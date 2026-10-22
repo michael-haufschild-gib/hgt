@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ConstantScalarExtensionFractionRing
-import GaloisForLFunctions.HTGeometry.CriticalFieldConstantBaseChangeCompatibility
+import GaloisForLFunctions.HTGeometry.Critical.Field.ConstantBaseChangeCompatibility
 
 /-!
 # Compatibility of the critical finite extension with constant base change

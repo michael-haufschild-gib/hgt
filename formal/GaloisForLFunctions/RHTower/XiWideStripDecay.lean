@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiHorizontalStripDecay
 import GaloisForLFunctions.RHTower.TiltedRiemannKernel
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceSpectrumExact
 
 /-!
 # Exponential decay of `Ξ` on every horizontal strip

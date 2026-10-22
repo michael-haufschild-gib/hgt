@@ -9,7 +9,7 @@
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerRankQuotient.lean` (already in the corpus) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRankQuotient.lean` (already in the corpus) and
 `DeningerFreeAlgebraRankQuotient.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 ### Done — the degree-zero theorem `(4)` and its universal property
@@ -204,7 +204,7 @@ multiplicative quotient.
 
 ### The 1-categorical content landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRankQuotient.lean`.  Axiom audit for all 12
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRankQuotient.lean`.  Axiom audit for all 12
 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 mathlib has no `∞`-categories, so the mapping-space equivalence `(3)` cannot be written.  What is
@@ -244,7 +244,7 @@ one-categorical shadow, which is what the card actually uses downstream — and 
 free commutative algebra on a module (`SymmetricAlgebra`).  So the span itself, and the pushout
 property of the rank quotient along it, are now proved rather than bypassed.
 
-`formal/GaloisForLFunctions/RHTower/DeningerRankQuotientPushout.lean`; axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRankQuotientPushout.lean`; axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerRankFreeToA`, `deningerRankFreeToA_ι` — the map `P = Sym(J) → A` extending the fibre

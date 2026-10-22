@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `AutocorrelationChainDamping`, `CCMRestrictedWeilBoundedRemainder`, `CCMRestrictedWeilGroundFrequencyLocalization`, `CCMRestrictedWeilFormTranslation`.
-- **Module:** `GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimeOuterShell` (wired into `RHTower.lean`).
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimeOuterShell` (wired into `RHTower.lean`).
 - **Statement:** Above the half-diameter, the square of the actual compressed symmetric translation is the endpoint-overlap projection. Its norm is exactly one while overlap is nonempty, with both eigenvalue signs present under both pole constraints. The literal finite-prime norm is at most `21(exp(a)+exp(a/2))`.
 
 ## Proof chain and scope
@@ -44,7 +44,7 @@ The last inequality uses the already proved elementary mass bound `primeMassHalf
 
 ## Verification
 - `lake env lean /tmp/hgt-prime-shell.7o42tom1/Combined.lean`: all 16 public theorems pass without warnings.
-- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimeOuterShell`: PASS.
+- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimeOuterShell`: PASS.
 - `lake env lean /tmp/hgt-prime-shell.7o42tom1/Audit.lean`: all 16 public declarations use exactly `[propext, Classical.choice, Quot.sound]`; the actual mathlib `RiemannHypothesis` definition is printed.
 - `python3 scripts/formal_tools.py lint`: PASS (repository large-file warnings only); `git diff --check`: PASS.
 - All owned Lean and build processes terminated normally.

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszPrimePowerHistoryTransport
 import GaloisForLFunctions.RHTower.SPEQuantileRieszSuzukiPrimePowerAlphabetBridge
-import GaloisForLFunctions.RHTower.SuzukiCofinalPrunedHistory
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCofinalPrunedHistory
 
 /-!
 # Synchronized SP-E/Suzuki prime-power history

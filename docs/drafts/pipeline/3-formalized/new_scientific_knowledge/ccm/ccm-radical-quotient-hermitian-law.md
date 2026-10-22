@@ -3,7 +3,7 @@
 - **ID:** `ccm-radical-quotient-hermitian-law-formal`
 - **Stage:** 3-formalized
 - **Parent route:** `../../1-in-progress/ccm-radical-quotient-hermitian-law.md`
-- **Module:** `formal/GaloisForLFunctions/RHTower/CCMRadicalQuotientHermitian.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRadicalQuotientHermitian.lean`
 - **Manuscript:** `docs/drafts/manuscripts/ccm-radical-quotient-hermitian/main.tex`
 - **Status:** `[UNCONDITIONALLY FORMALIZED] [NOT AN RH PROOF]`
 
@@ -49,7 +49,7 @@ quotient determinants to `Xi`; it is not asserted here.
 
 - [x] leaf file passes `lake env lean`
 - [x] imported by `RHTower.lean`
-- [x] final cached `lake build GaloisForLFunctions.RHTower.CCMRadicalQuotientHermitian`
+- [x] final cached `lake build GaloisForLFunctions.RHTower.CCM.CCMRadicalQuotientHermitian`
 - [x] axiom print audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] module reachable from `RHTower.lean`; repository-wide lint is blocked only by unrelated
   concurrent unreachable modules, none involving this module

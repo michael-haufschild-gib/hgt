@@ -5219,7 +5219,7 @@ Two lessons worth keeping.
   `formal/GaloisForLFunctions/RHTower/TwoDilationSpectralRepresentation.lean`.  The tree already
   owned Bochner–Schwartz in the Schwartz-form category
   (`HTGeometry/SchwartzPositiveMeasureRepresentation.lean`) and the whole theta-null classification
-  (`RHTower/HedenmalmUniversalPositiveFormClassification.lean`); the genuinely missing step was
+  (`RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean`); the genuinely missing step was
   `momentumSymmetric_of_two_dilation_invariance` — two multiplicatively independent integer
   dilations force momentum symmetry, via differentiability of the translation orbit plus density of
   the two-generator period group.  Capstones at the actual Hedenmalm theta source:
@@ -7649,7 +7649,7 @@ correction stands: `ΓH`-invariance is periodicity under a *lattice*, so a multi
 complement directions.
 
 **Card D** (`gauss-component-quasi-inner-residue-hierarchy`). The cited Connes–Consani input is not
-one theorem but a family the tree already develops in `RHTower/CCMConnesConsani*`:
+one theorem but a family the tree already develops in `RHTower/CCM/CCMConnesConsani*`:
 `connesConsani_arithmeticJacobianPrimeFibre_frontier` ("literature frontier plus strict new
 comparison in one unconditional statement"), `connesConsani_polarize2_realBasis`,
 `connesConsani_diracpm3_i_matrix`, `connesConsani_spectralreal_character`. The next step on card D is

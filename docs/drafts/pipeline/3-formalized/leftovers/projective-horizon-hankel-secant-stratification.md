@@ -176,7 +176,7 @@ from the cited paper-level parent theory.  The targeted Lean check passes; no fu
 ## Lean progress — 2026-08-30: the catalecticant identification and the dimension of the secant variety
 
 **A corpus search first: most of the Hankel determinantal algebra was already here.**  The
-`RHTower/DeningerHankel*` family owns the exact statements this card calls "classical catalecticant
+`RHTower/Deninger/DeningerHankel*` family owns the exact statements this card calls "classical catalecticant
 theory":
 
 - `DeningerHankelSecantParameterization.deningerHankelSecantMoment` — the `r`-atom moment

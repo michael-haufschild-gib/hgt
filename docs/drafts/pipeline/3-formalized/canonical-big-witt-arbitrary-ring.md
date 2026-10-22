@@ -138,7 +138,7 @@ T-adic continuity as a premise: `coeff_eq_eval_universalPolynomial` derives fini
 dependence coefficientwise from naturality itself.
 
 Verification: direct foreground Lean checks passed for every module; targeted final build of
-`GaloisForLFunctions.RHTower.DeningerBigWittCanonicity` passed, thereby rebuilding the construction
+`GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCanonicity` passed, thereby rebuilding the construction
 chain through the uniqueness capstone without a full build. The whole-repository formal lint finds
 no proof debt or wiring error in these modules, but exits nonzero on unrelated pre-existing
 unreachable modules. Axiom audit reports only standard `propext`, `Classical.choice`, and

@@ -5,7 +5,7 @@
 - **Paper proof:**
   `../../../2-fully-proven/new_scientific_knowledge/suzuki/suzuki-one-prime-rough-primitive-hardy-closure.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeRoughPrimitiveHardyTail.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeRoughPrimitiveHardyTail.lean`
 - **Status:** `[FORMALIZED ANALYTIC CORE] [AXIOM-CLEAN] [NOT RH]`
 
 ## Certified theorem surface

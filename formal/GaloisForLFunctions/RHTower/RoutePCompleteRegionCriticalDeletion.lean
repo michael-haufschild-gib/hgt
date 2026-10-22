@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.DivisorCenteredHyperbola
 import GaloisForLFunctions.HTGeometry.FarBandPowerTail
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 import GaloisForLFunctions.RHTower.DivisorHyperbolaAbelBound
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorAbelProducer
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorAbelProducer
 
 /-!
 # Critical deletion of the complete Möbius divisor region

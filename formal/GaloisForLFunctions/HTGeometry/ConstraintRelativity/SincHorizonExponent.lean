@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.CCMBoundaryStripTransfer
+import GaloisForLFunctions.RHTower.CCM.CCMBoundaryStripTransfer
 
 /-!
 # Observer ramification and the sinc horizon exponent

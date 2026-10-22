@@ -3,7 +3,7 @@
 - **ID:** FZZ-P-HSC
 - **Stage:** 1-in-progress
 - **Type:** FORMALIZED SOURCE RESULTS; FULL CONTINUATION OPEN
-- **Source:** [current frontier](../../rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation), [first-strip cutoff audit](../../fzz-p-continued-screening-mark.md)
+- **Source:** [current frontier](../../rh-current-frontier-map.md#fzz-p--parity-delay-mellin-orientation), [first-strip cutoff audit](fzz-p-continued-screening-mark.md)
 - **Statement:** Derive the original angular Taylor subtraction at exponent `-6`, including both punctures and all differentiated counterterms.
 
 ## Goal

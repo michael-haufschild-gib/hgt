@@ -209,10 +209,10 @@ pending expert review.
 
 Lean modules:
 
-- `GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber`;
-- `GaloisForLFunctions.RHTower.CCMRationalMoritaHilbertQuaternionic`;
-- `GaloisForLFunctions.RHTower.CCMRationalRealCrossedProduct`;
-- `GaloisForLFunctions.RHTower.CCMRationalKRealBrauerBridge`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalQuaternionicMoritaFiber`;
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalMoritaHilbertQuaternionic`;
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalRealCrossedProduct`;
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalKRealBrauerBridge`.
 
 Formal capstones:
 
@@ -260,8 +260,8 @@ Formal capstones:
 - 2026-07-25 — proved after the graded-adjoint attack isolated the need for an intrinsic
   no-doubling quaternionic carrier.  No numerical evidence and no RH assumption used.
 - 2026-07-25 — formalized in `CCMRationalQuaternionicMoritaFiber.lean`; minimal
-  `lake env lean GaloisForLFunctions/RHTower/CCMRationalQuaternionicMoritaFiber.lean` passed;
-  final `lake build GaloisForLFunctions.RHTower.CCMRationalQuaternionicMoritaFiber` passed;
+  `lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalQuaternionicMoritaFiber.lean` passed;
+  final `lake build GaloisForLFunctions.RHTower.CCM.CCMRationalQuaternionicMoritaFiber` passed;
   formal lint passed.
 - 2026-07-25 — corrected the endomorphism-erasure interpretation after auditing Real graded
   Brauer classification. Added and formalized the fixed-algebra law and the full finite-support

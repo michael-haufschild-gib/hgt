@@ -23,5 +23,5 @@ PW forward/reverse real Borel imbalance is reflection odd. The literal full CTP 
 - `divisorReflectionOddReal_not_sufficient_for_balance` formally rules out a parity-only inference; `divisorReflectionOddReal_eq_zero_of_criticalFiberInvariant` gives the exact positive survivor.
 - `fullCircleCrossBranchSymmetricCausalPair_re_eq_zero_iff_conjInvariant_on_critical` refines that survivor: at a critical divisor copy, source cancellation is equivalent to invariance of its real part under the canonical Schwarz conjugate copy.
 - `angularMean_reflect`, `angularDirichletKernel_reflect`, and `fullCircleSourcePairDensity_reflect` make all source transformations explicit.
-- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularSourceReflection.lean` passed on 2026-09-21.
+- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularSourceReflection.lean` passed on 2026-09-21.
 - Leaf OLean audit remains pending: targeted `lake build` incorrectly replayed over 12,000 unrelated modules and was stopped under the no-long-build rule.

@@ -2,7 +2,7 @@
 
 - **ID:** `suzuki-coherent-response-gain-no-go`
 - **Stage:** 3 — formalized
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiCoherentResponseGainNoGo`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCoherentResponseGainNoGo`
 - **Scientific status:** `[PROVED IN LEAN] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 
 ## Main declarations
@@ -23,9 +23,9 @@ complete causal fused response.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCoherentResponseGainNoGo.lean`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentResponseGainNoGo.lean`: pass.
 - Capstone `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCoherentResponseGainNoGo`: pass
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCoherentResponseGainNoGo`: pass
   (`Build completed successfully`, 9320 jobs; cached/replayed dependencies).
 - Repository lint reaches new module through `GaloisForLFunctions.RHTower`; global lint remains red
   only because 22 unrelated shared-tree modules are not yet imported by their theorem-area

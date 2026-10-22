@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.BoundaryHistoryCorona
 import GaloisForLFunctions.RHTower.PoissonScaleHistoryFrame
 import GaloisForLFunctions.RHTower.BurnolCoPoissonTopConormalPluckerJuliaCayleyLanding
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixPairedDefectGaussHodgeCurvature
-import GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventOperatorLift
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseResolventOperatorLift
 
 /-!
 # The boundary-scale germ of the physical Plücker density and its four organs

@@ -10,7 +10,7 @@
   `DeningerCofinalCountercharacterTopBoundaryTransgression.lean`, and
   `TateKummerWoldGammaIntervalCharacter.lean`.
 - **Lean counterpart:**
-  `formal/GaloisForLFunctions/RHTower/DeningerMobiusGammaSixNormalTransgression.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusGammaSixNormalTransgression.lean`.
 - **Formal closure:** the Lean module constructs the literal finite-corrected tail; proves its
   equality with the inverse-transported complete six packet; constructs the honest complementary
   rational Steinberg cell and normalized cubic Kummer selector; extracts both `[6^m]-1` and

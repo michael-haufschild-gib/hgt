@@ -74,7 +74,7 @@ must distinguish those squared amplitudes before postprocessing. The exact
 decoder-existence criterion gives the sharp boundary of the obstruction.
 
 Paper proof: closed above. Lean declarations in
-[FullCanonicalSourceEncodingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullCanonicalSourceEncodingNoGo.lean):
+[FullCanonicalSourceEncodingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullCanonicalSourceEncodingNoGo.lean):
 `canonicalQNMValue_amplitude_fibres`,
 `exists_fullCanonical_source_decoder_iff`,
 `not_exists_fullCanonical_nonzero_source_decoder`, and

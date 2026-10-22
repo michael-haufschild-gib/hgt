@@ -17,7 +17,7 @@ matching, extinction law or RH conclusion is established.
 
 The detailed analytical derivation, including the regularized two-frequency
 pairing and all three QNM source counterterms, is in
-[HB DN source reduction](../../hb-dn-source-moment-reduction.md). Its global Lean
+[HB DN source reduction](hb-dn-source-moment-reduction.md). Its global Lean
 proof is pending. Current verified findings are kept separately in
 [HB DN facts](../../bookkeeping/audits-ledgers-and-reviews/hb-dn-source-resolvent-facts.md).
 
@@ -4024,7 +4024,7 @@ New modules:
   `GaloisForLFunctions.HTGeometry.HalfOrderBeta`:
   `finitePart_cutoff_tendsto`, `cleared_eq_gamma`, `finitePart_eq_gamma`,
   `finitePart_ne_zero`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalRadialNorm`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalRadialNorm`:
   namespace `RHTower.D4BMFundamentalNorm` supplies `mode_square_intervalIntegrable`, `mode_square_integral`,
   `mode_square_cutoff_tendsto`, `normFinitePart_eq_gamma`,
   `normFinitePart_ne_zero`; namespace `RHTower.D4BMPhysicalModeAction`
@@ -5720,7 +5720,7 @@ Formal statements:
 - `HTGeometry/CoordinateEinsteinCyclicAction.lean`:
   `paired_cyclicity_defect`, `cubicAction_eq_density_third`,
   `cubicAction_cyclic` in `HTGeometry.EinsteinCyclicVariation`.
-- `RHTower/ThetaCuspHawkingBMCyclicActionBoundary.lean`:
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMCyclicActionBoundary.lean`:
   `metricFamily_jet`, `physical_cubicAction_cyclic`,
   `physical_cubicAction_eq_density_third` in `RHTower.D4BMCyclicAction`.
   The physical theorems have no supplied regularity, symmetry,
@@ -5845,7 +5845,7 @@ The diagonal is also compared with the actual field-source coefficient
 normalization independently. This Taylor factor is distinct from a
 causal half-jump convention.
 
-`RHTower/ThetaCuspHawkingBMOnShellCyclicSource.lean` proves
+`RHTower/ThetaCusp/ThetaCuspHawkingBMOnShellCyclicSource.lean` proves
 `physical_bulk_second_eq_hessian`,
 `quadraticPairing_diag_eq_sourceCoefficient`,
 `physical_quadratic_cyclicity_defect` and
@@ -6104,7 +6104,7 @@ necessary before claiming that reconstruction's quadratic Bianchi defects
 have been discharged.
 
 The full identity is also specialized to the actual literal theta-cusp field
-in `RHTower/ThetaCuspHawkingBMLiteralConservation.lean`.
+in `RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralConservation.lean`.
 `sourceField_apply` identifies every exterior component with the existing
 `D4BMActualMetricSource.source`. The theorem
 `literal_source_conservation_near_zero` supplies conservation on an actual
@@ -7201,7 +7201,7 @@ exact original decomposition `Z=lift-seed/d+R(onsetPulse)/d`. The source
 pulse is retained. Full Einstein action/boundary pairing remains open.
 
 The scratch check and exact `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalRetardedIdentity`
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOriginalRetardedIdentity`
 audit pass at default proof budgets; the new leaf is wired. The audit built
 only this leaf against cached dependencies. Repository lint reports the
 unrelated unreachable `Sieve.KloostermanGlobalCollisionCoprime` module.

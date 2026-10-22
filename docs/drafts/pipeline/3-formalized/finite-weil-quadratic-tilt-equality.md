@@ -82,7 +82,7 @@ atomic probability measure; every canonical edge mass is strictly positive.
   Unreachable modules: RHTower.CCMPolarOddPrimeJumps, RHTower.PaperWoldPrimeWindows,
   RHTower.Sieve.FourthDerivativeTestSharp, RHTower.ZetaFiveSeventhsLineBound,
   HTGeometry.QKrawtchoukCompanionTriangular. Existing sorry:
-  RHTower/CCMPolarOddPrimeJumps.lean:104, ccmPolarOddSource_eq_core_add_atoms.
+  RHTower/CCM/CCMPolarOddPrimeJumps.lean:104, ccmPolarOddSource_eq_core_add_atoms.
   No owned error.
 - Final native scratch audit passed seven axiom reports and ten API checks.
   Only propext, Classical.choice, and Quot.sound occur. Artifacts use

@@ -46,5 +46,5 @@ If the jump conjecture fails, identify the exact sign-changing term and stronges
 
 - 2026-10-10 — Started after endpoint-rank theorem failed to control the selected constrained ground. No web or literature novelty test per user instruction.
 
-- 2026-10-12 — Formalized (MUST-1331): `RHTower/CCMPolarOddPrimeJumps` (`ccmPolarOddSource_jump`, `ccmPolarOddSource_jump_nonneg`), standard axioms, wired.
+- 2026-10-12 — Formalized (MUST-1331): `RHTower/CCM/CCMPolarOddPrimeJumps` (`ccmPolarOddSource_jump`, `ccmPolarOddSource_jump_nonneg`), standard axioms, wired.
   - **Correction to the paper proof.** The claim "the terms `e^(x/2)e^R` and `e^(−x/2)e^L` cancel exactly" is false: their difference is `e^a(e^(−x/2) − e^(x/2)) = −2e^a sinh(x/2)`. The continuous core is therefore `G_a(x) = e^(x/2)[B(R,L) + e^R + L] − e^(−x/2)[B(L,R) + e^L + R]`. The previous Lean statement omitted the exponentials, was false, and carried the corpus's only `sorry`. The jump law is unchanged, since the extra term is continuous.

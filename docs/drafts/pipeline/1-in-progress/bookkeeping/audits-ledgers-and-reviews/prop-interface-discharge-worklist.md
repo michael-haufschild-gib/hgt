@@ -21,7 +21,7 @@ definitions, 50 undischarged interfaces.
 | consumers | interface | defining module | areas | status |
 |---:|---|---|---|---|
 | 23 | `GaloisForLFunctions.HTGeometry.ErlangRecoveryAdmissible` | `GaloisForLFunctions.HTGeometry.ErlangWignerSmithPacket` | HTGeometry | **discharged** — `HTGeometry.ErlangBoundedSource` |
-| 13 | `GaloisForLFunctions.RHTower.SuzukiAllAngleRealZeros` | `GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler` | RHTower | **discharged** — `RHTower.SuzukiAllAngleWitnesses` |
+| 13 | `GaloisForLFunctions.RHTower.Suzuki.SuzukiAllAngleRealZeros` | `GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteApertureHermiteBiehler` | RHTower | **discharged** — `RHTower.SuzukiAllAngleWitnesses` |
 | 12 | `GaloisForLFunctions.HTGeometry.IsConstantMvPolynomial` | `GaloisForLFunctions.HTGeometry.DisjointBlockPolynomialIndependence` | HTGeometry | **discharged** — `HTGeometry.NonconstantMvPolynomialWitnesses` |
 | 10 | `GaloisForLFunctions.HTGeometry.MembraneLocalPrincipalBrackets` | `GaloisForLFunctions.HTGeometry.HolographicLocalityBound` | HTGeometry | **discharged** — `HTGeometry.MembraneLocalityWitnesses` |
 | 8 | `GaloisForLFunctions.FiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` | HTGeometry | **inductive — realized by its own `nil`/`cons` constructors**; explicit towers in `HTGeometry.FiniteGeometricLayerTowerWitnesses` |
@@ -48,7 +48,7 @@ definitions, 50 undischarged interfaces.
 | 3 | `GaloisForLFunctions.HTGeometry.RayTailCoefficientIndependent` | `GaloisForLFunctions.HTGeometry.SeparatedRayTailPacket` | HTGeometry | **discharged** — `HTGeometry.TailIndependenceWitnesses` |
 | 3 | `GaloisForLFunctions.HTGeometry.probabilityCarrierExpandedPatternRelationHolds` | `GaloisForLFunctions.HTGeometry.BoundaryCarrierTranslationFreeness` | HTGeometry | **discharged** — `HTGeometry.PatternRelationWitnesses` |
 | 3 | `GaloisForLFunctions.HasBesselBound` | `GaloisForLFunctions.RHTower.DirichletHilbertRiggingBarrier` | RHTower | **discharged** — `RHTower.BesselBoundWitnesses` |
-| 3 | `GaloisForLFunctions.RHTower.SchanuelConjecture` | `GaloisForLFunctions.RHTower.SchanuelWeldApex` | RHTower | **irreducible external open input** — split stagewise in `RHTower.SchanuelStageWitnesses`: stage 0 proved, stage 1 shown *equivalent* to Hermite–Lindemann (mathlib has only the analytical part) |
+| 3 | `GaloisForLFunctions.RHTower.Schanuel.SchanuelConjecture` | `GaloisForLFunctions.RHTower.Schanuel.SchanuelWeldApex` | RHTower | **irreducible external open input** — split stagewise in `RHTower.SchanuelStageWitnesses`: stage 0 proved, stage 1 shown *equivalent* to Hermite–Lindemann (mathlib has only the analytical part) |
 | 2 | `GaloisForLFunctions.HTGeometry.ClosedBooleanConstraintShiftInvariant` | `GaloisForLFunctions.HTGeometry.IsodivisorialPrimeWalshStoneSaturation` | HTGeometry | **discharged** — `HTGeometry.ShiftInvariantConstraintWitnesses` |
 | 2 | `GaloisForLFunctions.HTGeometry.ExponentZeroGaugeSeparatedReflectionClass` | `GaloisForLFunctions.HTGeometry.ExponentZeroEulerGaugeReflectionTransversal` | HTGeometry | **discharged** — `HTGeometry.GaugeSeparatedClassWitnesses` |
 | 2 | `GaloisForLFunctions.HTGeometry.IsMetricBornologicallyCofinal` | `GaloisForLFunctions.HTGeometry.HypertranscendentalClockBoundary` | HTGeometry | **discharged** — `HTGeometry.MetricCofinalWitnesses` |
@@ -195,7 +195,7 @@ New checked modules:
 - `HTGeometry/FurtherPropInterfaceWitnesses.lean`
 - `HTGeometry/SecondTierPropInterfaceWitnesses.lean`
 - `HTGeometry/SingletonPropInterfaceWitnesses.lean`
-- `RHTower/SuzukiGammaTestedEquationWitnesses.lean`
+- `RHTower/Suzuki/SuzukiGammaTestedEquationWitnesses.lean`
 - `RHTower/SingletonPropInterfaceWitnesses.lean`
 
 Classified false positives include structure fields (`PartialCompletion.admissible`), inductive

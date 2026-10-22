@@ -174,7 +174,7 @@ form-domain admission/incoming nonnegativity and separate degenerate branch.
 Modules:
 
 - `formal/GaloisForLFunctions/RHTower/L2FourierEndpointOrthogonality.lean`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiHlogEndpointSupport.lean`;
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHlogEndpointSupport.lean`;
 - `formal/GaloisForLFunctions/RHTower/XiShiftedHardEdgeOddPrimeWallEndpointInvisibility.lean`.
 
 Capstones:

@@ -427,5 +427,5 @@ before claiming publication-level novelty.
   `lake build` (8,560 jobs), and HTGeometry umbrella `lake build` (10,529 jobs) passed. `#print
   axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`. Repository lint reached an
   unrelated pre-existing orphan module,
-  `GaloisForLFunctions.RHTower.SuzukiOppositeShiftParityHarmonicRecovery`; no finding names this
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiOppositeShiftParityHarmonicRecovery`; no finding names this
   card's module, which is reachable from the HTGeometry umbrella.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiSafeShiftTransverseChargeBudget
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSafeShiftTransverseChargeBudget
 import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniFourthCumulantCapNoGo
 
 /-!

@@ -148,7 +148,7 @@ finiteness.  Zero counting itself is absent.
   ```
 
   so an arbitrary copy above the band floor `3(1+h)` is a valid witness
-  (`RHTower/SuzukiGeneralWitnessAnnularPayment.lean`, `RHTower.annulus_general_payment`).  What the
+  (`RHTower/Suzuki/SuzukiGeneralWitnessAnnularPayment.lean`, `RHTower.annulus_general_payment`).  What the
   consuming card now needs is
 
   ```text

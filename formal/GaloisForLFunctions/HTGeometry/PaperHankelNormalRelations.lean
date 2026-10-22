@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PaperHomogeneousNormalRelations
-import GaloisForLFunctions.RHTower.DeningerHankelGlobalSecantPrime
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelGlobalSecantPrime
 
 /-!
 # The complete Hankel-minor relation ring survives in normal coordinates

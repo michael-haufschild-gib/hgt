@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ZeroEstimate
 import GaloisForLFunctions.HTGeometry.PrimeTorusKroneckerDensity
-import GaloisForLFunctions.RHTower.SuzukiApertureLiouvilleDense
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureLiouvilleDense
 
 /-!
 # The native orbit gives genericity, not the arithmetic edge bound

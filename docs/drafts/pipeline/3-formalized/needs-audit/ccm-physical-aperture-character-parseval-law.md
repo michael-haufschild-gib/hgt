@@ -61,7 +61,7 @@ independent published-source descent problem.
 ## Lean certificate
 
 Module:
-`formal/GaloisForLFunctions/RHTower/CCMPhysicalPrimeApertureCharacterTomography.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPhysicalPrimeApertureCharacterTomography.lean`.
 
 Principal declarations:
 
@@ -73,7 +73,7 @@ Principal declarations:
 Direct validation:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMPhysicalPrimeApertureCharacterTomography.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMPhysicalPrimeApertureCharacterTomography.lean
 ```
 
 passes without warnings.  Final targeted module build and axiom audit remain pending until the

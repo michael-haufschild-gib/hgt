@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-screw-null-global-log-regularity-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMScrewNullLogRegularity.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMScrewNullLogRegularity.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 9 declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

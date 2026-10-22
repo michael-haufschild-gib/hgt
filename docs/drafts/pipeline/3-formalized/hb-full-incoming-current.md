@@ -4,7 +4,7 @@ Status: formalized. This evaluates the entire explicit incoming wave image in th
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Owner: [ThetaCuspHawkingBMFullIncomingCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullIncomingCurrent.lean), namespace `RHTower.D4BMFullIncomingCurrent`.
+Owner: [ThetaCuspHawkingBMFullIncomingCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullIncomingCurrent.lean), namespace `RHTower.D4BMFullIncomingCurrent`.
 
 ## Exact result
 
@@ -55,7 +55,7 @@ No amplitude, clock, angular-response or boundary-cancellation premise is suppli
 
 ## Validation
 
-Scratch `lake env lean` passed. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullIncomingCurrent` passed in an isolated audit using only existing compiled dependencies: two jobs, 23 seconds. The audit froze 3,991 project dependency modules (19,940 artifact links) and used 12 local dependency stubs. No dependency or umbrella build ran. All ten new public theorems passed `#print axioms` in a separate scratch file, each with exactly `propext`, `Classical.choice`, and `Quot.sound`. Installed source and five build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`; the umbrella was not built. The search index refreshed once (four changed files, zero removed). All 21 new public API rows, the unique umbrella import, and local document links were checked. Global `scripts/formal_tools.py lint` reported two unrelated unwired modules: `GaloisForLFunctions.RHTower.FokasLenellsCausalFrequencyAbsoluteInstability` and `GaloisForLFunctions.HTGeometry.PathIndependenceCochain`. No lint error named this module.
+Scratch `lake env lean` passed. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullIncomingCurrent` passed in an isolated audit using only existing compiled dependencies: two jobs, 23 seconds. The audit froze 3,991 project dependency modules (19,940 artifact links) and used 12 local dependency stubs. No dependency or umbrella build ran. All ten new public theorems passed `#print axioms` in a separate scratch file, each with exactly `propext`, `Classical.choice`, and `Quot.sound`. Installed source and five build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`; the umbrella was not built. The search index refreshed once (four changed files, zero removed). All 21 new public API rows, the unique umbrella import, and local document links were checked. Global `scripts/formal_tools.py lint` reported two unrelated unwired modules: `GaloisForLFunctions.RHTower.FokasLenellsCausalFrequencyAbsoluteInstability` and `GaloisForLFunctions.HTGeometry.PathIndependenceCochain`. No lint error named this module.
 
 ## Next direct cancellation test
 

@@ -2,11 +2,11 @@
 
 - **Card:** `ccm-growing-aperture-mellin-determinant-transfer.md`
 - **Stage:** 3-formalized
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMGrowingApertureMellin.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMGrowingApertureMellin.lean`
 - **Namespace:** `GaloisForLFunctions.RHTower`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on every declaration
-- **Build:** `lake build GaloisForLFunctions.RHTower.CCMGrowingApertureMellin` — success
+- **Build:** `lake build GaloisForLFunctions.RHTower.CCM.CCMGrowingApertureMellin` — success
 
 ## Certified statements
 

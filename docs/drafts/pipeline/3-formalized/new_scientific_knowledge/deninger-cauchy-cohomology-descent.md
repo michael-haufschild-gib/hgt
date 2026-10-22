@@ -95,7 +95,7 @@ commute automatically.
 ## Lean
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticCauchyCohomologyDescent.lean`:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCauchyCohomologyDescent.lean`:
 
 - `deningerCauchyQuotientRestriction`;
 - `deningerCauchyQuotientRestriction_mk`;
@@ -118,8 +118,8 @@ hypothesis:
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticCauchyCohomologyDescent.lean`
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerArithmeticCauchyCohomologyDescent`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCauchyCohomologyDescent.lean`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCauchyCohomologyDescent`
   completes successfully.
 - Scratch `#print axioms` on all ten declarations: only the Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`; three of them do not even use choice.
@@ -133,7 +133,7 @@ now discharged.
 
 - [x] 0 → 1 in-progress: exact descent statement
 - [x] 1 → 2 fully-proven: complete paper proof
-- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.DeningerArithmeticCauchyCohomologyDescent`,
+- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCauchyCohomologyDescent`,
   cached build green, axiom audit clean
 - [ ] 3 → 4 publication-ready: the arithmetic content is the conservativity conjecture
   `DAC_FULL_CAUCHY_BOUNDARY_CLASSIFICATION`, which supplies hypothesis `(1)` and is not proved

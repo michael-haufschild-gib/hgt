@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaLeftLineBound
 import GaloisForLFunctions.RHTower.SmoothAFEZetaStripBound
 import GaloisForLFunctions.RHTower.ZetaLowerBound
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import GaloisForLFunctions.RHTower.Sieve.ZetaRealBound
 
 /-!

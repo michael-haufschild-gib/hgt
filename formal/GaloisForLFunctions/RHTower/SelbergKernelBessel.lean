@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCauchyPowerFourierBessel
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCauchyPowerFourierBessel
 import GaloisForLFunctions.RHTower.SelbergEisensteinCuspExpansion
 
 open Complex MeasureTheory Filter Topology

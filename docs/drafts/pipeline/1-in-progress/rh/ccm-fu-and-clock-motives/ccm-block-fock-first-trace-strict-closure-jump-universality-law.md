@@ -22,7 +22,7 @@ the block--Fock shifted tail, rather than merely conjoining their separate no-go
 - [x] 1 → 2 fully-proven: dependency-closed proof below
 - [x] 2 → 3 formalized:
   `primeFirstTraceClock_graphClosure_lt_blockFockTailClock_graphClosure`;
-  `lake env lean GaloisForLFunctions/RHTower/CCMBlockFockCodiagonalNoGo.lean` clean
+  `lake env lean GaloisForLFunctions/RHTower/CCM/CCMBlockFockCodiagonalNoGo.lean` clean
 - [ ] 3 → 4 publication-ready: pending standalone exposition and external novelty review
 
 ## Statement

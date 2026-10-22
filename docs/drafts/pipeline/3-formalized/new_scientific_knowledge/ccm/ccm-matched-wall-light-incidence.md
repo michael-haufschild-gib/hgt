@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedOrientedWallLightIncidence`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedOrientedWallLightIncidence`.
 This closes a source-occurrence theorem inside the actual matched CCM carrier; it does not yet
 identify the Robin--Gamma--holonomy rectangular trace or prove RH.
 

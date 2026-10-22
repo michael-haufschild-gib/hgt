@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmBoundaryValueProblem
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
 
 /-!
 # The Borel holonomy of the flat theta tail

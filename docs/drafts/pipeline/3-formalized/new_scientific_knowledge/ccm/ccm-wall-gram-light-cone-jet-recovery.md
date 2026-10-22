@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadWallGramLightConeJetRecovery`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadWallGramLightConeJetRecovery`.
 This closes prime-power negative-light occurrence inside the differentiated actual wall-Gram
 channel; global completed producer comparison and RH remain open.
 

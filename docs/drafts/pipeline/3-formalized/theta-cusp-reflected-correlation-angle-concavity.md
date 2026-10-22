@@ -261,8 +261,8 @@ Formalized modules:
 
 - `GaloisForLFunctions.HilbertMetric.RiccatiCorrelationAngle`
 - `GaloisForLFunctions.HilbertMetric.ThreePointCorrelationAngle`
-- `GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati`
-- `GaloisForLFunctions.RHTower.HedenmalmCenterMixedCorrelationAngle`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGlobalReflectedRiccati`
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedCorrelationAngle`
 
 ## Log
 

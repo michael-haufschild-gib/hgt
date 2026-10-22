@@ -228,7 +228,7 @@ Verification:
 
 ```text
 lake env lean \
-  GaloisForLFunctions/RHTower/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean
+  GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean
 ```
 
 passed with no `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or computation.

@@ -274,8 +274,8 @@ tensor feature is constructed rather than posited.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMDiagonalFockLift.lean` (wired, axiom-clean, 10
-declarations), over `RHTower/CCMHalfUnitCauchySeam.lean` from the parent card.
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMDiagonalFockLift.lean` (wired, axiom-clean, 10
+declarations), over `RHTower/CCM/CCMHalfUnitCauchySeam.lean` from the parent card.
 
 - `cauchyKernel`, `kernelMatrix` — equation `(2)` and the Gram matrix of a kernel at a finite node
   family.

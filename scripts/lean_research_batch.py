@@ -18,9 +18,10 @@ import sqlite3
 import time
 
 from lean_research_corpus import Corpus, source_priority
-from research_runtime.config import (CONTEXT_TOKENS, DEFAULT_CACHE_DIR, INSTRUCTION,
-                                     MODELS, RUNTIME_HOME, installation_status)
-from research_batch.format import (FORMAT, DIMENSIONS, SHARD_ROWS, atomic_bytes, atomic_json,
+from research_runtime.config import (CONTEXT_TOKENS, DEFAULT_CACHE_DIR, DOCUMENT_TEMPLATE,
+                                     EMBEDDING_DIMENSIONS, EMBEDDING_POOLING, MODELS,
+                                     QUERY_TEMPLATE, RUNTIME_HOME, installation_status)
+from research_batch.format import (FORMAT, SHARD_ROWS, atomic_bytes, atomic_json,
                                   checked_file, checked_result, descriptor, load_manifest,
                                   parity, read_shard, sha_file, sha_text)
 
@@ -31,10 +32,10 @@ MATCH_INCOMING_SQL = ('SELECT c.id,c.content_hash,i.position FROM batch_incoming
 
 def embedding_spec():
     return dict(repo=MODELS['embedding']['repo'], revision=MODELS['embedding']['revision'],
-                dimensions=DIMENSIONS, context_tokens=CONTEXT_TOKENS,
-                query_instruction=INSTRUCTION, document_instruction='', padding='right',
-                query_template=f'Instruct: {INSTRUCTION}\nQuery:{{text}}',
-                pooling='last_valid_token', normalization='l2_float32', format=FORMAT)
+                dimensions=EMBEDDING_DIMENSIONS, context_tokens=CONTEXT_TOKENS,
+                padding='right', query_template=QUERY_TEMPLATE,
+                document_template=DOCUMENT_TEMPLATE, pooling=EMBEDDING_POOLING,
+                normalization='l2_float32', format=FORMAT)
 
 
 @contextmanager
@@ -87,21 +88,21 @@ def snapshot(cache, directory, model):
                           exported_document_references=0)
             con.executemany('INSERT INTO files VALUES(?,?,?,?,?,?)', corpus.con.execute(
                 'SELECT path,status,error,source_hash,compile_status,extractor_version FROM files'))
-            cursor = corpus.con.execute('SELECT id,path,view,text,content_hash FROM documents ORDER BY id')
+            cursor = corpus.con.execute('SELECT id,path,view,embed_text,content_hash FROM documents ORDER BY id')
             while rows := cursor.fetchmany(4096):
                 pending = []
                 for row in rows:
                     counts['total_documents'] += 1
-                    if row['view'] == 'lean':
+                    if row['view'] == 'lean' or '/.lake/packages/' in row['path']:
                         continue
                     counts['eligible_documents'] += 1
                     if row['content_hash'] in cached:
                         counts['cached_documents'] += 1
                         continue
-                    if sha_text(row['text']) != row['content_hash']:
+                    if sha_text(row['embed_text']) != row['content_hash']:
                         raise ValueError(f'Corpus text/hash mismatch at document {row["id"]}')
                     counts['exported_document_references'] += 1
-                    pending.append((row['content_hash'], row['text'], source_priority(row['path']), row['view']))
+                    pending.append((row['content_hash'], row['embed_text'], source_priority(row['path']), row['view']))
                 con.executemany('INSERT INTO texts VALUES(?,?,?,?) ON CONFLICT(hash) DO UPDATE '
                                 'SET priority=MIN(priority,excluded.priority)', pending)
                 con.commit()
@@ -156,7 +157,8 @@ def saved_reference(model):
         cpu_vectors.extend(cpu['results'][label]['vectors'])
     vectors.extend(runtime['queries'])
     cpu_vectors.extend(cpu['queries'])
-    report = parity(cpu_vectors, np.asarray(vectors, dtype=np.float32), len(fixture['queries']))
+    report = parity(cpu_vectors, np.asarray(vectors, dtype=np.float32), len(fixture['queries']),
+                    EMBEDDING_DIMENSIONS)
     if not report['passed']:
         raise ValueError('Saved local/CPU compatibility failed')
     return dict(documents=documents, queries=fixture['queries'], vectors=vectors,
@@ -283,7 +285,8 @@ def validate_audit(bundle, output, manifest):
         raise ValueError('A successful CUDA audit is required')
     reference = json.loads(checked_file(bundle, manifest['reference']).read_text())
     values = np.load(checked_file(output, report['vectors']), allow_pickle=False)
-    verdict = parity(reference['vectors'], values, len(reference['queries']))
+    verdict = parity(reference['vectors'], values, len(reference['queries']),
+                     manifest['spec']['dimensions'])
     if not verdict['passed']:
         raise ValueError('Returned vectors failed numerical compatibility')
     return manifest_sha, sha_file(path), verdict
@@ -324,7 +327,8 @@ def import_results(cache, bundle, output, *, budget_seconds=600, lock_seconds=15
                 report['pending_shards'] += 1
                 continue
             rows = read_shard(bundle, entry)
-            _, matrix = checked_result(bundle, output, entry, manifest_sha, audit_sha)
+            _, matrix = checked_result(bundle, output, entry, manifest_sha, audit_sha,
+                                       manifest['spec']['dimensions'])
             corpus.con.execute('DELETE FROM batch_incoming')
             corpus.con.executemany('INSERT INTO batch_incoming VALUES(?,?)',
                                   [(row['hash'], i) for i, row in enumerate(rows)])

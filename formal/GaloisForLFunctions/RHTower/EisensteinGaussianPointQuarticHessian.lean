@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation
 
 /-!
 # The real-analytic Eisenstein series at the Gaussian point: orbifold criticality and the quartic

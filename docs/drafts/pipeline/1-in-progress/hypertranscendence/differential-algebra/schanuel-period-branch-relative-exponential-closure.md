@@ -120,7 +120,7 @@ stratification.
 
 ## Formalization status
 
-`RHTower/SchanuelPeriodCharacterNormalForm.lean` defines the actual field `Qbar(alpha)`, proves
+`RHTower/Schanuel/SchanuelPeriodCharacterNormalForm.lean` defines the actual field `Qbar(alpha)`, proves
 that a nonzero logarithm of an algebraic number is transcendental over `Qbar`, proves the exact
 local extraction equivalence, proves algebraicity descends from every nonzero integral power,
 constructs and saturates the concrete multiplicative character subgroup, divides characters to

@@ -89,16 +89,16 @@ coercivity/relative error passed with only standard Lean axioms.
 
 Unrelated unreachable modules reported by lint38139:
 
-- GaloisForLFunctions.RHTower.CCMApertureChainProfile
-- GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-- GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-- GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-- GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-- GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+- GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+- GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+- GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 - GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 - GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 - GaloisForLFunctions.RHTower.SoninCorrectionResponseRecovery
-- GaloisForLFunctions.RHTower.ThetaCuspMixedPairOddFourFloor
+- GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspMixedPairOddFourFloor
 - GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
 - GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving
 

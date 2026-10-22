@@ -49,21 +49,21 @@ injectivity, target reducedness shortcut, or computation is used in the arbitrar
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelCorrectedRationalStage`
-- `GaloisForLFunctions.RHTower.DeningerKroneckerFieldStage`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelReducedMultiplication`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelUniversalQuotient`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelUniversalMultiplicationDescent`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelPairTensorEquiv`
-- `GaloisForLFunctions.RHTower.DeningerCharacteristicZeroTensorReduced`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelPrimeReduction`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelStageOnePrime`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelLeadingLocalization`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelLocalizedCoordinates`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelLocalizedRetraction`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelLocalizedEquivalence`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelSylvesterExchange`
-- `GaloisForLFunctions.RHTower.DeningerHazewinkelSylvesterContainment`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelCorrectedRationalStage`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerKroneckerFieldStage`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelReducedMultiplication`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelUniversalQuotient`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelUniversalMultiplicationDescent`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelPairTensorEquiv`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerCharacteristicZeroTensorReduced`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelPrimeReduction`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelStageOnePrime`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLeadingLocalization`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLocalizedCoordinates`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLocalizedRetraction`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLocalizedEquivalence`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelSylvesterExchange`
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelSylvesterContainment`
 
 ## Exact remaining source theorem
 
@@ -78,14 +78,14 @@ are recorded as open, not hidden as hypotheses in any claimed unconditional all-
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelPairTensorEquiv.lean`
-- `lake build GaloisForLFunctions.RHTower.DeningerHazewinkelPairTensorEquiv`
-- `lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelLeadingLocalization.lean`
-- `lake build GaloisForLFunctions.RHTower.DeningerHazewinkelLeadingLocalization`
-- `lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelStageOnePrime.lean`
-- `lake build GaloisForLFunctions.RHTower.DeningerHazewinkelStageOnePrime`
-- `lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelLocalizedEquivalence.lean`
-- `lake build GaloisForLFunctions.RHTower.DeningerHazewinkelLocalizedEquivalence`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelPairTensorEquiv.lean`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelPairTensorEquiv`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelLeadingLocalization.lean`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLeadingLocalization`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelStageOnePrime.lean`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelStageOnePrime`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelLocalizedEquivalence.lean`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLocalizedEquivalence`
 
 All passed on 2026-08-13. Modules are wired into `GaloisForLFunctions.RHTower`. Axiom audit reports
 only `propext`, `Classical.choice`, and `Quot.sound`.

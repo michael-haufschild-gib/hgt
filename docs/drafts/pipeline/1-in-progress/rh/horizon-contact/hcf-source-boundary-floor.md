@@ -39,7 +39,7 @@ obtain the lower bound is circular.
 ## Lean status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureFirstOrderWindingAsymptotic.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureFirstOrderWindingAsymptotic.lean`:
 
 - `tendsto_criticalFeatureCanonicalFirstOrderPoleGammaWinding_div_zeroCount`
 - `tendsto_criticalFeaturePhaseCovariance_add_boundary_div_zeroCount`

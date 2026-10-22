@@ -60,7 +60,7 @@ Own broad arXiv words included redshift, endpoint, gluing and polyhomogeneous, w
 
 ## Lean certificate
 
-[ThetaCuspHawkingBMSpinTwoUniformDelay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSpinTwoUniformDelay.lean), namespace `RHTower.D4BMSpinTwoUniformDelay`, adds seven public theorems to the already verified owner:
+[ThetaCuspHawkingBMSpinTwoUniformDelay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSpinTwoUniformDelay.lean), namespace `RHTower.D4BMSpinTwoUniformDelay`, adds seven public theorems to the already verified owner:
 
 - `horizon_geometry_limits`: original invariant and both time-derivative limits.
 - `horizon_ratio_limits`: both original normalized coefficients, with exact branch delays.

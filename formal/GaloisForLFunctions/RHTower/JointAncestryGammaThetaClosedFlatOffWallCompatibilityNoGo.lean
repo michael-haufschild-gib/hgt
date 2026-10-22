@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryGammaThetaBooleanClosedCreation
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
 
 /-!
 # JAS Gamma--theta closed-flat off-wall compatibility no-go

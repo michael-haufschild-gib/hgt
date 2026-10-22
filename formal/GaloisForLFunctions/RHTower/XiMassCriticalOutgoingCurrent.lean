@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMassCriticalErrorFlux
-import GaloisForLFunctions.RHTower.CCMSawtoothDilationMean
+import GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationMean
 
 /-!
 # Critical outgoing-current transference for the Xi mass face

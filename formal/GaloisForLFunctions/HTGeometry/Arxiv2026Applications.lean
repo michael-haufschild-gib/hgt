@@ -12,7 +12,7 @@ import GaloisForLFunctions.HTGeometry.Arxiv2609KineticVariance
 import GaloisForLFunctions.HTGeometry.Arxiv2609ThurstonIdentifiability
 import GaloisForLFunctions.HTGeometry.Arxiv2609PaperCorpusApplications
 import GaloisForLFunctions.HTGeometry.ClockNullFrameEquivalence
-import GaloisForLFunctions.HTGeometry.KleinGordonOperator
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonOperator
 
 /-!
 # Cross-paper applications from 2026 arXiv papers

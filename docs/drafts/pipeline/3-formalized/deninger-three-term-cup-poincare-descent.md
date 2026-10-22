@@ -140,7 +140,7 @@ perfectness theorem; nondegeneracy cannot be inferred merely from a nonzero trac
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCupDescent.lean` checks with
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermCupDescent.lean` checks with
 `lake env lean` and builds; axiom audit `propext, Classical.choice, Quot.sound`.
 
 - `DeningerArithmeticThreeTermCupPairing` — the chain data: `pair02`, `pair11`, the differential

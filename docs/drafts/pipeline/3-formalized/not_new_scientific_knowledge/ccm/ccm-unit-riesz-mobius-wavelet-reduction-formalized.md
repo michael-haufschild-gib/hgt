@@ -3,11 +3,11 @@
 - **Card:** `ccm-unit-riesz-mobius-wavelet-reduction.md`
 - **Stage:** 3-formalized / not-new
 - **Lean modules:**
-  - `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinRieszMobiusRenewal.lean` — `(1)`, `(2)`,
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinRieszMobiusRenewal.lean` — `(1)`, `(2)`,
     `(9)`, `(13)`
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszQuadratureDefect.lean` — `(4)`, `(5)`, `(6)`,
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszQuadratureDefect.lean` — `(4)`, `(5)`, `(6)`,
     `(11)` sharp form
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszWaveletFrontier.lean` — `(7)`, `(10)`, `(15)`,
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszWaveletFrontier.lean` — `(7)`, `(10)`, `(15)`,
     `(18)`, `(20)`–`(23)`, `(25)`
 - **Umbrella:** all wired from `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` throughout

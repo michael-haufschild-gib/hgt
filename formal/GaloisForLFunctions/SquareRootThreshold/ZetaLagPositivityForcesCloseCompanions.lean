@@ -1,6 +1,6 @@
 import GaloisForLFunctions.SquareRootThreshold.FejerLagWindowCubicPotentialLaw
 import GaloisForLFunctions.RHTower.ZetaLocalZeroCount
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
 
 /-!
 # Lag positivity forces close companions for `ζ`

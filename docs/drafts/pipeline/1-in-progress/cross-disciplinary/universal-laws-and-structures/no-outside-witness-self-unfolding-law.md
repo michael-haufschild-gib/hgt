@@ -745,7 +745,7 @@ time. Existing approaches use observer degrees of freedom, partial sources, enla
 spaces, or conditioning.
 
 The child conjecture
-[`closed-universe-self-witness-resolution-law.md`](../../closed-universe-self-witness-resolution-law.md)
+[`closed-universe-self-witness-resolution-law.md`](closed-universe-self-witness-resolution-law.md)
 tests the stronger reversal:
 
 > **The universe's unique global fact must internally generate the higher witness structure from

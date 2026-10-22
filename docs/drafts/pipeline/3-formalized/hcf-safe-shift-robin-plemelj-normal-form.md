@@ -42,13 +42,13 @@ size estimate.
 
 ## Lean certificate
 
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean`
 - **Exact source derivative:** `hasDerivAt_criticalFeatureSafeShiftSourceDensity_one`
 - **Exact Robin identity:** `criticalFeatureSafeShiftRobinJet_eq_poleGammaVMJet`
 - **Finite localization:** `criticalFeatureSourcePlemeljCorrectedLatticeBudget_eq_sum_robinDefects`
 - **Cofinal limit:** `tendsto_criticalFeatureSafeShiftRobinPlemeljDefect_sum`
 - **Reachability:** imported by `formal/GaloisForLFunctions/RHTower.lean`
-- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean` passed; leaf target `lake build GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureSafeShiftRobinPlemelj` passed.
+- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureSafeShiftRobinPlemelj.lean` passed; leaf target `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureSafeShiftRobinPlemelj` passed.
 - **Axiom audit:** not rerun; no declarations were created or modified in this promotion pass.
 
 ## Log

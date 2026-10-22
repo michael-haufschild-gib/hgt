@@ -604,7 +604,7 @@ Gamma/Burnol/BV landing.
 ## 11. Formalization certificate
 
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Closed capstone:** `gammaSixCyclotomicDenominatorAdmission_closed`
 - **Denominator infinitude:** `gammaSixFermatDenominator_coprime`,
@@ -636,9 +636,9 @@ Gamma/Burnol/BV landing.
 - **Functorial no-go:** `gammaSixCommonPole_factor_odd_zero` proves collapse after every additive
   transport factoring through the honest common-pole residue.
 - **Verification:** direct source check with
-  `lake env lean GaloisForLFunctions/RHTower/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCyclotomicDenominatorAdmission.lean`
   and exact module audit with
-  `lake build GaloisForLFunctions.RHTower.DeningerGammaSixCyclotomicDenominatorAdmission` both
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCyclotomicDenominatorAdmission` both
   pass.  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound` for all audited
   headline theorems.  Source contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.
 - **Scope:** `[NOT RH]`.  Formalization closes denominator classification and admission; it does

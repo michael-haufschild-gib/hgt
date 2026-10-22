@@ -76,11 +76,11 @@ convergent divisor regrouping. No such inverse theorem is claimed here.
 
 ## Lean verification
 
-`formal/GaloisForLFunctions/RHTower/DeningerDampedHalfDensitySourceLimit.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedHalfDensitySourceLimit.lean`
 contains 486 lines: 25 public theorems, 10 definitions, one abbreviation and
 seven private lemmas. Scratch `lake env lean /tmp/route_l_c43_halfdensity.lean`
 passed without errors or warnings. The final targeted audit
-`lake build GaloisForLFunctions.RHTower.DeningerDampedHalfDensitySourceLimit`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedHalfDensitySourceLimit`
 passed; only this new leaf was built (40 seconds, 11945 dependency-graph jobs).
 One umbrella import and 36 public declarations without cross-module name
 collisions were verified. Global lint passed. The index refresh passed,

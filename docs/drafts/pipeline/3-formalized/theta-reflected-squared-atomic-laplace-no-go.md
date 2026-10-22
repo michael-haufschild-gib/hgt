@@ -102,7 +102,7 @@ for every `N≥0`, hence also along `x=n`.  Contradiction.
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspReflectedSquaredAtomicLaplaceNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSquaredAtomicLaplaceNoGo`
 
 - `tendsto_exp_mul_thetaCuspReflectedSquaredProduct_atTop_zero`
 - `not_summableDominantPencil_represents_thetaCuspReflectedSquaredProduct`

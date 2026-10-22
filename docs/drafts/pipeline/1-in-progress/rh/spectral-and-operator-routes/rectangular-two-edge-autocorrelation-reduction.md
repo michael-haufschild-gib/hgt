@@ -20,18 +20,18 @@ This is worth stating first, because the gate reads as if a whole analytic layer
 
 | Needed | Already formalized |
 |---|---|
-| the carrier identity `(18)` | `RHTower/CCMPolarPrimeStieltjesAutocorrelation.lean` — `polarPrimeAutocorrelationQuadratic_eq_integral_sub_sum`, with `apertureAutocorrelation v h = ∫ v(x+h) conj(v x) dx` |
+| the carrier identity `(18)` | `RHTower/CCM/CCMPolarPrimeStieltjesAutocorrelation.lean` — `polarPrimeAutocorrelationQuadratic_eq_integral_sub_sum`, with `apertureAutocorrelation v h = ∫ v(x+h) conj(v x) dx` |
 | the symbol identity `(18a)` | same module — `correctedCCMSymbol_eq_archimedean_add_stieltjes` |
 | the cumulative critical-error form `(20)` | same module — `criticalMellinStieltjesCumulative_eq_criticalErrorForm` |
 | Stieltjes integration by parts `(19)` | same module — `polarPrimeAutocorrelationQuadratic_integrationByParts_of_support` |
-| the rectangular Weil value | `RHTower/CCMRectangularScrewCurvature.lean` — `xiWeilPolarization_rectangular_logSample_eq_xiScrewWindowCurvature` |
-| the two-edge transform | `RHTower/CCMRectangularTwoEdge.lean` — `rectangularTwoEdgeTransform`, `xiRectangularTwoEdgeTransform` |
+| the rectangular Weil value | `RHTower/CCM/CCMRectangularScrewCurvature.lean` — `xiWeilPolarization_rectangular_logSample_eq_xiScrewWindowCurvature` |
+| the two-edge transform | `RHTower/CCM/CCMRectangularTwoEdge.lean` — `rectangularTwoEdgeTransform`, `xiRectangularTwoEdgeTransform` |
 
 **Missing: only the physical-side autocorrelation of the two-edge window, and its pairing.**
 
 ## 2. Identifying the physical vector
 
-`RHTower/CCMRectangularTwoEdge.lean` defines
+`RHTower/CCM/CCMRectangularTwoEdge.lean` defines
 
 ```text
 rectangularWindowAmplitude L w = (1 - exp(-L w))/w = integral_0^L exp(-w t) dt,

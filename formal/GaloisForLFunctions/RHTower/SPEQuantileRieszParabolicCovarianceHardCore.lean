@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszParabolicPhysicalWall
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCompletedCenteredBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCompletedCenteredBoundary
 
 /-!
 # Literal SP-E physical-wall covariance hard core

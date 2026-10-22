@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspWignerPairOrientationAntisymmetry
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspWignerPairOrientationAntisymmetry
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!

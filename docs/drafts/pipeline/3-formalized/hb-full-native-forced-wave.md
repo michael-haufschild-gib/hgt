@@ -8,7 +8,7 @@ The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, retaining independent
 
 ## Exact field and equation
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave`. Namespace: `RHTower.D4BMNativeResponse`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullNativeWave`. Namespace: `RHTower.D4BMNativeResponse`.
 
 Let `Q(X,k)=fullSquarePotential q ![X,exp(k)]` and let `F(a,b)=oddSource s amplitude ((a+b)/2) ((a-b)/2)`. The source is the original continuous odd extension of `timeReducedCoefficient`. With the original native kernel `K`, define
 
@@ -62,7 +62,7 @@ Candidate statements, source arguments, proof ideas and ingredient groups were i
 
 ## Validation
 
-For the initial four-theorem result, `lake env lean` passed the completed scratch proof. Its final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave` passed in 108 seconds, three jobs, without warnings. The isolated audit used 4,080 existing own-module caches and 11 package caches; no old dependency, full or umbrella build was run. That source had 683 lines. The [cutoff-residual extension audit](hb-native-cutoff-residual-wave.md) covers the current 1026-line module and its four additional public theorems.
+For the initial four-theorem result, `lake env lean` passed the completed scratch proof. Its final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullNativeWave` passed in 108 seconds, three jobs, without warnings. The isolated audit used 4,080 existing own-module caches and 11 package caches; no old dependency, full or umbrella build was run. That source had 683 lines. The [cutoff-residual extension audit](hb-native-cutoff-residual-wave.md) covers the current 1026-line module and its four additional public theorems.
 
 Only the four new public theorems were checked with `#print axioms`; each reports exactly `[propext, Classical.choice, Quot.sound]`. Source and five build artifacts were installed byte-identically to the audit. The module remains wired once into the area umbrella `formal/GaloisForLFunctions/RHTower.lean`; that umbrella was not built.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact
 
 /-!

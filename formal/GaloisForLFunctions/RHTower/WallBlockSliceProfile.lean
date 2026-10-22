@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WallResolventLaplace
-import GaloisForLFunctions.RHTower.SuzukiWallBlockSliceBound
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWallBlockSliceBound
 import GaloisForLFunctions.RHTower.VectorFourierPlancherelIntegral
 import GaloisForLFunctions.HTGeometry.BlockWindowFubini
 

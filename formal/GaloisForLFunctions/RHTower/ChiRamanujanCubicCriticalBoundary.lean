@@ -96,7 +96,7 @@ def cubicMixedKernel (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) : ℂ
 def cubicAxisKernel (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) : ℂ :=
   cubicTestedAxisNumerator Φ ![1+ε,w.1,w.2] / ((ε^2+w.1^2 : ℝ) : ℂ)
 
-theorem continuous_cubicMixedKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuous_cubicMixedKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {ε : ℝ} (hε : 0 < ε) : Continuous (cubicMixedKernel Φ ε) := by
   have hn : Continuous (fun w : ℝ × ℝ =>
       (w.1 : ℂ)*(w.2 : ℂ)*cubicTestedSource Φ ![1+ε,w.1,w.2]) :=
@@ -111,13 +111,13 @@ theorem continuous_cubicMixedKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff �
   · exact_mod_cast (ne_of_gt (show 0 < ε^2+w.1^2 by positivity))
   · exact_mod_cast (ne_of_gt (show 0 < ε^2+w.2^2 by positivity))
 
-theorem continuous_cubicAxisKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuous_cubicAxisKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {ε : ℝ} (hε : 0 < ε) : Continuous (cubicAxisKernel Φ ε) := by
   have hn := continuous_cubicTestedAxisSlice hΦ (σ := 1+ε) (by linarith)
   have hd : Continuous (fun w : ℝ × ℝ => ((ε^2+w.1^2 : ℝ) : ℂ)) := by fun_prop
   exact hn.div hd (fun w => by exact_mod_cast (ne_of_gt (show 0 < ε^2+w.1^2 by positivity)))
 
-theorem cubicMixedKernel_reflections (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
+private theorem cubicMixedKernel_reflections (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
     cubicMixedKernel Φ ε w+cubicMixedKernel Φ ε (-w.1,w.2)+
       (cubicMixedKernel Φ ε (w.1,-w.2)+cubicMixedKernel Φ ε (-w.1,-w.2)) =
       ((w.1 : ℂ)*(w.2 : ℂ)*cubicMixedDifference Φ (1+ε) w) /
@@ -126,7 +126,7 @@ theorem cubicMixedKernel_reflections (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : �
   simp only [neg_sq,Complex.ofReal_neg]
   ring
 
-theorem cubicAxisKernel_reflection (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
+private theorem cubicAxisKernel_reflection (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
     cubicAxisKernel Φ ε w+cubicAxisKernel Φ ε (-w.1,w.2) =
       cubicAxisDifference Φ (1+ε) w / ((ε^2+w.1^2 : ℝ) : ℂ) := by
   dsimp only [cubicAxisKernel,cubicAxisDifference]

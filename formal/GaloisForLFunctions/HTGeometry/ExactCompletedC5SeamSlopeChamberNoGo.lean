@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetC5FixedActionSeamClosure
+import GaloisForLFunctions.HTGeometry.PolynomialODE.JetC5FixedActionSeamClosure
 
 /-!
 # Exact completed C5 slope: optimized cumulants, chamber and flow no-go

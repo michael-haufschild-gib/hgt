@@ -461,8 +461,8 @@ Lean artifacts:
 - strengthened `exists_thetaCuspCenterMixedOddStationary_obstruction_of_not_posSemidef`.
 
 Exact targeted builds passed for
-`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedGlobalCoalescedWall`,
-`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedPtolemyWall`, and the strengthened stationary
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterMixedGlobalCoalescedWall`,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterMixedPtolemyWall`, and the strengthened stationary
 module.  Axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`.
 
 August 2026 corpus and literature searches found no statement of the global theta coalesced speed
@@ -519,7 +519,7 @@ Lean artifacts:
 - `exists_thetaCuspReflectedSourceOddParityWall_neg_of_centerMixed_neg`.
 
 Exact `lake env lean` and targeted module build pass for
-`GaloisForLFunctions.RHTower.ThetaCuspCenterMixedPtolemyTransport`.  Axiom audit reports only
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterMixedPtolemyTransport`.  Axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
 Two stronger shortcuts failed before this survivor was isolated.  Monotonicity of ordinary
@@ -605,7 +605,7 @@ source-coupled; it does not arise from optimizing an external estimate.
 
 Lean artifact:
 
-- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceOddStationary.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceOddStationary.lean`;
 - `exists_thetaCuspReflectedSourceOddParityWall_pos_right`;
 - `tendsto_thetaCuspReflectedSourceOddParityWall_atTop`;
 - `exists_thetaCuspReflectedSourceOddParityWall_stationary_neg_of_neg`;
@@ -614,7 +614,7 @@ Lean artifact:
   `thetaCuspReflectedSourceOddParityWall_global_or_stationary_flux_obstruction`.
 
 Exact foreground `lake env lean`, targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationary`, and umbrella wiring
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSourceOddStationary`, and umbrella wiring
 all pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 Two conjectures failed in the hostile pass.  Global reflected Riccati margin alone is not a
@@ -682,7 +682,7 @@ one local minimum carrying the complete first- and second-order obstruction pack
 
 Lean artifact:
 
-- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceOddStationaryCurvature.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceOddStationaryCurvature.lean`;
 - `hasDerivAt_thetaCuspReflectedSourceSchrodingerPotential`;
 - `monotoneOn_thetaCuspReflectedSourceSchrodingerPotential`;
 - `thetaCuspReflectedSourceDecayFluxCurvature_single_switch`;
@@ -712,7 +712,7 @@ negative local minimum.  Next conjecture must use the completed atom--likelihood
 structure to contradict that joint package; Riccati alone is formally exhausted.
 
 Exact foreground `lake env lean` and targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationaryCurvature` pass after
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSourceOddStationaryCurvature` pass after
 umbrella wiring.  The capstone axiom audit reports only `propext`, `Classical.choice`, and
 `Quot.sound`; the module contains no `sorry`, `admit`, added `axiom`, `opaque`, or `unsafe`
 declaration.  Repo-wide formal lint reaches this module but remains red on unrelated pre-existing
@@ -788,7 +788,7 @@ literal source counterexample to the wall is a certified discrete counterexample
 Lean artifacts:
 
 - `GaloisForLFunctions/HilbertMetric/FifthRootDividedDropWall.lean`;
-- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootDividedDropWall.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceFifthRootDividedDropWall.lean`;
 - `HilbertMetric.weighted_fifth_power_wall`;
 - `HilbertMetric.fifthRootConvexChord_forces_wall`;
 - `thetaCuspReflectedSourceOddParityWall_nonneg_of_fifthRootShape`;
@@ -890,7 +890,7 @@ source displacement.
 New Lean artifacts:
 
 - `GaloisForLFunctions/HilbertMetric/FifthRootCurvatureCusp.lean`;
-- `GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootCurvature.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceFifthRootCurvature.lean`;
 - `HilbertMetric.fifthRootDividedDropCurvatureNumerator_even`;
 - `HilbertMetric.iteratedDeriv_eight_fifthRootDividedDropCurvatureNumerator_zero`;
 - `HilbertMetric.iteratedDeriv_fifthRootDividedDropCurvatureNumerator_zero_of_lt_eight`;
@@ -949,7 +949,7 @@ Michałowski's de Bruijn--Newman study explicitly leaves global `PF_4` open whil
 computational `PF_5` failure.
 
 New Lean artifacts in
-`GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceFifthRootCurvature.lean`:
+`GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceFifthRootCurvature.lean`:
 
 - `thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect`;
 - `thetaCuspReflectedSourceNormalizedProjectiveDecreaseDefect_mem_Icc`;
@@ -1141,7 +1141,7 @@ partition-measure transport.
 
 Lean artifact:
 
-- `GaloisForLFunctions/RHTower/ThetaCuspReflectedLikelihoodSixJetOrientation.lean`;
+- `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodSixJetOrientation.lean`;
 - `hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetThree` through
   `hasDerivAt_thetaCuspReflectedLikelihoodCumulantJetFive`;
 - `strictMonoOn_thetaCuspLikelihoodSourceLogPartitionJetFive`;

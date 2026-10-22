@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspWignerPairSpectrum
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspWignerPairSpectrum
 
 /-!
 # The order derivative of the hyperbolic-secant power transform

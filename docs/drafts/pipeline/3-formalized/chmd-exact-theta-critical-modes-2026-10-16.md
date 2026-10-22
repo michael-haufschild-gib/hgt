@@ -64,9 +64,9 @@ No inference from a formal Fourier multiplier to graph membership.
   audited source hashes unchanged; whitespace checks passed.
 - `scripts/formal_tools.py index`: exit 0, 14 changed files, 0 removed.
 - Global `scripts/formal_tools.py lint`: exit 1 solely for six other untracked,
-  unwired leaves: RHTower/DeningerHasseHilbertShift,
-  RHTower/DeningerHasseResolventTriangular, RHTower/DeningerMeyerClosedHasseGenerator,
-  RHTower/DeningerMeyerFredholmXi, RHTower/DeningerMeyerHasseResolvent,
+  unwired leaves: RHTower/Deninger/DeningerHasseHilbertShift,
+  RHTower/Deninger/DeningerHasseResolventTriangular, RHTower/Deninger/DeningerMeyerClosedHasseGenerator,
+  RHTower/Deninger/DeningerMeyerFredholmXi, RHTower/Deninger/DeningerMeyerHasseResolvent,
   HTGeometry/GradedTriangularRegularizedDeterminant. No lint error names this
   contribution. Concurrent leaves were left untouched.
 - All 31 owned scratch artifacts removed; absence verified. All owned processes

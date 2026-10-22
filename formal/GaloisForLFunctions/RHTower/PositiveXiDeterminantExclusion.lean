@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.RegularizedDeterminantAlgebraicMultiplicity
 import GaloisForLFunctions.RHTower.HardyTheorem
 import GaloisForLFunctions.RHTower.PositiveOperatorKernel
-import GaloisForLFunctions.RHTower.SuzukiWeilZeroSeries
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWeilZeroSeries
 
 /-!
 # Positive operators cannot carry exact Xi determinants

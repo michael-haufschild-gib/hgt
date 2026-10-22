@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized; all 39 theorems and final audits passed. RH unproved.
-Module: `GaloisForLFunctions.RHTower.DeningerGammaSixCriticalAbelReader`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCriticalAbelReader`.
 
 ## Question and positive result
 
@@ -135,7 +135,7 @@ measure or reader agreement. Neither paper is an RH premise.
 
 All 39 scratch theorems passed without warnings using
 `lake env lean /tmp/route_l_critical_abel.lean`.
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixCriticalAbelReader`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCriticalAbelReader`
 passed. All 39 theorem axiom reports contain only `propext`,
 `Classical.choice`, and `Quot.sound`. `scripts/formal_tools.py lint`
 passed; existing repository warnings remain. Umbrella import wired.

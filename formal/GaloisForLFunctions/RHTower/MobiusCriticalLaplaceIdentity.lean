@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CausalL2LaplaceHolomorphy
 import GaloisForLFunctions.RHTower.MobiusCausalSourceLimit
-import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovTransform
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszMarkovTransform
 import GaloisForLFunctions.RHTower.MobiusPowerSumBoundaryLaplace
 
 /-!

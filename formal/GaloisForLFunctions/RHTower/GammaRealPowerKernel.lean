@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiMellinConvolution
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiMellinConvolution
 import GaloisForLFunctions.RHTower.ThetaSymmetryMellinConverse
 
 /-!

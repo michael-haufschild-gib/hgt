@@ -177,7 +177,7 @@ carrier.
 The exact all-angle deduction and local normal-family theorem are formalized unconditionally in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureHermiteBiehler.lean.
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteApertureHermiteBiehler.lean.
 ```
 
 The module proves:

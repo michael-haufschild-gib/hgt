@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-source-normalized-nonschatten-birman-schwinger-line-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMNonSchattenBirmanSchwinger.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMNonSchattenBirmanSchwinger.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 5 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

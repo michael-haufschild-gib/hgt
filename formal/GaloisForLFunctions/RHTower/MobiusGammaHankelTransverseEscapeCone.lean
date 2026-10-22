@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceMellinPlancherelBridge
-import GaloisForLFunctions.RHTower.CCMShiftedXiCancellation
+import GaloisForLFunctions.RHTower.CCM.CCMShiftedXiCancellation
 
 /-!
 # Transverse escape cone for Möbius Gamma--Hankel covariance

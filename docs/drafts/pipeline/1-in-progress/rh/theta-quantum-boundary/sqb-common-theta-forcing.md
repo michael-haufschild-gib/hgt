@@ -104,7 +104,7 @@ graph. True constant-mode centering gives (3), also without a domain premise.
 
 Lean leaves:
 - formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcing.lean
-- formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPositiveHeightOperator.lean
+- formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPositiveHeightOperator.lean
 - formal/GaloisForLFunctions/RHTower/SelbergThetaCommonForcingGraph.lean
 
 All three source checks and named leaf builds passed. All 73 public declarations
@@ -118,7 +118,7 @@ retain their own source operators. They do not yet provide a cancellation law fo
 this unchanged native equation. The remaining target is a concrete nonzero native
 family with vanishing normalized full residual; no such estimate is asserted.
 
-The [native Gram composition search](../../sqb-native-gram-composition-search.md) records
+The [native Gram composition search](sqb-native-gram-composition-search.md) records
 existing small-image and one-sided norm-transfer constructions found across the
 corpus. The open join is an exact source/native augmented Gram identification,
 including mixed vector/operator-image entries, together with the source-specific

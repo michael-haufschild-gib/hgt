@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper + Lean)
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT AN RH PROOF]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiPrimeValuationSeam.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeValuationSeam.lean`
 - **Parent:** `primeLog_linearIndependent` in `RHTower/WeldRateLattice.lean`
 
 ## Statement

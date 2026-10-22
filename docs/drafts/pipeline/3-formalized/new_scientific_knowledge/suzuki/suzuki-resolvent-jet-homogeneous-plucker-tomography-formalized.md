@@ -7,20 +7,20 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiHomogeneousBladeDimension.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiResolventJetHomogeneousPluckerTomography.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHomogeneousBladeDimension.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResolventJetHomogeneousPluckerTomography.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiHomogeneousBladeDimension`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiHomogeneousBladeDimension`:
 
 ```text
 RHTower.suzukiHomogeneousBlade_finrank
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiResolventJetHomogeneousPluckerTomography`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiResolventJetHomogeneousPluckerTomography`:
 
 ```text
 RHTower.suzukiCyclicResolventFilter_realizes_target_fun

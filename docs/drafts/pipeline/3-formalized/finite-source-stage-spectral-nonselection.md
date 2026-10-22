@@ -39,7 +39,7 @@ nonreal divisor.
 - **Exact killing theorem/mechanism:** `thetaSourceSignedApproximationProperty_spectrally_nonselective`; finite support, Hilbert--Schmidt regularity, approximation accuracy, and exact trace zero admit a nonreal divisor at every stage accuracy.
 - **Strongest positive survivor:** Arbitrary-target density theorem with explicit isolated bad divisor, plus source-specific application to every theta approximation fibre.
 - **New insight:** Current stage specification is spectrally nonselective around the actual nonzero theta source, not merely at the zero kernel. Required arithmetic flag or modewise boundary law must be recorded in replacement stage data and proved stable under completion.
-- **Status:** Internal corpus had only zero-target microblocks. External Hedenmalm audit supplies fixed source/determinant framework but no arbitrary-target finite-stage selection theorem. Paper proof dependency-closed; Lean modules `GaloisForLFunctions.HTGeometry.TraceZeroNonrealDivisorDensity` and `GaloisForLFunctions.RHTower.HedenmalmThetaAdmissibleStageSpectralNonselection`.
+- **Status:** Internal corpus had only zero-target microblocks. External Hedenmalm audit supplies fixed source/determinant framework but no arbitrary-target finite-stage selection theorem. Paper proof dependency-closed; Lean modules `GaloisForLFunctions.HTGeometry.TraceZeroNonrealDivisorDensity` and `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAdmissibleStageSpectralNonselection`.
 
 ## Log
 

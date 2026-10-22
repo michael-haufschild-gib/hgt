@@ -6,9 +6,9 @@
 - **Parent:** `deninger-mw-gamma-brst-complex`
 - **Lean modules:**
   `GaloisForLFunctions.HTGeometry.BRSTHodgeConstraint` (`(3)`, `(5)`),
-  `GaloisForLFunctions.RHTower.DeningerArithmeticUnitaryBRSTHodge` (`(2)`, `(4)`, harmonic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticUnitaryBRSTHodge` (`(2)`, `(4)`, harmonic
   stability),
-  `GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction` (the unitary action on the harmonic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerUnitaryHarmonicAction` (the unitary action on the harmonic
   sector)
 
 ## Statement
@@ -95,7 +95,7 @@ realization and proving chain-map functoriality.  It is not an additional spectr
 - `brstHodgeHamiltonian_apply_eq_zero_iff` : `Δ_Q ψ = 0 ↔ Qψ = 0 ∧ Q†ψ = 0`, which is `(5)`,
   proved from `re ⟪Δ_Q ψ, ψ⟫ = ‖Qψ‖² + ‖Q†ψ‖²`.
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticUnitaryBRSTHodge.lean`, over an arbitrary
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticUnitaryBRSTHodge.lean`, over an arbitrary
 `RCLike` field and complete inner-product space:
 
 - `deningerUnitary_commutes_adjoint_of_commutes` : `(2)`, `UQ† = Q†U`, by taking adjoints in
@@ -103,7 +103,7 @@ realization and proving chain-map functoriality.  It is not an additional spectr
 - `deningerUnitary_commutes_brstHodgeHamiltonian` : `(4)`, `UΔ_Q = Δ_QU`;
 - `deningerUnitary_maps_brstHarmonic_to_brstHarmonic` : `Δ_Q x = 0 → Δ_Q (Ux) = 0`.
 
-`GaloisForLFunctions/RHTower/DeningerUnitaryHarmonicAction.lean` upgrades stability of the
+`GaloisForLFunctions/RHTower/Deninger/DeningerUnitaryHarmonicAction.lean` upgrades stability of the
 harmonic sector to the unitary action the Deninger consequence asserts:
 
 - `deningerBRSTHarmonic Q = ker Q ⊓ ker Q†` with
@@ -128,7 +128,7 @@ theorem.
 ### Verification
 
 - Direct commands: `lake env lean` on all three modules — pass with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerUnitaryHarmonicAction`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerUnitaryHarmonicAction`
   completes (`✔ [3084/3084]`).
 - Scratch `#print axioms` on every headline declaration: only `propext`, `Classical.choice`,
   `Quot.sound`.

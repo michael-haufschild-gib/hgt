@@ -52,7 +52,7 @@ half-density amplitude.
 ## Result
 
 Module:
-`GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary`
+`GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary`
 
 Main declarations:
 
@@ -80,8 +80,8 @@ Hilbert--Schmidt/RH wall. Status: `[NOVELTY UNVERIFIED]` pending expert review.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary.lean` — PASS
-- `lake build GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary` — PASS (`12791/12791`)
+- `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary.lean` — PASS
+- `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityWeakSchattenBoundary` — PASS (`12791/12791`)
 - `#print axioms` on six capstones — only `propext`, `Classical.choice`, `Quot.sound`
 - `scripts/formal_tools.py lint` — no forbidden declaration in new module; unrelated pre-existing umbrella reachability failures remain
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`

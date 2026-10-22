@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstRowStationaryPhase
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowStationaryPhase
 
 /-!
 # Two-index separation of the dilated radial phase speeds

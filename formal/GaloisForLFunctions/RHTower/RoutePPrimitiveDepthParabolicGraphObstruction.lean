@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveDepthRadialGraphCollapse
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicVarianceBalance
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicVarianceBalance
 
 /-!
 # A physical Route P moment survives radial graph collapse

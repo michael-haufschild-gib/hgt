@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WeilWorkDeficitGammaKernelMellin
 import GaloisForLFunctions.RHTower.WeilWorkHigherDenominatorCosineMellin
-import GaloisForLFunctions.RHTower.SuzukiMellinConvolution
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiMellinConvolution
 
 /-!
 # Absolute Mellin transform of the actual reciprocal-Gamma cosine kernel

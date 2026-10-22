@@ -31,6 +31,8 @@ def terminate_owned(child, *, grace=0.25):
     try:
         os.killpg(child.pid, signal.SIGTERM)
         deadline = time.monotonic() + grace
+        # Always spend the grace and SIGKILL the group, even once the leader has
+        # exited: a grandchild that ignored SIGTERM outlives it.
         while time.monotonic() < deadline:
             child.poll()
             os.killpg(child.pid, 0)

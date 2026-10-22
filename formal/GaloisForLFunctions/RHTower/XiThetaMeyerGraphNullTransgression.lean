@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerHalfDensityXiGraphClosure
-import GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniFluxPolarization
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHalfDensityXiGraphClosure
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKakutaniFluxPolarization
 
 /-!
 # Xi theta--Meyer graph-null transgression

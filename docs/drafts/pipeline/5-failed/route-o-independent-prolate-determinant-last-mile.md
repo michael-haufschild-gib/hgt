@@ -70,10 +70,10 @@ not RH -> exists delta>0, eventually Delta_n>=delta.
 ```
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/CCMProlateRayleighGroundLock.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMProlateRayleighGroundLock.lean`.
 
 Finite source infrastructure survivor:
-`formal/GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilMatrix.lean` formalizes the literal
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedRestrictedWeilMatrix.lean` formalizes the literal
 restricted-Weil functional, exact CCM matrix, rank-two displacement, reflection, automatic ground
 shift, and real-rooted source/response completion.
 

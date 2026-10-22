@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaDirichletExpansion
-import GaloisForLFunctions.RHTower.CCMShiftedXiCancellation
+import GaloisForLFunctions.RHTower.CCM.CCMShiftedXiCancellation
 import Mathlib.Analysis.Complex.RemovableSingularity
 
 /-!

@@ -44,13 +44,13 @@ A newest-first arXiv search for Mosco led to [Stange, 25 August 2026](https://ar
 
 ## Formal statements
 
-The family extension is in [ThetaCuspHawkingBMNativeJointEnergy.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeJointEnergy.lean):
+The family extension is in [ThetaCuspHawkingBMNativeJointEnergy.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeJointEnergy.lean):
 
 - `nativeTimePrimitiveAngularEnergy_continuous`, `nativeTimePrimitiveAngularEnergy_boundary`, and `nativeTimePrimitiveAngularEnergy_compact` establish the actual family and trace.
 - `nativeTimePrimitiveAngularEnergy_value_hasDerivAt` identifies its literal radial derivative in the original angular L² space.
 - `nativeTimePrimitiveAngularEnergy_value_contDiff` establishes C¹ regularity after that value embedding.
 
-The endpoint results are in [ThetaCuspHawkingBMNativeRadialEndpoint.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeRadialEndpoint.lean):
+The endpoint results are in [ThetaCuspHawkingBMNativeRadialEndpoint.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeRadialEndpoint.lean):
 
 - `nativeDirichletCutoff_profile`, `nativeDirichletCutoff_weighted_derivative_bound`, and `nativeDirichletCutoff_eventually_one` establish the actual smooth cutoff, uniform bound and stabilization of its full germ.
 - `nativeTimePrimitiveAngularEnergy_endpoint_error_tendsto_zero` controls the complete radial cutoff correction.
@@ -63,8 +63,8 @@ All three native convergence statements also establish integrability at every cu
 
 The family extension passed its complete scratch check with `lake env lean`. The endpoint development was checked in scratch, with the last chain-rule correction passing a focused scratch check against the actual cutoff profile. Both complete final sources then passed their exact-module audits:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeJointEnergy`: two jobs, 18 seconds reported build time; 1223 source lines.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeRadialEndpoint`: two jobs, 127 seconds reported build time; 261 source lines.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeJointEnergy`: two jobs, 18 seconds reported build time; 1223 source lines.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeRadialEndpoint`: two jobs, 127 seconds reported build time; 261 source lines.
 
 The isolated audit reused 4135 cached local modules and 11 cached dependency packages. No dependency or umbrella build ran. Separate temporary axiom-check files covered only the five new family theorems and six new endpoint theorems; every result uses only `propext`, `Classical.choice`, and `Quot.sound`. The audited sources and their five emitted artifacts were installed byte for byte, with source guards before installation. The new endpoint leaf is wired into `RHTower.lean`; the family leaf was already imported there.
 

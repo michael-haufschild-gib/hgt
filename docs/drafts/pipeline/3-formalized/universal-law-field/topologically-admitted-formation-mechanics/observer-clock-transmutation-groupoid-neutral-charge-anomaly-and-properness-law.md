@@ -205,7 +205,7 @@ Formalized exactly in:
   for relative clock rates, boundary-storage plus acceleration conservation, neutral dipole charge
   and `l1` mass, sharp uniform-boundedness equivalence, unbounded fixed-resource escape, and a
   zero-argument certificate;
-- `GaloisForLFunctions.RHTower.SuzukiHarmonicRieszClockTransmutation`: literal harmonic and
+- `GaloisForLFunctions.RHTower.Suzuki.SuzukiHarmonicRieszClockTransmutation`: literal harmonic and
   square-root clocks, absolute summability and zero total harmonic charge, exact completed Riesz
   response, literal relative rate, linear lower growth, global nonproperness, neutral-dipole
   escape, and a zero-argument literal certificate.

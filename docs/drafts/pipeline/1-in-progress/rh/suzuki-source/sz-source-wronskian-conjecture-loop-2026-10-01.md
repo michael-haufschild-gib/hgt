@@ -3802,7 +3802,7 @@ Audit: scratch23431 failed only at the unqualified restrict_univ name;
 scratch65020 failed at an implicit weight rewrite in the Gamma corollary.
 The corrected final leaf command25304 exited0 without diagnostics:
 
-    lake --old env lean GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.olean
+    lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPhysicalTwoPrimePhaseLaw.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPhysicalTwoPrimePhaseLaw.olean
 
 Axiom6552 checked all19 public definitions/theorems from /tmp; every result
 uses only propext, Classical.choice, Quot.sound. One umbrella import,
@@ -3874,7 +3874,7 @@ selective corrections and route SZ are not retired.
 Lean: initial scratch2633 and12244 failed at elaboration/rewrite details;
 repaired scratch26419 exited0. Final33353 exited0 with no diagnostics:
 
-    lake --old env lean GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.olean
+    lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMExteriorPacketNegativeEnergyEscape.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMExteriorPacketNegativeEnergyEscape.olean
 
 Axiom90720 inspected all10 public declarations from /tmp: only propext,
 Classical.choice, Quot.sound. One umbrella import, no full/umbrella build,
@@ -3962,7 +3962,7 @@ Lean: scratch39975 passed incoming nonvanishing. Combined14103/35423
 needed elaboration repairs;54437 had one extra tactic after a solved
 goal. Final93039 exited0 with no diagnostics:
 
-    lake --old env lean GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.olean
+    lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMExponentialRampCuspConcentration.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMExponentialRampCuspConcentration.olean
 
 Axiom45260 exited0 for all6 public declarations, only propext,
 Classical.choice, Quot.sound; explicit mathlib API checks included.
@@ -4249,8 +4249,8 @@ T>=log(chosen terminal index).
 New module CCMPrimeMomentUpperContact has4 public theorems. Scratch3116
 failed on index/cast/case elaboration; repaired scratch73279 passed all
 four with standard axioms. Final foreground leaf73270 used
-`lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.lean
--o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.olean`,
+`lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentUpperContact.lean
+-o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentUpperContact.olean`,
 exit0 no diagnostics. Final axiom audit72769 used /tmp scratch, exit0;
 only propext, Classical.choice, Quot.sound for all4 public declarations.
 One umbrella import. No full/umbrella build, heartbeat increase, numerical

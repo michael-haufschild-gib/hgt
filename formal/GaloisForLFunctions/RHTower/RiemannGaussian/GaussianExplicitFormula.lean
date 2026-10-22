@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianComplexHeat
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianDigammaGrowth
-import GaloisForLFunctions.RHTower.CCMSawtoothDilationIncidence
+import GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationIncidence
 import Mathlib.NumberTheory.LSeries.Dirichlet
 
 /-!

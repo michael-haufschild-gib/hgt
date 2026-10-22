@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinRoutePCCMGammaSixTwoSheetCarrier
-import GaloisForLFunctions.RHTower.DeningerGammaSixCofinalMeyerTateXiGreenBoundary
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalMeyerTateXiGreenBoundary
 
 /-!
 # Literal Meyer--Tate source production for the P/CCM two-sheet carrier

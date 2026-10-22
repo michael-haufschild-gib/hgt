@@ -12,7 +12,7 @@ Paper prose does not mention formalization. This file is internal audit only.
 | Alternating rational cocycle is a coboundary iff it is zero | `DeningerNormalizedCocycle.isCoboundary_iff_eq_zero_of_alternating` | Proved |
 | Baumslag free-rational cover supplies primitive and canonical vanishing criterion | `deningerBauFree_exists_canonical_kernelTransgression`, `DeningerNormalizedCocycle.deningerBauFree_exists_alternating_kernelTransgression` | Proved |
 
-Formal source: `formal/GaloisForLFunctions/RHTower/DeningerRelationKernelTransgression.lean`.
+Formal source: `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRelationKernelTransgression.lean`.
 
 ## Actual arithmetic calibrator
 
@@ -27,8 +27,8 @@ Formal source: `formal/GaloisForLFunctions/RHTower/DeningerRelationKernelTransgr
 
 Sources:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittDerivedCupSource.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerRelationKernelTransgression.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittDerivedCupSource.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRelationKernelTransgression.lean`
 
 ## Completed source and Green transport
 
@@ -44,10 +44,10 @@ Sources:
 
 Sources:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianHarmonicSourcePrimitive.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianHarmonicSourcePrimitive.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
 
 ## Completion wall and retained defect
 
@@ -66,11 +66,11 @@ Sources:
 Sources:
 
 - `formal/GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianGreenRangeWall.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedGreenDefect.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerGreenResolvedSourceConservativityCriterion.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerCompletedXiHellingerGammaResolvedProvenanceSaturation.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerResolvedDefectHellingerGammaBalancedCofaceNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianGreenRangeWall.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianCompletedGreenDefect.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGreenResolvedSourceConservativityCriterion.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompletedXiHellingerGammaResolvedProvenanceSaturation.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerResolvedDefectHellingerGammaBalancedCofaceNoGo.lean`
 
 ## Literal boundary regulator and Ward comparison
 
@@ -83,7 +83,7 @@ Sources:
 
 Sources:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerSecondaryPoissonRegulator.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerSecondaryPoissonRegulator.lean`
 - `formal/GaloisForLFunctions/RHTower/XiWardEdgeEnergyPhaseQuantizationUniversalityLaw.lean`
 - `formal/GaloisForLFunctions/RHTower/XiWardEndpointSourceIndex.lean`
 

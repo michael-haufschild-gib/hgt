@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorOneSided
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorAbelSubpower
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorOneSided
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorAbelSubpower
 import GaloisForLFunctions.RHTower.MobiusRieszQuarticSampling
 import GaloisForLFunctions.RHTower.WeilLagPowerGapSampling
 

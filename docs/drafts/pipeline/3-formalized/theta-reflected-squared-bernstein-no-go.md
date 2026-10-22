@@ -120,7 +120,7 @@ represent the profile either.
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspReflectedSquaredBernsteinNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSquaredBernsteinNoGo`
 
 - `thetaCuspReflectedSourceProduct_le_superGaussianEnvelope` proves the explicit reflected
   double-exponential envelope.

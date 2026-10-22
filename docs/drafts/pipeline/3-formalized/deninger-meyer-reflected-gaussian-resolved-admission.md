@@ -8,9 +8,9 @@
 - **Publication context:**
   `../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`
 - **Lean modules:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianHorizonAdmission.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianHorizonAdmission.lean`
   and
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianResolvedAdmission.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianResolvedAdmission.lean`
 
 ## 1. Frontier closed by this result
 

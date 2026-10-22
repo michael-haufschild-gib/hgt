@@ -1,8 +1,11 @@
 # Isolated Linux environment; CUDA runtime comes from these wheels, regardless
 # of the template's CUDA toolkit. Resolve with uv --torch-backend cu129.
+# transformers 5.x is required: EmbeddingGemma 2 declares
+# transformers_version 5.18.0.dev0 and its architecture does not exist in 4.x.
+# transformers 5.20.2 in turn forces huggingface-hub>=1.31 and tokenizers>=0.23.1.
 torch==2.8.0+cu129
-transformers==4.56.2
-huggingface-hub==0.35.3
+transformers==5.20.2
+huggingface-hub==2.2.0
 numpy==2.3.3
 safetensors==0.8.0
-tokenizers==0.22.2
+tokenizers==0.23.3

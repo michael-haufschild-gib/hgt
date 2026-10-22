@@ -4,7 +4,7 @@ Status: analytical conjecture/proof loop in progress. Complete physical pairing 
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The target is the complete SV–SV coefficient of `2 Omega(B(p,p)/2,B(m,m)/2)`. Its source is the same literal angular half-square on both physical branches; the source rates are `s` and `-s-3`. The scalar/vector amplitudes remain independent. The [circle cancellation and fixed-clock expression](../../hb-causal-circle-taylor-cancellation.md) supplies the exact horizon bulk and derived contacts.
+The target is the complete SV–SV coefficient of `2 Omega(B(p,p)/2,B(m,m)/2)`. Its source is the same literal angular half-square on both physical branches; the source rates are `s` and `-s-3`. The scalar/vector amplitudes remain independent. The [circle cancellation and fixed-clock expression](hb-causal-circle-taylor-cancellation.md) supplies the exact horizon bulk and derived contacts.
 
 ## Conjecture under test
 

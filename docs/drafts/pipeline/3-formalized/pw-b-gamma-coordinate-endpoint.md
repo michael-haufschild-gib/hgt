@@ -151,11 +151,11 @@ a Lean premise, and no numerical experiments were run.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateEndpoint.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateEndpoint.lean`.
 The leaf has 384 lines, 25 public theorems and two definitions.
 Its closed capstone is `pwGammaMobiusCoordinateEndpoint_closed`.
 Scratch and direct `lake env lean` checks passed without warnings. The
-targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateEndpoint`
+targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateEndpoint`
 passed. Scratch `#print axioms` audited all 27 public declarations: only
 `propext`, `Classical.choice`, and `Quot.sound` occur. Formal lint, index
 regeneration, all-name uniqueness, generated API coverage and task-scoped

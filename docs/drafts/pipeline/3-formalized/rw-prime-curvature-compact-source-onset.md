@@ -46,7 +46,7 @@ Endpoint visibility and form-domain capacity identify an exact onset of local co
 
 ## Complete Lean certificate
 
-`formal/GaloisForLFunctions/RHTower/CCMPrimePoleCurvatureCompactOnset.lean` formalizes the exact
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePoleCurvatureCompactOnset.lean` formalizes the exact
 closed endpoint. `aperture_indices_eq` and `gammaTwo_eq_fixed` identify the literal cutoff and
 all four curvature rows with the established six-sample quadratic. `boundary_blockDet_pos`,
 `boundarySchur_pos`, and `curvatureAtTwo_eq_boundary_squares` prove the strict logarithmic
@@ -61,8 +61,8 @@ classification with the actual sharp negative extremizers at every `2 < A < 5/2`
 both exact pole constraints, arbitrary small form norm and arbitrary small complete `|Q|`.
 Its statement has no unproved mathematical hypothesis parameters.
 
-Targeted `lake --old build +GaloisForLFunctions.RHTower.CCMPrimePoleCurvatureCompactOnset:olean`
-passed. Final `lake env lean GaloisForLFunctions/RHTower/CCMPrimePoleCurvatureCompactOnset.lean`
+Targeted `lake --old build +GaloisForLFunctions.RHTower.CCM.CCMPrimePoleCurvatureCompactOnset:olean`
+passed. Final `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimePoleCurvatureCompactOnset.lean`
 passed exit 0 without warnings. All 16 public declarations were axiom-audited in `/tmp`; only
 `propext`, `Classical.choice`, and `Quot.sound` occur, including private dependencies transitively.
 The new leaf is wired into `RHTower.lean`. Authoritative formal lint reports no issue on this

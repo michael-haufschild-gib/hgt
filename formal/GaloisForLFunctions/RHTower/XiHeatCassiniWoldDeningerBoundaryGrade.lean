@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldHolonomyLogSmooth
-import GaloisForLFunctions.RHTower.DeningerAbsGenerator
-import GaloisForLFunctions.RHTower.DeningerBoundarySpace
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbsGenerator
+import GaloisForLFunctions.RHTower.Deninger.DeningerBoundarySpace
 
 /-!
 # Deninger boundary grade of the Route-T Wold residual

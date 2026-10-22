@@ -95,7 +95,7 @@ the generic no-go applies.
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeCriticalRiggingReflectionNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeCriticalRiggingReflectionNoGo.lean`
 contains the complete result. Direct `lake env lean` passes.
 
 ## Log

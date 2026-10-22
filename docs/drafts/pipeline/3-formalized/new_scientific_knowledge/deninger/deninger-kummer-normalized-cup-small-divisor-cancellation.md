@@ -128,7 +128,7 @@ Formalize unconditionally:
 ## Lean status
 
 All three targets are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerKummerNormalizedCupSmallDivisorCancellation.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerNormalizedCupSmallDivisorCancellation.lean`.
 Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
 
 - Target 1 — `deningerCylinderCup_smul` is the complex bilinearity of the cylinder cup under

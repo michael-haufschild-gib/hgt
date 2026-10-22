@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiOrdinateCosineMass
 import GaloisForLFunctions.RHTower.LiEvenCrossActualClockSineSource
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
 /-!
 # The RH mean law of the literal reciprocal sine response

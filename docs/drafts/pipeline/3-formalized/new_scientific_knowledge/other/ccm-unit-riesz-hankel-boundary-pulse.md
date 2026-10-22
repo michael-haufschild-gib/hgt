@@ -169,8 +169,8 @@ Verdict: `SURVIVES INTERNAL HOSTILE AUDIT` as sharp route classification, not RH
 
 ## 7. Index of the formalization
 
-Modules: `RHTower/CCMUnitRieszHankelBoundaryPulse.lean`,
-`RHTower/CCMUnitRieszCesaroCurvature.lean`.  All declarations are unconditional; `#print axioms`
+Modules: `RHTower/CCM/CCMUnitRieszHankelBoundaryPulse.lean`,
+`RHTower/CCM/CCMUnitRieszCesaroCurvature.lean`.  All declarations are unconditional; `#print axioms`
 returns only `propext, Classical.choice, Quot.sound`.
 
 | Card item | Lean declaration |

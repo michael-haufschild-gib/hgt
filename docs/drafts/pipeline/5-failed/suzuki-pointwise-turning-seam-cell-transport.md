@@ -33,7 +33,7 @@ atomicity at a strict apex, not overlap bookkeeping between past and future inte
 ## Positive survivor and representation lesson
 
 The exact apex-lock classification is paper-proved in the linked Stage-2 card and Lean-proved in
-`formal/GaloisForLFunctions/RHTower/SuzukiMangoldtApexLock.lean`.  It identifies a source-aligned
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtApexLock.lean`.  It identifies a source-aligned
 rigidity absent from the prior transport picture.
 
 Representation lesson: individual atomic payment is wrong primitive at turning seam.  A successful

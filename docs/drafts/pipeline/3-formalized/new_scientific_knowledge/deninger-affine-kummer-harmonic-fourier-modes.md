@@ -309,7 +309,7 @@ carrier not killed by
 
 ### The mode, the Hodge equations, the norm and the chirality landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHarmonicMode.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHarmonicMode.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 Leafwise one-forms are carried by their coefficient pairs, so the star `(6)` is the quarter turn
@@ -330,7 +330,7 @@ eigenvalue equation for the star, whose eigenvalues are `± i`.
 
 ### The cup pairing and the power correspondence landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHarmonicCup.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHarmonicCup.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerMode_neg` — the mode of the opposite frequency has the same profile and the opposite
@@ -347,7 +347,7 @@ eigenvalue equation for the star, whose eigenvalues are `± i`.
 
 ### Completeness of the mode list landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHarmonicUniqueness.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHarmonicUniqueness.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 This is item 4 of the theorem at a fixed frequency, which is exactly the ODE analysis the card's
@@ -367,7 +367,7 @@ proof performs.
 
 ### The cylinder modes, their orthonormality and the character completeness landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCylinderModes.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCylinderModes.lean`,
 `DeningerTorusCompleteness.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
@@ -396,7 +396,7 @@ annihilator that makes the Kronecker orbit dense.
 
 ### The descent to the character coefficients landed: the card is complete
 
-`formal/GaloisForLFunctions/RHTower/DeningerParametricTorus.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerParametricTorus.lean`,
 `DeningerKroneckerTranspose.lean`, `DeningerModeDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 

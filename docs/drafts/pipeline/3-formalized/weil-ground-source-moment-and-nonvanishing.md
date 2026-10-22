@@ -97,7 +97,7 @@ Both divergent logarithms are retained in the symmetric term; no numerical appro
 
 ## Verification
 - Scratch `lake env lean /tmp/hgt-ground-source.3dwu8uiu/Force.lean` and `Boundary.lean`: PASS.
-- Named final builds of `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundSourceMoment` and `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarSourceNonvanishing`: PASS. No full or umbrella build.
+- Named final builds of `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundSourceMoment` and `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarSourceNonvanishing`: PASS. No full or umbrella build.
 - No numerical experiment, computational oracle, added axiom, or RH premise supplies these results.
 - Scratch `Audit.lean`: all 18 public theorems have exactly `[propext, Classical.choice, Quot.sound]`; actual mathlib `RiemannHypothesis` printed and remains unproved.
 - Final `python3 scripts/formal_tools.py lint`: PASS (`formal lint passed`); existing size warnings remain. Logs: `/tmp/hgt-ground-source.3dwu8uiu/Lint.txt` and `.err`.

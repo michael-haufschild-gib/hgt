@@ -5,7 +5,7 @@
 - **Type:** THEOREM PACKAGE
 - **Source:** `CCMActualHeadOutgoingQuantileCompletedCharacteristicSeam.lean`,
   `CCMActualHeadCoherentCompletedGammaProducer.lean`
-- **Formal module:** `GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileEndpointGauge`
+- **Formal module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileEndpointGauge`
 - **Labels:** `[BRIDGE] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 
 ## Goal
@@ -42,8 +42,8 @@ physical-aperture quadratic quotient, not a pointwise identity of symbols.
 
 ## Lean audit
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileEndpointGauge.lean` — pass.
-- Target-only `lake build GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileEndpointGauge`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileEndpointGauge.lean` — pass.
+- Target-only `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileEndpointGauge`
   — pass. No umbrella build run.
 - `#print axioms` on all nine theorems — only `propext`, `Classical.choice`, `Quot.sound`.
 - Forbidden declaration scan — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

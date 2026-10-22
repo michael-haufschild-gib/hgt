@@ -266,7 +266,7 @@ is formalized in Lean.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMSoninEdgeTrace.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSoninEdgeTrace.lean`.
 
 The card's substantive claim is that the *whole* exact position anomaly factors through one edge
 commutator.  That claim is algebra, and it is now proved as algebra — in an arbitrary ring, from the
@@ -352,7 +352,7 @@ What is deliberately not formalized, and why:
 records.  The remaining exactly algebraic content — the resolvent dressing chain `(6c)`–`(6e)` and
 the formal-complement identity `(10)` — is now proved:
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMSoninEdgeCommutatorAlgebra.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninEdgeCommutatorAlgebra.lean`
 (4 theorems, all unconditional, axioms exactly `[propext]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

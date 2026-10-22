@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilMarginSuperexponentialLaw
 import GaloisForLFunctions.RHTower.IsolatedDeepZeroWeilDetection
 import GaloisForLFunctions.RHTower.HodgeNyquistExclusion
-import GaloisForLFunctions.RHTower.CCMMetaplecticGammaMomentSeries
+import GaloisForLFunctions.RHTower.CCM.CCMMetaplecticGammaMomentSeries
 
 
 /-!

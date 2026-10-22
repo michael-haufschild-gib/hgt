@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LinearPMapUnitarySquareTransport
-import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelCompressionBridge
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelCompressionBridge
 import GaloisForLFunctions.RHTower.WeightOneCliffordLogClosure
 
 /-!

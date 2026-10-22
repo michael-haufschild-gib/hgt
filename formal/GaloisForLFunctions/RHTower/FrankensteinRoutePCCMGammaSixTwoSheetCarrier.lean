@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinRoutePTailFluxCCMThirdJetBridge
-import GaloisForLFunctions.RHTower.DeningerGammaSixCofinalSingularGraphSoninTransport
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalSingularGraphSoninTransport
 
 /-!
 # Route-P/CCM tail current on a two-sheet Gamma-six singular carrier

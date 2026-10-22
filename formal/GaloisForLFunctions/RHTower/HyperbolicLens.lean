@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.HyperbolicBallMeanValue
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMWeightedResponseAdmission
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMWeightedResponseAdmission
 
 open MeasureTheory UpperHalfPlane Metric Set
 open scoped MatrixGroups

@@ -792,3 +792,12 @@ follow the example of other research programmes: formal/GaloisForLFunctions/Bezo
 2. once enough material is collected, write in the lean folder a foundational README.md (not a log or ledger) that explains why, what, how - motivation, objects, language, mechanisms, traps, where the programme sits in the context of the whole research and how it relates to other research programmes
 
 formalize the foundational pillars. then develop it further until it has enough "meat on the bone" to provide mathematical tools to answer questions in our research that we could not answer before.
+
+
+HTGeometry/CriticalSchur... -> HTGeometry/Critical/Schur/
+HTGeometry/CriticalBlock... -> HTGeometry/Critical/Block/
+HTGeometry/CriticalGeometric... -> HTGeometry/Critical/Geometric/
+HTGeometry/CriticalSheet... -> HTGeometry/Critical/Sheet/
+HTGeometry/CriticalSource... -> HTGeometry/Critical/Source/
+HTGeometry/CriticalNormal... -> HTGeometry/Critical/Normal/
+HTGeometry/CriticalObservation... -> HTGeometry/Critical/Observation/

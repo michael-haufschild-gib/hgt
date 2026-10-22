@@ -60,7 +60,7 @@ Pulling out the constant exponential gives
 
 **Retrieval caution.** A method-search record described the definition `ThetaFZZParikhWilczekCriticalNeutralTorusSewing` as proving its universal implication. Direct source inspection shows it is a `Prop` definition followed by an RH equivalence, not a proved source identity. Generated method descriptions are leads only; they cannot discharge assumptions.
 
-**Radial normalization follow-up, 2026-09-11.** The [neutral radial zero-mode audit](../../fzz-p-radial-zero-mode-ward.md) now evaluates that factor in its positive effective-coupling chamber. Geometric radial-volume subtraction retains a nonzero logarithmic-coupling Ward contribution. Its real convergence chamber is classified exactly. This is the target-radial cutoff, not the worldsheet-position scale `L` above; the two terms cannot be identified or canceled without the complete source relation. Nonzero modes, continuation outside the real convergence chamber, and external momentum remain to be assembled.
+**Radial normalization follow-up, 2026-09-11.** The [neutral radial zero-mode audit](fzz-p-radial-zero-mode-ward.md) now evaluates that factor in its positive effective-coupling chamber. Geometric radial-volume subtraction retains a nonzero logarithmic-coupling Ward contribution. Its real convergence chamber is classified exactly. This is the target-radial cutoff, not the worldsheet-position scale `L` above; the two terms cannot be identified or canceled without the complete source relation. Nonzero modes, continuation outside the real convergence chamber, and external momentum remain to be assembled.
 
 ## Search evidence
 

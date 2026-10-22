@@ -11,13 +11,13 @@ formal/GaloisForLFunctions/RHTower/XiHedenmalmFourierEquation.lean
 formal/GaloisForLFunctions/RHTower/XiHedenmalmReflectionFoldedDirac.lean
 formal/GaloisForLFunctions/RHTower/XiHedenmalmInvariantHomogenization.lean
 formal/GaloisForLFunctions/RHTower/XiHedenmalmMultiplicityChain.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmRankOneDilationObstruction.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmRankOneDilationObstruction.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoEndedVolterraDefect.lean
 formal/GaloisForLFunctions/RHTower/XiRealAxisNonvanishing.lean
 formal/GaloisForLFunctions/RHTower/XiPolynomialDensity.lean
 formal/GaloisForLFunctions/RHTower/XiCSchwartzRestriction.lean
-formal/GaloisForLFunctions/RHTower/ThetaCuspComplexStrip.lean
-formal/GaloisForLFunctions/RHTower/ThetaCuspFourierLaplace.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspComplexStrip.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFourierLaplace.lean
 formal/GaloisForLFunctions/RHTower/ExpDecayFourierAnalytic.lean
 ```
 

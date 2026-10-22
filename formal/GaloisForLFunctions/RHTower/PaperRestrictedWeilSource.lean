@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilActualBirmanSchwinger
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilGammaSlepianStrictSource
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilActualBirmanSchwinger
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGammaSlepianStrictSource
 
 /-! # The full signed restricted-Weil source at every real energy
 

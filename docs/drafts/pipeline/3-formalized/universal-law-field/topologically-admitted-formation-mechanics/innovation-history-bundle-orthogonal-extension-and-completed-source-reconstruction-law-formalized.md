@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / NEW FIELD OBJECT / GLOBAL FORMATION HISTORY
 - **Paper source:** `innovation-history-bundle-orthogonal-extension-and-completed-source-reconstruction-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.ScaleInnovationHistoryBundle`;
-  `GaloisForLFunctions.RHTower.SuzukiFormationInnovationHistory`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationHistory`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NEW FIELD OBJECT] [NOT RH]`
 
 ## Certified generic object
@@ -48,7 +48,7 @@ The Suzuki module proves:
 - Direct foreground elaboration passed for both modules.
 - Targeted leaf builds only:
   - `GaloisForLFunctions.HTGeometry.ScaleInnovationHistoryBundle`: `3030/3030`
-  - `GaloisForLFunctions.RHTower.SuzukiFormationInnovationHistory`: `14117/14117`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationHistory`: `14117/14117`
     (large inherited dependency replay after concurrent cache changes)
 - Both modules imported by `HTGeometry.UniversalLawField`; literal module also imported by
   `RHTower`; neither umbrella built.

@@ -147,7 +147,7 @@ replace corrected global projector by orthogonal local sum.
 
 ### Both theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerProjectorLimitPassage.lean`.  Axiom audit for all 12
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerProjectorLimitPassage.lean`.  Axiom audit for all 12
 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 Projective-limit theorem:

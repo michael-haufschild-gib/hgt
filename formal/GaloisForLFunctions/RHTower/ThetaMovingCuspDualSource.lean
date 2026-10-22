@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.CausalMobiusThetaMovingCusp
 import GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape
 import GaloisForLFunctions.HTGeometry.L1PeriodizationFourier
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.XiEntireReal
 
 /-!

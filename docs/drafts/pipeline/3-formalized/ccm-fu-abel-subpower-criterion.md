@@ -63,7 +63,7 @@ These are source-applicability findings, not a claimed no-go for every bootstrap
 - [x] Scratch proof of the exact source criterion (`lake env lean`, exit 0).
 - [x] Exact-leaf build, new-theorem axiom audit, lint, umbrella import.
 
-Module: [CCMFUSuzukiMobiusDivisorAbelSubpower.lean](../../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorAbelSubpower.lean).
+Module: [CCMFUSuzukiMobiusDivisorAbelSubpower.lean](../../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorAbelSubpower.lean).
 Public theorems: `abs_resolvent_log_nat_le_mobiusDivisorSquareRootAbel` and
 `riemannHypothesis_iff_mobiusDivisorSquareRootAbelSubpower` in namespace `RHTower`.
 The criterion has no external premise; it is an equivalence, not a proof of either side.

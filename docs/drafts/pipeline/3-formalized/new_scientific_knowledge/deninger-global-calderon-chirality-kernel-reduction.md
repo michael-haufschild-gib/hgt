@@ -149,7 +149,7 @@ principles.
 ## Lean status
 
 Formalized in
-`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`
 as:
 
 - `deningerCalderonGraph_conormal_iff_stationary`;

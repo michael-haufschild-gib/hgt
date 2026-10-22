@@ -10,36 +10,36 @@
 
 | Module | Path |
 |---|---|
-| `GaloisForLFunctions.RHTower.CCMRationalAdelicTwoEndpointStokesModuli` | `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean` |
+| `GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicTwoEndpointStokesModuli` | `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicTwoEndpointStokesModuli.lean` |
 
 Wired into `GaloisForLFunctions.RHTower`.  All declarations live in the root namespace `RHTower`.
 One public accessor, `ccmRationalArchimedeanPrimeOrbitStokes_eq`, was added to
-`RHTower/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`; it is a `rfl` lemma exposing the two
+`RHTower/CCM/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`; it is a `rfl` lemma exposing the two
 tails of the corpus's bilateral orbit functional.
 
 ## Corpus reuse
 
 Nothing below was rebuilt.
 
-- `RHTower/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` — the bilateral orbit functional
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` — the bilateral orbit functional
   `ccmRationalArchimedeanPrimeOrbitStokes` together with **Lemma C**: the summability of both tails
   (`primeOrbitPositiveTerm_summable` via the Schwartz lattice bound, and
   `primeOrbitNegativeTerm_summable` via the mean-value estimate and a geometric majorant) is
   already discharged there, so the sampling functionals of this card are honest linear forms with
   no new analysis.  Also `ccmRationalAdelicPrimeOrbitStokesLM` and the exact Stokes law
   `ccmRationalAdelicPrimeOrbitStokes_scaling_sub`.
-- `RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` —
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` —
   `ccmRationalAdelicPrimeOrbitDifference`, `ccmRationalAdelicPrimeOrbitDifference_mem_ker`,
   `ccmRationalAdelicBruhatIntegral_orbitDifference` (card `(TPS.2)` for `ε₁`),
   `ccmRationalIntegralFiniteAdelesBruhat` and its value/integral lemmas.
-- `RHTower/CCMRationalAdelicScalingAction.lean` — `ccmRationalAdelicBruhatScaling`,
+- `RHTower/CCM/CCMRationalAdelicScalingAction.lean` — `ccmRationalAdelicBruhatScaling`,
   `ccmRationalArchimedeanScaling_apply`, `ccmRationalFiniteBruhatScaling_apply`,
   `ccmRationalAdelicBruhatScaling_tmul`, `ccmRationalFiniteBruhatScalingLinear`.
-- `RHTower/CCMRationalFiniteAdeleHaarCharacter.lean` — `ccmRationalFiniteBruhatIntegral_scaling`,
+- `RHTower/CCM/CCMRationalFiniteAdeleHaarCharacter.lean` — `ccmRationalFiniteBruhatIntegral_scaling`,
   the finite Haar Jacobian.
-- `RHTower/CCMRationalAdelicEpsilonZero.lean`, `CCMRationalAdelicEpsilonOne.lean` — `ε₀`, `ε₁`
+- `RHTower/CCM/CCMRationalAdelicEpsilonZero.lean`, `CCMRationalAdelicEpsilonOne.lean` — `ε₀`, `ε₁`
   and their tensor evaluation.
-- `RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` —
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` —
   `ccmRationalAdelicFiniteZeroPartialEval` and `..._tmul` (card `(TPS.12)`).
 - From mathlib: `ContDiffBump`, `HasCompactSupport.toSchwartzMap`, `LinearMap.exists_extend`,
   `LinearIndependent.finite_of_isNoetherian`, `Finset.sum_ite_eq'`.
@@ -132,8 +132,8 @@ constructed and that claiming one would be theatre.
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean  # clean
-lake build GaloisForLFunctions.RHTower.CCMRationalAdelicTwoEndpointStokesModuli          # green
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicTwoEndpointStokesModuli.lean  # clean
+lake build GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicTwoEndpointStokesModuli          # green
 ```
 
 `#print axioms` on `twoEndpointH1Equiv`, `twoEndpointH1Equiv_retainedClass`,

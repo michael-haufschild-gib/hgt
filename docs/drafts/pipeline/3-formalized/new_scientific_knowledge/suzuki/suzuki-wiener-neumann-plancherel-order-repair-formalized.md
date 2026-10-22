@@ -6,9 +6,9 @@
 - **Paper proof:** `./suzuki-wiener-neumann-plancherel-order-repair.md`
 - **Lean:**
   - `formal/GaloisForLFunctions/HTGeometry/DiscreteL1Convolution.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWienerNeumannMajorant.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWienerMixedNormCarrier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWienerOrderSwapCounterexample.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWienerOrderSwapCounterexample.lean`
 
 ## Formal content
 

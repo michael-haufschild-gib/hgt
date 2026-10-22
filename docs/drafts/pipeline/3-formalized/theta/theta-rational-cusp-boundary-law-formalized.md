@@ -3,8 +3,8 @@
 - **Paper card:** `theta-rational-cusp-boundary-law.md`
 - **Lean modules:** `GaloisForLFunctions.RHTower.QuadraticGaussSumFourthPower`,
   `GaloisForLFunctions.RHTower.ThetaRationalCuspBoundary`,
-  `GaloisForLFunctions.RHTower.ThetaCuspOneSidedConnection`,
-  `GaloisForLFunctions.RHTower.ThetaCuspAbelBoundaryPairing`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspOneSidedConnection`,
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspAbelBoundaryPairing`
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** targeted `lake build`; `lake env lean` audit clean; `#print axioms` =
   `propext`, `Classical.choice`, `Quot.sound` for all audited theorems; no `sorry`.

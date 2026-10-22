@@ -150,12 +150,12 @@ comparison but do not supply its missing source-level vanishing theorem.
 ## Lean validation
 
 Module:
-[ThetaCuspHawkingBMQuarticResponseCuspFinitePart.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseCuspFinitePart.lean),
+[ThetaCuspHawkingBMQuarticResponseCuspFinitePart.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResponseCuspFinitePart.lean),
 namespace `RHTower.D4BMQuarticResponseCuspFinitePart`.
 Seven public theorems and six definitions are wired once into the RHTower
 umbrella. `lake env lean /tmp/hb-response-cusp-finite-part.lean` passed without
 diagnostics. Final exact-leaf
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResponseCuspFinitePart`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticResponseCuspFinitePart`
 passed against cached imports in 18 seconds without warnings. No dependency,
 full or umbrella build ran. The audited source SHA256 is
 `70c14b84874bac701d5aba6495139a57ffeffa4c6a31154385e104db0905dce4`.

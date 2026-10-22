@@ -5,11 +5,11 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-wiener-nuclear-boundary-carrier.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWienerNuclearBoundaryCarrier.lean`
   - Wiener stack: `formal/GaloisForLFunctions/HTGeometry/DiscreteL1Convolution.lean`,
-    `RHTower/SuzukiWienerNeumannMajorant.lean`, `RHTower/SuzukiWienerMixedNormCarrier.lean`
+    `RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean`, `RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean`
   - boundary-moment lock (pre-existing):
-    `formal/GaloisForLFunctions/RHTower/SuzukiPhysicalLogBoundaryMomentLock.lean`
+    `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPhysicalLogBoundaryMomentLock.lean`
   - chart: `formal/GaloisForLFunctions/HTGeometry/PhysicalLogChart.lean`
 
 ## Formal content

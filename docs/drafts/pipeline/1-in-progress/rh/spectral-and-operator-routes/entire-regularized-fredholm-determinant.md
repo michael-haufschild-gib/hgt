@@ -118,7 +118,7 @@ formal/GaloisForLFunctions/HTGeometry/FiniteDeterminantArgumentPrinciple.lean
 formal/GaloisForLFunctions/HTGeometry/LogDerivUniformLimit.lean
 formal/GaloisForLFunctions/HTGeometry/RegularizedDeterminantMultiplicity.lean
 formal/GaloisForLFunctions/HTGeometry/SchurCharpoly.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaEntireDeterminant.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaEntireDeterminant.lean
 ```
 
 | step | statement | Lean declaration |

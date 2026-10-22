@@ -79,7 +79,7 @@ point and cannot be slack.**
 
 ## 5. What it would buy
 
-The theta source is log-concave on `ℝ` — `RHTower/ThetaCuspKernelLogConcavity.strictConcaveOn_
+The theta source is log-concave on `ℝ` — `RHTower/ThetaCusp/ThetaCuspKernelLogConcavity.strictConcaveOn_
 thetaCuspLogSource`, unconditional, already in the tree — hence log-concave on `[0,∞)`, and its even
 moments are exactly `thetaCuspRawEvenMoment`. So the conjecture would give `C ≥ 0` for the theta
 source **unconditionally**, discharging both quadratic hypotheses and with them the entire low block

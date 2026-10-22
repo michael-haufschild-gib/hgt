@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesPhysicalPluckerFirstTraceNoGo
 import GaloisForLFunctions.RHTower.FrankensteinThetaPluckerBoundaryAnomalyRecovery
-import GaloisForLFunctions.RHTower.HedenmalmStokesOrientedFirstTraceQuantizedJump
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesOrientedFirstTraceQuantizedJump
 
 /-!
 # Boundary-trace capacity of the physical Pluecker operator

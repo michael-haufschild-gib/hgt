@@ -1,7 +1,7 @@
 # CCM-FU: bounded quotient profiles
 
 - **Stage:** 1-in-progress
-- **Parent:** [source-local two-prime comparison](../../ccm-fu-two-prime-local-blocks.md)
+- **Parent:** [source-local two-prime comparison](ccm-fu-two-prime-local-blocks.md)
 - **Objective:** Resolve the finite unit-cutoff head remaining after uniform eventual factor-two comparison. Retain unbounded dilation and the exact clipped phase.
 
 ## Frozen diagnostic

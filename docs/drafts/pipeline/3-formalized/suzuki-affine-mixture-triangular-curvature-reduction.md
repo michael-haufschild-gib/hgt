@@ -155,7 +155,7 @@ event set below `floor(exp H)`.
 ## Lean realization
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiAffineMixtureTriangularCurvatureReduction`
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiAffineMixtureTriangularCurvatureReduction`
 
 Principal closed theorems:
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiGammaWallCutoffCommutator
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaWallCutoffCommutator
 
 /-!
 # `(15)`: a one-sided exponential source lies in the block class

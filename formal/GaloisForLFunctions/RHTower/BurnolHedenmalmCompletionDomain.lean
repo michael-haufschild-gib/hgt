@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiThetaL2Cyclicity
 import GaloisForLFunctions.RHTower.XiFirstDividedSourceNumericalSector
-import GaloisForLFunctions.RHTower.DeningerEulerStirling
+import GaloisForLFunctions.RHTower.Deninger.DeningerEulerStirling
 import GaloisForLFunctions.HTGeometry.MaximalRealL2Multiplication
 
 /-!

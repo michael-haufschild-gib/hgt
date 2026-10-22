@@ -92,7 +92,7 @@ curve \(d=1\), where complementary weight is \(1-n\) and total degree is \(3\).
 
 - Paper proof: dependency-closed.
 - Lean: implemented and verified in
-  `formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovDuality.lean`; the module
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovDuality.lean`; the module
   compiles and builds, and every declaration audits to
   `propext, Classical.choice, Quot.sound`.  See the Lean status section below.
 - Positivity/RH: not used and not implied.
@@ -107,7 +107,7 @@ curve \(d=1\), where complementary weight is \(1-n\) and total degree is \(3\).
 
 ### The chain-level duality landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovDuality.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovDuality.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound` (and `propext, Quot.sound` for the skew-transfer lemma).
 
 - `deningerWeilArakelovCenteredVertical` — the vertical map `Θ - n` of the mapping fibre.

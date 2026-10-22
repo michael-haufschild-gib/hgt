@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PositiveReweightingSupport
-import GaloisForLFunctions.RHTower.HedenmalmGraviAxionGapLaw
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGraviAxionGapLaw
 import GaloisForLFunctions.RHTower.StationaryRecurrenceSupportIntervalLaw
 import Mathlib.Probability.Distributions.Gaussian.Real
 

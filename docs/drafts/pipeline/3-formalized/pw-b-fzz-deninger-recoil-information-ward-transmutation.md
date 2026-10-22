@@ -72,7 +72,7 @@ and burden unification.
 ## Formal theorem
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation`
 
 The formalization proves unconditionally:
 
@@ -99,9 +99,9 @@ using brightness alone cannot discharge it.
 ## Verification
 
 - direct check:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation.lean`;
 - targeted build:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation`
   passed (`8834` jobs);
 - `#print axioms` on all eight public theorems reported only `propext`, `Classical.choice`, and
   `Quot.sound`;

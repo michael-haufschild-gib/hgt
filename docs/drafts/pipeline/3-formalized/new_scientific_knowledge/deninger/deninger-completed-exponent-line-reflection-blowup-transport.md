@@ -140,7 +140,7 @@ fixed-reader cyclicity identity.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerExponentLineReflectionBlowupTransport.lean`, with the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExponentLineReflectionBlowupTransport.lean`, with the
 coefficient forms in `DeningerExponentGammaSixShellTransportRigidity.lean`.  Axiom audit for every
 declaration: `propext, Classical.choice, Quot.sound`.
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaPrimeShiftNoetherIntegrated
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedThreePoint
 
 /-!
 # Orientation of the actual arithmetic exchange

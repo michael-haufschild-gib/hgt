@@ -50,7 +50,7 @@ uniformly to zero.  Conversely, uniform decay implies cofinal smallness, which a
 
 ## Lean certificate
 - Module:
-  `GaloisForLFunctions.RHTower.HedenmalmThetaSchurQuarticSpectralDecayEquivalence`.
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSchurQuarticSpectralDecayEquivalence`.
 - Uniform localization:
   `eventually_thetaSourceStageSchurDiagonal_im_sq_lt_of_rh`.
 - Uniform decay:

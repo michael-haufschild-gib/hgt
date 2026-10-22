@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaCutDivisor
-import GaloisForLFunctions.RHTower.DeningerMeyerHedenmalmSourceRealization
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHedenmalmSourceRealization
 
 /-! # Literal Meyer sources in the compact theta current
 

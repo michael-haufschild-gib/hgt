@@ -49,11 +49,11 @@ All quantifiers are unconditional. No RH premise, zero input, computation, or fi
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiPositiveSharedPlaneWindowPermutationNoGo`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveSharedPlaneWindowPermutationNoGo`
 - Exact semantic guard: `suzukiPositiveSharedPlaneTwentyWindowOrderedCompletedObservable_eq`
 - Uniform divergence: `tendsto_suzukiPositiveSharedPlaneTwentyWindowOrderedCompletedObservable_atTop`
 - Route-class certificate: `no_bounded_suzukiPositiveSharedPlaneTwentyWindowOrderedCompletedObservable`
-- Source check: `lake env lean GaloisForLFunctions/RHTower/SuzukiPositiveSharedPlaneWindowPermutationNoGo.lean` passed.
-- Final audit: `lake build GaloisForLFunctions.RHTower.SuzukiPositiveSharedPlaneWindowPermutationNoGo` passed.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveSharedPlaneWindowPermutationNoGo.lean` passed.
+- Final audit: `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveSharedPlaneWindowPermutationNoGo` passed.
 - Axioms: only `propext`, `Classical.choice`, `Quot.sound`.
 - Formal lint reports only pre-existing unrelated umbrella-reachability debt; this module is wired into `GaloisForLFunctions.RHTower` and contains no forbidden declaration.

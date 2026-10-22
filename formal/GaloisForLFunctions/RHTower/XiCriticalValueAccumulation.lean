@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiSliceCircleDecay
 import GaloisForLFunctions.HTGeometry.GammaSuperPolynomialDecay
 import GaloisForLFunctions.HTGeometry.PolynomialCriticalValues
-import GaloisForLFunctions.RHTower.SuzukiCharacteristicEntireLimitNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCharacteristicEntireLimitNoGo
 import GaloisForLFunctions.RHTower.ArithmeticJointJetExclusion
 
 /-!

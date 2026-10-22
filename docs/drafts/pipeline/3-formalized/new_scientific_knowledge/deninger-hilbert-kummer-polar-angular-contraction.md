@@ -6,13 +6,13 @@
 - **Label:** `DAC_DENINGER_HILBERT_KUMMER_POLAR_ANGULAR_CONTRACTION`
 - **Parent:** `deninger-hilbert-kummer-radial-flow-poisson`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerCharacterPolar` (`(1)`, `(2)`, `(4)`),
-  `GaloisForLFunctions.RHTower.DeningerSphereContraction` (the two deformations of `(8)`, `(9)`),
-  `GaloisForLFunctions.RHTower.DeningerSphereSlideHomotopy` (`(9)` as a homotopy),
-  `GaloisForLFunctions.RHTower.DeningerSphereLineHomotopy` (`(8)` as a homotopy),
-  `GaloisForLFunctions.RHTower.DeningerSphereContractible` (`(6)`),
-  `GaloisForLFunctions.RHTower.DeningerShift` (the model),
-  `GaloisForLFunctions.RHTower.DeningerHaarAverage` (`(7)`)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCharacterPolar` (`(1)`, `(2)`, `(4)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSphereContraction` (the two deformations of `(8)`, `(9)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSphereSlideHomotopy` (`(9)` as a homotopy),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSphereLineHomotopy` (`(8)` as a homotopy),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSphereContractible` (`(6)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShift` (the model),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHaarAverage` (`(7)`)
 - **Statement:** the Hilbert--Kummer bounded generic character locus
   splits into unitary phase and Hilbert logarithmic modulus; the
   nonzero modulus has contractible infinite-dimensional angular factor,
@@ -191,7 +191,7 @@ claims.
 
 ### The polar decomposition landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCharacterPolar.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCharacterPolar.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerCharacter_polar` — **`(1)`--`(2)`**: `P(α) = η_P(α)·exp(L_P(α))`, with
@@ -207,7 +207,7 @@ claims.
 
 ### The two sphere deformations landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerSphereContraction.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSphereContraction.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 Both statements are proved for an arbitrary real inner product space and an arbitrary linear
@@ -223,7 +223,7 @@ isometry with the stated properties, so no model of `H` has to be fixed yet.
 
 ### The quarter-circle homotopy landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerSphereSlideHomotopy.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSphereSlideHomotopy.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSphereIsometryMap` — a linear isometry restricts to a continuous self-map of the unit
@@ -239,8 +239,8 @@ So the second half of the contraction is complete as a homotopy.
 
 ### The angular contraction `(6)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerSphereLineHomotopy.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerSphereContractible.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSphereLineHomotopy.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSphereContractible.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSegment`, `deningerSegment_ne_zero`, `deningerSphereLineHomotopy` — **`(8)` as a
@@ -259,7 +259,7 @@ form the card's `(6)` needs.
 
 ### The model landed — the unit sphere of `ℓ²(ℕ, ℝ)` is contractible
 
-`formal/GaloisForLFunctions/RHTower/DeningerShift.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerShift.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerShiftFun`, `deningerShiftFun_memℓp`, `deningerShift` — **the unilateral shift** as a
@@ -280,7 +280,7 @@ the contractibility.
 
 ### Haar averaging `(7)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHaarAverage.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHaarAverage.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerHaarAverage μ ρ m = ∫ g, ρ g m ∂μ` — the orbit average against a left-invariant

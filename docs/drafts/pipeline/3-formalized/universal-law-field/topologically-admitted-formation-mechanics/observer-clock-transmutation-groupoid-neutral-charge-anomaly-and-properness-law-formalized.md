@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / CLOCK GROUPOID / GLOBAL PROPERNESS CLASSIFICATION
 - **Paper source:** `observer-clock-transmutation-groupoid-neutral-charge-anomaly-and-properness-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.FormationClockTransmutation`;
-  `GaloisForLFunctions.RHTower.SuzukiHarmonicRieszClockTransmutation`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiHarmonicRieszClockTransmutation`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 
 ## Certified generic mechanism
@@ -44,7 +44,7 @@ The Suzuki module constructs literal harmonic and square-root clocks and proves:
   leaf build dropped from `8655` to `938` jobs.
 - Targeted leaf builds only:
   - `GaloisForLFunctions.HTGeometry.FormationClockTransmutation`: `938/938`
-  - `GaloisForLFunctions.RHTower.SuzukiHarmonicRieszClockTransmutation`: `12876/12876`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiHarmonicRieszClockTransmutation`: `12876/12876`
     (large inherited dependency replay after cache changes)
 - Both modules imported by `HTGeometry.UniversalLawField`; literal module also imported by
   `RHTower`; neither umbrella built.

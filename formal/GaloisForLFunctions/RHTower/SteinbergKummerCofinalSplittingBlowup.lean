@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerSteinbergKummerSuccessorNormalTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerSteinbergKummerSuccessorNormalTransgression
 
 /-!
 # Steinberg--Kummer cofinal splitting blowup

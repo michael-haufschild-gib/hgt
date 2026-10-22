@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.InfiniteMobiusShiftAnalysis
 import GaloisForLFunctions.RHTower.ZetaTwoShiftContraction
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import GaloisForLFunctions.RHTower.SeamRealAxisGrowth
-import GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
 
 /-!
 # Critical escape of the normalized Möbius shift channel

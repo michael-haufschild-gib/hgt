@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureUniformGridAliasNoGo
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureUniformGridAliasNoGo
 import Mathlib.Algebra.Field.Periodic
 
 /-!+# Uniform phase quantization for the physical HCF reporter

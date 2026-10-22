@@ -5,7 +5,7 @@
 - **Type:** EXACT FLUX SYSTEM / NONNORMAL WEIGHTED UNIQUENESS THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiPrimitiveFluxNonnormalGraphReduction`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimitiveFluxNonnormalGraphReduction`
 - **Inputs:** `suzuki-coordinate-cutoff-primitive-flux-identity.md`,
   `suzuki-gamma-weighted-tail-coercivity.md`,
   `../../../1-in-progress/suzuki-paired-gamma-logistic-flat-sector-conjecture.md`

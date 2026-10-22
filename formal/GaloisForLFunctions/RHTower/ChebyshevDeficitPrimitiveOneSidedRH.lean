@@ -1,7 +1,7 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleCompressionRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleCompressionRHCriterion
 import GaloisForLFunctions.RHTower.WeilLagFunctionOneSided
 import GaloisForLFunctions.RHTower.CriticalContinuousChebyshevDivisorLaplaceWeld
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAbelCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAbelCompleteness
 import GaloisForLFunctions.RHTower.VisibleCoprimeZetaZeroJet
 
 /-!

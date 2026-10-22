@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FokasLenellsCausalUnitBoundaryWeakLimit
-import GaloisForLFunctions.RHTower.CCMPrimePolePolynomialBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePolePolynomialBoundary
 import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.Topology.Algebra.Order.Field
 open GaloisForLFunctions.HTGeometry

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmLocalFrameObstruction
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmLocalFrameObstruction
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 import GaloisForLFunctions.RHTower.XiDerivativeKummerCollision
 

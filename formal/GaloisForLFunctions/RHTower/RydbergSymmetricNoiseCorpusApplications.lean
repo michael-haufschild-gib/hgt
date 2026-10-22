@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.RydbergSymmetricFrozenNoise
 import GaloisForLFunctions.RHTower.GaussianEvenCarrier
-import GaloisForLFunctions.RHTower.SuzukiGammaSymbol
-import GaloisForLFunctions.RHTower.SuzukiLogisticCoupling
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaSymbol
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLogisticCoupling
 import GaloisForLFunctions.HTGeometry.SteinhausLaplaceProduct
 import GaloisForLFunctions.RHTower.HardyZ
 

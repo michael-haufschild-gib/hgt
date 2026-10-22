@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerSquarefreeWickRegularOrbitFlux
-import GaloisForLFunctions.RHTower.ArtinFiniteAbelianFourier
+import GaloisForLFunctions.RHTower.Artin.ArtinFiniteAbelianFourier
 
 /-!
 # Genuine-Artin positivity obstruction for Euler--Wick

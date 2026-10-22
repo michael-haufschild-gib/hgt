@@ -12,50 +12,50 @@
   logarithmic Kummer character is a global radial coordinate; discrete
   flow pullbacks are exactly Meyer's dilations.
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticPoissonTransfer`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPoissonTransfer`
   (`(11)`--`(14)`),
-  `GaloisForLFunctions.RHTower.DeningerArithmeticHilbertKummerRadius`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticHilbertKummerRadius`
   (`(6)`, `(8)`, `(9)` in operator-norm form),
-  `GaloisForLFunctions.RHTower.DeningerFiniteExtension`,
-  `GaloisForLFunctions.RHTower.DeningerHilbertKummerCharacter`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFiniteExtension`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHilbertKummerCharacter`
   (the density proof of `(7)`, the exponent form of `(8)`, and the
   descent and positivity of `(9)`),
-  `GaloisForLFunctions.RHTower.DeningerHeightZeroKummer`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHeightZeroKummer`
   (the height-zero theorem, the injectivity of `(2)`, and `(4)` ⟹ `(5)`),
-  `GaloisForLFunctions.RHTower.DeningerKummerPlaceIsometry`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerPlaceIsometry`
   (the place isometry `‖f_α‖₁ = 2h(α)` behind `(1)`--`(2)`),
-  `GaloisForLFunctions.RHTower.DeningerArchimedeanBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerFinitePlaceBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerFinitePlaceSumBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerPlaceRestriction`,
-  `GaloisForLFunctions.RHTower.DeningerHeightBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeight`,
-  `GaloisForLFunctions.RHTower.DeningerAbsoluteHeightSeminorm`,
-  `GaloisForLFunctions.RHTower.DeningerKummerGroupNorm`,
-  `GaloisForLFunctions.RHTower.DeningerKummerSpace`,
-  `GaloisForLFunctions.RHTower.DeningerKummerCompletion`,
-  `GaloisForLFunctions.RHTower.DeningerLocalDegree`,
-  `GaloisForLFunctions.RHTower.DeningerPlaceDegree`,
-  `GaloisForLFunctions.RHTower.DeningerL2PlaceSum`,
-  `GaloisForLFunctions.RHTower.DeningerL2Norm`,
-  `GaloisForLFunctions.RHTower.DeningerL2Inner`,
-  `GaloisForLFunctions.RHTower.DeningerL2InnerBaseChange`,
-  `GaloisForLFunctions.RHTower.DeningerAbsL2Inner`,
-  `GaloisForLFunctions.RHTower.DeningerL2InnerAdditive`,
-  `GaloisForLFunctions.RHTower.DeningerL2InnerTorsion`,
-  `GaloisForLFunctions.RHTower.DeningerAbsL2InnerAdditive`,
-  `GaloisForLFunctions.RHTower.DeningerKummerL2Inner`,
-  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInner`,
-  `GaloisForLFunctions.RHTower.DeningerKummerSpaceInnerPos`,
-  `GaloisForLFunctions.RHTower.DeningerL2Definite`,
-  `GaloisForLFunctions.RHTower.DeningerKummerL2Definite`,
-  `GaloisForLFunctions.RHTower.DeningerKummerL2Bilinear`,
-  `GaloisForLFunctions.RHTower.DeningerRealSmul`,
-  `GaloisForLFunctions.RHTower.DeningerRealSmulModule`,
-  `GaloisForLFunctions.RHTower.DeningerL2CauchySchwarz`,
-  `GaloisForLFunctions.RHTower.DeningerL2Norm2`,
-  `GaloisForLFunctions.RHTower.DeningerL2Space`,
-  `GaloisForLFunctions.RHTower.DeningerHilbertKummer`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArchimedeanBaseChange`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFinitePlaceBaseChange`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFinitePlaceSumBaseChange`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPlaceRestriction`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHeightBaseChange`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAbsoluteHeight`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAbsoluteHeightSeminorm`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerGroupNorm`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerSpace`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerCompletion`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerLocalDegree`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPlaceDegree`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2PlaceSum`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2Norm`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2Inner`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2InnerBaseChange`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAbsL2Inner`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2InnerAdditive`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2InnerTorsion`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAbsL2InnerAdditive`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerL2Inner`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerSpaceInner`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerSpaceInnerPos`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2Definite`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerL2Definite`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKummerL2Bilinear`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRealSmul`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRealSmulModule`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2CauchySchwarz`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2Norm2`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerL2Space`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHilbertKummer`
   (the gluing of the place tower, the absolute height on `Q̄`, the
   normed Kummer group `𝒢`, the normed `ℚ`-vector space `𝒢 ⊗ ℚ`, its
   completion, and the local-degree normalization of the place space)
@@ -312,7 +312,7 @@ true-to-approximate map for which Deninger proposed a relevant complex
 
 ### The exact Poisson-flow theorem is formalized
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPoissonTransfer.lean`, verified and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPoissonTransfer.lean`, verified and
 extended.  Axiom audit: `propext, Classical.choice, Quot.sound`; two of the identities need only
 `propext` (and `Quot.sound`).
 
@@ -342,8 +342,8 @@ the sections below.
 
 ### The refinement theorem's proof mechanism is formalized
 
-`formal/GaloisForLFunctions/RHTower/DeningerFiniteExtension.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummerCharacter.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFiniteExtension.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertKummerCharacter.lean`.  Axiom audit on all
 seventeen declarations: `propext, Classical.choice, Quot.sound`.
 
 **Bounded extension off a finite-dimensional subspace.**
@@ -403,7 +403,7 @@ seventeen declarations: `propext, Classical.choice, Quot.sound`.
 
 ### The height-zero theorem and `(4)` ⟹ `(5)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHeightZeroKummer.lean`.  Axiom audit on all four
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHeightZeroKummer.lean`.  Axiom audit on all four
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerMulHeightOne_iff_isOfFinOrder` — **the height-zero theorem** (Kronecker's theorem in
@@ -425,7 +425,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### The place isometry and the density-free extension landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerPlaceIsometry.lean`, plus two additions to
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerPlaceIsometry.lean`, plus two additions to
 `DeningerHeightZeroKummer.lean`.  Axiom audit on all seven declarations:
 `propext, Classical.choice, Quot.sound`.
 
@@ -470,7 +470,7 @@ the product formula.  That is exactly the data `(Y, λ)` needs at one level of t
 
 ### The archimedean half of the gluing landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArchimedeanBaseChange.lean`.  Axiom audit on all four
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArchimedeanBaseChange.lean`.  Axiom audit on all four
 declarations: `propext, Classical.choice, Quot.sound`.
 
 What the tower needs is that the place model of `K` sits inside the place model of `L` with a
@@ -496,7 +496,7 @@ The archimedean half of that is now proved:
 
 ### The local-degree scaling law landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinitePlaceBaseChange.lean`.  Axiom audit on all three
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinitePlaceBaseChange.lean`.  Axiom audit on all three
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerToNNReal_congr` — the value of `WithZeroMulInt.toNNReal` depends only on the base, not
@@ -519,7 +519,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### The fibrewise sum law landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinitePlaceSumBaseChange.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinitePlaceSumBaseChange.lean`.  Axiom audit on all
 four declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerSpectrumOfMem` — a prime of `𝓞 L` in the fibre `primesOverFinset v.asIdeal (𝓞 L)`,
@@ -545,8 +545,8 @@ of the base-change law are now proved.
 
 ### The base-change law is complete
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceRestriction.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerHeightBaseChange.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceRestriction.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHeightBaseChange.lean`.  Axiom audit on all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 **Restriction of finite places.**
@@ -586,7 +586,7 @@ the Kummer norm of `α` is an invariant of `α` alone.  Note that mathlib has no
 
 ### The absolute Weil height on the algebraic numbers landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbsoluteHeight.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbsoluteHeight.lean`.  Axiom audit on all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 mathlib has heights only on a fixed number field.  The global object the card's place space needs
@@ -618,8 +618,8 @@ former.  The fix is to transport once, at the `NumberField ℚ⟮α⟯` instance
 
 ### The normed Kummer group `𝒢` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbsoluteHeightSeminorm.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerKummerGroupNorm.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbsoluteHeightSeminorm.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerGroupNorm.lean`.  Axiom audit on all
 declarations: `propext, Classical.choice, Quot.sound` (the units/finite-order transfer needs only
 `propext, Quot.sound`).
 
@@ -651,7 +651,7 @@ is the positive-definiteness of that norm rather than a citation.
 
 ### The Kummer space `𝒢 ⊗ ℚ` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerSpace.lean`.  Axiom audit on all declarations:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerSpace.lean`.  Axiom audit on all declarations:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerKummerGroup_eq_one_of_isOfFinOrder`, `deningerKummerGroup_isMulTorsionFree` — **the
@@ -675,7 +675,7 @@ its norm.
 
 ### The Hilbert--Kummer Banach space landed — `(1)` and `(2)` are now constructions
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerCompletion.lean`.  Axiom audit on all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerCompletion.lean`.  Axiom audit on all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerKummerSpace_normedAddCommGroup`, `deningerKummerSpace_normedSpace` — `𝒢 ⊗ ℚ` is a
@@ -705,7 +705,7 @@ At this point only the `L²` structure was missing, the completion built so far 
 the sections below.
 ### The local-degree normalization landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerLocalDegree.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLocalDegree.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 This is the foundation for the `L²` structure, and it clarifies exactly why the `L¹` and `L²`
@@ -733,7 +733,7 @@ weight unchanged by enlarging the field — the normalization under which *every
 
 ### The place degree landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceDegree.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceDegree.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPlaceDegree w` — the local degree over `ℚ` of a finite place, i.e. the local degree of
@@ -748,7 +748,7 @@ This is the weight in the `L²` normalization, now known to behave correctly und
 
 ### The weighted fibre sum for `L²` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2PlaceSum.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2PlaceSum.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The `L²` summand `(log ‖x‖_w)²/d_w` depends on the *place*, not only on its value, so the earlier
@@ -776,7 +776,7 @@ This is the exact `L²` counterpart of `deningerFinitePlaceSum_baseChange`, and 
 
 ### The `L²` place norm landed — the `p = 2` normalization is proved
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2Norm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2Norm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2NormSq x = ∑_{v arch} mult(v)·(log v(x))² + ∑ᶠ_{v fin} (log v(x))²/d_v` — the
@@ -799,7 +799,7 @@ factorization of the local degree together with the fundamental identity.
 
 ### The `L²` inner product landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2Inner.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2Inner.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2Inner x y = ∑_{v arch} mult(v)·(log v x)(log v y) + ∑ᶠ_{v fin} (log v x)(log v y)/d_v`
@@ -814,7 +814,7 @@ factorization of the local degree together with the fundamental identity.
 
 ### Base change for the `L²` inner product landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2InnerBaseChange.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2InnerBaseChange.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2InnerFinsumBaseChange` — the finite part.  Same support-and-fibration argument as for
@@ -838,7 +838,7 @@ and the norm's null set is the torsion (`deningerAllPlaces_one_isOfFinOrder`).
 
 ### The absolute `L²` inner product landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbsL2Inner.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbsL2Inner.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The `L²` inner product is now an invariant of the algebraic numbers themselves, in the same sense
@@ -859,7 +859,7 @@ the field of definition, each proved from the place tower rather than quoted.
 
 ### Additivity of the `L²` inner product landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2InnerAdditive.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2InnerAdditive.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerInfinitePlace_log_mul`, `deningerFinitePlace_log_mul` — the logarithm of a place is
@@ -877,7 +877,7 @@ This is the bilinearity of the form.  With symmetry (`deningerAbsL2Inner_comm`),
 
 ### Vanishing of the `L²` inner product on torsion landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2InnerTorsion.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2InnerTorsion.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerInfinitePlace_eq_one_of_isOfFinOrder`, `deningerFinitePlace_eq_one_of_isOfFinOrder` —
@@ -893,7 +893,7 @@ out are exactly those on which the form is identically zero, so it is well defin
 
 ### Additivity of the absolute `L²` inner product landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbsL2InnerAdditive.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbsL2InnerAdditive.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerAdjoinTriple_numberField` — `ℚ⟮α, β, γ⟯` is a number field, from
@@ -912,7 +912,7 @@ The `L²` form on `Q̄ˣ` now has the complete set of properties it needs: symme
 
 ### The `L²` inner product on `𝒢` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Inner.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerL2Inner.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerUnitL2Inner` — the absolute form on the units, where the nonvanishing hypotheses of all
@@ -929,7 +929,7 @@ So the card's `H_Kum` inner product now exists on the Kummer group itself.
 
 ### The `L²` inner product on `𝒢 ⊗ ℚ` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerSpaceInner.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerSpaceInner.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerKummerL2Inner_one_left` — the form vanishes at the identity, from biadditivity alone
@@ -945,7 +945,7 @@ The card's `H_Kum` inner product now exists on `𝒢 ⊗ ℚ` itself.
 
 ### Positivity and additivity of the `L²` form on `𝒢 ⊗ ℚ` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerSpaceInnerPos.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerSpaceInnerPos.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2NormSq_nonneg` — the place norm is a sum of squares against positive weights, hence
@@ -963,7 +963,7 @@ Banach completion already built, the `L²` one gives the Hilbert completion.
 
 ### Definiteness of the `L²` place norm landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2Definite.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2Definite.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2NormSq_eq_zero_places` — **a vanishing `L²` norm forces every place to take the value
@@ -983,7 +983,7 @@ properties an inner product on `𝒢 ⊗ ℚ` requires.
 
 ### Definiteness on `𝒢` and `𝒢 ⊗ ℚ` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Definite.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerL2Definite.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerIntermediate_isOfFinOrder_of` — finite order transfers back from a subfield element.
@@ -1006,7 +1006,7 @@ definite.
 
 ### The bundled `ℚ`-bilinear `L²` form landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerL2Bilinear.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerL2Bilinear.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerKummerL2Inner_inv_left`, `deningerKummerL2Inner_zpow_left` — the form negates under
@@ -1023,7 +1023,7 @@ injectivity and dense span proved.
 
 ### The real scalar extension landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRealSmul.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRealSmul.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 mathlib has no way to turn a normed `ℚ`-space into a real one: `UniformSpace.Completion` preserves
@@ -1042,7 +1042,7 @@ and only proves that continuous additive maps are then `ℝ`-linear.  So the ext
 
 ### The real module structure landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRealSmulModule.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRealSmulModule.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 Every module axiom for the extended action is a density argument against the corresponding
@@ -1065,7 +1065,7 @@ a real space.
 
 ### Cauchy--Schwarz for the `L²` form landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2CauchySchwarz.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2CauchySchwarz.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSpaceL2Inner_add_qsmul` — the expansion `⟨x + q y, x + q y⟩ = ⟨y,y⟩q² + 2⟨x,y⟩q +
@@ -1080,7 +1080,7 @@ a real space.
 
 ### The `L²` norm on `𝒢 ⊗ ℚ` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2Norm2.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2Norm2.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSpaceL2Inner_zero_left`, `_neg_left`, `_neg_neg` — the form kills zero and is odd in
@@ -1096,7 +1096,7 @@ earlier.
 
 ### The Hilbert--Kummer space landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerL2Space.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL2Space.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `DeningerL2Space F` — the Kummer space `𝒢 ⊗ ℚ` carrying the `L²` norm.  It has to be a *type
@@ -1115,7 +1115,7 @@ the `L²` Kummer form, and `(2)` is `deningerKummerClass` with its injectivity a
 
 ### The parallelogram identity landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummer.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertKummer.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2NormSpace_parallelogram` — **the parallelogram identity** for the `L²` norm on the
@@ -1127,7 +1127,7 @@ the `L²` Kummer form, and `(2)` is `deningerKummerClass` with its injectivity a
 
 ### `H_Kum` is a real inner product space — the card's `(1)` is complete
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertKummer.lean` (extended).  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertKummer.lean` (extended).  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL2Completion_parallelogram` — the parallelogram identity on the completion, by density:

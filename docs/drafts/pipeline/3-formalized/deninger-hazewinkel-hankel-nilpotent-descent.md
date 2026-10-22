@@ -5,9 +5,9 @@
 - **Source:** Christopher Deninger, *Rational Witt vectors and associated sheaves*,
   Proposition 2.1(a,c,d), Lemma 2.2, and Proposition 2.10, arXiv:2508.05329v1.
 - **Lean modules:**
-  - `formal/GaloisForLFunctions/RHTower/DeningerDeterminantalLaplace.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerHazewinkelHankelDescent.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerRationalWittHazewinkelHankel.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDeterminantalLaplace.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelHankelDescent.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittHazewinkelHankel.lean`
 
 ## Formalized result
 
@@ -80,9 +80,9 @@ characteristic-zero assumption, ghost injectivity, target theorem premise, added
 ## Verification
 
 - Direct foreground Lean checks pass for all three modules.
-- Exact build `lake build GaloisForLFunctions.RHTower.DeningerHazewinkelHankelDescent` passes.
+- Exact build `lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelHankelDescent` passes.
 - Exact build
-  `lake build GaloisForLFunctions.RHTower.DeningerRationalWittHazewinkelHankel` passes; no full
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittHazewinkelHankel` passes; no full
   build was run.
 - `#print axioms` on generalized Laplace, exact `J` containment, rank descent, cartesianity,
   formal étaleness, coefficient-lift surjectivity, rational finite rank, sharp kernel rank, both

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinWhittakerArithmeticEnvelope
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinWhittakerArithmeticEnvelope
 
 /-!
 # Hecke relation for the Eisenstein Whittaker coefficients

@@ -1,8 +1,8 @@
-import GaloisForLFunctions.RHTower.HedenmalmIntervalAnomaly
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmIntervalAnomaly
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
 import GaloisForLFunctions.RHTower.CausalThetaHalfLaplace
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 
 /-!
 # The theta CDF action: hazard, endpoint ratio and the fixed-shift law

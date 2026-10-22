@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinThetaPluckerIntertwiningAnomaly
-import GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationAnomaly
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeTranslationAnomaly
 
 /-!
 # Theta prime-translation origin of the physical Pluecker carrier

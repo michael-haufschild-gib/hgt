@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszTerminalSquareLaw
-import GaloisForLFunctions.RHTower.SuzukiBoundaryExcursionJuliaKreinLightLift
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiBoundaryExcursionJuliaKreinLightLift
 import GaloisForLFunctions.RHTower.RoutePJuliaKreinHistoryPort
 
 /-!

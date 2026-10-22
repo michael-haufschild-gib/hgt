@@ -123,7 +123,7 @@ an explicit positive spectral measure.
 ## Formal theorem surface
 
 The unconditionally checked module
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSpectralMeasure.lean` contains:
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSpectralMeasure.lean` contains:
 
 - `thetaCuspAtomLikelihoodRatio_eq_spectralTerm` — exact atomwise transformed quotient;
 - `integral_exp_neg_mul_thetaCuspAtomLikelihoodSpectralMeasure` — one-atom measure identity;

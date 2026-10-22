@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedWallLightQuadraticJet`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedWallLightQuadraticJet`.
 This proves a new local source law; it does not yet identify that law with the actual
 Robin--Gamma--holonomy trace or prove RH.
 

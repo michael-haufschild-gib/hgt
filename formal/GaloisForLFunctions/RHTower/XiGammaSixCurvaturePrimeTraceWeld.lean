@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHorizontalCollisionGaussHodgePrimeCurrent
-import GaloisForLFunctions.RHTower.HedenmalmSquarefreeFirstTraceExponentialContinuation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSquarefreeFirstTraceExponentialContinuation
 
 /-!
 # Gamma-six curvature / continued first-prime-trace weld

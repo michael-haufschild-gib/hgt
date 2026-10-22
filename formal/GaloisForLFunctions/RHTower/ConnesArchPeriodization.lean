@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzPoisson
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzLattice
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzPoisson
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzLattice
 import Mathlib.Analysis.Fourier.PoissonSummation
 
 /-!

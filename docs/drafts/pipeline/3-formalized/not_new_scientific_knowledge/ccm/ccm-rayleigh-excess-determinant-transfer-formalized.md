@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMRayleighExcessAngle`
+- `GaloisForLFunctions.RHTower.CCM.CCMRayleighExcessAngle`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

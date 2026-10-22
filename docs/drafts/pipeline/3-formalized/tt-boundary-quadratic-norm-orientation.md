@@ -151,7 +151,7 @@ is positive: the second factor is positive at t0 for sufficiently small h and re
 Three modules, all clean under `lake env lean`, `#print axioms` = `propext, Classical.choice,
 Quot.sound` on every main theorem, appended to `GaloisForLFunctions/RHTower.lean`:
 
-`RHTower/ThetaCuspRatioBoundaryNormOrientation.lean`
+`RHTower/ThetaCusp/ThetaCuspRatioBoundaryNormOrientation.lean`
 - real-cast bridge: real polynomials `boundaryCompactA77`, `boundaryCompactB77` with
   `boundaryCompactA77_ofReal`, `boundaryCompactB77_ofReal` (`(A : ℂ) = boundaryCompactA75`, no real
   parts taken);
@@ -172,13 +172,13 @@ Quot.sound` on every main theorem, appended to `GaloisForLFunctions/RHTower.lean
 The global C77 Bernstein certificate is not needed: `g(s) > 0` on `[0,S]` follows from the exact
 formula, and `G > 0` on the strip from continuity.
 
-`RHTower/ThetaCuspRatioSourceSlopeReal.lean`
+`RHTower/ThetaCusp/ThetaCuspRatioSourceSlopeReal.lean`
 - `sourcePolyConj_slope`: the full source slope polynomial has real coefficients;
 - `interiorHom` (`J ↦ eω` in the boundary quadratic algebra), `interiorHom_one`,
   `boundaryEval_interiorHom` (physical evaluation at `(v,k,ez)`), `interiorHom_slope_conj` (real
   components), `continuous_interiorHom` (continuity in `e`).
 
-`RHTower/ThetaCuspRatioBoundaryNormInterior.lean`
+`RHTower/ThetaCusp/ThetaCuspRatioBoundaryNormInterior.lean`
 - `interior_error_factor` (`E(t) = (t-t₀)(1-h²(t+t₀))`), `interiorT78_source` (`J = eZ`),
   `interiorNorm78_one` (`e = 1` recovers `N/h⁴⁴`, `T/h²²`), `interiorSlope78_physical`;
 - **`boundaryNorm78_interior_negative`**: for every `0 < s < 361/25` there are `h > 0`, `e₀ < 1` such

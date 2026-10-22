@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFarIntegerLogGapCoercivity
+import GaloisForLFunctions.RHTower.CCM.CCMFarIntegerLogGapCoercivity
 
 /-!
 # Nonzero positive-energy pairs at arbitrary separation

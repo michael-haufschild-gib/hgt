@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMCompressedShiftIndependence`
+- `GaloisForLFunctions.RHTower.CCM.CCMCompressedShiftIndependence`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

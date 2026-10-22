@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCrossKernelRankFactorization
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCrossKernelRankFactorization
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourceIntegerHistoryNoGo
 
 /-!

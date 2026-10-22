@@ -3,7 +3,7 @@
 - **ID:** biscale-packet-spectral-realization-1810
 - **Stage:** 1-in-progress
 - **Type:** BRIDGE; classical factorization plus existing source energy mechanisms
-- **Parent:** [field programme](../../biscale-field-development-1810.md), items 8 and 11
+- **Parent:** [field programme](biscale-field-development-1810.md), items 8 and 11
 
 ## Exact target and scope
 

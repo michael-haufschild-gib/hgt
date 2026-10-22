@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-sonin-log-position-edge-trace-correction-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMSoninEdgeCommutatorAlgebra.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninEdgeCommutatorAlgebra.lean`
   (plus the already-formalized coordinate commutators cited in the card's "Coordinate scope")
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext]` on all 4 theorems

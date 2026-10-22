@@ -292,7 +292,7 @@ that makes the features independent, which is exactly the step the earlier decis
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMRelativeLogDerivCoordinateIndex.lean` (wired,
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMRelativeLogDerivCoordinateIndex.lean` (wired,
 axiom-clean, 6 declarations).
 
 - `cauchyFeature`, **`conj_cauchyFeature`** — equation `(8)` and the conjugate form

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHeightAdaptiveFiniteLadder
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowParityCollision
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowParityCollision
 
 /-!
 # Height-adaptive adjacent divisor-census collision

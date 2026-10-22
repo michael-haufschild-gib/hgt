@@ -48,7 +48,7 @@ Own broad arXiv words were symmetrizer and transversality, with 2026 filters. [L
 
 ## Lean certificate
 
-[ThetaCuspHawkingBMSpinTwoUniformDelay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSpinTwoUniformDelay.lean), namespace `RHTower.D4BMSpinTwoUniformDelay`, contains the following eleven uniform-bound theorems:
+[ThetaCuspHawkingBMSpinTwoUniformDelay](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSpinTwoUniformDelay.lean), namespace `RHTower.D4BMSpinTwoUniformDelay`, contains the following eleven uniform-bound theorems:
 
 - `causal_coefficient_bounds`: all three original geometric coefficients, on the entire closed causal cone.
 - `delay_bulk_normalized`, `delay_bulk_bound`: equality with the literal transferred bulk and its coefficient estimate.

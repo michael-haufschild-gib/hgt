@@ -100,7 +100,7 @@ RHTower.criticalMellinDefect_cancellation
 
 The target module builds and the declarations pass `#print axioms` with only Lean's standard
 logical axioms. The generated indexes were refreshed. At the final repository-wide lint run, an
-unrelated concurrent file, `RHTower/ThetaCuspReflection.lean`, contained an active `sorry`; the CCM
+unrelated concurrent file, `RHTower/ThetaCusp/ThetaCuspReflection.lean`, contained an active `sorry`; the CCM
 module itself contains no proof debt.
 
 ## Scope boundary

@@ -41,7 +41,7 @@ found no residue theorem for this literal physical half-density diagonal.
 ## Result
 
 Module:
-`GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo`
+`GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo`
 
 Main declarations:
 
@@ -73,7 +73,7 @@ pending expert review.
 ## Verification
 
 - direct `lake env lean` — PASS
-- leaf `lake build GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo` — PASS (`12794/12794`)
+- leaf `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo` — PASS (`12794/12794`)
 - `#print axioms` on three capstones — only `propext`, `Classical.choice`, `Quot.sound`
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`
 

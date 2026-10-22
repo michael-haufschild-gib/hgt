@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonJetTailTransition
 import GaloisForLFunctions.RHTower.MobiusSquarefreeReciprocalProjectivePaperCertificate
-import GaloisForLFunctions.RHTower.CCMBoundaryRelativeTrace
+import GaloisForLFunctions.RHTower.CCM.CCMBoundaryRelativeTrace
 
 /-!
 # Saturation of the reciprocal projective-horizon Ward seam

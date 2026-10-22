@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectedBiHeatMultiplicityLeadingJetBalance
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFZZDeningerWardTransmutation
 
 /-!
 # RBH/FZZ-P/PW-B/Deninger multiplicity-information Ward transmutation

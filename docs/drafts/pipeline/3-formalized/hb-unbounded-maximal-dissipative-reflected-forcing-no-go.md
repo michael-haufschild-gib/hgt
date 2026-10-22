@@ -54,7 +54,7 @@ Apply this to the corpus-proved opposite nonzero imaginary angular parameters an
 ## Formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingHBUnboundedMaximalDissipativeReflectedForcingNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBUnboundedMaximalDissipativeReflectedForcingNoGo`
 
 Main theorem:
 `d4HBUnboundedMaximalDissipativeReflectedForcingExclusionRouteKilled`

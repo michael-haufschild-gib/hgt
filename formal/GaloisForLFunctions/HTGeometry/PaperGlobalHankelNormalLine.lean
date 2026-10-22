@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PaperHomogeneousIdealNormalLine
 import GaloisForLFunctions.HTGeometry.PaperHankelIdealOrders
-import GaloisForLFunctions.RHTower.DeningerHankelGlobalSecantPrime
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelGlobalSecantPrime
 
 /-!
 # Polynomial normal lines for the countable Deninger Hankel ideal

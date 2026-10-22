@@ -2,7 +2,7 @@
 
 Status: analytical source reduction; physical extinction and RH unproved. Frontier map remains read-only.
 
-Verified findings and scoped no-gos from this work: [concise research log](../../hb-extinction-own-research-log.md).
+Verified findings and scoped no-gos from this work: [concise research log](hb-extinction-own-research-log.md).
 
 ## Actual cap derivative attack, 12 September 2026
 
@@ -1293,7 +1293,7 @@ derivative formulas, and Einstein left-QNM incidence have separate statuses;
 none is promoted to a Lean theorem by this field-value result.
 
 Scratch checking passed. The final isolated cached command was
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFutureHorizonCap`;
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFutureHorizonCap`;
 the exact leaf passed in 70 seconds without proof diagnostics, and its guarded
 artifacts were installed. Source SHA-256:
 `700d7eea5d3d129e58011e29b0ec550c53d480e64bb09c4668090d15485409e8`.
@@ -1403,12 +1403,12 @@ The preceding advanced-response deep request was partial and mostly returned
 toy integral models; those were not substituted for the native BM kernel.
 
 **Formal status.** The new leaf
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSourceAdvancedAdmission.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSourceAdvancedAdmission.lean`
 proves `density_integrable`, `response_fubini`, `response_bound`,
 `response_ingoing_horizon`, `response_dirichlet` and
 `lift_plus_response_ingoing_horizon`, with all source bounds discharged.
 The scratch check passed without diagnostics. The isolated cached final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceAdvancedAdmission`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullSourceAdvancedAdmission`
 built only that leaf and passed in 25 seconds; matching artifacts were installed
 and the umbrella import was added. No heartbeat changes or umbrella build.
 The global lint run found no issue in this leaf but failed on a concurrent,
@@ -1681,7 +1681,7 @@ entropy/Peierls identifications described as remaining work above.
 
 Validation: `lake env lean /tmp/hb-moving-horizon.lean` passed without diagnostics.
 The final isolated, cached
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalHorizonDeformation`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOriginalHorizonDeformation`
 built only that leaf and passed (191 seconds). Audited source SHA256:
 `ad718e39cd4ed42e6911102e14107a8151fc4829dc4e7fa930fc3186ffff636e`.
 The finished module is wired into `RHTower.lean`; no umbrella was built.
@@ -1876,7 +1876,7 @@ The 240-line leaf sets only `autoImplicit false`, uses no heartbeat/depth/
 transparency setting, and is wired after `BMPhysicalResponseGreenTransport`.
 Source SHA256: `341292fd1fc9d09b558c1e4bdc5c288b543dc2660dad973b65527c438252ae21`.
 The exact cached isolated audit
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalReaderDarboux`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalReaderDarboux`
 passed (10 seconds reported for the leaf), with no warnings. Its artifacts were
 published after the source-hash check and its isolated directory removed.
 Repository formal lint and scoped whitespace checks passed. No full or umbrella
@@ -2014,7 +2014,7 @@ failed its size limit; no theorem from that paper is claimed to apply. A separat
 reciprocity API request was rate-limited; it supplied no usable paper.
 
 **Closed formal result:**
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCurrentSourceAction.lean`, namespace
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCurrentSourceAction.lean`, namespace
 `RHTower.D4BMCurrentSourceAction`, proves `onset_action`, `onset_self_action`,
 `onset_stream_action`, `physical_left_onset_action`, and `physical_left_switched_action`.
 All public statements have no additional logical hypotheses. They retain the original
@@ -2025,7 +2025,7 @@ extinction, or RH.
 
 Validation: `lake env lean /tmp/hb-onset-action.lean` passed with no diagnostics.
 The exact cached isolated audit
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCurrentSourceAction` passed
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCurrentSourceAction` passed
 (56 seconds reported for the leaf), without warnings. Source SHA256:
 `cf60006daccdd1a8a217aec6bc8f826639c623e83a5e8ca909ddc32462185979`.
 Only `autoImplicit false` is set; no heartbeat/depth/transparency changes. Artifacts
@@ -2055,7 +2055,7 @@ horizon, cusp, characteristic and source-contact faces. This identity is proved 
 Lean; it is not an extinction law or a proved sign for the complete physical action.
 
 **Closed formal result:**
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMActionWeightExchange.lean`, namespace
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMActionWeightExchange.lean`, namespace
 `RHTower.D4BMActionWeightExchange`, proves seven public theorems with no additional logical
 premises. `literal_corrected_weight_exchange` identifies the actual first testing-weight
 derivative on both cubic metric paths, allowing arbitrary quadratic/cubic correction matrices.
@@ -2067,7 +2067,7 @@ These statements do not claim that the correction matrices solve their forced eq
 that the boundary current vanishes.
 
 Validation: final `/tmp/hb-action-weight-exchange.lean` scratch check passed; exact cached
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMActionWeightExchange` passed in
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMActionWeightExchange` passed in
 156 seconds without warnings. Source SHA256:
 `23f3e93ef47831f4621702ecfc08bf222b75ec6e6ecc8858b8132c0746d792cd`.
 Only `autoImplicit false` is set; no heartbeat, depth or transparency increases. The audited
@@ -2657,13 +2657,13 @@ The working method is conjecture → attempted proof or falsification → pivot.
 
 The current positive result is the [exact onset decomposition of the full original mixed scalar source](../../../3-formalized/hb-full-source-onset-reduction.md). It reuses the existing global angular inverse and identifies the actual time-dependent remainder as a fixed ingoing onset pulse. The incoming horizon profile is explicitly `H-s(s-1)Q/4`; it must remain in the causal pairing. The next primary test is cancellation between this horizon contribution and the pulse response in the complete tensor action, including the missing scalar-scalar and vector-vector channels. Do not substitute an isolated scalar-pole or normalization theorem for that test.
 
-**Active tensor test.** The [Einstein radial action current](../../../3-formalized/hb-mixed-radial-action-current.md) is proved by differentiating the actual volume-weighted action current. The [original-source contact reduction](../../hb-causal-onset-contact-cancellation.md) identifies the pulse term that cancels the particular field's explicit `D_chi=integral exp(-6v)*chi'^2` coefficient. The remaining local contribution has only `C_chi=integral exp(-6v)*chi²` and the exact complex factor `2s+3`. This is a local analytical source identity; actual causal horizon admission and global integration remain open. The explicit unresolved term is equation (6) in that card: the pulse's horizon pairing through `roughLaplacian-1`, its cross terms with the particular field, and its original-source contact terms. Equation (7) reduces the cross terms to one source-derived test while retaining time and cusp boundaries. Evaluate that causal pulse term next; do not repeat the squared-onset coefficient check. Full extinction also requires every other tensor-sector pairing. With independent branch polarizations, SS–VV and SV–SV carry different amplitude monomials; do not combine their coefficients without a source-derived relation. No physical extinction is proved.
+**Active tensor test.** The [Einstein radial action current](../../../3-formalized/hb-mixed-radial-action-current.md) is proved by differentiating the actual volume-weighted action current. The [original-source contact reduction](hb-causal-onset-contact-cancellation.md) identifies the pulse term that cancels the particular field's explicit `D_chi=integral exp(-6v)*chi'^2` coefficient. The remaining local contribution has only `C_chi=integral exp(-6v)*chi²` and the exact complex factor `2s+3`. This is a local analytical source identity; actual causal horizon admission and global integration remain open. The explicit unresolved term is equation (6) in that card: the pulse's horizon pairing through `roughLaplacian-1`, its cross terms with the particular field, and its original-source contact terms. Equation (7) reduces the cross terms to one source-derived test while retaining time and cusp boundaries. Evaluate that causal pulse term next; do not repeat the squared-onset coefficient check. Full extinction also requires every other tensor-sector pairing. With independent branch polarizations, SS–VV and SV–SV carry different amplitude monomials; do not combine their coefficients without a source-derived relation. No physical extinction is proved.
 
 1. **Test: the original fundamental source is a cubic endpoint primitive.** The exact reduction below leaves one period with an explicitly fixed coefficient. At `s=w=0`, the source integral is `2/3`; the coefficient of the remaining period is nonzero. Thus the proposed universal pure-cubic-primitive identity fails. This is not a counterexample to extinction at a Xi divisor, and does not retire HB. The positive result is the explicit primitive-plus-period decomposition.
 2. **Test: the complementary period is obtained by exchanging the two physical QNM branches.** The period identity exchanges `(w,2s)`. The actual target frequencies have real part between `-2` and `-1`, whereas the source rates `2s` have real part between `-4` and `-2`. Thus simple physical branch exchange does not perform the needed period exchange. The canonical left connection covectors also act on source/response coordinates at a fixed spectral parameter; their proved normalization is not the missing source-rate exchange. This rejects that proposed proof step, not every possible augmented adjoint identity.
 3. **Positive source test: do radial and angular completion use independent affine arguments?** They do not. The original radial quadratic coefficient factors through the same `5 rho/2-1` and `3 rho/2` arguments appearing in the evaluated angular source, and their functional-equation complements. The exact identities are below. Whether the *full tensor causal pairing* uses these factors with the required orientation remains open.
 
-**Causal value construction.** The [source-only circle kernel](../../hb-causal-horizon-circle-kernel.md) gives an analytical formula for the full horizon response using the literal theta-square field, the original radial source polynomial, and finite hyperbolic circle averages. Its pulse comparison closes by an exact radial flux identity and cancellation of the moving AdS image endpoint. The [scalar Riemann kernel](../../../3-formalized/hb-causal-riemann-kernel.md) has actual derivative, original BM wave, characteristic, causal support, and AdS boundary theorems in Lean. Full angular Green identification, horizon admission, and evaluation of the resulting Einstein pairing remain open. The next cancellation test uses this explicit source-only response, retaining every tensor sector and all endpoint terms.
+**Causal value construction.** The [source-only circle kernel](hb-causal-horizon-circle-kernel.md) gives an analytical formula for the full horizon response using the literal theta-square field, the original radial source polynomial, and finite hyperbolic circle averages. Its pulse comparison closes by an exact radial flux identity and cancellation of the moving AdS image endpoint. The [scalar Riemann kernel](../../../3-formalized/hb-causal-riemann-kernel.md) has actual derivative, original BM wave, characteristic, causal support, and AdS boundary theorems in Lean. Full angular Green identification, horizon admission, and evaluation of the resulting Einstein pairing remain open. The next cancellation test uses this explicit source-only response, retaining every tensor sector and all endpoint terms.
 
 ## Actual radial source, without setting w = 2s
 
@@ -3286,7 +3286,7 @@ separate from this unswitched particular mixed-current identity.
 
 Validation: complete `lake env lean /tmp/hb-mixed-native-reader-flux.lean` passed
 without warnings or raised limits. Isolated cached `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedNativeReaderFlux` passed
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedNativeReaderFlux` passed
 (2 jobs; leaf 56 seconds), and the exact leaf's umbrella import is wired.
 Source SHA256: `4a3fb68e028547a27c2f9ea86d7a4d9419fe1a134f5644b328d16be156c97a27`.
 
@@ -3372,7 +3372,7 @@ one surviving boundary contribution explicit; it does not close that obligation.
 
 Validation: complete `lake env lean /tmp/hb-mixed-particular-cusp-flux.lean`
 passed without warnings. Isolated cached `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedParticularCuspFlux` passed
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedParticularCuspFlux` passed
 (2 jobs; leaf 30 seconds), published the exact checked artifacts and removed its
 temporary directory. The new leaf is wired into the RHTower umbrella without
 building that umbrella. No proof-limit override or clock change was added.
@@ -3748,7 +3748,7 @@ coexact stream trace are in `ThetaCuspHawkingBMRelativeReaderHorizon.lean`.
 The proposed nonzero-coexact-difference argument was not formalized by this
 leaf; the proved full-stream limit retains that difference explicitly. The
 isolated cached `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRelativeReaderHorizon` passed
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRelativeReaderHorizon` passed
 (2 jobs; leaf 247 seconds). Artifacts were published under the source hash
 `b93e554dd5330b2a91296bbbfe48dd8e22e623fedf8b33233bacc924e7f36c3e`,
 the temporary audit directory was removed, and the unique umbrella import was
@@ -3961,7 +3961,7 @@ no unchanged-Hawking-clock theorem was transferred from it.
 Validation: complete `lake env lean /tmp/hb-mixed-radial-overlap.lean` passed
 without warnings after reducing imports to the required mixed current and original
 left-horizon factor. Isolated cached `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedRadialOverlap` passed
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedRadialOverlap` passed
 (2 jobs; leaf 34 seconds); artifacts published under a source-hash guard,
 temporary directory removed, and exact leaf wired without an umbrella build.
 Source SHA256: `2b8fef587ca670b1bcbf329e2731ef978bf760e98b956a7937e8fc29c3bfaea4`.
@@ -4353,7 +4353,7 @@ generated ingredient suggestions did not supply the missing source identity.
 warnings. The exact admission classification, no-admitted-turn theorem, and
 summed phase law are in `ThetaCuspComplexClockSector`, wired into `RHTower`.
 The final isolated cached `lake build
-GaloisForLFunctions.RHTower.ThetaCuspComplexClockSector` passed without warnings
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexClockSector` passed without warnings
 (one leaf compilation, 22 seconds). Source hash:
 `bb7b4a237e2af9a950a1a3c9c6fa1efe7656d89566e5005e8b750bf3b107a08a`.
 The audit directory was removed and the checked leaf artifacts published.
@@ -4413,7 +4413,7 @@ zero at every equal reader d=0, and has joint limit zero. This uses no
 simple-zero assumption. The exact residue, literal cusp coefficient germ,
 unboundedness, no-joint-limit theorem, subtraction identity and continuous
 zero remainder are Lean-proved in
-[ThetaCuspHawkingBMXiReaderSplitResidue](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMXiReaderSplitResidue.lean).
+[ThetaCuspHawkingBMXiReaderSplitResidue](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMXiReaderSplitResidue.lean).
 The elementary tail integral above is a paper calculation; this leaf does
 not assert a new truncated-Poincare-integral identification.
 
@@ -4606,7 +4606,7 @@ impossibility. No new Lean compilation or axiom inspection was performed.
 
 The [new ordered-kernel report](../../../2-fully-proven/computations/hb-reduced-optical-ordered-kernel-2026-09-13-codex-root/REPORT.md)
 tests the scalar coefficient in equations(13)-(14) of
-[the two-sided current reduction](../../hb-two-sided-source-current-reduction.md).
+[the two-sided current reduction](hb-two-sided-source-current-reduction.md).
 Its nonzero values at sampled actual zero heights concern individual ordered
 coefficients, before angular, lift, contact and terminal assembly. No experiment
 was rerun here.
@@ -4737,7 +4737,7 @@ supplies the required HB boundary cancellation.
 **Formal status.** `ThetaCuspHawkingBMReflectedReaderBoundary` proves the exact
 quotient, nonvanishing, horizon non-admission and nonzero opposite coordinate.
 Scratch `lake env lean` and isolated cached final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMReflectedReaderBoundary`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMReflectedReaderBoundary`
 passed without warnings; one leaf compiled in53seconds. The119-line module
 is wired into `RHTower`; no umbrella build, numerical experiment, added axiom
 or raised proof limit. Source SHA256:

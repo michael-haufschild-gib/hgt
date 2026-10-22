@@ -85,7 +85,7 @@ cannot supply it.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePGeometricKLBurnolHolonomyVirial.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePGeometricKLBurnolHolonomyVirial.lean`
 
 Headline declarations:
 

@@ -63,7 +63,7 @@ heads, so cannot contain this classification.
 - `not_eventually_ccmRestrictedWeilCanonicalGroundHead_uniform_positive_margin_of_groundEnergy_eq_zero`
 - `ccmRestrictedWeilGroundEnergy_pos_iff_exists_eventually_canonicalGroundHead_uniform_margin`
 
-All in `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean`.
+All in `formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilCanonicalGroundHeadEnergy.lean`.
 
 ## Log
 

@@ -42,7 +42,7 @@ has a proved smooth radial horizon extension and zero radial boundary limit afte
 the actual ingoing coordinate change. The complete vector-stream Einstein operator
 is reduced to its forced master curl. The next specific response target is the
 angular resolvent of S² described in
-[the physical correction card](../../hb-quadratic-physical-correction.md). Its complete
+[the physical correction card](hb-quadratic-physical-correction.md). Its complete
 all-height mixed nonlinear source is now proved equal to the original amplitude
 cut, with the exact forced current and angular defect retained. Both actual Xi
 branches have nonreal angular parameters, and the full squared cusp principal
@@ -54,7 +54,7 @@ now has a dense injective embedding, proved by full-core periodization and local
 integration by parts through the completed differential graph. Its constructed
 self-adjoint operator gives a unique full-forcing weak response on both actual Xi
 branches. Smooth global reconstruction and physical causal admission remain open;
-see [the angular resolvent card](../../hb-global-angular-resolvent.md).
+see [the angular resolvent card](hb-global-angular-resolvent.md).
 
 The corpus now contains actual second/third Einstein variations, complete metric
 jets, the corrected-family source coefficients and the constrained vector master
@@ -756,7 +756,7 @@ each is imported exactly once by its theorem-area umbrella.
 - The full-metric main-workspace no-build preflight requested eight older dependency rebuilds.
   An isolated local audit package used the exact new source and absolute cached dependency
   libraries. Its preflight required only the new leaf. Final
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullMetricTwoJet` passed in
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullMetricTwoJet` passed in
   9.3 seconds, compiling only that leaf. Only its `.olean` and `.ilean` were installed into
   the main cache; no dependency or trace metadata was changed.
 
@@ -784,8 +784,8 @@ were installed without main-workspace rebuild metadata. An isolated local audit 
 the exact new sources and absolute cached dependency libraries. Sequential no-build preflights
 required only the respective new leaf. Final targeted builds passed without warnings:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBackgroundMetricTwoJet`: 19 seconds.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMActualAffineMetricSource`: 5.4 seconds.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMBackgroundMetricTwoJet`: 19 seconds.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMActualAffineMetricSource`: 5.4 seconds.
 
 Only these new leaves compiled; the second build reused the finished background leaf. Only
 their `.olean` and `.ilean` artifacts were installed in the main cache. No dependency or trace
@@ -808,7 +808,7 @@ process remains.
 The 368-line `ThetaCuspHawkingBMPhysicalMonodromyMaster` passed scratch `lake env lean`
 without warnings. An isolated package reused the existing dependency oleans and checked exact
 source bytes. Its preflight requested only the new leaf; final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalMonodromyMaster`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalMonodromyMaster`
 passed in 46 seconds, with only that leaf compiled. Only its olean/ilean were installed in the
 main cache; no dependency trace metadata was copied. The leaf is wired exactly once into
 `RHTower.lean`, which was not built. No full build ran.
@@ -828,7 +828,7 @@ physical source/projection, and fixed-clock extinction remain open.
 The 314-line `ThetaCuspHawkingBMFundamentalMetricSource` passed scratch `lake env lean`
 without warnings. An isolated exact-source package reused cached dependencies. Its preflight
 required only the new leaf, and final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalMetricSource`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFundamentalMetricSource`
 passed in 5.0 seconds; only that leaf compiled. Its olean/ilean were installed without copying
 dependency trace metadata. The leaf is wired exactly once into `RHTower.lean`; no umbrella
 or full build ran.
@@ -863,7 +863,7 @@ The full RH objective remains active; the next physical obligations are stated a
 
 The 301-line `ThetaCuspHawkingBMAngularScalarEquation` passed scratch `lake env lean`
 without warnings. Its isolated exact-source final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularScalarEquation`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMAngularScalarEquation`
 passed in 5.2 seconds, compiling only this new leaf against existing cached dependencies.
 The source copies were byte-checked and only the new olean/ilean were installed;
 no dependency trace metadata was copied. The leaf is wired once into `RHTower.lean`.
@@ -883,8 +883,8 @@ The 364-line `ThetaCuspHawkingBMHorizonCovectorEquation` and 110-line
 `ThetaCuspHawkingBMLiteralCuspMetricSource` passed scratch `lake env lean` checks.
 Their final exact-source, cache-only audits passed without proof warnings:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMHorizonCovectorEquation`: 8.9 seconds.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCuspMetricSource`: 203 seconds.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMHorizonCovectorEquation`: 8.9 seconds.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCuspMetricSource`: 203 seconds.
 
 Each build compiled only its requested new leaf. Scratch, canonical and audit source
 bytes were compared; only new olean/ilean artifacts were installed. Both leaves are
@@ -915,8 +915,8 @@ The new leaves passed scratch `lake env lean` without warnings. Exact-source,
 cache-only final audits each compiled only the requested new leaf:
 
 - `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexLinearization`: 5.0 seconds; 250 lines, 12 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLinearizedEinsteinSource`: 4.3 seconds; 89 lines, 4 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalMetricBoundary`: 5.1 seconds; 205 lines, 10 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLinearizedEinsteinSource`: 4.3 seconds; 89 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFundamentalMetricBoundary`: 5.1 seconds; 205 lines, 10 new public theorems.
 
 Scratch, canonical and audit source bytes were compared. Only the new olean/ilean
 artifacts were installed; dependency sources and trace metadata were not changed.
@@ -938,9 +938,9 @@ unproved in the corpus.
 All three new leaves passed foreground scratch `lake env lean` checks without warnings.
 Final exact-source cache-only builds compiled only the requested leaf:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarLinearizedRicciJet`: 198 seconds; 156 lines, 4 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFundamentalScalarMetric`: 18 seconds; 254 lines, 6 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarLinearEinsteinEquation`: 10 seconds; 320 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarLinearizedRicciJet`: 198 seconds; 156 lines, 4 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFundamentalScalarMetric`: 18 seconds; 254 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarLinearEinsteinEquation`: 10 seconds; 320 lines, 6 new public theorems.
 
 Scratch, canonical and audit bytes match. Each leaf has exactly one `RHTower.lean`
 import. Only the new olean/ilean artifacts were installed; dependency sources and trace
@@ -971,9 +971,9 @@ The vector contraction's one unused simplifier argument was removed; final build
 passed without proof warnings. Each exact-source cache-only build compiled only
 its requested new leaf:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorLinearizedRicciJet`: 164 seconds; 93 lines, 2 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorLinearEinsteinEquation`: 15 seconds; 350 lines, 7 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullLinearEinsteinEquation`: 8.1 seconds; 102 lines, 6 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVectorLinearizedRicciJet`: 164 seconds; 93 lines, 2 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVectorLinearEinsteinEquation`: 15 seconds; 350 lines, 7 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullLinearEinsteinEquation`: 8.1 seconds; 102 lines, 6 new public theorems.
 
 Scratch, canonical and audit bytes match; each leaf is wired once in `RHTower.lean`.
 Only new olean/ilean artifacts were installed. No dependency source or trace metadata
@@ -1002,8 +1002,8 @@ builds. Each exact-source cache-only final audit compiled only its requested lea
 
 - `lake build GaloisForLFunctions.HTGeometry.ComplexCubicPathChainRule`: 2.1 seconds; 131 lines, 6 new public theorems.
 - `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinCubicPath`: 2.3 seconds; 107 lines, 4 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCorrectedMetricSource`: 4.4 seconds; 178 lines, 11 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedCorrectedSource`: 6.7 seconds; 151 lines, 3 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCorrectedMetricSource`: 4.4 seconds; 178 lines, 11 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedCorrectedSource`: 6.7 seconds; 151 lines, 3 new public theorems.
 
 Final builds passed without proof warnings. Scratch, canonical and audit source bytes
 match; each new leaf has exactly one theorem-area umbrella import. Only the new
@@ -1036,7 +1036,7 @@ build. Exact-source cache-only final audits compiled only their requested leaves
 - `lake build GaloisForLFunctions.HTGeometry.ComplexCoordinateDerivativeRules`: 1.8 seconds; 59 lines, 7 new public theorems.
 - `lake build GaloisForLFunctions.HTGeometry.ComplexCoordinateConnectionBianchi`: 1.7 seconds; 120 lines, 4 new public theorems.
 - `lake build GaloisForLFunctions.HTGeometry.ComplexMetricFieldBianchi`: 1.0 seconds; 180 lines, 6 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralMetricBianchi`: 9.6 seconds; 133 lines, 3 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralMetricBianchi`: 9.6 seconds; 133 lines, 3 new public theorems.
 
 Final builds passed without proof warnings. Scratch, canonical and audit source
 bytes match; each leaf is wired once in its theorem-area umbrella. Only new
@@ -1068,7 +1068,7 @@ Three leaves passed scratch checks and exact-source targeted final audits:
 
 - `lake build GaloisForLFunctions.HTGeometry.ComplexMetricCompatibility`: 2.1 seconds; 96 lines, 6 new public theorems.
 - `lake build GaloisForLFunctions.HTGeometry.ComplexMatrixDerivativeRules`: 1.6 seconds; 59 lines, 6 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarBoundaryGaugeCharge`: 7.5 seconds; 224 lines, 11 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarBoundaryGaugeCharge`: 7.5 seconds; 224 lines, 11 new public theorems.
 
 Each final build compiled only its requested leaf from exact source against cached
 dependencies. Each is wired once into its area umbrella. Only the new olean/ilean
@@ -1089,8 +1089,8 @@ The [exact source and correction proof](../../../3-formalized/hb-quadratic-angul
 passed foreground scratch checks and three exact-source leaf audits:
 
 - `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexQuadratic`: 5.1 seconds; 9 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularSource`: 221 seconds; 2 new public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularCorrection`: 24 seconds; 3 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticAngularSource`: 221 seconds; 2 new public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticAngularCorrection`: 24 seconds; 3 new public theorems.
 
 Only those new leaves were compiled against cached dependencies. Main and audit
 sources match exactly, each leaf has one area-umbrella import, and only their new
@@ -1119,10 +1119,10 @@ preserved.
 The [ingoing correction and full vector operator](../../../3-formalized/hb-ingoing-correction-and-vector-master.md)
 passed foreground scratch checks and four exact-source final leaf audits:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingCorrection`: 26 seconds; 3 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIngoingCoordinates`: 4.3 seconds; 7 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingEndpoints`: 18 seconds; 6 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorStreamEinstein`: 199 seconds; 6 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticIngoingCorrection`: 26 seconds; 3 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIngoingCoordinates`: 4.3 seconds; 7 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticIngoingEndpoints`: 18 seconds; 6 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVectorStreamEinstein`: 199 seconds; 6 public theorems.
 
 Only these new leaves were compiled against cached dependencies. Exact source
 bytes and single umbrella imports were verified; only their new olean/ilean pairs

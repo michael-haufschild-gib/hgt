@@ -112,6 +112,6 @@ by the informal “two orientations should cancel” argument.
 ## Lean target
 
 New module:
-`GaloisForLFunctions.RHTower.HedenmalmThetaDirectCayleyReflectionPortDefect`.
+`GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDirectCayleyReflectionPortDefect`.
 It will formalize port linearity, resolved orbit normal form, exact defect formula, sign/zero
 classification, reflection multiplier inversion, and weighted same-time annihilation.

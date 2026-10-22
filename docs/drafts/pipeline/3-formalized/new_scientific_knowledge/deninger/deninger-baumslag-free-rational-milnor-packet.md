@@ -6,351 +6,351 @@
 - **Label:** `DAC_BAUMSLAG_FREE_RATIONAL_MILNOR_PACKET`
 - **Parent:** `deninger-baumslag-milnor-pro-realization`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` (clauses 1 and 2),
-  `GaloisForLFunctions.RHTower.DeningerDegreeOneInflation` (the degree-one reduction of clause 3),
-  `GaloisForLFunctions.RHTower.DeningerMilnorAmplitude` and
-  `GaloisForLFunctions.RHTower.DeningerTwoTermFormality` (the square-zero product and the formality
+  `GaloisForLFunctions.RHTower.Deninger.DeningerUniquelyDivisibleKernel` (clauses 1 and 2),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDegreeOneInflation` (the degree-one reduction of clause 3),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerMilnorAmplitude` and
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTwoTermFormality` (the square-zero product and the formality
   of clause 4),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagRationalization` (the rationalization itself, its
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization` (the rationalization itself, its
   universal property, and the surjection `(1)`),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagDegreeOne` (clause 3 and `H^1 ≅ U`),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagRationalProjective` (the splitting of central
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagDegreeOne` (clause 3 and `H^1 ≅ U`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalProjective` (the splitting of central
   extensions, i.e. `H^2(BR_U;ℚ) = 0`),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagPullback` (clause 5's finite-cover consequence),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagFunctorial` (functoriality and `GL`/power-map
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagPullback` (clause 5's finite-cover consequence),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagFunctorial` (functoriality and `GL`/power-map
   equivariance),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagH2` (`H² = 0` in mathlib's group cohomology),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagH1` (`H¹ ≅ U` in mathlib's group cohomology),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagEquivariance` (equivariance under a group acting on
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagH2` (`H² = 0` in mathlib's group cohomology),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagH1` (`H¹ ≅ U` in mathlib's group cohomology),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagEquivariance` (equivariance under a group acting on
   the chosen family),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupH2` (`H²(F_m; A) = 0` for arbitrary coefficients),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupH1` (`H⁰` and `H¹` of a free group),
-  `GaloisForLFunctions.RHTower.DeningerCohomologyDimensionShift` (`Hⁿ(F_m; A) = 0` for all `n ≥ 2`),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagComparison` (`H^*(R_U;ℚ) ≅ H^*(F_m;ℚ)` in degrees
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupH2` (`H²(F_m; A) = 0` for arbitrary coefficients),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupH1` (`H⁰` and `H¹` of a free group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCohomologyDimensionShift` (`Hⁿ(F_m; A) = 0` for all `n ≥ 2`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagComparison` (`H^*(R_U;ℚ) ≅ H^*(F_m;ℚ)` in degrees
   `≤ 2`),
-  `GaloisForLFunctions.RHTower.DeningerRootAdjunction` and
-  `GaloisForLFunctions.RHTower.DeningerRootAdjunctionNoGo` (root adjunction, and why the naive tower
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootAdjunction` and
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootAdjunctionNoGo` (root adjunction, and why the naive tower
   fails),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagGeneration` (generation, torsion freeness, and root
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagGeneration` (generation, torsion freeness, and root
   transfer),
-  `GaloisForLFunctions.RHTower.DeningerRationalPower` (rational powers in a group with unique
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalPower` (rational powers in a group with unique
   roots),
-  `GaloisForLFunctions.RHTower.DeningerRationalFreeDGroup` (`Bau(ℤ) ≅ ℚ`),
-  `GaloisForLFunctions.RHTower.DeningerBaumslagAbelian` (root-closed centralizers; `Bau` of an
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalFreeDGroup` (`Bau(ℤ) ≅ ℚ`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagAbelian` (root-closed centralizers; `Bau` of an
   abelian group is abelian),
-  `GaloisForLFunctions.RHTower.DeningerRatVectorSpace` (an abelian group with unique roots is a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRatVectorSpace` (an abelian group with unique roots is a
   rational vector space),
-  `GaloisForLFunctions.RHTower.DeningerPermutationShapiro` (Shapiro's lemma for permutation
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPermutationShapiro` (Shapiro's lemma for permutation
   representations),
-  `GaloisForLFunctions.RHTower.DeningerPushoutLength` (word length in an amalgamated free product),
-  `GaloisForLFunctions.RHTower.DeningerBassSerreTree` (the tree of cosets and its augmented
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutLength` (word length in an amalgamated free product),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBassSerreTree` (the tree of cosets and its augmented
   complex),
-  `GaloisForLFunctions.RHTower.DeningerPushoutFirstLetter` (the sharp length law),
-  `GaloisForLFunctions.RHTower.DeningerTreeAcyclic` (acyclicity of the tree of cosets),
-  `GaloisForLFunctions.RHTower.DeningerTreeShortExact` (the tree sequence as a short exact sequence
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutFirstLetter` (the sharp length law),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeAcyclic` (acyclicity of the tree of cosets),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeShortExact` (the tree sequence as a short exact sequence
   of representations),
-  `GaloisForLFunctions.RHTower.DeningerPermutationSum` (permutation representations of disjoint
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPermutationSum` (permutation representations of disjoint
   unions),
-  `GaloisForLFunctions.RHTower.DeningerHomologyAdditive` (group homology is an additive functor),
-  `GaloisForLFunctions.RHTower.DeningerTreeTwoFactor` (the tree of a two factor amalgam),
-  `GaloisForLFunctions.RHTower.DeningerTreeHomology` (the homology of the tree modules),
-  `GaloisForLFunctions.RHTower.DeningerTreeVanishing` (vanishing for an amalgam),
-  `GaloisForLFunctions.RHTower.DeningerCyclicHomology` (the regular representation and the infinite
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHomologyAdditive` (group homology is an additive functor),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeTwoFactor` (the tree of a two factor amalgam),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeHomology` (the homology of the tree modules),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeVanishing` (vanishing for an amalgam),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCyclicHomology` (the regular representation and the infinite
   cyclic group),
-  `GaloisForLFunctions.RHTower.DeningerAmalgamCyclic` (the root adjunction step),
-  `GaloisForLFunctions.RHTower.DeningerHomologyUnion` (homology of an increasing union),
-  `GaloisForLFunctions.RHTower.DeningerPushoutConcat` (length of a product of alternating letters),
-  `GaloisForLFunctions.RHTower.DeningerPushoutPower` (length of a power),
-  `GaloisForLFunctions.RHTower.DeningerPushoutDecomp` (the letter decomposition of an element),
-  `GaloisForLFunctions.RHTower.DeningerPushoutInv` (word length of an inverse),
-  `GaloisForLFunctions.RHTower.DeningerPushoutMerge` (merging a letter into a word),
-  `GaloisForLFunctions.RHTower.DeningerCyclicReduction` (cyclic reduction),
-  `GaloisForLFunctions.RHTower.DeningerPushoutTorsion` (amalgams of torsion free groups),
-  `GaloisForLFunctions.RHTower.DeningerPushoutNormal` (uniqueness of transversal words),
-  `GaloisForLFunctions.RHTower.DeningerPushoutRoot` (equal powers of cyclically reduced elements),
-  `GaloisForLFunctions.RHTower.DeningerPushoutMetric` (subadditivity of the word length),
-  `GaloisForLFunctions.RHTower.DeningerPushoutOrder` (cyclically reduced elements have infinite
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAmalgamCyclic` (the root adjunction step),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHomologyUnion` (homology of an increasing union),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutConcat` (length of a product of alternating letters),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutPower` (length of a power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutDecomp` (the letter decomposition of an element),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutInv` (word length of an inverse),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutMerge` (merging a letter into a word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCyclicReduction` (cyclic reduction),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutTorsion` (amalgams of torsion free groups),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutNormal` (uniqueness of transversal words),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutRoot` (equal powers of cyclically reduced elements),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutMetric` (subadditivity of the word length),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutOrder` (cyclically reduced elements have infinite
   order),
-  `GaloisForLFunctions.RHTower.DeningerCycLenEq` (equal powers have cyclic reductions of equal
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycLenEq` (equal powers have cyclic reductions of equal
   length),
-  `GaloisForLFunctions.RHTower.DeningerTransversalForm` (transversal form of a word),
-  `GaloisForLFunctions.RHTower.DeningerWordMerge` (merging letters at the ends of a word),
-  `GaloisForLFunctions.RHTower.DeningerConjWord` (normal word of a conjugated power),
-  `GaloisForLFunctions.RHTower.DeningerConjNormalize` (normalizing a conjugator),
-  `GaloisForLFunctions.RHTower.DeningerBaseLength` (the base group preserves the word length),
-  `GaloisForLFunctions.RHTower.DeningerConjSplit` (splitting a conjugated power),
-  `GaloisForLFunctions.RHTower.DeningerPowWord` (the normal word of a power),
-  `GaloisForLFunctions.RHTower.DeningerRotate` (rotation is conjugation),
-  `GaloisForLFunctions.RHTower.DeningerFlattenRotate` (dropping from a concatenation of copies),
-  `GaloisForLFunctions.RHTower.DeningerFlattenDrop` (dropping whole and partial copies),
-  `GaloisForLFunctions.RHTower.DeningerRotateCompare` (comparing two descriptions of a list),
-  `GaloisForLFunctions.RHTower.DeningerLeadLetter` (the leading letter of an uncancelled product),
-  `GaloisForLFunctions.RHTower.DeningerCancelCriterion` (when a product cancels),
-  `GaloisForLFunctions.RHTower.DeningerMergeDichotomy` (the merge dichotomy),
-  `GaloisForLFunctions.RHTower.DeningerLeadSurvives` (the leading letter survives a short factor),
-  `GaloisForLFunctions.RHTower.DeningerPrefixConj` (the conjugator is a prefix),
-  `GaloisForLFunctions.RHTower.DeningerAbsorbRight` (absorbing the base group into the last letter),
-  `GaloisForLFunctions.RHTower.DeningerCycStepCases` (the two cases of a reduction step),
-  `GaloisForLFunctions.RHTower.DeningerCycData` (the cyclic reduction data),
-  `GaloisForLFunctions.RHTower.DeningerSuffixIndex` (suffixes of words differing in the last letter),
-  `GaloisForLFunctions.RHTower.DeningerPrefixTransfer` (transferring a prefix),
-  `GaloisForLFunctions.RHTower.DeningerPrefixTransferGen` (transferring a prefix across a changed
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTransversalForm` (transversal form of a word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerWordMerge` (merging letters at the ends of a word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjWord` (normal word of a conjugated power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjNormalize` (normalizing a conjugator),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseLength` (the base group preserves the word length),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjSplit` (splitting a conjugated power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPowWord` (the normal word of a power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotate` (rotation is conjugation),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFlattenRotate` (dropping from a concatenation of copies),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFlattenDrop` (dropping whole and partial copies),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotateCompare` (comparing two descriptions of a list),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerLeadLetter` (the leading letter of an uncancelled product),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCancelCriterion` (when a product cancels),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerMergeDichotomy` (the merge dichotomy),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerLeadSurvives` (the leading letter survives a short factor),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPrefixConj` (the conjugator is a prefix),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAbsorbRight` (absorbing the base group into the last letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycStepCases` (the two cases of a reduction step),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycData` (the cyclic reduction data),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSuffixIndex` (suffixes of words differing in the last letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPrefixTransfer` (transferring a prefix),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPrefixTransferGen` (transferring a prefix across a changed
   tail),
-  `GaloisForLFunctions.RHTower.DeningerCycReassemble` (reassembling the data after a step),
-  `GaloisForLFunctions.RHTower.DeningerCycBase` (the base case),
-  `GaloisForLFunctions.RHTower.DeningerCycDecomp` (decomposing a non cyclically reduced word),
-  `GaloisForLFunctions.RHTower.DeningerCycRecursion` (the cyclic reduction recursion),
-  `GaloisForLFunctions.RHTower.DeningerWordIndices` (the index sequence is an invariant),
-  `GaloisForLFunctions.RHTower.DeningerHeadOnly` (words transversal except at the front),
-  `GaloisForLFunctions.RHTower.DeningerPowerLength` (the length of a power),
-  `GaloisForLFunctions.RHTower.DeningerTwoExponent` (the two exponent comparison),
-  `GaloisForLFunctions.RHTower.DeningerRotateCycRed` (rotations of a cyclically reduced word),
-  `GaloisForLFunctions.RHTower.DeningerConjLetter` (conjugating by a letter),
-  `GaloisForLFunctions.RHTower.DeningerConjHead` (incomplete cancellation),
-  `GaloisForLFunctions.RHTower.DeningerConjLast` (cancellation at the back),
-  `GaloisForLFunctions.RHTower.DeningerConjTrichotomy` (the one letter trichotomy),
-  `GaloisForLFunctions.RHTower.DeningerConjWordLength` (conjugating by a whole word),
-  `GaloisForLFunctions.RHTower.DeningerConjWordForm` (the trichotomy in word form),
-  `GaloisForLFunctions.RHTower.DeningerConjugacyCriterion` (the conjugacy criterion),
-  `GaloisForLFunctions.RHTower.DeningerRootTorsionFree` (a root adjunction preserves torsion
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycReassemble` (reassembling the data after a step),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycBase` (the base case),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycDecomp` (decomposing a non cyclically reduced word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycRecursion` (the cyclic reduction recursion),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerWordIndices` (the index sequence is an invariant),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHeadOnly` (words transversal except at the front),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPowerLength` (the length of a power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTwoExponent` (the two exponent comparison),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotateCycRed` (rotations of a cyclically reduced word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjLetter` (conjugating by a letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjHead` (incomplete cancellation),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjLast` (cancellation at the back),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjTrichotomy` (the one letter trichotomy),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjWordLength` (conjugating by a whole word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjWordForm` (the trichotomy in word form),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjugacyCriterion` (the conjugacy criterion),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootTorsionFree` (a root adjunction preserves torsion
   freeness),
-  `GaloisForLFunctions.RHTower.DeningerCosetTransfer` (projection and transfer of permutation
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCosetTransfer` (projection and transfer of permutation
   representations),
-  `GaloisForLFunctions.RHTower.DeningerLESMono` (vanishing from an injective comparison map),
-  `GaloisForLFunctions.RHTower.DeningerCoinvariantsTranslation` (translation on coinvariants),
-  `GaloisForLFunctions.RHTower.DeningerH1Cyclic` (the first homology of an infinite cyclic group),
-  `GaloisForLFunctions.RHTower.DeningerRegularH0` (the zeroth homology of the regular
+  `GaloisForLFunctions.RHTower.Deninger.DeningerLESMono` (vanishing from an injective comparison map),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCoinvariantsTranslation` (translation on coinvariants),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerH1Cyclic` (the first homology of an infinite cyclic group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRegularH0` (the zeroth homology of the regular
   representation),
-  `GaloisForLFunctions.RHTower.DeningerH1Line` (a line, and surjections between lines),
-  `GaloisForLFunctions.RHTower.DeningerProjSplit` (the projection is split, and injective on first
+  `GaloisForLFunctions.RHTower.Deninger.DeningerH1Line` (a line, and surjections between lines),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerProjSplit` (the projection is split, and injective on first
   homology),
-  `GaloisForLFunctions.RHTower.DeningerTriangularMono` (a triangular map with injective diagonal),
-  `GaloisForLFunctions.RHTower.DeningerShear` (shearing a biproduct),
-  `GaloisForLFunctions.RHTower.DeningerTreeMatrix` (the boundary of the tree in coordinates),
-  `GaloisForLFunctions.RHTower.DeningerTreeHomologyMono` (the boundary is injective on homology),
-  `GaloisForLFunctions.RHTower.DeningerAmalgamTwo` (degree two for a root adjunction),
-  `GaloisForLFunctions.RHTower.DeningerBaseInFactor` (the base group inside a factor),
-  `GaloisForLFunctions.RHTower.DeningerRootIndex` (the index of a root adjunction),
-  `GaloisForLFunctions.RHTower.DeningerRootTwo` (degree two across a root adjunction),
-  `GaloisForLFunctions.RHTower.DeningerRootElement` (the adjoined root),
-  `GaloisForLFunctions.RHTower.DeningerTower` (a tower of root adjunctions),
-  `GaloisForLFunctions.RHTower.DeningerFlattenPeriodic` (periodicity of a repeated word),
-  `GaloisForLFunctions.RHTower.DeningerFlattenTake` (prefixes of a repeated word),
-  `GaloisForLFunctions.RHTower.DeningerConjPowCycRed` (conjugates of powers),
-  `GaloisForLFunctions.RHTower.DeningerWordUnique` (two words with the same product),
-  `GaloisForLFunctions.RHTower.DeningerConjLetterForm` (the form of a conjugating letter),
-  `GaloisForLFunctions.RHTower.DeningerConjInvariant` (the conjugator invariant),
-  `GaloisForLFunctions.RHTower.DeningerConjLetterCases` (which cancellation happened),
-  `GaloisForLFunctions.RHTower.DeningerRotateLen` (the length of a rotation),
-  `GaloisForLFunctions.RHTower.DeningerConjugator` (the conjugator of a single letter),
-  `GaloisForLFunctions.RHTower.DeningerRootBase` (roots in the base group),
-  `GaloisForLFunctions.RHTower.DeningerRootsNotUnique` (roots in an amalgam need not be unique),
-  `GaloisForLFunctions.RHTower.DeningerRootFactor` (roots of elements of the factors),
-  `GaloisForLFunctions.RHTower.DeningerRootNotIsolated` (a root adjunction is never isolated),
-  `GaloisForLFunctions.RHTower.DeningerGaloisPacket` (the packet at a Galois action),
-  `GaloisForLFunctions.RHTower.DeningerFreeProductVanishing` (a free product of two infinite cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTriangularMono` (a triangular map with injective diagonal),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShear` (shearing a biproduct),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeMatrix` (the boundary of the tree in coordinates),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTreeHomologyMono` (the boundary is injective on homology),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAmalgamTwo` (degree two for a root adjunction),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseInFactor` (the base group inside a factor),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootIndex` (the index of a root adjunction),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootTwo` (degree two across a root adjunction),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootElement` (the adjoined root),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTower` (a tower of root adjunctions),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFlattenPeriodic` (periodicity of a repeated word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFlattenTake` (prefixes of a repeated word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjPowCycRed` (conjugates of powers),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerWordUnique` (two words with the same product),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjLetterForm` (the form of a conjugating letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjInvariant` (the conjugator invariant),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjLetterCases` (which cancellation happened),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotateLen` (the length of a rotation),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjugator` (the conjugator of a single letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootBase` (roots in the base group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootsNotUnique` (roots in an amalgam need not be unique),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootFactor` (roots of elements of the factors),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootNotIsolated` (a root adjunction is never isolated),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerGaloisPacket` (the packet at a Galois action),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeProductVanishing` (a free product of two infinite cyclic
   groups),
-  `GaloisForLFunctions.RHTower.DeningerIndSubsingleton` (induction from a trivial subgroup),
-  `GaloisForLFunctions.RHTower.DeningerFreeProductRoots` (roots in a free product),
-  `GaloisForLFunctions.RHTower.DeningerRetractVanishing` (vanishing passes to a retract),
-  `GaloisForLFunctions.RHTower.DeningerBauVanishingCriterion` (a criterion for clause (4)),
-  `GaloisForLFunctions.RHTower.DeningerBauTrivial` (the rationalization of a trivial group),
-  `GaloisForLFunctions.RHTower.DeningerUnionCyclic` (an increasing union of infinite cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerIndSubsingleton` (induction from a trivial subgroup),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeProductRoots` (roots in a free product),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRetractVanishing` (vanishing passes to a retract),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauVanishingCriterion` (a criterion for clause (4)),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauTrivial` (the rationalization of a trivial group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerUnionCyclic` (an increasing union of infinite cyclic
   subgroups),
-  `GaloisForLFunctions.RHTower.DeningerRootChain` (the chain of iterated roots),
-  `GaloisForLFunctions.RHTower.DeningerBauCyclic` (the rationalization of a cyclic group),
-  `GaloisForLFunctions.RHTower.DeningerBauSubsingleton` (index sets with at most one element),
-  `GaloisForLFunctions.RHTower.DeningerRetractCohomology` (vanishing of cohomology passes to a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootChain` (the chain of iterated roots),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauCyclic` (the rationalization of a cyclic group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauSubsingleton` (index sets with at most one element),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRetractCohomology` (vanishing of cohomology passes to a
   retract),
-  `GaloisForLFunctions.RHTower.DeningerBauCohomologyCriterion` (a cohomological criterion),
-  `GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleProd` (unique roots in a product),
-  `GaloisForLFunctions.RHTower.DeningerDualVanishing` (a space vanishes when its dual does),
-  `GaloisForLFunctions.RHTower.DeningerFinsuppDual` (the dual of finitely supported functions),
-  `GaloisForLFunctions.RHTower.DeningerCochainDual` (the cochain differential is dual to the chain
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauCohomologyCriterion` (a cohomological criterion),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerUniquelyDivisibleProd` (unique roots in a product),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDualVanishing` (a space vanishes when its dual does),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFinsuppDual` (the dual of finitely supported functions),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCochainDual` (the cochain differential is dual to the chain
   differential),
-  `GaloisForLFunctions.RHTower.DeningerExactDual` (dualizing preserves exactness),
-  `GaloisForLFunctions.RHTower.DeningerKerRangeCongr` (exactness in the middle transports along an
+  `GaloisForLFunctions.RHTower.Deninger.DeningerExactDual` (dualizing preserves exactness),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKerRangeCongr` (exactness in the middle transports along an
   isomorphism of three term sequences),
-  `GaloisForLFunctions.RHTower.DeningerHomologyCohomology` (vanishing homology forces vanishing
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHomologyCohomology` (vanishing homology forces vanishing
   cohomology, for trivial coefficients over a field),
-  `GaloisForLFunctions.RHTower.DeningerVanishingCohomology` (the cohomological form of the vanishing
+  `GaloisForLFunctions.RHTower.Deninger.DeningerVanishingCohomology` (the cohomological form of the vanishing
   results),
-  `GaloisForLFunctions.RHTower.DeningerFactorMix` (uniqueness of roots for elements of the factors,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorMix` (uniqueness of roots for elements of the factors,
   over a mixing hypothesis),
-  `GaloisForLFunctions.RHTower.DeningerRootIsolated` (uniqueness of roots for elements of the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootIsolated` (uniqueness of roots for elements of the
   factors of a root adjunction at an isolated element,
-  `GaloisForLFunctions.RHTower.DeningerCycRedPowInj` (equal powers of cyclically reduced words of
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycRedPowInj` (equal powers of cyclically reduced words of
   equal length are equal),
-  `GaloisForLFunctions.RHTower.DeningerBaseConjWord` (base conjugates of cyclically reduced words),
-  `GaloisForLFunctions.RHTower.DeningerBaseHeadPow` (the block form of a power of a cyclically
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseConjWord` (base conjugates of cyclically reduced words),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseHeadPow` (the block form of a power of a cyclically
   reduced element),
-  `GaloisForLFunctions.RHTower.DeningerBaseHeadSuffix` (equal powers of cyclically reduced elements
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseHeadSuffix` (equal powers of cyclically reduced elements
   have the same word),
-  `GaloisForLFunctions.RHTower.DeningerShiftDiff` (two shifts producing the same word),
-  `GaloisForLFunctions.RHTower.DeningerRGroupConjugation` (conjugation of an isolated element in a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShiftDiff` (two shifts producing the same word),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRGroupConjugation` (conjugation of an isolated element in a
   group with unique roots),
-  `GaloisForLFunctions.RHTower.DeningerConjBase` (conjugating a base element back into the base
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjBase` (conjugating a base element back into the base
   group),
-  `GaloisForLFunctions.RHTower.DeningerRootCentral` (a root adjunction does not move its base
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootCentral` (a root adjunction does not move its base
   group),
-  `GaloisForLFunctions.RHTower.DeningerShiftFixed` (the shift preserves differences),
-  `GaloisForLFunctions.RHTower.DeningerBlockInv` (the block data of a power decomposes),
-  `GaloisForLFunctions.RHTower.DeningerBaseHeadEq` (equal powers of cyclically reduced elements are
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShiftFixed` (the shift preserves differences),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBlockInv` (the block data of a power decomposes),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseHeadEq` (equal powers of cyclically reduced elements are
   equal),
-  `GaloisForLFunctions.RHTower.DeningerCycRedEltEq` (uniqueness of roots for cyclically reduced
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycRedEltEq` (uniqueness of roots for cyclically reduced
   words),
-  `GaloisForLFunctions.RHTower.DeningerCycLenBound` (the length bound of the cyclic reduction),
-  `GaloisForLFunctions.RHTower.DeningerPowCycRed` (an element whose power is cyclically reduced is
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycLenBound` (the length bound of the cyclic reduction),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPowCycRed` (an element whose power is cyclically reduced is
   cyclically reduced),
-  `GaloisForLFunctions.RHTower.DeningerFactorConjPow` (a conjugate of a factor element has no
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorConjPow` (a conjugate of a factor element has no
   cyclically reduced power),
-  `GaloisForLFunctions.RHTower.DeningerCycRedWordOfPow` (elements with a cyclically reduced power),
-  `GaloisForLFunctions.RHTower.DeningerConjCycRed` (reducing an equality of powers to the cyclically
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycRedWordOfPow` (elements with a cyclically reduced power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerConjCycRed` (reducing an equality of powers to the cyclically
   reduced case),
-  `GaloisForLFunctions.RHTower.DeningerFactorConjOfPow` (elements with a short power),
-  `GaloisForLFunctions.RHTower.DeningerShortConj` (conjugating a factor element by a letter),
-  `GaloisForLFunctions.RHTower.DeningerCrossConjWord` (conjugating a factor element by a word
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorConjOfPow` (elements with a short power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShortConj` (conjugating a factor element by a letter),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCrossConjWord` (conjugating a factor element by a word
   starting in another factor),
-  `GaloisForLFunctions.RHTower.DeningerShortConjCases` (the conjugacy criterion for short
+  `GaloisForLFunctions.RHTower.Deninger.DeningerShortConjCases` (the conjugacy criterion for short
   elements),
-  `GaloisForLFunctions.RHTower.DeningerFactorCentralizer` (the centralizer of a factor element),
-  `GaloisForLFunctions.RHTower.DeningerBaseCentralizer` (the centralizer of a base element),
-  `GaloisForLFunctions.RHTower.DeningerAmalgamRoots` (uniqueness of roots in an amalgam),
-  `GaloisForLFunctions.RHTower.DeningerBaseCentralizerOne` (the centralizer of a base element with
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorCentralizer` (the centralizer of a factor element),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseCentralizer` (the centralizer of a base element),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAmalgamRoots` (uniqueness of roots in an amalgam),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaseCentralizerOne` (the centralizer of a base element with
   one exceptional factor),
-  `GaloisForLFunctions.RHTower.DeningerAmalgamRootsOne` (uniqueness of roots in an amalgam with one
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAmalgamRootsOne` (uniqueness of roots in an amalgam with one
   exceptional factor),
-  `GaloisForLFunctions.RHTower.DeningerRootUniqueRoots` (a root adjunction preserves unique roots),
-  `GaloisForLFunctions.RHTower.DeningerCentralizerZpow` (centralizers of powers in a group with
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootUniqueRoots` (a root adjunction preserves unique roots),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCentralizerZpow` (centralizers of powers in a group with
   unique roots),
-  `GaloisForLFunctions.RHTower.DeningerRootEltCentral` (the adjoined root is self-centralizing),
-  `GaloisForLFunctions.RHTower.DeningerRootEltIsolated` (the adjoined root is isolated),
-  `GaloisForLFunctions.RHTower.DeningerRootStageTower` (a tower of root adjunctions at the adjoined
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootEltCentral` (the adjoined root is self-centralizing),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootEltIsolated` (the adjoined root is isolated),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootStageTower` (a tower of root adjunctions at the adjoined
   root),
-  `GaloisForLFunctions.RHTower.DeningerRootTowerGood` (the tower runs, and its invariant is not
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootTowerGood` (the tower runs, and its invariant is not
   vacuous),
-  `GaloisForLFunctions.RHTower.DeningerStepEmbed` (the stages of the tower embed in one another),
-  `GaloisForLFunctions.RHTower.DeningerChainUniqueRoots` (unique roots pass to a union of a chain),
-  `GaloisForLFunctions.RHTower.DeningerTowerColimit` (the colimit of the tower),
-  `GaloisForLFunctions.RHTower.DeningerTowerMapInj` (the transition maps of the tower are
+  `GaloisForLFunctions.RHTower.Deninger.DeningerStepEmbed` (the stages of the tower embed in one another),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerChainUniqueRoots` (unique roots pass to a union of a chain),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTowerColimit` (the colimit of the tower),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTowerMapInj` (the transition maps of the tower are
   injective),
-  `GaloisForLFunctions.RHTower.DeningerTowerIotaInj` (the colimit has unique roots),
-  `GaloisForLFunctions.RHTower.DeningerTowerColimitRoot` (roots in the colimit of the tower),
-  `GaloisForLFunctions.RHTower.DeningerRootTowerHomology` (homology along the tower),
-  `GaloisForLFunctions.RHTower.DeningerColimitHomology` (homology of the colimit of the tower),
-  `GaloisForLFunctions.RHTower.DeningerRootStepCyclic` (a root adjunction to a cyclic group is
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTowerIotaInj` (the colimit has unique roots),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerTowerColimitRoot` (roots in the colimit of the tower),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootTowerHomology` (homology along the tower),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerColimitHomology` (homology of the colimit of the tower),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootStepCyclic` (a root adjunction to a cyclic group is
   cyclic),
-  `GaloisForLFunctions.RHTower.DeningerColimitDivisible` (divisibility in the colimit of the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerColimitDivisible` (divisibility in the colimit of the
   tower),
-  `GaloisForLFunctions.RHTower.DeningerFairExponents` (a fair sequence of exponents, and the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFairExponents` (a fair sequence of exponents, and the
   rationalization),
-  `GaloisForLFunctions.RHTower.DeningerFactorEltCentral` (self-centralization is inherited by
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorEltCentral` (self-centralization is inherited by
   elements of the factor),
-  `GaloisForLFunctions.RHTower.DeningerFactorEltIsolated` (isolation is inherited by elements of the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorEltIsolated` (isolation is inherited by elements of the
   factor),
-  `GaloisForLFunctions.RHTower.DeningerFactorImages` (the images of two factors meet in the base
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorImages` (the images of two factors meet in the base
   group),
-  `GaloisForLFunctions.RHTower.DeningerFactorEltDisjoint` (disjointness from the cyclic factor is
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFactorEltDisjoint` (disjointness from the cyclic factor is
   inherited),
-  `GaloisForLFunctions.RHTower.DeningerFreeProductUniqueRoots` (a free product of groups with unique
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeProductUniqueRoots` (a free product of groups with unique
   roots has unique roots),
-  `GaloisForLFunctions.RHTower.DeningerFreeProductCentral` (centralizers and isolation in a free
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeProductCentral` (centralizers and isolation in a free
   product),
-  `GaloisForLFunctions.RHTower.DeningerFreeProductTorsion` (free products preserve unique roots),
-  `GaloisForLFunctions.RHTower.DeningerUniqueRootsTransport` (unique roots transport along an
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeProductTorsion` (free products preserve unique roots),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerUniqueRootsTransport` (unique roots transport along an
   isomorphism),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupAmalgam` (a free group is an amalgam of infinite
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupAmalgam` (a free group is an amalgam of infinite
   cyclic groups),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupRoots` (a free group has unique roots),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupCentral` (the centralizer of a basis element),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupIsolated` (a basis element is isolated),
-  `GaloisForLFunctions.RHTower.DeningerFreeGroupDisjoint` (distinct basis elements stay disjoint
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupRoots` (a free group has unique roots),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupCentral` (the centralizer of a basis element),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupIsolated` (a basis element is isolated),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeGroupDisjoint` (distinct basis elements stay disjoint
   under conjugation),
-  `GaloisForLFunctions.RHTower.DeningerRootInherit` (the three properties of a waiting element are
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootInherit` (the three properties of a waiting element are
   inherited together),
-  `GaloisForLFunctions.RHTower.DeningerRootDisjointSymm` (disjointness of the adjoined root from the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootDisjointSymm` (disjointness of the adjoined root from the
   waiting elements),
-  `GaloisForLFunctions.RHTower.DeningerRootDisjointFactors` (disjointness between two waiting
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootDisjointFactors` (disjointness between two waiting
   elements survives),
-  `GaloisForLFunctions.RHTower.DeningerFamilyStage` (a stage carrying a family of elements),
-  `GaloisForLFunctions.RHTower.DeningerFamilyTower` (the tower over a family),
-  `GaloisForLFunctions.RHTower.DeningerFamilyColimit` (the colimit of the tower over a family),
-  `GaloisForLFunctions.RHTower.DeningerFamilyHomology` (homology along the tower over a family),
-  `GaloisForLFunctions.RHTower.DeningerFamilyRoot` (the scheduled roots in the colimit),
-  `GaloisForLFunctions.RHTower.DeningerDivisiblePowers` (divisibility passes to powers),
-  `GaloisForLFunctions.RHTower.DeningerMaximalRoot` (an isolated element is not a proper power),
-  `GaloisForLFunctions.RHTower.DeningerRootExponentBound` (the exponent of a root of a cyclically
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFamilyStage` (a stage carrying a family of elements),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFamilyTower` (the tower over a family),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFamilyColimit` (the colimit of the tower over a family),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFamilyHomology` (homology along the tower over a family),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFamilyRoot` (the scheduled roots in the colimit),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDivisiblePowers` (divisibility passes to powers),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerMaximalRoot` (an isolated element is not a proper power),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootExponentBound` (the exponent of a root of a cyclically
   reduced element is bounded),
-  `GaloisForLFunctions.RHTower.DeningerMaximalRootExists` (a cyclically reduced element has a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerMaximalRootExists` (a cyclically reduced element has a
   maximal root),
-  `GaloisForLFunctions.RHTower.DeningerCycRedPowWord` (a power of a cyclically reduced word is a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCycRedPowWord` (a power of a cyclically reduced word is a
   cyclically reduced word),
-  `GaloisForLFunctions.RHTower.DeningerCyclicCentralizers` (groups with cyclic centralizers),
-  `GaloisForLFunctions.RHTower.DeningerCentralizerRotate` (centralizing a cyclically reduced element
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCyclicCentralizers` (groups with cyclic centralizers),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCentralizerRotate` (centralizing a cyclically reduced element
   rotates its word),
-  `GaloisForLFunctions.RHTower.DeningerRotatePeriodic` (a rotation symmetry makes the index sequence
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotatePeriodic` (a rotation symmetry makes the index sequence
   periodic),
-  `GaloisForLFunctions.RHTower.DeningerRotateCentElt` (the element realizing a rotation symmetry),
-  `GaloisForLFunctions.RHTower.DeningerPrefixCompose` (composing the prefixes of successive
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRotateCentElt` (the element realizing a rotation symmetry),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPrefixCompose` (composing the prefixes of successive
   rotations),
-  `GaloisForLFunctions.RHTower.DeningerCommonCyclic` (commuting elements lie in a common cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCommonCyclic` (commuting elements lie in a common cyclic
   subgroup),
-  `GaloisForLFunctions.RHTower.DeningerNotConjShort` (a long cyclically reduced element is not
+  `GaloisForLFunctions.RHTower.Deninger.DeningerNotConjShort` (a long cyclically reduced element is not
   conjugate to a short one),
-  `GaloisForLFunctions.RHTower.DeningerCommonCyclicAmalgam` (the descent in an amalgam with one
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCommonCyclicAmalgam` (the descent in an amalgam with one
   exceptional factor),
-  `GaloisForLFunctions.RHTower.DeningerMaximalRootCentralizer` (a maximal root is its own
+  `GaloisForLFunctions.RHTower.Deninger.DeningerMaximalRootCentralizer` (a maximal root is its own
   centralizer),
-  `GaloisForLFunctions.RHTower.DeningerCentralizerConj` (centralizers along conjugation),
-  `GaloisForLFunctions.RHTower.DeningerRootCycRedCentralizer` (cyclic centralizers in a root
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCentralizerConj` (centralizers along conjugation),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootCycRedCentralizer` (cyclic centralizers in a root
   adjunction, for long elements),
-  `GaloisForLFunctions.RHTower.DeningerRootShortCentralizer` (cyclic centralizers in a root
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootShortCentralizer` (cyclic centralizers in a root
   adjunction, for elements of a factor),
-  `GaloisForLFunctions.RHTower.DeningerRootCyclicCentralizers` (a root adjunction preserves cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRootCyclicCentralizers` (a root adjunction preserves cyclic
   centralizers),
-  `GaloisForLFunctions.RHTower.DeningerPushoutCountable` (an amalgam of countable groups is
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPushoutCountable` (an amalgam of countable groups is
   countable),
-  `GaloisForLFunctions.RHTower.DeningerCCStage` (stages carrying unique roots and cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCStage` (stages carrying unique roots and cyclic
   centralizers),
-  `GaloisForLFunctions.RHTower.DeningerCCTower` (the tower of such stages),
-  `GaloisForLFunctions.RHTower.DeningerCCColimit` (its colimit),
-  `GaloisForLFunctions.RHTower.DeningerCCHomology` (homology along it),
-  `GaloisForLFunctions.RHTower.DeningerCCTrajectory` (enumeration indices along the tower),
-  `GaloisForLFunctions.RHTower.DeningerCCDivisible` (the fair schedule and divisibility of the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCTower` (the tower of such stages),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCColimit` (its colimit),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCHomology` (homology along it),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCTrajectory` (enumeration indices along the tower),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCDivisible` (the fair schedule and divisibility of the
   colimit),
-  `GaloisForLFunctions.RHTower.DeningerFreeCyclicCentralizers` (a free group has cyclic
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeCyclicCentralizers` (a free group has cyclic
   centralizers),
-  `GaloisForLFunctions.RHTower.DeningerFreeSplit` (splitting off one generator of a free group),
-  `GaloisForLFunctions.RHTower.DeningerFreeHomology` (the homology of a free group of finite rank),
-  `GaloisForLFunctions.RHTower.DeningerFreeRationalization` (the rationalization of a free group of
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeSplit` (splitting off one generator of a free group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeHomology` (the homology of a free group of finite rank),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFreeRationalization` (the rationalization of a free group of
   finite rank),
-  `GaloisForLFunctions.RHTower.DeningerCCDescent` (mapping the tower into a uniquely divisible
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCCDescent` (mapping the tower into a uniquely divisible
   group),
-  `GaloisForLFunctions.RHTower.DeningerBauFreeVanishing` (the homology and cohomology of the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBauFreeVanishing` (the homology and cohomology of the
   rationalization of a free group),
-  `GaloisForLFunctions.RHTower.DeningerClassifyingSpace` (the classifying space of a group),
-  `GaloisForLFunctions.RHTower.DeningerClassifyingFibre` (the fibre of a map of classifying spaces),
-  `GaloisForLFunctions.RHTower.DeningerClassifyingEdges` (simplices of a classifying space),
-  `GaloisForLFunctions.RHTower.DeningerHornEdges` (edges of a horn),
-  `GaloisForLFunctions.RHTower.DeningerClassifyingHomExt` (maps into a classifying space are
+  `GaloisForLFunctions.RHTower.Deninger.DeningerClassifyingSpace` (the classifying space of a group),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerClassifyingFibre` (the fibre of a map of classifying spaces),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerClassifyingEdges` (simplices of a classifying space),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornEdges` (edges of a horn),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerClassifyingHomExt` (maps into a classifying space are
   determined by the edges),
-  `GaloisForLFunctions.RHTower.DeningerEdgeCocycle` (the cocycle identity for edges),
-  `GaloisForLFunctions.RHTower.DeningerSimplexEdge` (edges of a simplex of a classifying space),
-  `GaloisForLFunctions.RHTower.DeningerHornFaceEdge` (edges of a face of a horn),
-  `GaloisForLFunctions.RHTower.DeningerHornCocycle` (the cocycle identity inside a horn),
-  `GaloisForLFunctions.RHTower.DeningerSimplexOfFun` (simplices of a classifying space from
+  `GaloisForLFunctions.RHTower.Deninger.DeningerEdgeCocycle` (the cocycle identity for edges),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSimplexEdge` (edges of a simplex of a classifying space),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornFaceEdge` (edges of a face of a horn),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornCocycle` (the cocycle identity inside a horn),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSimplexOfFun` (simplices of a classifying space from
   prescribed edges),
-  `GaloisForLFunctions.RHTower.DeningerHornCocycleWitness` (the cocycle identity from a fourth
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornCocycleWitness` (the cocycle identity from a fourth
   vertex),
-  `GaloisForLFunctions.RHTower.DeningerHornAllEdges` (all edges of a horn of a large simplex),
-  `GaloisForLFunctions.RHTower.DeningerHornFiller` (the filler of a horn of a large simplex),
-  `GaloisForLFunctions.RHTower.DeningerHornFillerFace` (the faces of the filler),
-  `GaloisForLFunctions.RHTower.DeningerHornLiftLarge` (filling a horn of a large simplex),
-  `GaloisForLFunctions.RHTower.DeningerHornLiftOne` (filling a one dimensional horn),
-  `GaloisForLFunctions.RHTower.DeningerHornLiftTwo` (filling a two dimensional horn),
-  `GaloisForLFunctions.RHTower.DeningerClassifyingFibration` (the map of classifying spaces of a
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornAllEdges` (all edges of a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornFiller` (the filler of a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornFillerFace` (the faces of the filler),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornLiftLarge` (filling a horn of a large simplex),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornLiftOne` (filling a one dimensional horn),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHornLiftTwo` (filling a two dimensional horn),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerClassifyingFibration` (the map of classifying spaces of a
   surjection is a Kan fibration),
-  `GaloisForLFunctions.RHTower.DeningerPacketFibre` (the homotopy fibre of the packet's surjection)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPacketFibre` (the homotopy fibre of the packet's surjection)
 
 ## Statement
 
@@ -419,7 +419,7 @@ divisible-fiber theorem.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerUniquelyDivisibleKernel.lean` proves clauses 1 and 2 in the
+`GaloisForLFunctions/RHTower/Deninger/DeningerUniquelyDivisibleKernel.lean` proves clauses 1 and 2 in the
 generality in which the card's own proof argues them — nothing about Baumslag rationalization is
 used, only unique divisibility of `R_U` and torsion-freeness of `A`:
 
@@ -432,7 +432,7 @@ used, only unique divisibility of `R_U` and torsion-freeness of `A`:
 - `deningerKer_noFiniteQuotient` : that kernel admits no nontrivial homomorphism to a finite
   group.  This is clause 2, obtained from
   `DAC_DIVISIBLE_FIBER_FINITE_COVER_INVARIANCE` as already formalized in
-  `GaloisForLFunctions.RHTower.DeningerDivisibleFiberFiniteCoverInvariance`, exactly as the card
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDivisibleFiberFiniteCoverInvariance`, exactly as the card
   cites it.
 
 ### What is formalized and what is not
@@ -442,7 +442,7 @@ Formalized: clauses 1 and 2, unconditionally.  `DeningerUniquelyDivisible` and
 `deningerKer_uniquelyDivisible` uses only `propext`.
 
 **The construction `R_U = Bau(F_m)` and the surjection `(1)` are now formalized**, in
-`GaloisForLFunctions/RHTower/DeningerBaumslagRationalization.lean`.  Groups with unique roots are
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalization.lean`.  Groups with unique roots are
 the models of an equational theory — adjoin a unary `root n` for every `n`, subject to
 `(root n x)^{n+1} = x` and `root n (x^{n+1}) = x`, from which uniqueness of roots *follows* — so the
 theory is a variety and the forgetful functor to groups has a left adjoint.  `DeningerBau G` is that
@@ -482,7 +482,7 @@ Not formalized, and none of it is a mathlib gap of the ordinary kind:
 
 **Clause 5's consequence is proved at the actual object.**  The homotopy pullback has no mathlib
 counterpart, but its group-theoretic shadow does: the fibre product of `a_U` along any homomorphism
-`H → A`.  `GaloisForLFunctions/RHTower/DeningerBaumslagPullback.lean`:
+`H → A`.  `GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagPullback.lean`:
 
 - `deningerBauPullback` — the fibre product, as the equalizer subgroup of `H × R_U`;
 - `deningerBauPullbackProj_surjective` — it surjects onto `H`, because `a_U` does;
@@ -499,13 +499,13 @@ counterpart, but its group-theoretic shadow does: the fibre product of `a_U` alo
 coefficients is the group of homomorphisms, clause 3 identifies that with the homomorphisms out of
 `A = U^∨`, additive maps between rational vector spaces are linear, and for a reflexive `U` the
 double dual is `U` again.  **That identification is also stated in mathlib's group cohomology**, in
-`GaloisForLFunctions/RHTower/DeningerBaumslagH1.lean`: with a trivial action the `1`-coboundaries
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagH1.lean`: with a trivial action the `1`-coboundaries
 vanish (`deningerCoboundaries₁_trivial`), so `H¹` is the module of `1`-cocycles
 (`deningerH1Equiv`), and a `1`-cocycle for a trivial action is exactly a homomorphism
 (`deningerCocycles₁Equiv`); composing with clause 3 gives
 `deningerBauFree_H1_equiv : groupCohomology.H1 (Rep.trivial ℚ R_U ℚ) ≃ U`.
 
-`GaloisForLFunctions/RHTower/DeningerBaumslagRationalProjective.lean` gives degree two.  Second
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalProjective.lean` gives degree two.  Second
 cohomology with trivial coefficients classifies central extensions, and every central extension of
 `R_U` by a uniquely divisible abelian group splits:
 
@@ -521,7 +521,7 @@ cohomology with trivial coefficients classifies central extensions, and every ce
   uniquely divisible kernel splits.
 
 **And that vanishing is now stated in mathlib's group cohomology, not paraphrased.**
-`GaloisForLFunctions/RHTower/DeningerBaumslagH2.lean` closes the loop:
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagH2.lean` closes the loop:
 `deningerBauFree_H2_eq_zero` is `groupCohomology.H2 (Rep.trivial ℚ R_U M) = 0` for every rational
 vector space `M` with trivial action.  mathlib has no bridge from `H²` to central extensions, so the
 bridge is built here: a normalized `2`-cocycle twists `M × G` into a group (`DeningerCocycleExt`),
@@ -537,7 +537,7 @@ space, hence has unique roots, so by the universal property homomorphisms out of
 correspond to homomorphisms out of `F_m`, which correspond to arbitrary functions on the basis —
 and those are exactly the homomorphisms out of `A`, by the basis's own universal property.  So the
 adjunction does what the card's proof delegated to Casacuberta--Peschke.
-`GaloisForLFunctions/RHTower/DeningerBaumslagDegreeOne.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagDegreeOne.lean`:
 
 - `deningerBauFreeHom_factors` — every homomorphism from the rationalization into a rational vector
   space factors through `a_U`;
@@ -550,7 +550,7 @@ adjunction does what the card's proof delegated to Casacuberta--Peschke.
 `ℚ`, `ℚ^m`, `0, 0, …`.  That computation is now proved in *every* degree, unconditionally, and for
 arbitrary coefficients — `H⁰ = M`, `H¹ = (ι → M)`, and `Hⁿ = 0` for all `n ≥ 2`.
 
-`GaloisForLFunctions/RHTower/DeningerFreeGroupH1.lean` does the first two, for an arbitrary
+`GaloisForLFunctions/RHTower/Deninger/DeningerFreeGroupH1.lean` does the first two, for an arbitrary
 coefficient ring:
 
 - `deningerTrivial_H0_equiv` — `H⁰(G; M) ≅ M` for a trivial module, so `H⁰(F_m;ℚ) = ℚ`;
@@ -562,7 +562,7 @@ coefficient ring:
 - `deningerFreeGroup_H1_equiv` — **`H¹(F_ι; M) ≃ (ι → M)`**, which for `|ι| = m` and `M = ℚ` is the
   card's `ℚ^m`.
 
-Degree two is in `GaloisForLFunctions/RHTower/DeningerFreeGroupH2.lean`:
+Degree two is in `GaloisForLFunctions/RHTower/Deninger/DeningerFreeGroupH2.lean`:
 `deningerFreeGroup_H2_eq_zero` is `H²(FreeGroup ι; A) = 0` for every representation `A`.  The
 mechanism is the same twisted extension as for `R_U`, but no divisibility is needed — a section is
 defined on the free generators and the composite with the projection is the identity because it is
@@ -571,7 +571,7 @@ associativity is the cocycle identity together with `ρ(gh) = ρ(g)ρ(h)`, and t
 extra identity.
 
 All higher degrees follow by dimension shifting, in
-`GaloisForLFunctions/RHTower/DeningerCohomologyDimensionShift.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerCohomologyDimensionShift.lean`:
 
 - `deningerIsZero_coind_succ` — coinduction from the trivial subgroup is cohomologically trivial in
   positive degrees, by Shapiro's lemma and the vanishing over the trivial group;
@@ -586,7 +586,7 @@ All higher degrees follow by dimension shifting, in
 
 **The Casacuberta--Peschke comparison itself, in the degrees that are computed here.**  The card's
 proof quotes `H_*(R_U;ℚ) ≅ H_*(F_m;ℚ)`.  In degrees zero, one and two that comparison is now proved
-outright, with no import, in `GaloisForLFunctions/RHTower/DeningerBaumslagComparison.lean`:
+outright, with no import, in `GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagComparison.lean`:
 
 - `deningerBauHomEquiv` — the adjunction as an explicit bijection `Hom(Bau G, H) ≃ Hom(G, H)` for
   any `H` with unique roots.  This is what makes the comparison a theorem rather than an import;
@@ -597,7 +597,7 @@ So the imported computation is needed only from degree three on.
 
 **The missing degrees, and a route that is now closed off.**  The remaining vanishing needs the
 homology of `R_U`, which Casacuberta--Peschke compute along a tower of amalgamated free products.
-The single root adjunction is built in `GaloisForLFunctions/RHTower/DeningerRootAdjunction.lean`:
+The single root adjunction is built in `GaloisForLFunctions/RHTower/Deninger/DeningerRootAdjunction.lean`:
 `DeningerRootAdjoin g n` amalgamates `G` with an infinite cyclic group over the cyclic subgroups
 generated by `g` and by the `n`-th power of the new generator.  `deningerRootAdjoin_root_pow` is the
 defining property — the new generator is an `n`-th root of `g` — and
@@ -605,7 +605,7 @@ defining property — the new generator is an `n`-th root of `g` — and
 infinite order of `g`.
 
 **But the naive tower of such adjunctions does not converge to `Bau(G)`**, and
-`GaloisForLFunctions/RHTower/DeningerRootAdjunctionNoGo.lean` proves why.  Adjoining a square root
+`GaloisForLFunctions/RHTower/Deninger/DeningerRootAdjunctionNoGo.lean` proves why.  Adjoining a square root
 `t` of `a²` to the free group on two generators produces a group in which `t` and `a` are *distinct*
 square roots of the same element: a homomorphism onto `ℤ/2` sending `a` to `1` and `t` to `0`
 separates them, and it is compatible with the amalgamation because `a²` and `t²` both go to `0`.  So
@@ -1512,7 +1512,7 @@ Supporting facts that are proved, in `DeningerBaumslagGeneration.lean`:
   are equal in a group with unique roots, and that transfers along any embedding.  These are the
   shape in which "has unique roots" is used downstream.
 
-**Functoriality and equivariance.**  `GaloisForLFunctions/RHTower/DeningerBaumslagFunctorial.lean`.
+**Functoriality and equivariance.**  `GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagFunctorial.lean`.
 
 - `deningerBauMap`, `deningerBauMap_id`, `deningerBauMap_comp` — the rationalization is a functor:
   a homomorphism extends over the rationalizations, uniquely, because the target has unique roots.
@@ -1524,7 +1524,7 @@ Supporting facts that are proved, in `DeningerBaumslagGeneration.lean`:
   `GL(U)`-equivariance and power-map equivariance.
 
 **Equivariance under a group acting on the chosen family.**
-`GaloisForLFunctions/RHTower/DeningerBaumslagEquivariance.lean`.  The packet depends on a family
+`GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagEquivariance.lean`.  The packet depends on a family
 `b : ι → A`; whenever a group `Γ` acts on `ι` and on `A` and `b` is equivariant, the packet is
 equivariant.
 
@@ -1540,10 +1540,10 @@ fixes no Galois action of its own.
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerUniquelyDivisibleKernel.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerUniquelyDivisibleKernel.lean`
   — passes with no errors and no warnings.
 - Cached module build:
-  `lake build GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel` completes.
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerUniquelyDivisibleKernel` completes.
 - Scratch `#print axioms` on all four declarations: no axioms, `propext`, or the standard
   `propext, Classical.choice, Quot.sound`.
 - Imported by the `GaloisForLFunctions.RHTower` umbrella.
@@ -1553,27 +1553,27 @@ fixes no Galois action of its own.
 - [x] 0 → 1 in-progress: packet statement isolated
 - [x] 1 → 2 fully-proven: complete paper proof
 - [x] 2 → 3 formalized, clauses 1 and 2
-  (`GaloisForLFunctions.RHTower.DeningerUniquelyDivisibleKernel`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerUniquelyDivisibleKernel`)
 - [x] 2 → 3 formalized, the construction `Bau(F_m)`, its universal property, and the surjection
-  `(1)` (`GaloisForLFunctions.RHTower.DeningerBaumslagRationalization`)
+  `(1)` (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization`)
 - [x] 2 → 3 formalized, clause 3 with trivial rational coefficients
-  (`GaloisForLFunctions.RHTower.DeningerBaumslagDegreeOne`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagDegreeOne`)
 - [x] 2 → 3 formalized, clause 4 in degrees one and two
-  (`GaloisForLFunctions.RHTower.DeningerBaumslagDegreeOne`,
-  `GaloisForLFunctions.RHTower.DeningerBaumslagRationalProjective`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagDegreeOne`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalProjective`)
 - [x] 2 → 3 formalized, clause 5's finite-cover consequence
-  (`GaloisForLFunctions.RHTower.DeningerBaumslagPullback`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagPullback`)
 - [x] 2 → 3 formalized, the transfer of vanishing from homology to cohomology over a field
 - [x] 2 → 3 formalized, clause 4 above degree two
-  (`GaloisForLFunctions.RHTower.DeningerBauFreeVanishing`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBauFreeVanishing`)
 - [x] 2 → 3 formalized, the homotopy-fibre half of clause 5
-  (`GaloisForLFunctions.RHTower.DeningerPacketFibre`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerPacketFibre`)
 - [x] `GL(U)` and power-map equivariance of the packet, and functoriality of the rationalization
-  (`GaloisForLFunctions.RHTower.DeningerBaumslagFunctorial`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagFunctorial`)
 - [x] equivariance of the packet under any group acting on the index set and on `A`
-  (`GaloisForLFunctions.RHTower.DeningerBaumslagEquivariance`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagEquivariance`)
 - [x] 3 → 4 publication-ready: instantiate the equivariance at an actual Galois action
-  (`GaloisForLFunctions.RHTower.DeningerGaloisPacket`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerGaloisPacket`)
 
 ## Hostile audit
 

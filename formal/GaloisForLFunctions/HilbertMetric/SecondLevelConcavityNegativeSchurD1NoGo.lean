@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityFifthRootNoGo
-import GaloisForLFunctions.RHTower.ThetaCuspReflectedEighthPolynomial
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedEighthPolynomial
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 
 /-!

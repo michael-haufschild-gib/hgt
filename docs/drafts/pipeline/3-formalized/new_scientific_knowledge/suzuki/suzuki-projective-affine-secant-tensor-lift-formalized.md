@@ -8,8 +8,8 @@
 ## Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/StokesCartanLorentzCapacity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiAffineSecantSpectralSum.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineSecantSpectralSum.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveAffineSecantTensor.lean`
 
 ## Formal theorem surface
 
@@ -21,7 +21,7 @@ Every declaration below was resolved against the tree and its axiom surface chec
 GaloisForLFunctions.IrregularStokes.FiniteQuadratic.sum_mul_sum
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiAffineSecantSpectralSum`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiAffineSecantSpectralSum`:
 
 ```text
 RHTower.offDiag_sum_eq_sub_diag
@@ -29,7 +29,7 @@ RHTower.sum_sum_eq_diag_add_offDiag
 RHTower.suzukiProjectiveAffineSecant_finite_spectral_sum
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiProjectiveAffineSecantTensor`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectiveAffineSecantTensor`:
 
 ```text
 RHTower.suzukiProjectiveAffineSecantTensor_gauge_covariance

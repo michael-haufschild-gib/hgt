@@ -319,8 +319,8 @@ regularity and the convolution operator:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/ExponentialDividedDifference.lean
-formal/GaloisForLFunctions/RHTower/SuzukiPolarRemainderLipschitz.lean
-formal/GaloisForLFunctions/RHTower/SuzukiPolarConvolutionRate.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolarRemainderLipschitz.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolarConvolutionRate.lean
 ```
 
 The removable singularity `(11)`--`(14)` is realized by the exact identity

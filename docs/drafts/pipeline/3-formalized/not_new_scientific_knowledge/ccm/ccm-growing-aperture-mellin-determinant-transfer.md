@@ -537,7 +537,7 @@ analytic inputs. No Lean file is added.
 
 ## Lean status
 
-`FORMALIZED` — `formal/GaloisForLFunctions/RHTower/CCMGrowingApertureMellin.lean`
+`FORMALIZED` — `formal/GaloisForLFunctions/RHTower/CCM/CCMGrowingApertureMellin.lean`
 (namespace `GaloisForLFunctions.RHTower`, wired into `GaloisForLFunctions/RHTower.lean`,
 axioms `[propext, Classical.choice, Quot.sound]` on every declaration).
 

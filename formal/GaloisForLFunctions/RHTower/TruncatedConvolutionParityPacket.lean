@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.TruncatedConvolutionCommutator
-import GaloisForLFunctions.RHTower.CCMGeneralParityOddGroundAdapter
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralParityOddGroundAdapter
 
 /-!
 # The Fourier compression of a truncated convolution is a centered divided-difference packet

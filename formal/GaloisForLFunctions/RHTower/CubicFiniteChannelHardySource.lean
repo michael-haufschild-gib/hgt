@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CubicTwoChannelHardySource
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseTraceFormula
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseTraceFormula
 import GaloisForLFunctions.HTGeometry.PencilTracePolynomial
 import Mathlib.Analysis.InnerProductSpace.PiL2
 

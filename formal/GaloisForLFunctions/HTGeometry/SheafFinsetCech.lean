@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FinsetCechDatum
-import GaloisForLFunctions.RHTower.DeningerFineSurjective
+import GaloisForLFunctions.RHTower.Deninger.DeningerFineSurjective
 
 /-!
 # The alternating Čech complex of a sheaf on a finite cover

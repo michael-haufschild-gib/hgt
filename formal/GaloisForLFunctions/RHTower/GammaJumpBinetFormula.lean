@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaJumpSymbolIdentity
-import GaloisForLFunctions.RHTower.SuzukiGammaFrequencySymbol
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaFrequencySymbol
 
 /-!
 # The Gamma jump operator has the multiplier `r`

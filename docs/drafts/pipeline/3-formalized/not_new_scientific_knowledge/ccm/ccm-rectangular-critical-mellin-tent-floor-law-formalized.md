@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-rectangular-critical-mellin-tent-floor-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRectangularTentFloor.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularTentFloor.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 10 declarations
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

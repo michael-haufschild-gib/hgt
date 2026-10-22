@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGammaSixCofinalMeyerTateXiGreenBoundary
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalMeyerTateXiGreenBoundary
 import GaloisForLFunctions.RHTower.PreDivisorTransverseRamificationRoosTransgression
 
 /-!

@@ -159,10 +159,10 @@ All four targeted builds and final actual-source checks passed. All 28 public
 declarations have only standard Lean foundations. Imports, generated index, and
 whitespace checks passed. Global lint exited 1 on 14 unrelated unwired modules:
 
-- `GaloisForLFunctions.RHTower.CCMParityQuartetEvenFloor`
-- `GaloisForLFunctions.RHTower.CCMParityQuartetModel`
-- `GaloisForLFunctions.RHTower.CCMParityQuartetOddTest`
-- `GaloisForLFunctions.RHTower.CCMParityQuartetZeroSum`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetEvenFloor`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetModel`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetOddTest`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetZeroSum`
 - `GaloisForLFunctions.RHTower.WeilZetaSquareAveraging`
 - `GaloisForLFunctions.RHTower.WeilZetaSquareBoundaryInequality`
 - `GaloisForLFunctions.RHTower.WeilZetaSquareDilationRigidity`

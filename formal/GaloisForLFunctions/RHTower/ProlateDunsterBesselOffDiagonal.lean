@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateDunsterWeakLimit
-import GaloisForLFunctions.RHTower.CCMFirstRowEnvelopeTail
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowEnvelopeTail
 
 /-!
 # Compact off-diagonal cancellation for the Dunster/Bessel profile

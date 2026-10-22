@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaNativeJetEulerConnection
 import GaloisForLFunctions.RHTower.MobiusThetaNativeEulerMass
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent
 
 /-!
 # Complete critical Euler currents and their origin contacts

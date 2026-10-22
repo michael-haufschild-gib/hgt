@@ -4,7 +4,7 @@ Status: nine public theorems formalized in the existing source-adjoint leaf. The
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint`, namespace `RHTower.D4BMCausalSourceKernel`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSourceAdjoint`, namespace `RHTower.D4BMCausalSourceKernel`.
 
 ## Successful cancellation conjecture
 
@@ -57,7 +57,7 @@ These theorems do not yet establish joint continuity of the complete parameteriz
 The full changed source passed `lake env lean` in scratch without warnings. Final audit ran only
 
 ```
-lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSourceAdjoint
 ```
 
 The exact leaf passed in 49 seconds, three Lake jobs. Its 3,972 existing own dependency modules and external dependency caches were reused; no dependency or umbrella build ran. The temporary stub manifests produced administrative missing-manifest warnings; the Lean leaf produced no warnings.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SecantMomentIndependence
-import GaloisForLFunctions.RHTower.DeningerHankelHigherRankGroebner
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelHigherRankGroebner
 
 /-!
 # The dimension of the Hankel secant variety

@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress.
 - **Type:** [BRIDGE], derived proof candidate, not a replacement RH conjecture.
 - **Goal:** Force exhaustive prime inclusion under one every-cutoff energy budget.
-- **Parent:** [exact successor extension](../../ccm-fu-exact-successor-extension.md).
+- **Parent:** [exact successor extension](ccm-fu-exact-successor-extension.md).
 
 ## Frozen statement and motivation
 

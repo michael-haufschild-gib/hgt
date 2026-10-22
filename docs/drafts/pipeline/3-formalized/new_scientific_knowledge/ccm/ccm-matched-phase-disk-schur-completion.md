@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseDiskSchurCompletion`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseDiskSchurCompletion`.
 This closes the local sign problem for one intact matched prime--polar cell after adding its exact
 wall-chord complement. It does not yet transport the resulting non-summable reserve through the
 global completed Gamma/Robin producer, so it is not an RH proof.

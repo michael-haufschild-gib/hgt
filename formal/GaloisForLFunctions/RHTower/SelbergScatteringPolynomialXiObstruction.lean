@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringPolynomialSeparation
 import GaloisForLFunctions.RHTower.HardyDyadicWindowTheorem
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingOpticalCuspScatteringIncidence
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingOpticalCuspScatteringIncidence
 
 /-!
 # Actual Xi scattering poles obstruct fixed polynomial spectral transport

@@ -4,7 +4,7 @@
 - **Paper theorem:**
   `./suzuki-coherent-causal-depth-fusion.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCoherentCausalDepthFusion.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentCausalDepthFusion.lean`
 - **Umbrella import:**
   `formal/GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean`
 - **RH used:** no
@@ -36,8 +36,8 @@ the rectangular Robin--Gamma--holonomy trace, Ward semiboundedness, or RH.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCoherentCausalDepthFusion.lean`: passes.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCoherentCausalDepthFusion`: passes, 9337/9337 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentCausalDepthFusion.lean`: passes.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCoherentCausalDepthFusion`: passes, 9337/9337 jobs.
 - `#print axioms` for all-prime summability, cofinal Gram expansion, and faithful separation reports
   only `propext`, `Classical.choice`, and `Quot.sound`.
 - Forbidden-declaration scan of this module is empty; `git diff --check` passes.

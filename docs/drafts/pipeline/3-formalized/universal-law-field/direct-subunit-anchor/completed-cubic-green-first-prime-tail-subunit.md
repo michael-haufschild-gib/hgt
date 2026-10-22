@@ -95,7 +95,7 @@ No premise, hypothesis, axiom, zero assumption, or numerical computation enters 
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenTailSubunit`
+  `GaloisForLFunctions.RHTower.CCM.CCMRoutePCompletedCubicGreenTailSubunit`
 - Main theorem:
   `RHTower.abs_ccmRoutePCompletedCubicGreenTail_lt_one`
 - Supporting locks formalize:

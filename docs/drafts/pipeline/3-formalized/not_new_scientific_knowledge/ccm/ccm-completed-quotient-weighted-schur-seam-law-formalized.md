@@ -8,10 +8,10 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMWeightedSchurSeam` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMWeightedSchurSeam` (new)
 - `GaloisForLFunctions.HTGeometry.ShiftedDerivativeCoercivity` — pre-existing
   `hasDerivAt_normSq_comp`, reused rather than redefined.
-- `GaloisForLFunctions.RHTower.CCMHalfUnitCauchySeam` — `re_hadamardPair_pos`, the positivity of
+- `GaloisForLFunctions.RHTower.CCM.CCMHalfUnitCauchySeam` — `re_hadamardPair_pos`, the positivity of
   `Re (X′/X)` beyond the seam.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -49,6 +49,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMWeightedSchurSeam`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMWeightedSchurSeam`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

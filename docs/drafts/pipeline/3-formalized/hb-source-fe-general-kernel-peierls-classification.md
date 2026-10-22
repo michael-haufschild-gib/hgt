@@ -96,7 +96,7 @@ isolates every kernel coefficient.
 
 Formal module:
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEKernelPeierlsClassification`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEKernelPeierlsClassification`
 
 Principal declarations:
 

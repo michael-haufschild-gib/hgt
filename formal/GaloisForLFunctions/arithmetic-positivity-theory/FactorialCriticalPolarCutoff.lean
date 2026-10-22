@@ -1,5 +1,5 @@
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialCriticalPhasePrimitive
-import GaloisForLFunctions.RHTower.CCMEndpointFourierJet
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointFourierJet
 
 /-! Critical polar endpoint with an explicit inverse-cutoff error.
 The endpoint is defined by an absolutely convergent primitive integral. -/

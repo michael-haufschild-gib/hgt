@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SquareSampledDivisorRemainder
 import GaloisForLFunctions.RHTower.DivisorHyperbolaPositivePrefix
-import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelSummation
 
 set_option autoImplicit false
 open scoped BigOperators

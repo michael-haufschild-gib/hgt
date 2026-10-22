@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMEulerPickTransferBoundary` (new), over the Pick-cluster modules.
+`GaloisForLFunctions.RHTower.CCM.CCMEulerPickTransferBoundary` (new), over the Pick-cluster modules.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 
@@ -44,6 +44,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMEulerPickTransferBoundary`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMEulerPickTransferBoundary`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

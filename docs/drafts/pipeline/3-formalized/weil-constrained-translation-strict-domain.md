@@ -38,10 +38,10 @@ Inputs include `L2MellinUnitary`, `LpBoundedMultiplier`, `CCMArchimedeanHilbertF
 
 | Leaf under `formal/GaloisForLFunctions/` | Public theorems | Named build |
 |---|---:|---|
-| `RHTower/CCMRestrictedWeilFormTranslation.lean` | 11 | Pass |
+| `RHTower/CCM/CCMRestrictedWeilFormTranslation.lean` | 11 | Pass |
 | `HTGeometry/L2TranslationPolynomialIndependence.lean` | 2 | Pass |
 | `HTGeometry/CompactConstrainedRadical.lean` | 4 | Pass |
-| `RHTower/CCMRestrictedWeilPolarStrictDomain.lean` | 7 | Pass |
+| `RHTower/CCM/CCMRestrictedWeilPolarStrictDomain.lean` | 7 | Pass |
 
 All four leaves are imported by their theorem-area umbrellas. Foreground scratch checks used `lake env lean <file>`; final audits used named `lake --old --log-level=error build <module>` calls, with no full or umbrella build. The 24 public theorem axiom audits report only `[propext, Classical.choice, Quot.sound]`; the actual target remains mathlib's zeta-zero `RiemannHypothesis`. No added axiom, admission, or computational proof oracle occurs. No mathematical numerical experiment was used.
 

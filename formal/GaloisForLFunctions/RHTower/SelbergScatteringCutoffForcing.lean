@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringSourceVector
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCutoffPowerFlux
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCutoffPowerFlux
 
 /-!
 # Exact original transition forcing and its scalar cancellation

@@ -1,0 +1,350 @@
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioKineticSlopeInterior6Defect
+namespace HTGeometry.ThetaRatioKineticContraction
+noncomputable section
+set_option autoImplicit false
+open HTGeometry.EvenCompactBernstein
+
+def slopeInterior6Form4 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 254109868665953361137008984790176628736)*x 0
+
+def slopeInterior6Form5 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 6745122249147732600769135552151011983360)*x 0 +
+  (Nat.rawCast 63527467166488340284252246197544157184)*x 1
+
+def slopeInterior6Form6 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 30405159252729465244021068526495186550784)*x 0 +
+  ((Int.negOfNat 391752714193344765086222184884855635968).rawCast)*x 1
+
+def slopeInterior6Form7 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 118094758780126832455765326317431755374592)*x 0 +
+  ((Int.negOfNat 5871411969506666652774770917764199612416).rawCast)*x 1 +
+  ((Int.negOfNat 60880489367884659439075069272646483968).rawCast)*x 2
+
+def slopeInterior6Form8 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 342341516191612066861523577151655314980864)*x 0 +
+  ((Int.negOfNat 20426773806513905364251362384806584254464).rawCast)*x 1 +
+  (Nat.rawCast 247737514706351907250471336637645193216)*x 2
+
+def slopeInterior6Form9 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 970920311504757706891027209680283922071552)*x 0 +
+  ((Int.negOfNat 83783380190039290768268931180476328050688).rawCast)*x 1 +
+  (Nat.rawCast 1998032841815507626553625055731665338368)*x 2 +
+  (Nat.rawCast 24411017476011723349967298307389652992)*x 3
+
+def slopeInterior6Form10 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 2061609789809326748478409333221274303856640)*x 0 +
+  ((Int.negOfNat 199623040275581682708224762742922725556224).rawCast)*x 1 +
+  (Nat.rawCast 5347779321296077344078579755034825719808)*x 2 +
+  ((Int.negOfNat 71062639562307666311623901085601628160).rawCast)*x 3
+
+def slopeInterior6Form11 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 2897421271101294930678047469215427896279040)*x 0 +
+  ((Int.negOfNat 493813143410288368378588421751786304438272).rawCast)*x 1 +
+  (Nat.rawCast 25575244275074085755146741390651963736064)*x 2 +
+  ((Int.negOfNat 404818509404717720140873000820831944704).rawCast)*x 3 +
+  ((Int.negOfNat 5400161496534052588463314652337537024).rawCast)*x 4
+
+def slopeInterior6Form12 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 2696148311853390538016233112627389950590976)*x 0 +
+  ((Int.negOfNat 908588595697869008670274940152704732758016).rawCast)*x 1 +
+  (Nat.rawCast 45962148926604562905650088788032047022080)*x 2 +
+  ((Int.negOfNat 225926979912383424273319034451325353984).rawCast)*x 3 +
+  (Nat.rawCast 4724952196398694357323297470363467776)*x 4
+
+def slopeInterior6Form13 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 1568198576902668673204710272362435735191552)*x 0 +
+  ((Int.negOfNat 979571457359313522359354585722538485088256).rawCast)*x 1 +
+  (Nat.rawCast 103036652189843326896251637566091470831616)*x 2 +
+  ((Int.negOfNat 6004971441159618454056494170663097991168).rawCast)*x 3 +
+  (Nat.rawCast 102366556955974874385416373543704199168)*x 4 +
+  (Nat.rawCast 724681278881551854618122854953123840)*x 5
+
+def slopeInterior6Form14 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 348078581102304679189937891014372856168448)*x 0 +
+  ((Int.negOfNat 565379294800292140989665187941465758629888).rawCast)*x 1 +
+  (Nat.rawCast 159872811062358848333194327142905751273472)*x 2 +
+  ((Int.negOfNat 5635866628647890782456730156907387420672).rawCast)*x 3 +
+  ((Int.negOfNat 288217050297207762199203271487980044288).rawCast)*x 4 +
+  (Nat.rawCast 2055967940378733958175418850209693696)*x 5
+
+def slopeInterior6Form15 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 285266546628394017940153501941857475624960).rawCast)*x 0 +
+  ((Int.negOfNat 65632888499328336508601980715301718720512).rawCast)*x 1 +
+  (Nat.rawCast 100964407310838007115460320441797101748224)*x 2 +
+  ((Int.negOfNat 8989963114608711672168263482921080324096).rawCast)*x 3 +
+  (Nat.rawCast 1424536545769423860973273503761021534208)*x 4 +
+  ((Int.negOfNat 28134157035064171558681919156876476416).rawCast)*x 5 +
+  ((Int.negOfNat 60583422154699904524326485020901376).rawCast)*x 6
+
+def slopeInterior6Form16 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 327917716570826840353444141719328011583488).rawCast)*x 0 +
+  (Nat.rawCast 172851850955762395740135208106869917745152)*x 1 +
+  ((Int.negOfNat 11719865467777437984720402173164542492672).rawCast)*x 2 +
+  ((Int.negOfNat 11220964485104678173934094842266443055104).rawCast)*x 3 +
+  (Nat.rawCast 14344497314764989306871618728408121344)*x 4 +
+  (Nat.rawCast 101685328433729208480932215682500657152)*x 5 +
+  ((Int.negOfNat 537707756157259198542915042036154368).rawCast)*x 6
+
+def slopeInterior6Form17 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 160390456748226046411149634250707279282176).rawCast)*x 0 +
+  (Nat.rawCast 153236660881613501765254194767918329233408)*x 1 +
+  ((Int.negOfNat 54873433994229394854198692148874913513472).rawCast)*x 2 +
+  (Nat.rawCast 2183358560929889879468367088005427494912)*x 3 +
+  ((Int.negOfNat 536686124325692027644626652099585769472).rawCast)*x 4 +
+  ((Int.negOfNat 287481125878735209942926215689371910144).rawCast)*x 5 +
+  (Nat.rawCast 4816296436248167333348548836467933184)*x 6 +
+  (Nat.rawCast 3085578166221613092680581861343232)*x 7
+
+def slopeInterior6Form18 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 42076239867596286523571370669941584822272).rawCast)*x 0 +
+  (Nat.rawCast 56122017389559811272719055015333209309184)*x 1 +
+  ((Int.negOfNat 33793964632717077606899221079769231654912).rawCast)*x 2 +
+  (Nat.rawCast 10061146226866597632042455451694408925184)*x 3 +
+  (Nat.rawCast 86870404439170089954571901490130059264)*x 4 +
+  (Nat.rawCast 187310900017095616081848566005282897920)*x 5 +
+  ((Int.negOfNat 17119566480466631816347489522283446272).rawCast)*x 6 +
+  (Nat.rawCast 55216917284792510284324198485590016)*x 7
+
+def slopeInterior6Form19 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 3618948439886658151977087443306551443456).rawCast)*x 0 +
+  (Nat.rawCast 1365612175285282864517785737896593981440)*x 1 +
+  ((Int.negOfNat 6055014021421447367846027194469210652672).rawCast)*x 2 +
+  (Nat.rawCast 4280308116526809974704467819190271606784)*x 3 +
+  ((Int.negOfNat 740771836181180137113912450695515078656).rawCast)*x 4 +
+  (Nat.rawCast 176566990981461760511462521319391756288)*x 5 +
+  (Nat.rawCast 40574744025098789930538909623346266112)*x 6 +
+  ((Int.negOfNat 452110603407674475368226595962617856).rawCast)*x 7 +
+  ((Int.negOfNat 87578288010863648447081352265728).rawCast)*x 8
+
+def slopeInterior6Form20 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 1358412216319830220172950473157902336000)*x 0 +
+  ((Int.negOfNat 7571330947104401666388963833382980026368).rawCast)*x 1 +
+  (Nat.rawCast 4516743943800415843951346879925508374528)*x 2 +
+  ((Int.negOfNat 954035164726293150163835295452161376256).rawCast)*x 3 +
+  ((Int.negOfNat 444023927621361790256608135814144065536).rawCast)*x 4 +
+  ((Int.negOfNat 82027694839757438068105947015077167104).rawCast)*x 5 +
+  ((Int.negOfNat 43452758831869913372071451761739563008).rawCast)*x 6 +
+  (Nat.rawCast 1592443181668672922138923095960846336)*x 7 +
+  ((Int.negOfNat 2677444435666510105400667065548800).rawCast)*x 8
+
+def slopeInterior6Form21 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 542069128162821877648178396940503875584)*x 0 +
+  ((Int.negOfNat 3314520805369730207982636726539954159616).rawCast)*x 1 +
+  (Nat.rawCast 3444680001073706710558346225986515763200)*x 2 +
+  ((Int.negOfNat 1380881848516729166358632421515260329984).rawCast)*x 3 +
+  (Nat.rawCast 330745080247579629656290567397069291520)*x 4 +
+  ((Int.negOfNat 8262464386284517738582891290830045184).rawCast)*x 5 +
+  ((Int.negOfNat 2814235730017057297739329855926829056).rawCast)*x 6 +
+  ((Int.negOfNat 3606253702023213400512398073752715264).rawCast)*x 7 +
+  (Nat.rawCast 21674063692660123140220347758936064)*x 8 +
+  (Nat.rawCast 1060716495128943609416993734656)*x 9
+
+def slopeInterior6Form22 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 86508872829969510390845999747702980608)*x 0 +
+  ((Int.negOfNat 627277144202264695118822175343216951296).rawCast)*x 1 +
+  (Nat.rawCast 840678089928931538936224266323094405120)*x 2 +
+  ((Int.negOfNat 494462777289465639867814051152503242752).rawCast)*x 3 +
+  (Nat.rawCast 225572988011598956269975335046647644160)*x 4 +
+  ((Int.negOfNat 14273935213460932563007244490126655488).rawCast)*x 5 +
+  (Nat.rawCast 21241972323856710449157229363536592896)*x 6 +
+  (Nat.rawCast 4838065532253443227679344468389003264)*x 7 +
+  ((Int.negOfNat 77792374441368905260722141152673792).rawCast)*x 8 +
+  (Nat.rawCast 50386275371120564987544496766976)*x 9
+
+def slopeInterior6Form23 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 6466098382971092648031388514056667136)*x 0 +
+  ((Int.negOfNat 18671493099044010459069145329344446464).rawCast)*x 1 +
+  ((Int.negOfNat 35081139777688623941807398950524682240).rawCast)*x 2 +
+  ((Int.negOfNat 279651382100004543009149159271825408).rawCast)*x 3 +
+  ((Int.negOfNat 8669817718747821656572042112994902016).rawCast)*x 4 +
+  ((Int.negOfNat 20728841169299534070054587642324975616).rawCast)*x 5 +
+  ((Int.negOfNat 2096148638326129165364301199306653696).rawCast)*x 6 +
+  ((Int.negOfNat 2293490492537707299886851959549853696).rawCast)*x 7 +
+  (Nat.rawCast 179216490265925425154193938618253312)*x 8 +
+  ((Int.negOfNat 415846073642693955805098188734464).rawCast)*x 9
+
+def slopeInterior6Form24 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 154387670107219942193701841251860480)*x 0 +
+  (Nat.rawCast 17885362825812151047226636194866528256)*x 1 +
+  ((Int.negOfNat 66598390947611305631046769518909063168).rawCast)*x 2 +
+  (Nat.rawCast 74342197033583370454450985011783925760)*x 3 +
+  ((Int.negOfNat 29844919484995822363188685677212467200).rawCast)*x 4 +
+  (Nat.rawCast 9123028533835374490386272606918541312)*x 5 +
+  ((Int.negOfNat 2320814658154643771568362237265444864).rawCast)*x 6 +
+  ((Int.negOfNat 982014870670015339415153681973116928).rawCast)*x 7 +
+  ((Int.negOfNat 275070503069041827333283079232946176).rawCast)*x 8 +
+  (Nat.rawCast 1553044740805950443351264408371200)*x 9
+
+def slopeInterior6Form25 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 3935706983523175112874163499811471360)*x 1 +
+  ((Int.negOfNat 18140200259352927476243190795806441472).rawCast)*x 2 +
+  (Nat.rawCast 26797641269807487194030520218343702528)*x 3 +
+  ((Int.negOfNat 8761926975954008252662469979367538688).rawCast)*x 4 +
+  (Nat.rawCast 6036449090993836076503590390378528768)*x 5 +
+  ((Int.negOfNat 492720084118939484867370401465892864).rawCast)*x 6 +
+  (Nat.rawCast 958922278728170506831360621119799296)*x 7 +
+  (Nat.rawCast 232077273937431529366437591773085696)*x 8 +
+  ((Int.negOfNat 3763588634394433063879481908789248).rawCast)*x 9
+
+def slopeInterior6Form26 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 290218199425750504421842982340132864)*x 1 +
+  ((Int.negOfNat 3422360366117680200704252219706310656).rawCast)*x 2 +
+  (Nat.rawCast 2354294345166726208774489110453682176)*x 3 +
+  ((Int.negOfNat 318393136953403866790138284865486848).rawCast)*x 4 +
+  ((Int.negOfNat 1101778643581722660013023796666564608).rawCast)*x 5 +
+  ((Int.negOfNat 362690392767278514665030091628609536).rawCast)*x 6 +
+  (Nat.rawCast 57012254530729878398142971992080384)*x 7 +
+  ((Int.negOfNat 62467390079395552653213173758820352).rawCast)*x 8 +
+  (Nat.rawCast 6396535343207988823411319044571136)*x 9
+
+def slopeInterior6Form27 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 514804061388527740783937267366363136).rawCast)*x 2 +
+  ((Int.negOfNat 762859832359396463439572775953498112).rawCast)*x 3 +
+  (Nat.rawCast 1071733569808474209603243363375513600)*x 4 +
+  ((Int.negOfNat 591220500858811684554501864988606464).rawCast)*x 5 +
+  (Nat.rawCast 320760102792203084127811903502155776)*x 6 +
+  ((Int.negOfNat 103483333634779526009148018845024256).rawCast)*x 7 +
+  ((Int.negOfNat 37614332122667490049234447965880320).rawCast)*x 8 +
+  ((Int.negOfNat 7099264086239744125834755399745536).rawCast)*x 9
+
+def slopeInterior6Form28 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 38739595405867358381551224858083328).rawCast)*x 2 +
+  ((Int.negOfNat 297612033475879524138792878912569344).rawCast)*x 3 +
+  (Nat.rawCast 308428951962708267072026613871804416)*x 4 +
+  (Nat.rawCast 37120771395062095605378292314537984)*x 5 +
+  (Nat.rawCast 88160953406553205851061263135670272)*x 6 +
+  ((Int.negOfNat 26511674055347737373595943254884352).rawCast)*x 7 +
+  (Nat.rawCast 22877811808296363163938960143548416)*x 8 +
+  (Nat.rawCast 4426396233877070668711661880213504)*x 9
+
+def slopeInterior6Form29 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 53778983657185224867847886969241600).rawCast)*x 3 +
+  ((Int.negOfNat 25823723819578922369003523743416320).rawCast)*x 4 +
+  (Nat.rawCast 25703486386891224746682978807054336)*x 5 +
+  ((Int.negOfNat 49453106232391935487082998058188800).rawCast)*x 6 +
+  (Nat.rawCast 1265586992389443148849904672047104)*x 7 +
+  (Nat.rawCast 2012082698680336099817592943804416)*x 8 +
+  ((Int.negOfNat 892124884969213413158105898811392).rawCast)*x 9
+
+def slopeInterior6Form30 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 4236766930888040978087737810747392).rawCast)*x 3 +
+  ((Int.negOfNat 14856439063654785122898975242846208).rawCast)*x 4 +
+  (Nat.rawCast 3738433826559685640735761046175744)*x 5 +
+  ((Int.negOfNat 4603418802344839785538327872012288).rawCast)*x 6 +
+  (Nat.rawCast 8120160015992409790319675383480320)*x 7 +
+  ((Int.negOfNat 2183506810702235936557342012735488).rawCast)*x 8 +
+  ((Int.negOfNat 567906074395552304085229495123968).rawCast)*x 9
+
+def slopeInterior6Form31 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 116521534379666863486544495247360)*x 4 +
+  ((Int.negOfNat 955502797056454107684864037748736).rawCast)*x 5 +
+  (Nat.rawCast 3574513297893464532723516385001472)*x 6 +
+  ((Int.negOfNat 41659498851148769525732619583488).rawCast)*x 7 +
+  ((Int.negOfNat 599277774048859901232335598649344).rawCast)*x 8 +
+  (Nat.rawCast 355480211956941155277107544195072)*x 9
+
+def slopeInterior6Form32 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 248341450639395195104685434339328)*x 4 +
+  ((Int.negOfNat 453313263678538971907597459783680).rawCast)*x 5 +
+  ((Int.negOfNat 28866046722686536334368391036928).rawCast)*x 6 +
+  ((Int.negOfNat 922407931961836381135593466232832).rawCast)*x 7 +
+  (Nat.rawCast 252710257996334718705948193456128)*x 8 +
+  ((Int.negOfNat 24330549667765511568037376950272).rawCast)*x 9
+
+def slopeInterior6Form33 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 37325759370964950984324104060928)*x 5 +
+  ((Int.negOfNat 135920801562245228001127701676032).rawCast)*x 6 +
+  (Nat.rawCast 88056588960057352927972341841920)*x 7 +
+  (Nat.rawCast 79845460479896716042533957795840)*x 8 +
+  ((Int.negOfNat 26740790251437232029039373320192).rawCast)*x 9
+
+def slopeInterior6Form34 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 13153785966783768809569272201216)*x 5 +
+  (Nat.rawCast 7315896149544436832446237900800)*x 6 +
+  (Nat.rawCast 39187694112733419751950287634432)*x 7 +
+  ((Int.negOfNat 31456768314788719242069028110336).rawCast)*x 8 +
+  (Nat.rawCast 4538284952442148202171552759808)*x 9
+
+def slopeInterior6Form35 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 2494156264226083651647141052416)*x 6 +
+  ((Int.negOfNat 7556415679670253081301427945472).rawCast)*x 7 +
+  ((Int.negOfNat 1769953291842259499022777581568).rawCast)*x 8 +
+  (Nat.rawCast 1270998142214580341294172733440)*x 9
+
+def slopeInterior6Form36 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 239866683197356928479002624000).rawCast)*x 6 +
+  ((Int.negOfNat 120470786440327697600757104640).rawCast)*x 7 +
+  (Nat.rawCast 1599541361365582934545532977152)*x 8 +
+  ((Int.negOfNat 326639197691607881405844946944).rawCast)*x 9
+
+def slopeInterior6Form37 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 134389251732953063456451330048)*x 7 +
+  ((Int.negOfNat 131618361298670547639811964928).rawCast)*x 8 +
+  ((Int.negOfNat 28925087776928208695479762944).rawCast)*x 9
+
+def slopeInterior6Form38 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 10556593164147165840386555904).rawCast)*x 7 +
+  ((Int.negOfNat 13245498753529449657648807936).rawCast)*x 8 +
+  (Nat.rawCast 13672646533757008396091916288)*x 9
+
+def slopeInterior6Form39 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 2207116731303517327183577088)*x 8 +
+  ((Int.negOfNat 803037396808596604757999616).rawCast)*x 9
+
+def slopeInterior6Form40 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 75208532590926657811906560).rawCast)*x 8 +
+  ((Int.negOfNat 88376198336456295733788672).rawCast)*x 9
+
+def slopeInterior6Form41 (x : ℕ → ℝ) : ℝ :=
+  (Nat.rawCast 9632405144225823930187776)*x 9
+
+def slopeInterior6Form42 (x : ℕ → ℝ) : ℝ :=
+  ((Int.negOfNat 137655605229775019311104).rawCast)*x 9
+
+def slopeInterior6ClockForm (A : ℕ) (x : ℕ → ℝ) : ℝ :=
+  (4/5)^(4-4)*slopeInterior6Form4 x*degreeElevationCoefficient 38 (4-4) A +
+  (4/5)^(5-4)*slopeInterior6Form5 x*degreeElevationCoefficient 38 (5-4) A +
+  (4/5)^(6-4)*slopeInterior6Form6 x*degreeElevationCoefficient 38 (6-4) A +
+  (4/5)^(7-4)*slopeInterior6Form7 x*degreeElevationCoefficient 38 (7-4) A +
+  (4/5)^(8-4)*slopeInterior6Form8 x*degreeElevationCoefficient 38 (8-4) A +
+  (4/5)^(9-4)*slopeInterior6Form9 x*degreeElevationCoefficient 38 (9-4) A +
+  (4/5)^(10-4)*slopeInterior6Form10 x*degreeElevationCoefficient 38 (10-4) A +
+  (4/5)^(11-4)*slopeInterior6Form11 x*degreeElevationCoefficient 38 (11-4) A +
+  (4/5)^(12-4)*slopeInterior6Form12 x*degreeElevationCoefficient 38 (12-4) A +
+  (4/5)^(13-4)*slopeInterior6Form13 x*degreeElevationCoefficient 38 (13-4) A +
+  (4/5)^(14-4)*slopeInterior6Form14 x*degreeElevationCoefficient 38 (14-4) A +
+  (4/5)^(15-4)*slopeInterior6Form15 x*degreeElevationCoefficient 38 (15-4) A +
+  (4/5)^(16-4)*slopeInterior6Form16 x*degreeElevationCoefficient 38 (16-4) A +
+  (4/5)^(17-4)*slopeInterior6Form17 x*degreeElevationCoefficient 38 (17-4) A +
+  (4/5)^(18-4)*slopeInterior6Form18 x*degreeElevationCoefficient 38 (18-4) A +
+  (4/5)^(19-4)*slopeInterior6Form19 x*degreeElevationCoefficient 38 (19-4) A +
+  (4/5)^(20-4)*slopeInterior6Form20 x*degreeElevationCoefficient 38 (20-4) A +
+  (4/5)^(21-4)*slopeInterior6Form21 x*degreeElevationCoefficient 38 (21-4) A +
+  (4/5)^(22-4)*slopeInterior6Form22 x*degreeElevationCoefficient 38 (22-4) A +
+  (4/5)^(23-4)*slopeInterior6Form23 x*degreeElevationCoefficient 38 (23-4) A +
+  (4/5)^(24-4)*slopeInterior6Form24 x*degreeElevationCoefficient 38 (24-4) A +
+  (4/5)^(25-4)*slopeInterior6Form25 x*degreeElevationCoefficient 38 (25-4) A +
+  (4/5)^(26-4)*slopeInterior6Form26 x*degreeElevationCoefficient 38 (26-4) A +
+  (4/5)^(27-4)*slopeInterior6Form27 x*degreeElevationCoefficient 38 (27-4) A +
+  (4/5)^(28-4)*slopeInterior6Form28 x*degreeElevationCoefficient 38 (28-4) A +
+  (4/5)^(29-4)*slopeInterior6Form29 x*degreeElevationCoefficient 38 (29-4) A +
+  (4/5)^(30-4)*slopeInterior6Form30 x*degreeElevationCoefficient 38 (30-4) A +
+  (4/5)^(31-4)*slopeInterior6Form31 x*degreeElevationCoefficient 38 (31-4) A +
+  (4/5)^(32-4)*slopeInterior6Form32 x*degreeElevationCoefficient 38 (32-4) A +
+  (4/5)^(33-4)*slopeInterior6Form33 x*degreeElevationCoefficient 38 (33-4) A +
+  (4/5)^(34-4)*slopeInterior6Form34 x*degreeElevationCoefficient 38 (34-4) A +
+  (4/5)^(35-4)*slopeInterior6Form35 x*degreeElevationCoefficient 38 (35-4) A +
+  (4/5)^(36-4)*slopeInterior6Form36 x*degreeElevationCoefficient 38 (36-4) A +
+  (4/5)^(37-4)*slopeInterior6Form37 x*degreeElevationCoefficient 38 (37-4) A +
+  (4/5)^(38-4)*slopeInterior6Form38 x*degreeElevationCoefficient 38 (38-4) A +
+  (4/5)^(39-4)*slopeInterior6Form39 x*degreeElevationCoefficient 38 (39-4) A +
+  (4/5)^(40-4)*slopeInterior6Form40 x*degreeElevationCoefficient 38 (40-4) A +
+  (4/5)^(41-4)*slopeInterior6Form41 x*degreeElevationCoefficient 38 (41-4) A +
+  (4/5)^(42-4)*slopeInterior6Form42 x*degreeElevationCoefficient 38 (42-4) A
+
+def slopeInterior6TensorCoefficient (A B : ℕ) : ℝ :=
+  slopeInterior6ClockForm A (fun b => (361/25)^b*degreeElevationCoefficient 9 b B)
+
+end
+end HTGeometry.ThetaRatioKineticContraction
+

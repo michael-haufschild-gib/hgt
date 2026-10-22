@@ -70,7 +70,7 @@ pole-driven unbounded growth, not loss of one preferred sign convention.
 ## Formal artifact
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureTailFiniteCeiling.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesCurvatureTailFiniteCeiling.lean
 ```
 
 Principal declarations:

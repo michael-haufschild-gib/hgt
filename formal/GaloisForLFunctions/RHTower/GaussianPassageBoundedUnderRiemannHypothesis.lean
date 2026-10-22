@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.AnchoredPhasePassageRigidity
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevErrorPowerBound
 import GaloisForLFunctions.RHTower.PrimeVacuumErrorTransfer
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 
 /-!
 # Bounded Gaussian passage is exactly the Riemann hypothesis

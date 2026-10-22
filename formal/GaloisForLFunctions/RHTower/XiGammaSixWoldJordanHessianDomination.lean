@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGammaSixFilteredBoundaryControl
-import GaloisForLFunctions.RHTower.HedenmalmThetaGammaSixWoldCarrier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaGammaSixWoldCarrier
 
 /-!
 # Gamma Hessian domination by the Wold--Jordan harmonic source carrier

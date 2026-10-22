@@ -6,8 +6,8 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal modules:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszLogLatticeHandoff.lean`,
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszResolventRHCriterion.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszLogLatticeHandoff.lean`,
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszResolventRHCriterion.lean`
 - **Parent:** `ccm-unit-riesz-coherent-outgoing-charge-hankel`
 
 ## Result

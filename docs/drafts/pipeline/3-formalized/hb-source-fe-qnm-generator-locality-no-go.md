@@ -40,7 +40,7 @@ finite packet.
 ## Formal result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEQNMGeneratorLocalityNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEQNMGeneratorLocalityNoGo`.
 Lean proves:
 
 1. the literal positive-branch BM QNM frequency has an exact affine Xi-support formula;

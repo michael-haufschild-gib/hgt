@@ -13,7 +13,7 @@ A continuous, possibly nonlinear coupling on existing all-cross-prime `ℓ²` so
 
 `RHTower.no_continuousAt_zero_crossPrimeAmbient_to_oneLegGraph_reconstruction` proves no such map exists. Actual source-normalized prime-harmonic rows converge to zero in ambient `ℓ²`, but their exact graph admissions converge to nonzero vertical trace generator. Any exact map continuous at origin would give two distinct limits for same image sequence.
 
-Capstone: `RHTower.boundedCrossPrimeSingularGraphLiftRouteKilled` in `GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`.
+Capstone: `RHTower.boundedCrossPrimeSingularGraphLiftRouteKilled` in `GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`.
 
 ## Strongest positive survivor
 

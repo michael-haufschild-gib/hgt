@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCapDerivBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerCapDerivBound
 import GaloisForLFunctions.HTGeometry.SchwartzComplete
 
 /-!

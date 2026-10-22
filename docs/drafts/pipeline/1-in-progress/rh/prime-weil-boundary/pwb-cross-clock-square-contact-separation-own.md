@@ -11,7 +11,7 @@ Literal complementary source legs → cross-rate metric forcing → **new ordere
 
 ## Paper proof
 
-Use the notation and spectral rigidity proof in [the cross-clock forcing card](../../pwb-cross-branch-clock-forcing-own.md): `H=U_true U_false`, `D=(Δ−20)H`, `Q=fullSquarePotential q`, and `β=sourceGrowthExponent q∈[1,2)`. The corpus proves `crossBranchForcingCovector=coexact D` and `fullSquareCovector=coexact Q`. If the stated fields agreed, both coordinate derivatives of `D−cQ` would vanish on the connected upper half-plane. Thus
+Use the notation and spectral rigidity proof in [the cross-clock forcing card](pwb-cross-branch-clock-forcing-own.md): `H=U_true U_false`, `D=(Δ−20)H`, `Q=fullSquarePotential q`, and `β=sourceGrowthExponent q∈[1,2)`. The corpus proves `crossBranchForcingCovector=coexact D` and `fullSquareCovector=coexact Q`. If the stated fields agreed, both coordinate derivatives of `D−cQ` would vanish on the connected upper half-plane. Thus
 
 `(Δ−20)H = cQ + C` for one constant `C∈ℂ`.
 

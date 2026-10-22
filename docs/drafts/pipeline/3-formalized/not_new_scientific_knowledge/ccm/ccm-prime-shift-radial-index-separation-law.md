@@ -151,7 +151,7 @@ identification of a prime-shift cutoff with a radial-index cutoff.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMTruncatedDivisorReindex.lean`.  `ApertureShiftCutoff.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMTruncatedDivisorReindex.lean`.  `ApertureShiftCutoff.lean`
 covers the prime-shift cutoff and is untouched; nothing is duplicated.
 
 The previous decision judged the reindexing to "add no new mathematical content".  That is true of the

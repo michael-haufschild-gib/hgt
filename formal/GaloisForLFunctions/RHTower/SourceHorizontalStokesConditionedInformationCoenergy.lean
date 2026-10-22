@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesReflectedCompactCarrier
-import GaloisForLFunctions.RHTower.HedenmalmThetaRoutePInformationWoldGaussVirialBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaRoutePInformationWoldGaussVirialBridge
 import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 
 /-!

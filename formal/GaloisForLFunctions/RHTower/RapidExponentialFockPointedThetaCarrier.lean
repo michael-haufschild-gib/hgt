@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RapidExponentialMomentFockThetaTrace
-import GaloisForLFunctions.RHTower.DeningerArithmeticCompactOpen
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCompactOpen
 import GaloisForLFunctions.HTGeometry.ContinuousMapLocallyConvex
 
 /-!

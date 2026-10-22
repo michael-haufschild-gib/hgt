@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergThetaSourcePhase
-import GaloisForLFunctions.RHTower.HedenmalmThetaCompactDivisorEigenmode
-import GaloisForLFunctions.RHTower.HedenmalmCompletedDividedEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaCompactDivisorEigenmode
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompletedDividedEnergy
 
 /-!
 # Exact positive variance of the actual theta source mode

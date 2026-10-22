@@ -7,7 +7,7 @@
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL NOVELTY PROVISIONAL]`
   `[NOT RH] [NOT WHOLE-CCM DEATH]`
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMInfiniteConvolutionPrimeFaceRigidity.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMInfiniteConvolutionPrimeFaceRigidity.lean`
 
 ## Frontier attacked
 

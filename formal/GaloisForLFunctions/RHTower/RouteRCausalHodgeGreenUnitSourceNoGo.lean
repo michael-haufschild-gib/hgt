@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiAbelLogFourierKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiAbelLogFourierKernel
 import GaloisForLFunctions.RHTower.GaussHodgeMassCurrent
 
 /-!

@@ -71,8 +71,8 @@ The proof closes the endpoint comparison as follows.
    proves the complete Bochner transform identity.
 
 The capstones are
-[`principalLaplaceProfile_eq_principalDifference`](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMJointSourcePrincipalGreenIdentification.lean),
-[`causalCuspSourceVector_original_transform`](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMJointSourceCausalCuspSourceIdentification.lean),
+[`principalLaplaceProfile_eq_principalDifference`](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMJointSourcePrincipalGreenIdentification.lean),
+[`causalCuspSourceVector_original_transform`](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMJointSourceCausalCuspSourceIdentification.lean),
 and the reusable
 [`negative_homogeneous_eq_zero`](../../../../formal/GaloisForLFunctions/HTGeometry/NegativeWronskianUniqueness.lean).
 

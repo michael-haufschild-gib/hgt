@@ -490,7 +490,7 @@ Lean:
 
 ```text
 GaloisForLFunctions/HTGeometry/PairGroupoidBidescentLaw.lean
-GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean
+GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoEndedVolterraDefect.lean
 ```
 
 ## 2026-08-03 all-cross-prime Gaussian residual normalization

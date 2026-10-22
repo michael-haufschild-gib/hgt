@@ -27,7 +27,7 @@ The exact row also yields `||P(z)⁻¹||≥c exp(δ|τ|)`. This quantifies an un
 
 ## Formal status
 
-Module `RHTower/HedenmalmThetaExteriorPseudospectralSeparation.lean`:
+Module `RHTower/Hedenmalm/HedenmalmThetaExteriorPseudospectralSeparation.lean`:
 
 - `adjoint_thetaSourcePencil_esscher`: exact one-direction source defect.
 - `norm_adjoint_thetaSourcePencil_pseudomode` and `norm_thetaExteriorPseudomode_residual`: exact completed-Xi residual coefficient.

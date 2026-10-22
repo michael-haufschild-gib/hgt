@@ -5,12 +5,12 @@
 - **Claim:** `[PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-log-recurrence-polynomial-carrier-trichotomy.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLatticeCarrierWeight.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLatticeShellSummability.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPositionCommutatorGroup.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialGroupEstimate.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiHatanoNelsonEllipse.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiApertureBorelCantelli.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLatticeCarrierWeight.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLatticeShellSummability.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositionCommutatorGroup.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolynomialGroupEstimate.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHatanoNelsonEllipse.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureBorelCantelli.lean`
 
 ## Formal content
 

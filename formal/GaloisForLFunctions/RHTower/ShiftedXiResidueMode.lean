@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RiemannTower
-import GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiAntiPickIdentity
 
 /-!
 # The simple-zero residue mode of the shifted-xi quotient

@@ -62,7 +62,7 @@ lower-Hardy wall value.  Gamma/polar completion is retained exactly through the 
 
 ## Lean certificate
 
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiCauchyWallHardyEvaluation`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyWallHardyEvaluation`
 - **Exact outgoing evaluation:**
   `suzukiUnitRieszCompletedCauchyWallSymbolComplex_neg_I_eq_outgoingCharge`
 - **Closed resolvent evaluation:**

@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import sqlite3
 import subprocess
 import sys
 import threading
@@ -106,9 +107,16 @@ def classify_failures(reports):
 
 def small_shard_count(directory):
     # This is a read probe, including while a bulk importer owns the writer.
-    with Corpus(directory, readonly=True) as corpus:
-        return corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<8192 '
-            'AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)').fetchone()[0]
+    # A cache with no database yet has nothing to compact, and a probe must
+    # never be the reason a maintenance cycle fails.
+    if not (directory / 'corpus.sqlite3').exists():
+        return 0
+    try:
+        with Corpus(directory, readonly=True) as corpus:
+            return corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<8192 '
+                'AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)').fetchone()[0]
+    except sqlite3.DatabaseError:
+        return 0
 
 
 def maintenance_contention(tail):
@@ -191,7 +199,7 @@ def run(root: Path, *, once=False) -> int:
             phases[name] = dict(at=time.time(), elapsed_seconds=time.monotonic()-started,
                                 exit_code=child.returncode, termination_reason=termination_reason,
                                 errors=errors, deferred=deferred, error=error,
-                                completed={k: last[k] for k in ('changed', 'vectors', 'methods') if k in last})
+                                completed={k: last[k] for k in ('changed', 'vectors') if k in last})
             record(last_phase=name, last_exit_code=child.returncode, last_result=last,
                    errors=errors, deferred=deferred, last_error=error)
         record()
@@ -223,10 +231,11 @@ def run(root: Path, *, once=False) -> int:
                     if not stopped() and (directory / 'qdrant.json').exists():
                         phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
                             '--cache-dir', str(directory), '--budget-seconds', '30'])
-                    phase('methods', 45, ['--methods'])
-                    if not stopped() and not (directory / 'qdrant.json').exists():
-                        small = small_shard_count(directory)
-                        if small > 256:
+                    # Compaction is not a Qdrant alternative: publication writes
+                    # one small immutable file per batch and `sync` reconstructs
+                    # vectors out of those files, whoever serves the queries.
+                    if not stopped():
+                        if small_shard_count(directory) > 256:
                             phase('compaction', 30, ['--compact'])
                 else:
                     record(last_error='Local models unavailable; source indexing continues. Run research-setup to enable enrichment.')

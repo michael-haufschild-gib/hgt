@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiApertureDressedWallLightCompletion.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureDressedWallLightCompletion.lean`
 
 ## Formal theorem surface
 

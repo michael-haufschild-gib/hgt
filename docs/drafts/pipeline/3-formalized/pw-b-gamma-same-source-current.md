@@ -138,8 +138,8 @@ identification remain separate obligations.
 
 Modules:
 
-- formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceKernel.lean: 312 lines, 21 public theorems, four definitions.
-- formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceCurrent.lean: 319 lines, 23 public theorems, four definitions.
+- formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceKernel.lean: 312 lines, 21 public theorems, four definitions.
+- formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceCurrent.lean: 319 lines, 23 public theorems, four definitions.
 
 The complete `lake env lean` scratch checks passed. Both targeted final
 `lake build` commands passed, rebuilding only their new leaf; existing

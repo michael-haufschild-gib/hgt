@@ -10,7 +10,7 @@ import GaloisForLFunctions.RHTower.MixedStateQutritRecurrenceSeparation
 import GaloisForLFunctions.RHTower.MixedStateQuquartMomentRecurrenceSeparation
 import GaloisForLFunctions.RHTower.FiniteJetRecurrenceSeparation
 import GaloisForLFunctions.RHTower.FermiMellinPhaseProperness
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildNonMarkovEdge
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildNonMarkovEdge
 
 /-!
 # Indefinite-order and Cramer--Rao applications across the corpus

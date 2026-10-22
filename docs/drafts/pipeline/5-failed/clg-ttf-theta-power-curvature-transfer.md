@@ -127,7 +127,7 @@ counterexample to RH for the original source `Psi_1=Phi`.
 - **Paper dependencies:** corpus modular ODE, source positivity and global drift
   barrier; Lagarias–Rains positive curvature formula and four-square factorization;
   corpus existence and nonreality of a nontrivial zeta zero. No RH assumption.
-- **Lean status:** `formal/GaloisForLFunctions/RHTower/ThetaCuspModularEnergyFloor.lean`
+- **Lean status:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspModularEnergyFloor.lean`
   proves `strictAntiOn_thetaCuspModularStrongEnergy`,
   `thetaCuspModularStrongEnergy_gt_twelve`, `thetaCuspModularPowerSourceBracket_pos`,
   `thetaCuspNormalizedPowerSource_eq`, `thetaCuspNormalizedPowerSource_neg`,
@@ -136,7 +136,7 @@ counterexample to RH for the original source `Psi_1=Phi`.
   source incidence. The full theta-power Mellin incidence and the negative
   transfer statement are paper-only.
 - **Validation:** scratch `lake env lean` and final
-  `lake --old build GaloisForLFunctions.RHTower.ThetaCuspModularEnergyFloor` passed.
+  `lake --old build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspModularEnergyFloor` passed.
   The leaf compiled in 14 seconds; three required existing modules were refreshed
   sequentially. No umbrella build or numerical computation. All seven new theorem
   axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.

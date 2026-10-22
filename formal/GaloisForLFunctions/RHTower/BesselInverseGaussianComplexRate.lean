@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCauchyPowerFourierBessel
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCauchyPowerFourierBessel
 
 /-!
 # The inverse-Gaussian Mellin integral with a complex rate

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ConstrainedWeilPlateauSecondOrder
 import GaloisForLFunctions.RHTower.ConstrainedWeilApertureWindowMean
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarMultiplier
-import GaloisForLFunctions.RHTower.SuzukiPolarTranslateMultiplier
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarMultiplier
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPolarTranslateMultiplier
 
 /-!
 # The pole-vanishing derivative test `D φ = φ'' − φ/4`

@@ -182,7 +182,7 @@ arbitrary factor `B` remains.
 
 ## 9. Formal status
 
-`formal/GaloisForLFunctions/RHTower/SuzukiNegativeProjectorCoherentCompletion.lean` formalizes
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeProjectorCoherentCompletion.lean` formalizes
 Sections 3--5 unconditionally.  The device that removes the unbounded-operator obstruction is the
 card's own hypothesis `0 in rho(A)`: the inverse `B = A^(-1)` is a *bounded* self-adjoint operator,
 and in the inverse coordinate `x = 1/t` the affine defect is the rational function
@@ -274,7 +274,7 @@ Section 9 mapped every numbered display to a declaration, but Section 4 makes on
 `(9)`: that `D_-` is the **unique** Loewner-minimal commuting positive correction. The corpus had
 only the lower bound `negPart_le_of_cfc_add_nonneg` (`C >= D_-`), which alone does not say `D_-`
 belongs to the admissible class, and so does not give minimality or uniqueness. Now closed in
-`RHTower/SuzukiNegativeProjectorCoherentCompletion.lean` [PROVED HERE], standard axioms
+`RHTower/Suzuki/SuzukiNegativeProjectorCoherentCompletion.lean` [PROVED HERE], standard axioms
 `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `suzukiCommutingCompletions` : the admissible class — `C = c(B)` with `c` continuous on the

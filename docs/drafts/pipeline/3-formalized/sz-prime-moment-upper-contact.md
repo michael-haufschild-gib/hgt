@@ -94,7 +94,7 @@ checks determined applicability. No absence or novelty claim follows.
   a square-root cast, and an untyped intermediate inequality.
 - Scratch73279 passed all four theorems and their axiom queries.
 - Final production audit73270:
-  `lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeMomentUpperContact.olean`,
+  `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentUpperContact.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentUpperContact.olean`,
   in `formal`, exit0 with no diagnostics.
 - Final all4-public-theorem axiom audit72769:
   `lake --old env lean /tmp/sz_upper_contact_axioms.lean`, exit0;
@@ -119,12 +119,12 @@ source comparison, or prove the linear primitive tail sign directly.
 
 Lint67589 errors (unmodified modules):
 
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+- owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 - owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
 - owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 - owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines

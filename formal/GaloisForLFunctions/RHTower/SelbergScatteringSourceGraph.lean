@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringSourceBounds
 import GaloisForLFunctions.RHTower.SelbergScatteringCutoffDerivatives
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMHeightLaplacian
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMHeightLaplacian
 
 /-!
 # Original corrected source in the native closed graph

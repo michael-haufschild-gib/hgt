@@ -10,7 +10,7 @@
   and its arithmetic opens form the finite-boundary recollement basis
   needed for Deninger's source localization.
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerSpecZCofiniteRecollement`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSpecZCofiniteRecollement`
 
 ## Theorem
 
@@ -148,7 +148,7 @@ finite prime star.
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerSpecZCofiniteRecollement.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerSpecZCofiniteRecollement.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all 24 declarations: only the Lean/mathlib standard
   `propext`, `Classical.choice`, and `Quot.sound`.
@@ -194,7 +194,7 @@ strict direct-sum topology.  That is
   recollements complete
 - [x] 2 → 3 formalized: prime-open basis and finite-support
   decomposition encoded in Lean
-  (`GaloisForLFunctions.RHTower.DeningerSpecZCofiniteRecollement`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerSpecZCofiniteRecollement`)
 - [ ] 3 → 4 publication-ready: integrate with pro-recollement
   analytic comparison
 

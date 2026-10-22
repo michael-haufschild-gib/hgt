@@ -3,7 +3,7 @@
 ## Status
 
 - Stage: 3-formalized
-- Lean target: `GaloisForLFunctions.RHTower.ThetaCuspPairwiseStrictTernaryLocalizationUniversalityLaw`
+- Lean target: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPairwiseStrictTernaryLocalizationUniversalityLaw`
 - Scientific status: `[PROVED HERE] [FORMALIZED] [UNCONDITIONAL] [NOT RH]`
 
 ## Theorem-generated route

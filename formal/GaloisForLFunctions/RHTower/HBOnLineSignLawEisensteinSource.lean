@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.EisensteinLineSourceL2
 import GaloisForLFunctions.RHTower.EisensteinLineSourceRatio
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSkewPlateauCovarianceKernel
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSkewPlateauCovarianceKernel
 import GaloisForLFunctions.RHTower.HighBlockAsymptotics
 
 /-!

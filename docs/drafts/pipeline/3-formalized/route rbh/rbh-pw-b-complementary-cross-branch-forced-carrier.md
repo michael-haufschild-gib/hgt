@@ -71,7 +71,7 @@ both orders of the skew causal pairing.
 ## Lean status
 
 - Direct source audit passed:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchBidegree.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchBidegree.lean`.
 - Wired to `GaloisForLFunctions/RHTower.lean`; umbrella was not built.
 - No `.olean` build or umbrella build was run for this new leaf.
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SerreQ8ArtinGaloisRealization
-import GaloisForLFunctions.RHTower.ArtinInducedDegree
+import GaloisForLFunctions.RHTower.Artin.ArtinInducedDegree
 
 /-!
 # The literal monomial source law for Serre's `Q₈` Artin representation

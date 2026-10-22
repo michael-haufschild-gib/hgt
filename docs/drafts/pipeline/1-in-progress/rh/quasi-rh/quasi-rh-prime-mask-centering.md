@@ -3,7 +3,7 @@
 - **ID:** quasi-rh-prime-mask-centering
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE, with a closed finite arithmetic optimization
-- **Source:** [Fixed-strip task](../../quasi-rh-fixed-strip-improvement.md)
+- **Source:** [Fixed-strip task](quasi-rh-fixed-strip-improvement.md)
 - **Statement:** Realize a mean-preserving prime-mask average inside the exceptional detector source, and estimate its nonexceptional blocks before absolute summation.
 
 ## Mechanism and first tests
@@ -75,7 +75,7 @@ The existing `HyperKloostermanFactoredModuliBilinear.norm_sq_factored_moduli_le`
 
 At common ideal `C=1`, `globalExtension` is an empty product. The remaining arithmetic factor is a character in each lattice variable, up to a fixed ray-class factor. For separated test weights, a bound of the proposed strength would require a scalar character-sum saving of the shape `N^(1/2)q^(1/6+ε)`. Thus generic orthogonality is not sufficient: the target has conductor-aspect Weyl strength. The retrieved Jacobi/Gauss identities evaluate complete two-character sums; they do not supply this short-sum bound or the necessary higher correlations. The coupled shell profile must also be separated with controlled norms before using any scalar estimate.
 
-The [additive-shift route](../../quasi-rh-shift-correlation.md) now proves the exact fourth-correlation polynomial, power-degenerate tuple count, cross-ratio reduction and complete-parameter mean-square bound in Lean. Its interval fourth-moment conjecture through shift length `q^(1/3)` isolates a possible source of the required conductor exponent. The complete-parameter bound does not prove that short-window conjecture.
+The [additive-shift route](quasi-rh-shift-correlation.md) now proves the exact fourth-correlation polynomial, power-degenerate tuple count, cross-ratio reduction and complete-parameter mean-square bound in Lean. Its interval fourth-moment conjecture through shift length `q^(1/3)` isolates a possible source of the required conductor exponent. The complete-parameter bound does not prove that short-window conjecture.
 
 ## Three-quarters requirement
 

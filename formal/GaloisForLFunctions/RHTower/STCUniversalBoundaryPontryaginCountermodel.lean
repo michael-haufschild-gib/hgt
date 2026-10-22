@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmCompactSourceEigenmode
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompactSourceEigenmode
 import GaloisForLFunctions.HTGeometry.PontryaginNeutralEigenvectorBound
 
 /-!

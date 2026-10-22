@@ -5,7 +5,7 @@
 - **Type:** exact positive survivor + sharpened RH frontier
 - **Status:** `[PROVED] [UNCONDITIONAL] [SOURCE-PURE ALGEBRA]`
 - **Parent:** `../../1-in-progress/suzuki-jump-kernel-loewner-growth.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiXiRealFEBipolarizationCompletion.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiRealFEBipolarizationCompletion.lean`
 
 ## 1. Actual frontier after the S43 obstruction
 
@@ -223,7 +223,7 @@ bipolarization theorem lacks formal closure.
 
 ### Lean progress — Section 2's degeneracy claim and Section 3's minimality FORMALIZED
 
-Audit against `RHTower/SuzukiXiRealFEBipolarizationCompletion.lean`. The algebraic content of
+Audit against `RHTower/Suzuki/SuzukiXiRealFEBipolarizationCompletion.lean`. The algebraic content of
 `(5)`--`(8)`, `(10)`, `(11)`, `(12)` and the negative-node specialization each had a declaration.
 Two assertions did not.
 

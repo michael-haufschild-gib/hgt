@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiBesselWeightBounds
 import GaloisForLFunctions.RHTower.XiEndpointCancellation
 import GaloisForLFunctions.RHTower.ExteriorDunsterPrimitive
-import GaloisForLFunctions.RHTower.CCMFirstRowVanDerCorputBlocks
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowVanDerCorputBlocks
 import GaloisForLFunctions.RHTower.ProlateDunsterComparisonBridge
 
 /-!

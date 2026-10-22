@@ -50,27 +50,27 @@ Unbounded slopes and symbol values do not control their integrated signed work o
 Final direct leaf60657 passed with no diagnostics:
 
 ```text
-lake --old env lean GaloisForLFunctions/RHTower/SuzukiCompletedCurrentSignedWindows.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiCompletedCurrentSignedWindows.olean
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCompletedCurrentSignedWindows.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompletedCurrentSignedWindows.olean
 ```
 
 Public declarations: `RHTower.hasDerivWithinAt_suzukiPsi_right` (line42), `RHTower.criticalMellinCompletedError_two_signed_windows` (line215), `RHTower.correctedCCMSymbol_zero_two_signed_windows` (line228). Umbrella import appears once; no umbrella build was run. All three public axiom queries53591 passed in /tmp, each reporting only propext, Classical.choice and Quot.sound. The printed capstone types quantify only over B and L; neither has an RH premise. Global lint49877 reported only the following unrelated unreachable-module errors; the new leaf had no lint error:
 
 ```text
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PMPowerDampedMobiusBoundaryMoments
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMixedLaplaceTransform
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.RoutePNativeMixedWeightedFTC
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareFlow
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareMoments
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspRatioSquareSlope
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioSquareFlow
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioSquareMoments
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioSquareSlope
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaGaussianAmplitudeQuadratic
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaGaussianCovarianceLimit
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaGaussianCovarianceMeasure

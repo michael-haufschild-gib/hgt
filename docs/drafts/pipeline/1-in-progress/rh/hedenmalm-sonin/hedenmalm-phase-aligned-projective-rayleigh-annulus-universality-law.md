@@ -60,11 +60,11 @@ phase-aligned vector distance. Their closure yields a new metric spectral statem
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.HedenmalmPhaseAlignedProjectiveRayleighAnnulusUniversalityLaw`
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPhaseAlignedProjectiveRayleighAnnulusUniversalityLaw`
 - Main theorem:
   `thetaCuspRightLine_phaseAlignedProjectiveRayleighAnnulusUniversality`
 - Exact-file command:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmPhaseAlignedProjectiveRayleighAnnulusUniversalityLaw.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPhaseAlignedProjectiveRayleighAnnulusUniversalityLaw.lean`
 - Result: passed warning-free on 2026-07-23.
 - Umbrella:
   `formal/GaloisForLFunctions/RHTower.lean`.

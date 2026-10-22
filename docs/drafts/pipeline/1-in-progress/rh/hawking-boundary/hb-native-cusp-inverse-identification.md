@@ -4,7 +4,7 @@ Stage: 1-in-progress. Native cusp transport and cutoff-subtracted angular L² ad
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hardest target remains cancellation of `2 Omega(B(p,p)/2,B(m,m)/2)` with all physical boundary currents and independent tensor amplitudes. The [full-source growth result](../../hb-full-source-terminal-decay.md) supplies a Laplace overlap `max(kappa,3/2)<Re w<2`. The native residual and the constructed physical response are now identified in the original time-Hilbert-space class by their proved equations and covariance-energy uniqueness. The hard next target is their actual derivative/current transfer and the complete physical boundary evaluation.
+The hardest target remains cancellation of `2 Omega(B(p,p)/2,B(m,m)/2)` with all physical boundary currents and independent tensor amplitudes. The [full-source growth result](hb-full-source-terminal-decay.md) supplies a Laplace overlap `max(kappa,3/2)<Re w<2`. The native residual and the constructed physical response are now identified in the original time-Hilbert-space class by their proved equations and covariance-energy uniqueness. The hard next target is their actual derivative/current transfer and the complete physical boundary evaluation.
 
 ## Exact native cusp transport
 

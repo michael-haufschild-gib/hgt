@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWardCubicPrimeGammaMixedSecantGraph
 import GaloisForLFunctions.RHTower.GaussHodgeWeilFundamentalSymmetry
-import GaloisForLFunctions.RHTower.DeningerPrimeGammaEulerSectorObstruction
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeGammaEulerSectorObstruction
 
 /-!
 # Prime--Gamma secant fundamental-symmetry gap (W-H206)

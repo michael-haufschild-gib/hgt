@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.TraceNormLimit
 import GaloisForLFunctions.RHTower.TraceNorm
 import GaloisForLFunctions.RHTower.SchattenApproximation
 import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
-import GaloisForLFunctions.RHTower.DeningerNuclearSchattenBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerNuclearSchattenBridge
 import GaloisForLFunctions.HTGeometry.RankOneHilbertSchmidt
 import Mathlib.Analysis.InnerProductSpace.Projection.Basic
 

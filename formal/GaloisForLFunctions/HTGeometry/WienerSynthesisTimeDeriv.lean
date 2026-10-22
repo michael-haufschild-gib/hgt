@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonChartC1
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonChartC1
 
 /-!
 # Differentiating a synthesis in time, in general

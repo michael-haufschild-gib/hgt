@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergDelangeConvolutionTransfer
-import GaloisForLFunctions.RHTower.SuzukiCriticalAperturePrimeCurrent
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalAperturePrimeCurrent
 import GaloisForLFunctions.RHTower.ZetaBinomialHalfFractionalPole
 import GaloisForLFunctions.HTGeometry.PrimeSieveHarmonicInclusionExclusion
 

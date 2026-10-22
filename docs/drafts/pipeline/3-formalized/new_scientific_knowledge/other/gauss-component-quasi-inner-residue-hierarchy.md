@@ -1454,7 +1454,7 @@ RHTower.inner_fourierLp_gaussQuasiInnerG        -- the fold
 ```
 
 The general self-adjointness lemma was **generalized out of** the Klein–Gordon layer rather than
-duplicated: `HTGeometry/KleinGordonSelfAdjointMultiplier.lean`'s `lpBoundedMulCLM_inner` is now a
+duplicated: `HTGeometry/KleinGordon/KleinGordonSelfAdjointMultiplier.lean`'s `lpBoundedMulCLM_inner` is now a
 one-line application of the arbitrary-measure version in `HTGeometry/LpBoundedMultiplier.lean`.
 
 ### Why this is the right object

@@ -42,7 +42,7 @@ divisors.
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.DeningerRationalWittLocalization
+GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittLocalization
 ```
 
 Headline declarations:
@@ -59,8 +59,8 @@ Headline declarations:
 
 Audit:
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerRationalWittLocalization.lean` — passed.
-- `lake build GaloisForLFunctions.RHTower.DeningerRationalWittLocalization` — passed; no full or
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittLocalization.lean` — passed.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittLocalization` — passed; no full or
   umbrella build run.
 - `#print axioms` on all headline layers — only `propext`, `Classical.choice`, `Quot.sound`.
 - Module imported by `GaloisForLFunctions.RHTower` umbrella.

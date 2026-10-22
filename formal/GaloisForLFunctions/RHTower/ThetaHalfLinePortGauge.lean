@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaHalfLinePortCrossings
 import GaloisForLFunctions.RHTower.FiniteZeroHadamardProduct
-import GaloisForLFunctions.RHTower.HedenmalmThetaEigenODE
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaEigenODE
 
 /-!
 # Exact symmetrization of the theta half-line port

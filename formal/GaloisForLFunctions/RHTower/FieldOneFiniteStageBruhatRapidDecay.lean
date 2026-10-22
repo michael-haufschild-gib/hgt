@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageBruhatPeriodization
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageModuleOneFundamentalDomain
-import GaloisForLFunctions.RHTower.CCMRationalPeriodicWeightedPoisson
+import GaloisForLFunctions.RHTower.CCM.CCMRationalPeriodicWeightedPoisson
 
 /-!
 # Uniform rapid decay of finite-stage Bruhat periodization

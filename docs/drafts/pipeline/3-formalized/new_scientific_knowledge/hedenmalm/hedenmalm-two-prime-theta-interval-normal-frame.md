@@ -397,9 +397,9 @@ conjunction.
 
 ## Lean status
 
-`[FORMALIZED]`  `formal/GaloisForLFunctions/RHTower/HedenmalmIntervalAnomaly.lean`
+`[FORMALIZED]`  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmIntervalAnomaly.lean`
 (namespace `RHTower.HedenmalmIntervalAnomaly`), built on the rank-one anomaly module
-`RHTower/HedenmalmPrimeTranslationAnomaly.lean` of the parent card.  All declarations are
+`RHTower/Hedenmalm/HedenmalmPrimeTranslationAnomaly.lean` of the parent card.  All declarations are
 `#print axioms`-clean.
 
 | # | statement | Lean declaration |
@@ -413,7 +413,7 @@ conjunction.
 | — | **prime-2 / prime-3 no common zero**, raw and centered | `eq_zero_of_log_three_eq_log_two`, `no_common_zero_two_three`, `no_common_zero_centered_two_three` |
 | `(6)` | the centered window `c_n = -i S_(L_n/2) r_n`, strictly positive and even | `centeredWindow`, `centeredWindow_eq`, `centeredWindow_pos`, `intervalMass_pos`, `cdfFun_neg`, `intervalMass_neg`, `centeredWindow_neg` |
 
-**Unconditional divisor factorization.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaIntervalTransform.lean`
+**Unconditional divisor factorization.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaIntervalTransform.lean`
 (namespace `RHTower.HedenmalmThetaSource`) proves the factorization at the actual arithmetic
 source, with no hypothesis: one integration by parts on the line, the window derivative
 `k(. + L) - k`, and the vanishing of the boundary terms from the exponential decay of the source.
@@ -428,7 +428,7 @@ source, with no hypothesis: one integration by parts on the line, the window der
 | `(5)` | **`hat r_n = q_n Xi_C`** | `integral_integerAnomaly_sourceChar` |
 | `(7)` | **`hat c_n = a_n Xi_C`** | `integral_centeredWindow_sourceChar` |
 
-**Normal frame and compact coordinate.**  `formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeNormalFrame.lean`
+**Normal frame and compact coordinate.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeNormalFrame.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
 
 | # | statement | Lean declaration |
@@ -445,7 +445,7 @@ source, with no hypothesis: one integration by parts on the line, the window der
 
 **Kronecker frame obstruction.**  `formal/GaloisForLFunctions/HTGeometry/KroneckerApproxRecurrence.lean`
 strengthens the corpus Kronecker theorem to arbitrarily large times, and
-`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeFrameObstruction.lean` applies it.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeFrameObstruction.lean` applies it.
 
 | # | statement | Lean declaration |
 |---|---|---|
@@ -459,7 +459,7 @@ strengthens the corpus Kronecker theorem to arbitrarily large times, and
 | `(24)` | the pointwise ceiling `b_p(t)^2 <= 4/p` | `sq_rpow_neg_half`, `sq_frameSymbol_le_four_div`, `summable_weighted_frameSymbol` |
 | `(26)`,`(27)` | **the summably weighted all-prime diagonal sum drops below any tolerance at arbitrarily large times** | `exists_gt_tsum_weighted_frameSymbol_lt` |
 
-**Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean`
+**Positive-kernel self-adjoint channels.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeChannels.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
 
 | # | statement | Lean declaration |
@@ -488,7 +488,7 @@ Three new modules carry them.
 | — | **analytic division**: an entire function whose analytic order dominates that of a nonzero entire `g` everywhere is an entire multiple of `g` | `exists_entire_quotient` |
 | `(13)` | **Wedderburn's lemma**: two entire functions without a common zero, the zeros of the first simple, nonzero and escaping, generate the unit ideal | `exists_entire_bezout` |
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeBezout.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeBezout.lean`
 (namespace `RHTower.HedenmalmThetaSource`):
 
 | # | statement | Lean declaration |
@@ -499,7 +499,7 @@ Three new modules carry them.
 | `(8)` | **the multiplier is even and real**, `a_n(-z) = a_n(z)` and `a_n(conj z) = conj a_n(z)` | `centeredMultiplierE_neg`, `centeredMultiplierE_conj` |
 | `(13)` | **the two-prime Bezout identity** `b_2 a_2 + b_3 a_3 = 1` with `b_2`, `b_3` entire | `exists_two_prime_bezout` |
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeIdeal.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeIdeal.lean`
 (namespace `RHTower.HedenmalmThetaSource`):
 
 | # | statement | Lean declaration |

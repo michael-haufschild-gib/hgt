@@ -223,7 +223,7 @@ Lean should formalize unconditionally:
 ## Lean status
 
 All five formalization targets landed unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerFailureNerveMixedDaggerCoboundary.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFailureNerveMixedDaggerCoboundary.lean`.  Axiom audit
 for all 16 declarations: `propext, Classical.choice, Quot.sound`.
 
 **The weighted Hermitian adjunction identity and `(3)`--`(8)`.**

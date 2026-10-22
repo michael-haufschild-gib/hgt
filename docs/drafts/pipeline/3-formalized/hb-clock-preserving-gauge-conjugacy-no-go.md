@@ -148,7 +148,7 @@ route. Novelty claim is restricted to that exact source-native no-go and its sur
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMClockPreservingGaugeConjugacyNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMClockPreservingGaugeConjugacyNoGo`.
 
 Principal declarations:
 

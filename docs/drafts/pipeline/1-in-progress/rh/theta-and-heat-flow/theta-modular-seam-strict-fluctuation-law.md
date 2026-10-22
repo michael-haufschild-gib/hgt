@@ -4,10 +4,10 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM-FIRST CROSS-ENDPOINT LAW / PAPER-PROVED / LEAN-PENDING-AUDIT
 - **Source modules:**
-  `RHTower/ThetaCuspLikelihoodSpectralMeasure.lean`,
-  `RHTower/ThetaCuspLikelihoodModularSeam.lean`
+  `RHTower/ThetaCusp/ThetaCuspLikelihoodSpectralMeasure.lean`,
+  `RHTower/ThetaCusp/ThetaCuspLikelihoodModularSeam.lean`
 - **Formal target:**
-  `RHTower/ThetaCuspLikelihoodModularFluctuation.lean`
+  `RHTower/ThetaCusp/ThetaCuspLikelihoodModularFluctuation.lean`
 
 ## Statement
 

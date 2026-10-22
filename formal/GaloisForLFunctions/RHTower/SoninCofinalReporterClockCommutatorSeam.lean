@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.SoninCofinalContractiveMobiusGammaXiIncidence
 import GaloisForLFunctions.RHTower.SoninCofinalAmbidextrousInwardIncidence
 import GaloisForLFunctions.RHTower.MobiusCriticalFisherReporterRankOneReduction
 import GaloisForLFunctions.RHTower.MobiusCriticalComplexPhaseHardySource
-import GaloisForLFunctions.RHTower.CCMGalerkinDiagonalTransfer
+import GaloisForLFunctions.RHTower.CCM.CCMGalerkinDiagonalTransfer
 import GaloisForLFunctions.RHTower.MobiusCoMovingDiffuseCodiagonal
 
 /-!

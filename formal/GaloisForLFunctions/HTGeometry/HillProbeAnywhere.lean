@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HillClockProbe
-import GaloisForLFunctions.HTGeometry.KleinGordonProbeAnywhere
-import GaloisForLFunctions.HTGeometry.KleinGordonRegularProbes
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonProbeAnywhere
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRegularProbes
 
 /-!
 # A probe at every event of a variable-speed chart

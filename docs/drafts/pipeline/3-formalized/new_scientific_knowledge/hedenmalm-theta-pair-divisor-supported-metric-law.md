@@ -437,18 +437,18 @@ integrability of `|XiC|^2` against every temperate spectral measure follows auto
 Schwartz decay. Nullity of the source then forces the complete atomic decomposition `(11)`; no
 integrability or support premise remains in this adapter.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspReflection.lean` proves the missing global reflection
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflection.lean` proves the missing global reflection
 mechanism for the actual all-integer theta-cusp series. The raw positive Gaussian tail changes
 under reflection by exactly the two modes `exp(x/2)` and `exp(-x/2)`; the cusp operator
 `d^2/dx^2 - 1/4` annihilates both. Lean consequently proves that the full source is even, smooth
 to every order, and that its `m`-th derivative has parity `(-1)^m`.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartz.lean` proves actual global energy decay, not
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartz.lean` proves actual global energy decay, not
 only compact-local convergence. Every derivative has an explicit `C_m exp(-|x|)` bound after
 reflection, every weighted derivative is globally bounded, and the full theta-cusp source is
 constructed as an actual element of real and complex Schwartz space.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean` now proves the exact normalized
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzFourierXi.lean` now proves the exact normalized
 Schwartz-space identity
 
 ```text
@@ -457,7 +457,7 @@ fourier (2*pi * thetaCuspFullSource (2*pi * ·)) t = XiC t.
 
 It also specializes the spectral-measure adapter: nullity of this explicit source in any positive
 temperate spectral form forces the complete atomic measure decomposition on the real `Xi` zero set.
-`formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean` closes the
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean` closes the
 former central representation gap.  It constructs the unique positive temperate spectral measure
 of every nonnegative momentum-symmetric Schwartz form, proves that theta nullity is equivalent to
 support on the real `Xi` divisor, and derives the exact atomic decomposition.  Together with the

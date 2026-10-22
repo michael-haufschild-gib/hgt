@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-rational-residual-finite-evans-matrix-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRationalResidualEvansMatrix.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalResidualEvansMatrix.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 18 declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

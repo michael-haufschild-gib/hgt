@@ -126,7 +126,7 @@ No such identification is currently available.
 
 ## Lean status
 
-`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMRealSpectralLogGraph.lean`
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCM/CCMRealSpectralLogGraph.lean`
 (4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

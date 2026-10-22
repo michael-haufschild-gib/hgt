@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PolynomialFockSharpPhaseTransition
 import GaloisForLFunctions.RHTower.PolynomialMomentFockThetaTrace
-import GaloisForLFunctions.RHTower.DeningerArithmeticCompactOpen
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCompactOpen
 import GaloisForLFunctions.HTGeometry.ContinuousMapLocallyConvex
 
 /-!

@@ -6,7 +6,7 @@
 - **Type:** SOURCE-SPECIFIC NO-GO / SHARP BOUNDARY LAW
 - **Scientific status:** `[PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiCoherentResponseGainNoGo.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentResponseGainNoGo.lean`
 
 ## Result
 

@@ -351,7 +351,7 @@ module builds pass; the expanded capstone axiom audit again reports only `propex
 
 Current Lean modules:
 
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodModularSeam.lean`;
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSeamScorePolynomial.lean`;
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodThermodynamicKL.lean`.
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodModularSeam.lean`;
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSeamScorePolynomial.lean`;
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodThermodynamicKL.lean`.
 

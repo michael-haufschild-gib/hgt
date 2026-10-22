@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 import GaloisForLFunctions.RHTower.BoundedClockZeroTransfer
-import GaloisForLFunctions.RHTower.HedenmalmLocalFrameObstruction
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmLocalFrameObstruction
 import GaloisForLFunctions.RHTower.XiHedenmalmEigenbasis
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles

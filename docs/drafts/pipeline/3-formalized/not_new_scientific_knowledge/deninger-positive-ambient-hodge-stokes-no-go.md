@@ -103,7 +103,7 @@ only the Route-L dependency correction.
 ## Lean formalization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerPositiveAmbientHodgeStokesNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPositiveAmbientHodgeStokesNoGo.lean`.
 
 Kernel-checked declarations:
 

@@ -30,13 +30,13 @@ The remaining flux-sign law is explicitly retained and is formally equivalent to
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxSourceWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxSourceWeld.lean`
 
 Verification:
 
 - direct source check passed with `lake env lean`;
 - exact target build passed with
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld`;
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld`;
 - `#print axioms` for the pointwise envelope, global transform weld, and specialized RH criterion
   reports only `propext`, `Classical.choice`, and `Quot.sound`;
 - forbidden-declaration scan is empty.

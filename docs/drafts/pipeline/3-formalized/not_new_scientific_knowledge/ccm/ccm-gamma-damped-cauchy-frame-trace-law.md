@@ -160,7 +160,7 @@ a channel-resolved positive operator whose diagonal is proved to be the arithmet
 
 ## Lean status
 
-`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMGammaDampedCauchyFrame.lean`
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCM/CCMGammaDampedCauchyFrame.lean`
 (10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
 into `formal/GaloisForLFunctions/RHTower.lean`).
 

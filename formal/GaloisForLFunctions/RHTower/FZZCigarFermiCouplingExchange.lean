@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FZZCigarMarkedRadialReplicaResponse
-import GaloisForLFunctions.RHTower.SuzukiLogisticCoupling
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLogisticCoupling
 import Mathlib.MeasureTheory.Integral.Prod
 import GaloisForLFunctions.RHTower.FZZCigarParityDelaySourceContinuation
 

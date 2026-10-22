@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized and audited; 18 unconditional theorems. RH remains unproved.
-Module: `GaloisForLFunctions.RHTower.DeningerGibbsPrimeIncidenceRepair`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGibbsPrimeIncidenceRepair`.
 
 ## Exact question and outcome
 
@@ -114,7 +114,7 @@ used as a Lean premise or asserted to give the missing source comparison.
 ## Verification
 
 - `lake env lean /tmp/route_l_prime_incidence.lean`: passed, no warnings.
-- Targeted final `lake build GaloisForLFunctions.RHTower.DeningerGibbsPrimeIncidenceRepair`:
+- Targeted final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGibbsPrimeIncidenceRepair`:
   passed; new module built, dependencies replayed. Import wired into `RHTower`.
 - Complete 18-theorem audit through `/tmp/route_l_prime_incidence_axioms.lean`:
   only `propext`, `Classical.choice`, `Quot.sound`; no added axioms.

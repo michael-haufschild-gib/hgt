@@ -12,9 +12,9 @@
 
 - [x] Paper proof
 - [x] Lean source written:
-  `RHTower/DeningerArithmeticDiagonalPowerRelation.lean`
+  `RHTower/Deninger/DeningerArithmeticDiagonalPowerRelation.lean`
 - [x] Direct `lake env lean` check
-- [x] Final module build (`lake build GaloisForLFunctions.RHTower.DeningerArithmeticDiagonalPowerRelation`)
+- [x] Final module build (`lake build GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticDiagonalPowerRelation`)
 
 ## Statement
 
@@ -95,7 +95,7 @@ HIGHER-SYZYGY OBSTRUCTION TO PRIME-INDEXED DESCENT`.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticDiagonalPowerRelation.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticDiagonalPowerRelation.lean`
 
 - `deningerDiagonalPowerRelation T F n = T n - F n` — equation `(2)`.
 - `deningerDiagonalPowerRelation_mul` — equation `(3)`, the Leibniz law

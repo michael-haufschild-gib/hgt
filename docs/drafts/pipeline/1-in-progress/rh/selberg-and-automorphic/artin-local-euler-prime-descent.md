@@ -55,7 +55,7 @@ by a base prime cannot be honestly defined before this theorem.
 
 ## Formalized sublayer
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeTransport.lean` proves the exact
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerPrimeTransport.lean` proves the exact
 ideal-action transport lemmas
 
 ```text
@@ -69,7 +69,7 @@ inertia_map_stabilizer_conj:
 These use no postulated equivariance: membership is transported directly through the pointwise
 ideal action.
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeDescent.lean` completes the conjugate
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerPrimeDescent.lean` completes the conjugate
 prime layer.  It defines the concrete linear equivalence
 `inertiaInvariantConjLinearEquiv` induced by `rho(tau)`, proves the induced endomorphisms are
 conjugate, transports residue-field finiteness via `Ideal.quotientEquiv`, and proves
@@ -85,7 +85,7 @@ checks and leaf builds passed; axiom audits report only `[propext, Classical.cho
 Both leaves are wired into `RHTower.lean` without an umbrella build.
 
 The local base-prime carrier is now present in
-`formal/GaloisForLFunctions/RHTower/ArtinNumberFieldLocalEulerFactor.lean`:
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinNumberFieldLocalEulerFactor.lean`:
 
 ```text
 numberFieldFinitePlaceLocalEulerPolynomial :
@@ -120,7 +120,7 @@ the same polynomial.  No global Euler product or analytic statement is implied y
 - 2026-08-15 — formalized the number-field finite-place wrapper using a chosen maximal ideal above
   a base maximal ideal and proved its choice independence from the same-base-prime theorem.
   `lake env lean` and the targeted `lake build
-  GaloisForLFunctions.RHTower.ArtinNumberFieldLocalEulerFactor` passed.  Its axiom audit reports
+  GaloisForLFunctions.RHTower.Artin.ArtinNumberFieldLocalEulerFactor` passed.  Its axiom audit reports
   only `[propext, Classical.choice, Quot.sound]`; it is wired into `RHTower.lean` without an
   umbrella build.  Repository-wide formal lint remains blocked by unrelated concurrent modules,
   so this card remains Stage 1 rather than claiming a whole-tree formal-gate pass.

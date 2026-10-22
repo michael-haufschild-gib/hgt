@@ -96,12 +96,12 @@ No umbrella or full build, numerical experiment or heartbeat increase is used.
 
 Unrelated unreachable modules reported by lint9165:
 
-- GaloisForLFunctions.RHTower.CCMApertureChainProfile
-- GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-- GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-- GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-- GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-- GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+- GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+- GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+- GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+- GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 - GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 - GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 - GaloisForLFunctions.RHTower.RoutePLcmAbsoluteObstruction

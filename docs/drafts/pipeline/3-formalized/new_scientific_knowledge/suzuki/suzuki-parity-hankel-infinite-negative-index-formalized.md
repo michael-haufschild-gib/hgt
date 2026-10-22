@@ -7,14 +7,14 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiArchimedeanParityHankelInfiniteNegativeIndex`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiArchimedeanParityHankelInfiniteNegativeIndex`:
 
 ```text
 RHTower.ArchHankelHasAtLeastNegativeSquaresOn

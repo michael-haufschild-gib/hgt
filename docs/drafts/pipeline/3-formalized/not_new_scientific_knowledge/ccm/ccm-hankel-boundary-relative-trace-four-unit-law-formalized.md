@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMBoundaryRelativeTrace` (new)
-- `GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope` — pre-existing carrier of `leakDensity`,
+- `GaloisForLFunctions.RHTower.CCM.CCMBoundaryRelativeTrace` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMHankelGapTraceSlope` — pre-existing carrier of `leakDensity`,
   `tailLeakEnergy`, `hankelGapProfile`, `LeakProfile`, the pole and divisor packets, and the Cauchy
   energy criterion. One theorem (`leakDensity_polePacketProfile`) was exported from an inline `have`
   so that this module can reuse it.
@@ -57,7 +57,7 @@ These are exactly the card's unticked gates.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMBoundaryRelativeTrace`: success.
-- `lake build GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope`: success (after the export).
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMBoundaryRelativeTrace`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMHankelGapTraceSlope`: success (after the export).
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

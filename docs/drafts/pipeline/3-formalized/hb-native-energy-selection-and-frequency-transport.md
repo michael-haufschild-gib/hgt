@@ -107,7 +107,7 @@ open. No numerical experiment was needed.
 
 ## Lean surface and audit
 
-Module prefix: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBM`.
+Module prefix: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBM`.
 
 | Module suffix | Namespace | New public theorems |
 |---|---|---:|

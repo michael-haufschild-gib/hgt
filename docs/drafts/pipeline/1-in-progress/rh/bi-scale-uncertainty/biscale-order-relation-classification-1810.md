@@ -2,7 +2,7 @@
 
 - **ID:** biscale-order-relation-classification-1810
 - **Stage:** 1-in-progress
-- **Parent:** [field programme](../../biscale-field-development-1810.md), items 3–4 and 13
+- **Parent:** [field programme](biscale-field-development-1810.md), items 3–4 and 13
 - **Status:** exact candidate and symbolic construction; full proof and Lean gates open
 
 ## Candidate local criterion

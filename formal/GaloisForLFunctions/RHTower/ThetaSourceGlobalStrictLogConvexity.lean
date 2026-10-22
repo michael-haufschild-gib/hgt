@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTiltReflectedWork
-import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld
 import GaloisForLFunctions.RHTower.XiShiftLoewnerEulerSplit
 
 /-!

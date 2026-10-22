@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiWardCubicHeightBohrFiber
 import GaloisForLFunctions.HTGeometry.HarmonicLogFourierMode
-import GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationAnomaly
-import GaloisForLFunctions.RHTower.HedenmalmThetaPrimeCriticalRiggedCarrier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeTranslationAnomaly
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaPrimeCriticalRiggedCarrier
 
 /-!
 # Source-native integer-harmonic ordinate dephasing

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiLatticeShellSummability
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLatticeShellSummability
 
 /-!
 # Geometric convergence of orbit sums over an `S`-unit lattice

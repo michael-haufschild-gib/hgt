@@ -421,11 +421,11 @@ External priority remains unaudited.
 Formalized unconditionally:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiOrbitWeightSummability.lean
-formal/GaloisForLFunctions/RHTower/SuzukiOrbitCarrier.lean
-formal/GaloisForLFunctions/RHTower/SuzukiApertureRecurrence.lean
-formal/GaloisForLFunctions/RHTower/SuzukiApertureAlmostEvery.lean
-formal/GaloisForLFunctions/RHTower/SuzukiLiouvilleAperture.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOrbitWeightSummability.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOrbitCarrier.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureRecurrence.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureAlmostEvery.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLiouvilleAperture.lean
 ```
 
 `(1)`--`(2)` are `orbitLength`, `orbitWeight`, `orbitTranslate`; `(9)` is `tsum_orbitWeight_sq`

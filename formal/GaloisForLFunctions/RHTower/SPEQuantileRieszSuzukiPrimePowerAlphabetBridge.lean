@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimePowerTowerCollapse
-import GaloisForLFunctions.RHTower.SuzukiExteriorWienerAlphabet
-import GaloisForLFunctions.RHTower.SuzukiRootPortObservationGram
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimePowerTowerCollapse
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExteriorWienerAlphabet
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRootPortObservationGram
 
 /-!
 # SP-E prime-power atoms on Suzuki's labelled alphabet

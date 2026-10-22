@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiInteriorExcursionShiftSelection.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiInteriorExcursionShiftSelection.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiInteriorExcursionShiftSelection`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiInteriorExcursionShiftSelection`:
 
 ```text
 RHTower.exists_isGreatest_suzukiDefectMatchingShiftSet_of_witness

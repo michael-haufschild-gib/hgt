@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RestrictedUnitaryCubicIndex
 import GaloisForLFunctions.HTGeometry.CompactPerturbationFredholm
-import GaloisForLFunctions.RHTower.CCMArithmeticPrimeFredholmOrientation
+import GaloisForLFunctions.RHTower.CCM.CCMArithmeticPrimeFredholmOrientation
 
 noncomputable section
 

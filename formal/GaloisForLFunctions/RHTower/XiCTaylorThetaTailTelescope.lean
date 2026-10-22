@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierXi
 import GaloisForLFunctions.RHTower.PrimeArchThetaCumulantMinor
 import GaloisForLFunctions.RHTower.PrimeEnergyZeroTransfer
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral

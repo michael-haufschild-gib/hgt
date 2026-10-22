@@ -361,7 +361,7 @@ Formalization:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/PairGroupoidBidescentLaw.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoEndedVolterraDefect.lean
 ```
 
 ## All-cross-prime residual normalization theorem

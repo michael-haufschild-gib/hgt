@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmGaussianHankelRH
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGaussianHankelRH
 
 /-!
 # Gaussian-window moment rescaling and the cooling limit

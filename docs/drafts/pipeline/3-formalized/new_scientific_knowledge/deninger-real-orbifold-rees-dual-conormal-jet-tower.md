@@ -96,7 +96,7 @@ and destroys the archimedean density.
 
 The analytic character identity is already formalized unconditionally
 in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticArchimedean.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticArchimedean.lean`.
 In particular:
 
 - `summable_deningerTimeTestLaplace_neg_even` proves summability of the
@@ -111,7 +111,7 @@ In particular:
 
 The remaining item — the representation of the character as the flow
 trace of the explicit jet-product object `(4)` — is now formalized in
-`formal/GaloisForLFunctions/RHTower/DeningerReesJetTower.lean`; see the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerReesJetTower.lean`; see the
 Lean status section at the end of this card.
 
 ## 6. Boundary of the theorem
@@ -156,7 +156,7 @@ Those are the remaining clauses of
 
 ### The jet tower, its flow law and its character landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerReesJetTower.lean`, alongside the already formalized
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerReesJetTower.lean`, alongside the already formalized
 analytic identity in `DeningerArithmeticArchimedean.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 

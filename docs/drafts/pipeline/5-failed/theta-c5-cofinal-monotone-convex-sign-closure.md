@@ -70,9 +70,9 @@ twice, substitute into the fifth-root total-variance budget, and use the corpus 
   proof must exploit quantitative covariance/cumulant cancellation from the theta likelihood
   hierarchy, not generic monotone-likelihood-ratio orientation.
 - **Status:** Dependency-closed Lean theorems in
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodTax`, especially
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureLikelihoodTax`, especially
   `thetaCuspCompletedProductFiberCofinalLikelihoodConvexityTaxAtZero_pos` and
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`, especially
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`, especially
   `thetaCuspCompletedProductFiberCofinalLikelihoodSlopeSquareTaxAtZero_pos` and
   `thetaCuspCompletedProductFiberCofinalFunctionalBudget_nonpos_iff_drift_le_neg_twoTaxes`.
   Parent cofinal functional-absorption conjecture remains open.

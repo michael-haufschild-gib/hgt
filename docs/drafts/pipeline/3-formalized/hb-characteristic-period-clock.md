@@ -39,7 +39,7 @@ It holds for every natural `j` and `0<c<1`, without a frequency nonresonance ass
 
 ## Exact Lean scope
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCharacteristicPeriod`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCharacteristicPeriod`.
 Namespace: `RHTower.D4BMCharacteristicPeriod`.
 
 - `clockPeriod_hasDerivAt`: moving-endpoint period's clock equation at every positive delay, with explicit endpoint forcing.
@@ -61,7 +61,7 @@ For the actual contact's explicit period coefficients, clock integration by part
 
 ## Validation
 
-Foreground `lake env lean` scratch verification passed without warnings. The final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCharacteristicPeriod`; it built the actual leaf in 10 seconds and reported three jobs. Forty-seven existing own-corpus dependencies and eleven external package caches were frozen and reused. No old dependency, full or umbrella build ran.
+Foreground `lake env lean` scratch verification passed without warnings. The final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCharacteristicPeriod`; it built the actual leaf in 10 seconds and reported three jobs. Forty-seven existing own-corpus dependencies and eleven external package caches were frozen and reused. No old dependency, full or umbrella build ran.
 
 Only the ten new public theorems were axiom-audited. All report exactly `propext`, `Classical.choice`, and `Quot.sound`. The installed source, olean and ilean are byte-identical to the audited artifacts. The module is wired into RHTower without building that umbrella. No mathematical computation, frontier-map edit, launcher invocation or Git command was used.
 

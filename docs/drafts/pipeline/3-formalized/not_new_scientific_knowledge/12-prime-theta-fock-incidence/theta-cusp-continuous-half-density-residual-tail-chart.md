@@ -327,7 +327,7 @@ for its role in the RH chain.
 
 ## Lean completion log — 2026-08-24
 
-`RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean` formalizes equations `(1)`--`(26)`,
+`RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean` formalizes equations `(1)`--`(26)`,
 including continuous half-density tails, residual parity series, survival and moment corridors,
 crossing-window collapse, unique regular-curvature seam, and both peak localizations. It is
 imported explicitly by `RHTower.lean`. Direct source checking and targeted leaf build pass.

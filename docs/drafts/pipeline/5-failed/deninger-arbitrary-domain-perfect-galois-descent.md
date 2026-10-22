@@ -31,7 +31,7 @@ infrastructure and formalize it without importing its conclusion.
   a corrected normal-domain theorem, with the imperfect-field divisibility condition handled
   separately.
 - **Status:** Counterexample and survivor are unconditional Lean theorems in
-  `GaloisForLFunctions.RHTower.DeningerRationalWittDomainDescentCounterexample`.  Direct Lean check,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittDomainDescentCounterexample`.  Direct Lean check,
   targeted module build, and axiom audit pass.  Final declarations use only `propext`,
   `Classical.choice`, and `Quot.sound`.
 

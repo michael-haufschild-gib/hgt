@@ -1,7 +1,7 @@
 # Single infinite trace-free Fock kernel for matched CCM packets
 
 Status: formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseInfiniteFockKernel`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseInfiniteFockKernel`.
 
 ## New knowledge
 

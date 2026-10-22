@@ -97,7 +97,7 @@ Route-P consequence.
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolAffineGaugeClassification.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolAffineGaugeClassification.lean`
 contains complete result. Direct `lake env lean` and exact module build pass.
 
 ## Log

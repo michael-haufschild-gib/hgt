@@ -49,7 +49,7 @@ the audit.
 4. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Theta modular-seam strict fluctuation.** Exact modular
    barycenter plus strict Hankel positivity forces
    `sigma^2(1+m0)^2 < (2*pi)^2 m0*m2`. Formalized in
-   `RHTower/ThetaCuspLikelihoodModularFluctuation.lean`.
+   `RHTower/ThetaCusp/ThetaCuspLikelihoodModularFluctuation.lean`.
 5. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **SEM dyadic Weyl degeneracy.** On an actual SEM hole
    packet, the completed depth-`k` Weyl equation is equivalent to zero wrap holonomy or vanishing
    completed SEM contour charge modulo `2^k`. Formalized in
@@ -89,7 +89,7 @@ the audit.
 14. `[LEAN-PROVED] [HOSTILE AUDIT PASSED]` **Theta-cusp center-mixed strict two-node law.** Positive
     critical aperture and nonzero displacement force strict two-node Bochner positivity; node
     collision is the exact rank-loss boundary. Formalized in
-    `RHTower/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`.
+    `RHTower/ThetaCusp/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`.
 15. `[LEAN-PROVED] [HOSTILE AUDIT PASSED; CLOSE PRIOR ART]` **Degree-five Gaussian eventual
     strictness.** Gaussian Fock positivity plus degree-five unisolvent determinant survival gives
     eventual positive definiteness and positive determinant. Formalized in

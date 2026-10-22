@@ -57,12 +57,12 @@ Hence `H_a` has no uniform absolute bound. This contradicts the proposed univers
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiPNTEnvelopeCesaroNoGo`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiPNTEnvelopeCesaroNoGo`
 - Capstone: `suzukiPNTEnvelopeCesaroProducerRouteKilled`
 - Divergence theorem: `tendsto_suzukiSqrtEnvelopeWitness_highPass_atTop`
 - Explicit survivor bound: `suzukiSqrtEnvelopeWitness_highPass_lower`
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/SuzukiPNTEnvelopeCesaroNoGo.lean` passed.
-- Targeted audit: `lake build GaloisForLFunctions.RHTower.SuzukiPNTEnvelopeCesaroNoGo` passed (`14114/14114`).
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiPNTEnvelopeCesaroNoGo.lean` passed.
+- Targeted audit: `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiPNTEnvelopeCesaroNoGo` passed (`14114/14114`).
 - Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella: imported by `GaloisForLFunctions.RHTower`.
 - Formal lint: passed; no forbidden declaration.

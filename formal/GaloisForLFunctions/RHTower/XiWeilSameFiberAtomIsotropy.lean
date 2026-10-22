@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
+import GaloisForLFunctions.RHTower.CCM.CCMCliffordWeilProduct
 
 /-!
 # Same-fibre Xi atoms are isotropic off the critical-reflection fixed locus

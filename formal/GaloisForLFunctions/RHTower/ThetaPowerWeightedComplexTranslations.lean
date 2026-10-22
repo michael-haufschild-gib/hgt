@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspComplexGaussianEnvelope
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexGaussianEnvelope
 import GaloisForLFunctions.RHTower.ThetaPowerWeightedSource
 
 /-!

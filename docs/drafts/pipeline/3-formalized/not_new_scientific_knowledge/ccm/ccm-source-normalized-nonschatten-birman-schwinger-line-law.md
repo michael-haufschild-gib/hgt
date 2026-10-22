@@ -242,7 +242,7 @@ added.
 restricted-Weil operator and its logarithmic spectral asymptotics remain cited parents, but the
 card's own operator-algebraic and comparison steps are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMNonSchattenBirmanSchwinger.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMNonSchattenBirmanSchwinger.lean`
 (5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

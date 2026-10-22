@@ -1,6 +1,6 @@
-import GaloisForLFunctions.HTGeometry.CriticalSchurRamifies
+import GaloisForLFunctions.HTGeometry.Critical.Schur.Ramifies
 import GaloisForLFunctions.HTGeometry.KaehlerAnnihilatorDeterminant
-import GaloisForLFunctions.HTGeometry.CriticalSchurCoordinateAdjoin
+import GaloisForLFunctions.HTGeometry.Critical.Schur.CoordinateAdjoin
 
 /-!
 # The raw coordinate cotangent basis, and the Kähler different at the Schur place

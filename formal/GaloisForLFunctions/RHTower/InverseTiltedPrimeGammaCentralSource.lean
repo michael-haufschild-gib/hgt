@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization
+import GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedCriticalMellinFactorization
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaMovingHankel
 
 /-!

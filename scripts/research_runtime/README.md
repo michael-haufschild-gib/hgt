@@ -1,8 +1,9 @@
 # Local Lean research runtime
 
 One supervisor per canonical corpus cache, one inference child, no hosted API.
-Target: Apple M3 Pro / 18 GiB. Setup is explicit; all search and generation calls
-are offline. The main corpus/engine/CLI can import the public client without
+Target: Apple M3 Pro / 18 GiB. Setup is explicit; all calls are offline. The
+runtime serves retrieval: an embedder and a reranker, warm together in one
+child. No text-generation model is pinned. The main corpus/engine/CLI can import the public client without
 installing any inference dependencies in their parent Python.
 
 ## Start, restart and stop
@@ -40,13 +41,13 @@ scripts/research_runtime/.venv/bin/python -m unittest scripts.tests.test_lean_re
 ```
 
 Setup runs `uv sync --project scripts/research_runtime --python 3.12 --locked`,
-then downloads the three immutable model revisions in `models.json` with two
+then downloads the immutable model revisions in `models.json` with two
 file transfers at most. All subprocesses remain foreground-owned; interruption
 terminates/reaps only the spawned setup process group. It never runs Lean.
 `--env-only` installs just Python/dependencies. `--verify` hashes every manifested
 root model/tokenizer artifact offline. Unused SentenceTransformers submodules
 are excluded. `--smoke` runs actual embeddings, ordered relevance scores, and
-MLX generation without downloads. Missing installation is an error, not an
+generation when a model is pinned, without downloads. Missing installation is an error, not an
 implicit setup trigger. Model/runtime libraries are imported only in the
 inference child (or the explicitly selected setup/smoke commands).
 
@@ -110,19 +111,19 @@ The client keeps this end-to-end deadline locally and sends the remaining durati
 over the socket. Protocol 2 rebases it onto the worker's clock: macOS Python 3.9
 can use a process-local clock origin, unlike the dedicated Python 3.12 worker.
 `RuntimeDeadline` means the request expired. `RuntimeUnavailable` means missing
-setup, queue saturation, cancellation, preempted enrichment, transport failure,
-or a model failure. Empty embed/rerank batches return `[]` after validation.
-Results preserve input order; embeddings are 1024-dimensional L2-normalized
-float lists; reranker scores are yes probabilities in [0,1]. No silent partial
-batches or partial generation are returned.
+setup, queue saturation, cancellation, transport failure, or a model failure.
+`generate` raises it unconditionally unless a generation model is pinned, which
+it is not by default: this runtime serves retrieval. Empty embed/rerank batches
+return `[]` after validation. Results preserve input order; embeddings are
+768-dimensional L2-normalized float lists; reranker scores are yes probabilities
+in [0,1]. No silent partial batches are returned.
 
 `status()` exposes `available`/`ready` (verified installation, not GPU execution
 proof), `running`, interpreter, per-role pinned repo/revision, installed/loaded,
 actual `device`, `dtype`, and `fallback_reason` after inference. Before first use,
 device is null. `last_devices` is explicitly historical after child replacement.
-`embedding_model_version`, `reranker_model_version`, `generation_model_version`
-are stable repo@revision plus configuration/lock fingerprint strings, suitable
-for embedding/method cache validity. `fingerprints.models` and
+One `<role>_model_version` per pinned role is a stable repo@revision plus
+configuration/lock fingerprint string, suitable for embedding cache validity. `fingerprints.models` and
 `fingerprints.runtime` expose separate hashes. Do not hash the entire status for
 cache keys: PID, queue, loaded models and devices are operational fields.
 
@@ -131,28 +132,32 @@ cache keys: PID, queue, loaded models and devices are operational fields.
 - 32 accepted connections; bounded 2 MiB framed JSON; 64 texts per request;
   32768 characters per text and 262144 characters total. At most 600 seconds
   until deadline. Admission saturation raises RuntimeUnavailable promptly.
-- Embedding microbatches: four texts, right padding and explicit last-nonpad
-  pooling. Reranking: one text on MPS, four on CPU, left padding. Both cap at
+- Embedding batches are length-sorted under a padded-token budget, right padded,
+  and mean pooled over the attention mask: EmbeddingGemma pools the mean, so the
+  mask is load-bearing. Query and document sides take different task prefixes.
+  Only the text tower is loaded (271M of 740M); the audio tower has no SDPA
+  kernel, so building it fails the load outright.
+  Reranking: one text on MPS, four on CPU, left padding. Both cap at
   2048 tokens per text/pair. Truncation applies
   to embedding text or reranker body; reranker prefix/suffix always survive.
-- Generation: 8192 tokens including chat template and requested output;
+- Generation, only if a model is pinned: 8192 tokens including chat template and requested output;
   1–2048 output tokens; 256-token prefill chunks; deterministic greedy sampling.
-- Interactive work precedes enrichment in the queue. Interactive arrival
-  preempts active enrichment, returning RuntimeUnavailable to that enrichment
-  caller so it can retry later. Interactive calls do not preempt each other.
+- Interactive work precedes enrichment in the queue and never cancels it:
+  killing indexing to serve a query starved indexing outright once several
+  agents searched continuously. Indexing requests are small, so a query waits
+  well under a second behind one. Interactive calls do not preempt each other.
 - Supervisor I/O (including child IPC) is nonblocking, polled every 20ms.
   Client deadlines include startup, queueing, tokenization, loading and compute.
   Closing a request socket cancels it. `client.close()` cancels only that
   client's calls, including from another thread. KeyboardInterrupt unwinds the
   owning socket; other clients stay connected. Client waits do not wait for
   model loading or a stuck kernel after deadline.
-- Cancellation kills/reaps only the supervisor's current inference child,
-  before starting another. No process-name searches or unrelated PID kills.
+- The search child holds the embedder and reranker together and stays warm for
+  the life of the supervisor. Cancellation kills/reaps only the supervisor's
+  current inference child, before starting another. No process-name searches or unrelated PID kills.
   SIGTERM/SIGINT of supervisor reaps its child; a child watches its parent's
   lifetime. A shared supervisor outlives clients and exits after five idle
-  minutes. Torch search and MLX generation use different child lifetimes,
-  releasing model/framework allocations on switching. Search models remain
-  warm together inside the search child.
+  minutes.
 - Socket paths are shortened hashes under a private, owned `/tmp` directory;
   socket permissions 0600, directory 0700. A lifetime flock prevents duplicate
   supervisors and protects stale-socket cleanup. No TCP listener, remote plugin,
@@ -163,12 +168,18 @@ cache keys: PID, queue, loaded models and devices are operational fields.
 These are primary sources inspected for the implemented APIs; installed versions
 are pinned in `pyproject.toml` and transitively locked in `uv.lock`.
 
-- [Qwen embedding card](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B/blob/97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3/README.md):
-  query instruction, plain documents, last-token/nonpad pooling, L2 norm.
+- [EmbeddingGemma 2 card](https://huggingface.co/google/embeddinggemma-2/blob/914f7f89142e33e77833254d9c9b90c3cef7303b/README.md):
+  asymmetric task prefixes (`task: search result | query:` against
+  `title: none | text:`), mean pooling with the prompt included, 768 dimensions
+  via Matryoshka, L2 norm, bfloat16 recommended and float16 warned against.
+- [EmbeddingGemma 2 text model](https://github.com/huggingface/transformers/blob/v5.20.2/src/transformers/models/embedding_gemma2/modeling_embedding_gemma2.py):
+  `EmbeddingGemma2TextModel` applies `embedding_projection` per token, which
+  upstream notes is equivalent to projecting after the mean pool, and returns
+  the projected state as `last_hidden_state`.
 - [Qwen reranker card](https://huggingface.co/Qwen/Qwen3-Reranker-0.6B/blob/e61197ed45024b0ed8a2d74b80b4d909f1255473/README.md):
   exact system/user/assistant/closed-think wrapper, separate prefix/body/suffix
   tokenization, final-position no/yes logits, normalized yes probability.
-- [Transformers Qwen3 4.56.2 implementation](https://github.com/huggingface/transformers/blob/v4.56.2/src/transformers/models/qwen3/modeling_qwen3.py):
+- [Transformers Qwen3 implementation](https://github.com/huggingface/transformers/blob/v5.20.2/src/transformers/models/qwen3/modeling_qwen3.py):
   `logits_to_keep=1` avoids allocating vocabulary logits for every input token.
 - [PyTorch MPS](https://docs.pytorch.org/docs/stable/notes/mps.html):
   explicit availability check and device transfer. Search uses float32 on MPS:
@@ -177,15 +188,10 @@ are pinned in `pyproject.toml` and transitively locked in `uv.lock`.
   per-text reranking avoid that kernel path. CPU float32 fallback is explicit
   and reported; automatic
   hidden per-operator MPS fallback is disabled. Finite output is checked.
-- [MLX model card](https://huggingface.co/mlx-community/Qwen3-4B-Instruct-2507-4bit/blob/50d427756c6b1b2fe0c0a10f67fbda1fc8e82c1b/README.md),
-  [MLX-LM load](https://github.com/ml-explore/mlx-lm/blob/v0.28.2/mlx_lm/utils.py),
-  [stream generation](https://github.com/ml-explore/mlx-lm/blob/v0.28.2/mlx_lm/generate.py):
-  existing local path, local tokenizer settings, tokenized chat template,
-  `stream_generate` and greedy `make_sampler(temp=0.0)`.
-- [Transformers offline mode](https://huggingface.co/docs/transformers/v4.56.2/installation#offline-mode):
-  forced offline flags before imports plus `local_files_only=True`. MLX only
-  receives an existing verified absolute path. Child additionally denies INET
-  socket creation, DNS resolution, and subprocess launch through an audit hook.
+- [Transformers offline mode](https://huggingface.co/docs/transformers/v5.20.2/installation#offline-mode):
+  forced offline flags before imports plus `local_files_only=True`. The child
+  additionally denies INET socket creation, DNS resolution, and subprocess
+  launch through an audit hook.
 - [uv locking/sync](https://docs.astral.sh/uv/concepts/projects/sync/):
   dedicated project, Python 3.12, locked dependency installation.
 
@@ -193,35 +199,22 @@ Both upstream repository licenses, adaptation notices, revisions and source
 hashes are in `licenses/`. No corpus, engine, CLI, or Lean source is modified by
 this runtime implementation.
 
-## Verified 2026-09-09
+## Verified 2026-10-22
 
-26 runtime tests passed, including actual local-tokenizer parity with Qwen's
-published reranker procedure. The three-model smoke returned normalized 1024-D
-embeddings, correct relevance ordering (0.992197 versus 0.00004685), and MLX
-output `local`. Embedding/reranker ran on MPS float32 with no fallback;
-generation ran on Metal. Dependency lock and downloaded weight hashes passed.
+Retrieval-only: `models.json` pins an embedder and a reranker. No generation
+model is installed, so `generate` raises RuntimeUnavailable by design.
 
-Right-padded batches of four passed CPU reference parity on mixed-length,
-roughly 5000-character inputs: max absolute difference 3.50e-7, minimum cosine
-0.99999988. The 32-document shared-client probe processed 153424 characters in
-48.27 seconds including startup/loading (0.663 documents/second). Warm direct
-probes ranged 27.79–43.29 seconds (0.74–1.15 documents/second). These synthetic
-Lean-like texts are capped at 2048 tokens; real chunk lengths and contention
-change throughput. At comparable lengths, 919k chunks imply roughly 9–16 days
-of serial embedding, before interruptions or other index work. Use resumable
-batches; no full-corpus performance/quality acceptance is claimed.
+Offline snapshot hashes verified for both roles. The smoke returned normalized
+768-D embeddings and correct relevance ordering (0.9921975 versus 0.00004685);
+both models ran on MPS float32 with no fallback. 367 tests pass.
 
-Machine-readable evidence is in `validation.json`. Reproduce the isolated,
-180-second bounded CPU/MPS parity probe with:
+The text tower loads at 271M parameters of the checkpoint's 740M: vision and
+audio tower configs are nulled before loading, which is required rather than
+merely economical, because `Gemma4AudioModel` has no SDPA kernel and building it
+fails the load. A Lean statement against a natural-language goal, with the
+asymmetric prefixes applied, scored cosine 0.82.
 
-```sh
-PYTHONPATH=scripts scripts/research_runtime/.venv/bin/python -m research_runtime.probe_embedding
-```
-
-Only run that explicit probe when no other model work is planned: it owns an
-additional temporary model process for comparison. Normal searches/enrichment
-always use the shared worker. The client throughput probe uses the worker:
-
-```sh
-scripts/research_runtime/.venv/bin/python scripts/lean_research_setup.py --embedding-smoke
-```
+Source extraction measures 50 files/second after batching the ~20 source
+reference rows per declaration into one statement per file, which projects to
+roughly 25 minutes for 75,595 files. Parsing alone accounts for 4.4 minutes of
+that. No full-corpus retrieval-quality acceptance is claimed.

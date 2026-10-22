@@ -125,7 +125,7 @@ the doubled swap, rather than cite superselection alone.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingModularSuperselectionChargedUnitaryBypassNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingModularSuperselectionChargedUnitaryBypassNoGo`.
 
 - `thetaCuspHawkingChargedDoubleKMSSwapUnitary` is the explicit corpus `lp` reindexing unitary for
   product-coordinate transposition.
@@ -139,7 +139,7 @@ Formalized in
   no-sewing.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingModularSuperselectionChargedUnitaryBypassNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingModularSuperselectionChargedUnitaryBypassNoGo`
 passed all 10,999 jobs. Representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC87 finding. Module is wired into the `GaloisForLFunctions.RHTower` umbrella without running a

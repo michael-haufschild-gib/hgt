@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaFiniteSpatialRealization
-import GaloisForLFunctions.RHTower.DeningerMeyerFiniteXiCausalSolvability
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerFiniteXiCausalSolvability
 
 /-! # Literal theta--Meyer transport of finite differential equations
 

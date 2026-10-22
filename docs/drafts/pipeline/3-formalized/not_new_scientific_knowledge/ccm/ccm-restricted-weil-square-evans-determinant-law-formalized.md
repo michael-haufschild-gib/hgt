@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-restricted-weil-square-evans-determinant-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilSquareEvans.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilSquareEvans.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` (one theorem uses `[propext]` only)
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

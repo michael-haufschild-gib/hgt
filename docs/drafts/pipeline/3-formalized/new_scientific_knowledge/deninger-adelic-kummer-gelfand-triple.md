@@ -10,7 +10,7 @@
   Hilbert space, with continuous product-formula topology and
   distribution dual.
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerAdelicKummerGelfandTriple`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAdelicKummerGelfandTriple`
 
 ## Setup
 
@@ -140,7 +140,7 @@ supplied, since `deningerRiggedDual_injective` takes `DenseRange i` as its hypot
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerAdelicKummerGelfandTriple.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerAdelicKummerGelfandTriple.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all 20 declarations: only the Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`.

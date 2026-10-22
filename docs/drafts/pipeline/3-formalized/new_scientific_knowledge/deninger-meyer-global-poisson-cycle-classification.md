@@ -151,8 +151,8 @@ provisional pending specialist review.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerPrimeSamplingCohomologyObstruction.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerEndpointGlobalPoissonComplex.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPrimeSamplingCohomologyObstruction.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerEndpointGlobalPoissonComplex.lean`.
 
 Capstones:
 

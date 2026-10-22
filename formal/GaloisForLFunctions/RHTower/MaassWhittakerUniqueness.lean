@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BesselArgumentDerivative
 import GaloisForLFunctions.RHTower.SelbergMaassSliceRigidity
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
 
 /-!
 # Uniqueness of the Whittaker solution of the Maass modal equation

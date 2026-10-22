@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [BRIDGE] [NOT AN RH PROOF]`
 - **Parents:**
   `absolute-euler-paired-translation-resolvent-functional-calculus.md`,
-  `formal/GaloisForLFunctions/RHTower/CCMPolarPrimeStieltjesAutocorrelation.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMPolarPrimeStieltjesAutocorrelation.lean`
 - **Statement:** On every absolute-Euler damped-sine packet, all individual critical prime-power
   autocorrelations and both polar resolvents combine into one integral of the derivative of the
   packet autocorrelation against the cumulative completed critical-Mellin error.  The remaining

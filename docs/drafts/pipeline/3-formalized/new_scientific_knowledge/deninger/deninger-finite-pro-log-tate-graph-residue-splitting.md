@@ -152,7 +152,7 @@ The analytic input instantiating these declarations is formulas
 
 The split chart `(1)`, the normal decomposition `(3)`, the maps `(4)`, the seminorm
 family `(2)` and the finite packet of clause 5 are represented directly in
-`formal/GaloisForLFunctions/RHTower/DeningerFiniteProLogTateGraphResidueSplitting.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFiniteProLogTateGraphResidueSplitting.lean`
 (41 declarations; axiom audit for every one of them:
 `[propext, Classical.choice, Quot.sound]`).
 

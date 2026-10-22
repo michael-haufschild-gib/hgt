@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusAbelPrefixGramIntegral
-import GaloisForLFunctions.RHTower.DeningerMertensSummatory
+import GaloisForLFunctions.RHTower.Deninger.DeningerMertensSummatory
 import GaloisForLFunctions.RHTower.GaussSpikeMass
 
 /-!

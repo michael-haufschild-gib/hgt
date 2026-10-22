@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.WaveEventCoordinates
 import GaloisForLFunctions.HTGeometry.WaveEnergyFlux
-import GaloisForLFunctions.HTGeometry.KleinGordonClockProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonClockProbe
 import GaloisForLFunctions.HTGeometry.ClockProbeSeparablePotential
 
 /-!

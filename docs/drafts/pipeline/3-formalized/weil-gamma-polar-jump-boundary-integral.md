@@ -100,7 +100,7 @@ These are unconditional for every positive aperture and every real slope. The ar
 
 ## Verification
 - Scratch `lake env lean /tmp/hgt-gamma-pole.6YS4omj7/Final.lean`: PASS.
-- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilGammaPolarBoundary`: PASS (14 seconds).
+- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGammaPolarBoundary`: PASS (14 seconds).
 - Scratch `Audit.lean`: all 10 public theorems use exactly `[propext, Classical.choice, Quot.sound]`; actual mathlib `RiemannHypothesis` printed.
 - Scratch `PoleDomain.lean` and `Friedrichs.lean`: PASS with `lake env lean`.
 - Named final audits of `CCMRestrictedWeilPolarFourierRegularity` and `CCMRestrictedWeilPolarOperatorDomain`: PASS (8.5 and 6.0 seconds).

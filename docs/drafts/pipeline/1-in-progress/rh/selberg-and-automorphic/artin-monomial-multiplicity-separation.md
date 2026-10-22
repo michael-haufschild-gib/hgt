@@ -36,8 +36,8 @@ holomorphy beyond a required finite-character bridge.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinMonomialMultiplicitySeparation.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinMonomialMultiplicitySeparation` passed; this was
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinMonomialMultiplicitySeparation.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinMonomialMultiplicitySeparation` passed; this was
   the targeted leaf build, not an umbrella or full build.
 - `/tmp/ArtinMonomialMultiplicitySeparationAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for both exported theorems.

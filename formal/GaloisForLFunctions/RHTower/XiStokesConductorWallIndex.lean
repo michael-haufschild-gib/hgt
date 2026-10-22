@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmStokesOrientedFirstTraceQuantizedJump
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesOrientedFirstTraceQuantizedJump
 
 /-!
 # Xi Stokes--conductor wall index

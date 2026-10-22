@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / FORMALIZATION / QUANTITATIVE BRIDGE
 - **Scientific status:** `[PROVED IN LEAN] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMRectangularPowerLowerZeroFree.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularPowerLowerZeroFree.lean`
 
 ## Statement
 

@@ -101,7 +101,7 @@ not claimed as new.
 
 ## Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean` proves
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoPrimeKummerDenseNonclosedRange.lean` proves
 unconditionally:
 
 1. injectivity, coordinate action, and dense range of a nonvanishing diagonal `\ell^2` multiplier;
@@ -116,9 +116,9 @@ unconditionally:
    cohomology vanishes while relative boundary cohomology is nonzero.
 
 Verification: foreground
-`lake env lean GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean`
+`lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerTwoPrimeKummerDenseNonclosedRange.lean`
 and targeted
-`lake build GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerTwoPrimeKummerDenseNonclosedRange`
 both pass. No full build was run. A transitive `#print axioms` traversal was stopped after
 90 seconds without output; formal lint remains authoritative for forbidden declarations.
 

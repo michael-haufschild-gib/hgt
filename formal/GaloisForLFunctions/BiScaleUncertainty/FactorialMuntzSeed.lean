@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarCausalSource
 import GaloisForLFunctions.HTGeometry.BoundedVariationNormAlgebra
-import GaloisForLFunctions.RHTower.CCMBVMuntzSummation
+import GaloisForLFunctions.RHTower.CCM.CCMBVMuntzSummation
 import Mathlib.MeasureTheory.Measure.Haar.NormedSpace
 
 /-! An explicit zero-mean bounded-variation seed for the factorial ramp. -/

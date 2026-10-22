@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenProbeDatum
 import GaloisForLFunctions.HTGeometry.ClockPotentialLocalDetermination
-import GaloisForLFunctions.HTGeometry.KleinGordonSpacetimeProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSpacetimeProbe
 
 /-!
 # Clock probes of a variable speed, with a potential

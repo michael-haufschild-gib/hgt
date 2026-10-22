@@ -6,7 +6,7 @@ Lean-formalized; exact file audit passed on 2026-07-22. Literature novelty audit
 
 ## Corpus sources
 
-- `RHTower/HedenmalmRankTwoTangentInertia.lean`
+- `RHTower/Hedenmalm/HedenmalmRankTwoTangentInertia.lean`
 - `RHTower/RayleighProjectiveQuantumFisher.lean`
 
 ## Theorem-first derivation
@@ -30,9 +30,9 @@ parent module.
 
 ## Lean status
 
-- Module: `GaloisForLFunctions.RHTower.HedenmalmProjectiveRayleighGapUniversalityLaw`
+- Module: `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmProjectiveRayleighGapUniversalityLaw`
 - Capstone: `RHTower.thetaCuspRightLine_projectiveRayleighGap_strict`
-- Exact command passed: `lake env lean GaloisForLFunctions/RHTower/HedenmalmProjectiveRayleighGapUniversalityLaw.lean`
+- Exact command passed: `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmProjectiveRayleighGapUniversalityLaw.lean`
 
 ## Novelty
 

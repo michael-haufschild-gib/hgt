@@ -216,9 +216,9 @@ Every formalizable piece of this card's perimeter is now in Lean, axiom-clean:
   every prime length);
 - falsified item 5 → `HTGeometry/RationalScalingReturnNoGo.lean` (no compact transversal
   makes the rational suspension proper — strengthened to arbitrary compact factors);
-- paper-proved item 4 (the local atom) → `RHTower/DeningerArithmeticRectangularHalfDensity.lean`
+- paper-proved item 4 (the local atom) → `RHTower/Deninger/DeningerArithmeticRectangularHalfDensity.lean`
   (verified this session; its card's stale gate closed and moved to 3-formalized) together
-  with `RHTower/DeningerArithmeticRectangularQuaternionicHodge.lean` (the positive anti-linear
+  with `RHTower/Deninger/DeningerArithmeticRectangularQuaternionicHodge.lean` (the positive anti-linear
   star on the complexified atom).
 
 What remains is exactly the `[OPEN CORE]`: construct the additive/Steinberg descent complex

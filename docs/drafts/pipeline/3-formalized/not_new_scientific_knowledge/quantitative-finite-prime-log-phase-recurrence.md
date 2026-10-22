@@ -187,7 +187,7 @@ problem.  Fixed-dimensional Kronecker recurrence cannot decide it.
 The file
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMPrimePoleFiniteCoherence.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePoleFiniteCoherence.lean
 ```
 
 contains the unconditional declarations
@@ -218,7 +218,7 @@ exists_fin_primeLog_weighted_phaseSum_polar_floor_annular_quantitative. (13)
 The proof uses a literal finite pigeonhole argument over product cells.  Narrow verification by
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMPrimePoleFiniteCoherence.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimePoleFiniteCoherence.lean
 ```
 
 passes.  The declarations use only Lean's standard logical axioms `propext`, `Classical.choice`,

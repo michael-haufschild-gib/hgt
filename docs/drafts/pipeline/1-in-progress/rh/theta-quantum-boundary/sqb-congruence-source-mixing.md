@@ -65,7 +65,7 @@ checks, index/wiring checks and repository formal lint passed. The global
 `totalOrbitCurvature >= amplitudeMass/8` comparison remains open, as does the
 independent full-Xi occurrence handoff required for RH.
 
-The [actual generator-cost construction](../../sqb-congruence-generator-cost.md) now
+The [actual generator-cost construction](sqb-congruence-generator-cost.md) now
 controls complete centered variance by literal S/T displacements at each fixed
 level and preserves its normalized chord law at original nodes. Its quadratic
 word-cost coefficient provably diverges over levels, even for least-cost words;

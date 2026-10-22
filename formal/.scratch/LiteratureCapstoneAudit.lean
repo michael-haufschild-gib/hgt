@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CaratheodoryFejerPSDtoAtomicFactorization
-import GaloisForLFunctions.RHTower.CCMCyclotomicLambertIntegrality
+import GaloisForLFunctions.RHTower.CCM.CCMCyclotomicLambertIntegrality
 import GaloisForLFunctions.RHTower.BurnolCoPoissonCosineClosedExactJetDetection
 
 #print axioms GaloisForLFunctions.HTGeometry.exists_atomic_caratheodoryFejer_psd_factorization

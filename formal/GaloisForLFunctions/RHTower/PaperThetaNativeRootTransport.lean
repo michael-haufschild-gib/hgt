@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperThetaNativeQuantileComparison
 import GaloisForLFunctions.RHTower.PaperThetaNativeGrushin
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceConormalSocle
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceConormalSocle
 import Mathlib.Tactic.Module
 
 /-! # All generalized native modes enter the full theta source block

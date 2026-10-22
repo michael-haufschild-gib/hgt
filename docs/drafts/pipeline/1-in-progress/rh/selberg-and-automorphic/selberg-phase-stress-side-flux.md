@@ -1,7 +1,7 @@
 # Complete original phase stress and vertical-side flux
 
 - **Stage:** 1-in-progress
-- **Parent:** [Selberg conjecturing loop](../../selberg-quarter-conjecturing-loop.md), cycle53.
+- **Parent:** [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle53.
 - **Objective:** Evaluate the actual aggregate phase stress and vertical-side dilation flux, then connect that physical record to the original cusp Fourier/Bessel data needed by the full quarter comparison.
 
 ## Evidence and conjecture
@@ -48,6 +48,6 @@ Every task-owned Lean/check/build handle is terminal. This turn used strictly se
 
 A focused explicit-OR gramKernel/unipotent/Kloosterman corpus query found98 declarations in5 SelbergMaass modules (`/tmp/selberg_stress55_arithmetic.json`). Re-read the actual fibreWeight_at_word, fibreWeight_convolution, transferGram_convolution, exact kernel magnitude, and support proofs. These retain the middle-residue annihilator multiplicities, including composite-level nonunits, and the actual complex character phases.
 
-Cycle54 proved the full complex kernel identity with the correct first-slot conjugation. The actual original mode ODEs then produced a stronger positive result: the cross-frequency boundary Wronskian is a squared-frequency difference times an actual positive cusp-tail Gram kernel. Genuine original cusp integrability proves the upper endpoint is zero. A complex two-mode test yields a quantitative current bound by the two tail-loss masses. [Complete proof and audit](../../selberg-kernel-wronskian.md).
+Cycle54 proved the full complex kernel identity with the correct first-slot conjugation. The actual original mode ODEs then produced a stronger positive result: the cross-frequency boundary Wronskian is a squared-frequency difference times an actual positive cusp-tail Gram kernel. Genuine original cusp integrability proves the upper endpoint is zero. A complex two-mode test yields a quantitative current bound by the two tail-loss masses. [Complete proof and audit](selberg-kernel-wronskian.md).
 
 Next derive the exact horizontal Fourier weight in the physical top stress and combine it with the current/tail relation. Retain the full complex kernel, signed frequencies, and all same-residue interference; positivity of the underlying tail kernel does not supply the still-unproved full weighted boundary/core comparison.

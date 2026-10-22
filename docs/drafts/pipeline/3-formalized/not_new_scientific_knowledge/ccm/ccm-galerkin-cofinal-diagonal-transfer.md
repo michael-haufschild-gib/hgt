@@ -179,7 +179,7 @@ knowledge.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMGalerkinDiagonalTransfer.lean`, on the spectral inequality of
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGalerkinDiagonalTransfer.lean`, on the spectral inequality of
 `CCMRayleighExcessAngle.lean`.  The previous decision called this "a generic finite-dimensional
 shadow"; none of the statements below is finite dimensional — the spectral half is a `HasSum`
 statement over an arbitrary index type, and the uniform-convergence half is stated for an arbitrary

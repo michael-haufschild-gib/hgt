@@ -7,7 +7,7 @@ finite linear combinations of literal lower prime--Gamma Cauchy atoms converging
 those vectors.  For every pair of labels `i,j : Fin 4`, the corresponding Hermitian Gram entry
 converges to the target mixed term.
 
-Formal source: `RHTower/DeningerPrimeGammaLowerCauchyFiniteGramApproximation.lean`, theorem
+Formal source: `RHTower/Deninger/DeningerPrimeGammaLowerCauchyFiniteGramApproximation.lean`, theorem
 `exists_lowerCauchy_fourTuple_gramApprox`.
 
 ## Consequence for P and C1

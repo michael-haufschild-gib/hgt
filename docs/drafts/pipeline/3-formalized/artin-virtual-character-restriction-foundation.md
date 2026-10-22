@@ -73,7 +73,7 @@ proposition interface.
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinVirtualCharacter.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinVirtualCharacter.lean`
 - Concrete carriers: `genuineCharacterMonoid`, `virtualCharacterGroup`.
 - Actual representation restriction: `restrictFDRep`.
 - Universe-safe carrier reduction: `smallModelRepresentation`, `smallModelEquiv`,
@@ -82,9 +82,9 @@ proposition interface.
 - Structural theorems: `genuineCharacterMonoid_le_virtualCharacterGroup`,
   `VirtualCharacter.conj_invariant`, `GenuineCharacter.one_eq_natCast`, and
   `VirtualCharacter.one_eq_intCast`.
-- Source check: `lake env lean GaloisForLFunctions/RHTower/ArtinVirtualCharacter.lean`.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinVirtualCharacter.lean`.
 - Targeted olean audit:
-  `lake build GaloisForLFunctions.RHTower.ArtinVirtualCharacter`.
+  `lake build GaloisForLFunctions.RHTower.Artin.ArtinVirtualCharacter`.
 - `#print axioms` audit of all exported theorems reports only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

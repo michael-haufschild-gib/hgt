@@ -5,7 +5,7 @@
 - **Type:** source-specific half-transform theorem, exact finite-type gauge rigidity, and additive-port nondegeneracy gate
 - **Routes:** STC, CSB, U, BPC, K-RVM, MPLF
 - **Status:** `[PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]`
-- **Dependencies:** The positive, even, strictly decreasing positive-ray completed theta source and all its exponential moments; the closed Lean [two-thirds simple-critical-zero theorem](../../../../formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean); the literal Hedenmalm [two-ended Volterra source](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean) and [source ODE](../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaEigenODE.lean).
+- **Dependencies:** The positive, even, strictly decreasing positive-ray completed theta source and all its exponential moments; the closed Lean [two-thirds simple-critical-zero theorem](../../../../formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean); the literal Hedenmalm [two-ended Volterra source](../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoEndedVolterraDefect.lean) and [source ODE](../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaEigenODE.lean).
 
 ## Conjecture tested
 

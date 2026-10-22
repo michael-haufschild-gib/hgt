@@ -14,22 +14,22 @@ declaration is exactly `propext`, `Classical.choice`, `Quot.sound`.
 
 | Card item | Declaration | Module |
 |---|---|---|
-| `(3)` full integral-isogeny core equals the scalar power core | `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` | `RHTower/SchanuelIntegralIsogenyCoreIntersection` |
-| `(4)` the scalar field of the determinant sits inside `K_M` | `schanuelDefect_slope_mem_of_integral_isogeny` | `RHTower/SchanuelDefectIsogeny` |
-| the `n=2` affine chart and its `trdeg = 1` rank transfer | `schanuelDefect_slope_mem_integral_isogeny_valueField` | `RHTower/SchanuelIntegralIsogenyValueField` |
-| `(1)` the defect map of a family of differentials, and its kernel | `defectMap`, `mem_ker_defectMap_iff` | `RHTower/SchanuelDefectGrassmannianDescent` |
-| `(5)` numerical all-dimensional integral transformation law | `schanuelDefect_integer_linearCombination` | `RHTower/SchanuelDefectIsogeny` |
-| `(5)` field form: the defect pair of an integral transform is the integral combination of the defect pairs | `kaehlerPairDefect_intTransform` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| `(3)` full integral-isogeny core equals the scalar power core | `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` | `RHTower/Schanuel/SchanuelIntegralIsogenyCoreIntersection` |
+| `(4)` the scalar field of the determinant sits inside `K_M` | `schanuelDefect_slope_mem_of_integral_isogeny` | `RHTower/Schanuel/SchanuelDefectIsogeny` |
+| the `n=2` affine chart and its `trdeg = 1` rank transfer | `schanuelDefect_slope_mem_integral_isogeny_valueField` | `RHTower/Schanuel/SchanuelIntegralIsogenyValueField` |
+| `(1)` the defect map of a family of differentials, and its kernel | `defectMap`, `mem_ker_defectMap_iff` | `RHTower/Schanuel/SchanuelDefectGrassmannianDescent` |
+| `(5)` numerical all-dimensional integral transformation law | `schanuelDefect_integer_linearCombination` | `RHTower/Schanuel/SchanuelDefectIsogeny` |
+| `(5)` field form: the defect pair of an integral transform is the integral combination of the defect pairs | `kaehlerPairDefect_intTransform` | `RHTower/Schanuel/SchanuelDefectGrassmannianDescent` |
 | `(5)` concrete instantiation: the small-field defect pairs extend to the integral transform | `extendDifferential_pairDefect_transform` | same |
 | `(6)` separable Kähler base change `K (x)_{K_M} Omega[K_M/A] = Omega[K/A]` | `kaehlerBaseChangeOfSeparable`, `kaehlerBaseChangeOfIsAlgebraic` | `HTGeometry/SeparableKaehlerBaseChange` |
 | `(6)` injectivity and surjectivity of the canonical map | `mapBaseChange_injective_of_separable`, `mapBaseChange_surjective_of_separable` | same |
 | `(7)` flat base change of kernels | `ker_lTensor_eq_range_subtype`, `exists_of_mem_ker_lTensor` | same |
-| `(7)` kernel descent: a big-field relation is a big-field combination of small-field relations | `mem_span_image_ker_of_extended` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| `(7)` kernel descent: a big-field relation is a big-field combination of small-field relations | `mem_span_image_ker_of_extended` | `RHTower/Schanuel/SchanuelDefectGrassmannianDescent` |
 | `(7)` `W = M^T (K (x) W'_M)`, both inclusions | `mem_span_transform_of_mem_ker`, `sum_smul_transform_eq_zero`, `ker_defectMap_eq_span_transform` | same |
 | **Theorem 2** for an exponential configuration with an intermediate-field transform | `ker_pairDefect_eq_span_transform` | same |
 | Plücker coordinates as maximal minors, and basis independence of their ratios | `pluecker`, `pluecker_mul`, `pluecker_ratio_mul` | `HTGeometry/PlueckerFieldOfDefinition` |
 | Plücker field of definition: a subspace spanned over a subfield has its ratios there | `pluecker_mem_range`, `pluecker_ratio_mem_range` | same |
-| **Theorem 2's conclusion**: the normalized Plücker ratios of the defect kernel lie in `K_M` | `pluecker_ratio_transform_mem_range` | `RHTower/SchanuelDefectGrassmannianDescent` |
+| **Theorem 2's conclusion**: the normalized Plücker ratios of the defect kernel lie in `K_M` | `pluecker_ratio_transform_mem_range` | `RHTower/Schanuel/SchanuelDefectGrassmannianDescent` |
 
 ### Deviations, recorded
 
@@ -179,7 +179,7 @@ coefficient wall.
   `schanuelDefect_slope_mem_integral_isogeny_valueField`.  The all-dimensional transformation law
   `(5)` is Lean-proved by `schanuelDefect_integer_linearCombination`.  Core equality `(3)` is
   Lean-proved by `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` in
-  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.  The **Plücker field-of-definition layer is now Lean-proved** in
+  `RHTower/Schanuel/SchanuelIntegralIsogenyCoreIntersection.lean`.  The **Plücker field-of-definition layer is now Lean-proved** in
   `HTGeometry/PlueckerFieldOfDefinition.lean` (new, umbrella-wired, axiom-clean):
   `pluecker` defines the Grassmannian coordinates as the maximal minors of a spanning matrix,
   `pluecker_mul` shows a basis change scales every coordinate by one determinant,

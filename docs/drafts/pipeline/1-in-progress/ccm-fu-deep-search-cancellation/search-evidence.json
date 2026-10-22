@@ -131,8 +131,8 @@
         },
         {
           "name": "mobiusDivisorSquareRootAbelMoment_eq_divisorDefect_kernel",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
           "line": 638,
           "kind": "theorem",
           "doc": "Collapsed Möbius-kernel producer.** The complete source is the prime-free divisor defect paired with one explicit moving kernel. Each kernel coefficient is the signed Möbius aggregation of the exact clipped square-root block masses. Thus no von Mangoldt coefficient remains and the only possible cofinal gain is joint cancellation inside `mobiusClippedAbelKernel`; separate dilation-channel estimates cannot create it."
@@ -495,8 +495,8 @@
         },
         {
           "name": "RHTower.norm_moebius_le_one",
-          "module": "GaloisForLFunctions.RHTower.DeningerPoissonMoebius",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPoissonMoebius.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMoebius",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonMoebius.lean",
           "line": 41,
           "end_line": 51,
           "kind": "theorem",
@@ -691,8 +691,8 @@
         },
         {
           "name": "RHTower.d4BMGeneralizedDivisorArithmetic_eq_divisorSum",
-          "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualUnfoldedScalarNormalizationNoGo",
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualUnfoldedScalarNormalizationNoGo.lean",
+          "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualUnfoldedScalarNormalizationNoGo",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualUnfoldedScalarNormalizationNoGo.lean",
           "line": 49,
           "end_line": 68,
           "kind": "lemma",
@@ -1030,8 +1030,8 @@
         },
         {
           "name": "RHTower.mobiusThetaPrimeNormalResidualMultiplier_successor_transport",
-          "module": "GaloisForLFunctions.RHTower.DeningerMobiusPrimeNormalSuccessorBlowup",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMobiusPrimeNormalSuccessorBlowup.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerMobiusPrimeNormalSuccessorBlowup",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusPrimeNormalSuccessorBlowup.lean",
           "line": 541,
           "end_line": 572,
           "kind": "theorem",
@@ -1470,8 +1470,8 @@
         },
         {
           "name": "RHTower.finiteCriticalMobiusBoundary",
-          "module": "GaloisForLFunctions.RHTower.CCMUnitRieszMobiusCausalVirial",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszMobiusCausalVirial.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMUnitRieszMobiusCausalVirial",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMobiusCausalVirial.lean",
           "line": 24,
           "end_line": 29,
           "kind": "def",
@@ -1758,8 +1758,8 @@
         },
         {
           "name": "mobiusClippedAbelKernel_eq_full_add_terminal",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
           "line": 471,
           "kind": "theorem",
           "doc": "Exact complete/terminal boundary split.** The collapsed kernel is a half-order Abel factor times a square-root-weighted Mertens sum, plus one literal terminal-band correction. This is the coefficient-faithful boundary transport law: discarding the terminal term would change the source, while estimating the two terms separately would destroy their possible cancellation."
@@ -1782,8 +1782,8 @@
         },
         {
           "name": "riemannHypothesis_of_squarePrimeWindowPositiveExcessSquareEnergySubpower",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquarePositiveExcessDuality",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquarePositiveExcessDuality.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquarePositiveExcessDuality",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquarePositiveExcessDuality.lean",
           "line": 255,
           "kind": "theorem",
           "doc": "Near-linear growth of the one-sided square-aperture energy proves RH."
@@ -1798,8 +1798,8 @@
         },
         {
           "name": "riemannHypothesis_iff_fractionalNegativeEnergy_and_complementarySubpower",
-          "module": "GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRectangularNegativeChannelSplitCompleteness.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativeChannelSplitCompleteness",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativeChannelSplitCompleteness.lean",
           "line": 196,
           "kind": "theorem",
           "doc": "Exact fractional-carrier theorem.** Every selector with values in `[0,1]` gives an exact continuous allocation of the negative Weil mass. RH is equivalent to weighted negative energy in that allocation and subpower growth of its complement."
@@ -2056,16 +2056,16 @@
         },
         {
           "name": "DyadicWeightedPrimeWindowSubpowerUpperOff",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowExcessEnergyGate",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowExcessEnergyGate.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowExcessEnergyGate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowExcessEnergyGate.lean",
           "line": 794,
           "kind": "def",
           "doc": "Pointwise subpower control away from an exceptional set. Finite prefixes may simply be included in `E`."
         },
         {
           "name": "riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpperOff_finite",
-          "module": "GaloisForLFunctions.RHTower.CCMFiniteExceptionClosure",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFiniteExceptionClosure.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFiniteExceptionClosure",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFiniteExceptionClosure.lean",
           "line": 75,
           "kind": "theorem",
           "doc": "Finite exceptions discharge the energy premise from the sparse sharp-window RH criterion."
@@ -2080,64 +2080,64 @@
         },
         {
           "name": "riemannHypothesis_of_dyadicWeightedPrimeWindowSubpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSubpowerGate",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSubpowerGate.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSubpowerGate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSubpowerGate.lean",
           "line": 681,
           "kind": "theorem",
           "doc": "Dyadic sharp-window subpower criterion.** The requested inequality, for every positive epsilon with an epsilon-dependent constant and from any fixed index onward, implies RH."
         },
         {
           "name": "dyadicWeightedHigherPrimePowerWindow_le_subpower",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPrimeReduction",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowPrimeReduction.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPrimeReduction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowPrimeReduction.lean",
           "line": 128,
           "kind": "theorem",
           "doc": "The repeated-prime contribution is below every fixed positive power, with an explicit constant."
         },
         {
           "name": "criticalMellinAdjacentBlock_subpowerLower_of_dyadicWeightedPrimeWindow_subpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMDyadicSharpRectangularTransfer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMDyadicSharpRectangularTransfer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMDyadicSharpRectangularTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMDyadicSharpRectangularTransfer.lean",
           "line": 239,
           "kind": "theorem",
           "doc": "The all-epsilon dyadic prime-window inequality discharges the all-epsilon adjacent-block source estimate, with the explicit constant conversion `D_epsilon = C_epsilon * log 2`."
         },
         {
           "name": "dyadicWeightedPrimeWindowSubpowerUpper_iff_thetaErrorIncrement",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPrimeReduction",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowPrimeReduction.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPrimeReduction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowPrimeReduction.lean",
           "line": 307,
           "kind": "theorem",
           "doc": "All-epsilon theta-error reduction.** From any cutoff at least two, the requested subpower upper estimate for the full von Mangoldt window is exactly equivalent to the same one-sided subpower estimate for the endpoint-and-primitive increment of `theta(x) - x`. Proper prime powers have already been absorbed at logarithmic cost."
         },
         {
           "name": "exists_rectangularWeilTailSubpowerLower_of_dyadicWeightedPrimeWindow_subpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMDyadicSharpRectangularTransfer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMDyadicSharpRectangularTransfer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMDyadicSharpRectangularTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMDyadicSharpRectangularTransfer.lean",
           "line": 293,
           "kind": "theorem",
           "doc": "Independently of the still-open rectangular source identity, the dyadic sharp inequality already implies RH and therefore supplies the abstract rectangular Weil lower tail at every positive width."
         },
         {
           "name": "dyadicWeightedPrimeWindowPowerUpper_zero_iff_subpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergyWidthCollision",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergyWidthCollision",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean",
           "line": 319,
           "kind": "theorem",
           "doc": "Exact endpoint identification with the original Route I source predicate."
         },
         {
           "name": "dyadicWeightedPrimeWindowPositiveExcessEnergy_of_subpowerUpperOff",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowExcessEnergyGate",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowExcessEnergyGate.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowExcessEnergyGate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowExcessEnergyGate.lean",
           "line": 866,
           "kind": "theorem",
           "doc": "Sparse-exception subpower control and the exact exceptional energy together supply the global positive-excess energy."
         },
         {
           "name": "DyadicWeightedPrimeWindowSubpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSubpowerGate",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSubpowerGate.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSubpowerGate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSubpowerGate.lean",
           "line": 672,
           "kind": "def",
           "doc": "The user's eventual all-epsilon upper estimate for the exact dyadic von-Mangoldt window."
@@ -2146,16 +2146,16 @@
       "exploration": [
         {
           "name": "riemannHypothesis_iff_exists_dyadicWeightedPrimeWindowSubpowerUpper",
-          "module": "GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMGeneralizedVonKoch.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGeneralizedVonKoch.lean",
           "line": 928,
           "kind": "theorem",
           "doc": "Exact zero-width collision between RH and sharp-window subpower upper bounds."
         },
         {
           "name": "sharpPrimePolarCoefficient_dyadic_signed",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmFirstTraceSharpPolarSignednessWall",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmFirstTraceSharpPolarSignednessWall.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmFirstTraceSharpPolarSignednessWall",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmFirstTraceSharpPolarSignednessWall.lean",
           "line": 114,
           "kind": "theorem",
           "doc": "Closed finite witness that canonical dyadic polar renormalization is neither nonnegative nor nonpositive."
@@ -2918,16 +2918,16 @@
         },
         {
           "name": "primeArchSuzukiFiniteParityInteriorExcursion_iff_crossGapBudget",
-          "module": "GaloisForLFunctions.RHTower.SuzukiParityResolventTransportBudget",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiParityResolventTransportBudget.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiParityResolventTransportBudget",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParityResolventTransportBudget.lean",
           "line": 478,
           "kind": "theorem",
           "doc": "Exact finite Suzuki spectral carrier.** A finite parity-resolvent endpoint crosses the Xi first-defect threshold exactly when the integrated normalized signed cross-parity gap mass pays the calibrated Xi log-odds cost."
         },
         {
           "name": "neg_oneThousandFiftyEight_lt_thetaCuspBornWittenCrossSignedSecondProfile",
-          "module": "GaloisForLFunctions.RHTower.ThetaCuspFirstSecondAtomCrossHankelObstruction",
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFirstSecondAtomCrossHankelObstruction.lean",
+          "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFirstSecondAtomCrossHankelObstruction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFirstSecondAtomCrossHankelObstruction.lean",
           "line": 166,
           "kind": "theorem",
           "doc": "Matching lower budget: the cross defect has magnitude less than `1058` on the same rational seam interval."
@@ -3512,8 +3512,8 @@
         },
         {
           "name": "RHTower.hasDerivAt_thetaCuspReflectedSourceOddParityWall_slope",
-          "module": "GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationaryCurvature",
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspReflectedSourceOddStationaryCurvature.lean",
+          "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSourceOddStationaryCurvature",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedSourceOddStationaryCurvature.lean",
           "line": 180,
           "end_line": 190,
           "kind": "theorem",
@@ -3773,8 +3773,8 @@
         },
         {
           "name": "thetaSourceSignedStageQuadraticTraceEnergyDefect_eq_half_skewAdjointEnergy",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaSkewAdjointDefectCriterion",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaSkewAdjointDefectCriterion.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSkewAdjointDefectCriterion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSkewAdjointDefectCriterion.lean",
           "line": 43,
           "kind": "theorem",
           "doc": "The quadratic trace-energy defect of an actual stage is half its skew-adjoint energy."
@@ -3993,8 +3993,8 @@
         },
         {
           "name": "GaloisForLFunctions.RHTower.offDiagCharge_eq_sum_offDiag",
-          "module": "GaloisForLFunctions.RHTower.CCMLocalRatioAnomaly",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMLocalRatioAnomaly.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMLocalRatioAnomaly",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioAnomaly.lean",
           "line": 251,
           "end_line": 266,
           "kind": "theorem",

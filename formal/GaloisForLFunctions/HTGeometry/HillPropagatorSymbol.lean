@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HillFundamentalPair
 import GaloisForLFunctions.HTGeometry.HillFlowTwoSidedStability
-import GaloisForLFunctions.HTGeometry.KleinGordonSymbol
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSymbol
 
 /-!
 # The propagator of the massive Hill fibre, as a symbol in the frequency

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / Connes--CCM positive-carrier optimization
 - **Scientific status:** `[PROVED] [FORMALIZED] [STRUCTURAL BRIDGE] [NOT AN RH PROOF]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection`
+  `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMinimalPositiveCorrection`
 
 ## Theorem
 

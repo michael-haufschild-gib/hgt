@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCriticalBoundaryFluxPotential
-import GaloisForLFunctions.RHTower.ThetaCuspSeedZeroMean
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSeedZeroMean
 import GaloisForLFunctions.HTGeometry.ReflectionIntegral
 
 /-!

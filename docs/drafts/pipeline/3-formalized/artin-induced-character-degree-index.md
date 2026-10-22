@@ -83,7 +83,7 @@ target-equivalent proposition interface.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/ArtinInducedDegree.lean
+formal/GaloisForLFunctions/RHTower/Artin/ArtinInducedDegree.lean
 ```
 
 Exported results:
@@ -97,7 +97,7 @@ Exported results:
 
 Verification on 2026-08-14:
 
-- direct source check: `lake env lean GaloisForLFunctions/RHTower/ArtinInducedDegree.lean` passed;
-- targeted audit: `lake build GaloisForLFunctions.RHTower.ArtinInducedDegree` passed;
+- direct source check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinInducedDegree.lean` passed;
+- targeted audit: `lake build GaloisForLFunctions.RHTower.Artin.ArtinInducedDegree` passed;
 - axiom audit for every exported result: only `propext`, `Classical.choice`, and `Quot.sound`;
 - imported by `formal/GaloisForLFunctions/RHTower.lean`; umbrella build intentionally not run.

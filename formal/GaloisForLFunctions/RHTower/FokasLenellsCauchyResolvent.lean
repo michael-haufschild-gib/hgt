@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMArchimedeanQuantizedCalculus
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanQuantizedCalculus
 import Mathlib.Analysis.Normed.Ring.Units
 import Mathlib.Analysis.Normed.Operator.Prod
 import Mathlib.Tactic

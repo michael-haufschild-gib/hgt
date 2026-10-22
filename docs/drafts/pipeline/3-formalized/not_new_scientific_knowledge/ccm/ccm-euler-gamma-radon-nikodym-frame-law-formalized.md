@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-euler-gamma-radon-nikodym-frame-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMEulerGammaRadonNikodym.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerGammaRadonNikodym.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 9 theorems
 - **Hypotheses:** only `2 ≤ p` and `1 ≤ k`; no `sorry`, `axiom`, `opaque`

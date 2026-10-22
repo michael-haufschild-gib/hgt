@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-causal-weil-robin-green-identity.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalWeilRobinGreenIdentity.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -47,7 +47,7 @@ nonvanishing premise is assumed.
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalWeilRobinGreenIdentity.lean`;
 - targeted SOTA build: `9448/9448` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`;

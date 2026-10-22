@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGammaSixFilteredBoundaryHarmonicResidue
-import GaloisForLFunctions.RHTower.HedenmalmThetaPhysicalEndpointPrimeHardyGreenScaling
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaPhysicalEndpointPrimeHardyGreenScaling
 
 /-!
 # Gamma-six confluent boundary-layer flux

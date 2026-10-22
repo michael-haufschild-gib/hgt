@@ -195,7 +195,7 @@ the correct route interface but does not clear the novelty gate.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMApertureMorseCharge.lean`.  `RHTower/SeamSpectralFlow.lean` is
+`formal/GaloisForLFunctions/RHTower/CCM/CCMApertureMorseCharge.lean`.  `RHTower/SeamSpectralFlow.lean` is
 matrix-level Krein nonnegativity and does **not** overlap: nothing is duplicated.
 
 The previous decision listed "zero extension of the closed Weil forms" as missing analytic content.

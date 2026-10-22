@@ -156,7 +156,7 @@ Next exact construction: `rw-prime-curvature-compact-source-onset.md`. Existing 
 
 ## Verified compact-source onset — 2026-09-29
 
-New leaf `RHTower/CCMPrimePoleCurvatureCompactOnset.lean` closes every mathematical clause of the boundary-onset card. Literal closed cutoff and four-row equality, exact logarithmic bounds, positive Schur complement, both support-forced endpoint zeros, the full six-real-sample kernel, and the all-strict-aperture constrained sharp negative stencil are proved. Intrinsic capstone has no analytic premise. Targeted --old leaf build and final direct Lean passed without warnings; all 16 public declarations axiom-audit to the standard baseline. Wired into RHTower. Card moved to Stage 3. Formal lint has no finding on the new leaf; global failures concern concurrent unreachable leaves, now including new LI mass-series leaves.
+New leaf `RHTower/CCM/CCMPrimePoleCurvatureCompactOnset.lean` closes every mathematical clause of the boundary-onset card. Literal closed cutoff and four-row equality, exact logarithmic bounds, positive Schur complement, both support-forced endpoint zeros, the full six-real-sample kernel, and the all-strict-aperture constrained sharp negative stencil are proved. Intrinsic capstone has no analytic premise. Targeted --old leaf build and final direct Lean passed without warnings; all 16 public declarations axiom-audit to the standard baseline. Wired into RHTower. Card moved to Stage 3. Formal lint has no finding on the new leaf; global failures concern concurrent unreachable leaves, now including new LI mass-series leaves.
 
 Next: exact LI small-mass crossover. Live corpus now contains `LiEvenCrossEulerMassSeries`, `LiEvenCrossEulerMassJetSeries`, and `LiEvenCrossEulerSmallMassRemainder`. Their literal series and uniform remainder proof sources were inspected. Do not edit these concurrent leaves; build necessary artifacts and construct a disjoint `LiEvenCrossEulerSmallMassCrossover.lean` for exact two-term decomposition, uniform growing-order estimate, first-negative-index bounded-offset/slope law, and sequence profile. All original card clauses remain required before promotion.
 
@@ -822,12 +822,12 @@ warnings and these 15 other unreachable modules; none concerns the four
 new leaves:
 
 ```text
-GaloisForLFunctions.RHTower.CCMApertureChainProfile
-GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 GaloisForLFunctions.RHTower.LiClockPairedEtaCompletionAsymptotic
 GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
@@ -906,12 +906,12 @@ unreachable modules, with no finding on this leaf or the four earlier
 translation leaves:
 
 ```text
-GaloisForLFunctions.RHTower.CCMApertureChainProfile
-GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 GaloisForLFunctions.RHTower.LiClockPairedEtaFinitePartitionVolterra
 GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
@@ -994,12 +994,12 @@ subagent, full/umbrella build or commit is used.
 Authoritative final lint exits 1: all 170 warnings are baseline large-file
 warnings; ten other leaves remain unreachable, with no owned-leaf finding:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
 - `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
@@ -1095,12 +1095,12 @@ reports three changed sources and no removals.
 Authoritative final lint exits 1: 170 baseline large-file warnings and
 13 other unreachable leaves remain:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
 - `GaloisForLFunctions.RHTower.RiemannKernelModulatedWindowTests`
@@ -1214,12 +1214,12 @@ Authoritative lint exits 1, with zero findings for this leaf. Global
 diagnostics are 170 baseline large-file warnings and 18 unrelated
 unreachable modules:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
 - `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
@@ -2189,12 +2189,12 @@ already indexed this source. Authoritative lint 37590 exits one; all 183
 lines read. Exactly 172 existing size warnings plus these 11 unrelated
 unreachable modules, no other or owned leaf finding:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
 - `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
@@ -2235,7 +2235,7 @@ one has an explicit universe-zero witness compiled in the all-95 API gate.
 - `GaloisForLFunctions.HTGeometry.norm_modulation`
 - `GaloisForLFunctions.HTGeometry.norm_neg_I_mul`
 
-`GaloisForLFunctions.RHTower.ThetaCuspSchwartzTranslationCurve`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzTranslationCurve`:
 
 - `RHTower.thetaSchwartzSpatialJetCLM`
 - `RHTower.thetaSchwartzSpatialJetCLM_apply`
@@ -3012,12 +3012,12 @@ zero_add | Mathlib.Algebra.Group.Defs
 Complete current unrelated lint failures:
 
 ```text
-GaloisForLFunctions.RHTower.CCMApertureChainProfile
-GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
@@ -3273,12 +3273,12 @@ Every actual imported native binding (29 Mathlib, five project):
 
 Index76750 EXIT0, complete four-line output read: three documentation regenerations, one changed and zero removed. Literal lint84100 EXIT1; ALL183 lines read, 172 existing large-file warnings and these 11 unrelated unreachable modules, zero owned finding or forbidden proof debt:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `GaloisForLFunctions.RHTower.ChebyshevDyadicWeightedEnergy`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
@@ -3623,12 +3623,12 @@ Literal authoritative lint59755 EXIT1, ALL185 lines read: 172 existing
 large-file warnings and these13 unrelated unreachable-module errors; zero
 owned finding or forbidden proof debt. Global lint is NOT green:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
 - `GaloisForLFunctions.RHTower.SpeiserLittlewoodStrip`.
@@ -4018,12 +4018,12 @@ finding or forbidden proof debt. Three prior external errors became reachable;
 three other external modules now appear. No foreign source certificate accepted.
 GLOBAL LINT IS NOT GREEN:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
 - `GaloisForLFunctions.RHTower.PMPowerIncrementSeries`.
@@ -4354,12 +4354,12 @@ All exact owned gate handles terminal before certificate persistence:
   GLOBAL LINT IS NOT GREEN. No foreign certificate accepted or unrelated
   source repaired inside this owned leaf. Exact12 errors:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
 - `GaloisForLFunctions.RHTower.PMScaledPowerVariance`.
@@ -4733,12 +4733,12 @@ ALL owned gate handles terminal before this full certificate persistence:
   finding. GLOBAL LINT IS NOT GREEN. No unrelated repairs or foreign
   certificate accepted within this leaf. Exact12 errors:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `GaloisForLFunctions.RHTower.HamburgerTwistedCriticalLine`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
@@ -5381,12 +5381,12 @@ ALL owned gates terminal before full certificate persistence:
   ZERO owned/debt finding. GLOBAL LINT IS NOT GREEN. No unrelated source
   repairs or foreign proof certificate inferred. Exact12 errors:
 
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`.
@@ -5869,12 +5869,12 @@ ALL owned leaf gate handles terminal before this certificate persistence:
  GLOBAL LINT IS NOT GREEN. Compared with prior12, WeilDeviationLocalMass
  andWeilFractionalMassAtomicRigidity now reachable; no foreign proof
  certification or unrelated repair inferred.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`.
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`.
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`.
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`.
@@ -6321,7 +6321,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.thetaWeightedTranslationClass_mem_derivativeHistory`
   - theorem `RHTower.thetaWeightedDerivative_memLp`
   - theorem `RHTower.thetaWeightedDerivativeVector_coe`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeJordan` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeJordan.lean`; 386 lines; SHA256 `723ab105c2f91e44a38c13e8caff1d32f8cdd4a8f73e9ef98f531b2647e73291`; 34 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeJordan` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeJordan.lean`; 386 lines; SHA256 `723ab105c2f91e44a38c13e8caff1d32f8cdd4a8f73e9ef98f531b2647e73291`; 34 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaSourceDerivativeFunction`
   - theorem `RHTower.HedenmalmThetaSource.continuous_thetaSourceDerivativeFunction`
   - theorem `RHTower.HedenmalmThetaSource.hasDerivAt_thetaSourceDerivativeFunction`
@@ -6356,7 +6356,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - def `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeHistory`
   - theorem `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeVector_mem_history`
   - theorem `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeHistory_invariant`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistorySpectrum` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeHistorySpectrum.lean`; 158 lines; SHA256 `2865799a9ce69352b1b5a2a67777edcf4e23db49f457c79d855de90b4bd2e466`; 10 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistorySpectrum` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeHistorySpectrum.lean`; 158 lines; SHA256 `2865799a9ce69352b1b5a2a67777edcf4e23db49f457c79d855de90b4bd2e466`; 10 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryInverse`
   - theorem `RHTower.HedenmalmThetaSource.isCompactOperator_thetaDerivativeHistoryInverse`
   - def `RHTower.HedenmalmThetaSource.thetaHistoryDerivativeVector`
@@ -6367,7 +6367,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryInverse_spectral_value_eq_zero`
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryInverse_spectrum`
   - theorem `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeHistory_ne_top`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaZeroHistoryNoGo` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaZeroHistoryNoGo.lean`; 79 lines; SHA256 `f5ee5c0be81a642534181f7c3aa5bb1658b8a26509a9901d3541aba2569d1f62`; 3 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaZeroHistoryNoGo` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaZeroHistoryNoGo.lean`; 79 lines; SHA256 `f5ee5c0be81a642534181f7c3aa5bb1658b8a26509a9901d3541aba2569d1f62`; 3 actual public; exact catalogue/native and umbrella reachability PASS.
   - theorem `RHTower.HedenmalmThetaSource.thetaKernelOperator_dense_range`
   - theorem `RHTower.HedenmalmThetaSource.thetaKernelOperator_adjoint_injective`
   - theorem `RHTower.HedenmalmThetaSource.thetaKernelOperator_no_injective_bounded_symmetrizer`
@@ -6392,7 +6392,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `GaloisForLFunctions.HTGeometry.norm_orthogonalQuotientSection`
   - theorem `GaloisForLFunctions.HTGeometry.continuousInvariantQuotient_eq_comp_section`
   - theorem `GaloisForLFunctions.HTGeometry.isCompactOperator_continuousInvariantQuotient`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryQuotient` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeHistoryQuotient.lean`; 218 lines; SHA256 `f65e9a98cd3fef890fc65ca4eeaf48c04d08ef971fe9a160b9405c54e7fce4a9`; 22 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryQuotient` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeHistoryQuotient.lean`; 218 lines; SHA256 `f65e9a98cd3fef890fc65ca4eeaf48c04d08ef971fe9a160b9405c54e7fce4a9`; 22 actual public; exact catalogue/native and umbrella reachability PASS.
   - theorem `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeHistory_isClosed`
   - abbrev `RHTower.HedenmalmThetaSource.ThetaDerivativeHistoryQuotient`
   - def `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryQuotientProjection`
@@ -6415,7 +6415,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryQuotientInverse_thetaDivisorEigenvector`
   - theorem `RHTower.HedenmalmThetaSource.analyticOrderAt_XiC_eq_finrank_maxGenEigenspace_thetaDerivativeHistoryQuotientInverse`
   - theorem `RHTower.HedenmalmThetaSource.finrank_maxGenEigenspace_thetaDerivativeHistoryQuotientInverse_eq_xiSupportMultiplicity`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryRiesz` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeHistoryRiesz.lean`; 247 lines; SHA256 `4e1ee5e551b139ecf5f698e657a5689eeffda487d69fe50765ef4f83b5c53c10`; 24 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryRiesz` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeHistoryRiesz.lean`; 247 lines; SHA256 `4e1ee5e551b139ecf5f698e657a5689eeffda487d69fe50765ef4f83b5c53c10`; 24 actual public; exact catalogue/native and umbrella reachability PASS.
   - theorem `RHTower.HedenmalmThetaSource.zero_not_mem_thetaRiesz_closedBall`
   - theorem `RHTower.HedenmalmThetaSource.thetaLocalRieszProjection_derivative`
   - theorem `RHTower.HedenmalmThetaSource.thetaQuantileDerivativeHistory_le_ker_thetaLocalRieszProjection`
@@ -6440,7 +6440,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeHistoryRieszProjection_mem_kernel_iff`
   - theorem `RHTower.HedenmalmThetaSource.ker_thetaDerivativeHistoryRieszProjection`
   - theorem `RHTower.HedenmalmThetaSource.analyticOrderAt_XiC_eq_finrank_range_thetaDerivativeHistoryRieszProjection`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryFourier` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeHistoryFourier.lean`; 359 lines; SHA256 `59e06af639f1783b80731b2156c1c303ceafe17e018828bd4da072e855560101`; 35 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryFourier` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeHistoryFourier.lean`; 359 lines; SHA256 `59e06af639f1783b80731b2156c1c303ceafe17e018828bd4da072e855560101`; 35 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaHistoryFourierFunctional`
   - def `RHTower.HedenmalmThetaSource.thetaSourceFourierFunctional`
   - theorem `RHTower.HedenmalmThetaSource.thetaHistoryFourierFunctional_quantileUnitary`
@@ -6674,7 +6674,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - def `RHTower.thetaRealTemperedFourierEvaluation`
   - theorem `RHTower.thetaRealTemperedFourierEvaluation_apply`
   - theorem `RHTower.exists_thetaTemperedFourierLaplaceEvaluation_iff`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeOscillatoryPrimitive` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeOscillatoryPrimitive.lean`; 154 lines; SHA256 `0c59cdc02882546578b02895ac27b8a42bae3bc3de8543ebb6f4a39a73ee3b10`; 12 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeOscillatoryPrimitive` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeOscillatoryPrimitive.lean`; 154 lines; SHA256 `0c59cdc02882546578b02895ac27b8a42bae3bc3de8543ebb6f4a39a73ee3b10`; 12 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaDerivativeOscillatoryIntegrand`
   - def `RHTower.HedenmalmThetaSource.thetaDerivativeOscillatoryPrimitive`
   - theorem `RHTower.HedenmalmThetaSource.integrable_thetaDerivativeOscillatoryIntegrand`
@@ -6687,7 +6687,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.HedenmalmThetaSource.continuous_thetaDerivativeOscillatoryPrimitive`
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeOscillatoryPrimitive_reciprocal`
   - theorem `RHTower.HedenmalmThetaSource.sourceModeF_derivative_expansion`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaDerivativePrimitiveBounds` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativePrimitiveBounds.lean`; 375 lines; SHA256 `f8edca07083080271fa9d31329437e87beb30b7cabfbf8fc297efa5c97fb8b97`; 18 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativePrimitiveBounds` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativePrimitiveBounds.lean`; 375 lines; SHA256 `f8edca07083080271fa9d31329437e87beb30b7cabfbf8fc297efa5c97fb8b97`; 18 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaDerivativeAbsoluteIntegrand`
   - theorem `RHTower.HedenmalmThetaSource.continuous_thetaDerivativeAbsoluteIntegrand`
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativeAbsoluteIntegrand_nonneg`
@@ -6706,7 +6706,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - def `RHTower.HedenmalmThetaSource.thetaDerivativePrimitiveUniformNormBound`
   - theorem `RHTower.HedenmalmThetaSource.thetaDerivativePrimitiveUniformNormBound_nonneg`
   - theorem `RHTower.HedenmalmThetaSource.norm_thetaDerivativeOscillatoryPrimitive_toLp_le`
-- `GaloisForLFunctions.RHTower.HedenmalmThetaQuotientEigenmodeDecay` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaQuotientEigenmodeDecay.lean`; 216 lines; SHA256 `703b3b0a5483e39f91b2962626986e831fc0dd0ff7f3e2df58fab0ca6bdf2e79`; 19 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaQuotientEigenmodeDecay` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaQuotientEigenmodeDecay.lean`; 216 lines; SHA256 `703b3b0a5483e39f91b2962626986e831fc0dd0ff7f3e2df58fab0ca6bdf2e79`; 19 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.HedenmalmThetaSource.thetaSourceDerivativeHistory`
   - theorem `RHTower.HedenmalmThetaSource.thetaSourceDerivativeHistory_isClosed`
   - def `RHTower.HedenmalmThetaSource.thetaSourceDerivativeHistoryQuotientProjection`
@@ -6795,7 +6795,7 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - def `RHTower.thetaPhysicalTemperedLowerJetSpan`
   - theorem `RHTower.thetaPhysicalTemperedLowerJetSpan_le_annihilator`
   - theorem `RHTower.thetaPhysicalTemperedLowerJetSpan_finrank`
-- `GaloisForLFunctions.RHTower.ThetaCuspSchwartzComplexTranslation` — `formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzComplexTranslation.lean`; 218 lines; SHA256 `04ef94b4b36baf8cac68c52f0ed0d255b1e3cd977bede4f92588e5b9d41618f7`; 13 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzComplexTranslation` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzComplexTranslation.lean`; 218 lines; SHA256 `04ef94b4b36baf8cac68c52f0ed0d255b1e3cd977bede4f92588e5b9d41618f7`; 13 actual public; exact catalogue/native and umbrella reachability PASS.
   - theorem `RHTower.thetaCuspStripSource_complexJet_analyticAt`
   - theorem `RHTower.thetaCuspStripSource_complexJet_exp_decay`
   - theorem `RHTower.thetaCuspStripTranslate_contDiff`
@@ -6809,9 +6809,9 @@ ALL41 CURRENT SOURCE/PUBLIC INVENTORIES
   - theorem `RHTower.thetaCuspSchwartzTranslationCurve_spatialJet`
   - theorem `RHTower.thetaCuspSchwartzTranslationCurve_zero`
   - theorem `RHTower.thetaCuspSchwartzTranslationCurve_real_apply`
-- `GaloisForLFunctions.RHTower.ThetaCuspStripTaylorRemainder` — `formal/GaloisForLFunctions/RHTower/ThetaCuspStripTaylorRemainder.lean`; 156 lines; SHA256 `a0ec457154b110f3c1de8554b6f9d8fc56b982b52d6f52dc820f922c797b31a4`; 1 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspStripTaylorRemainder` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspStripTaylorRemainder.lean`; 156 lines; SHA256 `a0ec457154b110f3c1de8554b6f9d8fc56b982b52d6f52dc820f922c797b31a4`; 1 actual public; exact catalogue/native and umbrella reachability PASS.
   - theorem `RHTower.thetaCuspStripSource_complexJet_taylor_substrip`
-- `GaloisForLFunctions.RHTower.ThetaCuspSchwartzTranslationCurve` — `formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzTranslationCurve.lean`; 194 lines; SHA256 `0f751ed5e7975c4c309eb4f3e1297411ce8b08d441df64d0ec1f9588a3a2be20`; 11 actual public; exact catalogue/native and umbrella reachability PASS.
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzTranslationCurve` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzTranslationCurve.lean`; 194 lines; SHA256 `0f751ed5e7975c4c309eb4f3e1297411ce8b08d441df64d0ec1f9588a3a2be20`; 11 actual public; exact catalogue/native and umbrella reachability PASS.
   - def `RHTower.thetaSchwartzSpatialJetCLM`
   - theorem `RHTower.thetaSchwartzSpatialJetCLM_apply`
   - theorem `RHTower.thetaSchwartzSpatialJetCLM_deriv_apply`
@@ -11069,12 +11069,12 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 297 occurrences |   The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
 297 occurrences |     
 297 occurrences |   Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
-1 occurrences | ℹ [8758/9071] Replayed GaloisForLFunctions.RHTower.ThetaCuspTiltedSchwartz
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspTiltedSchwartz.lean:146:48: Try this:
+1 occurrences | ℹ [8758/9071] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltedSchwartz
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltedSchwartz.lean:146:48: Try this:
 1 occurrences | ℹ [8788/9071] Replayed GaloisForLFunctions.RHTower.XiThetaSourceSeam
 1 occurrences | info: GaloisForLFunctions/RHTower/XiThetaSourceSeam.lean:79:2: Try this:
-1 occurrences | ℹ [8792/9071] Replayed GaloisForLFunctions.RHTower.ThetaCuspFourierXi
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFourierXi.lean:39:2: Try this:
+1 occurrences | ℹ [8792/9071] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierXi
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFourierXi.lean:39:2: Try this:
 1 occurrences | ℹ [8829/9071] Replayed GaloisForLFunctions.RHTower.DeckWindow
 1 occurrences | info: GaloisForLFunctions/RHTower/DeckWindow.lean:231:4: Try this:
 1 occurrences | ℹ [8832/9071] Replayed GaloisForLFunctions.RHTower.DiscWindow
@@ -11085,8 +11085,8 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/CriticalDiscEulerOrbitDensity.lean:171:2: Try this:
 1 occurrences | ℹ [8915/9071] Replayed GaloisForLFunctions.RHTower.PrimeArchThetaFirstMoment
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchThetaFirstMoment.lean:146:18: Try this:
-1 occurrences | ℹ [8920/9071] Replayed GaloisForLFunctions.RHTower.DeningerDivisorFlow
-1 occurrences | info: GaloisForLFunctions/RHTower/DeningerDivisorFlow.lean:279:2: Try this:
+1 occurrences | ℹ [8920/9071] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerDivisorFlow
+1 occurrences | info: GaloisForLFunctions/RHTower/Deninger/DeningerDivisorFlow.lean:279:2: Try this:
 1 occurrences | ℹ [8952/9071] Replayed GaloisForLFunctions.RHTower.WeightedEulerStripFourierAnalytic
 1 occurrences | info: GaloisForLFunctions/RHTower/WeightedEulerStripFourierAnalytic.lean:202:4: Try this:
 1 occurrences | ⚠ [9003/9071] Replayed GaloisForLFunctions.HTGeometry.LabeledBoundarySimplex
@@ -11107,10 +11107,10 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | ℹ [9097/9331] Replayed GaloisForLFunctions.RHTower.PrimeArchThetaQuadraticVirialMorseReduction
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchThetaQuadraticVirialMorseReduction.lean:284:4: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchThetaQuadraticVirialMorseReduction.lean:302:4: Try this:
-1 occurrences | ℹ [9106/9331] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSpectralMeasure
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSpectralMeasure.lean:62:2: Try this:
-1 occurrences | ℹ [9109/9331] Replayed GaloisForLFunctions.RHTower.ThetaCuspReflectedLikelihoodInterferenceFactorization
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspReflectedLikelihoodInterferenceFactorization.lean:123:2: Try this:
+1 occurrences | ℹ [9106/9331] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSpectralMeasure
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSpectralMeasure.lean:62:2: Try this:
+1 occurrences | ℹ [9109/9331] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedLikelihoodInterferenceFactorization
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodInterferenceFactorization.lean:123:2: Try this:
 1 occurrences | ℹ [9187/9331] Replayed GaloisForLFunctions.Hurwitz.AnalyticContinuation
 1 occurrences | info: GaloisForLFunctions/Hurwitz/AnalyticContinuation.lean:370:23: Try this:
 1 occurrences | info: GaloisForLFunctions/Hurwitz/AnalyticContinuation.lean:422:6: Try this:
@@ -11128,10 +11128,10 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | ℹ [9330/9647] Replayed GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomFourthMomentFloor
 2 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean:540:16: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean:542:14: Try this:
-1 occurrences | ℹ [9347/9647] Replayed GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularAutocorrelation.lean:219:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularAutocorrelation.lean:347:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularAutocorrelation.lean:628:14: Try this:
+1 occurrences | ℹ [9347/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularAutocorrelation.lean:219:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularAutocorrelation.lean:347:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularAutocorrelation.lean:628:14: Try this:
 1 occurrences | ℹ [9352/9647] Replayed GaloisForLFunctions.HTGeometry.DigammaGaussSeries
 1 occurrences | info: GaloisForLFunctions/HTGeometry/DigammaGaussSeries.lean:189:2: Try this:
 1 occurrences | ℹ [9353/9647] Replayed GaloisForLFunctions.RHTower.XiGuinandWeilRectangularResolventFourier
@@ -11144,18 +11144,18 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | ℹ [9355/9647] Replayed GaloisForLFunctions.RHTower.XiGuinandWeilSymmetricContour
 1 occurrences | info: GaloisForLFunctions/RHTower/XiGuinandWeilSymmetricContour.lean:132:4: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/XiGuinandWeilSymmetricContour.lean:138:4: Try this:
-1 occurrences | ℹ [9360/9647] Replayed GaloisForLFunctions.RHTower.CCMRectangularStieltjesAutocorrelation
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularStieltjesAutocorrelation.lean:238:57: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularStieltjesAutocorrelation.lean:282:2: Try this:
-1 occurrences | ℹ [9361/9647] Replayed GaloisForLFunctions.RHTower.CCMSharpPrimeWindowQuadrature
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMSharpPrimeWindowQuadrature.lean:132:74: Try this:
-1 occurrences | ℹ [9376/9647] Replayed GaloisForLFunctions.RHTower.CCMSharpPrimeWindowDirichlet
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMSharpPrimeWindowDirichlet.lean:33:4: Try this:
-1 occurrences | ℹ [9395/9647] Replayed GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularDirectionalDerivative.lean:195:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMRectangularDirectionalDerivative.lean:400:4: Try this:
-1 occurrences | ℹ [9417/9647] Replayed GaloisForLFunctions.RHTower.CCMComplexMellinColligation
-2 occurrences | info: GaloisForLFunctions/RHTower/CCMComplexMellinColligation.lean:44:16: Try this:
+1 occurrences | ℹ [9360/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMRectangularStieltjesAutocorrelation
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularStieltjesAutocorrelation.lean:238:57: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularStieltjesAutocorrelation.lean:282:2: Try this:
+1 occurrences | ℹ [9361/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowQuadrature
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowQuadrature.lean:132:74: Try this:
+1 occurrences | ℹ [9376/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowDirichlet
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean:33:4: Try this:
+1 occurrences | ℹ [9395/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMRectangularDirectionalDerivative
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularDirectionalDerivative.lean:195:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMRectangularDirectionalDerivative.lean:400:4: Try this:
+1 occurrences | ℹ [9417/9647] Replayed GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
+2 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMComplexMellinColligation.lean:44:16: Try this:
 1 occurrences | ℹ [9472/9647] Replayed GaloisForLFunctions.RHTower.XiSquaredSeamPowerSixtyFourJensenKernel
 1 occurrences | info: GaloisForLFunctions/RHTower/XiSquaredSeamPowerSixtyFourJensenKernel.lean:105:6: Try this:
 1 occurrences | ℹ [9500/9647] Replayed GaloisForLFunctions.RHTower.XiSquaredSeamCassiniResolventSourceLaw
@@ -11163,24 +11163,24 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/XiSquaredSeamCassiniResolventSourceLaw.lean:133:4: Try this:
 1 occurrences | ℹ [9519/9647] Replayed GaloisForLFunctions.RHTower.ThetaWignerCenterMix
 1 occurrences | info: GaloisForLFunctions/RHTower/ThetaWignerCenterMix.lean:288:2: Try this:
-1 occurrences | ℹ [9522/9647] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionFourthTuran
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean:206:53: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean:234:53: Try this:
-1 occurrences | ℹ [9529/9647] Replayed GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspAtomLikelihoodCrossDomination.lean:187:4: Try this:
-1 occurrences | ⚠ [9535/9647] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionSixthTuran
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthTuran.lean:260:62: Try this:
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthTuran.lean:259:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ℹ [9522/9647] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionFourthTuran
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean:206:53: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean:234:53: Try this:
+1 occurrences | ℹ [9529/9647] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspAtomLikelihoodCrossDomination
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAtomLikelihoodCrossDomination.lean:187:4: Try this:
+1 occurrences | ⚠ [9535/9647] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionSixthTuran
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthTuran.lean:260:62: Try this:
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthTuran.lean:259:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
 49 occurrences | Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthTuran.lean:260:58: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthTuran.lean:260:58: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
 1 occurrences | ℹ [9549/9647] Replayed GaloisForLFunctions.RHTower.XiThetaSquareRateCausalSource
 1 occurrences | info: GaloisForLFunctions/RHTower/XiThetaSquareRateCausalSource.lean:420:2: Try this:
-1 occurrences | ℹ [9558/9647] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthSpectralDecomposition
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthSpectralDecomposition.lean:30:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthSpectralDecomposition.lean:114:6: Try this:
-1 occurrences | ℹ [9559/9647] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthDominantAtomBound
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthDominantAtomBound.lean:148:8: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthDominantAtomBound.lean:189:8: Try this:
+1 occurrences | ℹ [9558/9647] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthSpectralDecomposition
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthSpectralDecomposition.lean:30:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthSpectralDecomposition.lean:114:6: Try this:
+1 occurrences | ℹ [9559/9647] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthDominantAtomBound
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthDominantAtomBound.lean:148:8: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthDominantAtomBound.lean:189:8: Try this:
 1 occurrences | ℹ [9591/9647] Replayed GaloisForLFunctions.HilbertMetric.FifthRootDividedDropWall
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/FifthRootDividedDropWall.lean:53:36: Try this:
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/FifthRootDividedDropWall.lean:55:36: Try this:
@@ -11202,8 +11202,8 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/XiCTaylorThetaTailArithmeticPhaseSeam.lean:292:38: Try this:
 1 occurrences | ℹ [9611/9647] Replayed GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberHermitianCollapse
 1 occurrences | info: GaloisForLFunctions/RHTower/XiCTaylorThetaTailProductFiberHermitianCollapse.lean:518:2: Try this:
-1 occurrences | ℹ [9641/9958] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthStableTowerBound
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthStableTowerBound.lean:87:4: Try this:
+1 occurrences | ℹ [9641/9958] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthStableTowerBound
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerBound.lean:87:4: Try this:
 1 occurrences | ℹ [9656/9958] Replayed GaloisForLFunctions.RHTower.Sieve.MertensSecond
 1 occurrences | info: GaloisForLFunctions/RHTower/Sieve/MertensSecond.lean:123:2: Try this:
 1 occurrences | ℹ [9669/9958] Replayed GaloisForLFunctions.RHTower.MobiusLaplaceAdditiveTriangleSubpower
@@ -11218,29 +11218,29 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | ℹ [9745/9958] Replayed GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityReflection
 1 occurrences | info: GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityReflection.lean:341:21: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/XiCTaylorThetaTailCompletedDensityReflection.lean:360:2: Try this:
-1 occurrences | ℹ [9757/9958] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodRayBoundaryResidue
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodRayBoundaryResidue.lean:109:2: Try this:
-1 occurrences | ℹ [9759/9958] Replayed GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:1671:44: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:1714:44: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:2428:44: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:4909:44: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:6365:67: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:8351:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:8381:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:8914:52: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean:8971:37: Try this:
-1 occurrences | ℹ [9761/9958] Replayed GaloisForLFunctions.RHTower.HedenmalmAutocorrelationPath
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:40:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:55:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:110:50: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:137:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:165:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean:206:4: Try this:
-1 occurrences | ℹ [9762/9958] Replayed GaloisForLFunctions.RHTower.ThetaCuspWignerProductFiberNormalForm
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean:246:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean:1461:18: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean:1554:18: Try this:
+1 occurrences | ℹ [9757/9958] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodRayBoundaryResidue
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodRayBoundaryResidue.lean:109:2: Try this:
+1 occurrences | ℹ [9759/9958] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspShellIncompleteGammaCoordinate
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:1671:44: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:1714:44: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:2428:44: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:4909:44: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:6365:67: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:8351:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:8381:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:8914:52: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean:8971:37: Try this:
+1 occurrences | ℹ [9761/9958] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmAutocorrelationPath
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:40:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:55:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:110:50: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:137:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:165:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean:206:4: Try this:
+1 occurrences | ℹ [9762/9958] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspWignerProductFiberNormalForm
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean:246:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean:1461:18: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean:1554:18: Try this:
 1 occurrences | ℹ [9773/9958] Replayed GaloisForLFunctions.HilbertMetric.SixthJetRaywiseCoalescedCone
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/SixthJetRaywiseCoalescedCone.lean:46:2: Try this:
 1 occurrences | ℹ [9806/9958] Replayed GaloisForLFunctions.RHTower.MobiusIncidenceUniversalGapResponse
@@ -11261,21 +11261,21 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/VonMangoldtGammaBivariateMoment.lean:133:12: Try this:
 1 occurrences | ℹ [10162/10286] Replayed GaloisForLFunctions.RHTower.PrimeClockScaleFactor
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeClockScaleFactor.lean:93:14: Try this:
-1 occurrences | ℹ [10191/10286] Replayed GaloisForLFunctions.RHTower.CCMPrimeTransverseFrostmanProfile
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMPrimeTransverseFrostmanProfile.lean:268:2: Try this:
-1 occurrences | ℹ [10194/10286] Replayed GaloisForLFunctions.RHTower.SuzukiCausalDepthFrostmanTransfer
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanTransfer.lean:176:2: Try this:
-2 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanTransfer.lean:316:29: Try this:
-1 occurrences | ℹ [10206/10286] Replayed GaloisForLFunctions.RHTower.SuzukiCriticalApexVacuumCapacityNoGo
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean:306:12: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean:331:12: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean:445:4: Try this:
-1 occurrences | ℹ [10272/10593] Replayed GaloisForLFunctions.RHTower.CCMFirstClockLandauTransform
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockLandauTransform.lean:163:8: Try this:
-1 occurrences | ℹ [10275/10593] Replayed GaloisForLFunctions.RHTower.CCMFirstClockLandauCarrier
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockLandauCarrier.lean:324:2: Try this:
-1 occurrences | ℹ [10277/10593] Replayed GaloisForLFunctions.RHTower.CCMFirstClockLandauHalving
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockLandauHalving.lean:108:2: Try this:
+1 occurrences | ℹ [10191/10286] Replayed GaloisForLFunctions.RHTower.CCM.CCMPrimeTransverseFrostmanProfile
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMPrimeTransverseFrostmanProfile.lean:268:2: Try this:
+1 occurrences | ℹ [10194/10286] Replayed GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthFrostmanTransfer
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthFrostmanTransfer.lean:176:2: Try this:
+2 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthFrostmanTransfer.lean:316:29: Try this:
+1 occurrences | ℹ [10206/10286] Replayed GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalApexVacuumCapacityNoGo
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean:306:12: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean:331:12: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean:445:4: Try this:
+1 occurrences | ℹ [10272/10593] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauTransform
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockLandauTransform.lean:163:8: Try this:
+1 occurrences | ℹ [10275/10593] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauCarrier
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockLandauCarrier.lean:324:2: Try this:
+1 occurrences | ℹ [10277/10593] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauHalving
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockLandauHalving.lean:108:2: Try this:
 1 occurrences | ℹ [10295/10593] Replayed GaloisForLFunctions.HilbertMetric.GaussianJetPositivity
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean:376:6: Try this:
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean:395:6: Try this:
@@ -11283,8 +11283,8 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean:1020:2: Try this:
 1 occurrences | ℹ [10296/10593] Replayed GaloisForLFunctions.HilbertMetric.RankOneSchurGaussianConcavity
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/RankOneSchurGaussianConcavity.lean:967:4: Try this:
-1 occurrences | ⚠ [10339/10593] Replayed GaloisForLFunctions.RHTower.CCMFirstClockPhaseNaturalTransportRigidity
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMFirstClockPhaseNaturalTransportRigidity.lean:170:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
+1 occurrences | ⚠ [10339/10593] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockPhaseNaturalTransportRigidity
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMFirstClockPhaseNaturalTransportRigidity.lean:170:2: `push_neg` has been deprecated. Prefer using `push Not` instead.
 6 occurrences | If you'd rather continue using `push_neg` in your project, you can implement it as follows:
 12 occurrences | ```
 6 occurrences | open Lean.Parser.Tactic in
@@ -11299,127 +11299,127 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/XiPrimeSeamCoherenceCollapse.lean:42:2: Try this:
 1 occurrences | ℹ [10394/10593] Replayed GaloisForLFunctions.HilbertMetric.UniformCoalescedThreePointSquare
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/UniformCoalescedThreePointSquare.lean:334:2: Try this:
-1 occurrences | ℹ [10442/10593] Replayed GaloisForLFunctions.RHTower.ThetaCuspCenterMixedOrientationRankUniversalityLaw
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspCenterMixedOrientationRankUniversalityLaw.lean:72:4: Try this:
+1 occurrences | ℹ [10442/10593] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterMixedOrientationRankUniversalityLaw
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedOrientationRankUniversalityLaw.lean:72:4: Try this:
 1 occurrences | ℹ [10451/10593] Replayed GaloisForLFunctions.RHTower.XiGaussianHeatTuranPairSum
 1 occurrences | info: GaloisForLFunctions/RHTower/XiGaussianHeatTuranPairSum.lean:153:2: Try this:
 1 occurrences | ℹ [10499/10593] Replayed GaloisForLFunctions.RHTower.ThetaTiltFluxCarrier
 1 occurrences | info: GaloisForLFunctions/RHTower/ThetaTiltFluxCarrier.lean:463:2: Try this:
-1 occurrences | ⚠ [10523/10593] Replayed GaloisForLFunctions.RHTower.HedenmalmThetaCompactDivisorEigenmode
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean:91:8: Try this:
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean:305:42: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10523/10593] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaCompactDivisorEigenmode
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean:91:8: Try this:
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean:305:42: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
 1 occurrences | ⚠ [10579/10593] Replayed GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeCompactExpansion
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/PolynomialODEJetRankThreeCompactExpansion.lean:930:33: Variable name `S` is not explicitly referenced.
 11 occurrences | The binding can be removed (if unused) or named `_` (if used implicitly).
 11 occurrences | Note: This linter can be disabled with `set_option linter.unusedVariables false`
-1 occurrences | ℹ [10594/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthOrdinaryPositivity
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:57:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:137:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:206:16: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:402:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:409:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:503:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:510:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:585:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:628:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:648:8: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:690:6: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:710:8: Try this:
-1 occurrences | ℹ [10595/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthDominantPairCompensation
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthDominantPairCompensation.lean:273:2: Try this:
-1 occurrences | ℹ [10596/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthStablePairCompensation
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthStablePairCompensation.lean:738:2: Try this:
-1 occurrences | ℹ [10597/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthFockSector
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthFockSector.lean:342:60: Try this:
-1 occurrences | ℹ [10600/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthBellHigherEvenAbsorption
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean:233:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean:253:6: Try this:
-1 occurrences | ℹ [10604/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEighthPairSectorTrace
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEighthPairSectorTrace.lean:89:71: Try this:
-1 occurrences | ℹ [10607/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthEighthSpectralCoupling
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean:46:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean:69:4: Try this:
-1 occurrences | ⚠ [10611/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:359:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:359:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:403:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10612/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:350:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:350:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:393:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10613/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:386:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:386:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:429:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10614/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:54:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:270:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:270:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:313:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ℹ [10619/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:61:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:89:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:141:4: Try this:
-1 occurrences | ℹ [10620/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthDominantAtomExact
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthDominantAtomExact.lean:35:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthDominantAtomExact.lean:64:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthDominantAtomExact.lean:110:4: Try this:
+1 occurrences | ℹ [10594/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthOrdinaryPositivity
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:57:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:137:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:206:16: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:402:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:409:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:503:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:510:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:585:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:628:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:648:8: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:690:6: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean:710:8: Try this:
+1 occurrences | ℹ [10595/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthDominantPairCompensation
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthDominantPairCompensation.lean:273:2: Try this:
+1 occurrences | ℹ [10596/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthStablePairCompensation
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthStablePairCompensation.lean:738:2: Try this:
+1 occurrences | ℹ [10597/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthFockSector
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthFockSector.lean:342:60: Try this:
+1 occurrences | ℹ [10600/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthBellHigherEvenAbsorption
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean:233:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean:253:6: Try this:
+1 occurrences | ℹ [10604/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEighthPairSectorTrace
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEighthPairSectorTrace.lean:89:71: Try this:
+1 occurrences | ℹ [10607/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthEighthSpectralCoupling
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean:46:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean:69:4: Try this:
+1 occurrences | ⚠ [10611/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:359:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:359:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean:403:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10612/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:350:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:350:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean:393:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10613/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:386:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:386:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean:429:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10614/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:54:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:270:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:270:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean:313:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ℹ [10619/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:61:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:89:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean:141:4: Try this:
+1 occurrences | ℹ [10620/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthDominantAtomExact
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthDominantAtomExact.lean:35:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthDominantAtomExact.lean:64:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthDominantAtomExact.lean:110:4: Try this:
 1 occurrences | ⚠ [10624/10748] Replayed GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomFourthMomentSixteenthFloor
 1 occurrences | warning: GaloisForLFunctions/RHTower/PrimeArchThetaFirstAtomFourthMomentSixteenthFloor.lean:422:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10637/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower.lean:40:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10638/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower.lean:27:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10639/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleEighteenFifthsExactAtomLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleEighteenFifthsExactAtomLower.lean:29:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ℹ [10640/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean:62:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean:69:4: Try this:
-1 occurrences | ⚠ [10660/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound.lean:238:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10661/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound.lean:255:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10662/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound.lean:241:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10663/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound.lean:242:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10664/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound.lean:244:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10666/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound.lean:76:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ℹ [10667/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:54:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:82:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:134:4: Try this:
-1 occurrences | ⚠ [10669/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:64:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:282:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:282:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:326:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ⚠ [10678/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean:21:38: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean:46:44: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | ⚠ [10679/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean:21:41: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean:46:47: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | ⚠ [10680/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean:21:41: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean:46:47: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | ⚠ [10681/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean:20:40: Variable name `hqhi` is not explicitly referenced.
-1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean:45:46: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | ⚠ [10637/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower.lean:40:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10638/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower.lean:27:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10639/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleEighteenFifthsExactAtomLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEighteenFifthsExactAtomLower.lean:29:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ℹ [10640/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean:62:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean:69:4: Try this:
+1 occurrences | ⚠ [10660/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound.lean:238:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10661/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound.lean:255:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10662/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound.lean:241:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10663/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound.lean:242:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10664/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound.lean:244:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10666/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound.lean:76:27: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ℹ [10667/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:54:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:82:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean:134:4: Try this:
+1 occurrences | ⚠ [10669/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:64:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:282:30: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:282:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean:326:20: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | ⚠ [10678/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean:21:38: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean:46:44: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | ⚠ [10679/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean:21:41: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean:46:47: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | ⚠ [10680/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean:21:41: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean:46:47: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | ⚠ [10681/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean:20:40: Variable name `hqhi` is not explicitly referenced.
+1 occurrences | warning: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean:45:46: Variable name `hqhi` is not explicitly referenced.
 1 occurrences | ℹ [10691/10748] Replayed GaloisForLFunctions.HilbertMetric.FivePointFiniteDifferenceCusp
 1 occurrences | info: GaloisForLFunctions/HilbertMetric/FivePointFiniteDifferenceCusp.lean:324:2: Try this:
-1 occurrences | ℹ [10693/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFirstAtomReflectionJets
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFirstAtomReflectionJets.lean:47:2: Try this:
+1 occurrences | ℹ [10693/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFirstAtomReflectionJets
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFirstAtomReflectionJets.lean:47:2: Try this:
 1 occurrences | ℹ [10724/10748] Replayed GaloisForLFunctions.RHTower.ExpDecayFourierAnalytic
 1 occurrences | info: GaloisForLFunctions/RHTower/ExpDecayFourierAnalytic.lean:112:4: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/ExpDecayFourierAnalytic.lean:476:4: Try this:
-1 occurrences | ℹ [10742/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxSplit
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeFluxSplit.lean:215:4: Try this:
-1 occurrences | ℹ [10744/10748] Replayed GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeFluxWindow.lean:231:14: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeFluxWindow.lean:259:14: Try this:
+1 occurrences | ℹ [10742/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxSplit
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeFluxSplit.lean:215:4: Try this:
+1 occurrences | ℹ [10744/10748] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxWindow
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeFluxWindow.lean:231:14: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeFluxWindow.lean:259:14: Try this:
 1 occurrences | ℹ [11020/11148] Replayed GaloisForLFunctions.HTGeometry.GammaVerticalSuperPolynomialDecay
 1 occurrences | info: GaloisForLFunctions/HTGeometry/GammaVerticalSuperPolynomialDecay.lean:110:10: Try this:
 1 occurrences | ℹ [11166/11381] Replayed GaloisForLFunctions.RHTower.Sieve.HalaszMontgomeryDual
@@ -11585,45 +11585,45 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | warning: GaloisForLFunctions/RHTower/PrimeArchBernsteinSectorConfinedPhase.lean:657:54: This simp argument is unused:
 1 occurrences | warning: GaloisForLFunctions/RHTower/PrimeArchBernsteinSectorConfinedPhase.lean:657:64: This simp argument is unused:
 1 occurrences | info: GaloisForLFunctions/RHTower/PrimeArchBernsteinSectorConfinedPhase.lean:687:4: Try this:
-1 occurrences | ⚠ [12506/12672] Replayed GaloisForLFunctions.RHTower.HedenmalmThetaMetricCommutator
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaMetricCommutator.lean:28:6: `ContinuousLinearMap.mul_apply` has been deprecated: Use `mul_apply_eq_comp` instead
+1 occurrences | ⚠ [12506/12672] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMetricCommutator
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMetricCommutator.lean:28:6: `ContinuousLinearMap.mul_apply` has been deprecated: Use `mul_apply_eq_comp` instead
 2 occurrences | Note: The updated constant is in a different namespace. Dot notation may need to be changed (e.g., from `x.mul_apply` to `mul_apply_eq_comp x`).
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaMetricCommutator.lean:28:37: `ContinuousLinearMap.smul_apply` has been deprecated: Use `smul_apply` instead
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMetricCommutator.lean:28:37: `ContinuousLinearMap.smul_apply` has been deprecated: Use `smul_apply` instead
 2 occurrences | Note: The updated constant is in a different namespace. Dot notation may need to be changed (e.g., from `x.smul_apply` to `smul_apply x`).
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaMetricCommutator.lean:73:4: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMetricCommutator.lean:73:4: try 'simp' instead of 'simpa'
 1 occurrences | ⚠ [12507/12672] Replayed GaloisForLFunctions.HTGeometry.RealBranchArcCount
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/RealBranchArcCount.lean:79:17: `Finset.filter_card_add_filter_neg_card_eq_card` has been deprecated: Use `Finset.card_filter_add_card_filter_not` instead
 1 occurrences | ⚠ [12508/12672] Replayed GaloisForLFunctions.RHTower.XiSuperchargeHarnackDefect
 1 occurrences | warning: GaloisForLFunctions/RHTower/XiSuperchargeHarnackDefect.lean:30:17: `Finset.filter_card_add_filter_neg_card_eq_card` has been deprecated: Use `Finset.card_filter_add_card_filter_not` instead
-1 occurrences | ℹ [12522/12672] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingFullMirrorValueMixingEndpoint
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingFullMirrorValueMixingEndpoint.lean:314:2: Try this:
-1 occurrences | ℹ [12613/12672] Replayed GaloisForLFunctions.RHTower.SuzukiCanonicalShiftRatio
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiCanonicalShiftRatio.lean:129:2: Try this:
-1 occurrences | ℹ [12614/12672] Replayed GaloisForLFunctions.RHTower.SuzukiLagariasMeromorphicInner
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiLagariasMeromorphicInner.lean:483:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiLagariasMeromorphicInner.lean:509:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiLagariasMeromorphicInner.lean:517:4: Try this:
-1 occurrences | ℹ [12686/12925] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:94:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:101:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:287:8: Try this:
-1 occurrences | ℹ [12696/12925] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingSelfDualEinsteinDilationCarrier
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingSelfDualEinsteinDilationCarrier.lean:231:2: Try this:
-1 occurrences | ⚠ [12724/12925] Replayed GaloisForLFunctions.RHTower.CCMRationalBruhatNonUnitalAlgebra
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalBruhatNonUnitalAlgebra.lean:65:10: This simp argument is unused:
+1 occurrences | ℹ [12522/12672] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFullMirrorValueMixingEndpoint
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFullMirrorValueMixingEndpoint.lean:314:2: Try this:
+1 occurrences | ℹ [12613/12672] Replayed GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalShiftRatio
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalShiftRatio.lean:129:2: Try this:
+1 occurrences | ℹ [12614/12672] Replayed GaloisForLFunctions.RHTower.Suzuki.SuzukiLagariasMeromorphicInner
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiLagariasMeromorphicInner.lean:483:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiLagariasMeromorphicInner.lean:509:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiLagariasMeromorphicInner.lean:517:4: Try this:
+1 occurrences | ℹ [12686/12925] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:94:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:101:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingEKGCompletedEisensteinOpticalIncidence.lean:287:8: Try this:
+1 occurrences | ℹ [12696/12925] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSelfDualEinsteinDilationCarrier
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingSelfDualEinsteinDilationCarrier.lean:231:2: Try this:
+1 occurrences | ⚠ [12724/12925] Replayed GaloisForLFunctions.RHTower.CCM.CCMRationalBruhatNonUnitalAlgebra
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalBruhatNonUnitalAlgebra.lean:65:10: This simp argument is unused:
 2 occurrences |   mul_assoc
 2 occurrences |   simp [̵m̵u̵l̵_̵a̵s̵s̵o̵c̵,̵ ̵m̵u̵l̵_̵c̵o̵m̵m̵,̵[̲m̲u̲l̲_̲c̲o̲m̲m̲,̲ mul_left_comm]
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalBruhatNonUnitalAlgebra.lean:65:21: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalBruhatNonUnitalAlgebra.lean:65:21: This simp argument is unused:
 2 occurrences |   mul_comm
 2 occurrences |   simp [mul_assoc, m̵u̵l̵_̵c̵o̵m̵m̵,̵ ̵mul_left_comm]
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalBruhatNonUnitalAlgebra.lean:122:10: This simp argument is unused:
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalBruhatNonUnitalAlgebra.lean:122:21: This simp argument is unused:
-1 occurrences | ⚠ [12725/12925] Replayed GaloisForLFunctions.RHTower.CCMRationalAdelicBruhatNonUnitalAlgebra
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalAdelicBruhatNonUnitalAlgebra.lean:78:10: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalBruhatNonUnitalAlgebra.lean:122:10: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalBruhatNonUnitalAlgebra.lean:122:21: This simp argument is unused:
+1 occurrences | ⚠ [12725/12925] Replayed GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicBruhatNonUnitalAlgebra
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicBruhatNonUnitalAlgebra.lean:78:10: This simp argument is unused:
 2 occurrences |   ccmRationalFiniteBruhatMulLeft
 1 occurrences |   simp only [ccmRationalAdelicBruhatPureMulLeft_tmul, c̵c̵m̵R̵a̵t̵i̵o̵n̵a̵l̵F̵i̵n̵i̵t̵e̵B̵r̵u̵h̵a̵t̵M̵u̵l̵L̵e̵f̵t̵,̵ ̵add_mul, TensorProduct.tmul_add,
 1 occurrences |   ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲LinearMap.add_apply]
-1 occurrences | warning: GaloisForLFunctions/RHTower/CCMRationalAdelicBruhatNonUnitalAlgebra.lean:84:10: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicBruhatNonUnitalAlgebra.lean:84:10: This simp argument is unused:
 1 occurrences |   simp only [ccmRationalAdelicBruhatPureMulLeft_tmul, c̵c̵m̵R̵a̵t̵i̵o̵n̵a̵l̵F̵i̵n̵i̵t̵e̵B̵r̵u̵h̵a̵t̵M̵u̵l̵L̵e̵f̵t̵,̵ ̵smul_mul_assoc, TensorProduct.tmul_smul,
 1 occurrences |   ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲LinearMap.smul_apply, RingHom.id_apply]
 1 occurrences | ⚠ [12734/12925] Replayed GaloisForLFunctions.RHTower.CyclicBarTensorOperators
@@ -11647,21 +11647,21 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/RHTower/BVCoPoissonHellingerBetaResonanceTransmutation.lean:258:4: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/BVCoPoissonHellingerBetaResonanceTransmutation.lean:1378:2: Try this:
 1 occurrences | info: GaloisForLFunctions/RHTower/BVCoPoissonHellingerBetaResonanceTransmutation.lean:1385:2: Try this:
-1 occurrences | ⚠ [12865/12925] Replayed GaloisForLFunctions.RHTower.DeningerCalderonWittDerivedCupSource
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittDerivedCupSource.lean:300:25: This simp argument is unused:
+1 occurrences | ⚠ [12865/12925] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittDerivedCupSource
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittDerivedCupSource.lean:300:25: This simp argument is unused:
 1 occurrences |   zero_apply
 1 occurrences |   simp only [map_zero, z̵e̵r̵o̵_̵a̵p̵p̵l̵y̵,̵ ̵sub_zero] at hq
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittDerivedCupSource.lean:300:37: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittDerivedCupSource.lean:300:37: This simp argument is unused:
 2 occurrences |   sub_zero
 1 occurrences |   simp only [map_zero, zero_apply,̵ ̵s̵u̵b̵_̵z̵e̵r̵o̵] at hq
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittDerivedCupSource.lean:309:25: This simp argument is unused:
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittDerivedCupSource.lean:309:25: This simp argument is unused:
 1 occurrences |   simp only [map_zero, s̵u̵b̵_̵z̵e̵r̵o̵,̵ ̵zero_sub] at ha
-1 occurrences | ⚠ [12868/12925] Replayed GaloisForLFunctions.RHTower.DeningerCalderonWittMilnorIncidence
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittMilnorIncidence.lean:423:2: try 'simp' instead of 'simpa'
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittMilnorIncidence.lean:508:2: 'change
+1 occurrences | ⚠ [12868/12925] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittMilnorIncidence
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittMilnorIncidence.lean:423:2: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittMilnorIncidence.lean:508:2: 'change
 1 occurrences |   i.1 - deningerCalderonWittExteriorCupSection p (deningerCalderonWittAlgebraicExteriorCup p i.1) =
 1 occurrences |     i.1' tactic does nothing
-1 occurrences | warning: GaloisForLFunctions/RHTower/DeningerCalderonWittMilnorIncidence.lean:657:6: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittMilnorIncidence.lean:657:6: try 'simp' instead of 'simpa'
 1 occurrences | ℹ [12880/12925] Replayed GaloisForLFunctions.HTGeometry.CharacteristicEquilibriumDefect
 1 occurrences | info: GaloisForLFunctions/HTGeometry/CharacteristicEquilibriumDefect.lean:551:4: Try this:
 1 occurrences | ⚠ [12881/12925] Replayed GaloisForLFunctions.HTGeometry.HyperbolicLevyKhintchine
@@ -11683,31 +11683,31 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean:259:77: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean:290:73: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/JuliaDefectEquilibriumPositiveDefinite.lean:294:77: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | ℹ [12889/12925] Replayed GaloisForLFunctions.RHTower.SuzukiMangoldtApexCrossPrimeBlock
-1 occurrences | info: GaloisForLFunctions/RHTower/SuzukiMangoldtApexCrossPrimeBlock.lean:418:14: Try this:
-1 occurrences | ℹ [12895/12925] Replayed GaloisForLFunctions.RHTower.CCMFirstClockTailLowerBoundCompleteness
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean:301:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean:325:8: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean:393:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean:501:4: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean:745:2: Try this:
+1 occurrences | ℹ [12889/12925] Replayed GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtApexCrossPrimeBlock
+1 occurrences | info: GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtApexCrossPrimeBlock.lean:418:14: Try this:
+1 occurrences | ℹ [12895/12925] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockTailLowerBoundCompleteness
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean:301:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean:325:8: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean:393:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean:501:4: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean:745:2: Try this:
 1 occurrences | ℹ [12896/12925] Replayed GaloisForLFunctions.RHTower.XiAperturePoissonValuationClockShuttle
 1 occurrences | info: GaloisForLFunctions/RHTower/XiAperturePoissonValuationClockShuttle.lean:71:73: Try this:
 1 occurrences | ℹ [12900/12925] Replayed GaloisForLFunctions.RHTower.XiPhysicalEndpointValuationCorrectionOddShuttle
 1 occurrences | info: GaloisForLFunctions/RHTower/XiPhysicalEndpointValuationCorrectionOddShuttle.lean:441:2: Try this:
 1 occurrences | ℹ [12925/13190] Replayed GaloisForLFunctions.RHTower.EulerPrimitiveCommonTestSource
 1 occurrences | info: GaloisForLFunctions/RHTower/EulerPrimitiveCommonTestSource.lean:97:4: Try this:
-1 occurrences | ℹ [12950/13190] Replayed GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedPureHodgeModularTransgression
-2 occurrences | info: GaloisForLFunctions/RHTower/CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean:317:14: Try this:
-1 occurrences | ℹ [12978/13190] Replayed GaloisForLFunctions.RHTower.DeningerMeyerStrongLogMellin
-1 occurrences | info: GaloisForLFunctions/RHTower/DeningerMeyerStrongLogMellin.lean:243:4: Try this:
+1 occurrences | ℹ [12950/13190] Replayed GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedPureHodgeModularTransgression
+2 occurrences | info: GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimitivePromotedPureHodgeModularTransgression.lean:317:14: Try this:
+1 occurrences | ℹ [12978/13190] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerMeyerStrongLogMellin
+1 occurrences | info: GaloisForLFunctions/RHTower/Deninger/DeningerMeyerStrongLogMellin.lean:243:4: Try this:
 1 occurrences | ℹ [12980/13190] Replayed GaloisForLFunctions.RHTower.MobiusLaplaceMellinPlancherelBridge
 1 occurrences | info: GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean:676:74: Try this:
-1 occurrences | ℹ [12984/13190] Replayed GaloisForLFunctions.RHTower.DeningerMeyerDilationFlow
-1 occurrences | info: GaloisForLFunctions/RHTower/DeningerMeyerDilationFlow.lean:135:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/DeningerMeyerDilationFlow.lean:304:2: Try this:
-1 occurrences | ℹ [12991/13190] Replayed GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertransport
-1 occurrences | info: GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCountertransport.lean:141:2: Try this:
+1 occurrences | ℹ [12984/13190] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerMeyerDilationFlow
+1 occurrences | info: GaloisForLFunctions/RHTower/Deninger/DeningerMeyerDilationFlow.lean:135:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/Deninger/DeningerMeyerDilationFlow.lean:304:2: Try this:
+1 occurrences | ℹ [12991/13190] Replayed GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianCountertransport
+1 occurrences | info: GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianCountertransport.lean:141:2: Try this:
 1 occurrences | ℹ [13012/13190] Replayed GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalCodiagonal
 1 occurrences | info: GaloisForLFunctions/RHTower/MobiusThetaAdaptivePrimeNormalCodiagonal.lean:97:58: Try this:
 1 occurrences | ℹ [13044/13190] Replayed GaloisForLFunctions.RHTower.EulerPrimitiveJointDepthHilbertSource
@@ -11731,17 +11731,17 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | info: GaloisForLFunctions/HTGeometry/LerchHurwitzDerivative.lean:371:2: Try this:
 1 occurrences | ℹ [13329/13479] Replayed GaloisForLFunctions.RHTower.RouteRCofinalSieveHarmonicResidue
 1 occurrences | info: GaloisForLFunctions/RHTower/RouteRCofinalSieveHarmonicResidue.lean:310:6: Try this:
-1 occurrences | ℹ [13368/13479] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge.lean:112:14: Try this:
-1 occurrences | ℹ [13381/13479] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex.lean:197:2: Try this:
+1 occurrences | ℹ [13368/13479] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge.lean:112:14: Try this:
+1 occurrences | ℹ [13381/13479] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex.lean:197:2: Try this:
 1 occurrences | ℹ [13427/13479] Replayed GaloisForLFunctions.RHTower.Sieve.InghamExponentialMellinInversion
 1 occurrences | info: GaloisForLFunctions/RHTower/Sieve/InghamExponentialMellinInversion.lean:182:14: Try this:
 1 occurrences | ⚠ [13428/13479] Replayed GaloisForLFunctions.SelbergClass.ComplexRayMellinInversion
 1 occurrences | warning: GaloisForLFunctions/SelbergClass/ComplexRayMellinInversion.lean:210:4: Try `simp at hz₀re` instead of `simpa using hz₀re`
-1 occurrences | ℹ [13464/13641] Replayed GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord.lean:242:2: Try this:
-1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord.lean:262:2: Try this:
+1 occurrences | ℹ [13464/13641] Replayed GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord.lean:242:2: Try this:
+1 occurrences | info: GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord.lean:262:2: Try this:
 1 occurrences | ℹ [13525/13641] Replayed GaloisForLFunctions.RHTower.FractSqConstSeries
 1 occurrences | info: GaloisForLFunctions/RHTower/FractSqConstSeries.lean:155:2: Try this:
 1 occurrences | ⚠ [13549/13641] Replayed GaloisForLFunctions.HTGeometry.ClosedHyperplaneInverse
@@ -11756,27 +11756,27 @@ ALL 2595 raw lines; 722 full unique lines; exact reconstruction PASS
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/ClosedHyperplaneInverse.lean:325:4: try 'simp' instead of 'simpa'
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/ClosedHyperplaneInverse.lean:328:0: automatically included section variable(s) unused in theorem `GaloisForLFunctions.HTGeometry.closedHyperplaneInverse_dense_domain`:
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/ClosedHyperplaneInverse.lean:562:0: automatically included section variable(s) unused in theorem `GaloisForLFunctions.HTGeometry.closedDenseInverse_domain`:
-1 occurrences | ⚠ [13553/13641] Replayed GaloisForLFunctions.RHTower.HedenmalmShiftedClosedWeightedDerivative
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmShiftedClosedWeightedDerivative.lean:58:23: try 'simp' instead of 'simpa'
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmShiftedClosedWeightedDerivative.lean:72:20: try 'simp' instead of 'simpa'
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmShiftedClosedWeightedDerivative.lean:98:23: try 'simp' instead of 'simpa'
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmShiftedClosedWeightedDerivative.lean:174:8: try 'simp' instead of 'simpa'
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmShiftedClosedWeightedDerivative.lean:176:8: try 'simp' instead of 'simpa'
+1 occurrences | ⚠ [13553/13641] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmShiftedClosedWeightedDerivative
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedClosedWeightedDerivative.lean:58:23: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedClosedWeightedDerivative.lean:72:20: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedClosedWeightedDerivative.lean:98:23: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedClosedWeightedDerivative.lean:174:8: try 'simp' instead of 'simpa'
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedClosedWeightedDerivative.lean:176:8: try 'simp' instead of 'simpa'
 1 occurrences | ⚠ [13554/13641] Replayed GaloisForLFunctions.HTGeometry.CompactHyperplanePerturbation
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/CompactHyperplanePerturbation.lean:24:25: `ContinuousLinearMap.add_apply` has been deprecated: Use `add_apply` instead
 1 occurrences | Note: The updated constant is in a different namespace. Dot notation may need to be changed (e.g., from `x.add_apply` to `add_apply x`).
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/CompactHyperplanePerturbation.lean:25:6: `ContinuousLinearMap.one_apply` has been deprecated: Use `one_apply_eq_self` instead
 1 occurrences | Note: The updated constant is in a different namespace. Dot notation may need to be changed (e.g., from `x.one_apply` to `one_apply_eq_self x`).
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/CompactHyperplanePerturbation.lean:180:6: `push_neg` has been deprecated. Prefer using `push Not` instead.
-1 occurrences | ⚠ [13557/13641] Replayed GaloisForLFunctions.RHTower.HedenmalmThetaZeroHistoryNoGo
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaZeroHistoryNoGo.lean:33:14: `ContinuousLinearMap.mul_apply` has been deprecated: Use `mul_apply_eq_comp` instead
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaZeroHistoryNoGo.lean:34:14: `ContinuousLinearMap.smul_apply` has been deprecated: Use `smul_apply` instead
-1 occurrences | ⚠ [13570/13641] Replayed GaloisForLFunctions.RHTower.HedenmalmThetaRealResolventTrace
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean:337:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean:395:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean:398:51: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | warning: GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean:1071:42: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
-1 occurrences | info: GaloisForLFunctions/RHTower/HedenmalmThetaRealResolventTrace.lean:1244:4: Try this:
+1 occurrences | ⚠ [13557/13641] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaZeroHistoryNoGo
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaZeroHistoryNoGo.lean:33:14: `ContinuousLinearMap.mul_apply` has been deprecated: Use `mul_apply_eq_comp` instead
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaZeroHistoryNoGo.lean:34:14: `ContinuousLinearMap.smul_apply` has been deprecated: Use `smul_apply` instead
+1 occurrences | ⚠ [13570/13641] Replayed GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaRealResolventTrace
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRealResolventTrace.lean:337:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRealResolventTrace.lean:395:65: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRealResolventTrace.lean:398:51: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | warning: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRealResolventTrace.lean:1071:42: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+1 occurrences | info: GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRealResolventTrace.lean:1244:4: Try this:
 1 occurrences | ⚠ [13575/13641] Replayed GaloisForLFunctions.HTGeometry.CompactRieszProjectionTrace
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/CompactRieszProjectionTrace.lean:25:0: automatically included section variable(s) unused in theorem `GaloisForLFunctions.HTGeometry.finiteDimensional_range_of_isCompactOperator_of_isIdempotentElem`:
 1 occurrences | warning: GaloisForLFunctions/HTGeometry/CompactRieszProjectionTrace.lean:124:2: 'push_cast' tactic does nothing
@@ -16660,9 +16660,9 @@ e98d175c370c59bc3692fc08eaa659e0a570f7395a331aa0cf6c483e9b23cfb1
 STRING 34 occurrences 1 characters 43
 RHTower.D4BMModularCore.weightedDeriv_memLp
 STRING 35 occurrences 1 characters 63
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSmoothModularCore
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSmoothModularCore
 STRING 36 occurrences 1 characters 75
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSmoothModularCore.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSmoothModularCore.lean
 STRING 37 occurrences 2 characters 144
 theorem weightedDeriv_memLp (v : ℂ) (f : UpperHalfPlane → ℂ) (hf : ChartSmooth f)
     (hk : CellCompact f) : MemLp (weightedDeriv v f) 2 measure
@@ -16958,9 +16958,9 @@ efc352e9db1548b9629320886d36efa88728ee2b724cdad9af0f2a1f0db5f2f4
 STRING 182 occurrences 1 characters 43
 RHTower.ThetaCuspOddFour.gaussian_even_four
 STRING 183 occurrences 1 characters 60
-GaloisForLFunctions.RHTower.ThetaCuspGaussianFourteenJetTail
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGaussianFourteenJetTail
 STRING 184 occurrences 1 characters 72
-formal/GaloisForLFunctions/RHTower/ThetaCuspGaussianFourteenJetTail.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspGaussianFourteenJetTail.lean
 STRING 185 occurrences 2 characters 86
 private theorem gaussian_even_four (q : ℝ) :
     iteratedDeriv 4 (gaussian q) 0 = g2 q
@@ -17150,9 +17150,9 @@ a50a4a29d73c0ff1d7302956ded4a04296833f4b2c29fb634b7643d02ba67a93
 STRING 276 occurrences 1 characters 49
 RHTower.D4BMCausalSourceKernel.weight_derivatives
 STRING 277 occurrences 1 characters 65
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSourceAdjoint
 STRING 278 occurrences 1 characters 77
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalSourceAdjoint.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalSourceAdjoint.lean
 STRING 279 occurrences 2 characters 167
 private theorem weight_derivatives (s : ℂ) {u : ℝ} (hu : 0 < 1+u) :
     HasDerivAt (weight s) (weightFirst s u) u ∧
@@ -17264,9 +17264,9 @@ b18fdb6cdb838541e1b79fd92eb1774e4919aa066fd78a6fd6b670b634bf035a
 STRING 331 occurrences 1 characters 42
 RHTower.D4BMCausalKernel.gauss_derivatives
 STRING 332 occurrences 1 characters 65
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalRiemannKernel
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalRiemannKernel
 STRING 333 occurrences 1 characters 77
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalRiemannKernel.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalRiemannKernel.lean
 STRING 334 occurrences 2 characters 229
 private theorem gauss_derivatives (nu : ℂ) {z : ℝ} (hz : 0 < z) :
     HasDerivAt (legendreGauss nu) (2*legendreGaussFirst nu z/(z+1)^(2 : ℕ)) z ∧
@@ -17437,9 +17437,9 @@ e91f0221fd732b3a9df882b16e85cd7b938497629355953f4ce7d3ad73bd187c
 STRING 413 occurrences 1 characters 50
 RHTower.D4BMOriginalGreenBoundary.weightDerivative
 STRING 414 occurrences 1 characters 67
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOriginalGreenBoundary
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOriginalGreenBoundary
 STRING 415 occurrences 1 characters 79
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalGreenBoundary.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalGreenBoundary.lean
 STRING 416 occurrences 2 characters 32
 def weightDerivative (x : P) : ℂ
 STRING 417 occurrences 1 characters 1
@@ -17538,9 +17538,9 @@ db1c138ed1541527b65b86d1a6dd64b95b8f5df5ca7e2708662e82c3066c0f20
 STRING 460 occurrences 1 characters 50
 RHTower.cCMArchimedeanHankelProductTraceLocalInst3
 STRING 461 occurrences 1 characters 60
-GaloisForLFunctions.RHTower.CCMArchimedeanHankelProductTrace
+GaloisForLFunctions.RHTower.CCM.CCMArchimedeanHankelProductTrace
 STRING 462 occurrences 1 characters 72
-formal/GaloisForLFunctions/RHTower/CCMArchimedeanHankelProductTrace.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanHankelProductTrace.lean
 STRING 463 occurrences 4 characters 8
 instance
 STRING 464 occurrences 2 characters 105
@@ -17632,9 +17632,9 @@ STRING 501 occurrences 1 characters 64
 STRING 502 occurrences 1 characters 41
 RHTower.norm_suzukiCanonicalHankelUnitary
 STRING 503 occurrences 1 characters 57
-GaloisForLFunctions.RHTower.SuzukiCanonicalHankelOperator
+GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelOperator
 STRING 504 occurrences 1 characters 69
-formal/GaloisForLFunctions/RHTower/SuzukiCanonicalHankelOperator.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalHankelOperator.lean
 STRING 505 occurrences 2 characters 192
 theorem norm_suzukiCanonicalHankelUnitary
     (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
@@ -17692,9 +17692,9 @@ d7e2a36706106e127a5ebeab822752241d789dea779611cbad95b3d8b53fb20d
 STRING 521 occurrences 1 characters 59
 RHTower.ccmCenteredConstantSineCorrelation_add_swap_eq_zero
 STRING 522 occurrences 1 characters 55
-GaloisForLFunctions.RHTower.CCMConnesConsaniPolarizeTwo
+GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniPolarizeTwo
 STRING 523 occurrences 1 characters 67
-formal/GaloisForLFunctions/RHTower/CCMConnesConsaniPolarizeTwo.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniPolarizeTwo.lean
 STRING 524 occurrences 2 characters 305
 theorem ccmCenteredConstantSineCorrelation_add_swap_eq_zero
     (L : CCMPositiveAperture) (m : ℕ) (t : ℝ) :
@@ -17784,9 +17784,9 @@ f3fbbdb4e6288a713ecfb57bc94eca5a49a896c07cc8d874745fa47c59653876
 STRING 558 occurrences 1 characters 60
 RHTower.thetaCuspNativeOddCanonicalCompensatedDet_pos_global
 STRING 559 occurrences 1 characters 58
-GaloisForLFunctions.RHTower.ThetaCuspGlobalOddCompensation
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGlobalOddCompensation
 STRING 560 occurrences 1 characters 70
-formal/GaloisForLFunctions/RHTower/ThetaCuspGlobalOddCompensation.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspGlobalOddCompensation.lean
 STRING 561 occurrences 2 characters 170
 theorem thetaCuspNativeOddCanonicalCompensatedDet_pos_global :
     ∀ x : ℝ, 0 ≤ x →
@@ -17888,9 +17888,9 @@ STRING 594 occurrences 1 characters 64
 STRING 595 occurrences 1 characters 57
 RHTower.thetaCuspNativeEvenFourCanonical_posDef_of_one_le
 STRING 596 occurrences 1 characters 57
-GaloisForLFunctions.RHTower.ThetaCuspEvenFourExtendedTail
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourExtendedTail
 STRING 597 occurrences 1 characters 69
-formal/GaloisForLFunctions/RHTower/ThetaCuspEvenFourExtendedTail.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspEvenFourExtendedTail.lean
 STRING 598 occurrences 2 characters 175
 theorem thetaCuspNativeEvenFourCanonical_posDef_of_one_le :
     ∀ x : ℝ, 1 ≤ x →
@@ -17941,9 +17941,9 @@ b51c2d7b808f55afd20ffc76cb45082b09579f48ca9047a702871908471609b7
 STRING 616 occurrences 1 characters 68
 RHTower.suzukiCanonicalPositiveHankelUnitary_positiveHalfLineUnitary
 STRING 617 occurrences 2 characters 56
-GaloisForLFunctions.RHTower.SuzukiCanonicalHankelLemma41
+GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelLemma41
 STRING 618 occurrences 2 characters 68
-formal/GaloisForLFunctions/RHTower/SuzukiCanonicalHankelLemma41.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalHankelLemma41.lean
 STRING 619 occurrences 2 characters 351
 theorem suzukiCanonicalPositiveHankelUnitary_positiveHalfLineUnitary
     (omega : ℝ) (hinner : SuzukiCanonicalThetaMeromorphicInner omega)
@@ -17976,9 +17976,9 @@ STRING 626 occurrences 1 characters 64
 STRING 627 occurrences 1 characters 64
 RHTower.thetaCuspNativeEvenFourCanonical_posDef_of_fourFifths_le
 STRING 628 occurrences 1 characters 58
-GaloisForLFunctions.RHTower.ThetaCuspEvenFourEntrywiseTail
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourEntrywiseTail
 STRING 629 occurrences 1 characters 70
-formal/GaloisForLFunctions/RHTower/ThetaCuspEvenFourEntrywiseTail.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspEvenFourEntrywiseTail.lean
 STRING 630 occurrences 2 characters 184
 theorem thetaCuspNativeEvenFourCanonical_posDef_of_fourFifths_le :
     ∀ x : ℝ, 4/5 ≤ x →
@@ -18000,9 +18000,9 @@ ebd7aab5b79f6580d7e879ea62bdeae5abdae838c3376e15531d3b48309fe05f
 STRING 635 occurrences 1 characters 64
 RHTower.thetaCuspNativeEvenFourCanonical_posDef_on_explicit_tail
 STRING 636 occurrences 1 characters 57
-GaloisForLFunctions.RHTower.ThetaCuspEvenFourExplicitTail
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourExplicitTail
 STRING 637 occurrences 1 characters 69
-formal/GaloisForLFunctions/RHTower/ThetaCuspEvenFourExplicitTail.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspEvenFourExplicitTail.lean
 STRING 638 occurrences 2 characters 184
 theorem thetaCuspNativeEvenFourCanonical_posDef_on_explicit_tail :
     ∀ x : ℝ, 6/5 ≤ x →
@@ -18024,9 +18024,9 @@ STRING 642 occurrences 1 characters 64
 STRING 643 occurrences 1 characters 66
 RHTower.thetaCuspNativeEvenFourCanonical_posDef_of_sevenEighths_le
 STRING 644 occurrences 1 characters 57
-GaloisForLFunctions.RHTower.ThetaCuspEvenFourTwoScaleTail
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourTwoScaleTail
 STRING 645 occurrences 1 characters 69
-formal/GaloisForLFunctions/RHTower/ThetaCuspEvenFourTwoScaleTail.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspEvenFourTwoScaleTail.lean
 STRING 646 occurrences 2 characters 186
 theorem thetaCuspNativeEvenFourCanonical_posDef_of_sevenEighths_le :
     ∀ x : ℝ, 7/8 ≤ x →
@@ -18101,9 +18101,9 @@ d07e31ec0e39367c2956bbdcf2ea5d2f1c3401f7f9b00310b7da355dc151603c
 STRING 672 occurrences 1 characters 51
 RHTower.ccmWeilPoleDiagonal_eq_poleDiagonalExplicit
 STRING 673 occurrences 2 characters 64
-GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleTracePositivity
+GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleTracePositivity
 STRING 674 occurrences 2 characters 76
-formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPoleTracePositivity.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilPoleTracePositivity.lean
 STRING 675 occurrences 2 characters 135
 theorem ccmWeilPoleDiagonal_eq_poleDiagonalExplicit (a : SuzukiPositiveAperture) :
     ccmWeilPoleDiagonal a = poleDiagonalExplicit a.1
@@ -18145,9 +18145,9 @@ STRING 689 occurrences 1 characters 64
 STRING 690 occurrences 1 characters 41
 RHTower.suzukiThreePointCentralWeight_pos
 STRING 691 occurrences 1 characters 62
-GaloisForLFunctions.RHTower.SuzukiPositiveSpectralResponseNoGo
+GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveSpectralResponseNoGo
 STRING 692 occurrences 1 characters 74
-formal/GaloisForLFunctions/RHTower/SuzukiPositiveSpectralResponseNoGo.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveSpectralResponseNoGo.lean
 STRING 693 occurrences 2 characters 81
 theorem suzukiThreePointCentralWeight_pos :
     0 < suzukiThreePointCentralWeight
@@ -18402,7 +18402,7 @@ STRING 738 occurrences 1 characters 3281
 - **Type:** THEOREM (Lean) / LOCAL PHASE QUOTIENT / ORIENTATION CONNECTION
 - **Paper source:** `anchored-innovation-phase-bundle-local-gauge-and-positive-action-quotient-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.ScaleInnovationPhaseGauge`;
-  `GaloisForLFunctions.RHTower.SuzukiFormationInnovationPhaseGauge`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationPhaseGauge`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 
 ## Certified generic law
@@ -18444,7 +18444,7 @@ The Suzuki module proves:
 - Direct foreground elaboration passed for both final modules.
 - Targeted leaf builds only:
   - `GaloisForLFunctions.HTGeometry.ScaleInnovationPhaseGauge`: `3031/3031`
-  - `GaloisForLFunctions.RHTower.SuzukiFormationInnovationPhaseGauge`: `14119/14119`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationPhaseGauge`: `14119/14119`
     (large inherited dependency replay after cache changes)
 - Both modules imported by `HTGeometry.UniversalLawField`; literal module also imported by
   `RHTower`; neither umbrella built.
@@ -18689,11 +18689,11 @@ STRING 758 occurrences 1 characters 64
 STRING 759 occurrences 1 characters 332
 {"kind": "source", "source_hash": "598849fb6912cdec5edda345a787e09fcfb87b2ea68c20cb3c87af35065582d0", "toolchain": "leanprover/lean4:v4.32.2", "status": "source_only", "extraction_version": "source-2", "package": "project", "manifest_hash": "60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c", "recorded_stage": null}
 STRING 760 occurrences 1 characters 78
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLaplacePowerThirdJet.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLaplacePowerThirdJet.lean
 STRING 761 occurrences 1 characters 66
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplacePowerThirdJet
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLaplacePowerThirdJet
 STRING 762 occurrences 1 characters 1699
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplacePowerJets
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLaplacePowerJets
 
 /-!
 The literal third radial jet of the positive complex power.
@@ -18877,7 +18877,7 @@ ac12d027b3983bd6483c3ea1c5a92754a439f90974ea993d0f8e4beee9e48bd2
 STRING 772 occurrences 1 characters 332
 {"kind": "source", "source_hash": "49be7eda73a442be5a45fee49152887324db7cdebc9847484a875bf883b3c9a9", "toolchain": "leanprover/lean4:v4.32.2", "status": "source_only", "extraction_version": "source-2", "package": "project", "manifest_hash": "60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c", "recorded_stage": null}
 STRING 773 occurrences 1 characters 3009
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleBoundaryPrimitives
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleBoundaryPrimitives
 import GaloisForLFunctions.RHTower.PoleSelfEnergyLimit
 
 /-!
@@ -19189,14 +19189,14 @@ STRING 784 occurrences 1 characters 64
 STRING 785 occurrences 2 characters 332
 {"kind": "source", "source_hash": "5ea4f7b447468b5b6b54c4db50a4ce7cf1c62654f38d11668a6a3ead12333164", "toolchain": "leanprover/lean4:v4.32.2", "status": "source_only", "extraction_version": "source-2", "package": "project", "manifest_hash": "60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c", "recorded_stage": null}
 STRING 786 occurrences 1 characters 70
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaDerivativeJordan.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDerivativeJordan.lean
 STRING 787 occurrences 1 characters 58
-GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeJordan
+GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeJordan
 STRING 788 occurrences 1 characters 4971
-import GaloisForLFunctions.RHTower.HedenmalmShiftedSourceEquation
-import GaloisForLFunctions.RHTower.HedenmalmThetaZeroHistoryNoGo
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmShiftedSourceEquation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaZeroHistoryNoGo
 import GaloisForLFunctions.RHTower.ThetaPowerWeightedDerivativeHistory
-import GaloisForLFunctions.RHTower.ThetaCuspFullDerivativeExponentialMoments
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullDerivativeExponentialMoments
 
 /-!
 # Actual theta derivatives and both zero-Jordan chains
@@ -20189,7 +20189,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/RHTower.lean has 21289 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry.lean has 16387 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean has 12440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean has 8232 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean has 6890 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEOddCompactProductC.lean has 6383 lines
@@ -20210,7 +20210,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean has 3980 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean has 3871 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner3.lean has 3783 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean has 3722 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean has 3711 lines
 warning: large Lean file: formal/GaloisForLFunctions/PNTPlus/Wiener.lean has 3689 lines
@@ -20219,40 +20219,40 @@ warning: large Lean file: formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean has 3532 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean has 3468 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean has 3337 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner4.lean has 3257 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean has 3177 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaModularDifferentialClosure.lean has 3107 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FESchwarzPrimeCoronaHorizontalGradeCollapse.lean has 3093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionDegreeCenteredArithmeticSource.lean has 2933 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldIntegralNorm.lean has 2784 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner5.lean has 2775 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean has 2721 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean has 2671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardFixedWidthPrimeGapRungCover.lean has 2652 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding.lean has 2630 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean has 2627 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean has 2587 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTimeDistribution.lean has 2587 lines
 warning: large Lean file: formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean has 2583 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean has 2546 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/NeutralGammaRatioPolynomialJetBoundary.lean has 2534 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean has 2520 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding/Probability.lean has 2410 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean has 2378 lines
 warning: large Lean file: formal/GaloisForLFunctions/U0/U0SliceViableA.lean has 2369 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner6.lean has 2337 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimePoissonSuperselectionScreen.lean has 2333 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/DispersivePDE/BrizardElasticaApplications.lean has 2332 lines
@@ -20262,26 +20262,26 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/SeamCongruence.lean
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianXiDivisorContour.lean has 2297 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean has 2291 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean has 2278 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean has 2249 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterra.lean has 2249 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean has 2229 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Laurent/Witness.lean has 2205 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean has 2203 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean has 2176 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeFramedIntegralNuclearHomotopyDefect.lean has 2155 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PhaseSubdiscriminantKaehlerSmith.lean has 2147 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean has 2093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesGlobalMeanFirstTrace.lean has 2089 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingCanonicalSurgery.lean has 2024 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean has 2000 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularAddition/StructuredCircuit.lean has 1988 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FreeFockMatrixValuedSpectralLaw.lean has 1982 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingEvenCanonicalSurgery.lean has 1969 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardCommonModeNaturalCellShell.lean has 1959 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/CompleteResolutionCofinalConditioningLaw.lean has 1956 lines
@@ -20301,8 +20301,8 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusDivisorInheri
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean has 1816 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MaassModelHilbertOrbitDerivatives.lean has 1811 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PropInterfaceClosureLaws.lean has 1791 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean has 1788 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean has 1788 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/ShorFactoring.lean has 1777 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/FiniteCyclicDLP.lean has 1765 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean has 1762 lines
@@ -20310,13 +20310,13 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/EulerDeletionNested
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/FiniteCyclicDLP.lean has 1761 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverRecurrenceDistributionLaw.lean has 1755 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean has 1747 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstitutiveTwoEndedAdmissionCriticalShell.lean has 1743 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean has 1712 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/DirichletKernel.lean has 1711 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FiniteLevelResolutionLaw.lean has 1706 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ParityConditionedForecastingInstability.lean has 1693 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspC5SharpTailJets.lean has 1686 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspC5SharpTailJets.lean has 1686 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DissipativeQuantumReturnInformationTransition.lean has 1671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean has 1662 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimeProfileSeparatedPacketExact.lean has 1658 lines
@@ -20325,14 +20325,14 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/LocalHamiltonianCau
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/LogNormalEquationTrace.lean has 1638 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaRiccatiGaussianCountermodel.lean has 1633 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCoMovingDiffuseCodiagonal.lean has 1628 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean has 1604 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean has 1601 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner8.lean has 1596 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean has 1594 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SemilocalProlateThirdEulerCriticalJet.lean has 1593 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilSafeLineArchimedean.lean has 1586 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
 warning: large Lean file: formal/GaloisForLFunctions/QECLean/Stabilizer/Codes/Toric/StabilizerCode.lean has 1570 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFiniteTranslationBounds.lean has 1565 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderExteriorSquare.lean has 1557 lines
@@ -20347,22 +20347,22 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusPrimeInsertio
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaPoleReciprocalBellGrading.lean has 1520 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Signal.lean has 1515 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean has 1515 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/RawCoefficients.lean has 1512 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean has 1511 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionDensityTail.lean has 1510 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLogApertureFusion.lean has 1506 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherCountableCommonHardyReporter.lean has 1506 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardDyadicBlockSpatialL2.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/AbelianRepairLeastAction.lean has 1501 lines
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
@@ -20373,7 +20373,7 @@ error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.R
 #### Pinned successful API scratch
 
 ```lean
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
 import Mathlib.Analysis.Convex.Deriv
 
@@ -21126,7 +21126,7 @@ Whole-history scratch remains retained; no prefix cleanup performed.
 
 ```lean
 import GaloisForLFunctions.RHTower.TwoGaussianSourceCounterexample
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 import GaloisForLFunctions.RHTower.HermiteGaussianEnvelope
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
@@ -21705,7 +21705,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/RHTower.lean has 21307 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry.lean has 16387 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean has 12440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean has 8232 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean has 6890 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEOddCompactProductC.lean has 6383 lines
@@ -21726,7 +21726,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean has 3980 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean has 3871 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner3.lean has 3783 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean has 3722 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean has 3711 lines
 warning: large Lean file: formal/GaloisForLFunctions/PNTPlus/Wiener.lean has 3689 lines
@@ -21735,40 +21735,40 @@ warning: large Lean file: formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean has 3532 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean has 3468 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean has 3337 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner4.lean has 3257 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean has 3177 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaModularDifferentialClosure.lean has 3107 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FESchwarzPrimeCoronaHorizontalGradeCollapse.lean has 3093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionDegreeCenteredArithmeticSource.lean has 2933 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldIntegralNorm.lean has 2784 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner5.lean has 2775 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean has 2721 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean has 2671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardFixedWidthPrimeGapRungCover.lean has 2652 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding.lean has 2630 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean has 2627 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean has 2587 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTimeDistribution.lean has 2587 lines
 warning: large Lean file: formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean has 2583 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean has 2546 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/NeutralGammaRatioPolynomialJetBoundary.lean has 2534 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean has 2520 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding/Probability.lean has 2410 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean has 2378 lines
 warning: large Lean file: formal/GaloisForLFunctions/U0/U0SliceViableA.lean has 2369 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner6.lean has 2337 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimePoissonSuperselectionScreen.lean has 2333 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/DispersivePDE/BrizardElasticaApplications.lean has 2332 lines
@@ -21778,26 +21778,26 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/SeamCongruence.lean
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianXiDivisorContour.lean has 2297 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean has 2291 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean has 2278 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean has 2249 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterra.lean has 2249 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean has 2229 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Laurent/Witness.lean has 2205 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean has 2203 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean has 2176 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeFramedIntegralNuclearHomotopyDefect.lean has 2155 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PhaseSubdiscriminantKaehlerSmith.lean has 2147 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean has 2093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesGlobalMeanFirstTrace.lean has 2089 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingCanonicalSurgery.lean has 2024 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean has 2000 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularAddition/StructuredCircuit.lean has 1988 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FreeFockMatrixValuedSpectralLaw.lean has 1982 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingEvenCanonicalSurgery.lean has 1969 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardCommonModeNaturalCellShell.lean has 1959 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/CompleteResolutionCofinalConditioningLaw.lean has 1956 lines
@@ -21817,8 +21817,8 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusDivisorInheri
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean has 1816 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MaassModelHilbertOrbitDerivatives.lean has 1811 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PropInterfaceClosureLaws.lean has 1791 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean has 1788 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean has 1788 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/ShorFactoring.lean has 1777 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/FiniteCyclicDLP.lean has 1765 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean has 1762 lines
@@ -21826,13 +21826,13 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/EulerDeletionNested
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/FiniteCyclicDLP.lean has 1761 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverRecurrenceDistributionLaw.lean has 1755 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean has 1747 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstitutiveTwoEndedAdmissionCriticalShell.lean has 1743 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean has 1712 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/DirichletKernel.lean has 1711 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FiniteLevelResolutionLaw.lean has 1706 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ParityConditionedForecastingInstability.lean has 1693 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspC5SharpTailJets.lean has 1686 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspC5SharpTailJets.lean has 1686 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DissipativeQuantumReturnInformationTransition.lean has 1671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean has 1662 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimeProfileSeparatedPacketExact.lean has 1658 lines
@@ -21841,14 +21841,14 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/LocalHamiltonianCau
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/LogNormalEquationTrace.lean has 1638 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaRiccatiGaussianCountermodel.lean has 1633 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCoMovingDiffuseCodiagonal.lean has 1628 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean has 1604 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean has 1601 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner8.lean has 1596 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean has 1594 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SemilocalProlateThirdEulerCriticalJet.lean has 1593 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilSafeLineArchimedean.lean has 1586 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
 warning: large Lean file: formal/GaloisForLFunctions/QECLean/Stabilizer/Codes/Toric/StabilizerCode.lean has 1570 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFiniteTranslationBounds.lean has 1565 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderExteriorSquare.lean has 1557 lines
@@ -21863,22 +21863,22 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusPrimeInsertio
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaPoleReciprocalBellGrading.lean has 1520 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Signal.lean has 1515 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean has 1515 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/RawCoefficients.lean has 1512 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean has 1511 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionDensityTail.lean has 1510 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLogApertureFusion.lean has 1506 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherCountableCommonHardyReporter.lean has 1506 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardDyadicBlockSpatialL2.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/AbelianRepairLeastAction.lean has 1501 lines
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.HorizontalShiftOverlapExact
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.HorizontalSimplicityDeficitCount
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.HorizontalTradeoffHyperbolicBounds
@@ -21893,7 +21893,7 @@ error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.R
 
 ```lean
 import GaloisForLFunctions.RHTower.TwoGaussianSourceCounterexample
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 import GaloisForLFunctions.RHTower.HermiteGaussianEnvelope
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
@@ -22144,7 +22144,7 @@ PositiveDensitySource.mass_ne_zero : ∀ (S : PositiveDensitySource), S.mass ≠
 
 ```lean
 import GaloisForLFunctions.RHTower.TwoGaussianSourceCounterexample
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 import GaloisForLFunctions.RHTower.HermiteGaussianEnvelope
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
@@ -22287,19 +22287,19 @@ noncomputable section
 -- OWNER GaloisForLFunctions.HTGeometry.WeightedDensityL2 GaloisForLFunctions.HTGeometry.sqrtWeight
 #check @GaloisForLFunctions.HTGeometry.sqrtWeight
 
--- OWNER GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.SourceSpace
+-- OWNER GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.SourceSpace
 #check @RHTower.HedenmalmQuantile.SourceSpace
 
--- OWNER GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.measurable_sourceWeight
+-- OWNER GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.measurable_sourceWeight
 #check @RHTower.HedenmalmQuantile.measurable_sourceWeight
 
--- OWNER GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceInverse
+-- OWNER GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceInverse
 #check @RHTower.HedenmalmQuantile.sourceInverse
 
--- OWNER GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceWeight
+-- OWNER GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceWeight
 #check @RHTower.HedenmalmQuantile.sourceWeight
 
--- OWNER GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceWeight_pos
+-- OWNER GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm RHTower.HedenmalmQuantile.sourceWeight_pos
 #check @RHTower.HedenmalmQuantile.sourceWeight_pos
 
 -- OWNER GaloisForLFunctions.RHTower.HermiteFunctionOrthogonality RHTower.tendsto_polyEval_mul_gauss_atBot
@@ -23874,7 +23874,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/RHTower.lean has 21328 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry.lean has 16387 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean has 12440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean has 8232 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean has 6890 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEOddCompactProductC.lean has 6383 lines
@@ -23895,7 +23895,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean has 3980 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean has 3871 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner3.lean has 3783 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean has 3722 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean has 3711 lines
 warning: large Lean file: formal/GaloisForLFunctions/PNTPlus/Wiener.lean has 3689 lines
@@ -23904,40 +23904,40 @@ warning: large Lean file: formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean has 3532 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean has 3468 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean has 3337 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner4.lean has 3257 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean has 3177 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaModularDifferentialClosure.lean has 3107 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FESchwarzPrimeCoronaHorizontalGradeCollapse.lean has 3093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionDegreeCenteredArithmeticSource.lean has 2933 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldIntegralNorm.lean has 2784 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner5.lean has 2775 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean has 2721 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean has 2671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardFixedWidthPrimeGapRungCover.lean has 2652 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding.lean has 2630 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean has 2627 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean has 2587 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTimeDistribution.lean has 2587 lines
 warning: large Lean file: formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean has 2583 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean has 2546 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/NeutralGammaRatioPolynomialJetBoundary.lean has 2534 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean has 2520 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding/Probability.lean has 2410 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean has 2378 lines
 warning: large Lean file: formal/GaloisForLFunctions/U0/U0SliceViableA.lean has 2369 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner6.lean has 2337 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimePoissonSuperselectionScreen.lean has 2333 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/DispersivePDE/BrizardElasticaApplications.lean has 2332 lines
@@ -23947,26 +23947,26 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/SeamCongruence.lean
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianXiDivisorContour.lean has 2297 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean has 2291 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean has 2278 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean has 2249 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterra.lean has 2249 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean has 2229 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Laurent/Witness.lean has 2205 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean has 2203 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean has 2176 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeFramedIntegralNuclearHomotopyDefect.lean has 2155 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PhaseSubdiscriminantKaehlerSmith.lean has 2147 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean has 2093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesGlobalMeanFirstTrace.lean has 2089 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingCanonicalSurgery.lean has 2024 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean has 2000 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularAddition/StructuredCircuit.lean has 1988 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FreeFockMatrixValuedSpectralLaw.lean has 1982 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingEvenCanonicalSurgery.lean has 1969 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardCommonModeNaturalCellShell.lean has 1959 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/CompleteResolutionCofinalConditioningLaw.lean has 1956 lines
@@ -23986,8 +23986,8 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusDivisorInheri
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean has 1816 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MaassModelHilbertOrbitDerivatives.lean has 1811 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PropInterfaceClosureLaws.lean has 1791 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean has 1788 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean has 1788 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/ShorFactoring.lean has 1777 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/FiniteCyclicDLP.lean has 1765 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean has 1762 lines
@@ -23995,13 +23995,13 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/EulerDeletionNested
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/FiniteCyclicDLP.lean has 1761 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverRecurrenceDistributionLaw.lean has 1755 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean has 1747 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstitutiveTwoEndedAdmissionCriticalShell.lean has 1743 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean has 1712 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/DirichletKernel.lean has 1711 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FiniteLevelResolutionLaw.lean has 1706 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ParityConditionedForecastingInstability.lean has 1693 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspC5SharpTailJets.lean has 1686 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspC5SharpTailJets.lean has 1686 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DissipativeQuantumReturnInformationTransition.lean has 1671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean has 1662 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimeProfileSeparatedPacketExact.lean has 1658 lines
@@ -24010,14 +24010,14 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/LocalHamiltonianCau
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/LogNormalEquationTrace.lean has 1638 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaRiccatiGaussianCountermodel.lean has 1633 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCoMovingDiffuseCodiagonal.lean has 1628 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean has 1604 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean has 1601 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner8.lean has 1596 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean has 1594 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SemilocalProlateThirdEulerCriticalJet.lean has 1593 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilSafeLineArchimedean.lean has 1586 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
 warning: large Lean file: formal/GaloisForLFunctions/QECLean/Stabilizer/Codes/Toric/StabilizerCode.lean has 1570 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFiniteTranslationBounds.lean has 1565 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderExteriorSquare.lean has 1557 lines
@@ -24032,22 +24032,22 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusPrimeInsertio
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaPoleReciprocalBellGrading.lean has 1520 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Signal.lean has 1515 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean has 1515 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/RawCoefficients.lean has 1512 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean has 1511 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionDensityTail.lean has 1510 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLogApertureFusion.lean has 1506 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherCountableCommonHardyReporter.lean has 1506 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardDyadicBlockSpatialL2.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/AbelianRepairLeastAction.lean has 1501 lines
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase
@@ -26387,7 +26387,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/RHTower.lean has 21339 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry.lean has 16387 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityCountableAvoidance.lean has 12440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean has 9881 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Interval/Witness.lean has 8232 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CaiChenFangGuoRajchman.lean has 6890 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEOddCompactProductC.lean has 6383 lines
@@ -26408,7 +26408,7 @@ warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/M
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeTranscendenceBridge.lean has 3980 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/Arithmetic/PlainAdder/Schedule.lean has 3871 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner3.lean has 3783 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLiteralCyclicPeierlsPulseLayer.lean has 3769 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/DeckAnnulusData.lean has 3722 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaDifferentialFE.lean has 3711 lines
 warning: large Lean file: formal/GaloisForLFunctions/PNTPlus/Wiener.lean has 3689 lines
@@ -26417,40 +26417,40 @@ warning: large Lean file: formal/GaloisForLFunctions/Bottcher/HDiscLoopDeck.lean
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/EkeraHastadStyle.lean has 3532 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62BackwardOrbitBrolin.lean has 3468 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/Factoring/ShorStyle.lean has 3337 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean has 3296 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner4.lean has 3257 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVectorJetEntries.lean has 3216 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardElevenFifthsSelectedCellExclusion.lean has 3177 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaModularDifferentialClosure.lean has 3107 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetEntries.lean has 3100 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FESchwarzPrimeCoronaHorizontalGradeCollapse.lean has 3093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiShiftedCanonicalAdmissionDegreeCenteredArithmeticSource.lean has 2933 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean has 2830 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialSources.lean has 2822 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamEntries.lean has 2792 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ABHN/NonarchimedeanLocalFieldIntegralNorm.lean has 2784 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner5.lean has 2775 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityGlobalBranch.lean has 2721 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Q62EquilibriumVanishing.lean has 2671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardFixedWidthPrimeGapRungCover.lean has 2652 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFamilies.lean has 2649 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding.lean has 2630 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DpolyBallFloor.lean has 2627 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/DeningerArithmeticTimeDistribution.lean has 2587 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTimeDistribution.lean has 2587 lines
 warning: large Lean file: formal/GaloisForLFunctions/HilbertMetric/GaussianJetPositivity.lean has 2583 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/RelativeRigidityNaturalBoundary.lean has 2546 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGradientStreamEntries.lean has 2540 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/NeutralGammaRatioPolynomialJetBoundary.lean has 2534 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean has 2520 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialFamilies.lean has 2473 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarStreamReconstructionField.lean has 2440 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean has 2418 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/OrderFinding/Probability.lean has 2410 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetMixedInverseTable.lean has 2390 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninCoupledPrimeArchGramTransfer.lean has 2378 lines
 warning: large Lean file: formal/GaloisForLFunctions/U0/U0SliceViableA.lean has 2369 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSeedCapRadialMemory.lean has 2362 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner6.lean has 2337 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimePoissonSuperselectionScreen.lean has 2333 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/DispersivePDE/BrizardElasticaApplications.lean has 2332 lines
@@ -26460,26 +26460,26 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/SeamCongruence.lean
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/GaussianXiDivisorContour.lean has 2297 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean has 2291 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverTemporalDimensionLaw.lean has 2278 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterra.lean has 2249 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterra.lean has 2249 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/NewtonPeriodic.lean has 2229 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/Polynomial/Complement/Laurent/Witness.lean has 2205 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ProlateDunsterBesselOffDiagonal.lean has 2203 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailSquareIndexPolarization.lean has 2176 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeFramedIntegralNuclearHomotopyDefect.lean has 2155 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/PhaseSubdiscriminantKaehlerSmith.lean has 2147 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean has 2130 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogClosedMarkov.lean has 2113 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies.lean has 2099 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadialTraceFamilies.lean has 2099 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/RapidConvexCurvatureResonance.lean has 2093 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/GammaSewnMobiusApertureStokesGlobalMeanFirstTrace.lean has 2089 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualThirdJet.lean has 2052 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingCanonicalSurgery.lean has 2024 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninEulerCalkinPartialIsometry.lean has 2000 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean has 1997 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/MAU/ModularAddition/StructuredCircuit.lean has 1988 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FreeFockMatrixValuedSpectralLaw.lean has 1982 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean has 1972 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/MovingEvenCanonicalSurgery.lean has 1969 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardCommonModeNaturalCellShell.lean has 1959 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/CompleteResolutionCofinalConditioningLaw.lean has 1956 lines
@@ -26499,8 +26499,8 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusDivisorInheri
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/CorrelationExponentBridge.lean has 1816 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MaassModelHilbertOrbitDerivatives.lean has 1811 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PropInterfaceClosureLaws.lean has 1791 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean has 1788 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean has 1788 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean has 1779 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/ShorFactoring.lean has 1777 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Algorithms/FiniteCyclicDLP.lean has 1765 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SoninTimeBandHilbertSchmidt.lean has 1762 lines
@@ -26508,13 +26508,13 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/EulerDeletionNested
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/FiniteCyclicDLP.lean has 1761 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ObserverRecurrenceDistributionLaw.lean has 1755 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/BottcherParameterVelocityIdentification.lean has 1747 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogGroundSimplicity.lean has 1746 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstitutiveTwoEndedAdmissionCriticalShell.lean has 1743 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/BottcherTowerData.lean has 1712 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Util/DirichletKernel.lean has 1711 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/FiniteLevelResolutionLaw.lean has 1706 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ParityConditionedForecastingInstability.lean has 1693 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspC5SharpTailJets.lean has 1686 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspC5SharpTailJets.lean has 1686 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DissipativeQuantumReturnInformationTransition.lean has 1671 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusLaplaceMellinPlancherelBridge.lean has 1662 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PrimeProfileSeparatedPacketExact.lean has 1658 lines
@@ -26524,14 +26524,14 @@ warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/LogNormalEquatio
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaRiccatiGaussianCountermodel.lean has 1633 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCoMovingDiffuseCodiagonal.lean has 1628 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/LiClockThetaSignedGammaJumps.lean has 1624 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral.lean has 1613 lines
 warning: large Lean file: formal/GaloisForLFunctions/Bottcher/Brolin/TargetShifted.lean has 1604 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureCurvatureFlow.lean has 1601 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactHorner8.lean has 1596 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiSourceModularTypeSuperselectionLaw.lean has 1594 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/SemilocalProlateThirdEulerCriticalJet.lean has 1593 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/RiemannGaussian/RiemannXiSuzukiWeilSafeLineArchimedean.lean has 1586 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean has 1575 lines
 warning: large Lean file: formal/GaloisForLFunctions/QECLean/Stabilizer/Codes/Toric/StabilizerCode.lean has 1570 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailFiniteTranslationBounds.lean has 1565 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/ConstraintRelativity/CongruenceOrderExteriorSquare.lean has 1557 lines
@@ -26546,22 +26546,22 @@ warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusPrimeInsertio
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/GammaPoleReciprocalBellGrading.lean has 1520 lines
 warning: large Lean file: formal/GaloisForLFunctions/QuantumAlg/Primitives/QSP/MultiQubit/QSVT/Signal.lean has 1515 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/FramedTwoBoundaryPhaseFibreHistorySeparation.lean has 1515 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualFirstStokesFubini.lean has 1513 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/PolynomialODEEvenCompactBernstein/RawCoefficients.lean has 1512 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/DiscreteSteinhaus.lean has 1511 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionDensityTail.lean has 1510 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/XiPhysicalPrimeLogApertureFusion.lean has 1506 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/MobiusCriticalFisherCountableCommonHardyReporter.lean has 1506 lines
-warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
+warning: large Lean file: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarJetSpatial3ConnectionTable.lean has 1503 lines
 warning: large Lean file: formal/GaloisForLFunctions/RHTower/Sieve/MaynardDyadicBlockSpatialL2.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/Hurwitz/AllNTailIndependence.lean has 1502 lines
 warning: large Lean file: formal/GaloisForLFunctions/HTGeometry/AbelianRepairLeastAction.lean has 1501 lines
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase

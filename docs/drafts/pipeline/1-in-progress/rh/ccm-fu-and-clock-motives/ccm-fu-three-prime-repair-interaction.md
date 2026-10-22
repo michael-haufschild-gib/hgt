@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress; complete third-interaction and late-block source laws are [formalized](../../../3-formalized/ccm-fu-three-prime-late-block-transport.md). General prescribed-prime repair remains open.
 - **Proof chain:** Actual divisor source → renewable signed reserve → exhaustive prime selection → uniform signed Abel bound → RH.
 - **Target:** The complete third energy difference needed when a prescribed first prime is followed by a repair and any further successor.
-- **Parent:** [prescribed-prime repair](../../ccm-fu-forced-prime-repair.md).
+- **Parent:** [prescribed-prime repair](ccm-fu-forced-prime-repair.md).
 
 ## Exact source calculation
 

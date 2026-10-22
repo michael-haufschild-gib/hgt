@@ -133,7 +133,7 @@ would follow immediately. Without that realization HC80 is an exact endpoint, no
 ## Formalization result
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEQNMShaleStinespringObstruction`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEQNMShaleStinespringObstruction`
 
 Lean proves unconditionally:
 
@@ -149,7 +149,7 @@ Audit:
 
 - direct `lake env lean` check: passed;
 - targeted `lake build
-  GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEQNMShaleStinespringObstruction`: passed
+  GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEQNMShaleStinespringObstruction`: passed
   `12019/12019`;
 - `#print axioms` on local classification, off-wall unboundedness, global iff-RH, and RBH bridge:
   only standard `[propext, Classical.choice, Quot.sound]`;

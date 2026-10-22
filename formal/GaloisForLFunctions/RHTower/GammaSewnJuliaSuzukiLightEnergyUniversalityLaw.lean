@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaSourceTransport
-import GaloisForLFunctions.RHTower.SuzukiValuationDepthLightCoercivity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiValuationDepthLightCoercivity
 
 /-!
 # Gamma-sewn Julia defect as the source of Suzuki light-depth mass

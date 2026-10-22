@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerXiGaussianGammaResidue
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiGaussianGammaResidue
 
 /-!
 # Route R local relative anomaly-cancellation no-go

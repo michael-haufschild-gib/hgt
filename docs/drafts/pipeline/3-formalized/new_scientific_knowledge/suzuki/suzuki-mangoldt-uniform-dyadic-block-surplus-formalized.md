@@ -4,7 +4,7 @@
 - **Stage:** 3 -- formalized in Lean 4
 - **Paper proof:** `./suzuki-mangoldt-uniform-dyadic-block-surplus.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.TiltedTentGeometricBracketMinimax`;
-  `GaloisForLFunctions.RHTower.SuzukiMangoldtApexCrossPrimeBlock`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtApexCrossPrimeBlock`
 - **Status:** unconditional
 
 ## Formal theorem map
@@ -70,7 +70,7 @@ suzukiMangoldtAlignedApex_sample_lt_self_of_ne
 ## Audit
 
 - Direct `lake env lean` checks of both modules: passed.
-- Final `lake build GaloisForLFunctions.RHTower.SuzukiMangoldtApexCrossPrimeBlock`: passed.
+- Final `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtApexCrossPrimeBlock`: passed.
 - Repository formal lint gate: passed.
 - Capstone axiom surfaces: only `propext`, `Classical.choice`, `Quot.sound`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in the module.

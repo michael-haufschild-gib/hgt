@@ -117,13 +117,13 @@ No computations supply proof evidence. No RH, positivity, or extinction premise 
 
 ## Verification record
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceProbeRangeClassification.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceProbeRangeClassification.lean`.
 Imported by `formal/GaloisForLFunctions/RHTower.lean`; generated indexes refreshed.
 
 - Scratch `lake env lean /tmp/hb-source-probe.NT73vA/SourceProbeRange.lean`: passed, no warnings.
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceProbeRangeClassification.lean`:
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceProbeRangeClassification.lean`:
   passed, no warnings.
-- `lake --old build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceProbeRangeClassification`:
+- `lake --old build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceProbeRangeClassification`:
   passed; exactly one module compiled, in 23 seconds. Existing dependency artifacts were used.
   The ordinary no-build preflight reports 39 stale transitive targets; `--old` skips transitive
   invalidation. No full/umbrella build or dependency rebuild ran. Cached dependency warnings

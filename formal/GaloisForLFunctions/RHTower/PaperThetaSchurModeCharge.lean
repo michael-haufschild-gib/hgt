@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaSchurQuarticSpectralDecayEquivalence
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSchurQuarticSpectralDecayEquivalence
 
 /-!
 # The native theta quartic charge, retaining every stage and every mode

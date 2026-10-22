@@ -310,11 +310,11 @@ premise is relabeled as the literal source weld.
 
 ## 9. Index of the formalization
 
-Modules: `RHTower/CCMUnitRieszCompletedSourceWeld.lean`,
-`RHTower/CCMUnitRieszVolterraLaplace.lean`,
-`RHTower/CCMUnitRieszStirlingLaplace.lean`,
-`RHTower/CCMUnitRieszCompletedCurrentLaplace.lean`,
-`RHTower/CCMUnitRieszCompletedSourceLaplaceWeld.lean`.  All declarations are unconditional;
+Modules: `RHTower/CCM/CCMUnitRieszCompletedSourceWeld.lean`,
+`RHTower/CCM/CCMUnitRieszVolterraLaplace.lean`,
+`RHTower/CCM/CCMUnitRieszStirlingLaplace.lean`,
+`RHTower/CCM/CCMUnitRieszCompletedCurrentLaplace.lean`,
+`RHTower/CCM/CCMUnitRieszCompletedSourceLaplaceWeld.lean`.  All declarations are unconditional;
 `#print axioms` returns only `propext, Classical.choice, Quot.sound`.
 
 The measure-valued form of `(26)` is formalized without importing Stieltjes--Laplace measure

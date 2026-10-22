@@ -306,7 +306,7 @@ No parity hypothesis is needed.
   the selected even critical state is the full bottom, or must couple its nonreal zero to every odd
   lower-ground vector.  Even-ground common zeros alone cannot do this.
 - **Lean status.** Finite odd core is proved in
-  `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: positive semimetric
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMParityFreeOddGroundFourier.lean`: positive semimetric
   completion, nonnegative full characteristic roots, and real non-pole Fourier-resolvent zeros.
   `CCMCompactFourierMeanSquareZeroTransfer.lean` proves the exact fixed-support `L²` Fourier bound,
   locally uniform convergence, and nonzero-limit real-zero transfer.
@@ -388,8 +388,8 @@ finite-dimensional subspace, and the transfer of the gap statements to it; and
 commuting with an involution is either even or odd, which is the last sentence of section 4.
 
 The literal infinite-dimensional operator these are to be applied to already exists in the corpus:
-`RHTower/CCMRestrictedWeilFriedrichsOperator.lean` builds `ccmRestrictedWeilOperator` with a
-compact resolvent and a ground eigenstate, and `RHTower/CCMRestrictedWeilGroundParity.lean` builds
+`RHTower/CCM/CCMRestrictedWeilFriedrichsOperator.lean` builds `ccmRestrictedWeilOperator` with a
+compact resolvent and a ground eigenstate, and `RHTower/CCM/CCMRestrictedWeilGroundParity.lean` builds
 its reflection and the even/odd splitting of the source quadratic form.  What remains is the
 wiring: choose the symmetric Fourier compressions `E_N`, identify the compressed matrices with the
 published parity packet, and feed the two convergence lemmas into
@@ -400,7 +400,7 @@ published parity packet, and feed the two convergence lemmas into
 Two new axiom-clean modules close the gap between the finite resolvent numerator and the actual
 Fourier transform, and identify the abstract packet data with the literal centered modes.
 
-    RHTower/CCMShannonFourierFactorization.lean
+    RHTower/CCM/CCMShannonFourierFactorization.lean
       ccmModeWindow, ccmTrigPoly, continuous_ccmTrigPoly
       ccmModeWindow_succ, sum_ccmModeWindow_eq      the symmetric window splits into the zero mode
                                                     and the `±(k+1)` pairs
@@ -413,7 +413,7 @@ Fourier transform, and identify the abstract packet data with the literal center
         compactFourier_ccmTrigPoly_zero_im_eq_zero  off the real axis the zeros of the transform are
                                                     exactly the zeros of the first-order resolvent
 
-    RHTower/CCMPublishedOddGroundRealZeros.lean
+    RHTower/CCM/CCMPublishedOddGroundRealZeros.lean
       ccmPublishedParityCrossFrequency_none/_some   the cross-frequency block is inclusion times mode
       ccmPublishedParity_squaredFrequency('),
         ccmPublishedParityEta_none/_some,
@@ -449,7 +449,7 @@ module removes that restriction: it proves the parity-block construction from th
 alone, and then instantiates them for an arbitrary centered divided-difference matrix, which is
 exactly the matrix class of section 1.
 
-    RHTower/CCMGeneralParityOddGroundAdapter.lean
+    RHTower/CCM/CCMGeneralParityOddGroundAdapter.lean
       exists_ccmParityFreeOddGroundData_of_blocks
                                                 only positive semidefiniteness of the two parity
                                                 blocks, the rank-one cross commutator `(PF.1)`, and a

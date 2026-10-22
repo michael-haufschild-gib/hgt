@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMobiusCriticalWKBSeam
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusCriticalWKBSeam
 
 /-!
 # Route E all-order source damping and bounded-reporter firewall

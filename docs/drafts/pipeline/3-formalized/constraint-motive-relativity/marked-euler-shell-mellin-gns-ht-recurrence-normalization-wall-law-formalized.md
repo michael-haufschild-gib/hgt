@@ -33,7 +33,7 @@ re-derived:
 - `RHTower/HighExponentShellHypertranscendence.lean` — §6's HT statement
   `highExponentShellArithmetic_differentialIndependent` and its `ζ`-relative form
   `zetaShellArithmetic_differentialIndependent`;
-- `RHTower/DiagonalEllTwoOperator.lean`, `RHTower/SuzukiDiagonalResolventInstantiation.lean` —
+- `RHTower/DiagonalEllTwoOperator.lean`, `RHTower/Suzuki/SuzukiDiagonalResolventInstantiation.lean` —
   `diagonalOperator` and `isCompactOperator_diagonalOperator`;
 - `ConstraintMotiveRelativity/PortRecurrenceJets.lean` — `portOrbit`,
   `isCompact_closure_range_portOrbit`, `portOrbit_recurrent`.

@@ -63,7 +63,7 @@ Spiers--Pound--Moxon, arXiv:2305.19332; Spiers, arXiv:2402.00604.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicHermitianSourceOrientationNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicHermitianSourceOrientationNoGo.lean`
 - Literal source weight:
   `d4BMXiSecondHarmonicHermitianSourceWeight`
 - Compatibility classifier:

@@ -58,11 +58,111 @@ private def higherPositiveWeightMeasure {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Ω → ℝ) : Measure Ω :=
   μ.withDensity (fun z => ENNReal.ofReal (max (f z) 0))
 
+private theorem higherPositiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
+    (hi : Integrable (fun z => f z*Real.exp (t*X z)) μ) :
+    Integrable (fun z => Real.exp (t*X z)) (higherPositiveWeightMeasure μ f) := by
+  rw [higherPositiveWeightMeasure, integrable_withDensity_iff_integrable_smul'
+    (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
+  simp only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul]
+  apply hi.norm.mono' (by fun_prop)
+  filter_upwards with z
+  rw [norm_mul, norm_mul, Real.norm_of_nonneg (le_max_right _ _),
+    Real.norm_of_nonneg (Real.exp_pos _).le]
+  apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
+  exact max_le (le_abs_self _) (abs_nonneg _)
 
+private theorem higherPositiveWeight_integral {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (t : ℝ) :
+    mgf X (higherPositiveWeightMeasure μ f) t = ∫ z, max (f z) 0*Real.exp (t*X z) ∂μ := by
+  rw [mgf, higherPositiveWeightMeasure, integral_withDensity_eq_integral_toReal_smul
+    (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
+  simp only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul]
+
+private theorem higher_signed_exp_analyticAt {Ω : Type*} [MeasurableSpace Ω]
+    (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
+    (hi : ∀ᶠ s in 𝓝 t, Integrable (fun z => f z*Real.exp (s*X z)) μ) :
+    AnalyticAt ℝ (fun s => ∫ z, f z*Real.exp (s*X z) ∂μ) t := by
+  have hn : ∀ᶠ s in 𝓝 t, Integrable (fun z => (-f z)*Real.exp (s*X z)) μ := by
+    filter_upwards [hi] with s hs
+    convert! hs.neg using 1
+    ext z
+    dsimp
+    ring
+  have hp : t ∈ interior (integrableExpSet X (higherPositiveWeightMeasure μ f)) := by
+    apply mem_interior_iff_mem_nhds.mpr
+    filter_upwards [hi] with s hs
+    exact higherPositiveWeight_integrable μ f X hf hX s hs
+  have hm : t ∈ interior (integrableExpSet X (higherPositiveWeightMeasure μ (fun z => -f z))) := by
+    apply mem_interior_iff_mem_nhds.mpr
+    filter_upwards [hn] with s hs
+    exact higherPositiveWeight_integrable μ (fun z => -f z) X hf.neg hX s hs
+  apply ((analyticAt_mgf hp).sub (analyticAt_mgf hm)).congr
+  filter_upwards [hi, hn] with s hs ht
+  simp only [Pi.sub_apply]
+  rw [higherPositiveWeight_integral μ f X hf, higherPositiveWeight_integral μ (fun z => -f z) X hf.neg]
+  have hip : Integrable (fun z => max (f z) 0*Real.exp (s*X z)) μ := by
+    have h := higherPositiveWeight_integrable μ f X hf hX s hs
+    rw [higherPositiveWeightMeasure, integrable_withDensity_iff_integrable_smul'
+      (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)] at h
+    simpa only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul] using h
+  have him : Integrable (fun z => max (-f z) 0*Real.exp (s*X z)) μ := by
+    have h := higherPositiveWeight_integrable μ (fun z => -f z) X hf.neg hX s ht
+    rw [higherPositiveWeightMeasure, integrable_withDensity_iff_integrable_smul'
+      (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)] at h
+    simpa only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul] using h
+  rw [← integral_sub hip him]
+  apply integral_congr_ae
+  filter_upwards with z
+  by_cases hz : 0 ≤ f z
+  · rw [max_eq_left hz, max_eq_right (neg_nonpos.mpr hz)]
+    ring
+  · have hz' := le_of_not_ge hz
+    rw [max_eq_right hz', max_eq_left (neg_nonneg.mpr hz')]
+    ring
 
 private theorem exterior_admission (α β : ℝ) (hs : α+β < -2) :
-    IntegrableOn (fzzScreeningPlaneKernel α β) fzzScreeningPlaneExterior :=
-  exterior_integrable α β hs
+    IntegrableOn (fzzScreeningPlaneKernel α β) fzzScreeningPlaneExterior := by
+  have h := fzzScreeningPlaneExterior_integrable α (Real.log (-2-α-β))
+  rw [Real.exp_log (by linarith : 0 < -2-α-β)] at h
+  simpa only [show -2-α-(-2-α-β) = β by ring] using h
+
+private theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
+    fzzScreeningPlaneKernel α β z*Real.exp (δ*Real.log ‖z‖) =
+      fzzScreeningPlaneKernel (α+δ) β z := by
+  have hn := norm_pos_iff.mpr hz
+  rw [show Real.exp (δ*Real.log ‖z‖) = ‖z‖^δ by rw [Real.rpow_def_of_pos hn, mul_comm]]
+  unfold fzzScreeningPlaneKernel
+  rw [Real.rpow_add hn]
+  ring
+
+private theorem exterior_shift_analytic (α β : ℝ) (hs : α+β < -2) :
+    AnalyticAt ℝ (fun δ => ∫ z : ℂ in fzzScreeningPlaneExterior,
+      fzzScreeningPlaneKernel (α+δ) β z) 0 := by
+  have hshift : ∀ᶠ δ : ℝ in 𝓝 0, (α+δ)+β < -2 := by
+    exact (isOpen_lt (by fun_prop) continuous_const).mem_nhds (by simpa using hs)
+  have hi : ∀ᶠ δ : ℝ in 𝓝 0, Integrable
+      (fun z => fzzScreeningPlaneKernel α β z*Real.exp (δ*Real.log ‖z‖))
+        (volume.restrict fzzScreeningPlaneExterior) := by
+    filter_upwards [hshift] with δ hδ
+    apply (exterior_admission (α+δ) β hδ).congr
+    filter_upwards [ae_restrict_of_ae (volume.ae_ne (0 : ℂ))] with z hz
+    exact (plane_kernel_shift α β δ hz).symm
+  have han := higher_signed_exp_analyticAt (volume.restrict fzzScreeningPlaneExterior)
+    (fzzScreeningPlaneKernel α β) (fun z => Real.log ‖z‖)
+    (by unfold fzzScreeningPlaneKernel; fun_prop) (by fun_prop) 0 hi
+  apply han.congr
+  filter_upwards with δ
+  apply integral_congr_ae
+  filter_upwards [ae_restrict_of_ae (volume.ae_ne (0 : ℂ))] with z hz
+  exact plane_kernel_shift α β δ hz
+
+private theorem exterior_analytic (α β : ℝ) (hs : α+β < -2) :
+    AnalyticAt ℝ (fun s => ∫ z : ℂ in fzzScreeningPlaneExterior,
+      fzzScreeningPlaneKernel s β z) α := by
+  have h := (exterior_shift_analytic α β hs).comp_sub α
+  have he (s : ℝ) : α+(s-α) = s := by ring
+  simpa only [zero_add, he] using h
 
 private theorem exterior_reflection (α β : ℝ) :
     (∫ z : ℂ in fzzScreeningPlaneExterior, fzzScreeningPlaneKernel α β z) =
@@ -106,7 +206,7 @@ private theorem half_power_analytic (α c : ℝ) :
   have h : AnalyticAt ℝ (fun s : ℝ => Real.exp (Real.log (1/2)*(s+c))) α := by fun_prop
   simpa only [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 1/2)] using h
 
-theorem higher_radial_analytic (α : ℝ) (ha : -8 < α) (k : ℕ) :
+private theorem higher_radial_analytic (α : ℝ) (ha : -8 < α) (k : ℕ) :
     AnalyticAt ℝ (fun s => fzzScreeningHigherClearedRadial s k) α := by
   rcases k with _ | (_ | (_ | n))
   · exact (show AnalyticAt ℝ (fun s : ℝ => (s+4)*(s+6)) α by fun_prop).mul
@@ -123,7 +223,7 @@ theorem higher_radial_analytic (α : ℝ) (ha : -8 < α) (k : ℕ) :
       linarith
     exact ((higher_factor_analytic α).mul hp).div (by fun_prop) hd
 
-theorem higher_counterterm_analytic_left (α β : ℝ) (ha : -8 < α) :
+private theorem higher_counterterm_analytic_left (α β : ℝ) (ha : -8 < α) :
     AnalyticAt ℝ (fun s => fzzScreeningHigherClearedCounterterm s β) α := by
   apply analyticAt_const.mul
   apply Finset.analyticAt_fun_sum
@@ -214,6 +314,23 @@ private theorem original_local_reflection (α β : ℝ) :
   rw [hp] at h
   simpa only [fzzScreeningPlaneKernel_reflection] using h
 
+private theorem original_plane_gamma (α β : ℝ) (ha : -2 < α) (hb : -2 < β)
+    (hs : α+β < -2) : Integrable (fzzScreeningPlaneKernel α β) ∧
+      (∫ z : ℂ, fzzScreeningPlaneKernel α β z) = fzzScreeningPlaneContinuedGamma α β := by
+  obtain ⟨x,y,hx,hy⟩ := (fzzScreeningBeta_chart_iff (-α/2) (-β/2)).mpr
+    ⟨by linarith, by linarith, by linarith, by linarith, by linarith⟩
+  have hpa : -2*(-α/2) = α := by ring
+  have hpb : -2*(-β/2) = β := by ring
+  constructor
+  · unfold fzzScreeningPlaneKernel
+    simpa only [hx,hy,hpa,hpb] using fzzScreeningBetaKernel_integrable x y
+  · have h := fzzScreeningBetaIntegral_eq_gamma x y
+    unfold fzzScreeningBetaIntegral at h
+    rw [hx,hy,hpa,hpb,
+      show -α/2 + -β/2 - 1 = -α/2-β/2-1 by ring,
+      show 1- -α/2 = 1+α/2 by ring, show 1- -β/2 = 1+β/2 by ring,
+      show 2- -α/2- -β/2 = 2+α/2+β/2 by ring] at h
+    exact h
 
 private theorem higher_original_integral (α β : ℝ) (ha : -2 < α) (hb : -2 < β)
     (hs : α+β < -2) : fzzScreeningHigherClearedSource α β =

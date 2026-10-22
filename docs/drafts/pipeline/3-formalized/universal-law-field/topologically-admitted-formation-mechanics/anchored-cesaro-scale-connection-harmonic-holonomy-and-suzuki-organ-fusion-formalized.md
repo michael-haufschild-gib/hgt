@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / LITERAL MULTI-ORGAN FORMATION LAW
 - **Paper source:** `anchored-cesaro-scale-connection-harmonic-holonomy-and-suzuki-organ-fusion.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.AnchoredCesaroScaleConnection`;
-  `GaloisForLFunctions.RHTower.SuzukiAnchoredCesaroScaleConnection`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiAnchoredCesaroScaleConnection`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [BRIDGE] [NOT RH]`
 
 ## Certified generic mechanism
@@ -53,7 +53,7 @@ exact terminal-correction field. It proves:
 - Direct foreground elaboration passed for both modules.
 - Targeted leaf build only:
   - `GaloisForLFunctions.HTGeometry.AnchoredCesaroScaleConnection`: `3028/3028`
-  - `GaloisForLFunctions.RHTower.SuzukiAnchoredCesaroScaleConnection`: `14113/14113`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiAnchoredCesaroScaleConnection`: `14113/14113`
     (large inherited dependency replay from concurrent corpus/cache changes)
 - Umbrella wiring:
   - both modules imported by `HTGeometry.UniversalLawField`

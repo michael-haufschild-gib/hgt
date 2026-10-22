@@ -11,12 +11,12 @@
 - `formal/GaloisForLFunctions/HTGeometry/LinearPartialFractions.lean`
 - `formal/GaloisForLFunctions/HTGeometry/MonotoneLikelihoodRatio.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PoissonBoundaryPositivity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCrossResolventInstantiation.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiHalfPlaneHerglotz.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiMeasureAntiPick.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAntiPickIdentity.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCrossResolventInstantiation.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHalfPlaneHerglotz.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMeasureAntiPick.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftSpectralMonotoneRatio.lean`
 
 ## Formal theorem surface
 
@@ -104,7 +104,7 @@ GaloisForLFunctions.HTGeometry.tendsto_dilate
 GaloisForLFunctions.HTGeometry.unitPoissonTest
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiAntiPickIdentity`:
 
 ```text
 RHTower.aeval_cauchyClearedPoly
@@ -159,7 +159,7 @@ RHTower.tendsto_cauchyTerm_atTop
 RHTower.tendsto_residue_of_simple_zero
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiCrossResolventInstantiation`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCrossResolventInstantiation`:
 
 ```text
 RHTower.crossResponse
@@ -175,14 +175,14 @@ RHTower.spectralOperator_spectralResolvent
 RHTower.spectralResolvent
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiDonoghueHerglotzTransform`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiDonoghueHerglotzTransform`:
 
 ```text
 GaloisForLFunctions.RHTower.herglotzOfCayley
 GaloisForLFunctions.RHTower.im_herglotzOfCayley_pos
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiHalfPlaneHerglotz`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiHalfPlaneHerglotz`:
 
 ```text
 GaloisForLFunctions.RHTower.analyticAt_herglotzOfCayley
@@ -192,7 +192,7 @@ GaloisForLFunctions.RHTower.exists_poissonRepresentation_upperHalfPlane
 GaloisForLFunctions.RHTower.harmonicOnNhd_neg_im_comp
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiMeasureAntiPick`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiMeasureAntiPick`:
 
 ```text
 RHTower.cauchyKernel_cross_eq
@@ -202,7 +202,7 @@ RHTower.integral_cauchyKernel_crossWronskian_le
 RHTower.monotoneLikelihood_cauchyKernel
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiShiftSpectralMonotoneRatio`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftSpectralMonotoneRatio`:
 
 ```text
 RHTower.deriv_suzukiShiftRatio_nonpos

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailMomentLogConvex
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedThreePoint
 
 /-!
 # Full theta moment growth obstructs the literal odd source Gram representation

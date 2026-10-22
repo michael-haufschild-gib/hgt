@@ -40,8 +40,10 @@ both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
    tasked with changing the search tool. Use available partial results; broaden or rephrase unhelpful queries.
    Start services with `../launch.sh`; use `../launch.sh --restart` or `../launch.sh --stop`
    to restart or stop them. New, edited and deleted Lean sources are indexed automatically.
-   Default hybrid search includes statements and proof methods; `--mode deep` adds
-   iterative discovery. Default request budget: 300 seconds; override with `--budget-seconds`.
+   Search covers declaration names, docstrings, statements and proof bodies, lexically and
+   semantically, and defaults to this project; `--scope mathlib` or `--scope all` reaches
+   installed Mathlib, which is lexical only. Describe the goal in words -- docstrings and
+   statements are embedded. Default request budget: 300 seconds; override with `--budget-seconds`.
    Spaces mean AND; `--any` means OR. See "How Search Works Here" in `README.md`.
 4. Use `rg` for exact syntax or for proof-body text the index does not cover:
    `rg "<name-or-concept>" GaloisForLFunctions`

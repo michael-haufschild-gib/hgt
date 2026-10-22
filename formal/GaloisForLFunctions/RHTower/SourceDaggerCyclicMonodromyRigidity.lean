@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerOneSidedFramedMateCurvatureTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerOneSidedFramedMateCurvatureTransgression
 import GaloisForLFunctions.RHTower.XiSourceModularTypeSuperselectionLaw
 
 /-!

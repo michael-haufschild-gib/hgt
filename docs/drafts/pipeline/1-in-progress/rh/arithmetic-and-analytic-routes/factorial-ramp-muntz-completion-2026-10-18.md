@@ -173,7 +173,7 @@ RW received no new extension during the RB cycle. The Tail/Readout audit remains
 
 - `GaloisForLFunctions.RHTower.SelbergNativeConstantMode`
 - `GaloisForLFunctions.RHTower.SmoothAFEZetaDisplacedReflectedCombinedMeanSquare`
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPositiveRows`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCuspPositiveRows`
 - `GaloisForLFunctions.RHTower.WeilPaperPacketRepair`
 - `GaloisForLFunctions.RHTower.XiGaussianHeatHankelLargeTimeDetection`
 

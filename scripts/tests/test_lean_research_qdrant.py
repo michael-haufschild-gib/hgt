@@ -9,7 +9,9 @@ from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import Corpus
 from lean_research_vectors import Vectors
-from lean_research_qdrant import Qdrant, sync, reconcile
+from lean_search_index import module_matches
+from lean_research_qdrant import (MODULE_FILTER_VALUES, Qdrant, hydrate, module_filter,
+                                  prune_collections, reconcile, sync)
 
 class QdrantRequestTests(unittest.TestCase):
  def test_timeout_is_not_reported_as_server_unavailable(self):
@@ -21,6 +23,74 @@ class QdrantRequestTests(unittest.TestCase):
      factory.return_value.getresponse.side_effect=failure
      with self.assertRaisesRegex(expected,message):q.request('GET','/collections',deadline=time.monotonic()+3)
      factory.return_value.close.assert_called_once()
+
+class FilterTests(unittest.TestCase):
+    """Filter construction and hydration, with no server involved."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name); (self.root/'formal').mkdir()
+        for name in ('RHTower', 'HTGeometry', 'MathlibFork'):
+            (self.root/'formal'/f'{name}.lean').write_text(f'theorem t{name.lower()} : True := trivial')
+        self.c = Corpus(self.root/'cache'); self.addCleanup(self.c.close); self.c.refresh(self.root)
+
+    def test_narrow_inclusion_is_enumerated_exactly(self):
+        must, must_not, exhaustive = module_filter(self.c, 'RHTower', ())
+        self.assertEqual(must, [dict(key='module', match=dict(any=['RHTower']))])
+        self.assertEqual(must_not, [])
+        self.assertTrue(exhaustive)
+
+    def test_unmatched_inclusion_short_circuits(self):
+        must, must_not, exhaustive = module_filter(self.c, 'NoSuchModule', ())
+        self.assertIsNone(must)
+
+    def test_broad_inclusion_is_not_enumerated_into_the_request(self):
+        """A broad inclusion defers to the post-filter instead of enumerating."""
+        class ManyModules:
+            con = type('Con', (), {'execute': staticmethod(
+                lambda *a, **k: [(f'Module{i}',) for i in range(MODULE_FILTER_VALUES + 1)])})()
+        must, must_not, exhaustive = module_filter(ManyModules(), 'Module', ())
+        self.assertEqual(must, [])
+        self.assertFalse(exhaustive, 'a broad inclusion defers to the exact post-filter')
+
+    def test_exclusion_is_one_constant_size_token_clause(self):
+        must, must_not, exhaustive = module_filter(self.c, '', ['Mathlib'])
+        self.assertEqual(must_not, [dict(key='module_tokens', match=dict(text='Mathlib'))])
+        # Token matching is a SUBSET of substring matching, so it may only
+        # under-exclude. MathlibFork must survive the server clause and be
+        # removed by the exact post-filter instead of being dropped silently.
+        self.assertTrue(module_matches('MathlibFork', '', []))
+        self.assertFalse(module_matches('MathlibFork', '', ['Mathlib']))
+
+    def test_hydration_resolves_a_page_in_batched_queries(self):
+        docs = [dict(r) for r in self.c.con.execute("SELECT * FROM documents WHERE view='statement'")]
+        self.assertTrue(docs)
+        Vectors(self.c).publish(docs, [[1., 0.]] * len(docs), 'm1')
+        hits = [dict(id=d['id'], score=1.0, payload=dict(content_hash=d['content_hash'],
+                     module=d['module'], view=d['view'])) for d in docs]
+        queries = []
+        class Counting:
+            directory = self.c.directory
+            def __init__(inner, con):
+                inner._con = con
+            @property
+            def con(inner):
+                return inner
+            def execute(inner, sql, *args):
+                queries.append(sql)
+                return inner._con.execute(sql, *args)
+        rows = hydrate(Counting(self.c.con), hits, 'm1', ('statement',), '', ())
+        self.assertEqual(len(queries), 1, f'one query per page, not one per hit: {len(queries)}')
+        self.assertEqual({r['id'] for r in rows}, {d['id'] for d in docs})
+        # A payload that disagrees with the database is never served.
+        stale = [dict(hits[0], payload=dict(hits[0]['payload'], content_hash='0' * 64))]
+        self.assertEqual(hydrate(self.c, stale, 'm1', ('statement',), '', ()), [])
+
+    def test_prune_refuses_when_the_database_names_no_model(self):
+        report = prune_collections(self.c)
+        self.assertIn('refused', report)
+        self.assertEqual(report['dropped'], [])
+
 
 @unittest.skipUnless(os.environ.get('HGT_TEST_QDRANT')=='1','requires local Qdrant integration opt-in')
 class QdrantTests(unittest.TestCase):
@@ -83,11 +153,17 @@ class QdrantTests(unittest.TestCase):
  def test_coverage_uses_receipts_and_invalidates_them_at_source_change(self):
   import sqlite3
   self.v.publish(self.docs,[[1.,0.],[0.,1.]],'m1');self.flush()
+  self.assertEqual(self.v.measure_coverage('m1')['ready'],2)
+  # A search reads the persisted measurement only. Both counts it replaces are
+  # million-row scans on the production corpus, so the search path must not
+  # touch `documents` or `qdrant_points` at all.
   self.c.con.set_authorizer(lambda action,table,column,*_:sqlite3.SQLITE_DENY
-   if action==sqlite3.SQLITE_READ and table=='documents' and column not in ('view','') else sqlite3.SQLITE_OK)
-  try:self.assertEqual(self.v.coverage('m1')['ready'],2)
+   if action==sqlite3.SQLITE_READ and table in ('documents','qdrant_points') else sqlite3.SQLITE_OK)
+  try:
+   snapshot=self.v.coverage('m1')
+   self.assertEqual((snapshot['ready'],snapshot['status']),(2,'snapshot'))
   finally:self.c.con.set_authorizer(None)
   (self.root/'formal/A.lean').unlink();self.c.refresh(self.root)
-  self.assertEqual(self.v.coverage('m1')['ready'],1)
+  self.assertEqual(self.v.measure_coverage('m1')['ready'],1)
 
 if __name__=='__main__':unittest.main()

@@ -4,7 +4,7 @@
 - **Paper theorem:**
   `../../2-fully-proven/new_scientific_knowledge/other/ccm-critical-mellin-aperture-resolvent-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinApertureResolvent.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinApertureResolvent.lean`
 - **Umbrella imports:** `formal/GaloisForLFunctions/RHTower.lean` and
   `formal/GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean`
 - **RH used:** no
@@ -39,8 +39,8 @@ one-sided Riesz bound, Weil positivity, or RH.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMCriticalMellinApertureResolvent.lean`: passes.
-- `lake build GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent`: passes,
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinApertureResolvent.lean`: passes.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinApertureResolvent`: passes,
   3553/3553 jobs.
 - `lake build GaloisForLFunctions.RHTower`: passes.
 - Combined `#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound`.

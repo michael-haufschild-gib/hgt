@@ -138,7 +138,7 @@ uses neither RH nor QNM completeness. This proves all four frozen claims.
   damping already forces total extinction. Remaining full-source PDE burden is now a peripheral
   or singular spectral-incidence problem, not an infinite damped-threshold summation problem.
 - **Status:** Internal/external audit complete; paper proof and Lean proof dependency-closed in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEArbitraryCausalSpectrumNoCancellation`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEArbitraryCausalSpectrumNoCancellation`.
   Direct `lake env lean` and targeted `lake build` pass. Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`, including for the premise-free wrapper. Module is wired into `RHTower.lean`. Global lint reports
   unrelated pre-existing shared-tree reachability errors and does not report the new module.

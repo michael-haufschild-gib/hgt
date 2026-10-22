@@ -180,7 +180,7 @@ External priority remains unverified.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/SuzukiResolventJetHomogeneousPluckerTomography.lean` proves
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResolventJetHomogeneousPluckerTomography.lean` proves
 zero-constant arbitrary resolvent interpolation, cyclic source recovery of every finite target,
 one-mode blindness, exact two-mode pair isolation, disappearance of homogeneous coordinate under
 polarization, and spectral-resolvent specialization.  Direct check and targeted SOTA build pass;
@@ -230,7 +230,7 @@ chord sees, not a gap in this card's theorem; it is carried by
   affine gauge audit restricts Plücker tomography to alternating sector of marked tensor.
 
 ### Lean progress — exterior-basis dimension argument FORMALIZED
-`RHTower/SuzukiHomogeneousBladeDimension.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+`RHTower/Suzuki/SuzukiHomogeneousBladeDimension.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
 Quot.sound], builds clean (my-cone lint clean; unrelated parallel-agent RHTower unreachable + large-file
 warnings only). Registered in the RHTower umbrella.
 - `suzukiHomogeneousBlade_finrank` : `Module.finrank ℝ (⋀²(Fin (n+1) → ℝ)) = n + Nat.choose n 2` — the

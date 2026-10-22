@@ -1,0 +1,132 @@
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiOnePrimePolarSource
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiOnePrimeRoughPrimitiveFourierIdentification
+import GaloisForLFunctions.RHTower.L2WeakDerivativeContinuousLinearMap
+
+/-!
+# Literal two-endpoint Suzuki polar source in the terminal state
+
+The right chart `(a,-1)` and left chart `(-a,1)` are embedded in the two terminal coordinates.
+Their exact scalar weak-derivative identities assemble functorially into the literal terminal
+source required by the one-prime Fourier/Hardy transport.
+-/
+
+open Set MeasureTheory
+open scoped ENNReal SchwartzMap LineDeriv
+
+noncomputable section
+
+namespace RHTower
+
+/-- Scalar `L²` representative of a smoothly activated endpoint-centered polar primitive. -/
+def suzukiOnsetCenteredPolarPrimitiveL2
+    (a : ℝ) (u : ℝ → ℝ) (x₀ ε : ℝ)
+    (ha : 0 ≤ a) (hx₀ : |x₀| ≤ a) (hε : |ε| ≤ 1)
+    (hu : IntervalIntegrable u volume (-a) a) :
+    Lp ℂ 2 (volume : Measure ℝ) :=
+  realToComplexL2 (suzukiOnsetCenteredPolarPrimitive a u x₀ ε)
+    (memLp_suzukiOnsetCenteredPolarPrimitive ha hx₀ hε hu)
+
+/-- Scalar `L²` representative of the derivative of the activated polar primitive. -/
+def suzukiOnsetCenteredPolarSourceL2
+    (a : ℝ) (u : ℝ → ℝ) (x₀ ε : ℝ)
+    (ha : 0 ≤ a) (hx₀ : |x₀| ≤ a) (hε : |ε| ≤ 1)
+    (hu : IntervalIntegrable u volume (-a) a) :
+    Lp ℂ 2 (volume : Measure ℝ) :=
+  realToComplexL2 (deriv (suzukiOnsetCenteredPolarPrimitive a u x₀ ε))
+    (memLp_deriv_suzukiOnsetCenteredPolarPrimitive ha hx₀ hε hu)
+
+theorem suzukiOnsetCenteredPolarPrimitiveL2_weakDerivative
+    (a : ℝ) (u : ℝ → ℝ) (x₀ ε : ℝ)
+    (ha : 0 ≤ a) (hx₀ : |x₀| ≤ a) (hε : |ε| ≤ 1)
+    (hu : IntervalIntegrable u volume (-a) a) :
+    ∂_{(1 : ℝ)}
+        (suzukiOnsetCenteredPolarPrimitiveL2 a u x₀ ε ha hx₀ hε hu : 𝓢'(ℝ, ℂ)) =
+      (suzukiOnsetCenteredPolarSourceL2 a u x₀ ε ha hx₀ hε hu : 𝓢'(ℝ, ℂ)) := by
+  simpa [suzukiOnsetCenteredPolarPrimitiveL2, suzukiOnsetCenteredPolarSourceL2] using
+    suzukiOnsetCenteredPolarPrimitive_weakDerivative ha hx₀ hε hu
+
+/-- Isometric embedding of one scalar source into terminal coordinate `i`. -/
+def onePrimeTerminalCoordinateCLM (i : Fin 2) :
+    ℂ →L[ℂ] OnePrimeTerminalState :=
+  ContinuousLinearMap.toSpanSingleton ℂ (EuclideanSpace.basisFun (Fin 2) ℂ i)
+
+/-- Literal two-coordinate primitive: right polar chart in coordinate zero, left chart in one. -/
+def suzukiOnePrimePolarTerminalPrimitive
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) : OnePrimeTerminalSourceL2 :=
+  (onePrimeTerminalCoordinateCLM 0).compLp
+      (suzukiOnsetCenteredPolarPrimitiveL2 a u a (-1) ha
+        (by simp [abs_of_nonneg ha]) (by norm_num) hu) +
+    (onePrimeTerminalCoordinateCLM 1).compLp
+      (suzukiOnsetCenteredPolarPrimitiveL2 a u (-a) 1 ha
+        (by simp [abs_of_nonneg ha]) (by norm_num) hu)
+
+/-- Literal two-coordinate derivative source of the terminal polar primitive. -/
+def suzukiOnePrimePolarTerminalSource
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) : OnePrimeTerminalSourceL2 :=
+  (onePrimeTerminalCoordinateCLM 0).compLp
+      (suzukiOnsetCenteredPolarSourceL2 a u a (-1) ha
+        (by simp [abs_of_nonneg ha]) (by norm_num) hu) +
+    (onePrimeTerminalCoordinateCLM 1).compLp
+      (suzukiOnsetCenteredPolarSourceL2 a u (-a) 1 ha
+        (by simp [abs_of_nonneg ha]) (by norm_num) hu)
+
+/-- Exact terminal weak derivative for Suzuki's two physical endpoint charts. -/
+theorem suzukiOnePrimePolarTerminalPrimitive_weakDerivative
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) :
+    ∂_{(1 : ℝ)}
+        (suzukiOnePrimePolarTerminalPrimitive a u ha hu :
+          𝓢'(ℝ, OnePrimeTerminalState)) =
+      (suzukiOnePrimePolarTerminalSource a u ha hu :
+        𝓢'(ℝ, OnePrimeTerminalState)) := by
+  have hright := suzukiOnsetCenteredPolarPrimitiveL2_weakDerivative
+    a u a (-1) ha (by simp [abs_of_nonneg ha]) (by norm_num) hu
+  have hleft := suzukiOnsetCenteredPolarPrimitiveL2_weakDerivative
+    a u (-a) 1 ha (by simp [abs_of_nonneg ha]) (by norm_num) hu
+  apply l2_weakDerivative_add
+  · exact l2_weakDerivative_compLp (onePrimeTerminalCoordinateCLM 0) _ _ hright
+  · exact l2_weakDerivative_compLp (onePrimeTerminalCoordinateCLM 1) _ _ hleft
+
+/-- The canonical rough-primitive quotient is the Fourier transform of the literal physical
+terminal polar primitive, with no abstract weak-source assumption. -/
+theorem suzukiOnePrimePolarTerminalForcing_eq_primitiveFourier_ae
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) :
+    onePrimeTerminalRoughPrimitiveForcing
+        (suzukiOnePrimePolarTerminalSource a u ha hu) =ᵐ[volume]
+      onePrimeTerminalSourceFourier
+        (suzukiOnePrimePolarTerminalPrimitive a u ha hu) := by
+  exact onePrimeTerminalRoughPrimitiveForcing_eq_sourceFourier_ae _ _
+    (suzukiOnePrimePolarTerminalPrimitive_weakDerivative a u ha hu)
+
+/-- Positive terminal Hardy admission generated by Suzuki's literal two-endpoint polar source. -/
+theorem lintegral_enorm_sq_suzukiOnePrimePolarTerminalFourier_forcedStripRay_pos_lt_top
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) (c : OnePrimeTerminalState) :
+    ∫⁻ x in Set.Ioi (1 : ℝ),
+      ‖GaloisForLFunctions.RHTower.forcedStripRay suzukiGammaRatioSqrtBranch
+        onePrimeTerminalAdjacencyCLM c
+          (onePrimeTerminalSourceFourier
+            (suzukiOnePrimePolarTerminalPrimitive a u ha hu))
+          (3 / 4 : ℝ) 1 x‖ₑ ^ 2 < ⊤ := by
+  exact lintegral_enorm_sq_onePrimeTerminalSourceFourier_forcedStripRay_pos_lt_top
+    _ _ (suzukiOnePrimePolarTerminalPrimitive_weakDerivative a u ha hu) c
+
+/-- Negative terminal Hardy admission generated by Suzuki's literal two-endpoint polar source. -/
+theorem lintegral_enorm_sq_suzukiOnePrimePolarTerminalFourier_forcedStripRay_neg_lt_top
+    (a : ℝ) (u : ℝ → ℝ) (ha : 0 ≤ a)
+    (hu : IntervalIntegrable u volume (-a) a) (c : OnePrimeTerminalState) :
+    ∫⁻ x in Set.Ioi (1 : ℝ),
+      ‖GaloisForLFunctions.RHTower.forcedStripRay suzukiGammaRatioSqrtBranch
+        onePrimeTerminalAdjacencyCLM c
+          (onePrimeTerminalSourceFourier
+            (suzukiOnePrimePolarTerminalPrimitive a u ha hu))
+          (3 / 4 : ℝ) (-1) x‖ₑ ^ 2 < ⊤ := by
+  exact lintegral_enorm_sq_onePrimeTerminalSourceFourier_forcedStripRay_neg_lt_top
+    _ _ (suzukiOnePrimePolarTerminalPrimitive_weakDerivative a u ha hu) c
+
+end RHTower
+
+end

@@ -174,6 +174,6 @@ which unconditionally proves correlation-angle subadditivity there.
 ## Formal target
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspAtomLikelihoodCrossDomination`, including the half-factor
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspAtomLikelihoodCrossDomination`, including the half-factor
 law, atom algebra inequality, likelihood mean-value bounds, strict cross domination, completed
 same-half-line Riccati margin, and unconditional same-half-line angle law.

@@ -121,7 +121,7 @@ closed parts.
   boundary repair. The smallest surviving source correction has three interaction channels and is
   forced by the four intermediate Casimir eigenvalues.
 - **Status:** Formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinMixedCasimirPoleFillLanding`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinMixedCasimirPoleFillLanding`.
   Targeted module build passes. Axiom audit reports only `propext`, `Classical.choice`, and
   `Quot.sound`. Umbrella import is wired. Global lint's remaining unreachable-module errors name
   unrelated concurrent modules; this module is not among them.

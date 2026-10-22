@@ -91,7 +91,7 @@ Once these hold, the expected top cohomology and its generator are consequences.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticEndpointPurity.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticEndpointPurity.lean`
 
 - `deningerTheta2_eq_id_of_theta0_eq_zero_of_endpointPairing` — equation `(2)`: a vanishing
   bottom generator and a separating weight-one endpoint pairing force `Θ₂ = 1`.

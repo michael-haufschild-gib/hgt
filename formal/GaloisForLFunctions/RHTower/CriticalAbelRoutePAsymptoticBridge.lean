@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CriticalAbelSourceRealIntegral
-import GaloisForLFunctions.RHTower.CCMUnitRieszResolventRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszResolventRHCriterion
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourceFixedAmplitudeOscillation
 
 /-!

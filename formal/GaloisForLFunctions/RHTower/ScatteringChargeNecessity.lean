@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiRootRetainedJumpSource
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRootRetainedJumpSource
 
 /-!
 # A non-square-integrable term is not repaired by a square-integrable one

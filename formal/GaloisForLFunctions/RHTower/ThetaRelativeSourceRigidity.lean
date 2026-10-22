@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaZeroDivisionSource
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 import GaloisForLFunctions.RHTower.XiZeroCountJensenBound
 import GaloisForLFunctions.RHTower.XiLogDerivFactorization
 import GaloisForLFunctions.RHTower.XiEntireReal

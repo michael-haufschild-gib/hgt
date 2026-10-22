@@ -79,7 +79,7 @@ receiver isolated by C21.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePProjectiveDualityAdjunctionFracture.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePProjectiveDualityAdjunctionFracture.lean`
 
 Headline declarations:
 

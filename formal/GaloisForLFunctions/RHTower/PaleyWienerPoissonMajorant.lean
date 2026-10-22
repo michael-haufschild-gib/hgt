@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ZetaCriticalLineJensenInequality
-import GaloisForLFunctions.RHTower.SuzukiScrewWeilIdentity
-import GaloisForLFunctions.RHTower.CCMEvenGroundXiStripConvergenceRH
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewWeilIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMEvenGroundXiStripConvergenceRH
 
 /-!
 # The Poisson majorant of a Paley–Wiener transform

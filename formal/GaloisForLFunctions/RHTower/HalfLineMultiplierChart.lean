@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.InvariantMultiplierChart
-import GaloisForLFunctions.RHTower.CCMActualHeadQuantileGammaChiSquareProducer
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundFrequencyLocalization
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadQuantileGammaChiSquareProducer
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGroundFrequencyLocalization
 
 /-!
 # The half-line Paley--Wiener realization of the Euler multiplier chart

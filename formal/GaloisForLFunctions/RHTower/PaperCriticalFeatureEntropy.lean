@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureUniformGridAliasNoGo
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureUniformGridAliasNoGo
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Finite.Comparison
 
 /-!+# Entropy cost of a critical-feature phase alias

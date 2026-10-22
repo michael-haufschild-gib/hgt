@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FrullaniIntegral
-import GaloisForLFunctions.RHTower.CCMDiagonalFockLift
+import GaloisForLFunctions.RHTower.CCM.CCMDiagonalFockLift
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 

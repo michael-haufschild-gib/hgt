@@ -18,7 +18,7 @@ The original four joint components are value, radial derivative and both sech-we
 
 ## Exact formal results
 
-[ThetaCuspHawkingBMNativeRadialMollification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeRadialMollification.lean) contains:
+[ThetaCuspHawkingBMNativeRadialMollification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeRadialMollification.lean) contains:
 
 - `nativeRadialMollification_graph_mem`: admission of each actual smoothing.
 - `nativeRadialMollification_value` and `nativeRadialMollification_value_hasDerivAt`: exact original value and derivative identities.
@@ -41,6 +41,6 @@ A newest-first arXiv search for intertwining led to [Caputo, Quattropani and Sau
 
 ## Validation
 
-The complete smoothing and L² convergence fragment passed scratch Lean checks. The graph assembly was checked in scratch; the final real-restriction chain-rule correction passed a focused scratch check against the actual toolchain. The complete 449-line module then passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeRadialMollification`: two jobs, 187 seconds reported build time, reusing the isolated cache of 4146 local modules and 11 dependency packages. No dependency or umbrella build ran.
+The complete smoothing and L² convergence fragment passed scratch Lean checks. The graph assembly was checked in scratch; the final real-restriction chain-rule correction passed a focused scratch check against the actual toolchain. The complete 449-line module then passed `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeRadialMollification`: two jobs, 187 seconds reported build time, reusing the isolated cache of 4146 local modules and 11 dependency packages. No dependency or umbrella build ran.
 
 A separate scratch audit checked only the seven new public theorems. All use only `propext`, `Classical.choice`, and `Quot.sound`. The source and five emitted artifacts were installed byte for byte, and the leaf was imported in `RHTower.lean`. The frontier map and universal-law ledger were not modified. No numerical experiment ran. Final lint and cleanup are recorded in the full native-admission report.

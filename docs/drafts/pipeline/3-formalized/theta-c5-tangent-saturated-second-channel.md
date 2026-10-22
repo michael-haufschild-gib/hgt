@@ -72,6 +72,6 @@ close the tangent theorem.
 - Standard convexity, log-sum-exp, exponential-family, and monotone-likelihood-ratio theory does not
   determine this source-specific C5 coefficient; no external priority claim is made.
 - Lean module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5TangentSaturatedSecondChannel`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5TangentSaturatedSecondChannel`.
 - Direct Lean and exact target build passed; axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`.

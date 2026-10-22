@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PrimePairWallLanding
 import GaloisForLFunctions.RHTower.ThetaCarrierPolarizationFisher
 import GaloisForLFunctions.RHTower.MobiusThetaNativeMeyerAdmission
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 import GaloisForLFunctions.RHTower.ThetaSourceGlobalStrictLogConvexity
 import GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape
 

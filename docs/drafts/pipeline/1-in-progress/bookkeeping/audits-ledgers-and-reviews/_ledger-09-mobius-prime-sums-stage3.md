@@ -31,7 +31,7 @@
 - `RHTower/PrimeSquareFourierStrata.lean` — `ZMod (p^2)` additive Fourier, valuation strata
   indicators, unnormalized compression entries, deformed occupation Gram.
 - `HTGeometry/PrimeCollisionConvolution.lean` — two-prime collision orientation.
-- `RHTower/SuzukiCoupledErrorCriticalDerivative.lean` — `suzukiShiftedCoefficient`, first jet.
+- `RHTower/Suzuki/SuzukiCoupledErrorCriticalDerivative.lean` — `suzukiShiftedCoefficient`, first jet.
 - `RHTower/WeightedEulerCoefficientSpaces.lean`, `RHTower/MertensPrimeMeanReader.lean` —
   logarithmic Marcinkiewicz layer `M_log`, vanishing-tail layer `M_0`, Mertens mean coordinate.
 - `RHTower/MertensPrimeWindowWeakConvergence.lean` — Mertens first theorem in prime form.
@@ -497,7 +497,7 @@ telescoping sums.
 NOTE (namespaces): this corpus has BOTH `RHTower` and `GaloisForLFunctions.RHTower` as namespaces.
 A bare `grep` for a declaration name therefore over-reports collisions.  `inv_sqrt_le_telescope`
 already exists as `GaloisForLFunctions.RHTower.inv_sqrt_le_telescope`
-(`RHTower/CCMNonSchattenBirmanSchwinger.lean`, imports only Mathlib) and is now REUSED by
+(`RHTower/CCM/CCMNonSchattenBirmanSchwinger.lean`, imports only Mathlib) and is now REUSED by
 `SqrtTelescopeSums.lean` rather than duplicated.
 
 EQUATION (5) DESIGN (card 9, final step).

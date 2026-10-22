@@ -226,7 +226,7 @@ ANALYTIC GENERATOR SQUARE REMAINS OPEN`.
 
 ### The categorical reduction landed, in the setting mathlib supports
 
-`formal/GaloisForLFunctions/RHTower/DeningerAmalgamationUniversalDescent.lean`.  Axiom audit for
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAmalgamationUniversalDescent.lean`.  Axiom audit for
 all 18 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 mathlib has no ∞-categories, so the statement `(5)` about mapping *spaces* cannot be written.  What

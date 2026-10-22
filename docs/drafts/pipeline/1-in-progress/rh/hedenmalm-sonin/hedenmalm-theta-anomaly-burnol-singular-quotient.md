@@ -84,7 +84,7 @@ each Xi multiplicity copy. Novelty claim is limited to that exact weld and forma
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolSingularQuotient.lean` contains the
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolSingularQuotient.lean` contains the
 complete result. Direct `lake env lean` and exact module build pass.
 
 ## Log

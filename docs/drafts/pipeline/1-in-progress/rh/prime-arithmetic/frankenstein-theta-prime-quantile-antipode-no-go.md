@@ -4,7 +4,7 @@
 - **Stage:** 1 — in progress
 - **Type:** FAILED SELECTOR + POSITIVE CLASSIFICATION
 - **Parent:** `frankenstein-theta-prime-translation-plucker-anomaly.md`
-- **Target:** `formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeTranslationReflectionNoGo.lean`
+- **Target:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeTranslationReflectionNoGo.lean`
 
 ## Exact frontier
 

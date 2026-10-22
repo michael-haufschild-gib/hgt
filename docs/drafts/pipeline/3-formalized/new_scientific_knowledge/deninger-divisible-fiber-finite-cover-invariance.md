@@ -6,7 +6,7 @@
 - **Label:** `DAC_DIVISIBLE_FIBER_FINITE_COVER_INVARIANCE`
 - **Parent:** `deninger-relative-sullivan-milnor-character-space`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerDivisibleFiberFiniteCoverInvariance`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDivisibleFiberFiniteCoverInvariance`
 
 ## Statement
 
@@ -117,7 +117,7 @@ bijection of finite quotients, and the profinite-completion isomorphism.
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerDivisibleFiberFiniteCoverInvariance.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerDivisibleFiberFiniteCoverInvariance.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all 26 declarations: only the Lean/mathlib
   standard `propext`, `Classical.choice`, and `Quot.sound`.
@@ -160,7 +160,7 @@ though it remains relevant to a full profinite-homotopy comparison.
 - [x] 0 → 1 in-progress: exact statement
 - [x] 1 → 2 fully-proven: complete paper proof
 - [x] 2 → 3 formalized: Lean module
-  `GaloisForLFunctions.RHTower.DeningerDivisibleFiberFiniteCoverInvariance`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerDivisibleFiberFiniteCoverInvariance`,
   unconditional, standard axioms only
 - [ ] 3 → 4 publication-ready
 

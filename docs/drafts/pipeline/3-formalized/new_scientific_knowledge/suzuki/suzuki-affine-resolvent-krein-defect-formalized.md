@@ -4,7 +4,7 @@
 - **Stage:** 3 — formalized in Lean 4
 - **Claim:** `[PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-affine-resolvent-krein-defect.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineResolventKreinDefect.lean`
 
 ## Formal content
 

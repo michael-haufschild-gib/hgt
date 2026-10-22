@@ -4,8 +4,8 @@
 - **ID:** ULF-TAFM-23
 - **Status:** `[FORMALIZED] [UNCONDITIONAL] [AXIOM-CLEAN] [NOT RH]`
 - **Modules:**
-  - `GaloisForLFunctions.RHTower.SuzukiObserverJetFormation`
-  - `GaloisForLFunctions.RHTower.SuzukiObserverJetFormationCompletion`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetFormation`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetFormationCompletion`
 
 ## Exact finite decomposition
 
@@ -46,7 +46,7 @@ hidden, asserted, or discharged by claiming RH.
 ## Verification
 
 Direct foreground elaboration passed with `lake env lean`. Targeted leaf build
-`GaloisForLFunctions.RHTower.SuzukiObserverJetFormationCompletion` passed `12879/12879`; no
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetFormationCompletion` passed `12879/12879`; no
 umbrella build was run. Eight capstone axiom audits report only `propext`, `Classical.choice`, and
 `Quot.sound`. Module is wired into `RHTower` and `HTGeometry.UniversalLawField`.
 

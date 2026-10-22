@@ -7,7 +7,7 @@
 - **Paper proof:**
   `../3-formalized/new_scientific_knowledge/suzuki/suzuki-boundary-log-nonclock-nonflat-tangent.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftNonClock.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean`
 
 ## Formalized theorem chain
 

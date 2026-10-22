@@ -427,9 +427,9 @@ Primary adjacent sources:
 formal/GaloisForLFunctions/HTGeometry/WeightedDensityL2.lean
 formal/GaloisForLFunctions/HTGeometry/PositiveDensityQuantile.lean
 formal/GaloisForLFunctions/HTGeometry/BoundedMultiplierHilbert.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmPinnedVolterraBoundaryDefect.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileNormalForm.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileMetric.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPinnedVolterraBoundaryDefect.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileNormalForm.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileMetric.lean
 ```
 
 The universal infinite-dimensional operator half is in

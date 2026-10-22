@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiDonoghueKernelUniformBound
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDonoghueKernelUniformBound
 
 /-!
 # Probability measures on the projective interval exist

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GaussComponentAmplitude
-import GaloisForLFunctions.RHTower.CCMHalfUnitExtrapolationCost
+import GaloisForLFunctions.RHTower.CCM.CCMHalfUnitExtrapolationCost
 import GaloisForLFunctions.HTGeometry.FourierCircleTranslation
 
 /-!

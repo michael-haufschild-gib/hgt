@@ -12,7 +12,7 @@
 
 - [x] Dependency-closed paper proof
 - [x] Lean source written:
-  `RHTower/DeningerArithmeticFrobeniusHomotopyDefect.lean`
+  `RHTower/Deninger/DeningerArithmeticFrobeniusHomotopyDefect.lean`
 - [x] Direct `lake env lean` check
 - [x] Final module build; equation `(6)` (commutation defect) also formalized
 
@@ -106,7 +106,7 @@ spectrum is the zeta divisor.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticFrobeniusHomotopyDefect.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticFrobeniusHomotopyDefect.lean`
 
 - `deningerHomotopyBoundary d h = d h + h d` — the endomorphism-complex boundary of `(2)`.
 - `deningerFrobeniusHomotopyDefect F a h m n = h_{mn} - F_m h_n - a_n h_m` — equation `(3)`.

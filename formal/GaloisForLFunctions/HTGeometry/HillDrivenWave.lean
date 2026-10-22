@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenField
-import GaloisForLFunctions.HTGeometry.KleinGordonPotentialWave
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonPotentialWave
 
 /-!
 # The wave equation of the driven evolution

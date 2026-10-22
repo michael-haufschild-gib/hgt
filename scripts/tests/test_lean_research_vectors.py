@@ -70,6 +70,31 @@ class VectorTests(unittest.TestCase):
         self.assertEqual(report['republished'], 2)
         self.assertEqual(self.db.con.execute('SELECT COUNT(*) FROM vector_shards').fetchone()[0], 1)
 
+    def test_compaction_expires_dead_reuse_entries_and_reclaims_files(self):
+        """A reuse entry for content no documents carry must not pin its shard
+        file, or compaction can never reclaim anything."""
+        self.vectors.publish([self.docs[0]], [[1., 0.]], 'm1')
+        self.vectors.publish([self.docs[1]], [[0., 1.]], 'm1')
+        # Strand a cache entry: content that no document carries any more.
+        shard = self.db.con.execute('SELECT id FROM vector_shards LIMIT 1').fetchone()[0]
+        with self.db.con:
+            self.db.con.execute('INSERT OR REPLACE INTO embedding_cache VALUES(?,?,?,?)',
+                                ('0' * 64, 'm1', shard, self.docs[0]['id']))
+        report = self.vectors.compact('m1')
+        self.assertEqual(report['expired_reuse_entries'], 1)
+        self.assertIsNone(self.db.con.execute(
+            "SELECT 1 FROM embedding_cache WHERE content_hash=?", ('0' * 64,)).fetchone())
+        # Superseded files are tombstoned, then unlinked once the grace passes.
+        tombstoned = [r[0] for r in self.db.con.execute('SELECT filename FROM vector_shard_tombstones')]
+        self.assertTrue(tombstoned)
+        self.assertTrue(all((self.vectors.directory / name).exists() for name in tombstoned),
+                        'a filename already read out of SQLite must stay openable')
+        self.assertEqual(self.vectors.collect_tombstones(grace_seconds=-1), len(tombstoned))
+        self.assertFalse(any((self.vectors.directory / name).exists() for name in tombstoned))
+        self.assertEqual(self.db.con.execute('SELECT COUNT(*) FROM vector_shard_tombstones').fetchone()[0], 0)
+        # The surviving compacted shard still answers queries.
+        self.assertEqual(len(self.vectors.search([1., .1], model='m1', views=('statement',))), 2)
+
     def test_deadline_and_invalid_embeddings_are_rejected(self):
         with self.assertRaises(ValueError):
             self.vectors.publish(self.docs, [[1., 0.]], 'm1')

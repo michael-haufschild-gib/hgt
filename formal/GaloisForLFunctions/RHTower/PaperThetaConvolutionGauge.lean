@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerGaugeJets
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaugeJets
 import GaloisForLFunctions.RHTower.PaperThetaSpatialSolvability
 
 /-! # Native theta solutions for global source convolution gauges

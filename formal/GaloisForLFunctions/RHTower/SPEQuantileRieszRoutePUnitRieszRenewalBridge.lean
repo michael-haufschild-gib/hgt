@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePWeightedChebyshevCredit
-import GaloisForLFunctions.RHTower.CCMCriticalMellinRieszMobiusRenewal
-import GaloisForLFunctions.RHTower.CCMUnitRieszExponentialCoherentTrace
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinRieszMobiusRenewal
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszExponentialCoherentTrace
 
 /-!
 # Exact Route P/SP-E to CCM-FU unit-Riesz renewal bridge

@@ -68,9 +68,9 @@ two-sided comparison with universal constants `4(log 2)^2` and `8(log 2)^2`.
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationCompletedRadialWorkEquivalence.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeTranslationCompletedRadialWorkEquivalence.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationCompletedRadialWorkEquivalence`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeTranslationCompletedRadialWorkEquivalence`
   (`12953/12953`).
 - 2026-08-13 — Axiom audit passed for all capstones; dependencies are exactly
   `propext`, `Classical.choice`, and `Quot.sound`.

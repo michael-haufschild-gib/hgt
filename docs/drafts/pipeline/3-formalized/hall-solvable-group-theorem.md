@@ -29,7 +29,7 @@ normal `N`, no solvability needed); `IsSolvable.commutator_lt_of_ne_bot`; `Subgr
 mathlib **lacks**: any `IsHall` predicate; minimal normal subgroups; conjugacy half of
 Schur–Zassenhaus; class functions; count of irreducibles; column orthogonality; integrality of
 character values; Burnside `p^a q^b`; Wielandt's three-subgroup solvability theorem.
-corpus **lacks** all of the above (only `RHTower/ArtinVirtualCharacter.lean` touches `FDRep`
+corpus **lacks** all of the above (only `RHTower/Artin/ArtinVirtualCharacter.lean` touches `FDRep`
 characters; no Sylow/solvable material at all).
 
 ## Approach

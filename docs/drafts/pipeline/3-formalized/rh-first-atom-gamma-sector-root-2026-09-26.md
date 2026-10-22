@@ -17,7 +17,7 @@ The same holds after division by `4*sqrt(pi)`. The normalized expression
 is `RHTower.thetaCuspAtomGammaPair`; the theorems are
 `RHTower.thetaCuspAtomGammaCore_re_pos` and
 `RHTower.thetaCuspAtomGammaPair_re_pos` in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspAtomGammaSector.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAtomGammaSector.lean`.
 No assumption on the zeta zeros occurs.
 
 ## Dependency-closed proof

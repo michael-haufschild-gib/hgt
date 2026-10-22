@@ -8,7 +8,7 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMBoundaryStripTransfer` — the weak-limit, graph-core, and
+- `GaloisForLFunctions.RHTower.CCM.CCMBoundaryStripTransfer` — the weak-limit, graph-core, and
   four-unit layers.
 - `GaloisForLFunctions.RHTower.MobiusFisherContactWardBudget` — pre-existing entrywise lower
   semicontinuity of the Hilbert–Schmidt energy (`hsNormSq_le_of_tendsto_entries`) and the budget

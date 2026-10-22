@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FZZCigarParityReflectedFermiInformationGradientFlow
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorOpticalCancellationHolomorphyObstruction
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPreDivisorOpticalCancellationHolomorphyObstruction
 import GaloisForLFunctions.Bottcher.InteriorModulusObstruction
 
 /-!

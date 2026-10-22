@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusRieszSmoothingThreshold
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusRieszPrimeCellSign
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusRieszPrimeCellSign
 import GaloisForLFunctions.RHTower.ThetaCutoffCommutatorCofinalLimit
 
 /-!

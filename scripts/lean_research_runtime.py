@@ -156,6 +156,12 @@ Construction and status never start the worker, import ML, or download anything.
                 finally:
                     with self._guard:
                         self._sockets.discard(sock)
+        except RuntimeDeadline:
+            # RuntimeDeadline subclasses TimeoutError, hence OSError. On 3.10+
+            # `socket.timeout is TimeoutError` caught it; on a macOS 3.9 parent
+            # socket.timeout is a distinct OSError subclass, so a real deadline
+            # was reported as a transport failure instead.
+            raise
         except socket.timeout:
             raise RuntimeDeadline('local runtime deadline expired') from None
         except OSError as exc:

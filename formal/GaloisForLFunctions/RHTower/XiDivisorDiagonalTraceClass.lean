@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiDivisorHilbertCarrier
-import GaloisForLFunctions.RHTower.DeningerDivisorDefectTrace
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorDefectTrace
 import GaloisForLFunctions.RHTower.TraceNormBound
 import GaloisForLFunctions.RHTower.TraceNormLimit
 

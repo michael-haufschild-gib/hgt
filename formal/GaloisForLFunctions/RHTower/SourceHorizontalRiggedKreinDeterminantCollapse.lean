@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalRiggedKreinFundamentalSymmetry
 import GaloisForLFunctions.RHTower.SourceHorizontalWoldNeutralJetBridge
-import GaloisForLFunctions.RHTower.SuzukiCarlemanCentralFlux
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanCentralFlux
 import GaloisForLFunctions.HTGeometry.PeriodRigidity
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 

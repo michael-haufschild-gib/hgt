@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMPolarPrimeStieltjesAutocorrelation
 
 /-!
 # The critical-Mellin Stieltjes pairing with its boundary term

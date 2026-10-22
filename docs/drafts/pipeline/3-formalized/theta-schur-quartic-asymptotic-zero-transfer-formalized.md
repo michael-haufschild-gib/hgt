@@ -3,7 +3,7 @@
 - **ID:** `GTA-PQ4-LSC-formalized`
 - **Stage:** 3-formalized
 - **Paper card:** `theta-schur-quartic-asymptotic-zero-transfer.md`
-- **Module:** `GaloisForLFunctions.RHTower.HedenmalmThetaSchurQuarticAsymptoticZeroTransfer`
+- **Module:** `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSchurQuarticAsymptoticZeroTransfer`
 
 ## Exact certified surface
 

@@ -103,7 +103,7 @@ positive Hodge operator, determinant comparison, or RH proof.
   cochain groups, both differentials, all three cohomology carriers, and proves the
   nilpotence, endpoint, middle-cocycle, middle-coboundary, and top-image formulas.
 - Direct check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticResidueFlowTotalization.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticResidueFlowTotalization.lean`
   exits successfully with no output.
 - The source contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 - Exact `#print axioms` is deferred until the final permitted module build creates the

@@ -156,7 +156,7 @@ secondary Bessel domain.
 
 ## Lean certificate
 
-`formal/GaloisForLFunctions/RHTower/DeningerRationalWittPacketRestrictionObstruction.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittPacketRestrictionObstruction.lean`,
 imported by `GaloisForLFunctions.RHTower`, formalizes:
 
 - `deningerMiddlePacketMap` and `deningerMiddlePacketMap_injective`: `(4)` descends to the

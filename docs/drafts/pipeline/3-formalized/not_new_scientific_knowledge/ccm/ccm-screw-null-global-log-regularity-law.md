@@ -182,7 +182,7 @@ card's own reduction steps (the symbol algebra, the interior regularity, the emp
 branch, and the kernel transport of `(12)`) are all reachable, and the logarithmic Dirichlet
 infrastructure stays explicitly outside the statement.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMScrewNullLogRegularity.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMScrewNullLogRegularity.lean`
 (9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerPoleBoundaryBudget
-import GaloisForLFunctions.RHTower.SuzukiCauchyWallHardyEvaluation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyWallHardyEvaluation
 
 /-!
 # Exact Euler-pole budget for the completed Suzuki source wall

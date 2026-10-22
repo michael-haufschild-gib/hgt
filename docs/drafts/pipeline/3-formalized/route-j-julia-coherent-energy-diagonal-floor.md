@@ -295,7 +295,7 @@ Generic kernel infrastructure is in
 - `normalizedKernel_anchor_sq_not_le_energy_sub_diagonal` kills post hoc subtraction.
 
 Exact arithmetic specialization is in
-`formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaCoherentEnergyDiagonalFloor.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaCoherentEnergyDiagonalFloor.lean`:
 
 - `ccmFirstClockJuliaSixthPower_cutoff` proves `(JDF1)`;
 - `ccmFirstClockJuliaSixthPower_block_primePowerLength_eq_one` proves the one-mode seam;

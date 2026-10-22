@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 import GaloisForLFunctions.RHTower.StripHorizontalShift
 import GaloisForLFunctions.RHTower.KreinCompletionPinning
 import GaloisForLFunctions.RHTower.RiemannKernelCuspSeries

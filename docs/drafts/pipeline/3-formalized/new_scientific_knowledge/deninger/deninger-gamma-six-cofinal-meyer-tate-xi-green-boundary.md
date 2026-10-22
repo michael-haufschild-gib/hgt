@@ -187,7 +187,7 @@ boundary. By `(MT10)`, that is now sole RH-bearing operation.
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions/RHTower/DeningerGammaSixCofinalMeyerTateXiGreenBoundary.lean`.
+`GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCofinalMeyerTateXiGreenBoundary.lean`.
 
 Capstones:
 
@@ -204,7 +204,7 @@ Capstones:
 Verification:
 
 - direct `lake env lean` passed;
-- leaf-only `lake build GaloisForLFunctions.RHTower.DeningerGammaSixCofinalMeyerTateXiGreenBoundary`
+- leaf-only `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalMeyerTateXiGreenBoundary`
   passed;
 - capstone axiom audit reports only `propext`, `Classical.choice`, and
   `Quot.sound`;

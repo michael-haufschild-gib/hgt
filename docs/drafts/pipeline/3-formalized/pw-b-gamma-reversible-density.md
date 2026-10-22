@@ -59,7 +59,7 @@ balance remain open. RH is not proved.
 
 ## Verification and research
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaReversibleDensity.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaReversibleDensity.lean`.
 The final scratch passes all18 public declarations with only propext,
 Classical.choice and Quot.sound. Identical proof bodies are promoted;
 the one-copy RHTower umbrella import is wired. The targeted leaf build

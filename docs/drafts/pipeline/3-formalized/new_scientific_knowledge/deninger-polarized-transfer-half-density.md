@@ -5,8 +5,8 @@
 - **Type:** ABSTRACT SOURCE THEOREM / SPECIALIZATION GATE
 - **Parent:** `deninger-mw-gamma-brst-complex`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticPolarizedTransfer` (the ungraded form of `(4)`),
-  `GaloisForLFunctions.RHTower.DeningerPolarizedHalfDensity` (the modulus-graded data, `(4)`,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPolarizedTransfer` (the ungraded form of `(4)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPolarizedHalfDensity` (the modulus-graded data, `(4)`,
   `(5)`, `(6)`, and the half-density factorization)
 
 ## Statement
@@ -117,12 +117,12 @@ Those are separate construction theorems.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticPolarizedTransfer.lean` proves the ungraded form
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPolarizedTransfer.lean` proves the ungraded form
 of `(4)`: `deningerPolarizedTransfer_pairing_scale` derives `B(Vx, J(Vy)) = q·B(x, Jy)` from
 adjunction, Hodge naturality, the degree law, and right-linearity of the pairing, over an
 arbitrary commutative semiring.
 
-`GaloisForLFunctions/RHTower/DeningerPolarizedHalfDensity.lean` carries the graded statement:
+`GaloisForLFunctions/RHTower/Deninger/DeningerPolarizedHalfDensity.lean` carries the graded statement:
 
 - `DeningerPolarizedTransfer ι H` : coefficient spaces `H r` indexed by a modulus, with
   `pull n r : H r →ₗ H (modulus n r)`, `push n r : H (modulus n r) →ₗ H r`, Poincaré pairings
@@ -151,7 +151,7 @@ and Xi comparison are the four things the card explicitly says the theorem does 
 ### Verification
 
 - Direct commands: `lake env lean` on both modules — pass with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerPolarizedHalfDensity`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerPolarizedHalfDensity`
   completes (`✔ [2005/2005]`).
 - Scratch `#print axioms`: `deningerPolarizedTransfer_pairing_scale` depends on no axioms at all;
   the graded theorems use `propext`, `Classical.choice`, `Quot.sound` and nothing else.

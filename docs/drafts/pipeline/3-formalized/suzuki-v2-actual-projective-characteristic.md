@@ -139,7 +139,7 @@ the actual convergent normal family without assuming it.
 Formal module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiTaV2ProjectiveCharacteristic.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaV2ProjectiveCharacteristic.lean
 ```
 
 It proves, for the literal `suzukiTaCharacteristic` family:

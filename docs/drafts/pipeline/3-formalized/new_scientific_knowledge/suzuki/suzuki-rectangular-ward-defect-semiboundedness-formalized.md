@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-rectangular-ward-defect-semiboundedness.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiRectangularWardDefectBoundedness.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularWardDefectBoundedness.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC BRIDGE]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -48,7 +48,7 @@ proved.
 - imported by `GaloisForLFunctions.RHTower` umbrella;
 - imported and summarized in `RiemannHypothesisSOTA2026`;
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiRectangularWardDefectBoundedness.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularWardDefectBoundedness.lean`;
 - targeted SOTA build: `9451/9451` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

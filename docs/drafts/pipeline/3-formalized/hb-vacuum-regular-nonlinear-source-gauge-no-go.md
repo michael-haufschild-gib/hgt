@@ -34,7 +34,7 @@ On the wall both literal source packets vanish, so the zero map supplies the con
 existence is exactly wall placement; universal existence is exactly RH.
 
 ## Lean closure
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo`
 - Main route kill: `not_exists_hbXiPeierls_vacuumRegular_sourceExchange_clockCovariant_of_offLine`
 - Exact classification: `hbXiPeierlsExistsVacuumRegularNonlinearSourceExchangeAt_iff`
 - Global endpoint: `forall_hbXiPeierlsExistsVacuumRegularNonlinearSourceExchangeAt_iff_rh`

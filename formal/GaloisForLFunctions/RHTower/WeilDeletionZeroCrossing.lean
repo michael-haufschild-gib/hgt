@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMApertureRemainderFamilyContinuity
+import GaloisForLFunctions.RHTower.CCM.CCMApertureRemainderFamilyContinuity
 import GaloisForLFunctions.RHTower.WeilInsertionCCMCrossing
 
 /-!

@@ -6,7 +6,7 @@
 - **Source:** HC57 clock anticommutator; HC58 physical source transduction; complex-linear Kerr
   `t-phi` reflection current algebra
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence`
 - **Result:** Complex-linear and literal anti-linear source-FE reflections have complementary
   defects. Simultaneous source reflection, involution, and centered-clock oddness is equivalent to
   RH in either realization.
@@ -70,9 +70,9 @@ Search is bounded, not exhaustive.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence.lean`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence.lean`
   — passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence`
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFELinearAntilinearClockReflectionCoherence`
   — passed (`12024/12024`).
 - `#print axioms` on all 11 public theorems — only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint reports no HC59 issue; repository-wide failure remains 18 pre-existing unrelated

@@ -13,7 +13,7 @@
 - `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleDivergence.lean`
 - `formal/GaloisForLFunctions/HTGeometry/WaveTracePoleTransform.lean`
 - `formal/GaloisForLFunctions/HTGeometry/WaveTraceSpectrum.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularTwoEdge.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularTwoEdge.lean`
 - `formal/GaloisForLFunctions/RHTower/CentralReciprocalMoments.lean`
 - `formal/GaloisForLFunctions/RHTower/LandauIntegralTransfer.lean`
 - `formal/GaloisForLFunctions/RHTower/RiemannTower.lean`
@@ -105,7 +105,7 @@ GaloisForLFunctions.HTGeometry.WaveSpectrum.waveTrace_im
 GaloisForLFunctions.HTGeometry.WaveSpectrum.waveTrace_smul
 ```
 
-`GaloisForLFunctions.RHTower.CCMRectangularTwoEdge`:
+`GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge`:
 
 ```text
 RHTower.exists_xiDivisorSupport_abs_im_lower_bound

@@ -7,7 +7,7 @@
 - **RH used:** no
 - **Computation used:** no
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetConnection.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryThirdJetConnection.lean`
 
 ## Claim
 

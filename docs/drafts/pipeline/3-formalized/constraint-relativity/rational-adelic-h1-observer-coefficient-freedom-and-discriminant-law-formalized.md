@@ -10,7 +10,7 @@
 
 | Module | Path |
 |---|---|
-| `GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyObserverFreedom` | `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` |
+| `GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyObserverFreedom` | `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` |
 
 Wired into `GaloisForLFunctions.RHTower`.  All declarations live in the root namespace `RHTower`,
 matching the CCM prime-isotropy modules they extend.
@@ -19,29 +19,29 @@ matching the CCM prime-isotropy modules they extend.
 
 Nothing below was rebuilt.
 
-- `RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` — the whole source complex:
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` — the whole source complex:
   `CCMRationalAdelicPrimeRelativeOne`, `ccmRationalAdelicPrimeRelativeD0` (`D₀x = (Tx, ε₀x)`),
   `ccmRationalAdelicPrimeRelativeD1`, `ccmRationalAdelicPrimeRelativeComplex`,
   `ccmRationalAdelicPrimeRelativeCocycle` (`η_p = (0,1)`), `ccmRationalAdelicPrimeRelativeClass`,
   `ccmRationalAdelicPrimeRelativeClass_ne_zero`, and the strict Route-R comparison
   `ccmRationalAdelicPrimeRelativeXiComparison0/1/2`, `ccmRationalAdelicPrimeRelativeXiChainMap`.
-- `RHTower/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` — the bilateral orbit Stokes
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` — the bilateral orbit Stokes
   primitive `ccmRationalAdelicPrimeOrbitStokesLM` (`R_p`), its exact law
   `ccmRationalAdelicPrimeOrbitStokes_scaling_sub` (`R_p T = ε₀`, card `(OCF.5)`), the descended
   period `ccmRationalAdelicPrimeRelativeH1StokesRegulator` and its normalisation
   `ccmRationalAdelicPrimeRelativeH1StokesRegulator_class`.
-- `RHTower/CCMRationalAdelicEpsilonZero.lean` — `ccmRationalAdelicBruhatZeroEval` (`ε₀`) and its
+- `RHTower/CCM/CCMRationalAdelicEpsilonZero.lean` — `ccmRationalAdelicBruhatZeroEval` (`ε₀`) and its
   scaling invariance `ccmRationalAdelicBruhatZeroEval_smul`.
-- `RHTower/CCMRationalAdelicEpsilonOne.lean` — `ccmRationalAdelicBruhatIntegral` (`ε₁`) and its
+- `RHTower/CCM/CCMRationalAdelicEpsilonOne.lean` — `ccmRationalAdelicBruhatIntegral` (`ε₁`) and its
   rational-scaling invariance `ccmRationalAdelicBruhatIntegral_smul`, which is card `(OCF.21)`.
-- `RHTower/CCMRationalFiniteAdeleHaar.lean` — `ccmRationalIntegralFiniteAdeles`, its openness and
+- `RHTower/CCM/CCMRationalFiniteAdeleHaar.lean` — `ccmRationalIntegralFiniteAdeles`, its openness and
   compactness, and the normalisation `ccmRationalFiniteAdeleHaar_integral_subring` (`μ_f(Ẑ) = 1`).
-- `RHTower/CCMRationalArchimedeanHaar.lean` — `ccmRationalArchimedeanSchwartzIntegral` and the
+- `RHTower/CCM/CCMRationalArchimedeanHaar.lean` — `ccmRationalArchimedeanSchwartzIntegral` and the
   Jacobian law `ccmRationalArchimedeanSchwartzIntegral_scaling`.
 - `RHTower/PrimeFirstTraceGradedVariableIdealFixedXiComparison.lean` — `PrimeTraceSequence`,
   `primeFirstTraceSummableIdeal`, `primeFixedPhysicalFisherClass` and the sharp summability wall
   `primeFixedPhysicalFisherClass_ne_zero_iff`, which is the card's `[F_u] = 0 ⟺ u < 0`.
-- `RHTower/DeningerArithmeticThreeTermCohomology.lean` / `DeningerThreeTermOperations.lean` —
+- `RHTower/Deninger/DeningerArithmeticThreeTermCohomology.lean` / `DeningerThreeTermOperations.lean` —
   `cycles1`, `boundaries1`, `H1`, `H1_mk_eq_zero_iff`, `DeningerThreeTermHom.H1map`.
 - `HTGeometry/GaussianSchwartz.lean` — `gaussianSchwartz`, the Gaussian as a `SchwartzMap ℝ ℂ`.
 - From mathlib: `LocallyConstant.indicator`, `MeasureTheory.integral_indicator_const`,
@@ -150,8 +150,8 @@ an arbitrary grade `t` in the moderate strip, with no divisor input.
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean  # clean
-lake build GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyObserverFreedom          # green
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean  # clean
+lake build GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyObserverFreedom          # green
 ```
 
 `#print axioms` on `ccmRationalAdelicPrimeRelativeH1Equiv`,

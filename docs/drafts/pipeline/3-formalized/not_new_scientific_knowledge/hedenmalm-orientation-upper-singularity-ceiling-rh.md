@@ -75,7 +75,7 @@ exists_nat_sub_mem_leftShiftBoundary.
 ```
 
 The capstone module is
-`formal/GaloisForLFunctions/RHTower/HedenmalmOrientationUpperSingularityCeilingRH.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmOrientationUpperSingularityCeilingRH.lean`:
 
 ```text
 XiCanonicalOrientationUpperSingularityCeiling

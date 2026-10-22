@@ -9,7 +9,7 @@
   `formal/GaloisForLFunctions/RHTower/PrimeSupportBoundaryJets.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeWordEnsembleBoundaryTomography.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeSupportMultivariateLiftMarker.lean`, and
-  `formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowDivisorTomography.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowDivisorTomography.lean`
 - **Statement:** `[CONJECTURE]` The actual completed prime source is the locally uniform determinant
   limit of a cofinal, source-constrained family of finite Ramanujan graph lifts.  The formal Ihara
   selector then puts every finite nontrivial zero on its graph-critical circle, and the determinant

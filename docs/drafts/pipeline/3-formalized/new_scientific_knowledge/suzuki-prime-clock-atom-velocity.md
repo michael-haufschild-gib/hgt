@@ -8,7 +8,7 @@
 - **Paper theorem:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-prime-clock-atom-velocity-transference.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiPrimeClockAtomVelocity.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockAtomVelocity.lean`
 
 ## Exact result
 
@@ -76,8 +76,8 @@ identify a Xi divisor.
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiPrimeClockAtomVelocity.lean
-lake build GaloisForLFunctions.RHTower.SuzukiPrimeClockAtomVelocity
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockAtomVelocity.lean
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeClockAtomVelocity
 lake env lean /tmp/SuzukiPrimeClockAtomAxioms.lean
 scripts/formal_tools.py lint
 ```

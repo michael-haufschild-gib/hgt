@@ -128,13 +128,13 @@ Gamma/logistic/exterior forcing acting on this tower.
 
 ## Lean certificate
 
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiNonnormalForcedPrimeNormalTower`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiNonnormalForcedPrimeNormalTower`
 - **Capstone:** `suzukiNonnormalPrimeExpression_partial_eq_source_add_residual`
 - **Coefficient identification:** `suzukiForcedPrimeNormalFactor_mul_gradeFactor`
 - **Uniform word bound:** `norm_suzukiForcedPrimeNormalTower_le`
 - **Derivative certificate:** `hasDerivAt_suzukiForcedPrimeNormalPartial`
-- **Verification:** `lake env lean GaloisForLFunctions/RHTower/SuzukiNonnormalForcedPrimeNormalTower.lean`
-- **Leaf build:** `lake build GaloisForLFunctions.RHTower.SuzukiNonnormalForcedPrimeNormalTower`
+- **Verification:** `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiNonnormalForcedPrimeNormalTower.lean`
+- **Leaf build:** `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiNonnormalForcedPrimeNormalTower`
 - **Axiom audit:** only `propext`, `Classical.choice`, and `Quot.sound`
 
 ## Log

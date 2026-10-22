@@ -29,7 +29,7 @@ functional-reflection algebra is and whether changing the involution can retain 
 - `ConstitutivePositiveProfileFormation.lean` proves receiver-profile conservation and hereditary
   star-isotropy.
 - `RHTower/XiPositiveReflectionRadical.lean` proves the route-specific positive-radical reduction.
-- `RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean` contains a concrete Hodge
+- `RHTower/CCM/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean` contains a concrete Hodge
   untwisting.
 - `RHTower/EulerPrimitiveJointDepthKreinXiLanding.lean` contains a concrete fundamental symmetry.
 - No universal-law theorem classifies the full receiver radical or positive spectrum of a finite

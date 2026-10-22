@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.DirichletPolyBoundedAbel
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 

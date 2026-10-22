@@ -193,7 +193,7 @@ SOURCE HODGE/PURITY IMPLICATIONS CLOSED`.
 
 ### The flow corollary, the twisted extension, and the odd Hodge operator landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKahlerRiemannFlowPurity.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKahlerRiemannFlowPurity.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The Deninger--Singhof input (Proposition 4.6) enters exactly as the card's proof uses it: as the

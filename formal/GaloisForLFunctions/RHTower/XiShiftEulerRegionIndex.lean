@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiKernelOpenRegionLocality
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiKernelOpenRegionLocality
 import GaloisForLFunctions.RHTower.XiShiftEulerPointwiseContractivity
 import GaloisForLFunctions.RHTower.XiShiftEulerPrimeFactor
 import GaloisForLFunctions.HTGeometry.KernelCorrelationOrder

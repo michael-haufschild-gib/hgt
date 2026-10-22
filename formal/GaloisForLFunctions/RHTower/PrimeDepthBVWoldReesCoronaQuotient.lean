@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldPositiveStokesPolarization
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyStokesRegulator
 import GaloisForLFunctions.HTGeometry.StokesCoronaSchurVanishing
 
 /-!

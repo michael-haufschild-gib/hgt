@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesKotheBoundary
-import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightMellin
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeLogHeightMellin
 
 /-!
 # Phase-sensitive Mellin response of the Gamma-sewn Stokes connection

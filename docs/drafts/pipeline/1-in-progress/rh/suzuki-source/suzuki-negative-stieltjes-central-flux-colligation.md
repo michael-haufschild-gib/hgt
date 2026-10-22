@@ -306,7 +306,7 @@ for full jump kernel.
 Finite positive colligations, exact affine-intercept decomposition, strict kernel sign, exact mass
 gap equivalence, asymmetric fixed/escaping selector, and connector to Suzuki one-sided
 Weyl-normalized central flux are formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiCarlemanStieltjesFlux.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanStieltjesFlux.lean`.
 
 Open: prove source quotient `(S1)--(S2)` in concrete operator model, establish shift-variable
 Weyl law `(C2)` or falsify it via `(S3)`, and prove non-small-aperture Robin crossing `(A9)`.

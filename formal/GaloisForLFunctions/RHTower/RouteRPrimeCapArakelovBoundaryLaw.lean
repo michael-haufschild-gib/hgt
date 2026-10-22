@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRPrimeLogEssentialCapSingularStokesLaw
-import GaloisForLFunctions.RHTower.DeningerRealKummerArakelovBoundary
+import GaloisForLFunctions.RHTower.Deninger.DeningerRealKummerArakelovBoundary
 import GaloisForLFunctions.RHTower.RouteRHarmonicQuantumGapCriterion
 
 /-!

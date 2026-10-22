@@ -4,7 +4,7 @@ Status: twelve closed Lean theorems. Complete physical extinction and RH remain 
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMZeroDelayCurrent`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMZeroDelayCurrent`.
 Namespace: `RHTower.D4BMZeroDelayCurrent`.
 
 The [source-specific calculation](../1-in-progress/hb-zero-delay-current-match.md) evaluates the whole zero-delay radial triangle from the finite-clock transfer. The cubic onset primitive and antisymmetrization turn the characteristic contact into endpoint moments. Complementary source exponents then give the exact horizon and null-slice scalar coefficients of the retained physical lift currents.
@@ -28,6 +28,6 @@ Here `I_s`, `J_s`, and `K_s` are actual finite integrals of the original source 
 
 The finite-clock transfer onto the actual native kernel remains a paper identity. The comparison of these scalar coefficients with the physical current must retain the angular Green boundary and physical face orientations. The remaining endpoint moment terms, positive-delay bulk, positive characteristic delays, terminal integral, and all independent SS/SV/VV contributions remain part of the full cancellation problem. This leaf proves neither that cancellation nor the native-circle representation of the complete unprojected physical response.
 
-Validation: foreground `lake env lean` scratch checks passed without warnings. The final foreground `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMZeroDelayCurrent` built the new leaf in 44 seconds (three jobs), using 3,987 frozen existing own-module caches and eleven external package caches. No existing module or umbrella was rebuilt. Only the twelve new public declarations were axiom-audited; every one reports exactly `propext`, `Classical.choice`, and `Quot.sound`. No axioms or computational proof oracles were added. Installed source, `.olean`, and `.ilean` were byte-compared with the audited artifacts. The import is wired into `GaloisForLFunctions/RHTower.lean`.
+Validation: foreground `lake env lean` scratch checks passed without warnings. The final foreground `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMZeroDelayCurrent` built the new leaf in 44 seconds (three jobs), using 3,987 frozen existing own-module caches and eleven external package caches. No existing module or umbrella was rebuilt. Only the twelve new public declarations were axiom-audited; every one reports exactly `propext`, `Classical.choice`, and `Quot.sound`. No axioms or computational proof oracles were added. Installed source, `.olean`, and `.ilean` were byte-compared with the audited artifacts. The import is wired into `GaloisForLFunctions/RHTower.lean`.
 
 The corpus index was refreshed and `scripts/formal_tools.py lint` passed, with existing large-file warnings. Scoped whitespace checks passed. Owned scratch and frozen-audit files were removed after verifying no owned Lean/Lake process remained. No mathematical computations or frontier-map edits were made.

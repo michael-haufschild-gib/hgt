@@ -40,7 +40,7 @@ Peierls--Darboux optical power. Any nonzero fixed response is nonzero at every t
 - `d4BMXiSecondHarmonicSourceIndependentResponseCurrent_ne_zero_of_tilt`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceIndependentResponseDichotomy.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceIndependentResponseDichotomy.lean`
 
 ## New knowledge
 
@@ -75,8 +75,8 @@ identification, not the classical excitation-factor or Peierls frameworks.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceIndependentResponseDichotomy.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceIndependentResponseDichotomy`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceIndependentResponseDichotomy.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceIndependentResponseDichotomy`
 - Build result: success, 11914 jobs after shared dependency replay
 - `#print axioms` on seven endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

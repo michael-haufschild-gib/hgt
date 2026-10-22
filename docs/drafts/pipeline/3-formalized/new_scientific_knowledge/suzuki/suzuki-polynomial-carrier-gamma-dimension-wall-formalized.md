@@ -5,8 +5,8 @@
 - **Claim:** `[PAPER-PROVED] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:** `./suzuki-polynomial-carrier-gamma-dimension-wall.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialCarrierGammaWall.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPolynomialCarrierGammaDimensionWall.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolynomialCarrierGammaWall.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolynomialCarrierGammaDimensionWall.lean`
   - `formal/GaloisForLFunctions/RHTower/PolyDistortedHomogeneousThreshold.lean`
   - `formal/GaloisForLFunctions/RHTower/PolyCarrierForcedClosure.lean`
   - `formal/GaloisForLFunctions/RHTower/WallOneBlockEstimate.lean`

@@ -89,7 +89,7 @@ cancellation law forcing this squarefree Fisher charge below two on cofinal heig
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmSquarefreeFisherConormalReflectionCharge.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSquarefreeFisherConormalReflectionCharge.lean`
 
 Headline declarations:
 

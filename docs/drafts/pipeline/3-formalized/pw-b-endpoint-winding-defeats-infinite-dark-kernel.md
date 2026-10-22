@@ -40,7 +40,7 @@ supplies `0<q<1`. Absolute summability permits corpus product-`tsum` factorizati
 energy into response squared.
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekInfiniteDarkEndpointWindingSeparation.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekInfiniteDarkEndpointWindingSeparation.lean`.
 
 Main declarations:
 
@@ -52,7 +52,7 @@ Main declarations:
 - `schwarzschildParikhWilczekEndpointWinding_defeats_infiniteGradeDarkMatrix`
 
 Verification: direct `lake env lean` passed; target-only `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekInfiniteDarkEndpointWindingSeparation`
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekInfiniteDarkEndpointWindingSeparation`
 passed (11614 jobs). Six audited endpoints depend only on `[propext, Classical.choice, Quot.sound]`.
 Formal lint reports no error in module; repository-wide failure remains limited to pre-existing
 unreachable modules outside HC31.

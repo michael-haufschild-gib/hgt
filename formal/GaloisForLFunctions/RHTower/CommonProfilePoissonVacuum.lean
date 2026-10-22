@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiAffinePoisson
 import GaloisForLFunctions.RHTower.CommonProfileAnchorResponseMobius
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzLattice
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzLattice
 
 /-!
 # The physical occupancy, its Euler vacuum, and the anchored Fourier response

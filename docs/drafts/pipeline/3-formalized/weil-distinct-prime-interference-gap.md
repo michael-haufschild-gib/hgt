@@ -62,7 +62,7 @@ Finally, to verify the failed first conjecture, take a constrained `+1` eigenvec
 
 ## Verification
 - Scratch `lake env lean` checks: all 17 public theorem bodies pass; the final source copy removes one redundant tactic warning.
-- Named final audits for `GaloisForLFunctions.HTGeometry.NilpotentContractionInterference` and `GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimeInterference`: PASS.
+- Named final audits for `GaloisForLFunctions.HTGeometry.NilpotentContractionInterference` and `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimeInterference`: PASS.
 - `lake env lean /tmp/hgt-prime-interference.ysms8iuq/Audit.lean`: all 17 public declarations use exactly `[propext, Classical.choice, Quot.sound]`; the actual mathlib `RiemannHypothesis` definition is printed.
 - `python3 scripts/formal_tools.py lint`: PASS (large-file warnings only); `git diff --check`: PASS.
 - All owned Lean and build processes terminated normally.

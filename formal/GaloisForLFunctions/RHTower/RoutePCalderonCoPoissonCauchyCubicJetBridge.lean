@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittGammaCoPoissonHodgeBoundaryComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittGammaCoPoissonHodgeBoundaryComparison
 import GaloisForLFunctions.RHTower.PrimeGammaCauchyCubicSignedEulerianCurvature
 
 /-!

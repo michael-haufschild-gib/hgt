@@ -177,13 +177,13 @@ identifies the auxiliary Hardy construction with the previously defined response
 
 ### Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPrincipalReflectionAdmission.lean`:
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPrincipalReflectionAdmission.lean`:
   exact height mean, global Legendre derivative control, and complete reflected
   Dirichlet kernel control on the physical exponent strip (4 public theorems).
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPrincipalSmallDamping.lean`:
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPrincipalSmallDamping.lean`:
   literal retarded-response and radial `L2` growth, all three actual principal
   responses, and complete original-source Laplace admission (5 public theorems).
-- `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMForcedSmallDamping.lean`:
+- `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMForcedSmallDamping.lean`:
   original frequency holomorphy, original forced-response `L2` admission,
   absolute Laplace admission, and exact original transform (4 public theorems).
 

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RouteEDeningerVacuumFiniteDilationFracture
-import GaloisForLFunctions.RHTower.CCMArchimedeanInfiniteOrder
-import GaloisForLFunctions.RHTower.DeningerMeyerStrongLogTarget
-import GaloisForLFunctions.RHTower.DeningerCollarExchange
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanInfiniteOrder
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerStrongLogTarget
+import GaloisForLFunctions.RHTower.Deninger.DeningerCollarExchange
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
 
 /-!

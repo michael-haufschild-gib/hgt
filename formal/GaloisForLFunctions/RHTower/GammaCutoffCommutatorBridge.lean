@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaCutoffIdentityBounds
-import GaloisForLFunctions.RHTower.SuzukiGammaWallCutoffCommutator
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaWallCutoffCommutator
 
 /-!
 # The cutoff commutator is the corpus's wall commutator

@@ -162,7 +162,7 @@ is a route bridge, not new scientific knowledge.
 
 **Superseded, 2026-08-03.**  The abstract collapse `(1)`--`(7)` and the composition `(14)` with the
 cofinal criterion are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMCofinalFloorCriterion.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCofinalFloorCriterion.lean`.
 
 - **`tendsto_ground_zero_of_excess_gap_ratio`** — equations `(1)`--`(7)`: from `d = r - eps_0 ≥ 0`,
   an eventual bound `d ≤ C * (eps_1 - eps_0) / lambda`, and `r → 0`, `eps_1 → 0`, it concludes

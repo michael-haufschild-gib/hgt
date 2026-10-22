@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperWoldDirectedCovarianceRH
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldResidualNaturalWidthSpectrum
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.ZetaRealStrip
 
 /-!

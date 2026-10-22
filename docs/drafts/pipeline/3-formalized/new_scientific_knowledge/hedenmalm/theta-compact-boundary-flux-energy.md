@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized (certificate: `theta-compact-boundary-flux-energy-formalized.md`)
 - **Type:** THEOREM
-- **Lean target:** `formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactFluxEnergy.lean`
+- **Lean target:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactFluxEnergy.lean`
 
 ## Statement
 

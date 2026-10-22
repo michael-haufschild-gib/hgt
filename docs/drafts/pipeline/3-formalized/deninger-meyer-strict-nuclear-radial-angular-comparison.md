@@ -264,7 +264,7 @@ middle complex with `(4)`, and prove cup/trace compatibility.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerRadialEndpoints.lean`, 16 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerRadialEndpoints.lean`, 16 declarations, axiom
 audit for every one of them: `propext, Classical.choice, Quot.sound`.
 
 **`(2)` and `(10)`, Meyer's space and the two endpoint functionals.**  mathlib has the Schwartz
@@ -328,7 +328,7 @@ two structural lemmas used in `(1)` and §3.
 
 The blocker recorded above says nuclearity cannot be stated because mathlib has no nuclear space
 theory.  The first missing piece is now built:
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearOperator.lean` (11 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearOperator.lean` (11 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout) defines nuclear *operators* between normed
 spaces, which mathlib does not have in any form.
 
@@ -360,7 +360,7 @@ they rest on is now available.
 ### Nuclear spaces, defined
 
 The space-level half is now built too:
-`formal/GaloisForLFunctions/RHTower/DeningerSeminormQuotient.lean` (19 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSeminormQuotient.lean` (19 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).  mathlib has `Seminorm`, `WithSeminorms` and
 `LocallyConvexSpace`, but it has no normed space attached to a seminorm, so the definition of a
 nuclear space could not even be written; that gap is closed.
@@ -391,7 +391,7 @@ projective tensor product, neither of which exists yet.
 
 ### Nuclearity is independent of the defining family
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceInvariance.lean` (7 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSpaceInvariance.lean` (7 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) makes the definition usable by proving
 it is an invariant of the topology rather than of the chosen seminorms.
 
@@ -411,7 +411,7 @@ it is an invariant of the topology rather than of the chosen seminorms.
 
 ### Bridge to the corpus trace-class theory
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSchattenBridge.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSchattenBridge.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`) connects the new general notion to the Schatten
 machinery the corpus already owns.
 
@@ -429,7 +429,7 @@ norm, the ideal bounds and the additivity of the Schatten 1-class are available 
 
 ### Products of nuclear spaces
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearProduct.lean` (12 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearProduct.lean` (12 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout) proves the first permanence property.
 
 - `deningerSeminormInduced` — **the map of normed spaces induced by a bounded linear map**, a
@@ -457,7 +457,7 @@ Hilbert--Schmidt characterization, where subspaces are complemented.
 
 ### Hilbert--Schmidt composites are nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtNuclear.lean` (4 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertSchmidtNuclear.lean` (4 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) supplies the bridge on which the
 remaining permanence theory rests.
 
@@ -481,7 +481,7 @@ nuclear space, and the converse factorization of a nuclear map through Hilbert--
 
 ### Parseval, and the Hilbert--Schmidt condition is intrinsic
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtAdjoint.lean` (7 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertSchmidtAdjoint.lean` (7 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) removes the basis from the previous
 module's hypothesis.
 
@@ -504,7 +504,7 @@ Hilbert--Schmidt maps is nuclear" with Hilbert--Schmidt in its usual, intrinsic 
 
 ### Nuclear implies Hilbert--Schmidt
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertSchmidt.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearHilbertSchmidt.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`) closes the converse direction on Hilbert spaces.
 
 - `deningerInner_adjoint_comp` — pairing `T* T` against a vector gives the squared norm of its
@@ -521,7 +521,7 @@ on Hilbert spaces, in both directions of the classical comparison.
 
 ### Finite-rank maps and the usable nuclearity criterion
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearFiniteRank.lean` (2 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearFiniteRank.lean` (2 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerIsNuclear_of_finiteRank` — **a map with finite-dimensional range is nuclear**.  The
@@ -539,7 +539,7 @@ on Hilbert spaces, in both directions of the classical comparison.
 
 ### Nuclearity passes to the completions
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletion.lean` (4 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearCompletion.lean` (4 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerCompletionFunctional`, `_coe`, `_norm_le` — **the extension of a continuous functional
@@ -561,7 +561,7 @@ subspaces is formulated against.
 
 ### Subspaces, and the exact point where they are not formal
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspace.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspace.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).
 
 - `DeningerIsNuclear.of_comp_left_inverse` — if the left factor of a nuclear composite has a
@@ -586,7 +586,7 @@ of a nuclear map through a Hilbert space, and is what remains to be built.
 
 ### Balancing a nuclear representation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearBalanced.lean` (2 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearBalanced.lean` (2 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `DeningerIsNuclear.exists_balanced` — **a nuclear map has a representation in which every
@@ -609,7 +609,7 @@ continuously, and exact balancing genuinely fails.
 
 ### The Hilbertian domination of a nuclear map
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertFactor.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearHilbertFactor.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `deningerTsum_mul_le_sqrt` — **Cauchy--Schwarz for sums**: for nonnegative square-summable
@@ -632,7 +632,7 @@ quotient is complemented — the hypothesis of
 
 ### A nuclear space is presented by Hilbertian seminorms
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertianRefinement.lean` (3 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertianRefinement.lean` (3 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `DeningerIsHilbertianSeminorm` — a seminorm given by the norm of a linear map into an `ℓ²`
@@ -656,7 +656,7 @@ restating nuclearity against the completed quotients, for which
 
 ### The completed formulation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceCompleted.lean` (9 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSpaceCompleted.lean` (9 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `DeningerSeminormCompletion`, `deningerSeminormMkC`, `_norm` — the Banach space attached to a
@@ -680,7 +680,7 @@ projection.
 
 ### Subspaces in the completed formulation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceCompleted.lean` (5 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspaceCompleted.lean` (5 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerSubspaceEmbedding_square` — the comparison square of a subspace before completion.
@@ -701,7 +701,7 @@ version of this theorem could not be discharged.
 
 ### The `ℓ²` embedding of a Hilbertian quotient
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertianEmbedding.lean` (10 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertianEmbedding.lean` (10 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerHilbertianEmbedding`, `_norm`, `_isometry` — a Hilbertian seminorm's defining map kills
@@ -721,7 +721,7 @@ ingredient of the bounded left inverse that
 
 ### Subspaces of a Hilbertian nuclear space are nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceHilbertian.lean` (16 declarations,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspaceHilbertian.lean` (16 declarations,
 axiom audit `propext, Classical.choice, Quot.sound` throughout).
 
 `deningerIsNuclearSpaceC_subspace_of_hilbertian` and
@@ -743,7 +743,7 @@ nuclearity of the Schwartz space (the Hermite-coefficient characterisation).
 
 ### Permanence under subspaces, for any presentation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletedInvariance.lean` (6 declarations,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearCompletedInvariance.lean` (6 declarations,
 axiom audit `propext, Classical.choice, Quot.sound` throughout).
 
 `deningerIsNuclearSpaceC_subspace`: **every subspace of a nuclear space is nuclear**, with no
@@ -757,7 +757,7 @@ density on the classes of vectors.
 
 ### A nuclear space that is not finite dimensional
 
-`formal/GaloisForLFunctions/RHTower/DeningerRapidSequenceSpace.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRapidSequenceSpace.lean` and
 `.../DeningerRapidSequenceNuclear.lean` (25 declarations together, axiom audit `propext,
 Classical.choice, Quot.sound`).
 
@@ -1365,7 +1365,7 @@ audit `propext, Classical.choice, Quot.sound`.
 
 ### Lean: `𝒮(ℝ)` is a nuclear space `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerSchwartzNuclear.lean` (13 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSchwartzNuclear.lean` (13 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerOscL2CLM`, `deningerOscL2CLM_partialSum` — the oscillator map `f ↦ (Kᵐf).toLp`, and the
@@ -1395,7 +1395,7 @@ presentation of `H_−`.
 
 ### Lean: both radial spaces of `(1)`–`(2)` are nuclear `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerRadialNuclear.lean` (16 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRadialNuclear.lean` (16 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `H_∩` is the already-formalized `DeningerMeyerCap` of `DeningerMeyerRadialEndpoints.lean`
@@ -1425,7 +1425,7 @@ Note nuclearity needs only the submodule structure; closedness is what makes the
 ### Lean: the Poisson operator `(3)` — values, Euler stability, two-ended decay
 
 `formal/GaloisForLFunctions/HTGeometry/SchwartzEulerOperator.lean` (7 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonOperator.lean` (9 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonOperator.lean` (9 declarations), axiom audit
 `propext, Classical.choice, Quot.sound`.
 
 The analytic core of `(3)` turned out to be **already in the corpus**:
@@ -1456,7 +1456,7 @@ Strictness and closed range (Meyer's theorem) come after that.
 
 ### Lean: the Poisson operator `Z : ℋ_∩ → ℋ_−` is constructed `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonDerivative.lean` (10 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonDerivative.lean` (10 declarations),
 `DeningerPoissonWeight.lean` (13), `DeningerPoissonSchwartz.lean` (17); axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
@@ -1492,7 +1492,7 @@ finally the strict exact sequence `(4)`.
 
 ### Lean: the Poisson operator is continuous `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonContinuous.lean` (8 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonContinuous.lean` (8 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The decay constants of the two-ended estimates are *explicit Schwartz seminorms* —
@@ -1521,7 +1521,7 @@ left inverse of `Z` on its range, which is exactly strictness plus injectivity.
 
 ### Lean: Möbius inversion and injectivity of `Z` `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonMoebius.lean` (9 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonMoebius.lean` (9 declarations) and
 `DeningerPoissonInjective.lean` (2); axiom audit `propext, Classical.choice, Quot.sound`.
 
 - `deningerMoebiusPair f x (n,m) = μ(n)f(nmx)` — the double family.  Both degenerate index values
@@ -1545,7 +1545,7 @@ left inverse of `Z` on its range, which is exactly strictness plus injectivity.
 
 ### Lean: the Mellin symbol of `Z` is `ζ` `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonMellin.lean` (7 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonMellin.lean` (7 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `schwartz_isBigO_atTop`, `schwartz_isBigO_zero`, `mellinConvergent_schwartz` — the Mellin
@@ -1570,7 +1570,7 @@ series `∑ₙ|Zf(nx)|` is of size `1/x` even though `f` is bounded, so the canc
 
 ### Lean: the image of `Z` vanishes on the zeros of `ζ`, and the cokernel `(4)` `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonZeroDivisor.lean` (14 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonZeroDivisor.lean` (14 declarations) and
 `DeningerPoissonCokernel.lean` (19); axiom audit `propext, Classical.choice, Quot.sound`.
 
 - `isBigO_deningerPoissonValue_atTop`, `_zero` — the two-ended decay of `Zf` in `O`-form (any
@@ -1603,7 +1603,7 @@ topological singular-chain cosheaf.
 
 ### Lean: quotient seminorms and the quotient criterion for nuclearity
 
-`formal/GaloisForLFunctions/RHTower/DeningerQuotientSeminorm.lean` (12 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerQuotientSeminorm.lean` (12 declarations) and
 `DeningerQuotientProjection.lean` (8); axiom audit `propext, Classical.choice, Quot.sound`.
 
 Towards the nuclearity of `M_ζ` (the last permanence property the card's `(4)` needs, and the one
@@ -1632,7 +1632,7 @@ the corpus already uses for subspaces, run in the other direction.
 
 ### Lean: quotients of nuclear spaces are nuclear, and `M_ζ` is nuclear `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerQuotientHilbertian.lean` (9 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerQuotientHilbertian.lean` (9 declarations),
 `DeningerQuotientNuclear.lean` (10), `DeningerQuotientNuclearCompleted.lean` (3) and
 `DeningerMZetaNuclear.lean` (2); axiom audit `propext, Classical.choice, Quot.sound`.
 
@@ -1668,7 +1668,7 @@ single open analytic input, and it is exactly Meyer's zeta estimate.
 ### Lean: towards strictness — the elementary zeta bound, the reverse Mellin estimate, and the
 ### Fourier reflection `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerZetaLowerBound.lean` (4 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerZetaLowerBound.lean` (4 declarations),
 `DeningerPoissonReverseMellin.lean` (2) and `DeningerPoissonFourierReflection.lean` (4); axiom
 audit `propext, Classical.choice, Quot.sound`.
 
@@ -1699,7 +1699,7 @@ That is the remaining analytic package for `(3)`–`(4)`; everything else on the
 
 ### Lean: the reverse Mellin estimate on the left line `[PROVED HERE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerZetaLeftLine.lean` (7 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerZetaLeftLine.lean` (7 declarations),
 `DeningerCapVanishing.lean` (3) and `DeningerCapMellinLeft.lean` (11); axiom audit
 `propext, Classical.choice, Quot.sound`.
 
@@ -1736,14 +1736,14 @@ for `𝓕f`, which is what controls the derivatives near the origin.
 Five further modules, all built clean under `lake build`, turn the two line estimates for `1/ζ`
 into control of `f` by the radial data of `Zf`.
 
-* `RHTower/DeningerCapInversion.lean`
+* `RHTower/Deninger/DeningerCapInversion.lean`
   - `deningerReflect` — reflection of a Schwartz map.
   - `mellin_deningerPoissonValue_eq_fourier` — on a vertical line the Mellin transform of `Zf` is
     the Fourier transform of the reflected logarithmic weight.
   - `verticalIntegrable_mellin_poisson` — hence integrable on every vertical line.
   - `norm_mellinInv_le`, `norm_le_mellin_line` — **the inversion bound**
     `‖f x‖ ≤ (2π)⁻¹ x^{-σ} ∫‖M(f)(σ+iy)‖dy` for every integer `σ ≥ −1`.
-* `RHTower/DeningerStrictLineBounds.lean`
+* `RHTower/Deninger/DeningerStrictLineBounds.lean`
   - `deningerLineNorm σ g = ∫‖M(g)(σ+iy)‖dy`.
   - `deningerLineNorm_le_right/_left` — the `1/ζ` multiplier estimates transported to the line
     norms (factor `4` for `σ ≥ 2`, factor `8π²` on `σ = −1`; the left line uses that `{0}` is null).
@@ -1751,12 +1751,12 @@ into control of `f` by the radial data of `Zf`.
   - `integral_norm_le_seminorm` — `∫‖h‖ ≤ π(p₀,₀(h)+p₂,₀(h))` for Schwartz `h`.
   - `deningerLineNorm_poisson_eq/_le`, `exists_bound_deningerLineNorm` — **the line norm of `Zf` is
     bounded by finitely many Schwartz seminorms of the weight `Z_σ f`**, i.e. by radial data.
-* `RHTower/DeningerCapSupBound.lean`
+* `RHTower/Deninger/DeningerCapSupBound.lean`
   - `abs_pow_mul_norm_le`, `seminorm_zero_le_lineNorm`, `exists_bound_seminorm_zero` —
     **`p_{m,0}(f) ≤ C·(radial data of `Zf` at the two indices `m+2` and `−1`)`**: the far end from
     the line `Re s = m+2`, the origin from the line `Re s = −1`, `x = 0` from `f(0) = 0`, and
     negative `x` from evenness.
-* `RHTower/DeningerFourierWeight.lean`
+* `RHTower/Deninger/DeningerFourierWeight.lean`
   - `exists_bound_seminorm_comp_pair`, `exists_bound_schwartzSup_comp` — generic seminorm bounds
     for a continuous operator (all bi-indices, and finite suprema).
   - `deningerPoissonSchwartz_fourier` — **the weights of `Z𝓕f` are the reflected weights of `Zf`**,
@@ -1764,7 +1764,7 @@ into control of `f` by the radial data of `Zf`.
     reflection `s ↦ 1 − s` of the weight index.
   - `exists_bound_seminorm_zero_fourier` — **`p_{m,0}(𝓕f)` is bounded by the radial data of `f`**
     (at the indices `1−(m+2)` and `2`).
-* `RHTower/DeningerCapDerivBound.lean`
+* `RHTower/Deninger/DeningerCapDerivBound.lean`
   - `norm_fourier_le_integral`, `norm_le_integral_norm_fourier` — Fourier inversion as a supremum
     bound.
   - `norm_fourier_derivSCLM`, `norm_fourier_iterate_derivSCLM` — the multiplier `(2π|ξ|)^n`.
@@ -1785,7 +1785,7 @@ the two regions together give `p_{k,n}(f) ≤ C·(radial data)`, the reverse of
 Three further modules close the strictness statement.  `#print axioms` on each headline theorem
 returns exactly `[propext, Classical.choice, Quot.sound]`.
 
-* `RHTower/DeningerEulerStirling.lean`
+* `RHTower/Deninger/DeningerEulerStirling.lean`
   - `deningerWeightedDerivCLM` — the operator `U_n : f ↦ x^n f^{(n)}`.
   - `deningerWeightedDerivCLM_succ_apply` — **the recursion `U_{n+1} = θU_n − nU_n`** (product rule).
   - `deningerStirling`, `deningerStirling_eq_zero`, `deningerWeightedDerivCLM_eq_sum` —
@@ -1793,13 +1793,13 @@ returns exactly `[propext, Classical.choice, Quot.sound]`.
   - `seminorm_le_weightedDeriv` — `p_{k,n}(f) ≤ p_{0,n}(f) + p_{k,0}(U_n f)`: the origin is covered
     by the derivative supremum, the far end by the weighted derivative.
   - `seminorm_sum_le`, `seminorm_weightedDeriv_le_euler`.
-* `RHTower/DeningerRadialEulerData.lean`
+* `RHTower/Deninger/DeningerRadialEulerData.lean`
   - `deningerMeyerCap_eulerSCLM_iterate` — Meyer's space is stable under `θ^j`.
   - `deningerEulerWeightCLM`, `deningerPoissonSchwartz_eulerSCLM`,
     `deningerPoissonSchwartz_euler_iterate` — **`Z_τ(θ^j f) = (D − τ)^j Z_τ(f)`**: the Poisson
     operator conjugates the Euler operator into `D − τ` on the `τ`-th weight.
   - `exists_bound_schwartzSup_euler` — hence the radial data of `θ^j f` is bounded by that of `f`.
-* `RHTower/DeningerPoissonStrict.lean`
+* `RHTower/Deninger/DeningerPoissonStrict.lean`
   - `deningerRadialData` — the finite radial datum `∑_{s ∈ S} (sup_K p)(Z_s f)`, with
     monotonicity lemmas.
   - `exists_bound_seminorm_zero_deriv_radial` — the derivative suprema, through the Fourier side.
@@ -1840,13 +1840,13 @@ which mathlib does not have.  It is now proved in the corpus, and statement (3) 
     `contDiff_schwartzLimitDeriv`, `iteratedDeriv_schwartzLimitDeriv` — each iterated derivative
     converges uniformly, and the limit of the derivatives is the derivative of the limit.
   - `schwartzCauchyLimit`, `tendsto_schwartzCauchyLimit`, `instCompleteSpaceSchwartzMap`.
-* `RHTower/DeningerPoissonClosedRange.lean`
+* `RHTower/Deninger/DeningerPoissonClosedRange.lean`
   - `deningerPoissonSchwartz_sub` — the weights are linear in the function.
   - `instCompleteSpaceDeningerMeyerCap` — Meyer's space is complete, being closed in `𝓢(ℝ, ℂ)`.
   - `deningerPoisson_range_isClosed` — **the image of the Poisson operator is closed**: a sequence
     in the image whose radial data converge has, by the strictness bounds, a Cauchy sequence of
     preimages; the limit lies in Meyer's space and its Poisson sum is the limit.
-* `RHTower/DeningerRadialFrechet.lean`
+* `RHTower/Deninger/DeningerRadialFrechet.lean`
   - `deningerRadialCompat_isClosed`, `instCompleteSpaceDeningerRadialCompat` — the radial space is
     closed in the countable product, hence complete.
   - `deningerMZeta_t2Space` — **the cokernel `M_ζ` is separated.**
@@ -1866,7 +1866,7 @@ cokernel; both `ℋ_∩` and `ℋ_−` are complete and first countable, i.e. Fr
 * `HTGeometry/SchwartzComplete.lean` also carries `instMetrizableSpaceSchwartzMap`: the uniformity
   is countably generated and the space is separated, so `𝓢(ℝ, ℂ)` is metrizable — with completeness
   this makes it a Fréchet space.
-* `RHTower/DeningerFrechetProperties.lean`
+* `RHTower/Deninger/DeningerFrechetProperties.lean`
   - `instPseudoMetrizableSpaceDeningerMeyerCap`, `instPseudoMetrizableSpaceDeningerRadialCompat` —
     both source spaces are metrizable.
   - `instIsUniformAddGroupDeningerRadialCompat` — the radial space is a uniform additive group.
@@ -1935,7 +1935,7 @@ the deep input of §2 — together with the completion functor itself.
   - (`ProjectiveTensorSeminorm.lean` gained the list-level interface
     `projTensorSeminorm_le_projTensorSum` and `exists_projTensorSum_lt`, which keep the elaboration
     away from the subtype of representations.)
-* `RHTower/DeningerTensorTransport.lean`
+* `RHTower/Deninger/DeningerTensorTransport.lean`
   - `deningerTensor_exact`, `deningerTensor_injective`, `deningerTensor_surjective` — over a field
     every module is flat, so the Poisson sequence stays exact after tensoring with any coefficient
     space and the Poisson operator stays injective.
@@ -2066,7 +2066,7 @@ exactness holds by flatness.  What is left is bookkeeping: instantiate
   `projTensorSeminorm_le_nuclear_strict_injection` — **a strict injection stays strict after
   tensoring with a nuclear coefficient space**:
   `π(p₁, q_A)(z) ≤ (trace norm)·C·π(p₂, q_B)((1 ⊗ j) z)`.
-* `RHTower/DeningerTensorStrict.lean`
+* `RHTower/Deninger/DeningerTensorStrict.lean`
   - `deningerTensor_poisson_strict` — **`1 ⊗ Z` is strict for nuclear coefficients**: for every
     seminorm index of `E` and every Schwartz index there are a dominating seminorm index, a radial
     index and a constant with
@@ -2304,7 +2304,7 @@ for the free locally convex seminorms, this closes `(6)`–`(8)` of §3.
     adjoining `h = 0` is therefore the cone on a contractible base: the radial coordinate carries no
     topology and nothing is created at the apex, which is exactly what `(9)` asserts.
 
-* `RHTower/DeningerEndpointCodimension.lean` — statement `(10)`, sharpened.
+* `RHTower/Deninger/DeningerEndpointCodimension.lean` — statement `(10)`, sharpened.
   - `hermitePoly_two_eval_zero`, `hermiteSchwartz_two_zero_ne_zero` — the second Hermite function
     does not vanish at the origin; its value there is `-(1/π)` times the Gaussian.
   - `deningerFourierEval_hermiteSchwartz` — the endpoint value of a Hermite function is its value at
@@ -2355,7 +2355,7 @@ nuclear, so what has to be built is the direct sum.  For a direct sum the compar
 seminorms is an *infinite* sum of coordinate comparison maps, so the existing finite-sum lemma is
 not enough: the masses of the rank-one representations must be tracked and made summable.
 
-* `RHTower/DeningerNuclearTsum.lean`
+* `RHTower/Deninger/DeningerNuclearTsum.lean`
   - `DeningerIsNuclearLe T M` — nuclearity with a bound on the mass of the representation.
   - `DeningerIsNuclearLe.isNuclear`, `.mono`, `DeningerIsNuclear.exists_nuclearLe` — the bounded
     notion refines the plain one and every nuclear map has some finite mass.
@@ -2375,7 +2375,7 @@ makes the masses summable.  Then quotient permanence gives the inductive limit.
 
 ### Record — §2 pro-Ind: a countable direct sum of nuclear spaces is nuclear (Lean, unconditional)
 
-* `RHTower/DeningerSigmaSeminorm.lean` — the presentation.
+* `RHTower/Deninger/DeningerSigmaSeminorm.lean` — the presentation.
   - `deningerSigmaSummable`, `deningerSigmaSeminorm` — **the direct sum seminorm**, written as an
     unconditional sum of the coordinate seminorms; a vector of the direct sum has finite support, so
     no convergence question arises and no decidability hypothesis on the coordinates is needed.
@@ -2386,13 +2386,13 @@ makes the masses summable.  Then quotient permanence gives the inductive limit.
     coordinate need not be closed under scaling, and the whole proof turns on being able to enlarge
     one coordinate's seminorm by a constant.
 
-* `RHTower/DeningerSeminormInducedCompleted.lean`
+* `RHTower/Deninger/DeningerSeminormInducedCompleted.lean`
   - `deningerSeminormInducedC`, `_mkC`, `_norm_le`, `deningerSeminormComparisonC_mkC` — the completed
     map of Banach spaces induced by a bounded linear map, its value on a class, and that it keeps the
     bound.  Nuclearity is stated on the completed quotients, so the coordinate projections and
     inclusions are needed there.
 
-* `RHTower/DeningerSigmaNuclear.lean`
+* `RHTower/Deninger/DeningerSigmaNuclear.lean`
   - `deningerSigma_eq_sum_single` — a vector of a direct sum is the sum of its coordinate vectors.
   - `deningerIsNuclearSpaceC_sigma` — **a countable direct sum of nuclear spaces is nuclear.**
 
@@ -2416,7 +2416,7 @@ permanence (`deningerIsNuclearSpaceC_quotient`) finishes Trèves Prop. 50.1 and,
 
 ### Record — §2 pro-Ind closed: a countable inductive limit of nuclear spaces is nuclear (Lean, unconditional)
 
-* `RHTower/DeningerIndLimitNuclear.lean`
+* `RHTower/Deninger/DeningerIndLimitNuclear.lean`
   - `deningerQuotKerEquiv`, `_mk`, `_symm_apply` — the isomorphism of the quotient by the kernel with
     the target of a surjection, named so that the elaborator never unfolds it.
   - `deningerFinalSeminorm` — **the seminorm of a locally convex final topology**: the source
@@ -2503,7 +2503,7 @@ yet formalized.  All three are now proved.
     product preserves an explicit continuous splitting", and it is now backed on both the algebraic
     and the seminorm side.
 
-* `RHTower/DeningerMZetaMetrizable.lean` — the last component of "`(4)` is a strict exact sequence of
+* `RHTower/Deninger/DeningerMZetaMetrizable.lean` — the last component of "`(4)` is a strict exact sequence of
   nuclear **Fréchet** spaces".
   - `deningerMZeta_firstCountable` — the cokernel is first countable: the projection is open and
     continuous and the radial space is metrizable, so the neighbourhood filter of a class is the

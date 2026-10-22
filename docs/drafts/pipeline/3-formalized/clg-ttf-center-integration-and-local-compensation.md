@@ -50,8 +50,8 @@ Lean proves that a global positive comparison of this form, for any fixed `K≥0
 ## Lean landing and verification
 
 - `HTGeometry/AlternatingPairJetIntegral.lean`: finite recurrence, derivative identity, integrability, and exact integral transport.
-- `RHTower/ThetaCuspCenterMixedAllOrderIntegration.lean`: literal all-order source transport and `thetaCuspIntegratedNativeSignedCone_iff_riemannHypothesis`.
-- `RHTower/ThetaCuspCenterCompensationFlux.lean`: exact zero integral, derivative bound, and preservation of every integrated quadratic form.
-- `RHTower/ThetaCuspNativeOddSchurCompensation.lean`: explicit source coefficient, exact positive seam margin, uniform local repair, unchanged tenth moment, and the conditional global-comparison receiver.
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedAllOrderIntegration.lean`: literal all-order source transport and `thetaCuspIntegratedNativeSignedCone_iff_riemannHypothesis`.
+- `RHTower/ThetaCusp/ThetaCuspCenterCompensationFlux.lean`: exact zero integral, derivative bound, and preservation of every integrated quadratic form.
+- `RHTower/ThetaCusp/ThetaCuspNativeOddSchurCompensation.lean`: explicit source coefficient, exact positive seam margin, uniform local repair, unchanged tenth moment, and the conditional global-comparison receiver.
 
 All four modules are checked individually and wired into their umbrellas. Eight new capstones report only `propext`, `Classical.choice`, and `Quot.sound`; no axioms were added. Formal lint passes, and all 39 new public declaration names are unique outside these modules. No umbrella or full build was run. Exploratory numerical signs are not used in any Lean proof.

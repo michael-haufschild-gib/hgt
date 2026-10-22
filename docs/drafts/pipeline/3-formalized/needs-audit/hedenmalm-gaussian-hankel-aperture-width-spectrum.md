@@ -142,7 +142,7 @@ carrier does not discharge that obligation.
 ## Lean theorem surface
 
 The unconditional formalization is
-`formal/GaloisForLFunctions/RHTower/HedenmalmGaussianHankelApertureWidthSpectrum.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGaussianHankelApertureWidthSpectrum.lean`.
 Its capstones are:
 
 ```text

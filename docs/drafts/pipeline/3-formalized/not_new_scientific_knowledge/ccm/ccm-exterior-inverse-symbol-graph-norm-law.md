@@ -189,7 +189,7 @@ would be wrapper work, so no Lean file is added.
 exterior compression remain cited parents, but the card's own proof happens on the Fourier side, and
 every step there is reachable.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMExteriorInverseSymbol.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMExteriorInverseSymbol.lean`
 (6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — two are
 axiom-free — wired into `formal/GaloisForLFunctions/RHTower.lean`).
 

@@ -68,7 +68,7 @@ prime-orbit determinant.
 
 - `[PAPER-PROVED]` Proof above.
 - `[LEAN-PROVED]`
-  `formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovResolvent.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovResolvent.lean`.
 - Direct verification command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovResolvent.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovResolvent.lean`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration is present.

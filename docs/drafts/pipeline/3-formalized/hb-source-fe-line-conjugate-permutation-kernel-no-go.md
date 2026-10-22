@@ -76,7 +76,7 @@ permutation-kernel classification. Search is bounded, not exhaustive.
 ## Formal result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFELineConjPermutationKernelNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFELineConjPermutationKernelNoGo`.
 Lean proves:
 
 1. functional-equation reflection and Schwarz conjugation commute on multiplicity-exact Xi copies;

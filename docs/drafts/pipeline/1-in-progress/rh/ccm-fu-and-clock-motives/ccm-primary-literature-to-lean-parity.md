@@ -29,7 +29,7 @@ listed as open source gates rather than repackaged as Lean hypotheses.
 
 ## Proven source theorem: zeta-cycle spectral classification
 
-`formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean` proves on the literal
+`formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniZetaCycles.lean` proves on the literal
 periodized half-density Poisson source:
 
 ```text

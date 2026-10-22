@@ -362,7 +362,7 @@ Thus one strictly visible step unconditionally separates both root coefficients 
 oriented `lp` carrier.  **The exact finite-step squared norm sum `(11)` is now formal**, in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiRootPortObservationGram.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootPortObservationGram.lean
   suzukiRootPortObservation                 the compressed transported trace P T beta
   suzukiRootPortObservation_left_coordinate exact left descendant coordinate -w_i beta_-
   suzukiRootPortObservation_right_coordinate  exact right descendant coordinate -w_i beta_+

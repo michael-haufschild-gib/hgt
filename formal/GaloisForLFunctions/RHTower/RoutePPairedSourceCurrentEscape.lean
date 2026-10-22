@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePActivePairedDisplacementEscape
 import GaloisForLFunctions.RHTower.RoutePMovingDepthBoundary
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileLorentzEdgeProducer
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileLorentzEdgeProducer
 
 /-!
 # A complete paired current at arbitrarily small Xi norm

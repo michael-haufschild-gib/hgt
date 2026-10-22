@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSuzukiCrossApertureRieszTransport
+import GaloisForLFunctions.RHTower.CCM.CCMSuzukiCrossApertureRieszTransport
 
 open scoped InnerProductSpace
 

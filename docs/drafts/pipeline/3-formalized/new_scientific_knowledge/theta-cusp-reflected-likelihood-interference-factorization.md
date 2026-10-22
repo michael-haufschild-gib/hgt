@@ -122,7 +122,7 @@ state this theta-specific likelihood cocycle. Novelty remains provisional.
 
 ## Lean realization
 
-`RHTower/ThetaCuspReflectedLikelihoodInterferenceFactorization.lean` formalizes:
+`RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodInterferenceFactorization.lean` formalizes:
 
 - the completed source as first atom times the existing likelihood partition;
 - unnormalized and normalized reflected product factorizations;

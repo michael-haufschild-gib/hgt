@@ -57,7 +57,7 @@ Dependency-closed paper proof and positive survivor are recorded in
 `../3-formalized/hb-bulk-holomorphic-hermitian-optical-no-go.md`.
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBulkHolomorphicHermitianOpticalNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBulkHolomorphicHermitianOpticalNoGo`.
 
 Main route-kill theorem:
 `RHTower.not_thetaCuspHawkingSameVariableLocalHermitianOpticalLanding`.

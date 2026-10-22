@@ -97,7 +97,7 @@ lift out, or use a gauge channel whose positive tail grows with its cancellation
 Module:
 
 ~~~text
-GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineSuperoscillation
+GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineSuperoscillation
 ~~~
 
 Lean proves:
@@ -113,9 +113,9 @@ Lean proves:
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadExteriorCosineSuperoscillation.lean`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadExteriorCosineSuperoscillation.lean`
   passed;
-- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineSuperoscillation`
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineSuperoscillation`
   passed; no umbrella/full build was run;
 - all 29 public theorem/instance axiom audits report only `propext`, `Classical.choice`, and
   `Quot.sound`;

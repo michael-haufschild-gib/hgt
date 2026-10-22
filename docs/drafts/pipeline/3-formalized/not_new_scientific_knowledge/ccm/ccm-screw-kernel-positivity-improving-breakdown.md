@@ -185,7 +185,7 @@ but it is routine parent theory after the kernel is written and is therefore cla
 explicit screw function `(3)` and its classical second derivative off the prime-power atoms are now
 built, and both proved theorems of this card are formalized unconditionally.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiExplicitScrewRegularKernel.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExplicitScrewRegularKernel.lean`
 
 - `screwFn c₁ c₀` — Suzuki's explicit screw function `(3)`, with the two archimedean constants
   `ψ(1/4) − log π` and `(1/4)Φ(1,2,1/4)` carried as parameters and instantiated at
@@ -206,7 +206,7 @@ built, and both proved theorems of this card are formalized unconditionally.
   `screwRegularKernel_pos_iff`, `screwRegularKernel_neg_of_lt_threshold` — **equation `(7)`**:
   `0 < K t ↔ 0 < e^(3t) − e^t − 1 ↔ t_* < t`, and strict negativity below the threshold.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiScrewDisjointCrossCoupling.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewDisjointCrossCoupling.lean`
 
 - `screwAtoms`, `exists_atomFree_mem_Ioo`, `exists_atomFree_radius` — the atoms in a bounded
   interval form a finite set, so every nonempty open interval contains a non-atom and every
@@ -222,7 +222,7 @@ built, and both proved theorems of this card are formalized unconditionally.
   disjointly supported vectors vanishes, so *no* scalar shift of the form satisfies the first
   Beurling--Deny inequality, hence none has a positivity preserving semigroup.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiScrewDistributionalKernel.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewDistributionalKernel.lean`
 
 - `exists_affine_screwPrimeSum_Ioo` — on an atom-free open interval the hinge sum is not merely
   locally but **globally** one affine function, because every atom then lies outside the interval.
@@ -234,7 +234,7 @@ built, and both proved theorems of this card are formalized unconditionally.
   derivative vanish at the endpoints of a compact subinterval of an atom-free `(α,β) ⊆ (0,∞)`.
   This is what licenses reading `(1)` as an ordinary integral against `K` on such supports.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiScrewCorrelationPairing.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCorrelationPairing.lean`
 
 - `screwCrossCorr`, `screwCorrelationForm` — the cross-correlation `c_(f,h)(u) = ∫ f y h(u+y) dy`
   and the one-variable pairing `∫ K u * c_(f,h)(u) du`.

@@ -64,7 +64,7 @@ certified directly, while every finite fibre derivative is certified separately.
 ## Lean certificate
 
 - Planned module:
-  `GaloisForLFunctions.RHTower.ThetaCuspWignerGammaXiTransverseEnergyUniversalityLaw`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspWignerGammaXiTransverseEnergyUniversalityLaw`
 - Planned main theorem:
   `thetaCusp_completeWignerGammaXiTransverseEnergyUniversality`
 - Umbrella:

@@ -35,6 +35,81 @@ private lemma sample_vanish (P : Finset ℕ) {M r : ℕ} (hr : 0<r) (hMr : M≤r
     simp [mobiusDivisorInterpolatedFibre, Nat.div_self hr, hw, h1]
   · simp [mobiusDivisorInterpolatedFibre, Nat.div_eq_of_lt hlt, h0, h1]
 
+private lemma source_mem_insert {p r M : ℕ} (hp : p.Prime) (P : Finset ℕ) :
+    r ∈ fixedCoreSquarefreeIndices (insert p P) M ↔
+      r ∈ fixedCoreSquarefreeIndices P M ∧ ¬p∣r := by
+  simp only [fixedCoreSquarefreeIndices, mem_filter, mem_Icc]
+  constructor
+  · rintro ⟨hr,hs,hd⟩
+    refine ⟨⟨hr,hs,hd.mono_right (subset_insert _ _)⟩,?_⟩
+    intro hpr
+    exact disjoint_left.mp hd (Nat.mem_primeFactors.mpr ⟨hp,hpr,by omega⟩) (mem_insert_self _ _)
+  · rintro ⟨⟨hr,hs,hd⟩,hpr⟩
+    refine ⟨hr,hs,disjoint_left.mpr ?_⟩
+    intro q hqr hqP
+    rcases mem_insert.mp hqP with rfl | hqP
+    · exact hpr (Nat.mem_primeFactors.mp hqr).2.1
+    · exact disjoint_left.mp hd hqr hqP
+
+private lemma source_mul {p r : ℕ} (hp : p.Prime) (P : Finset ℕ)
+    (hpP : p∉P) (hr : 0<r) :
+    Squarefree (p*r) ∧ Disjoint (p*r).primeFactors P ↔
+      Squarefree r ∧ Disjoint r.primeFactors (insert p P) := by
+  rw [Nat.squarefree_mul_iff, Nat.primeFactors_mul hp.ne_zero hr.ne', hp.primeFactors]
+  constructor
+  · rintro ⟨⟨hc,_,hs⟩,hd⟩
+    refine ⟨hs,disjoint_left.mpr ?_⟩
+    intro q hqr hqP
+    rcases mem_insert.mp hqP with rfl | hqP
+    · exact (hp.coprime_iff_not_dvd.mp hc) (Nat.mem_primeFactors.mp hqr).2.1
+    · exact disjoint_left.mp hd (mem_union_right _ hqr) hqP
+  · rintro ⟨hs,hd⟩
+    refine ⟨⟨hp.coprime_iff_not_dvd.mpr ?_,hp.squarefree,hs⟩, disjoint_left.mpr ?_⟩
+    · intro hpr
+      exact disjoint_left.mp hd (Nat.mem_primeFactors.mpr ⟨hp,hpr,hr.ne'⟩) (mem_insert_self _ _)
+    · intro q hq hqP
+      rcases mem_union.mp hq with hq | hq
+      · exact hpP ((mem_singleton.mp hq) ▸ hqP)
+      · exact disjoint_left.mp hd hq (mem_insert_of_mem hqP)
+
+private lemma source_split {p : ℕ} (hp : p.Prime) (P : Finset ℕ)
+    (hpP : p∉P) (M : ℕ) (f : ℕ → ℝ) :
+    (∑ r ∈ fixedCoreSquarefreeIndices P M, f r) =
+      (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) M, f r)+
+      ∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/p), f (p*r) := by
+  let S := fixedCoreSquarefreeIndices P M
+  have hfree : S.filter (fun r => ¬p∣r) = fixedCoreSquarefreeIndices (insert p P) M := by
+    ext r
+    exact mem_filter.trans (source_mem_insert hp P).symm
+  have hdiv : (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) (M/p), f (p*r)) =
+      ∑ r ∈ S.filter (fun r => p∣r), f r := by
+    apply sum_nbij' (fun r => p*r) (fun r => r/p)
+    · intro r hr
+      obtain ⟨hr,hs⟩ := mem_filter.mp hr
+      have hr' := mem_Icc.mp hr
+      apply mem_filter.mpr
+      refine ⟨mem_filter.mpr ⟨mem_Icc.mpr ⟨by nlinarith [hp.pos], ?_⟩,
+        (source_mul hp P hpP hr'.1).mpr hs⟩,dvd_mul_right _ _⟩
+      simpa [mul_comm] using (Nat.le_div_iff_mul_le hp.pos).mp hr'.2
+    · intro r hr
+      obtain ⟨hr,hpr⟩ := mem_filter.mp hr
+      obtain ⟨hr,hs,hd⟩ := mem_filter.mp hr
+      have hr' := mem_Icc.mp hr
+      have he : p*(r/p)=r := Nat.mul_div_cancel' hpr
+      have hq : 0<r/p := by nlinarith
+      apply mem_filter.mpr
+      refine ⟨mem_Icc.mpr ⟨hq,Nat.div_le_div_right hr'.2⟩,?_⟩
+      apply (source_mul hp P hpP hq).mp
+      rw [he]
+      exact ⟨hs,hd⟩
+    · intro r _
+      exact Nat.mul_div_cancel_left r hp.pos
+    · intro r hr
+      exact Nat.mul_div_cancel' (mem_filter.mp hr).2
+    · intro r _
+      rfl
+  rw [hdiv, ← hfree]
+  exact (sum_filter_not_add_sum_filter S (fun r => p∣r) f).symm
 
 /-- Exact sampling of the original critical head in logarithmic time.
 The cofactor weight is the triangular age, with the indicated affine offset;
@@ -171,8 +246,13 @@ theorem mobiusDivisorSelectionEnergy_le_finiteClock (M : ℕ) (P : Finset ℕ) :
 private lemma square_as_fibre (P : Finset ℕ) (M : ℕ) {r : ℕ}
     (hr : Squarefree r) (hd : Disjoint r.primeFactors P) :
     (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) =
-      (mobiusDivisorSelectionFibre M P r.primeFactors)^(2 : ℕ) :=
-  term_as_fibre P M hr hd
+      (mobiusDivisorSelectionFibre M P r.primeFactors)^(2 : ℕ) := by
+  have h := mobiusDivisorSelectionFibre_product_interpolation M P r.primeFactors
+    (fun p hp => (Nat.mem_primeFactors.mp hp).1) hd
+  rw [Nat.prod_primeFactors_of_squarefree hr] at h
+  have hm : (((ArithmeticFunction.moebius r : ℤ) : ℝ))^(2 : ℕ) = 1 := by
+    exact_mod_cast ArithmeticFunction.moebius_sq_eq_one_of_squarefree hr
+  rw [h, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg r), hm, mul_one]
 
 /-- Exact classification of affine clock offsets at complete processing.
 The unshifted triangular clock is blind to the head; offset one retains its

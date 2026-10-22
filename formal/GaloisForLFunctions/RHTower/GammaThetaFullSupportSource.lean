@@ -1,7 +1,7 @@
 import GaloisForLFunctions.BiScaleUncertainty.SquarefreeGaussianCompletion
 import GaloisForLFunctions.RHTower.GammaThetaSupportWeightBounds
 import GaloisForLFunctions.RHTower.JointAncestryGammaThetaBooleanClosedCreation
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 
 /-!
 # The actual Gamma--theta source over every finite prime support

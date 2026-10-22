@@ -10,10 +10,14 @@ RUNTIME_HOME = Path(__file__).resolve().parent
 DEFAULT_CACHE_DIR = RUNTIME_HOME.parents[1] / 'formal' / '.lake' / 'hgt-research' / 'discovery-1'
 PYTHON = RUNTIME_HOME / '.venv' / 'bin' / 'python'
 MODELS = json.loads((RUNTIME_HOME / 'models.json').read_text())
+EMBEDDING_DIMENSIONS = MODELS['embedding']['dimensions']
 PROTOCOL_VERSION = 2
-ADAPTER_VERSION = 3
+ADAPTER_VERSION = 4
 MAX_FRAME = 2 * 1024 * 1024
 MAX_ITEMS = 64
+# Indexing requests are small so an agent's query waits well under a second
+# behind one. Queries are served first but never cancel work in flight.
+ENRICHMENT_ITEMS = 8
 MAX_TEXT = 32768
 MAX_TOTAL_TEXT = 262144
 MAX_PENDING = 32
@@ -21,15 +25,31 @@ MAX_SECONDS = 600.0
 MAX_TOKENS = 2048
 CONTEXT_TOKENS = 2048
 BATCH_SIZE = 4
+# Padded tokens per embedding forward pass, and the batch ceiling. Short
+# statements dominate the corpus, so a fixed small batch left the GPU idle.
+TOKEN_BUDGET = 8192
+MAX_BATCH_SIZE = 64
+PAD_MULTIPLE = 32
 GENERATION_CONTEXT = 8192
-INSTRUCTION = 'Find relevant Lean 4 math declarations'
+# EmbeddingGemma's task prefixes are a fixed set from its model card, not a
+# free-text instruction: queries and documents use DIFFERENT prefixes, and the
+# prefix tokens are inside the mean (1_Pooling sets include_prompt: true).
+QUERY_TEMPLATE = 'task: search result | query: {text}'
+DOCUMENT_TEMPLATE = 'title: none | text: {text}'
+EMBEDDING_POOLING = MODELS['embedding'].get('pooling', 'mean')
+# mlx-lm must ship a matching architecture for the Metal fast path. 0.32.2 has
+# no embedding_gemma2, so the pinned model omits this and search runs on Torch
+# MPS. Setting it back on enables the fast path without other changes.
+MLX_EMBEDDING_MODULE = MODELS['embedding'].get('mlx_module')
 
 
 def fingerprints() -> dict:
     """Change with model revisions, prompts, token limits, or dependency lock."""
     roles = {role: hashlib.sha256(json.dumps(spec, sort_keys=True).encode()).hexdigest()
              for role, spec in MODELS.items()}
-    payload = {'models': MODELS, 'adapter': ADAPTER_VERSION, 'instruction': INSTRUCTION,
+    payload = {'models': MODELS, 'adapter': ADAPTER_VERSION,
+               'query_template': QUERY_TEMPLATE, 'document_template': DOCUMENT_TEMPLATE,
+               'pooling': EMBEDDING_POOLING, 'dimensions': EMBEDDING_DIMENSIONS,
                'context': CONTEXT_TOKENS, 'generation_context': GENERATION_CONTEXT,
                'lock': hashlib.sha256((RUNTIME_HOME / 'uv.lock').read_bytes()).hexdigest()}
     return {'models': roles, 'runtime': hashlib.sha256(
@@ -72,7 +92,7 @@ def installation_status(cache_dir: Path) -> dict:
                        all(m['installed'] for m in result['models'].values()))
     result['available'] = result['ready']
     result['reason'] = None if result['ready'] else 'pinned local environment or snapshots missing/stale; run explicit setup'
-    for role in ('embedding', 'reranker', 'generation'):
+    for role in MODELS:
         result[f'{role}_model_version'] = (f"{MODELS[role]['repo']}@{MODELS[role]['revision']}"
                                           f":{result['fingerprints']['runtime']}")
     return result

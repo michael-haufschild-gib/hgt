@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.FactorialMuntzTail
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarSourceFactorization
-import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelKernelInversion
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelKernelInversion
 
 /-! Exact tail reconstruction and quantitative bounds for the actual compact
 factorial-ramp readout at every right-half-plane zeta zero. -/

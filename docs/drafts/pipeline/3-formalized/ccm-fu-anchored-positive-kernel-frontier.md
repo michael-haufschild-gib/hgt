@@ -19,7 +19,7 @@ task is uniform signed control of the displayed anchored moment.
 - [x] 0 → 1 in-progress: literal source, fixed positive lower wall, no source substitution
 - [x] 1 → 2 fully-proven: dependency-closed finite-interval paper proof below
 - [x] 2 → 3 formalized: module
-  `GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCesaroAnchoredMoment`
+  `GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeCesaroAnchoredMoment`
 - [ ] 3 → 4 publication-ready: integrate into a standalone CCM-FU paper
 
 ## Corpus-first audit

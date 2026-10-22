@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenChartWave
-import GaloisForLFunctions.HTGeometry.KleinGordonProbeExamples
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonProbeExamples
 
 /-!
 # A datum whose driven field is positive at a prescribed event

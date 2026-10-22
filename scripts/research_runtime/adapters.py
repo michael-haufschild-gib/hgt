@@ -10,7 +10,8 @@ import socket
 import sys
 from pathlib import Path
 
-from .config import (BATCH_SIZE, CONTEXT_TOKENS, GENERATION_CONTEXT, INSTRUCTION,
+from .config import (BATCH_SIZE, CONTEXT_TOKENS, DOCUMENT_TEMPLATE, EMBEDDING_DIMENSIONS,
+                     GENERATION_CONTEXT, MLX_EMBEDDING_MODULE, QUERY_TEMPLATE,
                      installation_status, offline_environment)
 from .protocol import RuntimeDeadline, RuntimeUnavailable, remaining
 
@@ -18,10 +19,13 @@ RERANK_PREFIX = ('<|im_start|>system\nJudge whether the Document meets the requi
                  'based on the Query and the Instruct provided. Note that the answer '
                  'can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n')
 RERANK_SUFFIX = '<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n'
+# Qwen's reranker keeps its own instruction: it scores pairs and shares no
+# vector space with the embedder, so its prompt is unrelated to Gemma's.
+RERANK_INSTRUCTION = 'Find relevant Lean 4 math declarations'
 
 
 def embedding_text(text: str, query: bool) -> str:
-    return f'Instruct: {INSTRUCTION}\nQuery:{text}' if query else text
+    return (QUERY_TEMPLATE if query else DOCUMENT_TEMPLATE).format(text=text)
 
 
 def reranker_inputs(tokenizer, query: str, documents: list[str], max_length=CONTEXT_TOKENS):
@@ -30,12 +34,20 @@ def reranker_inputs(tokenizer, query: str, documents: list[str], max_length=CONT
     budget = max_length - len(prefix) - len(suffix)
     if budget <= 0:
         raise ValueError('reranker token budget cannot fit official wrapper')
-    pairs = [f'<Instruct>: {INSTRUCTION}\n<Query>: {query}\n<Document>: {doc}' for doc in documents]
+    pairs = [f'<Instruct>: {RERANK_INSTRUCTION}\n<Query>: {query}\n<Document>: {doc}' for doc in documents]
     inputs = tokenizer(pairs, padding=False, truncation='longest_first',
                        return_attention_mask=False, max_length=budget,
                        add_special_tokens=False)
     inputs['input_ids'] = [prefix + ids + suffix for ids in inputs['input_ids']]
     return tokenizer.pad(inputs, padding=True, return_tensors='pt', max_length=max_length)
+
+
+def mean_pool(hidden, attention_mask):
+    """Mean over real tokens only. EmbeddingGemma pools the mean, not the last
+    token, so the mask is load-bearing: averaging pad positions in silently
+    returns plausible, wrong vectors. Must stay identical to the batch runner."""
+    mask = attention_mask.unsqueeze(-1).to(hidden.dtype)
+    return (hidden * mask).sum(dim=1).float() / mask.sum(dim=1).clamp(min=1e-9).float()
 
 
 def yes_no_ids(tokenizer) -> tuple[int, int]:
@@ -84,7 +96,7 @@ class LocalModels:
 
     def _torch_model(self, role, cpu=False):
         import torch
-        from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
+        from transformers import AutoConfig, AutoModel, AutoModelForCausalLM, AutoTokenizer
 
         if role in self.loaded:
             return self.loaded[role]
@@ -96,10 +108,23 @@ class LocalModels:
         tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True,
                                                   trust_remote_code=False,
                                                   padding_side='right' if role == 'embedding' else 'left')
-        factory = AutoModel if role == 'embedding' else AutoModelForCausalLM
-        model = factory.from_pretrained(path, local_files_only=True, trust_remote_code=False,
-                                        dtype=torch.float32,
-                                        attn_implementation='sdpa').eval()
+        if role == 'embedding':
+            # Retrieval uses the text tower alone. Building the vision and audio
+            # towers would load 740M instead of 271M, and the audio tower has no
+            # SDPA kernel at all, so requesting sdpa fails the whole load. The
+            # 512->768 projection lives inside the text tower, which upstream
+            # notes is equivalent to projecting after the mean pool.
+            config = AutoConfig.from_pretrained(path, local_files_only=True)
+            config.vision_config = None
+            config.audio_config = None
+            wrapper = AutoModel.from_pretrained(path, config=config, local_files_only=True,
+                                                trust_remote_code=False, dtype=torch.float32,
+                                                attn_implementation='sdpa').eval()
+            model = getattr(wrapper, 'language_model', wrapper)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(path, local_files_only=True, trust_remote_code=False,
+                                                         dtype=torch.float32,
+                                                         attn_implementation='sdpa').eval()
         # Record selected device before transfer so a failed MPS transfer can retry on CPU.
         self.devices[role] = device
         model = model.to(device)
@@ -124,9 +149,12 @@ class LocalModels:
                                        padding=True, truncation=True, max_length=CONTEXT_TOKENS,
                                        return_tensors='pt').to(self.devices[role])
                     hidden = model(**inputs, use_cache=False).last_hidden_state
-                    last = inputs['attention_mask'].sum(dim=1) - 1
-                    pooled = hidden[torch.arange(hidden.shape[0], device=hidden.device), last]
-                    output = torch.nn.functional.normalize(pooled.float(), p=2, dim=1)
+                    if hidden.shape[-1] != EMBEDDING_DIMENSIONS:
+                        raise RuntimeUnavailable(
+                            f'embedding width {hidden.shape[-1]} is not the pinned '
+                            f'{EMBEDDING_DIMENSIONS}; check models.json and the projection head')
+                    pooled = mean_pool(hidden, inputs['attention_mask'])
+                    output = torch.nn.functional.normalize(pooled, p=2, dim=1)
                 else:
                     inputs = reranker_inputs(tokenizer, request['query'], batch).to(self.devices[role])
                     no, yes = yes_no_ids(tokenizer)
@@ -143,7 +171,8 @@ class LocalModels:
         if request['op'] == 'generate':
             return self._generate(request)
         role = 'embedding' if request['op'] == 'embed' else 'reranker'
-        if role == 'embedding' and self.devices.get(role) not in ('mps', 'cpu'):
+        if (role == 'embedding' and MLX_EMBEDDING_MODULE
+                and self.devices.get(role) not in ('mps', 'cpu')):
             try:
                 return self._mlx_embed(request)
             except RuntimeDeadline:
@@ -193,6 +222,8 @@ class LocalModels:
         from mlx_lm import load, stream_generate
         from mlx_lm.sample_utils import make_sampler
 
+        if 'generation' not in installation_status(self.cache_dir)['models']:
+            raise RuntimeUnavailable('no generation model is pinned; this runtime serves retrieval only')
         if 'generation' not in self.loaded:
             path = self._path('generation')  # Existence checked before mlx-lm's download branch.
             if not mx.metal.is_available():

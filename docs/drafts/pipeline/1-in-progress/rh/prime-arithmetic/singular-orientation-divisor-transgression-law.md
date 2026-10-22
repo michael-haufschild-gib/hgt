@@ -66,7 +66,7 @@ It does not assert RH or assume a zero-location statement.
   - `map_reflectionOrientation_eq_one_of_hyperbolic_regular`
   - `hyperbolic_smul_antiInvariant_eq_zero`
   - `antiInvariant_eq_zero_of_hyperbolic_smul_injective`
-- `formal/GaloisForLFunctions/RHTower/HedenmalmOrientationDivisorTransgression.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmOrientationDivisorTransgression.lean`
   - multiplicity-exact removable germ and punctured identification
   - nonzero order-jump singularity theorem
   - infinite positive-translation order-jump carrier

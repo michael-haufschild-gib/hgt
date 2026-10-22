@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiBoundaryPoissonDensity
-import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovTransform
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszMarkovTransform
 import GaloisForLFunctions.HTGeometry.HalfLineTransportDistance
 
 /-!

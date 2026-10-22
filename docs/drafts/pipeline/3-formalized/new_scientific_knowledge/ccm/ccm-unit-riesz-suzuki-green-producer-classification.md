@@ -3,7 +3,7 @@
 - **ID:** `ccm-unit-riesz-suzuki-green-producer-classification`
 - **Stage:** 3-formalized
 - **Type:** EXACT SOURCE WELD / RH-EQUIVALENT PRODUCER CLASSIFICATION
-- **Lean:** `GaloisForLFunctions/RHTower/CCMUnitRieszSuzukiGreenProducerClassification.lean`
+- **Lean:** `GaloisForLFunctions/RHTower/CCM/CCMUnitRieszSuzukiGreenProducerClassification.lean`
 - **Status:** `[LEAN FORMALIZED] [LEAF BUILT] [WIRED] [NOT AN RH PROOF]`
 
 ## Formalized result
@@ -23,7 +23,7 @@ constant classification is recorded separately in `ccm-unit-riesz-sharp-pole-cla
 
 ## Audit
 
-- [x] `lake env lean GaloisForLFunctions/RHTower/CCMUnitRieszSuzukiGreenProducerClassification.lean`
+- [x] `lake env lean GaloisForLFunctions/RHTower/CCM/CCMUnitRieszSuzukiGreenProducerClassification.lean`
 - [x] exact leaf build
 - [x] umbrella wiring
 - [x] capstone axiom audit: only `propext`, `Classical.choice`, `Quot.sound`

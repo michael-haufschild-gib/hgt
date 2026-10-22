@@ -24,7 +24,7 @@ external novelty unverified.
 
 ## Lean theorem surface
 
-Module: `RHTower/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`.
+Module: `RHTower/ThetaCusp/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`.
 
 - `xiRelativeResolventTerm_lineConj_pair_im_pos_of_halfPlaneBound`: strict paired atom sign.
 - `xiRelativeResolventTrace_im_pos_of_halfPlaneBound`: strict full trace sign.

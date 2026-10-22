@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DerivedPolarizationLaw
-import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHodge
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticOrientedHodge
 import GaloisForLFunctions.RHTower.PurityCurvatureExponentialTransgression
 import GaloisForLFunctions.RHTower.XiSourceEntropyCauchyTomography
 

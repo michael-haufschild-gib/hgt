@@ -277,7 +277,7 @@ DERIVED GLOBAL-SECTION COMPARISON CLOSED UNCONDITIONALLY`.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRestrictedPrimeSheaf.lean`.  Axiom audit for all 4
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRestrictedPrimeSheaf.lean`.  Axiom audit for all 4
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerWeighted_summable_of_finiteCover` — **the gluing estimate `(8)`**: a nonnegative weight
@@ -307,7 +307,7 @@ The strict splitting `(10)` is the split-leg situation already proved in
 
 ### The sheaf itself
 
-`formal/GaloisForLFunctions/RHTower/DeningerRestrictedPrimeGluing.lean` builds the object and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRestrictedPrimeGluing.lean` builds the object and
 proves the sheaf axiom, over an arbitrary family of `ℝ`-modules with two seminorms and two
 nonnegative weight systems — which is `(4)`--`(5)` with the completeness of the value spaces
 dropped, that being the only ingredient mathlib cannot express.  Axiom audit for all 13
@@ -338,7 +338,7 @@ The earlier record said the card stayed at stage 2 "for one reason only: its val
 space, no strict inductive limit, no completed direct sum, and no derived category of sheaves in
 which to state `(6)`--`(7)`."  Each clause of that is now discharged.
 
-`formal/GaloisForLFunctions/RHTower/DeningerMixedPrimeBanach.lean`.  Axiom audit for all 10
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMixedPrimeBanach.lean`.  Axiom audit for all 10
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerLpEval` — coordinate evaluation on `lp`, as a continuous linear map of norm at most one.

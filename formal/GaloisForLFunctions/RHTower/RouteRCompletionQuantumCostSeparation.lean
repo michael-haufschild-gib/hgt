@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRExternalTensorMonodromy
-import GaloisForLFunctions.RHTower.DeningerBigWittPrimeSeamDirichletTransport
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittPrimeSeamDirichletTransport
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixPairedDefectGaussHodgeCurvature
 
 /-!

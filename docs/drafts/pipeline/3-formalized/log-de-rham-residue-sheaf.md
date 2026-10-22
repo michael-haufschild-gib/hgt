@@ -102,19 +102,19 @@ Landed, axiom audit `propext, Classical.choice, Quot.sound` for every declaratio
   the complex homogeneity of the antiholomorphic Wirtinger functional; `dzbarAt_coord`, a
   coordinate is holomorphic; `coordSetForm` and **`setDbar_coordSetForm`**: multiplying a form by a
   coordinate commutes with the Dolbeault operator.
-- `formal/GaloisForLFunctions/RHTower/DeningerDivisorInclusion.lean` — `deningerDivisorMap`,
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDivisorInclusion.lean` — `deningerDivisorMap`,
   appending a zero last coordinate; its injectivity, continuity, and the fact that it commutes with
   updating an earlier coordinate; **`dzbarAt_comp_divisorMap`**: the antiholomorphic derivatives
   restrict to the divisor, which is a definitional consequence of that commutation;
   `deningerDivisorPullback` and `setDbar_deningerDivisorPullback`.
-- `formal/GaloisForLFunctions/RHTower/DeningerStructureSheafMaps.lean` — **`deningerCoordMul`**,
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerStructureSheafMaps.lean` — **`deningerCoordMul`**,
   multiplication by a coordinate as an endomorphism of the sheaf of holomorphic functions;
   **`deningerDivisorInclusion`**, the divisor as a map of spaces; **`deningerDivisorRestrict`**,
   restriction to the divisor as a morphism to the direct image of the structure sheaf of the
   divisor; **`deningerCoordMul_comp_restrict`**, the composite vanishes; and
   **`deningerCoordMul_mono`**: multiplication by a coordinate is a monomorphism, because a form it
   kills vanishes off the coordinate's zero set and hence, being continuous, on it too.
-- `formal/GaloisForLFunctions/RHTower/DeningerDivisorExtension.lean` — `deningerChopMap`, forgetting
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDivisorExtension.lean` — `deningerChopMap`, forgetting
   the last coordinate, with the two computations of the antiholomorphic derivatives of a function
   pulled back along it; **`deningerDivisorRestrict_locallySurjective`** and
   **`deningerDivisorRestrict_epi`**: off the divisor the trace of a small neighbourhood is empty, so
@@ -241,7 +241,7 @@ already used for `deningerDivisorRestrict_locallySurjective`.
 
 ## The ideal sheaf, and the one statement left
 
-`formal/GaloisForLFunctions/RHTower/DeningerDivisorIdeal.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDivisorIdeal.lean`.  Axiom audit
 `propext, Classical.choice, Quot.sound`.
 
 Exactness of `0 → O --·z--> O --restrict--> i_* O_D → 0` in the middle is now a *factorisation*
@@ -312,7 +312,7 @@ sequence and steps 1--4 of this card.
 ## The ideal sequence is short exact — the card is closed
 
 **`deningerIdealSequence_shortExact`** in
-`formal/GaloisForLFunctions/RHTower/DeningerDivisorIdeal.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDivisorIdeal.lean`.  Axiom audit
 `propext, Classical.choice, Quot.sound`.
 
     0 → O --·z--> O --restrict--> i_* O_D → 0

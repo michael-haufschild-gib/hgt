@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiTailSummatoryErrorTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTailSummatoryErrorTransform
 import GaloisForLFunctions.RHTower.ShiftedEulerMobiusSynthesis
 import GaloisForLFunctions.RHTower.Sieve.ConvolutionSummatorySwap
 import GaloisForLFunctions.RHTower.GaussSpikeMass

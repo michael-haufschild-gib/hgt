@@ -8,7 +8,7 @@ The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent tens
 
 ## Literal full-source identity
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeGoursat`. Namespace: `RHTower.D4BMNativeCircle`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeGoursat`. Namespace: `RHTower.D4BMNativeCircle`.
 
 Write `Q(X,k)=fullSquarePotential q ![X,exp(k)]`, the complete theta half-square. The existing native kernel is
 
@@ -68,7 +68,7 @@ Broad Darboux and Friedrichs searches found the actual full-source Darboux equat
 
 The proof uses the existing full-source characteristic contact and actual mathlib FTC with endpoint limits. Candidate declarations and source-argument views were inspected. Searches reported incomplete semantic coverage and predominantly source-only metadata; a later squared-radius smoothness search also reached its deadline. No generated ingredient group was accepted as a proof.
 
-Validation: `lake env lean` checked the scratch proof. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeGoursat` passed in 38 seconds, three jobs, using an isolated exact-module audit with 3,944 existing own-module caches and 11 package caches. No dependency, full or umbrella rebuild was run. The 455-line source and five build artifacts were installed byte-identically to the audit. The unique import is wired into `formal/GaloisForLFunctions/RHTower.lean` without building that umbrella.
+Validation: `lake env lean` checked the scratch proof. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeGoursat` passed in 38 seconds, three jobs, using an isolated exact-module audit with 3,944 existing own-module caches and 11 package caches. No dependency, full or umbrella rebuild was run. The 455-line source and five build artifacts were installed byte-identically to the audit. The unique import is wired into `formal/GaloisForLFunctions/RHTower.lean` without building that umbrella.
 
 Only `nativeRiemannKernel_goursat` and `nativeDirichletCausalKernel_volterra` were checked with `#print axioms`; both report exactly `[propext, Classical.choice, Quot.sound]`. Formal lint passed with existing large-file warnings. Module-filtered corpus discovery finds both public theorems at source lines 392 and 442. Mathematical computations were not run. The frontier map and route-independent STATUS ledger were not modified.
 

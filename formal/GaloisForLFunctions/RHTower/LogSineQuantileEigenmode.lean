@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LogSineQuantileNonrealZeros
 import GaloisForLFunctions.RHTower.LogSineQuantileEndpoint
-import GaloisForLFunctions.RHTower.HedenmalmPinnedVolterraBoundaryDefect
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPinnedVolterraBoundaryDefect
 
 /-!
 # Nonreal modes of the literal singular quantile inverse

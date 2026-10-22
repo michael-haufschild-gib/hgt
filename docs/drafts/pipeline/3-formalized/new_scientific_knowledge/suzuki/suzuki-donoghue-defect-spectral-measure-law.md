@@ -339,7 +339,7 @@ dependency-closed analytic connectors used by this theorem:
 4. the exact Donoghue kernel decomposition `(8)` and atomic scaling `(1+x^2)p_x`.
 
 These connectors are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSpectralMeasure.lean` as
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueSpectralMeasure.lean` as
 
 ```text
 suzukiHerglotz_eq_twoAngleDonoghueQuotient
@@ -394,7 +394,7 @@ an eigenbasis.
 
 **`(14)`, the canonical interlacing, is formal** — it was not among the connectors above, and its
 conclusion is carried by a "Therefore" in section 4.  In
-`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueInterlacing.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueInterlacing.lean`:
 
 - `nevanlinnaWeight`, `nevanlinnaWeight_pos`: the atom weight `(1+t²)p`, positive when the mass is.
 - `donoghuePurePoint_eq_cauchySum`: **the pure-point Donoghue transform is a positive-weight Cauchy

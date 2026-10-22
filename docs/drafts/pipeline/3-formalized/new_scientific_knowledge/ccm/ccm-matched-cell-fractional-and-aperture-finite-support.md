@@ -94,9 +94,9 @@ principle independently exposed by reporter-secant transition-core escape.
 
 ## Lean certificates
 
-- `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedSymmetricFirstMomentControl.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedSmoothCoreConvergence.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedApertureFiniteSupport.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedSymmetricFirstMomentControl.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedSmoothCoreConvergence.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedApertureFiniteSupport.lean`
 
 Key declarations:
 

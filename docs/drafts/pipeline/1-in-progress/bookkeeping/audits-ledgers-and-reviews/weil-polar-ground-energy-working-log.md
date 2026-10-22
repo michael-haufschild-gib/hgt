@@ -97,7 +97,7 @@ with the prime 2 to λ = 1.433 (> √2). Floating-point stage; interval evaluati
   "threshold 1.19" was the archimedean-only form.  A first run with width 0.25 had a far-tail bound
   carrying a spurious factor `e^{−S/2}`; fixed.  An earlier version dropped the prime-2 term for
   `S ≥ log 3`; fixed (all `n ≥ 2` with `log n < S`, coefficient `2Λ(n)/√n`).
-- Lean: `RHTower/SuzukiWeilConstrainedKernelForm.lean` (wired after `CCMRestrictedWeilPolarBombieriYoshida`):
+- Lean: `RHTower/Suzuki/SuzukiWeilConstrainedKernelForm.lean` (wired after `CCMRestrictedWeilPolarBombieriYoshida`):
   `suzukiRestrictedWeilForm_eq_constrainedKernelForm` — Suzuki's form equals
   `A(S) g(0) + ∫_0^S K₊(h)(g(0) − g(h)) dh + 2(∫e^{x/2}u)(∫e^{−x/2}u) + prime block`, with
   `K₊ = e^{h/2}/sinh h = 2e^{−h/2}/(1−e^{−2h})` and

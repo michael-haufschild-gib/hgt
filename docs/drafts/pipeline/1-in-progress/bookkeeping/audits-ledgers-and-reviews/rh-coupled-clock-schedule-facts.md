@@ -100,7 +100,7 @@ or supply an independent uniform comparison that proves that control.
 
 ## Current-clock source-depth boundary
 
-The [current-clock depth certificate](../../rh-current-clock-depth-facts.md) proves
+The [current-clock depth certificate](rh-current-clock-depth-facts.md) proves
 that certain inherited prime debts over every nonempty even prime core
 cannot be repaid using only bounded-quotient helper windows. Even at an
 arbitrarily later cutoff `L ≥ M`, repayment requires a fresh helper `q`
@@ -111,7 +111,7 @@ producer controlling deeper child fields remains missing.
 
 ## Current-clock positive producer
 
-The [current-clock payment certificate](../../rh-current-clock-payment-facts.md)
+The [current-clock payment certificate](rh-current-clock-payment-facts.md)
 constructs actual batches of size `capacity-1` with the full logarithmic
 weight retained. Every prefix costs at most `R² M`; the endpoint removes
 the initial weighted receiving square plus `delta M²`. Constants are uniform

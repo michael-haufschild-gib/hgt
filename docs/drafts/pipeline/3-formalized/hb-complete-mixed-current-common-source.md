@@ -12,12 +12,12 @@ These results address the SV–SV cancellation coefficient by putting every boun
 
 ## Exact Lean scope
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedRadialActionCurrent`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedRadialActionCurrent`:
 
 - `RHTower.D4BMMixedActionCurrent.mixed_complete_action_current`: actual volume-weighted Einstein action variation at every original exterior point equals `completeCurrentDensity` in all four coordinate directions. The mixed metric entries and first jets are free; no field equation or boundary condition is assumed.
 - `RHTower.D4BMMixedActionCurrent.stream_complete_action_current`: substituting `streamMetricJet` gives the full `streamCurrentDensity`, with `streamAngularAction` and `streamMasterValue` retained. This evaluates reconstructed metric jets; it does not assert that arbitrary covector jets satisfy the coexact field equation.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCommonRadialSource`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCommonRadialSource`:
 
 - `RHTower.D4BMCommonRadialSource.timeOriginalForcing_common_source`: for every actual Xi copy, either branch, original angular point and exterior tortoise coordinate, `timeOriginalForcing` equals `-2(1-u²)u commonSource`. Its two seed inputs contain the actual theta half-square and its actual Laplacian. All source and radial differentiation facts are discharged internally.
 - `RHTower.D4BMCommonRadialSource.commonSource_differential_form`: the same operator in ordinary radial derivative form, with no differentiation or division of the fixed onset.

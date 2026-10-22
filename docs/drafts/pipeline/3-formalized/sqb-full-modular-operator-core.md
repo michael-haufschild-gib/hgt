@@ -82,7 +82,7 @@ noncompact convergence or spectral-occurrence conclusions is asserted here.
 
 ## Lean module and audit
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullCoreOperator`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullCoreOperator`.
 Namespace: `RHTower.D4BMModularCore`.
 
 The eleven public declarations comprise compact orbit summability; existence,

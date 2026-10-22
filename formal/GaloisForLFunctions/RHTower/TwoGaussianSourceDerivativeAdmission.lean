@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.TwoGaussianSourceCounterexample
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 import GaloisForLFunctions.RHTower.HermiteGaussianEnvelope
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas

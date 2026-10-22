@@ -74,7 +74,7 @@ repository. No Lean closure is claimed here.
 
 ## Formalized (2026-09-27)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMTimeLiftStreamJet.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMTimeLiftStreamJet.lean`
 (namespace `RHTower.D4BMPhysicalLiftCurrent`):
 
 - `timeLiftStream q s a j x = profile(s,a,r) · timeOnset(2s, t + tortoise r) ·

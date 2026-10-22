@@ -381,7 +381,7 @@ nonerasure dichotomy. External priority unverified; no new general-theorem claim
 ## Lean-return note
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean`
 (wired into `GaloisForLFunctions.RHTower`).  Theorems A--D, the target-coefficient no-go and the
 constitutive dichotomy are green and unconditional; the declaration-by-equation map, the corpus
 reuse ledger and the axiom audit are in the companion card

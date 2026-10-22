@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergMaassFourierModes
-import GaloisForLFunctions.RHTower.DeningerFourierBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerFourierBridge
 
 /-!
 # Physical mass and quarter-energy Parseval identities for Maass slices

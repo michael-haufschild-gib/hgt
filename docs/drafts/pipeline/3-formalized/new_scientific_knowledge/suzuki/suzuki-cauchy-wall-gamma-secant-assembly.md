@@ -81,7 +81,7 @@ be stated without dropping or scalarizing Gamma channel first.
 
 ## Lean certificate
 
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiCauchyWallGammaSecantAssembly`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyWallGammaSecantAssembly`
 - **Reporter secant:** `suzukiUnitRieszReporterWallSecant_neg_I`
 - **Literal Gamma evaluation:** `suzukiUnitRieszArchWallSecant_neg_I`
 - **Literal polar evaluation:** `suzukiUnitRieszPolarWallSecant_neg_I`

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerBigWittRing
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittRing
 import GaloisForLFunctions.RHTower.FrankensteinMeyerPrimeKoszulGammaReporter
 
 /-!

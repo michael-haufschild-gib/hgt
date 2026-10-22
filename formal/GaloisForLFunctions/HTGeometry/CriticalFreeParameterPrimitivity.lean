@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FracXTranscendental
-import GaloisForLFunctions.HTGeometry.CriticalGeometricFieldPrimitivity
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.FieldPrimitivity
 
 /-!
 # The critical tower keeps its primitivity over a free parameter

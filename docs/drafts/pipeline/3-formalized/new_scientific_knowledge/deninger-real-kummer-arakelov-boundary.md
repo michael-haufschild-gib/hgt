@@ -11,10 +11,10 @@
   together with finite valuations its cokernel is the unique
   Arakelov orientation line.
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerRealKummerArakelovBoundary`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRealKummerArakelovBoundary`
   (`DAC_REAL_KUMMER_ARAKELOV_BOUNDARY`),
-  `GaloisForLFunctions.RHTower.DeningerSquareZeroKummerBoundary` (`(10)`--`(11)`),
-  `GaloisForLFunctions.RHTower.DeningerArakelovBoundarySheaf`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSquareZeroKummerBoundary` (`(10)`--`(11)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArakelovBoundarySheaf`
   (`DAC_ARAKELOV_BOUNDARY_SHEAF`, `(1)`--`(2)`)
 
 ## Arakelov boundary sheaf
@@ -232,7 +232,7 @@ All declarations live in the `RHTower` namespace.  Real prime coordinates are `�
 - `deningerArchBoundary_abs_le` : `|∂_∞ d| ≤ ∑_p log p |d_p|` — equation `(9)`.
 
 **Equation `(4)`, the product formula, formalized in full.**  In
-`GaloisForLFunctions/RHTower/DeningerRationalPrimeFactorization.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerRationalPrimeFactorization.lean`:
 
 - `deningerRatExp_prod_eq` : a positive rational is the product of its prime powers;
 - `deningerLog_eq_sum` : `log q = ∑_p ord_p(q) log p`.
@@ -247,7 +247,7 @@ Sign-insensitivity, i.e. that all of this descends to `ℚ^× / {±1}`, is
 `deningerRatExp_neg` / `deningerRatExp_abs`.
 
 **Square-zero Milnor extension `(10)`--`(11)`, formalized.**  In
-`GaloisForLFunctions/RHTower/DeningerSquareZeroKummerBoundary.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerSquareZeroKummerBoundary.lean`:
 
 - `deningerAugmentation_leibniz` : for an augmented real algebra, a linear functional that kills
   the unit and every product of two elements of the augmentation ideal automatically satisfies
@@ -275,7 +275,7 @@ the Milnor algebra rather than on a formalized graded Milnor `K`-theory: mathlib
 algebra is quasi-isomorphic to that square-zero model.
 
 **The boundary sheaf `(1)`, formalized.**  In
-`GaloisForLFunctions/RHTower/DeningerArakelovBoundarySheaf.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerArakelovBoundarySheaf.lean`:
 
 - `deningerArakelovBoundarySheaf` : the prescription `(1)` realized as the skyscraper sheaf at
   the generic point of `Spec ℤ` with value the real orientation line.  The card's own remark that
@@ -293,7 +293,7 @@ So everything in `DAC_ARAKELOV_BOUNDARY_SHEAF` except the single step "flasque, 
 
 `DAC_ARAKELOV_BOUNDARY_SHEAF` `(2)` is not.  Its arithmetic input is formalized —
 `deningerSpecZGeneric_mem_of_isOpen` in
-`GaloisForLFunctions.RHTower.DeningerSpecZCofiniteRecollement` proves that every nonempty open of
+`GaloisForLFunctions.RHTower.Deninger.DeningerSpecZCofiniteRecollement` proves that every nonempty open of
 `Spec ℤ` contains the generic point, which is exactly why the prescription `(1)` is a sheaf and
 why all its restrictions between nonempty opens are the identity, hence surjective, hence
 flasque.  What is missing is `(2)`.
@@ -324,9 +324,9 @@ lemma.
 ### Verification
 
 - Direct commands: `lake env lean` on
-  `GaloisForLFunctions/RHTower/DeningerRealKummerArakelovBoundary.lean`,
-  `GaloisForLFunctions/RHTower/DeningerSquareZeroKummerBoundary.lean` and
-  `GaloisForLFunctions/RHTower/DeningerArakelovBoundarySheaf.lean`
+  `GaloisForLFunctions/RHTower/Deninger/DeningerRealKummerArakelovBoundary.lean`,
+  `GaloisForLFunctions/RHTower/Deninger/DeningerSquareZeroKummerBoundary.lean` and
+  `GaloisForLFunctions/RHTower/Deninger/DeningerArakelovBoundarySheaf.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all declarations of the three modules and the two product-formula
   lemmas: only the Lean/mathlib standard `propext`, `Classical.choice`, and `Quot.sound`.

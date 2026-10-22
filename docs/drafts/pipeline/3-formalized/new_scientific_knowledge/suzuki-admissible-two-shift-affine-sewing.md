@@ -9,7 +9,7 @@
   and Sections 6--8.
 - **Parents:** `suzuki-shifted-xi-target-flat-pencil`,
   `suzuki-opposite-shift-cross-sewn-exterior-product`.
-- **Lean module:** `GaloisForLFunctions.RHTower.SuzukiAdmissibleTwoShiftAffineSewing`
+- **Lean module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiAdmissibleTwoShiftAffineSewing`
 
 ## Corpus frontier and falsified predecessor
 

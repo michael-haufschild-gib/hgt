@@ -152,7 +152,7 @@ complete Hermite basis, and proves the cutoff compression equals the already ide
 Hankel block before transporting the result to `[H,M_f]`.
 
 Audit evidence: file Lean passed; targeted build
-`GaloisForLFunctions.RHTower.CCMArchimedeanInfiniteOrder` passed; formal lint passed; `#print
+`GaloisForLFunctions.RHTower.CCM.CCMArchimedeanInfiniteOrder` passed; formal lint passed; `#print
 axioms` for both the compression equality and final theorem reports only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
@@ -206,7 +206,7 @@ support-limited inequality without numerical spectral input. Repackaging
 be rediscovery.
 
 Audit evidence: all three geometric-kernel files pass `lake env lean`; targeted build
-`GaloisForLFunctions.RHTower.CCMArchimedeanGeometricCompositeKernel` passes; and `RHTower.lean`
+`GaloisForLFunctions.RHTower.CCM.CCMArchimedeanGeometricCompositeKernel` passes; and `RHTower.lean`
 elaborates with all modules umbrella-wired. `#print axioms` for the scattering kernel,
 sharp-commutator kernel, composite distributional pairing, and diagonal nonintegrability endpoint
 reports only `propext`, `Classical.choice`, and `Quot.sound`. At that audit, global formal lint was

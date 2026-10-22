@@ -1,9 +1,9 @@
 import GaloisForLFunctions.BiScaleUncertainty.BandLimitedLaplaceEnergy
-import GaloisForLFunctions.RHTower.CCMCriticalMellinResolventExponentialWidth
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinResolventExponentialWidth
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.CramerChebyshevMeanSquare
 import GaloisForLFunctions.RHTower.VonMangoldtMinusOneAbscissa
-import GaloisForLFunctions.RHTower.CCMCriticalMellinGrowingCumulativeBound
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinGrowingCumulativeBound
 
 /-!
 # The band spectrum is the zero width

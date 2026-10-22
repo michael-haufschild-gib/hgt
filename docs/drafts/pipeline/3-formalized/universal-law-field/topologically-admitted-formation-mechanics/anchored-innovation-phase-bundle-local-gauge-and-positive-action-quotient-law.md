@@ -210,7 +210,7 @@ Formalized exactly in:
   invariance, strict one-site nonfaithfulness, endpoint and global holonomy reconstruction,
   functional-equation reflection as the constant `-1` gauge, global reflection invariance of
   adjacent holonomy, and a zero-argument certificate;
-- `GaloisForLFunctions.RHTower.SuzukiFormationInnovationPhaseGauge`: literal completed Suzuki
+- `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationPhaseGauge`: literal completed Suzuki
   current, one-step energy, accumulated variance, conditioned aligned-Gamma readout, strict
   one-site separation, and a zero-argument literal certificate.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstClockWoldXiDepthCapacityNoGo
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockWoldXiDepthCapacityNoGo
 import Mathlib.Analysis.InnerProductSpace.l2Space
 
 /-!

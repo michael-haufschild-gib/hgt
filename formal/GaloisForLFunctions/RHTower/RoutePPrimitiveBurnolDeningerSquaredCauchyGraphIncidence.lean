@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveBurnolWardResolvedGeneratorGraph
-import GaloisForLFunctions.RHTower.DeningerPrimeGammaReflectedDiagonal
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeGammaReflectedDiagonal
 
 /-!
 # Route P primitive Burnol / Deninger squared-Cauchy graph incidence

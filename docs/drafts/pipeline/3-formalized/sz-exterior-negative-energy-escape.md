@@ -71,7 +71,7 @@ limit, eventual negative-tail energy lower law and exterior negative-point
 consequence for every actual positive aperture.
 
 - Scratch26419: exit0. Final33353: exit0, no diagnostics.
-- Final command: `lake --old env lean GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExteriorPacketNegativeEnergyEscape.olean`.
+- Final command: `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMExteriorPacketNegativeEnergyEscape.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMExteriorPacketNegativeEnergyEscape.olean`.
 - Axiom90720: all10 public declarations use only propext, Classical.choice,
   Quot.sound; no new axioms or hypothesis of Weil positivity.
 - One umbrella import; no umbrella/full build or heartbeat override.

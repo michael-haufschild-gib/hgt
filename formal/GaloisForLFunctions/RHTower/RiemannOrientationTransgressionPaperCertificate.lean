@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittOrientationTransgressionCompleteness
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittOrientationTransgressionCompleteness
 import GaloisForLFunctions.RHTower.RiemannDenseSourceClosedAdmissionLaw
 
 /-!

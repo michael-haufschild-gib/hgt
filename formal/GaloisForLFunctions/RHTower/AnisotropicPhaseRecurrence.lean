@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 import Mathlib.Data.Fintype.Pigeonhole
 
 /-!

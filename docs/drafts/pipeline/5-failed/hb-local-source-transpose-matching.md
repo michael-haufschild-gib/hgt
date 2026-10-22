@@ -37,7 +37,7 @@ Whole-route consequence: this obstruction is to the whole differentiable **radia
 
 ## Lean audit
 
-[ThetaCuspHawkingBMLocalSourceTransposeRigidity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMLocalSourceTransposeRigidity.lean), namespace `RHTower.D4BMLocalTranspose`:
+[ThetaCuspHawkingBMLocalSourceTransposeRigidity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMLocalSourceTransposeRigidity.lean), namespace `RHTower.D4BMLocalTranspose`:
 
 - `exists_sourceContact_ne_zero`: actual contact nonvanishing.
 - `source_weight_derivative`, `source_weight_classification`, `preservesSource_iff`: forced equation and exact converse classification.

@@ -195,7 +195,7 @@ Verification:
 
 ```text
 lake env lean \
-  GaloisForLFunctions/RHTower/SuzukiPositionTorquePrimeClockIrreducibility.lean
+  GaloisForLFunctions/RHTower/Suzuki/SuzukiPositionTorquePrimeClockIrreducibility.lean
 ```
 
 passed with no `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or computation.

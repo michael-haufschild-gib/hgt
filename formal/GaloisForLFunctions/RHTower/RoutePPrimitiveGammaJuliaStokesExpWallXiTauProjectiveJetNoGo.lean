@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaStokesWallFirstJetInvariant
 import GaloisForLFunctions.RHTower.CanonicalXiSeamLogEquivalence
-import GaloisForLFunctions.RHTower.ThetaCuspCalibratedPowerReciprocalSecondMomentLaw
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCalibratedPowerReciprocalSecondMomentLaw
 import GaloisForLFunctions.HTGeometry.MaximumTermLogarithmicDerivative
 
 /-!

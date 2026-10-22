@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSoninPathTropicalMemory
+import GaloisForLFunctions.RHTower.CCM.CCMSoninPathTropicalMemory
 
 /-!
 # Sonin tropical Calkin path universality

@@ -6,9 +6,9 @@
 - **Paper proof:** `./suzuki-paired-seam-carleman-logistic-normal-form.md`
 - **Lean:**
   - `formal/GaloisForLFunctions/HTGeometry/ReflectionIntegral.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPairedSeamScalar.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLogisticCoupling.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPairedSeamNormalForm.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPairedSeamScalar.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLogisticCoupling.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPairedSeamNormalForm.lean`
 
 ## Formal content
 

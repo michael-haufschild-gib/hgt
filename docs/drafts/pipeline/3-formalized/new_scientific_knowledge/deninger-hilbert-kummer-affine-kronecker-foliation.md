@@ -7,9 +7,9 @@
   `DAC_RESIDUAL_DENSE_KUMMER_LEAVES`
 - **Parent:** `deninger-kahler-riemann-arithmetic-leaf-realization`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerKronecker` (the nonvanishing of `(5)`, deck invariance of
-  `x`), `GaloisForLFunctions.RHTower.DeningerLeafwiseKahler` (`(10)`, `(11)`, `(12)`),
-  `GaloisForLFunctions.RHTower.DeningerResidualLeaves` (`(15)`)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerKronecker` (the nonvanishing of `(5)`, deck invariance of
+  `x`), `GaloisForLFunctions.RHTower.Deninger.DeningerLeafwiseKahler` (`(10)`, `(11)`, `(12)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerResidualLeaves` (`(15)`)
 - **Statement:** the Hilbert--Kummer modulus Euler field and its
   associated Kronecker phase field define a canonical
   two-real-dimensional integrable distribution on the nonunitary
@@ -270,7 +270,7 @@ work is:
 
 ### The Kronecker nonvanishing and the deck-invariant radius landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKronecker.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKronecker.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerOrthogonal_denseSpan_eq_zero` — **a vector orthogonal to a family with dense span is
@@ -289,12 +289,12 @@ work is:
 
 `(10)` and `(11)` — `*α = β`, `*β = -α`, `*² = -1`, and `γ ∧ *γ > 0` for `γ ≠ 0` — are
 `deningerLeafStar_star`, `deningerLeafStar_du/dv` and `deningerLeafWedge_star_pos` in
-`GaloisForLFunctions.RHTower.DeningerLeafwiseKahler`, together with the Kähler scaling law
+`GaloisForLFunctions.RHTower.Deninger.DeningerLeafwiseKahler`, together with the Kähler scaling law
 `deningerLeafFlow_wedge` for `(12)`.  They are not reproved here.
 
 ### The residual dense locus `(15)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerResidualLeaves.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerResidualLeaves.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerNonPerp v = {h | ⟪v, h⟫ ≠ 0}`, with `deningerNonPerp_isOpen` — the complement of an
@@ -319,7 +319,7 @@ Pontryagin duality for compact abelian groups.
 
 ### Weyl's criterion and Kronecker's theorem in `d` dimensions landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerExpAverage.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExpAverage.lean`,
 `DeningerTorusFlow.lean`, `DeningerWeylCriterion.lean`, `DeningerKroneckerDense.lean`.
 Axiom audit: `propext, Classical.choice, Quot.sound` throughout.
 
@@ -353,7 +353,7 @@ This is the theorem `(15)` invoked as "Pontryagin duality"; none of it existed i
 
 ### The affine leaf distribution `(1)`--`(7)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAffineLeafFlow.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAffineLeafFlow.lean`,
 `DeningerAffineLeafSymmetry.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 

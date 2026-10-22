@@ -40,7 +40,7 @@ boundary coefficient. It is not the final opposite-QNM projection of the full th
 
 ## Lean result
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicRadialBoundaryUniqueness.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicRadialBoundaryUniqueness.lean`
 contains a boundary-problem predicate, the canonical coefficient definition, and nine public
 theorems. The predicate requires actual first and second derivatives and the literal forced BM
 expression. Uniqueness itself does not assume continuity of the source. Existence and equality
@@ -60,7 +60,7 @@ nonzero Wronskian from the existing source geometry, without an inverse-map prem
 ## Verification
 
 Scratch `lake env lean` passed without warnings. Final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicRadialBoundaryUniqueness`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicRadialBoundaryUniqueness`
 passed in **8.2 seconds**, **2 jobs**, in an isolated exact-source leaf package using the
 project's toolchain and cached import directories. No dependency or umbrella build ran.
 Only the new leaf's olean/ilean were installed in the workspace cache. Source bytes matched

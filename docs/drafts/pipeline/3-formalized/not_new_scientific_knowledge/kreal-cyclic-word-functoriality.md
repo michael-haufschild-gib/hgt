@@ -74,7 +74,7 @@ on pure tensors, hence on the whole tensor product.
 Modules:
 
 - `GaloisForLFunctions.RHTower.KRealCyclicWord`;
-- `GaloisForLFunctions.RHTower.CCMRationalCyclicRealCore`.
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalCyclicRealCore`.
 
 Formal capstones:
 

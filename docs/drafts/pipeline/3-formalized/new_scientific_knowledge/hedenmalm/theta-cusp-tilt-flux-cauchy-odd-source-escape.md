@@ -73,7 +73,7 @@ steps in Lean.
 
 ## Lean sources
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParityCauchyLocalization.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParityCauchyLocalization.lean`
 
 Key closed declarations:
 
@@ -87,7 +87,7 @@ exists_twoCauchyPacket_eventually_oddEnergy_gt_evenEnergy
 riemannHypothesis_iff_regularTwoCauchyParityDomination
 ```
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParityCauchySourceEscape.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParityCauchySourceEscape.lean`
 
 Key closed declarations:
 

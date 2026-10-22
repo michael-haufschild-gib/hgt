@@ -70,7 +70,7 @@ of zero. Therefore its proposed global nonnegativity premise is formally false.
 ## Lean certificate
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureVelocityFirstAtomCurvatureSeamNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFifthRootCurvatureVelocityFirstAtomCurvatureSeamNoGo.lean`
 - Seam decomposition:
   `thetaCuspReflectedLogJetTwo_zero_zero_eq_likelihood`
 - Exact stripped-core jets:

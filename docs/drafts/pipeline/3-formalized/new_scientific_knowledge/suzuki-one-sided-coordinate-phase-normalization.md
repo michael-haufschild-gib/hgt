@@ -5,7 +5,7 @@
 - **Type:** SOURCE CORRECTION / THEOREM / FRONTIER REOPENING
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[NOVELTY SEARCH: NO MATCH] [NOT AN RH PROOF]`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiCarlemanCoordinatePhase`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanCoordinatePhase`
 - **RH used:** no
 - **Computation used:** no
 - **Primary sources:** M. Suzuki, *Aspects of the screw function corresponding to the Riemann

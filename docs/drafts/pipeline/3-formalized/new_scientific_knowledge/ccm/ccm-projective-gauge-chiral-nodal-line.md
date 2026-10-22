@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** NEW SCIENTIFIC KNOWLEDGE
 - **Source:** whole-corpus weld: actual matched CCM chiral Schatten frame × `SourceOrderedPairComplexStructure` × odd skew-packet singularity × finite Hankel Krein crossing
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine`
 - **Status:** closed and unconditional; not an RH proof
 
 ## Result
@@ -58,8 +58,8 @@ assuming an RH-equivalent landing.
 
 ## Verification
 
-- direct check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine.lean`
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine`
+- direct check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine.lean`
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeChiralNodalLine`
 - selected theorem axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - module wired into `GaloisForLFunctions/RHTower.lean`
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ConstrainedProlateWeilToeplitzSchur
 import GaloisForLFunctions.RHTower.ConstrainedProlateTrueApertureMetric
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 
 /-!
 # The constrained-prolate true-aperture Xi moment metric

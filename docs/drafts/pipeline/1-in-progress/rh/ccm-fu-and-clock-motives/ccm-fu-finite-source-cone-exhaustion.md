@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE] / source-production target
-- **Parent:** [complete adaptive prime ceiling](../../ccm-fu-adaptive-prime-ceiling.md)
+- **Parent:** [complete adaptive prime ceiling](ccm-fu-adaptive-prime-ceiling.md)
 - **Closed:** Arbitrary finite-field directional control, exact actual-state/energy transport, common-parent prime supply, and arbitrarily long bounded batches with a complete finite preparation budget.
 - **Open:** Quantitative transport of those witnesses through changing retained fields and complete compatible cofinal coverage under one energy budget.
 
@@ -85,7 +85,7 @@ prescribed finite length. Every subset used to prepare P has energy at most
 retained coordinates are included, and actual common-parent prime windows
 have the prescribed quotients and clipping bounds. The budget depends on S.
 
-The [support and common-head bridge](../../ccm-fu-retained-support-cost.md) gives
+The [support and common-head bridge](ccm-fu-retained-support-cost.md) gives
 necessary full-field witness costs and exact source correlations. Possible
 actual labels have product below M and number at most M-1. All coordinates
 are product-scale samples of one coprime-to-product(S) head, and the full

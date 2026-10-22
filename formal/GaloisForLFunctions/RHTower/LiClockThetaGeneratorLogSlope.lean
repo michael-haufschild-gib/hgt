@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.LiClockThetaForcingRatioShape
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 import GaloisForLFunctions.RHTower.PrimeArchThetaModularDifferentialClosure
 import GaloisForLFunctions.RHTower.PrimeArchThetaRawMomentRatioVanishing
 

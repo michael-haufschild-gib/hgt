@@ -3,7 +3,7 @@
 - **Stage:** 3-formalized
 - **Route:** TG, source-to-Hardy operator-ideal admission
 - **Parent:** tg-gamma-clock-nuclear-phase-admission.md
-- **Production:** formal/GaloisForLFunctions/RHTower/CCMArchimedeanNuclearContinuity.lean
+- **Production:** formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanNuclearContinuity.lean
 
 ## Exact statement
 
@@ -36,8 +36,8 @@ continuous nuclear lift of 2(upper-lower), namely the original [H,M_g].
 ## Verification and contribution
 
 2026-10-04: final foreground `lake --old env lean
-GaloisForLFunctions/RHTower/CCMArchimedeanNuclearContinuity.lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMArchimedeanNuclearContinuity.olean`
+GaloisForLFunctions/RHTower/CCM/CCMArchimedeanNuclearContinuity.lean -o
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanNuclearContinuity.olean`
 exits 0, empty diagnostics. Separate /tmp audit of all five public declarations
 exits 0: exactly propext, Classical.choice, Quot.sound. Umbrella wired; no full
 or umbrella build. Index0 records all five. Lint1 reports sixteen unrelated

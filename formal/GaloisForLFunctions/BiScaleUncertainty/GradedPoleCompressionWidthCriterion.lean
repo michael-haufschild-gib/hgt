@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.DeficitPrimitiveOneSidedWidth
 import GaloisForLFunctions.BiScaleUncertainty.BandSpectrumZeroWidthLaw
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleCompressionRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleCompressionRHCriterion
 import GaloisForLFunctions.RHTower.XiHedenmalmKummerRootRH
 
 /-!

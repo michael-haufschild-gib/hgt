@@ -11,7 +11,7 @@ Deninger's argument is: a **trace formula** identifies the spectrum of a Frobeni
 with the zeros of zeta, and a **polarization** forces that spectrum onto the critical line.
 
 **Polarization half — present, with witnesses, and exactly as strong as it needs to be.**
-`RHTower/DeningerWeightOnePolarization.lean` proves `eigenvalue_re_eq_half`. Until today the
+`RHTower/Deninger/DeningerWeightOnePolarization.lean` proves `eigenvalue_re_eq_half`. Until today the
 structure had no instance; it now has two
 (`DeningerWeightOnePolarizationWitness.lean`, `DeningerPreHilbertUnboundedWitness.lean`), and
 `exists_polarization_with_prescribed_spectrum` shows a package exists **for every real sequence
@@ -20,7 +20,7 @@ structure had no instance; it now has two
 carrier of an arithmetic realisation must be pre-Hilbert.
 
 **Trace-formula half — present and unconditional, but it constructs nothing.**
-`RHTower/DeningerLefschetzTrace.lean` proves
+`RHTower/Deninger/DeningerLefschetzTrace.lean` proves
 
 ```text
 deningerResolventLefschetzTrace :

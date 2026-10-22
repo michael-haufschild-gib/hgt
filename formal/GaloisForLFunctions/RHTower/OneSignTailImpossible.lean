@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiTailTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTailTransform
 import GaloisForLFunctions.RHTower.LandauSingularAtAbscissa
 import GaloisForLFunctions.HTGeometry.ConvexDiffCountableConnected
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ArithmeticResonanceCofinalTemperedness
-import GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockAsymptoticBohrLaw
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!

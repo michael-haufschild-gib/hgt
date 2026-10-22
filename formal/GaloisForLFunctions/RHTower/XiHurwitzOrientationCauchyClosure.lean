@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationWeilSector
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationEnergyConsumers
 import GaloisForLFunctions.RHTower.XiWeilCauchyPoleExhaustion
-import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMTwoPoleSourceCriterion
 
 /-!
 # Cauchy-source closure of the Xi--Hurwitz orientation vector

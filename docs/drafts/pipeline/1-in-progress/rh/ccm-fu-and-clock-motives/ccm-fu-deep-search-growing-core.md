@@ -3,7 +3,7 @@
 - **Status:** Six unrestricted deep searches completed; no new arithmetic estimate or RH proof.
 - **Chain:** Actual divisor source → uniform complete signed Abel bound → CCM-FU → RH.
 - **Evidence:** [Full search responses](../../ccm-fu-deep-search-growing-core/search-evidence.json), [checked Lean signatures](../../ccm-fu-deep-search-growing-core/lean-signatures.txt).
-- **Related work:** [Previous cancellation search](../../ccm-fu-deep-search-cancellation.md).
+- **Related work:** [Previous cancellation search](ccm-fu-deep-search-cancellation.md).
 
 ## Search scope and limitations
 
@@ -85,7 +85,7 @@ the product
 L_P(t) = product_(p in P) [1 - 2 sqrt(p)/(p+1) cos(t log p)].
 ```
 
-The [spectral amplification candidate](../../ccm-fu-prime-prefix-spectral-amplification.md)
+The [spectral amplification candidate](ccm-fu-prime-prefix-spectral-amplification.md)
 records a possible full-prefix lower bound and its unproved source-identification
 steps. A targeted source search found that `MobiusCriticalPrimeBlockGammaBand`
 already proves terminal-block resonance on a shrinking interval, and
@@ -134,7 +134,7 @@ solves the scalar phase after all small primes are processed, but keeps both
 endpoint energies in its ceiling. It leaves the interacting phase and the
 final source bound open. No unrelated Steinitz infrastructure was added.
 
-The separate [gcd-prefix diagnostic](../../ccm-fu-gcd-prefix-budget.md) was cancelled
+The separate [gcd-prefix diagnostic](ccm-fu-gcd-prefix-budget.md) was cancelled
 before computation: archived data already have `G_1(1024)>D(1024)`, violating
 its fixed constant-one bound at its first gcd prefix. Those are numerical
 source values, not a new formal counterexample. The experiment script was

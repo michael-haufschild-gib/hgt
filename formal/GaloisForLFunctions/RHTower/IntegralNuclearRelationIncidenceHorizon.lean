@@ -8,9 +8,9 @@ to the literal-source Meyer Xi relation and the all-cross-prime Calderon--Witt i
 One strict-right Xi copy becomes the unique full-support prime-mixed horizon, whose rank-one
 projection is Schatten-1 and has trace one.
 -/
-import GaloisForLFunctions.RHTower.DeningerMeyerHalfDensityXiGraphClosure
-import GaloisForLFunctions.RHTower.DeningerCalderonWittAllCrossPrimeIncidenceKoszul
-import GaloisForLFunctions.RHTower.CCMShiftedXiCancellation
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHalfDensityXiGraphClosure
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittAllCrossPrimeIncidenceKoszul
+import GaloisForLFunctions.RHTower.CCM.CCMShiftedXiCancellation
 import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
 import GaloisForLFunctions.HTGeometry.PointedFisherCutoffWardTrace
 

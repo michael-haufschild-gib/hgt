@@ -116,16 +116,18 @@ the shared local inference worker, background indexing and unfinished local
 GPU-result receivers. Remote Runpod jobs continue independently.
 
 Default hybrid search combines lexical matches with Qdrant vector retrieval
-across names, documentation, statements, proofs, proof-method descriptions,
-installed Lean dependencies and research notes. Use `--mode deep` for iterative
-lemma and proof-idea discovery, or `--mode lexical` for lexical search alone.
-The default request budget is 300 seconds; change it with `--budget-seconds`.
+across declaration names, docstrings, statements, proofs and research notes.
+Scope defaults to this project; `--scope mathlib` or `--scope all` reaches the
+installed dependencies, which are lexically indexed but carry no vectors.
+`--mode lexical` uses lexical search alone. The default request budget is
+300 seconds; change it with `--budget-seconds`.
 
 ### What keeps it current
 
 While services run, the indexer scans for added, edited and deleted sources.
-Changed content is reparsed and queued for local descriptions and embeddings;
-Qdrant updates resume after interruptions. Work is prioritized RHTower, then
+Changed content is reparsed and queued for embedding; Qdrant updates resume
+after interruptions. Searches are served first and never cancel queued
+indexing, so both make progress while agents work. Work is prioritized RHTower, then
 HTGeometry, then the remaining corpus. New content can be found lexically
 before its embeddings are ready. Source/compiler freshness and partial coverage
 remain visible in search results. No Lean builds run in the background.
@@ -135,7 +137,7 @@ lexical index when needed. No manual reindex is needed for normal edits.
 
 ```bash
 ../scripts/formal_tools.py research "<query>"
-../scripts/formal_tools.py research "<query>" --mode deep --budget-seconds 300
+../scripts/formal_tools.py research "<query>" --scope all --budget-seconds 300
 ../scripts/formal_tools.py research "<query>" --mode lexical
 ../scripts/formal_tools.py search-index --corpus   # explicitly refresh source content
 ```

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Fourier.Interval
-import GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanCircleTraceCocycle
 
 /-!
 # One good set for every local energy window of a native circle symbol

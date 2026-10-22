@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GaussianAbsoluteMoment
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxWindow
 import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
 import GaloisForLFunctions.RHTower.ZetaPartialSumStrip
 import GaloisForLFunctions.RHTower.RiemannTower

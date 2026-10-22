@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LowDegreeHochschildFaceFlatness
-import GaloisForLFunctions.RHTower.DeningerCofinalCountercharacterTopBoundaryTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerCofinalCountercharacterTopBoundaryTransgression
 import GaloisForLFunctions.RHTower.MobiusThetaSourceDaggerMinimalBoundaryLaw
 
 /-!

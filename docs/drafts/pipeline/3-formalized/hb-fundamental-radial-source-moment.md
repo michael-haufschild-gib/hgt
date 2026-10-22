@@ -87,7 +87,7 @@ continuation or physical retarded/advanced adjoint identification is added.
 
 ## Modules and validation
 
-Five leaves under `GaloisForLFunctions.RHTower.ThetaCuspHawkingBM`:
+Five leaves under `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBM`:
 
 - `FundamentalRadialModes`: original elementary modes and exact normalization.
 - `FundamentalSourceMoment`: original-to-elementary source identities.

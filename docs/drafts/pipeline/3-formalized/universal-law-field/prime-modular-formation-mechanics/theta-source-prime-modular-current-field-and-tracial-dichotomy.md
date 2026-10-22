@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Paper proof:** `docs/drafts/pipeline/3-formalized/universal-law-field/prime-modular-formation-mechanics/theta-source-prime-modular-current-field-and-tracial-dichotomy-paper.md`
-- **Lean module:** `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCurrentField`
+- **Lean module:** `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCurrentField`
 
 ## Certified declarations
 
@@ -21,7 +21,7 @@
 ## Audit
 
 - Direct elaboration: PASS
-- Named leaf build: `lake build GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCurrentField` PASS (`12830/12830`)
+- Named leaf build: `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCurrentField` PASS (`12830/12830`)
 - Axioms: only `propext`, `Classical.choice`, `Quot.sound`
 - Forbidden declarations in module: none
 - Umbrellas wired: `HTGeometry.UniversalLawField`, `RHTower`

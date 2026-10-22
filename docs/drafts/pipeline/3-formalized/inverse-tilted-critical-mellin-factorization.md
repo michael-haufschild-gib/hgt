@@ -71,7 +71,7 @@ additional source-completeness theorem is missing.
 The unconditional Lean module is
 
 ```text
-GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization
+GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedCriticalMellinFactorization
 ```
 
 Its declarations are:

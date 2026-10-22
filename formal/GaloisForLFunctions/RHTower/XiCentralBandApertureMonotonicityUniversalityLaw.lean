@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmCentralBandGaussianHankel
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCentralBandGaussianHankel
 import GaloisForLFunctions.RHTower.XiNormalizedApertureRelativeKrein
 
 /-!

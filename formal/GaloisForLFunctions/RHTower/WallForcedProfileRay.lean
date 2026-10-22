@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WallThresholdDatum
-import GaloisForLFunctions.RHTower.SuzukiWallTailSplit
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWallTailSplit
 
 /-!
 # The forced profile on a terminal ray

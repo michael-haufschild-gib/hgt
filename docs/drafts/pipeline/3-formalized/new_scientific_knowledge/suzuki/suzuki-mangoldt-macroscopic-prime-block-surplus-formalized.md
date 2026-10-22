@@ -4,7 +4,7 @@
 - **Labels:** `[NEW]` `[SUZUKI]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]`
 - **Stage 2 proof:** `./suzuki-mangoldt-macroscopic-prime-block-surplus.md`
 - **Universal module:** `formal/GaloisForLFunctions/HTGeometry/TiltedTentRightFlank.lean`
-- **Suzuki module:** `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtMacroscopicPrimeBlock.lean`
+- **Suzuki module:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtMacroscopicPrimeBlock.lean`
 
 ## Formalized theorem package
 
@@ -58,7 +58,7 @@ No declaration in either new module uses `sorry`, `admit`, a user `axiom`, `opaq
 Final targeted build
 
 ```text
-lake build GaloisForLFunctions.RHTower.SuzukiMangoldtMacroscopicPrimeBlock
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtMacroscopicPrimeBlock
 ```
 
 passes `9414/9414`.  Repository lint no longer reports either new module or its two immediate

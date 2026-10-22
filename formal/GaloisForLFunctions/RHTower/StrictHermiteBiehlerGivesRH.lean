@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PositivityForcesMultipleZeros
 import GaloisForLFunctions.RHTower.SlabMassSquareCertificate
-import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteApertureHermiteBiehler
 
 /-!
 # Strict Hermite–Biehler for the Hedenmalm pair gives the hypothesis outright

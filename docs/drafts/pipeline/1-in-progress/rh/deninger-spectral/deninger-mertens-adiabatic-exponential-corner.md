@@ -422,7 +422,7 @@ all-prime enhanced Tate--Milnor/Calderón nearby-cycle comparison.
 ## 11. Lean certificate
 
 The dependency-closed scalar and finite-sequence core is formalized in
-`GaloisForLFunctions.RHTower.DeningerMertensAdiabaticCorner`.
+`GaloisForLFunctions.RHTower.Deninger.DeningerMertensAdiabaticCorner`.
 It includes:
 
 - \(\varepsilon_p=1/\log p\) and \(K_p(h,e)=p^{-he}\);
@@ -435,13 +435,13 @@ It includes:
 The direct check
 
 ```text
-lake env lean formal/GaloisForLFunctions/RHTower/DeningerMertensAdiabaticCorner.lean
+lake env lean formal/GaloisForLFunctions/RHTower/Deninger/DeningerMertensAdiabaticCorner.lean
 ```
 
 passes.  The final target audit
 
 ```text
-lake build GaloisForLFunctions.RHTower.DeningerMertensAdiabaticCorner
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerMertensAdiabaticCorner
 ```
 
 passes.  A separate `#print axioms` audit shows only

@@ -72,7 +72,7 @@ as open obligations. RH is unproved.
 
 ## Verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaSkewSourceEndpoint.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaSkewSourceEndpoint.lean`.
 All8 public declarations pass the final scratch with only propext,
 Classical.choice and Quot.sound. Exact passing bodies are promoted and
 one RHTower umbrella import is wired. The targeted leaf build passed

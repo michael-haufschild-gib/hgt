@@ -224,7 +224,7 @@ equivalence `(11)--(12)`, or three-channel square conjecture `(16)`.  Priority r
 
 ## Formal status
 
-`formal/GaloisForLFunctions/RHTower/SuzukiJumpKernelLoewnerGap.lean` proves `(3)`, `(8)`, `(11)`,
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiJumpKernelLoewnerGap.lean` proves `(3)`, `(8)`, `(11)`,
 and strict extrapolation `(13)` unconditionally.
 
 `(12)` — the **Loewner** form of the gap law — is formal too.  `(11)` is the per-test-vector

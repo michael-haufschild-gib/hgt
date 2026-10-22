@@ -11,7 +11,7 @@
 - Lean: `RH → ¬ PsiRemainderSquareRootBounded`.
 - Lean: `¬ CCMFUSuzukiWeightedCurvatureFirstMomentLinearBound`.
 - Lean: `¬ CCMUnitRieszCentralBarycenterNaturalBound`.
-- Module: `GaloisForLFunctions.RHTower.CCMFULittlewoodNoGo`.
+- Module: `GaloisForLFunctions.RHTower.CCM.CCMFULittlewoodNoGo`.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 **Open core:** none.

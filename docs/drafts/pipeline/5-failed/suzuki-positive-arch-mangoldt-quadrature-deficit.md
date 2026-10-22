@@ -308,8 +308,8 @@ or S69 apex-relative scalar surplus is now forbidden by a formal countermodel.
 
 Formal artifacts:
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBicausalNoFreeSplice.lean`;
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
 - `docs/drafts/pipeline/5-failed/suzuki-continuum-two-flank-surplus-pays-bicausal-seam.md`.
 
 This closes a scalar transport sublane, not Suzuki's complete operator program, and does not prove

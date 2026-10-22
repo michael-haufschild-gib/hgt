@@ -87,7 +87,7 @@ their module lands; this card does not edit their files.
   covered only eventually in `N` (ineffective PNT inputs). Closing it needs explicit prime-count
   inputs in `eventually_moebiusRenormalizedDefect_polynomial_cofinal_bound` and
   `eventually_periodCovariance_moebius_zero_ge`, plus the finite horizons below the resulting `N₀`.
-- 2026-10-21 — **Row 5 decided** (RW/SZ/CHMD completed norms). `RHTower/SuzukiScrewCompletionInsideTheWeilFormDomain`:
+- 2026-10-21 — **Row 5 decided** (RW/SZ/CHMD completed norms). `RHTower/Suzuki/SuzukiScrewCompletionInsideTheWeilFormDomain`:
   dilation `g(r·)` multiplies `‖g'‖²` by `r` while the Weil form norm decays like `√((1+log r)/r)`, so
   `not_exists_derivative_norm_le_weilFormNorm`; the primitive map `P : L²₀ → 𝒟_W` is injective with dense range
   and `not_surjective_suzukiZeroMeanPrimitiveCCMFormCLM` — the SZ completion is a proper dense subspace of RW's.

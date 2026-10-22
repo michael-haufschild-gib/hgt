@@ -174,7 +174,7 @@ pseudodifferential and PSWF infrastructure absent from the formal tree. No wrapp
 semiclassical layer is indeed a cited parent, but two of the card's own steps are fully reachable
 and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMCountableLogChirp.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMCountableLogChirp.lean`
 (4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

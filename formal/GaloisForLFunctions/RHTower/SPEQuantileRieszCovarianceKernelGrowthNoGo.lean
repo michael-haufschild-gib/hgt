@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
 import GaloisForLFunctions.PNTPlus.Consequences
 
 /-!

@@ -142,14 +142,14 @@ with the already-proved likelihood-tax overspend. This removes the fourth jet fr
 
 ## Lean certificate
 
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCofinalChordReserve`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCompactCore`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryLocus`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryAcceleration`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicBalance`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicAcceleration`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCofinalChordReserve`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCompactCore`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryLocus`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryAcceleration`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicBalance`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicAcceleration`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget`
 - `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_eq_integralReserve_sub_taxDensity`
 - `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_iff_taxDensity_le_integralReserve`
 - `thetaCuspCompletedProductFiberCofinalLikelihoodTaxDensityAtZero_pos`
@@ -172,13 +172,13 @@ with the already-proved likelihood-tax overspend. This removes the fourth jet fr
 Targeted builds:
 
 ```text
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCofinalChordReserve
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCompactCore
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryLocus
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryAcceleration
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicBalance
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran
-lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCofinalChordReserve
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCompactCore
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryLocus
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryAcceleration
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicBalance
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran
+lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget
 ```
 
 ## Novelty audit
@@ -208,7 +208,7 @@ theorem.
   likelihood tax also overspends. Targeted build passed; axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`.
 - 2026-08-29 — Added
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureRiccatiBackwardDrift`. Exact normalized
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureRiccatiBackwardDrift`. Exact normalized
   Riccati evolution exposes a strict forward lower drift, while the exact integrating factor
   conjugates it to a strictly increasing charge `exp(2q)*(2*q1*q2-q3)`. The proposed backward
   terminal-zero argument is therefore impossible. Lean also identifies charge with the raw source

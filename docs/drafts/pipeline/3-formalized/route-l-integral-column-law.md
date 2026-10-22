@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized; all 23 theorems and final audits passed.
-Module: `GaloisForLFunctions.RHTower.DeningerGammaSixIntegralColumnLaw`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixIntegralColumnLaw`.
 RH and the fixed physical-reader comparison remain unproved.
 
 ## Question and result
@@ -155,7 +155,7 @@ an RH premise; no numerical experiment was performed.
 ## Verification
 
 - `lake env lean /tmp/route_l_integral_columns.lean`: all 23 theorems passed without warnings.
-- `lake build GaloisForLFunctions.RHTower.DeningerGammaSixIntegralColumnLaw`: passed.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixIntegralColumnLaw`: passed.
 - All 23 theorem axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
 - `scripts/formal_tools.py lint`: passed; existing repository warnings remain.
 - Umbrella import wired; no full or umbrella build or numerical evaluation.

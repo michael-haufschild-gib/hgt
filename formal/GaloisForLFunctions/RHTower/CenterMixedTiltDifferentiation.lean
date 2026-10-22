@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspTiltedSchwartz
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltedSchwartz
 import Mathlib
 import GaloisForLFunctions.RHTower.RadialInteractionBound
 

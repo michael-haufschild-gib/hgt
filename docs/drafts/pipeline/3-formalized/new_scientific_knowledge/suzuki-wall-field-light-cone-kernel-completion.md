@@ -4,7 +4,7 @@
 - **Paper proof:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-light-cone-kernel-completion.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldLightConeKernelCompletion.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -80,7 +80,7 @@ Only after that can corpus rectangular Ward lower-bound connector imply RH.
 ## Verification
 
 - direct source check passed:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiWallFieldLightConeKernelCompletion.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean`;
 - unconditional, no `sorry`, `admit`, project axiom, `opaque`, `unsafe`, computation, estimate, or
   RH premise;
 - final targeted SOTA build passed `9458/9458`;

@@ -4,7 +4,7 @@
 
 Paper-proved and formalized in Lean 4 on 2026-08-28. HC42 closed.
 
-Lean module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingSharedWardEnergySquare`.
+Lean module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSharedWardEnergySquare`.
 
 ## Corpus provenance
 
@@ -104,7 +104,7 @@ five-route Ward-energy square. This is bounded-search novelty, not exhaustive bi
 ## Lean audit
 
 - Direct `lake env lean` check passed.
-- Target `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingSharedWardEnergySquare` passed:
+- Target `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSharedWardEnergySquare` passed:
   12,000 jobs.
 - `#print axioms` for all nine public theorems reports only `propext`, `Classical.choice`, and
   `Quot.sound`.

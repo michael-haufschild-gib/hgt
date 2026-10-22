@@ -1,7 +1,7 @@
 # Original arithmetic kernel and cross-frequency Wronskian
 
 - Stage: 1-in-progress
-- Parent: [Selberg conjecturing loop](../../selberg-quarter-conjecturing-loop.md), cycle54.
+- Parent: [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle54.
 - Objective: recover the complete arithmetic mixed Gram form, then derive actual cross-frequency transport and a positive integral kernel for the original Maass Fourier coefficients.
 
 ## Corpus evidence and conjecturing loop
@@ -56,6 +56,6 @@ The final source SHA256 agrees with the manifest. Exact-module research and API 
 
 ## Next positive comparison
 
-The proposed reconstruction-first continuation was paused after a user-triggered [duplication audit](../../selberg-weighted-top-fourier.md). Actual source absolute summability, complete derivative Parseval, and core–cusp gluing already exist. The checked new Wronskian/tail identities have not yet yielded a stronger all-level spectral comparison. Before adding another module, establish on paper a direct estimate for the complete existing core–cusp quarter form using the actual arithmetic constraints. Do not assign a sign to frequency reweighting merely because the underlying tail kernel is positive, or count another equivalent boundary representation as closure of that estimate.
+The proposed reconstruction-first continuation was paused after a user-triggered [duplication audit](selberg-weighted-top-fourier.md). Actual source absolute summability, complete derivative Parseval, and core–cusp gluing already exist. The checked new Wronskian/tail identities have not yet yielded a stronger all-level spectral comparison. Before adding another module, establish on paper a direct estimate for the complete existing core–cusp quarter form using the actual arithmetic constraints. Do not assign a sign to frequency reweighting merely because the underlying tail kernel is positive, or count another equivalent boundary representation as closure of that estimate.
 
 The full Selberg1/4 theorem remains active and unproved. This card records intermediate positive mathematics, not completion of the root goal.

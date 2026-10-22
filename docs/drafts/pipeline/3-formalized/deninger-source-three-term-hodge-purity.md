@@ -126,7 +126,7 @@ Any of the following breaks the proof:
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermHodge.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermHodge.lean`
 (namespace `RHTower.DeningerArithmeticThreeTermHodge`), wired into the `RHTower` umbrella.
 Axiom audit: `propext, Classical.choice, Quot.sound`.
 

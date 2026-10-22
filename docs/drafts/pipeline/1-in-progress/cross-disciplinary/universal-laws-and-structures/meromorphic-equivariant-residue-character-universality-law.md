@@ -11,7 +11,7 @@ Theorem-first survivor. Paper proof complete; exact Lean module check passed war
   arbitrary self-map equivariance forces multiplier-to-order equality with the scalar character.
 - `HTGeometry/LogarithmicResidueQuantization.lean`: the logarithmic derivative residue is the
   signed integer meromorphic order, including poles.
-- `RHTower/CCMMeromorphicCuspBoundaryNoGo.lean`: corpus already uses Laurent normal form for
+- `RHTower/CCM/CCMMeromorphicCuspBoundaryNoGo.lean`: corpus already uses Laurent normal form for
   arbitrary integer meromorphic charge along a punctured analytic arc.
 - `HTGeometry/RamificationPoleFixedPoint.lean`: signed order, rather than analytic nonnegative
   order, is the natural local coordinate for pole/zero rigidity.

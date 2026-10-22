@@ -1,0 +1,19 @@
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioWeightedJet10KGrid
+namespace HTGeometry.ThetaRatioWeightedSquare
+noncomputable section
+set_option autoImplicit false
+open MvPolynomial ThetaRatioSource ThetaRatioSquare
+
+def weightedJet10KColumn0Clean : {P : Poly //
+    (∑ i ∈ Finset.range 17, jet10KCell i 0)=P} := by
+  have h : (∑ i ∈ Finset.range 17, jet10KCell i 0)=
+      ∑ i ∈ Finset.range 17, jet10KCell i 0 := rfl
+  conv at h =>
+    rhs
+    simp only [Finset.sum_range_succ,Finset.sum_range_zero,jet10KCell,jet10KPiece0,jet10KPiece1,jet10KPiece2,jet10KPiece3,jet10KPiece4,jet10KPiece5,jet10KPiece6,jet10KPiece7,jet10KPiece8,jet10KPiece9,jet10KPiece10,jet10KPiece11,jet10KPiece12,jet10KPiece13,jet10KPiece14,jet10KPiece15,jet10KPiece16]
+    dsimp only [jet10KPiece0C0,jet10KPiece0C0Part0,jet10KPiece0C0Part1,jet10KPiece0Term54,jet10KPiece0Term55,jet10KPiece0Term56,jet10KPiece0Term57,jet10KPiece0Term58,jet10KPiece0Term59,jet10KPiece0Term60,jet10KPiece0Term61,jet10KPiece0Term62,jet10KPiece0Term63,jet10KPiece0Term64,jet10KPiece0Term65,jet10KPiece0Term66,jet10KPiece1C0,jet10KPiece1C0Part0,jet10KPiece1C0Part1,jet10KPiece1Term57,jet10KPiece1Term58,jet10KPiece1Term59,jet10KPiece1Term60,jet10KPiece1Term61,jet10KPiece1Term62,jet10KPiece1Term63,jet10KPiece1Term64,jet10KPiece1Term65,jet10KPiece1Term66,jet10KPiece1Term67,jet10KPiece1Term68,jet10KPiece1Term69,jet10KPiece2C0,jet10KPiece2C0Part0,jet10KPiece2Term60,jet10KPiece2Term61,jet10KPiece2Term62,jet10KPiece2Term63,jet10KPiece2Term64,jet10KPiece2Term65,jet10KPiece2Term66,jet10KPiece3C0,jet10KPiece3C0Part0,jet10KPiece3Term67,jet10KPiece4C0,jet10KPiece4C0Part0,jet10KPiece4Term66,jet10KPiece5C0,jet10KPiece5C0Part0,jet10KPiece5Term67,jet10KPiece6C0,jet10KPiece6C0Part0,jet10KPiece6Term66,jet10KPiece7C0,jet10KPiece7C0Part0,jet10KPiece7Term66,jet10KPiece8C0,jet10KPiece8C0Part0,jet10KPiece8Term67,jet10KPiece9C0,jet10KPiece9C0Part0,jet10KPiece9Term67,jet10KPiece10C0,jet10KPiece10C0Part0,jet10KPiece10Term66,jet10KPiece11C0,jet10KPiece11C0Part0,jet10KPiece11Term60,jet10KPiece12C0,jet10KPiece12C0Part0,jet10KPiece12Term50,jet10KPiece13C0,jet10KPiece13C0Part0,jet10KPiece13Term36,jet10KPiece13Term37,jet10KPiece13Term38,jet10KPiece13Term39,jet10KPiece13Term40,jet10KPiece13Term41,jet10KPiece13Term42,jet10KPiece14C0,jet10KPiece14C0Part0,jet10KPiece14C0Part1,jet10KPiece14Term0,jet10KPiece14Term3,jet10KPiece14Term6,jet10KPiece14Term9,jet10KPiece14Term12,jet10KPiece14Term15,jet10KPiece14Term18,jet10KPiece14Term21,jet10KPiece14Term24,jet10KPiece14Term27,jet10KPiece14Term30,jet10KPiece14Term33,jet10KPiece14Term36,jet10KPiece14Term39,jet10KPiece14Term42,jet10KPiece14Term44,jet10KPiece14Term46,jet10KPiece14Term49,jet10KPiece14Term53,jet10KPiece15C0,jet10KPiece15C0Part0,jet10KPiece15C0Part1,jet10KPiece15Term0,jet10KPiece15Term4,jet10KPiece15Term7,jet10KPiece15Term10,jet10KPiece15Term13,jet10KPiece15Term16,jet10KPiece15Term19,jet10KPiece15Term22,jet10KPiece15Term25,jet10KPiece15Term28,jet10KPiece15Term31,jet10KPiece15Term34,jet10KPiece15Term37,jet10KPiece15Term40,jet10KPiece15Term43,jet10KPiece15Term46,jet10KPiece15Term49,jet10KPiece15Term51,jet10KPiece15Term53,jet10KPiece16C0,jet10KPiece16C0Part0,jet10KPiece16Term1,jet10KPiece16Term3,jet10KPiece16Term5,jet10KPiece16Term7]
+    simp
+    ring_nf (config := {mode := .raw})
+  exact ⟨_,h⟩
+end
+end HTGeometry.ThetaRatioWeightedSquare

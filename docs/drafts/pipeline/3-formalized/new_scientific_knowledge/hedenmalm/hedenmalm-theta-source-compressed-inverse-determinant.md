@@ -312,7 +312,7 @@ matching `(3)`--`(8)`.  Novelty remains unverified pending a focused operator-th
 ## Lean status
 
 `[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceCompressedInverseDeterminant.lean`, with
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceCompressedInverseDeterminant.lean`, with
 `HedenmalmThetaSourceDeterminantIdentity.lean`, `HedenmalmThetaSourceDeterminantMultiplicity.lean`,
 and `HedenmalmThetaTraceKernel.lean`. The concrete source-derived operator is Hilbert--Schmidt and
 compact; its pencil is noninvertible exactly at the centered Xi divisor; analytic order equals the
@@ -331,7 +331,7 @@ ledger is superseded by these modules.
 Grushin factorization `G_z G_0^(-1) = I + z B`, the reciprocal eigenvalue law
 `ker(I+zB) = ker(B + z^(-1))` away from the origin, and compactness transfer.
 
-**Concrete weighted layer.** `formal/GaloisForLFunctions/RHTower/HedenmalmHilbertSchmidtNorm.lean`
+**Concrete weighted layer.** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmHilbertSchmidtNorm.lean`
 (namespace `RHTower.HedenmalmHilbertSchmidt`), built on the quantile normal form of the sibling
 card.  All declarations are `#print axioms`-clean.
 
@@ -348,7 +348,7 @@ card.  All declarations are `#print axioms`-clean.
 | `(1)` | the assembled field of functionals | `pinnedKernelField`, `pinnedKernelField_apply`, `pinnedKernelL2` |
 | `(1)` | **`B` is Hilbert--Schmidt**, and compact | `isHilbertSchmidt_pinnedKernelOperator`, `isCompactOperator_pinnedKernelOperator` |
 
-**Unconditional layer.**  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceUnconditional.lean`
+**Unconditional layer.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceUnconditional.lean`
 and `.../HedenmalmThetaKernelEnergy.lean` (namespace `RHTower.HedenmalmThetaSource`) instantiate the
 whole layer at the actual arithmetic source, so the statements below carry **no hypothesis at all**.
 
@@ -417,7 +417,7 @@ formalized.
 | `(1)`,`(9)` | **`B^2` is trace class**, and so is the positive energy `B^dagger B`, whose trace is the Hilbert--Schmidt energy | `isTraceClass_thetaKernelOperator_sq`, `isTraceClass_adjoint_comp_thetaKernelOperator`, `re_opTrace_adjoint_comp_thetaKernelOperator` |
 
 **Trace calibration, the quantile half.**
-`formal/GaloisForLFunctions/RHTower/HedenmalmQuantileSliceMoment.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileSliceMoment.lean`
 (namespace `RHTower.HedenmalmThetaSource`).
 
 | # | statement | Lean declaration |
@@ -445,7 +445,7 @@ even source: `Q(1-s) = -Q(s)`, `q(1-t) = q(t)`, and the change of variables `t -
 slice at `1-s` into minus the slice at `s`, so `sliceMoment` is odd while `sliceMoment + Q` is
 constant, forcing both to be `0`.
 
-**Transposed rows.**  `formal/GaloisForLFunctions/RHTower/HedenmalmTransposeKernelField.lean`
+**Transposed rows.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTransposeKernelField.lean`
 starts the adjoint side.
 
 | # | statement | Lean declaration |

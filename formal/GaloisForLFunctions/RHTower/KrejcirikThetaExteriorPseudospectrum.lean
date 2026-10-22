@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.PseudospectrumSimilarity
-import GaloisForLFunctions.RHTower.HedenmalmThetaExteriorPseudospectralSeparation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaExteriorPseudospectralSeparation
 
 /-!
 # Exterior theta pseudomodes as genuine pseudospectral points

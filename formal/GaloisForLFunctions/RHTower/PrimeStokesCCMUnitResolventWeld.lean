@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCriticalMellinApertureResolvent
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinApertureResolvent
 
 open Complex
 

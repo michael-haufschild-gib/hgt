@@ -1,8 +1,8 @@
-import GaloisForLFunctions.RHTower.CCMSmoothSourceRecentering
+import GaloisForLFunctions.RHTower.CCM.CCMSmoothSourceRecentering
 import GaloisForLFunctions.RHTower.ThetaIntegerLogGapPolarization
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundParity
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarBumpSources
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarInverse
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGroundParity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarBumpSources
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarInverse
 
 /-!
 # Full quadratic structure and local coercivity in translated ground coordinates

@@ -117,7 +117,7 @@ positive, proving `(DR)` and `Re R'_n(b-ia)<0`.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean
 ```
 
 Declarations:
@@ -134,7 +134,7 @@ thetaCuspHigherShellGammaFourDirectionalCone
 Verification:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean
+lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean
 ```
 
 passes. `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`. Umbrella

@@ -84,7 +84,7 @@ control remain open.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusSourceEndpoint.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusSourceEndpoint.lean`.
 The combined scratch and every public axiom audit passed: nine theorems
 and one definition use only propext, Classical.choice and Quot.sound.
 Identical proof bodies were promoted and the one-copy umbrella import is

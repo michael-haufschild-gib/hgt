@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.AnalyticDominatedL2Sections
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 import GaloisForLFunctions.RHTower.ThetaTailFirstMomentKernel
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 

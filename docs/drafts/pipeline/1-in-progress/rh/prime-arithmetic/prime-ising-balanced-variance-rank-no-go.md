@@ -5,7 +5,7 @@
 - **Type:** `[THEOREM] [SOURCE-PURE NO-GO] [UNCONDITIONAL]`
 - **Lean inputs:** `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeBalancedCentering.lean`,
   `formal/GaloisForLFunctions/RHTower/PrimeIsingTreeFKExpansion.lean`,
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean`, and
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzFourierXi.lean`, and
   `formal/GaloisForLFunctions/HTGeometry/FixedModalLocallyUniformHankel.lean`
 - **Statement:** `[PROVED]` No sequence of balanced finite prime-labelled ferromagnetic Ising
   trees converges locally uniformly to `XiC(0)⁻¹ XiC`.

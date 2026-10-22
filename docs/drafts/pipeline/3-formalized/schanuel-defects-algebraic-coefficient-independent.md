@@ -176,10 +176,10 @@ needs.
 
 | Card item | Existing declaration |
 |---|---|
-| the numerical logarithmic Kähler defect of one exponential pair, relative to `Q̄` | `schanuelDefect` (`RHTower/SchanuelDefectLattice.lean`) |
+| the numerical logarithmic Kähler defect of one exponential pair, relative to `Q̄` | `schanuelDefect` (`RHTower/Schanuel/SchanuelDefectLattice.lean`) |
 | **the integral floor**: for a rationally independent tuple the defects are integrally independent | `schanuelDefect_integer_relation` (same module) |
-| a slope between two defects descends to any rank-one intermediate value field | `schanuelDefect_slope_mem_intermediateField_of_finrank_one` (`RHTower/SchanuelDefectValueField.lean`) |
-| the same under an integral isogeny of value fields | `schanuelDefect_slope_mem_of_integral_isogeny_field` (`RHTower/SchanuelIntegralIsogenyValueField.lean`) |
+| a slope between two defects descends to any rank-one intermediate value field | `schanuelDefect_slope_mem_intermediateField_of_finrank_one` (`RHTower/Schanuel/SchanuelDefectValueField.lean`) |
+| the same under an integral isogeny of value fields | `schanuelDefect_slope_mem_of_integral_isogeny_field` (`RHTower/Schanuel/SchanuelIntegralIsogenyValueField.lean`) |
 
 The card's own gate note -- "formalized: exact theorem requires algebraic-group/Kähler-differential
 layer" -- is therefore accurate about the *upgrade* from `ℤ` to `Q̄`, not about the floor itself,
@@ -227,7 +227,7 @@ to `schanuelDefect_integer_relation`, which is already proved.
 
 ## Rational coefficient floor packaged (2026-08-25)
 
-`formal/GaloisForLFunctions/RHTower/SchanuelDefectRationalIndependence.lean` now closes and packages
+`formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelDefectRationalIndependence.lean` now closes and packages
 that reduction:
 
 ```text
@@ -255,7 +255,7 @@ immediate slope consequence of the new `LinearIndependent ℚ` packaging.  Its a
 
 ## Algebraic-coefficient singleton case formalized (2026-08-25)
 
-`formal/GaloisForLFunctions/RHTower/SchanuelDefectSingletonAlgebraicIndependence.lean` closes the
+`formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelDefectSingletonAlgebraicIndependence.lean` closes the
 exact one-variable specialization over `Q̄`:
 
 ```text
@@ -279,7 +279,7 @@ is still required for `n ≥ 2`.
 
 ## Arbitrary-dimensional support-one case formalized (2026-08-25)
 
-`formal/GaloisForLFunctions/RHTower/SchanuelDefectSparseAlgebraicIndependence.lean` packages the
+`formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelDefectSparseAlgebraicIndependence.lean` packages the
 singleton result inside an arbitrary rationally independent tuple:
 
 ```text
@@ -800,7 +800,7 @@ extracts, from any finite packet of integral characters, a `ℤ`-basis made of a
 vectors whose rational coordinate vectors are linearly independent.  `LatticeSpanFinite.lean`
 proves finite witness and independent-basis forms of membership in `latticeSpan`.
 
-`RHTower/SchanuelLatticeBakerAssembly.lean` then proves
+`RHTower/Schanuel/SchanuelLatticeBakerAssembly.lean` then proves
 
 ```text
 algebraic_coefficients_eq_zero_of_latticeSpan
@@ -848,7 +848,7 @@ supply the algebraic character and additive values consumed by the formalized Ba
 
 Fresh corpus research found no theorem joining coordinatewise algebraicity of a coset
 representative to the existing relation spaces and Baker endpoint.  The new
-`RHTower/SchanuelAlgebraicCosetBaker.lean` leaf supplies that exact assembly and reuses every
+`RHTower/Schanuel/SchanuelAlgebraicCosetBaker.lean` leaf supplies that exact assembly and reuses every
 previous layer.
 
 Its endpoint
@@ -956,7 +956,7 @@ that statement is now concrete and formalized.
 ## Numerical Schanuel relation identified with invariant pullback (2026-08-26)
 
 Fresh corpus research reused the existing complex-exponential unit map; no mixed exponential point
-or exact Schanuel pullback theorem existed.  `RHTower/SchanuelInvariantKaehlerForm.lean` defines the
+or exact Schanuel pullback theorem existed.  `RHTower/Schanuel/SchanuelInvariantKaehlerForm.lean` defines the
 genuine mixed point `schanuelExponentialPoint x = (x, exp x)` and proves
 
 ```text
@@ -1428,7 +1428,7 @@ propagates invariant Kähler vanishing through every iterated product, and prove
 class vanishes.  No subgroup, dominance, translation, finite-type, torsion, or co-Lie premise is
 left to the caller.
 
-`RHTower/SchanuelDefectAlgebraicIndependence.lean` closes the card with
+`RHTower/Schanuel/SchanuelDefectAlgebraicIndependence.lean` closes the card with
 
 ```text
 schanuelDefect_algebraic_relation

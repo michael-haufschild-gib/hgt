@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ChronometricCausalDiamond
-import GaloisForLFunctions.HTGeometry.KleinGordonConformalSpacetime
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonConformalSpacetime
 
 /-!
 # The two-species scale law inside a causal diamond

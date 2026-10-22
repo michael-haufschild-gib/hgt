@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
-import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCM.CCMTwoPoleSourceCriterion
 import GaloisForLFunctions.RHTower.XiShiftPrimeExposure
 
 /-!

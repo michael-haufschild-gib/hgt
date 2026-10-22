@@ -205,7 +205,7 @@ not new scientific knowledge.
 added") was already false when written: `CCMQuartetResolventPolarization.lean` had existed since
 2026-07-26.  Both halves of the card's proved content are now in the tree.
 
-`formal/GaloisForLFunctions/RHTower/CCMQuartetResolventPolarization.lean` (namespace `RHTower`) —
+`formal/GaloisForLFunctions/RHTower/CCM/CCMQuartetResolventPolarization.lean` (namespace `RHTower`) —
 the scalar algebra:
 
 - `ccmQuartetPairResolvent`, `ccmCausalResolvent`, `ccmAntiCausalResolvent`, `ccmQuartetCrossPacket`,
@@ -221,7 +221,7 @@ the scalar algebra:
   formal form of the card's "in the critical-line limit the odd mode vanishes; off the line it is
   nonzero".
 
-`formal/GaloisForLFunctions/RHTower/CCMQuartetPaleyWiener.lean` — the Paley--Wiener half, added now:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMQuartetPaleyWiener.lean` — the Paley--Wiener half, added now:
 
 - **`integrableOn_Ioi_cexp_neg_mul`**, **`integral_Ioi_cexp_neg_mul`**, **`integral_Ioi_exp_neg_mul`**
   — the Laplace transform of an exponential ray, `int_0^infinity exp(-b t) dt = 1/b` for `Re b > 0`.

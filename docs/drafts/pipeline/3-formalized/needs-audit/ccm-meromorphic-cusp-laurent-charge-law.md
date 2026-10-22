@@ -139,7 +139,7 @@ novelty remains open and must not be advertised as settled.
 
 ## Formal declarations
 
-Module `formal/GaloisForLFunctions/RHTower/CCMMeromorphicCuspBoundaryNoGo.lean`:
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMMeromorphicCuspBoundaryNoGo.lean`:
 
 - `tendsto_ofReal_exp_neg_mul_nhdsNE_zero`;
 - `normedAnalyticShiftMultiplier_eventually_factor_zpow`;
@@ -159,7 +159,7 @@ Module `formal/GaloisForLFunctions/RHTower/CCMMeromorphicCuspBoundaryNoGo.lean`:
 - [x] formal lint attribution audit: no C38 finding; repository-wide lint fails only on
   pre-existing umbrella-reachability findings in other dirty-tree modules
 - [x] targeted final module build:
-  `GaloisForLFunctions.RHTower.CCMMeromorphicCuspBoundaryNoGo`
+  `GaloisForLFunctions.RHTower.CCM.CCMMeromorphicCuspBoundaryNoGo`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

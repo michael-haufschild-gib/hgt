@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CenteredRealEvenPolynomialDensity
-import GaloisForLFunctions.RHTower.DeningerArithmeticFiniteJetInterpolation
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticFiniteJetInterpolation
 import GaloisForLFunctions.RHTower.QuartetSymmetryJets
 
 /-!

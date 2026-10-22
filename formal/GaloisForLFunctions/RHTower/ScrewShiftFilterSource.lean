@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ScrewTailPrimitive
-import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExplicitScrewRegularKernel
 
 /-!
 # The even-shift filtered screw source

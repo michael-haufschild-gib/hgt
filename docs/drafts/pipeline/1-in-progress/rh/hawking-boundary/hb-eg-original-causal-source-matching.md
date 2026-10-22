@@ -59,7 +59,7 @@ and integrals is assumed in this argument.
 
 ## Lean certificate
 
-[OriginalCausalSourceMatching](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalSourceMatching.lean)
+[OriginalCausalSourceMatching](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalCausalSourceMatching.lean)
 proves `physicalFundamentalFrequency_time_chamber`,
 `causalOnset_integrable_hasDerivAt`, `physicalOnset_time_moments`,
 `canonicalCausalSourceCutoff_tendsto`, and

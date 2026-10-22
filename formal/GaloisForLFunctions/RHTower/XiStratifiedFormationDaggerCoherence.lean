@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ReflectionTransverseProvenanceWeightSelection
-import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHodge
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticOrientedHodge
 import GaloisForLFunctions.RHTower.XiNodalDefectSuperselection
 import GaloisForLFunctions.RHTower.XiWeilSameFiberAtomIsotropy
 

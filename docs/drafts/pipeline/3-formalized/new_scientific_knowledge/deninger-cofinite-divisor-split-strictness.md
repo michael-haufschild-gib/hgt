@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper) · LEAN 4 THEOREM
 - **Label:** `DAC_COFINITE_DIVISOR_SPLIT_STRICTNESS`
 - **Parent:** `deninger-arithmetic-projection-leray-rost-schmid-resolution`
-- **Lean:** `GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting`
+- **Lean:** `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting`
 - **Statement:** on every cofinite arithmetic open, the weight-one
   generic-to-prime divisor row is canonically split exact; the same
   splitting remains strict in the mixed weighted \(L^1/L^2\) topology.
@@ -117,7 +117,7 @@ the source row with these coordinates.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteDivisorSplitting.lean` proves the split
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCofiniteDivisorSplitting.lean` proves the split
 exact row `(4)`--`(5)`:
 
 - `deningerInsideDivisorEmbedding` : `ι_N`, extension by zero from the primes dividing `N`;
@@ -134,12 +134,12 @@ exact row `(4)`--`(5)`:
 Formalized: the whole of `(4)`, hence `(5)` under the identifications `(1)`--`(2)`.  Those two
 identifications are themselves formalized elsewhere in the corpus: `(1)` is
 `deningerRatExp_existsUnique` in
-`GaloisForLFunctions.RHTower.DeningerRationalPrimeFactorization` together with
+`GaloisForLFunctions.RHTower.Deninger.DeningerRationalPrimeFactorization` together with
 `deningerRatExpTensorReal`, and the description of `ℤ[1/N]`-units in `(2)` is the same statement
 restricted to the primes dividing `N`.
 
 The weighted quantities of `(6)` and the operator-norm estimates are in
-`GaloisForLFunctions/RHTower/DeningerWeightedMixedDivisorNorms.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerWeightedMixedDivisorNorms.lean`:
 
 - `deningerWeightedL1`, `deningerWeightedL2Sq`, `deningerWeightedMix` : `‖x‖_{1,w}`, `‖x‖_{2,w}²`
   and `‖x‖_mix` on finitely supported coordinates, for arbitrary weights `w`;
@@ -158,11 +158,11 @@ The weighted quantities of `(6)` and the operator-norm estimates are in
   open, with splitting bounded by one.
 
 The bridge to the completion is under construction in
-`GaloisForLFunctions/RHTower/DeningerWeightedCountingMeasure.lean`.  The weighted mixed space is
+`GaloisForLFunctions/RHTower/Deninger/DeningerWeightedCountingMeasure.lean`.  The weighted mixed space is
 not a new Banach space to build: it is the mixed `L¹/L²` space of the weighted counting measure
 `∑_p w_p δ_p` on the primes, and that space, its completeness, its dense injection into `L²` and
 its continuous integral functional are already in
-`GaloisForLFunctions.RHTower.DeningerAdelicKummerGelfandTriple` for an arbitrary measure.  So far:
+`GaloisForLFunctions.RHTower.Deninger.DeningerAdelicKummerGelfandTriple` for an arbitrary measure.  So far:
 
 - `deningerWeightMeasure w` : the measure `∑_p w_p δ_p`;
 - `deningerWeightMeasure_lintegral` : its lower integral is the weighted sum
@@ -187,11 +187,11 @@ the measure `∑_p w_p δ_p`.  This is the identification the completion argumen
 
 So the ambient completed space of `(7)` is not a new construction: the weighted divisor
 coordinates sit isometrically inside `DeningerMixed (deningerWeightMeasure w)`, which
-`GaloisForLFunctions.RHTower.DeningerAdelicKummerGelfandTriple` already proves is a Banach space,
+`GaloisForLFunctions.RHTower.Deninger.DeningerAdelicKummerGelfandTriple` already proves is a Banach space,
 densely embedded in `L²`, carrying a continuous integral functional.
 
 The operator that `(7)` needs on the completed space is built in
-`GaloisForLFunctions/RHTower/DeningerLpIndicator.lean`.  Coordinate restriction on the completion
+`GaloisForLFunctions/RHTower/Deninger/DeningerLpIndicator.lean`.  Coordinate restriction on the completion
 is multiplication by the indicator of the prime set:
 
 - `deningerLpIndicatorFun` and `deningerLpIndicatorFun_coeFn` : the map on almost-everywhere
@@ -206,7 +206,7 @@ is multiplication by the indicator of the prime set:
 This is stated for an arbitrary measure and exponent, so it applies to both factors of the mixed
 space at once.
 
-`GaloisForLFunctions/RHTower/DeningerMixedIndicator.lean` induces that operator on the mixed
+`GaloisForLFunctions/RHTower/Deninger/DeningerMixedIndicator.lean` induces that operator on the mixed
 space:
 
 - `deningerMixedIndicatorAmb` : the indicator applied in both components of the ambient product,
@@ -240,15 +240,15 @@ summands `E_{mix,S_N}` and `E_{mix,P_N}` are the ranges of the two projections.
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteDivisorSplitting.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCofiniteDivisorSplitting.lean`
   — passes with no errors and no warnings.
 - Cached module build:
-  `lake build GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting` completes.
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting` completes.
 - Scratch `#print axioms` on the five theorems of the splitting module and on all eleven
   declarations of the weighted-norm module: only the Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`.
 - Cached module build of the weighted-norm module:
-  `lake build GaloisForLFunctions.RHTower.DeningerWeightedMixedDivisorNorms` completes
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerWeightedMixedDivisorNorms` completes
   (1996 jobs).
 - Imported by the `GaloisForLFunctions.RHTower` umbrella.
 
@@ -257,19 +257,19 @@ summands `E_{mix,S_N}` and `E_{mix,P_N}` are the ranges of the two projections.
 - [x] 0 → 1 in-progress: divisor row isolated on a cofinite open
 - [x] 1 → 2 fully-proven: split exactness and mixed strictness proved
 - [x] 2 → 3 formalized, split exact row `(4)`--`(5)`
-  (`GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting`)
 - [x] 2 → 3 formalized, the weighted quantities of `(6)` and the operator-norm-at-most-one
-  estimates (`GaloisForLFunctions.RHTower.DeningerWeightedMixedDivisorNorms`)
+  estimates (`GaloisForLFunctions.RHTower.Deninger.DeningerWeightedMixedDivisorNorms`)
 - [x] 2 → 3 formalized, the bounded splitting of `(4)` in the mixed quantities
   (`deningerRestrictCoords_add_compl`, `deningerWeightedMix_split_bounded`)
 - [x] 2 → 3 formalized, the weighted counting measure and the identification of both quantities
-  of `(6)` with `eLpNorm` (`GaloisForLFunctions.RHTower.DeningerWeightedCountingMeasure`)
+  of `(6)` with `eLpNorm` (`GaloisForLFunctions.RHTower.Deninger.DeningerWeightedCountingMeasure`)
 - [x] 2 → 3 formalized, the isometric placement of the weighted divisor coordinates in the mixed
   `L¹/L²` Banach space (`deningerToMixed`, `deningerToMixed_norm`)
 - [x] 2 → 3 formalized, the completed restriction operator
-  (`GaloisForLFunctions.RHTower.DeningerLpIndicator`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerLpIndicator`)
 - [x] 2 → 3 formalized, `(7)` on the completed space
-  (`GaloisForLFunctions.RHTower.DeningerMixedIndicator`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerMixedIndicator`)
 - [ ] 3 → 4 publication-ready: integrate with the analytic comparison that identifies the source
   row with these coordinates
 

@@ -158,7 +158,7 @@ is claimed and no result from it is used.
 ## Lean verification
 
 The complete scratch file passed with exit 0 and empty log. The
-[DeningerGammaSixNativeWoldReadout](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaSixNativeWoldReadout.lean) module has 19 theorems, four
+[DeningerGammaSixNativeWoldReadout](../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixNativeWoldReadout.lean) module has 19 theorems, four
 definitions and a three-constructor native-face type. All declaration
 bodies match that successful scratch. It is wired directly after C30
 in `RHTower`. Its targeted final build passed: the new module compiled
@@ -172,7 +172,7 @@ Verification commands, run sequentially in the foreground:
 
 ```text
 lake env lean /tmp/route_l_native_wold_readout.lean
-lake build GaloisForLFunctions.RHTower.DeningerGammaSixNativeWoldReadout
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixNativeWoldReadout
 lake env lean /tmp/route_l_native_wold_axioms.lean
 scripts/formal_tools.py lint
 ```

@@ -90,7 +90,7 @@ analytic-continuation axiom is introduced.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinGenericMixedCasimirSourceLanding`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinGenericMixedCasimirSourceLanding`
 - Main theorems:
   - `D4BMStrictTripleUnfoldingParameters.actualUnfoldedScalarSource_eq_positiveLambdaProduct`
   - `D4BMStrictTripleUnfoldingParameters.canonicalScalarVertex_eq_mixedCasimir_mul_positiveLambdaProduct`

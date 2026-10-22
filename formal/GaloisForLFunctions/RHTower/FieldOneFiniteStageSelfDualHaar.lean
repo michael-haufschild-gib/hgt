@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleHaar
+import GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleHaar
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageIdeleLocusMeasure
 
 /-!

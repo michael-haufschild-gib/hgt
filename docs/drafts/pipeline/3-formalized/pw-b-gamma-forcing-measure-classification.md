@@ -136,13 +136,13 @@ calculus methods. No new general integration theorem or RH proof is claimed.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaForcingMeasureClassification.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaForcingMeasureClassification.lean`.
 The leaf has 422 lines and 31 public theorems. Its closed capstone is
 `pwGammaForcingMeasureClassification_closed`; the complete arithmetic
 mass defect is `pwGammaMobius_complete_response_mass_defect`.
 
 Scratch and direct `lake env lean` checks passed without warnings.
-The targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaForcingMeasureClassification`
+The targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaForcingMeasureClassification`
 passed. All 31 theorems were audited by scratch `#print axioms`: only
 `propext`, `Classical.choice`, and `Quot.sound` occur. Formal lint, index
 regeneration, all-name uniqueness and task-scoped file checks passed.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiLagariasMeromorphicInner
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLagariasMeromorphicInner
 import GaloisForLFunctions.RHTower.XiResolventMassBudget
 import GaloisForLFunctions.RHTower.ScrewCurvatureSumOfSquares
 import GaloisForLFunctions.HTGeometry.RealRootedCoefficientLimit

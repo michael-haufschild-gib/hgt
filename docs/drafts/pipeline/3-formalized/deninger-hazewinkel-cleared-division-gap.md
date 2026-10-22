@@ -57,7 +57,7 @@ The parent saturation card therefore correctly remains Stage 1.
 
 ## Lean realization
 
-- `RHTower/DeningerHazewinkelClearedDivisionGap.lean`
+- `RHTower/Deninger/DeningerHazewinkelClearedDivisionGap.lean`
   - `hazewinkelClearedKillPivot_comp_scaledTail`;
   - `hazewinkelCleared_X_one_not_mem_range`;
   - `hazewinkelCleared_division_exits_range` (closed capstone).

@@ -6,7 +6,7 @@
 - **Source:** `CCMActualHeadOutgoingQuantileEndpointGauge.lean`,
   `CCMActualHeadOutgoingQuantileTransportProducer.lean`,
   `CCMActualHeadCoherentCompletedGammaProducer.lean`
-- **Formal module:** `GaloisForLFunctions.RHTower.CCMActualHeadApertureCosineGaugeQuotient`
+- **Formal module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadApertureCosineGaugeQuotient`
 - **Labels:** `[BRIDGE] [FORMALIZED] [NEW FORMAL SYNTHESIS] [NOT AN RH PROOF]`
 
 ## Goal
@@ -56,7 +56,7 @@ reverse-prime control is equivalent to nonnegativity of exactly this expression.
 ## Lean audit
 
 - Source `lake env lean` — pass.
-- Target-only `lake build GaloisForLFunctions.RHTower.CCMActualHeadApertureCosineGaugeQuotient`
+- Target-only `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadApertureCosineGaugeQuotient`
   — pass. No umbrella build run.
 - `#print axioms` on all eight theorems — only `propext`, `Classical.choice`, `Quot.sound`.
 - Forbidden declaration scan — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

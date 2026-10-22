@@ -32,7 +32,7 @@ implies source-FE clock covariance and RH through the four-route transductions.
 ## Lean artifact
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingHBBoundedGlobalAIMESourceResponseTrivializationNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBBoundedGlobalAIMESourceResponseTrivializationNoGo`
 
 Capstone:
 `d4HBBoundedGlobalAIMESourceResponseExistenceRouteKilled`.

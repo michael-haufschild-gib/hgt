@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperRestrictedWeilInertia
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleCompressionRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleCompressionRHCriterion
 
 /-! # Exact ground threshold and the zero-repair-rank RH receiver
 

@@ -80,7 +80,7 @@ quadratic survivor `[NEW] [CLASSIFICATION]`, external priority provisional.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekReflectionOrbitAggregateNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekReflectionOrbitAggregateNoGo.lean`
 - Reflection law: `schwarzschildParikhWilczekBorelRecoilHolonomy_lineReflection`
 - Linear classification:
   `schwarzschildParikhWilczekBorelLinearOrbitAggregate_eq_zero_iff`
@@ -90,7 +90,7 @@ quadratic survivor `[NEW] [CLASSIFICATION]`, external priority provisional.
   `riemannHypothesis_iff_schwarzschildParikhWilczekBorelQuadraticOrbitEnergy_zero`
 - Direct `lake env lean` passed.
 - Targeted build
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekReflectionOrbitAggregateNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekReflectionOrbitAggregateNoGo`
   passed (`11423/11423`).
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella import wired in `formal/GaloisForLFunctions/RHTower.lean`.

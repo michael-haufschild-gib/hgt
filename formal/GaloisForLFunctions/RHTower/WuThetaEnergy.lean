@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WuSchwartzEnergy
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 
 /-!
 # Characteristic energy integration for the native theta and Xi sources

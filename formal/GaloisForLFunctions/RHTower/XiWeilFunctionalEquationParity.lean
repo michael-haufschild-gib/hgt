@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHilbertHodge
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticOrientedHilbertHodge
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
-import GaloisForLFunctions.RHTower.CCMFirstClockLandauCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauCompleteness
 
 /-!
 # The two functional-equation Weil sectors are isometric

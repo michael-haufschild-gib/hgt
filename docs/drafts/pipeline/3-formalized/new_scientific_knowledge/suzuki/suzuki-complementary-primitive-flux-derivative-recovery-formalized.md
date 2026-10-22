@@ -8,8 +8,8 @@
 ## Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaShiftKappa.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
 
 ## Formal theorem surface
 
@@ -22,13 +22,13 @@ GaloisForLFunctions.HTGeometry.neg_norm_mul_normSq_le_inner_neg_apply
 GaloisForLFunctions.HTGeometry.norm_le_of_coercive
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiGammaShiftKappa`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaShiftKappa`:
 
 ```text
 GaloisForLFunctions.RHTower.neg_suzukiGammaShiftKappa_le_integral
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiPrimitiveFluxNonnormalGraphReduction`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimitiveFluxNonnormalGraphReduction`:
 
 ```text
 GaloisForLFunctions.RHTower.primitiveFlux_cutoffComplement_sum

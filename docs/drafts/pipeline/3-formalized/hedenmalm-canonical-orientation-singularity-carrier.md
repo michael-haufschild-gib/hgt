@@ -62,7 +62,7 @@ advance.
 ## Formal theorem surface
 
 The completed unconditional layer is in
-`formal/GaloisForLFunctions/RHTower/HedenmalmCanonicalOrientationMultiplier.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCanonicalOrientationMultiplier.lean`:
 
 ```text
 xiCanonicalHorizontalOrientationMultiplier
@@ -79,8 +79,8 @@ The infinite support and residue layers are in
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/TranslatedStripBoundary.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmInfiniteOrientationSingularities.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmOrientationResidues.lean.
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmInfiniteOrientationSingularities.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmOrientationResidues.lean.
 ```
 
 Their capstones are

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCoherentSquareExclusion
+import GaloisForLFunctions.RHTower.CCM.CCMCoherentSquareExclusion
 import GaloisForLFunctions.RHTower.Sieve.DistanceLocalChanges
 import GaloisForLFunctions.RHTower.LiouvillePrimeBandAlgebra
 

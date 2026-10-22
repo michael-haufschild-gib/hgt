@@ -29,7 +29,7 @@ casts; earlier unsuccessful audits are not evidence.
 The dependency closure contains627 modules:45 affine-boundary modules,
 7 regular-core modules and575 full coefficient/reconstruction/sign modules.
 They are staged in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspRatioBoundaryCertificate/` and
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspRatioBoundaryCertificate/` and
 wired into RHTower. Debug printing and scratch API examples were removed.
 Their production module identities require serial direct leaf reaudits;
 scratch caches were not renamed or copied. Manifest:

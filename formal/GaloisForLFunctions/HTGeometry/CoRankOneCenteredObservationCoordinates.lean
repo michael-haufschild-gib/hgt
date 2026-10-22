@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RankOneCenteredObservationCoordinates
-import GaloisForLFunctions.HTGeometry.CriticalReciprocalSourceCoordinates
+import GaloisForLFunctions.HTGeometry.Critical.Reciprocal.SourceCoordinates
 
 namespace GaloisForLFunctions.HTGeometry
 

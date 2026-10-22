@@ -311,7 +311,7 @@ Second verdict: `SURVIVES PRELIMINARY ATTACK`; exact paper proof is dependency-c
 
 ## Lean closure
 
-`formal/GaloisForLFunctions/RHTower/CCMSingleClockCompleteSourceDivisorTomography.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSingleClockCompleteSourceDivisorTomography.lean`
 formalizes the literal full-trace one-sided crease current, strict-right polar support and residue
 atlas, polar-subtracted critical Bohr atlas with exact multiplicity, complete divisor bijection and
 canonical product, arbitrary Stone recurrence chambers, and a stronger inverse obstruction:

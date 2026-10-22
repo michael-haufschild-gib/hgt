@@ -48,10 +48,10 @@ can have this exact modulus.
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmSoninEscapeAnalyticGaugeCuspNoGo.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSoninEscapeAnalyticGaugeCuspNoGo.lean`.
 - 2026-08-13 — Imported by `GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmSoninEscapeAnalyticGaugeCuspNoGo`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSoninEscapeAnalyticGaugeCuspNoGo`
   (`12957/12957`).
 - 2026-08-13 — Axiom audit passed for every new theorem; dependencies are exactly `propext`,
   `Classical.choice`, and `Quot.sound`.

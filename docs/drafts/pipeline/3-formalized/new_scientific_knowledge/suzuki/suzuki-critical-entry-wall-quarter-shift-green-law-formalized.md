@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-critical-entry-wall-quarter-shift-green-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -62,7 +62,7 @@ bare third jet followed by observer innovation.
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`;
 - targeted SOTA build: `9453/9453` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - repository formal lint reaches this module but remains red on eight unrelated concurrent

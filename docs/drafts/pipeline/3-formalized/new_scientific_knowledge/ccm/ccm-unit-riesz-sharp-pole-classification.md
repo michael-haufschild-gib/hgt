@@ -6,7 +6,7 @@
 - **Scientific status:** `[LEAN FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
   `[EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parent:** `ccm-unit-riesz-suzuki-green-producer-classification`
-- **Lean:** `GaloisForLFunctions/RHTower/CCMUnitRieszSharpPoleClassification.lean`
+- **Lean:** `GaloisForLFunctions/RHTower/CCM/CCMUnitRieszSharpPoleClassification.lean`
 
 ## Theorem
 

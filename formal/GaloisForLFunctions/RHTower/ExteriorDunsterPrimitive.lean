@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiAmplitudeDecay
 import GaloisForLFunctions.RHTower.ExteriorXiPrimitive
-import GaloisForLFunctions.RHTower.CCMFirstRowEnvelopeTail
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowEnvelopeTail
 
 /-!
 # The exterior primitive of the prolate Liouville–Green branch

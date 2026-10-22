@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberGlobalReflection
-import GaloisForLFunctions.RHTower.ThetaCuspInversionBoundaryValue
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspInversionBoundaryValue
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailPhasePotentialSeam
 
 /-!

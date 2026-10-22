@@ -27,9 +27,9 @@ Let `K(x)=e^(x/2)(B(a−x,a+x)−A(x))`, with bounded arithmetic error `A` and b
 
 ## Lean certificate and audit
 
-- Module: `formal/GaloisForLFunctions/RHTower/CCMPolarSourceEndpointRank.lean`; wired into `RHTower.lean`.
-- `lake env lean GaloisForLFunctions/RHTower/CCMPolarSourceEndpointRank.lean`: pass.
-- `lake build --old GaloisForLFunctions.RHTower.CCMPolarSourceEndpointRank`: pass, 12783 jobs (dependency replay).
+- Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMPolarSourceEndpointRank.lean`; wired into `RHTower.lean`.
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPolarSourceEndpointRank.lean`: pass.
+- `lake build --old GaloisForLFunctions.RHTower.CCM.CCMPolarSourceEndpointRank`: pass, 12783 jobs (dependency replay).
 - `#print axioms` from `/tmp` for reflection and endpoint-rank theorems: only `propext`, `Classical.choice`, `Quot.sound`.
 - `scripts/formal_tools.py lint`: fails on unrelated concurrent unwired modules and `LiUpperQuadraticCriterion.lean:203` `sorry`; no issue reported for this module.
 

@@ -365,7 +365,7 @@ their exact synthesis into the Neumann holonomy survivor.  Priority remains unve
 
 ## Formal status
 
-`formal/GaloisForLFunctions/RHTower/SuzukiFullFrequencyNeumannHolonomy.lean` proves the exact
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFullFrequencyNeumannHolonomy.lean` proves the exact
 algebraic layer `(3)--(6)`, `(12)--(14)`, the centered-pole cancellation identity, dyadic
 specialization, Pick-kernel split `(18)`, projective-cancellation rigidity, and the exact dyadic
 reciprocal-secant derivative limit used in `(P6)--(P8)`.  It also proves the pointwise smoothing identity
@@ -397,7 +397,7 @@ The Formal status section correctly records that the compact-distributional Four
 argument `(P10)--(P13)` does not depend on that interface: once `(P11)` is granted, the
 contradiction is pure real analysis at the endpoint — a logarithmic singularity cannot cancel a
 simple pole. That engine is now formal, in
-`RHTower/SuzukiFiniteShiftNonClock.lean` (the module that already owns the endpoint log layer used
+`RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean` (the module that already owns the endpoint log layer used
 by `(P11)`), [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `tendsto_sub_mul_suzukiBoundaryLog` : `(a - x) * log (a^2 - x^2) -> 0` as `x -> a⁻`, i.e. the
@@ -449,7 +449,7 @@ formal), plus `mu_0 = 0` from oddness. The corpus already owns the right vehicle
 `HTGeometry/MomentFunctionalPositivity.lean`'s `momentFunctional s p = ∑ₖ aₖ sₖ`, with additivity,
 `smul`, and `momentFunctional_X_pow` — so no new source theory was needed.
 
-Added to `RHTower/SuzukiFullFrequencyNeumannHolonomy.lean` [PROVED HERE], standard axioms
+Added to `RHTower/Suzuki/SuzukiFullFrequencyNeumannHolonomy.lean` [PROVED HERE], standard axioms
 `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `IsOddSourceMoments` : an odd source is one with all even moments vanishing; `.zeroth` extracts

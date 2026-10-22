@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.TaylorJordanNormalization
 import GaloisForLFunctions.RHTower.XiHedenmalmJordanMatrix
-import GaloisForLFunctions.RHTower.DeningerArithmeticJetDeterminant
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticJetDeterminant
 
 /-!
 # Exact metric-conditioning frontier of the actual Xi arithmetic jet chains

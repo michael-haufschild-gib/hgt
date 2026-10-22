@@ -2,7 +2,7 @@
 
 Status: formalized and audited; 12 unconditional theorems. RH remains unproved.
 Date: 2026-09-11.
-Module: `GaloisForLFunctions.RHTower.DeningerGibbsCyclicDiagonalRecovery`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGibbsCyclicDiagonalRecovery`.
 
 ## Exact source and theorem
 
@@ -114,7 +114,7 @@ attack ledger. No external conjecture or paper claim is a Lean premise.
 ## Verification
 
 - Scratch `lake env lean /tmp/route_l_divisibility_recovery.lean`: passed without warnings.
-- Final targeted `lake build GaloisForLFunctions.RHTower.DeningerGibbsCyclicDiagonalRecovery`:
+- Final targeted `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGibbsCyclicDiagonalRecovery`:
   passed; only the new module built, dependencies replayed. No umbrella build.
 - All 12 theorem declarations audited through `/tmp/route_l_cyclic_diagonal_axioms.lean`:
   only `propext`, `Classical.choice`, `Quot.sound`; no added axioms.

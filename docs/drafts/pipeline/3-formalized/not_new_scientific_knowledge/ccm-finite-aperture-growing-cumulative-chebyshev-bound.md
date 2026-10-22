@@ -5,7 +5,7 @@
 - **Type:** THEOREM / CONNES-SOURCE BRIDGE
 - **Scientific status:** `[FULLY PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinGrowingCumulativeBound.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinGrowingCumulativeBound.lean`
 
 ## Theorem
 

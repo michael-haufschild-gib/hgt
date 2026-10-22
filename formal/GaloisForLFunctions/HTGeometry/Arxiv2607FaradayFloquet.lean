@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonGrowthRate
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonGrowthRate
 
 /-!
 # Faraday--Rayleigh--Taylor Floquet identities from arXiv:2607.28932

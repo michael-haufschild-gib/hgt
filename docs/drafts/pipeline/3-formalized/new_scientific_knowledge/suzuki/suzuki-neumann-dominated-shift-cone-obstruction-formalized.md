@@ -5,14 +5,14 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-neumann-dominated-shift-cone-obstruction.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiStrongResolventLimit.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiEdgeDataInterface.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiDiagonalResolventInstantiation.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiStrongResolventLimit.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEdgeDataInterface.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDiagonalResolventInstantiation.lean`
   - `formal/GaloisForLFunctions/RHTower/IntervalL2ResolventCoordinate.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiIntervalEdgeData.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiScrewKernelRegularity.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiScrewShiftConeAssembly.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiIntervalEdgeData.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewKernelRegularity.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewShiftConeAssembly.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLargeNegativeShiftCentralFlux.lean`
   - analytic layer: `formal/GaloisForLFunctions/HTGeometry/CompactFourierSineKernel.lean`,
     `SignedCharFunCentralJet.lean`, `PrimitiveAverageLimit.lean`, `StrongConvergenceDense.lean`,
     `CfcNormBound.lean`, `CompactOperatorDiscreteSpectrum.lean`, `CompactIntervalL2Pairing.lean`,

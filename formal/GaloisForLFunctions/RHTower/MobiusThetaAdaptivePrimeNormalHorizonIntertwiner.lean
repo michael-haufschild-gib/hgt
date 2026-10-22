@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalHilbertNoGo
-import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianHorizonAdmission
-import GaloisForLFunctions.RHTower.DeningerMultiplier
-import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCompletedGreenDefect
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianHorizonAdmission
+import GaloisForLFunctions.RHTower.Deninger.DeningerMultiplier
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianCompletedGreenDefect
 
 /-!
 # Adaptive prime-normal source--divisor horizon intertwiner

@@ -278,7 +278,7 @@ form, the Paley–Wiener compression and the Dirichlet reconstruction remain cit
 card's own finite-dimensional statements — equal dimensions, kernel transfer, the determinant
 criterion and the parity grading — are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilSquareEvans.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilSquareEvans.lean`
 (4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — one is
 `[propext]` only — wired into `formal/GaloisForLFunctions/RHTower.lean`).
 

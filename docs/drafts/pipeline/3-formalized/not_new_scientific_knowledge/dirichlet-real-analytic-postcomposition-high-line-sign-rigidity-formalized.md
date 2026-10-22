@@ -28,7 +28,7 @@ the horizontal parameter `x > H + 1` in the two eventual sign filters and set
 
 ## Route-I specialization
 
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowAnalyticPostcompositionNoGo` proves:
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowAnalyticPostcompositionNoGo` proves:
 
 - arbitrary-offset impedance/source line identities;
 - nonvanishing of the first nonconstant sharp-window coefficient;
@@ -41,8 +41,8 @@ postcomposition. Coefficient-nonlocal square-aperture correlation energy survive
 ## Audit
 
 - direct `lake env lean GaloisForLFunctions/HTGeometry/DirichletAnalyticPostcompositionSignRigidity.lean`: pass;
-- direct `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`: pass;
+- direct `lake env lean GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`: pass;
 - targeted `lake build GaloisForLFunctions.HTGeometry.DirichletAnalyticPostcompositionSignRigidity`: pass;
-- targeted `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowAnalyticPostcompositionNoGo`: pass;
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowAnalyticPostcompositionNoGo`: pass;
 - capstone axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`;
 - scoped forbidden-declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.

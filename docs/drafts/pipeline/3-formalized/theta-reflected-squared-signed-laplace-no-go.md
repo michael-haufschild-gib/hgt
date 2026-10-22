@@ -105,7 +105,7 @@ is identically zero.  At `x=0`, however, the left-hand side is `Φ(u)²>0`.  Con
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspReflectedSquaredSignedLaplaceNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSquaredSignedLaplaceNoGo`
 
 - `finiteComplexLaplace`
 - `diffContOnCl_finiteComplexLaplace`

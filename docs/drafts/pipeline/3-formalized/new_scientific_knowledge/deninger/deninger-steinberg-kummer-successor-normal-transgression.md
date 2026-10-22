@@ -4,7 +4,7 @@
 - **Type:** SOURCE CONSTRUCTION / FULL-GRADE NORMAL TRANSGRESSION / ROUTE-L FRONTIER ADVANCE
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [PROJECT-SPECIFIC NEW KNOWLEDGE] [NOT RH]`
 - **Lean counterpart:**
-  `formal/GaloisForLFunctions/RHTower/DeningerSteinbergKummerSuccessorNormalTransgression.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerSteinbergKummerSuccessorNormalTransgression.lean`
 - **Corpus inputs:**
   `RouteRKummerCyclicOneCocycleDetector.lean`,
   `DeningerMeyerDilationFlow.lean`,

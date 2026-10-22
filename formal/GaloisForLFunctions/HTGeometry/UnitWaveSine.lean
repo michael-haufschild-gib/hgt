@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.L2SpatialReflectionMultipliers
-import GaloisForLFunctions.HTGeometry.KleinGordonFieldRegularity
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonFieldRegularity
 
 /-! The sine propagator with the original unit-speed Fourier normalization restored. -/
 open MeasureTheory

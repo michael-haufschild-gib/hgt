@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillRealField
-import GaloisForLFunctions.HTGeometry.KleinGordonConformalProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonConformalProbe
 
 /-!
 # The evolution field on the chart

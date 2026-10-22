@@ -117,9 +117,9 @@ returned older work or no hits. No external hypothesis is imported.
 
 All 45 theorems passed `lake env lean /tmp/route_l_full_source_admission.lean`
 with no errors or warnings. The checked development is in
-`formal/GaloisForLFunctions/RHTower/DeningerGammaSixCompleteIntegrandAdmission.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCompleteIntegrandAdmission.lean`
 and wired into `RHTower`. The final targeted command
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixCompleteIntegrandAdmission`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCompleteIntegrandAdmission`
 passed; the new module built in 112 seconds. No full umbrella build ran.
 
 `lake env lean /tmp/route_l_complete_integrand_axioms.lean` audited all

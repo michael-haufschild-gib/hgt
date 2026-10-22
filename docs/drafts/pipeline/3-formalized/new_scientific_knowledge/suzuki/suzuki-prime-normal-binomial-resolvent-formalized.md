@@ -10,7 +10,7 @@
   - `formal/GaloisForLFunctions/HTGeometry/PrimeNormalFlowEquation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PrimeNormalFlowExpansion.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PrimeNormalFlowUniqueness.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiVolterraLogGradeRecurrence.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiVolterraLogGradeRecurrence.lean`
 
 ## Formal content
 

@@ -130,7 +130,7 @@ theorem is global twisted descent and dense cup-isometric comparison.
 
 ### All six identities landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticRectangularQuaternionicHodge.lean`.  Axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticRectangularQuaternionicHodge.lean`.  Axiom
 audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerRectangularConjugation`, `deningerRectangularComplexJ`,

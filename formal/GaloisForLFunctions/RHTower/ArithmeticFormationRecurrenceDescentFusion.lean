@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ArithmeticFormationCompletionBoundaryFusion
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent
 
 /-!
 # Arithmetic formation--recurrence descent fusion

@@ -53,13 +53,13 @@ remainder at finite height.  The paired cusp currents are the complete obstructi
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`
 - Headline theorems:
   `d4BM_actualBalancedSpinTwoTruncatedMoment_defect_decomposition`,
   `d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedCuspTop`,
   `d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedTruncatedBulk`
 - Direct check: `lake env lean` passes.
-- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`
+- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`
   passes at `12475/12475`.
 - Axioms: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Umbrella: imported by `GaloisForLFunctions.RHTower`.

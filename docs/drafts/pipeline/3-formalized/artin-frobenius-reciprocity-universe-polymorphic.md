@@ -72,12 +72,12 @@ axiom, `opaque`, `unsafe`, or target-equivalent proposition interface.
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinFrobeniusReciprocity.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinFrobeniusReciprocity.lean`.
 - Explicit adjunction: `indResIntertwiningEquiv`.
 - Pairing theorem: `characterPairing_induced_restricted`.
 - Source check:
-  `lake env lean GaloisForLFunctions/RHTower/ArtinFrobeniusReciprocity.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinFrobeniusReciprocity.lean`.
 - Targeted olean audit:
-  `lake build GaloisForLFunctions.RHTower.ArtinFrobeniusReciprocity`.
+  `lake build GaloisForLFunctions.RHTower.Artin.ArtinFrobeniusReciprocity`.
 - `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

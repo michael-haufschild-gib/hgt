@@ -95,12 +95,12 @@ which remains the RH-equivalent unresolved target.
 
 ## Lean audit, 2026-10-04
 
-Leaf: `formal/GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/CCM/CCMExponentialRampCuspConcentration.lean`.
 Scratch39975 verified incoming nonvanishing. Combined14103 and35423
 required coercion and limit-type repairs;54437 exposed one extra tactic
 after its goal was solved. Final93039 exited0 with no diagnostics:
 
-    lake --old env lean GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMExponentialRampCuspConcentration.olean
+    lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMExponentialRampCuspConcentration.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMExponentialRampCuspConcentration.olean
 
 Axiom45260 exited0: every public declaration uses only propext,
 Classical.choice, Quot.sound. Mathlib API name checks were included in

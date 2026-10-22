@@ -5,11 +5,11 @@
 - **Claim:** `[PAPER-PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOrbitWeightSummability.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOrbitCarrier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiApertureRecurrence.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiApertureAlmostEvery.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLiouvilleAperture.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOrbitWeightSummability.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOrbitCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureRecurrence.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureAlmostEvery.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLiouvilleAperture.lean`
   - weighted shifts (pre-existing): `formal/GaloisForLFunctions/HTGeometry/WeightedShiftEnergy.lean`
 
 ## Formal content

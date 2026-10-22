@@ -80,16 +80,16 @@ At `k=0`, the truncated history is zero and literal seeding gives `δ_0=-S(q)/D_
 - **Exact killing theorem/mechanism:** A simple Jost pole makes every history-local nonlinear perturbation hierarchy triangular with invertible diagonal; strong recursion uniquely absorbs the literal source on every fibre, including tilted ones.
 - **Strongest positive survivor:** Full correction-tower vanishing is exactly the critical wall and globally RH. Any live HB successor must derive that independent standard-clock condition, or exhibit a genuinely non-triangular multiple-pole/resonance obstruction invalidating simple-pole recursion.
 - **New insight:** Passing from one frequency counterterm to arbitrary formal order does not strengthen selection. Higher-order solvability contains no new horizontal information; all RH content is concentrated in forbidding the unique leading renormalization.
-- **Status:** `[LEAN-PROVED]`. Exact capstone `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo` in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo`; strongest survivor and returned-Evans extinction are formalized. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` pending independent proof/priority review.
+- **Status:** `[LEAN-PROVED]`. Exact capstone `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo` in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo`; strongest survivor and returned-Evans extinction are formalized. `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` pending independent proof/priority review.
 
 ## Lean certificate
 
-- **Module:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo.lean`
 - **Capstone:** `RHTower.d4BMMixedCasimirAllOrderTriangularQNMClockRenormalization_noGo`
 - **Positive survivor:** `RHTower.forall_d4BMMixedCasimirAllOrderQNMClockTower_allXi_eq_zero_iff_rh`
 - **Physical return:** `RHTower.d4BMMixedCasimirAllOrderClockRenormalizedReturnDeterminant_qnmPlus_eq_zero`
 - **Umbrella:** imported by `formal/GaloisForLFunctions/RHTower.lean`
-- **Verification:** direct `lake env lean` PASS; targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo` PASS; capstone and global survivor depend only on `propext`, `Classical.choice`, `Quot.sound`.
+- **Verification:** direct `lake env lean` PASS; targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMAllOrderTriangularQNMClockRenormalizationNoGo` PASS; capstone and global survivor depend only on `propext`, `Classical.choice`, `Quot.sound`.
 - **Lint:** new module is umbrella-reachable and contains no forbidden declarations; repository lint remains red only on unrelated pre-existing reachability debt.
 
 ## Log

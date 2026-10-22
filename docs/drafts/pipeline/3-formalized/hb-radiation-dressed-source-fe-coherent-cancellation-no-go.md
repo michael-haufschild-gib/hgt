@@ -138,7 +138,7 @@ dynamics, or enforce copywise darkness before any FE aggregation.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFECoherentCancellationNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFECoherentCancellationNoGo`.
 
 - The actual raw unit-seed BM Ward projection is proved exactly equal to retarded Green transfer
   times the literal polarized nonlinear source.
@@ -154,7 +154,7 @@ Formalized in
   coherent return vanishes and the unique ratio law holds.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFECoherentCancellationNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFECoherentCancellationNoGo`
 passed all 12,018 jobs. Representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC89 finding. Module is wired into the `GaloisForLFunctions.RHTower` umbrella without running a

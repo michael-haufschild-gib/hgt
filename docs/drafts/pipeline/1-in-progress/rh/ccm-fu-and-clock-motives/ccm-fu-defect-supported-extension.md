@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE], proposed source-specific step in complete reserve extension
 - **Goal:** Uniform complete signed Abel bound and RH; both remain open.
-- **Parent:** [reserve-extension induction](../../ccm-fu-reserve-extension-induction.md).
+- **Parent:** [reserve-extension induction](ccm-fu-reserve-extension-induction.md).
 
 ## Frozen question
 

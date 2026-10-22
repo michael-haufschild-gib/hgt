@@ -8,7 +8,7 @@
 
 ## Proof chain and scope
 
-The [theta CDF-action quotient](../../theta-quantile-fourier-action-quotient.md) constructs $D=PB|_{e^\perp}$ from the literal theta density, with
+The [theta CDF-action quotient](theta-quantile-fourier-action-quotient.md) constructs $D=PB|_{e^\perp}$ from the literal theta density, with
 
 \[
 D_{mn}=\frac{\Phi_m-\Phi_{n-m}}{2\pi n},\qquad
@@ -48,7 +48,7 @@ s_n=\frac{v_{2,n-1}}{2\pi N_{n-1}}
 
 Here $N_j=\max(e^3,j+1/8)$ and $v_{2,j}=L_j-\log(L_j-\log L_j)$, $L_j=\log(N_j/e)$; therefore $N_{n-1}\sim n$ and $v_{2,n-1}\sim\log n$.
 
-For the actual theta density, $\Phi_n=o(\log n)$. Here is a source-level proof. The corpus's [all-order first-atom approximation](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspFirstAtomAllOrderApproximation.lean) and the explicit first atom give $(\log k)'(x)\to-\infty$ as $x\to+\infty$: its logarithmic derivative is $9/2-2\pi e^{2x}+o(e^{2x})$. Evenness gives the opposite sign at $-\infty$. By log-concavity, for $x$ large with $(\log k)'(x)<0$,
+For the actual theta density, $\Phi_n=o(\log n)$. Here is a source-level proof. The corpus's [all-order first-atom approximation](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFirstAtomAllOrderApproximation.lean) and the explicit first atom give $(\log k)'(x)\to-\infty$ as $x\to+\infty$: its logarithmic derivative is $9/2-2\pi e^{2x}+o(e^{2x})$. Evenness gives the opposite sign at $-\infty$. By log-concavity, for $x$ large with $(\log k)'(x)<0$,
 
 \[
 \frac{\int_x^\infty k(y)\,dy}{k(x)}

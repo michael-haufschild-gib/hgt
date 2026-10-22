@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerActivationSquarefreeDisintegration
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimePowerTowerCollapse
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimePowerTowerCollapse
 
 /-!
 # Primitive--fibre modular renormalization

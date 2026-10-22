@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSuzukiCrossApertureRieszTransport
+import GaloisForLFunctions.RHTower.CCM.CCMSuzukiCrossApertureRieszTransport
 
 #print axioms RHTower.suzukiTaNormalizedCompletedCovarianceSource
 #print axioms RHTower.suzukiTaNormalizedCompletedCovarianceSource_crossAperture_eq

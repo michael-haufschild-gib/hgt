@@ -384,19 +384,19 @@ scale-resolved free-energy and source-abscissa statement is bundled by
 
 ## Axiom and lint gate
 
-- Exact build targets: GaloisForLFunctions.RHTower.CCMUnconditionalFoundation,
-  GaloisForLFunctions.RHTower.CCMRectangularOneSidedTransverseExponent, and
-  GaloisForLFunctions.RHTower.CCMRectangularSparseExceptionCompleteness,
-  GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSplitCompleteness, and
-  GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum, and
-  GaloisForLFunctions.RHTower.CCMRectangularNegativeDirichletAbscissa, and
-  GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution, and
-  GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum, and
-  GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum, and
-  GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection, and
-  GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography, and
-  GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization, and
-  GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography, and
+- Exact build targets: GaloisForLFunctions.RHTower.CCM.CCMUnconditionalFoundation,
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularOneSidedTransverseExponent, and
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularSparseExceptionCompleteness,
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativeChannelSplitCompleteness, and
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativeChannelSpectrum, and
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativeDirichletAbscissa, and
+  GaloisForLFunctions.RHTower.CCM.CCMRectangularFiniteChannelNonDilution, and
+  GaloisForLFunctions.RHTower.CCM.CCMSourceDivisorEnergySpectrum, and
+  GaloisForLFunctions.RHTower.CCM.CCMPrimeGammaSourceEnergySpectrum, and
+  GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMinimalPositiveCorrection, and
+  GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedDyadicPrimeTomography, and
+  GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedCriticalMellinFactorization, and
+  GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinDivisorTomography, and
   GaloisForLFunctions.RHTower.XiThermalQuartetCubicChargeBound, and
   GaloisForLFunctions.RHTower.XiThermalOffLineChargeSelfCubicBound, and
   GaloisForLFunctions.RHTower.XiThermalProjectiveCofinalSection, and

@@ -4,7 +4,7 @@ Status: the exact causal remainder, all angular cusp-jet bounds, the Goursat equ
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-[Lean source](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalResponseCusp.lean), namespace `RHTower.D4BMCausalCusp`. [Current attack](../1-in-progress/hb-causal-response-cusp-current.md).
+[Lean source](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalResponseCusp.lean), namespace `RHTower.D4BMCausalCusp`. [Current attack](../1-in-progress/hb-causal-response-cusp-current.md).
 
 ## Exact original response
 
@@ -60,7 +60,7 @@ The existing [full original onset decomposition](hb-full-source-onset-reduction.
 
 ## Validation
 
-The scratch proof passed `lake env lean`. The isolated final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalResponseCusp`; it passed in 340 seconds with two jobs. Cached dependencies were frozen for the audit; no dependency or umbrella build ran.
+The scratch proof passed `lake env lean`. The isolated final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalResponseCusp`; it passed in 340 seconds with two jobs. Cached dependencies were frozen for the audit; no dependency or umbrella build ran.
 
 All eight new public theorems passed the scratch axiom audit with exactly `propext`, `Classical.choice`, and `Quot.sound`. The verified source and all five compiled artifacts were installed byte-for-byte.
 

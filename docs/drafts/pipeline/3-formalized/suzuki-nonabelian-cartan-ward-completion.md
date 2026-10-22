@@ -152,7 +152,7 @@ This proves the package.
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiNonabelianCartanWardCompletion`.
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiNonabelianCartanWardCompletion`.
 - Literal rank-two carrier: `det_suzukiRankTwoStokesFissionCell`,
   `suzukiRankTwoStokesFissionCell_zero_zero`,
   `suzukiCenterStokesCartanCell_primePower_eq_negativeLight`, and

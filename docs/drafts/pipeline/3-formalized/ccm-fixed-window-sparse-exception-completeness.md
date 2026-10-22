@@ -62,7 +62,7 @@ half-power law is the unconditional divisor-independent corollary of \(\delta_*\
 
 ## Formal artifact
 
-`formal/GaloisForLFunctions/RHTower/CCMRectangularSparseExceptionCompleteness.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularSparseExceptionCompleteness.lean`
 
 The exact module build and repository lint pass.  The checked capstones depend only on
 `propext`, `Classical.choice`, and `Quot.sound`.

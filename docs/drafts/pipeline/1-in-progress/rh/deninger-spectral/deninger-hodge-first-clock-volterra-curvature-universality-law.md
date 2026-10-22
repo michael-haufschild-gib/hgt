@@ -1,7 +1,7 @@
 # Deninger-Hodge first-clock Volterra-curvature universality law
 
 Status: Stage 2 — dependency-closed paper proof; Lean formalization in progress  
-Lean target: `GaloisForLFunctions.RHTower.DeningerHodgeFirstClockVolterraCurvatureUniversalityLaw`  
+Lean target: `GaloisForLFunctions.RHTower.Deninger.DeningerHodgeFirstClockVolterraCurvatureUniversalityLaw`  
 Novelty: `[NOVELTY UNVERIFIED]`
 
 ## Theorem-generated discovery

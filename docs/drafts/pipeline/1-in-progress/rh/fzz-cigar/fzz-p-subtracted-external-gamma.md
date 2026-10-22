@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** closed source-factor theorem; physical source assembly open
-- **Predecessor:** [neutral coupling insertion](../../fzz-p-coupling-insertion-gamma.md)
+- **Predecessor:** [neutral coupling insertion](fzz-p-coupling-insertion-gamma.md)
 
 ## Chain and obstacle
 

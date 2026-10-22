@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FiniteRegularityCurveBounds
-import GaloisForLFunctions.HTGeometry.KleinGordonSpacetimeProbe
-import GaloisForLFunctions.HTGeometry.KleinGordonRegularProbes
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSpacetimeProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRegularProbes
 
 /-!
 # Clock probes for a spacetime potential of finite regularity

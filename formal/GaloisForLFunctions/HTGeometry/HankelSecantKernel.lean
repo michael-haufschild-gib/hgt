@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HankelIncidenceRing
-import GaloisForLFunctions.RHTower.DeningerHankelHigherRankGroebner
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelHigherRankGroebner
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Mathlib.RingTheory.MvPolynomial.Basic
 

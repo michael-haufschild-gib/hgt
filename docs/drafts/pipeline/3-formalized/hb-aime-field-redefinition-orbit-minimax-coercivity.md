@@ -56,14 +56,14 @@ Unique minimizer is equal-channel orbit representative. For nonzero seed this co
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity`
 
 All declarations are closed Lean proofs. No new axioms, `sorry`, `admit`, `opaque`, or `unsafe` declarations are introduced.
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity`: passed, 12,753 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEFieldRedefinitionOrbitMinimaxCoercivity`: passed, 12,753 jobs.
 - `#print axioms` for all fourteen public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC48 error. Global lint remains red only on unrelated unreachable owned modules.

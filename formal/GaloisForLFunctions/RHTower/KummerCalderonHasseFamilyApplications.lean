@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HasseFamily
-import GaloisForLFunctions.RHTower.DeningerKummerHasse
-import GaloisForLFunctions.RHTower.DeningerCalderonWittHasse
+import GaloisForLFunctions.RHTower.Deninger.DeningerKummerHasse
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittHasse
 import GaloisForLFunctions.RHTower.WindingHomotopyHasse
 
 /-!

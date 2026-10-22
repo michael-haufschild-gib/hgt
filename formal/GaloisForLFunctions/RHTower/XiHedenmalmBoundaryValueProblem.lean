@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspInversionBoundaryValue
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspInversionBoundaryValue
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!

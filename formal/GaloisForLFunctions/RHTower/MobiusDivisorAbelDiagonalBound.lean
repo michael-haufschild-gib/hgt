@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
 
 /-!
 # Harmonic bound for the literal Möbius–divisor Abel diagonal

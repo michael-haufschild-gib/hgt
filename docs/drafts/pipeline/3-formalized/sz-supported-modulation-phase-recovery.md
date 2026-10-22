@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** route SZ; `../1-in-progress/sz-first-contact-multiplier-identity.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilModulationPhaseRecovery.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilModulationPhaseRecovery.lean`
 
 ## Exact new result
 
@@ -39,18 +39,18 @@ The aperture and source are fixed before the carrier limit. No uniform statement
 ## Verification
 
 - Full scratch: exit 0, no diagnostics (11443).
-- Final leaf: `lake --old env lean GaloisForLFunctions/RHTower/CCMRestrictedWeilModulationPhaseRecovery.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMRestrictedWeilModulationPhaseRecovery.olean`; exit 0, no diagnostics (73301).
+- Final leaf: `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilModulationPhaseRecovery.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilModulationPhaseRecovery.olean`; exit 0, no diagnostics (73301).
 - Eight public axiom queries: passed (69365, exit 0); every declaration uses only `propext`, `Classical.choice`, and `Quot.sound`.
 - One umbrella import; no umbrella or full build. No numerical experiment, heartbeat change, or added axiom.
 - Global `scripts/formal_tools.py lint`: exit 1, fourteen unrelated unreachable modules; no new-leaf or prohibited-declaration diagnostic. Exact remaining errors:
 
 ```text
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureChainProfile
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMApertureTranslationChains
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MertensProductDiamondPintz
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment
 error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines

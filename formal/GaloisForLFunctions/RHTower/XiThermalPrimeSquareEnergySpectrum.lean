@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergySpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergySpectrum
 import GaloisForLFunctions.RHTower.PrimeArchThermalKrylovEquivalence
 import GaloisForLFunctions.RHTower.XiProjectiveReflectionSourceTemperatureSpectrum
 

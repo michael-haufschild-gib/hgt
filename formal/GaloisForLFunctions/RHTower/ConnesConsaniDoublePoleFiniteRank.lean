@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HardyDiskKernelContinuity
 import GaloisForLFunctions.HTGeometry.LpInjectionCompression
-import GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanCircleTraceCocycle
 import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
 
 open Complex

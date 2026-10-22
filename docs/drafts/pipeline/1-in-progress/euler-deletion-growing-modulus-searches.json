@@ -85,8 +85,8 @@
           {
             "name": "d4GaugeFixedTeukolskyTotalPlusPlusMinusCausalCut_invariant_commonResponseCorrection",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBCommonCausalOrientationHardEdgeRenormalizationNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBCommonCausalOrientationHardEdgeRenormalizationNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBCommonCausalOrientationHardEdgeRenormalizationNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBCommonCausalOrientationHardEdgeRenormalizationNoGo.lean",
             "line": 84,
             "doc": "A response correction common to both causal orientations is invisible to the full nonlinear Einstein--Teukolsky causal cut.",
             "score": -28.0368836999676
@@ -103,8 +103,8 @@
           {
             "name": "ThetaCuspHawkingPrimeSwapInvariantPartialResponseHistory",
             "kind": "structure",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo.lean",
             "line": 43,
             "doc": "A time-dependent, possibly nonlinear and norm-unbounded response history on a swap-invariant partial domain containing the actual visible charged theta state.",
             "score": -26.69455553788693
@@ -112,8 +112,8 @@
           {
             "name": "ccmRationalLocalBrauerAddHom_apply_ne_connesLocalWeilTerm_of_invariant",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMRationalAdelicFiniteResidueBrauerObstruction",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalAdelicFiniteResidueBrauerObstruction.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicFiniteResidueBrauerObstruction",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicFiniteResidueBrauerObstruction.lean",
             "line": 96,
             "doc": "The full additive-Brauer obstruction reaches the actual finite local term in Connes's Weil explicit formula. A future ABHN-to-Connes/Tate comparison must be nonlinear before the local Weil term is formed.",
             "score": -26.590488904002573
@@ -121,8 +121,8 @@
           {
             "name": "thetaCuspHawkingMassDilatedFullMirrorAmplitude_comoving",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingMassDilationOrderBlindnessNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingMassDilationOrderBlindnessNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingMassDilationOrderBlindnessNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingMassDilationOrderBlindnessNoGo.lean",
             "line": 166,
             "doc": "The complete nonlinear Davies--Fulling numerator is exactly invariant at comoving frequencies.",
             "score": -19.942625532570865
@@ -507,8 +507,8 @@
           {
             "name": "deningerConj_setIntegral",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerRealApexEndpoint",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerRealApexEndpoint.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerRealApexEndpoint",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerRealApexEndpoint.lean",
             "line": 84,
             "doc": "The two half planes carry the same integral** for a conjugation-invariant integrand, because the involution exchanges them and preserves the measure.",
             "score": -22.52846582572187
@@ -525,8 +525,8 @@
           {
             "name": "abs_integral_mul_cos_le_norm",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFirstRowEnvelopeTail",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstRowEnvelopeTail.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstRowEnvelopeTail",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstRowEnvelopeTail.lean",
             "line": 895,
             "doc": "The real cosine integral is dominated by the complex oscillatory integral, for either sign of the phase. This is what lets the three block estimates — which carry the phase sign their van der Corput test demands — all bound the same real quantity.",
             "score": -21.00364904123255
@@ -570,8 +570,8 @@
           {
             "name": "schanuelDefect_slope_mem_of_integral_isogeny",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.SchanuelDefectIsogeny",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SchanuelDefectIsogeny.lean",
+            "module": "GaloisForLFunctions.RHTower.Schanuel.SchanuelDefectIsogeny",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelDefectIsogeny.lean",
             "line": 56,
             "doc": "The original defect slope belongs to any rank-one intermediate value field carrying a nondegenerate integral isogeny transform of the exponential pair.",
             "score": -18.09653428366673
@@ -579,8 +579,8 @@
           {
             "name": "schanuelDefect_slope_mem_of_integral_isogeny_field",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.SchanuelIntegralIsogenyValueField",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SchanuelIntegralIsogenyValueField.lean",
+            "module": "GaloisForLFunctions.RHTower.Schanuel.SchanuelIntegralIsogenyValueField",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelIntegralIsogenyValueField.lean",
             "line": 292,
             "doc": "The original defect slope descends through every rank-one embedded field carrying a nonsingular integral transform of the exponential pair.",
             "score": -18.004345361167065
@@ -667,8 +667,8 @@
           {
             "name": "deningerQ8RootNumberNegOne_topS_recovery_formula",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOnePrimitiveField",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerQ8RootNumberNegOnePrimitiveField.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOnePrimitiveField",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerQ8RootNumberNegOnePrimitiveField.lean",
             "line": 235,
             "doc": "",
             "score": -27.91775431883793
@@ -685,8 +685,8 @@
           {
             "name": "deningerQ8RootNumberNegOne_recoveryDenominator_ne_zero",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOnePrimitiveField",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerQ8RootNumberNegOnePrimitiveField.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOnePrimitiveField",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerQ8RootNumberNegOnePrimitiveField.lean",
             "line": 196,
             "doc": "",
             "score": -27.06443584319444
@@ -790,8 +790,8 @@
           {
             "name": "d4FundamentalQNMNonlinearChiralSource_xi_ne_zero_iff",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer.lean",
             "line": 326,
             "doc": "Every nonzero absorbed horizon mode produces nonzero fixed-angular-sector cross-helicity return at every actual Xi divisor. This is not a transition between theta-shadow harmonics.",
             "score": -39.55886533573923
@@ -799,8 +799,8 @@
           {
             "name": "xiZeroCopyReflect_re_ne_half_of_ne_half_nonlinear",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo.lean",
             "line": 105,
             "doc": "",
             "score": -37.01510501804851
@@ -808,8 +808,8 @@
           {
             "name": "d4BMXiFESchwarzNonlinearBoundaryCurrent_eq_zero_iff_transfer_eq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNonlinearFEReflectionBoundaryProducer",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNonlinearFEReflectionBoundaryProducer.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNonlinearFEReflectionBoundaryProducer",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNonlinearFEReflectionBoundaryProducer.lean",
             "line": 169,
             "doc": "Source-free nonlinear boundary dynamics identify FE-reflected and Schwarz transfers.",
             "score": -36.37516904271744
@@ -817,8 +817,8 @@
           {
             "name": "d4FundamentalQNMNonlinearReturnDeterminant_qnmPlus_ne_zero_iff",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingNonlinearChiralTeukolskyReturnProducer.lean",
             "line": 377,
             "doc": "Horizon phase cancels at old pole; explicit cubic fixed-sector chiral source makes the projective Evans wedge nonzero exactly for nonzero ingoing horizon mode.",
             "score": -35.055527408397616
@@ -826,8 +826,8 @@
           {
             "name": "sourceHorizontalPrimeGeometricKLScaleTerm_zero_eq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaRoutePAllPrimeInformationVirialDivergence",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaRoutePAllPrimeInformationVirialDivergence",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
             "line": 38,
             "doc": "Exact first-prime-power expression: nonlinear information carrier already contains the unstable exponential branch at valuation one.",
             "score": -28.515771277561605
@@ -871,8 +871,8 @@
           {
             "name": "eventually_one_div_prime_le_sourceHorizontalPrimeGeometricKLScaleTerm_zero",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaRoutePAllPrimeInformationVirialDivergence",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaRoutePAllPrimeInformationVirialDivergence",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
             "line": 50,
             "doc": "At every sufficiently large prime, first nonlinear information layer dominates prime harmonic mass.",
             "score": -27.980940876670825
@@ -880,8 +880,8 @@
           {
             "name": "hbXiPeierlsUnitSourceFECocycle_ne_zero_local",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEVacuumContinuousNonlinearDetectorNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFEVacuumContinuousNonlinearDetectorNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEVacuumContinuousNonlinearDetectorNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFEVacuumContinuousNonlinearDetectorNoGo.lean",
             "line": 364,
             "doc": "",
             "score": -26.554480642755998
@@ -889,8 +889,8 @@
           {
             "name": "hbXiPeierlsUnitSourcePacket_ne_zero_of_offLine",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVacuumRegularNonlinearSourceGaugeNoGo.lean",
             "line": 100,
             "doc": "",
             "score": -26.39792266401915
@@ -927,8 +927,8 @@
           {
             "name": "tendsto_suzukiCompletedStokesCartanWardObservable_sub_green",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.SuzukiNonabelianCartanWardCofinalEquivalence",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiNonabelianCartanWardCofinalEquivalence.lean",
+            "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiNonabelianCartanWardCofinalEquivalence",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNonabelianCartanWardCofinalEquivalence.lean",
             "line": 73,
             "doc": "Cofinal source identification.** The nonlinear nonabelian Cartan observable and the literal completed Suzuki Green source differ by a quantity tending to zero.",
             "score": -19.856759529741712
@@ -1004,8 +1004,8 @@
           {
             "name": "tendsto_weight_eq_zero_of_mul_upperBound_of_not_upperBound",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMEvenShiftExponentialTypeRigidity",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMEvenShiftExponentialTypeRigidity.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMEvenShiftExponentialTypeRigidity",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMEvenShiftExponentialTypeRigidity.lean",
             "line": 120,
             "doc": "Necessary boundary-collapse law.** If multiplication by a convergent nonnegative-limit weight genuinely creates an exponential upper bound absent from the original carrier, that weight must converge to zero. Thus every scalar transform capable of crossing a tail exponent is necessarily asymptotically noninvertible.",
             "score": -11.096632526314943
@@ -1192,8 +1192,8 @@
           {
             "name": "tendsto_twoModeSource_div_deficit",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMTwoModeDeficitScale",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMTwoModeDeficitScale.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMTwoModeDeficitScale",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMTwoModeDeficitScale.lean",
             "line": 105,
             "doc": "The central correction is of deficit order.** With the fixed-mode prolate asymptotics as hypotheses — both deficits vanish, the two total integrals converge to their limits, and the eigenvalue gap is asymptotically half the second deficit — the two-mode central value divided by the deficit converges to `-2^{-3/4} sqrt(3/11)`. The point of the statement is the *scale*: the ratio has a finite nonzero limit against `d1`, so the zero-mode Poisson correction is of concentration-deficit order and not of square-root-leakage order.",
             "score": -18.01469225435205
@@ -1224,8 +1224,8 @@
           {
             "name": "criticalMellinAtomWeight_eq_vonMangoldt_mul_oddBlockFockDefect",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFirstClockBlockSubdivisionTransfer",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockBlockSubdivisionTransfer.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockBlockSubdivisionTransfer",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockBlockSubdivisionTransfer.lean",
             "line": 267,
             "doc": "Von Mangoldt block-Fock defect law.** Every positive integer atom's critical Mellin radial weight is its von Mangoldt mass times the universal degree-one defect of the Gamma block ladder.",
             "score": -14.8708279873731
@@ -1663,8 +1663,8 @@
           {
             "name": "schattenPowerPartialSum_two_thetaMobiusPrimeNormalHalfDensityDiagonal_le_primeDiagonalSum",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo.lean",
             "line": 103,
             "doc": "Every Schatten-2 prefix is bounded by the corresponding reciprocal-prime prefix.",
             "score": -35.935827156160116
@@ -1672,8 +1672,8 @@
           {
             "name": "summable_suzukiCheckpointSignedCurvaturePositiveMass_powerDamping_of_half_lt",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.SuzukiCurvatureJordanAbscissaRigidity",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCurvatureJordanAbscissaRigidity.lean",
+            "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCurvatureJordanAbscissaRigidity",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCurvatureJordanAbscissaRigidity.lean",
             "line": 339,
             "doc": "Above the half-order wall, positive Suzuki curvature Jordan mass is summable.",
             "score": -32.38067523881497
@@ -1681,8 +1681,8 @@
           {
             "name": "summable_suzukiCheckpointSignedCurvatureNegativeMass_powerDamping_of_half_lt",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.SuzukiCurvatureJordanAbscissaRigidity",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCurvatureJordanAbscissaRigidity.lean",
+            "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCurvatureJordanAbscissaRigidity",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCurvatureJordanAbscissaRigidity.lean",
             "line": 383,
             "doc": "Above the half-order wall, negative Suzuki curvature Jordan mass is summable.",
             "score": -32.38067523881497
@@ -1708,8 +1708,8 @@
           {
             "name": "dyadicSharpHalfPowerExceptionalMajorant_LSeriesSummable",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowExcessEnergyGate",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowExcessEnergyGate.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowExcessEnergyGate",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowExcessEnergyGate.lean",
             "line": 771,
             "doc": "",
             "score": -31.309656596537128
@@ -1904,8 +1904,8 @@
           {
             "name": "ccmGuinandWeilPrimeEntryCenteredMatrixJet3_quadratic_of_sum_eq_zero",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryThirdJetTransverse",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetTransverse.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPrimeEntryThirdJetTransverse",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryThirdJetTransverse.lean",
             "line": 757,
             "doc": "Transverse third-jet square law.** On the zero-sum sector, all central terms vanish and only the positive clock outer product survives.",
             "score": -32.17973533296924

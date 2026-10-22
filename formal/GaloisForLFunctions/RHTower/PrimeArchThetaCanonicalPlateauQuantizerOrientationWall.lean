@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchObservableCarrierQuantization
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 import Mathlib.Probability.Kernel.Representation
 
 /-!

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageModuleOneFundamentalDomain
-import GaloisForLFunctions.RHTower.DeningerRationalPrimeFactorization
-import GaloisForLFunctions.RHTower.DeningerSUnitEndpointPage
+import GaloisForLFunctions.RHTower.Deninger.DeningerRationalPrimeFactorization
+import GaloisForLFunctions.RHTower.Deninger.DeningerSUnitEndpointPage
 
 /-!
 # Integral coordinates on the literal finite-stage CCM S-unit subgroup

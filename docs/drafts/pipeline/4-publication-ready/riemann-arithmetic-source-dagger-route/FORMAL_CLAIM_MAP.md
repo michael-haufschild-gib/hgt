@@ -55,7 +55,7 @@ interfaces from being reported as constructed mathematics.
 | Away from monodromy one, every strict single-valued cyclic-to-paracyclic landing is zero, independently of topology | same module: `strictCyclicParacyclicLanding_eq_zero_of_monodromy_ne_one` |
 | Source--dagger boundary class forces `Re s = 1/2`; strict landing is zero off line | `RHTower/SourceDaggerCyclicBoundaryDefectLaw.lean`: `re_eq_half_of_sourceDaggerCyclicBoundaryClass`, `sourceDaggerStrictCyclicLanding_eq_zero_of_re_ne_half` |
 | One global boundary-class landing on every Xi divisor fibre implies RH | same module: `riemannHypothesis_of_sourceDaggerCyclicBoundaryClassLanding` |
-| Mate gain is `exp ((2 Re s - 1) log n)` | `RHTower/DeningerOneSidedFramedMateCurvatureTransgression.lean`: `deningerHalfDensityMateGain`, `deningerHalfDensityMateGain_eq_norm_inv_sq` |
+| Mate gain is `exp ((2 Re s - 1) log n)` | `RHTower/Deninger/DeningerOneSidedFramedMateCurvatureTransgression.lean`: `deningerHalfDensityMateGain`, `deningerHalfDensityMateGain_eq_norm_inv_sq` |
 
 ## Canonical maximal quotient and physical collapse
 
@@ -88,10 +88,10 @@ interfaces from being reported as constructed mathematics.
 | Manuscript claim | Formal support |
 |---|---|
 | Product-topology closed relation retaining all finite prime blocks is maximally vertical and equals domain times full output | `RHTower/CompleteResolutionCofinalConditioningLaw.lean`: `completeResolution_closedLinearRelation_countablePrime_affine_fullVertical`, `linearRelation_eq_domain_prod_of_fullVertical`, `completeResolution_closedLinearRelation_countablePrime_affine_eq_domain_prod`, `completeResolution_countablePrime_topologyAlternative`, `completeResolution_countablePrime_informative_forces_strictTopology` |
-| Actual cross-prime arithmetic source span is dense in completed packet | `RHTower/DeningerCalderonWittAllCrossPrimeArithmeticSourceCompletion.lean`: `deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert_denseRange` |
+| Actual cross-prime arithmetic source span is dense in completed packet | `RHTower/Deninger/DeningerCalderonWittAllCrossPrimeArithmeticSourceCompletion.lean`: `deningerCalderonWittCrossPrimeSourceSpanToPacketHilbert_denseRange` |
 | Old oriented boundary kills actual cross-prime source span; every continuous extension is zero | same module: `deningerCalderonWittGlobalOrientedBoundary_crossPrimeSourceSpan`, `deningerCalderonWittCrossPrimeContinuousOrientedBoundaryExtension_eq_zero` |
-| Relative Calderón--Witt class is exactly Green primitive escape from admitted sector | `RHTower/DeningerCalderonWittRelativeBoundaryTransgression.lean`: `deningerCalderonWittRelativeBoundaryClass_eq_zero_iff`, `deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff` |
-| Every regular orientation-blind consumer factors through one orientation trace; no third regular source channel | `RHTower/DeningerCalderonWittOrientationTransgressionCompleteness.lean`: `deningerCalderonWittOrientationTransgressionCompleteness`, `deningerCalderonWittGlobalOrientationTransgressionCompleteness` |
+| Relative Calderón--Witt class is exactly Green primitive escape from admitted sector | `RHTower/Deninger/DeningerCalderonWittRelativeBoundaryTransgression.lean`: `deningerCalderonWittRelativeBoundaryClass_eq_zero_iff`, `deningerCalderonWittGlobalRelativeBoundaryClass_eq_zero_iff` |
+| Every regular orientation-blind consumer factors through one orientation trace; no third regular source channel | `RHTower/Deninger/DeningerCalderonWittOrientationTransgressionCompleteness.lean`: `deningerCalderonWittOrientationTransgressionCompleteness`, `deningerCalderonWittGlobalOrientationTransgressionCompleteness` |
 
 ## Explicitly unproved
 

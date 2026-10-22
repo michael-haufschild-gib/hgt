@@ -20,4 +20,4 @@ Consequence for the live source problem: SWA-1 can survive only through signed a
 
 ## Verification
 
-Module `GaloisForLFunctions.RHTower.SuzukiPNTEnvelopeCesaroNoGo` passes direct Lean checking, targeted `lake build`, formal lint, and axiom audit. Imported by the RHTower umbrella. Frontier map was not modified by this work.
+Module `GaloisForLFunctions.RHTower.Suzuki.SuzukiPNTEnvelopeCesaroNoGo` passes direct Lean checking, targeted `lake build`, formal lint, and axiom audit. Imported by the RHTower umbrella. Frontier map was not modified by this work.

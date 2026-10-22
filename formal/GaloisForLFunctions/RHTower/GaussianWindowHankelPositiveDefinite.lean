@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmGaussianHankelRH
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGaussianHankelRH
 import GaloisForLFunctions.HTGeometry.MomentInnerProduct
 
 /-!

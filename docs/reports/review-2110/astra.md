@@ -158,7 +158,7 @@ Its corresponding paper identity is
 For fixed \(x\) and \(\varepsilon\ge a>0\), the part \(k>x\) is an absolutely convergent tail, because \(\mathcal A_\varepsilon(x/k)=-xr_\varepsilon/k\). It contributes
 \(-xr_\varepsilon\sum_{k>x}\Lambda(k)k^{-1-\varepsilon}\). Together with the finite part this supplies the full centering derivative. Replacing \(\mathcal A(x)\) with \(A(\lfloor x\rfloor)\) introduces a fractional-part correction; they must not be silently identified.
 
-The underlying logarithmic Möbius identity is already in [DeningerVonMangoldtMoebiusConvolution.lean](../../../formal/GaloisForLFunctions/RHTower/DeningerVonMangoldtMoebiusConvolution.lean). The corpus also has a different, logarithmic-in-cutoff covariance balance, with kernel \(\Lambda(d)(1-d^{-\varepsilon})\), in [PMPowerDampedMobiusLogConvolution.lean](../../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusLogConvolution.lean). Neither identity supplies (C).
+The underlying logarithmic Möbius identity is already in [DeningerVonMangoldtMoebiusConvolution.lean](../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerVonMangoldtMoebiusConvolution.lean). The corpus also has a different, logarithmic-in-cutoff covariance balance, with kernel \(\Lambda(d)(1-d^{-\varepsilon})\), in [PMPowerDampedMobiusLogConvolution.lean](../../../formal/GaloisForLFunctions/RHTower/PMPowerDampedMobiusLogConvolution.lean). Neither identity supplies (C).
 
 An absolute dilation estimate encounters the critical coefficient sum \(\sum_k\Lambda(k)k^{-\varepsilon-1/2}\), so it cannot justify the proposed continuation below half damping. The prospective input must be a **lower bound on the signed numerical range along the literal arithmetic source**, perhaps after an explicitly controlled correction to the energy. It must retain the full Mangoldt forcing and all mixed terms. An abstract operator inequality assumed on that source would merely move the obligation.
 
@@ -212,7 +212,7 @@ Q_A(u)=\sum_q\Re(a_q\overline{b_q})
 =\frac14\sum_q\bigl(|a_q+b_q|^2-|a_q-b_q|^2\bigr).
 \]
 
-The exact zero-form identity is in [CCMParityQuartetZeroSum.lean](../../../formal/GaloisForLFunctions/RHTower/CCMParityQuartetZeroSum.lean). The current lower bound uses \(\Re(a\bar b)\ge-|a-b|^2/4\), discarding the positive term. On-line zeros contribute only to the positive part.
+The exact zero-form identity is in [CCMParityQuartetZeroSum.lean](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMParityQuartetZeroSum.lean). The current lower bound uses \(\Re(a\bar b)\ge-|a-b|^2/4\), discarding the positive term. On-line zeros contribute only to the positive part.
 
 **Research target.** After justifying separate summability on the smooth core, define \(E_\pm(u)=\tfrac14\sum_q|a_q\pm b_q|^2\). Can one derive, from the actual prime–Gamma–pole source, for every \(\sigma>\Delta\) a constant \(C_\sigma\ge0\), independent of \(A>0\) and of the smooth source \(u\) compactly supported inside \((-A,A)\), such that
 
@@ -229,7 +229,7 @@ without assuming bounded local off-line depth mass? Then extend the floor throug
 Positive-background compensation already occurs in the synthetic [DilutedOffLineLatticeHidingLaw.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/DilutedOffLineLatticeHidingLaw.lean). Thus retaining the positive part is not itself a novel theorem. The new content must be a uniform source-specific comparison, or a genuinely weaker structural hypothesis verified independently for the arithmetic source. Nor may the argument subtract two divergent completed energies; the smooth-core identity and the passage to the form domain require separate justification.
 
 ## Directions I would not count as new opportunities.
-Bare first-contact noncrossing, generic Schur complements, source reconstruction, or another spectral realization at finite aperture are already extensively developed. The corpus locates first contact in a completion-boundary kernel and has finite movable-source coordinates; this does not prove that the kernel is impossible. See [CCMFirstContactSourceKernel.lean](../../../formal/GaloisForLFunctions/RHTower/CCMFirstContactSourceKernel.lean) and [SuzukiTaMovableReducingExceptionalBlock.lean](../../../formal/GaloisForLFunctions/RHTower/SuzukiTaMovableReducingExceptionalBlock.lean).
+Bare first-contact noncrossing, generic Schur complements, source reconstruction, or another spectral realization at finite aperture are already extensively developed. The corpus locates first contact in a completion-boundary kernel and has finite movable-source coordinates; this does not prove that the kernel is impossible. See [CCMFirstContactSourceKernel.lean](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFirstContactSourceKernel.lean) and [SuzukiTaMovableReducingExceptionalBlock.lean](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaMovableReducingExceptionalBlock.lean).
 
 I would also reject the shortcut “hidden off-line configurations crystallize; zeta is noncrystalline; therefore RH.” The inspected rigidity theorem concerns fixed-period, fixed-depth synthetic profiles under a scaling limit. The actual anti-crystal statement uses eventual strict ordering of zero copies, which already excludes reflected off-line pairs with the same ordinate. The hypotheses needed for the proposed combination are not available. See [ProfileRigidityAtTheSquareRootThreshold.lean](../../../formal/GaloisForLFunctions/SquareRootThreshold/ProfileRigidityAtTheSquareRootThreshold.lean) and [ZetaZeroAntiCrystalLaw.lean](../../../formal/GaloisForLFunctions/RHTower/ZetaZeroAntiCrystalLaw.lean).
 
@@ -505,7 +505,7 @@ Hence the **iterated** limit of finite-horizon signed work is
 \lim_{T\to\infty}\lim_{t\downarrow0}E'_T(t)=-4\gamma.
 \tag{Z}
 \]
-This is not differentiation of the infinite energy. The source theorem is `hasSum_completedPrimePolarGammaHarmonicCharge_zero` in [CCMFUSuzukiCompletedRieszGraphEnergy.lean](../../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCompletedRieszGraphEnergy.lean).
+This is not differentiation of the infinite energy. The source theorem is `hasSum_completedPrimePolarGammaHarmonicCharge_zero` in [CCMFUSuzukiCompletedRieszGraphEnergy.lean](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCompletedRieszGraphEnergy.lean).
 
 The distinction is substantive: for \(D_T(t)=\sum_{n\le T}(A_t(n)-1)^2/[n(n+1)]\), the corpus proves
 \[

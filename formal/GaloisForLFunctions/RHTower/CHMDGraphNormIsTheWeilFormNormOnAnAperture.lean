@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.SuzukiRWCHMDQuotientCoordinates
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRWCHMDQuotientCoordinates
 import GaloisForLFunctions.RHTower.CHMDBirmanSchwingerBound
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilGammaSlepianStrictSource
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGammaSlepianStrictSource
 import GaloisForLFunctions.RHTower.GaussianEvenCarrier
 
 /-!

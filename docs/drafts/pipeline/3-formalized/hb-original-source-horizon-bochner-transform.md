@@ -92,7 +92,7 @@ slice admission alone.
 ## Lean surface and audit
 
 Route namespace `RHTower.D4BMJointSource`; module prefix
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSource`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJointSource`.
 
 | Suffix | Public theorems | Content |
 |---|---:|---|

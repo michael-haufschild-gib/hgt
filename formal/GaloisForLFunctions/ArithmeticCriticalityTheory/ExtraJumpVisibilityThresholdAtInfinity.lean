@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.FoldedSourceOriginJumpMomentLaw
 import GaloisForLFunctions.RHTower.RiemannKernelSharpLogDerivative
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaLayerBounds
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaFarTail
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaLayerBounds
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaFarTail
 
 /-!
 # Which half of the folded no-go sees the rates: the extra-jump visibility threshold

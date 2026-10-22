@@ -6,7 +6,7 @@
   Groskin's finite source quotient; Groskin states the finite signed-measure calculus on paper
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, Lemma 2.3 and Corollary 2.4
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilContinuousSourceQuotient.lean`
 
 ## Source-native space
 
@@ -100,6 +100,6 @@ differentiation into the continued Xi Ward source. RH is not proved here.
 - `ccmGuinandWeilAtomicSourcePacketMatrix_eq`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilContinuousSourceQuotient` pass. `#print axioms` reports
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilContinuousSourceQuotient` pass. `#print axioms` reports
 only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`,
 `admit`, `opaque`, or `unsafe` declaration is used.

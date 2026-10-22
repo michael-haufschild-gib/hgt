@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaScoreMomentRecurrence
 import GaloisForLFunctions.RHTower.PrimeArchThetaScoreMomentDefect
-import GaloisForLFunctions.RHTower.ThetaCuspNormalizedShiftedGramStrict
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspNormalizedShiftedGramStrict
 
 /-!
 # Four-moment constraint from score coercivity and shifted Gram positivity

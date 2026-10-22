@@ -54,7 +54,7 @@ If `Re ρ≤1`, `exists_besselViolation_of_re_le_one` applies to this exact real
 
 ## Lean certificate
 
-- Module: `RHTower/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean`
+- Module: `RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean`
 - Main theorem: `strictRightXiZero_mscCompleteMinimalSingularRouteKill`
 - Build: targeted module PASS
 - Axioms: `propext`, `Classical.choice`, `Quot.sound`

@@ -10,7 +10,7 @@ Hedenmalm divisor-metric no-go and not counted as a separate scientific claim.
 - `HTGeometry/SchwartzSesquilinearTempered.lean`
   - `leftTemperedDistribution`
   - `leftTemperedDistribution_apply`
-- `RHTower/HedenmalmUniversalPositiveFormClassification.lean`
+- `RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean`
   - `universalPositiveForm_theta_leftRadical_of_thetaNull`
   - `universalPositiveForm_identicallyZero_iff_canonicalMeasure_zero`
   - `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero`
@@ -37,12 +37,12 @@ curried tempered-distribution family.
 ## Lean status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`.
 
 Exact check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
 ```
 
 ## Novelty status

@@ -9,8 +9,8 @@
 
 - `formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean`
 - `formal/GaloisForLFunctions/HTGeometry/ShiftedDerivativeCoercivity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaShiftKappa.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
 
 ## Formal theorem surface
 
@@ -33,13 +33,13 @@ GaloisForLFunctions.HTGeometry.normSq_shifted
 GaloisForLFunctions.HTGeometry.sq_mul_integral_normSq_le
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiGammaShiftKappa`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaShiftKappa`:
 
 ```text
 GaloisForLFunctions.RHTower.neg_suzukiGammaShiftKappa_le_integral
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiPrimitiveFluxNonnormalGraphReduction`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimitiveFluxNonnormalGraphReduction`:
 
 ```text
 GaloisForLFunctions.RHTower.primitiveFluxSystem_exponential_pointwise

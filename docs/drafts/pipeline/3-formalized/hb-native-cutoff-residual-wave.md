@@ -64,7 +64,7 @@ The deep dominated-L2 search recovered the actual dominated continuity theorem a
 
 ## Validation
 
-`lake env lean` passed the completed scratch proof without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave` passed in 93 seconds, three jobs, without warnings. The isolated audit reused 4091 existing project dependency caches and 11 installed dependency packages; no dependency or umbrella build ran.
+`lake env lean` passed the completed scratch proof without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullNativeWave` passed in 93 seconds, three jobs, without warnings. The isolated audit reused 4091 existing project dependency caches and 11 installed dependency packages; no dependency or umbrella build ran.
 
 Only the four new public theorems were checked with `#print axioms`; all report exactly `[propext, Classical.choice, Quot.sound]`. The source and five build artifacts were installed byte-identically to the audit. The existing unique area-umbrella import in `formal/GaloisForLFunctions/RHTower.lean` remains wired.
 

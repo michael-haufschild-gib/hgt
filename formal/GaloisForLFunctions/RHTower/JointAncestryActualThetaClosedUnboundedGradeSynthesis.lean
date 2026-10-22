@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryActualThetaGradeNormEscape
-import GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange
+import GaloisForLFunctions.RHTower.Deninger.DeningerTwoPrimeKummerDenseNonclosedRange
 import GaloisForLFunctions.HTGeometry.SourceLinearClosedRelationSplitting
 
 /-!

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTailCauchyAsymptotic
-import GaloisForLFunctions.RHTower.ThetaCuspFirstAtomAllOrderApproximation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFirstAtomAllOrderApproximation
 import GaloisForLFunctions.RHTower.LogarithmicCauchyRankBoundary
 
 /-!

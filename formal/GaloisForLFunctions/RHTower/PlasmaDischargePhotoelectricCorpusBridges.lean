@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.PlasmaDischargePhotoelectricLaws
 import GaloisForLFunctions.RHTower.MobiusIncidenceKMSEntropyProduction
 import GaloisForLFunctions.RHTower.SoninEulerFiniteL2Lower
 import GaloisForLFunctions.RHTower.ProjectiveWaterFillingOptimizer
-import GaloisForLFunctions.RHTower.CCMPrimeSourceGroundIncidence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeSourceGroundIncidence
 
 /-!
 # Corpus bridges for plasma, discharge, and photoelectric laws

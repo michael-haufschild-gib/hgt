@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MoebiusHarmonicLogRate
 import GaloisForLFunctions.RHTower.Sieve.InvZetaProductShift
-import GaloisForLFunctions.RHTower.DeningerAbelianLimit
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelianLimit
 import GaloisForLFunctions.RHTower.AbelTailLSeries
 import GaloisForLFunctions.HTGeometry.DiscreteAbelRing
 import GaloisForLFunctions.HTGeometry.RealDirichletSeries

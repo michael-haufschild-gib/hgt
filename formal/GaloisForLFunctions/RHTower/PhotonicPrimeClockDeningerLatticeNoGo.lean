@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.DeningerFloquetLatticeMeasure
-import GaloisForLFunctions.RHTower.DeningerFloquetMeasureEnergy
+import GaloisForLFunctions.RHTower.Deninger.DeningerFloquetLatticeMeasure
+import GaloisForLFunctions.RHTower.Deninger.DeningerFloquetMeasureEnergy
 import GaloisForLFunctions.HTGeometry.PhotonicTimeCrystalDynamicChirality
 import Mathlib.SetTheory.Cardinal.Pigeonhole
 

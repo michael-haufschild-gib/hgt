@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaGaussianAmplitudeQuadratic
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 
 /-! The actual coarea measure has the integrable quadratic envelope needed
 to retain covariance feedback through the singular node limit. -/

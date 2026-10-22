@@ -13,7 +13,7 @@
 
 **Terminal note.** This historical attack is closed.  Its cofinal tail strengthening and exact
 universal-class negation are formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`.  The former
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean`.  The former
 `SUZUKI-SOURCE-COMMUTATOR-GRAM` successor was later retired as a stale label: commutator/Gram
 infrastructure already exists, and remaining signed/cofinal operator floor belongs to Route G.
 

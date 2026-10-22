@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaConfluentCoordinateCurrent
-import GaloisForLFunctions.RHTower.ThetaCuspCurvatureLogConvex
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCurvatureLogConvex
 import GaloisForLFunctions.RHTower.ThetaTwoNodeSignedSturmEnergy
 
 /-! The actual finite-pair signed Sturm forcing has a strictly increasing

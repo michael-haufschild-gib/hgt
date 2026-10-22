@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GammaOrientedAlienCharge
-import GaloisForLFunctions.RHTower.SuzukiAntiPickIdentity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiAntiPickIdentity
 
 /-!
 # Scaled Gamma polar Borel residues

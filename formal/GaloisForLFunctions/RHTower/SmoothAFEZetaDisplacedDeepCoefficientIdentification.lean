@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaDisplacedDeepDerivativeTruncation
-import GaloisForLFunctions.RHTower.DeningerPoissonMoebius
+import GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMoebius
 import GaloisForLFunctions.HTGeometry.VerticalStripContourShift
 
 /-!

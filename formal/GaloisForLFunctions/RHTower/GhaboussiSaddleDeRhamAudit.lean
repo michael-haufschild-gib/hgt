@@ -4,8 +4,8 @@ import GaloisForLFunctions.HTGeometry.GammaGaussianEnvelopeBVShift
 import GaloisForLFunctions.HTGeometry.MellinAntiderivativeStep
 import GaloisForLFunctions.HTGeometry.SeibergWitten.FlatConnection
 import GaloisForLFunctions.HTGeometry.StokesFormalContactInvariance
-import GaloisForLFunctions.RHTower.DeningerDlogPeriod
-import GaloisForLFunctions.RHTower.DeningerHarmonicMode
+import GaloisForLFunctions.RHTower.Deninger.DeningerDlogPeriod
+import GaloisForLFunctions.RHTower.Deninger.DeningerHarmonicMode
 
 /-!
 # Audit of the saddle/de Rham mechanisms in arXiv:2408.13292

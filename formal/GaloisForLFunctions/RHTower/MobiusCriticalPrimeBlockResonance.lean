@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
 import GaloisForLFunctions.RHTower.WindowBudget
-import GaloisForLFunctions.RHTower.CCMPrimeTransverseFrostmanProfile
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeTransverseFrostmanProfile
 
 /-!
 # Critical prime-block resonance of the Möbius dilation cascade

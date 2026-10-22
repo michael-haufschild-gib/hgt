@@ -121,7 +121,7 @@ ingoing phase vanishes at the horizon and the outer phase vanishes at AdS.
 
 ## Lean surface and audit
 
-All modules use prefix `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplace`
+All modules use prefix `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLaplace`
 and namespace `RHTower.D4BMLaplaceRadial`.
 
 | Module suffix | New public theorems |

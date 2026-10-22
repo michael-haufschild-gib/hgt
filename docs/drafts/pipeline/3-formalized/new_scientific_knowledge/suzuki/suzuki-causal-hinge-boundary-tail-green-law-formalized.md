@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-causal-hinge-boundary-tail-green-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalHingeBoundaryTailGreenLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalHingeBoundaryTailGreenLaw.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -44,7 +44,7 @@ replace missing collective source positivity with a hypothesis.
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCausalHingeBoundaryTailGreenLaw.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalHingeBoundaryTailGreenLaw.lean`;
 - exact module build: `9015/9015` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiEndpointReflectionDefectEnergy
-import GaloisForLFunctions.RHTower.HedenmalmLocalFrameObstruction
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmLocalFrameObstruction
 
 /-!
 # The endpoint curvature as one completed-zeta value

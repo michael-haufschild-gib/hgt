@@ -24,7 +24,7 @@ Set `a=Re ρ`, `A=a(3-a)`, `B=(1-a)(2+a)`, and
 Corpus search found only positivity and uniqueness of `S`, not its magnitude gap or unit no-go. Primary literature through 2026-08 supplies massless topological-black-hole modes, AIME, QNM bilinear projection, and second-order Teukolsky sources, but no equivalent susceptibility theorem or RH consequence.
 
 ## Lean
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBUnitMovingHorizonAIMECancellationNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBUnitMovingHorizonAIMECancellationNoGo`
 - Capstone: `d4HBUnitMovingHorizonAIMECancellationRouteKilled`
 - Direct `lake env lean`: PASS
 - Targeted build: `11892/11892` PASS

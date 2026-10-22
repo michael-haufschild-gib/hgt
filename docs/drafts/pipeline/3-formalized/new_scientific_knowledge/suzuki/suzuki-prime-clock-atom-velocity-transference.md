@@ -290,7 +290,7 @@ classical. Priority remains `[NOVELTY UNVERIFIED]` pending specialist review.
 Formalize the exact dependency-closed algebra and finite recovery theorem in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiPrimeClockAtomVelocity.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockAtomVelocity.lean
 ```
 
 The target declarations are:
@@ -306,7 +306,7 @@ tendsto_suzukiPrimeClockAtomVelocity_normalized_bohrCoefficient.
 
 All six declarations exist.  Equation `(7)`, the identification of the velocity with the physical
 prime sine transform, lives in
-`formal/GaloisForLFunctions/RHTower/SuzukiPrimeClockPhysicalSine.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockPhysicalSine.lean`:
 
 ```text
 suzukiFreeClockNode                                 x_(a,k) = (k+1/2) pi / a

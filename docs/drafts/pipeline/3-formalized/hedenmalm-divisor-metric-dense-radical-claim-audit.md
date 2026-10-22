@@ -25,11 +25,11 @@ novelty or significance credit.
 The following files passed separate foreground commands of the required form:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean
+lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzFourierXi.lean
 lake env lean GaloisForLFunctions/RHTower/XiThetaSchwartzL2Nonclosability.lean
 lake env lean GaloisForLFunctions/RHTower/XiThetaSpectralOrientationClassification.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
 lake env lean GaloisForLFunctions/RHTower/XiDivisorSupportedMetric.lean
 ```
 
@@ -51,7 +51,7 @@ paper's theorem surface.
 Both named-module builds completed successfully:
 
 ```text
-lake build GaloisForLFunctions.RHTower.HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw
 lake build GaloisForLFunctions.RHTower.XiDivisorSupportedMetric
 ```
 

@@ -81,7 +81,7 @@ increment concerns exact equivalences for the actual probability measures.
   XiSliceHeatRateInteriorLindelof, ZetaFiveSeventhsLineBound, ZetaStripInterpolation.
   Unreachable HTGeometry modules: HurwitzZetaEulerMaclaurinBridge,
   QKrawtchoukCompanionTriangular. Existing sorry in
-  RHTower/CCMPolarOddPrimeJumps.lean:104, ccmPolarOddSource_eq_core_add_atoms.
+  RHTower/CCM/CCMPolarOddPrimeJumps.lean:104, ccmPolarOddSource_eq_core_add_atoms.
   No error belongs to the four leaves in this increment.
 - Final native scratch audit passed eight axiom reports, seven API references,
   and the constant-variance example. Only propext, Classical.choice, and Quot.sound

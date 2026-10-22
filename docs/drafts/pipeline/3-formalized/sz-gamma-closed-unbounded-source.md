@@ -86,10 +86,10 @@ If `B=0`, the right side divided by `c_0` is the required Hilbert representative
 
 ## Lean artifacts
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaBoundaryCancellation.lean`: actual columns, boundary coefficients, nonsummable homogeneous mode, square-summable adjacent rows.
-- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaClosedSource.lean`: canonical graph closure, single-valuedness, closedness, dense domain, exact finite packets and Gram kernel.
-- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaUnboundedSource.lean`: actual inverse-Wold source-normal coordinate identity, first-row divergence, no bounded extension, and fixed premise-free theorem `suzukiGammaCanonicalTwoLegSource_closed_dense_unbounded` at `h=a=1`.
-- `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaFiniteRowBoundary.lean`: exact Hilbert-row criterion `suzukiGammaFiniteRow_hilbert_iff_boundary_zero` and fully polarized finite-packet identity.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaBoundaryCancellation.lean`: actual columns, boundary coefficients, nonsummable homogeneous mode, square-summable adjacent rows.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaClosedSource.lean`: canonical graph closure, single-valuedness, closedness, dense domain, exact finite packets and Gram kernel.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaUnboundedSource.lean`: actual inverse-Wold source-normal coordinate identity, first-row divergence, no bounded extension, and fixed premise-free theorem `suzukiGammaCanonicalTwoLegSource_closed_dense_unbounded` at `h=a=1`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaFiniteRowBoundary.lean`: exact Hilbert-row criterion `suzukiGammaFiniteRow_hilbert_iff_boundary_zero` and fully polarized finite-packet identity.
 
 All four modules are wired into `formal/GaloisForLFunctions/RHTower.lean`.
 

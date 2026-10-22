@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.IsingHarmonicMagnetizationNoGo
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiCayleyTarget
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiCayleyTarget
 
 /-!
 # Slow-field Griffiths–Simon producers of `Ξ` are carried by their couplings

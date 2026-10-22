@@ -116,7 +116,7 @@ No new carrier module is justified. No all-order new theorem was claimed or chec
 
 ### Attempt 2: positive subset redistribution while preserving full-product fidelity
 
-Inspected `RHTower/CCMSubsetFidelityReadoutRigidity.lean`, including the proof of
+Inspected `RHTower/CCM/CCMSubsetFidelityReadoutRigidity.lean`, including the proof of
 `positiveSubsetMixture_eq_fullAtom_of_fullProductFidelity`, and
 `PositiveSubsetFidelityRawEulerNonWickUniversalityLaw.lean`. On every proper Boolean face,
 nonnegative weights summing to zero must vanish individually; the remaining top weight is
@@ -362,10 +362,10 @@ Finally the literal increment at one is `2γ-1>0`, so
 **Lean status:** all seven public theorems passed the combined scratch check
 without warnings, with only `propext`, `Classical.choice`, and `Quot.sound`.
 The finished module is
-`formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusRieszPrimeCellSign.lean`,
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusRieszPrimeCellSign.lean`,
 namespace `RHTower.MobiusRieszCancellation`. Its RH umbrella import is wired.
 The named final audit
-`lake build GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusRieszPrimeCellSign`
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusRieszPrimeCellSign`
 passed; cached dependencies replayed existing warnings, while the new module
 built without warnings. Indexes were regenerated. No numerical experiments
 or numerical approximations were used; no full or umbrella build ran.

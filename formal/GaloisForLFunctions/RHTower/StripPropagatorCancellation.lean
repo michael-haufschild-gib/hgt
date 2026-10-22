@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.StripPropagatorLineDecay
-import GaloisForLFunctions.RHTower.SuzukiStripTransportUniform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiStripTransportUniform
 
 /-!
 # Propagating the boundary term of the integration by parts

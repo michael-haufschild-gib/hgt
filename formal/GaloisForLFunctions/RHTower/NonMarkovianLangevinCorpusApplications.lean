@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.GammaDigammaJetFreeness
 import GaloisForLFunctions.HTGeometry.ZetaJetFreeness
 import GaloisForLFunctions.RHTower.XiJetFreeness
 import GaloisForLFunctions.RHTower.XiLogDerivFiniteSpectralDressing
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildNonMarkovEdge
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildNonMarkovEdge
 import GaloisForLFunctions.HTGeometry.PrimeDirichletPositiveDefinite
 import Mathlib.Tactic
 

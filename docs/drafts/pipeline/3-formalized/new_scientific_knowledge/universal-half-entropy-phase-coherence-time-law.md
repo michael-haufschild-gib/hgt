@@ -354,7 +354,7 @@ The complete upper mechanism, including the stronger delayed weighted and prime-
 formalized in
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMPrimePoleFiniteCoherence.lean.
+formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePoleFiniteCoherence.lean.
 ```
 
 In particular:

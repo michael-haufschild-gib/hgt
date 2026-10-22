@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimeGapCrossBound
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeGapCrossBound
 import GaloisForLFunctions.RHTower.ThetaIntegerLogGapPolarization
 import GaloisForLFunctions.RHTower.ThetaPrimeSensitivePolarization
 

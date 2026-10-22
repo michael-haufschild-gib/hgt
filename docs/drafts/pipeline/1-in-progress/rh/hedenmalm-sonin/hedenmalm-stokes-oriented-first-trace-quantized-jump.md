@@ -7,7 +7,7 @@
   `HedenmalmThetaPhysicalEndpointPrimeHardyGreenScaling`,
   `PrimeArchPolarSeamRemoval`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/HedenmalmStokesOrientedFirstTraceQuantizedJump.lean`
+  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesOrientedFirstTraceQuantizedJump.lean`
 - **Status:** `[PROVED IN LEAN] [QUANTIZED JUMP] [NOT RH]`
 
 ## Result

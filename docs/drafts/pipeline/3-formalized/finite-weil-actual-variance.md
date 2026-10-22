@@ -107,7 +107,7 @@ The local search index returns all three roots as eligible, with no markers.
 
 Global formal lint exited 1: 10 unrelated errors and 367 size warnings. None concern
 these leaves. This is not a claim that the repository-wide gate passes. Exact errors:
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMPolarOddPrimeJumps`
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMPolarOddPrimeJumps`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MontgomeryPairCorrelationShortLength`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperEGCCompactifiedCopy`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperEGCCompactifiedCorrection`
@@ -116,7 +116,7 @@ these leaves. This is not a claim that the repository-wide gate passes. Exact er
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperEGCVerticalMajorant`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroAntiCrystalLogLog`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.QKrawtchoukCompanionTriangular`
-- `error: proof debt: formal/GaloisForLFunctions/RHTower/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)`
+- `error: proof debt: formal/GaloisForLFunctions/RHTower/CCM/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)`
 
 Validation artifacts: `/tmp/hgt-actual-variance-metadata.py`,
 `/tmp/hgt-actual-variance-metadata.json`, `/tmp/hgt-actual-variance-declarations.json`,

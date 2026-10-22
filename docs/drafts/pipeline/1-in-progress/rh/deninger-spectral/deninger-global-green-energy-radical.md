@@ -78,7 +78,7 @@ submodule.  No uniform local coercivity constant is required.
 
 This is formalized as
 `RHTower.deningerTsumEnergy_eq_zero_iff_mem_boundaries` in
-`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`;
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`;
 required direct-file Lean check passes.
 
 Closed-boundary passage is also abstractly complete:

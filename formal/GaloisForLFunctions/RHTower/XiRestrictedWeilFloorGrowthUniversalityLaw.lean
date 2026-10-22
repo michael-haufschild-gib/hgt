@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilFloorGrowthSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilFloorGrowthSpectrum
 
 /-!
 # Xi restricted-Weil floor growth universality

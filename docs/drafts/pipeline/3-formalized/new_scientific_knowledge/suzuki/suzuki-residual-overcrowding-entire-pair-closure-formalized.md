@@ -5,18 +5,18 @@
 - **Claim:** `[PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-residual-overcrowding-entire-pair-closure.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiResidualOvercrowding.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiEndpointNevanlinnaMass.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCommonGaugeQuotient.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSeriesTransform.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueKernelUniformBound.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCayleyPhaseLift.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiClarkFiniteReconstruction.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiClarkSeriesReconstruction.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFixedLatticeRigidity.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFixedLatticeRigidityLimit.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResidualOvercrowding.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedLabelOvercrowding.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEndpointNevanlinnaMass.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCommonGaugeQuotient.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueSeriesTransform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueKernelUniformBound.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCayleyPhaseLift.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiClarkFiniteReconstruction.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiClarkSeriesReconstruction.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedLatticeRigidity.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedLatticeRigidityLimit.lean`
   - `formal/GaloisForLFunctions/HTGeometry/UniformZeroCountBound.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ComplexWeakConvergenceBridge.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ContinuousPhaseLiftUniqueness.lean`

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzTranslationCurve
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzTranslationCurve
 import Mathlib.Analysis.Distribution.TemperedDistribution
 import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.LinearAlgebra.Isomorphisms

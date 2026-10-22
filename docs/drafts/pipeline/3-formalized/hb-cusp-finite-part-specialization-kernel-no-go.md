@@ -37,7 +37,7 @@ fail.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`
 - Collision exponent: `d4BM_accidentalZeroExponent_specializes_to_zero`
 - Identical profiles: `d4BM_zero_and_accidentalZero_families_same_specialized_profile`
 - Exact descent criterion: `d4BM_linearReporter_factorsThrough_iff_ker_le`

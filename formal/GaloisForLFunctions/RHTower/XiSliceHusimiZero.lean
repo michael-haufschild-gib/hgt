@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiSliceHusimiPositivity
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.PrimeArchThetaModularDifferentialClosure
 import GaloisForLFunctions.HTGeometry.EntireLogarithm
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ConnesLatticeRapidDecay
-import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleDenominator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleDenominator
 
 /-!
 # Confinement of the rational denominators and the adelic lattice sum

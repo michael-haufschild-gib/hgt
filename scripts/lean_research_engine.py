@@ -23,10 +23,12 @@ from pathlib import Path
 from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
-ENGINE_VERSION = "deep-5-coverage"
+ENGINE_VERSION = "deep-6-shard-batched"
 METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8
+# Documents staged into one published shard; must stay <= MAX_SHARD_DOCUMENTS.
+PUBLISH_BATCH = 1024
 
 
 def json_object(text: str) -> dict:
@@ -90,9 +92,14 @@ class Engine:
         self.runtime = runtime
         self.vectors = vectors
         self.status = runtime.status() if runtime else {"available": False, "reason": "local runtime is not set up"}
+        # Retrieval needs the embedder and reranker. A text-generation model is
+        # optional and absent by default: it evicted the search models from the
+        # shared worker, which is what starved indexing under parallel agents.
+        self.can_generate = bool(runtime) and 'generation' in self.status.get('models', {})
         self.model_version = digest(json.dumps(self.status.get("fingerprints", self.status), sort_keys=True))
         self.embedding_model = embedding_version(self.status)
         self.vector_coverage = None
+        self.lexical_only_scope = False
         self.errors: list[dict] = []
         self._records = {}
         self._record_version = None
@@ -156,9 +163,11 @@ class Engine:
 
     def retrieve(self, query: str, *, options: dict, deadline: float, on_partial=None, on_stage=None) -> tuple[list[dict], list[dict], list[dict]]:
         stage = on_stage or (lambda name: None)
+        scope = options.get('scope', 'ours')
         common = dict(limit=100, module=options.get("module", ""), exclude_modules=options.get("exclude_modules", []), deadline=deadline)
+        lexical = dict(common, scope=scope)
         direct, methods, prose = [], [], []
-        lanes = [(('statement', 'type', 'shape'), direct)]
+        lanes = [(('statement', 'type', 'doc'), direct)]
         if options.get('retrieval_views', 'all') == 'all':
             lanes.extend([(('proof', 'method'), methods), (('prose',), prose)])
         def publish():
@@ -170,7 +179,7 @@ class Engine:
             stage('text:' + views[0])
             try:
                 hits = self.corpus.search(query, views=views, any_terms=options.get("any_terms", False), exact=options.get("exact", False),
-                                         **{**common, 'deadline': min(deadline, time.monotonic() + 10)})
+                                         **{**lexical, 'deadline': min(deadline, time.monotonic() + 10)})
                 target.append(hits)
             except (ValueError, sqlite3.DatabaseError) as exc:
                 self.fail("text_retrieval", exc)
@@ -182,7 +191,7 @@ class Engine:
             stage('text:lean')
             try:
                 prose.append(self.corpus.search(query, views=('lean',), any_terms=options.get('any_terms', False), exact=options.get('exact', False),
-                                                **{**common, 'deadline': min(deadline, time.monotonic() + 10)}))
+                                                **{**lexical, 'deadline': min(deadline, time.monotonic() + 10)}))
             except (ValueError, sqlite3.DatabaseError) as exc:
                 self.fail('source_retrieval', exc)
         publish()
@@ -192,7 +201,11 @@ class Engine:
                     reciprocal_rank_fusion(prose, key='id')[:10])
         # Qdrant can search the published index while new vectors are queued.
         # Counting millions of receipts first adds no retrieval capability.
-        if self.runtime and self.vectors and time.monotonic() < deadline:
+        # Only our corpus is embedded, so a Mathlib-scoped request has no vector
+        # lane to run and says so rather than reporting an empty semantic stage.
+        if scope == 'mathlib':
+            self.lexical_only_scope = True
+        elif self.runtime and self.vectors and time.monotonic() < deadline:
             try:
                 stage('query_embedding')
                 embedding = self.runtime.embed([query], query=True, deadline=min(deadline, time.monotonic() + 30))[0]
@@ -259,8 +272,8 @@ class Engine:
         return json.dumps(data, ensure_ascii=False)
 
     def _generate(self, prompt: str, deadline: float, *, max_tokens=768) -> dict:
-        if not self.runtime:
-            raise RuntimeError("local reasoning model is unavailable")
+        if not self.can_generate:
+            raise RuntimeError("no local generation model is pinned; retrieval only")
         return json_object(self.runtime.generate(prompt, deadline=deadline, max_tokens=max_tokens))
 
     def _judge(self, query, candidates, methods, deadline):
@@ -376,8 +389,11 @@ class Engine:
                                         -c.get("reranker_score", c["score"]), c["id"]))
             result["candidate_lemmas"] = select_candidates(ordered, **{k: options.get(k, v) for k, v in (("limit", 20), ("per_module", 2), ("offset", 0))})
             result["source_arguments"] = select_candidates(list(all_methods.values()), **{k: options.get(k, v) for k, v in (("limit", 20), ("per_module", 2), ("offset", 0))})
-            result["prose"] = list(all_prose.values())[:10]
-            result['source_passages'] = list(all_passages.values())[:10]
+            # Rank prose/passages by score across rounds; insertion order kept the
+            # first lane that happened to return a document ahead of better hits.
+            by_score = lambda values: sorted(values, key=lambda c: (-c.get('retrieval_score', 0), c['id']))[:10]
+            result["prose"] = by_score(all_prose.values())
+            result['source_passages'] = by_score(all_passages.values())
             result["elapsed_seconds"] = time.monotonic() - started
             if result['candidate_lemmas']:
                 result.setdefault('first_candidate_seconds', result['elapsed_seconds'])
@@ -407,7 +423,10 @@ class Engine:
             for c in methods:
                 all_methods.setdefault(c['id'], c)
             for c in prose:
-                (all_passages if c.get('view') == 'lean' else all_prose).setdefault(c['id'], c)
+                target = all_passages if c.get('view') == 'lean' else all_prose
+                old = target.get(c['id'])
+                if not old or c.get('retrieval_score', 0) > old.get('retrieval_score', 0):
+                    target[c['id']] = c
             update()
 
         for round_number in range(rounds):
@@ -416,10 +435,10 @@ class Engine:
                 break
             # Spend at most the retrieval portion on expansions. Repeatedly
             # halving the remaining request budget starved the final judgment.
-            judgment_reserve = min(60, (deadline - time.monotonic()) / 3) if mode == 'deep' and self.runtime else 0
+            judgment_reserve = min(60, (deadline - time.monotonic()) / 3) if mode == 'deep' and self.can_generate else 0
             retrieval_cutoff = deadline - judgment_reserve
             stop_after_judgment = False
-            if mode == "deep" and self.runtime and round_number > 0:
+            if mode == "deep" and self.can_generate and round_number > 0:
                 # Previous judgment supplies queries; only decompose if those
                 # yielded none. Never repeatedly retry an identical failed query.
                 if not next_queries:
@@ -465,8 +484,11 @@ class Engine:
                                                   origin="user" if expanded == query else ('keyword_relaxation' if expanded in relaxed else 'local_model'),
                                                   lexical_operator="OR" if options.get("any_terms") else "AND"))
                 try:
-                    retrieval_deadline = min(retrieval_cutoff, time.monotonic() + 90) if mode == 'deep' and self.runtime else deadline
-                    retrieve_options = {**options, 'lexical_only': True} if relaxed and expanded in initial_queries else options
+                    retrieval_deadline = min(retrieval_cutoff, time.monotonic() + 90) if mode == 'deep' and self.can_generate else deadline
+                    # Only the literal keyword relaxations are lexical: they exist to
+                    # force short AND matches. The user's own query must keep its
+                    # vector lane, which is the whole point of the embedding index.
+                    retrieve_options = {**options, 'lexical_only': True} if expanded in relaxed else options
                     candidates, methods, prose = self.retrieve(expanded, options=retrieve_options, deadline=retrieval_deadline,
                                                                on_partial=retain, on_stage=stage)
                     retain(candidates, methods, prose)
@@ -475,7 +497,7 @@ class Engine:
                 # Publish the literal query's matches first. Long natural
                 # language goals then need short AND queries even when sparse
                 # vector coverage happens to return some unrelated neighbors.
-                if (mode == 'deep' and self.runtime and round_number == 0 and expanded == initial_queries[-1]
+                if (mode == 'deep' and self.can_generate and round_number == 0 and expanded == initial_queries[-1]
                         and len(query_parts(query)) > 4 and time.monotonic() < retrieval_cutoff):
                     try:
                         stage('decomposition')
@@ -502,7 +524,7 @@ class Engine:
                                 attempted.add(q.strip().casefold())
                     except Exception as exc:
                         self.fail('decomposition', exc)
-            if mode != "deep" or not self.runtime or time.monotonic() >= deadline:
+            if mode != "deep" or not self.can_generate or time.monotonic() >= deadline:
                 break
             try:
                 stage('filter_and_judge')
@@ -567,7 +589,9 @@ class Engine:
             result['index_warnings'].append('method_dependency_refresh')
         if result['coverage'].get('pending_files') or result['coverage'].get('inventory_errors') or result['coverage'].get('outcomes', {}).get('failed'):
             result['index_warnings'].append('source_index_incomplete')
-        if not self.vectors:
+        if self.lexical_only_scope:
+            result['index_warnings'].append('mathlib_scope_is_lexical_only')
+        elif not self.vectors:
             result["unfinished_stages"].append("semantic_index_unavailable")
         elif (self.vector_coverage or {}).get('complete') is False:
             result['index_warnings'].append('semantic_index_incomplete')
@@ -751,32 +775,55 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
             if progress:
                 progress(report)
     if vectors and time.monotonic() < deadline:
+        # One publish writes one immutable shard file, so stage a whole shard
+        # across several bounded embed requests and publish once.
+        from research_runtime.config import ENRICHMENT_ITEMS as EMBED_ITEMS
         index = Vectors(corpus)
         while time.monotonic() < deadline:
-            docs = index.pending(model, limit=32)
+            docs = index.pending(model, limit=PUBLISH_BATCH)
             if not docs:
                 break
+            staged_docs: list[dict] = []
+            staged_vectors: list[list[float]] = []
+            def flush():
+                if staged_docs:
+                    report['vectors'] += index.publish(staged_docs, staged_vectors, model)
+                    staged_docs.clear()
+                    staged_vectors.clear()
             try:
                 by_hash = index.reuse(docs, model)
-                unique = {d['content_hash']: d['text'] for d in docs if d['content_hash'] not in by_hash}
-                if unique:
-                    generated = runtime.embed(list(unique.values()), deadline=min(deadline,time.monotonic()+120), priority='enrichment')
-                    if len(generated) != len(unique):
-                        raise ValueError('embedding count differs from requested unique documents')
-                    by_hash.update(zip(unique, generated))
-                embeddings = [by_hash[d['content_hash']] for d in docs]
-                report["vectors"] += index.publish(docs, embeddings, model)
+                for start in range(0, len(docs), EMBED_ITEMS):
+                    if time.monotonic() >= deadline:
+                        break
+                    window = docs[start:start + EMBED_ITEMS]
+                    unique = {d['content_hash']: d['embed_text'] for d in window if d['content_hash'] not in by_hash}
+                    if unique:
+                        generated = runtime.embed(list(unique.values()), deadline=min(deadline, time.monotonic()+120), priority='enrichment')
+                        if len(generated) != len(unique):
+                            raise ValueError('embedding count differs from requested unique documents')
+                        by_hash.update(zip(unique, generated))
+                    staged_docs.extend(window)
+                    staged_vectors.extend(by_hash[d['content_hash']] for d in window)
             except Exception as exc:
                 report["failures"].append(dict(stage="embedding", error=str(exc)))
+                # Never discard vectors already computed because a later window
+                # was preempted or hit its deadline.
+                try:
+                    flush()
+                except Exception as publish_error:
+                    report["failures"].append(dict(stage="embedding_publish", error=str(publish_error)))
                 break
+            flush()
             if progress:
                 progress(report)
     # Coverage is a corpus-wide scan, so it must share the maintenance budget.
+    # Searches read the measurement this writes; they never scan it themselves.
     corpus.con.set_progress_handler(lambda: time.monotonic() >= deadline, 10000)
     try:
         if time.monotonic() >= deadline:
             raise TimeoutError('coverage deferred at deadline')
         report['coverage'] = corpus.coverage()
+        report['semantic_coverage'] = Vectors(corpus).measure_coverage(model)
     except (sqlite3.OperationalError, TimeoutError):
         if time.monotonic() < deadline:
             raise

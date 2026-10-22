@@ -92,7 +92,7 @@ The exact topological graded Real-jet law remains **[NOVELTY UNVERIFIED]**:
 
 Formalized in:
 
-`formal/GaloisForLFunctions/RHTower/DeningerCompactOpenGradedRealJetUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompactOpenGradedRealJetUniversalityLaw.lean`
 
 with declarations:
 
@@ -107,6 +107,6 @@ with declarations:
 
 Exact-file verification passed:
 
-`lake env lean GaloisForLFunctions/RHTower/DeningerCompactOpenGradedRealJetUniversalityLaw.lean`
+`lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerCompactOpenGradedRealJetUniversalityLaw.lean`
 
 Wired into `GaloisForLFunctions/RHTower.lean` beside the compact-open topological jet dual.

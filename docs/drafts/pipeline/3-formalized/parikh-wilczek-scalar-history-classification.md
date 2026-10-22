@@ -67,7 +67,7 @@ classification `[NEW] [CLASSIFICATION]`, external priority provisional.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekScalarHistoryClassification.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekScalarHistoryClassification.lean`
 - Phase factorization/classification:
   `schwarzschildParikhWilczekScalarHistoryPhase_eq`,
   `schwarzschildParikhWilczekScalarHistoryPhase_eq_zero_iff`
@@ -78,7 +78,7 @@ classification `[NEW] [CLASSIFICATION]`, external priority provisional.
   `riemannHypothesis_iff_schwarzschildParikhWilczekScalarHistoryQuadraticEnergy_zero`
 - Direct `lake env lean` passed.
 - Targeted build
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekScalarHistoryClassification`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekScalarHistoryClassification`
   passed (`11558/11558`).
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella import wired in `formal/GaloisForLFunctions/RHTower.lean`.

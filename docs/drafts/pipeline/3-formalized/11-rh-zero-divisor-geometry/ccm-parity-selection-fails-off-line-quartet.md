@@ -84,11 +84,11 @@ Modules (namespace `RHTower.CCMParityQuartet`, wired into `GaloisForLFunctions.R
 
 | Module | Content |
 |---|---|
-| `RHTower/CCMParityQuartetModel` | closed forms for `D⁺`, `D⁻`, `I`; phase apertures; `exists_phaseAperture_gap` |
-| `RHTower/CCMParityQuartetZeroSum` | `sourceQuadratic_eq_re_tsum`, `summable_zeroSumTerm`, `re_zeroSumTerm_quartet`, `norm_integral_mul_sq_le` |
-| `RHTower/CCMParityQuartetEvenFloor` | `IsolatedTopQuartet`, `sourceQuadratic_ge_of_smooth_even`, `evenPart_toCCMFormVector`, `sourceQuadratic_ge_of_isEven` |
-| `RHTower/CCMParityQuartetOddTest` | smooth cutoffs, `oddTestSource`, `sourceQuadratic_le_offLine_add`, `testTransform_gTrunc_top`, convergence of `v_n` |
-| `RHTower/CCMParitySelectionNoGo` | `exists_aperture_ground_odd`, `not_isolatedTopQuartet_of_eventually_even_ground` |
+| `RHTower/CCM/CCMParityQuartetModel` | closed forms for `D⁺`, `D⁻`, `I`; phase apertures; `exists_phaseAperture_gap` |
+| `RHTower/CCM/CCMParityQuartetZeroSum` | `sourceQuadratic_eq_re_tsum`, `summable_zeroSumTerm`, `re_zeroSumTerm_quartet`, `norm_integral_mul_sq_le` |
+| `RHTower/CCM/CCMParityQuartetEvenFloor` | `IsolatedTopQuartet`, `sourceQuadratic_ge_of_smooth_even`, `evenPart_toCCMFormVector`, `sourceQuadratic_ge_of_isEven` |
+| `RHTower/CCM/CCMParityQuartetOddTest` | smooth cutoffs, `oddTestSource`, `sourceQuadratic_le_offLine_add`, `testTransform_gTrunc_top`, convergence of `v_n` |
+| `RHTower/CCM/CCMParitySelectionNoGo` | `exists_aperture_ground_odd`, `not_isolatedTopQuartet_of_eventually_even_ground` |
 
 Corpus inputs used: `ccmRestrictedWeilSourceQuadratic_toCCMFormVector_eq_smoothForm`,
 `suzukiScrewSmoothForm_eq_tsum`, `testTransform_ibp`, `denseRange_ccmComplexSmoothInteriorSource_toCCMFormVector`,

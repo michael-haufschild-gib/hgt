@@ -4,7 +4,7 @@
 - **Date:** 2026-08-15
 - **Route:** L
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerBigWittFrobeniusMultiplicativeSubmassNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBigWittFrobeniusMultiplicativeSubmassNoGo.lean`
 - **Status:** CONJECTURE REFUTED; EXACT RESIDUE HIERARCHY FORMALIZED
 
 ## Failed conjecture

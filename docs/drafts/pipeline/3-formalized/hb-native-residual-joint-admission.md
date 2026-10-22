@@ -84,9 +84,9 @@ Broad joint-space and spherical-averaging searches, followed by deep weak-modula
 
 ## Validation
 
-`lake env lean` passed the completed 599-line admission scratch proof without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeResidualAdmission` passed in 118 seconds, three jobs. Its isolated audit reused 4095 existing project dependency caches and 11 installed dependency packages.
+`lake env lean` passed the completed 599-line admission scratch proof without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeResidualAdmission` passed in 118 seconds, three jobs. Its isolated audit reused 4095 existing project dependency caches and 11 installed dependency packages.
 
-The 669-line source-equation prerequisite passed final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeSourceEquation` in 59 seconds, three jobs, reusing 4029 project caches and the same 11 dependency packages. Only its new `radialResponse_null_native` theorem was audited; previous theorem audits were not repeated.
+The 669-line source-equation prerequisite passed final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeSourceEquation` in 59 seconds, three jobs, reusing 4029 project caches and the same 11 dependency packages. Only its new `radialResponse_null_native` theorem was audited; previous theorem audits were not repeated.
 
 The seven new admission theorems and the one new source-equation theorem each report exactly `[propext, Classical.choice, Quot.sound]`. No mathematical computations or proof oracles were used. Both sources and their five build artifacts were installed byte-identically to their audits. The source-equation import remains unique in the area umbrella; the new admission import is wired there once. No umbrella or dependency rebuild ran.
 

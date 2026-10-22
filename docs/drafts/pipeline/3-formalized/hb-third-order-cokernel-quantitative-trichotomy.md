@@ -41,7 +41,7 @@ Search date: 2026-08-28. Primary sources checked: Sberna et al. AIME (`arXiv:211
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy`
 
 Main results:
 
@@ -55,8 +55,8 @@ All declarations are closed Lean proofs. No new axioms, `sorry`, `admit`, `opaqu
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy`: passed, 12,749 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelQuantitativeTrichotomy`: passed, 12,749 jobs.
 - `#print axioms` for all five public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC45 error. Global lint remains red only on unrelated pre-existing or concurrently added unreachable owned modules.

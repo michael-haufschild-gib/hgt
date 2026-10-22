@@ -127,8 +127,8 @@ Exact-source final audits compiled only the three requested new leaves against
 cached dependencies:
 
 - `lake build GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexQuadratic`: 5.1 seconds; 9 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularSource`: 221 seconds; 2 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularCorrection`: 24 seconds; 3 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticAngularSource`: 221 seconds; 2 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticAngularCorrection`: 24 seconds; 3 public theorems.
 
 All fourteen new public theorems were axiom-audited once in a scratch file; each
 uses only `propext`, `Classical.choice`, and `Quot.sound`. No added axioms or

@@ -89,7 +89,7 @@ The positive result is an exact, nonzero finite-cap compensation and its attachm
 
 ## Formalization
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLateSourceClock`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLateSourceClock`.
 Namespace: `RHTower.D4BMLateSourceClock`.
 
 Public source theorems:

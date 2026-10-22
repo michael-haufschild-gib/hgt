@@ -1,8 +1,8 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFiniteShellSeamCancellation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFiniteShellSeamCancellation
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailDensityAtoms
 import GaloisForLFunctions.HTGeometry.JuliaDefectLevyKhintchine
-import GaloisForLFunctions.RHTower.ThetaCuspFullDerivativeExponentialMoments
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullDerivativeExponentialMoments
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartz
 
 /-!
 # Exact Fourier boundary cancellation across finite theta shell cutoffs

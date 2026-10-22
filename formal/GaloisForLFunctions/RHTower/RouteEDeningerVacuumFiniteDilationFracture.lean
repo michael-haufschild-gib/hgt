@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerExpSchwartz
+import GaloisForLFunctions.RHTower.Deninger.DeningerExpSchwartz
 import GaloisForLFunctions.HTGeometry.KrylovReplicaMomentAmplificationLaw
 import Mathlib.Analysis.Analytic.Order
 

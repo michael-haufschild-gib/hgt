@@ -61,8 +61,8 @@ The remaining source-level task is cancellation of the derived work and every ph
 
 ## Verification
 
-Module: [ThetaCuspHawkingBMIncomingClockTranslation.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMIncomingClockTranslation.lean), namespace `RHTower.D4BMIncomingClockTranslation`, 459 lines, ten public theorems.
+Module: [ThetaCuspHawkingBMIncomingClockTranslation.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMIncomingClockTranslation.lean), namespace `RHTower.D4BMIncomingClockTranslation`, 459 lines, ten public theorems.
 
-The current/source-work statements and the pulse factorization passed foreground `lake env lean` scratch checks. The assembled source passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIncomingClockTranslation` in 132 seconds, with no warnings and only the new leaf compiled. Twelve existing cache roots were reused; no dependency, full or umbrella build ran. The leaf is imported once by `RHTower.lean`.
+The current/source-work statements and the pulse factorization passed foreground `lake env lean` scratch checks. The assembled source passed `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIncomingClockTranslation` in 132 seconds, with no warnings and only the new leaf compiled. Twelve existing cache roots were reused; no dependency, full or umbrella build ran. The leaf is imported once by `RHTower.lean`.
 
 Source SHA256: `0c6ff170b19498571fc80765ef8c935eea2b09de46272530d40c9c057bfe612d`. Static indexing completed; all thirteen public declarations appear in `LEAN_API.md`. Global formal lint passed with existing large-file warnings. No numerical experiment was run. All owned Lean checks exited.

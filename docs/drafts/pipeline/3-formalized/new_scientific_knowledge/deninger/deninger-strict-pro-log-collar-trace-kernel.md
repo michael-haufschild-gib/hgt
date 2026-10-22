@@ -272,7 +272,7 @@ MIXED PRO-LOG COLLAR COMPLETION`.
 
 ### The trace-kernel exactness landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArakelovTraceKernel.lean`, alongside the concrete real
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArakelovTraceKernel.lean`, alongside the concrete real
 boundary already in `DeningerRealKummerArakelovBoundary.lean` (which is the case without the collar
 summand).  Axiom audit for all 11 declarations: `propext, Classical.choice, Quot.sound` or less.
 
@@ -297,7 +297,7 @@ summand).  Axiom audit for all 11 declarations: `propext, Classical.choice, Quot
 
 ### The residue sequence in the constant model
 
-`formal/GaloisForLFunctions/RHTower/DeningerResidueSequence.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerResidueSequence.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The logarithmic residue sequence `(1)`--`(2)` is now available on the constant forms, which is where
@@ -331,7 +331,7 @@ recorded as unavailable.
 
 ### The Fourier step of `(2)`
 
-`formal/GaloisForLFunctions/RHTower/DeningerFiniteCharacterBasis.lean` (8 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFiniteCharacterBasis.lean` (8 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`) supplies the missing infrastructure for the surjectivity
 argument of `(1)`--`(2)`:
 

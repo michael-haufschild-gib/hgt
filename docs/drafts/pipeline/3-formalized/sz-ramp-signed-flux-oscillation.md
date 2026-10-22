@@ -67,7 +67,7 @@ frequency and multiplicity; it does not destroy the phase needed by SZ.
 
 ## Lean declarations and audit
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitBohrFlux.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitBohrFlux.lean`.
 
 The final premise-free statements are
 `ccmPrimeDeficitIncoming_omega_pm` and
@@ -79,7 +79,7 @@ the final oscillation theorems discharge that assumption by cases.
 
 Final foreground leaf check (exit0, no diagnostics):
 
-    lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitBohrFlux.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeDeficitBohrFlux.olean
+    lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitBohrFlux.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitBohrFlux.olean
 
 Exactly one umbrella import, no umbrella/full build. No numerical
 experiment, heartbeat override, added axiom, subagent, or commit.
@@ -89,19 +89,19 @@ Lint37688 exited1; diagnostics were truncated by the tool, so89207 reran
 with both output streams captured and exited1. It reported16 unrelated
 unreachable modules, none in this new leaf:
 
-- `GaloisForLFunctions.RHTower.CCMApertureChainProfile`
-- `GaloisForLFunctions.RHTower.CCMApertureTranslationChains`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampPrimeMoment`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampSourceDissipation`
-- `GaloisForLFunctions.RHTower.CCMExponentialRampTerminalEntropy`
-- `GaloisForLFunctions.RHTower.CCMRetainedChainKernelLower`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureChainProfile`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureTranslationChains`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampPrimeMoment`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampSourceDissipation`
+- `GaloisForLFunctions.RHTower.CCM.CCMExponentialRampTerminalEntropy`
+- `GaloisForLFunctions.RHTower.CCM.CCMRetainedChainKernelLower`
 - `GaloisForLFunctions.RHTower.MertensProductDiamondPintz`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedCriticalMoment`
 - `GaloisForLFunctions.RHTower.MoebiusMollifiedErrorThreeLines`
 - `GaloisForLFunctions.RHTower.RoutePCausalBiasTransfer`
 - `GaloisForLFunctions.RHTower.RoutePFinitePrimeCovariance`
 - `GaloisForLFunctions.RHTower.RoutePPrimeCovarianceBudget`
-- `GaloisForLFunctions.RHTower.ThetaCuspC5IntrinsicGreenRecovery`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspC5IntrinsicGreenRecovery`
 - `GaloisForLFunctions.RHTower.ThetaMovingShellFirstOrderPhase`
 - `GaloisForLFunctions.RHTower.ZetaZeroDensityPowerSaving`
 - `GaloisForLFunctions.HTGeometry.CompactMonoidMeasureAlgebra`

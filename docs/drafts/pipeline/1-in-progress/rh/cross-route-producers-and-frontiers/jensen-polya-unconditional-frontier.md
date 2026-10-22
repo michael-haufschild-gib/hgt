@@ -1353,7 +1353,7 @@ conclusion consumed by a hypothesis nobody produced — reproduced in my own wor
 
 ### 19.1 The corpus already had the theta atom's exact curvature
 
-Searching before building, as mandated: `RHTower/ThetaCuspFinitePrimeSource.lean` defines
+Searching before building, as mandated: `RHTower/ThetaCusp/ThetaCuspFinitePrimeSource.lean` defines
 
 ```text
 thetaCuspSeed t = 2π(2πt⁴ − 3t²)e^{−πt²} ,   thetaCuspSourceTerm x n = e^{x/2}·thetaCuspSeed(n e^x) ,

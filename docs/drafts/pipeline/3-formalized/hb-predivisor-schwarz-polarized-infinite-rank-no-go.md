@@ -93,7 +93,7 @@ Verdict: `CLOSED IN LEAN`.
 
 ## Lean closure
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorFiniteSchwarzPolarizedInfiniteRankNoGo`.
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPreDivisorFiniteSchwarzPolarizedInfiniteRankNoGo`.
 - Certificate: `d4HBPreDivisorFiniteSchwarzPolarizedRouteKilled`.
 - Direct `lake env lean` and targeted `lake build` pass.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.

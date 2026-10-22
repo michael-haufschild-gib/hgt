@@ -433,7 +433,7 @@ principal symbols to the completed Xi Green/Calderón--Witt target. Full proof:
 ## Lean formalization certificate
 
 Sections 2--6 are formalized unconditionally in
-`RHTower/DeningerGammaSixCriticalEdgeCofaceRigidity.lean`, with exact source infrastructure from
+`RHTower/Deninger/DeningerGammaSixCriticalEdgeCofaceRigidity.lean`, with exact source infrastructure from
 `DeningerGammaSixFullSourcePrincipalClass`, finite-coface infrastructure from
 `DeningerGammaSixFiniteCofaceClassification`, and the all-weight Euler source from
 `DeningerStrongLogEulerGreenTransport`.
@@ -458,7 +458,7 @@ infinite injective image of the open character interval. Euler conservativity us
 the actual all-weight Meyer defect.
 
 The module is wired into the `RHTower` umbrella. Direct `lake env lean` and exact-module
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixCriticalEdgeCofaceRigidity` pass. A
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCriticalEdgeCofaceRigidity` pass. A
 `#print axioms` audit of all headline theorems reports only `propext`, `Classical.choice`, and
 `Quot.sound`; no project axioms, hypotheses, `sorry`, `admit`, `opaque`, or `unsafe` declarations
 occur.

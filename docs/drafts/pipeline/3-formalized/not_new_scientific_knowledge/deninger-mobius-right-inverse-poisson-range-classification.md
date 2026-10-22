@@ -209,7 +209,7 @@ Two new modules, both wired into `GaloisForLFunctions.RHTower`, both checked wit
 `propext, Classical.choice, Quot.sound`.  Nothing is assumed: no hypothesis, no `sorry`, no added
 axiom.
 
-### `formal/GaloisForLFunctions/RHTower/DeningerMobiusPoissonRangeClassification.lean`
+### `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusPoissonRangeClassification.lean`
 
 ```text
 deningerLogPull_double_summable                 (3)  ∑_{m,n≥1} ‖H_h(mnx)‖ < ∞
@@ -234,13 +234,13 @@ deningerMobiusRegularDomain_inverse_continuous  (8)  ** E𝔐_μ : 𝒟_μ → H
 `(2)` and `(4)` were already in the tree and are reused verbatim:
 `deningerMobiusRay_summable` (absolute convergence of `∑_n μ(n) H_h(nx)` on every positive ray) and
 `deningerMobius_rightInverse` (`∑_{m≥1} (𝔐_μ h)(mx) = H_h(x)`, the pointwise right inverse), in
-`RHTower/DeningerMobiusPreimage.lean` and `RHTower/DeningerMobiusRightInverse.lean`; the left
+`RHTower/Deninger/DeningerMobiusPreimage.lean` and `RHTower/Deninger/DeningerMobiusRightInverse.lean`; the left
 inversion `𝔐_μ(Zf) = f` is `deningerMobiusPreimage_poissonSource` and the Meyer--Poisson reflection
 `J(Zf) = Z(ℱf)` is `deningerCollarExchange_poissonSource`, both in
-`RHTower/DeningerPoissonPreimage.lean`.  `J` is the corpus's `deningerCollarExchange`, whose
+`RHTower/Deninger/DeningerPoissonPreimage.lean`.  `J` is the corpus's `deningerCollarExchange`, whose
 defining formula `deningerCollarExchange_apply` is literally `(Jh)(t) = e^{-t}h(-t)`, i.e. `(9)`.
 
-### `formal/GaloisForLFunctions/RHTower/DeningerMeyerStrictEmbedding.lean`
+### `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerStrictEmbedding.lean`
 
 `(8)` is the only part of the card that is not purely algebraic: it asserts closedness and inverse
 continuity **for the nuclear Meyer topology**, while the corpus's strictness and closed-range

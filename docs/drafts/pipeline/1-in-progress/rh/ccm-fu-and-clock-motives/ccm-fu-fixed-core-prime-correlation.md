@@ -1,7 +1,7 @@
 # CCM-FU: literal fixed-core prime correlation
 
 - **Stage:** 1-in-progress; signed reserve control. The exact source correlation and its complete coefficient series are [formalised](../../../3-formalized/ccm-fu-fixed-core-prime-correlation.md).
-- **Parent:** [fixed-core coefficient and reserve](../../ccm-fu-fixed-core-energy-limit.md).
+- **Parent:** [fixed-core coefficient and reserve](ccm-fu-fixed-core-energy-limit.md).
 - **Goal:** Signed reserve supply and renewal through changing cores, exhaustive selection, uniform signed Abel bound, RH.
 
 ## Closed source reduction

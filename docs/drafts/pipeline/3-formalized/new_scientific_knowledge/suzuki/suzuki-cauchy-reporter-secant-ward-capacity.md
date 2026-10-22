@@ -3,7 +3,7 @@
 - **Status:** Formalized; targeted source check passes
 - **Routes:** CCM-UR, CCM-FU, CCM-HG, Route O, Suzuki reflected-wall assembly
 - **Labels:** `[NEW]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]` `[FINITE-TO-COFINAL-INFRASTRUCTURE]`
-- **Lean module:** `GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantWardCapacity`
+- **Lean module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyReporterSecantWardCapacity`
 
 ## Corpus-first frontier audit
 

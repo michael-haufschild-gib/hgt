@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.PosteriorContrastProjection
 import GaloisForLFunctions.HTGeometry.FinitePacketMeasure
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusHyperbolicRapidity
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceJuliaPythagoras
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusHyperbolicRapidity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceJuliaPythagoras
 
 /-!
 # The two-point posterior realization of the Möbius--Hardy cell

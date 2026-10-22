@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiEndpointCompletedValueBound
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
-import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeGammaSourceEnergySpectrum
 
 /-!
 # Projective reflection source--temperature master spectrum

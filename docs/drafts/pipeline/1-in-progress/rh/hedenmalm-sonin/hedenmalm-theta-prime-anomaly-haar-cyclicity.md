@@ -74,7 +74,7 @@ Hilbert-quotient variants of the response-identification proposal at once.
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeAnomalyHaarCyclicity.lean` proves the exact
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeAnomalyHaarCyclicity.lean` proves the exact
 Fourier profile, countability/nullity of its complete zero set, physical translation cyclicity,
 and continuous-quotient collapse. Direct Lean check passes; final lint, axiom, and exact module
 build remain.

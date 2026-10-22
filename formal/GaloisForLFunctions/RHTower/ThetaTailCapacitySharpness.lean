@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaTailDivisorCapacity
 import GaloisForLFunctions.RHTower.CausalMobiusThetaMovingCusp
-import GaloisForLFunctions.RHTower.ThetaCuspFullDerivativeExponentialMoments
-import GaloisForLFunctions.RHTower.ThetaCuspReflection
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullDerivativeExponentialMoments
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflection
 import GaloisForLFunctions.HTGeometry.GammaVerticalPolynomialDecay
 
 /-!

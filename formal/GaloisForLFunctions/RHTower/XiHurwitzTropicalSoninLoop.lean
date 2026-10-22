@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHurwitzPrincipalPhaseGrowth
-import GaloisForLFunctions.RHTower.CCMSoninPathTropicalMemory
+import GaloisForLFunctions.RHTower.CCM.CCMSoninPathTropicalMemory
 
 /-!
 # The Xi--Hurwitz phase as a tropical Sonin loop memory

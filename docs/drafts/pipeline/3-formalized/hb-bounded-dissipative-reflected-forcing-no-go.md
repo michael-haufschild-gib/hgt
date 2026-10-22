@@ -40,7 +40,7 @@ responses exist uniquely and are nonzero.
 ## Formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingHBBoundedDissipativeReflectedForcingNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBBoundedDissipativeReflectedForcingNoGo`
 
 Main theorem:
 `d4HBBoundedDissipativeReflectedForcingExclusionRouteKilled`

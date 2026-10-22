@@ -50,7 +50,7 @@ axiom checks, are indexed once, and are wired once in the umbrella.
 Repository formal lint passed; no owned compiler remains.
 [Complete proof and audit](../../../3-formalized/sqb-original-period-resistance.md).
 
-The [full original current-period limit](../../sqb-original-period-current-limit.md)
+The [full original current-period limit](sqb-original-period-current-limit.md)
 is now formalized through nodal concentration. It gives finite product limits
 on zero-free periods and product divergence at nodal heights with positive
 limiting current. Bounded nodal products require zero limiting current;

@@ -27,7 +27,7 @@ another estimate or one-particle stochastic-order criterion.
 - [x] 0 → 1: exact source objects and existing divisor-phase theorem identified
 - [x] 1 → 2: dependency-closed algebraic and analytic proof below
 - [x] 2 → 3: Lean module
-  `GaloisForLFunctions.RHTower.ThetaCuspLikelihoodEisensteinMassShell` passes direct checking,
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodEisensteinMassShell` passes direct checking,
   targeted build, axiom audit, generated-index check, and formal lint
 - [ ] 3 → 4: independent novelty audit and publication packaging
 
@@ -192,7 +192,7 @@ This correction is formalized by
 
 Module:
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEisensteinMassShell.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEisensteinMassShell.lean`
 
 Principal declarations:
 

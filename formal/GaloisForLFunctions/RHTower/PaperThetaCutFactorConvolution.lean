@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperThetaCutFactorLefschetz
-import GaloisForLFunctions.RHTower.DeningerMeyerConvolutionWeilTrace
-import GaloisForLFunctions.RHTower.DeningerMeyerConvolutionFredholm
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerConvolutionWeilTrace
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerConvolutionFredholm
 
 /-! # Whole-source convolution fixed by native theta current factors
 

@@ -159,7 +159,7 @@ requires the uniform finite-stage estimates in
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearTestScale.lean`, 15 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearTestScale.lean`, 15 declarations, axiom audit
 for every one of them: `propext, Classical.choice, Quot.sound`.
 
 **`(1)`, the inductive-limit test topology.**
@@ -230,7 +230,7 @@ convex space theory being absent from mathlib.
 
 The blocker recorded above says nuclearity cannot be stated because mathlib has no nuclear space
 theory.  The first missing piece is now built:
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearOperator.lean` (11 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearOperator.lean` (11 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout) defines nuclear *operators* between normed
 spaces, which mathlib does not have in any form.
 
@@ -262,7 +262,7 @@ they rest on is now available.
 ### Nuclear spaces, defined
 
 The space-level half is now built too:
-`formal/GaloisForLFunctions/RHTower/DeningerSeminormQuotient.lean` (19 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSeminormQuotient.lean` (19 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).  mathlib has `Seminorm`, `WithSeminorms` and
 `LocallyConvexSpace`, but it has no normed space attached to a seminorm, so the definition of a
 nuclear space could not even be written; that gap is closed.
@@ -293,7 +293,7 @@ projective tensor product, neither of which exists yet.
 
 ### Nuclearity is independent of the defining family
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceInvariance.lean` (7 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSpaceInvariance.lean` (7 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) makes the definition usable by proving
 it is an invariant of the topology rather than of the chosen seminorms.
 
@@ -313,7 +313,7 @@ it is an invariant of the topology rather than of the chosen seminorms.
 
 ### Bridge to the corpus trace-class theory
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSchattenBridge.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSchattenBridge.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`) connects the new general notion to the Schatten
 machinery the corpus already owns.
 
@@ -331,7 +331,7 @@ norm, the ideal bounds and the additivity of the Schatten 1-class are available 
 
 ### Products of nuclear spaces
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearProduct.lean` (12 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearProduct.lean` (12 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout) proves the first permanence property.
 
 - `deningerSeminormInduced` — **the map of normed spaces induced by a bounded linear map**, a
@@ -359,7 +359,7 @@ Hilbert--Schmidt characterization, where subspaces are complemented.
 
 ### Hilbert--Schmidt composites are nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtNuclear.lean` (4 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertSchmidtNuclear.lean` (4 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) supplies the bridge on which the
 remaining permanence theory rests.
 
@@ -383,7 +383,7 @@ nuclear space, and the converse factorization of a nuclear map through Hilbert--
 
 ### Parseval, and the Hilbert--Schmidt condition is intrinsic
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertSchmidtAdjoint.lean` (7 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertSchmidtAdjoint.lean` (7 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) removes the basis from the previous
 module's hypothesis.
 
@@ -406,7 +406,7 @@ Hilbert--Schmidt maps is nuclear" with Hilbert--Schmidt in its usual, intrinsic 
 
 ### Nuclear implies Hilbert--Schmidt
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertSchmidt.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearHilbertSchmidt.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`) closes the converse direction on Hilbert spaces.
 
 - `deningerInner_adjoint_comp` — pairing `T* T` against a vector gives the squared norm of its
@@ -423,7 +423,7 @@ on Hilbert spaces, in both directions of the classical comparison.
 
 ### Finite-rank maps and the usable nuclearity criterion
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearFiniteRank.lean` (2 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearFiniteRank.lean` (2 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerIsNuclear_of_finiteRank` — **a map with finite-dimensional range is nuclear**.  The
@@ -441,7 +441,7 @@ on Hilbert spaces, in both directions of the classical comparison.
 
 ### Nuclearity passes to the completions
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletion.lean` (4 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearCompletion.lean` (4 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerCompletionFunctional`, `_coe`, `_norm_le` — **the extension of a continuous functional
@@ -463,7 +463,7 @@ subspaces is formulated against.
 
 ### Subspaces, and the exact point where they are not formal
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspace.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspace.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound` throughout).
 
 - `DeningerIsNuclear.of_comp_left_inverse` — if the left factor of a nuclear composite has a
@@ -488,7 +488,7 @@ of a nuclear map through a Hilbert space, and is what remains to be built.
 
 ### Balancing a nuclear representation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearBalanced.lean` (2 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearBalanced.lean` (2 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `DeningerIsNuclear.exists_balanced` — **a nuclear map has a representation in which every
@@ -511,7 +511,7 @@ continuously, and exact balancing genuinely fails.
 
 ### The Hilbertian domination of a nuclear map
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearHilbertFactor.lean` (2 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearHilbertFactor.lean` (2 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `deningerTsum_mul_le_sqrt` — **Cauchy--Schwarz for sums**: for nonnegative square-summable
@@ -534,7 +534,7 @@ quotient is complemented — the hypothesis of
 
 ### A nuclear space is presented by Hilbertian seminorms
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertianRefinement.lean` (3 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertianRefinement.lean` (3 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `DeningerIsHilbertianSeminorm` — a seminorm given by the norm of a linear map into an `ℓ²`
@@ -558,7 +558,7 @@ restating nuclearity against the completed quotients, for which
 
 ### The completed formulation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSpaceCompleted.lean` (9 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSpaceCompleted.lean` (9 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `DeningerSeminormCompletion`, `deningerSeminormMkC`, `_norm` — the Banach space attached to a
@@ -582,7 +582,7 @@ projection.
 
 ### Subspaces in the completed formulation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceCompleted.lean` (5 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspaceCompleted.lean` (5 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerSubspaceEmbedding_square` — the comparison square of a subspace before completion.
@@ -603,7 +603,7 @@ version of this theorem could not be discharged.
 
 ### The `ℓ²` embedding of a Hilbertian quotient
 
-`formal/GaloisForLFunctions/RHTower/DeningerHilbertianEmbedding.lean` (10 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHilbertianEmbedding.lean` (10 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout).
 
 - `deningerHilbertianEmbedding`, `_norm`, `_isometry` — a Hilbertian seminorm's defining map kills
@@ -623,7 +623,7 @@ ingredient of the bounded left inverse that
 
 ### Subspaces of a Hilbertian nuclear space are nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearSubspaceHilbertian.lean` (16 declarations,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearSubspaceHilbertian.lean` (16 declarations,
 axiom audit `propext, Classical.choice, Quot.sound` throughout).
 
 The complementation hypothesis of the previous step is now **discharged**, so permanence under
@@ -660,7 +660,7 @@ dominating families, which needs a composition law for the completed comparison 
 
 ### Permanence under subspaces, for any presentation
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearCompletedInvariance.lean` (6 declarations,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearCompletedInvariance.lean` (6 declarations,
 axiom audit `propext, Classical.choice, Quot.sound` throughout).
 
 The restriction to a Hilbertian presentation is now removed.
@@ -685,8 +685,8 @@ theorem rather than an assumption, for whatever family the ambient space is pres
 
 ### A nuclear test scale that is not finite dimensional
 
-`formal/GaloisForLFunctions/RHTower/DeningerRapidSequenceSpace.lean` (14 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerRapidSequenceNuclear.lean` (11 declarations), axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRapidSequenceSpace.lean` (14 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRapidSequenceNuclear.lean` (11 declarations), axiom
 audit `propext, Classical.choice, Quot.sound` throughout.
 
 Until now the only spaces known to be nuclear in the corpus were the finite dimensional ones, so
@@ -719,8 +719,8 @@ does now.
 
 ### The test space of the card is nuclear, and so is its Kummer subspace
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinestNuclear.lean` (16 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerLocallyConstantTestSpace.lean` (12 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinestNuclear.lean` (16 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLocallyConstantTestSpace.lean` (12 declarations),
 axiom audit `propext, Classical.choice, Quot.sound` throughout.
 
 This is the first half of the proof of `[DAC_ADELIC_KUMMER_NUCLEAR_TEST_SCALE]` — the statement
@@ -772,7 +772,7 @@ locally convex spaces, so that last item needs the construction built first.
 
 ### The integral functional and its kernel
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestIntegral.lean` (9 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestIntegral.lean` (9 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 Statement `(5)` of the card — `I(f) = ∫_Y f dλ` is continuous on `𝒟(Y)` and `𝒮_Kum ⊆ ker I` — in
@@ -796,7 +796,7 @@ the form the corpus can carry.
 
 ### The Hilbert end of the scale, and the dual injection
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestL2Scale.lean` (7 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestL2Scale.lean` (7 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The parts of `(3)`–`(4)` that do not depend on the still unbuilt mixed Banach completion
@@ -824,8 +824,8 @@ compact opens), the mixed Banach step `E_Kum`, and the projective tensor product
 
 ### Density of the test space in `L²`, and the scale
 
-`formal/GaloisForLFunctions/RHTower/DeningerLocallyConstantApproximation.lean` (5 declarations)
-and `formal/GaloisForLFunctions/RHTower/DeningerTestL2Dense.lean` (4 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLocallyConstantApproximation.lean` (5 declarations)
+and `formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestL2Dense.lean` (4 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 The density that `(3)` asserts, for the Hilbert end of the scale, under exactly the hypotheses the
@@ -853,7 +853,7 @@ disconnected, and `λ` a regular measure.
 
 ### The projective tensor product of seminorms
 
-`formal/GaloisForLFunctions/RHTower/DeningerTensorSeminorm.lean` (13 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTensorSeminorm.lean` (13 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 First step towards `(6)`.  Mathlib has a projective seminorm only for `PiTensorProduct` of normed
@@ -876,8 +876,8 @@ Next for `(6)`: the tensor product of nuclear maps, and nuclearity of the family
 
 ### The projective tensor product of nuclear spaces is nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerTensorBilinear.lean` (14 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerTensorNuclear.lean` (5 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTensorBilinear.lean` (14 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTensorNuclear.lean` (5 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 Statement `(6)` of the card at the level of the general theory: **a projective tensor product of
@@ -924,7 +924,7 @@ convolution on the second is continuous as soon as both factors are.
 
 ### The Banach step of the scale, and the dual scale
 
-`formal/GaloisForLFunctions/RHTower/DeningerScaleFactorization.lean` (9 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerScaleFactorization.lean` (9 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The middle term `E_Kum` of `(3)` in abstract form: **any continuous seminorm dominating the `L²`
@@ -951,7 +951,7 @@ Kummer subspace — everything the scale asserts about such a choice is now a th
 
 ### Subspaces are closed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinestClosed.lean` (3 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinestClosed.lean` (3 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The word *closed* in the card's "`𝒮_Kum` is a closed nuclear subspace".
@@ -968,7 +968,7 @@ The word *closed* in the card's "`𝒮_Kum` is a closed nuclear subspace".
 
 ### Completeness of the test space
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinestComplete.lean` (8 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinestComplete.lean` (8 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The word *complete* in the card's "`𝒟(Y)` is a complete nuclear LF space".
@@ -998,7 +998,7 @@ field-norm and Tate operations on them.
 
 ### A concrete instance: the `p`-adic integers
 
-`formal/GaloisForLFunctions/RHTower/DeningerPadicTestSpace.lean` (12 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPadicTestSpace.lean` (12 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 All of the above is stated for a second countable, Hausdorff, locally compact, totally
@@ -1027,7 +1027,7 @@ not the functional analysis.
 
 ### The place-component decomposition
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestSigma.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestSigma.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The card's decomposition of `Y` into compact open place components, and of `𝒟(Y)` along it — the
@@ -1051,7 +1051,7 @@ local model of the adelic test space.
 
 ### Operators on the scale, and preservation of the mass-zero condition
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestPullback.lean` (7 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestPullback.lean` (7 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The card's "Galois maps, normalized field-norm projections, and Tate-twisted power maps act
@@ -1073,8 +1073,8 @@ pullbacks along proper maps and their finite averages.
 
 ### Towards the smooth factor of `(6)`: Fourier coefficients of periodic functions
 
-`formal/GaloisForLFunctions/RHTower/DeningerFourierCoeffDeriv.lean` (5 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerFourierDecay.lean` (3 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierCoeffDeriv.lean` (5 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierDecay.lean` (3 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 `(6)` tensors `𝒮_Kum` with the smooth test space `C_c^∞(ℝ)`; the nuclearity theorem for tensor
@@ -1102,8 +1102,8 @@ nuclearity.
 
 ### Rapid decay, and the bridge to the Fourier basis of the circle
 
-`formal/GaloisForLFunctions/RHTower/DeningerFourierRapidDecay.lean` (3 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerFourierBridge.lean` (3 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierRapidDecay.lean` (3 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierBridge.lean` (3 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 Both directions of the smoothness/decay dictionary that will identify a smooth periodic test space
@@ -1131,8 +1131,8 @@ nuclearity is already proved on this card.
 
 ### The Grothendieck–Pietsch criterion for Köthe spaces, and transport of nuclearity
 
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearTransport.lean` (3 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerKotheSpace.lean` (12 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearTransport.lean` (3 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKotheSpace.lean` (12 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 The general form of the sequence model that will carry the smooth factor of `(6)`, together with
@@ -1162,8 +1162,8 @@ which the Fourier dictionary above compares to the space itself.
 
 ### The coefficient model of a smooth periodic test space
 
-`formal/GaloisForLFunctions/RHTower/DeningerFourierKothe.lean` (5 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerSmoothPeriodic.lean` (9 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierKothe.lean` (5 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothPeriodic.lean` (9 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 - `deningerFourierWeights` — the Köthe datum `(1 + |n|)^k` on the integers;
@@ -1192,7 +1192,7 @@ tensor factor of `(6)`.
 
 ### The coefficient map lands in the nuclear model
 
-`formal/GaloisForLFunctions/RHTower/DeningerSmoothCoeffMap.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothCoeffMap.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerSmoothPeriodic_integrable`, `deningerFourierCoeff_add`, `deningerFourierCoeff_smul` —
@@ -1214,9 +1214,9 @@ direction.
 
 ### The smooth factor of `(6)` is nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerSmoothCoeffInjective.lean` (2 declarations),
-`formal/GaloisForLFunctions/RHTower/DeningerNuclearTransportC.lean` (3 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerSmoothPeriodicNuclear.lean` (3 declarations), axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothCoeffInjective.lean` (2 declarations),
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerNuclearTransportC.lean` (3 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothPeriodicNuclear.lean` (3 declarations), axiom
 audit `propext, Classical.choice, Quot.sound` throughout.
 
 - `deningerSmoothPeriodic_eq_zero_of_coeff` — **a continuous periodic function with vanishing
@@ -1242,7 +1242,7 @@ and `E_Kum`.
 
 ### The characters and the orthogonality relations
 
-`formal/GaloisForLFunctions/RHTower/DeningerFourierCharacter.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierCharacter.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerCharacter`, `_apply`, `_hasDerivAt`, `_periodic` — the character `exp(2πinx/T)`, its
@@ -1263,7 +1263,7 @@ space, such as the compactly supported smooth functions of `(6)`.
 
 ### Nuclearity of the smooth test space, and of every subspace of it
 
-`formal/GaloisForLFunctions/RHTower/DeningerSmoothCharacterBasis.lean` (12 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothCharacterBasis.lean` (12 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `deningerHasSum_of_isometry` — an isometry reflects convergence of series.
@@ -1286,7 +1286,7 @@ audit `propext, Classical.choice, Quot.sound`).
 
 ### Subspaces of the test space are nuclear in the uncompleted sense
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinestSubspaceNuclear.lean` (4 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinestSubspaceNuclear.lean` (4 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 Nuclearity of `𝒮_Kum` was so far available at the completed level, where it comes from subspace
@@ -1308,8 +1308,8 @@ the uncompleted sense too, which is what makes such a subspace usable as a tenso
 
 ### Statement `(6)`: the suspension is nuclear
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestSpaceComplex.lean` (8 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerSuspensionNuclear.lean` (2 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestSpaceComplex.lean` (8 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSuspensionNuclear.lean` (2 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 The two factors of `(6)` live over different fields as first built — the locally constant test
@@ -1340,7 +1340,7 @@ the suspension tensor product nuclear with both factors supplied.
 
 ### The arithmetic layer begins: a number field has countably many places
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceCountable.lean` (5 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceCountable.lean` (5 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The card's space `Y` is built from the places of the fields in a tower.  At each level the set of
@@ -1368,7 +1368,7 @@ they lie in the kernel of the integral — the card's `(5)`.
 
 ### The Kummer span of a number field is a closed nuclear subspace
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceSpace.lean` (10 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceSpace.lean` (10 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The card's `𝒮_Kum` now exists as a concrete object at each level of the tower, and the structural
@@ -1396,7 +1396,7 @@ giving `𝒮_Kum ⊆ ker I` — statement `(5)`.
 
 ### Statement `(5)` arithmetically: the product formula kills the Kummer span
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceIntegral.lean` (5 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceIntegral.lean` (5 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerPlaceTest_finite_support`, `deningerPlaceSum` — on the discrete space of places the
@@ -1419,7 +1419,7 @@ number fields, with the Galois and field-norm maps between levels.
 
 ### The height is an `ℓ¹` norm on the Kummer functions
 
-`formal/GaloisForLFunctions/RHTower/DeningerHeightL1.lean` (5 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHeightL1.lean` (5 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The identity that makes the Allcock–Vaaler picture work — the Weil height *is* a norm on the space
@@ -1440,7 +1440,7 @@ theorems above it is what connects the card's `𝒮_Kum` to the mixed Banach ste
 
 ### The Banach step `E_Kum` concretely: the `ℓ¹` completion
 
-`formal/GaloisForLFunctions/RHTower/DeningerL1Norm.lean` (5 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL1Norm.lean` (5 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerPlaceAbs_finite_support`, `deningerL1Seminorm`, `_apply` — **the sum of the absolute
@@ -1457,7 +1457,7 @@ theorems above it is what connects the card's `𝒮_Kum` to the mixed Banach ste
 
 ### The Hilbert end over the places, and the `ℓ² ≤ ℓ¹` comparison
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceMeasure.lean` (7 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceMeasure.lean` (7 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - Measure instances for the space of places: the Borel structure of a discrete space is the
@@ -1480,7 +1480,7 @@ for the place space of a number field.
 
 ### The counting measure is regular, and the concrete scale over the places
 
-`formal/GaloisForLFunctions/RHTower/DeningerPlaceRegular.lean` (4 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPlaceRegular.lean` (4 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerCount_outerRegular`, `deningerCount_innerRegular`, `deningerCount_regular` — **the
@@ -1498,7 +1498,7 @@ for the place space of a number field.
 
 ### The Banach step is the height norm, and the tower invariance
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestHeightBridge.lean` (9 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestHeightBridge.lean` (9 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 The scale built above lives on the test space of the place space; the classical Weil height lives
@@ -1530,7 +1530,7 @@ of the card's scale is the height completion and not merely an abstract seminorm
 
 ### Statement `(1)`: the strict inductive limit of finite-dimensional steps
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestExhaustion.lean` (11 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestExhaustion.lean` (11 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerTestStep`, `_mem`, `_mono` — the step of an exhaustion: the test functions supported in
@@ -1558,7 +1558,7 @@ of the card's scale is the height completion and not merely an abstract seminorm
 
 ### Statement `(2)`: the Kummer subspace is the image of a homomorphism, faithful modulo torsion
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerHomomorphism.lean` (11 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerHomomorphism.lean` (11 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerKummerFun_mul`, `_one`, `_pow`, `_inv`, `deningerKummerTest_mul` — the logarithmic
@@ -1582,7 +1582,7 @@ nuclear subspace but an arithmetically faithful one.
 
 ### The operators of `(6)`: translation and the rational shifts
 
-`formal/GaloisForLFunctions/RHTower/DeningerSuspensionTranslation.lean` (10 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSuspensionTranslation.lean` (10 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `deningerFourierKernel_add`, `_period`, `_periodic'` — the Fourier kernel is a character of
@@ -1607,7 +1607,7 @@ audit `propext, Classical.choice, Quot.sound`).
 
 ### The last operator of `(6)`: convolution by a test function
 
-`formal/GaloisForLFunctions/RHTower/DeningerSuspensionConvolution.lean` (11 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSuspensionConvolution.lean` (11 declarations, axiom
 audit `propext, Classical.choice, Quot.sound`).
 
 - `deningerConvolve`, `_apply`, `_periodic`, `_contDiff` — convolution by a compactly supported
@@ -1638,8 +1638,8 @@ is now a proved bounded operator on the suspension.
 
 ### Statement `(5)`, Galois half: automorphisms permute the places and preserve the scale
 
-`formal/GaloisForLFunctions/RHTower/DeningerGaloisPlaceAction.lean` (12 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerGaloisInvariance.lean` (14 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaloisPlaceAction.lean` (12 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaloisInvariance.lean` (14 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 Mathlib has the Galois action on the *infinite* places only.  The finite half is built here from
@@ -1677,7 +1677,7 @@ the adic valuation upwards.
 
 ### Statement `(5)`, projection half: the field-norm projection
 
-`formal/GaloisForLFunctions/RHTower/DeningerTestPushforward.lean` (10 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTestPushforward.lean` (10 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerPushFun`, `_eq_sum`, `_support`, `_mem`, `deningerPush`, `_apply` — **the fibrewise
@@ -1702,8 +1702,8 @@ power maps — are now proved to act on the test scale and to preserve `(5)`.
 
 ### The tower: transition maps, the Kummer direct system, and the cocycle condition
 
-`formal/GaloisForLFunctions/RHTower/DeningerTowerTransition.lean` (16 declarations) and
-`formal/GaloisForLFunctions/RHTower/DeningerTowerCocycle.lean` (7 declarations), axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTowerTransition.lean` (16 declarations) and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTowerCocycle.lean` (7 declarations), axiom audit
 `propext, Classical.choice, Quot.sound` throughout.
 
 The Allcock–Vaaler space is the limit of the place spaces of a tower of number fields.  Its
@@ -1745,7 +1745,7 @@ the two facts that make the tower a direct system.
 
 ### Every level of the tower embeds in the next
 
-`formal/GaloisForLFunctions/RHTower/DeningerTowerInjective.lean` (6 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTowerInjective.lean` (6 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerArchDegreeOver_pos`, `deningerFiniteDegreeOver_pos`, `deningerPlaceDegreeOver_pos` — the
@@ -1771,7 +1771,7 @@ injectivity above.
 
 ### The colimit: the test space of the Allcock–Vaaler space of a tower
 
-`formal/GaloisForLFunctions/RHTower/DeningerTowerDirectLimit.lean` (8 declarations, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTowerDirectLimit.lean` (8 declarations, axiom audit
 `propext, Classical.choice, Quot.sound`).
 
 - `deningerTowerPullHom` — the transition map attached to an *embedding* of number fields, not to a

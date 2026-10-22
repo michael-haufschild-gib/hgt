@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FZZCigarParityReflectedFermiInformationGradientFlow
-import GaloisForLFunctions.RHTower.DeningerDivisorGaugeWardIdentity
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorGaugeWardIdentity
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 
 /-!

@@ -35,7 +35,7 @@ the same structure algebraically: a null state is oriented by its first extensio
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairNullCone.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairNullCone.lean`
 
 Key closed declarations:
 
@@ -73,7 +73,7 @@ source diagonal is exact first Krein crossing form of nonzero parity-null bounda
 including divisor multiplicity. Existing nearby-negativity existence is sharpened to canonical
 spectral-flow law.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairCrossing.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairCrossing.lean`
 
 Key closed declarations:
 
@@ -121,7 +121,7 @@ This identifies reason fixed tangent positivity/crossing arguments stall: they c
 `|lambda| + Re lambda`, while RH is radical of complementary `|lambda| - Re lambda`. Any producer
 must transfer or annihilate normal channel; tightening tangent crossing estimates cannot suffice.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairLorentzWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairLorentzWeld.lean`
 
 Key closed declarations:
 
@@ -169,7 +169,7 @@ but this statement alone supplies no vanishing pressure: nonzero normal charge i
 the receiver through the externally selected aperture. The later universality no-go identifies
 this dependence exactly.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairNormalRenewalWeld.lean`
 
 Key closed declarations:
 
@@ -211,7 +211,7 @@ This eliminates delayed far-right witnesses and Xi-dependent schedule selection 
 receiver. It does not make its amplitude source-native: the reporter still receives the spectral
 displacement as external aperture data.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalWeld.lean`
 
 Key closed declarations:
 
@@ -239,7 +239,7 @@ Therefore neither positivity nor persistence of this increment detects the sourc
 reporter, not an arithmetic producer, and cannot force the Schwarz-pair normal coefficient to
 vanish.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalUniversalityNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParitySchwarzPairParabolicRenewalUniversalityNoGo.lean`
 
 Key closed declarations:
 

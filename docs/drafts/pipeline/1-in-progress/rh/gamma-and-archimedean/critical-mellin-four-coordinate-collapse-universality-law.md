@@ -6,10 +6,10 @@ Lean-formalized; exact file audit passed on 2026-07-22. Literature novelty audit
 
 ## Corpus sources
 
-- `RHTower/CCMComplexMellinColligation.lean`
+- `RHTower/CCM/CCMComplexMellinColligation.lean`
 - `RHTower/PolarPrimeChannelContinuation.lean`
 - `RHTower/XiCriticalMellinSourceFactorization.lean`
-- `RHTower/CCMInverseTiltedCriticalMellinFactorization.lean`
+- `RHTower/CCM/CCMInverseTiltedCriticalMellinFactorization.lean`
 
 ## Theorem-first derivation
 

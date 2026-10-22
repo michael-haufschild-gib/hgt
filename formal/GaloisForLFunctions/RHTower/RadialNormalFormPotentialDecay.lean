@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRadialProlateDefect
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProlateDefect
 
 /-!
 # The exterior radial normal-form potential is a `1/x²` symbol

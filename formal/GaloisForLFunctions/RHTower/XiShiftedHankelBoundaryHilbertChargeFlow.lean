@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiShiftedHankelBoundaryKreinCrossing
 import GaloisForLFunctions.RHTower.XiShiftedReciprocalHankelTailCriterion
-import GaloisForLFunctions.RHTower.SuzukiSafeShiftResponseChargeCancellation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSafeShiftResponseChargeCancellation
 import GaloisForLFunctions.RHTower.XiSquaredEulerAllDegreeChargeCriterion
 
 /-!

@@ -6,7 +6,7 @@ The [direct coincident-radius finite-clock transfer](../../../3-formalized/hb-sp
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes and the full physical boundary. This construction attacks the reduced SV–SV source integral from [the two-sided reduction](../../hb-two-sided-source-current-reduction.md). It uses the spin-two angular weight before transferring the onset derivatives. It does not change the original clock or project the angular half-square onto an eigenfunction.
+The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes and the full physical boundary. This construction attacks the reduced SV–SV source integral from [the two-sided reduction](hb-two-sided-source-current-reduction.md). It uses the spin-two angular weight before transferring the onset derivatives. It does not change the original clock or project the angular half-square onto an eigenfunction.
 
 ## Conjecture and exact differential mechanism
 
@@ -44,7 +44,7 @@ The [native-source proof](../../../3-formalized/hb-native-spin-two-primitive.md)
 
 ## Apply (1) to the original finite clock density
 
-Keep exactly the notation and source normalization of [the finite-clock transfer](../../hb-reduced-source-clock-transfer.md). At fixed `0<u,w<1`, set `t=-s-3`,
+Keep exactly the notation and source normalization of [the finite-clock transfer](hb-reduced-source-clock-transfer.md). At fixed `0<u,w<1`, set `t=-s-3`,
 
 ```
 alpha=(2s+1)(2s+2), gamma=(2t+1)(2t+2),
@@ -161,7 +161,7 @@ T W = I_2/A^2-3B I_1/A^3+(3B^2-A^2)I_0/A^4
     +3B g_s(V)g_t(c)/A^3.                            (9)
 ```
 
-Thus the physical source's terminal Wronskian and its geometry-dependent product correction remain inside the finite transformed bulk. Their presence is compatible with the zero upper boundary in (5). The [full-source terminal estimate](../../hb-full-source-terminal-decay.md) controls both terms after multiplication by `F`: their integrated contribution tends to zero at rate `exp(-4(1-beta)V)` on every fixed compact radial square and angular region, where `beta=max(Re rho,1-Re rho)<1`. The estimate retains the complete angular source. It concerns the source integral; the physical lift/response and source-contact temporal currents still require their own comparison.
+Thus the physical source's terminal Wronskian and its geometry-dependent product correction remain inside the finite transformed bulk. Their presence is compatible with the zero upper boundary in (5). The [full-source terminal estimate](hb-full-source-terminal-decay.md) controls both terms after multiplication by `F`: their integrated contribution tends to zero at rate `exp(-4(1-beta)V)` on every fixed compact radial square and angular region, where `beta=max(Re rho,1-Re rho)<1`. The estimate retains the complete angular source. It concerns the source integral; the physical lift/response and source-contact temporal currents still require their own comparison.
 
 Restore the original factor `-a_s^2 a_t^2 uw(1+u)^(2s)(1+w)^(2t)/2`, the outer `Q` pairing, direct minus image, and subtraction of the reversed ordered branch. Formula (7) changes this reduced source bulk into the corresponding **positive** prefactor times `F T W`. It replaces the separate characteristic-period comparison with a single weighted spin-two-kernel integral.
 

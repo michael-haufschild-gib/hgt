@@ -39,7 +39,7 @@ ceiling—including reflected direct-three-center constant `15872/21125`—is eq
 finite-displacement covariance and infinite Plemelj covariance.
 
 FD1 is proved in
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureCanonicalFiniteDisplacement.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureCanonicalFiniteDisplacement.lean`.
 The selected cutoffs are cofinal, selected displacements are positive and tend to zero, and the
 finite covariance error is pointwise `< 1/(n+1)`.
 

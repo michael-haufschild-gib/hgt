@@ -18,7 +18,7 @@ the original quotient topology to the original forcing and its unique repaired
 solution. This removes the original-Frechet finite-mode approximation obstacle.
 It is not an arbitrary infinite-packet admission or a native BV convergence result.
 
-Main source: `formal/GaloisForLFunctions/RHTower/DeningerMeyerFiniteNativeDensity.lean`.
+Main source: `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerFiniteNativeDensity.lean`.
 All eleven leaves passed direct `lake --old env lean` audits with fresh oleans;
 all eleven umbrella imports are unique. All 76 public declarations passed the
 exhaustive axiom audit using only `propext`, `Classical.choice`, `Quot.sound`.
@@ -173,7 +173,7 @@ Formalization progress (still **18/100**, no completion claim):
   `HTGeometry/DividedDifferenceCauchyProjection.lean` pass direct leaf Lean
   audits. They prove entireness through the moving diagonal and the exact
   inside/outside Cauchy identities. No individual zero residues are used.
-- `RHTower/DeningerMeyerSourceSeries.lean` is under its first direct audit.
+- `RHTower/Deninger/DeningerMeyerSourceSeries.lean` is under its first direct audit.
   The source convergence step simplifies using existing original Frechet
   completeness: summability of every defining gauge gives source summability.
   A weighted Mellin-line bound pays each gauge. Continuous Mellin jets then
@@ -302,7 +302,7 @@ Integration update:
 - The capstone is not wired or counted until its audit passes. Still18/100.
 
 Capstone direct audit passed:
-- `lake --old env lean -o .../DeningerMeyerFiniteNativeDensity.olean GaloisForLFunctions/RHTower/DeningerMeyerFiniteNativeDensity.lean` exited 0, no warnings.
+- `lake --old env lean -o .../DeningerMeyerFiniteNativeDensity.olean GaloisForLFunctions/RHTower/Deninger/DeningerMeyerFiniteNativeDensity.lean` exited 0, no warnings.
 - `deningerMeyerFiniteNativeModes_dense` is closed and unconditional in the original scoped quotient topology.
 - `deningerMeyerOriginalConvolution_nativeApproximation` pays exact finite native repaired equations and original-topology convergence for every original forcing and source symbol.
 - All eleven leaves are now uniquely wired. Ten ingredient artifacts plus the capstone artifact are fresh. No umbrella build.

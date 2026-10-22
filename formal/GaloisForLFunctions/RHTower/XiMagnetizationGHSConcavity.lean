@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiXiSecondDefectJet
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiXiSecondDefectJet
 import GaloisForLFunctions.RHTower.XiEndpointSchwarzPairHeightGap
 import GaloisForLFunctions.RHTower.DigammaLeLog
 import GaloisForLFunctions.RHTower.XiLogDerivFactorization

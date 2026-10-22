@@ -28,7 +28,7 @@ lift property.
 ## Theorem
 
 The Lean module
-`GaloisForLFunctions.RHTower.CCMRectangularObservableHolomorphicCriterion` defines
+`GaloisForLFunctions.RHTower.CCM.CCMRectangularObservableHolomorphicCriterion` defines
 
 ```text
 XiRectangularWeilTailHolomorphicContinuation L N

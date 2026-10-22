@@ -64,7 +64,7 @@ realization or its HB no-go. Priority remains provisional.
 - Conjecture frozen.
 - Paper proof dependency-closed.
 - Formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicPeierlsArbitraryIncidenceRealizationNoGo`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicPeierlsArbitraryIncidenceRealizationNoGo`.
 - Direct `lake env lean` check passed.
 - Targeted module build passed.
 - Axiom audit passed: only `propext`, `Classical.choice`, and `Quot.sound`.

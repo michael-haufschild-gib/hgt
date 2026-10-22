@@ -107,10 +107,10 @@ existence of this finite part. HB remains open and is not retired.
 
 ## Lean verification
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticFullTestedCuspPeriod`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticFullTestedCuspPeriod`.
 Five public theorems and five public definitions. Scratch verification passed
 with `lake env lean /tmp/hb-full-tested-cusp-period.lean` at default limits.
-The isolated final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticFullTestedCuspPeriod` passed in 66 seconds using cached imports. Source SHA256: `e4e2f2efc0c15ec211def51df61969ee227614025ce295ceda872a541d147bde`. The umbrella imports the leaf once.
+The isolated final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticFullTestedCuspPeriod` passed in 66 seconds using cached imports. Source SHA256: `e4e2f2efc0c15ec211def51df61969ee227614025ce295ceda872a541d147bde`. The umbrella imports the leaf once.
 No heartbeat, recursion-depth or transparency override was added.
 
 The generated index was refreshed once (4 changed files); all ten public API

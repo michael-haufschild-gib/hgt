@@ -1413,7 +1413,7 @@ vertical singular vector `(0,1)`.
 The canonical ordinary operator lift has now been completed without hypotheses.  Apply the
 trace-norm-continuous positive rank-one embedding to those graph packets and to their vertical
 limit.  New module
-`GaloisForLFunctions.RHTower.DeningerBigWittPrimeHarmonicGraphTraceNormSaturation` proves:
+`GaloisForLFunctions.RHTower.Deninger.DeningerBigWittPrimeHarmonicGraphTraceNormSaturation` proves:
 
 ```text
 source rank-one packets -> |(0,1)><(0,1)| in Schatten-one norm,

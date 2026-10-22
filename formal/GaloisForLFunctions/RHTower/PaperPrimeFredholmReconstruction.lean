@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperZetaCycleVaryingPeriods
 import GaloisForLFunctions.RHTower.PaperZetaCyclePhysicalReconstruction
-import GaloisForLFunctions.RHTower.CCMArithmeticPrimeFredholmTrace
+import GaloisForLFunctions.RHTower.CCM.CCMArithmeticPrimeFredholmTrace
 
 /-! # Simultaneous reconstruction of arithmetic-prime Fredholm traces
 

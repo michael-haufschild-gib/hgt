@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized and audited; 18 theorems.
-Module: `GaloisForLFunctions.RHTower.DeningerGammaSixBoundedSoninProbe`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixBoundedSoninProbe`.
 RH remains unproved.
 
 ## Candidate and exact result
@@ -129,7 +129,7 @@ as a mathematical premise or claimed to solve the compatibility problem.
 
 - `lake env lean /tmp/route_l_bounded_sonin_probe.lean`: passed, all 18 theorems,
   including literal finite-jet classification, no warnings.
-- Targeted final `lake build GaloisForLFunctions.RHTower.DeningerGammaSixBoundedSoninProbe`: passed; only the new module built, dependencies replayed. Umbrella import wired.
+- Targeted final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixBoundedSoninProbe`: passed; only the new module built, dependencies replayed. Umbrella import wired.
 - All 18 theorem declarations audited through `/tmp/route_l_bounded_sonin_probe_axioms.lean`: only `propext`, `Classical.choice`, `Quot.sound`; no added axioms.
 - `scripts/formal_tools.py lint`: passed, existing file-size warnings only.
 - Scoped whitespace check passed; no owned Lean or search process remains.

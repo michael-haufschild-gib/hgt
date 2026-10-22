@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MaassRationalHeckeConjugateCoverL2
-import GaloisForLFunctions.RHTower.DeningerCosetTransfer
+import GaloisForLFunctions.RHTower.Deninger.DeningerCosetTransfer
 
 namespace GaloisForLFunctions.RHTower
 

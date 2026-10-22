@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperThetaGaussianNativeSeries
-import GaloisForLFunctions.RHTower.DeningerMeyerGaussianFaithfulness
-import GaloisForLFunctions.RHTower.DeningerMeyerFiniteNativeDensity
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaussianFaithfulness
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerFiniteNativeDensity
 
 /-! # Faithfulness of the actual infinite native source synthesis
 

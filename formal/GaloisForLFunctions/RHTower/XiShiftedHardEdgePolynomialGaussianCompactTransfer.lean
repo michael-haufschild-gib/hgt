@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgePolynomialGaussianExponentialSchwartz
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeComplexPaleyWienerDivisorLimit
-import GaloisForLFunctions.RHTower.DeningerPaleyWiener
+import GaloisForLFunctions.RHTower.Deninger.DeningerPaleyWiener
 
 /-!
 # Compact-transfer theorem for the Route-U polynomial--Gaussian carrier

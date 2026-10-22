@@ -1,7 +1,7 @@
 # HB: attacks on the physical selection mechanism
 
 Owner: current core-bridge investigation. Status: **OPEN**.
-Companion: [viability assessment](../../hb-core-bridge-viability.md) and
+Companion: [viability assessment](hb-core-bridge-viability.md) and
 [source evidence](../../bookkeeping/audits-ledgers-and-reviews/hb-core-bridge-viability-facts.md).
 
 These attacks concern the complete physical-action bridge. They do not claim RH,

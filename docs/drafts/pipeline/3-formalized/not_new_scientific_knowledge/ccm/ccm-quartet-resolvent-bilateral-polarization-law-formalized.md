@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMQuartetResolventPolarization` — the scalar algebra.
-- `GaloisForLFunctions.RHTower.CCMQuartetPaleyWiener` — the Paley–Wiener half.
+- `GaloisForLFunctions.RHTower.CCM.CCMQuartetResolventPolarization` — the scalar algebra.
+- `GaloisForLFunctions.RHTower.CCM.CCMQuartetPaleyWiener` — the Paley–Wiener half.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

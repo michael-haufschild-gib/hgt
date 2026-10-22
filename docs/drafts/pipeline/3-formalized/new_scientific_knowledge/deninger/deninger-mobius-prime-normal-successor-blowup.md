@@ -203,7 +203,7 @@ equivalent to imposing the critical line and is forbidden.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusPrimeNormalSuccessorBlowup.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusPrimeNormalSuccessorBlowup.lean` and
 `DeningerMobiusSuccessorAmplitude.lean`, on the corpus inputs
 `MobiusThetaPhysicalSourceToXiLanding.lean` and
 `MobiusThetaInternalJetPrimeNormalComplexGraph.lean`.  Axiom audit for every declaration:

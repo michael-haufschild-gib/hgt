@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMEulerEssentialBoundaryLayerCorrespondence
+import GaloisForLFunctions.RHTower.CCM.CCMEulerEssentialBoundaryLayerCorrespondence
 import GaloisForLFunctions.RHTower.PrimeArchPolarSeamRemoval
 
 /-!

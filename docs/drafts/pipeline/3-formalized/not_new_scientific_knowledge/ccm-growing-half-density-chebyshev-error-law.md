@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / CRITICAL-MELLIN SOURCE IDENTITY
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinGrowingCumulative.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinGrowingCumulative.lean`
 
 ## Statement
 

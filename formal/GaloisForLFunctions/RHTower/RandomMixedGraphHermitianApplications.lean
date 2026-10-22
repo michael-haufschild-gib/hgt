@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.RandomMixedGraphCore
-import GaloisForLFunctions.RHTower.SuzukiOnePrimeTerminalSimilarityTransport
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiOnePrimeTerminalSimilarityTransport
 import GaloisForLFunctions.RHTower.MobiusCoprimeInertia
 
 namespace GaloisForLFunctions.RHTower.RandomMixedGraph

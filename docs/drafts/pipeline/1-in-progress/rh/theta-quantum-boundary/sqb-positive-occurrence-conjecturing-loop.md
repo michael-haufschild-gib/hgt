@@ -702,7 +702,7 @@ identities, not domain assumptions. The family with vanishing normalized full
 residual remains to be constructed; neither its existence nor nonvanishing of
 the centered pair is inferred from the forced equation.
 
-The [common-forcing proof](../../sqb-common-theta-forcing.md) gives the analytical
+The [common-forcing proof](sqb-common-theta-forcing.md) gives the analytical
 construction and the [native graph audit](../../../3-formalized/sqb-common-theta-forcing.md)
 records its Lean boundary.
 

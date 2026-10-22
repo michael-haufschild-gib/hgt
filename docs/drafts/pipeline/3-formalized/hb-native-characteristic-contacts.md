@@ -14,13 +14,13 @@ The proof starts from the actual circle mean and its previously proved Darboux e
 
 All five declarations are in `RHTower.D4BMNativeCircle`.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCharacteristicContact`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCharacteristicContact`:
 
 - `mean_second_at_zero`: the actual second radial derivative of `mean q` at zero equals half `scalarLaplacian (fullSquarePotential q)` at the original angular point.
 - `argumentFirst_tendsto_characteristic`: the actual interior derivative expression tends from `Z>1` to that same source contact.
 - `angularKernel_right_derivative`: `HasDerivWithinAt` on `Ici 1` gives the exact first right characteristic derivative. No assertion is made about the totalized kernel below one.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCausalSourceContacts`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCausalSourceContacts`:
 
 - `nativeRiemannKernel_direct_source_contact`: at fixed positive ingoing delay `h`, the function `y ↦ R(h-x+y,x,y)` has right derivative `sinh(h/2) Delta Q/[cosh x cosh(x-h/2)]` at `y=x-h/2`.
 - `nativeRiemannKernel_image_source_contact`: for `x<=0`, the function `y ↦ R(h-x+y,x,-y)` has right derivative `sinh(h/2-x) Delta Q/[cosh x cosh(h/2)]` at `y=-h/2`.

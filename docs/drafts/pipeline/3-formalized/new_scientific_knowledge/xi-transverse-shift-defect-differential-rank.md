@@ -8,7 +8,7 @@
   `HTGeometry/PrimeProfileSeparatedPacketExact.lean`;
   `HTGeometry/PrimePowerAnalyticDilation.lean`;
   `RHTower/XiShiftPrimeExposure.lean`;
-  `RHTower/SuzukiCoupledErrorCriticalDerivative.lean`
+  `RHTower/Suzuki/SuzukiCoupledErrorCriticalDerivative.lean`
 - **Formal result:** For every arbitrarily indexed integral Xi prime-source shift family over the
   genuine rational coordinate field, the represented differential matroid is exactly the pointed
   collision matroid of its shift labels: shift zero is a loop, repetitions are parallel, and the

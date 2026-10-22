@@ -215,7 +215,7 @@ unverified.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean` proves:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveAffineSecantTensor.lean` proves:
 
 - division-free and quotient affine-secant identities `(1)--(3)`;
 - Plücker gauge invariance and marked tensor covariance `(4)--(6)`;
@@ -271,7 +271,7 @@ here, so it does not gate this card.
   SOTA targeted build and axiom audit pass.
 
 ### Lean progress — finite spectral sum FORMALIZED
-`RHTower/SuzukiAffineSecantSpectralSum.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
+`RHTower/Suzuki/SuzukiAffineSecantSpectralSum.lean` [PROVED HERE], standard axioms [propext, Classical.choice,
 Quot.sound], builds clean, formal lint passed. Registered in the RHTower umbrella.
 - `suzukiProjectiveAffineSecant_finite_spectral_sum` : with resolvent coordinates given by finite spectral
   sums `x=Σbᵢvᵢ, X=Σtᵢbᵢvᵢ, y=Σdᵢvᵢ, Y=Σtᵢdᵢvᵢ`, the marked affine-secant tensor equals
@@ -287,12 +287,12 @@ positivity goal is open.)
 ### Lean progress — `(7)`'s diagonal/pair split FORMALIZED
 
 Audit of this card's numbered statements against its two modules
-(`RHTower/SuzukiProjectiveAffineSecantTensor.lean`, `RHTower/SuzukiAffineSecantSpectralSum.lean`):
+(`RHTower/Suzuki/SuzukiProjectiveAffineSecantTensor.lean`, `RHTower/Suzuki/SuzukiAffineSecantSpectralSum.lean`):
 every statement has a declaration. One shape mismatch remained and is now closed.
 
 `(7)` is displayed as a **three-part** decomposition — a per-mode diagonal part, genuine pair terms
 over `i < j`, and the homogeneous `c`-channel — whereas `suzukiProjectiveAffineSecant_finite_spectral_sum`
-absorbs the diagonal into the full double sum. Added in `RHTower/SuzukiAffineSecantSpectralSum.lean`
+absorbs the diagonal into the full double sum. Added in `RHTower/Suzuki/SuzukiAffineSecantSpectralSum.lean`
 [PROVED HERE], standard axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `sum_sum_eq_diag_add_offDiag` : `∑ᵢ ∑ⱼ F i j = (∑ᵢ F i i) + ∑ᵢ ∑_{j ≠ i} F i j` — the general

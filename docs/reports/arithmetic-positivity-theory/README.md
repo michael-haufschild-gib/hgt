@@ -131,7 +131,7 @@ Sources: [XiWeilLineConjHilbert.lean](../../../formal/GaloisForLFunctions/RHTowe
 
 Relevant starting points:
 
-- [Exact finite Schur theorem](../../../formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilExactFiniteSchur.lean).
+- [Exact finite Schur theorem](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilExactFiniteSchur.lean).
 - [Prime resummation](../../../formal/GaloisForLFunctions/BiScaleUncertainty/ClampedPrimeLogResummation.lean) and [exact ramp diagonal](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialRampDiagonalIdentity.lean).
 - [Tail growth card](../../drafts/pipeline/3-formalized/factorial-muntz-tail-archimedean-growth-2026-10-18.md) and [tail growth declarations](../../../formal/GaloisForLFunctions/BiScaleUncertainty/FactorialMuntzTailWeilGrowth.lean).
 - [Current ramp margin card](../../drafts/pipeline/1-in-progress/factorial-ramp-diagonal-margin-2026-10-18.md).

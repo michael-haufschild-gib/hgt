@@ -3,7 +3,7 @@
 - **ID:** LI-CLOCK-SINGLE-DAMPING-STRIP-SIGN
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE / actual source sign; classification paper-proved
-- **Parent:** [integrated actual-source sign](../../li-clock-integrated-source-sign.md)
+- **Parent:** [integrated actual-source sign](li-clock-integrated-source-sign.md)
 - **Target:** Test the exact all-order coefficient law at one positive damping, identify its zero-strip content, and seek a literal source proof beyond the unconditional strip range.
 
 ## Paper-proved exact mechanism

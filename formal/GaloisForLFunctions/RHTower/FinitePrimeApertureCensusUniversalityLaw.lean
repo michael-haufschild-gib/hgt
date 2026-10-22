@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GaussPairedChannelSchattenCapstone
 import GaloisForLFunctions.RHTower.PrimeLogExponentialTypeUniqueness
-import GaloisForLFunctions.RHTower.ThetaCuspMellinPole
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspMellinPole
 
 /-!
 # Finite-prime aperture census universality

@@ -7,7 +7,7 @@
 - **Parent:** `suzuki-shifted-xi-target-flat-pencil`
 - **Corpus frontier addressed:** finite-Neumann-boundary control in `(S23.9)` of
   `docs/handover/sota-suzuki.md`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiExteriorPoleTomography`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiExteriorPoleTomography`
 
 ## Actual corpus frontier
 

@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiPhysicalLogBoundaryMomentLock.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPhysicalLogBoundaryMomentLock.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiPhysicalLogBoundaryMomentLock`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPhysicalLogBoundaryMomentLock`:
 
 ```text
 GaloisForLFunctions.RHTower.boundaryMatchedHigh

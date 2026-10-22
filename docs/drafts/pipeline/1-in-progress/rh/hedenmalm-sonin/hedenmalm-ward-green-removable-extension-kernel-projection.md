@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) + OPEN PRODUCER
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW CLASSIFICATION] [NOT RH]`
 - **Parent:** `P-G151`
-- **Target module:** `formal/GaloisForLFunctions/RHTower/HedenmalmWardGreenRemovableExtensionKernelProjection.lean`
+- **Target module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmWardGreenRemovableExtensionKernelProjection.lean`
 
 ## Goal
 

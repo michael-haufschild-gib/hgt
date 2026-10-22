@@ -126,7 +126,7 @@ every positive shift. Proposed search ingredients were not accepted as proofs.
 
 New generic module: `HTGeometry/IntegrableMultiplicativeHankel.lean` (211 lines,
 14 public theorems). New exact-source module:
-`RHTower/SuzukiCanonicalPositiveShiftHankel.lean` (163 lines, seven public theorems).
+`RHTower/Suzuki/SuzukiCanonicalPositiveShiftHankel.lean` (163 lines, seven public theorems).
 The initial elaboration errors were repaired. Each module passes its direct
 `lake --old env lean -j1 -o ... <module>` check with exit 0, no warnings, and
 default heartbeats. Both modules are wired into their corresponding umbrellas;

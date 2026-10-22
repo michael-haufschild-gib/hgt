@@ -126,7 +126,7 @@ the branch recorded as an integer, exactly as `(R)` states it.
 ## Lean progress -- clause 1
 
 `formal/GaloisForLFunctions/HTGeometry/TranscendenceDegreeOneVariable.lean` and
-`formal/GaloisForLFunctions/RHTower/SchanuelStageTwoDegree.lean` (both new, umbrella-wired,
+`formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelStageTwoDegree.lean` (both new, umbrella-wired,
 axiom-clean) close clause 1.
 
 | Card item | Declaration | Module |
@@ -167,7 +167,7 @@ RHTower.finrank_kaehlerDifferential_eq_one_of_trdeg_eq_one
     (htrdeg : Algebra.trdeg A K = 1) : Module.finrank K Ω[K⁄A] = 1
 ```
 
-in `formal/GaloisForLFunctions/RHTower/SchanuelKaehlerDimension.lean`, together with the separable
+in `formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelKaehlerDimension.lean`, together with the separable
 base change and the simple-transcendental case it is built from.
 
 **New, and general.**  `formal/GaloisForLFunctions/HTGeometry/KaehlerRankTranscendenceDegree.lean`
@@ -231,7 +231,7 @@ The algebraic-coefficient dependency is now closed by
 concrete value field, Kähler-rank theorem, generic slope theorem, and internal-generation lemma
 before new code was written.
 
-`RHTower/SchanuelDefectAlgebraicSlope.lean` proves the missing coefficient consequence:
+`RHTower/Schanuel/SchanuelDefectAlgebraicSlope.lean` proves the missing coefficient consequence:
 
 ```text
 schanuelDefect_slope_transcendental_algebraicClosure
@@ -241,7 +241,7 @@ Any complex scalar relating the two numerical defects is transcendental over
 `algebraicClosure ℚ ℂ`; the proof applies the exact algebraic-coefficient independence theorem to
 the coefficient vector `(-rho,1)`.
 
-`RHTower/SchanuelStageTwoDefectSlopeCore.lean` then instantiates the whole algebraic core in the
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeCore.lean` then instantiates the whole algebraic core in the
 literal field
 
 ```text
@@ -303,7 +303,7 @@ Clause 4 and that geometric packaging still keep the card at Stage 2.
 
 Fresh `formal_tools.py research` searches found the existing stage-two value field, Hermite--
 Lindemann selector, Kähler-kernel machinery, matrix-minor transfer, and algebraic-coefficient
-defect theorem.  `RHTower/SchanuelStageTwoExponentialAlgebraicity.lean` supplies only the missing
+defect theorem.  `RHTower/Schanuel/SchanuelStageTwoExponentialAlgebraicity.lean` supplies only the missing
 bridges.  It constructs three pair-supported polynomial relations, proves their gradient rows span
 the three-dimensional coordinate-differential kernel, restricts them to the two-dimensional
 exponential tangent, and uses nonvanishing of the intrinsic defect to prove injectivity.  A
@@ -358,7 +358,7 @@ which this theorem applies.  Card remains Stage 2.
 
 ## Lean progress — canonical affine normalization and literal regulator paths (2026-09-02)
 
-`RHTower/SchanuelStageTwoDefectSlopeNormalForm.lean` now packages clauses 1–4 through the exact
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeNormalForm.lean` now packages clauses 1–4 through the exact
 stage-two core and essentiality/ecl theorems.  For clause 5 it constructs the integral-closure
 normalization ring, its affine spectrum, an exact function-field equivalence with the concrete
 stage-two value field, and the transported additive and exponential rational coordinates.  It also
@@ -373,7 +373,7 @@ a description of the formal state; the card remains at Stage 2.
 
 ## Lean progress — the affine chart is a genuine normal Noetherian curve chart (2026-09-02)
 
-`RHTower/SchanuelStageTwoDefectSlopeAffineNormality.lean` now proves the exact commutative-algebra
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeAffineNormality.lean` now proves the exact commutative-algebra
 properties of the canonical affine normalization.  Transcendence of `core.rho` makes evaluation
 
 ```text
@@ -410,7 +410,7 @@ at Stage 2.
 
 ## Lean progress — genuine global projective relative normalization (2026-09-02)
 
-`RHTower/SchanuelStageTwoDefectSlopeProjectiveNormalization.lean` now constructs the literal
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeProjectiveNormalization.lean` now constructs the literal
 projective line over the algebraic numbers as the `Proj` of the standard grading on
 `AlgNum[U₀, U₁]`.  Its degree-zero graded ring is proved canonically equivalent to `AlgNum`, and
 the projective line is proper over that base.  Homogeneous evaluation
@@ -440,8 +440,8 @@ Stage 2.
 ## Lean progress — finite and proper projective normalization (2026-09-03)
 
 The finite/proper qualification above is now closed without an added finiteness premise.
-`RHTower/SchanuelStageTwoDefectSlopeAffineChartCompatibility.lean` and
-`RHTower/SchanuelStageTwoDefectSlopeInfinityChartCompatibility.lean` compute the actual pullback
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeAffineChartCompatibility.lean` and
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeInfinityChartCompatibility.lean` compute the actual pullback
 maps on the two standard projective charts.  After the canonical section-ring identifications,
 the first is literal inclusion of the slope coordinate ring in the concrete stage-two value field;
 the second is literal inclusion of the inverse-slope coordinate ring and sends its affine
@@ -477,7 +477,7 @@ immersion induces an isomorphism on function fields.  The proof identifies the t
 uses the stalk isomorphism of an open immersion, and contains no birationality premise hidden in
 the statement.
 
-`RHTower/SchanuelStageTwoDefectSlopeProjectiveFunctionField.lean` applies that result to the actual
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeProjectiveFunctionField.lean` applies that result to the actual
 relative normalization.  Its normalized standard chart is affine and dense because it contains
 the dense image of `Spec K`.  The chart-section equivalence is transported through the already
 computed projective generic-map square, so its section ring is exactly the concrete integral
@@ -510,7 +510,7 @@ regular there is represented by a germ in the local ring whose specialization is
 element.  Evaluation is the point's stalk map followed by the canonical equivalence between the
 unique stalk of `Spec ℂ` and `ℂ`.
 
-`RHTower/SchanuelStageTwoDefectSlopeProjectiveRegulator.lean` transports the four literal elements
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeProjectiveRegulator.lean` transports the four literal elements
 `x₁,x₂,e^{x₁},e^{x₂}` of the concrete value field through
 `stageTwoSlopeProjectiveNormalizationFunctionFieldEquiv`, making them rational functions on the
 actual proper projective normalization.  `StageTwoProjectiveDivisorAvoidingPath` is a path of
@@ -552,7 +552,7 @@ literally the composite
 Spec ℂ ⟶ Spec k ⟶ X.
 ```
 
-`RHTower/SchanuelStageTwoDefectSlopeAlgebraicBasePoint.lean` applies this to `k = AlgNum` and the
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeAlgebraicBasePoint.lean` applies this to `k = AlgNum` and the
 actual proper projective normalization.  The structure
 `StageTwoProjectiveDivisorAvoidingPathWithAlgebraicBase` carries an `AlgNum`-valued source point,
 the exact factorization of the path's source complex point through it, and formal smoothness at its
@@ -576,7 +576,7 @@ identified with dominant function-field pullback followed by the canonical
 `functionField (Spec ℂ) ≃ ℂ` map.  It also records the affine-spectrum adjunction identity needed
 to compute structural composites.
 
-`RHTower/SchanuelStageTwoDefectSlopeGenericTargetPoint.lean` applies this dictionary to the literal
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeGenericTargetPoint.lean` applies this dictionary to the literal
 inclusion
 
 ```text
@@ -648,13 +648,13 @@ intrinsically: evaluation of every regular function is `C∞`.  This condition i
 chosen generating presentation, implies continuity for the pointwise topology, and is preserved
 and reflected by the scalar-extension homeomorphism.
 
-`RHTower/SchanuelStageTwoDefectSlopeCoordinatePrincipalOpen.lean` chooses one nonzero common
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeCoordinatePrincipalOpen.lean` chooses one nonzero common
 denominator for the four literal elements `x₁,x₂,exp x₁,exp x₂` in the concrete affine
 normalization ring.  Its localization is therefore one actual affine domain on which all four are
 regular functions.  The canonical map from that localization to the concrete value field sends
 the four localized elements to their literal field values.
 
-`RHTower/SchanuelStageTwoDefectSlopePrincipalOpenComplexPoints.lean` constructs the canonical
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopePrincipalOpenComplexPoints.lean` constructs the canonical
 target point of this relative complex spectrum and proves that the four regular functions evaluate
 there to exactly `x₁,x₂,exp x₁,exp x₂`.  Smoothness of every coordinate pullback is derived from
 intrinsic affine smoothness, not supplied separately.  Consequently
@@ -669,7 +669,7 @@ canonical target.  All derivative fields, continuous-derivative fields, algebrai
 and target values are derived.
 
 Finally,
-`RHTower/SchanuelStageTwoDefectSlopePrincipalOpenProjectivization.lean` proves that this coordinate
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopePrincipalOpenProjectivization.lean` proves that this coordinate
 domain is not an affine stand-in: its spectrum maps into the actual proper projective normalization
 by an open immersion
 
@@ -720,7 +720,7 @@ embedding of its base-field value.  Consequently algebraicity of all four source
 is derived from the actual `Spec AlgNum` factorization; it is no longer supplied as a separate path
 field.
 
-`RHTower/SchanuelStageTwoDefectSlopeProjectiveRationalSmoothPath.lean` defines a global path of
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeProjectiveRationalSmoothPath.lean` defines a global path of
 actual projective coordinate points carrying only rational smoothness, the actual algebraic source
 factorization and smooth-source condition, the canonical target, parameter order, and divisor
 avoidance.  It derives the coordinate derivatives and their continuity, derives both algebraic
@@ -766,7 +766,7 @@ field to identify every other supplied regular germ with that same section.  Thu
 is derived from the affine atlas and actual stalks; it is not an axiom, hypothesis, renamed
 rational-smoothness condition, or finite-chart restriction.
 
-`RHTower/SchanuelStageTwoDefectSlopeProjectiveAnalytificationPath.lean` then introduces
+`RHTower/Schanuel/SchanuelStageTwoDefectSlopeProjectiveAnalytificationPath.lean` then introduces
 
 ```text
 StageTwoProjectiveAnalytificationDivisorAvoidingPath

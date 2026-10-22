@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** complex Dirac two-shear plane × source-selected adaptive shear × Julia orientation-preserving plane lift × quantum complex-Gram energy
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear`
 - **Statement:** The actual matched complex phase symbol canonically selects a Hermitian shear whose nodal form is its squared norm and whose Dirac determinant has one strict global sign away from spectral center.
 
 ## Goal
@@ -113,8 +113,8 @@ Weil/Xi positivity or RH conclusion is claimed here.
 ## Verification
 
 - scratch: `lake env lean /tmp/CCMSelfPolarized.lean` — PASS
-- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear.lean` — PASS
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear` — PASS
+- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear.lean` — PASS
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracSelfPolarizedShear` — PASS
 - axiom audit of Hermitian, crossing-form, determinant, reciprocity, global-sign, and finite-packet theorems: only `[propext, Classical.choice, Quot.sound]`
 - umbrella import added to `GaloisForLFunctions.RHTower`
 - no umbrella/full build run

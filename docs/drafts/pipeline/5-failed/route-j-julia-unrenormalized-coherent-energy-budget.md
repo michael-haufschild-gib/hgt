@@ -64,7 +64,7 @@ The proposed unrenormalized global budget is false uniformly in Julia scale.
 Formalized in:
 
 - `formal/GaloisForLFunctions/HTGeometry/NonnegativeKernelDiagonalCapacity.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaCoherentEnergyDiagonalFloor.lean`.
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaCoherentEnergyDiagonalFloor.lean`.
 
 Load-bearing declarations:
 

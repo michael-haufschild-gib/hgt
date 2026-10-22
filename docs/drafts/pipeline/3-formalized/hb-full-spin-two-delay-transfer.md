@@ -42,7 +42,7 @@ The proved signed direct-minus-image identity retains both distinct domains. Its
 
 ## Lean certificate
 
-[ThetaCuspHawkingBMSpinTwoDelayCharacteristic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSpinTwoDelayCharacteristic.lean), namespace `RHTower.D4BMSpinTwoDelay`, now also contains:
+[ThetaCuspHawkingBMSpinTwoDelayCharacteristic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSpinTwoDelayCharacteristic.lean), namespace `RHTower.D4BMSpinTwoDelay`, now also contains:
 
 - `causalDelayStart_nonneg`, `causalDelayStart_direct_le_image`: exact physical branch domains.
 - `delayArgument_characteristic`, `delay_original_trace`: original invariant and full physical kernel identification.

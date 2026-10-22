@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalAffineCauchyResidualDivergence.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAffineCauchyResidualDivergence.lean`
 
 ## Formal theorem surface
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 
 /-!
 # Euler locality of the physical-diagonal chart

@@ -108,8 +108,8 @@
         {
           "name": "weightedFirstMomentLinearBound_iff_rh_and_psiRemainderSquareRootBounded",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiFirstMomentCriticalErrorClassification",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiFirstMomentCriticalErrorClassification.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstMomentCriticalErrorClassification",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFirstMomentCriticalErrorClassification.lean",
           "line": 221,
           "doc": "Literal arithmetic classification of the first-moment route.",
           "score": -19.6199535159279
@@ -117,8 +117,8 @@
         {
           "name": "deningerSchwartzFirstModeRestriction_eq_zero_iff",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerRationalWittSchwartzBesselRestriction",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerRationalWittSchwartzBesselRestriction.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittSchwartzBesselRestriction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittSchwartzBesselRestriction.lean",
           "line": 206,
           "doc": "Exact source-sampling kernel, before arithmetic boundary classification.",
           "score": -18.15477365555818
@@ -171,8 +171,8 @@
         {
           "name": "deningerCalderonWittPacketUnweightedNormalizable_horizonRay_iff",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerCalderonWittGaussianHorizontalNormalization",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCalderonWittGaussianHorizontalNormalization.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittGaussianHorizontalNormalization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittGaussianHorizontalNormalization.lean",
           "line": 81,
           "doc": "Inverse-horizon domain classification.** The inverse-horizon domain meets the one-dimensional residual Koszul ray only at zero. Weighted completion admits `c • horizon` for every scalar, while arithmetic normalization exposes the nonsummable constant family `c`.",
           "score": -13.854399962001793
@@ -189,8 +189,8 @@
         {
           "name": "ccmGuinandWeilThirdGradeCesaroLinearBound_iff_anchoredMomentBound",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeCesaroAnchoredMoment",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroAnchoredMoment.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeCesaroAnchoredMoment",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeCesaroAnchoredMoment.lean",
           "line": 494,
           "doc": "Exact CCM-FU frontier classification.** Linear growth of the literal Cesàro primitive is equivalent to uniform boundedness of one source-faithful anchored signed moment. The positive kernel is kept intact; its positive and negative arithmetic regions are never bounded separately.",
           "score": -12.736976132491707
@@ -200,8 +200,8 @@
         {
           "name": "suzukiReporterSecantCauchyGram_pos_iff_not_transitionSeparated",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantSharpArithmeticLocalization",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyReporterSecantSharpArithmeticLocalization",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean",
           "line": 250,
           "doc": "Complete exact sign classification.** A Suzuki reporter-secant Cauchy cross-Gram is strictly positive exactly when its lag pair lies before the symmetric exact transition.",
           "score": -12.709768514743308
@@ -209,8 +209,8 @@
         {
           "name": "xiPrimeWardExteriorCoefficientFaithfulSourceSubquantum_iff_riemannHypothesis",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmCoefficientFaithfulExteriorSourceContour",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCoefficientFaithfulExteriorSourceContour.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCoefficientFaithfulExteriorSourceContour",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCoefficientFaithfulExteriorSourceContour.lean",
           "line": 1007,
           "doc": "Sharp classification of the new producer.** The fixed-prime, rational-rectangle, coefficient-faithful source-subquantum law is exactly RH. Hence the remaining task cannot be discharged by a generic finite contour bound: it must consume arithmetic cancellation strong enough to annihilate the retained two-orientation packet.",
           "score": -12.436067577210654
@@ -218,8 +218,8 @@
         {
           "name": "vonMangoldt_add_secondGrade_le_suzukiCriticalChordCoefficient",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiCriticalChordMeasure",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiCriticalChordMeasure",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean",
           "line": 403,
           "doc": "Global two-grade Suzuki lower law.** At every positive arithmetic label, the critical Suzuki chord contains both the von Mangoldt grade and `ω` times its full Dirichlet self-convolution. The proof uses the complete one-prime/two-prime/support classification of `Λ * Λ`; no Euler grade or sign is discarded.",
           "score": -12.056297372553335
@@ -283,8 +283,8 @@
         {
           "name": "ccmConvolutionPrimeFace_compositeApexSeparationUniversality",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMConvolutionPrimeFaceCompositeApexSeparationUniversalityLaw",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMConvolutionPrimeFaceCompositeApexSeparationUniversalityLaw.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMConvolutionPrimeFaceCompositeApexSeparationUniversalityLaw",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMConvolutionPrimeFaceCompositeApexSeparationUniversalityLaw.lean",
           "line": 123,
           "doc": "CCM convolution prime-face/composite-apex separation universality law.**",
           "score": -27.100286065750613
@@ -292,8 +292,8 @@
         {
           "name": "ccmActualHeadMatchedPrimePolarCellDifference_eq_zero_of_apertureSeparation",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedApertureFiniteSupport",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedApertureFiniteSupport.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedApertureFiniteSupport",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedApertureFiniteSupport.lean",
           "line": 68,
           "doc": "Exact remote-cell cancellation.** If a matched cell lies beyond physical aperture diameter, its prime anchor equals its entire outgoing polar cell.",
           "score": -25.325110726824906
@@ -337,8 +337,8 @@
         {
           "name": "suzukiCriticalApertureCoherentSeparation",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.SuzukiCoherentCausalDepthFusion",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCoherentCausalDepthFusion.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCoherentCausalDepthFusion",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentCausalDepthFusion.lean",
           "line": 433,
           "doc": "Translation-invariant deficit from the coherent all-prime cap.",
           "score": -23.301315979726866
@@ -346,8 +346,8 @@
         {
           "name": "suzukiCriticalApertureDepthFrostmanSeparation",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.SuzukiCausalDepthFrostmanTransfer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanTransfer.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthFrostmanTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthFrostmanTransfer.lean",
           "line": 373,
           "doc": "Translation-invariant deficit from the two-prime causal-depth cap.",
           "score": -23.085976805867688
@@ -501,8 +501,8 @@
         {
           "name": "ccmBlockFockCommonCarrierSquare_minimalRepair_eq",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMBlockFockCommonCarrierSquareObstruction",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMBlockFockCommonCarrierSquareObstruction.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMBlockFockCommonCarrierSquareObstruction",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMBlockFockCommonCarrierSquareObstruction.lean",
           "line": 253,
           "doc": "At the exact capacity threshold, the repaired square pair collapses to one rank-one ray.",
           "score": -30.88479112578176
@@ -678,8 +678,8 @@
         {
           "name": "ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFinitePrimePowerFirstJet",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean",
           "line": 444,
           "doc": "",
           "score": -33.000596777501485
@@ -690,25 +690,25 @@
       "eligible": 67,
       "markers": [
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
           "line": 9,
           "text": "Positive canonical boundary flux at every singular point of the missing chamber excludes a first",
           "score": -19.76542193856624
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
           "line": 91,
           "text": "/-- Positive canonical boundary flux at every singular point in the missing chamber excludes every",
           "score": -14.858487869163444
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
           "line": 8,
           "text": "This module isolates the exact remaining source theorem for the finite TCD rank-three gate.",
           "score": -14.644809408842795
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthBoundaryKreinFirstCrossing.lean",
           "line": 139,
           "text": "of the missing chamber. The forward implication is vacuous because global D1 excludes such a",
           "score": -14.644809408842795
@@ -732,8 +732,8 @@
         {
           "name": "completedXiLabel_dual",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMArithmeticPrimeFredholmTrace",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMArithmeticPrimeFredholmTrace.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMArithmeticPrimeFredholmTrace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMArithmeticPrimeFredholmTrace.lean",
           "line": 44,
           "doc": "Receiver reflection is inherited from source duality, not from a chosen Xi zero.",
           "score": -29.682842842634287
@@ -997,8 +997,8 @@
         {
           "name": "tendsto_suzukiOriginRemainder_div_sq",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiOriginRemainderRegularity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiOriginRemainderRegularity.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiOriginRemainderRegularity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOriginRemainderRegularity.lean",
           "line": 365,
           "doc": "Sharp two-sided origin asymptotic for Suzuki's literal remainder.",
           "score": -29.87935776226157
@@ -1006,8 +1006,8 @@
         {
           "name": "CriticalFeatureCanonicalAsymptoticLower",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureFirstOrderWindingAsymptotic",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureFirstOrderWindingAsymptotic.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureFirstOrderWindingAsymptotic",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureFirstOrderWindingAsymptotic.lean",
           "line": 532,
           "doc": "`B(n) ≥ c N(n) - o(N(n))`, encoded without choosing a remainder sequence.",
           "score": -29.402843493745408
@@ -1015,8 +1015,8 @@
         {
           "name": "CriticalFeatureCanonicalAsymptoticUpper",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureCanonicalHeightWindow",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureCanonicalHeightWindow.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureCanonicalHeightWindow",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureCanonicalHeightWindow.lean",
           "line": 128,
           "doc": "`B(n) ≤ c N(n) + o(N(n))`, encoded without choosing a remainder sequence.",
           "score": -29.384290538805867
@@ -1024,8 +1024,8 @@
         {
           "name": "suzukiSmallApertureRemainderRadius",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.SuzukiSmallApertureGroundAsymptotic",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiSmallApertureGroundAsymptotic.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiSmallApertureGroundAsymptotic",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSmallApertureGroundAsymptotic.lean",
           "line": 58,
           "doc": "",
           "score": -29.203056293745746
@@ -1033,8 +1033,8 @@
         {
           "name": "norm_halfLog_scattering_asymptotic",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiHalfLogScatteringAsymptotic",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiHalfLogScatteringAsymptotic.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiHalfLogScatteringAsymptotic",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHalfLogScatteringAsymptotic.lean",
           "line": 72,
           "doc": "The half-log scattering asymptotic.** The truncated oscillatory inverse Fourier integral of a homogeneous Gamma solution equals `2πL^{-1/2}β(c₊,c₋)` up to an explicit `O(L^{-1})` remainder.",
           "score": -28.945714851051715
@@ -1073,8 +1073,8 @@
         {
           "name": "primeLocalRatio_zero",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMLocalRatioPlaces",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMLocalRatioPlaces.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMLocalRatioPlaces",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioPlaces.lean",
           "line": 68,
           "doc": "",
           "score": -30.124028074280403
@@ -1147,8 +1147,8 @@
         {
           "name": "ccmActualHeadMatchedPhaseProjectiveGaugeNodalSourceCrossingFamily_one_primePower_isLocalMax_zero",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean",
           "line": 391,
           "doc": "",
           "score": -28.635309170721506

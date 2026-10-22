@@ -6,7 +6,7 @@
 
 ## Source and frozen statements
 
-The proved constant-speed prefix law and the open clock conjecture C in [the phase-block card](../../arithmetic-log-phase-blocks.md) suggest interpolating the clock while retaining the same arithmetic quadratic.
+The proved constant-speed prefix law and the open clock conjecture C in [the phase-block card](arithmetic-log-phase-blocks.md) suggest interpolating the clock while retaining the same arithmetic quadratic.
 
 Let `b(y)=(fract(y)^2-fract(y))/2`, `q_h(v)=(exp(h*v)-1)/h` for `h>0`, and `q_0(v)=v`. Define
 

@@ -79,7 +79,7 @@ Consequently, for every real `r > 1/2`, the exact source identity is uncondition
   = -(logDeriv zetaResidueUnit(r + 1/2) + 1) / (r + 1/2).
 ```
 
-Formal source: `RHTower/CCMUnitRieszCausalLaplaceBridge.lean`, theorem
+Formal source: `RHTower/CCM/CCMUnitRieszCausalLaplaceBridge.lean`, theorem
 `criticalMellinChebyshevResolventLaplace_eq_logDeriv_on_real`.
 
 ## Whole-route meaning
@@ -98,7 +98,7 @@ endpoint rate, so its causal defect extension now equals `regularizedCriticalMel
 full open right half-plane, unconditionally.  The proof uses equality on the real ray `r > 2` and
 analytic continuation; it introduces no bound below the endpoint.
 
-Formal source: `RHTower/CCMUnitRieszCausalLaplaceBridge.lean`, theorem
+Formal source: `RHTower/CCM/CCMUnitRieszCausalLaplaceBridge.lean`, theorem
 `criticalMellinChebyshevResolventDefectExtension_eq_regularized_rightHalfPlane`.
 
 This closes a genuine analytic interface gap but does not improve the exponent.  Hence it does

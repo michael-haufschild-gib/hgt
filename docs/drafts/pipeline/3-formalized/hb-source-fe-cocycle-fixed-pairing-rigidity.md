@@ -74,7 +74,7 @@ Bounded literature search through 2026-08-28 found work on reflected/CPT bilinea
 
 Formal module:
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFECocycleFixedPairingRigidity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFECocycleFixedPairingRigidity`
 
 The conjecturing loop rejected the first direct opposite-channel ratio because conjugation prevents
 the anti-linear cocycle from telescoping. The corrected corpus-native FE ratio is the unique

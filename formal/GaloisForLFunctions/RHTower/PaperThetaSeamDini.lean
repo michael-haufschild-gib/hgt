@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.PaperThetaPairedCdf
 import GaloisForLFunctions.RHTower.PaperThetaL1Domain
 import GaloisForLFunctions.RHTower.ThetaQuantileKronReduction
-import GaloisForLFunctions.RHTower.HedenmalmQuantileSliceMoment
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileSliceMoment
 
 /-! # Paid paired Dini cancellation at the divisor seam -/
 

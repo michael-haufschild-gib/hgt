@@ -7,9 +7,9 @@
   `DAC_DENINGER_HILBERT_KUMMER_KAHLER_ORBIT_COLLAR`
 - **Parent:** `deninger-hilbert-kummer-radial-flow-poisson`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerRadiusTrivialization` (the abstract
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRadiusTrivialization` (the abstract
   equivariant-radius theorem `(2)`--`(4)` and freeness),
-  `GaloisForLFunctions.RHTower.DeningerArithmeticHilbertKummerRadius`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticHilbertKummerRadius`
   (the Hilbert--Kummer radius and flow identities)
 
 ## Abstract equivariant-radius theorem
@@ -233,7 +233,7 @@ positive local Hodge star, contain the RH-bearing content.
 
 ### The abstract equivariant-radius theorem landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRadiusTrivialization.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRadiusTrivialization.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `DeningerRadiusFlow X` bundles the data: a jointly continuous real action, a continuous
@@ -316,7 +316,7 @@ Hilbert--Kummer model with this abstract data.
 
 ### The leafwise Kähler structure landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerLeafwiseKahler.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLeafwiseKahler.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 Real leafwise one-forms are coefficient pairs `a du + b dv`, and the Kähler form `(10)` is the
@@ -351,7 +351,7 @@ Hilbert--Kummer model with this abstract data.
 
 ### The radial integral `(14)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRadialIntegral.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRadialIntegral.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerComplex_volume_real_unitBall` — the unit ball of the complex line has area `π`.

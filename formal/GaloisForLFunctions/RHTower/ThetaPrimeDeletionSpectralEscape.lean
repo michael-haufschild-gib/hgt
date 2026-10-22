@@ -3,8 +3,8 @@ import GaloisForLFunctions.RHTower.ThetaTailFirstMomentKreinTransform
 import GaloisForLFunctions.RHTower.ThetaEulerAtomMellin
 import GaloisForLFunctions.RHTower.ThetaEulerCriticalAtomMoment
 import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 
 /-!
 # Prime deletion preserves the Xi divisor while its boundary spectrum escapes

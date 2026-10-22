@@ -147,7 +147,7 @@ Status: `[NEW] [PAPER-PROVED] [LEAN-PROVED] [NO-GO-CLOSED-WITH-POSITIVE-SURVIVOR
 `[NOVELTY-AUDIT-PASSED-BOUNDED]`.
 
 Formal module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEModularBogoliubovDilationNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEModularBogoliubovDilationNoGo`.
 It is imported by `GaloisForLFunctions.RHTower`.
 
 `hbXiPeierlsUnitSourceFEOrbitExpandingGain_ge_one` places the literal source orbit on the positive

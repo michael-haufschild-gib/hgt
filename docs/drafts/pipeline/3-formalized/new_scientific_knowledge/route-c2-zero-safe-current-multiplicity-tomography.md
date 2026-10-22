@@ -12,7 +12,7 @@
 
 ## Lean theorem surface
 
-Module: `RHTower/ThetaCuspCenterMixedDivisorTomography.lean`.
+Module: `RHTower/ThetaCusp/ThetaCuspCenterMixedDivisorTomography.lean`.
 
 - `hasDerivAt_normSq_XiC_transverse`: zero-safe squared-energy derivative.
 - `thetaCuspCenterMixedFourierCurrent_eq_xiTransverseEnergyCurrent`: literal source-current

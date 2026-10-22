@@ -95,7 +95,7 @@ proves norm at most one plus exact almost-everywhere agreement with physical int
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeCriticalRiggedCarrier.lean` proves the
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeCriticalRiggedCarrier.lean` proves the
 critical detector, critical anomaly, exact source transform, contractive normalized translation,
 literal evaluation covariance, Goldilocks classification, and the admitted `z=i/4` producer
 counterexample. Direct `lake env lean` passes.

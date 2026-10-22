@@ -158,13 +158,13 @@ strict sign-sector counterexample are also complete; final evidence follows.
 
 - `formal/GaloisForLFunctions/HTGeometry/PositiveRationalSteinbergSquare.lean` proves the
   general positive-rational character theorem over any commutative ring where two is a unit.
-- `formal/GaloisForLFunctions/RHTower/DeningerPositiveSteinbergSquare.lean` defines the actual
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPositiveSteinbergSquare.lean` defines the actual
   positive augmentation ideal and proves
   `deningerKummerSteinbergIdeal_eq_positiveAugmentationIdeal_sq`. It also constructs the sign
   augmentation, proves the explicit negative-square counterexample, and concludes
   `deningerKummerSteinbergIdeal_lt_augmentationIdeal_sq`.
 - Both leaves are wired into their respective umbrellas exactly once. No umbrella build ran.
-- `lake --old build +GaloisForLFunctions.RHTower.DeningerPositiveSteinbergSquare` exited zero
+- `lake --old build +GaloisForLFunctions.RHTower.Deninger.DeningerPositiveSteinbergSquare` exited zero
   and built both new leaves. Existing dependency warnings were replayed; neither new leaf
   produced a warning.
 - Final sequential `lake env lean` checks of both repository source files exited zero with

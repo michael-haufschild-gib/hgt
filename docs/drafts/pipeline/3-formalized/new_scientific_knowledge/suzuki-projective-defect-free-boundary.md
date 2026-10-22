@@ -137,7 +137,7 @@ problem is the intermediate-window lower bound for the dimensionless odd leakage
 The unconditional theorem batch is in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiProjectiveDefectBoundary.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveDefectBoundary.lean
 ```
 
 with principal declarations

@@ -27,7 +27,7 @@ equivalent to RH.
 - `forall_hbXiPeierlsBranchSchwarzCovariant_iff_rh`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`
 
 ## New knowledge
 
@@ -62,8 +62,8 @@ facts that second-order Teukolsky sources, QNM Wronskians, or Peierls brackets e
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence`
 - Build result: success, 11885 jobs after shared dependency replay
 - `#print axioms` on five endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Umbrella import added to `formal/GaloisForLFunctions/RHTower.lean`; no umbrella build run

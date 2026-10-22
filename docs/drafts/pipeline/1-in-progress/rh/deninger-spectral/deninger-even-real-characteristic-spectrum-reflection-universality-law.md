@@ -67,7 +67,7 @@ The exact characteristic-spectrum transport remains **[NOVELTY UNVERIFIED]**:
 
 Formalized in:
 
-`formal/GaloisForLFunctions/RHTower/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean`
 
 with declarations:
 
@@ -79,7 +79,7 @@ with declarations:
 
 Exact-file verification passed:
 
-`lake env lean GaloisForLFunctions/RHTower/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean`
+`lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean`
 
 Wired into `GaloisForLFunctions/RHTower.lean` immediately after the characteristic and Real-source
 modules.

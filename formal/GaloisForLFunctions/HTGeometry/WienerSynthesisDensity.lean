@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonFlowPointwise
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonFlowPointwise
 import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 /-!

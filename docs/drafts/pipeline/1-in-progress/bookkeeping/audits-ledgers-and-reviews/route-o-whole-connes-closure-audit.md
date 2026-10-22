@@ -155,7 +155,7 @@ singularity, and Route-J specialization are formalized unconditionally in
 formal/GaloisForLFunctions/HTGeometry/CommonCharacterFusionConservation.lean,
 formal/GaloisForLFunctions/RHTower/HighExponentShellFusionConservation.lean,
 formal/GaloisForLFunctions/RHTower/PrimeValuationHellingerReesReflectionFracture.lean,
-formal/GaloisForLFunctions/RHTower/CCMFirstClockSourceFusionSuperselectionNoGo.lean.
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockSourceFusionSuperselectionNoGo.lean.
 ```
 
 `[PROVED SUBCLASS NO-GO; NOT WHOLE-CONNES]` The hypotheses are not forced by the literal

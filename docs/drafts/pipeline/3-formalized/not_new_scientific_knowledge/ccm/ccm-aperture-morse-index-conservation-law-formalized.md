@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMApertureMorseCharge`
+- `GaloisForLFunctions.RHTower.CCM.CCMApertureMorseCharge`
 
 Umbrella: `GaloisForLFunctions.RHTower` (imported at `formal/GaloisForLFunctions/RHTower.lean`).
 

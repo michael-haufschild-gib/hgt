@@ -3,7 +3,7 @@
 - **ID:** quasi-rh-shift-correlation
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE, with a closed algebraic exceptional-set classification
-- **Source:** [Fixed-strip task](../../quasi-rh-fixed-strip-improvement.md)
+- **Source:** [Fixed-strip task](quasi-rh-fixed-strip-improvement.md)
 - **Statement:** Keep the fourth-moment character correlations produced by additive shifts, and separate their exact power degeneracies before completion.
 
 ## Arithmetic target

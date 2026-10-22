@@ -360,11 +360,11 @@ which must be bounded.
 ## Lean certificate
 
 - Generic module: `GaloisForLFunctions.HTGeometry.ObserverClockInteractionAnomaly`.
-- Literal module: `GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly`.
+- Literal module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiClockInteractionAnomaly`.
 - `observerClockInteractionAnomaly_completion_certificate` packages exact marginal decomposition,
   fusion, descent, clock reconstruction modulo constants, and fixed-probe properness.
 - `suzukiClockInteractionAnomaly_completion_certificate` packages exact literal amplitude and
   unconditional escape above every real ceiling.
-- Targeted build: `lake build GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly` passed
+- Targeted build: `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiClockInteractionAnomaly` passed
   `12878/12878`; no umbrella build was run.
 - Every newly added theorem depends only on `propext`, `Classical.choice`, and `Quot.sound`.

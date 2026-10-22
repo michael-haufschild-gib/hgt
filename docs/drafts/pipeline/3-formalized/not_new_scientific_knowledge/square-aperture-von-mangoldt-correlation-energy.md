@@ -9,7 +9,7 @@
 
 ## Module
 
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareCorrelationEnergy` provides:
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareCorrelationEnergy` provides:
 
 - `squareWindowContains`, the square-aperture incidence relation;
 - `squareWindowOverlapKernel` and `squareWindowFirstMomentKernel`;

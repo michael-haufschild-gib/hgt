@@ -139,7 +139,7 @@ all `n` costs only `O(log n)`, which is absorbed by every positive power.
 ## Lean implementation
 
 ```text
-GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
+GaloisForLFunctions.RHTower.CCM.CCMRectangularDirectionalDerivative
   hasDerivWithinAt_rectangularMovingPrimeTent_diagonal
   hasDerivWithinAt_rectangularMovingPrimeTentSum_diagonal
   hasDerivAt_rectangularAdjacentPolarValue_diagonal
@@ -153,7 +153,7 @@ GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
   riemannHypothesis_of_eventually_dyadicAdjacentBlockDiagonalRightSlope_lower
   riemannHypothesis_of_eventually_dyadicPrimePolarSourceDiagonalRightSlope_lower
 
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareSampling
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareSampling
   riemannHypothesis_of_eventually_squareAdjacentBlockDiagonalRightSlope_lower
   riemannHypothesis_of_eventually_squarePrimePolarSourceDiagonalRightSlope_lower
 ```

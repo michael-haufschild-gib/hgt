@@ -78,7 +78,7 @@ Xi-fibre diagonal Peierls incidence rigidity law. Bounded, not exhaustive, prior
   weight. Universal incidence is equivalent both to tilted-fibre agreement and to the weight defect
   being supported on critical-line copies. The canonical propagator is recovered exactly.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity`
   passed (`12010/12010`); all twelve exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present; formal lint reports no finding in
   this module (only unrelated unreachable modules).

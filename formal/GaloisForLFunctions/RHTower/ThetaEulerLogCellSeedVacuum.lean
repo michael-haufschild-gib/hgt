@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.QuasiPolynomialBlaschkeIsometry
 import GaloisForLFunctions.RHTower.ThetaEulerLogCellResidueChannels
 import GaloisForLFunctions.RHTower.ThetaSeedHalfLineDivision
 import GaloisForLFunctions.RHTower.ThetaZeroDivisionRateDerivativeWitness
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxWindow
 import GaloisForLFunctions.HTGeometry.SechSquareConvolutionKernel
 
 /-!

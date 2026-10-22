@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.MertensSecondTheorem
 import GaloisForLFunctions.HTGeometry.PrimeSieveHarmonicInclusionExclusion
 import GaloisForLFunctions.RHTower.DirichletSummatorySwap
 import Mathlib.Analysis.Normed.Group.Tannery
-import GaloisForLFunctions.RHTower.DeningerVonMangoldtMoebiusConvolution
+import GaloisForLFunctions.RHTower.Deninger.DeningerVonMangoldtMoebiusConvolution
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 
 /-!

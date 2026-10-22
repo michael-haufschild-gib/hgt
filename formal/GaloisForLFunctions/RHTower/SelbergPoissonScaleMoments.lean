@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FrullaniIntegral
-import GaloisForLFunctions.RHTower.DeningerMultiplier
+import GaloisForLFunctions.RHTower.Deninger.DeningerMultiplier
 
 /-!
 # Scale moments of a dyadic Poisson response

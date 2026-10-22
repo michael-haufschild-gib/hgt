@@ -183,7 +183,7 @@ repairing topology clause of `DAC_TATE_POISSON_PRO_HODGE_RIGGING`.
 ## Lean status
 
 Formalized in
-`GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector` and
+`GaloisForLFunctions.RHTower.Deninger.DeningerTateGraphGreenPrimeSector` and
 imported by `GaloisForLFunctions.RHTower`.  Exact declarations cover:
 
 - uniform graph majorant from any positive period lower bound;
@@ -199,7 +199,7 @@ Direct `lake env lean`, cached module build, and scratch
 
 Two subsequent modules close the quantitative high-prime and orthogonal direct-sum consequences.
 
-`GaloisForLFunctions.RHTower.DeningerTateGraphPrimeDiskEscape` proves:
+`GaloisForLFunctions.RHTower.Deninger.DeningerTateGraphPrimeDiskEscape` proves:
 
 - unit unsmoothed Green energy at any positive frequency has scalar mass \(\lambda^{-1}\);
 - its Tate graph cost is at least \(L^2\);
@@ -209,7 +209,7 @@ Two subsequent modules close the quantitative high-prime and orthogonal direct-s
 Thus no fixed graph disk contains unit-Green packets at arbitrarily large primes. This is a
 quantitative escape law, not a rejection of graph completion.
 
-`GaloisForLFunctions.RHTower.DeningerPrimeDiagonalGreenSummability` constructs the real Hilbert
+`GaloisForLFunctions.RHTower.Deninger.DeningerPrimeDiagonalGreenSummability` constructs the real Hilbert
 direct sum \(\ell^2(\mathbb P)\) and actual continuous local Green forms supported on individual
 prime coordinates. It proves:
 
@@ -232,14 +232,14 @@ orthogonal decomposition. Claiming full Route L summability from this coordinate
 still be theatre.
 
 The scalar target is now replaced by the correct full-packet target. In
-`GaloisForLFunctions.RHTower.DeningerPrimeBlockGreenSummability`, each prime carries an arbitrary
+`GaloisForLFunctions.RHTower.Deninger.DeningerPrimeBlockGreenSummability`, each prime carries an arbitrary
 complete real Hilbert fibre \(K_p\), and the target is \(\ell^2(\mathbb P;K_p)\). The same finite
 maximum-tail estimate holds for identity-on-\(K_p\) block operators. Hence the full-block local
 forms are unordered operator-norm summable, their global energy is nonnegative, and its radical is
 zero. This retains all packet mean-zero/Fourier/transverse modes; it does not collapse them to one
 average.
 
-`GaloisForLFunctions.RHTower.DeningerPrimeBlockRestrictionAssembly` gives the exact source-facing
+`GaloisForLFunctions.RHTower.Deninger.DeningerPrimeBlockRestrictionAssembly` gives the exact source-facing
 criterion. For local restrictions \(r_p:E\to K_p\), the two analytic inputs
 
 \[

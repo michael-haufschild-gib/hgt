@@ -5,7 +5,7 @@
 - **Type:** THEOREM / CONNES-SOURCE BRIDGE
 - **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinFiniteApertureCenterPairing.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinFiniteApertureCenterPairing.lean`
 
 ## Theorem
 

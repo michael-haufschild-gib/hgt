@@ -55,7 +55,7 @@ finite signedness witness for literal coefficient. Algebraic relabeling alone do
 ## Lean outcome
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmFirstTraceSharpPolarSignednessWall.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmFirstTraceSharpPolarSignednessWall.lean`.
 
 Closed results:
 

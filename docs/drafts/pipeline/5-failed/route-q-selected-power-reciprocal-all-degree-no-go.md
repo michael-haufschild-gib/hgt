@@ -106,5 +106,5 @@ source-derived partition to construct the required quantized fibres before bound
   enumerated Xi thermal node.
 - Replacement hypothesis: construct a source-derived measurable plateau quotient whose
   pushforward is the canonical atomic Xi moment measure; continuity/strict monotonicity is forbidden.
-- Lean: `RHTower/ThetaCuspCalibratedPowerReciprocalAllDegreeNoGo.lean` formalizes open-ray absolute
+- Lean: `RHTower/ThetaCusp/ThetaCuspCalibratedPowerReciprocalAllDegreeNoGo.lean` formalizes open-ray absolute
   continuity, positive mass outside `K`, and the final all-degree no-go.

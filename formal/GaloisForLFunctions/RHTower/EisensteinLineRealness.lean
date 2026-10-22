@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EisensteinMaassSelbergLineModel
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralSourceReflection
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralSourceReflection
 
 /-!
 # Realness on the critical line and the Maass–Selberg norm formula

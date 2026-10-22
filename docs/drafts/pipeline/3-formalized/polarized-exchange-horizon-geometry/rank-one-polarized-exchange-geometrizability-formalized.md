@@ -59,7 +59,7 @@ monoid homomorphism `χ : ℕ+ →* kˣ`, so no positivity or nonvanishing side 
 ## Relation to the existing corpus calculation
 
 The card's hostile audit records that the raw matrix curvature already exists in
-`RHTower/DeningerOneSidedFramedMateCurvatureTransgression.lean`.  That file is imported, not
+`RHTower/Deninger/DeningerOneSidedFramedMateCurvatureTransgression.lean`.  That file is imported, not
 duplicated, and the identification is proved:
 
 - `spectralGain_one_apply` — the half-density spectral gain is `deningerHalfDensityMateGain`;

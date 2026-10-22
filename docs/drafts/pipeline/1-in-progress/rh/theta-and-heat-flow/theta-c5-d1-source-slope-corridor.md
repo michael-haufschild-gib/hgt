@@ -27,7 +27,7 @@ where `R₇` contains no eighth jet `D`. Since actual source has `A>0` and `L>0`
 
 ## Lean status
 
-- Module: `RHTower/ThetaCuspExactCompletedC5D1SlopeCorridor.lean`
+- Module: `RHTower/ThetaCusp/ThetaCuspExactCompletedC5D1SlopeCorridor.lean`
 - Identity: `thetaCuspC5D1SlopeReserve_identity`
 - Local source law: `eventually_right_thetaCuspC5D1SlopeCorridorAt`
 - Two-gate closure: `thetaCuspC5_D1_closed_of_slopeCorridor`

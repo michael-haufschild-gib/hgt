@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RouteRPreDivisorGammaCoronaGlobalizationNoGo
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyVerticalGauge
-import GaloisForLFunctions.RHTower.DeningerArithmeticAdelicKummerNoGo
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyVerticalGauge
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticAdelicKummerNoGo
 
 /-!
 # Route R source topology / observer dichotomy

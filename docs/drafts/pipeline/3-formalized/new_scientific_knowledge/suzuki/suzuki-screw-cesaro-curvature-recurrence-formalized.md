@@ -7,19 +7,19 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroLandauRecurrence.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLargeNegativeShiftCentralFlux.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCesaroLandauRecurrence.lean`
 - `formal/GaloisForLFunctions/RHTower/XiCanonicalProduct.lean`
 - `formal/GaloisForLFunctions/RHTower/XiHadamardGrowth.lean`
 - `formal/GaloisForLFunctions/RHTower/XiRelativeResolventTrace.lean`
 - `formal/GaloisForLFunctions/RHTower/XiWeilPolarization.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroCurvatureRecurrence.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCesaroCurvatureRecurrence.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiLargeNegativeShiftCentralFlux`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiLargeNegativeShiftCentralFlux`:
 
 ```text
 RHTower.eventually_XiC_curvature_lt_suzukiDyadicNegativeShiftIntercept
@@ -27,7 +27,7 @@ RHTower.suzukiDyadicNegativeShiftIntercept
 RHTower.tendsto_suzukiDyadicNegativeShiftIntercept_atTop
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiScrewCesaroLandauRecurrence`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewCesaroLandauRecurrence`:
 
 ```text
 RHTower.continuousAt_xiSquareResolventSum_zero

@@ -5,7 +5,7 @@
 - **Paper proof:**
   `../2-fully-proven/new_scientific_knowledge/deninger/deninger-cross-prime-closed-relation-saturation.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerCalderonWittCrossPrimeClosedRelationNoGo`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCrossPrimeClosedRelationNoGo`
 
 ## Formalized capstones
 
@@ -26,11 +26,11 @@ spectral-synthesis, or source-annihilation premise occurs.
 ## Verification
 
 - direct foreground check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
   passed;
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`;
 - targeted final audit:
-  `lake build GaloisForLFunctions.RHTower.DeningerCalderonWittCrossPrimeClosedRelationNoGo`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCrossPrimeClosedRelationNoGo`
   passed;
 - `#print axioms` for all four capstones reports exactly
   `propext`, `Classical.choice`, and `Quot.sound`;

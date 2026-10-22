@@ -306,7 +306,7 @@ that such a theorem must propagate; generic Clark theory does not.
 ## 9. Formalization target
 
 Formalize the dependency-closed analytic core in
-`formal/GaloisForLFunctions/RHTower/SuzukiArithmeticTangentHolography.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArithmeticTangentHolography.lean`:
 
 ```text
 iteratedDeriv_suzukiDonoghueTransform_odd_zero
@@ -376,7 +376,7 @@ restricted-Weil operator. Its own proof (Section 5) reduces `(15)` to
 i.e. to the **strong** convergence `(I + eps A_a)^{-1} -> I` evaluated at the fixed vector
 `A_a e^x`. That statement is now unconditional in the corpus:
 
-- `RHTower/SuzukiStrongResolventLimit.lean` : `tendsto_neumannShiftFamily_id` —
+- `RHTower/Suzuki/SuzukiStrongResolventLimit.lean` : `tendsto_neumannShiftFamily_id` —
   `(I + eps A)^{-1} v -> v` strongly as `eps -> 0+`, for `A = rho + B^{-1}` with `B` the bounded,
   injective, self-adjoint resolvent. No unbounded operator is formed anywhere in its proof.
 
@@ -392,7 +392,7 @@ naming the source rather than constructing the operator.
 
 Section 5 proves `(18)` from "the derivative of `i(1+w)/(1-w)` is `2i/(1-w)^2`". The corpus already
 had that transform as `herglotzOfCayley` but no derivative for it; it is now proved in
-`RHTower/SuzukiDonoghueHerglotzTransform.lean` [PROVED HERE], standard axioms
+`RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean` [PROVED HERE], standard axioms
 `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `hasDerivAt_herglotzOfCayley` : `HasDerivAt herglotzOfCayley (2 I / (1 - Θ)^2) Θ` for `Θ ≠ 1`.
@@ -436,7 +436,7 @@ differentiability, and chain rule for each of `herglotzOfCayley` and `cayleyOfHe
 
 ### Section 9's module EXISTS — all six targets formal, and Theorem A's determinacy is end to end
 
-`RHTower/SuzukiArithmeticTangentHolography.lean` now carries the card's entire dependency-closed
+`RHTower/Suzuki/SuzukiArithmeticTangentHolography.lean` now carries the card's entire dependency-closed
 analytic core.  The six named targets:
 
 - `iteratedDeriv_suzukiDonoghueTransform_odd_zero` — **`(5)`**: for a spectral probability with a

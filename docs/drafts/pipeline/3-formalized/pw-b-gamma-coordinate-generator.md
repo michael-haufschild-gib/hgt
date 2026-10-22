@@ -121,11 +121,11 @@ paper is a Lean premise.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateGenerator.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateGenerator.lean`.
 The leaf contains 338 lines, 21 public theorems and one definition.
 Its capstone is `pwGammaMobiusCoordinateGenerator_closed`.
 Scratch and direct `lake env lean` checks passed without warnings. The
-targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateGenerator`
+targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusCoordinateGenerator`
 passed. Scratch `#print axioms` audited all 22 public declarations: only
 `propext`, `Classical.choice`, and `Quot.sound` occur. Formal lint, index
 regeneration, all-name uniqueness, generated API coverage and task-scoped

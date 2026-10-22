@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMDiagonalFockLift` (new)
-- `GaloisForLFunctions.RHTower.CCMHalfUnitCauchySeam` (new in the parent card)
+- `GaloisForLFunctions.RHTower.CCM.CCMDiagonalFockLift` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMHalfUnitCauchySeam` (new in the parent card)
 - `GaloisForLFunctions.HTGeometry.PrimeLogHerglotz`,
   `GaloisForLFunctions.HTGeometry.PrimeLogCauchySeamRank` — the formal prime-log transport wall
   `(15b)`, `(15c)`, pre-existing.
@@ -49,6 +49,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the new module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMDiagonalFockLift`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMDiagonalFockLift`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

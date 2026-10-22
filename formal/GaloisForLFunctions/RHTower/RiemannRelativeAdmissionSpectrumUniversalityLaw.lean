@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.L2RelativeAdmissionSpectrum
-import GaloisForLFunctions.RHTower.DeningerCalderonWittRelativeBoundaryTransgression
-import GaloisForLFunctions.RHTower.HedenmalmEulerReflectionAdmissionFracture
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittRelativeBoundaryTransgression
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmEulerReflectionAdmissionFracture
 
 /-!
 # Relative admission spectra across three Riemann-source routes

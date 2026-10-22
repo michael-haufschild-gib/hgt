@@ -17,7 +17,7 @@ The Gram kernel `K(i,j)=2ⁱ2ʲ` has `aₙ=(n+1)2ⁿ`, is absolutely admissible 
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekAbsolutelyAdmissibleMatrixEndpointTomography`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekAbsolutelyAdmissibleMatrixEndpointTomography`
 - Route kill: `schwarzschildParikhWilczekAbsolutelyAdmissiblePairwisePositiveEndpointDarkRouteKilled`
 - Semantic convergence: `summable_pwMatrixEndpointEnergy_of_absoluteAdmissible`
 - Strict witness: `pwExponentialGramKernel_absolutelyAdmissible`, `pwExponentialGramKernel_not_uniformlyBounded`

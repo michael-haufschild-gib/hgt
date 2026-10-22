@@ -154,7 +154,7 @@ Hodge problem.
 ## Lean status
 
 Formalized in
-`GaloisForLFunctions.RHTower.DeningerPoissonHeatTopologyEscape`.
+`GaloisForLFunctions.RHTower.Deninger.DeningerPoissonHeatTopologyEscape`.
 The module proves:
 
 - high-frequency decay of the general Poisson--heat multiplier;

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource
 
 /-!
 # Source envelope for finite theta-shell Fourier transforms

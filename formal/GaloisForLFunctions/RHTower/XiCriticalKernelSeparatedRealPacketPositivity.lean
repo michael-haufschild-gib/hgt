@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaTailFirstMomentDoubleLaplace
 import GaloisForLFunctions.RHTower.ThetaTailSeparatedPacketPositivity
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 
 /-!
 # Separated real-packet positivity of the critical logarithmic-derivative kernel

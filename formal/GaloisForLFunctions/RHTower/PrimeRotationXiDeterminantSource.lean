@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerPrimeRotationResolution
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerPrimeRotationResolution
 import GaloisForLFunctions.RHTower.PrimeRotationMarkedXiSource
 import Mathlib.LinearAlgebra.Matrix.Block
 

@@ -73,4 +73,4 @@ Fatou route; this observation is not a new proof architecture.
 substantial finite cost; releasing monotonicity while keeping the same frozen
 prefix and coefficient budget reduces that cost. Neither family is retired.
 The new closed harmonic-charge normalization removes the far tail but leaves
-the near-zero estimate open. [Current attack and exact outcomes](../../chronological-escaping-averages.md).
+the near-zero estimate open. [Current attack and exact outcomes](chronological-escaping-averages.md).

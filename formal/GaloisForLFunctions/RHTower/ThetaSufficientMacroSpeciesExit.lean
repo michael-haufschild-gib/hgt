@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodProbabilityNondivisibility
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodProbabilityNondivisibility
 import GaloisForLFunctions.HTGeometry.HellingerAffinityFactorization
 import GaloisForLFunctions.HTGeometry.PoissonIntensityMarkingIsometry
 import Mathlib.Probability.Kernel.Disintegration.StandardBorel

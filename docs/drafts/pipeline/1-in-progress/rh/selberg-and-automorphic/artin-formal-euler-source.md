@@ -119,7 +119,7 @@ the convolution/cardinality equivalence, and an exported ideal-count `LSeries` t
 
 ## Exact formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinFormalEulerSource.lean` now defines
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinFormalEulerSource.lean` now defines
 
 ```text
 artinLocalEulerPowerSeries,
@@ -141,8 +141,8 @@ exact coefficientwise finite-product stabilization theorem.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinFormalEulerSource.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinFormalEulerSource` passed; targeted leaf only.
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinFormalEulerSource.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinFormalEulerSource` passed; targeted leaf only.
 - `/tmp/ArtinFormalEulerSourceAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for all exported results.
 - The leaf is wired into `formal/GaloisForLFunctions/RHTower.lean`; no umbrella build was run.

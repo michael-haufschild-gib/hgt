@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaPositiveScalingEnergies
-import GaloisForLFunctions.RHTower.SuzukiScrewDisjointCrossCoupling
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewDisjointCrossCoupling
 
 /-!
 # The exact sign threshold of the continuous theta coupling

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE CAPSTONE
 - **Source:** `HedenmalmThetaMobiusPrimeNormalHalfDensityDixmierTraceNoGo.lean` · `HedenmalmThetaPhysicalEndpointLogarithmicBoundaryLaw.lean` · `PrimeDiagonalSingularValues.lean`
-- **Lean:** `GaloisForLFunctions/RHTower/HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue.lean`
+- **Lean:** `GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue.lean`
 - **Statement:** Ordered physical half-density energy has double-logarithmic residue zero on neutral Xi copies and exactly one on every nonneutral copy; global zero residue is equivalent to RH.
 
 ## Goal and exact RH chain
@@ -80,7 +80,7 @@ Main declarations:
 Verification on 2026-08-29:
 
 - direct `lake env lean` PASS
-- leaf `lake build GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue` PASS (`12796/12796`)
+- leaf `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue` PASS (`12796/12796`)
 - axiom audit PASS: only `propext`, `Classical.choice`, `Quot.sound`
 - module wired into `GaloisForLFunctions.RHTower`
 - formal lint found no forbidden declaration here; global lint remains red only on unrelated existing umbrella-reachability errors

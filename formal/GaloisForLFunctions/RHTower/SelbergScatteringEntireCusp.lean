@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringEntireOperator
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPacketApproximation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCuspPacketApproximation
 import GaloisForLFunctions.HTGeometry.CfcResidualTransport
 
 /-!

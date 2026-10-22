@@ -10,7 +10,7 @@ The hard target is the complete physical pairing `2 Omega(B(p,p)/2,B(m,m)/2)=0`,
 
 Module `ThetaCuspHawkingBMNativeAngularGreen` supplies `RHTower.D4BMNativeResponse.nativeMean_joint_smooth`, exposing the existing proof of joint smoothness of the literal theta circle mean in radius and both base coordinates.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCommonSourceGreen` proves three unconditional public statements:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCommonSourceGreen` proves three unconditional public statements:
 
 - `kernel_invariant_affine`: the fixed-ingoing-delay invariant is affine in compact source radius for both direct and AdS-image terms.
 - `thetaSeed_nativeSpinTwoKernel_green`: the original theta seed and either actual native kernel term, retaining `-Delta(Delta-2)`, satisfy the complete local spatial Green identity in the original measure. All regularity is discharged internally. `SourceInterior` contains only geometric source/cone conditions.

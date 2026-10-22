@@ -7,7 +7,7 @@ finite-rank approximation numbers and nuclear norm, proves the two-sided ideal l
 invariance under Hilbert adjoint, and recovers the existing square theory definitionally.
 -/
 import GaloisForLFunctions.RHTower.TraceNorm
-import GaloisForLFunctions.RHTower.DeningerHilbertSchmidtNuclear
+import GaloisForLFunctions.RHTower.Deninger.DeningerHilbertSchmidtNuclear
 import GaloisForLFunctions.HTGeometry.L2PairingEnergy
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import Mathlib.Analysis.InnerProductSpace.ProdL2

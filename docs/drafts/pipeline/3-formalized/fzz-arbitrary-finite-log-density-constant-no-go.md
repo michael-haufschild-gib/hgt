@@ -89,7 +89,7 @@ Internal corpus search found the coefficient-one dyadic countermodel, bounded-de
 
 ## Lean target
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo`
 - Powered-contact lemma: `iteratedDeriv_pow_eq_zero_before_mul_order`
 - Natural amplification capstone: `fzzArbitraryFiniteLogDensityConstantRouteKilled`
 - Real-threshold closed capstone: `fzzEveryFiniteNormalizedLogDensityThresholdRouteKilled`
@@ -97,8 +97,8 @@ Internal corpus search found the coefficient-one dyadic countermodel, bounded-de
 ## Verification
 
 - Paper proof: dependency-closed
-- Lean module check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo.lean` PASS
-- Targeted final build: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo` PASS
+- Lean module check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo.lean` PASS
+- Targeted final build: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildArbitraryLogDensityConstantNoGo` PASS
 - Umbrella: wired into `GaloisForLFunctions/RHTower.lean`
 - Closed capstone axioms: only Lean/mathlib standard `propext`, `Classical.choice`, and `Quot.sound`
 - Scoped forbidden-declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`

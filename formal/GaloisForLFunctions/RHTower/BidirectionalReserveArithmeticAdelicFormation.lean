@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BidirectionalReserveFormation
-import GaloisForLFunctions.RHTower.CCMRationalIntegralAdeleHaarIndex
+import GaloisForLFunctions.RHTower.CCM.CCMRationalIntegralAdeleHaarIndex
 import GaloisForLFunctions.RHTower.Sieve.TwistedMainTermMerge
 import Mathlib
 

@@ -7,8 +7,8 @@
 ## Lean modules
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactFluxEnergy.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceEntropyBoundaryWeld.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactFluxEnergy.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceEntropyBoundaryWeld.lean
 ```
 
 Namespace `RHTower`; reachable from `GaloisForLFunctions.RHTower`.
@@ -32,7 +32,7 @@ survive; the sign is retained until the final squared density, as the card requi
 
 ```bash
 cd formal
-lake build GaloisForLFunctions.RHTower.HedenmalmThetaSourceEntropyBoundaryWeld
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceEntropyBoundaryWeld
 ```
 
 Clean.  `#print axioms` on every declaration in the table reports only `propext`,

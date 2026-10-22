@@ -191,15 +191,15 @@ source-specific synthesis; external priority remains unverified.
 - [x] unique endpoint trace classification
 - [x] Lean formalization of differential transport, wall calibration, forcing recursion, and
   uniqueness:
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalEntryWallQuarterShiftGreenLaw.lean`
 - [x] explicit integral Green representation `(5)` in Lean:
-  `formal/GaloisForLFunctions/RHTower/SuzukiEntryWallGreenRepresentation.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEntryWallGreenRepresentation.lean`
 - [ ] actual restricted-Weil endpoint realization or bounded residual
 - [ ] rectangular Ward-defect lower bound and RH
 
 ## Lean status of the integral representation
 
-`formal/GaloisForLFunctions/RHTower/SuzukiEntryWallGreenRepresentation.lean` formalizes `(5)`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEntryWallGreenRepresentation.lean` formalizes `(5)`
 unconditionally; axiom audits report only `[propext, Classical.choice, Quot.sound]`.
 
 - `entryGreenKernel z x = exp (-I z x) - 1 + I z x` is the bracket of `(5)`, and

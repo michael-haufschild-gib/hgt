@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.OneDimBrascampLieb
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
-import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGlobalReflectedRiccati
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSeamJets
 
 /-!

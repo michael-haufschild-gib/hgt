@@ -37,7 +37,7 @@ completion/trace channel that a successful Route-U strictness theorem must elimi
 ## Exact theorem
 
 Lean module:
-`GaloisForLFunctions.RHTower.SuzukiFirstContactBoundaryRoughness`
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstContactBoundaryRoughness`
 
 Capstone:
 
@@ -99,9 +99,9 @@ trace/quotient exclusion theorem, not another interior Gram estimate.
 ## Verification
 
 - Scratch: `lake env lean /tmp/RouteUFirstContact.lean` — PASS.
-- Production direct check: `lake env lean GaloisForLFunctions/RHTower/SuzukiFirstContactBoundaryRoughness.lean` — PASS.
+- Production direct check: `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiFirstContactBoundaryRoughness.lean` — PASS.
 - Exact leaf build:
-  `lake build GaloisForLFunctions.RHTower.SuzukiFirstContactBoundaryRoughness` — PASS
+  `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstContactBoundaryRoughness` — PASS
   (`10492/10492`; missing prerequisite `.olean`s rebuilt as required).
 - Closed axiom audit for all three public theorems — PASS; dependencies are exactly
   `propext`, `Classical.choice`, and `Quot.sound`.

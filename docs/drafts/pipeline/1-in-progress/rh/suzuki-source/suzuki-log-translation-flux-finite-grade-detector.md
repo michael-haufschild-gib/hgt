@@ -206,7 +206,7 @@ hierarchy, take `N_a` larger than every selected grade. `QED`
 Lean proves the theorem without an assumed basis in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiFiniteGradeTraceDetector.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteGradeTraceDetector.lean
 ```
 
 as `exists_finite_trace_detector` and `exists_finite_grade_trace_cutoff`.

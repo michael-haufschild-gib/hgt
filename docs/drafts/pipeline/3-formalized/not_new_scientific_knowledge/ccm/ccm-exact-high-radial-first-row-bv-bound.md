@@ -199,7 +199,7 @@ the nonstationary integration interface (`HTGeometry/NonstationaryPhaseLowerBoun
 `HTGeometry/TwoPhaseOscillatoryProduct.lean`) and the exterior dilated-phase layer
 (`RHTower/RadialDilatedPhaseSeparation.lean`, `RHTower/RadialTwoIndexOscillatoryBound.lean`).
 
-`GaloisForLFunctions/RHTower/CCMHighRadialFirstRowBV.lean` (wired, axiom-clean) proves the card end
+`GaloisForLFunctions/RHTower/CCM/CCMHighRadialFirstRowBV.lean` (wired, axiom-clean) proves the card end
 to end, with every constant absolute:
 
 ```text

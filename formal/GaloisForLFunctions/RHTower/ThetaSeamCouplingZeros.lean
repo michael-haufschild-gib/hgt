@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaSeamCouplingFamily
 import GaloisForLFunctions.RHTower.XiStripInverseDecay
 import GaloisForLFunctions.RHTower.EntireConstantShiftZeroCount
 import GaloisForLFunctions.HTGeometry.RealNonnegativeZeroEvenOrder
-import GaloisForLFunctions.RHTower.ThetaCuspChargeLevelSpecificity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeLevelSpecificity
 import GaloisForLFunctions.HTGeometry.DivisorPairing
 
 /-!

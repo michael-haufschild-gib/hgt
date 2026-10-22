@@ -90,7 +90,7 @@ reflected all-parameter L1 admission does not supply it.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceMass.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusSameSourceMass.lean`.
 The complete scratch passed, including all 31 public declaration axiom
 checks with only propext, Classical.choice and Quot.sound. Identical proof
 bodies were promoted and the umbrella import was wired. The targeted final build passed, rebuilding only the new leaf in 239s;

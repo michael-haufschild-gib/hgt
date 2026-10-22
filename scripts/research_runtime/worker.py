@@ -99,6 +99,7 @@ class WorkerServer:
         self.last_devices = {}
         self.sequence = 0
         self.stopping = False
+        self.unreaped = None
         self.last_activity = time.monotonic()
 
     def _stop_child(self):
@@ -119,8 +120,13 @@ class WorkerServer:
                     child.kill()
             child.join(5)
             if child.is_alive():
-                # Never launch overlapping inference if the OS has not reaped the old child.
+                # Never launch overlapping inference if the OS has not reaped the
+                # old child: the handle is deliberately retained so _schedule
+                # cannot start another. serve()'s finally therefore has to
+                # tolerate this raising a second time, or peer, listener and
+                # socket teardown would be skipped and the first error masked.
                 self.stopping = True
+                self.unreaped = child.pid
                 raise RuntimeUnavailable('inference child could not be reaped')
             child.close()
             self.child = None
@@ -155,7 +161,7 @@ class WorkerServer:
                        'pending': sum(p.request is not None and p.request['op'] != 'status'
                                       and not p.outgoing and p is not self.active
                                       for p in self.peers),
-                       'last_devices': self.last_devices})
+                       'last_devices': self.last_devices, 'unreaped_child': self.unreaped})
         return status
 
     def _read(self, peer):
@@ -222,11 +228,10 @@ class WorkerServer:
         pending = sorted((p for p in self.peers if p.request and not p.outgoing
                           and p is not self.active and p.request['op'] != 'status'),
                          key=lambda p: (p.request.get('priority', 'interactive') != 'interactive', p.sequence))
-        if self.active and pending and self.active.request.get('priority') == 'enrichment' and (
-                pending[0].request.get('priority', 'interactive') == 'interactive'):
-            interrupted, self.active = self.active, None
-            self._stop_child()
-            self._reply(interrupted, {'error': 'unavailable', 'message': 'enrichment preempted by interactive search; retry later'})
+        # Interactive requests sort first and wait out the running one; nothing
+        # is killed. Killing indexing to serve a query starved indexing
+        # completely once several agents searched continuously, and threw away
+        # the work already computed.
         if self.active or not pending:
             return
         peer = pending[0]
@@ -326,9 +331,16 @@ class WorkerServer:
                 elif time.monotonic() - self.last_activity > self.idle_seconds:
                     break
         finally:
-            self._stop_child()
+            self.stopping = True
+            try:
+                self._stop_child()
+            except RuntimeUnavailable:
+                pass  # Already recorded in self.unreaped; teardown continues.
             for peer in list(self.peers):
-                self._close(peer)
+                try:
+                    self._close(peer)
+                except RuntimeUnavailable:
+                    self.peers.discard(peer)
             listener.close()
             self.selector.close()
             sock_path.unlink(missing_ok=True)

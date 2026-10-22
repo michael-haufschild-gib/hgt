@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiSourceBoundaryOrientationConservation
-import GaloisForLFunctions.RHTower.CCMUniversalWeilSourceReconstruction
+import GaloisForLFunctions.RHTower.CCM.CCMUniversalWeilSourceReconstruction
 
 /-!
 # Singular continued-source realization of Xi source entropy

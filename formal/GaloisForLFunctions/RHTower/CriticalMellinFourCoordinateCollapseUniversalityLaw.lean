@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PolarPrimeChannelContinuation
-import GaloisForLFunctions.RHTower.CCMInverseTiltedCriticalMellinFactorization
+import GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedCriticalMellinFactorization
 
 /-!
 # Critical-Mellin four-coordinate collapse universality law

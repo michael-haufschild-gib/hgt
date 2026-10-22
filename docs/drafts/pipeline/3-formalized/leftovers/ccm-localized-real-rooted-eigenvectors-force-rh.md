@@ -148,7 +148,7 @@ horizontal segments, Chebyshev's bound `ψ(x) ≪ x`, and the `L²` Paley–Wien
   - Euler–Lagrange from `ccmRestrictedWeilGroundEnergy_mem_lowerBounds`;
   - the explicit formula on the form domain, by density from smooth interior sources;
   - Parseval for smooth tests, to put the right side in Fourier form.
-- **B4 done, capstone formalized (2026-10-09).** Module `RHTower/CCMFullGroundZeroSideEigen`
+- **B4 done, capstone formalized (2026-10-09).** Module `RHTower/CCM/CCMFullGroundZeroSideEigen`
   (standard axioms, `lake --old build` green, wired).
   - `zeroSide_eigen_of_isFullGround`: every full ground state `u` satisfies
     `Σ_q Ĝ_u(γ_q)v̂(−γ_q) = (μ_a/2π)∫Ĝ_u(σ)v̂(−σ)dσ` for all smooth interior sources `v`, where
@@ -173,7 +173,7 @@ horizontal segments, Chebyshev's bound `ψ(x) ≪ x`, and the `L²` Paley–Wien
   - `RHTower/PaleyWienerPoissonMajorant`: Poisson majorant
     `log|F(x±iy)| ≤ a y + (y/π)∫log|F(u)|/((u−x)²+y²)du` for every L¹ function supported in
     `[−a,a]`. It is proved by boundary Jensen on the disc; no inner–outer factorization is needed.
-  - `RHTower/CCMFullGroundPoissonBalanceRH.riemannHypothesis_of_poissonBalancedFullGrounds`:
+  - `RHTower/CCM/CCMFullGroundPoissonBalanceRH.riemannHypothesis_of_poissonBalancedFullGrounds`:
     the strip bound is replaced by a real-line condition on `log|F_j|`.
 - **Second-moment variant formalized in zero-sum form (2026-10-09, loop row 565, MUST-833).**
   - `RHTower/XiRealRootedApproxEigenLimitRH`: Theorem C with asymptotic eigen-equations.
@@ -181,8 +181,8 @@ horizontal segments, Chebyshev's bound `ψ(x) ≪ x`, and the `L²` Paley–Wien
     the Steps 1–2 Gaussian-test limit of this card, with uniform Gaussian growth replacing
     boundedness. Smearing the exact shift identities over `|v| ≤ a_j − 2` against a Gaussian removes
     the cutoff estimates and the explicit formula for non-compact tests.
-  - `RHTower/CCMFullGroundGaussianGrowthRH.riemannHypothesis_of_gaussianGrowthFullGrounds`.
-  - `RHTower/CCMEvenFullGroundZeroSumRH.riemannHypothesis_of_evenFullGrounds_zeroSum`: even
+  - `RHTower/CCM/CCMFullGroundGaussianGrowthRH.riemannHypothesis_of_gaussianGrowthFullGrounds`.
+  - `RHTower/CCM/CCMEvenFullGroundZeroSumRH.riemannHypothesis_of_evenFullGrounds_zeroSum`: even
     real-rooted grounds with `∫|u_j| ≤ Me^{a_j}|∫u_j|` and `Σ_ρ 1/|ρ|² ≤ S` force RH. This is
     weaker than the card's hypothesis 2, which asks for `‖f_j‖₁ ≤ C`.
   - Remaining gap to the card's literal hypothesis 3 (`∫x²f_j ≤ C`): the classical identity
@@ -191,7 +191,7 @@ horizontal segments, Chebyshev's bound `ψ(x) ≪ x`, and the `L²` Paley–Wien
 
 ## Lean certificate (2026-10-09)
 
-Main theorems, in `formal/GaloisForLFunctions/RHTower/CCMEvenFullGroundSecondMomentRH.lean`:
+Main theorems, in `formal/GaloisForLFunctions/RHTower/CCM/CCMEvenFullGroundSecondMomentRH.lean`:
 
 - `RHTower.CCMFullGroundEigen.riemannHypothesis_of_evenEigenvectors_secondMoment`: the card's
   Theorem.
@@ -221,7 +221,7 @@ Audit (2026-10-09, run from `formal/`):
   in: `XiRealRootedEigenLimitRH`, `CCMFullGroundZeroSideEigen`, `XiRealRootedApproxEigenLimitRH`,
   `XiRealRootedEigenGaussianGrowthRH`, `CCMFullGroundGaussianGrowthRH`, `CCMEvenFullGroundZeroSumRH`,
   `CanonicalProductE1SecondDerivative`, `CCMEvenFullGroundSecondMomentRH`.
-- `lake --old build +GaloisForLFunctions.RHTower.CCMEvenFullGroundSecondMomentRH` succeeds.
+- `lake --old build +GaloisForLFunctions.RHTower.CCM.CCMEvenFullGroundSecondMomentRH` succeeds.
 - All modules are wired into `GaloisForLFunctions/RHTower.lean`.
 - `#print axioms` gives `[propext, Classical.choice, Quot.sound]` for:
   - `riemannHypothesis_of_card_hypotheses` and `integral_sq_mul_conj_eq_of_realZeros` (added later on 2026-10-09; `lake env lean` and `lake --old build` re-run clean);

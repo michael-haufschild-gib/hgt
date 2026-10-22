@@ -194,7 +194,7 @@ Xi curvature is positive.
 ## Formal status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiApertureDressedWallLightCompletion.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureDressedWallLightCompletion.lean`.
 
 Umbrella-reachable through `GaloisForLFunctions.RHTower`. Direct foreground Lean check, final
 module build, standard-axiom audit, and formal lint are recorded in the promotion audit below.

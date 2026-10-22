@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerGlobalHassePaugamPairing
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGlobalHassePaugamPairing
 import GaloisForLFunctions.RHTower.PaperThetaCutMeyerCurrent
 
 /-! # Literal theta current factors are total in native Meyer Hilbert cohomology

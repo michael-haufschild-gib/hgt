@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CriticalGeometricSheetFibre
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.SheetFibre
 import GaloisForLFunctions.HTGeometry.FreeJetTranslationFixedField
 import GaloisForLFunctions.HTGeometry.LaurentSeriesNormalization
 import GaloisForLFunctions.HTGeometry.PowerSeriesCommonScaleIndependence

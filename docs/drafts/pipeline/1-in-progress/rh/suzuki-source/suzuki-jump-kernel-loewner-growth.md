@@ -242,7 +242,7 @@ Proving `(15)` gives full jump positivity and RH; matching negative diagonal alo
 Paper and Lean theorem:
 
 - `../2-fully-proven/new_scientific_knowledge/suzuki-finite-morse-resolvent-jet-completion.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventJetCompletion.lean`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventJetCompletion.lean`.
 
 ## 2026-07-22 projective correction and complete jet tomography
 
@@ -286,7 +286,7 @@ source yields jump Pick positivity and RH.
 Paper and Lean:
 
 - `../2-fully-proven/new_scientific_knowledge/suzuki-resolvent-jet-homogeneous-plucker-tomography.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiResolventJetHomogeneousPluckerTomography.lean`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResolventJetHomogeneousPluckerTomography.lean`.
 
 ## 2026-07-22 affine-secant correction: Plücker chord is not full sewn source
 
@@ -328,7 +328,7 @@ Paper, failed route, and Lean:
 
 - `../2-fully-proven/new_scientific_knowledge/suzuki-projective-affine-secant-tensor-lift.md`;
 - `../../../5-failed/suzuki-plucker-only-affine-sewing-producer.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveAffineSecantTensor.lean`.
 
 ## 2026-07-22 physical Volterra phase target
 
@@ -358,7 +358,7 @@ term retained.  One negative principal minor falsifies it.
 
 See
 `../../../3-formalized/new_scientific_knowledge/suzuki/suzuki-volterra-cartesian-phase-defect.md` and
-`formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiVolterraCartesianPhaseDefect.lean`.
 
 ## 2026-07-22 global-local compound Bezoutian correction
 
@@ -411,7 +411,7 @@ gives full jump Pick positivity and RH.
 Paper and Lean:
 
 - `../../../3-formalized/new_scientific_knowledge/suzuki/suzuki-global-local-compound-bezoutian-weld.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
 
 ## 2026-07-22 rooted midpoint Lorentz sharpening
 
@@ -467,4 +467,4 @@ mismatch or negative finite principal minor falsifies conjecture.
 Paper and Lean:
 
 - `../../../3-formalized/new_scientific_knowledge/suzuki/suzuki-marked-secant-midpoint-lorentz-completion.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.

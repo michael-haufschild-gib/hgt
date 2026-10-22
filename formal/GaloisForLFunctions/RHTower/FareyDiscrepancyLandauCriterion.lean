@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.FareySet
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries
 import GaloisForLFunctions.RHTower.MobiusMertensLittlewood
 
 /-!

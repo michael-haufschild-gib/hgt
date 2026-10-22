@@ -86,7 +86,7 @@ continuity needed for CCM's strongly-Schwartz completed target.
 ## Lean realization
 
 - **Module:**
-  `GaloisForLFunctions.RHTower.CCMRationalAdelicBruhatSimpleTensorTraceClass`
+  `GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicBruhatSimpleTensorTraceClass`
 - **Capstones:**
   - `ccmRationalAdelicBruhatPureTensorOrbit_summable`
   - `ccmRationalAdelicBruhatTensorOrbit_summable`

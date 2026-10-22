@@ -68,7 +68,7 @@ arbitrary strengthening of the finite-chart premise.
 Formal module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiV2SphericalConvergence.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiV2SphericalConvergence.lean
 ```
 
 | Card statement | Lean declaration |

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.EvenLandauSharpOffLineExclusion
 import GaloisForLFunctions.RHTower.XiGaussianHeatWindowThresholdLaw
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
 
 /-!
 # A heat Hankel window certifies the critical line up to the Nyquist height

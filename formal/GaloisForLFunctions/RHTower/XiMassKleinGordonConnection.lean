@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMassCriticalPrimeTailGreenStokes
-import GaloisForLFunctions.HTGeometry.KleinGordonSynthesis
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSynthesis
 
 /-!
 # Klein--Gordon law of the Xi mass connection kernel

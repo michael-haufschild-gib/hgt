@@ -11,7 +11,7 @@
 - **Exact killing theorem/mechanism:** `not_exists_hbUniversalPeierls_nonzero_fixedSkewPropagator_unit_BM_incidence`. Universal-carrier skew classification reduces every candidate to one scalar symplectic rotation; Hardy's critical copy forces that scalar to zero.
 - **Strongest positive survivor:** `exists_hbUniversalPeierls_fixedSkewPropagator_unit_BM_incidence_iff_rh`. An arbitrary fixed skew propagator exists exactly under RH, and classification makes the zero propagator its sole possible value.
 - **New insight:** Enlarging the scalar ansatz to every complex-linear skew endomorphism adds no freedom at all in the two-dimensional universal Peierls carrier. Remaining HB producer burden cannot be evaded by choosing a more general abstract skew map; it must derive global incidence from literal augmented Einstein--Teukolsky source dynamics.
-- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMUniversalSkewPropagatorClassification` and `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMUniversalSkewPropagatorGlobalRigidity`; novelty audit recorded on formalized card.
+- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMUniversalSkewPropagatorClassification` and `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMUniversalSkewPropagatorGlobalRigidity`; novelty audit recorded on formalized card.
 
 ## Log
 

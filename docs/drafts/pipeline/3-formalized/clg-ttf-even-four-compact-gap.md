@@ -89,11 +89,11 @@ The remaining sufficient comparison for this correction is `S(x)+C_*G(x)>0` on t
 Six new modules and one extension:
 
 - `HTGeometry/HankelSuccessorSchurStrict`: exact determinant factorization and strict Schur equivalence for every strict finite head.
-- `RHTower/ThetaCuspFirstAtomReflectionJets`: extended through order twelve by symbolic polynomial identities.
-- `RHTower/ThetaCuspNativeTwelfthJetLimit`: first-atom limit, complete-source transport and lower-order compensation.
-- `RHTower/ThetaCuspNativeEvenFourTail`: explicit Gaussian square decomposition and complete corrected matrix tail.
-- `RHTower/ThetaCuspNativeEvenHead`: strict actual head, including zero.
-- `RHTower/ThetaCuspEvenFourCompensation`: exact scalar comparison, fixed source coefficient and compact-gap theorem.
-- `RHTower/ThetaCuspEvenFourCenterIntegration`: entry integrability, exact moment preservation and weighted compact-gap theorem.
+- `RHTower/ThetaCusp/ThetaCuspFirstAtomReflectionJets`: extended through order twelve by symbolic polynomial identities.
+- `RHTower/ThetaCusp/ThetaCuspNativeTwelfthJetLimit`: first-atom limit, complete-source transport and lower-order compensation.
+- `RHTower/ThetaCusp/ThetaCuspNativeEvenFourTail`: explicit Gaussian square decomposition and complete corrected matrix tail.
+- `RHTower/ThetaCusp/ThetaCuspNativeEvenHead`: strict actual head, including zero.
+- `RHTower/ThetaCusp/ThetaCuspEvenFourCompensation`: exact scalar comparison, fixed source coefficient and compact-gap theorem.
+- `RHTower/ThetaCusp/ThetaCuspEvenFourCenterIntegration`: entry integrability, exact moment preservation and weighted compact-gap theorem.
 
 Each module was checked in scratch with one foreground `lake env lean` process at a time. Only needed oleans were emitted. New imports are wired into both relevant umbrellas without umbrella or full builds. The formal lint gate passed. Seven new capstones were audited once; their only axioms are `propext`, `Classical.choice` and `Quot.sound`.

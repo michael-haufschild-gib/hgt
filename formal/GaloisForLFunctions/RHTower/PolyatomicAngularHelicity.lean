@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticAngularSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticAngularSource
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-!

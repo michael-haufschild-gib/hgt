@@ -41,7 +41,7 @@ Inspected sources:
 - `RHTower/PrimeFaceBoundaryGauge.lean`: coefficientwise prime products trivialize the entire admitted boundary-graph family, jointly in the complex parameter. Its header explicitly does **not** assert that the domain forms a chain complex.
 - `HTGeometry/TailQuotientSeparationLaw.lean`: finite-support observations cannot distinguish completion classes that erase those same supports.
 - `HTGeometry/PrimeProfileInvariantInverseLimitOperationalTorsionUniversalityLaw.lean`: arbitrary intersections and uniform finite annihilators already have a precise corpus treatment.
-- `RHTower/DeningerGeneralizedDivisorSupport.lean`: generalized-divisor support comparison is an explicit interface; it is not a source construction selecting Xi zeros.
+- `RHTower/Deninger/DeningerGeneralizedDivisorSupport.lean`: generalized-divisor support comparison is an explicit interface; it is not a source construction selecting Xi zeros.
 - `xi-conductor-nearby-cycle-degeneration.md`: the source-first node/Legendre family, terminal multiplicity class, and vertical invariant-cycle comparison already exist. The missing ingredient is a global source-natural comparison, not another pointwise class.
 - `rh-incompatible-arithmetic-ends/facts.md` and its card: prime-boundary monodromy, primitive-ray rearrangements, and scalar arithmetic completions were already screened. Merely naming another arithmetic end is not novelty.
 
@@ -219,7 +219,7 @@ Verdict: the naive inference from arbitrarily deep root/commutator presentations
 
 ### Source test and next proof obligation
 
-Corpus search found the relevant existing source calculation in `RHTower/DeningerSteinbergKummerSuccessorNormalTransgression.lean`: the Steinberg ideal lies in the square of the augmentation ideal, while the normal selector extracts a first-order successor edge. Its source header explicitly warns that the selector lowers augmentation order. Read the header and definitions/lemmas at lines 390–525; do not treat source-index hits as a new compiled audit.
+Corpus search found the relevant existing source calculation in `RHTower/Deninger/DeningerSteinbergKummerSuccessorNormalTransgression.lean`: the Steinberg ideal lies in the square of the augmentation ideal, while the normal selector extracts a first-order successor edge. Its source header explicitly warns that the selector lowers augmentation order. Read the header and definitions/lemmas at lines 390–525; do not treat source-index hits as a new compiled audit.
 
 A purely algebraic version exposes the first obstruction without logarithmic size arguments. In `C[Q_(>0)^*]`, let `epsilon([q])=1`, let `I=ker(epsilon)`, and define the complex-linear map `lambda([q])=ord_3(q)`. Prime-exponent additivity gives
 
@@ -478,7 +478,7 @@ the retained prime tangent class and sign sector, not another renaming of the st
 The positive Steinberg ideal classification exposes a distinction between two actual source
 readers. The coefficient-of-identity Kummer cyclic trace does not become the augmentation
 reader after quotienting. New leaves `RHTower/SquareZeroUnitCyclicBoundary.lean` and
-`RHTower/DeningerPositiveSteinbergCyclicComparison.lean` identify the canonical tensor-power
+`RHTower/Deninger/DeningerPositiveSteinbergCyclicComparison.lean` identify the canonical tensor-power
 image of the existing multiplier normal K1 cycle in the Steinberg quotient.
 
 That exact image is a cycle and is not a full degree-two Hochschild boundary: the descended

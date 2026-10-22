@@ -67,7 +67,7 @@ The literal positive and negative Suzuki light-source spans are algebraically in
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiWallLightPrimePowerFiniteLinearCarrierNoGo`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiWallLightPrimePowerFiniteLinearCarrierNoGo`
 - Packet theorems: `suzukiCriticalWallPositiveLightAmplitude_linearIndependent`, `suzukiCriticalWallNegativeLightAmplitude_linearIndependent`
 - Capstone: `suzukiCriticalWallLightFixedFiniteLinearCarrierRouteKilled`
 - Target build: PASS

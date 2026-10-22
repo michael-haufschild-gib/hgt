@@ -366,7 +366,7 @@ transport.
 
 ### The assembled complex and its endpoints
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermAssembly.lean` (5 declarations,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermAssembly.lean` (5 declarations,
 axiom audit `propext, Classical.choice, Quot.sound` or less) puts together the pieces that the
 sub-cards already contribute:
 

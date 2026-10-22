@@ -2,7 +2,7 @@
 
 Status: formalized; foreground scratch check, exact-module build and three new public theorem axiom audits passed. RH remains unproved.
 
-Lean module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOnsetGreenReconstruction`.
+Lean module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOnsetGreenReconstruction`.
 Namespace: `RHTower.D4BMOnsetGreenReconstruction`.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
@@ -82,7 +82,7 @@ Search and analytical evidence are recorded in the [onset-pulse card](../1-in-pr
 
 ## Validation
 
-Foreground `lake env lean` scratch checks passed. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOnsetGreenReconstruction` completed successfully with two jobs, processing only this new leaf. The isolated audit reused 3,995 cached project modules and installed dependency caches; no dependency, full-project or umbrella build ran.
+Foreground `lake env lean` scratch checks passed. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOnsetGreenReconstruction` completed successfully with two jobs, processing only this new leaf. The isolated audit reused 3,995 cached project modules and installed dependency caches; no dependency, full-project or umbrella build ran.
 
 All three new public theorem axiom reports contain exactly `propext`, `Classical.choice` and `Quot.sound`. Existing theorem axiom audits were not repeated. The installed source and all five build artifacts match the audited files byte for byte. The new module is wired once into `RHTower.lean`.
 

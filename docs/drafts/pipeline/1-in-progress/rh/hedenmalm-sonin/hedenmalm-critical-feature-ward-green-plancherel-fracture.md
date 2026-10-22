@@ -5,7 +5,7 @@
 - **Type:** FALSIFIED producer; THEOREM (Lean) positive survivor
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW SPECIALIZATION] [NOT RH]`
 - **Parent:** `P-G150`
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureWardGreenPlancherelFracture.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureWardGreenPlancherelFracture.lean`
 - **Statement:** Full continuous critical-feature Plancherel reconstructs Ward Hermitian mass exactly,
   but erases height and cannot supply the missing arithmetic same-copy trace.
 

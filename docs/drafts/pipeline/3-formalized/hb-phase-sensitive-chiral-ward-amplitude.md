@@ -33,7 +33,7 @@ This theorem closes phase/orientation loss in passive HB power but does not forc
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude`
 
 Main results:
 
@@ -59,8 +59,8 @@ Search date: 2026-08-28. Primary-source search covered exact topological-black-h
 
 ## Verification audit
 
-- Direct source check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude.lean` — pass.
-- Target-only final build: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude` — pass, 12,003 jobs; no umbrella/full build.
+- Direct source check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude.lean` — pass.
+- Target-only final build: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhaseSensitiveChiralWardAmplitude` — pass, 12,003 jobs; no umbrella/full build.
 - `#print axioms` on all 16 public theorems — only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint reports no HC43 defect. Global lint remains nonzero only because of pre-existing unreachable modules outside this card's scope.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella.

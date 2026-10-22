@@ -1,5 +1,5 @@
 import GaloisForLFunctions.Bottcher.AnalyticRoot
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
 import GaloisForLFunctions.RHTower.TwinRigidity
 
 /-!

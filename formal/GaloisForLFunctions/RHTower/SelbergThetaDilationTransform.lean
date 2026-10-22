@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld
 import GaloisForLFunctions.RHTower.XiCanonicalProduct
 import Mathlib.Analysis.Convolution
 

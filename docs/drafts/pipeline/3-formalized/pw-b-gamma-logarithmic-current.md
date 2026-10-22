@@ -116,9 +116,9 @@ identification. No external paper is a Lean premise.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent.lean`.
 Scratch and direct `lake env lean` checks passed. The targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusLogarithmicCurrent`
 passed. All 23 public theorems were audited with `#print axioms` in a
 scratch file: only `propext`, `Classical.choice`, and `Quot.sound` occur.
 The leaf has one definition and 405 lines. Its premise-free capstone is

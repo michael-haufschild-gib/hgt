@@ -5,7 +5,7 @@
 - **Date:** 2026-08-15
 - **Status:** `[NEW BRIDGE] [PAPER PROVED] [LEAN FORMALIZED]`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixCofinalFullGradeSoninTransport.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCofinalFullGradeSoninTransport.lean`
 - **RH used:** no
 - **Xi-zero location used:** no
 - **Computation used:** no

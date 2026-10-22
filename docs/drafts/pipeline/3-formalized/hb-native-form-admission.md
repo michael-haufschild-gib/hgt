@@ -61,14 +61,14 @@ Strong convergence of the original values therefore gives convergence of every p
 
 ## Lean modules and audit
 
-[ThetaCuspHawkingBMNativeFormBound.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeFormBound.lean) contains `nativeCuspJointGraph_norm_sq_bound` and `nativeCuspJointGraph_bounded`.
+[ThetaCuspHawkingBMNativeFormBound.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeFormBound.lean) contains `nativeCuspJointGraph_norm_sq_bound` and `nativeCuspJointGraph_bounded`.
 
-[ThetaCuspHawkingBMNativeFormAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeFormAdmission.lean) contains `nativeCuspJointGraph_value`, `nativeCuspJointGraph_value_tendsto`, and `nativeJointTimePrimitive_form_admission`.
+[ThetaCuspHawkingBMNativeFormAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeFormAdmission.lean) contains `nativeCuspJointGraph_value`, `nativeCuspJointGraph_value_tendsto`, and `nativeJointTimePrimitive_form_admission`.
 
 Both complete candidates passed scratch checks with `lake env lean`. Exact-module final audits passed:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeFormBound`: 187 source lines; three jobs; 139 seconds reported build time.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeFormAdmission`: 182 source lines; four jobs; 73 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeFormBound`: 187 source lines; three jobs; 139 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeFormAdmission`: 182 source lines; four jobs; 73 seconds reported build time.
 
 The builds reused cached imports in the isolated leaf environment, including the existing weak-limit module. No dependency or umbrella rebuild ran. Separate scratch axiom audits checked only the two new form-bound theorems and three new admission theorems. All use only `propext`, `Classical.choice`, and `Quot.sound`. Together with the seven smoothing theorems, twelve new public theorems were audited without repeating older axiom checks.
 

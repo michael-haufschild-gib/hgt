@@ -6,7 +6,7 @@
 - **Paper proof:**
   `./suzuki-critical-apex-vacuum-capacity-no-go.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean`
 
 ## Exact theorem surface
 
@@ -47,10 +47,10 @@ can create unbounded error at an exponentially moving apex while leaving opposit
 
 ## Verification
 
-- direct `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`:
+- direct `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean`:
   pass;
 - six new capstone axiom audits: only `propext`, `Classical.choice`, `Quot.sound`;
 - targeted leaf build passed:
-  `lake build GaloisForLFunctions.RHTower.SuzukiCriticalApexVacuumCapacityNoGo`;
+  `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalApexVacuumCapacityNoGo`;
 - repository lint reaches the module but remains red only on three unrelated, concurrently
   untracked BV co-Poisson modules missing from the RHTower umbrella.

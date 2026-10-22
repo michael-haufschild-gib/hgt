@@ -1,6 +1,6 @@
 import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Tactic
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 
 /-!
 # Prime-scale positive theta source with an off-line completed zero

@@ -216,7 +216,7 @@ arithmetic construction is exactly:
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPositiveCellDegreeZero.lean`.  Axiom audit for all 5
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPositiveCellDegreeZero.lean`.  Axiom audit for all 5
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerPositiveCell_span_le_ker`, `deningerPositiveCell_degreeZero_injective`,
@@ -247,7 +247,7 @@ equivariant universal property is a one-categorical argument — "every `g ∈ G
 pushout span, functoriality of colimits gives the induced endomorphism, hence relations among the
 `G`-operations remain relations after attachment" — and that argument is now formalized.
 
-`formal/GaloisForLFunctions/RHTower/DeningerPositiveCellEquivariance.lean`; axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPositiveCellEquivariance.lean`; axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerCellAction` — **the descended operation**: an operation of the monoid compatible with the
@@ -275,7 +275,7 @@ The monic Milnor--Witt lift theorem trivializes two determinant lines, by the cl
 `dT`.  The first of those trivializations is ordinary commutative algebra and is now proved; only
 the Milnor--Witt fundamental class it orients remains out of reach.
 
-`formal/GaloisForLFunctions/RHTower/DeningerPrincipalConormal.lean`; axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrincipalConormal.lean`; axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerConormal_mul_mem_sq_iff` — a multiple of a regular generator lies in the square of the
@@ -301,7 +301,7 @@ class of `dT` — is also ordinary commutative algebra and is now proved, so bot
 two-term presentation of `L_{B/A}` are formalized as free of rank one, and its differential is
 identified.
 
-`formal/GaloisForLFunctions/RHTower/DeningerMonicKaehlerLine.lean`; axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMonicKaehlerLine.lean`; axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerKaehlerBaseChangeEquiv` — **the base change `Ω¹_{A[T]/A} ⊗_{A[T]} B` is free of rank
@@ -355,7 +355,7 @@ ring itself is no longer a gap.
 
 ### The cotangent complex of the monic lift `[NEW]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMonicCotangentComplex.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMonicCotangentComplex.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The card's monic lift asserts the two-term presentation
@@ -384,7 +384,7 @@ determinant twist, and the Gysin forgetful map to the ordinary cycle `[Z_P]`.
 
 ### The degree-zero cell and the rank quotient `[NEW]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerDegreeZeroCell.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDegreeZeroCell.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The card's `(5)`--`(6)` are the counterpart of its `(2)`: positive cells leave degree zero
@@ -408,7 +408,7 @@ class, its determinant twist and the Gysin map, which need Milnor--Witt sheaf th
 ### The first homology of the monic cotangent complex `[NEW]`
 
 `deningerMonicH1Cotangent_subsingleton` in
-`formal/GaloisForLFunctions/RHTower/DeningerMonicCotangentComplex.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMonicCotangentComplex.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 With the two-term presentation identified and its differential computed, the homology of the
@@ -428,7 +428,7 @@ oriented fundamental class, its determinant twist and the Gysin map — is outst
 `formal/GaloisForLFunctions/HTGeometry/MilnorWittFormAction.lean`,
 `MilnorWittTwist.lean`, `MilnorWittFundamentalClass.lean`,
 `MilnorWittKFunctoriality.lean`, and
-`formal/GaloisForLFunctions/RHTower/DeningerMonicFundamentalClass.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMonicFundamentalClass.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The monic lift theorem was recorded as blocked on "Milnor--Witt sheaf theory": the oriented
@@ -478,7 +478,7 @@ proved.
 ### The cycle group and the forgetful map: the lift covers `[Z_P]` `[NEW]`
 
 `formal/GaloisForLFunctions/HTGeometry/MilnorWittCycles.lean` and the new material in
-`MilnorWittFundamentalClass.lean` and `RHTower/DeningerMonicFundamentalClass.lean`.  Axiom audit for
+`MilnorWittFundamentalClass.lean` and `RHTower/Deninger/DeningerMonicFundamentalClass.lean`.  Axiom audit for
 all declarations: `propext, Classical.choice, Quot.sound`.
 
 The previous entry proved the fundamental class has rank one *after* choosing a generator of the
@@ -533,7 +533,7 @@ quotient".  In the cycle-level shadow that argument is now a theorem.
 ### The Gysin pushforward, and interior-slot vanishing `[NEW]`
 
 `formal/GaloisForLFunctions/HTGeometry/MilnorWittGradedAppend.lean` and new material in
-`MilnorWittCycles.lean` and `RHTower/DeningerMonicFundamentalClass.lean`.  Axiom audit for all
+`MilnorWittCycles.lean` and `RHTower/Deninger/DeningerMonicFundamentalClass.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - **`mwGysin`** — **the Gysin pushforward of the closed immersion of a point**, on codimension-one

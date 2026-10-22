@@ -42,13 +42,13 @@ All four promoted realization modules passed direct foreground checks.
 
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
-| One-sided crease derivatives exist and recover every von Mangoldt atom | `ccmFirstClockArithmeticTrace_entry_oneSided`; `ccmFirstClockArithmeticTrace_entry_recovers_vonMangoldt` | `formal/GaloisForLFunctions/RHTower/CCMFirstClockCreaseCurrent.lean` |
-| Rectangular diagonal Xi-Weil coefficient is real | `xiRectangularWeilLogCoefficient_im_eq_zero` | `formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePoleTomography.lean` |
+| One-sided crease derivatives exist and recover every von Mangoldt atom | `ccmFirstClockArithmeticTrace_entry_oneSided`; `ccmFirstClockArithmeticTrace_entry_recovers_vonMangoldt` | `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockCreaseCurrent.lean` |
+| Rectangular diagonal Xi-Weil coefficient is real | `xiRectangularWeilLogCoefficient_im_eq_zero` | `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePoleTomography.lean` |
 | On every sufficiently late logarithmic sample it equals a finite prime-polar source plus explicit Gamma correction | `xiRectangularWeilLogCoefficient_re_eq_primePolarSource_add_gammaCorrection` | `formal/GaloisForLFunctions/RHTower/XiGuinandWeilRectangularGammaPolarSourceLaw.lean` |
-| Full coefficient series agrees on its initial half-plane with a canonical cutoff-free continuation | `LSeries_xiRectangularWeilLogCoefficient_eq_fullContinuation` | `formal/GaloisForLFunctions/RHTower/CCMRectangularFullObservableDivisorTomography.lean` |
+| Full coefficient series agrees on its initial half-plane with a canonical cutoff-free continuation | `LSeries_xiRectangularWeilLogCoefficient_eq_fullContinuation` | `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularFullObservableDivisorTomography.lean` |
 | Continuation poles on `Re s > 1` are exactly shifted strict-right Xi zeros | `meromorphicOrderAt_xiRectangularWeilFullContinuation_eq_neg_one_iff` | same |
 | Normalized trailing coefficient recovers analytic multiplicity | `normalizedFullObservableResidue_eq_xiRightMultiplicity` | same |
-| Functional-equation reflection supplies strict-left copies and polar subtraction leaves exactly critical divisor | `ccmFirstClockXiRationalDivisor_eq_two_right_add_critical`; `ccmFirstClockPolarSubtractedSource_eq_critical` | `formal/GaloisForLFunctions/RHTower/CCMUnitaryPolarSourceAtlas.lean` |
+| Functional-equation reflection supplies strict-left copies and polar subtraction leaves exactly critical divisor | `ccmFirstClockXiRationalDivisor_eq_two_right_add_critical`; `ccmFirstClockPolarSubtractedSource_eq_critical` | `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitaryPolarSourceAtlas.lean` |
 | Polar-subtracted clock has unique continuous Bohr-almost-periodic asymptote | `ccmFirstClockPolarSubtractedSource_sub_screw_tendsto_zero`; `ccmFirstClockPolarSubtractedSource_asymptote_unique` | same |
 | Nonzero Bohr coefficients recover exact critical-line absolute multiplicity | `bohrCoefficient_two_mul_xiLineScrewSeries_eq_multiplicity`; `two_mul_xiLineScrewSeries_recovers_multiplicity` | same |
 | Complete crease-pole-frequency reconstruction is bundled unconditionally | `ccmFirstClockCreasePolarFrequencyAtlas` | same |
@@ -60,12 +60,12 @@ capstone declaration has only the standard logical axioms listed above.
 
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
-| RH iff the unsubtracted scaled source admits a continuous Bohr-almost-periodic asymptote | `ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic_iff_rh` | `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrLaw.lean` |
+| RH iff the unsubtracted scaled source admits a continuous Bohr-almost-periodic asymptote | `ccmFirstClockScaledSourceAsymptoticallyBohrAlmostPeriodic_iff_rh` | `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean` |
 | Under RH, the exact screw model is an asymptote with the stated uniform error | `ccmFirstClockMovingDenominatorError_bounds_of_rh`; `ccmFirstClockScaledSource_sub_explicitScrew_tendsto_zero_of_rh` | same |
-| Every such asymptote is unique and equals the explicit critical screw | `ccmFirstClockAsymptoticBohrModel_eq_explicitScrew` | `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean` |
+| Every such asymptote is unique and equals the explicit critical screw | `ccmFirstClockAsymptoticBohrModel_eq_explicitScrew` | `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrTorelli.lean` |
 | Its coefficient at nonzero frequency is `-N(|lambda|)/lambda^2` | `bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_multiplicity` | same |
 | Multiplication by `-lambda^2` recovers exact absolute divisor multiplicity | `ccmFirstClockAsymptoticBohrModel_recovers_absoluteMultiplicity` | same |
-| Every value in the compact relation-hull interval is relatively densely approximated by the source | `exists_eventual_window_ccmFirstClockScaledPublishedSource_near_of_rh` | `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrLaw.lean` |
+| Every value in the compact relation-hull interval is relatively densely approximated by the source | `exists_eventual_window_ccmFirstClockScaledPublishedSource_near_of_rh` | `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean` |
 | Full absolute endpoint occurs exactly under even-total integral-relation parity | `ccmFirstClockAsymptoticHullMax_eq_absoluteBound_iff_parity_of_rh` | same |
 
 Both promoted Bohr modules passed direct foreground checks. Axiom audit found

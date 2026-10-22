@@ -3,7 +3,7 @@
 - **ID:** `WEIL-ENTRY-001-L3`
 - **Stage:** 3-formalized
 - **Parent card:** `1-in-progress/weil-positivity-soft-prime-entry.md`
-- **Module:** `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundState` (imports the
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundState` (imports the
   pole-vanishing ground energy module and `SuzukiSmallApertureGroundEnergy`; wired after
   `CCMRestrictedWeilPolarGroundEnergy`)
 - **Axioms:** `[propext, Classical.choice, Quot.sound]`; lint clean; no hypotheses.

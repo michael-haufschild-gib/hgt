@@ -7,7 +7,7 @@
   `CCMPrimeFreeApertureCharacteristicPair.lean`,
   `HardyZPhaseAsymptotic.lean`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.CCMActualHeadExteriorGaugeCoerciveCompactReduction`
+  `GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorGaugeCoerciveCompactReduction`
 - **Labels:** `[BRIDGE] [FORMALIZED] [NEW FORMAL SYNTHESIS] [NOT AN RH PROOF]`
 
 ## Goal
@@ -58,7 +58,7 @@ producer problem from global sign control to compact lifting with coefficient-no
 
 - Source `lake env lean` — pass.
 - Target-only
-  `lake build GaloisForLFunctions.RHTower.CCMActualHeadExteriorGaugeCoerciveCompactReduction`
+  `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorGaugeCoerciveCompactReduction`
   — pass. No umbrella build run.
 - `#print axioms` on all seventeen theorems — only `propext`, `Classical.choice`, `Quot.sound`.
 - Forbidden declaration scan — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

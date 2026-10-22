@@ -2,7 +2,7 @@
 
 - **Paper card:** `stc-prime-height-commutator-calkin-ghost.md`
 - **Lean modules:** `GaloisForLFunctions.RHTower.STCPrimeHeightCalkinGhost`,
-  `GaloisForLFunctions.RHTower.DeningerGammaAllPrimeStokesPairBridge`, `GaloisForLFunctions.RHTower.STCPrimeWindowPackets`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerGammaAllPrimeStokesPairBridge`, `GaloisForLFunctions.RHTower.STCPrimeWindowPackets`
   (uses corpus `LpReindexCompactDichotomy`, `BoundedDiagonalOperatorLp`, `SoninEulerCornerNoncompact`, `SoninCalkinNormBound`)
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** `lake --old build`; `lake --old env lean` clean; `#print axioms` =

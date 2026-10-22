@@ -213,7 +213,7 @@ load-bearing in `(11)`.
 
 ### Both labelled theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerRayResolution.lean`, reusing the split-leg
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerRayResolution.lean`, reusing the split-leg
 lemmas of `DeningerPolarizationAlmostProjection.lean`.  Axiom audit for all 31 declarations:
 `propext, Classical.choice, Quot.sound`.
 

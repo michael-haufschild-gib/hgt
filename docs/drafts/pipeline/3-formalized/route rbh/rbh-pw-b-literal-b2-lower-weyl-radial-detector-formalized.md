@@ -1,7 +1,7 @@
 # Literal B2 lower-Weyl radial detector — Lean certificate
 
 - **Paper card:** `rbh-pw-b-literal-b2-lower-weyl-radial-detector.md`
-- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
+- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCyclicPeierlsLowerWeylRadialDetector`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsSelfInverseSquarePhysical`,
   `ThetaCuspHawkingBMLiteralCyclicPeierlsAffineCuspIncidence`, `ThetaCuspHawkingBMMixedRadialOverlap`
 - **Umbrella:** `GaloisForLFunctions.RHTower`

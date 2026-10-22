@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonTopConormalPluckerHolonomyLanding
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceJuliaPythagoras
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceJuliaPythagoras
 
 /-!
 # Burnol top conormal as the Xi-Ward Julia normal cone

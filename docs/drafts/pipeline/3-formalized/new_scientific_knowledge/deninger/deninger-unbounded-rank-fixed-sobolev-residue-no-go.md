@@ -132,7 +132,7 @@ forms are summable on every resulting Banach disk.
 ## Lean status
 
 Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerUnboundedRankFixedSobolevResidueNoGo.lean`.  Axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerUnboundedRankFixedSobolevResidueNoGo.lean`.  Axiom
 audit for all 32 declarations: `propext, Classical.choice, Quot.sound`.
 
 The witness is an actual function on the rank-`d` unit torus, and the Sobolev norm `(3)` is the

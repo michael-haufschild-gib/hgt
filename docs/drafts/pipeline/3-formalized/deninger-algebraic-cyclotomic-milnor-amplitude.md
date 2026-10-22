@@ -177,7 +177,7 @@ the separate source-natural window identified above.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorAmplitude.lean`.  Axiom audit for all 5
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMilnorAmplitude.lean`.  Axiom audit for all 5
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerTorsion_tmul_real_eq_zero`, `deningerTorsionTensorReal_eq_zero`,
@@ -251,7 +251,7 @@ ring itself is no longer a gap.
 
 `formal/GaloisForLFunctions/HTGeometry/MilnorKGrading.lean`,
 `MilnorKFunctoriality.lean`, `MilnorKAlgebraicReduction.lean`, and
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorRealShape.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMilnorRealShape.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The graded Milnor `K`-theory the card needs is now available: the corpus carries `MilnorKDeg F n`
@@ -290,7 +290,7 @@ The reduction chain is now connected at the graded level as well:
 map `K_n^M(F) → K_n^M(E)` induced by a field homomorphism (multilinearity goes to multilinearity,
 Steinberg to Steinberg), `milnorKDeg_mem_of_gen` (the symbol classes generate), and
 `milnorKDegTwo_torsion_of_finiteSubextension`.  Composing,
-`deningerMilnorRealVanishing_of_finiteSubextension` in `RHTower/DeningerMilnorRealShape.lean` is
+`deningerMilnorRealVanishing_of_finiteSubextension` in `RHTower/Deninger/DeningerMilnorRealShape.lean` is
 the card's `(1)` and `(2)` in full, resting on the single hypothesis that every degree-two class of
 every finite subextension of `ℚ` is torsion.
 
@@ -411,7 +411,7 @@ to all higher degrees, and the real-vanishing conclusion `(1)`--`(2)`.
 
 `formal/GaloisForLFunctions/HTGeometry/MilnorKTameResidueFinite.lean` and the new
 `deningerMilnorRealVanishing_of_tameKernelTorsion` in
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorRealShape.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMilnorRealShape.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The tame-kernel reduction still carried a side condition — that the residue fields at the finite
@@ -829,7 +829,7 @@ for `−1` the representative is `p − 1`, and `{−1,p} = {p−1,p}` because S
 
 ### 6. The card's `(1)` and `(2)` over `Q`
 
-`RHTower/DeningerRationalMilnorAmplitude.lean`.
+`RHTower/Deninger/DeningerRationalMilnorAmplitude.lean`.
 
 ```
 deningerRationalMilnorRealVanishing (k) (t : K^M_{2+k}(Q) ⊗ R) : t = 0        ** (1) for F = Q **
@@ -942,7 +942,7 @@ degrees — is `(1)`+`(2)`+`(3)` plus `deningerGradedDegreeOne_mul_eq_zero`, all
 
 ### The card, assembled into one conditional theorem
 
-`formal/GaloisForLFunctions/RHTower/DeningerAlgebraicMilnorAmplitude.lean` (wired into the `RHTower`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAlgebraicMilnorAmplitude.lean` (wired into the `RHTower`
 umbrella; axiom audit `propext, Classical.choice, Quot.sound`).
 
 ```text
@@ -2474,7 +2474,7 @@ equation `(3)` is already present, without a substitute hypothesis or weakened c
 RHTower.deningerAlgebraicUnitRealification
 ```
 
-in `formal/GaloisForLFunctions/RHTower/DeningerAlgebraicMilnorAmplitude.lean`. It gives
+in `formal/GaloisForLFunctions/RHTower/Deninger/DeningerAlgebraicMilnorAmplitude.lean`. It gives
 
 ```text
 ((Additive Fˣ) ⊗[ℤ] ℝ) ≃ₗ[ℤ] ((DeningerUnitLattice F) ⊗[ℤ] ℝ)

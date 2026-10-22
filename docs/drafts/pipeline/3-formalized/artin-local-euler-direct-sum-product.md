@@ -15,7 +15,7 @@ behind the multiplicativity of Euler factors for direct sums; it does not posit 
 
 ## Exact formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerProduct.lean` defines the explicit linear
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerProduct.lean` defines the explicit linear
 equivalence
 
 ```text
@@ -42,7 +42,7 @@ frobeniusInertiaEulerPolynomial_prod:
   P_Q(rhoV.prod rhoW) = P_Q(rhoV) * P_Q(rhoW),
 ```
 
-and `formal/GaloisForLFunctions/RHTower/ArtinNumberFieldLocalEulerProduct.lean` proves
+and `formal/GaloisForLFunctions/RHTower/Artin/ArtinNumberFieldLocalEulerProduct.lean` proves
 
 ```text
 numberFieldFinitePlaceLocalEulerPolynomial_prod:
@@ -62,15 +62,15 @@ over a field preserves that product.  This has no arithmetic or analytic premise
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinLocalEulerProduct.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinLocalEulerProduct` passed; this is the targeted
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerProduct.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinLocalEulerProduct` passed; this is the targeted
   module build, not an umbrella or full build.
 - `/tmp/ArtinLocalEulerProductAxioms.lean` reports `[propext, Quot.sound]` for
   `invariantsProdLinearEquiv_conj_toInvariants` and
   `[propext, Classical.choice, Quot.sound]` for `localEulerPolynomial_prod` and the new actual
   `frobeniusInertiaEulerPolynomial_prod` adapter.
-- `lake env lean GaloisForLFunctions/RHTower/ArtinNumberFieldLocalEulerProduct.lean` and its
-  targeted `lake build GaloisForLFunctions.RHTower.ArtinNumberFieldLocalEulerProduct` passed.
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinNumberFieldLocalEulerProduct.lean` and its
+  targeted `lake build GaloisForLFunctions.RHTower.Artin.ArtinNumberFieldLocalEulerProduct` passed.
   `/tmp/ArtinNumberFieldLocalEulerProductAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]`.
 - Both leaves are imported by `formal/GaloisForLFunctions/RHTower.lean`; the umbrella was

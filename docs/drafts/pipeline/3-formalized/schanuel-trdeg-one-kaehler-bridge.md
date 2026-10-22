@@ -54,7 +54,7 @@ rank-one defect wall for a categorical reason: they are separable algebraic, hen
 
 ## Lean certificate
 
-Module: `GaloisForLFunctions.RHTower.SchanuelKaehlerDimension`, wired into the
+Module: `GaloisForLFunctions.RHTower.Schanuel.SchanuelKaehlerDimension`, wired into the
 `GaloisForLFunctions.RHTower` umbrella and built green.
 
 | Card statement | Lean declaration |

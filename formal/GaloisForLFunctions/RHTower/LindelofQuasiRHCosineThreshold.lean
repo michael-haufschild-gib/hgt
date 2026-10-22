@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LindelofOpenImpliesCriticalLine
 import GaloisForLFunctions.RHTower.WeilLagFunctionCriterion
-import GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMSourceDivisorEnergySpectrum
 
 /-!
 # Quasi-RH as a sub-half threshold of the cosine family

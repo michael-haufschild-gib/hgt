@@ -107,7 +107,7 @@ counted as route closure.
 
 ## Lean artifacts
 
-- `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCompletedCoherentBarycenter.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCompletedCoherentBarycenter.lean`
 - umbrella import: `formal/GaloisForLFunctions/RHTower.lean`
 
 Premise-free capstones:
@@ -121,8 +121,8 @@ Premise-free capstones:
 
 Exact leaf audit:
 
-    lake env lean GaloisForLFunctions/RHTower/CCMUnitRieszCompletedCoherentBarycenter.lean
-    lake build GaloisForLFunctions.RHTower.CCMUnitRieszCompletedCoherentBarycenter
+    lake env lean GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCompletedCoherentBarycenter.lean
+    lake build GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCompletedCoherentBarycenter
 
 Both passed.  Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
 

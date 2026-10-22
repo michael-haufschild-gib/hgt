@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonNormalizedSourceRadialBias
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowNoncensorship
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowNoncensorship
 import GaloisForLFunctions.RHTower.GelfondSchneider
 import GaloisForLFunctions.RHTower.BurnolCoPoissonSubWindowIndependence
 

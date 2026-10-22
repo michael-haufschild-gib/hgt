@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.IndexedDiagonalWeakSchatten
 import GaloisForLFunctions.RHTower.SchattenCriticalAsymptotic
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.RHTower.EulerSquarefreeDyadicAffineProjection
 import GaloisForLFunctions.HTGeometry.CompactOperatorDiscreteSpectrum
 import Mathlib.Analysis.Fourier.AddCircle

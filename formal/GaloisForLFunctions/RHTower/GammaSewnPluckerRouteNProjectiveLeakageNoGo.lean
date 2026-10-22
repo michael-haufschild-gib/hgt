@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnPluckerNuclearRootBudget
-import GaloisForLFunctions.RHTower.HedenmalmGammaSewnProjectiveParityLeakageBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnProjectiveParityLeakageBridge
 
 /-!
 # C1 nuclear-root incidence cannot carry Route-N projective leakage

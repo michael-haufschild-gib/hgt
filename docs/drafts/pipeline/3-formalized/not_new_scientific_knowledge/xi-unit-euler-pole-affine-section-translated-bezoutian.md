@@ -222,7 +222,7 @@ The formal corpus already contains the source ingredients:
 - `RHTower/ZetaCarrier.lean`: `archFactor` and `xi_eq_archFactor_mul_zeta`;
 - `RHTower/RiemannTower.lean`: the entire `xi`, its reflection, and `xi_one : xi 1 = 1/2`;
 - `RHTower/ZetaLogDerivResidue.lean`: `zetaResidueUnit` and the unit zeta residue;
-- `RHTower/CCMShiftedXiCancellation.lean`: an entire pole-filled version of
+- `RHTower/CCM/CCMShiftedXiCancellation.lean`: an entire pole-filled version of
   `(s-1) * riemannZeta s`;
 - `HTGeometry/ProjectiveJetHorizon.lean`: `jetTailField_constSlopeAffine_eq`, which formalizes the
   translation blindness repaired here.

@@ -8,7 +8,7 @@ The hard target remains cancellation of the complete physical current with indep
 
 ## Actual L2 fields
 
-The declarations in [ThetaCuspHawkingBMNativeResidualAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeResidualAdmission.lean) use the original product of radial measure on `x<0` and angular measure on the modular fundamental cell. Write
+The declarations in [ThetaCuspHawkingBMNativeResidualAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeResidualAdmission.lean) use the original product of radial measure on `x<0` and angular measure on the modular fundamental cell. Write
 
 ```
 W(t,x,z) = integral_0^t (t-u) nativeResidual(u,x,z) du,
@@ -42,7 +42,7 @@ Continuity and finite causal support make each radial coefficient L2. The actual
 
 ## Exact angular localization and escaping error
 
-The new [ThetaCuspHawkingBMNativeAngularLocalization.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeAngularLocalization.lean) uses the actual global native primitive, its original complete modular germs, and `eta_N=modularCuspCutoff(n+1)`.
+The new [ThetaCuspHawkingBMNativeAngularLocalization.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeAngularLocalization.lean) uses the actual global native primitive, its original complete modular germs, and `eta_N=modularCuspCutoff(n+1)`.
 
 `nativeTimePrimitive_compact_angular_localization` proves, at each real radial coordinate,
 
@@ -89,8 +89,8 @@ Own broad arXiv terms were `exhaustion` and `coercivity`, using newest-first res
 ## Validation
 
 - Both scratch files passed with `lake env lean`, without warnings.
-- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeResidualAdmission`: 163 seconds, two jobs, 4099 cached local dependencies and 11 cached dependency packages.
-- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeAngularLocalization`: 97 seconds, two jobs, 4133 cached local dependencies and the same 11 dependency packages.
+- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeResidualAdmission`: 163 seconds, two jobs, 4099 cached local dependencies and 11 cached dependency packages.
+- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeAngularLocalization`: 97 seconds, two jobs, 4133 cached local dependencies and the same 11 dependency packages.
 - Neither audit rebuilt an old dependency or umbrella. Each used an isolated audit root containing only its target source and cached dependencies.
 - Only the six new public theorems were checked with `#print axioms`; each uses only `propext`, `Classical.choice`, `Quot.sound`.
 - Audited source and all five emitted artifacts per target were installed byte for byte. The existing module was protected by an original-source equality check; the new module by a destination-absence check.

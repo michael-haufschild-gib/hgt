@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileTwoEndedSelector
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceSpectrumExact
 
 /-! # Entire-parameter connection formula for the literal theta mode
 

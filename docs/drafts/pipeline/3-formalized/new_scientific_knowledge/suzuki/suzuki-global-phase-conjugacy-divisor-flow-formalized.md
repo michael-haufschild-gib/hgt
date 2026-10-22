@@ -8,8 +8,8 @@
 ## Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/CompactOperatorDiscreteSpectrum.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventOperatorLift.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiGlobalPhaseConjugacy.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventOperatorLift.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalPhaseConjugacy.lean`
 
 ## Formal theorem surface
 
@@ -24,13 +24,13 @@ GaloisForLFunctions.HTGeometry.finite_setOf_hasEigenvalue_norm_ge
 GaloisForLFunctions.HTGeometry.finite_setOf_mem_spectrum_norm_ge
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventOperatorLift`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseResolventOperatorLift`:
 
 ```text
 RHTower.finite_setOf_negativeLevel_of_isCompactOperator
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiGlobalPhaseConjugacy`:
 
 ```text
 GaloisForLFunctions.RHTower.integral_phaseSpeed_fullTurn
@@ -74,7 +74,7 @@ These are research frontier items, not formalization debt.
 - **Paper theorem:**
   `./suzuki-global-phase-conjugacy-divisor-flow.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiGlobalPhaseConjugacy.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalPhaseConjugacy.lean`
 - **RH used:** no
 - **Computation used:** no
 
@@ -130,8 +130,8 @@ No cofinal compactness or Xi identification is assumed or proved.
 
 ## Audit
 
-- [x] direct `lake env lean GaloisForLFunctions/RHTower/SuzukiGlobalPhaseConjugacy.lean`
-- [x] exact `lake build GaloisForLFunctions.RHTower.SuzukiGlobalPhaseConjugacy`
+- [x] direct `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalPhaseConjugacy.lean`
+- [x] exact `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiGlobalPhaseConjugacy`
 - [x] SOTA import source check
 - [x] `#print axioms` capstone audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] global formal lint

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.QNMBackwardError
-import GaloisForLFunctions.RHTower.HedenmalmThetaExteriorPseudospectralSeparation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaExteriorPseudospectralSeparation
 
 /-!
 # QNMThetaBackwardError

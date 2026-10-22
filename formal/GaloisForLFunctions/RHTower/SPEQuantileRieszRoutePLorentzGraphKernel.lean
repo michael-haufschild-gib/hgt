@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileLorentzEdgeProducer
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCenteredBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileLorentzEdgeProducer
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCenteredBoundary
 import GaloisForLFunctions.RHTower.SPEQuantileRieszParabolicBridge
 
 /-!

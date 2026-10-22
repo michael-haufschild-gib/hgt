@@ -6,13 +6,13 @@ Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two s
 
 The [analytical optical-coordinate calculation](../1-in-progress/hb-optical-source-tail.md) removes the complementary complex powers from the radial variables and exposes an explicit rational/logarithmic primitive in the long-delay source pairing. These leaves formalize the exact primitive with the native circle field, and removal of the entire principal cusp field by the physical logarithmic angular channel.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOpticalSourceTail`, namespace `RHTower.D4BMOpticalSourceTail`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOpticalSourceTail`, namespace `RHTower.D4BMOpticalSourceTail`:
 
 - `sourcePrimitive_derivative`: the constructed rational/logarithmic primitive differentiates to the complete transformed radial density, with the actual native circle mean and its first two angular Laplacians.
 - `sourceDensity_integral`: every positive-endpoint radial integral equals the difference of the explicit primitive's endpoint values. Integrability is discharged; no angular eigenvalue or cancellation premise is supplied.
 - `sourceCoefficients_log_channel`: the two literal source coefficients multiply to `(lambda-2)(lambda-6)/64` times the actual circle field's operator `Delta²-2(4lambda+1)Delta+4lambda(4lambda+1)`.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMOpticalLogCusp`, namespace `RHTower.D4BMOpticalLogCusp`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMOpticalLogCusp`, namespace `RHTower.D4BMOpticalLogCusp`:
 
 - `principalSquare_logarithmicChannel`: the actual differential operator `-Delta(Delta-2)[Delta²-2(4lambda+1)Delta+4lambda(4lambda+1)]` annihilates the literal principal half-square on every upper-half-plane point at every Xi occurrence. The proof derives its repeated Laplacians from the full three-term principal expansion, including both original Weyl coefficients and their cross term.
 

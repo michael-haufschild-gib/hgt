@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalWoldPrimeClockCubic
-import GaloisForLFunctions.RHTower.HedenmalmThetaXiHardySymmetricSquareWeld
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaXiHardySymmetricSquareWeld
 import GaloisForLFunctions.RHTower.FrankensteinKreinCCMRoutePSignedConormalResidueBridge
 
 /-!

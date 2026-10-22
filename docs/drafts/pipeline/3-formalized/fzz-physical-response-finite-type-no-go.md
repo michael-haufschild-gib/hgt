@@ -78,7 +78,7 @@ Hence `P` is not of finite exponential type.
 ## Lean certificate
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildPhysicalResponseFiniteTypeNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildPhysicalResponseFiniteTypeNoGo`.
 The certificate contains:
 
 - exact shifted analytic-order transfer at every Xi divisor point in the open critical strip;

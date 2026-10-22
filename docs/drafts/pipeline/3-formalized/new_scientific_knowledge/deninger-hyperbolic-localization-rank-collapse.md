@@ -5,9 +5,9 @@
 - **Type:** NEW POSITIVE SURVIVOR / SOURCE GAMMA REALIZATION
 - **Parent:** `deninger-gamma-rank-character-rigidity`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticHyperbolicLocalization` (`(1)`, `(2)`, `(4)`),
-  `GaloisForLFunctions.RHTower.DeningerHyperbolicIdempotents` (the idempotent splitting),
-  `GaloisForLFunctions.RHTower.DeningerGrothendieckWittLocalization` (`(3)`)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticHyperbolicLocalization` (`(1)`, `(2)`, `(4)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerHyperbolicIdempotents` (the idempotent splitting),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerGrothendieckWittLocalization` (`(3)`)
 
 ## Statement
 
@@ -78,7 +78,7 @@ signature summand \(e_-\).
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticHyperbolicLocalization.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticHyperbolicLocalization.lean`:
 
 - `deningerHyperbolicLocalization_epsilon_eq_one` : `(1)`, `ε = 1` wherever `h` is invertible,
   by the card's own factorization `(1 - ε)h = 1 - ε²= 0`;
@@ -86,7 +86,7 @@ signature summand \(e_-\).
 - `deningerHyperbolicLocalization_push_pull_eq_degree` : the degree law `(4)` that `(2)` gives on
   the localized complex.
 
-`GaloisForLFunctions/RHTower/DeningerHyperbolicIdempotents.lean` formalizes the idempotent
+`GaloisForLFunctions/RHTower/Deninger/DeningerHyperbolicIdempotents.lean` formalizes the idempotent
 description the card gives as the equivalent form of `(3)`, for any commutative ring in which `2`
 is invertible:
 
@@ -99,7 +99,7 @@ is invertible:
 - `deningerSignIdem_mul_hyperbolic` : `e₋ h = 0`, which is exactly why inverting `h` annihilates
   the signature summand and keeps the rank one.
 
-`GaloisForLFunctions/RHTower/DeningerGrothendieckWittLocalization.lean` formalizes `(3)` itself,
+`GaloisForLFunctions/RHTower/Deninger/DeningerGrothendieckWittLocalization.lean` formalizes `(3)` itself,
 integrally:
 
 - `DeningerGW` : the universal algebra `A_GW = ℤ[ε]/(ε² - 1)`, realized as
@@ -132,7 +132,7 @@ positive Gamma boundary realization, not parts of `(1)`--`(4)`.
 ### Verification
 
 - Direct commands: `lake env lean` on all three modules — pass with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerGrothendieckWittLocalization`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGrothendieckWittLocalization`
   completes (`✔ [2998/2998]`).
 - Scratch `#print axioms`: the idempotent module uses only `propext` and `Quot.sound`, with no
   choice; the two localization modules use the standard `propext`, `Classical.choice`, `Quot.sound`

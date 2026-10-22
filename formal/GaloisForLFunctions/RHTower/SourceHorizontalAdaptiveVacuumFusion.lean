@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalAdaptiveFisherCofinalContiguitySelection
-import GaloisForLFunctions.RHTower.HedenmalmGammaSewnSquarefreeParityLocalization
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnSquarefreeParityLocalization
 
 /-!
 # Adaptive horizontal occupation as bounded-admission vacuum fusion

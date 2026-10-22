@@ -39,7 +39,7 @@ pairwise distinct. `Matrix.det_vandermonde_ne_zero_iff` gives nonzero determinan
 `Matrix.eq_zero_of_mulVec_eq_zero` forces coefficient vector to vanish.
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekFinitePacketEndpointTomography.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekFinitePacketEndpointTomography.lean`.
 
 Main declarations:
 
@@ -50,7 +50,7 @@ Main declarations:
 - `schwarzschildParikhWilczekFinitePacketEndpointResponse_eq_zero_iff`
 
 Verification: direct `lake env lean` passed; target-only `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFinitePacketEndpointTomography` passed
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFinitePacketEndpointTomography` passed
 (11614 jobs). Five audited declarations depend only on `[propext, Classical.choice, Quot.sound]`.
 Formal lint reports no error in this module; repository-wide failure remains limited to pre-existing
 unreachable modules outside HC30.

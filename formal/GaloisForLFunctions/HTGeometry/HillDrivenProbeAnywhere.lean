@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenClockProbe
 import GaloisForLFunctions.HTGeometry.HillProbeAnywhere
-import GaloisForLFunctions.HTGeometry.KleinGordonRegularProbes
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRegularProbes
 
 /-!
 # A driven probe at every event

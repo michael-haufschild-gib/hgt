@@ -84,7 +84,7 @@ axioms.
 ## Formal result
 
 Formal module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEHorizonBoundaryRelativeCocycleRigidity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEHorizonBoundaryRelativeCocycleRigidity`
 
 Closed theorem:
 `hbXiPhaseSensitiveUnitRadiativeSourceFEHorizonBoundaryRelativeCocycleRigidity`.

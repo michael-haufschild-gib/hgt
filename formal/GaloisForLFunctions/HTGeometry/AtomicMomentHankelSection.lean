@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMParityCompressionDeterminant
+import GaloisForLFunctions.RHTower.CCM.CCMParityCompressionDeterminant
 
 /-!
 # Hankel sections of an atomic moment sequence

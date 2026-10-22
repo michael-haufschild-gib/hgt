@@ -433,5 +433,5 @@ The complete explicit specialization is formalized in
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
 - `RHTower.lean` contains the module import. Current umbrella elaboration is blocked before that
   import by unrelated, concurrently edited
-  `GaloisForLFunctions.RHTower.DeningerCriticalFloquetVonMangoldtWall`; its target presently has
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCriticalFloquetVonMangoldtWall`; its target presently has
   independent source errors. No source-normal theorem depends on that module.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiSliceHusimiZero
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 import GaloisForLFunctions.RHTower.DeBruijnNewmanNonnegative
 import GaloisForLFunctions.RHTower.XiCosineShiftDefectDisks
 

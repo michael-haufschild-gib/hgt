@@ -271,23 +271,23 @@ differentials, traces, norms, or abstract function-field Galois theory can finis
   its fixed field equals the stable fixed field.  The coefficient-descent core of `(IC)` is
   formalized by
   `schanuelDefect_slope_mem_intermediateField_of_finrank_one` in
-  `RHTower/SchanuelDefectValueField.lean`: any rank-one intermediate field carrying both
+  `RHTower/Schanuel/SchanuelDefectValueField.lean`: any rank-one intermediate field carrying both
   exponential pairs contains their ambient defect slope.  Its scratch axiom audit again reports
   only `propext`, `Classical.choice`, and `Quot.sound`.  Full-matrix inversion is formalized by
   `mobius_slope_mem_intermediateField`: descent of
   `(c+d*rho)/(a+b*rho)` through a nonzero-determinant integral matrix forces descent of `rho`.
   Their exact combination is formalized by
   `schanuelDefect_slope_mem_of_integral_isogeny` in the umbrella-wired module
-  `RHTower/SchanuelDefectIsogeny.lean`: any rank-one intermediate field carrying the transformed
+  `RHTower/Schanuel/SchanuelDefectIsogeny.lean`: any rank-one intermediate field carrying the transformed
   exponential pair contains the original slope.  The concrete generated field `K_M`, adjugate
   recovery of both additive coordinates and determinant powers, finite/separable descent, and the
   deduction of its Kähler finrank from `trdeg=1` are formalized by
   `finiteDimensional_integral_isogeny_valueField` and
   `schanuelDefect_slope_mem_integral_isogeny_valueField` in the umbrella-wired module
-  `RHTower/SchanuelIntegralIsogenyValueField.lean`.  Their scratch axiom audit reports only
+  `RHTower/Schanuel/SchanuelIntegralIsogenyValueField.lean`.  Their scratch axiom audit reports only
   `propext`, `Classical.choice`, and `Quot.sound`.  The exact cofinality statement `(3)` is
   formalized by `fullIntegralIsogenyCore_eq_scalarPowerIsogenyCore` in
-  `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`, using the explicit determinant-power
+  `RHTower/Schanuel/SchanuelIntegralIsogenyCoreIntersection.lean`, using the explicit determinant-power
   containment and scalar-matrix realization; its scratch axiom audit has the same standard list.
   Targeted external
   search found Kummer subfield results (for example Stacks Project, Tag `0EXP`) but no statement
@@ -320,13 +320,13 @@ torically primitive algebraic curve; ordinary field intersection is proved insuf
 - 2026-08-14 -- finite-automorphism power-primitive stabilization formalized in scratch, copied
   exactly into `HTGeometry/SchanuelIsogenyCore.lean`, and axiom-audited; no project build run.
 - 2026-08-14 -- full integral-matrix core/scalar-power core equality formalized in scratch,
-  axiom-audited, and umbrella-wired as `RHTower/SchanuelIntegralIsogenyCoreIntersection.lean`.
+  axiom-audited, and umbrella-wired as `RHTower/Schanuel/SchanuelIntegralIsogenyCoreIntersection.lean`.
 - 2026-08-14 -- rank-one intermediate-value-field slope descent formalized and axiom-audited in
-  scratch, then copied into already-wired `RHTower/SchanuelDefectValueField.lean`.
+  scratch, then copied into already-wired `RHTower/Schanuel/SchanuelDefectValueField.lean`.
 - 2026-08-14 -- nondegenerate integral Möbius slope inversion formalized with explicit ring
   identities after retiring a tactic-heavy elaboration; scratch axiom audit clean.
 - 2026-08-14 -- full nondegenerate integral-isogeny slope descent combined in
-  `RHTower/SchanuelDefectIsogeny.lean`, scratch-verified, axiom-audited, and umbrella-wired.
+  `RHTower/Schanuel/SchanuelDefectIsogeny.lean`, scratch-verified, axiom-audited, and umbrella-wired.
 - 2026-08-14 -- concrete `K_M` construction closed in Lean: adjugate coordinate/power recovery,
   finite separable extension, `trdeg=1` Kähler-rank transfer, transformed exponential law and
   rational independence, and original-slope membership all scratch-verified and umbrella-wired.
@@ -335,10 +335,10 @@ torically primitive algebraic curve; ordinary field intersection is proved insuf
 
 Modules (all wired into their umbrellas and built green):
 `GaloisForLFunctions.HTGeometry.SchanuelIsogenyCore`,
-`GaloisForLFunctions.RHTower.SchanuelDefectValueField`,
-`GaloisForLFunctions.RHTower.SchanuelDefectIsogeny`,
-`GaloisForLFunctions.RHTower.SchanuelIntegralIsogenyValueField`,
-`GaloisForLFunctions.RHTower.SchanuelIntegralIsogenyCoreIntersection`.
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelDefectValueField`,
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelDefectIsogeny`,
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelIntegralIsogenyValueField`,
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelIntegralIsogenyCoreIntersection`.
 
 | Card statement | Lean declaration |
 |---|---|

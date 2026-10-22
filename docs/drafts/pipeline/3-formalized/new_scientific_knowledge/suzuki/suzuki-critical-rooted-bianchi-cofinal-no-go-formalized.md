@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalRootedBianchiCofinalNoGo.lean`
 
 ## Formal theorem surface
 
@@ -44,7 +44,7 @@ RH is not claimed proved.
 ## Verification
 
 - Direct Lean check: passed with
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`; no project axiom or RH premise.
 - Forbidden-token scan: clean.
 - Repository formal lint: passed.

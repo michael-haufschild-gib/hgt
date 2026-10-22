@@ -1,10 +1,10 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileResistanceNetwork
 import GaloisForLFunctions.RHTower.ThetaQuantileHalfPowerThreshold
-import GaloisForLFunctions.RHTower.ThetaCuspNativeOddSchurFarTail
-import GaloisForLFunctions.RHTower.ThetaCuspFullDerivativeExponentialMoments
-import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspNativeOddSchurFarTail
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullDerivativeExponentialMoments
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld
 import GaloisForLFunctions.RHTower.ThetaDerivativePacketDivisor
-import GaloisForLFunctions.RHTower.HedenmalmClosedWeightedDerivative
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmClosedWeightedDerivative
 
 /-!
 # The theta quotient as an oblique Stein-score projection

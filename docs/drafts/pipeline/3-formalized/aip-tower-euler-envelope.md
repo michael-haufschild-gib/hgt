@@ -306,6 +306,25 @@ model's envelope — are attained by trains on the same multiplicative progressi
 pattern of the weight: the single-tower sector is closed, and all remaining information is
 cross-tower.
 
+### The bi-lattice train: two towers resonate at once (twenty-first pass)
+
+The cross-tower sector needs a test aligned with two primes, and that is the **bi-lattice train**:
+unit copies of one bump at the shifts `i a + j b`, `i, j < M`, the logarithms of the `{p,q}`-smooth
+numbers of a square box. Since distinct prime logarithms are `ℤ`-independent, the lag `k a` is
+matched only by lattice pairs differing by `k` in the first exponent and agreeing in the second, so
+
+    A_S(k a) = (M − k) M A_g(0),     A_S(0) = M² A_g(0)
+
+(`autoCorr_biLatticeTrain_fst`, `autoCorr_biLatticeTrain_zero`), and symmetrically in `b`: **both
+towers resonate to the full fraction `(M − k)/M → 1`**, so the two Euler envelopes add and the
+prime-side bound is already sharp on a pair of aligned towers. The hypotheses have a model
+(`logPrime_pair_independent` for the arithmetic, `exists_width_biLattice_sep` for the geometry: the
+finitely many nonzero integer combinations in the box have a positive minimum, so a narrow enough
+bump exists for *any* pair of generators — separation is finiteness, only independence is
+arithmetic). Consequence for the comb-energy reduction: the aligned test has strictly positive
+cross-prime counts at the lags `log(p^i/q^j)`, so the nonpositive-aggregate regime — the polynomial
+one — fails exactly on the multiplicatively aligned tests, which is where the cost side is large.
+
 ## Gates
 
 - [x] 0 → 1 in-progress: well-posed, source-pure
@@ -376,6 +395,9 @@ Related corpus infrastructure not reused (right-translate convention differs):
 - `ArithmeticIncidencePositivity/TranslatePairingCalculus.lean` — the reusable pairing calculus
   (`testPairing`, `ContCompact`, Gram expansion and bound, `geoTrain`, `geoTail`,
   `geoTrain_resolvent`, Cauchy–Schwarz, `abs_autoCorr_le_autoCorr_zero`)
+- `ArithmeticIncidencePositivity/BiLatticeTrainWitness.lean` — the two-tower resonance witness
+  (`biLatticeTrain`, `autoCorr_biLatticeTrain_fst`, `autoCorr_biLatticeTrain_zero`,
+  `logPrime_pair_independent`, `exists_width_biLattice_sep`)
 - `ArithmeticIncidencePositivity/AlternatingTrainWitness.lean` — the twisted envelope's witness
   (`alternatingTrain`, `autoCorr_alternatingTrain`, `geoLagCharge_alternatingTrain_eq`,
   `geoLagCharge_alternatingTrain_ge`)
@@ -446,3 +468,6 @@ Related corpus infrastructure not reused (right-translate convention differs):
   exponential rate isolated in the cross-prime aggregate
 - 2026-10-22 — twentieth pass: the alternating train attains the Liouville-twisted envelope; the
   twisted charge of the alternating train equals the untwisted charge of the resonant train
+- 2026-10-22 — twenty-first pass: the bi-lattice train — two towers resonate at once, the two Euler
+  envelopes add, and the aligned tests have positive cross-prime aggregate (with a model for the
+  independence and separation hypotheses)

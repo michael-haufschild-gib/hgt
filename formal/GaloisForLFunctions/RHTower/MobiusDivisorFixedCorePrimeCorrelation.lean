@@ -24,7 +24,7 @@ private lemma sample_vanish (P : Finset ℕ) {M r : ℕ} (hr : 0<r) (hMr : M≤r
     simp [mobiusDivisorInterpolatedFibre, Nat.div_self hr, hw, h1]
   · simp [mobiusDivisorInterpolatedFibre, Nat.div_eq_of_lt hlt, h0, h1]
 
-lemma source_mem_insert {p r M : ℕ} (hp : p.Prime) (P : Finset ℕ) :
+private lemma source_mem_insert {p r M : ℕ} (hp : p.Prime) (P : Finset ℕ) :
     r ∈ fixedCoreSquarefreeIndices (insert p P) M ↔
       r ∈ fixedCoreSquarefreeIndices P M ∧ ¬p∣r := by
   simp only [fixedCoreSquarefreeIndices, mem_filter, mem_Icc]
@@ -40,7 +40,7 @@ lemma source_mem_insert {p r M : ℕ} (hp : p.Prime) (P : Finset ℕ) :
     · exact hpr (Nat.mem_primeFactors.mp hqr).2.1
     · exact disjoint_left.mp hd hqr hqP
 
-lemma source_mul {p r : ℕ} (hp : p.Prime) (P : Finset ℕ)
+private lemma source_mul {p r : ℕ} (hp : p.Prime) (P : Finset ℕ)
     (hpP : p∉P) (hr : 0<r) :
     Squarefree (p*r) ∧ Disjoint (p*r).primeFactors P ↔
       Squarefree r ∧ Disjoint r.primeFactors (insert p P) := by
@@ -61,7 +61,7 @@ lemma source_mul {p r : ℕ} (hp : p.Prime) (P : Finset ℕ)
       · exact hpP ((mem_singleton.mp hq) ▸ hqP)
       · exact disjoint_left.mp hd hq (mem_insert_of_mem hqP)
 
-lemma source_split {p : ℕ} (hp : p.Prime) (P : Finset ℕ)
+private lemma source_split {p : ℕ} (hp : p.Prime) (P : Finset ℕ)
     (hpP : p∉P) (M : ℕ) (f : ℕ → ℝ) :
     (∑ r ∈ fixedCoreSquarefreeIndices P M, f r) =
       (∑ r ∈ fixedCoreSquarefreeIndices (insert p P) M, f r)+

@@ -26,7 +26,7 @@ carried by the *analytic* vanishing relation `ζ(ρ) = 0` coupling an already-ge
 the family's transcendence type.
 -/
 import GaloisForLFunctions.HTGeometry.WeldRateLattice
-import GaloisForLFunctions.RHTower.SchanuelWeldApex
+import GaloisForLFunctions.RHTower.Schanuel.SchanuelWeldApex
 
 open Complex
 

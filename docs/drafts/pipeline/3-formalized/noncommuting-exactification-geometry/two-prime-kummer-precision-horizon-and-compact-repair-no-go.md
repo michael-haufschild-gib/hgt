@@ -429,7 +429,7 @@ design law: relative-domain or genuinely noncompact incidence is unavoidable.
 Do not write Lean now. Existing parent formalization already contains the arithmetic small-divisor
 sequence and dense/nonclosed diagonal range. Later formalization can extend
 
-`formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoPrimeKummerDenseNonclosedRange.lean`
 
 with separately reviewed theorems for:
 

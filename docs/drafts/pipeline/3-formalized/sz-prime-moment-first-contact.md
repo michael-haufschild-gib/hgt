@@ -59,8 +59,8 @@ min(U_N,-1) is a deep descent, contradicting statement4.
 
 ## Audit
 
-- Leaf: `formal/GaloisForLFunctions/RHTower/CCMPrimeMomentFirstContact.lean`.
-- Final foreground audit57414: `lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeMomentFirstContact.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeMomentFirstContact.olean`, exit0, no diagnostics.
+- Leaf: `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentFirstContact.lean`.
+- Final foreground audit57414: `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentFirstContact.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentFirstContact.olean`, exit0, no diagnostics.
 - Axiom audit24541: all9 public declarations; only `propext`, `Classical.choice`, `Quot.sound`; exit0.
 - One import in `RHTower.lean`; no umbrella build. No custom axioms,
   admissions, numerical experiments, or heartbeat changes.

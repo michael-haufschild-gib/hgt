@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MFreeLadder
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
 import GaloisForLFunctions.RHTower.CompletePositiveKolchinFreeRiemannResolution
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 

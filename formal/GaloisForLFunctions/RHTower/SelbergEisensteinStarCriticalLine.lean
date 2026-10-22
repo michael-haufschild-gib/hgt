@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergEisensteinCoefficientSeries
 import GaloisForLFunctions.RHTower.SelbergKernelBetaIntegral
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselOrderExteriorEnvelope
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMBesselOrderExteriorEnvelope
 
 open Complex UpperHalfPlane Metric Filter Topology
 open scoped MatrixGroups FourierTransform

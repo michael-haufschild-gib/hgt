@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-gamma-tensor-square-mate-identification.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerCalderonWittGammaTensorSquareMateIdentification`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittGammaTensorSquareMateIdentification`
 
 ## Formal result
 

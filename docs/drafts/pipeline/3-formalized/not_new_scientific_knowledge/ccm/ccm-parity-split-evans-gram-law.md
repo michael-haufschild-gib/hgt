@@ -108,7 +108,7 @@ infrastructure, not new scientific knowledge.
 
 **Superseded, 2026-08-03.**  The previous "wrapper-only, no Lean file" decision is retired: the
 whole linear-algebraic content `(1)`--`(6)` is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMParityInvolutionGrading.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMParityInvolutionGrading.lean`.
 
 - `parityPlus J`, `parityMinus J`, **`isCompl_parity`** — the splitting `F = F^+ ⊕ F^-` for any
   involution, with the explicit halves `(v ± J v)/2`.

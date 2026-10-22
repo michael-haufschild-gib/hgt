@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMarkedSecantMidpointLorentzCompletion.lean`
 
 ## Formal theorem surface
 
@@ -70,7 +70,7 @@ RH is not claimed proved.
 ## Verification
 
 - Direct Lean check: passed with
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiMarkedSecantMidpointLorentzCompletion.lean`.
 - Final targeted SOTA build: passed with
   `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` (9193 jobs).
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`; no project axiom or RH premise.

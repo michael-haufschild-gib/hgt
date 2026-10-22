@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.TensorFractionRingDomain
 import GaloisForLFunctions.HTGeometry.TensorProductAlgClosedFieldDomain
-import GaloisForLFunctions.HTGeometry.CriticalObservationField
-import GaloisForLFunctions.HTGeometry.CriticalRawCoordinateValuation
+import GaloisForLFunctions.HTGeometry.Critical.Observation.Field
+import GaloisForLFunctions.HTGeometry.Critical.RawCoordinate.Valuation
 import GaloisForLFunctions.HTGeometry.CriticalGenericArc
 
 /-!

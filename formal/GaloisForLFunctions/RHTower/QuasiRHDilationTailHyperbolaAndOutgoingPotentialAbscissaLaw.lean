@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.QuasiRHQuotientHeadAndFiniteContactAbscissaLaw
 import GaloisForLFunctions.RHTower.DivisorSmoothSquareMaximum
 import GaloisForLFunctions.RHTower.HomothetyEigenchannelsAndSecondCesaroDivisorBridge
-import GaloisForLFunctions.RHTower.SuzukiCompletedOutgoingDilationBalance
-import GaloisForLFunctions.RHTower.SuzukiEulerianOutgoingChargeRigidity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCompletedOutgoingDilationBalance
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiEulerianOutgoingChargeRigidity
 
 /-!
 # Quasi-RH Abscissa Laws II: High-Dilation Tails, Small-Quotient Hyperbola Duality, and Monotone Convex Prime Potentials

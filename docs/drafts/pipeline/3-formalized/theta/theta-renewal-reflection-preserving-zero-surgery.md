@@ -5,7 +5,7 @@
 - **Type:** source-class countermodel and exact mass-preserving interpolation theorem
 - **Routes:** STC, CSB, U; theta one-port interface
 - **Status:** [PROVED HERE ON PAPER] [FORMALIZED IN LEAN] [NOT AN RH PROOF]
-- **Dependencies:** [Literal renewal factorization](../../3-formalized/theta/theta-renewal-phase-cosh-factorization.md), [all-shift theta Fourier identity](../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceSpectrumExact.lean), and [horizontal Xi decay](../../../../../formal/GaloisForLFunctions/RHTower/XiHorizontalStripDecay.lean).
+- **Dependencies:** [Literal renewal factorization](../../3-formalized/theta/theta-renewal-phase-cosh-factorization.md), [all-shift theta Fourier identity](../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceSpectrumExact.lean), and [horizontal Xi decay](../../../../../formal/GaloisForLFunctions/RHTower/XiHorizontalStripDecay.lean).
 - **Scope:** The construction changes the theta source. It neither gives an off-axis zero of literal Xi nor proves RH.
 
 ## Reinterpretation and theorem

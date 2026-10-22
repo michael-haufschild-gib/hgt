@@ -154,7 +154,7 @@ can Paugam cup/trace and positive Hodge transport be meaningfully attempted.
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.DeningerRationalWittGaugeFirstSuspensionDescent`.
+`GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittGaugeFirstSuspensionDescent`.
 
 Capstone:
 `deningerPrimeComplexifiedRationalWitt_exists_cofinalGaugeTensorClass`.

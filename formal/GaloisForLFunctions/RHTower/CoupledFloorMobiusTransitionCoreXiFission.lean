@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CoupledFloorMobiusAffineRieszHandoff
-import GaloisForLFunctions.RHTower.SuzukiTransitionCoreAbelSourceMultiGateWeld
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreAbelSourceMultiGateWeld
 
 /-!
 # Cofinal coupled-floor source landing in the aligned Xi transition core

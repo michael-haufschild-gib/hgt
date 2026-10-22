@@ -148,7 +148,7 @@ candidate new result. External novelty verification remains required before publ
 ## Lean certificate
 
 File:
-`formal/GaloisForLFunctions/RHTower/DeningerGammaSixBigWittStokesSource.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixBigWittStokesSource.lean`
 
 Capstone:
 `RHTower.DAC_DENINGER_GAMMA_SIX_BIG_WITT_STOKES_SOURCE`
@@ -168,8 +168,8 @@ unproved premise is introduced.
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerGammaSixBigWittStokesSource.lean` passed.
-- Targeted `lake build GaloisForLFunctions.RHTower.DeningerGammaSixBigWittStokesSource` passed;
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixBigWittStokesSource.lean` passed.
+- Targeted `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixBigWittStokesSource` passed;
   no umbrella or full build was run.
 - Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Repository lint reports no issue in this module and confirms umbrella reachability. It exits

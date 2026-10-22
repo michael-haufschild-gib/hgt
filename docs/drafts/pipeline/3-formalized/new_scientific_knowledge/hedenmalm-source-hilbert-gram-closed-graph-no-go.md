@@ -212,7 +212,7 @@ Primary source:
 
 ## Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmSourceHilbertGramClosedGraphNoGo.lean` proves:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSourceHilbertGramClosedGraphNoGo.lean` proves:
 
 1. `LinearPMap.IsClosable.eq_zero_of_tendsto_graph`;
 2. `hilbertGram_leftRadical_eq_ker`;

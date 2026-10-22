@@ -4,7 +4,7 @@
 - **Date:** 2026-09-11
 - **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (Lean); 29 theorems checked and axiom-audited
-- **Module:** `GaloisForLFunctions.RHTower.DeningerGammaSixFixedDilationTailReader`
+- **Module:** `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixFixedDilationTailReader`
 - **Source:** [source-selected completion attack](../1-in-progress/route-l-source-selected-completion-attack.md), C27
 - **Statement:** The actual complete integral correction, cut off in its original integer coordinate, has an explicit nonzero normalized second boundary variation at the fixed dilation six. Every finite diagonal repair has the same eventual normalized readout.
 - **RH status:** unproved; comparison with the fixed physical reader at the original horizontal anchor is still missing.
@@ -135,7 +135,7 @@ construction therefore supplies no physical-reader comparison here.
 
 All 29 theorems passed `lake env lean /tmp/route_l_fixed_six_tail.lean`
 without warnings. The targeted final command
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixFixedDilationTailReader`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixFixedDilationTailReader`
 passed (171 seconds for the new module). All 29 reports from
 `lake env lean /tmp/route_l_fixed_six_axioms.lean` contain only
 `propext`, `Classical.choice`, and `Quot.sound`. The module is wired

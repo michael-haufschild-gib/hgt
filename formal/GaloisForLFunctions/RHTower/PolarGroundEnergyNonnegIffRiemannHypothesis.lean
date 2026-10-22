@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilPrimeMeasureRigidityFinite
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarBombieriYoshida
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarBombieriYoshida
 import GaloisForLFunctions.RHTower.PoleVanishingWeilPositivityPrimeTwo
 
 /-!

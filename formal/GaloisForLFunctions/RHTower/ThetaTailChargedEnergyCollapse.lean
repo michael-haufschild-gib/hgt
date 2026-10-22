@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspChargedSourceMeanSquare
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargedSourceMeanSquare
 import GaloisForLFunctions.RHTower.ThetaTailReflectedCauchyObstruction
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 

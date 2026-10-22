@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ReciprocalScaleDrivenAction
-import GaloisForLFunctions.RHTower.ThetaCuspPrimeArchSourceEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPrimeArchSourceEquation
 
 /-!
 # The prime--Gamma equation as a canonical Noether system

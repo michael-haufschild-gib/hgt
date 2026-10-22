@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiModelSpaceConjugation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiModelSpaceConjugation
 import GaloisForLFunctions.HTGeometry.PaleyWienerHalfPlane
 
 noncomputable section

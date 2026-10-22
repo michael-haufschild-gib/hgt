@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilWorkExposingRayLogKernel
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarInverse
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarInverse
 import GaloisForLFunctions.RHTower.ResolventDivisionDecay
 
 /-!

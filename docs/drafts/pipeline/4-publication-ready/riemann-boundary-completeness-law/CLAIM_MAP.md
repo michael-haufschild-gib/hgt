@@ -29,7 +29,7 @@ is internal audit metadata.
 |---|---|
 | every observer uniquely splits into absolute orientation and relative Green transgression | `HTGeometry/GreenObservationSplittingLaw.lean`: `greenObservation_primary_add_secondary`, `greenObservation_primary_secondary_unique` |
 | boundary-blind iff unique factorization through orientation trace | `HTGeometry/OrientationTraceFactorizationLaw.lean`: `orientationTrace_factorization_unique_iff`; also `greenObservation_traceFactorization_iff_secondary_eq_zero` |
-| local and all-prime Calderón--Witt source instantiation | `RHTower/DeningerCalderonWittOrientationTransgressionCompleteness.lean`: local/global `...OrientationTransgressionCompleteness` and primary/secondary theorems |
+| local and all-prime Calderón--Witt source instantiation | `RHTower/Deninger/DeningerCalderonWittOrientationTransgressionCompleteness.lean`: local/global `...OrientationTransgressionCompleteness` and primary/secondary theorems |
 | paper-level conjunction with completed source law | `RHTower/RiemannOrientationTransgressionPaperCertificate.lean`: `riemannOrientationTransgressionPaperCore` |
 
 ## Completion boundary

@@ -483,24 +483,24 @@ ALL 20 `candidate_lemmas` retained records:
 |---|---|---|
 |RC0|RHTower.logarithmicCoprimeCross — formal/GaloisForLFunctions/RHTower/LogarithmicCoprimeEnergy.lean:23–30|Wrong arithmetic coprime-cross observable.|
 |RC1|GaloisForLFunctions.RHTower.endpointLog_crossing_le_twenty_div_seven_c — formal/GaloisForLFunctions/RHTower/ProlateRadialEndpointBounds.lean:237–264|Endpoint crossing bound for a different force.|
-|RC2|RHTower.logSymbolKernel_cross_le — formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCommutatorKernel.lean:198–215|Carleman quadratic crossing envelope; not D history.|
-|RC3|RHTower.thetaWallRatioAutocorrelation — formal/GaloisForLFunctions/RHTower/ThetaCuspWallBohrTopology.lean:35–39|Theta-wall autocorrelation; different carrier.|
+|RC2|RHTower.logSymbolKernel_cross_le — formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanCommutatorKernel.lean:198–215|Carleman quadratic crossing envelope; not D history.|
+|RC3|RHTower.thetaWallRatioAutocorrelation — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWallBohrTopology.lean:35–39|Theta-wall autocorrelation; different carrier.|
 |RC4|RHTower.liEvenCrossLogMassFirstCurrent_real — formal/GaloisForLFunctions/RHTower/LiEvenCrossEulerCurrentBridge.lean:69–80|Log-mass first current, not the literal P/K/D clock.|
 |RC5|RHTower.liEvenCrossRealLogMassFirstCurrent — formal/GaloisForLFunctions/RHTower/LiEvenCrossRealEulerJetBridge.lean:41–44|Real Euler-jet current, different observable.|
-|RC6|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection_eq_centeredRate_mul — formal/GaloisForLFunctions/RHTower/HedenmalmStokesOrientedFirstTraceQuantizedJump.lean:91–101|Moving-horizon connection coordinate; no D source bridge.|
-|RC7|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection_leftWindow_eq_tail — formal/GaloisForLFunctions/RHTower/HedenmalmThetaMovingHorizonWardCarrier.lean:300–306|Moving-horizon Ward left/tail identity; no actual D inequality.|
+|RC6|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection_eq_centeredRate_mul — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesOrientedFirstTraceQuantizedJump.lean:91–101|Moving-horizon connection coordinate; no D source bridge.|
+|RC7|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection_leftWindow_eq_tail — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMovingHorizonWardCarrier.lean:300–306|Moving-horizon Ward left/tail identity; no actual D inequality.|
 |RC8|RHTower.liEvenCrossLogMassFirstCurrent — formal/GaloisForLFunctions/RHTower/LiEvenCrossEulerCurrentBridge.lean:66–69|Log-mass current definition; no inverse orientation.|
-|RC9|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection — formal/GaloisForLFunctions/RHTower/HedenmalmThetaMovingHorizonWardCarrier.lean:253–257|Horizon connection definition, different clock.|
+|RC9|RHTower.HedenmalmThetaSource.thetaMovingHorizonConnection — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMovingHorizonWardCarrier.lean:253–257|Horizon connection definition, different clock.|
 |RC10|RHTower.crossover_le — formal/GaloisForLFunctions/RHTower/BorelCaratheodoryCeiling.lean:92–99|Elementary crossover logarithm estimate.|
 |RC11|RHTower.thetaLocalizationChainWeight_le_four — formal/GaloisForLFunctions/RHTower/ThetaLocalizationChainWeight.lean:54–60|Theta localization weight bound, different quadratic source.|
 |RC12|RHTower.thetaCouplingA_one — formal/GaloisForLFunctions/RHTower/ThetaSeamCouplingFamily.lean:348–352|Theta coupling-state identity, different family.|
-|RC13|RHTower.thetaLocalizationWeight_le_four — formal/GaloisForLFunctions/RHTower/CCMThetaSmoothLocalization.lean:73–79|Smooth localization weight bound; admission only.|
+|RC13|RHTower.thetaLocalizationWeight_le_four — formal/GaloisForLFunctions/RHTower/CCM/CCMThetaSmoothLocalization.lean:73–79|Smooth localization weight bound; admission only.|
 |RC14|RHTower.thetaLocalizationChainWeight — formal/GaloisForLFunctions/RHTower/ThetaLocalizationChainWeight.lean:23–26|Localization weight definition; no correlation sign.|
 |RC15|RHTower.ThetaSourceWard.thetaContinuousLinkMeasure — formal/GaloisForLFunctions/RHTower/ThetaGammaPolarScalingEnergy.lean:19–22|Polar Gamma positive product carrier; no actual D bridge.|
-|RC16|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCMRationalAdelicClassSpaceSourceAction.lean:29–30|Abbreviation for crossed additive-group completion; returned type is insufficient, no applicability inferred.|
-|RC17|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCMRationalAdelicEndpointReal.lean:23–24|Abbreviation for crossed additive-group completion; same insufficient returned type.|
-|RC18|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCMRationalAdelicCrossedContinuousTraceNormField.lean:21–23|Abbreviation for crossed additive-group completion; same insufficient returned type.|
-|RC19|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCMRationalAdelicCyclicRestrictionLinear.lean:22–25|Abbreviation for crossed additive-group completion; same insufficient returned type.|
+|RC16|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicClassSpaceSourceAction.lean:29–30|Abbreviation for crossed additive-group completion; returned type is insufficient, no applicability inferred.|
+|RC17|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicEndpointReal.lean:23–24|Abbreviation for crossed additive-group completion; same insufficient returned type.|
+|RC18|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicCrossedContinuousTraceNormField.lean:21–23|Abbreviation for crossed additive-group completion; same insufficient returned type.|
+|RC19|GaloisForLFunctions.RHTower.Crossed — formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicCyclicRestrictionLinear.lean:22–25|Abbreviation for crossed additive-group completion; same insufficient returned type.|
 
 ALL 20 `source_arguments` retained records:
 
@@ -508,24 +508,24 @@ ALL 20 `source_arguments` retained records:
 |---|---|---|
 |RS0|RHTower.l2Amplification_primeCoordinate_actualThetaPacket — formal/GaloisForLFunctions/RHTower/JointAncestryCriticalSingletonPrimeMultiplicationEscape.lean:210–223|Prime-coordinate tensor packet, wrong observable.|
 |RS1|GaloisForLFunctions.HTGeometry.gomesQubitOrbitDerivative — formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitConnection.lean:108–113|Qubit-orbit derivative definition.|
-|RS2|RHTower.quantumStratonovichCayleyTransition_theta_eq — formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean:242–254|Quantum Stratonovich/Cayley transition; mismatch.|
-|RS3|RHTower.HedenmalmThetaSource.thetaSourceSignedStageCorrection — formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualStageGreenBalance.lean:22–26|Finite signed theta-stage operator; not complete P.|
+|RS2|RHTower.quantumStratonovichCayleyTransition_theta_eq — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean:242–254|Quantum Stratonovich/Cayley transition; mismatch.|
+|RS3|RHTower.HedenmalmThetaSource.thetaSourceSignedStageCorrection — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualStageGreenBalance.lean:22–26|Finite signed theta-stage operator; not complete P.|
 |RS4|GaloisForLFunctions.HTGeometry.gomesQubitOrbitBias — formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean:27–30|Qubit-orbit bias; mismatch.|
 |RS5|RHTower.thetaCuspComplexSource — formal/GaloisForLFunctions/RHTower/ThetaWignerCenterMix.lean:91–94|Actual theta complex cast, analytic admission only.|
-|RS6|RHTower.thetaCuspFullLogJetEight — formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthLogJets.lean:25–30|Finite eighth log jet; no all-order history bound.|
-|RS7|RHTower.thetaCuspFullLogJetSix — formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthLogJets.lean:23–28|Finite sixth log jet; same limitation.|
-|RS8|RHTower.HedenmalmThetaSource.thetaSourceSignedStageFinMatrix — formal/GaloisForLFunctions/RHTower/HedenmalmThetaHermiteTraceFlag.lean:32–38|Finite signed stage matrix; different carrier.|
+|RS6|RHTower.thetaCuspFullLogJetEight — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLogJets.lean:25–30|Finite eighth log jet; no all-order history bound.|
+|RS7|RHTower.thetaCuspFullLogJetSix — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthLogJets.lean:23–28|Finite sixth log jet; same limitation.|
+|RS8|RHTower.HedenmalmThetaSource.thetaSourceSignedStageFinMatrix — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean:32–38|Finite signed stage matrix; different carrier.|
 |RS9|GaloisForLFunctions.HTGeometry.gomesSSHCarrier — formal/GaloisForLFunctions/HTGeometry/GomesTwoBandAdjointMass.lean:22–26|Gomes SSH Bloch carrier; mismatch.|
-|RS10|RHTower.HedenmalmThetaSource.thetaSourceSignedStageMatrix — formal/GaloisForLFunctions/RHTower/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean:35–40|Canonical signed theta-stage matrix; different carrier.|
+|RS10|RHTower.HedenmalmThetaSource.thetaSourceSignedStageMatrix — formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean:35–40|Canonical signed theta-stage matrix; different carrier.|
 |RS11|GaloisForLFunctions.HTGeometry.gomesFockPhase_vector_moments — formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:27–37|Fock phase-gauge vector moments; different source.|
 |RS12|GaloisForLFunctions.HTGeometry.gomesFockZeroPhase_vector_moments — formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:60–70|Fock zero-phase moments; same mismatch.|
 |RS13|RHTower.thetaBilateralLaplace — formal/GaloisForLFunctions/RHTower/ThetaTailFirstMomentKreinTransform.lean:20–24|Actual bilateral theta Laplace definition; admission only.|
 |RS14|RHTower.liEvenCrossActualClockBorelCoefficient — formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockBorelSource.lean:18–22|EXACT literal actual nu/factorial B coefficient; used and primary body freshly read.|
 |RS15|GaloisForLFunctions.HTGeometry.egbFixedCharge_enthalpy_jump — formal/GaloisForLFunctions/HTGeometry/GaussBonnetCriticalEndpoint.lean:102–113|Thermodynamic enthalpy jump; mismatch.|
-|RS16|RHTower.continuous_thetaCuspSourceTerm_one — formal/GaloisForLFunctions/RHTower/ThetaCuspKernelLogConcavity.lean:870–876|Actual first-atom continuity; source admission only.|
-|RS17|RHTower.thetaCuspSchwartzReal_apply — formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartz.lean:371–375|Actual Schwartz representative; source admission only.|
-|RS18|RHTower.ccmLocalPotentialLocalizationDefect_eq — formal/GaloisForLFunctions/RHTower/CCMThetaPhaseLocalPotential.lean:40–50|Actual Weil IMS localization, different quadratic source; full ready method object read.|
-|RS19|RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular — formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthGeneralModularClosure.lean:18–26|Finite eighth general modular curvature identity; no full moving D comparison.|
+|RS16|RHTower.continuous_thetaCuspSourceTerm_one — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspKernelLogConcavity.lean:870–876|Actual first-atom continuity; source admission only.|
+|RS17|RHTower.thetaCuspSchwartzReal_apply — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartz.lean:371–375|Actual Schwartz representative; source admission only.|
+|RS18|RHTower.ccmLocalPotentialLocalizationDefect_eq — formal/GaloisForLFunctions/RHTower/CCM/CCMThetaPhaseLocalPotential.lean:40–50|Actual Weil IMS localization, different quadratic source; full ready method object read.|
+|RS19|RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular — formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthGeneralModularClosure.lean:18–26|Finite eighth general modular curvature identity; no full moving D comparison.|
 
 ALL 10 `prose` retained records:
 
@@ -547,11 +547,11 @@ ALL 10 `source_passages` retained records:
 |ID|Exact returned source/name/range|Disposition|
 |---|---|---|
 |RT0|formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:1–77|Full supplied Fock phase-gauge block, different moments.|
-|RT1|formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72|Finite-stage real-divisor receiver ASSUMES real divisors; not an actual sign producer.|
+|RT1|formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72|Finite-stage real-divisor receiver ASSUMES real divisors; not an actual sign producer.|
 |RT2|formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:73–149|Full supplied Fock zero-phase/rotation block; mismatch.|
 |RT3|formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean:1–90|Full supplied qubit Gibbs orbit block; mismatch.|
-|RT4|formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean:165–179|Actual restricted Weil IMS, different quadratic source.|
-|RT5|formal/GaloisForLFunctions/RHTower/DeningerGammaSixActualGammaBoundaryLogTransgression.lean:199–252|Tensor Gamma Wold log transgression; not P.|
+|RT4|formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean:165–179|Actual restricted Weil IMS, different quadratic source.|
+|RT5|formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixActualGammaBoundaryLogTransgression.lean:199–252|Tensor Gamma Wold log transgression; not P.|
 |RT6|formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldConvergentLogHolonomy.lean:117–224|Prime heat/Cassini holonomy full supplied block; different observable.|
 |RT7|formal/GaloisForLFunctions/RHTower/LogarithmicDilationPrimitiveQuadrature.lean:1–84|Generic logarithmic dilation quadrature; no actual source identification.|
 |RT8|formal/GaloisForLFunctions/RHTower/XiHeatCassiniWoldConvergentLogHolonomy.lean:217–242|Prime holonomy scalar log mesh block; same mismatch.|

@@ -11,10 +11,10 @@
 - `formal/GaloisForLFunctions/HTGeometry/HyperbolicModulus.lean`
 - `formal/GaloisForLFunctions/HTGeometry/LowerBoundedSourceResolvent.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PositiveOperatorInner.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveDefectBoundary.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJetSource.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeShiftEscape.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveDefectBoundary.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJet.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJetSource.lean`
 
 ## Formal theorem surface
 
@@ -67,7 +67,7 @@ GaloisForLFunctions.HTGeometry.tInner_shift_floor_eq_shift
 GaloisForLFunctions.HTGeometry.tInner_shift_lower_bound
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiNegativeShiftEscape`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiNegativeShiftEscape`:
 
 ```text
 GaloisForLFunctions.RHTower.exists_shift_threshold_carrier_close
@@ -80,7 +80,7 @@ GaloisForLFunctions.RHTower.suzuki_negativeShift_escape
 GaloisForLFunctions.RHTower.suzuki_negativeShift_escape_freeSource
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectiveDefectBoundary`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiFreeLivsic_tendstoUniformlyOn_upperStrip

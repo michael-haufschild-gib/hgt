@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadWallGramLightConeReflectionFiber`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadWallGramLightConeReflectionFiber`.
 This retires direct scalar transport of wall-light orientation through the completed Γ-wall
 producer. The positive survivor is an exact parity-sector classification pointing to an odd
 holonomy/Schur carrier.

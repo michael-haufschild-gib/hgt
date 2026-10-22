@@ -4,7 +4,7 @@ Status: analytical source-only kernel construction; formal Green/admission work 
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The immediate target is the unknown causal pulse horizon value in equations (6)–(7) of [hb-causal-onset-contact-cancellation.md](../../hb-causal-onset-contact-cancellation.md). The candidate here constructs that value from the original full angular source, without an angular eigenprojection or an assigned horizon value.
+The immediate target is the unknown causal pulse horizon value in equations (6)–(7) of [hb-causal-onset-contact-cancellation.md](hb-causal-onset-contact-cancellation.md). The candidate here constructs that value from the original full angular source, without an angular eigenprojection or an assigned horizon value.
 
 ## Kernel derived from the original wave equation
 
@@ -220,7 +220,7 @@ B_V=(partial_r-partial_q)T_V/2.
 
 The first identity follows by integrating the time derivative of the product; its lower endpoint vanishes. No terminal term has been dropped.
 
-Let `k_s(q)=coexact(K_s(q)Q)` and `k_t(q)=coexact(K_t(q)Q)` be the constructed source-only covector kernels. Let `S_s,S_t` be the literal horizon-source coefficients from equation (2) of [the source contact reduction](../../hb-causal-onset-contact-cancellation.md), so the original sources are `h_s S_s` and `h_t S_t`. On a finite angular region `Omega`, use its actual bilinear covector pairing `inner_Omega`, set `A=D-2`, and define
+Let `k_s(q)=coexact(K_s(q)Q)` and `k_t(q)=coexact(K_t(q)Q)` be the constructed source-only covector kernels. Let `S_s,S_t` be the literal horizon-source coefficients from equation (2) of [the source contact reduction](hb-causal-onset-contact-cancellation.md), so the original sources are `h_s S_s` and `h_t S_t`. On a finite angular region `Omega`, use its actual bilinear covector pairing `inner_Omega`, set `A=D-2`, and define
 
 ```
 B_st(q,r)=inner_Omega(k_s(q),A k_t(r)),

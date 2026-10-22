@@ -62,7 +62,7 @@ In `HedenmalmCriticalFeatureSourceAliasBudget.lean`:
 
 ## Verification
 
-- `lake build GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureSourceAliasBudget`: PASS
+- `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureSourceAliasBudget`: PASS
   (`13735/13735`).
 - `#print axioms` for all 11 public declarations: only `propext`, `Classical.choice`, `Quot.sound`.
 - Frontier map and concurrently edited Route HCF files were not modified.

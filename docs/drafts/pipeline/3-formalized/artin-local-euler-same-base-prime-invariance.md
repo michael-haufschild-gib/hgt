@@ -9,7 +9,7 @@
 
 ## Exact formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeDescent.lean` proves
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerPrimeDescent.lean` proves
 
 ```text
 frobeniusInertiaEulerPolynomial_eq_of_under_eq:
@@ -24,8 +24,8 @@ Mathlib objects.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinLocalEulerPrimeDescent.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinLocalEulerPrimeDescent` passed; targeted leaf only.
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerPrimeDescent.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinLocalEulerPrimeDescent` passed; targeted leaf only.
 - `/tmp/ArtinLocalEulerPrimeDescentAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for the final equality and all supporting public
   declarations.

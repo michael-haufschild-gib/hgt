@@ -1,12 +1,18 @@
 {
   "schema_version": 1,
-  "benchmark_version": "2026-09-09.2",
+  "benchmark_version": "2026-10-22.1",
   "evaluator_version": 2,
   "release_policy": {
     "heldout_split": "test",
     "minimum_cases_per_gate_kind": 2,
     "minimum_heldout_families": 2,
-    "required_runs": ["lexical", "hybrid-statements", "hybrid", "deep-once", "deep"],
+    "required_runs": [
+      "lexical",
+      "hybrid-statements",
+      "hybrid",
+      "deep-once",
+      "deep"
+    ],
     "direct": "Strict paired mean direct recall@20 improvement: deep over lexical.",
     "exact": "Preserve every lexical exact hit in every nonlexical control; an empty lexical success set cannot pass.",
     "methods": "Strict raw source analogy recall@20 improvement: full-method hybrid over statement-only hybrid; generated proposals are scored separately.",
@@ -38,7 +44,7 @@
           "line": 239,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_horizon_classification",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         }
       ],
       "rationale": "Density trichotomy yields no roots, one critical root, or exactly two supercritical roots."
@@ -74,7 +80,7 @@
           "line": 239,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_horizon_classification",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         }
       ],
       "rationale": "Literal identifier regression."
@@ -92,7 +98,7 @@
           "line": 239,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_horizon_classification",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         },
         {
           "relpath": "formal/GaloisForLFunctions/HTGeometry/EinastoEnergyConditions.lean",
@@ -126,7 +132,7 @@
           "line": 126,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_critical_zero_iff",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         }
       ],
       "rationale": "Critical density equality versus a strictly positive density excess.",
@@ -137,7 +143,7 @@
           "line": 185,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_supercritical_exactly_two",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25",
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287",
           "reason": "Requires density critical+exp(v); gives two roots instead of the unique critical root."
         }
       ]
@@ -155,7 +161,7 @@
           "line": 115,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoCriticalLogDensity_calibration",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         },
         {
           "relpath": "formal/GaloisForLFunctions/HTGeometry/EinastoHorizonClassification.lean",
@@ -163,7 +169,7 @@
           "line": 141,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_strictAnti_left",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         },
         {
           "relpath": "formal/GaloisForLFunctions/HTGeometry/EinastoHorizonClassification.lean",
@@ -171,7 +177,7 @@
           "line": 148,
           "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_strictMono_right",
           "theorem_family": "einasto",
-          "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+          "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
         }
       ],
       "rationale": "Calibration supplies critical value; each monotonicity theorem supplies injectivity on its side. Existence needs additional continuity and boundary obligations.",
@@ -183,7 +189,7 @@
             "line": 115,
             "qualified_name": "GaloisForLFunctions.HTGeometry.einastoCriticalLogDensity_calibration",
             "theorem_family": "einasto",
-            "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+            "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
           }
         ],
         [
@@ -193,7 +199,7 @@
             "line": 141,
             "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_strictAnti_left",
             "theorem_family": "einasto",
-            "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+            "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
           }
         ],
         [
@@ -203,7 +209,7 @@
             "line": 148,
             "qualified_name": "GaloisForLFunctions.HTGeometry.einastoMetric_strictMono_right",
             "theorem_family": "einasto",
-            "source_hash": "4ac50695dbd88387995047a753a4a8d5228b6ce058758980b302b35f063c2e25"
+            "source_hash": "56b4996d0e051439ad227d124e4525f69a45f657a2fa2b2693a03c02ac7f7287"
           }
         ]
       ]
@@ -595,7 +601,7 @@
           "line": 27,
           "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
           "theorem_family": "evaporation",
-          "source_hash": "5ae6ed7435cd0cde763fbbb962e73e1426487021f593f2f563b723450516f273"
+          "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
         }
       ],
       "rationale": "Landmarks: preterminal ODE, continuous terminal zero, exact sum of shell durations. Incomplete relevance set."
@@ -809,7 +815,7 @@
             "line": 27,
             "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
             "theorem_family": "evaporation",
-            "source_hash": "5ae6ed7435cd0cde763fbbb962e73e1426487021f593f2f563b723450516f273"
+            "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
           },
           "source_subject": "random gate-word probability",
           "target_subject": "black-hole evaporation shells",
@@ -840,7 +846,7 @@
           "line": 27,
           "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
           "theorem_family": "evaporation",
-          "source_hash": "5ae6ed7435cd0cde763fbbb962e73e1426487021f593f2f563b723450516f273"
+          "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
         }
       ],
       "rationale": "Reverse geometric-series transfer with additional combinatorial grouping obligations.",
@@ -852,7 +858,7 @@
             "line": 27,
             "qualified_name": "RHTower.tsum_schwarzschildEvaporationDyadicShellDuration",
             "theorem_family": "evaporation",
-            "source_hash": "5ae6ed7435cd0cde763fbbb962e73e1426487021f593f2f563b723450516f273"
+            "source_hash": "ccb959c65b5e03b07e90f1e3cd7e1377f755aec3e62c835354f340884759380e"
           },
           "target": {
             "relpath": "formal/GaloisForLFunctions/HTGeometry/SelectionSynthesisDivergence.lean",

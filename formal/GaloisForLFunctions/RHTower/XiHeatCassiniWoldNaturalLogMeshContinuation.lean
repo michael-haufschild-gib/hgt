@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.RadialGramOffDiagonalDecay
 import GaloisForLFunctions.RHTower.Sieve.LogLogTelescope
 import GaloisForLFunctions.HTGeometry.CauchyDominatedIntegralHolomorphy
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevLineContinuity
-import GaloisForLFunctions.RHTower.DeningerPoissonMellin
+import GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMellin
 
 /-!
 # Natural integer log-mesh continuation

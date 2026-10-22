@@ -103,7 +103,7 @@ def fzzScreeningPlaneContinuedGamma (α β : ℝ) : ℝ :=
   Real.pi*Real.Gamma (-α/2-β/2-1)*Real.Gamma (1+α/2)*Real.Gamma (1+β/2) /
     (Real.Gamma (-α/2)*Real.Gamma (-β/2)*Real.Gamma (2+α/2+β/2))
 
-theorem original_plane_gamma (α β : ℝ) (ha : -2 < α) (hb : -2 < β)
+private theorem original_plane_gamma (α β : ℝ) (ha : -2 < α) (hb : -2 < β)
     (hs : α+β < -2) : Integrable (fzzScreeningPlaneKernel α β) ∧
       (∫ z : ℂ, fzzScreeningPlaneKernel α β z) = fzzScreeningPlaneContinuedGamma α β := by
   obtain ⟨x,y,hx,hy⟩ := (fzzScreeningBeta_chart_iff (-α/2) (-β/2)).mpr

@@ -121,7 +121,7 @@ asymptoticBohrModel_unique
 Xi/source module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrTorelli.lean
 ```
 
 Capstones:
@@ -136,8 +136,8 @@ Both theorem-area umbrellas import the modules. Green audit:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/SummableSpectrumScrewBohrCoefficients.lean
-lake env lean GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean
-lake build GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrTorelli
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrTorelli.lean
+lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockAsymptoticBohrTorelli
 lake env lean /tmp/ccm_abt_axioms.lean
 ```
 

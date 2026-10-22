@@ -226,7 +226,7 @@ New infrastructure (absent from mathlib, built for this card and reusable):
   (`solutionSpace_eq_modeSpace`), and there are exactly `deg L` of them
   (`card_charIndex`), so **`finrank_solutionSpace : finrank ℂ (solutionSpace L) = L.natDegree`**.
 
-Card module: `formal/GaloisForLFunctions/RHTower/CCMCharacteristicCrossingModes.lean`
+Card module: `formal/GaloisForLFunctions/RHTower/CCM/CCMCharacteristicCrossingModes.lean`
 (wired into `formal/GaloisForLFunctions/RHTower.lean`):
 
 - `finite_realZeroSet_of_tendsto_atTop` — **equation (2)**: a real-analytic symbol tending to `+∞`

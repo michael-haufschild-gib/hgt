@@ -127,7 +127,7 @@ source-faithful no-cancellation/weight-selection theorem.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhaseSensitiveReflectedPairCancellationNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhaseSensitiveReflectedPairCancellationNoGo`.
 
 - The signed Deninger Ward charge and calibrated actual BM chiral amplitude are proved exactly odd
   under functional-equation reflection.
@@ -143,7 +143,7 @@ Formalized in
   the canonical nonzero seed.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhaseSensitiveReflectedPairCancellationNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhaseSensitiveReflectedPairCancellationNoGo`
 passed all 12,004 jobs. Representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC88 finding. Module is wired into the `GaloisForLFunctions.RHTower` umbrella without running a

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryPoleGluing
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
 import GaloisForLFunctions.RHTower.PrimeDiagonalSingularValues
 
 /-!

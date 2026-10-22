@@ -29,6 +29,6 @@ For the actual HB orbit, existence of projectively descended complex-bilinear di
 ## Verification
 
 - Direct `lake env lean` check: PASS.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo`: PASS.
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo`: PASS.
 - Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella wired.  Global lint reports only unrelated concurrently unwired modules; this module is reachable.

@@ -5,10 +5,10 @@
 - **Claim:** `[PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-critical-radical-anchor-finite-head-reduction.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCriticalRadicalAnchor.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiAnnularCriticalPayment.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiAnnularTailSumPayment.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGeneralWitnessAnnularPayment.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalRadicalAnchor.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAnnularCriticalPayment.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAnnularTailSumPayment.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGeneralWitnessAnnularPayment.lean`
   - `formal/GaloisForLFunctions/RHTower/XiAnnularCopyCount.lean` (and its provider chain)
 
 ## Formal content

@@ -109,7 +109,7 @@ The first term in `(8)` is not a positivity remainder chosen after the fact.  It
 skew-Cartesian coordinate of the actual time-ordered prime--Gamma convolution.
 
 **`(5)`--`(6)` are formal as identities**, in
-`formal/GaloisForLFunctions/RHTower/SuzukiVolterraCartesianPhaseDefect.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiVolterraCartesianPhaseDefect.lean`:
 `isSelfAdjoint_volterraSymmetric` and `isSelfAdjoint_volterraPhase` show both Cartesian coordinates
 are self-adjoint for *any* bounded operator, and
 `two_smul_eq_volterraSymmetric_add_I_smul_volterraPhase` is `(6)`.  The response theorems in this
@@ -452,7 +452,7 @@ prime--Gamma causal commutator `(32)` evaluated in marked secant `(28)`.
 
 Formalize Cartesian response algebra, phase homogenization, rank-one Neumann orientation,
 complex marked-secant specialization, and RH source-germ connector in
-`RHTower/SuzukiVolterraCartesianPhaseDefect.lean`.
+`RHTower/Suzuki/SuzukiVolterraCartesianPhaseDefect.lean`.
 
 ## Log
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinGammaSixGuinandWeilContourCarrier
-import GaloisForLFunctions.RHTower.HedenmalmStokesFourthTraceCurvatureBudgetBand
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesFourthTraceCurvatureBudgetBand
 
 /-!
 # Frankenstein Gamma-six contour verified-height tail

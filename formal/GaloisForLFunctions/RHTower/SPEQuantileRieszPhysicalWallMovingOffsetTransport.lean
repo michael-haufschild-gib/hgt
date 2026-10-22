@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicSourceRelativeOffsetIncrement
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicSourceRelativeOffsetIncrement
 
 /-!
 # Moving-offset transport at the physical SP-E wall

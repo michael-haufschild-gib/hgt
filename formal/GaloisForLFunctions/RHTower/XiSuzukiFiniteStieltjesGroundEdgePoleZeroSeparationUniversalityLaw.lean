@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiFiniteStieltjesGroundEdgeExclusionUniversalityLaw
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteStieltjesGroundEdgeExclusionUniversalityLaw
 import GaloisForLFunctions.RHTower.XiSuzukiPoleZeroNormalFormUniversalityLaw
 
 /-!

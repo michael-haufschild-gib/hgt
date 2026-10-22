@@ -79,7 +79,7 @@ fixed-action C5 Jacobian seam theorem was found in the audited literature.
   - `modularThetaC5FixedActionSeamJetElimination`
   - `modularThetaC5FixedActionSeamPolynomialReal_pos_of_mem_physicalChamber`
   - chart transport and source-positive closure theorems
-- `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5JacobianSeamOrientation`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5JacobianSeamOrientation`
   - `thetaCuspC5FixedActionSeamLogValue_pos`
   - `thetaCuspC5FixedAction_direct_survives_velocity_seam_noGo`
 

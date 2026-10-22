@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaDerivativeL1
-import GaloisForLFunctions.RHTower.SuzukiCanonicalL1Translation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalL1Translation
 import Mathlib.MeasureTheory.Group.Integral
 import Mathlib.Topology.MetricSpace.Equicontinuity
 

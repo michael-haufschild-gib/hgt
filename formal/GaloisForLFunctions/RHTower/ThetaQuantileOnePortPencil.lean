@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileFourierQuotient
-import GaloisForLFunctions.RHTower.HedenmalmPinnedBoundaryTwoPort
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPinnedBoundaryTwoPort
 
 /-!
 # The exact one-port pencil of the theta quotient

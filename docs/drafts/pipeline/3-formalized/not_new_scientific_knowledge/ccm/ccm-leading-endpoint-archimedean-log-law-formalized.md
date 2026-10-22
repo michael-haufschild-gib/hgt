@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-leading-endpoint-archimedean-log-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMEndpointArchimedeanLog.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMEndpointArchimedeanLog.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 7 declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

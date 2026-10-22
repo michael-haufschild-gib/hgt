@@ -79,7 +79,7 @@ followed by the noncompact cutoff-face theorem; neither has been claimed.
 
 ## Formalized (2026-09-27)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMRetardedCompactWeakRealization.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMRetardedCompactWeakRealization.lean`
 (namespace `RHTower.D4BMRetardedCompactWeakRealization`):
 
 - `eventPotential q br a ((t,x),z) = originalPotential q br a (t+x) (t-x) z.re z.im`,

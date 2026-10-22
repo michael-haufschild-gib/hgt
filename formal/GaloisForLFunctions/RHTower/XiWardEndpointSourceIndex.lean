@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerDivisorFlow
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorFlow
 import GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetAccretivity
 import GaloisForLFunctions.RHTower.XiThermalOffLineChargeSelfCubicBound
 import GaloisForLFunctions.RHTower.XiWardDiagonalQuantumHeightCapUniversalityLaw

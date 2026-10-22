@@ -121,11 +121,11 @@ Proof: every R>floor(exp T) contributes zero because its first entry is beyond T
 
 ### RP-5a formal audit
 
-- Added `formal/GaloisForLFunctions/RHTower/CCMPrimeEntryEulerEndpointControl.lean` (no new assumptions, heartbeat options, or computational experiments).
+- Added `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeEntryEulerEndpointControl.lean` (no new assumptions, heartbeat options, or computational experiments).
 - `ccmPrimeEntryEulerEndpoint_eq_short_sum`: exact removal of zero endpoint layers beyond the physical cutoff.
 - `ccmPrimeEntryEulerEndpoint_le_cubic`: the full endpoint obeys the stated cubic bound.
 - `ccmPrimeDeficitCriticalEnergy_integral_sub_centeredEuler_bounds`: exact nonnegative, cubic-bounded difference between integrated critical energy and the remaining centered Euler curvature.
-- Final leaf check: `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeEntryEulerEndpointControl.olean GaloisForLFunctions/RHTower/CCMPrimeEntryEulerEndpointControl.lean`, exit 0, no diagnostics. Initial check exposed two cast elaboration errors; both fixed before the successful audit.
+- Final leaf check: `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeEntryEulerEndpointControl.olean GaloisForLFunctions/RHTower/CCM/CCMPrimeEntryEulerEndpointControl.lean`, exit 0, no diagnostics. Initial check exposed two cast elaboration errors; both fixed before the successful audit.
 - Separate `/tmp` axiom audit with `lake --old env lean` exited 0. All three checked theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`; no extra axioms or `sorryAx`.
 - Added exactly this leaf's umbrella import. Ran guarded `scripts/formal_tools.py index`; it refreshed API/gap/overview documentation and indexed the new source. No umbrella or full build.
 - `scripts/formal_tools.py lint` exited 1: ten other unreachable modules: `CCMApertureChainProfile`, `CCMApertureTranslationChains`, `CCMExponentialRampPrimeMoment`, `CCMExponentialRampSourceDissipation`, `CCMExponentialRampTerminalEntropy`, `CCMRetainedChainKernelLower`, `MoebiusMollifiedCriticalMoment`, `MoebiusMollifiedErrorThreeLines`, `ThetaMovingShellFirstOrderPhase`, `ZetaZeroDensityPowerSaving`. It also reports existing large-file warnings. No error names the new leaf. Unrelated unfinished modules were not imported or edited.
@@ -340,7 +340,7 @@ Exact scope: this closes a genuine positive comparison-error classification. It 
 
 Final leaf audit passed, exit 0 and no diagnostics:
 
-    lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerPositiveRigidity.olean GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerPositiveRigidity.lean
+    lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerPositiveRigidity.olean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerPositiveRigidity.lean
 
 The leaf is wired into `RHTower.lean`; no umbrella build was run. RP's frontier entry records the exact zero-cone result while retaining the signed source gap. Global lint still exits 1 on the same ten pre-existing unreachable modules listed earlier; the new leaf is reachable and has no lint error. A separate `/tmp` axiom audit passed for all five public theorems: each depends only on `[propext, Classical.choice, Quot.sound]`. No added axiom or placeholder occurs. Index refresh and temporary-file cleanup follow this checkpoint.
 

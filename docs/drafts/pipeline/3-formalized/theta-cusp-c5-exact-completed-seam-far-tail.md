@@ -3,7 +3,7 @@
 - **ID:** CLG-TTF-C5-exact-completed-far-tail
 - **Stage:** 3-formalized
 - **Type:** SIGNIFICANT PREMISE DISCHARGE
-- **Lean:** `GaloisForLFunctions.RHTower.ThetaCuspExactCompletedC5SeamFarTail`
+- **Lean:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspExactCompletedC5SeamFarTail`
 
 ## Result
 
@@ -46,8 +46,8 @@ Entire noncompact physical C5 orientation burden is closed. Remaining
 
 ## Audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspExactCompletedC5SeamFarTail.lean`: pass.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspExactCompletedC5SeamFarTail`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspExactCompletedC5SeamFarTail.lean`: pass.
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspExactCompletedC5SeamFarTail`: pass.
 - Final theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 - No `sorry`, `admit`, added axiom, `opaque`, `unsafe`, hypothesis, or computation.
 - Wired into `GaloisForLFunctions.RHTower` umbrella.

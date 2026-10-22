@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / LOCAL PHASE QUOTIENT / ORIENTATION CONNECTION
 - **Paper source:** `anchored-innovation-phase-bundle-local-gauge-and-positive-action-quotient-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.ScaleInnovationPhaseGauge`;
-  `GaloisForLFunctions.RHTower.SuzukiFormationInnovationPhaseGauge`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationPhaseGauge`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 
 ## Certified generic law
@@ -47,7 +47,7 @@ The Suzuki module proves:
 - Direct foreground elaboration passed for both final modules.
 - Targeted leaf builds only:
   - `GaloisForLFunctions.HTGeometry.ScaleInnovationPhaseGauge`: `3031/3031`
-  - `GaloisForLFunctions.RHTower.SuzukiFormationInnovationPhaseGauge`: `14119/14119`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiFormationInnovationPhaseGauge`: `14119/14119`
     (large inherited dependency replay after cache changes)
 - Both modules imported by `HTGeometry.UniversalLawField`; literal module also imported by
   `RHTower`; neither umbrella built.

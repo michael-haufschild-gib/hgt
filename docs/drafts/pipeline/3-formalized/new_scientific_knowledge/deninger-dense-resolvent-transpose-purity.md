@@ -111,7 +111,7 @@ order-zero states.
 The order-zero algebraic kernel, finite generalized-jet kernel,
 centered weight-one purity theorem, source-resolvent Xi spectrum
 package, and RH corollary are formalized in
-`GaloisForLFunctions.RHTower.DeningerArithmeticDenseResolventPurity`.
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticDenseResolventPurity`.
 Checked against the card statement by statement:
 
 - `deningerTransposeEigenfunctional_eq_zero_of_sub_surjective` is the

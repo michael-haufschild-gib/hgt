@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LinearIndependentMinorCertificate
-import GaloisForLFunctions.RHTower.DeningerHankelDiagonalMonicity
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelDiagonalMonicity
 
 /-!
 # Apolarity for finite moment sequences

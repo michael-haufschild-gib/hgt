@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingSchwarzschildMatsubaraCutoffEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSchwarzschildMatsubaraCutoffEndpoint
 import GaloisForLFunctions.HTGeometry.CPVSchwarzschildLimit
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
 
 /-!
 # Information scaling extracted from the Schwarzschild metric

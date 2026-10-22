@@ -76,7 +76,7 @@ exhaustive, priority claim.
   Derived unconditional nonpositivity, strict negativity on tilted fibres, pointwise nonnegative
   orientation iff critical-line incidence, and universal nonnegative orientation iff RH.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingMovingHorizonPeierlsOrbitSquareLaw`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingMovingHorizonPeierlsOrbitSquareLaw`
   passed (`11904/11904`); all nine exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present; formal lint reports no finding in
   this module (only pre-existing unrelated unreachable modules).

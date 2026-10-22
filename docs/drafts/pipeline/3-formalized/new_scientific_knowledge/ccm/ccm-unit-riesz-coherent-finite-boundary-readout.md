@@ -6,7 +6,7 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentFiniteBoundaryReadout.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCoherentFiniteBoundaryReadout.lean`
 - **Parent:** `ccm-unit-riesz-coherent-principal-relative-carrier`
 
 ## Result

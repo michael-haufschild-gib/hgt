@@ -143,7 +143,7 @@ Cauchy Gram factor.  See the Lean status section below.
 ## Lean status
 
 **Formalized, 2026-08-15.**  Module
-`formal/GaloisForLFunctions/RHTower/CCMHalfUnitCauchySeam.lean` (wired, axiom-clean, 8
+`formal/GaloisForLFunctions/RHTower/CCM/CCMHalfUnitCauchySeam.lean` (wired, axiom-clean, 8
 declarations).
 
 - **`re_hadamardPair_pos`** — the proof of `(2)` at the level of `(7)`: for `Re z > 1/2` and a

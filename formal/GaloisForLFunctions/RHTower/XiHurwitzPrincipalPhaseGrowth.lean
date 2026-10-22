@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMRectangularTransverseGrowth
-import GaloisForLFunctions.RHTower.CCMRectangularSubpowerLowerGate
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTransverseGrowth
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularSubpowerLowerGate
 import GaloisForLFunctions.RHTower.XiHurwitzConstraintOrientation
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 

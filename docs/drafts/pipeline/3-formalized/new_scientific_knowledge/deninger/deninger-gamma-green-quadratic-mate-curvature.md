@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-gamma-green-quadratic-mate-curvature.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerCalderonWittGammaGreenQuadraticMateCurvature`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittGammaGreenQuadraticMateCurvature`
 
 ## Formal result
 

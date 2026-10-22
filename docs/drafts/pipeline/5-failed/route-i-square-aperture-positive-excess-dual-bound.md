@@ -93,7 +93,7 @@ RH
 Paper proof:
 `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/square-aperture-positive-excess-zero-width-collision.md`.
 Lean transfer module:
-`formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 ## External frontier
 

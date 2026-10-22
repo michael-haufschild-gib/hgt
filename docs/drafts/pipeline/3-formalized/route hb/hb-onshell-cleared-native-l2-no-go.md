@@ -45,7 +45,7 @@ Expanding the displayed source definitions at `u = 1` gives the exact cancellati
 
 ## Formalized (2026-09-27)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOnShellClearedNativeL2NoGo.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOnShellClearedNativeL2NoGo.lean`
 (namespace `RHTower.D4BMJointSource`):
 
 - `onShellHorizonProfile_one`: `H_s(1) = -8 · power (2s) 2 · (s+1)(2s+1)` (the positive survivor),

@@ -8,7 +8,7 @@
   `DeningerOneSidedFramedMateCurvatureTransgression`, and the current Route-L
   source-null-homology wall
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittTwoPrimeOrientationBoundaryWall.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittTwoPrimeOrientationBoundaryWall.lean`
 
 ## Statement
 

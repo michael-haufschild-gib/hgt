@@ -60,10 +60,10 @@ direction. The native source is positive there; adjoining degree seven
 lowers its admissible compensation below the inherited coefficient.
 
 Paper status: dependency-closed. Lean source:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspInheritedOddCompensationBoundary.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspInheritedOddCompensationBoundary.lean`.
 Lean status: formalized, including the matrix no-go and exact positive
 capacity. Direct `lake env lean` on the saved leaf exits zero without
-warnings. Targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCuspInheritedOddCompensationBoundary`
+warnings. Targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspInheritedOddCompensationBoundary`
 passes. The six exported theorem axiom audits, run from a separate
 `/tmp` file, contain only `propext`, `Classical.choice`, and `Quot.sound`.
 The leaf is wired once into the RHTower umbrella; generated indexes

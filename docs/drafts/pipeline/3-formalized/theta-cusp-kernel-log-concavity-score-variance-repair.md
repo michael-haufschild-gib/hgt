@@ -195,7 +195,7 @@ atom is strictly positive there by its explicit formula, completing `(1)` on `[0
 ## Lean realization
 
 The unconditional source proof and its exact downstream transfer compile in
-`GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity`.  The principal declarations are:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity`.  The principal declarations are:
 
 ```text
 thetaCuspLogConcavityNumerator_neg

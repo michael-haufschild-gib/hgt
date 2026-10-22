@@ -72,7 +72,7 @@ cutoff values.  Any exact extension is unbounded below on that domain's entire n
 ## Lean certificate
 
 Module:
-`formal/GaloisForLFunctions/RHTower/SuzukiCompletedMellinPositiveDomainNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompletedMellinPositiveDomainNoGo.lean`.
 
 Principal declarations:
 
@@ -83,7 +83,7 @@ Principal declarations:
 - `not_exists_positive_suzukiCriticalGaussianRatLeftHalfProfile_extension`;
 - `suzukiCriticalGaussianRatLeftHalfProfile_extension_unboundedBelow`.
 
-`lake build GaloisForLFunctions.RHTower.SuzukiCompletedMellinPositiveDomainNoGo` passed on
+`lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCompletedMellinPositiveDomainNoGo` passed on
 2026-07-22.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Scientific boundary and survivor

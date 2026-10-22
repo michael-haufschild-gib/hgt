@@ -174,7 +174,7 @@ anomaly rather than annihilate it.
 Lean module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/DeningerMeyerRelationKernelBoundarySeparation.lean
+formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerRelationKernelBoundarySeparation.lean
 ```
 
 Load-bearing declarations:
@@ -197,8 +197,8 @@ deningerMeyerReflectedLogGaussianSource_not_mem_literalBoundaryRange
 Verification:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/DeningerMeyerRelationKernelBoundarySeparation.lean
-lake build GaloisForLFunctions.RHTower.DeningerMeyerRelationKernelBoundarySeparation
+lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerMeyerRelationKernelBoundarySeparation.lean
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerMeyerRelationKernelBoundarySeparation
 ../scripts/formal_tools.py lint
 ```
 

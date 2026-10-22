@@ -1,7 +1,7 @@
 import Mathlib
 import GaloisForLFunctions.RHTower.CriticalLocusQuadrupleEvenness
 import GaloisForLFunctions.RHTower.CrystallineShadowTransversality
-import GaloisForLFunctions.RHTower.SuzukiInteriorExcursionSpectralTurningPoint
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiInteriorExcursionSpectralTurningPoint
 
 /-!
 # Hessian classification of spectral-type criteria at the critical locus

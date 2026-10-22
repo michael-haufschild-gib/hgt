@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ConstitutiveOnShellWronskianInternalization
-import GaloisForLFunctions.RHTower.DeningerArithmeticJetDuality
-import GaloisForLFunctions.RHTower.DeningerArithmeticRealStructure
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticJetDuality
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticRealStructure
 import GaloisForLFunctions.RHTower.XiEdgeLogDerivativeBlindness
 import GaloisForLFunctions.RHTower.XiZerosInfinite
 

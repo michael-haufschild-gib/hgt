@@ -2,7 +2,7 @@
 
 - **ID:** HB-CAUSAL-SOURCE-SYMMETRY-REPAIR
 - **Stage:** 1-in-progress
-- **Parent:** [Source-contact rigidity](../../hb-source-contact-rigidity.md)
+- **Parent:** [Source-contact rigidity](hb-source-contact-rigidity.md)
 - **Status:** Candidate deferred. The paper commutator omitted a second-time-derivative term, corrected below on 12 September 2026. No new closed Lean theorem, extinction, or RH proof. Do not resume this invented symmetry as a substitute for deriving the actual complete-action cancellation.
 
 Proof chain: literal theta cusp → Xi occurrence → retained spin two → physical causal radial/left-QNM action → extinction at the original common Hawking clock → RH.

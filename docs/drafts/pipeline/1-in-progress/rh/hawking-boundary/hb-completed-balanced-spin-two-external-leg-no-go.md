@@ -19,4 +19,4 @@ Kill canonical completed Plebanski--Maass vertex as full HB same-pole counterter
 - **Kill:** projecting parameter is `rho-1/2 = I*z`; completed vertex contains `XiC(z)^2=0`; nonzero AIME pole survives every multiplicative radial/left factor.
 - **Survivor:** external-leg derivative/residue amputation, or non-factorizing source-to-left-QNM incidence.
 - **Novelty audit:** corpus search found no prior external-leg theorem; primary-paper search found separate BM QNMs, AIME, QNM bilinear projection, and AdS4 Plebanski vertex, not this weld.
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompletedBalancedSpinTwoExternalLegNoGo.lean`; axioms only `propext`, `Classical.choice`, `Quot.sound`.
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompletedBalancedSpinTwoExternalLegNoGo.lean`; axioms only `propext`, `Classical.choice`, `Quot.sound`.

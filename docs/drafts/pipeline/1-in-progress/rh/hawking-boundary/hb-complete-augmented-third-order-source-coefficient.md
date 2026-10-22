@@ -63,7 +63,7 @@ and existing BM mode data before the factorization is proved.
 ## Loop result HC94-A.1 — universal Mellin kernel proved; single-mode shortcut rejected
 
 The new module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingSelfDualGeneralMellinVertex` proves the exact
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSelfDualGeneralMellinVertex` proves the exact
 Gamma-normalized curvature-corrected Plebanski kernel
 
 `V(c,a,b,h,k) = ((a*k-b*h)^2 + a*k^2 + b*h^2
@@ -113,7 +113,7 @@ direct third variation.
 ## Loop result HC94-A.2 — exact second-jet corner law and nonzero finite part
 
 Corpus-led endpoint analysis falsified the unrenormalized radial-source shortcut. The module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge` proves
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicSecondDerivativeEdge` proves
 
 `(1-z)*sqrt(1-z)*Rpp''(z) → (sqrt(pi)/2)*Gamma(c)/(Gamma(a)*Gamma(b))`,
 
@@ -130,7 +130,7 @@ would leave a scheme-dependent finite part and cannot feed the coefficient-norma
 source.
 
 **Positive survivor HC94-A.2-P.** The new module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicCornerRenormalizedSecondDerivative`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicCornerRenormalizedSecondDerivative`
 proves the exact second-jet connection
 
 `Rpp'' = A_forbidden*S_forbidden'' + A_normalizable*S_normalizable''`
@@ -185,7 +185,7 @@ may be combined with stationary `+-` response and direct third variation to atta
 Jevicki--Suzuki's exact massless-topological-black-hole chart has `rho=r⁻¹`,
 `z_BM=1-rho²`, and Poincare radial coordinate `Z=rho*sigma`. Hence one BM radial fibre contains
 the full positive `Z` ray. The module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalPoincareRadialNoGo` proves the sharp
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalPoincareRadialNoGo` proves the sharp
 classification: a scalar Poincare-radial profile factors through `z_BM` on the exterior iff it is
 constant on `Z>0`. Therefore `1/Z` does not descend. After inserting the physical self-dual
 coefficient `2i/(u-v)=i/Z`, an explicit unequal-charge plane-wave probe also has two distinct
@@ -193,7 +193,7 @@ values at the same BM radius. This is a theorem-level retirement of every scalar
 specialization of the physical Plebanski curvature term, not numerical evidence.
 
 The inverse-Jacobian module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPoincareRadialDerivativePullback` proves from actual
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPoincareRadialDerivativePullback` proves from actual
 chart derivatives that
 
 `partial_Z = rho*partial_sigma + (1-rho²)/sigma*partial_rho`.
@@ -230,7 +230,7 @@ projection. Scalar radial convolution is now formally excluded and must not be r
 ## Loop result HC94-A.5 — full radial two-jet vertex and KI chiral reconstruction
 
 The module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSelfDualDeformedTwoJetVertex` implements the literal
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSelfDualDeformedTwoJetVertex` implements the literal
 two-leg bidifferential vertex of Chowdhury--Doran--Lipstein--Monteiro--Nagy--Singh Eq. (100), with
 the fixed `1/Z` denominator outside the left/right derivatives. The second pullback of a pure BM
 profile is
@@ -292,7 +292,7 @@ Do not reuse fixed Poincare plane-wave charges for a BM separated mode.
 
 The rapidity substitution `rho=sech(xi)`, `sqrt(1-rho^2)=tanh(xi)` removes square-root edge
 premises. The module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullPoincareDerivativePullback` constructs the three
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullPoincareDerivativePullback` constructs the three
 globally defined scaled coordinate fields
 
 `sigma*tanh(xi)*partial_T`, `sigma*tanh(xi)*partial_Y`,
@@ -313,7 +313,7 @@ QNM admits a single fixed Poincare momentum throughout a BM hyperbolic fibre. Th
 the remaining plane-wave-charge shortcut, rather than merely warning against it.
 
 The module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiCoordinateJacobiVertex` implements the
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPlebanskiCoordinateJacobiVertex` implements the
 literal position-space Jacobi double bracket from Chowdhury et al. Eq. (63):
 
 `(f_uu*g_ww+g_uu*f_ww)/2 - f_uw*g_uw
@@ -352,7 +352,7 @@ Eisenstein first/traceless-second derivative vertex.
 `[PAPER-PROVED] [LEAN-PROVED]` The full variable-coefficient chain rule
 `V(Wf)=V^iW^jf_ij+V^i(partial_i W^j)f_j` and the complete rapidity-chart transport to
 `u,w,uu,uw,ww` are formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPoincareLightConeSecondJetPullback`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPoincareLightConeSecondJetPullback`.
 The map agrees with the earlier first Jacobian and feeds coordinate Eq. (63) directly. A physical
 sigma-affine witness has zero principal Hessian term but exact `partial_Z^2=tanh(xi)^2`, proving
 that the first-jet connection cannot be deleted. Direct Lean and targeted build pass
@@ -376,7 +376,7 @@ before it contaminates the negative-leg projection.
 source carrier must retain the spin-two/traceless horizon Hessian polarization, or an equivalent
 polarized derivative Eisenstein vertex.  The witness and universal no-factorization theorem are
 formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiAngularPolarizationNoGo`, wired into the
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPlebanskiAngularPolarizationNoGo`, wired into the
 RHTower umbrella.  Direct Lean and targeted build pass `11265/11265`; all three headline axiom
 audits report only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -401,7 +401,7 @@ and scaling the traceless horizon Hessian by that actual mode gives the exact lo
 It is nonzero for every Xi copy, all overtone labels, and every Eq. (63) curvature coefficient.
 Thus radial darkness cannot make the missing polarized angular channel vacuous.  This is
 formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMXiPlebanskiPolarizedSourceExistence`, wired into the
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMXiPlebanskiPolarizedSourceExistence`, wired into the
 RHTower umbrella.  Direct Lean and targeted build pass `12046/12046`; headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -450,7 +450,7 @@ BM-pulled Plebanski source is exactly
 The unit balanced pair is nonzero at every positive rapidity.  Hence this sector contains exactly
 one local `+2` and one local `-2` factor; it cannot be replaced by scalar Laplacian data.  This is
 formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiBalancedSpinTwoSource`, wired into the
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPlebanskiBalancedSpinTwoSource`, wired into the
 RHTower umbrella.  Direct Lean and targeted build pass `12047/12047`.  Headline axiom audits
 report only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -482,7 +482,7 @@ Lean proves
 For a pure traceless jet the connection terms vanish, the two operators recover
 `-spinMinus,-spinPlus`, and the complete pulled Eq. (63) source factors exactly through their
 product.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPlebanskiMaassSecondJetBridge`, wired into the
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPlebanskiMaassSecondJetBridge`, wired into the
 RHTower umbrella.  Direct Lean and targeted build pass `12048/12048`; headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -517,7 +517,7 @@ identity
 
 Therefore two Stokes defects are exhaustive: no third tensor invariant can obstruct scalar-vertex
 reduction in the diagonal channel.  The canonical zero-defect Stokes completion is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex`; it equals
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompletedBalancedSpinTwoEisensteinVertex`; it equals
 the displayed polynomial times the existing diagonal completed scalar vertex, has the explicit
 four-Xi factorization, and preserves Weyl reflection in both spectral parameters.  Module is
 wired into RHTower.  Direct Lean and targeted build pass `12049/12049`; headline axiom audits
@@ -545,7 +545,7 @@ The analytic-family finite part--coefficient extraction before spectral speciali
 annihilates both Stokes boundary currents for arbitrary constant-term coefficients.  Accidental
 numerical exponent zero on a resonance hyperplane creates no analytic-continuation anomaly.  This
 is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspAnalyticFinitePart`; targeted build
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCuspAnalyticFinitePart`; targeted build
 passes `12050/12050` and headline axiom audits are kernel-only.
 
 `[PAPER-PROVED] [LEAN-PROVED]` For the nonconstant part, a new packet subtype carries arbitrary
@@ -556,7 +556,7 @@ jet degree `m`, complex coefficients, and the exact weighted summability certifi
 Lean proves the full infinite packet tends to zero by a parameter-independent Tannery majorant.
 This is not a finite-mode or termwise-only statement and is stable under every fixed derivative
 order needed by the two Stokes currents.  It is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspExponentialJetTail`; targeted build
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCuspExponentialJetTail`; targeted build
 passes `12055/12055`, with only `propext`, `Classical.choice`, and `Quot.sound` in the axiom audit.
 
 **Open source-specific seam.** Construct the actual completed weight `0,+/-4` Eisenstein
@@ -586,7 +586,7 @@ negative leg -> conserved left-QNM coefficient -> HC94 clock defect -> RH`.
 `[PAPER-PROVED] [LEAN-PROVED]` The conjectured estimate follows directly from the corpus
 Schlaefli representation and an exact shifted-Gaussian integral.  It is formalized without
 premises beyond the positive-argument subtype in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselOrderExteriorEnvelope`, wired into RHTower,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMBesselOrderExteriorEnvelope`, wired into RHTower,
 and passes direct Lean plus targeted build `12058/12058`.  The headline axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -621,7 +621,7 @@ norms then bound the `n^u` factor by `n^|Re u|`, each `d^(-2u)` by `n^(2|Re u|)`
 cardinality by `n`.  The claimed envelope follows.  Arbitrary-real polynomial growth is summable
 after the cusp exponential, yielding the exact weighted certificate for every jet degree and an
 actual `D4BMCuspExponentialJetTailPacket`.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinWhittakerArithmeticEnvelope`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinWhittakerArithmeticEnvelope`, wired into
 RHTower, and passes direct Lean plus targeted build `12059/12059`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -655,7 +655,7 @@ defect -> RH`.
 at most one.  The actual divisor coefficient envelope supplies a single summable dominator after
 absorbing every fixed `Y`-power.  Corpus Tannery then proves convergence of the entire infinite
 complex series, not termwise or finite-mode convergence.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinWhittakerBesselTail`, wired into RHTower,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinWhittakerBesselTail`, wired into RHTower,
 and passes direct Lean plus targeted build `12066/12066`.  Headline axiom audits report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -686,7 +686,7 @@ argument is bounded below by `s/2`.  Positivity of `cosh` therefore dominates th
 integrand by the same derivative kernel at `s/2`; its integrability follows from the adjacent-order
 product-to-sum identity and the corpus integrability theorem.  Dominated differentiation yields
 the exact displayed formula.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselArgumentDerivative`, wired into RHTower, and
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMBesselArgumentDerivative`, wired into RHTower, and
 passes direct Lean plus targeted build `12068/12068`.  The headline axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -718,7 +718,7 @@ Stokes currents -> actual polarized coefficient -> negative leg -> conserved lef
 in HC94-A.9f.  The Bessel envelope from HC94-A.9g and polynomial height absorption then give a
 single summable Tannery majorant.  Lean proves the result for all fixed `j,m`, stronger than the
 Maass need `j,m<=2`.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPolynomialWhittakerTail`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinPolynomialWhittakerTail`, wired into
 RHTower, and passes direct Lean plus targeted build `12069/12069`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -746,7 +746,7 @@ coefficient -> negative leg -> left-QNM -> HC94 -> RH`.
 integer-height jet and the cofinal identity `sqrt(Y)/Y=1/sqrt(Y)`.  Combining both zero limits
 proves the full square-root-normalized tail vanishes for arbitrary fixed index and height degrees.
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinSqrtWhittakerTail`, wired into RHTower,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinSqrtWhittakerTail`, wired into RHTower,
 and passes direct Lean plus targeted build `12070/12070`.  The headline axiom audit reports only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -777,7 +777,7 @@ steps, differentiates those exact words, and verifies the two second-step coeffi
 through orders `nu+/-2`.  Substitution `c=2*pi*n` turns the words into finite combinations of the
 already admitted square-root/index tails.  Lean then proves both complete infinite nonconstant
 weight `+4` and `-4` tails tend to zero.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinLiteralMaassWhittakerWord`, wired into
 RHTower, and passes direct Lean plus targeted build `12071/12071`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -815,7 +815,7 @@ Whittaker height degree from `m` to `m+M` absorbs `Y^M` exactly term-by-term in 
 series.  A bounded multiplier therefore preserves the already-proved zero cusp limit.  Lean
 proves this for every complex `w`, every index/height degree, and both complete literal
 `R_2 R_0` and `L_(-2) L_0` tails.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinMixedConstantWhittakerTail`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinMixedConstantWhittakerTail`, wired into
 RHTower, and passes direct Lean plus targeted build `12072/12072`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -903,7 +903,7 @@ completed normalization `Lambda(2s)/2` is therefore an actual absolutely converg
 formal Fourier declaration.  Lean also classifies the `c=0` primitive pairs as exactly `(0,+1)`
 and `(0,-1)` and proves their total seed is `2 y^s`, so the factor `1/2` recovers the canonical
 leading term.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareAbsoluteConvergence`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinPoincareAbsoluteConvergence`, wired into
 RHTower, and passes direct Lean plus targeted build `12086/12086`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint still reports unrelated
 concurrently-created modules missing from umbrellas; this module itself is reachable.
@@ -930,7 +930,7 @@ scaling proves the exact coefficient
 `y^s Q^(-2s) c_Q(m) Fourier(K_{y,s})(m)`.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareRamanujanUnfolding`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinPoincareRamanujanUnfolding`, wired into
 RHTower, and passes direct Lean plus targeted build `12210/12210`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -959,7 +959,7 @@ Poincare series licenses every `tsum` reindexing.  The resulting headline identi
    = y^s + sum_{Q>0} positivePrimitiveCuspSlice(z,s,Q,x)`.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPrimitiveCuspReindexing`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinPrimitiveCuspReindexing`, wired into
 RHTower, and passes direct Lean plus targeted build `12298/12298`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -993,7 +993,7 @@ cancellation then proves for every positive `n`
    = 2 a_(s-1/2)(n) sqrt(y) K_(s-1/2)(2 pi n y)`.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFourierCoefficient`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFourierCoefficient`, wired into
 RHTower, and passes direct Lean plus targeted build `12311/12311`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1027,7 +1027,7 @@ corpus Möbius--zeta inverse therefore give the exact, premise-free identity in 
 The specialization `w = 2s` is packaged using the already-certified Eisenstein absolute-
 convergence chamber, so no extra summability or nonvanishing hypothesis remains.  This is
 formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries`, wired into
 RHTower, and passes direct Lean plus targeted build `12293/12293`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1054,7 +1054,7 @@ vertical Green currents cancel under `T`, the paired circular radial Green curre
 `S`, the complete noncusp paired defect is zero, and the paired modular boundary current is
 exactly the top cusp current.  These are properties of the actual infinite series, not abstract
 automorphy premises.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
 into RHTower, and passes direct Lean plus targeted build `12316/12316`.  Axiom audits report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1082,7 +1082,7 @@ Consequently every nonzero real frequency has the exact formula
 
 and the zero mode is separately identified by its exact Gamma-power formula.  No pointwise
 Poisson, Schwartz, Fubini, or Bessel premise is assumed.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCauchyPowerFourierBessel`, wired into RHTower, and
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCauchyPowerFourierBessel`, wired into RHTower, and
 passes direct Lean plus targeted build `12213/12213`.  Headline axiom audits report only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
@@ -1131,7 +1131,7 @@ corpus zero Cauchy-power transform then cancels Gamma, zeta, pi, and height powe
 
 Lean identifies this expression definitionally with
 `d4BMCompletedEisensteinCuspConstantPart .scalar (s-1/2) y`.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient`, wired into
 RHTower, and passes direct Lean plus targeted build `12312/12312`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1149,7 +1149,7 @@ generator invariance for the actual primitive-pair Poincare series.  Translation
 the primitive-pair equivalence `(c,d) -> (c,d+c)` and inversion by `(c,d) -> (d,-c)`.  Lean proves
 the exact seed laws and both raw and completed `T : z -> z+1` and `S : z -> -1/z` invariance,
 without a modularity premise.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinModularGeneratorInvariance`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinModularGeneratorInvariance`, wired into
 RHTower, and passes direct Lean plus targeted build `12313/12313`.  Axiom audits report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1163,7 +1163,7 @@ hyperbolic eigen-equation
 At `s=1/2+u`, the eigenvalue is exactly the corpus geometric eigenvalue `u^2-1/4`.  The headline
 theorem packages all four `HasDerivAt` certificates with the PDE, excluding merely formal jets.
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinPoincareSeedEigenEquation`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinPoincareSeedEigenEquation`, wired into
 RHTower, and passes direct Lean plus targeted build `12314/12314`.  Axiom audits report only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1179,7 +1179,7 @@ both differentiations term by term.  Lean proves
 
 for the actual completed Poincare series, together with the centered `u^2-1/4` form.  No stronger
 convergence chamber or differentiability hypothesis is assumed.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualEigenEquation`, wired into RHTower,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualEigenEquation`, wired into RHTower,
 and passes direct Lean plus targeted build `12315/12315`.  Headline and termwise-derivative axiom
 audits report only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1199,7 +1199,7 @@ sign reversal on the unit semicircle, the Green--Lagrange interior identity, and
 cancellation of paired vertical and circular boundary currents.  The resulting truncated boundary
 record reduces the whole paired boundary current exactly to the top cusp current.  This is
 formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualGreenBoundaryCancellation`, wired
 into RHTower, and passes direct Lean plus targeted build `12316/12316`.  Headline axiom audits
 report only `propext`, `Classical.choice`, and `Quot.sound`.  Literal two-dimensional Stokes
 integration was deliberately not encoded in this pointwise boundary theorem.
@@ -1218,7 +1218,7 @@ horizontal coordinate and every existing absolute-convergence parameter,
   = d4BMCompletedEisensteinCuspLeg .scalar (s-1/2)`.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSignedFourierUniqueness`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSignedFourierUniqueness`, wired into
 RHTower, and passes direct Lean plus targeted build `12461/12461`.  Axiom audits of negative-mode
 symmetry, second-jet continuity, pointwise Fourier inversion, and global equality report only
 `propext`, `Classical.choice`, and `Quot.sound`.
@@ -1247,7 +1247,7 @@ exact chamber `Re(s)>1`.  The result is lifted through raw and completed sums an
 the already-certified value, first jets, and pure second jets as an actual
 `D4BMFullSecondJet`.  Its literal corpus `R_2 R_0` and `L_(-2) L_0` evaluations are therefore now
 closed differential expressions, not formal proxies.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualMixedDerivative`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualMixedDerivative`, wired into
 RHTower, and passes direct Lean plus targeted build `12462/12462`.  Headline axiom audits report
 only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1270,7 +1270,7 @@ certificates produce genuine signed two-variable full second jets.  Literal full
 proves all four chirality/frequency laws: positive modes send `R_2 R_0` to the existing raising
 word and `L_(-2) L_0` to the lowering word, while negative modes exchange those two words exactly.
 Thus no sign or connection-term obstruction kills the signed `++-` route.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualMaassModeJet`, wired into RHTower,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualMaassModeJet`, wired into RHTower,
 and passes direct Lean plus targeted build `12463/12463`.  Axiom audits of both radial
 reconstructions and all four signed normalization theorems report only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -1296,7 +1296,7 @@ the horizontal first jet.  Hence the actual tail has certified value, `x`, `y`, 
 jets; its missing `yy` field can be recovered algebraically from the existing Poincare
 eigen-equation, reducing the weld burden from five independently convergent derivative families
 to four.  This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSignedFirstJetWeld`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSignedFirstJetWeld`, wired into
 RHTower, and passes direct Lean plus targeted build `12464/12464`.  Axiom audits of both uniform
 majorants and all four infinite-series derivative theorems report only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -1326,7 +1326,7 @@ the canonical completed `.raise` and `.lower` cusp legs.  Exterior height is car
 data, so the headline theorems have no logical premises.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualCanonicalMaassWeld`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualCanonicalMaassWeld`, wired into
 RHTower, and passes direct Lean plus targeted build `12465/12465`.  Axiom audits of the signed-tail
 and full canonical eigen equations, full second-jet weld, and both headline Maass welds report only
 `propext`, `Classical.choice`, and `Quot.sound`.  Lint reports only unrelated pre-existing
@@ -1364,7 +1364,7 @@ the diagonal affine-exponent family and its analytic-family finite part is zero.
 actual paired boundary current has an exact `constant + rapidly decaying remainder` decomposition.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesDefect`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFirstStokesDefect`, wired into
 RHTower, and passes direct Lean plus targeted build `12466/12466`.  Axiom audits of the pointwise
 divergence, arbitrary-power vertical derivative-tail decay, rapid-decay mixed-current theorem,
 literal actual boundary decomposition, and full cusp closure report only `propext`,
@@ -1395,7 +1395,7 @@ the actual first Stokes defect divided by `y^2` with the sum of these two genuin
 components.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesIntegral`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFirstStokesIntegral`, wired into
 RHTower. Direct Lean and targeted build `12467/12467` pass. Axiom audits of local normal
 continuity, arc substitution, oriented circular cancellation, the literal truncated Green theorem,
 and the hyperbolic defect-density bridge report only `propext`, `Classical.choice`, and
@@ -1427,7 +1427,7 @@ integral, Fubini premise, measurability premise, or regularity premise remains b
 Poincare source and the first moment reduction.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesFubini`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFirstStokesFubini`, wired into
 RHTower.  Direct Lean and targeted module build `12469/12469` pass.  Axiom audits of both Fubini
 orders, the standard-moment/bulk identity, the bulk/cusp identity, and the two headline standard
 moment identities report only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -1462,7 +1462,7 @@ normalization mismatch and leaves one analytic obstruction: the second defect's 
 part.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesDefect`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSecondStokesDefect`, wired into
 RHTower.  Direct Lean and targeted build `12470/12470` pass.  Axiom audits of the actual
 Maass/full-Hessian identity and exhaustive actual defect decomposition report only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -1496,8 +1496,8 @@ actual balanced BM `++-` coefficient is the literal second modular-boundary/cusp
 theorem for this current.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualThirdJet` and
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesCurrent`, both wired
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualThirdJet` and
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSecondStokesCurrent`, both wired
 into RHTower.  Direct Lean passes; targeted builds pass at `12471/12471` and `12472/12472`.
 Axiom audits of the completed third derivatives, differentiated eigen equations, both current
 derivatives, the Bochner identity, and the headline defect-divergence theorem report only
@@ -1541,7 +1541,7 @@ with analytic-family finite part zero for the first term and cusp limit zero for
 There is no asymptotic premise, boundary hypothesis, proxy current, or added axiom.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesBoundaryCancellation`,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSecondStokesBoundaryCancellation`,
 wired into RHTower.  Direct Lean and targeted build `12473/12473` pass.  Axiom audits of non-cusp
 pairing, vertical-energy Maass factorization, full mixed-sector rapid decay, literal affine-family
 evaluation, full cusp closure, and actual boundary decomposition report only `propext`,
@@ -1584,7 +1584,7 @@ and simultaneously
 The headline Lean theorems are
 `d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedCuspTop` and
 `d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedTruncatedBulk` in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
 `RHTower`. Direct Lean and targeted build `12474/12474` pass. Axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint finds no forbidden declaration; its remaining
 umbrella-reachability failures are unrelated pre-existing debt. The formalized card is
@@ -1651,7 +1651,7 @@ Headline Lean theorems are
 `d4BM_actualBalancedSpinTwoTruncatedMoment_defect_decomposition`,
 `d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedCuspTop`, and
 `d4BM_actualBalancedSpinTwoTruncatedMoment_eq_pairedTruncatedBulk` in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualBalancedSpinTwoCoefficientExtraction`,
 wired into `RHTower`.  Direct Lean passes; targeted build `12475/12475` passes.  Axiom audit reports
 only `propext`, `Classical.choice`, and `Quot.sound`.  Formal lint finds no forbidden declaration
 and confirms the new module is reachable; its exit failure is unrelated shared-worktree
@@ -1731,7 +1731,7 @@ the classical completed-Lambda RSZ value is nonzero at `s=t=2`, while the canoni
 is exactly ten times it.  Direct equality therefore fails at a regular point, not only at a pole.
 
 This is formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`, wired into `RHTower`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`, wired into `RHTower`.
 Headline theorems are `d4BM_actualBalancedCanonicalLandingResidual_eq`,
 `d4BM_actualBoundaryFreeCanonicalBalancedLanding_iff_scalarRSZ`,
 `d4BM_directScalarLanding_from_zeroCusp_not_forced`, and
@@ -1816,7 +1816,7 @@ analytic-family regularization uniformly.  The strongest positive survivor is fo
 meromorphic identity -> C-A.9u balanced source -> negative BM -> left-QNM -> HC94 cocycle -> RH`.
 
 Formalization:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`, wired
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`, wired
 into `RHTower`.  Headline theorems are
 `d4BM_zero_and_accidentalZero_families_same_specialized_profile`,
 `d4BM_linearReporter_factorsThrough_iff_ker_le`,

@@ -87,7 +87,7 @@ Generic module `formal/GaloisForLFunctions/HTGeometry/BoundaryTraceRamification.
 - `tendsto_thermalBoundaryTraceDensity_zero_of_hasDerivAt`;
 - `not_hasDerivAt_of_thermalBoundaryTraceDensity_tendsto_pos`.
 
-CCM module `formal/GaloisForLFunctions/RHTower/CCMBoundaryTraceRamification.lean`:
+CCM module `formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryTraceRamification.lean`:
 
 - `ccmFourUnitBoundaryCurve_squareRootLaw`;
 - `ccmFourUnitBoundaryCurve_not_hasDerivAt`.
@@ -101,7 +101,7 @@ CCM module `formal/GaloisForLFunctions/RHTower/CCMBoundaryTraceRamification.lean
 - [x] formal lint attribution audit: no finding in these modules; repository-wide lint fails only on
   pre-existing umbrella-reachability findings outside this card
 - [x] targeted module build through
-  `GaloisForLFunctions.RHTower.CCMBoundaryTraceRamification`
+  `GaloisForLFunctions.RHTower.CCM.CCMBoundaryTraceRamification`
 
 ## Log
 

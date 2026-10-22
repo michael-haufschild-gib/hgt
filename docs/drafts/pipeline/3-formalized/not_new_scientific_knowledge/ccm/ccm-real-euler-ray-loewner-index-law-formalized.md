@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMEulerRayLoewner` (new), over
+`GaloisForLFunctions.RHTower.CCM.CCMEulerRayLoewner` (new), over
 `CCMEulerRayLogDerivativeIndex`, `CCMDiagonalFockLift`, `CCMHalfUnitCauchySeam`.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -40,6 +40,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMEulerRayLoewner`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMEulerRayLoewner`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerFlowLefschetz
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerFlowLefschetz
 import GaloisForLFunctions.RHTower.PaperThetaCutHasseCompletion
 
 /-! # Native theta cut factors determine the actual arithmetic flow trace

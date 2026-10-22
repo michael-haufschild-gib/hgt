@@ -12,7 +12,7 @@
 - `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewHull.lean`
 - `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewRecurrence.lean`
 - `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewValue.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiScrewCompactHullParityLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCompactHullParityLaw.lean`
 
 ## Formal theorem surface
 
@@ -77,7 +77,7 @@ GaloisForLFunctions.HTGeometry.screwHullMax_eq_two_mul_tsum_iff
 GaloisForLFunctions.HTGeometry.screwValue_image_screwHull
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiScrewCompactHullParityLaw`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewCompactHullParityLaw`:
 
 ```text
 RHTower.closure_suzukiScrewFunction_image_Ici

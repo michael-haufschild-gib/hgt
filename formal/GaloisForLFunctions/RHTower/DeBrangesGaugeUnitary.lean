@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DeBrangesGaugeInvariance
-import GaloisForLFunctions.RHTower.SuzukiDeBrangesSpace
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDeBrangesSpace
 import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 import GaloisForLFunctions.HTGeometry.EntireZeroSetNull
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 
 /-!
 # The shifted Perron formula right of a Xi frontier

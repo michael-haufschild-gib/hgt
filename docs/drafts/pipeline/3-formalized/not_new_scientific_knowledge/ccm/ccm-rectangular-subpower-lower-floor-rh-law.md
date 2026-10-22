@@ -173,18 +173,18 @@ rectangular Weil values.
 exist, are wired into `formal/GaloisForLFunctions/RHTower.lean`, and every declaration in them is
 unconditional with axioms exactly `[propext, Classical.choice, Quot.sound]` (18 theorems audited):
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularSubpowerLowerGate.lean` —
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularSubpowerLowerGate.lean` —
   `riemannHypothesis_of_xiRectangularRightSubpowerLower` and
   `riemannHypothesis_of_xiRectangularWeilTailSubpowerLower`, together with the power-corrected
   Landau coefficient, its Dirichlet-series continuation
   (`LSeries_xiRectangularPowerLandauCoefficient_eq_continuation`), the differentiability of the
   continuation on the Landau ball, and the left-summability transfer.  This is `(4)`, `(10)`–`(12)`
   and the scale-local Landau step.
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularPowerLowerZeroFree.lean` —
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularPowerLowerZeroFree.lean` —
   `xiRightTransverseSup_le_of_xiRectangularRightPowerLower` and
   `xiRightCenteredZero_re_le_of_xiRectangularRightPowerLower`, the fixed-exponent quantitative
   conclusion `(3)`/`(13)` on the divisor carrier.
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePowerLowerZeroFree.lean` — the
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePowerLowerZeroFree.lean` — the
   bounded-remainder absorption `(8)`–`(9)` and the source-facing endpoint
   `ξ ρ = 0 → re ρ ≤ 1/2 + α` for the observable rectangular Weil values.
 

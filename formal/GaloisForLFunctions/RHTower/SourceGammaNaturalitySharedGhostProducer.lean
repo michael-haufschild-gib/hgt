@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceSelectedGammaWardSharedGhostDescent
-import GaloisForLFunctions.RHTower.DeningerCalderonWittOrientationTransgressionCompleteness
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittOrientationTransgressionCompleteness
 
 /-!
 # Source/Gamma naturality produces the shared inverse-oriented ghost

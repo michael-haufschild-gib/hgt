@@ -287,23 +287,23 @@ need apertures `a ≫ log log t` and then the trivial rate `e^{a}` gives only `M
 saving over `log t` only for `Θ > 1/4`. Verdict: the upper half is a local zero-density statement; the frontier
 map's "sampling inequality" was too optimistic.
 
-**Lean (2026-09-08): `RHTower/SuzukiScrewFormExcessLowerBound.lean`** — `xiTopExcess := ⨆_q |Im z_q|` (≤ 1/2, ≥ 0),
+**Lean (2026-09-08): `RHTower/Suzuki/SuzukiScrewFormExcessLowerBound.lean`** — `xiTopExcess := ⨆_q |Im z_q|` (≤ 1/2, ≥ 0),
 `xiSpectralInvSqSum := Σ'_q ‖z_q‖⁻²`, ray-coefficient bounds `‖c_q‖, ‖c̄_q‖ ≤ (e^{Θ|a|}+1)‖φ‖₁` under `|Im z_q| ≤ Θ`,
 and `re_suzukiScrewSmoothForm_ge_of_im_le` / `_ge_topExcess` / `_ge_half`:
 `Re Q(φ) ≥ −((e^{Θ|a|}+1)‖φ‖₁)² Σ'_q ‖z_q‖⁻²`. This is the upper half of the rate identity in the `L¹` normalisation
 (CANNOT-339). Remaining for the exact `L¹` identity in the non-attained case: the quantitative Bombieri–Yoshida cap
 with an `L¹`-normalised hypothesis (two-bump sources have polynomial `L¹` norm, so `abs_im_le_add_of_polarGroundEnergy_ge`
 should transfer).
-**Lean (2026-09-08, later): `RHTower/SuzukiScrewFormL1RateIdentity.lean`** — `ScrewFormL1Rate ε` (∃ C ≥ 0, ∀ a φ,
+**Lean (2026-09-08, later): `RHTower/Suzuki/SuzukiScrewFormL1RateIdentity.lean`** — `ScrewFormL1Rate ε` (∃ C ≥ 0, ∀ a φ,
 `Re Q(φ) ≥ −C e^{ε|a|}‖φ‖₁²`), `screwFormL1Rate_two_mul_topExcess` (constant `4Σ'‖z_q‖⁻²`),
 `integral_norm_polarTranslateTest_le` (`‖M∗φ‖₁ ≤ 5(1+cosh ½)‖φ‖₁`), `re_smoothForm_twoBump_ge_of_l1Rate`,
 `re_weightedXiScrewDivisor_polar_ge_of_l1Rate`, `abs_im_xiSpectralPoint_le_half_of_l1Rate` (rate `ε < 1` ⟹ excess ≤ `ε/2`,
 no `+δ` since no polynomial factor), `screwFormL1Rate_iff` (`0 ≤ ε < 1`: rate `ε` ⟺ `2Θ_sup ≤ ε`),
 `riemannHypothesis_iff_screwFormL1Rate_subexponential`. The exact rate identity is closed in the `L¹` normalisation.
-**Lean (2026-09-08): `RHTower/SuzukiScrewFormConjugationDefect.lean`** — `xiZeroCopyPartner` (= reflect ∘ conj, involution,
+**Lean (2026-09-08): `RHTower/Suzuki/SuzukiScrewFormConjugationDefect.lean`** — `xiZeroCopyPartner` (= reflect ∘ conj, involution,
 spectral point `z̄_q`, fixes on-line copies), `suzukiTestRayCoefBar_eq_conj_partner`, `re_mul_mul_conj_eq` (polarisation),
 `re_suzukiScrewSmoothForm_eq_sampling_sub_defect` (exact law, MUST-265), `re_suzukiScrewSmoothForm_eq_sampling_of_riemannHypothesis`.
-**Lean (2026-09-08): `RHTower/SuzukiPsiRateIdentity.lean`** — `norm_xiScrewDivisorTerm_le_of_im_le`, `suzukiPsi_ge_of_im_le`
+**Lean (2026-09-08): `RHTower/Suzuki/SuzukiPsiRateIdentity.lean`** — `norm_xiScrewDivisorTerm_le_of_im_le`, `suzukiPsi_ge_of_im_le`
 (`Ψ(t) ≥ −(e^{Θt}+1)Σ'‖z_q‖⁻²`), `SuzukiPsiRate`, `suzukiPsiRate_iff` (`ε ≥ 0`: rate `ε` ⟺ `Θ_sup ≤ ε`),
 `ScrewPrimeSumRate`, `screwPrimeSumRate_iff` (prime-side exact formula for `Θ_sup`, MUST-266). Lower half from the corpus
 `abs_im_xiSpectralPoint_le_of_suzukiPsi_ge'` (`SuzukiScrewSubexponentialCriterion.lean`).

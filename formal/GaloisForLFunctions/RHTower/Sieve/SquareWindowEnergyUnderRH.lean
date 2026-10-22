@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.DyadicWindowErrorUnderRH
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareCorrelationEnergy
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareCorrelationEnergy
 
 /-!
 # `RH ⟹` the square-aperture correlation energy is subpower

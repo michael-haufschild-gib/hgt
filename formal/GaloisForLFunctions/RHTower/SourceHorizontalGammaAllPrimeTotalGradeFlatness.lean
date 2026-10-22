@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedExteriorSource
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedExteriorSource
 
 /-!
 # All-prime fixed-total-grade flatness of the literal Gamma exterior

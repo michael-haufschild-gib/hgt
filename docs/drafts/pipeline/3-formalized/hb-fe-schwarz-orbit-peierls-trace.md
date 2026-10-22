@@ -63,7 +63,7 @@ cancel unconditionally, but only by erasing all detector information.
 - `hbXiPeierlsFESchwarzSignedOrbitCubicTrace_eq_zero`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`
 
 ## New knowledge
 
@@ -99,8 +99,8 @@ currents.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace`
 - Build result: success, 11895 jobs after shared dependency replay
 - `#print axioms` on six endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

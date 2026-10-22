@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiGammaWeakDomainUpgrade
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaWeakDomainUpgrade
 import GaloisForLFunctions.RHTower.WallFirstBoundarySquareIntegrable
 import GaloisForLFunctions.HTGeometry.LogChartEnergyExtended
 

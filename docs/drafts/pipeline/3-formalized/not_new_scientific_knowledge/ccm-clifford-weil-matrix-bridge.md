@@ -96,7 +96,7 @@ criterion identifies scalar nonnegativity with RH.
 - [x] unconditional formal verification
 - [x] moved to Stage 3 after verification and axiom audit
 
-Formal realization: `formal/GaloisForLFunctions/RHTower/CCMCliffordWeilProduct.lean`.
+Formal realization: `formal/GaloisForLFunctions/RHTower/CCM/CCMCliffordWeilProduct.lean`.
 Target module build passed. Axiom audit for `(A)`, Gram positivity, coefficient extraction, exact Xi
 polarization, and the full-domain RH equivalence reports only `propext`, `Classical.choice`, and
 `Quot.sound`.

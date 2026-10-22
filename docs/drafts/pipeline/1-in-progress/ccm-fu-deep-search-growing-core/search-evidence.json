@@ -286,7 +286,7 @@
           "score": -33.12773279276086
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiAffineMixtureTriangularCurvatureReduction.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineMixtureTriangularCurvatureReduction.lean",
           "line": 850,
           "text": "/-- Remaining CCM--FU burden after the exact affine-floor transform: uniform cancellation of the",
           "score": -32.67809875594106
@@ -304,7 +304,7 @@
           "score": -30.797382272770037
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCriticalOrderedJordanCancellation.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalOrderedJordanCancellation.lean",
           "line": 14,
           "text": "The remaining burden is uniform affine checkpoint cancellation before scalarization.",
           "score": -29.75480212679377
@@ -340,7 +340,7 @@
           "score": -25.045051552810246
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeTranslationQuantileFlow.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeTranslationQuantileFlow.lean",
           "line": 21,
           "text": "This identifies the exact source of the remaining Route-P orientation: multiplicative flatness",
           "score": -24.05227212328022
@@ -871,8 +871,8 @@
         {
           "id": "df0f1deb5646e934c3c541409707e85f307a7a715c7bf8bc9c4c2c65da40b767",
           "name": "RHTower.DiffOp",
-          "module": "GaloisForLFunctions.RHTower.SuzukiPolynomialGroupEstimate",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiPolynomialGroupEstimate.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiPolynomialGroupEstimate",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolynomialGroupEstimate.lean",
           "line": 78,
           "end_line": 88,
           "kind": "inductive",
@@ -893,8 +893,8 @@
         {
           "id": "4b904fc5fa8680dd4e9079a4ebfd7e3488cbb3b1710ffaef001df8791cc647b6",
           "name": "GaloisForLFunctions.HTGeometry.norm_kgMulOp_sub_sub_le",
-          "module": "GaloisForLFunctions.HTGeometry.KleinGordonMovingPotential",
-          "relpath": "formal/GaloisForLFunctions/HTGeometry/KleinGordonMovingPotential.lean",
+          "module": "GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonMovingPotential",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonMovingPotential.lean",
           "line": 37,
           "end_line": 97,
           "kind": "theorem",
@@ -2177,8 +2177,8 @@
                 {
                   "id": "df0f1deb5646e934c3c541409707e85f307a7a715c7bf8bc9c4c2c65da40b767",
                   "name": "RHTower.DiffOp",
-                  "module": "GaloisForLFunctions.RHTower.SuzukiPolynomialGroupEstimate",
-                  "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiPolynomialGroupEstimate.lean",
+                  "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiPolynomialGroupEstimate",
+                  "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolynomialGroupEstimate.lean",
                   "line": 78
                 }
               ],
@@ -2387,8 +2387,8 @@
         {
           "name": "suzukiUnitRieszReporterWeightedPositiveLightMass_zero_eq_prime_half",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardAtomicContinuousLightWeld",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardAtomicContinuousLightWeld.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardAtomicContinuousLightWeld",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardAtomicContinuousLightWeld.lean",
           "line": 523,
           "doc": "",
           "score": -57.57209913718165
@@ -2396,8 +2396,8 @@
         {
           "name": "suzukiUnitRieszReporterWeightedNegativeLightMass_zero_eq_prime_half",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardAtomicContinuousLightWeld",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardAtomicContinuousLightWeld.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardAtomicContinuousLightWeld",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardAtomicContinuousLightWeld.lean",
           "line": 532,
           "doc": "",
           "score": -57.57209913718165
@@ -2405,8 +2405,8 @@
         {
           "name": "unitRieszSqrtWeightedPrimePrefix",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.CCMUnitRieszCompletedCoherentBarycenter",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszCompletedCoherentBarycenter.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCompletedCoherentBarycenter",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCompletedCoherentBarycenter.lean",
           "line": 47,
           "doc": "Square-root-weighted prime mass still causally visible at incoming log-time `-t`.",
           "score": -50.7838744012376
@@ -2414,8 +2414,8 @@
         {
           "name": "suzukiUnitRieszReporterWeightedPositiveLightMass_eq_naturalSum",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardFixedTwoLightPhaseLeakage",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardFixedTwoLightPhaseLeakage.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardFixedTwoLightPhaseLeakage",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardFixedTwoLightPhaseLeakage.lean",
           "line": 101,
           "doc": "Natural-number occurrence of the exact positive-light mass.",
           "score": -47.68748022087414
@@ -2423,8 +2423,8 @@
         {
           "name": "tendsto_suzukiUnitRieszReporterWeightedWallLightMass_atTop",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardUnconditionalMassEscape",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardUnconditionalMassEscape.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardUnconditionalMassEscape",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardUnconditionalMassEscape.lean",
           "line": 171,
           "doc": "At every fixed wall height, total literal wall-light energy escapes unconditionally.",
           "score": -47.48225935299583
@@ -2432,8 +2432,8 @@
         {
           "name": "tendsto_suzukiUnitRieszReporterWeightedWallLightMass_atTop_of_riemannHypothesis",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardRelativeMassEscape",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardRelativeMassEscape.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardRelativeMassEscape",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardRelativeMassEscape.lean",
           "line": 87,
           "doc": "At every fixed wall height, total literal wall-light energy escapes under RH.",
           "score": -46.72381751204277
@@ -2441,8 +2441,8 @@
         {
           "name": "tendsto_unitRieszCoherentPrimeOutgoingCharge_atTop",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiWardUnconditionalMassEscape",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiWardUnconditionalMassEscape.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiWardUnconditionalMassEscape",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWardUnconditionalMassEscape.lean",
           "line": 139,
           "doc": "Unconditional atomic escape.** PNT forces finite positive Suzuki wall mass to escape before any RH input or prime--Gamma cancellation.",
           "score": -45.07807110888712
@@ -2450,8 +2450,8 @@
         {
           "name": "unitRiesz_center_eq_weightedPrimePolarGammaCurvature_add_arch",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiGammaBinetCofinalBridge",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiGammaBinetCofinalBridge.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiGammaBinetCofinalBridge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiGammaBinetCofinalBridge.lean",
           "line": 114,
           "doc": "",
           "score": -44.59122631805141
@@ -2459,8 +2459,8 @@
         {
           "name": "unitRieszSqrtWeightedPrimePrefix_zero",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiSignedCurvatureUnitRieszBridge",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiSignedCurvatureUnitRieszBridge.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiSignedCurvatureUnitRieszBridge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSignedCurvatureUnitRieszBridge.lean",
           "line": 45,
           "doc": "At central incoming time, the strict causal prefix consists exactly of events below the aperture.",
           "score": -43.232122781549606
@@ -2477,8 +2477,8 @@
         {
           "name": "criticalMellinPrimeMass_unitRieszSuzukiBase_eq_zero",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMUnitRieszSharpPoleClassification",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszSharpPoleClassification.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMUnitRieszSharpPoleClassification",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszSharpPoleClassification.lean",
           "line": 73,
           "doc": "",
           "score": -42.709937031814306
@@ -2504,8 +2504,8 @@
         {
           "name": "criticalVonMangoldtRieszMass",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiCriticalChordMeasure",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiCriticalChordMeasure",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean",
           "line": 908,
           "doc": "Limiting positive prime carrier at one finite aperture.",
           "score": -38.827186353965594
@@ -2513,8 +2513,8 @@
         {
           "name": "unitRieszPrimeCurrent",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.CCMUnitRieszCompletedCurrentLaplace",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszCompletedCurrentLaplace.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCompletedCurrentLaplace",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCompletedCurrentLaplace.lean",
           "line": 39,
           "doc": "The critically weighted prime staircase.",
           "score": -38.682406264907726
@@ -2531,8 +2531,8 @@
         {
           "name": "tendsto_normalized_criticalSecondGradeSignedRieszMass",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiCriticalChordMeasure",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiCriticalChordMeasure",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean",
           "line": 1218,
           "doc": "Global signed second-grade renormalization.** After division by the exact positive square-root mesh scale, the coupled arithmetic-minus-polar critical variation tends to zero. The subtraction is performed before normalization, so no triangle inequality separates the two carriers or loses their leading cancellation.",
           "score": -37.95507598380618
@@ -2578,8 +2578,8 @@
         {
           "name": "sharpMovingPrimeWindowMass_logTwo_eq_dyadicWeightedPrimeWindow_floorExp",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMDyadicSharpRectangularTransfer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMDyadicSharpRectangularTransfer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMDyadicSharpRectangularTransfer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMDyadicSharpRectangularTransfer.lean",
           "line": 81,
           "doc": "The continuous dyadic moving window has no floor error: it is literally the integer window at `floor (exp x)`.",
           "score": -34.89456990686905
@@ -2644,7 +2644,7 @@
       "eligible": 23023,
       "markers": [
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean",
           "line": 1178,
           "text": "remaining Hedenmalm sign, if true, is an integrated source-mass cancellation theorem and cannot",
           "score": -33.01686258038652
@@ -2656,7 +2656,7 @@
           "score": -29.83102703482085
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockReducedMassDeficitFloor.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockReducedMassDeficitFloor.lean",
           "line": 7,
           "text": "After complete prime-power tower collapse, this module packages the exact remaining cancellation",
           "score": -29.184777755142637
@@ -2937,8 +2937,8 @@
         {
           "name": "ccmOuterShiftProduct_pow_shrinking_support",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimeInterference",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPrimeInterference.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimeInterference",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilPrimeInterference.lean",
           "line": 100,
           "doc": "Every product iterate loses one lag difference from its support radius.",
           "score": -44.01908310191038
@@ -3212,7 +3212,7 @@
           "score": -25.53146454184751
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPoissonReverseMellin.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonReverseMellin.lean",
           "line": 12,
           "text": "the Euler product region the multiplier is invertible for elementary reasons.  The remaining half",
           "score": -25.190480194112638
@@ -3242,7 +3242,7 @@
           "score": -23.17433945918252
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean",
           "line": 14,
           "text": "obstruction: KL geometry receives off-wall growth, but cannot itself be Route P's missing finite",
           "score": -23.154041820141913
@@ -3272,7 +3272,7 @@
           "score": -21.990912979340703
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerBigWittCanonicity.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerBigWittCanonicity.lean",
           "line": 11,
           "text": "Euler variables.  After killing the remaining variables, the inputs are finite polynomials.",
           "score": -21.718042565711336
@@ -8616,8 +8616,8 @@
         {
           "name": "deningerArithmeticGradedPoincare",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticSemisimpleHodge",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticSemisimpleHodge.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticSemisimpleHodge",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticSemisimpleHodge.lean",
           "line": 44,
           "doc": "Poincare pairing between graded ordinary and compact-support copies.",
           "score": -41.5342278101686
@@ -8625,8 +8625,8 @@
         {
           "name": "ccmActualHeadCompletedQuantileCurrent_higherGamma_signedControl",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadCoherentQuantileGammaProducer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadCoherentQuantileGammaProducer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadCoherentQuantileGammaProducer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadCoherentQuantileGammaProducer.lean",
           "line": 781,
           "doc": "Higher Γ energy absorbs the literal signed prime--polar completed current at the operator-valued coherent chi-square price. No prime cell or completed error is separated by an absolute value.",
           "score": -40.79047169527327
@@ -8670,8 +8670,8 @@
         {
           "name": "suzukiFinitePartEnergy_signed_split",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiLimitingLogIrreducibilityCore",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiLimitingLogIrreducibilityCore.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiLimitingLogIrreducibilityCore",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLimitingLogIrreducibilityCore.lean",
           "line": 363,
           "doc": "Exact Beurling--Deny sign decomposition on Suzuki's smooth real core. The only coupling between positive and negative parts is the strictly nonnegative `1/|x-y|` jump interaction.",
           "score": -38.678680375543735
@@ -8697,8 +8697,8 @@
         {
           "name": "quantileCells_higherGamma_signedControl",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadQuantileGammaChiSquareProducer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadQuantileGammaChiSquareProducer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadQuantileGammaChiSquareProducer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadQuantileGammaChiSquareProducer.lean",
           "line": 764,
           "doc": "Completing the Γ square absorbs the signed finite quantile current. The only price is the source-only overlapping displacement chi-square, with no absolute prime or polar mass.",
           "score": -36.132844328689686
@@ -8742,8 +8742,8 @@
         {
           "name": "ccmRestrictedWeilGroundEnergy_nonneg_iff_eventually_signedCompletedErrorGammaProducer_ge",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMActualHeadSignedCompletedErrorGammaProducer",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadSignedCompletedErrorGammaProducer.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadSignedCompletedErrorGammaProducer",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadSignedCompletedErrorGammaProducer.lean",
           "line": 435,
           "doc": "At fixed aperture, cofinal threshold control of the cancellation-preserving producer is exactly nonnegativity of the true restricted-Weil ground energy. No unsigned Γ envelope can replace this statement because the preceding chi-square theorem proves that envelope diverges.",
           "score": -35.05066861403622
@@ -8760,8 +8760,8 @@
         {
           "name": "kgFieldEnergyT_kgTunedPot_real_between",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.HTGeometry.KleinGordonTunedEnergyRange",
-          "relpath": "formal/GaloisForLFunctions/HTGeometry/KleinGordonTunedEnergyRange.lean",
+          "module": "GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonTunedEnergyRange",
+          "relpath": "formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonTunedEnergyRange.lean",
           "line": 67,
           "doc": "The energy never leaves the interval between its two extreme values.**",
           "score": -34.74010033105612
@@ -8879,7 +8879,7 @@
           "score": -28.249379521943776
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilOddPrimeBudget.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilOddPrimeBudget.lean",
           "line": 176,
           "text": "/-- The remaining odd arithmetic sign is precisely one comparison between the exact budgets. -/",
           "score": -27.986254227648956
@@ -8897,7 +8897,7 @@
           "score": -26.602847426416574
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreGrowingRankCartanFission.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreGrowingRankCartanFission.lean",
           "line": 21,
           "text": "What is not proved here is the remaining arithmetic admission theorem: this growing-rank signed",
           "score": -25.91074773116008
@@ -8909,7 +8909,7 @@
           "score": -25.733153029542787
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedSignedControlProducer.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedSignedControlProducer.lean",
           "line": 17,
           "text": "quadratic-aperture gain missing from a fixed-light Suzuki split: the actual signed asymmetric",
           "score": -25.175027085830394
@@ -8927,7 +8927,7 @@
           "score": -23.83290895626431
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiTaCovarianceReflection.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaCovarianceReflection.lean",
           "line": 22,
           "text": "the Xi target; that remaining step is the arithmetic parity-energy problem for the actual",
           "score": -23.37809481483959
@@ -8945,7 +8945,7 @@
           "score": -22.720937436783174
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaMobiusHyperbolicRapidity.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusHyperbolicRapidity.lean",
           "line": 18,
           "text": "This sharpens the remaining producer requirement.  No predicate using only",
           "score": -22.25645975444752
@@ -8963,7 +8963,7 @@
           "score": -22.105825380791728
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean",
           "line": 16,
           "text": "Thus the remaining cofinal prime--polar--Gamma estimate only has to control pairs before the exact",
           "score": -21.923665578606876
@@ -9576,8 +9576,8 @@
         {
           "id": "813a21d763908aacceba1f49b8b7b3aa67e63dbe19caba4a45fb248cb7ff31e4",
           "name": "RHTower.squareWindowCorrelationEnergy",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareCorrelationEnergy",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareCorrelationEnergy.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareCorrelationEnergy",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareCorrelationEnergy.lean",
           "line": 55,
           "end_line": 68,
           "kind": "def",
@@ -9746,8 +9746,8 @@
         {
           "id": "f2cb419018a64bdd4838758060c563e5cdf0f1593ec0f39ee023ae453bdeba71",
           "name": "RHTower.ccmFirstClockJuliaGoodBadCoherentCorrelation_sq_le_energy_mul_energy",
-          "module": "GaloisForLFunctions.RHTower.CCMFirstClockJuliaTwoPacketCapacity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaTwoPacketCapacity.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockJuliaTwoPacketCapacity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaTwoPacketCapacity.lean",
           "line": 477,
           "end_line": 493,
           "kind": "theorem",
@@ -10616,8 +10616,8 @@
         {
           "id": "1d9d0ec7e0ee5e9caaa74f066f7a87a3d62c6857aa843e843e8b99d7a494de43",
           "name": "RHTower.thetaXiMultiplicativeJet_sameFiber_signedWardConservation",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaAnomalyMultiplicativeJetSameFiberWardConservation",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyMultiplicativeJetSameFiberWardConservation.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAnomalyMultiplicativeJetSameFiberWardConservation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyMultiplicativeJetSameFiberWardConservation.lean",
           "line": 29,
           "end_line": 42,
           "kind": "theorem",
@@ -10773,8 +10773,8 @@
         {
           "id": "1e81503b4d2dd5156d59a361d497a051a185921676f488e1ea208aa4f243aa58",
           "name": "RHTower.threeRealEulerResponseEnergy_nonneg_iff_correlationTriangleLaw",
-          "module": "GaloisForLFunctions.RHTower.ThetaCuspTiltFluxThreeRealCorrelationAngle",
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxThreeRealCorrelationAngle.lean",
+          "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxThreeRealCorrelationAngle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxThreeRealCorrelationAngle.lean",
           "line": 448,
           "end_line": 456,
           "kind": "theorem",
@@ -11657,8 +11657,8 @@
         {
           "id": "3fba134ae3299760f9ebe50885443394a0476863ef1451a27728df6bc260cf6a",
           "name": "RHTower.ccmFirstClockJulia_badChannel_energySandwich",
-          "module": "GaloisForLFunctions.RHTower.CCMFirstClockJuliaEquilibriumGram",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockJuliaEquilibriumGram",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaEquilibriumGram.lean",
           "line": 224,
           "end_line": 234,
           "kind": "theorem",
@@ -11734,8 +11734,8 @@
         {
           "id": "909e8b097f4742c766f287f52c1df1f364478d533c9a82f401ad91dfcab58138",
           "name": "RHTower.ccmFirstClockJulia_negative_completedSource_forces_badCoherentEnergy",
-          "module": "GaloisForLFunctions.RHTower.CCMFirstClockJuliaEquilibriumGram",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockJuliaEquilibriumGram",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaEquilibriumGram.lean",
           "line": 255,
           "end_line": 288,
           "kind": "theorem",
@@ -12228,8 +12228,8 @@
         {
           "id": "813a21d763908aacceba1f49b8b7b3aa67e63dbe19caba4a45fb248cb7ff31e4",
           "name": "RHTower.squareWindowCorrelationEnergy",
-          "module": "GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareCorrelationEnergy",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareCorrelationEnergy.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareCorrelationEnergy",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareCorrelationEnergy.lean",
           "line": 55,
           "end_line": 68,
           "kind": "def",
@@ -13089,8 +13089,8 @@
         {
           "id": "7bff98a0a60faeef4bee0ec6c0f924f01ea9f9a1bdee4a268c74097290727bad",
           "name": "RHTower.ccmFirstClockJuliaAttenuatedCompletedPacket_sq_le_completedCoherentEnergy",
-          "module": "GaloisForLFunctions.RHTower.CCMFirstClockJuliaTwoPacketCapacity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaTwoPacketCapacity.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockJuliaTwoPacketCapacity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaTwoPacketCapacity.lean",
           "line": 434,
           "end_line": 461,
           "kind": "theorem",
@@ -14212,8 +14212,8 @@
         {
           "id": "fa4a173baab64ca3b4cf35e5ea8fd809d560683a7fda6440a205c86ce3212e5f",
           "name": "RHTower.ccmFirstClockJuliaGoodBadCoherentDeterminant_nonneg",
-          "module": "GaloisForLFunctions.RHTower.CCMFirstClockJuliaTwoPacketCapacity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaTwoPacketCapacity.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockJuliaTwoPacketCapacity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaTwoPacketCapacity.lean",
           "line": 493,
           "end_line": 504,
           "kind": "theorem",
@@ -14410,7 +14410,7 @@
           "view": "prose",
           "line": 152,
           "end_line": 239,
-          "text": "n zero-mode correction is moreover asymptotic to an explicit constant times the concentration\ndeficit. The generic theorem here remains valid, but its bad vectors are now proved not to model the\nleading endpoint tail of the CCM source.\n\n## Lean status\n\n**Formalized unconditionally, 2026-08-04**, in\n`formal/GaloisForLFunctions/RHTower/CCMArithmeticTailUnbounded.lean`.\n\nThe route taken is the card's proof with the logarithmic unitary **removed**.  The card passes to\n`L²(dt)` in order to write the operator as a translation polynomial, but the extremal vector can be\nwritten directly in the `v` variable as the pullback of the card's indicator,\n\n```text\nq(v) = L^(-1/2) v^(-1/2) on [a, a e^L],   L = 2 log N,\n```\n\nand then every step is an elementary `dv/v` computation.  Nothing is lost: the unitary is needed only\nto *see* the coherence, not to prove it.\n\n- **`arithDilationSum`** — the operator `(S_(a,N) q)(v) = sqrt v sum_(n<=N) q(nv)` of the route object.\n- **`coherentPacket`**, `coherentPacket_apply`, `coherentPacket_eq_zero`, `measurable_coherentPacket`,\n  **`abs_coherentPacket_le`** — the extremal vector and its uniform bound on `[a, ∞)`, which is where\n  `v >= a > 0` enters.\n- **`integral_Ioi_coherentPacket_sq`** — `‖q‖_(L²(dv)) = 1`.  The whole computation is\n  `int_a^(a e^L) dv/v = L`, so the normalisation `L^(-1/2)` is exactly right.\n- `arithDilationSum_sq_div` — the target integrand `|S q|²/v` is the square of the *plain* dilation\n  sum, with the `sqrt v` cancelled.  This is what makes the `dv/v` measure invisible in the estimates.\n- `exp_two_mul_log`, **`arithDilationSum_coherentPacket_window`** — the **coherent step**, equation\n  `(3)` of the card: for `v in [a, aN]` every one of the `N` dilates `nv` lands in `[a, a N²]`, which\n  is the support because `L = 2 log N`, and the `v`-dependence cancels exactly:\n\n  ```text\n  (S q)(v) = L^(-1/2) sum_(n=1)^N n^(-1/2),   constant on the window.\n  ```\n\n  This is the only place the choice of `L` is used, and it is the entire mechanism: the `N` dilates add\n  with the same sign.\n- `arithDilationSum_coherentPacket_eq_zero`, **`integrableOn_arithDilationSum_sq_div`** — the image\n  lies in `L²(dv/v)`: it vanishes beyond `a e^L` and is bounded by `(N L^(-1/2) a^(-1/2))²`, so the\n  window bound extends to the whole ray.  Without this the comparison with a sub-window would not be a\n  statement about the norm at all.\n- **`half_mul_sq_sum_le_integral`** — the squared-norm bound `(1/2)(sum_(n<=N) n^(-1/2))²`.  The\n  factor `1/2` is `log N / L`, i.e. the fraction of the packet's logarithmic length on which coherence\n  holds.\n- `two_mul_sqrt_succ_sub_one_le_sum`, **`two_mul_sqrt_sub_one_le_sum`** — the comparison\n  `sum_(n<=N) n^(-1/2) >= 2(sqrt(N+1) - 1) >= 2(sqrt N - 1)`.  Proved by induction rather than by an\n  integral comparison; note that the naive induction on `2(sqrt N - 1)` **fails** (the step inequality\n  is false), and shifting the target to `sqrt(N+1)` is what makes each step an instance of\n  `2 sqrt(N+1) <= sqrt(N+1) + sqrt(N+2)`.\n- **`two_mul_sq_sub_one_le_integral`**, `sum_inv_sqrt_nonneg`,\n  **`inv_sqrt_two_mul_sum_le_sqrt_integral`**, **`sqrt_two_mul_sqrt_sub_one_le_sqrt_integral`** —\n  equation `(1)` in both of its stated forms,\n\n  ```text\n  ||S_(a,N)|| >= 2^(-1/2) sum_(n=1)^N n^(-1/2) >= sqrt 2 (sqrt N - 1).\n  ```\n\n- **`exists_unit_arithDilationSum_ge`** — equation `(2)`: for every constant `C` there are `N >= 2` and\n  a unit vector whose image has tail energy at least `C`.  The witness is explicit,\n  `N = max 2 ceil((1 + sqrt(max C 0 / 2))²)`, so no compactness or filter argument is used.\n\nThe Mellin interpretation and the positive requirement are commentary on this bound, not additional\nclaims, and the source-specific exception they point to is itself formalized: the sawtooth sine series\nof `SawtoothFourierSeries.lean` and the endpoint jets of `CCMEndpointFourierJet.lean` bound the\nleading exterior tail of a compact `C²` source, and `CCMTwoModeDeficitScale.lean` puts the two-mode\nzero-mode correction at concentration-deficit order.\n\n## Gates\n\n- [x] `sqrt N` lower bound for the finite arithmetic dilation sum proved\n- [x] unboundedness of the infinite sum proved\n- [x] Lean: coherent packet constructed and normalised\n- [x] Lean: coherence on the window (the constancy identity)\n- [x] Lean: image integrability, so the bound is a statement about the norm\n- [x] Lean: half-power harmonic sum comparison\n- [x] Lean: equation `(1)` in both stated forms, unconditional\n- [x] Lean: equation `(2)`, with an explicit witness\n- [ ] the positive object: the arithmetic tail map restricted to the two-dimensional low-mode\n      radial-prolate family\n\n## Novelty verdict\n\nThe theorem is an exact and useful topology classifier, but its mechanism is standard\nMellin/dilation theory. It is therefore `[BRIDGE]`, not new scientific knowledge. The positive\nunresolved mathematical object is the arithmetic tail map restricted to the two-dimensional\nlow-mode radial-prolate family.\n",
+          "text": "n zero-mode correction is moreover asymptotic to an explicit constant times the concentration\ndeficit. The generic theorem here remains valid, but its bad vectors are now proved not to model the\nleading endpoint tail of the CCM source.\n\n## Lean status\n\n**Formalized unconditionally, 2026-08-04**, in\n`formal/GaloisForLFunctions/RHTower/CCM/CCMArithmeticTailUnbounded.lean`.\n\nThe route taken is the card's proof with the logarithmic unitary **removed**.  The card passes to\n`L²(dt)` in order to write the operator as a translation polynomial, but the extremal vector can be\nwritten directly in the `v` variable as the pullback of the card's indicator,\n\n```text\nq(v) = L^(-1/2) v^(-1/2) on [a, a e^L],   L = 2 log N,\n```\n\nand then every step is an elementary `dv/v` computation.  Nothing is lost: the unitary is needed only\nto *see* the coherence, not to prove it.\n\n- **`arithDilationSum`** — the operator `(S_(a,N) q)(v) = sqrt v sum_(n<=N) q(nv)` of the route object.\n- **`coherentPacket`**, `coherentPacket_apply`, `coherentPacket_eq_zero`, `measurable_coherentPacket`,\n  **`abs_coherentPacket_le`** — the extremal vector and its uniform bound on `[a, ∞)`, which is where\n  `v >= a > 0` enters.\n- **`integral_Ioi_coherentPacket_sq`** — `‖q‖_(L²(dv)) = 1`.  The whole computation is\n  `int_a^(a e^L) dv/v = L`, so the normalisation `L^(-1/2)` is exactly right.\n- `arithDilationSum_sq_div` — the target integrand `|S q|²/v` is the square of the *plain* dilation\n  sum, with the `sqrt v` cancelled.  This is what makes the `dv/v` measure invisible in the estimates.\n- `exp_two_mul_log`, **`arithDilationSum_coherentPacket_window`** — the **coherent step**, equation\n  `(3)` of the card: for `v in [a, aN]` every one of the `N` dilates `nv` lands in `[a, a N²]`, which\n  is the support because `L = 2 log N`, and the `v`-dependence cancels exactly:\n\n  ```text\n  (S q)(v) = L^(-1/2) sum_(n=1)^N n^(-1/2),   constant on the window.\n  ```\n\n  This is the only place the choice of `L` is used, and it is the entire mechanism: the `N` dilates add\n  with the same sign.\n- `arithDilationSum_coherentPacket_eq_zero`, **`integrableOn_arithDilationSum_sq_div`** — the image\n  lies in `L²(dv/v)`: it vanishes beyond `a e^L` and is bounded by `(N L^(-1/2) a^(-1/2))²`, so the\n  window bound extends to the whole ray.  Without this the comparison with a sub-window would not be a\n  statement about the norm at all.\n- **`half_mul_sq_sum_le_integral`** — the squared-norm bound `(1/2)(sum_(n<=N) n^(-1/2))²`.  The\n  factor `1/2` is `log N / L`, i.e. the fraction of the packet's logarithmic length on which coherence\n  holds.\n- `two_mul_sqrt_succ_sub_one_le_sum`, **`two_mul_sqrt_sub_one_le_sum`** — the comparison\n  `sum_(n<=N) n^(-1/2) >= 2(sqrt(N+1) - 1) >= 2(sqrt N - 1)`.  Proved by induction rather than by an\n  integral comparison; note that the naive induction on `2(sqrt N - 1)` **fails** (the step inequality\n  is false), and shifting the target to `sqrt(N+1)` is what makes each step an instance of\n  `2 sqrt(N+1) <= sqrt(N+1) + sqrt(N+2)`.\n- **`two_mul_sq_sub_one_le_integral`**, `sum_inv_sqrt_nonneg`,\n  **`inv_sqrt_two_mul_sum_le_sqrt_integral`**, **`sqrt_two_mul_sqrt_sub_one_le_sqrt_integral`** —\n  equation `(1)` in both of its stated forms,\n\n  ```text\n  ||S_(a,N)|| >= 2^(-1/2) sum_(n=1)^N n^(-1/2) >= sqrt 2 (sqrt N - 1).\n  ```\n\n- **`exists_unit_arithDilationSum_ge`** — equation `(2)`: for every constant `C` there are `N >= 2` and\n  a unit vector whose image has tail energy at least `C`.  The witness is explicit,\n  `N = max 2 ceil((1 + sqrt(max C 0 / 2))²)`, so no compactness or filter argument is used.\n\nThe Mellin interpretation and the positive requirement are commentary on this bound, not additional\nclaims, and the source-specific exception they point to is itself formalized: the sawtooth sine series\nof `SawtoothFourierSeries.lean` and the endpoint jets of `CCMEndpointFourierJet.lean` bound the\nleading exterior tail of a compact `C²` source, and `CCMTwoModeDeficitScale.lean` puts the two-mode\nzero-mode correction at concentration-deficit order.\n\n## Gates\n\n- [x] `sqrt N` lower bound for the finite arithmetic dilation sum proved\n- [x] unboundedness of the infinite sum proved\n- [x] Lean: coherent packet constructed and normalised\n- [x] Lean: coherence on the window (the constancy identity)\n- [x] Lean: image integrability, so the bound is a statement about the norm\n- [x] Lean: half-power harmonic sum comparison\n- [x] Lean: equation `(1)` in both stated forms, unconditional\n- [x] Lean: equation `(2)`, with an explicit witness\n- [ ] the positive object: the arithmetic tail map restricted to the two-dimensional low-mode\n      radial-prolate family\n\n## Novelty verdict\n\nThe theorem is an exact and useful topology classifier, but its mechanism is standard\nMellin/dilation theory. It is therefore `[BRIDGE]`, not new scientific knowledge. The positive\nunresolved mathematical object is the arithmetic tail map restricted to the two-dimensional\nlow-mode radial-prolate family.\n",
           "content_hash": "a4a249910ea0ad4421d25385aa6b053c3fb26be12538959f5bc955b77148005a",
           "provenance": "{\"kind\": \"source\", \"source_hash\": \"6b8e549dd4429110e0e504e13878369910865d641343d9eef346bba47fd53945\", \"toolchain\": \"leanprover/lean4:v4.32.2\", \"status\": \"source_only\", \"extraction_version\": \"source-2\", \"package\": \"research\", \"manifest_hash\": \"60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c\", \"recorded_stage\": \"3-formalized\"}",
           "score": 0.61959517,
@@ -14781,8 +14781,8 @@
         {
           "name": "thetaSourceSignedStage_metricAdjoint_iff_greenCancellation",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaActualStageGreenBalance",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualStageGreenBalance.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaActualStageGreenBalance",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualStageGreenBalance.lean",
           "line": 237,
           "doc": "Positive-metric adjointness of an actual stage is exactly cancellation of the pinned rank-two current by the correction Green remainder. Thus no boundary information is hidden in operator notation.",
           "score": -36.48277729773235
@@ -14987,7 +14987,7 @@
           "score": -24.884228592179046
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantTransitionCoreEscape.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantTransitionCoreEscape.lean",
           "line": 14,
           "text": "all nonpositive cross-scale interactions can never supply the missing cofinal Ward bound.  A viable",
           "score": -24.394205578974017
@@ -15041,7 +15041,7 @@
           "score": -20.226289187266403
         },
         {
-          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspWignerProductFiberNormalForm.lean",
+          "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerProductFiberNormalForm.lean",
           "line": 1178,
           "text": "remaining Hedenmalm sign, if true, is an integrated source-mass cancellation theorem and cannot",
           "score": -20.191218994423163
@@ -17888,12 +17888,12 @@
         {
           "id": 2289198,
           "decl_id": null,
-          "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification.lean",
-          "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification",
+          "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification.lean",
+          "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification",
           "view": "lean",
           "line": 1,
           "end_line": 109,
-          "text": "import GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification\n\n/-!\n# Parikh--Wilczek signed matrix three-moment classification\n\nThe residual of every PW Borel grade lies in the affine span of one common spectral coordinate and\nthe fixed shift `4k(k+1)`.  Consequently every finite signed matrix cross-grade interaction depends\non only three matrix moments, and its exact zero locus is the reflection wall together with roots of\none real quadratic.\n\nThis rank-two collapse also exposes a universal three-grade dark vector `(2,-3,1)`.  Its outer\nproduct is nonzero, symmetric, and positive semidefinite as a quadratic form, yet its signed entries\nannihilate the recoil signal identically.  Thus positive semidefiniteness alone cannot rescue the\nfinite signed-matrix route; entrywise positivity in the preceding classification is essential.\n\n`[NEW] [CLASSIFICATION] [EXACT DARK SECTOR] [NO-GO] [PAPER-PROVED] [LEAN-PROVED]`\n-/\n\nopen Complex\nopen scoped BigOperators\n\nnamespace RHTower\n\nnoncomputable section\n\n/-- Common scalar spectral coordinate carried by every Borel-grade residual. -/\ndef schwarzschildParikhWilczekBorelSpectralCoordinate (s : ℂ) : ℝ :=\n  s.re * (1 - s.re) + s.im ^ 2 + 1\n\n/-- Grade-dependent shift complementary to the common spectral coordinate. -/\ndef schwarzschildParikhWilczekBorelGradeShift (k : ℕ) : ℝ :=\n  4 * (k : ℝ) * ((k : ℝ) + 1)\n\n/-- Exact affine-rank-two decomposition of every grade residual. -/\ntheorem schwarzschildParikhWilczekBorelGradeResidual_eq_coordinate_add_shift\n    (s : ℂ) (k : ℕ) :\n    schwarzschildParikhWilczekBorelGradeResidual s k =\n      schwarzschildParikhWilczekBorelSpectralCoordinate s +\n        schwarzschildParikhWilczekBorelGradeShift k := by\n  rw [schwarzschildParikhWilczekBorelGradeResidual,\n    schwarzschildParikhWilczekBorelSpectralCoordinate,\n    schwarzschildParikhWilczekBorelGradeShift]\n  ring\n\n/-- Zeroth signed matrix moment. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentZero\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j\n\n/-- First signed matrix moment against the sum of grade shifts. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentOne\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j *\n    (schwarzschildParikhWilczekBorelGradeShift (i : ℕ) +\n      schwarzschildParikhWilczekBorelGradeShift (j : ℕ))\n\n/-- Second signed matrix moment against the product of grade shifts. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentTwo\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j *\n    schwarzschildParikhWilczekBorelGradeShift (i : ℕ) *\n      schwarzschildParikhWilczekBorelGradeShift (j : ℕ)\n\n/-- Quadratic residual polynomial determined by the three signed matrix moments. -/\ndef schwarzschildParikhWilczekSignedMatrixResidualPolynomial\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) : ℝ :=\n  schwarzschildParikhWilczekSignedMatrixMomentZero M *\n      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +\n    schwarzschildParikhWilczekSignedMatrixMomentOne M *\n      schwarzschildParikhWilczekBorelSpectralCoordinate s +\n    schwarzschildParikhWilczekSignedMatrixMomentTwo M\n\n/-- Every finite signed matrix residual energy is its three-moment quadratic. -/\ntheorem schwarzschildParikhWilczekMatrixResidualEnergy_three_moment\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :\n    schwarzschildParikhWilczekMatrixResidualEnergy M s =\n      schwarzschildParikhWilczekSignedMatrixResidualPolynomial M s := by\n  rw [schwarzschildParikhWilczekMatrixResidualEnergy,\n    schwarzschildParikhWilczekSignedMatrixResidualPolynomial,\n    schwarzschildParikhWilczekSignedMatrixMomentZero,\n    schwarzschildParikhWilczekSignedMatrixMomentOne,\n    schwarzschildParikhWilczekSignedMatrixMomentTwo]\n  simp_rw [schwarzschildParikhWilczekBorelGradeResidual_eq_coordinate_add_shift]\n  apply Eq.symm\n  calc\n    _ = ∑ i, ∑ j,\n        (M i j * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +\n          M i j *\n            (schwarzschildParikhWilczekBorelGradeShift (i : ℕ) +\n              schwarzschildParikhWilczekBorelGradeShift (j : ℕ)) *\n                schwarzschildParikhWilczekBorelSpectralCoordinate s +\n          M i j * schwarzschildParikhWilczekBorelGradeShift (i : ℕ) *\n            schwarzschildParikhWilczekBorelGradeShift (j : ℕ)) := by\n          simp_rw [Finset.sum_add_distrib, Finset.sum_mul]\n    _ = _ := by\n      apply Finset.sum_congr rfl\n      intro i _\n      apply Finset.sum_congr rfl\n      intro j _\n      ring\n\n/-- Full signed cross-grade energy is wall squared times the three-moment quadratic. -/\ntheorem schwarzschildParikhWilczekMatrixCrossGradeEnergy_three_moment\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :\n    schwarzschildParikhWilczekMatrixCrossGradeEnergy M s =\n      schwarzschildParikhWilczekBorelWallFactor s ^ 2 *\n        schwarzschildParikhWilczekSignedMatrixResidualPolynomial M s := by\n  rw [schwarzschildParikhWilczekMatrixCrossGradeEnergy_factorization,\n",
+          "text": "import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification\n\n/-!\n# Parikh--Wilczek signed matrix three-moment classification\n\nThe residual of every PW Borel grade lies in the affine span of one common spectral coordinate and\nthe fixed shift `4k(k+1)`.  Consequently every finite signed matrix cross-grade interaction depends\non only three matrix moments, and its exact zero locus is the reflection wall together with roots of\none real quadratic.\n\nThis rank-two collapse also exposes a universal three-grade dark vector `(2,-3,1)`.  Its outer\nproduct is nonzero, symmetric, and positive semidefinite as a quadratic form, yet its signed entries\nannihilate the recoil signal identically.  Thus positive semidefiniteness alone cannot rescue the\nfinite signed-matrix route; entrywise positivity in the preceding classification is essential.\n\n`[NEW] [CLASSIFICATION] [EXACT DARK SECTOR] [NO-GO] [PAPER-PROVED] [LEAN-PROVED]`\n-/\n\nopen Complex\nopen scoped BigOperators\n\nnamespace RHTower\n\nnoncomputable section\n\n/-- Common scalar spectral coordinate carried by every Borel-grade residual. -/\ndef schwarzschildParikhWilczekBorelSpectralCoordinate (s : ℂ) : ℝ :=\n  s.re * (1 - s.re) + s.im ^ 2 + 1\n\n/-- Grade-dependent shift complementary to the common spectral coordinate. -/\ndef schwarzschildParikhWilczekBorelGradeShift (k : ℕ) : ℝ :=\n  4 * (k : ℝ) * ((k : ℝ) + 1)\n\n/-- Exact affine-rank-two decomposition of every grade residual. -/\ntheorem schwarzschildParikhWilczekBorelGradeResidual_eq_coordinate_add_shift\n    (s : ℂ) (k : ℕ) :\n    schwarzschildParikhWilczekBorelGradeResidual s k =\n      schwarzschildParikhWilczekBorelSpectralCoordinate s +\n        schwarzschildParikhWilczekBorelGradeShift k := by\n  rw [schwarzschildParikhWilczekBorelGradeResidual,\n    schwarzschildParikhWilczekBorelSpectralCoordinate,\n    schwarzschildParikhWilczekBorelGradeShift]\n  ring\n\n/-- Zeroth signed matrix moment. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentZero\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j\n\n/-- First signed matrix moment against the sum of grade shifts. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentOne\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j *\n    (schwarzschildParikhWilczekBorelGradeShift (i : ℕ) +\n      schwarzschildParikhWilczekBorelGradeShift (j : ℕ))\n\n/-- Second signed matrix moment against the product of grade shifts. -/\ndef schwarzschildParikhWilczekSignedMatrixMomentTwo\n    {N : ℕ} (M : Fin N → Fin N → ℝ) : ℝ :=\n  ∑ i, ∑ j, M i j *\n    schwarzschildParikhWilczekBorelGradeShift (i : ℕ) *\n      schwarzschildParikhWilczekBorelGradeShift (j : ℕ)\n\n/-- Quadratic residual polynomial determined by the three signed matrix moments. -/\ndef schwarzschildParikhWilczekSignedMatrixResidualPolynomial\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) : ℝ :=\n  schwarzschildParikhWilczekSignedMatrixMomentZero M *\n      schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +\n    schwarzschildParikhWilczekSignedMatrixMomentOne M *\n      schwarzschildParikhWilczekBorelSpectralCoordinate s +\n    schwarzschildParikhWilczekSignedMatrixMomentTwo M\n\n/-- Every finite signed matrix residual energy is its three-moment quadratic. -/\ntheorem schwarzschildParikhWilczekMatrixResidualEnergy_three_moment\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :\n    schwarzschildParikhWilczekMatrixResidualEnergy M s =\n      schwarzschildParikhWilczekSignedMatrixResidualPolynomial M s := by\n  rw [schwarzschildParikhWilczekMatrixResidualEnergy,\n    schwarzschildParikhWilczekSignedMatrixResidualPolynomial,\n    schwarzschildParikhWilczekSignedMatrixMomentZero,\n    schwarzschildParikhWilczekSignedMatrixMomentOne,\n    schwarzschildParikhWilczekSignedMatrixMomentTwo]\n  simp_rw [schwarzschildParikhWilczekBorelGradeResidual_eq_coordinate_add_shift]\n  apply Eq.symm\n  calc\n    _ = ∑ i, ∑ j,\n        (M i j * schwarzschildParikhWilczekBorelSpectralCoordinate s ^ 2 +\n          M i j *\n            (schwarzschildParikhWilczekBorelGradeShift (i : ℕ) +\n              schwarzschildParikhWilczekBorelGradeShift (j : ℕ)) *\n                schwarzschildParikhWilczekBorelSpectralCoordinate s +\n          M i j * schwarzschildParikhWilczekBorelGradeShift (i : ℕ) *\n            schwarzschildParikhWilczekBorelGradeShift (j : ℕ)) := by\n          simp_rw [Finset.sum_add_distrib, Finset.sum_mul]\n    _ = _ := by\n      apply Finset.sum_congr rfl\n      intro i _\n      apply Finset.sum_congr rfl\n      intro j _\n      ring\n\n/-- Full signed cross-grade energy is wall squared times the three-moment quadratic. -/\ntheorem schwarzschildParikhWilczekMatrixCrossGradeEnergy_three_moment\n    {N : ℕ} (M : Fin N → Fin N → ℝ) (s : ℂ) :\n    schwarzschildParikhWilczekMatrixCrossGradeEnergy M s =\n      schwarzschildParikhWilczekBorelWallFactor s ^ 2 *\n        schwarzschildParikhWilczekSignedMatrixResidualPolynomial M s := by\n  rw [schwarzschildParikhWilczekMatrixCrossGradeEnergy_factorization,\n",
           "content_hash": "24700c136186e1f5a865cd2fbe7e2e4992274cd32650c9206ad6c9ebd41fcad8",
           "provenance": "{\"kind\": \"source\", \"source_hash\": \"c9c5e6739ee2e37d28454922b200a4bd9ce3e2df4278b29dec77ba882b8f64b6\", \"toolchain\": \"leanprover/lean4:v4.32.2\", \"status\": \"source_only\", \"extraction_version\": \"source-2\", \"package\": \"project\", \"manifest_hash\": \"60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c\", \"recorded_stage\": null}",
           "score": -21.609276087510487,
@@ -18265,8 +18265,8 @@
         {
           "name": "abs_cell_discrepancy_le",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMBVMuntzSummation",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMBVMuntzSummation.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMBVMuntzSummation",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMBVMuntzSummation.lean",
           "line": 40,
           "doc": "On one cell the right-endpoint value differs from the mean by at most the variation there.",
           "score": -147.97078125870283
@@ -18757,8 +18757,8 @@
         {
           "id": "3e5040f07a59fd27ff089972ebe383ba51b198e87b31321025622cfa3f79f393",
           "name": "RHTower.HedenmalmThetaSource.mobiusCriticalTwoSidedCayleyDiscrepancy",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmThetaSourceJuliaPythagoras",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceJuliaPythagoras.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceJuliaPythagoras",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceJuliaPythagoras.lean",
           "line": 31,
           "end_line": 36,
           "kind": "def",
@@ -21403,7 +21403,7 @@
           "view": "prose",
           "line": 1,
           "end_line": 113,
-          "text": "# CCM quantile characteristic-transport law\n\n- **ID:** ccm-quantile-characteristic-transport-law\n- **Stage:** 3-formalized\n- **Type:** THEOREM\n- **Source:** `CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n- **Statement:** The finite outgoing-quantile phase symbol is exactly the cosine-characteristic\n  discrepancy between continuous outgoing polar mass on `[0,b_N]` and atomic prime mass at\n  `log n`, coupled cellwise by equal mass; its curvature telescopes to the corresponding global\n  second-moment discrepancy.\n\n## Goal\n\nReplace cellwise phase bookkeeping by one transported Fourier--Stieltjes source without losing the\nmonotone quantile coupling. This exposes transport cost and moment structure to Hilbert-space\npositivity tools. It is a bridge theorem, not an RH proof.\n\n## Gates\n\n- [x] 0 → 1 in-progress: exact source definitions and proof route identified; corpus search found\n  no aggregate characteristic-discrepancy theorem\n- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency\n- [x] 2 → 3 formalized: nine Lean theorems, targeted source/build/axiom audit\n- [ ] 3 → 4 publication-ready: standalone proof and external novelty audit\n\n## Theorem A — characteristic discrepancy `[PROVED HERE]`\n\nFor `b_N = ccmOutgoingPrimeQuantileBoundary N` and frequency `xi`,\n\n`Q_N(xi) = ∫_[0,b_N] exp(h/2) cos(2*pi*h*xi) dh\n  - sum_(n<N) w_n cos(2*pi*log(n)*xi)`.\n\nThis is not the ordinary same-window prime cutoff: atomic nodes retain quantile transport order and\nmay lie outside their polar cell. It is the characteristic discrepancy of the explicit coupling.\n\n## Theorem B — global curvature `[PROVED HERE]`\n\n`Q_N''(0) = 4*pi^2 * (\n  sum_(n<N) w_n*(log n)^2 - ∫_[0,b_N] exp(h/2)*h^2 dh)`.\n\nThe right side is the second-moment difference of the two equal-mass finite measures.\n\n## Theorem C — quadratic transport bound `[PROVED HERE]`\n\nDefine the literal absolute second-moment work\n\n`A_N = sum_(n<N) ∫_[b_n,b_(n+1)] exp(h/2) * |h^2 - (log n)^2| dh`.\n\nThen\n\n`|Q_N(xi)| ≤ (2*pi*xi)^2/2 * A_N`.\n\nThe proof uses the new global inequality\n\n`|cos x - cos y| ≤ |x^2-y^2|/2`,\n\nobtained from the exact product formula for `cos x - cos y` and `|sin u| ≤ |u|`. This is stronger\nat low frequency than a generic Lipschitz bound. It formalizes a useful separation: signed\nsecond-moment work determines curvature, while absolute second-moment work controls magnitude.\n\n## Approach\n\n1. Use exact quantile cell mass to split each profile into polar cosine mass minus atom cosine mass.\n2. Induct over consecutive boundaries to telescope continuous cell integrals.\n3. Differentiate the finite sum using already proved cell jets and telescope second moments.\n4. Compare the characteristic discrepancy with `HTGeometry.QuantileCoupling` and\n   `HTGeometry.QuadraticTransportCost`; import them only if a theorem uses their measure-level API.\n\nAll four steps are closed. Measure-level imports were not needed: the corpus's literal cell\ncoupling supports a sharper direct quadratic estimate.\n\n## Hostile audit\n\n- Equal mass gives `Q_N(0)=0` but no pointwise sign.\n- Second-moment difference is signed and is not quadratic transport cost.\n- Atomic support is indexed by transport cells, not clipped by `log n ≤ b_N`.\n- Any bound must retain frequency scaling and cannot replace exact phase identity by absolute mass.\n\n## Novelty audit\n\n- Internal research search found general monotone-coupling and quadratic-cost theorems plus the new\n  cell phase module, but no theorem identifying this CCM finite symbol with a transported\n  characteristic discrepancy.\n- Labels: `[BRIDGE] [INTERNAL CANDIDATE] [NOT AN RH PROOF]`.\n\n## Lean formalization\n\nModule: `formal/GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n\n- exact consecutive-cell telescope to `[0,b_N]`\n- exact cell polar-minus-atom characteristic identity\n- exact finite characteristic-discrepancy identity\n- finite first- and second-jet derivative theorems\n- exact global curvature/second-moment theorem\n- global cosine square-difference inequality\n- cellwise and finite quadratic transport bounds\n\nAudit:\n\n- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n  passed\n- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileCharacteristicTransport`\n  passed; no umbrella build run\n- all nine theorem axiom audits report only `propext`, `Classical.choice`, `Quot.sound`\n- forbidden-token scan empty\n- wired into `GaloisForLFunctions/RHTower.lean`\n- `python3 scripts/formal_tools.py lint` passed after wiring\n\n## Log\n\n- 2026-08-21 — created directly in Stage 1 after source and corpus-absence audit.\n- 2026-08-21 — Conjectures A, B, and stronger quadratic C closed in Lean; promoted to Stage 3.\n",
+          "text": "# CCM quantile characteristic-transport law\n\n- **ID:** ccm-quantile-characteristic-transport-law\n- **Stage:** 3-formalized\n- **Type:** THEOREM\n- **Source:** `CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n- **Statement:** The finite outgoing-quantile phase symbol is exactly the cosine-characteristic\n  discrepancy between continuous outgoing polar mass on `[0,b_N]` and atomic prime mass at\n  `log n`, coupled cellwise by equal mass; its curvature telescopes to the corresponding global\n  second-moment discrepancy.\n\n## Goal\n\nReplace cellwise phase bookkeeping by one transported Fourier--Stieltjes source without losing the\nmonotone quantile coupling. This exposes transport cost and moment structure to Hilbert-space\npositivity tools. It is a bridge theorem, not an RH proof.\n\n## Gates\n\n- [x] 0 → 1 in-progress: exact source definitions and proof route identified; corpus search found\n  no aggregate characteristic-discrepancy theorem\n- [x] 1 → 2 fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency\n- [x] 2 → 3 formalized: nine Lean theorems, targeted source/build/axiom audit\n- [ ] 3 → 4 publication-ready: standalone proof and external novelty audit\n\n## Theorem A — characteristic discrepancy `[PROVED HERE]`\n\nFor `b_N = ccmOutgoingPrimeQuantileBoundary N` and frequency `xi`,\n\n`Q_N(xi) = ∫_[0,b_N] exp(h/2) cos(2*pi*h*xi) dh\n  - sum_(n<N) w_n cos(2*pi*log(n)*xi)`.\n\nThis is not the ordinary same-window prime cutoff: atomic nodes retain quantile transport order and\nmay lie outside their polar cell. It is the characteristic discrepancy of the explicit coupling.\n\n## Theorem B — global curvature `[PROVED HERE]`\n\n`Q_N''(0) = 4*pi^2 * (\n  sum_(n<N) w_n*(log n)^2 - ∫_[0,b_N] exp(h/2)*h^2 dh)`.\n\nThe right side is the second-moment difference of the two equal-mass finite measures.\n\n## Theorem C — quadratic transport bound `[PROVED HERE]`\n\nDefine the literal absolute second-moment work\n\n`A_N = sum_(n<N) ∫_[b_n,b_(n+1)] exp(h/2) * |h^2 - (log n)^2| dh`.\n\nThen\n\n`|Q_N(xi)| ≤ (2*pi*xi)^2/2 * A_N`.\n\nThe proof uses the new global inequality\n\n`|cos x - cos y| ≤ |x^2-y^2|/2`,\n\nobtained from the exact product formula for `cos x - cos y` and `|sin u| ≤ |u|`. This is stronger\nat low frequency than a generic Lipschitz bound. It formalizes a useful separation: signed\nsecond-moment work determines curvature, while absolute second-moment work controls magnitude.\n\n## Approach\n\n1. Use exact quantile cell mass to split each profile into polar cosine mass minus atom cosine mass.\n2. Induct over consecutive boundaries to telescope continuous cell integrals.\n3. Differentiate the finite sum using already proved cell jets and telescope second moments.\n4. Compare the characteristic discrepancy with `HTGeometry.QuantileCoupling` and\n   `HTGeometry.QuadraticTransportCost`; import them only if a theorem uses their measure-level API.\n\nAll four steps are closed. Measure-level imports were not needed: the corpus's literal cell\ncoupling supports a sharper direct quadratic estimate.\n\n## Hostile audit\n\n- Equal mass gives `Q_N(0)=0` but no pointwise sign.\n- Second-moment difference is signed and is not quadratic transport cost.\n- Atomic support is indexed by transport cells, not clipped by `log n ≤ b_N`.\n- Any bound must retain frequency scaling and cannot replace exact phase identity by absolute mass.\n\n## Novelty audit\n\n- Internal research search found general monotone-coupling and quadratic-cost theorems plus the new\n  cell phase module, but no theorem identifying this CCM finite symbol with a transported\n  characteristic discrepancy.\n- Labels: `[BRIDGE] [INTERNAL CANDIDATE] [NOT AN RH PROOF]`.\n\n## Lean formalization\n\nModule: `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n\n- exact consecutive-cell telescope to `[0,b_N]`\n- exact cell polar-minus-atom characteristic identity\n- exact finite characteristic-discrepancy identity\n- finite first- and second-jet derivative theorems\n- exact global curvature/second-moment theorem\n- global cosine square-difference inequality\n- cellwise and finite quadratic transport bounds\n\nAudit:\n\n- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`\n  passed\n- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileCharacteristicTransport`\n  passed; no umbrella build run\n- all nine theorem axiom audits report only `propext`, `Classical.choice`, `Quot.sound`\n- forbidden-token scan empty\n- wired into `GaloisForLFunctions/RHTower.lean`\n- `python3 scripts/formal_tools.py lint` passed after wiring\n\n## Log\n\n- 2026-08-21 — created directly in Stage 1 after source and corpus-absence audit.\n- 2026-08-21 — Conjectures A, B, and stronger quadratic C closed in Lean; promoted to Stage 3.\n",
           "content_hash": "46ad6a9e2fc6ec9400f3d323fc7c212563d5a1e866bf22dda5fb84d1ca41ecc5",
           "provenance": "{\"kind\": \"source\", \"source_hash\": \"46ad6a9e2fc6ec9400f3d323fc7c212563d5a1e866bf22dda5fb84d1ca41ecc5\", \"toolchain\": \"leanprover/lean4:v4.32.2\", \"status\": \"source_only\", \"extraction_version\": \"source-2\", \"package\": \"research\", \"manifest_hash\": \"60632d93742565663651bdb5310075baf641ac9de6957a399d2b99931d6b083c\", \"recorded_stage\": \"3-formalized\"}",
           "score": -19.068818674215652,

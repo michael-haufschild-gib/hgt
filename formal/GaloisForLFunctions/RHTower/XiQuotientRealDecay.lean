@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 import GaloisForLFunctions.RHTower.XiHorizontalStripDecay
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.XiWeilLineConjHilbert
 import GaloisForLFunctions.RHTower.XiWeilResolventSource
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation

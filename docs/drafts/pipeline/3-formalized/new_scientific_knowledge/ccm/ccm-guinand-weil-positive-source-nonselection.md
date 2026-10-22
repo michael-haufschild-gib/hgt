@@ -7,7 +7,7 @@
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, Corollary 2.4 supplies the exact finite
   source quotient but does not state this positive-cone nonselection theorem
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPositiveSourceNonselection.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPositiveSourceNonselection.lean`
 
 ## Strict-positive ambiguity
 
@@ -69,6 +69,6 @@ This does not construct that transport and does not prove RH.
 - `ccmGuinandWeilFiniteEventPacketMatrix_no_strictlyPositive_source_decoder`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilPositiveSourceNonselection` pass. `#print axioms` reports
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPositiveSourceNonselection` pass. `#print axioms` reports
 only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`,
 `admit`, `opaque`, or `unsafe` declaration is used.

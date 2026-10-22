@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
 
 /-!
 # A prime delay is not a passive impedance

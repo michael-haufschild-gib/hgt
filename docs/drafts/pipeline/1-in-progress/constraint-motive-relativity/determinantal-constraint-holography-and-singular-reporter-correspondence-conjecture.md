@@ -14,7 +14,7 @@
 - **Exact source-Grushin seed:**
   `../../2-fully-proven/new_scientific_knowledge/hedenmalm/hedenmalm-theta-source-compressed-inverse-determinant.md`;
   `../../../../../formal/GaloisForLFunctions/HTGeometry/SourceGrushinInverse.lean`;
-  `../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean`.
+  `../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean`.
 - **Arithmetic parent:**
   `../../2-fully-proven/constraint-relativity/prime-valuation-cyclic-coframe-and-diagonal-dagger-defect-law.md`.
 - **Field parent:** `stratified-source-response-and-law-event-geometry.md`.

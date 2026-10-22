@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new all-integer-mode odd/diagonal incidence and exact weighted-cosine
   event tangent; prior corpus already proves one-sided first-clock odd entry slope tomography
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryIncidence.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryIncidence.lean`
 
 ## Entry wall
 
@@ -85,5 +85,5 @@ ordinary derivative of the floor-truncated source.
 - `ccmGuinandWeilPrimeEntry_fourUnit_source_codiagonal_incidence`
 
 Targeted direct Lean check and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryIncidence` pass. Principal `#print axioms`
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPrimeEntryIncidence` pass. Principal `#print axioms`
 reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

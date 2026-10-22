@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateL2Operator
-import GaloisForLFunctions.RHTower.CCMEndpointResponseIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointResponseIdentity
 import GaloisForLFunctions.HTGeometry.SimpleEigenvalueCompactBranch
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 

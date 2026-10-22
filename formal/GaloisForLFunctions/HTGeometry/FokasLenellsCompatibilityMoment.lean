@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseTraceFormula
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseTraceFormula
 import GaloisForLFunctions.HTGeometry.FokasLenellsGlobalSmallScattering
 import GaloisForLFunctions.HTGeometry.RiemannGaussian.GaussianSmoothing
 

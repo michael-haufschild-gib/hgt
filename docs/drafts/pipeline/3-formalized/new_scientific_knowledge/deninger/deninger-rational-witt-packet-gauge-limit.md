@@ -281,9 +281,9 @@ priority remains provisional.
 
 Modules:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerPrimeFiniteCyclotomicTransitionNaturality.lean`;
-- `formal/GaloisForLFunctions/RHTower/DeningerPrimeFinitePacketInverseLimit.lean`;
-- `formal/GaloisForLFunctions/RHTower/DeningerRationalWittPacketGaugeLimit.lean`.
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeFiniteCyclotomicTransitionNaturality.lean`;
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeFinitePacketInverseLimit.lean`;
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittPacketGaugeLimit.lean`.
 
 Formal capstones:
 
@@ -301,6 +301,6 @@ Verification:
 
 - all three modules pass direct `lake env lean <file>`;
 - targeted builds pass for all three module dependencies, including final target
-  `GaloisForLFunctions.RHTower.DeningerRationalWittPacketGaugeLimit`;
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittPacketGaugeLimit`;
 - axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`;
 - all modules are wired into `GaloisForLFunctions.RHTower`.

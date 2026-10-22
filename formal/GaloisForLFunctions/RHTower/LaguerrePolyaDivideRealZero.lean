@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiCharacteristicMeromorphicLimit
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCharacteristicMeromorphicLimit
 import GaloisForLFunctions.HTGeometry.LaguerrePolyaImaginaryAxisBounds
 import GaloisForLFunctions.RHTower.LaguerrePolyaFirstOrderInterlacing
 

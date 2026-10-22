@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper), `[BRIDGE]`
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Date:** 2026-08-13
-- **Module:** `formal/GaloisForLFunctions/RHTower/CCMNestedFloorNoEvacuation.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMNestedFloorNoEvacuation.lean`
 - **Parent theories:** nested Rayleigh quotients and Suzuki's compact generalized eigenvalue
   formulation
 - **Statement:** The lowest restricted-Weil floor is nonincreasing with aperture. Once it is
@@ -116,7 +116,7 @@ identity. It is a route bridge, not new scientific knowledge.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Every proved theorem of this card is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMNestedFloorNoEvacuation.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMNestedFloorNoEvacuation.lean`.
 
 The previous decision objected that "an abstract infimum-monotonicity wrapper would not certify the
 analytic embedding".  The objection is answered by choosing the right representation: the trial

@@ -6,7 +6,7 @@ Law 249; paper proof and exact Lean module audit passed. Literature novelty audi
 
 ## Corpus sources
 
-- `RHTower/ThetaCuspMellinPole.lean`
+- `RHTower/ThetaCusp/ThetaCuspMellinPole.lean`
 - `RHTower/PrimeLogExponentialTypeUniqueness.lean`
 - `RHTower/GaussPairedChannelSchattenCapstone.lean`
 - `RHTower/GaussPairedChannelSchattenDepth.lean`

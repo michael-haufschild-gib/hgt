@@ -98,7 +98,7 @@ equivalence. Bounded, not exhaustive, priority claim.
 - 2026-08-28 — Formalized in
   `ThetaCuspHawkingRetardedAdvancedReciprocitySchwarzCausalRigidity.lean`. Direct
   `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingRetardedAdvancedReciprocitySchwarzCausalRigidity`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingRetardedAdvancedReciprocitySchwarzCausalRigidity`
   passed (`12024/12024`); all eleven exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present. Formal lint reports no finding in
   this module and remains nonzero only for the pre-existing unrelated unreachable-module list.

@@ -60,7 +60,7 @@ The completed observable still tends to positive infinity on aperture `8n`, whil
 
 ## Lean certificate
 
-Module: `formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreGrowingRankCartanFission.lean`
+Module: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreGrowingRankCartanFission.lean`
 
 Key theorems:
 
@@ -85,8 +85,8 @@ Merely bounding the cubic fission remainder is insufficient: linear transition m
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiTransitionCoreGrowingRankCartanFission.lean` — pass.
-- `lake build GaloisForLFunctions.RHTower.SuzukiTransitionCoreGrowingRankCartanFission` — pass (`[11954/11954]` target complete; dependency replay only as required for missing oleans).
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreGrowingRankCartanFission.lean` — pass.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreGrowingRankCartanFission` — pass (`[11954/11954]` target complete; dependency replay only as required for missing oleans).
 - `#print axioms` on summability, exact mass, uniform-excess, and cofinal-escape theorems — only `propext`, `Classical.choice`, `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella build intentionally not run.
 

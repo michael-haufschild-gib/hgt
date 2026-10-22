@@ -52,7 +52,7 @@ Finally, the actual derivative identities `partial_Y=Y^(-1) partial_k` and `Y^2 
 
 ## Lean ownership and validation
 
-Owner: [ThetaCuspHawkingBMNativeAngularCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeAngularCurrent.lean), namespace `RHTower.D4BMNativeAngularCurrent`.
+Owner: [ThetaCuspHawkingBMNativeAngularCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeAngularCurrent.lean), namespace `RHTower.D4BMNativeAngularCurrent`.
 
 Six public theorems:
 
@@ -63,7 +63,7 @@ Six public theorems:
 - `originalVerticalGreen_eq`: actual original-height coordinate dictionary.
 - `originalVerticalGreen_cusp_expansion`: complete original-height boundary asymptotic.
 
-Scratch check passes without warnings. Isolated `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeAngularCurrent` passes in 208 seconds with three jobs, reusing cached dependencies. All six new public theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`. The source and five installed build artifacts match the audited files byte for byte. The umbrella imports the module exactly once; no dependency or umbrella build was run. Twelve local links across the result and two related cards resolve.
+Scratch check passes without warnings. Isolated `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeAngularCurrent` passes in 208 seconds with three jobs, reusing cached dependencies. All six new public theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`. The source and five installed build artifacts match the audited files byte for byte. The umbrella imports the module exactly once; no dependency or umbrella build was run. Twelve local links across the result and two related cards resolve.
 
 The global lint gate reports six umbrella-reachability errors outside this change: `RHTower.EulerDeletionSignatureWordExpansion`, `RHTower.Sieve.MenonHarmonicRamareLadderSwapped`, `RHTower.Sieve.MenonHarmonicRamareLadderSwappedVolume`, and `HTGeometry.WeightedMinimax.{Alternation,Coefficient,Perturbation}`. It reports no error for the new native angular-current module. The global gate is not claimed to pass.
 

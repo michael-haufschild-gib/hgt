@@ -67,7 +67,7 @@ unproved.
 
 ## Verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaAdjointLogMoment.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaAdjointLogMoment.lean`.
 The final scratch co-imports both finished source/contact leaves and
 passes all11 public declarations with only propext, Classical.choice
 and Quot.sound. Identical proof bodies are promoted and one RHTower

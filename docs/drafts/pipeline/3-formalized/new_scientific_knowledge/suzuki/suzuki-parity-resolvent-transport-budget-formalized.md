@@ -7,16 +7,16 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiInteriorExcursionSpectralTurningPoint.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiParityResolventTransportBudget.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiParitySpectralPairTransport.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiInteriorExcursionSpectralTurningPoint.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParityResolventTransportBudget.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParitySpectralPairTransport.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftSpectralMonotoneRatio.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiInteriorExcursionSpectralTurningPoint`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiInteriorExcursionSpectralTurningPoint`:
 
 ```text
 RHTower.exists_rise_peak_fall_of_strict_interior_excursion
@@ -34,7 +34,7 @@ RHTower.suzukiSecondDeriv_nonpos_of_isLocalMax
 RHTower.suzukiStationaryAngleAcceleration_eq_tiltedVarianceDifference
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiParityResolventTransportBudget`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiParityResolventTransportBudget`:
 
 ```text
 RHTower.hasDerivAt_suzukiParityResolventLogOdds
@@ -57,7 +57,7 @@ RHTower.suzukiFiniteParityResolvent_hazardGap_eq_pairSum_div
 RHTower.suzukiFiniteParityResolvent_hazardGap_pos_iff_inversionDebt_lt_credit
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiParitySpectralPairTransport`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiParitySpectralPairTransport`:
 
 ```text
 RHTower.integrable_suzukiParitySpectralCrossGapKernel
@@ -69,7 +69,7 @@ RHTower.suzukiParitySpectral_hazardGap_neg_iff_credit_lt_inversionDebt
 RHTower.suzukiParitySpectral_hazardGap_pos_iff_inversionDebt_lt_credit
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiShiftSpectralMonotoneRatio`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftSpectralMonotoneRatio`:
 
 ```text
 RHTower.hasDerivAt_integral_weighted_suzukiShiftResolventKernel

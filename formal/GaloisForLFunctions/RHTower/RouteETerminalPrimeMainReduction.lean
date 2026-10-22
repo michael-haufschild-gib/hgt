@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RouteETerminalContinuousOddResonance
 import GaloisForLFunctions.RHTower.RouteETerminalPrimeStieltjesTransport
-import GaloisForLFunctions.RHTower.CCMSawtoothDilationIncidence
+import GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationIncidence
 
 namespace RHTower
 open Filter Topology MeasureTheory Set intervalIntegral

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangleExhaustion
 import GaloisForLFunctions.RHTower.XiGaussianHeatTraceCriterion
 import GaloisForLFunctions.RHTower.XiCanonicalProduct
-import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterra
 
 /-!
 # The Poisson zero trace and its unconditional exponential type

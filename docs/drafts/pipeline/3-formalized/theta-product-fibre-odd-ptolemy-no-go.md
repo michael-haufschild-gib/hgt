@@ -46,7 +46,7 @@ which is the reflection-odd four-point wall of product fibre `k=1` at center zer
 - **Strongest positive survivor:** Aggregate cancellation between product fibres is necessary; individual-fibre Ptolemy positivity cannot prove the completed-source wall.
 - **New insight:** The modular seam derivative cancellation is not cosmetic. Higher shells must repair a rank-four defect created by the seam-rising first shell before any global odd-wall argument can close.
 - **Status:** Paper proof dependency-closed and formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspCompletedProductFiberOddPtolemyNoGo`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCompletedProductFiberOddPtolemyNoGo`.
   Axiom audit reports only Lean/mathlib foundations `propext`, `Classical.choice`, and `Quot.sound`;
   no project axiom or hypothesis is introduced.
 

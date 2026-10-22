@@ -52,10 +52,10 @@ The determinant-one law predicts the universal mass shell
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmSoninCartanGammaSixMassShell.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSoninCartanGammaSixMassShell.lean`.
 - 2026-08-13 — Imported by `GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmSoninCartanGammaSixMassShell`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSoninCartanGammaSixMassShell`
   (`12959/12959`).
 - 2026-08-13 — Axiom audit passed for every new theorem; dependencies are exactly `propext`,
   `Classical.choice`, and `Quot.sound`.

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
 import GaloisForLFunctions.RHTower.TraceHankelConverse
-import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMTwoPoleSourceCriterion
 import Mathlib.Order.Interval.Set.Infinite
 import Mathlib.Algebra.Polynomial.OfFn
 

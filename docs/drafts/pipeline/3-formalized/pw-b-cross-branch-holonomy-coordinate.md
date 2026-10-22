@@ -17,6 +17,6 @@ The literal complementary source carries the complete reflection-even PW closed-
 
 ## Formal evidence
 
-- [ThetaCuspHawkingParikhWilczekCrossBranchHolonomyBridge.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCrossBranchHolonomyBridge.lean) directly passes `lake env lean`.
+- [ThetaCuspHawkingParikhWilczekCrossBranchHolonomyBridge.lean](/Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCrossBranchHolonomyBridge.lean) directly passes `lake env lean`.
 - Scratch axiom audit reports only `propext`, `Classical.choice`, `Quot.sound`.
 - Module is wired into `GaloisForLFunctions/RHTower.lean`; no umbrella build was run.

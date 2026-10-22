@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaMovingShellTailJet
 import GaloisForLFunctions.RHTower.ThetaFiniteShellFrequencyJet
 import GaloisForLFunctions.RHTower.XiMovingShellJetDecay
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 
 /-!
 # Joint cutoff/height limits of literal theta-prefix frequency jets

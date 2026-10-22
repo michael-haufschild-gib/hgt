@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized and audited; 24 unconditional theorems. RH remains unproved.
-Module: `GaloisForLFunctions.RHTower.DeningerGammaSixFullSourceScalarization`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixFullSourceScalarization`.
 
 ## Actual source and fixed comparison
 
@@ -120,7 +120,7 @@ assumption, conditional expectation or quantum channel is a Lean premise.
 ## Verification
 
 - `lake env lean /tmp/route_l_full_gamma_flattening.lean`: passed, no warnings.
-- Targeted final `lake build GaloisForLFunctions.RHTower.DeningerGammaSixFullSourceScalarization`:
+- Targeted final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixFullSourceScalarization`:
   passed; only new module built, dependencies replayed. Umbrella import wired.
 - All 24 theorem declarations audited through `/tmp/route_l_full_gamma_scalarization_axioms.lean`:
   only `propext`, `Classical.choice`, `Quot.sound`; no added axioms.

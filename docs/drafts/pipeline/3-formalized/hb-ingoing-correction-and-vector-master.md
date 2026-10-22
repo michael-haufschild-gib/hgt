@@ -119,10 +119,10 @@ RH is not proved or falsified. The frontier map is read-only.
 All four leaves' proofs passed foreground scratch `lake env lean` checks.
 Exact-source cache-only final audits compiled only the requested new leaves:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingCorrection`: 26 seconds; 3 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIngoingCoordinates`: 4.3 seconds; 7 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticIngoingEndpoints`: 18 seconds; 6 public theorems.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorStreamEinstein`: 199 seconds; 6 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticIngoingCorrection`: 26 seconds; 3 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIngoingCoordinates`: 4.3 seconds; 7 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticIngoingEndpoints`: 18 seconds; 6 public theorems.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVectorStreamEinstein`: 199 seconds; 6 public theorems.
 
 The 22 new public theorems were axiom-audited once in scratch. Each uses only
 `propext`, `Classical.choice`, and `Quot.sound`; there are no added axioms or

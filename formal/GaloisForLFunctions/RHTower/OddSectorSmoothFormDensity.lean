@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.OddSectorInteriorTraceRepair
-import GaloisForLFunctions.RHTower.CCMParityTopLayerOddFloor
+import GaloisForLFunctions.RHTower.CCM.CCMParityTopLayerOddFloor
 
 /-!+# Smooth odd approximation in the complete form domain
 

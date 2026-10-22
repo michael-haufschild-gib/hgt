@@ -31,7 +31,7 @@ Let `C(t)=thetaCuspWignerPairKernel (1/2) t` and
 
 The public Lean theorem is
 `RHTower.thetaCuspWignerPairKernel_continuousPrimeMainTerm` in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspWignerPrimeMainTerm.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPrimeMainTerm.lean`.
 The leaf is wired once in `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Complete paper proof [PROVED HERE]

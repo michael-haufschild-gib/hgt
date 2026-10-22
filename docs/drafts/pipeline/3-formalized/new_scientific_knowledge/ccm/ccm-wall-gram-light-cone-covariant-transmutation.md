@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadWallGramLightConeCovariantTransmutation`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadWallGramLightConeCovariantTransmutation`.
 This supplies coefficient-faithful occurrence of differentiated wall orientation inside the
 literal matched prime-minus-polar producer. Completed finite-block sign/Schur closure remains open.
 

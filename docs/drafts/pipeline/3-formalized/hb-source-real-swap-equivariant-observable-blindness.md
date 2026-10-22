@@ -20,7 +20,7 @@ Killed HB producer class:
 
 ## Lean
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSourceRealSwapEquivariantPartialResponseNoGo`
 - Certificate: `d4HBSourceRealSwapEquivariantNeutralSectorRouteKilled`
 - Direct Lean: PASS
 - Target build: PASS (`11000` jobs)

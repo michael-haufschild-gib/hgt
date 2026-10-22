@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BilateralAllPrimeIndLimit
-import GaloisForLFunctions.RHTower.DeningerDivisorGaugeWardIdentity
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorGaugeWardIdentity
 
 /-!
 # The moderation selector at the actual Xi divisor: conormal conservativity ⟺ RH

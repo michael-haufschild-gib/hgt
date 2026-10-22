@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress.
 - **Type:** [BRIDGE], derived selection candidate, not a replacement for RH.
 - **Goal:** Choose an admitted endpoint after a prescribed nonisolated prime.
-- **Parent:** [prescribed-prime repair](../../ccm-fu-forced-prime-repair.md).
+- **Parent:** [prescribed-prime repair](ccm-fu-forced-prime-repair.md).
 
 ## Frozen statement
 

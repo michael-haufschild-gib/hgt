@@ -10,7 +10,7 @@
 
 New in this closure:
 
-- `GaloisForLFunctions.RHTower.CCMRationalAdelicBruhatSchwartzSpace` — Bruhat's Schwartz space of
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicBruhatSchwartzSpace` — Bruhat's Schwartz space of
   `ℝ × 𝔸_f`, its identification with the algebraic tensor core, and the pointwise form of the
   source involution.
 

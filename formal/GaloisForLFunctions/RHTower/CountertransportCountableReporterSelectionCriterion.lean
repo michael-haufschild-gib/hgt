@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusCriticalFisherCountableCommonHardyReporter
-import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianCountertransportXiCapacity
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianCountertransportXiCapacity
 
 /-!
 # Countable reporter selection criterion for Gaussian countertransport

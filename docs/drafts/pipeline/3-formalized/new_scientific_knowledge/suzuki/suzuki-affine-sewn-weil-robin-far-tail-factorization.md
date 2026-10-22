@@ -163,7 +163,7 @@ KNOWLEDGE]`; external priority unverified.
 
 Equations `(2)`, `(4)`, delayed-hinge specialization `(6)`, common-factor Bezoutian `(9)`, and
 phase-aligned affine-sewing sign inheritance are formalized unconditionally in
-`RHTower/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`.  Targeted SOTA build passes
+`RHTower/Suzuki/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`.  Targeted SOTA build passes
 `9450/9450`; audited declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
 Formalization proves finite common-channel factorization and the exact far-atom obstruction.  The
 infinite von-Mangoldt sum in `(7)` remains a paper theorem in its source-native convergence

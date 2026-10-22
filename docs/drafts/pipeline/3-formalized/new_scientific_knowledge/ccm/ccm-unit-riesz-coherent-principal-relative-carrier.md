@@ -6,7 +6,7 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentRelativeCarrier.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCoherentRelativeCarrier.lean`
 - **Parent:** `ccm-unit-riesz-coherent-arithmetic-tail-charge`
 
 ## Result

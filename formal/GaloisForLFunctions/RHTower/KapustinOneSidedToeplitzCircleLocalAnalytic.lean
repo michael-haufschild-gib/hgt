@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SmirnovToeplitzCircleL1
 import GaloisForLFunctions.RHTower.KapustinOneSidedToeplitzAnalyticSymbol
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiFiniteDiskFactor
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiFiniteDiskFactor
 
 open Complex Filter MeasureTheory Metric Set Topology
 

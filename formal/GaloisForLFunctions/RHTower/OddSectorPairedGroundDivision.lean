@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.OddSectorFiniteGroundReduction
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilFullFormRealRootedGround
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilEvenSectorCrossZeros
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilFullFormRealRootedGround
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilEvenSectorCrossZeros
 
 /-!
 # Paired Fourier division in the arithmetic-corrected odd ground space

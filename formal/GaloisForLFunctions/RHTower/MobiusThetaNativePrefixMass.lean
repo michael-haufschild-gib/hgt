@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaNativeMeyerAdmission
-import GaloisForLFunctions.RHTower.DeningerAdiabaticGreenStokes
-import GaloisForLFunctions.RHTower.DeningerEvenPreimageMassZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerAdiabaticGreenStokes
+import GaloisForLFunctions.RHTower.Deninger.DeningerEvenPreimageMassZero
 
 /-!
 # The original prime-prefix contribution to the native horizontal boundary

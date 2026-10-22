@@ -9,7 +9,7 @@
 ## Exact moment update
 
 Use the moments and divisor sum from
-[the complete Estermann transfer](../../edq-estermann-inverse-frequency-transfer.md):
+[the complete Estermann transfer](edq-estermann-inverse-frequency-transfer.md):
 
 ```
 H_N = sum_(n<=N) mu(n)/n,

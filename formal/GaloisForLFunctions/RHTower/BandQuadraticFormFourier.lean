@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMEndpointResponseIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointResponseIdentity
 import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 

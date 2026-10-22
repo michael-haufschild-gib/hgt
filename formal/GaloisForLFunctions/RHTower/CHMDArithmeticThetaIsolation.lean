@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.XiSliceHusimiHeatDictionary
 import Mathlib.Analysis.Normed.Lp.lpSpace
 

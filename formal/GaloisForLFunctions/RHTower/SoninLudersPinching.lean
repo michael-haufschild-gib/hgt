@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
+import GaloisForLFunctions.RHTower.CCM.CCMSoninResolventCommutator
 import GaloisForLFunctions.RHTower.SoninEssentialNormExtensions
 import GaloisForLFunctions.HTGeometry.FiniteConstraintGroupAverage
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtCompact

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanCircleTraceCocycle
 import GaloisForLFunctions.RHTower.RestrictedUnitaryFredholmCompression
 
 /-!

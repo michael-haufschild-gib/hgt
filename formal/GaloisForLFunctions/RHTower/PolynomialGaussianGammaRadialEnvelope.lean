@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PolynomialGaussianLocalConcentration
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseTraceFormula
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseTraceFormula
 import GaloisForLFunctions.RHTower.HardyZPhaseAsymptotic
 import GaloisForLFunctions.HTGeometry.HermiteOrthogonality
 

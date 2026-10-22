@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiDualityDaggerHistoryTransgression
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixRelativeReflectionFraming
-import GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniFluxPolarization
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKakutaniFluxPolarization
 
 /-!
 # Xi history--theta--Gamma ambidexterity transgression

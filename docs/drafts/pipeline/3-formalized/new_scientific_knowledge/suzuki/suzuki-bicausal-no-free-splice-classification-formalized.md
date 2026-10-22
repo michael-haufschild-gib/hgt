@@ -6,7 +6,7 @@
 - **Paper proof:**
   `./suzuki-bicausal-no-free-splice-classification.md`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBicausalNoFreeSplice.lean`
 
 ## Formal surface
 
@@ -32,10 +32,10 @@ source control of arithmetic displacement residual after restricted-Weil/Robin/G
 ## Audit
 
 - targeted `lake env lean` check: pass;
-- target-only cached `lake build GaloisForLFunctions.RHTower.SuzukiBicausalNoFreeSplice`: pass;
+- target-only cached `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiBicausalNoFreeSplice`: pass;
   Lake replayed cached dependencies and built only
   `GaloisForLFunctions.HTGeometry.BicausalDisplacementOverlap` and
-  `GaloisForLFunctions.RHTower.SuzukiBicausalNoFreeSplice`;
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiBicausalNoFreeSplice`;
 - axiom audit: pass; all six audited declarations depend only on `propext`,
   `Classical.choice`, and `Quot.sound`;
 - umbrella imports:

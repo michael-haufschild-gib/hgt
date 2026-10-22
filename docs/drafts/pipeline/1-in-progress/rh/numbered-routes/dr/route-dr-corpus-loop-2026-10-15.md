@@ -600,7 +600,7 @@ Corpus findings:
   shifted rational-fibre responses with n^s. Equality of the reflected
   responses on the Xi divisor is explicitly RH-equivalent. It is not an
   available source equality.
-- `RHTower/DeningerKummerHasse.lean` separates already-realized local
+- `RHTower/Deninger/DeningerKummerHasse.lean` separates already-realized local
   currents; it does not realize every sum-zero current or supply a
   comparison to the analytic zeta section.
 - `RHTower/XiDyadicDescentLevelUniversalityLaw.lean` already identifies

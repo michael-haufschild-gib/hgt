@@ -7,15 +7,15 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiPositionTorquePrimeClockIrreducibility.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiWeilPositionTorqueCurvature.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositionTorquePrimeClockIrreducibility.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWeilPositionTorqueCurvature.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PrimeResidueValuationExactSourceBoundary.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiPositionTorquePrimeClockIrreducibility`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPositionTorquePrimeClockIrreducibility`:
 
 ```text
 RHTower.LSeries_suzukiPositionTorquePrimeFiniteAbscissaSource
@@ -30,7 +30,7 @@ RHTower.suzukiPositionTorquePrimeUpperEndCarrier_differentialIndependent_over_lo
 RHTower.suzukiPositionTorquePrimeUpperEndCarrier_hypertranscendentalOver_localEulerResidueFusionCompletion
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiWeilPositionTorqueCurvature`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiWeilPositionTorqueCurvature`:
 
 ```text
 RHTower.suzukiPositionTorqueEulerSource

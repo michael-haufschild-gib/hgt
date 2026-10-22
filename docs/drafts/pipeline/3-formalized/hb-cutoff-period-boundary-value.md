@@ -93,7 +93,7 @@ descends because its explicit clearing factor is nonzero at this parameter.
 
 ## Lean implementation
 
-All modules below have prefix `GaloisForLFunctions.RHTower.ThetaCuspHawking`.
+All modules below have prefix `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawking`.
 
 - `BMHeightLaplacian`: reusable actual height Laplacian, extracted from the
   existing `BMCuspCutoffMean` caller.
@@ -108,7 +108,7 @@ All modules below have prefix `GaloisForLFunctions.RHTower.ThetaCuspHawking`.
 - `BMScalarCutoffBoundaryValue`: `scalarCutoffPeriod_eq_boundary_value`,
   `scalarCutoffPeriod_weyl`, and substitution of all three derived cutoff
   values into `continuedAngularSourceProjection`.
-- [BMPhysicalAngularCutoffCalibration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalAngularCutoffCalibration.lean):
+- [BMPhysicalAngularCutoffCalibration](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalAngularCutoffCalibration.lean):
   original physical parameter, principal part, modular inversion, and
   `physicalScalar_cutoff_calibration`.
 

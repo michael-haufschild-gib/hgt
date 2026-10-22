@@ -247,8 +247,8 @@ diagonal identity, and the infinitesimal derivation `(11)`-`(13)`.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMEulerRayLogDerivativeIndex.lean` (wired,
-axiom-clean, 13 declarations), over `RHTower/CCMDiagonalFockLift.lean`.
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerRayLogDerivativeIndex.lean` (wired,
+axiom-clean, 13 declarations), over `RHTower/CCM/CCMDiagonalFockLift.lean`.
 
 - `rankOneMatrix`, **`posSemidef_rankOneMatrix`** — a rank-one Gram kernel is positive
   semidefinite; the building block of the packet signs.

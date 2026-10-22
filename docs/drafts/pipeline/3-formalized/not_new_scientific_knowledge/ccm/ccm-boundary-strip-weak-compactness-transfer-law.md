@@ -137,7 +137,7 @@ cofinal Weil spectral-floor convergence.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMBoundaryStripTransfer.lean`, together with the kernel-model half
+`formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryStripTransfer.lean`, together with the kernel-model half
 that the tree already owned.
 
 - **`norm_le_of_weak_limit`** — the weak lower semicontinuity step of the proof of `(3)`, in the shape

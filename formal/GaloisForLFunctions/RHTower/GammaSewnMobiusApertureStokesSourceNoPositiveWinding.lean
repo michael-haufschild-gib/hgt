@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesReflectedCompactCarrier
-import GaloisForLFunctions.RHTower.CCMArithmeticPrimeFredholmOrientation
+import GaloisForLFunctions.RHTower.CCM.CCMArithmeticPrimeFredholmOrientation
 
 /-!
 # Source-only no-positive winding for the reflected Stokes flow

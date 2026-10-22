@@ -389,7 +389,7 @@ Two tempting scalar exits are closed and must not be retried.
 
 The previously stated “live construction” by a singular four-grade codiagonal on the radial
 odd block--Fock carrier is already excluded by
-`formal/GaloisForLFunctions/RHTower/CCMBlockFockCodiagonalNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMBlockFockCodiagonalNoGo.lean`.
 
 For a prime `p`, the complete odd block--Fock vector and shifted higher-grade tail are
 

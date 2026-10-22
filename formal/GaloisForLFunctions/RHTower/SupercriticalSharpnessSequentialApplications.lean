@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.SupercriticalSharpnessMechanisms
 import GaloisForLFunctions.RHTower.LevinsonOddFiberDensity
 import GaloisForLFunctions.RHTower.XiHorizontalCollisionChargeEndpoint
-import GaloisForLFunctions.RHTower.DeningerGammaSixShellPrincipalIdeal
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixShellPrincipalIdeal
 
 /-!
 # Sequential-touch alternatives for arithmetic census processes

@@ -14,22 +14,22 @@ declaration is exactly `propext`, `Classical.choice`, `Quot.sound`.
 
 | Card item | Declaration | Module |
 |---|---|---|
-| `(1)` exact shifted-defect identity, undivided | `smul_kaehlerPairDefect_eq_of_zpow_of_affine` | `RHTower/SchanuelPeriodBranchDefect` |
+| `(1)` exact shifted-defect identity, undivided | `smul_kaehlerPairDefect_eq_of_zpow_of_affine` | `RHTower/Schanuel/SchanuelPeriodBranchDefect` |
 | `(1)` divided form `eps^{(m,k)}_i = (eps_i - k_i dtau)/m` | `kaehlerPairDefect_eq_inv_smul_of_zpow_of_affine` | same |
 | rank-two criterion for a shifted rank-one pair | `linearIndependent_rankOne_period_shift`, `linearIndependent_rankOne_period_shift_inv_smul` | same |
-| `(2)` the new differential is independent of the old direction | `linearIndependent_mapBaseChange_and_D_adjoin_transcendental` | `RHTower/SchanuelPureTranscendentalPeriod` |
-| `(3)` **Case I**: every nonzero integral shift has defect rank two | `linearIndependent_nontrivial_integral_period_shift_of_transcendental` | `RHTower/SchanuelPeriodBranchRank` |
+| `(2)` the new differential is independent of the old direction | `linearIndependent_mapBaseChange_and_D_adjoin_transcendental` | `RHTower/Schanuel/SchanuelPureTranscendentalPeriod` |
+| `(3)` **Case I**: every nonzero integral shift has defect rank two | `linearIndependent_nontrivial_integral_period_shift_of_transcendental` | `RHTower/Schanuel/SchanuelPeriodBranchRank` |
 | `k_1 rho - k_2 != 0` for integral `k != 0` and transcendental `rho` | `intCast_mul_sub_ne_zero_of_transcendental` | same |
-| Case I: every shifted additive pair stays rationally independent | `linearIndependent_period_shift_of_linearIndependent_triple` | `RHTower/SchanuelAlgebraicPeriodBranch` |
-| Case I: the branch value field has transcendence degree two | `trdeg_periodField_eq_two` | `RHTower/SchanuelValueFieldInstance` |
-| **Case II**: a period inside the old span makes every shifted pair collinear | `not_linearIndependent_smul_pair`, `not_linearIndependent_period_shift_of_mem_span` | `RHTower/SchanuelAlgebraicPeriodBranch` |
+| Case I: every shifted additive pair stays rationally independent | `linearIndependent_period_shift_of_linearIndependent_triple` | `RHTower/Schanuel/SchanuelAlgebraicPeriodBranch` |
+| Case I: the branch value field has transcendence degree two | `trdeg_periodField_eq_two` | `RHTower/Schanuel/SchanuelValueFieldInstance` |
+| **Case II**: a period inside the old span makes every shifted pair collinear | `not_linearIndependent_smul_pair`, `not_linearIndependent_period_shift_of_mem_span` | `RHTower/Schanuel/SchanuelAlgebraicPeriodBranch` |
 | Case II: the shifted pair is independent iff `1 + q_1k_1 + q_2k_2 != 0` | `linearIndependent_period_shift_of_det_ne_zero` | same |
 | Case II: only one rational line of integral shifts is excluded | `infinite_setOf_det_ne_zero` | same |
-| Case II: every branch value field has transcendence degree one | `trdeg_periodField_eq_one` | `RHTower/SchanuelValueFieldInstance` |
+| Case II: every branch value field has transcendence degree one | `trdeg_periodField_eq_one` | `RHTower/Schanuel/SchanuelValueFieldInstance` |
 | general input: adjoining a transcendental raises the degree by one | `trdeg_adjoin_simple_eq_one`, `trdeg_eq_add_one_of_transcendental` | `HTGeometry/TranscendenceDegreeOneVariable` |
 | general input: an algebraic extension preserves the degree | `trdeg_eq_of_isAlgebraic` | same |
 | general input: a simple extension is algebraic over its ring model | `isAlgebraic_adjoin_gen` | same |
-| the retired multiplicity amplification | `SchanuelPowerMultiplicityNoGo` (module) | `RHTower/SchanuelPowerMultiplicityNoGo` |
+| the retired multiplicity amplification | `SchanuelPowerMultiplicityNoGo` (module) | `RHTower/Schanuel/SchanuelPowerMultiplicityNoGo` |
 
 ### Deviations from the paper proof
 
@@ -135,11 +135,11 @@ automorphism.  Thus neither branch-rank pattern contradicts algebraic Galois sym
 - **Universal principle exposed:** finite étale/Kummer descent is blind to the affine period
   translation coupling additive and multiplicative coordinates.  Adjoining `tau` resolves the
   defect precisely when it adds a new transcendence direction.
-- **Lean status:** `RHTower/SchanuelPeriodBranchDefect.lean` formalizes the exact branch-defect
-  identity and determinant criterion. `RHTower/SchanuelPureTranscendentalPeriod.lean` proves that
+- **Lean status:** `RHTower/Schanuel/SchanuelPeriodBranchDefect.lean` formalizes the exact branch-defect
+  identity and determinant criterion. `RHTower/Schanuel/SchanuelPureTranscendentalPeriod.lean` proves that
   a nonzero old Kähler direction and `d tau` are independent after adjoining a transcendental
-  period. `RHTower/SchanuelPeriodBranchRank.lean` combines this with transcendence of `rho` to
-  prove rank two for every nonzero integral branch shift.  `RHTower/SchanuelAlgebraicPeriodBranch.lean` (new) closes the algebraic-period case: a period
+  period. `RHTower/Schanuel/SchanuelPeriodBranchRank.lean` combines this with transcendence of `rho` to
+  prove rank two for every nonzero integral branch shift.  `RHTower/Schanuel/SchanuelAlgebraicPeriodBranch.lean` (new) closes the algebraic-period case: a period
   differential inside the span of the old defect makes every shifted pair collinear, hence of rank
   at most one (`not_linearIndependent_smul_pair`,
   `not_linearIndependent_period_shift_of_mem_span`); the shifted additive pair stays rationally
@@ -168,7 +168,7 @@ automorphism.  Thus neither branch-rank pattern contradicts algebraic Galois sym
 
 Find an arithmetic invariant of an isolated exponential intersection that is sensitive to the
 simultaneous affine period translation. Multiplicity is now rigorously retired: the local-unit
-factorization formalized in `RHTower/SchanuelPowerMultiplicityNoGo.lean` proves scalar powering
+factorization formalized in `RHTower/Schanuel/SchanuelPowerMultiplicityNoGo.lean` proves scalar powering
 preserves the local exponential-intersection ideal and zero order. A branch-counting replacement
 would need a genuine degree/height surplus, not merely the full Kummer orbit.
 
@@ -177,9 +177,9 @@ would need a genuine degree/height surplus, not merely the full Kummer orbit.
 - 2026-08-14 -- shifted-defect formula proved; exact `tau`-algebraic/transcendental dichotomy and
   Kummer-symmetry failure isolated.
 - 2026-08-14 -- exact shifted-defect identity and determinant rank criterion verified
-  unconditionally in Lean and wired as `RHTower/SchanuelPeriodBranchDefect.lean`.
+  unconditionally in Lean and wired as `RHTower/Schanuel/SchanuelPeriodBranchDefect.lean`.
 - 2026-08-14 -- pure-transcendental base/new differential independence and the full nonzero
   integral-shift rank-two theorem verified unconditionally in Lean and wired as
-  `RHTower/SchanuelPureTranscendentalPeriod.lean` and `RHTower/SchanuelPeriodBranchRank.lean`.
+  `RHTower/Schanuel/SchanuelPureTranscendentalPeriod.lean` and `RHTower/Schanuel/SchanuelPeriodBranchRank.lean`.
 - 2026-08-14 -- scalar-power multiplicity amplification retired by an exact local-unit law;
-  positive survivor formalized in `RHTower/SchanuelPowerMultiplicityNoGo.lean`.
+  positive survivor formalized in `RHTower/Schanuel/SchanuelPowerMultiplicityNoGo.lean`.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateRadialNormalization
-import GaloisForLFunctions.RHTower.CCMRadialProlateProfileMeasure
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProlateProfileMeasure
 
 /-!
 # Exact bridge from endpoint-normalized prolate modes to the Dunster transform

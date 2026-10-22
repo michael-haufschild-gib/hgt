@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ChebyshevDeficitPrimitiveOneSidedRH
-import GaloisForLFunctions.RHTower.CCMUnitRieszCompletedSourceLaplaceWeld
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCompletedSourceLaplaceWeld
 import GaloisForLFunctions.RHTower.XiMassCriticalPrimeCone
 
 /-!

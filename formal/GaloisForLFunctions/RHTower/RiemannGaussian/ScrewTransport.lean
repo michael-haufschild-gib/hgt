@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianPositivityCertificate
-import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExplicitScrewRegularKernel
 
 /-!
 # Frozen-hinge and Legendre barriers for the screw-function route

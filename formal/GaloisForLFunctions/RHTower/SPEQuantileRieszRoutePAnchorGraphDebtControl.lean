@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileBaseEdgeDissipationLower
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileBaseEdgeDissipationLower
 import GaloisForLFunctions.RHTower.VonMangoldtLogMomentHankel
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePArithmeticVarianceNull
 

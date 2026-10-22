@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-failure-nerve-singular-cartier-metric.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerFailureNerveSingularCartierMetric`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFailureNerveSingularCartierMetric`
 
 ## Formal result
 

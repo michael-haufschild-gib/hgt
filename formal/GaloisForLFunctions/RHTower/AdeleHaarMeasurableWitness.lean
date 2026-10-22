@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageHaarScaling
 import GaloisForLFunctions.RHTower.FieldOneFiniteAdeleCompactOpenBasis
-import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleDenominator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleDenominator
 import GaloisForLFunctions.RHTower.FieldOneFiniteAdeleIntegralBruhatTest
 
 /-!

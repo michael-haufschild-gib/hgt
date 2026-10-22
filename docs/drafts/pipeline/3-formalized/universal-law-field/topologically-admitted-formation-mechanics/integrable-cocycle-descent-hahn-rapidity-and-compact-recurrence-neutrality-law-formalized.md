@@ -4,7 +4,7 @@
 - **Paper card:**
   `integrable-cocycle-descent-hahn-rapidity-and-compact-recurrence-neutrality-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.TopologicallyAdmittedIntegrableCocycleDescent`,
-  `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent`
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent`
 - **Umbrellas:** `GaloisForLFunctions.HTGeometry.UniversalLawField`,
   `GaloisForLFunctions.RHTower`
 - **Status:** `[LEAN-CERTIFIED]` `[NO PROJECT AXIOMS]` `[L1/HAAR]` `[RH-EQUIVALENT INTERFACE]`
@@ -56,9 +56,9 @@ Foreground checks:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/TopologicallyAdmittedIntegrableCocycleDescent.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent.lean
 lake build GaloisForLFunctions.HTGeometry.TopologicallyAdmittedIntegrableCocycleDescent
-lake build GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularIntegrableCocycleDescent
 ```
 
 Both named leaf builds pass. Missing dependency oleans were rebuilt by those targets; no umbrella,

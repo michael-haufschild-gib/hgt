@@ -43,8 +43,8 @@ the nontrivial tested Gamma action without replacing it by a scalar trace remain
   Mellin transport from the missing joint source construction. New normal-form proof
   is the next test; no numerical computation or RH premise.
 - 2026-10-02: `CCMGammaSoninNormalForm.lean` passes the final foreground leaf audit:
-  `lake --old env lean GaloisForLFunctions/RHTower/CCMGammaSoninNormalForm.lean -o
-  .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMGammaSoninNormalForm.olean`.
+  `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMGammaSoninNormalForm.lean -o
+  .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMGammaSoninNormalForm.olean`.
   Ten public theorems prove the Hardy reflection, both Mellin cutoff identities,
   Gamma normal form, both Sonin reductions, bare-counterterm invisibility and the
   exact tested continuum trace-class survivor. Wired into RHTower; no umbrella build.

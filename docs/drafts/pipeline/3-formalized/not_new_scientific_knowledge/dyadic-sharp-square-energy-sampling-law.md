@@ -167,7 +167,7 @@ which had only a pointwise interface.
 The implementation is
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergySampling
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergySampling
 ```
 
 with public declarations
@@ -184,7 +184,7 @@ riemannHypothesis_of_squareCompletedErrorBackwardPositiveVariationEnergy
 ```
 
 The quantitative divisor consumers are in
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergySpectrum`:
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergySpectrum`:
 
 ```text
 xi_zero_re_le_half_add_of_squarePrimeWindowPositiveExcessEnergy

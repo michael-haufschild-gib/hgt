@@ -8,7 +8,7 @@ The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/S
 
 ## Actual object and normalization
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeSourceEquation`. Namespace: `RHTower.D4BMNativeResponse`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeSourceEquation`. Namespace: `RHTower.D4BMNativeResponse`.
 
 Let `U(tau,x)=radialResponse nu s amplitude tau x`, the previously constructed integral of the original Riemann kernel against `F=oddSource s amplitude`. All three complex parameters are arbitrary. Set
 
@@ -83,7 +83,7 @@ For the complete angular response, the original modular domain, cusp subtraction
 
 Broad Fubini/retarded searches and deep triangle/change-of-variable searches exposed compact-integrability and triangle-interchange arguments. The separated-profile triangle lemmas were insufficient for the coupled kernel, so the exact four-variable integral argument was built. The proof uses the actual mathlib interval-integral swap and Jacobian theorem. Broad OR and deep free/massive-Duhamel searches recovered scalar oscillators and the existing massive Duhamel formulas. Their generated ingredient group did not establish the required free-operator identity. Candidate and source-argument views were inspected. Search reported complete file inventory but incomplete semantic coverage, 48 compiled snapshots, 43 stale snapshots and predominantly source-only metadata. Applicability of every ingredient used here was verified by Lean.
 
-Foreground scratch `lake env lean` passed without warnings. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeSourceEquation`, with 4029 frozen own-module caches and 11 package caches. The new leaf built in 102 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
+Foreground scratch `lake env lean` passed without warnings. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeSourceEquation`, with 4029 frozen own-module caches and 11 package caches. The new leaf built in 102 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the three new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files match the audited files byte for byte. The unique import is in the `GaloisForLFunctions.RHTower` area umbrella; no umbrella build ran.
 

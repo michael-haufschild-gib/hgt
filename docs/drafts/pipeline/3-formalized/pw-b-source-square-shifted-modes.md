@@ -70,7 +70,7 @@ integrating-factor method instead.
 
 ## Lean verification, 2026-09-11
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularSourceSquareShiftedModes`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularSourceSquareShiftedModes`.
 Capstone: `RHTower.pwLogGammaSource_every_complex_shift_admitted`.
 Classification: `RHTower.pwLogShiftedSourceMode_classification`.
 

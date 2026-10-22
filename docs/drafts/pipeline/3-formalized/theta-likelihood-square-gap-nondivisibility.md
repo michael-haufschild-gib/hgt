@@ -136,9 +136,9 @@ law is infinitely divisible, so the GGC/Thorin conclusions follow.
 
 Modules:
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean`
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodProbabilityNondivisibility.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodProbabilityNondivisibility.lean`
 
 Lean proves exactly:
 
@@ -234,7 +234,7 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
 ## Lean progress
 
 - 2026-07-25 — **Correction + reusable-lemma extraction.**  The theta-specific atom content of this
-  card was **already** fully formalized in `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`
+  card was **already** fully formalized in `RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean`
   (`thetaCuspLikelihoodSeamTiltedMeasure` = `P_B`, its singleton masses at `0,3,6`,
   `not_additivelyClosedAtomSupport_...` on the actual measure, and
   `thetaCuspLikelihoodSeamTiltedMeasure_selfConv_singleton_six_ne_zero`).  An abstract-atom-set
@@ -285,7 +285,7 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   only remaining input for the `2 → 3` gate is the classical Steutel--van Harn direction
   `ID + atom at 0 ⟹ compound Poisson` (still absent from mathlib).
 - 2026-07-25 — **`P_B` is not a compound Poisson — connector formalized (unconditional)**, appended to
-  `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean` (axioms `[propext, Classical.choice,
+  `RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean` (axioms `[propext, Classical.choice,
   Quot.sound]`):
   * `thetaCuspLikelihoodSeamTiltedMeasure_not_convPowMixture` — **`P_B ≠ convPowMixture c Q`** for
     every positive-weight `c` and jump law `Q`: a compound-Poisson mixture has additively closed atom
@@ -303,7 +303,7 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   * `InfinitelyDivisible μ := ∀ n>0, ∃ ν prob, μ = ν^{∗n}` — the infinite-divisibility predicate.
   * `IsCompoundPoissonMixture μ := ∃ c Q, (∀m, c m ≠ 0) ∧ SFinite Q ∧ μ = convPowMixture c Q`, with
     `IsCompoundPoissonMixture.singleton_add_ne_zero` (its atom support is additively closed).
-  In `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`:
+  In `RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean`:
   * `thetaCuspLikelihoodSeamTiltedMeasure_not_compoundPoisson` — **`¬ IsCompoundPoissonMixture P_B`,
     unconditional** (existential form: `P_B` is not any compound Poisson mixture).
   * `thetaCuspLikelihoodSeamTiltedMeasure_not_infinitelyDivisible` — **`¬ InfinitelyDivisible P_B`
@@ -480,7 +480,7 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
     `conv_self_singleton_eq_zero_of_no_pair` forces `mu{a} = 0` -- contradiction.  (Positivity of `a`
     is not assumed; it follows.)
 
-  New in `RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean`, giving the exact atomic support:
+  New in `RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean`, giving the exact atomic support:
   * `three_le_thetaCuspLikelihoodGap_shift`, `thetaCuspHigherLikelihoodSpectralMeasure_singleton_eq_zero`,
     `thetaCuspLikelihoodSeamTiltedMeasure_singleton_eq_zero` — off the origin and the square gaps
     nothing is charged (the Lebesgue rays charge no singleton), hence
@@ -502,7 +502,7 @@ That is insufficient for a priority claim. Label remains `[NOVELTY-UNVERIFIED]`.
   `P_B` is the literal probability normalization.  That mismatch is closed below.
 
 - 2026-08-01 — **Normalized probability law and items 1--6 formalized exactly.**  Added
-  `RHTower/ThetaCuspLikelihoodProbabilityNondivisibility.lean`, proving the tilted mass and seam
+  `RHTower/ThetaCusp/ThetaCuspLikelihoodProbabilityNondivisibility.lean`, proving the tilted mass and seam
   mass formulas, defining the literal `P_B`, proving its probability and half-line support laws,
   transferring the exact `0,3,6` atom formulas, proving the normalized self-convolution atom at
   `6`, additive nonclosure, and unconditional non-infinite-divisibility.  The GGC and

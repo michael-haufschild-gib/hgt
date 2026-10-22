@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SelbergMaassPhaseStress
 import GaloisForLFunctions.RHTower.MaassCuspSmoothness
 import GaloisForLFunctions.RHTower.PeriodicFourierDecay
-import GaloisForLFunctions.HTGeometry.KleinGordonEigenEnvelope
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonEigenEnvelope
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!

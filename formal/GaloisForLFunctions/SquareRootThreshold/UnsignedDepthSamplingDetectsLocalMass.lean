@@ -1,5 +1,5 @@
 import GaloisForLFunctions.SquareRootThreshold.TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarBumpSources
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarBumpSources
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 

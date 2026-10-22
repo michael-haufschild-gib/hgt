@@ -77,11 +77,11 @@ supplied to that capstone.
 
 ## Lean modules
 
-- [BMWeightedSquareCuspBound](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMWeightedSquareCuspBound.lean): two weighted full-field bounds.
-- [BMScalarSourcePairingAdmission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarSourcePairingAdmission.lean): four angular admission theorems.
-- [BMCompleteAngularSourceProjection](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompleteAngularSourceProjection.lean): actual integral definitions, complete integrability, and exact channel decomposition.
-- [BMCompleteAngularProjectionMeromorphy](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompleteAngularProjectionMeromorphy.lean): radial L² admission, exact class assembly, and norm-valued meromorphy.
-- [BMFundamentalAngularSourcePairing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalAngularSourcePairing.lean): original separation eigenvalue and unconditional all-Xi specialization.
+- [BMWeightedSquareCuspBound](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMWeightedSquareCuspBound.lean): two weighted full-field bounds.
+- [BMScalarSourcePairingAdmission](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarSourcePairingAdmission.lean): four angular admission theorems.
+- [BMCompleteAngularSourceProjection](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompleteAngularSourceProjection.lean): actual integral definitions, complete integrability, and exact channel decomposition.
+- [BMCompleteAngularProjectionMeromorphy](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompleteAngularProjectionMeromorphy.lean): radial L² admission, exact class assembly, and norm-valued meromorphy.
+- [BMFundamentalAngularSourcePairing](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFundamentalAngularSourcePairing.lean): original separation eigenvalue and unconditional all-Xi specialization.
 
 ## Remaining physical identification
 

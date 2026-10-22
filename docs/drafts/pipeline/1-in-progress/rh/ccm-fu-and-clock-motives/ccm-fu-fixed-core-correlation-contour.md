@@ -1,7 +1,7 @@
 # CCM-FU: paired Mellin contour for the distant-head average
 
 - **Stage:** 1-in-progress; literal source analysis.
-- **Parent:** [signed-head moment](../../ccm-fu-fixed-core-signed-head-moment.md).
+- **Parent:** [signed-head moment](ccm-fu-fixed-core-signed-head-moment.md).
 - **Proof chain:** Actual divisor source, renewable signed reserve, exhaustive selection, uniform signed Abel bound, RH.
 
 ## Exact target

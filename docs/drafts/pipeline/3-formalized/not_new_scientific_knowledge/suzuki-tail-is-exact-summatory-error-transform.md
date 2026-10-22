@@ -132,7 +132,7 @@ It gives the correct surviving arithmetic object but is a routine parent-theory 
 
 ## Lean formalization
 
-Module: `formal/GaloisForLFunctions/RHTower/SuzukiTailSummatoryErrorTransform.lean`
+Module: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTailSummatoryErrorTransform.lean`
 (with the complex-valued countable Dirac integration lemmas added to
 `formal/GaloisForLFunctions/HTGeometry/CountableWeightedDirac.lean`).
 

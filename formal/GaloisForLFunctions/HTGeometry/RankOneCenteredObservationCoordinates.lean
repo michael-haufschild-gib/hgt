@@ -2,8 +2,8 @@ import GaloisForLFunctions.HTGeometry.TailParameterChange
 import GaloisForLFunctions.HTGeometry.FracXTranscendental
 import GaloisForLFunctions.HTGeometry.ProjectiveHorizonAllRankQSystem
 import GaloisForLFunctions.HTGeometry.TailCenteredCoefficientMatch
-import GaloisForLFunctions.HTGeometry.CriticalObservationField
-import GaloisForLFunctions.HTGeometry.CriticalGeometricSheetFibre
+import GaloisForLFunctions.HTGeometry.Critical.Observation.Field
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.SheetFibre
 import GaloisForLFunctions.HTGeometry.CenteredFreeParameter
 
 /-!

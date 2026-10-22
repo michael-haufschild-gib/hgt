@@ -359,7 +359,7 @@ split, the inverse-horizontal energy, and the bilateral atom factorization.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMTwoChannelGraph.lean` (wired, axiom-clean, 5
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMTwoChannelGraph.lean` (wired, axiom-clean, 5
 declarations).
 
 - **`pairedGraph_closed`** — section 1, statement 2, in the form the proof actually uses: for

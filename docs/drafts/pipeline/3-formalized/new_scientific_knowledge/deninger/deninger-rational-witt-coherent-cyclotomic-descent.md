@@ -186,7 +186,7 @@ priority remains provisional pending specialist review.
 ## 9. Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerRationalWittCoherentCyclotomicDescent.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittCoherentCyclotomicDescent.lean`.
 
 Formal capstones:
 
@@ -207,10 +207,10 @@ adds elements.
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerRationalWittCoherentCyclotomicDescent.lean`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittCoherentCyclotomicDescent.lean`
   passes;
 - targeted
-  `lake build GaloisForLFunctions.RHTower.DeningerRationalWittCoherentCyclotomicDescent`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittCoherentCyclotomicDescent`
   passes;
 - capstone axiom audit reports only `propext`, `Classical.choice`, and
   `Quot.sound`.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusCriticalComplexPhaseHermitianGram
-import GaloisForLFunctions.RHTower.DeningerInvZetaPole
+import GaloisForLFunctions.RHTower.Deninger.DeningerInvZetaPole
 
 /-!
 # Physical-ordinate orthogonality of the literal signed squarefree source

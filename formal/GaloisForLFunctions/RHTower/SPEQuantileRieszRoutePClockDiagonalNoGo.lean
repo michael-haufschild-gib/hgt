@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePJuliaKreinHistoryPort
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarCovarianceHardCore
 
 /-!
 # SP-E/P diagonal clock-transport no-go

@@ -48,7 +48,7 @@ Dependency-closed proof and hostile scope are recorded in
 `../3-formalized/hb-source-fixed-linear-mixing-clock-covariance-no-go.md`.
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFixedLinearMixingClockCovarianceNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFixedLinearMixingClockCovarianceNoGo`.
 
 Main route-kill theorem:
 `RHTower.hbXiPeierlsExistsUnitSourceFixedLinearGaugePhysicalClockStepCovariant_iff`.

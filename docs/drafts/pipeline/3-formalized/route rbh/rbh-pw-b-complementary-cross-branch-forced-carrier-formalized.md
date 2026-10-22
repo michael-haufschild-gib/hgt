@@ -1,8 +1,8 @@
 # RBH / PW-B complementary cross-branch forced carrier — Lean certificate
 
 - **Paper card:** `rbh-pw-b-complementary-cross-branch-forced-carrier.md`
-- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchBidegree`,
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchSource`; input
+- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchBidegree`,
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCyclicPeierlsCrossBranchSource`; input
   `ThetaCuspHawkingBMStreamMetricEinstein`
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** `lake --old env lean` clean; `#print axioms` of every listed theorem =

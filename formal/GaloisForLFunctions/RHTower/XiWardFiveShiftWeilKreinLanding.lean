@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWardFiveShiftPairedSubmicroscopicSeparator
 import GaloisForLFunctions.RHTower.GaussHodgeWeilKreinDecomposition
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 
 /-!
 # Five-shift Euler–Gamma separator in the Xi Weil–Krein trace

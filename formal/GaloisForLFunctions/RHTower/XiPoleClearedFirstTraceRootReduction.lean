@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GermExtension
-import GaloisForLFunctions.RHTower.HedenmalmSquarefreeFirstTraceExponentialContinuation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSquarefreeFirstTraceExponentialContinuation
 import GaloisForLFunctions.RHTower.XiSquarefreePoleUnitRootReduction
 
 /-!

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsSecondTimeMultiplier
 import GaloisForLFunctions.RHTower.FokasLenellsTimeInverse
-import GaloisForLFunctions.HTGeometry.KleinGordonDuhamelDerivative
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonDuhamelDerivative
 
 /-!
 # A second time derivative for the actual Cauchy inverse

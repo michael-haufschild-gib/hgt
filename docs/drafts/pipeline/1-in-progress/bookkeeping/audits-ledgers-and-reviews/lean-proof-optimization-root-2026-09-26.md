@@ -40,8 +40,8 @@ Constraints: no git; no heartbeat or recursion increases; no numerical mathemati
 
 ## Final gates
 
-- `lake build +GaloisForLFunctions.RHTower.ThetaCuspQuadraticMeanSquare`: pass.
-- `lake build +GaloisForLFunctions.RHTower.ThetaCuspChargedSourceMeanSquare`: pass.
+- `lake build +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspQuadraticMeanSquare`: pass.
+- `lake build +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargedSourceMeanSquare`: pass.
 - `lake build +GaloisForLFunctions.RHTower.ThetaTailChargedEnergyCollapse`: pass.
 - All three existing umbrella imports present exactly once. No new module or public declaration.
 - Index regeneration completed. Final `lint --check-generated` has no stale-index error; it fails on exactly two unrelated unreachable modules: `FermiNymanBoundedWitnessMellin` and `FermiNymanBoundedWitnessRigidity`. These files were not edited in this task. Existing large-file warnings remain.

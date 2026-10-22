@@ -112,9 +112,9 @@ open core.
 - `../3-formalized/hedenmalm-divisor-metric-dense-radical-no-go.md`
 - `../3-formalized/not_new_scientific_knowledge/xi-weil-full-square-summable-positivity-criterion.md`
 - `../5-failed/hedenmalm-divided-chain-symmetric-carrier-law.md`
-- `formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean`
-- `formal/GaloisForLFunctions/RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`
-- `formal/GaloisForLFunctions/RHTower/HedenmalmSourceHilbertGramClosedGraphNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSourceHilbertGramClosedGraphNoGo.lean`
 - `formal/GaloisForLFunctions/RHTower/XiDivisorSupportedMetric.lean`
 - `formal/GaloisForLFunctions/RHTower/XiWeilPositivityCriterion.lean`
 - `formal/GaloisForLFunctions/RHTower/XiHedenmalmSymmetricMultiplicity.lean`

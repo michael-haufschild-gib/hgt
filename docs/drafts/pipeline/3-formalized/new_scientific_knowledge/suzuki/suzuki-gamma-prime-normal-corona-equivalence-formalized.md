@@ -5,10 +5,10 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-gamma-prime-normal-corona-equivalence.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaCoronaSequence.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaDistributionalHalfLine.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPrimeNormalCoronaComparison.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaHalfLineClassification.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaCoronaSequence.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaDistributionalHalfLine.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeNormalCoronaComparison.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaHalfLineClassification.lean`
   - `formal/GaloisForLFunctions/HTGeometry/HalfLogTraceNonIntegrable.lean`
   - `formal/GaloisForLFunctions/HTGeometry/InverseSqrtPerturbation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/DistributionalLinearODE.lean`
@@ -18,7 +18,7 @@
   - `formal/GaloisForLFunctions/HTGeometry/IntervalTestSeparation.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PointSupportGammaForm.lean`
   - `formal/GaloisForLFunctions/HTGeometry/CentralBinomialSeries.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPrimeNormalBinomialSeries.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeNormalBinomialSeries.lean`
 
 ## Formal content
 

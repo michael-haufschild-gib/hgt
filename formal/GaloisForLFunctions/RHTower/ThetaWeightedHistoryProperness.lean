@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaRealShiftHistory
-import GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryFourier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryFourier
 
 /-!
 # Proper derivative history throughout the positive theta-weight range

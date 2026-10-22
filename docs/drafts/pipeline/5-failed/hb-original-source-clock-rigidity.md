@@ -108,7 +108,7 @@ applicable ingredient.
 
 ## Lean certificate
 
-[OriginalSourceClockRigidity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalSourceClockRigidity.lean)
+[OriginalSourceClockRigidity](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalSourceClockRigidity.lean)
 proves the original two-coordinate translation and recovery laws,
 `sourceClock_scalar_realization_iff`, `sourceClock_eventual_zero_iff`,
 `sourceClockSlope_eq_zero_of_finite_exponentials`,

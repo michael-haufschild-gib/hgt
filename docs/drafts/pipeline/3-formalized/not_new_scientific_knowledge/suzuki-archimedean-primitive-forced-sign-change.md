@@ -123,13 +123,13 @@ Modules:
   transfer laws for a primitive: `HTGeometry.tendsto_rpow_mul_intervalIntegral_nhdsGT_zero`
   (divergent endpoint, `α < -1`) and `HTGeometry.tendsto_rpow_mul_intervalIntegral_nhdsLT`
   (convergent endpoint, `β > -1`).
-- `formal/GaloisForLFunctions/RHTower/SuzukiRealKernelForm.lean` — the real form of the literal
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRealKernelForm.lean` — the real form of the literal
   kernel and its primitive (`RHTower.ofReal_suzukiRealSourceG`,
   `RHTower.ofReal_suzukiRealSourceGOne`), the complete beta value
   `RHTower.suzukiRealBetaTail_zero`, the endpoint rate of the incomplete-beta tail
   `RHTower.tendsto_suzukiRealBetaTail_nhdsLT_one`, and interval integrability of the weighted
   kernel `RHTower.intervalIntegrable_suzukiRealSourceGWeighted`.
-- `formal/GaloisForLFunctions/RHTower/SuzukiArchimedeanPrimitiveSignChange.lean` — the endpoint
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanPrimitiveSignChange.lean` — the endpoint
   expansions and the sign change.
 
 | Card statement | Lean declaration |

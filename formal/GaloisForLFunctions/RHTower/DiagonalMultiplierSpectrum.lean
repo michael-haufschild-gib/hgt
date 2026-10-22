@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange
+import GaloisForLFunctions.RHTower.Deninger.DeningerTwoPrimeKummerDenseNonclosedRange
 import GaloisForLFunctions.HTGeometry.ObserverHorizonStability
 
 /-!

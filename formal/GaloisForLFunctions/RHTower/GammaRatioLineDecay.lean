@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaRatioStripUniform
-import GaloisForLFunctions.RHTower.SuzukiGammaForcedStripHardy
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaForcedStripHardy
 
 /-!
 # The Gamma quotient decays at the exact vertical rate on a fixed line

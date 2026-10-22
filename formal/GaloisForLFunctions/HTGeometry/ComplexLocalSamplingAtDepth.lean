@@ -373,14 +373,21 @@ theorem chi_sub_ofReal (z : ℂ) (y t : ℝ) :
   push_cast
   ring
 
-/-- **The reproducing identity at a complex frequency.**  The cutoff is one on the support of
-`f`, so the transform at `z` is the kernel average of the transform on the real line. -/
-theorem fourierAt_eq_integral {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
-    (hfc : Continuous f) (hf : Integrable f) (hFi : Integrable (𝓕 f))
+/-- The kernel of a cutoff at a complex frequency. -/
+def cutoffKernel (T : ℝ → ℂ) (w : ℂ) : ℂ := ∫ t : ℝ, T t * chi w t
+
+theorem sampKernelAt_eq_cutoffKernel (a : ℝ) (w : ℂ) :
+    sampKernelAt a w = cutoffKernel (trapFn a) w := rfl
+
+/-- **The reproducing identity for an arbitrary plateau cutoff.**  If `T` is one on `[−a, a]` and
+vanishes off `[−R, R]`, then a transform of a source supported in `[−a, a]` is, at every complex
+frequency, the average of its restriction to the real line against the cutoff's kernel. -/
+theorem fourierAt_eq_integral_of_cutoff {a R : ℝ} (hR : 0 ≤ R)
+    {T : ℝ → ℂ} (hTc : Continuous T) (hTi : Integrable T)
+    (hT1 : ∀ t : ℝ, |t| ≤ a → T t = 1) (hT0 : ∀ t : ℝ, R < |t| → T t = 0)
+    {f : ℝ → ℂ} (hfc : Continuous f) (hf : Integrable f) (hFi : Integrable (𝓕 f))
     (hsupp : ∀ t : ℝ, a < |t| → f t = 0) (z : ℂ) :
-    fourierAt f z = ∫ y : ℝ, 𝓕 f y * sampKernelAt a (z - (y : ℂ)) := by
-  have hTc : Continuous (trapFn a) := continuous_trapFn a
-  have hTi : Integrable (trapFn a) := integrable_trapFn ha
+    fourierAt f z = ∫ y : ℝ, 𝓕 f y * cutoffKernel T (z - (y : ℂ)) := by
   have hΦc : Continuous (𝓕 f) :=
     VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
       (by exact continuous_inner) hf
@@ -401,7 +408,7 @@ theorem fourierAt_eq_integral {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
     rw [hre, Real.exp_zero]
   -- the double integrand
   let G : ℝ → ℝ → ℂ := fun y t =>
-    𝓕 f y * (trapFn a t * chi z t *
+    𝓕 f y * (T t * chi z t *
       Complex.exp (((2 * π * (y * t) : ℝ) : ℂ) * Complex.I))
   have hmeas : Measurable (Function.uncurry G) :=
     ((hΦc.measurable.comp measurable_fst).mul
@@ -409,35 +416,32 @@ theorem fourierAt_eq_integral {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
         (hchic.measurable.comp measurable_snd)).mul hcharc.measurable))
   have hFint : Integrable (Function.uncurry G) (volume.prod volume) := by
     refine Integrable.mono' (g := fun p : ℝ × ℝ =>
-      ‖𝓕 f p.1‖ * (‖trapFn a p.2‖ * Real.exp (6 * π * a * |z.im|)))
+      ‖𝓕 f p.1‖ * (‖T p.2‖ * Real.exp (2 * π * R * |z.im|)))
       (Integrable.mul_prod hFi.norm (hTi.norm.mul_const _))
       hmeas.aestronglyMeasurable (Filter.Eventually.of_forall fun p => ?_)
-    by_cases hp2 : |p.2| ≤ 3 * a
-    · have hchi : ‖chi z p.2‖ ≤ Real.exp (6 * π * a * |z.im|) := by
-        have h := norm_chi_le (by linarith : (0:ℝ) ≤ 3 * a) z hp2
-        calc ‖chi z p.2‖ ≤ Real.exp (2 * π * (3 * a) * |z.im|) := h
-          _ = Real.exp (6 * π * a * |z.im|) := by congr 1; ring
+    by_cases hp2 : |p.2| ≤ R
+    · have hchi : ‖chi z p.2‖ ≤ Real.exp (2 * π * R * |z.im|) := norm_chi_le hR z hp2
       show ‖G p.1 p.2‖ ≤ _
       simp only [G, norm_mul, hcharnorm p.1 p.2, mul_one]
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hchi (norm_nonneg _)) (norm_nonneg _)
-    · have hT0 : trapFn a p.2 = 0 := trapFn_eq_zero ha (not_le.mp hp2)
+    · have hTz : T p.2 = 0 := hT0 p.2 (not_le.mp hp2)
       show ‖G p.1 p.2‖ ≤ _
-      simp [G, hT0]
+      simp [G, hTz]
   -- swap, then use inversion and that the cutoff is one on the support
   have hswap := MeasureTheory.integral_integral_swap hFint
-  have hright : (∫ y : ℝ, 𝓕 f y * sampKernelAt a (z - (y : ℂ))) = ∫ y : ℝ, ∫ t : ℝ, G y t := by
+  have hright : (∫ y : ℝ, 𝓕 f y * cutoffKernel T (z - (y : ℂ))) = ∫ y : ℝ, ∫ t : ℝ, G y t := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-    simp only [sampKernelAt]
+    simp only [cutoffKernel]
     rw [← MeasureTheory.integral_const_mul]
     refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
     simp only [G]
     rw [chi_sub_ofReal]
     ring
-  have hinner : ∀ t : ℝ, (∫ y : ℝ, G y t) = f t * (trapFn a t * chi z t) := by
+  have hinner : ∀ t : ℝ, (∫ y : ℝ, G y t) = f t * (T t * chi z t) := by
     intro t
     have hfac : ∀ y : ℝ, G y t =
-        (trapFn a t * chi z t) *
+        (T t * chi z t) *
           (Complex.exp (((2 * π * (y * t) : ℝ) : ℂ) * Complex.I) * 𝓕 f y) := by
       intro y
       simp only [G]
@@ -457,10 +461,21 @@ theorem fourierAt_eq_integral {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
     ring
   rw [hright, hswap, integral_congr_ae (Filter.Eventually.of_forall hinner), fourierAt]
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-  show f t * chi z t = f t * (trapFn a t * chi z t)
+  show f t * chi z t = f t * (T t * chi z t)
   by_cases ht : |t| ≤ a
-  · rw [trapFn_eq_one ha ht, one_mul]
+  · rw [hT1 t ht, one_mul]
   · rw [hsupp t (not_le.mp ht), zero_mul, zero_mul]
+
+/-- **The reproducing identity at a complex frequency.**  The cutoff is one on the support of
+`f`, so the transform at `z` is the kernel average of the transform on the real line. -/
+theorem fourierAt_eq_integral {a : ℝ} (ha : 0 < a) {f : ℝ → ℂ}
+    (hfc : Continuous f) (hf : Integrable f) (hFi : Integrable (𝓕 f))
+    (hsupp : ∀ t : ℝ, a < |t| → f t = 0) (z : ℂ) :
+    fourierAt f z = ∫ y : ℝ, 𝓕 f y * sampKernelAt a (z - (y : ℂ)) :=
+  fourierAt_eq_integral_of_cutoff (a := a) (R := 3 * a) (by linarith)
+    (continuous_trapFn a) (integrable_trapFn ha)
+    (fun _ ht => trapFn_eq_one ha ht) (fun _ ht => trapFn_eq_zero ha ht)
+    hfc hf hFi hsupp z
 
 /-! ## Sampling at depth against a logarithmic density -/
 
@@ -480,14 +495,18 @@ theorem measurable_sampKernelAt_sub (a : ℝ) (z : ℂ) :
       (Complex.continuous_ofReal.comp continuous_snd))
   exact (hjoint.stronglyMeasurable.integral_prod_right').measurable
 
-/-- **Sampling at depth against a logarithmic density.**  A transform of a source supported in
-`[−a, a]`, sampled with nonnegative weights at complex points of depth at most `σ` whose real
-parts carry weight at most `A₀ log(|n|+3)` per unit window, is bounded by the logarithmically
-weighted energy of the transform on the real line; the depth costs one explicit exponential. -/
-theorem sum_norm_sq_fourierAt_le_of_kernelBound {a B σ : ℝ} (ha : 0 < a) (_hB : 0 ≤ B)
-    (_hσ : 0 ≤ σ)
-    {f : ℝ → ℂ} (hfc : Continuous f) (hf : Integrable f) (hFi : Integrable (𝓕 f))
-    (hsupp : ∀ t : ℝ, a < |t| → f t = 0)
+/-- **Sampling at depth against a kernel of quadratic decay.**  For any kernel reproducing the
+transform of `f` on the real line, with quadratic decay in the real direction and an exponential
+cost `e^{2πR|Im w|}` in the depth, a weighted sum of squares over sample points of depth at most
+`σ` whose real parts carry kernel mass at most `B φ` is bounded by the `φ`-weighted energy of the
+transform.  The rate `R` is the support radius of the cutoff behind the kernel. -/
+theorem sum_norm_sq_fourierAt_le_of_kernel {B σ R C : ℝ} (hR : 0 ≤ R) (hCnn : 0 ≤ C)
+    (_hB : 0 ≤ B) (_hσ : 0 ≤ σ)
+    {f : ℝ → ℂ} (hf : Integrable f)
+    (K : ℂ → ℂ)
+    (hKb : ∀ w : ℂ, ‖K w‖ ≤ Real.exp (2 * π * R * |w.im|) * (C / (1 + w.re ^ 2)))
+    (hKm : ∀ z : ℂ, Measurable fun y : ℝ => K (z - (y : ℂ)))
+    (hrep : ∀ z : ℂ, fourierAt f z = ∫ y : ℝ, 𝓕 f y * K (z - (y : ℂ)))
     (φ : ℝ → ℝ) (_hφ : ∀ y : ℝ, 0 ≤ φ y)
     (hΦ2 : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2)
     (hint : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2 * φ y)
@@ -495,12 +514,15 @@ theorem sum_norm_sq_fourierAt_le_of_kernelBound {a B σ : ℝ} (ha : 0 < a) (_hB
     (hSim : ∀ q ∈ S, |(p q).im| ≤ σ) (hm : ∀ q, 0 ≤ m q)
     (hker : ∀ y : ℝ, (∑ q ∈ S, m q * (1 + ((p q).re - y) ^ 2)⁻¹) ≤ B * φ y) :
     ∑ q ∈ S, m q * ‖fourierAt f (p q)‖ ^ 2 ≤
-      ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * B))) *
+      ((Real.exp (2 * π * R * σ) * (C * π)) *
+        (Real.exp (2 * π * R * σ) * (C * B))) *
         ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * φ y := by
   classical
-  have hM : (0:ℝ) ≤ 8 * a + a⁻¹ := by positivity
-  have hE : (0:ℝ) < Real.exp (6 * π * a * σ) := Real.exp_pos _
+  have hM : (0:ℝ) ≤ C := hCnn
+  have hE : (0:ℝ) < Real.exp (2 * π * R * σ) := Real.exp_pos _
+  have hR2 : (0:ℝ) ≤ 2 * π * R := by
+    have := Real.pi_pos
+    nlinarith
   have hΦc : Continuous (𝓕 f) :=
     VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar
       (by exact continuous_inner) hf
@@ -527,113 +549,115 @@ theorem sum_norm_sq_fourierAt_le_of_kernelBound {a B σ : ℝ} (ha : 0 < a) (_hB
     nlinarith [hk1, sq_nonneg ‖𝓕 f y‖]
   -- the pointwise bound at one sample point
   have hpt : ∀ z : ℂ, |z.im| ≤ σ → ‖fourierAt f z‖ ^ 2 ≤
-      (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+      (Real.exp (2 * π * R * σ) * (C * π)) *
+        (Real.exp (2 * π * R * σ) * (C *
           ∫ y : ℝ, (1 + (z.re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2)) := by
     intro z hzs
-    have hexpmono : Real.exp (6 * π * a * |z.im|) ≤ Real.exp (6 * π * a * σ) := by
+    have hexpmono : Real.exp (2 * π * R * |z.im|) ≤ Real.exp (2 * π * R * σ) := by
       refine Real.exp_le_exp.mpr ?_
-      have hprod : (0:ℝ) ≤ 6 * π * a * (σ - |z.im|) :=
-        mul_nonneg (by positivity) (by linarith)
+      have hprod : (0:ℝ) ≤ 2 * π * R * (σ - |z.im|) := mul_nonneg hR2 (by linarith)
       nlinarith [hprod]
-    have hKb : ∀ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ ≤
-        Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (1 + (z.re - y) ^ 2)⁻¹) := by
+    have hKb : ∀ y : ℝ, ‖K (z - (y : ℂ))‖ ≤
+        Real.exp (2 * π * R * σ) * (C * (1 + (z.re - y) ^ 2)⁻¹) := by
       intro y
-      have h := norm_sampKernelAt_le ha (z - (y : ℂ))
+      have h := hKb (z - (y : ℂ))
       rw [sub_ofReal_re, sub_ofReal_im] at h
-      calc ‖sampKernelAt a (z - (y : ℂ))‖
-          ≤ Real.exp (6 * π * a * |z.im|) * ((8 * a + a⁻¹) / (1 + (z.re - y) ^ 2)) := h
-        _ = Real.exp (6 * π * a * |z.im|) * ((8 * a + a⁻¹) * (1 + (z.re - y) ^ 2)⁻¹) := by
+      calc ‖K (z - (y : ℂ))‖
+          ≤ Real.exp (2 * π * R * |z.im|) * (C / (1 + (z.re - y) ^ 2)) := h
+        _ = Real.exp (2 * π * R * |z.im|) * (C * (1 + (z.re - y) ^ 2)⁻¹) := by
             rw [div_eq_mul_inv]
-        _ ≤ Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (1 + (z.re - y) ^ 2)⁻¹) :=
-            mul_le_mul_of_nonneg_right hexpmono (by positivity)
-    have hwm : Measurable fun y : ℝ => ‖sampKernelAt a (z - (y : ℂ))‖ :=
-      (measurable_sampKernelAt_sub a z).norm
-    have hwi : Integrable fun y : ℝ => ‖sampKernelAt a (z - (y : ℂ))‖ := by
-      refine Integrable.mono' (((hcauchy z.re).const_mul (8 * a + a⁻¹)).const_mul
-        (Real.exp (6 * π * a * σ))) hwm.aestronglyMeasurable
+        _ ≤ Real.exp (2 * π * R * σ) * (C * (1 + (z.re - y) ^ 2)⁻¹) :=
+            mul_le_mul_of_nonneg_right hexpmono (mul_nonneg hCnn (by positivity))
+    have hwm : Measurable fun y : ℝ => ‖K (z - (y : ℂ))‖ :=
+      (hKm z).norm
+    have hwi : Integrable fun y : ℝ => ‖K (z - (y : ℂ))‖ := by
+      refine Integrable.mono' (((hcauchy z.re).const_mul C).const_mul
+        (Real.exp (2 * π * R * σ))) hwm.aestronglyMeasurable
         (Filter.Eventually.of_forall fun y => ?_)
       rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
       exact hKb y
-    have hwg2 : Integrable fun y : ℝ => ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 := by
-      refine Integrable.mono' (hΦ2.const_mul (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹)))
+    have hwg2 : Integrable fun y : ℝ => ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 := by
+      refine Integrable.mono' (hΦ2.const_mul (Real.exp (2 * π * R * σ) * C))
         (hwm.mul ((hΦc.norm.pow 2).measurable)).aestronglyMeasurable
         (Filter.Eventually.of_forall fun y => ?_)
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-      have hb : ‖sampKernelAt a (z - (y : ℂ))‖ ≤
-          Real.exp (6 * π * a * σ) * (8 * a + a⁻¹) := by
+      have hb : ‖K (z - (y : ℂ))‖ ≤
+          Real.exp (2 * π * R * σ) * C := by
         refine (hKb y).trans ?_
         have hk1 : (1 + (z.re - y) ^ 2)⁻¹ ≤ 1 := by
           rw [inv_le_one_iff₀]
           right
           nlinarith [sq_nonneg (z.re - y)]
-        have hle : (8 * a + a⁻¹) * (1 + (z.re - y) ^ 2)⁻¹ ≤ (8 * a + a⁻¹) * 1 :=
+        have hle : C * (1 + (z.re - y) ^ 2)⁻¹ ≤ C * 1 :=
           mul_le_mul_of_nonneg_left hk1 hM
         nlinarith [hE.le, hle]
-      calc ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2
-          ≤ (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹)) * ‖𝓕 f y‖ ^ 2 :=
+      calc ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2
+          ≤ (Real.exp (2 * π * R * σ) * C) * ‖𝓕 f y‖ ^ 2 :=
             mul_le_mul_of_nonneg_right hb (by positivity)
-        _ = Real.exp (6 * π * a * σ) * (8 * a + a⁻¹) * ‖𝓕 f y‖ ^ 2 := by ring
+        _ = Real.exp (2 * π * R * σ) * C * ‖𝓕 f y‖ ^ 2 := by ring
     have hnorm : ‖fourierAt f z‖ ≤
-        ∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ := by
-      rw [fourierAt_eq_integral ha hfc hf hFi hsupp z]
+        ∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ := by
+      rw [hrep z]
       refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
       congr 1 with y
       rw [norm_mul]
       ring
     have hCS := sq_integral_weighted_le (μ := (volume : Measure ℝ))
-      (w := fun y : ℝ => ‖sampKernelAt a (z - (y : ℂ))‖) (g := fun y : ℝ => ‖𝓕 f y‖)
+      (w := fun y : ℝ => ‖K (z - (y : ℂ))‖) (g := fun y : ℝ => ‖𝓕 f y‖)
       (fun y => norm_nonneg _) hwm.aestronglyMeasurable
       (hΦc.norm).aestronglyMeasurable hwi hwg2
     have hsq : ‖fourierAt f z‖ ^ 2 ≤
-        (∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖) *
-          ∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
+        (∫ y : ℝ, ‖K (z - (y : ℂ))‖) *
+          ∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
       (pow_le_pow_left₀ (norm_nonneg _) hnorm 2).trans hCS
-    have hmass : (∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖) ≤
-        Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π) := by
-      refine (integral_mono hwi (((hcauchy z.re).const_mul (8 * a + a⁻¹)).const_mul
-        (Real.exp (6 * π * a * σ))) hKb).trans (le_of_eq ?_)
+    have hmass : (∫ y : ℝ, ‖K (z - (y : ℂ))‖) ≤
+        Real.exp (2 * π * R * σ) * (C * π) := by
+      refine (integral_mono hwi (((hcauchy z.re).const_mul C).const_mul
+        (Real.exp (2 * π * R * σ))) hKb).trans (le_of_eq ?_)
       rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, hcauchymass]
-    have hsecond : (∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2) ≤
-        Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+    have hsecond : (∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2) ≤
+        Real.exp (2 * π * R * σ) * (C *
           ∫ y : ℝ, (1 + (z.re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2) := by
       have hdom : Integrable fun y : ℝ =>
-          Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * ((1 + (z.re - y) ^ 2)⁻¹ *
-            ‖𝓕 f y‖ ^ 2)) := ((hcw z.re).const_mul (8 * a + a⁻¹)).const_mul _
+          Real.exp (2 * π * R * σ) * (C * ((1 + (z.re - y) ^ 2)⁻¹ *
+            ‖𝓕 f y‖ ^ 2)) := ((hcw z.re).const_mul C).const_mul _
       refine (integral_mono hwg2 hdom fun y => ?_).trans (le_of_eq ?_)
       · have hb := hKb y
-        calc ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2
-            ≤ (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (1 + (z.re - y) ^ 2)⁻¹)) *
+        calc ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2
+            ≤ (Real.exp (2 * π * R * σ) * (C * (1 + (z.re - y) ^ 2)⁻¹)) *
                 ‖𝓕 f y‖ ^ 2 := mul_le_mul_of_nonneg_right hb (by positivity)
-          _ = Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * ((1 + (z.re - y) ^ 2)⁻¹ *
+          _ = Real.exp (2 * π * R * σ) * (C * ((1 + (z.re - y) ^ 2)⁻¹ *
                 ‖𝓕 f y‖ ^ 2)) := by ring
       · rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
-    have hpos1 : (0:ℝ) ≤ ∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
+    have hpos1 : (0:ℝ) ≤ ∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
       integral_nonneg fun y => by positivity
-    have hpos2 : (0:ℝ) ≤ Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π) := by positivity
+    have hpos2 : (0:ℝ) ≤ Real.exp (2 * π * R * σ) * (C * π) :=
+      mul_nonneg hE.le (mul_nonneg hCnn Real.pi_pos.le)
     calc ‖fourierAt f z‖ ^ 2
-        ≤ (∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖) *
-            ∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 := hsq
-      _ ≤ (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-            ∫ y : ℝ, ‖sampKernelAt a (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
+        ≤ (∫ y : ℝ, ‖K (z - (y : ℂ))‖) *
+            ∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 := hsq
+      _ ≤ (Real.exp (2 * π * R * σ) * (C * π)) *
+            ∫ y : ℝ, ‖K (z - (y : ℂ))‖ * ‖𝓕 f y‖ ^ 2 :=
           mul_le_mul_of_nonneg_right hmass hpos1
-      _ ≤ (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-            (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+      _ ≤ (Real.exp (2 * π * R * σ) * (C * π)) *
+            (Real.exp (2 * π * R * σ) * (C *
               ∫ y : ℝ, (1 + (z.re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2)) :=
           mul_le_mul_of_nonneg_left hsecond hpos2
   -- sum over the sample points with their weights, exchange, and reproduce the density
   have hsum : ∑ q ∈ S, m q * ‖fourierAt f (p q)‖ ^ 2 ≤
-      ∑ q ∈ S, m q * ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+      ∑ q ∈ S, m q * ((Real.exp (2 * π * R * σ) * (C * π)) *
+        (Real.exp (2 * π * R * σ) * (C *
           ∫ y : ℝ, (1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2))) :=
     Finset.sum_le_sum fun q hq => mul_le_mul_of_nonneg_left (hpt (p q) (hSim q hq)) (hm q)
-  have hC : (0:ℝ) ≤ (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-      (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹)) := by positivity
-  have hstep1 : ∑ q ∈ S, m q * ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-      (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+  have hCpos : (0:ℝ) ≤ (Real.exp (2 * π * R * σ) * (C * π)) *
+      (Real.exp (2 * π * R * σ) * C) :=
+    mul_nonneg (mul_nonneg hE.le (mul_nonneg hCnn Real.pi_pos.le))
+      (mul_nonneg hE.le hCnn)
+  have hstep1 : ∑ q ∈ S, m q * ((Real.exp (2 * π * R * σ) * (C * π)) *
+      (Real.exp (2 * π * R * σ) * (C *
         ∫ y : ℝ, (1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2))) =
-      ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-        (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹))) *
+      ((Real.exp (2 * π * R * σ) * (C * π)) *
+        (Real.exp (2 * π * R * σ) * C)) *
         ∑ q ∈ S, ∫ y : ℝ, m q * ((1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
@@ -660,22 +684,53 @@ theorem sum_norm_sq_fourierAt_le_of_kernelBound {a B σ : ℝ} (ha : 0 < a) (_hB
         ≤ (B * φ y) * ‖𝓕 f y‖ ^ 2 := mul_le_mul_of_nonneg_right hk (by positivity)
       _ = B * (‖𝓕 f y‖ ^ 2 * φ y) := by ring
   calc ∑ q ∈ S, m q * ‖fourierAt f (p q)‖ ^ 2
-      ≤ ∑ q ∈ S, m q * ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-          (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) *
+      ≤ ∑ q ∈ S, m q * ((Real.exp (2 * π * R * σ) * (C * π)) *
+          (Real.exp (2 * π * R * σ) * (C *
             ∫ y : ℝ, (1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2))) := hsum
-    _ = ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-          (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹))) *
+    _ = ((Real.exp (2 * π * R * σ) * (C * π)) *
+          (Real.exp (2 * π * R * σ) * C)) *
           ∑ q ∈ S, ∫ y : ℝ, m q * ((1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2) := hstep1
-    _ = ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-          (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹))) *
+    _ = ((Real.exp (2 * π * R * σ) * (C * π)) *
+          (Real.exp (2 * π * R * σ) * C)) *
           ∫ y : ℝ, ∑ q ∈ S, m q * ((1 + ((p q).re - y) ^ 2)⁻¹ * ‖𝓕 f y‖ ^ 2) := by rw [hexch]
-    _ ≤ ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-          (Real.exp (6 * π * a * σ) * (8 * a + a⁻¹))) *
+    _ ≤ ((Real.exp (2 * π * R * σ) * (C * π)) *
+          (Real.exp (2 * π * R * σ) * C)) *
           (B * ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * φ y) :=
-        mul_le_mul_of_nonneg_left hinner hC
-    _ = ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-          (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * B))) *
+        mul_le_mul_of_nonneg_left hinner hCpos
+    _ = ((Real.exp (2 * π * R * σ) * (C * π)) *
+          (Real.exp (2 * π * R * σ) * (C * B))) *
           ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * φ y := by ring
+
+/-- **Sampling at depth against a logarithmic density.**  A transform of a source supported in
+`[−a, a]`, sampled with nonnegative weights at complex points of depth at most `σ` whose real
+parts carry weight at most `A₀ log(|n|+3)` per unit window, is bounded by the logarithmically
+weighted energy of the transform on the real line; the depth costs one explicit exponential. -/
+theorem sum_norm_sq_fourierAt_le_of_kernelBound {a B σ : ℝ} (ha : 0 < a) (hB : 0 ≤ B)
+    (hσ : 0 ≤ σ)
+    {f : ℝ → ℂ} (hfc : Continuous f) (hf : Integrable f) (hFi : Integrable (𝓕 f))
+    (hsupp : ∀ t : ℝ, a < |t| → f t = 0)
+    (φ : ℝ → ℝ) (hφ : ∀ y : ℝ, 0 ≤ φ y)
+    (hΦ2 : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2)
+    (hint : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2 * φ y)
+    {ι : Type*} [DecidableEq ι] (S : Finset ι) (p : ι → ℂ) (m : ι → ℝ)
+    (hSim : ∀ q ∈ S, |(p q).im| ≤ σ) (hm : ∀ q, 0 ≤ m q)
+    (hker : ∀ y : ℝ, (∑ q ∈ S, m q * (1 + ((p q).re - y) ^ 2)⁻¹) ≤ B * φ y) :
+    ∑ q ∈ S, m q * ‖fourierAt f (p q)‖ ^ 2 ≤
+      ((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
+        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * B))) *
+        ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * φ y := by
+  have hrate : 2 * π * (3 * a) * σ = 6 * π * a * σ := by ring
+  have hconc := sum_norm_sq_fourierAt_le_of_kernel (R := 3 * a) (C := 8 * a + a⁻¹)
+    (by linarith) (by positivity) hB hσ hf (sampKernelAt a)
+    (fun w => by
+      have h := norm_sampKernelAt_le ha w
+      have e : 2 * π * (3 * a) * |w.im| = 6 * π * a * |w.im| := by ring
+      rw [e]
+      exact h)
+    (fun z => measurable_sampKernelAt_sub a z)
+    (fun z => fourierAt_eq_integral ha hfc hf hFi hsupp z)
+    φ hφ hΦ2 hint S p m hSim hm hker
+  rwa [hrate] at hconc
 
 /-- **Sampling at depth against a logarithmic density.**  The instance of the kernel-bound form in
 which the per-window weight is `A₀ log(|n|+3)`: the right-hand side carries the archimedean

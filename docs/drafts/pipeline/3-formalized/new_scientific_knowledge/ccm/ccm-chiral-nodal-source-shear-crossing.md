@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** NEW SCIENTIFIC KNOWLEDGE
 - **Source:** chiral nodal line × corpus Krein crossing × singular determinant-response/adjugate mechanisms
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear`
 - **Status:** closed and unconditional; not an RH proof
 
 ## Result
@@ -58,8 +58,8 @@ now coefficient-faithful and premise-free.
 
 ## Verification
 
-- direct check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear.lean`
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear`
+- direct check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear.lean`
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalSourceShear`
 - selected theorem axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - module wired into `GaloisForLFunctions/RHTower.lean`
 

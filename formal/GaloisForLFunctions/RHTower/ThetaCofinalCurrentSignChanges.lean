@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.ThetaCutoffCommutatorMellin
 import GaloisForLFunctions.RHTower.ThetaZeroDivisionRateTomography
 import GaloisForLFunctions.RHTower.RiemannXiZerosInfinite
 import GaloisForLFunctions.RHTower.XiRealAxisGrowth
-import GaloisForLFunctions.RHTower.SuzukiTorqueContinuationPole
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTorqueContinuationPole
 import GaloisForLFunctions.HTGeometry.RiemannZetaMeromorphic
 
 /-!

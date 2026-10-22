@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzPoisson
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzPoisson
 import GaloisForLFunctions.HTGeometry.FlowTemperedGrowth
 import GaloisForLFunctions.HTGeometry.FourierIntegralDilation
 

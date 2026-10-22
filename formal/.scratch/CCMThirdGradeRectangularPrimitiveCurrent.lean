@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeRectangularFubiniCurrent
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeRectangularFubiniCurrent
 
 open MeasureTheory Set
 

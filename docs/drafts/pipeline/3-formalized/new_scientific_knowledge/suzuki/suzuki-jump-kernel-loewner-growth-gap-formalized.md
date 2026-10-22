@@ -9,7 +9,7 @@
 
 ## Module
 
-`formal/GaloisForLFunctions/RHTower/SuzukiJumpKernelLoewnerGap.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiJumpKernelLoewnerGap.lean`
 
 ## Certified declarations
 

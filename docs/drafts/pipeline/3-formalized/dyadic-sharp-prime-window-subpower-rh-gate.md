@@ -112,8 +112,8 @@ definition of `delta_*`.
 The implementation is in
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowDirichlet
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSubpowerGate
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowDirichlet
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSubpowerGate
 ```
 
 The touched modules compile. The formal lint gate passes. `#print axioms` for the capstone reports

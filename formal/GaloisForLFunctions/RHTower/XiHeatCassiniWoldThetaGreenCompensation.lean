@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldCenteredLogConnection
-import GaloisForLFunctions.RHTower.HedenmalmThetaXiMassCompensatedAsymptoticCarrier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaXiMassCompensatedAsymptoticCarrier
 
 /-!
 # Wold / theta-Green anomaly compensation

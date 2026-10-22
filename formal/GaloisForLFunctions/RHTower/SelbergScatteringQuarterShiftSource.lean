@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringHeightConjugation
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFirstStokesDefect
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalAngularCutoffCalibration
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFirstStokesDefect
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalAngularCutoffCalibration
 
 /-!
 # The original Xi field after an outgoing quarter shift

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaMovingShellBoundaryLayer
-import GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspShellIncompleteGammaCoordinate
 import GaloisForLFunctions.RHTower.PrimeArchThetaLiouvilleWard
 
 /-!

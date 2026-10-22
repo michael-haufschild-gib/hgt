@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateSeparationEnergy
-import GaloisForLFunctions.RHTower.CCMRadialProlateDefect
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProlateDefect
 
 /-!
 # From the angular prolate action to the exterior radial equation

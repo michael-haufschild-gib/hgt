@@ -8,7 +8,7 @@
 
 ## 1. What the Lean actually says
 
-`RHTower/DeningerArithmeticPositiveCalderonKoszul.lean` (598 lines) carries the labels the
+`RHTower/Deninger/DeningerArithmeticPositiveCalderonKoszul.lean` (598 lines) carries the labels the
 Calderón–Green gate calls its global content: `DAC_POSITIVE_GRAPH_CONORMAL_TRANSVERSALITY`,
 `DAC_GLOBAL_GREEN_ENERGY_STRICT_POSITIVITY`, `DAC_GLOBAL_CALDERON_CHIRALITY_KERNEL_REDUCTION`,
 `DAC_GLOBAL_GREEN_ENERGY_RADICAL_PASSAGE`, `DAC_RESTRICTED_SUM_GREEN_ENERGY_DETECTION`,
@@ -193,7 +193,7 @@ Section 1 showed the global layer rests on one anonymous hypothesis. Section 2 s
 instrument can see it. That combination has a specific danger: **an interface nobody can satisfy
 proves nothing**, and until today nothing in the tree exhibited a family satisfying it.
 
-`RHTower/DeningerGreenEnergyWitness.lean`, axiom-clean `[propext, Classical.choice, Quot.sound]`:
+`RHTower/Deninger/DeningerGreenEnergyWitness.lean`, axiom-clean `[propext, Classical.choice, Quot.sound]`:
 
 ```text
 conductanceEnergy c u e          = c e.1 e.2 * (u e.1 - u e.2)^2
@@ -262,7 +262,7 @@ What survived the check, and only because the check was run *before* writing:
 
 - `HTGeometry/WeightedOrbitInvariantExistence.lean` — grep confirmed the corpus had the no-go and no
   converse;
-- `RHTower/DeningerGreenEnergyWitness.lean` — `formal_tools.py research` confirmed no Dirichlet-form
+- `RHTower/Deninger/DeningerGreenEnergyWitness.lean` — `formal_tools.py research` confirmed no Dirichlet-form
   radical law and no witness for the global interface;
 - sections 1–2 of this card — confirmed absent from `prop-interface-discharge-audit.md`.
 
@@ -367,11 +367,11 @@ index and the weight —
 **Why that is not merely a nuisance.** The corpus already contains, formalized, an RH criterion sitting
 at exactly that boundary:
 
-- `RHTower/CCMSharpPrimeWindowDivisorTomography.lean`,
+- `RHTower/CCM/CCMSharpPrimeWindowDivisorTomography.lean`,
   `riemannHypothesis_of_dyadicWeightedPrimeWindowPositiveExcess_summable_at_one` —
   *"Absolute convergence at the single critical abscissa `1` of the positive dyadic prime-window
   overshoot excludes every right Xi zero and proves RH"*;
-- `RHTower/CCMSharpPrimeWindowEnergySpectrum.lean`,
+- `RHTower/CCM/CCMSharpPrimeWindowEnergySpectrum.lean`,
   `xi_zero_re_le_half_add_of_dyadicWeightedPrimeWindowPositiveExcess_summable` — convergence at
   `1 + alpha` gives the zero-free region `Re rho ≤ 1/2 + alpha`.
 
@@ -541,7 +541,7 @@ now with a concrete consequence attached, which is a reason to answer it.
 I answered my own open question from the tree instead of waiting, and the answer **kills the
 arithmetic conclusion I drew in §8 and §10**. Recording that before anything else.
 
-`RHTower/DeningerArithmeticPoissonZetaAssembly.lean` builds the middle cup pairing as
+`RHTower/Deninger/DeningerArithmeticPoissonZetaAssembly.lean` builds the middle cup pairing as
 
 ```text
 deningerPoissonZetaCupPairing (Z) (principal) (degree) (psi)
@@ -610,11 +610,11 @@ So the corrected reduction is:
 Answered from the Lean, and the answer restructures the card's conclusion. The odd Hodge star **is
 constructed**, twice, on the arithmetic divisor carrier:
 
-- `RHTower/DeningerArithmeticOrientedHodge.lean` — on graded `H¹ = XiZeroCopy →₀ ℂ`, the
+- `RHTower/Deninger/DeningerArithmeticOrientedHodge.lean` — on graded `H¹ = XiZeroCopy →₀ ℂ`, the
   FE-orientation star. `deningerArithmetic_orientedHodge_package` proves *unconditionally*: cup
   alternating, nondegenerate, `σ² = −1`, **positivity**, and the weight-one derivation law — and
   proves `[θ, σ] = 0 ↔ RiemannHypothesis`.
-- `RHTower/DeningerArithmeticOrientedHilbertHodge.lean` — the same on the Hilbert completion with
+- `RHTower/Deninger/DeningerArithmeticOrientedHilbertHodge.lean` — the same on the Hilbert completion with
   the closed unbounded `θ` (`deningerDivisorClosedTheta_orientedHodge_iff_riemannHypothesis`), and
   `deningerArithmeticOrientedClosedPolarization` — the full weight-one package **from RH**.
 
@@ -689,7 +689,7 @@ hence `ψ(δ_q, θy) = λ_{Rq} ψ(δ_q, y)` for every `y`. Anti-linearity gives
 
 ### 12.5 Lean status
 
-`RHTower/DeningerDivisorGaugeWardIdentity.lean` — built green, umbrella-registered, lint-clean,
+`RHTower/Deninger/DeningerDivisorGaugeWardIdentity.lean` — built green, umbrella-registered, lint-clean,
 all ten theorems axiom-clean `[propext, Classical.choice, Quot.sound]`:
 
 ```text
@@ -741,11 +741,11 @@ and on-line zeros) before formalization.
   positivity-extremal point with diagonal ≡ 1 and defect exactly 2|Re ρ − ½| per zero. The lane's
   "one clause" is therefore a conserved quantity of the gauge orbit — no model choice, weight, or
   Hodge-gauge can shrink it. Formalized axiom-clean in
-  `RHTower/DeningerDivisorGaugeWardIdentity.lean` (10 theorems).
+  `RHTower/Deninger/DeningerDivisorGaugeWardIdentity.lean` (10 theorems).
 
 ## 13. The gauge orbit's two poles and their monodromy, completed in Lean
 
-`RHTower/DeningerDivisorSchwarzMonodromy.lean` — built green, umbrella-registered, axiom-clean —
+`RHTower/Deninger/DeningerDivisorSchwarzMonodromy.lean` — built green, umbrella-registered, axiom-clean —
 completes the two-extremal-gauges picture of §12 as formal mathematics:
 
 - `xiZeroCopyConjEquiv` — Schwarz conjugation lifted to the multiplicity-exact divisor copies
@@ -801,7 +801,7 @@ algebra, and the Δ-vanishing iff. This is the first statement in the lane whose
 
 ## 14. The defect trace is built and it detects RH — §13.1 executed
 
-`RHTower/DeningerDivisorDefectTrace.lean` — built green, umbrella-registered, zero warnings,
+`RHTower/Deninger/DeningerDivisorDefectTrace.lean` — built green, umbrella-registered, zero warnings,
 all capstones axiom-clean `[propext, Classical.choice, Quot.sound]`:
 
 - `xiSpectralPoint_sub_conj` — the defect-trace twist factor **is** the Ward displacement factor
@@ -842,7 +842,7 @@ concrete analytic object.
 
 ## 15. The holomorphic half is prime data — §14's remaining bookkeeping done, without derivatives
 
-`RHTower/DeningerDivisorTwistedTraceReduction.lean` — built green, umbrella-registered, zero
+`RHTower/Deninger/DeningerDivisorTwistedTraceReduction.lean` — built green, umbrella-registered, zero
 warnings, axiom-clean. Instead of differentiating the trace (Weierstrass machinery), three
 pairwise distinct base points and partial fractions do everything:
 
@@ -883,7 +883,7 @@ open wall, unchanged: a mechanism evaluating the defect.
 
 ## 16. The circle closes: mixed trace = prime data ⟺ RH, at every scale
 
-`RHTower/DeningerDivisorThreePointDetection.lean` — built green, umbrella-registered, zero
+`RHTower/Deninger/DeningerDivisorThreePointDetection.lean` — built green, umbrella-registered, zero
 warnings, axiom-clean — executes both remaining recorded steps of §15:
 
 - `abs_im_xiSpectralPoint_lt_half` — every spectral point lies in the open horizontal strip

@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / source-only horizontal Xi-divisor spectrum
 - **Scientific status:** `[PROVED] [FORMALIZED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY NEEDS AUDIT] [NOT AN RH PROOF]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.CCMPrimeGammaSourceEnergySpectrum`
+  `GaloisForLFunctions.RHTower.CCM.CCMPrimeGammaSourceEnergySpectrum`
 
 ## Statement
 

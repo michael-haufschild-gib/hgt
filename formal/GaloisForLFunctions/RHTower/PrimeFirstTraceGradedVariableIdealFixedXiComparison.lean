@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyStokesRegulator
 import GaloisForLFunctions.RHTower.PrimeFirstTraceEssentialEdgeReflectedIdealGrade
 
 /-!

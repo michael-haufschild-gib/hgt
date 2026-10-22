@@ -109,7 +109,7 @@ no numerical or symbolic experiment.
    `threePointCorrelationDeterminantPathMixedFourthJetYX_zero`.
 3. `exists_threePointCorrelationDeterminantPath_pos_uniform_square` converts the negative second
    jet and strict fourth Hankel gap into one common positive determinant square.
-4. `RHTower/HedenmalmCenterMixedUniformCoalescedSquare.lean` discharges every hypothesis from the
+4. `RHTower/Hedenmalm/HedenmalmCenterMixedUniformCoalescedSquare.lean` discharges every hypothesis from the
    actual theta source.  Its capstone
    `exists_thetaCuspCenterMixed_uniformCoalescedSquare_posDef` is the exact claim above.
 

@@ -339,7 +339,7 @@ No prior corpus card or targeted source search identified `(18)`.  Priority rema
 
 Section 7 said formalization should begin when "the exact physical word-profile object and its
 coefficient recursion exist; then `(4)` becomes the terminal summability theorem for that concrete
-series."  Both now exist, in `RHTower/SuzukiPhysicalLogGradeNuclearSummability.lean`, built on the
+series."  Both now exist, in `RHTower/Suzuki/SuzukiPhysicalLogGradeNuclearSummability.lean`, built on the
 corpus's own `suzukiPrimePowerWeight` (the card's `(10)`) and `suzukiPrimeNormalGradeFactor` (the
 Volterra recursion of `(13a)`):
 

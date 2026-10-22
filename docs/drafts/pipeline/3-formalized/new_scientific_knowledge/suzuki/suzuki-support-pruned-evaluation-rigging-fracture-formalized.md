@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedEvaluationRiggingFracture.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedEvaluationRiggingFracture.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiSupportPrunedEvaluationRiggingFracture`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiSupportPrunedEvaluationRiggingFracture`:
 
 ```text
 GaloisForLFunctions.RHTower.no_bounded_suzukiSeamHilbert_phaseEvaluation

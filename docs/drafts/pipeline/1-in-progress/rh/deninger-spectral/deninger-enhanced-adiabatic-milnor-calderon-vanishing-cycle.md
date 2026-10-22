@@ -384,7 +384,7 @@ with the inverse-trace metric \(d_p^2\); applying
 \(\kappa_p^{-1}+\kappa_p\) as a bounded channel is impossible.
 
 The identities are unconditional in
-`RHTower/DeningerMobiusCriticalWKBSeam.lean`.  They join the enhanced
+`RHTower/Deninger/DeningerMobiusCriticalWKBSeam.lean`.  They join the enhanced
 adiabatic and Möbius--Fisher theorem graphs, but do not supply the
 reporter map.
 

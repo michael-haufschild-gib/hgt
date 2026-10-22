@@ -39,7 +39,7 @@ Cancellation makes their distinct `Q` images roots of `R`.  Polynomial root coun
 ## Lean artifact
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo`
 - Main no-go:
   `RHTower.not_d4HBFiniteLocalAngularThresholdXiComplete`
 - Closed certificate:
@@ -51,9 +51,9 @@ Cancellation makes their distinct `Q` images roots of `R`.  Polynomial root coun
 ## Verification
 
 - Direct check:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo.lean`
 - Targeted build:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEFiniteLocalAngularThresholdNoGo`
   passed `12021/12021`.
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint found no defect in this module and confirmed umbrella reachability.  Its nonzero exit

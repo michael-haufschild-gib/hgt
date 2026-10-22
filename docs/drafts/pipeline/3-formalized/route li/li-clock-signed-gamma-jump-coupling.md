@@ -406,7 +406,7 @@ Probability overlap actually inspected:
   IsCompoundPoissonMixture = arbitrary everywhere-nonzero convolution weights,
   including an infinite measure. It is not the ordinary probability CP criterion
   in N7/N16; its existence theorem cannot construct this required law.
-- RHTower/ThetaCuspLikelihoodAtomicNondivisibility.lean:205-226 is a DIFFERENT
+- RHTower/ThetaCusp/ThetaCuspLikelihoodAtomicNondivisibility.lean:205-226 is a DIFFERENT
   seam-likelihood square-gap measure, charging3 but not6; source/support no-go,
   not J_z or mu_p. No same-law nondivisibility imported.
 - RHTower/ThetaTiltXiInfiniteDivisibilityNoGo.lean:1-64/208-245 concerns central

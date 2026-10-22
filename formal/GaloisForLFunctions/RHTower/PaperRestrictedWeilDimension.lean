@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMArchimedeanDenseFormCore
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanDenseFormCore
 import GaloisForLFunctions.RHTower.SoninEulerTripleShellOverlap
 
 /-! # Infinite dimension of the actual restricted-Weil form domain

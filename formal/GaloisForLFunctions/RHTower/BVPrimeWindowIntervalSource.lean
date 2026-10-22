@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowQuadrature
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowQuadrature
 import GaloisForLFunctions.RHTower.GelfondSchneider
 
 /-!

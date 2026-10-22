@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceSpectrumExact
 import GaloisForLFunctions.RHTower.CausalThetaHalfLaplace
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 
 /-!
 # Inverse-linear decay of `Ξ` on horizontal strips

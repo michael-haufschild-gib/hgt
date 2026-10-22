@@ -31,7 +31,7 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 ## Current exact closures
 
 - `ccm-critical-mellin-aperture-resolvent-law`: source change-of-variables `(10)`, specialized tail
-  `(11)`, and tail convergence added to `RHTower/CCMCriticalMellinApertureResolvent.lean`.
+  `(11)`, and tail convergence added to `RHTower/CCM/CCMCriticalMellinApertureResolvent.lean`.
 - `ramsey-weyl-causal-phase-law`: exact Weyl half-phase implication, scaled swap law, two-sided
   inverse, group commutator, and local nonvanishing added to
   `HTGeometry/ContinuumChronometricGravity.lean`.
@@ -50,7 +50,7 @@ audit and positive-survivor extraction. Partial bridge theorems never count as c
 - `theta-cusp-calibrated-power-reciprocal-first-moment-law`: exact `19413/160000` fixed-carrier
   gap plus generic normalized negative-power profile theory, unique source-selected exponent,
   calibrated mass/first moment, and strict support below `1/3` added to
-  `RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`.
+  `RHTower/ThetaCusp/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`.
 - `hypertranscendental-hochster-source-coherence-duality`: exact all-multidegree, all-Koszul-degree
   cycle/cocycle and boundary/coboundary correspondence composed with the universal analytic
   Stanley--Reisner realization and every finite residue-orientation index in

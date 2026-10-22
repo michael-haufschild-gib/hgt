@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonFieldMild
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonFieldMild
 import GaloisForLFunctions.RHTower.L2FourierReflection
 
 /-! Spatial reflection of bounded multipliers and the genuine Klein–Gordon propagator. -/

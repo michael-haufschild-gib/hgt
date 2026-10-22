@@ -42,7 +42,7 @@ The first arrow cannot be supplied by any compact global Hilbert response.
 ## Lean artifact
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingHBCompactGlobalAIMESourceResponseNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBCompactGlobalAIMESourceResponseNoGo`
 
 Main declarations:
 

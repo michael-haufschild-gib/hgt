@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaSewnCriticalGreenThreshold
 import GaloisForLFunctions.RHTower.FrankensteinTailFluxGammaCoorientedShortingNoGo
-import GaloisForLFunctions.RHTower.DeningerCalderonWittResolvedCrossEffectBoundary
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittResolvedCrossEffectBoundary
 
 /-!
 # Route P Gamma-resolved antidiagonal shorting

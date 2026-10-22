@@ -54,7 +54,7 @@ stationarity.
 - `hbXiPeierlsFESchwarzCanonicalOpticalWard_iff_positiveWard`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression.lean`
 
 ## New knowledge
 
@@ -92,8 +92,8 @@ and RH/Ward equivalences, not the separate classical frameworks.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPeierlsDarbouxOrbitOpticalTransgression`
 - Build result: success, 11905 jobs after shared dependency replay
 - `#print axioms` on seven endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

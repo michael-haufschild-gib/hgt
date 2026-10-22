@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierCircleConvergence
-import GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanCircleTraceCocycle
 
 /-! # One Fourier exceptional set for the native circle operator orbit
 

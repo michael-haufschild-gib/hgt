@@ -3,7 +3,7 @@
 **Frozen target [R], OPEN.** Construct real a_(k,N), one fixed bound C independent
 of k,N, and full L²(0,∞) convergence e^(−t)+Σ_(k≤N)a_(k,N)h(kt)→0,
 where h(t)=1/t−1/(e^t−1). Derive everything without RH. The target has not changed.
-[Classical RH interface](../../chronological-rh-recovery-interface.md).
+[Classical RH interface](chronological-rh-recovery-interface.md).
 
 **Verified:** fourteen individual Lean leaf builds; 167 public declarations audited,
 only propext/Classical.choice/Quot.sound. All thirteen umbrella imports wired.
@@ -132,7 +132,7 @@ while preserving Möbius signs gives 1.29339e−8; the full unit box gives
 6.05440e−9 with the same 4096 frozen coefficients. The predeclared
 sign-preserving ≤1e−8 prediction was not attained, nor refuted by a certified
 lower bound. Independent quadrature and high-precision checks agree.
-[Current source investigation and report](../../chronological-escaping-averages.md).
+[Current source investigation and report](chronological-escaping-averages.md).
 
 Earlier N=4096 C=1 fits reached 3.51e−10 with 16 frozen coefficients and
 8.71e−10 with 1024 frozen. Peaks near logarithmic frequency 14.1 arose without
@@ -144,7 +144,7 @@ linking rank and cutoff. Cancelling finitely many scalar zero phases fails to
 control moving L² profiles, whose Mellin dependence is N^(ρ−s) on an entire
 line. A dual proof must rule out a uniformly positive separating L² test;
 compact-test identities alone do not extend without the required norm control.
-[Compact current attack card](../../chronological-arithmetic-averaging.md).
+[Compact current attack card](chronological-arithmetic-averaging.md).
 
 ## Current boundary-moment attack
 
@@ -166,7 +166,7 @@ Runpod tested 27 exact-moment candidates. Best unit-budget norms at
 N=512,2048,8192: 4.05e−6, 1.28e−6, 5.20e−7. More moments can worsen
 full error and exceed the coefficient budget; near-zero Taylor accuracy
 does not control the rest of the boundary layer.
-[Compact proof/experiment map](../../chronological-boundary-moment-repair.md).
+[Compact proof/experiment map](chronological-boundary-moment-repair.md).
 
 **[BRIDGE K-window], paper proved:** every zero-charge unit row with an exact
 half-prefix has ||r_N||_(L²([log(N)/N,∞)))≤8/log(N), N≥4. For the growing-jet

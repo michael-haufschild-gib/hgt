@@ -189,7 +189,7 @@ frontier localization are `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; external prior
 
 ## Formalization status `[LEAN-PROVED]`
 
-`RHTower/SuzukiCausalWeilRobinGreenIdentity.lean` proves denominator-matching algebra `(2)`,
+`RHTower/Suzuki/SuzukiCausalWeilRobinGreenIdentity.lean` proves denominator-matching algebra `(2)`,
 uniqueness of completed exterior, delayed-hinge recovery `(7)`, and both Xi and compound-denominator
 connectors.  Analytic integration and compact-diagonal exterior invariance `(9)` remain
 dependency-closed paper theorems; Lean does not encode missing positivity as a hypothesis.

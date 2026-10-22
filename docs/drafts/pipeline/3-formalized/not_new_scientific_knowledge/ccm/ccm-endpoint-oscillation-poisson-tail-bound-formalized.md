@@ -14,9 +14,9 @@
   pointwise inversion for periodic `C²` functions, absent from mathlib.
 - `GaloisForLFunctions.RHTower.PoissonSummationPiecewise` — Euler–Maclaurin at arbitrary real
   endpoints, both orders, and Poisson summation at `Ff(y) = O(1/y)` regularity.
-- `GaloisForLFunctions.RHTower.CCMEndpointFourierJet` — the twice-integrated endpoint Fourier
+- `GaloisForLFunctions.RHTower.CCM.CCMEndpointFourierJet` — the twice-integrated endpoint Fourier
   formula and the endpoint tail bounds.
-- `GaloisForLFunctions.RHTower.CCMTwoModeDeficitScale` — the two-mode central correction.
+- `GaloisForLFunctions.RHTower.CCM.CCMTwoModeDeficitScale` — the two-mode central correction.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

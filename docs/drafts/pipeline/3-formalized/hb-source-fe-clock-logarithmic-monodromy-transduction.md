@@ -73,7 +73,7 @@ equivalence. This is a bounded, not exhaustive, priority claim.
   universal finite-radiation sheet darkness and universal optical-deck extinction equivalent to RH.
   The frozen Gram/deck coefficient is exactly monodromy times transducer energy times clock-defect
   energy. Formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEClockLogarithmicMonodromyTransduction`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEClockLogarithmicMonodromyTransduction`.
   Direct Lean check passed; target build passed (`12033/12033`); all eleven public theorems audit to
   standard axioms only (`propext`, `Classical.choice`, `Quot.sound`); umbrella import wired. Global
   lint reports only unrelated umbrella-reachability failures and no HC61 violation.

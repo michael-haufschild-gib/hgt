@@ -41,7 +41,7 @@ def biLatticeTrain (g : ℝ → ℝ) (a b : ℝ) (M : ℕ) : ℝ → ℝ :=
 whose nonzero small integer combinations are separated beyond the bump diameter, the train's
 autocorrelation at `k a` counts the matching lattice pairs: `(M − k) M` of the `M²` copies. -/
 theorem autoCorr_biLatticeTrain_fst {a b w : ℝ} (hg : Continuous g) (hgc : HasCompactSupport g)
-    (hw : 0 ≤ w) (hsupp : ∀ x, w < |x| → g x = 0) {M k : ℕ} (hk : k ≤ M)
+    (hsupp : ∀ x, w < |x| → g x = 0) {M k : ℕ} (hk : k ≤ M)
     (hind : ∀ u v : ℤ, (u : ℝ) * a + (v : ℝ) * b = 0 → u = 0 ∧ v = 0)
     (hsep : ∀ u v : ℤ, |u| ≤ 2 * (M : ℤ) → |v| ≤ (M : ℤ) →
       ((u : ℝ) * a + (v : ℝ) * b ≠ 0) → 2 * w < |(u : ℝ) * a + (v : ℝ) * b|) :
@@ -156,12 +156,15 @@ theorem autoCorr_biLatticeTrain_fst {a b w : ℝ} (hg : Continuous g) (hgc : Has
 theorem logPrime_pair_independent {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q)
     (u v : ℤ) (h : (u : ℝ) * Real.log p + (v : ℝ) * Real.log q = 0) : u = 0 ∧ v = 0 := by
   classical
+  have hqp : q ≠ p := Ne.symm hpq
   obtain ⟨f, hf⟩ : ∃ f : Fin 2 → Nat.Primes,
-      f = fun i => if i = 0 then (⟨p, hp⟩ : Nat.Primes) else ⟨q, hq⟩ := ⟨_, rfl⟩
+      f = ![(⟨p, hp⟩ : Nat.Primes), ⟨q, hq⟩] := ⟨_, rfl⟩
   have hfinj : Function.Injective f := by
     intro i j hij
-    fin_cases i <;> fin_cases j <;> simp_all [hf] <;>
-      exact absurd (congrArg Subtype.val hij) (by simpa using hpq)
+    fin_cases i <;> fin_cases j <;> simp_all <;>
+      first
+        | exact hpq (congrArg Subtype.val hij)
+        | exact hqp (congrArg Subtype.val hij)
   have hli : LinearIndependent ℤ (fun i : Fin 2 => Real.log ((f i : ℕ) : ℝ)) :=
     GaloisForLFunctions.logPrime_linearIndependent_int.comp f hfinj
   have hpair : LinearIndependent ℤ ![Real.log ((p : ℕ) : ℝ), Real.log ((q : ℕ) : ℝ)] := by
@@ -175,60 +178,50 @@ theorem logPrime_pair_independent {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq
     exact h)
   exact this
 
-/-- **A valid bump width exists.** For distinct primes and every box size the finitely many nonzero
-integer combinations of the two logarithms have a positive minimum, so some bump is narrow enough
-for the separation hypothesis. -/
-theorem exists_width_biLattice_sep {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q)
-    (M : ℕ) :
+/-- **A valid bump width exists.** For every pair of generators and every box size the finitely
+many nonzero integer combinations in the box have a positive minimum, so some bump is narrow enough
+for the separation hypothesis: the family of bi-lattice trains is not vacuous. Separation is pure
+finiteness; the arithmetic enters only through independence. -/
+theorem exists_width_biLattice_sep (a b : ℝ) (M : ℕ) :
     ∃ w : ℝ, 0 < w ∧ ∀ u v : ℤ, |u| ≤ 2 * (M : ℤ) → |v| ≤ (M : ℤ) →
-      ((u : ℝ) * Real.log p + (v : ℝ) * Real.log q ≠ 0) →
-      2 * w < |(u : ℝ) * Real.log p + (v : ℝ) * Real.log q| := by
+      ((u : ℝ) * a + (v : ℝ) * b ≠ 0) →
+      2 * w < |(u : ℝ) * a + (v : ℝ) * b| := by
   classical
   obtain ⟨val, hval⟩ : ∃ val : ℤ × ℤ → ℝ,
-      val = fun z => (z.1 : ℝ) * Real.log p + (z.2 : ℝ) * Real.log q := ⟨_, rfl⟩
+      val = fun z => (z.1 : ℝ) * a + (z.2 : ℝ) * b := ⟨_, rfl⟩
   obtain ⟨B, hB⟩ : ∃ B : Finset (ℤ × ℤ),
-      B = Finset.Icc (-(2 * (M : ℤ))) (2 * (M : ℤ)) ×ˢ Finset.Icc (-(M : ℤ)) (M : ℤ) := ⟨_, rfl⟩
-  obtain ⟨V, hV⟩ : ∃ V : Finset ℝ,
-      V = (B.filter (fun z => val z ≠ 0)).image (fun z => |val z|) := ⟨_, rfl⟩
-  by_cases hne : V.Nonempty
-  · refine ⟨V.min' hne / 3, ?_, ?_⟩
-    · have hmem := V.min'_mem hne
-      rw [hV, Finset.mem_image] at hmem
-      obtain ⟨z, hz, hzeq⟩ := hmem
-      rw [Finset.mem_filter] at hz
-      have : 0 < |val z| := abs_pos.mpr hz.2
-      rw [← hzeq] at this ⊢
-      linarith
-    · intro u v hu hv hnz
-      have hmemB : (u, v) ∈ B := by
-        rw [hB, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
-        rw [abs_le] at hu hv
-        exact ⟨⟨hu.1, hu.2⟩, ⟨hv.1, hv.2⟩⟩
-      have hmemV : |val (u, v)| ∈ V := by
-        rw [hV, Finset.mem_image]
-        exact ⟨(u, v), Finset.mem_filter.mpr ⟨hmemB, by rw [hval]; exact hnz⟩, rfl⟩
-      have hmin := V.min'_le _ hmemV
-      have hval' : val (u, v) = (u : ℝ) * Real.log p + (v : ℝ) * Real.log q := by rw [hval]
-      rw [hval'] at hmin
-      linarith
+      B = (Finset.Icc (-(2 * (M : ℤ))) (2 * (M : ℤ)) ×ˢ Finset.Icc (-(M : ℤ)) (M : ℤ)).filter
+        (fun z => val z ≠ 0) := ⟨_, rfl⟩
+  have hbox : ∀ u v : ℤ, |u| ≤ 2 * (M : ℤ) → |v| ≤ (M : ℤ) → val (u, v) ≠ 0 → (u, v) ∈ B := by
+    intro u v hu hv hnz
+    rw [hB, Finset.mem_filter, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
+    rw [abs_le] at hu hv
+    exact ⟨⟨⟨hu.1, hu.2⟩, ⟨hv.1, hv.2⟩⟩, hnz⟩
+  by_cases hne : B.Nonempty
+  · obtain ⟨z₀, hz₀mem, hz₀min⟩ := B.exists_min_image (fun z => |val z|) hne
+    have hnz₀ : val z₀ ≠ 0 := by
+      rw [hB, Finset.mem_filter] at hz₀mem
+      exact hz₀mem.2
+    have hpos : 0 < |val z₀| := abs_pos.mpr hnz₀
+    refine ⟨|val z₀| / 3, by linarith, ?_⟩
+    intro u v hu hv hnz
+    have hmem : (u, v) ∈ B := hbox u v hu hv (by rw [hval]; exact hnz)
+    have hle := hz₀min (u, v) hmem
+    have hval' : val (u, v) = (u : ℝ) * a + (v : ℝ) * b := by rw [hval]
+    rw [hval'] at hle
+    linarith
   · refine ⟨1, one_pos, ?_⟩
     intro u v hu hv hnz
-    exfalso
-    refine hne ⟨|val (u, v)|, ?_⟩
-    rw [hV, Finset.mem_image]
-    refine ⟨(u, v), Finset.mem_filter.mpr ⟨?_, by rw [hval]; exact hnz⟩, rfl⟩
-    rw [hB, Finset.mem_product, Finset.mem_Icc, Finset.mem_Icc]
-    rw [abs_le] at hu hv
-    exact ⟨⟨hu.1, hu.2⟩, ⟨hv.1, hv.2⟩⟩
+    exact absurd ⟨(u, v), hbox u v hu hv (by rw [hval]; exact hnz)⟩ hne
 
 /-- The mass of the bi-lattice train is `M²` bumps. -/
 theorem autoCorr_biLatticeTrain_zero {a b w : ℝ} (hg : Continuous g) (hgc : HasCompactSupport g)
-    (hw : 0 ≤ w) (hsupp : ∀ x, w < |x| → g x = 0) {M : ℕ}
+    (hsupp : ∀ x, w < |x| → g x = 0) {M : ℕ}
     (hind : ∀ u v : ℤ, (u : ℝ) * a + (v : ℝ) * b = 0 → u = 0 ∧ v = 0)
     (hsep : ∀ u v : ℤ, |u| ≤ 2 * (M : ℤ) → |v| ≤ (M : ℤ) →
       ((u : ℝ) * a + (v : ℝ) * b ≠ 0) → 2 * w < |(u : ℝ) * a + (v : ℝ) * b|) :
     autoCorr (biLatticeTrain g a b M) 0 = ((M : ℝ) * (M : ℝ)) * autoCorr g 0 := by
-  have h := autoCorr_biLatticeTrain_fst hg hgc hw hsupp (k := 0) (Nat.zero_le M) hind hsep
+  have h := autoCorr_biLatticeTrain_fst hg hgc hsupp (k := 0) (Nat.zero_le M) hind hsep
   rw [Nat.cast_zero, zero_mul] at h
   rw [h, Nat.sub_zero]
 

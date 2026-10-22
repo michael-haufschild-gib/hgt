@@ -273,7 +273,7 @@ Two dependency-closed pieces are formalized unconditionally.
 endpoint limits `(15)`.
 
 **Theorem B order engine** —
-`formal/GaloisForLFunctions/RHTower/SuzukiResidualOvercrowding.lean`.  The whole content of
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResidualOvercrowding.lean`.  The whole content of
 Theorem B is order combinatorics of the label family, and that is what is formalized:
 
 - `label_zero_neg`: the reflection pairing `u (1 - k) = -u k` puts the origin strictly between the
@@ -322,7 +322,7 @@ formalized:
   vanishing of the interior residual.
 
 **Equation `(13)`, the meromorphic carrier** —
-`formal/GaloisForLFunctions/RHTower/SuzukiCommonGaugeQuotient.lean`.  The proof of Theorem C calls
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCommonGaugeQuotient.lean`.  The proof of Theorem C calls
 `(13)` "ordinary quotient convergence away from zeros of the limiting denominator", and it had no
 declaration.  The content is that the *common* gauge cancels in the ratio because it is zero-free:
 
@@ -337,7 +337,7 @@ limits is used.  Only zero-freeness.  This is exactly why `(12)` is stated as pa
 before the ratio is taken.
 
 **Discharge of the abstraction** —
-`formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean`.  The theorems above
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedLabelOvercrowding.lean`.  The theorems above
 are order combinatorics of an abstract label family; this module proves that Suzuki's own
 compactified inverse-phase labels
 
@@ -357,7 +357,7 @@ abstraction:
   family.
 
 **Theorem D analytic input** —
-`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueKernelUniformBound.lean`.  The proof of `(17)`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueKernelUniformBound.lean`.  The proof of `(17)`
 names two properties of the Donoghue kernel as its hypotheses; both are now formal:
 
 - `suzukiDonoghueDenom_ne_zero`, `le_norm_suzukiDonoghueDenom`: above the real axis the denominator
@@ -420,7 +420,7 @@ matching one-sided limits:
   compactified spectral probabilities transfers to their Herglotz transforms.
 
 **The endpoint mass is the linear Nevanlinna coefficient** —
-`formal/GaloisForLFunctions/RHTower/SuzukiEndpointNevanlinnaMass.lean`.  The convergence in `(17)`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEndpointNevanlinnaMass.lean`.  The convergence in `(17)`
 is only half of what `(17)` displays; the other half is the identification of the limit as
 `alpha z + int K_z dnu_int`, which is what makes `alpha` *the linear coefficient* and is Theorem
 D's actual title claim.  That split is now formal:
@@ -485,7 +485,7 @@ The parent holography step is itself already formal, in
 Verified by reading those declarations rather than by trusting the parent card's gates.
 
 **But the composite `(19)` is not available on the order-isomorphism model, and is false there** —
-`formal/GaloisForLFunctions/RHTower/SuzukiFixedLatticeRigidityLimit.lean`.  The links above are
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedLatticeRigidityLimit.lean`.  The links above are
 each formal, yet `(19)` itself does not follow from them, because the corpus models a carrier as an
 arbitrary `ℝ ≃o ℝ` and for that class the statement is refuted:
 
@@ -510,7 +510,7 @@ lattice, and still has derivative one there:
   still different.
 
 **The two middle links are now genuine objects** —
-`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`.  The chain calls
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`.  The chain calls
 `sigma -> m` and `m -> Theta` "function applications", but `m` and `Theta` did not exist in the
 corpus as definitions, so there was nothing to apply.  They do now, with the properties that make
 them what they are:
@@ -532,7 +532,7 @@ them what they are:
   composed.
 
 **The last link, the normalized phase lift, is now formal too** —
-`formal/GaloisForLFunctions/RHTower/SuzukiCayleyPhaseLift.lean`.  On the real boundary the Cayley
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCayleyPhaseLift.lean`.  On the real boundary the Cayley
 transform of a real Herglotz value lies on the unit circle and its argument is the explicit lift
 `m |-> pi + 2 arctan m`:
 
@@ -566,7 +566,7 @@ inner function — that is the Clark property of the carrier, i.e. that its Herg
 Donoghue transform of its own jet measure.  It is a genuine analytic hypothesis and not a
 consequence of the order structure, which is exactly what the counterexample shows.
 
-**`(19)` assembled** — `formal/GaloisForLFunctions/RHTower/SuzukiFixedLatticeRigidity.lean`.  With
+**`(19)` assembled** — `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedLatticeRigidity.lean`.  With
 every link formal, the chain composes:
 
 - `phase_eq_of_boundaryHerglotz_eq`: the boundary Herglotz function determines the normalized phase.
@@ -582,7 +582,7 @@ supply.  It is not removable: `not_fixedLatticeJets_determine_reflectionNormaliz
 `(19)` without it, even for reflection-normalized carriers.
 
 **The reconstruction, built for a finite aperture** —
-`formal/GaloisForLFunctions/RHTower/SuzukiClarkFiniteReconstruction.lean`.  For the finite-aperture
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiClarkFiniteReconstruction.lean`.  For the finite-aperture
 case this card names, the Clark reconstruction is explicit — the Donoghue transform of a finite
 atomic spectral measure — so no abstract parameter remains:
 
@@ -647,7 +647,7 @@ whose spectral mass sits entirely at the two projective endpoints has boundary H
 phase lift itself.  Its phase is genuinely non-constant, so the rigidity hypotheses are satisfied
 non-trivially and not only by the atomless degenerate case.
 
-**The countable lattice** — `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSeriesTransform.lean`.
+**The countable lattice** — `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueSeriesTransform.lean`.
 The Suzuki lattice is indexed by `ZZ`, so the transform is a series.  It converges, and absolutely,
 because the Donoghue kernel is bounded *uniformly in the spectral variable*
 (`norm_suzukiDonoghueKernel_le`, bound `‖z‖ + (‖z‖^2+1)/Im z`), so the series is dominated termwise
@@ -663,7 +663,7 @@ by the masses times one constant:
   reconstruction for the whole lattice.
 
 **The countable boundary reconstruction** —
-`formal/GaloisForLFunctions/RHTower/SuzukiClarkSeriesReconstruction.lean`.  On the real axis the
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiClarkSeriesReconstruction.lean`.  On the real axis the
 imaginary-height bound degenerates, so the boundary series needs a different input: separation of
 the atoms from the point.  For a Suzuki configuration that is automatic, since the physical points
 `x_k = tan u_k` escape to infinity and have no finite accumulation point.
@@ -801,7 +801,7 @@ of `(19)` sits entirely in that parent step and not in this card.
   link.  No new Lean was written for it; duplicating those proofs would have been waste.
 - 2026-08-01 — Theorem D's endpoint/interior decomposition formalized
   (`integral_extendedProjectiveKernel_split`), in
-  `formal/GaloisForLFunctions/RHTower/SuzukiEndpointNevanlinnaMass.lean`.  Equation `(17)` displays
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEndpointNevanlinnaMass.lean`.  Equation `(17)` displays
   both a convergence and an identification of the limit as `alpha z + int K_z dnu_int`; only the
   convergence had a declaration, so the card's "Theorem D is formal end to end" was overstated —
   the step that actually earns the title "endpoint residual is exactly linear Nevanlinna mass" was

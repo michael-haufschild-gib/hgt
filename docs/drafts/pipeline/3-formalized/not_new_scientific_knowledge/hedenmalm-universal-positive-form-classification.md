@@ -63,7 +63,7 @@ Files:
 ```text
 formal/GaloisForLFunctions/HTGeometry/SchwartzCompactPositiveFunctional.lean
 formal/GaloisForLFunctions/HTGeometry/SchwartzPositiveMeasureRepresentation.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean
 ```
 
 Principal theorem surface:

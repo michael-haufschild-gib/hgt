@@ -6,7 +6,7 @@
 - **Source:** `CCMActualHeadApertureCosineGaugeQuotient.lean`,
   `CCMActualHeadCoherentCompletedGammaProducer.lean`,
   `SuzukiFirstContactBoundaryRoughness.lean`
-- **Formal module:** `GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineMeasureGauge`
+- **Formal module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineMeasureGauge`
 - **Labels:** `[BRIDGE] [FORMALIZED] [NEW FORMAL SYNTHESIS] [NOT AN RH PROOF]`
 
 ## Goal
@@ -57,7 +57,7 @@ nonnegativity.
 ## Lean audit
 
 - Source `lake env lean` — pass.
-- Target-only `lake build GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineMeasureGauge`
+- Target-only `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineMeasureGauge`
   — pass. No umbrella build run.
 - `#print axioms` on all eight theorems — only `propext`, `Classical.choice`, `Quot.sound`.
 - Forbidden declaration scan — no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

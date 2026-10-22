@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RepPointPairCuspBound
 import GaloisForLFunctions.RHTower.FiniteTimeBandFourierCompact
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompactModularPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompactModularPeriodization
 
 /-!
 # The core part of a point-pair operator is compact

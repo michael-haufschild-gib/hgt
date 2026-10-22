@@ -10,11 +10,11 @@
 - `formal/GaloisForLFunctions/HTGeometry/CfcEigenvector.lean`
 - `formal/GaloisForLFunctions/HTGeometry/CompactOperatorDiscreteSpectrum.lean`
 - `formal/GaloisForLFunctions/HTGeometry/ResolventFamilyJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseEigenspaceBlock.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseInterpolantUniqueness.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventJetCompletion.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventOperatorLift.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiNegativeProjectorCoherentCompletion.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseEigenspaceBlock.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseInterpolantUniqueness.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventJetCompletion.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventOperatorLift.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeProjectorCoherentCompletion.lean`
 
 ## Formal theorem surface
 
@@ -45,7 +45,7 @@ GaloisForLFunctions.HTGeometry.aeval_eq_resolventShiftJet_sum
 GaloisForLFunctions.HTGeometry.hasDerivAt_resolventShiftJet
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteMorseEigenspaceBlock`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseEigenspaceBlock`:
 
 ```text
 RHTower.negPart_cfc_apply_of_eigenvector
@@ -57,7 +57,7 @@ RHTower.suzukiResolventJetSquare_gram_nonneg
 RHTower.suzukiResolventJetSquare_inner_eq
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteMorseInterpolantUniqueness`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseInterpolantUniqueness`:
 
 ```text
 RHTower.suzukiFiniteMorseInterpolant_natDegree_le
@@ -65,7 +65,7 @@ RHTower.suzukiFiniteMorseInterpolant_unique
 RHTower.suzukiFiniteMorseKreinInterpolant_unique
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventJetCompletion`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseResolventJetCompletion`:
 
 ```text
 RHTower.suzukiFiniteMorseInterpolant_eval
@@ -74,7 +74,7 @@ RHTower.suzukiFiniteMorseKreinInterpolant_exact_negativeDebt
 RHTower.suzukiFiniteResolventPolynomial_exactProjector_impossible
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteMorseResolventOperatorLift`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMorseResolventOperatorLift`:
 
 ```text
 RHTower.aeval_apply_of_eigenvector
@@ -99,7 +99,7 @@ RHTower.suzukiResolventJetSquare_nonneg
 RHTower.suzukiResolventJet_isSelfAdjoint
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiNegativeProjectorCoherentCompletion`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiNegativeProjectorCoherentCompletion`:
 
 ```text
 RHTower.gram_re_nonneg_of_nonneg

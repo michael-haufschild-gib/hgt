@@ -120,7 +120,7 @@ uses this gain rather than the unconditionally transported pairing.
 Status: `[NEW] [PAPER-PROVED] [LEAN-PROVED] [NOVELTY-AUDIT-PASSED-BOUNDED]`.
 
 Formal module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFECocycleHyperbolicModulusOrientation`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFECocycleHyperbolicModulusOrientation`.
 It is imported by `GaloisForLFunctions.RHTower`.
 
 The carrier trichotomy is proved by

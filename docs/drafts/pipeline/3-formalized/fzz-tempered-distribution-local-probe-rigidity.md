@@ -5,7 +5,7 @@
 - **Type:** THEOREM / ROUTE KILL
 - **Status:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 - **Source:** `FZZCigarParityDelaySourceContinuation` · `ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo` · `DeningerMobiusFourierCommutator` · `HTGeometry.SchwartzCompactSupport`
-- **Formal module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo`
+- **Formal module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo`
 - **Claim:** Every tempered-distribution FZZ completion satisfying full source-character covariance and one necessary canonical local dressing identity has local probe response equal to the forced reciprocal-Fermi weight. Hence no such family is locally polynomially tempered.
 
 ## RH proof chain and discharged burden
@@ -56,8 +56,8 @@ No positivity, finite variation, moment condition, distribution support conditio
 
 ## Formal audit
 
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo.lean` passed.
-- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo` passed (`9834/9834`).
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo.lean` passed.
+- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo` passed (`9834/9834`).
 - Axiom audit: all five classification/response/no-go theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 - Umbrella: imported by `GaloisForLFunctions.RHTower`.
 - Repository lint reports only unrelated concurrently present unreachable modules; this module is reachable and has no forbidden declarations.

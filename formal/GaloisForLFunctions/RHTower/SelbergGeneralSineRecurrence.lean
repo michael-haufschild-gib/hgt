@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 import GaloisForLFunctions.HTGeometry.SineVerticalDecay
 import GaloisForLFunctions.RHTower.SelbergFullShiftRootLaw
 

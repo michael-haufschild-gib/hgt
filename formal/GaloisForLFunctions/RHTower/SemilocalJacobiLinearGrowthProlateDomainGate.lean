@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MonicOrthoExtremalComparison
 import GaloisForLFunctions.RHTower.SoninSemilocalJacobiResidueCorollaries
 import GaloisForLFunctions.RHTower.SoninSemilocalJacobiOrthonormal
-import GaloisForLFunctions.RHTower.CCMMetaplecticGammaMomentDeterminacy
+import GaloisForLFunctions.RHTower.CCM.CCMMetaplecticGammaMomentDeterminacy
 
 /-!
 # Semilocal Jacobi linear growth and the prolate domain gate

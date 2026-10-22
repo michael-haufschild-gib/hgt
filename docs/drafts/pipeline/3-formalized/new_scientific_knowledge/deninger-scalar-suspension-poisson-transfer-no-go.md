@@ -185,7 +185,7 @@ obligations:
 
 ### The no-go and the positive survivor landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPoissonTransfer.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPoissonTransfer.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerScalarDeckPullback`, `deningerScalarDeckSum_eq_nsmul` — **`(4)`–`(5)`**: a descended

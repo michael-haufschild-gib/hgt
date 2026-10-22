@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowDirichlet
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowContinuation
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowContinuation
 
 /-!
 # Canonical continuation of bounded-variation prime windows

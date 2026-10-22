@@ -368,7 +368,7 @@ linear-algebra wrapper around the missing theorem `(21)`, so no Lean file is add
 ## Lean status — 2026-08-16
 
 `[FORMALIZED]` — module
-`formal/GaloisForLFunctions/RHTower/CCMEulerObservabilityAllocation.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMEulerObservabilityAllocation.lean`
 (5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 
@@ -392,7 +392,7 @@ Deliberately outside the Lean statement (cited parents, not results of this card
 
 - the weighted Vandermonde faithfulness `(5)`;
 - the signed-Cauchy relative index theorem `(13)` — the corpus already owns its kernel algebra in
-  `RHTower/CCMRelativeLogDerivCoordinateIndex.lean` (card
+  `RHTower/CCM/CCMRelativeLogDerivCoordinateIndex.lean` (card
   `ccm-relative-logderivative-coordinate-negative-index-law`);
 - the residue-birth statement `(15e)` on an open dense set of deformations;
 - the divisor-preserving convergence bound `(18)`.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.OddSectorExactDualAttainment
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundParityForcing
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundParityForcing
 import GaloisForLFunctions.RHTower.ChronologicalLeastNormMomentRepair
 
 /-!

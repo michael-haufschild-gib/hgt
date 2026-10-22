@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsTimeInverse
 import GaloisForLFunctions.RHTower.FokasLenellsTimeForcing
-import GaloisForLFunctions.HTGeometry.KleinGordonDuhamelDerivative
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonDuhamelDerivative
 
 /-!
 # C¹ time regularity of the actual RH boundary problem

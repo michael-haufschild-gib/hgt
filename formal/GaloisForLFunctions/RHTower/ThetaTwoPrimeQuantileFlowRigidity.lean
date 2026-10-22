@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.TwoDilationDivisorMetric
-import GaloisForLFunctions.RHTower.HedenmalmQuantileRootMode
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileRootMode
 
 /-!
 # Two-prime quantile-flow rigidity

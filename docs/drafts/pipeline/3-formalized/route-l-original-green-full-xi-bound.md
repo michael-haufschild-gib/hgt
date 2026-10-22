@@ -155,9 +155,9 @@ No heartbeat or recursion-limit increase was introduced.
 All three new modules and the exposed source estimate passed foreground
 scratch checking with `lake env lean`. Sequential final audits passed:
 
-- `lake build GaloisForLFunctions.RHTower.DeningerOriginalGreenXiResolventBound`
-- `lake build GaloisForLFunctions.RHTower.DeningerOriginalGreenGaussianEnvelope`
-- `lake build GaloisForLFunctions.RHTower.DeningerOriginalPrimeGreenXiAdmission`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerOriginalGreenXiResolventBound`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerOriginalGreenGaussianEnvelope`
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerOriginalPrimeGreenXiAdmission`
 
 Only the named new modules and the shared source module rebuilt; dependency
 messages were replayed. One Lean process ran at a time. No full or umbrella

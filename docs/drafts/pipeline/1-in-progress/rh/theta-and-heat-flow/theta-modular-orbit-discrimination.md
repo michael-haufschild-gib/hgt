@@ -38,7 +38,7 @@ This would close the compact D1 gap if the polynomial certificate is verified. A
 incidence remains a separate unsolved RH producer even after that closure.
 
 The exact source admission theorem is checked in scratch and by the named-leaf audit of
-`GaloisForLFunctions.RHTower.ThetaCuspModularCompactTube` (only this leaf compiled).
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspModularCompactTube` (only this leaf compiled).
 The remaining formal work is the explicit jet expansion, the positive algebraic identities,
 and their transfer back to raw and native D1. Candidate coefficients are not imported as
 numerical premises.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeApertureThetaAbelPhaseFiberRigidity
-import GaloisForLFunctions.RHTower.CCMSmoothProfileDecay
+import GaloisForLFunctions.RHTower.CCM.CCMSmoothProfileDecay
 import GaloisForLFunctions.RHTower.XiEndpointSourceHeightGap
 
 open Complex Filter Topology MeasureTheory MeromorphicOn

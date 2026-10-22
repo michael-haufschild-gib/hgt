@@ -28,7 +28,7 @@ Here `delta_*` is used only inside the contradiction proof. It does not occur in
 ## Theorem
 
 The Lean module
-`GaloisForLFunctions.RHTower.CCMRectangularSubpowerLowerGate` defines
+`GaloisForLFunctions.RHTower.CCM.CCMRectangularSubpowerLowerGate` defines
 
 ```text
 XiRectangularRightSubpowerLower L

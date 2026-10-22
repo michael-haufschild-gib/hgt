@@ -81,7 +81,7 @@ or decay premise remains.
 ## Lean formalization
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualSecondStokesIntegral`, wired into
 `GaloisForLFunctions.RHTower`. Headline unconditional theorems:
 
 - `d4BM_actualSecondStokesTruncatedDefectMoment_eq_pairedCuspTop`;

@@ -1,7 +1,7 @@
 # CCM-FU: fixed-core energy coefficient and signed reserve
 
 - **Stage:** 1-in-progress; signed source analysis.
-- **Parent:** [fixed-core reserve signs](../../ccm-fu-fixed-core-reserve-sign.md).
+- **Parent:** [fixed-core reserve signs](ccm-fu-fixed-core-reserve-sign.md).
 - **Goal:** Actual signed reserve control through changing processed cores, uniform signed Abel bound, RH. Goal remains open.
 
 ## Closed source chain

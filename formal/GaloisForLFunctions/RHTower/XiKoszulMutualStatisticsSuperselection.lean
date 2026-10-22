@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittMilnorIncidence
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittMilnorIncidence
 import GaloisForLFunctions.RHTower.XiNodalDefectSuperselection
 
 /-!

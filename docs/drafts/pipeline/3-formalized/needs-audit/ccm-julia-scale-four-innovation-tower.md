@@ -146,7 +146,7 @@ Unconditional modules:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaScaleFourTransfer.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaScaleFourTransfer.lean
 ```
 
 Formalized capstones:

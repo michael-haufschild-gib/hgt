@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmWardKernelAbelProjector
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmWardKernelAbelProjector
 import GaloisForLFunctions.RHTower.XiHolomorphicAffineCompanionFibreDeterminant
 
 /-!

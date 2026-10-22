@@ -1,7 +1,7 @@
 # All-prime equal-depth Gamma-to-Stokes pair bridge — Lean certificate
 
 - **Paper card:** `stc-all-prime-gamma-stokes-pair-bridge.md`
-- **Lean modules:** `GaloisForLFunctions.RHTower.DeningerGammaAllPrimeStokesPairBridge`,
+- **Lean modules:** `GaloisForLFunctions.RHTower.Deninger.DeningerGammaAllPrimeStokesPairBridge`,
   `GaloisForLFunctions.RHTower.STCGammaPairCalibrationGeometry`
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** `lake --old build`; `lake --old env lean` clean; `#print axioms` =

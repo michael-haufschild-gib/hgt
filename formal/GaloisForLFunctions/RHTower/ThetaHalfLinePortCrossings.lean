@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaHalfLinePortOrientation
 import GaloisForLFunctions.HTGeometry.RealZeroCrossingCount
 import GaloisForLFunctions.RHTower.Zeta23SimpleCriticalDensity
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureBoundaryCapacity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureBoundaryCapacity
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!

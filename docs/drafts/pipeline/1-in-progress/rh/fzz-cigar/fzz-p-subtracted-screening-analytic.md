@@ -6,7 +6,7 @@ Status: seven public theorems formalized and fully audited, 2026-09-11. Continue
 
 Fixed theta/FZZ source → full integrated mixed replica–momentum Ward law in an independently fixed phase frame → balanced external-Gamma vacuum-delay saturation → passivity → RH.
 
-The [whole-plane cutoff audit](../../fzz-p-plane-screening-cutoff-matching.md) identifies the original finite part for two fixed punctures with independently shrinking cutoff disks. To use a continued expression in a marked source response, it must be proved equal to that prescription. This card closes the original source's separate analytic dependence; it does not replace the remaining equality theorem by an assumption.
+The [whole-plane cutoff audit](fzz-p-plane-screening-cutoff-matching.md) identifies the original finite part for two fixed punctures with independently shrinking cutoff disks. To use a continued expression in a marked source response, it must be proved equal to that prescription. This card closes the original source's separate analytic dependence; it does not replace the remaining equality theorem by an assumption.
 
 ## Exact source and statements
 
@@ -51,7 +51,7 @@ A totalized singular quotient multiplied by its clearing factor would give zero 
 
 ## Remaining match
 
-Use `a=-alpha/2`, `b=-beta/2`. This card's `H` is four times the cleared source in the [matching card](../../fzz-p-plane-screening-cutoff-matching.md). The proposed partner is
+Use `a=-alpha/2`, `b=-beta/2`. This card's `H` is four times the cleared source in the [matching card](fzz-p-plane-screening-cutoff-matching.md). The proposed partner is
 
 `4*pi*Gamma(a+b-1)*Gamma(2-a)*Gamma(2-b)/(Gamma(a)*Gamma(b)*Gamma(2-a-b))`.
 

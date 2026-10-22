@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTailKernelGeometricDeficitSplit
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.HTGeometry.ExponentialLaplaceValue
 
 /-!

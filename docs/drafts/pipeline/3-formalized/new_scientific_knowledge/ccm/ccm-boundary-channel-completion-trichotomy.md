@@ -6,8 +6,8 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal modules:**
-  - `formal/GaloisForLFunctions/RHTower/CCMBoundaryChannelCompletion.lean`
-  - `formal/GaloisForLFunctions/RHTower/CCMDividedDifferenceInstantiation.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryChannelCompletion.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMDividedDifferenceInstantiation.lean`
 - **Manuscript:** `docs/drafts/manuscripts/ccm-boundary-channel-completion/main.tex`
 - **Parent sources:** Connes--Consani--Moscovici, *Zeta Spectral Triples*;
   Connes--van Suijlekom, *Quadratic Forms, Real Zeros and Echoes of the Spectral Action*.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HardyHorizontalLayerLeakage
-import GaloisForLFunctions.RHTower.SuzukiCanonicalHankelCompressionBridge
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelCompressionBridge
 import GaloisForLFunctions.HTGeometry.HalfLineExponentialGram
 
 open Complex Filter Topology MeasureTheory Set

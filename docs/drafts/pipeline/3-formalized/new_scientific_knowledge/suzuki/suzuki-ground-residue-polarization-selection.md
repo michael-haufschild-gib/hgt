@@ -26,7 +26,7 @@ construct the two-angle meromorphic limit, and does not imply RH.
 - [x] 0 -> 1 in-progress: exact mixed-ground endpoint stated in source-residue variables
 - [x] 1 -> 2 fully-proven: limit transport, sharp threshold, and greatest-root proof closed
 - [x] 2 -> 3 formalized: unconditional
-      `RHTower/SuzukiGroundResiduePolarizationSelection.lean`
+      `RHTower/Suzuki/SuzukiGroundResiduePolarizationSelection.lean`
 - [ ] 3 -> 4 publication-ready: specialist priority review and inclusion in a standalone Suzuki
       source paper
 
@@ -299,8 +299,8 @@ Primary comparison:
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiGroundResiduePolarizationSelection.lean
-formal/GaloisForLFunctions/RHTower/SuzukiGroundProjectionReflectionCone.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundResiduePolarizationSelection.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundProjectionReflectionCone.lean
 ```
 
 Capstone declarations:

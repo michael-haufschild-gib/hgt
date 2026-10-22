@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiShiftedGammaForm
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedGammaForm
 
 /-!
 # The exponential conjugation of the Gamma transport

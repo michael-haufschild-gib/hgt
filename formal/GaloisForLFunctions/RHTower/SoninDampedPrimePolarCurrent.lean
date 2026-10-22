@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.SoninExtendedFunctionalEquation
 import GaloisForLFunctions.RHTower.SoninMellinFunctional
 import GaloisForLFunctions.RHTower.SoninPrimePolarSignedEnergy
 import GaloisForLFunctions.RHTower.MellinHeadChart
-import GaloisForLFunctions.RHTower.CCMHardyCriticalMellinNonextension
+import GaloisForLFunctions.RHTower.CCM.CCMHardyCriticalMellinNonextension
 
 /-!
 # The actual damped prime–polar current on the physical Sonin carrier

@@ -100,7 +100,7 @@ one canonical analytic-coefficient subtraction already witnesses sharpness.
 - **New insight:** all-grade FZZ covariance has unbounded ultraviolet counterterm complexity. A
   finite-type local source action cannot carry the missing Ward-equivariant reflection.
 - **Status:** formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityAllGradeFiniteCountertermNoGo`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityAllGradeFiniteCountertermNoGo`.
   Closed route theorem `not_fzzCigarParityUniformFiniteCountertermProducer`; sharp survivor theorem
   `exists_fzzCigarParity_exactCountertermDepth_everyGrade`. Direct-file check and targeted module
   build green; `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`; umbrella

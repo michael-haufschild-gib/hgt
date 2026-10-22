@@ -151,7 +151,7 @@ remains necessary.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerCompleteSourceComparisonSingularity.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerCompleteSourceComparisonSingularity.lean`.
 
 Capstones:
 

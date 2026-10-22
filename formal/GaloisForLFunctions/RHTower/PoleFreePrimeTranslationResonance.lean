@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ChebyshevPsiScaling
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # The pole-free prime translation form grows like `e^A / A`

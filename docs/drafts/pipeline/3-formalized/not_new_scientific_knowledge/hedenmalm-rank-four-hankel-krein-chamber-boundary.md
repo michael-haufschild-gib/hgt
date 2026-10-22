@@ -87,7 +87,7 @@ source-specific global chamber-avoidance theorem can supply the missing sign.
 ## Formal certificate
 
 File:
-`formal/GaloisForLFunctions/RHTower/HedenmalmHankelKreinChamber.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmHankelKreinChamber.lean`.
 
 Premise-free theorem surface:
 

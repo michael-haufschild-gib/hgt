@@ -28,7 +28,7 @@ The original physical scalar principal factor preserves that zero remainder.
 [The full scalar-tested centered current](../../../3-formalized/hb-physical-tested-centered-current.md)
 now has an exact six-term source law and zero upper trace under every complex
 height weight, with the negative lower current retained in the density
-integral. [Restored tested moments and contacts](../../hb-physical-tested-mean-contact-current.md),
+integral. [Restored tested moments and contacts](hb-physical-tested-mean-contact-current.md),
 mean/contact boundary cancellation and complete-action faces remain open;
 fixed-clock extinction is not asserted.
 
@@ -433,7 +433,7 @@ Corpus search for this test found `HBXiPeierlsRetardedAdvancedReciprocal` and th
 
 `ThetaCuspHawkingBMQuarticContactBalance.lean` now proves (2) for the existing six `quarticContactField` expressions, at every actual Xi occurrence and every upper-half-plane point. Its private differential proof starts with the literal complete scalar equation and the actual two-jet product rule. The exported theorem takes no added spectral, covariance, sign, extinction or boundary assumption. Both retained spin-two Laplacians are present.
 
-The proof eliminates RQ pointwise using the Laplacian of J, then cancels matching Laplacian terms while keeping the source fields opaque. It avoids expanding J inside the nested derivatives of J². No heartbeat limit was added or increased. The independent differential scratch passed; the attached source leaf passed its exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticContactBalance` audit, without warnings, and is imported once by the RHTower umbrella. This is the bulk contact identity, not the complete nonlinear physical-action sign or extinction theorem.
+The proof eliminates RQ pointwise using the Laplacian of J, then cancels matching Laplacian terms while keeping the source fields opaque. It avoids expanding J inside the nested derivatives of J². No heartbeat limit was added or increased. The independent differential scratch passed; the attached source leaf passed its exact cached `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticContactBalance` audit, without warnings, and is imported once by the RHTower umbrella. This is the bulk contact identity, not the complete nonlinear physical-action sign or extinction theorem.
 
 The principal expansion is being checked as a separate small leaf importing the already verified cusp-jet module; the original 815-line cusp-jet source is unchanged. This avoids re-elaborating its admission proofs on every principal-expansion check. The first check found reducible lambda-expression rewrites, a gradient-name resolution error and a leading-minus parse ambiguity. These were corrected using explicit target shapes, direct gradient evaluation and parentheses. After isolating and checking the finite convolution algebra, the full revised principal leaf passed scratch checking and its final targeted audit.
 
@@ -473,11 +473,11 @@ The existing finite Mellin flux formula therefore cancels every N^w_j term exact
 
 ## Principal attachment closed, 12 September 2026
 
-[ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean) now proves the complete five-power representation of each original `quarticContactPrincipal` field, its actual height derivative and Laplacian, and the same-occurrence physical principal Green flux. The three original Q coefficients are supplied by `nativePrincipalSquare_eq_power_sum`; actual differentiated coefficients supply J and RQ. A separately checked finite convolution identity retains all nine ordered products without expanding analytic fields inside the algebra proof. These nine Weyl products do not represent the independent SS/SV/VV amplitude channels.
+[ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean) now proves the complete five-power representation of each original `quarticContactPrincipal` field, its actual height derivative and Laplacian, and the same-occurrence physical principal Green flux. The three original Q coefficients are supplied by `nativePrincipalSquare_eq_power_sum`; actual differentiated coefficients supply J and RQ. A separately checked finite convolution identity retains all nine ordered products without expanding analytic fields inside the algebra proof. These nine Weyl products do not represent the independent SS/SV/VV amplitude channels.
 
 The checked gradient coefficient is represented directly as `k_j(k_j-1)(J0²)_j/2-(J0 Delta J0)_j`, exactly following the original field definition. Its alternative symmetrized `sum r_i r_l j_i j_l` formula above remains a paper simplification, not a separately exported Lean theorem.
 
-The public `quarticContactPrincipal_physical_bulk_flux_coefficient` proves the final displayed indicial factor for the actual H and Delta-H coefficients. The full leaf passed `lake env lean /tmp/hb-quartic-principal-leaf.lean` without diagnostics. Its exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticPrincipalExpansion` passed without warnings in 38 seconds. Source and five artifacts were published byte-identically, with one RHTower umbrella import. Source SHA-256: `86bf5f736cfeb9a8b57ed4a2a73be731d89eef845c8d149cd1cdce1702b879a0`.
+The public `quarticContactPrincipal_physical_bulk_flux_coefficient` proves the final displayed indicial factor for the actual H and Delta-H coefficients. The full leaf passed `lake env lean /tmp/hb-quartic-principal-leaf.lean` without diagnostics. Its exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticPrincipalExpansion` passed without warnings in 38 seconds. Source and five artifacts were published byte-identically, with one RHTower umbrella import. Source SHA-256: `86bf5f736cfeb9a8b57ed4a2a73be731d89eef845c8d149cd1cdce1702b879a0`.
 
 The pointwise-balance leaf's final audit passed in 65 seconds; its source SHA-256 is `7370d39abf82d3d47af937eaeba02f67614ea2c5e03a1d76184d34e319604eb4`. Neither new file contains a heartbeat setting. The earlier missing-cache and pending-principal checkpoints are superseded by these results. Native finite-part Green transport and complete physical-action extinction remain open.
 
@@ -501,7 +501,7 @@ The five-power attachment should identify K_H with the finite sum of the origina
 
 ## Exact quartic cutoff contact closed, 12 September 2026
 
-[ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffContact.lean) proves the actual contact for every one of the six original principal fields:
+[ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticCutoffContact.lean) proves the actual contact for every one of the six original principal fields:
 
 ```
 K_slot = Delta(chi P0_slot)-chi Delta(P0_slot)
@@ -512,7 +512,7 @@ integral psi K_slot dmu
 
 Every full-scalar contact pairing is absolutely integrable. For the actual residual R=H-chi H0, it also proves `Delta R=R_5-K_4` and absolute integrability of its full-scalar Laplacian pairing. The physical identity uses the literal incoming coefficient `Lambda(rho)=0` and independently proved noncollision `w_j != 0`; neither a zero contact integral nor a new regulator is assumed.
 
-Scratch `lake env lean /tmp/hb-quartic-cutoff-contact.lean` passed without diagnostics. The exact cached leaf audit `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticCutoffContact` passed without warnings in 66 seconds. Source SHA-256: `a0cad9244771ec3c5cfc46cc691aa991e4c39d9044d02eecb91f8acade0a0505`; all five artifacts were published byte-identically. The leaf has one RHTower umbrella import and no heartbeat setting. Global lint/API audit remains pending for this addition.
+Scratch `lake env lean /tmp/hb-quartic-cutoff-contact.lean` passed without diagnostics. The exact cached leaf audit `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticCutoffContact` passed without warnings in 66 seconds. Source SHA-256: `a0cad9244771ec3c5cfc46cc691aa991e4c39d9044d02eecb91f8acade0a0505`; all five artifacts were published byte-identically. The leaf has one RHTower umbrella import and no heartbeat setting. Global lint/API audit remains pending for this addition.
 
 The modular construction has been simplified further: apply the existing `cellGermExtension` to the smooth principal height subtraction. It is zero below height two; translations preserve height, and every nonparabolic closed-cell overlap lies strictly below two. These facts prove full germ compatibility, including elliptic corners. Subtracting this extension from the original modular quartic field produces the actual residual on every closed-cell germ. This avoids a separate compact planar periodization construction. The finite-core construction and physical Green identity passed an initial scratch check; the expanded candidate including smoothness and its differentiated cutoff is still being checked. No native limiting Green theorem or complete-action extinction is claimed yet.
 
@@ -539,7 +539,7 @@ The last equality is the established transduction. If the preceding source ident
 
 ### Quartic residual core certified
 
-[ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualCore.lean) now proves the literal residual's smoothness, constructs its modular extension, preserves its full germ on the original closed cell, and constructs compact native cores. Its physical Green identity, full differentiated cutoff formula and eventual stabilization of the entire residual germ are closed. The final cached leaf build passed without warnings in 92 seconds after scratch checking. Source SHA-256: `ac36a24de7b322a6f8578056a309c0d1c9c13346c7c2965b5bd2780c5f3ba6fc`. No heartbeat setting or transparency override was added; the leaf is imported once by RHTower.
+[ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResidualCore.lean) now proves the literal residual's smoothness, constructs its modular extension, preserves its full germ on the original closed cell, and constructs compact native cores. Its physical Green identity, full differentiated cutoff formula and eventual stabilization of the entire residual germ are closed. The final cached leaf build passed without warnings in 92 seconds after scratch checking. Source SHA-256: `ac36a24de7b322a6f8578056a309c0d1c9c13346c7c2965b5bd2780c5f3ba6fc`. No heartbeat setting or transparency override was added; the leaf is imported once by RHTower.
 
 The next candidate is `formal/.lake/hb-extinction-scratch/residual-green.lean`, checked through `/tmp/hb-quartic-residual-green.lean`. It derives weighted L2 admission of every actual residual derivative from `quarticContact_remainder_jet_bound`, then uses the independently admitted inverse-height physical scalar to control `psi*y*partial_y R`. Its proposed dominating density for the full cutoff Laplacian is
 
@@ -554,7 +554,7 @@ The complete-action deep/method query returned the existing exact `stream_comple
 
 ## Native quartic Green transport certified
 
-The entire [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualGreen.lean) candidate passed `lake env lean /tmp/hb-quartic-residual-green.lean` without diagnostics. The exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResidualGreen` passed without warnings in 25 seconds. The source is installed and wired once; all five audited artifacts were published byte-identically. Source SHA-256: `275d33f0f1f664da5b65e6972148fd1a9d9a9f8360dabfdd9da5cbd65522719b`. The new identity is
+The entire [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResidualGreen.lean) candidate passed `lake env lean /tmp/hb-quartic-residual-green.lean` without diagnostics. The exact cached final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticResidualGreen` passed without warnings in 25 seconds. The source is installed and wired once; all five audited artifacts were published byte-identically. Source SHA-256: `275d33f0f1f664da5b65e6972148fd1a9d9a9f8360dabfdd9da5cbd65522719b`. The new identity is
 
 ```
 N_q(Delta H) = mu_q N_q(H),
@@ -575,7 +575,7 @@ Final audit for the cutoff-contact, residual-core and native-Green leaves: all 2
 ## Native contact-period balance certified, 12 September 2026
 
 The source identity (6) is now closed in
-[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeBalance.lean).
+[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticNativeBalance.lean).
 For the original native period N, unchanged physical parameter mu, and the literal
 fields and coefficients defined above, `quarticNativePhysicalPeriod_spinTwo` proves
 
@@ -601,7 +601,7 @@ heartbeat, recursion-depth or transparency override was introduced.
 
 Scratch `lake env lean /tmp/hb-quartic-native-balance.lean` passed with no
 diagnostics. The exact cached leaf audit
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticNativeBalance`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticNativeBalance`
 passed in 121 seconds, with no warnings. Source SHA-256:
 `d12f4dc95999a9e834e4eaef091bb77069d46f8d33080fe21e9c86a41a652de8`.
 The leaf is imported once by RHTower; no umbrella or full build was run.
@@ -708,7 +708,7 @@ This factor is nonzero at every Xi occurrence: Re(p)>2; translating p=x+2 gives
 the cubic x³+31x²+84x+72, which has no zero in Re(x)>=0 by elimination of its
 real and imaginary parts. Thus any cancellation must involve the actual
 response-source pairings or retained faces. All three statements are now certified
-in [ThetaCuspHawkingBMQuarticResponseWork.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseWork.lean).
+in [ThetaCuspHawkingBMQuarticResponseWork.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResponseWork.lean).
 The leaf also transports the balance to the actual finite-clock horizon moment
 and unshifted physical horizon integral, retaining the original common rate -6,
 onset endpoint, and derivative-clock energy. Scratch checking and the final exact
@@ -743,7 +743,7 @@ inspection and the exact Lean check establish the new result, not retrieval rank
 The broader lexical query `fullAngular homogeneous cusp response` found an
 important existing boundary result missed by that deep query:
 `D4BMCuspResponse.responseMean_native_decomposition` in
-[ThetaCuspHawkingBMCuspGrowingCoefficient.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCuspGrowingCoefficient.lean).
+[ThetaCuspHawkingBMCuspGrowingCoefficient.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCuspGrowingCoefficient.lean).
 Its original native norm eliminates the growing coefficient, while the actual
 surviving coefficient and both infinite source tails remain. Direct inspection of
 `responseMean`, `root`, `limitingCoefficient` and `limitingFlux` confirms these are
@@ -1493,7 +1493,7 @@ All owned Lean and search processes completed. Index refresh covered three
 changed files; lint first reported stale API/OVERVIEW generation. A second
 refresh covered one new change. Final `lint --check-generated` failed solely
 on the then-unreachable
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetQuadraticEinstein`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarJetQuadraticEinstein`.
 No global lint success is claimed and no unrelated unfinished source was
 changed. The exact new leaf audit passed. Log:
 `formal/.lake/hb-extinction-scratch/native-cusp-comparison-final-lint.log`.
@@ -1558,7 +1558,7 @@ remained unchanged. `scripts/formal_tools.py lint --check-generated` exited 1
 with the sole error:
 
 ```
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetEntries
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarJetEntries
 ```
 
 This is a different shared-tree module; no unrelated unfinished source was

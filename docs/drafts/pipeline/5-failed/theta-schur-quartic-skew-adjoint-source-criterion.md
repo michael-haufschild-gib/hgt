@@ -70,9 +70,9 @@ classification with a source-side strict witness, not only a negative result.
 
 - `formal/GaloisForLFunctions/HTGeometry/FiniteMatrixSchurQuarticSkewAdjointDefect.lean`
   proves the finite quadratic identity and quartic majorant.
-- `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSkewAdjointDefectCriterion.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSkewAdjointDefectCriterion.lean`
   proves cofinal skew-energy smallness implies RH.
-- `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSkewAdjointDefectFloorNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSkewAdjointDefectFloorNoGo.lean`
   proves the coordinate expectation, strict limit energy, exact stage-energy convergence,
   eventual half-limit floor, and negation of the cofinal premise.
 - Direct `lake env lean` checks and targeted `lake build` calls pass.

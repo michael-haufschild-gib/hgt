@@ -113,7 +113,7 @@ Hankel tower and is not used as if it did.
   numerical Gaussian integral value.
 - `RHTower/ExponentialMomentPolynomialSignCone.lean` proves the polynomial-square sign-cone law.
 - `RHTower/CompleteHankelSignCone.lean` proves the finite-Hankel tower equivalence.
-- `RHTower/HedenmalmGaussianHankelRH.lean` proves the fixed-temperature RH equivalence,
+- `RHTower/Hedenmalm/HedenmalmGaussianHankelRH.lean` proves the fixed-temperature RH equivalence,
   temperature invariance, and the existential/universal temperature endpoints.
 
 The target module passes the narrow project build.  An explicit `#print axioms` audit of the

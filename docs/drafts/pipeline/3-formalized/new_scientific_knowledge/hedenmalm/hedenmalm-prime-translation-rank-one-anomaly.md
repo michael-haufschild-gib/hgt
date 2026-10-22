@@ -438,8 +438,8 @@ combined theorem remains `[NOVELTY UNVERIFIED]` pending an independent operator-
 ## Lean status
 
 `[FORMALIZED UNCONDITIONALLY]`  Authoritative closure modules:
-`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean` and
-`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationJordanCapstone.lean`. The latter
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeTranslationAnomaly.lean` and
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeTranslationJordanCapstone.lean`. The latter
 closes the former parent dependency with `integerShift_mul`,
 `analyticOrderAt_XiC_eq_finrank_maxGenEigenspace_thetaKernelOperator`, and
 `thetaSource_geometricUniqueness_and_fullAlgebraicMultiplicity`. Together with the imported theta
@@ -452,7 +452,7 @@ theorem-area umbrella checks pass.
 Historical development status follows; the parent-multiplicity blocker is superseded by the exact
 entire-determinant multiplicity theorem.
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean` (namespace
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeTranslationAnomaly.lean` (namespace
 `RHTower.HedenmalmPrimeTranslation`) formalizes the source core over the general positive-density
 source class `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every declaration below has
 `#print axioms` equal to `[propext, Classical.choice, Quot.sound]`.
@@ -480,7 +480,7 @@ multiplicity `m`) quotes the analytic Fredholm multiplicity of the parent card
 `hedenmalm-supersymmetric-fredholm-range-divisor.md`.
 
 `(14)` is formalized in
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaSeriesExpansion.lean` for a source presented by
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSeriesExpansion.lean` for a source presented by
 its integer series (`structure ThetaSeriesSource`): the single-term identity is the exponential
 change of variables `t = n e^y` (`mellinTail_expChart`) and the interchange of the sum with the
 integral is `MeasureTheory.integral_tsum`, whose two hypotheses are carried explicitly.

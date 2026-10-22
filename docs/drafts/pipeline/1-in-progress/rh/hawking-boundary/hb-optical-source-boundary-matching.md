@@ -3,7 +3,7 @@
 - **ID:** HB-OPTICAL-SOURCE-BOUNDARY
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper, finite optical reduction); [four exact scalar cap theorems formalized](../../../3-formalized/hb-optical-source-boundary-caps.md)
-- **Source:** [actual optical primitives](../../hb-optical-source-tail.md), [corpus Green ingredients](../../hb-corpus-ingredient-search.md), [complete mixed current](../../hb-mixed-complete-current.md).
+- **Source:** [actual optical primitives](hb-optical-source-tail.md), [corpus Green ingredients](hb-corpus-ingredient-search.md), [complete mixed current](hb-mixed-complete-current.md).
 - **Statement:** Transferring only the two original source polynomials cancels the internal optical interface and the source edge; the moving characteristic contributes an explicit corner primitive.
 
 The chain remains literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. The complete physical pairing, the independent SS/VV coefficients and RH remain unproved. This calculation concerns the SV–SV long-delay bulk on finite optical domains. The original compact onset, finite-time correction, angular Green and physical current terms remain attached to it. The frontier map is read only.

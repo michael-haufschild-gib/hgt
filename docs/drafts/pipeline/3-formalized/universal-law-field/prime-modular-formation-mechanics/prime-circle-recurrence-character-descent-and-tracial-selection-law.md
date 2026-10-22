@@ -6,7 +6,7 @@
 - **Paper proof:** `docs/drafts/pipeline/3-formalized/universal-law-field/prime-modular-formation-mechanics/prime-circle-recurrence-character-descent-and-tracial-selection-law-paper.md`
 - **Lean modules:**
   `GaloisForLFunctions.HTGeometry.ConstitutiveCompactRecurrenceCharacterDescent`;
-  `GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent`
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent`
 
 ## Certified declarations
 
@@ -24,7 +24,7 @@
 
 - Direct elaboration: PASS
 - Named leaf build:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCompactRecurrenceDescent`
   PASS
 - Axioms: only `propext`, `Classical.choice`, `Quot.sound`
 - Forbidden declarations in both modules: none

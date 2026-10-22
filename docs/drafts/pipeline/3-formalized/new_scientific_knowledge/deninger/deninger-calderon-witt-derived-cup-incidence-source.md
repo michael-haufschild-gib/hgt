@@ -51,9 +51,9 @@ form on `M_zeta`.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerCalderonWittDerivedCupSource.lean`;
-- `GaloisForLFunctions/RHTower/DeningerCalderonWittMilnorIncidence.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerPaugamGradingObstruction.lean` for the middle-grading
+- `GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittDerivedCupSource.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittMilnorIncidence.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamGradingObstruction.lean` for the middle-grading
   no-go.
 
 Key declarations:

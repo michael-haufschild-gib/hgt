@@ -5,7 +5,7 @@
 - **Type:** BRIDGE / POSITIVE SOURCE-ORIENTATION LAW
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE] [SIGN OPEN]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean`
+  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean`
 
 ## Unconditional theorem
 

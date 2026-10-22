@@ -136,7 +136,7 @@ TRACE-NORM ESTIMATE`.
 
 ## Lean status (2026-07-31): the compact-support stabilization half is formalized
 
-`RHTower/DeningerPrimePowerOrbitStabilization.lean` — built green, umbrella-registered, zero
+`RHTower/Deninger/DeningerPrimePowerOrbitStabilization.lean` — built green, umbrella-registered, zero
 warnings, axiom-clean — formalizes the arithmetic half of this card's `[PROVED HERE]` limit
 theorem:
 

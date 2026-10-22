@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeCountingLiLandau
 import GaloisForLFunctions.RHTower.LittlewoodOmega
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleCompressionRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleCompressionRHCriterion
 
 /-!
 # Littlewood's theorem: `π(x) > li(x)` infinitely often

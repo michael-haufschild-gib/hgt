@@ -30,8 +30,8 @@ residual uniformly lower-semibounded. Positive rank growth alone is terminal.
 
 ## Verification
 
-Module `GaloisForLFunctions.RHTower.SuzukiTransitionCoreLinearCompensationNoGo` passes direct Lean
+Module `GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreLinearCompensationNoGo` passes direct Lean
 checking, targeted build (`11979/11979`), and axiom audit. It is imported by RHTower umbrella.
 Global formal lint is blocked by unrelated pre-existing unreachable module
-`GaloisForLFunctions.RHTower.DeningerQ8ActualTwoAdicInertia`; no forbidden declarations occur in
+`GaloisForLFunctions.RHTower.Deninger.DeningerQ8ActualTwoAdicInertia`; no forbidden declarations occur in
 new module. Frontier map was not modified.

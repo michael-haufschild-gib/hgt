@@ -1,8 +1,8 @@
 import GaloisForLFunctions.HTGeometry.RankOneCriticalCenteredPolynomial
 import GaloisForLFunctions.HTGeometry.CenteredFreeParameter
 import GaloisForLFunctions.HTGeometry.SplittingFieldBaseEquiv
-import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromyFaithful
-import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromyJordan
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.MonodromyFaithful
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.MonodromyJordan
 
 /-!
 # Full actual monodromy in the left rank-one case

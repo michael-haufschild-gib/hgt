@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinFullCuspSectorAssembly
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinFullCuspSectorAssembly
 import GaloisForLFunctions.RHTower.SeamVerticalDecay
 
 /-!

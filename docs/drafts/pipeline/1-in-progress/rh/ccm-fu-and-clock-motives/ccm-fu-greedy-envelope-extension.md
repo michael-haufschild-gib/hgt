@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE], derived arithmetic selection candidate; unproved
-- **Parent:** [exact successor extension](../../ccm-fu-exact-successor-extension.md).
+- **Parent:** [exact successor extension](ccm-fu-exact-successor-extension.md).
 - **Goal:** Complete signed Abel bound and RH remain open.
 
 ## Frozen selection question

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWindowZeroCount
 import GaloisForLFunctions.RHTower.LagExplicitFormula
-import GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMSourceDivisorEnergySpectrum
 
 /-!
 # Quantitative tails of the zero weights

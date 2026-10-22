@@ -75,7 +75,7 @@ layer (`XiGuinandWeilExplicitFormula`, `xi_explicitFormula_logDeriv`).
 - `RHTower/XiGuinandWeilExplicitFormula`, `XiExplicitFormulaLogDeriv`: explicit formulas.
 - `HTGeometry/PoissonBoundaryPositivity`, `Bottcher/PoissonBoundary`: Poisson kernel.
 - `RHTower/ArchimedeanMellinFourier`: Poisson summation (even/dilated).
-- `RHTower/CCMRationalAdelicBruhatSchwartzSpace`: Bruhat–Schwartz on `𝔸_ℚ`.
+- `RHTower/CCM/CCMRationalAdelicBruhatSchwartzSpace`: Bruhat–Schwartz on `𝔸_ℚ`.
 
 ## Log
 - 2026-08-21 — created; paper read in full; statement inventory frozen; corpus audit done.

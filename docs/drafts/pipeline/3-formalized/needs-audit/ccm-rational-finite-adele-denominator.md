@@ -72,7 +72,7 @@ for trace class.
 
 ## Lean realization
 
-- **Module:** `GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleDenominator`
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleDenominator`
 - **Capstones:**
   - `ccmRationalFiniteAdele_exists_integerDenominator`
   - `ccmRationalFiniteAdele_isCompact_exists_commonIntegerDenominator`

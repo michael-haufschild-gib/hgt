@@ -159,7 +159,7 @@ KNOWLEDGE]`; external priority remains unverified.
 ## Formal status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiRectangularWardDefectBoundedness.lean`.  Lean proves the
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularWardDefectBoundedness.lean`.  Lean proves the
 forward connector for arbitrary nonnegative energy and Hilbert norm squares, plus both false-RH
 cofinal divergence converses.  It assumes no source factorization and does not formalize the still
 open bound `(8)`.

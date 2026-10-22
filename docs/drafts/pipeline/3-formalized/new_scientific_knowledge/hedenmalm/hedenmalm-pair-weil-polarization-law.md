@@ -300,7 +300,7 @@ of the proposed metric and identifies its precise open content, but remains
 ## Lean status
 
 `[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
-`formal/GaloisForLFunctions/RHTower/HedenmalmPairWeilPolarizationCapstone.lean`, theorem
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPairWeilPolarizationCapstone.lean`, theorem
 `hedenmalmPairWeilPolarizationLaw`. It packages unconditional Hermitian symmetry, spectral
 formal symmetry, the two-sided theta radical and quotient descent, the exact Weil-positivity/RH
 equivalence, and the exact positive-definite theta-eigenspan/RH-plus-simplicity equivalence.
@@ -395,7 +395,7 @@ exists_norm_xiThetaEigenFourier_horizontal_le
 The exponential factor of `(18a)` is therefore unconditional, and the polynomial factor is not
 needed for it: away from the removed point the linear denominator is bounded below, so the quotient
 simply inherits the exponential decay of `XiC` proved in
-`RHTower/ThetaCuspComplexStrip.lean`, and on the remaining compact interval continuity gives a bound.
+`RHTower/ThetaCusp/ThetaCuspComplexStrip.lean`, and on the remaining compact interval continuity gives a bound.
 What `(18a)` still lacks in Lean is the same estimate on closed *horizontal strips* rather than the
 real axis alone.  The first piece of that is now built and stated for an arbitrary function, in
 `formal/GaloisForLFunctions/RHTower/StripHorizontalShift.lean`:

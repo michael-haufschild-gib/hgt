@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WeldClassTable
-import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldSquareRootWeld
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalWallFieldSquareRootWeld
 
 /-!
 # Prime-power source rank obstruction for Route-J phase nodes

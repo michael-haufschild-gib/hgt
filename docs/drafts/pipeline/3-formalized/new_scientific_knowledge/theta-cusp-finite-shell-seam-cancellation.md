@@ -3,7 +3,7 @@
 - **Stage:** 3-formalized
 - **Type:** theorem / source obstruction with positive survivor
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspFiniteShellSeamCancellation.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFiniteShellSeamCancellation.lean`
 
 ## Statement
 

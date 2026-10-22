@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiGammaStripFourierWeight
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaStripFourierWeight
 import GaloisForLFunctions.HTGeometry.CompactTestTransformOrder
 
 /-!

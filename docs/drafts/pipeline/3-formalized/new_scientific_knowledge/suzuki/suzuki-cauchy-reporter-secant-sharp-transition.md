@@ -3,7 +3,7 @@
 - **Status:** Formalized; targeted source check, leaf build, and axiom audit pass
 - **Routes:** CCM-UR, CCM-FU, CCM-HG, Route O, Suzuki reflected-wall assembly
 - **Labels:** `[NEW]` `[SOURCE-SPECIFIC]` `[UNCONDITIONAL]` `[SHARP-CLASSIFICATION]`
-- **Lean module:** `GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantSharpTransition`
+- **Lean module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyReporterSecantSharpTransition`
 
 ## Corpus-first frontier audit
 
@@ -89,9 +89,9 @@ Principal declarations:
 
 Verification after umbrella wiring:
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantSharpTransition.lean`
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantSharpTransition.lean`
   passes;
-- `lake build GaloisForLFunctions.RHTower.SuzukiCauchyReporterSecantSharpTransition` passes;
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyReporterSecantSharpTransition` passes;
 - `#print axioms` on factorization, strict antitonicity, unique transition, transition zero,
   sign trichotomy, and sharp positive/negative theorems reports only `propext`,
   `Classical.choice`, and `Quot.sound`.

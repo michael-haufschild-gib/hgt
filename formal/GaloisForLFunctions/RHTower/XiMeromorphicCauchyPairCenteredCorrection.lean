@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMeromorphicCauchyPairReflectionCorrectionNoGo
-import GaloisForLFunctions.RHTower.CCMUnitaryPolarSourceAtlas
+import GaloisForLFunctions.RHTower.CCM.CCMUnitaryPolarSourceAtlas
 
 /-!
 # Centered spectral EGC shifted-pole correction

@@ -275,7 +275,7 @@ Paths below are under `formal/GaloisForLFunctions/` unless explicitly noted. Eve
 |`RHTower/PrimeArchThetaTwoAtomHankelDominance.lean:1–90`|Genuine full positive raw moment/Hankel carrier; differs from signed D/Gamma carrier.|
 |`RHTower/CompleteHankelSignCone.lean:58–102,107–154`, `completeHankelCone_weightedMoment_iff_ae`|Finite measure, entire exp moments and bounded J hypotheses; ALL weighted-Hankel PSD iff sign. Those PSD hypotheses for actual signed history remain unproved.|
 |`RHTower/ThetaRenewalIncrement.lean:84–132`|Different renewal primitive/origin, not literal P,D; its positive envelope cannot substitute.|
-|`RHTower/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`, `covariance_volterra_unique`|Homogeneous vector P2 uniqueness, not positive inverse or M15.|
+|`RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`, `covariance_volterra_unique`|Homogeneous vector P2 uniqueness, not positive inverse or M15.|
 |`HTGeometry/VolterraConvolutionAlgebra.lean:18–34`, `volterraConv`|True orientation/continuous compact commutation; no signed correlation cone.|
 |`RHTower/PrimeArchThetaRawMomentRatioVanishing.lean:102–128`|Actual arbitrary raw moment slope/fence; useful source admission, not log-sign bound.|
 |Frozen683 C2–C6,C8–C14; frozen159 S1–S5; frozen608 U16–U18|Entire already-reviewed proofs/source domains reused unchanged. Their source correlation remains conditional/open; all endpoint terms and strict reserve kept.|
@@ -307,7 +307,7 @@ Warnings `coverage_snapshot_older_generation`, `semantic_coverage_unavailable`; 
 |C2|`Chebyshev.theta_zero` — `formal/.lake/packages/mathlib/Mathlib/NumberTheory/Chebyshev.lean:160–163`|Prime-number Chebyshev theta at zero, not the actual completed theta kernel. Wrong observable; ingredient suggestion rejected.|
 |C3|`GaloisForLFunctions.HTGeometry.weightMoment` — `formal/GaloisForLFunctions/HTGeometry/NonnegativeWeightMomentHankel.lean:25–28`|Generic nonnegative discrete weight moment. No literal signed D/history identification.|
 |C4|`RHTower.fisherWeightedMoment` — `formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean:19–22`|Finite Fisher weight moment definition, different law; no source correlation orientation.|
-|C5|`RHTower.deningerWeightedMomentFun` — `formal/GaloisForLFunctions/RHTower/DeningerWeightedMoment.lean:26–28`|Schwartz derivative-squared Deninger weighted moment, different quadratic positive carrier.|
+|C5|`RHTower.deningerWeightedMomentFun` — `formal/GaloisForLFunctions/RHTower/Deninger/DeningerWeightedMoment.lean:26–28`|Schwartz derivative-squared Deninger weighted moment, different quadratic positive carrier.|
 |C6|`HTGeometry.ConstraintMotiveRelativity.weightMoment` — `formal/GaloisForLFunctions/HTGeometry/ConstraintMotiveRelativity/MarkedMellinExchange.lean:633–637`|Marked Mellin character/log-atom moment, different operator and history.|
 |C7|`RHTower.thetaXiPrimeModularCompactRecurrenceDescent_iff_index_zero` — `formal/GaloisForLFunctions/RHTower/IntegralCurvedTateFormationPropernessIndex.lean:195–203`|Properness/index-zero equivalence with source closure hypotheses; not a proof of this actual first-zero inequality.|
 |C8|`RHTower.fisherWeightedTsumMoment` — `formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean:121–126`|Generic infinite Fisher-weight moment, no source bridge to D.|
@@ -316,10 +316,10 @@ Warnings `coverage_snapshot_older_generation`, `semantic_coverage_unavailable`; 
 |C11|`RHTower.thetaLoopEnergy_zero` — `formal/GaloisForLFunctions/RHTower/ThetaRenewalFeedbackLoop.lean:262–265`|Renewal loop-energy origin identity, no D-weighted comparison.|
 |C12|`RHTower.thetaRenewalLambdaCoord_zero` — `formal/GaloisForLFunctions/RHTower/ThetaRenewalSeamGerm.lean:203–206`|Renewal lambda-coordinate origin identity, different family.|
 |C13|`RHTower.DeletionResidueMartingale.exists_historyProjection_eq_weighted_residue_quotient` — `formal/GaloisForLFunctions/RHTower/EulerDeletionWeightedResidueProjection.lean:149–172`|Finite weighted residue/history projection existence. Different residue carrier and conditional projection, not M15.|
-|C14|`RHTower.deningerWeightedMomentMass` — `formal/GaloisForLFunctions/RHTower/DeningerAbelMajorant.lean:26–29`|Deninger Schwartz positive derivative-square mass, not the signed full primitive.|
+|C14|`RHTower.deningerWeightedMomentMass` — `formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelMajorant.lean:26–29`|Deninger Schwartz positive derivative-square mass, not the signed full primitive.|
 |C15|`RHTower.weightedRawEvenMoment` — `formal/GaloisForLFunctions/RHTower/PrimeArchThetaTwoAtomHankelDominance.lean:36–39`|ACTUAL positive raw weighted theta moment. Full primary positive Hankel proof read; its raw carrier differs from D/Gamma history.|
-|C16|`RHTower.HedenmalmThetaSource.thetaLpConj_zero` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean:2860–2867`|Hedenmalm Hilbert-conjugacy zero identity, not causal source sign.|
-|C17|`RHTower.D4BMJointSource.covariance_volterra_unique` — `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`|Homogeneous vector covariance-Volterra uniqueness. Fresh full proof read; uniqueness does not preserve a signed inverse cone.|
+|C16|`RHTower.HedenmalmThetaSource.thetaLpConj_zero` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean:2860–2867`|Hedenmalm Hilbert-conjugacy zero identity, not causal source sign.|
+|C17|`RHTower.D4BMJointSource.covariance_volterra_unique` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`|Homogeneous vector covariance-Volterra uniqueness. Fresh full proof read; uniqueness does not preserve a signed inverse cone.|
 |C18|`GaloisForLFunctions.HTGeometry.volterraConv` — `formal/GaloisForLFunctions/HTGeometry/VolterraConvolutionAlgebra.lean:19–23`|Exact generic Volterra orientation and continuous compact calculus. Admission only; primary definition/commutation read.|
 |C19|`GaloisForLFunctions.HTGeometry.WeightedHistoryDatum.weightedHistoryAction` — `formal/GaloisForLFunctions/HTGeometry/WeightedHistoryCompletionBoundaryLaw.lean:299–303`|Finite graded weighted-history action definition, different history data.|
 |C20|`RHTower.relVolterra_orientation` — `formal/GaloisForLFunctions/RHTower/LiClockPairedEtaPartitionRelativeVolterra.lean:187–195`|Exact paired-eta relative-clock orientation, different symmetrized normalization. Does not prove single-Xi actual M15.|
@@ -330,24 +330,24 @@ Warnings `coverage_snapshot_older_generation`, `semantic_coverage_unavailable`; 
 |---|---|---|
 |S1|`RHTower.l2Amplification_primeCoordinate_actualThetaPacket` — `formal/GaloisForLFunctions/RHTower/JointAncestryCriticalSingletonPrimeMultiplicationEscape.lean:210–223`|Tensor prime-coordinate actual-theta packet amplification, wrong observable.|
 |S2|`GaloisForLFunctions.HTGeometry.gomesQubitOrbitDerivative` — `formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitConnection.lean:108–113`|Gomes qubit orbit derivative definition, wrong dynamical system.|
-|S3|`RHTower.quantumStratonovichCayleyTransition_theta_eq` — `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean:242–254`|Theta quantum Stratonovich/Cayley transition, no literal P/D source inequality.|
-|S4|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageCorrection` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualStageGreenBalance.lean:22–26`|Finite signed theta-stage correction operator, not complete primitive/history.|
+|S3|`RHTower.quantumStratonovichCayleyTransition_theta_eq` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean:242–254`|Theta quantum Stratonovich/Cayley transition, no literal P/D source inequality.|
+|S4|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageCorrection` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualStageGreenBalance.lean:22–26`|Finite signed theta-stage correction operator, not complete primitive/history.|
 |S5|`GaloisForLFunctions.HTGeometry.gomesQubitOrbitBias` — `formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean:27–30`|Gomes qubit orbit bias, different carrier.|
 |S6|`RHTower.thetaCuspComplexSource` — `formal/GaloisForLFunctions/RHTower/ThetaWignerCenterMix.lean:91–94`|Actual theta complex-source cast, analytic admission only.|
-|S7|`RHTower.thetaCuspFullLogJetEight` — `formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthLogJets.lean:25–30`|Finite eighth full log-jet object; no all-order D-weighted bound.|
-|S8|`RHTower.thetaCuspFullLogJetSix` — `formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthLogJets.lean:23–28`|Finite sixth full log-jet object; no moving history orientation.|
-|S9|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageFinMatrix` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaHermiteTraceFlag.lean:32–38`|Finite Hermite signed-stage matrix, different source operator.|
+|S7|`RHTower.thetaCuspFullLogJetEight` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLogJets.lean:25–30`|Finite eighth full log-jet object; no all-order D-weighted bound.|
+|S8|`RHTower.thetaCuspFullLogJetSix` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthLogJets.lean:23–28`|Finite sixth full log-jet object; no moving history orientation.|
+|S9|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageFinMatrix` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean:32–38`|Finite Hermite signed-stage matrix, different source operator.|
 |S10|`GaloisForLFunctions.HTGeometry.gomesSSHCarrier` — `formal/GaloisForLFunctions/HTGeometry/GomesTwoBandAdjointMass.lean:22–26`|Gomes SSH two-band carrier, no theta D source.|
-|S11|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageMatrix` — `formal/GaloisForLFunctions/RHTower/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean:35–40`|Canonical signed-stage matrix, not full P/history.|
+|S11|`RHTower.HedenmalmThetaSource.thetaSourceSignedStageMatrix` — `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean:35–40`|Canonical signed-stage matrix, not full P/history.|
 |S12|`GaloisForLFunctions.HTGeometry.gomesFockPhase_vector_moments` — `formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:27–37`|Full supplied Fock phase vector-moment proof excerpt; different Fock/gauge law.|
 |S13|`GaloisForLFunctions.HTGeometry.gomesFockZeroPhase_vector_moments` — `formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:60–70`|Full supplied Fock zero-phase proof excerpt; same mismatch.|
 |S14|`RHTower.thetaBilateralLaplace` — `formal/GaloisForLFunctions/RHTower/ThetaTailFirstMomentKreinTransform.lean:20–24`|Actual bilateral theta Laplace definition, analytic admission only, no M15 sign.|
 |S15|`RHTower.liEvenCrossActualClockBorelCoefficient` — `formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockBorelSource.lean:18–22`|EXACT actual Borel coefficient with nu_j and squared factorial. Fresh primary definition read; source admission, no signed correlation bound.|
 |S16|`GaloisForLFunctions.HTGeometry.egbFixedCharge_enthalpy_jump` — `formal/GaloisForLFunctions/HTGeometry/GaussBonnetCriticalEndpoint.lean:102–113`|Gauss-Bonnet fixed-charge enthalpy jump, different problem.|
-|S17|`RHTower.continuous_thetaCuspSourceTerm_one` — `formal/GaloisForLFunctions/RHTower/ThetaCuspKernelLogConcavity.lean:870–876`|Actual first theta-atom continuity, source admission only.|
-|S18|`RHTower.thetaCuspSchwartzReal_apply` — `formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartz.lean:371–375`|Actual Schwartz representative identity, source admission only.|
-|S19|`RHTower.ccmLocalPotentialLocalizationDefect_eq` — `formal/GaloisForLFunctions/RHTower/CCMThetaPhaseLocalPotential.lean:40–50`|Full ready IMS potential-localization method object, assumptions/steps/obligations/evidence read. It identifies a different quadratic Weil defect; no actual D-history comparison.|
-|S20|`RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular` — `formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthGeneralModularClosure.lean:18–26`|Finite eighth general modular curvature identity, not full signed moving cost.|
+|S17|`RHTower.continuous_thetaCuspSourceTerm_one` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspKernelLogConcavity.lean:870–876`|Actual first theta-atom continuity, source admission only.|
+|S18|`RHTower.thetaCuspSchwartzReal_apply` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartz.lean:371–375`|Actual Schwartz representative identity, source admission only.|
+|S19|`RHTower.ccmLocalPotentialLocalizationDefect_eq` — `formal/GaloisForLFunctions/RHTower/CCM/CCMThetaPhaseLocalPotential.lean:40–50`|Full ready IMS potential-localization method object, assumptions/steps/obligations/evidence read. It identifies a different quadratic Weil defect; no actual D-history comparison.|
+|S20|`RHTower.ofReal_thetaCuspFullSourceReflectionEighthHankelCurvature_eq_generalModular` — `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthGeneralModularClosure.lean:18–26`|Finite eighth general modular curvature identity, not full signed moving cost.|
 
 ### I: complete ingredient set
 
@@ -373,15 +373,15 @@ I1 `Theta zero identity and weighted moment definition`, status=not_verified: EV
 |Index|Exact returned passage|Disposition|
 |---|---|---|
 |T1|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:1–77`|Full Fock phase/gauge moment block, different law.|
-|T2|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72`|Finite-stage real-divisor rigidity. ASSUMES the real-divisor source law; RH receiver, not its producer.|
+|T2|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72`|Finite-stage real-divisor rigidity. ASSUMES the real-divisor source law; RH receiver, not its producer.|
 |T3|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean:73–149`|Full Fock zero-phase/rotation block, no literal D.|
 |T4|`formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean:1–90`|Full Gomes qubit transport/Gibbs rotation block, wrong carrier.|
-|T5|`formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean:165–179`|Weil IMS arithmetic localization block, a different quadratic source defect.|
-|T6|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalBaseCircleJets.lean:93–179`|Theta Hawking source-circle mixed derivatives/measurability; different observable.|
+|T5|`formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean:165–179`|Weil IMS arithmetic localization block, a different quadratic source defect.|
+|T6|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalBaseCircleJets.lean:93–179`|Theta Hawking source-circle mixed derivatives/measurability; different observable.|
 |T7|`formal/GaloisForLFunctions/RHTower/GomesClarkWeightedSource.lean:95–143`|Generic finite weighted Clark/Hausdorff source injectivity; no positive signed history orientation.|
 |T8|`formal/.lake/packages/mathlib/Mathlib/RingTheory/MvPolynomial/WeightedHomogeneous.lean:235–335`|Mathlib weighted homogeneous polynomial algebra, no actual history bound.|
 |T9|`formal/.lake/packages/mathlib/Mathlib/RingTheory/MvPolynomial/WeightedHomogeneous.lean:329–450`|Further homogeneous-component algebra, no source sign.|
-|T10|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalBaseCircleJets.lean:1–100`|Theta Hawking source-circle kinematics; no literal complete primitive inequality.|
+|T10|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalBaseCircleJets.lean:1–100`|Theta Hawking source-circle kinematics; no literal complete primitive inequality.|
 
 ## 11. Exhaustive target disposition and review boundary
 
@@ -641,13 +641,13 @@ All B01–B27 full retained blocks were independently read and byte-matched to l
 |B18|`formal/GaloisForLFunctions/RHTower/CompleteHankelSignCone.lean:58–102`|Generic weighted moment/true integral domain; no actual PSD proof.|
 |B19|`formal/GaloisForLFunctions/RHTower/CompleteHankelSignCone.lean:107–145`|Complete conditional sign-cone iff, continuous version and genuine assumptions; requested interval clipped at actual EOF.|
 |B20|`formal/GaloisForLFunctions/RHTower/ThetaRenewalIncrement.lean:84–132`|Different renewal primitive and nonzero origin; no substitution into actual P.|
-|B21|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`|Homogeneous vector Volterra uniqueness; not positivity of inverse.|
+|B21|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCausalEquality.lean:197–232`|Homogeneous vector Volterra uniqueness; not positivity of inverse.|
 |B22|`formal/GaloisForLFunctions/HTGeometry/VolterraConvolutionAlgebra.lean:18–34`|Literal convolution orientation and continuous compact commutation.|
 |B23|`formal/GaloisForLFunctions/RHTower/PrimeArchThetaRawMomentRatioVanishing.lean:102–128`|Actual raw score fence/ratio interface, no all-log/history sign.|
 |B24|`formal/GaloisForLFunctions/RHTower/PrimeArchThetaCumulantMinor.lean:439–478`|Exact M0=nu1, actual normalized moments and first cumulant relation; prior full source audit reused with unchanged hash.|
 |B25|`formal/.lake/packages/mathlib/Mathlib/NumberTheory/Chebyshev.lean:152–165`|Fresh exact prime-Chebyshev theta_zero check; wrong theta for ingredient I1.|
 |B26|`formal/GaloisForLFunctions/RHTower/IntegralCurvedTateFormationPropernessIndex.lean:178–206`|Fresh exact C7 q-only equivalence; neither branch concluded, no M15/D bridge.|
-|B27|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean:29–71`|Fresh T2 implication requires all-stage real divisors; unconditional dichotomy does not select them.|
+|B27|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean:29–71`|Fresh T2 implication requires all-stage real divisors; unconditional dichotomy does not select them.|
 
 Whole-file hashes below certify byte freshness only for unrelated modules; semantic review covers their ALL returned excerpts, not every theorem in entire unrelated files. For used actual primary dependencies, the relevant source bodies were read or unchanged full prior audits reused. C/S extraction hashes are never substituted for this table.
 
@@ -668,19 +668,19 @@ Whole-file hashes below certify byte freshness only for unrelated modules; seman
 |F13|`formal/GaloisForLFunctions/HTGeometry/NonnegativeWeightMomentHankel.lean`|`7de8284fe0d0b2d41c7b767a08e2261b27d7ef682667031ebc0993dad5c206c8`|
 |F14|`formal/GaloisForLFunctions/HTGeometry/VolterraConvolutionAlgebra.lean`|`520f645d1fe538c5934c37d5c74d98c4b99a4aad1e0d5bea1799e5bb220e064a`|
 |F15|`formal/GaloisForLFunctions/HTGeometry/WeightedHistoryCompletionBoundaryLaw.lean`|`ecaf0d4b5e30f07dbcf3971886c932628d226a36344cf8015979e8c7bc03c922`|
-|F16|`formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean`|`3f8588ab3e2539f301e2e930b6f7887c01812afb4c53ed9359d9a2df11dcf2ad`|
-|F17|`formal/GaloisForLFunctions/RHTower/CCMThetaPhaseLocalPotential.lean`|`f18675c620e660547d8cb49b307556ef5724cef40237a53b6f402e74d5b69109`|
+|F16|`formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean`|`3f8588ab3e2539f301e2e930b6f7887c01812afb4c53ed9359d9a2df11dcf2ad`|
+|F17|`formal/GaloisForLFunctions/RHTower/CCM/CCMThetaPhaseLocalPotential.lean`|`f18675c620e660547d8cb49b307556ef5724cef40237a53b6f402e74d5b69109`|
 |F18|`formal/GaloisForLFunctions/RHTower/CompleteHankelSignCone.lean`|`9c0e07606162a4359235f10464261ef38c8641bbfd1d5abc8e1e5b72440451fe`|
-|F19|`formal/GaloisForLFunctions/RHTower/DeningerAbelMajorant.lean`|`24f1133e266465622c9ef333212cb4d9fc8e388f29297f4459339da2cce5c1b5`|
-|F20|`formal/GaloisForLFunctions/RHTower/DeningerWeightedMoment.lean`|`bbd5a77dd353e31288c2fa8491c93a7ce82c4d7e0137a7ae4a049cf43c4fe700`|
+|F19|`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelMajorant.lean`|`24f1133e266465622c9ef333212cb4d9fc8e388f29297f4459339da2cce5c1b5`|
+|F20|`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWeightedMoment.lean`|`bbd5a77dd353e31288c2fa8491c93a7ce82c4d7e0137a7ae4a049cf43c4fe700`|
 |F21|`formal/GaloisForLFunctions/RHTower/EulerDeletionWeightedResidueProjection.lean`|`b255f2789c337a322a82ee9da1707276771cd67758c2a3cc084259415080dfe8`|
 |F22|`formal/GaloisForLFunctions/RHTower/FisherCurvatureMoment.lean`|`0717fca8fa16883fe82a46b2e6034450da9356dc858a666a1b75d0a40b0811c6`|
 |F23|`formal/GaloisForLFunctions/RHTower/GomesClarkWeightedSource.lean`|`da5f57ae16a95f4b3065e2551ade8008108753fbc2935dbbc219ac9ae577b767`|
-|F24|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean`|`3fd92e46b5e63aa740e699890fe1ca3308956da445d52b618dcf714b1cd98d3c`|
-|F25|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualStageGreenBalance.lean`|`4ab0a3d7d5248fdf278a84062c28a7bd36adbe2342a7e9f032e112f21fe03831`|
-|F26|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean`|`903734d574a951919a452adb3104382989adf5137a2e82e92d7d2ee73cfc6521`|
-|F27|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaHermiteTraceFlag.lean`|`5618af6fb8cd45b564e2e63646d06e2b0d279f662622083adf8d67b3ee2baefd`|
-|F28|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceDifferentialGreen.lean`|`9708ac7a8a49fa029a780db048fd33ae2b29598dcdc3f51d6a5a4e3f3c2c0756`|
+|F24|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean`|`3fd92e46b5e63aa740e699890fe1ca3308956da445d52b618dcf714b1cd98d3c`|
+|F25|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualStageGreenBalance.lean`|`4ab0a3d7d5248fdf278a84062c28a7bd36adbe2342a7e9f032e112f21fe03831`|
+|F26|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCanonicalSourceCellOddPoleCompletion.lean`|`903734d574a951919a452adb3104382989adf5137a2e82e92d7d2ee73cfc6521`|
+|F27|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean`|`5618af6fb8cd45b564e2e63646d06e2b0d279f662622083adf8d67b3ee2baefd`|
+|F28|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceDifferentialGreen.lean`|`9708ac7a8a49fa029a780db048fd33ae2b29598dcdc3f51d6a5a4e3f3c2c0756`|
 |F29|`formal/GaloisForLFunctions/RHTower/IntegralCurvedTateFormationPropernessIndex.lean`|`81ce420d43650e1dd64ed6a09b29c22f619eea999a5eff623132cd6d4b7be621`|
 |F30|`formal/GaloisForLFunctions/RHTower/JointAncestryCriticalSingletonPrimeMultiplicationEscape.lean`|`792a7cf225b238915cfe651b2551a62a1dbb7036dc7f23abb1ef90f24d6d49d3`|
 |F31|`formal/GaloisForLFunctions/RHTower/LiClockPairedEtaPartitionRelativeVolterra.lean`|`f4c09695e01372445880b744327bb4367df98ecb5dea36319e1323e109a8e4e0`|
@@ -696,14 +696,14 @@ Whole-file hashes below certify byte freshness only for unrelated modules; seman
 |F41|`formal/GaloisForLFunctions/RHTower/PrimeArchThetaScoreMomentRecurrence.lean`|`3d36927db3df83b1c9cc57db8ee1bc0da1c753440072fc12fa5fdab624f1fe1d`|
 |F42|`formal/GaloisForLFunctions/RHTower/PrimeArchThetaTwoAtomHankelDominance.lean`|`3aa9597aec7e8563499cafdacea5e98ba5ce9c8df17171af81aca4a407e0dae8`|
 |F43|`formal/GaloisForLFunctions/RHTower/PrimeArchValuationSectorCones.lean`|`5170f88070589bfdfb0d210f4a7c0e7c673e7e30fc6adabac4b3d955707ce487`|
-|F44|`formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthGeneralModularClosure.lean`|`e11be4e54eaef3248e0cc3596d68ef9da1a228a081dc43d59cb1bbd8ec1feff6`|
-|F45|`formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionEighthLogJets.lean`|`c5e6902d38a2b3db8acaa1e88fb4e0bb02c6bab52ff4fb9e8a786e6e885c3a9f`|
-|F46|`formal/GaloisForLFunctions/RHTower/ThetaCuspFullReflectionSixthLogJets.lean`|`f02d0a1bbd4a78ba0c80fed9e8e865be132b3b60f077b68cd90f2ef4cd809c91`|
-|F47|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCausalEquality.lean`|`e5ef18e925d51456213f49dbb57647023c2dea4de048043a4640d3dce525ff0a`|
-|F48|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalBaseCircleJets.lean`|`5b4b740e9ae7544c17ea4c274d05f705e05ebd32fc650633b9ab77e04c86f4a6`|
-|F49|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean`|`2f6b94eabe734e8b7da6bc8f978acd45109b44b58232eb06bcf8dd684b12a7b9`|
-|F50|`formal/GaloisForLFunctions/RHTower/ThetaCuspKernelLogConcavity.lean`|`ee14392e0ab7cae26aab7148d64cd8f22103276f4606f489fd1b48efdb5ca41b`|
-|F51|`formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartz.lean`|`d58cc3761cb4628501db2bd846f393de6b495f2b7b73aa89d39fca0bd70ec76e`|
+|F44|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthGeneralModularClosure.lean`|`e11be4e54eaef3248e0cc3596d68ef9da1a228a081dc43d59cb1bbd8ec1feff6`|
+|F45|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLogJets.lean`|`c5e6902d38a2b3db8acaa1e88fb4e0bb02c6bab52ff4fb9e8a786e6e885c3a9f`|
+|F46|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullReflectionSixthLogJets.lean`|`f02d0a1bbd4a78ba0c80fed9e8e865be132b3b60f077b68cd90f2ef4cd809c91`|
+|F47|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCausalEquality.lean`|`e5ef18e925d51456213f49dbb57647023c2dea4de048043a4640d3dce525ff0a`|
+|F48|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalBaseCircleJets.lean`|`5b4b740e9ae7544c17ea4c274d05f705e05ebd32fc650633b9ab77e04c86f4a6`|
+|F49|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean`|`2f6b94eabe734e8b7da6bc8f978acd45109b44b58232eb06bcf8dd684b12a7b9`|
+|F50|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspKernelLogConcavity.lean`|`ee14392e0ab7cae26aab7148d64cd8f22103276f4606f489fd1b48efdb5ca41b`|
+|F51|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartz.lean`|`d58cc3761cb4628501db2bd846f393de6b495f2b7b73aa89d39fca0bd70ec76e`|
 |F52|`formal/GaloisForLFunctions/RHTower/ThetaRenewalFeedbackLoop.lean`|`ef6f65b3d9228cd981e4f62764ae496fddedfe6cd0c79a49a6832a1513c3adf9`|
 |F53|`formal/GaloisForLFunctions/RHTower/ThetaRenewalIncrement.lean`|`01f431568b3d368e7e84a185cb071f2fd9b1a0c26487defd473bdbadb14a7d38`|
 |F54|`formal/GaloisForLFunctions/RHTower/ThetaRenewalSeamGerm.lean`|`333a7294ed6ac6a6f90136e88cfda79632c5a8b03b2e9b45ddd7b9ad2a72cea8`|

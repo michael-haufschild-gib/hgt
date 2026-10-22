@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaCoPoissonIntervalKreinNoGo
-import GaloisForLFunctions.RHTower.SuzukiCriticalRootedBianchiCofinalNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalRootedBianchiCofinalNoGo
 
 /-!
 # Gamma/co-Poisson critical completion trilemma

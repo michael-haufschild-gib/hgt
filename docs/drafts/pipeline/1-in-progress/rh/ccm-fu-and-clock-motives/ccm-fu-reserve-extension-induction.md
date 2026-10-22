@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE] / direct proof attempt for frozen PE4
-- **Parent:** [adaptive prime ceiling](../../ccm-fu-adaptive-prime-ceiling.md)
+- **Parent:** [adaptive prime ceiling](ccm-fu-adaptive-prime-ceiling.md)
 - **Primary goal:** Complete source bound, CCM-FU boundary transport, RH.
 
 ## Attempted complete proof
@@ -347,7 +347,7 @@ the bounded quotient profiles and their signed interactions in changing
 retained states; summing the separate uniform errors does not supply the
 complete signed bound.
 
-The direct [binary gcd compensation attempt](../../ccm-fu-binary-gcd-compensation.md)
+The direct [binary gcd compensation attempt](ccm-fu-binary-gcd-compensation.md)
 also fails its frozen numerical test: 59 of all 2,550 saved packets
 `G_r+G_(2r)` at odd r and cutoffs through 100 are positive. The first,
 at cutoff eleven, survives independent 80-digit source reconstruction even
@@ -356,7 +356,7 @@ compensation is exactly the released pairs at odd cofactors three and five.
 Thus the full reserve must remain available across odd gcd classes; this
 test supplies no new Lean premise, formal no-go, or full source bound.
 
-The [negative-support extension candidate](../../ccm-fu-defect-supported-extension.md)
+The [negative-support extension candidate](ccm-fu-defect-supported-extension.md)
 allows already mixed fields. At every saved cutoff through32, all3949
 certified proper states with negative nonempty coordinates have a certified
 or terminal exit using a prime in the union of those labels. Every saved
@@ -390,7 +390,7 @@ some states that already bound every immediate successor. An exact-overlap
 induction can use a larger class, but its complete signed comparison and
 closure under repeated mergers have not been proved.
 
-The [exact successor-energy extension candidate](../../ccm-fu-exact-successor-extension.md)
+The [exact successor-energy extension candidate](ccm-fu-exact-successor-extension.md)
 uses that larger class directly: current energy and every immediate
 successor energy must meet the original diagonal. Every initial state has
 this property. All8176 eligible proper saved states through32 have a

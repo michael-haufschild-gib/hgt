@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiNegativeProjectorCoherentCompletion.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeProjectorCoherentCompletion.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiNegativeProjectorCoherentCompletion`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiNegativeProjectorCoherentCompletion`:
 
 ```text
 RHTower.abs_suzukiInverseDefect_eq_weight

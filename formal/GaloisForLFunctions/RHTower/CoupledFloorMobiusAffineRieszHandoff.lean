@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CoupledFloorMobiusCriticalBoundaryCancellation
-import GaloisForLFunctions.RHTower.CCMFUSuzukiCompletedRieszGraphEnergy
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiCompletedRieszGraphEnergy
 
 /-!
 # Affine-Riesz handoff from the coupled floor--Möbius incidence to CCM-FU

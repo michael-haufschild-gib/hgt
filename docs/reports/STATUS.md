@@ -208,7 +208,7 @@ inventories elsewhere.
 [boosted-cone]: ../../formal/GaloisForLFunctions/RHTower/TrivialWeightBoostedWeilCone.lean
 [twin-rigidity]: ../../formal/GaloisForLFunctions/RHTower/TwinRigidityZetaPower.lean
 [finite-moments]: ../../formal/GaloisForLFunctions/HTGeometry/FiniteHankelBoundaryExtensionClass.lean
-[finite-samples]: ../../formal/GaloisForLFunctions/RHTower/CCMFiniteSamplingGroundRigidity.lean
+[finite-samples]: ../../formal/GaloisForLFunctions/RHTower/CCM/CCMFiniteSamplingGroundRigidity.lean
 [theta-shape]: ../../formal/GaloisForLFunctions/RHTower/ThetaCompactStripZeroEngineering.lean
 [theta-charge]: ../../formal/GaloisForLFunctions/RHTower/ThetaCriticalBoundaryMellinCharge.lean
 [theta-ports]: ../../formal/GaloisForLFunctions/RHTower/ThetaEulerTwoPortJetPole.lean

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperCriticalFeatureEntropy
 import GaloisForLFunctions.RHTower.PaperCriticalFeaturePhaseQuantization
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureOffLineAliasBalance
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureOffLineAliasBalance
 
 /-!
 # Entropy accounting for the literal critical-line Xi packet

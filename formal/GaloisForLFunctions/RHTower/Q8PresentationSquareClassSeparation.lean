@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SerreQ8RootNumberNegOneTopRadicand
-import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneRadicalLifts
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOneRadicalLifts
 
 /-!
 # Square-class separation of the two Q8 radical presentations

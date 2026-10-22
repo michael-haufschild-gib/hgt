@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspPrimeArchSourceEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPrimeArchSourceEquation
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!

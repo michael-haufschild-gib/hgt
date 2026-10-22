@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new finite aggregate factorization and unconditional visible-cutoff
   negative orientation
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryAtomicConnection.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryAtomicConnection.lean`
 
 ## Universal matrix direction
 
@@ -64,5 +64,5 @@ the continuous pole/Gamma connection and its weld to centered continued Xi Ward 
 - `ccmGuinandWeilPrimeEntryAtomicTangent_rank_le_one`
 
 Targeted direct Lean check and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryAtomicConnection` pass. Principal
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPrimeEntryAtomicConnection` pass. Principal
 `#print axioms` reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

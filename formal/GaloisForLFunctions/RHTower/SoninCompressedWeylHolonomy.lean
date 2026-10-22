@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninSemilocalCyclicWeylDescent
-import GaloisForLFunctions.RHTower.SuzukiApertureL2Equivalence
-import GaloisForLFunctions.RHTower.SuzukiTaMovableCompletedCovarianceCharacteristic
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureL2Equivalence
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTaMovableCompletedCovarianceCharacteristic
 
 /-!
 # Finite-aperture Weyl holonomy and the literal Suzuki source

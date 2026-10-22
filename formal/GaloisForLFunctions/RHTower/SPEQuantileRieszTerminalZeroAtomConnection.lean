@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszPhysicalWallMovingOffsetTransport
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCovarianceExteriorProducer
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarCovarianceExteriorProducer
 
 /-!
 # Literal terminal connection at zero SP-E admissions

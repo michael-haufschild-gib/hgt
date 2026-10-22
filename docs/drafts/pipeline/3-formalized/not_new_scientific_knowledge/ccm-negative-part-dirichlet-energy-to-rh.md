@@ -90,7 +90,7 @@ measure already equivalent to RH.
 
 Module:
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativePartEnergyGate.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativePartEnergyGate.lean`
 
 Principal declarations:
 

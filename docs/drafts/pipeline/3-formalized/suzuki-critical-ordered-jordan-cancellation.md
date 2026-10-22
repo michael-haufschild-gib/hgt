@@ -153,7 +153,7 @@ Verdict: `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]` pending external peer review.
 
 Module:
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalOrderedJordanCancellation.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalOrderedJordanCancellation.lean`
 
 Unconditional public results:
 
@@ -170,9 +170,9 @@ Unconditional public results:
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalOrderedJordanCancellation.lean`
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalOrderedJordanCancellation.lean`
   passed.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCriticalOrderedJordanCancellation` passed.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalOrderedJordanCancellation` passed.
 - Capstone and major-premise axiom audits report only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - Formal lint finds no forbidden declaration or reachability issue in this module. Repository-wide

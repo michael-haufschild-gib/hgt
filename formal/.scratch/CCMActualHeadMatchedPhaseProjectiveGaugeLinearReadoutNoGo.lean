@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeTraceClassOperator
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeTraceClassOperator
 import GaloisForLFunctions.RHTower.PrimeLogTripleCluster
 
 open Filter Topology

@@ -186,7 +186,7 @@ translation calculus. It is a route-useful bridge, not new scientific knowledge.
 ## Lean status
 
 `[FORMALIZED]` — module
-`formal/GaloisForLFunctions/RHTower/CCMBoundaryLaplaceSaturation.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryLaplaceSaturation.lean`
 (5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

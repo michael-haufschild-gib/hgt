@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittSingularGammaTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittSingularGammaTransgression
 import GaloisForLFunctions.RHTower.RiemannDerivedPolarizationLaw
 import GaloisForLFunctions.RHTower.XiSourceModularTypeSuperselectionLaw
 

@@ -1,7 +1,7 @@
 # CCM-FU: signed head moment and averaged remainder
 
 - **Stage:** 1-in-progress; averaged source remainder. The [uniformly positive signed moment](../../../3-formalized/ccm-fu-fixed-core-signed-head-moment.md) is formalised.
-- **Parent:** [literal prime correlation](../../ccm-fu-fixed-core-prime-correlation.md).
+- **Parent:** [literal prime correlation](ccm-fu-fixed-core-prime-correlation.md).
 - **Goal:** Signed reserve supply and renewal through changing processed cores, exhaustive selection, uniform signed Abel bound, RH.
 
 ## Closed source invariant
@@ -59,7 +59,7 @@ The proved continuous representation of the discrete correlation series is
 
 This discrete-to-continuous correlation identification is formalized,
 including every quotient block and the full absolute tail.
-The [literal paired Mellin contour](../../ccm-fu-fixed-core-correlation-contour.md)
+The [literal paired Mellin contour](ccm-fu-fixed-core-correlation-contour.md)
 has a proved large-dilation limit, including its entire source,
 quadratic strip decay, justified contour shift and vanishing boundary
 remainder. Its residue is exactly -B(-1/2)*product(1-sqrt(p))*J_P.

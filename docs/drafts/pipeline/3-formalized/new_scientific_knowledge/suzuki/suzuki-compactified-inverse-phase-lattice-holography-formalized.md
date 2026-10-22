@@ -11,9 +11,9 @@
 - `formal/GaloisForLFunctions/HTGeometry/LabelledAtomicMeasure.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PointwiseLimitClass.lean`
 - `formal/GaloisForLFunctions/HTGeometry/ScheffeCounting.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCayleyPhaseLift.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCayleyPhaseLift.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedPhaseProfile.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`
 
 ## Formal theorem surface
 
@@ -65,7 +65,7 @@ GaloisForLFunctions.HTGeometry.tendsto_tsum_mul_comp_of_tendsto
 GaloisForLFunctions.HTGeometry.tendsto_tsum_posPart_of_tendsto
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiCayleyPhaseLift`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCayleyPhaseLift`:
 
 ```text
 GaloisForLFunctions.RHTower.cayleyPhaseLift_half_sub
@@ -74,7 +74,7 @@ GaloisForLFunctions.RHTower.cayleyPhaseLift_zero_of_odd
 GaloisForLFunctions.RHTower.neg_cot_half_cayleyPhaseLift
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCompactifiedPhaseProfile`:
 
 ```text
 GaloisForLFunctions.RHTower.hasDerivAt_suzukiCenteredInversePhase
@@ -97,7 +97,7 @@ GaloisForLFunctions.RHTower.suzukiPhaseProbabilityMass_eq_two_mul_compactifiedDe
 GaloisForLFunctions.RHTower.tan_suzukiCompactifiedInversePhase
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiDonoghueHerglotzTransform`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiDonoghueHerglotzTransform`:
 
 ```text
 GaloisForLFunctions.RHTower.cayleyOfHerglotz_I
@@ -139,7 +139,7 @@ These are research frontier items, not formalization debt.
 - **Paper theorem:**
   `./suzuki-compactified-inverse-phase-lattice-holography.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedPhaseProfile.lean`
 - **RH used:** no
 - **Computation used:** no
 
@@ -195,8 +195,8 @@ the resulting lattice values and masses with the Xi/de Branges divisor.
 
 ## Audit
 
-- [x] direct `lake env lean GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
-- [x] exact `lake build GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile`
+- [x] direct `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedPhaseProfile.lean`
+- [x] exact `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCompactifiedPhaseProfile`
 - [x] SOTA import source check
 - [x] `#print axioms` capstone audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] global formal lint

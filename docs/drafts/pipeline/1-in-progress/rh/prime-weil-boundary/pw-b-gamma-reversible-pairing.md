@@ -215,7 +215,7 @@ are preserved in the [endpoint search record](../../pw-b-gamma-reciprocal-flat-e
 The useful methods are the actual mean-value theorem, admitted Gamma
 majorants, dominated integral convergence and Tannery. Proposed Sonin
 L2 and strong-log Mellin carriers do not establish admission or spectral
-occurrence for this source. The [attack journal](../../pw-b-source-orientation-attack.md)
+occurrence for this source. The [attack journal](pw-b-source-orientation-attack.md)
 records the recent broad arXiv papers and their missing transfer premises.
 
 ## Lean and research state
@@ -239,7 +239,7 @@ the reversible search in the [endpoint records](../../pw-b-gamma-endpoint-subtra
 retain partial coverage of723712 declarations, candidates and ingredient
 sets. The proposed finite-fibre, cusp-eigenform and uniformly bounded-weight
 arguments were checked and do not establish this singular source domain.
-The [main attack card](../../pw-b-source-orientation-attack.md) records the
+The [main attack card](pw-b-source-orientation-attack.md) records the
 recent broad arXiv searches and the exact limitations of their transfer.
 
 
@@ -306,7 +306,7 @@ C_z,p=sum_(n>=3)|a_n|/(n-1)^p finite and j>=p>=2,
 
 The qualitative complete detector already suffices. This refinement is not
 needed for the corrected-scalar no-go and would make no uniform claim in z.
-The [attack journal](../../pw-b-source-orientation-attack.md#iteration30-original-cutoff-coefficient-extraction)
+The [attack journal](pw-b-source-orientation-attack.md#iteration30-original-cutoff-coefficient-extraction)
 retains the conjecture/proof/pivot history, research coverage and build evidence.
 
 ## Iteration31 verified mechanism: translate the moving contact layer

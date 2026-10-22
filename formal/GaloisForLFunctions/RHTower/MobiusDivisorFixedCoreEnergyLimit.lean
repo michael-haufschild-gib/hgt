@@ -56,7 +56,7 @@ private lemma prefix_eq (P : Finset ℕ) (M T : ℕ) :
     sum_fiberwise_eq_sum_filter (fixedCoreSquarefreeIndices P M) (range T)
       (fun r => M/r) (fun r => (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ))
 
-lemma term_as_fibre (P : Finset ℕ) (M : ℕ) {r : ℕ}
+private lemma term_as_fibre (P : Finset ℕ) (M : ℕ) {r : ℕ}
     (hr : Squarefree r) (hd : Disjoint r.primeFactors P) :
     (r : ℝ)*(mobiusDivisorInterpolatedFibre M r P ∅)^(2 : ℕ) =
       (mobiusDivisorSelectionFibre M P r.primeFactors)^(2 : ℕ) := by

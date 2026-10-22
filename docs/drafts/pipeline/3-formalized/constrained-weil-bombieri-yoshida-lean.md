@@ -244,7 +244,7 @@ wants `HasDerivAt` on `Ici`; `-(1/(ε − s)) = 1/(s − ε)` via `show ε − s
 `cosh 2⁻¹` forms of `one_le_cosh` in context; `rw [h]` closes `≤`/`=` goals by `rfl`, so a following `<;> simp`
 is flagged — use bullets.
 
-## Prime-side landing: `RHTower/SuzukiScrewSubexponentialCriterion.lean`
+## Prime-side landing: `RHTower/Suzuki/SuzukiScrewSubexponentialCriterion.lean`
 
 The threshold engine with the constant weight `W ≡ 1` lands on Suzuki's unweighted screw function
 `Ψ(t) = Σ'_q (1 − cos(z_q t))/z_q²`, which is real (`xiScrewDivisor_im_eq_zero`) and equals the
@@ -261,7 +261,7 @@ explicit smooth part minus the prime hinge sum on `t ≥ 0`
 Trap: `screwPrimeSum` lives in `GaloisForLFunctions.RHTower`, not `RHTower`; qualify it fully.
 Axioms `[propext, Classical.choice, Quot.sound]`; built as a leaf of `RHTower` (12332 jobs).
 
-## Sharp cap: `RHTower/CCMRestrictedWeilPolarBombieriYoshidaSharp.lean`
+## Sharp cap: `RHTower/CCM/CCMRestrictedWeilPolarBombieriYoshidaSharp.lean`
 
 Translation invariance of the screw form halves the two-bump aperture and the excess cap.
 

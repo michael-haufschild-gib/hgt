@@ -54,8 +54,8 @@ All statements use the literal arithmetic cells. No source-sign premise
 or RH premise is introduced.
 
 Final audit: `lake --old env lean
-GaloisForLFunctions/RHTower/CCMOutgoingQuantileEntropyDebit.lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMOutgoingQuantileEntropyDebit.olean`,
+GaloisForLFunctions/RHTower/CCM/CCMOutgoingQuantileEntropyDebit.lean -o
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMOutgoingQuantileEntropyDebit.olean`,
 session19866, exit0 without diagnostics. All12 public declarations were
 queried in `/tmp/sz_quantile_entropy_axioms.lean`, session43695, exit0;
 only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import added;

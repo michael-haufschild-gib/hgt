@@ -73,7 +73,7 @@ The active C19 calculation records why the common producer cannot be passed thro
 
 ## Lean validation
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceDensityDual`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceDensityDual`.
 Namespace: `RHTower.D4BMSourceDensityDual`.
 
 Seven public theorems cover the integrating-factor derivative, source-forcing identity, radial density, source AdS residue, spin-two radial flux, actual fundamental-mode endpoint and their exact difference residue. Six public definitions name the explicit source expressions. Source theorems quantify over actual Xi occurrences and geometric domain subtypes; no additional source law or vanishing assumption is introduced.

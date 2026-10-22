@@ -349,4 +349,4 @@ Verdict: `[PAPER-PROVED] [NOVELTY UNVERIFIED]`.
       -exterior-source.md` now states that the compensated finite-index fixed sector must not be
       identified with the actual boundary-defect kernel;
 - [x] formalize the exact dependency-closed theorem in Lean —
-      `RHTower/CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean`.
+      `RHTower/CCM/CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean`.

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.BesselArgumentDerivative
 import GaloisForLFunctions.HTGeometry.BesselOrderRecurrence
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
 
 /-!
 # The modified Bessel equation and the Mellin transform of `K_ν(t) e^{-t}`

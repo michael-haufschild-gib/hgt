@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FirstRowModelSymbol
-import GaloisForLFunctions.RHTower.CCMHighRadialFirstRowBV
+import GaloisForLFunctions.RHTower.CCM.CCMHighRadialFirstRowBV
 
 /-!
 # The high radial first-row entry

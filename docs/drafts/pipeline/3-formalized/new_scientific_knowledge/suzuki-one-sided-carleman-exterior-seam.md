@@ -254,7 +254,7 @@ Priority remains externally unaudited.  No novelty is claimed for generic Carlem
 
 ## Formalization
 
-`GaloisForLFunctions.RHTower.SuzukiOneSidedCarlemanSeam` proves:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiOneSidedCarlemanSeam` proves:
 
 ```text
 suzukiCarlemanSheet_sum

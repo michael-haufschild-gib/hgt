@@ -172,7 +172,7 @@ boundary, not the elementary power-vanishing lemma by itself.
   cannot see nonreal divisor surgery.  Surviving source selection must use full germs/unbounded jet
   compatibility or nonlocal complex data.
 - **Status:** Paper and Lean proved in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildCompletedResponseBoundedJetFiltrationNoGo`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildCompletedResponseBoundedJetFiltrationNoGo`.
   Direct `lake env lean` and exact targeted `lake build` pass.  Axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`.  Module is wired into `RHTower.lean` and corpus search finds
   the route kill and survivor.  Global lint failure lists only unrelated pre-existing unreachable

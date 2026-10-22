@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.FrechetClosedRange
 import GaloisForLFunctions.HTGeometry.SchwartzComplete
 import GaloisForLFunctions.HTGeometry.HermiteOrthogonality
 import GaloisForLFunctions.HTGeometry.SchwartzTranslation
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityTemperedDistributionLocalProbeNoGo
 
 /-!
 # FZZ puncture tempered scalar occurrence no-go

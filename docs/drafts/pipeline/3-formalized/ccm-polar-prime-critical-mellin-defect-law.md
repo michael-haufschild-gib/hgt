@@ -395,8 +395,8 @@ the open across-boundary Stieltjes layer now bridges from this explicit finite v
 **Lean status:** `[FORMALIZED]`.
 
 The previously missing distributional sign and autocorrelation Stieltjes layers are formalized in
-`formal/GaloisForLFunctions/RHTower/CCMPolarPrimeSourceSign.lean` and
-`formal/GaloisForLFunctions/RHTower/CCMPolarPrimeStieltjesAutocorrelation.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPolarPrimeSourceSign.lean` and
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPolarPrimeStieltjesAutocorrelation.lean`.
 
 The source-sign module proves:
 

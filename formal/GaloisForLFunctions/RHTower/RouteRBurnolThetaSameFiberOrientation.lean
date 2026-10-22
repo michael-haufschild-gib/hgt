@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.HedenmalmCompletedDividedEnergy
-import GaloisForLFunctions.RHTower.HedenmalmThetaCompactFluxEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompletedDividedEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaCompactFluxEnergy
 import GaloisForLFunctions.RHTower.BurnolCartierHeadEnergyStokesFlux
 
 /-!

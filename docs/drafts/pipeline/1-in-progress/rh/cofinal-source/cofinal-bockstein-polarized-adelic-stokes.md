@@ -904,7 +904,7 @@ rational-adelic period and the vector is reconstructed from pre-divisor Euler--G
 no divisor-indexed interpolation or pulled-back source norm is introduced.
 
 Formal module:
-`GaloisForLFunctions/RHTower/CCMRationalAdelicReflectedGaussianCartierComparison.lean`.
+`GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicReflectedGaussianCartierComparison.lean`.
 
 ### Exact surviving obstruction `[OPEN CORE NARROWED]`
 
@@ -1035,7 +1035,7 @@ atom is zero, equivalently that the zero-hidden physical atom itself belongs to 
 No such annihilation, and therefore no RH proof, is claimed here.
 
 Formal status: `[FORMALISED IN LEAN]` in
-`GaloisForLFunctions/RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
+`GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
 The module proves the fixed-polarization isometry, comparison injectivity, actual completed Hodge
 action on the coordinate line, unique hidden untwisting, zero-hidden physical landing, exact
 resolved-graph landing, retained leading-jet nonerasure, and the rational-adelic atom
@@ -1101,7 +1101,7 @@ layer; it is now exactly isolated, with line-invariance and comparison-gauge wea
 both closed.
 
 Formal status: appended to
-`GaloisForLFunctions/RHTower/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
+`GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicCompletedXiFixedCoronaPolarization.lean`.
 Direct check, targeted build, and axiom audit (only `propext`, `Classical.choice`,
 `Quot.sound`) pass.
 

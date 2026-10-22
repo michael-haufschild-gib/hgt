@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveBurnolJuliaKreinMatrixCompletion
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitPrimeCellGammaPythagoreanBudget
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitPrimeCellGammaPythagoreanBudget
 
 /-!
 # Route P fourth-depth Gamma-cyclic Julia intertwiner

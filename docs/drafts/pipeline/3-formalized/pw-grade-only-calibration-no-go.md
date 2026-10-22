@@ -83,7 +83,7 @@ Therefore calibrated endpoint normalization is uniquely forced and spectrally de
 - Calibration property: `SchwarzschildParikhWilczekGradeOnlyDiagonalCalibration`.
 - Closed route kill: `no_schwarzschildParikhWilczekGradeOnlyDiagonalCalibration`.
 - Direct `lake env lean` check: PASS.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGradeOnlyCalibrationNoGo`: PASS (`11570/11570`; shared worktree required stale dependency replay).
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGradeOnlyCalibrationNoGo`: PASS (`11570/11570`; shared worktree required stale dependency replay).
 - Axiom audit for all named theorems: only `propext`, `Classical.choice`, `Quot.sound`.
 - Wired into `GaloisForLFunctions.RHTower` umbrella. Global lint reaches new module and remains red only on unrelated concurrently unwired modules; no lint error names this module.
 

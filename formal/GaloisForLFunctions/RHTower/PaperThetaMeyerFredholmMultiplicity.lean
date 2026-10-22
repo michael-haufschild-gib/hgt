@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerFredholmXi
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerFredholmXi
 import GaloisForLFunctions.RHTower.PaperThetaConfluentCurrent
 
 /-! # The native theta gluing threshold is the actual Meyer spectral rank

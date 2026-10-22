@@ -229,7 +229,7 @@ faithfulness on Meyer generalized spectral blocks.
 
 ### The Calderón graph Lagrangian theorem landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCalderonGraph.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonGraph.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerGraph_symplectic_iff` — mathlib's adjoint of a submodule of Cauchy data *is* the Green
@@ -245,7 +245,7 @@ faithfulness on Meyer generalized spectral blocks.
 
 ### The completing-the-square identity `(6)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerEnergyIdentity.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEnergyIdentity.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerNormSq_hasDerivAt` — **the derivative of the squared modulus** along a differentiable
@@ -261,7 +261,7 @@ faithfulness on Meyer generalized spectral blocks.
 
 ### The energy identity `(7)` on the trigonometric core landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerTraceEnergy.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTraceEnergy.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The card proves `(7)` "first for compactly supported coefficients and then by closure"; the core
@@ -277,7 +277,7 @@ case is formalized.
 
 ### The trace bound and the Dirichlet principle landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerTraceBound.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTraceBound.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerEnergy_completeSquare` — **`(6)` in the displayed form**: the radial energy is the
@@ -291,7 +291,7 @@ case is formalized.
 
 ### The boundary space `(1)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerBoundarySpace.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBoundarySpace.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerBoundaryNormSq ℓ φ = ∑_a |ℓ a| ‖φ_a‖²` — the boundary norm `(1)`.
@@ -306,7 +306,7 @@ completeness: the completion in `(1)` is realized concretely rather than abstrac
 
 ### The Dirichlet orthogonality of `(5)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerDirichletOrthogonal.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDirichletOrthogonal.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The card's proof of `(5)` is one sentence: "if `u₀` has zero trace, integration by parts against the
@@ -322,7 +322,7 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
 
 ### The energy form is definite
 
-`formal/GaloisForLFunctions/RHTower/DeningerEnergyDefinite.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEnergyDefinite.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerEnergy_nonneg` — the radial energy `(2)` is nonnegative.
@@ -333,7 +333,7 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
 
 ### The boundary space `(1)` is a Hilbert space
 
-`formal/GaloisForLFunctions/RHTower/DeningerBoundaryComplete.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBoundaryComplete.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerBoundarySubmodule` — the boundary data of finite boundary norm form a submodule: the
@@ -346,7 +346,7 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
 
 ### The trace quotient isometry `(3)`, the decomposition `(5)`, and the defect `(8)`
 
-`formal/GaloisForLFunctions/RHTower/DeningerTraceQuotient.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTraceQuotient.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerProjection_minimal` — the orthogonal projection minimizes the distance to a subspace.
@@ -366,7 +366,7 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
 
 ### The cup form `(10)` and the positive Hodge operator `(11)`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketHodge.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketHodge.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerGradMode_cup` — the radial wedge integral of the gradients of two opposite Poisson modes
@@ -382,7 +382,7 @@ harmonic Poisson extension makes their energy cross term zero".  That is now a t
 
 ### Power naturality
 
-`formal/GaloisForLFunctions/RHTower/DeningerPowerNaturality.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPowerNaturality.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPowerPull_absOp` — the power pullback intertwines `A_ℓ` with weight one.

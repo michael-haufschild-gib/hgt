@@ -4,7 +4,7 @@ Status: the actual Legendre-kernel cancellation, Taylor integral remainder, expl
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hard target is the assembled physical pairing. This calculation attacks the explicit circle term in equations (8)–(10) of [the source-only horizon construction](../../hb-causal-horizon-circle-kernel.md), using the [proved source adjoint identity](../../../3-formalized/hb-causal-source-adjoint-kernel.md).
+The hard target is the assembled physical pairing. This calculation attacks the explicit circle term in equations (8)–(10) of [the source-only horizon construction](hb-causal-horizon-circle-kernel.md), using the [proved source adjoint identity](../../../3-formalized/hb-causal-source-adjoint-kernel.md).
 
 ## Exact cancellation
 

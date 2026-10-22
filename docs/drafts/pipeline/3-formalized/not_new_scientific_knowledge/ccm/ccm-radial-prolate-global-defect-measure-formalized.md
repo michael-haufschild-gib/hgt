@@ -8,7 +8,7 @@
 
 ## Lean modules
 
-New: `GaloisForLFunctions.RHTower.CCMRadialGlobalDefectMass`.
+New: `GaloisForLFunctions.RHTower.CCM.CCMRadialGlobalDefectMass`.
 
 Pre-existing and reused: `CCMRadialProlateProfileMeasure`, `CCMRadialProfileAsymptotic`,
 `CCMRadialSquaredProfile`, `CCMRadialDensityBridge`, `FresnelIntegral`, `BesselJZeroConstant`,
@@ -58,6 +58,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the new module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMRadialGlobalDefectMass`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMRadialGlobalDefectMass`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

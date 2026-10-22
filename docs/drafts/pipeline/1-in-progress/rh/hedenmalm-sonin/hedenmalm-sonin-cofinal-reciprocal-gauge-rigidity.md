@@ -49,10 +49,10 @@ Conjecture that these two transformation laws are compatible exactly at neutral 
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmSoninCofinalReciprocalGaugeRigidity.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSoninCofinalReciprocalGaugeRigidity.lean`.
 - 2026-08-13 — Imported by `GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmSoninCofinalReciprocalGaugeRigidity`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSoninCofinalReciprocalGaugeRigidity`
   (`12962/12962`).
 - 2026-08-13 — Axiom audit passed for every new theorem; dependencies are exactly `propext`,
   `Classical.choice`, and `Quot.sound`.

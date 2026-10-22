@@ -1150,6 +1150,7 @@ def research_options(args: argparse.Namespace) -> dict:
         "explore": getattr(args, "explore", 5),
         "module": getattr(args, "module", ""),
         "exclude_modules": getattr(args, "exclude_module", []),
+        "scope": getattr(args, "scope", "ours"),
     }
 
 
@@ -1168,7 +1169,10 @@ def render_search(args: argparse.Namespace, result: SearchResults,
                           "markers": [dataclasses.asdict(m) for m in markers], **extra}, ensure_ascii=False))
         return
     mode = "OR (any term/phrase)" if options["any_terms"] else "AND (every term/phrase)"
+    scopes = {'ours': 'this project only', 'mathlib': 'installed Mathlib only (lexical)',
+              'all': 'this project and Mathlib'}
     print(f"Query: {mode}; {'exact tokens' if options['exact'] else 'prefix expansion'}; {backend}")
+    print(f"Scope: {scopes.get(options['scope'], options['scope'])}")
     print(f"Matches: {result.total} declarations in {result.modules} modules; "
           f"{result.eligible} after module cap ({options['per_module'] or 'off'}).")
     print(f"Declarations (offset {options['offset']}, showing {len(result.declarations)}):")
@@ -1178,8 +1182,11 @@ def render_search(args: argparse.Namespace, result: SearchResults,
         if hit.doc:
             print(f"  {hit.doc[:240]}{'…' if len(hit.doc) > 240 else ''}")
 
-    for hit in result.declarations:
-        show(hit)
+    if options['scope'] == 'mathlib':
+        print("  (declaration list covers this project only; Mathlib hits appear under research discovery)")
+    else:
+        for hit in result.declarations:
+            show(hit)
     if result.exploration:
         print("\nExplore other modules (same query; favors less represented filename families):")
         for hit in result.exploration:
@@ -1231,7 +1238,8 @@ def research(args: argparse.Namespace) -> int:
             if getattr(args, "no_refresh", False) and not index.counts()["files"]:
                 print("index is empty or requires rebuilding; rerun without --no-refresh", file=sys.stderr)
                 return 2
-            result = index.search(query, limit=args.limit, **options)
+            result = index.search(query, limit=args.limit,
+                                  **{k: v for k, v in options.items() if k != 'scope'})
             marker_hits = index.search_markers(
                 query, args.limit, **{k: options[k] for k in
                 ("any_terms", "exact", "module", "exclude_modules")}
@@ -1459,6 +1467,10 @@ def main(argv: list[str] | None = None) -> int:
     research_parser.add_argument("--offset", type=int, default=0, help="page through results after module cap")
     research_parser.add_argument("--module", default="", help="literal substring of dotted module name")
     research_parser.add_argument("--exclude-module", action="append", default=[], help="exclude module substring; repeatable")
+    research_parser.add_argument("--scope", choices=("ours", "mathlib", "all"), default="ours",
+                                 help="ours: this project's Lean and research notes (default). "
+                                      "mathlib: installed Mathlib only, lexical results. "
+                                      "all: both. Only our corpus has semantic vectors.")
     research_parser.add_argument("--json", action="store_true", help="structured hits, match counts, query interpretation")
     research_parser.add_argument(
         "--no-refresh",

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
-import GaloisForLFunctions.RHTower.SuzukiPositiveHalfLine
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveHalfLine
 import GaloisForLFunctions.HTGeometry.DilationSpectralType
 import GaloisForLFunctions.HTGeometry.PullbackCompletion
 import GaloisForLFunctions.HTGeometry.ResolventCompactness

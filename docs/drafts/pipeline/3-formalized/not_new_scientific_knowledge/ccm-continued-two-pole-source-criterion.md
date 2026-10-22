@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / FORMALIZATION / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/CCMTwoPoleSourceCriterion.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMTwoPoleSourceCriterion.lean`
 - **Scientific status:** `[PROVED IN LEAN] [BRIDGE] [NOT AN RH PROOF]`
 
 ## Statement

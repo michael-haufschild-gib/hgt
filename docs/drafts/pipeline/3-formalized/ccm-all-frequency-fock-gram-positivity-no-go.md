@@ -61,7 +61,7 @@ Since `K` itself already satisfies every finite mixed-frequency Gram-positivity 
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo`
+- Module: `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedAllFrequencyFockGramPositivityNoGo`
 - Positive survivor: `ccmActualHeadMatchedPhaseAllFrequencyProjectiveFockPrimePowerReporterSignStraddle`
 - Route kills: `ccmActualHeadMatchedPhaseAllFrequencyFockGramReporterPositivityRouteKilled`, `ccmActualHeadMatchedPhaseAllFrequencyFockGramRatioLowerBoundRouteKilled`
 - Direct check and target-only build: pass.

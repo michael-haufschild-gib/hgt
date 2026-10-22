@@ -117,13 +117,13 @@ completion of this fixed current, not existence of `L_M` and not cofinal converg
 - [x] Rewire active compound conjecture to critical current topology.
 
 Lean core:
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalApertureQuarterShiftCurrent.lean`, especially
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApertureQuarterShiftCurrent.lean`, especially
 `suzukiCriticalApertureBoundaryAtom_succ`,
 `norm_suzukiCriticalApertureDepthRatio_lt_one`, and
 `tsum_suzukiCriticalApertureBoundaryAtom_eq_resolvent`.
 
 Prime completion:
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalAperturePrimeCurrent.lean` defines the closed
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAperturePrimeCurrent.lean` defines the closed
 per-prime current `suzukiCriticalApertureQuarterShiftCurrent` and the cofinal current
 `suzukiCriticalApertureCofinalCurrent`, and proves the whole majorant chain of the audit
 paragraph above:

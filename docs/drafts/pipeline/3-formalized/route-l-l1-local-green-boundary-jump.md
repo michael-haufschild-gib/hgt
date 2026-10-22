@@ -156,7 +156,7 @@ then attributed 91.3 seconds to imports and 2.31 seconds to elaboration,
 with 285 milliseconds in tactics. No resource limit was raised.
 
 The generic calculus now lives in
-`formal/GaloisForLFunctions/RHTower/DeningerL1GreenCellCalculus.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL1GreenCellCalculus.lean`
 (286 lines, 17 public declarations), importing only L1 periodization and
 the necessary mathlib summation modules. The two concrete source results
 remain in `DeningerL1LocalGreenBoundary.lean` (41 lines). Importing that
@@ -171,7 +171,7 @@ have disappeared. Neither module contains a heartbeat or recursion-limit
 override.
 
 The optimized final audit
-`lake build GaloisForLFunctions.RHTower.DeningerL1LocalGreenBoundary`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerL1LocalGreenBoundary`
 passed: only the new core (60 seconds) and its application (82 seconds)
 were built. Existing dependency diagnostics were replayed. No full or
 umbrella build, numerical experiment, or axiom-print command was used.

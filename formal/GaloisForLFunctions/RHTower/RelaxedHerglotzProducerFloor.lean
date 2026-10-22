@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RelaxedHerglotzProducerCompactness
 import GaloisForLFunctions.RHTower.CarlsonHalfPlaneProducerFloor
-import GaloisForLFunctions.RHTower.SuzukiRemainderFourierTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRemainderFourierTransform
 import GaloisForLFunctions.RHTower.WindingAmplitude
 import GaloisForLFunctions.RHTower.WeilConeSingularDeficitEnvelope
 

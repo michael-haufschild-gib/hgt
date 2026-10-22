@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateDunsterRegularBranch
-import GaloisForLFunctions.RHTower.CCMRadialProlateEndpointLayer
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProlateEndpointLayer
 
 open Filter Set Topology
 noncomputable section

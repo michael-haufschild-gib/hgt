@@ -284,9 +284,9 @@ All three leaves are imported by `GaloisForLFunctions.RHTower`.
 Verification:
 
 - exact source check:
-  `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence.lean`
+  `lake env lean GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence.lean`
 - exact leaf build:
-  `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence`
+  `lake build GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergyZeroWidthEquivalence`
 - axiom audit of all five new endpoint declarations: only `propext`, `Classical.choice`, and
   `Quot.sound`; no project axiom and no `sorryAx`.
 - `squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`
@@ -300,7 +300,7 @@ Lean now proves generalized von Koch in the exact transparent source proposition
 
 The proof handles `alpha<1/2` by a parameterized zero-free Perron contour and handles
 `alpha>=1/2` by the unconditional linear Chebyshev bound. Exact source check and exact leaf build
-both pass for `GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch`; axiom audit of all 22 new
+both pass for `GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch`; axiom audit of all 22 new
 declarations reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Gates

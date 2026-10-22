@@ -11,7 +11,7 @@ This is the bounded algebraic layer of the Burnol conductor argument.  It does
 not construct the unbounded position/conductor multipliers or prove the BMO
 boundedness of their analytic commutator.
 -/
-import GaloisForLFunctions.RHTower.CCMSoninResolventCommutator
+import GaloisForLFunctions.RHTower.CCM.CCMSoninResolventCommutator
 
 noncomputable section
 

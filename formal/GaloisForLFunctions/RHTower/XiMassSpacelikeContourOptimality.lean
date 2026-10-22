@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmGammaSewnXiMassTimelikeBoostBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnXiMassTimelikeBoostBridge
 import GaloisForLFunctions.HTGeometry.PrincipalSquareRoot
 
 /-!

@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-ramified-top-conormal-finite-stage-cocone.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalFiniteStageCocone`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRamifiedTopConormalFiniteStageCocone`
 
 ## Formalized capstones
 
@@ -38,11 +38,11 @@ source annihilation, or completed Gamma comparison is assumed.
 ## Verification
 
 - direct foreground check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerRamifiedTopConormalFiniteStageCocone.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRamifiedTopConormalFiniteStageCocone.lean`
   passed;
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`;
 - targeted build:
-  `lake build GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalFiniteStageCocone`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRamifiedTopConormalFiniteStageCocone`
   passed;
 - `#print axioms` on eight finite-stage capstones reports only `propext`,
   `Classical.choice`, and `Quot.sound`;

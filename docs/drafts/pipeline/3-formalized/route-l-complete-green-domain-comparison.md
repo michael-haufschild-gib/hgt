@@ -5,7 +5,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM; finite-domain classification and explicit complete-source test
 - **Depends on:** [C32](../3-formalized/route-l-complete-transgression-physical-balance.md), [C37](../3-formalized/route-l-coherent-joint-source-transport.md)
-- **Lean:** `GaloisForLFunctions.RHTower.DeningerFinitePrimeGreenDomainXiJets`
+- **Lean:** `GaloisForLFunctions.RHTower.Deninger.DeningerFinitePrimeGreenDomainXiJets`
 - **RH status:** unproved
 
 Chain: complete original Green/BV source → cyclic/fixed physical-reader

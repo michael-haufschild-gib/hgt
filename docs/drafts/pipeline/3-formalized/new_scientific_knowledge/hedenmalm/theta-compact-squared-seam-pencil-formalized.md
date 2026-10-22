@@ -7,8 +7,8 @@
 ## Lean modules
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaSquaredSeamPencil.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSquaredSeamPencil.lean
 ```
 
 Namespace `RHTower`; reachable from `GaloisForLFunctions.RHTower`.
@@ -33,7 +33,7 @@ Namespace `RHTower`; reachable from `GaloisForLFunctions.RHTower`.
 
 ```bash
 cd formal
-lake build GaloisForLFunctions.RHTower.HedenmalmThetaSquaredSeamPencil
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSquaredSeamPencil
 ```
 
 Clean.  `#print axioms` on every declaration in the table reports only `propext`,

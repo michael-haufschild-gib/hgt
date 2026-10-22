@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGammaSixShellPrincipalIdeal
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixShellPrincipalIdeal
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldCurvedSourceDifferential
 
 /-!

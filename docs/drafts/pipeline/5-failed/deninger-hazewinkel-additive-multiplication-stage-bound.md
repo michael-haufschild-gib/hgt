@@ -5,7 +5,7 @@
 - **Source:** Christopher Deninger, *Rational Witt vectors and associated sheaves*,
   arXiv:2508.05329v1, equation (15), Lemma 2.6, and Theorem 2.8.
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerHazewinkelStageBoundCounterexample.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelStageBoundCounterexample.lean`
 - **Status:** PUBLISHED QUANTITATIVE CLAIM REFUTED; POSITIVE SURVIVOR FORMALIZED
 
 ## Failed claim

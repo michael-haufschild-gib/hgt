@@ -33,7 +33,7 @@ Scope: nonanalytic zero-coupling behavior and remote strong-coupling exceptional
 
 ## Lean
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAnalyticNontriangularResonanceCollisionNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMAnalyticNontriangularResonanceCollisionNoGo`
 - Main intermediate: `exists_unique_d4BMXiGaugeFixedTotalPeriodAllOrderReturnedJostPoleGermMinus`
 - Direct `lake env lean`: PASS
 - Targeted `lake build`: PASS (`12542` jobs)

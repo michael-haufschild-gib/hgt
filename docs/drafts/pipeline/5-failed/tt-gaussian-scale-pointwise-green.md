@@ -72,12 +72,12 @@ in `HedenmalmThetaSourceUnconditional`. Fresh corpus searches supplied these
 sources; partial searches and background-refresh limits are recorded in
 the working log. No external-literature frontier was substituted.
 
-Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCuspGaussianScaleOperator.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspGaussianScaleOperator.lean`.
 Twelve public theorems audited:
 
-- `lake build --old +GaloisForLFunctions.RHTower.ThetaCuspGaussianScaleOperator`
+- `lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGaussianScaleOperator`
   passed (leaf 58 seconds; unchanged dependencies replayed).
-- Final `lake env lean GaloisForLFunctions/RHTower/ThetaCuspGaussianScaleOperator.lean`
+- Final `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspGaussianScaleOperator.lean`
   passed without warnings.
 - A separate `/tmp` audit printed exactly `[propext, Classical.choice,
   Quot.sound]` for every public theorem. No added axioms or proof holes.

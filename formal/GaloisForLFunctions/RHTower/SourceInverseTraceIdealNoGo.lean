@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.MertensClockDefectSignedSpectrum
 import GaloisForLFunctions.RHTower.PoissonPrimePhaseTwistThetaNoGo
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtNearIsometryCount
 import GaloisForLFunctions.HTGeometry.LpBoundedMultiplier
-import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld
 
 /-!
 # The Xi-divisor source inverse is not trace class

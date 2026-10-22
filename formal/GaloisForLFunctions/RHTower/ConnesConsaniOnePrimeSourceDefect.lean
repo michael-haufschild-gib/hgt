@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMArchimedeanQuantizedCalculus
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanQuantizedCalculus
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageConnesMarcolliLocalRatio
 
 /-!

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryCriticalMixedPrimeGradeIncidence
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 
 /-!
 # JAS actual completed-theta grade norm escape

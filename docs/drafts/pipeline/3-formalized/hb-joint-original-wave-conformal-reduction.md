@@ -95,7 +95,7 @@ to the completed response remain open.
 ## Lean surface
 
 Namespace: `RHTower.D4BMJointConformal`. Canonical prefix:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointConformal`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJointConformal`.
 
 | Suffix | Public theorems | Content |
 |---|---:|---|

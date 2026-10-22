@@ -17,8 +17,38 @@ open Set Filter MeasureTheory
 open scoped ContDiff Topology SchwartzMap
 namespace RHTower.BAGTrace
 
+private theorem continuous_cubicMixedDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) : Continuous (cubicMixedDifference Φ σ) := by
+  have hs := continuous_cubicTestedSlice hΦ hσ
+  have h1 : Continuous (fun w : ℝ × ℝ => (-w.1,w.2)) := by fun_prop
+  have h2 : Continuous (fun w : ℝ × ℝ => (w.1,-w.2)) := by fun_prop
+  have h12 : Continuous (fun w : ℝ × ℝ => (-w.1,-w.2)) := by fun_prop
+  convert ((hs.sub (hs.comp h1)).sub (hs.comp h2)).add (hs.comp h12) using 1
+  rfl
 
+private theorem continuousAt_cubicTestedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) (u v : ℝ) :
+    ContinuousAt (fun τ : ℝ => cubicTestedSource Φ ![τ,u,v]) σ := by
+  have he : Continuous (fun τ : ℝ => ![τ,u,v]) := by
+    apply continuous_pi
+    intro i
+    fin_cases i <;> dsimp <;> fun_prop
+  exact ContinuousAt.comp (f := fun τ : ℝ => ![τ,u,v])
+    (contDiffAt_cubicTestedSource hΦ (w := ![σ,u,v]) hσ).continuousAt he.continuousAt
 
+private theorem continuousAt_cubicMixedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) (w : ℝ × ℝ) :
+    ContinuousAt (fun τ : ℝ => cubicMixedDifference Φ τ w) σ :=
+  (((continuousAt_cubicTestedParameter hΦ hσ w.1 w.2).sub
+    (continuousAt_cubicTestedParameter hΦ hσ (-w.1) w.2)).sub
+    (continuousAt_cubicTestedParameter hΦ hσ w.1 (-w.2))).add
+    (continuousAt_cubicTestedParameter hΦ hσ (-w.1) (-w.2))
+
+private theorem measurable_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) : Measurable (cubicMixedQuotient Φ σ) := by
+  have hc : Continuous (fun w : ℝ × ℝ => ((w.1*w.2 : ℝ) : ℂ)) := by fun_prop
+  convert (continuous_cubicMixedDifference hΦ hσ).measurable.div hc.measurable using 1
+  rfl
 
 private theorem cubicDampingFactor_nonneg (ε u : ℝ) : 0 ≤ cubicDampingFactor ε u := by
   unfold cubicDampingFactor
@@ -33,9 +63,74 @@ private theorem continuous_cubicDampingFactor {ε : ℝ} (hε : 0 < ε) :
   exact (continuous_id.pow 2).div (continuous_const.add (continuous_id.pow 2))
     (fun u => by positivity)
 
+private theorem tendsto_cubicDampingFactor {u : ℝ} (hu : u ≠ 0) :
+    Tendsto (fun ε : ℝ => cubicDampingFactor ε u) (𝓝[>] 0) (𝓝 1) := by
+  have hc : ContinuousAt (fun ε : ℝ => u^2/(ε^2+u^2)) 0 :=
+    continuousAt_const.div ((continuousAt_id.pow 2).add continuousAt_const)
+      (by simpa using pow_ne_zero 2 hu)
+  simpa [cubicDampingFactor, hu] using hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
 
+private theorem tendsto_damped_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ}
+    (hΦ : ContDiff ℝ ∞ Φ) (w : ℝ × ℝ) :
+    Tendsto (fun ε : ℝ => (cubicDampingFactor ε w.1*cubicDampingFactor ε w.2) •
+      cubicMixedQuotient Φ (1+ε) w) (𝓝[>] 0) (𝓝 (cubicMixedQuotient Φ 1 w)) := by
+  by_cases hu : w.1=0
+  · simp [cubicDampingFactor,cubicMixedQuotient,hu]
+  by_cases hv : w.2=0
+  · simp [cubicDampingFactor,cubicMixedQuotient,hv]
+  have hq : ContinuousAt (fun σ : ℝ => cubicMixedQuotient Φ σ w) 1 :=
+    (continuousAt_cubicMixedParameter hΦ (by norm_num) w).div_const _
+  have he : Tendsto (fun ε : ℝ => 1+ε) (𝓝[>] 0) (𝓝 1) := by
+    have hc : Continuous (fun ε : ℝ => 1+ε) := by fun_prop
+    simpa only [add_zero] using (hc.tendsto 0).mono_left
+      (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+  have h := ((tendsto_cubicDampingFactor hu).mul (tendsto_cubicDampingFactor hv)).smul
+    (hq.tendsto.comp he)
+  simpa only [one_mul,one_smul,Function.comp_def] using h
 
+private theorem continuous_cubicAxisDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) : Continuous (cubicAxisDifference Φ σ) := by
+  have hs := continuous_cubicTestedAxisSlice hΦ hσ
+  have h1 : Continuous (fun w : ℝ × ℝ => (-w.1,w.2)) := by fun_prop
+  convert hs.add (hs.comp h1) using 1
+  rfl
 
+private theorem continuousAt_cubicAxisTestParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) (u v : ℝ) :
+    ContinuousAt (fun τ : ℝ => cubicTestedAxisNumerator Φ ![τ,u,v]) σ := by
+  have he : Continuous (fun τ : ℝ => ![τ,u,v]) := by
+    apply continuous_pi
+    intro i
+    fin_cases i <;> dsimp <;> fun_prop
+  exact ContinuousAt.comp (f := fun τ : ℝ => ![τ,u,v])
+    (contDiffAt_cubicTestedAxisNumerator hΦ (w := ![σ,u,v]) hσ).continuousAt he.continuousAt
+
+private theorem continuousAt_cubicAxisParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) (w : ℝ × ℝ) :
+    ContinuousAt (fun τ : ℝ => cubicAxisDifference Φ τ w) σ :=
+  (continuousAt_cubicAxisTestParameter hΦ hσ w.1 w.2).add
+    (continuousAt_cubicAxisTestParameter hΦ hσ (-w.1) w.2)
+
+private theorem measurable_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {σ : ℝ} (hσ : 1 ≤ σ) : Measurable (cubicAxisQuotient Φ σ) := by
+  have hc : Continuous (fun w : ℝ × ℝ => ((w.1^2 : ℝ) : ℂ)) := by fun_prop
+  convert (continuous_cubicAxisDifference hΦ hσ).measurable.div hc.measurable using 1
+  rfl
+
+private theorem tendsto_damped_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ}
+    (hΦ : ContDiff ℝ ∞ Φ) (w : ℝ × ℝ) :
+    Tendsto (fun ε : ℝ => cubicDampingFactor ε w.1 • cubicAxisQuotient Φ (1+ε) w)
+      (𝓝[>] 0) (𝓝 (cubicAxisQuotient Φ 1 w)) := by
+  by_cases hu : w.1=0
+  · simp [cubicDampingFactor,cubicAxisQuotient,hu]
+  have hq : ContinuousAt (fun σ : ℝ => cubicAxisQuotient Φ σ w) 1 :=
+    (continuousAt_cubicAxisParameter hΦ (by norm_num) w).div_const _
+  have he : Tendsto (fun ε : ℝ => 1+ε) (𝓝[>] 0) (𝓝 1) := by
+    have hc : Continuous (fun ε : ℝ => 1+ε) := by fun_prop
+    simpa only [add_zero] using (hc.tendsto 0).mono_left
+      (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+  have h := (tendsto_cubicDampingFactor hu).smul (hq.tendsto.comp he)
+  simpa only [one_smul,Function.comp_def] using h
 
 private theorem norm_damped_axis_le (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
     ‖cubicDampingFactor ε w.1 • cubicAxisQuotient Φ (1+ε) w‖ ≤
@@ -138,7 +233,42 @@ theorem tendsto_integral_schwartz_literal_cubicMixed (Φ : 𝓢(ℝ × ℝ, ℂ)
   apply integral_congr_ae
   exact ae_of_all _ fun w => damped_cubicMixedQuotient_eq hε Φ w
 
+private theorem continuous_cubicMixedKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {ε : ℝ} (hε : 0 < ε) : Continuous (cubicMixedKernel Φ ε) := by
+  have hn : Continuous (fun w : ℝ × ℝ =>
+      (w.1 : ℂ)*(w.2 : ℂ)*cubicTestedSource Φ ![1+ε,w.1,w.2]) :=
+    ((Complex.continuous_ofReal.comp continuous_fst).mul
+      (Complex.continuous_ofReal.comp continuous_snd)).mul
+      (continuous_cubicTestedSlice hΦ (by linarith))
+  have hd : Continuous (fun w : ℝ × ℝ =>
+      (((ε^2+w.1^2 : ℝ) : ℂ)*((ε^2+w.2^2 : ℝ) : ℂ))) := by fun_prop
+  apply hn.div hd
+  intro w
+  apply mul_ne_zero
+  · exact_mod_cast (ne_of_gt (show 0 < ε^2+w.1^2 by positivity))
+  · exact_mod_cast (ne_of_gt (show 0 < ε^2+w.2^2 by positivity))
 
+private theorem continuous_cubicAxisKernel {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+    {ε : ℝ} (hε : 0 < ε) : Continuous (cubicAxisKernel Φ ε) := by
+  have hn := continuous_cubicTestedAxisSlice hΦ (σ := 1+ε) (by linarith)
+  have hd : Continuous (fun w : ℝ × ℝ => ((ε^2+w.1^2 : ℝ) : ℂ)) := by fun_prop
+  exact hn.div hd (fun w => by exact_mod_cast (ne_of_gt (show 0 < ε^2+w.1^2 by positivity)))
+
+private theorem cubicMixedKernel_reflections (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
+    cubicMixedKernel Φ ε w+cubicMixedKernel Φ ε (-w.1,w.2)+
+      (cubicMixedKernel Φ ε (w.1,-w.2)+cubicMixedKernel Φ ε (-w.1,-w.2)) =
+      ((w.1 : ℂ)*(w.2 : ℂ)*cubicMixedDifference Φ (1+ε) w) /
+        (((ε^2+w.1^2 : ℝ) : ℂ)*((ε^2+w.2^2 : ℝ) : ℂ)) := by
+  dsimp only [cubicMixedKernel,cubicMixedDifference]
+  simp only [neg_sq,Complex.ofReal_neg]
+  ring
+
+private theorem cubicAxisKernel_reflection (Φ : ℝ × ℝ → ℂ) (ε : ℝ) (w : ℝ × ℝ) :
+    cubicAxisKernel Φ ε w+cubicAxisKernel Φ ε (-w.1,w.2) =
+      cubicAxisDifference Φ (1+ε) w / ((ε^2+w.1^2 : ℝ) : ℂ) := by
+  dsimp only [cubicAxisKernel,cubicAxisDifference]
+  simp only [neg_sq]
+  ring
 
 private theorem norm_frequency_cauchy_le {ε : ℝ} (hε : 0 < ε) (u : ℝ) :
     |u|/(ε^2+u^2) ≤ 1/ε := by

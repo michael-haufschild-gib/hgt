@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FZZCigarPunctureDilationCompletenessEndpoint
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceCompressedInverseDeterminant
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceCompressedInverseDeterminant
 import GaloisForLFunctions.RHTower.XiExplicitFormulaLogDeriv
 
 /-!

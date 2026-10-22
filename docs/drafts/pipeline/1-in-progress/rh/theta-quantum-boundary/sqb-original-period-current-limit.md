@@ -53,7 +53,7 @@ and standard-only axiom audits. All are indexed once, with both local
 helpers also indexed; the module is wired once. Repository formal lint passed.
 [Complete proof and audit](../../../3-formalized/sqb-original-period-current-limit.md).
 
-The [zero-limit source-rigidity audit](../../sqb-zero-period-current-rigidity.md)
+The [zero-limit source-rigidity audit](sqb-zero-period-current-rigidity.md)
 now forces pair/phase vanishing, a common real radial derivative, and zero
 first horizontal derivatives at common nodes. Nonflat horizontal nodes
 force positive E₀ and product divergence. Exceptional Maass zero means

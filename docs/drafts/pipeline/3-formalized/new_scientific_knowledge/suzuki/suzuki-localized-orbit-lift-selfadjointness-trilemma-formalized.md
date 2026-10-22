@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiLocalizedOrbitLiftTrilemma.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLocalizedOrbitLiftTrilemma.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiLocalizedOrbitLiftTrilemma`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiLocalizedOrbitLiftTrilemma`:
 
 ```text
 GaloisForLFunctions.RHTower.projectivelyTranslationCovariant_summable_normSq_eq_zero

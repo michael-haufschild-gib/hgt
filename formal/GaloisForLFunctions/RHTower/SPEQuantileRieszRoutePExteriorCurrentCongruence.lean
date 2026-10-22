@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePJuliaKreinZeroClockHistoryDensity
-import GaloisForLFunctions.RHTower.CCMFirstClockExteriorPositivePartNoGo
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockExteriorPositivePartNoGo
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePPluckerCocycle
 
 /-!

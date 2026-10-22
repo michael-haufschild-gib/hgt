@@ -145,17 +145,17 @@ The new dependency-closed realization consists of:
 
 - `HTGeometry/VonNeumannDeficiency.lean`: closure/adjoint decomposition, boundary pairing,
   one-dimensional unitary extension, and self-adjointness.
-- `RHTower/SuzukiTaSymmetry.lean`: actual `H(T_a)` derivative symmetry (Lemma 6.1).
-- `RHTower/SuzukiTaCharacteristicRealization.lean`: normalized actual deficiency vectors,
+- `RHTower/Suzuki/SuzukiTaSymmetry.lean`: actual `H(T_a)` derivative symmetry (Lemma 6.1).
+- `RHTower/Suzuki/SuzukiTaCharacteristicRealization.lean`: normalized actual deficiency vectors,
   boundary family, self-adjoint extensions, and canonical spectral Riesz vectors.
-- `RHTower/SuzukiTaSpectralEigenspace.lean`: exact complex shifted-range closure and
+- `RHTower/Suzuki/SuzukiTaSpectralEigenspace.lean`: exact complex shifted-range closure and
   one-dimensional adjoint eigenspaces for every spectral parameter.
-- `RHTower/SuzukiTaCharacteristicZeros.lean`: exact characteristic-zero/eigenvalue equivalence
+- `RHTower/Suzuki/SuzukiTaCharacteristicZeros.lean`: exact characteristic-zero/eigenvalue equivalence
   and real-zero theorem.
-- `RHTower/SuzukiTaCharacteristicEntire.lean`: literal physical Fourier formula and entireness.
-- `RHTower/SuzukiV2CharacteristicTarget.lean`: exact v2 target, conditional Corollary 1.6,
+- `RHTower/Suzuki/SuzukiTaCharacteristicEntire.lean`: literal physical Fourier formula and entireness.
+- `RHTower/Suzuki/SuzukiV2CharacteristicTarget.lean`: exact v2 target, conditional Corollary 1.6,
   unconditional pole obstruction, and corrected meromorphic implication.
-- `RHTower/SuzukiV2SphericalConvergence.lean`: exact pole-free finite-chart convergence and the
+- `RHTower/Suzuki/SuzukiV2SphericalConvergence.lean`: exact pole-free finite-chart convergence and the
   two-chart spherical formulation, including compactwise eventual zero-freeness in the reciprocal
   chart; spherical convergence formally implies the corrected meromorphic wall and RH.
 

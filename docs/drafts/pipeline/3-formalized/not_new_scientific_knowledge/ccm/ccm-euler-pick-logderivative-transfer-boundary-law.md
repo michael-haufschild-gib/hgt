@@ -513,7 +513,7 @@ the finite-aperture indefiniteness, and the relative Herglotz criterion `(24)`.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMEulerPickTransferBoundary.lean` (wired, axiom-clean,
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerPickTransferBoundary.lean` (wired, axiom-clean,
 9 declarations).
 
 - `pairedZeroKernel`, **`pairedZeroKernel_eq`** — equation `(6)`: the logarithmic-derivative

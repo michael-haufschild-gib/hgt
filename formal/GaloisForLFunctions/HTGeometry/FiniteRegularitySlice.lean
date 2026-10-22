@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteRegularityWienerFamily
-import GaloisForLFunctions.HTGeometry.KleinGordonSupportBounds
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSupportBounds
 
 /-!
 # Derivatives of a time slice of a jointly differentiable function

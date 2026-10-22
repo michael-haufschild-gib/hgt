@@ -5,9 +5,9 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-physical-log-grade-nuclear-summability.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPhysicalLogGradeNuclearSummability.lean`
-  - coefficient recursion: `formal/GaloisForLFunctions/RHTower/SuzukiVolterraLogGradeRecurrence.lean`
-  - step weights: `formal/GaloisForLFunctions/RHTower/SuzukiRootPortObservationGram.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPhysicalLogGradeNuclearSummability.lean`
+  - coefficient recursion: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiVolterraLogGradeRecurrence.lean`
+  - step weights: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootPortObservationGram.lean`
     (`suzukiPrimePowerWeight`)
 
 ## Formal content

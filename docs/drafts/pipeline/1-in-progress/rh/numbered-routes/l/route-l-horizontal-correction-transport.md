@@ -131,7 +131,7 @@ was started. Log: `/tmp/route-l-native-collar-source-build.log`.
 The exact scratch/tree comparison and whitespace checks passed. Global
 formal lint ran once (process 9880, exit 1): its only error is the
 unrelated untracked shared-worktree module
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetQuadraticEinstein`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarJetQuadraticEinstein`
 being unreachable from `RHTower`. Its header concerns a separate scalar
 Einstein variation, and it was not modified here. Existing large-file
 warnings remain. Log: `/tmp/route-l-native-collar-source-lint.log`.

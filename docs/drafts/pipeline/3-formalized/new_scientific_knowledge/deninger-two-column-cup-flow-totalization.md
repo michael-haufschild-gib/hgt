@@ -165,7 +165,7 @@ nondegeneracy, is already formalized in
 
 ### Both theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticTwoColumnSignatureTotalization.lean`, over
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTwoColumnSignatureTotalization.lean`, over
 the three-term complex/flow/cup framework of `DeningerArithmeticThreeTermCohomology.lean` and
 `DeningerArithmeticThreeTermCupDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.

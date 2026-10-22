@@ -45,7 +45,7 @@ model and use at least four FE--Schwarz sectors.
 - `hbXiPeierls_tilted_sourceFaithful_noGo_and_realClosure_ge_four`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`
 
 ## New knowledge
 
@@ -78,8 +78,8 @@ reflection symmetries separately.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo`
 - Build result: success, 11892 jobs after shared dependency replay
 - `#print axioms` on four endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token scan: clean

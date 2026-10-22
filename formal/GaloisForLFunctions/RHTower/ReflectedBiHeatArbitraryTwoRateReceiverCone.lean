@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectedBiHeatFiniteCommensurateChebyshevClassification
-import GaloisForLFunctions.RHTower.CCMGrowingApertureMellin
+import GaloisForLFunctions.RHTower.CCM.CCMGrowingApertureMellin
 
 /-!
 # Reflected bi-heat arbitrary two-rate receiver cone

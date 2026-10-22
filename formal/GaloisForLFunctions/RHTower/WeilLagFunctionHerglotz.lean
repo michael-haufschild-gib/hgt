@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilLagFunctionGrowth
 import GaloisForLFunctions.RHTower.WeilLagFunctionSingleBase
 import GaloisForLFunctions.RHTower.WeilLagFunctionOneSided
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.XiEndpointStrongHeightGap
 
 /-!

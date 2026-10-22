@@ -62,7 +62,7 @@ The unmarked polynomial Calkin quotient admits a universal character taking ever
 ## Formal surface
 
 The unconditional module is
-`formal/GaloisForLFunctions/RHTower/CCMPrimeTransverseFrostmanProfile.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeTransverseFrostmanProfile.lean`.
 Its main declarations prove:
 
 - the exact complex Frostman defect and Poisson-profile identity;

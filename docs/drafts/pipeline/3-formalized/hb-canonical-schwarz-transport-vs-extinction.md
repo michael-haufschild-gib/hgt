@@ -51,14 +51,14 @@ Existing “FE--Schwarz branch covariance” instead compares vectors on disjoin
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification`
 
 All declarations are closed Lean proofs. No new axioms, `sorry`, `admit`, `opaque`, or `unsafe` declarations are introduced.
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification`: passed, 11,917 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCanonicalSchwarzTransportExtinctionClassification`: passed, 11,917 jobs.
 - `#print axioms` for all nineteen public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC49 error. Global lint remains red only on unrelated unreachable owned modules.

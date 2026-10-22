@@ -41,16 +41,16 @@ which tends to zero. Hence the leading surviving coefficient must be zero. The p
 
 ## Lean artifact
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography`
-- File: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography.lean`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography`
+- File: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography.lean`
 - Umbrella: `formal/GaloisForLFunctions/RHTower.lean`
 - Main endpoint: `schwarzschildParikhWilczekBoundedPacketEndpointResponse_eq_zero_iff`
 - Reusable theorem: `boundedPowerSeries_coeff_eq_zero_of_zeroSequence`
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography`: passed (11,616 jobs).
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekBoundedPacketCountableTomography`: passed (11,616 jobs).
 - `#print axioms` on four public endpoints: only `propext`, `Classical.choice`, `Quot.sound`.
 - `scripts/formal_tools.py lint`: no finding in this module; reported only pre-existing unreachable modules elsewhere.
 

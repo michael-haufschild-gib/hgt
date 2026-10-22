@@ -276,7 +276,7 @@ This is narrower than the former generic “construct a Rost--Schmid/Meyer compa
 ## Lean surface
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerExponentExceptionalTameGreenBridge.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExponentExceptionalTameGreenBridge.lean`
 
 Main declarations:
 
@@ -304,7 +304,7 @@ Main declarations:
 - [x] direct `lake env lean` check
 - [x] wired into `GaloisForLFunctions.RHTower`
 - [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
-- [x] targeted `lake build GaloisForLFunctions.RHTower.DeningerExponentExceptionalTameGreenBridge`
+- [x] targeted `lake build GaloisForLFunctions.RHTower.Deninger.DeningerExponentExceptionalTameGreenBridge`
 - [ ] repository lint audit
 - [ ] 3 -> 4: standalone external exposition and external novelty review
 

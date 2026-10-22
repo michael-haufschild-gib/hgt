@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePIdealCentroidVarianceCorrection
 import GaloisForLFunctions.RHTower.MertensSecondTheorem
-import GaloisForLFunctions.RHTower.SuzukiTransitionCoreGrowingRankCartanFission
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreGrowingRankCartanFission
 
 /-!
 # Route P barycentric escape of matched centroid variance

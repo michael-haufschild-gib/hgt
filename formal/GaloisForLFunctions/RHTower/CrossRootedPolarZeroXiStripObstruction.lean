@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMEvenGroundXiStripConvergenceRH
+import GaloisForLFunctions.RHTower.CCM.CCMEvenGroundXiStripConvergenceRH
 import GaloisForLFunctions.RHTower.CanonicalProductE1LogDeriv
 import GaloisForLFunctions.RHTower.DeBruijnShiftContraction
 

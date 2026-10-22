@@ -4,7 +4,7 @@ Status: formalized. The complete physical pulse convolution, mixed action and RH
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Owner: [ThetaCuspHawkingBMFullAngularCircleReconstruction.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularCircleReconstruction.lean), namespace `RHTower.D4BMFullAngularReconstruction`.
+Owner: [ThetaCuspHawkingBMFullAngularCircleReconstruction.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularCircleReconstruction.lean), namespace `RHTower.D4BMFullAngularReconstruction`.
 
 For either actual Xi branch, put `s=physicalRate q branch`, `alpha=(2s+1)(2s+2)`, `p(d)=legendreKernel (2s+1) (cosh d)`. Write `h(d)` for the original full angular circle mean and `m(d)` for the literal half-square mean. The new closed reconstruction is
 
@@ -46,7 +46,7 @@ Both gates, reflection `y -> -y`, the factor `1/2`, and the original onset deriv
 
 ## Validation
 
-Foreground scratch checks used `lake env lean`. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleReconstruction` passed without warnings: two jobs, 252 seconds, in an isolated audit using 3,992 cached project dependencies and 12 local dependency stubs. No dependency or umbrella build ran. All six new public theorem axiom reports contain exactly `propext`, `Classical.choice`, and `Quot.sound`. Source and five installed build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`.
+Foreground scratch checks used `lake env lean`. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularCircleReconstruction` passed without warnings: two jobs, 252 seconds, in an isolated audit using 3,992 cached project dependencies and 12 local dependency stubs. No dependency or umbrella build ran. All six new public theorem axiom reports contain exactly `propext`, `Classical.choice`, and `Quot.sound`. Source and five installed build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`.
 
 Source SHA-256: `f7ab17cd0f54835122ad862a7de61da762f6140cae0ce5cdb6499ab6543588d4`.
 

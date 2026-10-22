@@ -11,7 +11,7 @@ Paper proof:
 Formal module:
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquarePositiveExcessDuality
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquarePositiveExcessDuality
 ```
 
 Principal declarations:

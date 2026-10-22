@@ -53,12 +53,12 @@ exact modes created when the Euler-contour is transported to the critical bounda
   `Quot.sound`.
 - [x] Finite-pole contour transport from the Euler half-plane to the boundary pairing: canonical
   removable normalization, selected horizontal sides, line integrability, and exact finite-pole
-  residue transport in `RHTower/SuzukiFinitePoleContourTransport.lean`,
-  `RHTower/SuzukiSelectedContourSides.lean`, `RHTower/SuzukiContourLineIntegrability.lean`, and
-  `RHTower/SuzukiFinitePoleResidueTransport.lean`.
+  residue transport in `RHTower/Suzuki/SuzukiFinitePoleContourTransport.lean`,
+  `RHTower/Suzuki/SuzukiSelectedContourSides.lean`, `RHTower/Suzuki/SuzukiContourLineIntegrability.lean`, and
+  `RHTower/Suzuki/SuzukiFinitePoleResidueTransport.lean`.
 - [x] Fixed Euler-line inversion, causal high-line vanishing on the reflected wrong-support core,
   and the resulting residue-only normalized boundary formula in
-  `RHTower/SuzukiFinitePoleLeakage.lean`.
+  `RHTower/Suzuki/SuzukiFinitePoleLeakage.lean`.
 - [x] Final leakage leaf built exactly; its four new declarations axiom-audited with only
   `propext`, `Classical.choice`, and `Quot.sound`.
 

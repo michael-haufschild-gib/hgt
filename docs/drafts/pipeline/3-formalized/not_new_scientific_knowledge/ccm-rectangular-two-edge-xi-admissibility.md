@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** `[BRIDGE]` / unconditional CCM foundation
 - **Novelty status:** not promoted as new scientific knowledge
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRectangularTwoEdge.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularTwoEdge.lean`
 
 ## Theorem
 

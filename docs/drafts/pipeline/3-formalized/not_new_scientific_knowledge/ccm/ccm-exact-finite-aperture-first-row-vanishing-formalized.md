@@ -25,12 +25,12 @@ Bessel layer (`RHTower`):
 
 First-row layer (`RHTower`):
 
-- `GaloisForLFunctions.RHTower.CCMFirstRowStationaryPhase`
-- `GaloisForLFunctions.RHTower.CCMFirstRowVanDerCorputBlocks`
-- `GaloisForLFunctions.RHTower.CCMFirstRowEnvelopeTail`
-- `GaloisForLFunctions.RHTower.CCMFirstRowDunsterModel`
-- `GaloisForLFunctions.RHTower.CCMRadialProlateDefect`
-- `GaloisForLFunctions.RHTower.CCMRadialProlateEndpointLayer`
+- `GaloisForLFunctions.RHTower.CCM.CCMFirstRowStationaryPhase`
+- `GaloisForLFunctions.RHTower.CCM.CCMFirstRowVanDerCorputBlocks`
+- `GaloisForLFunctions.RHTower.CCM.CCMFirstRowEnvelopeTail`
+- `GaloisForLFunctions.RHTower.CCM.CCMFirstRowDunsterModel`
+- `GaloisForLFunctions.RHTower.CCM.CCMRadialProlateDefect`
+- `GaloisForLFunctions.RHTower.CCM.CCMRadialProlateEndpointLayer`
 
 All twelve are wired into their area umbrellas (`GaloisForLFunctions.RHTower`,
 `GaloisForLFunctions.HTGeometry`).

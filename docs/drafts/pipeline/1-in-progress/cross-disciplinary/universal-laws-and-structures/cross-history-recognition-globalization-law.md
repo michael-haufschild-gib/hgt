@@ -272,7 +272,7 @@ Thus anomaly inflow proves that an obstruction can impose physical existence con
 not prove that the obstruction canonically creates a new executable operation, its probability, or
 its independence law. The reinterpretation “completion nonuniqueness is quantum” is already frozen
 and attacked in
-[`law-valued-actuality-universal-law.md`](../../law-valued-actuality-universal-law.md); bare alternatives
+[`law-valued-actuality-universal-law.md`](law-valued-actuality-universal-law.md); bare alternatives
 either have no relative phase or totalize inside a containing theory.
 
 The positive survivor is sharper:

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.IntegralCurvedTateFormationPropernessIndex
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceShellReplicaWardDoubleProperness
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceShellReplicaWardDoubleProperness
 import GaloisForLFunctions.HTGeometry.BoundedFormationRecoveryRigidity
 
 /-!

@@ -209,7 +209,7 @@ stated as a `HasSum` at all.  Mathlib's Bernoulli Fourier expansions
 Equation `(8)` is mathlib's `hasSum_zeta_two` and needs no corpus work.
 
 Equation `(6)` is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMEndpointFourierJet.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMEndpointFourierJet.lean`:
 
 - `hasDerivAt_linScaled`, `hasDerivAt_sinScaled`, `hasDerivAt_negCosScaled` — the two antiderivatives
   of `cos(2πxy)` and `sin(2πxy)`.
@@ -349,7 +349,7 @@ first order produces the endpoint jump terms, the second order makes the remaind
 convergent.  A proof using only one of them cannot close `(5)`.
 
 Equations `(9)`, `(10)`, `(11)` are formalized in
-`formal/GaloisForLFunctions/RHTower/CCMTwoModeDeficitScale.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMTwoModeDeficitScale.lean`:
 
 - `twoModeSource`, **`twoModeSource_eq_of_eigen`** — equation `(10)`, as an exact identity with no
   asymptotics: under the eigen-relation `l_j = c_j e_j(0)` the value at the origin of the normalised

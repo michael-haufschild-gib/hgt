@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LiEvenCrossActualClockThirdLahBracket
 import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniThetaCumulantContact
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiSourceRate
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiSourceRate
 
 /-!
 # Signed tilted cumulants and the Lah recurrence of the integrated clock

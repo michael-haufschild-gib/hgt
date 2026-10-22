@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
   `[NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiFlatFluxChargeAutomatic`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiFlatFluxChargeAutomatic`
 - **Inputs:** `suzuki-flat-primitive-flux-volterra-liouville.md`,
   `suzuki-paired-seam-carleman-logistic-normal-form.md`,
   `suzuki-interior-seam-indicial-dipole-exclusion.md`
@@ -250,7 +250,7 @@ No separate physical-root dipole/flux matching theorem remains in `(22)`.
 The unconditional formal core is in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxChargeAutomatic.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxChargeAutomatic.lean
 ```
 
 It proves:

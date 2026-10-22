@@ -464,9 +464,9 @@ not establish priority; specialist review remains required.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiParityResolventTransportBudget.lean
-formal/GaloisForLFunctions/RHTower/SuzukiParitySpectralPairTransport.lean
-formal/GaloisForLFunctions/RHTower/SuzukiInteriorExcursionSpectralTurningPoint.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParityResolventTransportBudget.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParitySpectralPairTransport.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiInteriorExcursionSpectralTurningPoint.lean
 ```
 
 Capstone declarations:

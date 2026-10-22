@@ -5,8 +5,8 @@
 - **Type:** exact finite-negative-block reduction / conjecture repair
 - **Status:** `[PROVED] [LEAN-FORMALIZED] [UNCONDITIONAL] [FRONTIER-SHARPENING]`
 - **Parent:** `suzuki-affine-resolvent-krein-defect.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`,
-  `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineResolventKreinDefect.lean`,
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiKreinSchurBlockCongruence.lean`
 
 ## 1. Problem
 
@@ -151,13 +151,13 @@ No claim is made that `(5)` currently holds for actual source.  That is exact RH
 Lean proves scalar completed-square identity `(2)`, equivalence `(3)`, strict positivity of
 nonzero coupling tax, and specialization to exact negative-node affine-resolvent debt.  General
 finite-dimensional block congruence is **also formal** — see the log entry immediately below, which
-closes it in `RHTower/SuzukiKreinSchurBlockCongruence.lean`, together with the automatic positive
+closes it in `RHTower/Suzuki/SuzukiKreinSchurBlockCongruence.lean`, together with the automatic positive
 spectral complement `suzukiPositiveBlock_posDef` of §3.
 
 ### Lean progress — general finite block congruence formalized
 
 The §7 gap "general finite-dimensional block congruence remains paper-proved" is now closed
-unconditionally in `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean`:
+unconditionally in `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiKreinSchurBlockCongruence.lean`:
 
 - `suzukiSignedKreinMetric P N`, `suzukiKreinCompletion Cpp Cpm Cmm` — the signed Krein metric
   `S = diag(P,−N)` and self-adjoint source completion `C = [[C₊₊,C₊₋],[C₊₋ᴴ,C₋₋]]`.

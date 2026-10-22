@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.MobiusThetaRawSourceModulation
-import GaloisForLFunctions.RHTower.ThetaCuspTiltedSchwartz
-import GaloisForLFunctions.RHTower.DeningerMobiusPreimage
-import GaloisForLFunctions.RHTower.DeningerCollarExchange
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltedSchwartz
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusPreimage
+import GaloisForLFunctions.RHTower.Deninger.DeningerCollarExchange
 
 /-!
 # Native logarithmic collar of the complete raw theta source

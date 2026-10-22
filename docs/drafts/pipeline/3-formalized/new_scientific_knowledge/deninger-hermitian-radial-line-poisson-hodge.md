@@ -193,7 +193,7 @@ derived comparison in step 4.
 
 ### The local Hermitian line landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticHermitianRadialLine.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticHermitianRadialLine.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerHermitianLineRadius`, `deningerHermitianLineScale`, `deningerHermitianLineArea`,
@@ -208,7 +208,7 @@ derived comparison in step 4.
 
 ### The flow, the critical measure, and the forced exponents landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHermitianCriticalMeasure.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHermitianCriticalMeasure.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerKahlerForm_eq` — **`(1)`**: evaluating `(i/2) dz ∧ dz̄` on two tangent vectors gives the

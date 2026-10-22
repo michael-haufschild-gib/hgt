@@ -5,12 +5,12 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-carleman-flat-port-weighted-strip-barrier.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortProfile.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortChart.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortResponse.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortAsymptotic.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortBarrier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortGap.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortProfile.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortChart.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortResponse.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortAsymptotic.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortBarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortGap.lean`
 
 ## Formal content
 

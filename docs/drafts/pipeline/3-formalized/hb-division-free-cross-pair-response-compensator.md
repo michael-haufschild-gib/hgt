@@ -47,7 +47,7 @@ zero-observable degeneration.
 - `d4BMXiSecondHarmonicCrossPairCancellation_nontrivial_of_tilt`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCrossPairResponseCompensator.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCrossPairResponseCompensator.lean`
 
 ## New knowledge
 
@@ -82,8 +82,8 @@ no-go, not the underlying classical perturbation frameworks.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCrossPairResponseCompensator.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCrossPairResponseCompensator`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCrossPairResponseCompensator.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCrossPairResponseCompensator`
 - Build result: success, 11913 jobs after shared dependency replay
 - `#print axioms` on seven endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

@@ -7,7 +7,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Parent:** `../../1-in-progress/suzuki-rooted-midpoint-compound-gram.md`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiCausalHingeBoundaryTailGreenLaw`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalHingeBoundaryTailGreenLaw`
 - **RH used:** no
 - **Computation used:** no
 - **Primary sources:** M. Suzuki, *Aspects of the screw function corresponding to the Riemann

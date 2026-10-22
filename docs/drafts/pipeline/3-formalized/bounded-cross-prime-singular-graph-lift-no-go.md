@@ -31,12 +31,12 @@ where vertical one-leg trace generator `v` is nonzero. Suppose `F` is continuous
 
 ## Formal certificate
 
-- Module: `GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`
+- Module: `GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`
 - Capstone: `boundedCrossPrimeSingularGraphLiftRouteKilled`
 - Sharp survivor: `crossPrime_oneLegGraph_reconstruction_not_continuousAt_zero`
 - Explicit limit: `tendsto_crossPrime_oneLegGraph_of_finitePacket_reconstruction`
 - Direct `lake env lean` check: PASS
-- Targeted `lake build GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`: PASS (11486 jobs)
+- Targeted `lake build GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCrossPrimeSingularGraphLiftNoGo`: PASS (11486 jobs)
 - Axioms for all five new theorems: `[propext, Classical.choice, Quot.sound]`
 - Umbrella: imported by `GaloisForLFunctions.RHTower`
 - Corpus search index: all declarations found

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarMultiplier
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarMultiplier
 import GaloisForLFunctions.RHTower.WeilPositivityMultiplicativeToeplitzBound
 import GaloisForLFunctions.RHTower.DigammaVerticalLogGrowth
 

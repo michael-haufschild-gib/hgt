@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonClassical
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonClassical
 
 /-!
 # The weighted frequency measure

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergThetaCommonForcing
-import GaloisForLFunctions.RHTower.ThetaCuspTiltFluxSourceWeld
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxSourceWeld
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
 /-!

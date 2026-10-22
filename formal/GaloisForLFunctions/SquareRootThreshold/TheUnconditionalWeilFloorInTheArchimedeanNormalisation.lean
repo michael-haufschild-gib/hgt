@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ComplexLocalSamplingAtDepth
+import GaloisForLFunctions.HTGeometry.NarrowPlateauSamplingAtDepth
 import GaloisForLFunctions.RHTower.XiGaussianHeatWindowNyquistExclusion
 import GaloisForLFunctions.SquareRootThreshold.LagRateBoundsTheDeBruijnNewmanHeatTime
 import Zeta23.RvM.LocalCount
@@ -218,24 +218,24 @@ theorem re_Wsummand_ge (f : ℝ → ℂ) (ρ : ℂ) :
         mul_le_mul_of_nonneg_left hbd hm
 
 /-- The floor at a given depth bound and a given logarithmic density of the sample points. -/
-private theorem floorCore {a σ A₁ : ℝ} (ha : 0 < a) (hA₁ : 0 ≤ A₁) (hσ0 : 0 ≤ σ)
+private theorem floorCoreFrom {σ A₁ Csamp : ℝ}
     (hdepthAll : ∀ ρ ∈ Zeta23.zetaZeroConfig.carrier, |(spectralSample ρ).im| ≤ σ)
     (hcount : ∀ (S : Finset Zeta23.zetaZeroConfig.carrier) (n : ℤ),
       (∑ q ∈ S.filter fun q : Zeta23.zetaZeroConfig.carrier =>
           (n : ℝ) ≤ -(((q : ℂ)).im / (2 * π)) ∧ -(((q : ℂ)).im / (2 * π)) ≤ (n : ℝ) + 1,
         (Zeta23.zetaZeroConfig.mult (q : ℂ) : ℝ)) ≤ A₁ * Real.log (|(n : ℝ)| + 3))
     (f : ℝ → ℂ) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
-    (hsupp : ∀ t : ℝ, a < |t| → f t = 0) (hFi : Integrable (𝓕 f))
-    (hint : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) :
-    -(((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (3 * A₁ * logKernelConst)))) *
-        ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+    (hb : ∀ (s : Finset Zeta23.zetaZeroConfig.carrier)
+        (pt : Zeta23.zetaZeroConfig.carrier → ℂ),
+      (∀ ρ ∈ s, |(pt ρ).im| ≤ σ) →
+      (∀ n : ℤ, (∑ ρ ∈ s.filter fun ρ : Zeta23.zetaZeroConfig.carrier =>
+          (n : ℝ) ≤ (pt ρ).re ∧ (pt ρ).re ≤ (n : ℝ) + 1,
+        (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ)) ≤ A₁ * Real.log (|(n : ℝ)| + 3)) →
+      (∑ ρ ∈ s, (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ) * ‖fourierAt f (pt ρ)‖ ^ 2) ≤
+        Csamp * ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) :
+    -(Csamp * ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
       (Zeta23.zetaZeroConfig.W f f).re := by
   classical
-  set Csamp : ℝ := (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
-    (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (3 * A₁ * logKernelConst))) with hCs
-  have hfcont : Continuous f := hf.continuous
-  have hfint : Integrable f := hfcont.integrable_of_hasCompactSupport hfc
   set g : Zeta23.zetaZeroConfig.carrier → ℝ := fun ρ =>
     (Zeta23.zetaZeroConfig.mult ρ : ℝ) / 2 *
       (‖fourierAt f (spectralSample ρ)‖ ^ 2 +
@@ -274,14 +274,8 @@ private theorem floorCore {a σ A₁ : ℝ} (ha : 0 < a) (hA₁ : 0 ≤ A₁) (h
       refine Finset.sum_congr ?_ fun ρ _ => rfl
       refine Finset.filter_congr fun ρ _ => ?_
       rw [Complex.conj_re]
-    have hb1 := sum_norm_sq_fourierAt_le ha hA₁ hσ0 hfcont hfint hFi hsupp hint s
-      (fun ρ => spectralSample (ρ : ℂ))
-      (fun ρ => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ)) hdepth
-      (fun ρ => Nat.cast_nonneg _) hc1
-    have hb2 := sum_norm_sq_fourierAt_le ha hA₁ hσ0 hfcont hfint hFi hsupp hint s
-      (fun ρ => (starRingEnd ℂ) (spectralSample (ρ : ℂ)))
-      (fun ρ => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ)) hdepth'
-      (fun ρ => Nat.cast_nonneg _) hc2
+    have hb1 := hb s (fun ρ => spectralSample (ρ : ℂ)) hdepth hc1
+    have hb2 := hb s (fun ρ => (starRingEnd ℂ) (spectralSample (ρ : ℂ))) hdepth' hc2
     have hsplit : (∑ ρ ∈ s, g ρ) =
         (∑ ρ ∈ s, (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ) *
             ‖fourierAt f (spectralSample (ρ : ℂ))‖ ^ 2) / 2 +
@@ -296,7 +290,7 @@ private theorem floorCore {a σ A₁ : ℝ} (ha : 0 < a) (hA₁ : 0 ≤ A₁) (h
         rw [hg]
         ring
       rw [Finset.sum_congr rfl hpt, ← Finset.sum_div, Finset.sum_add_distrib, add_div]
-    rw [hsplit, hCs]
+    rw [hsplit]
     linarith [hb1, hb2]
   have hgsummable : Summable g := summable_of_sum_le (fun ρ => hgnn ρ) hpart
   have hWsummable : Summable fun ρ : Zeta23.zetaZeroConfig.carrier =>
@@ -322,6 +316,50 @@ private theorem floorCore {a σ A₁ : ℝ} (ha : 0 < a) (hA₁ : 0 ≤ A₁) (h
       Csamp * ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3) :=
     hgsummable.tsum_le_of_sum_le hpart
   linarith
+
+/-- The floor through the trapezoid of plateau `a` and support radius `3a`: the depth rate is
+`6πaσ`. -/
+private theorem floorCore {a σ A₁ : ℝ} (ha : 0 < a) (hA₁ : 0 ≤ A₁) (hσ0 : 0 ≤ σ)
+    (hdepthAll : ∀ ρ ∈ Zeta23.zetaZeroConfig.carrier, |(spectralSample ρ).im| ≤ σ)
+    (hcount : ∀ (S : Finset Zeta23.zetaZeroConfig.carrier) (n : ℤ),
+      (∑ q ∈ S.filter fun q : Zeta23.zetaZeroConfig.carrier =>
+          (n : ℝ) ≤ -(((q : ℂ)).im / (2 * π)) ∧ -(((q : ℂ)).im / (2 * π)) ≤ (n : ℝ) + 1,
+        (Zeta23.zetaZeroConfig.mult (q : ℂ) : ℝ)) ≤ A₁ * Real.log (|(n : ℝ)| + 3))
+    (f : ℝ → ℂ) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hsupp : ∀ t : ℝ, a < |t| → f t = 0) (hFi : Integrable (𝓕 f))
+    (hint : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) :
+    -(((Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * π)) *
+        (Real.exp (6 * π * a * σ) * ((8 * a + a⁻¹) * (3 * A₁ * logKernelConst)))) *
+        ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+      (Zeta23.zetaZeroConfig.W f f).re := by
+  have hfcont : Continuous f := hf.continuous
+  have hfint : Integrable f := hfcont.integrable_of_hasCompactSupport hfc
+  exact floorCoreFrom hdepthAll hcount f hf hfc
+    (fun s pt hd hc => sum_norm_sq_fourierAt_le ha hA₁ hσ0 hfcont hfint hFi hsupp hint s pt
+      (fun ρ => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ)) hd (fun _ => Nat.cast_nonneg _) hc)
+
+/-- The floor through the trapezoid of plateau `a` and collar `δ`: the depth rate is
+`2π(a + 2δ)σ`, the aperture of the source itself up to the collar. -/
+private theorem floorCoreCollar {a δ σ A₁ : ℝ} (ha : 0 < a) (hδ : 0 < δ) (hA₁ : 0 ≤ A₁)
+    (hσ0 : 0 ≤ σ)
+    (hdepthAll : ∀ ρ ∈ Zeta23.zetaZeroConfig.carrier, |(spectralSample ρ).im| ≤ σ)
+    (hcount : ∀ (S : Finset Zeta23.zetaZeroConfig.carrier) (n : ℤ),
+      (∑ q ∈ S.filter fun q : Zeta23.zetaZeroConfig.carrier =>
+          (n : ℝ) ≤ -(((q : ℂ)).im / (2 * π)) ∧ -(((q : ℂ)).im / (2 * π)) ≤ (n : ℝ) + 1,
+        (Zeta23.zetaZeroConfig.mult (q : ℂ) : ℝ)) ≤ A₁ * Real.log (|(n : ℝ)| + 3))
+    (f : ℝ → ℂ) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hsupp : ∀ t : ℝ, a < |t| → f t = 0) (hFi : Integrable (𝓕 f))
+    (hint : Integrable fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) :
+    -(((Real.exp (2 * π * (a + 2 * δ) * σ) * ((4 * (a + δ) + δ⁻¹) * π)) *
+        (Real.exp (2 * π * (a + 2 * δ) * σ) *
+          ((4 * (a + δ) + δ⁻¹) * (3 * A₁ * logKernelConst)))) *
+        ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+      (Zeta23.zetaZeroConfig.W f f).re := by
+  have hfcont : Continuous f := hf.continuous
+  have hfint : Integrable f := hfcont.integrable_of_hasCompactSupport hfc
+  exact floorCoreFrom hdepthAll hcount f hf hfc
+    (fun s pt hd hc => sum_norm_sq_fourierAt_le_collar ha hδ hA₁ hσ0 hfcont hfint hFi hsupp hint
+      s pt (fun ρ => (Zeta23.zetaZeroConfig.mult (ρ : ℂ) : ℝ)) hd (fun _ => Nat.cast_nonneg _) hc)
 
 /-- **The floor at a given depth bound.**  The exponential rate in the aperture is twice the
 depth of the sample points, which is the zero width divided by `2π`. -/
@@ -396,6 +434,94 @@ theorem exists_re_W_ge_logWeighted_rate {a : ℝ} (ha : 0 < a) :
     field_simp
     try ring
   rw [hexp]
+
+
+/-! ## The sharp rate: the aperture itself, not three times it -/
+
+/-- **The floor at a given depth bound, with the collar rate.**  Through a plateau cutoff of
+collar `δ` the exponential rate is `4π(a + 2δ)σ` instead of `12πaσ`. -/
+theorem exists_re_W_ge_logWeighted_of_depth_collar {a δ σ : ℝ} (ha : 0 < a) (hδ : 0 < δ)
+    (hσ0 : 0 ≤ σ)
+    (hdepthAll : ∀ ρ ∈ Zeta23.zetaZeroConfig.carrier, |(spectralSample ρ).im| ≤ σ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
+      (∀ t : ℝ, a < |t| → f t = 0) → Integrable (𝓕 f) →
+      Integrable (fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) →
+      -(C * Real.exp (4 * π * (a + 2 * δ) * σ) *
+          ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+        (Zeta23.zetaZeroConfig.W f f).re := by
+  classical
+  obtain ⟨A₀, hA₀, hloc⟩ := Zeta23.RvM.zetaZeroConfig_local_count
+  have hLC := Zeta23.Tail.LocalCount.ofWindowCount Zeta23.zetaZeroConfig hA₀ hloc
+  obtain ⟨A₁, hA₁, hcount⟩ := exists_count_spectralSample hLC
+  have hX : (0:ℝ) ≤ 4 * (a + δ) + δ⁻¹ := by
+    have := inv_pos.mpr hδ
+    linarith
+  have hY : (0:ℝ) ≤ 3 * A₁ * logKernelConst :=
+    mul_nonneg (by linarith) logKernelConst_nonneg
+  refine ⟨((4 * (a + δ) + δ⁻¹) * π) * ((4 * (a + δ) + δ⁻¹) * (3 * A₁ * logKernelConst)),
+    mul_nonneg (mul_nonneg hX Real.pi_pos.le) (mul_nonneg hX hY),
+    fun f hf hfc hsupp hFi hint => ?_⟩
+  have hcore := floorCoreCollar ha hδ hA₁ hσ0 hdepthAll hcount f hf hfc hsupp hFi hint
+  refine le_trans (le_of_eq ?_) hcore
+  have hsplitexp : Real.exp (2 * π * (a + 2 * δ) * σ) * Real.exp (2 * π * (a + 2 * δ) * σ) =
+      Real.exp (4 * π * (a + 2 * δ) * σ) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [← hsplitexp]
+  ring
+
+/-- **The unconditional floor at the collar rate.**  For every collar `δ > 0` the archimedean
+floor holds with exponential rate `2(a + 2δ) · zetaZeroWidth` in the aperture. -/
+theorem exists_re_W_ge_logWeighted_rate_collar {a δ : ℝ} (ha : 0 < a) (hδ : 0 < δ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
+      (∀ t : ℝ, a < |t| → f t = 0) → Integrable (𝓕 f) →
+      Integrable (fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) →
+      -(C * Real.exp (2 * (a + 2 * δ) * zetaZeroWidth) *
+          ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+        (Zeta23.zetaZeroConfig.W f f).re := by
+  have hw : 0 ≤ zetaZeroWidth := zetaZeroWidth_nonneg
+  have hpi : (0:ℝ) < 2 * π := by positivity
+  have hdepth : ∀ ρ ∈ Zeta23.zetaZeroConfig.carrier,
+      |(spectralSample ρ).im| ≤ zetaZeroWidth / (2 * π) := by
+    intro ρ hρ
+    rw [spectralSample_im, abs_div, abs_of_pos hpi]
+    gcongr
+    exact abs_re_sub_half_le_zetaZeroWidth hρ
+  obtain ⟨C, hC, hfloor⟩ := exists_re_W_ge_logWeighted_of_depth_collar ha hδ
+    (by positivity : (0:ℝ) ≤ zetaZeroWidth / (2 * π)) hdepth
+  refine ⟨C, hC, fun f hf hfc hsupp hFi hint => ?_⟩
+  have h := hfloor f hf hfc hsupp hFi hint
+  refine le_trans (le_of_eq ?_) h
+  have hexp : Real.exp (2 * (a + 2 * δ) * zetaZeroWidth) =
+      Real.exp (4 * π * (a + 2 * δ) * (zetaZeroWidth / (2 * π))) := by
+    congr 1
+    field_simp
+    try ring
+  rw [hexp]
+
+/-- **The rate of the archimedean floor is twice the aperture times the width.**  For every
+`ε > 0` the unconditional floor holds with rate `(2a + ε) · zetaZeroWidth` at aperture `a`.  This
+is the rate at which the forward arrow reads a floor: a bound `−C e^{2σA}` at aperture `A` forces
+the zeros into `|Re ρ − ½| ≤ σ`.  The three-radius trapezoid gave `6a · width`, a factor three
+away; the narrow collar removes it, so the two directions of "the rate of the ground-energy path
+is twice the width" meet in the same unit, with the collar paid for by the constant. -/
+theorem exists_re_W_ge_logWeighted_rate_sharp {a ε : ℝ} (ha : 0 < a) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f →
+      (∀ t : ℝ, a < |t| → f t = 0) → Integrable (𝓕 f) →
+      Integrable (fun y : ℝ => ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) →
+      -(C * Real.exp ((2 * a + ε) * zetaZeroWidth) *
+          ∫ y : ℝ, ‖𝓕 f y‖ ^ 2 * Real.log (|y| + 3)) ≤
+        (Zeta23.zetaZeroConfig.W f f).re := by
+  obtain ⟨C, hC, hfloor⟩ :=
+    exists_re_W_ge_logWeighted_rate_collar (a := a) (δ := ε / 4) ha (by positivity)
+  refine ⟨C, hC, fun f hf hfc hsupp hFi hint => ?_⟩
+  have h := hfloor f hf hfc hsupp hFi hint
+  have hrate : Real.exp (2 * (a + 2 * (ε / 4)) * zetaZeroWidth) =
+      Real.exp ((2 * a + ε) * zetaZeroWidth) := by
+    congr 1
+    ring
+  rwa [hrate] at h
 
 /-! ## The on-line terms are free: the weight is the off-line count -/
 

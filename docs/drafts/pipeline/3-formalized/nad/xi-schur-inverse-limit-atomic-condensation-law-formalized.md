@@ -17,7 +17,7 @@
 | `HTGeometry/SingularSchurDefectCollapse.lean`, `HTGeometry/FAndMRieszSchurConsequences.lean` | the singular Schur-defect collapse and the Bernstein–Szegő cofinal approximation |
 | `HTGeometry/BernsteinSzegoProbabilityApproximation.lean`, `HTGeometry/BernsteinSzegoCaratheodoryRational.lean`, `HTGeometry/MomentFiberPickSchurPhase.lean` | the OPUC/Schur-defect and Bernstein–Szegő layers and the generic Xi-facing capstone |
 | `HTGeometry/CircleSingularWitness.lean` | singularity of countably carried circle measures |
-| `RHTower/CCMCompletedPrimeGammaAccretivityCriterion.lean` | the checked anti-Herglotz/RH criterion |
+| `RHTower/CCM/CCMCompletedPrimeGammaAccretivityCriterion.lean` | the checked anti-Herglotz/RH criterion |
 
 ## Audited declarations
 

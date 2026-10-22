@@ -137,7 +137,7 @@ linear correction scale cannot close RH.
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiCanonicalSignedCompensationSaturation`
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalSignedCompensationSaturation`
 
 Principal closed theorems:
 
@@ -152,9 +152,9 @@ Principal closed theorems:
 Audit:
 
 - direct check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCanonicalSignedCompensationSaturation.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalSignedCompensationSaturation.lean`;
 - targeted final build:
-  `lake build GaloisForLFunctions.RHTower.SuzukiCanonicalSignedCompensationSaturation`,
+  `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalSignedCompensationSaturation`,
   `13732/13732` jobs completed;
 - the five audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`;
 - module imported by `GaloisForLFunctions.RHTower`;

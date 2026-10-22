@@ -148,7 +148,7 @@ was checked in isolation with
 Lean 4.30 subtype coercions in the existing three-term dependency, the
 project file passes
 `lake env lean
-GaloisForLFunctions/RHTower/DeningerArithmeticCoarseInvariants.lean`.
+GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCoarseInvariants.lean`.
 Its two central theorems have only Lean's standard `propext` and
 `Quot.sound` axioms.  The full sheaf-category equalizer statement
 remains to be formalized.
@@ -172,7 +172,7 @@ Two modules.  Axiom audit for every declaration: `propext, Classical.choice, Quo
 
 ### The categorical sheaf theorem
 
-`formal/GaloisForLFunctions/RHTower/DeningerCoarseInvariantSheaf.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCoarseInvariantSheaf.lean`
 
 - `invariantSubmodule F act U` — formula `(1)`: sections of `F` over `U` fixed by every operator
   of an arbitrary family `act : ι → (F ⟶ F)` of natural endomorphisms.

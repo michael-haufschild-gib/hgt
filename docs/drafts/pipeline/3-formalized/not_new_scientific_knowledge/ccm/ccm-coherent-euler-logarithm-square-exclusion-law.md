@@ -243,7 +243,7 @@ the factorization rather than being coherently summed and then squared.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMCoherentSquareExclusion.lean`.  The previous decision said the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCoherentSquareExclusion.lean`.  The previous decision said the
 weighted logarithmic shift carrier, the completed archimedean form and the aperture-dependent Euler
 logarithm were all absent, so that only `(15)` could be stated.  That was wrong about the shape of the
 theorem: the exclusion never uses the completed form, only that its value on **one fixed packet** does

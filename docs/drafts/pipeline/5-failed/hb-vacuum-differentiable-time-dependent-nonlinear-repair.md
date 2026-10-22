@@ -22,7 +22,7 @@ Test strongest ordinary perturbative escape left after static nonlinear source-g
 - **Exact killing theorem/mechanism:** `hbXiPeierlsVacuumDifferentiableNonlinearEvolution_forces_linearClockCovariance`. Exact nonlinear source-FE equivariance differentiates along real source amplitudes. Its vacuum first variation must commute with literal anti-linear FE transport. If first variation is centered BM finite-time clock, existing clock classification forces RH at every nonzero time. Nonlinear terms cannot repair off-wall linear defect.
 - **Strongest positive survivor:** successful source-dynamical producer must change linearized clock/source-FE law, be singular or non-differentiable at vacuum, or prove only isolated finite-amplitude source covariance with no accumulating vacuum family. These are mathematically distinct from perturbative nonlinear evolution.
 - **New insight:** genuine time dependence is not an escape from static nonlinear rigidity within any perturbative Einstein--Teukolsky solution map. Remaining HB route, if any, is nonperturbative/source-changing already at first order or isolated-amplitude.
-- **Status:** formalized in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVacuumDifferentiableNonlinearEvolutionNoGo`; certificate `d4HBVacuumDifferentiableNonlinearEvolutionRouteKilled`; targeted build passes; axioms only `propext`, `Classical.choice`, `Quot.sound`.
+- **Status:** formalized in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVacuumDifferentiableNonlinearEvolutionNoGo`; certificate `d4HBVacuumDifferentiableNonlinearEvolutionRouteKilled`; targeted build passes; axioms only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Log
 

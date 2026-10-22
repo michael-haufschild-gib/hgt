@@ -220,7 +220,7 @@ zero.
 
 ### The per-mode Poisson boundary theory landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonBoundary.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonBoundary.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 On the character of frequency `μ` the Poisson extension `(3)` is the decaying profile `e^{-|μ| r}`,
@@ -243,7 +243,7 @@ which is the mode profile already built for `DAC_AFFINE_KUMMER_HARMONIC_FOURIER_
 
 ### The Poisson semigroup as an operator landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMultiplier.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMultiplier.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 mathlib has no diagonal multiplier on a square-summable coefficient space, so it is built here.
@@ -262,7 +262,7 @@ mathlib has no diagonal multiplier on a square-summable coefficient space, so it
 
 ### The boundary Hodge operator as an operator landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerBoundaryHodgeOperator.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBoundaryHodgeOperator.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 `sgn(D_ℓ)` is bounded, so `(7)` can be built as a genuine operator with the multiplier machinery.
@@ -276,7 +276,7 @@ mathlib has no diagonal multiplier on a square-summable coefficient space, so it
 
 ### The phase generator `(1)` landed, by reuse
 
-`formal/GaloisForLFunctions/RHTower/DeningerPhaseGenerator.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPhaseGenerator.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The corpus already contained the hard theorem: `MaximalRealDiagonalSelfAdjoint.lean` constructs
@@ -296,7 +296,7 @@ character lattice needs, but the `ℕ`-indexed construction was not new.
 
 ### The absolute value `(2)` and the polar decomposition landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbsGenerator.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbsGenerator.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 For a diagonal operator the absolute value needs no general Borel calculus: it is the diagonal of
@@ -314,7 +314,7 @@ the absolute frequencies, and the defining relations are proved directly.
 
 ### The power correspondence `(8)`--`(11)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerIndexIsometry.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerIndexIsometry.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The pullback `F_q^*` sends the character of `a` to the character of `q a`, so on coefficients it is

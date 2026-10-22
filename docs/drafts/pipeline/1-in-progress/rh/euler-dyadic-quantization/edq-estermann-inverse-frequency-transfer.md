@@ -17,7 +17,7 @@ with all three sums over `1<=h<=N`. The desired EDQ conclusion requires
 cofinal subpower control of the complete source, not merely of one transformed
 frequency range.
 
-The full Gram identity in [the covariance attack](../../edq-full-covariance-core-attack.md)
+The full Gram identity in [the covariance attack](edq-full-covariance-core-attack.md)
 uses the Vasyunin function. Its relation to the sine Estermann function is
 
 `V(a/b) = -(2*b/pi^2)*D_sin(1,a/b)` for coprime positive `a,b`.

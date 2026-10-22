@@ -72,13 +72,13 @@ The actual finite retarded action retains a history strip under a fixed time tra
 
 ## Lean
 
-Source: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPulseHorizonSource.lean`, namespace `RHTower.D4BMPulseHorizonSource`.
+Source: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPulseHorizonSource.lean`, namespace `RHTower.D4BMPulseHorizonSource`.
 
 - `normalizedPulseSource_eq_compact`, `normalizedPulseSource_original_radius`: actual exterior cancellation and original normalization.
 - `compactPulseSource_horizon`, `normalizedPulseSource_horizon_limit`: retained horizon drive and original exterior limit.
 - `horizonPulseContact_profile`, `horizonPulseContact_clockMoment`: exact horizon contact and its translation moment.
 - `originalPulseContact_eq_compact`, `compactPulseContact_horizon`, `originalPulseContact_horizon_limit`: original radial contact, regular trace and justified limit.
 
-Scratch proofs checked with `lake env lean`. Final exact leaf builds passed with no warnings: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPulseHorizonSource` (202 seconds) and `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPulseContactClock` (40 seconds). Each used twelve existing cache roots and compiled only its leaf. Both modules are wired into `RHTower.lean`; no umbrella or full build was run. Static index refreshed and formal lint passed, with existing large-file warnings. No new axioms or incomplete proofs were added.
+Scratch proofs checked with `lake env lean`. Final exact leaf builds passed with no warnings: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPulseHorizonSource` (202 seconds) and `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPulseContactClock` (40 seconds). Each used twelve existing cache roots and compiled only its leaf. Both modules are wired into `RHTower.lean`; no umbrella or full build was run. Static index refreshed and formal lint passed, with existing large-file warnings. No new axioms or incomplete proofs were added.
 
 Audited source SHA-256 values: `4a70aba6a727f6fc6559a0915fb4d9a1d574e4d3dd3ad24397a4f56f7e5d8624` (horizon/source leaf), `9d52996da090334e0feb52c03a4d9a49ee3ee5b538fa6b38979fa13603f9307c` (finite-clock leaf).

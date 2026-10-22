@@ -566,7 +566,7 @@ source-specific cancellation.  Priority remains unverified.
 
 ## Formalization
 
-`GaloisForLFunctions.RHTower.SuzukiCarlemanEvenPoleCarrier` proves the exact
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanEvenPoleCarrier` proves the exact
 dependency-closed theorem batch:
 
 ```text
@@ -595,7 +595,7 @@ suzukiExteriorWeylGram_eq_gauged_pick
 meromorphicTrailingCoeffAt_suzukiPhaseOneExteriorWeylQuotient_of_XiC_zero
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiCarlemanCentralFlux` proves the exact central hostile test:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanCentralFlux` proves the exact central hostile test:
 
 ```text
 residue_re_nonpos_of_upperHalfPlane_im_nonneg

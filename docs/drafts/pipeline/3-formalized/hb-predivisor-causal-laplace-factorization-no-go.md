@@ -21,7 +21,7 @@ Corpus search found finite-energy, late-time finite-variation, and open-complex-
 
 ## Lean
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBPreDivisorCausalLaplaceFactorizationNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBPreDivisorCausalLaplaceFactorizationNoGo`
 - Capstone: `d4HBPreDivisorExponentiallyFiniteVariationCausalLaplaceRouteKilled`
 - Direct `lake env lean`: PASS
 - Targeted build: `12471/12471` PASS

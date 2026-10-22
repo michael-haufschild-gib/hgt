@@ -97,7 +97,7 @@ old one-dimensional argument would be circular.
 Implemented module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMRadicalQuotientHermitian.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMRadicalQuotientHermitian.lean
 ```
 
 Standalone manuscript, with no reference to the internal formal layer:

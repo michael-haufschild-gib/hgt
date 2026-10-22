@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.PoissonPrimeClockCommutator
 import GaloisForLFunctions.RHTower.HardyTitchmarshSourceTransport
-import GaloisForLFunctions.RHTower.HedenmalmThetaTrace
-import GaloisForLFunctions.RHTower.HedenmalmCompactSourceEigenmode
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaTrace
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompactSourceEigenmode
 import GaloisForLFunctions.RHTower.STCPrimeLogSquarePoleScaling
 
 /-!

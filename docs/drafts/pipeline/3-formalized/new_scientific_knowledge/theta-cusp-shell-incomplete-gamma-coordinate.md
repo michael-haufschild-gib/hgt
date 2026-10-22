@@ -3,7 +3,7 @@
 - **Stage:** 3-formalized
 - **Type:** theorem / exact nonperturbative coordinate
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean`
 
 ## Statement
 

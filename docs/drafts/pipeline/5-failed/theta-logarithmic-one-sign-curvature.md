@@ -80,14 +80,14 @@ cofinally, as claimed.
 ## Verification scope
 
 The complete proof and API checks passed in `/tmp/rn_log_jet_check.lean`.
-`lake --old build GaloisForLFunctions.RHTower.ThetaCuspLogJetOscillation`
+`lake --old build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLogJetOscillation`
 passed; no umbrella build was run. `scripts/formal_tools.py lint` found no
 issue in the new leaf, but failed on 11 unrelated unwired modules recorded
 in the RN working log. No numerical jet evaluation, new axiom, or heartbeat
 increase was used.
 
 Final audit:
-`lake env lean GaloisForLFunctions/RHTower/ThetaCuspLogJetOscillation.lean`
+`lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLogJetOscillation.lean`
 passed with exit 0 and no output.
 
 ## Log

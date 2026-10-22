@@ -38,7 +38,7 @@ private theorem cosine_third : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(3 : �
   rw [integral_cos_pow_three]
   simp
 
-theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(4 : ℕ)) = 3*Real.pi/4 := by
+private theorem cosine_fourth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(4 : ℕ)) = 3*Real.pi/4 := by
   rw [show (4:ℕ)=2+2 by rfl, integral_cos_pow, cosine_second]
   simp
   ring
@@ -47,7 +47,7 @@ private theorem cosine_fifth : (∫ θ : ℝ in 0..2*Real.pi, Real.cos θ^(5 : �
   rw [show (5:ℕ)=3+2 by rfl, integral_cos_pow, cosine_third]
   simp
 
-theorem quintic_cosine_integral (a b c d e f : ℝ) :
+private theorem quintic_cosine_integral (a b c d e f : ℝ) :
     (∫ θ : ℝ in 0..2*Real.pi,
       a+b*Real.cos θ+c*Real.cos θ^(2 : ℕ)+d*Real.cos θ^(3 : ℕ)+e*Real.cos θ^(4 : ℕ)+f*Real.cos θ^(5 : ℕ)) =
         2*Real.pi*a+Real.pi*c+(3*Real.pi/4)*e := by

@@ -1,7 +1,7 @@
 # Original character mismatch controlled by both transfer losses
 
 - **Stage:** 1-in-progress
-- **Parent:** [Selberg conjecturing loop](../../selberg-quarter-conjecturing-loop.md), cycle52.
+- **Parent:** [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle52.
 - **Objective:** Bound the original coherent seam pairing by transfer loss in both its source and radial derivative, connecting the actual seam current to the proved phase-loss Rellich identity.
 
 ## Evidence and conjecture
@@ -10,7 +10,7 @@ Cycle50-51 source hashes were revalidated unchanged. The previous goal turn made
 
 Current explicit-OR corpus queries for projection mismatch, quadratic domination, bilinear bound, polarization, and golden ratio returned2662 declarations in393 modules; bilinear/quadratic-bound/discriminant/Cauchy-Schwarz returned2120 in818. Counts describe discovery metadata, not all proof bodies read. Inspected the actual character-projector adjoint/orthogonal-corner proofs, ComplexQuadraticPolarization's real polarization/scalar-optimization argument, EventSquarePolarization's finite mixed expansion, and IntegralCauchySchwarz's exact nonnegative-quadratic lemma. Artifacts use `/tmp/selberg_mixed54_`.
 
-For literal upper/lower projectors P,Q, let A(v)=norm(v)^2-norm(QP(v))^2, B=P-Q, a=(Id-P)v, b=(Id-Q)P(v), and phi=(1+sqrt(5))/2. Test the two exact positive identities recorded on the [dilation card](../../selberg-maass-dilation-stress.md). Their proposed consequence is `abs(Re(inner (B(v)) w))^2 <= phi^2*A(v)*A(w)` uniformly in level and both vectors. No angle bound, nonzero-loss condition, or spectral coercivity premise is allowed.
+For literal upper/lower projectors P,Q, let A(v)=norm(v)^2-norm(QP(v))^2, B=P-Q, a=(Id-P)v, b=(Id-Q)P(v), and phi=(1+sqrt(5))/2. Test the two exact positive identities recorded on the [dilation card](selberg-maass-dilation-stress.md). Their proposed consequence is `abs(Re(inner (B(v)) w))^2 <= phi^2*A(v)*A(w)` uniformly in level and both vectors. No angle bound, nonzero-loss condition, or spectral coercivity premise is allowed.
 
 ## Proof loop
 
@@ -56,4 +56,4 @@ Next derive the complete phase stress tensor as the original stress of F minus t
 
 ## Cycle53 continuation completed
 
-The complete phase stress, its unit-translation symmetry, and the exact physical side/top flux formulas are now proved. They have been substituted into the full original core–cusp bound. All28 declarations in the new module passed the full source/build/axiom/coverage/wiring/index/lint audit; the latest repository lint is green, so the prior unrelated wiring-error snapshot above is historical. [Complete proof and next arithmetic kernel estimate](../../selberg-phase-stress-side-flux.md). The full quarter endpoint remains unproved.
+The complete phase stress, its unit-translation symmetry, and the exact physical side/top flux formulas are now proved. They have been substituted into the full original core–cusp bound. All28 declarations in the new module passed the full source/build/axiom/coverage/wiring/index/lint audit; the latest repository lint is green, so the prior unrelated wiring-error snapshot above is historical. [Complete proof and next arithmetic kernel estimate](selberg-phase-stress-side-flux.md). The full quarter endpoint remains unproved.

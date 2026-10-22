@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource
 import GaloisForLFunctions.HTGeometry.MonomialLaplaceComplex
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 import Mathlib.MeasureTheory.Integral.DominatedConvergence

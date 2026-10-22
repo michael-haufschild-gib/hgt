@@ -234,7 +234,7 @@ power correspondence and residue trace, not by pretending that
 
 ### Both labelled theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerProLogCuspHodge.lean`, on top of the leafwise Kähler
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerProLogCuspHodge.lean`, on top of the leafwise Kähler
 and germ modules (`DeningerLeafwiseKahler.lean`, `DeningerStationaryKahlerGerm.lean`).  Axiom audit
 for all 21 declarations: `propext, Classical.choice, Quot.sound`.
 

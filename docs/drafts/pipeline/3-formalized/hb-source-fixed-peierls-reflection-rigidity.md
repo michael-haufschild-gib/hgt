@@ -56,7 +56,7 @@ Sberna--Bosch--East--Green--Lehner,
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFixedPeierlsReflectionRigidity`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFixedPeierlsReflectionRigidity`
 - Theorems:
   - `d4BMXiSecondHarmonicPeierlsPolarizedCutCandidate_reflection_add_eq_two_mul_hermitianCurrent`
   - `d4GaugeFixedTeukolskySourceFixedPeierlsCubicCut_reflection_odd`

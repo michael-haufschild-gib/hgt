@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCurvatureProjectiveGlobal
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCurvatureProjectiveGlobal
 
 /-! A global positive current for the center confluent coordinate energy.
 The projective curvature reserve integrates twice to a slope-curvature

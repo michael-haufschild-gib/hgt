@@ -144,7 +144,7 @@ The worry there was that a *finite-dimensional* shadow would contradict the theo
 below states the theorem in its genuine direction — no finite-dimensional space contains the Hankel
 columns — so nothing is weakened.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMEvansBoundaryInfiniteRank.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMEvansBoundaryInfiniteRank.lean`
 (10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
 into `formal/GaloisForLFunctions/RHTower.lean`).
 

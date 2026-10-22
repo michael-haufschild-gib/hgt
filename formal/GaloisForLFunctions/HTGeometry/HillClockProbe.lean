@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillChartWave
-import GaloisForLFunctions.HTGeometry.KleinGordonProbeExamples
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonProbeExamples
 import GaloisForLFunctions.HTGeometry.ClockPotentialLocalDetermination
 
 /-!

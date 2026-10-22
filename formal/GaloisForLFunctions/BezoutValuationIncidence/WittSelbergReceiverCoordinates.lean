@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerBigWittFrobeniusRingEndomorphism
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittFrobeniusRingEndomorphism
 import GaloisForLFunctions.BezoutValuationIncidence.SelbergHilbertCoordinateEquivalence
 
 /-!

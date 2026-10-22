@@ -14,10 +14,10 @@
   - `formal/GaloisForLFunctions/HTGeometry/NonstationaryPhaseIteration.lean`
   - `formal/GaloisForLFunctions/RHTower/GammaJumpMultiplierBounds.lean`
   - `formal/GaloisForLFunctions/RHTower/GammaJumpFourierMultiplier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootRetainedProjectedSource.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootRetainedEnergyEstimate.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootRetainedTerminalBlocks.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootRetainedJumpSource.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootRetainedProjectedSource.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootRetainedEnergyEstimate.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootRetainedTerminalBlocks.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootRetainedJumpSource.lean`
 
 ## Formal content
 

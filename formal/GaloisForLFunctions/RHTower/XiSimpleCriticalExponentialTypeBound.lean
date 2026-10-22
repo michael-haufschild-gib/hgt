@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.HorizontalSingletonFiberCharging
-import GaloisForLFunctions.RHTower.SuzukiCompactL2Fourier
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCompactL2Fourier
 
 /-!
 # Simple critical ordinates versus finite exponential type

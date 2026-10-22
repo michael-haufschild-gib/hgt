@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMWeilRadicalTailQuotient`
+- `GaloisForLFunctions.RHTower.CCM.CCMWeilRadicalTailQuotient`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

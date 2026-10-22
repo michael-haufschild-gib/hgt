@@ -146,7 +146,7 @@ the new module proves their range is dense.
 
 ## Lean certificates
 
-Module: `GaloisForLFunctions/RHTower/DeningerGammaSixCofinalSingularGraphSoninTransport.lean`.
+Module: `GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCofinalSingularGraphSoninTransport.lean`.
 
 - `deningerGammaSixCofinalFiniteGraph_closure_eq_top`;
 - `tendsto_deningerGammaSixCofinalFiniteGraphAdmission_averagingPacket`;

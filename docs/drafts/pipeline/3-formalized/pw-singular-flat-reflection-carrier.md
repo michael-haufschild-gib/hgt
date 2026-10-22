@@ -187,7 +187,7 @@ all-orders-flat nonanalytic sector left open by the prior analytic no-go.
 ## Lean certificate
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularFlatReflectionCarrier.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularFlatReflectionCarrier.lean`
 - Unconditional carrier theorem:
   `RHTower.schwarzschildParikhWilczek_singularFlatReflectionCarrier`.
 - Exact source weld:

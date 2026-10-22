@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CauchyTransformHardy
 import GaloisForLFunctions.RHTower.HardyBlaschkeMultiplier
-import GaloisForLFunctions.RHTower.SuzukiModelSpaceOrthogonal
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiModelSpaceOrthogonal
 
 open Complex Filter Topology MeasureTheory Set
 open scoped InnerProductSpace

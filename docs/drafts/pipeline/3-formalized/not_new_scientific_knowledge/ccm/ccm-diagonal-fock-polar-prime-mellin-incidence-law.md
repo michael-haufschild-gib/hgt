@@ -202,7 +202,7 @@ only the algebraic rearrangement would be wrapper work, so no new Lean file is a
 Laplace identity `(7)` remains a cited parent, but the card's own channel constructions and the
 passivity rewriting are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMDiagonalFockColligation.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMDiagonalFockColligation.lean`
 (7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

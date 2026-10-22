@@ -67,15 +67,90 @@ class Qdrant:
         path = '/collections/' + self.collection(model)
         existing = self.request('GET', path, deadline=deadline, missing_ok=True)
         if existing is None:
+            # Memory tiers (Qdrant >=1.19): originals stay cold on disk and the
+            # int8 copy is pinned. The HNSW graph keeps the default `cached`
+            # tier: it is small next to the vectors and is traversed with
+            # hnsw_ef=512 on every query, so paging it in cold costs latency
+            # for no meaningful saving.
             self.request('PUT', path, dict(vectors=dict(size=dimensions, distance='Cosine', memory='cold'),
-                hnsw_config=dict(m=16, ef_construct=100, max_indexing_threads=4, memory='cold'),
+                hnsw_config=dict(m=16, ef_construct=100, max_indexing_threads=4),
                 quantization_config=dict(scalar=dict(type='int8', memory='pinned')),
                 optimizers_config=dict(max_optimization_threads=1, default_segment_number=4), on_disk_payload=True), deadline=deadline)
             for key in ('module', 'view'):
                 self.request('PUT', path + '/index?wait=true', dict(field_name=key, field_schema='keyword'), deadline=deadline)
+            # A token index on the module lets `--exclude-module` be answered
+            # server side with a constant-size clause. Token matching is a
+            # SUBSET of the substring semantics, so it may only under-exclude;
+            # the exact SQLite post-filter removes the remainder.
+            self.request('PUT', path + '/index?wait=true', dict(field_name='module_tokens',
+                field_schema=dict(type='text', tokenizer='word', lowercase=True,
+                                  min_token_len=1, max_token_len=60)), deadline=deadline)
         elif existing['config']['params']['vectors']['size'] != dimensions:
             raise ValueError('Qdrant dimension differs from embedding model')
         return path
+
+
+# An enumerated `match.any` module list is exact but costs one JSON value per
+# module, so it is sent only while the list is small.
+MODULE_FILTER_VALUES = 512
+MAX_PAGE = 1024
+MAX_SCANNED = 4096
+MIN_HNSW_EF = 512
+SQL_VARIABLES = 900
+
+
+def module_filter(corpus, module, exclude_modules):
+    """Build a filter that never excludes a document `module_matches` accepts.
+
+    An inclusion clause must be exact or a superset: a token clause can miss an
+    infix match (`--module Tower` against `RHTower`), so inclusions are either
+    enumerated exactly or left to the exact SQLite post-filter. An exclusion
+    clause may be a subset, since under-excluding only yields extra candidates
+    the post-filter drops; those use one constant-size token clause each.
+    """
+    must, must_not, exhaustive = [], [], True
+    for term in exclude_modules:
+        must_not.append(dict(key='module_tokens', match=dict(text=term)))
+    if module:
+        modules = [r[0] for r in corpus.con.execute('SELECT DISTINCT module FROM files')
+                   if module_matches(r[0], module)]
+        if not modules:
+            return None, None, True
+        if len(modules) <= MODULE_FILTER_VALUES:
+            must.append(dict(key='module', match=dict(any=modules)))
+        else:
+            # Too broad to enumerate; rely on the post-filter and page instead.
+            exhaustive = False
+    return must, must_not, exhaustive
+
+
+def hydrate(corpus, hits, model, views, module, exclude_modules):
+    """Resolve a whole page in batched queries, never one round-trip per hit."""
+    order = {}
+    for hit in hits:
+        order.setdefault(hit['id'], hit)
+    rows = {}
+    ids = list(order)
+    for start in range(0, len(ids), SQL_VARIABLES):
+        block = ids[start:start + SQL_VARIABLES]
+        for row in corpus.con.execute(
+                'SELECT d.*,v.model AS vector_model,v.content_hash AS vector_hash '
+                'FROM documents d JOIN vectors v ON v.doc_id=d.id WHERE d.id IN (%s)'
+                % ','.join('?' for _ in block), block):
+            rows[row['id']] = row
+    result = []
+    for did, hit in order.items():
+        row = rows.get(did)
+        payload = hit.get('payload') or {}
+        if (row and row['vector_model'] == model and row['vector_hash'] == row['content_hash']
+                and row['content_hash'] == payload.get('content_hash') and row['view'] in views
+                and row['module'] == payload.get('module') and row['view'] == payload.get('view')
+                and module_matches(row['module'], module, exclude_modules)):
+            value = dict(row)
+            value.pop('vector_model'); value.pop('vector_hash')
+            value['score'] = float(hit['score'])
+            result.append(value)
+    return result
 
 
 def search(corpus, embedding, *, model, views, limit=100, module='', exclude_modules=(), deadline=float('inf')):
@@ -86,43 +161,43 @@ def search(corpus, embedding, *, model, views, limit=100, module='', exclude_mod
     if not embedding or not all(math.isfinite(float(x)) for x in embedding):
         raise ValueError('Invalid query embedding')
     client = Qdrant(corpus.directory)
-    must = [dict(key='view', match=dict(any=list(views)))]
-    if module or exclude_modules:
-        modules = [r[0] for r in corpus.con.execute('SELECT DISTINCT module FROM files')
-                   if module_matches(r[0], module, exclude_modules)]
-        if not modules:
-            return []
-        must.append(dict(key='module', match=dict(any=modules)))
-    count = max(64, limit*2)
+    must, must_not, exhaustive = module_filter(corpus, module, exclude_modules)
+    if must is None:
+        return []
+    must.append(dict(key='view', match=dict(any=list(views))))
+    query_filter = dict(must=must)
+    if must_not:
+        query_filter['must_not'] = must_not
+    # A filter left to the post-filter returns mostly non-matching hits, so it
+    # starts from a wider page rather than discovering that by widening.
+    collected, offset = {}, 0
+    count = max(64, limit * 2) if exhaustive else max(256, limit * 4)
     while True:
-        left = deadline-time.monotonic()
+        left = deadline - time.monotonic()
         if left <= 0:
             raise TimeoutError('Qdrant deadline exceeded')
         path = '/collections/' + client.collection(model) + '/points/query'
         if math.isfinite(left):
             path += '?timeout=' + str(max(1, math.ceil(left)))
-        result = client.request('POST', path, dict(query=list(embedding), filter=dict(must=must),
-            limit=count, with_payload=True, with_vector=False,
-            params=dict(hnsw_ef=512, quantization=dict(rescore=True, oversampling=2.0))), deadline=deadline, missing_ok=True)
+        # Page with an offset: widening by re-querying from rank zero repeated
+        # every comparison already paid for in the previous round. HNSW must
+        # explore at least offset+limit candidates for a page to mean anything,
+        # so ef tracks the depth actually requested.
+        result = client.request('POST', path, dict(query=list(embedding), filter=query_filter,
+            limit=count, offset=offset, with_payload=True, with_vector=False,
+            params=dict(hnsw_ef=max(MIN_HNSW_EF, min(MAX_SCANNED, offset + count)),
+                        quantization=dict(rescore=True, oversampling=2.0))), deadline=deadline, missing_ok=True)
         if result is None:
             return []
         hits = result['points']
-        current = []
-        for hit in hits:
-            row = corpus.con.execute('SELECT d.*,v.model AS vector_model,v.content_hash AS vector_hash '
-                'FROM documents d JOIN vectors v ON v.doc_id=d.id WHERE d.id=?', (hit['id'],)).fetchone()
-            payload = hit.get('payload') or {}
-            if (row and row['vector_model'] == model and row['vector_hash'] == row['content_hash']
-                    and row['content_hash'] == payload.get('content_hash') and row['view'] in views
-                    and row['module'] == payload.get('module') and row['view'] == payload.get('view')
-                    and module_matches(row['module'], module, exclude_modules)):
-                value = dict(row)
-                value.pop('vector_model'); value.pop('vector_hash')
-                value['score'] = float(hit['score'])
-                current.append(value)
-        if len(current) >= limit or len(hits) < count or count >= 4096:
-            return sorted(current, key=lambda r: (-r['score'], r['id']))[:limit]
-        count = min(4096, count*2)
+        for row in hydrate(corpus, hits, model, views, module, exclude_modules):
+            if row['id'] not in collected or collected[row['id']]['score'] < row['score']:
+                collected[row['id']] = row
+        offset += len(hits)
+        if len(collected) >= limit or len(hits) < count or offset >= MAX_SCANNED:
+            break
+        count = min(MAX_PAGE, count * 2)
+    return sorted(collected.values(), key=lambda r: (-r['score'], r['id']))[:limit]
 
 
 def sync(corpus, *, deadline, batch_size=256):
@@ -138,6 +213,7 @@ def sync(corpus, *, deadline, batch_size=256):
         if not queued:
             break
         operations = {}
+        resolved = []
         for entry in queued:
             row = corpus.con.execute('SELECT d.*,v.model,v.content_hash AS vector_hash,s.filename '
                 'FROM documents d JOIN vectors v ON v.doc_id=d.id JOIN vector_shards s ON s.id=v.shard '
@@ -145,16 +221,24 @@ def sync(corpus, *, deadline, batch_size=256):
             group = operations.setdefault(entry['model'], dict(upserts=[], deletes=[], entries=[]))
             group['entries'].append(entry)
             if row and row['content_hash'] == row['vector_hash']:
-                if archive is None:
-                    archive = FaissVectors(corpus)
-                if loaded_name != row['filename']:
-                    loaded = archive.faiss.read_index(str(archive.directory / row['filename']))
-                    loaded_name = row['filename']
-                vector = loaded.reconstruct(int(row['id'])).tolist()
-                group['upserts'].append(dict(id=row['id'], vector=vector,
-                    payload=dict(content_hash=row['content_hash'], module=row['module'], view=row['view'])))
+                resolved.append((entry, row))
             else:
                 group['deletes'].append(entry['doc_id'])
+        # Read each archive file once per batch. Queue order follows insertion,
+        # not shard layout, so reconstructing in queue order reopened the same
+        # index repeatedly.
+        for entry, row in sorted(resolved, key=lambda pair: (pair[1]['filename'], pair[1]['id'])):
+            if archive is None:
+                archive = FaissVectors(corpus)
+            if loaded_name != row['filename']:
+                loaded = archive.faiss.read_index(str(archive.directory / row['filename']))
+                loaded_name = row['filename']
+            vector = loaded.reconstruct(int(row['id'])).tolist()
+            # `module_tokens` carries the module again for the token index that
+            # answers exclusions server side; `module` stays the exact keyword.
+            operations[entry['model']]['upserts'].append(dict(id=row['id'], vector=vector,
+                payload=dict(content_hash=row['content_hash'], module=row['module'],
+                             module_tokens=row['module'], view=row['view'])))
         for model, group in operations.items():
             path = '/collections/' + client.collection(model)
             if group['upserts']:
@@ -192,6 +276,35 @@ def reconcile(corpus):
             'FROM qdrant_points p LEFT JOIN vectors v ON v.doc_id=p.doc_id AND v.model=p.model WHERE v.doc_id IS NULL')
 
 
+def prune_collections(corpus, *, apply=False, deadline=float('inf')):
+    """Report, and optionally drop, collections for retired embedding models.
+
+    A retired model's collection still holds its pinned int8 copy in RAM, so a
+    model swap doubles the footprint until it goes. This is never automatic: a
+    populated Qdrant volume with an empty corpus database is the documented
+    archive-restore path, and dropping collections there would destroy the only
+    copy. It therefore refuses to act unless the database names some model.
+    """
+    client = Qdrant(corpus.directory)
+    models = [r[0] for r in corpus.con.execute('SELECT DISTINCT model FROM vector_shards')]
+    report = dict(known_models=models, keep=[], prunable=[], dropped=[], applied=bool(apply))
+    if not models:
+        report['refused'] = 'corpus database names no embedding model; refusing to drop any collection'
+        return report
+    keep = {client.collection(model) for model in models}
+    listing = client.request('GET', '/collections', deadline=deadline) or {}
+    for entry in listing.get('collections', []):
+        name = entry.get('name', '')
+        if not name.startswith(client.config['prefix']):
+            continue  # Another cache's instance; never ours to touch.
+        (report['keep'] if name in keep else report['prunable']).append(name)
+    if apply:
+        for name in report['prunable']:
+            client.request('DELETE', '/collections/' + name, deadline=deadline, missing_ok=True)
+            report['dropped'].append(name)
+    return report
+
+
 if __name__ == '__main__':
     from lean_research_corpus import Corpus
     from lean_research_batch import locks
@@ -199,10 +312,18 @@ if __name__ == '__main__':
     parser.add_argument('--cache-dir', required=True, type=Path)
     parser.add_argument('--budget-seconds', type=float, default=30)
     parser.add_argument('--reconcile', action='store_true')
+    parser.add_argument('--prune-collections', action='store_true',
+                        help='report collections belonging to retired embedding models')
+    parser.add_argument('--apply', action='store_true',
+                        help='with --prune-collections, actually drop them')
     args = parser.parse_args()
     directory = args.cache_dir.resolve()
     try:
         with locks([directory/n for n in ('source.lock','compiler.lock','enrichment.lock')], seconds=5), Corpus(directory) as corpus:
+            if args.prune_collections:
+                print(json.dumps(prune_collections(corpus, apply=args.apply,
+                    deadline=time.monotonic()+args.budget_seconds), indent=2), flush=True)
+                raise SystemExit(0)
             if args.reconcile:
                 reconcile(corpus)
             print(json.dumps(sync(corpus, deadline=time.monotonic()+args.budget_seconds)), flush=True)

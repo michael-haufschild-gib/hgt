@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingRHCriterion
 import GaloisForLFunctions.BiScaleUncertainty.DeficitPrimitiveOneSidedWidth
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.FreeLagSymbolBoundaryLayer
 
 /-!

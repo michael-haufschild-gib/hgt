@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.HalfWeightWhittaker
 import GaloisForLFunctions.RHTower.SelbergModalEnergy
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMBesselOrderExteriorEnvelope
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMBesselOrderExteriorEnvelope
 
 /-!
 # Bounded modal solutions below `1/4` are Whittaker functions

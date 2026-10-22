@@ -110,7 +110,7 @@ further source-sign mechanism. Targeted Lean and axiom verification passed.
 
 ## Formal survivor
 
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerPaugamInsertedTrace.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamInsertedTrace.lean`
 implements the exact C3 proof and is imported by `RHTower.lean`.
 
 - `deningerMeyerHilbertConvolution_topInsertion_trace` reads the highest Hasse
@@ -124,7 +124,7 @@ implements the exact C3 proof and is imported by `RHTower.lean`.
 
 The final targeted module command, run from `formal/`, exited 0:
 
-`lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/DeningerMeyerPaugamInsertedTrace.olean GaloisForLFunctions/RHTower/DeningerMeyerPaugamInsertedTrace.lean`
+`lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamInsertedTrace.olean GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamInsertedTrace.lean`
 
 A separate `/tmp` import and `#print axioms` audit of all eight public theorems
 exited 0. Each uses only `propext`, `Classical.choice`, and `Quot.sound`.

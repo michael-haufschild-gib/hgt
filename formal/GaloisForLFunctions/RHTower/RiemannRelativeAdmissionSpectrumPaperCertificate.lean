@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RiemannRelativeAdmissionSpectrumUniversalityLaw
 import GaloisForLFunctions.RHTower.MobiusThetaPhysicalSourceToXiLanding
 import GaloisForLFunctions.RHTower.MobiusThetaComplexSourceToXiLanding
-import GaloisForLFunctions.RHTower.DeningerCalderonWittHellingerBetaRelativeResidueTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittHellingerBetaRelativeResidueTransgression
 
 /-!
 # Certificate for the relative admission-spectrum paper

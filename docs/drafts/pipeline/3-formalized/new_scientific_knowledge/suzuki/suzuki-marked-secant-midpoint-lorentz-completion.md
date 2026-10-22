@@ -9,7 +9,7 @@
   `../../1-in-progress/suzuki-rooted-midpoint-compound-gram.md`,
   `suzuki-global-local-compound-bezoutian-weld.md`
 - **Lean target:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMarkedSecantMidpointLorentzCompletion.lean`
 
 ## 1. Problem fixed by theorem
 
@@ -306,7 +306,7 @@ of its assertions had no declaration:
 2. **"unique minimal rate `kappa = d^2`"** — only the equivalence `(5) <-> (6)` was formalized, which
    does not by itself say `d^2` belongs to the admissible set.
 
-Both closed in `RHTower/SuzukiMarkedSecantMidpointLorentzCompletion.lean` [PROVED HERE], standard
+Both closed in `RHTower/Suzuki/SuzukiMarkedSecantMidpointLorentzCompletion.lean` [PROVED HERE], standard
 axioms `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `suzukiMarkedSecant_rootedCompletion_isLeast` : `IsLeast {kappa | (5)} (d^2)` — `d^2` is the least

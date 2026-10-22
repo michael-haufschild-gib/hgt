@@ -7,8 +7,8 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/DeningerBaumslagRationalization.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiRealFEBipolarizationCompletion.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalization.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiRealFEBipolarizationCompletion.lean`
 - `formal/GaloisForLFunctions/RHTower.lean`
 - `formal/GaloisForLFunctions/RHTower/MobiusLaplaceBoundaryMultiplicity.lean`
 
@@ -16,13 +16,13 @@
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.DeningerBaumslagRationalization`:
+`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization`:
 
 ```text
 RHTower.DeningerBau.sound
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiXiRealFEBipolarizationCompletion`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiXiRealFEBipolarizationCompletion`:
 
 ```text
 RHTower.suzukiWeldCompletedNonnegative_isLeast

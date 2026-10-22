@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinCCMRoutePApertureTailFluxBridge
-import GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryThirdJetConnection
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPrimeEntryThirdJetConnection
 
 /-!
 # P-G189 tail flux as the transverse CCM prime-entry third jet

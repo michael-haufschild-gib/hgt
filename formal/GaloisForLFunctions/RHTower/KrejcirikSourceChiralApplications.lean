@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.KrejcirikSourceChiralPseudospectrum
-import GaloisForLFunctions.RHTower.HedenmalmThetaEscapingNonlocalChiralPolarization
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaEscapingNonlocalChiralPolarization
 
 /-!
 # Krejčiřík bounds for arithmetic source chiralizations

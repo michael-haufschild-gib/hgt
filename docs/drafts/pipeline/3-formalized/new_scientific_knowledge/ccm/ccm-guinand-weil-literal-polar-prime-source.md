@@ -7,7 +7,7 @@
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, finite source-measure calculus and
   prime/pole source prescription
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilLiteralPolarPrimeSource.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilLiteralPolarPrimeSource.lean`
 
 ## Literal channels before quotienting
 
@@ -75,6 +75,6 @@ claimed here.
 - `ccmGuinandWeilPolarPrimeSourceValue_physical_eq_published`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilLiteralPolarPrimeSource` pass. `#print axioms` reports
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilLiteralPolarPrimeSource` pass. `#print axioms` reports
 only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`,
 `admit`, `opaque`, or `unsafe` declaration is used.

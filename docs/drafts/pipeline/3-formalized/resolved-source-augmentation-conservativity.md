@@ -41,7 +41,7 @@ Serial propagation and parallel kernel intersection form the paper's full networ
    defects;
 8. a uniform positive lower bound implies source-sector conservativity.
 
-`formal/GaloisForLFunctions/RHTower/DeningerGreenResolvedSourceConservativityCriterion.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGreenResolvedSourceConservativityCriterion.lean`
 proves:
 
 1. codiagonal of the arithmetic Green resolved defect vanishes unconditionally;

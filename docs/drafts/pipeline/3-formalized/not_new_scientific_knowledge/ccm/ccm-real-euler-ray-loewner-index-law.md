@@ -219,8 +219,8 @@ scalar-versus-kernel separation, and the positivity of every displayed Euler fac
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMEulerRayLoewner.lean` (wired, axiom-clean, 9
-declarations), over `RHTower/CCMEulerRayLogDerivativeIndex.lean`.
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerRayLoewner.lean` (wired, axiom-clean, 9
+declarations), over `RHTower/CCM/CCMEulerRayLogDerivativeIndex.lean`.
 
 - **`ray_cauchy_denominator`** — equation `(13)`: on the vertical ray `z = i y`, `w = i x` the
   complex Cauchy denominator collapses, `i/(i y - conj (i x)) = 1/(x+y)`.

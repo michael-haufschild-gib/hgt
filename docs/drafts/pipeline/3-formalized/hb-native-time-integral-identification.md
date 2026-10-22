@@ -54,19 +54,19 @@ A separate deep covariance-energy search recovered the original Friedrichs covar
 
 ## Lean modules and audit
 
-[ThetaCuspHawkingBMNativeTimeIntegralIdentification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeTimeIntegralIdentification.lean) contains four public theorems:
+[ThetaCuspHawkingBMNativeTimeIntegralIdentification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeTimeIntegralIdentification.lean) contains four public theorems:
 
 - `nativeJointTimePrimitive_eq_bochner`: actual native primitive equals the original-space Bochner integral.
 - `causalCuspSourceVector_native_forcing_ae`: complete physical source represents the literal native forcing.
 - `nativeJointIntegratedForcing_eq_bochner`: exact original-source double time integral.
 - `nativeJointResidual_bochner_covariance_equation`: actual native bounded Volterra equation.
 
-[ThetaCuspHawkingBMNativeResidualAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeResidualAdmission.lean) exposes the already proved literal joint continuity as `nativeJointResidualField_joint_continuous`; its existing private construction is preserved.
+[ThetaCuspHawkingBMNativeResidualAdmission.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeResidualAdmission.lean) exposes the already proved literal joint continuity as `nativeJointResidualField_joint_continuous`; its existing private construction is preserved.
 
 The complete candidates passed `lake env lean`. Final audits in the isolated cached leaf environment passed:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeResidualAdmission`: two jobs, 115 seconds reported build time.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeTimeIntegralIdentification`: 243 lines, two jobs, 136 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeResidualAdmission`: two jobs, 115 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeTimeIntegralIdentification`: 243 lines, two jobs, 136 seconds reported build time.
 
 Only the five new public theorems were checked with `#print axioms` in a separate scratch file. Each uses exactly `propext`, `Classical.choice` and `Quot.sound`. No added axiom, numerical result, native-response equality premise or forcing-identification premise enters the proof. Sources and five artifacts per module were installed byte for byte. The new module is imported by `RHTower.lean`. Repository-wide `scripts/formal_tools.py lint` passed; pre-existing large-file warnings remain. No umbrella build, numerical experiment, Git command, launcher or frontier-map edit ran.
 

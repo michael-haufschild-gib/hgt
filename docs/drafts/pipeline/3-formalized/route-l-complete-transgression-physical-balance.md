@@ -158,7 +158,7 @@ on the original conormal difference, rather than assume that merger.
 All nine theorems passed scratch verification without errors or
 warnings, including the anti-Fourier detecting test and separate
 vanishing of Gamma and transgression on fixed tests. The repository
-module `GaloisForLFunctions.RHTower.DeningerAdiabaticGaussianBoundaryParity`
+module `GaloisForLFunctions.RHTower.Deninger.DeningerAdiabaticGaussianBoundaryParity`
 contains exactly those checked bodies and one source definition, and
 is wired into `RHTower`.
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiEndpointReflectionDefectEnergy
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 
 /-!
 # A quantitative endpoint norm budget from the Xi height gap

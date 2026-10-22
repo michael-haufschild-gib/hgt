@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GomesHausdorffReflection
-import GaloisForLFunctions.RHTower.SuzukiClarkScrewRigidity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiClarkScrewRigidity
 
 /-!
 # Exact information retained by the existing Clark observation kernels

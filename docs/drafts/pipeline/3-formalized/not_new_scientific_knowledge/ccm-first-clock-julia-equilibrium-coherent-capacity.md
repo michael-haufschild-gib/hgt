@@ -132,7 +132,7 @@ Formal modules:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaEquilibriumGram.lean
 ```
 
 Unconditionally formalized:

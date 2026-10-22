@@ -6,7 +6,7 @@
   finite-dimensional rank--nullity is classical
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, Lemma 2.3 and Corollary 2.4
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCodiagonalObserverDimension.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilCodiagonalObserverDimension.lean`
 
 ## Exact phase transition
 
@@ -88,6 +88,6 @@ physical-horizon lift.
 - `ccmGuinandWeilRectangularPairedEventPacketMatrix_exists_unbalanced_zero_codiagonal`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilCodiagonalObserverDimension` pass. `#print axioms` reports
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilCodiagonalObserverDimension` pass. `#print axioms` reports
 only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`,
 `admit`, `opaque`, or `unsafe` declaration is used.

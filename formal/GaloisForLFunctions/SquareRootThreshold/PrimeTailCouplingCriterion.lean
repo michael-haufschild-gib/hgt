@@ -1,7 +1,7 @@
 import GaloisForLFunctions.SquareRootThreshold.WindowedOffDiagonalBeyondThreshold
 import GaloisForLFunctions.RHTower.WeilFullConeExposedPoint
 import GaloisForLFunctions.RHTower.WeilMarkovOddSectorTrivialZeroSquares
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleCompressionRHCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleCompressionRHCriterion
 import GaloisForLFunctions.RHTower.ZetaStrongRecurrenceReceiver
 
 /-!

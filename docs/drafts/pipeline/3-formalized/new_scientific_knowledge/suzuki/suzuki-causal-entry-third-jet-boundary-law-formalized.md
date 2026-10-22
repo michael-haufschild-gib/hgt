@@ -4,8 +4,8 @@
 - **Paper proof:**
   `./suzuki-causal-entry-third-jet-boundary-law.md`
 - **Lean modules:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`,
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryMovingCutRealization.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalEntryThirdJetBoundaryLaw.lean`,
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalEntryMovingCutRealization.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -102,7 +102,7 @@ It identifies discrete endpoint reporter required by
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalEntryThirdJetBoundaryLaw.lean`;
 - targeted SOTA build: `9452/9452` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - repository formal lint reaches this module but remains red on unrelated concurrent unreachable

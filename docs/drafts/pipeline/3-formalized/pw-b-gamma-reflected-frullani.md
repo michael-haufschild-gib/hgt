@@ -146,11 +146,11 @@ result is a Lean premise, and no numerical experiments were run.
 
 ## Lean audit
 
-Module: formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani.lean.
+Module: formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani.lean.
 The leaf has 447 lines, 38 public theorems and six definitions; capstone
 pwGammaMobiusReflectedFrullani_closed. Complete scratch and direct
 `lake env lean` checks passed, as did the targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani`.
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusReflectedFrullani`.
 The accepted proof emits an informational ring-normalization suggestion;
 the build also replays existing upstream style warnings. No proof goal
 remains open. All 44 public declarations passed the scratch axiom audit,

@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
-import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
-import GaloisForLFunctions.RHTower.HedenmalmThetaEigenODE
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGlobalReflectedRiccati
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaEigenODE
 import GaloisForLFunctions.RHTower.XiCanonicalProduct
 import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper

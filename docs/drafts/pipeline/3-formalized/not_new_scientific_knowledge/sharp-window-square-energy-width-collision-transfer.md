@@ -106,7 +106,7 @@ Paper proofs:
 - [x] no computation
 - [x] no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 - [x] targeted
-  `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergyWidthCollision`
+  `lake build GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergyWidthCollision`
 - [x] `#print axioms` audit: `[propext, Classical.choice, Quot.sound]`
 - [x] formal lint recognizes module as umbrella-reachable; repository-wide lint remains red only
   for five unrelated unreachable modules

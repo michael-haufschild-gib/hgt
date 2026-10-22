@@ -20,8 +20,8 @@
           {
             "name": "deningerCocycleOneEquiv",
             "kind": "noncomputable def",
-            "module": "GaloisForLFunctions.RHTower.DeningerSquareZeroAmalgamation",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerSquareZeroAmalgamation.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerSquareZeroAmalgamation",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerSquareZeroAmalgamation.lean",
             "line": 203,
             "doc": "The degree-one cocycles are the radial summand, when the arithmetic residue is injective.",
             "score": -28.78372952553689
@@ -29,8 +29,8 @@
           {
             "name": "deningerFrobeniusHomotopyDefect_cocycle",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticFrobeniusHomotopyDefect",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticFrobeniusHomotopyDefect.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticFrobeniusHomotopyDefect",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticFrobeniusHomotopyDefect.lean",
             "line": 109,
             "doc": "The defects obey the multiplicative two-cocycle identity.",
             "score": -28.70143436354515
@@ -38,8 +38,8 @@
           {
             "name": "ccmActualHeadMatchedRadialCharacteristicCocycle",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedOrientedCharacteristicCocycle",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedOrientedCharacteristicCocycle.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedOrientedCharacteristicCocycle",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedOrientedCharacteristicCocycle.lean",
             "line": 378,
             "doc": "Pointwise oriented characteristic increment of one symmetric polar pair around its arithmetic anchor.",
             "score": -28.240982517144804
@@ -47,8 +47,8 @@
           {
             "name": "fixedPrimeEulerCocycle_eq_zero",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteDivisorSplitting.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCofiniteDivisorSplitting.lean",
             "line": 206,
             "doc": "",
             "score": -28.079127151655275
@@ -56,8 +56,8 @@
           {
             "name": "deningerPowerBarD1Cocycle",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticPowerBar",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticPowerBar.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPowerBar",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPowerBar.lean",
             "line": 53,
             "doc": "The degree-one coboundary lands in genuine degree-two cocycles.",
             "score": -27.062476264212062
@@ -65,8 +65,8 @@
           {
             "name": "fixedPrimeEulerCocycle",
             "kind": "noncomputable def",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteDivisorSplitting.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCofiniteDivisorSplitting.lean",
             "line": 199,
             "doc": "The factor set as a degree-two cocycle with trivial integral coefficients.",
             "score": -26.91386142035924
@@ -92,8 +92,8 @@
           {
             "name": "DeningerArithmeticH0",
             "kind": "abbrev",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticCochainComplex",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticCochainComplex.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCochainComplex",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCochainComplex.lean",
             "line": 114,
             "doc": "Degree-zero cocycles.",
             "score": -22.340798244940927
@@ -101,8 +101,8 @@
           {
             "name": "deningerGammaRankBarHodgeCocycle2",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticGammaRankRegular",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticGammaRankRegular.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGammaRankRegular",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticGammaRankRegular.lean",
             "line": 524,
             "doc": "The good degree-two cocycle kernel is stable under source Hodge.",
             "score": -21.94313950077969
@@ -119,8 +119,8 @@
           {
             "name": "deningerArithmeticFiber_H1_cycles_eq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermAssembly",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermAssembly.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticThreeTermAssembly",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermAssembly.lean",
             "line": 46,
             "doc": "Degree-one cocycles are the residue kernel.",
             "score": -21.05922967286269
@@ -137,8 +137,8 @@
           {
             "name": "deningerWeilArakelov_mem_ker_D1",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticWeilArakelovFiber",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovFiber.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticWeilArakelovFiber",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovFiber.lean",
             "line": 139,
             "doc": "Degree-one cocycles satisfy the horizontal cocycle and transgression equations.",
             "score": -18.403791400409403
@@ -146,8 +146,8 @@
           {
             "name": "boundaries1_le_cycles1",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCohomology",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCohomology.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticThreeTermCohomology",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermCohomology.lean",
             "line": 56,
             "doc": "Every degree-one boundary is a degree-one cocycle.",
             "score": -17.739388624199062
@@ -155,8 +155,8 @@
           {
             "name": "H0",
             "kind": "abbrev",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCohomology",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCohomology.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticThreeTermCohomology",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermCohomology.lean",
             "line": 63,
             "doc": "Arithmetic `H⁰`: degree-zero cocycles.",
             "score": -17.557149916178684
@@ -166,8 +166,8 @@
           {
             "name": "deningerBauFree_isCoboundary_iff_exists_relation_trivial_primitive",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerRelationKernelHasse",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerRelationKernelHasse.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerRelationKernelHasse",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerRelationKernelHasse.lean",
             "line": 23,
             "doc": "A cocycle is globally a coboundary exactly when it has a free-cover primitive trivial on every arithmetic relation.",
             "score": -15.985757616689202
@@ -193,8 +193,8 @@
           {
             "name": "CCMActualHeadMatchedPhaseProjectiveFockIndex",
             "kind": "inductive",
-            "module": "GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveFockCocycle",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveFockCocycle.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveFockCocycle",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveFockCocycle.lean",
             "line": 74,
             "doc": "Arithmetic atoms and their positive/negative moving probes.",
             "score": -15.92710606123039
@@ -353,8 +353,8 @@
           {
             "name": "deningerProductFibre_tsum",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerMobiusRightInverse",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMobiusRightInverse.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerMobiusRightInverse",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusRightInverse.lean",
             "line": 33,
             "doc": "The product-fibre interchange.** An absolutely summable family on `ℕ × ℕ` vanishing on the zero product is summed by grouping along the fibres of `(m, k) ↦ mk`, each of which is the divisor antidiagonal.",
             "score": -29.32013830841899
@@ -407,8 +407,8 @@
           {
             "name": "thetaCuspShellGammaThreshold_productFiber",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspShellIncompleteGammaCoordinate",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspShellIncompleteGammaCoordinate.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspShellIncompleteGammaCoordinate",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellIncompleteGammaCoordinate.lean",
             "line": 248,
             "doc": "Product-fibre shell cuts multiply to the square of the fibre index.",
             "score": -25.486877720102243
@@ -523,8 +523,8 @@
           {
             "name": "deningerCollarExchange_poissonSource",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerPoissonPreimage",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPoissonPreimage.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerPoissonPreimage",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonPreimage.lean",
             "line": 63,
             "doc": "The collar exchange of a Poisson boundary is the Poisson boundary of the Fourier transform.** The Poisson operator carries the Fourier involution to multiplicative inversion, and in the logarithmic coordinate multiplicative inversion is exactly `J`.",
             "score": -28.90997625444178
@@ -550,8 +550,8 @@
           {
             "name": "integrable_ccmFourierTruncatedLogBoundary",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniFourierTruncation",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniFourierTruncation.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniFourierTruncation",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniFourierTruncation.lean",
             "line": 383,
             "doc": "The rough CCM half-density boundary is genuinely `L¹` on logarithmic scale. This is the measure-theoretic fact needed to compute its periodization coefficients without an illicit exchange of the critical-line Dirichlet series with an integral.",
             "score": -20.202795660850096
@@ -613,8 +613,8 @@
           {
             "name": "deningerOrdinaryIntegerBVGreenStokesBoundaryEvaluation_reflection",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerOrdinaryIntegerBVGreenStokesRadialComparison",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerOrdinaryIntegerBVGreenStokesRadialComparison",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerOrdinaryIntegerBVGreenStokesRadialComparison.lean",
             "line": 219,
             "doc": "Critical reflection exchanges the physical conormal evaluation with the opposite mate-gain branch.",
             "score": -16.725593732452683
@@ -622,8 +622,8 @@
           {
             "name": "deningerGreenBoundary_star_transverse",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerExtendedCuspHodge",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerExtendedCuspHodge.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerExtendedCuspHodge",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerExtendedCuspHodge.lean",
             "line": 125,
             "doc": "The star exchanges complementary Lagrangians.** The Green form of a nonzero packet against its Hodge star is positive, so the two boundary lines are transverse.",
             "score": -16.500529014746533
@@ -678,8 +678,8 @@
           {
             "name": "thetaCuspHawkingQuantumStratonovichCoupling",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumStratonovichBoundaryEndpoint.lean",
             "line": 218,
             "doc": "Singular Stratonovich exchange coefficient supplied by the genuine theta-cusp Hawking Born shell.",
             "score": -15.847509179403131
@@ -728,8 +728,8 @@
           {
             "name": "deningerGammaCharacter_maps_quadraticInteger_to_degree",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticGammaRankRigidity",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticGammaRankRigidity.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGammaRankRigidity",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticGammaRankRigidity.lean",
             "line": 58,
             "doc": "Once the positive character is forced to be rank, every Milnor--Witt quadratic integer maps to its ordinary finite-syntomic degree.",
             "score": -22.318307560767842
@@ -942,8 +942,8 @@
           {
             "name": "d4HBSelfDualSameChargeLocalJacobiCancellationRouteKilled",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean",
             "line": 100,
             "doc": "Premise-free certificate: no nontrivial real same-charge Plebanski packet is extinguished by local cyclic/Jacobi assembly.",
             "score": -26.669075472053798
@@ -969,8 +969,8 @@
           {
             "name": "D4HBPeierlsStationaryRadiativeAntiAlignmentRouteKilled",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBPeierlsStationaryChannelElimination",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBPeierlsStationaryChannelElimination.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBPeierlsStationaryChannelElimination",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBPeierlsStationaryChannelElimination.lean",
             "line": 116,
             "doc": "Closed route class: source-derived cyclic Peierls incidence leaves no nontrivial stationary/radiative cancellation mechanism in the HB causal cut.",
             "score": -16.52724110056579
@@ -1119,8 +1119,8 @@
           {
             "name": "deningerMeyerFiniteXiJetRepair_finrank_lower_bound",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerMeyerHalfDensityFiniteXiJetRepairIndex",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerHalfDensityFiniteXiJetRepairIndex.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHalfDensityFiniteXiJetRepairIndex",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerHalfDensityFiniteXiJetRepairIndex.lean",
             "line": 138,
             "doc": "Xi repair-memory index.** Every finite-dimensional linear record which, together with the half-density source coordinate, faithfully resolves the closed off-line Xi-jet relation has output dimension at least the packet's total analytic multiplicity.",
             "score": -29.321300124065385
@@ -1234,8 +1234,8 @@
           {
             "name": "two_mul_norm_product_le_weighted_sum",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo.lean",
             "line": 104,
             "doc": "",
             "score": -23.52970606523676
@@ -1324,8 +1324,8 @@
           {
             "name": "anchoredTwoScaleEnergy_lower_product",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedTwoScaleDomination",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimitivePromotedTwoScaleDomination.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedTwoScaleDomination",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimitivePromotedTwoScaleDomination.lean",
             "line": 353,
             "doc": "",
             "score": -23.148898115703417
@@ -1395,7 +1395,7 @@
             "score": -14.542549078646646
           },
           {
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct.lean",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct.lean",
             "line": 199,
             "text": "/-- Plane kernel remaining after the positive-ray Mellin integral. -/",
             "score": -12.740022349275195
@@ -1623,8 +1623,8 @@
           {
             "name": "deningerPeriodization_defect",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerMeyerPeriodization",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerPeriodization.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerMeyerPeriodization",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPeriodization.lean",
             "line": 177,
             "doc": "The periodization kills every periodization defect.** Reindexing the lattice by one step is a bijection, so the telescoping sum vanishes.",
             "score": -28.48205134459132
@@ -1746,8 +1746,8 @@
           {
             "name": "forall_d4HBAdjointQNMComplexBilinearFullCokernelOrbitLandingAt_iff_rh",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo.lean",
             "line": 159,
             "doc": "Global classification: universal complex-bilinear diagonal phase descent is RH itself, so it cannot serve as an independent proof producer.",
             "score": -29.601434225973435
@@ -1773,8 +1773,8 @@
           {
             "name": "pairH02Linear",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCupDescent",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCupDescent.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticThreeTermCupDescent",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermCupDescent.lean",
             "line": 62,
             "doc": "The fully bilinear endpoint cup-trace pairing on `H⁰ × H²`.",
             "score": -20.09119873294559
@@ -1782,8 +1782,8 @@
           {
             "name": "D4HBAdjointQNMDiagonalPositivityRouteKilled",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBAdjointQNMComplexBilinearPositivityNoGo.lean",
             "line": 179,
             "doc": "Closed diagonal-route certificate. Complex-bilinear phase descent is possible only at zero and is globally RH; the complementary Hermitian/KMS diagonal class has the wrong polarity.",
             "score": -20.071026258741178
@@ -1815,8 +1815,8 @@
           {
             "name": "deningerArithmeticCompactOpenH1EvenSigma",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCompactOpenGradedRealJetUniversalityLaw.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCompactOpenGradedRealJetUniversalityLaw",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompactOpenGradedRealJetUniversalityLaw.lean",
             "line": 99,
             "doc": "Continuous even Real involution descended to compact-open middle cohomology.",
             "score": -27.051585097368754
@@ -1824,8 +1824,8 @@
           {
             "name": "deningerArithmeticCompactOpenH1EvenSigma_sq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerCompactOpenGradedRealJetUniversalityLaw",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCompactOpenGradedRealJetUniversalityLaw.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCompactOpenGradedRealJetUniversalityLaw",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompactOpenGradedRealJetUniversalityLaw.lean",
             "line": 166,
             "doc": "The descended compact-open Real map remains an involution.",
             "score": -26.877649385823975
@@ -1833,8 +1833,8 @@
           {
             "name": "deningerArithmeticH1EvenKReal_sigma_eigenvector",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerEvenRealCharacteristicSpectrumReflectionUniversalityLaw.lean",
             "line": 53,
             "doc": "The descended even-Real involution maps every nonzero Frobenius eigenvector to the reflected nonzero eigenspace.",
             "score": -25.743348116786805
@@ -1842,8 +1842,8 @@
           {
             "name": "deningerEntireFunctionalEquationSigma_sq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticRealStructure",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticRealStructure.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticRealStructure",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticRealStructure.lean",
             "line": 64,
             "doc": "Functional-equation reflection is an involution on entire sources.",
             "score": -18.87330852256522
@@ -1851,8 +1851,8 @@
           {
             "name": "deningerPrimeGammaUpperSharpToJetHilbert",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.DeningerArithmeticPrimeGammaHilbert",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticPrimeGammaHilbert.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPrimeGammaHilbert",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPrimeGammaHilbert.lean",
             "line": 59,
             "doc": "Linear upper sharp packets before applying the anti-linear Weil involution.",
             "score": -17.930284282461674
@@ -2021,8 +2021,8 @@
           {
             "name": "ccmRationalFiniteBruhatIntegral_scaling",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleHaarCharacter",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalFiniteAdeleHaarCharacter.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleHaarCharacter",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRationalFiniteAdeleHaarCharacter.lean",
             "line": 238,
             "doc": "",
             "score": -35.03770360991517
@@ -2048,8 +2048,8 @@
           {
             "name": "ccmRationalArchimedeanSchwartzIntegral_scaling",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMRationalArchimedeanHaar",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalArchimedeanHaar.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanHaar",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRationalArchimedeanHaar.lean",
             "line": 36,
             "doc": "Inverse rational pullback multiplies the archimedean integral by `|k|`.",
             "score": -34.76854819870123
@@ -2066,8 +2066,8 @@
           {
             "name": "archimedeanMellinUnitary_ccmIntegratedScaling_eq_integral",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMArchimedeanMellinTransport",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanMellinTransport.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMArchimedeanMellinTransport",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanMellinTransport.lean",
             "line": 120,
             "doc": "",
             "score": -34.403816744907296
@@ -2461,8 +2461,8 @@
           {
             "name": "exists_uniform_bound_suzukiCheckpointEventCurvatureJump_prefix",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiSignedCurvatureMeasure",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiSignedCurvatureMeasure.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiSignedCurvatureMeasure",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSignedCurvatureMeasure.lean",
             "line": 155,
             "doc": "Reset packets have a uniform total-variation budget over every finite event prefix.",
             "score": -30.556229289416926
@@ -2497,8 +2497,8 @@
           {
             "name": "dyadicCompletedErrorBackwardPositiveVariation",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.CCMCompletedErrorVariationEnergyGate",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMCompletedErrorVariationEnergyGate.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMCompletedErrorVariationEnergyGate",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMCompletedErrorVariationEnergyGate.lean",
             "line": 35,
             "doc": "Positive backward completed-error variation, with the irrelevant finite prefix normalized to the already-defined positive excess so the identity is exact at every natural index.",
             "score": -29.43119242636905
@@ -2821,8 +2821,8 @@
           {
             "name": "criticalFeatureCompactFiniteLatticeSourceCovariancePhaseAverage_eq_firstOrder_sub_endpoint_boundary",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureFirstOrderWindingReduction",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureFirstOrderWindingReduction.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureFirstOrderWindingReduction",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureFirstOrderWindingReduction.lean",
             "line": 112,
             "doc": "Exact source-only covariance formula after height-cell tiling and vertical FTC.",
             "score": -34.82397542331319
@@ -2830,8 +2830,8 @@
           {
             "name": "intervalIntegral_integral_sum_Ico_unitCells_eq_vertical",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeaturePositiveShiftCellAverage",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeaturePositiveShiftCellAverage.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeaturePositiveShiftCellAverage",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeaturePositiveShiftCellAverage.lean",
             "line": 188,
             "doc": "Parametric unit-cell tiling. A phase integral of any continuous lattice-summed family equals its ordinary vertical rectangle integral after Fubini.",
             "score": -24.561028864458812
@@ -3291,8 +3291,8 @@
           {
             "name": "deningerCech_homotopy",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.DeningerCechHomotopy",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCechHomotopy.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCechHomotopy",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCechHomotopy.lean",
             "line": 92,
             "doc": "The averaging operator is a contracting homotopy.** In every degree the two composites add up to the identity, because the partition of unity has total mass one.",
             "score": -36.52679574334809
@@ -3336,8 +3336,8 @@
           {
             "name": "deningerCechK",
             "kind": "noncomputable def",
-            "module": "GaloisForLFunctions.RHTower.DeningerCechHomotopy",
-            "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCechHomotopy.lean",
+            "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCechHomotopy",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCechHomotopy.lean",
             "line": 42,
             "doc": "The contracting homotopy: average over a prepended index against the partition of unity, each term extended by zero.",
             "score": -29.378023202328574
@@ -3486,8 +3486,8 @@
           {
             "name": "norm_thetaXiPrimeModularDilation_sq",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaSourcePrimeModularCurrentField",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourcePrimeModularCurrentField.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourcePrimeModularCurrentField",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourcePrimeModularCurrentField.lean",
             "line": 175,
             "doc": "The modular norm is exactly the two literal source-translation energies.",
             "score": -27.28529252510876
@@ -3578,8 +3578,8 @@
           {
             "name": "invSqrt_mul_logTranslate_thetaCuspLogSeed",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource",
-            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeSource.lean",
+            "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource",
+            "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeSource.lean",
             "line": 130,
             "doc": "A normalized logarithmic translation is exactly physical dilation of the seed.",
             "score": -17.87805279129938
@@ -3839,8 +3839,8 @@
           {
             "name": "abs_vonMangoldtSelfConvolutionHyperbolaHalf_div_sub_harmonic_le",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFUSuzukiSecondGradeAsymptotic",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiSecondGradeAsymptotic.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiSecondGradeAsymptotic",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSecondGradeAsymptotic.lean",
             "line": 282,
             "doc": "Uniform PNT control on the symmetric hyperbola: after division by `N`, its prime end differs from the harmonic prime mass only by the PNT saving at `sqrt N` and the exact floor boundary.",
             "score": -35.240998840520945
@@ -4164,8 +4164,8 @@
           {
             "name": "ccmLogApertureUnitary_maps_additive_to_multiplicative",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMLogarithmicApertureUnitary",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMLogarithmicApertureUnitary.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMLogarithmicApertureUnitary",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMLogarithmicApertureUnitary.lean",
             "line": 209,
             "doc": "",
             "score": -40.73800700074802
@@ -4173,8 +4173,8 @@
           {
             "name": "ccmLogApertureUnitary_symm_maps_multiplicative_to_additive",
             "kind": "private theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMLogarithmicApertureUnitary",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMLogarithmicApertureUnitary.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMLogarithmicApertureUnitary",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMLogarithmicApertureUnitary.lean",
             "line": 219,
             "doc": "",
             "score": -40.63942050695132
@@ -4182,8 +4182,8 @@
           {
             "name": "additiveWeight_multiplicativeWeight",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMSawtoothDilationIncidence",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationIncidence",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSawtoothDilationIncidence.lean",
             "line": 354,
             "doc": "",
             "score": -39.99979989815465
@@ -4236,8 +4236,8 @@
           {
             "name": "multiplicativeAlgebraicCharacterLattice",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.SchanuelPeriodCharacterNormalForm",
-            "relpath": "formal/GaloisForLFunctions/RHTower/SchanuelPeriodCharacterNormalForm.lean",
+            "module": "GaloisForLFunctions.RHTower.Schanuel.SchanuelPeriodCharacterNormalForm",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelPeriodCharacterNormalForm.lean",
             "line": 103,
             "doc": "Integral additive characters whose exponentials are algebraic.",
             "score": -30.82307245025253
@@ -4254,8 +4254,8 @@
           {
             "name": "multiplicativeWeight",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.CCMSawtoothDilationIncidence",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationIncidence",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMSawtoothDilationIncidence.lean",
             "line": 347,
             "doc": "The multiplicative weight `G(x) = V(log(x/L))/x` attached to an additive one.",
             "score": -30.1581928443805
@@ -4263,8 +4263,8 @@
           {
             "name": "criticalBlockSubdivisionAverage_successorEdge_of_multiplicative",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.CCMFirstClockBlockSubdivisionTransfer",
-            "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockBlockSubdivisionTransfer.lean",
+            "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockBlockSubdivisionTransfer",
+            "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockBlockSubdivisionTransfer.lean",
             "line": 43,
             "doc": "Multiplicativity turns exact additive subdivision into a joint eigenvector law.",
             "score": -29.964555355318744
@@ -5325,8 +5325,8 @@
           {
             "name": "sourceHorizontalBoseVariance",
             "kind": "def",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo.lean",
             "line": 34,
             "doc": "Fisher variance of geometric valuation.",
             "score": -29.72304399809545
@@ -5334,8 +5334,8 @@
           {
             "name": "sourceHorizontalHasDerivAt_boseVariance",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaMobiusPoleUnitPrimeCellParityFibreChiralityNoGo.lean",
             "line": 71,
             "doc": "",
             "score": -29.592107840847586
@@ -5343,8 +5343,8 @@
           {
             "name": "exists_mem_Icc_le_neg_intervalVariance_div_of_zeroMean",
             "kind": "theorem",
-            "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureBoundaryAliasVarianceSaving",
-            "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureBoundaryAliasVarianceSaving.lean",
+            "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureBoundaryAliasVarianceSaving",
+            "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureBoundaryAliasVarianceSaving.lean",
             "line": 21,
             "doc": "A continuous zero-mean reporter on one cell falls below minus variance over any positive upper envelope.",
             "score": -29.26314117573302

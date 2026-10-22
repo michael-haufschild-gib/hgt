@@ -88,5 +88,5 @@ The negative conclusion is closed together with its nontrivial positive survivor
 ## Corpus status
 
 - `/tmp/bsu-coupled-diagonal-search-20261018.json`: partial reranking result (deadline expired). All 20 candidate lemmas and 20 source-argument hits were inspected. Current exact diagonal, Gram estimates and Müntz-tail results are applicable; generic archimedean producers and other literal source families do not supply the missing coupled estimate.
-- Direct source search found the arithmetic-summation Mellin identities in `RHTower/CCMBVMuntzSummation.lean`, but no existing arithmetic-sum endpoint limit under the searched names.
+- Direct source search found the arithmetic-summation Mellin identities in `RHTower/CCM/CCMBVMuntzSummation.lean`, but no existing arithmetic-sum endpoint limit under the searched names.
 - `/tmp/bsu-muntz-boundary-search-20261018.json` also returned partial reranking results. All 20 candidate and 20 source-argument hits were inspected. Generic Euler–Maclaurin results require differentiable towers not satisfied at the literal clamp corners; their summation ideas support the direct finite positive-part calculation above. Neither search measured semantic coverage; both background refreshes were incomplete. No exhaustive-search or external-novelty claim.

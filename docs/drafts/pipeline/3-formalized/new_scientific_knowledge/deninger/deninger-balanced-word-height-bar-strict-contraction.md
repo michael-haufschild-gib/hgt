@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOT RH]`
 - **Label:** DAC_BALANCED_WORD_HEIGHT_BAR_STRICT_CONTRACTION
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/DeningerWordHeight.lean`,
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerWordHeight.lean`,
   `DeningerBarWord.lean`, `DeningerBarInsert.lean`, `DeningerBarSlice.lean`,
   `DeningerBarDifferential.lean`, `DeningerBarUnit.lean`, `DeningerBarContraction.lean`,
   `DeningerBarSector.lean`, `DeningerBarFace.lean`, `DeningerBarInsertComm.lean`,

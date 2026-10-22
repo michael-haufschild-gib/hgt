@@ -1,7 +1,7 @@
 # Deninger entropy/Gaussian heat-contour universality law
 
 Status: Stage 2 — dependency-closed paper proof; Lean formalization in progress  
-Lean target: `GaloisForLFunctions.RHTower.DeningerEntropyGaussianHeatContourUniversalityLaw`  
+Lean target: `GaloisForLFunctions.RHTower.Deninger.DeningerEntropyGaussianHeatContourUniversalityLaw`  
 Novelty: `[NOVELTY UNVERIFIED]`
 
 ## Theorem-generated discovery

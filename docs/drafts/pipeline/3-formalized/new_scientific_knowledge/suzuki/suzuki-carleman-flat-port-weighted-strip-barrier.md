@@ -269,12 +269,12 @@ relation.
 Formalized unconditionally:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortProfile.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortChart.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortResponse.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortAsymptotic.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortBarrier.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCarlemanFlatPortGap.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortProfile.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortChart.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortResponse.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortAsymptotic.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortBarrier.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanFlatPortGap.lean
 ```
 
 `(3)` is `tendsto_sqrt_mul_flatPortProfile`; `(17)` is `integral_Ioi_flatPortProfile`, from the

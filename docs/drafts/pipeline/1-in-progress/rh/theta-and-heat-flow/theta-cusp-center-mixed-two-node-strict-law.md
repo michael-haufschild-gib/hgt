@@ -38,7 +38,7 @@ definite. `[PROVED HERE]`
 
 ## Formalization
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`
 - Capstone: `thetaCuspCenterMixedTwoNodeMatrix_posDef`
 - Determinant: `det_thetaCuspCenterMixedTwoNodeMatrix_pos`
 
@@ -69,5 +69,5 @@ specific universal theta-density law is not. `[NOVELTY AUDIT PASSED]`
 - 2026-07-21 — Found during complete PSD-family closure audit.
 - 2026-07-21 — Scratch proof passed exactly with `lake env lean`.
 - 2026-07-21 — Direct tree check passed exactly:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedTwoNodeStrictLaw.lean`.
 - 2026-07-21 — Hostile literature audit found no exact theta-cusp center-mixed strictness law.

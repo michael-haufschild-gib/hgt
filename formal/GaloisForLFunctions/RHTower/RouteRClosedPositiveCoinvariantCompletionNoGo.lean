@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.CCMRationalWeightedShiftReal
+import GaloisForLFunctions.RHTower.CCM.CCMRationalWeightedShiftReal
 import GaloisForLFunctions.RHTower.ContinuousSesquilinearFormBridge
-import GaloisForLFunctions.RHTower.DeningerSUnitEndpointPage
+import GaloisForLFunctions.RHTower.Deninger.DeningerSUnitEndpointPage
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 
 /-!

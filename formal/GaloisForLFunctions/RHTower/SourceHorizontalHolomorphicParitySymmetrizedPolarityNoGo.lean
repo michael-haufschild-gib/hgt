@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalHolomorphicUnitizationOddCompoundNoGo
 import GaloisForLFunctions.RHTower.XiCentralDiscBound
-import GaloisForLFunctions.RHTower.SuzukiWeilVerticalDecay
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWeilVerticalDecay
 import GaloisForLFunctions.HTGeometry.RealEvenFactorizationSignTransfer
 
 /-!

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyVerticalGauge
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyVerticalGauge
 import GaloisForLFunctions.HTGeometry.GomesVerticalShearForms
 
 /-!

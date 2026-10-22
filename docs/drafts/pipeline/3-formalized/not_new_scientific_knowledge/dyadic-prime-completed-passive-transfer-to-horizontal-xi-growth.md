@@ -8,7 +8,7 @@
 - **Collision target:** retired Route C2, published horizontal Xi growth / theta-kernel positivity
 - **Formalized companion:** `dyadic-prime-completed-passive-transfer-to-horizontal-xi-growth-formalized.md`
 - **Lean target:**
-  `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer`
+  `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowCompletedPassiveTransfer`
 
 ## Theorem
 

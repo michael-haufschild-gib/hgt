@@ -300,16 +300,16 @@ derivative", "Cech cohomology sheaf acyclic", plus greps over the module names.
 **Reusable, and it changes the plan for B4.**  Sheaf cohomology on a topological space is already
 corpus-owned:
 
-- `RHTower/DeningerFlasqueAcyclic.lean` — `deningerSheafCohomology U F n`, sheaf cohomology as the
+- `RHTower/Deninger/DeningerFlasqueAcyclic.lean` — `deningerSheafCohomology U F n`, sheaf cohomology as the
   `Ext` out of the free abelian sheaf on an open set; `deningerSheafCohomologyZeroEquiv`, degree
   zero is sections; **`deningerFlasque_isZero_cohomology`, a flasque sheaf has no higher
   cohomology**.
-- `RHTower/DeningerOpenFreeSheaf.lean` — the free abelian sheaf on an open set and its hom
+- `RHTower/Deninger/DeningerOpenFreeSheaf.lean` — the free abelian sheaf on an open set and its hom
   adjunction, the representing object of the above.
-- `RHTower/DeningerSkyscraperAcyclic.lean`, `RHTower/DeningerRestrictedPrimeAcyclic.lean`,
-  `RHTower/DeningerArakelovBoundarySheaf.lean` — worked instances of proving acyclicity in that
+- `RHTower/Deninger/DeningerSkyscraperAcyclic.lean`, `RHTower/Deninger/DeningerRestrictedPrimeAcyclic.lean`,
+  `RHTower/Deninger/DeningerArakelovBoundarySheaf.lean` — worked instances of proving acyclicity in that
   framework, including through mathlib's site-level `Sheaf.H`.
-- `RHTower/DeningerCechHomotopy.lean`, `DeningerCechGlue.lean`, `DeningerCechSplit.lean`, and
+- `RHTower/Deninger/DeningerCechHomotopy.lean`, `DeningerCechGlue.lean`, `DeningerCechSplit.lean`, and
   `HTGeometry/CechFineAcyclicModule.lean` — the Čech side, fine ⟹ Čech-acyclic with module
   coefficients.
 
@@ -1091,7 +1091,7 @@ closed.  The remaining passage to `H^q(Z, O_Z) = 0` in the corpus's own sheaf co
 `deningerSheafCohomology U F n = Ext (deningerOpenFree U) F n` is a chain of standard results that
 mathlib does not have.  Three of its links are now built.
 
-**Acyclic resolutions.**  `RHTower/DeningerAcyclicResolution.lean`.
+**Acyclic resolutions.**  `RHTower/Deninger/DeningerAcyclicResolution.lean`.
 `DeningerAcyclic F` says all higher cohomology of `F` vanishes.  Two consequences of the covariant
 `Ext` sequence: `deningerExt_eq_zero_of_shift` (dimension shifting: with acyclic middle term, a
 class of the subsheaf in degree `n+2` comes from degree `n+1` of the quotient) and
@@ -1101,14 +1101,14 @@ resolution whose sections surject onto the sections of the successive kernels ki
 cohomology.**  This is the exact shape Cartan B is used in — the analytic input is precisely the
 surjectivity of sections, i.e. global solvability of `∂̄`.
 
-**The Godement sheaf.**  `RHTower/DeningerGodement.lean`.
+**The Godement sheaf.**  `RHTower/Deninger/DeningerGodement.lean`.
 `deningerGodementSheaf F` is `U ↦ ∏_{x ∈ U} F_x`, the sheaf of arbitrary sections of the stalks.
 It is a sheaf because the underlying presheaf of types is the presheaf of dependent functions, it is
 flasque because a family defined on a smaller open set extends by zero, and the germ map
 `deningerGodementι` is a monomorphism by `section_ext`.  This gives the short exact sequence
 `0 → F → C⁰(F) → C⁰(F)/F → 0` with flasque — hence acyclic — middle term.
 
-**Fine sheaves.**  `RHTower/DeningerFineSheaf.lean`.
+**Fine sheaves.**  `RHTower/Deninger/DeningerFineSheaf.lean`.
 `DeningerFineAction F` is a multiplication of sections by continuous real functions, additive in
 both arguments, compatible with restriction, unital, and vanishing on any open set where the
 function vanishes.  The last axiom is what makes a partition of unity usable.  Two inheritance
@@ -1152,8 +1152,8 @@ Axiom audit for everything landed: `propext, Classical.choice, Quot.sound`.
 ## Fine sheaves on a paracompact space are acyclic (2026-08-06)
 
 The theorem named as the remaining gap above is proved, unconditionally, in
-`RHTower/DeningerSheafGluing.lean`, `RHTower/DeningerFineLifting.lean` and
-`RHTower/DeningerFineSurjective.lean`.
+`RHTower/Deninger/DeningerSheafGluing.lean`, `RHTower/Deninger/DeningerFineLifting.lean` and
+`RHTower/Deninger/DeningerFineSurjective.lean`.
 
   `deningerFine_acyclicOn : DeningerFineAction F → DeningerAcyclicOn F ⊤`
 
@@ -1226,7 +1226,7 @@ with `deningerHasPartitions_top` proving it for `R = ⊤` on a normal paracompac
 `SmoothPartitionOfUnity`.  This is strictly better than the previous form: the analytic input is
 named, and the acyclicity theorem no longer carries topological typeclass assumptions of its own.
 
-**The domain as a space.**  `RHTower/DeningerDomainSpace.lean`.  An open `Ω ⊆ ℂ^n` becomes
+**The domain as a space.**  `RHTower/Deninger/DeningerDomainSpace.lean`.  An open `Ω ⊆ ℂ^n` becomes
 `deningerSpace Ω`, so that `⊤` of that space is `Ω` itself — which is what the acyclicity theorem
 needs, since a partition of unity on a proper open subset need not extend to the ambient space.
 `deningerAmb U` is the ambient open set of an open set of the domain, and `deningerExtend f` is the
@@ -1234,7 +1234,7 @@ extension of a section by zero to all of `ℂ^n`.  Because `Ω` is open, the ext
 section near each of its points (`deningerExtend_eventuallyEq`), which is what makes every analytic
 condition stated through it local and restriction-stable.
 
-**The sheaves.**  `RHTower/DeningerDolbeaultSheaf.lean`.
+**The sheaves.**  `RHTower/Deninger/DeningerDolbeaultSheaf.lean`.
 
   `DeningerFormPred q f` : the coefficients vanish off the sets of `q` directions, and near every
   point the extension agrees with a **globally smooth** `SetForm` on `ℂ^n`.
@@ -1247,7 +1247,7 @@ section is computed by any of its local models (by `setDbar_congr_of_eventuallyE
 
 `DeningerClosedFormPred q` adds the vanishing of that differential.  Both are local predicates
 closed under the group operations, so `DeningerLocalGroupData` — the general gadget turning such a
-predicate into a sheaf of abelian groups, built in `RHTower/DeningerLocalSheaf.lean` on top of
+predicate into a sheaf of abelian groups, built in `RHTower/Deninger/DeningerLocalSheaf.lean` on top of
 mathlib's `subpresheafToTypes` — produces
 
   `deningerFormSheaf Ω q`       : smooth `(0,q)`-forms,
@@ -1264,7 +1264,7 @@ which is `setDbar_exact_global` / `setDbar_exact_punctured`.  Then
 
 ## The Dolbeault resolution is short exact (2026-08-06)
 
-`RHTower/DeningerDolbeaultSheaf.lean`.
+`RHTower/Deninger/DeningerDolbeaultSheaf.lean`.
 
 **The maps.**  `deningerFormIncl Ω q : K^q ⟶ A^q` is the inclusion of the closed forms;
 `deningerFormDbar Ω q : A^q ⟶ K^{q+1}` is `f ↦ ∂̄f`, computed on the ambient extension.  That the
@@ -1302,7 +1302,7 @@ Axiom audit for all of it: `propext, Classical.choice, Quot.sound`.
 
 ## The form sheaves are fine, and the exact route to the smooth partitions (2026-08-06)
 
-`RHTower/DeningerDolbeaultFine.lean`.
+`RHTower/Deninger/DeningerDolbeaultFine.lean`.
 
 `DeningerSmoothMult Ω` is the subgroup of `C(deningerSpace Ω, ℝ)` of functions whose extension by
 zero agrees, near every point of the domain, with a globally smooth function on `ℂ^n` — the same
@@ -1424,7 +1424,7 @@ Both capstones are in place:
 
 ## The cell-induction step of `(7)` (2026-08-07)
 
-Two more consequences of the covariant `Ext` sequence, in `RHTower/DeningerAcyclicResolution.lean`,
+Two more consequences of the covariant `Ext` sequence, in `RHTower/Deninger/DeningerAcyclicResolution.lean`,
 are exactly what the pro-Stein card's induction over a finite relative cell filtration consumes:
 
 - `deningerAcyclicOn_middle` — **acyclicity is two-out-of-three**: if the sub- and quotient sheaves

@@ -225,7 +225,7 @@ Verification:
 
 ```text
 lake env lean \
-  GaloisForLFunctions/RHTower/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean
+  GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean
 ```
 
 passed with no `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or computation.

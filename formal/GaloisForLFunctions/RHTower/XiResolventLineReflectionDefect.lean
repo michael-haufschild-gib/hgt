@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiResolventMassRigidity
-import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
-import GaloisForLFunctions.RHTower.CCMUniversalWeilSourceReconstruction
+import GaloisForLFunctions.RHTower.CCM.CCMCliffordWeilProduct
+import GaloisForLFunctions.RHTower.CCM.CCMUniversalWeilSourceReconstruction
 
 /-!
 # Resolvent mass as an exact line-reflection defect

@@ -7,7 +7,7 @@
 ## Lean-derived conjecture
 
 Reading the terminal Cassini likelihood-ratio/Markov no-go theorem against
-`RHTower/ThetaCuspModularColdCurvatureUniversalityLaw.lean` exposes a larger certificate for the
+`RHTower/ThetaCusp/ThetaCuspModularColdCurvatureUniversalityLaw.lean` exposes a larger certificate for the
 same fixed theta likelihood carrier:
 
 - strict positivity and all-order strict spectral Hankel blocks at every positive source point;
@@ -48,11 +48,11 @@ targeted literature.
 
 ## Lean target
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
 
 ## Verification
 
 - source proof exact, warning-free:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
 - umbrella already imports target module
 - final module build deferred to terminal audit

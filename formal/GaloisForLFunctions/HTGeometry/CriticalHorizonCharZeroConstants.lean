@@ -1,5 +1,5 @@
-import GaloisForLFunctions.HTGeometry.CriticalCoefficientBaseChange
-import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromy
+import GaloisForLFunctions.HTGeometry.Critical.Coefficient.BaseChange
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.Monodromy
 
 /-!
 # The critical horizon over arbitrary characteristic-zero constants

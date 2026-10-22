@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiPacketCoefficientSeries
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPacketCoefficientSeries
 import GaloisForLFunctions.RHTower.MFreeLadder
 import GaloisForLFunctions.RHTower.WoldEulerActivationHolonomy
 import Mathlib.NumberTheory.EulerProduct.Basic

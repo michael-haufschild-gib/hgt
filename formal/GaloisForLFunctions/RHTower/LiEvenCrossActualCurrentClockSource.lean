@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiReciprocalSquareSecondMomentRadius
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiSourceRate
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiSourceRate
 
 /-!
 # Complete shifted source tower for the actual LI clock limit

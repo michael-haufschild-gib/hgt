@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EvenSectorSingleSourceFibreRecovery
-import GaloisForLFunctions.RHTower.SuzukiTitchmarshUniqueness
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTitchmarshUniqueness
 import GaloisForLFunctions.RHTower.ArchimedeanNodeValueFunction
 
 /-!

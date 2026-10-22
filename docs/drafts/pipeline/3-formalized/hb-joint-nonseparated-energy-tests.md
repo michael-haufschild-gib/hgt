@@ -101,7 +101,7 @@ Generic namespace: `GaloisForLFunctions.HTGeometry`.
 | HilbertFiniteProjectionL2 | 3 | Exact finite tensor sums and L² convergence |
 
 Route namespace: `RHTower.D4BMJointWave`. Canonical prefix:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJoint`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJoint`.
 
 | Module suffix | Public theorems | Content |
 |---|---:|---|

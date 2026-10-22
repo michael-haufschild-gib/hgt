@@ -5,9 +5,9 @@
 - **Type:** SOURCE POSITIVE COEFFICIENT CONSTRUCTION
 - **Parent:** `deninger-hyperbolic-localization-rank-collapse`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticGammaRankRegular` (the algebraic core, the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGammaRankRegular` (the algebraic core, the
   quaternionic double, the completion, and bar-Hodge descent),
-  `GaloisForLFunctions.RHTower.DeningerGammaRankPowerTransfer` (the framed power transfers
+  `GaloisForLFunctions.RHTower.Deninger.DeningerGammaRankPowerTransfer` (the framed power transfers
   `(1)`--`(5)`, `(11)`, and the group `ℚ_{>0}^×`)
 
 ## Goal
@@ -147,7 +147,7 @@ relation subspace.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticGammaRankRegular.lean` formalizes the coefficient
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticGammaRankRegular.lean` formalizes the coefficient
 object itself:
 
 - `DeningerGammaRankCore`, `deningerGammaRankPowerShift` : the finite-support double and the left
@@ -168,7 +168,7 @@ object itself:
 - `deningerGammaRankBarHodge_D0`, `_D1`, `_D2`, `deningerGammaRankBarHodgeCocycle2` : `J` commutes
   with all three bar coboundaries and the good truncation `ker Q²` is `J`-stable.
 
-`GaloisForLFunctions/RHTower/DeningerGammaRankPowerTransfer.lean` formalizes the framed power
+`GaloisForLFunctions/RHTower/Deninger/DeningerGammaRankPowerTransfer.lean` formalizes the framed power
 transfers, which are the arithmetic content of `(1)`--`(5)` and `(11)`:
 
 - `deningerGammaRankHilbertPowerShift_mul`, `_one`, `_inv`, `_bijective` : the completed
@@ -199,7 +199,7 @@ are open source theorems that the card states as open, not parts of the construc
 ### Verification
 
 - Direct commands: `lake env lean` on both modules — pass with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerGammaRankPowerTransfer`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaRankPowerTransfer`
   completes (`✔ [3106/3106]`).
 - Scratch `#print axioms` on all transfer and positive-rational theorems: only `propext`,
   `Classical.choice`, `Quot.sound`.

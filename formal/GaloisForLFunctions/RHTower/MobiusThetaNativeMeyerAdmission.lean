@@ -1,7 +1,7 @@
-import GaloisForLFunctions.RHTower.ThetaCuspTiltedSchwartz
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltedSchwartz
 import GaloisForLFunctions.RHTower.MobiusThetaNativeCollarSourceTransport
-import GaloisForLFunctions.RHTower.DeningerSecondaryCollarDefect
-import GaloisForLFunctions.RHTower.DeningerMeyerTopology
+import GaloisForLFunctions.RHTower.Deninger.DeningerSecondaryCollarDefect
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerTopology
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgePolynomialGaussianExponentialSchwartz
 
 /-!

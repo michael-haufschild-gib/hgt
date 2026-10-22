@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateL2Operator
-import GaloisForLFunctions.RHTower.CCMEndpointResponseIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointResponseIdentity
 
 /-!
 # The variational bound and the even-test bridge

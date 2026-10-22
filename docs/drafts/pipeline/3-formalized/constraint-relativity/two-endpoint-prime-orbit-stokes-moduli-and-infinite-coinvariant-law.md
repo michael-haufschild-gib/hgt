@@ -14,10 +14,10 @@
 - **Parents:**
   `rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law.md`,
   literal corpus files
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`,
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicEpsilonZero.lean`,
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicEpsilonOne.lean`,
-  `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean`,
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicEpsilonZero.lean`,
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicEpsilonOne.lean`,
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean`.
 
 ## Goal
 
@@ -359,7 +359,7 @@ observer torsor. External priority unverified; no claim of new general theorem.
 ## Lean-return note
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicTwoEndpointStokesModuli.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicTwoEndpointStokesModuli.lean`
 (wired into `GaloisForLFunctions.RHTower`).  Theorems A, B, E and Lemma D are green and
 unconditional; the declaration-by-equation map, the corpus reuse ledger and the axiom audit are in
 the companion card

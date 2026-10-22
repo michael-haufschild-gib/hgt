@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CayleyThetaRecordFlatness
 import GaloisForLFunctions.HTGeometry.TanhSubstitution
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.HTGeometry.SzegoWeightOuterMultiplier
 import GaloisForLFunctions.HTGeometry.HardyRealBoundaryConstant
 import GaloisForLFunctions.HTGeometry.HadamardLipschitz.PoincareDiameter

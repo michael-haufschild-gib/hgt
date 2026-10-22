@@ -305,7 +305,7 @@ Friedrichs extension is required anywhere.
 ### Audit — item 6's reality claim is already formal (target list was under-listing)
 
 The Formalization target block omits three declarations that
-`RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean` already proves, all discharging item 6's closing
+`RHTower/Suzuki/SuzukiFiniteShiftProjectiveHolonomy.lean` already proves, all discharging item 6's closing
 sentence *"therefore `Xi_r(x)` is purely imaginary and `(13)` is real, as required"*:
 
 - `conj_suzukiLogarithmicSourceGenerator_eq_neg` : from `F(-x) = conj F(x)` and `G(-x) = conj G(x)`,
@@ -341,7 +341,7 @@ constructing the operator.
 
 ### Gap class — objects present, calculus absent
 
-`RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean` defines `suzukiProjectiveSourceTransport`,
+`RHTower/Suzuki/SuzukiFiniteShiftProjectiveHolonomy.lean` defines `suzukiProjectiveSourceTransport`,
 `suzukiFiniteShiftSource`, `suzukiLogarithmicSourceGenerator` and proves their algebra, but contains
 **zero** derivative lemmas — no `HasDerivAt`, `DifferentiableAt` or `deriv` anywhere. Yet `(11)` and
 `(12)` differentiate exactly these objects (`partial_r Theta_r = Theta_r Xi_r`, and `Xi_r` as the
@@ -351,7 +351,7 @@ So the card's differentiation steps are not blocked on the operator — the oper
 `partial_r R_r = -R_r^2` is already corpus-owned (see the cross-reference above) — but on the
 **calculus of this module's own objects**, which nobody has written. That is a bounded, mechanical
 piece of work: derivative, `DifferentiableAt`, and a logarithmic-derivative law for the transport,
-mirroring what `RHTower/SuzukiDonoghueHerglotzTransform.lean` now carries for the Cayley pair.
+mirroring what `RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean` now carries for the Cayley pair.
 
 Note for whoever writes it: mathlib's `logDeriv_div` (`Mathlib/Analysis/Calculus/LogDeriv.lean`)
 gives the quotient rule for logarithmic derivatives directly, and the transport is a quotient of two

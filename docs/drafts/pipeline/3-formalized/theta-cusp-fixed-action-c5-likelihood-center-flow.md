@@ -3,7 +3,7 @@
 - **ID:** TC-C5-LIKE-CENTER
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodCenterFlow`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5LikelihoodCenterFlow`
 - **Main theorem:** `c5LikelihoodCenterFlowJets_pos`
 
 ## Result
@@ -30,8 +30,8 @@ convexity plus the atom-tangent reserve `M_C5'(0) >= -M_C5(0)/5`; see
 
 ## Audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFixedActionC5LikelihoodCenterFlow.lean`
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodCenterFlow`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFixedActionC5LikelihoodCenterFlow.lean`
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5LikelihoodCenterFlow`
 - Axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Wired in `GaloisForLFunctions.RHTower`.
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GradeMonodromyInversion
 import GaloisForLFunctions.RHTower.ZetaResidueFactorDerivative
-import GaloisForLFunctions.RHTower.DeningerNuclearHilbertFactor
+import GaloisForLFunctions.RHTower.Deninger.DeningerNuclearHilbertFactor
 import GaloisForLFunctions.RHTower.PrimeCharacterTailIndependence
 
 /-!

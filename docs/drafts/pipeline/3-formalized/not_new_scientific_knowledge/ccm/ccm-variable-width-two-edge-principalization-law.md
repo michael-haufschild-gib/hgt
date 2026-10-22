@@ -143,7 +143,7 @@ as a load-bearing hypothesis.
 ## Lean status
 
 The complete theorem is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMTwoEdgeVariableWidthPrincipalization.lean` for arbitrary
+`formal/GaloisForLFunctions/RHTower/CCM/CCMTwoEdgeVariableWidthPrincipalization.lean` for arbitrary
 real vector-valued functions.  The module constructs the even aperture, odd aperture, unrestricted
 one-sided profile, and midpoint-vanishing odd-profile submodules and the two explicit linear
 equivalences `(VW5)`.
@@ -157,7 +157,7 @@ equivalences `(VW5)`.
 - [x] both linear equivalences constructed
 - [x] variable-width vacuity isolated positively as the tightness obligation
 - [x] narrow Lean verification — `VERIFIED 2026-07-27`.
-      `lake build GaloisForLFunctions.RHTower.CCMTwoEdgeVariableWidthPrincipalization`
+      `lake build GaloisForLFunctions.RHTower.CCM.CCMTwoEdgeVariableWidthPrincipalization`
       completes successfully (1976 jobs), the module is registered in the
       `GaloisForLFunctions.RHTower` umbrella, and a targeted axiom audit of all six headline
       declarations — `evenTwoEdgePacket_apertureBoundaryReadout`,

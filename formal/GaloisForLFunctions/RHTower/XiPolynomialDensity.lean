@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ExpDecayFourierAnalytic
 import GaloisForLFunctions.RHTower.XiCSchwartzRestriction
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 
 /-!
 # Polynomial multiples of the centered xi function are dense in `L^(2 : ℕ)`

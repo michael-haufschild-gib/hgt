@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaSourceTransport
-import GaloisForLFunctions.RHTower.SuzukiCriticalWallFieldSquareRootWeld
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalWallFieldSquareRootWeld
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularGammaPolarSourceLaw
-import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceDivisorTomography
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeGammaSourceDivisorTomography
 
 /-!
 # Gamma-sewn Julia rectangular divisor transgression

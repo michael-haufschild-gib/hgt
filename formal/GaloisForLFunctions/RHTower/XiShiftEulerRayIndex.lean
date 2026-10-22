@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftEulerCommonDivisorIndex
-import GaloisForLFunctions.RHTower.CCMEulerRayLoewner
+import GaloisForLFunctions.RHTower.CCM.CCMEulerRayLoewner
 
 /-!
 # One real Euler ray carries the complete shifted-Xi index

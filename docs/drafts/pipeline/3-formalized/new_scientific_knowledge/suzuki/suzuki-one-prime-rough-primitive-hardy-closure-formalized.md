@@ -8,18 +8,18 @@
   - `formal/GaloisForLFunctions/HTGeometry/PolynomialTransportRemainder.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PolynomialGroupOneBlock.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ThirdAmplitudeRayDecay.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeOneBlockEstimate.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeChartClosure.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeOneBlockEstimate.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeChartClosure.lean`
 - **Lean (already in the corpus for this card):**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeRoughPrimitiveHardyTail.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeRoughPrimitiveHardyTail.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrier.lean`
 - **Lean (inherited from the stage-3 input cards):**
   - `formal/GaloisForLFunctions/HTGeometry/InverseFamilyDerivative.lean`,
     `InverseFamilyThirdDerivative.lean`, `PhaseGeneratorIntegrationByParts.lean`,
     `PhaseGeneratorThirdIntegrationByParts.lean`
   - `formal/GaloisForLFunctions/HTGeometry/DyadicLatticeCover.lean`
   - `formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`,
     `SuzukiGammaShiftKappa.lean`
 
 ## Formal content

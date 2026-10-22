@@ -242,7 +242,7 @@ gate.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMCausalPickAffineConjugacy.lean` (wired, axiom-clean,
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMCausalPickAffineConjugacy.lean` (wired, axiom-clean,
 9 declarations).
 
 - `affineEmbed`, **`neg_I_mul_affineEmbed`** — equation `(9)` and the identity

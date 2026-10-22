@@ -7,15 +7,15 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJetSource.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJet.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJetSource.lean`
 - `formal/GaloisForLFunctions/RHTower.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiXiFirstDefectJet`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJet`:
 
 ```text
 RHTower.eightyFive_mul_re_xiShiftedReciprocalMoment_one_lt_four_mul_zero
@@ -25,7 +25,7 @@ RHTower.xiHedenmalmLivsicFirstDefectJet_mem_Ioo
 RHTower.xiHedenmalmLivsic_firstDefectJet_tendsto_of_locallyUniform
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiXiFirstDefectJetSource`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJetSource`:
 
 ```text
 RHTower.suzukiGroundLeakage_eventually_gt_xiHedenmalmLivsicFirstDefectJet_floor

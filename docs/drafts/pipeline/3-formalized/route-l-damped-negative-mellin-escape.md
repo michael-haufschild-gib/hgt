@@ -51,7 +51,7 @@ No numerical experiment or critical-line assumption enters the proof.
 
 ## Verified actual sources and explicit limit families
 
-`formal/GaloisForLFunctions/RHTower/DeningerDampedPrimeMellinGrowth.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedPrimeMellinGrowth.lean`
 constructs the literal ordered finite source product, proves its entire
 Mellin formula and weighted-reflection fixedness, and normalizes by its
 nonzero actual Xi reading. The uniform negative-coordinate estimate applies
@@ -74,7 +74,7 @@ corollaries have no cofinality, growth, source-admission or RH premise.
 Final scratch `lake env lean /tmp/route_l_damped_c42.lean` passed with no
 errors or warnings. It is byte-identical to the final module: 317 lines,
 21 public theorems and four definitions. The targeted audit
-`lake build GaloisForLFunctions.RHTower.DeningerDampedPrimeMellinGrowth`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedPrimeMellinGrowth`
 passed; only the new leaf was built (69 seconds, 11944 dependency-graph
 jobs). One umbrella import and 25 public declarations with zero
 cross-module name collisions were verified. Global lint and index refresh

@@ -82,7 +82,7 @@ prime--polar negative-abscissa spectra.
 - `rectangularPrimePolarSource_cumulativeNegativeMass_exactTransversePowerOrder`
 
 The implementation is in
-`formal/GaloisForLFunctions/RHTower/CCMCumulativeNegativeMassSpectrum.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCumulativeNegativeMassSpectrum.lean`.
 
 ## Status
 

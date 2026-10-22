@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiSquaredSeamCassiniGlobalJensenLaw
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
 import GaloisForLFunctions.RHTower.ModulusSlopeBudget
 import GaloisForLFunctions.RHTower.XiThermalQuadraticReflectionDefectSpectrum
 import GaloisForLFunctions.RHTower.XiReciprocalSquareFixedCauchySource

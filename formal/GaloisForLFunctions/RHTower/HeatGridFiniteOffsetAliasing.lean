@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.HeatGridAliasingBoundary
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # Finite offset families cannot remove heat-grid aliasing

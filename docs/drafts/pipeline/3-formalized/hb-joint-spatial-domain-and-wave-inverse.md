@@ -114,7 +114,7 @@ positive real w and does not rely only on a nonreal spectral parameter.
 
 ## Lean modules and verification
 
-Canonical prefix: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJoint`.
+Canonical prefix: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJoint`.
 Namespace: `RHTower.D4BMJointWave`.
 
 Suffixes: `RadialCore`, `RadialGreen`, `AngularTests`, `SpatialTests`,

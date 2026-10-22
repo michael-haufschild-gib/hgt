@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodPrimeCubeLeeYangCone
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodPrimeCubeLeeYangCone
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberRadialEdge
 
 /-!

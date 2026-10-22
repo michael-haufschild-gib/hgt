@@ -5,7 +5,7 @@
 - **Lean modules:**
   - `formal/GaloisForLFunctions/HTGeometry/ExponentialPolynomialModes.lean` (new infrastructure)
   - `formal/GaloisForLFunctions/HTGeometry/CharacteristicModeDimension.lean` (new infrastructure)
-  - `formal/GaloisForLFunctions/RHTower/CCMCharacteristicCrossingModes.lean` (card module)
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMCharacteristicCrossingModes.lean` (card module)
 - **Umbrellas:** `formal/GaloisForLFunctions/HTGeometry.lean`, `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 49 declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

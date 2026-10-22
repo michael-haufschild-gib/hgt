@@ -70,7 +70,7 @@ RH iff exists N, forall epsilon>0, exists C_epsilon>=0,
 The implementation is
 
 ```text
-GaloisForLFunctions.RHTower.CCMDyadicSharpRectangularTransfer.
+GaloisForLFunctions.RHTower.CCM.CCMDyadicSharpRectangularTransfer.
 ```
 
 Principal declarations:

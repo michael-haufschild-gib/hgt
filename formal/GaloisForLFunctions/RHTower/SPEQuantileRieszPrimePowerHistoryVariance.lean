@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszPrimePowerHistoryLedger
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicVarianceBalance
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicVarianceBalance
 
 /-!
 # Physical variance landing of the SP-E prime-power history

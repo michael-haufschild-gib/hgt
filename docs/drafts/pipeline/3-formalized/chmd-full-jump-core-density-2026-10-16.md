@@ -133,7 +133,7 @@ compactCore = top. The paper dependency chain and all eight leaf builds are comp
   - RHTower/PaperThetaParameterAnalytic
   - RHTower/PaperThetaParameterTraces
   - RHTower/PaperThetaParameterVariation
-  - HTGeometry/KleinGordonLightConeBesselKernel
+  - HTGeometry/KleinGordon/KleinGordonLightConeBesselKernel
   Concurrent work was preserved. The earlier six Deninger wiring failures did
   not appear in this final lint run. No global lint pass is claimed.
 - All 36 owned scratch files removed; absence verified. All owned Lean, search,

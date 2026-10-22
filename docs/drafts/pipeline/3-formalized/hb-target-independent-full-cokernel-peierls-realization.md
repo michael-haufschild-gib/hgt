@@ -78,7 +78,7 @@ realization or four-route negative-square orbit law. Bounded, not exhaustive, pr
   negativity, pointwise orientation classification, exact HB/FZZ-P/PW-B/RBH presentations, and
   universal extinction/orientation equivalences with RH.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingTargetIndependentFullCokernelPeierlsRealization`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingTargetIndependentFullCokernelPeierlsRealization`
   passed (`12009/12009`); all twelve exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present; formal lint reports no finding in
   this module (only unrelated unreachable modules).

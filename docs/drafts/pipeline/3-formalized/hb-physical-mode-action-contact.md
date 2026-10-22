@@ -165,7 +165,7 @@ New modules:
   `GaloisForLFunctions.HTGeometry.HalfOrderBeta`:
   `finitePart_cutoff_tendsto`, `cleared_eq_gamma`, `finitePart_eq_gamma`,
   `finitePart_ne_zero`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalRadialNorm`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalRadialNorm`:
   namespace `RHTower.D4BMFundamentalNorm` supplies `mode_square_intervalIntegrable`, `mode_square_integral`,
   `mode_square_cutoff_tendsto`, `normFinitePart_eq_gamma`,
   `normFinitePart_ne_zero`; namespace `RHTower.D4BMPhysicalModeAction`
@@ -184,15 +184,15 @@ gate passed with only existing large-file warnings.
 
 All declarations below belong to namespace `RHTower.D4BMPhysicalModeAction`.
 
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModeActionReconstruction`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMModeActionReconstruction`:
   `radiusLift_derivatives`, `radial_mode_action`, `staticStreamJet_actual`,
   `radialStreamJet_actual`, `radial_stream_master`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalModeAction`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalModeAction`:
   `physicalModeAngularJet_operator`, `physicalProjectedStream_jet`,
   `physicalLeftModeStream_jet`, `physicalProjectedModeAction_value`,
   `physicalProjectedStream_master`, `physicalLeftModeStream_master`,
   `physicalProjectedStream_causal_origin`, `physicalProjectedModeAction_transport`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPhysicalTimeActionContinuation`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPhysicalTimeActionContinuation`:
   `projectedSource_fundamental_analytic`,
   `continuedPhysicalTimeAction_eq_actual`, `continuedPhysicalTimeAction_meromorphic`,
   `continuedPhysicalTimeAction_residue`, `physicalTimeResidue_fundamental_value`,
@@ -239,15 +239,15 @@ Checked and audited leaves:
 
 - `GaloisForLFunctions.HTGeometry.NormalizedFirstEndpointMellin`:
   `normalizedFirstEndpointMellin_uniform_bound`, `normalizedFirstEndpointMellin_tendsto`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIncomingSourceTransport`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIncomingSourceTransport`:
   `continuedResponse_div_horizon_hasDerivAt`, `incomingSourceTransport_analyticAt`,
   `incomingSourceTransport_tendsto_horizon`, plus both physical specializations.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLaplaceHorizonGaussBound`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLaplaceHorizonGaussBound`:
   `horizonGauss_uniform_first_bound`, `horizonGauss_uniform_nonzero`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIncomingSourceBound`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIncomingSourceBound`:
   `incomingSourceTransport_uniform_first_bound`,
   `physical_fundamental_incomingSourceTransport_uniform_bound`.
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMIncomingHorizonExpansion`:
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMIncomingHorizonExpansion`:
   `continuedResponse_horizon_quadratic_expansion`, `incomingResponseEndpoint_meromorphic`.
 
 All five passed warning-free foreground scratch checks and exact isolated

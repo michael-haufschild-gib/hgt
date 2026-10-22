@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiReciprocalSquareFixedCauchySource
-import GaloisForLFunctions.RHTower.CCMUniversalWeilSourceReconstruction
+import GaloisForLFunctions.RHTower.CCM.CCMUniversalWeilSourceReconstruction
 
 open Complex Filter Topology
 

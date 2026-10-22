@@ -4,8 +4,8 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ASYMPTOTIC BOOKKEEPING BRIDGE
 - **Scientific status:** `[LEAN-PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Formal module:** `RHTower/CCMCenterPairingNormalizedBudgetTransfer.lean`
-- **Parent:** `RHTower/CCMCriticalMellinFiniteApertureCenterPairing.lean`
+- **Formal module:** `RHTower/CCM/CCMCenterPairingNormalizedBudgetTransfer.lean`
+- **Parent:** `RHTower/CCM/CCMCriticalMellinFiniteApertureCenterPairing.lean`
 - **Statement:** A center error bounded by a positive defect times a vanishing normalized resource
   budget is little-o of that defect. Applied to the clipped CCM estimate, this gives the correct
   variation thresholds `o(lambda/log lambda)` for an `o(d_lambda)` error and `o(lambda)` for an

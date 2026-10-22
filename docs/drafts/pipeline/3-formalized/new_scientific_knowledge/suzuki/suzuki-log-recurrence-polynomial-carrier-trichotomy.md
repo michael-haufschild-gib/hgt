@@ -398,12 +398,12 @@ now unconditional in Lean:
 
 | item | Lean |
 |---|---|
-| `(8)` | `RHTower.summable_polyDecay_fin`, `RHTower.summable_polyWeight_sq_event` in `RHTower/SuzukiLatticeShellSummability.lean` |
-| `(14)` | `RHTower.polyWeight_ratio_le`, `RHTower.polyWeight_ratio_le'` in `RHTower/SuzukiLatticeCarrierWeight.lean` |
-| `(15)` | `RHTower.position_mul_exp`, `RHTower.listProd_mul_exp`, `RHTower.exists_time_polynomial` in `RHTower/SuzukiPositionCommutatorGroup.lean` |
-| `(17)` | `RHTower.exists_polynomial_word_bound`, `RHTower.exists_polynomial_group_bound` in `RHTower/SuzukiPolynomialGroupEstimate.lean` |
-| `(21)`--`(24)` | `RHTower.hatanoNelsonSymbol_eq`, `RHTower.hatanoNelsonSymbol_quarter`, `RHTower.hatanoNelsonSymbol_im_ne_zero`, `RHTower.primeStepSymbol_im` in `RHTower/SuzukiHatanoNelsonEllipse.lean` |
-| `(28)` | `RHTower.ae_finite_badAperture`, `RHTower.ae_finite_logType` in `RHTower/SuzukiApertureBorelCantelli.lean` |
+| `(8)` | `RHTower.summable_polyDecay_fin`, `RHTower.summable_polyWeight_sq_event` in `RHTower/Suzuki/SuzukiLatticeShellSummability.lean` |
+| `(14)` | `RHTower.polyWeight_ratio_le`, `RHTower.polyWeight_ratio_le'` in `RHTower/Suzuki/SuzukiLatticeCarrierWeight.lean` |
+| `(15)` | `RHTower.position_mul_exp`, `RHTower.listProd_mul_exp`, `RHTower.exists_time_polynomial` in `RHTower/Suzuki/SuzukiPositionCommutatorGroup.lean` |
+| `(17)` | `RHTower.exists_polynomial_word_bound`, `RHTower.exists_polynomial_group_bound` in `RHTower/Suzuki/SuzukiPolynomialGroupEstimate.lean` |
+| `(21)`--`(24)` | `RHTower.hatanoNelsonSymbol_eq`, `RHTower.hatanoNelsonSymbol_quarter`, `RHTower.hatanoNelsonSymbol_im_ne_zero`, `RHTower.primeStepSymbol_im` in `RHTower/Suzuki/SuzukiHatanoNelsonEllipse.lean` |
+| `(28)` | `RHTower.ae_finite_badAperture`, `RHTower.ae_finite_logType` in `RHTower/Suzuki/SuzukiApertureBorelCantelli.lean` |
 
 Every declaration audits to `[propext, Classical.choice, Quot.sound]`.
 

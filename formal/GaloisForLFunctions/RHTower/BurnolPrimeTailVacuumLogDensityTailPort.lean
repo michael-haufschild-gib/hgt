@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.BurnolPrimeTailVacuumHalfLaplaceWall
 import GaloisForLFunctions.RHTower.BurnolPrimeTailFoldedMultiRatePort
 import GaloisForLFunctions.RHTower.PrimeVacuumMellin
-import GaloisForLFunctions.RHTower.SuzukiStieltjesMoments
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiStieltjesMoments
 
 /-!
 # Literal tail ports for the vacuum-subtracted prime current

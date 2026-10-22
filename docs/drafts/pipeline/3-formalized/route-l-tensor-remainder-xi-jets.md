@@ -2,7 +2,7 @@
 
 Date: 2026-09-11.
 Status: formalized; all 22 theorem axiom audits, targeted module build and formal lint passed. RH remains unproved.
-Module: `GaloisForLFunctions.RHTower.DeningerGammaSixTensorRemainderXiJets`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixTensorRemainderXiJets`.
 
 ## Positive result
 
@@ -132,7 +132,7 @@ work.
 ## Verification
 
 - `lake env lean /tmp/route_l_tensor_remainder.lean`: all 22 theorems passed without warnings.
-- `lake build GaloisForLFunctions.RHTower.DeningerGammaSixTensorRemainderXiJets`: passed.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixTensorRemainderXiJets`: passed.
 - `lake env lean /tmp/route_l_tensor_remainder_axioms.lean`: all 22 theorems use only `propext`, `Classical.choice`, and `Quot.sound`; no added axioms.
 - `scripts/formal_tools.py lint`: passed with existing file-size warnings.
 - Umbrella import wired; no full or umbrella build.

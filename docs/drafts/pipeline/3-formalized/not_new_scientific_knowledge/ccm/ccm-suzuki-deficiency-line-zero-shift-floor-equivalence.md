@@ -100,7 +100,7 @@ proved no-evacuation law. This is route clarification, not new scientific knowle
 ## Lean status
 
 **Superseded, 2026-08-03.**  The variational content of `(2)`--`(6)` is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMDeficiencyLineZeroShift.lean`, on the nested-floor layer of
+`formal/GaloisForLFunctions/RHTower/CCM/CCMDeficiencyLineZeroShift.lean`, on the nested-floor layer of
 `CCMNestedFloorNoEvacuation.lean` and `CCMCofinalFloorCriterion.lean`.
 
 - `ShiftAdmissible Q N D lam` — the shifted-positivity condition `(2)`, `T_(a,lambda) > 0`, written

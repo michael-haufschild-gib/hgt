@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 import GaloisForLFunctions.RHTower.ThetaWignerCenterMix
 import GaloisForLFunctions.RHTower.WeightedEulerStripFourierAnalytic
 import GaloisForLFunctions.RHTower.Sieve.LogPolySetScaling

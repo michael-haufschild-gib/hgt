@@ -20,7 +20,6 @@ namespace GaloisForLFunctions.HTGeometry
 open MvPolynomial
 
 set_option maxRecDepth 8000
-set_option maxHeartbeats 1000000
 
 variable {K : Type*} [Field K] [CharZero K] {d : ℕ}
 

@@ -6,7 +6,7 @@
 
 ## Frozen statements
 
-Use the literal source and Bernoulli polynomial from [the successor-phase card](../../arithmetic-successor-phase-threshold.md). Let `s=sigma+i*t`, `u=conjugate(s)`, `sigma>0`, `t>0`, integer `n>=1`, and `t<2*pi*n`. Put
+Use the literal source and Bernoulli polynomial from [the successor-phase card](arithmetic-successor-phase-threshold.md). Let `s=sigma+i*t`, `u=conjugate(s)`, `sigma>0`, `t>0`, integer `n>=1`, and `t<2*pi*n`. Put
 
 `a_k=n*exp(2*pi*k/t)` and `T_u(x)=integral_(x..infinity) b(y)*y^(-u-2) dy`.
 

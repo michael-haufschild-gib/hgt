@@ -53,7 +53,7 @@ renormalization, finite border, and “positive remainder” outside square cann
 - Paper proof:
   `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-rooted-bianchi-cofinal-no-go.md`.
 - Lean proof:
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalRootedBianchiCofinalNoGo.lean`.
 - Formal certificate:
   `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-rooted-bianchi-cofinal-no-go-formalized.md`.
 

@@ -5,7 +5,7 @@
 - **Type:** SOURCE COMPARISON / GREEN FRACTURE BOUNDARY
 - **Status:** `[LEAN-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED]`
 - **Lean:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
 - **Parents:**
   `deninger-meyer-reflected-gaussian-harmonic-source-primitive.md`,
   `../1-in-progress/mobius-theta-adaptive-infinite-depth-gaussian-boundary.md`
@@ -71,10 +71,10 @@ record whose route observations vanish and whose full record reflects zero.
 ## Verification
 
 - Direct foreground check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerMeyerAdaptiveHarmonicGreenBoundary.lean`
   passed.
 - Targeted module build:
-  `lake build GaloisForLFunctions.RHTower.DeningerMeyerAdaptiveHarmonicGreenBoundary`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerMeyerAdaptiveHarmonicGreenBoundary`
   passed.
 - Axiom audit of the Green/Hodge transport, Cauchy reflection, bounded provenance factorization,
   Bochner integral, and adaptive-limit comparison reports only `propext`, `Classical.choice`, and

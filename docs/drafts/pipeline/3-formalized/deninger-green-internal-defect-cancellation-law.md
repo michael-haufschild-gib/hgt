@@ -143,7 +143,7 @@ not construction of the grading or its polarization.
 ## Formal certificates
 
 - `formal/GaloisForLFunctions/HTGeometry/FactorRetainingCovariantSolderLaw.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerGreenInternalDefectCancellationLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGreenInternalDefectCancellationLaw.lean`
 - `formal/GaloisForLFunctions/RHTower/EulerPrimitiveBoundaryDefectGrades.lean`
 
 ## Gates

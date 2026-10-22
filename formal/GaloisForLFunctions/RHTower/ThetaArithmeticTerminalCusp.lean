@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaCuspNativeOddSchurFarTail
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspNativeOddSchurFarTail
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.ThetaPrimeDeletionMellin
 
 /-!

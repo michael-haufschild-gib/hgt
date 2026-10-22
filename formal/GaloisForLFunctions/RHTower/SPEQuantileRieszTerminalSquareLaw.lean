@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszTerminalErrorGate
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCompletedEndpointLaw
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCompletedEndpointLaw
 
 /-!
 # SP-E terminal Riesz square law

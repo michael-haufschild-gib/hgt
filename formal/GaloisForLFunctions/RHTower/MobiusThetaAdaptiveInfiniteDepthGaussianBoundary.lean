@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalHorizonIntertwiner
-import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding
 
 /-!
 # Adaptive prime-normal infinite-depth Gaussian boundary

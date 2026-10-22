@@ -74,7 +74,7 @@ section.
 
 The unconditional formalization is
 
-- `formal/GaloisForLFunctions/RHTower/CCMUniversalWeilSourceReconstruction.lean`.
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMUniversalWeilSourceReconstruction.lean`.
 
 Principal declarations:
 

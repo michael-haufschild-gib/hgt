@@ -143,7 +143,7 @@ theta source. Novelty remains provisional.
 
 ## Lean realization
 
-`RHTower/ThetaCuspReflectedLikelihoodCumulantObstruction.lean` formalizes:
+`RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodCumulantObstruction.lean` formalizes:
 
 - `M_j'=-M_(j+1)` for every tilted likelihood moment;
 - mean, variance, and third-cumulant derivative identities;

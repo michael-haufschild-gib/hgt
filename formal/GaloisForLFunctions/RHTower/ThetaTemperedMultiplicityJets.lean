@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
 import Mathlib.Analysis.Distribution.TemperedDistribution
 import Mathlib.Analysis.Complex.RealDeriv
 import Mathlib.LinearAlgebra.Dimension.Constructions

@@ -33,7 +33,7 @@ At `s = 1/4 + i`, `wall(s)=1`, so this value is nonzero. Hence `2d+1` is the fir
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFinitePolynomialGradeNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFinitePolynomialGradeNoGo`
 - Main theorems:
   - `schwarzschildParikhWilczekPolynomialGradeDarkWeight_annihilates`
   - `schwarzschildParikhWilczekPolynomialGradeDarkMatrix_finiteQuadraticForm_nonneg`

@@ -185,7 +185,7 @@ Fourier-algebra/Fubini reduction once the project-specific matched cell has been
 ## Lean certificate
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedCosinePhaseNormalForm.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedCosinePhaseNormalForm.lean`:
 
 - `ccmActualHeadSymmetricTransportRebate_sub_two_translationDefect_eq_cosinePhase`;
 - `ccmActualHeadMatchedSymmetricCellResidual_eq_nestedCosinePhase`;
@@ -203,8 +203,8 @@ Formalized in
 
 Verification on 2026-08-21:
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedCosinePhaseNormalForm.lean` passed;
-- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedCosinePhaseNormalForm`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedCosinePhaseNormalForm.lean` passed;
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedCosinePhaseNormalForm`
   built only the required target and dependency cache; no umbrella build was run;
 - `/tmp` `#print axioms` audit reports exactly `propext`, `Classical.choice`, and `Quot.sound`
   for every theorem;

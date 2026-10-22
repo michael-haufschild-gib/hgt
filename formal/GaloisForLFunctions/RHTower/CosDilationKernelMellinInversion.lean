@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.DilationAutocorrelationPeriodization
 import GaloisForLFunctions.RHTower.ArchimedeanMellinFourier
-import GaloisForLFunctions.RHTower.CCMArchimedeanFourierMellinScattering
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanFourierMellinScattering
 import Mathlib.Analysis.MellinInversion
 import GaloisForLFunctions.HTGeometry.MellinTestFunctionPerron
 

@@ -45,7 +45,7 @@ Thus injective `L` forces `κH(q)=κB(q)`, hence `Re(q)=1/2`. On wall, identity 
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMRadiativeSourceFEVacuumDifferentiableNonlinearDetectorNoGo.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMRadiativeSourceFEVacuumDifferentiableNonlinearDetectorNoGo.lean`
 - Final theorem: `RHTower.d4HBVacuumDifferentiableNonlinearDetectorScalarizationRouteKilled`
 - Sharp survivor: `RHTower.hbXiRadiativeNonlinearDetector_firstVariation_axisLoss_of_offLine`
 - Global classification: `RHTower.hbXiRadiativeGlobalVacuumDifferentiableFaithfulDetectorScalarization_iff_rh`

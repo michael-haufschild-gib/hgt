@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UniversalObservationDescentLaw
-import GaloisForLFunctions.RHTower.DeningerMeyerGaussianLineWronskianGreenComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaussianLineWronskianGreenComparison
 
 /-!
 # Gaussian projective descent on the Riemann divisor

@@ -7,7 +7,7 @@
   arXiv:2606.09096v1, Sections 8.2--8.3
 - **Parents:** `suzuki-exterior-pole-tomography-neumann-boundary`,
   `suzuki-neumann-clock-annihilator`, `suzuki-admissible-two-shift-affine-sewing`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiProjectedContinuousDeficiency`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectedContinuousDeficiency`
 - **RH used:** no
 - **Computation used:** no
 

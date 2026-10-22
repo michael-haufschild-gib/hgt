@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneTopRadicand
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOneTopRadicand
 
 /-!
 # The literal Serre quaternionic radical field

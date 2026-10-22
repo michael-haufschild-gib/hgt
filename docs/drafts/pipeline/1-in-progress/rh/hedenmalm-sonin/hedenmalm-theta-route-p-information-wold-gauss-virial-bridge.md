@@ -74,7 +74,7 @@ complex; no positive descendant can reverse it.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePInformationWoldGaussVirialBridge.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePInformationWoldGaussVirialBridge.lean`
 
 Headline declarations:
 

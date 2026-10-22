@@ -8,7 +8,7 @@
 - **Publication context:**
   `../../../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`
 - **Lean module:**
-  `../../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerXiGaussianResidueNonadmission.lean`
+  `../../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerXiGaussianResidueNonadmission.lean`
 
 ## 1. Frontier theorem
 
@@ -226,7 +226,7 @@ source datum rather than hiding it inside a chosen Hilbert norm.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerGaussianResidueGrowth.lean`, axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerGaussianResidueGrowth.lean`, axiom audit
 `propext, Classical.choice, Quot.sound` for every declaration.  The exact residue formula `(1)` was
 already in the corpus (`xi_mul_poissonGaussianSingularLift_residue_eq_explicit`); what is new here
 is the growth estimate `(3)`.
@@ -253,7 +253,7 @@ is the growth estimate `(3)`.
   `T₀ = 8π²`, exactly `(16)` and the threshold of `(15)`.
 
 **Sections 4 and 5.**
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerGaussianResidueNonadmission.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerGaussianResidueNonadmission.lean`.
 
 - `gaussianGreenResidue` — the residue `R(ρ)` as a named object.
 - `exists_xiZero_im_gt` — **the Xi zero ordinates are unbounded.**  If they were bounded the zero set

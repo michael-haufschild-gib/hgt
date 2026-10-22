@@ -76,9 +76,9 @@ prove unshifted positivity, identify Xi, or prove/falsify RH.
 Final commands, run separately in the foreground from `formal/`:
 
 ```text
-lake --old env lean GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftSource.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftSource.olean
-lake --old env lean GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftLimit.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftLimit.olean
-lake --old env lean GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftCarrier.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiRaisedMetricShiftCarrier.olean
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftSource.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftSource.olean
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftLimit.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftLimit.olean
+lake --old env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftCarrier.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiRaisedMetricShiftCarrier.olean
 ```
 
 Global lint78784 exited1 on eleven unrelated unreachable modules:

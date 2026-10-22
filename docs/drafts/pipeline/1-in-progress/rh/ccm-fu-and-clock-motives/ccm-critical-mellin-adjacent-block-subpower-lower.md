@@ -175,7 +175,7 @@ should therefore target this weighted energy before attempting the stronger unif
 ## Formal endpoint
 
 The complete formal chain is in
-`GaloisForLFunctions.RHTower.CCMRectangularSubpowerLowerGate`:
+`GaloisForLFunctions.RHTower.CCM.CCMRectangularSubpowerLowerGate`:
 
 ```text
 source inequality (1)

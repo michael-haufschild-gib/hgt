@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMGuinandWeilLiteralPolarPrimeSource
-import GaloisForLFunctions.RHTower.CCMCriticalMellinGrowingCumulative
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilLiteralPolarPrimeSource
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinGrowingCumulative
 import GaloisForLFunctions.RHTower.RoutePPrimeGammaBaseCubicWeight
 
 /-!

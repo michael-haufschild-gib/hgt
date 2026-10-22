@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SoninGammaClockSymbol
 import GaloisForLFunctions.RHTower.HardyZPhaseAsymptotic
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseDerivative
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseOperatorProduct
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseDerivative
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseOperatorProduct
 import GaloisForLFunctions.HTGeometry.L2MultiplierContinuity
 
 /-!

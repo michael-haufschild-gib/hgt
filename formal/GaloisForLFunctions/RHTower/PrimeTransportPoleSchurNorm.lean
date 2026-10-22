@@ -1,8 +1,8 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimePolarArithmeticAction
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimePolarArithmeticAction
 import GaloisForLFunctions.RHTower.MertensFirst
 import GaloisForLFunctions.RHTower.ChebyshevPsiScaling
-import GaloisForLFunctions.RHTower.CCMConnesConsaniHilbertOne
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity
+import GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniHilbertOne
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarConstrainedRightContinuity
 
 open MeasureTheory Set Filter
 open scoped ENNReal InnerProduct

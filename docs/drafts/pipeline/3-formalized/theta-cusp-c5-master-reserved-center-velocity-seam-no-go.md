@@ -62,7 +62,7 @@ equality transfers the sign to the master-reserved core and contradicts universa
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityMasterReservedSeamNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityMasterReservedSeamNoGo`
 - Direct `lake env lean` check: PASS
 - Targeted `lake build` check: PASS
 - `#print axioms` for route kill, local negativity, and seam classification:

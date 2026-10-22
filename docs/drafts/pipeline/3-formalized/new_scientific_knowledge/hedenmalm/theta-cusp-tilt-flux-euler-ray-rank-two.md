@@ -45,7 +45,7 @@ squared-Euler chamber law.
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParityEulerRayWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParityEulerRayWeld.lean`
 
 Closed declarations:
 
@@ -61,7 +61,7 @@ Verification:
 
 - direct source check passed with `lake env lean`;
 - exact target build passed with
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspTiltFluxWeilParityEulerRayWeld`;
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxWeilParityEulerRayWeld`;
 - no umbrella/full build was run;
 - all five `#print axioms` reports contain only `propext`, `Classical.choice`, and `Quot.sound`;
 - forbidden-token scan and targeted `git diff --check` passed;

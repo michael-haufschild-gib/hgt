@@ -6,10 +6,10 @@
 - **Status:** `[CONJECTURE SURVIVED] [PAPER PROOF COMPLETE] [LEAN CORE COMPLETE] [NOVELTY UNVERIFIED]`
 - **Lean parents:**
   - `formal/GaloisForLFunctions/HTGeometry/ResolvedDefectConservationLaw.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerGreenInternalDefectCancellationLaw.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerResolvedDefectHellingerGammaBalancedCofaceNoGo.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittResolvedCrossEffectBoundary.lean`
-  - `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCompletedXiHellingerGammaGradedVerticalObstruction.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGreenInternalDefectCancellationLaw.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerResolvedDefectHellingerGammaBalancedCofaceNoGo.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittResolvedCrossEffectBoundary.lean`
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittCompletedXiHellingerGammaGradedVerticalObstruction.lean`
 
 ## Frontier correction
 

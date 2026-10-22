@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FZZCigarPunctureTwoChannelPluckerClassification
-import GaloisForLFunctions.RHTower.SuzukiExteriorFeshbachPruning
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExteriorFeshbachPruning
 
 /-!
 # FZZ puncture Gram-dark self-energy classification

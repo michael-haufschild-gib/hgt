@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMCumulativeNegativeMassSpectrum
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Order.LiminfLimsup
 

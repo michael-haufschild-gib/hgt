@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / GLOBAL SOURCE-ACTION AND PROPERNESS COORDINATE
 - **Paper source:** `completion-primitive-variance-dirichlet-conservation-and-positive-formation-action-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.AnchoredCesaroVarianceCompletion`;
-  `GaloisForLFunctions.RHTower.SuzukiCompletedFormationEnergy`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiCompletedFormationEnergy`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [BRIDGE] [NOT RH]`
 
 ## Certified generic mechanism
@@ -53,7 +53,7 @@ The Suzuki module proves:
 - Direct foreground elaboration passed for both modules.
 - Targeted leaf builds only:
   - `GaloisForLFunctions.HTGeometry.AnchoredCesaroVarianceCompletion`: `3029/3029`
-  - `GaloisForLFunctions.RHTower.SuzukiCompletedFormationEnergy`: `14115/14115`
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiCompletedFormationEnergy`: `14115/14115`
     (large inherited dependency replay after concurrent cache changes)
 - Umbrella wiring:
   - both modules imported by `HTGeometry.UniversalLawField`

@@ -160,7 +160,7 @@ knowledge.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMShiftCovariantPoleDivisorCapacity.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMShiftCovariantPoleDivisorCapacity.lean`.
 
 - `polePacketProfile`, `divisorPacketProfile`, `divisorPacketMultiplicity`,
   `poleDivisorMultiplier` — equations `(2)`, `(4)`, `(7)`.

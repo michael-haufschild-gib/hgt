@@ -47,7 +47,7 @@ reflected direct-three-center ceiling `15872/21125` is equivalent for corrected 
 the fused finite source covariance.
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureCanonicalLatticeSummedDisplacement.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureCanonicalLatticeSummedDisplacement.lean`.
 
 ## Frontier consequence
 

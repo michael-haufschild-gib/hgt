@@ -2,11 +2,11 @@
 
 - **Card:** `ccm-radial-prime-first-row-reduction.md`
 - **Stage:** 3-formalized
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRadialPrimeFirstRow.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRadialPrimeFirstRow.lean`
 - **Namespace:** `GaloisForLFunctions.RHTower`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on every declaration
-- **Build:** `lake build GaloisForLFunctions.RHTower.CCMRadialPrimeFirstRow` — success
+- **Build:** `lake build GaloisForLFunctions.RHTower.CCM.CCMRadialPrimeFirstRow` — success
 
 ## Certified statements
 

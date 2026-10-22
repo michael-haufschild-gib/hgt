@@ -75,7 +75,7 @@ resolvent. Claiming the converse would add a missing realization theorem.
 ## Lean target
 
 File:
-`formal/GaloisForLFunctions/RHTower/DeningerEntropyProductionThermodynamicLimitUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEntropyProductionThermodynamicLimitUniversalityLaw.lean`
 
 Planned declarations:
 

@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-characteristic-evans-boundary-infinite-rank-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMEvansBoundaryInfiniteRank.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMEvansBoundaryInfiniteRank.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 10 declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspEvenCompactSourceCoordinates
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenCompactSourceCoordinates
 import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactDeterminant
-import GaloisForLFunctions.RHTower.ThetaCuspEvenFourExplicitTail
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourExplicitTail
 
 /-! # Explicit complete-source even rank-four positivity through the energy interval -/
 namespace RHTower

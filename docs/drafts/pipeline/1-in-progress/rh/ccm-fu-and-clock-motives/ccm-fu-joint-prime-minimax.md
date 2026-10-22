@@ -149,7 +149,7 @@ exist as interacting middle primes are consumed. A local minimax formula
 alone does not discharge that obligation or bound the terminal sum.
 
 For the weaker uniform-quadratic existence target needed by RH, the
-[global late-order rounding theorem](../../ccm-fu-late-order-rounding.md) removes
+[global late-order rounding theorem](ccm-fu-late-order-rounding.md) removes
 late-prime permutation as an essential choice: any successful order can
 be transformed to any prescribed late-prime relative order, with another
 uniform quadratic constant and every intermediate stage controlled.

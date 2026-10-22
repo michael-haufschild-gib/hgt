@@ -97,6 +97,6 @@ The rational family has a common positive seam interval from the already proved 
 
 ## Lean verification
 
-Six modules: `HTGeometry/HankelFourPerturbation`, `FirstAtomEvenTailReserve`; `RHTower/ThetaCuspEvenFourEffectiveErrors`, `ThetaCuspEvenFourEffectiveReserve`, `ThetaCuspEvenFourEffectiveSchur`, `ThetaCuspEvenFourExplicitTail`.
+Six modules: `HTGeometry/HankelFourPerturbation`, `FirstAtomEvenTailReserve`; `RHTower/ThetaCusp/ThetaCuspEvenFourEffectiveErrors`, `ThetaCuspEvenFourEffectiveReserve`, `ThetaCuspEvenFourEffectiveSchur`, `ThetaCuspEvenFourExplicitTail`.
 
 Each was checked in scratch with one foreground `lake env lean` process at a time, emitting only its needed olean. The checked bytes were copied into the corpus. All six imports are wired into their relevant umbrellas without full or umbrella builds. Six new capstones were audited once; only `propext`, `Classical.choice` and `Quot.sound` occur. The single formal lint run reported one repository-wide failure outside these six modules: `RHTower.MobiusDivisorTwoChannelPrimeBlocks` is unreachable from its theorem-area umbrella. The six modules above all have unique umbrella imports; their checks and axiom audits passed. No global lint pass is claimed.

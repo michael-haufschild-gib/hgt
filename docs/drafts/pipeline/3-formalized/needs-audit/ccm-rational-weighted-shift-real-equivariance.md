@@ -97,7 +97,7 @@ Remaining analytic input is now precise: prove that every CCM Bruhat--Schwartz m
 
 Module:
 
-- `GaloisForLFunctions.RHTower.CCMRationalWeightedShiftReal`
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalWeightedShiftReal`
 
 Capstones:
 

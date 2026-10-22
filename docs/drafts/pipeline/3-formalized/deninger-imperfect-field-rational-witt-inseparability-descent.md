@@ -111,11 +111,11 @@ integer coefficient is divisible by `d(a)`.  Naturality gives Galois invariance.
 
 ## Lean formalization
 
-- **Field module:** `GaloisForLFunctions.RHTower.DeningerRationalWittInseparabilityDescent`
+- **Field module:** `GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittInseparabilityDescent`
 - **Field capstone:**
   `deningerRationalWittIntegralGaloisInvariantInsepDivisible_iff_exists_base`
 - **Normal-domain module:**
-  `GaloisForLFunctions.RHTower.DeningerRationalWittInseparabilityNormalDomainDescent`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittInseparabilityNormalDomainDescent`
 - **Normal capstone:**
   `deningerRationalWittNormalDomain_galoisInvariant_insepDivisible_normalization_iff_exists_base`
 - **Axiom audit:** only `propext`, `Classical.choice`, `Quot.sound`

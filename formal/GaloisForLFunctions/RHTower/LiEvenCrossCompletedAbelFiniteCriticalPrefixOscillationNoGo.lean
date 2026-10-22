@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.LiEvenCrossCompletedAbelInteriorFirstZero
 import GaloisForLFunctions.RHTower.XiWeilHardyCriticalLocusPoissonReserve
 import GaloisForLFunctions.RHTower.PrimeArchShiftThirteenCircleCone
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 
 /-!

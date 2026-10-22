@@ -246,7 +246,7 @@ no atomwise reflected Riccati contraction of the form `(RC1)`.  Novelty remains 
 
 ## Lean realization
 
-`RHTower/ThetaCuspSingleAtomReflectedRiccatiContraction.lean` formalizes:
+`RHTower/ThetaCusp/ThetaCuspSingleAtomReflectedRiccatiContraction.lean` formalizes:
 
 - the exact source atom normal form and normalized reflected product;
 - the reflected action as the negative logarithm of that model;

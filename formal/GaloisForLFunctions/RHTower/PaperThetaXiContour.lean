@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaUniformCutControl
-import GaloisForLFunctions.RHTower.DeningerMeyerXiContourSource
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiContourSource
 
 /-! # Charge-free periods of the admitted theta family
 

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** SOURCE COMPLEX LEMMA · LEAN 4 THEOREM
 - **Parent:** `deninger-mw-gamma-brst-complex`
-- **Lean module:** `GaloisForLFunctions.RHTower.DeningerArithmeticPowerBar`
+- **Lean module:** `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPowerBar`
 
 ## Statement
 
@@ -99,7 +99,7 @@ separate and cannot be inserted into `(1)`.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticPowerBar.lean` proves the card for an arbitrary
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPowerBar.lean` proves the card for an arbitrary
 monoid acting on an abelian group, which is the generality of the statement:
 
 - `deningerPowerBarD0`, `deningerPowerBarD1`, `deningerPowerBarD2` : the three coboundaries `(1)`;
@@ -126,9 +126,9 @@ the stability proof is exactly additivity of `v` under the inner faces.
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticPowerBar.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPowerBar.lean`
   — passes with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerArithmeticPowerBar`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPowerBar`
   completes.
 - Scratch `#print axioms`: the three coboundaries and `deningerPowerWeight_inner_face` depend on
   no axioms at all; the rest use only `propext` and `Quot.sound`.  No use of choice anywhere in
@@ -139,7 +139,7 @@ the stability proof is exactly additivity of `v` under the inner faces.
 
 - [x] 0 → 1 in-progress: bar skeleton isolated
 - [x] 1 → 2 fully-proven: nilpotence and good truncation proved
-- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.DeningerArithmeticPowerBar`, including the
+- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPowerBar`, including the
   valuation-weight filtration
 - [ ] 3 → 4 publication-ready: the four remaining source data listed above — coefficient packet,
   framed transfer action, chain cup/trace, and positive Gamma metric — are not part of this lemma

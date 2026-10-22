@@ -99,7 +99,7 @@ degree 8 even the two exponents differ.
 
 ## Current source evidence
 
-- `RHTower/DeningerPrimePacketCyclotomicTowerAction.lean`, theorem
+- `RHTower/Deninger/DeningerPrimePacketCyclotomicTowerAction.lean`, theorem
   `deningerPrimePacketCyclotomicStageAction_frobenius`, supplies the genuine
   arithmetic p-power action on the named cyclotomic stage. It contains no
   identification with a global analytic Kummer cover of E.
@@ -114,7 +114,7 @@ degree 8 even the two exponents differ.
 - `RHTower/FrankensteinXiIntegralCartierMonodromyBridge.lean` explicitly
   retains an RH-strength reporter-existence premise. Its equivalences do
   not construct the candidate analytic map.
-- `RHTower/DeningerSpecZFrobeniusDivisorPullback.lean` concerns the actual
+- `RHTower/Deninger/DeningerSpecZFrobeniusDivisorPullback.lean` concerns the actual
   arithmetic integer divisor over Spec Z. It does not identify this with
   the analytic zero divisor of zeta.
 - Mathlib `Analysis/Complex/Basic.lean` proves that a continuous complex

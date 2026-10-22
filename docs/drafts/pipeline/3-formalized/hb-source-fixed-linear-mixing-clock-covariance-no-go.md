@@ -96,7 +96,7 @@ also witnesses arbitrary time.
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFixedLinearMixingClockCovarianceNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFixedLinearMixingClockCovarianceNoGo`
 
 Closed certificate:
 `d4HBSourceFixedLinearMixingClockCovarianceRouteKilled`.

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaPowerOffLineParameterSet
 import GaloisForLFunctions.RHTower.ThetaGroupFormCuspBounds
-import GaloisForLFunctions.RHTower.ThetaCuspChargeWindowLaw
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeWindowLaw
 
 /-!
 # The cusp constant of the theta-power transform

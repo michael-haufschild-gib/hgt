@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.SuzukiRectangularPositiveArchLagCompletion`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiRectangularPositiveArchLagCompletion`
 - **RH used:** no
 - **Computation used:** no
 
@@ -87,7 +87,7 @@ audit remains open.
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiRectangularPositiveArchLagCompletion.lean` — PASS;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularPositiveArchLagCompletion.lean` — PASS;
 - final targeted build:
   `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` — PASS, `9512/9512`;
 - axiom surface of eight capstones: `propext`, `Classical.choice`, `Quot.sound` only;

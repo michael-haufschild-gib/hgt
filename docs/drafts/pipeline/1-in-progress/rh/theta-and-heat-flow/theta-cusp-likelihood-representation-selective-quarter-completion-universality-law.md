@@ -73,11 +73,11 @@ same carrier.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspLikelihoodRepresentationSelectiveQuarterCompletionUniversalityLaw`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodRepresentationSelectiveQuarterCompletionUniversalityLaw`
 - Main theorem:
   `thetaCuspLikelihood_representationSelectiveQuarterCompletionUniversality`
 - Exact-file command:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspLikelihoodRepresentationSelectiveQuarterCompletionUniversalityLaw.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodRepresentationSelectiveQuarterCompletionUniversalityLaw.lean`
   passed warning-free on 2026-07-23.
 - Umbrella:
   imported by `formal/GaloisForLFunctions/RHTower.lean`.

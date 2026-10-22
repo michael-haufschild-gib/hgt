@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource
 
 /-!
 # The weight-one inversion implements the Born swap on the archimedean mode

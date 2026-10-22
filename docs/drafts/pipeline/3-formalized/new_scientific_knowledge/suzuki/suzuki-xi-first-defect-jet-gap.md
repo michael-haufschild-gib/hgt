@@ -221,8 +221,8 @@ priority review remains required before publication.
 
 Unconditional modules:
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiXiFirstDefectJetSource.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJet.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiXiFirstDefectJetSource.lean`
 
 Main declarations:
 
@@ -241,9 +241,9 @@ suzukiGroundLeakage_eventually_gt_xiHedenmalmLivsicFirstDefectJet_floor
 Both files pass direct foreground `lake env lean`, and the promotion gate is discharged:
 
 ```text
-GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.SuzukiXiFirstDefectJet
-GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.SuzukiXiFirstDefectJetSource
-lake build GaloisForLFunctions.RHTower.SuzukiXiFirstDefectJetSource            green
+GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJet
+GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJetSource
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJetSource            green
 #print axioms on all nine declarations   [propext, Classical.choice, Quot.sound]
 ```
 

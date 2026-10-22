@@ -6,7 +6,7 @@
 - **Paper proof:**
   `./suzuki-shifted-xi-target-flat-pencil.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.SuzukiShiftedXiTargetFlatPencil`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiTargetFlatPencil`
 - **RH used:** no
 - **Computation used:** no
 
@@ -59,10 +59,10 @@ Nevanlinna mass remain open.  No finite-aperture Fourier diagonalization is clai
 ## Audit
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiShiftedXiTargetFlatPencil.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftedXiTargetFlatPencil.lean
   PASS
 
-lake build GaloisForLFunctions.RHTower.SuzukiShiftedXiTargetFlatPencil
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiTargetFlatPencil
   PASS (8600/8600)
 
 lake env lean GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean

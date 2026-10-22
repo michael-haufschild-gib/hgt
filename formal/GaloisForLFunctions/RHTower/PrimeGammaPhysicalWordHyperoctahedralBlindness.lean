@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiPhysicalLogGradeNuclearSummability
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPhysicalLogGradeNuclearSummability
 
 /-!
 # Hyperoctahedral blindness of the physical prime--Gamma word coefficient

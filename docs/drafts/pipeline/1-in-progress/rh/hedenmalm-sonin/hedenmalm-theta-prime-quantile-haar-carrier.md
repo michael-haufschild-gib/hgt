@@ -71,7 +71,7 @@ classification of the only covariant carrier on which the P-G103 anomaly is admi
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeQuantileHaarCarrier.lean` proves
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeQuantileHaarCarrier.lean` proves
 `measurePreserving_thetaIntegerQuantileFlow`, `thetaQuantileHaarMeasure_Icc`,
 `thetaQuantileHaarMeasure_compl_Ioo`, `thetaQuantileHaarMeasure_Ioo`, and
 `finiteMeasure_eq_zero_of_map_thetaIntegerQuantileFlow_eq_self`. Direct Lean check and exact module

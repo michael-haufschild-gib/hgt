@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterra
 import GaloisForLFunctions.RHTower.XiEndpointCentralMomentDyadicBridge
 import GaloisForLFunctions.RHTower.CompletedPrimeGammaSecondMomentCenterPositive
 

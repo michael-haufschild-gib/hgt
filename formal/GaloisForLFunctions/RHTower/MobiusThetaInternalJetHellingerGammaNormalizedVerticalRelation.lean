@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittCompletedXiHellingerGammaGradedVerticalObstruction
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCompletedXiHellingerGammaGradedVerticalObstruction
 import GaloisForLFunctions.RHTower.MobiusThetaInternalJetCompletedHellingerGammaIncidenceBridge
 
 /-!

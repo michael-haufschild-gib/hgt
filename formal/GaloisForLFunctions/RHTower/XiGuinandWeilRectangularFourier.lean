@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
-import GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
 import Mathlib.Analysis.Fourier.Inversion
 import Mathlib.Analysis.Fourier.Convolution
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals

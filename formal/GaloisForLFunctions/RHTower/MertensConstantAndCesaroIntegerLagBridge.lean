@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ObserverJetFubiniAndIntegerLagBridge
 import GaloisForLFunctions.RHTower.WeilLagTwoSidedMeshSampling
-import GaloisForLFunctions.RHTower.CCMFUSuzukiSelbergOutgoingAbelWeld
-import GaloisForLFunctions.RHTower.CCMUnitRieszProfileLimit
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiSelbergOutgoingAbelWeld
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszProfileLimit
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevPsiBigO
 import GaloisForLFunctions.RHTower.Sieve.SqrtLogTailIntegral
 

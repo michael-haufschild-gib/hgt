@@ -66,8 +66,8 @@ The reduced head remains to compare against the exact opposing contributions at 
 
 Global `python3 scripts/formal_tools.py lint` reports only these wiring errors:
 
-- `GaloisForLFunctions.RHTower.ThetaCuspCenterCompensationFlux`
-- `GaloisForLFunctions.RHTower.ThetaCuspCenterMixedAllOrderIntegration`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterCompensationFlux`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterMixedAllOrderIntegration`
 - `GaloisForLFunctions.HTGeometry.AlternatingPairJetIntegral`
 
 These concurrently added modules are outside this work and were not modified, built, or re-audited. The new leaf has no lint error. The index refresh reports 32739 files, 399729 declarations, 3909 gap markers. All owned Lean/Lake handles completed; process inspection found none remaining. Four owned scratch sources/manifests were removed. Logs remain at `/tmp/edq_height_reserve_{build,axioms,lint,index}.log`. No numerical experiment, computational certificate, or added axiom enters the proof.

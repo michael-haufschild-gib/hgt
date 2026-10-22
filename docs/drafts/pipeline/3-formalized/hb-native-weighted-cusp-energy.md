@@ -3,7 +3,7 @@
 - **ID:** HB-QNCE
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeCuspEnergy.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticNativeCuspEnergy.lean`
 - **Parent:** [HB-QNCD](hb-native-nonconstant-cusp-decay.md)
 - **Route:** HB; literal theta cusp → Xi occurrence → retained spin two → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH
 - **Active integration:** [source/contact/spin-two balance](../1-in-progress/hb-source-contact-spin-two-balance.md)
@@ -197,7 +197,7 @@ faces must still be evaluated.
 ## Exact leaf verification
 
 The assembled scratch and exact isolated `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticNativeCuspEnergy` passed.
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticNativeCuspEnergy` passed.
 The exact leaf build took 38 seconds with cached dependencies and unchanged
 source SHA256. Its artifacts were published and its temporary audit directory
 removed. One umbrella import was added; no umbrella or full build was run.
@@ -210,7 +210,7 @@ remained unchanged. `scripts/formal_tools.py lint --check-generated` exited 1
 with the sole error:
 
 ```
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetEntries
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarJetEntries
 ```
 
 This is a different shared-tree module; no unrelated unfinished source was

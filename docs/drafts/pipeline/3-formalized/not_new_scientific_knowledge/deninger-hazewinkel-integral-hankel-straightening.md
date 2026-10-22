@@ -156,7 +156,7 @@ The remaining all-stage primeness frontier is then only integral saturation
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.DeningerHazewinkelHankelStraightening
+GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelHankelStraightening
 ```
 
 Principal declarations:
@@ -175,8 +175,8 @@ equality then specializes this universal identity to Hazewinkel's integer polyno
 Verification:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelHankelStraightening.lean
-lake build GaloisForLFunctions.RHTower.DeningerHazewinkelHankelStraightening
+lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelHankelStraightening.lean
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelHankelStraightening
 ```
 
 Both passed. `#print axioms` for the three declarations reports only Lean/mathlib's standard

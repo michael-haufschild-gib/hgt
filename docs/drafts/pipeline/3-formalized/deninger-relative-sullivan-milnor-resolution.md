@@ -123,7 +123,7 @@ in conflict:
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRelativeSullivanMilnorResolution.lean`, 41
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRelativeSullivanMilnorResolution.lean`, 41
 declarations, axiom audit for every one of them: `propext, Classical.choice, Quot.sound` (the
 new-generator ideal needs only `propext, Quot.sound`).
 
@@ -964,7 +964,7 @@ The two limit theorems lose their side condition:
 
 ### The specialization: the resolution of the two-term algebra
 
-`formal/GaloisForLFunctions/RHTower/DeningerRelativeSullivanMilnorLimit.lean`.  The general relative
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRelativeSullivanMilnorLimit.lean`.  The general relative
 tower is instantiated at the target of the statement, `K = k ⊕ V` with `V·V = 0`, over the base
 `P = Λ(V)` with `d_P = 0`.
 

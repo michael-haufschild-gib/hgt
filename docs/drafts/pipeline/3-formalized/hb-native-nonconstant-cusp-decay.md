@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Predecessor:** [native cusp-mode coercivity](hb-native-cusp-mode-coercivity.md)
 - **Active attack:** [source-contact/current balance](../1-in-progress/hb-source-contact-spin-two-balance.md)
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeCuspComparison.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticNativeCuspComparison.lean`
 
 Proof chain: literal theta cusp → Xi occurrence → retained spin two → physical
 causal radial/left-QNM action → fixed common Hawking-clock extinction → RH.
@@ -127,7 +127,7 @@ All owned Lean and search processes completed. Index refresh covered three
 changed files; lint first reported stale API/OVERVIEW generation. A second
 refresh covered one new change. Final `lint --check-generated` failed solely
 on the then-unreachable
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarJetQuadraticEinstein`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarJetQuadraticEinstein`.
 No global lint success is claimed and no unrelated unfinished source was
 changed. The exact new leaf audit passed. Log:
 `formal/.lake/hb-extinction-scratch/native-cusp-comparison-final-lint.log`.

@@ -117,7 +117,7 @@ theta-specific combination of strict infinite-support cooling with the modular s
 
 ## Formalization target
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodStrictCooling.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodStrictCooling.lean`
 
 - [x] zeroth moment equals spectral response;
 - [x] every tilted moment is nonnegative;

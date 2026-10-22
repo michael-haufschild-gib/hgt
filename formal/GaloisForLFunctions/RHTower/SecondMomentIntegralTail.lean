@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMHighRadialFirstRowBV
+import GaloisForLFunctions.RHTower.CCM.CCMHighRadialFirstRowBV
 
 /-!
 # A second-moment bound controls the far part of an integral

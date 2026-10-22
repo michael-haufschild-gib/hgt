@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Route:** L
 - **Status:** `[PROVED] [FORMALIZED] [UNCONDITIONAL] [NOT RH]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/DeningerGammaSixShellPrincipalIdeal.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixShellPrincipalIdeal.lean`
 
 ## Exact theorem
 
@@ -55,8 +55,8 @@ one, choosing `epsilon=1-alpha` would put `G_6` itself in Schatten-1, contradict
 
 ## Formal audit
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerGammaSixShellPrincipalIdeal.lean`: pass.
-- `lake build GaloisForLFunctions.RHTower.DeningerGammaSixShellPrincipalIdeal`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixShellPrincipalIdeal.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixShellPrincipalIdeal`: pass.
 - Key axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
 - Module imported by `GaloisForLFunctions.RHTower` umbrella.
 

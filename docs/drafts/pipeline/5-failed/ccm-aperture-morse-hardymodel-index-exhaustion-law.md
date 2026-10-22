@@ -228,7 +228,7 @@ Primary sources:
 
 `[FORMALIZED]` — supersedes the "no wrapper is added" decision recorded above, which is stale.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMApertureMorseExhaustion.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMApertureMorseExhaustion.lean`
 (14 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`,
 wired into `formal/GaloisForLFunctions/RHTower.lean`).
 
@@ -250,7 +250,7 @@ What is proved in Lean:
   its dimension intact.  This is the bump replacement of point masses, and it uses the corpus lemma
   `HTGeometry.neg_of_perturbed_negDef` (`PerturbedNegativeDefinite.lean`).
 - `le_morseCharge_of_perturbation` — **equation (5)**: the aperture Morse charge of
-  `RHTower/CCMApertureMorseCharge.lean` is at least the negative inertia `k` of the limiting point
+  `RHTower/CCM/CCMApertureMorseCharge.lean` is at least the negative inertia `k` of the limiting point
   Gram matrix.
 - `hasNegDefSubspaceOfDim_map`, `hasNegDefSubspaceOfDim_comap` — **equations (14)–(16)**: a linear
   equivalence transports negative-definite subspaces in both directions with their dimension, so
@@ -266,7 +266,7 @@ Reused, not rebuilt:
 
 - `GaloisForLFunctions.RHTower.HasNegDefSubspaceOfDim`, `morseCharge`, `morseCharge_mono`,
   `negDefDims_eq_zero_iff_nonneg`, `morseCharge_eq_zero_of_nonneg`, `exists_crossing_of_pos_of_neg`
-  from `RHTower/CCMApertureMorseCharge.lean` (the conservation-law card).
+  from `RHTower/CCM/CCMApertureMorseCharge.lean` (the conservation-law card).
 - `GaloisForLFunctions.HTGeometry.neg_of_perturbed_negDef` from
   `HTGeometry/PerturbedNegativeDefinite.lean`.
 - The finite factorization and exact finite inertia of `RHTower/SeamInertiaCharge.lean`.
@@ -299,6 +299,6 @@ Deliberately outside the Lean statement (cited parents, not results of this card
   requires confluent derivative jets. Aperture transport cannot be multiplicity-exact until that carrier
   is built and proved compatible with the actual Xi screw kernel.
 - **Status:** Exact survivors remain unconditional in
-  `RHTower/CCMApertureMorseExhaustion.lean` and are recorded by the replacement stage-3 card
+  `RHTower/CCM/CCMApertureMorseExhaustion.lean` and are recorded by the replacement stage-3 card
   `ccm-aperture-morse-abstract-exhaustion-survivor.md`. The false Xi/Hardy multiplicity transport is
   retired; no RH or source identification is claimed.

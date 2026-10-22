@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.GaussBonnetThermodynamicPrescriptions
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
 
 /-!
 # Logarithmic entropy in the existing Schwarzschild recoil construction

@@ -114,7 +114,7 @@ continuation gives equality on all of `C`. Therefore `G(1)=G(0)`. Since `a != 0`
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBulkHolomorphicHermitianOpticalNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBulkHolomorphicHermitianOpticalNoGo`
 
 - `star_thetaCuspHawkingLocalHermitianAnomaly`
 - `thetaCuspBalancedHawkingBornAmplitude_zero`

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62Poisson
 import GaloisForLFunctions.RHTower.ChenGuptaLiHtReciprocalAllOrder
-import GaloisForLFunctions.RHTower.DeningerPoissonMellin
+import GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMellin
 import GaloisForLFunctions.RHTower.ThueMorseMellinFlatness
 
 /-!

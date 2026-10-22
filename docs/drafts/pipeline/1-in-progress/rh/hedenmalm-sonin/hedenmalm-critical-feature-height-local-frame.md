@@ -4,7 +4,7 @@
 - **Stage:** `1-in-progress`
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW SYNTHESIS] [NOT RH]`
 - **Parent:** `rh-current-frontier-map.md`, Route P finite-ceiling wall
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureHeightLocalFrame.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureHeightLocalFrame.lean`
 
 ## Conjecture loop
 

@@ -235,7 +235,7 @@ sum of local packet modes.
 
 ### Both labelled theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerShiftedFiberTotalization.lean`, on the corpus's
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerShiftedFiberTotalization.lean`, on the corpus's
 three-term arithmetic complex.  Axiom audit for all 13 declarations:
 `propext, Classical.choice, Quot.sound` or less.
 

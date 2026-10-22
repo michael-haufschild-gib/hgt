@@ -44,7 +44,7 @@ First-fibre amplitude is continuous in center, so strict rise persists in a neig
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspCompletedProductFiberCofinalDropRepair`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCompletedProductFiberCofinalDropRepair`
 - Exact decomposition: `thetaCuspCompletedProductFiberAmplitude_one_add_higherTail`
 - Seam repair: `exists_thetaCuspCompletedProductFiberHigherTail_drop_repairs_first_rise`
 - Positive-center germ: `exists_thetaCuspCompletedProductFiberHigherTail_drop_repairs_first_rise_germ`

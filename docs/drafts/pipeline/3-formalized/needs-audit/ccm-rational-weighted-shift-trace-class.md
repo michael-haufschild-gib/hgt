@@ -77,7 +77,7 @@ shift identity.
 
 ## Lean realization
 
-- **Module:** `GaloisForLFunctions.RHTower.CCMRationalWeightedShiftTraceClass`
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRationalWeightedShiftTraceClass`
 - **Capstones:**
   - `ccmRationalMoritaWeightedShift_isHilbertSchmidt`
   - `ccmRationalMoritaCoefficientSqrtPhase_mul_sqrtNorm`

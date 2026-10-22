@@ -5,9 +5,9 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-gamma-three-grade-delay-root-observability.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootPortFirstGradeObservability.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiRootPortObservationGram.lean`
-  - carrier: `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootPortFirstGradeObservability.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRootPortObservationGram.lean`
+  - carrier: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`,
     `SuzukiSupportPrunedSeamCarrierBounds.lean`, `SuzukiPrimeValuationSeam.lean`
 
 ## Formal content

@@ -164,24 +164,24 @@ It is not logically required for zero exclusion.
 ## Formal evidence map
 
 - `HTGeometry/ResolvedDefectConservationLaw.lean`
-- `RHTower/DeningerGreenResolvedDefectLaw.lean`
+- `RHTower/Deninger/DeningerGreenResolvedDefectLaw.lean`
 - `RHTower/CompleteResolutionCofinalConditioningLaw.lean`
 - `RHTower/CompleteResolutionPrimeNormalHilbertSaturation.lean`
 - `RHTower/CompleteResolutionPrimeNormalFiniteFibreGrading.lean`
 - `RHTower/HypertranscendentalDivisorInformationLocalizationLaw.lean`
 - `RHTower/MobiusThetaInternalJetPhysicalGraph.lean`
 - `RHTower/MobiusThetaInternalJetSourceLocalSpanning.lean`
-- `RHTower/DeningerMeyerXiSpectralInclusion.lean`
-- `RHTower/DeningerMeyerFiniteXiJetPacket.lean`
-- `RHTower/DeningerMeyerFullXiJetAdmissionBoundary.lean`
-- `RHTower/DeningerMeyerXiCofinalSynthesisSingularity.lean`
-- `RHTower/DeningerMeyerPointwiseXiComparisonSharpness.lean`
-- `RHTower/DeningerMeyerPaugamGeneralizedJetPairing.lean`
-- `RHTower/DeningerMeyerPaugamGradingObstruction.lean`
-- `RHTower/DeningerMeyerInvariantEvaluationGaugeFrontier.lean`
+- `RHTower/Deninger/DeningerMeyerXiSpectralInclusion.lean`
+- `RHTower/Deninger/DeningerMeyerFiniteXiJetPacket.lean`
+- `RHTower/Deninger/DeningerMeyerFullXiJetAdmissionBoundary.lean`
+- `RHTower/Deninger/DeningerMeyerXiCofinalSynthesisSingularity.lean`
+- `RHTower/Deninger/DeningerMeyerPointwiseXiComparisonSharpness.lean`
+- `RHTower/Deninger/DeningerMeyerPaugamGeneralizedJetPairing.lean`
+- `RHTower/Deninger/DeningerMeyerPaugamGradingObstruction.lean`
+- `RHTower/Deninger/DeningerMeyerInvariantEvaluationGaugeFrontier.lean`
 - `RHTower/TransverseInformationInvariantGaugeDichotomy.lean`
-- `RHTower/DeningerMeyerHalfDensityL1Completion.lean`
-- `RHTower/DeningerMeyerLogGaussianUniversalOrbitCriterion.lean`
+- `RHTower/Deninger/DeningerMeyerHalfDensityL1Completion.lean`
+- `RHTower/Deninger/DeningerMeyerLogGaussianUniversalOrbitCriterion.lean`
 - `RHTower/BurnolCoPoissonBerezinFaithful.lean`
 - `RHTower/BurnolCoPoissonBerezinReflection.lean`
 
@@ -244,7 +244,7 @@ its vertical fibre; if single-valued it is full zero graph, and any closable par
 agreeing on core has zero closure.  Therefore surviving horizontal transgression must act already
 on finite witnesses or change source topology/arithmetic relation before completion.
 
-- `RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
+- `RHTower/Deninger/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
 
 Positive orthogonal completion is independently excluded at depth one: the first order-growing
 Euler jet atom at central Cauchy point already exceeds the whole canonical zeroth

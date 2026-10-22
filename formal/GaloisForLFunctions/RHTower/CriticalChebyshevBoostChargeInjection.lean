@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CriticalContinuousChebyshevDivisorLaplaceWeld
-import GaloisForLFunctions.RHTower.HedenmalmQuantileDivisorCharge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileDivisorCharge
 import GaloisForLFunctions.RHTower.PrimePolarResidueCancellation
 
 /-!

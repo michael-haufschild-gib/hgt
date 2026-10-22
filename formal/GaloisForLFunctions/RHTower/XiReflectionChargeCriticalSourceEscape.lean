@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiMassCriticalCenteredDirichletCone
 import GaloisForLFunctions.RHTower.XiMassCriticalWeilPairingCriterion
-import GaloisForLFunctions.RHTower.DeningerCriticalFloquetCrossCurrent
+import GaloisForLFunctions.RHTower.Deninger.DeningerCriticalFloquetCrossCurrent
 import GaloisForLFunctions.RHTower.XiReflectionSelfIntersectionCharge
 
 /-!

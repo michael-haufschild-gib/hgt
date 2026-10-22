@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HilbertMetric.CentroidGauge
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # Universal high-dimensional phase-coherence entropy

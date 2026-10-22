@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerArithmeticLocalHodgeObstruction
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticLocalHodgeObstruction
 import GaloisForLFunctions.RHTower.XiPrimeSeamCoherenceCollapse
 
 /-!

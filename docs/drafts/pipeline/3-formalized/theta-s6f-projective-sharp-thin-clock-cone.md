@@ -90,7 +90,7 @@ amplitude bounds are essential.
 
 ## Lean
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthProjectiveSharpThinClockCone`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthProjectiveSharpThinClockCone`
 - Main theorem: `thetaCuspModularProjectiveClocks_mem_sharpThinCone`
 - Umbrella: `GaloisForLFunctions.RHTower`
 - Direct `lake env lean` and exact-module `lake build` pass.

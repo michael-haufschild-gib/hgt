@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittKoszulSource
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittKoszulSource
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldPositiveStokesPolarization
 
 /-!

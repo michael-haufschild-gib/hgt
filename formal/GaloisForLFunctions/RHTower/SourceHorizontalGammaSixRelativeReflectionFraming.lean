@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixCurvedSuspensionHodgeTrace
-import GaloisForLFunctions.RHTower.HedenmalmThetaRouteRPositiveUnitCurrentBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaRouteRPositiveUnitCurrentBridge
 
 /-!
 # Relative reflection framing of the source-horizontal Gamma-six suspension

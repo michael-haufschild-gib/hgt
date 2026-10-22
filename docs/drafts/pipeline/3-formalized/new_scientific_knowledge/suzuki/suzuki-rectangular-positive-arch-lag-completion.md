@@ -7,7 +7,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.SuzukiRectangularPositiveArchLagCompletion`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiRectangularPositiveArchLagCompletion`
 - **Parents:** `complete-sharp-rectangular-guinand-weil-prime-gamma-law.md`,
   `suzuki-rectangular-wall-gram-gate.md`
 - **RH used:** no
@@ -220,7 +220,7 @@ Robin transport rather than a universal sampling claim.
 
 ### Lean progress — Theorem D's lower half and audit item 4 FORMALIZED
 
-Audit of Theorems A--D against `RHTower/SuzukiRectangularPositiveArchLagCompletion.lean`.
+Audit of Theorems A--D against `RHTower/Suzuki/SuzukiRectangularPositiveArchLagCompletion.lean`.
 Theorem A (`(1)`, through `rectangularTwoEdgeAutocorrelation_le_zeroLag` with the corpus
 `..._nonneg` and `..._zero`), Theorem B (`(2)`, nonnegativity, strict positivity), Theorem C
 (`(3)`, `(4)`, `(5)`) and Theorem D's `(6)`--`(7)` each had a declaration. Two things did not.

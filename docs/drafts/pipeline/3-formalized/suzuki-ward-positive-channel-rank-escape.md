@@ -32,8 +32,8 @@ Represent aperture-`N` positive completion by `rank N` nonnegative real channel 
 - **Status:** `[PROVED HERE]`; direct Lean check and leaf build pass. Axiom dependencies are only `propext`, `Classical.choice`, `Quot.sound`. Web searches through 29 August 2026 found Suzuki canonical-system and screw-function criteria but no matching wall-mass/channel-rank theorem; label `[NOVELTY UNVERIFIED]` pending expert review.
 
 ## Verification
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiWardPositiveChannelRankEscape.lean` — pass.
-- `lake build GaloisForLFunctions.RHTower.SuzukiWardPositiveChannelRankEscape` — pass (`[11881/11881]`).
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiWardPositiveChannelRankEscape.lean` — pass.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiWardPositiveChannelRankEscape` — pass (`[11881/11881]`).
 - `#print axioms` for all four public theorems — only standard quotient/classical axioms.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella build intentionally not run.
 

@@ -433,7 +433,7 @@ None constructs canonical Route-R fixed-`ell1` coefficient section.
 ## 10. Lean-return note
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean`
 (wired into `GaloisForLFunctions.RHTower`).  Theorems A--E are green and unconditional; the
 declaration-by-equation map, the corpus reuse ledger and the axiom audit are in the companion card
 `rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law-formalized.md`.  The open

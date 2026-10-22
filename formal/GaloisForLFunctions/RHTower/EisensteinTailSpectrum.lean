@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.EisensteinHeckeOperator
 import GaloisForLFunctions.RHTower.EisensteinLineZeroMean
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinLineEigenEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinLineEigenEquation
 import GaloisForLFunctions.HTGeometry.BesselOrderRecurrence
 import Mathlib.Analysis.SpecificLimits.Basic
 

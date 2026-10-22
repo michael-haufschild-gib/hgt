@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaTemperedMultiplicityJets
 import GaloisForLFunctions.RHTower.ThetaTemperedEvaluationBoundary
-import GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryFourier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryFourier
 
 /-!
 # Actual tempered multiplicity jets for the unscaled theta source

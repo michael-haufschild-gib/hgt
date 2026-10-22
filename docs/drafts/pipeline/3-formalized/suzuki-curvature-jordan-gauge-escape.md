@@ -133,7 +133,7 @@ Verdict: `DEPENDENCY-CLOSED PAPER PROOF`.
 ## Lean realization
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiCurvatureJordanGaugeEscape`
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCurvatureJordanGaugeEscape`
 
 Public conclusions:
 
@@ -150,7 +150,7 @@ smaller dependency cone.
 Audit:
 
 - direct `lake env lean` check passed;
-- targeted `lake build GaloisForLFunctions.RHTower.SuzukiCurvatureJordanGaugeEscape` passed;
+- targeted `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCurvatureJordanGaugeEscape` passed;
 - `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`;
 - module is wired into `GaloisForLFunctions.RHTower`;
 - repository lint recognizes this module as reachable. Global lint remains red only on unrelated

@@ -133,7 +133,11 @@ class CorpusTests(unittest.TestCase):
         stats = self.db.refresh(self.root)
         self.assertEqual(stats['coverage']['files'], 3)
         self.assertEqual(stats['coverage']['outcomes'], {'indexed': 3})
-        self.assertEqual(stats['coverage']['declarations'], 2)
+        # A refresh reports file-level outcomes only; the row counts are
+        # million-row scans and belong to the enrichment phases.
+        self.assertTrue(stats['coverage']['row_counts_deferred'])
+        self.assertNotIn('declarations', stats['coverage'])
+        self.assertEqual(self.db.coverage()['declarations'], 2)
         self.assertEqual(len(self.db.search('conditional', views=('prose',))), 1)
 
     def test_refresh_purges_files_once_they_sit_under_tmp(self):
@@ -182,6 +186,24 @@ class CorpusTests(unittest.TestCase):
         self.assertFalse(stats['complete'])
         self.assertEqual(stats['coverage']['pending_files'], 1)
         self.assertTrue(self.db.search('alpha'))
+
+    def test_type_shape_is_never_turned_into_searchable_documents(self):
+        """`type_shape` is a lean-expr-json-v1 tree, not prose: chunking it
+        indexes JSON punctuation and crowds out real statements."""
+        self.write('formal/A.lean', 'theorem alpha (n : Nat) : n = n := rfl')
+        self.db.refresh(self.root)
+        sha = self.db.con.execute('SELECT source_hash FROM files').fetchone()[0]
+        shape = json.dumps(['forall', 'b0', 'implicit', ['const', 'Nat', []]] * 4000)
+        self.assertGreater(len(shape), 5000, 'the fixture must exceed one chunk')
+        self.db.install_compiler_rows('formal/A.lean', [dict(
+            name='alpha', type_text='∀ n : Nat, n = n', type_shape=shape, binders=[], axioms=[])],
+            source_hash=sha)
+        views = dict(self.db.con.execute('SELECT view,COUNT(*) FROM documents GROUP BY view'))
+        self.assertNotIn('shape', views)
+        self.assertEqual(views['type'], 1)
+        # The structural form stays on the declaration for non-text use.
+        did = self.db.search('alpha')[0]['decl_id']
+        self.assertEqual(self.db.declaration(did)['type_shape'], shape)
 
     def test_compiler_rows_preserve_all_binders_and_reject_stale_hash(self):
         self.write('formal/A.lean', 'theorem alpha (n : Nat) : n = n := rfl')

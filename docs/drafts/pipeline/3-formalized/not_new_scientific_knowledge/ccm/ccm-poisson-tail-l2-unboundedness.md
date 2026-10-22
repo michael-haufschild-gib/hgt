@@ -156,7 +156,7 @@ leading endpoint tail of the CCM source.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMArithmeticTailUnbounded.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMArithmeticTailUnbounded.lean`.
 
 The route taken is the card's proof with the logarithmic unitary **removed**.  The card passes to
 `L²(dt)` in order to write the operator as a translation polynomial, but the extremal vector can be

@@ -1,9 +1,9 @@
 import GaloisForLFunctions.RHTower.FiniteOfflineCauchyL2
 import GaloisForLFunctions.RHTower.XiShiftLoewnerFlow
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardHardyTransport
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 import GaloisForLFunctions.RHTower.XiShiftDivisorPrimeSymbol
-import GaloisForLFunctions.RHTower.CCMFUSuzukiCriticalChordMeasure
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiCriticalChordMeasure
 
 open MeasureTheory Set Complex Filter
 open scoped BigOperators

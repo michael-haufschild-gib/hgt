@@ -5,7 +5,7 @@
 - **Paper theorem:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-residual-overcrowding-entire-pair-closure.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedPhaseProfile.lean`
 - **RH used:** no
 - **Computation used:** no
 
@@ -40,8 +40,8 @@ normality.  Those source and measure-topology statements therefore remain paper-
 
 ## Audit
 
-- [x] direct `lake env lean GaloisForLFunctions/RHTower/SuzukiCompactifiedPhaseProfile.lean`
-- [x] exact `lake build GaloisForLFunctions.RHTower.SuzukiCompactifiedPhaseProfile`
+- [x] direct `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedPhaseProfile.lean`
+- [x] exact `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCompactifiedPhaseProfile`
 - [x] SOTA import source check
 - [x] `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] global formal lint

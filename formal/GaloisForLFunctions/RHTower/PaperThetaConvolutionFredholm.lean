@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerOriginalConvolutionInverse
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerOriginalConvolutionInverse
 import GaloisForLFunctions.RHTower.PaperThetaConvolutionGauge
 
 /-! # Native theta solving for arbitrary original convolution symbols

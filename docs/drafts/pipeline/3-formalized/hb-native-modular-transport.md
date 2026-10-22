@@ -95,7 +95,7 @@ Broad rotation/stabilizer/spherical and periodic-integral searches, followed by 
 
 The initial energy-estimate searches returned weak-derivative candidates and unrelated semantic matches; none was treated as the missing energy estimate. Search inventory was complete for the circle and cutoff requests, with partial retrieval and predominantly pending or source-only compiler metadata. One later energy request reported coverage pending. These search results support discovery; the final Lean audit establishes the new theorem claims.
 
-The completed scratch proof passed `lake env lean`; its unused tactic warning was removed before the final audit. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeModularTransport` passed in 11 seconds, two jobs, without warnings. The isolated audit reused 4114 existing project dependency caches and 11 installed dependency packages. No dependency or umbrella build ran.
+The completed scratch proof passed `lake env lean`; its unused tactic warning was removed before the final audit. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeModularTransport` passed in 11 seconds, two jobs, without warnings. The isolated audit reused 4114 existing project dependency caches and 11 installed dependency packages. No dependency or umbrella build ran.
 
 Only the eight new public theorems were checked with `#print axioms`. All report exactly `[propext, Classical.choice, Quot.sound]`. The 299-line source and five build artifacts were installed byte-identically to the audit. The new module is wired once into `formal/GaloisForLFunctions/RHTower.lean`.
 

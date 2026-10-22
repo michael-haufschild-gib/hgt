@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillChartPartials
-import GaloisForLFunctions.HTGeometry.KleinGordonChartC1
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonChartC1
 
 /-!
 # The chart field of the evolution has continuous partial derivatives

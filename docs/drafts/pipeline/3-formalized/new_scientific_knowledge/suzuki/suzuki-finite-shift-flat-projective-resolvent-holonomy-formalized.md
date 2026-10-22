@@ -10,8 +10,8 @@
 - `formal/GaloisForLFunctions/HTGeometry/CompactFourierEntire.lean`
 - `formal/GaloisForLFunctions/HTGeometry/CompactFourierSineKernel.lean`
 - `formal/GaloisForLFunctions/HTGeometry/ResolventFamilyJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftProjectiveHolonomy.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`
 
 ## Formal theorem surface
 
@@ -53,7 +53,7 @@ GaloisForLFunctions.HTGeometry.hasDerivAt_resolventShiftJet
 GaloisForLFunctions.HTGeometry.resolventShiftJet
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteShiftProjectiveHolonomy`:
 
 ```text
 GaloisForLFunctions.RHTower.conj_suzukiLogarithmicSourceGenerator_eq_neg
@@ -94,7 +94,7 @@ GaloisForLFunctions.RHTower.suzukiReflectedQuotientDifference_eq_crossWronskian
 - **Paper theorem:**
   `./suzuki-finite-shift-flat-projective-resolvent-holonomy.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftProjectiveHolonomy.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftProjectiveHolonomy.lean`
 - **RH used:** no
 - **Computation used:** no
 
@@ -143,7 +143,7 @@ concrete operator is not yet represented in Lean.
 ## Audit
 
 - [x] direct `lake env lean` source check
-- [x] exact `lake build GaloisForLFunctions.RHTower.SuzukiFiniteShiftProjectiveHolonomy`
+- [x] exact `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteShiftProjectiveHolonomy`
 - [x] global formal lint
 - [x] `#print axioms` capstone audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] `git diff --check`

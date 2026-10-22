@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaCoPoissonIntervalFactorialBridge
-import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularFullObservableDivisorTomography
 
 /-!
 # Rectangular tomography is a Gamma/co-Poisson interval cell

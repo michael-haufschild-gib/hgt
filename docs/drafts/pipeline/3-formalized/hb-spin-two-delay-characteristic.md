@@ -86,7 +86,7 @@ Every geometric coefficient is independent of `x`: all inverse powers of `1-u^2`
 
 ## Lean statements and verification
 
-[ThetaCuspHawkingBMSpinTwoDelayCharacteristic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSpinTwoDelayCharacteristic.lean), namespace `RHTower.D4BMSpinTwoDelay`, adds nine public theorems:
+[ThetaCuspHawkingBMSpinTwoDelayCharacteristic](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSpinTwoDelayCharacteristic.lean), namespace `RHTower.D4BMSpinTwoDelay`, adds nine public theorems:
 
 - `primitive_factor`, `moments_at_one`: exact normalized native moments and their original characteristic values.
 - `clockProfile_original`, `clockDensity_original`: equality with the original reduced source coefficient and moving-terminal clock.

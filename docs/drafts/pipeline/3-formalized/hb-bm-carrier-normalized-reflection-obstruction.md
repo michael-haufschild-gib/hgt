@@ -103,7 +103,7 @@ radius `z=1/2` is consequently equivalent to RH by the existing exact Xi-copy en
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicCarrierNormalizedReflectionObstruction.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicCarrierNormalizedReflectionObstruction.lean`
 - Exact reflected sum:
   `d4BMXiSecondHarmonicUnitCarrierPeierlsPolarizedCut_reflection_add`
 - Pointwise selector:

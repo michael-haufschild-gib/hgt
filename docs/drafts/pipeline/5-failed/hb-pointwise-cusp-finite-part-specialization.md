@@ -51,7 +51,7 @@ descent.
 - **New invariant:** Kernel inclusion is the exact descent invariant.  Analytic-family finite part
   detects a direction erased by pointwise specialization at resonance.
 - **Lean:**
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`;
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCuspFinitePartSpecializationNoGo`;
   headline theorem
   `d4BM_cuspAnalyticFamilyFinitePart_not_factorThrough_specializedHeight`.
   Direct Lean and targeted build `12477/12477` pass.  Axiom audit reports only `propext`,

@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity`
+`GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity`
 (namespace `RHTower.PrimitivePromotedCellHodgeRigidity`; umbrella `GaloisForLFunctions.RHTower`).
 
 ## Formal theorem chain
@@ -46,9 +46,9 @@ with `ker(actual Gamma/Hardy boundary reflection defect)` and cites the rigidity
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity.lean`
   — clean, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity`
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity`
   — green.
 - `#print axioms` on statements 3–7: `propext`, `Classical.choice`, `Quot.sound` only.
 - Umbrella import present in `GaloisForLFunctions/RHTower.lean`.

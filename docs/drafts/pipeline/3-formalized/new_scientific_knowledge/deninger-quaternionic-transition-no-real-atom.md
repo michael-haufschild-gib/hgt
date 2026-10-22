@@ -5,7 +5,7 @@
 - **Type:** THEOREM / POSITIVE SURVIVOR · LEAN 4 THEOREM
 - **Parent:** `deninger-rectangular-untwisted-real-descent-obstruction`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticQuaternionicTransitionNoReal`
 - **Statement:** standard \(Q_8\)-holonomy preserves the positive
   rectangular quaternionic Hodge atom and forbids every compatible real
   reduction.
@@ -77,7 +77,7 @@ forbidden.
 ## Lean status
 
 All identities and the no-real-reduction theorem are in
-`GaloisForLFunctions/RHTower/DeningerArithmeticQuaternionicTransitionNoReal.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticQuaternionicTransitionNoReal.lean`:
 
 - `deningerQuaternionTransitionI`, `deningerQuaternionTransitionK` : the two generators;
 - `deningerQuaternionTransitionI_sq`, `deningerQuaternionTransitionK_sq`,
@@ -96,10 +96,10 @@ neither, exactly as the paper proof says.
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticQuaternionicTransitionNoReal.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticQuaternionicTransitionNoReal.lean`
   — passes with no errors and no warnings.
 - Cached module build:
-  `lake build GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticQuaternionicTransitionNoReal`
   completes successfully.
 - Scratch `#print axioms` on all ten declarations: only the Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`.
@@ -111,7 +111,7 @@ neither, exactly as the paper proof says.
 - [x] 0 → 1 in-progress: explicit transition atom isolated
 - [x] 1 → 2 fully-proven: identities and no-real-reduction proof complete
 - [x] 2 → 3 formalized:
-  `GaloisForLFunctions.RHTower.DeningerArithmeticQuaternionicTransitionNoReal`, verified and
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticQuaternionicTransitionNoReal`, verified and
   axiom-audited
 - [ ] 3 → 4 publication-ready: derive a `Q₈`-valued cocycle on Deninger's rational-Witt
   finite-correspondence groupoid from source data; attaching labels by hand is forbidden

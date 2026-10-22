@@ -20,9 +20,9 @@ The precise inner-product convention is given by `principalDirichletFormOperator
 
 For all three actual exponents m=2ρ,1,2−2ρ, the proved Xi strip supplies the exponent conditions. At Re(w)≥7/4 the resulting bound is 4||F||/|w|. This solves the original stationary form problem; identifying this solution with the actual causal time-family transform is a separate obligation.
 
-Module: [ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean), namespace `RHTower.D4BMJointWave`.
+Module: [ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean), namespace `RHTower.D4BMJointWave`.
 
-Verification: `lake env lean` accepted the combined scratch containing the exact source. `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPrincipalDirichletCoercivity` passed in an isolated directory using cached dependencies, compiling only this new leaf (two jobs). The exact source and five build artifacts were installed, and one import was added to `RHTower.lean`. No umbrella build ran. No axiom-print checks or numerical experiments ran.
+Verification: `lake env lean` accepted the combined scratch containing the exact source. `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPrincipalDirichletCoercivity` passed in an isolated directory using cached dependencies, compiling only this new leaf (two jobs). The exact source and five build artifacts were installed, and one import was added to `RHTower.lean`. No umbrella build ran. No axiom-print checks or numerical experiments ran.
 
 The next causal landing uses the [native circle-kernel growth argument](../1-in-progress/hb-principal-growth-energy.md), which gives a rate strictly below two for the actual kernels and can avoid constructing a separate Hardy evolution from this inverse.
 

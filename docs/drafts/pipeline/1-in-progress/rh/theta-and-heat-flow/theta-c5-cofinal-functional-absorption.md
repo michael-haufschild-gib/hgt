@@ -250,18 +250,18 @@ the later all-rank and source-to-Weil joins.
 ## Lean artifacts
 
 - `GaloisForLFunctions.HilbertMetric.FifthRootCurvatureMixture`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureTotalVariance`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodTax`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCofinalChordReserve`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureCompactCore`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryLocus`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureStationaryAcceleration`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicBalance`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicAcceleration`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget`
-- `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureRiccatiBackwardDrift`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureTotalVariance`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureLikelihoodTax`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureLikelihoodSlopeTax`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCofinalChordReserve`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureCompactCore`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryLocus`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureStationaryAcceleration`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicBalance`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicAcceleration`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFourthTuran`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicRiccatiBudget`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureRiccatiBackwardDrift`
 - `GaloisForLFunctions.HilbertMetric.RiccatiChargeFifthRootNoGo`
 - Main exact hard core:
   `thetaCuspReflectedSourceFifthRootCurvatureNumerator_zero_nonneg_iff_cofinalFunctionalBudget_nonpos`
@@ -408,7 +408,7 @@ modular source ODE. Lean proves that nonnegative local log curvature at all such
 minima is already equivalent to global modular-center C5.
 
 New artifact:
-`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`, with main
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`, with main
 theorems
 `stationary_c5_fluxLogCurvature_certificate`,
 `thetaCuspReflectedSourceSquaredNormalizedDecayFluxLogCurvature_neg_of_intrinsicBalance_localMin_neg`,

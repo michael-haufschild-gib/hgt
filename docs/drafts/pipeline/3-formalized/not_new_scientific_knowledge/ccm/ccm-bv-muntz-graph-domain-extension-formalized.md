@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMBVMuntzSummation`
+- `GaloisForLFunctions.RHTower.CCM.CCMBVMuntzSummation`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

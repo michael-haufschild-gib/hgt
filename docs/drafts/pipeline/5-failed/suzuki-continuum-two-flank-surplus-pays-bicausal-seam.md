@@ -45,7 +45,7 @@ prevents a false RH claim while leaving source-specific operator transport open.
 ## Status
 
 Positive survivor is dependency-closed on paper and formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiBicausalNoFreeSplice.lean`.  Targeted module and axiom
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBicausalNoFreeSplice.lean`.  Targeted module and axiom
 audits are recorded on its Stage 3 card.
 
 ## Stronger 2026-07-22 closure: capacity and flank surplus still do not suffice
@@ -76,5 +76,5 @@ identity.  Treating S69's apex-relative block surplus as free target capacity is
 Paper and Lean survivor:
 
 - `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-critical-apex-vacuum-capacity-no-go.md`;
-- `formal/GaloisForLFunctions/RHTower/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApexVacuumCapacityNoGo.lean`;
 - capstone axioms: only `propext`, `Classical.choice`, `Quot.sound`.

@@ -86,7 +86,7 @@ Dropping any one returns to an obstruction already formalized in the corpus.
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxWeilParityWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxWeilParityWeld.lean`
 
 Closed declarations:
 
@@ -108,7 +108,7 @@ Verification:
 
 - direct source check passed with `lake env lean`;
 - exact target build passed with
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspTiltFluxWeilParityWeld`;
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxWeilParityWeld`;
 - no umbrella/full build was run;
 - all nine theorem `#print axioms` reports contain only `propext`, `Classical.choice`, and
   `Quot.sound`;

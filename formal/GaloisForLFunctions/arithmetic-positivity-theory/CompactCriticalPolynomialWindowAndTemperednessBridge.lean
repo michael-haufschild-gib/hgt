@@ -1,7 +1,7 @@
 import GaloisForLFunctions.«arithmetic-positivity-theory».CompactCriticalSourceWeilPositivity
 import GaloisForLFunctions.«arithmetic-positivity-theory».CriticalCompleteFormPolynomialWindows
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTentActualZetaDetectionAndFullZeroFormBridge
-import GaloisForLFunctions.RHTower.DeningerCausalVonMangoldtWall
+import GaloisForLFunctions.RHTower.Deninger.DeningerCausalVonMangoldtWall
 import GaloisForLFunctions.RHTower.NonTemperedShiftedZetaPairCountermodel
 
 /-!

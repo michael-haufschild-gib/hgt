@@ -26,7 +26,7 @@ two-sample identity followed by corpus theorem
 
 ## Module
 
-`formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftSpectralMonotoneRatio.lean`
 
 Declarations:
 

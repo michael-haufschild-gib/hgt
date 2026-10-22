@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninAllPrimePositiveMomentWeldFrontier
 import GaloisForLFunctions.RHTower.SoninCoupledPrimeArchGramTransfer
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
 
 /-!
 # Aperture lower floor forced by an all-prime Sonin moment weld

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!

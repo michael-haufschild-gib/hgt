@@ -88,7 +88,7 @@ complex-time vertical bound. Exact literature novelty remains **[NOVELTY UNVERIF
 
 Formalized in:
 
-`formal/GaloisForLFunctions/RHTower/DeningerGaussianLefschetzHeatContourUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaussianLefschetzHeatContourUniversalityLaw.lean`
 
 and imported by:
 

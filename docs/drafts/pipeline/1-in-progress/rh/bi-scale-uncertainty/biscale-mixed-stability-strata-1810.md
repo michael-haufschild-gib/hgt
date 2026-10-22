@@ -2,7 +2,7 @@
 
 - **ID:** biscale-mixed-stability-strata-1810
 - **Stage:** 1-in-progress
-- **Parent:** [field programme](../../biscale-field-development-1810.md), item 5
+- **Parent:** [field programme](biscale-field-development-1810.md), item 5
 - **Status:** exact obstruction and positive replacement identified; Lean audit open
 
 ## Failed uniform coefficient-metric formulation

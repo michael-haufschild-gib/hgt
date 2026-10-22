@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingStimulatedCubicUnmaskingEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingStimulatedCubicUnmaskingEndpoint
 import GaloisForLFunctions.RHTower.XiExternalInternalReflectionSeparation
 import GaloisForLFunctions.RHTower.XiRelativeGammaAnomalyCompactReduction
 

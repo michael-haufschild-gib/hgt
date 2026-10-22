@@ -157,7 +157,7 @@ twisted arithmetic descent rather than in the local geometric stalk.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerQuadraticallyClosedRankCollapse.lean`, 44
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerQuadraticallyClosedRankCollapse.lean`, 44
 declarations, axiom audit for every one of them within
 `propext, Classical.choice, Quot.sound` (several need only `propext, Quot.sound`).
 
@@ -509,7 +509,7 @@ consequence 1.
   algebraically closed `F` exactly as the card states them, rather than for the weaker
   quadratically closed hypothesis the derivation actually uses.
 
-  `formal/GaloisForLFunctions/RHTower/DeningerRankCollapseSpectralConsequences.lean` proves
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRankCollapseSpectralConsequences.lean` proves
   consequences 2, 3 and 4, each in the generality that carries it, and each in a model rather than
   a formal analogy:
 

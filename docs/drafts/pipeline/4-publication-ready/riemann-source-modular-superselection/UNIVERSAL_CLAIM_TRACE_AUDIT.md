@@ -51,7 +51,7 @@ The elementary converse factorization and the decomposition
 | Positive diagonal and negative antidiagonal directions | `reciprocalLabelQuadratic_diag_pos`; `reciprocalLabelQuadratic_antidiag_neg` | same |
 | Opposite-character reflected action preserves the form and intertwines fusion | `reciprocalLabelForm_reflectedLabelAction_invariant`; `finiteLabelFusion_reflectedLabelAction_fst`; `finiteLabelFusion_reflectedLabelAction_snd` | same |
 | Shell codiagonal is not sequentially closable and Bessel unit response is impossible | `highShell_no_stableHilbert_unitFusion`; `highShell_infiniteFusionSingularity_and_unitaryLocus` | `RHTower/HighExponentShellFusionConservation.lean` |
-| Route-J centered block energy is smaller than squared bad mass | `ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq`; `ccmFirstClock_sourceFusion_regularHilbert_noGo` | `RHTower/CCMFirstClockSourceFusionSuperselectionNoGo.lean` |
+| Route-J centered block energy is smaller than squared bad mass | `ccmFirstClockJuliaSixthPowerBlockCenteredFusionEnergy_lt_badMass_sq`; `ccmFirstClock_sourceFusion_regularHilbert_noGo` | `RHTower/CCM/CCMFirstClockSourceFusionSuperselectionNoGo.lean` |
 
 ## One centered modular charge
 
@@ -86,20 +86,20 @@ in the manuscript.
 | Wold--Poisson faithful lift | `xiWoldPoissonBivariateConormalResponse_residue_transport`; `xiWoldPoissonBivariateConormalResidueMode_eq_zero_iff` | `RHTower/XiWoldPoissonBivariateConormal.lean` |
 | Holomorphic strip separation | `hull_eq_of_line_eq`; `bohrEval_injective_of_isometry` | `HTGeometry/StripHullSeparation.lean` |
 | Gamma-field finite-phase boundary | `finite_phase_law_of_gammaField_relation`; `finite_phase_law_of_gammaField_coefficients_eventual` | `HTGeometry/GammaFieldCoefficientLaw.lean` |
-| Hedenmalm dense radical and nonclosability | `dense_xiThetaL2RadicalImage_of_scalarThetaNull`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_leftTemperedDistribution_zero`; `hilbertGram_l2PartialOperator_not_closable` | `RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmSourceHilbertGramClosedGraphNoGo.lean` |
-| Deninger Tor and middle fibre | `deningerTor_injective`; `deningerTor_map_eq`; `deningerMiddleFiber_degree_zero`; `deningerMiddleFiber_degree_one_injective`; `deningerMiddleFiber_degree_one_surjective`; `deningerMiddleFiber_degree_two` | `RHTower/DeningerKummerStalkTor.lean`; `DeningerMiddleFiber.lean` |
-| Deninger finite-prime endpoint | `deningerSOrd_product`; `deningerSEndpoint_H0`; `deningerSEndpoint_H1`; `deningerSEndpoint_H2` | `RHTower/DeningerSUnitEndpointPage.lean` |
+| Hedenmalm dense radical and nonclosability | `dense_xiThetaL2RadicalImage_of_scalarThetaNull`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_leftTemperedDistribution_zero`; `hilbertGram_l2PartialOperator_not_closable` | `RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmSourceHilbertGramClosedGraphNoGo.lean` |
+| Deninger Tor and middle fibre | `deningerTor_injective`; `deningerTor_map_eq`; `deningerMiddleFiber_degree_zero`; `deningerMiddleFiber_degree_one_injective`; `deningerMiddleFiber_degree_one_surjective`; `deningerMiddleFiber_degree_two` | `RHTower/Deninger/DeningerKummerStalkTor.lean`; `DeningerMiddleFiber.lean` |
+| Deninger finite-prime endpoint | `deningerSOrd_product`; `deningerSEndpoint_H0`; `deningerSEndpoint_H1`; `deningerSEndpoint_H2` | `RHTower/Deninger/DeningerSUnitEndpointPage.lean` |
 | Arithmetic cyclotomic comparison and nontrivial quotient | `deningerPrimeArithmeticCyclotomicCharacter_range`; `deningerPacketFrobeniusClosure_ne_top` | `DeningerPrimeArithmeticCyclotomicComparison.lean`; `DeningerPacketFrobeniusQuotientNontrivial.lean` |
 | Real twisted orientation and Rees jets | `deningerRealTwist_forced`; `deningerGermJ_flow_comm`; `deningerRealJet_reesFlow`; `deningerJetTower_tsum`; `deningerGermJetTower_character` | `DeningerRealApexEndpoint.lean`; `DeningerReesJetTower.lean`; `DeningerStationaryKahlerGerm.lean` |
 | Deninger flow purity and Green radical | `deningerFlowPurity_re_eq`; `deningerLeafHodgeJ_pos`; `deningerPrimePacketContinuousRestrictionSummedGreenForm_self_eq_zero_iff` | `DeningerKahlerRiemannFlowPurity.lean`; `DeningerPrimePacketContinuousRestrictionGreen.lean` |
 | Sonin linear completion boundary | `not_sublinear_of_forall_bddBelow` | `RHTower/SoninCompletionMustGrowLinearly.lean` |
-| Suzuki phase erasure | `tendsto_suzukiCompactCoreDeficiencyProjection_zero`; `tendsto_suzukiApertureCayley_allBoundarySchedules`; `tendsto_suzukiApertureResolvent_allBoundarySchedules` | `RHTower/SuzukiCompactCorePhaseUniversality.lean` |
-| Free Suzuki interface | `exists_suzukiEdgeData_of_operator`; `nonempty_suzukiEdgeData` | `RHTower/SuzukiEdgeDataInterface.lean` |
+| Suzuki phase erasure | `tendsto_suzukiCompactCoreDeficiencyProjection_zero`; `tendsto_suzukiApertureCayley_allBoundarySchedules`; `tendsto_suzukiApertureResolvent_allBoundarySchedules` | `RHTower/Suzuki/SuzukiCompactCorePhaseUniversality.lean` |
+| Free Suzuki interface | `exists_suzukiEdgeData_of_operator`; `nonempty_suzukiEdgeData` | `RHTower/Suzuki/SuzukiEdgeDataInterface.lean` |
 | Trace-class valuation correction | `routeKPhysicalEndpointCorrectionOperator_memSchattenClass_one` | `RHTower/XiPrimeMarkedPhysicalEndpointCorrectionTraceClass.lean` |
 | Primitive boundary is not absolutely nuclear | `not_summable_norm_routeKPhysicalEndpointBoundaryRankOne` | `RHTower/XiPrimeMarkedPhysicalEndpointBoundaryNuclearObstruction.lean` |
 | Polynomially moderate scalar boundary | `exists_norm_seamFluxCochain_boundary_global_le` | `RHTower/XiPrimeMarkedPhysicalEndpointBoundaryGrowth.lean` |
 | Source-defined trace-class relocation preserves triangles | `schattenDoubleCommutator_memSchattenClass_one`; `schattenDoubleCommutator_triangleHolonomy_ne_zero` | `RHTower/SchattenDoubleCommutatorRelocation.lean` |
-| Sharp-window terminal collision | `squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`; `riemannHypothesis_of_squarePrimeWindowPositiveExcessSquareEnergySubpower` | `RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`; `CCMSharpPrimeWindowSquarePositiveExcessDuality.lean` |
+| Sharp-window terminal collision | `squarePrimeWindowPositiveExcessSquare_abscissa_eq_intrinsicXiWidth`; `riemannHypothesis_of_squarePrimeWindowPositiveExcessSquareEnergySubpower` | `RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`; `CCMSharpPrimeWindowSquarePositiveExcessDuality.lean` |
 
 ## Biaxial theorem
 

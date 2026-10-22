@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PaperWeightOrderIdeals
-import GaloisForLFunctions.RHTower.DeningerDeterminantalLaplace
+import GaloisForLFunctions.RHTower.Deninger.DeningerDeterminantalLaplace
 import Mathlib.LinearAlgebra.Matrix.MvPolynomial
 import Mathlib.RingTheory.MvPolynomial.Homogeneous
 import Mathlib.Data.Fin.SuccPred

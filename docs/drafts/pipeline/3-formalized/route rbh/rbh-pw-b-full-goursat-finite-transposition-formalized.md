@@ -1,8 +1,8 @@
 # RBH / PW-B full Goursat finite weak transposition — Lean certificate
 
 - **Paper card:** `rbh-pw-b-full-goursat-finite-transposition.md`
-- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat`,
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursatTransposition`; input
+- **Lean modules:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularGoursat`,
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularGoursatTransposition`; input
   `HTGeometry.VolterraRectangleTransposition`
 - **Umbrellas:** `GaloisForLFunctions.RHTower`, `GaloisForLFunctions.HTGeometry`
 - **Verification:** `lake --old env lean` clean; `#print axioms` = `propext`, `Classical.choice`,

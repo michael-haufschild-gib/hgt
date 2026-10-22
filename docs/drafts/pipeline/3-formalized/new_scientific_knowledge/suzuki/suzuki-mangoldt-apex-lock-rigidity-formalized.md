@@ -1,7 +1,7 @@
 # Suzuki Mangoldt apex-lock rigidity — Lean formalization
 
 - **Stage:** 3 — formalized in Lean 4
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiMangoldtApexLock`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtApexLock`
 - **Imported by:** `GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026`
 - **Status:** `[LEAN-PROVED] [AXIOM-CLEAN] [NOVELTY UNVERIFIED]`
 - **Paper proof:**
@@ -45,7 +45,7 @@ prime powers this null superlevel carries positive Mangoldt mass.
 ## Verification
 
 - Direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiMangoldtApexLock.lean` — passed.
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtApexLock.lean` — passed.
 - Final umbrella audit:
   `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` — passed `9514/9514`.
 - Nine capstone axiom surfaces contain only `propext`, `Classical.choice`, and `Quot.sound`.

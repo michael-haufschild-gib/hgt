@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLiteralConvergence
-import GaloisForLFunctions.RHTower.CCMConnesConsaniZetaCycles
+import GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniZetaCycles
 
 /-! # Literal cycle traces from arithmetic Fourier coefficients
 

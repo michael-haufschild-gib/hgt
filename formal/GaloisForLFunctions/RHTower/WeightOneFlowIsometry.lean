@@ -1,6 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.RHTower.TransverseDensityWeightOne
-import GaloisForLFunctions.RHTower.DeningerMeyerHalfDensityL1Completion
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHalfDensityL1Completion
 
 /-!
 # The weight-one density is the square of the Meyer half-density weight

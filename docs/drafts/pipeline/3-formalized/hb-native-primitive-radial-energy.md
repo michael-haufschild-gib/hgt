@@ -16,7 +16,7 @@ W(x)=integral_0^t (t-u) V(u+x,u-x) du,
 L=-max(t,0)-1.
 ```
 
-All three theorems live in `RHTower.D4BMNativeResponse`, in [ThetaCuspHawkingBMFullNativeWave.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean).
+All three theorems live in `RHTower.D4BMNativeResponse`, in [ThetaCuspHawkingBMFullNativeWave.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean).
 
 | Theorem | Statement |
 | --- | --- |
@@ -39,7 +39,7 @@ The angular action has not been dropped. Combining this identity with the known 
 ## Validation
 
 - Scratch: `lake env lean /tmp/hb-native-energy.jl2371mW/FullNativeWave.lean`, passed.
-- Final: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave` in an isolated audit root, passed in 35 seconds, two jobs. It used 4091 cached own-module dependencies and 11 cached dependency packages; no old dependency or umbrella was rebuilt.
+- Final: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullNativeWave` in an isolated audit root, passed in 35 seconds, two jobs. It used 4091 cached own-module dependencies and 11 cached dependency packages; no old dependency or umbrella was rebuilt.
 - Only the three new public declarations were checked with `#print axioms` in a scratch file. Each depends only on `propext`, `Classical.choice`, `Quot.sound`.
 - Source and the five emitted artifacts were installed byte for byte from the audited target, guarded against a concurrent source change.
 - `scripts/formal_tools.py lint` passed; its size warnings include this 1807-line module.

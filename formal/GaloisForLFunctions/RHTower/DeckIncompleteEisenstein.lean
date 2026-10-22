@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.DeckCuspidalConstantTerm
 import GaloisForLFunctions.HTGeometry.UpperHalfPlaneStripIntegral
 import GaloisForLFunctions.RHTower.EisensteinHoroballBound
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompactModularPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompactModularPeriodization
 
 /-!
 # Incomplete Eisenstein series on the finite deck

@@ -49,7 +49,7 @@ survivor is accumulated-action/jet coupling rather than fixed-action monotonicit
 
 - `GaloisForLFunctions.HTGeometry.PolynomialODEJetClosure`
 - `GaloisForLFunctions.RHTower.PrimeArchThetaModularDifferentialClosure`
-- `GaloisForLFunctions.RHTower.ThetaCuspActionVelocitySeamLogMinorNoGo`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspActionVelocitySeamLogMinorNoGo`
 - Capstones:
   `thetaCuspActionVelocitySeam_curvature_sixth_lt_two_fourth_sq`,
   `not_thetaCuspActionVelocitySeamLogMinor_nonneg`

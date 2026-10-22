@@ -842,7 +842,7 @@ Milnor's exact sequence now carries its Bass–Tate refinement.  All modules are
 - `MilnorNumberFieldDegreeDrop.lean` — `milnorKDeg_rat_torsion`,
   **`milnorKDeg_numberField_torsion`**: `K_m^M(F)` is torsion for every number field `F` and every
   `m ≥ [F : ℚ] + 1`.
-- `RHTower/DeningerMilnorNumberFieldDegreeDrop.lean` —
+- `RHTower/Deninger/DeningerMilnorNumberFieldDegreeDrop.lean` —
   **`deningerNumberFieldMilnorRealVanishing`**: the realified statement of the card.
 
 ### What this does not give

@@ -309,7 +309,7 @@ added") is out of date on its first count: the tree owns the sinc kernel and the
   smoothness and the commutation with the prolate operator.
 
 Equation `(7)` is now proved as well, in
-`formal/GaloisForLFunctions/RHTower/CCMEndpointResponseIdentity.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMEndpointResponseIdentity.lean`:
 
 - `bandFourier`, `intervalIntegrable_bandFourier_integrand`, **`conj_bandFourier`** — the finite Fourier
   transform of a real function on the band, and the fact that conjugating it flips the frequency.
@@ -475,7 +475,7 @@ in the Hilbert space and pointwise.  What the card still imports is only the cla
 differentiated fixed-mode (Fuchs) expansion `(9)` and the constrained limit `(12)`.
 
 **The constant-transport half of `(10)`--`(18)` is proved**, in
-`RHTower/CCMEndpointResponseConstants.lean`.  Each equation of the card that is a *limit inference* is now a
+`RHTower/CCM/CCMEndpointResponseConstants.lean`.  Each equation of the card that is a *limit inference* is now a
 theorem whose hypotheses are exactly the named inputs, and nothing else:
 
 - `tendsto_endpointSq_div_leakage` — equation `(10)`: from the endpoint identity `(5)` in the form
@@ -501,7 +501,7 @@ analytic imports: the differentiated fixed-mode asymptotic `(9)`, the constraine
 `delta/d_1 -> 8/11`, and the exterior sawtooth incidence constant `(17)`.
 
 **The exterior sawtooth incidence constant `(17)` is proved**, in
-`RHTower/CCMEndpointSawtoothResponse.lean`, by identifying the endpoint layer's own pairing with the
+`RHTower/CCM/CCMEndpointSawtoothResponse.lean`, by identifying the endpoint layer's own pairing with the
 sawtooth incidence layer the tree already owns (`CCMSawtoothDilationIncidence`,
 `CCMSawtoothExteriorTail`: the exact period mean `1/(12 n)`, the uniform `O(1/L)` averaging error, the
 `O(1/n)` domination and the dominated limit):

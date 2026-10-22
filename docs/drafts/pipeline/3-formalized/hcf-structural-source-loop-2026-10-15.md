@@ -111,7 +111,7 @@ Final verification:
 - From `formal/`, final `lake env lean <file>` passed with empty diagnostics
   for all four actual tree files:
   `GaloisForLFunctions/HTGeometry/L2CosineTranslationIndependence.lean`,
-  `GaloisForLFunctions/RHTower/CCMRestrictedWeilEvenStrictDomain.lean`,
+  `GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilEvenStrictDomain.lean`,
   `GaloisForLFunctions/RHTower/XiGaussianHeatWindowEvenSource.lean`, and
   `GaloisForLFunctions/RHTower/XiGaussianHeatWindowExactTransition.lean`.
 - A separate scratch `#print axioms` audit passed for cosine independence,

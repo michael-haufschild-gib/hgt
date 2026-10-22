@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalApertureQuarterShiftCurrent.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalApertureQuarterShiftCurrent.lean`
 
 ## Formal theorem surface
 
@@ -43,7 +43,7 @@ per-prime depth core only.  RH is not claimed proved.
 
 ## Prime completion (added)
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalAperturePrimeCurrent.lean` closes the remaining
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAperturePrimeCurrent.lean` closes the remaining
 analytic gate.  It defines the closed per-prime current
 
 ```text

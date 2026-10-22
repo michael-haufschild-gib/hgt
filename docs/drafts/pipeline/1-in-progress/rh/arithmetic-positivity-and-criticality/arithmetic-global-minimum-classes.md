@@ -4,7 +4,7 @@
 
 ## Frozen conjecture E
 
-Use the literal remainder and profiles defined in [arithmetic zero minimum classes](../../arithmetic-zero-minimum-classes.md). For every complex parameter with `sigma=Re(s)>0`, `s!=1`, not just zeros:
+Use the literal remainder and profiles defined in [arithmetic zero minimum classes](arithmetic-zero-minimum-classes.md). For every complex parameter with `sigma=Re(s)>0`, `s!=1`, not just zeros:
 
 `p^(2 sigma) W_p -> -conj(s) sum_(n>=1)n^(-2 sigma-1)/12`.
 

@@ -7,7 +7,7 @@
 - **RH used:** no
 - **Computation used:** no
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryScalarDressingRigidity.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryScalarDressingRigidity.lean`
 
 ## Claim
 

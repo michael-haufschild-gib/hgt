@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.VisibleCoprimeMobiusLaplaceAddition
-import GaloisForLFunctions.RHTower.DeningerPoissonMellin
+import GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMellin
 import GaloisForLFunctions.RHTower.EulerSquarefreeDyadicStateFactorization
 import GaloisForLFunctions.Core
 

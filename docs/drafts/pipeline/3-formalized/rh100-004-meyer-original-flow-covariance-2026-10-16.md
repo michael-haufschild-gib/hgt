@@ -86,9 +86,9 @@ through the separated continuous dual; no invisible-kernel vanishing is used.
 
 New leaves:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerStrongLogFlowDerivative.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerWeakFlow.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerMeyerOriginalFlowCovariance.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerStrongLogFlowDerivative.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerWeakFlow.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerOriginalFlowCovariance.lean`
 
 Each passed a foreground direct audit from `formal` using
 `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/<module>.olean GaloisForLFunctions/RHTower/<module>.lean`.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerSuspensionTranslation
+import GaloisForLFunctions.RHTower.Deninger.DeningerSuspensionTranslation
 import GaloisForLFunctions.RHTower.SelbergMaassFourierModes
 import GaloisForLFunctions.RHTower.SelbergMaassRationalCuspTransport
 

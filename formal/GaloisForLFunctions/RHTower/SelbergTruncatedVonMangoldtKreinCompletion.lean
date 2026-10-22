@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilApertureMonotonicity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilApertureMonotonicity
 import GaloisForLFunctions.RHTower.PoleVanishingWeilPrimeTwoEntry
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarConstrainedRightContinuity
 
 /-!
 # Selberg-weighted von Mangoldt completions of the restricted Weil form

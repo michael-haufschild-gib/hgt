@@ -123,7 +123,7 @@ variable under preservation of all lower face data.  RH is not yet proved.
 - 2026-08-11 — targeted builds PASS for both new modules and corrected null-gauge producer. Axiom
   audit reports only `propext`, `Classical.choice`, `Quot.sound`. Global lint remains red solely on
   pre-existing unreachable umbrella modules and pre-existing `sorry` in
-  `RHTower/DeningerMeyerOscDomination.lean:88`; no finding-module lint debt.
+  `RHTower/Deninger/DeningerMeyerOscDomination.lean:88`; no finding-module lint debt.
 - 2026-08-11 — division-free norm flux and singular canonical completed-source classifier proved in
   Lean.  First-face extension/blow-up alternative replaced by exact odd-preemption/even-rank-fill
   law.  Open core moved to cofinal parity-lift degree escape.

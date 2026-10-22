@@ -52,10 +52,10 @@ P-G129 completed radial work from its lower gain.
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmSoninCartanWeylEscapeReconstruction.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSoninCartanWeylEscapeReconstruction.lean`.
 - 2026-08-13 — Imported by `GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmSoninCartanWeylEscapeReconstruction`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSoninCartanWeylEscapeReconstruction`
   (`12958/12958`).
 - 2026-08-13 — Axiom audit passed for every new theorem; dependencies are exactly `propext`,
   `Classical.choice`, and `Quot.sound`.

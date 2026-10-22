@@ -247,7 +247,7 @@ or `1/Xi` multiplier occurs.  Claim is a source-carrier theorem, not RH.
 
 ## Lean realization
 
-`formal/GaloisForLFunctions/RHTower/DeningerGammaSixLogarithmicWoldJordanTransgression.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixLogarithmicWoldJordanTransgression.lean`
 formalizes the dependency-closed package on the literal source objects:
 
 - forward/reflected exponent derivatives at neutral grade;
@@ -260,7 +260,7 @@ formalizes the dependency-closed package on the literal source objects:
   rectangular trace class, and proof that this coface is not trace class.
 
 Verification: direct `lake env lean` pass; leaf-only `lake build
-GaloisForLFunctions.RHTower.DeningerGammaSixLogarithmicWoldJordanTransgression` pass; capstone
+GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixLogarithmicWoldJordanTransgression` pass; capstone
 axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`; umbrella import wired
 without umbrella build.  Global no-build lint reaches pre-existing unrelated unreachable-module
 errors; new module itself contains no forbidden declaration.

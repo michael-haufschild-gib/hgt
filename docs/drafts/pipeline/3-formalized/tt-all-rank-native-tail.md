@@ -76,8 +76,8 @@ scratch audit also passed.
 
 Targeted builds used `lake build --old +<module>`: 88 seconds for the
 all-order limit leaf, 62 seconds for the matrix leaf. Final direct
-`lake env lean GaloisForLFunctions/RHTower/ThetaCuspAllOrderGaussianLimit.lean`
-and `lake env lean GaloisForLFunctions/RHTower/ThetaCuspAllRankNativeTail.lean`
+`lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAllOrderGaussianLimit.lean`
+and `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspAllRankNativeTail.lean`
 both exited 0, without leaf diagnostics. Both leaves are explicitly wired
 into RHTower. No heartbeat changes, holes, added axioms, numerical
 experiments, subagents, full builds, or umbrella builds.

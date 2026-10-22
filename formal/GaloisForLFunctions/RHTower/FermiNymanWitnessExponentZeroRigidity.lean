@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FermiNymanWitnessDyadicDefect
 import GaloisForLFunctions.RHTower.ZetaInverseWideHorizontal
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import GaloisForLFunctions.HTGeometry.PolynomialAntiderivative
 import GaloisForLFunctions.HTGeometry.FourierUniquenessL1
 

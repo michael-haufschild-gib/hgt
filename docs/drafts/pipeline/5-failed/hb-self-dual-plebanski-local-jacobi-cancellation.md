@@ -40,7 +40,7 @@ Internal corpus basis: exact coordinate Plebanski bracket and plane-wave special
 - **Exact killing theorem/mechanism:** `d4HBSelfDualSameChargeCyclicVertex_eq_zero_iff`: local cyclic Plebanski assembly is zero iff all three affine momenta coincide. Nontrivial physical same-charge packets are therefore bright.
 - **Strongest positive survivor:** exact curvature-independent graph-Laplacian identity `d4HBSelfDualSameChargeCyclicVertex_eq_energy`.
 - **New insight:** self-dual integrability cannot supply HB radiative extinction at source-local level. Any surviving cancellation must be created by the complete nonlocal retarded-minus-advanced Green discontinuity, including continuum/threshold orientation, before left projection.
-- **Status:** `[PROVED HERE] [LEAN-PROVED]`; module `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo`; primary-literature audit found flat-space higher-tree vanishing and AdS cubic kinematic algebra, but no same-charge theta-cusp cyclic zero-set classification.
+- **Status:** `[PROVED HERE] [LEAN-PROVED]`; module `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo`; primary-literature audit found flat-space higher-tree vanishing and AdS cubic kinematic algebra, but no same-charge theta-cusp cyclic zero-set classification.
 
 ## Log
 

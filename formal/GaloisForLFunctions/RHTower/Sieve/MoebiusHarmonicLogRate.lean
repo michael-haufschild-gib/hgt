@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMertensSummatory
+import GaloisForLFunctions.RHTower.Deninger.DeningerMertensSummatory
 import GaloisForLFunctions.RHTower.Sieve.MoebiusHarmonicTailIdentity
 import GaloisForLFunctions.HTGeometry.ReciprocalLogPowerTail
 import GaloisForLFunctions.HTGeometry.RpowExpAsymptotics

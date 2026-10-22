@@ -8,7 +8,7 @@
 - **Failed route:**
   `../../5-failed/theta-likelihood-universal-composite-swap-orientation.md`
 - **Formal target:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeSquareSignWall.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodPrimeSquareSignWall.lean`
 - **Statement:** On every prime-square swap shell, reflection-wall current has one exact
   diagonal-versus-endpoint sign wall; its first boundary conormal is strictly positive at every
   positive height, so square shells universally reverse the proposed composite orientation near
@@ -227,7 +227,7 @@ Primary capstones are
 ## Verification
 
 - Direct `lake env lean` check passes without diagnostics.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspLikelihoodPrimeSquareSignWall` passes.
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodPrimeSquareSignWall` passes.
 - `#print axioms` on factor classification, raw sign wall, diagonal-renormalized strict sign,
   conormal limit, residue positivity, and positive witness reports only `propext`,
   `Classical.choice`, and `Quot.sound`.

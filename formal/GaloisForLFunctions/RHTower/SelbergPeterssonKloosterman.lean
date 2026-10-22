@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergPoincareBounded
-import GaloisForLFunctions.RHTower.DeningerFourierCharacter
+import GaloisForLFunctions.RHTower.Deninger.DeningerFourierCharacter
 
 open Complex MeasureTheory UpperHalfPlane Set
 open scoped FourierTransform

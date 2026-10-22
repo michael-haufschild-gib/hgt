@@ -10,7 +10,7 @@
 - **Publication context:**
   `../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`
 - **Intended Lean module:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianPrimeGammaCauchyLanding.lean`
 
 ## 1. Exact source object
 

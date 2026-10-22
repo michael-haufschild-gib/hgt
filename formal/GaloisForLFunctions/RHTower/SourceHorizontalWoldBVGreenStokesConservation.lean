@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalWoldEulerGreenAnomaly
-import GaloisForLFunctions.RHTower.DeningerOrdinaryIntegerBVGreenStokesRadialComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerOrdinaryIntegerBVGreenStokesRadialComparison
 
 /-!
 # Wold prime-clock profile as an ordinary-integer BV Green--Stokes boundary

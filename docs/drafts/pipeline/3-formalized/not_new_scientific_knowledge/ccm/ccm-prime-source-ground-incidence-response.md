@@ -230,7 +230,7 @@ Hellmann--Feynman would be wrapper work. No Lean file is added.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMPrimeSourceGroundIncidence.lean`, on the corpus
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeSourceGroundIncidence.lean`, on the corpus
 Hellmann--Feynman layer `HTGeometry/HellmannFeynman.lean`.  The earlier decision ("formalizing
 abstract finite-dimensional Hellmann--Feynman would be wrapper work") is out of date twice over: the
 tree already owns Hellmann--Feynman in infinite dimensions, and the card's own `[PROVED]` content is

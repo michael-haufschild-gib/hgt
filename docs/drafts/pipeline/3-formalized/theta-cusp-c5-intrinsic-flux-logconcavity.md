@@ -11,7 +11,7 @@
 ## Lean artifact
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`
 - Exact certificate:
   `RHTower.stationary_c5_fluxLogCurvature_certificate`
 - Calculus bridge:
@@ -37,8 +37,8 @@ CLG/TTF-or-Weil joins to RH.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity.lean`
-- targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity.lean`
+- targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureIntrinsicFluxLogConcavity`
 - `#print axioms` on exact certificate, main sign theorem, failure classification, iff reduction,
   and closed no-go
 - formal lint gate

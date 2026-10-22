@@ -75,14 +75,14 @@ passed. Local lexical searches return all six roots as eligible without markers.
 
 Global lint snapshot: 8 unrelated errors and 367 warnings.
 This does not claim a passing repository-wide lint gate. Errors:
-- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMPolarOddPrimeJumps`
+- `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMPolarOddPrimeJumps`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.MontgomeryPairCorrelationShortLength`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.WeilMarginTwistLockRigidity`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.XiCriticalityLogLogDepth`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.XiGaussianHeatHankelInertia`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.ZetaZeroAntiCrystalLogLog`
 - `error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.QKrawtchoukCompanionTriangular`
-- `error: proof debt: formal/GaloisForLFunctions/RHTower/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)`
+- `error: proof debt: formal/GaloisForLFunctions/RHTower/CCM/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)`
 
 Audit artifacts: `/tmp/hgt-rank-one-metadata.py`, `-metadata.json`,
 `-declarations.json`, `-incoming-imports.txt`, `-final-audit.lean`,

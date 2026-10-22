@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.HolomorphicJetReturn
 import GaloisForLFunctions.HTGeometry.AnalyticConjReflection
 import GaloisForLFunctions.HTGeometry.EntireJetEvaluation
 import GaloisForLFunctions.RHTower.SourceHorizontalHolomorphicAdditiveCrossPrimeUniversality
-import GaloisForLFunctions.RHTower.SuzukiCarlemanCentralFlux
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanCentralFlux
 
 /-!
 # Skew-adjoint additive SC two-port no-go

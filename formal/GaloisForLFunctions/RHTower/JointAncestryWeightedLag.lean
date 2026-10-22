@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryDiagonalBochnerLevel
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
 /-!
 # Dressed lag functions

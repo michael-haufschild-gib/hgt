@@ -26,7 +26,7 @@ After weighting by critical source mass `Lambda(p)/sqrt(p)`, Lean proves
 
 Euler prime-harmonic divergence therefore proves repaired mass is not summable.  Exact theorem:
 `not_summable_suzukiCriticalAffineCauchyResidualMass` in
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalAffineCauchyResidualDivergence.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAffineCauchyResidualDivergence.lean`.
 
 ## Strongest positive survivor
 

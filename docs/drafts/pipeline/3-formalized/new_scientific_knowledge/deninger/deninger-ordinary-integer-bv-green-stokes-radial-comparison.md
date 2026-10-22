@@ -1,7 +1,7 @@
 # Deninger ordinary-integer BV Green--Stokes radial comparison
 
 - **Paper:** [deninger-ordinary-integer-bv-green-stokes-radial-comparison.md](new_scientific_knowledge/deninger/deninger-ordinary-integer-bv-green-stokes-radial-comparison.md)
-- **Lean module:** `GaloisForLFunctions.RHTower.DeningerOrdinaryIntegerBVGreenStokesRadialComparison`
+- **Lean module:** `GaloisForLFunctions.RHTower.Deninger.DeningerOrdinaryIntegerBVGreenStokesRadialComparison`
 - **Status:** formalized unconditionally
 - **Scope:** exact boundary-evaluation comparison and critical-line classification; no physical
   Stokes annihilation or RH claim

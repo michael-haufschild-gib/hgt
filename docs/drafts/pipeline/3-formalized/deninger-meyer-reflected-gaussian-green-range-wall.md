@@ -8,7 +8,7 @@
 - **Publication context:**
   `../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`
 - **Lean module:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianGreenRangeWall.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianGreenRangeWall.lean`
 
 ## 1. Statement
 

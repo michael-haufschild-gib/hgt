@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergMaassFourierModes
 import GaloisForLFunctions.RHTower.SelbergBesselBoundaryOperator
-import GaloisForLFunctions.RHTower.DeningerFourierKothe
+import GaloisForLFunctions.RHTower.Deninger.DeningerFourierKothe
 
 /-!
 # Actual Maass traces in the critical cusp boundary-form domain

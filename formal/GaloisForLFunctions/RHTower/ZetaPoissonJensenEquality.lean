@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ZetaCriticalLineJensenEquality
 import GaloisForLFunctions.RHTower.ZetaPoissonJensenInequality
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 
 
 /-!

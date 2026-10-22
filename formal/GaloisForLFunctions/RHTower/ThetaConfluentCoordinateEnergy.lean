@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaConfluentCoordinateCurrent
 import GaloisForLFunctions.RHTower.ThetaTailConfluentCenterGram
 import GaloisForLFunctions.RHTower.ThetaTailTwoPointPositivity
-import GaloisForLFunctions.RHTower.ThetaCuspNativeOddSchurFarTail
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspNativeOddSchurFarTail
 
 /-! Strict center and joint-center coordinate-energy signs, retaining the logarithmic
 boundary flux and the complete inverse-Gram correction. -/

@@ -48,8 +48,8 @@ For the canonical constant-one packet, the closed route endpoint has no hypothes
 
 ## Lean artifact
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography`
-- File: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography.lean`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography`
+- File: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography.lean`
 - Umbrella: `formal/GaloisForLFunctions/RHTower.lean`
 - Exact kernel: `schwarzschildParikhWilczekCalibratedRecoilEndpointResponse_eq_zero_iff`
 - Premise-free endpoint: `riemannHypothesis_iff_schwarzschildParikhWilczekCalibratedRecoilEndpointResponse_zero`
@@ -61,7 +61,7 @@ Strict positivity makes each residual divisor nonzero, so the calibrated per-gra
 ## Verification
 
 - Direct `lake env lean` check: passed with no warnings.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography`: passed (11,617 jobs).
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekCalibratedRecoilEndpointTomography`: passed (11,617 jobs).
 - `#print axioms` on five public theorem endpoints: only `propext`, `Classical.choice`, `Quot.sound`.
 - `scripts/formal_tools.py lint`: no finding in HC33; only unrelated pre-existing unreachable-module failures.
 

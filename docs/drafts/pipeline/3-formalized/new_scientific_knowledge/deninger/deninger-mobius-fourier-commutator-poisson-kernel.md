@@ -616,7 +616,7 @@ that obstruction and its non-diagonal polarization.
 
 ### Section 5 — the causal von Mangoldt endpoint anomaly `(34)`--`(35)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerCausalVonMangoldtWall.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCausalVonMangoldtWall.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.  No distribution theory is needed: testing
 the current against `φ` turns `(34)` into a numerical series, which is the statement proved.
 
@@ -639,8 +639,8 @@ which is what `(38)` uses; every `C_c^∞` test function satisfies it.
 
 ### The source and the canonical preimage `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerExpSchwartz.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusPreimage.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExpSchwartz.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusPreimage.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `DeningerExpSchwartz` — `H_- = S_exp(ℝ)` of `(1)`, realized as a subspace of `𝓢(ℝ, ℂ)` cut out by
@@ -655,7 +655,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### The product-fibre interchange, `(25)` and `(44)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusRightInverse.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusRightInverse.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerProductFibre_tsum` — **the interchange**: an absolutely summable family on `ℕ × ℕ`
@@ -672,7 +672,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### Section 6 — the Möbius connection `(44)`--`(45)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusConnection.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusConnection.lean`.  Axiom audit for all
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerNegMobiusLog`, `deningerNegMobiusLog_mul_zeta` — `(44)` in convolution form,
@@ -689,7 +689,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
 
 ### Section 2 — the unconditional saving `(8)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMertensSummatory.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMertensSummatory.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 The summatory function `M` itself is **corpus-owned** — `RHTower.Sieve.mertensM` in
@@ -705,7 +705,7 @@ The summatory function `M` itself is **corpus-owned** — `RHTower.Sieve.mertens
 
 ### Section 2 — the convergence `(9)`, in discrete form `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMertensInvSquare.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMertensInvSquare.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerCubeRootExp_le`, `deningerCubeRootExp_summable` — `∑_k exp(-c k^{1/3}) < ∞`, from a
@@ -723,7 +723,7 @@ any polynomial test and only the dyadic grouping separates it.
 
 ### Section 2 — Abel summation `(10)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusAbel.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusAbel.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerMertensM_abs_le` — `|M(n)| ≤ n + 1`.
@@ -735,7 +735,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — the weighted derivative of the pullback `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerLogPullDeriv.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLogPullDeriv.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerLogPullDeriv`, `deningerLogPull_hasDerivAt` — `H_h'(x) = h'(log x)/x` on the ray.
@@ -748,7 +748,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — the Abel coefficient `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelCoefficient.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelCoefficient.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerAbelWindow_volume` — the dilation window `{x : ix ≤ u ≤ (i+1)x}` is `Icc (u/(i+1)) (u/i)`.
@@ -768,7 +768,7 @@ the Abelian theorem is the missing piece.
 
 ### Section 2 — the first weighted moment `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerWeightedMoment.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWeightedMoment.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerWeightedMoment_continuousOn` — the integrand `u ‖H_h'(u)‖` is continuous on the ray.
@@ -777,7 +777,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — the Tonelli assembly `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelTonelli.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelTonelli.lean`,
 `DeningerAbelWindowSwap.lean`, `DeningerAbelMassBound.lean`.  Axiom audit for all declarations:
 `propext, Classical.choice, Quot.sound`.
 
@@ -796,7 +796,7 @@ This is the analytic core of `(11)`: combined with `deningerAbelCoefficient_summ
 
 ### Section 2 — `(11)` for `r = 0`: the preimage has finite mass `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelMajorant.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelMajorant.lean`,
 `DeningerPreimageMass.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerWeightedMomentMass_lt_top` — the first weighted moment is finite as an `ℝ≥0∞` integral.
@@ -813,7 +813,7 @@ deliberate: it needs no measurability of `f_h` at all, and the comparison is pur
 
 ### Section 2 — all higher weighted moments `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerHigherMoment.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHigherMoment.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerExpWeight_le_pow` — the exponential weight dominates `y^k` and `y^{-k}` together.
@@ -824,7 +824,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — the order-`r` window and coefficients `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerHigherCoefficient.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHigherCoefficient.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerWindowPow_integral` — the `r`-th moment of the dilation window is
@@ -839,7 +839,7 @@ Every ingredient of `(11)` now exists at every order `r`.
 
 ### Section 2 — the Möbius harmonic series converges `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusHarmonic.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusHarmonic.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerMertensHarmonic_summable` — `∑_i M(i)/(i(i+1))` converges absolutely.
@@ -853,7 +853,7 @@ true here.
 
 ### Section 2 — the Abelian weight `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelianTelescope.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelianTelescope.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerAbelWeight`, `deningerAbelWeight_nonneg`, `deningerAbelWeight_sum_range`,
@@ -866,7 +866,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — the Abel average `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelAverage.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelAverage.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerAbelAverage_summable` — averaging a bounded sequence against the Abel weight converges
@@ -880,7 +880,7 @@ These three plus the head-vanishing assemble into `deningerAbelian_tendsto` belo
 
 ### Section 2 — the Abelian limit theorem `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerAbelianLimit.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAbelianLimit.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerBounded_of_tendsto` — a convergent real sequence is bounded.
@@ -893,7 +893,7 @@ vanishing with the exponent.
 
 ### Section 2 — the harmonic partial sums as an Abel input `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerHarmonicPartial.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHarmonicPartial.lean`,
 `DeningerAbelSummation.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerAbelSummation` — Abel summation as a finite identity,
@@ -911,7 +911,7 @@ then `1/ζ(1+σ) → 0` from the pole, which forces the limit to be `0`.
 
 ### Section 2 — the Dirichlet series as an Abel average `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerDirichletAbel.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDirichletAbel.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerMobiusDirichlet_summable` — `∑ μ(n) n^{-1-σ}` converges absolutely for every `σ > 0`.
@@ -926,7 +926,7 @@ series with the Abel average of the harmonic partial sums.  The only remaining i
 
 ### Section 2 — the analytic input `1/ζ → 0` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerInvZetaPole.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerInvZetaPole.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerInvZeta_tendsto_zero` — **`ζ(s)⁻¹ → 0` as `s → 1`**, from mathlib's
@@ -940,7 +940,7 @@ limit theorem, and the pole.  What is left is the composition.
 
 ### Section 2 — the Dirichlet series equals the Abel average `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerDirichletLimit.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDirichletLimit.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerDirichlet_eq_abelAverage` — **`∑_n μ(n) n^{-1-σ} = ∑_m A_{m+1} w_σ(m)`** for every
@@ -954,7 +954,7 @@ argument between `Real.rpow` and `Complex.cpow`, not new mathematics.
 
 ### Section 2 — `(15)` and `(12)`: the Möbius harmonic series sums to zero `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusHarmonicZero.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusHarmonicZero.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerDirichletTerm_eq`, `deningerDirichlet_cast` — the real Dirichlet series
@@ -972,7 +972,7 @@ pole pins it.  This corrects the card's own suggestion that `(15)` is a PNT cons
 
 ### Section 4 — real-Fourier covariance `(6)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerCommutatorCovariance.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCommutatorCovariance.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound` (one lemma needs only `propext`).
 
 - `deningerCollarCommutator` — the commutator `S h = F(E h) - E(J h)`.
@@ -988,7 +988,7 @@ algebraic content of `(6)` is complete and independent of that choice.
 
 ### Section 2 — the pullback is integrable on the ray `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPullIntegrable.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPullIntegrable.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerLogPull_continuousOn`, `deningerLogPull_integrable` — `H_h ∈ L¹(0,∞)`, by the same
@@ -1002,7 +1002,7 @@ scaling and the sum/integral interchange are in place.
 
 ### Section 2 — dilation scaling of the ray integral `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerDilationIntegral.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDilationIntegral.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerPullMass`, `deningerLogPull_dilation_integral` — dilation scales the ray integral by the
@@ -1016,7 +1016,7 @@ remains is the dominated-convergence interchange, whose majorant
 
 ### Section 2 — the dominating function `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMajorantIntegrable.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMajorantIntegrable.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerAbelMajorant_measurable` — the majorant is measurable (a countable sum of measurable
@@ -1032,7 +1032,7 @@ convergence is `deningerMobius_abel`, the uniform bound is
 
 ### Section 2 — the Abel partial sums as integrable functions `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerLogPull_measurable`, `deningerAbelPartial`, `deningerAbelPartial_measurable` — the Abel
@@ -1047,7 +1047,7 @@ integrability of the difference fails; handling it by vanishing of the product w
 
 ### Section 2 — `(12)`: the preimage has zero mass `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreimageZeroMass.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerAbelPartial_norm_le` — the partial sums are dominated by the real majorant.
@@ -1060,7 +1060,7 @@ gives `∫_0^∞ f_h = (∑_i M(i)/(i(i+1))) · ∫_0^∞ H_h` directly, and the
 
 ### Section 1 — the even extension `E f_h` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerEvenPreimage.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEvenPreimage.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerEvenPreimage`, `deningerEvenPreimage_even` — the even extension of `(4)`, with evenness
@@ -1072,7 +1072,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 2 — `(11)` at every order: all moments of the preimage `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerWindowSwapPow.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWindowSwapPow.lean`,
 `DeningerHigherMassBound.lean`, `DeningerHigherMajorant.lean`,
 `DeningerHigherPreimageMass.lean`.  Axiom audit for all declarations: `propext,
 Classical.choice, Quot.sound`.
@@ -1096,7 +1096,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 1 — the collar exchange `J` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerCollarExchange.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCollarExchange.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerPow_le_factorial_mul_exp` — `|x|^k ≤ k! e^{|x|}`, from a single term of the exponential
@@ -1117,7 +1117,7 @@ multiplier lemma applies.  It is an operation of the exponentially decreasing so
 
 ### Section 2 — the even extension is `L¹` on the line `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPreimageL1.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreimageL1.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerMobiusPreimage_integrableOn`, `deningerMobiusPreimagePow_integrableOn` — the ray form
@@ -1130,7 +1130,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 3/4 — `(4)` and `(6)` at the concrete `𝔖_μ` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMobiusFourierCommutator.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMobiusFourierCommutator.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerFourierSq_apply` — **`ℱ²g = g ∘ (-·)`** on Schwartz functions, from mathlib's Fourier
@@ -1149,7 +1149,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 1 — the Poisson operator `Z : H_∩ → H_-` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonSource.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonSource.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerPoissonLog_expBound` — **the Poisson sum beats every *real* exponential weight**: the
@@ -1165,7 +1165,7 @@ family of integer weights); this is the single-weight form the commutator consum
 
 ### Section 3 — the preimage of a Poisson boundary `(19)`--`(20)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoissonPreimage.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonPreimage.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerLogPull_poissonSource` — the pullback of `Z f` is the Poisson sum of `f`.
@@ -1178,7 +1178,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 3 — the boundary inclusion `Z(H_∩) ⊆ ker 𝔖_μ` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerCommutatorBoundaryKernel.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCommutatorBoundaryKernel.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerL1Distribution_congr` — the `L¹` distribution only sees the almost-everywhere class.
@@ -1191,7 +1191,7 @@ Classical.choice, Quot.sound`.
 
 ### Section 3 — the Fourier transform of an integrable density `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerL1FourierDistribution.lean`.  Axiom audit: `propext,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerL1FourierDistribution.lean`.  Axiom audit: `propext,
 Classical.choice, Quot.sound`.
 
 - `deningerFourier_mul_formula` — the multiplication formula `∫ (ℱF)·G = ∫ F·(ℱG)` for two
@@ -1207,7 +1207,7 @@ identity `ℱ(E f_h) = E f_{Jh}` almost everywhere.
 
 ### Section 2 — rapid decay of the preimage on the far ray `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPreimageRayDecay.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreimageRayDecay.lean`,
 `DeningerLogSeries.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerLogPull_norm_le_inv_pow` — on `[1,∞)` the exponential weight of the source *is* a power
@@ -1221,7 +1221,7 @@ identity `ℱ(E f_h) = E f_{Jh}` almost everywhere.
 
 ### Section 3 — decay plus bounded derivatives is Schwartz `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerLandauInterpolation.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLandauInterpolation.lean`,
 `DeningerSchwartzOfDecay.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerLandau_deriv_le` — **the Landau interpolation `‖u'(x)‖ ≤ 2ε/δ + Mδ`**, from the
@@ -1238,7 +1238,7 @@ above.  No differentiation of the Möbius series is needed.
 
 ### Section 3 — bounded derivatives from the moments `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerFourierBoundedDerivs.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFourierBoundedDerivs.lean`,
 `DeningerEvenPreimageDecay.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerFourier_contDiff`, `deningerFourier_iteratedDeriv_bound` — **a density with every moment
@@ -1250,7 +1250,7 @@ above.  No differentiation of the Möbius series is needed.
 
 ### Section 3 — the converse `(21)`--`(24)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerCommutatorKernelConverse.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCommutatorKernelConverse.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerOpen_null_empty`, `deningerAeBound_on_open`, `deningerAbsDecay_of_ae` — an
@@ -1266,7 +1266,7 @@ above.  No differentiation of the Möbius series is needed.
 
 ### Section 2 — continuity of the preimage on the ray, and `(16)` `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerPreimageContinuous.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreimageContinuous.lean`,
 `DeningerLogSeries.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerLogSeries_continuous`, `deningerMobiusPreimage_continuousOn` — **`f_h` is continuous on
@@ -1278,7 +1278,7 @@ above.  No differentiation of the Möbius series is needed.
 
 ### Section 3 — `(5)`: the exact kernel `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerEvenPreimageMassZero.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEvenPreimageMassZero.lean`,
 `DeningerCommutatorExactKernel.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerEvenPreimage_integral_zero` — **`∫_ℝ E f_h = 0`**, by reflecting `(12)` onto the negative
@@ -1296,7 +1296,7 @@ and the zero-mass theorem `(12)` was already available.  **No Poisson summation 
 
 ### Section 1 — the nuclear Meyer topology `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerSeminorm.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerSeminorm.lean`,
 `DeningerMeyerTopology.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerMeyerWeight`, `deningerMeyerWeight_bddAbove`, `deningerMeyerWeight_le` — the weight
@@ -1311,7 +1311,7 @@ and the zero-mass theorem `(12)` was already available.  **No Poisson summation 
 
 ### Section 2 — `(13)`: the moment map is continuous `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerMomentMajorant.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMomentMajorant.lean`,
 `DeningerMomentSeminormBound.lean`, `DeningerPreimageMomentCLM.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
@@ -1335,7 +1335,7 @@ and the zero-mass theorem `(12)` was already available.  **No Poisson summation 
 
 ### Section 4 — `(30)`: the Euler-depleted kernel `[DONE]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerEulerDepletedKernel.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEulerDepletedKernel.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPeriodizationDefect_injective` — **`Δ_p = 1 - τ_{log p}` is injective on the source**: a

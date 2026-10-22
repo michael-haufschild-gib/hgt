@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsCausalStrongStability
 import GaloisForLFunctions.RHTower.FokasLenellsCausalBoundaryEigenvectors
-import GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaWeakRobinTraceNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaWeakRobinTraceNoGo
 
 /-! The actual causal evolution has one fixed input with no exponential decay rate.
 Banach--Steinhaus is applied to the concrete, norm-unbounded family `(n+1) T_n`. -/

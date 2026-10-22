@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RiemannKernelTruncationWeilPositive
 import GaloisForLFunctions.RHTower.RiemannKernelSharpLogDerivative
 import GaloisForLFunctions.RHTower.WeilFullConeBochnerMeasure
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaFarTail
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaFarTail
 
 /-!
 # The exact order of the Weil energy of the truncated Riemann kernel

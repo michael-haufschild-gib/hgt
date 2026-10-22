@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenChartSecond
 import GaloisForLFunctions.HTGeometry.HillChartWave
 import GaloisForLFunctions.HTGeometry.HillClockProbe
-import GaloisForLFunctions.HTGeometry.KleinGordonRealProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRealProbe
 
 /-!
 # The driven chart field solves the wave equation of its speed, with a potential

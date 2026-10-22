@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingEvaporationSingularityOrderSelectionEndpoint
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingEvaporationSingularityOrderSelectionEndpoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSchwarzschildRecoilCompletionEndpoint
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 /-!

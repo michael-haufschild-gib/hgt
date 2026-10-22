@@ -59,7 +59,7 @@ The searched prior corpus contained scalar critical-Mellin completed-error ident
 
 ## Verification
 - Scratch `lake env lean /tmp/hgt-prime-pole.Xhbr4D4a/Integral.lean`: PASS.
-- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilPrimePolarArithmeticAction`: PASS (34 seconds).
+- Named final audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPrimePolarArithmeticAction`: PASS (34 seconds).
 - Scratch `Audit.lean`: all 12 public theorems use exactly `[propext, Classical.choice, Quot.sound]`; actual mathlib `RiemannHypothesis` printed.
 - `git diff --check`: PASS.
 - `python3 scripts/formal_tools.py lint`: PASS (large-file warnings only). The temporary shared-tree umbrella gap was resolved by its owning task; no unrelated source file was modified here.

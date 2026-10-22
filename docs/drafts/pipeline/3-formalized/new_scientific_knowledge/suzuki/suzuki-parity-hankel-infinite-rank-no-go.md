@@ -239,7 +239,7 @@ Verification:
 
 ```text
 lake env lean \
-  GaloisForLFunctions/RHTower/SuzukiArchimedeanParityHankelInfiniteRank.lean
+  GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanParityHankelInfiniteRank.lean
 ```
 
 passed with no `sorry`, `admit`, new axiom, `opaque`, `unsafe`, or computation.

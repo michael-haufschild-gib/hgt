@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovTransform
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszMarkovTransform
 
 /-!
 # The Laplace transform of the shifted power-sum boundary vector

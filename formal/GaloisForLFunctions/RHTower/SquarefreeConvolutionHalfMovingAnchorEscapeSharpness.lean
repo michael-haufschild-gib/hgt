@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SquarefreeConvolutionHalfMovingAnchorFlatnessNoGo
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeCayleyLimit
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildCompletedResponseBoundedJetFiltrationNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildCompletedResponseBoundedJetFiltrationNoGo
 
 /-!
 # Sharpness of moving-anchor compact escape

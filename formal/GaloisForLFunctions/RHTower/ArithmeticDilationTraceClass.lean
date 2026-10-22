@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ArithmeticDilationProjectiveLimit
 import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 import GaloisForLFunctions.RHTower.NuclearRankOneSchatten
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.RHTower.TraceClassCyclicity
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtMatrix
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn

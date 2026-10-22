@@ -9,7 +9,7 @@
 
 - `formal/GaloisForLFunctions/HTGeometry/BicausalDisplacementOverlap.lean`
 - `formal/GaloisForLFunctions/HTGeometry/TiltedTentTwoFlankSurplus.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiMangoldtLogHaarTransport.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtLogHaarTransport.lean`
 
 ## Formal theorem surface
 
@@ -34,7 +34,7 @@ GaloisForLFunctions.HTGeometry.tiltedTentTwoFlankSurplus_critical_gt_two
 GaloisForLFunctions.HTGeometry.tiltedTentTwoFlankSurplus_eq
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiMangoldtLogHaarTransport`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtLogHaarTransport`:
 
 ```text
 RHTower.mangoldtLogHaarTransportWidth

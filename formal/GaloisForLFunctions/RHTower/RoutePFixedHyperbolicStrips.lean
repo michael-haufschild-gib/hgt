@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.MobiusDivisorLatePrimeHeadAsymptotic
 import GaloisForLFunctions.RHTower.MobiusDivisorClippedHomothety
 import GaloisForLFunctions.RHTower.Sieve.MoebiusMaximalWindow
-import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelSummation
 import GaloisForLFunctions.RHTower.DivisorSmoothSquareMaximum
 
 /-!

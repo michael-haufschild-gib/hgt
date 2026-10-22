@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RouteRPrimeLogEssentialCapFixedGradePhaseDagger
-import GaloisForLFunctions.RHTower.DeningerMeyerAntiReflectedGaussianOddMultiplier
-import GaloisForLFunctions.RHTower.CCMRationalAdelicReflectedGaussianCartierComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerAntiReflectedGaussianOddMultiplier
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicReflectedGaussianCartierComparison
 
 /-!
 # Gaussian source Hermiticity for Route R phase quadratures

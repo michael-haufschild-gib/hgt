@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmPinnedVolterraBoundaryDefect
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPinnedVolterraBoundaryDefect
 import Mathlib.Analysis.Fourier.AddCircle
 
 /-!

@@ -11,7 +11,7 @@
 - **RH used:** no
 - **Computation used:** no
 - **Lean:**
-  `GaloisForLFunctions.RHTower.DeningerCalderonWittHellingerBetaRelativeResidueTransgression`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittHellingerBetaRelativeResidueTransgression`
 
 ## Frontier
 

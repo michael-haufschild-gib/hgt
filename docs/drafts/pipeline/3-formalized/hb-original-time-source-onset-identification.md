@@ -93,7 +93,7 @@ channel of the admitted frequency residual.
 ## Lean surface
 
 Route namespace: `RHTower.D4BMJointSource`. Canonical module prefix:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSource`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJointSource`.
 
 | Suffix | Public theorems | Content |
 |---|---:|---|

@@ -76,7 +76,7 @@ No unproved analytic, arithmetic, divisor, or RH premise remains.
 - Beyond-all-polynomial survivor: `polynomial_isLittleO_uvWeight`.
 - Closed route kill: `no_polynomiallyTempered_FZZCigarParityLocalFEReflectionData`.
 - Direct `lake env lean` check: PASS.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityLocalTemperedFEReflectionNoGo`: PASS (`8785/8785`).
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityLocalTemperedFEReflectionNoGo`: PASS (`8785/8785`).
 - Axiom audit for all named theorems: only `propext`, `Classical.choice`, `Quot.sound`.
 - Wired into `GaloisForLFunctions.RHTower` umbrella. Global lint remains red only on unrelated pre-existing unreachable modules; new module is reachable and absent from lint errors.
 

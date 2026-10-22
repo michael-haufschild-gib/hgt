@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergThetaDilationTransform
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPositiveMean
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCuspPositiveMean
 import Mathlib.Analysis.Complex.RemovableSingularity
 /-!
 # The full totient-weighted theta Hankel transform

@@ -31,7 +31,7 @@ Corpus search found no forced-resolvent application to HC62; existing no-gos sto
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBUnboundedSelfAdjointAngularForcingNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBUnboundedSelfAdjointAngularForcingNoGo`
 - Closed theorem: `d4HBUnboundedSelfAdjointAngularForcingExclusionRouteKilled`
 - Direct `lake env lean`: PASS
 - Targeted `lake build`: PASS (`12036` jobs)

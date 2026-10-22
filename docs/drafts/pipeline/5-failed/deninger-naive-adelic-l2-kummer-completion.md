@@ -118,7 +118,7 @@ coefficient topology.
   independence, positivity, scaling, and the dense-kernel no-go are
   paper-proved.  Abstract scaling and dense-kernel consequences are
   written in
-  `RHTower/DeningerArithmeticAdelicKummerNoGo.lean`; direct check is
+  `RHTower/Deninger/DeningerArithmeticAdelicKummerNoGo.lean`; direct check is
   deferred while unrelated Lean builds saturate the workspace.
 
 ## References

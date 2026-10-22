@@ -360,7 +360,7 @@ deninger-gamma-six-critical-edge-coface-rigidity.md.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerGammaSixOrientationAsymmetry.lean`, on the physical
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixOrientationAsymmetry.lean`, on the physical
 `L²` layer `L2MellinUnitary.lean` and `DeningerMobiusPrimeNormalSuccessorBlowup.lean`.  Axiom audit
 for every declaration: `propext, Classical.choice, Quot.sound`.
 
@@ -382,7 +382,7 @@ for every declaration: `propext, Classical.choice, Quot.sound`.
   reciprocal endpoint.
 
 - **§3, `(8)`--`(13)`: the Gamma-residue landing and the counterterm wall.**
-  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixResidueLanding.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixResidueLanding.lean`.
   `deningerArchimedeanFactor` is `A(s) = ½s(s-1)π^{-s/2}Γ(s/2)`, `deningerXi` the factored
   `Ξ = A·ζ` of `(8)`, `deningerSixTailCorrection` and `deningerSixTailMultiplier` the
   continuation `(9)`, and `deningerXiSixTailContinuation` the right-hand side `A + Ξ P₆`.
@@ -396,7 +396,7 @@ for every declaration: `propext, Classical.choice, Quot.sound`.
   a pole along the Xi divisor with the opposite principal germ.
 
 - **§4, `(14)`--`(16)`: the functional-equation mate.**
-  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixReciprocalFace.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixReciprocalFace.lean`.
   `deningerGammaR_ne_zero` and **`deningerXi_eq_completed`** identify the factored `Ξ = A·ζ` with
   `½s(s-1)` times mathlib's completed zeta on the right half plane, so
   **`deningerXi_one_sub`** is the functional equation `Ξ(1-s) = Ξ(s)`.
@@ -409,7 +409,7 @@ for every declaration: `propext, Classical.choice, Quot.sound`.
   `2m log 6, -2m log 2, -2m log 3` sum to zero, because `log 6 = log 2 + log 3`.
 
 - **§5, `(17)`--`(18)`, `(20)`: the place-marked Stokes polygon.**
-  `formal/GaloisForLFunctions/RHTower/DeningerGammaSixStokesPolygon.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixStokesPolygon.lean`.
   **`deningerPlaceTelescope`** is the general marked telescope in the group algebra of any
   commutative group: two composition relations `ab = c` and `cd = 1` make the three faces cancel.
   **`deningerSixPositivePath`** and **`deningerSixReciprocalPath`** are `(17)` and `(18)` for the

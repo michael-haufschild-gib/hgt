@@ -39,7 +39,7 @@ Here `A=[m_(i+j)]_(i,j<3)` is the already proved strictly positive literal head,
 
 `S(0)/Φ(0)²=D₄(X)/(D₃(X)q₀(X))`, with `D₃(X)q₀(X)>0`.
 
-All mass factors cancel. The determinant tables are in `HTGeometry/PolynomialODEEvenSeamDeterminant`; complete-source transport is in `RHTower/ThetaCuspEvenSeamDeterminant`.
+All mass factors cancel. The determinant tables are in `HTGeometry/PolynomialODEEvenSeamDeterminant`; complete-source transport is in `RHTower/ThetaCusp/ThetaCuspEvenSeamDeterminant`.
 
 ## Rational coefficient reserves
 
@@ -77,6 +77,6 @@ The unique positive zero `τ` of `G` selects explicit lower comparisons for the 
 
 ## Lean verification
 
-Eight new modules are checked: `HTGeometry/HankelFourDeterminant`, `PolynomialODEEvenSeamJets`, `PolynomialODEEvenSeamDeterminant`, `PolynomialODEEvenSeamReserves`; `RHTower/ThetaCuspEvenSeamJets`, `ThetaCuspEvenSeamDeterminant`, `ThetaCuspEvenCompensationCoefficient`, `ThetaCuspEvenCompensationRationalFamily`.
+Eight new modules are checked: `HTGeometry/HankelFourDeterminant`, `PolynomialODEEvenSeamJets`, `PolynomialODEEvenSeamDeterminant`, `PolynomialODEEvenSeamReserves`; `RHTower/ThetaCusp/ThetaCuspEvenSeamJets`, `ThetaCuspEvenSeamDeterminant`, `ThetaCuspEvenCompensationCoefficient`, `ThetaCuspEvenCompensationRationalFamily`.
 
 Each was checked in scratch with one foreground `lake env lean` process at a time, emitting only its needed olean. Checked bytes were copied into the corpus and wired into the relevant umbrellas without building the umbrellas. Seven new capstones were audited once; their only axioms are `propext`, `Classical.choice` and `Quot.sound`. The formal lint gate passed.

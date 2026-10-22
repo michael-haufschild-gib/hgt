@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourceNoAnalyticExtension
-import GaloisForLFunctions.RHTower.CCMQuartetPaleyWiener
+import GaloisForLFunctions.RHTower.CCM.CCMQuartetPaleyWiener
 
 /-!
 # Quantitative two-sided oscillation of the literal Route-P source

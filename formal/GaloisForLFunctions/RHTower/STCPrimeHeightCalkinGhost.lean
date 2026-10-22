@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.LpReindexCompactDichotomy
 import GaloisForLFunctions.HTGeometry.LpTwoMatrixOperators
 import GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact
 import GaloisForLFunctions.RHTower.XiPrimeSeamCofinalAnchoredEssentialNormDecay
-import GaloisForLFunctions.RHTower.DeningerGammaAllPrimeStokesPairBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaAllPrimeStokesPairBridge
 import GaloisForLFunctions.RHTower.STCPrimeWindowPackets
 
 /-!

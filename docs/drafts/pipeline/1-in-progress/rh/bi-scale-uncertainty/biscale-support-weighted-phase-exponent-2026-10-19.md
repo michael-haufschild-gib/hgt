@@ -3,7 +3,7 @@
 - **ID:** biscale-support-weighted-phase-exponent-2026-10-19
 - **Stage:** 1-in-progress
 - **Type:** Conjecture and proof outline; uncounted
-- **Source:** [100-contribution programme](../../biscale-100-contribution-programme-2026-10-18.md)
+- **Source:** [100-contribution programme](biscale-100-contribution-programme-2026-10-18.md)
 - **Dependency:** [Parity-neighborhood package](../../../3-formalized/biscale-parity-neighborhood-phase-transitions-2026-10-19.md) is formalized and audited as package 7. This route remains uncounted.
 
 ## Question

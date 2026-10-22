@@ -7,7 +7,7 @@
 - **Parent:** `../1-in-progress/deninger-meyer-gaussian-green-resolvent.md`
 - **Predecessor:** `deninger-meyer-reflected-gaussian-green-range-wall.md`
 - **Lean module:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianCompletedSourceGreen.lean`
 
 ## 1. Frontier closed
 

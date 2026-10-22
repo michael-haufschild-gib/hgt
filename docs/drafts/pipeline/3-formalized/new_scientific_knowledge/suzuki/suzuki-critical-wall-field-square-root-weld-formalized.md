@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-critical-wall-field-square-root-weld.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldSquareRootWeld.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalWallFieldSquareRootWeld.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -61,7 +61,7 @@ bounded.  Existing connector still requires assembled Ward-defect lower bound.  
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldSquareRootWeld.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalWallFieldSquareRootWeld.lean`;
 - targeted SOTA build: `9454/9454` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - repository formal lint reaches new module but remains red on eleven unrelated concurrent

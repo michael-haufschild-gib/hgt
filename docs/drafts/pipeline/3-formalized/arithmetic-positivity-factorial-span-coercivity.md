@@ -118,7 +118,7 @@ Taking \(r=1/2\) gives \(g(t)\ge-G-\log2\) everywhere. Taking \(r=R\) gives \(g(
 \]
 If \(\eta M<1\), the global lower bound and \(c\log M\le c\log(1/\eta)\) prove the same conclusion. Thus (9) holds for every \(M\ge2\).
 
-This is an ordinary, absolutely convergent integral. The verified raw-tail logarithmic Fourier bound extends to each finite combination by the finite-sum square inequality. The global logarithmic comparison for the Gamma symbol then supplies \(\int|F_b|^2|g|<\infty\). The comparison is available through [CCMArchimedeanLogWeightEquivalence.lean](../../../../formal/GaloisForLFunctions/RHTower/CCMArchimedeanLogWeightEquivalence.lean) and the exact Gamma-weight identities used in [FactorialTailFourierEnergy.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean). Coefficient-count constants used only to establish this integrability do not enter (9).
+This is an ordinary, absolutely convergent integral. The verified raw-tail logarithmic Fourier bound extends to each finite combination by the finite-sum square inequality. The global logarithmic comparison for the Gamma symbol then supplies \(\int|F_b|^2|g|<\infty\). The comparison is available through [CCMArchimedeanLogWeightEquivalence.lean](../../../../formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanLogWeightEquivalence.lean) and the exact Gamma-weight identities used in [FactorialTailFourierEnergy.lean](../../../../formal/GaloisForLFunctions/arithmetic-positivity-theory/FactorialTailFourierEnergy.lean). Coefficient-count constants used only to establish this integrability do not enter (9).
 
 ## Entire prime and polar budgets
 

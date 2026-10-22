@@ -73,7 +73,7 @@ Prove:
 ## Formal result
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEFaithfulDetectorScalarizationRigidity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEFaithfulDetectorScalarizationRigidity`
 
 The closed theorem `hbXiRadiativeFaithfulDetectorScalarizationRigidity` proves all five clauses of
 HC93 for the actual HC92 source-FE horizon/boundary cocycles. In particular:

@@ -12,7 +12,7 @@
 ## Lean artifact
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve`
 - Positive-factor normalization:
   `RHTower.thetaCuspReflectedSourceFifthRootCurvatureVelocity_eq_product_sq_mul_actionCore`
 - Exact sign equivalence:
@@ -55,9 +55,9 @@ downstream assembly obligations remain separate.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve.lean`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve.lean`
 - targeted
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityLikelihoodReserve`
 - `#print axioms` on normalization, strict reserve, and route-facing reduction
 - formal lint gate; new module is reachable from its umbrella
 

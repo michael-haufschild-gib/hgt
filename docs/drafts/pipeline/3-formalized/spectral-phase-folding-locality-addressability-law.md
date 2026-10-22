@@ -1412,9 +1412,9 @@ needs building:
 
 | Card item | Existing declaration |
 |---|---|
-| **Weyl's criterion on `𝕋^d`**: a velocity vector pairing nontrivially with every nonzero integer vector makes the time average of every continuous function converge to its torus mean | `RHTower.deningerWeyl` (`RHTower/DeningerWeylCriterion.lean`) |
-| a character with nonzero frequency has vanishing flow mean | `RHTower.deningerFlowAverage_mFourier_tendsto` (`RHTower/DeningerTorusFlow.lean`) |
-| Kronecker density from a trivial annihilator | `RHTower.deningerKroneckerFlow_dense` (`RHTower/DeningerKroneckerDense.lean`) |
+| **Weyl's criterion on `𝕋^d`**: a velocity vector pairing nontrivially with every nonzero integer vector makes the time average of every continuous function converge to its torus mean | `RHTower.deningerWeyl` (`RHTower/Deninger/DeningerWeylCriterion.lean`) |
+| a character with nonzero frequency has vanishing flow mean | `RHTower.deningerFlowAverage_mFourier_tendsto` (`RHTower/Deninger/DeningerTorusFlow.lean`) |
+| Kronecker density from a trivial annihilator | `RHTower.deningerKroneckerFlow_dense` (`RHTower/Deninger/DeningerKroneckerDense.lean`) |
 | **symmetric-window unique ergodicity** of a rationally independent phase flow | `hasHaarTimeAverage_of_continuous` (`HTGeometry/InfiniteTorusEquidistribution.lean`) |
 | its one-sided form | `hasHaarForwardAverage_of_continuous` (`HTGeometry/InfiniteTorusForwardDensity.lean`) |
 | the symmetric character average and its exact `sinc` value | `symmetricPhaseAverage`, `symmetricPhaseAverage_eq_sinc` (`HTGeometry/SymmetricTimeAverageCharacterLaw.lean`) |

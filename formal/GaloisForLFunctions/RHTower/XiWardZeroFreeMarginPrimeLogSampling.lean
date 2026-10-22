@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardEulerEdgeCompleteness
-import GaloisForLFunctions.RHTower.CCMShiftedXiCancellation
+import GaloisForLFunctions.RHTower.CCM.CCMShiftedXiCancellation
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegion
 import GaloisForLFunctions.RHTower.ZetaLowHeightZeroFree
 import GaloisForLFunctions.RHTower.ShrinkingWindowPrimeSupply

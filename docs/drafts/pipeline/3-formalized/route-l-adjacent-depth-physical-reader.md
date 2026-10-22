@@ -157,13 +157,13 @@ physical readout; zero raw measurements do not supply its vanishing.
 
 ## Completed Lean audit
 
-[Module](../../../../formal/GaloisForLFunctions/RHTower/DeningerGammaSixAdjacentDepthPhysicalReader.lean):
+[Module](../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixAdjacentDepthPhysicalReader.lean):
 22 theorems and 5 definitions; wired into `RHTower`.
 
 - Complete scratch: `lake env lean /tmp/route_l_adjacent_depth_physical_reader.lean`,
   exit 0, empty log. Repository proof bodies match this successful scratch.
 - Targeted final build:
-  `lake build GaloisForLFunctions.RHTower.DeningerGammaSixAdjacentDepthPhysicalReader`,
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixAdjacentDepthPhysicalReader`,
   exit 0; new module built successfully. Log:
   `/tmp/route_l_adjacent_depth_build.log`. No full or umbrella build.
 - All 22 theorem dependencies:

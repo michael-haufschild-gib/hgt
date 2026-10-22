@@ -289,11 +289,11 @@ All statements are unconditional; no hypothesis stands in for the literal `E`, `
 All declarations are unconditional; `#print axioms` returns only
 `propext, Classical.choice, Quot.sound`.
 
-Modules: `RHTower/CCMUnitRieszCompletedSourceWeld.lean`,
-`RHTower/CCMUnitRieszCesaroCurvature.lean`,
-`RHTower/CCMUnitRieszFUCurvatureTransport.lean`,
-`RHTower/CCMUnitRieszCesaroFiniteApertureReporter.lean`,
-`RHTower/CCMUnitRieszHankelBoundaryPulse.lean`.
+Modules: `RHTower/CCM/CCMUnitRieszCompletedSourceWeld.lean`,
+`RHTower/CCM/CCMUnitRieszCesaroCurvature.lean`,
+`RHTower/CCM/CCMUnitRieszFUCurvatureTransport.lean`,
+`RHTower/CCM/CCMUnitRieszCesaroFiniteApertureReporter.lean`,
+`RHTower/CCM/CCMUnitRieszHankelBoundaryPulse.lean`.
 
 | Card item | Lean declaration |
 |---|---|

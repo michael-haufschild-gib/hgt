@@ -39,7 +39,7 @@ and elementary field algebra give displayed identities.  No estimate or external
 used. `[PROVED HERE]`
 
 ## Lean certificate
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspReflectedActionVelocityBalance`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedActionVelocityBalance`
 - Main theorem:
   `thetaCuspReflectedActionFifthRootCurvatureNumerator_nonneg_iff_actionVelocityBarrier`
 - Targeted build: PASS

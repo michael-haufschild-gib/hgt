@@ -136,7 +136,7 @@ The same coefficient identity proves full finite-packet covariance under RH by e
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity`
 - Fibrewise classification:
   `hbXiPeierlsUnitSourceFEPhysicalClockStep_single_commute_iff`
 - Arbitrary-time global classification:
@@ -146,10 +146,10 @@ The same coefficient identity proves full finite-packet covariance under RH by e
 - Closed unit-time endpoint:
   `hbXiPeierlsUnitSourceFEUnitPhysicalClockStepCovariant_iff_rh`
 - Direct check:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity.lean`
   — PASS.
 - Targeted build:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFinitePhysicalClockStepCovarianceRigidity`
   — PASS.
 - Axiom audit: all four theorem certificates use only `propext`, `Classical.choice`, and
   `Quot.sound`; no project axiom or hypothesis.

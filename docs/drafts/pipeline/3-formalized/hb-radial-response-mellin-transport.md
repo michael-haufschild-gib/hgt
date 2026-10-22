@@ -120,14 +120,14 @@ limit. The finite transport instead follows directly from the actual source
 equation and its verified averaging calculus.
 
 Module:
-[ThetaCuspHawkingBMQuarticResponseMellinTransport.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseMellinTransport.lean),
+[ThetaCuspHawkingBMQuarticResponseMellinTransport.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResponseMellinTransport.lean),
 namespace `RHTower.D4BMQuarticResponseMellinTransport`.
 Nine public theorems and five definitions are wired into the RHTower umbrella
 once. `lake env lean /tmp/hb-response-mellin-transport.lean` passed without
 diagnostics. Proofs use explicit scalar types, component integrability and
 algebraic factorization; no heartbeat, recursion-depth or transparency override
 was introduced. Final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResponseMellinTransport`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticResponseMellinTransport`
 passed without warnings in 45 seconds against cached imports. The audited source
 hash is `e25a2775f9bc18a97835d036108f3419c05678c821a5baade8f49ef31cd9861c`.
 No dependency or umbrella build ran.

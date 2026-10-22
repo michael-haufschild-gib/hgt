@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromyFull
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.MonodromyFull
 import GaloisForLFunctions.HTGeometry.CriticalOneStepRigidity
 
 /-!

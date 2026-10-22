@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileFourierQuotient
-import GaloisForLFunctions.RHTower.HedenmalmQuantileRootMode
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileRootMode
 
 /-!
 # Calculus of the theta quantile profile

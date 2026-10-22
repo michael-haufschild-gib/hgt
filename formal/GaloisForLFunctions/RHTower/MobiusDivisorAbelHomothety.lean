@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
 
 /-!
 # Exact integer homothety of literal Möbius–divisor channels

@@ -264,7 +264,7 @@ language.
 
 ## Lean status of positive survivor
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmPrimeNormalWickBoundaryEnergy.lean` formalizes,
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeNormalWickBoundaryEnergy.lean` formalizes,
 unconditionally:
 
 - `norm_sq_complex_sin_eq`;

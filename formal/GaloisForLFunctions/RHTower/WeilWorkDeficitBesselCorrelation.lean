@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaOneSidedBernsteinGauge
 import GaloisForLFunctions.RHTower.RiemannKernelCuspSeries
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
 import GaloisForLFunctions.HTGeometry.BesselOrderRecurrence
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 

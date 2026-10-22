@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SchwartzPositiveMeasureRepresentation
-import GaloisForLFunctions.RHTower.HedenmalmUniversalPositiveFormClassification
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmUniversalPositiveFormClassification
 import GaloisForLFunctions.RHTower.TwoDilationDivisorMetric
 
 /-!

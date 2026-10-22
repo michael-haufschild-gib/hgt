@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspChargedBoundaryGrowth
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargedBoundaryGrowth
 import GaloisForLFunctions.RHTower.ThetaTailAnalyticLocality
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 

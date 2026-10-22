@@ -138,7 +138,7 @@ and RH remain open. No numerical experiment was used.
 
 ## Lean surface and audit
 
-All modules use prefix `GaloisForLFunctions.RHTower.ThetaCuspHawkingBM` and
+All modules use prefix `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBM` and
 namespace `RHTower.D4BMModularCore`.
 
 | Module suffix | New public theorems |

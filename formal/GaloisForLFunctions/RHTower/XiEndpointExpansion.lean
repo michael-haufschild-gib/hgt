@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.InverseSqrtEndpointIntegral
-import GaloisForLFunctions.RHTower.CCMFirstRowStationaryPhase
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowStationaryPhase
 
 /-!
 # The endpoint expansion of the Liouville–Green phase

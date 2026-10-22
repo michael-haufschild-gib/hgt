@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaLogCofinalTraceNoGo
-import GaloisForLFunctions.RHTower.HedenmalmStokesOrientedFirstTraceQuantizedJump
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesOrientedFirstTraceQuantizedJump
 
 /-!
 # Route P primitive Gamma--Julia Stokes aperture residue transport

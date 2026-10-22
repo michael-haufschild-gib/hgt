@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaMovingShellFourierJet
-import GaloisForLFunctions.RHTower.ThetaCuspFiniteShellSeamCancellation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFiniteShellSeamCancellation
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Complex.RealDeriv
 

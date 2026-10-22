@@ -132,7 +132,7 @@ phase choice, division, or RH premise enters the proof.
   is derived from one cyclic action, only second-harmonic radiation can carry the causal cut.
 - **Status:** paper and Lean proved in
   `ThetaCuspHawkingHBPeierlsStationaryChannelElimination`; direct `lake env lean` and targeted
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBPeierlsStationaryChannelElimination`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBPeierlsStationaryChannelElimination`
   passed; axioms only `propext`, `Classical.choice`, `Quot.sound`; umbrella wired.  Formal lint
   reaches the module and reports only unrelated concurrently owned unreachable modules
   `HedenmalmThetaSourceFunctionalEquationRootCurrentTransport` and

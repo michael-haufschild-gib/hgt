@@ -365,10 +365,10 @@ Zero-based C/S/P/T indices match each raw array exactly. Every table row dispose
 |P8|docs/drafts/pipeline/2-fully-proven/li-clock-score-correlation-reserve.md|Prior score-correlation hit ledger, not a new source proof.|
 |P9|docs/drafts/pipeline/3-formalized/li-clock-history-correlation-boundary.md|Formalized barrier prior hit ledger; receiver remains conditional.|
 |T0|formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean|Full returned Fock-qubit gauge block, unrelated source.|
-|T1|formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean|Full72 finite-divisor supplied branch/dichotomy; source branch not selected.|
+|T1|formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean|Full72 finite-divisor supplied branch/dichotomy; source branch not selected.|
 |T2|formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean|Full returned Fock-qubit gauge block, unrelated source.|
 |T3|formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean|Qubit orbit transport block, not P or D.|
-|T4|formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean|Weil quadratic IMS localization identity, wrong cost.|
+|T4|formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean|Weil quadratic IMS localization identity, wrong cost.|
 |T5|formal/GaloisForLFunctions/RHTower/LiClockThetaScoreMeasure.lean|Genuine actual ScoreMeasure finite/L1/moments/strict square slack; applicable admission, no M15 sign.|
 |T6|formal/GaloisForLFunctions/RHTower/LiClockThetaScoreMeasure.lean|Literal actual raw R0 and score measures; applicable source normalization.|
 |T7|formal/GaloisForLFunctions/HTGeometry/GreedyBumpCovarianceApplications.lean|Supplied positive-definite covariance model, not actual history.|
@@ -434,7 +434,7 @@ Zero-based C/S/P/T indices match each raw array exactly. Every table row dispose
 |T1|formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionBorel.lean|Paired-eta complete Borel convergence block, distinct source.|
 |T2|formal/GaloisForLFunctions/RHTower/RealSL2Haar.lean|Real-SL2 Haar normalization, unrelated.|
 |T3|formal/GaloisForLFunctions/HTGeometry/FokasLenellsScatteringContinuity.lean|Fokas-Lenells scattering continuity, unrelated.|
-|T4|formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekForcedContactScalarTransmutationNoGo.lean|PW scalar-transmutation no-go, different divisor/operator.|
+|T4|formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekForcedContactScalarTransmutationNoGo.lean|PW scalar-transmutation no-go, different divisor/operator.|
 |T5|formal/GaloisForLFunctions/RHTower/DepthUpdate.lean|Synthetic depth quadratic update model, not actual D.|
 |T6|formal/GaloisForLFunctions/RHTower/RoutePPrimitiveJointDepthGammaJuliaScalarIntertwinerNoGo.lean|Prime Hilbert joint-depth intertwiner, wrong observable.|
 |T7|formal/.lake/packages/mathlib/Mathlib/Tactic/GCongr/Core.lean|Mathlib gcongr tactic implementation, not mathematics of source sign.|
@@ -617,10 +617,10 @@ Indexes below are zero-based exact raw-array indexes. Complete names, source/pro
 |prose[8]|`docs/drafts/pipeline/2-fully-proven/li-clock-score-correlation-reserve.md`|Prior score-correlation hit ledger, not a new source proof.|
 |prose[9]|`docs/drafts/pipeline/3-formalized/li-clock-history-correlation-boundary.md`|Formalized barrier prior hit ledger; receiver remains conditional.|
 |source_passages[0]|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean`|Full returned Fock-qubit gauge block, unrelated source.|
-|source_passages[1]|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean`|Full72 finite-divisor supplied branch/dichotomy; source branch not selected.|
+|source_passages[1]|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean`|Full72 finite-divisor supplied branch/dichotomy; source branch not selected.|
 |source_passages[2]|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean`|Full returned Fock-qubit gauge block, unrelated source.|
 |source_passages[3]|`formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean`|Qubit orbit transport block, not P or D.|
-|source_passages[4]|`formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean`|Weil quadratic IMS localization identity, wrong cost.|
+|source_passages[4]|`formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean`|Weil quadratic IMS localization identity, wrong cost.|
 |source_passages[5]|`formal/GaloisForLFunctions/RHTower/LiClockThetaScoreMeasure.lean`|Genuine actual ScoreMeasure finite/L1/moments/strict square slack; applicable admission, no M15 sign.|
 |source_passages[6]|`formal/GaloisForLFunctions/RHTower/LiClockThetaScoreMeasure.lean`|Literal actual raw R0 and score measures; applicable source normalization.|
 |source_passages[7]|`formal/GaloisForLFunctions/HTGeometry/GreedyBumpCovarianceApplications.lean`|Supplied positive-definite covariance model, not actual history.|
@@ -686,7 +686,7 @@ Indexes below are zero-based exact raw-array indexes. Complete names, source/pro
 |source_passages[1]|`formal/GaloisForLFunctions/RHTower/LiClockPairedEtaInfinitePartitionBorel.lean`|Paired-eta complete Borel convergence block, distinct source.|
 |source_passages[2]|`formal/GaloisForLFunctions/RHTower/RealSL2Haar.lean`|Real-SL2 Haar normalization, unrelated.|
 |source_passages[3]|`formal/GaloisForLFunctions/HTGeometry/FokasLenellsScatteringContinuity.lean`|Fokas-Lenells scattering continuity, unrelated.|
-|source_passages[4]|`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekForcedContactScalarTransmutationNoGo.lean`|PW scalar-transmutation no-go, different divisor/operator.|
+|source_passages[4]|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekForcedContactScalarTransmutationNoGo.lean`|PW scalar-transmutation no-go, different divisor/operator.|
 |source_passages[5]|`formal/GaloisForLFunctions/RHTower/DepthUpdate.lean`|Synthetic depth quadratic update model, not actual D.|
 |source_passages[6]|`formal/GaloisForLFunctions/RHTower/RoutePPrimitiveJointDepthGammaJuliaScalarIntertwinerNoGo.lean`|Prime Hilbert joint-depth intertwiner, wrong observable.|
 |source_passages[7]|`formal/.lake/packages/mathlib/Mathlib/Tactic/GCongr/Core.lean`|Mathlib gcongr tactic implementation, not mathematics of source sign.|

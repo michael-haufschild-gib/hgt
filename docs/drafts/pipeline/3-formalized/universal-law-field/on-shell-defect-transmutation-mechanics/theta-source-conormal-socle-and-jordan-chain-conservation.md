@@ -212,7 +212,7 @@ interpretation of already proved organs.
   nilpotent range reconstruction, and square-zero phase pass scratch Lean elaboration.
 - 2026-08-31 — formalized as
   `GaloisForLFunctions.HTGeometry.ConstitutiveNilpotentSocleLaw` and
-  `GaloisForLFunctions.RHTower.HedenmalmThetaSourceConormalSocle`; direct elaboration and batched
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceConormalSocle`; direct elaboration and batched
   named leaf build pass (`10961/10961`), umbrellas wired without building them, scoped forbidden
   scan and diff check pass, and audited capstones depend only on `propext`, `Classical.choice`, and
   `Quot.sound`.

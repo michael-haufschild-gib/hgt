@@ -10,12 +10,12 @@
 formal/GaloisForLFunctions/HTGeometry/WeightedDensityL2.lean
 formal/GaloisForLFunctions/HTGeometry/PositiveDensityQuantile.lean
 formal/GaloisForLFunctions/HTGeometry/BoundedMultiplierHilbert.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmPinnedVolterraBoundaryDefect.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileNormalForm.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileMetric.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileBoundaryFlux.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileRootMode.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmQuantileDivisorCharge.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPinnedVolterraBoundaryDefect.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileNormalForm.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileMetric.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileBoundaryFlux.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileRootMode.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileDivisorCharge.lean
 ```
 
 All nine are reachable from `GaloisForLFunctions.HTGeometry` and `GaloisForLFunctions.RHTower`.
@@ -106,12 +106,12 @@ cd formal
 lake env lean GaloisForLFunctions/HTGeometry/WeightedDensityL2.lean
 lake env lean GaloisForLFunctions/HTGeometry/PositiveDensityQuantile.lean
 lake env lean GaloisForLFunctions/HTGeometry/BoundedMultiplierHilbert.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmQuantileNormalForm.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmQuantileMetric.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmQuantileBoundaryFlux.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmQuantileRootMode.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmQuantileDivisorCharge.lean
-lake build GaloisForLFunctions.RHTower.HedenmalmQuantileDivisorCharge
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileNormalForm.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileMetric.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileBoundaryFlux.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileRootMode.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileDivisorCharge.lean
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileDivisorCharge
 ```
 
 All clean.  `#print axioms` on every declaration in the table reports only `propext`,

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodNormalCrossingPrimeFace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodNormalCrossingPrimeFace
 
 /-!
 # Theta-likelihood prime normal-tangent universality

@@ -5,7 +5,7 @@
 - **Status:** [LEAN-PROVED] [UNCONDITIONAL] [NOT RH]
 - **Date:** 2026-08-11
 - **Module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerExponentLineReflectionBlowupTransport.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerExponentLineReflectionBlowupTransport.lean`
 - **Paper proof:**
   `../2-fully-proven/new_scientific_knowledge/deninger/deninger-completed-exponent-line-reflection-blowup-transport.md`
 
@@ -44,7 +44,7 @@ prove fixed-reader cyclicity. Those remain Route L's RH-bearing steps.
 
 ## Audit
 
-- [x] `lake env lean GaloisForLFunctions/RHTower/DeningerExponentLineReflectionBlowupTransport.lean`
+- [x] `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerExponentLineReflectionBlowupTransport.lean`
 - [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
-- [x] `lake build GaloisForLFunctions.RHTower.DeningerExponentLineReflectionBlowupTransport`
+- [x] `lake build GaloisForLFunctions.RHTower.Deninger.DeningerExponentLineReflectionBlowupTransport`
 - [ ] repository lint reachability

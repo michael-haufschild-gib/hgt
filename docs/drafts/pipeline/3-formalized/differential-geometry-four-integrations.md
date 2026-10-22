@@ -52,7 +52,7 @@ Paths below are relative to `formal/GaloisForLFunctions/`.
 
 | Integration | Checked result | Remaining work or premise |
 |---|---|---|
-| Bochner / Weil | `RHTower/CCMPrimePoleJumpBochner.lean`, `CCMWeilJumpEnergy.lean`, `CCMPrimePoleCurvatureBounds.lean`: literal prime-jump identities, full source decomposition and quantitative defect bound. `CCMPrimePoleNegativeCurvature.lean` supplies a smooth negative-Γ₂ witness. | The native arithmetic sign comparison remains open. Both generic upstream Bochner/Weitzenböck endpoints now pass. |
+| Bochner / Weil | `RHTower/CCM/CCMPrimePoleJumpBochner.lean`, `CCMWeilJumpEnergy.lean`, `CCMPrimePoleCurvatureBounds.lean`: literal prime-jump identities, full source decomposition and quantitative defect bound. `CCMPrimePoleNegativeCurvature.lean` supplies a smooth negative-Γ₂ witness. | The native arithmetic sign comparison remains open. Both generic upstream Bochner/Weitzenböck endpoints now pass. |
 | Curvature / charge | `HTGeometry/RegularizedMonomialCharge.lean`, `RegularizedMonomialWinding.lean`, `RegularizedMonomialCurvature.lean`: exact disk/annulus mass, distributional point charge, winding, actual metric bulk/boundary integrals and singular limits. | Complete at the stated scope. Generic regularized Gauss–Bonnet and weak-energy lower semicontinuity pass. No arithmetic sub-unit bound is proved. |
 | Poisson / Green | `HTGeometry/CompactMeanZeroLaplacian.lean`, `CompactPoissonGreen.lean`, `CompactGreenEndpointDressing.lean`: actual smooth mean-zero Laplacian and Green inverse, both composition laws, L² reciprocity, exact Dirichlet energy/nonpositivity, and concrete endpoint dressing. | Complete at the stated scope. The full smooth Poisson producer passes; bounded, causal and mass-shifted inverses are not asserted. |
 | De Rham / topology | `HTGeometry/ManifoldDeRhamCohomology.lean`, `ModelDeRhamPeriods.lean`, `GeometricHurewicz.lean`: actual exterior complex and pullbacks, concrete plane periods, low-degree Hurewicz maps/equivalences, sphere examples and H₂-based premise discharge. | Complete at the stated scope. No de Rham–singular comparison or arithmetic Hodge realization is claimed. |
@@ -151,7 +151,7 @@ adapter using the literal von Mangoldt coefficients, signed logarithmic shifts,
 aperture indicators and pole-profile ratios also verifies the support identity and
 the pointwise transport from normalized jump energy to `ccmPrimePoleEdgeDensity`.
 The integrated row identity passed. These declarations are now registered in
-`RHTower/CCMPrimePoleJumpBochner.lean`, whose leaf build passed. Its dependency was
+`RHTower/CCM/CCMPrimePoleJumpBochner.lean`, whose leaf build passed. Its dependency was
 then narrowed from the kernel/recurrence endpoint to `CCMPrimePoleSchurDefect`;
 verification of that import reduction and further energy identities is pending.
 
@@ -217,14 +217,14 @@ claim of nonzero de Rham cohomology on the plane.
 
 ### Further verified integration
 
-`RHTower/CCMPrimePoleJumpBochner.lean` now proves that the normalized real and
+`RHTower/CCM/CCMPrimePoleJumpBochner.lean` now proves that the normalized real and
 imaginary jump energies integrate to the existing prime Schur energy. Both
 orientations, cutoff indicators and pole-profile weights remain literal. The
 narrowed import and complete extension passed the leaf build (12,903 jobs,
 mostly cached).
 
 The full consumer passed its scratch check, standard-axiom audit and leaf build
-as `RHTower/CCMWeilJumpEnergy.lean`. It proves the unconstrained source
+as `RHTower/CCM/CCMWeilJumpEnergy.lean`. It proves the unconstrained source
 identity retaining the polar cross term, its constrained specialization, the
 exact jump-energy deficit at zero source, and strict positivity from the exact
 row bound plus existing two-prime rigidity. The row bound is still an explicit
@@ -232,7 +232,7 @@ arithmetic hypothesis. A combined import check caught a name collision with the
 existing state-negation lemma; the new shift reversal is now named
 `ccmPrimePoleEdgeEnergy_neg_shift`, and its leaf rebuilt successfully.
 
-`RHTower/CCMPrimePoleJumpRates.lean` passes both its scratch check and leaf build:
+`RHTower/CCM/CCMPrimePoleJumpRates.lean` passes both its scratch check and leaf build:
 actual rates at logarithmic coordinates simplify to rational expressions in the
 multiplicative position.
 
@@ -324,7 +324,7 @@ explicit lower-curvature estimate. `HTGeometry/JumpCurvatureBounds.lean` now
 passes its leaf build and standard-axiom audit. It proves the exact identity and
 the stronger bound `Γ₂ ≥ (Lf)²/2 − DΓ`. The literal prime-envelope specialization
 also passed its scratch check and standard-axiom audit and is registered in
-`RHTower/CCMPrimePoleCurvatureBounds.lean`, whose leaf build passes. Its degree bound
+`RHTower/CCM/CCMPrimePoleCurvatureBounds.lean`, whose leaf build passes. Its degree bound
 is proved using existing Chebyshev and reciprocal-Mangoldt estimates, so no new
 arithmetic or nonnegative-curvature hypothesis is left in that estimate.
 
@@ -375,7 +375,7 @@ and the finite-graph calculation is still distinguished from the unverified
 literal-operator witness until this split proof passes.
 
 The split literal prime-curvature calculation now passes its scratch check and
-standard-axiom audit. `RHTower/CCMPrimePoleNegativeCurvature.lean` records the
+standard-axiom audit. `RHTower/CCM/CCMPrimePoleNegativeCurvature.lean` records the
 actual aperture and rates, four exact row evaluations, an explicit smooth
 polynomial-in-exp witness, the exact `Γ₂` value, and strict negativity. This
 is no longer only a finite graph probe. It disproves blanket nonnegative

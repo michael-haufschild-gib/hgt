@@ -69,11 +69,11 @@ for that term together with the source's pole convolution.
 - [x] Index refreshed; generated files current at final lint.
 - [ ] Repository lint: blocked by three unrelated unreachable BiScale modules.
 
-Canonical source: `formal/GaloisForLFunctions/RHTower/SuzukiCriticalBetaKernel.lean`.
+Canonical source: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.lean`.
 Capstone: `RHTower.tendsto_suzukiCriticalPrimaryPairing_firstVariation`.
 Audit script: `/tmp/hgt_sz_beta_axioms.lean`.
 
-Canonical compile: `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiCriticalBetaKernel.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/SuzukiCriticalBetaKernel.ilean GaloisForLFunctions/RHTower/SuzukiCriticalBetaKernel.lean` — exit 0.
+Canonical compile: `lake --old env lean -j 1 -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.olean -i .lake/build/lib/lean/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.ilean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.lean` — exit 0.
 One informational ring tactic suggestion; no compiler error or linter warning.
 All 19 public declarations use only `[propext, Classical.choice, Quot.sound]`.
 Source SHA256: `09a74d61dd9c1dfa54a20b0ded5995d2cb1356520cd919bc3ba4c45791ff08da`.

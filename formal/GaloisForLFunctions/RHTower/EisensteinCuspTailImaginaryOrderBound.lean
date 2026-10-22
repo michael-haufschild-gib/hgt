@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BesselKImaginaryOrderUniformBound
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinFullCuspSectorAssembly
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinFullCuspSectorAssembly
 import GaloisForLFunctions.RHTower.Sieve.MaynardFixedDivisorMoment
 
 /-!

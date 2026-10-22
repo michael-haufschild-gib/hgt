@@ -169,7 +169,7 @@ reproduce `(7)`. Constructing that divisor-selective lift is the remaining Route
   divisor equation into compactness. This separates the needed theorem from all ordinary
   relative-cyclic, joint-torsion, and Dixmier-trace packages.
 - **Status:** paper proof and Lean formalization dependency-closed in
-  `RHTower/DeningerGammaSixTraceIdealSoninStrictLiftObstruction.lean`. Direct leaf check and
+  `RHTower/Deninger/DeningerGammaSixTraceIdealSoninStrictLiftObstruction.lean`. Direct leaf check and
   targeted leaf build pass. Both capstones depend only on `propext`, `Classical.choice`, and
   `Quot.sound`.
 

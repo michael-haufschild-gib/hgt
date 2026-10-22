@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFiniteLocalizationChain
+import GaloisForLFunctions.RHTower.CCM.CCMFiniteLocalizationChain
 
 /-!
 # One bounded weight for an entire localization chain

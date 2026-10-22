@@ -105,7 +105,7 @@ pointwise all-epsilon bound on the complement of `A`.
 The implementation is
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowExcessEnergyGate.
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowExcessEnergyGate.
 ```
 
 Principal declarations:

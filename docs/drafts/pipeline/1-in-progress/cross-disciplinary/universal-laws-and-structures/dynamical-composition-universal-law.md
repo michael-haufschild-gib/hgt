@@ -1121,7 +1121,7 @@ physical no-spectator admissibility law from source-positive completion—not to
 subgroup, a tensor split, or an irreducibility axiom.
 
 Full conjecture, parent collisions, and falsifiers are frozen in
-[`correlated-continuation-ambiguity-law.md`](../../correlated-continuation-ambiguity-law.md).
+[`correlated-continuation-ambiguity-law.md`](correlated-continuation-ambiguity-law.md).
 
 ## Fifth jump candidate: events generate physical sameness
 
@@ -1193,7 +1193,7 @@ capacity for possibility, fact, and successor law. A possible repair is to deriv
 faithful universal representatives of one independently defined source consequence.
 
 Exact conjecture, circularity attacks, parent collisions, and open core:
-[`consequence-trirepresentability-universal-law.md`](../../consequence-trirepresentability-universal-law.md).
+[`consequence-trirepresentability-universal-law.md`](consequence-trirepresentability-universal-law.md).
 
 ## Fifth jump candidate: jointly conservative future shape
 
@@ -1208,4 +1208,4 @@ conservative and that source succession rotates their hidden directions through 
 fact, and law.
 
 This corrected universal conjecture and its first Lean-formalized finite shadow are recorded in
-[`jointly-conservative-future-shape-law.md`](../../jointly-conservative-future-shape-law.md).
+[`jointly-conservative-future-shape-law.md`](jointly-conservative-future-shape-law.md).

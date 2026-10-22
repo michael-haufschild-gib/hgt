@@ -1,7 +1,7 @@
 # Complete original Fourier reconstruction for weighted top stress
 
 - Stage: paused after duplication audit; no new Lean module promoted
-- Parent: [Selberg conjecturing loop](../../selberg-quarter-conjecturing-loop.md), cycle55.
+- Parent: [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle55.
 - Objective: derive the complete Fourier expansion of the physical top stress and combine its signed-frequency weights with the proved arithmetic Wronskian/tail kernel.
 
 ## Evidence and conjecture

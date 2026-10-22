@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaEigenODE
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaEigenODE
 import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureCurvatureFlow
 import GaloisForLFunctions.RHTower.SourceZeroHorizontalCarrier
 import GaloisForLFunctions.RHTower.XiWeilSourceInvolution

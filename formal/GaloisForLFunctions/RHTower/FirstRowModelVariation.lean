@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.BesselEndpointVariation
 import GaloisForLFunctions.RHTower.XiAmplitudeEndpointSymbol
-import GaloisForLFunctions.RHTower.CCMFirstRowDunsterModel
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowDunsterModel
 import GaloisForLFunctions.RHTower.ExteriorDunsterPrimitive
 
 /-!

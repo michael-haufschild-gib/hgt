@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerXiCofinalSynthesisSingularity
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiCofinalSynthesisSingularity
 import GaloisForLFunctions.RHTower.StripHorizontalShift
 
 /-!

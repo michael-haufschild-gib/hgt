@@ -69,7 +69,7 @@ theorems passed the axiom audit with only `propext`, `Classical.choice`, and
 connection and its stated arithmetic admission; it is not transferred to the
 inverse connection.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekReflectedSourceForcing.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekReflectedSourceForcing.lean`.
 - Positive survivors: `pwReflectedMobius_connection`,
   `pwLogInverseGainReflection_gamma_fixed`, and
   `pwGammaInverseConnectionForcing_reflected_balance` in namespace `RHTower`.

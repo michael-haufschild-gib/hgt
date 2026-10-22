@@ -119,7 +119,7 @@ differential torus, or belongs to the still-open one-algebraic-coordinate Schanu
   arithmetic specialization of the resulting torus, not functional differential dependence.
 - **Status:** exact Lean theorem
   `GaloisForLFunctions.RHTower.defect_integer_combination_is_logarithmic_iff` in
-  `RHTower/SchanuelDefectCharacterLattice.lean`; supporting identity
+  `RHTower/Schanuel/SchanuelDefectCharacterLattice.lean`; supporting identity
   `sum_valueDefect_eq_log_monomial_sub`.  Scratch `lake env lean` passed.  `#print axioms` reports
   only `propext`, `Classical.choice`, and `Quot.sound`.  No `sorry`, `admit`, project axiom,
   `opaque`, or `unsafe` declaration.

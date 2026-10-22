@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMRadialDivisibilityCarrier`
+- `GaloisForLFunctions.RHTower.CCM.CCMRadialDivisibilityCarrier`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

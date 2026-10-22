@@ -56,13 +56,13 @@ Every step above, including the source incidence, is in the checked leaf.
 
 ## Lean certificate
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspFirstAtomOddFourPositivity`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFirstAtomOddFourPositivity`.
 Public definition: `RHTower.ThetaCuspOddCentral.firstAtomOddFour`.
 Public theorem: `RHTower.ThetaCuspOddCentral.firstAtomOddFour_posDef`.
 All recurrence, coordinate, and matrix helpers are private.
 
-- Targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCuspFirstAtomOddFourPositivity`: passed.
-- Final `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFirstAtomOddFourPositivity.lean`: passed.
+- Targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFirstAtomOddFourPositivity`: passed.
+- Final `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFirstAtomOddFourPositivity.lean`: passed.
 - Compiled-module axiom audit of both public declarations: only
   `propext`, `Classical.choice`, `Quot.sound`.
 - Wired once into `RHTower.lean`; declaration index refreshed.

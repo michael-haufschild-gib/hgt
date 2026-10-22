@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMSubsetCovarianceFock`
+- `GaloisForLFunctions.RHTower.CCM.CCMSubsetCovarianceFock`
 
 Standing on the local-ratio layer of `ccm-local-ratio-second-order-covariance-charge` (already
 Stage 3). Umbrella: `GaloisForLFunctions.RHTower`.

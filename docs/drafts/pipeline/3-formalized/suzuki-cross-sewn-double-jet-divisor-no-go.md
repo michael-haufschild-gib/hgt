@@ -138,7 +138,7 @@ zero/nonzero case split yield the three channel incidences.
 ## Lean formalization and audit
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiCrossSewnDoubleJetDivisorNoGo`.
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCrossSewnDoubleJetDivisorNoGo`.
 
 Main declarations:
 

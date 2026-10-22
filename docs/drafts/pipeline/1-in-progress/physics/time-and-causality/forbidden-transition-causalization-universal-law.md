@@ -266,7 +266,7 @@ and binary addition all hold throughout the paper-proved family \(M_{q+1,q}(\mat
 make each local pair causally complete.
 
 The stronger surviving target is
-[`causal-arity-conservation-universal-law.md`](../../causal-arity-conservation-universal-law.md).
+[`causal-arity-conservation-universal-law.md`](causal-arity-conservation-universal-law.md).
 Define source consequence arity before positivity, and future arity as the least number of
 primitive records needed to reach the interior. The unconditionally Lean-proved theorem
 `primitive-gram-interior-arity.md` shows

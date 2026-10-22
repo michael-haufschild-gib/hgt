@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Parent card:** `1-in-progress/weil-positivity-soft-prime-entry.md` (Theorem D, the direction
   needed for propagation past a prime threshold)
-- **Module:** `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity`
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarConstrainedRightContinuity`
   (imports `SuzukiGroundEnergyContinuity`; wired after it in `RHTower.lean`)
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on every theorem; lint clean; no
   hypotheses beyond the floor being propagated.

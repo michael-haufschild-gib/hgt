@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedWallLightThirdJetTransmutation`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedWallLightThirdJetTransmutation`.
 This identifies a positive source connection but does not yet prove its occurrence in the full
 Robin--Gamma--holonomy trace or prove RH.
 

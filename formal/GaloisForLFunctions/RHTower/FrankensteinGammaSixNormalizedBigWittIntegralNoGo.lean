@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FrankensteinXiBidirectionalIntegralCartierSource
-import GaloisForLFunctions.RHTower.DeningerGammaSixBigWittStokesSource
-import GaloisForLFunctions.RHTower.DeningerBigWittFrobeniusRingEndomorphism
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixBigWittStokesSource
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittFrobeniusRingEndomorphism
 
 /-!
 # The normalized Gamma-six Big-Witt source has no integral lift

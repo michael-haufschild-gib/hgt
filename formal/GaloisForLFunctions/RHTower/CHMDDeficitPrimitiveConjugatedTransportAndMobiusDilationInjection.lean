@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CHMDPrimeKernelDerivativeUniformBound
-import GaloisForLFunctions.RHTower.CCMPrimeDeficitMobiusTailLocalization
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitMobiusTailLocalization
 
 /-!
 # Conjugated second-derivative transport of the integrated Chebyshev deficit

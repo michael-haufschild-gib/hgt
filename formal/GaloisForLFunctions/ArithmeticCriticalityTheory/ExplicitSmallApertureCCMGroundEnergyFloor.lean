@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.MeanZeroProfileVariationInequalityPastPrimeTwo
-import GaloisForLFunctions.RHTower.SuzukiGroundEnergyContinuity
-import GaloisForLFunctions.RHTower.SuzukiFirstContactBoundaryRoughness
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGroundEnergyContinuity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstContactBoundaryRoughness
 
 /-!
 # An explicit small-aperture floor for the restricted Weil operator

@@ -152,7 +152,7 @@ Adjacent primary sources:
 ## Lean formalization
 
 ```text
-GaloisForLFunctions.RHTower.HedenmalmPinnedVolterraBoundaryDefect
+GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPinnedVolterraBoundaryDefect
 ```
 
 Main public declarations:
@@ -191,8 +191,8 @@ no_injective_pinnedVolterra_anticommutator
 - [x] external preliminary novelty search
 - [x] unconditional Lean formalization
 - [x] theorem-area umbrella import
-- [x] `lake env lean GaloisForLFunctions/RHTower/HedenmalmPinnedVolterraBoundaryDefect.lean`
-- [x] leaf-only `lake build GaloisForLFunctions.RHTower.HedenmalmPinnedVolterraBoundaryDefect`
+- [x] `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPinnedVolterraBoundaryDefect.lean`
+- [x] leaf-only `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPinnedVolterraBoundaryDefect`
 - [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [ ] broad external operator-theory novelty audit
 - [ ] probability-integral transform and actual theta-source specialization

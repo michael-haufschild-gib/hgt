@@ -77,7 +77,7 @@ remains in this source obligation.
 The implementation is
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPrimeReduction
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPrimeReduction
 ```
 
 with principal declarations

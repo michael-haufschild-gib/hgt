@@ -160,7 +160,7 @@ knowledge.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMRayleighExcessAngle.lean`.  The previous decision anticipated
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRayleighExcessAngle.lean`.  The previous decision anticipated
 "an abstract finite-dimensional version of `(3)`"; the version built is **not** finite dimensional —
 the spectral half is stated with `HasSum` over an arbitrary index type, so no finite-dimensionality
 and no eigenbasis cardinality assumption enters.

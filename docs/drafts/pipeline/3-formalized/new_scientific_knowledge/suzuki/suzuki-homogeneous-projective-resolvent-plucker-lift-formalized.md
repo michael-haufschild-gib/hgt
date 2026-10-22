@@ -8,9 +8,9 @@
 ## Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/AlternatingChordLaw.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerBaumslagRationalization.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveResolventBlade.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveResolventPluckerLift.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalization.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveResolventBlade.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveResolventPluckerLift.lean`
 
 ## Formal theorem surface
 
@@ -25,13 +25,13 @@ GaloisForLFunctions.HTGeometry.altPair_self
 GaloisForLFunctions.HTGeometry.exteriorPair_chord
 ```
 
-`GaloisForLFunctions.RHTower.DeningerBaumslagRationalization`:
+`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization`:
 
 ```text
 RHTower.DeningerBau.sound
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiProjectiveResolventBlade`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectiveResolventBlade`:
 
 ```text
 RHTower.suzukiHomogeneousResolventBlade_chord
@@ -39,7 +39,7 @@ RHTower.suzukiHomogeneousState_eq
 RHTower.suzukiResolventBlade_chord
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiProjectiveResolventPluckerLift`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectiveResolventPluckerLift`:
 
 ```text
 RHTower.suzukiCenteredProjectiveShiftNumerator_eq_projectiveMinor

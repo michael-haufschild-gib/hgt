@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import Mathlib.Analysis.Complex.Liouville
 
 /-!

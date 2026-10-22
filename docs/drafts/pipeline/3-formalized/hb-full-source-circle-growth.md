@@ -29,7 +29,7 @@ The actual complete tail bound controls the scalar above height one. Both origin
 
 ## Lean statements
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceCircleGrowth`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullSourceCircleGrowth`.
 Namespace: `RHTower.D4BMNativeCircle`.
 
 - `sourceGrowthExponent_bounds`: the strict exponent range from the actual Xi strip.
@@ -45,7 +45,7 @@ The source-circle growth also gives a nonempty delay-Laplace overlap `max(kappa,
 
 ## Validation
 
-Foreground scratch `lake env lean` passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceCircleGrowth`, with 3938 existing own-module caches and 11 package caches frozen. It built the new module in 123 seconds and reported three jobs. No old dependency, full or umbrella build ran.
+Foreground scratch `lake env lean` passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullSourceCircleGrowth`, with 3938 existing own-module caches and 11 package caches frozen. It built the new module in 123 seconds and reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the four new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files are byte-identical to the audited files. The umbrella has one new import and was not built.
 

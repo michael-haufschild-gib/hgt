@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.ChebyshevDeficitPrimitiveOneSidedRH
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilOddPrimeTransport
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilOddPrimeTransport
 import GaloisForLFunctions.RHTower.SelbergTruncatedVonMangoldtKreinCompletion
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPoleDiagonalBounds
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundVariance
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPoleDiagonalBounds
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundVariance
 
 /-!
 # One literal parity pole per aperture decides RH, and Weil-positive supersystems force RH

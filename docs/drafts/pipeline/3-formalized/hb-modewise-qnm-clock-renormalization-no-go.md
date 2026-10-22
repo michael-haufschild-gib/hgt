@@ -123,7 +123,7 @@ sourceful cancellation rather than darkness.
   extinction law.  It needs a separate divisor-independent standard-clock theorem that forbids the
   canonical nonzero off-wall frequency shifts.
 - **Status:** Formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedCasimirModewiseQNMClockRenormalizationNoGo`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedCasimirModewiseQNMClockRenormalizationNoGo`.
   Direct `lake env lean` and targeted module build pass.  Capstone axioms are only `propext`,
   `Classical.choice`, and `Quot.sound`.  Module is wired into `GaloisForLFunctions.RHTower`.
 

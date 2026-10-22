@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldSingularDepthLowering
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedCofinalDepthCountertransport
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedCofinalDepthCountertransport
 
 /-!
 # Source-normal Gamma / BV--Wold Schatten bridge

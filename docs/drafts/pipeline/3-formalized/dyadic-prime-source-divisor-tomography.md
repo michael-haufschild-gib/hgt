@@ -60,7 +60,7 @@ dyadicSharpPrimeSourceDivisorTomography_capstone
 in
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowDivisorTomography
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowDivisorTomography
 ```
 
 ## Formal strengthening over the previous carrier theorem

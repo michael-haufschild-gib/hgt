@@ -69,7 +69,7 @@ keeps these obligations distinct.
 
 ## Verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaAdjointSourceTest.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaAdjointSourceTest.lean`.
 The final scratch passes all28 public declarations, with only propext,
 Classical.choice and Quot.sound in every axiom report. Identical proof
 bodies are promoted and one RHTower umbrella import is wired. The

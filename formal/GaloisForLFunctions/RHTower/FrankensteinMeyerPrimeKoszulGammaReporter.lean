@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerInvariantEvaluationGaugeFrontier
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerInvariantEvaluationGaugeFrontier
 import GaloisForLFunctions.RHTower.FrankensteinBigWittSingularGammaReporterDescent
 import GaloisForLFunctions.RHTower.PrimeTranslationKoszulOffLine
 

@@ -5,7 +5,7 @@
 - **Paper theorem:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/deninger-centered-flow-countercharacter-relative-curvature-no-go.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean`
 
 ## Exact formalized result
 
@@ -80,8 +80,8 @@ curvature vanishing, countercharacter triviality, static capacity, or RH.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean`: PASS.
-- `lake build GaloisForLFunctions.RHTower.DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo`: PASS; targeted module only, no full build.
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo.lean`: PASS.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerCenteredFlowCountercharacterRelativeCurvatureNoGo`: PASS; targeted module only, no full build.
 - `#print axioms` on all headline and capstone theorems: only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - Forbidden-token audit for `sorry`, `admit`, `axiom`, `opaque`, and `unsafe`: clean.

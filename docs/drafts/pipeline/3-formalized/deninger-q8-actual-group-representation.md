@@ -18,8 +18,8 @@
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerQ8ActualGroupRepresentation.lean` — green.
-- `lake build GaloisForLFunctions.RHTower.DeningerQ8ActualGroupRepresentation` — green.
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerQ8ActualGroupRepresentation.lean` — green.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerQ8ActualGroupRepresentation` — green.
 - `#print axioms` lists only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Remaining literature boundary
@@ -40,6 +40,6 @@ Euler product and proves its holomorphy and nonvanishing in `Re(s) > 1`.
 
 This is a `[LEAN-PROVED]` Artin realization bridge, not new arithmetic, and not the missing explicit Q8 number field or
 the required global root-number computation.  Both `lake env lean
-GaloisForLFunctions/RHTower/DeningerQ8ArtinGaloisRealization.lean` and its targeted `lake build`
+GaloisForLFunctions/RHTower/Deninger/DeningerQ8ArtinGaloisRealization.lean` and its targeted `lake build`
 leaf passed after wiring; `#print axioms` reports only `propext`, `Classical.choice`, and
 `Quot.sound`.

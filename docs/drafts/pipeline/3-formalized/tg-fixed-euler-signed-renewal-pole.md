@@ -85,7 +85,7 @@ joint Hardy cubic compatibility, and strict contraction remain open.
 
 ## Lean certificate
 
-Leaf: `formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerSignedPole.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerSignedPole.lean`.
 Seven public theorems, including `ccmPrimeDeficitDivisorSource_finite_pair_pole_limit`,
 `ccmPrimeDeficitDivisorSource_finite_pair_pole_vanishes_iff`, and
 `ccmPrimeDeficitEulerSignedRenewal_not_exponential_bound`.

@@ -6,7 +6,7 @@
 - **Paper proof:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/deninger-burnol-conormal-radial-top-boundary-comparison.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerBurnolConormalRadialTopBoundaryComparison`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerBurnolConormalRadialTopBoundaryComparison`
 
 ## Unconditional formal content
 
@@ -32,8 +32,8 @@
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/DeningerBurnolConormalRadialTopBoundaryComparison.lean
-lake build GaloisForLFunctions/RHTower/DeningerBurnolConormalRadialTopBoundaryComparison.lean:olean
+lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerBurnolConormalRadialTopBoundaryComparison.lean
+lake build GaloisForLFunctions/RHTower/Deninger/DeningerBurnolConormalRadialTopBoundaryComparison.lean:olean
 lake env lean /tmp/hgt_route_l_burnol_deninger_axioms.lean
 ```
 

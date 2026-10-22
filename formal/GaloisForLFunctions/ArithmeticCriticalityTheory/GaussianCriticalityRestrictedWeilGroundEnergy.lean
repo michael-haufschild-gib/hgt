@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.WindowGaugeLogarithmicGroundEnergyFloor
 import GaloisForLFunctions.ArithmeticCriticalityTheory.OddProfileOriginFailure
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaLayerBounds
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaFarTail
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaLayerBounds
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaFarTail
 
 /-!
 # Gaussian criticality of the restricted Weil operators

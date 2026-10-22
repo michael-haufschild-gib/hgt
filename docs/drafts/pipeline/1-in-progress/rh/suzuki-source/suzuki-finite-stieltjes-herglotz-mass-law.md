@@ -36,11 +36,11 @@ strictly negative, the same threshold makes source flux strictly negative.
 
 ## Lean formalization
 
-`RHTower/SuzukiFiniteStieltjesHerglotzMassLaw.lean` proves the residue, source-flux, curvature,
+`RHTower/Suzuki/SuzukiFiniteStieltjesHerglotzMassLaw.lean` proves the residue, source-flux, curvature,
 spectral-gap, and strict-sign conclusions in one theorem. Exact direct check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiFiniteStieltjesHerglotzMassLaw.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteStieltjesHerglotzMassLaw.lean
 ```
 
 passes.

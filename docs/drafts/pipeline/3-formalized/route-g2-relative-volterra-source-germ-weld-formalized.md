@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Paper proof:** `./route-g2-relative-volterra-source-germ-weld.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.SuzukiVolterraSourceGermWeldRigidity`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiVolterraSourceGermWeldRigidity`
 
 ## Formal theorem surface
 
@@ -51,10 +51,10 @@ Quot.sound
 Passed on 2026-08-01:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiVolterraSourceGermWeldRigidity.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiVolterraSourceGermWeldRigidity.lean
 python3 scripts/formal_tools.py lint
 lake env lean /tmp/SuzukiVolterraSourceGermWeldRigidity.lean   # batched #print axioms
-lake build GaloisForLFunctions.RHTower.SuzukiVolterraSourceGermWeldRigidity
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiVolterraSourceGermWeldRigidity
 ```
 
 Module is imported by `GaloisForLFunctions.RHTower`; generated Lean API/overview/gap indexes include

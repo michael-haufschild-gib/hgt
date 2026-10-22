@@ -132,7 +132,7 @@ assumption is made. HB and RH remain open.
 
 Scratch `lake env lean /tmp/hb-tested-angular-current.lean` passed with both
 original and trimmed imports at default limits. The isolated final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticTestedCurrentCusp`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticTestedCurrentCusp`
 passed in 16 seconds using cached imports. Source SHA256:
 `ce13833079844dd9a71392bdfbcd65ed72cf5bbef7c67636bab0d8557e730c5d`.
 The module has nine public theorems and eight public definitions and is wired

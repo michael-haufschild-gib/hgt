@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-one-sided-framed-mate-curvature-transgression.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerOneSidedFramedMateCurvatureTransgression`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerOneSidedFramedMateCurvatureTransgression`
 - **RH status:** not proved
 
 ## Formalized content
@@ -48,7 +48,7 @@ Direct foreground elaboration:
 
 ```text
 lake env lean \
-  GaloisForLFunctions/RHTower/DeningerOneSidedFramedMateCurvatureTransgression.lean
+  GaloisForLFunctions/RHTower/Deninger/DeningerOneSidedFramedMateCurvatureTransgression.lean
 ```
 
 passes without errors or warnings.
@@ -57,7 +57,7 @@ Targeted module build only:
 
 ```text
 lake build \
-  GaloisForLFunctions.RHTower.DeningerOneSidedFramedMateCurvatureTransgression
+  GaloisForLFunctions.RHTower.Deninger.DeningerOneSidedFramedMateCurvatureTransgression
 ```
 
 passes. No full build was run.

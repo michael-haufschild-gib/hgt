@@ -279,12 +279,12 @@ positivity, or RH claim is yet proved.
 ## Lean status (2026-07-31): the item-10 algebra core is formalized
 
 Repo-state survey first: the item-8 no-go (indefinite `p_ε`) was already formalized in
-`RHTower/DeningerArithmeticMilnorWittTransferObstruction.lean` (rank, signature, `not_posDef`,
+`RHTower/Deninger/DeningerArithmeticMilnorWittTransferObstruction.lean` (rank, signature, `not_posDef`,
 prime form), with its card correctly in `5-failed`; the rank-rigidity and hyperbolic
 localization companions (`DeningerArithmeticGammaRankRigidity`,
 `DeningerArithmeticHyperbolicLocalization`) also exist. What was missing is now added:
 
-`RHTower/DeningerPowerMapFiniteFree.lean` — built green, umbrella-registered, zero warnings,
+`RHTower/Deninger/DeningerPowerMapFiniteFree.lean` — built green, umbrella-registered, zero warnings,
 axiom-clean — the algebraic core of item 10 and of proof obligation 2:
 
 - `coeff_sum_expand_mul_X_pow` — the single-contributor coefficient formula for

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWardCubicBichamberHolomorphicCodiagonal
-import GaloisForLFunctions.RHTower.HedenmalmOrientationDivisorTransgression
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmOrientationDivisorTransgression
 
 /-!
 # Positive-shift arithmetic realization of the reflection--Loewner covariance

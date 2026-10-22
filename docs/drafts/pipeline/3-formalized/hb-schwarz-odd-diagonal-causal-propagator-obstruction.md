@@ -88,7 +88,7 @@ priority claim.
   incident Schwarz-odd diagonal jump iff RH; under RH, the zero jump is valid because all unit BM
   sources are extinct.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingSchwarzOddDiagonalCausalPropagatorObstruction`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingSchwarzOddDiagonalCausalPropagatorObstruction`
   passed (`12022/12022`); all five exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present. Formal lint reports no finding in
   this module; repository lint remains nonzero only for pre-existing unrelated unreachable modules.

@@ -11,10 +11,10 @@
 - `formal/GaloisForLFunctions/HTGeometry/LabelledAtomicMeasure.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PoissonBoundaryPositivity.lean`
 - `formal/GaloisForLFunctions/HTGeometry/PositiveOperatorInner.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCrossResolventInstantiation.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueInterlacing.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSpectralMeasure.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiProjectiveDefectBoundary.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCrossResolventInstantiation.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueInterlacing.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueSpectralMeasure.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveDefectBoundary.lean`
 
 ## Formal theorem surface
 
@@ -64,13 +64,13 @@ GaloisForLFunctions.HTGeometry.tInner_normalize_sq
 GaloisForLFunctions.HTGeometry.tInner_smul_smul
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiCrossResolventInstantiation`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCrossResolventInstantiation`:
 
 ```text
 RHTower.inner_spectralResolvent
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiDonoghueInterlacing`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiDonoghueInterlacing`:
 
 ```text
 GaloisForLFunctions.RHTower.cauchySum_eq_zero_at_center
@@ -102,7 +102,7 @@ GaloisForLFunctions.RHTower.tsum_eq_zero_of_symmetric_odd
 GaloisForLFunctions.RHTower.tsum_moment_eq_zero_of_symmetric
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiDonoghueSpectralMeasure`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiDonoghueSpectralMeasure`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiDonoghueKernel_eq_mobius
@@ -113,10 +113,10 @@ GaloisForLFunctions.RHTower.suzukiUpperCayleyInv_phase_residue_at_one
 GaloisForLFunctions.RHTower.suzukiUpperCayleyInv_residue_at_one
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiProjectiveDefectBoundary`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiProjectiveDefectBoundary`:
 
 ```text
-GaloisForLFunctions.RHTower.SuzukiParityPair
+GaloisForLFunctions.RHTower.Suzuki.SuzukiParityPair
 ```
 
 ## Verification

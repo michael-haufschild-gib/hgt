@@ -1,7 +1,7 @@
 # CCM-FU: source-local two-prime blocks
 
 - **Stage:** 1-in-progress
-- **Parent:** [initial two-prime ceiling](../../ccm-fu-initial-small-subset-ceiling.md)
+- **Parent:** [initial two-prime ceiling](ccm-fu-initial-small-subset-ceiling.md)
 - **Frozen question:** Does every original two-prime cofactor block contract? Is `K_p(N)<=2 K_1(N)` true for every prime p and natural cutoff N, providing a sufficient source comparison?
 - **Method:** Recover original signed source coefficients from all saved subset energies using the already checked late-edge head reconstruction and finite subset inversion. Read the data only; regenerate no channels or greedy paths. Use the original absolute energy tolerance. Numerical results guide an independent analytic proof and are never Lean premises.
 
@@ -46,7 +46,7 @@ The [large first-prime orientation theorem](../../../3-formalized/ccm-fu-large-p
 
 The [signed terminal modular mean](../../../3-formalized/ccm-fu-terminal-modular-mean.md) sharpens the unit coefficient band to the exact limit `c=log(2*pi)/2-gamma-1/4`. The complete terminal residue is `o(M)`, and the centered hyperbola has coefficient `-1/24`. One common quotient threshold gives `|K_d(M)-c*sqrt(M)|<=epsilon*sqrt(M)` for every positive dilation d with sufficiently large `M/d`, including clipped endpoints. The actual unit coefficient is therefore determined; no source coefficient or computed value is assumed.
 
-The [remaining middle quotient profiles](../../ccm-fu-bounded-quotient-profiles.md), finite parent regime and all-cutoff ceiling remain open. A saved-vector diagnostic supports the candidate global `K_1(N)<=sqrt(N)/8` bound through1024 but rejects the sufficient prefix envelope at 16 cutoffs. The exact limit above does not establish that global ceiling. None of those data is a Lean premise and no channels were regenerated.
+The [remaining middle quotient profiles](ccm-fu-bounded-quotient-profiles.md), finite parent regime and all-cutoff ceiling remain open. A saved-vector diagnostic supports the candidate global `K_1(N)<=sqrt(N)/8` bound through1024 but rejects the sufficient prefix envelope at 16 cutoffs. The exact limit above does not establish that global ceiling. None of those data is a Lean premise and no channels were regenerated.
 
 The [support-localized interaction estimate](../../../3-formalized/ccm-fu-localized-mixed-interactions.md)
 supplies a separate uniform source comparison. Universal D>1 and T>=1

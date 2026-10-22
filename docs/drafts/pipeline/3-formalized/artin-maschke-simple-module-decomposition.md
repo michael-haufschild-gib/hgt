@@ -9,7 +9,7 @@
 
 ## Exact formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinMaschkeDecomposition.lean` proves
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinMaschkeDecomposition.lean` proves
 
 ```text
 finiteGroup_exists_simpleModule_decomposition:
@@ -35,8 +35,8 @@ finite-dimensionality of `rho` to `ℂ[G]` gives the needed module-finiteness hy
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinMaschkeDecomposition.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinMaschkeDecomposition` passed; this is the targeted
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinMaschkeDecomposition.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinMaschkeDecomposition` passed; this is the targeted
   module build, not an umbrella or full build.
 - `/tmp/ArtinMaschkeDecompositionAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for all three exported theorems.

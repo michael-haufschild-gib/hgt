@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE], direct signed-source proof candidate.
 - **Goal:** Complete signed Abel bound, CCM-FU boundary chain, RH.
-- **Parent:** [complete reserve-extension attack](../../ccm-fu-reserve-extension-induction.md).
+- **Parent:** [complete reserve-extension attack](ccm-fu-reserve-extension-induction.md).
 
 Write `G_r(M)` for the exact ordered off-diagonal contribution of channel
 pairs with gcd r. The corpus proves

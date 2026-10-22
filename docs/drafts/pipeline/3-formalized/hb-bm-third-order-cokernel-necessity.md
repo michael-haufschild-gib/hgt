@@ -57,7 +57,7 @@ Nakano--Ioka, [Second Order Quasi-Normal Mode of the Schwarzschild Black Hole](h
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelNecessity`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelNecessity`
 - Theorems:
   - `d4EinsteinThirdOrder_nonAIMEProjection_eq_neg_AIME_of_unitBMTarget_of_criticalLine`
   - `d4EinsteinThirdOrder_nonAIMEProjection_ne_zero_of_unitBMTarget_of_criticalLine`

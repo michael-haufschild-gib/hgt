@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.InvZetaAbscissaSubpolynomial
 import GaloisForLFunctions.RHTower.ZetaConvexityBound
 import GaloisForLFunctions.RHTower.MellinHardyClasses
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import GaloisForLFunctions.RHTower.ZetaZeroAbscissa
 
 /-!

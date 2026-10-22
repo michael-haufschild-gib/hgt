@@ -531,7 +531,7 @@ Only inclusion of the target spectrum is obtained; nothing here excludes additio
 spectral pollution away from the target spectrum, exactly as the paper states.
 
 **Module 5 (DONE)** Suzuki-facing assembly:
-`formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureBoundaryPhaseLocking.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteApertureBoundaryPhaseLocking.lean`.
 
 - `apertureDeficiencyProjection`, `apertureBoundaryBlock`, `globalBoundaryBlock`.
 - `tendsto_apertureTransport`: `(3.3)-(3.4)` for the aperture chain.

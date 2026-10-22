@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMCofinalFloorCriterion` — both halves of the criterion.
-- `GaloisForLFunctions.RHTower.CCMNestedFloorNoEvacuation` — the nested-floor layer it stands on.
+- `GaloisForLFunctions.RHTower.CCM.CCMCofinalFloorCriterion` — both halves of the criterion.
+- `GaloisForLFunctions.RHTower.CCM.CCMNestedFloorNoEvacuation` — the nested-floor layer it stands on.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

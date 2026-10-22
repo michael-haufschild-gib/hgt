@@ -33,7 +33,7 @@ exact endpoint recurrence. Finally
 - **Exact killing theorem/mechanism:** positive curvature controls drawdown from the unique minimum but not its additive level; endpoint positivity does not fix that level.
 - **Strongest positive survivor:** exact classification `conjugate - moment = -min F`; SCE can survive only through source-specific arithmetic control of the checkpoint level.
 - **New insight:** all proved convex/event identities determine relative geometry. The missing absolute sign is precisely the RH-equivalent arithmetic datum, not a consequence of that geometry.
-- **Status:** formalized in `RHTower/SuzukiCheckpointStrictConvexEventNoGo.lean`; targeted build green; capstones use only `propext`, `Classical.choice`, `Quot.sound`. Suzuki 2022–2026 primary papers contain RH-equivalent screw positivity criteria but no collision with this universal convex/event no-go.
+- **Status:** formalized in `RHTower/Suzuki/SuzukiCheckpointStrictConvexEventNoGo.lean`; targeted build green; capstones use only `propext`, `Classical.choice`, `Quot.sound`. Suzuki 2022–2026 primary papers contain RH-equivalent screw positivity criteria but no collision with this universal convex/event no-go.
 
 ## Log
 - 2026-09-01 — corpus-derived conjecture SCE-NG1 frozen; paper proof closed.

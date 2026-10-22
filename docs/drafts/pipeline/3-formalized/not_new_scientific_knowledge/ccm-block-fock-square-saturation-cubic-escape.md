@@ -139,7 +139,7 @@ universal laws and do not open new RH route.
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.CCMBlockFockPowerDilationTrichotomy
+GaloisForLFunctions.RHTower.CCM.CCMBlockFockPowerDilationTrichotomy
 ```
 
 Key declarations:

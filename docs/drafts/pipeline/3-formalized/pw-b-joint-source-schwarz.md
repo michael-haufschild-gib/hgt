@@ -2,7 +2,7 @@
 
 - **Route:** PW-B
 - **Status:** formalized Lean premise
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSourceSchwarz`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJointSourceSchwarz`
 
 `timeReducedCoefficient_conj` proves, unconditionally, that conjugation of the
 literal original-time residual source is the same source at conjugated spectral
@@ -16,6 +16,6 @@ product-measure integration, then the already-reduced critical-fibre
 cancellation; no PW magnitude identity is claimed.
 
 **Verification:** `lake env lean
-GaloisForLFunctions/RHTower/ThetaCuspHawkingBMJointSourceSchwarz.lean` passed.
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMJointSourceSchwarz.lean` passed.
 The module is wired into `RHTower.lean`. Its targeted `lake build` was stopped
 after it replayed over 12,000 unrelated modules; no umbrella build was run.

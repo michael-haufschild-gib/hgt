@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiClarkMeasure
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiClarkMeasure
 import GaloisForLFunctions.HTGeometry.L2FourierIntegralBridge
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 

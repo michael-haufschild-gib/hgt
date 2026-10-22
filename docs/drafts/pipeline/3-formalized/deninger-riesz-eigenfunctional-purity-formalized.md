@@ -5,7 +5,7 @@
 - **Type:** LEAN 4 THEOREM
 - **Label:** `DAC_RIESZ_EIGENFUNCTIONAL_HODGE_PURITY_LEAN`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticRieszEigenfunctionalPurity`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticRieszEigenfunctionalPurity`
 
 ## Formalized statement
 
@@ -29,7 +29,7 @@ that package and the closed weight-one polarization.
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticRieszEigenfunctionalPurity.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticRieszEigenfunctionalPurity.lean`
 - Result: passed.
 - Scratch `#print axioms`: only Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`.

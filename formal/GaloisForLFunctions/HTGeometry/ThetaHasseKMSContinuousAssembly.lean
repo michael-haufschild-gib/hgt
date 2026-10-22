@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCarrierHassePacket
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
 import GaloisForLFunctions.HTGeometry.ConstitutiveThetaHasseKMSExecutionBalance
 import GaloisForLFunctions.HTGeometry.IntegralCauchySchwarz
 import Mathlib.Analysis.Calculus.Deriv.MeanValue

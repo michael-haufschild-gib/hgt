@@ -260,7 +260,7 @@ statement.  Priority remains unverified pending specialist review.
 
 ## Lean target
 
-`formal/GaloisForLFunctions/RHTower/SuzukiParitySourceCapacityGap.lean` will prove:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParitySourceCapacityGap.lean` will prove:
 
 ```text
 suzukiSourceNormalizedEnergySet_isLeast

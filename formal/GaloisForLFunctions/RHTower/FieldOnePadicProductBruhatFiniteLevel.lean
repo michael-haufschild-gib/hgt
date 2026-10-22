@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicBruhatFourierSelfMap
-import GaloisForLFunctions.RHTower.CCMRationalFiniteAdeleNonarchimedean
+import GaloisForLFunctions.RHTower.CCM.CCMRationalFiniteAdeleNonarchimedean
 
 /-!
 # Simultaneous finite-level control on a finite product of p-adic fields

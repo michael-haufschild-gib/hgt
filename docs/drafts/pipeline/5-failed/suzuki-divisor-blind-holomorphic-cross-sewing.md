@@ -52,7 +52,7 @@ Dependency-closed proof, hostile corpus/literature audit, and full certificate a
 `../3-formalized/suzuki-cross-sewn-double-jet-divisor-no-go.md`.
 
 Lean module:
-`GaloisForLFunctions.RHTower.SuzukiCrossSewnDoubleJetDivisorNoGo`.
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiCrossSewnDoubleJetDivisorNoGo`.
 
 Exact classifier:
 `RHTower.analyticAt_suzukiCrossSewnExterior_iff_channelIncidence`.

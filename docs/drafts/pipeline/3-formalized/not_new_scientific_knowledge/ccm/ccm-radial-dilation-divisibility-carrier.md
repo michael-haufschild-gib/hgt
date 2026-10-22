@@ -271,7 +271,7 @@ parent-theory gate after vocabulary erasure. It is classified as a bridge.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMRadialDivisibilityCarrier.lean`.  The Möbius inversion
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialDivisibilityCarrier.lean`.  The Möbius inversion
 interface the previous decision reported missing is mathlib's, and the analytic components are not
 needed: every statement below is an identity in the radial index.
 

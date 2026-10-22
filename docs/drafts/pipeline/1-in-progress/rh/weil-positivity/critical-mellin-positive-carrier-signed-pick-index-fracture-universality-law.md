@@ -7,7 +7,7 @@
 ## Lean-derived conjecture
 
 Reading `HTGeometry/MeasureCarrier.lean` against
-`RHTower/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean` exposes a same-source
+`RHTower/CCM/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean` exposes a same-source
 sign/index fracture.
 
 For every aperture, the finite positive polar part of the critical-Mellin source produces a

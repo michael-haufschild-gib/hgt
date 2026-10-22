@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SlabFullWidthAdmissibility
-import GaloisForLFunctions.RHTower.CCMTwoPoleSourceCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMTwoPoleSourceCriterion
 
 /-!
 # The conjugated germ theorem on the slab

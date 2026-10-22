@@ -94,7 +94,7 @@ private theorem tail_kernel_bound (α β : ℝ) :
       _ ≤ ‖z‖^α*((1/2 : ℝ)*‖z‖)^β := mul_le_mul_of_nonneg_left hp (Real.rpow_nonneg hn.le _)
       _ = _ := by rw [Real.mul_rpow (by norm_num) hn.le, Real.rpow_add hn]; ring
 
-theorem exterior_integrable (α β : ℝ) (hs : α+β < -2) :
+private theorem exterior_integrable (α β : ℝ) (hs : α+β < -2) :
     IntegrableOn (fzzScreeningPlaneKernel α β) fzzScreeningPlaneExterior := by
   obtain ⟨C,hC,hbound⟩ := tail_kernel_bound α β
   have hi : IntegrableOn (fzzScreeningPlaneKernel α β) {z : ℂ | 2 < ‖z‖} := by

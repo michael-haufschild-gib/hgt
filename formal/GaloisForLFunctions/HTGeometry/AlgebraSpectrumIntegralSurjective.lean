@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AlgebraSpectrumEquiv
-import GaloisForLFunctions.RHTower.DeningerDynSysIntegralLift
+import GaloisForLFunctions.RHTower.Deninger.DeningerDynSysIntegralLift
 
 /-!
 # Surjectivity on complex points for integral extensions

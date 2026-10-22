@@ -62,7 +62,7 @@ gives qualitative `0<delta≤T` with
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFarTail`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityFarTail`
 - Main asymptotic:
   `tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized`
 - Endpoint signs:
@@ -71,10 +71,10 @@ gives qualitative `0<delta≤T` with
 - Exact reduction:
   `exists_thetaCuspReflectedSourceFifthRootCurvatureVelocity_zero_compactCore`
 - Direct source audit:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureVelocityFarTail.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFifthRootCurvatureVelocityFarTail.lean`
   passed.
 - Targeted final audit:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFarTail` passed.
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityFarTail` passed.
 - `#print axioms` on the normalized limit, both endpoint signs, and compact-core equivalence
   reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Repository lint reports no forbidden declaration or reachability defect for this module. Its

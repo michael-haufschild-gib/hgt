@@ -54,9 +54,9 @@ actual Gaussian integer atom retained through the corpus source limits.
 `ThetaCuspPolynomialFluxBorderDegree.lean` contains the source-specific
 flux derivative limit, exact residual limit, eventual strict positivity,
 and impossibility of cofinal vanishing. Targeted
-`lake build --old +GaloisForLFunctions.RHTower.ThetaCuspPolynomialFluxBorderDegree`
+`lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPolynomialFluxBorderDegree`
 passed. The leaf is imported by `RHTower.lean`; no umbrella build ran.
-Final `lake env lean GaloisForLFunctions/RHTower/ThetaCuspPolynomialFluxBorderDegree.lean`
+Final `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspPolynomialFluxBorderDegree.lean`
 passed (exit 0). Both checks emitted one informational `ring_nf` suggestion,
 not a failed proof or leaf warning. Separate `/tmp` axiom checks for all
 four public theorems returned exactly `[propext, Classical.choice, Quot.sound]`:

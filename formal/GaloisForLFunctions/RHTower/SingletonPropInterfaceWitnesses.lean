@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.IharaBlockSelector
-import GaloisForLFunctions.RHTower.SuzukiCoordinateCutoffCovariance
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoordinateCutoffCovariance
 
 /-! # Canonical singleton-consumer witnesses in the Riemann tower -/
 

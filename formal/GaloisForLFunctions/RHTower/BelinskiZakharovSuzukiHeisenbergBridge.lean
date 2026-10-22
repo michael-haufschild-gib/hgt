@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiFiniteMatrixHeisenberg
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteMatrixHeisenberg
 import GaloisForLFunctions.HTGeometry.KerrNewmanBelinskiZakharovBridge
 
 /-!

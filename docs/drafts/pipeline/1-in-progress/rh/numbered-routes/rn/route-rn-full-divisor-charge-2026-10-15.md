@@ -1290,11 +1290,11 @@ checked by scratch `#print axioms`; dependencies are only propext,
 Classical.choice and Quot.sound. The module is imported once by RHTower.
 The compiler emitted a tactic suggestion, not an error. `git diff --check`
 passed. Repository lint exited 1 because the unrelated untracked module
-GaloisForLFunctions.RHTower.DeningerMeyerNativeClockBoundaryDefect was not
+GaloisForLFunctions.RHTower.Deninger.DeningerMeyerNativeClockBoundaryDefect was not
 reachable from its umbrella. No changes were made to that module.
 Its import subsequently appeared from concurrent workspace work. A second
 lint run exited 1 on another unrelated untracked module,
-GaloisForLFunctions.RHTower.DeningerMeyerExactXiCapSource. The RN module
+GaloisForLFunctions.RHTower.Deninger.DeningerMeyerExactXiCapSource. The RN module
 remained imported exactly once; repository lint is not claimed passing.
 
 Domain audit: thetaFullArithmeticQuadratic accepts Schwartz ground

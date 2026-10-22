@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WindowTransformSamplingParseval
-import GaloisForLFunctions.RHTower.CCMParityQuartetEvenFloor
+import GaloisForLFunctions.RHTower.CCM.CCMParityQuartetEvenFloor
 
 /-!
 # Transforms of interval sources sampled on locally bounded point sets

@@ -131,15 +131,15 @@ No headline proof is deferred solely to Lean.
 Each command was run sequentially in foreground from `formal/`:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRectangularWeilCompleteness.lean
-lake env lean GaloisForLFunctions/RHTower/CCMRectangularTransverseGrowth.lean
-lake env lean GaloisForLFunctions/RHTower/CCMRectangularOneSidedTransverseExponent.lean
-lake env lean GaloisForLFunctions/RHTower/CCMRectangularTwoSidedOscillation.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRectangularWeilCompleteness.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRectangularTransverseGrowth.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRectangularOneSidedTransverseExponent.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRectangularTwoSidedOscillation.lean
 lake env lean GaloisForLFunctions/RHTower/XiGuinandWeilRectangularFullFormula.lean
-lake env lean GaloisForLFunctions/RHTower/CCMPrimeGammaSourceEnergySpectrum.lean
-lake env lean GaloisForLFunctions/RHTower/CCMPrimeGammaSourceDivisorTomography.lean
-lake env lean GaloisForLFunctions/RHTower/CCMCumulativeNegativeMassSpectrum.lean
-lake env lean GaloisForLFunctions/RHTower/CCMSmoothTwoEdgeWeil.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeGammaSourceEnergySpectrum.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeGammaSourceDivisorTomography.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMCumulativeNegativeMassSpectrum.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMSmoothTwoEdgeWeil.lean
 lake env lean GaloisForLFunctions/RHTower/FrequencySectorBlaschkeCompleteness.lean
 lake env lean GaloisForLFunctions/RHTower/CompactCarrierFrequencyCompleteness.lean
 lake env lean GaloisForLFunctions/RHTower/CriticalDiscReflectedLambertUniversality.lean

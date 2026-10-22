@@ -1,7 +1,7 @@
 # Projective Fock cocycle for the intact matched CCM source
 
 Status: formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveFockCocycle`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveFockCocycle`.
 
 ## Frankenstein weld
 

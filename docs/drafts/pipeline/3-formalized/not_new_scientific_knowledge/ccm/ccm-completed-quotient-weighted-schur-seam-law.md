@@ -532,7 +532,7 @@ or `(23)`, which stay imports.
 
 ## Lean status
 
-Module `formal/GaloisForLFunctions/RHTower/CCMWeightedSchurSeam.lean` (wired, axiom-clean, 9
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMWeightedSchurSeam.lean` (wired, axiom-clean, 9
 declarations), reusing `HTGeometry.hasDerivAt_normSq_comp` rather than redefining it.
 
 - **`re_mul_conj_eq_normSq_mul`** — `(X' conj X).re = |X|^2 (X'/X).re`, the bridge from the

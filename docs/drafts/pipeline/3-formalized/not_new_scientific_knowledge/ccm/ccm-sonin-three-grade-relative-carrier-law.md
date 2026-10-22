@@ -347,7 +347,7 @@ longer asks for an abstract semilocal carrier or an arbitrary relative trace.
 `MeasuredIndexBlindness`).  The one algebraic gate that had no Lean carrier — the exact
 projection-compressed degree-one Gram identity `(9b)`–`(9d)` — is now proved:
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMSoninCompressedCommutator.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninCompressedCommutator.lean`
 (6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]` — two use
 `[propext]` only — wired into `formal/GaloisForLFunctions/RHTower.lean`).
 

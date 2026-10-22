@@ -44,9 +44,9 @@ unproved character-decomposition interface.
 ## Lean certificate
 
 - Modules:
-  - `formal/GaloisForLFunctions/RHTower/ArtinMonomialCharacter.lean` defines
+  - `formal/GaloisForLFunctions/RHTower/Artin/ArtinMonomialCharacter.lean` defines
     `linearGenuineCharacter` and `linearVirtualCharacter`.
-  - `formal/GaloisForLFunctions/RHTower/ArtinFiniteAbelianFourier.lean` proves the result.
+  - `formal/GaloisForLFunctions/RHTower/Artin/ArtinFiniteAbelianFourier.lean` proves the result.
 - Orthogonality and inversion:
   `linearCharacterPairing_orthonormal`, `finiteAbelian_fourier_reconstruction`.
 - Integral formulas:
@@ -56,8 +56,8 @@ unproved character-decomposition interface.
   `finiteAbelian_virtualCharacterGroup_eq_linear` and
   `finiteAbelian_genuineCharacterMonoid_eq_linear`.
 - Validation passed:
-  - `lake env lean GaloisForLFunctions/RHTower/ArtinFiniteAbelianFourier.lean`.
-  - `lake build GaloisForLFunctions.RHTower.ArtinFiniteAbelianFourier`.
+  - `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinFiniteAbelianFourier.lean`.
+  - `lake build GaloisForLFunctions.RHTower.Artin.ArtinFiniteAbelianFourier`.
   - `/tmp/ArtinFiniteAbelianAxioms.lean` reports only `propext`, `Classical.choice`, and
     `Quot.sound` for both closure theorems.
 - Wired into `formal/GaloisForLFunctions/RHTower.lean`; the umbrella was deliberately not built.

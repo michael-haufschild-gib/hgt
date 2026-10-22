@@ -360,7 +360,7 @@ its exact Route-L frontier consequence, not for the analytic ingredients separat
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerFinitePeriodizationKernel.lean`, on the periodization
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFinitePeriodizationKernel.lean`, on the periodization
 layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
 `DeningerEulerDepletionTower.lean`, `DeningerDepletedPoisson.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
@@ -383,7 +383,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
 ### Not yet formalized
 
 - **The entire Fourier--Laplace transform is now built** —
-  `formal/GaloisForLFunctions/RHTower/DeningerPaleyWiener.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPaleyWiener.lean`:
   `deningerFourierLaplace`, `deningerFourierLaplace_integrable` (integrable against every
   polynomial moment, at every complex frequency), `deningerFourierLaplace_hasDerivAt` and
   **`deningerFourierLaplace_differentiable`: `ĥ` is entire.**  The kernel bound is
@@ -391,7 +391,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   one factor of `t`, absorbed by the same margin; the domination is uniform on a unit ball of
   frequencies, so `hasDerivAt_integral_of_dominated_loc_of_deriv_le` applies.
 - **`(5)` is proved in the form the theorem uses** —
-  `formal/GaloisForLFunctions/RHTower/DeningerLatticeFrequency.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerLatticeFrequency.lean`:
   `deningerFourierLaplace_shift` (translation multiplies `ĥ` by `e^{izL}`),
   `deningerFourierLaplace_defect` (`ĥ = (1 - e^{izL})ĝ` on a defect) and
   **`deningerFourierLaplace_vanishes_at_lattice`: `Per_L h = 0` forces `ĥ(2πk/L) = 0` for every
@@ -399,7 +399,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   proved, no unfolding of the periodization over a fundamental interval is needed — no interchange
   of sum and integral, and no tiling of the line.
 - **`(6)` is proved unconditionally** —
-  `formal/GaloisForLFunctions/RHTower/DeningerTomographyInjective.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerTomographyInjective.lean`:
   `deningerFourierLaplace_real` (`ĥ(2πξ) = ℱh(ξ)`), `deningerSource_eq_zero_of_fourierLaplace_zero`
   (Fourier inversion), `deningerSource_eq_zero_of_zeros_tendsto` (identity theorem on the entire
   `ĥ` from zeros accumulating at the origin), **`deningerCofinalTomography`** (unbounded periods)
@@ -411,23 +411,23 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   gives for `(10)` ("if `𝒫_Q h = 𝒫_Q b` for `b ∈ B_p`, then `(6)` gives `h = b`"), stated without
   reference to `M_ζ`, so it does not wait on the Euler-depleted extension `(9)`.
 - **§4 is proved unconditionally** —
-  `formal/GaloisForLFunctions/RHTower/DeningerCompactOrbitWeightNoGo.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompactOrbitWeightNoGo.lean`:
   `deningerPeriodizationSum_shift` (`Per_L ∘ T_L = Per_L`),
   **`deningerCompactOrbitEnergy_weight_one_eq_zero`** (a weight-one functional factoring through a
   single compact orbit vanishes — the card's stronger form, with no rotation hypothesis) and
   `deningerRotationInvariantEnergy_weight_one_eq_zero` (`(16)` vs `(17)`).
 - **The quantitative core of §3 is proved unconditionally** —
-  `formal/GaloisForLFunctions/RHTower/DeningerTomographyNonstrict.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerTomographyNonstrict.lean`:
   `deningerPeriodizationSum_expShift` (translation ↦ rotation), `deningerPeriodizationSum_periodic`,
   `deningerEscapeFamily_periodizationSum` (`(13)`: every compact trace carries the damping factor
   `e^{-as}`) and **`deningerEscapeFamily_meyer_ge`** (`(14)`: the Meyer seminorm cancels the damping
   exactly, so `q_{a,0}(h_s) ≥ e^{au}‖h(u)‖` independently of `s`), with
   `deningerEscapeFamily_meyer_pos`.
 - **The target of `(3)` is now a real object.**  The earlier note on this card that
-  `C^∞(ℝ/Lℤ)` was missing was wrong: `RHTower/DeningerSmoothPeriodic.lean` and
+  `C^∞(ℝ/Lℤ)` was missing was wrong: `RHTower/Deninger/DeningerSmoothPeriodic.lean` and
   `DeningerSmoothPeriodicNuclear.lean` already carried the space and its nuclearity.  The one
   genuinely missing link — that the periodization *lands* there — is now built:
-  `formal/GaloisForLFunctions/RHTower/DeningerPeriodCutoff.lean` and
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPeriodCutoff.lean` and
   `DeningerPeriodizationSmooth.lean` prove **`deningerPeriodizationSum_contDiff`** (`Per_L h` is
   `C^∞`) and **`deningerPeriodizationMem`** (`Per_L h ∈ C^∞(ℝ/Lℤ)`), and
   `DeningerPeriodizationMap.lean` assembles **`deningerPeriodizationMap`** (`Per_L` as a linear map),
@@ -437,7 +437,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   The lattice sum has no summable majorant on `ℝ`, so `contDiff_tsum` does not apply directly; the
   proof cuts by a `ContDiffBump` equal to `1` on one period, where `|t+jL| ≥ |j|L - R` restores a
   geometric majorant, then propagates smoothness by periodicity.
-- **§3's primary statement is proved** — `formal/GaloisForLFunctions/RHTower/DeningerTomographyNotEmbedding.lean`:
+- **§3's primary statement is proved** — `formal/GaloisForLFunctions/RHTower/Deninger/DeningerTomographyNotEmbedding.lean`:
   `deningerEscape_trace_le` (every `C^r` circle seminorm of the escaped trace carries the damping
   factor `e^{-as}`, because the trace is a rotation of the original scaled by that factor),
   `deningerEscape_trace_tendsto_zero`, and **`deningerPeriodization_not_isEmbedding`**: the traces
@@ -445,7 +445,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   independent of the escape parameter.  That is `(12)`--`(14)`, i.e. the inverse on the range is
   discontinuous.
 - **`(9)` and `(10)` are proved** —
-  `formal/GaloisForLFunctions/RHTower/DeningerTomographyConservative.lean`:
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerTomographyConservative.lean`:
   **`deningerIotaEquiv`** is `M_ζ ≃ ker Per̄_p`, which is `(9)`, assembled from card
   `deninger-euler-depleted-meyer-periodization-extension`'s `deningerIota_injective` and
   `deningerIota_range_eq_perBar_ker`; and **`deningerCofinalTrace_mod_mem`** with
@@ -482,7 +482,7 @@ layer `DeningerMeyerPeriodization.lean`, `DeningerGreenSumSource.lean`,
   **`deningerTomography_not_isClosed_range`** — for every infinite prime set `Q` and every auxiliary
   period `p`, the range of `𝒫_Q : K_p → ∏_{q ∈ Q} C^∞(ℝ/L_qℤ)` **is not closed**.  That is `(11)`.
 - **§5's transport corollary `(20)`--`(25)` is proved unconditionally** —
-  `formal/GaloisForLFunctions/RHTower/DeningerStrongLogEulerGreenTransport.lean`.  The corpus's
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerStrongLogEulerGreenTransport.lean`.  The corpus's
   half-density seminorm `p_{1/2}` and its quotient `p̄_{1/2}` live on
   `DeningerMeyerStrongLogTarget`, so the Euler defect and its Green inverse are built there:
   `deningerMeyerStrongLogDecay_tendsto_zero_atTop` (all-weight decay at `+∞`),

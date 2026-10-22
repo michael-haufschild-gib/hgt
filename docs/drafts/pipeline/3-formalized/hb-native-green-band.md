@@ -18,7 +18,7 @@ The explicit nonreal point w=(B(q)+2)/2+i lies in 3/2<Re(w)<2 and works for all 
 
 The new intermediate convergence parameter depends on q. It does not select or change the Hawking clock. No vanishing current, QNM boundary limit or extinction hypothesis is introduced.
 
-Module: [ThetaCuspHawkingBMNativeGreenBand.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeGreenBand.lean), 954 lines. Namespaces: `RHTower.D4BMNativeCircle`, `RHTower.D4BMNativeResponse`, `RHTower.D4BMJointSource`, `RHTower.D4BMNativeLaplace`. The adapted spatial proof uses the existing actual equation and domains with the newly proved convergence condition; existing modules are unchanged.
+Module: [ThetaCuspHawkingBMNativeGreenBand.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeGreenBand.lean), 954 lines. Namespaces: `RHTower.D4BMNativeCircle`, `RHTower.D4BMNativeResponse`, `RHTower.D4BMJointSource`, `RHTower.D4BMNativeLaplace`. The adapted spatial proof uses the existing actual equation and domains with the newly proved convergence condition; existing modules are unchanged.
 
 Validation: the complete scratch passed `lake env lean`; one harmless tactic-style warning remains. The exact leaf build uses cached dependencies and compiles only the new module. The checked source and five artifacts are installed, and one umbrella import is added. No umbrella/full build, axiom-print check or numerical experiment is used.
 

@@ -26,7 +26,7 @@ theorem continuous_cubicTestedSlice {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff �
   exact ContinuousAt.comp (f := fun w : ℝ × ℝ => ![σ,w.1,w.2])
     (contDiffAt_cubicTestedSource hΦ (w := ![σ,w.1,w.2]) hσ).continuousAt he.continuousAt
 
-theorem continuous_cubicMixedDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuous_cubicMixedDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) : Continuous (cubicMixedDifference Φ σ) := by
   have hs := continuous_cubicTestedSlice hΦ hσ
   have h1 : Continuous (fun w : ℝ × ℝ => (-w.1,w.2)) := by fun_prop
@@ -35,7 +35,7 @@ theorem continuous_cubicMixedDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDif
   convert ((hs.sub (hs.comp h1)).sub (hs.comp h2)).add (hs.comp h12) using 1
   rfl
 
-theorem continuousAt_cubicTestedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuousAt_cubicTestedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) (u v : ℝ) :
     ContinuousAt (fun τ : ℝ => cubicTestedSource Φ ![τ,u,v]) σ := by
   have he : Continuous (fun τ : ℝ => ![τ,u,v]) := by
@@ -45,7 +45,7 @@ theorem continuousAt_cubicTestedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContD
   exact ContinuousAt.comp (f := fun τ : ℝ => ![τ,u,v])
     (contDiffAt_cubicTestedSource hΦ (w := ![σ,u,v]) hσ).continuousAt he.continuousAt
 
-theorem continuousAt_cubicMixedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuousAt_cubicMixedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) (w : ℝ × ℝ) :
     ContinuousAt (fun τ : ℝ => cubicMixedDifference Φ τ w) σ :=
   (((continuousAt_cubicTestedParameter hΦ hσ w.1 w.2).sub
@@ -57,7 +57,7 @@ theorem continuousAt_cubicMixedParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDi
 def cubicMixedQuotient (Φ : ℝ × ℝ → ℂ) (σ : ℝ) (w : ℝ × ℝ) : ℂ :=
   cubicMixedDifference Φ σ w / ((w.1*w.2 : ℝ) : ℂ)
 
-theorem measurable_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem measurable_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) : Measurable (cubicMixedQuotient Φ σ) := by
   have hc : Continuous (fun w : ℝ × ℝ => ((w.1*w.2 : ℝ) : ℂ)) := by fun_prop
   convert (continuous_cubicMixedDifference hΦ hσ).measurable.div hc.measurable using 1
@@ -93,14 +93,14 @@ private theorem continuous_cubicDampingFactor {ε : ℝ} (hε : 0 < ε) :
   exact (continuous_id.pow 2).div (continuous_const.add (continuous_id.pow 2))
     (fun u => by positivity)
 
-theorem tendsto_cubicDampingFactor {u : ℝ} (hu : u ≠ 0) :
+private theorem tendsto_cubicDampingFactor {u : ℝ} (hu : u ≠ 0) :
     Tendsto (fun ε : ℝ => cubicDampingFactor ε u) (𝓝[>] 0) (𝓝 1) := by
   have hc : ContinuousAt (fun ε : ℝ => u^2/(ε^2+u^2)) 0 :=
     continuousAt_const.div ((continuousAt_id.pow 2).add continuousAt_const)
       (by simpa using pow_ne_zero 2 hu)
   simpa [cubicDampingFactor, hu] using hc.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
 
-theorem tendsto_damped_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ}
+private theorem tendsto_damped_cubicMixedQuotient {Φ : ℝ × ℝ → ℂ}
     (hΦ : ContDiff ℝ ∞ Φ) (w : ℝ × ℝ) :
     Tendsto (fun ε : ℝ => (cubicDampingFactor ε w.1*cubicDampingFactor ε w.2) •
       cubicMixedQuotient Φ (1+ε) w) (𝓝[>] 0) (𝓝 (cubicMixedQuotient Φ 1 w)) := by
@@ -171,14 +171,14 @@ theorem continuous_cubicTestedAxisSlice {Φ : ℝ × ℝ → ℂ} (hΦ : ContDif
   exact ContinuousAt.comp (f := fun w : ℝ × ℝ => ![σ,w.1,w.2])
     (contDiffAt_cubicTestedAxisNumerator hΦ (w := ![σ,w.1,w.2]) hσ).continuousAt he.continuousAt
 
-theorem continuous_cubicAxisDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuous_cubicAxisDifference {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) : Continuous (cubicAxisDifference Φ σ) := by
   have hs := continuous_cubicTestedAxisSlice hΦ hσ
   have h1 : Continuous (fun w : ℝ × ℝ => (-w.1,w.2)) := by fun_prop
   convert hs.add (hs.comp h1) using 1
   rfl
 
-theorem continuousAt_cubicAxisTestParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuousAt_cubicAxisTestParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) (u v : ℝ) :
     ContinuousAt (fun τ : ℝ => cubicTestedAxisNumerator Φ ![τ,u,v]) σ := by
   have he : Continuous (fun τ : ℝ => ![τ,u,v]) := by
@@ -188,13 +188,13 @@ theorem continuousAt_cubicAxisTestParameter {Φ : ℝ × ℝ → ℂ} (hΦ : Con
   exact ContinuousAt.comp (f := fun τ : ℝ => ![τ,u,v])
     (contDiffAt_cubicTestedAxisNumerator hΦ (w := ![σ,u,v]) hσ).continuousAt he.continuousAt
 
-theorem continuousAt_cubicAxisParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem continuousAt_cubicAxisParameter {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) (w : ℝ × ℝ) :
     ContinuousAt (fun τ : ℝ => cubicAxisDifference Φ τ w) σ :=
   (continuousAt_cubicAxisTestParameter hΦ hσ w.1 w.2).add
     (continuousAt_cubicAxisTestParameter hΦ hσ (-w.1) w.2)
 
-theorem measurable_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
+private theorem measurable_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff ℝ ∞ Φ)
     {σ : ℝ} (hσ : 1 ≤ σ) : Measurable (cubicAxisQuotient Φ σ) := by
   have hc : Continuous (fun w : ℝ × ℝ => ((w.1^2 : ℝ) : ℂ)) := by fun_prop
   convert (continuous_cubicAxisDifference hΦ hσ).measurable.div hc.measurable using 1
@@ -214,7 +214,7 @@ theorem exists_bound_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ} (hΦ : ContDiff
     rw [cubicAxisQuotient,norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hp]
     exact (div_le_iff₀ hp).2 h
 
-theorem tendsto_damped_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ}
+private theorem tendsto_damped_cubicAxisQuotient {Φ : ℝ × ℝ → ℂ}
     (hΦ : ContDiff ℝ ∞ Φ) (w : ℝ × ℝ) :
     Tendsto (fun ε : ℝ => cubicDampingFactor ε w.1 • cubicAxisQuotient Φ (1+ε) w)
       (𝓝[>] 0) (𝓝 (cubicAxisQuotient Φ 1 w)) := by

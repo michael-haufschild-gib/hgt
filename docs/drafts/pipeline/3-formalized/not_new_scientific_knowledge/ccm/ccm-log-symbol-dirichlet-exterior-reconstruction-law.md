@@ -229,7 +229,7 @@ heat-kernel and unbounded-form layers remain cited parents, but the card's own s
 the positive infimum, the Carleman domination, the coercive inverse bound and the observability
 estimate — are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMLogSymbolDirichlet.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMLogSymbolDirichlet.lean`
 (4 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

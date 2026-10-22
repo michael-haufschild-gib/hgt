@@ -31,7 +31,7 @@ archimedean side and the prime side simultaneously. The prime channel is a posit
 the zero-side wave carries the primes as its boundary singularities (Cramér in Klein–Gordon coordinates).
 
 ## Plan (modules)
-1. `HTGeometry/KleinGordonLightConeBesselKernel.lean`: B entire, bounds, B(0)=1; Beta integral
+1. `HTGeometry/KleinGordon/KleinGordonLightConeBesselKernel.lean`: B entire, bounds, B(0)=1; Beta integral
    ∫_{−1}^{1}(1−t²)^k t^{2j} dt = 4^{k+1}k!(2j)!(k+j+1)!/(j!(2k+2j+2)!); light-cone identity
    cos(zw) = cos(zr) − (c z²/4)∫_{−1}^{1} B(c z²(1−t²)) cos(zrt) dt for w² = r² + c (power series + Cauchy product).
 2. CHMD prime-kernel light-cone decomposition: D via dslope of sinh(π·); (1/2π)∫sech²(r/2)cos(vr)dr = D(v);
@@ -47,7 +47,7 @@ the zero-side wave carries the primes as its boundary singularities (Cramér in 
   `sechSqHalfSymbol_eq`, Lévy form `gammaHardyPhaseRate_sub_zero_eq_integral`, holomorphy under integrals
   `differentiableAt_integral_of_cauchy_dominated`, rectangle tools; no light-cone identity, no massless explicit
   formula, no continuation beyond the strip in the corpus.
-- 2026-10-16 — modules compiled (lake env lean clean): `HTGeometry/KleinGordonLightConeBesselKernel` (B entire,
+- 2026-10-16 — modules compiled (lake env lean clean): `HTGeometry/KleinGordon/KleinGordonLightConeBesselKernel` (B entire,
   Beta integrals, complex + real light-cone identity, `besselJ_one_eq`), `RHTower/CHMDDAlembertSechKernel` (D = 2/S,
   S = dslope sinh(π·), zeros of S = iℤ∖0, D > 0, D ≤ 8(1+|v|)e^{−π|v|}, Fourier identity, (w−i)D(w) → −2i/π),
   `RHTower/CHMDLightConePrimeKernelDecomposition` (light-cone splitting of sech²-weighted KG integrals by Fubini;
@@ -56,7 +56,7 @@ the zero-side wave carries the primes as its boundary singularities (Cramér in 
   Φ₀(v) = (2/cos²¼)cosh(v/2) + A₀(v)/2π − P₀(v)). Next: module 4 (Lévy translate form of A₀, complex bounds),
   module 5 (contour continuation), module 6 (KG).
 - 2026-10-16 — all ten modules built and audited (axioms propext/Classical.choice/Quot.sound only):
-  `HTGeometry/KleinGordonLightConeBesselKernel`, `RHTower/CHMDDAlembertSechKernel`,
+  `HTGeometry/KleinGordon/KleinGordonLightConeBesselKernel`, `RHTower/CHMDDAlembertSechKernel`,
   `RHTower/CHMDLightConePrimeKernelDecomposition`, `RHTower/CHMDMasslessZeroWaveExplicitFormula`,
   `RHTower/CHMDArchimedeanLevyTranslateForm`, `RHTower/CHMDMasslessContinuationPieces`,
   `RHTower/CHMDMasslessCramerContinuation`, `RHTower/CHMDKleinGordonTransmutationComplexTime`,

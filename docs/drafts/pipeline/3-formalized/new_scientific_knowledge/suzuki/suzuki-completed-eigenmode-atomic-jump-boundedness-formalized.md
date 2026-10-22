@@ -8,7 +8,7 @@
 ## Lean modules
 
 - `formal/GaloisForLFunctions/HTGeometry/AtomicJumpForm.lean`
-- `formal/GaloisForLFunctions/RHTower/DeningerBaumslagRationalization.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalization.lean`
 
 ## Formal theorem surface
 
@@ -30,7 +30,7 @@ GaloisForLFunctions.HTGeometry.truncPos_mono
 GaloisForLFunctions.HTGeometry.truncPos_sub_le
 ```
 
-`GaloisForLFunctions.RHTower.DeningerBaumslagRationalization`:
+`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization`:
 
 ```text
 RHTower.DeningerBau.sound

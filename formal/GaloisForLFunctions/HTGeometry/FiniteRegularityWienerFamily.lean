@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteRegularityFourierDecay
-import GaloisForLFunctions.HTGeometry.KleinGordonRealProbe
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRealProbe
 
 /-!
 # Admissible families from curves of finitely differentiable potentials

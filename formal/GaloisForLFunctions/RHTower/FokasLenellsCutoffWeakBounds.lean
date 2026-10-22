@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FokasLenellsCutoffComplexCauchy
-import GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaWeakRobinTraceNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaWeakRobinTraceNoGo
 
 /-!
 # Fixed matrix coefficients detect cutoff instability

@@ -47,11 +47,11 @@ formal lint passed. No owned compiler remains.
 The remaining task is a quotient-area comparison retaining these explicit
 costs, the invariant mean and original nodal residual.
 
-The [original-period resistance classification](../../sqb-original-period-resistance.md)
+The [original-period resistance classification](sqb-original-period-resistance.md)
 is now closed: finite regulator limit and boundedness are equivalent to
 period zero-freeness; a common zero forces logarithmic divergence. Zero-free
 periods have a source-derived floor and quantitative finite-limit error.
-The [full original current-period limit](../../sqb-original-period-current-limit.md)
+The [full original current-period limit](sqb-original-period-current-limit.md)
 now gives finite product limits and the regulator-free block comparison on
 the two-period zero-free domain. Nodal heights with positive limiting current
 have divergent products; the zero-current-limit rate case and quotient-area

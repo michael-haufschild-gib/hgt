@@ -125,7 +125,7 @@ Module `formal/GaloisForLFunctions/HTGeometry/PeriodicCuspBoundaryGap.lean`:
 - `logarithmicCuspBoundaryDensity`;
 - `qParam_vertical_eq_real_exp`.
 
-Module `formal/GaloisForLFunctions/RHTower/CCMLogarithmicCuspBoundaryNoGo.lean`:
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMLogarithmicCuspBoundaryNoGo.lean`:
 
 - `logarithmicCuspBoundaryDensity_eq_analyticRamifiedBoundaryDensity`;
 - `period_eq_four_pi_mul_analyticOrderNatAt_of_logarithmicCuspBoundaryDensity_pos`;
@@ -143,7 +143,7 @@ Module `formal/GaloisForLFunctions/RHTower/CCMLogarithmicCuspBoundaryNoGo.lean`:
 - [x] formal lint attribution audit: no finding in either C37 module; repository-wide lint fails on
   pre-existing umbrella-reachability findings in other dirty-tree modules
 - [x] targeted final module build:
-  `GaloisForLFunctions.RHTower.CCMLogarithmicCuspBoundaryNoGo`
+  `GaloisForLFunctions.RHTower.CCM.CCMLogarithmicCuspBoundaryNoGo`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

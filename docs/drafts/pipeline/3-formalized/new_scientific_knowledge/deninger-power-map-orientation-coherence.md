@@ -5,9 +5,9 @@
 - **Type:** SOURCE CONSTRUCTION LEMMA
 - **Parent:** `deninger-mw-gamma-brst-complex`
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticPowerOrientation` (the matrices and the
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPowerOrientation` (the matrices and the
   elementary reduction `(1)`),
-  `GaloisForLFunctions.RHTower.DeningerPowerOrientationComposition` (the `SL₂` factorization,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerPowerOrientationComposition` (the `SL₂` factorization,
   determinant invariance, and the composite differential `(2)`)
 
 ## Statement
@@ -101,7 +101,7 @@ orientation.  This is the claimed composition law.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticPowerOrientation.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPowerOrientation.lean`:
 
 - `deningerPowerIteratedCotangentMatrix a b = !![a, 0; -1, b]` : the cotangent matrix of the
   iterated presentation;
@@ -111,7 +111,7 @@ orientation.  This is the claimed composition law.
 - `deningerPowerIteratedCotangentMatrix_reduction` : `L(a) A(a,b) R(b) = diag(1, ab)`, which is
   `(1)`.
 
-`GaloisForLFunctions/RHTower/DeningerPowerOrientationComposition.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerPowerOrientationComposition.lean`:
 
 - `deningerPowerElemUpper`, `deningerPowerSwap`, `deningerPowerReflect` : the card's `E(a)`, `S`,
   `D`, with their determinants `1`, `-1`, `-1`;
@@ -141,7 +141,7 @@ hypotheses.
 ### Verification
 
 - Direct commands: `lake env lean` on both modules — pass with no errors and no warnings.
-- Cached module build: `lake build GaloisForLFunctions.RHTower.DeningerPowerOrientationComposition`
+- Cached module build: `lake build GaloisForLFunctions.RHTower.Deninger.DeningerPowerOrientationComposition`
   completes (`✔ [1473/1473]`).
 - Scratch `#print axioms`: `deningerPowerComposite_derivative` uses only `propext`; the remaining
   headline theorems use `propext`, `Classical.choice`, `Quot.sound` and nothing else.

@@ -528,7 +528,7 @@ The normalization is already authoritative in
 value is one half of the unrenormalized theta-source Fourier transform.  Thus no normalization
 wrapper is needed.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeSource.lean` now defines the normalized
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeSource.lean` now defines the normalized
 polynomial--Gaussian seed `h`, proves the exact scaling-generator identity
 `h=(D_times^2+D_times)g_0`, proves the normalized logarithmic-translation formula `(17f)`, defines
 the finite-prime source as the absolutely convergent sum over `(N+1)`-smooth integers, and proves
@@ -538,19 +538,19 @@ uniform convergence of these sources to the all-integer theta-cusp state on ever
 logarithmic interval.  These declarations are unconditional and begin with the actual source rather
 than an abstract approximation interface.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspMellinPole.lean` defines the actual finite Euler
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspMellinPole.lean` defines the actual finite Euler
 denominator `product_(p<=N)(1-exp(-s log p))`.  It proves that every prime factor has analytic order
 one at `s=0`, that the full denominator has exact order `pi(N)`, and that its reciprocal has
 meromorphic order `-pi(N)`.  Thus the exact cusp pole order is formalized, rather than represented
 by a finite-dimensional count.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeDerivatives.lean` proves that every
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeDerivatives.lean` proves that every
 logarithmic derivative of every source summand is an explicit recursively generated
 polynomial--Gaussian.  A summable compact-interval majorant justifies termwise differentiation of
 both the all-integer and finite-prime sums, and proves uniform compact-local convergence of the
 actual iterated derivatives for every order `m`.  This is the full unconditional statement `(9)`.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeResolvent.lean` assembles the concrete
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeResolvent.lean` assembles the concrete
 one-prime physical Euler factors already present in the RHTower corpus.  It proves that their full
 finite product is invertible on the even physical Hilbert carrier and defines its bounded two-sided
 inverse.  The parameter-dependent logarithmic derivative `(17j)` has not yet been added.
@@ -597,10 +597,10 @@ approximant zero.
 
 ## Lean status update (2026-08-23)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeParametricDerivatives.lean` now proves, on the actual even Hilbert carrier, the exact complex derivative of the ordered finite-prime Euler product and the left logarithmic-derivative reconstruction identity `F_N(s) · (F_N(s)⁻¹ F_N' (s)) = F_N' (s)` throughout the open right half-plane. It is wired into `RHTower.lean`; the leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeParametricDerivatives`, and all new theorem declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeParametricDerivatives.lean` now proves, on the actual even Hilbert carrier, the exact complex derivative of the ordered finite-prime Euler product and the left logarithmic-derivative reconstruction identity `F_N(s) · (F_N(s)⁻¹ F_N' (s)) = F_N' (s)` throughout the open right half-plane. It is wired into `RHTower.lean`; the leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeParametricDerivatives`, and all new theorem declarations audit to only `propext`, `Classical.choice`, and `Quot.sound`.
 
 `formal/GaloisForLFunctions/HTGeometry/ComplexInverseFamilyDerivative.lean` and
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeResolventDerivative.lean` now also prove
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeResolventDerivative.lean` now also prove
 complex differentiability of Banach-algebra inversion at unit values, identify the total ring
 inverse with the physical finite-prime resolvent throughout `Re s > 0`, and derive
 
@@ -615,7 +615,7 @@ family and the finite-product anti-logarithmic-derivative identity. It does not 
 identity into the explicit prime-power/von Mangoldt series, prove the cofinal screen and weighted
 convergence, or finish the divisor-transfer gate; the card therefore remains at stage 2.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeWeightedTail.lean` now supplies the
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeWeightedTail.lean` now supplies the
 cutoff-independent positive-tail estimate required by the screen. For every derivative order `m`
 and integer rate `q+1`, it proves
 
@@ -629,8 +629,8 @@ only `propext`, `Classical.choice`, and `Quot.sound`. Positive-tail tightness is
 the cofinal diagonal choice, transition-strip estimates, reflected screen, and entire divisor
 transfer remain.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeCofinalSelection.lean` and
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimePositiveScreen.lean` now construct the
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeCofinalSelection.lean` and
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimePositiveScreen.lean` now construct the
 source-only diagonal sequence. It is strictly increasing; stage `j` controls every derivative
 order `m<=j` on `[-j-1,j+1]` by `exp(-j^2)`. A second compact minimum threshold makes the selected
 finite-prime source positive across the transition strip, while direct termwise positivity handles
@@ -640,7 +640,7 @@ everywhere. Exact leaf builds and all new axiom audits pass with only `propext`,
 `Classical.choice`, and `Quot.sound`. Remaining gate is all-derivative exponentially weighted
 convergence of these literal screens, followed by entire-transform and divisor transfer.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeScreenIntegrable.lean` now proves the
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeScreenIntegrable.lean` now proves the
 analytic domination needed for every fixed screen. The finite-prime source has arbitrary
 positive-ray exponential moments; the reflected one-sided term is compactly supported on that
 ray; hence the positive even screen and its absolute value have arbitrary two-sided exponential
@@ -649,7 +649,7 @@ the leaf build, and axiom audits for all ten new theorems pass with only `propex
 `Classical.choice`, and `Quot.sound`. This closes fixed-screen transform existence. Weighted
 convergence along the cofinal selector, its derivative upgrade, and divisor transfer remain.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeWeightedConvergence.lean` now proves the
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeWeightedConvergence.lean` now proves the
 literal selected screens converge to the completed theta source in exponentially weighted `L¹`
 for every real weight. The proof constructs one screen-index-independent integrable majorant from
 the uniform finite-prime positive tail, completed theta source, and Gaussian diagonal-selection
@@ -659,7 +659,7 @@ axiom audits pass with only `propext`, `Classical.choice`, and `Quot.sound`. Ord
 closed; all derivative orders and divisor transfer remain.
 
 `formal/GaloisForLFunctions/HTGeometry/SmoothDerivativeChain.lean` and
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeScreenJets.lean` now close the derivative
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeScreenJets.lean` now close the derivative
 identification gate. A complete everywhere-valid derivative chain is proved smooth at every level;
 applying it to the finite-prime theta series makes the literal cutoff screens `C^infinity`. Every
 actual right-screen derivative is identified with its full finite Leibniz sum, every even-screen
@@ -668,7 +668,7 @@ selected finite-prime source-jet average. Both leaf builds pass. Axiom audits fo
 theorems use only `propext`, `Classical.choice`, and `Quot.sound`. Weighted convergence of these
 identified higher jets remains before transform/divisor transfer.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFullDerivativeExponentialMoments.lean` now proves
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFullDerivativeExponentialMoments.lean` now proves
 every actual derivative of the completed theta source has every two-sided exponential moment. The
 proof lifts the finite-prime polynomial--Gaussian estimate to the complete all-integer derivative
 series, handles the zero atom exactly, and uses derivative parity for reflection. Exact source and
@@ -676,7 +676,7 @@ leaf checks pass; all four new theorem axiom audits use only `propext`, `Classic
 `Quot.sound`. This supplies the missing derivative-side dominating functions for higher-jet screen
 convergence.
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeScreenJetConvergence.lean` now closes the
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeScreenJetConvergence.lean` now closes the
 full all-derivative version of `(20)`. For every derivative order `m` and every real exponential
 weight `A`, the integral of
 
@@ -707,18 +707,18 @@ out zeros on the compact remainder, and eventually constructs the approximant ze
 same summed analytic multiplicity. This is the literal content of `(28)`, without restricting the
 domain to a disc.
 
-`RHTower/ThetaCuspFinitePrimeEntireTransform.lean` defines the actual transforms `F_j` in `(24)`.
+`RHTower/ThetaCusp/ThetaCuspFinitePrimeEntireTransform.lean` defines the actual transforms `F_j` in `(24)`.
 It proves arbitrary exponential moments imply entire Fourier--Laplace transforms, the weighted
 `L¹` transform bound, compact-open convergence to the exact theta transform and hence `XiC`, FE
 evenness, Schwarz reflection, disc multiplicity transfer, and full bounded-domain divisor transfer.
 
-`RHTower/ThetaCuspFinitePrimePointedPacket.lean` defines the literal packet `(23)` with the marked
+`RHTower/ThetaCusp/ThetaCuspFinitePrimePointedPacket.lean` defines the literal packet `(23)` with the marked
 prime set, normalized seed, actual bounded finite-prime resolvent, unscreened source, cutoff,
 right trace, reflected trace, and completed even screen. It proves that the marked component has
 exactly `Nat.primeCounting N_j` coordinates, the completed scalar trace is the claimed FE average,
 and the unscreened component is the exact smooth-integer resolvent series.
 
-The existing `RHTower/ThetaCuspFinitePrimeFluxSplit.lean` supplies the explicit finite
+The existing `RHTower/ThetaCusp/ThetaCuspFinitePrimeFluxSplit.lean` supplies the explicit finite
 von-Mangoldt prime-power generator expansion and its exact logarithmic-moment collapse, closing the
 remaining parameter-resolvent item rather than stopping at an abstract inverse-family derivative.
 

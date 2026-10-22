@@ -5,7 +5,7 @@
 - **Type:** `[BRIDGE]` / unconditional CCM Dirichlet foundation
 - **Novelty status:** not promoted separately as new scientific knowledge
 - **Lean modules:**
-  `formal/GaloisForLFunctions/RHTower/CCMRectangularDirichletLandau.lean`,
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularDirichletLandau.lean`,
   `CCMShiftedXiCancellation.lean`, `CCMShiftedXiNormalConvergence.lean`,
   `CCMShiftedXiPoleJet.lean`, `CCMShiftedXiGlobalOrder.lean`,
   `CCMShiftedXiLandauContinuation.lean`, `CCMShiftedXiLandauPoleContradiction.lean`,

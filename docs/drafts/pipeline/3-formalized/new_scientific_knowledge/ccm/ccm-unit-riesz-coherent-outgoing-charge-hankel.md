@@ -6,7 +6,7 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentOutgoingChargeHankel.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCoherentOutgoingChargeHankel.lean`
 - **Parents:** `ccm-unit-riesz-coherent-arithmetic-tail-charge`,
   `ccm-unit-riesz-coherent-finite-boundary-readout`
 

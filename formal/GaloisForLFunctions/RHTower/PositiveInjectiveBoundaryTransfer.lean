@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiStrongResolventLimit
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiStrongResolventLimit
 import GaloisForLFunctions.HTGeometry.CfcNormBound
 
 /-!

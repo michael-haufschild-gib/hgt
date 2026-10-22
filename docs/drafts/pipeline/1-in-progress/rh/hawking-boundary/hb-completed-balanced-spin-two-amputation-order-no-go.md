@@ -19,4 +19,4 @@ Classify derivative external-leg amputation and kill all subcritical grades, inc
 - **Kill:** completed projecting external leg occurs twice. Its square has exact zero order `2m`; arbitrary radial/left scale cannot revive any grade `<2m`, so opposite simple QNM AIME pole survives.
 - **Survivor:** multiplicity-matched grade `2m`. Its vertex jet is nonzero iff `Bochner(u,v)·XiC(2u+v)·XiC(2u-v) ≠ 0`; remaining HB burden is literal radial/left-QNM incidence and equality of this normalized jet with `-AIME`.
 - **Novelty audit:** corpus search found multiplicity/product-jet infrastructure but no completed balanced-vertex threshold; primary-paper search found no Xi-multiplicity/LSZ/HB weld.
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompletedBalancedSpinTwoAmputationOrderNoGo.lean`; build `12886/12886`; axioms only `propext`, `Classical.choice`, `Quot.sound`.
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompletedBalancedSpinTwoAmputationOrderNoGo.lean`; build `12886/12886`; axioms only `propext`, `Classical.choice`, `Quot.sound`.

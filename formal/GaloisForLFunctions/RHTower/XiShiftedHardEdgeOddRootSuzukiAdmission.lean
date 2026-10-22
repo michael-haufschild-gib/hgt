@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CompactL2FourierRootDivision
-import GaloisForLFunctions.RHTower.SuzukiH01FormDomain
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiH01FormDomain
 
 /-!
 # Route U compact-root admission to Suzuki's logarithmic form domain

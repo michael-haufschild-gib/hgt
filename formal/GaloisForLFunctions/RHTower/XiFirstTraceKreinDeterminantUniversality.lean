@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWardKreinTransversePickBlock
-import GaloisForLFunctions.RHTower.HedenmalmSquarefreeFirstTraceAnomalyCharge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSquarefreeFirstTraceAnomalyCharge
 import GaloisForLFunctions.RHTower.XiCompletedAperturePoleResonance
 
 /-!

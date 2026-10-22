@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMCoherentSquareExclusion`
+- `GaloisForLFunctions.RHTower.CCM.CCMCoherentSquareExclusion`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

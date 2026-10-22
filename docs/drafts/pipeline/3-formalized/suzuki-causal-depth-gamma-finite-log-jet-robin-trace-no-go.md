@@ -5,7 +5,7 @@
 - **Type:** THEOREM / producer-class no-go
 - **Scientific status:** `[LEAN-PROVED] [NOVELTY UNVERIFIED]`
 - **Source:** `irregular-stokes-robin-gamma-holonomy-coercivity.md` C1--C28
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo`
 - **Terminal theorem:** `no_suzukiCausalDepthGammaFixedLogJetWardProducer`
 - **Statement:** Every fixed logarithmic Wigner--Smith/Robin jet of the actual causal-depth Gamma
   feature is nuclear and cannot yield a lower-semibounded rectangular Ward defect through a
@@ -82,9 +82,9 @@ semiboundedness. Terminal theorem therefore has no premise and adds no route hyp
 ## Audit
 
 - Corpus search found exact existing module and declarations before any Lean construction.
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo.lean`:
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo.lean`:
   passed on 2026-09-02.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo`:
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaFiniteLogJetRobinTraceNoGo`:
   passed on 2026-09-02 (`Build completed successfully (12327 jobs)`).
 - Existing declaration audit reports only `propext`, `Classical.choice`, `Quot.sound`; not rerun
   because no Lean declaration changed.

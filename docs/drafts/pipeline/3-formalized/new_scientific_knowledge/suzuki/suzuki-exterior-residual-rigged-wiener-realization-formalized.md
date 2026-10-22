@@ -6,16 +6,16 @@
 - **Paper proof:** `./suzuki-exterior-residual-rigged-wiener-realization.md`
 - **Lean:**
   - `formal/GaloisForLFunctions/HTGeometry/LogKernelExteriorL2.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiExteriorSymbolBounds.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiExteriorWienerAlphabet.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiExteriorHardyAmplitudes.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiValuationEvaluationAlgebra.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiExteriorRiggedRealization.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorSymbolBounds.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorWienerAlphabet.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorHardyAmplitudes.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiValuationEvaluationAlgebra.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorRiggedRealization.lean`
   - Wiener stack (pre-existing): `HTGeometry/DiscreteL1Convolution.lean`,
-    `RHTower/SuzukiWienerNeumannMajorant.lean`, `RHTower/SuzukiWienerMixedNormCarrier.lean`,
-    `RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`
-  - alphabet (pre-existing): `RHTower/SuzukiRootPortObservationGram.lean`,
-    `RHTower/SuzukiPrimeValuationSeam.lean`
+    `RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean`, `RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean`,
+    `RHTower/Suzuki/SuzukiWienerNuclearBoundaryCarrier.lean`
+  - alphabet (pre-existing): `RHTower/Suzuki/SuzukiRootPortObservationGram.lean`,
+    `RHTower/Suzuki/SuzukiPrimeValuationSeam.lean`
   - archimedean input (pre-existing): `HTGeometry/DigammaVerticalUniformLog.lean`,
     `HTGeometry/GammaShiftExpIntegral.lean`, `HTGeometry/ReflectedDigammaAnomaly.lean`
 

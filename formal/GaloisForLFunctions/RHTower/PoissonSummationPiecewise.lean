@@ -1,7 +1,7 @@
-import GaloisForLFunctions.RHTower.CCMSawtoothDilationMean
+import GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationMean
 import GaloisForLFunctions.RHTower.EulerMaclaurinSawtooth
 import GaloisForLFunctions.RHTower.SawtoothFourierSeries
-import GaloisForLFunctions.RHTower.CCMEndpointFourierJet
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointFourierJet
 import Mathlib.NumberTheory.ZetaValues
 
 /-!

@@ -146,7 +146,7 @@ not a timing claim for the heavy actual-source imports. The actual-source
 scratch also passes after making its function equality and analytic-order
 application explicit. No axiom-print audit was run.
 
-`lake build GaloisForLFunctions.RHTower.DeningerDampedOriginalGreenMellin`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedOriginalGreenMellin`
 completed successfully. Only the two new modules built: generic core 2.2s,
 actual-source application 58s. Existing dependency messages were replayed.
 Index regeneration passed. The two modules expose 18 public declarations.

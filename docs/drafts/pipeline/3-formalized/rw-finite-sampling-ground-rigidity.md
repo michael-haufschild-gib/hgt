@@ -69,9 +69,9 @@ Targeted web searches for the exact combinations of Weil ground energy, physical
 
 Leaves: `CCMFiniteSamplingGroundRigidity.lean` and `CCMConstrainedPrimeCurvatureInstability.lean`, imported by `RHTower.lean`.
 
-- Named foreground `lake --old --log-level=error build +GaloisForLFunctions.RHTower.CCMConstrainedPrimeCurvatureInstability`: exit 0.
-- Final direct `lake env lean GaloisForLFunctions/RHTower/CCMFiniteSamplingGroundRigidity.lean`: exit 0.
-- Final direct `lake env lean GaloisForLFunctions/RHTower/CCMConstrainedPrimeCurvatureInstability.lean`: exit 0.
+- Named foreground `lake --old --log-level=error build +GaloisForLFunctions.RHTower.CCM.CCMConstrainedPrimeCurvatureInstability`: exit 0.
+- Final direct `lake env lean GaloisForLFunctions/RHTower/CCM/CCMFiniteSamplingGroundRigidity.lean`: exit 0.
+- Final direct `lake env lean GaloisForLFunctions/RHTower/CCM/CCMConstrainedPrimeCurvatureInstability.lean`: exit 0.
 - `/tmp/hgt-rw-axiom-audit.lean`: all eight public theorems depend only on `propext`, `Classical.choice`, `Quot.sound`; exit 0. No new axiom, `sorry`, `admit`, `opaque`, `unsafe`, or heartbeat override.
 - Formal index refreshed. Global `scripts/formal_tools.py lint` reached the wiring gate and failed on twelve other unwired modules; neither new leaf was reported. Those shared-workspace modules are outside this change. Global lint is therefore **not green**. No full or umbrella build was run.
 

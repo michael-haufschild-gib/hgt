@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRCrossPrimeStokesCalkinPolarHandoff
-import GaloisForLFunctions.RHTower.DeningerCalderonWittCrossPrimeSingularCorona
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCrossPrimeSingularCorona
 
 /-!
 # Route R cross-prime Stokes/Calkin pre-quotient no-factorization

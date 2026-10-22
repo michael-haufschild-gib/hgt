@@ -78,7 +78,7 @@ Mitman et al., arXiv:2208.07380; Silva et al., arXiv:2404.11110.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicPeierlsResponseOddChargeClassification.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicPeierlsResponseOddChargeClassification.lean`
 - Exact charge factorization:
   `d4BMXiSecondHarmonicPeierlsResponseCorrectedReflectionCurrent_eq_neg_charge_add`
 - Pointwise/global oddness classifiers:

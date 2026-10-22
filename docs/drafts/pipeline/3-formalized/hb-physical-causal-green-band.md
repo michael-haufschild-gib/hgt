@@ -26,7 +26,7 @@ All angular collisions remain in this identity. No angular noncollision or vanis
 
 ## Formal result and next obstacle
 
-Module: [ThetaCuspHawkingBMPhysicalCausalGreenBand.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalCausalGreenBand.lean), namespace `RHTower.D4BMNativeLaplace`. New full-response API: `causalJointForcedResponse_integrable_of_native`, `causalJointForcedResponse_laplace_of_native`, `causalJointForcedResponse_original_green`, `causalJointForcedResponse_operator_of_native`, `actualJointCausal_original_green_band`. The physical-projection API follows these.
+Module: [ThetaCuspHawkingBMPhysicalCausalGreenBand.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalCausalGreenBand.lean), namespace `RHTower.D4BMNativeLaplace`. New full-response API: `causalJointForcedResponse_integrable_of_native`, `causalJointForcedResponse_laplace_of_native`, `causalJointForcedResponse_original_green`, `causalJointForcedResponse_operator_of_native`, `actualJointCausal_original_green_band`. The physical-projection API follows these.
 
 The exact source passed combined `lake env lean` checking and the final exact leaf build using cached dependencies. Its source and five artifacts are installed and one import is wired into `RHTower.lean`. No umbrella/full build, axiom-print check or numerical experiment ran.
 

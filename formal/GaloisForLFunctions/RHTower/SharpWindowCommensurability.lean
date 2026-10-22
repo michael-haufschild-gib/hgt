@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 
 /-!
 # Two-width sharp-window amplitude commensurability

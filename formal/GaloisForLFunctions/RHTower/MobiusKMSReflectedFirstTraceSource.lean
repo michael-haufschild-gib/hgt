@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusKMSCentralClockExternalCoordinate
-import GaloisForLFunctions.RHTower.HedenmalmSquarefreeFirstTraceExponentialContinuation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSquarefreeFirstTraceExponentialContinuation
 
 /-!
 # Reflected first-trace source on the KMS central clock

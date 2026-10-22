@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittGaussianHorizontalNormalization
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittGaussianHorizontalNormalization
 import GaloisForLFunctions.RHTower.RiemannGammaCoPoissonHodgeGreenDescentLaw
 
 /-!

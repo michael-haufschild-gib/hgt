@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MertensSquareRootOmega
-import GaloisForLFunctions.RHTower.DeningerHarmonicPartial
+import GaloisForLFunctions.RHTower.Deninger.DeningerHarmonicPartial
 import Mathlib.Analysis.Asymptotics.SpecificAsymptotics
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

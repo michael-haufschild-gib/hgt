@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.DeBrangesExplicitGammaGauge
 import GaloisForLFunctions.RHTower.L2MellinUnitary
 import GaloisForLFunctions.RHTower.HardyTitchmarshEulerConcrete
-import GaloisForLFunctions.RHTower.SuzukiPositiveHalfLine
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveHalfLine
 import GaloisForLFunctions.HTGeometry.UnitaryOrbitGeometry
 import GaloisForLFunctions.HTGeometry.DifferentiallyAlgebraicExponentialPencil
 import GaloisForLFunctions.HTGeometry.MeroExponentialGauge

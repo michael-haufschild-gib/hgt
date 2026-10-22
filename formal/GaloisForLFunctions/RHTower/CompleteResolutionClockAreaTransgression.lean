@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CompleteResolutionCofinalConditioningLaw
-import GaloisForLFunctions.RHTower.DeningerRelationKernelTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerRelationKernelTransgression
 
 /-!
 # Complete-source clock area survives only by cohomological degree shift

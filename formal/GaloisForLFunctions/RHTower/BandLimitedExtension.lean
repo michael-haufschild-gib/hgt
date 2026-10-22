@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateL2Regularity
-import GaloisForLFunctions.RHTower.CCMEndpointResponseIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMEndpointResponseIdentity
 import GaloisForLFunctions.RHTower.SlepianKernelFourier
 import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 

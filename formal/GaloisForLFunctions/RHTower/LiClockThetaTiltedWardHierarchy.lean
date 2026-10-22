@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LiEvenCrossActualClockCumulantBoundary
-import GaloisForLFunctions.RHTower.ThetaCuspFullDerivativeExponentialMoments
-import GaloisForLFunctions.RHTower.ThetaCuspKernelLogConcavity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullDerivativeExponentialMoments
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspKernelLogConcavity
 
 /-!
 # The whole-line tilted Ward hierarchy of the theta law

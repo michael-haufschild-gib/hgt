@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringSourceVector
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullCoreOperator
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullCoreOperator
 import GaloisForLFunctions.HTGeometry.SmoothWeight
 import GaloisForLFunctions.HTGeometry.L2MultiplierContinuity
 

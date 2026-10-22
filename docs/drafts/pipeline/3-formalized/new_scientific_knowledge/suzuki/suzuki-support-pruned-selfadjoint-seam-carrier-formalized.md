@@ -7,14 +7,14 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedSeamCarrierBounds.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiSupportPrunedSeamCarrierBounds`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiSupportPrunedSeamCarrierBounds`:
 
 ```text
 GaloisForLFunctions.RHTower.norm_lpCoordinateProjection_le
@@ -28,7 +28,7 @@ GaloisForLFunctions.RHTower.suzukiSeamShift_adjoint
 GaloisForLFunctions.RHTower.suzukiSupportPrunedPrimeAdjacency_apply
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiSupportPrunedSelfAdjointSeamCarrier`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiSupportPrunedSelfAdjointSeamCarrier`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiFinitePrimeAdjacency

@@ -85,7 +85,7 @@ The linked proof derives finite original first characteristic derivatives of eve
 
 ## New public Lean statements
 
-[ThetaCuspHawkingBMNativeCharacteristicContact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCharacteristicContact.lean), namespace `RHTower.D4BMNativeCircle`, appends:
+[ThetaCuspHawkingBMNativeCharacteristicContact](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCharacteristicContact.lean), namespace `RHTower.D4BMNativeCircle`, appends:
 
 - `angularCurrent_integral`: exact original weighted current equals the full angular-action integral.
 - `argumentFirst_volterra`: the actual interior invariant derivative equals its rescaled nonsingular integral.
@@ -94,7 +94,7 @@ The linked proof derives finite original first characteristic derivatives of eve
 - `angularKernel_closed_derivative`: the integral is the actual derivative within the physical chart.
 - `angularKernel_source_integral`: reconstruction of the full kernel from the original source and admitted derivative.
 
-[ThetaCuspHawkingBMNativeSourceDerivative](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeSourceDerivative.lean), namespace `RHTower.D4BMNativeSourceDerivative`, adds:
+[ThetaCuspHawkingBMNativeSourceDerivative](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeSourceDerivative.lean), namespace `RHTower.D4BMNativeSourceDerivative`, adds:
 
 - `kernelField_source_derivative`: actual source-radius derivative on each closed physical ray.
 - `sourceFirst_continuousOn`: continuity of the admitted original source derivative.

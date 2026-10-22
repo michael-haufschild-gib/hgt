@@ -5,7 +5,7 @@
 - **Type:** ROUTE-L NO-GO / POSITIVE CLASSIFICATION
 - **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [GENERAL TOPOLOGICAL LINEAR ALGEBRA PARENT] [ROUTE APPLICATION NEW] [NOT RH]`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittCrossPrimeClosedRelationNoGo.lean`
 - **Parents:**
   - `deninger-cross-prime-arithmetic-source-completion.md`;
   - `deninger-all-cross-prime-incidence-koszul-exactness.md`;

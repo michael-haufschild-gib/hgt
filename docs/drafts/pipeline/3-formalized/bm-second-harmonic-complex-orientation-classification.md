@@ -73,7 +73,7 @@ Spiers--Pound--Moxon, arXiv:2305.19332; Spiers, arXiv:2402.00604.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicComplexOrientationClassification.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicComplexOrientationClassification.lean`
 - Exponent geometry:
   `d4BMXiPlusPlusComplementaryExponent_im`,
   `d4BMXiPlusPlusComplementaryExponent_reflect_im`

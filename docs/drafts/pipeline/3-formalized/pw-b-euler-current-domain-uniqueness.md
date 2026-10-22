@@ -74,7 +74,7 @@ on `propext`, `Classical.choice`, and `Quot.sound`. Generated formal indices wer
 refreshed; `git diff --check` passed. Existing dependency and repository-size
 warnings remain outside this leaf.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekEulerCurrentDomainUniqueness.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekEulerCurrentDomainUniqueness.lean`.
 - Positive theorem: `RHTower.pwEulerCurrent_forced_response_unique`.
 - Closed domain capstones: `RHTower.pwEulerCurrentDomain_nontrivial_homogeneous_kernel_trivial`
   and `RHTower.pwEulerCurrentDomain_reflection_not_preserved`.

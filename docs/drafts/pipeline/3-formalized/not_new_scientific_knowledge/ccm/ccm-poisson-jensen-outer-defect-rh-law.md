@@ -286,7 +286,7 @@ Blaschke defect `(10)`–`(11)`, its positivity and exact detection `(12)`–`(1
 identity `(20)`–`(21)`, and the limit subtraction `(15)`–`(18)` — and leaves the inner–outer
 factorization and the Poisson representation explicitly as cited parents.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMPoissonJensenOuterDefect.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMPoissonJensenOuterDefect.lean`
 (10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
 into `formal/GaloisForLFunctions/RHTower.lean`).
 

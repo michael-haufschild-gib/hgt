@@ -8,7 +8,7 @@
 - **Formalized companion:** `dyadic-prime-dirichlet-high-line-sign-rigidity-formalized.md`
 - **Lean targets:**
   `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity`,
-  `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`
+  `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPassiveNoGo`
 
 ## Theorem
 

@@ -105,8 +105,8 @@ entire functions is entire. It is a necessary source correction but not new scie
 
 ## Lean formalization
 
-Modules: `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicEntireLimitNoGo.lean` (already in
-the tree), `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicMeromorphicLimit.lean` (new), and
+Modules: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCharacteristicEntireLimitNoGo.lean` (already in
+the tree), `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCharacteristicMeromorphicLimit.lean` (new), and
 the unconditional Hardy chain
 `formal/GaloisForLFunctions/RHTower/JacobiThetaBoundaryLimits.lean`,
 `formal/GaloisForLFunctions/RHTower/HardyThetaSource.lean`,

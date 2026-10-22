@@ -78,7 +78,7 @@ literature.
 ## Lean
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmExteriorSourceThetaBoundaryGap.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmExteriorSourceThetaBoundaryGap.lean`
 
 - [x] multiplicity-square domination
 - [x] nonneutral boundary current implies exterior quantum lower bound

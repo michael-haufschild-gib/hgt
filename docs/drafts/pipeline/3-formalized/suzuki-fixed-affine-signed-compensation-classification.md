@@ -166,7 +166,7 @@ singular, or nonlocal before positive-energy projection.
 ## Lean formalization
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiFixedAffineSignedCompensationClassification`.
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFixedAffineSignedCompensationClassification`.
 
 Capstone:
 `suzukiFixedAffineSignedCompensation_routeClassification`.
@@ -177,7 +177,7 @@ normal form, positive-chamber RH equivalence, erasure theorem, and sign-reversed
 Audit:
 
 - direct check passed with
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiFixedAffineSignedCompensationClassification.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedAffineSignedCompensationClassification.lean`;
 - targeted module build passed, `13733/13733` jobs;
 - five audited capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`;
 - module is wired into `GaloisForLFunctions.RHTower` and formal lint reports no issue in it;

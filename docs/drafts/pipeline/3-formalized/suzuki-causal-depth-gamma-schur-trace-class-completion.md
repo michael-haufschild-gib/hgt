@@ -23,9 +23,9 @@ For source index `i=(p,e)`, put `νᵢ=log(p^(e+1))/2` and let `wᵢ` be actual 
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaSchurTraceClassCompletion`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaSchurTraceClassCompletion`
 - Premise-free main theorems: `suzukiCanonicalCausalDepthGammaEnergyOperator_isTraceClass`, `suzukiCanonicalCausalDepthGammaEnergyOperator_sourceBlock`, `suzukiCanonicalCausalDepthGammaEnergyOperator_re_opTrace_le`
-- `lake build GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaSchurTraceClassCompletion`: PASS
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaSchurTraceClassCompletion`: PASS
 - Axioms: `propext`, `Classical.choice`, `Quot.sound`
 - Umbrella: `GaloisForLFunctions.RHTower`
 

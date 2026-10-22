@@ -238,7 +238,7 @@ order, but presently only in a nonuniform high-mode topology.
 Lean module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiPrimeTangentTomography.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeTangentTomography.lean
 ```
 
 Formalized unconditionally:

@@ -33,7 +33,7 @@ This survivor is formalized jointly by:
 - `d4ThetaTeukolsky_tilted_closedPacket_card_ge_four`
 
 in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFaithfulBranchCovarianceNoGo.lean`.
 
 ## Consequence
 

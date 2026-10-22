@@ -33,11 +33,11 @@ uses `-2 U'(a)=lambda*mass` to identify the Robin boundary ratio with the same w
 
 ## Lean formalization
 
-`RHTower/SuzukiGroundEdgeHerglotzObstructionLaw.lean` proves both weighted-average and
+`RHTower/Suzuki/SuzukiGroundEdgeHerglotzObstructionLaw.lean` proves both weighted-average and
 Robin-compressed no-go forms. Exact direct check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiGroundEdgeHerglotzObstructionLaw.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeHerglotzObstructionLaw.lean
 ```
 
 passes.

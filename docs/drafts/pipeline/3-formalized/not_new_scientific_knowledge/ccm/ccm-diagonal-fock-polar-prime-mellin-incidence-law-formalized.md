@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-diagonal-fock-polar-prime-mellin-incidence-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMDiagonalFockColligation.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMDiagonalFockColligation.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 7 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

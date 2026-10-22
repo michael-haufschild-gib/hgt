@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMRelativeLogDerivCoordinateIndex` (new), over the Pick-cluster
+`GaloisForLFunctions.RHTower.CCM.CCMRelativeLogDerivCoordinateIndex` (new), over the Pick-cluster
 modules.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -41,6 +41,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMRelativeLogDerivCoordinateIndex`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMRelativeLogDerivCoordinateIndex`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

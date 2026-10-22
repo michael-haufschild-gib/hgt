@@ -144,7 +144,7 @@ forces boundedness with a source-determined noncanonical constant.
 
 ## Index of the formalization
 
-Module: `RHTower/CCMUnitRieszSuzukiGreenProducerClassification.lean` (namespace `RHTower`).
+Module: `RHTower/CCM/CCMUnitRieszSuzukiGreenProducerClassification.lean` (namespace `RHTower`).
 All declarations are unconditional; `#print axioms` returns only
 `propext, Classical.choice, Quot.sound`.
 

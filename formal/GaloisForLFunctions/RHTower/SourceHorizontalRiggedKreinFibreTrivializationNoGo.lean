@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalRiggedKreinFundamentalSymmetry
-import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeLogHeightGreen
 import GaloisForLFunctions.RHTower.GammaValuationSchurKotheVectorNoGoDualSurvivor
 
 /-!

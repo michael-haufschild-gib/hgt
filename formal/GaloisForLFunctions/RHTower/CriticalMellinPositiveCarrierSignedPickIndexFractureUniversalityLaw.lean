@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MeasureCarrier
-import GaloisForLFunctions.RHTower.CCMRawStieltjesPickKernelIndexInflationUniversalityLaw
+import GaloisForLFunctions.RHTower.CCM.CCMRawStieltjesPickKernelIndexInflationUniversalityLaw
 
 /-!
 # Critical-Mellin positive-carrier / signed-Pick index-fracture universality law

@@ -208,10 +208,10 @@ of it to be rebuilt:
 
 | Asset | Module | Bearing |
 |---|---|---|
-| **fine ⟹ Čech-acyclic in every degree**, by the partition-of-unity contracting homotopy `δK + Kδ = id` | `RHTower/DeningerCechHomotopy.lean` (`deningerCechK`, `deningerCech_homotopy`, `deningerCech_exact`) | this *is* the D4 bridge |
-| Čech degree zero = global sections (compatible families glue, uniquely) | `RHTower/DeningerCechGlue.lean` | the `H⁰` half |
-| first Čech cohomology splits for a fine cover | `RHTower/DeningerCechSplit.lean` | the `q = 1` instance |
-| Ext-based sheaf cohomology, `flasque ⟹ acyclic`, `injective ⟹ flasque`, free abelian sheaf on an open | `RHTower/DeningerFlasqueAcyclic.lean`, `DeningerOpenFreeSheaf.lean`, `DeningerSkyscraperAcyclic.lean`, `DeningerRestrictedPrimeAcyclic.lean` | the derived-functor side |
+| **fine ⟹ Čech-acyclic in every degree**, by the partition-of-unity contracting homotopy `δK + Kδ = id` | `RHTower/Deninger/DeningerCechHomotopy.lean` (`deningerCechK`, `deningerCech_homotopy`, `deningerCech_exact`) | this *is* the D4 bridge |
+| Čech degree zero = global sections (compatible families glue, uniquely) | `RHTower/Deninger/DeningerCechGlue.lean` | the `H⁰` half |
+| first Čech cohomology splits for a fine cover | `RHTower/Deninger/DeningerCechSplit.lean` | the `q = 1` instance |
+| Ext-based sheaf cohomology, `flasque ⟹ acyclic`, `injective ⟹ flasque`, free abelian sheaf on an open | `RHTower/Deninger/DeningerFlasqueAcyclic.lean`, `DeningerOpenFreeSheaf.lean`, `DeningerSkyscraperAcyclic.lean`, `DeningerRestrictedPrimeAcyclic.lean` | the derived-functor side |
 | CDGA, its cohomology, morphisms, quasi-isomorphisms; filtered colimits of CDGAs; cohomology commutes with them | `HTGeometry/CDGA.lean`, `CDGAColimit.lean`, `CDGAColimitQuasiIso.lean` | the algebra of `(7)` on the pro-Stein card |
 | relative Sullivan stages and towers over an arbitrary directed order, `cohomology_computed_at_stages` | `HTGeometry/GradedSullivan{Stage,Tower,Graded,Augmented}.lean` | the "relative Sullivan algebra as a filtered union of finite cell stages" of `(7)` |
 
@@ -448,7 +448,7 @@ That refactor is the next step; after it the induction has no remaining obstruct
 
 - 2026-08-06 — **D4a landed, by generalizing existing corpus work rather than rebuilding it.**
   `HTGeometry/CechFineAcyclicModule.lean`, axiom audit `propext, Classical.choice, Quot.sound`.
-  `RHTower/DeningerCechHomotopy` already had the partition-of-unity contracting homotopy for
+  `RHTower/Deninger/DeningerCechHomotopy` already had the partition-of-unity contracting homotopy for
   *real-valued* Čech cochains; its proof uses only scalar multiplication and finite sums, so it is
   carried out here for cochains valued in an arbitrary real module — the generality the sheaves of
   smooth `(0,q)`-forms need.

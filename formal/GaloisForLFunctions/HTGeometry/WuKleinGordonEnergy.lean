@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.WuDoubleNullEnergy
-import GaloisForLFunctions.HTGeometry.KleinGordonEnergyConservation
-import GaloisForLFunctions.HTGeometry.KleinGordonFieldMild
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonEnergyConservation
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonFieldMild
 
 /-!
 # Wu integration for free Klein–Gordon dynamics

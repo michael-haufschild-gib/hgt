@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CriticalHorizonCharZeroConstants
 import GaloisForLFunctions.HTGeometry.ConstantExtensionSheetDescent
-import GaloisForLFunctions.HTGeometry.CriticalGeometricMonodromyAllFields
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.MonodromyAllFields
 
 /-!
 # The critical horizon over an arbitrary characteristic-zero base

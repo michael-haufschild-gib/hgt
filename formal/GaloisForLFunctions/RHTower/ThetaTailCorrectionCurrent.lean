@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCurvatureLogConvex
-import GaloisForLFunctions.RHTower.ThetaCuspC5ClockSourceOrientation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCurvatureLogConvex
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspC5ClockSourceOrientation
 import GaloisForLFunctions.RHTower.ThetaTailFinitePairTransport
 
 /-! The positive finite-pair correction has a strictly negative source current

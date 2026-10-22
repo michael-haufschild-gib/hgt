@@ -1,17 +1,17 @@
 formal/GaloisForLFunctions/Bottcher/PolyWinding.lean:6:factors over `ℂ` and additivity of `logDeriv`.  No residues, no Rouché, no Jordan curve theorem.
-formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingNonlinearDivisorTransportEndpoint.lean:16:Rouche divisor stability then yields the new endpoint: every centered Xi zero survives sufficiently
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingNonlinearDivisorTransportEndpoint.lean:16:Rouche divisor stability then yields the new endpoint: every centered Xi zero survives sufficiently
 formal/GaloisForLFunctions/RHTower.lean:5851:import GaloisForLFunctions.RHTower.SpeiserCriticalLineSignLaw
 formal/GaloisForLFunctions/RHTower.lean:10646:import GaloisForLFunctions.RHTower.SpeiserCriticalPacketGauge
 formal/GaloisForLFunctions/RHTower/DeckHomotopy.lean:6:(`‖f − g‖ < ‖g‖`, the Rouché-flavored domination), then the principal branch
 formal/GaloisForLFunctions/RHTower/FrozenAdmissionResolventFlowNoGo.lean:395:/-! ## The sign reversal survives a positive weight -/
 formal/GaloisForLFunctions/RHTower/FrozenAdmissionResolventFlowNoGo.lean:448:theorem exists_frozen_admission_source_sign_reversal {d₁ d₂ d₃ a y : ℝ}
 formal/GaloisForLFunctions/RHTower/Matveev/FeldmanBinomial.lean:18:is divisible by `k!`, for negative arguments as well, by sign reversal or by containing zero — and
-formal/GaloisForLFunctions/RHTower/SuzukiFixedAffineSignedCompensationClassification.lean:9:RH-equivalent aligned energy, complete source erasure, or sign-reversed vacuous upper boundedness.
-formal/GaloisForLFunctions/RHTower/SuzukiFixedAffineSignedCompensationClassification.lean:143:/-- Sign-reversed affine residuals are vacuously upper bounded by zero. -/
-formal/GaloisForLFunctions/RHTower/SuzukiFixedAffineSignedCompensationClassification.lean:152:source erasure, or sign-reversed vacuous upper boundedness. -/
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedAffineSignedCompensationClassification.lean:9:RH-equivalent aligned energy, complete source erasure, or sign-reversed vacuous upper boundedness.
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedAffineSignedCompensationClassification.lean:143:/-- Sign-reversed affine residuals are vacuously upper bounded by zero. -/
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedAffineSignedCompensationClassification.lean:152:source erasure, or sign-reversed vacuous upper boundedness. -/
 formal/GaloisForLFunctions/RHTower/GibbsWeakCouplingConfinement.lean:19:Neither Rouché's theorem nor the fundamental theorem of algebra is used.
-formal/GaloisForLFunctions/RHTower/CCMEvansDeterminantLine.lean:105:/-- The Pluecker norm, hence the Gram determinant, is unchanged by that sign reversal. -/
-formal/GaloisForLFunctions/RHTower/CCMEvansDeterminantLine.lean:119:/-- **The Gram determinant forgets the crossing orientation.**  A source sign reversal takes the
+formal/GaloisForLFunctions/RHTower/CCM/CCMEvansDeterminantLine.lean:105:/-- The Pluecker norm, hence the Gram determinant, is unchanged by that sign reversal. -/
+formal/GaloisForLFunctions/RHTower/CCM/CCMEvansDeterminantLine.lean:119:/-- **The Gram determinant forgets the crossing orientation.**  A source sign reversal takes the
 formal/GaloisForLFunctions/HTGeometry/GaussianSignedPermutationInvariance.lean:6:A centred real Gaussian is invariant under sign reversal, and a product of identical factors is
 formal/GaloisForLFunctions/HTGeometry/GaussianSignedPermutationInvariance.lean:30:/-- A centred real Gaussian is invariant under sign reversal. -/
 formal/GaloisForLFunctions/HTGeometry/GaussianSignedPermutationInvariance.lean:41:/-- Sign reversal on one coordinate preserves the centred Gaussian. -/
@@ -136,11 +136,11 @@ formal/GaloisForLFunctions/RHTower/CountingSubstitute.lean:13:* `enclosed_count_
 formal/GaloisForLFunctions/RHTower/CountingSubstitute.lean:132:/-- **The Rouché substitute.** A dominated perturbation on the annulus charts
 formal/GaloisForLFunctions/RHTower/CountingSubstitute.lean:328:/-- **Relative Rouché substitute.** Relative `η < 1` closeness on the annulus charts
 formal/GaloisForLFunctions/HTGeometry/ComplexEventOrientationSewingNoGo.lean:14:nontrivial physical sewing defect would need structure beyond one-sided sign reversal of
-formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEisensteinMassShell.lean:205:theorem thetaCuspLikelihoodMassShell_two_hermitian_sign_reversal :
-formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodEisensteinMassShell.lean:214:  exact thetaProductFiberHermitianPolarization_sign_reversal
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEisensteinMassShell.lean:205:theorem thetaCuspLikelihoodMassShell_two_hermitian_sign_reversal :
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodEisensteinMassShell.lean:214:  exact thetaProductFiberHermitianPolarization_sign_reversal
 formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailPhaseAdaptedProuhetHalfLine.lean:367:/-- Current-level form of the fixed-half-line reduction.  The sign reversal between returned
-formal/GaloisForLFunctions/RHTower/SuzukiResidualOvercrowding.lean:207:/-! ## Theorem C: the glue around Rouché's count stability -/
-formal/GaloisForLFunctions/RHTower/SuzukiResidualOvercrowding.lean:223:/-- **An eventually bounded window count is uniformly bounded.**  Rouché's theorem delivers the
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResidualOvercrowding.lean:207:/-! ## Theorem C: the glue around Rouché's count stability -/
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResidualOvercrowding.lean:223:/-- **An eventually bounded window count is uniformly bounded.**  Rouché's theorem delivers the
 formal/GaloisForLFunctions/HTGeometry/UniformZeroCountBound.lean:14:and no Rouché theorem are required.
 formal/GaloisForLFunctions/HTGeometry/UniformZeroCountBound.lean:90:no argument principle and no Rouché theorem. -/
 formal/GaloisForLFunctions/RHTower/PrimeArchThetaGaussianApertureSignedProjectiveCurvature.lean:113:the cold-aperture sign reversal. -/
@@ -151,7 +151,7 @@ formal/GaloisForLFunctions/RHTower/SpeiserCriticalLineSignLaw.lean:20:zero of `�
 formal/GaloisForLFunctions/RHTower/SpeiserCriticalLineSignLaw.lean:29:/-- **Speiser's sign law.**  Above height `20`, `Re(ζ'/ζ) < 0` on the critical line wherever
 formal/GaloisForLFunctions/HTGeometry/MomentRatioClassStraddle.lean:71:theorem logConcave_class_undecidable :
 formal/GaloisForLFunctions/HTGeometry/FokasLenellsContourScattering.lean:97:/-- Imaginary rays exchange the transmission entries; changing ray sign reverses reflection. -/
-formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeEntireTransform.lean:246:/-- Full Rouché transfer on an arbitrary bounded domain: if centered Xi has no zero on the
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeEntireTransform.lean:246:/-- Full Rouché transfer on an arbitrary bounded domain: if centered Xi has no zero on the
 formal/GaloisForLFunctions/RHTower/PerturbationZero.lean:2:The Rouché-free zero-planting lemma (MWM lane; 11-recurrence-degrees.md §2 step 3).
 formal/GaloisForLFunctions/RHTower/PerturbationZero.lean:8:F(s₀) = g(s₀)/(g(s₀) + 0) = 1. No argument principle, no Rouché (mathlib has neither).
 formal/GaloisForLFunctions/RHTower/XiCTaylorThetaTailProductFiberHermitianCollapse.lean:412:/-- **Exact polarization sign reversal.**  At one explicit point in the canonical upper strip,
@@ -178,9 +178,9 @@ formal/GaloisForLFunctions/RHTower/SEMEventualSplit.lean:148:Rouché ball centre
 formal/GaloisForLFunctions/RHTower/SourceHorizontalHolomorphicSkewAdjointAdditiveTwoPortNoGo.lean:135:/-- Sharp boundary: opposite Hermitian sign reverses the central curvature. -/
 formal/GaloisForLFunctions/RHTower/CriticalPointInterpolation.lean:16:formalize Speiser's criterion, hypertranscendence, generated differential fields, entire order, or
 formal/GaloisForLFunctions/HTGeometry/HilbertSchmidtNegation.lean:5:# Sign reversal for Hilbert--Schmidt kernel models
-formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean:18:and eventual Rouché count stability closes the interior residual.
-formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean:153:/-- **Theorem C on the concrete family.**  Eventual Rouché count stability in one interior window
-formal/GaloisForLFunctions/RHTower/SuzukiCompactifiedLabelOvercrowding.lean:197:/-- Eventual Rouché count stability now closes the Suzuki interior residual without a separate
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedLabelOvercrowding.lean:18:and eventual Rouché count stability closes the interior residual.
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedLabelOvercrowding.lean:153:/-- **Theorem C on the concrete family.**  Eventual Rouché count stability in one interior window
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactifiedLabelOvercrowding.lean:197:/-- Eventual Rouché count stability now closes the Suzuki interior residual without a separate
 formal/GaloisForLFunctions/RHTower/GammaEulerTwoChannelAsymptotic.lean:14:(`gammaEulerTwoDifference_eventually_neg`) — the two-channel correlation-sign reversal.
 formal/GaloisForLFunctions/RHTower/GammaEulerTwoChannelAsymptotic.lean:148:/-- **Two-channel correlation sign reversal (continuous tail form).**  For `r,h₁,h₂ > 0`, two
 formal/GaloisForLFunctions/RHTower/GammaEulerTwoChannelAsymptotic.lean:293:/-- **Even-block correlation sign reversal (general continuous no-go).**  For `r > 0`, a nonempty
@@ -201,12 +201,12 @@ formal/GaloisForLFunctions/RHTower/XiFinitePacketGauge.lean:2:import GaloisForLF
 formal/GaloisForLFunctions/RHTower/XiFinitePacketGauge.lean:145:  obtain ⟨C', hC', hb'⟩ := RHTower.SpeiserGauge.orderOneEnvelope_mul_polynomial hC (finitePacketPoly a b) hbound
 formal/GaloisForLFunctions/RHTower/ArithmeticFiniteSourceContour.lean:2:import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaFiniteRouche
 formal/GaloisForLFunctions/RHTower/ArithmeticFiniteSourceContour.lean:8:positive-half-plane sets away from the pole. Local Rouché comparison transports the actual
-formal/GaloisForLFunctions/RHTower/ThetaCuspCenterMixedCutoffPolynomial.lean:26:/-- The first undecided-rank polynomial already splits over the reals. -/
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedCutoffPolynomial.lean:26:/-- The first undecided-rank polynomial already splits over the reals. -/
 formal/GaloisForLFunctions/RHTower/SoninKoplienkoSemilocalOrientationUniversalityLaw.lean:40:readout equals the actual linear orientation and differs from its sign reversal. -/
 formal/GaloisForLFunctions/HTGeometry/DiscreteTimeCrystalSpinChain.lean:178:/-- The two local sign reversals cancel on every YY coupling. -/
 formal/GaloisForLFunctions/HTGeometry/DiscreteTimeCrystalSpinChain.lean:189:/-- The two local sign reversals cancel on every ZZ coupling. -/
 formal/GaloisForLFunctions/RHTower/Sieve/VinogradovUpperHalfSaving.lean:283:/-- Sign-reversed approximation form used by logarithmic Taylor phases,
-formal/GaloisForLFunctions/RHTower/HedenmalmFixedCenterExteriorReflectionEnergy.lean:103:/-- Both sign reversals cancel: the boundary coefficient is reflection-invariant. -/
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmFixedCenterExteriorReflectionEnergy.lean:103:/-- Both sign reversals cancel: the boundary coefficient is reflection-invariant. -/
 formal/GaloisForLFunctions/RHTower/MobiusGammaEulerDifferenceTailParity.lean:98:/-- **Two-channel sign reversal.** Two positive-scale Euler differences make the next Gamma-tail
 formal/GaloisForLFunctions/RHTower/Sieve/VinogradovLogHeightWindow.lean:462:sign-reversed approximant theorem applies without signed numerators. -/
 formal/GaloisForLFunctions/RHTower/MobiusBoundaryOppositeSignTransport.lean:396:/-- A symmetric conductance supported on sign-reversing edges has zero signed row mass.  This is

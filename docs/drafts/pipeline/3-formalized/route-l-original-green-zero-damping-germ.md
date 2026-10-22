@@ -125,7 +125,7 @@ that the whole corpus contains no such theorem.
 
 ## Final verification
 
-`GaloisForLFunctions.RHTower.DeningerOriginalGreenZeroDampingGerm` contains
+`GaloisForLFunctions.RHTower.Deninger.DeningerOriginalGreenZeroDampingGerm` contains
 17 public declarations. The full source expression is meromorphic on the
 complex damping plane and agrees with the actual original Green integral
 throughout the proved real admission range `a>1`. The exact pole order,
@@ -134,7 +134,7 @@ filled analytic scalar germ are unconditional at every actual Xi support
 point and every original prime.
 
 The final audit
-`lake build GaloisForLFunctions.RHTower.DeningerOriginalGreenZeroDampingGerm`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerOriginalGreenZeroDampingGerm`
 passed, compiling only the new leaf (131 seconds); its required dependency
 jobs were cached. No full or umbrella build ran. The module is wired once
 into `RHTower.lean`. Both scratch checks passed via `lake env lean`.

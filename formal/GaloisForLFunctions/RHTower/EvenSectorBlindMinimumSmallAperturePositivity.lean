@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.EvenSectorBlindVariationalAttainment
 import GaloisForLFunctions.RHTower.EvenSectorExactMomentRealization
 import GaloisForLFunctions.RHTower.EvenSectorPoleFreeBlindFarkas
 import GaloisForLFunctions.RHTower.PolarGroundEnergyNonnegIffRiemannHypothesis
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilApertureMonotonicity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilApertureMonotonicity
 
 /-!
 # Small-aperture positivity, aperture antitonicity, and RH equivalence for the EWU blind minimum

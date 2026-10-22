@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [UNCONDITIONAL] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.SuzukiRectangularWallGramGate`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiRectangularWallGramGate`
 - **Parents:** `complete-sharp-rectangular-guinand-weil-prime-gamma-law.md`,
   `suzuki-wall-field-antidiagonal-gram-lift.md`,
   `suzuki-causal-depth-rectangular-caratheodory-growth.md`

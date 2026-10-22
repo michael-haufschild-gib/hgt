@@ -5,7 +5,7 @@
 - **Type:** THEOREM TARGET / SOURCE-ARITHMETIC DETOUR
 - **Scientific status:** `[CONJECTURE] [DIVISOR-SIDE PAPER PROOF OUTLINE] [LEAN OPEN] [NOT YET AN RH PROOF]`
 - **Formal glue:**
-  `formal/GaloisForLFunctions/RHTower/CCMMultiplicativeScrewCurvature.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMMultiplicativeScrewCurvature.lean`
 
 ## Exact object
 

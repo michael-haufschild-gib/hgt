@@ -484,7 +484,7 @@ CCMCyclotomicInteger.isIntegral
 CCMDyadicCyclotomicInteger.dyadicIntegral
 ```
 
-The proof is direct and source-faithful: a root of unity is integral because a positive power is one; a finite integer-linear combination is integral by finite-sum and product closure; clearing the supplied power of two gives the existing dyadic-integrality predicate. The leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.CCMCyclotomicAlgebraicIntegrality`, and its public theorems have only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into the RHTower umbrella without an umbrella build.
+The proof is direct and source-faithful: a root of unity is integral because a positive power is one; a finite integer-linear combination is integral by finite-sum and product closure; clearing the supplied power of two gives the existing dyadic-integrality predicate. The leaf was checked with `lake env lean`, target-built as `GaloisForLFunctions.RHTower.CCM.CCMCyclotomicAlgebraicIntegrality`, and its public theorems have only `propext`, `Classical.choice`, and `Quot.sound`. It is wired into the RHTower umbrella without an umbrella build.
 
 This does **not** prove the unresolved arithmetic intersection `Q(sqrt 2) ∩ Z^cyc[1/2] = Z[1/sqrt 2]`, nor the characteristic-polynomial descent in CCM Theorem 5.6. It supplies the exact algebraic-integrality premise needed for the first of those two remaining steps.
 
@@ -506,7 +506,7 @@ ccm_sqrtTwoRat_trace_exists_int
 ccm_sqrtTwoRat_norm_exists_int
 ```
 
-The module proves `Q(sqrt 2)` is a field from the irrationality of `sqrt 2`, builds its nontrivial conjugation over `Z`, reflects rational integrality across a faithful characteristic-zero extension, and proves that every integral element has integral rational trace and norm.  It was scratch-checked, target-built as `GaloisForLFunctions.RHTower.CCMSqrtTwoIntegralTraceNorm`, axiom-audited (only `propext`, `Classical.choice`, `Quot.sound`), and wired into `RHTower.lean` without an umbrella build.
+The module proves `Q(sqrt 2)` is a field from the irrationality of `sqrt 2`, builds its nontrivial conjugation over `Z`, reflects rational integrality across a faithful characteristic-zero extension, and proves that every integral element has integral rational trace and norm.  It was scratch-checked, target-built as `GaloisForLFunctions.RHTower.CCM.CCMSqrtTwoIntegralTraceNorm`, axiom-audited (only `propext`, `Classical.choice`, `Quot.sound`), and wired into `RHTower.lean` without an umbrella build.
 
 `[OPEN CORE]` The remaining source-independent parity lemma is exact: for `a, b : Q`, integral `a + b sqrt 2` has `2a` and `a^2 - 2b^2` integral; reducing the two rational denominators forces `a, b : Z`.  Only after that classification is proved may localization at `2` state the required cyclotomic intersection.  Neither conclusion is claimed by the new leaf.
 
@@ -564,7 +564,7 @@ and invokes the proved `O_(Q(sqrt 2)) = Z[sqrt 2]` classification.  The reverse 
 the cleared image as `a + b sqrt(2)` and uses the concrete cyclotomic certificate for `sqrt(2)`.
 
 Direct `lake env lean` and the sole target build
-`GaloisForLFunctions.RHTower.CCMSqrtTwoDyadicCyclotomicIntersection` passed.  A public axiom
+`GaloisForLFunctions.RHTower.CCM.CCMSqrtTwoDyadicCyclotomicIntersection` passed.  A public axiom
 audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  The leaf is imported by
 `RHTower.lean`; no umbrella build was run.
 
@@ -598,7 +598,7 @@ reusable finite algebra bridge; the separate `Q(sqrt 2)` similarity in the paper
 formalized.
 
 The scratch proof, duplicate-declaration audit, direct `lake env lean`, and sole target build
-`lake build GaloisForLFunctions.RHTower.CCMDyadicCyclotomicFiniteDeterminant` passed.  Its three
+`lake build GaloisForLFunctions.RHTower.CCM.CCMDyadicCyclotomicFiniteDeterminant` passed.  Its three
 public endpoint theorems use only `propext`, `Classical.choice`, and `Quot.sound`; the leaf is
 wired into `RHTower.lean` without an umbrella build.
 

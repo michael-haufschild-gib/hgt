@@ -5,7 +5,7 @@
 - **Type:** EXACT CUTOFF/TRANSPORT CLASSIFICATION AND PROOF-ARCHITECTURE NO-GO
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiCoordinateCutoffCovariance`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCoordinateCutoffCovariance`
 - **Killed claim:** the “harmless coordinatewise initial cutoff” in
   `suzuki-finite-recurrence-trace-zero-h1-conjecture.md`
 - **Primary-source boundary:** Suzuki 2026 constructs the fixed-aperture closed form and explicitly

@@ -5,7 +5,7 @@
 - **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (paper and Lean); 25 theorems audited
 - **Depends on:** [C28 complete integrand admission](route-l-complete-integrand-admission.md)
-- **Lean:** `GaloisForLFunctions.RHTower.DeningerGammaSixRegulatorDepthCrossover`
+- **Lean:** `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixRegulatorDepthCrossover`
 - **RH status:** unproved; no source-to-fixed-reader agreement supplied
 
 ## Exact source and conclusions
@@ -162,7 +162,7 @@ before any limits, and hence the stated repair invariance.
 successfully without errors or warnings for all 25 theorems and five
 definitions. The finished module is wired into `RHTower`.
 
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixRegulatorDepthCrossover`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixRegulatorDepthCrossover`
 completed successfully; the new module built in 15 seconds. Existing
 dependency messages were replayed. No full or umbrella build was run.
 

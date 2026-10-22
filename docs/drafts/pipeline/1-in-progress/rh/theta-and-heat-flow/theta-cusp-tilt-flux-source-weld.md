@@ -89,7 +89,7 @@ Xi Bezoutian evaluation. Any premise definitionally equivalent to the final sign
 ## Formal status
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxSourceWeld.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxSourceWeld.lean`.
 
 Main declarations:
 

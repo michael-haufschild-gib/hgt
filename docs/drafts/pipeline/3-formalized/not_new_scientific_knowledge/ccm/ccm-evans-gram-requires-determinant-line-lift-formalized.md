@@ -14,7 +14,7 @@ New in this closure:
   mathlib: the Hermitian Gram determinant of a finite complex feature family is the sum of the
   squared moduli of its maximal coordinate minors, that is, the squared Pluecker norm of the top
   exterior power. Reusable, source-free, so it lives in `HTGeometry`.
-- `GaloisForLFunctions.RHTower.CCMEvansDeterminantLine` — the Evans specialization and both
+- `GaloisForLFunctions.RHTower.CCM.CCMEvansDeterminantLine` — the Evans specialization and both
   obstructions.
 
 Umbrellas: `GaloisForLFunctions.HTGeometry`, `GaloisForLFunctions.RHTower`.

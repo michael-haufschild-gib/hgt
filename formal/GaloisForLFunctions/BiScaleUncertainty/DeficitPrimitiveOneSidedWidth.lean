@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ChebyshevDeficitPrimitiveOneSidedRH
-import GaloisForLFunctions.RHTower.CCMCriticalMellinResolventExponentialWidth
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinResolventExponentialWidth
 
 /-!
 # A one-sided bound on the integrated Chebyshev deficit bounds the zero width

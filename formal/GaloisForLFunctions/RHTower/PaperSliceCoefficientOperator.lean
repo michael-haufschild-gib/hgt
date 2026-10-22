@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperSliceCoefficientSource
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.HTGeometry.PaperCompactIdealTrace
 
 /-! # A compact operator carrying every signed slice coefficient

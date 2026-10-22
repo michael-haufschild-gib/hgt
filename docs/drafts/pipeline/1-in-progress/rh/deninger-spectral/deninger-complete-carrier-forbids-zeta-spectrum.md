@@ -5,7 +5,7 @@
 - **Type:** STRUCTURAL NO-GO (formalized)
 - **Scientific status:** `[LEAN-PROVED, AXIOM-CLEAN]` `[MATHEMATICS IS CLASSICAL — see §5]`
   `[NOT AN RH PROOF]`
-- **Module:** `formal/GaloisForLFunctions/RHTower/DeningerCompleteCarrierSpectrumBounded.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCompleteCarrierSpectrumBounded.lean`
 
 ## 1. The observation
 
@@ -111,7 +111,7 @@ Formalising it is the next task and it is well defined.
 
 §4 said the correct next rung is a **pre-Hilbert** carrier with unbounded spectrum on the critical
 line, and that it is well defined. It is now built:
-`formal/GaloisForLFunctions/RHTower/DeningerPreHilbertUnboundedWitness.lean`, axiom-clean.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPreHilbertUnboundedWitness.lean`, axiom-clean.
 
 **Carrier.** The *algebraic* direct sum `⨁_(n : ℕ) ℂ²`, realised as `(ℕ × Fin 2) →₀ ℂ`, with an
 inner product built by hand as an `InnerProductSpace.Core`:

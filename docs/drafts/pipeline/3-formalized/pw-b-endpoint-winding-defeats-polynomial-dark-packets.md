@@ -39,7 +39,7 @@ as `q(q-1)^N`. Since `N=2d+1` is odd and `0<q<1`, its sign is strictly negative.
 rank-one matrix outer product factors the double sum as the square of the same response.
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekEndpointWindingPolynomialDarkSeparation.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekEndpointWindingPolynomialDarkSeparation.lean`.
 
 Main declarations:
 
@@ -51,7 +51,7 @@ Main declarations:
 - `schwarzschildParikhWilczekEndpointWinding_defeats_everyPolynomialDarkPacket`
 
 Verification: direct `lake env lean` passed; target-only `lake build
-GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekEndpointWindingPolynomialDarkSeparation`
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekEndpointWindingPolynomialDarkSeparation`
 passed (11613 jobs); six audited endpoints report only `[propext, Classical.choice, Quot.sound]`.
 
 ## Literature and corpus novelty audit

@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilEvenStrictDomain
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilEvenStrictDomain
 import GaloisForLFunctions.RHTower.XiGaussianHeatWindowSpectralIdentity
-import GaloisForLFunctions.RHTower.SuzukiCCMMixedScrewWeilBridge
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCCMMixedScrewWeilBridge
 
 /-!
 # The completed even ground and literal heat-window sources

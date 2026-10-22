@@ -42,7 +42,7 @@ repair this particular matching mechanism.
 
 ## Exact theorem and scope
 
-[Lean module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalGreenPoleMatchingNoGo.lean):
+[Lean module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalGreenPoleMatchingNoGo.lean):
 
 - `fundamentalPoleExceptionFinset_card_linear` and
   `fundamentalPoleExceptionFinset_relative_density_zero`: only linearly many

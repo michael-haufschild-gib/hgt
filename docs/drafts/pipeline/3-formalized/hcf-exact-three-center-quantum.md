@@ -39,7 +39,7 @@ right source charge `11616/4225`.  Combining `N = N₀ + 2S` with budget
 `B ≤ 1452/4225 * N` yields `S ≤ N/8` and therefore `3N/4 ≤ N₀`.
 
 Formal module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureThreeCenterSharpQuantum.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureThreeCenterSharpQuantum.lean`.
 
 Principal theorems:
 

@@ -113,14 +113,14 @@ No additional local PDE theorem remains.
 
 The nonconstant cylindrical Fourier-mode coefficient elimination is
 formalized in
-`GaloisForLFunctions.RHTower.DeningerArithmeticLocalCauchyUniqueness`
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticLocalCauchyUniqueness`
 as `deningerSecondOrderMode_coefficients_eq_zero` and
 `deningerFiniteEnergyMode_coefficients_eq_zero`.  Its required
 direct-file check passes.
 
 The exact logical descent is formalized as
 `RHTower.deningerRelativeCauchyUnique_of_localRestrictions` in
-`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`;
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`;
 required direct-file check passes.  The derivation of the mode normal
 form from the local Hodge--Dirac PDE and the orientation-twisted real
 descent are formalized as well; see the sections below.
@@ -141,7 +141,7 @@ descent are formalized as well; see the sections below.
 
 ### The mode normal form landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerModeNormalForm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerModeNormalForm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerFirstOrder_eq_exp` — **uniqueness for `f' = c f`**: a solution equals its initial value
@@ -196,7 +196,7 @@ content of all three local models is now formalized.
 
 ### Orientation descent landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerOrientationDescent.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerOrientationDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound` (the faithfulness lemma needs only `propext`).
 
 - `deningerOrientationInvariant`, `deningerOrientationAntiInvariant` — the two summands, as

@@ -1,7 +1,7 @@
 # Deninger closed-generator/Hodge/Weil purity universality law
 
 Status: Stage 3 — formalized in Lean 4; final umbrella audit pending  
-Lean target: `GaloisForLFunctions.RHTower.DeningerClosedGeneratorHodgeWeilPurityUniversalityLaw`  
+Lean target: `GaloisForLFunctions.RHTower.Deninger.DeningerClosedGeneratorHodgeWeilPurityUniversalityLaw`  
 Novelty: `[NOVELTY UNVERIFIED]`
 
 ## Theorem-generated discovery
@@ -70,7 +70,7 @@ Literature audit: deferred until exact Lean proof succeeds, per research protoco
 - Core equivalence proof passed:
   `lake env lean /private/tmp/law477_core_scratch.lean`.
 - Existing closed-generator dependency passed independently:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerDivisorClosedGenerator.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerDivisorClosedGenerator.lean`.
 - Direct source elaboration is deferred to final module audit because this checkout has no cached
   `DeningerDivisorClosedGenerator.olean`; Lean stops before elaborating the new file.
 - Wired into `GaloisForLFunctions.RHTower`.

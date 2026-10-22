@@ -183,7 +183,7 @@ for the global Green/cup comparison.
 
 ### The Gaussian probes landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerGaussianProbe.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerGaussianProbe.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerGaussianProbe μ x = e^{-π μ² x²}` — the probe `(1)`, defined as the standard Gaussian
@@ -200,7 +200,7 @@ for the global Green/cup comparison.
 
 ### The endpoint-corrected core landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerGaussianEndpointCore.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaussianEndpointCore.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerGaussianCombo` — the finite combination `(5)`.
@@ -214,7 +214,7 @@ for the global Green/cup comparison.
 
 ### The completed Mellin factor landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerGaussianZetaMellin.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaussianZetaMellin.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerGaussianRaySum` — the power orbit sum `∑_{n≥1} g_μ(n·)`, with its partner
@@ -234,7 +234,7 @@ for the global Green/cup comparison.
 
 ### The finite-jet universality of §4 landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerExpPolyOperator.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExpPolyOperator.lean`,
 `.../DeningerEulerJets.lean`, `.../DeningerTriangularShift.lean`,
 `.../DeningerJetInterpolation.lean`, `.../DeningerGaussianJetUniversality.lean`.  Axiom audit of
 each: `propext, Classical.choice, Quot.sound`.

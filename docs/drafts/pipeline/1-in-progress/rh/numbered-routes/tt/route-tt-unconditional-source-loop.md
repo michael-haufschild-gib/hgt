@@ -1828,8 +1828,8 @@ specific exact-flattening construction, not C45 matrix positivity or TT.
 
 The positive survivor and obstruction are formalized in
 `ThetaCuspPolynomialFluxBorderDegree.lean` (four public theorems). Targeted
-`lake build --old +GaloisForLFunctions.RHTower.ThetaCuspPolynomialFluxBorderDegree`
-and final `lake env lean GaloisForLFunctions/RHTower/ThetaCuspPolynomialFluxBorderDegree.lean`
+`lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPolynomialFluxBorderDegree`
+and final `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspPolynomialFluxBorderDegree.lean`
 both passed. Each emitted an informational ring_nf suggestion, no leaf
 warning. A separate scratch axiom audit passed and returned exactly
 `[propext, Classical.choice, Quot.sound]` for all four. No added axioms,
@@ -3412,7 +3412,7 @@ The new mixed-pair production leaf is wired and its targeted --old
 build is running. No umbrella or full build is used.
 
 The 951-line mixed-pair production leaf built successfully in the
-targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCuspMixedPairOddFourFloor`
+targeted `lake build --old +GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspMixedPairOddFourFloor`
 run (454 seconds for the leaf). The mandatory direct `lake env lean`
 audit is now running. Existing dependency diagnostics were replayed;
 no umbrella/full build was requested.
@@ -3424,7 +3424,7 @@ value is -2 times the strictly negative native determinant, hence is
 strictly positive. The coefficient has no missing factor 3; G(0)=3Phi(0)^2.
 This imagined obstruction must not be used to retire or modify C56.
 
-Mandatory direct production audit `lake env lean GaloisForLFunctions/RHTower/ThetaCuspMixedPairOddFourFloor.lean`
+Mandatory direct production audit `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspMixedPairOddFourFloor.lean`
 exited 0 with no diagnostics. Umbrella wiring and formal index refresh
 are complete. Global lint exits 1 for twelve unrelated unwired modules;
 no error names the new leaf. Production public-theorem axiom inspection

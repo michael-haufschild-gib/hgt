@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiWallFieldAntidiagonalGramLift
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWallFieldAntidiagonalGramLift
 import GaloisForLFunctions.HTGeometry.KerrNewmanBelinskiZakharovBridge
 
 /-!

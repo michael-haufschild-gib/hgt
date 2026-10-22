@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.CCMBoundaryStripTransfer
+import GaloisForLFunctions.RHTower.CCM.CCMBoundaryStripTransfer
 
 /-!
 # The source–norm–support forgetful tower

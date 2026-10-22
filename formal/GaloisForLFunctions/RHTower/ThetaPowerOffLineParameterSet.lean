@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaPowerTranscendentalOffLineZero
 import GaloisForLFunctions.RHTower.ThetaPowerChiEightLFunction
-import GaloisForLFunctions.RHTower.ThetaCuspChargeHardyRigidity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeHardyRigidity
 import GaloisForLFunctions.RHTower.ThetaPowerChiTwelveLFunction
 
 /-!

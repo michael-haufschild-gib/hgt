@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilPolarization
-import GaloisForLFunctions.RHTower.HedenmalmThetaEigenTransform
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaEigenTransform
 
 /-!
 # The source-side involution realizes the critical-line sharp operation

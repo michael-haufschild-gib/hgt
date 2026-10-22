@@ -2,7 +2,7 @@
 
 Status: deferred under the user's instruction to stop repeated source-exclusion
 work and run positive occurrence conjectures. No centered-source exclusion is
-claimed. Current work is in [the positive occurrence loop](../../sqb-positive-occurrence-conjecturing-loop.md).
+claimed. Current work is in [the positive occurrence loop](sqb-positive-occurrence-conjecturing-loop.md).
 RH remains unproved. The frontier map is read-only; no numerical computations.
 
 Full chain: original Xi/modular source -> independent full-Xi occurrence in

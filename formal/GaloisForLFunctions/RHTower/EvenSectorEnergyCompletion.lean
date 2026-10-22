@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.EvenSectorWindowPurification
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilEvenSectorCrossZeros
-import GaloisForLFunctions.RHTower.CCMApertureCorrelationKernel
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilEvenSectorCrossZeros
+import GaloisForLFunctions.RHTower.CCM.CCMApertureCorrelationKernel
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
 
 /-!
 # Actual single sources for the energy completion of EWU mixtures

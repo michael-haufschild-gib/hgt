@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / Connes--CCM source--divisor--energy synthesis
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOVELTY NEEDS AUDIT] [NOT AN RH PROOF]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.CCMSourceDivisorEnergySpectrum`
+  `GaloisForLFunctions.RHTower.CCM.CCMSourceDivisorEnergySpectrum`
 
 ## Principal theorem
 
@@ -67,7 +67,7 @@ conserves it in its aggregate coefficient.
 The companion module
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMinimalPositiveCorrection
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMinimalPositiveCorrection
 ```
 
 proves that the negative part of the signed dyadic sharp-prime source is the pointwise least

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FourPowerGeneralizedCircle
 import GaloisForLFunctions.HTGeometry.WeldClassTable
-import GaloisForLFunctions.RHTower.DeningerSteinbergKummerSuccessorNormalTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerSteinbergKummerSuccessorNormalTransgression
 import GaloisForLFunctions.RHTower.ZetaRealStrip
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 

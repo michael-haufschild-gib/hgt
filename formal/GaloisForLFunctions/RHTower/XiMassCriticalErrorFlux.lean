@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMassStripFourierLipschitz
-import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMPolarPrimeStieltjesAutocorrelation
 import GaloisForLFunctions.RHTower.ExpFourierNormalization
 import GaloisForLFunctions.RHTower.XiMassArchimedeanUniformBound
 import GaloisForLFunctions.RHTower.PrimeMassLowerBound

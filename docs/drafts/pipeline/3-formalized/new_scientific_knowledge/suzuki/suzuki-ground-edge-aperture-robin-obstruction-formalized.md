@@ -9,7 +9,7 @@
 
 ## Module
 
-`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeApertureObstruction.lean`
 
 ## Certified declarations
 

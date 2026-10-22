@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # A fixed finite prime packet has no twist gap

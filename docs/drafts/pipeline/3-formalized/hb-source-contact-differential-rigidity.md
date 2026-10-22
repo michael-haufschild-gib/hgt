@@ -4,7 +4,7 @@ Status: formalized. Complete physical extinction and RH remain unproved.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal/left-QNM action → original common Hawking-clock extinction → RH.
 
-Owner: [ThetaCuspHawkingBMSourceContactRigidity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceContactRigidity.lean), namespace `RHTower.D4BMSourceContactRigidity`.
+Owner: [ThetaCuspHawkingBMSourceContactRigidity.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceContactRigidity.lean), namespace `RHTower.D4BMSourceContactRigidity`.
 
 ## Exact source law
 
@@ -48,7 +48,7 @@ The [active research card](../1-in-progress/hb-source-contact-rigidity.md) recor
 
 Three public definitions retain the original contact, its scalar/contact gradient pairing and its own bilinear gradient energy. Three public theorems prove its exact gradient-energy expression, the differential rigidity identity and the nonzero spectral coefficient.
 
-The foreground scratch check passed. Two proof-style warnings were removed before the final exact leaf audit. `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceContactRigidity` passed without warnings in 172 seconds, using twelve existing cache roots; only the new leaf compiled. It is wired once into `RHTower.lean`; no full or umbrella build ran. Source SHA-256: `67ffcc6f7291dc582d8ea482e230cf1af125ff569131ee2d4dec3a673b35ce9e`.
+The foreground scratch check passed. Two proof-style warnings were removed before the final exact leaf audit. `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceContactRigidity` passed without warnings in 172 seconds, using twelve existing cache roots; only the new leaf compiled. It is wired once into `RHTower.lean`; no full or umbrella build ran. Source SHA-256: `67ffcc6f7291dc582d8ea482e230cf1af125ff569131ee2d4dec3a673b35ce9e`.
 
 Index refresh, all six public API rows, the unique umbrella import, source/audit hash equality and new-card links were verified. Global formal lint passed with existing large-file warnings. Scoped whitespace checks passed. The 308-line leaf's canonical olean and ilean remain installed; all owned Lean/Lake processes exited and all owned scratch, search-output and audit files were removed. No commit or push was made.
 

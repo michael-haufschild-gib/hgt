@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerAffineGammaXiWardTransport
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
 
 /-!
 # Euler-affine Ward curvature bridge

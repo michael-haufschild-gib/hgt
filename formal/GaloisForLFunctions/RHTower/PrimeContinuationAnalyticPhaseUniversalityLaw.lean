@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowDivisorTomography
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowContinuation
-import GaloisForLFunctions.RHTower.CCMSimplePrimeDivisorSource
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowContinuation
+import GaloisForLFunctions.RHTower.CCM.CCMSimplePrimeDivisorSource
 
 /-!
 # Prime-continuation analytic-phase universality

@@ -128,7 +128,7 @@ absorbed the whole RH burden and when divisor-preserving determinant convergence
 ## Lean status
 
 **Superseded, 2026-08-03.**  Both proved halves of the criterion are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMCofinalFloorCriterion.lean`, on the nested-floor layer of
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCofinalFloorCriterion.lean`, on the nested-floor layer of
 `CCMNestedFloorNoEvacuation.lean`.
 
 The previous objection was that there is "no exhaustion by CCM apertures".  The exhaustion is

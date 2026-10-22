@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** NO-GO + exact positive survivor / cross-route operator classification
 - **Scientific status:** `[PROVED HERE] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentPolarSamplingNoGo.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCoherentPolarSamplingNoGo.lean`
 - **Parent:** `ccm-unit-riesz-exponential-coherent-trace`
 
 ## Question decided
@@ -198,8 +198,8 @@ controlled only by bare polar `L2` mass is now formally excluded.
 
 ## Index of the formalization
 
-Modules: `RHTower/CCMUnitRieszCoherentPolarSamplingNoGo.lean`,
-`RHTower/CCMUnitRieszCoherentGeneratorSampling.lean`.  All declarations are unconditional;
+Modules: `RHTower/CCM/CCMUnitRieszCoherentPolarSamplingNoGo.lean`,
+`RHTower/CCM/CCMUnitRieszCoherentGeneratorSampling.lean`.  All declarations are unconditional;
 `#print axioms` returns only `propext, Classical.choice, Quot.sound`.
 
 | Card item | Lean declaration |

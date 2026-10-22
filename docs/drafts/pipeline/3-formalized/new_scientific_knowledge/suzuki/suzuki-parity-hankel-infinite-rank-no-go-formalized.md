@@ -7,14 +7,14 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiArchimedeanParityHankelInfiniteRank.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanParityHankelInfiniteRank.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArchimedeanParityHankelInfiniteNegativeIndex.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiArchimedeanParityHankelInfiniteRank`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiArchimedeanParityHankelInfiniteRank`:
 
 ```text
 RHTower.HasPositiveOpenSquareSeparationRankAtMost

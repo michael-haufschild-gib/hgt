@@ -89,7 +89,7 @@ full prime-window estimate and hence RH.
 The axiom-clean implementation is
 
 ```text
-GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareSampling
+GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareSampling
 ```
 
 with principal declarations

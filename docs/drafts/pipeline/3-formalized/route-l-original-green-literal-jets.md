@@ -42,7 +42,7 @@ The admitted-source methods were reused and generalized to an open strip. Partia
 
 ## Status
 
-Ten public theorems are closed in `formal/GaloisForLFunctions/RHTower/DeningerDampedOriginalGreenMellinJets.lean`:
+Ten public theorems are closed in `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedOriginalGreenMellinJets.lean`:
 
 - Open-strip admission of all finite literal jets, differentiation under the integral, and iterated derivative identification.
 - The original full Green source's jet admission, literal/analytic identity, and full Euler-quotient identity.
@@ -53,7 +53,7 @@ Ten public theorems are closed in `formal/GaloisForLFunctions/RHTower/DeningerDa
 Validation on September 12, 2026:
 
 - `lake env lean /tmp/route_l_original_green_jets.lean`: exit 0.
-- `lake build GaloisForLFunctions.RHTower.DeningerDampedOriginalGreenMellinJets`: exit 0; new leaf compiled in 4.4 seconds, dependency output replayed from cache.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedOriginalGreenMellinJets`: exit 0; new leaf compiled in 4.4 seconds, dependency output replayed from cache.
 - `scripts/formal_tools.py index`: exit 0; refreshed seven changed source records.
 - Module wired once into `GaloisForLFunctions/RHTower.lean`; no umbrella build.
 - Default Lean limits; no added axioms, unfinished proof placeholders, numerical experiments, or axiom-print audit.

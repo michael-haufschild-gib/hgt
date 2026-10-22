@@ -84,7 +84,7 @@ Xi-based approximants under RH cannot witness the source-typed structure.
 
 ## Finite published CCM infrastructure closed during audit
 
-`formal/GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilMatrix.lean` now defines, for physical
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedRestrictedWeilMatrix.lean` now defines, for physical
 `a>0` (with a totalized algebraic extension), the literal one-sided functional
 
 ```text
@@ -123,7 +123,7 @@ exactly `(O2)` and therefore exactly RH.
 
 ## Lean realization
 
-`formal/GaloisForLFunctions/RHTower/CCMProlateRayleighGroundLock.lean` defines
+`formal/GaloisForLFunctions/RHTower/CCM/CCMProlateRayleighGroundLock.lean` defines
 `CCMProlateRayleighGroundData` and proves, without project axioms:
 
 ```text

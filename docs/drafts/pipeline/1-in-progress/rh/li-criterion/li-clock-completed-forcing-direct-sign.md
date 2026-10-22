@@ -3,7 +3,7 @@
 - **ID:** LI-CLOCK-COMPLETED-FORCING-DIRECT-SIGN
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE; direct source-sign attack
-- **Source:** [original finite-window target](../../li-clock-finite-eta-orientation-window.md), [exact relative law](../../../3-formalized/li-clock-partition-relative-volterra-forcing.md)
+- **Source:** [original finite-window target](li-clock-finite-eta-orientation-window.md), [exact relative law](../../../3-formalized/li-clock-partition-relative-volterra-forcing.md)
 - **Statement:** Prove the literal `Re F_N=C-K_N+Re H_N>=0` for every sufficiently large N throughout one fixed admissible `0<t<=c log(2N+1)` window.
 
 ## Goal
@@ -578,7 +578,7 @@ is admitted, and no new sign of the literal response is claimed.
 
 ## Log
 
-- 2026-10-01 — Derivative first leaf24 is now fully source/compiler/axiom checked: both complete reviews, exact direct/named checks, imported all24 foundational reports and wiring/API pass. Full two-leaf survivor remains open. Root opens the [literal integrated-clock sign test](../../li-clock-integrated-source-sign.md), retaining the exact source and auditing its eventual-sign receiver; Producer continues the literal massive-source ratio attack.
+- 2026-10-01 — Derivative first leaf24 is now fully source/compiler/axiom checked: both complete reviews, exact direct/named checks, imported all24 foundational reports and wiring/API pass. Full two-leaf survivor remains open. Root opens the [literal integrated-clock sign test](li-clock-integrated-source-sign.md), retaining the exact source and auditing its eventual-sign receiver; Producer continues the literal massive-source ratio attack.
 
 - 2026-10-01 — Tail-inverse178/independent118 audits pass: every actual positive kernel tail has a sign-changing inverse; no finite literal jet plus quantitative ratio-increment lower bounds can orient all inputs. Exact actual ratio band remains untested. MixedLimit26 completes proof/axiom/direct/named checks and wiring. Derivative first24 passes both whole-source reviews and exact tree direct check; named/imported-axiom gates are running. Latest global lint passes catalog freshness but reports eleven unrelated unwired modules. Neither full two-leaf survivor is complete.
 

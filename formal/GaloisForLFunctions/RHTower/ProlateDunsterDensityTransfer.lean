@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ProlateDunsterUniformTransfer
-import GaloisForLFunctions.RHTower.CCMRadialDensityBridge
+import GaloisForLFunctions.RHTower.CCM.CCMRadialDensityBridge
 
 /-!
 # Density transfer for exact radial prolate profiles

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiSmallApertureFormScaling
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSmallApertureFormScaling
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeDensityMeasure
 
 open Complex MeasureTheory Set Filter Topology

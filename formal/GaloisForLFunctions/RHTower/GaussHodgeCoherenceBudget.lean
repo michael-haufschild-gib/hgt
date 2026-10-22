@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GaussHodgeSeamEnergyBridge
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
 /-!
 # Coherence budget and conjugate-pair classification of the missing transform

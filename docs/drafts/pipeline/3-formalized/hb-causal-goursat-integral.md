@@ -8,7 +8,7 @@ The target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0` with independent tensor amplit
 
 ## Exact result
 
-The module is `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalGoursat`, namespace `RHTower.D4BMCausalKernel`. Write
+The module is `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalGoursat`, namespace `RHTower.D4BMCausalKernel`. Write
 
 ```
 R_nu(h,x,y)=legendreKernel(nu,Z(h,x,y)),
@@ -44,7 +44,7 @@ The Lean results do not yet construct the forced L² integral or prove the distr
 
 ## Validation
 
-Foreground scratch `lake env lean` passed without warnings. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalGoursat`, using 2623 frozen own-module caches and 11 package caches. The new leaf built in 66 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
+Foreground scratch `lake env lean` passed without warnings. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalGoursat`, using 2623 frozen own-module caches and 11 package caches. The new leaf built in 66 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the two new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files match the audited files byte for byte. The unique import is in the `GaloisForLFunctions.RHTower` area umbrella; no umbrella build ran.
 

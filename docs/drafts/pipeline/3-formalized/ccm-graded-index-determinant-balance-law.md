@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** UNIVERSAL THEOREM / CCM COFINAL DETERMINANT OBSTRUCTION
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN] [CANDIDATE NOVEL] [NOT RH]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMGradedIndexDeterminantBalance.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMGradedIndexDeterminantBalance.lean`
 
 ## Universal law
 

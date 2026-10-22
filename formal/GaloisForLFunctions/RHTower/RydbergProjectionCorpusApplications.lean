@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.RydbergClockDephasing
 import GaloisForLFunctions.HTGeometry.PositiveObserverGNSDecompositionLaw
-import GaloisForLFunctions.RHTower.CCMArchimedeanQuantizedCalculus
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanQuantizedCalculus
 import GaloisForLFunctions.RHTower.SoninEvenCarrier
 import GaloisForLFunctions.RHTower.SuperPoincareProjectionFamily
 import GaloisForLFunctions.RHTower.LpIndicatorProjectionGap

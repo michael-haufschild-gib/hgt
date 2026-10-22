@@ -24,7 +24,7 @@ The finite part is evaluated exactly: `ξ(s) = s(s-1)/2 · Λ₀(s) + 1/2` gives
 -/
 import GaloisForLFunctions.RHTower.XiRelativeResolventTrace
 import GaloisForLFunctions.RHTower.XiZeroSumDivergence
-import GaloisForLFunctions.RHTower.CCMFirstClockVolterra
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterra
 import Mathlib.NumberTheory.Harmonic.ZetaAsymp
 
 noncomputable section

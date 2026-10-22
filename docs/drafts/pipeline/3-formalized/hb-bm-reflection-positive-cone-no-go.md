@@ -78,14 +78,14 @@ provisional. Significance is exact removal of a whole physical-source ansatz cla
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicReflectionPositiveConeNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicReflectionPositiveConeNoGo.lean`
 - Right-half-plane theorem:
   `d4BMXiPlusPlusComplementaryFrobeniusExponent_re_pos`
 - Rigidity theorem:
   `d4BMXiReflectionPositiveConeRegularComplementaryCurrent_eq_zero_iff`
 - Direct `lake env lean` check passed.
 - Targeted build
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicReflectionPositiveConeNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicReflectionPositiveConeNoGo`
   passed (`11879/11879`).
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella import wired in `formal/GaloisForLFunctions/RHTower.lean`.

@@ -35,7 +35,7 @@ HC92 and nonvanishing reduce equal gain norms to `|T(Rq)|²=|T(q)|²`. At high o
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMRadiativeSourceFEVacuumRealDifferentiableNonlinearDetectorNoGo.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMRadiativeSourceFEVacuumRealDifferentiableNonlinearDetectorNoGo.lean`
 - Final theorem: `RHTower.d4HBVacuumRealDifferentiableNonlinearDetectorScalarizationRouteKilled`
 - Transfer survivor: `RHTower.d4BMXiSecondHarmonicBoundaryTransfer_normSq_reflect_eq_iff_re_eq_half`
 - Global classification: `RHTower.hbXiRadiativeGlobalVacuumRealDifferentiableFaithfulDetectorScalarization_iff_rh`

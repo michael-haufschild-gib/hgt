@@ -2,7 +2,7 @@
 
 Status: formalized; scratch, targeted module build, all-theorem axiom audit and repository lint passed.
 Date: 2026-09-11.
-Module: `GaloisForLFunctions.RHTower.DeningerOrdinaryIntegerGibbsOperatorDomain`.
+Module: `GaloisForLFunctions.RHTower.Deninger.DeningerOrdinaryIntegerGibbsOperatorDomain`.
 
 ## Exact source and result
 
@@ -111,7 +111,7 @@ other recent-paper exclusions are recorded in the C16 attack ledger.
 ## Verification
 
 - `lake env lean /tmp/route_l_gibbs_reader.lean` — all 30 theorems passed, no warnings.
-- `lake build GaloisForLFunctions.RHTower.DeningerOrdinaryIntegerGibbsOperatorDomain` — passed; only this new module was built, with existing dependency results replayed. No umbrella build.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerOrdinaryIntegerGibbsOperatorDomain` — passed; only this new module was built, with existing dependency results replayed. No umbrella build.
 - `scripts/formal_tools.py lint` — passed.
 - `lake env lean /tmp/route_l_gibbs_operator_axioms.lean` — all 30 theorems use only `propext`, `Classical.choice`, and `Quot.sound`; no added axioms.
 

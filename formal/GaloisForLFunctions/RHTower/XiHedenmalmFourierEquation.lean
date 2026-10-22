@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 import GaloisForLFunctions.RHTower.XiWeilPolarization
 
 /-!

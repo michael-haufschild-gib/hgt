@@ -5,18 +5,18 @@
 - **Claim:** `[PAPER-PROVED] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-flat-primitive-flux-volterra-liouville.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCoordinateCutoffPrimitiveFlux.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxChargeAutomatic.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatPrimitiveFluxAssembly.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWallCutoffCommutator.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaCommutatorConvolution.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaCommutatorBlock.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxBlockValue.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxBlockTail.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxCoercive.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxEnvelopeBridge.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxWeightedL2.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoordinateCutoffPrimitiveFlux.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimitiveFluxNonnormalGraphReduction.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxChargeAutomatic.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatPrimitiveFluxAssembly.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWallCutoffCommutator.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaCommutatorConvolution.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaCommutatorBlock.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxBlockValue.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxBlockTail.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxCoercive.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxEnvelopeBridge.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxWeightedL2.lean`
   - `formal/GaloisForLFunctions/HTGeometry/FlatVolterraDecay.lean`
   - `formal/GaloisForLFunctions/HTGeometry/CoerciveResolutionBound.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ExpEnvelopeAlgebra.lean`

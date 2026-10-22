@@ -52,7 +52,7 @@ actual determinant is eventually strictly positive.
 
 ## Exact Lean capstones
 Namespace HTGeometry.ThetaRatioWeightedSquare, module
-GaloisForLFunctions.RHTower.ThetaCuspRatioTerminalUpperDeterminantSigns:
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioTerminalUpperDeterminantSigns:
 
 - terminalUpperDeterminant_shift_pos
 - terminalUpperDeterminant_boundary_pos

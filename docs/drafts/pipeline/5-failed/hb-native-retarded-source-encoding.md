@@ -78,7 +78,7 @@ must not be identified with a vanishing full potential.
 
 ## Lean certificate
 
-[NativeFieldMatchingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeFieldMatchingNoGo.lean) proves
+[NativeFieldMatchingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeFieldMatchingNoGo.lean) proves
 `exists_original_scalar_ne_zero`, `exists_original_forcing_ne_zero`,
 `exists_originalPotential_amplitude_observation`,
 `originalPotential_amplitude_fibres`, and

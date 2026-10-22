@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteRegularitySpacetimeProbe
-import GaloisForLFunctions.HTGeometry.KleinGordonConformallyFlat
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonConformallyFlat
 
 /-!
 # Finite regularity on a conformally rescaled chart

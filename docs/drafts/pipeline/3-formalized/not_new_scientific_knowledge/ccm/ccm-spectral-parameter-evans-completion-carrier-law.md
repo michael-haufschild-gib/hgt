@@ -185,7 +185,7 @@ screw form, its completion and the logarithmic multiplier do remain cited parent
 own deductions — the reduction `(2)` → `(7)`, the shifted symbol `(5)`, and the conditional finite
 Morse formula `(9)` → `(10)`/`(11)` — are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMSpectralParameterEvans.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMSpectralParameterEvans.lean`
 (7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

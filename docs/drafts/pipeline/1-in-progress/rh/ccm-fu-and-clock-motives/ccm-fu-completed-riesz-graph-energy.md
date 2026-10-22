@@ -55,7 +55,7 @@ and its unit-aperture graph-coordinate form. No hypotheses, axioms, or computati
 ## Closed results
 
 Lean module:
-`GaloisForLFunctions/RHTower/CCMFUSuzukiCompletedRieszGraphEnergy.lean`.
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCompletedRieszGraphEnergy.lean`.
 
 - Exact prefix flux:
   `A_M = sum_{k<M-1} (psi(k+1)-(k+1)+2*gamma) * (sqrt(k+2)-sqrt(k+1))`.
@@ -128,7 +128,7 @@ Conjecture: Suzuki's finite right critical secant admits a source-faithful decom
 scalarization, without the apparent `1 / omega` loss.
 
 Outcome: proved unconditionally in
-`GaloisForLFunctions/RHTower/CCMFUSuzukiCriticalChordMeasure.lean`.
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiCriticalChordMeasure.lean`.
 
 - The atomic chord coefficient and matching polar prefix mass are nonnegative.
 - The completed finite Riesz jet is exactly positive atomic Riesz mass minus positive polar Riesz
@@ -211,7 +211,7 @@ critical-chord coprime multiplication theorem, prime-power second-grade lower bo
 ### C9 — exact second and third Suzuki transverse layers
 
 The second-grade global arithmetic asymptotic is now closed unconditionally in
-`GaloisForLFunctions/RHTower/CCMFUSuzukiSecondGradeAsymptotic.lean`:
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSecondGradeAsymptotic.lean`:
 
 ```text
 sum_{n<=N} (Lambda*Lambda)(n)
@@ -251,7 +251,7 @@ so coefficientwise the connected producer is exactly `2 Lambda(n) log(n)^2`.  Th
 inside the Dirichlet-convolution algebra before any scalar readout; all disconnected two- and
 three-prime Euler grades disappear identically.
 
-`GaloisForLFunctions/RHTower/CCMFUSuzukiConnectedThirdTangentBridge.lean` proves the exact dressed
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiConnectedThirdTangentBridge.lean` proves the exact dressed
 landing on every canonical non-unit label:
 
 ```text
@@ -337,10 +337,10 @@ equivalent matched-coverage/quantile-current law), not another convergence, comp
 energy, or separate-region positivity theorem.
 
 Lean status: proved and wired in
-`GaloisForLFunctions/RHTower/CCMFUSuzukiPositiveConnectedLogChord.lean`,
-`GaloisForLFunctions/RHTower/CCMFUSuzukiSignedWindowMixture.lean`, and
-`GaloisForLFunctions/RHTower/CCMFUSuzukiAdaptiveCofinalLanding.lean`. Targeted source checks and
-`lake build GaloisForLFunctions.RHTower.CCMFUSuzukiAdaptiveCofinalLanding` pass. Capstones have no
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiPositiveConnectedLogChord.lean`,
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSignedWindowMixture.lean`, and
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiAdaptiveCofinalLanding.lean`. Targeted source checks and
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiAdaptiveCofinalLanding` pass. Capstones have no
 axioms beyond `propext`, `Classical.choice`, and `Quot.sound`.
 
 Novelty status: `[NOVELTY UNVERIFIED]`. Corpus search found fixed-window Suzuki convergence and
@@ -381,8 +381,8 @@ obstruction, because the actual adaptive finite Suzuki family is quantitatively 
 uniformly equivalent to, the outgoing matched-coverage seam and completed oriented quantile current.
 
 Lean status: proved and wired in
-`GaloisForLFunctions/RHTower/CCMFUSuzukiHardCoreLanding.lean`. Direct source check and targeted
-`lake build GaloisForLFunctions.RHTower.CCMFUSuzukiHardCoreLanding` pass. Missing transitive oleans
+`GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiHardCoreLanding.lean`. Direct source check and targeted
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiHardCoreLanding` pass. Missing transitive oleans
 were built individually as encountered. Capstones have no axioms beyond `propext`,
 `Classical.choice`, and `Quot.sound`.
 

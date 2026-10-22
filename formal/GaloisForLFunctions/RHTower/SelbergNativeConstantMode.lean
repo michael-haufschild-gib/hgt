@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringCutoffDerivatives
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMHeightLaplacian
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMHeightLaplacian
 import GaloisForLFunctions.RHTower.SelbergScatteringEntireOperator
 import GaloisForLFunctions.HTGeometry.CfcEigenvector
 

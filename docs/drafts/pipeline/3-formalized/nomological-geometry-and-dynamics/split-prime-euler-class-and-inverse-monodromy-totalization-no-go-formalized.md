@@ -8,7 +8,7 @@
 
 | Module | Formalized content |
 |---|---|
-| `GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteDivisorSplitting` | Fixed-prime direct summand, section defect, Euler factor/cocycle/class vanishing, coefficient pushforward |
+| `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteDivisorSplitting` | Fixed-prime direct summand, section defect, Euler factor/cocycle/class vanishing, coefficient pushforward |
 | `GaloisForLFunctions.HTGeometry.ParachainConnesComparisonLaw` | Inverse-monodromy mate cancellation without trivial monodromy |
 | `GaloisForLFunctions.HTGeometry.BoundedLogarithmicPrimeInfinityShear` | Abstract, real `Lᵖ`, and real `c₀` bounded-shear splitting |
 | `GaloisForLFunctions.HTGeometry.ConstraintMotiveRelativity.CoframeAnomalyRank` | Normalized valuation coframes and preserved independence |

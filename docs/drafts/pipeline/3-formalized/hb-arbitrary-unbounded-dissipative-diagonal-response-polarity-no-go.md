@@ -52,7 +52,7 @@ standard-passive polarity and none can have HB's required opposite polarity.
 
 ## Formal certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBArbitraryUnboundedDissipativeDiagonalResponsePolarityNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBArbitraryUnboundedDissipativeDiagonalResponsePolarityNoGo`
 - Theorem: `d4HBArbitraryUnboundedDissipativeDiagonalResponsePolarityRouteKilled`
 - Direct `lake env lean` and targeted `lake build` pass.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.

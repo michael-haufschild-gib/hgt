@@ -136,7 +136,7 @@ the module compiles and builds, and every declaration audits to
 
 ### The totalization is verified
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticTwoColumnSignatureTotalization.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticTwoColumnSignatureTotalization.lean`,
 building on the three-term complex framework of
 `DeningerArithmeticThreeTermCohomology.lean`.  Axiom audit: `propext, Quot.sound` for the
 totalization itself, `propext, Classical.choice, Quot.sound` for the flow and cup constructions.

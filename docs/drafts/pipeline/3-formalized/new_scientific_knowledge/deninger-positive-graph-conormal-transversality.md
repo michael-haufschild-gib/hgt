@@ -126,7 +126,7 @@ Hilbert completion with coarse descent.
 ## Lean status
 
 Both `(2)` and `(3)` are formalized in
-`GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`
 as
 `RHTower.deningerPositiveCalderonGraph_inf_conormal_eq_bot` and
 `RHTower.deningerPositiveCalderonGraph_sup_conormal_eq_top`.

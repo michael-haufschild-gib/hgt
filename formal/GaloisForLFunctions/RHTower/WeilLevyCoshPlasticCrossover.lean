@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExplicitScrewRegularKernel
 import GaloisForLFunctions.RHTower.WeilLevyPoleGaussModeCancellation
 
 /-!

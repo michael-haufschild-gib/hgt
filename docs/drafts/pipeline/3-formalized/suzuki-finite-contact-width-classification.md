@@ -82,7 +82,7 @@ obstruction needed to kill the compensation mechanism rather than merely exhibit
 ## Lean certificate
 
 Module:
-`formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean`.
 
 - `suzukiTransitionCore_finiteContact_widthClassification`: order one is equivalent to RH; every
   order `m≥2` gives `XiZeroHalfPlaneBound ((m-1)/(2m))` with width strictly between `0` and `1/2`.

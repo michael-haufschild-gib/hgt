@@ -8,7 +8,7 @@ shifted polar Gram plus the critical Mellin-defect Gram.  This is an arbitrary-n
 identity: no Xi zero list enters the construction.
 -/
 import GaloisForLFunctions.HTGeometry.InverseGapCauchyCommutator
-import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
 
 open Complex Matrix
 

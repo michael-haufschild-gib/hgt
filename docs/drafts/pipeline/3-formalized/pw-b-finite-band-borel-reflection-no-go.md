@@ -101,13 +101,13 @@ Lean declaration:
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo`
 - Source:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo.lean`
 - Direct check:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo.lean` — PASS
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo.lean` — PASS
 - Targeted final build:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo` — PASS (`9034/9034`)
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekFiniteBandBorelReflectionNoGo` — PASS (`9034/9034`)
 - Axiom audit: both new theorems use only `propext`, `Classical.choice`, `Quot.sound`; no added
   axioms, `sorry`, `admit`, `opaque`, or `unsafe` declaration.
 - Umbrella: wired into `formal/GaloisForLFunctions/RHTower.lean`; no umbrella build run.

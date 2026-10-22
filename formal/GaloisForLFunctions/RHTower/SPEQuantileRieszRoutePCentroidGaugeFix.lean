@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePTranslationGauge
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
 
 /-!
 # Canonical centroid gauge fixing for the finite Route-P SP-E carrier

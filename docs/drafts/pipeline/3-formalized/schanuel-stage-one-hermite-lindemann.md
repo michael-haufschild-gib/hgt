@@ -3,7 +3,7 @@
 - **ID:** schanuel-stage-one-hermite-lindemann
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
-- **Source:** `formal/GaloisForLFunctions/RHTower/SchanuelStageWitnesses.lean`
+- **Source:** `formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelStageWitnesses.lean`
 - **Statement:** `SchanuelExtractionAt 1` holds unconditionally.
 
 ## Goal
@@ -55,15 +55,15 @@ repository's stated/formal frontier and removal of a false open dependency.
 
 - 2026-08-14 -- paper proof closed; queued exact Lean discharge and stale-frontier corrections.
 - 2026-08-14 -- `schanuelExtractionAt_one` added and checked with
-  `lake env lean GaloisForLFunctions/RHTower/SchanuelStageWitnesses.lean`; targeted
-  `lake build GaloisForLFunctions.RHTower.SchanuelStageWitnesses` passed. Axiom audit reports only
+  `lake env lean GaloisForLFunctions/RHTower/Schanuel/SchanuelStageWitnesses.lean`; targeted
+  `lake build GaloisForLFunctions.RHTower.Schanuel.SchanuelStageWitnesses` passed. Axiom audit reports only
   `propext`, `Classical.choice`, and `Quot.sound`. Global lint reached unrelated unreachable modules
   (`FieldOne*`, `Suzuki*`, and several `HTGeometry` files); this module is already reachable from
   `RHTower.lean` and contains no forbidden declaration.
 
 ## Lean certificate
 
-Module: `GaloisForLFunctions.RHTower.SchanuelStageWitnesses`, wired into the
+Module: `GaloisForLFunctions.RHTower.Schanuel.SchanuelStageWitnesses`, wired into the
 `GaloisForLFunctions.RHTower` umbrella.
 
 | Card statement | Lean declaration |

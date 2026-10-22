@@ -555,7 +555,7 @@ being hidden.
 ## Lean progress log — 2026-08-25
 
 `HTGeometry/CayleyBoundaryL2Unitary.lean` and
-`RHTower/CCMOnePrimeCayleyTransport.lean` close the exact full-space source transport.  The explicit
+`RHTower/CCM/CCMOnePrimeCayleyTransport.lean` close the exact full-space source transport.  The explicit
 Cayley half-density is proved surjective after the omitted circle endpoint is handled as a null set,
 then bundled as a unitary.  In the project's Fourier convention the nonnegative circle Hardy space
 maps to upper Hardy boundary, so the source projection transports to the complementary circle
@@ -586,7 +586,7 @@ the source coefficients `alpha_p`, `beta_p`.  Its Fourier matrix is proved exact
 The operator is then proved to have rank at most two and hence to be Schatten one, with no premises.
 Direct check, targeted leaf build, and axiom audit passed with only the same standard axioms.
 
-`RHTower/CCMPaperCayleyTransport.lean` resolves the Fourier-orientation mismatch between the
+`RHTower/CCM/CCMPaperCayleyTransport.lean` resolves the Fourier-orientation mismatch between the
 project Cayley convention and Theorem 4.4.  The explicit Hardy flip `J e_n=e_(-n-1)` is unitary,
 exchanges `Q` and `1-Q`, and yields the paper-coordinate unitary `W=J U_Cayley`.  The source
 projection and literal one-prime defect then satisfy the exact unconditional intertwining

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.L2FourierEndpointOrthogonality
-import GaloisForLFunctions.RHTower.SuzukiHlogEndpointSupport
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiHlogEndpointSupport
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeOddFirstFailurePrimePowerJump
 
 /-!

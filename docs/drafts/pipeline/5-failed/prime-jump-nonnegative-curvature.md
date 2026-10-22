@@ -36,7 +36,7 @@ Therefore `Q<0`. This is a dependency-closed paper proof.
 
 Lean: `RHTower.PrimeCurvatureCounterexample.gammaTwo_witness_eq`,
 `gammaTwo_witness_neg`, and `exists_smooth_negative_curvature`, in
-`formal/GaloisForLFunctions/RHTower/CCMPrimePoleNegativeCurvature.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePoleNegativeCurvature.lean`.
 The literal rates, cutoff, and logarithmic shifts are evaluated in Lean; this is
 not only an independently defined finite graph. Leaf build passes; the final
 existential statement uses only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -57,7 +57,7 @@ existential statement uses only `propext`, `Classical.choice`, and `Quot.sound`.
   not give nonnegative curvature for the prime part.
 - **Status:** dependency-closed paper proof and Lean proof for both obstruction
   and survivor. Survivor modules `HTGeometry/JumpCurvatureBounds.lean` and
-  `RHTower/CCMPrimePoleCurvatureBounds.lean` pass leaf builds and standard-axiom
+  `RHTower/CCM/CCMPrimePoleCurvatureBounds.lean` pass leaf builds and standard-axiom
   audits. The full prime/Gamma source identity is in `CCMWeilJumpEnergy.lean`;
   its arithmetic comparison remains open.
 

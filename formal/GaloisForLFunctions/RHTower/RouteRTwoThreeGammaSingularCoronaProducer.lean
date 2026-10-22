@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittCrossPrimeSingularCorona
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCrossPrimeSingularCorona
 import GaloisForLFunctions.RHTower.RouteRTwoThreeGammaCapComparison
 
 /-!

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiModelKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiModelKernel
 
 noncomputable section
 

@@ -74,9 +74,9 @@ admission, nonresonance, left-covector, or RH assumptions.
 ## Lean modules
 
 - [FirstEndpointMellinLimit](../../../../formal/GaloisForLFunctions/HTGeometry/FirstEndpointMellinLimit.lean): four theorems for the power bound, vanishing remainder, exact cutoff identity, and cutoff limit.
-- [BMOriginalHorizonFinitePart](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonFinitePart.lean): four theorems restoring the original forcing weight and onset, proving its cutoff identity and limit, and establishing meromorphy.
-- [BMOriginalHorizonFinitePartCurrent](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalHorizonFinitePartCurrent.lean): three theorems identifying the actual response bracket, its frequency germ, and its subtracted horizon limit.
-- [BMFundamentalHorizonFinitePart](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFundamentalHorizonFinitePart.lean): one unconditional all-Xi capstone for both physical fundamental frequencies.
+- [BMOriginalHorizonFinitePart](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalHorizonFinitePart.lean): four theorems restoring the original forcing weight and onset, proving its cutoff identity and limit, and establishing meromorphy.
+- [BMOriginalHorizonFinitePartCurrent](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalHorizonFinitePartCurrent.lean): three theorems identifying the actual response bracket, its frequency germ, and its subtracted horizon limit.
+- [BMFundamentalHorizonFinitePart](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFundamentalHorizonFinitePart.lean): one unconditional all-Xi capstone for both physical fundamental frequencies.
 
 ## Remaining HB work
 

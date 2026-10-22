@@ -9,7 +9,7 @@
   normalized Milnor \(K_1\) valuation residues, and normalized field
   norms act contractively in the mixed \(L^1/L^2\) topology.
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerAdelicPlaceAverageResidue`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerAdelicPlaceAverageResidue`
 
 ## Setup
 
@@ -163,7 +163,7 @@ two-seminorm statement it actually is.
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerAdelicPlaceAverageResidue.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerAdelicPlaceAverageResidue.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all 20 declarations: only the Lean/mathlib standard
   `propext`, `Classical.choice`, and `Quot.sound`.

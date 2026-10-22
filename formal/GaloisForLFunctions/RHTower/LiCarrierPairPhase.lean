@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LiCarrierPairGeometry
 import GaloisForLFunctions.RHTower.WindowBudget
-import GaloisForLFunctions.RHTower.SuzukiCayleyPhaseLift
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCayleyPhaseLift
 import GaloisForLFunctions.HTGeometry.HausdorffCDDPhaseKernel
 
 /-!

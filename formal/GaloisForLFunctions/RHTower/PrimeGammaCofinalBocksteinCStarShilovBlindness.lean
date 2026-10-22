@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeGammaCofinalBocksteinDeterminantTransgression
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyStokesRegulator
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!

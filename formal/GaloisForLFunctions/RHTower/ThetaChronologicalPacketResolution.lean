@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaChronologicalSingularDeconvolution
-import GaloisForLFunctions.RHTower.SuzukiCanonicalL1Translation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalL1Translation
 import GaloisForLFunctions.RHTower.RouteECofactorSquarefreeHarmonic
 import GaloisForLFunctions.PNTPlus.Consequences
 

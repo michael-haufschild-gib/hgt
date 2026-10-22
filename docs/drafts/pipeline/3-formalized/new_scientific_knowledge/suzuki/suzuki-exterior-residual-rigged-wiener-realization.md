@@ -309,16 +309,16 @@ Formalized unconditionally:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/LogKernelExteriorL2.lean
-formal/GaloisForLFunctions/RHTower/SuzukiExteriorSymbolBounds.lean
-formal/GaloisForLFunctions/RHTower/SuzukiExteriorWienerAlphabet.lean
-formal/GaloisForLFunctions/RHTower/SuzukiExteriorHardyAmplitudes.lean
-formal/GaloisForLFunctions/RHTower/SuzukiValuationEvaluationAlgebra.lean
-formal/GaloisForLFunctions/RHTower/SuzukiExteriorRiggedRealization.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorSymbolBounds.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorWienerAlphabet.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorHardyAmplitudes.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiValuationEvaluationAlgebra.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorRiggedRealization.lean
 ```
 
 together with the pre-existing Wiener stack (`HTGeometry/DiscreteL1Convolution.lean`,
-`RHTower/SuzukiWienerNeumannMajorant.lean`, `RHTower/SuzukiWienerMixedNormCarrier.lean`,
-`RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`).
+`RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean`, `RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean`,
+`RHTower/Suzuki/SuzukiWienerNuclearBoundaryCarrier.lean`).
 
 `(6)`--`(8)` are the log-kernel exterior estimates; `(9)`--`(11)` are the port splitting, its
 `L²` membership, Plancherel for the translated ports, and the opposite boundary phases;

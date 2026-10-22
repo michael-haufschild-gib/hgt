@@ -69,8 +69,8 @@ Five new modules, 449 lines, 19 public declarations:
 
 - `HTGeometry/SixPointSignedHankel.lean`: strict quadratic-form and parity assembly.
 - `HTGeometry/HankelSuccessorSchur.lean`: exact scalar successor admission for every strict finite head.
-- `RHTower/ThetaCuspCenterMixedSixthRank.lean`: literal parity incidence and unconditional rank-six positivity.
-- `RHTower/ThetaCuspCenterMixedSixPointCluster.lean`: factorial congruence and arbitrary-cluster theorem.
-- `RHTower/ThetaCuspCenterMixedSuccessorSource.lean`: all-order complete native source identity and exact rank-seven obligation.
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedSixthRank.lean`: literal parity incidence and unconditional rank-six positivity.
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedSixPointCluster.lean`: factorial congruence and arbitrary-cluster theorem.
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedSuccessorSource.lean`: all-order complete native source identity and exact rank-seven obligation.
 
 Each module passed a foreground `lake env lean` check; only required new oleans were emitted. The checked source bytes are copied into the corpus, and every module is imported once by its umbrella. No full, umbrella or cascading build was run. Axiom audits of the five new capstones report only `propext`, `Classical.choice`, `Quot.sound`. Formal lint passes with existing large-file warnings. Owned scratch files are removed at the final checkpoint, and no earlier theorem was re-audited.

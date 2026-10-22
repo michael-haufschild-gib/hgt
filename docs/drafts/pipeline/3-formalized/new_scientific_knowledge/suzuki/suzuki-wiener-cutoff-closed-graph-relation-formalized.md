@@ -8,12 +8,12 @@
   - `formal/GaloisForLFunctions/HTGeometry/MultiplierClosedGraph.lean`
   - `formal/GaloisForLFunctions/HTGeometry/CarlemanOperatorBound.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ResolventSubordination.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCutoffCommutator.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCarlemanCommutatorKernel.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiBandlimitedPort.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiExteriorRiggedRealization.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedSeamCarrierBounds.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCutoffCommutator.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanCommutatorKernel.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBandlimitedPort.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorRiggedRealization.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedSeamCarrierBounds.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSupportPrunedSelfAdjointSeamCarrier.lean`
 
 ## Formal content
 

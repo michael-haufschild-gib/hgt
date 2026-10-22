@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusJuliaSourceTransport
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimePowerTowerCollapse
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimePowerTowerCollapse
 import GaloisForLFunctions.HTGeometry.JuliaDefectAttenuation
 
 /-!

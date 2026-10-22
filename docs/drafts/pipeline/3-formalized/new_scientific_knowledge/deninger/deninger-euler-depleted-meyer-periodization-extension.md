@@ -122,7 +122,7 @@ $\Delta_pG_ph=h$, proving `(6)` and strictness of the first arrow.
 
 `(5)` is proved in Lean, as an exact sequence of `ℂ`-linear maps with a linear section.  The target
 `C^∞(ℝ/Lℤ)` is the corpus's periodic model `DeningerSmoothPeriodic L`
-(`formal/GaloisForLFunctions/RHTower/DeningerSmoothPeriodic.lean`), whose nuclearity is
+(`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSmoothPeriodic.lean`), whose nuclearity is
 `deningerSmoothPeriodic_isNuclearSpaceC` in `DeningerSmoothPeriodicNuclear.lean`.
 
 - `DeningerPeriodCutoff.lean`, `DeningerPeriodizationSmooth.lean` —
@@ -238,7 +238,7 @@ be flow-equivariant; only the kernel sector `(13)` is canonical.
 
 ### Formalization of `(10)`--`(14)`
 
-`formal/GaloisForLFunctions/RHTower/DeningerDepletedQuotient.lean` builds the quotient sequence as
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDepletedQuotient.lean` builds the quotient sequence as
 `ℂ`-linear maps:
 
 - `deningerPoissonRangeSubmodule` = `Z(H_∩)`, `deningerDepletedPoissonRange L` = `Δ_p Z(H_∩)`;
@@ -251,7 +251,7 @@ be flow-equivariant; only the kernel sector `(13)` is canonical.
 
 ### Continuity of the periodization
 
-`formal/GaloisForLFunctions/RHTower/DeningerPeriodizationBounded.lean` supplies the seminorm
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPeriodizationBounded.lean` supplies the seminorm
 estimate:
 
 - **`deningerPeriodizationSum_iteratedFDeriv`** — on the interval where the cutoff is `1`,
@@ -265,7 +265,7 @@ estimate:
 
 ### Boundedness of the splitting
 
-`formal/GaloisForLFunctions/RHTower/DeningerSplitBounded.lean` supplies the other half of the pair:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSplitBounded.lean` supplies the other half of the pair:
 
 - `deningerSmoothPeriodic_iteratedFDeriv_periodic` and `_bounded` — the jets of a smooth periodic
   function are periodic, hence bounded on the line by their bound on one period;
@@ -277,7 +277,7 @@ estimate:
 
 ### `(5)` is split strict
 
-`formal/GaloisForLFunctions/RHTower/DeningerCircleTopology.lean` installs the `C^∞` topology of the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCircleTopology.lean` installs the `C^∞` topology of the
 circle and turns both estimates into continuity:
 
 - `deningerPeriodicSup_add_le`, `_smul` and `deningerPeriodicSeminorm` — the `C^r` sup-seminorms are
@@ -303,13 +303,13 @@ source.
 
 The correct Lean target is **`DeningerIsNuclearSpaceC` for the family of finite suprema of the
 `q_{A,n}`**, not `DeningerIsNuclearSpace` for the bare family: the bare family is not directed, and
-`RHTower/DeningerSchwartzNuclear.lean` already records that the same is true of the Schwartz
+`RHTower/Deninger/DeningerSchwartzNuclear.lean` already records that the same is true of the Schwartz
 seminorms `p_{k,n}` — which is why the corpus statement there is
 `deningerIsNuclearSpaceC_schwartzSup`, over finite suprema.
 
 The assets for it are in place:
 
-- `𝒮(ℝ)` **is already proved nuclear** — `RHTower/DeningerSchwartzNuclear.lean`:
+- `𝒮(ℝ)` **is already proved nuclear** — `RHTower/Deninger/DeningerSchwartzNuclear.lean`:
   `deningerIsNuclearSpace_shiftedSeminormFamily` (the oscillator family `Q_m(f) = ‖K^m f‖₂`) and
   `deningerIsNuclearSpaceC_schwartzSup`;
 - the Hermite layer is corpus-owned — `HTGeometry/HermiteCoefficientMap.lean` (`hermiteCoeff`,
@@ -322,12 +322,12 @@ The route is fully determined by lemmas that already exist; `H_-` is the project
 of `𝒮` under multiplication by `e^{kt}`, and every permanence theorem needed is corpus-owned:
 
 1. `Φ : H_- →ₗ (ℤ → 𝒮(ℝ,ℂ))`, `Φ h k = e^{kt}h`.  The multiplication map is already built:
-   `deningerExpMul` in `RHTower/DeningerSecondaryCollarDefect.lean` (it even lands back in `H_-`).
-2. `deningerIsNuclearSpace_pi` (`RHTower/DeningerNuclearProduct.lean`) applied to the constant
+   `deningerExpMul` in `RHTower/Deninger/DeningerSecondaryCollarDefect.lean` (it even lands back in `H_-`).
+2. `deningerIsNuclearSpace_pi` (`RHTower/Deninger/DeningerNuclearProduct.lean`) applied to the constant
    family `fun _ : ℤ => ` the oscillator family makes `∏_{k∈ℤ} 𝒮` nuclear, using
    `deningerIsNuclearSpace_shiftedSeminormFamily`.
 3. `Φ` has the left inverse "evaluate at `k = 0`", so
-   `deningerIsNuclearSpace_subspace_of_leftInverse` (`RHTower/DeningerNuclearSubspace.lean`)
+   `deningerIsNuclearSpace_subspace_of_leftInverse` (`RHTower/Deninger/DeningerNuclearSubspace.lean`)
    transports nuclearity to the pulled-back family on `H_-`.
 4. The only genuinely new estimate: the pulled-back family and the family of finite suprema of the
    `q_{A,n}` dominate each other — compare `\sup_t e^{A|t|}\|h^{(n)}(t)\|` with the oscillator
@@ -475,7 +475,7 @@ Route-L Hodge form.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerPeriodization.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPeriodization.lean`,
 `DeningerGreenSumSource.lean`, `DeningerEulerDepletedKernel.lean`,
 `DeningerEulerDepletionTower.lean`, `DeningerDepletedPoisson.lean`,
 `DeningerMeyerSeminorm.lean`, `DeningerMeyerTopology.lean`.

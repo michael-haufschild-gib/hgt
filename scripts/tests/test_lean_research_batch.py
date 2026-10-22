@@ -17,8 +17,9 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import Corpus
 from lean_research_batch import embedding_spec, import_results, locks, snapshot, prepare, MATCH_INCOMING_SQL
-from research_batch.format import (DIMENSIONS, FORMAT, atomic_bytes, atomic_json, checked_file,
+from research_batch.format import (FORMAT, atomic_bytes, atomic_json, checked_file,
                                   descriptor, parity, read_shard, sha_file, validate_matrix)
+from research_runtime.config import EMBEDDING_DIMENSIONS as DIMENSIONS
 from research_batch.runner import run, validate_cuda
 from lean_research_batch_sync import sync, owned_run
 
@@ -234,7 +235,13 @@ class BatchTests(unittest.TestCase):
         for value in (np.zeros((1, DIMENSIONS), dtype=np.float32), np.array([unit(0)], dtype=np.float64),
                       np.full((1, DIMENSIONS), np.nan, dtype=np.float32), np.ones((1, 4), dtype=np.float32)):
             with self.assertRaises(ValueError):
-                validate_matrix(value, 1)
+                validate_matrix(value, 1, DIMENSIONS)
+        # The width is never a module constant: a model swap must not pass.
+        with self.assertRaisesRegex(ValueError, 'dimensions'):
+            validate_matrix(np.array([unit(0)], dtype=np.float32), 1, DIMENSIONS // 2)
+        for bad in (None, 1024.0, 4, 1 << 20):
+            with self.assertRaisesRegex(ValueError, 'bundle spec'):
+                validate_matrix(np.array([unit(0)], dtype=np.float32), 1, bad)
         with self.assertRaisesRegex(ValueError, 'filename'):
             checked_file(self.root, dict(name='../escape', size=0, sha256='x'))
 

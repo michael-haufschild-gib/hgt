@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageConnesMarcolliLemma233
-import GaloisForLFunctions.RHTower.CCMLocalRatioCompleted
-import GaloisForLFunctions.RHTower.CCMArchimedeanPhaseOperatorProduct
+import GaloisForLFunctions.RHTower.CCM.CCMLocalRatioCompleted
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanPhaseOperatorProduct
 import GaloisForLFunctions.RHTower.HardyTitchmarshSemilocalSquare
 
 /-!

@@ -2,7 +2,7 @@
 
 Status: the five source-adjoint theorems below and nine [circle-cancellation and regular-remainder theorems](hb-causal-circle-cancellation.md) are formalized. The complete physical tensor pairing and RH remain unproved.
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSourceAdjoint`.
 
 This evaluates the radial/angular factors in the [explicit horizon pairing](../1-in-progress/hb-causal-horizon-circle-kernel.md), using the [actual Riemann kernel](hb-causal-riemann-kernel.md). Its two integral identities include proofs of continuity, integrability, actual derivatives, and every radial endpoint value. The full angular circle-mean realization and physical response admission remain separate obligations.
 
@@ -63,7 +63,7 @@ The [assembled circle cancellation](hb-causal-circle-cancellation.md) eliminates
 
 ## Verification of the five source-adjoint theorems
 
-The completed scratch file passed `lake env lean` without warnings. The exact leaf passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSourceAdjoint` in 8.7 seconds, three Lake jobs, with 3,972 existing own dependency caches frozen and external dependency caches reused. No dependency or umbrella build ran.
+The completed scratch file passed `lake env lean` without warnings. The exact leaf passed `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSourceAdjoint` in 8.7 seconds, three Lake jobs, with 3,972 existing own dependency caches frozen and external dependency caches reused. No dependency or umbrella build ran.
 
 Only the five new public theorems received axiom checks. Each depends solely on `propext`, `Classical.choice`, and `Quot.sound`. Installed source and artifacts match the audited copies byte for byte. The module is imported by `RHTower.lean`.
 

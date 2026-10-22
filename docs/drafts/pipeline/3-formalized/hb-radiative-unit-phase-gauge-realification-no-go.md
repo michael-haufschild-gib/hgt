@@ -125,7 +125,7 @@ or prove detector coordinates are fixed by local algebra and cannot follow raw a
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEUnitPhaseRealificationNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEUnitPhaseRealificationNoGo`.
 
 - Actual raw BM Ward amplitude defines a global polar phase gauge, with unit norm, no zeros, and
   exact reconstruction `bphase(q) · ‖P(q)‖ = P(q)` including the extinction wall.
@@ -142,7 +142,7 @@ Formalized in
   law, and HC89 bright cancellation without any external premise.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEUnitPhaseRealificationNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEUnitPhaseRealificationNoGo`
 passed all 12,020 jobs. Representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules
 and no HC91 finding. Module is wired into `GaloisForLFunctions.RHTower` without a full umbrella

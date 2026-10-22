@@ -274,7 +274,7 @@ Cartier function.”  It is:
 
 ### The arithmetic content landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRationalDivisorSequence.lean`, on top of the `S`-unit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalDivisorSequence.lean`, on top of the `S`-unit
 machinery in `DeningerSUnitEndpointPage.lean` and the finite-support lemma in
 `DeningerRestrictedPrimeSheaf.lean`.  Axiom audit for all 11 declarations:
 `propext, Classical.choice, Quot.sound`.
@@ -301,7 +301,7 @@ machinery in `DeningerSUnitEndpointPage.lean` and the finite-support lemma in
 
 ### Rational powers and the Tate normalization landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerTateNormalizedPowerCompatibility.lean` encodes §4,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTateNormalizedPowerCompatibility.lean` encodes §4,
 equations `(10)`--`(11)`.  Axiom audit for all 23 declarations:
 `propext, Classical.choice, Quot.sound`.
 

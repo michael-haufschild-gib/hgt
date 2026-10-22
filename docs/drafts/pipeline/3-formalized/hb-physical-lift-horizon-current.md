@@ -93,7 +93,7 @@ Broad arXiv queries used transgression, reciprocity, intertwiner, conservation a
 
 ## Certificate and remaining target
 
-Owner: [ThetaCuspHawkingBMPhysicalLiftHorizonCurrent](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalLiftHorizonCurrent.lean), namespace `RHTower.D4BMPhysicalLiftCurrent`.
+Owner: [ThetaCuspHawkingBMPhysicalLiftHorizonCurrent](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalLiftHorizonCurrent.lean), namespace `RHTower.D4BMPhysicalLiftCurrent`.
 
 The eighteen new public theorems cover the literal profile dictionary and derivatives; all four action components; the original master/contact dictionary and decomposition; both horizon values and finite-clock integrals; the finite exterior-current integral limit; and the actual square/gradient source resolution.
 

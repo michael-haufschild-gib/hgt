@@ -24,7 +24,7 @@ The complete tensor remainder has transform
 
 `F_m(w,z) = h_m^2 (M_m(w) M_m(z)-1) X_k(w) X_l(z)`.
 
-Both leading–tail cross terms and the tail–tail term are admitted separately by `deningerGammaSixInternalJetTensorRemainder_cross_integrable`. This is the existing source theorem in `formal/GaloisForLFunctions/RHTower/DeningerGammaSixTensorRemainderXiJets.lean`, not a replacement by the leading jet.
+Both leading–tail cross terms and the tail–tail term are admitted separately by `deningerGammaSixInternalJetTensorRemainder_cross_integrable`. This is the existing source theorem in `formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixTensorRemainderXiJets.lean`, not a replacement by the leading jet.
 
 For distinct admitted `w,v`, put `Delta_wv f = (f(w)-f(v))/(w-v)`. Direct subtraction gives
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FrankensteinXiFullIntegralGammaEvaluationProducer
-import GaloisForLFunctions.RHTower.HedenmalmThetaDivisorPolarizedInterpolation
-import GaloisForLFunctions.RHTower.HedenmalmThetaGreenReflectionPairNoGo
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDivisorPolarizedInterpolation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaGreenReflectionPairNoGo
 
 /-!
 # Xi-selected Green--Stokes normal form for the quadratic inversion ghost

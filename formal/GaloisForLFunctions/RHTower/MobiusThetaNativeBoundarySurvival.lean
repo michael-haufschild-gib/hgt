@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaNativeSecondCollar
 import GaloisForLFunctions.RHTower.MobiusThetaNativeMellinExtraction
-import GaloisForLFunctions.RHTower.DeningerAdiabaticGaussianBoundaryParity
+import GaloisForLFunctions.RHTower.Deninger.DeningerAdiabaticGaussianBoundaryParity
 import GaloisForLFunctions.RHTower.XiEndpointCompletedValue
 
 /-!

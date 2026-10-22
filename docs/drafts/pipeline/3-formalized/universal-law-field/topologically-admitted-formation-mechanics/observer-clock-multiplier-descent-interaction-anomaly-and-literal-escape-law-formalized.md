@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean) / MULTIPLIER NON-DESCENT / JOINT RECONSTRUCTION
 - **Paper source:** `observer-clock-multiplier-descent-interaction-anomaly-and-literal-escape-law.md`
 - **Lean modules:** `GaloisForLFunctions.HTGeometry.ObserverClockInteractionAnomaly`;
-  `GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiClockInteractionAnomaly`
 - **Status:** `[FORMALIZED] [NO SORRY] [NO ADDED AXIOMS] [NOT RH]`
 
 ## Certified generic law
@@ -45,7 +45,7 @@ RH assumption occurs.
 - Batched scratch elaboration passed.
 - Direct foreground elaboration passed for both final modules.
 - Targeted leaf build only:
-  - `GaloisForLFunctions.RHTower.SuzukiClockInteractionAnomaly`: `12878/12878`; this refreshed and
+  - `GaloisForLFunctions.RHTower.Suzuki.SuzukiClockInteractionAnomaly`: `12878/12878`; this refreshed and
     built changed generic dependency `ObserverClockInteractionAnomaly` at job `12877`.
 - Generic module is imported by `HTGeometry`; literal module is imported by `RHTower`; neither
   umbrella was built.

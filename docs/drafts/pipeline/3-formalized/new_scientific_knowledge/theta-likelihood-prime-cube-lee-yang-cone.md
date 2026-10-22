@@ -5,7 +5,7 @@
 - **Type:** `[FORMALIZED] [NOVELTY UNVERIFIED] [UNCONDITIONAL] [NO RH CLAIM]`
 - **Parent:** `theta-likelihood-prime-square-conormal-sign-wall.md`
 - **Formal target:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
 - **Statement:** A positive symmetric prime-cube packet has strict negative current throughout the
   upper half-plane exactly on the sharp coefficient cone `b <= 3a`; the actual theta-likelihood
   boundary packet exits this cone near its normal-crossing face and therefore has positive-current
@@ -201,7 +201,7 @@ interference between distinct nonzero rapidity bands, not only the stationary ba
 
 Module:
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodPrimeCubeLeeYangCone.lean`
 
 Principal declarations:
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MaassSmoothDifferentialOperators
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCircleChart
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCircleChart
 
 /-!
 # The polar Laplacian of the original Maass source

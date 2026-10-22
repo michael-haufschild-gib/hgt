@@ -149,7 +149,7 @@ The original TG native-source residue conversion is unchanged. The affine normal
 
 ### Checked affine-source support module
 
-`formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitAffineSource.lean` now formalizes the paper reduction above and is imported by `RHTower.lean`. The main checked statements are:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitAffineSource.lean` now formalizes the paper reduction above and is imported by `RHTower.lean`. The main checked statements are:
 
 - `abs_ccmPrimeDeficitAffineSource_le`: uniform bound on the exact elementary source after subtracting the dilation of the affine profile.
 - `ccmLogChebyshevDeficitPrimitive_eq_affine_reconstruction`: the original deficit is exactly the known affine profile plus the literal Möbius inverse of that source.
@@ -157,7 +157,7 @@ The original TG native-source residue conversion is unchanged. The affine normal
 - `ccmPrimeDeficitAffine_coprime_balance`: exact reconstruction-square/coprime-cross balance, retaining every pair.
 - `ccmPrimeDeficitCriticalEnergy_add_affine_cross_le`: unconditional bound on the original critical energy **plus** twice the normalized signed cross work.
 
-Verification: the first direct Lean run found one ambiguous absolute-value rewrite; its argument was made explicit. The subsequent direct check passed. Targeted `lake build --old +GaloisForLFunctions.RHTower.CCMPrimeDeficitAffineSource` passed, reporting 13316 jobs. A scratch-only axiom audit of all five statements returned only `propext`, `Classical.choice`, and `Quot.sound`. Final `lake env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitAffineSource.lean` passed without diagnostics. No heartbeat increases, placeholders, numerical experiments, or additional RH hypotheses were introduced.
+Verification: the first direct Lean run found one ambiguous absolute-value rewrite; its argument was made explicit. The subsequent direct check passed. Targeted `lake build --old +GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitAffineSource` passed, reporting 13316 jobs. A scratch-only axiom audit of all five statements returned only `propext`, `Classical.choice`, and `Quot.sound`. Final `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitAffineSource.lean` passed without diagnostics. No heartbeat increases, placeholders, numerical experiments, or additional RH hypotheses were introduced.
 
 `scripts/formal_tools.py lint` exited 1 with exactly two errors: missing umbrella reachability for `CHMDStage3TwistedArcGroundStateAndSechAnnihilation` and `EvenSectorPoleFreeNodeTests`. These are outside this edit's scope; neither was modified. The new affine-source module had no lint diagnostic. Whitespace checks were clean.
 
@@ -316,13 +316,13 @@ The positive survivor is the explicit moving-scale prime mass and its renewal-sq
 
 ### Verified moving-cutoff boundary
 
-`formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerMovingMass.lean` now proves the two quantitative lower bounds and the unconditional statement `exists_ccmEulerMoving_cubic_window_large_mass`: for every real bound there are positive `m,N` inside the cubic causal window with larger critical renewal mass and exactly zero surviving-prime work. The module is imported by `RHTower.lean`. The failed mechanism and positive survivor are recorded in `docs/drafts/pipeline/5-failed/tg-cubic-causality-positive-contraction-2026-10-15.md`; TG itself remains in progress.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerMovingMass.lean` now proves the two quantitative lower bounds and the unconditional statement `exists_ccmEulerMoving_cubic_window_large_mass`: for every real bound there are positive `m,N` inside the cubic causal window with larger critical renewal mass and exactly zero surviving-prime work. The module is imported by `RHTower.lean`. The failed mechanism and positive survivor are recorded in `docs/drafts/pipeline/5-failed/tg-cubic-causality-positive-contraction-2026-10-15.md`; TG itself remains in progress.
 
 Verification completed:
 
-- Targeted `lake build --old +GaloisForLFunctions.RHTower.CCMPrimeDeficitEulerMovingMass` passed, reporting 13334 jobs.
+- Targeted `lake build --old +GaloisForLFunctions.RHTower.CCM.CCMPrimeDeficitEulerMovingMass` passed, reporting 13334 jobs.
 - Scratch-only checks of the referenced mathlib names passed. All three theorem axiom audits returned only `propext`, `Classical.choice`, and `Quot.sound`.
-- Final `lake env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerMovingMass.lean` passed without diagnostics.
+- Final `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerMovingMass.lean` passed without diagnostics.
 - `scripts/formal_tools.py lint` passed; it reported existing large-file warnings. No heartbeat increases, additional axioms, placeholders, or numerical experiments were introduced.
 
 The source search for causal prime-power coercivity completed with `partial=false` and unavailable semantic coverage. The moving-Euler search was partial with `semantic_retrieval` unfinished. A reciprocal-log Levy-clock search was also partial, with two queries and reranking unfinished. No zero-count-preserving reciprocal-clock transform was obtained; a finite-variance reinterpretation alone was not substituted for the deterministic zero-charge estimate. These searches do not establish exhaustive absence or external novelty.

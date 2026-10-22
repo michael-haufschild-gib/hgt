@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE], source-derived structure and cofinal cost analysis.
-- **Parent:** [finite source control and cofinal coverage](../../ccm-fu-finite-source-cone-exhaustion.md).
+- **Parent:** [finite source control and cofinal coverage](ccm-fu-finite-source-cone-exhaustion.md).
 - **Closed:** Exact support, full-field witness/aperture lower bounds, initial sign chamber, and all coordinates/full energy from one coprime head.
 - **Open:** Uniform control of the changing head and its product-scale energy along an exhaustive compatible order.
 - **Primary goal:** Unconditional RH via complete compatible source coverage under one energy budget; unchanged.

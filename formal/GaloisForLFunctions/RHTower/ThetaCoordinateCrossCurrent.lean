@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCurvatureLogConvex
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCurvatureLogConvex
 import GaloisForLFunctions.RHTower.ThetaCoordinateCanonicalBoundary
 
 /-! A globally positive interior term in the exact canonical coordinate margin.

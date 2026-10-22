@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchExactOffLineQuartetAccretivity
 import GaloisForLFunctions.RHTower.PrimeArchPassiveResponseRH
-import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMCompletedPrimeGammaAccretivityCriterion
 
 open Filter Topology Set Metric
 

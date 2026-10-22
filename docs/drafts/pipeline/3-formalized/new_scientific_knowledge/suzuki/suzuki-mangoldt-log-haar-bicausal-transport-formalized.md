@@ -1,7 +1,7 @@
 # Suzuki Mangoldt log-Haar bi-causal transport — Lean formalization
 
 - **Stage:** 3 — formalized in Lean 4
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiMangoldtLogHaarTransport`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiMangoldtLogHaarTransport`
 - **Imported by:** `GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026`
 - **Status:** `[FORMALIZED] [AXIOM-CLEAN]`
 
@@ -67,7 +67,7 @@ future cells on rising branch with past cells on falling branch inside bounded t
 ## Verification
 
 - Direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiMangoldtLogHaarTransport.lean` — passed.
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiMangoldtLogHaarTransport.lean` — passed.
 - Final umbrella audit:
   `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` — passed `9513/9513`.
 - Nine capstone axiom surfaces contain only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -6,8 +6,8 @@
 - **Scientific status:** `[LEAN-FORMALIZED] [UNCONDITIONAL] [NOVELTY-AUDIT-OPEN]
   [NOT RH] [NOT WHOLE-CCM DEATH]`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/CCMPublishedSourceEvenShiftSieve.lean`
-  - `formal/GaloisForLFunctions/RHTower/CCMEvenShiftExponentialTypeRigidity.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedSourceEvenShiftSieve.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMEvenShiftExponentialTypeRigidity.lean`
 
 ## The universal law
 
@@ -128,7 +128,7 @@ type of the completed critical-Mellin error.
 - [x] formal lint attribution audit: no error names either new module; global lint is red on
       unrelated pre-existing umbrella reachability failures
 - [x] targeted module build:
-      `lake build GaloisForLFunctions.RHTower.CCMEvenShiftExponentialTypeRigidity`
+      `lake build GaloisForLFunctions.RHTower.CCM.CCMEvenShiftExponentialTypeRigidity`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

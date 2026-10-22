@@ -52,7 +52,7 @@ Primeness over domains follows from the exact kernel description and the domain 
 
 ## Lean realization
 
-- `RHTower/DeningerHankelRankOneGroebner.lean`
+- `RHTower/Deninger/DeningerHankelRankOneGroebner.lean`
   - `hankelRankOneParameterization_finiteHankelMinor_zero`;
   - `hankelRankOneReduced_support_close`;
   - `hankelRankOneReduced_min_weight_div_degree`;

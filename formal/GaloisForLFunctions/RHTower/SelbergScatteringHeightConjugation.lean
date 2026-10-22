@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMAngularScalarEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMAngularScalarEquation
 
 /-!
 # Height conjugation of the complete Eisenstein cusp source

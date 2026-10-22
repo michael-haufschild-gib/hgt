@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.WeightedAtomHilbert
-import GaloisForLFunctions.RHTower.CCMGammaDampedCauchyFrame
+import GaloisForLFunctions.RHTower.CCM.CCMGammaDampedCauchyFrame
 
 /-!
 # Prime-density local-unitary invariants are zero-blind

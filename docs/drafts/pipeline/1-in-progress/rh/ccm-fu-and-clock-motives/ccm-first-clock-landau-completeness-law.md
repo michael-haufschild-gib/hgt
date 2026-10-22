@@ -10,9 +10,9 @@
   - Groskin, *A finite Guinand--Weil dictionary and archimedean tail order for the
     truncated Weil quadratic form*, arXiv:2607.02828
 - **Intended formal modules:**
-  - `GaloisForLFunctions.RHTower.CCMFirstClockZeroDictionary`
-  - `GaloisForLFunctions.RHTower.CCMFirstClockLandauCompleteness`
-  - `GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection`
+  - `GaloisForLFunctions.RHTower.CCM.CCMFirstClockZeroDictionary`
+  - `GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauCompleteness`
+  - `GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterraReflection`
 
 ## Exact conjecture
 
@@ -578,7 +578,7 @@ the explicit arithmetic reason already visible in its first moving clock edge.
   audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Remaining open core is no
   longer analytic transfer: it is exactly the literal published von-Mangoldt--Gamma source sign.
 - 2026-07-23 -- Wired `CCMFirstClockVolterraReflection` into the `RHTower` umbrella.  Final
-  cached audit `lake build GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection` completes
+  cached audit `lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterraReflection` completes
   successfully (`9074/9074`); dependency warnings are pre-existing linter warnings.
 
 ## Midpoint-reflection positive-mass law `[PROVED IN LEAN]`
@@ -660,7 +660,7 @@ excess.
 
 Lean source:
 
-- `formal/GaloisForLFunctions/RHTower/CCMFirstClockHalfWaveReflection.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockHalfWaveReflection.lean`
 - `pi_mul_ccmPublishedSourceSineCoefficient_eq_budget_add_aligned_sub_counter`
 - `ccmFirstClockContinuousHalfWaveBudget_pos`
 - `ccmFirstClockPrimeHalfWaveDominance_iff_rh`
@@ -755,12 +755,12 @@ different prime-power atoms.
 
 Lean source:
 
-- `formal/GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockExponentialTiltOdds.lean`
 - `finiteExponentialTilt_separatedOdds_mono`
 - `ccmFirstClockPrime_critical_counterAlignedOdds_ge_safe`
 
 Audit: direct `lake env lean` check and final targeted
-`lake build GaloisForLFunctions.RHTower.CCMFirstClockHalfWaveReflection` pass (`9075/9075`).
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockHalfWaveReflection` pass (`9075/9075`).
 The capstone, strict-budget, and oriented-source theorems use only `propext`,
 `Classical.choice`, and `Quot.sound`.  Global formal lint was concurrently blocked by the
 unrelated unwired module

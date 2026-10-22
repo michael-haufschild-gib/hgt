@@ -265,15 +265,15 @@ finite-prime boundary Hankel inequality `(14)`.
 **Superseded, 2026-08-03.**  The "no screw distribution" premise of the previous decision is now
 false.  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md` built, unconditionally:
 
-- `RHTower/SuzukiExplicitScrewRegularKernel.lean` — Suzuki's explicit screw function `screwFn`,
+- `RHTower/Suzuki/SuzukiExplicitScrewRegularKernel.lean` — Suzuki's explicit screw function `screwFn`,
   the hinge sum `screwPrimeSum` with its off-atom local affineness, the archimedean Lerch tail, and
   `iteratedDeriv 2 (screwFn c₁ c₀) t = -screwRegularKernel t` off the prime-power atoms, plus the
   plastic-number sign threshold.
-- `RHTower/SuzukiScrewDisjointCrossCoupling.lean` — `screwAtoms` and its discreteness,
+- `RHTower/Suzuki/SuzukiScrewDisjointCrossCoupling.lean` — `screwAtoms` and its discreteness,
   `screwRegularForm`, and the disjoint-support positive cross coupling.
-- `RHTower/SuzukiScrewDistributionalKernel.lean` — global affineness of the hinge sum on an
+- `RHTower/Suzuki/SuzukiScrewDistributionalKernel.lean` — global affineness of the hinge sum on an
   atom-free interval and the two-fold integration by parts `-∫ g φ'' = ∫ K φ`.
-- `RHTower/SuzukiScrewCorrelationPairing.lean` — `screwCrossCorr`, `screwCorrelationForm`, and the
+- `RHTower/Suzuki/SuzukiScrewCorrelationPairing.lean` — `screwCrossCorr`, `screwCorrelationForm`, and the
   shear identity `∫∫ K(x−y) f y h x = ∫ K u * c_(f,h)(u) du`.
 
 `K_reg` of `(6)` is therefore `screwRegularKernel`, and `(12)`'s right-hand pairing is
@@ -281,7 +281,7 @@ false.  `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-
 
 Every proved theorem of this card is now formalized unconditionally.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiParityHankelDecomposition.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiParityHankelDecomposition.lean`
 
 - `diffBilinForm K f g = ∫∫ K(x−y) f y g x` and `sumBilinForm K f g = ∫∫ K(x+y) f y g x` — the
   Toeplitz and Hankel forms.  For `φ, ψ` supported in `(0,a)` these are exactly `T_a` and `H_a`,
@@ -299,7 +299,7 @@ Every proved theorem of this card is now formalized unconditionally.
   the gap is `2 H`.  The only hypotheses are evenness of `K`, vanishing of `φ, ψ` on `(-∞,0]`, and
   integrability of the two basic integrands.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiPrimeHankelCarrier.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeHankelCarrier.lean`
 
 - `screwConvolve φ ψ t = ∫ φ y * ψ (t − y) dy` — the carrier `c_(φ,ψ)` of `(11)`;
   `screwCrossCorr_negReflect` identifies it with the reflected correlation.

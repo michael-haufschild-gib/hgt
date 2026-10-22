@@ -217,11 +217,11 @@ finite/full admission synthesis. Specialist priority review remains necessary.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerXiSpectralInclusion.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerXiJetPacketSurjectivity.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerFiniteXiJetPacket.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerFullXiJetAdmissionBoundary.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerXiCofinalSynthesisSingularity.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerXiSpectralInclusion.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerXiJetPacketSurjectivity.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerFiniteXiJetPacket.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerFullXiJetAdmissionBoundary.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerXiCofinalSynthesisSingularity.lean`.
 
 Capstones:
 

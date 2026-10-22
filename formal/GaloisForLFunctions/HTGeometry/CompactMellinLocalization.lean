@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.FractionalCompactMultiplier
 import GaloisForLFunctions.HTGeometry.PositiveQuadrantMellinLines
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRetardedCompactWeakRealization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRetardedCompactWeakRealization
 
 /-!
 # Actual compact Mellin localization and first Euler coefficients

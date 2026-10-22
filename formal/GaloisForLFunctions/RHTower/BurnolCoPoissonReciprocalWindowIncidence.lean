@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonCompletedZeroJets
 import GaloisForLFunctions.RHTower.BurnolCoPoissonGeneralSeedMellin
-import GaloisForLFunctions.RHTower.DeningerBurnolConormalRadialTopBoundaryComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerBurnolConormalRadialTopBoundaryComparison
 
 /-!
 # Actual Burnol reciprocal-window conormal incidence

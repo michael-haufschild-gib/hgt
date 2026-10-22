@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # The Dirichlet half of the discrete recurrence exponent

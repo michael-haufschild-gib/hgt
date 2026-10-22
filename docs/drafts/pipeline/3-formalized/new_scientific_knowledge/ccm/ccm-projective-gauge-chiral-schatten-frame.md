@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** NEW SCIENTIFIC KNOWLEDGE
 - **Source:** corpus weld: projective-gauge trace-class carrier × `InvolutiveProjectiveWedgeTransportLaw` × skew-adjoint rank-one calculus × Plücker orientation corpus
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator`
 - **Status:** closed and unconditional; not an RH proof
 
 ## Result
@@ -55,8 +55,8 @@ covariance.
 
 ## Verification
 
-- direct check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator.lean`
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator`
+- direct check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator.lean`
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeChiralOperator`
 - selected theorem axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - module wired into `GaloisForLFunctions/RHTower.lean`
 

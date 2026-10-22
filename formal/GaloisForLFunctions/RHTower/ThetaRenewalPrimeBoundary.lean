@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaRenewalFullDivisorCharge
-import GaloisForLFunctions.RHTower.ThetaCuspPrimeArchSourceEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPrimeArchSourceEquation
 import Mathlib.NumberTheory.SumPrimeReciprocals
 
 /-!

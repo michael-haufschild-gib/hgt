@@ -180,7 +180,7 @@ Audit date: 2026-07-31.
 | Prime source/log-clock graph closure is the full product | `primeFiniteTraceClock_graphClosure_eq_top` | `ArithmeticLogClockBoundedCompletionSaturation.lean` |
 | Every bounded packet recovery has diverging operator norm | `tendsto_norm_of_extends_gammaSewnMobiusJuliaFiniteTraceClock` | `ArithmeticJuliaNormalConeUniversalityLaw.lean` |
 | Actual-prime first-trace clock is not sequentially closable through intrinsic prime Hardy completion | `not_closable_primeFirstTraceClock` | `formal/GaloisForLFunctions/RHTower/ArithmeticSchurFirstTraceNonclosability.lean` |
-| CCM block--Fock shifted-tail graph has full-product closure; no closed single-valued linear or nonlinear relation extends it | `ccmPrimeOddBlockFockTailClock_graphClosure_eq_top`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelationExtension`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelation` | `formal/GaloisForLFunctions/RHTower/CCMBlockFockCodiagonalNoGo.lean` |
+| CCM block--Fock shifted-tail graph has full-product closure; no closed single-valued linear or nonlinear relation extends it | `ccmPrimeOddBlockFockTailClock_graphClosure_eq_top`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelationExtension`; `ccmPrimeOddBlockFock_no_closed_singleValuedRelation` | `formal/GaloisForLFunctions/RHTower/CCM/CCMBlockFockCodiagonalNoGo.lean` |
 | Pointed Fisher--Ward trace is odd in the unsquared tangent | `pointedCutoffWardTrace_neg_tangent`; `pointedFisherWard_orientationTransgression` | `formal/GaloisForLFunctions/HTGeometry/PointedFisherCutoffWardTrace.lean`; capstone |
 | For self-adjoint cutoff, pointed trace is pairing with double-cutoff curvature | `pointedCutoffWardTrace_eq_opTrace_curvature`; `pointedFisherWard_orientationTransgression` | same |
 | Bundled source acquisition law | field `arithmeticJuliaOrientedAcquisition` of `xiRamifiedSingularBoundary_law` | capstone |
@@ -223,7 +223,7 @@ Audit date: 2026-07-31.
 
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
-| Positive momentum-symmetric theta-null forms are divisor-supported atomic Fourier riggings | `universalPositiveForm_thetaNull_iff_canonicalMeasure_support_realDivisor`; `universalPositiveForm_canonicalMeasure_atomic_of_thetaNull` | `formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean` |
+| Positive momentum-symmetric theta-null forms are divisor-supported atomic Fourier riggings | `universalPositiveForm_thetaNull_iff_canonicalMeasure_support_realDivisor`; `universalPositiveForm_canonicalMeasure_atomic_of_thetaNull` | `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean` |
 | Every nonzero such form has dense nonclosed \(L^2\) radical and is nonclosable | `universalPositiveForm_nonzero_thetaNull_temperedDenseRadicalLaw`; `universalPositiveForm_thetaNull_sequentiallyL2Closable_iff_zero` | `HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean`; `HedenmalmUniversalPositiveFormClassification.lean` |
 | Independent Wold-depth/Poisson-time quadrant boundedness is the zero-rate equalizer | `conjugateTwoClockQuadrantBounded_iff`; `conjugateTwoClockQuadrantBounded_xiSourceRate_iff_boundaryFracture_zero` | `HighExponentShellLeastAtomAsymptotic.lean`; capstone |
 | All-scale prime-seam Sonin/Calkin compactness is the same equalizer | `xiPrimeSeamAllScaleCalkinCertificate_iff_riemannHypothesis`; `xiBoundaryCharacterNeutral_iff_regularBoundaryConsumers` | `XiPrimeSeamCalkinUniversalityLaw.lean`; capstone |
@@ -242,7 +242,7 @@ Audit date: 2026-07-31.
 | All dyadic levels are equivalent to RH | `riemannHypothesis_iff_forall_dyadicDescentLevelUniversalCertificate` | same |
 | If RH fails, valid dyadic levels form the exact initial segment through the sharp level | `dyadicDescentLevelUniversalCertificate_iff_le_sharpLevel` | same |
 | Persistent rung-one defect loop is equivalent to odd multiplicity in the right open strip | `xiDefect_persistentLoop_openStrip_oddOrderUniversality` | `XiDefectPersistentLocalLoopUniversalityLaw.lean` |
-| Positive finite first-order density forces \(2qm=1\) | `two_mul_rate_mul_analyticOrderNatAt_eq_one_of_boundaryDensity_pos` | `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean` |
+| Positive finite first-order density forces \(2qm=1\) | `two_mul_rate_mul_analyticOrderNatAt_eq_one_of_boundaryDensity_pos` | `formal/GaloisForLFunctions/RHTower/CCM/CCMFiniteRamifiedBoundaryNoGo.lean` |
 | Finite-sheeted positive density forces even sheet number and sign deck character | `finiteRamified_boundaryDensity_forces_even_and_deckCharacter_neg_one` | same |
 | Full finite deck descent is incompatible with positive density, including four-unit normalization | `not_exists_finiteRamified_deckInvariant_positiveBoundaryDensity`; `ccmFourUnit_not_finiteRamified_deckInvariant` | same |
 | Nontorsion deck descent is incompatible with positive density | `not_exists_analyticRamified_infiniteDeckInvariant_positiveBoundaryDensity`; `ccmFourUnit_not_analyticRamified_infiniteDeckInvariant` | same |
@@ -284,7 +284,7 @@ Audit date: 2026-07-31.
 
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
-| Any prescribed \(\vartheta\pm ia\) in the right critical strip occurs as zeros of an explicit nonnegative unit-pole Mellin source | `ccm_criticalClock_divisor_blindness` | `formal/GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean` |
+| Any prescribed \(\vartheta\pm ia\) in the right critical strip occurs as zeros of an explicit nonnegative unit-pole Mellin source | `ccm_criticalClock_divisor_blindness` | `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalClockDivisorBlindness.lean` |
 | This witness has the unit exponential critical clock and Schwarz-pair Cauchy energy \(>8\) | `tendsto_blindWitness_criticalClockLaplace`; `schwarzPairCauchyEnergy_gt_eight`; `ccm_criticalClock_divisor_blindness` | same |
 | Four-unit source profile is a critical-clock class invariant but divisor energy is not | `fourUnitBudget_classInvariant_but_divisor_not` | same |
 | Endpoint cross charge is \(c_\rho=\Re(1/[\rho(1-\rho)])\), nonnegative in open critical strip | `xiEndpointCrossCharge`; `endpoint_cross_term_re_eq`; `endpoint_cross_term_re_nonneg` | `formal/GaloisForLFunctions/RHTower/XiEndpointOffLineQuartetHeightGap.lean`; `formal/GaloisForLFunctions/RHTower/XiEndpointQuantitativeNormBudget.lean` |
@@ -308,8 +308,8 @@ Audit date: 2026-07-31.
 
 | Manuscript claim | Checked declaration | Module |
 |---|---|---|
-| Every finite lower/upper prime--Gamma source cup equals the multiplicity-exact Xi--Weil polarization of represented Cauchy tests | deningerPrimeGammaSourceCup_eq_xiWeilPolarization | formal/GaloisForLFunctions/RHTower/DeningerPrimeGammaReflectedDiagonal.lean |
-| Every square-summable Xi-divisor evaluation is a norm limit of pairwise-separated finite continued-source packets and source energies converge to its Weil value | xiWeilPolarization_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/CCMUniversalWeilSourceReconstruction.lean |
+| Every finite lower/upper prime--Gamma source cup equals the multiplicity-exact Xi--Weil polarization of represented Cauchy tests | deningerPrimeGammaSourceCup_eq_xiWeilPolarization | formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeGammaReflectedDiagonal.lean |
+| Every square-summable Xi-divisor evaluation is a norm limit of pairwise-separated finite continued-source packets and source energies converge to its Weil value | xiWeilPolarization_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/CCM/CCMUniversalWeilSourceReconstruction.lean |
 | One separated source sequence converges to the Xi--Hurwitz orientation vector with source energies tending to negative orientation energy | xiHurwitzOrientationEnergy_separatedContinuedSource_reconstruction | formal/GaloisForLFunctions/RHTower/XiHurwitzOrientationSeparatedSourceReconstruction.lean |
 | Eventual nonnegativity of that target-selected sequence is equivalent to RH | exists_separatedContinuedSource_sequence_eventually_nonnegative_iff_riemannHypothesis | same |
 | A positive Borel measure represents every completed source moment exactly iff RH | `primeArchMomentRepresentation_iff_riemannHypothesis` | `formal/GaloisForLFunctions/RHTower/PrimeArchMomentMeasureRH.lean` |
@@ -322,7 +322,7 @@ Audit date: 2026-07-31.
 | Hedenmalm reflection folds into the exact two-component first-order source system | xiHedenmalmEvenFold_equation; xiHedenmalmOddFold_equation | formal/GaloisForLFunctions/RHTower/XiHedenmalmReflectionFoldedDirac.lean |
 | Folded components satisfy the forced quadratic equations and the even fold is nonzero | xiHedenmalmEvenFold_quadratic; xiHedenmalmOddFold_quadratic; xiHedenmalmEvenFold_ne_zero; ne_zero_of_XiC_eq_zero | same |
 | Exact Gamma/co-Poisson reflected interval packet has a negative quadratic direction and determinant | gammaCoPoissonSymmetricPacketValue_re_neg; gammaCoPoissonSymmetricPacketDeterminant_re_neg | formal/GaloisForLFunctions/RHTower/GammaCoPoissonIntervalKreinNoGo.lean |
-| Canonical critical rooted prime coordinate is square-summable after scalar renormalization iff scalar is zero | summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff; gammaCoPoissonCriticalCompletionTrilemma | formal/GaloisForLFunctions/RHTower/SuzukiCriticalRootedBianchiCofinalNoGo.lean; formal/GaloisForLFunctions/RHTower/GammaCoPoissonCriticalCompletionTrilemma.lean |
+| Canonical critical rooted prime coordinate is square-summable after scalar renormalization iff scalar is zero | summable_const_mul_sq_suzukiCriticalRootedBianchiPrimeAmplitude_iff; gammaCoPoissonCriticalCompletionTrilemma | formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalRootedBianchiCofinalNoGo.lean; formal/GaloisForLFunctions/RHTower/GammaCoPoissonCriticalCompletionTrilemma.lean |
 
 ## Hyperbolic reflection, quantized debt, and Schur tax
 
@@ -334,7 +334,7 @@ Audit date: 2026-07-31.
 | Complete factorwise Euler-plus-Gamma order profile is zero on \(\Re s>0\) | `factorwiseWeldOrderProfile_eq_zero` | same |
 | No zero-preserving assembler of the complete factorwise order profile recovers Xi order at a zero | `no_factorwiseWeldOrderAssembler_at_xi_zero` | same |
 | Finite generic quartet Ward charge/\(4\pi\), Euler pole excess, and Weil negative index agree | `finiteQuartet_eulerWardWeil_index_law` | `formal/GaloisForLFunctions/RHTower/PositiveEulerFiniteQuartetOrientationLaw.lean` |
-| Positive two-channel completion requires \(c\ge n+b^2/a\) | `suzukiKreinScalarSchurComplement_posSemidef_iff`; `suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm` | `formal/GaloisForLFunctions/RHTower/SuzukiKreinSchurBlockCongruence.lean` |
+| Positive two-channel completion requires \(c\ge n+b^2/a\) | `suzukiKreinScalarSchurComplement_posSemidef_iff`; `suzukiKreinScalarWeld_posSemidef_iff_twoChannelForm` | `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiKreinSchurBlockCongruence.lean` |
 | Bundled reflection-character completion | `xiReflectionCharacterCompletion_law` | capstone |
 
 ## Source horizon, local quotient, global tomography, and multiplicity
@@ -344,7 +344,7 @@ Audit date: 2026-07-31.
 | Poisson order normalization uniquely converts a source generator into its direct conjugate displacement | `coherentGenerator_duality`; `sourceCayley_inverse_observationTime`; `sourceHorizonEscapeConservation_law` | `formal/GaloisForLFunctions/RHTower/SourceHorizonEscapeConservationLaw.lean` |
 | Critical line is the neutral source horizon | `sourceCayleyTransverseRate_eq_zero_iff`; field `sourceHorizon` of `sourceHorizonEscapeConservation_law` | same |
 | Continuous finite-factor-invariant compact-germ readers are constant on reflected local orbits | `no_continuous_frequencyInvariant_traceHankel_classifier` | `formal/GaloisForLFunctions/RHTower/ReflectedLambertRHBarrier.lean` |
-| One fixed-width logarithmically sampled prime–Gamma tail reconstructs off-line divisor poles and multiplicities | `meromorphicOrderAt_xiRectangularPrimeGammaTailContinuation_eq_neg_one_iff`; `normalizedPrimeGammaTailResidue_eq_xiRightMultiplicity` | `formal/GaloisForLFunctions/RHTower/CCMPrimeGammaSourceDivisorTomography.lean` |
+| One fixed-width logarithmically sampled prime–Gamma tail reconstructs off-line divisor poles and multiplicities | `meromorphicOrderAt_xiRectangularPrimeGammaTailContinuation_eq_neg_one_iff`; `normalizedPrimeGammaTailResidue_eq_xiRightMultiplicity` | `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeGammaSourceDivisorTomography.lean` |
 | Local reflection-odd aperture collision equals \(-4m_\rho^2\) | `xiCompletedApertureRegularizedResonantTwoPointDet_zero` | `formal/GaloisForLFunctions/RHTower/XiCompletedAperturePoleResonance.lean` |
 | Collision value \(-4\) is equivalent to simplicity, Hedenmalm normality, trivial relative \(K_1\) unit, and zero regulator | `xiCompletedApertureCollision_neg_four_iff_completeLocalSimplicity` | same |
 | Final capstone includes pointing, source/current separation, positive hierarchy, reflection completion, global tomography, and multiplicity tomography | `xiRamifiedSingularBoundary_law` | capstone |

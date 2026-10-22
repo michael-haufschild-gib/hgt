@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaZeroDivisionRealization
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxWindow
 
 /-!
 # Zero division on the literal theta seed and the Euler resolvent

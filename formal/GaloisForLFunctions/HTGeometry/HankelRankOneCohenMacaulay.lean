@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.RationalNormalConeGenerators
 import GaloisForLFunctions.HTGeometry.CohenMacaulayTransport
 import GaloisForLFunctions.HTGeometry.RationalNormalConeNormal
-import GaloisForLFunctions.RHTower.DeningerHankelHigherRankGroebner
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelHigherRankGroebner
 
 /-!
 # The `r = 1` Hankel stratum is Cohen–Macaulay, in the card's own presentation

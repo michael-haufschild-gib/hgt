@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseFockTomography`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseFockTomography`.
 Every finite matched prime--polar packet is now an exact nonlinear reporter of one cross-prime
 positive-semidefinite HilbertMetric kernel, with no local scalar Schur reserve inserted. This is
 not yet an RH proof; cofinal control of the reporter remains open.

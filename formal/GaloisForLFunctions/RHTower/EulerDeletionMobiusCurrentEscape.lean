@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerDeletionMixedCurrentGram
-import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusHarmonicZero
 
 /-!
 # Möbius channel completion and escape of the literal current

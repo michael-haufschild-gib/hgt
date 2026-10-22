@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-aperture-morse-hardymodel-index-exhaustion-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMApertureMorseExhaustion.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMApertureMorseExhaustion.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on every declaration
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

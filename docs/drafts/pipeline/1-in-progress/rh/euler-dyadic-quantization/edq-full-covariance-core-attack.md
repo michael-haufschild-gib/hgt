@@ -3588,7 +3588,7 @@ open; no route is retired.
 
 ## Compensated logarithmic renewal: compulsory linear forcing
 
-The [compensated renewal attack](../../edq-compensated-log-renewal.md) tests whether
+The [compensated renewal attack](edq-compensated-log-renewal.md) tests whether
 the harmonic correction in prime feedback can be discarded. It cannot:
 the [formal source theorem](../../../3-formalized/edq-log-prime-forcing.md) proves
 `c*N<=||B_N||^2<=C*N` eventually for the literal coefficients

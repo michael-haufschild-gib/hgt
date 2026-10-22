@@ -535,7 +535,7 @@ The missing step of section 5 was never the Bochner–Schwartz theorem — the t
 `existsUnique_temperateSpectralRepresentation`: every jointly continuous nonnegative
 momentum-symmetric Schwartz form has exactly one positive temperate spectral measure) together with
 the whole downstream theta-null classification
-(`RHTower/HedenmalmUniversalPositiveFormClassification.lean`).  What was missing is precisely the
+(`RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean`).  What was missing is precisely the
 mechanism the card asserts: getting **momentum symmetry out of two discrete dilations**.  That is
 now proved:
 

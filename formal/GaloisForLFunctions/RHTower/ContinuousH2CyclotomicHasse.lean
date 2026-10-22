@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.ABHN.NonarchimedeanContinuousH2Hasse
 import GaloisForLFunctions.HTGeometry.ABHN.RatModIntTorsionDirectedSystem
 import GaloisForLFunctions.HTGeometry.ABHN.FiniteTorsionInvariantSum
-import GaloisForLFunctions.RHTower.DeningerPrimePacketFiniteCyclotomicStage
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimePacketFiniteCyclotomicStage
 
 /-!
 # Continuous local H² as a Deninger cyclotomic stage

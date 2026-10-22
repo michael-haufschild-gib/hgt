@@ -106,7 +106,7 @@ dependency replay includes an existing informational `ring_nf` hint.
 Formal indices contain all 12 public entries. Public-name collision and
 `git diff --check` audits passed. All owned Lean and search processes finished.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusLeadingForcing.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusLeadingForcing.lean`.
 - Closed capstone: `RHTower.pwGammaMobiusForcing_leading_and_separation`.
 - Exact positive survivors: `pwGammaMobiusLogCurrent_leading_prime`,
   `pwGammaMobiusLogCurrent_inverse_forcing_defect`, and

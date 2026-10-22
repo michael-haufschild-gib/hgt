@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Parent:** Sondow--Dumitrescu horizontal monotonicity, here reproved directly from the centered
   Xi divisor and transferred to the complete Gaussian moment cone
-- **Lean:** `formal/GaloisForLFunctions/RHTower/HedenmalmExteriorGaussianHankel.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmExteriorGaussianHankel.lean`
 
 ## The law
 

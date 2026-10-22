@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BVPrimeWindowContinuation
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCancellation
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowCancellation
 import Mathlib.Analysis.Meromorphic.TrailingCoefficient
 
 /-!

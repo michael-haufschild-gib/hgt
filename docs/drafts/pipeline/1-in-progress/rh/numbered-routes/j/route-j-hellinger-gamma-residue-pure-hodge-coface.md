@@ -117,7 +117,7 @@ formal/GaloisForLFunctions/RHTower/
 ```
 
 It is wired into `GaloisForLFunctions.RHTower`.  Direct
-`lake env lean GaloisForLFunctions/RHTower/CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean`
+`lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimitivePromotedHellingerGammaPureHodgeCoface.lean`
 passes.  Load-bearing declarations include:
 
 - `hellingerEvenGammaResidueGauge_eq_gammaNegNatResidue`;

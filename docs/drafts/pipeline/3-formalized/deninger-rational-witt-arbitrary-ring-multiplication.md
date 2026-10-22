@@ -55,7 +55,7 @@ carrier equivalence transports its `CommRing` structure back to literal rational
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.DeningerRationalWittCanonicalMultiplication
+GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittCanonicalMultiplication
 ```
 
 Headline declarations:

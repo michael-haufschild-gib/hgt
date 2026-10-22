@@ -21,7 +21,7 @@ This identifies a source-specific half-unit coefficient problem strictly smaller
 weighted-Mertens `L2` tower.  It does not prove the coefficient bound.
 
 Finite unit-Riesz normalization and complete Möbius-renewal collapse are formalized in
-`formal/GaloisForLFunctions/RHTower/CCMCriticalMellinRieszMobiusRenewal.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinRieszMobiusRenewal.lean`.
 
 ## 1. Unit aperture is a double resonance
 
@@ -260,7 +260,7 @@ Stieltjes calculus; their value here is exact corpus closure and frontier locali
 
 ## Lean status — the layer-cake quadrature defect, 2026-08-15
 
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszQuadratureDefect.lean` (wired, axiom-clean, 19
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszQuadratureDefect.lean` (wired, axiom-clean, 19
 declarations) proves section 2 exactly.
 
 - `layerWeight`, **`integral_layerWeight`** — equation `(4)`:
@@ -292,7 +292,7 @@ the pole-channel saturation `(20)`-`(23)`, and the equivalence `(25)`.
 
 `[FORMALIZED]` — the remaining items of the previous section are now proved in the new module
 
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszWaveletFrontier.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszWaveletFrontier.lean`
 (8 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

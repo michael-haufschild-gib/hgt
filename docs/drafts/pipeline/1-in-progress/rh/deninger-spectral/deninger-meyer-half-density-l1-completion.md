@@ -155,7 +155,7 @@ topology.
 - [ ] source arithmetic admission for every Xi divisor point (RH-bearing open core).
 
 Formal module:
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerHalfDensityL1Completion.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerHalfDensityL1Completion.lean`.
 
 Verification: direct `lake env lean`, targeted module build, and axiom audit pass. Axiom audit
 reports only `propext`, `Classical.choice`, and `Quot.sound`. The latest global lint reaches an

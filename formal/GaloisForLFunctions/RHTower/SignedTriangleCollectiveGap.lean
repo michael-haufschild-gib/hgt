@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMWeilFrustratedTriangle
+import GaloisForLFunctions.RHTower.CCM.CCMWeilFrustratedTriangle
 
 /-!
 # A sign-independent collective correction

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesSquaredCompactMarkovCandidate
 import GaloisForLFunctions.RHTower.CriticalHalfApertureJacobiGammaRecovery
 import GaloisForLFunctions.RHTower.XiOrderFourteenCornerSourceExclusion
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniMarkovBoundaryTransport
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniMarkovBoundaryTransport
 
 /-!
 # Critical raw Stokes mass no-go

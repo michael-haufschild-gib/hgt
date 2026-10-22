@@ -3,9 +3,9 @@
 - **Card:** `ccm-rectangular-subpower-lower-floor-rh-law.md`
 - **Stage:** 3-formalized / not-new
 - **Lean modules:**
-  - `formal/GaloisForLFunctions/RHTower/CCMRectangularSubpowerLowerGate.lean`
-  - `formal/GaloisForLFunctions/RHTower/CCMRectangularPowerLowerZeroFree.lean`
-  - `formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePowerLowerZeroFree.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularSubpowerLowerGate.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularPowerLowerZeroFree.lean`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePowerLowerZeroFree.lean`
 - **Umbrella:** all three imported from `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 18 audited declarations
 - **Hypotheses:** none beyond the quantified data of each statement; no `sorry`, `axiom`, `opaque`

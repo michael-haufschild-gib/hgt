@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.SchanuelWeldApex
+import GaloisForLFunctions.RHTower.Schanuel.SchanuelWeldApex
 import GaloisForLFunctions.RHTower.BakerProof.BakerIteration
 import GaloisForLFunctions.RHTower.GelfondSchneider
 

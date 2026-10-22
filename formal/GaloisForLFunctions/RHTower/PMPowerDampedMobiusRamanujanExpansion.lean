@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusSmallDampingVariance
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinRamanujanDirichletSeries
 
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators

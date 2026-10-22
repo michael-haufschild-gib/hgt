@@ -38,7 +38,7 @@ curvature is strictly favorable rather than merely harmless.
 ## Lean artifact
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocitySecondLikelihoodReserve`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocitySecondLikelihoodReserve`
 - Universal coefficient theorem:
   `RHTower.c5VelocitySecondLikelihoodCoefficient_pos`
 - Action--terminal-velocity law:
@@ -76,7 +76,7 @@ action, actual first jet, and explicit first-atom curvature/third jet.
 
 - direct source check with `lake env lean`
 - targeted build of
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocitySecondLikelihoodReserve`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocitySecondLikelihoodReserve`
 - umbrella import present
 - `#print axioms` on universal coefficient, action law, strict reserve, and route-facing theorem
 - formal lint recognizes the new module as reachable; unrelated pre-existing unreachable-module

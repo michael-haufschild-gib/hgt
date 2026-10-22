@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.StaticChoiProjectiveComplexityPlateau
-import GaloisForLFunctions.RHTower.DeningerKroneckerDense
+import GaloisForLFunctions.RHTower.Deninger.DeningerKroneckerDense
 import GaloisForLFunctions.HTGeometry.SyndeticDenseOrbitLaw
 
 /-!

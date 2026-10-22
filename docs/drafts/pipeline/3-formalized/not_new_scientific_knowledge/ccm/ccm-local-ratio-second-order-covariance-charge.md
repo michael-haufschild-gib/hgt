@@ -240,7 +240,7 @@ identity would be a routine wrapper") was wrong about what the card's proved con
 and 3 are not a product identity: they are a jet computation plus an arithmetic divergence, and both
 are now formalized unconditionally.
 
-`formal/GaloisForLFunctions/RHTower/CCMLocalRatioAnomaly.lean` — the place-independent layer:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioAnomaly.lean` — the place-independent layer:
 
 - `multiplierDefectSum`, **`covarianceAnomaly`** — the objects of `(6)`.
 - **`prod_one_add_sub_one_sub_sum`**, **`covarianceAnomaly_eq_sum_powerset`** — equation `(7)`, the
@@ -262,7 +262,7 @@ are now formalized unconditionally.
   needed because the `(sum)^2 - sum^2` form admits **no** termwise lower bound: the diagonal correction
   has the wrong sign, and `sum_p b_p^2` in fact diverges.  This is a real subtlety in `(13)`.
 
-`formal/GaloisForLFunctions/RHTower/CCMLocalRatioPlaces.lean` — the finite places:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioPlaces.lean` — the finite places:
 
 - **`primeLocalRatio`**, `primeLocalRatio_den_ne_zero`, `primeLocalRatio_num_ne_zero`,
   `primeLocalRatio_zero` — the multiplier `(1 - r e^(iLt))/(1 - r e^(-iLt))` for `|r| < 1`, and
@@ -299,7 +299,7 @@ are now formalized unconditionally.
   positivity.  Every term of the closed value is positive, so **no monotonicity of `psi` is needed**;
   `Real.one_half_lt_eulerMascheroniConstant` finishes it.
 
-`formal/GaloisForLFunctions/RHTower/CCMLocalRatioArchimedean.lean` — the archimedean place:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioArchimedean.lean` — the archimedean place:
 
 - `gammaArch`, **`gammaArch_eq_cpow`** — `gamma_infinity(s) = pi^(-s/2) Gamma(s/2)`, defined through
   `exp` so the differentiation is elementary, with the bridge to the `cpow` form.
@@ -312,7 +312,7 @@ are now formalized unconditionally.
   Going straight from `ℝ` to `ℂ` with `HasDerivAt.scomp` produces a `HasDerivAt` whose `ℂ`-module
   instance path does not match the goal's, and `simpa` cannot cross it.
 
-`formal/GaloisForLFunctions/RHTower/CCMLocalRatioCompleted.lean` — the completed product and the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMLocalRatioCompleted.lean` — the completed product and the
 kernel:
 
 - `placeRatio`, `placeCharge`, `placeRatio_zero`, **`hasDerivAt_placeRatio`**, `placeCharge_pos` — the

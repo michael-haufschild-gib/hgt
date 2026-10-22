@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.EigenPairLineConvolution
 import GaloisForLFunctions.RHTower.EigenPairLineIntegrable
 import GaloisForLFunctions.RHTower.VonMangoldtLineSeriesSwap
-import GaloisForLFunctions.RHTower.HedenmalmTwoEndedVolterraDefect
-import GaloisForLFunctions.RHTower.ThetaCuspReflection
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmTwoEndedVolterraDefect
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflection
 import GaloisForLFunctions.RHTower.XiHedenmalmThetaBorelHilbert
 import Mathlib.Analysis.Fourier.Inversion
 

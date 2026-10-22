@@ -5,7 +5,7 @@
 - **Type:** THEOREM / COORDINATE GLUE
 - **Scientific status:** `[PROVED IN LEAN] [FORMALIZATION] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/CCMMultiplicativeScrewCurvature.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMMultiplicativeScrewCurvature.lean`
 
 Fix positive integers `m,n`.  For width `L=log m`, the fixed screw
 curvature at `x=log(m^2 n)` is

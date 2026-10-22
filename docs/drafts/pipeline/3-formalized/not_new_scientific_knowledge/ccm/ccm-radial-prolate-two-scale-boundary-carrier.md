@@ -220,14 +220,14 @@ identifies the true `chi_n(lambda)` with that rate.
 
 **Superseded, 2026-08-15.**  "No Lean file is added by this card" is out of date: every equation the
 card proves is now formal, in
-`formal/GaloisForLFunctions/RHTower/CCMRadialTwoScaleCarrier.lean` (see the Lean status section
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialTwoScaleCarrier.lean` (see the Lean status section
 below).  The eigenvalue asymptotic remains an import, but it is an input of `(4)` and `(6)`, not of
 anything the card derives.
 
 ## Lean status
 
 **Formalized, 2026-08-15.**  Module
-`formal/GaloisForLFunctions/RHTower/CCMRadialTwoScaleCarrier.lean` (wired, axiom-clean), built over
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialTwoScaleCarrier.lean` (wired, axiom-clean), built over
 `CCMRadialGlobalDefectMass` and the corpus's leakage layer.
 
 - **`norm_sq_twoModeExterior`** — equation `(3)`, exactly: for the normalized vanishing-integral

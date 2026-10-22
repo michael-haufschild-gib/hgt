@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMFirstRowEnvelopeTail
-import GaloisForLFunctions.RHTower.CCMFirstRowDunsterModel
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowEnvelopeTail
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowDunsterModel
 
 /-!
 # The Dunster coordinate as a change of variable

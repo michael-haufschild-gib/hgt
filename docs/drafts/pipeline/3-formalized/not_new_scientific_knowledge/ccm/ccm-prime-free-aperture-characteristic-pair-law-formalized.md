@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMPrimeFreeApertureCharacteristicPair`
+- `GaloisForLFunctions.RHTower.CCM.CCMPrimeFreeApertureCharacteristicPair`
 
 Standing on three pre-existing corpus layers:
 
@@ -53,6 +53,6 @@ and its injectivity through every prime-entry aperture).
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMPrimeFreeApertureCharacteristicPair`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMPrimeFreeApertureCharacteristicPair`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmInfiniteOrientationSingularities
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmInfiniteOrientationSingularities
 
 /-!
 # The critical-line lower bound on the Xi zero abscissa

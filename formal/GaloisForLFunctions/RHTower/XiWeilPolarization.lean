@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 import GaloisForLFunctions.Bottcher.ArgumentPrinciple
 

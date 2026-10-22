@@ -39,8 +39,8 @@ anchor also forces `c=0`, excluding nonzero fixed skew propagators.
 ## Lean certificate
 
 - Modules:
-  - `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMUniversalSkewPropagatorClassification`
-  - `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMUniversalSkewPropagatorGlobalRigidity`
+  - `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMUniversalSkewPropagatorClassification`
+  - `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMUniversalSkewPropagatorGlobalRigidity`
 - Theorems:
   - `hbUniversalPeierls_skewPropagator_eq_targetScaledRotation`
   - `hbUniversalPeierls_skewPropagator_existsUnique_targetScaledRotation`

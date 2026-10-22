@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaSewnPluckerNuclearRootIncidence
 import GaloisForLFunctions.HTGeometry.ContractionCompressionExhaustion
-import GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaTraceClassFeatureRobinTraceNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaTraceClassFeatureRobinTraceNoGo
 
 open Real Set Filter Topology ContinuousLinearMap
 open scoped BigOperators InnerProductSpace ComplexOrder

@@ -134,7 +134,7 @@ here. No external theorem or numerical experiment enters the proof.
 
 ## Formal surface and validation
 
-Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusSignedEndpoint.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusSignedEndpoint.lean`.
 Twenty-two public theorems and one definition. The closed
 `pwGammaMobiusSignedReconstruction_closed` packages actual integrability,
 zero mass, nontriviality, positive `L¹` norm, reconstructed integrability
@@ -144,7 +144,7 @@ reconstruction norm summability.
 Validation completed:
 
 - Scratch and direct leaf checks passed with `lake env lean <file>`.
-- Final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusSignedEndpoint`; target compiled in 99 seconds, with dependency jobs replayed from cache.
+- Final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusSignedEndpoint`; target compiled in 99 seconds, with dependency jobs replayed from cache.
 - All 22 public axiom audits passed in `/tmp/pwb-gamma-signed-axioms.lean`; only `propext`, `Classical.choice`, `Quot.sound` occur.
 - Formal lint passed. Index regenerated all three formal ledgers and records 22 theorem rows and one definition row.
 - All 23 public names are unique. Task-scoped diff and new-file whitespace checks passed.

@@ -295,8 +295,8 @@ That reasoning was too pessimistic: the whole proved content of this card is a s
 by the one-sided output cutoff has antidiagonal length `min(t,u)` — is an honest Tonelli computation
 that Lean can carry unconditionally.
 
-Module: `GaloisForLFunctions.RHTower.CCMBoundaryRelativeTrace` (new), built on the pre-existing
-`GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope`.
+Module: `GaloisForLFunctions.RHTower.CCM.CCMBoundaryRelativeTrace` (new), built on the pre-existing
+`GaloisForLFunctions.RHTower.CCM.CCMHankelGapTraceSlope`.
 
 - `boundaryBlockEnergy` — equation `(5a)`, the squared Hilbert--Schmidt mass of the output-boundary
   block of the Hankel kernel `k(x,y)=ell(x+y)`, as an `ENNReal`-valued quantity that is defined with

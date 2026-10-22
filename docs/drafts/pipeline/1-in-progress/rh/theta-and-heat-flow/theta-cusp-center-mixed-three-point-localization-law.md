@@ -45,14 +45,14 @@ in the shell and contradicts shell positive semidefiniteness. `[PROVED HERE]`
 
 ## Lean formalization
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspCenterMixedThreePointLocalizationLaw.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedThreePointLocalizationLaw.lean`
 - Certificate: `ThetaCuspCenterMixedThreePointLocalizationCertificate`
 - Capstone: `thetaCuspCenterMixedThreePoint_localizationLaw`
 
 Exact direct check passed:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/ThetaCuspCenterMixedThreePointLocalizationLaw.lean
+lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedThreePointLocalizationLaw.lean
 ```
 
 ## Hostile literature noncollision audit

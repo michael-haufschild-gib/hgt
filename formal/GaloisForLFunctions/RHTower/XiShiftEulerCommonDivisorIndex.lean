@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiCommonDivisorCancellation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiCommonDivisorCancellation
 import GaloisForLFunctions.RHTower.XiShiftEulerExceptionalIndex
 import GaloisForLFunctions.RHTower.XiShiftEulerDenseFiniteSection
 

@@ -339,7 +339,7 @@ the ordinary weighted derivative are therefore kernel-checked.
 **`(3)`, `(10)` and the Plancherel step `(11)` are now formal**, in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaShiftKappa.lean
 ```
 
 ```text
@@ -375,10 +375,10 @@ family, and the limit `(18) → (5)` are all Lean theorems.  See
 chain is:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiGammaMollifiedEquation.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaMollifiedEquation.lean
   SuzukiGammaTestedEquation            (5) in its honest tested form
   suzukiGamma_mollified_equation       (16)-(19) run pointwise: the mollified equation (18)
-formal/GaloisForLFunctions/RHTower/SuzukiGammaWeakDomainUpgrade.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWeakDomainUpgrade.lean
   suzukiGamma_uniform_energy_bound     (20)-(22) + (13): the uniform L² bound on U_eps
   suzukiGamma_weakDomain_upgrade       the section-4 limit: U in L², i.e. (6)
   suzukiGamma_profile_H1               V in H1: the weak derivative sigma*V + u is in L²

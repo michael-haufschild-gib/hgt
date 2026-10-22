@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannKernelTransformInjectivity
 import GaloisForLFunctions.RHTower.WeilPhiDoobPrimeAtoms
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinTwoKBesselMellinProduct
 
 /-!
 # Divisor coordinates for the complete prime Doob energy

@@ -513,7 +513,7 @@ The exact formal statements are
 
 ## 9. Formalization plan
 
-1. Reuse the weighted phase floor in `RHTower/CCMPrimePoleFiniteCoherence.lean`.
+1. Reuse the weighted phase floor in `RHTower/CCM/CCMPrimePoleFiniteCoherence.lean`.
 2. Generalize the existing equal-weight pairwise pivot in
    `RHTower/UniversalPhaseCoherenceEntropy.lean` to probability weights.
 3. Generalize the existing pivot shear and chord Laplace product in

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMCompletedPrimeGammaAccretivityCriterion
 import GaloisForLFunctions.RHTower.XiRelativeResolventFlux
 import GaloisForLFunctions.RHTower.CompletedFluxGradedReality
 import GaloisForLFunctions.RHTower.XiHeatShellMinimum

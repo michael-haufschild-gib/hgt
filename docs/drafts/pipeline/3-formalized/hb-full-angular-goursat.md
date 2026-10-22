@@ -2,7 +2,7 @@
 
 Status: formalized; scratch checks, exact-module build and all five new public theorem axiom audits passed. Complete physical pulse/current pairing and RH remain unproved.
 
-Lean module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat`.
+Lean module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularGoursat`.
 Namespace: `RHTower.D4BMFullAngularGoursat`.
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
@@ -75,7 +75,7 @@ Independent broad corpus terms included `transversal`, `Darboux Goursat` with OR
 
 ## Validation
 
-Foreground scratch checks used `lake env lean`. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularGoursat` passed without warnings: two jobs, 323 seconds, with only this new module reported built. The isolated audit reused 3,994 cached project modules and installed dependency caches; no dependency, full-project or umbrella build ran.
+Foreground scratch checks used `lake env lean`. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularGoursat` passed without warnings: two jobs, 323 seconds, with only this new module reported built. The isolated audit reused 3,994 cached project modules and installed dependency caches; no dependency, full-project or umbrella build ran.
 
 All five new public theorem axiom reports contain exactly `propext`, `Classical.choice` and `Quot.sound`. No existing theorem axiom audit was repeated. Source and all five installed build artifacts match the audited files byte for byte. The new module is wired once into `RHTower.lean`.
 

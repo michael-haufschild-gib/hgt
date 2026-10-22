@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerAbelianLimit
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelianLimit
 import GaloisForLFunctions.HTGeometry.DirichletSeriesBoundedPartialSums
 import GaloisForLFunctions.RHTower.ChiRamanujanMixedEulerTilt
 import Mathlib.NumberTheory.EulerProduct.DirichletLSeries

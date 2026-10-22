@@ -266,8 +266,8 @@ cones or fixed-point localization themselves.
 Formalized module:
 
 ```text
-GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
-GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
+GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
+GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyStokesRegulator
 ```
 
 Required declarations:
@@ -304,8 +304,8 @@ ccmRationalAdelicPrimeRelativeH1StokesRegulator_class
 Verification on 2026-08-04:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean
-lake build GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean
+lake build GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyRelativeXiChainMap
 ```
 
 Both pass.  `#print axioms` for the fixed-vector theorem, complex law, retained-class theorem,

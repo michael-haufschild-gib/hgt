@@ -6,7 +6,7 @@
 - **Scientific status:** `[LEAN-PROVED] [SOURCE-REPRESENTATION] [NOT RH]`
 - **Paper proof:**
   `./suzuki-volterra-cartesian-phase-defect.md`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiVolterraCartesianPhaseDefect`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiVolterraCartesianPhaseDefect`
 - **RH used:** no
 - **Computation used:** no
 

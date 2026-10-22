@@ -50,7 +50,7 @@ Hedenmalm current positivity band to the matching scalar TTF diagonal by an exac
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxHedenmalmWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxHedenmalmWeld.lean`
 
 Closed declarations:
 
@@ -67,7 +67,7 @@ Verification:
 
 - direct source check passed with `lake env lean`;
 - exact target build passed with
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspTiltFluxHedenmalmWeld`;
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxHedenmalmWeld`;
 - no umbrella/full build was run;
 - all six `#print axioms` reports contain only `propext`, `Classical.choice`, and `Quot.sound`;
 - module is wired into `RHTower.lean`.

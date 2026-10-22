@@ -69,7 +69,7 @@ jet identity and the Archimedean completion formula.
 - **Exact killing theorem/mechanism:** `D_c=X+cK` preserves the full natural analytic package but has paired nontrivial off-critical zeros at `s=1/4,3/4`.
 - **Strongest positive survivor:** exact principal-ideal classification `F=X+HK`, with `H` entire, reflection-symmetric, and Schwarz-real.
 - **New insight:** functional-equation reflection doubles the invisible response lattice rather than removing it; its canonical divisor is the symmetric reciprocal-Gamma product.  FE, Schwarz reality, and order-one growth do not select the Xi continuation.
-- **Status:** dependency-closed Lean proof in `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZSchwarzschildCompletedResponseSymmetryNoGo`.  Exact classification: `isEntireCompletedBlackHoleSymmetricInterpolant_iff_twoLadderGammaNull`.  Route kill: `completed_response_FE_Schwarz_orderOne_route_noGo`.  Direct `lake env lean` and targeted `lake build` pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint still reports unrelated pre-existing unreachable modules; this new module is wired into and reachable from `RHTower.lean`.
+- **Status:** dependency-closed Lean proof in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZSchwarzschildCompletedResponseSymmetryNoGo`.  Exact classification: `isEntireCompletedBlackHoleSymmetricInterpolant_iff_twoLadderGammaNull`.  Route kill: `completed_response_FE_Schwarz_orderOne_route_noGo`.  Direct `lake env lean` and targeted `lake build` pass.  Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.  Global lint still reports unrelated pre-existing unreachable modules; this new module is wired into and reachable from `RHTower.lean`.
 
 ## Novelty audit
 

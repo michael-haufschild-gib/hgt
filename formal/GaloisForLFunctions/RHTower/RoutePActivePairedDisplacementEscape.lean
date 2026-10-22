@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RoutePCompensatedMassRiccati
 import GaloisForLFunctions.RHTower.RoutePOneSidedChebyshevOscillation
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarRelativeDisplacement
-import GaloisForLFunctions.RHTower.CCMQuantileDisplacementMass
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarRelativeDisplacement
+import GaloisForLFunctions.RHTower.CCM.CCMQuantileDisplacementMass
 
 /-!
 # Unbounded actual critical-mass and paired-cell displacement

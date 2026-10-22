@@ -267,7 +267,7 @@ below instead formalizes the three exact steps the card's own proof turns on —
 the logarithmic rescaling `(9)`, and the exact constant arithmetic of `(12)`–`(15)`/`(17)` — and
 leaves the digamma multiplier and the semiclassical measure explicitly as cited parents.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMEndpointArchimedeanLog.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMEndpointArchimedeanLog.lean`
 (7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

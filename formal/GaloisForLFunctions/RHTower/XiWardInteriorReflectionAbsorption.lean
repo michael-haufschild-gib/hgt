@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWardInteriorTraceSplit
-import GaloisForLFunctions.RHTower.CCMRectangularDominantFold
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDominantFold
 
 /-!
 # Functional-equation absorption of the Ward boundary symbol

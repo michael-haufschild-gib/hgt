@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FiniteQuantumObserverCoherenceLaw
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 
 /-!
 # Coherence-graph recurrence deadline

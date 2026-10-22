@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeHodgeHistorySurvivalFredholmColligation
 import GaloisForLFunctions.HTGeometry.DiagonalCompactOperator
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 import GaloisForLFunctions.HTGeometry.HarmonicOrdinateDivergence
 import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
 

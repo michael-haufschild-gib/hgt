@@ -3,7 +3,7 @@
 - **Stage:** 3-formalized
 - **Type:** theorem / exact RH-target decomposition
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [NOVELTY UNVERIFIED]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspShellHedenmalmCurrent.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellHedenmalmCurrent.lean`
 
 ## Statement
 

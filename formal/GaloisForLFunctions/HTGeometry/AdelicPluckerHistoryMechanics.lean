@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ConstraintFrameRelativity.ValuatedPluckerGram
-import GaloisForLFunctions.RHTower.DeningerTestHeightBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerTestHeightBridge
 
 /-!
 # Adelic Plücker history mechanics

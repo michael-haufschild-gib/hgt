@@ -35,7 +35,7 @@ identity unconditionally and therefore carries no information about zero locatio
 - `hbXiPeierlsFESchwarzZeroTotalWardIdentity`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy.lean`
 
 ## New knowledge
 
@@ -69,8 +69,8 @@ of Ward identities, conserved currents, Peierls brackets, or nonlinear Teukolsky
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFESchwarzFixedWeightWardDichotomy`
 - Build result: success, 11897 jobs after shared dependency replay
 - `#print axioms` on four endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

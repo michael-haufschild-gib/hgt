@@ -4,7 +4,7 @@
 - **Stage:** `1-in-progress`
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW SYNTHESIS] [NOT RH]`
 - **Parent:** `P-G149`
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmWardGreenCriticalFeatureTrace.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmWardGreenCriticalFeatureTrace.lean`
 
 ## Conjecture loop
 

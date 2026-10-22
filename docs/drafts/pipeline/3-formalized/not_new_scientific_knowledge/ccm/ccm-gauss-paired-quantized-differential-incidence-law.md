@@ -294,8 +294,8 @@ analytic theorem rather than progress on RH. No Lean file is added.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMGaussPairedQuantizedDifferential.lean`, on the commutator
-calculus of `RHTower/CCMSoninEdgeTrace.lean`.  The earlier decision ("formalizing only the finite
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGaussPairedQuantizedDifferential.lean`, on the commutator
+calculus of `RHTower/CCM/CCMSoninEdgeTrace.lean`.  The earlier decision ("formalizing only the finite
 Leibniz identity would be a wrapper") measured the wrong object: the card's `[PROVED]` list is
 exactly `(4)`, `(7)`, the coinvariant descent `(8a)`--`(8e)`, the reflection form `(15)`, and the
 frequency module `(18)`, and none of these needs the analytic Hardy/quasi-inner layer.

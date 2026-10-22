@@ -40,7 +40,7 @@ the exact diagonal coefficient, and the monomial-order degree definition yield m
 
 ## Lean realization
 
-- `RHTower/DeningerHankelDiagonalMonicity.lean`
+- `RHTower/Deninger/DeningerHankelDiagonalMonicity.lean`
   - `hankelPermutationExponent_lt_diagonal`;
   - `hankelPermutationExponent_degLex_lt_diagonal`;
   - `finiteHankel_detTerm_eq_monomial`;

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMNestedFloorNoEvacuation
+import GaloisForLFunctions.RHTower.CCM.CCMNestedFloorNoEvacuation
 
 /-!
 # Rayleigh quotient sets bounded below

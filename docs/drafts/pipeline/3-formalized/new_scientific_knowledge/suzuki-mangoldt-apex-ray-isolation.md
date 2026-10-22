@@ -92,7 +92,7 @@ This is an exact-source noncollision audit, not a claim of literature priority.
 
 ## Lean realization
 
-Module `RHTower/SuzukiMangoldtApexRayIsolation.lean` proves:
+Module `RHTower/Suzuki/SuzukiMangoldtApexRayIsolation.lean` proves:
 
 - `suzukiMangoldtAlignedApex_sample_eq` — `(AR1)`;
 - `suzukiMangoldtAlignedApex_sample_eq_zero_of_outside` — closed complement of the annulus;

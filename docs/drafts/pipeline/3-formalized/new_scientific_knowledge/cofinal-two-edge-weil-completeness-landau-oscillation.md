@@ -230,15 +230,15 @@ split into the following exact layers:
 
 - `HTGeometry/CompactSupportSmoothBaire.lean` proves completeness, complete metrizability, and the
   Baire property for the literal fixed-compact-support smooth-function space.
-- `RHTower/CCMSmoothTwoEdgeProfile.lean` constructs `D_(eta,L)`, its continuous real-linear
+- `RHTower/CCM/CCMSmoothTwoEdgeProfile.lean` constructs `D_(eta,L)`, its continuous real-linear
   Laplace evaluations, proves every evaluation nonzero, and proves the simultaneous-nonvanishing
   set on the positive-transverse Xi divisor is dense and residual.
-- `RHTower/CCMSmoothProfileDecay.lean` proves the whole-line integration-by-parts identity and the
+- `RHTower/CCM/CCMSmoothProfileDecay.lean` proves the whole-line integration-by-parts identity and the
   reciprocal-height bound for profile amplitudes.
-- `RHTower/CCMWeightedXiLandau.lean` proves the coefficient-generic shifted-zeta continuation,
+- `RHTower/CCM/CCMWeightedXiLandau.lean` proves the coefficient-generic shifted-zeta continuation,
   genuine-pole obstruction, absence of an eventual lower bound, and cofinal unboundedness below
   for the ordinary logarithmic Dirichlet samples.
-- `RHTower/CCMSmoothTwoEdgeWeil.lean` proves the exact physical integral formula for
+- `RHTower/CCM/CCMSmoothTwoEdgeWeil.lean` proves the exact physical integral formula for
   `x ↦ f(a-|x|)`, square summability on the multiplicity-exact Xi divisor, the dominant-edge fold,
   the aperture-uniform summable remainder, residual-profile cofinal negative Weil values under
   false RH, and both restricted Weil criteria equivalent to RH.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerHankelHigherRankGroebner
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelHigherRankGroebner
 import GaloisForLFunctions.HTGeometry.MonomialSpan
 
 /-!

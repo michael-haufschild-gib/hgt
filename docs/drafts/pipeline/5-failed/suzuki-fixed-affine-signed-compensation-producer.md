@@ -52,7 +52,7 @@ Paper and Lean status:
 - complete proof and audits:
   `docs/drafts/pipeline/3-formalized/suzuki-fixed-affine-signed-compensation-classification.md`;
 - Lean module:
-  `formal/GaloisForLFunctions/RHTower/SuzukiFixedAffineSignedCompensationClassification.lean`;
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFixedAffineSignedCompensationClassification.lean`;
 - direct check, targeted build, axiom audit, and umbrella wiring passed.
 
 ## Route consequence

@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-gamma-green-positive-gauge-admission.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerCalderonWittAllCrossPrimeGammaAdmissionOperator`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittAllCrossPrimeGammaAdmissionOperator`
 
 ## Formalized content
 

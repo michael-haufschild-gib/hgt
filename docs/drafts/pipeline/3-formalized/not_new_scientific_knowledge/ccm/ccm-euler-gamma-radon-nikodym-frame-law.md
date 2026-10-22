@@ -215,7 +215,7 @@ bounded Euler-region frame cannot be substituted for the critical prime--archime
 
 ## Lean status
 
-`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCMEulerGammaRadonNikodym.lean`
+`[FORMALIZED]` — module `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerGammaRadonNikodym.lean`
 (9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

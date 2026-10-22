@@ -1,6 +1,6 @@
 import Mathlib
 import GaloisForLFunctions.RHTower.GammaEvenBoundaryParityNoGo
-import GaloisForLFunctions.RHTower.CCMMetaplecticGammaMomentDeterminacy
+import GaloisForLFunctions.RHTower.CCM.CCMMetaplecticGammaMomentDeterminacy
 import GaloisForLFunctions.RHTower.SoninSemilocalTwoPlaceAssociation
 
 /-!

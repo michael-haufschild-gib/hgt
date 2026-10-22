@@ -26,7 +26,7 @@ The two complex factors have positive real part and are conjugate to each other.
 
 ## Lean statements
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCircleGauss`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCircleGauss`.
 Namespace: `RHTower.D4BMNativeCircle`.
 
 - `powerCircle_eq_legendre`: exact native height-power/physical-kernel equality.
@@ -36,7 +36,7 @@ The [comparison card](../1-in-progress/hb-native-cusp-inverse-identification.md)
 
 ## Validation
 
-Foreground scratch `lake env lean` passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCircleGauss`, using 3947 frozen own-module caches and 11 package caches. The new leaf built in 99 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
+Foreground scratch `lake env lean` passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCircleGauss`, using 3947 frozen own-module caches and 11 package caches. The new leaf built in 99 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the two new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files match the audited files byte for byte. The umbrella contains one new import and was not built.
 

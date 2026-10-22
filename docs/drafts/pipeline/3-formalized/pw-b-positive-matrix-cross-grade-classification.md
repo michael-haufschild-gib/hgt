@@ -91,7 +91,7 @@ Primary comparison sources:
 ## Lean realization
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification`
 
 Theorems:
 

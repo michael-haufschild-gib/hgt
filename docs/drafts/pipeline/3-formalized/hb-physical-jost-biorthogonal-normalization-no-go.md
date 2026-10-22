@@ -51,7 +51,7 @@ and universally `current=0 ↔ c_R=0 ∨ RH`. Thus nonzero physical Jost respons
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalJostBiorthogonalNormalizationNoGo.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalJostBiorthogonalNormalizationNoGo.lean`
 - Final theorem: `RHTower.d4HBPhysicalJostBiorthogonalNormalizationRouteKilled`
 - Premise-free closed proposition: `RHTower.D4HBPhysicalJostBiorthogonalNormalizationRouteKilled`
 - Direct `lake env lean` passed.

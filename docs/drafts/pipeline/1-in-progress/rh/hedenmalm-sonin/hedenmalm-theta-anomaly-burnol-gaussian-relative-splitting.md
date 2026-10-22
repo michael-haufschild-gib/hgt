@@ -101,7 +101,7 @@ Primary comparisons:
 
 ## Formal artifact
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolGaussianRelativeSplitting.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolGaussianRelativeSplitting.lean`
 
 Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
@@ -109,6 +109,6 @@ Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 - 2026-08-13 — Frozen after P-G114 exposed affine gauge as sole reflection-odd coordinate.
 - 2026-08-13 — Direct `lake env lean` check passed.
-- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.HedenmalmThetaAnomalyBurnolGaussianRelativeSplitting` passed (`12937` jobs).
+- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAnomalyBurnolGaussianRelativeSplitting` passed (`12937` jobs).
 - 2026-08-13 — Axiom audit reported only `propext`, `Classical.choice`, and `Quot.sound`; full RHTower umbrella build passed (`19790` jobs).
 - 2026-08-13 — Repository lint failed on 41 pre-existing unrelated unreachable modules; no P-G115--P-G117 module appeared in failures.

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.PaperThetaCompactMeyerRealization
-import GaloisForLFunctions.RHTower.DeningerMeyerGaussianSourceApproximation
-import GaloisForLFunctions.RHTower.DeningerMeyerStrongLogOperatorContinuity
-import GaloisForLFunctions.RHTower.DeningerMeyerFullXiJetAdmissionBoundary
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaussianSourceApproximation
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerStrongLogOperatorContinuity
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerFullXiJetAdmissionBoundary
 
 /-! # The finite native normalization cannot extend continuously
 

@@ -20,7 +20,7 @@ Proof sharpens self-dual theta mass by geometric tail bound, obtains
 ## Lean
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthProjectiveClockChamber`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthProjectiveClockChamber`
 - Main theorem: `neg_thetaCuspModularODEState_Z_re_lt_three_tenths`
 - Supporting theorems:
   - `thetaCuspSelfDualThetaMass_lt_2173_div_2000`

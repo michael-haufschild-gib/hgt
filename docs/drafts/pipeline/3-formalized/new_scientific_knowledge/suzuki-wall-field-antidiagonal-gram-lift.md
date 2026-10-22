@@ -4,7 +4,7 @@
 - **Paper proof:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-wall-field-antidiagonal-gram-lift.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldAntidiagonalGramLift.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -66,7 +66,7 @@ RH.
 ## Verification
 
 - direct source check passed:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldAntidiagonalGramLift.lean`;
 - unconditional, no `sorry`, `admit`, project axiom, `opaque`, `unsafe`, computation, estimate, or
   RH premise;
 - final targeted SOTA build passed `9457/9457`;

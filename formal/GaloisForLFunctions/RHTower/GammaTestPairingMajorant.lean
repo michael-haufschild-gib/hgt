@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiGammaMollifiedEquation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaMollifiedEquation
 
 /-!
 # The scale majorant for pairing the Gamma jump against a test function

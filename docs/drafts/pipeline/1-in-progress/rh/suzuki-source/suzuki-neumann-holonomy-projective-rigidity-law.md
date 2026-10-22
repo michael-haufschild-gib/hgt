@@ -45,7 +45,7 @@ Distinct shifts cancel the first factor, proving the projective-tangent criterio
 
 ## Lean formalization
 
-Module: `formal/GaloisForLFunctions/RHTower/SuzukiFullFrequencyNeumannHolonomy.lean`
+Module: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFullFrequencyNeumannHolonomy.lean`
 
 Capstones:
 
@@ -56,7 +56,7 @@ Capstones:
 Exact direct check passed:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiFullFrequencyNeumannHolonomy.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiFullFrequencyNeumannHolonomy.lean
 ```
 
 ## Hostile literature noncollision audit

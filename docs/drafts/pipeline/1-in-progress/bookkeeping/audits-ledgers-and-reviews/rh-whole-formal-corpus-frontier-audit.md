@@ -628,7 +628,7 @@ Landau halving reaches every positive abscissa.  Removing both corrections retur
 exponential moments of `Q`, and existing Volterra-reflection capstone implies RH.
 
 Lean implementation is in
-`RHTower/CCMFirstClockTailLowerBoundCompleteness.lean`.  Current file contains exact predicate,
+`RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean`.  Current file contains exact predicate,
 source-to-affine divisor law, compact carrier and integrability, analytic continuation, corrected
 Landau measure, halving/dyadic descent, correction removal, full Xi-moment reconstruction, RH
 equivalence, and false-RH unboundedness capstone. Targeted `lake env lean` and final `lake build`
@@ -698,7 +698,7 @@ Formalized card:
 `../../../3-formalized/needs-audit/ccm-first-clock-asymptotic-bohr-completeness.md`.
 Lean modules:
 `HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean` and
-`RHTower/CCMFirstClockAsymptoticBohrLaw.lean`. Both umbrellas wired. Targeted Lean checks and final
+`RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean`. Both umbrellas wired. Targeted Lean checks and final
 module build green. Five capstone axiom audits report exactly
 `[propext, Classical.choice, Quot.sound]`.
 
@@ -782,7 +782,7 @@ Formal modules:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewBohrCoefficients.lean
-formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrTorelli.lean
 ```
 
 Formalized card:
@@ -835,7 +835,7 @@ Log injectivity makes every other finite-packet atom smooth at distinguished ape
 exact decomposition of whole packet into smooth background plus unique kink atom.
 
 Formal module:
-`formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimeEntrySlopeTomography.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimeEntrySlopeTomography.lean`.
 RHTower umbrella wired; direct `lake env lean` check green. Card moved to
 `../../../3-formalized/needs-audit/ccm-first-clock-prime-entry-slope-tomography.md`.
 
@@ -1017,7 +1017,7 @@ Formal modules:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaScaleFourTransfer.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaScaleFourTransfer.lean
 ```
 
 Card:
@@ -1118,7 +1118,7 @@ before sine evaluation.
 Formal module and card:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaKMSPrimePowerResolution.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaKMSPrimePowerResolution.lean
 docs/drafts/pipeline/3-formalized/needs-audit/ccm-julia-kms-prime-power-resolution.md
 ```
 
@@ -1170,7 +1170,7 @@ Formal modules and card:
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/JuliaDefectSpectralEquilibrium.lean
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaEquilibriumGram.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaEquilibriumGram.lean
 docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-first-clock-julia-equilibrium-coherent-capacity.md
 ```
 

@@ -3,7 +3,7 @@
 - **Type:** [BRIDGE], sufficient source-bound candidate.
 - **Status:** Rejected by already archived numerical source data; planned computation cancelled before execution. No new formal refutation.
 - **Goal:** Actual divisor-source cancellation → uniform signed Abel bound → CCM-FU → RH.
-- **Related:** [Positive gcd budget](../../ccm-fu-positive-gcd-budget.md), [prime-neighbor compensation](../../ccm-fu-one-prime-gcd-compensation.md).
+- **Related:** [Positive gcd budget](ccm-fu-positive-gcd-budget.md), [prime-neighbor compensation](ccm-fu-one-prime-gcd-compensation.md).
 
 ## Frozen question
 

@@ -34,14 +34,14 @@ simultaneously.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzPoisson`
+  `GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzPoisson`
 - Capstones:
   - `ccmRationalArchimedeanLatticeTrace_poisson`
   - `ccmRationalArchimedeanLatticeTrace_large_bound`
   - `ccmRationalArchimedeanLatticeTrace_small_bound`
   - `ccmRationalArchimedeanLatticeTrace_twoSidedDecay`
 - Direct check:
-  `lake env lean GaloisForLFunctions/RHTower/CCMRationalArchimedeanSchwartzPoisson.lean`
+  `lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalArchimedeanSchwartzPoisson.lean`
 - Axioms for every capstone:
   `[propext, Classical.choice, Quot.sound]`
 - Aggregate module imported by `GaloisForLFunctions.RHTower`.

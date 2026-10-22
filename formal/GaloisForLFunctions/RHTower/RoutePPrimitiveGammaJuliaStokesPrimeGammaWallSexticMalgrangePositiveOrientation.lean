@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiEndpointSchwarzPairHeightGap
 import GaloisForLFunctions.RHTower.PrimeArchValuationSectorCones
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
 
 /-!
 # Positive orientation of the sixth prime/Gamma wall Malgrange jet

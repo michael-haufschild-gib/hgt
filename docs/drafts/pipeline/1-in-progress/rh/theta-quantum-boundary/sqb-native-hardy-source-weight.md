@@ -3,7 +3,7 @@
 - **ID:** SQB104
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE, with analytical source identifications below
-- **Source:** [native source comparison](../../sqb-native-spectral-source-comparison.md)
+- **Source:** [native source comparison](sqb-native-spectral-source-comparison.md)
 - **Statement:** Normalize the literal common-forcing theta responses into the half-shift Hardy model space while retaining their full native norm and forcing.
 
 ## Goal and status

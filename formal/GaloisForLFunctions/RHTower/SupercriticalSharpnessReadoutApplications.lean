@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteMarkushevichSimplexBlock
-import GaloisForLFunctions.RHTower.CCMSubsetFidelityReadoutRigidity
+import GaloisForLFunctions.RHTower.CCM.CCMSubsetFidelityReadoutRigidity
 
 /-!
 # Supercritical sharpness midpoint extraction for simplex readout

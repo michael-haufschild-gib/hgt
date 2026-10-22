@@ -272,7 +272,7 @@ not_oneNodeAnchorSquare_le_anchoredSchurResidual_of_half_lt_sq
 Arithmetic specialization:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaPrincipalRelativeNoGo.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaPrincipalRelativeNoGo.lean
 ```
 
 Headline declarations:

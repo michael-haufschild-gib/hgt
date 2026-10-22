@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmLineTransformBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmLineTransformBridge
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularFourier
 
 /-!

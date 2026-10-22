@@ -47,7 +47,7 @@ Corpus search found no AIME/BM global comparison. Literature records absorption-
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEBMGlobalSourceIncompatibility`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEBMGlobalSourceIncompatibility`
 - Theorems:
   - `forall_normalizedAIMEResidue_eq_unitBMTarget_iff`
   - `not_exists_nonzero_normalizedAIMEResidue_global_unitBMTarget`

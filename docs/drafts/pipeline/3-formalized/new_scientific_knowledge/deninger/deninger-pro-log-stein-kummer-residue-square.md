@@ -339,7 +339,7 @@ AND REAL SIGNATURE REMAIN OPEN`.
 
 ### The residue square landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFiniteResidueSquare.lean`, with the Fourier input in
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFiniteResidueSquare.lean`, with the Fourier input in
 `DeningerFiniteCharacterBasis.lean`.  Axiom audit for all 13 declarations:
 `propext, Classical.choice, Quot.sound` or less.
 

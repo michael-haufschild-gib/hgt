@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGuinandWeilRectangularBottomEdge
-import GaloisForLFunctions.RHTower.CCMRectangularDirectionalDerivative
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirectionalDerivative
 
 /-!
 # The sharp dyadic prime window as a corrected Xi bottom-edge slope

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeShiftMarcinkiewiczTrichotomy
 import GaloisForLFunctions.RHTower.SingularCoronaResidueIncidenceTrilemma
-import GaloisForLFunctions.RHTower.DeningerSeminormInducedCompleted
+import GaloisForLFunctions.RHTower.Deninger.DeningerSeminormInducedCompleted
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.GraphPushoutSplitting
 import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.Algebra.Exact.Basic

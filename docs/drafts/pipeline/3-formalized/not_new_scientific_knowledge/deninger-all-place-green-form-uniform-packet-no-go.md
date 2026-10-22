@@ -128,7 +128,7 @@ arithmetic damping.
 ## Lean formalization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerAllPlaceGreenFormUniformPacketNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAllPlaceGreenFormUniformPacketNoGo.lean`.
 
 Kernel-checked declarations:
 

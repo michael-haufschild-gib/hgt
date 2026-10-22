@@ -239,9 +239,9 @@ full or umbrella build, admission, new axiom, numerical research, or heartbeat i
 
 Global lint exited 1 on these 16 concurrently developed, unrelated unwired leaves:
 
-- `GaloisForLFunctions.RHTower.CCMParityQuartetEvenFloor`
-- `GaloisForLFunctions.RHTower.CCMParityQuartetModel`
-- `GaloisForLFunctions.RHTower.CCMParityQuartetZeroSum`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetEvenFloor`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetModel`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityQuartetZeroSum`
 - `GaloisForLFunctions.RHTower.WeilConeBoundaryDilationInequality`
 - `GaloisForLFunctions.RHTower.WeilConeBoundaryDilationLogAveraging`
 - `GaloisForLFunctions.RHTower.WeilConeBoundaryDilationRigidity`

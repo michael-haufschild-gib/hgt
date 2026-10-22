@@ -324,7 +324,7 @@ preliminary noncollision result; `[NOVELTY UNVERIFIED]` remains mandatory.
 ## Lean status
 
 `[FORMALIZED UNCONDITIONALLY]`  Authoritative capstone:
-`formal/GaloisForLFunctions/RHTower/HedenmalmEssentialInverseFlowTrace.lean`, theorem
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmEssentialInverseFlowTrace.lean`, theorem
 `hedenmalmEssentialInverseFlowPrimeTomography_capstone`. It packages the source-derived compact
 operator, finite-rank Riesz projections and maximal generalized eigenspaces, finite-dimensional
 root-block functional calculus, absolute/cofinal cutoff limit, exact Xi--Weil identity,
@@ -334,7 +334,7 @@ theorem has no hypotheses. Targeted `lake env lean` and theorem-area umbrella ch
 
 Historical development status follows; its missing-item ledger is superseded by the capstone.
 
-`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/HedenmalmEssentialFlowSymbol.lean`
+`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmEssentialFlowSymbol.lean`
 (namespace `RHTower.HedenmalmThetaSource`).  All declarations are `#print axioms`-clean.
 
 | # | statement | Lean declaration |

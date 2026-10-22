@@ -43,7 +43,7 @@ therefore fail necessary central residue condition for normalized scalar Herglot
 ## Lean
 
 Module:
-`formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLargeNegativeShiftCentralFlux.lean`.
 
 Declarations:
 

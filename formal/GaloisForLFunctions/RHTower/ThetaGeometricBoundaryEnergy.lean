@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MellinBoundaryFinitePart
 import GaloisForLFunctions.HTGeometry.SecantEnergyBoundary
 import GaloisForLFunctions.RHTower.XiPoissonProgression
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartz
 import Mathlib.Analysis.Distribution.SchwartzSpace.Deriv
 
 /-!

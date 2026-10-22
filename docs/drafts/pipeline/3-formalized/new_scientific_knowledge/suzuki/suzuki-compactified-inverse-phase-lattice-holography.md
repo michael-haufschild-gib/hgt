@@ -412,7 +412,7 @@ list.  `orderIso_zero_of_reflection` closes a redundancy: the reflection normali
 normalizations are not independent hypotheses and the anchor never has to be assumed separately.
 
 Equation `(1)`, the Cayley inversion `m = i (1 + Theta) / (1 - Theta)`, is now formal too, in
-`formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`:
 
 - `cayleyOfHerglotz_ne_one`: the Cayley value is never `1`, so the inversion needs no side condition
   beyond the one already required to form the transform.
@@ -438,7 +438,7 @@ meromorphic object, which is bookkeeping on top of this bound.
 Equation `(12)` has three lines, and its *first* — the reflection normalization
 `phi(-x) = 2 pi - phi(x)` — is derived here from oddness of `m` via `m = -cot(phi/2)`.  The corpus
 had been carrying that line as a hypothesis (`hreflection`) and deriving only the other two.  It is
-now derived, in `formal/GaloisForLFunctions/RHTower/SuzukiCayleyPhaseLift.lean`:
+now derived, in `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCayleyPhaseLift.lean`:
 
 - `cayleyPhaseLift_half_sub`, `neg_cot_half_cayleyPhaseLift`: the relation `m = -cot(phi/2)`.
 - `cayleyPhaseLift_reflection_of_odd`: **`(12)`, first line** — oddness of `m` gives the reflection

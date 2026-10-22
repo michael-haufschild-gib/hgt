@@ -435,9 +435,9 @@ added.
 
 **Formalized unconditionally, 2026-08-15**, in
 `formal/GaloisForLFunctions/HTGeometry/SeparatingGramLocus.lean` (the abstract separating-locus
-theory) and `formal/GaloisForLFunctions/RHTower/CCMGenericGroundSeparatingIncidence.lean` (the
+theory) and `formal/GaloisForLFunctions/RHTower/CCM/CCMGenericGroundSeparatingIncidence.lean` (the
 compressed-shift construction), on the compressed shifts of
-`RHTower/CCMCompressedShiftIndependence.lean`.
+`RHTower/CCM/CCMCompressedShiftIndependence.lean`.
 
 Section 1, in `HTGeometry/SeparatingGramLocus.lean`:
 
@@ -461,7 +461,7 @@ Section 1, in `HTGeometry/SeparatingGramLocus.lean`:
 - `integral_conj_mul_eq_zero_of_disjoint`, **`linearIndependent_of_disjoint_support`** — the disjoint
   support mechanism.
 
-Section 2, in `RHTower/CCMGenericGroundSeparatingIncidence.lean`:
+Section 2, in `RHTower/CCM/CCMGenericGroundSeparatingIncidence.lean`:
 
 - `separatingBump`, `separatingBump_eq_zero_of_notMem`, `separatingBump_zero` — the test vector `x_0`
   of `(7)`.

@@ -100,7 +100,7 @@ invariants.  It identifies the obstruction to doing so.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCoarseStackScalarNoGo.lean`, on top of the already
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCoarseStackScalarNoGo.lean`, on top of the already
 formalized dense-time core in `DeningerArithmeticPureSuspensionNoGo.lean`.  Axiom audit for all 5
 declarations: `propext, Classical.choice, Quot.sound`.
 
@@ -146,7 +146,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
   derived functors of the same functor, and right derived functors are unique.
 
 **The card's derived-topos comparison**:
-`formal/GaloisForLFunctions/RHTower/DeningerDerivedToposComparison.lean`.  Axiom audit for all 5
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDerivedToposComparison.lean`.  Axiom audit for all 5
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerCoarsePushforward_preservesInjectives` — **`c_*` preserves injectives**, because it is
@@ -164,7 +164,7 @@ declarations: `propext, Classical.choice, Quot.sound`.
   `RΓ(X, c_* Ã) ≅ RΓ([X̃/G], Ã)`.
 
 **Non-vacuity at an actual quotient stack**:
-`formal/GaloisForLFunctions/RHTower/DeningerQuotientStackPointDescent.lean` instantiates the whole
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerQuotientStackPointDescent.lean` instantiates the whole
 comparison at `c : [pt/G] → pt`, where sheaves on the stack are `G`-representations and `c_*` is
 the invariants functor.  Axiom audit for all 7 declarations:
 `propext, Classical.choice, Quot.sound`.  Three of its facts were also missing from mathlib:

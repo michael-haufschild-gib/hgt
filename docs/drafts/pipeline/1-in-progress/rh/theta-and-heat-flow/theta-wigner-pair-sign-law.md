@@ -19,7 +19,7 @@ exactly and reads off where the pair current is positive and where it is negativ
 
 ## What is proved (Lean, axioms `propext`, `Classical.choice`, `Quot.sound` only)
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairSignLaw.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairSignLaw.lean`:
 
 1. `integral_rpow_mul_thetaCuspWignerRadialProfile` — for `σ > 0`,
    `∫_{(0,∞)} s^{σ−1} R(s,v) ds = Γ(σ+2)(1/cosh 2v)^{σ+2} Q(σ, cosh 2v)`,
@@ -40,7 +40,7 @@ Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairSignLaw.lean`:
    current is strictly positive iff `cosh w < thetaCuspWignerCriticalCosh σ`, strictly negative
    iff above, and always strictly positive at the pair's own center `2t = log m − log n`.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairHelmholtzForm.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairHelmholtzForm.lean`:
 
 8. `thetaCuspWignerPairKernel_eq_shifted_second_deriv` —
    `G_σ(y) = (2π)^{−σ}Γ(σ+2)/2 · ((σ−1)² f(y) − f''(y))` with `f(y) = (cosh y)^{−(σ+2)}`,
@@ -48,7 +48,7 @@ Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairHelmholtzForm.lean`:
    `hasDerivAt_deriv_thetaCuspWignerCoshPower` (`f'' = (σ+2)² f − (σ+2)(σ+3)(cosh)^{−(σ+4)}`).
    The shift constant is `(σ+2)² − (6σ+3) = (σ−1)²`, a perfect square.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairSpectrum.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairSpectrum.lean`:
 
 9. `integral_thetaCuspWignerPairKernel_mul_fourier` — for `σ > 0` and every real `ξ`,
    `∫_ℝ G_σ(y) e^{−iξy} dy = π^{−σ} |(s−1) Γ((s+2)/2)|²` at `s = σ+iξ`, an explicit *real*
@@ -71,7 +71,7 @@ Module `GaloisForLFunctions/RHTower/LogWeightedEulerIntegral.lean`:
     `∫₀^∞ s^{σ−1}(log s)e^{−Cs} ds = C^{−σ}(Γ'(σ) − Γ(σ) log C)`, by the dilation
     `integral_comp_mul_left_Ioi`; no differentiation under the integral.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairLogScaleWeight.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairLogScaleWeight.lean`:
 
 13. `thetaCuspWignerRadialLogWeight σ C = (Γ'(σ+4) − Γ(σ+4)log C)/C² − 6(Γ'(σ+3) − Γ(σ+3)log C)
     + 9(Γ'(σ+2) − Γ(σ+2)log C)`, with
@@ -81,7 +81,7 @@ Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairLogScaleWeight.lean`:
     `log (thetaCuspWignerAtomScale n m u) = log(2πnm e^{2u})` gives
     `(2(2πnm)^σ)^{-1}(1/cosh w)^{σ+2} · thetaCuspWignerRadialLogWeight σ (cosh w)`.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairCenterWeight.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairCenterWeight.lean`:
 
 15. `integrableOn_rpow_mul_iff_integrable_exp_chart` — the exponential chart is an integrability
     *equivalence*, not only an identity.
@@ -112,7 +112,7 @@ Module `GaloisForLFunctions/RHTower/CoshPowerSpectrumOrderDerivative.lean`:
     `log(cosh y)(cosh y)^{−b} ≤ (1/δ)(cosh y)^{−c}` for `c + δ ≤ b` (from `Real.log_le_rpow_div`),
     applied with `δ = c = a/4` on `b ∈ (a/2, 3a/2)`.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairLogSpectrum.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairLogSpectrum.lean`:
 
 21. `thetaCuspWignerPairLogKernel`, `thetaCuspWignerPairLogSpectrum` and
     `integral_thetaCuspWignerPairLogKernel_mul_cos` — the log-scale kernel's spectrum in closed
@@ -172,7 +172,7 @@ This refines the corpus's existing negativity witness: item 7 says exactly which
 separations are negative, and item 8 plus the classical `ĥ_a > 0` says their Fourier-side sum is
 nevertheless a modulus square.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairOrientationAntisymmetry.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairOrientationAntisymmetry.lean`:
 
 23. `integrable_center_mul_exp_mul_thetaCuspSourceTerm_pair`.
 24. `thetaCuspPairOrientationCurrent a n m t :=
@@ -185,7 +185,7 @@ Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairOrientationAntisymmetry.l
 26. `integral_Ioi_radial_sinh_eq` — `∫_{(0,∞)} r sinh(ar) f(r/2) dr = 4∫_{(0,∞)} u sinh(2au) f(u) du`,
     hypothesis-free, making the `r = 2u` identification exact.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerRadialGammaProductRule.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerRadialGammaProductRule.lean`:
 
 27. `deriv_Gamma_add_one : 0 < x → Γ'(x+1) = x Γ'(x) + Γ(x)` (mathlib has `Γ(x+1) = xΓ(x)` but
     not its derivative).
@@ -197,7 +197,7 @@ Module `GaloisForLFunctions/RHTower/ThetaCuspWignerRadialGammaProductRule.lean`:
     **The factor `2σ−1` changes sign exactly at the critical abscissa**, so at zero hyperbolic
     separation `Γ(σ+2)(2σ−1)` is the antisymmetric part of the centre weight under `σ ↔ 1−σ`.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspWignerPairKernelOrderDerivative.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspWignerPairKernelOrderDerivative.lean`:
 
 30. `hasDerivAt_const_rpow : HasDerivAt (fun τ => b^τ) (b^σ log b) σ` for `b > 0`.
 31. `hasDerivAt_thetaCuspWignerPairKernel` / `deriv_thetaCuspWignerPairKernel` —
@@ -225,7 +225,7 @@ every strategy that would deduce the gate from pointwise positivity of the curre
 archimedean base term where there is no arithmetic input at all.  The decay exponent inequality
 `σ + 2 > 3 − σ ⟺ σ > ½` is exactly the `σ ↔ 1−σ` asymmetry.
 
-Module `GaloisForLFunctions/RHTower/ThetaCuspCenterCurrentReflection.lean`:
+Module `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterCurrentReflection.lean`:
 
 33. `integral_center_exp_eq_neg_of_even` — for even `f`, `∫ u e^{cu} f u du = −∫ u e^{−cu} f u du`.
 34. `integral_center_mul_exp_mul_thetaCuspFullSource_reflect` — hence `C_σ(t) = −C_{1−σ}(t)` for

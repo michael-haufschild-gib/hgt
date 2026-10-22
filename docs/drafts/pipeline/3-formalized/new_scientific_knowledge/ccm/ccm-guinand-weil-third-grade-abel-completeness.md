@@ -7,7 +7,7 @@
 - **RH used:** no
 - **Computation used:** no
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean`
 
 ## Claim
 

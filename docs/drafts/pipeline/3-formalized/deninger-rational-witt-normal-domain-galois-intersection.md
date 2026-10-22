@@ -138,7 +138,7 @@ literature-new without author-level review.
 
 ## Lean formalization
 
-- **Module:** `GaloisForLFunctions.RHTower.DeningerRationalWittNormalDomainGaloisIntersection`
+- **Module:** `GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittNormalDomainGaloisIntersection`
 - **Capstone:**
   `deningerRationalWittNormalDomain_galoisFixed_normalization_iff_exists_base`
 - **Sharp obstruction:** `deningerCuspPerfectGaloisFixed_counterexample`

@@ -194,7 +194,7 @@ Closed declarations:
 
 The leaf also supplies the full parameterized Perron-contour, logarithmic-derivative, half-integer,
 natural-cutoff, and real-variable Chebyshev estimates. Exact source check and exact leaf build pass
-for `GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch`. Axiom audit of all 22 new declarations
+for `GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch`. Axiom audit of all 22 new declarations
 reports only `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorryAx`, opaque
 oracle, unsafe declaration, or computation is used.
 

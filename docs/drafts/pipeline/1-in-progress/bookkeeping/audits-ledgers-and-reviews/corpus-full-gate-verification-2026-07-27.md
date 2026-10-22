@@ -53,7 +53,7 @@ the *equivalence* is proved, not RH.
 
 ## Incidental finding for the Deninger lane
 
-`RHTower/DeningerArithmeticSpectralLine.lean:292` emits a tactic `info` during the build:
+`RHTower/Deninger/DeningerArithmeticSpectralLine.lean:292` emits a tactic `info` during the build:
 `ring` fails there and the suggestion is `ring_nf`. It is not an error and the module builds, but
 it is noise on every full build and the project's strict gate
 (`lint --check-generated --build`) fails on build warnings. Worth a one-line cleanup by whoever

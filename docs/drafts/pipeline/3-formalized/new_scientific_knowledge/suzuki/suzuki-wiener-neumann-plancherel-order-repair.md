@@ -312,14 +312,14 @@ Four modules close the card end to end, all `[propext, Classical.choice, Quot.so
   exactly `M^k`, the Neumann kernel of mass exactly `(1-M)⁻¹`, and the alternating Neumann series
   proved to be an actual **two-sided convolution inverse** of `δ₀ + r`
   (`discreteConv_delta_add_neumannSeries`) — the geometric `ℓ¹` resolvent.
-- `RHTower/SuzukiWienerNeumannMajorant.lean` — Section 3 at its literal structure: the high-pass
+- `RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean` — Section 3 at its literal structure: the high-pass
   symbol `h = Lδ₀ + qδ₀ + t` factors as `L(δ₀ + r)` (`wienerHighPassSymbol_eq`); the
   coefficientwise domination `(15)` (`enorm_wienerRelativeKernel_le`); the exact majorant mass
   `(14)` `‖r_*‖₁ = (C+M)/L₀` with the `< 1/2` threshold form; the Neumann inverse `(16)` with the
   inverse identity (`discreteConv_wienerHighPassSymbol_neumannInverse`); the frequency-independent
   coefficient bound `(17)` (`enorm_wienerNeumannInverse_le`); and the exact inverse-kernel mass
   `(18)` (`discreteMass_wienerInverseKernel`).
-- `RHTower/SuzukiWienerMixedNormCarrier.lean` — Section 4: the weighted two-term `L²` bound
+- `RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean` — Section 4: the weighted two-term `L²` bound
   `(20)`→per-coordinate, the `ℓ¹(L²)` mixed-norm bound `(21)`
   (`tsum_eLpNorm_le_twoKernel`), and — via **mathlib's `L²` Fourier isometry**
   (`Lp.fourierTransformₗᵢ`), which now supplies scalar Plancherel `(22)` as a lookup — the
@@ -327,7 +327,7 @@ Four modules close the card end to end, all `[propext, Classical.choice, Quot.so
   `L²_x` with the same two-kernel bound.  Section 6's `(26)` is
   `summable_tsum_norm_clm_comp`: bounded componentwise operators preserve the legal `ℓ¹`
   evaluation.
-- `RHTower/SuzukiWienerOrderSwapCounterexample.lean` — Section 2's explicit counterexample:
+- `RHTower/Suzuki/SuzukiWienerOrderSwapCounterexample.lean` — Section 2's explicit counterexample:
   `swapFreqFamily n ξ = (n+1)⁻¹ ψ(ξ-n)` for the concrete bump `ψ` has finite `L²(ℓ¹)` frequency
   norm (`lintegral_sq_tsum_swapFreqFamily`, the card's `(7)` via disjoint supports and
   translation invariance), while each position coordinate is a unimodular modulation of the fixed

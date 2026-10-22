@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EvenSectorLevyKreinRigidity
-import GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
 
 /-!
 # No positive universal interior deficit from one blind shift

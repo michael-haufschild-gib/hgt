@@ -229,7 +229,7 @@ it cannot retain an infinite arithmetic spectrum.
 The unconditional module is
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeCayleyUniversality.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeCayleyUniversality.lean
 ```
 
 Its principal declarations are

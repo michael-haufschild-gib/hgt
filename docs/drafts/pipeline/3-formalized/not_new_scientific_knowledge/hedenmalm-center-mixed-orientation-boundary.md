@@ -48,7 +48,7 @@ autocorrelation frames stop before this order statement.
 ## Formal certificate
 
 File:
-`formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCenterMixedOrientationBoundary.lean`.
 
 Theorem surface:
 

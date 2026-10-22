@@ -76,7 +76,7 @@ axiom, or unverified Lean theorem is claimed.
 
 ## Formalized (2026-09-27)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalSourcePolarization.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalSourcePolarization.lean`
 (namespace `RHTower.D4BMOriginalCausalPotential`):
 
 - `originalPotential_amplitude`: `originalPotential q br a p r X k = a² · originalPotential q br 1

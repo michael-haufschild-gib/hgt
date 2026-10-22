@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesSourceNoPositiveWinding
-import GaloisForLFunctions.RHTower.HedenmalmStokesOrientedFirstTraceQuantizedJump
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesOrientedFirstTraceQuantizedJump
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevNoetherCasimir
 
 /-!

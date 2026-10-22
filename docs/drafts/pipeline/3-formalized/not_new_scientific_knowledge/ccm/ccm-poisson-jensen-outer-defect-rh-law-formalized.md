@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-poisson-jensen-outer-defect-rh-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMPoissonJensenOuterDefect.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMPoissonJensenOuterDefect.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 10 declarations
 - **Hypotheses:** only the card's standing data conditions (`x > 0`, `a_ρ > 0`, positive

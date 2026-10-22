@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WeilDeletionZeroCrossing
 import GaloisForLFunctions.RHTower.WeilPrimeFreeTest
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarBombieriYoshidaQuantitative
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarBombieriYoshidaQuantitative
 import GaloisForLFunctions.RHTower.ScrewCurvatureSumOfSquares
 
 /-!

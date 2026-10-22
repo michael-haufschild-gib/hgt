@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiSafeHalfPlaneJacobiGammaRecovery
-import GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography
+import GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedDyadicPrimeTomography
 
 /-!
 # Safe-half-plane dyadic source window

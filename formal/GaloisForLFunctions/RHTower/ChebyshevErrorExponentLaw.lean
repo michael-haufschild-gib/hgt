@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.VonKochChebyshevBound
 import GaloisForLFunctions.RHTower.PrimeCountingLogIntegralExponentLaw
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.PrimeVacuumErrorTransfer
 
 /-!

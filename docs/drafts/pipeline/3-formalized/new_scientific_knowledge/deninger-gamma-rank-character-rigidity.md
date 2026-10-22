@@ -5,7 +5,7 @@
 - **Type:** POSITIVE SURVIVOR / SOURCE POLARIZATION LEMMA · LEAN 4 THEOREM
 - **Parent:** `deninger-polarized-transfer-half-density`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticGammaRankRigidity`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGammaRankRigidity`
 
 ## Statement
 
@@ -91,7 +91,7 @@ push-pull degree action lands in its scalar channel.
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticGammaRankRigidity.lean` proves the card in the
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticGammaRankRigidity.lean` proves the card in the
 generality in which it is stated, for an arbitrary ring carrying an involutive orientation class:
 
 - `deningerGammaRank_of_sq_eq_one_of_one_add_pos` : a real scalar with `ε² = 1` and `1 + ε > 0`
@@ -109,7 +109,7 @@ The signature character is excluded exactly as the card says: it sends `ε ↦ -
 ### Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticGammaRankRigidity.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticGammaRankRigidity.lean`
 - Scratch `#print axioms` on all three declarations: only the Lean/mathlib standard `propext`,
   `Classical.choice`, and `Quot.sound`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration; no hypothesis beyond `ε² = 1`
@@ -120,7 +120,7 @@ The signature character is excluded exactly as the card says: it sends `ε ↦ -
 
 - [x] 0 → 1 in-progress: exact rigidity statement
 - [x] 1 → 2 fully-proven: complete paper proof
-- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.DeningerArithmeticGammaRankRigidity`
+- [x] 2 → 3 formalized: `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGammaRankRigidity`
 - [ ] 3 → 4 publication-ready: construct the positive Gamma realization and prove the push-pull
   degree action lands in its scalar channel
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiLagariasMeromorphicInner
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLagariasMeromorphicInner
 import GaloisForLFunctions.RHTower.FarFieldAnchor
 import GaloisForLFunctions.RHTower.SelbergThetaHorizontalTransform
 import GaloisForLFunctions.RHTower.ZetaVerticalStripPolynomialBound

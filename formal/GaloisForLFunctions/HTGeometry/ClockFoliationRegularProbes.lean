@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ClockTwoSpeciesFoliation
-import GaloisForLFunctions.HTGeometry.KleinGordonRegularProbes
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonRegularProbes
 
 /-!
 # Foliated charts carry probes of the regularity the conformal transfer needs

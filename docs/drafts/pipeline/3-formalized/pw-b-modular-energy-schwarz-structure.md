@@ -2,7 +2,7 @@
 
 - **Route:** PW-B
 - **Status:** formalized Lean premise
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularEnergySchwarz`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMModularEnergySchwarz`
 
 `energyConj` is the literal componentwise conjugation of the modular value,
 real-direction derivative, and imaginary-direction derivative. Lean proves it

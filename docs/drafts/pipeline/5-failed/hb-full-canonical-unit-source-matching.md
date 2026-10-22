@@ -48,12 +48,12 @@ copy because its literal complementary testing source is zero.
 
 ## Lean certificate
 
-[FullCanonicalMatchingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullCanonicalMatchingNoGo.lean):
+[FullCanonicalMatchingNoGo](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullCanonicalMatchingNoGo.lean):
 `fundamentalCanonicalCriticalZeroFinset_card_linear`,
 `fundamentalCanonicalCriticalZeroFinset_relative_density_zero`,
 `exists_critical_canonicalQNMValue_ne_zero`,
 `not_exists_hbXiPeierls_fullCanonicalQNM_matching`,
 `not_exists_hbXiPeierls_fullCanonicalExtinction_matching`.
 
-[CanonicalContourAttachment](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalContourAttachment.lean)
+[CanonicalContourAttachment](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalContourAttachment.lean)
 proves the exact attachment to the complete original action.

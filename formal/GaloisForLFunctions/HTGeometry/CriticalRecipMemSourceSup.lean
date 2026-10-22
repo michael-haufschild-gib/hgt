@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CriticalObservationField
+import GaloisForLFunctions.HTGeometry.Critical.Observation.Field
 import GaloisForLFunctions.HTGeometry.GenericRecipMemAdjoin
 
 /-!

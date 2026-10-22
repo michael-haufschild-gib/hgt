@@ -33,7 +33,7 @@ The natural-grade corollary proves existence of `N` such that vanishing of `trac
 ## Formal certificate
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteGradeTraceDetector.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteGradeTraceDetector.lean`
 - Declarations:
   - `GaloisForLFunctions.RHTower.exists_finite_trace_detector`
   - `GaloisForLFunctions.RHTower.exists_finite_grade_trace_cutoff`

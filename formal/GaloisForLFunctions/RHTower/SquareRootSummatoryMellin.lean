@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiMellinConvolution
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiMellinConvolution
 import GaloisForLFunctions.RHTower.StepProfileMellinLSeries
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Tactic

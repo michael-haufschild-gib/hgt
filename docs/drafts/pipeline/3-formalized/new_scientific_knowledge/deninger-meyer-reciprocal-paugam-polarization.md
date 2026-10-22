@@ -167,8 +167,8 @@ provisional pending specialist review.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerReciprocalPaugamPolarization.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerPaugamGradingObstruction.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReciprocalPaugamPolarization.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamGradingObstruction.lean`.
 
 Capstones:
 

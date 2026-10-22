@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.CompactGroupAlmostPeriodic
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!

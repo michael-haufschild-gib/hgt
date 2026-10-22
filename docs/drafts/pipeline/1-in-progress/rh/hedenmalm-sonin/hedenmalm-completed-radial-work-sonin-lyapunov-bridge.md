@@ -59,10 +59,10 @@ computation, or added axiom is allowed.
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmCompletedRadialWorkSoninLyapunovBridge.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCompletedRadialWorkSoninLyapunovBridge.lean`.
 - 2026-08-13 — Imported by `GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmCompletedRadialWorkSoninLyapunovBridge`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompletedRadialWorkSoninLyapunovBridge`
   (`12956/12956`).
 - 2026-08-13 — Axiom audit passed for all new theorems; dependencies are exactly `propext`,
   `Classical.choice`, and `Quot.sound`.

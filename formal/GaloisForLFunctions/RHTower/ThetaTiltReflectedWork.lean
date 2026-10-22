@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiSafeBoundaryThetaCumulantWall
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSafeBoundaryThetaCumulantWall
 import GaloisForLFunctions.HTGeometry.MomentHankelStrict
 
 /-!

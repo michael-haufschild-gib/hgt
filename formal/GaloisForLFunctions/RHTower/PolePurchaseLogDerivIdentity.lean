@@ -1,5 +1,5 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.DeningerCriticalFloquetVonMangoldtWall
+import GaloisForLFunctions.RHTower.Deninger.DeningerCriticalFloquetVonMangoldtWall
 import GaloisForLFunctions.RHTower.PolePurchaseCollisionGap
 import GaloisForLFunctions.RHTower.VonMangoldtLineSeriesSwap
 

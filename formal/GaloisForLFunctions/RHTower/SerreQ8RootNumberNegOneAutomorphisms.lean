@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SerreQ8RootNumberNegOnePolynomial
-import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneAutomorphisms
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOneAutomorphisms
 
 /-!
 # Explicit quaternionic automorphisms of Serre's actual field

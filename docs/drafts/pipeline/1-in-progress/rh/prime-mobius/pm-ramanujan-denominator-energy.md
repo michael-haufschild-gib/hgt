@@ -3,8 +3,8 @@
 - **ID:** pm-ramanujan-denominator-energy
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** [PM31](../../pm-power-damped-mobius-haar.md);
-  [actual cumulative energy](../../pm-centered-divisor-dyadic-energy-budget.md)
+- **Source:** [PM31](pm-power-damped-mobius-haar.md);
+  [actual cumulative energy](pm-centered-divisor-dyadic-energy-budget.md)
 - **Statement:** For each positive damping, the centered Ramanujan
   expansion cut off by its natural denominator has a common finite
   anchored cumulative-energy budget.

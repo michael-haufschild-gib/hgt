@@ -59,7 +59,7 @@ Status: generic cone transfer killed; source-specific survivor formalized.
   `thetaCuspCenterLikelihoodBregmanAction_lt_self`; hence actual theta orbit cannot realize arbitrary
   generic collapse.
 - Formal module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`.
 - Surviving open core: prove theta source drive positivity and exact action-reserve barrier, with
   chamber split when slope square crosses first-atom curvature. This is precisely remaining
   `C5-VP1` center premise before velocity-to-C5 transport.
@@ -135,7 +135,7 @@ seam-essential. A viable proof of `C5-VP1-velocity` must retain this cancellatio
 next surviving jet/full master-reserved core; it cannot prove the stripped core separately.
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFirstAtomCurvatureSeamNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityFirstAtomCurvatureSeamNoGo`.
 Key route-kill theorem:
 `not_forall_thetaCuspCenterFifthRootVelocityFirstAtomCurvatureCore_nonneg`.
 Key survivor theorem:
@@ -213,7 +213,7 @@ full third likelihood channel or use a correction whose fourth jet cancels
 `120 * k * (G₃ + 6G₂)` exactly. No fixed uniform six-curvature reserve can close this gate.
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityMasterReservedSeamNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityMasterReservedSeamNoGo`.
 Route-kill theorem:
 `not_forall_thetaCuspCenterFifthRootVelocityMasterReservedCore_nonneg`.
 Exact survivor theorem:
@@ -292,7 +292,7 @@ one compact physical annulus. This is a significant proof-burden reduction but n
 velocity positivity and not RH.
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityFarTail`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityFarTail`.
 Key limit theorem:
 `tendsto_thetaCuspCenterFifthRootVelocityActionCore_normalized`.
 Key endpoint theorems:

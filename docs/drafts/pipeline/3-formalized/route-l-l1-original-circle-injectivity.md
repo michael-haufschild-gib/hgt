@@ -53,7 +53,7 @@ The terminal deep and hybrid reports are audited below. The complete
 179-line module `DeningerL1CofinalPrimeTomography` passes scratch check5
 with the literal original orientation `Delta_L = 1 - translation_L`.
 Its eight public theorems are wired into the umbrella. The final
-`lake build GaloisForLFunctions.RHTower.DeningerL1CofinalPrimeTomography`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerL1CofinalPrimeTomography`
 audit of that exact orientation passed, building only this leaf (42 seconds;
 other dependency results replayed). Formal lint passed and indexing
 completed; all eight public declarations are present in `formal/LEAN_API.md`.

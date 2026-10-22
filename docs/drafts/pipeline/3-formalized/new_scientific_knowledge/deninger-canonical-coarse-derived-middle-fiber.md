@@ -130,7 +130,7 @@ THE DENINGER SOURCE DEPENDENCY GRAPH`.
 
 ### The fibre lemma landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMiddleFiber.lean`.  Axiom audit: `propext` for the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMiddleFiber.lean`.  Axiom audit: `propext` for the
 five exactness theorems, `propext, Classical.choice, Quot.sound` for the equivariance of the
 inverse.
 

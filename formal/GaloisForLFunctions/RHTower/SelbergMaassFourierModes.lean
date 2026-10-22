@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergMaassFourierMean
-import GaloisForLFunctions.RHTower.DeningerFourierDecay
+import GaloisForLFunctions.RHTower.Deninger.DeningerFourierDecay
 
 /-!
 # Actual Fourier coefficients of congruence Maass eigenforms

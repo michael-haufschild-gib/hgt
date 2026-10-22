@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM, `[BRIDGE]`, positive filter-faithfulness law
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMCriticalMellinVolterraHaarMode`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinVolterraHaarMode`
 
 ## Statement
 
@@ -50,7 +50,7 @@ Re(w)>0  implies  M_L(w)!=0.                              (5)
 Finite-packet successor:
 
 - `GaloisForLFunctions.HTGeometry.FiniteModalTransfer`
-- `GaloisForLFunctions.RHTower.CCMCriticalMellinVolterraHaarFinitePacket`
+- `GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinVolterraHaarFinitePacket`
 - `det_criticalMellinVolterraHaarFinitePacket_ne_zero_iff`
 - `criticalMellinVolterraHaarFinitePacket_exact_hankel_mode_count`
 

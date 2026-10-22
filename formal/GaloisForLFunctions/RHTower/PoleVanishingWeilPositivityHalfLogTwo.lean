@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PoleVanishingWeilTraceCertificate
 import GaloisForLFunctions.HTGeometry.MidpointRadiusTrigEnclosures
-import GaloisForLFunctions.RHTower.SuzukiRemainderFourierTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRemainderFourierTransform
 
 /-!
 # Weil positivity on the pole-vanishing subspace at `√2`, and past the first prime

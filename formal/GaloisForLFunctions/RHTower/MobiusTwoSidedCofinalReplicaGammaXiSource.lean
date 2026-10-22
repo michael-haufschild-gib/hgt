@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusTwoSidedApertureWall
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusTwoSidedApertureWall
 import GaloisForLFunctions.RHTower.MobiusCofinalReplicaOneCorner
 
 /-!

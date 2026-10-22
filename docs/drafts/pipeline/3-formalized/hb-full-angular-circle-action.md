@@ -4,7 +4,7 @@ Status: formalized. The physical pulse convolution, complete mixed action and RH
 
 Chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Owner: [ThetaCuspHawkingBMFullAngularCircleAction.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularCircleAction.lean), namespace `RHTower.D4BMFullAngularCircleAction`.
+Owner: [ThetaCuspHawkingBMFullAngularCircleAction.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularCircleAction.lean), namespace `RHTower.D4BMFullAngularCircleAction`.
 
 Let `h(d,X,k)` be the actual circular mean of the constructed full angular field `H`, and let `m` be the original theta half-square mean. The proved base action is
 
@@ -46,7 +46,7 @@ All derivatives are actual derivatives. The characteristic value is the unchange
 
 ## Validation
 
-Foreground `lake env lean` scratch checks passed without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleAction` passed without warnings: three jobs, 82 seconds, with only the new action module reported built. The isolated audit reused the existing dependency cache and the already audited reconstruction module. No dependency or umbrella build ran. Source and five installed build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`.
+Foreground `lake env lean` scratch checks passed without warnings. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularCircleAction` passed without warnings: three jobs, 82 seconds, with only the new action module reported built. The isolated audit reused the existing dependency cache and the already audited reconstruction module. No dependency or umbrella build ran. Source and five installed build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`.
 
 Source SHA-256: `ec74c479f401a83d4fcf89bc20cc72786c966ab3c391d8b0d4c1e6785276d760`.
 

@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMCofinalFloorCriterion`
+- `GaloisForLFunctions.RHTower.CCM.CCMCofinalFloorCriterion`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

@@ -69,7 +69,7 @@ pairwise gluing is retired.
 
 ## Formal artifact
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolPrimeOrientationLine.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolPrimeOrientationLine.lean`
 
 Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
@@ -77,6 +77,6 @@ Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 - 2026-08-13 — Conjecture falsified; determinant-line survivor frozen.
 - 2026-08-13 — Direct `lake env lean` check passed.
-- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.HedenmalmThetaAnomalyBurnolPrimeOrientationLine` passed (`12938` jobs).
+- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAnomalyBurnolPrimeOrientationLine` passed (`12938` jobs).
 - 2026-08-13 — Axiom audit reported only `propext`, `Classical.choice`, and `Quot.sound`; full RHTower umbrella build passed (`19790` jobs).
 - 2026-08-13 — Repository lint failed on 41 pre-existing unrelated unreachable modules; no P-G115--P-G117 module appeared in failures.

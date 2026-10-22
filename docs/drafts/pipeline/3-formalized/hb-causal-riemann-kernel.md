@@ -2,7 +2,7 @@
 
 Status: 15 public theorems formalized. The integrated full-angular Green action and physical extinction remain unproved.
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalRiemannKernel`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalRiemannKernel`.
 
 The construction addresses the unknown causal pulse horizon value in [the source contact reduction](../1-in-progress/hb-causal-onset-contact-cancellation.md). Its [full-angular circle-kernel application](../1-in-progress/hb-causal-horizon-circle-kernel.md) gives an analytical source-only response formula; the corresponding angular and integral admission theorem is not supplied by this module.
 
@@ -57,7 +57,7 @@ These statements do not yet prove the distributional source identity across the 
 
 ## Verification
 
-The scratch proof passed `lake env lean`. The exact leaf passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalRiemannKernel` in an isolated audit using existing dependency caches: one new module, 10 seconds, three Lake jobs. No dependency or umbrella build was run. All 15 new public theorem axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The scratch proof passed `lake env lean`. The exact leaf passed `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalRiemannKernel` in an isolated audit using existing dependency caches: one new module, 10 seconds, three Lake jobs. No dependency or umbrella build was run. All 15 new public theorem axiom reports contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The installed source and artifacts match the audited copies byte for byte. The module is imported by `RHTower.lean`.
 

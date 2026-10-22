@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-affine-sewn-weil-robin-far-tail-factorization.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOT RH]`
 
@@ -68,7 +68,7 @@ connectors to RH.
 - imported by `GaloisForLFunctions.RHTower` umbrella;
 - imported and summarized in `RiemannHypothesisSOTA2026`;
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineSewnWeilRobinFarTailFactorization.lean`;
 - targeted SOTA build: `9450/9450` jobs;
 - axiom audit for five frontier declarations: `propext`, `Classical.choice`, `Quot.sound` only;
 - forbidden declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`.

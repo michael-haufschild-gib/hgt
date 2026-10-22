@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PolynomialFockSharpPhaseTransition
-import GaloisForLFunctions.RHTower.DeningerRadialIntegral
+import GaloisForLFunctions.RHTower.Deninger.DeningerRadialIntegral
 
 open MeasureTheory Set Metric
 

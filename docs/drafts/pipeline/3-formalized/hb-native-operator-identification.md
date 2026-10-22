@@ -40,13 +40,13 @@ Own broad arXiv query `duality` found [Kinra, 9 September 2026, sections 8–8.1
 
 ## Lean modules and final audit
 
-[ThetaCuspHawkingBMNativeCoreTransposition.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCoreTransposition.lean) contains:
+[ThetaCuspHawkingBMNativeCoreTransposition.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCoreTransposition.lean) contains:
 
 - `nativeTimePrimitive_angular_transposition`: integrability and exact angular second Green identity for every original core test.
 - `nativeTimePrimitive_radial_transposition`: exact negative-ray second Green identity for every original radial core test.
 - `nativeTimePrimitive_core_transposition`: the literal native equation against every original separated joint graph generator.
 
-[ThetaCuspHawkingBMNativeOperatorIdentification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeOperatorIdentification.lean) contains:
+[ThetaCuspHawkingBMNativeOperatorIdentification.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeOperatorIdentification.lean) contains:
 
 - `nativeJointTimePrimitive_covariance`: `B(W+G)=W` for the actual original embedding.
 - `nativeJointTimePrimitive_operator_action`: original unbounded operator-domain membership and exact operator value.
@@ -54,8 +54,8 @@ Own broad arXiv query `duality` found [Kinra, 9 September 2026, sections 8–8.1
 
 Both complete candidates passed `lake env lean` scratch checks. Exact-module final audits passed in the isolated cached leaf environment:
 
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCoreTransposition`: 330 lines, two jobs, 8.5 seconds reported build time.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeOperatorIdentification`: 115 lines, three jobs, 137 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCoreTransposition`: 330 lines, two jobs, 8.5 seconds reported build time.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeOperatorIdentification`: 115 lines, three jobs, 137 seconds reported build time.
 
 Only the six new public theorems were checked with `#print axioms` in a separate scratch file. Each uses exactly `propext`, `Classical.choice`, and `Quot.sound`. No added axiom, numerical result, native domain premise, or response-equality premise enters these proofs. Sources and five artifacts per module were installed byte for byte, and both imports were added to `RHTower.lean`. No umbrella or dependency rebuild ran.
 

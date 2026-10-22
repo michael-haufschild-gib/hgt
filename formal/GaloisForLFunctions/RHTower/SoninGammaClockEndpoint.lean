@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninPrimePolarChronologicalWork
-import GaloisForLFunctions.RHTower.CCMGuinandWeilArchimedeanOddSource
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilArchimedeanOddSource
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-!

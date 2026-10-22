@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SoninGammaClockSymbol
 import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 import GaloisForLFunctions.HTGeometry.MaximalRealL2Multiplication
-import GaloisForLFunctions.RHTower.CCMArchimedeanMellinTransport
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanMellinTransport
 
 /-!
 # Exact maximal domain of the Gamma clock symbol

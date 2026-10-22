@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-spectral-parameter-evans-completion-carrier-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMSpectralParameterEvans.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMSpectralParameterEvans.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 7 declarations
 - **Hypotheses:** the operator identities of Suzuki's construction and the card's own fibrewise

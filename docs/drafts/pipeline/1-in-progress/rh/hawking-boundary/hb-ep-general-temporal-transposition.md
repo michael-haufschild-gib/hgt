@@ -50,7 +50,7 @@ measure-preserving mechanism. The formalization uses its mathlib ingredients
 directly. Corpus deep searches had partial compiler coverage; applicability
 was checked by Lean.
 
-[Formal proof](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGeneralTemporalTransposition.lean):
+[Formal proof](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGeneralTemporalTransposition.lean):
 `coneKernel_joint_transposition`, `pastVertex_volume`,
 `temporalConeResidual_integrable`, `temporalConeResidual_integral`,
 `dirichletWaveTest_integrable`, `dirichletWaveTest_integral`,

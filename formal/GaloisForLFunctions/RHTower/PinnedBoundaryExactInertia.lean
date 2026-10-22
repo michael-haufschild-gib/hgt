@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaStageGreenBoundaryCofinalMixedInertia
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaStageGreenBoundaryCofinalMixedInertia
 import GaloisForLFunctions.HTGeometry.HermitianDefiniteSubspaceRankBound
 
 /-!

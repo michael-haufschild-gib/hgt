@@ -4,7 +4,7 @@
 - **Source theorem:**
   `docs/drafts/pipeline/3-formalized/new_scientific_knowledge/suzuki/suzuki-donoghue-defect-spectral-measure-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueSpectralMeasure.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueSpectralMeasure.lean`
 - **Unconditional:** yes
 - **RH:** not assumed and not proved
 

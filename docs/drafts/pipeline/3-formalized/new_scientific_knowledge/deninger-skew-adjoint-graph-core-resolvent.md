@@ -9,8 +9,8 @@
   a continuous automorphism of every common smooth graph core built
   from closed operators that strongly commute with it.
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerSkewAdjointGraphCore` (`(4)`, `(5)`, `(3)`),
-  `GaloisForLFunctions.RHTower.DeningerSkewAdjointResolventExists` (existence of `R_z`)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSkewAdjointGraphCore` (`(4)`, `(5)`, `(3)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSkewAdjointResolventExists` (existence of `R_z`)
 
 ## Theorem
 
@@ -95,7 +95,7 @@ is:
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerSkewAdjointGraphCore.lean`, over a complex inner-product
+`GaloisForLFunctions/RHTower/Deninger/DeningerSkewAdjointGraphCore.lean`, over a complex inner-product
 space:
 
 - `DeningerSkewSymmetric A` : `⟪Ax, y⟫ = -⟪x, Ay⟫` for a linear map defined on a subspace;
@@ -113,7 +113,7 @@ space:
 - `deningerCoreSub_bijective`, `deningerCoreEquiv` : **`(3)`**, the shifted generator is a linear
   automorphism of the core with the resolvent as inverse.
 
-`GaloisForLFunctions/RHTower/DeningerSkewAdjointResolventExists.lean` supplies the input that the
+`GaloisForLFunctions/RHTower/Deninger/DeningerSkewAdjointResolventExists.lean` supplies the input that the
 card's proof takes from the spectral theorem — that `z` with `Re z ≠ 0` lies in the resolvent set
 — and proves it directly, with no spectral theorem:
 
@@ -138,7 +138,7 @@ separate conjectural inputs and are not part of this theorem.
 
 - Direct commands: `lake env lean` on both modules — pass with no errors and no warnings.
 - Cached module build: `lake build
-  GaloisForLFunctions.RHTower.DeningerSkewAdjointResolventExists` completes (`✔ [2393/2393]`).
+  GaloisForLFunctions.RHTower.Deninger.DeningerSkewAdjointResolventExists` completes (`✔ [2393/2393]`).
 - Scratch `#print axioms` on every headline declaration: only `propext`, `Classical.choice`,
   `Quot.sound`.
 - Imported by the `GaloisForLFunctions.RHTower` umbrella.

@@ -49,7 +49,7 @@ local-unit identity.
 - **Universal principle:** finite étale torus isogenies preserve both Kähler rank and local
   intersection multiplicity. Any successful amplification must use period translation or another
   operation ramified/noninvertible at the selected analytic branch.
-- **Lean status:** `RHTower/SchanuelPowerMultiplicityNoGo.lean` formalizes `(1)`, the exact diagonal
+- **Lean status:** `RHTower/Schanuel/SchanuelPowerMultiplicityNoGo.lean` formalizes `(1)`, the exact diagonal
   cofactor value, and its nonvanishing in characteristic zero. Scratch axiom audit reports only
   `propext`, `Classical.choice`, and `Quot.sound`.
 - **Novelty:** elementary factorization is classical; its role as exact closure of this Schanuel

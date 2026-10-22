@@ -56,7 +56,7 @@ Direct projection elaboration on the concrete source exceeded the default heartb
 - `lake env lean /tmp/route_l_tail_escape.lean`: exit 0; nine public theorems, two public source definitions, six private proof lemmas, and one private shift definition.
 - New module wired into the RHTower umbrella; umbrella not built.
 - `lake build GaloisForLFunctions.RHTower.MobiusThetaStrictTailSourceSeparation`: exit 0; named leaf built in 98 seconds, with dependencies replayed from cache. No full or umbrella build.
-- `scripts/formal_tools.py lint`: exit 1; reported unrelated unreachable `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMTemporalCurrentFundamentalFactor`. No error reported for this module.
+- `scripts/formal_tools.py lint`: exit 1; reported unrelated unreachable `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMTemporalCurrentFundamentalFactor`. No error reported for this module.
 - The completed module contains no resource-limit overrides.
 - Fresh lexical corpus search finds the new normalized-source definition and both main limit theorems. Its JSON omits compiler metadata, so this is source discoverability verification only.
 - No numerical computations, axiom-print audit, new axioms, or unresolved proof placeholders.

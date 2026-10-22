@@ -138,7 +138,7 @@ holonomy in a non-homogeneous arithmetic groupoid/lamination.
 ## Gate closure (2026-07-31)
 
 Repo-state verification: the "2 → 3 formalized" gate was stale. The named module
-`RHTower/DeningerArithmeticRectangularHalfDensity.lean` exists, is umbrella-registered, and
+`RHTower/Deninger/DeningerArithmeticRectangularHalfDensity.lean` exists, is umbrella-registered, and
 covers the exact theorem: `deningerRectangularJ_sq` (J² = −1 on the moving rectangular
 tangent plane), `deningerRectangularScale_intertwines_J`, `deningerRectangularMetric_self_pos`
 (positivity), `deningerRectangularMetric_scale` (conformal weight q under r ↦ qr),

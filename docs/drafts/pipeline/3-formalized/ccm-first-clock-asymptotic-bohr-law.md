@@ -210,7 +210,7 @@ the transfer of the complete recurrence law to the literal published CCM first c
 ## Lean target
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrLaw.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean
 ```
 
 Required capstones:
@@ -227,7 +227,7 @@ Bohr almost periodicity is proved in
 `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean`.
 
 Targeted `lake env lean` checks and
-`lake build GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw` are green. `#print axioms`
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockAsymptoticBohrLaw` are green. `#print axioms`
 on the generic HT theorem, both required capstones, bounded-gap recurrence, and parity theorem
 reports exactly `[propext, Classical.choice, Quot.sound]`.
 
@@ -242,6 +242,6 @@ iInter_closure_ccmFirstClockScaledPublishedSource_image_Ici_eq_of_rh
 The last theorem identifies the intersection of all closed cofinal tail images with
 `[0, ccmFirstClockAsymptoticHullMax]`, exactly matching the paper's asymptotic tail-cluster set.
 Targeted `lake env lean`, final
-`lake build GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw`, and `#print axioms` on all
+`lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockAsymptoticBohrLaw`, and `#print axioms` on all
 three new capstones are green. Their axiom set is exactly
 `[propext, Classical.choice, Quot.sound]`.

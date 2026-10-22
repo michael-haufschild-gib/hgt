@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusDivisorDilationChannels
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
 import GaloisForLFunctions.RHTower.EulerMascheroniCorrectedUpper
 
 /-!

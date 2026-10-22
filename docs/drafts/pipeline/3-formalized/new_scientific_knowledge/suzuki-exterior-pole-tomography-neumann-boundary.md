@@ -6,7 +6,7 @@
 - **Scientific status:** `[FORMALIZED] [FULLY PROVEN ON PAPER] [SOURCE-SPECIFIC] [NOVELTY NOT EXTERNALLY AUDITED] [NOT AN RH PROOF]`
 - **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
   arXiv:2606.09096v1, Sections 8.2--8.3.
-- **Lean module:** `GaloisForLFunctions.RHTower.SuzukiExteriorPoleTomography`
+- **Lean module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiExteriorPoleTomography`
 
 ## Result
 

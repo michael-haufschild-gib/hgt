@@ -31,6 +31,6 @@ first-order decay is removed.
 
 ## Lean realization
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeBezoutGrowthNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeBezoutGrowthNoGo.lean`
 
 Principal theorem: `no_uniformly_bounded_real_two_prime_bezout`.

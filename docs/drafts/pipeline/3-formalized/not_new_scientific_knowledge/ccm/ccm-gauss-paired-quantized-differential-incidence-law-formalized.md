@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMGaussPairedQuantizedDifferential` (new), on the commutator calculus
-  of `RHTower/CCMSoninEdgeTrace`.
+- `GaloisForLFunctions.RHTower.CCM.CCMGaussPairedQuantizedDifferential` (new), on the commutator calculus
+  of `RHTower/CCM/CCMSoninEdgeTrace`.
 - `GaloisForLFunctions.HTGeometry.PrimeEulerProductAperture` — pre-existing, carrying equation `(18)`.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -45,6 +45,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMGaussPairedQuantizedDifferential`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMGaussPairedQuantizedDifferential`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

@@ -46,7 +46,7 @@ gamma_q = Re(xiSpectralPoint q).
 ## Lean implementation
 
 - `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrLaw.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean`
 
 Capstones:
 
@@ -66,8 +66,8 @@ Green commands:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/SummableSpectrumScrewAlmostPeriodic.lean
-lake env lean GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrLaw.lean
-lake build GaloisForLFunctions.RHTower.CCMFirstClockAsymptoticBohrLaw
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrLaw.lean
+lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockAsymptoticBohrLaw
 lake env lean /tmp/ccm_asymptotic_bohr_axioms.lean
 ```
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CriticalActivationReesSourceLaw
-import GaloisForLFunctions.RHTower.CCMAnalyticShiftSpectrumRigidity
+import GaloisForLFunctions.RHTower.CCM.CCMAnalyticShiftSpectrumRigidity
 import GaloisForLFunctions.RHTower.PrimeWoldGammaGlobalBoundaryVolume
 import Mathlib.Analysis.Analytic.Order
 

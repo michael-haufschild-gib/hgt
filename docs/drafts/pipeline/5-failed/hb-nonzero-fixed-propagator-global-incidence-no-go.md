@@ -11,7 +11,7 @@
 - **Exact killing theorem/mechanism:** `not_exists_hbUniversalPeierls_nonzero_fixedPropagator_unit_BM_incidence`. Hardy supplies one genuine critical-line Xi copy; exact BM zero-locus makes its target zero, so any globally constant target is zero.
 - **Strongest positive survivor:** `exists_hbUniversalPeierls_fixedPropagator_unit_BM_incidence_iff_rh`. Zero is the sole possible global scalar, and it works exactly under RH.
 - **New insight:** Global fixed-propagator compatibility is stronger than copywise abstract realization and carries no adjustable nonzero normalization. Any literal source-fixed Peierls construction proving all-copy incidence closes RH immediately; remaining burden is construction from augmented source, not target selection.
-- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFixedPropagatorGlobalRigidity`; corpus and literature novelty audit recorded on formalized card.
+- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFixedPropagatorGlobalRigidity`; corpus and literature novelty audit recorded on formalized card.
 
 ## Log
 

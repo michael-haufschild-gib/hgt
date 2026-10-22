@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.IntervalAutocorrelation
-import GaloisForLFunctions.RHTower.CCMPolarPrimeStieltjesAutocorrelation
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMPolarPrimeStieltjesAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 
 /-!
 # The two-edge rectangular window and its autocorrelation

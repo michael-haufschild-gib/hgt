@@ -58,9 +58,9 @@ Targeted public searches for Weil prime curvature, rank-one compensation, pole-p
 
 Leaves: `CCMPrimePoleCurvatureRankOne.lean` and the extended `CCMConstrainedPrimeCurvatureInstability.lean`; both are wired into `RHTower.lean`. The sampling dependency is separately audited in `rw-finite-sampling-ground-rigidity.md`.
 
-- Named foreground `lake --old --log-level=error build +GaloisForLFunctions.RHTower.CCMConstrainedPrimeCurvatureInstability`: exit 0, no warnings.
-- Final direct `lake env lean GaloisForLFunctions/RHTower/CCMPrimePoleCurvatureRankOne.lean`: exit 0, no warnings.
-- Final direct `lake env lean GaloisForLFunctions/RHTower/CCMConstrainedPrimeCurvatureInstability.lean`: exit 0, no warnings.
+- Named foreground `lake --old --log-level=error build +GaloisForLFunctions.RHTower.CCM.CCMConstrainedPrimeCurvatureInstability`: exit 0, no warnings.
+- Final direct `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPrimePoleCurvatureRankOne.lean`: exit 0, no warnings.
+- Final direct `lake env lean GaloisForLFunctions/RHTower/CCM/CCMConstrainedPrimeCurvatureInstability.lean`: exit 0, no warnings.
 - `/tmp/hgt-rw-rankone-axiom-audit.lean`: all twelve new public theorems use only `propext`, `Classical.choice`, `Quot.sound`; exit 0. Twenty public theorems across the three owned leaves now have explicit standard-axiom audits.
 - Formal index refreshed. Global formal lint still exits 1 because other shared-workspace modules remain unwired; none of the three owned leaves appears in errors. Global lint is **not green**. No full or umbrella build was run.
 

@@ -3,7 +3,7 @@
 - **ID:** `GTA-PQ4-SC2-formalized`
 - **Stage:** 3-formalized
 - **Paper card:** `theta-schur-quartic-spectral-decay-equivalence.md`
-- **Module:** `GaloisForLFunctions.RHTower.HedenmalmThetaSchurQuarticSpectralDecayEquivalence`
+- **Module:** `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSchurQuarticSpectralDecayEquivalence`
 
 ## Exact certified surface
 

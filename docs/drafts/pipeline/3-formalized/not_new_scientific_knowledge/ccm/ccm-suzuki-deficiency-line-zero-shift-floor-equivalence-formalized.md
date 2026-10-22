@@ -8,9 +8,9 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMDeficiencyLineZeroShift`
-- `GaloisForLFunctions.RHTower.CCMNestedFloorNoEvacuation`,
-  `GaloisForLFunctions.RHTower.CCMCofinalFloorCriterion` — the floor layer it stands on.
+- `GaloisForLFunctions.RHTower.CCM.CCMDeficiencyLineZeroShift`
+- `GaloisForLFunctions.RHTower.CCM.CCMNestedFloorNoEvacuation`,
+  `GaloisForLFunctions.RHTower.CCM.CCMCofinalFloorCriterion` — the floor layer it stands on.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

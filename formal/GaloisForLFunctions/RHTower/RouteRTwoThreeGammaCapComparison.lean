@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRPrimeCapArakelovBoundaryLaw
-import GaloisForLFunctions.RHTower.DeningerCalderonWittSingularGammaTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittSingularGammaTransgression
 import GaloisForLFunctions.RHTower.GammaCoorientedPositiveConeNoShorting
 
 /-!

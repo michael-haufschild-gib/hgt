@@ -8,11 +8,11 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMSawtoothDilationMean` — the sawtooth, its mean, the bounded
+- `GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationMean` — the sawtooth, its mean, the bounded
   primitive, and the integration by parts.
-- `GaloisForLFunctions.RHTower.CCMSawtoothDilationIncidence` — the arithmetic weight, the coordinate
+- `GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationIncidence` — the arithmetic weight, the coordinate
   change, the synthesis, and the limit.
-- `GaloisForLFunctions.RHTower.CCMSawtoothExteriorTail` — the exterior half-line and the full prime
+- `GaloisForLFunctions.RHTower.CCM.CCMSawtoothExteriorTail` — the exterior half-line and the full prime
   series.
 - `GaloisForLFunctions.RHTower.SawtoothFourierSeries` — `tendsto_sum_sawtoothSine`, identifying the
   card's series `∑_{k≥1} sin(kθ)/k` with the closed-form sawtooth on `(0, 2π)`.

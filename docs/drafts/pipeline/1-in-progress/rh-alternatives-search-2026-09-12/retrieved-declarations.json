@@ -1965,7 +1965,7 @@
   },
   {
     "name": "GaloisForLFunctions.HTGeometry.kgSpacetimeCurve_support",
-    "path": "formal/GaloisForLFunctions/HTGeometry/KleinGordonSpacetimeProbe.lean",
+    "path": "formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSpacetimeProbe.lean",
     "line": 111,
     "statement": "theorem kgSpacetimeCurve_support (hP : ContDiff ℝ ∞ P) (t : ℝ)\n    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∉ closedBall x₀ 2) :\n    kgSpacetimeCurve hP t₀ x₀ t x = 0",
     "queries": [
@@ -2596,7 +2596,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.algebraicIndependent_exp_and_of_transcendental_relativeExponentialBase",
-    "path": "formal/GaloisForLFunctions/RHTower/SchanuelAffineRelativeExponentialClosure.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelAffineRelativeExponentialClosure.lean",
     "line": 65,
     "statement": "theorem algebraicIndependent_exp_and_of_transcendental_relativeExponentialBase\n    (alpha w : ℂ) (halpha0 : alpha ≠ 0) (halpha : IsAlgebraic ℚ alpha)\n    (hw : Transcendental (relativeExponentialBase alpha) w) :\n    AlgebraicIndependent (algebraicClosure ℚ ℂ) ![Complex.exp alpha, w]",
     "queries": [
@@ -2605,7 +2605,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.algebraicIndependent_fin_two_of_transcendental_oneGeneratorField",
-    "path": "formal/GaloisForLFunctions/RHTower/SchanuelStageTwoIsogenyInvariance.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelStageTwoIsogenyInvariance.lean",
     "line": 62,
     "statement": "theorem algebraicIndependent_fin_two_of_transcendental_oneGeneratorField\n    {K L : Type} [Field K] [Field L] [Algebra K L]\n    (g w : L) (hg : Transcendental K g)\n    (hw : Transcendental (oneGeneratorField K L g) w) :\n    AlgebraicIndependent K ![g, w]",
     "queries": [
@@ -2686,7 +2686,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.evans_zero_divisor_empty_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMWeierstrassStabilizedEvans.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMWeierstrassStabilizedEvans.lean",
     "line": 106,
     "statement": "theorem evans_zero_divisor_empty_iff {E : ℝ → ℝ} :\n    (∀ lam : ℝ, lam ≤ 0 → E lam ≠ 0) ↔ ({lam : ℝ | lam ≤ 0 ∧ E lam = 0} = ∅)",
     "queries": [
@@ -2704,7 +2704,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.hasSum_sawtoothEnergy",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMEndpointArchimedeanLog.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMEndpointArchimedeanLog.lean",
     "line": 36,
     "statement": "theorem hasSum_sawtoothEnergy :\n    HasSum (fun k : ℕ => 2 * sawtoothCoeffSq k) (Real.pi ^ 2 / 12)",
     "queries": [
@@ -2758,7 +2758,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.not_algebraicIndependent_fin_two_of_isAlgebraic_relativeExponentialBase",
-    "path": "formal/GaloisForLFunctions/RHTower/SchanuelAffineRelativeExponentialClosure.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelAffineRelativeExponentialClosure.lean",
     "line": 102,
     "statement": "theorem not_algebraicIndependent_fin_two_of_isAlgebraic_relativeExponentialBase\n    (alpha : ℂ) (t : Fin 2 → ℂ)\n    (ht : ∀ i, IsAlgebraic (relativeExponentialBase alpha) (t i)) :\n    ¬ AlgebraicIndependent (algebraicClosure ℚ ℂ) t",
     "queries": [
@@ -2767,7 +2767,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.not_nonempty_linearEquiv_exteriorPower_evansExcessTarget",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMEvansDeterminantLine.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMEvansDeterminantLine.lean",
     "line": 88,
     "statement": "theorem not_nonempty_linearEquiv_exteriorPower_evansExcessTarget {d : ℕ} (hd : 1 ≤ d) :\n    ¬ Nonempty ((⋀[ℂ]^d (evansExcessTarget d)) ≃ₗ[ℂ] ℂ)",
     "queries": [
@@ -2776,7 +2776,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.primeLogs_algebraicallyIndependent_of_schanuel",
-    "path": "formal/GaloisForLFunctions/RHTower/SchanuelWeldApex.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Schanuel/SchanuelWeldApex.lean",
     "line": 64,
     "statement": "private theorem primeLogs_algebraicallyIndependent_of_schanuel (hS : SchanuelConjecture)\n    {n : ℕ} (p : Fin n → ℕ) (hp : ∀ i, (p i).Prime) (hpinj : Function.Injective p) :\n    AlgebraicIndependent ℚ (fun i => (Real.log (p i) : ℂ))",
     "queries": [
@@ -2785,7 +2785,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.prodInvolution_involutive",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMParityInvolutionGrading.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMParityInvolutionGrading.lean",
     "line": 256,
     "statement": "theorem prodInvolution_involutive {Weven Wodd : Type*} [AddCommGroup Weven] [Module ℝ Weven]\n    [AddCommGroup Wodd] [Module ℝ Wodd] (p : Weven × Wodd) :\n    prodInvolution Weven Wodd (prodInvolution Weven Wodd p) = p",
     "queries": [
@@ -2821,7 +2821,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.strictMono_cayleyPhaseLift",
-    "path": "formal/GaloisForLFunctions/RHTower/SuzukiCayleyPhaseLift.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCayleyPhaseLift.lean",
     "line": 85,
     "statement": "theorem strictMono_cayleyPhaseLift : StrictMono cayleyPhaseLift",
     "queries": [
@@ -2830,7 +2830,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.suzukiExteriorAtoms_eq_zero_outside",
-    "path": "formal/GaloisForLFunctions/RHTower/SuzukiExteriorRiggedRealization.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiExteriorRiggedRealization.lean",
     "line": 62,
     "statement": "theorem suzukiExteriorAtoms_eq_zero_outside (a : ℝ) {ν : SuzukiSeamValuation}\n    (hν : ν ∉ suzukiAtomSupport (suzukiApertureSteps a)) : suzukiExteriorAtoms a ν = 0",
     "queries": [
@@ -2848,7 +2848,7 @@
   },
   {
     "name": "GaloisForLFunctions.RHTower.unitRieszCesaroJointReporterEnergySymbol_pos_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszCesaroSignedReporterSymbol.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCesaroSignedReporterSymbol.lean",
     "line": 529,
     "statement": "theorem unitRieszCesaroJointReporterEnergySymbol_pos_iff\n    {z : ℂ} (hz : -(1 / 2 : ℝ) < z.re) :\n    0 < unitRieszCesaroJointReporterEnergySymbol z ↔ z ≠ 0",
     "queries": [
@@ -3595,7 +3595,7 @@
   },
   {
     "name": "RHTower.<anonymous@336>",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerMeyerPoissonMellinFactorization.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPoissonMellinFactorization.lean",
     "line": 336,
     "statement": "theorem\n    deningerMeyerStrongLogMellin_boundary_zero_at_zeta_zero\n    (f : DeningerMeyerCap) {ρ : ℂ}\n    (hρ0 : 0 < ρ.re) (hρ1 : ρ ≠ 1)\n    (hζ : riemannZeta ρ = 0) :\n    deningerMeyerStrongLogMellin\n        (deningerMeyerStrongLogSumLM f) ρ = 0",
     "queries": [
@@ -3604,7 +3604,7 @@
   },
   {
     "name": "RHTower.<anonymous@99>",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerMeyerGeneralizedZeroJetDescent.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerGeneralizedZeroJetDescent.lean",
     "line": 99,
     "statement": "theorem\n    deningerMeyerStrongLogMellin_boundary_iteratedDeriv_zero\n    (f : DeningerMeyerCap) {ρ : ℂ}\n    (hρ0 : 0 < ρ.re) (hρ1 : ρ ≠ 1)\n    (k : ℕ)\n    (hζjets :\n      ∀ j ≤ k, iteratedDeriv j riemannZeta ρ = 0) :\n    iteratedDeriv k\n        (deningerMeyerStrongLogMellin\n          (deningerMeyerStrongLogSumLM f)) ρ = 0",
     "queries": [
@@ -3730,7 +3730,7 @@
   },
   {
     "name": "RHTower.D4BMCausalKernel.riemannKernel",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalRiemannKernel.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalRiemannKernel.lean",
     "line": 252,
     "statement": "def riemannKernel (nu : ℂ) (h x y : ℝ) : ℂ",
     "queries": [
@@ -3739,7 +3739,7 @@
   },
   {
     "name": "RHTower.D4BMCausalKernel.riemannSpaceFirst",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCausalRiemannKernel.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCausalRiemannKernel.lean",
     "line": 261,
     "statement": "def riemannSpaceFirst (nu : ℂ) (h x y : ℝ) : ℂ",
     "queries": [
@@ -3748,7 +3748,7 @@
   },
   {
     "name": "RHTower.D4BMJointSource.lambda_at_xi",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalAngularCutoffCalibration.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalAngularCutoffCalibration.lean",
     "line": 25,
     "statement": "private theorem lambda_at_xi (q : XiZeroCopy) : reflectedCompletedLambda (q.1:ℂ) = 0",
     "queries": [
@@ -3757,7 +3757,7 @@
   },
   {
     "name": "RHTower.D4BMJointSource.nativeCutoffMellinContinuation_analytic",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCutoffMellinMeromorphy.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCutoffMellinMeromorphy.lean",
     "line": 30,
     "statement": "theorem nativeCutoffMellinContinuation_analytic {w : ℂ} (hw : w ≠ 0) :\n    AnalyticAt ℂ nativeCutoffMellinContinuation w",
     "queries": [
@@ -3766,7 +3766,7 @@
   },
   {
     "name": "RHTower.D4BMJointSource.nativePrincipalMomentContinuation_analytic",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativePrincipalMellinValue.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativePrincipalMellinValue.lean",
     "line": 67,
     "statement": "theorem nativePrincipalMomentContinuation_analytic (q : XiZeroCopy) (t : ℂ)\n    (ht : ∀ j : Fin 3, t+nativePrincipalPowerExponent q j ≠ 0) :\n    AnalyticAt ℂ (nativePrincipalMomentContinuation q) t",
     "queries": [
@@ -3775,7 +3775,7 @@
   },
   {
     "name": "RHTower.D4BMJointWave.rotated_scalar_bound",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPrincipalDirichletCoercivity.lean",
     "line": 193,
     "statement": "private theorem rotated_scalar_bound (a b c d eta N H D : ℝ)\n    (hN : 0 ≤ N) (hH : 0 ≤ H) (hHN : H ≤ N)\n    (hfac : 2*H ≤ D+N) (hc : c ≤ 2) (hd : d^2 ≤ 9) :\n    (a-3/2)*(D+(a^2+b^2+2)*N+(eta^2-c)*H) ≤\n      a*D+a*(a^2+b^2)*N+(a*(eta^2-c)-b*d*eta)*H",
     "queries": [
@@ -3784,7 +3784,7 @@
   },
   {
     "name": "RHTower.D4BMModularCore.globalLift_invariant",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGlobalScalarLift.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGlobalScalarLift.lean",
     "line": 44,
     "statement": "theorem globalLift_invariant (u : Space) (γ : PSL2Z) (z : UpperHalfPlane) :\n    globalLift u (γ • z) = globalLift u z",
     "queries": [
@@ -3793,7 +3793,7 @@
   },
   {
     "name": "RHTower.D4BMModularCore.smoothCurrentLaplace_continuation",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMMixedSmoothCurrentLaplace.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMMixedSmoothCurrentLaplace.lean",
     "line": 90,
     "statement": "theorem smoothCurrentLaplace_continuation (q : XiZeroCopy) (branch : Bool) (a : ℂ)\n    (r : {r : ℝ // 1 < r}) (z : Point) (k : Fin 2) {w : ℂ} (hw : 0 < w.re) :\n    smoothCurrentLaplace q branch a r z k w = regularizedSmoothCurrent q branch a r z k w /\n      (w-currentRate q branch)",
     "queries": [
@@ -3802,7 +3802,7 @@
   },
   {
     "name": "RHTower.D4BMNativeResponse.nativePrimitive_radial_left_deriv_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean",
     "line": 1869,
     "statement": "private theorem nativePrimitive_radial_left_deriv_zero (q : XiZeroCopy) (s amplitude : ℂ)\n    (t X k : ℝ) :\n    deriv (fun x => nativeResidualTimePrimitive q s amplitude t x X k) (-max t 0-1) = 0",
     "queries": [
@@ -3811,7 +3811,7 @@
   },
   {
     "name": "RHTower.D4BMScalarLinearEquation.literal_source_first_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMScalarLinearEinsteinEquation.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMScalarLinearEinsteinEquation.lean",
     "line": 270,
     "statement": "private theorem literal_source_first_zero (s a u : ℂ) (p : D4BMBackground.ExteriorPoint)\n    (hq : D4BMFundamentalScalarMetric.harmonicParameter s = D4BMLiteralCusp.scalarQ u)\n    (i j : Fin 4) :\n    deriv (D4BMActualMetricSource.source p\n      (D4BMLiteralCusp.perturbation (Complex.I*s) u a 0) i j) 0 = 0",
     "queries": [
@@ -3883,7 +3883,7 @@
   },
   {
     "name": "RHTower.DeningerArithmeticThreeTermHodge.eigenvalue_eq_half_add_I_mul",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermHodge.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermHodge.lean",
     "line": 78,
     "statement": "theorem eigenvalue_eq_half_add_I_mul {x : H} {lam : ℂ} (hx : x ≠ 0)\n    (heig : D.theta x = lam • x) :\n    lam = 1 / 2 + Complex.I * (lam.im : ℂ)",
     "queries": [
@@ -3892,7 +3892,7 @@
   },
   {
     "name": "RHTower.DeningerFieldHankelRecurrence",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerKroneckerFieldStage.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerKroneckerFieldStage.lean",
     "line": 128,
     "statement": "structure DeningerFieldHankelRecurrence\n    {K : Type*} [Field K] (a : ℕ → K) (n : ℕ) where\n  order : ℕ\n  order_pos : 0 < order\n  order_le : order ≤ n\n  coeff : Fin order → K\n  recurrence : ∀ i : ℕ,\n    a (i + order) = ∑ j : Fin order, coeff j * a (i + j.val)\n\n/-- Vanishing `(n+1)`-minors and constant coefficient one produce a recurrence\nof positive order at most `n`. -/",
     "queries": [
@@ -3901,7 +3901,7 @@
   },
   {
     "name": "RHTower.DeningerLinearRecurrenceFrom",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerRationalWittHazewinkelHankel.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittHazewinkelHankel.lean",
     "line": 65,
     "statement": "def DeningerLinearRecurrenceFrom (a q : ℕ → A) (d : ℕ) : Prop",
     "queries": [
@@ -3910,7 +3910,7 @@
   },
   {
     "name": "RHTower.DeningerMeyerZetaZeroJetDatum.evaluationLM",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerMeyerPaugamSpectralPairing.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPaugamSpectralPairing.lean",
     "line": 46,
     "statement": "def DeningerMeyerZetaZeroJetDatum.evaluationLM\n    (d : DeningerMeyerZetaZeroJetDatum) :\n    DeningerMeyerStrongLogCohomology →ₗ[ℂ] ℂ",
     "queries": [
@@ -3946,7 +3946,7 @@
   },
   {
     "name": "RHTower.HedenmalmThetaSource.memSchattenClass_one_smul_deningerGammaSixShellPrincipalOperator_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaGammaSixWoldCarrier.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaGammaSixWoldCarrier.lean",
     "line": 301,
     "statement": "theorem memSchattenClass_one_smul_deningerGammaSixShellPrincipalOperator_iff\n    (c : ℂ) :\n    MemSchattenClass 1 (c • deningerGammaSixShellPrincipalOperator) ↔ c = 0",
     "queries": [
@@ -3964,7 +3964,7 @@
   },
   {
     "name": "RHTower.LSeries_d4BMZeroRamanujanArithmeticC_eq_zetaRatio",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient.lean",
     "line": 98,
     "statement": "theorem LSeries_d4BMZeroRamanujanArithmeticC_eq_zetaRatio\n    {w : ℂ} (hw : 2 < w.re) :\n    LSeries d4BMZeroRamanujanArithmeticC w =\n      riemannZeta (w - 1) / riemannZeta w",
     "queries": [
@@ -3982,7 +3982,7 @@
   },
   {
     "name": "RHTower.LSeries_xiRectangularLandauCoefficient_eq_continuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMRectangularDirichletLandau.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularDirichletLandau.lean",
     "line": 635,
     "statement": "theorem LSeries_xiRectangularLandauCoefficient_eq_continuation\n    (L C : ℝ) (N : ℕ) {δ : ℝ} (hδ0 : 0 ≤ δ)\n    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)\n    {s : ℂ} (hs : 1 + δ < s.re) :\n    LSeries\n        (fun n => ((xiRectangularLandauCoefficient L C N n : ℝ) : ℂ)) s =\n      xiRectangularLandauContinuation L C N s",
     "queries": [
@@ -3991,7 +3991,7 @@
   },
   {
     "name": "RHTower.LSeries_xiRectangularNegativePartLandauCoefficient_eq_continuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMRectangularNegativePartEnergyGate.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativePartEnergyGate.lean",
     "line": 80,
     "statement": "theorem LSeries_xiRectangularNegativePartLandauCoefficient_eq_continuation\n    (L : ℝ) {delta : ℝ}\n    (hupper : ∀ q : XiRightZeroCopy,\n      (xiRightCenteredZero q).re ≤ delta)\n    {s : ℂ} (hsdelta : 1 + delta < s.re)\n    (hcorr : LSeriesSummable\n      (fun n => ((xiRectangularRightNegativePart L n : ℝ) : ℂ)) s) :\n    LSeries\n        (fun n => ((xiRectangularNegativePartLandauCoefficient L n : ℝ) : ℂ)) s =\n      xiRectangularNegativePartLandauContinuation L s",
     "queries": [
@@ -4000,7 +4000,7 @@
   },
   {
     "name": "RHTower.LSeries_xiRectangularWeilTailCoefficient_eq_continuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePoleTomography.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePoleTomography.lean",
     "line": 137,
     "statement": "theorem LSeries_xiRectangularWeilTailCoefficient_eq_continuation\n    {L : ℝ} {N : ℕ}\n    (hN : ∀ n : ℕ, N ≤ n →\n      1 ≤ n ∧ L ≤ Real.log n / 2)\n    {delta : ℝ} (hdelta0 : 0 ≤ delta)\n    (hupper : ∀ q : XiRightZeroCopy,\n      (xiRightCenteredZero q).re ≤ delta)\n    {s : ℂ} (hs : 1 + delta < s.re) :\n    LSeries (xiRectangularWeilTailCoefficient L N) s =\n      xiRectangularWeilTailContinuation L N s",
     "queries": [
@@ -4009,7 +4009,7 @@
   },
   {
     "name": "RHTower.LSeries_xiWeightedLandauCoefficient_eq_continuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMWeightedXiLandau.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMWeightedXiLandau.lean",
     "line": 485,
     "statement": "theorem LSeries_xiWeightedLandauCoefficient_eq_continuation\n    (D : XiRightCoefficientSystem) (C : ℝ) (N : ℕ)\n    {δ : ℝ} (hδ0 : 0 ≤ δ)\n    (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)\n    {s : ℂ} (hs : 1 + δ < s.re) :\n    LSeries (fun n => ((xiWeightedLandauCoefficient D C N n : ℝ) : ℂ)) s =\n      xiWeightedLandauContinuation D C N s",
     "queries": [
@@ -4522,7 +4522,7 @@
   },
   {
     "name": "RHTower.ccmArchimedeanFormWeight_complex_hasTemperateGrowth",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanDenseFormCore.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanDenseFormCore.lean",
     "line": 36,
     "statement": "theorem ccmArchimedeanFormWeight_complex_hasTemperateGrowth :\n    Function.HasTemperateGrowth\n      (fun xi : ℝ => (ccmArchimedeanFormWeight xi : ℂ))",
     "queries": [
@@ -4531,7 +4531,7 @@
   },
   {
     "name": "RHTower.ccmArchimedeanFormWeight_eq_linearArgument",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanDenseFormCore.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanDenseFormCore.lean",
     "line": 22,
     "statement": "theorem ccmArchimedeanFormWeight_eq_linearArgument (xi : ℝ) :\n    ccmArchimedeanFormWeight xi =\n      1 + 2 * (gammaHardyPhaseRate (2 * Real.pi * xi) - gammaHardyPhaseRate 0)",
     "queries": [
@@ -4540,7 +4540,7 @@
   },
   {
     "name": "RHTower.ccmArchimedeanLaurentSubmodule",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanLaurentFormCore.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanLaurentFormCore.lean",
     "line": 21,
     "statement": "def ccmArchimedeanLaurentSubmodule (a : SuzukiPositiveAperture) :\n    Submodule ℂ (CCMArchimedeanFormDomain a)",
     "queries": [
@@ -4549,7 +4549,7 @@
   },
   {
     "name": "RHTower.ccmFirstClockLaplaceContinuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauAnalytic.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockLandauAnalytic.lean",
     "line": 278,
     "statement": "def ccmFirstClockLaplaceContinuation (s : ℂ) : ℂ",
     "queries": [
@@ -4558,7 +4558,7 @@
   },
   {
     "name": "RHTower.ccmIsZetaCycle_of_character_survives",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniZetaCycles.lean",
     "line": 793,
     "statement": "theorem ccmIsZetaCycle_of_character_survives\n    (L : CCMZetaCircleLength) (m : ℤ)\n    (hm : ccmZetaCycleCharacterSurvives L m) : CCMIsZetaCycle L",
     "queries": [
@@ -4567,7 +4567,7 @@
   },
   {
     "name": "RHTower.ccmPublishedCenteredSource_rev",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilMatrix.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedRestrictedWeilMatrix.lean",
     "line": 223,
     "statement": "theorem ccmPublishedCenteredSource_rev\n    (a : ℝ) (N : ℕ) (i : Fin (2 * N + 1)) :\n    ccmPublishedCenteredSource a N (Fin.revPerm i) =\n      -ccmPublishedCenteredSource a N i",
     "queries": [
@@ -4576,7 +4576,7 @@
   },
   {
     "name": "RHTower.ccmZetaCycleCohomology_ne_bot_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniZetaCycles.lean",
     "line": 935,
     "statement": "theorem ccmZetaCycleCohomology_ne_bot_iff (L : CCMZetaCircleLength) :\n    ccmZetaCycleCohomology L ≠ ⊥ ↔ CCMIsZetaCycle L",
     "queries": [
@@ -4693,7 +4693,7 @@
   },
   {
     "name": "RHTower.coe_ccmArchimedeanLaurentSubmodule",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanLaurentFormCore.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanLaurentFormCore.lean",
     "line": 35,
     "statement": "theorem coe_ccmArchimedeanLaurentSubmodule (a : SuzukiPositiveAperture) :\n    (ccmArchimedeanLaurentSubmodule a : Set (CCMArchimedeanFormDomain a)) =\n      ccmLogFormToArchimedean a ''\n        (suzukiHlogLaurentSubmodule a : Set (SuzukiHlogFormDomain a))",
     "queries": [
@@ -4747,7 +4747,7 @@
   },
   {
     "name": "RHTower.connesConsani_repetitions",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniZetaCycles.lean",
     "line": 954,
     "statement": "theorem connesConsani_repetitions (L : CCMZetaCircleLength) :\n    ccmZetaCycleCohomology L ≠ ⊥ ↔\n      ∃ s ∈ CCMCriticalZetaOrdinateSet,\n        ∃ n : ℤ, s * (L : ℝ) = 2 * Real.pi * n",
     "queries": [
@@ -4792,7 +4792,7 @@
   },
   {
     "name": "RHTower.criticalFeatureBoundaryCutoffWeight_eq_zero_of_not_mem",
-    "path": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSourcePlemeljTrace.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureSourcePlemeljTrace.lean",
     "line": 66,
     "statement": "theorem criticalFeatureBoundaryCutoffWeight_eq_zero_of_not_mem\n    (t : ℝ) (n : ℕ) {x : ℝ}\n    (hx : x ∉ Ioo (-((n : ℝ) + 3)) ((n : ℝ) + 3)) :\n    criticalFeatureBoundaryCutoffWeight t n x = 0",
     "queries": [
@@ -4810,7 +4810,7 @@
   },
   {
     "name": "RHTower.d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualThirdJet.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualThirdJet.lean",
     "line": 1363,
     "statement": "def d4BMHorizontalVerticalVerticalThirdJetVerticalLocalMajorant\n    (z : D4BMUpperHalfPlaneCoordinate)\n    (P : D4BMEisensteinAbsoluteConvergenceParameter)\n    (p : D4BMPrimitiveIntegerPair) : ℝ",
     "queries": [
@@ -4819,7 +4819,7 @@
   },
   {
     "name": "RHTower.d4PreDivisorOpticalCancellationReducedDenominator",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingPreDivisorFiniteSchwarzPolarizedInfiniteRankNoGo.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingPreDivisorFiniteSchwarzPolarizedInfiniteRankNoGo.lean",
     "line": 30,
     "statement": "def d4PreDivisorOpticalCancellationReducedDenominator (z : ℂ) : ℂ",
     "queries": [
@@ -4828,7 +4828,7 @@
   },
   {
     "name": "RHTower.deningerCalderonWittCrossPrimeSingularCoronaHorizon_ne_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeSingularCorona.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittCrossPrimeSingularCorona.lean",
     "line": 122,
     "statement": "theorem deningerCalderonWittCrossPrimeSingularCoronaHorizon_ne_zero :\n    deningerCalderonWittCrossPrimeSingularCoronaHorizon ≠ 0",
     "queries": [
@@ -4837,7 +4837,7 @@
   },
   {
     "name": "RHTower.deningerCalderonWittPureHodgeSecondaryLift_witness_admission_gap_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerCalderonWittPureHodgeSecondaryAdmissionLoss.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittPureHodgeSecondaryAdmissionLoss.lean",
     "line": 91,
     "statement": "theorem deningerCalderonWittPureHodgeSecondaryLift_witness_admission_gap_iff\n    {p q : Nat.Primes} (hpq : p ≠ q) (a : ℝ) :\n    deningerCalderonWittCrossPrimeGammaWitness hpq ∉\n        deningerCalderonWittGammaAdmittedHodgeSector a ∧\n      deningerCalderonWittPureHodgeSecondaryLift hpq a\n          (deningerCalderonWittCrossPrimeGammaWitness hpq) ∈\n        actualCellGammaAdmittedHodgeSector a ↔\n      a ≠ 0",
     "queries": [
@@ -4846,7 +4846,7 @@
   },
   {
     "name": "RHTower.deningerCoordMul",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerStructureSheafMaps.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerStructureSheafMaps.lean",
     "line": 82,
     "statement": "noncomputable def deningerCoordMul (Ω : Opens (Fin n → ℂ)) (q : ℕ) (i : Fin n) :\n    deningerClosedFormSheaf Ω q ⟶ deningerClosedFormSheaf Ω q",
     "queries": [
@@ -4855,7 +4855,7 @@
   },
   {
     "name": "RHTower.deningerDivisor_eq_zero_iff",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerRationalDivisorSequence.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalDivisorSequence.lean",
     "line": 56,
     "statement": "theorem deningerDivisor_eq_zero_iff {u : ℚˣ} (hu : 0 < ((u : ℚ))) :\n    deningerDivisor u = 0 ↔ u = 1",
     "queries": [
@@ -4864,7 +4864,7 @@
   },
   {
     "name": "RHTower.deningerHorizontalResidue_not_bounded_by_transverseGraph",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerHorizontalResidueTransverseGraphNoGo.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerHorizontalResidueTransverseGraphNoGo.lean",
     "line": 346,
     "statement": "theorem deningerHorizontalResidue_not_bounded_by_transverseGraph\n    {A : E →L[ℂ] E} {lam : ℂ} {eta : E} (heta : A eta = lam • eta) (hetaNorm : ‖eta‖ = 1)\n    (C : ℝ) (orders : Finset ℕ) (zeta : AddCircle T) :\n    ∃ N : ℕ, 0 < N ∧\n      C * ∑ m ∈ orders,\n          ‖ContinuousMap.toLp 2 (haarAddCircle (T := T)) ℂ\n            (deningerTransverseFieldPower A m\n              (deningerTransverseTensor (deningerDirichletPacket zeta N) eta))‖ <\n        ‖deningerTransverseTensor (deningerDirichletPacket zeta N) eta zeta‖",
     "queries": [
@@ -4873,7 +4873,7 @@
   },
   {
     "name": "RHTower.deningerPermLift",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerPermutationSum.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPermutationSum.lean",
     "line": 26,
     "statement": "noncomputable def deningerPermLift (F : X → MonoidAlgebra k X') :\n    MonoidAlgebra k X →ₗ[k] MonoidAlgebra k X'",
     "queries": [
@@ -4882,7 +4882,7 @@
   },
   {
     "name": "RHTower.deningerPermLift_coeff",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerCyclicHomology.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCyclicHomology.lean",
     "line": 112,
     "statement": "theorem deningerPermLift_coeff {X X' : Type u} (F : X → MonoidAlgebra k X')\n    (f : MonoidAlgebra k X) (y : X') :\n    (MonoidAlgebra.coeffLinearEquiv k) (deningerPermLift k F f) y =\n      (MonoidAlgebra.coeffLinearEquiv k f).sum\n        (fun x c => c * (MonoidAlgebra.coeffLinearEquiv k (F x)) y)",
     "queries": [
@@ -4891,7 +4891,7 @@
   },
   {
     "name": "RHTower.deningerPermLift_single",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerPermutationSum.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPermutationSum.lean",
     "line": 30,
     "statement": "theorem deningerPermLift_single (F : X → MonoidAlgebra k X') (x : X) (c : k) :\n    deningerPermLift k F (MonoidAlgebra.single x c) = c • F x",
     "queries": [
@@ -4900,7 +4900,7 @@
   },
   {
     "name": "RHTower.deningerSpecZFrobeniusColimitGeneralizedDivisor_prime",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerSpecZFrobeniusDivisorPullback.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerSpecZFrobeniusDivisorPullback.lean",
     "line": 172,
     "statement": "theorem deningerSpecZFrobeniusColimitGeneralizedDivisor_prime\n    (p : Nat.Primes) :\n    deningerSpecZFrobeniusColimitGeneralizedDivisor ((p : ℕ) : ℤ) =\n      deningerPullbackSupport deningerSpecZFrobeniusColimitPrTop p",
     "queries": [
@@ -4909,7 +4909,7 @@
   },
   {
     "name": "RHTower.deningerSpecZIntegerZeroDivisor",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerSpecZFrobeniusDivisorPullback.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerSpecZFrobeniusDivisorPullback.lean",
     "line": 122,
     "statement": "def deningerSpecZIntegerZeroDivisor (n : ℤ) : Set Spec(ℤ)",
     "queries": [
@@ -4918,7 +4918,7 @@
   },
   {
     "name": "RHTower.deningerSpecZIntegerZeroDivisor_prime",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerSpecZFrobeniusDivisorPullback.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerSpecZFrobeniusDivisorPullback.lean",
     "line": 150,
     "statement": "theorem deningerSpecZIntegerZeroDivisor_prime (p : Nat.Primes) :\n    deningerSpecZIntegerZeroDivisor ((p : ℕ) : ℤ) = {deningerClosedPt p}",
     "queries": [
@@ -4927,7 +4927,7 @@
   },
   {
     "name": "RHTower.deningerTransverseTensor_eval_norm_dirichletPacket",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerHorizontalResidueTransverseGraphNoGo.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerHorizontalResidueTransverseGraphNoGo.lean",
     "line": 337,
     "statement": "theorem deningerTransverseTensor_eval_norm_dirichletPacket\n    {eta : E} (hetaNorm : ‖eta‖ = 1) (N : ℕ) (zeta : AddCircle T) :\n    ‖deningerTransverseTensor (deningerDirichletPacket zeta N) eta zeta‖ = Real.sqrt N",
     "queries": [
@@ -4936,7 +4936,7 @@
   },
   {
     "name": "RHTower.dense_ccmArchimedeanLaurentSubmodule",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanLaurentFormCore.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanLaurentFormCore.lean",
     "line": 48,
     "statement": "theorem dense_ccmArchimedeanLaurentSubmodule (a : SuzukiPositiveAperture) :\n    Dense (ccmArchimedeanLaurentSubmodule a : Set (CCMArchimedeanFormDomain a))",
     "queries": [
@@ -5026,7 +5026,7 @@
   },
   {
     "name": "RHTower.dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowExcessEnergyGate.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowExcessEnergyGate.lean",
     "line": 379,
     "statement": "theorem dyadicSharpNegativePartLandauContinuation_eq_LSeries_rightOf\n    (beta delta : ℝ) (hdelta : 0 < delta)\n    (hbetaDelta : beta < delta)\n    (hupper : ∀ q : XiRightZeroCopy,\n      (xiRightCenteredZero q).re ≤ delta)\n    (hcorr : LSeriesSummable\n      (fun n => ((dyadicSharpPrimeSourceNegativePart n : ℝ) : ℂ))\n      (((1 + beta : ℝ) : ℂ)))\n    {sigma : ℝ} (hsigma : 1 + delta < sigma)\n    (hsum : LSeriesSummable\n      (fun n => ((dyadicSharpNegativePartLandauCoefficient n : ℝ) : ℂ))\n      (sigma : ℂ)) :\n    Set.EqOn dyadicSharpNegativePartLandauContinuation\n      (LSeries\n        (fun n => ((dyadicSharpNegativePartLandauCoefficient n : ℝ) : ℂ)))\n      {s : ℂ | sigma < s.re}",
     "queries": [
@@ -5197,7 +5197,7 @@
   },
   {
     "name": "RHTower.finitePrimeCuspDenominator_analyticOrderAt_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspMellinPole.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspMellinPole.lean",
     "line": 94,
     "statement": "theorem finitePrimeCuspDenominator_analyticOrderAt_zero (N : ℕ) :\n    analyticOrderAt (finitePrimeCuspDenominator N) 0 = Nat.primeCounting N",
     "queries": [
@@ -5206,7 +5206,7 @@
   },
   {
     "name": "RHTower.fourierLp_mem_ccmZetaCycleCohomology_iff_zeta_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniZetaCycles.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniZetaCycles.lean",
     "line": 748,
     "statement": "theorem fourierLp_mem_ccmZetaCycleCohomology_iff_zeta_zero\n    (L : CCMZetaCircleLength) (m : ℤ) :\n    fourierLp 2 m ∈ ccmZetaCycleCohomology L ↔\n      riemannZeta (ccmZetaCircleCriticalPoint L m) = 0",
     "queries": [
@@ -5215,7 +5215,7 @@
   },
   {
     "name": "RHTower.fourier_ccmFourierTruncatedLogBoundary_eq_zero_of_zeta_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniRapidMuntz.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniRapidMuntz.lean",
     "line": 267,
     "statement": "theorem fourier_ccmFourierTruncatedLogBoundary_eq_zero_of_zeta_zero\n    (f : CCMFourierTruncatedInput) (ξ : ℝ)\n    (hζ : riemannZeta\n      ((1 / 2 : ℂ) - ((2 * Real.pi * ξ : ℝ) : ℂ) * Complex.I) = 0) :\n    𝓕 (fun t => (ccmFourierTruncatedLogBoundary f t : ℂ)) ξ = 0",
     "queries": [
@@ -5233,7 +5233,7 @@
   },
   {
     "name": "RHTower.fzzParikhWilczekNeutralRecoilCoefficient_zero_of_zeta_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZNeutralScreeningRecoilEndpoint.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZNeutralScreeningRecoilEndpoint.lean",
     "line": 95,
     "statement": "theorem fzzParikhWilczekNeutralRecoilCoefficient_zero_of_zeta_zero\n    (μ : ℂ) {s : ℂ} (hs : riemannZeta s = 0) :\n    fzzParikhWilczekNeutralRecoilCoefficient μ 0 s = 0",
     "queries": [
@@ -5458,7 +5458,7 @@
   },
   {
     "name": "RHTower.moebius_mul_primeFreeDivisorIncrementAF",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
     "line": 972,
     "statement": "theorem moebius_mul_primeFreeDivisorIncrementAF :\n    (ArithmeticFunction.moebius : ArithmeticFunction ℝ) *\n        primeFreeDivisorIncrementAF =\n      ArithmeticFunction.vonMangoldt -\n        (ArithmeticFunction.zeta : ArithmeticFunction ℝ) +\n        algebraMap ℝ (ArithmeticFunction ℝ)\n          (2 * Real.eulerMascheroniConstant)",
     "queries": [
@@ -5539,7 +5539,7 @@
   },
   {
     "name": "RHTower.not_exists_meromorphic_preDivisorOpticalCancellationSusceptibility",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingPreDivisorOpticalCancellationMeromorphicRemovability.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingPreDivisorOpticalCancellationMeromorphicRemovability.lean",
     "line": 86,
     "statement": "theorem not_exists_meromorphic_preDivisorOpticalCancellationSusceptibility :\n    ¬ ∃ f : ℂ → ℂ,\n      MeromorphicOn f {z : ℂ | 0 < z.re ∧ z.re < 1} ∧\n        ∀ z : ℂ, z ∈ {z : ℂ | 0 < z.re ∧ z.re < 1} →\n          f z = (d4PreDivisorOpticalCancellationSusceptibility z.re : ℂ)",
     "queries": [
@@ -5566,7 +5566,7 @@
   },
   {
     "name": "RHTower.primeFreeDivisorIncrementAF_apply",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean",
     "line": 1003,
     "statement": "theorem primeFreeDivisorIncrementAF_apply {n : ℕ} (hn : n ≠ 0) :\n    primeFreeDivisorIncrementAF n = primeFreeDivisorIncrement n",
     "queries": [
@@ -5667,7 +5667,7 @@
   },
   {
     "name": "RHTower.riemannHypothesis_iff_schwarzschildParikhWilczekCompleteEvaporationQuadraticEnergy_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean",
     "line": 124,
     "statement": "theorem riemannHypothesis_iff_schwarzschildParikhWilczekCompleteEvaporationQuadraticEnergy_zero\n    {alpha : ℝ} (halpha : 0 < alpha) (k : ℕ) :\n    RiemannHypothesis ↔\n      ∀ rho : XiDivisorSupport,\n        schwarzschildParikhWilczekCompleteEvaporationQuadraticEnergy\n          alpha (rho : ℂ) k = 0",
     "queries": [
@@ -5676,7 +5676,7 @@
   },
   {
     "name": "RHTower.riemannHypothesis_iff_schwarzschildParikhWilczekMatrixCrossGradeEnergy_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekPositiveMatrixCrossGradeClassification.lean",
     "line": 141,
     "statement": "theorem riemannHypothesis_iff_schwarzschildParikhWilczekMatrixCrossGradeEnergy_zero\n    {N : ℕ} {M : Fin N → Fin N → ℝ}\n    (hMnonneg : ∀ i j, 0 ≤ M i j)\n    (hMpos : ∃ i j, 0 < M i j) :\n    RiemannHypothesis ↔\n      ∀ rho : XiDivisorSupport,\n        schwarzschildParikhWilczekMatrixCrossGradeEnergy M (rho : ℂ) = 0",
     "queries": [
@@ -5685,7 +5685,7 @@
   },
   {
     "name": "RHTower.riemannHypothesis_iff_schwarzschildParikhWilczekScalarHistoryQuadraticEnergy_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekScalarHistoryClassification.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekScalarHistoryClassification.lean",
     "line": 83,
     "statement": "theorem riemannHypothesis_iff_schwarzschildParikhWilczekScalarHistoryQuadraticEnergy_zero\n    {w : ℕ → ℝ} (hw : Summable w) (htotal : (∑' n : ℕ, w n) ≠ 0) (k : ℕ) :\n    RiemannHypothesis ↔\n      ∀ rho : XiDivisorSupport,\n        schwarzschildParikhWilczekScalarHistoryQuadraticEnergy w (rho : ℂ) k = 0",
     "queries": [
@@ -5793,7 +5793,7 @@
   },
   {
     "name": "RHTower.schwarzschildParikhWilczekMellinJet_zero_of_zeta_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekBackreactionJetEndpoint.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekBackreactionJetEndpoint.lean",
     "line": 126,
     "statement": "theorem schwarzschildParikhWilczekMellinJet_zero_of_zeta_zero\n    {s : ℂ} (hs : riemannZeta s = 0) :\n    schwarzschildParikhWilczekMellinJet 0 s = 0",
     "queries": [
@@ -5838,7 +5838,7 @@
   },
   {
     "name": "RHTower.suzuki_exponentialType_uniqueness",
-    "path": "formal/GaloisForLFunctions/RHTower/SuzukiTitchmarshUniqueness.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTitchmarshUniqueness.lean",
     "line": 163,
     "statement": "theorem suzuki_exponentialType_uniqueness\n    {F : ℂ → ℂ} (hF : Differentiable ℂ F) (a : ℂ)\n    {A C : ℝ} (hA : 0 ≤ A) (hC : 1 ≤ C)\n    (hgrow : ∀ z : ℂ, ‖F z‖ ≤ C * Real.exp (A * ‖z‖))\n    (hvalues : ∀ z : ℂ, xi (1 / 2 - I * z) = 0 → F z = a) :\n    F = fun _ => a",
     "queries": [
@@ -5865,7 +5865,7 @@
   },
   {
     "name": "RHTower.tsum_xiSmoothProfileTwoEdgeDominant_logSample_eq_ofReal_weighted",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMSmoothTwoEdgeWeil.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMSmoothTwoEdgeWeil.lean",
     "line": 622,
     "statement": "theorem tsum_xiSmoothProfileTwoEdgeDominant_logSample_eq_ofReal_weighted\n    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)\n    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L)\n    {n : ℕ} (hn : 1 ≤ n) :\n    (∑' q : XiZeroCopy,\n      xiSmoothProfileTwoEdgeDominant f (Real.log n / 2)\n        (xiSpectralPoint q)) =\n      (xiWeightedRightDirichletCoefficientReal\n        (smoothProfileXiRightCoefficientSystem heta hwindow f hf) n : ℂ)",
     "queries": [
@@ -6010,7 +6010,7 @@
   },
   {
     "name": "RHTower.xiRectangularLandauContinuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMRectangularDirichletLandau.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularDirichletLandau.lean",
     "line": 629,
     "statement": "def xiRectangularLandauContinuation\n    (L C : ℝ) (N : ℕ) (s : ℂ) : ℂ",
     "queries": [
@@ -6019,7 +6019,7 @@
   },
   {
     "name": "RHTower.xiRectangularWeilTailContinuation",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePoleTomography.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePoleTomography.lean",
     "line": 130,
     "statement": "def xiRectangularWeilTailContinuation (L : ℝ) (N : ℕ) (s : ℂ) : ℂ",
     "queries": [
@@ -6046,7 +6046,7 @@
   },
   {
     "name": "RHTower.xiRightZeroSupport_eq_image_dyadicSharpPrimeSimplePoleSupport",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowDivisorTomography.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowDivisorTomography.lean",
     "line": 362,
     "statement": "theorem xiRightZeroSupport_eq_image_dyadicSharpPrimeSimplePoleSupport :\n    {ρ : ℂ | xi ρ = 0 ∧ 1 / 2 < ρ.re} =\n      (fun s : ℂ => s - 1 / 2) ''\n        {s : ℂ | 1 < s.re ∧\n          meromorphicOrderAt dyadicSharpPrimeContinuedSource s =\n            ((-1 : ℤ) : WithTop ℤ)}",
     "queries": [
@@ -6136,7 +6136,7 @@
   },
   {
     "name": "RHTower.xiWeilPolarization_smoothProfile_logSample_cofinally_unbounded_below",
-    "path": "formal/GaloisForLFunctions/RHTower/CCMSmoothTwoEdgeWeil.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/CCM/CCMSmoothTwoEdgeWeil.lean",
     "line": 647,
     "statement": "theorem xiWeilPolarization_smoothProfile_logSample_cofinally_unbounded_below\n    {eta L : ℝ} (heta : 0 < eta) (hwindow : eta < L - eta)\n    (f : SmoothBoundaryProfile eta L) (hf : f ∈ xiSmoothProfileGenericSet eta L)\n    (hne : Nonempty XiRightZeroCopy) :\n    ∀ B : ℝ, ∀ N0 : ℕ, ∃ n : ℕ,\n      N0 ≤ n ∧ L < Real.log n / 2 ∧\n      (xiWeilPolarization\n        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))\n        (xiSmoothProfileTwoEdgeTransform f (Real.log n / 2))).re < B",
     "queries": [
@@ -6172,7 +6172,7 @@
   },
   {
     "name": "RHTower.xi_deningerDivisorThetaEigen_eq_zero",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerDivisorFlow.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerDivisorFlow.lean",
     "line": 77,
     "statement": "theorem xi_deningerDivisorThetaEigen_eq_zero (q : XiZeroCopy) :\n    xi (deningerDivisorThetaEigen q) = 0",
     "queries": [
@@ -6452,7 +6452,7 @@
   },
   {
     "name": "SatisfiesBeurlingDeny",
-    "path": "formal/GaloisForLFunctions/RHTower/SuzukiScrewDisjointCrossCoupling.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewDisjointCrossCoupling.lean",
     "line": 121,
     "statement": null,
     "queries": [
@@ -6722,7 +6722,7 @@
   },
   {
     "name": "bochner_product_value",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeFormAdmission.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeFormAdmission.lean",
     "line": 13,
     "statement": null,
     "queries": [
@@ -6830,7 +6830,7 @@
   },
   {
     "name": "d4BM_secondStokes_bochner_algebra",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMEisensteinActualSecondStokesCurrent.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMEisensteinActualSecondStokesCurrent.lean",
     "line": 322,
     "statement": null,
     "queries": [
@@ -6857,7 +6857,7 @@
   },
   {
     "name": "deningerGaussianJet_universality",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerGaussianJetUniversality.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerGaussianJetUniversality.lean",
     "line": 45,
     "statement": null,
     "queries": [
@@ -6866,7 +6866,7 @@
   },
   {
     "name": "deningerPointedMulRoot_exists_iff_card_dvd",
-    "path": "formal/GaloisForLFunctions/RHTower/DeningerDynSysPointedMultiplicativeRoot.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerDynSysPointedMultiplicativeRoot.lean",
     "line": 187,
     "statement": null,
     "queries": [
@@ -7073,7 +7073,7 @@
   },
   {
     "name": "exists_squarefreePartition_logDeriv_regularGerm_of_strictRightXiZero",
-    "path": "formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherRegularGermCofinal.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherRegularGermCofinal.lean",
     "line": 105,
     "statement": null,
     "queries": [
@@ -7551,7 +7551,7 @@
   },
   {
     "name": "primitive_eq_native_bochner",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMPhysicalPrimitiveCurrent.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPhysicalPrimitiveCurrent.lean",
     "line": 23,
     "statement": null,
     "queries": [
@@ -7731,7 +7731,7 @@
   },
   {
     "name": "suzukiGroundEdge_cayley_universality",
-    "path": "formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeCayleyUniversality.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeCayleyUniversality.lean",
     "line": 294,
     "statement": null,
     "queries": [
@@ -7758,7 +7758,7 @@
   },
   {
     "name": "thetaCuspCassiniLikelihoodCarrier_fullPhaseAtlas_universality",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean",
     "line": 44,
     "statement": null,
     "queries": [
@@ -7767,7 +7767,7 @@
   },
   {
     "name": "thetaCuspCassiniLikelihoodRatio_reciprocalMarkovNoGo_universality",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean",
     "line": 25,
     "statement": null,
     "queries": [
@@ -7776,7 +7776,7 @@
   },
   {
     "name": "thetaCusp_centerMixedOrientationRank_universality",
-    "path": "formal/GaloisForLFunctions/RHTower/ThetaCuspCenterMixedOrientationRankUniversalityLaw.lean",
+    "path": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedOrientationRankUniversalityLaw.lean",
     "line": 93,
     "statement": null,
     "queries": [

@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMTransverseIndexTraceSlopeCoercivity` (new)
-- `GaloisForLFunctions.RHTower.CCMShiftCovariantPoleDivisorCapacity` — the divisor profile `(3)`,
+- `GaloisForLFunctions.RHTower.CCM.CCMTransverseIndexTraceSlopeCoercivity` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMShiftCovariantPoleDivisorCapacity` — the divisor profile `(3)`,
   the pole profile `(9)`, the total multiplicity `(2)`, and the half-line exponential integral.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -45,6 +45,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMTransverseIndexTraceSlopeCoercivity`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMTransverseIndexTraceSlopeCoercivity`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

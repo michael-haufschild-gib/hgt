@@ -10,7 +10,7 @@
 
 | Module | Path |
 |---|---|
-| `GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyVerticalGauge` | `formal/GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean` |
+| `GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyVerticalGauge` | `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean` |
 
 Wired into `GaloisForLFunctions.RHTower`.  All declarations live in the root namespace `RHTower`.
 
@@ -18,7 +18,7 @@ Wired into `GaloisForLFunctions.RHTower`.  All declarations live in the root nam
 
 Nothing below was rebuilt.
 
-- `RHTower/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` (the sibling card
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyObserverFreedom.lean` (the sibling card
   `rational-adelic-h1-observer-coefficient-freedom-and-discriminant-law-formalized.md`) supplies
   `ccmRationalAdelicPrimeOrbitDifference` (`T`), `ccmRationalAdelicPrimeOrbitDifference_mem_ker`,
   `CCMRationalAdelicPrimeResidualQuotient` (`Q_p`), `ccmRationalAdelicPrimeResidualRelations`,
@@ -26,25 +26,25 @@ Nothing below was rebuilt.
   `ccmRationalIntegralFiniteAdelesBruhat`, `ccmRationalAdelicHaarWitness` and its two endpoint
   values, `ccmRationalAdelicHaarWitnessCocycle`, and
   `ccmRationalAdelicPrimeStokesObserver` with `..._class`.
-- `RHTower/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` — the source complex
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyRelativeXiChainMap.lean` — the source complex
   `ccmRationalAdelicPrimeRelativeD0/D1`, `ccmRationalAdelicPrimeRelativeComplex`,
   `ccmRationalAdelicPrimeRelativeClass`, and the strict comparison
   `ccmRationalAdelicPrimeRelativeXiComparison1`,
   `primeDepthBVWoldXiPrimeLocalizedLeadingConormal`,
   `primeDepthBVWoldXiResolvedCovariantD0`.
-- `RHTower/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` —
+- `RHTower/CCM/CCMRationalAdelicPrimeIsotropyStokesRegulator.lean` —
   `ccmRationalAdelicPrimeOrbitStokesLM`, `ccmRationalAdelicPrimeOrbitStokes_scaling_sub` (card
   `(VSG.7)`: the primitive set is nonempty),
   `ccmRationalAdelicPrimeRelativeH1StokesRegulator`.
-- `RHTower/CCMRationalAdelicEpsilonZero.lean`, `CCMRationalAdelicEpsilonOne.lean` — `ε₀`, `ε₁`
+- `RHTower/CCM/CCMRationalAdelicEpsilonZero.lean`, `CCMRationalAdelicEpsilonOne.lean` — `ε₀`, `ε₁`
   and their scaling invariance.
-- `RHTower/CCMRationalAdelicScalingAction.lean` — `ccmRationalAdelicBruhatScaling` and
+- `RHTower/CCM/CCMRationalAdelicScalingAction.lean` — `ccmRationalAdelicBruhatScaling` and
   `ccmRationalAdelicBruhatScaling_sigma` (scaling commutes with the Real structure).
-- `RHTower/CCMRationalAdelicBruhatSimpleTensorReal.lean`, `CCMRationalAdelicEndpointReal.lean` —
+- `RHTower/CCM/CCMRationalAdelicBruhatSimpleTensorReal.lean`, `CCMRationalAdelicEndpointReal.lean` —
   the Real structure `ccmRationalAdelicBruhatSimpleTensorKRealEven.sigma`, its involutivity
   `ccmRationalAdelicBruhatSimpleTensor_sigma_sq`, and the endpoint laws
   `ccmRationalAdelicBruhatZeroEval_real`, `ccmRationalAdelicBruhatIntegral_real`.
-- `RHTower/DeningerThreeTermOperations.lean` — `DeningerThreeTermHom`, `H1map`, `H1map_mk`.
+- `RHTower/Deninger/DeningerThreeTermOperations.lean` — `DeningerThreeTermHom`, `H1map`, `H1map_mk`.
 - `HTGeometry/GaussianSchwartz.lean` — `gaussianSchwartz`.
 - From mathlib: `Submodule.dualAnnihilator`, `Submodule.dualQuotEquivDualAnnihilator`,
   `LinearMap.exists_extend`, `LinearMap.quotKerEquivOfSurjective`, `Submodule.quotEquivOfEq`.
@@ -139,8 +139,8 @@ remain open.
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean  # clean
-lake build GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyVerticalGauge          # green
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRationalAdelicPrimeIsotropyVerticalGauge.lean  # clean
+lake build GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyVerticalGauge          # green
 ```
 
 `#print axioms` on `ccmRationalAdelicPrimeVerticalGauge_classification`,

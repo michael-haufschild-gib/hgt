@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PositiveObserverCovarianceLaw
 import GaloisForLFunctions.HTGeometry.ClosedHyperplaneInverse
-import GaloisForLFunctions.RHTower.SuzukiDiagonalResolventInstantiation
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiDiagonalResolventInstantiation
 
 /-!
 # Positive observer compact-resolvent and escaping-lift law

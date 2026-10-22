@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticMeanSmall
 import GaloisForLFunctions.RHTower.WeilWorkSingularArithmeticPositiveEuler
 import GaloisForLFunctions.RHTower.WeilFullConeDeviationResidue
-import GaloisForLFunctions.RHTower.DeningerAbelianLimit
-import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelianLimit
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelSummation
 import Mathlib.Analysis.PSeries
 
 /-!

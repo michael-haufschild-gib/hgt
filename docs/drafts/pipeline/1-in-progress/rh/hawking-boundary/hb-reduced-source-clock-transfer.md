@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress.
 - **Status:** analytical finite-domain identity. No new Lean theorem is claimed. Complete physical extinction and RH remain unproved.
-- **Inputs:** [two-sided source reduction](../../hb-two-sided-source-current-reduction.md), [original optical coordinates and clock](../../hb-optical-source-tail.md), [native characteristic contacts](../../hb-causal-horizon-circle-kernel.md).
+- **Inputs:** [two-sided source reduction](hb-two-sided-source-current-reduction.md), [original optical coordinates and clock](hb-optical-source-tail.md), [native characteristic contacts](hb-causal-horizon-circle-kernel.md).
 
 The chain is literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. The hard target is the complete `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes and all physical faces retained. This calculation attacks the previously unevaluated compact-onset portion of its reduced SV–SV source bulk.
 
@@ -180,6 +180,6 @@ Restore the actual common factor
 
 The immediate cancellation conjecture is that this explicit `P_K` bulk, its characteristic contacts and its terminal integral combine with those fixed physical currents to extinguish the complete action coefficient. That cancellation is not established here. For a static-time truncation, substitute the actual radius-dependent ingoing cutoff before radial integration and keep the resulting geometry of the temporal face.
 
-The [spin-two primitive transfer](../../hb-spin-two-kernel-transfer.md) gives another exact analytical representation of the same finite reduced-source bulk: transfer the spin-two angular weight first, retaining both onset factors in `D_V`. Its characteristic boundary vanishes even on the direct coincident-radius diagonal; the original terminal source Wronskian remains explicitly inside the resulting coefficient. The primitive is checked for the actual complex-degree scalar Riemann kernel in Lean. Full native-circle formalization and comparison with the physical boundary currents remain open.
+The [spin-two primitive transfer](hb-spin-two-kernel-transfer.md) gives another exact analytical representation of the same finite reduced-source bulk: transfer the spin-two angular weight first, retaining both onset factors in `D_V`. Its characteristic boundary vanishes even on the direct coincident-radius diagonal; the original terminal source Wronskian remains explicitly inside the resulting coefficient. The primitive is checked for the actual complex-degree scalar Riemann kernel in Lean. Full native-circle formalization and comparison with the physical boundary currents remain open.
 
 This is an analytical result only. No numerical experiment, Lean build, axiom audit, or frontier-map edit was performed for this card.

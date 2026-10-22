@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaRelativeTail
-import GaloisForLFunctions.RHTower.HedenmalmIntervalAnomaly
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmIntervalAnomaly
 
 /-! # A lower tail bound for the actual theta CDF
 

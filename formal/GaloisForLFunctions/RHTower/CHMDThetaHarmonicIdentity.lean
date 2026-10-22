@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CHMDPolarJumpForm
-import GaloisForLFunctions.RHTower.ThetaCuspPrimeArchSourceEquation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPrimeArchSourceEquation
 import GaloisForLFunctions.RHTower.XiSliceHusimiHeatDictionary
 
 /-!

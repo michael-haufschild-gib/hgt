@@ -5,7 +5,7 @@
 - **Type:** `[POSITIVE SURVIVOR] [THEOREM]`
 - **Frontier:** `SUZUKI-FE-REFLECTED-WALL-WARD-ASSEMBLY`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiApertureDressedMarkedCompoundCofinal.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureDressedMarkedCompoundCofinal.lean`
 
 ## Goal
 

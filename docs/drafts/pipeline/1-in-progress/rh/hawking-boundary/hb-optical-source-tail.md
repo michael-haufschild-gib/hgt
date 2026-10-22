@@ -4,7 +4,7 @@ Status: analytical reduction of the mixed source pairing. The actual radial prim
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hard target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes. This calculation attacks the SV–SV source pairing exposed by the [complete-current transgression](../../hb-mixed-complete-current.md). It evaluates its radial integral instead of adding a vanishing-pairing assumption. The finite horizon expression and its contacts remain those in [the circle cancellation card](../../hb-causal-circle-taylor-cancellation.md).
+The hard target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes. This calculation attacks the SV–SV source pairing exposed by the [complete-current transgression](hb-mixed-complete-current.md). It evaluates its radial integral instead of adding a vanishing-pairing assumption. The finite horizon expression and its contacts remain those in [the circle cancellation card](hb-causal-circle-taylor-cancellation.md).
 
 ## Conjecture: source-adapted optical time removes the radial complex powers
 

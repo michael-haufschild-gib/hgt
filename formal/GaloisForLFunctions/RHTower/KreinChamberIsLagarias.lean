@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmHankelKreinChamber
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmHankelKreinChamber
 import GaloisForLFunctions.RHTower.NoDiscreteInvariant
 
 /-!

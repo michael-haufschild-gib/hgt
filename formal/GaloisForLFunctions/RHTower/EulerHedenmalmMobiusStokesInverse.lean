@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.EulerHedenmalmGammaStokesTransgression
 import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
 
 /-!
 # The ordinary Euler and Möbius dilation inverse of the anti-causal Gamma mode

@@ -7,7 +7,7 @@
 - **Parents:**
   `absolute-euler-paired-cumulative-critical-error-current-law.md`,
   `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm/ccm-screw-kernel-positivity-improving-breakdown.md`, and
-  `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinCompletedError.lean`, and
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinCompletedError.lean`, and
   `formal/GaloisForLFunctions/RHTower/XiShiftPrimeExposure.lean`
 - **Statement:** On the complete rational damped-sine core, the compensated digamma form and the
   cumulative critical prime current combine into one classically integrable current.  Its

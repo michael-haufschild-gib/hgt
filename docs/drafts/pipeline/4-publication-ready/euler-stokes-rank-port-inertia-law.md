@@ -324,5 +324,5 @@ the partially resolved categorical core above, not hidden inside this finite com
   `StokesGlobalPuiseuxWittLaw.lean`.
 - Direct checks of both modules pass. Axiom audit reports only standard `propext`,
   `Classical.choice`, and `Quot.sound`. Repository-wide formal lint reaches unrelated existing
-  umbrella error: `GaloisForLFunctions.RHTower.DeningerStageZeroCohomology` is unreachable from
+  umbrella error: `GaloisForLFunctions.RHTower.Deninger.DeningerStageZeroCohomology` is unreachable from
   `RHTower` umbrella; no Stokes-module lint violation was reported before that gate.

@@ -113,7 +113,7 @@ existing informational `ring_nf` hint. Formal indices contain all 14
 theorems and two public definitions; name-collision and diff checks passed.
 All owned Lean and search processes finished.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusParameterGenerator.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusParameterGenerator.lean`.
 - Closed capstone: `RHTower.pwGammaMobiusTilt_entire_generator_closed`.
 - Actual derivative: `pwGammaMobiusTilt_hasDerivAt`.
 - Euler identification: `pwGammaMobiusTilt_hasDerivAt_euler_zero`.

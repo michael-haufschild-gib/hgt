@@ -45,14 +45,14 @@ Search date: 2026-08-28. Primary-source search covered AIME (`arXiv:2112.11168`)
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity`
 
 All declarations are closed Lean proofs. No new axioms, `sorry`, `admit`, `opaque`, or `unsafe` declarations are introduced.
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity`: passed, 12,750 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelThresholdRigidity`: passed, 12,750 jobs.
 - `#print axioms` for all four public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC46 error. Global lint remains red only on unrelated pre-existing or concurrently added unreachable owned modules.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCofinalFloorCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMCofinalFloorCriterion
 
 /-!
 # The square mass is positive whenever it is nonzero

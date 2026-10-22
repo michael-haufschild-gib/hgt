@@ -176,7 +176,7 @@ singular endpoint/Fourier regularity defect, not another reflected trace.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerSecondaryCollarDefect.lean`, together with
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSecondaryCollarDefect.lean`, together with
 `DeningerCollarExchange.lean` and `DeningerMeyerPeriodization.lean`.  Axiom audit for every
 declaration: `propext, Classical.choice, Quot.sound`.
 
@@ -199,7 +199,7 @@ declaration: `propext, Classical.choice, Quot.sound`.
 ### Also done
 
 - **The period-uniform periodization estimate** —
-  `formal/GaloisForLFunctions/RHTower/DeningerPeriodizationFundamentalBound.lean`.  On one
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPeriodizationFundamentalBound.lean`.  On one
   fundamental interval `0 ≤ t ≤ L` the lattice point `t + jL` is at distance at least `(|j|-1)L`
   from the origin (`deningerLatticeDistance_ge`), so the lattice sum is majorised by the geometric
   series `q_{1,0}(h) r^{|j|-1}` with `r = e^{-L}`, whose total is `q_{1,0}(h)(1 + 2/(1-r))`
@@ -207,30 +207,30 @@ declaration: `propext, Classical.choice, Quot.sound`.
   **`deningerPeriodizationSum_norm_le_period`: `‖Per_L h(t)‖ ≤ 5 q_{1,0}(h)`, uniformly in the
   period.**  The crude estimate, which only uses `|t| ≤ L`, carries a factor `e^{L} = q` and makes
   the all-prime series diverge; this refinement is what makes `(5)` converge.
-- **`(5)` finiteness** — `formal/GaloisForLFunctions/RHTower/DeningerAllPrimeFloquetEnergy.lean`:
+- **`(5)` finiteness** — `formal/GaloisForLFunctions/RHTower/Deninger/DeningerAllPrimeFloquetEnergy.lean`:
   `deningerFloquetTerm` is `q^{-2}∫_0^{log q}‖Per_{log q}h‖²`,
   **`deningerFloquetTerm_le`** bounds it by `25 q_{1,0}(h)²(log q)/q²`, and
   `deningerLogDivSq_summable` (comparison with `∑ n^{-3/2}` through `log n ≤ 2√n`) gives
   **`deningerFloquetTerm_summable`**.  `deningerFloquetEnergy` is the sum, with
   `deningerFloquetEnergy_le` the domination `E(h) ≤ 25 q_{1,0}(h)² ∑_q (log q)/q²`.
-- **`(5)` continuity** — `formal/GaloisForLFunctions/RHTower/DeningerFloquetEnergyContinuity.lean`:
+- **`(5)` continuity** — `formal/GaloisForLFunctions/RHTower/Deninger/DeningerFloquetEnergyContinuity.lean`:
   periodization is additive and `|‖u‖²-‖v‖²| ≤ ‖u-v‖(‖u‖+‖v‖)`, so
   **`deningerFloquetEnergy_sub_le`** is the Lipschitz estimate
   `|E(h)-E(k)| ≤ 25 C q_{1,0}(h-k)(q_{1,0}(h)+q_{1,0}(k))`, and
   **`deningerFloquetEnergy_continuous`** follows by squeezing.  On the collar pair space,
-  `formal/GaloisForLFunctions/RHTower/DeningerSecondaryFloquetContinuity.lean` proves
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerSecondaryFloquetContinuity.lean` proves
   `deningerSecondaryDefectSource_seminorm_le` (`q_{1,0}(d_sec) ≤ q_{2,0}(h₊)+q_{2,0}(h₋)` — the
   half-density weight costs half a unit of exponent, the reflection none) and hence
   **`deningerSecondaryFloquetEnergy_continuous`**: `(5)` is continuous on `H_-²`.
 - **The `⟸` half of the radical at the level of `(5)`** —
-  `formal/GaloisForLFunctions/RHTower/DeningerAllPrimeFloquetRadical.lean`.  Every term is
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerAllPrimeFloquetRadical.lean`.  Every term is
   nonnegative, so a vanishing energy kills each term; `continuous_eq_zero_of_intervalIntegral_normSq`
   turns a zero integral of a continuous squared norm into pointwise vanishing on the open
   fundamental interval, and continuity plus periodicity spread that to the line
   (`deningerPeriodizationSum_eq_zero_of_floquetTerm`).  Cofinal prime tomography — now formalized on
   the companion card — then gives **`deningerFloquetEnergy_eq_zero_iff`: `E(h) = 0 ↔ h = 0`**.
 - **`(6)` ⟺ `(7)` at the level of the energy, and `(8)`** —
-  `formal/GaloisForLFunctions/RHTower/DeningerSecondaryFloquetEnergy.lean`.  The defect is the
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerSecondaryFloquetEnergy.lean`.  The defect is the
   half-density lift of `h₊ - J h₋`, hence a source cochain (`deningerSecondaryDefectSource`), so
   **`deningerSecondaryFloquetEnergy_eq_zero_iff`** reads: the all-prime secondary energy vanishes
   exactly on the reflected Calderón graph `h₊ = J h₋`.  Translation invariance of the energy

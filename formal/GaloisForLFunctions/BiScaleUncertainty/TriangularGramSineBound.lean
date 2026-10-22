@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMNilpotentContractionSine
+import GaloisForLFunctions.RHTower.CCM.CCMNilpotentContractionSine
 import GaloisForLFunctions.HTGeometry.StrictlyLoweringFiltration
 import GaloisForLFunctions.HTGeometry.FiniteExponentialHankel
 

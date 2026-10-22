@@ -246,7 +246,7 @@ exists, but does not construct that realization. Card therefore remains stage 2.
 ## Lean closure update (2026-08-24)
 
 Source-specific dependency is now closed without a nonexceptionality shortcut.
-`RHTower/SuzukiShiftedXiInfiniteKernelIdentification.lean` proves an exact Hermitian-cross-product
+`RHTower/Suzuki/SuzukiShiftedXiInfiniteKernelIdentification.lean` proves an exact Hermitian-cross-product
 identification of the literal canonical-product quotient with the phase-normalized infinite
 Blaschke quotient, then an invertible diagonal Cayley congruence from the literal regular Suzuki
 kernel to the arbitrary-inner generalized-Schur value kernel. Its capstone

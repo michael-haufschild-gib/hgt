@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.BurnolCoPoissonTopConormalPluckerMetricBridge
 import GaloisForLFunctions.RHTower.FrankensteinPluckerXiHilbertAdmission
-import GaloisForLFunctions.RHTower.HedenmalmGammaSewnBurnolHolonomyMassShell
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnBurnolHolonomyMassShell
 
 /-!
 # Burnol top-conormal landing in the Route-P physical holonomy

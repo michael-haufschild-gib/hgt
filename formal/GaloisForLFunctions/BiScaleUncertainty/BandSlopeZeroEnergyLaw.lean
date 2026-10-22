@@ -1,7 +1,7 @@
 import GaloisForLFunctions.BiScaleUncertainty.BandSpectrumZeroWidthLaw
 import GaloisForLFunctions.HTGeometry.LogarithmicResidueQuantization
 import GaloisForLFunctions.RHTower.CriticalChebyshevBoostChargeInjection
-import GaloisForLFunctions.RHTower.CCMUnitRieszMarkovTransform
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszMarkovTransform
 import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitRectanglePeeling
 import GaloisForLFunctions.RHTower.LiouvilleHyperbolaCutoffWide
 

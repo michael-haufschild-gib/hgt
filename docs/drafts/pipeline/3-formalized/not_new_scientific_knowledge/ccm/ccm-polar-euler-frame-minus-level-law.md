@@ -205,7 +205,7 @@ formalization of `(2)`--`(16)` would certify this bridge but would not prove the
 lower-frame bound `(17)` is indeed the open analytic core and stays open; what is now certified is
 the card's own exact assembly `(2)`–`(16)`, i.e. that the identity really is *frame minus level*.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMPolarEulerFrameLevel.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMPolarEulerFrameLevel.lean`
 (9 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

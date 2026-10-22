@@ -153,7 +153,7 @@ complex and the comparison `(5)` are absent from Lean, so no wrapper is added.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMEvansDeterminantLine.lean`, on new reusable infrastructure
+`formal/GaloisForLFunctions/RHTower/CCM/CCMEvansDeterminantLine.lean`, on new reusable infrastructure
 `formal/GaloisForLFunctions/HTGeometry/ComplexGramPlucker.lean`.  The earlier decision ("the
 analytic Fredholm complex and the comparison `(5)` are absent from Lean, so no wrapper is added")
 measured the wrong thing: `(3)`, `(4)` and the whole obstruction are finite linear algebra over `ℂ`,

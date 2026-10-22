@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM, `[BRIDGE]`
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMCriticalMellinCompletedError`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinCompletedError`
 
 ## Statement
 

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE KILL
 - **Source:** `ThetaCuspHawkingFZZParityPositiveNonlocalFEReflectionCollapse` · `HTGeometry.LocalExponentialTestClosure`
-- **Lean:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo`
+- **Lean:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo`
 - **Statement:** Every signed Fermi-weighted nonlocal kernel with a common bilateral exponential window and all reflected integer Mellin rows equals the reciprocal-delay target atom after cancellation; its undressed total variation is therefore at least the forced exponentially singular local weight.
 
 ## Goal and discharged burden
@@ -44,8 +44,8 @@ Total variation dominates this positive mass. Along reciprocal ultraviolet depth
 - Exact classification: `fermiWeightedMeasure_eq`
 - Undressed identity: `undressedNetMass_eq`
 - Sharp lower bound: `forcedWeight_le_undressedVariation`
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo.lean`
-- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo`
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo.lean`
+- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo`
 - Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - Umbrella: wired into `formal/GaloisForLFunctions/RHTower.lean`
 

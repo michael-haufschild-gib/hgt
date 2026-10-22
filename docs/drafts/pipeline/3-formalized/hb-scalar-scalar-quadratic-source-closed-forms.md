@@ -12,7 +12,7 @@ Row 35 of the HB ledger needs the three `++` blocks SS, SV, VV of the second-har
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea (index collapse over diagonal backgrounds + entry tables + power cancellation)
 - [x] 1 → 2  fully-proven: the proof is the Lean computation itself (`[PROVED HERE]` = Lean)
-- [x] 2 → 3  formalized: `RHTower.D4BMScalarLinearEquation.scalarJet_quadratic_einstein_0_0` … `_3_3`, `scalarJet_quadratic_ricci_trace`, `scalarJet_quadratic_ricci_i_j`, `scalarJet_quadratic_curvature_u_i_j`; module `ThetaCuspHawkingBMScalarScalarQuadraticSource`; `#print axioms` = propext, Classical.choice, Quot.sound; `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMScalarScalarQuadraticSource` green (2026-09-12)
+- [x] 2 → 3  formalized: `RHTower.D4BMScalarLinearEquation.scalarJet_quadratic_einstein_0_0` … `_3_3`, `scalarJet_quadratic_ricci_trace`, `scalarJet_quadratic_ricci_i_j`, `scalarJet_quadratic_curvature_u_i_j`; module `ThetaCuspHawkingBMScalarScalarQuadraticSource`; `#print axioms` = propext, Classical.choice, Quot.sound; `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMScalarScalarQuadraticSource` green (2026-09-12)
 - [ ] 3 → 4  publication-ready: not a target (no stage 4 for HB pieces)
 
 ## Approach
@@ -85,15 +85,15 @@ field-level statement. All modules at default heartbeats, standard axioms.
 
 ## Pass 8 (2026-09-13): onset trace and causal cut
 
-- `RHTower/ThetaCuspHawkingBMEvenSectorOnsetCurrent`: time component of the Einstein action current
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorOnsetCurrent`: time component of the Einstein action current
   between the `−` mode and the SS/VV `++` Laurent responses (`evenSector_onsetCurrent_SS/VV`), built from
   the per-family and per-source-jet closed forms with the radial module's jets.
-- `RHTower/ThetaCuspHawkingBMEvenSectorOnsetTrace`: at `μ = (s+1)(s+2)` with the actual Laurent
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorOnsetTrace`: at `μ = (s+1)(s+2)` with the actual Laurent
   coefficients, `r²·Ω^t = N(s,r)/(r⁴(r²−1)s(s+3))`, `N` even of degree six (`onsetDensitySS_eq`), Laurent
   in `u = 1/r` (`onsetDensitySS_substitution`); the continued Euler-integral trace is
   `Γ(½)·Γ((s−3)/2)/Γ((s−2)/2)·R(s)` with explicit rational `R` (`onsetTraceSS_eq`, `onsetTraceVV_eq`),
   no rational part, no logarithm.
-- `RHTower/ThetaCuspHawkingBMLaurentHorizonValue`: horizon values of the Laurent particulars, the
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMLaurentHorizonValue`: horizon values of the Laurent particulars, the
   radiation amplitude of the causal cut, at both physical rates.
 - Paper step recorded in the ledger (row 37): retarded response = Laurent particular; advanced response
   = particular minus `(y(1)/α)·h_N`; cut = `(y(1)/α)·h_N`; the cut lives in the quartic coefficient.
@@ -101,11 +101,11 @@ field-level statement. All modules at default heartbeats, standard axioms.
 
 ## Pass 9 (2026-09-13): the elementary skew cut
 
-- `RHTower/ThetaCuspHawkingBMEvenSectorSkewFamilies`, `…SkewSources`, `…SkewCurrent`: the two-rate
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFamilies`, `…SkewSources`, `…SkewCurrent`: the two-rate
   onset current between the complete `++` Laurent response (half-rate `s`) and the complete `−−`
   response (half-rate `−3−s`), assembled bilinearly from 169 atom-level identities
   (`evenSector_skewOnset_SS`).
-- `RHTower/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies`, `…SkewTraceSources`, `…SkewTrace`: at the
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTraceFamilies`, `…SkewTraceSources`, `…SkewTrace`: at the
   fundamental harmonic with all Laurent coefficients at their actual values, the density
   `skewDensitySS = N/(r⁶(r²−1)s(s+3))`, its Laurent form in `u = 1/r`, the horizon-logarithm
   coefficient `skewLogCoeff` (`skewLogCoeff_eq`), its oddness under the branch reflection
@@ -116,22 +116,22 @@ field-level statement. All modules at default heartbeats, standard axioms.
 
 ## Pass 10 (2026-09-13): the elementary skew cut, fully explicit
 
-- Radial two-rate chain `RHTower/ThetaCuspHawkingBMEvenSectorSkewRadial{Families,Sources,Current,TraceFamilies,TraceSources,Trace}`:
+- Radial two-rate chain `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewRadial{Families,Sources,Current,TraceFamilies,TraceSources,Trace}`:
   the radial component of the current between the `++` and `−−` Laurent responses; density
   `N/(r⁷ s(s+3))`, regular at the horizon.
-- `RHTower/ThetaCuspHawkingBMEvenSectorSkewLineSign`: on the critical line the horizon-log coefficient is
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewLineSign`: on the critical line the horizon-log coefficient is
   purely imaginary with negative imaginary part for `t² ≥ 3`.
-- `RHTower/ThetaCuspHawkingBMEvenSectorSkewFinitePart`: the Hadamard finite part of the bulk integral in
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFinitePart`: the Hadamard finite part of the bulk integral in
   the boundary variable — partial fractions, explicit primitive, FTC, exact split at the horizon cutoff,
   the finite part as a rational function plus `(b₁+d₁)·log 2`, and the limit theorem.
 - Result: `A = Q₀(s) + skewLogCoeff(s)·log(4/ε)` with explicit rational `Q₀`, both odd under the branch
   reflection; `Im A < 0` at every zero for every small horizon cutoff.
 - Audits: single-module `lake build` green for all eight new modules, standard axioms.
-- Pass 10 addendum: `RHTower/ThetaCuspHawkingBMEvenSectorSkewTiltDetection` — elementary tilt detection:
+- Pass 10 addendum: `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewTiltDetection` — elementary tilt detection:
   `2·Re(skewLogCoeff s)·|s(s+3)|² = (2 Re ρ − 1)·skewTiltCofactor` with the cofactor negative on the strip
   above height 35, so the real part vanishes exactly on the critical line there. `lake build` green,
   standard axioms.
-- Pass 10 addendum 2: `RHTower/ThetaCuspHawkingBMEvenSectorSkewFullTilt` — the regularized elementary cut
+- Pass 10 addendum 2: `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewFullTilt` — the regularized elementary cut
   `skewCut s ε = skewFinitePart s + skewLogCoeff s·log(4/ε)` with its link to the bulk-limit module, and
   tilt detection for every cutoff `ε ≤ 4/e` above height 58. `lake build` green, standard axioms.
 
@@ -342,7 +342,7 @@ producer, if any, is an independent evaluation of the cusp regularization face c
 
 ### Addendum pass 27 (2026-09-13): uniform kernel bound above the low band (Lean)
 
-- Module `RHTower/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean` (generator `gen_bulkbound.py`, standard
+- Module `RHTower/ThetaCusp/ThetaCuspHawkingBMEvenSectorSkewUniformBound.lean` (generator `gen_bulkbound.py`, standard
   axioms, default heartbeats, wired after `…SkewConstantFE`): `skewPlateauMu_line_abs_im_le : 50 ≤ t → t ≤ l →
   |Im K(−3/2+it, −l)| ≤ t⁹`, from `skewPlateauLineForm_bound_plus/minus` (`0 ≤ t⁹·D ± Form`) assembled from six
   exact region certificates (`t ≤ l ≤ 2t²`, `2t² ≤ l ≤ 8t²`, `l ≥ 8t²`; 49–68 terms each).

@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPacketApproximation
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskyTiltedAngularLeakage
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCuspPacketApproximation
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingTeukolskyTiltedAngularLeakage
 import GaloisForLFunctions.RHTower.XiEndpointSourceHeightGap
 
 /-!

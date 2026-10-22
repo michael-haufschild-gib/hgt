@@ -216,10 +216,10 @@ or Robin compression `(14)`.  Priority remains unverified beyond those sources.
 ## Formal status
 
 Exact topology and algebra are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeApertureObstruction.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeApertureObstruction.lean`.
 
 **Integral instantiation** is now formal too, in
-`formal/GaloisForLFunctions/RHTower/SuzukiGroundEdgeIntegralInstantiation.lean`.  The algebraic
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundEdgeIntegralInstantiation.lean`.  The algebraic
 average was stated for an abstract `moment` and `mass`; its analytic consumer needs those to be
 genuine integrals, and the step between is integration of a pointwise inequality against a
 nonnegative weight:

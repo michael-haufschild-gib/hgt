@@ -187,7 +187,7 @@ endpoint substitution alone would be a wrapper. No Lean file is added.
 Sturm–Liouville theory and the fixed-mode asymptotic `(5)` remain cited parents, but the card's own
 computations `(2)`, `(4)`, `(6)`, `(11)`–`(12)` are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMProlateEndpointJet.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMProlateEndpointJet.lean`
 (5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

@@ -11,9 +11,9 @@ The new public declarations are:
 
 | Module | Declaration | Result |
 | --- | --- | --- |
-| [FullNativeWave](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullNativeWave.lean) | `nativeResidualTimePrimitive_radial_hasDerivAt` | Actual radial first and second derivatives everywhere. |
+| [FullNativeWave](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullNativeWave.lean) | `nativeResidualTimePrimitive_radial_hasDerivAt` | Actual radial first and second derivatives everywhere. |
 | FullNativeWave | `nativeResidualTimePrimitive_joint_spatial_jets` | Joint continuity of the value and six pure spatial derivatives. |
-| [NativeJointEnergy](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeJointEnergy.lean) | `nativeTimePrimitive_frame_derivatives` | Both original hyperbolic frame derivatives on the closed cell. |
+| [NativeJointEnergy](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeJointEnergy.lean) | `nativeTimePrimitive_frame_derivatives` | Both original hyperbolic frame derivatives on the closed cell. |
 | NativeJointEnergy | `nativeTimePrimitive_chart_laplacian` | Exact original chart Laplacian in log-height coordinates. |
 | NativeJointEnergy | `nativeTimePrimitive_original_elliptic_equation` | Original operator applied to the native primitive equals complete forcing. |
 | NativeJointEnergy | `nativeTimePrimitive_compact_joint_energy` | Joint integrability and the exact cutoff energy identity. |
@@ -86,8 +86,8 @@ Own newest-first arXiv queries were `hypoellipticity` and `symmetrization`. [Cor
 ## Validation
 
 - Both scratch proofs passed with `lake env lean`, without warnings.
-- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullNativeWave`: 134 seconds, two jobs, 4091 cached local dependencies and 11 cached dependency packages.
-- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeJointEnergy`: 161 seconds, two jobs, 4134 cached local dependencies and the same 11 dependency packages.
+- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullNativeWave`: 134 seconds, two jobs, 4091 cached local dependencies and 11 cached dependency packages.
+- Final targeted build of `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeJointEnergy`: 161 seconds, two jobs, 4134 cached local dependencies and the same 11 dependency packages.
 - Each audit contained only its target source and cached dependencies. No existing dependency or umbrella was rebuilt.
 - Only the six new public theorems were checked with `#print axioms`; all depend only on `propext`, `Classical.choice`, `Quot.sound`.
 - Audited source and five emitted artifacts per target were installed byte for byte. The existing source had an original-source equality guard; the new module had a destination-absence guard.

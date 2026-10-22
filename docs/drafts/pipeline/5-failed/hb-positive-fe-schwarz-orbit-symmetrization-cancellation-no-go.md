@@ -28,7 +28,7 @@ receiver: universal vanishing is equivalent to RH. The complete weight classific
 physical positive averaging from vacuous signed cancellation.
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFESchwarzOrbitPeierlsTrace.lean`.
 
 ## Consequence
 

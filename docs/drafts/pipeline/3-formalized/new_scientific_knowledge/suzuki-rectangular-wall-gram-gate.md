@@ -6,7 +6,7 @@
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.SuzukiRectangularWallGramGate`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiRectangularWallGramGate`
 - **RH used:** no
 - **Computation used:** no
 
@@ -62,7 +62,7 @@ positive cells and adds polar--Gamma terms, so global compensation remains RH-be
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiRectangularWallGramGate.lean` — PASS;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularWallGramGate.lean` — PASS;
 - final audit:
   `lake build GaloisForLFunctions.RHTower.RiemannHypothesisSOTA2026` — PASS, `9480/9480`;
 - axiom surface of six capstones:

@@ -178,7 +178,7 @@ vertical differential alone.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerChainLiftObstruction.lean`.  Axiom audit for every
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerChainLiftObstruction.lean`.  Axiom audit for every
 declaration: `propext, Classical.choice, Quot.sound`.
 
 - `deningerChainLiftObstruction` — **`(3)`: the obstruction `Ω_{μ,Γ}`**, the fixed Möbius--Fourier

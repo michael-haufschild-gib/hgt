@@ -49,7 +49,7 @@ negative energy and their real zeros need not approach the zeta zeros near an of
 ## MUST-789 — unconditional at every aperture (2026-10-06)
 
 `RHTower.CCMRealRootedGround.exists_realRooted_polarGround` (module
-`RHTower/CCMRestrictedWeilRealRootedGroundState`, built, `lake --old env lean` clean, axioms
+`RHTower/CCM/CCMRestrictedWeilRealRootedGroundState`, built, `lake --old env lean` clean, axioms
 `propext, Classical.choice, Quot.sound`). On the full CCM form domain at every aperture `a > 0`:
 the polar ground subspace is finite-dimensional (`finiteDimensional_groundSubmodule`), and some
 nonzero polar ground state has only real transform zeros off `±i/(4π)`. Ingredients: the
@@ -60,7 +60,7 @@ gone. What remains for RH is the localization criterion RW-LOC-HURWITZ (paper).
 
 ## MUST-790 — positive quadrature at ground-state zeros (2026-10-06)
 
-`RHTower.CCMGroundQuadrature` (module `RHTower/CCMRestrictedWeilGroundZeroQuadrature`, built, audit
+`RHTower.CCMGroundQuadrature` (module `RHTower/CCM/CCMRestrictedWeilGroundZeroQuadrature`, built, audit
 clean, axioms `propext, Classical.choice, Quot.sound`): Euler–Lagrange `excessForm_eq_zero_of_ground`,
 zero-quotient orthogonality `excessForm_zeroQuotient_orthogonal`, quadrature `quadrature_le`, and
 `exists_realRooted_quadrature` (real-rooted ground state + positive weights on any finite set of its
@@ -68,7 +68,7 @@ zeros with `Σρ|ĝ(x)|² ≤ Q(g) − μ_a‖Jg‖²`). `exists_div` was genera
 included) via the bound `|ĝ| ≤ |f̂| + C·1_{[x₀−1,x₀+1]}` in the form measure.
 
 ## MUST-794 (2026-10-06): even-sector cross-rooted ground states
-- Module `RHTower/CCMRestrictedWeilEvenSectorCrossZeros.lean` (namespace `RHTower.CCMEvenSector`; standard axioms; `lake --old build` green; wired after `CCMRestrictedWeilGroundParityCrossing`).
+- Module `RHTower/CCM/CCMRestrictedWeilEvenSectorCrossZeros.lean` (namespace `RHTower.CCMEvenSector`; standard axioms; `lake --old build` green; wired after `CCMRestrictedWeilGroundParityCrossing`).
 - Statement: at every aperture the even polar ground energy `μᵉ_a` is attained. The even ground level is finite-dimensional, and some even ground state has transform zeros only on `ℝ ∪ iℝ` (off `w_{±1/2}`).
 - Literature comparison:
   - Connes–van Suijlekom (CMP 406 (2026) 312, Thm 6.1) assume a simple, isolated, even minimum.
@@ -77,7 +77,7 @@ included) via the bound `|ĝ| ≤ |f̂| + C·1_{[x₀−1,x₀+1]}` in the form 
   - With MUST-787–794 the Hurwitz half of their programme needs no simplicity or parity hypothesis. Only the convergence of the even generators to Ξ remains.
 
 ## MUST-795 (2026-10-06): source-locked strip receiver
-- Module `RHTower/CCMEvenGroundXiStripConvergenceRH.lean` (namespace `RHTower.CCMXiStrip`; standard axioms; `lake --old build` green; wired after `CCMRestrictedWeilEvenSectorCrossZeros`).
+- Module `RHTower/CCM/CCMEvenGroundXiStripConvergenceRH.lean` (namespace `RHTower.CCMXiStrip`; standard axioms; `lake --old build` green; wired after `CCMRestrictedWeilEvenSectorCrossZeros`).
 - `riemannHypothesis_of_evenGround_strip_convergence`: even ground states with cross-rooted transforms whose normalized transforms converge to `XiC` on `\|Im z\| < ½` give RH.
 - Reusable: `zero_mem_closed_of_tendstoLocallyUniformlyOn` (Hurwitz closed-locus transfer on open sets) and `differentiable_unitaryLaplace`.
 
@@ -101,7 +101,7 @@ included) via the bound `|ĝ| ≤ |f̂| + C·1_{[x₀−1,x₀+1]}` in the form 
   - For Connes's own objects, an unconstrained analogue of MUST-794 would be needed.
 
 ## MUST-797 (2026-10-06): the unconstrained form (Connes's `QW_λ`)
-- Module `RHTower/CCMRestrictedWeilFullFormRealRootedGround.lean`. Namespace `RHTower.CCMFullRealRootedGround`; standard axioms; `lake --old build` green; wired after `CrossRootedPolarZeroXiStripObstruction`.
+- Module `RHTower/CCM/CCMRestrictedWeilFullFormRealRootedGround.lean`. Namespace `RHTower.CCMFullRealRootedGround`; standard axioms; `lake --old build` green; wired after `CrossRootedPolarZeroXiStripObstruction`.
 - `exists_realRooted_fullGround`: at every aperture, some nonzero ground state of the unconstrained form (bottom `ccmRestrictedWeilGroundEnergy`) has only real transform zeros.
 - `realRooted_of_finrank_eq_one`: a simple ground level is real-rooted, of either parity.
 - `riemannHypothesis_of_fullGround_strip_convergence`: the receiver for Connes's objects.

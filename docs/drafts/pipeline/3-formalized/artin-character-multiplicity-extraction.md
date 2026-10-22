@@ -51,7 +51,7 @@ target-equivalent proposition interface.
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinCharacterMultiplicity.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinCharacterMultiplicity.lean`.
 - Extractors: `genuineMultiplicity`, `virtualMultiplicity`.
 - Exact cast theorems: `genuineMultiplicity_cast`, `virtualMultiplicity_cast`.
 - Biadditivity and negation: `virtualMultiplicity_add_left`,
@@ -61,7 +61,7 @@ target-equivalent proposition interface.
   `virtualMultiplicity_toVirtual_nonneg`.
 - Monomial specialization: `monomialMultiplicity`, `monomialMultiplicity_add`,
   `monomialMultiplicity_genuine_nonneg`.
-- Source check: `lake env lean GaloisForLFunctions/RHTower/ArtinCharacterMultiplicity.lean`.
-- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.ArtinCharacterMultiplicity`.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinCharacterMultiplicity.lean`.
+- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.Artin.ArtinCharacterMultiplicity`.
 - `#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

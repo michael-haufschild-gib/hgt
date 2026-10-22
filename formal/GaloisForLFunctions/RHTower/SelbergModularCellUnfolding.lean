@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergCompactPeriodization
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompactModularPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompactModularPeriodization
 import GaloisForLFunctions.HTGeometry.ModularStripUnfolding
 
 /-!

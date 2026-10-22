@@ -62,4 +62,4 @@ The normalized response is identified afterward: the original integral agrees ne
 
 ## Next direct attack
 
-[Original cutoff matching](../../fzz-p-plane-screening-cutoff-matching.md) specifies the next conjecture: assemble both local subtractions and the whole exterior, define the family with both collision poles explicitly cleared, prove its analytic dependence, and identify it with the continued Gamma expression. Only a proof matched to those original cutoffs can transport this marked calculation to physical exponents. The complete phase frame and mixed Ward producer remain unproved.
+[Original cutoff matching](fzz-p-plane-screening-cutoff-matching.md) specifies the next conjecture: assemble both local subtractions and the whole exterior, define the family with both collision poles explicitly cleared, prove its analytic dependence, and identify it with the continued Gamma expression. Only a proof matched to those original cutoffs can transport this marked calculation to physical exponents. The complete phase frame and mixed Ward producer remain unproved.

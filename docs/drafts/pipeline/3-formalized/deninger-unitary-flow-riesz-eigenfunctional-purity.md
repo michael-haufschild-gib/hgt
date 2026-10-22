@@ -128,7 +128,7 @@ Jordan filtrations, and zero multiplicities.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerUnitaryFlowRieszPurity.lean`, wired into the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerUnitaryFlowRieszPurity.lean`, wired into the
 `RHTower` umbrella.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `norm_eq_one_of_unitary_transposeEigenfunctional` — the theorem: for `V : H ≃ₗᵢ[ℂ] H` and

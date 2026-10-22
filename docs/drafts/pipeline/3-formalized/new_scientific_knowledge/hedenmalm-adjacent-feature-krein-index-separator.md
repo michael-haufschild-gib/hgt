@@ -100,7 +100,7 @@ finite separator theorem and no density conclusion is claimed here.
 
 ## Lean declarations
 
-Module `formal/GaloisForLFunctions/RHTower/HedenmalmAdjacentFeatureKreinIndexSeparator.lean`:
+Module `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAdjacentFeatureKreinIndexSeparator.lean`:
 
 - `adjacentCriticalFeatureEvaluationDet_eq` proves `(AF1)`;
 - `adjacentCriticalFeatureEvaluationDet_round_ne_zero` proves nearest-integer detection;

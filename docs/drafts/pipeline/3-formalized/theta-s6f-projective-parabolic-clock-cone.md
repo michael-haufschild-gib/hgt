@@ -167,6 +167,6 @@ remains unverified.
 ## Lean status
 
 `[LEAN-PROVED]` in
-`GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthProjectiveParabolicClockCone`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthProjectiveParabolicClockCone`.
 The exact module build and `#print axioms` audit pass; principal theorems depend only on
 `propext`, `Classical.choice`, and `Quot.sound`. No computational result occurs in the module.

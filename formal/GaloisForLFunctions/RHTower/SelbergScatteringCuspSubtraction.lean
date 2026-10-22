@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SelbergScatteringQuarterShiftSource
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCellGermExtension
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCuspPeriodization
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompactModularPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCellGermExtension
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCuspPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompactModularPeriodization
 
 /-!
 # Original Xi field with a genuine modular cusp subtraction

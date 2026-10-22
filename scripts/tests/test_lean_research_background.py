@@ -42,6 +42,33 @@ class BackgroundTests(unittest.TestCase):
                 self.assertTrue(any('--vectors' in call.args[0] for call in spawn.call_args_list))
                 self.assertFalse(status(root)['embeddings_paused'])
 
+    def test_compaction_runs_even_when_qdrant_serves_queries(self):
+        """Publication writes one small file per batch and `sync` reads those
+        files back, so compaction is required whoever serves the queries."""
+        from lean_research_background import run
+        from lean_research_corpus import cache_directory
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            directory = cache_directory(root)
+            directory.mkdir(parents=True)
+            (directory / 'qdrant.json').write_text('{}')
+            child = mock.Mock(returncode=0)
+            child.poll.return_value = 0
+            with mock.patch('lean_research_background.subprocess.Popen', return_value=child) as spawn, \
+                    mock.patch('lean_research_background.terminate_owned'), \
+                    mock.patch('lean_research_background.signal.signal'), \
+                    mock.patch('lean_research_background.small_shard_count', return_value=1000), \
+                    mock.patch('lean_research_runtime.RuntimeClient') as client:
+                client.return_value.__enter__.return_value.status.return_value = {'available': True}
+                run(root, once=True)
+                commands = [call.args[0] for call in spawn.call_args_list]
+            self.assertTrue(any('--compact' in command for command in commands))
+
+    def test_compaction_probe_tolerates_a_cache_without_a_database(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            self.assertEqual(small_shard_count(directory), 0)
+
     def test_denied_group_shutdown_reaps_direct_child(self):
         child = mock.Mock(pid=123456789)
         child.poll.return_value = None

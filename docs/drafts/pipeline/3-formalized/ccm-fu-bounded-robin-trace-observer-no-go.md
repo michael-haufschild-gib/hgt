@@ -26,7 +26,7 @@ Prove unconditionally:
 ## Result
 
 Both statements are proved unconditionally in
-`formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaBoundedRobinTraceNoGo.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaBoundedRobinTraceNoGo.lean`:
 
 - `eventually_linear_le_causalDepthGammaTraceNorm_mul_observerNorm_of_Ward_bddBelow`;
 - `no_uniformlyBounded_causalDepthGammaTrace_WardProducer`.

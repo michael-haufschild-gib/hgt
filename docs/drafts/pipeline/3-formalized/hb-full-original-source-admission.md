@@ -131,7 +131,7 @@ gives the actual unbounded-domain response and its frequency estimate.
 
 ## Lean surface and audit
 
-Canonical prefix: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJointSource`.
+Canonical prefix: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJointSource`.
 Namespace: `RHTower.D4BMJointSource`.
 
 Suffixes: `RadialUnit`, `Amplitude`, `LiftJets`, `GradientReduction`,

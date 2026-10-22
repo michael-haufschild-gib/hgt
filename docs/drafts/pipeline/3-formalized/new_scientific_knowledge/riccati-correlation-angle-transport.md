@@ -110,7 +110,7 @@ found no source stating the exact transport identity `(3)` or the implication fr
 
 - `formal/GaloisForLFunctions/HilbertMetric/RiccatiCorrelationAngle.lean`
 - theta-cusp specialization in
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspReflectedRiccatiAngle.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedRiccatiAngle.lean`
 
 - [x] certificate derivative identity;
 - [x] certificate nonnegativity from Riccati margin;

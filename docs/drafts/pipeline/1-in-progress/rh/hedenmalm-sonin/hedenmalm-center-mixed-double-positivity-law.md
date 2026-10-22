@@ -262,19 +262,19 @@ strict-positivity, integrability, and continuity theorems print only the standar
 `propext`, `Classical.choice`, and `Quot.sound`; no `sorryAx` occurs.
 
 The exact autocorrelation-path identification and full-aperture regularity are in
-`formal/GaloisForLFunctions/RHTower/HedenmalmAutocorrelationPath.lean`; their separate formalized
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmAutocorrelationPath.lean`; their separate formalized
 card is `../../../3-formalized/not_new_scientific_knowledge/hedenmalm-autocorrelation-path-boundary.md`.
 
 The general value-reflection law and its unconditional theta-source discharge are in
 `formal/GaloisForLFunctions/HTGeometry/PureStateProjectorTangentInertia.lean` and
-`formal/GaloisForLFunctions/RHTower/HedenmalmRankTwoTangentInertia.lean`.  They prove
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmRankTwoTangentInertia.lean`.  They prove
 `det G_T = -Delta(u,v)^2`, identify positive projective Gram energy with pair independence, and
 establish that the actual source compression is Hermitian, nonsingular, and neither positive nor
 negative semidefinite for every `|a|<1`.  This closes the ambient rank-two inertia obligation but
 does not prove the momentum-diagonal positivity equivalent to RH.
 
 The exact source-to-orientation boundary is in
-`formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.  It proves that
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCenterMixedOrientationBoundary.lean`.  It proves that
 the actual and pointed-moment Bezoutian diagonals equal the theta-orbit Krein current divided by
 `2a`, and that nonnegativity of the corresponding center-mixed Fourier current throughout the
 critical aperture is equivalent to RH.  It does not prove that current nonnegative.
@@ -783,7 +783,7 @@ finite-measure normalization is needed.  This is elementary positive-cone/Sylves
 matrix-valued positive-definite integration is classical parent theory, so no novelty claim is
 made.
 
-`RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean` now uses this theorem directly.  Its proof
+`RHTower/Hedenmalm/HedenmalmCenterMixedFourthJetCuspClosure.lean` now uses this theorem directly.  Its proof
 only discharges source facts already present in the corpus:
 
 - integrability of the weighted zeroth, second, and fourth reflection jets;
@@ -801,8 +801,8 @@ Focused verification passed:
 lake env lean GaloisForLFunctions/HilbertMetric/FourthCurvatureMixture.lean
 lake build GaloisForLFunctions.HilbertMetric.FourthCurvatureMixture
   8476/8476
-lake env lean GaloisForLFunctions/RHTower/HedenmalmCenterMixedFourthJetCuspClosure.lean
-lake build GaloisForLFunctions.RHTower.HedenmalmCenterMixedFourthJetCuspClosure
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCenterMixedFourthJetCuspClosure.lean
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedFourthJetCuspClosure
   8822/8822
 ```
 

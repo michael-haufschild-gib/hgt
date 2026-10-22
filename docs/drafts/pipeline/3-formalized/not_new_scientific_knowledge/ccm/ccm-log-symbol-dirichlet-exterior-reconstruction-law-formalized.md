@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-log-symbol-dirichlet-exterior-reconstruction-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMLogSymbolDirichlet.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMLogSymbolDirichlet.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 4 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

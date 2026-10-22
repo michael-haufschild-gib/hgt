@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaAllOrderCumulant
-import GaloisForLFunctions.RHTower.CCMRectangularFullObservableDivisorTomography
-import GaloisForLFunctions.RHTower.CCMPrimeGammaSourceDivisorTomography
-import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
-import GaloisForLFunctions.RHTower.CCMSmoothTwoEdgeWeil
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularFullObservableDivisorTomography
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeGammaSourceDivisorTomography
+import GaloisForLFunctions.RHTower.CCM.CCMCumulativeNegativeMassSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMSmoothTwoEdgeWeil
 
 /-!
 # Local-to-global RH tomography

@@ -199,7 +199,7 @@ chosen in advance, because that returns to predictive-state reconstruction relat
 behavior.
 
 The stronger active mathematical frontier is now source-consequence trirepresentability in
-[`consequence-trirepresentability-universal-law.md`](../../consequence-trirepresentability-universal-law.md).
+[`consequence-trirepresentability-universal-law.md`](consequence-trirepresentability-universal-law.md).
 Correlated reversal remains one finite amplitude shadow, not the selector of physical law.
 
 ## New-mathematics target

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiInfiniteKernelIdentification
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiInfiniteKernelIdentification
 import GaloisForLFunctions.RHTower.XiShiftEulerRegionIndex
 
 /-!

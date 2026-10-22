@@ -172,7 +172,7 @@ strictly larger distribution space.
 
 Module:
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCurvatureJordanAbscissaRigidity.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCurvatureJordanAbscissaRigidity.lean`
 
 Unconditional public results:
 
@@ -193,8 +193,8 @@ Unconditional public results:
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCurvatureJordanAbscissaRigidity.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCurvatureJordanAbscissaRigidity` passed.
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCurvatureJordanAbscissaRigidity.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCurvatureJordanAbscissaRigidity` passed.
 - Major theorem axiom audit: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint found no issue in this module and confirmed umbrella reachability; repository-wide lint
   remains red on unrelated concurrently unwired modules.

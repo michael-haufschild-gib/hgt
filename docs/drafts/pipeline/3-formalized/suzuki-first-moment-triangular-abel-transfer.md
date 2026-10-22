@@ -139,7 +139,7 @@ RH chain.
 ## Lean realization
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiFirstMomentTriangularAbelTransfer`
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstMomentTriangularAbelTransfer`
 
 Principal closed theorems:
 
@@ -155,7 +155,7 @@ Principal closed theorems:
   `riemannHypothesis_of_unitRieszCentralBarycenterNaturalBound`: record both complete RH chains.
 
 Direct `lake env lean` and targeted
-`lake build GaloisForLFunctions.RHTower.SuzukiFirstMomentTriangularAbelTransfer` pass. Axiom audit
+`lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiFirstMomentTriangularAbelTransfer` pass. Axiom audit
 for generic Abel transfer, exact decomposition, both premise transfers, and both RH capstones
 reports only `propext`, `Classical.choice`, and `Quot.sound`. Module is imported by RHTower
 umbrella. Global formal lint reports only unrelated concurrent umbrella-reachability failures; no

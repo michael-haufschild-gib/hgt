@@ -148,7 +148,7 @@ Only cancelled residual may be squared and passed cofinally.
 1. Prove `(1)--(3)` and sharp completion theorem unconditionally.
 2. Formalize those exact identities and connect them to compound Bezoutian theorem.
 3. ~~Complete absolute prime summability of exact current `(5)` in Lean.~~  **Done**, see
-   `formal/GaloisForLFunctions/RHTower/SuzukiCriticalAperturePrimeCurrent.lean`.
+   `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAperturePrimeCurrent.lean`.
 4. Insert exact current into marked Robin term of collective identity `(6)` before characteristic
    division.
 5. Match finite compound kernel against marked Robin plus completed causal Weil exterior and

@@ -11,13 +11,13 @@ formal/GaloisForLFunctions/HTGeometry/EntireInterpolation.lean
 formal/GaloisForLFunctions/HTGeometry/EntireBezout.lean
 formal/GaloisForLFunctions/HTGeometry/PrincipalConormal.lean
 formal/GaloisForLFunctions/HTGeometry/KroneckerApproxRecurrence.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmIntervalAnomaly.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaIntervalTransform.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeNormalFrame.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeBezout.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmTwoPrimeIdeal.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeChannels.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmPrimeFrameObstruction.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmIntervalAnomaly.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaIntervalTransform.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeNormalFrame.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeBezout.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeIdeal.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeChannels.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeFrameObstruction.lean
 ```
 
 All eleven are reachable from `GaloisForLFunctions.HTGeometry` and `GaloisForLFunctions.RHTower`.
@@ -102,10 +102,10 @@ cd formal
 lake env lean GaloisForLFunctions/HTGeometry/EntireInterpolation.lean
 lake env lean GaloisForLFunctions/HTGeometry/EntireBezout.lean
 lake env lean GaloisForLFunctions/HTGeometry/PrincipalConormal.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmTwoPrimeNormalFrame.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmTwoPrimeBezout.lean
-lake env lean GaloisForLFunctions/RHTower/HedenmalmTwoPrimeIdeal.lean
-lake build GaloisForLFunctions.RHTower.HedenmalmTwoPrimeIdeal
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeNormalFrame.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeBezout.lean
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoPrimeIdeal.lean
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmTwoPrimeIdeal
 ```
 
 All clean.  `#print axioms` on every declaration in the table reports only `propext`,

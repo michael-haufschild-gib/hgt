@@ -2365,10 +2365,10 @@ at the regularity the constructed probe actually has:
 - `conformalTransferPotential`, **`solvesPotentialWaveAt_conformalRescale`** — hence probes transfer,
   with `Ṽ = e^{-2σ}(V + a□σ + a²Γ(σ,σ))`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonRegularProbes.lean` carries the regularity through
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonRegularProbes.lean` carries the regularity through
 the probe interface (`RegularOpenProbes`, `regularOpenProbes_kgChartPotential`,
 `regularOpenProbes_of_smooth_spacetime`, `regularOpenProbes_conformalRescale`), and
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonConformallyFlat.lean` closes the loop:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonConformallyFlat.lean` closes the loop:
 
 - `kgEventInvCLM`, `kgEventInvCLM_split`, **`regularOpenProbes_of_smooth_chart`** — probes for every
   smooth potential of the flat chart, stated intrinsically, with no product form required;

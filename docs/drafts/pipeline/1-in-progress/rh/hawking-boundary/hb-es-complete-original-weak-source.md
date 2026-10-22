@@ -54,7 +54,7 @@ and RH remain open. The separated stationary metric theorem does not by
 itself reconstruct this time-dependent infinite future field.
 
 **Formal status:**
-[CompleteOriginalWeakSource](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCompleteOriginalWeakSource.lean),
+[CompleteOriginalWeakSource](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCompleteOriginalWeakSource.lean),
 namespace `RHTower.D4BMCompleteOriginalWeakSource`:
 `original_lift_weak_wave`, `reduced_forcing_target_pair`,
 `original_forcing_test_integrable`, `corrected_future_test_integrable`,

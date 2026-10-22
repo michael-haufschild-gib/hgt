@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
 
 /-!
 # The finite Möbius--log divisor paraproduct

@@ -97,7 +97,7 @@ division normalizes every nonzero character. **[PROVED HERE]**
 
 ## Formalization status
 
-`RHTower/SchanuelAffineRelativeExponentialClosure.lean` now proves unconditionally:
+`RHTower/Schanuel/SchanuelAffineRelativeExponentialClosure.lean` now proves unconditionally:
 
 1. two complex numbers algebraic over `Qbar(exp(alpha))` cannot be algebraically independent over
    `Qbar`;
@@ -112,14 +112,14 @@ the unconditional algebraic-vertex boundary: if `z` is algebraic and `exp(z)` is
 `Qbar(exp(alpha))`, finite Lindemann--Weierstrass forces `z in Q alpha`.  Hence every genuine
 relative-rigidity obstruction has transcendental `z`.
 
-`RHTower/SchanuelStageTwoIsogenyInvariance.lean` additionally proves that two-element extraction
+`RHTower/Schanuel/SchanuelStageTwoIsogenyInvariance.lean` additionally proves that two-element extraction
 failure survives every integral isogeny transform.  Its proof selects `x_0` or `exp(x_0)` as an
 unconditional transcendental anchor, makes every original generator algebraic over the resulting
 one-generator field, and transports algebraicity through integral additive coordinates and torus
 monomials.  No determinant hypothesis is needed for failure preservation; nonzero determinant is
 used only to preserve rational linear independence.
 
-`RHTower/SchanuelAffineCharacterNormalForm.lean` proves saturation of the concrete additive
+`RHTower/Schanuel/SchanuelAffineCharacterNormalForm.lean` proves saturation of the concrete additive
 character subgroup, primitive division, explicit Bezout completion to a determinant-one integral
 matrix, the forward normal form, and the global iff between existence of a nonzero-character
 stage-two failure and existence of a relative exponential-edge obstruction.  No rank-one
@@ -180,9 +180,9 @@ generator, so their Kähler module is already rank one and reproduces the defect
 ## Lean certificate
 
 Modules (all wired into the `GaloisForLFunctions.RHTower` umbrella and built green):
-`GaloisForLFunctions.RHTower.SchanuelAffineRelativeExponentialClosure`,
-`GaloisForLFunctions.RHTower.SchanuelStageTwoIsogenyInvariance`,
-`GaloisForLFunctions.RHTower.SchanuelAffineCharacterNormalForm`.
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelAffineRelativeExponentialClosure`,
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelStageTwoIsogenyInvariance`,
+`GaloisForLFunctions.RHTower.Schanuel.SchanuelAffineCharacterNormalForm`.
 
 | Card statement | Lean declaration |
 |---|---|

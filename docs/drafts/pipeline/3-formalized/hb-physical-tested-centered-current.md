@@ -134,7 +134,7 @@ Neither transfer produces complete physical-action orientation.
 ## Lean implementation and audit
 
 Four definitions and eight public theorems are in
-[ThetaCuspHawkingBMQuarticTestedNativeCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticTestedNativeCurrent.lean).
+[ThetaCuspHawkingBMQuarticTestedNativeCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticTestedNativeCurrent.lean).
 The implementation uses two narrow cached imports, explicit derivative and
 finite-integral equalities, typed integrability witnesses, and bounded local
 algebra. All 1,029 lines passed the assembled scratch without diagnostics at
@@ -143,7 +143,7 @@ certificate or axiom-printing step was used.
 
 Source SHA256:
 `76d58e156541c5ca69dffd1fdc3e5ec8e0a7b618b137b8ff8eb817f224dc201e`.
-The final isolated `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticTestedNativeCurrent`
+The final isolated `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticTestedNativeCurrent`
 passed in 153 seconds and published the exact matching leaf artifacts. One
 umbrella import is wired; no full or umbrella build was run. Generated index
 and lint results are recorded below.

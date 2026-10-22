@@ -5,7 +5,7 @@
 - **Type:** `[THEOREM] [POSITIVE CARRIER LAW] [BRIDGE]`
 - **Scientific status:** `[NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.CCMRectangularFiniteChannelNonDilution`
+  `GaloisForLFunctions.RHTower.CCM.CCMRectangularFiniteChannelNonDilution`
 
 ## Statement
 

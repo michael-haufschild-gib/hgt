@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WeilLagTwoSidedMeshSampling
 import GaloisForLFunctions.RHTower.PrimeLagLandauPowerSaving
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
 import GaloisForLFunctions.RHTower.WeilLagFunctionGrowthLower
 
 /-!

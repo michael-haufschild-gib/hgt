@@ -609,7 +609,7 @@ Internal search found the following separate ingredients:
   `RHTower/MobiusLaplaceMellinPlancherelBridge.lean`;
 - algebraic (D_{\rm anti}) decomposition in
   `RHTower/GibbsBatchParityCoarseGraining.lean`;
-- reflected WKB/Fisher identity in `RHTower/DeningerMobiusCriticalWKBSeam.lean`.
+- reflected WKB/Fisher identity in `RHTower/Deninger/DeningerMobiusCriticalWKBSeam.lean`.
 
 No internal theorem combines them into `(8)`, derives the odd-cube/rapidity laws `(16)`--`(19)`,
 proves terminal determinant transversality `(26)`--`(27)`, or identifies the sharp prefix threshold

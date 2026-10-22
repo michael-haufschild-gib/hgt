@@ -93,12 +93,12 @@ newly proved limit, rather than by its default value.
 
 ## Exact Lean scope
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCommonSourceGreen` adds
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCommonSourceGreen` adds
 `RHTower.D4BMCommonSourceGreen.sourceCutoffTrace_continuousOn`, with the actual
 fractional cutoff and original trace as public definitions. Every previously
 audited declaration is byte-for-byte unchanged.
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceTimeInterchange` provides,
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceTimeInterchange` provides,
 in namespace `RHTower.D4BMSourceTimeInterchange`:
 
 - `sourceTimeTruncatedTransfer_integrable`: genuine source-time integrability

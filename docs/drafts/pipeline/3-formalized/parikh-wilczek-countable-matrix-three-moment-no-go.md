@@ -54,7 +54,7 @@ Thus neither infinite support nor positive semidefiniteness prevents a countable
 ## Formal artifact
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo.lean`
 
 Principal declarations:
 
@@ -75,8 +75,8 @@ Wired into `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Verification
 
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo.lean` — pass.
-- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo` — pass.
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo.lean` — pass.
+- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekCountableMatrixThreeMomentNoGo` — pass.
 - Axiom audit: principal results use only `propext`, `Classical.choice`, and `Quot.sound`; no project axioms.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
 

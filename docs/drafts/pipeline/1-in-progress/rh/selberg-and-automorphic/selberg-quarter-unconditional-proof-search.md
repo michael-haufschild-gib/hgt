@@ -8,9 +8,9 @@
 
 ## Goal and current status
 
-**Latest steering:** the user resumed the full goal with a constructive conjecture/proof/pivot workflow. Work is now active in [the conjecturing-loop card](../../selberg-quarter-conjecturing-loop.md). The blocked status below records the earlier search-only audit, not the current task state. The new loop has proved and formalized an exact local geometric-interpolation equation and its translation obstruction.
+**Latest steering:** the user resumed the full goal with a constructive conjecture/proof/pivot workflow. Work is now active in [the conjecturing-loop card](selberg-quarter-conjecturing-loop.md). The blocked status below records the earlier search-only audit, not the current task state. The new loop has proved and formalized an exact local geometric-interpolation equation and its translation obstruction.
 
-The resumed objective does not prescribe a proof route. The full congruence spectral statement remains the goal; scalar analogues, finite-level results, and conditional implications are not substitutes. No proof has been obtained. The earlier symmetric-power search remains recorded in [its card](../../selberg-symmetric-power-unconditional-route.md); this resumption starts a fresh blocked audit.
+The resumed objective does not prescribe a proof route. The full congruence spectral statement remains the goal; scalar analogues, finite-level results, and conditional implications are not substitutes. No proof has been obtained. The earlier symmetric-power search remains recorded in [its card](selberg-symmetric-power-unconditional-route.md); this resumption starts a fresh blocked audit.
 
 **Research status: blocked after three consecutive resumed turns; full goal unachieved.** The native modular cusp operator, character-twist estimate, trace/monodromy candidates, and a newly located July 2026 modular-symbol route all leave an arithmetic exclusion theorem unproved. The third turn revalidated current source changes and the declaration index without finding a viable proof step. This card remains in progress because no route has been proved impossible or retired.
 
@@ -165,7 +165,7 @@ Current `HEAD` is `875d56442`. The diff from `2dca80eea` contains 145 formal sou
 
 The refreshed index was searched for `"selberg" "quarter"` (3 declarations / 2 modules) and `"maass"` (228 / 17, first 100 declarations retrieved), followed by `"symmetric power" "automorph"` (0), `"cuspidal" "positive"` (0), `"scattering" "regular"` (4 / 2), and `"twist" "nonvanish"` (0). These queries revalidate discovery, not a theorem of nonexistence. The scattering hits concern different analytic/physical carriers; no general-Maass exclusion was located.
 
-The new untracked `RHTower/ThetaCuspHawkingBMMixedSmoothCurrentLaplace.lean` was inspected through its continuation theorem. Its exact input is a `XiZeroCopy` with a fixed physical source and pointwise radial/angular arguments. It continues the actual switched source integral as an entire numerator divided by the source-frequency difference. It does not continue the full inverse or construct an all-congruence cuspidal spectral family. The accompanying `3-formalized/hb-original-wave-and-ingoing-source-continuation.md` explicitly retains the full retarded inverse and source-dependent cusp response as unfinished. These changes do not resolve any missing Selberg premise.
+The new untracked `RHTower/ThetaCusp/ThetaCuspHawkingBMMixedSmoothCurrentLaplace.lean` was inspected through its continuation theorem. Its exact input is a `XiZeroCopy` with a fixed physical source and pointwise radial/angular arguments. It continues the actual switched source integral as an entire numerator divided by the source-frequency difference. It does not continue the full inverse or construct an all-congruence cuspidal spectral family. The accompanying `3-formalized/hb-original-wave-and-ingoing-source-continuation.md` explicitly retains the full retarded inverse and source-dependent cusp response as unfinished. These changes do not resolve any missing Selberg premise.
 
 | Requirement | Authoritative evidence and outcome |
 |---|---|

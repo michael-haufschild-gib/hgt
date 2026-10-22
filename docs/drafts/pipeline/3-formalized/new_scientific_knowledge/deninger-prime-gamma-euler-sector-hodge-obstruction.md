@@ -125,7 +125,7 @@ because \(c\ne0\) and \(z-\overline z\ne0\).  Hence the functions differ. \(\squ
 
 ### All four assertions landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPrimeGammaEulerSectorObstruction.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeGammaEulerSectorObstruction.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPrimeGammaLowerPoint_im_lt`, `deningerPrimeGammaUpperPoint_im_gt` — **`(1)`**: strict

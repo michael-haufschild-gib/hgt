@@ -6,10 +6,10 @@
 - **Paper proof:** `./suzuki-gamma-wall-block-hardy-and-derivative-scattering.md`
 - **Lean (principal modules):**
   - `formal/GaloisForLFunctions/HTGeometry/WeightedHardyInequality.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripCarrierTwoSided.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaForcedStripHardy.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWallHardyBoundary.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWallCutoffCommutator.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripCarrierTwoSided.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaForcedStripHardy.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWallHardyBoundary.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWallCutoffCommutator.lean`
   - `formal/GaloisForLFunctions/RHTower/WallOneBlockEstimate.lean`
   - `formal/GaloisForLFunctions/RHTower/WallBlockSeries.lean`
   - `formal/GaloisForLFunctions/RHTower/GammaJumpMultiplier.lean`
@@ -40,7 +40,7 @@
   - `formal/GaloisForLFunctions/RHTower/WallInwardScatteringCharge.lean`
   - `formal/GaloisForLFunctions/RHTower/WallInwardScatteringCriterion.lean`
   - `formal/GaloisForLFunctions/RHTower/WallScatteringCriterionLine.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCutoffForcingIdentity.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCutoffForcingIdentity.lean`
 
 ## Formal content
 

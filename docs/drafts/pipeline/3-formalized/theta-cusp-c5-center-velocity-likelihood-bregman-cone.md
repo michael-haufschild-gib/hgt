@@ -55,7 +55,7 @@ replaces it with exact source-specific action barrier.
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`
 
 Key theorems:
 
@@ -69,8 +69,8 @@ Key theorems:
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone.lean`
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone.lean`
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFifthRootCurvatureVelocityLikelihoodBregmanCone`
 - selected `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`
 - no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` in module
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`

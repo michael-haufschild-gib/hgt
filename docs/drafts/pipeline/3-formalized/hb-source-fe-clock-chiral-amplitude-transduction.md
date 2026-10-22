@@ -6,7 +6,7 @@
 - **Source:** HC57 exact source-FE centered-QNM clock defect; phase-sensitive BM nonlinear
   mixed-horizon source projection
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction`
 - **Result:** One reflected coefficient of the HC57 clock defect is related by an explicit
   nowhere-zero multiplier to the actual phase-sensitive nonlinear BM source projection. Clock
   anticommutation failure is therefore a literal nonlinear source observable, with exact
@@ -70,9 +70,9 @@ transduction or RH-equivalent source identity. Search is bounded, not exhaustive
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction.lean`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction.lean`
   — passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction`
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEClockChiralAmplitudeTransduction`
   — passed (`12023/12023`).
 - `#print axioms` on all 11 public theorems — only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint reports no HC58 issue; repository-wide failure remains pre-existing unrelated

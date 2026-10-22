@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMClosedXiConformalKreinLaw
+import GaloisForLFunctions.RHTower.CCM.CCMClosedXiConformalKreinLaw
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationCofinalSourceSignGate
 
 /-!

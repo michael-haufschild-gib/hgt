@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilHilbertCore
-import GaloisForLFunctions.RHTower.DeningerArithmeticGeometricJetExhaustion
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticGeometricJetExhaustion
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
 
 /-!

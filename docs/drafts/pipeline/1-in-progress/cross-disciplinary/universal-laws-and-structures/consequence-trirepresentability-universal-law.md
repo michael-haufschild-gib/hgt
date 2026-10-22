@@ -442,7 +442,7 @@ orientation; and curvature forgets boundary self-law.
 The positive survivor is not three faithful copies. It is a minimal family of individually lossy
 reporters whose complete higher kernel intersection is trivial. Source succession must rotate
 what one reporter forgets into content visible to another. This correction is developed in
-[`jointly-conservative-future-shape-law.md`](../../jointly-conservative-future-shape-law.md).
+[`jointly-conservative-future-shape-law.md`](jointly-conservative-future-shape-law.md).
 
 The anti-numerology gap remains: joint conservativity alone does not imply equal capacity. A
 source-derived stationary role rotation, not an asserted equivalence, must prove the balance used

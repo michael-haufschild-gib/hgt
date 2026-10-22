@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPointwiseLocalPositivity
-import GaloisForLFunctions.RHTower.SuzukiExplicitScrewRegularKernel
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiExplicitScrewRegularKernel
 
 /-!
 # Curvature of Suzuki's pointwise Archimedean term

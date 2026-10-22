@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonFourierDecay
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonFourierDecay
 
 /-!
 # Weighted decay of a Fourier transform from finitely many derivatives

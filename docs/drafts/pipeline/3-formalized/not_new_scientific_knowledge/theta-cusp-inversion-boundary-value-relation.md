@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) / SOURCE VALUE-REFLECTION BRIDGE
 - **Scientific status:** `[PROVED] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
-- **Lean file:** `formal/GaloisForLFunctions/RHTower/ThetaCuspInversionBoundaryValue.lean`
+- **Lean file:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspInversionBoundaryValue.lean`
 - **Statement:** The completed Xi value is the exact anti-invariance defect of the one-sided
   theta boundary primitive under simultaneous spectral and logarithmic inversion.
 

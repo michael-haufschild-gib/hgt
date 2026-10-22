@@ -108,7 +108,7 @@ counterparts, and no Kerr theorem is used as a Lean premise.
 
 ## Lean verification
 
-Module: `formal/GaloisForLFunctions/RHTower/DeningerPairedPrimeGaussianSoninTransport.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPairedPrimeGaussianSoninTransport.lean`.
 258 lines, 18 public theorems, one private estimate, seven definitions.
 The complete scratch passed `lake env lean /tmp/route_l_paired_sonin_c39.lean`
 with no errors or warnings. Final leaf audit passed: only

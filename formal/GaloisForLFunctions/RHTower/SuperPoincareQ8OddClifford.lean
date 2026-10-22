@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SuperPoincareAlgebra
-import GaloisForLFunctions.RHTower.DeningerQ8RootNumberNegOneAutomorphisms
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8RootNumberNegOneAutomorphisms
 
 noncomputable section
 

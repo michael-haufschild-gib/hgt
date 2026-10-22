@@ -54,11 +54,11 @@ interface.
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinCharacterInduction.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinCharacterInduction.lean`.
 - Actual induced action: `inducedRepresentation`.
 - Generator theorem: `inducedRepresentation_character_mem_fdCharacterSet`.
 - Closure objects: `inducedGenuineCharacter`, `inducedVirtualCharacter`.
-- Source check: `lake env lean GaloisForLFunctions/RHTower/ArtinCharacterInduction.lean`.
-- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.ArtinCharacterInduction`.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinCharacterInduction.lean`.
+- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.Artin.ArtinCharacterInduction`.
 - `#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

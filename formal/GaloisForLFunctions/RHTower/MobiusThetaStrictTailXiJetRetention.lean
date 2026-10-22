@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGammaSixFullSourcePrincipalClass
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixFullSourcePrincipalClass
 import GaloisForLFunctions.HTGeometry.L1PeriodizationFourier
 
 /-!

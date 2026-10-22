@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.AbelianZetaGas.VonMangoldtEuler
 import GaloisForLFunctions.RHTower.RoutePPrimitiveCollisionSubquantum
 import GaloisForLFunctions.RHTower.XiWardCubicLogMomentEulerSource
 import GaloisForLFunctions.RHTower.XiMassPrimePowerVerticalIdeal
-import GaloisForLFunctions.RHTower.HedenmalmStokesCompletedResponseCovariantRenormalization
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesCompletedResponseCovariantRenormalization
 
 /-!
 # The Euler-depth Stokes lift and its moving cubic Gram

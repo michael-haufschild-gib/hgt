@@ -65,16 +65,16 @@ its rectangular Ward defect tends to negative infinity on `8n` for every width.
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.SuzukiTransitionCoreLinearCompensationNoGo`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreLinearCompensationNoGo`
 - Positive survivor: `RHTower.eventually_linear_le_correction_of_transitionCoreWardDefect_bddBelow`
 - Sublinear class kill: `RHTower.no_sublinear_transitionCore_rectangularWardProducer`
 - Actual-source escape: `RHTower.tendsto_suzukiRectangularWardDefect_completedGrowingRankCartanFission_eight_mul_atBot`
 - Route capstone: `RHTower.no_growingRankPositiveCartanFission_rectangularWardProducer`
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/SuzukiTransitionCoreLinearCompensationNoGo.lean` passed.
-- Targeted audit: `lake build GaloisForLFunctions.RHTower.SuzukiTransitionCoreLinearCompensationNoGo` passed (`11979/11979`).
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreLinearCompensationNoGo.lean` passed.
+- Targeted audit: `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiTransitionCoreLinearCompensationNoGo` passed (`11979/11979`).
 - Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella: imported by `GaloisForLFunctions.RHTower`.
-- Global formal lint reached unrelated pre-existing umbrella error: owned module `GaloisForLFunctions.RHTower.DeningerQ8ActualTwoAdicInertia` is not reachable. New module has no forbidden declaration and is reachable from umbrella.
+- Global formal lint reached unrelated pre-existing umbrella error: owned module `GaloisForLFunctions.RHTower.Deninger.DeningerQ8ActualTwoAdicInertia` is not reachable. New module has no forbidden declaration and is reachable from umbrella.
 
 ## Conjecturing loop
 

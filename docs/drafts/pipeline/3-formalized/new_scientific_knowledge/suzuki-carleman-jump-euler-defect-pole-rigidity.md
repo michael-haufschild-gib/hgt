@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [FORMALIZED] [NOVELTY UNVERIFIED] [NOT AN RH PROOF]`
 - **Parents:** `suzuki-even-carleman-pole-carrier`,
   `suzuki-anchored-euler-wronskian-escape-elimination`
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiCarlemanJumpEulerDefectWeld`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanJumpEulerDefectWeld`
 - **RH used:** no
 - **Computation used:** no
 

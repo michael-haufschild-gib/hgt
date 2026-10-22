@@ -35,7 +35,7 @@ The arithmetic reporter forces a genuine signature wall: positive and negative r
 
 ## Lean certificate `[LEAN-PROVED]`
 
-- Module: `GaloisForLFunctions.RHTower.CCMActualHeadMatchedAllFrequencyMetricLineTransportNoGo`
+- Module: `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedAllFrequencyMetricLineTransportNoGo`
 - Positive survivor: `ccmActualHeadMatchedPhasePrimePowerReporterFaithfulLine_signatureSplit`, `ccmActualHeadMatchedPhasePrimePowerMetricLineTransport_not_reachable`
 - Route kill: `ccmActualHeadMatchedPhaseConnectedMetricLineWardRouteKilled`
 - Direct check and target-only build: pass.

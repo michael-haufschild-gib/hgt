@@ -62,13 +62,13 @@ The broad `Darboux Volterra` search found `D4BMSpinTwoKernel.primitive_volterra`
 
 ## Lean certificate
 
-The new [ThetaCuspHawkingBMNativeCuspJets.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeCuspJets.lean) exposes `nativeJet`, `nativeIntegrandJet`, `circleRemainder`, and three unconditional source-specific theorems in `RHTower.D4BMNativeCuspJets`:
+The new [ThetaCuspHawkingBMNativeCuspJets.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeCuspJets.lean) exposes `nativeJet`, `nativeIntegrandJet`, `circleRemainder`, and three unconditional source-specific theorems in `RHTower.D4BMNativeCuspJets`:
 
 - `nativeCuspJet_integral`: every ordered native derivative equals its actual integrand derivative averaged with the original measure.
 - `nativeCuspJet_rapid_bound`: for every derivative word, order `N`, and fixed `D>=0`, one constant gives `|jet(d,X,k)| <= B exp(N(D-k))` whenever `0<=d<=D<=k`, uniformly in `X`.
 - `nativeCuspJet_weighted_tendsto_zero`: `exp(Nk) jet(d(k),X(k),k)` tends to zero for arbitrary paths `d(k)` in `[0,D]` and arbitrary `X(k)`.
 
-The existing [source-jet module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSquareCuspJets.lean) adds `squareRemainder_jet_smooth`; its previously audited declaration prefix is unchanged.
+The existing [source-jet module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSquareCuspJets.lean) adds `squareRemainder_jet_smooth`; its previously audited declaration prefix is unchanged.
 
 Scratch `lake env lean` checks passed. Final exact-module builds passed without warnings: the source-jet extension in 135 seconds (three jobs), and the native module in 90 seconds (four jobs). The isolated audit froze 3,944 cached own-module imports and their available artifacts. No dependency or umbrella build ran. Only the four new public theorems were axiom-audited; each reported exactly `propext`, `Classical.choice`, and `Quot.sound`. Both verified sources and ten artifacts were installed byte-identically, and the new native module was wired into `RHTower.lean`. Corpus indexing completed, formal lint passed, and edited local links, whitespace and target umbrella imports passed. All owned search and Lean processes reached terminal status; owned scratch and search files were removed.
 

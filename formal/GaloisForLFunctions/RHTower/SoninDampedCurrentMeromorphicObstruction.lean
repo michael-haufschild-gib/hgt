@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SoninDampedPrimePolarCurrent
 import GaloisForLFunctions.HTGeometry.L2MeromorphicAlgebra
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAbelCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAbelCompleteness
 import Mathlib.Analysis.Meromorphic.Order
 import Mathlib.Analysis.Calculus.ParametricIntegral
 

@@ -85,13 +85,13 @@ constant `7936/21125`.
 
 ## Lean certificate
 
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean`
 - **Trace identity:** `criticalFeaturePrimeGammaOffLineExcess_eq_tsum_offLineHolomorphicEnergy`
 - **Local sharp charge:** `directThreeCenterCriticalFeatureHolomorphicCharge_lower`
 - **Finite packet bound:** `finite_strictRight_card_mul_directThreeCenterCharge_le_offLineLatticeBudget`
 - **Receiver:** `three_quarters_line_of_directThreeCenter_primeGammaOffLineLatticeBudget`
 - **Reachability:** imported by `formal/GaloisForLFunctions/RHTower.lean`
-- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean` passed. No separate Lake build rerun because adjacent RHTower leaf build replayed 13,138 cached jobs; direct-file checking validates this unchanged pre-existing module without another large replay.
+- **Verification (2026-08-29):** `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureDirectThreeCenterHolomorphicCharge.lean` passed. No separate Lake build rerun because adjacent RHTower leaf build replayed 13,138 cached jobs; direct-file checking validates this unchanged pre-existing module without another large replay.
 - **Axiom audit:** not rerun; no declarations were created or modified in this promotion pass.
 
 ## Log

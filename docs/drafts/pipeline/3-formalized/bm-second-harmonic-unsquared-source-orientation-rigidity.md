@@ -82,7 +82,7 @@ arXiv:2305.19332; Mitman et al., arXiv:2208.07380.
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicUnsquaredSourceOrientationRigidity.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicUnsquaredSourceOrientationRigidity.lean`
 - Exact exponent coordinate:
   `d4BMXiPlusPlusComplementaryExponent_eq_xi`
 - Quartic obstruction and confinement:

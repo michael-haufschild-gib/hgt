@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzTranslationCurve
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzTranslationCurve
 import GaloisForLFunctions.RHTower.ThetaTemperedSourceJets
 import Mathlib.Analysis.Analytic.Order
 import Mathlib.Analysis.Analytic.Uniqueness

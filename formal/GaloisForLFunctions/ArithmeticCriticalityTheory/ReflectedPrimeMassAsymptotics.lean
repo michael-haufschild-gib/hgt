@@ -4,7 +4,7 @@ import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStatePlateau
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStateSpanPlateauLaw
 import GaloisForLFunctions.ArithmeticCriticalityTheory.TranslateGroundStateLorentzLaw
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevPNT
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaFarTail
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaFarTail
 import GaloisForLFunctions.RHTower.RiemannKernelTruncationWeilPositive
 
 /-!

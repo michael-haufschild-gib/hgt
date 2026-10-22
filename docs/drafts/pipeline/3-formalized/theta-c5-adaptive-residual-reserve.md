@@ -59,6 +59,6 @@ No numerical value or sampled sign occurs in proof.
 - [x] frontier integration
 
 Lean module:
-`GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5AdaptiveResidualReserve`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5AdaptiveResidualReserve`.
 Direct Lean and exact target build pass. Main theorem axiom audits contain only `propext`,
 `Classical.choice`, and `Quot.sound`.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSubsetFidelityReadoutRigidity
+import GaloisForLFunctions.RHTower.CCM.CCMSubsetFidelityReadoutRigidity
 import GaloisForLFunctions.RHTower.EulerSquarefreeWickDefect
 
 /-!

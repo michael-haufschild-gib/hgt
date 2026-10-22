@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMGalerkinDiagonalTransfer`
-- `GaloisForLFunctions.RHTower.CCMRayleighExcessAngle` — the spectral inequality it stands on.
+- `GaloisForLFunctions.RHTower.CCM.CCMGalerkinDiagonalTransfer`
+- `GaloisForLFunctions.RHTower.CCM.CCMRayleighExcessAngle` — the spectral inequality it stands on.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

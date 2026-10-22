@@ -218,7 +218,7 @@ Therefore its dyadic affine intercept satisfies
 So every sufficiently large finite `L` supplies two actual admissible negative shifts whose
 central sewn source flux has the required strict Herglotz residue sign.
 
-**Formalized**, in `formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean`
+**Formalized**, in `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLargeNegativeShiftCentralFlux.lean`
 rather than in this card's own module: `suzukiDyadicNegativeShiftIntercept` is the intercept,
 `tendsto_suzukiDyadicNegativeShiftIntercept_atTop` is `(13)`'s limit, and
 `eventually_XiC_curvature_lt_suzukiDyadicNegativeShiftIntercept` is the strict-sign conclusion.  Unlike the ground-edge
@@ -297,8 +297,8 @@ Priority remains **unverified**, not claimed as literature-certified novelty.
 ## Lean status
 
 - **Formal modules:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroCurvatureRecurrence.lean` (consumer layers);
-  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCesaroLandauRecurrence.lean` (analytic core).
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCesaroCurvatureRecurrence.lean` (consumer layers);
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCesaroLandauRecurrence.lean` (analytic core).
 
 ### The analytic core is closed
 

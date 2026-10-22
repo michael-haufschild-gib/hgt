@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMSmoothFiniteSum
-import GaloisForLFunctions.RHTower.CCMPrimeFrustratedTriangle
+import GaloisForLFunctions.RHTower.CCM.CCMSmoothFiniteSum
+import GaloisForLFunctions.RHTower.CCM.CCMPrimeFrustratedTriangle
 
 /-!
 # Finite full quadratic expansion for arbitrary compact real profiles

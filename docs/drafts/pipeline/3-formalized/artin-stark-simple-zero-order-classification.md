@@ -84,12 +84,12 @@ the three integer constraints.
 
 ## Lean certificate `[LEAN-PROVED]`
 
-- Module: `GaloisForLFunctions.RHTower.ArtinStarkSimpleZero`
+- Module: `GaloisForLFunctions.RHTower.Artin.ArtinStarkSimpleZero`
 - Theorem: `GaloisForLFunctions.artin_stark_simpleZero_order_classifier`
 - Exact scope: arbitrary finite `I`, `degree : I -> Nat`, `order : I -> Int`; statement matches the
   paper classifier above.
-- Leaf check: `lake env lean GaloisForLFunctions/RHTower/ArtinStarkSimpleZero.lean` passed.
-- Targeted olean: `lake build GaloisForLFunctions.RHTower.ArtinStarkSimpleZero` passed.
+- Leaf check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinStarkSimpleZero.lean` passed.
+- Targeted olean: `lake build GaloisForLFunctions.RHTower.Artin.ArtinStarkSimpleZero` passed.
 - Axiom audit: only Lean standard axioms `propext`, `Classical.choice`, `Quot.sound`.
 - Escape scan: no `sorry`, `admit`, new `axiom`, `opaque`, or `unsafe` declaration.
 - Umbrella: imported by `GaloisForLFunctions.RHTower`; umbrella build intentionally not run.

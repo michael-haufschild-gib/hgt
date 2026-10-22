@@ -9,7 +9,7 @@
 
 ## Exact formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinVirtualFrobeniusReciprocity.lean` proves the finite
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinVirtualFrobeniusReciprocity.lean` proves the finite
 pairing symmetry `characterPairing_comm`, then proves
 
 ```text
@@ -35,8 +35,8 @@ integral coefficients.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinVirtualFrobeniusReciprocity.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinVirtualFrobeniusReciprocity` passed; this is the
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinVirtualFrobeniusReciprocity.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinVirtualFrobeniusReciprocity` passed; this is the
   targeted module build, not an umbrella or full build.
 - `/tmp/ArtinVirtualFrobeniusReciprocityAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for all three exported theorems.

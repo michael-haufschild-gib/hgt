@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiMobiusContinuousApertureSzegoMetric
-import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
 
 /-!
 # The continuous Möbius aperture tangent is the CCM Cauchy colligation

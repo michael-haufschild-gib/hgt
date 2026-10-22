@@ -108,7 +108,7 @@ Non-vacuity is then inherited from the already-proved Gaussian coherent completi
   `erlangAverageThree_exact_recovery_of_boundedSource`, and the premise-free sine instance
   `erlangAverageThree_exact_recovery_sin` — the identity `(1 - εD)³ R = f` with no analytic premise.
 - 2026-07-26 — `RHTower.SuzukiAllAngleRealZeros` discharged
-  (`GaloisForLFunctions/RHTower/SuzukiAllAngleWitnesses.lean`).  The all-angle quantifier over the
+  (`GaloisForLFunctions/RHTower/Suzuki/SuzukiAllAngleWitnesses.lean`).  The all-angle quantifier over the
   unitary circle collapses: `A z + u E z = 0` has a unimodular solution `u` exactly when
   `‖A z‖ = ‖E z‖`, so
   `SuzukiAllAngleRealZeros A E ↔ ∀ z, z.im ≠ 0 → ‖A z‖ ≠ ‖E z‖`
@@ -251,7 +251,7 @@ Non-vacuity is then inherited from the already-proved Gaussian coherent completi
   - `RHTower.IsAbscissa` (`RHTower/LandauAbscissaWitnesses.lean`): Lebesgue measure on the half line
     has Laplace abscissa zero — integrability of the exponential kernel right of zero, and the
     constant lower bound left of zero;
-  - `RHTower.SchanuelConjecture` (`RHTower/SchanuelStageWitnesses.lean`): classified as an
+  - `RHTower.SchanuelConjecture` (`RHTower/Schanuel/SchanuelStageWitnesses.lean`): classified as an
     irreducible external open input and split stagewise. Stages 0 and 1 are proved unconditionally;
     stage 1 is Hermite–Lindemann
     (`∀ z ≠ 0, Transcendental ℚ z ∨ Transcendental ℚ (exp z)`), discharged by
@@ -496,7 +496,7 @@ as a hypothesis in the three areas and constructed nowhere.
 | 2 | `GaloisForLFunctions.HTGeometry.LinearWidthDetectorIndex` | `GaloisForLFunctions.HTGeometry.LinearWidthThreeStepDetector` |
 | 2 | `GaloisForLFunctions.HTGeometry.NormalCrossingExteriorCoherenceWitness` | `GaloisForLFunctions.HTGeometry.NormalCrossingCriticalDerivedPhase` |
 | 2 | `GaloisForLFunctions.InfiniteGeometricLayerTower` | `GaloisForLFunctions.HTGeometry.FiniteGeometricLayerDAResonance` |
-| 2 | `GaloisForLFunctions.RHTower.CCMRationalScaling` | `GaloisForLFunctions.RHTower.CCMRationalRealCrossedProduct` |
+| 2 | `GaloisForLFunctions.RHTower.CCM.CCMRationalScaling` | `GaloisForLFunctions.RHTower.CCM.CCMRationalRealCrossedProduct` |
 | 2 | `GaloisForLFunctions.RHTower.IsingBondState` | `GaloisForLFunctions.RHTower.PrimeIsingTreeFKExpansion` |
 | 1 | `GaloisForLFunctions.HTGeometry.BarnesReflectionAnalyticThresholdInput` | `GaloisForLFunctions.HTGeometry.GammaPhaseCompletion` |
 | 1 | `GaloisForLFunctions.HTGeometry.FieldOneCore.CertifiedProjectivePointFunctor` | `GaloisForLFunctions.HTGeometry.FieldOneDoctrineAtlas` |
@@ -2265,7 +2265,7 @@ the one that pays for it in the normalization.
 Jacobian layer (phase speed, Clark atom mass, Donoghue probability mass).  It is not an
 independent assumption at all: the transport **is** `φₛ⁻¹ ∘ φᵣ`.
 
-`RHTower/SuzukiPhaseTransportDerivative.lean` (built, registered, axioms clean):
+`RHTower/Suzuki/SuzukiPhaseTransportDerivative.lean` (built, registered, axioms clean):
 
 * **`hasDerivAt_suzukiPhaseTransport`** — if `φᵣ` is differentiable at `x` and `φₛ` has nonzero
   speed at the transported point, the transport is differentiable at `x` with speed
@@ -2345,7 +2345,7 @@ bound.
 `suzukiFiniteShiftSource F J δ (-z) ≠ 0` — nonvanishing of the *shifted* source — is the standing
 hypothesis of the exact finite-shift carrier identities.  It is not independent of the rest.
 
-`RHTower/SuzukiFiniteShiftGeneratorLimit.lean` (built, registered, axioms clean):
+`RHTower/Suzuki/SuzukiFiniteShiftGeneratorLimit.lean` (built, registered, axioms clean):
 
 * **`suzukiFiniteShiftSource_ne_zero`** — a shift strictly smaller in norm than the endpoint value
   cannot cancel it: `‖δ‖ ‖J w‖ < ‖F w‖ → F w + δ J w ≠ 0`.  No hypothesis on `F w` is needed; when
@@ -2746,7 +2746,7 @@ registered, axioms clean):
 ### When the Suzuki ground leakage vanishes
 
 The ground-edge universality law is driven by `leakage → 0`, produced nowhere.  The leakage is
-`τ · oddBudget / (gap · groundMass)`.  `RHTower/SuzukiGroundLeakageVanishing.lean` (built,
+`τ · oddBudget / (gap · groundMass)`.  `RHTower/Suzuki/SuzukiGroundLeakageVanishing.lean` (built,
 registered, axioms clean):
 
 * `suzukiGroundLeakage_of_oddBudget_eq_zero` and

@@ -74,7 +74,7 @@ cells. Novelty claim is limited to this exact source identification and quantita
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolCoronaEscape.lean` contains complete
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolCoronaEscape.lean` contains complete
 result. Direct `lake env lean` and exact module build pass.
 
 ## Log

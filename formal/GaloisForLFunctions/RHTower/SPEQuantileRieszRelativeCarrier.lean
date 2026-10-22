@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszSourceTransport
-import GaloisForLFunctions.RHTower.CCMUnitRieszCoherentFiniteBoundaryReadout
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCoherentFiniteBoundaryReadout
 
 /-!
 # SP-E boundary charge through the relative carrier

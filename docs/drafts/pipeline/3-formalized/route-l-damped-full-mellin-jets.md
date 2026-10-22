@@ -15,7 +15,7 @@ undamped Green primitive. This card closes every finite literal Mellin jet
 of that SAME source, its local derivative interpretation, and native Xi
 multiplicity with the exact nonzero leading coefficient. The complete
 packet and physical comparison remain open in [C46](../1-in-progress/route-l-damped-complete-xi-packet.md).
-The module is `formal/GaloisForLFunctions/RHTower/DeningerDampedSourceMellinJets.lean`.
+The module is `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedSourceMellinJets.lean`.
 
 ## Proved: every finite literal jet passes to the actual limit
 
@@ -175,7 +175,7 @@ and `interpolation`; publication dates were checked on the source pages.
 ## Lean validation
 
 `lake env lean /tmp/route_l_c45_jets.lean` check7 passed with no diagnostics.
-The final `lake build GaloisForLFunctions.RHTower.DeningerDampedSourceMellinJets`
+The final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedSourceMellinJets`
 audit passed, rebuilding only this leaf (37 seconds; other graph results
 were replayed). The module has 20 public theorems, one definition and three
 private lemmas and is wired once into `RHTower.lean`. Formal lint passed.

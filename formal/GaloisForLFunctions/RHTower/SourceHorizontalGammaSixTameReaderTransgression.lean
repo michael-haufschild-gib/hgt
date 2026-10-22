@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.RouteRRationalCartierPrimeDilationLanding
 import GaloisForLFunctions.RHTower.SourceHorizontalShellGreenPrimeClockProfile
-import GaloisForLFunctions.RHTower.DeningerExponentExceptionalTameGreenBridge
-import GaloisForLFunctions.RHTower.DeningerCyclicHomology
+import GaloisForLFunctions.RHTower.Deninger.DeningerExponentExceptionalTameGreenBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerCyclicHomology
 
 /-!
 # Gamma-six tame-reader transgression of the source-horizontal shell profile

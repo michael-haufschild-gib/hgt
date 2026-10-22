@@ -7,7 +7,7 @@
 
 ## Reinterpretation
 
-The [theta CDF-action quotient](../../theta-quantile-fourier-action-quotient.md) places every nonzero Xi zero in the spectrum of a matrix
+The [theta CDF-action quotient](theta-quantile-fourier-action-quotient.md) places every nonzero Xi zero in the spectrum of a matrix
 
 \[
 D_{mn}=\frac{\Phi_m-\Phi_{m-n}}{2\pi n},\qquad m,n\in\mathbb Z\setminus\{0\},
@@ -62,7 +62,7 @@ Here \(Vf=\sum_n x_n(e_n-1)/(2\pi in)\), \(B=iM_qV\), and reflection of \(q\) re
 
 ## Exact chirality of the actual root primitive
 
-The [quantile root-mode construction](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmQuantileRootMode.lean), [sharp theta-domain theorem](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean), and [endpoint theorem](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaRootEndpoints.lean) give an actual \(H^1_0(0,1)\) primitive \(g(t)=\mathrm{rootH}(z,t)\) for each theta zero \(z=u+iv\) in the natural strip. Its derivative is the \(L^2\) root mode minus one, and
+The [quantile root-mode construction](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileRootMode.lean), [sharp theta-domain theorem](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean), and [endpoint theorem](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRootEndpoints.lean) give an actual \(H^1_0(0,1)\) primitive \(g(t)=\mathrm{rootH}(z,t)\) for each theta zero \(z=u+iv\) in the natural strip. Its derivative is the \(L^2\) root mode minus one, and
 
 \[
 g'(t)+1=-izq(t)g(t).
@@ -126,7 +126,7 @@ a_{p,z}(t)=-p^{-iz}e^{-izQ(t)}
   \int_t^{\Psi_p(t)}e^{izQ(s)}ds.
 \]
 
-Thus the aperture term and its mixed area pay exactly for \((1-p^{2v})\mathcal J(g)\). This is a reparametrization identity for *every* positive source, so it cannot prove RH. The promising next operation is literal prime **atom deletion before** passing to CDF coordinates: that changes the source mode itself, rather than relabeling the same loop. The corpus's rank-one [prime-translation anomaly](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmPrimeTranslationAnomaly.lean) is the exact source-level comparison to use.
+Thus the aperture term and its mixed area pay exactly for \((1-p^{2v})\mathcal J(g)\). This is a reparametrization identity for *every* positive source, so it cannot prove RH. The promising next operation is literal prime **atom deletion before** passing to CDF coordinates: that changes the source mode itself, rather than relabeling the same loop. The corpus's rank-one [prime-translation anomaly](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeTranslationAnomaly.lean) is the exact source-level comparison to use.
 
 ## Prime-atom covariance at the modular seam
 
@@ -185,7 +185,7 @@ Strict log-concavity gives \(h(x+s)h(x+t)>h(x)h(x+s+t)\) for \(s,t>0\). Integrat
 \]
 The same argument applies to every shifted atom \(a_n=n^{-1/2}h(\,\cdot+\log n)\). Every diagonal \(m=n\) term of (9) has the **same** near-axis chirality as the hypothetical off-axis root in (7), even after subtracting its \(-z\) reflection. Thus no diagonal atom can supply a contrary *near-axis* orientation; any such effect must involve off-diagonal integer interference and the seam cutoffs in (10). This is a local diagnostic, not a constraint at known Xi zeros. Equation (11) is presently a paper proof only.
 
-The corpus already proves [strict log-concavity of the completed source](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumEnergyInequalityEndpoint.lean), so the same tail Turán argument applies to \(k\) itself. Consequently the **complete** seam area also has negative first horizontal derivative at \(u=0\) for every fixed vertical tilt \(v\) in the source strip. The off-diagonal atom sum does not reverse the orientation near the imaginary axis either. This moves the possible source-specific producer to a zero-local, oscillatory comparison at nonzero frequency: static curvature and termwise atom signs cannot give the contrary orientation globally.
+The corpus already proves [strict log-concavity of the completed source](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumEnergyInequalityEndpoint.lean), so the same tail Turán argument applies to \(k\) itself. Consequently the **complete** seam area also has negative first horizontal derivative at \(u=0\) for every fixed vertical tilt \(v\) in the source strip. The off-diagonal atom sum does not reverse the orientation near the imaginary axis either. This moves the possible source-specific producer to a zero-local, oscillatory comparison at nonzero frequency: static curvature and termwise atom signs cannot give the contrary orientation globally.
 
 There is a second, cofinal test. Because the complete \(k\) is even and Schwartz, integration by parts in the one-sided Green integral, uniformly for \(v\) in any fixed compact interval, gives in \(H^1(0,\infty)\)
 \[
@@ -223,13 +223,13 @@ They solve the same first-order forced equation and have the exact homogeneous d
 \[
 \boxed{\quad U_z(x)-V_z(x)=-i e^{-izx}\Xi(z).\quad} \tag{14}
 \]
-Thus Xi is the connection coefficient of two source-selected decaying branches. At a zero, the branches coincide and the mode inherits the superexponential theta decay at **both** ends; ordinary \(H^1\) membership in the upper half-plane only selects the right branch and misses this condition. The next substantive attack must find a theta-arithmetic constraint on the connection coefficient (14), potentially using the one-sided shell expansion and the modular seam, rather than seek an opposite sign for (13). The two-ended incidence is already in [the Lean corpus](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmShiftedSourceEquationExact.lean); the reinterpretation and its proposed arithmetic attack do not establish nonvanishing.
+Thus Xi is the connection coefficient of two source-selected decaying branches. At a zero, the branches coincide and the mode inherits the superexponential theta decay at **both** ends; ordinary \(H^1\) membership in the upper half-plane only selects the right branch and misses this condition. The next substantive attack must find a theta-arithmetic constraint on the connection coefficient (14), potentially using the one-sided shell expansion and the modular seam, rather than seek an opposite sign for (13). The two-ended incidence is already in [the Lean corpus](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedSourceEquationExact.lean); the reinterpretation and its proposed arithmetic attack do not establish nonvanishing.
 
-This connection is invisible to every fixed-order large-frequency jet. If \(H(z)=\int_0^\infty k(x)e^{izx}dx\), then \(\Xi(z)=H(z)+H(-z)\). Repeated integration by parts gives boundary expansions for both \(H\) terms, but evenness of the smooth completed \(k\) makes every algebraic boundary coefficient cancel in their sum. The corpus proves the arithmetic version: [each completed odd seam jet is the sum of the shell jets and vanishes](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspShellHedenmalmCurrent.lean). Individual reflected shells retain algebraic Fourier tails; only the complete modular assembly cancels them all. The remaining RH-bearing datum is the full, nonperturbative connection coefficient after this all-order cancellation. A finite jet, total-area sign, or first-atom dominance estimate cannot see its zero set without a new uniform remainder law.
+This connection is invisible to every fixed-order large-frequency jet. If \(H(z)=\int_0^\infty k(x)e^{izx}dx\), then \(\Xi(z)=H(z)+H(-z)\). Repeated integration by parts gives boundary expansions for both \(H\) terms, but evenness of the smooth completed \(k\) makes every algebraic boundary coefficient cancel in their sum. The corpus proves the arithmetic version: [each completed odd seam jet is the sum of the shell jets and vanishes](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspShellHedenmalmCurrent.lean). Individual reflected shells retain algebraic Fourier tails; only the complete modular assembly cancels them all. The remaining RH-bearing datum is the full, nonperturbative connection coefficient after this all-order cancellation. A finite jet, total-area sign, or first-atom dominance estimate cannot see its zero set without a new uniform remainder law.
 
 ## Positive half-transform and the actual connection problem
 
-There is a positive theorem on the *branch* that does not assume RH. The corpus proves \(k>0\), evenness, and [strict log-concavity on the whole line](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingQuantumEnergyInequalityEndpoint.lean). Therefore \(k'(x)<0\) for \(x>0\). Set \(\mu(x)=-k'(x)>0\) on that ray; \(\int_0^\infty\mu=k(0)\). Integration by parts gives
+There is a positive theorem on the *branch* that does not assume RH. The corpus proves \(k>0\), evenness, and [strict log-concavity on the whole line](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingQuantumEnergyInequalityEndpoint.lean). Therefore \(k'(x)<0\) for \(x>0\). Set \(\mu(x)=-k'(x)>0\) on that ray; \(\int_0^\infty\mu=k(0)\). Integration by parts gives
 \[
 H(z)=\frac{i}{z}\int_0^\infty\mu(x)(1-e^{izx})\,dx,\qquad
 \Xi(z)=\frac{2}{z}\int_0^\infty\mu(x)\sin(zx)\,dx. \tag{15}

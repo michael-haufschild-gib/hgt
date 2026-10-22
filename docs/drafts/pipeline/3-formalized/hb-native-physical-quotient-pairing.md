@@ -82,7 +82,7 @@ and the sum of the three original cutoff radial coefficients times
 
 ## Lean and verification
 
-All leaves use prefix `GaloisForLFunctions.RHTower.ThetaCuspHawking`:
+All leaves use prefix `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawking`:
 
 | Suffix | Content |
 | --- | --- |

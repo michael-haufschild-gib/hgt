@@ -242,8 +242,8 @@ retain the Laurent principal part.
 
 - `formal/GaloisForLFunctions/RHTower/BVPrimeWindowContinuation.lean`
 - `formal/GaloisForLFunctions/RHTower/BVPrimeWindowDivisorTomography.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowCancellation.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSubpowerGate.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowCancellation.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSubpowerGate.lean`
 - `../2-fully-proven/not_new_scientific_knowledge/burnol-copoisson-berezin-diagonal-reflection-law.md`
 - `burnol-hedenmalm-boundary-null-graph-completion-rh.md`
 

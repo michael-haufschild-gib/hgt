@@ -65,11 +65,11 @@ The hard open target is an unconditional critical-scale polynomial estimate for 
 
 ## Lean certificate
 
-Leaf: formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitNeutralWork.lean, 367 lines, four public theorems and five definitions:
+Leaf: formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitNeutralWork.lean, 367 lines, four public theorems and five definitions:
 
 - ccmPrimeDeficitNeutralCoefficient_harmonic
 - ccmLogChebyshevDeficitPrimitive_eq_neutral_work
 - ccmPrimeDeficitNeutralLinearWork_critical_bound
 - ccmPrimeDeficitNeutralDiagonalBudget_critical_bound
 
-Final foreground lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitNeutralWork.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeDeficitNeutralWork.olean: exit 0, no diagnostics. Import wired in RHTower. Separate /tmp axiom audit: exit 0, all four theorems use only propext, Classical.choice and Quot.sound. Index: exit 0; all nine API entries verified. Authoritative scripts/formal_tools.py lint: exit 1 on sixteen unrelated unreachable modules, with no finding for this leaf. Logs: /tmp/tg-c925-neutral-work-{final,axioms,index,lint}.log. Audit source: /tmp/tg-c925-neutral-work-axioms.lean.
+Final foreground lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitNeutralWork.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitNeutralWork.olean: exit 0, no diagnostics. Import wired in RHTower. Separate /tmp axiom audit: exit 0, all four theorems use only propext, Classical.choice and Quot.sound. Index: exit 0; all nine API entries verified. Authoritative scripts/formal_tools.py lint: exit 1 on sixteen unrelated unreachable modules, with no finding for this leaf. Logs: /tmp/tg-c925-neutral-work-{final,axioms,index,lint}.log. Audit source: /tmp/tg-c925-neutral-work-axioms.lean.

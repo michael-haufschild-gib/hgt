@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ExactCompletedC5SeamSlopeChamberNoGo
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeSourcePositiveSl2
+import GaloisForLFunctions.HTGeometry.PolynomialODE.JetRankThreeSourcePositiveSl2
 
 /-!
 # Exact completed C5 lowest-weight anomaly

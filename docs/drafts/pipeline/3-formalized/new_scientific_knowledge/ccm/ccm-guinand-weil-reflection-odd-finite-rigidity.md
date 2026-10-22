@@ -7,7 +7,7 @@
 - **External priority:** no primary CCM source located states the event/reflection balance
   equivalence; priority of the CCM consequence remains unverified
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilReflectionOddRigidity.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilReflectionOddRigidity.lean`
 
 ## Result
 
@@ -98,6 +98,6 @@ continuous. This theorem does not construct canonical `Pi(lambda,k)` or prove RH
 - `ccmGuinandWeilPairedEventPacketMatrix_offDiagonal_zero_iff_reflection_balanced_of_open_half`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilReflectionOddRigidity` pass. `#print axioms` reports only
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilReflectionOddRigidity` pass. `#print axioms` reports only
 Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`,
 `opaque`, or `unsafe` declaration is used.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM / NO-GO WITH POSITIVE DUAL, `[BRIDGE]`
 - **Scientific status:** `[LEAN-PROVED] [UNCONDITIONAL] [BRIDGE] [NOT NEW SCIENTIFIC KNOWLEDGE] [NOT AN RH PROOF]`
 - **Date:** 2026-08-13
-- **Module:** `formal/GaloisForLFunctions/RHTower/CCMHalfUnitExtrapolationCost.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMHalfUnitExtrapolationCost.lean`
 - **Parents:** the invariant half-unit weighted-domain seam, positive-shift Euler--Möbius
   contractivity, and the rectangular subpower lower RH gate
 
@@ -111,7 +111,7 @@ distinction is exactly where the surviving RH mechanism must live.
 ## Lean status
 
 **Superseded, 2026-08-03.**  The theorem is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMHalfUnitExtrapolationCost.lean`.  The previous decision
+`formal/GaloisForLFunctions/RHTower/CCM/CCMHalfUnitExtrapolationCost.lean`.  The previous decision
 declined it as a "generic norm estimate"; the estimate is in fact the entire content of the no-go,
 and formalizing it settles the gates independently of how the source-coupled extrapolator is later
 defined — the statements quantify over *every* finite node family.

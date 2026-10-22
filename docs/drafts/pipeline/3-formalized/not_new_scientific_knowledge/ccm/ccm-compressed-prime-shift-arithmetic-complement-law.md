@@ -270,7 +270,7 @@ that the Gamma no-go is replaced by the exact operator quotient a successful CCM
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMCompressedShiftIndependence.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCompressedShiftIndependence.lean`.
 
 The previous decision waited for "the weighted `L2` translation representation".  None is needed:
 every independence statement of this card is *pointwise*, so the shifts are realized as linear maps

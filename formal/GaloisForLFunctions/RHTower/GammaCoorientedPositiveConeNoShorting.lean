@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockPrimitivePromotedCellHodgeBoundaryRigidity
 
 /-!
 # Gamma-cooriented positive-cone no-shorting

@@ -723,7 +723,7 @@ residual central modes; any other parity-unbalanced quotient has at least its gr
 of protected modes.
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/CCMGradedIndexDeterminantBalance.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGradedIndexDeterminantBalance.lean`.
 
 Do not retry parity-free quotient convergence. Sole determinant survivor is the balanced even
 channel, and its remaining theorem is still divisor-tight convergence to Xi. Sole metric survivor
@@ -763,7 +763,7 @@ balanced active-even response.                                      (47)
 ```
 
 Lean declarations in
-`formal/GaloisForLFunctions/RHTower/CCMGradedIndexDeterminantBalance.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGradedIndexDeterminantBalance.lean`:
 
 - `ccm_radicalIndex_one_forces_evenBoundaryActive`;
 - `ccm_displacementRadicalIndex_one_forces_evenBoundaryActive`;
@@ -1412,7 +1412,7 @@ decision.  Do not present Parseval or Bessel bounds alone as progress across the
 arithmetic wall.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMPhysicalPrimeApertureCharacterTomography.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPhysicalPrimeApertureCharacterTomography.lean`.
 
 ## C32 fixed-shift exponential-spectrum rigidity `[LEAN-FORMALIZED]`
 
@@ -1456,8 +1456,8 @@ Evans nonvanishing.
 
 Formal sources:
 
-- `formal/GaloisForLFunctions/RHTower/CCMPublishedSourceEvenShiftSieve.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMEvenShiftExponentialTypeRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedSourceEvenShiftSieve.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMEvenShiftExponentialTypeRigidity.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-even-shift-exponential-spectrum-rigidity.md`.
 
 ## C33 holomorphic fixed-shift spectrum quantization `[LEAN-FORMALIZED]`
@@ -1493,7 +1493,7 @@ relations. Next attack must derive one of those structures from the four-unit Xi
 fixed-shift operator series is a closed route.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMAnalyticShiftSpectrumRigidity.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMAnalyticShiftSpectrumRigidity.lean`.
 
 ## C34 four-unit square-root boundary regularity `[LEAN-FORMALIZED, NOT NEW]`
 
@@ -1523,7 +1523,7 @@ curves but leaves the genuine singular/cofinal source-to-`Q_u D_Xi` transport un
 Formal sources:
 
 - `formal/GaloisForLFunctions/HTGeometry/BoundaryTraceRamification.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMBoundaryTraceRamification.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryTraceRamification.lean`;
 - `docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/ccm-four-unit-boundary-square-root-ramification.md`.
 
 ## C35 dimension-free holomorphic-orbit spectrum law `[LEAN-FORMALIZED]`
@@ -1567,8 +1567,8 @@ external novelty of the CCM classification remains open.
 
 Formal sources:
 
-- `formal/GaloisForLFunctions/RHTower/CCMAnalyticOrbitSpectrumRigidity.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMCommensurateJointShiftSpectrumRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMAnalyticOrbitSpectrumRigidity.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMCommensurateJointShiftSpectrumRigidity.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-dimension-free-holomorphic-orbit-spectrum-law.md`.
 
 ## C36 ramification-density monodromy selection law `[LEAN-FORMALIZED]`
@@ -1605,7 +1605,7 @@ scalar ramification, finite or nontorsion-infinite, as a CCM closing mechanism.
 
 Formal sources:
 
-- `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFiniteRamifiedBoundaryNoGo.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-ramification-density-monodromy-selection-law.md`.
 
 ## C37 logarithmic-cusp period--density quantization `[LEAN-FORMALIZED]`
@@ -1641,7 +1641,7 @@ nonvanishing. Do not retry bounded holomorphic logarithmic descent.
 Formal sources:
 
 - `formal/GaloisForLFunctions/HTGeometry/PeriodicCuspBoundaryGap.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMLogarithmicCuspBoundaryNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMLogarithmicCuspBoundaryNoGo.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-logarithmic-cusp-period-density-quantization-law.md`.
 
 ## C38 meromorphic-cusp Laurent charge law `[LEAN-FORMALIZED]`
@@ -1692,7 +1692,7 @@ Laurent or meromorphic cusp models.
 
 Formal sources:
 
-- `formal/GaloisForLFunctions/RHTower/CCMMeromorphicCuspBoundaryNoGo.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMMeromorphicCuspBoundaryNoGo.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-meromorphic-cusp-laurent-charge-law.md`.
 
 ## C39 essential Hilbert cusp sharpness and boundary concentration `[LEAN-FORMALIZED]`
@@ -1754,7 +1754,7 @@ cover, `2π` periodicity, and thermal density; C39 is an unconditional counterex
 
 Formal sources:
 
-- `formal/GaloisForLFunctions/RHTower/CCMEssentialCuspBoundaryLayer.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMEssentialCuspBoundaryLayer.lean`;
 - `docs/drafts/pipeline/3-formalized/needs-audit/ccm-essential-cusp-boundary-layer-sharpness.md`.
 
 ## C40 source selection of the essential cusp and positive Abel phase `[LEAN-FORMALIZED]`
@@ -1801,7 +1801,7 @@ first-clock completeness theorem this hard half-weight de-Abelization is RH-comp
 
 Formal source:
 
-- `formal/GaloisForLFunctions/RHTower/CCMEulerEssentialBoundaryLayerCorrespondence.lean`.
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerEssentialBoundaryLayerCorrespondence.lean`.
 
 ## C41 doubled-parity Hardy father/detail source `[LEAN-FORMALIZED; TARGET TRANSPORT OPEN]`
 
@@ -2460,7 +2460,7 @@ physical horizon whose Schur complement against the diagonal sector is nonnegati
 Falsifier: any construction decomposing into positive reflected single-event blocks is killed by
 `(C53.1)` before a limit is taken.
 
-Formal source: `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilSourceReflection.lean`.
+Formal source: `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilSourceReflection.lean`.
 Lean proves `(C52.3)--(C52.5)`, the arbitrary finite signed-packet diagonalization, the zero-mode
 mass law, central value `4` at total event weight `2`, the exact half-horizon value `-2`, and the
 resulting failure of positive semidefiniteness. The declarations are unconditional and use no
@@ -2520,7 +2520,7 @@ literal completed source has both possibilities, so treating C54 as a no-go for 
 cross-event cancellation would be theatre.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilReflectionOddRigidity.lean`. Lean proves the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilReflectionOddRigidity.lean`. Lean proves the
 Chebyshev/Vandermonde factorization, exact determinant, moment injectivity, literal packet edge law,
 the balance equivalence, and automatic nondegeneracy for distinct horizons in `(0,1/2)`.
 
@@ -2575,7 +2575,7 @@ all-jet physical horizon whose connection defect is the continued Xi Ward column
 only from quotient coordinates is noncanonical by `(C55.2)` and is rejected.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCodiagonalObserverDimension.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilCodiagonalObserverDimension.lean`.
 
 ## C56 full source observer and whole-matrix overcompleteness `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2634,7 +2634,7 @@ defect is the continued Xi Ward column. Any lift defined only from `(C56.1)` is 
 `(C56.3)`.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilFullSourceObserver.lean`.
 
 ## C57 strict-positive source nonselection `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2684,7 +2684,7 @@ Ward source. Any construction depending only on the quotient matrix or positivit
 weights is killed by C57.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPositiveSourceNonselection.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPositiveSourceNonselection.lean`.
 
 ## C58 continuous source quotient `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2760,7 +2760,7 @@ prime--Gamma/Xi Ward source already present in corpus. Equality of matrices alon
 the theorem must retain the channel decomposition in `S`.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilContinuousSourceQuotient.lean`.
 
 ## C59 literal polar--prime source weld `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2819,7 +2819,7 @@ packet equality with `ccmPublishedRestrictedWeilMatrix`. If the archimedean dens
 forcing a false bounded-measure model.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilLiteralPolarPrimeSource.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilLiteralPolarPrimeSource.lean`.
 
 ## C60 mixed-order Gamma source and complete odd dictionary `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2885,7 +2885,7 @@ pole--prime diagonal action. Only then prove whole centered-packet equality with
 boundary counterterm plus moving prime cutoff is exactly the continued Xi Ward column.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanOddSource.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilArchimedeanOddSource.lean`.
 
 ## C61 endpoint first jet and whole centered source matrix `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2939,8 +2939,8 @@ event-wall residue and replace a naive smooth connection by its correct BV/jump 
 that residue with the diagonal first jet and the already-formal continued Xi Ward column.
 
 Formal sources:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanFirstJet.lean` and
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCompletedCenteredSourceMatrix.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilArchimedeanFirstJet.lean` and
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilCompletedCenteredSourceMatrix.lean`.
 
 ## C62 four-unit prime-entry source--codiagonal incidence `[PROVED AND LEAN-FORMALIZED]`
 
@@ -2996,7 +2996,7 @@ physical truncation aperture from the smooth Julia phase parameter and give a so
 orientation; a mere equality of already-published matrices is insufficient.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryIncidence.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryIncidence.lean`.
 
 ## C63 rank-one whole-matrix event orientation `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3051,8 +3051,8 @@ derivative. Then compute the continuous pole/Gamma aperture derivative in the sa
 decomposition and test whether its centered Mellin continuation is the existing Xi Ward column.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryRankOneTangent.lean` and
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryFirstClockBridge.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryRankOneTangent.lean` and
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryFirstClockBridge.lean`.
 
 ## C64 finite atomic connection factorization `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3090,7 +3090,7 @@ the centered Mellin variable and identify their sum with
 continuous interior part, not the atomic prime events.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryAtomicConnection.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryAtomicConnection.lean`.
 
 ## C65 central-channel classification `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3132,7 +3132,7 @@ sector. If every scalar dressing still factors through `e e^T`, retire the entir
 bridge and require a non-scalar or higher-jet connection.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryCentralChannel.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryCentralChannel.lean`.
 
 ## C66 scalar-dressing rigidity `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3178,7 +3178,7 @@ first and second jets in the same decomposition. Test exact cancellation or coup
 attempting Xi Ward continuation.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryScalarDressingRigidity.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryScalarDressingRigidity.lean`.
 
 ## C67 third-jet transverse activation `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3246,7 +3246,7 @@ renormalization needed for a cofinal finite-energy limit and identify its endpoi
 Suzuki third-jet current.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryThirdJetTransverse.lean`.
 
 ## C68 finite positive third-jet connection `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3295,7 +3295,7 @@ continuous calculation. Then test an equality with Suzuki's endpoint third-jet c
 continued Xi Ward column.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryThirdJetConnection.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryThirdJetConnection.lean`.
 
 ## C69 phase-complete CCM--Suzuki wall-field weld `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3320,7 +3320,7 @@ entry field. The “four units” are not a numerical coincidence; they are the 
 perform exact finite-window Stieltjes cancellation before selecting any cofinal normalization.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryWallFieldWeld.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryWallFieldWeld.lean`.
 
 ## C70 forced completed third-grade connection `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3345,7 +3345,7 @@ flux.
 Green current, not only with the completed Mellin error.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCompletedConnection.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeCompletedConnection.lean`.
 
 ## C71 Xi-screw Green connection `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3374,7 +3374,7 @@ up to a convergent archimedean slope correction. C70's flux is intrinsic divisor
 RH-complete analytic-continuation condition.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilXiScrewGreenConnection.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilXiScrewGreenConnection.lean`.
 
 ## C72 cubic Abel completeness `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3408,7 +3408,7 @@ were shadows of trying to prove analytic continuation through a scalar tail esti
 the exact grade threshold rather than privileging a quadratic guess.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAbelCompleteness.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAbelCompleteness.lean`.
 
 ## C73 subcubic grade--growth completeness `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3437,7 +3437,7 @@ mechanisms must exploit arithmetic oscillation before absolute values; fixed sca
 wall motion, finite-jet recomputation, and separate prime/polar estimates are ruled out.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeSubcubicCompleteness.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeSubcubicCompleteness.lean`.
 
 ## C74 second-Abel/Cesàro completeness `[PROVED AND LEAN-FORMALIZED]`
 
@@ -3494,4 +3494,4 @@ prime staircase and polar channel before absolute values. C74 does not prove tha
 not prove RH unconditionally.
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroCompleteness.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeCesaroCompleteness.lean`.

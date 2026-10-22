@@ -123,7 +123,7 @@ All declarations must be unconditional and import existing density rather than r
 ## Lean status
 
 All four targets are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerPrimeKummerCoercivityLocalization.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeKummerCoercivityLocalization.lean`.  Axiom audit
 for every declaration: `propext, Classical.choice, Quot.sound`.
 
 - Target 1 — `deningerTateCircleModeRate_succ_gap` is the prime-independent gap `2π` of every

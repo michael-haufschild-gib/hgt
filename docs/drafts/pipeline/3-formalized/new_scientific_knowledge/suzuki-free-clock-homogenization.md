@@ -216,7 +216,7 @@ only the first-moment shadow of `(19)`.
 
 ## Formalization
 
-`formal/GaloisForLFunctions/RHTower/SuzukiHerglotzBoundaryStates.lean` proves unconditionally:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHerglotzBoundaryStates.lean` proves unconditionally:
 
 - the exact identity `(2)` on the upper half-plane;
 - the exact half-integer clock denominator `(12)`;

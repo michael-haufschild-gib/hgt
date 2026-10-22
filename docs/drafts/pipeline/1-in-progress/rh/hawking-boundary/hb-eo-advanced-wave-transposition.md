@@ -74,7 +74,7 @@ audit: `AdvancedKernelTransposition`, 119.64 seconds, two jobs. The module
 is wired into `RHTower.lean`; the umbrella was not built.
 Global lint reports the separate unwired `OnsetTransgressionHorizon` module.
 
-[Formal proof](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMAdvancedKernelTransposition.lean):
+[Formal proof](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMAdvancedKernelTransposition.lean):
 `coneKernel_transposition`, `angularAction_compact_transposition`,
 `tested_angularAction_growth`, `dirichlet_angular_transposition`,
 `testedSourceDensity_integrable`, `original_future_angular_transposition`.

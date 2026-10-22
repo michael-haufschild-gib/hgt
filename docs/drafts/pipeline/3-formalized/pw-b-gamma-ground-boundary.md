@@ -74,7 +74,7 @@ stronger exclusion and moment detector are not yet verified in Lean.
 
 ## Verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaGroundBoundary.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaGroundBoundary.lean`.
 All10 public declarations pass scratch Lean with only propext,
 Classical.choice and Quot.sound. Promoted bodies exactly match that
 scratch, every public name is unique in source and generated LEAN_API,

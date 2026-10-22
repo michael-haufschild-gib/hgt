@@ -110,7 +110,7 @@ if it already selected RH.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingChargedDoubleKMSSectorSwapNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingChargedDoubleKMSSectorSwapNoGo`.
 
 - Explicit visible and partner vectors tensor the corpus normalized geometric half-densities in
   opposite charge orders; both have norm square one.
@@ -125,7 +125,7 @@ Formalized in
   equivalent to RH.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingChargedDoubleKMSSectorSwapNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingChargedDoubleKMSSectorSwapNoGo`
 passed all 10,998 jobs; representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC86 finding.

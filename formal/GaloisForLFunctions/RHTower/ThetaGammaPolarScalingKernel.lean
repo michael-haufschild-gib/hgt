@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.ThetaCuspGammaSourceAction
-import GaloisForLFunctions.RHTower.ThetaCuspPolarSourceAction
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGammaSourceAction
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspPolarSourceAction
 
 /-!
 # The continuous Gamma/pole shift has both signs

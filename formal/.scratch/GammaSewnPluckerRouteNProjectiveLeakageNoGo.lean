@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnPluckerNuclearRootBudget
-import GaloisForLFunctions.RHTower.HedenmalmGammaSewnProjectiveParityLeakageBridge
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnProjectiveParityLeakageBridge
 
 open Filter Topology
 

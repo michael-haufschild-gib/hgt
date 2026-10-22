@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesMellinResponse
-import GaloisForLFunctions.RHTower.CCMFirstClockLandauCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauCompleteness
 
 /-!
 # No fixed Köthe vector can be the completed Stokes landing

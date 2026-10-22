@@ -19,7 +19,7 @@ must remain in any literal direct-J proof.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5MasterReservedSeamNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5MasterReservedSeamNoGo`
 - `c5CompletedMasterResidualReserve_eq_scaleGap_add_adaptiveResidual`
 - `c5CompletedMasterAdaptiveScaleGap_pos`
 - `c5CompletedMasterResidualReserve_pos`

@@ -91,7 +91,7 @@ Thus no source-independent threshold atom can complete this regular spectral rou
 ## Lean certificate
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEPhaseBlindThresholdSpectrumNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEPhaseBlindThresholdSpectrumNoGo`.
 
 The module proves:
 

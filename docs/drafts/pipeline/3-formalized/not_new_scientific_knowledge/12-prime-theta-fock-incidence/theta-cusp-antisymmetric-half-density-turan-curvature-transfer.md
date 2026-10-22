@@ -10,7 +10,7 @@
 - **Lean inputs:** `PrimeArchThetaAtomLikelihoodRatio.lean`;
   `PrimeArchThetaBornWittenBootstrap.lean`; `PrimeArchThetaLiouvilleWard.lean`;
   `ThetaCuspFourierLaplace.lean`; `XiEndpointCompletedValue.lean`
-- **Lean module:** `RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean`
+- **Lean module:** `RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean`
 - **Statement:** The difference of the two reflected half-density values supplies an exact odd-moment
   budget for every theta source atom.  For the first atom, the two open low-degree source gates are
   exactly a lower bound for the first half-line Turan defect and an upper bound for the second.
@@ -423,7 +423,7 @@ motivate `(15)` but do not discharge `(32)`--`(33)`.
 
 ## Lean completion log — 2026-08-24
 
-`RHTower/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean` formalizes every proved identity and
+`RHTower/ThetaCusp/ThetaCuspAntisymmetricHalfDensityTuranCurvature.lean` formalizes every proved identity and
 implication `(2)`--`(34)`, while preserving `(32)`--`(33)` as the explicitly open inequalities.
 This includes both reflected parity budgets, exact first-atom tail removal, source-specific
 curvature floor and one-seam law, literal double-integral Turan identity, positive boundary-pole

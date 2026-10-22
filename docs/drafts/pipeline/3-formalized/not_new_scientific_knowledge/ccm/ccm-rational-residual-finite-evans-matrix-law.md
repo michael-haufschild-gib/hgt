@@ -203,7 +203,7 @@ finite-dimensional layer of the card (the residual space, the cross-boundary exp
 tail stability, and the Gram determinant criterion) is fully reachable, and the infinite
 reconstruction stays explicitly outside the statement.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMRationalResidualEvansMatrix.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMRationalResidualEvansMatrix.lean`
 (18 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
 into `formal/GaloisForLFunctions/RHTower.lean`).
 

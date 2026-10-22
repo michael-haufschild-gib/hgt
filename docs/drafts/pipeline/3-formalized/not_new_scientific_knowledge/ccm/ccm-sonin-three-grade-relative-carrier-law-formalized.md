@@ -6,7 +6,7 @@
   - existing corpus endpoints (verified present): `SoninRelativeGramDefect`,
     `SoninSemilocalTraceObstruction`, `SoninAllPrimeResidualKernel`, `SoninSemilocalRelativeTrace`,
     `SoninEulerCalkinPartialIsometry`, `SeamSpectralFlow`, `MeasuredIndexBlindness`
-  - new: `formal/GaloisForLFunctions/RHTower/CCMSoninCompressedCommutator.lean`
+  - new: `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninCompressedCommutator.lean`
 - **Umbrella:** wired from `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` (two theorems use `[propext]` only)
 - **Hypotheses:** only the algebraic symmetry data (`Q` projection, `X` self-adjoint, `Z`

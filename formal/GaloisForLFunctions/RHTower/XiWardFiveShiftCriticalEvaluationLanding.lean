@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWardFiveShiftEulerGammaPrimeGap
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureKernel
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureKernel
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 
 /-!
 # Five-shift Euler–Gamma separator on critical source evaluations

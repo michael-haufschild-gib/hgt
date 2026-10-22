@@ -277,7 +277,7 @@ External priority remains unverified.
 
 ## 9. Lean certificate
 
-`formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeRoughPrimitiveHardyTail.lean` proves
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeRoughPrimitiveHardyTail.lean` proves
 unconditionally:
 
 ```text

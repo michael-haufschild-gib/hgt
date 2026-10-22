@@ -58,7 +58,7 @@ The current cancellation conjecture is now testable against two specified quanti
 
 ## Validation
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceOnsetReduction`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullSourceOnsetReduction`.
 
 The source passed `lake env lean` in scratch and an isolated `lake build` of this single module using cached dependencies. No umbrella or dependency rebuild was run. The module contains actual derivative proofs and source identities; it uses no numerical experiment or computational certificate.
 

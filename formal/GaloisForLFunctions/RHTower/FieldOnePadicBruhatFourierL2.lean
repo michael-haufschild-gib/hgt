@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicBruhatFourierInversion
-import GaloisForLFunctions.RHTower.DeningerLocallyConstantApproximation
+import GaloisForLFunctions.RHTower.Deninger.DeningerLocallyConstantApproximation
 import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 

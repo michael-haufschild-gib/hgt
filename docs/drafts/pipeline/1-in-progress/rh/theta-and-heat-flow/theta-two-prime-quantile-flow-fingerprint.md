@@ -17,7 +17,7 @@ For a strictly positive continuous integrable density $k$, write $M=\int k$, $F(
 \tag{1}
 \]
 
-The corpus proves the actual-theta semigroup law $\Psi_{mn}=\Psi_m\circ\Psi_n$ and strict displacement $\Psi_n(t)>t$ for $n>1$ in [HedenmalmThetaPrimeTranslationQuantileFlow.lean](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeTranslationQuantileFlow.lean).
+The corpus proves the actual-theta semigroup law $\Psi_{mn}=\Psi_m\circ\Psi_n$ and strict displacement $\Psi_n(t)>t$ for $n>1$ in [HedenmalmThetaPrimeTranslationQuantileFlow.lean](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeTranslationQuantileFlow.lean).
 
 ## Nonlinear rigidity theorem
 
@@ -50,7 +50,7 @@ The sign of $c$ depends on whether the perturbation is written $F(x+\varepsilon 
 
 ## Literal theta arithmetic in the same coordinates
 
-For the theta atom $a_m(x)$ used in [ThetaCuspFinitePrimeFluxSplit.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspFinitePrimeFluxSplit.lean), its proved shift identity is
+For the theta atom $a_m(x)$ used in [ThetaCuspFinitePrimeFluxSplit.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFinitePrimeFluxSplit.lean), its proved shift identity is
 
 \[
 a_m(x+\log n)=\sqrt n\,a_{nm}(x).
@@ -71,7 +71,7 @@ For $x\ge0$ every displayed atom is positive, so the final ratio is the literal 
 
 Equations (2)–(3) solve one fidelity question: a proposed source-to-selfadjoint transfer preserving both complete prime flows cannot replace the normalized theta density by a distinct even one, and its linearization cannot silently erase an even deformation. They do **not** orient the theta determinant spectrum.
 
-The first spectral conjecture fails: the ordinary unitary Koopman action of these flows on $L^2(0,1)$ is conjugate, by the quantile map with its Jacobian, to translation on $L^2(\mathbb R)$. Translation by $\log 2$ has no nonzero $L^2$ eigenvector, so an Xi eigenmode cannot simply be assigned a unit-modulus prime character there. This matches the corpus's [continuous-spectrum prime coupling](../../../../../../formal/GaloisForLFunctions/RHTower/FinitePrimeCommutingDilationNoPointSpectrum.lean); the actual-theta [finite-stationary-carrier theorem](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaDivisorFiniteStationarityNoGo.lean) shows that every nonzero finite measure on the interval fails stationarity under a genuine prime flow, while the surviving invariant Haar measure has infinite mass. The pivot is a **source boundary-cocycle** problem: construct a rigged or quotient action that retains the pinned-mean port and whose defect-fibre phase is controlled by a source energy. The existing [prime-pinned normal form](../../../../../../formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeTranslationQuantileFlow.lean) shows the boundary port moves rather than vanishes, so that anomaly must be included in any proof.
+The first spectral conjecture fails: the ordinary unitary Koopman action of these flows on $L^2(0,1)$ is conjugate, by the quantile map with its Jacobian, to translation on $L^2(\mathbb R)$. Translation by $\log 2$ has no nonzero $L^2$ eigenvector, so an Xi eigenmode cannot simply be assigned a unit-modulus prime character there. This matches the corpus's [continuous-spectrum prime coupling](../../../../../../formal/GaloisForLFunctions/RHTower/FinitePrimeCommutingDilationNoPointSpectrum.lean); the actual-theta [finite-stationary-carrier theorem](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaDivisorFiniteStationarityNoGo.lean) shows that every nonzero finite measure on the interval fails stationarity under a genuine prime flow, while the surviving invariant Haar measure has infinite mass. The pivot is a **source boundary-cocycle** problem: construct a rigged or quotient action that retains the pinned-mean port and whose defect-fibre phase is controlled by a source energy. The existing [prime-pinned normal form](../../../../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeTranslationQuantileFlow.lean) shows the boundary port moves rather than vanishes, so that anomaly must be included in any proof.
 
 The exact energy target is already formalized in [FrankensteinThetaPrimeTranslationPluckerLanding.lean](../../../../../../formal/GaloisForLFunctions/RHTower/FrankensteinThetaPrimeTranslationPluckerLanding.lean): at an Xi divisor, the two reflected normalized prime-translation energies are reciprocal, and simultaneous contractivity at one retained prime is equivalent to critical-line placement. The new two-flow theorem supplies **fidelity of the source coordinate**, not either contractivity inequality. The hard conjecture is a source-derived, boundary-aware positive realization of both reflected evaluations; simply using the ordinary translation unitary cannot provide it.
 

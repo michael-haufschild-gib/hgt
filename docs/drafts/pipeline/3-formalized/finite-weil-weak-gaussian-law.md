@@ -80,7 +80,7 @@ declarations.json,incoming-imports.txt,final-audit.lean,final-audit.log,
 roots-search.json,lint.log,close.py}; leaf logs /tmp/hgt-WeilLogShift*.log.
 
 Global formal lint: 12 errors, 367 warnings, all outside the five new leaves.
-- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCMPolarOddPrimeJumps
+- error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.CCM.CCMPolarOddPrimeJumps
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperHurwitzCompactCharacter
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperHurwitzEnergyDomain
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.PaperHurwitzPowerRegularization
@@ -91,4 +91,4 @@ Global formal lint: 12 errors, 367 warnings, all outside the five new leaves.
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.FejerLatticeVanishing
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.PaperDiagonalStrongConvergence
 - error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.HTGeometry: GaloisForLFunctions.HTGeometry.QKrawtchoukCompanionTriangular
-- error: proof debt: formal/GaloisForLFunctions/RHTower/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)
+- error: proof debt: formal/GaloisForLFunctions/RHTower/CCM/CCMPolarOddPrimeJumps.lean:104: sorry (theorem ccmPolarOddSource_eq_core_add_atoms)

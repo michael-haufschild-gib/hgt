@@ -504,7 +504,7 @@ open prime tail - polar tail + Gamma tail
 
 has absolute value strictly below `1`.  Complete unconditional proof is formalized as
 `RHTower.abs_ccmRoutePCompletedCubicGreenTail_lt_one` in
-`GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenTailSubunit`.  This corrects earlier
+`GaloisForLFunctions.RHTower.CCM.CCMRoutePCompletedCubicGreenTailSubunit`.  This corrects earlier
 prime/polar-only numerical interpretation.  It does not revive route: signed scalar absolute value
 does not bound nuclear norm.  Exact surviving operator obligation is a coefficient-faithful
 nuclear lift whose norm retains cancellation before entrywise/operator absolute value and whose
@@ -514,7 +514,7 @@ The most direct lift is now also closed in Lean.  Multiplying canonical unit-tra
 defect by completed scalar produces Schatten-one operator with trace norm `<1`, but trace becomes
 scalar and is provably neither `1` nor `-1`.  See
 `RHTower.ccmRoutePCompletedCubicGreenScaledIntegralDefect_closed` in
-`GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenIntegralDefectNoGo`.
+`GaloisForLFunctions.RHTower.CCM.CCMRoutePCompletedCubicGreenIntegralDefectNoGo`.
 
 ### Positive survivor — theta-survival relative curvature
 

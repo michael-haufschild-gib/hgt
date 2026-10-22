@@ -95,10 +95,10 @@ on a fixed lower horizontal line are countable, hence null, so the Lebesgue inte
 assuming a divisor-free line.
 
 Formal module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureSourcePlemeljTrace.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureSourcePlemeljTrace.lean`.
 
 Canonical-window module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureCanonicalHeightWindow.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureCanonicalHeightWindow.lean`.
 
 - `tendsto_iterated_criticalFeaturePoleGammaTrace`: infinite zero-independent source trace.
 - `tendsto_criticalFeatureSourcePlemeljCorrectedLatticeBudget`: budget-level replacement.

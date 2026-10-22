@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.LorentzianZeroMass
 import GaloisForLFunctions.RHTower.ZetaLogDerivZeroDistance
-import GaloisForLFunctions.RHTower.SuzukiRemainderFourierTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRemainderFourierTransform
 
 /-!
 # The narrow Lorentzian zero mass

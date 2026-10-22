@@ -57,7 +57,7 @@ source integrated against the full kernel pairing. Substitution of the
 kernel identity proves the stated equation.
 
 Lean results in
-[ThetaCuspHawkingBMFullSourceWeakWave.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSourceWeakWave.lean):
+[ThetaCuspHawkingBMFullSourceWeakWave.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSourceWeakWave.lean):
 
 - `kernel_joint_transposition`: the full kernel identity for general joint
   compact tests, with original source vertex and image normalization.
@@ -68,7 +68,7 @@ Lean results in
   forcing admission and the original response's full reduced weak equation.
 
 Verification: `lake env lean` scratch passed without warnings. Isolated
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullSourceWeakWave`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullSourceWeakWave`
 passed in 31.02 seconds, two jobs. Single-threaded foreground checks had a
 240-second hard timeout. The leaf is wired into `RHTower.lean`; no umbrella
 build ran. No added axioms, admitted proofs or heartbeat overrides.

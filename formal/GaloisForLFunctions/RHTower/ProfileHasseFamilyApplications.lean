@@ -1,8 +1,8 @@
 import GaloisForLFunctions.HTGeometry.HasseFamily
 import GaloisForLFunctions.RHTower.WeldChargeProfileHasse
-import GaloisForLFunctions.RHTower.DeningerFiniteCyclotomicHasse
+import GaloisForLFunctions.RHTower.Deninger.DeningerFiniteCyclotomicHasse
 import GaloisForLFunctions.RHTower.BurnolCoPoissonMellinHasse
-import GaloisForLFunctions.RHTower.ArtinMonomialMultiplicitySeparation
+import GaloisForLFunctions.RHTower.Artin.ArtinMonomialMultiplicitySeparation
 import GaloisForLFunctions.RHTower.FieldOneGlobalAdeleTorsionHasse
 
 /-!

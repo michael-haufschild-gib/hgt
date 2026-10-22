@@ -55,7 +55,7 @@ All four checks pass. No completeness or finite-dimensionality enters. The only 
 
 ## Lean closure
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorAnalyticLeftQNMTwoLegNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPreDivisorAnalyticLeftQNMTwoLegNoGo`
 - Closed certificate: `d4HBPreDivisorAnalyticLeftQNMTwoLegRouteKilled`
 - Direct Lean: PASS
 - Targeted module build: PASS

@@ -5,7 +5,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (dependency-closed paper proof)
 - **Register:** `[UNIVERSAL-LAW] [CORPUS-SYNTHESIS]`
-- **Target:** `formal/GaloisForLFunctions/RHTower/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
+- **Target:** `formal/GaloisForLFunctions/RHTower/CCM/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
 
 ## Theorem
 
@@ -56,7 +56,7 @@ with that rank-two Lorentz energy for arbitrary finite samples.
 
 ## Lean result
 
-`formal/GaloisForLFunctions/RHTower/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
 defines the sampled quadratic form and energy and proves:
 
 - `ccmPolarNegativeHessianQuadraticForm_eq_polarQuadraticForm`;
@@ -64,7 +64,7 @@ defines the sampled quadratic form and energy and proves:
 
 Direct exact check passed without warnings:
 
-`lake env lean GaloisForLFunctions/RHTower/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
+`lake env lean GaloisForLFunctions/RHTower/CCM/CCMPolarNegativeHessianLorentzSignatureUniversalityLaw.lean`
 
 The module is imported by `GaloisForLFunctions/RHTower.lean`.
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.VisibleCoprimeMellinSymbol
 import GaloisForLFunctions.RHTower.Sieve.InvZetaRegular
-import GaloisForLFunctions.RHTower.DeningerMeyerXiSpectralInclusion
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiSpectralInclusion
 import GaloisForLFunctions.RHTower.CompletedFluxGradedReality
 import GaloisForLFunctions.RHTower.FractionalPartZeta
 import GaloisForLFunctions.RHTower.RiemannVonMangoldt

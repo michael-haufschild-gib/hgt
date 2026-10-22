@@ -41,7 +41,7 @@ integrality needed at strict-right Xi copy.
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.CCMRoutePCompletedCubicGreenIntegralDefectNoGo`
+- Module: `GaloisForLFunctions.RHTower.CCM.CCMRoutePCompletedCubicGreenIntegralDefectNoGo`
 - Closed theorem: `RHTower.ccmRoutePCompletedCubicGreenScaledIntegralDefect_closed`
 
 ## Interpretation

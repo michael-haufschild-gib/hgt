@@ -79,7 +79,7 @@ classification or RH equivalence. Search is bounded, not exhaustive.
   unconditionally, while every source-fixed gauge is pointwise forced to be the identity off the
   critical line. Consequently a global nowhere-zero source-fixed real cocycle trivialization exists
   iff RH. Formalized in
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFESourceFixedGaugeTrivializationRigidity`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFESourceFixedGaugeTrivializationRigidity`.
   Direct Lean check passed; target build passed (`12025/12025`); all nine public theorems audit to
   standard axioms only (`propext`, `Classical.choice`, `Quot.sound`); umbrella import wired. Global
   lint reports only unrelated umbrella-reachability failures and no HC60 violation.

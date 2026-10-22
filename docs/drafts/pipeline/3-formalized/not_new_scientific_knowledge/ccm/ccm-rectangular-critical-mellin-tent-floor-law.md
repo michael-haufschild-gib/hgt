@@ -266,7 +266,7 @@ distributional Weil form and the Stieltjes autocorrelation law remain cited pare
 corresponding gate stays open), but the card's own geometric and algebraic steps are reachable and
 are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMRectangularTentFloor.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularTentFloor.lean`
 (10 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
 into `formal/GaloisForLFunctions/RHTower.lean`).
 

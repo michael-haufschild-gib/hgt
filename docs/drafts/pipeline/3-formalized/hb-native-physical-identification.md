@@ -8,7 +8,7 @@ The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/S
 
 ## Exact result
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativePhysicalIdentification`. Namespace: `RHTower.D4BMNativeResponse`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativePhysicalIdentification`. Namespace: `RHTower.D4BMNativeResponse`.
 
 `nativePrincipalResponse_eq_principalTimeResponse` proves, for the original `q`, branch, source amplitude and each `i : Fin 3`, equality of the entire time-dependent L² functions:
 
@@ -75,7 +75,7 @@ Broad `sinc`, convolution and shifted-frequency searches and deep interval/Fouri
 
 Candidate declarations, source arguments and generated ingredient groups were inspected. The final deep search inventoried 55,972 files with complete file inventory but incomplete semantic coverage, 48 compiled snapshots and 43 stale snapshots; candidates were predominantly source-only. Every ingredient used in this leaf was checked by Lean.
 
-Foreground scratch `lake env lean` passed. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativePhysicalIdentification`, using 4038 frozen own-module caches and 11 package caches. The 864-line new leaf built in 45 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran. Lean emitted one informational `ring_nf` suggestion; the build completed successfully.
+Foreground scratch `lake env lean` passed. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativePhysicalIdentification`, using 4038 frozen own-module caches and 11 package caches. The 864-line new leaf built in 45 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran. Lean emitted one informational `ring_nf` suggestion; the build completed successfully.
 
 Only the four new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files match the audited files byte for byte. A unique import was added to the `GaloisForLFunctions.RHTower` area umbrella; the umbrella was not built.
 

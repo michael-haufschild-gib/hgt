@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PolyatomicSourceApplications
-import GaloisForLFunctions.RHTower.DeningerRationalWittHazewinkelHankel
+import GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittHazewinkelHankel
 
 /-!
 # Exact infinite rank of the collision Laplace separation

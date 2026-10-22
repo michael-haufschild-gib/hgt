@@ -1,7 +1,7 @@
 # Actual Maass dilation stress and physical boundary energy
 
 - **Stage:** 1-in-progress
-- **Parent:** [Selberg conjecturing loop](../../selberg-quarter-conjecturing-loop.md), cycle50.
+- **Parent:** [Selberg conjecturing loop](selberg-quarter-conjecturing-loop.md), cycle50.
 - **Goal:** Derive a source-based boundary-to-bulk energy comparison using the original Maass equation, complete physical derivatives, and actual modular seams.
 
 ## Corpus-derived conjecture
@@ -71,7 +71,7 @@ and, with `phi=(1+sqrt(5))/2`,
 
 `phi*A(v) - Re(inner (B(v)) v) = (phi-1)*norm(phi*a-b)^2 + norm(Q(a))^2`.
 
-These square expansions suggest a uniform mixed estimate `abs(Re(inner (B(v)) w))^2 <= phi^2*A(v)*A(w)`, proved by polarization and scalar optimization after the actual projection identities are discharged. This would replace the full source derivative norm in the coherent seam bound by its own transfer-loss energy, precisely the quantity in the new radial phase Rellich law. Next loop: check the exact square expansions on paper and in Lean, then prove the mixed bound and specialize to the original radial source derivative. No angle or spectral assumption is proposed. Cycle52 proved both exact square identities, the mixed estimate, and its full original-source integrated/core–cusp strengthening. [Complete proof and current phase-stress target](../../selberg-character-mixed-loss.md). The full quarter comparison remains unproved.
+These square expansions suggest a uniform mixed estimate `abs(Re(inner (B(v)) w))^2 <= phi^2*A(v)*A(w)`, proved by polarization and scalar optimization after the actual projection identities are discharged. This would replace the full source derivative norm in the coherent seam bound by its own transfer-loss energy, precisely the quantity in the new radial phase Rellich law. Next loop: check the exact square expansions on paper and in Lean, then prove the mixed bound and specialize to the original radial source derivative. No angle or spectral assumption is proposed. Cycle52 proved both exact square identities, the mixed estimate, and its full original-source integrated/core–cusp strengthening. [Complete proof and current phase-stress target](selberg-character-mixed-loss.md). The full quarter comparison remains unproved.
 
 ## Cycle51 final audit status
 

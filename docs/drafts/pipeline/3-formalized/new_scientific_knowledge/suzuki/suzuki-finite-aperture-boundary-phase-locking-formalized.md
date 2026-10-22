@@ -5,7 +5,7 @@
 - **Claim:** `[PROVED] [UNCONDITIONAL]` for the universal law of Sections 2–5
 - **Paper proof:** `./suzuki-finite-aperture-boundary-phase-locking.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiFiniteApertureBoundaryPhaseLocking.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteApertureBoundaryPhaseLocking.lean`
   - `formal/GaloisForLFunctions/HTGeometry/NestedProjectionConvergence.lean`
   - `formal/GaloisForLFunctions/HTGeometry/FiniteRankTransportUnitary.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PolarTransportUnitary.lean`

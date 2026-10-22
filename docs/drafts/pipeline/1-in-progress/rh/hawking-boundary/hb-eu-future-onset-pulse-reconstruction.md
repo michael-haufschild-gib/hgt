@@ -75,29 +75,29 @@ justify discarding a horizon current.
 
 Current status: the finite future seed Green identity and its original
 pulse-minus-source balance are Lean verified in
-[FutureSeedFiniteGreen](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFutureSeedFiniteGreen.lean).
+[FutureSeedFiniteGreen](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFutureSeedFiniteGreen.lean).
 The actual angular mean growth and its integrable physical-clock majorant
 are Lean verified in
-[FullAngularMeanGrowth](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularMeanGrowth.lean).
+[FullAngularMeanGrowth](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularMeanGrowth.lean).
 The independent seed cap is absolutely admitted, its actual terminal
 limit is proved, and the finite original pulse-minus-source actions have
 the exact null-exhaustion limit `Seed-CSeed`, all Lean verified in
-[FutureSeedHorizonCap](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFutureSeedHorizonCap.lean).
+[FutureSeedHorizonCap](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFutureSeedHorizonCap.lean).
 Pulse admission and exhaustion of the original future integral by outgoing
 source cuts are Lean verified in
-[FuturePulseAdmission](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFuturePulseAdmission.lean).
+[FuturePulseAdmission](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFuturePulseAdmission.lean).
 Those cuts are identified with the finite null Green action in
-[FutureSourceBridge](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFutureSourceBridge.lean).
+[FutureSourceBridge](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFutureSourceBridge.lean).
 Its `future_source_balance` proves the complete scalar bridge for all real
 times, every nonnegative radial depth, both physical branches and arbitrary
 source amplitude and angular base point. Full temporal/metric/QNM matching
 and RH remain open. The finite upper direct pulse now has an exact smooth
 two-triangle representation through its characteristic corner, verified in
 `ThetaCuspHawkingBMFuturePulseCorner`; see
-[future pulse corner regularity](../../hb-fa-future-pulse-corner-regularity.md).
+[future pulse corner regularity](hb-fa-future-pulse-corner-regularity.md).
 The remaining pulse regions and the exact vanishing of the outgoing compact
 cutoff strips are verified in `ThetaCuspHawkingBMFuturePulseAssembly`; see
-[full future pulse assembly](../../hb-fb-full-future-pulse-assembly.md).
+[full future pulse assembly](hb-fb-full-future-pulse-assembly.md).
 `ThetaCuspHawkingBMFuturePulseIdentity` identifies the full compact action
 with the admitted original response and proves its joint smoothness in
 physical interior coordinates. Cap regularity and noncompact left-QNM
@@ -106,7 +106,7 @@ admission remain required for full differentiated matching.
 caps in one fixed source-radius representation and factors their late weights
 through a smooth compact parameter. The resulting temporal/radial regularity
 proof and the still-open angular admission are specified in
-[fixed-source horizon matching](../../hb-fd-fixed-source-horizon-matching.md).
+[fixed-source horizon matching](hb-fd-fixed-source-horizon-matching.md).
 
 ## Finite future Green identity with the actual terminal face
 
@@ -125,7 +125,7 @@ and `b(v,w)=f((v-w)/2)*o(v)`. The letter `a` remains the original
 amplitude. Let `K_D(v,w)` and `K_I(v,w)` be the circle means of `B` at
 the direct and image radii, respectively, **without** the factor `1/2`.
 The reciprocal closed-cone Goursat identity already proved in
-[FullAngularGoursat](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularGoursat.lean)
+[FullAngularGoursat](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularGoursat.lean)
 supplies their mixed source derivatives, including one-sided cone edges.
 It gives
 

@@ -12,7 +12,7 @@ The generic claim that positivity and the two mass totals recover the value fail
 
 ## Live conjecture → proof / fail → pivot
 
-Priority: attack the actual unbounded arithmetic sign. The [direct sign attempts](../../weil-pole-direct-sign-attack.md) record where divisor renewal and the positive self-pairing arguments fail to provide it. Generic lower-bound and classification work is not the active task.
+Priority: attack the actual unbounded arithmetic sign. The [direct sign attempts](weil-pole-direct-sign-attack.md) record where divisor renewal and the positive self-pairing arguments fail to provide it. Generic lower-bound and classification work is not the active task.
 
 1. Derive a lower bound for the actual logarithmic moment from structure of the literal Mangoldt coefficients, using the stationary equation where applicable. Mere mass positivity is insufficient, as the complete finite model shows.
 2. Test whether such a bound reaches the exact even-value threshold, retaining Gamma, pole and reciprocal errors. A larger-scale lower bound that loses the required sign must be classified by its sharp positive survivor.

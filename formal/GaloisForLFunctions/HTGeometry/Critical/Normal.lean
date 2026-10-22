@@ -1,0 +1,10 @@
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcFieldFibre
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcFieldIntegrality
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcPlace
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcReduction
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcResidueCharacteristic
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcSheetLift
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureArcSheetLiftInjective
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureConstantExtension
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureSchurValuation
+import GaloisForLFunctions.HTGeometry.Critical.Normal.CrossingFaceTor

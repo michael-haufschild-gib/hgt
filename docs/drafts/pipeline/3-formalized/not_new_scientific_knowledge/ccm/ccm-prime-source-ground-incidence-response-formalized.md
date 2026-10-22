@@ -8,7 +8,7 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMPrimeSourceGroundIncidence` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMPrimeSourceGroundIncidence` (new)
 - `GaloisForLFunctions.HTGeometry.HellmannFeynman` — pre-existing, carrying equation `(4)`.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -40,6 +40,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMPrimeSourceGroundIncidence`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMPrimeSourceGroundIncidence`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

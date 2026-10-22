@@ -107,7 +107,7 @@ restriction.
 ## Lean surface
 
 Route namespace: `RHTower.D4BMJointWave`. Canonical prefix:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMJoint`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMJoint`.
 
 | Module suffix | Public theorems | Content |
 |---|---:|---|

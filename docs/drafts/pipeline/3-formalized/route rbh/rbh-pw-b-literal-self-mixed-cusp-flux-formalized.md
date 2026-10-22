@@ -1,7 +1,7 @@
 # Literal self-copy mixed cusp-flux coefficient — Lean certificate
 
 - **Paper card:** `rbh-pw-b-literal-self-mixed-cusp-flux.md`
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCyclicPeierlsSelfMixedCuspFlux`
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** `lake --old env lean` clean; `#print axioms` = `propext`, `Classical.choice`,
   `Quot.sound`; no `sorry`.

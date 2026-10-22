@@ -198,7 +198,7 @@ construction.
 
 ### What landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCharacterShapeFormality.lean`, 22 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCharacterShapeFormality.lean`, 22 declarations, axiom
 audit for every one of them within `propext, Classical.choice, Quot.sound` (several need only
 `propext, Quot.sound`).
 
@@ -609,7 +609,7 @@ facts that the colimit of the algebras consumes — `torusSystemDirectedDeg` and
 `exteriorSystemDirectedDeg`, each obtained from `directedSystem_deg` applied to the corresponding
 `CDGADirectedSystem` witness.
 
-`formal/GaloisForLFunctions/RHTower/DeningerLatticeTorusTower.lean` instantiates this at the card's
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLatticeTorusTower.lean` instantiates this at the card's
 `𝓛_F`.  The lattices of a torsion-free abelian group are directed (`IsDirectedOrder` instance from
 `deningerFGSubmodule_directed`), finitely generated hence finite modules, and free
 (`deningerLatticeFree`), so `deningerLatticeBasis` is a basis indexed by the rank and
@@ -630,7 +630,7 @@ needs the relative derived tensor product of such algebras.  The general homotop
 `(5)` and `(6)` are built from — base change preserves equivalences, the fibre of an equivalence
 vanishes, the free algebra on the zero object is the unit, and tensoring over the unit is the
 identity — are proved in
-`formal/GaloisForLFunctions/RHTower/DeningerRankCollapseSpectralConsequences.lean`.  The card stays
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRankCollapseSpectralConsequences.lean`.  The card stays
 at stage 2 for `(4)`, which is one of its own `[PROVED HERE]` labels.
 - 2026-08-07 — Closed the last non-`E_∞` gap of `(2)`: the dictionary between the lattice poset and
   a tower of tori.  `deningerTorusTower` chooses `Module.finBasis` on each lattice — legitimate

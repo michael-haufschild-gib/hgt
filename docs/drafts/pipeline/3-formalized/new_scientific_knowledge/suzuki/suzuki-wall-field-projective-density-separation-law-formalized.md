@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-wall-field-projective-density-separation-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiWallFieldProjectiveDensitySeparationLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldProjectiveDensitySeparationLaw.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -48,7 +48,7 @@ marked-tensor Ward compensation, not normalized quotient positivity.
 ## Verification
 
 - direct source check passed:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiWallFieldProjectiveDensitySeparationLaw.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldProjectiveDensitySeparationLaw.lean`;
 - unconditional, no `sorry`, `admit`, project axiom, `opaque`, `unsafe`, computation, estimate, or
   RH premise;
 - final targeted SOTA build passed `9457/9457`;

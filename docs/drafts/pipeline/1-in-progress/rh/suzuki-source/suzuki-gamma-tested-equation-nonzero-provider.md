@@ -3,7 +3,7 @@
 - **ID:** suzuki-gamma-tested-equation-nonzero-provider
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** `formal/GaloisForLFunctions/RHTower/SuzukiGammaMollifiedEquation.lean`
+- **Source:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaMollifiedEquation.lean`
 - **Statement:** Construct an explicit nonzero admissible profile `V` and function `G` satisfying `SuzukiGammaTestedEquation σ τ V G` in a nonempty parameter range.
 
 ## Goal

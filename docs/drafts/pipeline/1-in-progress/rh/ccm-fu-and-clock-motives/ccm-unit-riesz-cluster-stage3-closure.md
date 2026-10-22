@@ -91,14 +91,14 @@ wired into `GaloisForLFunctions.RHTower`, all unconditional
 (`#print axioms` = `propext, Classical.choice, Quot.sound`):
 
 ```text
-RHTower/CCMUnitRieszCesaroFiniteApertureReporter.lean     W1  (four-unit Cesàro card)
-RHTower/CCMUnitRieszApertureResolventEpsilonTransfer.lean W2  (aperture-resolvent card)
-RHTower/CCMUnitRieszCoherentGeneratorSampling.lean        W3  (polar sampling no-go card)
-RHTower/CCMUnitRieszVolterraLaplace.lean                  W5' (reusable exponential-kernel
+RHTower/CCM/CCMUnitRieszCesaroFiniteApertureReporter.lean     W1  (four-unit Cesàro card)
+RHTower/CCM/CCMUnitRieszApertureResolventEpsilonTransfer.lean W2  (aperture-resolvent card)
+RHTower/CCM/CCMUnitRieszCoherentGeneratorSampling.lean        W3  (polar sampling no-go card)
+RHTower/CCM/CCMUnitRieszVolterraLaplace.lean                  W5' (reusable exponential-kernel
                                                                Laplace convolution law)
-RHTower/CCMUnitRieszStirlingLaplace.lean                  W4/W5
-RHTower/CCMUnitRieszCompletedCurrentLaplace.lean          W5
-RHTower/CCMUnitRieszCompletedSourceLaplaceWeld.lean       W5
+RHTower/CCM/CCMUnitRieszStirlingLaplace.lean                  W4/W5
+RHTower/CCM/CCMUnitRieszCompletedCurrentLaplace.lean          W5
+RHTower/CCM/CCMUnitRieszCompletedSourceLaplaceWeld.lean       W5
 ```
 
 ### Reusable assets produced

@@ -608,7 +608,7 @@ frontier movement.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerFloquetExactSequence.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFloquetExactSequence.lean`,
 `DeningerFloquetTomography.lean`, `DeningerHalfDensityFloquetEnergy.lean`,
 `DeningerEulerFloquetAdmission.lean`, on the all-prime energy layer
 (`DeningerPeriodizationFundamentalBound.lean`, `DeningerAllPrimeFloquetEnergy.lean`,
@@ -655,7 +655,7 @@ declaration: `propext, Classical.choice, Quot.sound`.
   `deningerFloquetPeriodization_range_eq_kernel` at `α = 1/2`.
 
 - **§6, `(24)`: the arithmetic lattice form of the energy.**
-  `formal/GaloisForLFunctions/RHTower/DeningerFloquetParseval.lean`.  The circle periodization is
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerFloquetParseval.lean`.  The circle periodization is
   the unit-cell periodization of the rescaled cochain
   (`deningerPeriodizationSum_eq_l1Periodization`), so the corpus's
   `HTGeometry/L1PeriodizationFourier.lean` coefficient theorem gives
@@ -704,7 +704,7 @@ declaration: `propext, Classical.choice, Quot.sound`.
 
 ### §6 `(23)` as a measure and `(26)` the unitary identification `[NEW]`
 
-`formal/GaloisForLFunctions/RHTower/DeningerFloquetLatticeMeasure.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFloquetLatticeMeasure.lean`,
 `DeningerFloquetMeasureEnergy.lean`, `DeningerFloquetAtomicMeasure.lean`,
 `DeningerSourceModulation.lean`, `DeningerFloquetGaussianAtom.lean`, `DeningerFloquetHilbert.lean`.
 Axiom audit for every declaration: `propext, Classical.choice, Quot.sound`.
@@ -740,7 +740,7 @@ Still open on this card: `(27)`, `(28)` and §7.
 
 ### §6 `(27)`--`(28)` and §7 `[NEW]` — the card is fully formalized
 
-`formal/GaloisForLFunctions/RHTower/DeningerFloquetPoissonSample.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFloquetPoissonSample.lean`,
 `DeningerFloquetPoissonFlow.lean`, `DeningerFloquetPoissonClosure.lean`,
 `DeningerFloquetPoissonCompleteness.lean`, `DeningerFloquetBoundedCorrection.lean`,
 `DeningerFloquetDepletedCorrection.lean`, and the reusable

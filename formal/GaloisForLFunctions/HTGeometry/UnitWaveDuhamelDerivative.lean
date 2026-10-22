@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UnitWaveDuhamel
-import GaloisForLFunctions.HTGeometry.KleinGordonDuhamelFirstDerivative
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonDuhamelFirstDerivative
 
 /-! The actual first time derivative of the physical retarded convolution. -/
 open MeasureTheory Set Filter

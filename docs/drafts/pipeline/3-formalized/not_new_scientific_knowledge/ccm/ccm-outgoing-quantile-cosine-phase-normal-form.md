@@ -107,7 +107,7 @@ not merely an endpoint scalar estimate. Node-straddling cells remain genuinely m
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileCosinePhaseNormalForm`
+  `GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileCosinePhaseNormalForm`
 - Main exact spectral theorems:
   `ccmActualHeadOutgoingQuantileCellTransport_eq_cosinePhaseProfile` and
   `ccmActualHeadOutgoingQuantileFiniteBlock_eq_cosinePhaseFiniteSymbol`.
@@ -118,10 +118,10 @@ not merely an endpoint scalar estimate. Node-straddling cells remain genuinely m
 - Arithmetic chamber:
   `ccmOutgoingPrimeQuantileBoundary_succ_le_log_iff_completedError_ge_threshold` and
   `ccmActualHeadOutgoingQuantileCosinePhaseProfile_secondDeriv_zero_nonneg_of_completedError`.
-- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCosinePhaseNormalForm.lean`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCosinePhaseNormalForm.lean`
   passed.
 - Target-only `lake build
-  GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileCosinePhaseNormalForm` passed.
+  GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileCosinePhaseNormalForm` passed.
 - Scratch `#print axioms` audit for all 25 theorems reports only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - Forbidden declaration scan is empty.

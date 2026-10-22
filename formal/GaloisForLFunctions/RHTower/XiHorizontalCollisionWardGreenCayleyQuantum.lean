@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHorizontalCollisionPrimeCayleyInformationLoss
-import GaloisForLFunctions.RHTower.HedenmalmWardDefectTransverseGreenSource
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmWardDefectTransverseGreenSource
 import GaloisForLFunctions.RHTower.XiReflectionSelfIntersectionCharge
 
 /-!

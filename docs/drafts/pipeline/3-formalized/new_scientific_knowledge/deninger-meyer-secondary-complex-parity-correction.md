@@ -167,8 +167,8 @@ provisional pending specialist review.
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerSecondaryThreeTermComplex.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerRadialParityCorrection.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerSecondaryThreeTermComplex.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerRadialParityCorrection.lean`.
 
 Capstones:
 

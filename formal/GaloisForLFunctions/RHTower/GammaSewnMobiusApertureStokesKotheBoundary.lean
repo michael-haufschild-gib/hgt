@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesInverseTilt
-import GaloisForLFunctions.RHTower.DeningerPrimeLogHeightGreen
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeLogHeightGreen
 
 /-!
 # Gamma-sewn Stokes inverse on the prime-log height Köthe boundary

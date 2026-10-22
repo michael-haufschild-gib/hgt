@@ -125,7 +125,7 @@ sector, but it cannot replace power-scale symmetric cancellation.
 
 ## Formalization
 
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalAffineCauchyResidualDivergence.lean` proves:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalAffineCauchyResidualDivergence.lean` proves:
 
 - `suzukiCriticalAffineCauchyResidual_eq_twoBoundary`;
 - `scaled_primeHarmonic_le_suzukiCriticalAffineCauchyResidualMass`;

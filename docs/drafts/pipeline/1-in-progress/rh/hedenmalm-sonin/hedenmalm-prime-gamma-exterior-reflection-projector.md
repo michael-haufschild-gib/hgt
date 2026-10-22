@@ -67,7 +67,7 @@ Cayley-source resolvent, with exterior vanishing providing the exact removable-k
 
 ## Verification gates
 
-- [x] `lake env lean formal/GaloisForLFunctions/RHTower/HedenmalmPrimeGammaExteriorReflectionProjector.lean`
-- [x] `lake build GaloisForLFunctions.RHTower.HedenmalmPrimeGammaExteriorReflectionProjector`
+- [x] `lake env lean formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmPrimeGammaExteriorReflectionProjector.lean`
+- [x] `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeGammaExteriorReflectionProjector`
 - [x] `#print axioms` audit
 - [x] umbrella import

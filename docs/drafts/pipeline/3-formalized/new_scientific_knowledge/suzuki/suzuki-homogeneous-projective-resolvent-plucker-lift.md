@@ -250,7 +250,7 @@ a positive-Grassmannian Christoffel--Darboux identity on spectral pairs.
 
 `(2)--(3)`, `(6)--(8)`, `(10)--(11)`, quotient cross-multiplication, rank-one blindness, and the
 connector to Suzuki's existing projective Neumann numerator are formalized in
-`RHTower/SuzukiProjectiveResolventPluckerLift.lean`:
+`RHTower/Suzuki/SuzukiProjectiveResolventPluckerLift.lean`:
 
 ```text
 suzukiProjectiveResolventMinor                        (2)
@@ -282,7 +282,7 @@ GaloisForLFunctions/HTGeometry/AlternatingChordLaw.lean
   altPair_chord        the chord law for an arbitrary 2-alternating map into any module
   exteriorPair_chord   its exterior-square instance
 
-GaloisForLFunctions/RHTower/SuzukiProjectiveResolventBlade.lean
+GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveResolventBlade.lean
   suzukiResolventBlade_chord              (4): u_beta ∧ u_alpha = (beta-alpha) v ∧ A v
   suzukiHomogeneousState_eq               (A v - alpha v, 1) = (A v, 1) - alpha (v, 0)
   suzukiHomogeneousResolventBlade_chord   (9): the same law after homogenization, in V × F

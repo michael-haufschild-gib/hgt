@@ -345,7 +345,7 @@ because `XiC z = (z-alpha)^m C z` with `C(alpha) != 0` --- leaves `i = P(z)(z-al
 and continuity at `alpha` forces `i = 0`.
 
 The **exact finite-dilation obstruction** `(10)`--`(11)` is formalized in
-`formal/GaloisForLFunctions/RHTower/HedenmalmRankOneDilationObstruction.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmRankOneDilationObstruction.lean`:
 
 ```text
 rankOneDilationCharacteristic a mu z = a - z - C[mu](z)
@@ -367,7 +367,7 @@ finite measure is Herglotz, which the corpus already owns as
 nonzero measure.
 
 The **causal/anti-causal coincidence** `(12)` is formalized in
-`formal/GaloisForLFunctions/RHTower/HedenmalmTwoEndedVolterraDefect.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTwoEndedVolterraDefect.lean`:
 
 ```text
 hedenmalmCausalVolterra, hedenmalmAntiCausalVolterra
@@ -429,7 +429,7 @@ so all the moment integrals in the determinacy argument are defined.  What is mi
 analytic input that makes their vanishing propagate.
 
 The first layer of that analytic input is now built in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspComplexStrip.lean`:
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspComplexStrip.lean`:
 
 ```text
 thetaCuspComplexSeed, thetaCuspComplexTerm  : the entire complexifications;

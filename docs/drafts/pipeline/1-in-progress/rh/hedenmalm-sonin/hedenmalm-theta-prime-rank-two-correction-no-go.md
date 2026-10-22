@@ -76,9 +76,9 @@ Hermitian rank-two correction is blind. P-G109's positive hyperbolic excess surv
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaPrimeRankTwoCorrectionNoGo.lean` contains the
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaPrimeRankTwoCorrectionNoGo.lean` contains the
 complete result. Direct `lake env lean` and exact `lake build
-GaloisForLFunctions.RHTower.HedenmalmThetaPrimeRankTwoCorrectionNoGo` pass.
+GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaPrimeRankTwoCorrectionNoGo` pass.
 
 ## Log
 

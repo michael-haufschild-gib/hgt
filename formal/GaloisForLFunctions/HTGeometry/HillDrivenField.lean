@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenFlowBounds
-import GaloisForLFunctions.HTGeometry.KleinGordonSynthesisField
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSynthesisField
 
 /-!
 # The field of the driven evolution, and its two time derivatives

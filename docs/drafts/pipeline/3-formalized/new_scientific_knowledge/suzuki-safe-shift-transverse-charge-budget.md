@@ -280,7 +280,7 @@ positivity but the explicit dispersion floor `(SR-62.6)`.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiSafeShiftTransverseChargeBudget.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSafeShiftTransverseChargeBudget.lean
 ```
 
 Capstones:

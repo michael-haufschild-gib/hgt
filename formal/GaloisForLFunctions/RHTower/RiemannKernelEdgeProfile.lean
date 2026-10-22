@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilFullConeRiemannKernelRigidity
-import GaloisForLFunctions.RHTower.CCMRiemannKernelBartaSources
+import GaloisForLFunctions.RHTower.CCM.CCMRiemannKernelBartaSources
 
 /-!
 # The edge profile of Riemann's kernel

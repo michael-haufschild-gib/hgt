@@ -6,7 +6,7 @@ Chain: literal theta-cusp source → Xi occurrence → retained spin-two source 
 
 ## Direct cancellation target
 
-The [common source and complete current](../../hb-mixed-complete-current.md) reduce the next calculation to the common producer on both legs of the causal Green kernel, with all derived contacts and boundary terms retained. The scalar Legendre kernel alone does not identify its action on the full theta half-square. The present target is the actual angular averaging identity needed in that pairing.
+The [common source and complete current](hb-mixed-complete-current.md) reduce the next calculation to the common producer on both legs of the causal Green kernel, with all derived contacts and boundary terms retained. The scalar Legendre kernel alone does not identify its action on the full theta half-square. The present target is the actual angular averaging identity needed in that pairing.
 
 For the actual source `Q=fullSquarePotential q` and original upper-half-plane point `(X,Y)`, define
 

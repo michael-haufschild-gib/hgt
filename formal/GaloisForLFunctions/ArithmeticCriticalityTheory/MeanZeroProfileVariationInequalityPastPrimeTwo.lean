@@ -1,8 +1,8 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ShortProfilePoleFreeVariationInequality
 import GaloisForLFunctions.ArithmeticCriticalityTheory.NonnegativeConeZeroFormCriterion
 import GaloisForLFunctions.RHTower.PoleVanishingWeilPositivityPrimeTwo
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundEnergy
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundEnergy
 
 /-!
 # The variation inequality on mean-zero profiles, past the prime 2

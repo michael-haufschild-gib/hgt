@@ -479,7 +479,7 @@ absolute-value estimate as failure of the signed budget itself.
   assessed from the actual displayed statements, not the judge's verdict.
 
 - Next explicit candidate:
-  [natural-denominator Ramanujan energy](../../pm-ramanujan-denominator-energy.md).
+  [natural-denominator Ramanujan energy](pm-ramanujan-denominator-energy.md).
   First audit and prove the actual
   coefficient expansion with absolute rearrangement. The proposed common
   anchored energy budget remains unproved; finite-prime and averaged

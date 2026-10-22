@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED] [FORMALIZED] [NOT NEW SCIENTIFIC KNOWLEDGE]`
 - **Lean modules:**
   - `GaloisForLFunctions.HTGeometry.FiniteModalTransfer`
-  - `GaloisForLFunctions.RHTower.CCMCriticalMellinVolterraHaarFinitePacket`
+  - `GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinVolterraHaarFinitePacket`
 
 ## General value law
 

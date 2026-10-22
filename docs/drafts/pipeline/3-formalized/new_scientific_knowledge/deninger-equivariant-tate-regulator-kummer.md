@@ -167,7 +167,7 @@ CLOSED`.
 
 ### The source-defined content landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerEquivariantTateRegulator.lean`.  Axiom audit for all
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEquivariantTateRegulator.lean`.  Axiom audit for all
 15 declarations: `propext, Classical.choice, Quot.sound`.
 
 Deninger's Proposition 12.1 and Kucharczyk--Scholze's Proposition 3.8 are the imported literature

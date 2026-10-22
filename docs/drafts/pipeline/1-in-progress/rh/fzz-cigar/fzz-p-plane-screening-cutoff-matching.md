@@ -22,7 +22,7 @@ Clear the two collision poles *in the definition*:
 
 `H=(1-a)(1-b)(E+A0+A1)+pi(1-b)R^(2-2a)+pi(1-a)R^(2-2b)`.
 
-Do not define this across the poles by multiplying a totalized singular quotient. Separate real analyticity of this explicitly cleared source is now proved; the [source-analytic audit](../../fzz-p-subtracted-screening-analytic.md) uses `alpha=-2a,beta=-2b` and a clearing normalization four times this one. The proposed Gamma partner is
+Do not define this across the poles by multiplying a totalized singular quotient. Separate real analyticity of this explicitly cleared source is now proved; the [source-analytic audit](fzz-p-subtracted-screening-analytic.md) uses `alpha=-2a,beta=-2b` and a clearing normalization four times this one. The proposed Gamma partner is
 
 `pi*Gamma(a+b-1)*Gamma(2-a)*Gamma(2-b)/(Gamma(a)*Gamma(b)*Gamma(2-a-b))`.
 
@@ -72,7 +72,7 @@ The analytic-primitive search did not provide a ready original-source theorem. A
 
 `exp(a*X)-1 = a * integral_(0,1) X*exp(a*t*X) dt`.
 
-On the collision disk at one, `X=log|z|` is bounded and vanishes linearly at the puncture. Thus `|z-1|^beta*X` is integrable for `beta>-3`. Lift the original subtraction to this fixed interval, establish joint integrability, and split its signed weight into positive and negative parts. Each resulting moment-generating function has an open exponential-moment domain; its analyticity then comes from the source itself. This avoids assuming analyticity of a primitive or of the desired Gamma expression. This construction is now formalized and fully audited in [the subtracted-source card](../../fzz-p-subtracted-screening-analytic.md). The completed scratch `/tmp/fzzp_plane_gamma_match.lean` now proves the Gamma partner, ordinary-chamber cancellation and both identity-theorem extensions.
+On the collision disk at one, `X=log|z|` is bounded and vanishes linearly at the puncture. Thus `|z-1|^beta*X` is integrable for `beta>-3`. Lift the original subtraction to this fixed interval, establish joint integrability, and split its signed weight into positive and negative parts. Each resulting moment-generating function has an open exponential-moment domain; its analyticity then comes from the source itself. This avoids assuming analyticity of a primitive or of the desired Gamma expression. This construction is now formalized and fully audited in [the subtracted-source card](fzz-p-subtracted-screening-analytic.md). The completed scratch `/tmp/fzzp_plane_gamma_match.lean` now proves the Gamma partner, ordinary-chamber cancellation and both identity-theorem extensions.
 
 With both local directions and the exterior now proved analytic, the explicit pole-cleared source can be matched in two connected one-variable slices: first keep `0<b<1` and extend in `a`; then keep the extended `a` and extend in `b`. The ordinary chamber supplies a nonempty open equality interval in each slice. Reciprocal Gamma is analytic through `a+b=2`, as already checked above.
 
@@ -96,7 +96,7 @@ The first analytic extension holds beta in `(-2,0)` and uses alpha base point `-
 
 Validation so far: complete scratch check clean; leaf-only build passed (8843 dependency jobs, leaf 218 seconds). All four public axiom closures in `/tmp/fzzp_plane_gamma_match_axioms.lean` contain only `propext`, `Classical.choice`, `Quot.sound`; the check passed. Formal lint found five unrelated unreachable modules in the concurrently edited Sieve and WeightedMinimax areas; it reported no new FZZ module error. No umbrella build was run. Logs: `/tmp/fzzp-plane-gamma-match-{scratch,build,axioms,lint}.log`.
 
-Next mathematical attack is recorded in [the continued marked-source card](../../fzz-p-continued-screening-mark.md). It retains both original local integrals, the exterior and the derivative of the power counterterm; the complete Ward producer remains open.
+Next mathematical attack is recorded in [the continued marked-source card](fzz-p-continued-screening-mark.md). It retains both original local integrals, the exterior and the derivative of the power counterterm; the complete Ward producer remains open.
 
 Further deep/method searches `analytic equality connected interval open overlap pole removal`, `differentiate subtracted integral logarithm counterterm`, and `digamma increment concave decreasing derivative` returned partial generation 823339 with incomplete semantic/compiler coverage and retrieval timeouts. All candidate and method names were inspected. The first search's applicable identity-theorem pattern in `MobiusLaplaceCriterionFrontier.lean` requires source analyticity; the present proof supplies that obligation from the original source. No generated ingredient set closes the Ward law.
 
@@ -104,4 +104,4 @@ Broad recent-paper searches used `residue`, `gluing`, `localization`, and `condi
 
 Lint recheck after concurrent umbrella changes still fails on four other modules: `Sieve.MenonHarmonicRamareLadderSwapped`, `Sieve.MenonHarmonicRamareLadderSwappedVolume`, `HTGeometry.WeightedMinimax.Alternation`, and `HTGeometry.WeightedMinimax.Perturbation`. Log `/tmp/fzzp-plane-gamma-match-lint-recheck.log`. This is a shared-tree gate failure, not a successful global lint audit.
 
-The [continued-source response and sign audit](../../fzz-p-continued-screening-mark.md) now closes the original exponent derivative, its exact Gamma response, a positive normalized diagonal lower bound and a strictly negative actual diagonal mark. Its six public theorems passed both leaf builds and every axiom check. Together with this Gamma-matching leaf, ten public source theorems are checked. The original marked cutoff limit and its derivative interchange are now proved in the same card. Complete physical parameter transport, higher collision subtractions, independently fixed phase frame and full Ward producer remain open.
+The [continued-source response and sign audit](fzz-p-continued-screening-mark.md) now closes the original exponent derivative, its exact Gamma response, a positive normalized diagonal lower bound and a strictly negative actual diagonal mark. Its six public theorems passed both leaf builds and every axiom check. Together with this Gamma-matching leaf, ten public source theorems are checked. The original marked cutoff limit and its derivative interchange are now proved in the same card. Complete physical parameter transport, higher collision subtractions, independently fixed phase frame and full Ward producer remain open.

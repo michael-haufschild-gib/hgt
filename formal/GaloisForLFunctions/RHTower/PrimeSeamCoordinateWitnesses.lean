@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiPrimeValuationSeam
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeValuationSeam
 
 /-!
 # The prime seam coordinate takes positive values in every window

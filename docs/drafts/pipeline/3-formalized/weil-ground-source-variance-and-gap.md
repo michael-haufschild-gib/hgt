@@ -1,7 +1,7 @@
 # Weil ground source variance and the unrestricted gap
 
 - **Stage:** 3-formalized
-- **Lean:** `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundVariance`; 15 public theorems, wired into `RHTower`.
+- **Lean:** `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundVariance`; 15 public theorems, wired into `RHTower`.
 - **Chain:** exact boundary–arithmetic source → ground-specific variational comparison → exclusion of a constrained zero ground → positive floors at all apertures → RH. The comparison is closed; exclusion remains open.
 - **Corpus seeds:** `CCMRestrictedWeilPolarGroundSourceMoment`, `CCMRestrictedWeilPolarParitySourceCoupling`, `CCMRestrictedWeilPolarGroundForcing`, `CCMRestrictedWeilPolarGroundEnergy`, `CCMRestrictedWeilActualBirmanSchwinger`, `CompactConstrainedRadical`, and `HTGeometry.BesselPSD`.
 
@@ -90,7 +90,7 @@ Exclude the actual forced zero ground using additional control of the combined b
 
 ## Validation
 - Scratch `lake env lean /tmp/hgt-ground-variance.U8bjZ0/Variance.lean`: PASS.
-- Named foreground audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundVariance`: PASS; the new leaf built in 9.1 seconds. No full or umbrella build.
+- Named foreground audit `lake --old --log-level=error build GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundVariance`: PASS; the new leaf built in 9.1 seconds. No full or umbrella build.
 - Scratch `Audit.lean`: all 15 public theorems have exactly `[propext, Classical.choice, Quot.sound]`. Actual mathlib `RiemannHypothesis` was printed and remains unproved.
 - `python3 scripts/formal_tools.py lint`: PASS; existing large-file warnings remain. Logs: `/tmp/hgt-ground-variance.U8bjZ0/Audit.txt`, `Lint.txt`, and `Lint.err`.
 - No numerical experiment, computational oracle, added axiom, or RH premise supplies these results.

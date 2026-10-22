@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new universal endpoint-jet law and mode-independent diagonal
   counterterm; published restricted-Weil Gamma expression is external input
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanFirstJet.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilArchimedeanFirstJet.lean`
 
 ## Universal first-jet law
 
@@ -63,5 +63,5 @@ cancellation and `(1)` are the two degrees of one graded source complex.
 - `ccmGuinandWeilArchimedeanDiagonalFirstJet_limit`
 
 Targeted direct Lean check and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilArchimedeanFirstJet` pass. Principal `#print axioms`
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilArchimedeanFirstJet` pass. Principal `#print axioms`
 reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

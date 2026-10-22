@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-limiting-radial-first-row-weber-bound.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMLimitingRadialWeber.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMLimitingRadialWeber.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 8 declarations
 - **Hypotheses:** only the positivity/quantified data of each statement; no `sorry`, `axiom`,

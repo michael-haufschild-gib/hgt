@@ -3,12 +3,12 @@
 - **Card:** `ccm-unit-riesz-markov-virial-landau-law.md`
 - **Stage:** 3-formalized / not-new
 - **Lean modules:**
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovDensity.lean` — cell positivity/gluing
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszMobiusCausalVirial.lean` — finite virial algebra
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszProfileLimit.lean` — `(4)`, `(5)`
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovTransform.lean` — `(6)`, `(7)`,
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMarkovDensity.lean` — cell positivity/gluing
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMobiusCausalVirial.lean` — finite virial algebra
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszProfileLimit.lean` — `(4)`, `(5)`
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMarkovTransform.lean` — `(6)`, `(7)`,
     `(14)`–`(17)`
-  - `formal/GaloisForLFunctions/RHTower/CCMUnitRieszVirialConnector.lean` — `(9)`, `(11)` split,
+  - `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszVirialConnector.lean` — `(9)`, `(11)` split,
     `(13)` polar part, `(18)`–`(21)`
 - **Umbrella:** all wired from `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` throughout

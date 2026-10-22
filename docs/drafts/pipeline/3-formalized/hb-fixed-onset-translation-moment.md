@@ -59,7 +59,7 @@ No presumed Green response, angular eigenprofile replacement or adjoint boundary
 
 ## Lean declarations
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFixedClockSourceTranslation`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFixedClockSourceTranslation`.
 Namespace: `RHTower.D4BMSourceClockTranslation`.
 
 - `sourceAndContact_clockDifference`
@@ -83,7 +83,7 @@ The positive result exposed by the failed zero-contact guess is an exact source 
 ## Verification
 
 - Foreground `lake env lean /tmp/hb-fixed-clock-translation.lean`: PASS, no warnings.
-- Exact `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFixedClockSourceTranslation`: PASS, 47 seconds, two jobs and no warnings. A temporary one-leaf Lake package reused the twelve existing dependency cache search roots; only the new leaf was registered for compilation. Its source was byte-identical to the installed canonical source. The canonical olean/ilean were produced by this build and imported successfully in the subsequent audit.
+- Exact `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFixedClockSourceTranslation`: PASS, 47 seconds, two jobs and no warnings. A temporary one-leaf Lake package reused the twelve existing dependency cache search roots; only the new leaf was registered for compilation. Its source was byte-identical to the installed canonical source. The canonical olean/ilean were produced by this build and imported successfully in the subsequent audit.
 - New-only `#print axioms` through foreground `lake env lean /tmp/hb-clock-axioms.lean`: all seven public theorems use only `propext`, `Classical.choice`, `Quot.sound`.
 - `scripts/formal_tools.py index`: PASS; public entries verified in `LEAN_API.md`.
 - `scripts/formal_tools.py lint`: PASS, with existing large-file warnings elsewhere.

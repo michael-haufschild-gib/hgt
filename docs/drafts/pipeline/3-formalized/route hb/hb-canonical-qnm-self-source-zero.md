@@ -40,7 +40,7 @@ Proof architecture: `outerDensity_decomposition` → `intervalIntegral.integral_
 ## Formalized (2026-09-27)
 
 `RHTower.D4BMOriginalCanonicalAction.canonicalQNMValue_eq_zero_of_physicalSelfSourceCoefficient_eq_zero`
-(`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalQNMSelfSourceZero.lean`), with the
+(`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalQNMSelfSourceZero.lean`), with the
 steps of the paper proof as separate lemmas: `canonicalMetricCutoff_eq_zero_of_…` (every cutoff
 `0 < e < 1` vanishes: `outerDensity_decomposition` on `uIoo (tortoiseOf e) 0`, both counterterm
 coefficients carry `P`), `canonicalRadialValue_eq_zero_of_…`, `physicalCornerCandidate_eq_zero_of_…`

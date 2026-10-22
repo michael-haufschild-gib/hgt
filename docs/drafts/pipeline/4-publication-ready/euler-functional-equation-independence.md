@@ -758,7 +758,7 @@ GaloisForLFunctions/HTGeometry/CriticalClockSourceUniversality.lean
 GaloisForLFunctions/HTGeometry/MonotoneMobiusPositivity.lean       -- Lemma 6.1
 GaloisForLFunctions/RHTower/LambdaPositiveFunctionalEquationOffLine.lean  -- Theorem H
 GaloisForLFunctions/RHTower/EntireFunctionalEquationOffLine.lean          -- Theorem J
-GaloisForLFunctions/RHTower/CCMCriticalClockDivisorBlindness.lean
+GaloisForLFunctions/RHTower/CCM/CCMCriticalClockDivisorBlindness.lean
 ```
 
 ## §5h. The de Bruijn–Newman lane: the extinction time of the Weil index

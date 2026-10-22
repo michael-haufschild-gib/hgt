@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszTerminalZeroAtomConnection
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
 
 /-!
 # Prime-power support of the SP-E strict-cross history

@@ -136,7 +136,7 @@ Reused from the corpus (not rebuilt):
 | Existing input | Where |
 |---|---|
 | the measure `dμ_∞ = (2π)^{-3/2}\|Γ(1/4+is/2)\|² ds` and `∫ e^{its} dμ_∞ = (cosh t)^{-1/2}` | `RHTower/SoninSemilocalGammaMeasureCharacteristic.lean` |
-| `IsProbabilityMeasure` for that measure | `RHTower/CCMMetaplecticGammaMomentDeterminacy.lean` |
+| `IsProbabilityMeasure` for that measure | `RHTower/CCM/CCMMetaplecticGammaMomentDeterminacy.lean` |
 | the real cosine transform `∫ cos(ts) dμ_∞ = φ(t)` | `RHTower/GammaEvenBoundaryParityNoGo.lean` |
 | strict convexity of `x ↦ x^{-1/2}` and `φ(u)φ(v) < (φ(u+v)+φ(u−v))/2` | `RHTower/SoninSemilocalTwoPlaceAssociation.lean` |
 

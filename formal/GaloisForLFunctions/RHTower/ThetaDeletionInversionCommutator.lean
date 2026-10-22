@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspOneSidedConnection
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspOneSidedConnection
 
 /-!
 # The prime-deletion / modular-inversion commutator of the Jacobi theta function

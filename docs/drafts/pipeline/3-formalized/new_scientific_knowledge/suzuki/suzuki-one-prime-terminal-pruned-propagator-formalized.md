@@ -5,11 +5,11 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-one-prime-terminal-pruned-propagator.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeTerminalPrunedPropagator.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeTerminalChannel.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrierOperator.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLiteralPairedSourceAssembly.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeTerminalPrunedPropagator.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeTerminalChannel.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrierOperator.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLiteralPairedSourceAssembly.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ScalarSquareExponential.lean`
 
 ## Formal content

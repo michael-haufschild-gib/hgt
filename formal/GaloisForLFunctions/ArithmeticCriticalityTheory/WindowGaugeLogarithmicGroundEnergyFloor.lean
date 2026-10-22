@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ArithmeticCriticalityTheory.RestrictedWeilGroundEnergyCriticalAtInfinity
-import GaloisForLFunctions.RHTower.SuzukiSmallApertureTheoremOneFour
-import GaloisForLFunctions.RHTower.SuzukiOriginRemainderFirstJet
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSmallApertureTheoremOneFour
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiOriginRemainderFirstJet
 
 /-!
 # The window gauge reproduces Suzuki's main term

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesComplexHalfPlaneCurrent
-import GaloisForLFunctions.RHTower.DeningerCriticalFloquetVonMangoldtWall
+import GaloisForLFunctions.RHTower.Deninger.DeningerCriticalFloquetVonMangoldtWall
 
 /-!
 # Gamma-sewn Stokes current, Deninger time, and the singular corona

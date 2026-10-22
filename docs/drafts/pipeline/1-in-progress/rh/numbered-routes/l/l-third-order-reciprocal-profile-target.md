@@ -35,7 +35,7 @@ On `[t,4K]`, `(u-t)^(alpha-1)<= (4K)^(alpha-1)`; the two block bounds give `O_(r
 integral_K^(2K) T_r(t)^2 dt <= C_(r,eta) K^(2-2r+eta). (2)
 ```
 
-The [geometric-to-continuous comparison](../../../l-reciprocal-exponential-packet-reduction.md) changes this energy by only `O_r(K^(2-2r))`. Equation (2) therefore gives the actual geometric packet bound at every `1<r<2`. As `eta<r-1`, the weighted packet-energy series converges; exponents `r` can approach `1`, so the existing strict-right source-energy criterion excludes off-line zeros and proves RH. **No hypothesis on RH enters (1); the unproved input is the order-three arithmetic estimate.**
+The [geometric-to-continuous comparison](l-reciprocal-exponential-packet-reduction.md) changes this energy by only `O_r(K^(2-2r))`. Equation (2) therefore gives the actual geometric packet bound at every `1<r<2`. As `eta<r-1`, the weighted packet-energy series converges; exponents `r` can approach `1`, so the existing strict-right source-energy criterion excludes off-line zeros and proves RH. **No hypothesis on RH enters (1); the unproved input is the order-three arithmetic estimate.**
 
 ## Small shifts are already within the target
 

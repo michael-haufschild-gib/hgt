@@ -9,8 +9,8 @@
   Deninger's degrees zero and two; every nontrivial middle class lies
   in the canonical relative analytic cone.
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerEndpointRelativeMiddleReduction` (clauses 1 and 3),
-  `GaloisForLFunctions.RHTower.DeningerRationalPrimeFactorization` (clause 2)
+  `GaloisForLFunctions.RHTower.Deninger.DeningerEndpointRelativeMiddleReduction` (clauses 1 and 3),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRationalPrimeFactorization` (clause 2)
 
 ## Algebraic endpoint complex
 
@@ -132,7 +132,7 @@ defects may map into this relative object but are not its definition.
 ## Formalized statement
 
 All declarations live in the `RHTower` namespace, in
-`GaloisForLFunctions/RHTower/DeningerEndpointRelativeMiddleReduction.lean`.
+`GaloisForLFunctions/RHTower/Deninger/DeningerEndpointRelativeMiddleReduction.lean`.
 
 **Clause 1, equation `(3)`.**  The two-term part of `(1)` sits in degrees one and two, so its
 cohomology there is the kernel and the cokernel of the principal-divisor map:
@@ -162,7 +162,7 @@ Lean proof does that case separately.
 
 **Clause 2, the rational case.**  `deningerRatExp q : ℕ →₀ ℤ` is the prime-exponent vector of a
 rational number, built from the factorizations of numerator and denominator.  In
-`GaloisForLFunctions/RHTower/DeningerRationalPrimeFactorization.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerRationalPrimeFactorization.lean`:
 
 - `deningerRatExp_apply_of_prime` : at a prime the coordinate *is* the residue,
   `deningerRatExp q p = ord_p q = padicValRat p q`;
@@ -194,8 +194,8 @@ that construction is not carried out here.
 ### Verification
 
 - Direct commands:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerEndpointRelativeMiddleReduction.lean` and
-  `lake env lean GaloisForLFunctions/RHTower/DeningerRationalPrimeFactorization.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerEndpointRelativeMiddleReduction.lean` and
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRationalPrimeFactorization.lean`
 - Result: passed with no errors and no warnings.
 - Scratch `#print axioms` on all 12 + 18 declarations of the two modules: only the Lean/mathlib
   standard `propext`, `Classical.choice`, and `Quot.sound`.

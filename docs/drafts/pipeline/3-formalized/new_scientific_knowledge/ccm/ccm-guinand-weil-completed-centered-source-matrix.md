@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new channel-faithful reconstruction of every published centered matrix
   entry; published restricted-Weil matrix formula is external input
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilCompletedCenteredSourceMatrix.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilCompletedCenteredSourceMatrix.lean`
 
 ## Polar--prime diagonal action
 
@@ -72,5 +72,5 @@ column.
 - `ccmGuinandWeilCompletedCenteredSourceMatrix_eq_published`
 
 Targeted direct Lean check and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilCompletedCenteredSourceMatrix` pass. Principal
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilCompletedCenteredSourceMatrix` pass. Principal
 `#print axioms` reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

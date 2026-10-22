@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.PerturbedOscillatorPhase
-import GaloisForLFunctions.RHTower.CCMRadialProlateDefect
-import GaloisForLFunctions.RHTower.CCMFirstRowDunsterModel
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProlateDefect
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowDunsterModel
 import GaloisForLFunctions.RHTower.ProlateTwoBranch
 
 /-!

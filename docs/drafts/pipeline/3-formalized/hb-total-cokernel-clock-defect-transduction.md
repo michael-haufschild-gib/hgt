@@ -86,7 +86,7 @@ endpoint, already equivalent to RH. No analytic assumption or physical sign is u
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMTotalCokernelClockDefectTransduction`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMTotalCokernelClockDefectTransduction`
 
 Principal declarations:
 

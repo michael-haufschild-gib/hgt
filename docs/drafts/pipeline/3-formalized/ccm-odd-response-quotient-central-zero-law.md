@@ -47,8 +47,8 @@ cofinal even-channel selection remains a necessary source theorem.
 
 ## Lean
 
-- `formal/GaloisForLFunctions/RHTower/CCMFullCharpolyCentralZeroNoGo.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMOddResponseQuotientCentralZero.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFullCharpolyCentralZeroNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMOddResponseQuotientCentralZero.lean`
 
 Key declarations:
 

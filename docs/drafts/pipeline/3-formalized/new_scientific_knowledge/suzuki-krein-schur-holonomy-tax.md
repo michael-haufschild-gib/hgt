@@ -4,7 +4,7 @@
 - **Stage:** 3 — formalized scalar core
 - **Claim:** `[PROVED] [UNCONDITIONAL]`
 - **Paper:** `../../2-fully-proven/new_scientific_knowledge/suzuki-krein-schur-holonomy-tax.md`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineResolventKreinDefect.lean`
 
 Lean proves:
 

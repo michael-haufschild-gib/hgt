@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.LogSineQuantileEigenmode
-import GaloisForLFunctions.RHTower.HedenmalmHilbertSchmidtNorm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmHilbertSchmidtNorm
 import Mathlib.Analysis.SpecialFunctions.JapaneseBracket
 
 /-!

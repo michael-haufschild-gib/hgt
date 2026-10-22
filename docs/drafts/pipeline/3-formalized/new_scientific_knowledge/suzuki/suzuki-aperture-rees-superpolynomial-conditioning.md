@@ -128,7 +128,7 @@ is new.
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.SuzukiApertureReesConditioningNoGo
+GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureReesConditioningNoGo
 ```
 
 Main declarations:
@@ -144,7 +144,7 @@ reflectedHellingerSewingOperatorNorm_not_isBigO_suzukiAperturePower
 Direct unconditional check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiApertureReesConditioningNoGo.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureReesConditioningNoGo.lean
 ```
 
 passed without `sorry`, `admit`, new axiom, `unsafe`, or computation.
@@ -152,8 +152,8 @@ passed without `sorry`, `admit`, new axiom, `unsafe`, or computation.
 Umbrella wiring, targeted build and axiom audit:
 
 ```text
-GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.SuzukiApertureReesConditioningNoGo
-lake build GaloisForLFunctions.RHTower.SuzukiApertureReesConditioningNoGo      green
+GaloisForLFunctions.RHTower imports GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureReesConditioningNoGo
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureReesConditioningNoGo      green
 #print axioms on all five declarations   [propext, Classical.choice, Quot.sound]
 ```
 

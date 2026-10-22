@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszSourceTransport
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCompletedSourceBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCompletedSourceBoundary
 
 /-!
 # SP-E Riesz transport as a terminal-completed parabolic carrier

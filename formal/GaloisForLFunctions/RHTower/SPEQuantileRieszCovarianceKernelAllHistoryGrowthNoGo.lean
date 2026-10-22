@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszCovarianceKernelGrowthNoGo
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarParabolicCenteredBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarParabolicCenteredBoundary
 
 /-!
 # All-history growth of the literal SP-E covariance kernel

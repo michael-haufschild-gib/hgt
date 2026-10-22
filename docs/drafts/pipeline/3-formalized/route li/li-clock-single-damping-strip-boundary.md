@@ -78,7 +78,7 @@ Paths in this section are relative to `formal/GaloisForLFunctions/`.
 | RHTower/PrimeArchThetaCumulantMinor.lean:439–446 | All even XiC jets equal (-1)^j times literal raw theta moments. |
 | RHTower/XiCTaylorThetaTailMomentLogConvex.lean:16–40 | Every actual raw even theta moment is strictly positive, with genuine source L1. |
 | RHTower/LiEvenCrossActualClockBorelSource.lean:37–49 | nu_j>0 for all j and nu_0=1. |
-| RHTower/ThetaCuspTiltFluxSourceWeld.lean:86–122 | Literal positive full theta source, faster-than-every-exponential envelope, full-complex bilateral-Laplace/Xi weld. |
+| RHTower/ThetaCusp/ThetaCuspTiltFluxSourceWeld.lean:86–122 | Literal positive full theta source, faster-than-every-exponential envelope, full-complex bilateral-Laplace/Xi weld. |
 | RHTower/ThetaSourceGlobalStrictLogConvexity.lean:31–125 | Full-complex moment differentiation, every real tilt's genuine polynomial L1, positive real partition function. |
 | HTGeometry/VivantiPringsheim.lean:32–36,294–324 | Precisely defined coherent `ContinuesAcross`; realSeriesSum analytic on its convergence disk; nonnegative series cannot continue at its finite positive radius. |
 | RHTower/PrimeArchBernsteinPringsheimCollar.lean:125–166 | Source-read pattern for segment germ propagation and convex disk-overlap identity. Its source-specific RH theorem is NOT imported as a proof of S2. |

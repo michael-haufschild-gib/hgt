@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileChargedPort
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
-import GaloisForLFunctions.RHTower.HedenmalmSourceMoments
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmSourceMoments
 
 /-!
 # The Xi divisor is a two-ended domain selector

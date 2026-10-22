@@ -55,7 +55,7 @@ estimate needed by the weighted-shift trace-class theorem.
 
 ## Lean realization
 
-- **Module:** `GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzLattice`
+- **Module:** `GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzLattice`
 - **Capstone:** `ccmRationalArchimedeanSchwartz_lattice_summable`
 - **Verification:** direct `lake env lean` check, cached leaf-module build, and `#print axioms`
   audit passed. Capstone depends only on `propext`, `Classical.choice`, and `Quot.sound`.

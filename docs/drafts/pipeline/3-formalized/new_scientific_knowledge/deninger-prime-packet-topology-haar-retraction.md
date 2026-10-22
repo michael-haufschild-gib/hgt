@@ -298,7 +298,7 @@ DEGREE`.
 
 ### The real Milnor collapse `(5)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerSymbolTorsion.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSymbolTorsion.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 mathlib has no Milnor K-theory, so the theorem is formalized through the property the card's proof
@@ -322,7 +322,7 @@ Over `F̄_p` every unit is a root of unity, which is the hypothesis `∀ g, IsOf
 
 ### The packet average `(8)`--`(10)` and the strict splitting `(9)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketAverage.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketAverage.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPacketAv` — the average `(8)` as a linear functional on the packet test space; by
@@ -347,7 +347,7 @@ the generic fibre does not apply: the source there is not compact-with-connected
 
 ### The fineness construction of `(6)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerClopenPartition.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerClopenPartition.lean`,
 `DeningerTransversePartition.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
@@ -377,7 +377,7 @@ formalized.
 
 ### The fineness statement of `(6)` landed in full
 
-`formal/GaloisForLFunctions/RHTower/DeningerBoxRefinement.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBoxRefinement.lean`,
 `DeningerPacketFine.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerClopenBox` — around every point of `B × S` there is a clopen-times-open box inside a
@@ -394,7 +394,7 @@ formalized.
 
 ### The smooth fineness of `(6)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketFineSmooth.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketFineSmooth.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPacketFineSmooth` — **the packet is smoothly fine**: for a compact profinite factor
@@ -410,7 +410,7 @@ formalized.
 
 ### The mapping-torus identity `(4)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMappingTorus.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMappingTorus.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The card's `(4)` is the statement that, Frobenius acting trivially, the suspension collapses to a
@@ -428,7 +428,7 @@ product.  That is a theorem about any space, and it is proved here in that gener
 
 ### The profinite factor `(1)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketUnits.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketUnits.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerTotallyDisconnected_of_injective` — **total disconnectedness passes along a continuous
@@ -447,7 +447,7 @@ product.  That is a theorem about any space, and it is proved here in that gener
 
 ### The no-go closure and `(13)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketNonlocal.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketNonlocal.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPacketAv_indicator` — the average of a clopen indicator is its mass.
@@ -460,7 +460,7 @@ product.  That is a theorem about any space, and it is proved here in that gener
   function of vanishing average, so `ker(Av_p)` is not trivial and the packet coefficient retains
   genuine nonconstant modes.
 
-`formal/GaloisForLFunctions/RHTower/DeningerPrimeScalarGreenMeanZeroNoGo.lean` upgrades this to the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeScalarGreenMeanZeroNoGo.lean` upgrades this to the
 Green-form obstruction needed by Route L. `deningerPacketAvContinuous` proves packet average is a
 bounded functional for the compact-open supremum norm. Pulling the positive scalar inner product
 back along it gives energy exactly `Av_p(f)^2`, whose radical is exactly `ker(Av_p)`. The same
@@ -469,7 +469,7 @@ cannot replace the full packet coefficient.
 
 ### Fineness kills the first Čech cohomology
 
-`formal/GaloisForLFunctions/RHTower/DeningerExtendByZero.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExtendByZero.lean`,
 `DeningerCechSplit.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 The acyclicity half of `(6)` rests on one construction — multiplying a section by a member of the
@@ -489,7 +489,7 @@ the first cohomological consequence.
 
 ### The contracting homotopy in every degree landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCechHomotopy.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCechHomotopy.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerCechD` — the Čech differential, the alternating sum over the faces of an index tuple.
@@ -509,7 +509,7 @@ continuity of the splitting cochain.
 
 ### The finite-stage factorization used by `(9)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerLocallyConstantFactor.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerLocallyConstantFactor.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The proof of `(9)` opens with "a locally constant function on compact profinite `B_p` factors
@@ -526,7 +526,7 @@ through a finite clopen quotient".  That is now a theorem.
 
 ### The finite-direct-sum expansion of `(7)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFiniteStageSum.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFiniteStageSum.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerLocallyConstant_eq_sum` — **a locally constant function into a module is a finite sum of
@@ -542,7 +542,7 @@ convex average followed by circle integration, and the splitting is the continuo
 
 ### Degree zero of the Čech complex landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCechGlue.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCechGlue.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerCechCocycle_zero_iff` — in degree zero the Čech differential is the difference of the two
@@ -556,7 +556,7 @@ sections in degree zero and nothing above.
 
 ### The Frobenius closure quotient and prime-period candidate landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPacketFrobeniusQuotient.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPacketFrobeniusQuotient.lean`.
 
 - `deningerPacketFrobeniusUnit` constructs the diagonal rational prime \(p\) as an actual element
   of \(U_p=\prod_{\ell\ne p}\mathbb Z_\ell^\times\). Unit membership is proved place by place from
@@ -575,7 +575,7 @@ sections in degree zero and nothing above.
 
 ### The pointwise automorphism and literal prime-fibre comparison landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPrimeMultiplicativeAutomorphismComparison.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeMultiplicativeAutomorphismComparison.lean`,
 `DeningerPrimeMultiplicativeAutomorphismTopology.lean`, and
 `DeningerPrimeFibreComparison.lean`. Axiom audit:
 `propext, Classical.choice, Quot.sound`.

@@ -291,7 +291,7 @@ or the self-adjoint diagonal-similarity classification.  External priority remai
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiLocalizedOrbitLiftTrilemma.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLocalizedOrbitLiftTrilemma.lean
 ```
 
 The formal core proves unconditionally that a square-summable weight on an infinite additive group

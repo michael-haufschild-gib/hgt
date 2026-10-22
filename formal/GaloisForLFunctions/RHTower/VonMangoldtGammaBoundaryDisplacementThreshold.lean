@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiCriticalRootedBianchiCofinalNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCriticalRootedBianchiCofinalNoGo
 import GaloisForLFunctions.RHTower.VonMangoldtGammaInfinitePointedWard
 
 namespace RHTower

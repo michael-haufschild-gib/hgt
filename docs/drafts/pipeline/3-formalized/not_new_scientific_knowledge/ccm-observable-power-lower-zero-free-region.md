@@ -49,8 +49,8 @@ problem.
 
 Modules:
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularPowerLowerZeroFree.lean`
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularObservablePowerLowerZeroFree.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularPowerLowerZeroFree.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularObservablePowerLowerZeroFree.lean`
 
 Principal declarations:
 

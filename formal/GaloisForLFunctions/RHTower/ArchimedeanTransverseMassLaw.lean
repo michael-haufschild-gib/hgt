@@ -1,6 +1,6 @@
 import Mathlib
-import GaloisForLFunctions.RHTower.DeningerStationaryKahlerGerm
-import GaloisForLFunctions.RHTower.DeningerAffineLeafFlow
+import GaloisForLFunctions.RHTower.Deninger.DeningerStationaryKahlerGerm
+import GaloisForLFunctions.RHTower.Deninger.DeningerAffineLeafFlow
 
 /-!
 # The archimedean place is a cusp for every flow-invariant transverse measure

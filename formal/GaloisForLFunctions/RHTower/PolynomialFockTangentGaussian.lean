@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.DeningerRadialIntegral
+import GaloisForLFunctions.RHTower.Deninger.DeningerRadialIntegral
 import GaloisForLFunctions.RHTower.PolynomialFockPotentialGeometry
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.GaussianMonomialTailAsymptotic
 
 /-!

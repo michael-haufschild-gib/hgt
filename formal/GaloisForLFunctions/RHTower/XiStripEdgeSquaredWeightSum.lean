@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.LagExplicitFormula
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPoleUnitStrictTransverseCurvature
 
 /-!
 # The strip-edge squared weight sum of the ξ divisor

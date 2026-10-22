@@ -70,7 +70,7 @@ formal lint and all 12 public theorem axiom audits passed. The only axioms are
 `propext`, `Classical.choice` and `Quot.sound`. No additional axioms, proof
 holes or numerical experiments. Owned Lean processes finished.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusForcingPositive.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusForcingPositive.lean`.
 - Closed capstone: `RHTower.pwGammaMobiusForcing_positive_reconstruction`.
 - Quantitative survivor: `RHTower.pwGammaMobiusLogCurrent_reconstruction_prime_floor`.
 - Strong nonvanishing: `RHTower.pwGammaMobiusLogCurrent_positive_arbitrarily_far`.

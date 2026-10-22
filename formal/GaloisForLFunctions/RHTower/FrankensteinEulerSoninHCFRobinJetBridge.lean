@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinEulerMobiusSoninCriticalNormalBridge
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeaturePositiveShiftCellAverage
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeaturePositiveShiftCellAverage
 
 /-!
 # Euler--Sonin--HCF Robin-jet bridge

@@ -148,7 +148,7 @@ Algebraic singular-support law:
 - `HTGeometry/PrimeOrientationHadamardSingularSupportLaw.lean`
   - `primeOrientationHadamardTail_positive_iff_hyperbolic_regular`
   - `primeOrientationHadamardTail_nontrivial_has_hyperbolic_annihilator`
-- `RHTower/DeningerOrientationDescent.lean`
+- `RHTower/Deninger/DeningerOrientationDescent.lean`
   - `deningerOrientation_isCompl`
   - `deningerOrientation_eq_zero_of_parts`
 
@@ -159,7 +159,7 @@ Topological and filtered consequences:
 - `RHTower/AsymptoticTypeSuperselection.lean`
   - `reesEssentialSewingCost_beyondEveryFiniteOrder`
   - `reesExactSewingOperatorNorm_beyondEveryFiniteOrder`
-- `RHTower/HedenmalmPrimeNormalSubLogSquareClassification.lean`
+- `RHTower/Hedenmalm/HedenmalmPrimeNormalSubLogSquareClassification.lean`
   - `primeClockVerticalEnergy_le_four_mul_harmonic`
   - `hedenmalmPrimeNormalSubLogSquare_iff_im_eq_zero`
 
@@ -199,7 +199,7 @@ Exact sources:
     character;
   - ordinary Euler multiplication annihilates this jump exactly at Xi zeros;
   - the nonvanishing character preserves Xi multiplicity.
-- `RHTower/HedenmalmOrientationDivisorTransgression.lean`
+- `RHTower/Hedenmalm/HedenmalmOrientationDivisorTransgression.lean`
   - translated logarithmic-current residue is the exact finite difference of
     Xi multiplicities;
   - every positive translation has infinitely many order jumps;

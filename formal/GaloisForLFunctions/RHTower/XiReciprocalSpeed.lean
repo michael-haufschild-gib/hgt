@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFirstRowVanDerCorputBlocks
+import GaloisForLFunctions.RHTower.CCM.CCMFirstRowVanDerCorputBlocks
 
 /-!
 # Controlled variation of the reciprocal phase speed

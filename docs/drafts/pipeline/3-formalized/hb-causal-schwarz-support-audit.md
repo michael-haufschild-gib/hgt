@@ -99,7 +99,7 @@ importing the large augmented-cokernel dependency tree.
 
 - Scratch and direct leaf checks passed with `lake env lean <file>`.
 - Preflight `lake --old --no-build build
-  GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCausalSchwarzSupport` selected only this
+  GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCausalSchwarzSupport` selected only this
   new leaf. Final `lake --old build` of the same module passed in 45 seconds; dependencies
   used their existing artifacts. No umbrella or large dependency rebuild was run.
 - A single scratch `#print axioms` audit of these 16 new theorems passed. Each depends

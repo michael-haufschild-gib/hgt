@@ -120,7 +120,7 @@ zero-occupation law), rather than merely existence of an extended state.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFELocalCylinderProductState`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFELocalCylinderProductState`.
 
 - `finitePairFockBornWeight_eq_bernoulli` derives the exact Bernoulli product weight from actual
   common-Fock coefficients; the cutoff mass is exactly one.
@@ -134,7 +134,7 @@ Formalized in
   iff wall, universal local vacuum iff RH, and HB/Deninger-FZZ-P/PW-B/RBH receiver equivalences.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFELocalCylinderProductState`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFELocalCylinderProductState`
 passed all 12,191 jobs; representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC84 finding.

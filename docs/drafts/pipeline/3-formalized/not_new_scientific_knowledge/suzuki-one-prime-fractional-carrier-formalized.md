@@ -5,7 +5,7 @@
 - **Paper proof:**
   `./suzuki-one-prime-fractional-carrier.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrier.lean`
 - **Status:** `[FORMALIZED] [AXIOM-CLEAN] [MATHEMATICALLY STANDARD] [NOT RH]`
 
 ## Certified theorem surface
@@ -25,8 +25,8 @@
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean
-lake build GaloisForLFunctions.RHTower.SuzukiOnePrimeFractionalCarrier
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrier.lean
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiOnePrimeFractionalCarrier
 ```
 
 Exact leaf build passed. `#print axioms` for every theorem above reports only `propext`,

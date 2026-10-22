@@ -134,7 +134,7 @@ so `(ASM)` is false.
 ## Lean status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMFirstClockApexSuperlevelMajorization.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockApexSuperlevelMajorization.lean`.
 
 Key declarations:
 
@@ -146,7 +146,7 @@ Key declarations:
 Direct check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMFirstClockApexSuperlevelMajorization.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockApexSuperlevelMajorization.lean
 ```
 
 passes.

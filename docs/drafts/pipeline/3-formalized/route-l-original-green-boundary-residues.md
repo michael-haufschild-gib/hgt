@@ -138,7 +138,7 @@ reader comparison. This is an audited method candidate, not a theorem
 transferred to Route L. No numerical example or completion algorithm ran.
 
 The final leaf audit
-`lake build GaloisForLFunctions.RHTower.DeningerOriginalGreenBoundaryResidues`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerOriginalGreenBoundaryResidues`
 passed. Only the two new modules built: pole calculus 46s, actual-source
 application 8.3s; existing dependency warnings were replayed. Index
 regeneration passed, and all 15 public declarations are present in the

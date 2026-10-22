@@ -5,7 +5,7 @@
 - **Type:** `[CANDIDATE NEW SOURCE-SPECIFIC THEOREM] [UNCONDITIONAL] [NO RH CLAIM]`
 - **Depends on:** `ThetaCuspLikelihoodSpectralMeasure.lean`,
   `ThetaCuspLikelihoodModularSeam.lean`, `ThetaCuspFinitePrimeSource.lean`
-- **Formal target:** `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodRayBoundaryResidue.lean`
+- **Formal target:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodRayBoundaryResidue.lean`
 
 ## Statement
 

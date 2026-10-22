@@ -87,7 +87,7 @@ significance is precise proof-burden reduction, not a standalone RH proof.
 
 ## Lean formalization
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicLeftConnectionCovector.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicLeftConnectionCovector.lean`
 - Canonical covectors:
   `d4BMXiPlusPlusRegularLeftConnectionCovector`,
   `d4BMXiPlusPlusComplementaryLeftConnectionCovector`
@@ -96,7 +96,7 @@ significance is precise proof-burden reduction, not a standalone RH proof.
   `d4BMXiAdSBoundaryPolarizedConcomitant_eq_horizonCoordinates`
 - Direct `lake env lean` check passed.
 - Targeted build
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicLeftConnectionCovector`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicLeftConnectionCovector`
   passed (`11161/11161`).
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella import wired in `formal/GaloisForLFunctions/RHTower.lean`.

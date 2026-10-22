@@ -4,7 +4,7 @@
 - **Date:** 2026-08-15
 - **Route:** L
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/DeningerBigWittFrobeniusPairwiseCyclicCorrectionNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBigWittFrobeniusPairwiseCyclicCorrectionNoGo.lean`
 - **Status:** CONJECTURE REFUTED; SHARP POSITIVE SURVIVOR FORMALIZED
 
 ## Failed conjecture

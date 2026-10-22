@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularScrewCurvature
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularScrewCurvature
 import GaloisForLFunctions.RHTower.XiAbstractInstance
 
 /-!

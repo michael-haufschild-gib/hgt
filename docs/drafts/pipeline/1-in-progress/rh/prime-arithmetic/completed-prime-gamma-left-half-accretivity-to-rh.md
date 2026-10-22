@@ -45,7 +45,7 @@ independent positive source construction.
 ## Lean endpoint already proved
 
 `formal/GaloisForLFunctions/RHTower/PrimeArchAntiHerglotzGate.lean` and
-`formal/GaloisForLFunctions/RHTower/CCMCompletedPrimeGammaAccretivityCriterion.lean` define
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCompletedPrimeGammaAccretivityCriterion.lean` define
 
 ```text
 CompletedPrimeGammaLeftHalfAccretive

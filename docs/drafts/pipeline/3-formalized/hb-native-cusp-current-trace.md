@@ -176,9 +176,9 @@ work and other horizon/characteristic faces also remain in the full balance.
 
 ## Exact leaf verification
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticNativeCuspCurrent`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticNativeCuspCurrent`.
 The assembled `/tmp` scratch passed `lake env lean`; the final isolated
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticNativeCuspCurrent`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticNativeCuspCurrent`
 passed in 117 seconds using cached dependencies. Artifacts were published;
 the temporary audit directory was removed. One RHTower umbrella import was
 added, without building the umbrella or any full project.

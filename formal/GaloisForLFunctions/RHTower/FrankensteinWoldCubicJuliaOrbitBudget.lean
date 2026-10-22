@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveGammaJuliaCompletedXiDivisorShorting
 import GaloisForLFunctions.RHTower.SourceHorizontalWoldPrimeClockCubic
-import GaloisForLFunctions.RHTower.HedenmalmThetaXiHardySymmetricSquareWeld
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaXiHardySymmetricSquareWeld
 
 /-!
 # Wold-cubic regularization of the completed Gamma--Julia orientation orbit

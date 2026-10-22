@@ -7,23 +7,23 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiPositiveResolventParityNoGo.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPositiveSpectralResponseNoGo.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiRelativeTiltReciprocalConcavity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiTwoJetShiftedHankelGate.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveResolventParityNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveSpectralResponseNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRelativeTiltReciprocalConcavity.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTwoJetShiftedHankelGate.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiPositiveResolventParityNoGo`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveResolventParityNoGo`:
 
 ```text
 RHTower.suzukiPositiveParityResolventModel_of_positive
 RHTower.suzukiPositiveParityResolvent_slack_surjective_at_fixed_torque
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiPositiveSpectralResponseNoGo`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPositiveSpectralResponseNoGo`:
 
 ```text
 RHTower.suzukiThreePointResolvent_commutes_position
@@ -32,7 +32,7 @@ RHTower.suzukiThreePoint_relativeTiltGap_gt_one
 RHTower.suzukiThreePoint_twoJetSlack_eq
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiRelativeTiltReciprocalConcavity`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiRelativeTiltReciprocalConcavity`:
 
 ```text
 RHTower.iteratedDeriv_two_squaredXiReciprocalRadialField
@@ -44,7 +44,7 @@ RHTower.suzukiAllAngleCarrier_forces_relativeTiltGap_le_one
 RHTower.suzukiSecondDefectParityCurvature_eq_relativeTiltGap
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiTwoJetShiftedHankelGate`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiTwoJetShiftedHankelGate`:
 
 ```text
 RHTower.moment_twoJetSlack_eq_hankelMinor

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaPowerFamily
-import GaloisForLFunctions.RHTower.ThetaCuspChargeWindowLaw
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeWindowLaw
 
 /-!
 # The translation law of the Hauptmodul logarithm

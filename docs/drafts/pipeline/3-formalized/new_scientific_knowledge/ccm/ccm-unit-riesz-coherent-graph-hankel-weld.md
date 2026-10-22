@@ -6,7 +6,7 @@
 - **Scientific status:** `[UNCONDITIONALLY PROVED IN LEAN]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [EXTERNAL PRIORITY UNVERIFIED] [NOT AN RH PROOF]`
 - **Formal module:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszCoherentGraphHankelWeld.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCoherentGraphHankelWeld.lean`
 - **Parent modules:**
   `CCMUnitRieszExponentialCoherentTrace.lean`,
   `CCMUnitRieszCoherentPolarSamplingNoGo.lean`, and

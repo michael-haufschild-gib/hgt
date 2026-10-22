@@ -248,7 +248,7 @@ interior overcrowding; zero linear mass no longer remains an independent premise
 Exact module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiAnchoredEulerWronskian.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAnchoredEulerWronskian.lean
 ```
 
 Formal capstones:

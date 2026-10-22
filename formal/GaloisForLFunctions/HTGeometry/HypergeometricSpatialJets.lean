@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicHypergeometricAnalyticODE
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicHypergeometricAnalyticODE
 
 /-! Spatial Gauss derivatives without a nontermination assumption. -/
 namespace GaloisForLFunctions.HTGeometry

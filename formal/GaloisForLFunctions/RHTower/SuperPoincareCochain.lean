@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SuperPoincareAlgebra
-import GaloisForLFunctions.RHTower.DeningerArithmeticCochainComplex
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCochainComplex
 
 noncomputable section
 

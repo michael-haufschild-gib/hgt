@@ -1,6 +1,6 @@
 import GaloisForLFunctions.BiScaleUncertainty.ProbeParsevalLaw
 import GaloisForLFunctions.HTGeometry.ConvexDiffCountableConnected
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAbelCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAbelCompleteness
 
 /-!
 # The growth exponent of a compact packet is the depth of the zeros it sees

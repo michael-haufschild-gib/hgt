@@ -126,7 +126,7 @@ not killed by this theorem.
 Generic module:
 `GaloisForLFunctions.HTGeometry.DirichletAnalyticPostcompositionSignRigidity`.
 Route-I specialization:
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowAnalyticPostcompositionNoGo`.
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowAnalyticPostcompositionNoGo`.
 Formalized companion:
 `dirichlet-real-analytic-postcomposition-high-line-sign-rigidity-formalized.md`.
 

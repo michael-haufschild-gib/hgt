@@ -75,7 +75,7 @@ iff `exists_deningerExpSchwartz_shiftedVacuum_iff` and proves the stronger survi
 log-pull in the strict source has infinite analytic order at zero, while any entire log-pull is
 identically zero. The claim-complete formalized child is
 `../../3-formalized/new_scientific_knowledge/route-e-deninger-analytic-log-pull-finite-dilation-fracture.md`.
-`RHTower/DeningerExpSchwartz.lean` supplies the actual faster-than-every-exponential two-sided
+`RHTower/Deninger/DeningerExpSchwartz.lean` supplies the actual faster-than-every-exponential two-sided
 source used by these proofs.
 
 ## 3. Exact positive collar decomposition

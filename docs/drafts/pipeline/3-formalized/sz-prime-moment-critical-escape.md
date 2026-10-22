@@ -87,8 +87,8 @@ bound, or the canonical-head Gamma--prime--polar inequality.
 ## Final verification
 
 - Final commands in formal: `lake --old env lean` on
-  `GaloisForLFunctions/RHTower/CCMPrimeMomentPotentialEscape.lean` and
-  `GaloisForLFunctions/RHTower/CCMPrimeMomentCriticalEscape.lean`, each
+  `GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentPotentialEscape.lean` and
+  `GaloisForLFunctions/RHTower/CCM/CCMPrimeMomentCriticalEscape.lean`, each
   with its matching `.lake/build/lib/lean/...olean` output. Audits7468
   and32271 exited0 without diagnostics, serial foreground execution.
 - Final scratch audit61451 exited0. All9 public declarations across

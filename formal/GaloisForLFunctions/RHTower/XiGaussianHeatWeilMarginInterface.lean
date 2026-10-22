@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiGaussianHeatPhysicalRealForm
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarGroundEnergy
-import GaloisForLFunctions.RHTower.SuzukiCCMMixedScrewWeilBridge
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarGroundEnergy
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCCMMixedScrewWeilBridge
 import GaloisForLFunctions.RHTower.XiResolventMassBudget
 
 /-!

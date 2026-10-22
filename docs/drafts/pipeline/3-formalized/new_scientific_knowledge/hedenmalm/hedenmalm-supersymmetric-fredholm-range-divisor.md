@@ -424,7 +424,7 @@ pass.
 Historical development status follows; statements that unbounded-operator infrastructure was
 missing are superseded by the new `LinearPMap` infrastructure and closed proofs.
 
-`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/HedenmalmFredholmRangeDivisor.lean`
+`[HISTORICAL PARTIAL STATUS]`  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmFredholmRangeDivisor.lean`
 (namespace `RHTower.HedenmalmFredholmRange`) formalizes the **range-divisor half** of the theorem
 in explicit integral form over the general source class
 `GaloisForLFunctions.HTGeometry.PositiveDensitySource`.  Every declaration has `#print axioms`
@@ -444,7 +444,7 @@ theorem of calculus on the whole line applied to the tilted product `u(x) e^(i a
 hypotheses are exactly the vanishing of that product at both ends, which is what membership of
 `u` in the weighted space supplies.
 
-**Weighted adjoint core.**  `formal/GaloisForLFunctions/RHTower/HedenmalmWeightedAdjointCore.lean`
+**Weighted adjoint core.**  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmWeightedAdjointCore.lean`
 (namespace `RHTower.HedenmalmThetaSource`) proves the core content of `(3)` and `(12)` at the
 actual arithmetic source, with no hypothesis on the source.
 
@@ -454,7 +454,7 @@ actual arithmetic source, with no hypothesis on the source.
 | `(11)` | **the weighted formal symmetry `<D f, g>_(H_k) = <f, L g>_(H_k)`** on compactly supported differentiable data | `integral_weighted_symmetry` |
 | `(12)` | **the half-density conjugation** `(k^(1/2) f)' = k^(1/2)(f' + (a/2) f)` | `hasDerivAt_halfDensity_mul` |
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmSourceKernelTrivial.lean` supplies the analytic
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSourceKernelTrivial.lean` supplies the analytic
 reason for `ker A = 0` in `(4)`: the formal kernel of `D` is the constants, and the weighted space
 carries none.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFullReflectionFourthTuran
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionFourthTuran
 
 /-!
 # Literal theta sign at the cold/degree corner

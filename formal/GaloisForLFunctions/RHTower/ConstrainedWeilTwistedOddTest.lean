@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiScrewTestRayEnergy
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewTestRayEnergy
 
 /-!
 # The twisted odd test law for Suzuki's screw form

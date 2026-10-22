@@ -6,7 +6,7 @@
 - **Paper proof:**
   `docs/drafts/pipeline/3-formalized/universal-law-field/harmonic-provenance-formation-mechanics/orthogonal-shell-replica-ward-double-properness-law-paper.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.HedenmalmThetaSourceShellReplicaWardDoubleProperness`
+  `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceShellReplicaWardDoubleProperness`
 
 ## Certified declarations
 
@@ -32,7 +32,7 @@
 
 - Direct elaboration: PASS
 - Named leaf build:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmThetaSourceShellReplicaWardDoubleProperness`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceShellReplicaWardDoubleProperness`
   PASS
 - Axioms: only `propext`, `Classical.choice`, `Quot.sound`
 - Forbidden declarations: none

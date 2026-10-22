@@ -9,7 +9,7 @@ In progress — paper proof and Lean formalization complete; literature novelty 
 - `HTGeometry/ChamberLawPickKernel.lean`
   - `totalGram_eq_smul_chamberPickKernel`
   - `re_quadForm_smul_neg_iff`
-- `RHTower/CCMRawStieltjesChamberIndexInflation.lean`
+- `RHTower/CCM/CCMRawStieltjesChamberIndexInflation.lean`
   - `criticalMellinSelectedStieltjes_chamber`
   - `activeCriticalMellinAtoms_card_ge`
   - `exists_activeCriticalMellinStieltjes_chamber_grade_ge`
@@ -29,12 +29,12 @@ cofinally unbounded finite negative index.
 ## Lean status
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean`.
 
 Exact check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMRawStieltjesPickKernelIndexInflationUniversalityLaw.lean
 ```
 
 ## Novelty status

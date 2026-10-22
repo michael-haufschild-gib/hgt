@@ -67,7 +67,7 @@ asserted for that physical source. No route is retired by this construction.
 
 ## Lean result and verification
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction.lean`
 contains 15 new public theorems. Its only direct import is the existing horizon-basis
 Green--Krein leaf. The central theorem `d4BMPlusPlusContinuousGreenResponse_forcedEquation`
 uses actual first and second derivatives, not only declared formal jets. The last theorem
@@ -77,7 +77,7 @@ specializes it to every Xi fibre without a supplied nondegeneracy premise.
 - Main-workspace build preflight stopped at the unrelated
   `XiCenteredOrderTwentyOneSourceBudgetClosure`, whose existing 82 MB olean lacked required
   build metadata. No dependency rebuild was started.
-- Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction`
+- Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicContinuousGreenAction`
   passed in **12 seconds** in an isolated leaf package using this exact source, the same
   toolchain, and existing corpus/mathlib oleans. The package declared only this module;
   local packages with no source targets supplied the cached import directories through

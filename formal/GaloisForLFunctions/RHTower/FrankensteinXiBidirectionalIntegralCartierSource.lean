@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixPairedDefectGaussHodgeCurvature
 import GaloisForLFunctions.HTGeometry.ConstitutiveStrictInversionCartier
-import GaloisForLFunctions.RHTower.DeningerPrincipalConormal
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrincipalConormal
 
 /-!
 # Bidirectional integral Cartier source for retained Xi divisors

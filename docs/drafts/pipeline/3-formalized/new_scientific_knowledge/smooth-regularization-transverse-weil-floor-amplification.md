@@ -312,14 +312,14 @@ paper narrative, but it does not estimate the floor and therefore does not prove
 The full proved theorem surface is formalized unconditionally in Lean 4 through the variational
 lower-bound interface; the restricted operator itself does not need to be reconstructed.
 
-- `formal/GaloisForLFunctions/RHTower/CCMInwardRegularizationFloor.lean` proves the inward kernel
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMInwardRegularizationFloor.lean` proves the inward kernel
   factor, trapezoidal profile and exact mass, transform convergence and domination, Xi-divisor
   dominated convergence, the lossless sharp trial-to-floor inequality `(13)`--`(14)`, the inward
   floor envelope, cofinal amplification `(18)`, and the critical criterion `(23)`.
 - `formal/GaloisForLFunctions/RHTower/NonnegativeMonotoneDirichletAbscissa.lean` proves the generic
   extended-real identity `(22)` for every nonnegative monotone coefficient sequence which is not
   eventually zero, including finite, zero, and infinite logarithmic exponents.
-- `formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilFloorGrowthSpectrum.lean` proves the sharp
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilFloorGrowthSpectrum.lean` proves the sharp
   false-RH lower abscissa `(24)`, sampled and continuous logarithmic limsup bounds `(19)`, the
   subpower and continuous subexponential equivalences `(20)`, the exact monotone floor
   specialization of `(22)`, and abscissa `-infinity` for the zero floor under RH.

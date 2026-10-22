@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.HillDrivenWave
 import GaloisForLFunctions.HTGeometry.HillEventContinuity
-import GaloisForLFunctions.HTGeometry.KleinGordonChartGeneric
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonChartGeneric
 import GaloisForLFunctions.HTGeometry.ClockPiPartialC1
 
 /-!

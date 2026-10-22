@@ -235,7 +235,7 @@ priority remains unverified.
 - [ ] RH
 
 Lean module:
-`formal/GaloisForLFunctions/RHTower/SuzukiCarlemanJumpPhaseObstruction.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanJumpPhaseObstruction.lean`.
 It proves the mixed-coordinate real/pure-imaginary implication and non-Herglotz theorem, plus
 centered meromorphic order laws, linear-escape invariance, and one-germ centered-Euler RH
 discharge.  Mixed theorem must not be instantiated as the actual physical sheet.  Prime--Gamma

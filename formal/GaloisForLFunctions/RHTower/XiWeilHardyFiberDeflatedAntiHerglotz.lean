@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMCompletedPrimeGammaAccretivityCriterion
 import GaloisForLFunctions.RHTower.XiHedenmalmKummerRootRH
 import GaloisForLFunctions.RHTower.XiSchurDiscGerm
 import GaloisForLFunctions.RHTower.XiWeilHardyFiberDeflatedTrace

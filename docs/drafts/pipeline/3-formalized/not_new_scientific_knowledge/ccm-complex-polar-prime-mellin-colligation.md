@@ -80,7 +80,7 @@ completed semilocal base Grams.
 ## Formal certificate
 
 The module
-`GaloisForLFunctions.RHTower.CCMComplexMellinColligation` proves:
+`GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation` proves:
 
 - `continuousPolarLaplaceChannelComplex_eq`;
 - `vonMangoldtPrimeLaplaceChannelComplex_eq_logDeriv`;

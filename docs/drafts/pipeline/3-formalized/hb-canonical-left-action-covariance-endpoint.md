@@ -48,7 +48,7 @@ true, source covariance is false, and canonical orbit optical power is strictly 
 - `hbXiPeierlsCanonicalLeftAction_tilted_incidence_noCovariance_positiveOptical`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint.lean`
 
 ## New knowledge
 
@@ -86,8 +86,8 @@ generic Peierls or QNM projection theory.
 ## Verification
 
 - Scratch: `lake env lean /tmp/HC22.lean`
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCanonicalLeftActionCovarianceEndpoint`
 - Build result: success, 11916 jobs after dependency replay
 - `#print axioms` on nine endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token scan: clean

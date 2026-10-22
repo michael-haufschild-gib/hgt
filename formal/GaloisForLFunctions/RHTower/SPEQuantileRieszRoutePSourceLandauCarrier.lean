@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePLandauDisk
-import GaloisForLFunctions.RHTower.CCMCriticalMellinResolventExponentialWidth
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinResolventExponentialWidth
 import GaloisForLFunctions.RHTower.LandauIntegralTransfer
 import GaloisForLFunctions.HTGeometry.ClockParametricIntegralHolomorphy
 

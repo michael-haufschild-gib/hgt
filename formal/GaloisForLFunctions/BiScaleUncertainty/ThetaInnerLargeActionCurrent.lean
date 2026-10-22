@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspC5OuterClockCurrent
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspC5OuterClockCurrent
 
 /-! Source action, rather than displacement alone, pays the complete clock
 current in the inner chamber `0 < t ≤ min(2, u)`: the current is positive once the action is

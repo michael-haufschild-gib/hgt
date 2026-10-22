@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsSpaceInverse
 import GaloisForLFunctions.RHTower.FokasLenellsSpaceForcing
-import GaloisForLFunctions.HTGeometry.KleinGordonDuhamelDerivative
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonDuhamelDerivative
 
 /-!
 # C¹ spatial regularity of the actual RH boundary problem

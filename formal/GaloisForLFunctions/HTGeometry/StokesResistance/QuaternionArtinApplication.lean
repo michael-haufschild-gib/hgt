@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StokesResistance.FiniteGroupCharacter
-import GaloisForLFunctions.RHTower.DeningerQ8ActualGroupRepresentation
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8ActualGroupRepresentation
 
 /-!
 # Quaternionic Artin application of Stokes symmetry counting

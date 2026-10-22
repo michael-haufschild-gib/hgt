@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.DenseFeatureGramUnitary
 import GaloisForLFunctions.HTGeometry.HalfPlaneHardyCauchyTotality
 import GaloisForLFunctions.HTGeometry.HalfPlaneFiniteBlaschkeModel
 import GaloisForLFunctions.HTGeometry.HardyDiskKernelContinuity
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiFiniteUpperKernelInertia
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiFiniteUpperKernelInertia
 
 /-!
 # Exact Cayley unitary between disk and line Hardy spaces

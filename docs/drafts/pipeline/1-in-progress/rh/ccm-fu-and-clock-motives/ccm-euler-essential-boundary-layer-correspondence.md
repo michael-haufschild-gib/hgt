@@ -156,8 +156,8 @@ survivor and prevents treating essential cusp as unrelated pathology.
 
 Audit:
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMEulerEssentialBoundaryLayerCorrespondence.lean`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMEulerEssentialBoundaryLayerCorrespondence.lean`
   passed with no diagnostics.
-- `lake build GaloisForLFunctions.RHTower.CCMEulerEssentialBoundaryLayerCorrespondence` passed.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMEulerEssentialBoundaryLayerCorrespondence` passed.
 - `scripts/formal_tools.py lint` passed; only pre-existing large-file warnings.
 - Capstone declarations use only `propext`, `Classical.choice`, and `Quot.sound`.

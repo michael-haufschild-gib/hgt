@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMComplexMellinColligation
+import GaloisForLFunctions.RHTower.CCM.CCMComplexMellinColligation
 import GaloisForLFunctions.RHTower.PrimePolarResidueCancellation
 import GaloisForLFunctions.HTGeometry.KreinLangerInertia
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardMellinArbitraryOrderDecay
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinZeroPacket
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 import GaloisForLFunctions.RHTower.XiEndpointReflectionDefectEnergy
 
 /-!

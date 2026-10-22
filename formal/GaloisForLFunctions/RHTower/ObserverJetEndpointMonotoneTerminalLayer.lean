@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilLagPowerGapExceptionalSampling
-import GaloisForLFunctions.RHTower.SuzukiObserverJetTerminalLayer
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetTerminalLayer
 import GaloisForLFunctions.RHTower.SquareSampleObserverJetOneSidedStrip
 
 /-!

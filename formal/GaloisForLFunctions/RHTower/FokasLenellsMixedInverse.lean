@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FokasLenellsMixedOperator
 import GaloisForLFunctions.RHTower.FokasLenellsSpaceInverse
-import GaloisForLFunctions.HTGeometry.KleinGordonDuhamelDerivative
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonDuhamelDerivative
 
 /-!
 # Commuting mixed derivatives of the actual Cauchy inverse

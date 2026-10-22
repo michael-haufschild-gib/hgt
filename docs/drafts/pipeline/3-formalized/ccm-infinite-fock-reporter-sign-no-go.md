@@ -43,7 +43,7 @@ The global coherent-Fock kernel is PSD at every frequency. Its exact positive/ne
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.CCMActualHeadMatchedInfiniteFockReporterSignNoGo`
+- Module: `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedInfiniteFockReporterSignNoGo`
 - Positive survivor: `ccmActualHeadMatchedPhaseGlobalProjectiveFockPrimePowerReporterSignStraddle`
 - Kills: `ccmActualHeadMatchedPhaseGlobalProjectiveFockPointwiseReporterPositivityRouteKilled`, `ccmActualHeadMatchedPhaseGlobalProjectiveFockPointwiseRatioLowerBoundRouteKilled`
 - Audit: direct `lake env lean` PASS; target-only `lake build` PASS; axioms `[propext, Classical.choice, Quot.sound]`; umbrella wired. Global lint has only unrelated concurrently unwired modules.

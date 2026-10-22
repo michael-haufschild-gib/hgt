@@ -62,9 +62,9 @@ Flach--Morin's conjectural equivalence between Weil--Arakelov cohomology and
 
 - `[PAPER-PROVED]` Proof above.
 - `[LEAN-PROVED]`
-  `formal/GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovFiber.lean`.
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovFiber.lean`.
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticWeilArakelovFiber.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticWeilArakelovFiber.lean`
   exits successfully with no output.
 - Source has no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration.
 - Full module build and axiom print remain deferred to final audit.

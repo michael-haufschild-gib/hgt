@@ -23,11 +23,11 @@
 - **Lean (inherited from the four input cards, all stage 3):**
   - `formal/GaloisForLFunctions/HTGeometry/LogNormalEquationTrace.lean`,
     `GammaTransportKernel.lean`, `HalfLogCesaroAverage.lean`, `LogChartEnergyTransfer.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripGluing.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripGluing.lean`,
     `SuzukiForcedStripDatum.lean`, `SuzukiGammaStripGluing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWallCutoffCommutator.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWallCutoffCommutator.lean`,
     `WallOneBlockEstimate.lean`, `WallBlockSeries.lean`, `WallForcedProfileMemLp.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWeightedTailCoercivity.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWeightedTailCoercivity.lean`,
     `SuzukiGammaShiftKappa.lean`, `SuzukiGammaMollifiedEquation.lean`,
     `SuzukiGammaWeakDomainUpgrade.lean`
 

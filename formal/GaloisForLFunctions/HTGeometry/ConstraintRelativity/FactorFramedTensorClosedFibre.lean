@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.ConstraintRelativity.FactorFramedTensorGradient
-import GaloisForLFunctions.RHTower.DeningerHazewinkelBoundaryKernel
+import GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelBoundaryKernel
 
 /-!
 # Literal closed fibres of factor tensor and Jacobian algebras

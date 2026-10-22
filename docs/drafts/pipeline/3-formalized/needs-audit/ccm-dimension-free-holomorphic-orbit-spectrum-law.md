@@ -106,7 +106,7 @@ remains open and must not be advertised as settled.
 
 ## Formal declarations
 
-Universal module `formal/GaloisForLFunctions/RHTower/CCMAnalyticOrbitSpectrumRigidity.lean`:
+Universal module `formal/GaloisForLFunctions/RHTower/CCM/CCMAnalyticOrbitSpectrumRigidity.lean`:
 
 - `analyticOrbitGerm`;
 - `normedAnalyticOrbitMultiplier`;
@@ -118,7 +118,7 @@ Universal module `formal/GaloisForLFunctions/RHTower/CCMAnalyticOrbitSpectrumRig
 - `criticalMellinCompletedError_analyticOrbit_upperBound_iff`.
 
 Explicit joint-shift module
-`formal/GaloisForLFunctions/RHTower/CCMCommensurateJointShiftSpectrumRigidity.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMCommensurateJointShiftSpectrumRigidity.lean`:
 
 - `commensurateJointShiftCurve`;
 - `commensurateJointShiftGerm`;
@@ -139,7 +139,7 @@ Explicit joint-shift module
 - [x] formal lint attribution audit: no finding in these modules; repository-wide lint fails only on
   pre-existing umbrella-reachability findings outside this card
 - [x] targeted module build through
-  `GaloisForLFunctions.RHTower.CCMBoundaryTraceRamification`
+  `GaloisForLFunctions.RHTower.CCM.CCMBoundaryTraceRamification`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

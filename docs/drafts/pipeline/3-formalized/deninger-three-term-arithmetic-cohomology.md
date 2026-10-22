@@ -100,7 +100,7 @@ exact cohomological output but does not assume it.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticThreeTermCohomology.lean` builds and its
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticThreeTermCohomology.lean` builds and its
 axiom audit is `propext, Classical.choice, Quot.sound`.
 
 - `DeningerArithmeticThreeTermComplex` — the data of `(1)`, with `d1_comp_d0 : d¹ ∘ d⁰ = 0`.

@@ -55,13 +55,13 @@ corresponding horizontal zero-free region.
 
 ## Formal artifacts
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativePartEnergyGate.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativePartEnergyGate.lean`
   - `xiRectangularRightNegativePart_LSeriesSummable_at_one_add_of_tailNegativePart_summable`
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativeChannelSplitCompleteness.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativeChannelSplitCompleteness.lean`
   - `riemannHypothesis_iff_negativeChannelEnergy_and_subpowerChannel`
   - `negativeChannelDichotomy_of_not_riemannHypothesis`
   - `riemannHypothesis_iff_fractionalNegativeEnergy_and_complementarySubpower`
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativeChannelSpectrum.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativeChannelSpectrum.lean`
   - `xi_zero_re_le_half_add_of_xiRectangularWeilTailNegativePart_summable`
   - `xiRightTransverseSup_le_iff_negativeChannelSpectrum`
   - `all_xiZeros_re_le_iff_negativeChannelSpectrum`

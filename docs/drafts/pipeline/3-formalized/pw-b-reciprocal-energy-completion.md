@@ -28,7 +28,7 @@ The required finite-energy two-grade reflection fixes the local map to `x â†¦ xâ
 
 - **Discharged premise:** the support geometry of any spectrally independent reciprocal completion is now exact, including a minimal completion and a constructive global model.
 - **Remaining hard premise:** derive this completion as a literal Hawking closed-time-path source seam while preserving the finite-energy contact terms. The theorem does not identify a physical source extension, establish functional-equation reflection at all complex grades, or claim partner balance.
-- **Status:** dependency-closed Lean source theorem in `GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekReciprocalCompletion.lean`, wired into `RHTower.lean`.
+- **Status:** dependency-closed Lean source theorem in `GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekReciprocalCompletion.lean`, wired into `RHTower.lean`.
 
 ## Log
 

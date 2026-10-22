@@ -5,20 +5,20 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-forced-gamma-upper-strip-gluing.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripParticular.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripHolomorphy.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripGluing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripLineBridge.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiForcedStripDatum.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiStripTransportUniform.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaForcedStripHardy.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripCarrierTwoSided.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripParticular.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripHolomorphy.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripGluing.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripLineBridge.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiForcedStripDatum.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiStripTransportUniform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaForcedStripHardy.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripCarrierTwoSided.lean`
   - `formal/GaloisForLFunctions/RHTower/GammaVerticalRatioUniform.lean`
   - `formal/GaloisForLFunctions/RHTower/GammaRatioStripUniform.lean`
   - `formal/GaloisForLFunctions/RHTower/StripFourierTranslation.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripGluing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiHalfLogScatteringKernel.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripSquareIntegrable.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripGluing.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHalfLogScatteringKernel.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripSquareIntegrable.lean`
   - `formal/GaloisForLFunctions/HTGeometry/WeightedHardyInequality.lean`
   - `formal/GaloisForLFunctions/HTGeometry/SegmentParameterHolomorphy.lean`
   - `formal/GaloisForLFunctions/HTGeometry/SegmentParameterPrimitive.lean`

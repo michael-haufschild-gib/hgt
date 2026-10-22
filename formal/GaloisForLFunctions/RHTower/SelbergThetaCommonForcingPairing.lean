@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SelbergThetaCommonForcingGram
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMStripMeanAdmission
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMHalfRowIntegralInterchange
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMStripMeanAdmission
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMHalfRowIntegralInterchange
 
 /-!
 # Literal scalar source pairing for the native common theta forcing

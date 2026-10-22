@@ -196,7 +196,7 @@ References checked:
   - `splitQuotient_pencil_charpoly`
   - `splitQuotient_pencil_lowestCoeff`
   - `splitQuotient_sourcePencil_lowestCoeff`
-- `formal/GaloisForLFunctions/RHTower/CCMSourcePencilRadicalEvans.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSourcePencilRadicalEvans.lean`
   - `ccmSourceCompletion_semimetricAction`
   - `ccmMetricAdjoint_splitRadical`
   - `ccmSplitGram_lowestCoeff_ne_zero`
@@ -208,8 +208,8 @@ Verification on 2026-07-22:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/RadicalQuotientEvansCoefficient.lean       PASS
-lake env lean GaloisForLFunctions/RHTower/CCMSourcePencilRadicalEvans.lean              PASS
-lake build GaloisForLFunctions.RHTower.CCMSourcePencilRadicalEvans                      PASS
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMSourcePencilRadicalEvans.lean              PASS
+lake build GaloisForLFunctions.RHTower.CCM.CCMSourcePencilRadicalEvans                      PASS
 #print axioms: [propext, Classical.choice, Quot.sound] only                               PASS
 ```
 

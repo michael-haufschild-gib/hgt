@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiHorizontalRatioSelection
 import GaloisForLFunctions.RHTower.GammaVerticalRatioUniform
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 
 /-!
 # Burnol's Proposition 5.1

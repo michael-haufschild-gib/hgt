@@ -318,7 +318,7 @@ SUSPENSION DESCENT OPEN`.
 
 ### The finite character stages `(1)` and the power law `(4)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCharacterStage.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCharacterStage.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerCharacterStage r A : (Fin r → A) ≃ₗ[ℤ] ((Fin r → ℤ) →ₗ[ℤ] A)` — **`(1)`**: the characters
@@ -336,7 +336,7 @@ SUSPENSION DESCENT OPEN`.
 
 ### The cylinder condition and its stability landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCylinderFunction.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCylinderFunction.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The card's first `[PROVED HERE]` rests on the sentence "Local cylinder representations are preserved
@@ -361,7 +361,7 @@ algebraic half of that is now proved.
 
 Five modules, all with axiom audit `propext, Classical.choice, Quot.sound`.
 
-`formal/GaloisForLFunctions/RHTower/DeningerCylinderDerivative.lean` — differentiating a cylinder
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCylinderDerivative.lean` — differentiating a cylinder
 function.
 
 - `deningerCylinderDeriv` — the directional derivative of a cylinder function in the coordinates of
@@ -372,7 +372,7 @@ function.
   coordinates, because the derivative of an analytic function is analytic and evaluating a
   continuous linear map at a fixed vector is continuous linear.
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageDeRham.lean` — the several-variable holomorphic de
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageDeRham.lean` — the several-variable holomorphic de
 Rham complex of a finite character stage.
 
 - `deningerStageTorus`, `deningerStageTorus_isOpen` — the stage `Z_{W,L} = (ℂ^×)^r` as an open
@@ -386,7 +386,7 @@ Rham complex of a finite character stage.
 - `deningerDlogForm`, `deningerDlogForm_holomorphic`, `deningerDlogForm_closed` — the generators
   `d log P(a)` of `(5)` are holomorphic on the stage and closed.
 
-`formal/GaloisForLFunctions/RHTower/DeningerAlternatizationOperator.lean` — mathlib has
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAlternatizationOperator.lean` — mathlib has
 antisymmetrization only as an additive map, with no bound; the analyticity of a family of forms
 needs it as a bounded operator.
 
@@ -397,7 +397,7 @@ needs it as a bounded operator.
 - `deningerAnalyticAt_of_toContinuousMultilinearMap` — analyticity of a family of alternating forms
   descends from analyticity after forgetting antisymmetry.
 
-`formal/GaloisForLFunctions/RHTower/DeningerFormPullback.lean` — transport of forms.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFormPullback.lean` — transport of forms.
 
 - `deningerPullbackForm` — the pullback of a differential form along a map.
 - `deningerPullbackForm_analyticAt` — **the pullback of an analytic form along an analytic map is
@@ -407,7 +407,7 @@ needs it as a bounded operator.
   `deningerStagePullback_extDeriv` — the pullback commutes with the exterior derivative and
   preserves holomorphy on the stages.
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageTransition.lean` — the transition maps of `(1)` at
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageTransition.lean` — the transition maps of `(1)` at
 the analytic level.
 
 - `deningerMonomialMap` — the monomial map of an integer matrix, covering both the power isogenies
@@ -422,7 +422,7 @@ the analytic level.
 
 ### The cylinder de Rham complex `(3)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerCylinderForm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCylinderForm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSelectMatrix`, `deningerMonomialMap_select` — the coordinate projections are monomial
@@ -440,7 +440,7 @@ the analytic level.
 
 ### The period of the logarithmic differential landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerDlogPeriod.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogPeriod.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerCircleDeriv` — a primitive of `z⁻¹` has constant derivative `i` along the unit circle.
@@ -452,8 +452,8 @@ the analytic level.
 
 ### The generators of `(5)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerDlogWedge.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerDlogTransition.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogWedge.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogTransition.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerDetForm` — the determinant in a chosen tuple of coordinates, as a continuous alternating
@@ -477,7 +477,7 @@ the analytic level.
 
 ### The Stein property landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageStein.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageStein.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.  mathlib has no Stein theory, so the definitions are built
 here.
 
@@ -493,8 +493,8 @@ here.
 
 ### The independence half of `(5)` landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerDlogIndependence.lean` and the generalized period in
-`formal/GaloisForLFunctions/RHTower/DeningerDlogPeriod.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogIndependence.lean` and the generalized period in
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogPeriod.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerDlogScalar_not_exact` — a multiple of the logarithmic differential is exact only if the
@@ -507,8 +507,8 @@ here.
 
 ### `(5)` in dimension one landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPuncturedPrimitive.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerStageOneCohomology.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPuncturedPrimitive.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageOneCohomology.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPuncturedPeriod`, `deningerPeriod_eq_increment` — the period of a holomorphic function on
@@ -529,7 +529,7 @@ here.
 
 ### The Poincaré lemma in degree one landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoincareOneForm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoincareOneForm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.  mathlib has primitives of holomorphic functions only in
 one variable; this is the several-variable statement in degree one.
 
@@ -545,8 +545,8 @@ one variable; this is the several-variable statement in degree one.
 
 ### The exactness bridge and the exponential covering landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerClosedOneForm.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerExpCover.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerClosedOneForm.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExpCover.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerFormFunctional` — a one-form as a family of functionals.
@@ -563,7 +563,7 @@ one variable; this is the several-variable statement in degree one.
 
 ### `(5)` in degree one, in every dimension, landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageOneFormExact.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageOneFormExact.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerExpPullback`, `deningerExpPullback_analytic`, `deningerExpPullback_closed`,
@@ -585,7 +585,7 @@ one variable; this is the several-variable statement in degree one.
 
 ### `(4)` and the sheaf condition, at the level of forms, landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStagePowerPermutation.lean` and locality sections
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStagePowerPermutation.lean` and locality sections
 appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
@@ -605,7 +605,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### `(5)` in degree zero landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageZeroCohomology.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageZeroCohomology.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerStageTorus_isPreconnected` — **a character stage is connected**, as a product of
@@ -618,7 +618,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### The contraction identity for higher degrees landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerContractionIdentity.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerContractionIdentity.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerRemoveNth_succ_cons` — removing a later entry of a tuple with a prepended entry.
@@ -636,7 +636,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### The Poincaré lemma in every degree landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPoincareKForm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoincareKForm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerHomotopyKernel`, `deningerHomotopyKDeriv`, `deningerHomotopyKernel_hasFDerivAt` — the
@@ -659,7 +659,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### Closed forms of every degree on a stage landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageKFormExact.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageKFormExact.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerExpPullbackForm`, `deningerExpPullbackForm_analytic` — the pullback of a stage form of
@@ -678,7 +678,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### The homotopy operator is `C^1`, and the descent step landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerHomotopyC1.lean` and the defect section of
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHomotopyC1.lean` and the defect section of
 `DeningerStageKFormExact.lean`.  Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerContractL`, `deningerContractCLM_continuous` — contraction against a vector is continuous
@@ -697,7 +697,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### Descent of periodic forms landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFormDescent.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFormDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPeriodicInt`, `deningerPeriodicDescent` — a coordinatewise periodic map on the covering
@@ -713,7 +713,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### Exactness on the stage from a periodic primitive landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageExactDescent.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageExactDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerLogBranch_hasFDerivAt_of_slit` — the derivative of a local branch of the logarithm at
@@ -728,7 +728,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### `(5)` in degree one, in the language of forms, landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageOneFormCohomology.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageOneFormCohomology.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerOfSubsingleton_formFunctional`, `deningerOfSubsingleton_dlogComb`,
@@ -741,7 +741,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### The generators pull back to constant forms
 
-`formal/GaloisForLFunctions/RHTower/DeningerWedgePullback.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWedgePullback.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerExpPullback_dlogWedge` — **along the exponential covering the exterior product of the
@@ -752,7 +752,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### Averaging over a period landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPeriodAverage.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPeriodAverage.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerPeriodCurve`, `deningerPeriodCurve_hasDerivAt` — the curve traversing one period in a
@@ -768,7 +768,7 @@ appended to `DeningerCylinderFunction.lean` and `DeningerStageDeRham.lean`.  Axi
 
 ### The averaging operator landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAverageOperator.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAverageOperator.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerAverageOp` — the average of a map over one period in a coordinate direction, for an
@@ -785,7 +785,7 @@ derivative of a periodic form.
 
 ### Contraction and the exterior derivative landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerContractDeriv.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerContractDeriv.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerExtDeriv_contract` — **the exterior derivative of a contracted form** is the
@@ -796,7 +796,7 @@ derivative of a periodic form.
 
 ### Constant forms with periodic primitives vanish, in every degree
 
-`formal/GaloisForLFunctions/RHTower/DeningerConstantFormVanishing.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerConstantFormVanishing.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerConstantForm_eq_zero` — **a form with constant coefficients on the covering space that is
@@ -813,7 +813,7 @@ derivative of a periodic form.
 
 ### No generator is exact, in every degree
 
-`formal/GaloisForLFunctions/RHTower/DeningerWedgeNotExact.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWedgeNotExact.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerDlogWedge_not_exact` — **an exterior product of logarithmic differentials is not the
@@ -824,7 +824,7 @@ derivative of a periodic form.
 
 ### The average over a period is homotopic to the identity
 
-`formal/GaloisForLFunctions/RHTower/DeningerAverageHomotopy.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAverageHomotopy.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerWeightHomotopy` — the average of a map over one period weighted by `1 - s`, with its
@@ -838,7 +838,7 @@ derivative of a periodic form.
 
 ### Invariance under the period flow
 
-`formal/GaloisForLFunctions/RHTower/DeningerFlowInvariance.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFlowInvariance.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerAverageOp_flowInvariant` — the average over a period is invariant under the whole
@@ -852,7 +852,7 @@ derivative of a periodic form.
 
 ### Averaging in every direction
 
-`formal/GaloisForLFunctions/RHTower/DeningerFullAverage.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFullAverage.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `DeningerAveragedData`, `deningerAveragedData` — the form averaged over a list of coordinate
@@ -866,9 +866,9 @@ derivative of a periodic form.
 
 ### `(5)` in every degree: closed forms are constant forms up to exact forms
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageConstantForm.lean`, with the descent criterion
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageConstantForm.lean`, with the descent criterion
 generalized to an arbitrary primitive in
-`formal/GaloisForLFunctions/RHTower/DeningerStageExactDescent.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageExactDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerStage_exact_of_primitive` — a periodic differentiable primitive of the pulled-back form,
@@ -882,7 +882,7 @@ generalized to an arbitrary primitive in
 
 ### The determinant forms span the constant forms
 
-`formal/GaloisForLFunctions/RHTower/DeningerDlogWedgeBasis.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDlogWedgeBasis.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerConstantStageForm_detForm` — the constant stage form of a determinant form is the
@@ -898,7 +898,7 @@ generalized to an arbitrary primitive in
 
 ### `(5)` in every degree, in the language of the generators
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageDlogCohomology.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageDlogCohomology.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerSubsetWedge` — the exterior product of the logarithmic differentials of a set of
@@ -957,7 +957,7 @@ generalized to an arbitrary primitive in
 
 ### The descended primitive is holomorphic
 
-`formal/GaloisForLFunctions/RHTower/DeningerHolomorphicDescent.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHolomorphicDescent.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerLogBranch_analyticAt`, `deningerLogBranchDeriv_analyticAt` — a branch of the logarithm
@@ -975,7 +975,7 @@ generalized to an arbitrary primitive in
 
 ### The transition law for the generators
 
-`formal/GaloisForLFunctions/RHTower/DeningerTransitionWedge.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTransitionWedge.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerMatrixCLM`, `deningerExpMap_matrixCLM` — the linear map of an exponent matrix on the
@@ -1010,8 +1010,8 @@ generalized to an arbitrary primitive in
 
 ### `(5)` as an isomorphism of modules, with its basis
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageCohomologyModule.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerCohomologyBasis.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageCohomologyModule.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCohomologyBasis.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerClosedForms`, `deningerExactForms`, `deningerCohomology` — the closed holomorphic forms
@@ -1032,9 +1032,9 @@ generalized to an arbitrary primitive in
 
 ### The transition maps on cohomology, and `(5)` as an exterior power
 
-`formal/GaloisForLFunctions/RHTower/DeningerCohomologyFunctor.lean`, with
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCohomologyFunctor.lean`, with
 `deningerCohomologyExteriorEquiv` in
-`formal/GaloisForLFunctions/RHTower/DeningerCohomologyBasis.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCohomologyBasis.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerStagePullbackₗ`, `deningerPullback_mem_closedForms`, `deningerClosedPullback_exact` —
@@ -1051,7 +1051,7 @@ generalized to an arbitrary primitive in
 
 ### The action of `(4)` on cohomology
 
-`formal/GaloisForLFunctions/RHTower/DeningerFrobeniusCohomology.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFrobeniusCohomology.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerMatrixCLM_power` — the power transition induces multiplication by the exponent on the
@@ -1065,7 +1065,7 @@ generalized to an arbitrary primitive in
 
 ### The comparison with the exterior power is natural
 
-`formal/GaloisForLFunctions/RHTower/DeningerExteriorNaturality.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExteriorNaturality.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerDetForm_subtype_sum`, `deningerDetFormBasis_repr` — the coordinates of a constant
@@ -1083,7 +1083,7 @@ generalized to an arbitrary primitive in
 
 ### `(6)` : the colimit of the stage cohomologies
 
-`formal/GaloisForLFunctions/RHTower/DeningerCohomologyColimit.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCohomologyColimit.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerMatrixCLM_transpose_comp`, `deningerCohomologyMap_comp`, `deningerCohomologyMap_id` —
@@ -1149,7 +1149,7 @@ record how each was closed.
   the exactness of filtered colimits already banked, both named ingredients of `(7)` are now
   formalized.
 - 2026-08-07 — Formalized the index category `I_F` itself, closing the last item of `(6)`.
-  `formal/GaloisForLFunctions/RHTower/DeningerLatticeIndex.lean`; axiom audit
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerLatticeIndex.lean`; axiom audit
   `propext, Classical.choice, Quot.sound`.
 
   The card's pairs `(W, L)` carry no more information than `L`: the stage `Z_{W,L} = Hom(L, ℂ^×)`
@@ -1181,8 +1181,8 @@ record how each was closed.
   With this, both named ingredients of `(7)` and both items of `(6)` are formalized.
 - 2026-08-07 — Formalized the proof of `(7)` at a finite character stage and finite cell stage, and
   the two colimit properties its pro-Ind passage uses.
-  `formal/GaloisForLFunctions/RHTower/DeningerFreeSheafAcyclic.lean`,
-  `formal/GaloisForLFunctions/RHTower/DeningerCellFiltration.lean`, and two additions to
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerFreeSheafAcyclic.lean`,
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerCellFiltration.lean`, and two additions to
   `formal/GaloisForLFunctions/HTGeometry/DirectLimitExact.lean`.  Axiom audit for all eighteen
   declarations: `propext, Classical.choice, Quot.sound`.
 
@@ -1213,7 +1213,7 @@ record how each was closed.
   What is still not a Lean statement is the pro-Ind analytic sheaf category as an object, so `(7)`
   itself is not written down as a single equivalence; every step of its proof is.
 - 2026-08-07 — `(7)` is now a theorem, not an assembly of ingredients.
-  `formal/GaloisForLFunctions/RHTower/DeningerProIndSections.lean`; axiom audit for all nine
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerProIndSections.lean`; axiom audit for all nine
   declarations: `propext, Classical.choice, Quot.sound`.
 
   The card defines the pro-Ind global-section functor as the filtered colimit of the finite-stage

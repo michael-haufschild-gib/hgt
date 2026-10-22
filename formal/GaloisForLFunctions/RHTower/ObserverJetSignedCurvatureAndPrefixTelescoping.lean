@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ObserverJetEndpointMonotoneTerminalLayer
-import GaloisForLFunctions.RHTower.SuzukiObserverJetBoundaryAsymptotics
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetBoundaryAsymptotics
 
 /-!
 # Signed Curvature Asymptotics, Prefix-Mass Potential, and Unit-Step Terminal Telescoping

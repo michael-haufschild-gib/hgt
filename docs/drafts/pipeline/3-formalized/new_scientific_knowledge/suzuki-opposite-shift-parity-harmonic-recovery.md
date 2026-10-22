@@ -7,7 +7,7 @@
 - **Primary source:** Masatoshi Suzuki, *Weil's quadratic form via the screw function*,
   arXiv:2606.09096v1, Corollary 1.6 and Sections 7--8.
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.SuzukiOppositeShiftParityHarmonicRecovery`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiOppositeShiftParityHarmonicRecovery`
 
 ## Actual frontier before this card
 

@@ -36,7 +36,7 @@ The sufficient final interface remains C_phys=-Sigma |D|² together with a sourc
 
 ## Lean
 
-Source: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMRetardedPulseClock.lean`.
+Source: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMRetardedPulseClock.lean`.
 Namespace: `RHTower.D4BMRetardedPulseClock`.
 
 - `pulseKernel_translation`: original kernel/source argument identity.
@@ -49,6 +49,6 @@ All public theorems use actual Xi occurrences and original source functions, wit
 
 See C13–C15 in [the active investigation](../1-in-progress/hb-fixed-clock-source-translation.md) for the paper proof, full interface and unsuccessful source-sign transfers.
 
-Validation: scratch checked with `lake env lean`; final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRetardedPulseClock` passed in 155 seconds without warnings. Twelve existing cache roots were reused; only the new leaf compiled. The finished leaf is wired into the umbrella without an umbrella or full build. Source SHA-256: `ba006ed0b56e7b91d1101c535ad7eb464bd29fbe0437c044048fdb7dc0fc581d`.
+Validation: scratch checked with `lake env lean`; final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRetardedPulseClock` passed in 155 seconds without warnings. Twelve existing cache roots were reused; only the new leaf compiled. The finished leaf is wired into the umbrella without an umbrella or full build. Source SHA-256: `ba006ed0b56e7b91d1101c535ad7eb464bd29fbe0437c044048fdb7dc0fc581d`.
 
 Static API index refreshed; formal lint passed with existing large-file warnings. The audited canonical `.olean` and `.ilean` are retained.

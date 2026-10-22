@@ -86,7 +86,7 @@ File:
 `formal/GaloisForLFunctions/RHTower/XiHedenmalmMomentOrientationBoundary.lean`.
 
 The theta-source normalization and Fourier-sign equivalence are in
-`formal/GaloisForLFunctions/RHTower/HedenmalmCenterMixedOrientationBoundary.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCenterMixedOrientationBoundary.lean`.
 
 Theorem surface:
 

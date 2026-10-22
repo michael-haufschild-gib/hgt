@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.MoebiusSharpLittleO
-import GaloisForLFunctions.RHTower.DeningerHarmonicPartial
-import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerHarmonicPartial
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusHarmonicZero
 
 /-!
 # Möbius moments of the half-length prefix

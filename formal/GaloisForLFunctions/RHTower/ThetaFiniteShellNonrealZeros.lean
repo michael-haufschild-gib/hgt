@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaFiniteShellFourierBoundary
 import GaloisForLFunctions.RHTower.ThetaFiniteShellSubquadraticSourceBound
 import GaloisForLFunctions.RHTower.FiniteZeroSubquadraticTwoRayDecay
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeEntireTransform
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeEntireTransform
 import GaloisForLFunctions.RHTower.PrimeArchThetaSourceAtomDomination
 
 /-!

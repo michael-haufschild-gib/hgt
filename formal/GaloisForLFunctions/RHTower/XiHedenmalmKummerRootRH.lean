@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHedenmalmKummerCollision
-import GaloisForLFunctions.RHTower.HedenmalmGaussianHankelApertureWidthSpectrum
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGaussianHankelApertureWidthSpectrum
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 import GaloisForLFunctions.RHTower.XiHurwitzHardyAnchor

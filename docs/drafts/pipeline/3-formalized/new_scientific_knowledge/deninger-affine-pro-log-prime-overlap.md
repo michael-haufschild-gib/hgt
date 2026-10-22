@@ -201,7 +201,7 @@ conjecture.
 
 ### Both labelled theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerAffinePrimeOverlap.lean`, on top of the cusp module
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerAffinePrimeOverlap.lean`, on top of the cusp module
 `DeningerProLogCuspHodge.lean`.  Axiom audit for all 12 declarations:
 `propext, Classical.choice, Quot.sound` or less.
 

@@ -5,7 +5,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/deninger/deninger-ramified-top-conormal-ambidexterity.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalAmbidexterity`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerRamifiedTopConormalAmbidexterity`
 
 ## Formalized capstones
 
@@ -50,11 +50,11 @@ spectral synthesis, or source-annihilation premise occurs.
 ## Verification
 
 - direct foreground check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerRamifiedTopConormalAmbidexterity.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRamifiedTopConormalAmbidexterity.lean`
   passed;
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`;
 - targeted final audit:
-  `lake build GaloisForLFunctions.RHTower.DeningerRamifiedTopConormalAmbidexterity`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRamifiedTopConormalAmbidexterity`
   passed;
 - `#print axioms` on nine capstones reports only `propext`,
   `Classical.choice`, and `Quot.sound` (classification needs no

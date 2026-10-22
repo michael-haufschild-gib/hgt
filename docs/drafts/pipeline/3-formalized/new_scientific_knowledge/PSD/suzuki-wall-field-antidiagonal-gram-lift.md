@@ -178,7 +178,7 @@ Weil quadratic form.  This assembly—not local rank-one positivity—is RH-bear
 
 ### Lean progress — Theorem B's rank claim FORMALIZED
 
-Audit of the numbered statements against `RHTower/SuzukiWallFieldAntidiagonalGramLift.lean`.
+Audit of the numbered statements against `RHTower/Suzuki/SuzukiWallFieldAntidiagonalGramLift.lean`.
 Theorem A (reflection, difference character, diagonal, anti-diagonal, Hermitian symmetry, far-jump)
 and Theorem C (rooted completion identity and its nonnegativity) each had a declaration. Theorem B
 did not: `..._posSemidef` proved positive semidefiniteness through `Matrix.posSemidef_gram`, but the

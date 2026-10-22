@@ -29,7 +29,7 @@ self-dual seam, so both are strict afterward.
 ## Lean
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthProjectiveThinClockCone`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthProjectiveThinClockCone`
 - Main theorem: `thetaCuspModularProjectiveClocks_mem_thinCone`
 - Supporting theorems:
   - `thetaCuspModularLowerProjectiveClockGap_pos`

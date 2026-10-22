@@ -8,9 +8,9 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.SuzukiParityHankelDecomposition` — the parity lifts and the
+- `GaloisForLFunctions.RHTower.Suzuki.SuzukiParityHankelDecomposition` — the parity lifts and the
   `T ± H` decomposition.
-- `GaloisForLFunctions.RHTower.SuzukiPrimeHankelCarrier` — the convolution carrier, shear identities,
+- `GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeHankelCarrier` — the convolution carrier, shear identities,
   cutoff, atomic split, and cocycle.
 
 Standing on the screw layer of `ccm-screw-kernel-positivity-improving-breakdown` (already Stage 3):

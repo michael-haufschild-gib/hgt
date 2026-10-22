@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.StripHorizontalShift
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 
 /-!
 # Exponential decay of the centered xi function on horizontal lines

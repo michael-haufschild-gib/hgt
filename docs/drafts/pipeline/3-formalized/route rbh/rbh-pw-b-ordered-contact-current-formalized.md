@@ -1,7 +1,7 @@
 # RBH / PW-B ordered contact-current compatibility — Lean certificate
 
 - **Paper card:** `rbh-pw-b-ordered-contact-current.md`
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMLiteralCyclicPeierlsOrderedCurrent`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMLiteralCyclicPeierlsOrderedCurrent`
 - **Umbrella:** `GaloisForLFunctions.RHTower`
 - **Verification:** `lake --old env lean` clean; `#print axioms` = `propext`, `Classical.choice`,
   `Quot.sound`; no `sorry`.

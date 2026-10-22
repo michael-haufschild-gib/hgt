@@ -78,7 +78,7 @@ Verdict: geometric lifetime sum `[REDISCOVERED]`; coefficient-faithful PW comple
 ## Lean formalization
 
 - Module:
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo.lean`
 - Total lifetime: `tsum_schwarzschildEvaporationDyadicShellDuration`
 - Phase persistence: `schwarzschildParikhWilczekCompleteEvaporationPhase_eq`
 - Quadratic persistence:
@@ -89,7 +89,7 @@ Verdict: geometric lifetime sum `[REDISCOVERED]`; coefficient-faithful PW comple
   `riemannHypothesis_iff_schwarzschildParikhWilczekCompleteEvaporationQuadraticEnergy_zero`
 - Direct `lake env lean` passed.
 - Targeted build
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekCompleteEvaporationAggregateNoGo`
   passed (`11557/11557`).
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - Umbrella import wired in `formal/GaloisForLFunctions/RHTower.lean`.

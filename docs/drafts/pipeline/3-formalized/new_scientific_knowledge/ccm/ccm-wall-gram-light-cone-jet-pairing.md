@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadWallGramLightConeJetPairing`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadWallGramLightConeJetPairing`.
 This transports differential wall-light occurrence through literal actual-head spectral pairing.
 Completed Gamma/Robin transport and the final Schur residual remain open.
 

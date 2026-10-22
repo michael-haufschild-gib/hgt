@@ -90,7 +90,7 @@ No step assumes critical-line placement, RH, a dark-mode law, or a target-depend
   producer search must move to a continuum-completed Green pair before imposing FE--Schwarz laws.
 - **Status:** dependency-closed Lean proof in
   `ThetaCuspHawkingEKGContinuumQNMOnlyCompletenessNoGo`.  Direct `lake env lean` and targeted
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingEKGContinuumQNMOnlyCompletenessNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingEKGContinuumQNMOnlyCompletenessNoGo`
   pass.  `#print axioms` reports only `propext`, `Classical.choice`, and `Quot.sound`.  Module is
   wired into `GaloisForLFunctions.RHTower`.  Global lint reaches this module; current lint failure
   is confined to three unrelated concurrent unreachable modules.

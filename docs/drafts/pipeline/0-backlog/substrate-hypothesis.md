@@ -1,1 +1,1 @@
-cross-disciplinary/universal-laws-and-structures/substrate-hypothesis.md
+bookkeeping/project-framing/substrate-hypothesis.md

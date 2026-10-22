@@ -44,7 +44,7 @@ source-forced fixed-grade balance remain open. RH is unproved.
 
 ## Verification and research
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaAdjointCutoffContact.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaAdjointCutoffContact.lean`.
 All nine public declarations pass in the final scratch, with only
 propext, Classical.choice and Quot.sound in their axiom reports.
 Identical proof bodies are promoted and one RHTower import is wired.

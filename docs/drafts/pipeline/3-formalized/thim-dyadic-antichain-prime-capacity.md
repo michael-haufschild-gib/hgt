@@ -545,7 +545,7 @@ scratch/log files after certification; retained active corpus-search evidence.
   arguments were triaged. Inventory is complete over 74,353 files; compiler and
   semantic coverage remain limited. A narrower lexical `tsum indicator dvd`
   query returns one exact hit, a private Schwartz-specialized lemma in
-  `RHTower/CCMRationalUnitInvariantMobiusPoissonCompression.lean:204`. Its proof
+  `RHTower/CCM/CCMRationalUnitInvariantMobiusPoissonCompression.lean:204`. Its proof
   uses subtype reindexing; it is not a public reciprocal-square API. Inspected
   `RHTower/LiClockPairedEtaInfinitePartitionDensityTail.lean:495` for its existing
   odd reciprocal-square summability proof, and found the public exact odd-square

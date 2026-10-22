@@ -236,7 +236,7 @@ verification remains required.
 ## Lean certificate
 
 File:
-`formal/GaloisForLFunctions/RHTower/DeningerBigWittCrossPrimeIncidenceHorizon.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBigWittCrossPrimeIncidenceHorizon.lean`
 
 Capstone:
 `RHTower.DAC_DENINGER_BIG_WITT_ALL_CROSS_PRIME_INCIDENCE_DESCENT`
@@ -257,10 +257,10 @@ premise is packaged as a structure field.
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerBigWittCrossPrimeIncidenceHorizon.lean`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerBigWittCrossPrimeIncidenceHorizon.lean`
   passed.
 - Targeted
-  `lake build GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeIncidenceHorizon` passed;
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCrossPrimeIncidenceHorizon` passed;
   no umbrella or full build was run.
 - Axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Repository lint reports no issue in either new Big-Witt module and confirms umbrella

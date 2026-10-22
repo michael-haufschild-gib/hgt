@@ -83,7 +83,7 @@ formal lint and all 15 public theorem axiom audits passed. Dependencies are
 only `propext`, `Classical.choice` and `Quot.sound`; no added axioms or proof
 holes. No numerical experiments were used. All owned Lean processes finished.
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusCurrent.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusCurrent.lean`.
 - Closed package: `RHTower.pwGammaMobius_source_current_closed`.
 - Actual reflected connection: `RHTower.pwGammaMobius_reflected_connection`.
 - Scratch: `/tmp/pwb-gamma-current.lean`; axiom audit:

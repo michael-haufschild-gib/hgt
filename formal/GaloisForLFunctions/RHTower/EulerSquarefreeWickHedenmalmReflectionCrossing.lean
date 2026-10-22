@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerSquarefreeWickOppositeResidueCrossing
-import GaloisForLFunctions.RHTower.HedenmalmStokesOrientedFirstTraceQuantizedJump
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesOrientedFirstTraceQuantizedJump
 
 /-!
 # EWQ--Hedenmalm reflected crossing

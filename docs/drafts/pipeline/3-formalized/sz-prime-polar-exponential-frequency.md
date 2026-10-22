@@ -44,7 +44,7 @@ Five public theorems include the exact cosine/twist identity, the polar
 frequency bound, the high-frequency prime estimate, and the full symbol
 estimate. Scratch audit1813 and final direct leaf audit23736 exited0.
 Final command from formal/:
-  lake --old env lean GaloisForLFunctions/RHTower/CCMPolarPrimeExponentialFrequencyCancellation.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPolarPrimeExponentialFrequencyCancellation.olean
+  lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPolarPrimeExponentialFrequencyCancellation.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPolarPrimeExponentialFrequencyCancellation.olean
 No warnings or errors. All five axiom queries (session91656) exited0 and
 reported only propext, Classical.choice, Quot.sound. Root RHTower umbrella
 import added; no umbrella or full build.

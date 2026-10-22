@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / ROUTE KILL
 - **Source:** `FZZCigarParityDelaySourceContinuation` · `ThetaCuspHawkingFZZParitySignedNonlocalMomentDeterminacyNoGo` · `HTGeometry.FlowCharFunUniqueness`
-- **Lean:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo`
+- **Lean:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo`
 - **Status:** `[LEAN-PROVED] [CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`
 
 ## RH proof chain and discharged burden
@@ -38,8 +38,8 @@ and zero imaginary net mass. Four-part variation dominates this quantity, whose 
 - Exact undressed mass: `FZZCigarParityComplexCharacterNonlocalFEReflectionData.undressedRealNet_eq`
 - Sharp variation lower bound: `FZZCigarParityComplexCharacterNonlocalFEReflectionData.forcedWeight_le_undressedVariation`
 - Route kill: `no_polynomiallyTempered_FZZCigarParityComplexCharacterNonlocalFEReflectionData`
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo.lean`
-- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo`
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo.lean`
+- Targeted audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingFZZParityComplexCharacterNonlocalRigidityNoGo`
 - Axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
 - Umbrella: wired into `formal/GaloisForLFunctions/RHTower.lean`
 - Lint: module absent from failures; global run currently fails only on unrelated concurrent unwired modules.

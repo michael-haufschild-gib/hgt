@@ -150,7 +150,7 @@ stable ideal continuously.
 
 Module:
 
-- `GaloisForLFunctions.RHTower.CCMRationalHilbertOperatorRealStructure`
+- `GaloisForLFunctions.RHTower.CCM.CCMRationalHilbertOperatorRealStructure`
 
 Formal capstones:
 

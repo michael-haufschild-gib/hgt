@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevMovingFiber
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiCayleyTarget
-import GaloisForLFunctions.RHTower.SuzukiV2CharacteristicTarget
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiCayleyTarget
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiV2CharacteristicTarget
 import GaloisForLFunctions.RHTower.ThetaSourceGlobalStrictLogConvexity
 
 /-!

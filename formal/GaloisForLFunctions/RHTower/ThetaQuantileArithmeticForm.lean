@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaBVWeilForm
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional
-import GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm
 
 /-! # Exact singular transport of the full arithmetic Weil form
 

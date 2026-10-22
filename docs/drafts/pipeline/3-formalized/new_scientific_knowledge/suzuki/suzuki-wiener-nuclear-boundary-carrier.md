@@ -385,9 +385,9 @@ high part.  This is the exact analytic implication used to reject the old sequen
 
 ### The nuclear theorem, the unitary chart, and the sharp obstruction are all formal
 
-`RHTower/SuzukiWienerNuclearBoundaryCarrier.lean`, on top of the Wiener stack
-(`HTGeometry/DiscreteL1Convolution.lean`, `RHTower/SuzukiWienerNeumannMajorant.lean`,
-`RHTower/SuzukiWienerMixedNormCarrier.lean`) and mathlib's `L²` Fourier isometry:
+`RHTower/Suzuki/SuzukiWienerNuclearBoundaryCarrier.lean`, on top of the Wiener stack
+(`HTGeometry/DiscreteL1Convolution.lean`, `RHTower/Suzuki/SuzukiWienerNeumannMajorant.lean`,
+`RHTower/Suzuki/SuzukiWienerMixedNormCarrier.lean`) and mathlib's `L²` Fourier isometry:
 
 - `tsum_eLpNorm_wienerSingleRoot_le` — **`(1)`–`(3)`**: the valuation sum of `L²` norms of the
   Neumann-inverse single-root carrier is at most `(L₀ - (C+M))⁻¹ ‖B‖₂` — the exact constant, via

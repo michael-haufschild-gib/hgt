@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WaveTraceLandauRecurrence
 import GaloisForLFunctions.RHTower.XiHadamardFactorization
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 import GaloisForLFunctions.RHTower.XiCentralHankelDeterminantCriterion
 
 /-!

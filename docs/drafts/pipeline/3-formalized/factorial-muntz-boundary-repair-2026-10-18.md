@@ -116,6 +116,6 @@ Direct source inspection identified these existing ingredients; they are not new
 - `RHTower/ArchimedeanGenusZeroSum.lean`, `tsum_inv_zero_mul_one_sub_zero`: the multiplicity-expanded sum `sum_q 1/(rho_q*(1-rho_q))` equals `poleSharpConstant = 2 + gamma - log(4*pi)`.
 - `RHTower/LiCoefficientXi.lean`, `summable_xiLiPairedTerm`: absolute summability of the paired Li terms.
 - `RHTower/LiFirstCoefficientsNonneg.lean`, `re_xiLiPaired_nonneg_of_le_68`: unconditional nonnegativity of the first 68 paired Li coefficients.
-- `RHTower/SuzukiCorFourSix.lean`, `suzukiEntireFourier_liTestFun_term` and `suzukiLiWeilForm_eq_xiLiPaired`: a literal half-line test family and its zero-side Li identity.
+- `RHTower/Suzuki/SuzukiCorFourSix.lean`, `suzukiEntireFourier_liTestFun_term` and `suzukiLiWeilForm_eq_xiLiPaired`: a literal half-line test family and its zero-side Li identity.
 
 The candidate next bridge is to connect the corrected source's exact readouts to an admissible full-Weil form with the correct normalization and multiplicities, then control passage back to the compact ramp. The existing `ExpDecayTest` in `RHTower/WeilConeXiDivisibleBlindTest.lean` explicitly requires `ContDiff` of order two. Therefore `riemannHypothesis_iff_decayClass_weilPositive` cannot be applied directly to this discontinuous correction. An identity for a zero series alone does not discharge that domain or truncation obligation. No further identity for the corrected source's full-Weil form is claimed here.

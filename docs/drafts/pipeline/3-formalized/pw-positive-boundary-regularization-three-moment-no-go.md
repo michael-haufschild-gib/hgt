@@ -65,7 +65,7 @@ Internal search found finite and absolutely summable three-moment classification
 
 ## Formalization
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekPositiveBoundaryRegularizationThreeMomentNoGo`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekPositiveBoundaryRegularizationThreeMomentNoGo`.
 
 Closed capstone: `pwPositiveBoundaryRegularization_threeMoment_noGo`.
 

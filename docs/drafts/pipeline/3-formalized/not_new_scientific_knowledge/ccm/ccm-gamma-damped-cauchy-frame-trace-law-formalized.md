@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-gamma-damped-cauchy-frame-trace-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMGammaDampedCauchyFrame.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMGammaDampedCauchyFrame.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 10 declarations
 - **Hypotheses:** only the defining data of a pointed unitary system (unit vector, norm preservation,

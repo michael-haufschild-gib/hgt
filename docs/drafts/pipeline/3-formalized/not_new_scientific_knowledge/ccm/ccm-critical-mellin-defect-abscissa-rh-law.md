@@ -183,7 +183,7 @@ added.
 Laplace–Stieltjes continuation and the zeta pole interface do remain cited parents, but the card's
 own section-3 chain `(i) → (ii) → (iii)` is fully reachable and is now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinAbscissa.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinAbscissa.lean`
 (5 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

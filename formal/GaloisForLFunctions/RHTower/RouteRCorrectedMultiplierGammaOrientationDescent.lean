@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RouteRPreDivisorRationalAdelicCorrectedMultiplierXiLanding
-import GaloisForLFunctions.RHTower.CCMRationalAdelicPrimeIsotropyStokesRegulator
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicPrimeIsotropyStokesRegulator
 
 /-!
 # Corrected multiplier Gamma-orientation descent for Route R

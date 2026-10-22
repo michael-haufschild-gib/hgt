@@ -14,7 +14,7 @@ nonexpansiveness, oriented-residue horizontal annihilation, and cofinal graph co
 ## Certificate
 
 - Lean: `RHTower.exists_mscPhysicalRegularGerm_residueSplit_tendsto_four`
-- Module: `GaloisForLFunctions.RHTower.HedenmalmGammaSewnSquarefreeFisherRegularGermCofinal`
+- Module: `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnSquarefreeFisherRegularGermCofinal`
 - `lake env lean` and targeted `lake build` pass.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 - 2026-08 audit (`2606.17494`, `2606.09096`, `2511.22755`, `2608.24827`): no squarefree Fisher regular-germ/cofinal-four statement found.

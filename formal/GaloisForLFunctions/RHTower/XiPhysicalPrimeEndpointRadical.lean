@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeEndpointNoncancellation
-import GaloisForLFunctions.RHTower.CCMPhysicalPrimeApertureCharacterTomography
+import GaloisForLFunctions.RHTower.CCM.CCMPhysicalPrimeApertureCharacterTomography
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeLogApertureDispersion
 import GaloisForLFunctions.HTGeometry.ZeroEstimate
 

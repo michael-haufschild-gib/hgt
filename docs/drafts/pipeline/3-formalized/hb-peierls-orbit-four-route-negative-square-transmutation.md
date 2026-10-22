@@ -75,7 +75,7 @@ four-route Peierls negative-square transmutation. Bounded, not exhaustive, prior
   PW imbalance, and actual RBH imbalance. Proved three pointwise extinction equivalences, three
   universal route equivalences, and two universal RH equivalences.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingPeierlsOrbitFourRouteNegativeSquareTransmutation`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPeierlsOrbitFourRouteNegativeSquareTransmutation`
   passed (`12008/12008`); all sixteen exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present; formal lint reports no finding in
   this module (only unrelated unreachable modules).

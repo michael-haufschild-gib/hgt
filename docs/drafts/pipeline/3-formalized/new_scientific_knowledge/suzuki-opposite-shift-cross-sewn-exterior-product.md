@@ -9,7 +9,7 @@
   and Sections 7--8.
 - **Parent:** `suzuki-opposite-shift-parity-harmonic-recovery`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.SuzukiOppositeShiftCrossSewnExterior`
+  `GaloisForLFunctions.RHTower.Suzuki.SuzukiOppositeShiftCrossSewnExterior`
 
 ## Actual frontier exposed by corpus
 

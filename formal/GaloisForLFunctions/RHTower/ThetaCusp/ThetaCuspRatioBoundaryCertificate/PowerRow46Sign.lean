@@ -1,0 +1,351 @@
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRatioBoundaryCertificate.PowerRow46Norms
+
+import Mathlib.Tactic.FinCases
+
+namespace HTGeometry.ThetaRatioInfinity
+
+noncomputable section
+
+open HTGeometry.EvenCompactBernstein
+
+theorem boundaryPowerBernstein77_46_0_pos : 0<boundaryFullCoefficient77 46 0 := by
+
+  rw [boundaryPowerBernstein77_46_0Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_0Norm]
+
+
+theorem boundaryPowerBernstein77_46_1_pos : 0<boundaryFullCoefficient77 46 1 := by
+
+  rw [boundaryPowerBernstein77_46_1Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_1Norm]
+
+
+theorem boundaryPowerBernstein77_46_2_pos : 0<boundaryFullCoefficient77 46 2 := by
+
+  rw [boundaryPowerBernstein77_46_2Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_2Norm]
+
+
+theorem boundaryPowerBernstein77_46_3_pos : 0<boundaryFullCoefficient77 46 3 := by
+
+  rw [boundaryPowerBernstein77_46_3Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_3Norm]
+
+
+theorem boundaryPowerBernstein77_46_4_pos : 0<boundaryFullCoefficient77 46 4 := by
+
+  rw [boundaryPowerBernstein77_46_4Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_4Norm]
+
+
+theorem boundaryPowerBernstein77_46_5_pos : 0<boundaryFullCoefficient77 46 5 := by
+
+  rw [boundaryPowerBernstein77_46_5Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_5Norm]
+
+
+theorem boundaryPowerBernstein77_46_6_pos : 0<boundaryFullCoefficient77 46 6 := by
+
+  rw [boundaryPowerBernstein77_46_6Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_6Norm]
+
+
+theorem boundaryPowerBernstein77_46_7_pos : 0<boundaryFullCoefficient77 46 7 := by
+
+  rw [boundaryPowerBernstein77_46_7Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_7Norm]
+
+
+theorem boundaryPowerBernstein77_46_8_pos : 0<boundaryFullCoefficient77 46 8 := by
+
+  rw [boundaryPowerBernstein77_46_8Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_8Norm]
+
+
+theorem boundaryPowerBernstein77_46_9_pos : 0<boundaryFullCoefficient77 46 9 := by
+
+  rw [boundaryPowerBernstein77_46_9Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_9Norm]
+
+
+theorem boundaryPowerBernstein77_46_10_pos : 0<boundaryFullCoefficient77 46 10 := by
+
+  rw [boundaryPowerBernstein77_46_10Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_10Norm]
+
+
+theorem boundaryPowerBernstein77_46_11_pos : 0<boundaryFullCoefficient77 46 11 := by
+
+  rw [boundaryPowerBernstein77_46_11Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_11Norm]
+
+
+theorem boundaryPowerBernstein77_46_12_pos : 0<boundaryFullCoefficient77 46 12 := by
+
+  rw [boundaryPowerBernstein77_46_12Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_12Norm]
+
+
+theorem boundaryPowerBernstein77_46_13_pos : 0<boundaryFullCoefficient77 46 13 := by
+
+  rw [boundaryPowerBernstein77_46_13Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_13Norm]
+
+
+theorem boundaryPowerBernstein77_46_14_pos : 0<boundaryFullCoefficient77 46 14 := by
+
+  rw [boundaryPowerBernstein77_46_14Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_14Norm]
+
+
+theorem boundaryPowerBernstein77_46_15_pos : 0<boundaryFullCoefficient77 46 15 := by
+
+  rw [boundaryPowerBernstein77_46_15Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_15Norm]
+
+
+theorem boundaryPowerBernstein77_46_16_pos : 0<boundaryFullCoefficient77 46 16 := by
+
+  rw [boundaryPowerBernstein77_46_16Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_16Norm]
+
+
+theorem boundaryPowerBernstein77_46_17_pos : 0<boundaryFullCoefficient77 46 17 := by
+
+  rw [boundaryPowerBernstein77_46_17Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_17Norm]
+
+
+theorem boundaryPowerBernstein77_46_18_pos : 0<boundaryFullCoefficient77 46 18 := by
+
+  rw [boundaryPowerBernstein77_46_18Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_18Norm]
+
+
+theorem boundaryPowerBernstein77_46_19_pos : 0<boundaryFullCoefficient77 46 19 := by
+
+  rw [boundaryPowerBernstein77_46_19Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_19Norm]
+
+
+theorem boundaryPowerBernstein77_46_20_pos : 0<boundaryFullCoefficient77 46 20 := by
+
+  rw [boundaryPowerBernstein77_46_20Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_20Norm]
+
+
+theorem boundaryPowerBernstein77_46_21_pos : 0<boundaryFullCoefficient77 46 21 := by
+
+  rw [boundaryPowerBernstein77_46_21Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_21Norm]
+
+
+theorem boundaryPowerBernstein77_46_22_pos : 0<boundaryFullCoefficient77 46 22 := by
+
+  rw [boundaryPowerBernstein77_46_22Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_22Norm]
+
+
+theorem boundaryPowerBernstein77_46_23_pos : 0<boundaryFullCoefficient77 46 23 := by
+
+  rw [boundaryPowerBernstein77_46_23Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_23Norm]
+
+
+theorem boundaryPowerBernstein77_46_24_pos : 0<boundaryFullCoefficient77 46 24 := by
+
+  rw [boundaryPowerBernstein77_46_24Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_24Norm]
+
+
+theorem boundaryPowerBernstein77_46_25_pos : 0<boundaryFullCoefficient77 46 25 := by
+
+  rw [boundaryPowerBernstein77_46_25Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_25Norm]
+
+
+theorem boundaryPowerBernstein77_46_26_pos : 0<boundaryFullCoefficient77 46 26 := by
+
+  rw [boundaryPowerBernstein77_46_26Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_26Norm]
+
+
+theorem boundaryPowerBernstein77_46_27_pos : 0<boundaryFullCoefficient77 46 27 := by
+
+  rw [boundaryPowerBernstein77_46_27Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_27Norm]
+
+
+theorem boundaryPowerBernstein77_46_28_pos : 0<boundaryFullCoefficient77 46 28 := by
+
+  rw [boundaryPowerBernstein77_46_28Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_28Norm]
+
+
+theorem boundaryPowerBernstein77_46_29_pos : 0<boundaryFullCoefficient77 46 29 := by
+
+  rw [boundaryPowerBernstein77_46_29Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_29Norm]
+
+
+theorem boundaryPowerBernstein77_46_30_pos : 0<boundaryFullCoefficient77 46 30 := by
+
+  rw [boundaryPowerBernstein77_46_30Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_30Norm]
+
+
+theorem boundaryPowerBernstein77_46_31_pos : 0<boundaryFullCoefficient77 46 31 := by
+
+  rw [boundaryPowerBernstein77_46_31Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_31Norm]
+
+
+theorem boundaryPowerBernstein77_46_32_pos : 0<boundaryFullCoefficient77 46 32 := by
+
+  rw [boundaryPowerBernstein77_46_32Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_32Norm]
+
+
+theorem boundaryPowerBernstein77_46_33_pos : 0<boundaryFullCoefficient77 46 33 := by
+
+  rw [boundaryPowerBernstein77_46_33Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_33Norm]
+
+
+theorem boundaryPowerBernstein77_46_34_pos : 0<boundaryFullCoefficient77 46 34 := by
+
+  rw [boundaryPowerBernstein77_46_34Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_34Norm]
+
+
+theorem boundaryPowerBernstein77_46_35_pos : 0<boundaryFullCoefficient77 46 35 := by
+
+  rw [boundaryPowerBernstein77_46_35Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_35Norm]
+
+
+theorem boundaryPowerBernstein77_46_36_pos : 0<boundaryFullCoefficient77 46 36 := by
+
+  rw [boundaryPowerBernstein77_46_36Norm.property]
+
+  norm_num [boundaryPowerBernstein77_46_36Norm]
+
+
+theorem boundaryFullCoefficient77_row46_pos (B : Fin 37) : 0<boundaryFullCoefficient77 46 B := by
+
+  fin_cases B
+
+  · exact boundaryPowerBernstein77_46_0_pos
+
+  · exact boundaryPowerBernstein77_46_1_pos
+
+  · exact boundaryPowerBernstein77_46_2_pos
+
+  · exact boundaryPowerBernstein77_46_3_pos
+
+  · exact boundaryPowerBernstein77_46_4_pos
+
+  · exact boundaryPowerBernstein77_46_5_pos
+
+  · exact boundaryPowerBernstein77_46_6_pos
+
+  · exact boundaryPowerBernstein77_46_7_pos
+
+  · exact boundaryPowerBernstein77_46_8_pos
+
+  · exact boundaryPowerBernstein77_46_9_pos
+
+  · exact boundaryPowerBernstein77_46_10_pos
+
+  · exact boundaryPowerBernstein77_46_11_pos
+
+  · exact boundaryPowerBernstein77_46_12_pos
+
+  · exact boundaryPowerBernstein77_46_13_pos
+
+  · exact boundaryPowerBernstein77_46_14_pos
+
+  · exact boundaryPowerBernstein77_46_15_pos
+
+  · exact boundaryPowerBernstein77_46_16_pos
+
+  · exact boundaryPowerBernstein77_46_17_pos
+
+  · exact boundaryPowerBernstein77_46_18_pos
+
+  · exact boundaryPowerBernstein77_46_19_pos
+
+  · exact boundaryPowerBernstein77_46_20_pos
+
+  · exact boundaryPowerBernstein77_46_21_pos
+
+  · exact boundaryPowerBernstein77_46_22_pos
+
+  · exact boundaryPowerBernstein77_46_23_pos
+
+  · exact boundaryPowerBernstein77_46_24_pos
+
+  · exact boundaryPowerBernstein77_46_25_pos
+
+  · exact boundaryPowerBernstein77_46_26_pos
+
+  · exact boundaryPowerBernstein77_46_27_pos
+
+  · exact boundaryPowerBernstein77_46_28_pos
+
+  · exact boundaryPowerBernstein77_46_29_pos
+
+  · exact boundaryPowerBernstein77_46_30_pos
+
+  · exact boundaryPowerBernstein77_46_31_pos
+
+  · exact boundaryPowerBernstein77_46_32_pos
+
+  · exact boundaryPowerBernstein77_46_33_pos
+
+  · exact boundaryPowerBernstein77_46_34_pos
+
+  · exact boundaryPowerBernstein77_46_35_pos
+
+  · exact boundaryPowerBernstein77_46_36_pos
+
+
+end
+
+end HTGeometry.ThetaRatioInfinity

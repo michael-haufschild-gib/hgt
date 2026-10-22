@@ -73,7 +73,7 @@ formality.  It does not prove the cochains of the fiberwise pullback over
 
 ### The theorem landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerTwoTermFormality.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoTermFormality.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The cochain algebra is modelled as a nonnegatively graded `k`-algebra `𝒜 : ℕ → Submodule k R` with

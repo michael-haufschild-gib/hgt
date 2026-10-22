@@ -11,7 +11,7 @@
 
 Module:
 
-`GaloisForLFunctions/RHTower/CCMUnitRieszMarkovDensity.lean`
+`GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMarkovDensity.lean`
 
 It proves unconditionally:
 

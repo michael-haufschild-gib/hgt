@@ -961,7 +961,7 @@ exactly under RH.  CCM is not part of this comparison.
        -\int_{\mathbb R}\frac{\phi(t)}{1-e^{-2t}}\,dt .
   \]
   Cached direct check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticArchimedean.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticArchimedean.lean`.
   No RH premise, special test family, CCM theorem, or numerical computation occurs.
   `[OPEN CORE]`: identify the right Xi logarithmic-derivative line with
   \(\sum_\rho\Phi(\rho)\) using the existing multiplicity-exact relative resolvent and a
@@ -1081,7 +1081,7 @@ exactly under RH.  CCM is not part of this comparison.
       \quad\Longleftrightarrow\quad \mathrm{RH}.
   \]
   Direct cached check:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticSemisimpleHodge.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticSemisimpleHodge.lean`.
   No CCM object, numerical computation, RH premise in the forward implication, simplicity
   premise, `sorry`, or new axiom occurs.
 

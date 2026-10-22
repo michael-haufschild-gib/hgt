@@ -136,7 +136,7 @@ fixed shift cannot reach that endpoint.
 - `normedAnalyticShiftMultiplier_eventually_eq_zero_of_order_eq_top`
 
 Formal source:
-`formal/GaloisForLFunctions/RHTower/CCMAnalyticShiftSpectrumRigidity.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMAnalyticShiftSpectrumRigidity.lean`.
 
 ## Gates
 
@@ -147,7 +147,7 @@ Formal source:
 - [x] formal lint attribution audit: no finding in this module; repository-wide lint fails only on
   pre-existing umbrella-reachability findings outside this card
 - [x] targeted module build through
-  `GaloisForLFunctions.RHTower.CCMBoundaryTraceRamification`
+  `GaloisForLFunctions.RHTower.CCM.CCMBoundaryTraceRamification`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

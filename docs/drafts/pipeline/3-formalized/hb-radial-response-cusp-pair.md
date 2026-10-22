@@ -117,7 +117,7 @@ metadata; actual source statements were inspected and applicability was checked
 in the proof. Generated ingredient sets were not treated as proofs.
 
 The proof is in
-[ThetaCuspHawkingBMQuarticResponseCuspPair.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseCuspPair.lean),
+[ThetaCuspHawkingBMQuarticResponseCuspPair.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResponseCuspPair.lean),
 namespace `RHTower.D4BMQuarticResponseCuspPair`. Its eleven public theorems and
 four definitions are wired into the RHTower umbrella once.
 
@@ -125,7 +125,7 @@ four definitions are wired into the RHTower umbrella once.
 The proof uses explicit continuity composition, source expansions and typed
 integral linearity. No heartbeat, recursion-depth or transparency override is
 present. Final
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResponseCuspPair`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticResponseCuspPair`
 passed without warnings in 18 seconds against cached imports, with the exact
 source hash `afb5b3652aeb0d89c1dadbab23a6cdd167af8454dd7d9c2390478a9f57488771`.
 No dependency or umbrella build ran.

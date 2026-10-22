@@ -327,11 +327,11 @@ not new scientific knowledge.
 ## Lean status
 
 **Superseded, 2026-08-04.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationMean.lean` (the sawtooth, the mean, the bounded
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSawtoothDilationMean.lean` (the sawtooth, the mean, the bounded
 primitive and the integration by parts),
-`formal/GaloisForLFunctions/RHTower/CCMSawtoothDilationIncidence.lean` (the arithmetic weight, the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSawtoothDilationIncidence.lean` (the arithmetic weight, the
 coordinate change, the synthesis and the limit) and
-`formal/GaloisForLFunctions/RHTower/CCMSawtoothExteriorTail.lean` (the exterior half-line and the full
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSawtoothExteriorTail.lean` (the exterior half-line and the full
 prime series).  Every theorem the card marks `[PROVED HERE]` is now proved in Lean.  The previous decision said no
 periodic `L²` Fourier interface exists in the tree, so nothing could be certified.  That was the wrong
 frame: `S` is the `2π`-periodic extension of a linear ramp, so taking

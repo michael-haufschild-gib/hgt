@@ -73,7 +73,7 @@ phase-bearing source coupling.  This does not prove RH or kill all CCM transport
 
 ## Lean theorem
 
-`formal/GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean` proves:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockExponentialTiltOdds.lean` proves:
 
 ```text
 finiteExponentialTilt_separatedOdds_mono
@@ -93,8 +93,8 @@ Thus the conclusion applies in particular to every safe Euler exponent `σ>1`.
 
 ## Audit
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMFirstClockExponentialTiltOdds.lean` — pass
-- `lake build GaloisForLFunctions.RHTower.CCMFirstClockExponentialTiltOdds` — pass
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockExponentialTiltOdds.lean` — pass
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockExponentialTiltOdds` — pass
   (`9076/9076`)
 - capstones use only `propext`, `Classical.choice`, and `Quot.sound`
 - `scripts/formal_tools.py lint` — pass

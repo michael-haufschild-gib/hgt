@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RoutePNativeNegativeCoprimeWork
 import GaloisForLFunctions.RHTower.MobiusDivisorUniformLocalRegularity
-import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusHarmonicZero
 import GaloisForLFunctions.HTGeometry.L1PeriodizationFourier
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 

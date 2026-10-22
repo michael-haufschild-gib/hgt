@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCurvatureDefectGrowthCenterModularJets
-import GaloisForLFunctions.RHTower.ThetaCuspExactCompletedC5SeamFarTail
-import GaloisForLFunctions.RHTower.ThetaCuspGlobalReflectedRiccati
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCurvatureDefectGrowthCenterModularJets
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspExactCompletedC5SeamFarTail
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspGlobalReflectedRiccati
 
 /-! The literal theta source has positive sixth logarithmic center jet.
 Its radial third-curvature numerator is negative near zero and positive

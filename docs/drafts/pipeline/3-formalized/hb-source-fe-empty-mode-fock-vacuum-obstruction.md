@@ -139,7 +139,7 @@ derive a route receiver inside the extended representation.
 ## Formalization result
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`
 
 Lean proves unconditionally:
 
@@ -158,7 +158,7 @@ Audit:
 
 - direct `lake env lean` check: passed;
 - targeted `lake build
-  GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`: passed
+  GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFERegularFockVacuumObstruction`: passed
   `12186/12186`;
 - `#print axioms` on diagonal necessity, constant existence classification, global iff-RH, and RBH
   bridge: only standard `[propext, Classical.choice, Quot.sound]`;

@@ -129,7 +129,7 @@ certify the characteristic-pair theorem, so no wrapper-only Lean module is added
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMPrimeFreeApertureCharacteristicPair.lean`.  The earlier
+`formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeFreeApertureCharacteristicPair.lean`.  The earlier
 decision ("the current Lean tree ... does not define the full real symbol, its digamma asymptotic, or
 its finite prime cutoff") is out of date on all three counts: the tree owns Gauss's quarter value
 (`RHTower/DigammaQuarter.lean`), the vertical logarithmic coercivity of `Re psi`

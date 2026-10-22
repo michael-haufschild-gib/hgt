@@ -48,7 +48,7 @@ the full domain to prove that output equality without fidelity is available at e
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSourceFaithfulEquivariantNeutralizationNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSourceFaithfulEquivariantNeutralizationNoGo`
 - Route kill: `RHTower.d4HBSourceFaithfulSwapEquivariantNeutralizationRouteKilled`
 - RH equivalence: `RHTower.d4HBEveryInjectiveSwapEquivariantResponseNeutralizes_iff_riemannHypothesis`
 - Direct `lake env lean` and target-only `lake build` pass.

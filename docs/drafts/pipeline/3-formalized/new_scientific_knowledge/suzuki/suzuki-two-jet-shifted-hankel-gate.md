@@ -28,7 +28,7 @@ proves a class-complete obstruction to using position torque as its only control
       safe-shift target
 - [x] 1 -> 2 fully-proven: dependency-closed Schwarz--Pick, parity, moment, and torque-fiber proofs
 - [x] 2 -> 3 formalized: unconditional Lean module
-      `RHTower/SuzukiTwoJetShiftedHankelGate.lean`
+      `RHTower/Suzuki/SuzukiTwoJetShiftedHankelGate.lean`
 - [ ] 3 -> 4 publication-ready: specialist priority review and integration into a standalone
       Suzuki operator paper
 
@@ -501,7 +501,7 @@ must do the work.
 ## Lean certificate
 
 Unconditional theorems in
-`formal/GaloisForLFunctions/RHTower/SuzukiTwoJetShiftedHankelGate.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTwoJetShiftedHankelGate.lean`:
 
 - `norm_iteratedDeriv_two_le_schurSlack`
 - `real_secondJet_add_schurBoundary_nonneg`
@@ -518,7 +518,7 @@ Unconditional theorems in
 - `primeArchSuzuki_twoJetSlack_nonneg_iff_shiftedHankelMinor_nonneg`
 
 Unconditional theorems in
-`formal/GaloisForLFunctions/RHTower/SuzukiRelativeTiltReciprocalConcavity.lean` include:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRelativeTiltReciprocalConcavity.lean` include:
 
 - `suzukiSecondDefectParityCurvature_eq_relativeTiltGap`
 - `suzukiAllAngleCarrier_forces_relativeTiltGap_le_one`
@@ -529,13 +529,13 @@ Unconditional theorems in
 - `squaredXiReciprocalRadialField_concaveAt_one_iff_shiftedHankelMinor_nonneg`
 
 The explicit operator realization and strengthened no-go are in
-`formal/GaloisForLFunctions/RHTower/SuzukiPositiveResolventParityNoGo.lean`, culminating in:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveResolventParityNoGo.lean`, culminating in:
 
 - `suzukiPositiveParityResolventModel_of_positive`
 - `suzukiPositiveParityResolvent_slack_surjective_at_fixed_torque`
 
 The stronger exponential spectral-response no-go is formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiPositiveSpectralResponseNoGo.lean`. Its capstones are:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositiveSpectralResponseNoGo.lean`. Its capstones are:
 
 - `suzukiThreePointResponse_sourceEquation`
 - `suzukiThreePointResolvent_commutes_position`

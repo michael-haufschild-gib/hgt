@@ -195,7 +195,7 @@ These remain in
 
 ### The whole germ landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerStationaryKahlerGerm.lean`, on top of the already
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStationaryKahlerGerm.lean`, on top of the already
 formalized leaf factor (`DeningerLeafwiseKahler.lean`) and transverse factor
 (`DeningerReesJetTower.lean`).  Axiom audit for all 48 declarations:
 `propext, Classical.choice, Quot.sound`.

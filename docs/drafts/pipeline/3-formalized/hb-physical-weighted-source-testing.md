@@ -96,7 +96,7 @@ map; the earlier radial projection meromorphy theorem already existed.
 
 ## Lean and verification
 
-All new leaves use prefix `GaloisForLFunctions.RHTower.ThetaCuspHawking`:
+All new leaves use prefix `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawking`:
 
 | Suffix | Content | Public theorems |
 | --- | --- | --- |

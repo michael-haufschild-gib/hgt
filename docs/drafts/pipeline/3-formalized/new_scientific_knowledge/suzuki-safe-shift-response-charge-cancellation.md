@@ -250,7 +250,7 @@ cross-orbit Hilbert dispersion against a separately positive, RH-complete transv
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiSafeShiftResponseChargeCancellation.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSafeShiftResponseChargeCancellation.lean
 ```
 
 Capstones:

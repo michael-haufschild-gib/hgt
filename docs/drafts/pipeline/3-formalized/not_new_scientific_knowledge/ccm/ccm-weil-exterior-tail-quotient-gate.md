@@ -228,7 +228,7 @@ the first topology in which that tail can possibly be controlled.
 ## Lean status
 
 **Superseded, 2026-08-03.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMWeilRadicalTailQuotient.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMWeilRadicalTailQuotient.lean`.
 
 - `IsBiadditive`, `weilRadical`, `weilRadicalSubgroup` — the pairing and its two-sided radical.  Only
   **additivity in each argument** is assumed: no sesquilinearity, no scalars, no topology and no form

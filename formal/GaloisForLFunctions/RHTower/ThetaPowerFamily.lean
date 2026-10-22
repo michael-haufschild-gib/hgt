@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaHauptmodulLogarithm
-import GaloisForLFunctions.RHTower.ThetaCuspChargeWindowLaw
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeWindowLaw
 import GaloisForLFunctions.RHTower.ThetaGroupFormCuspBounds
 
 /-!

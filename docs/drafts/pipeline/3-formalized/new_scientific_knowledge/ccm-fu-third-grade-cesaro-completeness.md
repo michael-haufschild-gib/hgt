@@ -114,7 +114,7 @@ assume or prove `(1)` unconditionally, so RH and its negation remain open.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroCompleteness.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeCesaroCompleteness.lean
 ```
 
 Main declarations:
@@ -131,7 +131,7 @@ Main declarations:
 
 Verification:
 
-- direct check passed: `lake env lean GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeCesaroCompleteness.lean`;
+- direct check passed: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeCesaroCompleteness.lean`;
 - exact leaf build passed;
 - axiom audit: only `propext`, `Classical.choice`, `Quot.sound`;
 - umbrella import wired; umbrella not built.

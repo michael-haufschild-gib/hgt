@@ -53,7 +53,7 @@ where `m_rho>=1`.  Since `epsilon_n>0` tends to zero, any eventual finite lower 
 ## Formal theorem surface
 
 The implementation is in
-`formal/GaloisForLFunctions/RHTower/HedenmalmOrientationVerticalMeshRH.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmOrientationVerticalMeshRH.lean`:
 
 ```text
 orientationVerticalMeshEpsilon

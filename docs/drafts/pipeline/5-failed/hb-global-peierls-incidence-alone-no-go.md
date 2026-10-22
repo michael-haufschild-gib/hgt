@@ -25,7 +25,7 @@ The source-incidence burden is closed: one fixed global radial propagator derive
 complementary exponent pairs canonical left-coordinate Einstein--Teukolsky source packets to the
 exact BM boundary concomitant. It also produces the complete BM polarized cubic cut. This is
 formalized in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMGlobalLeftCoordinatePeierlsIncidence.lean`.
 
 ## Strongest formal statements
 

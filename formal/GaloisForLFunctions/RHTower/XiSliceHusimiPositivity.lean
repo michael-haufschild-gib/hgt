@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiSliceMixedClassDetection
 import GaloisForLFunctions.RHTower.ThetaZeroDivisionSource
-import GaloisForLFunctions.RHTower.HedenmalmThetaAllShiftedTails
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAllShiftedTails
 
 /-!
 # Husimi positivity of the height-averaged slice

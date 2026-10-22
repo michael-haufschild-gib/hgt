@@ -284,7 +284,7 @@ All six numbered claims are closed unconditionally in Lean 4; the companion card
 `../3-formalized/ccm-rational-analytic-real-descent-formalized.md` maps each claim to its
 theorem.  The four items previously listed as "not yet represented in Lean" are now present:
 
-- the Bruhat--Schwartz adele space itself — `RHTower/CCMRationalAdelicBruhatSchwartzSpace.lean`
+- the Bruhat--Schwartz adele space itself — `RHTower/CCM/CCMRationalAdelicBruhatSchwartzSpace.lean`
   defines Bruhat's condition on `R x A_f` and proves that the corpus's algebraic tensor core
   `S(R) tensor C_c(A_f)` realizes *isomorphically* onto it (`range_..._eq`, `..._injective`), so
   no completion step separates the formalized source from `S(A_Q)`; the same file proves the

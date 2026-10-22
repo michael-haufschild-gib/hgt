@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ExponentialWeilFormDichotomy
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 
 /-!
 # One exponential Weil family decides RH: the Cayley multiplier

@@ -23,7 +23,7 @@ stabilizer, and arithmetic Frobenius.
 
 ## Formal result
 
-`formal/GaloisForLFunctions/RHTower/ArtinLocalEulerFactor.lean` proves:
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerFactor.lean` proves:
 
 1. `localEulerPolynomial rho I phi` is the reversed characteristic polynomial of the genuine
    induced action on `V^I` and equals `det (1 - T rho(phi) | V^I)` in a chosen basis
@@ -59,8 +59,8 @@ L-function survey; Horawa's L-function notes; Gun--Hazra--Sahu (2025), DOI
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ArtinLocalEulerFactor.lean` passed.
-- `lake build GaloisForLFunctions.RHTower.ArtinLocalEulerFactor` passed; this is the targeted
+- `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinLocalEulerFactor.lean` passed.
+- `lake build GaloisForLFunctions.RHTower.Artin.ArtinLocalEulerFactor` passed; this is the targeted
   module build, not an umbrella or full build.
 - `/tmp/ArtinLocalEulerAxioms.lean` reports only
   `[propext, Classical.choice, Quot.sound]` for

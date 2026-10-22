@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMCumulativeNegativeMassSpectrum
 
 /-!
 # Prime--Gamma cumulative cofinal universality

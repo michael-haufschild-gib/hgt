@@ -93,7 +93,7 @@ obstruction or its RH equivalence. Bounded, not exhaustive, priority claim.
   no matrix-support condition. Proved separately that the unit BM boundary concomitant is
   Schwarz-real iff the fibre is critical. Their universal exact incidence is therefore RH-equivalent.
 - 2026-08-28 — Verification: direct `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingArbitraryGlobalSchwarzOddPeierlsResponseRigidity`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingArbitraryGlobalSchwarzOddPeierlsResponseRigidity`
   passed (`12023/12023`); all four exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present. Formal lint reports no finding in
   this module; repository lint remains nonzero only for pre-existing unrelated unreachable modules.

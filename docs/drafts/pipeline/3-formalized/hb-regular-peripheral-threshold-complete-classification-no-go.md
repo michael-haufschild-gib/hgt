@@ -39,7 +39,7 @@ For `a != 0`, the right side is nonzero at every Xi descendant. Therefore the tw
 
 ## Formalization
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMERegularPeripheralThresholdCompleteNoGo`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMERegularPeripheralThresholdCompleteNoGo`.
 
 Closed capstone: `d4BMPassiveRegularPeripheralThresholdCancellationRouteKilled`.
 

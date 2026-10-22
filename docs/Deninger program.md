@@ -465,11 +465,11 @@ applied only afterwards.
 
 The generic three-term algebra, endpoint classes, middle quotient, cup
 descent, and weight-one flow schemas are formalized in Lean under
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPoissonZetaAssembly.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPoissonZetaAssembly.lean`.
 An algebraic graph model for a finite-plus-archimedean divisor and degree
 pair is formalized
 in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticArakelovPoissonComplex.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticArakelovPoissonComplex.lean`.
 For every supplied injective map \(Z\), this generic schema gives
 axiom-clean Lean equivalences
 \[
@@ -483,7 +483,7 @@ arithmetic source Poisson map, its cup form, or its flow; the graph
 endpoint is not the arithmetic principal-divisor map from units.
 Morphisms of source three-term complexes and their induced maps on
 all three cohomology groups are formalized in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticCauchyCohomologyDescent.lean`;
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCauchyCohomologyDescent.lean`;
 for the two-column Rost--Schmid/signature model, six componentwise
 restriction identities automatically assemble into the two chain-map
 squares.  The actual Cauchy restrictions and six identities remain to
@@ -557,7 +557,7 @@ The same argument excludes all off-axis generalized Mellin jets.
 
 This dense-resolvent implication and its RH corollary are formalized as
 axiom-clean implication theorems in Lean in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticDenseResolventPurity.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticDenseResolventPurity.lean`.
 They require an explicit `DeningerHodgeSchwartzResolventXiSpectrum`
 argument.  No constructor for that structure exists in the corpus.
 Lean does not treat the still-open arithmetic Calderón--Green

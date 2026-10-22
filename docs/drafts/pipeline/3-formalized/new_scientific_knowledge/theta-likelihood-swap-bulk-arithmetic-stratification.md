@@ -7,7 +7,7 @@
   `theta-likelihood-normal-crossing-prime-face.md`,
   `theta-likelihood-ray-boundary-residue.md`
 - **Formal target:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodSwapBulkStratification.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodSwapBulkStratification.lean`
 - **Statement:** Temperature-swap symmetrization extends the paired likelihood boundary face into
   the complete two-temperature interior; its zero-temperature corner vanishes exactly on prime
   shells and is strictly positive on composite shells, while every positive-temperature prime

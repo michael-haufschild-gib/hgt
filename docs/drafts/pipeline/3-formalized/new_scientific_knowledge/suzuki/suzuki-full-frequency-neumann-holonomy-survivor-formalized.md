@@ -10,8 +10,8 @@
 - `formal/GaloisForLFunctions/HTGeometry/CompactFourierSineKernel.lean`
 - `formal/GaloisForLFunctions/HTGeometry/MomentFunctionalPositivity.lean`
 - `formal/GaloisForLFunctions/HTGeometry/SignedCharFunCentralJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftNonClock.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFullFrequencyNeumannHolonomy.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFullFrequencyNeumannHolonomy.lean`
 
 ## Formal theorem surface
 
@@ -41,7 +41,7 @@ GaloisForLFunctions.HTGeometry.deriv_signedCharFun_zero
 GaloisForLFunctions.HTGeometry.signedCharFun_reflected_odd
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteShiftNonClock`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteShiftNonClock`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiBoundaryPole_ne_log_add_bounded
@@ -49,7 +49,7 @@ GaloisForLFunctions.RHTower.tendsto_sub_mul_suzukiBoundaryLog
 GaloisForLFunctions.RHTower.tendsto_sub_mul_suzukiBoundaryPole
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFullFrequencyNeumannHolonomy`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFullFrequencyNeumannHolonomy`:
 
 ```text
 RHTower.IsOddSourceMoments

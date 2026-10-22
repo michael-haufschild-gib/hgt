@@ -27,7 +27,7 @@ coefficient.  No continuation or zero hypothesis occurs.
 
 ## Dyadic specialization
 
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` provides:
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPassiveNoGo` provides:
 
 - `dyadicWeightedPrimeWindow_two` and `dyadicSharpPrimeSourceCoefficient_two`, proving the exact
   formulas `W(2) = log(2) / sqrt(2)` and
@@ -43,20 +43,20 @@ coefficient.  No continuation or zero hypothesis occurs.
 Both modules are imported by their umbrellas.
 
 The closure is strengthened by
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo`, which excludes every
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMobiusPassiveNoGo`, which excludes every
 nondegenerate real Möbius postcomposition, and by
-`GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer`, which identifies the
+`GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowCompletedPassiveTransfer`, which identifies the
 canonical completed survivor with the already-existing horizontal Xi-growth response.
 
 ## Audit
 
 - `lake env lean GaloisForLFunctions/HTGeometry/DirichletHalfPlaneSignRigidity.lean`: pass.
-- `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowPassiveNoGo.lean`: pass.
-- `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowPassiveNoGo.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPassiveNoGo`: pass.
 - final direct check after generic phase selection: pass.
 - final focused Route-I build after generic phase selection: pass.
-- `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowMobiusPassiveNoGo.lean`: pass.
-- `lake env lean GaloisForLFunctions/RHTower/CCMSharpPrimeWindowCompletedPassiveTransfer.lean`:
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowMobiusPassiveNoGo.lean`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowCompletedPassiveTransfer.lean`:
   pass.
 - targeted builds for both added Route-I leaf modules: pass.
 - formal lint without build initially passed; final repository-wide rerun reports only seven

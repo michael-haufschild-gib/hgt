@@ -63,9 +63,9 @@ WardEuclideanEnergy_q  = 2 A_q W_(q.1).
 ## Verification log
 
 - 2026-08-13 — Direct foreground check passed:
-  `lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyWardRadialSourceWorkBridge.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyWardRadialSourceWorkBridge.lean`.
 - 2026-08-13 — Exact module build passed:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmThetaAnomalyWardRadialSourceWorkBridge`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAnomalyWardRadialSourceWorkBridge`
   (`12949/12949`).
 - 2026-08-13 — Axiom audit passed for all capstones; dependencies are exactly
   `propext`, `Classical.choice`, and `Quot.sound`.

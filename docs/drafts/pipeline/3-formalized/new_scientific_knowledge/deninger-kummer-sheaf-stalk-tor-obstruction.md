@@ -111,8 +111,8 @@ two-term Milnor computation to stalkwise amplitude of
 
 ### The Tor computation landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerKummerStalkTor.lean`, together with
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorSquareZeroQuotient.lean` for `K = E/I`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerKummerStalkTor.lean`, together with
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMilnorSquareZeroQuotient.lean` for `K = E/I`.
 Axiom audit: `propext, Classical.choice, Quot.sound`.
 
 - `deningerExtGe j` — the part of `E = Λ(V)` of degree at least `j`: `m = Λ^{≥1}`,

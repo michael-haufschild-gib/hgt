@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseDiskCofinalGaugeNoGo`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseDiskCofinalGaugeNoGo`.
 This sharply retires positive scalar finite-part assembly of the local matched phase-disk
 completions. It does not prove the global completed source nonnegative and is not an RH proof.
 

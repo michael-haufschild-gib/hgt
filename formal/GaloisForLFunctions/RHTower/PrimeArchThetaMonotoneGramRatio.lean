@@ -1,8 +1,8 @@
 import GaloisForLFunctions.HTGeometry.MonotoneWeightedMonicQuadratic
 import GaloisForLFunctions.HTGeometry.MonotoneQuadraticResidualAlgebra
 import GaloisForLFunctions.RHTower.PrimeArchThetaCumulantMinor
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
-import GaloisForLFunctions.RHTower.ThetaCuspNormalizedShiftedGramStrict
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedThreePoint
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspNormalizedShiftedGramStrict
 
 /-!
 # Relative weighted-Gram floor for the literal theta source

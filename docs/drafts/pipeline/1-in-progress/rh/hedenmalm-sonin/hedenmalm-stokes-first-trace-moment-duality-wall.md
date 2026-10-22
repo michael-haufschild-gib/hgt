@@ -60,7 +60,7 @@ to existing inverse-moment summability.  Generic statements that moments differ 
 ## Lean outcome
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmStokesFirstTraceMomentDualityWall.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesFirstTraceMomentDualityWall.lean`.
 
 Closed results:
 

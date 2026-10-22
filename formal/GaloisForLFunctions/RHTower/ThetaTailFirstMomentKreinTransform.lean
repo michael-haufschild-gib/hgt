@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTailFirstMomentKernel
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceSpectrumExact
 import GaloisForLFunctions.RHTower.WeightedLaplaceShift
 
 /-!

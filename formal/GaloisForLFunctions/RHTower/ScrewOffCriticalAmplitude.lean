@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularScrewCurvature
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularScrewCurvature
 
 /-!
 # The exact exponential amplitude of an off-critical screw term

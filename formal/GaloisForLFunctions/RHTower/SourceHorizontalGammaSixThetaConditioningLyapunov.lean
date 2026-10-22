@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixMomentNeutralIndexAmplification
-import GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniFluxPolarization
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKakutaniFluxPolarization
 
 /-!
 # Gamma-six conditioning Lyapunov exponent and theta boundary flux

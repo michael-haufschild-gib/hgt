@@ -6,11 +6,11 @@ In progress — paper proof and Lean source complete; exact check and literature
 
 ## Theorem-first provenance
 
-- `RHTower/SuzukiFiniteStieltjesHerglotzMassLaw.lean`
+- `RHTower/Suzuki/SuzukiFiniteStieltjesHerglotzMassLaw.lean`
   - `suzukiFiniteNegativeStieltjesHerglotz_massLaw`
-- `RHTower/SuzukiGroundEdgeApertureObstruction.lean`
+- `RHTower/Suzuki/SuzukiGroundEdgeApertureObstruction.lean`
   - `suzukiGroundEdgeAverage_gt_XiC_curvature_of_half_lowerMoment`
-- `RHTower/SuzukiGroundEdgeHerglotzObstructionLaw.lean`
+- `RHTower/Suzuki/SuzukiGroundEdgeHerglotzObstructionLaw.lean`
   - `not_suzukiAffineSewnExteriorWeylQuotient_herglotz_of_groundEdgeMoment`
 
 ## Universal law
@@ -33,7 +33,7 @@ Assume Herglotz positivity. The finite-Stieltjes mass law gives
 ## Lean status
 
 Source complete in
-`formal/GaloisForLFunctions/RHTower/SuzukiFiniteStieltjesGroundEdgeExclusionUniversalityLaw.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteStieltjesGroundEdgeExclusionUniversalityLaw.lean`.
 
 Exact source check is deferred because the parent
 `SuzukiFiniteStieltjesHerglotzMassLaw.olean` is not yet present. Source proof is complete; parent

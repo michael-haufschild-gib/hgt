@@ -148,6 +148,6 @@ admission classes, so their difference is structural, not missing bounded-operat
   unnecessary; one-way preservation of the admitted Hilbert domain already contradicts
   intertwining at every nonzero strip displacement.
 - 2026-08-02 — exact certificates added in
-  `RHTower/HedenmalmEulerReflectionAdmissionFracture.lean` and
+  `RHTower/Hedenmalm/HedenmalmEulerReflectionAdmissionFracture.lean` and
   `RHTower/RiemannRelativeAdmissionSpectrumUniversalityLaw.lean`; direct checks passed and all
   load-bearing theorems depend only on `propext`, `Classical.choice`, and `Quot.sound`.

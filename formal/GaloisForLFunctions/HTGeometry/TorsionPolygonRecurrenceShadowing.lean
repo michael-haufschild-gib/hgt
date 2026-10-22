@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ProjectiveTorsionPhaseQuotient
 import GaloisForLFunctions.HTGeometry.KroneckerWeylDensity
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 import GaloisForLFunctions.HTGeometry.TemporalDimensionInteractionMultiplicationLaw
 
 /-!

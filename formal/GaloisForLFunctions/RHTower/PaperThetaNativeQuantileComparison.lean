@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PaperThetaNativeMomentIdentity
-import GaloisForLFunctions.RHTower.HedenmalmThetaComplexResolventRow
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaComplexResolventRow
 import Mathlib.MeasureTheory.Function.LpSpace.ContinuousFunctions
 
 /-! # Whole native space compared with the pinned Hilbert source

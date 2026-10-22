@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.HardyThetaFourier
-import GaloisForLFunctions.RHTower.SuzukiCharacteristicMeromorphicLimit
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCharacteristicMeromorphicLimit
 
 /-!
 # Hardy's theorem: infinitely many real zeros of the centered completed function

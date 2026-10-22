@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress.
 - **Type:** Derived source diagnostic, not a new primary conjecture.
-- **Parent:** [exact successor extension](../../ccm-fu-exact-successor-extension.md).
+- **Parent:** [exact successor extension](ccm-fu-exact-successor-extension.md).
 - **Goal:** Produce reserve through changing signed fields, then the uniform signed Abel bound and RH. Goal remains open.
 
 ## Frozen question
@@ -126,5 +126,5 @@ are now proved in Lean for every fixed prime core, including the empty core.
 The [complete signed prime-correlation series](../../../3-formalized/ccm-fu-fixed-core-prime-correlation.md)
 now gives the exact release coefficient and a rigorous finite-prefix error.
 Integral identification is optional; signed reserve control remains open and
-is not a conclusion from the finite experiment. The [energy-limit card](../../ccm-fu-fixed-core-energy-limit.md)
+is not a conclusion from the finite experiment. The [energy-limit card](ccm-fu-fixed-core-energy-limit.md)
 states the exact remaining analytic steps.

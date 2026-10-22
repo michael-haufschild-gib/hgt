@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RealCoronaLocalDetectabilityFracture
 import GaloisForLFunctions.HTGeometry.MaximalRealDiagonalSelfAdjoint
-import GaloisForLFunctions.RHTower.DeningerArithmeticOrientedHilbertHodge
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticOrientedHilbertHodge
 import GaloisForLFunctions.RHTower.XiOrdinateEndpointObstruction
 
 /-!

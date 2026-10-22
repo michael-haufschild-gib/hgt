@@ -18,17 +18,18 @@ Card template: docs/drafts/pipeline/_card-template.md
   or when explicitly tasked with changing the search tool.
 - With partial results, use the available hits and reported coverage. With no useful hits, broaden
   or rephrase the query, try `--any`, or switch search mode.
-- Search: `scripts/formal_tools.py research "clock inverse"`. Default hybrid searches names, docs,
-  statements, proof bodies, installed Lean dependencies and research notes using available indexed content.
-- Use `--mode deep` for iterative lemma, toy-proof and premise-group discovery; describe the goal or
-  proof mechanism in the query. `--budget-seconds 300` sets the request budget (default: 300 seconds).
+- Search: `scripts/formal_tools.py research "clock inverse"`. Default hybrid searches declaration
+  names, docstrings, statements, proof bodies and research notes, lexically and semantically.
+- Scope defaults to this project. `--scope mathlib` searches installed Mathlib instead, `--scope all`
+  searches both. Only our corpus has semantic vectors; Mathlib results are lexical.
+- Describe the goal or proof mechanism in the query: docstrings and statements are embedded, so a
+  natural-language goal matches. `--budget-seconds 300` sets the request budget (default: 300).
 - Lexical matching: spaces mean AND; `--any` means OR. Use inner quotes for phrases:
   `research '"critical line" zero'`. `--exact` disables prefix expansion; `--mode lexical` uses only lexical search.
 - Default: 20 hits per ranked section, at most 2 per module, plus 5 lexical exploration hits.
   Use `--per-module 0` to remove the cap, `--explore 0` to hide extras, `--offset 20` for the next page.
 - Filter with `--module <substring>` or `--exclude-module <substring>`; `--json` gives structured results.
-- In JSON, inspect `candidate_lemmas` and `source_arguments` alongside `declarations`; deep search also
-  returns `proof_ideas` and `ingredient_sets` when available.
+- In JSON, inspect `candidate_lemmas` and `prose` alongside `declarations`.
 - Check `partial`, coverage and source/compiler freshness; verify candidate applicability in Lean.
 - `--no-refresh` searches the cached index without refreshing it. Use `rg` for exhaustive source-text searches.
 

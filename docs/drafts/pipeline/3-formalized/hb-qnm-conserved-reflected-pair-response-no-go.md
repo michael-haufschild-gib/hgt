@@ -34,7 +34,7 @@ general QNM conserved-current/orthogonality results, but no such Xi/RH reflected
 Verified with:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQNMConservedReflectedPairResponseNoGo.lean
+lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQNMConservedReflectedPairResponseNoGo.lean
 ```
 
 Result: exit 0 in 19.96 seconds. No `lake build` was run.

@@ -223,8 +223,8 @@ not this secondary assembly.  External priority remains provisional pending spec
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerPoissonCalderonGraph.lean`;
-- `GaloisForLFunctions/RHTower/DeningerMeyerSecondaryPoissonRegulator.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPoissonCalderonGraph.lean`;
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerSecondaryPoissonRegulator.lean`.
 
 Capstones:
 

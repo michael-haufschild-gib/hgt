@@ -151,7 +151,7 @@ It does not establish actual Suzuki hypotheses `(8)`.  Remaining source work is 
 
 ## Formalization
 
-`formal/GaloisForLFunctions/RHTower/SuzukiShiftSpectralMonotoneRatio.lean` proves `(5)`, integrated
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftSpectralMonotoneRatio.lean` proves `(5)`, integrated
 cross-Wronskian inequality, and exact quotient-rule nonpositivity from monotone-likelihood kernel.
 **The setup fact** — that `D` has positive imaginary part above the real axis and hence never
 vanishes there — is formal in the same module.  It is what makes `q = N / D` well posed at all:
@@ -210,7 +210,7 @@ formula, the uniqueness of the coefficients, their sign, and the general decompo
 factors.
 
 **Complex anti-Pick identity `(1)`** is now formal, in
-`formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAntiPickIdentity.lean`.  The identity is algebra, not
 analysis, and splits into two ingredients:
 
 - `im_cauchy_mul_conj`: the imaginary part of a Cauchy factor against the conjugate of another
@@ -257,7 +257,7 @@ not proved as a statement about `q = N/D`, though every piece of it was.  The jo
   Stieltjes measure vanishes — the card's "as required".
 
 The instantiation `(6)--(7)` is formal too, in
-`formal/GaloisForLFunctions/RHTower/SuzukiCrossResolventInstantiation.lean`.  A finite orthonormal
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCrossResolventInstantiation.lean`.  A finite orthonormal
 eigenbasis makes the resolvent explicit, and its matrix elements are then Cauchy combinations:
 
 - `spectralOperator`, `spectralResolvent`, `spectralOperator_basis`,
@@ -298,7 +298,7 @@ anything.  Closed in `SuzukiShiftSpectralMonotoneRatio.lean`:
 ## The measure-level anti-Pick property (formal)
 
 Theorem B's second claim — "same symmetrization as `(1)` gives anti-Pick property under standard
-integrability" — is formal in `formal/GaloisForLFunctions/RHTower/SuzukiMeasureAntiPick.lean`, and it
+integrability" — is formal in `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiMeasureAntiPick.lean`, and it
 needs no complex integration theory.  Splitting the kernel as `1/(t - z) = u + i v` with
 `u = (t - Re z)/|t - z|^2` and `v = Im z/|t - z|^2` reduces the whole statement to the corpus's own
 integrated monotone-likelihood theorem:
@@ -444,7 +444,7 @@ invariance of the kernel, and the limit from continuity of `u` along radii.  The
 `u(0) = 0` is the zero measure.
 
 **The half-plane transfer is proved**, in
-`formal/GaloisForLFunctions/RHTower/SuzukiHalfPlaneHerglotz.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHalfPlaneHerglotz.lean`:
 
 - `analyticAt_herglotzOfCayley`: the inverse Cayley map (already in the corpus, with its positivity)
   is analytic off its pole.
@@ -654,7 +654,7 @@ External priority remains unverified.
 Clearing the denominators turns the shift ratio into a ratio of polynomial values, and a degree
 count turns the analytic zero structure into an actual factorization.
 
-In `formal/GaloisForLFunctions/RHTower/SuzukiAntiPickIdentity.lean`:
+In `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAntiPickIdentity.lean`:
 
 - `prod_mul_cauchySum`: the node product times a Cauchy combination is the sum of the weights
   against the complementary products — each term loses its own factor and keeps the rest.

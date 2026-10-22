@@ -8,10 +8,10 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope` (new)
-- `GaloisForLFunctions.RHTower.CCMTransverseIndexTraceSlopeCoercivity` — the Cauchy energy form and
+- `GaloisForLFunctions.RHTower.CCM.CCMHankelGapTraceSlope` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMTransverseIndexTraceSlopeCoercivity` — the Cauchy energy form and
   the coercivity bound.
-- `GaloisForLFunctions.RHTower.CCMShiftCovariantPoleDivisorCapacity` — the divisor and pole profiles.
+- `GaloisForLFunctions.RHTower.CCM.CCMShiftCovariantPoleDivisorCapacity` — the divisor and pole profiles.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 
@@ -48,6 +48,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMHankelGapTraceSlope`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMHankelGapTraceSlope`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

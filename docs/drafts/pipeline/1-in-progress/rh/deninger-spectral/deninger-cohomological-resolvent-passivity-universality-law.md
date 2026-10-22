@@ -84,7 +84,7 @@ domain. Exact literature novelty remains **[NOVELTY UNVERIFIED]**.
 
 Formalized in:
 
-`formal/GaloisForLFunctions/RHTower/DeningerCohomologicalResolventPassivityUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCohomologicalResolventPassivityUniversalityLaw.lean`
 
 and imported by:
 

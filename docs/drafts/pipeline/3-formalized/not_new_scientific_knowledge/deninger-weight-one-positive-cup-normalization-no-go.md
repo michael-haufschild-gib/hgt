@@ -99,7 +99,7 @@ target for clause 6 of `DAC_ARITHMETIC_CALDERON_PAUGAM_HARDY_COMPARISON`.
 ## Lean formalization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerWeightOnePositiveCupNormalizationNoGo.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerWeightOnePositiveCupNormalizationNoGo.lean`.
 
 Kernel-checked declarations formalize the complementary plane, flow generator, scaled cup, and
 odd Hodge operator, followed by:

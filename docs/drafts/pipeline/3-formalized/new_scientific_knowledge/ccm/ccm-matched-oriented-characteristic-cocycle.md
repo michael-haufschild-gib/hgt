@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedOrientedCharacteristicCocycle`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedOrientedCharacteristicCocycle`.
 This is a route theorem, not an RH proof.
 
 ## New knowledge

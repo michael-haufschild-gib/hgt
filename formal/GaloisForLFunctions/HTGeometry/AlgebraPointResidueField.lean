@@ -14,7 +14,6 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-set_option maxHeartbeats 2000000
 
 variable {k R : Type*} [Field k] [CommRing R] [Algebra k R]
 
@@ -200,7 +199,6 @@ namespace AlgSpec
 
 open scoped TensorProduct
 
-set_option maxHeartbeats 4000000
 set_option synthInstance.maxHeartbeats 2000000
 
 variable {A B : Type*} [CommRing A] [CommRing B]

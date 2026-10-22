@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ZetaZeroDensitySeparatedSelection
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
 /-!
 # Counting zeros by folded real part and absolute ordinate

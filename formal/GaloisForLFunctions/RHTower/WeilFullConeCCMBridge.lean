@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WeilFullConeExposedPoint
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
-import GaloisForLFunctions.RHTower.SuzukiRayleighInfimum
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRayleighInfimum
 import GaloisForLFunctions.RHTower.WeilParityPoleOneSidedRH
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeCCMScalingBridge
 

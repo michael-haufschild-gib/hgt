@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHurwitzOrientationBoundaryHyperbolicPlane
-import GaloisForLFunctions.RHTower.CCMCliffordWeilProduct
+import GaloisForLFunctions.RHTower.CCM.CCMCliffordWeilProduct
 
 /-!
 # Sharp transverse compensation for the Route-Q boundary plane

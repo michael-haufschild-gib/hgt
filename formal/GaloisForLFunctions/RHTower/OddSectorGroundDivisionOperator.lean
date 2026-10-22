@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.OddSectorGroundOriginInterpolation
-import GaloisForLFunctions.RHTower.CCMArchimedeanLogWeightEquivalence
-import GaloisForLFunctions.RHTower.SuzukiHlogDenseFormCore
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanLogWeightEquivalence
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiHlogDenseFormCore
 
 /-!
 # Ground-normalized squared-frequency division

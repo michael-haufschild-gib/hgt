@@ -96,7 +96,7 @@ completed Gamma/polar relation, or source Ward law before scalar co-Poisson eval
 
 ## Formal artifact
 
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolMultiplicativeSyzygyQuotient.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolMultiplicativeSyzygyQuotient.lean`
 
 Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
@@ -105,6 +105,6 @@ Imported by `formal/GaloisForLFunctions/RHTower.lean`.
 - 2026-08-13 — Exact source identity and two-gauge classification frozen.
 - 2026-08-13 — `/tmp/P117Scratch.lean` passed `lake env lean`.
 - 2026-08-13 — Promoted module passed direct `lake env lean` check.
-- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.HedenmalmThetaAnomalyBurnolMultiplicativeSyzygyQuotient` passed (`12939` jobs).
+- 2026-08-13 — Exact `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaAnomalyBurnolMultiplicativeSyzygyQuotient` passed (`12939` jobs).
 - 2026-08-13 — Axiom audit reported only `propext`, `Classical.choice`, and `Quot.sound`; full RHTower umbrella build passed (`19790` jobs).
 - 2026-08-13 — Repository lint failed on 41 pre-existing unrelated unreachable modules; no P-G115--P-G117 module appeared in failures.

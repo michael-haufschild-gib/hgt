@@ -55,7 +55,7 @@ in marked tensor before Pick polarization.
 ## Status
 
 Paper proof and Lean scalar algebra complete in
-`formal/GaloisForLFunctions/RHTower/SuzukiProjectiveAffineSecantTensor.lean`.  Actual marked
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiProjectiveAffineSecantTensor.lean`.  Actual marked
 prime--Gamma Christoffel--Darboux/Green factorization remains open and RH-bearing.
 
 ## Log

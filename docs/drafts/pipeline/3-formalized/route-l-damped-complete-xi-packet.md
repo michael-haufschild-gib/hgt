@@ -185,7 +185,7 @@ The L1 extension is now closed in C47; it is separate from the C46 packet theore
 ## Lean validation
 
 `lake env lean /tmp/route_l_c46_packet.lean` check3 passed without diagnostics.
-The final `lake build GaloisForLFunctions.RHTower.DeningerDampedCompleteXiPacket`
+The final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedCompleteXiPacket`
 audit passed; only the new leaf was built (272 seconds), with other graph
 results replayed. The 457-line module is wired once into `RHTower.lean`.
 No full/umbrella build, numerical experiment or axiom-print command was used.

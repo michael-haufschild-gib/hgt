@@ -8,7 +8,7 @@ The hard target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/V
 
 ## Exact Lean scope
 
-The [source module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCommonSourceGreen.lean), namespace `RHTower.D4BMCommonSourceGreen`, proves:
+The [source module](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCommonSourceGreen.lean), namespace `RHTower.D4BMCommonSourceGreen`, proves:
 
 - `nativeSpinTwoTrace_eq_interior`: the frozen-radius angular trace equals the full spin-two kernel on the smooth cone interior.
 - `nativeSpinTwoTrace_characteristic`: both characteristic traces equal the full original spin-two source.
@@ -67,7 +67,7 @@ An independent literature search found [Intertwining diffusions and wave equatio
 
 ## Validation
 
-Scratch checks passed for the new calculus, source traces, integrals and delay limits. The final audit built only `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCommonSourceGreen`; Lean compiled the complete 1,184-line module in 15 seconds, and Lake reported three jobs. The 4,133 existing own-corpus dependencies and installed package artifacts were frozen. No dependency or umbrella build ran.
+Scratch checks passed for the new calculus, source traces, integrals and delay limits. The final audit built only `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCommonSourceGreen`; Lean compiled the complete 1,184-line module in 15 seconds, and Lake reported three jobs. The 4,133 existing own-corpus dependencies and installed package artifacts were frozen. No dependency or umbrella build ran.
 
 Only the nine new public theorems were axiom-audited. Each reports exactly `propext`, `Classical.choice` and `Quot.sound`. The installed source and five olean/ilean/hash/trace artifacts are byte-identical to the audited files. The original source prefix is unchanged, and the existing RHTower import is verified. No mathematical computation was used.
 

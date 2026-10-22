@@ -1,5 +1,5 @@
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailLevyEnergy
-import GaloisForLFunctions.RHTower.CCMArchimedeanLogWeightEquivalence
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanLogWeightEquivalence
 
 /-! The actual factorial tail belongs to the logarithmic Fourier form domain
 uniformly on the enlarged Mellin strip. The proof transports its physical jump

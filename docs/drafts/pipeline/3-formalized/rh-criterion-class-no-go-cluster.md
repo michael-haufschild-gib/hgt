@@ -105,7 +105,7 @@ see §52 of the audit for the method failure that made this correction necessary
 | window mass `≥ (log2/2)√y` past the Chebyshev ratio | `eventually_sqrt_le_primeMassWindow_ratio` | `RHTower/PrimeMassWindow` |
 | four tents reduce to two on the arithmetic range | `rectangularTwoEdgeAutocorrelation_log_eq_two_tents` | `RHTower/RectangularTentReduction` |
 | secular tail from a cofinal floor, no growth hypothesis | `exists_secular_tail_bound_of_trace` | `RHTower/SecularTailFromTrace` |
-| CCM `hsum`/`hbessel` discharged; `hl0`/`hl1` targets pinned | `ccm_constraint_hypotheses_eventually` | `RHTower/CCMHypothesisDischarge` |
+| CCM `hsum`/`hbessel` discharged; `hl0`/`hl1` targets pinned | `ccm_constraint_hypotheses_eventually` | `RHTower/CCM/CCMHypothesisDischarge` |
 | **CCM radial floor is false for factorial amplitudes** | `factorial_amplitude_no_uniform_floor` | `RHTower/FuchsFloorNoGo` |
 | `‖Γ(1/2+it)‖² = π/cosh(πt)`, hence `≤ 2π e^{−π\|t\|}` | `normSq_Gamma_half_add_mul_I_le` | `HTGeometry/GammaCriticalLineModulus` |
 | `x^{−θ}` vs `log x/√x` crossing at `θ = 1/2` (pure analysis) | `precision_wall_at_one_half` | `RHTower/PrecisionGapExponent` |

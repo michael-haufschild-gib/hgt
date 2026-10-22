@@ -205,7 +205,7 @@ archimedean law \(x\mapsto e^{-2t}x\).
 
 ### Both labelled theorems landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRealApexEndpoint.lean` (new), on top of
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRealApexEndpoint.lean` (new), on top of
 `DeningerLeafwiseKahler.lean`, `DeningerStationaryKahlerGerm.lean` and
 `DeningerRadialKahlerTrace.lean`.  Axiom audit for all 19 new declarations:
 `propext, Classical.choice, Quot.sound`.

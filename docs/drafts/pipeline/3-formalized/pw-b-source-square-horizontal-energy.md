@@ -106,7 +106,7 @@ supply arithmetic stationarity. No external paper is a formal dependency.
 
 ## Lean certificate
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularWeightedHorizontalEnergy`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularWeightedHorizontalEnergy`.
 
 Main closed theorem:
 `RHTower.pwLogGammaSource_exists_finiteEnergy_horizontal_fixed_section`.
@@ -124,7 +124,7 @@ Other exact statements:
 Verification completed:
 
 - Scratch and direct `lake env lean` checks passed without warnings.
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularWeightedHorizontalEnergy`
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularWeightedHorizontalEnergy`
   passed. Lake reported 10,677 dependency jobs; only the new leaf was compiled,
   taking 138 seconds. Cached dependency warnings were replayed.
 - A separate scratch `#print axioms` audit covered all 14 new theorems and

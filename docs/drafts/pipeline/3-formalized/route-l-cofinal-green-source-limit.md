@@ -128,7 +128,7 @@ The fixed normalized physical image is retained, not proved zero.
 
 Scratch: `/tmp/route_l_cofinal_c40.lean`. The final clean 12-theorem proof
 passed `lake env lean` with no errors or warnings. The new module is
-`formal/GaloisForLFunctions/RHTower/DeningerCofinalPrimeMeyerEscape.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCofinalPrimeMeyerEscape.lean`
 (201 lines, 12 theorems, three definitions), with exactly one umbrella import.
 Targeted leaf audit passed: only the new leaf was built (193 seconds;
 11942 dependency-graph jobs). Index refresh passed and the new module

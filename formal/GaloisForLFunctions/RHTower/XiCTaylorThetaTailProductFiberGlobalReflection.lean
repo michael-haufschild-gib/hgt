@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberGlobalCurrent
-import GaloisForLFunctions.RHTower.ThetaCuspFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierXi
 
 /-!
 # Boundary reflection value of the global theta-density phase

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGaussianOneSidedIdentityRH
-import GaloisForLFunctions.RHTower.CCMEvenGroundXiStripConvergenceRH
+import GaloisForLFunctions.RHTower.CCM.CCMEvenGroundXiStripConvergenceRH
 
 /-!
 # Limits of real-rooted weights with asymptotic one-sided Gaussian identities

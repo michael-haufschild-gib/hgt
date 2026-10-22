@@ -64,7 +64,7 @@ This proves the stronger persistent-floor law independently of the RH endpoint:
   `riemannHypothesis_of_thetaSourceSchurPositiveQuarticChargeCofinallySmall`.
 - Weakening witness:
   `thetaSourceSchurPositiveQuarticChargeCofinallySmall_of_flag`.
-- Module: `GaloisForLFunctions.RHTower.HedenmalmThetaSchurQuarticAsymptoticZeroTransfer`.
+- Module: `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSchurQuarticAsymptoticZeroTransfer`.
 - `lake env lean` and exact `lake build` pass. Axioms: `propext`, `Classical.choice`, `Quot.sound`.
 - 2026-08-27 global `formal_tools.py lint` failure is outside this card: five concurrently added
   owned modules were not yet imported by `RHTower.lean`; no forbidden declaration was reported here.

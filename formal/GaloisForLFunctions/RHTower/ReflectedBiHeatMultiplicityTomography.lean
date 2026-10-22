@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectedBiHeatPhaseFinitePartExpansion
-import GaloisForLFunctions.RHTower.DeningerMeyerXiSpectralInclusion
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiSpectralInclusion
 import GaloisForLFunctions.RHTower.ArchimedeanGammaModule
 import GaloisForLFunctions.HTGeometry.RiemannZetaMeromorphic
 import GaloisForLFunctions.HTGeometry.AffineReflectionJet

@@ -54,7 +54,7 @@ successive finite determinants does not establish the rejected fixed-profile cer
 
 ## Lean evidence
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspFixedCenterCorrectionRigidity`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedCenterCorrectionRigidity`.
 It imports only the existing `ThetaCuspKernelLogConcavity`, expressing the correction directly
 in the literal source and its logarithm. Its four theorems prove unbounded negative normalized
 coefficient, interval (2), bound (1), and fixed-profile rigidity. No extra analytic or sign
@@ -63,7 +63,7 @@ the displayed mass and two-point conditions.
 
 The scratch file passed `lake env lean`. After a no-build preflight identified only the new
 leaf as stale, the final audit
-`lake --old --log-level=error build GaloisForLFunctions.RHTower.ThetaCuspFixedCenterCorrectionRigidity`
+`lake --old --log-level=error build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedCenterCorrectionRigidity`
 built that leaf in 5.5 seconds. All four new theorem axiom audits passed using only
 `propext`, `Classical.choice`, and `Quot.sound`. The umbrella import is wired.
 

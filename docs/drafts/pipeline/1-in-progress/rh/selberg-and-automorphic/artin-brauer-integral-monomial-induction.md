@@ -89,7 +89,7 @@ in the project vocabulary and its finite-group APIs are source-checked.  The exi
 proves the theorem, but does not supply a ready Lean dependency graph.
 
 The exact generator carrier is now present in
-`formal/GaloisForLFunctions/RHTower/ArtinBrauerElementary.lean`; it defines only the concrete
+`formal/GaloisForLFunctions/RHTower/Artin/ArtinBrauerElementary.lean`; it defines only the concrete
 elementary witness, index, and induced-linear virtual character.  It contains no claimed span,
 closure, or induction theorem.
 

@@ -121,11 +121,15 @@ socket.socket(socket.AF_UNIX).close()
                               capture_output=True, text=True, timeout=5)
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
-    def test_query_instruction_and_plain_documents(self):
+    def test_asymmetric_task_prefixes_from_the_model_card(self):
+        """EmbeddingGemma uses DIFFERENT fixed prefixes per side, unlike Qwen's
+        instruction-on-queries-only scheme. Documents are never bare text."""
         text = '∀ n : ℕ, n = n'
-        self.assertEqual(adapters.embedding_text(text, False), text)
+        self.assertEqual(adapters.embedding_text(text, False), 'title: none | text: ' + text)
         self.assertEqual(adapters.embedding_text(text, True),
-                         'Instruct: Find relevant Lean 4 math declarations\nQuery:' + text)
+                         'task: search result | query: ' + text)
+        self.assertNotEqual(adapters.embedding_text(text, False),
+                            adapters.embedding_text(text, True))
 
     def test_official_yes_no_ids_not_true_false(self):
         self.assertEqual(adapters.yes_no_ids(FakeTokenizer()), (7, 11))
@@ -218,8 +222,10 @@ socket.socket(socket.AF_UNIX).close()
         self.assertEqual(config.DEFAULT_CACHE_DIR, root/'formal/.lake/hgt-research/discovery-1')
         state = runtime.RuntimeClient(config.DEFAULT_CACHE_DIR).status()
         self.assertEqual(state['available'], state['ready'])
-        for role in ('embedding', 'reranker', 'generation'):
+        for role in config.MODELS:
             self.assertIn(config.MODELS[role]['revision'], state[role+'_model_version'])
+        # Retrieval is the product; a text-generation model is not part of it.
+        self.assertEqual(set(config.MODELS), {'embedding', 'reranker'})
 
     def test_malformed_manifest_reports_unavailable_without_model_import(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -275,13 +281,27 @@ class SetupTests(unittest.TestCase):
 
 
 class AdapterPolicyTests(unittest.TestCase):
+    def test_mlx_is_skipped_entirely_when_no_architecture_is_pinned(self):
+        """mlx-lm ships no embedding_gemma2, so the pinned model omits
+        mlx_module and the Metal path must not be probed at all."""
+        models = adapters.LocalModels(Path('/unused'))
+        def search(request, role):
+            models.devices[role] = 'mps'
+            models.loaded[role] = ('model', 'tokenizer')
+            return [[1.0]]
+        with patch.object(adapters, 'MLX_EMBEDDING_MODULE', None), patch.object(
+                models, '_mlx_embed') as mlx, patch.object(models, '_search', side_effect=search):
+            self.assertEqual(models.run({'op': 'embed', 'deadline': time.monotonic()+2}), [[1.0]])
+        mlx.assert_not_called()
+        self.assertIsNone(models.status()['embedding']['fallback_reason'])
+
     def test_mlx_failure_falls_back_and_does_not_retry_mlx_next_call(self):
         models = adapters.LocalModels(Path('/unused'))
         def search(request, role):
             models.devices[role] = 'cpu'
             models.loaded[role] = ('model', 'tokenizer')
             return [[1.0]]
-        with patch.object(models, '_mlx_embed', side_effect=ImportError('unavailable')) as mlx, patch.object(
+        with patch.object(adapters, 'MLX_EMBEDDING_MODULE', 'qwen3'), patch.object(models, '_mlx_embed', side_effect=ImportError('unavailable')) as mlx, patch.object(
                 models, '_search', side_effect=search):
             for _ in range(2):
                 self.assertEqual(models.run({'op': 'embed', 'deadline': time.monotonic()+2}), [[1.0]])
@@ -291,7 +311,7 @@ class AdapterPolicyTests(unittest.TestCase):
 
     def test_mlx_deadline_does_not_start_fallback(self):
         models = adapters.LocalModels(Path('/unused'))
-        with patch.object(models, '_mlx_embed', side_effect=runtime.RuntimeDeadline('expired')), patch.object(
+        with patch.object(adapters, 'MLX_EMBEDDING_MODULE', 'qwen3'), patch.object(models, '_mlx_embed', side_effect=runtime.RuntimeDeadline('expired')), patch.object(
                 models, '_search') as fallback:
             with self.assertRaises(runtime.RuntimeDeadline):
                 models.run({'op': 'embed', 'deadline': time.monotonic()+1})
@@ -304,26 +324,42 @@ class AdapterPolicyTests(unittest.TestCase):
         models.loaded['embedding'] = model
         models.devices['embedding'] = 'metal'
         deadline = time.monotonic()+2
-        models.run({'op': 'embed', 'texts': ['n = n'], 'query': True, 'deadline': deadline})
+        with patch.object(adapters, 'MLX_EMBEDDING_MODULE', 'qwen3'):
+            models.run({'op': 'embed', 'texts': ['n = n'], 'query': True, 'deadline': deadline})
         model.embed.assert_called_once_with([adapters.embedding_text('n = n', True)], deadline=deadline)
         self.assertEqual(models.status()['embedding']['backend'], 'mlx')
 
     def test_local_only_loads_select_explicit_mps_float32(self):
+        """Text tower only, with the other towers never built.
+
+        Leaving the audio tower in the config fails the load outright: it has
+        no SDPA kernel, and sdpa is what this requests.
+        """
         from unittest.mock import MagicMock
         torch = MagicMock()
         torch.backends.mps.is_available.return_value = True
         factory = MagicMock()
+        config_factory = MagicMock()
         tokenizer = MagicMock()
-        transformer = SimpleNamespace(AutoModel=factory, AutoModelForCausalLM=factory, AutoTokenizer=tokenizer)
+        transformer = SimpleNamespace(AutoConfig=config_factory, AutoModel=factory,
+                                      AutoModelForCausalLM=factory, AutoTokenizer=tokenizer)
         models = adapters.LocalModels(Path('/unused'))
         with patch.dict(sys.modules, {'torch': torch, 'transformers': transformer}), patch.object(
                 models, '_path', return_value='/local/snapshot'):
-            models._torch_model('embedding')
+            model, _ = models._torch_model('embedding')
         kwargs = factory.from_pretrained.call_args.kwargs
         self.assertTrue(kwargs['local_files_only'])
         self.assertFalse(kwargs['trust_remote_code'])
         self.assertIs(kwargs['dtype'], torch.float32)
-        factory.from_pretrained.return_value.eval.return_value.to.assert_called_once_with('mps')
+        self.assertEqual(kwargs['attn_implementation'], 'sdpa')
+        config = config_factory.from_pretrained.return_value
+        self.assertIs(kwargs['config'], config)
+        self.assertIsNone(config.vision_config)
+        self.assertIsNone(config.audio_config)
+        # The text tower carries the 512->768 projection; it is what runs.
+        wrapper = factory.from_pretrained.return_value.eval.return_value
+        self.assertIs(model, wrapper.language_model.to.return_value)
+        wrapper.language_model.to.assert_called_once_with('mps')
         self.assertEqual(tokenizer.from_pretrained.call_args.kwargs['padding_side'], 'right')
 
     def test_nonfinite_mps_retries_once_on_cpu_and_reports_reason(self):
@@ -339,7 +375,12 @@ class AdapterPolicyTests(unittest.TestCase):
         load.assert_called_once_with('embedding', cpu=True)
         self.assertIn('non-finite output', models.fallbacks['embedding'])
 
-    def test_mps_batches_embeddings_and_pools_last_nonpad(self):
+    def test_mps_batches_embeddings_and_pools_the_masked_mean(self):
+        """EmbeddingGemma pools the mean, and pad positions carry garbage.
+
+        Each row's pad slots hold a huge value, so including them changes the
+        direction: averaging the mask in is what this pins down.
+        """
         try:
             import torch
         except ImportError:
@@ -348,22 +389,81 @@ class AdapterPolicyTests(unittest.TestCase):
         class Inputs(dict):
             def to(self, device):
                 return self
+        mask = torch.tensor([[1, 0, 0], [1, 1, 0], [1, 1, 1]])
         def tokenizer(texts, **kwargs):
             batches.append(texts)
-            return Inputs(attention_mask=torch.tensor([[1, 0, 0], [1, 1, 0], [1, 1, 1]]))
+            return Inputs(attention_mask=mask)
+        hidden = torch.tensor([
+            [[1., 0., 0.], [0., 99., 0.], [0., 0., 99.]],
+            [[2., 0., 0.], [0., 2., 0.], [0., 0., 99.]],
+            [[3., 0., 0.], [0., 3., 0.], [0., 0., 3.]]])
         def model(**kwargs):
-            # Distinct padding vectors expose pooling the last position by mistake.
-            return SimpleNamespace(last_hidden_state=torch.tensor([
-                [[1., 0., 0.], [0., 9., 0.], [0., 0., 9.]],
-                [[0., 9., 0.], [0., 1., 0.], [0., 0., 9.]],
-                [[0., 9., 0.], [0., 0., 9.], [0., 0., 1.]]]))
+            return SimpleNamespace(last_hidden_state=hidden)
         models = adapters.LocalModels(Path('/unused'))
         models.devices['embedding'] = 'mps'
-        with patch.object(models, '_torch_model', return_value=(model, tokenizer)):
+        with patch.object(adapters, 'EMBEDDING_DIMENSIONS', 3), patch.object(
+                models, '_torch_model', return_value=(model, tokenizer)):
             result = models._search({'texts': ['short', 'a much longer text', 'middle'],
                                      'deadline': time.monotonic()+2}, 'embedding')
         self.assertEqual(list(map(len, batches)), [3])
-        self.assertEqual(result, [[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]])
+        expected = torch.nn.functional.normalize(
+            adapters.mean_pool(hidden, mask), p=2, dim=1).tolist()
+        for actual, want in zip(result, expected):
+            for a, w in zip(actual, want):
+                self.assertAlmostEqual(a, w, places=6)
+        # Row 0 has one real token, so its mean is that token alone.
+        self.assertAlmostEqual(result[0][0], 1.0, places=6)
+
+    def test_wrong_embedding_width_fails_loudly(self):
+        """A checkpoint whose last_hidden_state is the pre-projection state
+        must not silently yield confident, wrong vectors."""
+        try:
+            import torch
+        except ImportError:
+            self.skipTest('dedicated runtime Python not selected')
+        class Inputs(dict):
+            def to(self, device):
+                return self
+        def tokenizer(texts, **kwargs):
+            return Inputs(attention_mask=torch.tensor([[1, 1]]))
+        def model(**kwargs):
+            return SimpleNamespace(last_hidden_state=torch.ones(1, 2, 5))
+        models = adapters.LocalModels(Path('/unused'))
+        models.devices['embedding'] = 'cpu'
+        with patch.object(adapters, 'EMBEDDING_DIMENSIONS', 768), patch.object(
+                models, '_torch_model', return_value=(model, tokenizer)):
+            with self.assertRaisesRegex(runtime.RuntimeUnavailable, 'not the pinned 768'):
+                models._search({'texts': ['x'], 'deadline': time.monotonic()+2}, 'embedding')
+
+
+class EmbeddingBatchTests(unittest.TestCase):
+    """The batcher is pure list arithmetic; it needs no Metal to check."""
+
+    def batches(self, lengths):
+        from research_runtime.mlx_embedding import MLXEmbedding
+        tokens = [[0] * n for n in lengths]
+        order = sorted(range(len(tokens)), key=lambda i: len(tokens[i]))
+        return [len(b) for b in MLXEmbedding._batches(tokens, order)], tokens, order
+
+    def test_short_texts_fill_the_token_budget_instead_of_a_fixed_batch(self):
+        from research_runtime.config import MAX_BATCH_SIZE, TOKEN_BUDGET
+        # Statement chunks average ~110 tokens and are most of the corpus. A
+        # fixed batch of four spent a forward pass on 512 padded tokens.
+        sizes, _, _ = self.batches([110] * MAX_BATCH_SIZE)
+        self.assertEqual(sizes, [MAX_BATCH_SIZE])
+        # Long chunks still fall back to small batches under the same budget.
+        sizes, _, _ = self.batches([2048] * 16)
+        self.assertTrue(all(size * 2048 <= TOKEN_BUDGET for size in sizes))
+
+    def test_every_text_is_batched_exactly_once_and_shapes_stay_bounded(self):
+        for lengths in ([110] * 64, [170] * 64, [2048] * 64, [110] * 40 + [170] * 16 + [2048] * 8,
+                        [110], [110] * 7, [1], [2048, 1]):
+            sizes, tokens, order = self.batches(lengths)
+            from research_runtime.mlx_embedding import MLXEmbedding
+            members = [i for b in MLXEmbedding._batches(tokens, order) for i in b]
+            self.assertEqual(sorted(members), list(range(len(lengths))), lengths[:3])
+            # Powers of two keep mx.compile(shapeless=False) to a bounded set.
+            self.assertTrue(all(size & (size - 1) == 0 for size in sizes), sizes)
 
 
 class MLXEmbeddingTests(unittest.TestCase):
@@ -522,18 +622,26 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual(second.result(timeout=3), [[5.0]])
         self.assertEqual(other.status()['pid'], self.server.pid)
 
-    def test_interactive_preempts_enrichment_without_overlap(self):
+    def test_indexing_is_never_killed_to_serve_a_query(self):
+        """A query queues ahead of indexing and waits it out.
+
+        Killing indexing on every query starved it completely once several
+        agents searched continuously, and discarded work already computed.
+        """
         with concurrent.futures.ThreadPoolExecutor(2) as pool:
-            low = pool.submit(self.client.generate, 'slow-enrichment', priority='enrichment',
+            low = pool.submit(self.client.embed, ['slow-enrichment'], priority='enrichment',
                               deadline=time.monotonic()+10)
             self.wait_for(lambda: bool(self.events()))
-            old = self.events()[0][2]
-            result = self.client.embed(['search'], deadline=time.monotonic()+3)
+            child = self.events()[0][2]
+            result = self.client.embed(['search'], deadline=time.monotonic()+8)
             self.assertEqual(result, [[6.0]])
-            with self.assertRaisesRegex(runtime.RuntimeUnavailable, 'preempted'):
-                low.result(timeout=1)
-            with self.assertRaises(ProcessLookupError):
-                os.kill(old, 0)
+            # The indexing request completes rather than being cancelled, and
+            # the warm child is the same one that served the query.
+            self.assertEqual(low.result(timeout=8), [[float(len('slow-enrichment'))]])
+            os.kill(child, 0)
+            self.assertEqual(self.client.status()['child_pid'], child)
+            events = self.events()
+            self.assertEqual([e[0] for e in events], ['start', 'end'] * (len(events)//2))
 
     def test_expired_queued_request_never_reaches_model(self):
         with concurrent.futures.ThreadPoolExecutor(2) as pool:

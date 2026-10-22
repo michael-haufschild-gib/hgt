@@ -44,7 +44,7 @@ absolute-convergence point.
   `pole-filled scalar RSZ -> C-A.9u -> actual balanced ++- landing -> negative BM -> left-QNM ->
   HC94 cocycle -> RH`.
 - **Status:** Paper proof dependency-closed.  Lean module
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`; headline theorems
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`; headline theorems
   `d4BM_actualBalancedCanonicalLandingResidual_eq`,
   `d4BM_actualBoundaryFreeCanonicalBalancedLanding_iff_scalarRSZ`,
   `d4BM_directScalarLanding_from_zeroCusp_not_forced`, and

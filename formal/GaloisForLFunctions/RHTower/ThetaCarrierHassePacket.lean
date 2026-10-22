@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTiltReflectedWork
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceSpectrumExact
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceSpectrumExact
 import GaloisForLFunctions.HTGeometry.ConstitutiveFunctionalEquationPacketLift
 import GaloisForLFunctions.HTGeometry.ConstitutiveHasseGlobalRenewal
 import Mathlib.MeasureTheory.Measure.Tilted

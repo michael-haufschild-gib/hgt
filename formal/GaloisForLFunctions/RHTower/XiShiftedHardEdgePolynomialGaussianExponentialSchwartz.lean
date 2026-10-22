@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgePolynomialGaussianCarrier
-import GaloisForLFunctions.RHTower.DeningerLogSeries
+import GaloisForLFunctions.RHTower.Deninger.DeningerLogSeries
 import GaloisForLFunctions.HTGeometry.HermitePolynomialDerivativeEnergy
 
 /-!

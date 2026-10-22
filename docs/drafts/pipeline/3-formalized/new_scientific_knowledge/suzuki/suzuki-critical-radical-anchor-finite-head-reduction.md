@@ -395,8 +395,8 @@ This is the height-tail form of the finite-head reduction.
 Read-only providers already present:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiSafeShiftResponseChargeCancellation.lean
-formal/GaloisForLFunctions/RHTower/SuzukiSafeShiftTransverseChargeBudget.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSafeShiftResponseChargeCancellation.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSafeShiftTransverseChargeBudget.lean
 formal/GaloisForLFunctions/RHTower/SquaredXiCompleteMonotonicity.lean
 formal/GaloisForLFunctions/RHTower/XiCenteredOrdersSeventeenEighteenSourcePositivity.lean
 ```
@@ -562,9 +562,9 @@ Hardy's theorem is likewise not needed for `(SR-64.1)`: the anchored cofinite pa
 - [x] fixed-annulus witness-count criterion
 - [x] reduction of the zero-counting input below every published proportion theorem
 - [x] Lean: the tail-sum payment inequality
-      — `RHTower/SuzukiAnnularTailSumPayment.lean`
+      — `RHTower/Suzuki/SuzukiAnnularTailSumPayment.lean`
 - [x] removal of the critical-line restriction on the witnesses
-      — `RHTower/SuzukiGeneralWitnessAnnularPayment.lean`
+      — `RHTower/Suzuki/SuzukiGeneralWitnessAnnularPayment.lean`
 - [x] provider: the qualitative anchor of `(SR-64.1)` — not needed; the anchored payment
       `RHTower.exists_finset_anchor_payment` holds for an arbitrary anchor
 - [x] provider: one unconditional instance of `(SR-64.35)` — closed

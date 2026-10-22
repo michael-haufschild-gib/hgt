@@ -6,11 +6,11 @@
 - **Paper proof:** `./suzuki-polar-remainder-lipschitz-gamma-subcriticality.md`
 - **Lean:**
   - `formal/GaloisForLFunctions/HTGeometry/ExponentialDividedDifference.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPolarRemainderLipschitz.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPolarConvolutionRate.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolarRemainderLipschitz.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPolarConvolutionRate.lean`
   - kernel and removable singularity (pre-existing):
-    `formal/GaloisForLFunctions/RHTower/SuzukiWeilPositionTorqueCurvature.lean`,
-    `formal/GaloisForLFunctions/RHTower/SuzukiWeilRemainderRegularity.lean`
+    `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWeilPositionTorqueCurvature.lean`,
+    `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWeilRemainderRegularity.lean`
   - Cauchy–Schwarz (pre-existing): `formal/GaloisForLFunctions/HTGeometry/IntegralCauchySchwarz.lean`
 
 ## Formal content

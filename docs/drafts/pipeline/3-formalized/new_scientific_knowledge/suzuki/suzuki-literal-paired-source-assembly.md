@@ -13,7 +13,7 @@
   suzuki-tempered-orbit-carrier-aperture-recurrence-dichotomy.md,
   suzuki-coordinate-cutoff-primitive-flux-identity.md,
   suzuki-polar-remainder-lipschitz-gamma-subcriticality.md
-- **Lean core:** GaloisForLFunctions.RHTower.SuzukiLiteralPairedSourceAssembly
+- **Lean core:** GaloisForLFunctions.RHTower.Suzuki.SuzukiLiteralPairedSourceAssembly
 
 ## 1. Result
 

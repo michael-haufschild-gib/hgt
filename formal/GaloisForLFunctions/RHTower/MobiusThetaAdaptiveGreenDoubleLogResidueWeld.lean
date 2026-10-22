@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalGreenResolvedLineComparison
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
-import GaloisForLFunctions.RHTower.HedenmalmThetaSourceEntropyBoundaryWeld
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusPrimeNormalHalfDensityDoubleLogBoundaryResidue
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceEntropyBoundaryWeld
 
 /-!
 # Möbius--theta adaptive Green / double-log residue weld

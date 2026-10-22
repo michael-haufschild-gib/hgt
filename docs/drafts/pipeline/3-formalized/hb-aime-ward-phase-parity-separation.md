@@ -34,7 +34,7 @@ Exact two-phase tomography separates nonlinear source dynamics by phase parity: 
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEWardPhaseParitySeparation`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEWardPhaseParitySeparation`
 
 Main results:
 
@@ -60,8 +60,8 @@ Search date: 2026-08-28. Primary-source search covered third-order absorption-in
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingAIMEWardPhaseParitySeparation.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingAIMEWardPhaseParitySeparation`: passed, 12,005 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingAIMEWardPhaseParitySeparation.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingAIMEWardPhaseParitySeparation`: passed, 12,005 jobs.
 - `#print axioms` for all ten public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC44 error. Global lint remains red only on unrelated pre-existing unreachable owned modules.

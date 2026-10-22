@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SoninGammaClockSchwartzLimit
-import GaloisForLFunctions.RHTower.CCMArchimedeanNuclearContinuity
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanNuclearContinuity
 import GaloisForLFunctions.RHTower.StrongTraceNormMultiplierLimit
 import GaloisForLFunctions.RHTower.TraceNormLimit
 

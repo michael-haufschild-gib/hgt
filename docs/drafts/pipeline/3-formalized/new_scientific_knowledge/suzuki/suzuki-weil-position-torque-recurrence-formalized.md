@@ -5,34 +5,34 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL] [NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:** `./suzuki-weil-position-torque-recurrence.md`
 - **Lean (built for this card):**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueTentSeries.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueTentLaplace.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorquePrimeSeries.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorquePrimeLaplace.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueArchLaplace.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorquePrimeOrder.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueArchOrder.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueTotalTransform.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueEulerTransform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueTentSeries.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueTentLaplace.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorquePrimeSeries.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorquePrimeLaplace.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueArchLaplace.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorquePrimeOrder.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueArchOrder.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueTotalTransform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueEulerTransform.lean`
   - `formal/GaloisForLFunctions/RHTower/LaplaceAbscissaExists.lean`
   - `formal/GaloisForLFunctions/RHTower/ComplexLaplaceHolomorphy.lean`
   - `formal/GaloisForLFunctions/RHTower/RealJetsOfHolomorphic.lean`
   - `formal/GaloisForLFunctions/RHTower/LandauSingularAtAbscissa.lean`
   - `formal/GaloisForLFunctions/RHTower/RiemannXiRealAxisNonvanishing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueContinuationAnalytic.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueContinuationPole.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueContinuationAnalytic.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueContinuationPole.lean`
   - `formal/GaloisForLFunctions/RHTower/HeadLaplaceEntire.lean`
   - `formal/GaloisForLFunctions/RHTower/TailMeasureLaplace.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueTailCarrier.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTailTransform.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueTailCarrier.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTailTransform.lean`
   - `formal/GaloisForLFunctions/RHTower/OneSignTailImpossible.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTorqueCofinalSign.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTorqueCofinalSign.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ConvexDiffCountableConnected.lean`
 - **Lean (inherited, already in the corpus):**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWeilPositionTorqueCurvature.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiWeilPrimeCommutatorTorque.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiResolventPositionTorquePromotion.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiSecondDefectParityCommutator.lean`,
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWeilPositionTorqueCurvature.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWeilPrimeCommutatorTorque.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiResolventPositionTorquePromotion.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiSecondDefectParityCommutator.lean`,
     `SuzukiSecondDefectCompactParitySource.lean`
   - `formal/GaloisForLFunctions/RHTower/LandauAbscissaRigidity.lean`,
     `LandauAbscissaWitnesses.lean`, `LaplaceTransformMomentDerivative.lean`

@@ -498,7 +498,7 @@ Remaining for this card: section 5, the hard-edge ancestry theorem, which needs 
 convergence of the cleared hard polynomials `S_j -> F` and Hurwitz's theorem — the same normal-family
 input the hyperbolic-Weil-boundary card needs.  The corpus already has sequential Montel
 (`Bottcher/MontelNormal.lean`) and Hurwitz-type zero-locus transfer
-(`RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`).
+(`RHTower/CCM/CCMCompactFourierMeanSquareZeroTransfer.lean`).
 
 ### Sections 5 and 6
 

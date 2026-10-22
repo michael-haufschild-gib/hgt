@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FiniteExponentialPencilMeanSquare
 import GaloisForLFunctions.RHTower.GaussHodgeCoherenceBudget
-import GaloisForLFunctions.RHTower.CCMClosedXiConformalKreinLaw
+import GaloisForLFunctions.RHTower.CCM.CCMClosedXiConformalKreinLaw
 
 /-!
 # Vertical extraction of the Hodge mass at ℓ¹ weights: the truncation exchange is free

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiShiftEulerRationalSampleWitness
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 import GaloisForLFunctions.RHTower.XiRealBoundaryDivisorMeasure
 import GaloisForLFunctions.HTGeometry.DivisorPairing
 import GaloisForLFunctions.HTGeometry.RationalFiniteAvoidance

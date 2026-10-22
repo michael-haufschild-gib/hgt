@@ -37,11 +37,11 @@ AdS curvature cancels identically because the legs share transverse charge. Thus
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean`
 - Umbrella: `formal/GaloisForLFunctions/RHTower.lean`
 - Capstone: `d4HBSelfDualSameChargeLocalJacobiCancellationRouteKilled`
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean` — PASS
-- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo` — PASS (`11214/11214`)
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo.lean` — PASS
+- Targeted build: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBSelfDualPlebanskiLocalJacobiNoGo` — PASS (`11214/11214`)
 - Axioms: `propext`, `Classical.choice`, `Quot.sound`
 - Global lint: new module reachable; unrelated concurrently created modules remain unwired.
 

@@ -4,7 +4,7 @@
 - **Paper proof:**
   `./suzuki-critical-wall-field-resolvent-dressing-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldResolventDressingLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalWallFieldResolventDressingLaw.lean`
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [SOURCE-SPECIFIC]`
   `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE] [NOVELTY UNVERIFIED] [NOT RH]`
 
@@ -45,7 +45,7 @@ negative-mode Krein debt with uniformly lower-bounded rectangular residual.  RH 
 ## Verification
 
 - direct source check:
-  `lake env lean GaloisForLFunctions/RHTower/SuzukiCriticalWallFieldResolventDressingLaw.lean`;
+  `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalWallFieldResolventDressingLaw.lean`;
 - targeted SOTA build: `9455/9455` jobs;
 - axiom audit: `propext`, `Classical.choice`, `Quot.sound` only;
 - repository formal lint reaches new module but remains red on thirteen unrelated concurrent

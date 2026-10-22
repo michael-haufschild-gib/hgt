@@ -1,7 +1,7 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusQuotientPowerCutoff
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusQuotientPowerCutoff
 import GaloisForLFunctions.RHTower.MobiusDivisorLowerStripPowerGapBootstrap
-import GaloisForLFunctions.RHTower.SuzukiCompletedFormationEnergy
-import GaloisForLFunctions.RHTower.SuzukiQuadraticContactUnconditionalDecay
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCompletedFormationEnergy
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiQuadraticContactUnconditionalDecay
 
 /-!
 # Quasi-RH Abscissa Laws: Any-Cutoff Quotient Heads, Finite-Contact Suzuki Residuals, and Formation Energy

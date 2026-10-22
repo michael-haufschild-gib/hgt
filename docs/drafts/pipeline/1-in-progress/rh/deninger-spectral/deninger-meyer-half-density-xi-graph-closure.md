@@ -80,10 +80,10 @@ formal-index searches found no Xi graph-closure classification for the half-dens
 - [x] wire `RHTower` umbrella.
 
 Formal module:
-`formal/GaloisForLFunctions/RHTower/DeningerMeyerHalfDensityXiGraphClosure.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerHalfDensityXiGraphClosure.lean`.
 
 Verification: direct `lake env lean` and targeted `lake build
-GaloisForLFunctions.RHTower.DeningerMeyerHalfDensityXiGraphClosure` pass. Axiom audit of maximal
+GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHalfDensityXiGraphClosure` pass. Axiom audit of maximal
 verticality, critical single-valuedness, no closed single-valued extension, and exact closability
 reports only `propext`, `Classical.choice`, and `Quot.sound`.
 

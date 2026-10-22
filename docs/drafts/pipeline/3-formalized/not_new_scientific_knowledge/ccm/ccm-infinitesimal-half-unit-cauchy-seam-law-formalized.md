@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMHalfUnitCauchySeam` (new), over the pre-existing
+`GaloisForLFunctions.RHTower.CCM.CCMHalfUnitCauchySeam` (new), over the pre-existing
 `RHTower.re_inv_pos_of_re_pos` of `GammaSewnMobiusXiWardCofinalBoundaryLift`.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -44,6 +44,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMHalfUnitCauchySeam`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMHalfUnitCauchySeam`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

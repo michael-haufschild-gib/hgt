@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeBurnolFourierJetClosure
 import GaloisForLFunctions.RHTower.ArchimedeanMellinFourier
-import GaloisForLFunctions.HTGeometry.KleinGordonSymbol
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSymbol
 
 /-!
 # Position-square obstruction for the physical Fourier jet

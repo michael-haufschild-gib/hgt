@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaRealConnectionSpectralHankel
 import GaloisForLFunctions.RHTower.PrimeArchExactReconstructionStrictHankelRayUniversalityLaw
-import GaloisForLFunctions.RHTower.ThetaCuspLikelihoodSpectralMeasure
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLikelihoodSpectralMeasure
 
 /-!
 # Theta--Gamma strict Hankel ray in the prime--archimedean cone

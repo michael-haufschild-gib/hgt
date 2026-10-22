@@ -5,9 +5,9 @@
 - **Claim:** `[PAPER-PROVED] [NOVELTY-UNVERIFIED]`
 - **Paper proof:** `./suzuki-energy-derivative-shifted-range-hyperplane-repair.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTaHilbertSpace.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTaSmoothCore.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiTaDeficiencyIndices.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaHilbertSpace.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaSmoothCore.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTaDeficiencyIndices.lean`
 
 ## Formal content
 

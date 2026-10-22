@@ -48,10 +48,10 @@ Own newest-first arXiv queries were `tightness` and `recovery`. [Ding–Liu–Lo
 
 ## Validation
 
-All four public theorems are in [ThetaCuspHawkingBMNativeJointEnergy.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeJointEnergy.lean).
+All four public theorems are in [ThetaCuspHawkingBMNativeJointEnergy.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeJointEnergy.lean).
 
 - The complete scratch file passed `lake env lean` without warnings.
-- Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeJointEnergy` passed: two jobs, 12 seconds reported build time. The isolated audit reused 4134 cached local modules and 11 cached dependency packages; no dependency or umbrella build ran.
+- Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeJointEnergy` passed: two jobs, 12 seconds reported build time. The isolated audit reused 4134 cached local modules and 11 cached dependency packages; no dependency or umbrella build ran.
 - `#print axioms` checked only the four new public theorems. Each uses only `propext`, `Classical.choice`, and `Quot.sound`.
 - Original-source equality was checked before installation. Audited source and five emitted artifacts were installed byte for byte.
 - `scripts/formal_tools.py lint` passed with existing large-file warnings; that audit covered the 935-line global-energy version; the subsequent angular-family extension is documented in the [radial approximation report](hb-native-radial-form-approximation.md).

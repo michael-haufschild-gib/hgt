@@ -7,14 +7,14 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiApertureReesConditioningNoGo.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiApertureReesConditioningNoGo.lean`
 - `formal/GaloisForLFunctions/RHTower.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiApertureReesConditioningNoGo`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiApertureReesConditioningNoGo`:
 
 ```text
 RHTower.log_natCast_add_one_le_primeWoldBoundaryVolumeBelow_succ_inv

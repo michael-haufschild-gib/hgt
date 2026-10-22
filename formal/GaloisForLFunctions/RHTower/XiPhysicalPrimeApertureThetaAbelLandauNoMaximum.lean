@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeApertureThetaAbelSmoothProbeSummability
-import GaloisForLFunctions.RHTower.CCMWeightedXiLandau
+import GaloisForLFunctions.RHTower.CCM.CCMWeightedXiLandau
 
 /-!
 # Physical theta--Abel Landau rigidity without a rightmost zero

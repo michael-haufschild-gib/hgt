@@ -50,14 +50,14 @@ Search date: 2026-08-28. Primary-source search covered quadratic field-redefinit
 
 ## Lean artifact
 
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax`
 
 All declarations are closed Lean proofs. No new axioms, `sorry`, `admit`, `opaque`, or `unsafe` declarations are introduced.
 
 ## Verification audit
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax.lean`: passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax`: passed, 12,752 jobs.
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax.lean`: passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderFieldRedefinitionMinimax`: passed, 12,752 jobs.
 - `#print axioms` for all nine public theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Module wired into `GaloisForLFunctions.RHTower` umbrella; no umbrella build was run.
 - Formal lint contains no HC47 error. Global lint remains red only on unrelated pre-existing or concurrently added unreachable owned modules.

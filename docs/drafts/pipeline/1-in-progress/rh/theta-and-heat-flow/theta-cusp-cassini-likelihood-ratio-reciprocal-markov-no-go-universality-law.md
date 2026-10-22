@@ -6,8 +6,8 @@
 
 ## Lean-derived conjecture
 
-Reading `RHTower/ThetaCuspCassiniHyperbolicSourceLaw.lean` against
-`RHTower/ThetaCuspCassiniMarkovBoundaryTransport.lean` exposes a sharp representation boundary
+Reading `RHTower/ThetaCusp/ThetaCuspCassiniHyperbolicSourceLaw.lean` against
+`RHTower/ThetaCusp/ThetaCuspCassiniMarkovBoundaryTransport.lean` exposes a sharp representation boundary
 for one and the same explicit likelihood source.
 
 At every positive aperture `0 < t < 1`, the genuine Cassini response is the positive real ratio
@@ -47,12 +47,12 @@ integral identities and mass-obstruction lemmas were already formalized separate
 
 ## Lean target
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
 
 ## Verification
 
 - scratch proof exact, warning-free:
   `lake env lean /tmp/hgt_law289.lean`
 - source proof exact, warning-free:
-  `lake env lean GaloisForLFunctions/RHTower/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
+  `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCassiniLikelihoodRatioReciprocalMarkovNoGoUniversalityLaw.lean`
 - final module build deferred to terminal audit

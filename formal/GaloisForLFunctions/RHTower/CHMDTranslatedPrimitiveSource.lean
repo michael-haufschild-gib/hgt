@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CHMDDoobSourceGraph
 import GaloisForLFunctions.RHTower.MarkovShiftPolarizationAndEvenPrimitivePBAP
-import GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationary
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSourceOddStationary
 import GaloisForLFunctions.RHTower.XiSliceHusimiHeatDictionary
 
 /-!

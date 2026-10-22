@@ -174,7 +174,7 @@ Exact unconditional rank-drop statements are formalized in
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/NestedExhaustionPhaseUniversality.lean
-formal/GaloisForLFunctions/RHTower/SuzukiCompactCorePhaseUniversality.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompactCorePhaseUniversality.lean
 ```
 
 Capstones:

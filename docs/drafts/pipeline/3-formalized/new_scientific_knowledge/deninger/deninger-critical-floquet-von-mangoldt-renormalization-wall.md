@@ -381,7 +381,7 @@ not for the component harmonic-analysis identities.
 
 ## Lean status
 
-`formal/GaloisForLFunctions/RHTower/DeningerCriticalFloquetVonMangoldtWall.lean`,
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCriticalFloquetVonMangoldtWall.lean`,
 `DeningerCriticalFloquetCrossCurrent.lean` and
 `DeningerFloquetDiagonalSignWall.lean`.  Axiom audit for every declaration:
 `propext, Classical.choice, Quot.sound`.

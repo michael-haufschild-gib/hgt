@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RealCharacterDenseL2
 import GaloisForLFunctions.RHTower.L2MellinUnitary
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 
 /-!
 # Ordinary `L²` cyclicity of the Hedenmalm theta source

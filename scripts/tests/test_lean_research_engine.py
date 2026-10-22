@@ -21,7 +21,8 @@ class FakeRuntime:
         self.calls = []
 
     def status(self):
-        return {'available': True, 'embedding_model': 'fake', 'generation_model': 'fake'}
+        return {'available': True, 'embedding_model': 'fake', 'generation_model': 'fake',
+                'models': {'embedding': {}, 'reranker': {}, 'generation': {}}}
 
     def embed(self, texts, *, query=False, deadline):
         self.calls.append(('embed', texts))
@@ -38,10 +39,17 @@ class FakeRuntime:
 
 
 class EmptyVectors:
-    def coverage(self, model):
+    def __init__(self):
+        self.searches = []
+
+    def coverage(self, model, *, measure=False):
         return {'complete': True, 'expected': 1, 'ready': 1}
 
+    def measure_coverage(self, model):
+        return {'complete': True, 'expected': 1, 'ready': 1, 'status': 'measured'}
+
     def search(self, embedding, **kwargs):
+        self.searches.append(kwargs.get('views'))
         return []
 
 
@@ -351,6 +359,37 @@ class EngineTests(unittest.TestCase):
                 for left in limits['text']:
                     self.assertLessEqual(left,min(10,budget))
                     self.assertGreater(left,9 if budget==300 else 0)
+
+    def test_retrieval_only_runtime_skips_generation_stages_without_errors(self):
+        """No generation model pinned: deep mode must still retrieve and must
+        not report decomposition or judgment as failed stages."""
+        class Retrieval(FakeRuntime):
+            def status(self):
+                return {'available': True, 'embedding_model': 'fake',
+                        'models': {'embedding': {}, 'reranker': {}}}
+            def generate(self, *args, **kwargs):
+                raise AssertionError('no generation model is pinned')
+        engine = Engine(self.db, Retrieval(), vectors=EmptyVectors())
+        self.assertFalse(engine.can_generate)
+        result = engine.search('growth bound', mode='deep')
+        self.assertTrue(result['candidate_lemmas'])
+        self.assertEqual([e['stage'] for e in result['errors']], [])
+        self.assertNotIn('decomposition', result['unfinished_stages'])
+        self.assertNotIn('filter_and_judge', result['unfinished_stages'])
+
+    def test_deep_mode_long_query_still_reaches_the_vector_index(self):
+        """Only the keyword relaxations are lexical; the user's own query keeps
+        its vector lane and its reranking pass."""
+        runtime = FakeRuntime([{'sufficient': True}])
+        vectors = EmptyVectors()
+        goal = 'use a uniform growth bound to constrain a parameter'
+        result = Engine(self.db, runtime, vectors=vectors).search(goal, options={'max_rounds': 1})
+        relaxed = [q['query'] for q in result['query_trace'] if q['origin'] == 'keyword_relaxation']
+        self.assertTrue(relaxed, 'this goal must produce keyword relaxations')
+        self.assertTrue(vectors.searches, 'the user query must reach the vector lane')
+        embedded = [texts for kind, texts in runtime.calls if kind == 'embed']
+        self.assertIn([goal], embedded)
+        self.assertNotIn(relaxed[0], [t for texts in embedded for t in texts])
 
     def test_long_deep_query_decomposes_into_explicit_short_queries(self):
         runtime = FakeRuntime([{'queries': ['growth AND bound', 'growth bound', 'beta']}, {'sufficient': True}])

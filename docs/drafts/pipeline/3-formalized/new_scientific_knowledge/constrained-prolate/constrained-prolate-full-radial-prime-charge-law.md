@@ -284,7 +284,7 @@ The three off-diagonal inputs of `(9)` now stand as follows.
 | `(8)` low first row `k ≤ λ²` | `ccm-exact-finite-aperture-first-row-vanishing` | **stage 3** — `abs_integral_firstRow_leading_le`, `≤ 170/(√c k²)` |
 | `(8a)` high first row `k > λ²` | `ccm-exact-high-radial-first-row-bv-bound` | machinery formal (see below) |
 
-For `(8a)`, `GaloisForLFunctions/RHTower/CCMHighRadialFirstRowBV.lean` proves the estimate itself —
+For `(8a)`, `GaloisForLFunctions/RHTower/CCM/CCMHighRadialFirstRowBV.lean` proves the estimate itself —
 `abs_integral_highRadial_firstRow_le`, its exterior-ray form, and the divisor-weighted tail `(13)`
 with `tsum_weighted_highRadial_le` and `tendsto_tsum_log_shift_div_sq_tail` — from a
 `BVWeight` budget, and `bvWeight_of_symbol` / `firstRowWeight_symbol_bounds` discharge that budget

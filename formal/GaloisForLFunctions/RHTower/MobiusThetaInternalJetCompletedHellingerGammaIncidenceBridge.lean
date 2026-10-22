@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaInternalJetSourceLocalSpanning
 import GaloisForLFunctions.RHTower.RiemannDenseSourceClosedAdmissionLaw
-import GaloisForLFunctions.RHTower.DeningerCalderonWittCompletedXiHellingerGammaPureHodgeCoface
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCompletedXiHellingerGammaPureHodgeCoface
 
 /-!
 # Local physical-jet to completed Hellinger--Gamma incidence bridge

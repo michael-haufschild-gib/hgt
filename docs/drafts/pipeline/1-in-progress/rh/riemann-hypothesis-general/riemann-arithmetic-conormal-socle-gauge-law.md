@@ -14,7 +14,7 @@
   - `../2-fully-proven/prime-sieve-wold-gamma-bv-relative-character.md`;
   - `../../../3-formalized/new_scientific_knowledge/other/primitive-fibre-modular-renormalization-law.md`;
   - `formal/GaloisForLFunctions/RHTower/CompleteResolutionSourceCharacterSelectionLaw.lean`;
-  - `formal/GaloisForLFunctions/RHTower/DeningerRamifiedTopConormalFiniteStageCocone.lean`.
+  - `formal/GaloisForLFunctions/RHTower/Deninger/DeningerRamifiedTopConormalFiniteStageCocone.lean`.
 
 ## Result
 

@@ -127,7 +127,7 @@ the exact incompatibility theorem and forced secondary-regulator law `(5)`.
 ## 8. Lean status
 
 Formalized unconditionally in
-`GaloisForLFunctions/RHTower/DeningerRationalWittPoissonBoundarySamplingObstruction.lean`.
+`GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittPoissonBoundarySamplingObstruction.lean`.
 Capstones:
 
 - `deningerMeyerPrimeBoundaryProbe_meyerSum_pos`;

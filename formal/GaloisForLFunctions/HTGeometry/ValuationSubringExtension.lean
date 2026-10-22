@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.CriticalNormalClosureSchurValuation
+import GaloisForLFunctions.HTGeometry.Critical.Normal.ClosureSchurValuation
 import GaloisForLFunctions.HTGeometry.ValuationInertiaRamificationIndex
 
 /-!

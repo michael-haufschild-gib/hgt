@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaQuantileOnePortPencil
-import GaloisForLFunctions.RHTower.HedenmalmQuantileSliceMoment
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileSliceMoment
 
 /-!
 # The flat physical-space normal form of the theta one-port

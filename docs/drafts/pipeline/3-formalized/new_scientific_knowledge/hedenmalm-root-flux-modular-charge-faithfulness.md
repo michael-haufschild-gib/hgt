@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper + Lean)
 - **Scientific status:** `[PAPER-PROVED] [LEAN-PROVED] [BRIDGE] [NOVELTY UNVERIFIED] [NOT RH]`
-- **Lean status:** complete in `RHTower/HedenmalmRootFluxModularChargeFaithfulness.lean`,
+- **Lean status:** complete in `RHTower/Hedenmalm/HedenmalmRootFluxModularChargeFaithfulness.lean`,
   umbrella-wired. `hedenmalmRootQuantileEnergy_pos` proves `0 < E(z)` (interior-continuity
   upgrade of the a.e. zero-energy escape, then the pinned root ODE `h' = -izq·h - 1` forces
   derivative `-1` at an interior zero); `hedenmalmRootOrderedFlux_eq_neg_half_entropy_mul_energy`
@@ -126,7 +126,7 @@ unproved source connector is used.
 ## Internal and external frontier
 
 - `[CORPUS]` `rootFlux_identity_thetaSource` and `rootModeEndpoints_thetaSource` in
-  `formal/GaloisForLFunctions/RHTower/HedenmalmThetaRootEndpoints.lean` close all endpoint
+  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRootEndpoints.lean` close all endpoint
   hypotheses at actual theta-transform zeros.
 - `[CORPUS]` `hasDerivAt_rootH_ode` and positivity/continuity of the quantile speed in
   `HedenmalmQuantileRootMode.lean` supply the strict-energy contradiction.
@@ -166,5 +166,5 @@ unproved source connector is used.
 - 2026-08-07 — C2 survived hostile dependency audit. Interior continuity rules out an a.e.
   zero-energy escape; the forced `-1` in the root ODE rules out pointwise zero. Promoted to Stage 2.
 - 2026-08-13 — Faithful law and full neutrality equivalence formalized unconditionally in
-  `RHTower/HedenmalmRootFluxModularChargeFaithfulness.lean`; module build and axiom audit clean.
+  `RHTower/Hedenmalm/HedenmalmRootFluxModularChargeFaithfulness.lean`; module build and axiom audit clean.
   Promoted to 3-formalized.

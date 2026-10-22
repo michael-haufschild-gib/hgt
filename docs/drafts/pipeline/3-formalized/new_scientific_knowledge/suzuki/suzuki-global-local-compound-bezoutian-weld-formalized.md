@@ -10,7 +10,7 @@
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/SuzukiGlobalLocalCompoundBezoutianWeld.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalLocalCompoundBezoutianWeld.lean`
 
 ## Formal theorem surface
 
@@ -49,7 +49,7 @@ This isolates new open core:
 
 ## Verification
 
-- Direct module check: passed with `lake env lean GaloisForLFunctions/RHTower/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
+- Direct module check: passed with `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiGlobalLocalCompoundBezoutianWeld.lean`.
 - Direct SOTA check: passed with `lake env lean GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean`.
 - Axiom audit: only standard `propext`, `Quot.sound`, and `Classical.choice`; no project axiom or RH premise.
 - Forbidden-token scan of new module: clean.

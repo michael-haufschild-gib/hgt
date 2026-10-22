@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.Sieve.TotientMoebiusNormalisation
 import Mathlib.NumberTheory.TsumDivisorsAntidiagonal
 import GaloisForLFunctions.RHTower.SelbergThetaCommonForcingPairing
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinActualFourierCoefficient
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinCoprimeRowSum
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinActualFourierCoefficient
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinCoprimeRowSum
 
 /-!
 # Arithmetic coordinates for the native theta horizontal weight

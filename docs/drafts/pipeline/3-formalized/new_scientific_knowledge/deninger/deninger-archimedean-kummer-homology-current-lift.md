@@ -226,7 +226,7 @@ middle group with Meyer's Poisson quotient, remain separate.
 
 ### The source-defined content landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerArchimedeanCurrentLift.lean`.  Axiom audit for all 12
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArchimedeanCurrentLift.lean`.  Axiom audit for all 12
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerArchimedeanCurrent`, `deningerArchimedeanCurrent_basis`,
@@ -257,7 +257,7 @@ entries below record each.
 
 ### `(1)` and `(3)` on the actual cohomology of a character stage — 2026-08-07
 
-`formal/GaloisForLFunctions/RHTower/DeningerStageCurrent.lean`.  Axiom audit for all sixteen
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerStageCurrent.lean`.  Axiom audit for all sixteen
 declarations: `propext, Classical.choice, Quot.sound`.
 
 The card's `(1)` was recorded as an import on the ground that no de Rham complex of a complex
@@ -299,7 +299,7 @@ category, and the continuity estimate `(8)`.
 
 ### `(7)` and `(8)` on the pro-Ind model — 2026-08-07
 
-`formal/GaloisForLFunctions/RHTower/DeningerProIndCurrent.lean`.  Axiom audit for all seven
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerProIndCurrent.lean`.  Axiom audit for all seven
 declarations: `propext, Classical.choice, Quot.sound`.
 
 - `deningerStageCohomologySystem` — the directed system of first cohomologies of the character

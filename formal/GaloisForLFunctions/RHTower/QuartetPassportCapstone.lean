@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.QuartetPassportRealizer
 import GaloisForLFunctions.RHTower.EnvelopeJetAgreement
 import GaloisForLFunctions.RHTower.FiniteHermiteCRT
 import GaloisForLFunctions.RHTower.ImaginaryAxisPositiveRepair
-import GaloisForLFunctions.RHTower.DeningerArithmeticFiniteJetInterpolation
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticFiniteJetInterpolation
 
 /-!
 # Arbitrary finite quartet-passport realization: the capstone

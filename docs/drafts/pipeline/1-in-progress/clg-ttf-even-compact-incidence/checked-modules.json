@@ -156,14 +156,14 @@
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitCoordinates",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitRaw",
     "GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitReserve",
-    "GaloisForLFunctions.RHTower.ThetaCuspEvenCompactCorrection",
-    "GaloisForLFunctions.RHTower.ThetaCuspEvenCompactSourceCoordinates",
-    "GaloisForLFunctions.RHTower.ThetaCuspEvenCompactState"
+    "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenCompactCorrection",
+    "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenCompactSourceCoordinates",
+    "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenCompactState"
   ],
   "pending": [
     "HTGeometry/PolynomialODEEvenCompactDeterminant.lean",
     "HTGeometry/PolynomialODEEvenCompactRawDeterminant.lean",
-    "RHTower/ThetaCuspEvenFourExplicitCompact.lean",
+    "RHTower/ThetaCusp/ThetaCuspEvenFourExplicitCompact.lean",
     "HTGeometry/PolynomialODEEvenCompactGapCoefficient4.lean",
     "HTGeometry/PolynomialODEEvenCompactGapCoefficient5.lean",
     "HTGeometry/PolynomialODEEvenCompactGapCoefficient10.lean",

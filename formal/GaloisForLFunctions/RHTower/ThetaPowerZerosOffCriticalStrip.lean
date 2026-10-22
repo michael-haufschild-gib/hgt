@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaPowerStripRigidity
 import GaloisForLFunctions.RHTower.FiniteZeroSubquadraticTwoRayDecay
-import GaloisForLFunctions.RHTower.ThetaCuspChargeHardyRigidity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeHardyRigidity
 
 /-!
 # Zeros outside the critical strip above the cusp-order wall

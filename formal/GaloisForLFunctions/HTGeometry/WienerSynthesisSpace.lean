@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonSynthesisField
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonSynthesisField
 
 /-!
 # Differentiating the synthesis in space

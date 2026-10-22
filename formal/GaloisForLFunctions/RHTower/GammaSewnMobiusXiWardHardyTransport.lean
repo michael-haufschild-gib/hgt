@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusXiWardJuliaTransport
-import GaloisForLFunctions.RHTower.CCMRectangularDirichletLandau
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularDirichletLandau
 
 /-!
 # Non-diagonal Möbius--Gamma transport to the anti-causal Xi Ward column

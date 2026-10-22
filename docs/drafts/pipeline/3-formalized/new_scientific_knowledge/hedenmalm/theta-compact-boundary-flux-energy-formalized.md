@@ -7,7 +7,7 @@
 ## Lean module
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactFluxEnergy.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactFluxEnergy.lean
 ```
 
 Namespace `RHTower`; reachable from `GaloisForLFunctions.RHTower`.
@@ -36,7 +36,7 @@ Denominators are discharged by `thetaSource.mass_ne_zero`, `thetaXiRootEnergy_po
 
 ```bash
 cd formal
-lake build GaloisForLFunctions.RHTower.HedenmalmThetaCompactFluxEnergy
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaCompactFluxEnergy
 ```
 
 Clean.  `#print axioms` on every declaration in the table reports only `propext`,

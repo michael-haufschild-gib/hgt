@@ -407,7 +407,7 @@ The formal tree has no radial PSWF or stationary-phase infrastructure. No Lean f
 
 ## Lean status
 
-`FORMALIZED` — `formal/GaloisForLFunctions/RHTower/CCMRadialPrimeFirstRow.lean`
+`FORMALIZED` — `formal/GaloisForLFunctions/RHTower/CCM/CCMRadialPrimeFirstRow.lean`
 (namespace `GaloisForLFunctions.RHTower`, wired into `GaloisForLFunctions/RHTower.lean`,
 axioms `[propext, Classical.choice, Quot.sound]` on every declaration).
 

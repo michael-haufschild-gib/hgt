@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CHMDQuotientWeilForm
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
 import GaloisForLFunctions.RHTower.CHMDBoundStateInertia
 import GaloisForLFunctions.RHTower.OddSectorEnergyCompletion
 import Mathlib.Analysis.InnerProductSpace.PiL2

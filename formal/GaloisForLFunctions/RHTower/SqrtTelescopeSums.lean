@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMNonSchattenBirmanSchwinger
+import GaloisForLFunctions.RHTower.CCM.CCMNonSchattenBirmanSchwinger
 
 /-!
 # Two elementary square-root sums

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageSoninSigma
 import GaloisForLFunctions.RHTower.FieldOnePositiveUnitsHaarNormalization
-import GaloisForLFunctions.RHTower.CCMArchimedeanGeometricScaledKernel
+import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanGeometricScaledKernel
 
 /-!
 # Literal finite-stage CCM theta equation

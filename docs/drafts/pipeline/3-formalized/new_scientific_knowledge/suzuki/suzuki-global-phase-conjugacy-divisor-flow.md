@@ -435,7 +435,7 @@ carries the invariant mass `2 pi`* — is not among them and had no declaration.
 object: with the phase speed as the derivative of the chart, the cell integral telescopes to the
 phase increment by the fundamental theorem of calculus.
 
-Added to `RHTower/SuzukiGlobalPhaseConjugacy.lean` [PROVED HERE], standard axioms
+Added to `RHTower/Suzuki/SuzukiGlobalPhaseConjugacy.lean` [PROVED HERE], standard axioms
 `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `integral_phaseSpeed_phaseCell` : between the poles at lifted levels `level` and `level + cell`,
@@ -458,7 +458,7 @@ away from zero is a finite set of eigenvalues — is unconditional in the corpus
   `countable_setOf_hasEigenvalue`, `finite_setOf_mem_spectrum_norm_ge`,
   `countable_spectrum_of_isCompactOperator` — discreteness of the nonzero spectrum of a compact
   symmetric operator, proved by orthogonality rather than the Riesz lemma.
-- `RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` :
+- `RHTower/Suzuki/SuzukiFiniteMorseResolventOperatorLift.lean` :
   `finite_setOf_negativeLevel_of_isCompactOperator` — the same statement in this programme's own
   resolvent coordinates, so the `[Fintype]` on labelled levels is a **consequence** of compactness
   rather than a hypothesis.

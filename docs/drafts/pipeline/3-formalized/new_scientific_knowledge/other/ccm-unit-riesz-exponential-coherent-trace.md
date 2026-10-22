@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / cross-route source identification
 - **Scientific status:** `[PROVED HERE] [LEAN-PROVED, UNCONDITIONAL] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/CCMUnitRieszExponentialCoherentTrace.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszExponentialCoherentTrace.lean`
 - **Parent:** `ccm-unit-riesz-aperture-resolvent-weld`
 
 ## Statement
@@ -136,7 +136,7 @@ than by another scalar source reformulation.
 
 ## Index of the formalization
 
-Module: `RHTower/CCMUnitRieszExponentialCoherentTrace.lean`.  All declarations are unconditional;
+Module: `RHTower/CCM/CCMUnitRieszExponentialCoherentTrace.lean`.  All declarations are unconditional;
 `#print axioms` returns only `propext, Classical.choice, Quot.sound`.
 
 | Card item | Lean declaration |

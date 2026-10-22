@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerPositiveCellDegreeZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerPositiveCellDegreeZero
 import Mathlib.Data.Complex.Basic
 
 /-!

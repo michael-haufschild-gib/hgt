@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMobiusHarmonicZero
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusHarmonicZero
 
 /-!
 # Exact tail identity for the Möbius harmonic sum

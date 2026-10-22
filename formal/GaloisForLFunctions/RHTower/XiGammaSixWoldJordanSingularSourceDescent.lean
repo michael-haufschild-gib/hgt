@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiGammaSixWoldJordanHessianDomination
-import GaloisForLFunctions.RHTower.DeningerBigWittCrossPrimeHarmonicSingularGraphSource
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCrossPrimeHarmonicSingularGraphSource
 
 /-!
 # Literal Wold--Jordan square on genuine all-left Big-Witt source rows

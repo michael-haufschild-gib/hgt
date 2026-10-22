@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiOrdinateBandCopies
-import GaloisForLFunctions.RHTower.SuzukiGeneralWitnessAnnularPayment
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGeneralWitnessAnnularPayment
 
 /-!
 # The annular copy count and the unconditional annular payment

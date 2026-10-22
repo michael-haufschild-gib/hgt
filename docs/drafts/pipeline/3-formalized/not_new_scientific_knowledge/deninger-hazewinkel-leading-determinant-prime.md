@@ -84,7 +84,7 @@ classification `Prime D_n ∨ IsUnit D_n` for every natural `n`.
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.DeningerHazewinkelLeadingPrime
+GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLeadingPrime
 ```
 
 Principal declarations:
@@ -97,13 +97,13 @@ deningerHazewinkelLeadingDeterminant_prime_or_isUnit
 The second declaration is the unconditional capstone. Direct file checking passed with:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/DeningerHazewinkelLeadingPrime.lean
+lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerHazewinkelLeadingPrime.lean
 ```
 
 The module contains no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration. Targeted build
 
 ```text
-lake build GaloisForLFunctions.RHTower.DeningerHazewinkelLeadingPrime
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLeadingPrime
 ```
 
 passed after umbrella wiring. `#print axioms` for both declarations reports only Lean/mathlib's

@@ -230,8 +230,8 @@
         {
           "name": "deningerRectangularCoefficient_eq_const_div",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticRectangularHalfDensity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticRectangularHalfDensity.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticRectangularHalfDensity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticRectangularHalfDensity.lean",
           "line": 113,
           "doc": "Half-density rigidity. If a scalar metric coefficient has weight one under every positive moving-modulus dilation, then it is the inverse modulus times one constant.",
           "score": -16.007847383029205
@@ -525,8 +525,8 @@
         {
           "name": "deningerBoundedHilbertComplex_range_le_ker",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticBoundedHilbertComplex",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticBoundedHilbertComplex.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticBoundedHilbertComplex",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticBoundedHilbertComplex.lean",
           "line": 31,
           "doc": "Nilpotence puts every boundary in the cocycle subspace.",
           "score": -25.111679887252265
@@ -534,8 +534,8 @@
         {
           "name": "deningerBoundedHilbertComplex_closure_range_le_ker",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerArithmeticBoundedHilbertComplex",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerArithmeticBoundedHilbertComplex.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticBoundedHilbertComplex",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticBoundedHilbertComplex.lean",
           "line": 40,
           "doc": "The closure of the boundary subspace remains inside the cocycle subspace.",
           "score": -24.32617738948065
@@ -554,8 +554,8 @@
         {
           "name": "ccmGuinandWeilThirdGradeCesaroAnchoredErrorMoment_sub_eq_wallCofinalCocycle",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAnchoredWallTransport",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilThirdGradeAnchoredWallTransport.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAnchoredWallTransport",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilThirdGradeAnchoredWallTransport.lean",
           "line": 143,
           "doc": "Exact cofinal wall cocycle.** For two fixed positive anchors, the difference of the RH-bearing signed currents is not merely bounded: it is exactly an affine function of `H⁻¹`. Thus every fixed-anchor current represents the same cofinal germ modulo `span {1, H ↦ H⁻¹}` while retaining the literal completed prime--polar coefficients.",
           "score": -22.720351630310986
@@ -563,8 +563,8 @@
         {
           "name": "CCMCircleBoundedSymbol",
           "kind": "structure",
-          "module": "GaloisForLFunctions.RHTower.CCMArchimedeanCircleTraceCocycle",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMArchimedeanCircleTraceCocycle.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMArchimedeanCircleTraceCocycle",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMArchimedeanCircleTraceCocycle.lean",
           "line": 36,
           "doc": "A bounded measurable circle symbol, with all analytic data intrinsic to the object.",
           "score": -22.481210640329078
@@ -676,8 +676,8 @@
         {
           "name": "deningerFinitePlaceLogProfile_global_reciprocity",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerAdelicFiniteLogProfile",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerAdelicFiniteLogProfile.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerAdelicFiniteLogProfile",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerAdelicFiniteLogProfile.lean",
           "line": 28,
           "doc": "The finite local profile and weighted archimedean logarithms satisfy global reciprocity.",
           "score": -146.76197528698506
@@ -861,8 +861,8 @@
         {
           "name": "deningerGammaSixCofinalFiniteActualGammaTransport_averagingPacket",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerGammaSixCofinalSingularGraphSoninTransport",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerGammaSixCofinalSingularGraphSoninTransport.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalSingularGraphSoninTransport",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCofinalSingularGraphSoninTransport.lean",
           "line": 389,
           "doc": "Every uniform finite average has the same actual fixed-Sonin value even though its ambient `ell^2` realization tends to zero.",
           "score": -33.59194201674112
@@ -935,8 +935,8 @@
         {
           "name": "intervalIntegral_criticalFeatureCompactSourceBoundaryAliasAtPhase_eq_zero",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureBoundaryPhaseSelection",
-          "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmCriticalFeatureBoundaryPhaseSelection.lean",
+          "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureBoundaryPhaseSelection",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCriticalFeatureBoundaryPhaseSelection.lean",
           "line": 215,
           "doc": "Haar-cell averaging survives the Plemelj boundary limit exactly. This is proved after the source limit has been fixed, so no moving-phase interchange is used.",
           "score": -16.80030212844008
@@ -1171,8 +1171,8 @@
         {
           "name": "suzukiCausalWeilRobinReconstruction_delayedHinge",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.SuzukiCausalWeilRobinGreenIdentity",
-          "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCausalWeilRobinGreenIdentity.lean",
+          "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalWeilRobinGreenIdentity",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalWeilRobinGreenIdentity.lean",
           "line": 71,
           "doc": "The Robin reconstruction with hinge endpoint moments equals the already proved hinge boundary--tail exterior.",
           "score": -27.585680184438644
@@ -1648,8 +1648,8 @@
         {
           "name": "summable_deningerMoebiusPair",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerPoissonMoebius",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPoissonMoebius.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerPoissonMoebius",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPoissonMoebius.lean",
           "line": 91,
           "doc": "",
           "score": -41.039464144344244
@@ -2149,8 +2149,8 @@
         {
           "name": "deningerPrimeArithmeticMulAutIsTopologicalGroup",
           "kind": "noncomputable instance",
-          "module": "GaloisForLFunctions.RHTower.DeningerPrimeMultiplicativeAutomorphismTopology",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerPrimeMultiplicativeAutomorphismTopology.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerPrimeMultiplicativeAutomorphismTopology",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeMultiplicativeAutomorphismTopology.lean",
           "line": 62,
           "doc": "",
           "score": -25.78542134590238
@@ -2158,8 +2158,8 @@
         {
           "name": "deningerPrimeLogPeriodGroup",
           "kind": "def",
-          "module": "GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerTwoPrimeKummerDenseNonclosedRange",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
           "line": 141,
           "doc": "Integer span of the signed two-prime Kummer frequencies.",
           "score": -25.392561413120095
@@ -2167,8 +2167,8 @@
         {
           "name": "deningerPrimeLogPeriodGroup_not_discrete",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.DeningerTwoPrimeKummerDenseNonclosedRange",
-          "relpath": "formal/GaloisForLFunctions/RHTower/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
+          "module": "GaloisForLFunctions.RHTower.Deninger.DeningerTwoPrimeKummerDenseNonclosedRange",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoPrimeKummerDenseNonclosedRange.lean",
           "line": 145,
           "doc": "The two-prime signed Kummer frequency group is nondiscrete.",
           "score": -25.37450391611842
@@ -2187,8 +2187,8 @@
         {
           "name": "ccmArithmeticJacobianPrimeFibre_isTopologicalAddGroup",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniArithmeticJacobianPrimeFibre",
-          "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniArithmeticJacobianPrimeFibre.lean",
+          "module": "GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniArithmeticJacobianPrimeFibre",
+          "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniArithmeticJacobianPrimeFibre.lean",
           "line": 56,
           "doc": "Connes--Consani Proposition 7.3 at the mapping-torus presentation: the universal prime fibre has its canonical topological abelian group structure.",
           "score": -24.591514299062066
@@ -2223,8 +2223,8 @@
         {
           "name": "subgroup_prod_eq_prod_maps_of_card_coprime",
           "kind": "theorem",
-          "module": "GaloisForLFunctions.RHTower.ArtinBrauerElementary",
-          "relpath": "formal/GaloisForLFunctions/RHTower/ArtinBrauerElementary.lean",
+          "module": "GaloisForLFunctions.RHTower.Artin.ArtinBrauerElementary",
+          "relpath": "formal/GaloisForLFunctions/RHTower/Artin/ArtinBrauerElementary.lean",
           "line": 93,
           "doc": "A subgroup of a finite direct product of a cyclic `p'` group and a `p`-group is the direct product of its two projection images. This is the subgroup-closure step needed when passing from a Brauer-elementary group to one of its subgroups.",
           "score": -30.018969657974466

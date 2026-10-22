@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMParityInvolutionGrading`
+- `GaloisForLFunctions.RHTower.CCM.CCMParityInvolutionGrading`
 
 Umbrella: `GaloisForLFunctions.RHTower`.
 

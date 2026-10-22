@@ -100,7 +100,7 @@ No external theorem is inserted as an axiom.
 
 ## Formal surface and validation
 
-Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission.lean`.
 Fifteen public theorems and two definitions. The premise-free
 `pwGammaMobiusGlobalAdmission_closed` packages both exact admission classes,
 the positive integrability survivor, and the two zero-parameter failures.
@@ -109,7 +109,7 @@ The two integral-interchange theorems are also proved separately.
 Validation completed:
 
 - Scratch and direct file checks passed with `lake env lean <file>`.
-- Final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission`; target compiled in 67 seconds. Dependency jobs replayed cached results.
+- Final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekGammaMobiusGlobalAdmission`; target compiled in 67 seconds. Dependency jobs replayed cached results.
 - All 15 public theorem axiom audits passed in `/tmp/pwb-gamma-global-axioms.lean`; no axioms beyond `propext`, `Classical.choice`, `Quot.sound` occur.
 - `scripts/formal_tools.py lint` passed. Index regenerated all three formal ledgers and records the 15 theorems and two definitions.
 - All 17 public names have one declaration in the corpus. Task-scoped diff and new-file whitespace checks passed.

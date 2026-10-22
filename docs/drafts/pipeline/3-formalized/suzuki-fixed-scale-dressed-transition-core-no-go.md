@@ -74,7 +74,7 @@ every eventual lower bound.
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.SuzukiFixedScaleDressedTransitionCoreNoGo`.
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFixedScaleDressedTransitionCoreNoGo`.
 
 - `suzukiFixedScaleDressedWardBudget_le`: aperture-independent ceiling for the complete fixed-scale
   scalar dressing.
@@ -87,7 +87,7 @@ Module:
 - `no_fixedScaleDressed_transitionCore_WardProducer`: closed, parameter-free class kill.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.SuzukiFixedScaleDressedTransitionCoreNoGo` passed; all five
+`lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiFixedScaleDressedTransitionCoreNoGo` passed; all five
 certificates depend only on `propext`, `Classical.choice`, and `Quot.sound`.  Module is wired into
 `GaloisForLFunctions.RHTower`.  Global lint recognizes it as reachable; global lint remains red
 only because unrelated concurrently present modules are not wired into their umbrellas.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerPrimitiveJointDepthKreinXiLanding
-import GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinDivisorTomography
 import GaloisForLFunctions.RHTower.RoutePCompletedXiConormalBaseResidue
 
 open Complex Filter Function Set WithTop Topology MeasureTheory

@@ -289,8 +289,8 @@ coefficients supply the signs; an exact Taylor lower bound supplies
 used to infer the sign.
 
 Final leaf audit succeeded with `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspThreeAtomFourthLeadingRatio.olean
-GaloisForLFunctions/RHTower/ThetaCuspThreeAtomFourthLeadingRatio.lean`.
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomFourthLeadingRatio.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomFourthLeadingRatio.lean`.
 Scratch `#print axioms` reports only `propext`, `Classical.choice`, and
 `Quot.sound`; no added axioms or admissions. Umbrella import added.
 
@@ -311,8 +311,8 @@ majorant `<3/100`; this combines with the leading `<63/100` estimate.
 Finally, `G<2*(2q-3)` and `A0>=5*(2q-3)^4` give the normalized margin.
 
 The complete new leaf passed `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspThreeAtomFourthNumerator.olean
-GaloisForLFunctions/RHTower/ThetaCuspThreeAtomFourthNumerator.lean`.
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomFourthNumerator.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomFourthNumerator.lean`.
 Scratch axiom audits for the expansion, numerator bound, and normalized
 bound report only `propext`, `Classical.choice`, and `Quot.sound`.
 No resource-limit overrides were added. Both leaves are imported by
@@ -393,8 +393,8 @@ that the first-three Gaussian weight plus the whole remaining tail
 is strictly below two for every power through twelve.
 
 The Gaussian-tail leaf passed `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspThreeAtomGaussianTail.olean
-GaloisForLFunctions/RHTower/ThetaCuspThreeAtomGaussianTail.lean` and is
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomGaussianTail.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomGaussianTail.lean` and is
 imported by the RH umbrella. The actual atom normalization and tail
 derivative bounds are currently being checked in scratch; do not yet
 treat those as completed source theorems.
@@ -418,8 +418,8 @@ budget. The factorization uses the existing differentiation engine,
 not a new assumed termwise-derivative formula.
 
 The new source-derivative leaf passed `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspThreeAtomSourceDerivatives.olean
-GaloisForLFunctions/RHTower/ThetaCuspThreeAtomSourceDerivatives.lean` and
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomSourceDerivatives.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomSourceDerivatives.lean` and
 was wired into the umbrella. A further scratch check now connects the
 actual first-three raw derivative jets to the negative numerator.
 The full-source fourth-logarithmic sign remains open here until the
@@ -437,8 +437,8 @@ head jets and verifies the exact quartic identity
 `HilbertMetric.logarithmicFourthJet` of the five literal source-head
 derivative jets is `< -17/10` for every `x>=0`. The leaf passed
 `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspThreeAtomSourceHead.olean
-GaloisForLFunctions/RHTower/ThetaCuspThreeAtomSourceHead.lean` and was
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomSourceHead.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspThreeAtomSourceHead.lean` and was
 wired into the umbrella. This is a raw-jet statement; an explicit
 `iteratedDeriv 4 (log source)` identification remains to be connected
 when the full-source sign is proved.
@@ -712,8 +712,8 @@ spectral measure's continuum part and modular coupling must be retained.
 No claim of an audited ratio identity or sign has been made.
 
 Final checked leaf: `lake --old env lean -o
-.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCuspModularCoupledShear.olean
-GaloisForLFunctions/RHTower/ThetaCuspModularCoupledShear.lean` succeeded.
+.lake/build/lib/lean/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspModularCoupledShear.olean
+GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspModularCoupledShear.lean` succeeded.
 The umbrella import is present. Scratch axiom audit succeeded for the global
 coupled source theorem and its compact corollary, standard three axioms only.
 Index refresh succeeded. Global lint still reports eleven unrelated missing

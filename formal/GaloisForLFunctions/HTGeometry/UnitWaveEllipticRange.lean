@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.UnitWaveTimeIntegration
-import GaloisForLFunctions.HTGeometry.KleinGordonStrongSolution
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonStrongSolution
 
 /-! Two spatial inverse-frequency factors from time regularity of the actual forcing. -/
 open MeasureTheory Set

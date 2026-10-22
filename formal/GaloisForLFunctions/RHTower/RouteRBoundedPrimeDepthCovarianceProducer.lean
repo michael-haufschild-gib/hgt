@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalAdelicCompletedXiFixedCoronaPolarization
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicCompletedXiFixedCoronaPolarization
 
 /-!
 # Route R bounded prime-depth covariance criterion

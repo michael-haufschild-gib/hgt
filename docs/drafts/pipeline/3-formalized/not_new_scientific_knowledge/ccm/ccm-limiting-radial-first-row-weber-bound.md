@@ -185,7 +185,7 @@ decomposition, stationary phase and the Weber transform do remain cited parents,
 exact phase computations `(7)`, `(8)`, `(10)` and the arithmetic summation `(4)` are fully
 reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMLimitingRadialWeber.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMLimitingRadialWeber.lean`
 (8 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

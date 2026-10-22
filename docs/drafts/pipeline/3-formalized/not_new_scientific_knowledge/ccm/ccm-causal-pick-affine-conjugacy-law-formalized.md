@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMCausalPickAffineConjugacy` (new), over the Pick-cluster modules
+`GaloisForLFunctions.RHTower.CCM.CCMCausalPickAffineConjugacy` (new), over the Pick-cluster modules
 `CCMEulerRayLoewner`, `CCMEulerRayLogDerivativeIndex`, `CCMDiagonalFockLift`,
 `CCMHalfUnitCauchySeam`.
 
@@ -44,6 +44,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMCausalPickAffineConjugacy`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMCausalPickAffineConjugacy`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

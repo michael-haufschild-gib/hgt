@@ -7,16 +7,16 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimeTangentTomography.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeTangentTomography.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeTangentTomography`:
 
 ```text
-GaloisForLFunctions.RHTower.SuzukiPrimeTangentNonresonant
+GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeTangentNonresonant
 GaloisForLFunctions.RHTower.eventually_suzukiPrimeTangentNonresonant
 GaloisForLFunctions.RHTower.exists_suzukiPrimeTangentNonresonant_above
 GaloisForLFunctions.RHTower.exists_suzukiPrimeTangentTomography_above

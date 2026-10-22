@@ -77,7 +77,7 @@ This finite undershoot is a Lean theorem. The actual scaled limit `p W_p -> -u S
 
 ## Remaining hard problem
 
-The proposed use of the real balance as the missing exclusion law is now rejected on the actual source: [the phase-completeness audit](../../arithmetic-minimum-phase-completeness.md) proves nearby nonzero projected witnesses at every strip zero and an off-line nonzero projected witness from any strip zero. The negative weighted mean and the minimum-attainment argument below the decay exponent already follow at projected witnesses. The full complex discrepancy is retained exactly, but its required imaginary vanishing remains unproved.
+The proposed use of the real balance as the missing exclusion law is now rejected on the actual source: [the phase-completeness audit](arithmetic-minimum-phase-completeness.md) proves nearby nonzero projected witnesses at every strip zero and an off-line nonzero projected witness from any strip zero. The negative weighted mean and the minimum-attainment argument below the decay exponent already follow at projected witnesses. The full complex discrepancy is retained exactly, but its required imaginary vanishing remains unproved.
 
 The classes are independently defined and exhaustive, but their existence does not resolve the finite-label cases. A proof still needs an arithmetic relation involving the nonzero minimum values and the terms connecting distinct moduli that is incompatible with an off-line zero in each remaining class. Neither a generic minimum principle, divisor dominance, nor matching labels on already critical-line points supplies that relation. No conditional RH receiver with this missing relation as a premise has been added.
 

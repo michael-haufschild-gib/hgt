@@ -139,10 +139,10 @@ INCLUDING THE ARITHMETIC INPUT (2)`.
 
 Two modules:
 
-- `formal/GaloisForLFunctions/RHTower/DeningerArithmeticFiniteResidueEndpoint.lean` (already in the
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticFiniteResidueEndpoint.lean` (already in the
   tree) — the homological half: given *any* residue coordinate isomorphism, the three-term complex
   `(3)`--`(4)` has `H⁰ = R`, `H¹ = 0`, `H² = O` by projection.
-- `formal/GaloisForLFunctions/RHTower/DeningerSUnitEndpointPage.lean` (new) — the arithmetic half,
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerSUnitEndpointPage.lean` (new) — the arithmetic half,
   i.e. that `(2)` *is* such an isomorphism, plus the naturality claim.
 
 Axiom audit for all 24 new declarations: `propext, Classical.choice, Quot.sound`.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinLineInvariance
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinLineInvariance
 import GaloisForLFunctions.RHTower.EisensteinLineZeroMean
 import GaloisForLFunctions.RHTower.EisensteinMaassSelbergAlgebra
 

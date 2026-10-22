@@ -49,7 +49,7 @@ of its Green-jump weight. Contradiction.
 ## Lean certificate
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingOneSidedRetardedAdvancedSchwarzNoGo`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingOneSidedRetardedAdvancedSchwarzNoGo`
 
 Principal declarations:
 

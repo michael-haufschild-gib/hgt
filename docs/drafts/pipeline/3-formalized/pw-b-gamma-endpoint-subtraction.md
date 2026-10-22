@@ -61,7 +61,7 @@ checked against their actual hypotheses and do not supply the missing law.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusEndpointSubtraction.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusEndpointSubtraction.lean`.
 The complete scratch passes; all23 public declarations use only
 propext, Classical.choice and Quot.sound. Identical proof bodies are
 promoted and the one-copy RHTower umbrella import is wired.

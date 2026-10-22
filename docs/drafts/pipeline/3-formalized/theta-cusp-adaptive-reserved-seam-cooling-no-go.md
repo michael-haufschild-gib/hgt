@@ -81,7 +81,7 @@ so the parenthesis is strictly negative. Completed logarithmic curvature gives `
 - Physical fifth-germ identity and strict sign: `RHTower.iteratedDeriv_five_thetaCuspC5AdaptiveReservedClearedSeamGerm` and `RHTower.iteratedDeriv_five_thetaCuspC5AdaptiveReservedClearedSeamGerm_neg`.
 - Literal punctured-neighbourhood failure: `RHTower.eventually_c5CompletedAdaptiveReservedCompensationMargin_neg`.
 - Route-killing closed theorem: `RHTower.not_forall_c5CompletedAdaptiveReservedCompensationMargin_nonneg`.
-- Verification: direct foreground Lean checks passed for both new modules; targeted build `lake build GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5AdaptiveReservedSeamNoGo` passed; exported theorem axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
+- Verification: direct foreground Lean checks passed for both new modules; targeted build `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5AdaptiveReservedSeamNoGo` passed; exported theorem axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Log
 

@@ -77,7 +77,7 @@ window large enough to recover its own mass loss, those rates may be incompatibl
 Module:
 
 ~~~text
-GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineDualMassWall
+GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineDualMassWall
 ~~~
 
 Main theorem:
@@ -89,7 +89,7 @@ tendsto_exteriorCosineMeasureGauge_mass_atTop_of_constant_approximation
 Verification:
 
 - direct `lake env lean` source check passed;
-- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadExteriorCosineDualMassWall` passed;
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadExteriorCosineDualMassWall` passed;
 - all ten public theorem axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`;
 - forbidden-declaration scan is empty;
 - module is wired into `GaloisForLFunctions.RHTower`; no umbrella/full build was run.

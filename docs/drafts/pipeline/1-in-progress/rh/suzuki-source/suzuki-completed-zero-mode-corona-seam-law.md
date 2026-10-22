@@ -968,7 +968,7 @@ finite-to-flat/source-selected cancellation.
 The arithmetic collision classifier is formalized in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiPrimeValuationSeam.lean.
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeValuationSeam.lean.
 ```
 
 It reuses the existing unconditional `primeLog_linearIndependent` theorem and proves injectivity of

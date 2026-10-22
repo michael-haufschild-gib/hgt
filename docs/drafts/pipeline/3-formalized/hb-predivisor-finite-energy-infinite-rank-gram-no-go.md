@@ -43,7 +43,7 @@ If `S` were integrable on `(0,1/2)`, domination would make `x↦x⁻²` integrab
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorFiniteEnergyInfiniteRankGramNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPreDivisorFiniteEnergyInfiniteRankGramNoGo`
 - Hard-edge bound: `d4PreDivisorOpticalCancellationSusceptibility_rpow_neg_two_le`
 - Infinite susceptibility energy: `not_integrableOn_d4PreDivisorOpticalCancellationSusceptibility`
 - Dimension-free Gram obstruction: `not_integrableOn_normSq_of_d4PreDivisorOpticalCancellationGram`

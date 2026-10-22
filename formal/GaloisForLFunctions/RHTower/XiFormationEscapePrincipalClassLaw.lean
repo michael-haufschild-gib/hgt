@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiGammaSixFilteredBoundaryHarmonicResidue
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptiveGreenDoubleLogResidueWeld
-import GaloisForLFunctions.RHTower.HedenmalmThetaKakutaniBalancedIndexNoGo
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKakutaniBalancedIndexNoGo
 
 /-!
 # Quantized modular-formation escape: four-organ reconstruction

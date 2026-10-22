@@ -65,7 +65,7 @@ measure.
 
 Module:
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativePartSquareEnergyGate.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativePartSquareEnergyGate.lean`
 
 Principal declarations:
 

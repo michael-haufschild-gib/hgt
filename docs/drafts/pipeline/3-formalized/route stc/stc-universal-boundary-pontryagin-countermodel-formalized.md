@@ -2,7 +2,7 @@
 
 - **Paper card:** `stc-universal-boundary-pontryagin-countermodel.md`
 - **Lean modules:** `GaloisForLFunctions.RHTower.STCUniversalBoundaryPontryaginCountermodel`
-  (namespace `RHTower.UniversalBoundaryCountermodel`), `GaloisForLFunctions.RHTower.HedenmalmCompactSourceEigenmode`
+  (namespace `RHTower.UniversalBoundaryCountermodel`), `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCompactSourceEigenmode`
   (compact source inverse, metric commutator and divisor eigenvectors for any positive density),
   `GaloisForLFunctions.HTGeometry.PontryaginNeutralEigenvectorBound`; inputs from the corpus
   quantile/Hilbert--Schmidt layer (`PositiveDensityQuantile`, `HedenmalmQuantileNormalForm`,

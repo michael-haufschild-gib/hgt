@@ -74,7 +74,7 @@ before radial action; determinant/KL integration afterward is too late.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePInformationBocksteinAction.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePInformationBocksteinAction.lean`
 
 Headline declarations:
 

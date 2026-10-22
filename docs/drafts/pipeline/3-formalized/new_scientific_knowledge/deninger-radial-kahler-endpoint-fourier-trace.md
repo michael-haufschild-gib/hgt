@@ -146,7 +146,7 @@ quotient, and harmonic faithfulness.
 
 ### The whole theorem landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerRadialKahlerTrace.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRadialKahlerTrace.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerRadialLift f z = f (‖z‖²)` — the radial Kähler lift `(2)`.

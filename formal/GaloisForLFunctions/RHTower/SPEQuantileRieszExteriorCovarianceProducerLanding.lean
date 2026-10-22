@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszParabolicCovarianceHardCore
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarCovarianceExteriorProducer
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarCovarianceExteriorProducer
 
 /-!
 # Literal SP-E landing of the exterior covariance producer

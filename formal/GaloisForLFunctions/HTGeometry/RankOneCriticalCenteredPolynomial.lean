@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.RankOneCenteredObservationCoordinates
 import GaloisForLFunctions.HTGeometry.GenericJetReciprocalPowerSeries
-import GaloisForLFunctions.HTGeometry.CriticalGeometricDegreeExact
+import GaloisForLFunctions.HTGeometry.Critical.Geometric.DegreeExact
 
 /-!
 # The actual rank-one critical extension as a centered generic polynomial

@@ -6,7 +6,7 @@
 - **Paper proof:**
   `new_scientific_knowledge/other/theta-cusp-calibrated-power-reciprocal-first-moment-law.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - **Status:** unconditional quantitative no-go and unique positive power-reciprocal survivor.
 
 ## Formalized theorem
@@ -85,7 +85,7 @@ the Cassini boundary identity, or RH.
 ## Verification
 
 - Direct `lake env lean` check passes for the module.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspCalibratedPowerReciprocalMomentLaw` passes.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCalibratedPowerReciprocalMomentLaw` passes.
 - Capstone `#print axioms` checks report only `propext`, `Classical.choice`, and `Quot.sound`.
 - No `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declaration occurs in the module.
 - Module is imported by `formal/GaloisForLFunctions/RHTower.lean`.

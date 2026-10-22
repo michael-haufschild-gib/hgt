@@ -32,7 +32,7 @@
   literal positive prime steps for `2` and `3` have noncommuting compressed symmetric products
   at a positive physical aperture.  This supplies source-derived order for positive labels without
   assigning an artificial sign to a prime letter.
-- Lean proof: `formal/GaloisForLFunctions/RHTower/SuzukiOrientedPrunedPathChronology.lean`.
+- Lean proof: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOrientedPrunedPathChronology.lean`.
 - Route consequence: the remaining categorical bridge must preserve this oriented,
   support-pruned path algebra into P-G186 Julia columns and then establish its Type-B insertion
   law.  Passing first through `suzukiWordCoefficient` is ruled out by the blindness theorem above.
@@ -49,7 +49,7 @@
   Riesz readout additionally retains physical-wall/source-barycentre and terminal-mass mismatch
   terms.  A successful producer must control those literal channels together with the new ledger;
   a sign theorem for the strict-cross current alone would be insufficient.
-- Lean proof: `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarParabolicOrientationLedger.lean`
+- Lean proof: `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarParabolicOrientationLedger.lean`
   (`lake env lean` direct module check passed; no umbrella build run).
 - The ordered all-pair orientation ledger is exactly twice the weighted covariance numerator of
   matched--quantile displacement with the matched-cell barycentre.  Consequently the complete
@@ -58,7 +58,7 @@
   displacement--centroid covariance, and the hard missing theorem is a source-faithful
   covariance--debt cancellation law—not any local overlap/gap estimate or diagonal energy bound.
   This is now formalized in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`;
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`;
   direct checks and the narrow axiom audit use only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - The same literal covariance has an exact adjacent matched-gap representation only after Abel
@@ -66,26 +66,26 @@
   all-pair information and rules out replacing the hard cancellation by a local gap energy;
   any bridge to a fixed inverse-incidence primitive requires an explicit new source map.
   Formalized and axiom-audited in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
 - No cutoff-independent coefficient sequence equals that literal kernel at every finite head:
   its first coefficient is strictly larger at head `3` than at head `2`, with exact increment
   `weight(2) * weight(5) * (centroid(5) - centroid(2))`.  Thus P-G86's fixed adjacent primitive
   cannot be directly coefficient-preserving for SP-E.  This is not a no-go for a new explicit
   transformed source map.  Formalized and axiom-audited in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
 - The global Abel kernel obeys an exact causal cutoff update: appending atom `K + 3` changes each
   retained gap coefficient by its weight times its matched-centroid excess over that gap's prefix.
   Any nonlocal inverse-incidence bridge must preserve this history law, not merely adjacent-gap
   support.  Formalized and axiom-audited in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
 - At every prime-power append, this update is strictly positive for every already-visible gap.
   Hence each new prime atom broadcasts into the entire retained SP-E gap history; an inverse that
   only appends a local edge cannot be source-faithful. Formalized and axiom-audited in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
 - Every coefficient visible in a finite SP-E head is nonnegative.  Therefore the exact Abel
   reduction puts all unresolved sign/cancellation in the literal oriented quantile gaps, not in
   the nonlocal inverse kernel. Formalized and axiom-audited in
-  `formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCovarianceHardCore.lean`.
 - After multiplication by the literal completed source mass, the actual SP-E physical-wall Riesz
   readout is exactly: twice that global adjacent-gap current, plus the full displacement debt,
   plus completed terminal interaction/form, plus both physical-wall gauge terms.  The equation

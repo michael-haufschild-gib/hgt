@@ -91,8 +91,8 @@ relative Eilenberg--Moore comparison and commute with the pro-realization.
 
 ### All three clauses landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMilnorSquareZeroQuotient.lean` and
-`formal/GaloisForLFunctions/RHTower/DeningerExteriorFreeness.lean`.  Axiom audit of every
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMilnorSquareZeroQuotient.lean` and
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExteriorFreeness.lean`.  Axiom audit of every
 declaration: `propext, Classical.choice, Quot.sound`.
 
 **Clause 1 — freeness.**  `DeningerExteriorFreeness.lean`.

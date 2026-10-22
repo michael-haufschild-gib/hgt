@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiFiniteCancelledInertia
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiFiniteCancelledInertia
 import GaloisForLFunctions.RHTower.XiShiftEulerDenseFiniteSection
 
 /-!

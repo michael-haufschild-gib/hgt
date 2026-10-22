@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.SquarefreeCountingAsymptotic
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeCount
 import GaloisForLFunctions.RHTower.Sieve.MoebiusHarmonicArbitraryLogRate
-import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelSummation
 
 /-!
 # Transfer of actual Möbius cancellation to squarefree discrepancy

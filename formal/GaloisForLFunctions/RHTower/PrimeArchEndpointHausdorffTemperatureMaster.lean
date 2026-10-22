@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchScaledHausdorffDivisorValueRelation
 import GaloisForLFunctions.RHTower.PrimeArchFiniteKMSLocalMomentClosure
-import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMCumulativeNegativeMassSpectrum
 
 /-!
 # Endpoint Hausdorff source--temperature master law

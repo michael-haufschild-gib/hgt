@@ -77,7 +77,7 @@ Then
 \]
 the principal map is injective, and degree is surjective.  Equations
 `(2)`--`(3)` are written unconditionally in
-`RHTower/DeningerArithmeticRealArakelovEndpoint.lean`.
+`RHTower/Deninger/DeningerArithmeticRealArakelovEndpoint.lean`.
 
 By `DAC_ADELIC_PLACE_AVERAGE_RESIDUE`, the finite coordinates in `(2)`
 are exactly the place-average Kummer residues.  Thus `(1)` is the
@@ -120,7 +120,7 @@ coarse-sheaf/coherence defects.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticRealArakelovEndpoint.lean` checks with
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticRealArakelovEndpoint.lean` checks with
 `lake env lean` and builds; axiom audit `propext, Classical.choice, Quot.sound`.
 
 - `deningerFiniteDivisorWeight`, `deningerArakelovPrincipal`, `deningerArakelovDegree` —

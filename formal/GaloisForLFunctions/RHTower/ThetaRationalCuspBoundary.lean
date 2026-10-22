@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.QuadraticGaussSumFourthPower
 import GaloisForLFunctions.RHTower.HalfWeightThetaMultiplier
-import GaloisForLFunctions.RHTower.ThetaCuspComplexStrip
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspComplexStrip
 
 /-!
 # Rational-cusp boundary law of the completed theta source

@@ -153,7 +153,7 @@ the all-epsilon upper bound.
 ## Lean status
 
 Unconditional proofs are in
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszApertureResolventWeld.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszApertureResolventWeld.lean`:
 
 - `unitRieszCompletedSourceResponse_eq_chebyshevRayIntegral`;
 - `unitRieszChebyshevRayIntegral_eq_primeIntegral`;
@@ -180,8 +180,8 @@ Module is wired into `GaloisForLFunctions.RHTower`.
 
 ## Index of the formalization
 
-Modules: `RHTower/CCMUnitRieszApertureResolventWeld.lean`,
-`RHTower/CCMUnitRieszApertureResolventEpsilonTransfer.lean`.  All declarations are unconditional;
+Modules: `RHTower/CCM/CCMUnitRieszApertureResolventWeld.lean`,
+`RHTower/CCM/CCMUnitRieszApertureResolventEpsilonTransfer.lean`.  All declarations are unconditional;
 `#print axioms` returns only `propext, Classical.choice, Quot.sound`.
 
 | Card item | Lean declaration |

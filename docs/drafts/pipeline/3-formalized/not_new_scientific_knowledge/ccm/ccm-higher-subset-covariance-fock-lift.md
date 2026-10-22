@@ -301,7 +301,7 @@ as a bridge.
 ## 7. Lean status
 
 **Formalized unconditionally, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMSubsetCovarianceFock.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSubsetCovarianceFock.lean`.
 
 The previous decision said an "abstract wrapper around two standard atoms" would not certify the live
 gate.  That was the wrong measurement of the card's own content: sections 1–4 and 5a are not one

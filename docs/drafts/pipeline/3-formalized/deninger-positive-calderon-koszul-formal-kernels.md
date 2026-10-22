@@ -6,7 +6,7 @@
 - **Labels:** `DAC_POSITIVE_GRAPH_CONORMAL_INTERSECTION_LEAN`,
   `DAC_SCALED_CHAIN_CONTRACTION_EXACTNESS_LEAN`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`
 
 ## Formalized statements
 
@@ -44,7 +44,7 @@
 ## Verification
 
 - Direct command:
-  `lake env lean GaloisForLFunctions/RHTower/DeningerArithmeticPositiveCalderonKoszul.lean`
+  `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPositiveCalderonKoszul.lean`
 - Result: passed.
 - Axiom audit in `/tmp`: only Lean/mathlib standard
   `propext`, `Classical.choice`, and `Quot.sound`.

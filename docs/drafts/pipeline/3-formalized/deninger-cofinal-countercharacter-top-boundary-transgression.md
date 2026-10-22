@@ -7,7 +7,7 @@
 - **Paper proof:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/deninger/deninger-cofinal-countercharacter-top-boundary-transgression.md`
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.DeningerCofinalCountercharacterTopBoundaryTransgression`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCofinalCountercharacterTopBoundaryTransgression`
 
 ## Formalized theorem set
 
@@ -64,8 +64,8 @@ annihilation.
 Commands run from `formal/`:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/DeningerCofinalCountercharacterTopBoundaryTransgression.lean
-lake build GaloisForLFunctions.RHTower.DeningerCofinalCountercharacterTopBoundaryTransgression
+lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerCofinalCountercharacterTopBoundaryTransgression.lean
+lake build GaloisForLFunctions.RHTower.Deninger.DeningerCofinalCountercharacterTopBoundaryTransgression
 lake env lean /tmp/hgt_route_l_cofinal_countercharacter_axioms.lean
 ```
 

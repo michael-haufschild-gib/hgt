@@ -5,7 +5,7 @@
 - Stage: Formalized in Lean 4
 - Route: CCM-FU
 - Claim: C28
-- Module: `GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaTraceClassFeatureRobinTraceNoGo`
+- Module: `GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaTraceClassFeatureRobinTraceNoGo`
 
 ## Closed result
 

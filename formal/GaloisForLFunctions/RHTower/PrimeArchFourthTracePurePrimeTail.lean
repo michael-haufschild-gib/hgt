@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmStokesCurvatureTailFiniteCeiling
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesCurvatureTailFiniteCeiling
 
 /-!
 # Fourth-trace pure prime tail

@@ -10,7 +10,7 @@
   `ThetaCuspLikelihoodAtomicNondivisibility.lean`, and
   `XiOrderFourteenCornerSourceExclusion.lean`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCalibratedPowerReciprocalMomentLaw.lean`
 - **Statement:** Zeroth-mass calibration cannot repair the raw reciprocal-gap Cassini carrier:
   its first moment exceeds the canonical first source moment by more than
   `(19413 / 160000) * normalizedPrimeArchMoment 0`.  There is nevertheless a unique
@@ -251,7 +251,7 @@ normalizedPrimeArchMoment 1
 `#print axioms` on the quantitative obstruction, unique-exponent theorem, calibrated moment
 capstone, support theorem, and generic existence theorem reports only `propext`,
 `Classical.choice`, and `Quot.sound`.  Direct source check and
-`lake build GaloisForLFunctions.RHTower.ThetaCuspCalibratedPowerReciprocalMomentLaw` pass; the
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCalibratedPowerReciprocalMomentLaw` pass; the
 module is imported by `formal/GaloisForLFunctions/RHTower.lean`.
 
 ## Novelty audit

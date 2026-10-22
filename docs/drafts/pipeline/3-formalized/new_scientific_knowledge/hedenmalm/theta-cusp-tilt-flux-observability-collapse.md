@@ -71,7 +71,7 @@ sum-of-squares law, or cancellation invariant.
 
 ## Lean source
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspTiltFluxObservabilityWeld.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltFluxObservabilityWeld.lean`
 
 Closed declarations:
 
@@ -86,7 +86,7 @@ Verification:
 
 - direct source check passed with `lake env lean`;
 - exact target build passed with
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspTiltFluxObservabilityWeld`;
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTiltFluxObservabilityWeld`;
 - no umbrella/full build was run;
 - all four `#print axioms` reports contain only `propext`, `Classical.choice`, and `Quot.sound`;
 - module is wired into `RHTower.lean`.

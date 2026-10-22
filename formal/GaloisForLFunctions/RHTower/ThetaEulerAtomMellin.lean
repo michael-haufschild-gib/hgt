@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource
 import GaloisForLFunctions.RHTower.GaussianAbsoluteMoment
 import GaloisForLFunctions.HTGeometry.ReflectionIntegral
 

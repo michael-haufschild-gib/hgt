@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** SIGNED MATRIX CLASSIFICATION / EXACT DARK SECTOR
 - **Parent:** PW-B
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSignedMatrixThreeMomentClassification`
 - **Frontier-map policy:** read only
 
 ## Result

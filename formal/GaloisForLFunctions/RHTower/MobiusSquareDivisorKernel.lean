@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusSquareResidueShortBilinear
-import GaloisForLFunctions.RHTower.DeningerAbelSummation
+import GaloisForLFunctions.RHTower.Deninger.DeningerAbelSummation
 import GaloisForLFunctions.RHTower.DirichletDivisorAsymptotic
 import GaloisForLFunctions.RHTower.LogarithmicDivisorDilation
 

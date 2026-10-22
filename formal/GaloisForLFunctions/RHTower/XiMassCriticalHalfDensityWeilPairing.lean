@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CriticalHalfDensityPrimeTailResolventLaw
-import GaloisForLFunctions.RHTower.DeningerCriticalFloquetCrossCurrent
+import GaloisForLFunctions.RHTower.Deninger.DeningerCriticalFloquetCrossCurrent
 import GaloisForLFunctions.RHTower.XiMassCriticalErrorFlux
 
 /-!

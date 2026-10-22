@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiHorizontalCollisionWardGreenCayleyQuantum
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureExteriorPrimeGammaSource
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureExteriorPrimeGammaSource
 import GaloisForLFunctions.RHTower.XiSpectralSupportCriterion
 
 /-!

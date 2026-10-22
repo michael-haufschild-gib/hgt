@@ -183,6 +183,37 @@ on `Ẽ·(a′ − a/2)` is reusable verbatim.
   `exists_re_W_ge_logWeighted` (unconditional, `σ = 1/(4π)` from the strip) and
   `exists_re_W_ge_logWeighted_rate` (rate `6 a · zetaZeroWidth`).
 
+## The rate is sharp: the collar removes the factor three
+The depth cost of the sampling route is the **support radius of the plateau cutoff**, not the
+aperture of the source: the trapezoid `(2a)⁻¹(1_{[−a,a]} ⋆ 1_{[−2a,2a]})` is one on `[−a,a]` but
+lives on `[−3a,3a]`, so each of the two Mellin factors paid `e^{3a·w}` and the floor read
+`6a·zetaZeroWidth`. Keeping the two box radii apart,
+
+    T_{p,q} = (2q)⁻¹ (1_{[−q,q]} ⋆ 1_{[−p,p]}),   plateau p − q,   support p + q,
+
+and taking `p = a + δ`, `q = δ` gives a cutoff with plateau exactly `[−a,a]` and support radius
+`a + 2δ`: the kernel is still a product of two box transforms, so it keeps the quadratic decay
+`(4p + q⁻¹)/(1 + (Re w)²)`, and the depth now costs `e^{2π(a+2δ)|Im w|}`. The collar is paid for by
+the constant, which grows like `δ⁻¹`. Hence, unconditionally, for every `ε > 0`
+
+    Ẑ(f) ≥ −C(a, ε) e^{(2a+ε)·zetaZeroWidth} ∫ ‖𝓕f‖² log(|y|+3)
+
+for every `C²` compactly supported `f` vanishing off `[−a,a]`
+(`exists_re_W_ge_logWeighted_rate_sharp`; `…_rate_collar` is the statement at a fixed collar).
+`2a · width` is exactly the unit of the forward arrow — a floor `−C e^{2σA}` at aperture `A` forces
+`|Re ρ − ½| ≤ σ` — so the converse arrow now matches it with no constant factor: *the rate of the
+archimedean-normalised floor at aperture `a` is twice the aperture times the width*, read in the
+same unit in both directions, where the three-radius trapezoid left a factor-three gap.
+
+New Lean: `HTGeometry/NarrowPlateauSamplingAtDepth.lean` (`trapTwo`, `kernelTwo`, the product
+formula `kernelTwo_eq`, `norm_kernelTwo_le`, `fourierAt_eq_integral_kernelTwo`,
+`sum_norm_sq_fourierAt_le_two`, `sum_norm_sq_fourierAt_le_collar`); in
+`HTGeometry/ComplexLocalSamplingAtDepth.lean` the reproducing identity and the depth-sampling
+theorem are now abstract in the cutoff and in the kernel (`cutoffKernel`,
+`fourierAt_eq_integral_of_cutoff`, `sum_norm_sq_fourierAt_le_of_kernel`), with the three-radius
+statements as instances; in the floor module `floorCoreFrom` takes the sampling bound as an
+argument, so `floorCore` and `floorCoreCollar` differ only in which cutoff they sample with.
+
 ## The normalisation is the growth of the off-line count
 The on-line zeros are free: their Weil summands are nonnegative
 (`re_Wsummand_nonneg_of_onLine`, owned by `HodgeClassificationOfFiniteOffLineSets`), so only the

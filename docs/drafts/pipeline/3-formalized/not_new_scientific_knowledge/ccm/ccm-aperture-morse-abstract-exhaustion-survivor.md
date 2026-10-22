@@ -34,7 +34,7 @@ required nondegeneracy and independence statements.
 
 - [x] 0 → 1: false multiplicity claim isolated
 - [x] 1 → 2: exact algebraic and functional-analytic survivor dependency-closed
-- [x] 2 → 3: `RHTower/CCMApertureMorseExhaustion.lean` built, wired, and axiom-audited with only
+- [x] 2 → 3: `RHTower/CCM/CCMApertureMorseExhaustion.lean` built, wired, and axiom-audited with only
   `propext`, `Classical.choice`, and `Quot.sound`
 - [ ] 3 → 4: publication packaging unnecessary
 

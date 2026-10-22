@@ -244,7 +244,7 @@ rankOneProj_arithState      : the twisted density is the untwisted one conjugate
 norm_rankOneProj_arithState : ‖ρ_χ v‖ = ‖ρ_1 (U⁻¹ v)‖
 ```
 
-`rankOneProj` is the corpus's rank-one density from `RHTower/CCMGammaDampedCauchyFrame.lean` (reused,
+`rankOneProj` is the corpus's rank-one density from `RHTower/CCM/CCMGammaDampedCauchyFrame.lean` (reused,
 not redefined).  Unitary conjugacy is exactly the statement that spectrum, rank, purity, Schatten
 norms and entropies of the density — and of every reduced density along a prime bipartition, since
 the phase unitary factors along the bipartition by `twist_eq_prod` — are independent of `χ`.

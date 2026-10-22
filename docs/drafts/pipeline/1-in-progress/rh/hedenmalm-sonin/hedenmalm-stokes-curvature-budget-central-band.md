@@ -116,7 +116,7 @@ transverse instability—as current obstruction.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureBudgetCentralBand.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesCurvatureBudgetCentralBand.lean
 ```
 
 Theorems:

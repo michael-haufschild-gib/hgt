@@ -61,7 +61,7 @@ proposition interface.
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinVirtualCharacterPairing.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinVirtualCharacterPairing.lean`.
 - Exact normalization: `characterPairing`.
 - Actual-representation generator theorem: `fdCharacterPairing_eq_finrank`.
 - Universe-polymorphic actual-representation theorem:
@@ -69,9 +69,9 @@ proposition interface.
 - Closure theorems: `genuineCharacterPairing_eq_natCast` and
   `virtualCharacterPairing_eq_intCast`.
 - Source check:
-  `lake env lean GaloisForLFunctions/RHTower/ArtinVirtualCharacterPairing.lean`.
+  `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinVirtualCharacterPairing.lean`.
 - Targeted olean audit:
-  `lake build GaloisForLFunctions.RHTower.ArtinVirtualCharacterPairing`.
+  `lake build GaloisForLFunctions.RHTower.Artin.ArtinVirtualCharacterPairing`.
 - `#print axioms` audit of every theorem reports only `propext`, `Classical.choice`, and
   `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

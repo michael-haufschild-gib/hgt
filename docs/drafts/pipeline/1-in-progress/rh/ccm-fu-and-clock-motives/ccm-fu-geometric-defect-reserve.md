@@ -1,7 +1,7 @@
 # CCM-FU: geometric defect reserve
 
 - **Stage:** 1-in-progress
-- **Parent:** [adaptive prime ceiling](../../ccm-fu-adaptive-prime-ceiling.md)
+- **Parent:** [adaptive prime ceiling](ccm-fu-adaptive-prime-ceiling.md)
 - **Frozen question:** Does the sufficient state certificate `Q_P+2 sqrt(G_P D_P)<=Q_empty` admit a complete prime order at every stored cutoff? Separately, does the weaker first-prime estimate with Q_empty replacing G certify every second-prime extension?
 - **Scope:** Every stored subset state through32, original tolerance; no regeneration of channels or greedy paths.
 
@@ -17,7 +17,7 @@ There are 1478 states failing the sufficient geometric certificate. The first is
 
 Every stored cutoff through32 admits a complete path whose preterminal states satisfy the geometric certificate. At cutoff32 one such order is `31,29,23,19,2,17,13,7,5,11,3`. All 192 first-prime states satisfy the weaker sufficient reserve `Q_{p}+2 sqrt(Q_empty D_{p})<=Q_empty`, which would certify every second-prime extension there. Complete certified paths at every cutoff remain open. Universal first-prime certification is false by the analytic theorem below; none of these computed values enters Lean.
 
-The separate [bounded first-prime extension](../../ccm-fu-two-prime-local-blocks.md) checks every first-prime state at cutoffs33..1024 and finds no failure among 95747 states. Its original energies agree with the saved greedy data. The one-dimensional divisor-defect/unit-clock table and all first-prime records are saved. This extends only the numerical first-prime reserve evidence; complete geometric paths remain checked only through32.
+The separate [bounded first-prime extension](ccm-fu-two-prime-local-blocks.md) checks every first-prime state at cutoffs33..1024 and finds no failure among 95747 states. Its original energies agree with the saved greedy data. The one-dimensional divisor-defect/unit-clock table and all first-prime records are saved. This extends only the numerical first-prime reserve evidence; complete geometric paths remain checked only through32.
 
 ## Source-derived reserve scale
 
@@ -37,7 +37,7 @@ same12p family once p is large. Hence the geometric certificate is not
 necessary even for bounding **all** immediate successors. Its failure alone
 must not exclude such states from an argument using exact arithmetic overlaps.
 
-The [direct extension induction](../../ccm-fu-reserve-extension-induction.md)
+The [direct extension induction](ccm-fu-reserve-extension-induction.md)
 tests the stronger local property that every certified proper state has a
 certified successor or can complete. All 7350 certified proper saved states
 through32 pass. A complete all-state extension to cutoffs33..64 finds no

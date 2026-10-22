@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeRectangularPrimitiveCurrent
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeRectangularPrimitiveCurrent
 import GaloisForLFunctions.RHTower.XiMassCriticalPrimeCone
 
 open MeasureTheory Set

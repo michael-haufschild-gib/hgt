@@ -46,7 +46,7 @@ Sharp positive survivor: universal source-adapted cancellation implies
 ## Lean artifact
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBFiniteRankGlobalAIMESourceResponseNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBFiniteRankGlobalAIMESourceResponseNoGo`
 - New infrastructure:
   `exists_common_finset_support_of_finiteDimensional_finsupp`
 - Local no-go:
@@ -87,7 +87,7 @@ Novelty claim is limited to exact HB/AIME route-class application and Lean proof
 
 - Direct `lake env lean` check: passed.
 - Targeted build:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBFiniteRankGlobalAIMESourceResponseNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBFiniteRankGlobalAIMESourceResponseNoGo`
   passed `11894/11894`.
 - Axiom audit for infrastructure, phase/scale laws, local no-go, infinite-rank survivor, and closed
   certificate reports only `propext`, `Classical.choice`, and `Quot.sound`.

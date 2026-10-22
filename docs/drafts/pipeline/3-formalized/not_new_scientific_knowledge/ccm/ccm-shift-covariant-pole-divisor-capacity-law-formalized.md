@@ -8,7 +8,7 @@
 
 ## Lean module
 
-- `GaloisForLFunctions.RHTower.CCMShiftCovariantPoleDivisorCapacity`
+- `GaloisForLFunctions.RHTower.CCM.CCMShiftCovariantPoleDivisorCapacity`
 
 Standing on `CCMQuartetPaleyWiener` (half-line exponential Laplace integral) and
 `RHTower/FractionalPartZeta` (no real zeta zero in `(0,1)`).
@@ -45,6 +45,6 @@ card's open gates.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMShiftCovariantPoleDivisorCapacity`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMShiftCovariantPoleDivisorCapacity`: success.
 - `#print axioms` on every theorem: clean.
 - Umbrella import added.

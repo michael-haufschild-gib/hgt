@@ -12,7 +12,7 @@
 
 - [x] Dependency-closed paper proof
 - [x] Lean scalar determinant core written:
-  `RHTower/DeningerArithmeticComplexLeafOrbitSign.lean`
+  `RHTower/Deninger/DeningerArithmeticComplexLeafOrbitSign.lean`
 - [x] Direct `lake env lean` check and module build
 - [x] Bridge from complex multiplication to the real two-plane determinant
   (`det_complexLeafReturn`, `det_id_sub_complexLeafReturn`); the arithmetic leaf tangent bundle
@@ -87,7 +87,7 @@ REDUCED TO FOUR GEOMETRIC CHECKS`.
 
 ## Unconditional Lean formalization
 
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticComplexLeafOrbitSign.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticComplexLeafOrbitSign.lean`
 
 - `deningerComplexLeaf_returnDet_eq_normSq`, `deningerComplexLeaf_returnDet_pos` — the scalar
   coordinate identity `(1 - Re a)² + (Im a)² = |1 - a|²` and its positivity for `a ≠ 1`.

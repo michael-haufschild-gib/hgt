@@ -127,10 +127,10 @@ enough.
 - [x] move to Stage 2
 - [x] exact Lean theorem and positive-survivor theorem; both exported declarations have zero
   parameters and prove closed propositions
-- [x] `lake env lean GaloisForLFunctions/RHTower/HedenmalmThetaOrdinaryL2PreQuasiExclusion.lean`
+- [x] `lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaOrdinaryL2PreQuasiExclusion.lean`
 - [x] `#print axioms` scratch audit: only `propext`, `Classical.choice`, `Quot.sound`
 - [x] targeted final build:
-  `lake build GaloisForLFunctions.RHTower.HedenmalmThetaOrdinaryL2PreQuasiExclusion`
+  `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaOrdinaryL2PreQuasiExclusion`
 - [x] formal lint attempted: new module clean; repository gate remains blocked by unrelated
   pre-existing unwired `Sieve`, `XiCenteredFlow`, and `HTGeometry` modules
 - [x] umbrella wiring in `GaloisForLFunctions.RHTower`

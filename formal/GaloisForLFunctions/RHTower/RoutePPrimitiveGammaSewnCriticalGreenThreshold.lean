@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePPrimitiveBurnolApertureDefectFirstFlux
-import GaloisForLFunctions.RHTower.HedenmalmStokesFirstTraceMomentDualityWall
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesFirstTraceMomentDualityWall
 
 /-!
 # Route P critical Gamma--sewn Green threshold for aperture defect flux

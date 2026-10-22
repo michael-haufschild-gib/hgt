@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ConnesLevyKernelScaling
-import GaloisForLFunctions.RHTower.SuzukiGammaFrequencySymbol
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaFrequencySymbol
 import GaloisForLFunctions.HTGeometry.ComplexScaledGammaIntegral
 import Mathlib.MeasureTheory.Integral.Prod
 import GaloisForLFunctions.HTGeometry.HalfLineBetaKernel

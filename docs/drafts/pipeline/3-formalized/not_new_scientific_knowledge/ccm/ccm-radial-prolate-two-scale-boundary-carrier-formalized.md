@@ -8,8 +8,8 @@
 
 ## Lean modules
 
-- `GaloisForLFunctions.RHTower.CCMRadialTwoScaleCarrier` (new)
-- `GaloisForLFunctions.RHTower.CCMRadialGlobalDefectMass` (new in the companion card)
+- `GaloisForLFunctions.RHTower.CCM.CCMRadialTwoScaleCarrier` (new)
+- `GaloisForLFunctions.RHTower.CCM.CCMRadialGlobalDefectMass` (new in the companion card)
 - `RHTower.RadialLeakageMassNormalization`, `RHTower.RadialLeakageArcsineMeasure` — the leakage
   layer this is built on.
 - `RHTower.CCMEndpointResponseConstants` — the source of `(4)` and `(7)` as limit inferences.
@@ -52,6 +52,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the new module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMRadialTwoScaleCarrier`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMRadialTwoScaleCarrier`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

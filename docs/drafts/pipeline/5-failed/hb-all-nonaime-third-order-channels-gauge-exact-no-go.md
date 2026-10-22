@@ -11,7 +11,7 @@
 - **Exact killing theorem/mechanism:** `d4EinsteinThirdOrder_unitBMTarget_of_criticalLine_forces_nonexact_channel`. BM incidence forces the aggregate non-AIME resonant projection to `-AIMENumerator`, which is nonzero for nonzero seed; a left resonant state annihilates every channel in `range L`.
 - **Strongest positive survivor:** `d4EinsteinThirdOrder_nonAIMEProjection_eq_neg_AIME_of_unitBMTarget_of_criticalLine`. This is an exact value law, not only a nonvanishing obstruction: the aggregate non-AIME cokernel pairing is fixed uniquely by the source-derived AIME numerator.
 - **New insight:** A successful literal HB producer cannot gauge away all non-AIME third-order dynamics. It must generate a genuine cokernel class in the charge-orthogonal stationary, second-harmonic, or direct-third-variation sector, with aggregate left projection exactly cancelling AIME on every critical fibre.
-- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMThirdOrderCokernelNecessity`; targeted build and axiom audit pass. Formalized survivor card records literature audit.
+- **Status:** Dependency-closed paper proof and Lean proof in `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMThirdOrderCokernelNecessity`; targeted build and axiom audit pass. Formalized survivor card records literature audit.
 
 ## Log
 

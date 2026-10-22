@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedThreePoint
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedThreePoint
 import GaloisForLFunctions.RHTower.PrimeArchThetaTwoAtomHankelDominance
 import GaloisForLFunctions.HTGeometry.WeightedMonicQuadraticHalfWindow
 

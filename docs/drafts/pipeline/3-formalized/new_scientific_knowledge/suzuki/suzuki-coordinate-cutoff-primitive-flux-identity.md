@@ -5,7 +5,7 @@
 - **Type:** EXACT DIFFERENTIATED CUTOFF IDENTITY / POSITIVE SURVIVOR
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiCoordinateCutoffPrimitiveFlux`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCoordinateCutoffPrimitiveFlux`
 - **Inputs:** `suzuki-coordinate-cutoff-covariance-classification.md`,
   `suzuki-gamma-wall-block-hardy-and-derivative-scattering.md`
 

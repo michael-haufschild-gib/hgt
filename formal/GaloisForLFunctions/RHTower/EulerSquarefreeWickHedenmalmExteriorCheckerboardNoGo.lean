@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.EulerSquarefreeWickQuadraticCharacterBridge
-import GaloisForLFunctions.RHTower.HedenmalmCoefficientFaithfulExteriorSourceContour
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCoefficientFaithfulExteriorSourceContour
 
 /-!
 # EWQ checkerboard blindness of the coefficient-faithful Hedenmalm exterior packet

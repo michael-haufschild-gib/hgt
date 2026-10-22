@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-universal-boundary-laplace-frame-saturation-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMBoundaryLaplaceSaturation.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMBoundaryLaplaceSaturation.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 5 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

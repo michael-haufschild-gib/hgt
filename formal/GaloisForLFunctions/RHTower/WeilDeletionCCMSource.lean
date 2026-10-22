@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilSinglePrimeDeletionUniform
-import GaloisForLFunctions.RHTower.SuzukiPolarTranslateMultiplier
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPolarTranslateMultiplier
 import GaloisForLFunctions.RHTower.ConstrainedWeilTwistedOddTest
 import GaloisForLFunctions.HTGeometry.CompactTestTransform
 

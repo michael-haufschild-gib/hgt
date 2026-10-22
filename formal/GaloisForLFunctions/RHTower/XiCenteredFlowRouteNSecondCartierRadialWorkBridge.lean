@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.RiemannCenteredFlowCapacityIntertwining
 import GaloisForLFunctions.RHTower.SourceHorizontalRouteNProjectiveCremonaInvolution
-import GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationCompletedRadialWorkEquivalence
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeTranslationCompletedRadialWorkEquivalence
 
 /-!
 # Bilateral centered-flow capacity is Route-N translation excess

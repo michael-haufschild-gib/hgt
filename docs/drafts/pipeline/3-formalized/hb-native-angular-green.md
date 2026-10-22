@@ -8,7 +8,7 @@ The hard target remains the complete physical current with independent SS/SV/VV 
 
 ## Exact result
 
-All declarations are in `RHTower.D4BMNativeResponse`, in [ThetaCuspHawkingBMNativeAngularGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeAngularGreen.lean).
+All declarations are in `RHTower.D4BMNativeResponse`, in [ThetaCuspHawkingBMNativeAngularGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeAngularGreen.lean).
 
 For arbitrary native `q`, complex `s,amplitude`, real `t,x`, and natural `n`, let
 
@@ -62,7 +62,7 @@ Own broad arXiv queries were `gluing` and `dilation`. [Cho, revised 5 September 
 ## Validation
 
 - Scratch: `lake env lean /tmp/hb-native-angular.LyrTjNfX/Candidate.lean`, passed without warnings.
-- Final: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeAngularGreen` in an isolated audit root, passed in 31 seconds, two jobs. It reused 4127 cached local-module dependencies and 11 cached dependency packages. No old dependency or umbrella was rebuilt.
+- Final: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeAngularGreen` in an isolated audit root, passed in 31 seconds, two jobs. It reused 4127 cached local-module dependencies and 11 cached dependency packages. No old dependency or umbrella was rebuilt.
 - Only the eight new public theorems were checked with `#print axioms` in a scratch file. Every theorem depends only on `propext`, `Classical.choice`, `Quot.sound`.
 - The audited source and all five emitted artifacts were installed byte for byte, with checks that the destination files did not already exist.
 - `scripts/formal_tools.py lint` passed, with existing large-file warnings.

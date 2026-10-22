@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMCompressedShiftIndependence
+import GaloisForLFunctions.RHTower.CCM.CCMCompressedShiftIndependence
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import GaloisForLFunctions.RHTower.VonMangoldtLogSummatory
 

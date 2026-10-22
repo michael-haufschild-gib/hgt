@@ -17,7 +17,7 @@ conclusion follows from a zero upper cusp trace.
 mean restoration passed a foreground `lake env lean` check in
 `/tmp/hb-tested-linear-current.lean` at default limits. This scratch has not been
 published, wired or given a final leaf audit. Further boundary-lemma expansion is
-deferred in favor of the direct [causal source-symmetry repair attack](../../hb-causal-source-symmetry-repair.md).
+deferred in favor of the direct [causal source-symmetry repair attack](hb-causal-source-symmetry-repair.md).
 
 ## Next source identity
 

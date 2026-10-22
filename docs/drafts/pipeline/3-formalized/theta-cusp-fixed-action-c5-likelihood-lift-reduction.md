@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Lean module:**
-  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodLiftReduction`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5LikelihoodLiftReduction`
 - **Main theorems:** `c5CompletedVelocitySlopeLowerJetNumerator_lt`,
   `c5LikelihoodLowerJetSingleMasterReduction`,
   `two_mul_scale_mul_thetaCuspLikelihoodSourceLogPartitionJetTwo_lt_neg_jetThree`,
@@ -169,6 +169,6 @@ claim of exhaustive bibliographic certainty.
 
 - Direct Lean passed for both new modules.
 - `lake build GaloisForLFunctions.HTGeometry.ConvexIntegralTrapezoid` passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodLiftReduction` passed.
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5LikelihoodLiftReduction` passed.
 - Axiom audit for main theorems: only `propext`, `Classical.choice`, and `Quot.sound`.
 - Both modules are wired into their umbrellas; no umbrella or full build was run.

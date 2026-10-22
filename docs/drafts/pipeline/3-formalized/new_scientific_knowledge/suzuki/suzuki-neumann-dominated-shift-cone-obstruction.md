@@ -179,7 +179,7 @@ Concrete falsifiers for proposed selection laws:
 
 ## Formalization
 
-`formal/GaloisForLFunctions/RHTower/SuzukiLargeNegativeShiftCentralFlux.lean` proves the exact
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLargeNegativeShiftCentralFlux.lean` proves the exact
 affine consumer:
 
 ```text
@@ -482,7 +482,7 @@ further mathematics.
 
 ### Lean progress — `(2)` IS NOW ONE THEOREM
 
-The bundled statement, in the new module `RHTower/SuzukiStrongResolventLimit.lean` [PROVED HERE],
+The bundled statement, in the new module `RHTower/Suzuki/SuzukiStrongResolventLimit.lean` [PROVED HERE],
 wired into the `RHTower` umbrella, standard axioms `[propext, Classical.choice, Quot.sound]`,
 builds clean:
 
@@ -578,7 +578,7 @@ already proved — remains, and it is definitional.
 ### Lean progress — the spectral-window hypothesis discharged
 
 - `spectrum_subset_Icc_of_nonneg` : a positive bounded operator has `spectrum ℝ B ⊆ Icc 0 ‖B‖`.
-  [PROVED HERE] in `RHTower/SuzukiStrongResolventLimit.lean`, standard axioms
+  [PROVED HERE] in `RHTower/Suzuki/SuzukiStrongResolventLimit.lean`, standard axioms
   `[propext, Classical.choice, Quot.sound]`, builds clean.
 
 So the `hspec` hypothesis of both strong-limit theorems (`tendsto_resolventFamily_id`,
@@ -589,7 +589,7 @@ gives it, with `M = ‖B‖`. Lower bound from `spectrum_nonneg_of_nonneg`, uppe
 
 ## Restricted-resolvent instantiation: the abstract limits are inhabited
 
-`RHTower/SuzukiDiagonalResolventInstantiation.lean` supplies an explicit class of operators
+`RHTower/Suzuki/SuzukiDiagonalResolventInstantiation.lean` supplies an explicit class of operators
 satisfying every hypothesis of `tendsto_resolventFamily_id` and `tendsto_neumannShiftFamily_id`,
 so those limits are not vacuous.  The operators are the diagonal multipliers of
 `lp (fun _ : ℕ => ℂ) 2` (the corpus `diagonalOperator`, which previously carried norms and
@@ -691,12 +691,12 @@ three audit to exactly `[propext, Classical.choice, Quot.sound]`.
 The card records step `(11)` as resting on *"Suzuki's explicit screw function is continuous and
 satisfies `g(0)=0`"*, cited as external mathematics, and the status paragraph calls the
 identification with `g` "the only genuinely open item ... external mathematics cited by the card".
-That is not accurate for the corpus's own object.  `RHTower/SuzukiScrewCompactHullParityLaw.lean`
+That is not accurate for the corpus's own object.  `RHTower/Suzuki/SuzukiScrewCompactHullParityLaw.lean`
 already defines the screw function explicitly as
 
 `suzukiScrewFunction mult gamma t = ∑' γ, 2 * mult γ / γ ^ 2 * (1 - cos (γ t))`,
 
-and both properties follow from that definition.  `RHTower/SuzukiScrewKernelRegularity.lean`:
+and both properties follow from that definition.  `RHTower/Suzuki/SuzukiScrewKernelRegularity.lean`:
 
 - `suzukiScrewFunction_zero` — vanishing at the origin, termwise from `1 - cos 0 = 0`.
 - `continuous_suzukiScrewFunction` — continuity whenever the weights are summable, via the corpus's
@@ -716,12 +716,12 @@ the actual zero family.
 
 The narrowed claim in the previous entry — that what stays external is the identification of `mult`
 and `gamma` with the real zero family — is also wrong.  The corpus already carries that family:
-`RHTower/CCMUnitaryPolarSourceAtlas.lean` defines `xiLineScrewWeight q = 1 / γ ^ 2` over
+`RHTower/CCM/CCMUnitaryPolarSourceAtlas.lean` defines `xiLineScrewWeight q = 1 / γ ^ 2` over
 `xiCriticalOrdinate`, the screw series `xiLineScrewSeries` built from them, and proves
 `summable_xiLineScrewWeight` and `xiLineScrewSeries_continuous` **unconditionally**.
 
 So the specialisation carries no hypotheses at all
-(`RHTower/SuzukiScrewKernelRegularity.lean`):
+(`RHTower/Suzuki/SuzukiScrewKernelRegularity.lean`):
 
 - `xiLineScrewSeries_zero` — vanishing at the origin.
 - `tendsto_xiLineScrewAperture_average_zero` — **`(11)` for the screw function of the actual
@@ -739,7 +739,7 @@ finiteness of the associated kernel comes with them.
 
 The card's "choose `a>0` small enough that `H_g(2a)/(2a) > c_Xi`" was the one step of the
 `(10)`--`(12)` passage with no Lean counterpart.  It is now formal
-(`RHTower/SuzukiScrewKernelRegularity.lean`):
+(`RHTower/Suzuki/SuzukiScrewKernelRegularity.lean`):
 
 - `exists_aperture_XiC_curvature_lt_xiLineScrewAverage` — since the Xi curvature threshold is
   strictly negative (`XiC_secondDeriv_div_center_re_neg`) and the screw aperture average tends to
@@ -801,7 +801,7 @@ remaining source input for Theorem C; nothing compound is left.
 The card justifies passing from `(2)` to `(7)` in prose: *"pairing `(3)` with a `C^1` compact test
 integrates the distribution derivative by parts and is a bounded `L^2` functional, so strong
 convergence in `(2)` suffices."*  That step is now formal
-(`RHTower/SuzukiStrongResolventLimit.lean`):
+(`RHTower/Suzuki/SuzukiStrongResolventLimit.lean`):
 
 - `tendsto_inner_resolventFamily` — every pairing of the resolvent family against a fixed vector
   converges to the pairing of the limit.
@@ -825,7 +825,7 @@ around it is discharged.
 ### The whole passage `(2) => (10)` is one theorem
 
 `tendsto_normalizedEdgeQuotient` is now stated over an arbitrary filter, and
-`RHTower/SuzukiStrongResolventLimit.lean` carries the assembly:
+`RHTower/Suzuki/SuzukiStrongResolventLimit.lean` carries the assembly:
 
 - `tendsto_normalizedEdgeQuotient_of_resolventFamily` — if the pairings of the limit vector against
   the numerator and denominator vectors are the central-jet values `i * 2c * H(2a)` and `4ac`, then
@@ -896,7 +896,7 @@ left anywhere in Theorem A's chain.
 ### The remaining debt, named as one interface
 
 Following the project convention of representing a missing input as a `Prop`/structure interface,
-`RHTower/SuzukiEdgeDataInterface.lean` names the entire remaining debt of Theorem A as a single
+`RHTower/Suzuki/SuzukiEdgeDataInterface.lean` names the entire remaining debt of Theorem A as a single
 structure `SuzukiEdgeData`:
 
 - the bounded resolvent coordinate `B` with self-adjointness, injectivity and
@@ -1016,7 +1016,7 @@ written-down weights rather than against unspecified vectors.
 
 ### Edge data realised on `L^2` of the interval
 
-`RHTower/SuzukiIntervalEdgeData.lean` assembles the two weights into actual edge data:
+`RHTower/Suzuki/SuzukiIntervalEdgeData.lean` assembles the two weights into actual edge data:
 
 - `oneIntervalL2_ne_zero`, `nontrivial_intervalL2` — for `a > 0` the space is nontrivial (the
   constant function is not a.e. zero, since `Icc (-a) a` has measure `2a > 0`).
@@ -1246,7 +1246,7 @@ coordinate, on `L^2[-a,a]` rather than on `ℓ^2` or on an abstract space, and n
 
 ### Edge data with a compact resolvent coordinate and named weights
 
-`nonempty_intervalEdgeData_compact` (`RHTower/SuzukiIntervalEdgeData.lean`): edge data on
+`nonempty_intervalEdgeData_compact` (`RHTower/Suzuki/SuzukiIntervalEdgeData.lean`): edge data on
 `L^2[-a,a]` in which
 
 - the resolvent coordinate is `intervalHarmonicCoordinate` — **compact, self-adjoint, injective,
@@ -1270,7 +1270,7 @@ denominator functionals in place of these, in a structure whose every other fiel
 
 ### The triangle instantiation is assembled; Theorem C is inhabited end to end
 
-`RHTower/SuzukiScrewShiftConeAssembly.lean` composes the two finished halves that had not been
+`RHTower/Suzuki/SuzukiScrewShiftConeAssembly.lean` composes the two finished halves that had not been
 joined: the compact-coordinate interval edge data with named pairing weights, and the
 critical-ordinate screw theorems.  The primitive is instantiated at
 `xiLineScrewPrimitive = ∫₀^s xiLineScrewSeries` (continuous derivative and vanishing at the origin

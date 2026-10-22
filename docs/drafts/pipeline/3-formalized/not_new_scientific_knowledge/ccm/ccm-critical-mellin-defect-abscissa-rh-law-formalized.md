@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-critical-mellin-defect-abscissa-rh-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMCriticalMellinAbscissa.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinAbscissa.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 5 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

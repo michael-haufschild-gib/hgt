@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRadialProfileAsymptotic
+import GaloisForLFunctions.RHTower.CCM.CCMRadialProfileAsymptotic
 
 /-!
 # Decay of the leading cosine amplitude

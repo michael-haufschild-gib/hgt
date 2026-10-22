@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGammaAllPrimeStokesPairBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaAllPrimeStokesPairBridge
 import GaloisForLFunctions.RHTower.STCOrderedCurvatureRank
 
 /-!

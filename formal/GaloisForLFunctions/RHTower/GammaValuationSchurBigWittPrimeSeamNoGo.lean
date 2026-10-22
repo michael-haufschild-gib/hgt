@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael and the HGT contributors
 -/
 import GaloisForLFunctions.RHTower.GammaValuationSchurLabelledProfile
-import GaloisForLFunctions.RHTower.DeningerBigWittPrimeSeamDirichletTransport
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittPrimeSeamDirichletTransport
 
 /-!
 # Big-Witt prime-seam obstruction for the labelled Gamma valuation profile

@@ -343,7 +343,7 @@ Lambda(2s) integral_(0,1/2] y^(s-2) C_q(y) dy
 
 Both height integrals are admitted. `C_q` is the complete original cutoff
 orbit mean, and `h_q=eta A^2/2` retains both Weyl coefficients. The
-[combined native source value](../../hb-native-square-residual-mellin-value.md)
+[combined native source value](hb-native-square-residual-mellin-value.md)
 has its exact constant/cutoff assembly and a source-identified continuation
 in the convergence chamber, as detailed below. Identification with the
 actual physical quotient pairing and the outgoing advanced/adjoint left

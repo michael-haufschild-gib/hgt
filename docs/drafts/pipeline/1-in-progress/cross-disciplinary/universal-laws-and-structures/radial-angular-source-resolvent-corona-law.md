@@ -201,9 +201,9 @@ source--radial--angular realization.  No zero exclusion is used.
   - `finiteCoordinate_singularGradeReporter_constant`
 - `formal/GaloisForLFunctions/RHTower/SoninPacketBandGapFloor.lean`
   - `exists_pos_eventually_le_fourier_band_gap`
-- `formal/GaloisForLFunctions/RHTower/CCMUnitaryPolarSourceAtlas.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitaryPolarSourceAtlas.lean`
   - `ccmFirstClockCreasePolarFrequencyAtlas`
-- `formal/GaloisForLFunctions/RHTower/CCMFirstClockAsymptoticBohrTorelli.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockAsymptoticBohrTorelli.lean`
   - `ccmFirstClockAsymptoticBohrModel_eq_explicitScrew`
   - `bohrCoefficient_ccmFirstClockAsymptoticBohrModel_eq_multiplicity`
   - `ccmFirstClockAsymptoticBohrModel_recovers_absoluteMultiplicity`

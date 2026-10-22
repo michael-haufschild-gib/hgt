@@ -5,7 +5,7 @@
 - **Stage:** 3-formalized
 - **Type:** same-source admission / exact surviving boundary
 - **Depends on:** [C43 half-density source](route-l-damped-half-density-source-limit.md)
-- **Lean:** `formal/GaloisForLFunctions/RHTower/DeningerDampedWeightedSourceBoundary.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedWeightedSourceBoundary.lean`
 - **RH status:** unproved
 
 Chain: complete original Green/BV source → agreement with the fixed physical
@@ -100,7 +100,7 @@ Main results:
 - `deningerDampingTwo_source_no_integrable_primeGreen`
 
 Scratch `lake env lean /tmp/route_l_c44_weighted.lean` check8 passed with no
-diagnostics. The final `lake build GaloisForLFunctions.RHTower.DeningerDampedWeightedSourceBoundary`
+diagnostics. The final `lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedWeightedSourceBoundary`
 audit passed, rebuilding only this leaf (30 seconds; other graph results were
 replayed). The module is wired once into `RHTower.lean`; formal lint passed.
 No full/umbrella build, numerical experiment, axiom-print command or proof

@@ -113,7 +113,7 @@ bilinear/sesquilinear Green form, not only diagonal energy.
 
 ## Lean
 
-In `GaloisForLFunctions.RHTower.DeningerTateGraphGreenPrimeSector`:
+In `GaloisForLFunctions.RHTower.Deninger.DeningerTateGraphGreenPrimeSector`:
 
 - `deningerTateGraphCrossEnergy_summable`, `deningerTateGraphCrossEnergy_tsum_le`,
   `deningerTateGraphCrossEnergy_tsum_le_graph` formalize `(4)`, `(8)` and `(5)` for the

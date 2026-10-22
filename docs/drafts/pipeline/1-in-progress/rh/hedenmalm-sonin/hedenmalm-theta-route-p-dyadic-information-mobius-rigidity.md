@@ -85,7 +85,7 @@ resummation and before KL/Hellinger convexification.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePDyadicInformationMobiusRigidity.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePDyadicInformationMobiusRigidity.lean`
 
 Headline declarations:
 

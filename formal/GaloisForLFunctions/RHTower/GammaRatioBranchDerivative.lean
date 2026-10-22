@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiGammaStripBranch
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaStripBranch
 import Mathlib.Analysis.SpecialFunctions.Gamma.Digamma
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Inv

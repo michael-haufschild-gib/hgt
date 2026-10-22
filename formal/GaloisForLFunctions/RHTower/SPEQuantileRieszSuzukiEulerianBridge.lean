@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszSourceTransport
-import GaloisForLFunctions.RHTower.SuzukiEulerianOutgoingChargeRigidity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiEulerianOutgoingChargeRigidity
 
 /-!
 # Exact SP-E--Suzuki Eulerian charge bridge

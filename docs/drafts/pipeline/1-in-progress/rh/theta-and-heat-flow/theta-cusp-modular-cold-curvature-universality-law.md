@@ -6,7 +6,7 @@ In progress — paper proof and Lean source complete; exact check and literature
 
 ## Theorem-first provenance
 
-- `RHTower/ThetaCuspLikelihoodModularFluctuation.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodModularFluctuation.lean`
   - `thetaCuspLikelihoodModularSeam_strictFluctuation`
 - `RHTower/PrimeArchThetaGaussianApertureSignedProjectiveCurvature.lean`
   - `thetaCuspGaussianAperture_coldSlope_signFlip`
@@ -36,7 +36,7 @@ the left side becomes the squared corrected cold coefficient.
 ## Lean status
 
 Source complete in
-`formal/GaloisForLFunctions/RHTower/ThetaCuspModularColdCurvatureUniversalityLaw.lean`.
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspModularColdCurvatureUniversalityLaw.lean`.
 
 Direct source check is deferred to final audit because both provenance modules currently lack
 cached `.olean` artifacts; no early `lake build` was run.

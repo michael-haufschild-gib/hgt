@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaWeightedTranslationDomain
-import GaloisForLFunctions.RHTower.HedenmalmThetaDerivativeHistoryQuotient
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDerivativeHistoryQuotient
 import GaloisForLFunctions.HTGeometry.L2MeasureCongruence
 
 /-!

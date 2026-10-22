@@ -81,7 +81,7 @@ zero-height-recentered object without deleting Gamma/polar data.
 
 ## Lean certificate
 
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiCauchyWallUnitRieszIsometry`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiCauchyWallUnitRieszIsometry`
 - **Wall/coherent capstone:**
   `suzukiCauchyAnchoredWallGram_eq_unitExponentialCoherentIncrementGram`
 - **Polar capstone:** `integral_suzukiCauchyWallPolarCounterterm`

@@ -188,7 +188,7 @@ star calculations.
 
 ### The source theorem landed; the literature specialization is delimited
 
-`formal/GaloisForLFunctions/RHTower/DeningerExtendedCuspHodge.lean`, on top of
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerExtendedCuspHodge.lean`, on top of
 `DeningerProLogCuspHodge.lean` and the leafwise Kähler module.  Axiom audit for all 9 declarations:
 `propext, Classical.choice, Quot.sound`.
 

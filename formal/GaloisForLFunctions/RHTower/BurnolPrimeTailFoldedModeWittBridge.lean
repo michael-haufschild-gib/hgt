@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeTailReflectionFoldedSecondOrderResolvent
 import GaloisForLFunctions.RHTower.BurnolCartierHeadEnergyStokesFlux
-import GaloisForLFunctions.RHTower.CCMQuartetPaleyWiener
+import GaloisForLFunctions.RHTower.CCM.CCMQuartetPaleyWiener
 import GaloisForLFunctions.HTGeometry.HermitianWittEigenvalueReality
 
 /-!

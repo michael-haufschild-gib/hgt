@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularNegativePartSquareEnergyGate
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativePartSquareEnergyGate
 import Mathlib.Data.PNat.Basic
 
 /-!

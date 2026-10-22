@@ -86,7 +86,7 @@ remain open.
 
 ## Lean audit
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusMellinBridge.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusMellinBridge.lean`.
 The complete scratch and all nine public declaration axiom audits passed,
 using only propext, Classical.choice and Quot.sound. The eight theorems
 and one definition were promoted with identical proof bodies; the

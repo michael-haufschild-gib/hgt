@@ -50,7 +50,7 @@ commutator, bounded-operator algebra, and Hausdorff uniqueness of norm limits.
 - **Exact killing theorem/mechanism:** `thetaSourceSignedPulledOperator_not_eventually_thetaMetricAdjoint`; equivalently, `thetaSourceSignedStageGreenRemainder_not_eventually_pinnedGreen`. Vanishing correction commutators cannot cancel a fixed nonzero pinned current eventually.
 - **Strongest positive survivor:** Exact complete Green boundary and modal Stokes law at every actual stage, strict theta-metric energy, neutrality iff eigenvalue realness, exact adjointness/cancellation classification, and operator-norm convergence to pinned rank-two boundary.
 - **New insight:** Actual stages are asymptotically rank-two Green systems, not exact rank-two-neutral systems. Missing real-divisor input is exact modewise vanishing of complete boundary charge, not approximation, trace zero, or escape of exceptional poles.
-- **Status:** Paper proof dependency-closed; Lean module `GaloisForLFunctions.RHTower.HedenmalmThetaActualStageGreenBalance`; targeted build and axiom audit pass.
+- **Status:** Paper proof dependency-closed; Lean module `GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaActualStageGreenBalance`; targeted build and axiom audit pass.
 
 ## Log
 

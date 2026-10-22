@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.ThetaTailPositiveBalancePrimitive
 import GaloisForLFunctions.RHTower.ThetaTailJointCorrelation
-import GaloisForLFunctions.RHTower.ThetaCuspC5GlobalCurvatureSigns
-import GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthLikelihoodGain
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspC5GlobalCurvatureSigns
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthLikelihoodGain
 
 /-! The actual finite-pair transport primitive strictly exceeds its confluent
 linear profile. A second exact density-ratio comparison retains the source packet. -/

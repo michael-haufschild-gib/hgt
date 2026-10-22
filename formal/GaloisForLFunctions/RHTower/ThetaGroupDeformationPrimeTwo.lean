@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaGroupOffLineStripZero
-import GaloisForLFunctions.RHTower.ThetaCuspReflection
-import GaloisForLFunctions.RHTower.ThetaCuspFourierLaplace
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflection
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierLaplace
 
 /-!
 # The route-2 prime-2 relation is regularity at the zero-charge cusp

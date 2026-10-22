@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePFiniteSigmaCubicEulerTangentGram
-import GaloisForLFunctions.RHTower.DeningerInvZetaPole
+import GaloisForLFunctions.RHTower.Deninger.DeningerInvZetaPole
 import GaloisForLFunctions.RHTower.GammaShiftZetaReadout
 
 /-!

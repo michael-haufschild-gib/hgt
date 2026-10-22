@@ -259,7 +259,7 @@ Verdict: `SURVIVES PRELIMINARY ATTACK` and `[PAPER-PROVED]`.
 - 2026-08-01 — froze UPSA-1 after full-source polar/Bohr synthesis; closed paper proof and hostile
   circularity audit before Lean work.
 - 2026-08-01 — exact Lean closure in
-  `formal/GaloisForLFunctions/RHTower/CCMUnitaryPolarSourceAtlas.lean`: strict-right polar
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitaryPolarSourceAtlas.lean`: strict-right polar
   support/residue recovery, right/left/critical divisor partition, residual critical identity,
   unique Bohr asymptote, exact critical multiplicity recovery, multiplicity-preserving complete
   divisor equivalence, and normalized canonical-product reconstruction. Direct elaboration, final

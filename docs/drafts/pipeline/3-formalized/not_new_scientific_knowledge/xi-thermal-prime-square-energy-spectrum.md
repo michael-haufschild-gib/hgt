@@ -156,7 +156,7 @@ RH proof.
 Formalization:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergySpectrum.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergySpectrum.lean
 formal/GaloisForLFunctions/RHTower/XiThermalPrimeSquareEnergySpectrum.lean
 ```
 

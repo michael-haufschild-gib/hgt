@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalHorizonIntertwiner
 import GaloisForLFunctions.RHTower.MobiusThetaAdaptivePrimeNormalResolvedSector
-import GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianHarmonicSourcePrimitive
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianHarmonicSourcePrimitive
 
 /-!
 # Reflected adaptive prime-normal Green source

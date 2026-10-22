@@ -85,7 +85,7 @@ coupling supports a sharper direct quadratic estimate.
 
 ## Lean formalization
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`
 
 - exact consecutive-cell telescope to `[0,b_N]`
 - exact cell polar-minus-atom characteristic identity
@@ -97,9 +97,9 @@ Module: `formal/GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCharact
 
 Audit:
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCharacteristicTransport.lean`
   passed
-- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileCharacteristicTransport`
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileCharacteristicTransport`
   passed; no umbrella build run
 - all nine theorem axiom audits report only `propext`, `Classical.choice`, `Quot.sound`
 - forbidden-token scan empty

@@ -37,7 +37,7 @@ would lie in it.
 ## Formal result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFESpectralLocalKernelRigidity`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFESpectralLocalKernelRigidity`.
 Lean proves:
 
 1. literal BM unit source amplitude and normalized source-FE cocycle descend from multiplicity

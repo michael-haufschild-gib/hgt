@@ -6,7 +6,7 @@
 - **Source:** HC56 QNM-generator locality no-go; literal source-FE packet involution; centered Xi
   spectral coordinate
 - **Formal module:**
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity`
 - **Result:** The anticommutator of literal anti-linear source-FE transport with the centered BM QNM
   generator is the exact diagonal-reflected Xi-tilt charge. Its global vanishing is equivalent to
   RH.
@@ -73,9 +73,9 @@ anticommutator or RH-equivalent clock-defect formula. Search is bounded, not exh
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity.lean`
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity.lean`
   — passed.
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity`
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFECenteredQNMClockRigidity`
   — passed (`11925/11925`).
 - `#print axioms` on all 11 public theorems — only `propext`, `Classical.choice`, and `Quot.sound`.
 - Formal lint reports no HC57 issue; repository-wide failure remains the pre-existing set of 18

@@ -1,7 +1,7 @@
 # Deninger topological-Hodge RH/simplicity Real-jet universality law
 
 Status: Stage 2 — dependency-closed paper proof; Lean formalization in progress  
-Lean target: `GaloisForLFunctions.RHTower.DeningerTopologicalHodgeRHSimplicityRealJetUniversalityLaw`  
+Lean target: `GaloisForLFunctions.RHTower.Deninger.DeningerTopologicalHodgeRHSimplicityRealJetUniversalityLaw`  
 Novelty: `[NOVELTY UNVERIFIED]`
 
 ## Theorem-generated discovery

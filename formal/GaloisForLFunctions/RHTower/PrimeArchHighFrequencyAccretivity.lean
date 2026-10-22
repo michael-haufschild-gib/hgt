@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.XiGuinandWeilRectangleExhaustion
 import GaloisForLFunctions.RHTower.XiEndpointSourceHeightGap
 import GaloisForLFunctions.RHTower.XiWeilOneCauchyGate
 import GaloisForLFunctions.RHTower.XiGuinandWeilSymmetricContour
-import GaloisForLFunctions.RHTower.CCMCompletedPrimeGammaAccretivityCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMCompletedPrimeGammaAccretivityCriterion
 
 /-!
 # Prime--archimedean high-frequency accretivity

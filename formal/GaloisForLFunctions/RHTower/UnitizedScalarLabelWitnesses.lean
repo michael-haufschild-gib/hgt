@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalAdelicUnitizedCyclicRestrictionFormula
+import GaloisForLFunctions.RHTower.CCM.CCMRationalAdelicUnitizedCyclicRestrictionFormula
 
 /-!
 # The all-scalar branch of the unitized cyclic restriction is inhabited, and so is its complement

@@ -5,10 +5,10 @@
 - **Claim:** `[PROVED HERE] [NEW SCIENTIFIC KNOWLEDGE]`
 - **Paper proof:** `./suzuki-literal-paired-source-assembly.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiLiteralPairedSourceAssembly.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPairedSourceL2Bound.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiPairedCutoffEventGeometry.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiCoordinateCutoffPrimitiveFlux.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiLiteralPairedSourceAssembly.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPairedSourceL2Bound.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPairedCutoffEventGeometry.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoordinateCutoffPrimitiveFlux.lean`
   - `formal/GaloisForLFunctions/HTGeometry/SmoothTransitionDerivBound.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ExponentialPolynomialLatticeWeight.lean`
   - `formal/GaloisForLFunctions/HTGeometry/LpSingleExtension.lean`

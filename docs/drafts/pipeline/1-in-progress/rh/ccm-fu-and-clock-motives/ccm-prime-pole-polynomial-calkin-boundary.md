@@ -36,7 +36,7 @@ The unconditional Lean chain currently proves:
 7. Evaluation at `(1,...,1)` descends to a character of the polynomial quotient by compact evaluations, and this character is uniquely determined by taking value one on every generator.
 8. Every free polynomial over an arbitrary index family has a finite-generator presentation. Therefore the character extends algebraically to arbitrary positive scale families, including the complete family of prime logarithms.
 
-The finite capstone is `formal/GaloisForLFunctions/RHTower/CCMPrimePolePolynomialBoundary.lean`. The arbitrary-family and all-prime capstone is `formal/GaloisForLFunctions/RHTower/CCMPrimePoleUniversalPolynomialBoundary.lean`.
+The finite capstone is `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePolePolynomialBoundary.lean`. The arbitrary-family and all-prime capstone is `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimePoleUniversalPolynomialBoundary.lean`.
 
 ## Positive Connes-route obligation
 

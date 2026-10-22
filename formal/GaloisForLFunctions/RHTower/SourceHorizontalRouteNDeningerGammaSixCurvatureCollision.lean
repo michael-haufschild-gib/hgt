@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalRouteNProjectiveCremonaInvolution
-import GaloisForLFunctions.RHTower.DeningerExponentGammaSixShellTransportRigidity
-import GaloisForLFunctions.RHTower.DeningerMertensAdiabaticCorner
+import GaloisForLFunctions.RHTower.Deninger.DeningerExponentGammaSixShellTransportRigidity
+import GaloisForLFunctions.RHTower.Deninger.DeningerMertensAdiabaticCorner
 
 /-!
 # Route-N parity versus Deninger Gamma-six mixed curvature

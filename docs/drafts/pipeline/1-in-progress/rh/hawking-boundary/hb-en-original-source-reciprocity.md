@@ -79,7 +79,7 @@ selector or RH proof follows from bulk reciprocity alone.
 
 ## Lean status
 
-[FullSourceRadialReciprocity](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullSourceRadialReciprocity.lean)
+[FullSourceRadialReciprocity](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullSourceRadialReciprocity.lean)
 proves absolute admission, identification of the established future response
 with its source-event integral, exact retarded/advanced radial reciprocity,
 the antisymmetric two-source decomposition, full square-source admission,

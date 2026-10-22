@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.SuzukiPacketCoefficientSeries
-import GaloisForLFunctions.RHTower.SuzukiTailSummatoryErrorTransform
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiPacketCoefficientSeries
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiTailSummatoryErrorTransform
 
 /-!
 # The shifted Euler quotient is a positive twisted cocycle with zero algebraic curvature

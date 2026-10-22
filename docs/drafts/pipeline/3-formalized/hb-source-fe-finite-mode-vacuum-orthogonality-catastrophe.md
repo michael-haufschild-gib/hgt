@@ -126,7 +126,7 @@ and prove their equilibrium law there.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEFiniteModeFockVacuumOrthogonality`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEFiniteModeFockVacuumOrthogonality`.
 
 - `pairOccupation` is injective, and `finitePairFockRaw` has the exact subset coefficient law and
   norm square `(1 + ‖r‖²)^N`.
@@ -138,7 +138,7 @@ Formalized in
   transfer this exact endpoint to HB, Deninger/FZZ-P, PW-B, and canonical-copy RBH receivers.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEFiniteModeFockVacuumOrthogonality`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEFiniteModeFockVacuumOrthogonality`
 passed all 12,189 jobs; representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC83 finding.

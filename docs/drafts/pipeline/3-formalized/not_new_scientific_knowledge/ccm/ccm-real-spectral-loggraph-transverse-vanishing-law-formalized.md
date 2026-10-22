@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-real-spectral-loggraph-transverse-vanishing-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMRealSpectralLogGraph.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMRealSpectralLogGraph.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 4 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

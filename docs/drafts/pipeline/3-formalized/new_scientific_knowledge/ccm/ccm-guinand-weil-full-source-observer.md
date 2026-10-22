@@ -7,7 +7,7 @@
   rank--nullity is classical
 - **External anchor:** Akiva Groskin, arXiv:2607.02828, Lemma 2.3 and Corollary 2.4
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilFullSourceObserver.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilFullSourceObserver.lean`
 
 ## Exact finite observer
 
@@ -80,6 +80,6 @@ Ward incidence. No RH conclusion is claimed.
 - `ccmGuinandWeilFiniteEventPacketMatrix_exists_nonzero_kernel`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilFullSourceObserver` pass. `#print axioms` reports only
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilFullSourceObserver` pass. `#print axioms` reports only
 Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`,
 `opaque`, or `unsafe` declaration is used.

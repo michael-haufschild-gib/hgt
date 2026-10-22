@@ -198,7 +198,7 @@ remains provisional pending specialist review.
 ## 9. Lean certificate
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/DeningerSquareZeroFirstSuspensionCrossEffect.lean` and wired
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSquareZeroFirstSuspensionCrossEffect.lean` and wired
 into `GaloisForLFunctions.RHTower`.  Capstones:
 
 1. `deningerMeyerCalderonPacketTensorRegulator_tmul_eq_fixedPacket` identifies the tensor map with

@@ -92,7 +92,7 @@ A renamed `D(a)=1 iff a=0` theorem or another RH equivalence does not count.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmSoninWeylDefectQuantizationWall.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmSoninWeylDefectQuantizationWall.lean`
 
 Headline declarations:
 

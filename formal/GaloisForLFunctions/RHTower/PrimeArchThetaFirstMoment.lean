@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFourierXi
 import GaloisForLFunctions.RHTower.PrimeArchCentralMomentGerm
 import GaloisForLFunctions.RHTower.XiLaguerrePolya
 

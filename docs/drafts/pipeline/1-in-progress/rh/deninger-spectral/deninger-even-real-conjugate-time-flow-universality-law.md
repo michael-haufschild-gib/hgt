@@ -73,7 +73,7 @@ The exact global flow law remains **[NOVELTY UNVERIFIED]**:
 
 Formalized in:
 
-`formal/GaloisForLFunctions/RHTower/DeningerEvenRealConjugateTimeFlowUniversalityLaw.lean`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerEvenRealConjugateTimeFlowUniversalityLaw.lean`
 
 with declarations:
 
@@ -84,7 +84,7 @@ with declarations:
 
 Exact-file verification passed:
 
-`lake env lean GaloisForLFunctions/RHTower/DeningerEvenRealConjugateTimeFlowUniversalityLaw.lean`
+`lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerEvenRealConjugateTimeFlowUniversalityLaw.lean`
 
 Wired into `GaloisForLFunctions/RHTower.lean` with the other Deninger characteristic, flow, and
 Real-source laws.

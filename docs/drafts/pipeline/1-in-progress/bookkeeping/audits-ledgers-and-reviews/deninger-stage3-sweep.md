@@ -22,10 +22,10 @@
 
 | Card | Modules |
 |---|---|
-| `deninger-cross-prime-closed-relation-saturation` | `RHTower/DeningerCalderonWittCrossPrimeClosedRelationNoGo` (extended with consequences 2 and 4) |
-| `deninger-prime-log-height-kothe-calderon-source` | `RHTower/DeningerPrimeLogHeight`, `DeningerKotheComplete`, `DeningerPrimeLogHeightKothe`, `…Convolution`, `…Green`, `…Forms`, `…Mellin`, `…Power`, `…Cartan` (all new) |
-| `deninger-balanced-word-height-bar-strict-contraction` | `RHTower/DeningerWordHeight`, `DeningerBarWord`, `DeningerBarInsert`, `DeningerBarSlice`, `DeningerBarDifferential`, `DeningerBarUnit`, `DeningerBarContraction`, `DeningerBarSector`, `DeningerBarFace`, `DeningerBarInsertComm`, `DeningerBarFibre`, `DeningerBarSquareZero`, `DeningerBarAlgebra`, `DeningerBarPower` (all new) |
-| `deninger-linearized-milnor-first-sullivan-strict-primitive` | `RHTower/DeningerSetIndexedLinearization`, `DeningerExteriorPairSum`, `DeningerWordAlternating`, `DeningerSullivanPrimitive`, `DeningerSuspendedSource`, `DeningerSuspendedAlternating`, `DeningerSuspendedProduct`, `DeningerSuspendedPrimitive` (all new) |
+| `deninger-cross-prime-closed-relation-saturation` | `RHTower/Deninger/DeningerCalderonWittCrossPrimeClosedRelationNoGo` (extended with consequences 2 and 4) |
+| `deninger-prime-log-height-kothe-calderon-source` | `RHTower/Deninger/DeningerPrimeLogHeight`, `DeningerKotheComplete`, `DeningerPrimeLogHeightKothe`, `…Convolution`, `…Green`, `…Forms`, `…Mellin`, `…Power`, `…Cartan` (all new) |
+| `deninger-balanced-word-height-bar-strict-contraction` | `RHTower/Deninger/DeningerWordHeight`, `DeningerBarWord`, `DeningerBarInsert`, `DeningerBarSlice`, `DeningerBarDifferential`, `DeningerBarUnit`, `DeningerBarContraction`, `DeningerBarSector`, `DeningerBarFace`, `DeningerBarInsertComm`, `DeningerBarFibre`, `DeningerBarSquareZero`, `DeningerBarAlgebra`, `DeningerBarPower` (all new) |
+| `deninger-linearized-milnor-first-sullivan-strict-primitive` | `RHTower/Deninger/DeningerSetIndexedLinearization`, `DeningerExteriorPairSum`, `DeningerWordAlternating`, `DeningerSullivanPrimitive`, `DeningerSuspendedSource`, `DeningerSuspendedAlternating`, `DeningerSuspendedProduct`, `DeningerSuspendedPrimitive` (all new) |
 
 ## Batch state, verified 2026-08-10
 
@@ -41,13 +41,13 @@ here.
 
 ## Reusable infrastructure now available
 
-- `RHTower/DeningerAbelSummation` — **Abel summation as a finite identity**,
+- `RHTower/Deninger/DeningerAbelSummation` — **Abel summation as a finite identity**,
   `∑_{n ≤ N} a_n f_n = A_N f_N + ∑_{n < N} A_n (f_n - f_{n+1})`.  Every Abel argument in the Möbius
   calculus (the preimage estimate, the harmonic series, the Dirichlet series) is this identity
   followed by a limit; it had been hand-rolled inline three times before being factored out.
-- `RHTower/DeningerAbelianLimit` — the **Abelian limit theorem**, `b_n → S ⟹ ∑ b_n w_σ(n) → S` as
-  `σ ↓ 0`, with the weight layer `RHTower/DeningerAbelianTelescope` and
-  `RHTower/DeningerAbelAverage`.  mathlib has no version of this.
+- `RHTower/Deninger/DeningerAbelianLimit` — the **Abelian limit theorem**, `b_n → S ⟹ ∑ b_n w_σ(n) → S` as
+  `σ ↓ 0`, with the weight layer `RHTower/Deninger/DeningerAbelianTelescope` and
+  `RHTower/Deninger/DeningerAbelAverage`.  mathlib has no version of this.
 
 - `DeningerLattice = Nat.Primes →₀ ℤ`, `deningerHeight`, `deningerFreq`, with
   `deningerHeight_add_le`, `deningerHeight_nsmul`, `deningerHeight_inv_le_abs_freq`,
@@ -65,7 +65,7 @@ Numbering is the folder order; 13 cards remain in stage 2.
 
 ### The `S_exp(ℝ)` / Meyer analytic block (cards 1--7 below)
 
-The shared layer now exists: `RHTower/DeningerExpSchwartz` gives `H_- = S_exp(ℝ)` as
+The shared layer now exists: `RHTower/Deninger/DeningerExpSchwartz` gives `H_- = S_exp(ℝ)` as
 `DeningerExpSchwartz`, a **subspace of `𝓢(ℝ, ℂ)`** cut out by `∀ A n, ∃ C, ∀ x,
 e^{A|x|} ‖D^n f(x)‖ ≤ C` (so it inherits the whole Schwartz linear structure and the Schwartz
 embedding is definitional), the translation `deningerExpShift` with `deningerExpShift_mem`, and
@@ -73,7 +73,7 @@ embedding is definitional), the translation `deningerExpShift` with `deningerExp
 The one estimate everything rests on is `A|x| ≤ A|x+L| + |A||L|`, valid for both signs of `A`.
 What else exists and must not be rebuilt:
 
-- `RHTower/DeningerMeyerCap` and the whole `DeningerMeyer*` / `DeningerPoisson*` family
+- `RHTower/Deninger/DeningerMeyerCap` and the whole `DeningerMeyer*` / `DeningerPoisson*` family
   (`DeningerMeyerCap`, `deningerMeyerCap_mem_iff`, `deningerPoissonLM` — the operator `Z` —
   `deningerPoissonSchwartz`, `deningerCapSchwartz`, `DeningerRadialNuclear`,
   `DeningerPoissonFourierReflection`, `DeningerPoissonInjective`, `DeningerPoissonCokernel`,
@@ -99,53 +99,53 @@ What else exists and must not be rebuilt:
    - `(6)` real-Fourier covariance `𝔖_μ(Jh) = -F(𝔖_μ h)` — pure formal consequence of `F² =`
      reflection and evenness once `𝔖_μ` is defined.  Cheapest.
    - `(34)`--`(35)` the causal von Mangoldt endpoint anomaly — **DONE**,
-     `RHTower/DeningerCausalVonMangoldtWall`.  No distribution theory was needed: testing against
+     `RHTower/Deninger/DeningerCausalVonMangoldtWall`.  No distribution theory was needed: testing against
      `φ` makes it a numerical series.  `(41)` is then immediate from `(12)`.
    - `(45)` the Möbius connection identity.  mathlib has `ArithmeticFunction.log_mul_moebius_eq_vonMangoldt`
      (`log * μ = Λ`); convolving `(μ log) * ζ = -Λ` with `μ` gives `Λ * μ = -μ log`, which is `(44)`.
      Only a Fubini on a fixed positive ray is left.
-   - `(8)` the unconditional saving — **DONE**, `RHTower/DeningerMertensSummatory`.  `M` itself is
+   - `(8)` the unconditional saving — **DONE**, `RHTower/Deninger/DeningerMertensSummatory`.  `M` itself is
      corpus-owned (`Sieve.mertensM`); only the transport to integer arguments and the `/N²` shape
      were new.
-   - `(9)` the convergence — **DONE** in discrete form, `RHTower/DeningerMertensInvSquare`
+   - `(9)` the convergence — **DONE** in discrete form, `RHTower/Deninger/DeningerMertensInvSquare`
      (`deningerMertensM_invSq_summable : ∑_N |M(N)|/N² < ∞`).  Condensation is essential: no power
      comparison works, since `exp(-c(log N)^{1/3})` dominates every `N^{-ε}`.  The condensed series
      `∑_k exp(-c k^{1/3})` is elementary — one term of the exponential series plus `x^{7/3} ≥ x²`.
-   - `(10)` Abel summation — **DONE**, `RHTower/DeningerMobiusAbel`
+   - `(10)` Abel summation — **DONE**, `RHTower/Deninger/DeningerMobiusAbel`
      (`deningerMobius_abel`: the partial sums of `∑_n M(n)(H_h((n+1)x) - H_h(nx))` converge to
      `-f_h(x)`).  `Finset.sum_range_by_parts` plus a vanishing boundary term.
-   - the weighted derivative — **DONE**, `RHTower/DeningerLogPullDeriv`.  `x H_h'(x) = h'(log x)`
+   - the weighted derivative — **DONE**, `RHTower/Deninger/DeningerLogPullDeriv`.  `x H_h'(x) = h'(log x)`
      exactly, so the chain-rule factor cancels the weight and `x H_h'` inherits the pullback's own
      two-sided decay with no loss.
-   - the Abel coefficient — **DONE**, `RHTower/DeningerAbelCoefficient`.
+   - the Abel coefficient — **DONE**, `RHTower/Deninger/DeningerAbelCoefficient`.
      `deningerAbelWindow_volume` identifies the dilation window `{x : ix ≤ u ≤ (i+1)x}` as
      `Icc (u/(i+1)) (u/i)`, `deningerAbelWindow_length` gives its length `u/(i(i+1))`, and
      `deningerAbelCoefficient_summable` is `∑_i |M(i)|/(i(i+1)) < ∞` by comparison with `(9)`.
-   - the first weighted moment — **DONE**, `RHTower/DeningerWeightedMoment`
+   - the first weighted moment — **DONE**, `RHTower/Deninger/DeningerWeightedMoment`
      (`∫_0^∞ u|H_h'(u)|du < ∞`): bounded on `Ioc 0 1`, dominated by `u^{-2}` on `Ioi 1`.
-   - the Tonelli assembly — **DONE**, `RHTower/DeningerAbelTonelli`, `DeningerAbelWindowSwap`,
+   - the Tonelli assembly — **DONE**, `RHTower/Deninger/DeningerAbelTonelli`, `DeningerAbelWindowSwap`,
      `DeningerAbelMassBound`: one Abel difference has mass at most
      `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.  Working in `ℝ≥0∞` throughout removed every integrability
      side condition — that is the trick that made the exchange short.
-   - `(11)` for `r = 0` — **DONE**, `RHTower/DeningerAbelMajorant`, `DeningerPreimageMass`:
+   - `(11)` for `r = 0` — **DONE**, `RHTower/Deninger/DeningerAbelMajorant`, `DeningerPreimageMass`:
      `∫_0^∞ |f_h(x)| dx < ∞`, stated as finiteness of the `ℝ≥0∞` integral so that no measurability
      of `f_h` is needed.  Higher moments repeat the chain with `x^r`.
-   - all higher weighted moments — **DONE**, `RHTower/DeningerHigherMoment`
+   - all higher weighted moments — **DONE**, `RHTower/Deninger/DeningerHigherMoment`
      (`∫_0^∞ u^{r+1}|H_h'(u)|du < ∞` for every `r`), so both factors of `(11)` at order `r` exist;
      only the window integral `∫ x^r dx` is left there.
-   - the order-`r` window and coefficients — **DONE**, `RHTower/DeningerHigherCoefficient`:
+   - the order-`r` window and coefficients — **DONE**, `RHTower/Deninger/DeningerHigherCoefficient`:
      `deningerWindowPow_integral` (oriented interval), `deningerWindowPow_setIntegral` (+`_nonneg`),
      `deningerWindowPow_lintegral` (the `ℝ≥0∞` form the exchange consumes), and
      `deningerHigherCoefficient_summable`.  One
      inverse-square series controls every order: the bracket
      `i^{-(r+1)} - (i+1)^{-(r+1)}` is at most `i^{-2}` once `r ≥ 1`, so `(9)` alone suffices.
    - `(12)` — needs `(15)`, i.e. `∑_n μ(n)/n = 0`.  **Convergence is now proved**
-     (`RHTower/DeningerMobiusHarmonic`); only the *value* is open.  Do not try to get it from PNT:
+     (`RHTower/Deninger/DeningerMobiusHarmonic`); only the *value* is open.  Do not try to get it from PNT:
      partial summation turns `A(N) → S` into `M(N)/N → S - S = 0` for **any** `S`, so `M(N) = o(N)`
      cannot pin the constant.  The value needs Abel's theorem for `∑ μ(n) n^{-s} = 1/ζ(s)` as
      `s ↓ 1` plus the pole of `ζ` at `1`.  Corpus has `LSeries_moebius_eq_inv_riemannZeta`
      (`Re s > 1`); the Abelian theorem is the missing piece.  **Its backbone is built**:
-     `RHTower/DeningerAbelianTelescope` proves the Abel increments
+     `RHTower/Deninger/DeningerAbelianTelescope` proves the Abel increments
      `n^{-σ} - (n+1)^{-σ}` are nonnegative and sum to exactly `1` for every `σ > 0`, so they are a
      probability weight on the partial sums — which is precisely why the Abelian limit reproduces
      the ordinary sum.  What remains is the ε-split: for `n` past the convergence threshold the
@@ -181,21 +181,21 @@ What else exists and must not be rebuilt:
 - [x] 4 of 17 cards promoted
 - [x] entire word-height algebra built
 - [x] `b² = 0` for the bar differential
-- [x] `S_exp(ℝ)` layer built — `RHTower/DeningerExpSchwartz`
+- [x] `S_exp(ℝ)` layer built — `RHTower/Deninger/DeningerExpSchwartz`
 - [ ] Möbius–Fourier commutator built (unlocks cards 6--8 of the analytic block); its section 5
   (`(34)`--`(35)`, the causal endpoint anomaly) is done
 - [ ] the higher-structure block
 
 ## Log
 
-- 2026-08-10 — Built all higher weighted moments (`RHTower/DeningerHigherMoment`).  Note the
+- 2026-08-10 — Built all higher weighted moments (`RHTower/Deninger/DeningerHigherMoment`).  Note the
   `GaloisForLFunctions.RHTower` umbrella is currently red on
   `RHTower/GaussAmplitudeClass.lean:177`, which is a *concurrent session's* in-flight edit — it
   references none of the renamed names and is not part of this work.  Every module of this batch
   builds individually with zero errors.
 - 2026-08-10 — **Umbrella build caught six name collisions** the per-file checks could not see: `DeningerLattice` (vs `DeningerCharacterShapeFormality`), `deningerHardyPlus`/`Minus` (vs `DeningerArithmeticExactHardyProjectors`), `deningerShear` (vs `DeningerShear`), `deningerShift` (vs `DeningerShift`), `deningerEnergy` (vs `DeningerEnergyDefinite`).  Renamed the new ones to `DeningerPrimeLattice`, `deningerHeightHardyPlus`/`Minus`, `deningerHeightShear`, `deningerExpShift`, `deningerHeightEnergy`.  `GaloisForLFunctions.RHTower` now builds clean.  A prefix rename must NOT use a negative-lookahead word boundary — it blocks exactly the `_nonneg`, `_idem`, `_apply` suffixes that carry the collision.
 
-- 2026-08-10 — Proved `(11)` for `r = 0`: `∫_0^∞ |f_h| < ∞` (`RHTower/DeningerAbelMajorant`,
+- 2026-08-10 — Proved `(11)` for `r = 0`: `∫_0^∞ |f_h| < ∞` (`RHTower/Deninger/DeningerAbelMajorant`,
   `DeningerPreimageMass`).  Two choices kept it short: state the conclusion as finiteness of the
   `ℝ≥0∞` integral (no measurability of `f_h` needed anywhere), and get the pointwise bound from the
   Abel `Tendsto` by `le_of_tendsto` against a uniform majorant rather than by proving summability.
@@ -203,46 +203,46 @@ What else exists and must not be rebuilt:
   done entirely in `ℝ≥0∞`: `lintegral_lintegral_swap` needs only joint measurability of the window
   indicator, and no integrability hypothesis appears anywhere.  The slice computation is
   `lintegral_indicator_const` against the already-proved window measure.
-- 2026-08-10 — Built the first weighted moment (`RHTower/DeningerWeightedMoment`).  Every
+- 2026-08-10 — Built the first weighted moment (`RHTower/Deninger/DeningerWeightedMoment`).  Every
   ingredient of `(11)` is now proved; the only remaining step is the Tonelli assembly that turns
   `∫_0^∞ |H_h((i+1)x) - H_h(ix)| dx` into `(1/(i(i+1))) ∫_0^∞ u|H_h'(u)|du`.
-- 2026-08-10 — Built the Abel coefficient layer (`RHTower/DeningerAbelCoefficient`): the window
+- 2026-08-10 — Built the Abel coefficient layer (`RHTower/Deninger/DeningerAbelCoefficient`): the window
   identification, its length, and the summability of `|M(i)|/(i(i+1))`.  Everything `(11)` needs
   except the Tonelli assembly is now in place.
-- 2026-08-10 — Built the weighted-derivative layer (`RHTower/DeningerLogPullDeriv`).  The reason
+- 2026-08-10 — Built the weighted-derivative layer (`RHTower/Deninger/DeningerLogPullDeriv`).  The reason
   the first weighted moment costs nothing: `x H_h'(x) = h'(log x)` on the nose, so the chain-rule
   `1/x` cancels the weight and no exponent is spent.
-- 2026-08-10 — Built `(10)` (`RHTower/DeningerMobiusAbel`).  While setting up `(11)` the right
+- 2026-08-10 — Built `(10)` (`RHTower/Deninger/DeningerMobiusAbel`).  While setting up `(11)` the right
   route became clear and it is *not* the one the card's continuous proof suggests: instead of a
   decreasing majorant for `H_h'`, use Tonelli on `{x : ix ≤ u ≤ (i+1)x} = [u/(i+1), u/i]`, whose
   length is `u/(i(i+1))`.  That produces `1/(i(i+1))` directly and lands on `(9)`.
-- 2026-08-10 — Built `(9)` in discrete form (`RHTower/DeningerMertensInvSquare`).  Worth
+- 2026-08-10 — Built `(9)` in discrete form (`RHTower/Deninger/DeningerMertensInvSquare`).  Worth
   remembering *why* condensation: `∑_N exp(-c(log N)^{1/3})/N` fails every power comparison because
   `exp(-c(log N)^{1/3})` dominates `N^{-ε}` for every `ε`; only the dyadic grouping separates it,
   and the condensed series is elementary from one term of the exponential series.
-- 2026-08-10 — Built `(8)` in summatory form (`RHTower/DeningerMertensSummatory`).  **Caught a
+- 2026-08-10 — Built `(8)` in summatory form (`RHTower/Deninger/DeningerMertensSummatory`).  **Caught a
   duplication mid-write**: the Möbius summatory function is already corpus-owned as
   `Sieve.mertensM` (in `Sieve/MoebiusMaximalWindow.lean`, with `mertensSup` and the PNT form
   `tendsto_abs_mertensM_div`); the first draft redefined it.  Grep `def.*[Mm]ertens` before adding
   anything summatory-shaped.
-- 2026-08-10 — Built `(44)`--`(45)`, the Möbius connection (`RHTower/DeningerMobiusConnection`).
+- 2026-08-10 — Built `(44)`--`(45)`, the Möbius connection (`RHTower/Deninger/DeningerMobiusConnection`).
   Trap worth remembering: `ArithmeticFunction R` has its own `Neg` instance, *not* the ring's
   `HasDistribNeg` one, so `neg_mul` will not rewrite `(-f) * g` into `-(f * g)` and `ring` fails on
   the convolution ring.  Carry the sign inside `pmul` and every identity stays sign-free.
 - 2026-08-10 — Built the product-fibre interchange and the pointwise Möbius right inverse
-  (`RHTower/DeningerMobiusRightInverse`).  The interchange is cleanest as a *sigma decomposition*:
+  (`RHTower/Deninger/DeningerMobiusRightInverse`).  The interchange is cleanest as a *sigma decomposition*:
   the map `⟨N, q ∈ N.divisorsAntidiagonal⟩ ↦ q` is injective with range the nonzero-product locus,
   so `Function.Injective.tsum_eq` plus `Summable.tsum_sigma` does it — no fibrewise-summation
   machinery.  Shifting the outer index by one (`(n,k) ↦ (n+1,k)`) avoids needing `tsum_eq_zero_add`
   and its extra summability side condition.
-- 2026-08-10 — Built the canonical Möbius preimage (`RHTower/DeningerMobiusPreimage`).  The point
+- 2026-08-10 — Built the canonical Möbius preimage (`RHTower/Deninger/DeningerMobiusPreimage`).  The point
   is that absolute convergence on a ray needs no cancellation in `μ` at all: pulling back along
   `log` turns the exponential weight into two-sided power decay, and the inverse-square half alone
   gives `‖H_h(nx)‖ ≤ (C/x²)/n²`.
-- 2026-08-10 — Built the shared `S_exp(ℝ)` layer (`RHTower/DeningerExpSchwartz`).  Realizing it as a
+- 2026-08-10 — Built the shared `S_exp(ℝ)` layer (`RHTower/Deninger/DeningerExpSchwartz`).  Realizing it as a
   *submodule of `𝓢(ℝ, ℂ)`* rather than a new structure removed the whole module/topology
   boilerplate and makes the Schwartz embedding definitional.
-- 2026-08-10 — Built section 5 of the Möbius–Fourier card (`RHTower/DeningerCausalVonMangoldtWall`).
+- 2026-08-10 — Built section 5 of the Möbius–Fourier card (`RHTower/Deninger/DeningerCausalVonMangoldtWall`).
   Two corpus assets carried it: `Sieve.summable_log_div_sq` and `Sieve.mertensFirst_lower`.  The
   distributional statement `(34)` needs no distribution theory — testing against `φ` makes it a
   numerical series, and the only input is the mean-value bound at the origin.

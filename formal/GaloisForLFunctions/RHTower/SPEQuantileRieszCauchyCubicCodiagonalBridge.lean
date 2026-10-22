@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantilePolarAdjacentCodiagonal
 import GaloisForLFunctions.RHTower.PrimeGammaCauchyCubicSignedEulerianCurvature
 
 /-!

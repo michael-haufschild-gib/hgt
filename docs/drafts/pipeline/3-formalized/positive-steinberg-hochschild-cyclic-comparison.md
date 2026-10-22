@@ -84,7 +84,7 @@ homology: its value on `P(1,v)+P(v,1)` is the same nonzero number.
   This does not select a valid Xi comparison, and makes no global impossibility claim.
 - **Paper status:** dependency-closed using existing source ideal and regulator theorems.
 - **Lean implementation:** `RHTower/SquareZeroUnitCyclicBoundary.lean` and
-  `RHTower/DeningerPositiveSteinbergCyclicComparison.lean`, under
+  `RHTower/Deninger/DeningerPositiveSteinbergCyclicComparison.lean`, under
   `formal/GaloisForLFunctions/`. Generic finite tensor identities and the exact source family
   are implemented. The latter defines `normalCycle` as the canonical tensor-power image of
   `deningerSteinbergNormalKOneCycle`, proves both faces equal, proves non-membership in the full
@@ -95,7 +95,7 @@ homology: its value on `P(1,v)+P(v,1)` is the same nonzero number.
 ## Verification
 
 - Targeted `lake --old build +GaloisForLFunctions.RHTower.SquareZeroUnitCyclicBoundary`: PASS.
-- Targeted `lake --old build +GaloisForLFunctions.RHTower.DeningerPositiveSteinbergCyclicComparison`:
+- Targeted `lake --old build +GaloisForLFunctions.RHTower.Deninger.DeningerPositiveSteinbergCyclicComparison`:
   PASS. Both leaves wired once into `RHTower.lean`; no umbrella build run.
 - Index regenerated. Final direct `lake env lean` checks on both repository source files: PASS,
   empty logs. All 37 public declarations audited transitively with `#print axioms` in a `/tmp`

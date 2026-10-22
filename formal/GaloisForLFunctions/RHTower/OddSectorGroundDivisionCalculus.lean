@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.OddSectorGroundDivisionOperator
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundDerivativeCriterion
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGroundDerivativeCriterion
 
 /-!
 # Symmetric division and the exact odd ground radical

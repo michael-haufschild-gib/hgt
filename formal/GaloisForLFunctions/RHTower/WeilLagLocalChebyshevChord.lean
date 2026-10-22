@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilLagQuadraticInterpolation
-import GaloisForLFunctions.RHTower.SuzukiWeilLagTailBridge
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWeilLagTailBridge
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!

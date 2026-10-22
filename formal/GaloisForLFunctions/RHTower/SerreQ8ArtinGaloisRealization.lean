@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SerreQ8RootNumberNegOneGaloisIdentification
-import GaloisForLFunctions.RHTower.DeningerQ8ArtinGaloisRealization
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8ArtinGaloisRealization
 
 /-!
 # The concrete Artin representation of Serre's Q8 field

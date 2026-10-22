@@ -7,21 +7,21 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/DeningerBaumslagRationalization.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimeClockAtomVelocity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimeClockPhysicalSine.lean`
+- `formal/GaloisForLFunctions/RHTower/Deninger/DeningerBaumslagRationalization.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockAtomVelocity.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeClockPhysicalSine.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.DeningerBaumslagRationalization`:
+`GaloisForLFunctions.RHTower.Deninger.DeningerBaumslagRationalization`:
 
 ```text
 RHTower.DeningerBau.sound
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiPrimeClockAtomVelocity`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeClockAtomVelocity`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiPrimeClockAtomVelocity
@@ -31,7 +31,7 @@ GaloisForLFunctions.RHTower.tendsto_suzukiPrimeClockAtomVelocity_bohrCoefficient
 GaloisForLFunctions.RHTower.tendsto_suzukiPrimeClockAtomVelocity_normalized_bohrCoefficient
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiPrimeClockPhysicalSine`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeClockPhysicalSine`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiFreeClockNode

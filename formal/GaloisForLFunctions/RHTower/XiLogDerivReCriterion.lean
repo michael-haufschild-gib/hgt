@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiLogDerivReStripBound
-import GaloisForLFunctions.RHTower.HedenmalmCenterMixedOrientationBoundary
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCenterMixedOrientationBoundary
 
 /-!
 # RH as the sign of the completed logarithmic derivative

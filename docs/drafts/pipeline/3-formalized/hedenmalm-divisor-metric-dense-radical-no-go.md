@@ -118,12 +118,12 @@ assembly for this theta pair.
 
 ```text
 formal/GaloisForLFunctions/HTGeometry/SchwartzPositiveMeasureRepresentation.lean
-formal/GaloisForLFunctions/RHTower/ThetaCuspSchwartzFourierXi.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspSchwartzFourierXi.lean
 formal/GaloisForLFunctions/RHTower/XiThetaL2MetricSingularity.lean
 formal/GaloisForLFunctions/RHTower/XiThetaSchwartzL2Nonclosability.lean
 formal/GaloisForLFunctions/RHTower/XiThetaSpectralOrientationClassification.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmUniversalPositiveFormClassification.lean
-formal/GaloisForLFunctions/RHTower/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmUniversalPositiveFormClassification.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaNullTemperedDenseRadicalUniversalityLaw.lean
 formal/GaloisForLFunctions/RHTower/XiDivisorSupportedMetric.lean
 ```
 

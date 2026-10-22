@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiSourceRate
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiSourceRate
 import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniThetaCumulantContact
 import GaloisForLFunctions.RHTower.PrimeArchThetaGaussianApertureBalance
 

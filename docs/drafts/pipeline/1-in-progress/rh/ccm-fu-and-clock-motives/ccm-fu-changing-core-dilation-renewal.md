@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress; global reserve propagation remains open. The source laws below are [formalized](../../../3-formalized/ccm-fu-changing-core-pair-reserves.md).
 - **Goal:** Uniform signed reserve through exhaustive prime processing, then the every-cutoff Abel bound and RH.
-- **Parent:** [exact successor extension](../../ccm-fu-exact-successor-extension.md).
+- **Parent:** [exact successor extension](ccm-fu-exact-successor-extension.md).
 
 ## Closed source calculation
 

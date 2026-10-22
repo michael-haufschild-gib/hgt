@@ -253,7 +253,7 @@ physical-phase transport-rigidity theorem.
 
 ## Lean certificate
 
-`RHTower/CCMFirstClockBarycentricOrientationCompleteness.lean` defines finite oriented
+`RHTower/CCM/CCMFirstClockBarycentricOrientationCompleteness.lean` defines finite oriented
 source-faithful column-stochastic transport, formalizes invariant necessity and explicit
 barycentric sufficiency, defines the completed CCM `Option` packet, proves its exact scalar
 identity, and closes aperturewise and universal equivalences.

@@ -33,7 +33,7 @@ open scoped Topology
 noncomputable section
 namespace GaloisForLFunctions.RHTower
 
-theorem affine_rpow_iteratedDeriv (n : ℕ) (s q t : ℝ)
+private theorem affine_rpow_iteratedDeriv (n : ℕ) (s q t : ℝ)
     (ht : 0 < 1+q*t) :
     iteratedDeriv n (fun x : ℝ => (1+q*x)^s) t =
       q^n * (descPochhammer ℝ n).eval s * (1+q*t)^(s-n) := by
@@ -60,12 +60,12 @@ theorem affine_rpow_iteratedDeriv (n : ℕ) (s q t : ℝ)
     rw [he]
     ring
 
-theorem affine_rpow_contDiffAt (s q t : ℝ) (ht : 0 < 1+q*t)
+private theorem affine_rpow_contDiffAt (s q t : ℝ) (ht : 0 < 1+q*t)
     (n : WithTop ℕ∞) : ContDiffAt ℝ n (fun x : ℝ => (1+q*x)^s) t :=
   (Real.contDiffAt_rpow_const_of_ne ht.ne').comp t
     (contDiffAt_const.add (contDiffAt_const.mul contDiffAt_id))
 
-theorem affine_base_bounds (q t : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4))
+private theorem affine_base_bounds (q t : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4))
     (ht : t ∈ Icc (0 : ℝ) 1) : 1+q*t ∈ Icc (1/4 : ℝ) (9/4) := by
   constructor
   · have h := mul_le_mul_of_nonneg_right hq.1 ht.1
@@ -73,7 +73,7 @@ theorem affine_base_bounds (q t : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4))
   · have h := mul_le_mul_of_nonneg_right hq.2 ht.1
     nlinarith [ht.2]
 
-theorem affine_rpow_within (n : ℕ) (s q t : ℝ)
+private theorem affine_rpow_within (n : ℕ) (s q t : ℝ)
     (hq : q ∈ Icc (-3/4 : ℝ) (5/4)) (ht : t ∈ Icc (0 : ℝ) 1) :
     iteratedDerivWithin n (fun x : ℝ => (1+q*x)^s) (Icc 0 1) t =
       q^n * (descPochhammer ℝ n).eval s * (1+q*t)^(s-n) := by
@@ -138,7 +138,7 @@ def fzzScreeningFifthTaylor (β : ℝ) (z : ℂ) : ℝ :=
 def fzzScreeningFifthSubtracted (α β : ℝ) (z : ℂ) : ℝ :=
   ‖z‖^α * (‖z-1‖^β - fzzScreeningFifthTaylor β z)
 
-theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
+private theorem plane_q_bounds (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
     (‖z‖^(2 : ℕ)-2*z.re) ∈ Icc (-3/4 : ℝ) (5/4) ∧
       |‖z‖^(2 : ℕ)-2*z.re| ≤ (5/2)*‖z‖ := by
   have hr : ‖z‖ ≤ 1/2 := by simpa only [mem_closedBall, dist_zero_right] using hz
@@ -230,7 +230,7 @@ private def higherPositiveWeightMeasure {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Ω → ℝ) : Measure Ω :=
   μ.withDensity (fun z => ENNReal.ofReal (max (f z) 0))
 
-theorem higherPositiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
+private theorem higherPositiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
     (hi : Integrable (fun z => f z*Real.exp (t*X z)) μ) :
     Integrable (fun z => Real.exp (t*X z)) (higherPositiveWeightMeasure μ f) := by
@@ -244,14 +244,14 @@ theorem higherPositiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
   apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
   exact max_le (le_abs_self _) (abs_nonneg _)
 
-theorem higherPositiveWeight_integral {Ω : Type*} [MeasurableSpace Ω]
+private theorem higherPositiveWeight_integral {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (t : ℝ) :
     mgf X (higherPositiveWeightMeasure μ f) t = ∫ z, max (f z) 0*Real.exp (t*X z) ∂μ := by
   rw [mgf, higherPositiveWeightMeasure, integral_withDensity_eq_integral_toReal_smul
     (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
   simp only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul]
 
-theorem higher_signed_exp_analyticAt {Ω : Type*} [MeasurableSpace Ω]
+private theorem higher_signed_exp_analyticAt {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
     (hi : ∀ᶠ s in 𝓝 t, Integrable (fun z => f z*Real.exp (s*X z)) μ) :
     AnalyticAt ℝ (fun s => ∫ z, f z*Real.exp (s*X z) ∂μ) t := by
@@ -293,7 +293,7 @@ theorem higher_signed_exp_analyticAt {Ω : Type*} [MeasurableSpace Ω]
     rw [max_eq_right hz', max_eq_left (neg_nonneg.mpr hz')]
     ring
 
-theorem fifth_subtracted_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
+private theorem fifth_subtracted_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
     fzzScreeningFifthSubtracted α β z * Real.exp (δ*Real.log ‖z‖) =
       fzzScreeningFifthSubtracted (α+δ) β z := by
   have hn := norm_pos_iff.mpr hz
@@ -331,7 +331,7 @@ theorem fzzScreeningFifthSubtracted_singular_analytic (u β : ℝ) :
       fzzScreeningFifthSubtracted (-8+Real.exp u+δ) β z) 0 :=
   fifth_subtracted_shift_analytic _ β (by linarith [Real.exp_pos u])
 
-theorem affine_rpow_taylor (s q : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4)) :
+private theorem affine_rpow_taylor (s q : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4)) :
     taylorWithinEval (fun t : ℝ => (1+q*t)^s) 5 (Icc 0 1) 0 1 =
       ∑ j ∈ Finset.range 6, (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j := by
   rw [taylor_within_apply]
@@ -341,7 +341,7 @@ theorem affine_rpow_taylor (s q : ℝ) (hq : q ∈ Icc (-3/4 : ℝ) (5/4)) :
   simp only [mul_zero, add_zero, Real.one_rpow, mul_one, sub_zero, one_pow, smul_eq_mul]
   ring
 
-theorem scalar_fifth_integral_remainder (s q : ℝ)
+private theorem scalar_fifth_integral_remainder (s q : ℝ)
     (hq : q ∈ Icc (-3/4 : ℝ) (5/4)) :
     (1+q)^s - ∑ j ∈ Finset.range 6,
       (descPochhammer ℝ j).eval s / (j.factorial : ℝ) * q^j =
@@ -377,7 +377,7 @@ def fzzScreeningFifthLiftWeight (α : ℝ) (p : ℂ × ℝ) : ℝ :=
 def fzzScreeningFifthLiftLog (p : ℂ × ℝ) : ℝ :=
   Real.log (1+(‖p.1‖^(2 : ℕ)-2*p.1.re)*p.2)/2
 
-theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
+private theorem fifth_subtracted_lift_pointwise (α β : ℝ) (z : ℂ)
     (hz : z ∈ closedBall (0 : ℂ) (1/2)) :
     fzzScreeningFifthSubtracted α β z =
       (descPochhammer ℝ 6).eval (β/2) *
@@ -437,7 +437,7 @@ private theorem fifth_lift_factor_continuous (β : ℝ) :
       (1-p.2)^(5 : ℕ) / ((5:ℕ).factorial : ℝ)) fifthLiftCompact by fun_prop).mul hp).mul
     (Real.continuous_exp.comp_continuousOn (continuousOn_const.mul fifth_lift_log_continuous))
 
-theorem fifth_lift_exp_integrable (α β : ℝ) (ha : -8 < α) :
+private theorem fifth_lift_exp_integrable (α β : ℝ) (ha : -8 < α) :
     Integrable (fun p => fzzScreeningFifthLiftWeight α p * Real.exp (β*fzzScreeningFifthLiftLog p))
       fzzScreeningFifthLiftMeasure := by
   have hr : IntegrableOn (fun z : ℂ => ‖z‖^(α+6)) (ball 0 (1/2)) := by

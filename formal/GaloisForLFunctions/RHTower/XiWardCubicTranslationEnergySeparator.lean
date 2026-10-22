@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiWardCubicLogMomentEulerSource
-import GaloisForLFunctions.RHTower.HedenmalmPrimeTranslationAnomaly
-import GaloisForLFunctions.RHTower.HedenmalmThetaPrimeCriticalRiggedCarrier
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPrimeTranslationAnomaly
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaPrimeCriticalRiggedCarrier
 
 /-!
 # Cubic separator from fixed source-translation energy

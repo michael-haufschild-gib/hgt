@@ -1,0 +1,12 @@
+import GaloisForLFunctions.HTGeometry.Critical.Schur
+import GaloisForLFunctions.HTGeometry.Critical.Block
+import GaloisForLFunctions.HTGeometry.Critical.Geometric
+import GaloisForLFunctions.HTGeometry.Critical.Sheet
+import GaloisForLFunctions.HTGeometry.Critical.Source
+import GaloisForLFunctions.HTGeometry.Critical.Normal
+import GaloisForLFunctions.HTGeometry.Critical.Observation
+import GaloisForLFunctions.HTGeometry.Critical.Chart
+import GaloisForLFunctions.HTGeometry.Critical.Coefficient
+import GaloisForLFunctions.HTGeometry.Critical.Field
+import GaloisForLFunctions.HTGeometry.Critical.RawCoordinate
+import GaloisForLFunctions.HTGeometry.Critical.Reciprocal

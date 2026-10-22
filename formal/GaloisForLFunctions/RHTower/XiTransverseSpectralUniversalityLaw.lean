@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.HedenmalmGaussianHankelApertureWidthSpectrum
-import GaloisForLFunctions.RHTower.CCMCumulativeNegativeMassSpectrum
-import GaloisForLFunctions.RHTower.CCMRectangularNegativeChannelSpectrum
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGaussianHankelApertureWidthSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMCumulativeNegativeMassSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularNegativeChannelSpectrum
 
 /-!
 # Xi transverse spectral universality

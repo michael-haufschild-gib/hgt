@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteHankelBoundaryExtensionClass
-import GaloisForLFunctions.RHTower.SuzukiCharacteristicEntireLimitNoGo
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCharacteristicEntireLimitNoGo
 
 /-!
 # The G–U structure/admission split law

@@ -158,7 +158,7 @@ CCMFirstClockReducedTowerDominance ↔ RiemannHypothesis.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimePowerTowerCollapse.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimePowerTowerCollapse.lean
 ```
 
 Main declarations:
@@ -179,7 +179,7 @@ ccmFirstClockReducedTowerDominance_iff_rh
 Direct check:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMFirstClockPrimePowerTowerCollapse.lean
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimePowerTowerCollapse.lean
 ```
 
 passed without warnings. Module is imported by `GaloisForLFunctions.RHTower`.

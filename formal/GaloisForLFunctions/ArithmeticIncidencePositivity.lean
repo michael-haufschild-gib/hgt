@@ -60,6 +60,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.FirstOpenWindowTwoAtomL
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeCombEnergyReduction
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeDefectCoordinate
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AlternatingTrainWitness
+import GaloisForLFunctions.ArithmeticIncidencePositivity.BiLatticeTrainWitness
 
 /-!
 # Arithmetic Incidence Positivity

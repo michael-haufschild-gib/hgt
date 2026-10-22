@@ -101,7 +101,7 @@ reflection-orbit RH rigidity. Search is bounded, not exhaustive.
 ## Formal result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFERealCocycleReflectionOrbitExtinction`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFERealCocycleReflectionOrbitExtinction`.
 Lean proves:
 
 1. the exact carrier identity `C(1-s) C(s) = (s(1-s))^2 (s(1-s)+6) / 64`;

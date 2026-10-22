@@ -101,7 +101,7 @@ topology/orientation classification.
 ## Lean status
 
 Umbrella-wired module
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaAnomalyBurnolCanonicalSynthesis.lean` contains
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaAnomalyBurnolCanonicalSynthesis.lean` contains
 complete result. Direct `lake env lean` and exact module build pass.
 
 ## Log

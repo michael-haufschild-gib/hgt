@@ -65,11 +65,11 @@ critical-versus-safe inequality.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.CCMConvolutionTiltOddsRigidityUniversalityLaw`
+  `GaloisForLFunctions.RHTower.CCM.CCMConvolutionTiltOddsRigidityUniversalityLaw`
 - Main theorem:
   `RHTower.ccmGammaSewnConvolution_irreduciblePrimeTiltOddsRigidity`
 - Exact source check:
-  `lake env lean GaloisForLFunctions/RHTower/CCMConvolutionTiltOddsRigidityUniversalityLaw.lean`
+  `lake env lean GaloisForLFunctions/RHTower/CCM/CCMConvolutionTiltOddsRigidityUniversalityLaw.lean`
   (exit 0, no output)
 - Imported by `GaloisForLFunctions/RHTower.lean`.
 - Axiom audit and module build are deferred to required final audit; no intermediate

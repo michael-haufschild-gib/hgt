@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiObserverJetTerminalLayer
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetTerminalLayer
 import GaloisForLFunctions.HTGeometry.SecondCenteredModularAbel
 import GaloisForLFunctions.RHTower.PsiRemainderSignChange
 

@@ -1,0 +1,12 @@
+import GaloisForLFunctions.HTGeometry.Critical.Observation.ChartRing
+import GaloisForLFunctions.HTGeometry.Critical.Observation.ComplexPoints
+import GaloisForLFunctions.HTGeometry.Critical.Observation.ConnectedCover
+import GaloisForLFunctions.HTGeometry.Critical.Observation.ConormalBase
+import GaloisForLFunctions.HTGeometry.Critical.Observation.CoordinateRing
+import GaloisForLFunctions.HTGeometry.Critical.Observation.CotangentBasis
+import GaloisForLFunctions.HTGeometry.Critical.Observation.Field
+import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianBlocks
+import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianDet
+import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianMinor
+import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianRecip
+import GaloisForLFunctions.HTGeometry.Critical.Observation.TorusChartEquiv

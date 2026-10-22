@@ -6,7 +6,7 @@
 - **Parents:** `P-G139`, `P-G143`, `hd3-li-gauge-shift`,
   `XiSquaredEulerRayFullResponse`, `PrimeArchThetaCumulantMinor`
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/HedenmalmStokesCurvatureNormalizedFluxBudget.lean`
+  `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesCurvatureNormalizedFluxBudget.lean`
 - **Status:** `[PROVED IN LEAN] [NEW ROUTE-P SURVIVOR] [NOT RH]`
 
 ## Result

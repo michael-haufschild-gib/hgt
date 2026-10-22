@@ -106,9 +106,9 @@ Development checks used `lake env lean` on scratch files. Final audits used only
 imports supplied from their caches. All passed without Lean warnings:
 
 - `GaloisForLFunctions.HTGeometry.CoordinateEinsteinComplexMixedQuadratic`
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticMixedSource`
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticMixedAmplitude`
-- `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuadraticMixedCurrent`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticMixedSource`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticMixedAmplitude`
+- `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuadraticMixedCurrent`
 
 The 27 new public theorems were checked once with `#print axioms` in a scratch
 file. Only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`

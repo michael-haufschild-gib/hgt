@@ -834,7 +834,7 @@ relation. No applicable kernel theorem found among the retrieved hits.
 
 Cycle 9 continued: the actual Meyer specialization passed a warningfree
 actual-path Lean check and is installed as
-`RHTower/DeningerMeyerPrimeRotationModule.lean`. The generic Laurent
+`RHTower/Deninger/DeningerMeyerPrimeRotationModule.lean`. The generic Laurent
 resolution also passed its final actual-path check in
 `HTGeometry/IntegerFlowLaurentResolution.lean`.
 
@@ -883,7 +883,7 @@ explicit relation matrix, injectivity, and exact kernel, passed warningfree
 scratch and final actual-path Lean checks. Installed in
 `HTGeometry/RotationInducedFiniteFreeResolution.lean`. The phase correction
 is proved, not dropped. Native specialization is being checked at
-`RHTower/DeningerMeyerPrimeRotationResolution.lean`.
+`RHTower/Deninger/DeningerMeyerPrimeRotationResolution.lean`.
 
 Global lint ran and exited 1: an unrelated in-progress module
 `RHTower.EvenSectorPoleFreeTwoSidedGrowth` is unreachable from its umbrella;

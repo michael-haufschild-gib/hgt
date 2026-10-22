@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadWallGramLightConeCircleCompletion`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadWallGramLightConeCircleCompletion`.
 This classifies information lost by the scalar actual-head wall Gram; it does not yet provide the
 global orientation lift or prove RH.
 

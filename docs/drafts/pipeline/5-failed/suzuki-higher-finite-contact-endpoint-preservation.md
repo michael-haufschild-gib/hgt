@@ -38,7 +38,7 @@ Exact order-width spectrum:
 
 Paper proof and Lean certificate:
 `docs/drafts/pipeline/3-formalized/suzuki-finite-contact-width-classification.md` and
-`formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean`.
 The capstones are `suzukiTransitionCore_finiteContact_widthClassification` and
 `suzukiFiniteContact_algebraicEndpointNoGo`.
 

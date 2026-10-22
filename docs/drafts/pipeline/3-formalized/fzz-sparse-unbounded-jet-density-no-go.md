@@ -214,7 +214,7 @@ existence alone.
 ## Lean certificate
 
 - Survivor module: `formal/GaloisForLFunctions/HTGeometry/SparseUnboundedMultiplicityCanonicalProduct.lean`
-- Route-kill module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingFZZSchwarzschildSparseUnboundedJetDensityNoGo.lean`
+- Route-kill module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingFZZSchwarzschildSparseUnboundedJetDensityNoGo.lean`
 - Direct checks: both modules pass `lake env lean <file>`.
 - Targeted builds: both module targets pass; no umbrella or full build was run.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only.

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPositiveHeightOperator
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPositiveHeightOperator
 import GaloisForLFunctions.RHTower.SelbergThetaCommonForcing
 import GaloisForLFunctions.RHTower.SelbergNativeConstantMode
 import GaloisForLFunctions.HTGeometry.L2PairingEnergy

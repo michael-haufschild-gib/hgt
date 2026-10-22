@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiFiniteApertureHermiteBiehler
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteApertureHermiteBiehler
 
 /-!
 # Exact de Branges gauge invariance

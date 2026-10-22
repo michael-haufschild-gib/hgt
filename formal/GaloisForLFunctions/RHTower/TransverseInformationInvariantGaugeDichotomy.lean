@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerMeyerInvariantEvaluationGaugeFrontier
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerInvariantEvaluationGaugeFrontier
 
 /-!
 # Exact invariant-gauge dichotomy

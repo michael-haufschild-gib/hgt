@@ -205,7 +205,7 @@ No Stirling asymptotics are used.  In the Gauss product `Γ_n(s) = n^s n!/∏_{j
 comparison `u √(v²+τ²) ≤ √(u²+τ²) v` for `0 < u ≤ v` squares to `u²τ² ≤ τ²v²`.  Taking `n → ∞` with
 `Complex.GammaSeq_tendsto_Gamma` gives the statement for `Γ`.
 
-`formal/GaloisForLFunctions/RHTower/SuzukiGammaMultiplierPassivity.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaMultiplierPassivity.lean`
 
 | Card item | Lean name |
 |---|---|

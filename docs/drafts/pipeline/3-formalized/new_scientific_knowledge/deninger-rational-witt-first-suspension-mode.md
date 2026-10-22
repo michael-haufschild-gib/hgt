@@ -136,7 +136,7 @@ content is this arithmetic identification and variance repair.
 
 ## Lean certificate
 
-`formal/GaloisForLFunctions/RHTower/DeningerRationalWittFirstSuspensionMode.lean`, imported by
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittFirstSuspensionMode.lean`, imported by
 `GaloisForLFunctions.RHTower`, formalizes:
 
 - `deningerPrimeSuspensionFirstMode`, `norm_deningerPrimeSuspensionFirstMode`, and

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.KuznetsovBesselWeightBounds
-import GaloisForLFunctions.RHTower.DeningerSechDecay
+import GaloisForLFunctions.RHTower.Deninger.DeningerSechDecay
 
 /-!
 # Scale bounds for the spectral weights of a test function

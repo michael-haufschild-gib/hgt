@@ -4,7 +4,7 @@ Stage: 1-in-progress. Analytical terminal-decay proof below; the full source's v
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hardest target is the complete physical cancellation `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes. This attack resolves the terminal source coefficients in [the spin-two transfer](../../hb-spin-two-kernel-transfer.md). All statements below keep the actual full half-square `Q`, the original smooth transition, a fixed Xi occurrence, a compact angular region, and `0<=u,w<=r<1`.
+The hardest target is the complete physical cancellation `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/SV/VV amplitudes. This attack resolves the terminal source coefficients in [the spin-two transfer](hb-spin-two-kernel-transfer.md). All statements below keep the actual full half-square `Q`, the original smooth transition, a fixed Xi occurrence, a compact angular region, and `0<=u,w<=r<1`.
 
 ## Conjecture, proof and scope
 

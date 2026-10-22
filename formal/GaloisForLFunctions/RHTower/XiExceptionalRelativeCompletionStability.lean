@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerExponentExceptionalTameGreenBridge
+import GaloisForLFunctions.RHTower.Deninger.DeningerExponentExceptionalTameGreenBridge
 import GaloisForLFunctions.RHTower.XiRelativeCompletionStabilityWall
 
 /-!

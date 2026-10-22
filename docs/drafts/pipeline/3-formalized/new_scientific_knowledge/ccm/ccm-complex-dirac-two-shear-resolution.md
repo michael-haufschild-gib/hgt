@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** full oriented characteristic cocycle × supersymmetric Dirac kernel × two Hermitian shear coordinates × projective gauge
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear`
 - **Statement:** Every actual prime-power matched cocycle admits a Hermitian Dirac block whose two fixed shear forms recover its full complex coordinate; their joint energy vanishes exactly at spectral center, while the imaginary coordinate crosses center transversely.
 
 ## Goal
@@ -108,8 +108,8 @@ positivity, Xi zero statement, or RH is claimed here.
 ## Verification
 
 - scratch: `lake env lean /tmp/CCMComplexDirac.lean` — PASS
-- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear.lean` — PASS
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear` — PASS
+- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear.lean` — PASS
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeComplexDiracTwoShear` — PASS
 - axiom audit of strict profile positivity, symbol classification, kernel classification, determinant, joint-energy, transverse-crossing, and finite-packet theorems: only `[propext, Classical.choice, Quot.sound]`
 - umbrella import added to `GaloisForLFunctions.RHTower`
 - no umbrella/full build run

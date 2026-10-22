@@ -22,7 +22,7 @@ For each fixed nonnegative radius, the native mean minus its transported princip
 
 ## Lean statements
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCuspTransport`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCuspTransport`.
 Namespace: `RHTower.D4BMNativeCircle`.
 
 - `mean_cusp_expansion`: exact complete-source expansion.
@@ -37,7 +37,7 @@ The identity `P_alpha(d)=legendreKernel(-alpha,cosh(d))` is now [formalized sepa
 
 ## Validation
 
-Foreground `lake env lean` scratch check passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeCuspTransport`: 16 seconds, three jobs, with 3943 existing own-module caches and 11 package caches frozen. No old dependency, full or umbrella build ran.
+Foreground `lake env lean` scratch check passed. Final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeCuspTransport`: 16 seconds, three jobs, with 3943 existing own-module caches and 11 package caches frozen. No old dependency, full or umbrella build ran.
 
 Only the five new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. The six installed source/artifact files match the audited files byte for byte. The umbrella contains one new import and was not built.
 

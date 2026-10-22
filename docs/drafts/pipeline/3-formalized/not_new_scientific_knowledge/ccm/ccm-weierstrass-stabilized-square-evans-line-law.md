@@ -195,7 +195,7 @@ The analytic Fredholm family and its Dirichlet reduction remain cited parents, b
 algebraic claims — conjugate pairing of the stabilized roots, positivity of the stabilized quotient,
 and the determinant restatement — are reachable and are now proved.
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMWeierstrassStabilizedEvans.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMWeierstrassStabilizedEvans.lean`
 (6 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired into
 `formal/GaloisForLFunctions/RHTower.lean`).
 

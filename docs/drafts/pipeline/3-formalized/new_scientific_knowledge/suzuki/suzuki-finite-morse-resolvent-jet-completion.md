@@ -211,7 +211,7 @@ survivor is finite zero-constant shift jets as complete filters for homogeneous 
 
 ### Finite scalar core
 
-`formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventJetCompletion.lean` proves without
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventJetCompletion.lean` proves without
 RH or added axioms:
 
 - injectivity/nonvanishing of below-spectrum resolvent nodes;
@@ -228,7 +228,7 @@ Key declarations are
 
 ### Operator lift
 
-`formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` carries the whole
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseResolventOperatorLift.lean` carries the whole
 theorem to the operator level.  The lift uses the continuous functional calculus of the bounded
 self-adjoint resolvent `R`, not a spectral decomposition of the unbounded `A`.  The device is the
 resolvent coordinate `x = 1/(t - rho)`, in which the affine Krein weight becomes the rational
@@ -242,7 +242,7 @@ genuine continuous function of `R` even though `A` is unbounded.
 
 - statement `(1)`: `suzukiFiniteMorseInterpolant_unique` and its affine-Krein specialization
   `suzukiFiniteMorseKreinInterpolant_unique`, in
-  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseInterpolantUniqueness.lean` — the
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseInterpolantUniqueness.lean` — the
   zero-constant Lagrange interpolant is the only real polynomial of degree at most the node count
   with `p(0) = 0` and `p(r_j) = sqrt(w_j)`.  The degree bound is
   `suzukiFiniteMorseInterpolant_natDegree_le`, and the root count runs over the `k + 1` distinct
@@ -259,7 +259,7 @@ genuine continuous function of `R` even though `A` is unbounded.
   eigenspace `C = -D`" is the operator identity
   `suzukiFiniteMorse_jetSquare_eq_neg_kreinDefect_on_negativeEigenvector`, with the annihilation
   form `suzukiFiniteMorse_completion_apply_negativeEigenvector_eq_zero`, both in
-  `formal/GaloisForLFunctions/RHTower/SuzukiFiniteMorseEigenspaceBlock.lean`.  The lift from the
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteMorseEigenspaceBlock.lean`.  The lift from the
   scalar identity is `cfc_apply_eigenvector` in
   `formal/GaloisForLFunctions/HTGeometry/CfcEigenvector.lean`: the continuous functional calculus
   scales an eigenvector of `R` by the value of the symbol at the eigenvalue, so both blocks act by
@@ -424,7 +424,7 @@ not a theorem of the card: the Suzuki source domination `(C)`, retired as canoni
 ### Lean progress — the discreteness input is now derived, not assumed
 
 Consuming the new `HTGeometry/CompactOperatorDiscreteSpectrum.lean` inside the operator lift.
-Added to `RHTower/SuzukiFiniteMorseResolventOperatorLift.lean` [PROVED HERE], standard axioms
+Added to `RHTower/Suzuki/SuzukiFiniteMorseResolventOperatorLift.lean` [PROVED HERE], standard axioms
 `[propext, Classical.choice, Quot.sound]`, builds clean:
 
 - `finite_setOf_mem_real_spectrum_abs_ge` : for a compact self-adjoint resolvent `R`, the real

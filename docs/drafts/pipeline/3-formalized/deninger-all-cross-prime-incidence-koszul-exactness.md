@@ -60,8 +60,8 @@ retaining Tate--Milnor/source orientation.
 
 ## Audit
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerCalderonWittAllCrossPrimeIncidenceKoszul.lean` — pass.
-- `lake build GaloisForLFunctions.RHTower.DeningerCalderonWittAllCrossPrimeIncidenceKoszul` — pass; targeted module only.
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittAllCrossPrimeIncidenceKoszul.lean` — pass.
+- `lake build GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittAllCrossPrimeIncidenceKoszul` — pass; targeted module only.
 - axiom audit for normalization, comparison, local/global exactness, and
   completed Green cycle — only `propext`, `Classical.choice`, `Quot.sound`.
 - umbrella import added to `GaloisForLFunctions/RHTower.lean`.

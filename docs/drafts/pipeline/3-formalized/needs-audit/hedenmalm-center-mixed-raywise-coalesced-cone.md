@@ -145,7 +145,7 @@ RH hypothesis, zero data, or positivity assumption on the target matrix.
    exact deficit expansion, vanishing jets below six, and universal sixth-jet identity.
 2. `exists_threePointCorrelationDeterminantRay_pos_right` converts the strict sixth jet into a
    one-sided positive determinant interval for every fixed positive aspect ratio.
-3. `RHTower/HedenmalmCenterMixedRaywiseCoalescedCone.lean` extracts the sixth source jet, proves
+3. `RHTower/Hedenmalm/HedenmalmCenterMixedRaywiseCoalescedCone.lean` extracts the sixth source jet, proves
    the complete `C^6` derivative chain, and identifies the iterated derivatives with the existing
    theta jets.
 4. `exists_thetaCuspCenterMixed_raywiseCoalescedCone_posDef` discharges the generic theorem with

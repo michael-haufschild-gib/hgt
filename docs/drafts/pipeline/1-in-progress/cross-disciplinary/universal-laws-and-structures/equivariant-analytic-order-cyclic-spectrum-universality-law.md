@@ -10,7 +10,7 @@ does not yet have an object file and project rules reserve `lake build` for fina
 
 - `RHTower/SeamOfflineReflection.lean`: arbitrary analytic self-map invariance forces
   `(τ'(c))^ord = 1` for scalar-valued carriers.
-- `RHTower/CCMFiniteRamifiedBoundaryNoGo.lean`: scalar-rotation invariance forces
+- `RHTower/CCM/CCMFiniteRamifiedBoundaryNoGo.lean`: scalar-rotation invariance forces
   `ζ^ord = 1` for vector-valued analytic germs.
 - `HTGeometry/FiniteAffineCyclicMomentSymmetryUniversalityLaw.lean`: a primitive affine cyclic
   symmetry of an `n`-point spectrum is equivalent to vanishing of its first `n`

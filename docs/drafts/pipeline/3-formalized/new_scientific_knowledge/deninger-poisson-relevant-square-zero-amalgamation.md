@@ -247,7 +247,7 @@ coefficient, not missing definitions of arithmetic cohomology.
 
 ### The amalgamation and its totalization landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerSquareZeroAmalgamation.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSquareZeroAmalgamation.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 The split square-zero augmented objects are mathlib's `TrivSqZeroExt k I` with its augmentation

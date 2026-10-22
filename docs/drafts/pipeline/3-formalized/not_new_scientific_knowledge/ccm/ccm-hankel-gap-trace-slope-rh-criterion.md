@@ -288,9 +288,9 @@ added.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMHankelGapTraceSlope.lean`, on the divisor/pole profiles of
-`RHTower/CCMShiftCovariantPoleDivisorCapacity.lean` and the Cauchy energy form of
-`RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMHankelGapTraceSlope.lean`, on the divisor/pole profiles of
+`RHTower/CCM/CCMShiftCovariantPoleDivisorCapacity.lean` and the Cauchy energy form of
+`RHTower/CCM/CCMTransverseIndexTraceSlopeCoercivity.lean`.
 
 - `leakDensity`, `tailLeakEnergy`, `hankelGapProfile`, `LeakProfile` — the leakage density, the tail
   energy, the gap profile `F_ell(u) = int_u^infinity (t-u)|ell|^2`, and hypothesis `(1)`.

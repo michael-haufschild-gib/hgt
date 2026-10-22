@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.EvenSectorSmoothTraceCorrection
-import GaloisForLFunctions.RHTower.SuzukiSmallApertureGroundEnergy
-import GaloisForLFunctions.RHTower.CCMZetaWeilSmoothIdentity
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSmallApertureGroundEnergy
+import GaloisForLFunctions.RHTower.CCM.CCMZetaWeilSmoothIdentity
 
 /-!
 # An actual upward energy direction in the smooth even pole-free blind fibre

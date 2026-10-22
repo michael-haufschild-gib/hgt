@@ -7,7 +7,7 @@
   `[NEW QUANTIFIER CLOSURE] [NOT AN RH PROOF] [NO COMPUTATION]`
 - **Paper parent:** `../../5-failed/suzuki-holomorphic-gauge-characteristic-limit.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCharacteristicEntireLimitNoGo.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCharacteristicEntireLimitNoGo.lean`
 
 ## Formal theorem surface
 
@@ -57,8 +57,8 @@ retired one-angle compact-limit statement.
 
 ## Verification
 
-- `lake env lean GaloisForLFunctions/RHTower/SuzukiCharacteristicEntireLimitNoGo.lean` — passed.
-- `lake build GaloisForLFunctions.RHTower.SuzukiCharacteristicEntireLimitNoGo` — passed.
+- `lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiCharacteristicEntireLimitNoGo.lean` — passed.
+- `lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiCharacteristicEntireLimitNoGo` — passed.
 - `#print axioms RHTower.not_suzukiHolomorphicGaugeCharacteristicLimitWall` —
   `[propext, Classical.choice, Quot.sound]` only.
 - Module was already imported by `formal/GaloisForLFunctions/RHTower.lean`; no new umbrella import

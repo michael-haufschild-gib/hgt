@@ -34,7 +34,7 @@ Notation: `N = ‖f‖₁`, `κ = μ/2π`, `D = eigenDefectConst b (½) 0`, `K�
 
 ## Lean certificate (2026-10-09)
 
-Module `RHTower/CCMEigenvectorLowFrequencyMassBound` (wired in `RHTower.lean` after `CCMGroundEnergyZeroSumBound`; `lake env lean` clean; `lake --old build` green). `#print axioms` gives `[propext, Classical.choice, Quot.sound]`.
+Module `RHTower/CCM/CCMEigenvectorLowFrequencyMassBound` (wired in `RHTower.lean` after `CCMGroundEnergyZeroSumBound`; `lake env lean` clean; `lake --old build` green). `#print axioms` gives `[propext, Classical.choice, Quot.sound]`.
 
 | Claim | Lean |
 |-|-|
@@ -62,7 +62,7 @@ If the share decays like `e^{−ηB}` at every large aperture, the single-apertu
 So the exponential decay rate of the ground states' low-frequency share controls `Θ − ½` continuously.
 
 ## Shape receiver (MUST-844)
-Module `RHTower/CCMSymmetricDecreasingGroundStateRH` (wired after `CCMEigenvectorLowFrequencyMassBound`; `lake --old build` green; standard axioms).
+Module `RHTower/CCM/CCMSymmetricDecreasingGroundStateRH` (wired after `CCMEigenvectorLowFrequencyMassBound`; `lake --old build` green; standard axioms).
 
 1. **Time domain.** `I_σ(F) = √(π/σ)∫conj(f(t))k_σ(t)dt` with `k_σ(t) = ∫b(x)e^{−(t−x)²/4σ}dx` (`lowFrequencyMass_conjTransform_eq`). The proof is two applications of Fubini and `∫e^{isy}e^{−σs²}ds = √(π/σ)e^{−y²/4σ}` (`integral_cexp_mul_gaussian`, `integral_cexp_mul_lowFrequencyWeight`).
 2. **Kernel.** `0 ≤ k_σ ≤ b̂(0)`, `k_σ` is continuous, and `k_σ(t) ≥ b̂(0)e^{−(r+1)²/4σ}` for `|t| ≤ r` (`lowFrequencyKernel_ge`).

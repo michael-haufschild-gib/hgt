@@ -7,7 +7,7 @@
 - **Paper theorem:**
   `../../2-fully-proven/new_scientific_knowledge/suzuki-high-clock-prime-tangent-tomography.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiPrimeTangentTomography.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeTangentTomography.lean`
 
 ## Statement
 
@@ -67,8 +67,8 @@ used. The theorem does not assert uniformity as aperture grows or identify a Xi 
 ## Verification
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/SuzukiPrimeTangentTomography.lean
-lake build GaloisForLFunctions.RHTower.SuzukiPrimeTangentTomography
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeTangentTomography.lean
+lake build GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeTangentTomography
 lake env lean /tmp/SuzukiPrimeTangentAxioms.lean
 ```
 

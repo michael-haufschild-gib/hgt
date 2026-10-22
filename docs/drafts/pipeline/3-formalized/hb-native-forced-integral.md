@@ -8,7 +8,7 @@ The hardest target remains `2 Omega(B(p,p)/2,B(m,m)/2)=0`, with independent SS/S
 
 ## Exact construction
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeForcedIntegral`. Namespace: `RHTower.D4BMNativeResponse`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeForcedIntegral`. Namespace: `RHTower.D4BMNativeResponse`.
 
 The actual reduced source satisfies `timeReducedCoefficient(s,a,tau,0)=0` for every complex `s,a` and every real time. The proof evaluates the original radial polynomials and lift at their endpoint. Hence its continuous odd representative is exactly
 
@@ -48,7 +48,7 @@ The [comparison card](../1-in-progress/hb-native-cusp-inverse-identification.md)
 
 ## Validation
 
-Foreground scratch `lake env lean` passed without warnings. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMNativeForcedIntegral`, with 4028 frozen own-module caches and 11 package caches. The new leaf built in 50 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
+Foreground scratch `lake env lean` passed without warnings. The final audit ran only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMNativeForcedIntegral`, with 4028 frozen own-module caches and 11 package caches. The new leaf built in 50 seconds; Lake reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the 11 new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. All six installed source/artifact files match the audited files byte for byte. The unique import is in the `GaloisForLFunctions.RHTower` area umbrella; no umbrella build ran.
 

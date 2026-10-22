@@ -173,7 +173,7 @@ specialist review remains required.
 Module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiInteriorExcursionShiftSelection.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiInteriorExcursionShiftSelection.lean
 ```
 
 Capstone declarations:

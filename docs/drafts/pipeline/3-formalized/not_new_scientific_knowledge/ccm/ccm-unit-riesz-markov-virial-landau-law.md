@@ -19,8 +19,8 @@ all-epsilon one-sided coefficient bound implies RH by Landau's first-singularity
 This closes the connector.  It does not prove the one-sided coefficient bound.
 
 Cell positivity/gluing and finite Möbius virial algebra are formalized respectively in
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovDensity.lean` and
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMobiusCausalVirial.lean`.  Global convolution and
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMarkovDensity.lean` and
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMobiusCausalVirial.lean`.  Global convolution and
 Laplace/Landau analysis remain paper-level.
 
 ## 1. Fixed logarithmic profile
@@ -283,7 +283,7 @@ re-proposing them as frontier research.
 
 ## Lean status — the exact zeta transform, 2026-08-15
 
-`formal/GaloisForLFunctions/RHTower/CCMUnitRieszMarkovTransform.lean` (wired, axiom-clean, 26
+`formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMarkovTransform.lean` (wired, axiom-clean, 26
 declarations) proves the analytic heart of sections 2 and 4.
 
 - `unitRieszAtom` — the `r`-th arithmetic atom `1_{log r <= v}(exp(-v) - sqrt r exp(-3v/2))`, with
@@ -331,7 +331,7 @@ Still to formalize for this card: the total-mass statement `(5)` in its direct f
 `[FORMALIZED]` — the items listed as remaining above are now covered.
 
 - The total-mass statement `(5)` in its direct form (`w ≤ 1`, `1 − 9e^{-v/2} ≤ w`, `w → 1`) is
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszProfileLimit.lean`, and the sharp form
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszProfileLimit.lean`, and the sharp form
   `1 − w(v) ≤ 3e^{-v}` is `one_sub_unitRieszLogProfile_le` in
   `CCMUnitRieszQuadratureDefect.lean`.
 - The transform side `(6)`, `(7)`, `(14)`–`(17)` is
@@ -339,7 +339,7 @@ Still to formalize for this card: the total-mass statement `(5)` in its direct f
 - The remaining pieces — the wavelet kernel `(9)`, the convolution split of `(11)`, the polar part
   of the virial `(13)`, and the Landau bookkeeping `(18)`–`(21)` — are the new module
 
-  `formal/GaloisForLFunctions/RHTower/CCMUnitRieszVirialConnector.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszVirialConnector.lean`
   (7 theorems, all unconditional, axioms exactly `[propext, Classical.choice, Quot.sound]`, wired
   into `formal/GaloisForLFunctions/RHTower.lean`):
 

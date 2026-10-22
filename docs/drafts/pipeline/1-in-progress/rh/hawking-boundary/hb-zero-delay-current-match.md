@@ -4,7 +4,7 @@ Status: twelve closed Lean source and radial-contact theorems; [exact scope and 
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hardest obstacle is the complete physical source/current cancellation. This calculation evaluates the full zero-delay radial contact from [finite-clock transfer](../../hb-reduced-source-clock-transfer.md), rather than assigning that contact to zero.
+The hardest obstacle is the complete physical source/current cancellation. This calculation evaluates the full zero-delay radial contact from [finite-clock transfer](hb-reduced-source-clock-transfer.md), rather than assigning that contact to zero.
 
 ## The source primitive
 

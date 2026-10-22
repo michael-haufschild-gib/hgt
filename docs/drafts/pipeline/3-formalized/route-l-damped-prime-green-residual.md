@@ -67,7 +67,7 @@ a newly normalized limiting diagnostic.
   20 source arguments inspected; no generated ingredient premise adopted.
 
 The complete 383-line module is
-`formal/GaloisForLFunctions/RHTower/DeningerDampedPrimeCircleContraction.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerDampedPrimeCircleContraction.lean`.
 It proves the source operator and its weighted reflection mate, exact Mellin
 multiplier, full original periodization residual, strict normalized
 contraction, explicit Gaussian powers, and convergence in the original
@@ -151,7 +151,7 @@ are recorded on that card.
 Final scratch `lake env lean /tmp/route_l_damped_c41.lean` passed with no
 errors or warnings. The file is byte-identical to the new module:
 383 lines, 18 public theorems, two private lemmas and eight definitions.
-The final audit `lake build GaloisForLFunctions.RHTower.DeningerDampedPrimeCircleContraction`
+The final audit `lake build GaloisForLFunctions.RHTower.Deninger.DeningerDampedPrimeCircleContraction`
 passed; only the new leaf was built (135 seconds, 11943 dependency-graph
 jobs). One umbrella import, 26 public declarations and zero cross-module
 name collisions were verified. Index refresh and global lint passed.

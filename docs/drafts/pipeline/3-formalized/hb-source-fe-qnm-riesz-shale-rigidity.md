@@ -137,7 +137,7 @@ selects ordinary Fock space rather than an extended representation.
 ## Formalization result
 
 Module:
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEQNMRieszShaleRigidity`
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEQNMRieszShaleRigidity`
 
 Lean proves unconditionally:
 
@@ -158,7 +158,7 @@ Audit:
 
 - direct `lake env lean` check: passed;
 - targeted `lake build
-  GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEQNMRieszShaleRigidity`: passed
+  GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEQNMRieszShaleRigidity`: passed
   `12174/12174`;
 - `#print axioms` on positive-branch no-go, generic similarity invariance, global iff-RH, and RBH
   bridge: only standard `[propext, Classical.choice, Quot.sound]`;

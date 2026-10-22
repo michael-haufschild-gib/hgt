@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRectangularAutocorrelation
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularAutocorrelation
 
 /-!
 # On the arithmetic range the rectangular autocorrelation has only two tents

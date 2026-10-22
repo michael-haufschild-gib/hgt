@@ -148,7 +148,7 @@ be removed by that argument. No statement from either paper is imported into Lea
 
 ## Lean certificate
 
-Module: [ThetaCuspHawkingBMQuarticResponseWork.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResponseWork.lean).
+Module: [ThetaCuspHawkingBMQuarticResponseWork.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResponseWork.lean).
 Namespace: `RHTower.D4BMQuarticResponseWork`.
 
 Public theorems:
@@ -163,7 +163,7 @@ Public theorems:
 The four accompanying definitions name the original coefficients, transferred
 current, remaining local coefficient, and full-response work. Scratch
 `lake env lean /tmp/hb-quartic-response-work.lean` passed without diagnostics.
-Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticResponseWork`
+Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticResponseWork`
 passed without warnings in 100 seconds against cached imports; no dependency or
 umbrella build ran. No heartbeat, recursion-depth, or transparency override was
 added. The umbrella imports the leaf once.

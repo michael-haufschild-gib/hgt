@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiTransverseSpectralUniversalityLaw
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilFloorGrowthSpectrum
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilFloorGrowthSpectrum
 
 /-!
 # Xi transverse-certificate/restricted-Weil floor growth separation

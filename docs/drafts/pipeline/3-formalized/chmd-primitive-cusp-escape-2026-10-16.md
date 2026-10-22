@@ -65,12 +65,12 @@ The failed compactness route and second-pass positive salvage are recorded in
 - `scripts/formal_tools.py index` exited 0.
 - Global formal lint exited 1 solely for these six other unwired modules:
 
-- `GaloisForLFunctions.RHTower.DeningerHasseHilbertOperators`.
-- `GaloisForLFunctions.RHTower.DeningerHasseHilbertPairing`.
-- `GaloisForLFunctions.RHTower.DeningerMeyerHasseHilbertAdmission`.
-- `GaloisForLFunctions.RHTower.DeningerMeyerHasseHilbertDensity`.
-- `GaloisForLFunctions.RHTower.DeningerMeyerHasseHilbertTopology`.
-- `GaloisForLFunctions.RHTower.DeningerMeyerHasseMoments`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHasseHilbertOperators`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerHasseHilbertPairing`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHasseHilbertAdmission`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHasseHilbertDensity`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHasseHilbertTopology`.
+- `GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHasseMoments`.
 
 No new CHMD lint error was reported. These other modules were preserved.
 All owned processes are terminal. All 12 owned scratch files were removed; absence verified. All owned processes

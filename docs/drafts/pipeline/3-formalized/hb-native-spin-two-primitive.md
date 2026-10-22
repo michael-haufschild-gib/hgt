@@ -58,7 +58,7 @@ The scratch proof and exact-module build passed. The isolated exact target built
 
 Exactly the thirteen new public theorems were audited in a separate scratch file; each reported only `propext`, `Classical.choice`, and `Quot.sound`. The verified source and five artifacts were installed byte-identically. The new module is wired once into `RHTower.lean`; no umbrella build ran. Corpus indexing completed (two changed files), formal lint passed with existing large-file warnings, and twelve local document links passed. All owned search, Lean, Lake, indexing and lint handles reached terminal status. The final owned-process check was clear; scratch, isolated audit and search files were removed. The frontier map and universal ledger were not edited. No mathematical computation ran.
 
-[ThetaCuspHawkingBMNativeSpinTwoPrimitive](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeSpinTwoPrimitive.lean), namespace `RHTower.D4BMNativeSpinTwoPrimitive`, proves:
+[ThetaCuspHawkingBMNativeSpinTwoPrimitive](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeSpinTwoPrimitive.lean), namespace `RHTower.D4BMNativeSpinTwoPrimitive`, proves:
 
 - `laplaceMean_darboux`: the actual radial Darboux equation for every angular-Laplacian iterate.
 - `first_tendsto_characteristic`, `argument_right_derivative`: the actual first invariant contacts of all those original iterates.

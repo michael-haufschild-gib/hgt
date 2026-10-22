@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedDensityDeBranges
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailProductFiberGlobalReflection
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi
 import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
 
 open Complex Real MeasureTheory Set Filter Topology Polynomial

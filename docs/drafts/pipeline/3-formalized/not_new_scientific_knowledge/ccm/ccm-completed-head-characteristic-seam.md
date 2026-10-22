@@ -82,7 +82,7 @@ orientation is handled by interval sign reversal and never converted to positive
 
 ## Lean formalization
 
-Module: `formal/GaloisForLFunctions/RHTower/CCMActualHeadOutgoingQuantileCompletedCharacteristicSeam.lean`
+Module: `formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadOutgoingQuantileCompletedCharacteristicSeam.lean`
 
 Formalized results include:
 
@@ -98,7 +98,7 @@ Formalized results include:
 Audit:
 
 - targeted `lake env lean` source check passed
-- targeted `lake build GaloisForLFunctions.RHTower.CCMActualHeadOutgoingQuantileCompletedCharacteristicSeam`
+- targeted `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadOutgoingQuantileCompletedCharacteristicSeam`
   passed; no umbrella build run
 - all 25 theorem axiom audits report only `propext`, `Classical.choice`, `Quot.sound`
 - forbidden-token scan empty

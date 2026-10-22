@@ -175,7 +175,7 @@ oriented half-trace can be compared with Paugam.
 
 ### The source-proved content landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerMultiplicativeGreenTransgression.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerMultiplicativeGreenTransgression.lean`.  Axiom audit
 for all 9 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 Meyer's trace identity `(1)` and the nuclearity of `(5)` are the imported analytic theorems; what

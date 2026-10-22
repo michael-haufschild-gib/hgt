@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesPhysicalPluckerOrdinaryDeterminant
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
 
 /-!
 # First-trace no-go for the physical Pluecker determinant

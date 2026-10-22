@@ -5,7 +5,7 @@
 - **Type:** THEOREM (Lean)
 - **Predecessor:** [physical-clock tested-current balance](hb-physical-clock-tested-current-cusp-balance.md)
 - **Active attack:** [source-contact/current balance](../1-in-progress/hb-source-contact-spin-two-balance.md)
-- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeCuspModes.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticNativeCuspModes.lean`
 
 Proof chain: literal theta cusp → Xi occurrence → retained spin two → physical
 causal radial/left-QNM action → fixed common Hawking-clock extinction → RH.

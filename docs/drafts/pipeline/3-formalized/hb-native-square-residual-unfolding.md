@@ -90,7 +90,7 @@ so subtracting their means gives the displayed complete integrand.
 ## Lean implementation and audit
 
 All eight new modules have prefix
-`GaloisForLFunctions.RHTower.ThetaCuspHawking`:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawking`:
 
 - `BMSquareResidualModular`: actual compatible extension and full cutoff identity.
 - `BMSquareResidualModularBounds`: global bound and complete high-strip bounds.
@@ -99,7 +99,7 @@ All eight new modules have prefix
 - `BMEisensteinCoprimeRowSum`: exact primitive-pair/coprime-row identification.
 - `BMNativeSquareResidualUnfolding`: admitted native quotient-to-strip equality.
 - `BMNativeSquareResidualMellinReduction`: original measure and Mellin reduction.
-- [BMNativeSquareResidualFourierMean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMNativeSquareResidualFourierMean.lean):
+- [BMNativeSquareResidualFourierMean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMNativeSquareResidualFourierMean.lean):
   `residualStripMean_eq_fourier` and
   `scalarResidualPeriod_eq_full_fourier_mellin`.
 

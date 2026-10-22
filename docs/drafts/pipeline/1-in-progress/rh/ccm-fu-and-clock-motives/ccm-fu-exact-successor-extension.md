@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** [BRIDGE], derived extension candidate; unproved
 - **Goal:** Uniform complete signed Abel bound and RH; both remain open.
-- **Parent:** [reserve extension](../../ccm-fu-reserve-extension-induction.md).
+- **Parent:** [reserve extension](ccm-fu-reserve-extension-induction.md).
 
 ## Frozen arithmetic question
 
@@ -135,7 +135,7 @@ the parent pairing. First-gain magnitudes therefore avoid growth in
 card(P) at fixed quotient depth as well. Signs and unbounded depths
 still require the missing reserve comparison.
 
-The separately frozen [least-energy selection candidate](../../ccm-fu-greedy-envelope-extension.md)
+The separately frozen [least-energy selection candidate](ccm-fu-greedy-envelope-extension.md)
 asks whether the p minimizing the first gain preserves Psi admission at
 every admitted state. Its RunPod screen passes all8176 eligible saved
 states through32, including states outside the empty-state greedy path.

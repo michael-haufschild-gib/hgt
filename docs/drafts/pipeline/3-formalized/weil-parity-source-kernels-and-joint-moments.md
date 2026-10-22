@@ -90,7 +90,7 @@ Therefore the original and reflected source moments are jointly surjective on th
 
 ## Verification
 - Scratch `lake env lean /tmp/hgt-parity-source.91OGyY/Profile.lean` and `Physical.lean`: PASS.
-- Named final leaf builds of `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarParitySourceProfile` and `GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarParitySourceCoupling`: PASS (6.8 and 10 seconds). No full or umbrella build.
+- Named final leaf builds of `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarParitySourceProfile` and `GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarParitySourceCoupling`: PASS (6.8 and 10 seconds). No full or umbrella build.
 - No numerical experiment, computational oracle, added axiom, or RH premise supplies these results.
 - Scratch `Audit.lean`: all 15 public theorems have exactly `[propext, Classical.choice, Quot.sound]`; actual mathlib `RiemannHypothesis` printed and remains unproved.
 - Final `python3 scripts/formal_tools.py lint`: PASS (`formal lint passed`); existing size warnings remain. Logs: `/tmp/hgt-parity-source.91OGyY/Lint.txt` and `.err`.

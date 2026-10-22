@@ -613,7 +613,7 @@ hypothesis except the free parameters of the statement itself.
   `exists_clock_norm_primeChar_sub_one_le`, `exists_clock_finitePrimeTwistEnergy_le`,
   `exists_clock_in_horizon`, `exists_clock_finitePrimeTwistEnergy_lt`,
   `finitePrimeTwistEnergy_le_of_phase`.  These sit on the corpus simultaneous-approximation layer
-  `RHTower/CCMPrimePoleFiniteCoherence.lean`, whose annular clock is already cofinal, so no new
+  `RHTower/CCM/CCMPrimePoleFiniteCoherence.lean`, whose annular clock is already cofinal, so no new
   Diophantine input was needed.
 
 ## Gates

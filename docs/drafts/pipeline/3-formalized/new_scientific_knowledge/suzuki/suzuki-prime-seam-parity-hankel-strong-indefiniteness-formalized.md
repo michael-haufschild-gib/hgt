@@ -7,13 +7,13 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPrimeSeamParityHankelStrongIndefiniteness.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiPrimeSeamParityHankelStrongIndefiniteness`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimeSeamParityHankelStrongIndefiniteness`:
 
 ```text
 RHTower.primeSeamAtomQuadratic

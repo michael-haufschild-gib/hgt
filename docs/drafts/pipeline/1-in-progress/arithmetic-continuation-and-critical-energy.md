@@ -233,3 +233,19 @@ This card is the programme card: folder, umbrella, README and the continuation c
   - `TheAveragedCriterionOnSparseHorizons` — `energy_le_of_averaged_horizon` (per-horizon transport)
     and `riemannHypothesis_of_averaged_dyadic`: the averaged budget only has to be checked at dyadic
     horizons.
+- 2026-10-22 (cont. 6) — the free anchor and the core debt (all compiled, all wired):
+  - `TheFreeAnchorAtZeroDamping` — `dampedMobiusEnergy_le_pronicMass_add`,
+    `admits_of_work_integral_bound` (budget `1 + B`), `work_integral_le_of_bddAbove`, and
+    `riemannHypothesis_iff_cofinal_work_integral_bound`: RH is exactly a horizon-uniform bound on the
+    signed work accumulated from zero damping — no endpoint admission, no zero-free band, since the
+    undamped source is constant and the pronic mass is below one.
+  - `TheIntegratedCoreIsAPrimeCount` — `integral_rpow_neg_eq`, `integral_dampedPrimePrefix_eq`,
+    `integral_workCore_eq`, `integral_workCore_ge` (Chebyshev form), `workDeviation` and
+    `integral_workDeviation_le_of_bddAbove`.
+  - `TheCoreDebtIsThePrimeHarmonicSeries` — `sum_Icc_pronic_from`,
+    `integral_workCore_eq_scaleSum` (the integrated core as one sum over scales with density
+    `Λ(j)/log j`), `tendsto_primeHarmonic_atTop`, `integral_workCore_ge_primeHarmonic`,
+    `exists_horizon_integral_workCore_ge` and `integral_workDeviation_le_primeHarmonic`.
+    Consequence: the explicit positive core is a **debt** of size `Σ_{p ≤ T/2} 1/p`, and under any
+    energy budget the integrated deviation must carry it. The continuation obstruction is the
+    divergence of the prime harmonic series.

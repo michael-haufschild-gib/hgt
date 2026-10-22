@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusThetaNativeSecondCollar
-import GaloisForLFunctions.RHTower.DeningerMobiusConnection
+import GaloisForLFunctions.RHTower.Deninger.DeningerMobiusConnection
 
 /-!
 # Original internal-jet Euler connection on both collars

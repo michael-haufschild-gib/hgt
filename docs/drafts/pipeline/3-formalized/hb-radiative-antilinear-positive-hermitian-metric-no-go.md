@@ -130,7 +130,7 @@ fixed/reflection-real from local dynamics.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`.
 
 - Actual HC89 radiative cocycle is lifted to a conjugate-linear finite-packet transport with exact
   coefficient and singleton formulas and an unconditional involution theorem.
@@ -148,7 +148,7 @@ Formalized in
   external premise.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMRadiativeSourceFEPositiveHermitianMetricNoGo`
 passed all 12,019 jobs. Representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules
 and no HC90 finding. Module is wired into `GaloisForLFunctions.RHTower` without a full umbrella

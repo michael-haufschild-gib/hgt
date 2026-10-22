@@ -33,7 +33,7 @@ private def positiveWeightMeasure {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f : Ω → ℝ) : Measure Ω :=
   μ.withDensity (fun z => ENNReal.ofReal (max (f z) 0))
 
-theorem positiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
+private theorem positiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
     (hi : Integrable (fun z => f z*Real.exp (t*X z)) μ) :
     Integrable (fun z => Real.exp (t*X z)) (positiveWeightMeasure μ f) := by
@@ -47,14 +47,14 @@ theorem positiveWeight_integrable {Ω : Type*} [MeasurableSpace Ω]
   apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
   exact max_le (le_abs_self _) (abs_nonneg _)
 
-theorem positiveWeight_integralY {Ω : Type*} [MeasurableSpace Ω]
+private theorem positiveWeight_integralY {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f Y : Ω → ℝ) (hf : Measurable f) :
     (∫ z, Y z ∂positiveWeightMeasure μ f) = ∫ z, max (f z) 0*Y z ∂μ := by
   rw [positiveWeightMeasure, integral_withDensity_eq_integral_toReal_smul
     (by fun_prop) (by filter_upwards with z; exact ENNReal.ofReal_lt_top)]
   simp only [ENNReal.toReal_ofReal (le_max_right _ _), smul_eq_mul]
 
-theorem positiveWeight_integrableY {Ω : Type*} [MeasurableSpace Ω]
+private theorem positiveWeight_integrableY {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f Y : Ω → ℝ) (hf : Measurable f)
     (hi : Integrable Y (positiveWeightMeasure μ f)) :
     Integrable (fun z => max (f z) 0*Y z) μ := by
@@ -68,7 +68,7 @@ private theorem positive_sub_negative (r : ℝ) : max r 0-max (-r) 0 = r := by
   · rw [max_eq_right (le_of_not_ge hr), max_eq_left (neg_nonneg.mpr (le_of_not_ge hr))]
     ring
 
-theorem positive_exp_interior {Ω : Type*} [MeasurableSpace Ω]
+private theorem positive_exp_interior {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
     (hi : ∀ᶠ s in 𝓝 t, Integrable (fun z => f z*Real.exp (s*X z)) μ) :
     t ∈ interior (integrableExpSet X (positiveWeightMeasure μ f)) := by
@@ -76,7 +76,7 @@ theorem positive_exp_interior {Ω : Type*} [MeasurableSpace Ω]
   filter_upwards [hi] with s hs
   exact positiveWeight_integrable μ f X hf hX s hs
 
-theorem signed_exp_hasDerivAt {Ω : Type*} [MeasurableSpace Ω]
+private theorem signed_exp_hasDerivAt {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) (f X : Ω → ℝ) (hf : Measurable f) (hX : Measurable X) (t : ℝ)
     (hi : ∀ᶠ s in 𝓝 t, Integrable (fun z => f z*Real.exp (s*X z)) μ) :
     Integrable (fun z => f z*(X z*Real.exp (t*X z))) μ ∧
@@ -184,6 +184,15 @@ private theorem exterior_admission (α β : ℝ) (hs : α+β < -2) :
   rw [Real.exp_log (by linarith : 0 < -2-α-β)] at h
   simpa only [show -2-α-(-2-α-β) = β by ring] using h
 
+private theorem plane_kernel_shift (α β δ : ℝ) {z : ℂ} (hz : z ≠ 0) :
+    fzzScreeningPlaneKernel α β z*Real.exp (δ*Real.log ‖z‖) =
+      fzzScreeningPlaneKernel (α+δ) β z := by
+  have hn := norm_pos_iff.mpr hz
+  rw [show Real.exp (δ*Real.log ‖z‖) = ‖z‖^δ by rw [Real.rpow_def_of_pos hn, mul_comm]]
+  unfold fzzScreeningPlaneKernel
+  rw [Real.rpow_add hn]
+  ring
+
 
 private theorem zero_marked_source (α β : ℝ) (ha : -3 < α) :
     IntegrableOn (fun z : ℂ => Real.log ‖z‖*fzzScreeningZeroSubtracted α β z)
@@ -215,7 +224,7 @@ private theorem zero_marked_source (α β : ℝ) (ha : -3 < α) :
   · simpa only [IntegrableOn, mul_comm] using h.1
   · simpa only [mul_comm] using h.2.congr_of_eventuallyEq he
 
-theorem exterior_marked_source (α β : ℝ) (hs : α+β < -2) :
+private theorem exterior_marked_source (α β : ℝ) (hs : α+β < -2) :
     IntegrableOn (fun z : ℂ => Real.log ‖z‖*fzzScreeningPlaneKernel α β z)
       fzzScreeningPlaneExterior ∧
     HasDerivAt (fun δ => ∫ z : ℂ in fzzScreeningPlaneExterior,

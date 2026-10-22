@@ -36,7 +36,7 @@ magnitude law to PW imbalance would imply it and close the full PW-B chain.
 - `fullCircleCrossBranchSymmetricCausalPair_re_eq_zero_iff_conjInvariant_on_critical`
   specializes it to the literal full-circle source using the canonical
   multiplicity-exact Schwarz divisor transport.
-- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularSourceReflection.lean` passed on 2026-09-21.
+- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularSourceReflection.lean` passed on 2026-09-21.
 - No OLean audit was attempted after the required amplitude dependency's leaf
   build immediately replayed more than 12,000 unrelated modules and was
   stopped under the no-long-build rule.

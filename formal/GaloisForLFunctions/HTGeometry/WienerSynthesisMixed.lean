@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonProbeNormalization
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonProbeNormalization
 
 /-!
 # Mixed derivatives of a synthesis

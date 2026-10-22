@@ -29,8 +29,8 @@ Then `T_xi` is a positive Schatten-one operator of rank at most two, and every f
 
 Modules:
 
-- `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeSummableKernel`
-- `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeTraceClassOperator`
+- `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeSummableKernel`
+- `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeTraceClassOperator`
 
 Main theorems:
 

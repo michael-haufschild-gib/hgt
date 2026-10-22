@@ -8,7 +8,7 @@
 
 ## Lean module
 
-`GaloisForLFunctions.RHTower.CCMEulerRayLogDerivativeIndex` (new), over
+`GaloisForLFunctions.RHTower.CCM.CCMEulerRayLogDerivativeIndex` (new), over
 `CCMDiagonalFockLift` and `CCMHalfUnitCauchySeam`.
 
 Umbrella: `GaloisForLFunctions.RHTower`.
@@ -47,6 +47,6 @@ Umbrella: `GaloisForLFunctions.RHTower`.
 ## Verification performed
 
 - `lake env lean` on the module: no errors, no warnings.
-- `lake build GaloisForLFunctions.RHTower.CCMEulerRayLogDerivativeIndex`: success.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMEulerRayLogDerivativeIndex`: success.
 - `#print axioms` on every declaration: clean.
 - Umbrella import added.

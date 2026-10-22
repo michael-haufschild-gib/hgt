@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.SuperPoincareAlgebra
-import GaloisForLFunctions.RHTower.DeningerMultiplicativeGreenTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerMultiplicativeGreenTransgression
 import GaloisForLFunctions.RHTower.GammaSewnMobiusApertureStokesMellinResponse
-import GaloisForLFunctions.RHTower.DeningerStationaryKahlerGerm
+import GaloisForLFunctions.RHTower.Deninger.DeningerStationaryKahlerGerm
 
 noncomputable section
 

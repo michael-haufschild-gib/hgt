@@ -29,7 +29,7 @@ abscissa below a hypothetical transverse boundary.
 
 ## Formal artifact
 
-`formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowEnergySpectrum.lean`
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowEnergySpectrum.lean`
 
 Principal declaration:
 

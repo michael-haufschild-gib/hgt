@@ -4,7 +4,7 @@ Status: period and clock identities formalized; complete current comparison rema
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-The hardest target remains the complete physical current cancellation. The [zero-delay radial contact](../../hb-zero-delay-current-match.md) is now explicit. This card attacks the remaining positive-delay direct and image contacts and their comparison with the physical cross-currents in the [finite-clock transfer](../../hb-reduced-source-clock-transfer.md).
+The hardest target remains the complete physical current cancellation. The [zero-delay radial contact](hb-zero-delay-current-match.md) is now explicit. This card attacks the remaining positive-delay direct and image contacts and their comparison with the physical cross-currents in the [finite-clock transfer](hb-reduced-source-clock-transfer.md).
 
 ## Conjecture: joint characteristic transport assembles the remaining contacts
 

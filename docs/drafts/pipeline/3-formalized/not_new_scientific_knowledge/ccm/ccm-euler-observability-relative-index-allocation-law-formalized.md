@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-euler-observability-relative-index-allocation-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMEulerObservabilityAllocation.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMEulerObservabilityAllocation.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 5 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

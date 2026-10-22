@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzLattice
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzLattice
 
 /-!
 # Rapid decay of a dilated Schwartz lattice sum

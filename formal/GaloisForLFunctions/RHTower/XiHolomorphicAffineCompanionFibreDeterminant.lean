@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureHolomorphicSectorCoercivity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureHolomorphicSectorCoercivity
 
 /-!
 # Holomorphic affine-companion determinant on one Xi height fibre

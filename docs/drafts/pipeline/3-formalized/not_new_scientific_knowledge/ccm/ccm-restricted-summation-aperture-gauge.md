@@ -124,7 +124,7 @@ tail, not the point constraint, is the first genuine Weil--prolate transfer oper
 ## Lean status
 
 **Formalized unconditionally, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMApertureGauge.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMApertureGauge.lean`.
 
 - **`summationMap`** — `E(f)(u) = sqrt u * sum_(n>=1) f(nu)`, as a `tsum` over `n >= 1`.
 - **`ApertureCorrector`** — the class `K_lambda`: smooth, even, vanishing for `lambda^(-1) <= |x|`,

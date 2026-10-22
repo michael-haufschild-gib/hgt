@@ -74,7 +74,7 @@ for the theta center-mixed density. It is a missing formal connector, not a nove
 ## Lean realization
 
 `HilbertMetric/ThreePointCorrelationAngle.lean` proves the normalized criterion.
-`RHTower/HedenmalmCenterMixedCorrelationAngle.lean` then:
+`RHTower/Hedenmalm/HedenmalmCenterMixedCorrelationAngle.lean` then:
 
 - applies it to every reflected completed-source fibre;
 - uses `HTGeometry.integralMatrixKernel_posSemidef` to pass fibre positivity through Hedenmalm's

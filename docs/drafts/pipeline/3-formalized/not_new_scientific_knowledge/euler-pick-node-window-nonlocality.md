@@ -121,10 +121,10 @@ The source-specific dependency is closed by three new leaves:
 - `RHTower/AnalyticHermitianClosedSpanRealization.lean` constructs a total analytic Hermitian
   realization by compressing any bounded ambient Hermitian form to the closed span of its weakly
   analytic sections, while preserving the literal kernel.
-- `RHTower/SuzukiShiftedXiAnalyticKernelRealization.lean` realizes the denominator-cleared
+- `RHTower/Suzuki/SuzukiShiftedXiAnalyticKernelRealization.lean` realizes the denominator-cleared
   shifted-Xi kernel on the whole upper half-plane as the difference Gram kernel of two weighted
   Hardy sections.
-- `RHTower/SuzukiShiftedXiKernelOpenRegionLocality.lean` transfers locality through the nonzero
+- `RHTower/Suzuki/SuzukiShiftedXiKernelOpenRegionLocality.lean` transfers locality through the nonzero
   shifted-Xi diagonal congruence to the literal regular Pick kernel.
 
 The source-facing capstones are

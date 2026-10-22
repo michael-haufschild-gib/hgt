@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaTailCauchyFirstCorrection
-import GaloisForLFunctions.RHTower.ThetaCuspSchwartz
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartz
 
 /-!
 # Endpoint commutators of the literal theta tail kernel

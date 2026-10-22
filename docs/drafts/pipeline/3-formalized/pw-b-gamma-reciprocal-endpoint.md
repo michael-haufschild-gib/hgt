@@ -66,7 +66,7 @@ it is not a conclusion of this leaf alone.
 
 ## Scope and verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaReciprocalEndpoint.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaReciprocalEndpoint.lean`.
 All14 public declarations pass the final scratch with only propext,
 Classical.choice and Quot.sound. Exact passing proof bodies are promoted
 and wired once into RHTower. The targeted leaf build passed in15s,

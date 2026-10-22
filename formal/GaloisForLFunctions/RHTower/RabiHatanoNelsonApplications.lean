@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.RabiHatanoNelsonAlgebra
 import GaloisForLFunctions.RHTower.EulerSquarefreeWickNonreciprocalWilsonOrientation
-import GaloisForLFunctions.RHTower.SuzukiHatanoNelsonEllipse
-import GaloisForLFunctions.RHTower.SuzukiLatticeLimitSymbol
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiHatanoNelsonEllipse
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiLatticeLimitSymbol
 
 /-!
 # Rabi--Hatano--Nelson applications in the arithmetic corpus

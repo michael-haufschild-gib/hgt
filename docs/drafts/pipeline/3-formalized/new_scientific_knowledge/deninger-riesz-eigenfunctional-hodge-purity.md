@@ -107,7 +107,7 @@ comparison, not for critical-line location alone.
 
 Formalized as
 `RHTower.deningerClosedWeightOne_rieszEigenfunctional_re_eq_half` in
-`GaloisForLFunctions.RHTower.DeningerArithmeticRieszEigenfunctionalPurity`.
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticRieszEigenfunctionalPurity`.
 The same module defines
 `DeningerClosedWeightOneRieszXiSpectrum` and proves
 `riemannHypothesis_of_closedWeightOne_rieszXiSpectrum`.

@@ -105,12 +105,12 @@ and physical action. That method does not close the missing invariance producer.
 ## Lean validation
 
 Module:
-[ThetaCuspHawkingBMQuarticCuspFluxDecay.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCuspFluxDecay.lean),
+[ThetaCuspHawkingBMQuarticCuspFluxDecay.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticCuspFluxDecay.lean),
 namespace `RHTower.D4BMQuarticCuspFluxDecay`.
 Six public theorems and two definitions are wired into the RHTower umbrella once.
 `lake env lean /tmp/hb-cusp-flux-decay-next.lean` passed without diagnostics.
 The final exact leaf
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticCuspFluxDecay`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticCuspFluxDecay`
 passed in 25 seconds without warnings, using cached imports. No dependency or
 umbrella build ran. The audited source SHA256 is
 `2f8ac5abed0198f4a8539d30032f9cc2323293c08023976e9b7ef7b3dfd121dc`.
@@ -124,7 +124,7 @@ or axiom-printing check was used. All owned Lean/Lake processes completed.
 Index regeneration registered all eight public declarations. Final
 `scripts/formal_tools.py lint --check-generated` returned exit 1 for one other
 unreachable worktree module,
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMTemporalCurrentFundamentalFactor`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMTemporalCurrentFundamentalFactor`.
 It reported no error for this leaf and no stale generated-document error.
 That unrelated module was not modified. All owned search, Lean, Lake and lint
 processes completed; the isolated leaf-audit directory was removed.

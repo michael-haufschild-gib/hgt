@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiPhysicalPrimeApertureThetaAbelLandauNoMaximum
 import GaloisForLFunctions.RHTower.XiGuinandWeilSpectralRectangle
 import GaloisForLFunctions.RHTower.RectangularWindowAmplitudeAnalytic
-import GaloisForLFunctions.RHTower.CCMRectangularWeilCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularWeilCompleteness
 
 /-!
 # Physical theta--Abel energy Weil source detector

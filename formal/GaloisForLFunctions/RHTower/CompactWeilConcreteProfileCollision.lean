@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CompactWeilClosePairSamplingCollision
-import GaloisForLFunctions.RHTower.CCMGuinandWeilThirdGradeAbelCompleteness
+import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAbelCompleteness
 import GaloisForLFunctions.PNTPlus.Auxiliary
 
 /-!

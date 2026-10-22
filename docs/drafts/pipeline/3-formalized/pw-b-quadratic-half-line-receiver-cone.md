@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** COMPLETE SEMIALGEBRAIC RECEIVER CLASSIFICATION
 - **Parent:** PW-SM3 / PW-B
-- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekQuadraticHalfLineReceiverCone`
+- **Lean module:** `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekQuadraticHalfLineReceiverCone`
 - **Frontier-map policy:** read only
 
 ## Result

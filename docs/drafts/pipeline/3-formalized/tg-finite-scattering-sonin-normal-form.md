@@ -37,8 +37,8 @@ the next analytic problems; generic Gram positivity alone supplies no sub-unit b
 - 2026-10-02: corpus deep search partial; exact lexical search located the finite
   spherical unitary and its AE literal product theorem. Sources inspected directly.
 - 2026-10-02: `CCMFiniteScatteringSoninNormalForm.lean` passes final foreground
-  `lake --old env lean GaloisForLFunctions/RHTower/CCMFiniteScatteringSoninNormalForm.lean
-  -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMFiniteScatteringSoninNormalForm.olean`.
+  `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMFiniteScatteringSoninNormalForm.lean
+  -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMFiniteScatteringSoninNormalForm.olean`.
   Four definitions and six public theorems: actual finite Euler spectral/physical
   unitaries, AE literal product provenance, full mixed logarithmic differential,
   exact normal form, complementary residual Gram, its positive sign, and the exact

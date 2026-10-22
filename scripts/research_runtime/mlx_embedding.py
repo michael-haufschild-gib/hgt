@@ -8,23 +8,28 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .config import BATCH_SIZE, CONTEXT_TOKENS
+from .config import (CONTEXT_TOKENS, MAX_BATCH_SIZE, MLX_EMBEDDING_MODULE,
+                     PAD_MULTIPLE, TOKEN_BUDGET)
 from .protocol import RuntimeUnavailable, remaining
 
 
 class MLXEmbedding:
     def __init__(self, path: Path):
+        import importlib
         import mlx.core as mx
-        from mlx_lm.models.qwen3 import ModelArgs, Qwen3Model
         from transformers import AutoTokenizer
 
+        if not MLX_EMBEDDING_MODULE:
+            raise RuntimeUnavailable('no mlx-lm architecture is pinned for this embedding model')
         if not mx.metal.is_available():
             raise RuntimeUnavailable('MLX embedding requires Apple Metal')
+        module = importlib.import_module('mlx_lm.models.' + MLX_EMBEDDING_MODULE)
+        ModelArgs, Base = module.ModelArgs, getattr(module, 'Model', None) or module.Qwen3Model
         self.tokenizer = AutoTokenizer.from_pretrained(
             str(path), local_files_only=True, trust_remote_code=False, padding_side='right')
         # The official embedding artifact has bare base-model keys. The generic
         # mlx-lm generation loader expects model.* keys and is inappropriate.
-        self.model = Qwen3Model(ModelArgs.from_dict(json.loads((path/'config.json').read_text())))
+        self.model = Base(ModelArgs.from_dict(json.loads((path/'config.json').read_text())))
         self.model.load_weights(str(path/'model.safetensors'), strict=True)
         self.model.eval()
         self.model.set_dtype(mx.float32)
@@ -32,6 +37,26 @@ class MLXEmbedding:
         # Qwen3's attention/reshape code depends on Python shapes. Shapeless
         # compilation produced finite but incorrect vectors in the CPU audit.
         self.forward = mx.compile(self.model, shapeless=False)
+
+    @staticmethod
+    def _batches(tokens, order):
+        """Length-sorted batches under a padded-token budget.
+
+        Batch sizes are powers of two so `mx.compile(shapeless=False)` sees a
+        bounded set of shapes.
+        """
+        width = lambda index: ((len(tokens[index]) + PAD_MULTIPLE - 1) // PAD_MULTIPLE) * PAD_MULTIPLE
+        cursor = 0
+        while cursor < len(order):
+            count = 1
+            while count < MAX_BATCH_SIZE and cursor + count < len(order):
+                # Ascending length: the last member sets the padded width.
+                if (count + 1) * width(order[cursor + count]) > TOKEN_BUDGET:
+                    break
+                count += 1
+            count = 1 << (count.bit_length() - 1)
+            yield order[cursor:cursor + count]
+            cursor += count
 
     def embed(self, texts: list[str], *, deadline: float) -> list[list[float]]:
         import mlx.core as mx
@@ -46,11 +71,10 @@ class MLXEmbedding:
             raise ValueError('embedding text must contain at least one token')
         order = sorted(range(len(texts)), key=lambda i: len(tokens[i]))
         result = [None] * len(texts)
-        for start in range(0, len(order), BATCH_SIZE):
+        for indices in self._batches(tokens, order):
             remaining(deadline)
-            indices = order[start:start+BATCH_SIZE]
             x = self.tokenizer.pad({'input_ids': [tokens[i] for i in indices]},
-                                   padding=True, pad_to_multiple_of=32,
+                                   padding=True, pad_to_multiple_of=PAD_MULTIPLE,
                                    return_attention_mask=True, return_tensors='np')
             # Causal attention cannot see right padding after a valid token.
             # Pool each last valid token, never the last padded array position.

@@ -355,7 +355,7 @@ The unique-factorization core is also available in the earlier form
 `primePower_pair_orientation` of
 `formal/GaloisForLFunctions/HTGeometry/PrimeCollisionConvolution.lean`, and the first half-density
 jet as `hasDerivAt_suzukiShiftedCoefficient` in
-`formal/GaloisForLFunctions/RHTower/SuzukiCoupledErrorCriticalDerivative.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoupledErrorCriticalDerivative.lean`.
 
 ## Gates
 

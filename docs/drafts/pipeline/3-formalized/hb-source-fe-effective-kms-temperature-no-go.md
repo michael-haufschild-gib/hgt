@@ -123,7 +123,7 @@ cannot orient the wall.
 ## Formalization result
 
 Formalized in
-`GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEEffectiveKMSTemperatureNoGo`.
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEEffectiveKMSTemperatureNoGo`.
 
 - `norm_hbXiPeierlsUnitSourceFEFockVacuumPairRatio_sq_lt_half` derives the strict thermal range
   from the exact source bosonic normalization; positivity is exactly off-wall.
@@ -139,7 +139,7 @@ Formalized in
   Gibbs identification.
 
 Audit: direct `lake env lean` passed; targeted
-`lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEEffectiveKMSTemperatureNoGo`
+`lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEEffectiveKMSTemperatureNoGo`
 passed all 12,192 jobs; representative `#print axioms` outputs contain only `propext`,
 `Classical.choice`, and `Quot.sound`. Formal lint reports only pre-existing unreachable modules and
 no HC85 finding.

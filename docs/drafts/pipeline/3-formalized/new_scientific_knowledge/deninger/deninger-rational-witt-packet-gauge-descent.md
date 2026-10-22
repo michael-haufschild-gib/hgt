@@ -252,7 +252,7 @@ source-to-packet gauge descent.  External priority remains provisional.
 ## 11. Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/DeningerRationalWittPacketGaugeDescent.lean`.
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittPacketGaugeDescent.lean`.
 
 Formal capstones:
 
@@ -271,10 +271,10 @@ Wrat source composition; no unproved exponent-cocycle premise is introduced.
 
 Verification:
 
-- `lake env lean GaloisForLFunctions/RHTower/DeningerRationalWittPacketGaugeDescent.lean`
+- `lake env lean GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittPacketGaugeDescent.lean`
   passes;
 - targeted
-  `lake build GaloisForLFunctions.RHTower.DeningerRationalWittPacketGaugeDescent`
+  `lake build GaloisForLFunctions.RHTower.Deninger.DeningerRationalWittPacketGaugeDescent`
   passes;
 - capstone axiom audit reports only `propext`, `Classical.choice`, and
   `Quot.sound`.

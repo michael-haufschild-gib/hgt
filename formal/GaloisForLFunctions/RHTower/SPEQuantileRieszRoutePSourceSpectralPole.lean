@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.CriticalChebyshevBoostChargeInjection
 import GaloisForLFunctions.RHTower.HardyDyadicWindowTheorem
-import GaloisForLFunctions.RHTower.CCMUnitRieszCausalLaplaceBridge
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCausalLaplaceBridge
 
 open Complex Filter Topology
 

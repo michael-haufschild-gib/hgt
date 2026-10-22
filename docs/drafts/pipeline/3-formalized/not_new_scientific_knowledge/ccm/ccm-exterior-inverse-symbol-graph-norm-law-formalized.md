@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-exterior-inverse-symbol-graph-norm-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMExteriorInverseSymbol.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMExteriorInverseSymbol.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]`; `range_incidence` and
   `range_incidence_unique` depend on no axioms at all

@@ -133,19 +133,19 @@ Exact comparison now separates the statements. Planat--Solé prove negativity of
 - `HTGeometry/PolynomialODEJetRankThreeClosure.lean`: exact ten-jet self-dual ODE elimination.
 - `RHTower/PrimeArchThetaModularDifferentialClosure.lean`: actual theta-source modular connector.
 - `RHTower/PrimeArchThetaBornWittenEighthJet.lean`: actual Born--Witten seventh/eighth jets and atomwise D1 positivity.
-- `RHTower/ThetaCuspLikelihoodSeventhEighthCumulant.lean`: exact cumulants and quantitative `κ₈>(2/3)m₈`.
-- `RHTower/ThetaCuspLikelihoodSeventhEighthSourceJets.lean`: actual source jets and exact pointwise low-score obstruction.
-- `RHTower/ThetaCuspLikelihoodEighthScoreRayTransform.lean`: exact one- and two-ray incomplete-Laplace transforms, dominant Dirac--ray compensation, and `1/30` core certificate.
-- `RHTower/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean`: strict full ordinary eighth-jet positivity and sharpened `(128/15)A⁸m₈` normalized-moment lower bound.
-- `RHTower/ThetaCuspLikelihoodEighthDominantPairCompensation.lean`: degree-twenty exponential fusion and strict dominant grade-two absorption.
-- `RHTower/ThetaCuspLikelihoodEighthStablePairCompensation.lean`: exact atom-pair core, factor-nine transform envelope, Gaussian stable-tail budgets, and complete ordered grade-two absorption.
-- `RHTower/ThetaCuspLikelihoodEighthFockSector.lean`: sharp stable Gaussian bounds, full one-particle monomial budget, `q⁷` higher-even summability, and strict completed even-Fock reserve.
-- `RHTower/ThetaCuspLikelihoodEighthFockTraceConnector.lean`: positivity of completed losses and strict coefficient-faithful landing inside literal ordinary eighth source jet.
-- `RHTower/ThetaCuspLikelihoodEighthBellGrades.lean`: exact literal log-J8 Bell decomposition, positivity of all favorable odd grades, and reduction to four even losses.
-- `RHTower/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean`: iterated normalized-moment product laws, exact monomial trace, and absorption of Bell grades four, six, and eight into higher-even Fock loss.
-- `RHTower/ThetaCuspFullReflectionEighthLogJets.lean`: actual complete-source seventh/eighth log jets and normalized D1 polynomial.
-- `RHTower/ThetaCuspFullReflectionEighthBellTransfer.lean`: exact raw-to-log D1 connector through Bell order eight.
-- `RHTower/ThetaCuspFullReflectionEighthHankelSeam.lean`: strict source seam theorem and nontrivial open D1 chamber.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodSeventhEighthCumulant.lean`: exact cumulants and quantitative `κ₈>(2/3)m₈`.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodSeventhEighthSourceJets.lean`: actual source jets and exact pointwise low-score obstruction.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthScoreRayTransform.lean`: exact one- and two-ray incomplete-Laplace transforms, dominant Dirac--ray compensation, and `1/30` core certificate.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthOrdinaryPositivity.lean`: strict full ordinary eighth-jet positivity and sharpened `(128/15)A⁸m₈` normalized-moment lower bound.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthDominantPairCompensation.lean`: degree-twenty exponential fusion and strict dominant grade-two absorption.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthStablePairCompensation.lean`: exact atom-pair core, factor-nine transform envelope, Gaussian stable-tail budgets, and complete ordered grade-two absorption.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthFockSector.lean`: sharp stable Gaussian bounds, full one-particle monomial budget, `q⁷` higher-even summability, and strict completed even-Fock reserve.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthFockTraceConnector.lean`: positivity of completed losses and strict coefficient-faithful landing inside literal ordinary eighth source jet.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthBellGrades.lean`: exact literal log-J8 Bell decomposition, positivity of all favorable odd grades, and reduction to four even losses.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean`: iterated normalized-moment product laws, exact monomial trace, and absorption of Bell grades four, six, and eight into higher-even Fock loss.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLogJets.lean`: actual complete-source seventh/eighth log jets and normalized D1 polynomial.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthBellTransfer.lean`: exact raw-to-log D1 connector through Bell order eight.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthHankelSeam.lean`: strict source seam theorem and nontrivial open D1 chamber.
 
 ## No-go closure
 
@@ -179,10 +179,10 @@ All connector and positivity theorems pass direct Lean, targeted module builds, 
 
 **New Lean artifacts.**
 
-- `RHTower/ThetaCuspLikelihoodEighthPairTraceIntegral.lean`: exact algebraic-pair/product-integral identity.
-- `RHTower/ThetaCuspLikelihoodEighthAtomPairTrace.lean`: exact point/ray atom-pair integral formula, including symbolic ray--ray shifted moments.
-- `RHTower/ThetaCuspLikelihoodEighthPairSectorTrace.lean`: product tilting, absolutely convergent atom expansion, four-sector reassembly, and `algebraicPairTrace₈ = pairSectorMass₈`.
-- `RHTower/ThetaCuspLikelihoodEighthLogPositivity.lean`: coefficient-matched even-loss absorption and strict literal logarithmic J8 positivity on `x≥0`.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthPairTraceIntegral.lean`: exact algebraic-pair/product-integral identity.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthAtomPairTrace.lean`: exact point/ray atom-pair integral formula, including symbolic ray--ray shifted moments.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthPairSectorTrace.lean`: product tilting, absolutely convergent atom expansion, four-sector reassembly, and `algebraicPairTrace₈ = pairSectorMass₈`.
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthLogPositivity.lean`: coefficient-matched even-loss absorption and strict literal logarithmic J8 positivity on `x≥0`.
 
 - 2026-08-27 — proved exact tilted-product trace, exact atom-pair trace including ray--ray sector, absolutely convergent four-sector pair reassembly, and strict literal logarithmic eighth likelihood jet positivity for all physical sources. Global D1 transfer remains active.
 
@@ -225,11 +225,11 @@ proof must use diagonal domination or nonlinear Schur absorption, not termwise p
 
 **New Lean artifacts.**
 
-- `RHTower/ThetaCuspFullReflectionEighthLikelihoodGain.lean`: exact `(4A²-B)J8` gain and quantitative native lower gain.
-- `RHTower/ThetaCuspFullReflectionEighthLowerJetBaseline.lean`: globally positive no-sixth baseline and exact coupled sixth/eighth burden.
-- `RHTower/ThetaCuspFullReflectionEighthCompactReserve.lean`: sharp nonlinear compact lower reserve.
-- `RHTower/ThetaCuspFullReflectionEighthLargeWeight.lean`: strict native D1 for `x≥11/20`.
-- `RHTower/ThetaCuspFirstSecondAtomCrossHankelObstruction.lean`: exact cross-indefiniteness interval and physical diagonal-absorption survivor.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLikelihoodGain.lean`: exact `(4A²-B)J8` gain and quantitative native lower gain.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLowerJetBaseline.lean`: globally positive no-sixth baseline and exact coupled sixth/eighth burden.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthCompactReserve.lean`: sharp nonlinear compact lower reserve.
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthLargeWeight.lean`: strict native D1 for `x≥11/20`.
+- `RHTower/ThetaCusp/ThetaCuspFirstSecondAtomCrossHankelObstruction.lean`: exact cross-indefiniteness interval and physical diagonal-absorption survivor.
 
 - 2026-08-27 — proved quantitative eighth likelihood gain, strict global lower-jet baseline, exact sixth/eighth coupling, sharp nonlinear compact reserve, and unconditional D1 for `x≥11/20`. Compact interval remains.
 - 2026-08-27 — disproved atom-pair PSD at first--second signed curvature with uniform defect `656<-cross<1058`; proved `ρ≤1/100` diagonal absorption and instantiated it for actual seam likelihood weight. Rank-three compact work continues through nonlinear absorption.
@@ -259,7 +259,7 @@ the exact sixth loss to eighth Fock grades and retained fourth-jet terms. The Au
 Planat--Solé second-level concavity result concerns a different order-two transform and reports
 higher Turán orders open; it does not supply this rank-three D1 sign.
 
-**New Lean artifact.** `RHTower/ThetaCuspFullReflectionEighthRefinedLargeWeight.lean` proves the
+**New Lean artifact.** `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthRefinedLargeWeight.lean` proves the
 three refined profile certificates, Born-top and native D1 positivity at weight `19/4`, the exact
 Taylor landing, and native D1 positivity for every `x≥69/200`. Direct Lean, exact module build, and
 axiom audit pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -287,7 +287,7 @@ budget `5000`. Thus any compact proof based only on an independent sixth upper b
 that narrow threshold; current global sixth estimates do not. Surviving route is correlated
 full-determinant or nonlinear Schur absorption, retaining fourth/eighth structure.
 
-**New Lean artifact.** `RHTower/ThetaCuspFirstSecondAtomSharpSeamWeight.lean` proves the exact seam
+**New Lean artifact.** `RHTower/ThetaCusp/ThetaCuspFirstSecondAtomSharpSeamWeight.lean` proves the exact seam
 ratio, `445ρ₂<1`, uniform reserve `>21`, and its unconditional physical specialization.
 
 - 2026-08-28 — sharpened actual second-atom seam weight to `ρ₂<1/445` and proved physical
@@ -337,11 +337,11 @@ worst-curvature `W³`; all three required profile certificates then become posit
 A stronger `q=9/2` native uniform-loss conjecture was also rejected by a negative cleared constant,
 so no unsupported endpoint extrapolation was retained.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean` proves the
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean` proves the
 ordinary sixth leading-moment bound, retained eighth Fock fraction, and global strict jet coupling.
-`RHTower/ThetaCuspFullReflectionEighthSixthSpectralReserve.lean` proves positivity of the compact
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthSixthSpectralReserve.lean` proves positivity of the compact
 eighth coefficient and the lower-jet reserve reduction.
-`RHTower/ThetaCuspFullReflectionEighthSpectralRefinedWeight.lean` proves the `47/10` native chamber,
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthSpectralRefinedWeight.lean` proves the `47/10` native chamber,
 exact Taylor landing, and native D1 positivity for `x≥17/50`. Direct Lean, exact module builds, and
 axiom audits pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -369,8 +369,8 @@ gain therefore prove native D1 throughout that chamber. The finite Taylor certif
 places every `x≥13/40` there. Remaining scalar interval is now `0≤x<13/40`, a further reduction
 from `17/50`.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthScaleSixBound.lean` proves the recentered
-point/ray envelopes and scale-local `J₆<3700`. `RHTower/ThetaCuspFullReflectionEighthScaleSix.lean`
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleSixBound.lean` proves the recentered
+point/ray envelopes and scale-local `J₆<3700`. `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleSix.lean`
 proves the `q≥9/2` rank-three chamber and native D1 positivity for every `x≥13/40`. Direct Lean,
 targeted module builds, and axiom audits pass; axioms are only `propext`, `Classical.choice`, and
 `Quot.sound`.
@@ -403,9 +403,9 @@ so every source `x≥9/32` lies in the chamber. Remaining scalar interval is now
 `0≤x<9/32`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthScaleElevenHalvesBound.lean` proves the shifted point/ray
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleElevenHalvesBound.lean` proves the shifted point/ray
 envelopes and scale-local `J₆<30000`.
-`RHTower/ThetaCuspFullReflectionEighthScaleElevenHalves.lean` proves the `q≥4` profile chamber
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleElevenHalves.lean` proves the `q≥4` profile chamber
 and native D1 positivity for every `x≥9/32`. Direct Lean, targeted module builds, and axiom
 audits pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -434,9 +434,9 @@ positive eighth likelihood gain prove native D1 in that chamber. The finite Tayl
 ```
 places every `x≥15/64` there. Remaining scalar interval is now `0≤x<15/64`.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthScaleFiveBound.lean` proves the exact
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFiveBound.lean` proves the exact
 center-six point/ray envelopes and scale-local `J₆<2800`.
-`RHTower/ThetaCuspFullReflectionEighthScaleFive.lean` proves the `q≥7/2` profile chamber and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFive.lean` proves the `q≥7/2` profile chamber and
 native D1 positivity for every `x≥15/64`. Direct Lean, targeted module builds, and axiom audits
 pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -466,9 +466,9 @@ positive eighth channel. The order-nine Taylor certificate
 places every `x≥23/128` in the chamber. Remaining scalar interval is now
 `0≤x<23/128`.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthScaleNineHalvesBound.lean` proves the
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleNineHalvesBound.lean` proves the
 center-`9/2` score envelopes, rational half-exponential enclosure, and `J₆<5100`.
-`RHTower/ThetaCuspFullReflectionEighthScaleNineHalves.lean` proves the `q≥3` profile chamber
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleNineHalves.lean` proves the `q≥3` profile chamber
 and native D1 positivity for every `x≥23/128`. Direct Lean, targeted module builds, and axiom
 audits pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -495,9 +495,9 @@ whole weight chamber. The finite Taylor certificate
 ```
 places every `x≥31/256` there. Remaining scalar interval is now `0≤x<31/256`.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthScaleFourBound.lean` proves the
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFourBound.lean` proves the
 center-three score envelopes and `J₆<11000`.
-`RHTower/ThetaCuspFullReflectionEighthScaleFour.lean` proves the `q≥5/2` profile chamber and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFour.lean` proves the `q≥5/2` profile chamber and
 native D1 positivity for every `x≥31/256`. Direct Lean, targeted module builds, and axiom audits
 pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -532,9 +532,9 @@ Taylor landing
 places every `x≥7/64` in the chamber. Remaining scalar interval is now `0≤x<7/64`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthScaleThirtyNineTenthsBound.lean` proves the exact local score
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleThirtyNineTenthsBound.lean` proves the exact local score
 envelopes and `J₆<13300`.
-`RHTower/ThetaCuspFullReflectionEighthScaleThirtyNineTenths.lean` proves the `q≥12/5` profile
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleThirtyNineTenths.lean` proves the `q≥12/5` profile
 chamber and native D1 positivity for every `x≥7/64`. Direct Lean, targeted module builds, and
 axiom audits pass; axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -573,11 +573,11 @@ half-step cannot close by independent scalar `J₆/J₈` boxes. Surviving compac
 quantitative fourth displacement or a finer joint sixth--eighth decomposition. The sharper source
 landing conjecture `11/2 < π exp(14/25)` was also rejected; `281/500` is the proved nearby landing.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean` now proves
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthEighthSpectralCoupling.lean` now proves
 the retained Fock fractions and global `1/69` coupling.
-`RHTower/ThetaCuspLikelihoodSixthScaleElevenHalvesBound.lean` proves the direct score envelopes and
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleElevenHalvesBound.lean` proves the direct score envelopes and
 `J₆<1800`.
-`RHTower/ThetaCuspFullReflectionEighthScaleElevenHalves.lean` proves the compensated `q≥4`
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleElevenHalves.lean` proves the compensated `q≥4`
 chamber and `x≥281/1000` capstone. Direct Lean, exact targeted builds, and axiom audits pass;
 axioms are only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -615,9 +615,9 @@ weight chamber. The finite Taylor landing
 places every `x≥27/256` there. Remaining scalar interval is `0≤x<27/256`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthScaleThirtyOneEighthsBound.lean` proves the score envelopes,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleThirtyOneEighthsBound.lean` proves the score envelopes,
 exponential enclosure, mass bounds, and `J₆<13100`.
-`RHTower/ThetaCuspFullReflectionEighthScaleThirtyOneEighths.lean` proves the `q≥19/8` profile
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleThirtyOneEighths.lean` proves the `q≥19/8` profile
 chamber and native D1 positivity for every `x≥27/256`. Both are wired into the RHTower umbrella.
 Direct Lean, targeted module build, and axiom audit pass; axioms are only `propext`,
 `Classical.choice`, and `Quot.sound`.
@@ -665,11 +665,11 @@ the joint reserve is positive at `(e₄,e₆)=(50,15832)` but negative at `(48,1
 scale-`15/4` advance must either retain at least fifty fourth-jet units, improve the sixth budget,
 or use a still finer joint trace inequality; repeating independent scalar boxes cannot suffice.
 
-**New Lean artifacts.** `RHTower/ThetaCuspLikelihoodFourthDominantAtomLower.lean` proves the
+**New Lean artifacts.** `RHTower/ThetaCusp/ThetaCuspLikelihoodFourthDominantAtomLower.lean` proves the
 dominant atom moment injection and global `7800 A⁴exp(-3A)` fourth-log-jet floor.
-`RHTower/ThetaCuspLikelihoodSixthEighthScaleSevenHalvesCoupling.lean` proves the sharp local Fock
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthEighthScaleSevenHalvesCoupling.lean` proves the sharp local Fock
 comparison, retained fractions, and `1/26` jet coupling. The fourth lower orientation is in
-`RHTower/ThetaCuspLikelihoodFourthSixthSpectralDomination.lean`. All are wired into the RHTower
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthSixthSpectralDomination.lean`. All are wired into the RHTower
 umbrella. Direct Lean checks, exact targeted builds, formal lint for forbidden declarations, and
 axiom audits pass for these modules; axioms are only `propext`, `Classical.choice`, and
 `Quot.sound`. Repository-wide lint still reports unrelated concurrently created unwired modules.
@@ -708,11 +708,11 @@ reserve is positive throughout `23/6≤A≤31/8`. Splicing this compact chamber 
 places every source `x≥1/10` there. Remaining D1 interval is now `0≤x<1/10`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodFourthCompactLowerBound.lean` proves the ordinary fourth-moment floor,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthCompactLowerBound.lean` proves the ordinary fourth-moment floor,
 global `19/20` log-retention law, and compact `J₄^log>28` theorem.
-`RHTower/ThetaCuspLikelihoodSixthScaleTwentyThreeSixthsBound.lean` proves the direct scale-`23/6`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleTwentyThreeSixthsBound.lean` proves the direct scale-`23/6`
 sixth-score estimates and `J₆^log<14200`.
-`RHTower/ThetaCuspFullReflectionEighthScaleTwentyThreeSixthsJoint.lean` proves exact joint-reserve
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleTwentyThreeSixthsJoint.lean` proves exact joint-reserve
 monotonicity, compact positivity, the `q≥7/3` splice, and native D1 for `x≥1/10`. All three are
 wired into the RHTower umbrella. Direct Lean and targeted module builds pass. Axiom audits return
 only `propext`, `Classical.choice`, and `Quot.sound`. Formal lint reports no forbidden declaration
@@ -770,7 +770,7 @@ Thus the remaining C20 bridge is now the open interval `0<x<1/10`; no endpoint n
 burden remains. `C20-GENERAL-MODULAR-D1` stays the named open core for that interval.
 
 **New Lean artifact.**
-`RHTower/ThetaCuspFullReflectionEighthNativeSeam.lean` proves native continuity at zero, exact
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthNativeSeam.lean` proves native continuity at zero, exact
 raw/native seam factorization, and strict native seam positivity. It is wired into the RHTower
 umbrella. Direct Lean and targeted module build pass; forbidden-declaration scan is clean; axiom
 audit returns only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -808,7 +808,7 @@ single semialgebraic/dynamical sign theorem
 derivative, universal jets, full arbitrary-basepoint polynomial, and exact closure for every ODE
 trajectory. `RHTower/PrimeArchThetaModularDifferentialClosure.lean` now exposes the actual modular
 state, proves its vector-field law, extends source-jet transfer to arbitrary basepoint, and
-instantiates the universal closure. `RHTower/ThetaCuspFullReflectionEighthGeneralModularClosure.lean`
+instantiates the universal closure. `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthGeneralModularClosure.lean`
 identifies this value with literal raw D1, proves reality, gives the exact positivity equivalence,
 and verifies seam specialization. Modules are wired into HTGeometry/RHTower umbrellas. Direct Lean,
 targeted builds, forbidden-declaration scans, and axiom audits pass; axioms are only `propext`,
@@ -850,10 +850,10 @@ proved seam theorem, the remaining C20 sign interval is now exactly `0<x<9/100`;
 arbitrary-basepoint modular polynomial remains the complementary mechanism for that interval.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthScaleFifteenFourthsBound.lean` proves the scalar endpoint
-`J₆<15832`. `RHTower/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean` proves the live
-affine fourth floor. `RHTower/ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound.lean` proves
-the live affine sixth ceiling. `RHTower/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFifteenFourthsBound.lean` proves the scalar endpoint
+`J₆<15832`. `RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFifteenFourthsAffineLower.lean` proves the live
+affine fourth floor. `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFifteenFourthsAffineBound.lean` proves
+the live affine sixth ceiling. `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFifteenFourthsAffineJoint.lean`
 proves joint reserve positivity and the `x≥9/100` D1 capstone. All are wired into the RHTower
 umbrella. Direct Lean checks and exact targeted module builds pass. Axiom audits return only
 `propext`, `Classical.choice`, and `Quot.sound`. A targeted 2026-08-28 literature search found
@@ -897,10 +897,10 @@ C20 sign interval is now exactly `0<x<7/80`; arbitrary-basepoint modular polynom
 complementary mechanism on that interval.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean`
-proves fourth floor; `RHTower/ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleThreeHundredFiftyNineNinetySixthsAffineLower.lean`
+proves fourth floor; `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleThreeHundredFiftyNineNinetySixthsAffineBound.lean`
 proves sixth ceiling; and
-`RHTower/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleThreeHundredFiftyNineNinetySixthsAffineJoint.lean`
 proves joint reserve and `x≥7/80` D1 capstone. All are wired into RHTower umbrella. Direct Lean
 checks and exact targeted builds pass. Forbidden-declaration scan is clean. Axiom audits return
 only `propext`, `Classical.choice`, and `Quot.sound`. Existing targeted 2026-08-28 literature audit
@@ -948,11 +948,11 @@ proves native D1 for every `x≥43/500`. Together with seam positivity, remainin
 exactly `0<x<43/500`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyNineFortyEighthsBound.lean`
 proves scale monotonicity, factor-`1/20` atom gain, and stable tower `<1`.
-`RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean` and
-`RHTower/ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound.lean` prove
-moving jet profiles. `RHTower/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean` and
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleOneHundredSeventyNineFortyEighthsAffineBound.lean` prove
+moving jet profiles. `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneHundredSeventyNineFortyEighthsAffineJoint.lean`
 proves joint reserve and `x≥43/500` capstone. All are wired into RHTower umbrella. Direct Lean
 checks and exact targeted builds pass. Forbidden-declaration scan is clean. Axiom audits return
 only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -1007,10 +1007,10 @@ proves native D1 for every `x≥83/1000`, reducing remaining C20 interval to exa
 `0<x<83/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleEightyNineTwentyFourthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean` prove stable,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleEightyNineTwentyFourthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleEightyNineTwentyFourthsAffineLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleEightyNineTwentyFourthsAffineBound.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEightyNineTwentyFourthsAffineJoint.lean` prove stable,
 producer, reserve, and D1 capstones. Generic AE-score transfer theorem was added to
 `ThetaCuspLikelihoodFourthScaleOneHundredSeventyNineFortyEighthsAffineLower.lean`. All modules are
 wired into RHTower umbrella. Direct Lean checks and exact targeted builds pass. Forbidden scan and
@@ -1150,7 +1150,7 @@ source-positive ring, vector field, covariant jets, and exact mass-factor closur
 `HTGeometry/PolynomialODEJetRankThreeSourcePositiveSeamNoGo.lean` proves sharp seam source wall and
 exact negative rational witness. `RHTower/PrimeArchThetaModularDifferentialClosure.lean`
 instantiates physical flow, exact source factor, strict clocks, and source-positive/normalized D1
-identity. `RHTower/ThetaCuspFullReflectionEighthGeneralModularClosure.lean` exposes reality,
+identity. `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthGeneralModularClosure.lean` exposes reality,
 physical chamber, and exact positivity equivalence. Modules are wired into umbrellas; direct Lean,
 targeted builds, and axiom audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
 
@@ -1208,11 +1208,11 @@ proves native D1 for every `x≥81/1000`, reducing the remaining C20 interval to
 `0<x<81/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodScaleLocalTailCooling.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleFiftyNineSixteenthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleFiftyNineSixteenthsAffineJoint.lean` formalize the
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalTailCooling.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleFiftyNineSixteenthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleFiftyNineSixteenthsAffineLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleFiftyNineSixteenthsAffineBound.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFiftyNineSixteenthsAffineJoint.lean` formalize the
 cooling law, stable half-unit tower, affine producers, joint reserve, and D1 capstone. All are wired
 into the RHTower umbrella. Direct `lake env lean` checks and exact targeted build of the capstone
 pass. Forbidden-declaration scan and diff check are clean. Representative axiom audits return only
@@ -1322,11 +1322,11 @@ then proves native D1 for every `x≥78/1000`. Remaining actual C20 interval is 
 `0<x<78/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodScaleLocalTailCoolingElevenThirds.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleElevenThirdsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleElevenThirdsAffineBound.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleElevenThirdsAffineJoint.lean` formalize cooling,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalTailCoolingElevenThirds.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleElevenThirdsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleElevenThirdsExactAtomLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleElevenThirdsAffineBound.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleElevenThirdsAffineJoint.lean` formalize cooling,
 stable sixth control, exact atom-ray integration, affine fourth/sixth bounds, coupled reserve, and
 the `78/1000` D1 capstone. All five are wired into the RHTower umbrella. Direct Lean checks and the
 exact targeted capstone build pass (`9655/9655`). Forbidden-declaration and diff checks are clean.
@@ -1455,7 +1455,7 @@ grade `q₂` for the sixth. A shared compiler turns the single scalar certificat
 the chamber factors `989/1000` and `1003/1000`; no scale-specific Bell expansion remains.
 
 **New Lean artifact.**
-`RHTower/ThetaCuspLikelihoodBellTailPolynomialEnvelope.lean` proves positivity of literal tail
+`RHTower/ThetaCusp/ThetaCuspLikelihoodBellTailPolynomialEnvelope.lean` proves positivity of literal tail
 mass and ordinary fourth score, both exact polynomial envelopes, and the shared `1596p<1`
 compiler. It is wired into the RHTower umbrella. Direct `lake env lean`, targeted module build,
 forbidden-declaration scan, diff check, and representative axiom audits pass; axioms are only
@@ -1508,11 +1508,11 @@ the exact Taylor certificate
 gives native D1 for every `x≥75/1000`. Remaining actual C20 interval is `0<x<75/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingOneHundredSeventyFiveFortyEighths.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyFiveFortyEighthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleOneHundredSeventyFiveFortyEighthsAffineBound.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleOneHundredSeventyFiveFortyEighthsAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingOneHundredSeventyFiveFortyEighths.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneHundredSeventyFiveFortyEighthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneHundredSeventyFiveFortyEighthsExactAtomLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleOneHundredSeventyFiveFortyEighthsAffineBound.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneHundredSeventyFiveFortyEighthsAffineJoint.lean`
 formalize local Bell cooling, stable mass, exact fourth atom integration, sharpened sixth mass, the
 joint chamber, and the `75/1000` capstone. All are wired into the RHTower umbrella. Direct Lean
 checks and exact targeted capstone build pass (`9660/9660`). Forbidden-declaration scan is empty;
@@ -1565,12 +1565,12 @@ yields native D1 for every `x≥149/2000`, reducing the formally open positive C
 `0<x<75/1000` to `0<x<149/2000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodFourthDominantAtomExact.lean` proves the scale-free exact fourth
-atom-ray integral. `RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingOneThousandThreeHundredNinetyNineThreeHundredEightyFourths.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsExactAtomLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsAffineBound.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthDominantAtomExact.lean` proves the scale-free exact fourth
+atom-ray integral. `RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingOneThousandThreeHundredNinetyNineThreeHundredEightyFourths.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsExactAtomLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsAffineBound.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneThousandThreeHundredNinetyNineThreeHundredEightyFourthsAffineJoint.lean`
 prove local Bell cooling, stable sixth mass, fourth and sixth affine profiles, full joint chamber,
 and the `149/2000` capstone. Together with the generic Bell envelope, all seven modules are wired
 exactly once into the RHTower umbrella. Direct Lean checks pass; targeted capstone build passes
@@ -1624,13 +1624,13 @@ gives native D1 for every `x≥72/1000`, reducing the formally open positive C20
 `0<x<149/2000` to `0<x<72/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingTwentyNineEighths.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleTwentyNineEighthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower.lean`, and
-`RHTower/ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound.lean` prove the sharpened local
-Bell and marginal profiles. `RHTower/ThetaCuspLikelihoodEighthScaleTwentyNineEighthsFockFloor.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingTwentyNineEighths.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleTwentyNineEighthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleTwentyNineEighthsExactAtomLower.lean`, and
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleTwentyNineEighthsAffineBound.lean` prove the sharpened local
+Bell and marginal profiles. `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthScaleTwentyNineEighthsFockFloor.lean`
 proves pair absorption and the literal eighth-jet floor.
-`RHTower/ThetaCuspFullReflectionEighthScaleTwentyNineEighthsDirectAffineJoint.lean` proves the
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleTwentyNineEighthsDirectAffineJoint.lean` proves the
 fourth/sixth/eighth joint chamber, physical compact reserve, native D1 dispatch, and `72/1000`
 capstone. All are reachable from the RHTower umbrella. Direct Lean checks pass; targeted capstone
 build passes (`9726/9726`). Forbidden-declaration scan is empty. Representative axiom audits use
@@ -1701,12 +1701,12 @@ is proved by a finite Taylor lower certificate, yielding native D1 for every `x�
 reducing the formally open positive C20 interval from `0<x<72/1000` to `0<x<143/2000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingOneThousandThreeHundredNinetyOneThreeHundredEightyFourths.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsAffineBound.lean`,
-`RHTower/ThetaCuspLikelihoodEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsFockFloor.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsDirectAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingOneThousandThreeHundredNinetyOneThreeHundredEightyFourths.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsExactAtomLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsAffineBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsFockFloor.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneThousandThreeHundredNinetyOneThreeHundredEightyFourthsDirectAffineJoint.lean`
 formalize the complete producer and reserve chain. All six are wired exactly once into the RHTower
 umbrella. Direct Lean checks pass; targeted capstone build passes (`9732/9732`). Representative
 axiom audits use only `propext`, `Classical.choice`, and `Quot.sound`.
@@ -1775,14 +1775,14 @@ therefore proves native D1 for every `x≥71/1000`, shrinking the formally open 
 to `0<x<71/1000`.
 
 **New Lean artifacts.**
-`RHTower/ThetaCuspLikelihoodEighthHigherEvenLocalCooling.lean` formalizes the reusable cubic
+`RHTower/ThetaCusp/ThetaCuspLikelihoodEighthHigherEvenLocalCooling.lean` formalizes the reusable cubic
 response-to-Fock-loss law.
-`RHTower/ThetaCuspLikelihoodScaleLocalBellCoolingSixHundredNinetyFiveOneHundredNinetySeconds.lean`,
-`RHTower/ThetaCuspLikelihoodSixthStableTowerScaleSixHundredNinetyFiveOneHundredNinetySecondsBound.lean`,
-`RHTower/ThetaCuspLikelihoodFourthScaleSixHundredNinetyFiveOneHundredNinetySecondsExactAtomLower.lean`,
-`RHTower/ThetaCuspLikelihoodSixthScaleSixHundredNinetyFiveOneHundredNinetySecondsAffineBound.lean`,
-`RHTower/ThetaCuspLikelihoodEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsFockFloor.lean`, and
-`RHTower/ThetaCuspFullReflectionEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsDirectAffineJoint.lean`
+`RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingSixHundredNinetyFiveOneHundredNinetySeconds.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthStableTowerScaleSixHundredNinetyFiveOneHundredNinetySecondsBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodFourthScaleSixHundredNinetyFiveOneHundredNinetySecondsExactAtomLower.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodSixthScaleSixHundredNinetyFiveOneHundredNinetySecondsAffineBound.lean`,
+`RHTower/ThetaCusp/ThetaCuspLikelihoodEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsFockFloor.lean`, and
+`RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleSixHundredNinetyFiveOneHundredNinetySecondsDirectAffineJoint.lean`
 formalize the complete local producer, reserve, and source-threshold chain. All seven are wired
 exactly once into the RHTower umbrella. Direct Lean checks pass; targeted capstone build passes
 (`9739/9739`). Forbidden-declaration scan is empty. Representative axiom audits use only

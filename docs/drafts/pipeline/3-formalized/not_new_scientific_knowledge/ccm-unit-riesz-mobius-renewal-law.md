@@ -11,7 +11,7 @@
 
 Module:
 
-`GaloisForLFunctions/RHTower/CCMCriticalMellinRieszMobiusRenewal.lean`
+`GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinRieszMobiusRenewal.lean`
 
 It proves unconditionally:
 

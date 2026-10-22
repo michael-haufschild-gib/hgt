@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePTerminalCentroidExcessSummability
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileParabolicNormalizedVarianceFlow
 
 /-!
 # Exact matched-to-ideal centroid variance correction

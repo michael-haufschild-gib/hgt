@@ -149,8 +149,8 @@ the formal/paper wall in `SourceHorizontalMomentNeutralAmplification.lean` and
 ## Validation
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/HedenmalmCoefficientFaithfulExteriorSourceContour.lean
-lake build GaloisForLFunctions.RHTower.HedenmalmCoefficientFaithfulExteriorSourceContour
+lake env lean GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCoefficientFaithfulExteriorSourceContour.lean
+lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCoefficientFaithfulExteriorSourceContour
 ```
 
 Both passed.  A scratch `#print axioms` audit of the zero-sum identity, determinant identity,

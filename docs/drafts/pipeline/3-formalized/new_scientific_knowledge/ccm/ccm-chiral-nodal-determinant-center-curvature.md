@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** matched oriented characteristic cocycle × chiral nodal source shear × wall-light jets × determinant curvature
-- **Lean module:** `GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature`
+- **Lean module:** `GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature`
 - **Statement:** Every actual prime-power nodal source-shear determinant has a double spectral-center zero and strictly negative second derivative; every nonempty finite direct sum inherits the same strict curvature and a local nonpositive determinant chamber.
 
 ## Goal
@@ -103,8 +103,8 @@ No global propagation, absence of later crossings, or RH is claimed here.
 ## Verification
 
 - scratch: `lake env lean /tmp/CCMNodalCenter.lean` — PASS
-- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean` — PASS
-- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature` — PASS
+- direct source check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature.lean` — PASS
+- exact leaf build: `lake build GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedPhaseProjectiveGaugeNodalCenterCurvature` — PASS
 - axiom audit: only `[propext, Classical.choice, Quot.sound]`
 - umbrella import added to `GaloisForLFunctions.RHTower`
 - global `formal_tools.py lint`: new module clean; command remains red only because ten unrelated pre-existing Connes/Chen modules are unreachable from `RHTower`

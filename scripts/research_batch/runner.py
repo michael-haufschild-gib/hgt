@@ -68,8 +68,9 @@ class Encoder:
     def encode(self, texts, *, query=False):
         import numpy as np
         torch = self.torch
-        if query:
-            texts = [self.spec['query_template'].format(text=text) for text in texts]
+        template = self.spec['query_template'] if query else self.spec.get('document_template')
+        if template:
+            texts = [template.format(text=text) for text in texts]
         tokens = self.tokenizer(texts, padding=False, truncation=True,
                                 max_length=self.spec['context_tokens'])['input_ids']
         if any(not ids for ids in tokens):
@@ -92,8 +93,14 @@ class Encoder:
                         padding=True, pad_to_multiple_of=32, return_attention_mask=True,
                         return_tensors='pt').to(self.device)
                     hidden = self.model(**batch, use_cache=False).last_hidden_state
-                    pooled = hidden[torch.arange(count, device=self.device),
-                                    batch['attention_mask'].sum(dim=1) - 1]
+                    # Must match research_runtime.adapters.mean_pool exactly, or
+                    # the parity gate rejects the import. Mask is load-bearing.
+                    if self.spec.get('pooling', 'mean') == 'mean':
+                        mask = batch['attention_mask'].unsqueeze(-1).to(hidden.dtype)
+                        pooled = (hidden * mask).sum(dim=1) / mask.sum(dim=1).clamp(min=1e-9)
+                    else:
+                        pooled = hidden[torch.arange(count, device=self.device),
+                                        batch['attention_mask'].sum(dim=1) - 1]
                     result[indices] = torch.nn.functional.normalize(pooled.float(), dim=1).cpu().numpy()
                 except torch.cuda.OutOfMemoryError:
                     if count == 1:
@@ -105,7 +112,7 @@ class Encoder:
                     continue
                 del batch, hidden, pooled
                 cursor += count
-        return validate_matrix(result, len(texts)), sum(map(len, tokens))
+        return validate_matrix(result, len(texts), self.spec['dimensions']), sum(map(len, tokens))
 
     def environment(self):
         torch = self.torch
@@ -125,7 +132,8 @@ def audit(encoder, bundle, manifest, output, *, publish=True):
     docs, _ = encoder.encode(reference['documents'])
     queries, _ = encoder.encode(reference['queries'], query=True)
     actual = np.concatenate([docs, queries])
-    report = parity(reference['vectors'], actual, len(reference['queries']))
+    report = parity(reference['vectors'], actual, len(reference['queries']),
+                    manifest['spec']['dimensions'])
     report.update(manifest_sha256=sha_file(Path(bundle) / 'manifest.json'),
                   reference_sha256=manifest['reference']['sha256'],
                   environment=encoder.environment(), target_model=manifest['target_model'])
@@ -174,14 +182,16 @@ def run(args):
                     raise ValueError(f'Resume environment changed: {key}')
             ref = json.loads(checked_file(bundle, manifest['reference']).read_text())
             values = np.load(checked_file(output, previous['vectors']), allow_pickle=False)
-            if not parity(ref['vectors'], values, len(ref['queries']))['passed']:
+            if not parity(ref['vectors'], values, len(ref['queries']),
+                          manifest['spec']['dimensions'])['passed']:
                 raise ValueError('Stored compatibility audit failed')
         audit_sha = sha_file(output / 'audit.json')
         started = time.monotonic()
         new_count, new_tokens, resumed, completed = 0, 0, 0, 0
         for entry in manifest['shards']:
             if (output / (entry['name'] + '.done.json')).exists():
-                checked_result(bundle, output, entry, manifest_sha, audit_sha)
+                checked_result(bundle, output, entry, manifest_sha, audit_sha,
+                           manifest['spec']['dimensions'])
                 resumed += entry['count']
                 completed += 1
                 continue

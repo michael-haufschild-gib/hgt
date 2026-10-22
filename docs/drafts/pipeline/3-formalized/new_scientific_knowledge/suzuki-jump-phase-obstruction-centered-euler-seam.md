@@ -58,7 +58,7 @@ Euler-defect germ weld and proves RH.
 ## Formalization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/SuzukiCarlemanJumpPhaseObstruction.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCarlemanJumpPhaseObstruction.lean`.
 
 Key declarations:
 

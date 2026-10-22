@@ -158,7 +158,7 @@ genuine obstruction to strict nuclear descent.
 ## Lean status
 
 All three clauses are formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerTwoColumnCauchyFlowGraphDescent.lean`.  Axiom audit
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerTwoColumnCauchyFlowGraphDescent.lean`.  Axiom audit
 for every declaration: `propext, Classical.choice, Quot.sound` (the two structures use only
 `propext, Quot.sound`).
 

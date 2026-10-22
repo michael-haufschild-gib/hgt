@@ -45,7 +45,7 @@ For strict-right Xi zero, `1/2<Re ρ<1`; no such rigging exists. Existing residu
 - **Strongest positive survivor:** exact invariant and canonical balanced weight above; non-diagonal or genuinely distributional completion only.
 - **New insight:** physical MSC overlap wall is absolute-convergence wall, independent of Hilbert aperture and weight choice.
 - **Novelty audit:** no matching theorem found through 2026-08 in Hedenmalm [arXiv:2606.17494](https://arxiv.org/abs/2606.17494), weighted Dirichlet-space RH work [arXiv:2206.02654](https://arxiv.org/abs/2206.02654), Meyer nuclear-Fréchet spectral model [math/0412277](https://arxiv.org/abs/math/0412277), or corpus search.
-- **Formal status:** `RHTower/HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo.lean`; targeted build passes; axioms only `propext`, `Classical.choice`, `Quot.sound`.
+- **Formal status:** `RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherDiagonalRiggingNoGo.lean`; targeted build passes; axioms only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Log
 

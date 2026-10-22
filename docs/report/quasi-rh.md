@@ -69,7 +69,7 @@ def XiZeroHalfPlaneBound (alpha : ℝ) : Prop :=
   ∀ rho : ℂ, xi rho = 0 → rho.re ≤ 1 / 2 + alpha
 ```
 
-See [CCMSourceDivisorEnergySpectrum.lean:27](../../formal/GaloisForLFunctions/RHTower/CCMSourceDivisorEnergySpectrum.lean#L27). Here `alpha` is displacement from the critical line, not the right boundary itself. Thus the baseline is `alpha = 3/8`, and improvement means `alpha < 3/8`.
+See [CCMSourceDivisorEnergySpectrum.lean:27](../../formal/GaloisForLFunctions/RHTower/CCM/CCMSourceDivisorEnergySpectrum.lean#L27). Here `alpha` is displacement from the critical line, not the right boundary itself. Thus the baseline is `alpha = 3/8`, and improvement means `alpha < 3/8`.
 
 The functional equation `xi (1 − s) = xi s` supplies the other side: applying the same bound to `1 − ρ` gives
 
@@ -77,7 +77,7 @@ The functional equation `xi (1 − s) = xi s` supplies the other side: applying 
 \frac12-\alpha\leq\Re\rho\leq\frac12+\alpha.
 \]
 
-The corpus uses this exact reflection argument in [VonMangoldtMinusOneAbscissa.lean:174](../../formal/GaloisForLFunctions/RHTower/VonMangoldtMinusOneAbscissa.lean#L174). Its ζ transfer is [CCMGeneralizedVonKoch.lean:13](../../formal/GaloisForLFunctions/RHTower/CCMGeneralizedVonKoch.lean#L13).
+The corpus uses this exact reflection argument in [VonMangoldtMinusOneAbscissa.lean:174](../../formal/GaloisForLFunctions/RHTower/VonMangoldtMinusOneAbscissa.lean#L174). Its ζ transfer is [CCMGeneralizedVonKoch.lean:13](../../formal/GaloisForLFunctions/RHTower/CCM/CCMGeneralizedVonKoch.lean#L13).
 
 Consequently, for ζ a better right boundary also improves the left boundary. There are not two independent numerical optimization problems. “Zero-free for `Re(s) > b`” permits zeros on `Re(s) = b`; the resulting strip is closed. The statement concerns nontrivial zeros, not ζ’s trivial negative-even zeros. For imprimitive Dirichlet L-functions, zeros introduced by omitted Euler factors also require separate treatment; the natural comparison is the nontrivial divisor of the associated primitive completed L-function.
 
@@ -113,7 +113,7 @@ Improving this proof requires changing the estimates that produce its exponent f
 
 ### 2.1 Existing theorem and its exact hypothesis
 
-The most directly useful file is [SuzukiTransitionCoreFiniteContactWidthClassification.lean](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean).
+The most directly useful file is [SuzukiTransitionCoreFiniteContactWidthClassification.lean](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean).
 
 Write:
 
@@ -129,7 +129,7 @@ P_m(N)=\frac{E_N^m}{C_N^{m-1}}.
 
 The Lean definition totalizes the zero-denominator case; the proof separately obtains eventual positivity of the core. `SuzukiTransitionCoreFiniteContactResidualEventuallyBounded m` means that some nonnegative constant bounds this residual for all sufficiently large integer apertures.
 
-The theorem at [line 407](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L407) is:
+The theorem at [line 407](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L407) is:
 
 ```lean
 theorem xiZeroHalfPlaneBound_suzukiFiniteContactWidth_of_finiteContactResidualEventuallyBounded
@@ -149,7 +149,7 @@ Its numerical consequences are therefore:
 | `m = 2` | `E_N^2 / C_N = O(1)` | **`[1/4, 3/4]`** |
 | `m = 1` | `E_N = O(1)` | RH |
 
-The order-two case also has a dedicated theorem in [SuzukiTransitionCoreQuadraticContactWidthLoss.lean:359](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreQuadraticContactWidthLoss.lean#L359). The classification at [line 441](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L441) identifies order-one boundedness with RH.
+The order-two case also has a dedicated theorem in [SuzukiTransitionCoreQuadraticContactWidthLoss.lean:359](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreQuadraticContactWidthLoss.lean#L359). The classification at [line 441](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L441) identifies order-one boundedness with RH.
 
 **What was not found:** a theorem supplying `hcontact` unconditionally at order two or three. Exact-name searches through the Lean sources found the definition, comparison lemmas, implications, and classification; they did not find a closed producer of the needed residual bound. Nor did the audit find a theorem taking the accepted `7/8` bound alone and producing the order-three hypothesis.
 
@@ -170,11 +170,11 @@ If \(P_m(N)\leq B\), then
 \leq B K^{m-1}N^{m-1}.
 \]
 
-Hence \(|G_N|=O(N^{(m-1)/(2m)})\). The corpus transports this through the exact completed-source identities and logarithmic-lattice interpolation to an exponential bound for the critical Mellin resolvent. The existing continuation theorem then gives the matching Xi width. Relevant interfaces are [finite-contact amplitude transfer:68](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L68), [general interpolation:319](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L319), and [resolvent-to-width:611](../../formal/GaloisForLFunctions/RHTower/CCMCriticalMellinResolventExponentialWidth.lean#L611).
+Hence \(|G_N|=O(N^{(m-1)/(2m)})\). The corpus transports this through the exact completed-source identities and logarithmic-lattice interpolation to an exponential bound for the critical Mellin resolvent. The existing continuation theorem then gives the matching Xi width. Relevant interfaces are [finite-contact amplitude transfer:68](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L68), [general interpolation:319](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L319), and [resolvent-to-width:611](../../formal/GaloisForLFunctions/RHTower/CCM/CCMCriticalMellinResolventExponentialWidth.lean#L611).
 
 Increasing `m` makes `(m − 1)/(2m)` larger. Higher contact order therefore weakens this particular bound. Orders three and two are useful because their hypotheses are stronger.
 
-The same file proves an [algebraic endpoint obstruction:169](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L169): for every fixed `m ≥ 2`, the abstract finite-contact inequalities with unit-bounded residual permit unbounded amplitudes. This blocks an inference to RH from those inequalities alone. The positive result surviving that obstruction is the explicit nonzero width above. It does not rule out improving the width using additional arithmetic information.
+The same file proves an [algebraic endpoint obstruction:169](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L169): for every fixed `m ≥ 2`, the abstract finite-contact inequalities with unit-bounded residual permit unbounded amplitudes. This blocks an inference to RH from those inequalities alone. The positive result surviving that obstruction is the explicit nonzero width above. It does not rule out improving the width using additional arithmetic information.
 
 ### 2.3 A weaker research target can already beat 7/8
 
@@ -208,11 +208,11 @@ This is a **derived conditional extension to formalize**, not a theorem claimed 
 
 A subpower estimate `P_2(N) = O_ε(N^ε)` for every positive ε would likewise aim at the closed `3/4` boundary by taking the infimum of the resulting widths; exact boundedness need not be the only possible route.
 
-There is also useful structure for investigating the estimate: [SuzukiCompletedWardCancellativeBand.lean:75](../../formal/GaloisForLFunctions/RHTower/SuzukiCompletedWardCancellativeBand.lean#L75) proves that a negative completed Ward cross contribution must involve lags comparable within a factor of two. This localizes cancellation in that Ward cross form. Applying it to the aligned scalar energy requires an exact identity or comparison; local sign information alone supplies neither that comparison nor a quantitative saving.
+There is also useful structure for investigating the estimate: [SuzukiCompletedWardCancellativeBand.lean:75](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompletedWardCancellativeBand.lean#L75) proves that a negative completed Ward cross contribution must involve lags comparable within a factor of two. This localizes cancellation in that Ward cross form. Applying it to the aligned scalar energy requires an exact identity or comparison; local sign information alone supplies neither that comparison nor a quantitative saving.
 
 ### 2.4 What the corpus already proves for the actual residual
 
-Let `A_N = unitRieszCoherentPrimeOutgoingCharge N`. The existing [canonical compensation module](../../formal/GaloisForLFunctions/RHTower/SuzukiCanonicalSignedCompensationSaturation.lean#L237) proves, without a zero-width premise,
+Let `A_N = unitRieszCoherentPrimeOutgoingCharge N`. The existing [canonical compensation module](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalSignedCompensationSaturation.lean#L237) proves, without a zero-width premise,
 
 \[
 \frac{A_N}{\sqrt N}\longrightarrow\frac13,\qquad
@@ -220,13 +220,13 @@ Let `A_N = unitRieszCoherentPrimeOutgoingCharge N`. The existing [canonical comp
 \frac{G_N}{A_N}\longrightarrow0.
 \]
 
-Its [energy identity and limit](../../formal/GaloisForLFunctions/RHTower/SuzukiCanonicalSignedCompensationSaturation.lean#L329) give, eventually,
+Its [energy identity and limit](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCanonicalSignedCompensationSaturation.lean#L329) give, eventually,
 
 \[
 \frac{E_N}{C_N}=\left(\frac{G_N}{A_N}\right)^2\longrightarrow0.
 \]
 
-Together with the [linear core bound](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAlignedGammaCompletion.lean#L221), this has the immediate mathematical consequence
+Together with the [linear core bound](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L221), this has the immediate mathematical consequence
 
 \[
 \frac{P_2(N)}N
@@ -234,11 +234,11 @@ Together with the [linear core bound](../../formal/GaloisForLFunctions/RHTower/S
 \longrightarrow0.
 \]
 
-**Existing inputs therefore yield `P_2(N) = o(N)`.** The repository contains this consequence in [SuzukiQuadraticContactUnconditionalDecay.lean:59](../../formal/GaloisForLFunctions/RHTower/SuzukiQuadraticContactUnconditionalDecay.lean#L59), together with the exact fourth-power normalization. Eventual nonzero denominators come from the canonical compensation module. This is a supporting result, not either requested improvement.
+**Existing inputs therefore yield `P_2(N) = o(N)`.** The repository contains this consequence in [SuzukiQuadraticContactUnconditionalDecay.lean:59](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiQuadraticContactUnconditionalDecay.lean#L59), together with the exact fourth-power normalization. Eventual nonzero denominators come from the canonical compensation module. This is a supporting result, not either requested improvement.
 
 This is genuine cancellation for the literal source. But `o(N)` provides no fixed power saving: even `N / log N` is `o(N)` while exceeding every `N^r` with `r < 1` eventually. Beating `7/8` by Section 2.3 requires `r < 1/2`. Normalized convergence cannot supply that exponent.
 
-The actual arithmetic quantity is also identified, rather than left as an abstract energy. For `N ≥ 2`, [SuzukiTransitionCoreAbelSourceMultiGateWeld.lean:29](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAbelSourceMultiGateWeld.lean#L29) expresses `G_N` as the signed Selberg square-root Abel moment divided by `N`, with its polar-lattice, polar, and archimedean corrections retained. The same file expresses `E_N` as `C_N` times the square of that corrected scalar divided by `A_N`. This is the concrete source whose rate needs improvement; changing normalization or estimating a different unsigned energy would not settle the task.
+The actual arithmetic quantity is also identified, rather than left as an abstract energy. For `N ≥ 2`, [SuzukiTransitionCoreAbelSourceMultiGateWeld.lean:29](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAbelSourceMultiGateWeld.lean#L29) expresses `G_N` as the signed Selberg square-root Abel moment divided by `N`, with its polar-lattice, polar, and archimedean corrections retained. The same file expresses `E_N` as `C_N` times the square of that corrected scalar divided by `A_N`. This is the concrete source whose rate needs improvement; changing normalization or estimating a different unsigned energy would not settle the task.
 
 ## 3. One-sided arithmetic bounds: already precise enough
 
@@ -302,13 +302,13 @@ The corpus proves both directions at the same width:
 \operatorname{ChebyshevErrorPowerSpectrum}(\alpha),\qquad\alpha\geq0.
 \]
 
-The definition and reverse direction are in [CCMSharpPrimeWindowSquareEnergyWidthCollision.lean:37](../../formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L37) and [line 393](../../formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L393); the forward direction is [CCMGeneralizedVonKoch.lean:971](../../formal/GaloisForLFunctions/RHTower/CCMGeneralizedVonKoch.lean#L971).
+The definition and reverse direction are in [CCMSharpPrimeWindowSquareEnergyWidthCollision.lean:37](../../formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L37) and [line 393](../../formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L393); the forward direction is [CCMGeneralizedVonKoch.lean:971](../../formal/GaloisForLFunctions/RHTower/CCM/CCMGeneralizedVonKoch.lean#L971).
 
 Consequently, the accepted baseline supplies `ψ(x) − x = O_ε(x^(7/8+ε))`. Sending that estimate through the reverse implication recovers `7/8`. It does not yield `5/6`. A proof of `O_ε(x^(5/6+ε))` would be a genuine improvement, and the receiving theorem is ready.
 
-The square-sampled prime-window formulation is also quantitative. For its squared positive-excess coefficient, the matching absolute-convergence abscissa is bounded by `1 + 4*alpha`; see [line 262](../../formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L262). The factor four comes from sampling at squares and then squaring the excess. Baseline width `3/8` corresponds to abscissa `5/2`; width `1/3` corresponds to `7/3`.
+The square-sampled prime-window formulation is also quantitative. For its squared positive-excess coefficient, the matching absolute-convergence abscissa is bounded by `1 + 4*alpha`; see [line 262](../../formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean#L262). The factor four comes from sampling at squares and then squaring the excess. Baseline width `3/8` corresponds to abscissa `5/2`; width `1/3` corresponds to `7/3`.
 
-There is a direct sufficient weighted-summability theorem in [CCMSharpPrimeWindowSquareEnergySpectrum.lean:50](../../formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergySpectrum.lean#L50). One must distinguish convergence at an endpoint from an abscissa bound: the latter generally only guarantees convergence strictly to its right. Renaming the energy exponent or dropping one of these scaling factors would create a false improvement.
+There is a direct sufficient weighted-summability theorem in [CCMSharpPrimeWindowSquareEnergySpectrum.lean:50](../../formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergySpectrum.lean#L50). One must distinguish convergence at an endpoint from an abscissa bound: the latter generally only guarantees convergence strictly to its right. Renaming the energy exponent or dropping one of these scaling factors would create a false improvement.
 
 ### 4.2 Wold covariance isolates a signed estimate
 
@@ -446,9 +446,9 @@ Write \(S(N)=\texttt{coherentSelbergSquareRootAbelMoment}\ N\). Its literal defi
 S(N)=\sum_{k=1}^{N-1}(\sqrt{k+1}-\sqrt k)(\psi(k)-k).
 \]
 
-This is [CCMFUSuzukiSelbergOutgoingAbelWeld.lean:32](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiSelbergOutgoingAbelWeld.lean#L32). Its exact completion gives \(G_N=S(N)/N+O(1)\): the lattice defect divided by N is \(O(N^{-1/2})\), and the polar and archimedean corrections are uniformly bounded. Those bounds are retained explicitly in the [existing transfer proof](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L255).
+This is [CCMFUSuzukiSelbergOutgoingAbelWeld.lean:32](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiSelbergOutgoingAbelWeld.lean#L32). Its exact completion gives \(G_N=S(N)/N+O(1)\): the lattice defect divided by N is \(O(N^{-1/2})\), and the polar and archimedean corrections are uniformly bounded. Those bounds are retained explicitly in the [existing transfer proof](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreFiniteContactWidthClassification.lean#L255).
 
-Moreover \(A_N^2\asymp N\), \(C_N\asymp N\), and \(E_N\asymp |G_N|^2\), with positive constants independent of N. The lower core bound follows from \(A_N^2\leq C_N\) and the [linear lower bound on \(A_N^2\)](../../formal/GaloisForLFunctions/RHTower/SuzukiTransitionCoreAlignedGammaCompletion.lean#L238); the upper bounds were established in Section 2. Thus, for each fixed \(m\geq1\),
+Moreover \(A_N^2\asymp N\), \(C_N\asymp N\), and \(E_N\asymp |G_N|^2\), with positive constants independent of N. The lower core bound follows from \(A_N^2\leq C_N\) and the [linear lower bound on \(A_N^2\)](../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L238); the upper bounds were established in Section 2. Thus, for each fixed \(m\geq1\),
 
 \[
 P_m(N)\asymp \frac{|G_N|^{2m}}{N^{m-1}}.
@@ -489,7 +489,7 @@ T(N)=\texttt{mobiusDivisorSquareRootAbelMoment}\ N.
 \]
 
 The corpus proves \(|F(q)|\leq24\sqrt q\) and
-\(T(N)=S(N)+2\gamma(\sqrt N-1)\) in [CCMFUSuzukiMobiusDivisorAbelProducer.lean:44](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorAbelProducer.lean#L44) and [line 86](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorAbelProducer.lean#L86). It also proves the exact finite decomposition
+\(T(N)=S(N)+2\gamma(\sqrt N-1)\) in [CCMFUSuzukiMobiusDivisorAbelProducer.lean:44](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorAbelProducer.lean#L44) and [line 86](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorAbelProducer.lean#L86). It also proves the exact finite decomposition
 
 \[
 T(N)=\sum_{q=1}^{N-1}F(q)K_N(q),\qquad
@@ -498,7 +498,7 @@ K_N(q)=\sum_{1\leq d,\ qd<N}\mu(d)
 \tag{8.1}
 \]
 
-See [CCMFUSuzukiMobiusDivisorDilationChannels.lean:638](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L638). Both the complete blocks and the clipped terminal block are present.
+See [CCMFUSuzukiMobiusDivisorDilationChannels.lean:638](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L638). Both the complete blocks and the clipped terminal block are present.
 
 **Paper lemma: baseline-dependent tail estimate.** Suppose, for a fixed \(1/2<\beta<1\) and \(C_\beta\geq0\),
 \[
@@ -521,7 +521,7 @@ N^{\beta+1/2}Q^{1/2-\beta}.
 \(w(d)=\sqrt{\min(N,(q+1)d)}-\sqrt{qd}\)
 by zero outside \(1\leq d<N/q\). It rises as
 \(\sqrt d(\sqrt{q+1}-\sqrt q)\) until \(d=N/(q+1)\), then falls as
-\(\sqrt N-\sqrt{qd}\). Its maximum is at most \(\sqrt N/q\), so its discrete total variation is at most \(2\sqrt N/q\). The corpus's [boundary-free Abel identity](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L377) is
+\(\sqrt N-\sqrt{qd}\). Its maximum is at most \(\sqrt N/q\), so its discrete total variation is at most \(2\sqrt N/q\). The corpus's [boundary-free Abel identity](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L377) is
 \[
 K_N(q)=\sum_{d\leq\lfloor(N-1)/q\rfloor}M(d)(w(d)-w(d+1)).
 \]
@@ -531,12 +531,12 @@ This proves (8.2), including the moving boundary; an empty tail is zero.
 
 The needed Mertens premise is available from the accepted zero-free half-plane: [MobiusMertensAbscissaLittlewood.lean:58](../../formal/GaloisForLFunctions/RHTower/MobiusMertensAbscissaLittlewood.lean#L58) gives \(M(D)=O_\delta(D^{b_0+\delta})\) under zero-freeness right of \(b_0\). Absorb the harmless \(D+1\) into the constant.
 
-**Lean theorem.** With Θ denoting the actual `zetaZeroAbscissa`, [CCMFUSuzukiMobiusQuotientTail.lean](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusQuotientTail.lean#L126) proves the uniform remainder bound
+**Lean theorem.** With Θ denoting the actual `zetaZeroAbscissa`, [CCMFUSuzukiMobiusQuotientTail.lean](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusQuotientTail.lean#L126) proves the uniform remainder bound
 \[
 |T(N)-H(N,Q)|\leq C_\varepsilon N^{\Theta+\varepsilon+1/2}
 Q^{1/2-\Theta-\varepsilon}
 \]
-for every ε>0, all N, and Q≥1, with no assumed zero-free strip. The [clipped-kernel bound](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusClippedKernelBound.lean#L116) includes the moving endpoint. The [power-cutoff theorem](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusQuotientPowerCutoff.lean#L16) gives exponent `Θ+1/2−θ(Θ−1/2)+ε` at `Q=ceil(N^θ)`. Its one-ninth, one-third, and one-quarter specializations are unconditional statements about Θ; the numerical substitutions below use the accepted baseline.
+for every ε>0, all N, and Q≥1, with no assumed zero-free strip. The [clipped-kernel bound](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusClippedKernelBound.lean#L116) includes the moving endpoint. The [power-cutoff theorem](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusQuotientPowerCutoff.lean#L16) gives exponent `Θ+1/2−θ(Θ−1/2)+ε` at `Q=ceil(N^θ)`. Its one-ninth, one-third, and one-quarter specializations are unconditional statements about Θ; the numerical substitutions below use the accepted baseline.
 
 For a one-step use of a current boundary \(1/2<b_0<1\), choose a desired \(1/2<b_1<b_0\) and
 \[
@@ -617,7 +617,7 @@ for every ε and all sufficiently large N, or its lower counterpart. The identic
 
 The one-step choices in Section 8.2 remain available, including \(N^{1/4}\) after establishing 5/6. Self-contraction permits arbitrarily smaller fixed positive powers already, so those choices do not constrain the revised arithmetic target.
 
-**Arithmetic work still required.** Prove joint cancellation between the complete and terminal portions of \(K_N(q)\), and across the retained q range. Their [exact complete/terminal split](../../formal/GaloisForLFunctions/RHTower/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L471) is available. Independent absolute estimates discard the needed information. Relative to the baseline, the first target needs a power saving \(N^{1/24}\) in the Abel action; the second needs \(N^{1/8}\). These are explicit research obligations, not established estimates.
+**Arithmetic work still required.** Prove joint cancellation between the complete and terminal portions of \(K_N(q)\), and across the retained q range. Their [exact complete/terminal split](../../formal/GaloisForLFunctions/RHTower/CCM/CCMFUSuzukiMobiusDivisorDilationChannels.lean#L471) is available. Independent absolute estimates discard the needed information. Relative to the baseline, the first target needs a power saving \(N^{1/24}\) in the Abel action; the second needs \(N^{1/8}\). These are explicit research obligations, not established estimates.
 
 **Verdict:** the tail estimates and self-contracting receivers are formalized. (R5) and (R3) remain the open arithmetic core. Their deduction needs no accepted baseline, but neither estimate has been proved.
 

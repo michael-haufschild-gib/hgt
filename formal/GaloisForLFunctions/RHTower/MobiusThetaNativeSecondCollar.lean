@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.MobiusThetaNativePrefixMass
-import GaloisForLFunctions.RHTower.DeningerAdiabaticTransgression
-import GaloisForLFunctions.RHTower.DeningerCommutatorBoundaryKernel
+import GaloisForLFunctions.RHTower.Deninger.DeningerAdiabaticTransgression
+import GaloisForLFunctions.RHTower.Deninger.DeningerCommutatorBoundaryKernel
 
 /-!
 # Original second collar and retained finite-prefix transgression

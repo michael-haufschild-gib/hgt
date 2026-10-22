@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.GammaRatioBranchDerivative
 import GaloisForLFunctions.RHTower.WallGeneratorLogCoercivity
-import GaloisForLFunctions.RHTower.SuzukiGammaForcedStripHardy
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiGammaForcedStripHardy
 import GaloisForLFunctions.HTGeometry.PhaseGeneratorIntegrationByParts
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv

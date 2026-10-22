@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCompactModularPeriodization
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCompactModularPeriodization
 
 /-!
 # Sharp height obstruction to covering the core by integral cusp relocation

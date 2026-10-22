@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeSource
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeSource
 import Mathlib.Analysis.MellinTransform
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 

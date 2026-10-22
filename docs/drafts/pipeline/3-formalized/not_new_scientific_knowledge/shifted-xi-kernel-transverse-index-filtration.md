@@ -241,7 +241,7 @@ denominator exposes finite factors of arbitrarily large degree.
 
 ## Lean status update -- symmetric-core Schur factor (2026-08-24)
 
-`RHTower/SuzukiShiftedXiCoreSchur.lean` now constructs the multiplicity-exact canonical product
+`RHTower/Suzuki/SuzukiShiftedXiCoreSchur.lean` now constructs the multiplicity-exact canonical product
 over all Xi zero copies with transverse coordinate at most `omega` in absolute value and proves its
 shifted quotient is Schur on the upper half-plane, unconditionally. The proof reindexes the core
 through both functional-equation reflection and critical-line reflection, pairs genus-one factors
@@ -259,7 +259,7 @@ kernel inertia engine.
 ## Lean status update -- literal finite shifted-Xi kernel inertia (2026-08-24)
 
 The finite transverse-tail case is now dependency-closed all the way to the literal kernel in this
-card. `RHTower/SuzukiShiftedXiFiniteUpperKernelInertia.lean` defines the regular upper-half-plane
+card. `RHTower/Suzuki/SuzukiShiftedXiFiniteUpperKernelInertia.lean` defines the regular upper-half-plane
 node type `XiShiftRegularUpperNode omega`, carrying both positive height and actual
 `suzukiCanonicalE omega z ≠ 0`, and proves
 `xiShiftRegularUpperKernel_exactNegativeSquares_finite`. For every `omega ≥ 0` whose strict-right
@@ -298,7 +298,7 @@ finite negative dimension. No finite-card hypothesis has been promoted to the fu
 
 ## Lean status update -- exact finite/infinite literal-kernel classification (2026-08-24)
 
-`RHTower/SuzukiShiftedXiInfiniteUpperKernelInertia.lean` closes the infinite-tail branch without
+`RHTower/Suzuki/SuzukiShiftedXiInfiniteUpperKernelInertia.lean` closes the infinite-tail branch without
 constructing an infinite Blaschke product. It clears the literal quotient denominator, proving the
 exact regular-locus congruence
 
@@ -339,7 +339,7 @@ canonically linearly equivalent to the surviving adjoint range, and its finite i
 dimension profile is exactly `RestrictedAdjointRankAtLeast`. A common numerator/denominator disk
 zero supplies an explicit nonzero Szegő-kernel vector in the cancellation space.
 
-`RHTower/SuzukiShiftedXiCommonDivisorCancellation.lean` proves that, at every literal shifted-Xi
+`RHTower/Suzuki/SuzukiShiftedXiCommonDivisorCancellation.lean` proves that, at every literal shifted-Xi
 pole coordinate, vanishing of the full Hardy numerator is equivalent to the reflected
 `suzukiCanonicalE` source zero. Thus exceptional horizontally paired Xi zeros are exactly common
 pole/numerator directions. The capstone
@@ -349,7 +349,7 @@ negative packet exactly when the complete pole model space modulo all common-fac
 an `r`-element independent family. This covers finite or infinite tails and all exceptional shifts.
 
 `HTGeometry/FiniteTailCountingStieltjes.lean` proves the generic finite atomic tail-count law.
-`RHTower/SuzukiShiftedXiTransverseStieltjes.lean` instantiates it with multiplicity-labelled Xi
+`RHTower/Suzuki/SuzukiShiftedXiTransverseStieltjes.lean` instantiates it with multiplicity-labelled Xi
 zeros: above any finite positive anchor tail, atomic mass on `(a,b]` equals
 `Nat.card (XiShiftRightZeroCopy a) - Nat.card (XiShiftRightZeroCopy b)`, and at every
 nonexceptional higher shift that raw count is the exact negative index of the literal kernel. The

@@ -56,7 +56,7 @@ projective sixth-curvature monotonicity directly.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5MasterReservedSeamNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5MasterReservedSeamNoGo`
 - Killing theorem:
   `not_forall_c5CompletedMasterReservedCompensationMargin_nonneg`
 - Local wrong-sign theorem:

@@ -165,7 +165,7 @@ general `L2` Muntz frameworks. This is a useful route reconciliation, not new sc
 ## Lean status
 
 **Superseded, 2026-08-04.**  Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMBVMuntzSummation.lean`.  The previous decision said the tree has
+`formal/GaloisForLFunctions/RHTower/CCM/CCMBVMuntzSummation.lean`.  The previous decision said the tree has
 no Mellin--Plancherel interface, so only the Riemann-sum inequality could be certified and that would
 be "a wrapper".  That undersells the estimate: `(7)` is the only place the bounded-variation hypothesis
 does any work, and it is what makes the endpoint jump harmless — which is the whole point of the card.

@@ -199,7 +199,7 @@ Weil even-gap lower bound remain later gates.
 ## Lean status
 
 **Partially formalized, 2026-08-04**, in
-`formal/GaloisForLFunctions/RHTower/CCMFirstRowStationaryPhase.lean`.  Two of the card's proved gates
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstRowStationaryPhase.lean`.  Two of the card's proved gates
 need no asymptotic input at all and are now unconditional.
 
 **The exact stationary point, equations `(6)`–`(9)`:**
@@ -310,7 +310,7 @@ The Bessel envelope of `(14)`–`(15)` is also now a proved object of the tree, 
   no Bessel functions.
 
 The envelope tail integral `(16)` is proved in
-`formal/GaloisForLFunctions/RHTower/CCMFirstRowEnvelopeTail.lean`:
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstRowEnvelopeTail.lean`:
 
 - `invPow32`, `hasDerivAt_negTwoDivSqrt`, `integrableOn_invPow32`, **`integral_Ioi_invPow32`** — the
   exact tail mass `int_a^infinity x^(-3/2) dx = 2 a^(-1/2)`, from the antiderivative `-2 x^(-1/2)`;
@@ -376,7 +376,7 @@ exists in mathlib.
   in `(13)` uses only their finiteness.
 
 The three-region decomposition that `(13)` runs on is now proved, in
-`formal/GaloisForLFunctions/RHTower/CCMFirstRowVanDerCorputBlocks.lean` (split off from the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstRowVanDerCorputBlocks.lean` (split off from the
 stationary-phase module, which keeps the exact stationary point, the bracket `(4)`, the differentiation
 laws `(10)` and the weighted first-row sum `(18)`):
 
@@ -484,7 +484,7 @@ the real `cos`/`sin` ones.  With the aperture hypothesis `3k <= c` (implied by t
   which are `O(c^{-1/2}k^{-2})`.
 
 The first step of `(14)` is proved, in
-`formal/GaloisForLFunctions/RHTower/CCMFirstRowDunsterModel.lean`.  Dunster's pole-uniform
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstRowDunsterModel.lean`.  Dunster's pole-uniform
 approximation compares the radial prolate equation with a Bessel equation in the Liouville–Green
 variable, and the comparison equation itself is an exact identity, not an asymptotic one:
 
@@ -770,7 +770,7 @@ Note: the same Liouville speed already exists in the tree as
 endpoint; the endpoint normalisation is what the bracket `(4)` needs, so the two coexist.
 
 **The last PSWF-specific input of `(14)` is proved**, in
-`formal/GaloisForLFunctions/RHTower/CCMRadialProlateDefect.lean`.  Nothing about prolate spheroidal
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialProlateDefect.lean`.  Nothing about prolate spheroidal
 spectral theory is imported: the theorem is about an arbitrary solution of the radial equation with
 separation constant `chi = s c²` in the range the separation law `(2)` provides.
 
@@ -888,7 +888,7 @@ not merely bounded by the Bessel envelope, it *equals* a fixed combination of th
   shape `(15)`–`(17)` integrate.
 
 Two structural facts about the endpoint layer are proved in
-`formal/GaloisForLFunctions/RHTower/CCMRadialProlateEndpointLayer.lean`.  They record *why* the accounting
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialProlateEndpointLayer.lean`.  They record *why* the accounting
 of `(14)` closes, and they are what any extension of the comparison through the layer `c xi_s(x) <= 1` runs
 on.
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiCorFourSix
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCorFourSix
 import GaloisForLFunctions.RHTower.XiEndpointReciprocalTraceReflection
 
 /-!

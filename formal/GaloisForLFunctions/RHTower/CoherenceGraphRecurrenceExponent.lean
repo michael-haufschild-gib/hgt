@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CoherenceGraphVolumeLaw
-import GaloisForLFunctions.RHTower.CCMPrimePoleFiniteCoherence
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePoleFiniteCoherence
 import GaloisForLFunctions.HTGeometry.TorusReturnExponentLaw
 
 /-!

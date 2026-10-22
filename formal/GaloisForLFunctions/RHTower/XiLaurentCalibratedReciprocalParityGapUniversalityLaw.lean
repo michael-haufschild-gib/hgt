@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniCalibratedReciprocalMomentNoGo
 import GaloisForLFunctions.RHTower.XiCenteredReciprocalLaurentParitySourceUniversalityLaw
 
 /-!

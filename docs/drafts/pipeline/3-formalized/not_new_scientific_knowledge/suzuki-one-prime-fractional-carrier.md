@@ -100,7 +100,7 @@ vector-valued Fourier/Bochner assembly.
 ## Stage-3 note
 
 Every checked gate above is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/SuzukiOnePrimeFractionalCarrier.lean`
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiOnePrimeFractionalCarrier.lean`
 (`fractionalPolynomialOrbitWeight`, `…_pos`, `fractionalPolynomialOrbitShiftRatio`,
 `…_cocycle`, `fractionalPolynomialOrbitShift`, `…_add`,
 `abs_fractionalPolynomialOrbitShiftRatio_le`,

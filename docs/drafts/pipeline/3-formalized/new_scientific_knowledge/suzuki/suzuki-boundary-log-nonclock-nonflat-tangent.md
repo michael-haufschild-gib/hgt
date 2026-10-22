@@ -229,7 +229,7 @@ finite-aperture tangent through a cofinal intermediate-shift regime without its 
 Lean module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftNonClock.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean
 ```
 
 Formalized, unconditionally:
@@ -264,7 +264,7 @@ archimedean remainder: each of those contributes a bounded term with finite one-
 limits and none of them carries a `log ε`.
 
 **The form itself is now a Lean definition**, in
-`formal/GaloisForLFunctions/RHTower/SuzukiRestrictedWeilForm.lean`.  Kernel `(1)` is assembled
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRestrictedWeilForm.lean`.  Kernel `(1)` is assembled
 block by block — finite part, scalar Dirac, prime translation pairs, smooth remainder — so what
 this card writes as `A_a u = w` is `IsRestrictedWeilRepresentative`, a statement about an explicit
 integral pairing.  No Friedrichs extension and no spectral theorem is involved:
@@ -298,7 +298,7 @@ compact aperture.  Suzuki's `r''` is carried as a continuous kernel parameter, b
 data the corpus does not own; every other block is fully explicit.
 
 **`(5)` and `(6)` are theorems**, in
-`formal/GaloisForLFunctions/RHTower/SuzukiBoundaryLogEndpointBlowUp.lean`:
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBoundaryLogEndpointBlowUp.lean`:
 
 ```text
 cauchyDividedDifference
@@ -329,7 +329,7 @@ source layer; the analytic content of Theorem A is formalized without axioms.
 
 ### Cross-reference — endpoint separation added to this card's module
 
-`RHTower/SuzukiFiniteShiftNonClock.lean` now also carries the endpoint *separation* layer, proved
+`RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean` now also carries the endpoint *separation* layer, proved
 for the Nonvanishing step of `suzuki-full-frequency-neumann-holonomy-survivor.md`:
 `tendsto_sub_mul_suzukiBoundaryLog`, `tendsto_sub_mul_suzukiBoundaryPole`, and
 `suzukiBoundaryPole_ne_log_add_bounded` — a logarithmic endpoint singularity cannot absorb a simple
@@ -346,7 +346,7 @@ the statements it was thought to require were restated in the coordinate of the 
 
 Machinery available for reuse here, all unconditional and axiom-clean:
 
-- `RHTower/SuzukiStrongResolventLimit.lean` : `tendsto_resolventFamily_id` — the strong resolvent
+- `RHTower/Suzuki/SuzukiStrongResolventLimit.lean` : `tendsto_resolventFamily_id` — the strong resolvent
   limit `(-lambda)(A - lambda)^{-1} -> I` as a single theorem about a bounded `B`.
 - `HTGeometry/CfcNormBound.lean` : CFC norm bounds and the resolvent symbol estimates that drive it.
 - `HTGeometry/StrongConvergenceDense.lean`, `HTGeometry/CompactOperatorDiscreteSpectrum.lean` :
@@ -415,7 +415,7 @@ With `abs_neumannSymbol_le` this completes the scalar layer for `(I + eps A)^{-1
 exactly mirroring what closed `(2)` on the sibling card: uniform bound, estimate symbol, uniform
 smallness, then `tendsto_norm_cfc_zero` and `tendsto_id_of_norm_comp_tendsto_zero`. The bundling
 into one theorem is the same CFC bookkeeping already carried out in
-`RHTower/SuzukiStrongResolventLimit.lean`, and would go in an RHTower module for the same
+`RHTower/Suzuki/SuzukiStrongResolventLimit.lean`, and would go in an RHTower module for the same
 instance reason recorded there.
 
 `(P1)`'s first-order term `A_a e^x = B^{-1} e^x` remains, needing `e^x ∈ range B`.
@@ -429,7 +429,7 @@ instance reason recorded there.
 All three scalar inputs for `(I + eps A)^{-1} -> I` strongly now exist — uniform bound
 (`abs_neumannSymbol_le`), link identity, and uniform smallness
 (`eventually_forall_abs_neumannSymbol_le`) — matching one-for-one the inputs that closed `(2)`.
-Bundling is the CFC bookkeeping of `RHTower/SuzukiStrongResolventLimit.lean`.
+Bundling is the CFC bookkeeping of `RHTower/Suzuki/SuzukiStrongResolventLimit.lean`.
 
 Note for whoever writes that bundle: `field_simp` does **not** close this identity — it normalises
 the denominator to a different associativity than the hypothesis and leaves an inverse-form goal
@@ -440,7 +440,7 @@ the numerator by hand.
 
 - `abs_neumannFamilySymbol_le` : the shift symbol is bounded by `2` on `[0, M]` when
   `1 + eps rho >= 1/2`, uniformly in `x` and `eps`.
-- `tendsto_neumannShiftFamily_id`, in `RHTower/SuzukiStrongResolventLimit.lean` :
+- `tendsto_neumannShiftFamily_id`, in `RHTower/Suzuki/SuzukiStrongResolventLimit.lean` :
   **`(I + eps A)^{-1} -> I` strongly as `eps -> 0+`**, for `A = rho + B^{-1}` with `B` bounded,
   injective and self-adjoint with spectrum in `[0, M]`.
 

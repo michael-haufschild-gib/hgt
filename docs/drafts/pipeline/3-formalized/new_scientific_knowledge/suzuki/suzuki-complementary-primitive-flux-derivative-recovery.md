@@ -5,7 +5,7 @@
 - **Type:** EXACT COMPLEMENTARY-FLUX CANCELLATION / WEAK DERIVATIVE THEOREM
 - **Scientific status:** `[PAPER-PROVED] [UNCONDITIONAL] [NOVELTY UNVERIFIED] [NOT RH]`
 - **Route:** completed Evans/logarithmic-seam branch of Connes/CCM
-- **Lean:** `GaloisForLFunctions.RHTower.SuzukiPrimitiveFluxNonnormalGraphReduction`
+- **Lean:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiPrimitiveFluxNonnormalGraphReduction`
 - **Inputs:** `suzuki-coordinate-cutoff-primitive-flux-identity.md`,
   `suzuki-flat-primitive-flux-volterra-liouville.md`,
   `suzuki-gamma-weighted-tail-coercivity.md`
@@ -323,7 +323,7 @@ formal/GaloisForLFunctions/HTGeometry/GraphFluxStabilityEstimate.lean
   norm_le_of_coercive        c‖u‖² ≤ ⟪u, w⟫  ⟹  c‖u‖ ≤ ‖w‖
   neg_norm_mul_normSq_le_inner_neg_apply   (19)'s bounded-nonnormal half:
                              Re⟪-Bv, v⟫ ≥ -‖B‖‖v‖², Cauchy-Schwarz alone
-formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaShiftKappa.lean
   neg_suzukiGammaShiftKappa_le_integral    (19)'s shifted-Gamma half
 ```
 

@@ -5,17 +5,17 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-gamma-homogeneous-half-log-scattering-classification.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaDistributionalHalfLine.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaHalfLineClassification.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiHalfLogScatteringKernel.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaCoronaSequence.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripBranch.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripGluing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripCarrierIntegrability.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripSquareIntegrable.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripUniformBound.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripContourPairing.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaStripFourierWeight.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaDistributionalHalfLine.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaHalfLineClassification.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiHalfLogScatteringKernel.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaCoronaSequence.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripBranch.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripGluing.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripCarrierIntegrability.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripSquareIntegrable.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripUniformBound.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripContourPairing.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaStripFourierWeight.lean`
   - `formal/GaloisForLFunctions/HTGeometry/PointSupportGammaForm.lean`
   - `formal/GaloisForLFunctions/HTGeometry/HalfLogTraceNonIntegrable.lean`
   - `formal/GaloisForLFunctions/HTGeometry/ExponentialTwist.lean`

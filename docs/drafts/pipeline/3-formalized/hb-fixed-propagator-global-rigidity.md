@@ -31,7 +31,7 @@ Existing universal-carrier classification says fixed scalar `T` realizes all inc
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFixedPropagatorGlobalRigidity`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFixedPropagatorGlobalRigidity`
 - Theorems:
   - `exists_hbUniversalPeierls_fixedPropagator_unit_BM_incidence_iff_rh`
   - `not_exists_hbUniversalPeierls_nonzero_fixedPropagator_unit_BM_incidence`

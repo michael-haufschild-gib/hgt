@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized (certificate: `theta-compact-source-entropy-boundary-weld-formalized.md`)
 - **Type:** THEOREM
-- **Lean target:** `formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceEntropyBoundaryWeld.lean`
+- **Lean target:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceEntropyBoundaryWeld.lean`
 
 ## Statement
 

@@ -34,7 +34,7 @@ parameter-family identity before specialization.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMEisensteinScalarLandingNoGo`
 - Exact residual:
   `d4BM_actualBalancedCanonicalLandingResidual_eq`
 - Necessary-and-sufficient survivor:

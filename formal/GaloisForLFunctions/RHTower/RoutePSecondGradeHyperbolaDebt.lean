@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiSecondGradeAsymptotic
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiSecondGradeAsymptotic
 import GaloisForLFunctions.RHTower.PsiRemainderRecursion
 
 /-!

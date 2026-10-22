@@ -55,7 +55,7 @@ holomorphy. No additional divisor reconstruction theorem remains.
 ## Lean certificate
 
 - Module:
-  `GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography`
+  `GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinDivisorTomography`
 - Main declaration:
   `criticalMellinDivisorTomography_capstone`
 - Canonical equivalence:
@@ -63,7 +63,7 @@ holomorphy. No additional divisor reconstruction theorem remains.
 - Pole-line criterion:
   `riemannHypothesis_iff_criticalMellin_poles_on_line`
 - Exact module build:
-  `lake build GaloisForLFunctions.RHTower.CCMCriticalMellinDivisorTomography`
+  `lake build GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinDivisorTomography`
 - Allowed axioms:
   `[propext, Classical.choice, Quot.sound]`.
 

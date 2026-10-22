@@ -307,7 +307,7 @@ is unconditional; no RH input, no numerical estimate, and no spectral theorem oc
    `apertureFourier_apertureExp_eq` evaluates the free transform in closed form.
 
 3. **Free carrier `(4)` and the quotient passage** —
-   `formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean`.
+   `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeShiftEscape.lean`.
    `suzukiApertureCarrier_smul` is the projective invariance `(10)` at the level of densities, so
    the common factor `r` cancels.  `suzukiApertureCarrier_apertureExp` proves that the Fourier
    carrier of the free density `exp x` is exactly `suzukiFreeLivsic a`, i.e. equation `(4)`; the
@@ -338,7 +338,7 @@ Axiom audit of every declaration above: `[propext, Classical.choice, Quot.sound]
 - [x] hostile paper-proof audit closed
 - [x] primary-literature collision audit closed at the source-specific level
 - [x] dependency-closed projective/free-boundary survivor formalized in Lean
-- [x] concrete restricted-Weil resolvent escape theorem formalized in Lean: formal/GaloisForLFunctions/RHTower/SuzukiNegativeShiftEscape.lean
+- [x] concrete restricted-Weil resolvent escape theorem formalized in Lean: formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiNegativeShiftEscape.lean
 - [ ] source-side cofinal shift selected with defect angle tending to `kappa_Xi∈(77/85,1)`,
       even share `>81/85`, odd share `<4/85`, and persistent ground leakage
 - [ ] RH

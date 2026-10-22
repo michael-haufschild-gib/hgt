@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.LiPairedEndpointTraceLanding
-import GaloisForLFunctions.RHTower.SuzukiCoalescingXiSourceRate
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCoalescingXiSourceRate
 import Mathlib.RingTheory.Polynomial.Chebyshev
 
 /-!

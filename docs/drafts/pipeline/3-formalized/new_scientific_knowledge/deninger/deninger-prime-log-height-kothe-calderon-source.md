@@ -6,7 +6,7 @@
 - **Scientific status:** `[PROVED HERE] [LEAN-PROVED] [NOT RH]`
 - **Label:** DAC_PRIME_LOG_HEIGHT_KOTHE_CALDERON_SOURCE
 - **Lean:**
-  `formal/GaloisForLFunctions/RHTower/DeningerPrimeLogHeight.lean`,
+  `formal/GaloisForLFunctions/RHTower/Deninger/DeningerPrimeLogHeight.lean`,
   `DeningerKotheComplete.lean`,
   `DeningerPrimeLogHeightKothe.lean`,
   `DeningerPrimeLogHeightConvolution.lean`,

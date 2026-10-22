@@ -67,7 +67,7 @@ balance remain unproved.
 
 ## Verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekGammaMobiusReciprocalEndpoint.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekGammaMobiusReciprocalEndpoint.lean`.
 All11 public declarations pass the final scratch with only propext,
 Classical.choice and Quot.sound. Exact bodies are promoted and wired
 once into RHTower. The targeted leaf build passed in40s, building only

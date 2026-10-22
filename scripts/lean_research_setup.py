@@ -17,10 +17,12 @@ import subprocess
 import sys
 
 try:
-    from .research_runtime.config import DEFAULT_CACHE_DIR, MODELS, PYTHON, RUNTIME_HOME, fingerprints
+    from .research_runtime.config import (DEFAULT_CACHE_DIR, EMBEDDING_DIMENSIONS, MODELS,
+                                      PYTHON, RUNTIME_HOME, fingerprints)
     from .research_runtime.processes import terminate_owned, cancellation_signals
 except ImportError:
-    from research_runtime.config import DEFAULT_CACHE_DIR, MODELS, PYTHON, RUNTIME_HOME, fingerprints
+    from research_runtime.config import (DEFAULT_CACHE_DIR, EMBEDDING_DIMENSIONS, MODELS,
+                                     PYTHON, RUNTIME_HOME, fingerprints)
     from research_runtime.processes import terminate_owned, cancellation_signals
 
 
@@ -136,7 +138,7 @@ def smoke(cache_dir: Path, seconds: float = 180) -> dict:
     deadline = time.monotonic() + seconds
     vectors = client.embed(['A natural number equals itself.', 'The moon is made of cheese.'], deadline=deadline)
     query = client.embed(['natural number reflexivity'], query=True, deadline=deadline)
-    if len(vectors) != 2 or any(len(v) != 1024 for v in vectors + query):
+    if len(vectors) != 2 or any(len(v) != EMBEDDING_DIMENSIONS for v in vectors + query):
         raise RuntimeError('embedding dimension/order smoke failed')
     if any(not all(map(math.isfinite, v)) or abs(sum(x*x for x in v) - 1) > 0.01 for v in vectors + query):
         raise RuntimeError('embedding normalization smoke failed')
@@ -145,9 +147,11 @@ def smoke(cache_dir: Path, seconds: float = 180) -> dict:
     if len(scores) != 2 or not all(0 <= x <= 1 for x in scores) or scores[0] <= scores[1]:
         raise RuntimeError(f'yes/no relevance smoke failed: {scores}')
     search_status = client.status()
-    generated = client.generate('Reply with the single word local.', max_tokens=16, deadline=deadline)
-    if not generated.strip():
-        raise RuntimeError('generation smoke returned empty text')
+    generated = None
+    if 'generation' in MODELS:
+        generated = client.generate('Reply with the single word local.', max_tokens=16, deadline=deadline)
+        if not generated.strip():
+            raise RuntimeError('generation smoke returned empty text')
     return {'embedding_dimensions': len(query[0]), 'scores': scores, 'generated': generated,
             'search_status': search_status, 'status': client.status()}
 
@@ -168,7 +172,7 @@ def embedding_smoke(cache_dir: Path, seconds: float = 120) -> dict:
         start = time.monotonic()
         embeddings = client.embed(documents, deadline=start+seconds)
         elapsed = time.monotonic()-start
-        if len(embeddings) != 32 or any(len(v) != 1024 or not all(map(math.isfinite, v))
+        if len(embeddings) != 32 or any(len(v) != EMBEDDING_DIMENSIONS or not all(map(math.isfinite, v))
                 or abs(sum(x*x for x in v)-1) > 0.01 for v in embeddings):
             raise RuntimeError('embedding throughput smoke failed output checks')
         return {'documents': 32, 'characters': sum(map(len, documents)),

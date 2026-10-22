@@ -57,12 +57,12 @@ This theorem kills a proposed producer rather than assuming that endpoint: finit
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingHBArbitraryHilbertSchmidtHermitianCompletionFidelityNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBArbitraryHilbertSchmidtHermitianCompletionFidelityNoGo`
 - Generic rigidity: `selfAdjoint_sourceBlock_entireDet2_ne_diagKernel`
 - Exact tilted-source theorem: `d4HBReducedTeukolskyArbitraryHermitianCompletion_tilted`
 - Closed capstone: `d4HBReducedTeukolskyArbitraryHermitianCompletionFidelityRouteKilled`
 - `lake env lean` PASS
-- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingHBArbitraryHilbertSchmidtHermitianCompletionFidelityNoGo` PASS
+- Targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingHBArbitraryHilbertSchmidtHermitianCompletionFidelityNoGo` PASS
 - `#print axioms`: only Lean/mathlib standard `propext`, `Classical.choice`, `Quot.sound`; no added axiom
 - Scoped forbidden-declaration scan: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe`
 - Global lint currently fails only on unrelated concurrently added modules missing umbrella imports; this module is umbrella-reachable and absent from every lint error

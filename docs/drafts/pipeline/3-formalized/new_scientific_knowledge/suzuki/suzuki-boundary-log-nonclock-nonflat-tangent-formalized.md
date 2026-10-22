@@ -11,10 +11,10 @@
 - `formal/GaloisForLFunctions/HTGeometry/CompactOperatorDiscreteSpectrum.lean`
 - `formal/GaloisForLFunctions/HTGeometry/HadamardFinitePart.lean`
 - `formal/GaloisForLFunctions/HTGeometry/SignedCharFunCentralJet.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiBoundaryLogEndpointBlowUp.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiFiniteShiftNonClock.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiRestrictedWeilForm.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiStrongResolventLimit.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiBoundaryLogEndpointBlowUp.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFiniteShiftNonClock.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRestrictedWeilForm.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiStrongResolventLimit.lean`
 - `formal/GaloisForLFunctions/HTGeometry/StrongConvergenceDense.lean`
 
 ## Formal theorem surface
@@ -57,7 +57,7 @@ GaloisForLFunctions.HTGeometry.neg_integral_expNeg_mul_deriv
 GaloisForLFunctions.HTGeometry.neg_integral_exp_mul_deriv
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiBoundaryLogEndpointBlowUp`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiBoundaryLogEndpointBlowUp`:
 
 ```text
 GaloisForLFunctions.RHTower.abs_cauchyDividedDifference_le
@@ -67,7 +67,7 @@ GaloisForLFunctions.RHTower.not_bounded_of_tendsto_neg_half_cauchyFinitePart
 GaloisForLFunctions.RHTower.tendsto_neg_half_cauchyFinitePart_atTop
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiFiniteShiftNonClock`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiFiniteShiftNonClock`:
 
 ```text
 GaloisForLFunctions.RHTower.suzukiBoundaryLogTerm
@@ -76,7 +76,7 @@ GaloisForLFunctions.RHTower.tendsto_sub_mul_suzukiBoundaryLog
 GaloisForLFunctions.RHTower.tendsto_sub_mul_suzukiBoundaryPole
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiRestrictedWeilForm`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiRestrictedWeilForm`:
 
 ```text
 GaloisForLFunctions.RHTower.ApertureTest
@@ -95,7 +95,7 @@ GaloisForLFunctions.RHTower.weilScalarBlock_eq
 GaloisForLFunctions.RHTower.weilSmoothBlock_eq
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiStrongResolventLimit`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiStrongResolventLimit`:
 
 ```text
 GaloisForLFunctions.RHTower.tendsto_neumannShiftFamily_id

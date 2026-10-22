@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonPotentialFlow
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonPotentialFlow
 
 /-!
 # The Duhamel formula for the driven oscillator

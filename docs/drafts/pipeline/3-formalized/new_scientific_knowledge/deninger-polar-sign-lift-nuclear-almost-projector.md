@@ -150,7 +150,7 @@ global kernel statement.
 
 The exact Hardy-projector consequences of a self-adjoint involution
 are formalized in
-`GaloisForLFunctions.RHTower.DeningerArithmeticExactHardyProjectors`:
+`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticExactHardyProjectors`:
 idempotence, complementarity, mutual annihilation, self-adjointness,
 and recovery of chirality by \(\Pi_+-\Pi_-\).  Required direct-file
 check passes.
@@ -184,7 +184,7 @@ reduction are formalized; see the sections below.
 
 ### The polar-sign lift landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPolarSignLift.lean`.  Axiom audit: only `propext`
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPolarSignLift.lean`.  Axiom audit: only `propext`
 and `Quot.sound` — no choice.
 
 The construction is stated algebraically over a ring with involution and a two-sided ideal.  The
@@ -221,7 +221,7 @@ Neither is needed for clauses 1--5 as stated; they are what instantiate the hypo
 
 ### The continuous functional calculus construction landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPolarSignCFC.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPolarSignCFC.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 This discharges the first remaining item: the hypotheses of the algebraic theorem are now
@@ -272,7 +272,7 @@ not needed for clauses 1--5.
 
 ### The Fredholm reduction landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPolarSignFredholm.lean`.  Axiom audit:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPolarSignFredholm.lean`.  Axiom audit:
 `propext, Classical.choice, Quot.sound`.
 
 - `deningerIsUnit_of_ker_eq_bot` — **if `S² - 1` is compact and `S` is injective, then `S` is

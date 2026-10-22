@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new endpoint-order classification and exact complete odd-source weld;
   published archimedean sine integral and restricted-Weil counterterm are external inputs
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilArchimedeanOddSource.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilArchimedeanOddSource.lean`
 
 ## Failed order-zero conjecture
 
@@ -82,5 +82,5 @@ endpoint-renormalized weighted-cosine diagonal, where the Gamma counterterm cann
 - `ccmGuinandWeilCompletedPhysicalOddSourceValue_eq_published`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilArchimedeanOddSource` pass. `#print axioms` on principal
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilArchimedeanOddSource` pass. `#print axioms` on principal
 limit and capstone reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.

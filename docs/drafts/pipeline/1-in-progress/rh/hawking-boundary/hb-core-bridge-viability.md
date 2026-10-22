@@ -3,7 +3,7 @@
 Status: **OPEN — physical viability not established.**
 Owner: current core-bridge investigation; independent of other research logs.
 Evidence ledger: [facts and no-gos](../../bookkeeping/audits-ledgers-and-reviews/hb-core-bridge-viability-facts.md).
-Active attacks: [conjectures, failure tests and positive survivors](../../hb-core-bridge-conjecture-attacks.md).
+Active attacks: [conjectures, failure tests and positive survivors](hb-core-bridge-conjecture-attacks.md).
 Method: [reframing](../../../../../meta/stroke-of-genius-method.md) and
 [scientific method](../../../../../meta/scientific-method.md).
 

@@ -21,7 +21,7 @@ Vacuum differentiability of dynamics does not constrain isolated finite-amplitud
 
 ## Status
 
-- Lean module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMIsolatedUnitAmplitudeCovarianceInterpolationNoGo.lean`
+- Lean module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMIsolatedUnitAmplitudeCovarianceInterpolationNoGo.lean`
 - Targeted build: passed.
 - Axiom audit: `propext`, `Classical.choice`, `Quot.sound` only.
 - Literature boundary: general Whitney/Borel jet interpolation is established parent theory; current nonlinear Teukolsky/QNM work constructs perturbative sources and quadratic modes but no Birmingham--Mokhtari/Xi finite-amplitude covariance selector was found ([Spiers--Pound--Moxon 2023](https://arxiv.org/abs/2305.19332), [Green et al. 2024](https://arxiv.org/abs/2210.15935), [Bourg et al. 2025](https://arxiv.org/abs/2503.07432), [Slutsky--Sodin--Wennman 2025](https://arxiv.org/abs/2507.12058)).

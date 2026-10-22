@@ -27,7 +27,7 @@ clock edge and apply finite Abel summation. Kernel value and variation bounds yi
 - [x] Lean source check
 - [x] targeted module build
 - [x] axiom audit: only `propext`, `Classical.choice`, `Quot.sound`
-- **Module:** `GaloisForLFunctions.RHTower.SuzukiObserverJetLinearActionClassification`
+- **Module:** `GaloisForLFunctions.RHTower.Suzuki.SuzukiObserverJetLinearActionClassification`
 
 ## Novelty audit
 

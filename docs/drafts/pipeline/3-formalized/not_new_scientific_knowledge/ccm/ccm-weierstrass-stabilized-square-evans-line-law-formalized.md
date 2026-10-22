@@ -2,7 +2,7 @@
 
 - **Card:** `ccm-weierstrass-stabilized-square-evans-line-law.md`
 - **Stage:** 3-formalized / not-new
-- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCMWeierstrassStabilizedEvans.lean`
+- **Lean module:** `formal/GaloisForLFunctions/RHTower/CCM/CCMWeierstrassStabilizedEvans.lean`
 - **Umbrella:** `formal/GaloisForLFunctions/RHTower.lean`
 - **Axioms:** `[propext, Classical.choice, Quot.sound]` on all 6 theorems
 - **Hypotheses:** only the quantified data of each statement; no `sorry`, `axiom`, `opaque`

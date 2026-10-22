@@ -137,7 +137,7 @@ cofinite arithmetic sections supplied by Deninger's projection.
 
 ### The named gate landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerBasisAmplitude.lean`.  Axiom audit for all 8
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerBasisAmplitude.lean`.  Axiom audit for all 8
 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 - `deningerStalk_eq_zero_of_basis` — **the sheafification-on-basis theorem**: a presheaf whose

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ReflectedBiHeatSignedTwoScaleReceiverCone
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekQuadraticHalfLineReceiverCone
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekQuadraticHalfLineReceiverCone
 
 /-!
 # Reflected bi-heat signed three-scale receiver cone

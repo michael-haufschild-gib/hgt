@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.PeriodIncidenceMultiplier
 import GaloisForLFunctions.RHTower.PrimeLogExponentialTypeUniqueness
 import GaloisForLFunctions.RHTower.SoninCarrierApertureChain
 import GaloisForLFunctions.RHTower.SoninOrthonormalCompactVanishing
-import GaloisForLFunctions.RHTower.SuzukiCompactL2Fourier
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCompactL2Fourier
 
 /-!
 # Faithful compact prime formation and boundary interception

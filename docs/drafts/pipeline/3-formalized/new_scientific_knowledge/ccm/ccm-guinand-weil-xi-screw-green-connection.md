@@ -7,7 +7,7 @@
 - **RH used:** no
 - **Computation used:** no
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilXiScrewGreenConnection.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilXiScrewGreenConnection.lean`
 
 ## Claim
 

@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Route:** MSC
-- **Lean:** `RHTower/HedenmalmGammaSewnSquarefreeFisherConormalResidueSplit.lean`
+- **Lean:** `RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherConormalResidueSplit.lean`
 - **Result:** If a strict-right Xi zero has multiplicity `m`, then the coefficient-faithful
   singular correction has the unique analytic-germ decomposition
   `F(v)/B(v) = 2m/(v-u) + h(v)` with `h` analytic at `u`.

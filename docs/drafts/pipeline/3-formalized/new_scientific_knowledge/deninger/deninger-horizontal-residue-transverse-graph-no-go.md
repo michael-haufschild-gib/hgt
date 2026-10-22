@@ -167,7 +167,7 @@ not be discarded during completion.
 ## Lean status
 
 Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/DeningerHorizontalResidueTransverseGraphNoGo.lean`.  Axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerHorizontalResidueTransverseGraphNoGo.lean`.  Axiom
 audit for every declaration: `propext, Classical.choice, Quot.sound`.
 
 The packet `(2)` is built as an actual element of `L²(AddCircle T)`, not as a scalar surrogate:

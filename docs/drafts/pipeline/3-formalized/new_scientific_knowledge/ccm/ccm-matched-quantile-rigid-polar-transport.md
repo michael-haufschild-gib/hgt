@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMActualHeadMatchedQuantilePolarCoordinateTransport.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMActualHeadMatchedQuantilePolarCoordinateTransport.lean`.
 Exact module build and axiom audit pass. The declarations use only `propext`, `Classical.choice`,
 and `Quot.sound`.
 

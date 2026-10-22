@@ -200,7 +200,7 @@ priority review.
 ## Lean target
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean
 ```
 
 Required capstones:
@@ -213,12 +213,12 @@ not_ccmFirstClockPublishedSourceEventuallyBoundedBelow_of_not_rh
 ## Lean audit
 
 The exact theorem above is formalized unconditionally in
-`formal/GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean` and imported by
+`formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean` and imported by
 the `GaloisForLFunctions.RHTower` umbrella. Final targeted audit on 2026-08-01:
 
 ```text
-lake env lean GaloisForLFunctions/RHTower/CCMFirstClockTailLowerBoundCompleteness.lean  # green
-lake build GaloisForLFunctions.RHTower.CCMFirstClockTailLowerBoundCompleteness          # green
+lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean  # green
+lake build GaloisForLFunctions.RHTower.CCM.CCMFirstClockTailLowerBoundCompleteness          # green
 ```
 
 `#print axioms` for

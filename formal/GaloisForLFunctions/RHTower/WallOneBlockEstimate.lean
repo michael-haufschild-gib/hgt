@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.WallBlockRayTotals
 import GaloisForLFunctions.RHTower.WallBlockThreshold
-import GaloisForLFunctions.RHTower.SuzukiWallWindowEstimate
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWallWindowEstimate
 
 /-!
 # The one-block estimate

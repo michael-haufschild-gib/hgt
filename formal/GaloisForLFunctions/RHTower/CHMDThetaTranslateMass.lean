@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CHMDFullJumpCoreDensity
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 import GaloisForLFunctions.RHTower.CHMDTranslatedPrimitiveSource
 
 /-!

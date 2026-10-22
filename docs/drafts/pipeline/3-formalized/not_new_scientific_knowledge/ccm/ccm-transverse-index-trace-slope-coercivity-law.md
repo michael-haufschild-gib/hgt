@@ -203,9 +203,9 @@ source budget, so no Lean file is added.
 ## Lean status
 
 **Formalized unconditionally, 2026-08-15**, in
-`formal/GaloisForLFunctions/RHTower/CCMTransverseIndexTraceSlopeCoercivity.lean`, on the divisor
+`formal/GaloisForLFunctions/RHTower/CCM/CCMTransverseIndexTraceSlopeCoercivity.lean`, on the divisor
 profile and half-line exponential integral of
-`RHTower/CCMShiftCovariantPoleDivisorCapacity.lean`.
+`RHTower/CCM/CCMShiftCovariantPoleDivisorCapacity.lean`.
 
 - `divisorPacketEnergy` — the right-hand side of `(5)`, `E(D) = ||ell_D||_2^2`, defined as the
   `L^2(0, infinity)` energy of the anti-causal residue profile `(3)`.

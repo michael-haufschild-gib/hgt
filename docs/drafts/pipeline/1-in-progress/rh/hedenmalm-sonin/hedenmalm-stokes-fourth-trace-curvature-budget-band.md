@@ -110,7 +110,7 @@ had not been transported through polar-residue cancellation and curvature normal
 ## Formal artifact
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmStokesFourthTraceCurvatureBudgetBand.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesFourthTraceCurvatureBudgetBand.lean
 ```
 
 Principal declarations:

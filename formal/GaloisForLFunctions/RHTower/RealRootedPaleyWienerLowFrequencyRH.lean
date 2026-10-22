@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiIntervalLaguerrePolyaRH
 import GaloisForLFunctions.RHTower.XiShiftedIntervalLaguerrePolyaRH
 import GaloisForLFunctions.RHTower.OrderOneEvenLaguerrePolya
-import GaloisForLFunctions.RHTower.CCMEvenFullGroundZeroSumRH
+import GaloisForLFunctions.RHTower.CCM.CCMEvenFullGroundZeroSumRH
 
 /-!
 # Even compactly supported functions with real-rooted transforms: low-frequency convergence to `Φ`

@@ -116,14 +116,14 @@ Verdict: `[REDISCOVERED] [BRIDGE] [PAPER-PROVED]`, not candidate new scientific 
 
 ## Lean formalization
 
-- Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical.lean`
+- Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical.lean`
 - Exact classification:
   `d4BMPlusPlusFiniteIngoing_eq_outgoing_iff_normalizableSourceMoment_eq_zero`
 - Supporting factorization:
   `d4BMPlusPlusFiniteIngoing_sub_outgoingRightEndpointGreenResponse_eq_gain_mul_moment`
 - Direct check: `lake env lean` passed.
 - Final targeted audit:
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSecondHarmonicFiniteSourceGreenRadical`
   passed.
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 - `scripts/formal_tools.py lint`: passed.

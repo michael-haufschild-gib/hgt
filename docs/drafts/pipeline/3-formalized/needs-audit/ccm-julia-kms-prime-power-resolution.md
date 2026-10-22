@@ -187,7 +187,7 @@ report, not a priority claim; external expert audit remains required.
 Unconditional module:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockJuliaKMSPrimePowerResolution.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockJuliaKMSPrimePowerResolution.lean
 ```
 
 Formal capstones:

@@ -1,7 +1,7 @@
 # CCM-FU: initial small-subset ceiling
 
 - **Stage:** 1-in-progress
-- **Parent:** [adaptive prime ceiling](../../ccm-fu-adaptive-prime-ceiling.md)
+- **Parent:** [adaptive prime ceiling](ccm-fu-adaptive-prime-ceiling.md)
 - **Question:** Does every original processed subset of at most two primes stay below the original diagonal? What is the smallest subset size and first stored cutoff where unrestricted subset control fails?
 - **Method:** Read every saved subset energy through cutoff32. Group failures by processed cardinality, retaining the exact source and original tolerance `1e-12*max(1,Q_empty)`. Regenerate neither channels nor greedy paths. Numerical output guides the next paper argument and is never a Lean premise.
 
@@ -15,7 +15,7 @@ The complete grouped output, retained input hash and reproducible stored-data sc
 
 The [formal quantitative defect transport](../../../3-formalized/ccm-fu-parity-defect-transport.md) gives a second-merger bound using the first merger's created sign-defect energy and the original diagonal. Its arithmetic adjacent-cutoff bound is unconditional. To establish the two-prime ceiling, a sharper source comparison must show that this cost is covered by the first merger's released energy, or directly bound the complete signed second-step gain. That comparison remains open.
 
-The [source-local block candidate](../../ccm-fu-two-prime-local-blocks.md) isolates a sharper comparison: `K_p(N)<=2 K_1(N)` for every prime and cutoff. The [formal sharp criterion](../../../3-formalized/ccm-fu-two-prime-local-criterion.md) retains every four-coefficient block and proves an unconditional alternative: a two-prime ceiling failure at M forces a unit-channel factor-two failure for one of those same primes at `r<N<=M`. The factor two is sharp for the nonnegative local comparison class. The actual unit comparison remains open.
+The [source-local block candidate](ccm-fu-two-prime-local-blocks.md) isolates a sharper comparison: `K_p(N)<=2 K_1(N)` for every prime and cutoff. The [formal sharp criterion](../../../3-formalized/ccm-fu-two-prime-local-criterion.md) retains every four-coefficient block and proves an unconditional alternative: a two-prime ceiling failure at M forces a unit-channel factor-two failure for one of those same primes at `r<N<=M`. The factor two is sharp for the nonnegative local comparison class. The actual unit comparison remains open.
 
 All 6562 stored cofactor blocks through32 pass. Extending only first-prime diagnostics to cutoffs33..1024 gives 617453 passing active source-pair factor-two comparisons and 95747 passing first-prime geometric reserve tests. The latter would suffice for all second extensions at those cutoffs, but these remain numerical checks. The saved one-dimensional source table permits further analysis without regenerating it; no computed result enters Lean.
 

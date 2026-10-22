@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FrankensteinPluckerXiHilbertAdmission
-import GaloisForLFunctions.RHTower.HedenmalmThetaDivisorPolarizedInterpolation
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaDivisorPolarizedInterpolation
 
 /-!
 # Exact theta-to-Pluecker intertwining anomaly

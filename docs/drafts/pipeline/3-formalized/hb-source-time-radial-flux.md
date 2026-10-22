@@ -84,7 +84,7 @@ The actual smooth cutoff obeys `0≤chi≤1`, so
 
 ## Lean scope and validation
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceTimeFlux`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceTimeFlux`.
 Namespace: `RHTower.D4BMSourceTimeFlux`.
 
 - `sourceCharacteristicWeight_exp_bound`: uniform exponential delay bound.

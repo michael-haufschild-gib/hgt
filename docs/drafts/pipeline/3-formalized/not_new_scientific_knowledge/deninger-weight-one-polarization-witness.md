@@ -4,11 +4,11 @@
 - **Stage:** 1-in-progress
 - **Type:** NON-VACUITY WITNESS (formalized)
 - **Scientific status:** `[LEAN-PROVED, AXIOM-CLEAN]` `[NOT NEW MATHEMATICS]` `[NOT AN RH PROOF]`
-- **Module:** `formal/GaloisForLFunctions/RHTower/DeningerWeightOnePolarizationWitness.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Deninger/DeningerWeightOnePolarizationWitness.lean`
 
 ## 1. What the corpus proves, and what it rests on
 
-`RHTower/DeningerWeightOnePolarization.lean` proves
+`RHTower/Deninger/DeningerWeightOnePolarization.lean` proves
 
 ```text
 eigenvalue_re_eq_half
@@ -66,7 +66,7 @@ instances that exist.
 ## 3. The skewness, and what it means for the reduction
 
 `omega` is skew, matching what the arithmetic assembly actually uses: in
-`RHTower/DeningerArithmeticPoissonZetaAssembly.lean` the middle cup pairing is built with
+`RHTower/Deninger/DeningerArithmeticPoissonZetaAssembly.lean` the middle cup pairing is built with
 `hpsiSkew : ∀ h k, psi h k = - psi k h`, so `psi h h = 0` identically. **No positivity is free.** The
 positive form is the twist `Q(h,k) = psi(h, C k)` by the complex structure — in the weight-one
 package, `inner_eq_cup_star` is exactly that twist, with `C = sigma` the Hodge star.
@@ -109,7 +109,7 @@ Riemann bilinear relation of the would-be arithmetic Hodge structure.
 
 Repo-state verification (per the standing rule: verify modules, not card text): the gate
 "an infinite-dimensional witness with unbounded spectrum" was completed in
-`RHTower/DeningerPreHilbertUnboundedWitness.lean` (umbrella-registered, axiom-clean):
+`RHTower/Deninger/DeningerPreHilbertUnboundedWitness.lean` (umbrella-registered, axiom-clean):
 the pre-Hilbert carrier `⨁_n ℂ²` with `exists_polarization_with_prescribed_spectrum`
 (a polarization package for **every** real spectrum sequence) and `not_completeSpace_carrier`
 (incompleteness derived from the unbounded-spectrum no-go). See

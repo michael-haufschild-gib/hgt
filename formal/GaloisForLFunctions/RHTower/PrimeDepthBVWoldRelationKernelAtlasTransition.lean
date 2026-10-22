@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.PrimeDepthBVWoldSourceDaggerAtlasTransition
-import GaloisForLFunctions.RHTower.DeningerMeyerRelationKernelBoundarySeparation
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerRelationKernelBoundarySeparation
 
 /-!
 # BV-Wold / relation-kernel atlas transition

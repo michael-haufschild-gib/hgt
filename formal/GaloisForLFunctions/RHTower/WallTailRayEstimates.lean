@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.WallBoundaryTransportCancellation
 import GaloisForLFunctions.RHTower.WallTailIntegrationByParts
 import GaloisForLFunctions.RHTower.WallEvenAmplitudeBounds
-import GaloisForLFunctions.RHTower.SuzukiWallTailAmplitude
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWallTailAmplitude
 import GaloisForLFunctions.HTGeometry.FrequencyLineSplit
 import GaloisForLFunctions.RHTower.StripPropagatorRayMass
 

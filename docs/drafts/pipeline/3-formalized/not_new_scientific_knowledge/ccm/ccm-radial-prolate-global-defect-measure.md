@@ -265,8 +265,8 @@ of date: the tree owns Bessel's equation for the integral representation, a seco
 Wronskian normalisation, the `u^{-1/2}` envelopes, the large-argument phase asymptotic, the radial prolate
 equation in Liouville normal form, and the pole-uniform comparison estimate with an explicit
 `1 + O(c^{-1})` factor (see `ccm-exact-finite-aperture-first-row-vanishing.md` and
-`formal/GaloisForLFunctions/RHTower/CCMRadialProlateDefect.lean`).  What the present card adds is the
-*profile* side, in `formal/GaloisForLFunctions/RHTower/CCMRadialProlateProfileMeasure.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialProlateDefect.lean`).  What the present card adds is the
+*profile* side, in `formal/GaloisForLFunctions/RHTower/CCM/CCMRadialProlateProfileMeasure.lean`.
 
 **The radial angle and equation `(17)`:**
 
@@ -391,7 +391,7 @@ disguise.  The remaining steps beyond the substitution already recorded:
   `Re[e^{iu} sqrt 2 conj(fresnelValue)] = (sqrt(pi)/2)(cos u + sin u)`, which is `cos(u - pi/4)` in disguise;
   the factor `2/pi` of the integral representation turns it into `(cos u + sin u)/sqrt(pi)`.
 
-**Equation `(8)` is assembled**, in `formal/GaloisForLFunctions/RHTower/CCMRadialProfileAsymptotic.lean`.
+**Equation `(8)` is assembled**, in `formal/GaloisForLFunctions/RHTower/CCM/CCMRadialProfileAsymptotic.lean`.
 The key structural point is that the rescaled amplitude is *exactly* algebraic:
 
 ```text
@@ -428,7 +428,7 @@ the Fourier ratio, Dunster's `(4)` for the actual mode (available in this tree a
 and approximation bounds of `ccm-exact-finite-aperture-first-row-vanishing`), and the separation law `(6)`.
 
 **The squared-profile law `(10)` is proved on intervals**, in
-`formal/GaloisForLFunctions/RHTower/CCMRadialSquaredProfile.lean`.  Testing against intervals rather than
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialSquaredProfile.lean`.  Testing against intervals rather than
 against continuous `phi` is exactly vague convergence, and it is what makes the weight of the oscillatory
 integral explicit — and monotone, which is what the corpus van der Corput test consumes.
 
@@ -494,7 +494,7 @@ theorem, because the interval bound is uniform in the right endpoint:
   Continuous test functions follow by density of `C¹`, which adds nothing analytic.
 
 **The limiting measure is the corpus's arcsine leakage measure**, bridged in
-`formal/GaloisForLFunctions/RHTower/CCMRadialDensityBridge.lean`.  The profile side of this card and the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialDensityBridge.lean`.  The profile side of this card and the
 leakage side of the exterior-mass cards had been producing the same measure in two normalisations; the bridge
 makes that a theorem.
 
@@ -553,7 +553,7 @@ response, which this card imports from the endpoint-response cards.
 
 ## Lean progress — the mass equations, 2026-08-15
 
-`formal/GaloisForLFunctions/RHTower/CCMRadialGlobalDefectMass.lean` (wired, axiom-clean) closes the
+`formal/GaloisForLFunctions/RHTower/CCM/CCMRadialGlobalDefectMass.lean` (wired, axiom-clean) closes the
 last Lean gate.
 
 ```text

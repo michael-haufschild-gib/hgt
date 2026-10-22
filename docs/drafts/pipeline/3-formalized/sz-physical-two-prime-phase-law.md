@@ -56,7 +56,7 @@ the attempted exact independent-density transfer, not route SZ.
   scalar-symbol pushforward absolute continuity does not imply absolute
   continuity of this two-coordinate law.
 - Final leaf audit25304: exit0, no diagnostics. Command:
-  `lake --old env lean GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.olean`.
+  `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPhysicalTwoPrimePhaseLaw.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPhysicalTwoPrimePhaseLaw.olean`.
 - Axiom audit6552: all19 public declarations checked from a /tmp import;
   only `propext`, `Classical.choice`, `Quot.sound`. No added axioms, proof
   placeholders, heartbeat changes, numerical experiments, or umbrella build.
@@ -66,7 +66,7 @@ the attempted exact independent-density transfer, not route SZ.
 
 ## Exact Lean declarations
 
-Leaf: `formal/GaloisForLFunctions/RHTower/CCMPhysicalTwoPrimePhaseLaw.lean`.
+Leaf: `formal/GaloisForLFunctions/RHTower/CCM/CCMPhysicalTwoPrimePhaseLaw.lean`.
 
 - `ccmTwoPrimePhysicalPhaseSupport_null`: independent phase mass zero.
 - `ccmPhysicalTwoPrimePhaseLaw_support_mass`: physical mass on that set.

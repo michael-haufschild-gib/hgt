@@ -162,7 +162,7 @@ raw-packet no-go modules. This card's new content is their source-forced global 
 ## 8. Lean status
 
 Formalized unconditionally in
-`GaloisForLFunctions/RHTower/DeningerRationalWittSchwartzBesselRestriction.lean`:
+`GaloisForLFunctions/RHTower/Deninger/DeningerRationalWittSchwartzBesselRestriction.lean`:
 
 1. `summable_deningerPrimeCubicMass` proves prime-cubic summability;
 2. `summable_norm_deningerSchwartzFirstModeRestrictionValue_sq` constructs the dependent

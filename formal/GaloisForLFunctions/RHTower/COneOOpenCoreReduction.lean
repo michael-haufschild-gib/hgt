@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiQuotientRealDecay
 import GaloisForLFunctions.RHTower.XiWeilCauchyCoreMultiplicity
-import GaloisForLFunctions.RHTower.CCMPublishedRestrictedWeilMatrix
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMPublishedRestrictedWeilMatrix
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 
 /-!
 # The C1--O open-core reduction

@@ -3046,7 +3046,7 @@ remain open.
 
 Production promotion: recursively closed C75/C76/C77 graph627 modules,
 115MB source before removal of debug printing. Staged under
-RHTower/ThetaCuspRatioBoundaryCertificate, preserving theorem statements and
+RHTower/ThetaCusp/ThetaCuspRatioBoundaryCertificate, preserving theorem statements and
 proofs, mapping every internal import. No caches copied or renamed. All627
 leaves wired into RHTower; serial direct reaudits running in functions cell1036.
 Manifest /tmp/tt_c77_production_manifest.json; journal

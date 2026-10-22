@@ -2,7 +2,7 @@ import GaloisForLFunctions.RHTower.PrimeQuasiInnerEulerReconstruction
 import GaloisForLFunctions.RHTower.PrimeWinningFaceUnit
 import GaloisForLFunctions.RHTower.MobiusLaplaceLandauOscillation
 import GaloisForLFunctions.RHTower.FiniteDirichletCriticalNonannihilation
-import GaloisForLFunctions.RHTower.CCMSimplePrimeDivisorSource
+import GaloisForLFunctions.RHTower.CCM.CCMSimplePrimeDivisorSource
 
 /-!
 # Surviving poles of finitely weighted divisor sources

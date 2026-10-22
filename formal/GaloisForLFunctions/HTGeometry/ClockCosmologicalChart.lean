@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonConformallyFlat
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonConformallyFlat
 
 /-!
 # Cosmological charts and the conformal invariance of causality

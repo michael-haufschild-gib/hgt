@@ -4,7 +4,7 @@
 - **Paper theorem:**
   `./suzuki-causal-depth-rectangular-caratheodory-growth.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthRectangularCaratheodoryGrowth.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthRectangularCaratheodoryGrowth.lean`
 - **Umbrella import:**
   `formal/GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean`
 - **Scientific status:** `[LEAN-PROVED] [SOURCE-SPECIFIC] [NOVELTY UNVERIFIED] [NOT RH]`

@@ -25,7 +25,7 @@ for `0 < x < 137/2000`. This is a source-orbit sign law, not a reformulation ass
 
 ## Exact bridge already formalized
 
-`GaloisForLFunctions.RHTower.ThetaCuspFullReflectionEighthProjectiveDrift` proves unconditionally:
+`GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFullReflectionEighthProjectiveDrift` proves unconditionally:
 
 1. `projectiveValue = sourcePositiveD1Value.re / Q^6` has derivative `projectiveDrift / Q^7`;
 2. for `x > 0`, `projectiveValue = 4 * thetaCuspFullReflectionEighthHankelCurvature`;

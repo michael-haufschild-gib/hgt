@@ -6,7 +6,7 @@ finite time-band blocks coupling the physical and Fourier polarizations.  This m
 those sources in one algebraic two-sided ideal on the actual even carrier.  It then replays the
 quadratic-corner reduction without passing to arbitrary compact operators.
 -/
-import GaloisForLFunctions.RHTower.CCMSoninFiniteWordNormalForm
+import GaloisForLFunctions.RHTower.CCM.CCMSoninFiniteWordNormalForm
 import GaloisForLFunctions.RHTower.SoninEulerFiniteGramLower
 import GaloisForLFunctions.RHTower.SoninTimeBandSchatten
 import GaloisForLFunctions.RHTower.TraceClassOperatorTrace

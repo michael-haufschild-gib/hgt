@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspLogFourthNegative
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspLogFourthNegative
 import GaloisForLFunctions.RHTower.ThetaTiltLogDensity
 
 /-! Two simultaneous source-port zeros have strictly negative free derivatives.

@@ -64,7 +64,7 @@ observable is the horizontal support function of the right Xi divisor.
 
 The unconditional formalization is
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularOneSidedTransverseExponent.lean`.
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularOneSidedTransverseExponent.lean`.
 
 Principal declarations:
 

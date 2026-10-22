@@ -64,7 +64,7 @@ In `HedenmalmCriticalFeatureSharpLatticeCharge.lean`:
 
 ## Verification
 
-- `lake build GaloisForLFunctions.RHTower.HedenmalmCriticalFeatureSharpLatticeCharge`: PASS
+- `lake build GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmCriticalFeatureSharpLatticeCharge`: PASS
   (`13734/13734`).
 - `#print axioms` for all 21 public declarations: only `propext`, `Classical.choice`, `Quot.sound`.
 - Global `scripts/formal_tools.py lint`: umbrella reachability currently blocked by concurrent,

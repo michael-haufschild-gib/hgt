@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.XiWeilArithmeticGram
 import GaloisForLFunctions.RHTower.XiThetaEigenGramLaw
 import GaloisForLFunctions.RHTower.XiHedenmalmDeBrangesSeam
 import GaloisForLFunctions.RHTower.XiHedenmalmFourierEquation
-import GaloisForLFunctions.RHTower.HedenmalmPairWeilPolarizationCapstone
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmPairWeilPolarizationCapstone
 
 /-!
 # The eigen-pair Guinand–Weil identity

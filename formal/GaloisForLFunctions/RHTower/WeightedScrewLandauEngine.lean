@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.SuzukiWeightedScrewTwoBumpLimit
-import GaloisForLFunctions.RHTower.SuzukiScrewPointwiseNonnegativityCriterion
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWeightedScrewTwoBumpLimit
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewPointwiseNonnegativityCriterion
 import GaloisForLFunctions.RHTower.LandauIntegralTransfer
 
 /-!

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomWardObstructionScaleQuadrature
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailFiniteTranslationBounds
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 
 /-!
 # High-order rational quadrature for the first theta atom

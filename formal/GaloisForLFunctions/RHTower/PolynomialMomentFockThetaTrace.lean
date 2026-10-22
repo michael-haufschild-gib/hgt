@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.PolynomialMomentFockKernelBound
 import GaloisForLFunctions.RHTower.XiThetaExplicitBounds
 import GaloisForLFunctions.RHTower.XiThetaCriticalTrace
-import GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeEntireTransform
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeEntireTransform
 import GaloisForLFunctions.RHTower.ConnesTwoSidedPowerTail
 import GaloisForLFunctions.RHTower.ExpFourierNormalization
 import GaloisForLFunctions.HTGeometry.ExpRayL2

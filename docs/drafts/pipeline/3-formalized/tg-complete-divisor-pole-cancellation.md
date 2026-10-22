@@ -87,7 +87,7 @@ The coefficient-mass square is retained. At the actual moving arithmetic cutoff 
 
 ## Lean certificate
 
-Five public theorems and two definitions in `formal/GaloisForLFunctions/RHTower/CCMPrimeDeficitCompletePole.lean`:
+Five public theorems and two definitions in `formal/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitCompletePole.lean`:
 
 - `ccmPrimeDeficitDivisorPoleRemainder_polynomial_bound`
 - `ccmPrimeDeficitDivisorPoleRemainder_global_bound`
@@ -95,7 +95,7 @@ Five public theorems and two definitions in `formal/GaloisForLFunctions/RHTower/
 - `ccmPrimeDeficitDivisorSource_finite_pair_remainder_bound`
 - `ccmPrimeDeficitDivisorSource_harmonic_neutral_bound`
 
-Final foreground `lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitCompletePole.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCMPrimeDeficitCompletePole.olean`: exit 0, no diagnostics. RHTower import wired; index exit 0; all seven API entries verified. Separate /tmp axiom audit: exit 0; all five theorems depend only on propext, Classical.choice and Quot.sound. Authoritative `scripts/formal_tools.py lint`: exit 1, thirteen unrelated unreachable modules, no finding for this leaf. Logs: `/tmp/tg-c924-complete-pole-{final,axioms,index,lint}.log`; audit source `/tmp/tg-c924-complete-pole-axioms.lean`.
+Final foreground `lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitCompletePole.lean -o .lake/build/lib/lean/GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitCompletePole.olean`: exit 0, no diagnostics. RHTower import wired; index exit 0; all seven API entries verified. Separate /tmp axiom audit: exit 0; all five theorems depend only on propext, Classical.choice and Quot.sound. Authoritative `scripts/formal_tools.py lint`: exit 1, thirteen unrelated unreachable modules, no finding for this leaf. Logs: `/tmp/tg-c924-complete-pole-{final,axioms,index,lint}.log`; audit source `/tmp/tg-c924-complete-pole-axioms.lean`.
 
 ## Log
 

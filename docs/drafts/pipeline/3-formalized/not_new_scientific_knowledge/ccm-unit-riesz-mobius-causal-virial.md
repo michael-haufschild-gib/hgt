@@ -11,7 +11,7 @@
 
 Module:
 
-`GaloisForLFunctions/RHTower/CCMUnitRieszMobiusCausalVirial.lean`
+`GaloisForLFunctions/RHTower/CCM/CCMUnitRieszMobiusCausalVirial.lean`
 
 For a finite critical Möbius boundary it defines the boundary mass, logarithmic moment, causal
 complement, exact step primitive, and causal virial.  Lean proves unconditionally

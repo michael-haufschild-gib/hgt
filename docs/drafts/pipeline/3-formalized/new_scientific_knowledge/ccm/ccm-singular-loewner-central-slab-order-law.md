@@ -8,9 +8,9 @@
 - **Formal modules:**
   - `GaloisForLFunctions.HTGeometry.PositiveResiduePoleForcing`
   - `GaloisForLFunctions.HTGeometry.HermitianLoewnerPoleForcing`
-  - `GaloisForLFunctions.RHTower.CCMPositiveResidueCentralSlab`
-  - `GaloisForLFunctions.RHTower.CCMPublishedSourceSineCoefficient`
-  - `GaloisForLFunctions.RHTower.CCMSingularLoewnerPoleForcing`
+  - `GaloisForLFunctions.RHTower.CCM.CCMPositiveResidueCentralSlab`
+  - `GaloisForLFunctions.RHTower.CCM.CCMPublishedSourceSineCoefficient`
+  - `GaloisForLFunctions.RHTower.CCM.CCMSingularLoewnerPoleForcing`
 
 ## Main law
 
@@ -207,6 +207,6 @@ or RH premise occurs.
   completed-error/normalized-Chebyshev cosine moment; proved negative one-mode forcing and
   eventual nonnegativity under Xi convergence in Lean.
 - 2026-07-23 — all five new modules pass direct Lean; targeted cached build
-  `GaloisForLFunctions.RHTower.CCMSingularLoewnerPoleForcing` passes `8971/8971`; capstone axiom
+  `GaloisForLFunctions.RHTower.CCM.CCMSingularLoewnerPoleForcing` passes `8971/8971`; capstone axiom
   audit reports only `propext`, `Classical.choice`, and `Quot.sound`. Global lint reaches the new
   modules and reports only unrelated shared-tree modules missing from their umbrellas.

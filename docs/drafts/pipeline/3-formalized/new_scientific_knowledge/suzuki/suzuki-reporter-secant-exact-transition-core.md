@@ -74,9 +74,9 @@ atomic-continuous compensate first  -> exact RH-bearing completed amplitude
 
 ## Lean certificates
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantTransitionCoreEscape.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiCauchyReporterSecantPrimeChargeBridge.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantSharpArithmeticLocalization.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantTransitionCoreEscape.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCauchyReporterSecantPrimeChargeBridge.lean`
 
 Key declarations:
 

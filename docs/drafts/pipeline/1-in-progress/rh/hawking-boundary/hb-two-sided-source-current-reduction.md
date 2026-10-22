@@ -3,7 +3,7 @@
 - **ID:** HB-TWO-SIDED-SOURCE-CURRENT
 - **Stage:** 1-in-progress
 - **Type:** analytical current reduction; [six exact source/clock/primitive theorems formalized](../../../3-formalized/hb-reduced-optical-source-tail.md); physical causal boundary evaluation in progress
-- **Source:** `ThetaCuspHawkingBMJointSourceTimeField.timeOriginalForcing_gradient_absorption`, the [complete physical current](../../hb-mixed-complete-current.md), and the [finite optical source identity](../../hb-optical-source-boundary-matching.md).
+- **Source:** `ThetaCuspHawkingBMJointSourceTimeField.timeOriginalForcing_gradient_absorption`, the [complete physical current](hb-mixed-complete-current.md), and the [finite optical source identity](hb-optical-source-boundary-matching.md).
 - **Statement:** Use the existing actual source lift in both slots of the complete current; retain its fixed physical boundary terms and reduce the remaining forcing to scalar multiples of the full angular half-square.
 
 The chain is literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH. The hard target remains the complete physical pairing, with independent SS/SV/VV amplitudes. Neither its cancellation nor RH is proved here. The frontier map is read only.

@@ -1486,7 +1486,7 @@ added axiom is used. The rank-one classification and its exact nullspace
 are the positive survivor, not just the negative statement.
 
 Validation: seven public declarations; final foreground
-`lake --old env lean GaloisForLFunctions/RHTower/CCMPrimeDeficitEulerSignedPole.lean -o ...`
+`lake --old env lean GaloisForLFunctions/RHTower/CCM/CCMPrimeDeficitEulerSignedPole.lean -o ...`
 exit0 with no diagnostics. Separate /tmp axioms audit exit0: only propext,
 Classical.choice, Quot.sound for all seven. Wired into RHTower, index exit0,
 all seven API rows verified. Authoritative lint exit1 with fifteen unrelated

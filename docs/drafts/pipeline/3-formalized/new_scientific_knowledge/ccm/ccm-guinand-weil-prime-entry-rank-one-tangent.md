@@ -5,7 +5,7 @@
 - **Novelty scope:** corpus-new whole-matrix event tangent, rank-one factorization, and source-derived
   negative-semidefinite orientation
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilPrimeEntryRankOneTangent.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilPrimeEntryRankOneTangent.lean`
 
 ## Divided-difference collapse
 
@@ -84,7 +84,7 @@ continuous pole/Gamma connection without losing sign.
 - `ccmGuinandWeilPrimeEntryRankOneTangent_eq_firstClockSlope`
 
 Targeted direct Lean check and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilPrimeEntryRankOneTangent` pass. Principal
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilPrimeEntryRankOneTangent` pass. Principal
 `#print axioms` reports only Lean's standard `propext`, `Classical.choice`, and `Quot.sound`.
 The exact prior-corpus dictionary in `CCMGuinandWeilPrimeEntryFirstClockBridge` passes the same
 targeted checks and axiom audit.

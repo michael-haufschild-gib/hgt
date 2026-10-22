@@ -50,12 +50,12 @@ feed it to `inducedGenuineCharacter` and `inducedVirtualCharacter`. No `sorry`, 
 
 ## Lean certificate
 
-- Module: `formal/GaloisForLFunctions/RHTower/ArtinMonomialCharacter.lean`.
+- Module: `formal/GaloisForLFunctions/RHTower/Artin/ArtinMonomialCharacter.lean`.
 - One-dimensional action: `linearCharacterRepresentation`.
 - Exact trace theorem: `linearCharacterRepresentation_character`.
 - Monomial closures: `monomialGenuineCharacter`, `monomialVirtualCharacter`.
 - Multiplicity transport: `monomialCharacter_pairing_eq_restricted`.
-- Source check: `lake env lean GaloisForLFunctions/RHTower/ArtinMonomialCharacter.lean`.
-- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.ArtinMonomialCharacter`.
+- Source check: `lake env lean GaloisForLFunctions/RHTower/Artin/ArtinMonomialCharacter.lean`.
+- Targeted olean audit: `lake build GaloisForLFunctions.RHTower.Artin.ArtinMonomialCharacter`.
 - `#print axioms` audit reports only `propext`, `Classical.choice`, and `Quot.sound`.
 - Wired into `GaloisForLFunctions/RHTower.lean`; umbrella deliberately not built.

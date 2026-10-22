@@ -9,7 +9,10 @@ from pathlib import Path
 import uuid
 
 FORMAT = 1
-DIMENSIONS = 1024
+# The embedding width is a property of the pinned model, carried in each
+# bundle's spec. It is never a constant here: a model swap would otherwise pass
+# every checksum and fail only once vectors reached Qdrant.
+MIN_DIMENSIONS, MAX_DIMENSIONS = 8, 4096
 SHARD_ROWS = 4096
 COSINE_MIN = 0.999
 RANK_OVERLAP_MIN = 0.95
@@ -64,7 +67,8 @@ def descriptor(path, **extra):
 
 def load_manifest(bundle):
     manifest = json.loads((Path(bundle) / 'manifest.json').read_text())
-    if manifest['format'] != FORMAT or manifest['spec']['dimensions'] != DIMENSIONS:
+    width = manifest['spec']['dimensions']
+    if manifest['format'] != FORMAT or type(width) is not int or not MIN_DIMENSIONS <= width <= MAX_DIMENSIONS:
         raise ValueError('unsupported embedding bundle')
     names = [s['name'] for s in manifest['shards']]
     if len(names) != len(set(names)):
@@ -86,21 +90,23 @@ def read_shard(bundle, entry):
     return rows
 
 
-def validate_matrix(value, rows):
+def validate_matrix(value, rows, dimensions):
     import numpy as np
     matrix = np.asarray(value)
-    if matrix.dtype != np.float32 or matrix.shape != (rows, DIMENSIONS):
+    if type(dimensions) is not int or not MIN_DIMENSIONS <= dimensions <= MAX_DIMENSIONS:
+        raise ValueError('embedding width must come from the bundle spec')
+    if matrix.dtype != np.float32 or matrix.shape != (rows, dimensions):
         raise ValueError('embedding dtype, dimensions or row count mismatch')
     if not np.isfinite(matrix).all() or not np.allclose(np.linalg.norm(matrix, axis=1), 1, atol=1e-4):
         raise ValueError('non-finite or non-unit embedding')
     return matrix
 
 
-def parity(reference, actual, query_count):
+def parity(reference, actual, query_count, dimensions):
     """Numerical compatibility only; this is not a retrieval-quality benchmark."""
     import numpy as np
-    reference = validate_matrix(np.asarray(reference, dtype=np.float32), len(reference))
-    actual = validate_matrix(np.asarray(actual, dtype=np.float32), len(reference))
+    reference = validate_matrix(np.asarray(reference, dtype=np.float32), len(reference), dimensions)
+    actual = validate_matrix(np.asarray(actual, dtype=np.float32), len(reference), dimensions)
     if query_count < 1 or query_count >= len(reference):
         raise ValueError('reference needs both documents and queries')
     cosines = np.sum(reference * actual, axis=1)
@@ -119,10 +125,11 @@ def parity(reference, actual, query_count):
     return dict(passed=minimum >= COSINE_MIN and min(mixed_overlap, cuda_overlap) >= RANK_OVERLAP_MIN,
                 minimum_cosine=minimum, mixed_top20_overlap=mixed_overlap,
                 cuda_top20_overlap=cuda_overlap, rows=len(reference), query_count=query_count,
+                dimensions=dimensions,
                 thresholds=dict(minimum_cosine=COSINE_MIN, mean_top20_overlap=RANK_OVERLAP_MIN))
 
 
-def checked_result(bundle, output, entry, manifest_sha, audit_sha):
+def checked_result(bundle, output, entry, manifest_sha, audit_sha, dimensions):
     """A completion marker binds vectors to the input order and successful audit."""
     import numpy as np
     marker = Path(output) / (entry['name'] + '.done.json')
@@ -132,4 +139,4 @@ def checked_result(bundle, output, entry, manifest_sha, audit_sha):
         raise ValueError('result provenance mismatch')
     path = checked_file(output, report['vectors'])
     matrix = np.load(path, allow_pickle=False, mmap_mode='r')
-    return report, validate_matrix(matrix, entry['count'])
+    return report, validate_matrix(matrix, entry['count'], dimensions)

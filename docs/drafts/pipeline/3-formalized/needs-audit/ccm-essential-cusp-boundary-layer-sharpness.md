@@ -5,7 +5,7 @@
 - **Type:** THEOREM, sharpness witness
 - **Scientific status:** `[UNCONDITIONAL] [LEAN] [CORPUS-NEW] [EXTERNAL NOVELTY OPEN] [NOT RH]`
 - **Lean source:**
-  `formal/GaloisForLFunctions/RHTower/CCMEssentialCuspBoundaryLayer.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMEssentialCuspBoundaryLayer.lean`
 - **Depends on:**
   `ccm-meromorphic-cusp-laurent-charge-law.md`
 

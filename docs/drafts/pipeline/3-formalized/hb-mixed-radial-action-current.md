@@ -25,7 +25,7 @@ The proof differentiates the inverse matrix, connection variation and relative v
 
 This is the radial current density in the increasing-r direction. The outward orientation at the horizon has the opposite sign. It is not an assertion about an integrated, renormalized Peierls form.
 
-Lean: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedRadialActionCurrent`, theorem `RHTower.D4BMMixedActionCurrent.mixed_radial_action_current`.
+Lean: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedRadialActionCurrent`, theorem `RHTower.D4BMMixedActionCurrent.mixed_radial_action_current`.
 
 ## Source-specific horizon calculation — analytical
 
@@ -115,6 +115,6 @@ The formalized current is a needed input to this specific cancellation attempt. 
 
 ## Validation
 
-The final source passed `lake env lean` in scratch. One isolated `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMMixedRadialActionCurrent` compiled the requested leaf in 28 seconds, reading 2630 required old corpus modules from frozen caches. No dependency, full or umbrella build ran. Lake emitted only bootstrap warnings about the temporary dependency manifests; the Lean leaf emitted no warnings. The audited source and installed source are byte-identical, as are its installed olean/ilean files. The new import is wired into RHTower.
+The final source passed `lake env lean` in scratch. One isolated `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMMixedRadialActionCurrent` compiled the requested leaf in 28 seconds, reading 2630 required old corpus modules from frozen caches. No dependency, full or umbrella build ran. Lake emitted only bootstrap warnings about the temporary dependency manifests; the Lean leaf emitted no warnings. The audited source and installed source are byte-identical, as are its installed olean/ilean files. The new import is wired into RHTower.
 
 The one new public theorem's axiom audit reports only `propext`, `Classical.choice`, and `Quot.sound`. The two analytical coefficient identities were checked separately in scratch with the same axiom set; they are not installed as standalone corpus theorems. Index refresh, static lint with generated-file checks, and scoped whitespace checks passed. No numerical computation was used. Owned Lean/Lake processes completed; the owned scratch and isolated audit package were removed.

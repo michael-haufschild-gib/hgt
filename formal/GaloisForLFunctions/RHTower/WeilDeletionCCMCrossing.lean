@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilDeletionCCMSource
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeCCMScalingBridge
-import GaloisForLFunctions.RHTower.SuzukiSmallApertureGroundEnergy
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedSmoothCore
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiSmallApertureGroundEnergy
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarConstrainedSmoothCore
 
 /-!
 # Single-prime deletion inside the restricted Weil operator: a forced sign change

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowNoncensorship
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowNoncensorship
 
 /-!
 # Entireness of the rectangular window amplitude

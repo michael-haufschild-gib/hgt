@@ -80,7 +80,7 @@ from comparison of nonnegative series.
 
 ## Formal artifacts
 
-- `formal/GaloisForLFunctions/RHTower/CCMRectangularNegativeDirichletAbscissa.lean`
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMRectangularNegativeDirichletAbscissa.lean`
   - `xiRightTransverseSup_le_iff_negativePartEnergyAbove`
   - `xiRightTransverseSup_le_sub_one_of_negativePart_summable`
   - `xiRectangularNegativePart_summable_above_transverseSup`

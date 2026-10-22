@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.WeilDeletionZeroCrossing
-import GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarConstrainedRightContinuity
+import GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarConstrainedRightContinuity
 
 /-!
 # The prime-free restricted Weil family

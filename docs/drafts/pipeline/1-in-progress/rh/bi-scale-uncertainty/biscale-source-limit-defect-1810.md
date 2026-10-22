@@ -3,7 +3,7 @@
 - **ID:** biscale-source-limit-defect-1810
 - **Stage:** 1-in-progress
 - **Type:** ANALYTIC BRIDGE; candidate exact theorem, source/API audit incomplete
-- **Parent:** [field programme](../../biscale-field-development-1810.md), item 10
+- **Parent:** [field programme](biscale-field-development-1810.md), item 10
 
 ## Candidate positive theorem
 

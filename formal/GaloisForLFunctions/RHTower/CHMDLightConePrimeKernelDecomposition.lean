@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.KleinGordonLightConeBesselKernel
+import GaloisForLFunctions.HTGeometry.KleinGordon.KleinGordonLightConeBesselKernel
 import GaloisForLFunctions.RHTower.CHMDDAlembertSechKernel
 import GaloisForLFunctions.RHTower.CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerCalderonWittCompletedXiGreenIncidenceComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCompletedXiGreenIncidenceComparison
 import GaloisForLFunctions.RHTower.RiemannSingularGreenHodgeAdmissionLaw
 import Mathlib.Topology.Closure
 

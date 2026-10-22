@@ -62,15 +62,15 @@ cone of an off-critical zero.
 - Planat's June 2026 paper already owns theta-kernel positivity framing and critical-aperture
   localization.
 - These exact statements are formalized in
-  `RHTower/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean` and classified as not new.
+  `RHTower/ThetaCusp/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean` and classified as not new.
 - External novelty of the separate zero-safe odd divisor germ remains unverified; it is a bridge,
   not an RH result.
 
 ## Formal artifacts
 
-- `RHTower/HedenmalmGaussianHankelApertureWidthSpectrum.lean`
-- `RHTower/ThetaCuspCenterMixedDivisorTomography.lean`
-- `RHTower/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`
+- `RHTower/Hedenmalm/HedenmalmGaussianHankelApertureWidthSpectrum.lean`
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedDivisorTomography.lean`
+- `RHTower/ThetaCusp/ThetaCuspCenterMixedPublishedGrowthPriorArt.lean`
 
 ## Successor rule
 

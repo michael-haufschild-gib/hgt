@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape
 import GaloisForLFunctions.RHTower.MobiusThetaNativeMeyerAdmission
-import GaloisForLFunctions.RHTower.HedenmalmThetaPrimeTranslationFixedFibre
-import GaloisForLFunctions.RHTower.ThetaCuspReflectedSourceOddStationary
-import GaloisForLFunctions.RHTower.HedenmalmThetaKernelEnergy
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaPrimeTranslationFixedFibre
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedSourceOddStationary
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaKernelEnergy
 
 /-!
 # The half-line Laplace transform of the theta source

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.KreinLangerInertia
 import GaloisForLFunctions.RHTower.SelbergThetaCommonForcingGram
 import GaloisForLFunctions.RHTower.SelbergThetaNativeMoments
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMStripMeanAdmission
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMStripMeanAdmission
 
 /-!
 # Complete Eisenstein probes separate finite native theta packets

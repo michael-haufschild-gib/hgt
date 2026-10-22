@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusQuotientTail
-import GaloisForLFunctions.RHTower.CCMFUSuzukiMobiusRieszPrimeCellSign
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusQuotientTail
+import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusRieszPrimeCellSign
 
 /-!
 # The physical boundary of a shortened quotient head

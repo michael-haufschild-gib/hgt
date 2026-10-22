@@ -7,7 +7,7 @@
   `theta-likelihood-eisenstein-mass-shell-orientation.md`,
   `theta-wigner-eisenstein-orientation-current.md`
 - **Formal target:**
-  `formal/GaloisForLFunctions/RHTower/ThetaCuspLikelihoodNormalCrossingPrimeFace.lean`
+  `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspLikelihoodNormalCrossingPrimeFace.lean`
 
 ## Representation correction
 

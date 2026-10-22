@@ -9,7 +9,7 @@
 
 ## Möbius closure
 
-Module `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo` proves:
+Module `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMobiusPassiveNoGo` proves:
 
 - `realMobiusResponse_im`, the exact determinant-over-norm-square imaginary-part law;
 - denominator nonvanishing at every nonreal source value;
@@ -18,7 +18,7 @@ Module `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo` proves
 
 ## Completed transfer
 
-Module `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer` proves:
+Module `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowCompletedPassiveTransfer` proves:
 
 - `dyadicSharpPrimeZetaLogDerivCore_eq`, exact recovery of shifted `zeta'/zeta` from literal
   sharp-window data;

@@ -187,7 +187,7 @@ high-exponent source and literal Meyer source.  Specialist priority review remai
 
 Formalized unconditionally in:
 
-- `GaloisForLFunctions/RHTower/DeningerMeyerPointwiseXiComparisonSharpness.lean`.
+- `GaloisForLFunctions/RHTower/Deninger/DeningerMeyerPointwiseXiComparisonSharpness.lean`.
 
 Capstones:
 

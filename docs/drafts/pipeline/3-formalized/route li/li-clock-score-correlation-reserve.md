@@ -353,13 +353,13 @@ I1, **the complete ingredient set**: combines Steinhaus C1/C4 with paired-eta or
 |Index|Returned primary path/range|Disposition|
 |---|---|---|
 |T1|`HTGeometry/GomesFockQubitGauge.lean:1–77`|Fock phase gauge proofs, different carrier.|
-|T2|`RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72`|Actual real-divisor-to-RH receiver ASSUMES all-stage real divisors. No sign producer.|
+|T2|`RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean:1–72`|Actual real-divisor-to-RH receiver ASSUMES all-stage real divisors. No sign producer.|
 |T3|`HTGeometry/GomesFockQubitGauge.lean:73–149`|Remaining zero-phase/rotation invariance, unrelated.|
 |T4|`HTGeometry/GomesQubitOrbitTransport.lean:1–90`|Qubit radius/energy/Gibbs transport, unrelated; existing option override not adopted.|
-|T5|`RHTower/CCMThetaArithmeticLocalization.lean:165–179`|Exact Weil IMS signed defect decomposition, different arithmetic form.|
+|T5|`RHTower/CCM/CCMThetaArithmeticLocalization.lean:165–179`|Exact Weil IMS signed defect decomposition, different arithmetic form.|
 |T6|`RHTower/ThirdCumulantConstantIsSharp.lean:1–87`|Gaussian perturbative scalar cancellation, not actual normalized theta cumulants.|
 |T7|`HTGeometry/PoleUnitEulerShell.lean:91–122`|Shell unit mean/variance under explicit analytic/nonzero premises; no actual Xi inverse bound.|
-|T8|`RHTower/ThetaCuspReflectedLikelihoodCumulantObstruction.lean:411–478`|Exact atom-plus-cumulant correction decomposition; positivity requires supplied correction≥0. A receiver for a different Riccati quantity.|
+|T8|`RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodCumulantObstruction.lean:411–478`|Exact atom-plus-cumulant correction decomposition; positivity requires supplied correction≥0. A receiver for a different Riccati quantity.|
 |T9|`RHTower/XiShiftedHankelCassiniThetaCumulantContact.lean:1–105`|Esscher/Cassini derivative identities on `0<t<1`; contact sign described as a missing barrier. Different variable/first-zero set.|
 |T10|`HilbertMetric/GreedyBumpBernoulliCompletion.lean:101–204`|Finite Bernoulli cumulant sums, not full single-Xi history.|
 
@@ -542,13 +542,13 @@ Every original field reviewed: candidate/source statement, indexed/source/compil
 |P9|`docs/drafts/pipeline/3-formalized/jas-critical-singleton-prime-multiplication-escape.md`|JAS prime-Poisson tensor escape; different observable.|
 |P10|`docs/drafts/pipeline/2-fully-proven/li-clock-source-correlation-envelope.md`|Prior exact source-correlation-envelope corpus/admission record; useful overlap only.|
 |T1|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean`|Fock phase gauge full returned proof; different source.|
-|T2|`formal/GaloisForLFunctions/RHTower/HedenmalmThetaActualFiniteDivisorRigidity.lean`|Actual finite divisor rigidity ASSUMES every-stage real-divisor condition; receiver, not source producer.|
+|T2|`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaActualFiniteDivisorRigidity.lean`|Actual finite divisor rigidity ASSUMES every-stage real-divisor condition; receiver, not source producer.|
 |T3|`formal/GaloisForLFunctions/HTGeometry/GomesFockQubitGauge.lean`|Fock zero-phase/rotZ proofs; different source.|
 |T4|`formal/GaloisForLFunctions/HTGeometry/GomesQubitOrbitTransport.lean`|Qubit Gibbs rotation; different source. Existing option override is not adopted.|
-|T5|`formal/GaloisForLFunctions/RHTower/CCMThetaArithmeticLocalization.lean`|CCM/Weil IMS localization passage; different observable.|
+|T5|`formal/GaloisForLFunctions/RHTower/CCM/CCMThetaArithmeticLocalization.lean`|CCM/Weil IMS localization passage; different observable.|
 |T6|`formal/GaloisForLFunctions/RHTower/ThirdCumulantConstantIsSharp.lean`|Sharp third cumulant constant: perturbative Gaussian algebra, not actual all-order theta history.|
 |T7|`formal/GaloisForLFunctions/HTGeometry/PoleUnitEulerShell.lean`|Euler-shell mean/variance under analytic/nonzero premises; not literal D inverse sign.|
-|T8|`formal/GaloisForLFunctions/RHTower/ThetaCuspReflectedLikelihoodCumulantObstruction.lean`|Actual reflected-likelihood atom/correction decomposition; desired sign requires supplied correction sign. Different Riccati observable.|
+|T8|`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspReflectedLikelihoodCumulantObstruction.lean`|Actual reflected-likelihood atom/correction decomposition; desired sign requires supplied correction sign. Different Riccati observable.|
 |T9|`formal/GaloisForLFunctions/RHTower/XiShiftedHankelCassiniThetaCumulantContact.lean`|Shifted Hankel/Cassini contact flow on 0<t<1, different clock variable and an unclosed next-level barrier.|
 |T10|`formal/GaloisForLFunctions/HilbertMetric/GreedyBumpBernoulliCompletion.lean`|Greedy Bernoulli finite-channel cumulants; different source.|
 

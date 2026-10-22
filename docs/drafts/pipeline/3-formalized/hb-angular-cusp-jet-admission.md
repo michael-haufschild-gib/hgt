@@ -52,7 +52,7 @@ The corpus searches were partial: broad retrieval reported incomplete source/sem
 
 ## Lean certificate
 
-Module: [ThetaCuspHawkingBMSquareCuspJets.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSquareCuspJets.lean), namespace `RHTower.D4BMSquareCuspJets`.
+Module: [ThetaCuspHawkingBMSquareCuspJets.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSquareCuspJets.lean), namespace `RHTower.D4BMSquareCuspJets`.
 
 - `squareRemainder_jet_weighted_bound`
 - `spinTwoRemainder_jet_weighted_bound`
@@ -61,7 +61,7 @@ Module: [ThetaCuspHawkingBMSquareCuspJets.lean](../../../../formal/GaloisForLFun
 
 The theorems quantify over the original complex source parameter, every complex weight and every finite derivative word. No source decay, smoothness, summability or radiation premise is supplied by the caller. For the physical half-square at an actual Xi copy, specialize the source parameter to `center q` and retain the factor `1/2`.
 
-Scratch `lake env lean` passed. The final exact-module `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 24 seconds (three jobs). The 3,466 cached own-module imports were frozen; no dependency or umbrella build ran. A separate scratch axiom audit of only these four new theorems reported exactly `propext`, `Classical.choice`, and `Quot.sound` for each. The verified source and five artifacts were copied byte-identically into the corpus, and the module was wired into `RHTower.lean`.
+Scratch `lake env lean` passed. The final exact-module `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 24 seconds (three jobs). The 3,466 cached own-module imports were frozen; no dependency or umbrella build ran. A separate scratch axiom audit of only these four new theorems reported exactly `propext`, `Classical.choice`, and `Quot.sound` for each. The verified source and five artifacts were copied byte-identically into the corpus, and the module was wired into `RHTower.lean`.
 
 Source indexing completed (three changed files, no removals). Whole static `scripts/formal_tools.py lint` passed with existing large-file warnings. Fifteen local documentation links, edited-file whitespace and the single umbrella import were checked. Every owned Lean/Lake/search process completed, and scratch sources, cached-import links and search outputs were removed.
 
@@ -109,7 +109,7 @@ New public theorems in the existing leaf:
 - `quarticContactField_smooth`
 - `quarticContactGreenFlux_intervalIntegrable`
 
-The complete extension passed `lake env lean /tmp/hb-quartic-contact.lean` without diagnostics. The final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 178 seconds against twelve cached import roots. The verified source and leaf artifacts were copied byte-identically to the corpus. The existing umbrella import remains in place; no umbrella build or numerical evaluation was used. Source SHA-256: `922f4996faa598b52121805e3ad2ec122d5f5d6852fb549796ed82b84c614ace`.
+The complete extension passed `lake env lean /tmp/hb-quartic-contact.lean` without diagnostics. The final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 178 seconds against twelve cached import roots. The verified source and leaf artifacts were copied byte-identically to the corpus. The existing umbrella import remains in place; no umbrella build or numerical evaluation was used. Source SHA-256: `922f4996faa598b52121805e3ad2ec122d5f5d6852fb549796ed82b84c614ace`.
 
 The next mathematical obligation is the finite modular Green identity with its explicit principal-power and native Mellin corrections. Transport to the complete causal/left-QNM action, all independent channels and changing metric weights, and fixed-clock extinction remain open.
 
@@ -139,7 +139,7 @@ Delta(gamma_N P)=gamma_N Delta P
 
 Both cutoff derivatives remain. The new public declarations are `quarticContactField_modular`, `quarticContactCoreCutoff`, `quarticContactCoreCutoff_physical_green`, and `quarticContactCoreCutoff_laplacian` in the same existing leaf. No source regularity, test-domain, Green identity or extinction premise is supplied by their callers.
 
-`lake env lean /tmp/hb-quartic-green.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 7.3 seconds, using twelve cached import roots. Source and five leaf artifacts were copied byte-identically to the corpus; the existing single umbrella import remains. Source SHA-256: `04bf62862b8754bf3f1a01ad6e4832c7a59c66567171c4cd31a2a3cf8ab08110`.
+`lake env lean /tmp/hb-quartic-green.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSquareCuspJets` passed without warnings in 7.3 seconds, using twelve cached import roots. Source and five leaf artifacts were copied byte-identically to the corpus; the existing single umbrella import remains. Source SHA-256: `04bf62862b8754bf3f1a01ad6e4832c7a59c66567171c4cd31a2a3cf8ab08110`.
 
 The [active contact-balance card](../1-in-progress/hb-source-contact-spin-two-balance.md#constructed-compact-core-physical-green-identity) derives the next finite-transition Mellin cancellation on paper, retaining all five principal powers. That native finite-part transport is not yet a Lean theorem. Attachment to the complete causal/left-QNM action, independent SS/SV/VV channels, solved corrections, changing metric weights and remaining spacetime faces is still required. Fixed Hawking-clock extinction and RH remain unproved.
 
@@ -149,7 +149,7 @@ The compact Green extension's four public declarations are present once each in 
 
 ## Five-exponent finite Mellin boundary extension, 11 September 2026
 
-New module: [ThetaCuspHawkingBMQuarticCutoffMellin.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffMellin.lean), namespace `RHTower.D4BMQuarticCutoffMellin`.
+New module: [ThetaCuspHawkingBMQuarticCutoffMellin.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticCutoffMellin.lean), namespace `RHTower.D4BMQuarticCutoffMellin`.
 
 With rho the original Xi occurrence, define `k_j=4-j+(2j-4)rho` and `w_j=k_j-rho/2`, for j=0,...,4. All five w_j are nonzero: their imaginary parts are `(2j-9/2) Im(rho)`, and both factors are nonzero. For every natural n put N=n+2, keep the original cutoff chi(y)=smoothTransition(y-2), gamma_N(y)=1-chi(y/N), and the existing native M(w)=3^w/w-integral_2^3 chi(y)y^(w-1). Lean proves
 
@@ -162,7 +162,7 @@ These are finite-interval identities with directly established smoothness, integ
 
 Public declarations: `quarticPrincipalExponent`, `quarticPhysicalMellinExponent`, `quarticPhysicalMellinExponent_ne_zero`, `quarticCutoff_bulk_moment`, and `quarticCutoff_flux_moment`.
 
-The complete scratch `lake env lean /tmp/hb-quartic-cutoff-mellin.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticCutoffMellin` passed without warnings in 23 seconds (two jobs, twelve cached import roots). Source and five leaf artifacts were copied byte-identically to the corpus, and the module was wired once into the RHTower umbrella. Source SHA-256: `c05f47bf4838608b5cb497bee03bcfbd71d15477ce87bed5aa4f3cf1531fbd75`.
+The complete scratch `lake env lean /tmp/hb-quartic-cutoff-mellin.lean` passed without diagnostics. The exact cached `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticCutoffMellin` passed without warnings in 23 seconds (two jobs, twelve cached import roots). Source and five leaf artifacts were copied byte-identically to the corpus, and the module was wired once into the RHTower umbrella. Source SHA-256: `c05f47bf4838608b5cb497bee03bcfbd71d15477ce87bed5aa4f3cf1531fbd75`.
 
 This closes the finite cutoff moments at the exponents used by the paper principal expansion. Equality of each actual quartic principal field with that explicit five-power expansion and the full renormalized Green limit still require Lean proofs. The result does not assert complete physical-action cancellation or fixed Hawking-clock extinction.
 
@@ -174,8 +174,8 @@ Final verification after the Mellin leaf: the regenerated API contains all five 
 
 New leaves:
 
-- [ThetaCuspHawkingBMQuarticContactBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticContactBalance.lean), namespace `RHTower.D4BMQuarticContactBalance`.
-- [ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean), namespace `RHTower.D4BMQuarticPrincipalExpansion`.
+- [ThetaCuspHawkingBMQuarticContactBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticContactBalance.lean), namespace `RHTower.D4BMQuarticContactBalance`.
+- [ThetaCuspHawkingBMQuarticPrincipalExpansion.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticPrincipalExpansion.lean), namespace `RHTower.D4BMQuarticPrincipalExpansion`.
 
 With lambda=rho(rho-1), c=7lambda-2, Q=f²/2, J=(cQ-2Delta Q)/8, RQ=-Delta(Delta-2)Q and H=2J²+c(c-4)Q²/96, the first leaf proves
 
@@ -215,9 +215,9 @@ Final verification for the two 12 September leaves: all seven new public declara
 
 New leaves:
 
-- [ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticCutoffContact.lean), namespace `RHTower.D4BMQuarticCutoffContact`.
-- [ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualCore.lean), namespace `RHTower.D4BMQuarticResidualCore`.
-- [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticResidualGreen.lean), namespace `RHTower.D4BMQuarticResidualGreen`.
+- [ThetaCuspHawkingBMQuarticCutoffContact.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticCutoffContact.lean), namespace `RHTower.D4BMQuarticCutoffContact`.
+- [ThetaCuspHawkingBMQuarticResidualCore.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResidualCore.lean), namespace `RHTower.D4BMQuarticResidualCore`.
+- [ThetaCuspHawkingBMQuarticResidualGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticResidualGreen.lean), namespace `RHTower.D4BMQuarticResidualGreen`.
 
 For every actual principal slot, the contact leaf proves
 
@@ -253,7 +253,7 @@ Final audit for the cutoff-contact, residual-core and native-Green leaves: all 2
 
 ## Native spin-two contact period, 12 September 2026
 
-[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticNativeBalance.lean)
+[ThetaCuspHawkingBMQuarticNativeBalance.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticNativeBalance.lean)
 now transports the literal six-field contact identity through the actual native
 physical finite part. With lambda=(center q)^2-1/4, c=7lambda-2,
 a=c(c-4)/96 and the unchanged physical mu, its final theorem is

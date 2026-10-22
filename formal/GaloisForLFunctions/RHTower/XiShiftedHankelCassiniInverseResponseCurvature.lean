@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspCassiniHyperbolicSourceLaw
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCassiniHyperbolicSourceLaw
 import GaloisForLFunctions.RHTower.XiShiftedHankelCassiniSourceJet
 
 /-!

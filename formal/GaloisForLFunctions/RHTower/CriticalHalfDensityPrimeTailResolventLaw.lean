@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.LabelledAtomicMeasure
-import GaloisForLFunctions.RHTower.CCMCriticalMellinGrowingCumulative
-import GaloisForLFunctions.RHTower.DeningerArithmeticTimeDistribution
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinGrowingCumulative
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticTimeDistribution
 import GaloisForLFunctions.RHTower.PrimePolarDirichletBackbone
 import GaloisForLFunctions.RHTower.WindingXi
 import Mathlib.Analysis.BoundedVariation

@@ -10,7 +10,7 @@
 - **Publication context:**
   `../4-publication-ready/riemann-hellinger-hodge-green-descent/main.tex`
 - **Lean module:**
-  `../../../../formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianHarmonicSourcePrimitive.lean`
+  `../../../../formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianHarmonicSourcePrimitive.lean`
 
 ## Goal
 

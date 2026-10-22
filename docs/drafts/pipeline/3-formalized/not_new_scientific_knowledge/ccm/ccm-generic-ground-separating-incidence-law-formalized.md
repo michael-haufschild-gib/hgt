@@ -12,10 +12,10 @@ New in this closure:
 
 - `GaloisForLFunctions.HTGeometry.SeparatingGramLocus` — the abstract separating-locus theory in an
   arbitrary complex inner-product space. Reusable, so it lives in `HTGeometry`.
-- `GaloisForLFunctions.RHTower.CCMGenericGroundSeparatingIncidence` — the compressed-shift
+- `GaloisForLFunctions.RHTower.CCM.CCMGenericGroundSeparatingIncidence` — the compressed-shift
   construction of a separating vector and the prime-power label injectivity.
 
-Standing on `RHTower/CCMCompressedShiftIndependence` (the compressed shifts) and the corpus theorem
+Standing on `RHTower/CCM/CCMCompressedShiftIndependence` (the compressed shifts) and the corpus theorem
 `GaloisForLFunctions.linearIndependent_log_primes`.
 
 Umbrellas: `GaloisForLFunctions.HTGeometry`, `GaloisForLFunctions.RHTower`.

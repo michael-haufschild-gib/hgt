@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspDerivativeTailPositivity
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspDerivativeTailPositivity
 
 /-!
 # Tail ratio calculus for the literal theta source

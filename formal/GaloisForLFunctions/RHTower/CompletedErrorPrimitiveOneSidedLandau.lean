@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RoutePCompletedErrorOneSidedLandau
-import GaloisForLFunctions.RHTower.CCMSharpRectangularSewing
+import GaloisForLFunctions.RHTower.CCM.CCMSharpRectangularSewing
 
 /-!
 # A one-sided linear bound on the primitive of the completed critical-Mellin error forces RH

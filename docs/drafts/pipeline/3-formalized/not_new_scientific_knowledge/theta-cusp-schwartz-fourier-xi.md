@@ -28,7 +28,7 @@ hypothesis.
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspSchwartzFourierXi`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspSchwartzFourierXi`
 - Scaled raw transform: `fourier_thetaCuspSchwartz_scaled`
 - Explicit normalized source: `xiThetaSchwartzSource`
 - Exact Fourier identity: `fourier_xiThetaSchwartzSource`

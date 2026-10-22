@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerGammaSixBigWittStokesSource
+import GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixBigWittStokesSource
 
 /-!
 # All-cross big-Witt determinant ghost transmutation

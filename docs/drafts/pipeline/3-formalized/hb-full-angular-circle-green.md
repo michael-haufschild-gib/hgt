@@ -4,7 +4,7 @@ Status: formalized. The complete physical causal pairing and RH remain open.
 
 Proof chain: literal theta-cusp source → Xi occurrence → retained spin-two source → physical causal radial/left-QNM action → fixed Hawking-clock extinction → RH.
 
-Owner: [ThetaCuspHawkingBMFullAngularCircleGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFullAngularCircleGreen.lean), namespace `RHTower.D4BMFullAngularCircle`.
+Owner: [ThetaCuspHawkingBMFullAngularCircleGreen.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFullAngularCircleGreen.lean), namespace `RHTower.D4BMFullAngularCircle`.
 
 For either actual Xi branch let `s=physicalRate q branch`, `alpha=(2s+1)(2s+2)`, `p(d)=legendreKernel (2s+1) (cosh d)`, `h(d)` be the circular mean of the constructed full angular response, and `m(d)` the existing circular mean of the literal half-square source. The new closed identity is
 
@@ -38,7 +38,7 @@ This replaces the full-response channel in that pulse current by a literal-sourc
 
 ## Validation
 
-Development used foreground `lake env lean` scratch checks. Final `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFullAngularCircleGreen` passed: two jobs, 12 seconds, using an isolated cache-only audit with 3,986 project dependency modules and 12 local dependency stubs. No dependency or umbrella build ran. All seven new public theorem axiom reports contain exactly `propext`, `Classical.choice`, and `Quot.sound`. The installed source and five build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`; that umbrella was not built. Source SHA-256: `f49eb04f7014f989b2f2a419354aaa2c56e3da756b55f4560f5aef89e44e595d`.
+Development used foreground `lake env lean` scratch checks. Final `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFullAngularCircleGreen` passed: two jobs, 12 seconds, using an isolated cache-only audit with 3,986 project dependency modules and 12 local dependency stubs. No dependency or umbrella build ran. All seven new public theorem axiom reports contain exactly `propext`, `Classical.choice`, and `Quot.sound`. The installed source and five build artifacts match the audited files byte for byte. The module is wired once into `RHTower.lean`; that umbrella was not built. Source SHA-256: `f49eb04f7014f989b2f2a419354aaa2c56e3da756b55f4560f5aef89e44e595d`.
 
 The separate mathlib-name scratch check passed. The corpus index refreshed once (three changed files, zero removed); all 14 new public API rows, the unique umbrella import, and local document links were verified. `scripts/formal_tools.py lint` passed, with existing large-file warnings. All owned Lean/Lake processes terminated; the isolated audit, scratch files and four search-result files were removed. The frontier map and universal `STATUS.md` were not edited.
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageIdeleClassInvariantL2
-import GaloisForLFunctions.RHTower.CCMRationalArchimedeanSchwartzLattice
+import GaloisForLFunctions.RHTower.CCM.CCMRationalArchimedeanSchwartzLattice
 import GaloisForLFunctions.RHTower.FieldOneLocallyConstantWeylMultiplier
 
 /-!

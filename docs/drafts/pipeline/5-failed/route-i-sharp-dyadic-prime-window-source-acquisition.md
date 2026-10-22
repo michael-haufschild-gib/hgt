@@ -35,7 +35,7 @@ source limit preserves a conjugate high-line sign pair.  Its finite analytic van
 multiplies the first logarithmic Dirichlet frequency.  Paper certificate:
 `../3-formalized/not_new_scientific_knowledge/dirichlet-real-analytic-postcomposition-high-line-sign-rigidity.md`.
 Lean modules: `HTGeometry/DirichletAnalyticPostcompositionSignRigidity.lean` and
-`RHTower/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`.
+`RHTower/CCM/CCMSharpPrimeWindowAnalyticPostcompositionNoGo.lean`.
 
 `[BRIDGE]` Canonical noncensored Mellin normalization and archimedean completion equal
 `logDeriv XiC(-z)` exactly.  This collides with Route C2's Sondow--Dumitrescu/Planat horizontal-Xi
@@ -77,7 +77,7 @@ At `alpha=0`, `SharpUpper(0,N)` is definitionally
 Paper proof:
 `../2-fully-proven/not_new_scientific_knowledge/11-rh-zero-divisor-geometry/sharp-dyadic-prime-window-zero-width-collision.md`.
 Lean module:
-`formal/GaloisForLFunctions/RHTower/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
+`formal/GaloisForLFunctions/RHTower/CCM/CCMSharpPrimeWindowSquareEnergyWidthCollision.lean`.
 
 ## No-go closure
 

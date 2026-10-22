@@ -214,7 +214,7 @@ No external novelty claim is made.
 ## Formalization checkpoint
 
 The primary finite-energy first variation is now formalized in
-`formal/GaloisForLFunctions/RHTower/SuzukiCriticalBetaKernel.lean`.
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCriticalBetaKernel.lean`.
 Canonical compilation and the audit of all 19 public declarations passed; only
 `propext`, `Classical.choice`, and `Quot.sound` occur. The exact child result is
 tracked in `../3-formalized/sz-critical-beta-finite-energy-2026-10-18.md`.

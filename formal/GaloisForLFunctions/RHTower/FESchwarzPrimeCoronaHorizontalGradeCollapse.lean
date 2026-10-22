@@ -8,7 +8,7 @@ import GaloisForLFunctions.HTGeometry.CircleEmbeddingBiLipschitz
 import GaloisForLFunctions.HTGeometry.TrigPolyLogVanishing
 import GaloisForLFunctions.RHTower.TrigPolyOrthogonality
 import GaloisForLFunctions.RHTower.XiMassPrimeWindowAbel
-import GaloisForLFunctions.RHTower.DeningerAllPrimeFloquetRadical
+import GaloisForLFunctions.RHTower.Deninger.DeningerAllPrimeFloquetRadical
 import GaloisForLFunctions.HTGeometry.PeriodicRotationEnergy
 
 open Complex Filter Topology MeasureTheory Set

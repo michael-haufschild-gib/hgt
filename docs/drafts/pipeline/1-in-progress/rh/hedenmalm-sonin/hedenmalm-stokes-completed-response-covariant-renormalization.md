@@ -60,7 +60,7 @@ labelwise, while covariantly renormalized first-trace energy is reflection-even 
 ## Lean outcome
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmStokesCompletedResponseCovariantRenormalization.lean`.
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmStokesCompletedResponseCovariantRenormalization.lean`.
 
 Closed results:
 

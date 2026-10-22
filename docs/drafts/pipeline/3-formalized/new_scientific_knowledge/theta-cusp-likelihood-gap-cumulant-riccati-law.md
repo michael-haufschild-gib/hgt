@@ -205,13 +205,13 @@ interference channel.
 
 Formalized in:
 
-- `RHTower/ThetaCuspLikelihoodGapCumulantRiccati.lean`;
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodGapCumulantRiccati.lean`;
 - reusable support theorem promoted in
-  `RHTower/ThetaCuspCassiniMarkovBoundaryTransport.lean`;
+  `RHTower/ThetaCusp/ThetaCuspCassiniMarkovBoundaryTransport.lean`;
 - existing fourth-log-jet derivative API exposed in
-  `RHTower/ThetaCuspFullReflectionFourthTuran.lean`;
+  `RHTower/ThetaCusp/ThetaCuspFullReflectionFourthTuran.lean`;
 - reduced wall interface wired into
-  `RHTower/HedenmalmCenterMixedCorrelationAngle.lean`.
+  `RHTower/Hedenmalm/HedenmalmCenterMixedCorrelationAngle.lean`.
 
 ## Remaining target
 

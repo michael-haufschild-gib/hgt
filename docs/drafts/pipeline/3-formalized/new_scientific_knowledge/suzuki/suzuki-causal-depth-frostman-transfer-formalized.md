@@ -4,7 +4,7 @@
 - **Paper theorem:**
   `./suzuki-causal-depth-frostman-transfer.md`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthFrostmanTransfer.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthFrostmanTransfer.lean`
 - **Umbrella import:**
   `formal/GaloisForLFunctions/RHTower/RiemannHypothesisSOTA2026.lean`
 - **RH used:** no

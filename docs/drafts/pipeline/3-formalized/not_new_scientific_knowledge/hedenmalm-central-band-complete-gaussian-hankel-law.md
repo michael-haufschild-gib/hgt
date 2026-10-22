@@ -104,7 +104,7 @@ argument can close that tail by itself.
 The unconditional formalization is
 
 ```text
-formal/GaloisForLFunctions/RHTower/HedenmalmCentralBandGaussianHankel.lean
+formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCentralBandGaussianHankel.lean
 ```
 
 Its capstones are

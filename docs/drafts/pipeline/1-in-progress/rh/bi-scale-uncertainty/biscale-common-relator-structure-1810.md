@@ -3,7 +3,7 @@
 - **ID:** biscale-common-relator-structure-1810
 - **Stage:** 1-in-progress
 - **Type:** CLASSICAL STRUCTURAL CORE; quantitative and energy extensions open
-- **Parent:** [field programme](../../biscale-field-development-1810.md), items 1, 3, 4 and 13
+- **Parent:** [field programme](biscale-field-development-1810.md), items 1, 3, 4 and 13
 
 ## Exact algebraic candidate
 

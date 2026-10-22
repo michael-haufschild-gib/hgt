@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.MobiusLaplaceCriterionFrontier
-import GaloisForLFunctions.RHTower.DeningerZetaLowerBound
+import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import GaloisForLFunctions.RHTower.Sieve.ZetaStripGrowth
 import GaloisForLFunctions.RHTower.Sieve.ZetaRealBound
 import GaloisForLFunctions.RHTower.Sieve.InvZetaLowBox

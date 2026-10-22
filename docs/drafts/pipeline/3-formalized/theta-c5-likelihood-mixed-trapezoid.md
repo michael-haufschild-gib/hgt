@@ -47,6 +47,6 @@ three-jet cone.
   upper Hermite--Hadamard inequality are formal.
 - No computation enters proof.
 - Lean module:
-  `GaloisForLFunctions.RHTower.ThetaCuspFixedActionC5LikelihoodMixedTrapezoid`.
+  `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFixedActionC5LikelihoodMixedTrapezoid`.
 - Direct Lean and exact target build passed; axiom audit reports only `propext`,
   `Classical.choice`, and `Quot.sound`.

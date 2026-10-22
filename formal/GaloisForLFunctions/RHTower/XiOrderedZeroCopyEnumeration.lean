@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.XiOrderedPrimeTraceClassRelocation
 import GaloisForLFunctions.RHTower.PrimeArchThermalKrylovEquivalence
 import GaloisForLFunctions.RHTower.XiHadamardGrowth
-import GaloisForLFunctions.RHTower.DeningerDivisorSchwarzMonodromy
+import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
 open Complex Set
 

@@ -210,8 +210,8 @@ The source-specific synthesis is `[CANDIDATE NEW SCIENTIFIC KNOWLEDGE]`; priorit
 - [ ] rectangular third-jet Ward-defect lower bound and RH
 
 Lean modules:
-`formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryThirdJetBoundaryLaw.lean` (transport algebra
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalEntryThirdJetBoundaryLaw.lean` (transport algebra
 and wall jets) and
-`formal/GaloisForLFunctions/RHTower/SuzukiCausalEntryMovingCutRealization.lean` (the moving-cut
+`formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalEntryMovingCutRealization.lean` (the moving-cut
 integrals `A`, `B`, `H`, `W`, their three derivative laws `(4)` for a continuous source, and the
 resulting hypothesis-free jet chain and third-jet entry law).

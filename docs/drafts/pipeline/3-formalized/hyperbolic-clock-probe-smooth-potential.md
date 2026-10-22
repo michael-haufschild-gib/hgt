@@ -57,7 +57,7 @@ the linear case of Picard–Lindelöf with a two-variable kernel, which mathlib 
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSymbol.lean` — step 1, **the energy estimate**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSymbol.lean` — step 1, **the energy estimate**:
 
 - **`hasTemperateGrowth_realCos`**, **`hasTemperateGrowth_realSin`** — the sine and the cosine have
   temperate growth. mathlib does not have these; they are the model case of a smooth function all of
@@ -82,7 +82,7 @@ Note for the next step: `MemSobolev.fourierMultiplierCLM_of_bounded` lives in a 
 `[InnerProductSpace ℂ F] [CompleteSpace F]`; stating it with only `[NormedSpace ℂ F]` makes
 elaboration diverge rather than fail, which costs a heartbeat timeout to diagnose.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSymbolEvolution.lean` — step 2, **the symbols
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSymbolEvolution.lean` — step 2, **the symbols
 solve the equation**:
 
 - `hasDerivAt_cosFreq`, `hasDerivAt_sinFreq`, **`hasDerivAt_sincFreq`** — the time derivatives:
@@ -102,7 +102,7 @@ frequency.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSynthesis.lean` — the symbol evolution lifted
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSynthesis.lean` — the symbol evolution lifted
 through the frequency integral:
 
 - **`hasDerivAt_integral_symbol`** — differentiation under a symbol integral: if the symbol is
@@ -120,7 +120,7 @@ density satisfies for every `k`.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonOperator.lean` — what the frequency squared is on
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonOperator.lean` — what the frequency squared is on
 the physical side:
 
 - `kgFreq_sq` — `⟨ξ⟩² = 1 + ‖ξ‖²`;
@@ -136,7 +136,7 @@ Laplacian identification — now speak about the same operator.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonFreeSolution.lean` — the free evolution of a
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonFreeSolution.lean` — the free evolution of a
 Schwartz datum:
 
 - `kgFree`, `kgFreeVel` — the two propagators applied to a Schwartz function, again Schwartz;
@@ -152,7 +152,7 @@ Klein–Gordon equation, expressed entirely in the multiplier calculus, with no 
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonPointwise.lean` — the bridge from operators to
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonPointwise.lean` — the bridge from operators to
 integrals:
 
 - **`coe_fourierMultiplierCLM`** — a Fourier multiplier is the inverse transform of the product of
@@ -169,7 +169,7 @@ synthesis lemmas differentiate in time.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonClassical.lean` — **the free evolution is a
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonClassical.lean` — **the free evolution is a
 classical solution**:
 
 - `kgDensity`, `norm_kgDensity`, `continuous_kgChar` — the frequency density `𝐞⟪ξ,x⟫ 𝓕f ξ` of the
@@ -264,7 +264,7 @@ speed `⟨ξ⟩`, so the supremum of `|cos(t⟨ξ⟩) - cos(t'⟨ξ⟩)|` is `2`
 frequency repairs exactly this. One power of the weight buys uniform continuity in time, and that is
 the whole regularity bookkeeping of the evolution.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonPotentialFlow.lean` — **the evolution exists**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonPotentialFlow.lean` — **the evolution exists**:
 
 - `kgDuhamelKernel`, **`norm_kgDuhamelKernel_le`**, `continuous_kgDuhamelKernel` — the Duhamel
   kernel `K(t,s) = (multiplication by sin((t-s)⟨ξ⟩)/⟨ξ⟩) ∘ (convolution by 𝓕V)`, uniformly bounded
@@ -289,7 +289,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 - **`hasDerivAt_deriv_duhamelScalar`** — and the second: `u'' = -ω²u + h`. The Pythagorean identity
   is what returns the source, once.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonFlowPointwise.lean` — **the equation at every
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonFlowPointwise.lean` — **the equation at every
 frequency**:
 
 - `kgFlowSource`, `continuous_kgFlowSource` — the potential term of the evolution at a fixed
@@ -316,7 +316,7 @@ dimension**:
 - **`integrable_kgFreq_pow_mul_kgWeighted`**, **`integrable_kgFreq_pow_mul_inv_pow`** — hence `j`
   derivatives may be taken under the synthesis integral whenever `dim E + j < N`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonFlowBounds.lean` — **uniform bounds**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonFlowBounds.lean` — **uniform bounds**:
 
 - `norm_duhamelCosPart_le`, `norm_duhamelSinPart_le` — the moments of a bounded source are bounded by
   the length of the time interval;
@@ -326,7 +326,7 @@ dimension**:
   their versions uniform on a time interval — the first two time derivatives of the evolution are
   bounded *uniformly in the frequency*, the second one costing exactly `⟨ξ⟩²`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSynthesisField.lean` — **the field**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSynthesisField.lean` — **the field**:
 
 - **`aestronglyMeasurable_deriv_param`** — the derivative of a continuous family is measurable, being
   a pointwise limit of difference quotients. This avoids any joint-continuity argument;
@@ -363,7 +363,7 @@ multiplication**:
   syntheses, by Fubini (mathlib's `Integrable.convolution_integrand` supplies the product
   integrability) and the translation invariance of the measure.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonPotentialWave.lean` — **the equation**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonPotentialWave.lean` — **the equation**:
 
 - `kgPotential` — the potential attached to a convolving density, its inverse Fourier transform;
 - `kgWeighted_kgConvBCF` — the convolution operator read on the density itself;
@@ -379,7 +379,7 @@ multiplication**:
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonProbeNormalization.lean` — **the probe does not
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonProbeNormalization.lean` — **the probe does not
 vanish**:
 
 - `kgConjChar` — the datum concentrated at an event: the conjugate of the character;
@@ -413,7 +413,7 @@ event**:
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonRealProbe.lean` — **the real probe**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonRealProbe.lean` — **the real probe**:
 
 - `IsRealDensity`, `kgChar_neg`, **`conj_kgPotential`**, `kgPotential_im` — the potential is real
   exactly when the density satisfies `a(-η) = conj a(η)`, by the substitution `η ↦ -η`;
@@ -423,7 +423,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 - **`kgRealField_zero_pos`**, **`eventually_kgRealField_ne_zero`** — it is positive at the event and
   nonzero on a neighbourhood.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonUnitSpeed.lean` — **unit propagation speed**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonUnitSpeed.lean` — **unit propagation speed**:
 
 - **`deriv_deriv_kgFlowField_dir_smul`** — a second directional derivative scales quadratically;
 - **`kgFlowField_wave_equation_unit`**, **`kgRealField_wave_equation_unit`** — measuring the spatial
@@ -433,7 +433,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
   which is the corpus's wave operator with signature `(-1, 1, …, 1)` and potential `V - 1`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonChartLift.lean` — **the spacetime chart**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonChartLift.lean` — **the spacetime chart**:
 
 - `kgDir`, `kgDir_eq_basisFun` — the chart's spatial directions are the standard orthonormal basis;
 - `kgSpatial`, **`kgSpatial_update_zero`**, **`kgSpatial_update_succ`** — moving one chart coordinate
@@ -443,7 +443,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonChartPartials.lean` — **the coordinate
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonChartPartials.lean` — **the coordinate
 derivatives**:
 
 - `kgChartTimePartial`, `kgChartSpacePartial`, `kgChartPartial` — the partial derivatives of the
@@ -455,7 +455,7 @@ derivatives**:
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonFlowJointContinuity.lean` — **joint
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonFlowJointContinuity.lean` — **joint
 continuity**:
 
 - **`continuous_kgFlowSource_pair`** — the source is jointly continuous in frequency and time,
@@ -466,7 +466,7 @@ continuity**:
 - **`continuous_deriv_kgPotentialFlow_pair`**, **`continuous_kgFlowDensityDeriv_pair`** — hence the
   time derivative of the evolution, and its density, are jointly continuous.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonChartC1.lean` — **the chart field is `C¹`**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonChartC1.lean` — **the chart field is `C¹`**:
 
 - `continuous_kgSynthesis_flowDensityDeriv`, `continuous_kgSynthesis_dirDensity` — the two syntheses
   occurring as partial derivatives are continuous in the event;
@@ -487,7 +487,7 @@ synthesis in time, in general**:
 
 Axioms: `[propext, Classical.choice, Quot.sound]`.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonChartGeneric.lean`,
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonChartGeneric.lean`,
 `KleinGordonChartFamilies.lean`, `KleinGordonChartSecond.lean` — **the second-order chart
 calculus**:
 
@@ -503,7 +503,7 @@ calculus**:
   its own (mixed included), hence is differentiable: the hypothesis of the divergence-form
   d'Alembertian.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonClockProbe.lean` — **the clock probe**:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonClockProbe.lean` — **the clock probe**:
 
 - `kgEps`, `kgWaveOp` — the Minkowski signature and the corpus's wave operator on the chart;
 - `kgChartPotential` — the potential `V - 1`;
@@ -585,7 +585,7 @@ interval. That is the open core of the parent card.
 ## The class is inhabited
 
 A hypothesis class asserts nothing until something satisfies it, so
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonProbeExamples.lean` exhibits the potentials the
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonProbeExamples.lean` exhibits the potentials the
 construction covers:
 
 - **`WienerDensity.ofCompactSupport`** — a continuous density of compact support is admissible at
@@ -642,7 +642,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## A probe at every event: the corpus's `OpenProbes`
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonProbeAnywhere.lean` removes the last restriction —
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonProbeAnywhere.lean` removes the last restriction —
 the construction normalises the field at time zero, so on its own it produces probes near one time
 slice:
 
@@ -690,7 +690,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## Quantified decay: the last analytic input
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonFourierDecay.lean` supplies the estimate a
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonFourierDecay.lean` supplies the estimate a
 *time-dependent* family needs — a decay bound whose constant is an explicit functional of the
 function, not an unnamed constant produced by the Schwartz axioms:
 
@@ -733,7 +733,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## The parent card's hypothesis, discharged
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonConformalProbe.lean` closes the loop:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonConformalProbe.lean` closes the loop:
 
 - `kgSpatialCLM`, `contDiff_comp_kgSpatial`, `kgChart`, **`kgWaveOp_eq_dalembert`** — the wave
   operator of the construction *is* the corpus's `SmoothMetricChart.dalembert` of the flat chart
@@ -757,7 +757,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ### Sup bounds instead of integral norms
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSupportBounds.lean` converts the family's decay
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSupportBounds.lean` converts the family's decay
 functional into the form a concrete potential supplies:
 
 - **`integral_norm_le_of_support`** — `∫‖f‖ ≤ (sup‖f‖)·vol(K)` for `f` vanishing off `K`;
@@ -773,7 +773,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ### Every smooth spacetime potential
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonJointSmooth.lean` — the bounds a smooth potential
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonJointSmooth.lean` — the bounds a smooth potential
 supplies, from joint smoothness alone:
 
 - `contDiff_partialFDeriv`, `contDiff_partialFDerivTime`, `contDiff_partialFDeriv_two` — the partial
@@ -790,7 +790,7 @@ supplies, from joint smoothness alone:
 - **`exists_lipschitz_kgFunOp_iterate`** — and Lipschitz in time, by the mean value inequality
   applied to the partial derivative in time, which is again continuous with compact support.
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonSpacetimeProbe.lean` — the cut-off and the probe:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonSpacetimeProbe.lean` — the cut-off and the probe:
 
 - `kgSchwartzOp_sub`, `kgSchwartzOp_iterate_sub` — the operator is linear, being a Fourier
   multiplier, so time differences pass through it;
@@ -810,7 +810,7 @@ Axioms: `[propext, Classical.choice, Quot.sound]`.
 
 ## The parent card's hypothesis, discharged in full
 
-`formal/GaloisForLFunctions/HTGeometry/KleinGordonConformalSpacetime.lean`:
+`formal/GaloisForLFunctions/HTGeometry/KleinGordon/KleinGordonConformalSpacetime.lean`:
 
 - `kgEventCLM`, `contDiff_comp_kgEvent` — the splitting of an event into its time coordinate and its
   point is a continuous linear map, so a smooth function of the event is smooth on the chart;

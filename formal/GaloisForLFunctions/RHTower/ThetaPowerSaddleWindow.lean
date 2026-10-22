@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaPowerHardyZeros
-import GaloisForLFunctions.RHTower.ThetaCuspChargePowIntegral
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargePowIntegral
 
 /-!
 # The saddle window of `F_a` at its pole cusp, for every real `a > 1/2`

@@ -73,7 +73,7 @@ be globalized first.
 ## Lean realization
 
 Module:
-`formal/GaloisForLFunctions/RHTower/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean`
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaRoutePAllPrimeInformationVirialDivergence.lean`
 
 Headline declarations:
 

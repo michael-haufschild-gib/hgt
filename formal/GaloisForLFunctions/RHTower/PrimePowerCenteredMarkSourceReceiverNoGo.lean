@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerBigWittCenteredPrimeMarkXiFiberComparison
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittCenteredPrimeMarkXiFiberComparison
 
 /-!
 # Prime-power centered-mark source/receiver no-go

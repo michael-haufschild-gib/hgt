@@ -134,7 +134,7 @@ Dirichlet energy, not assumed on Meyer's Fréchet quotient.
 
 ### The guardrail landed
 
-`formal/GaloisForLFunctions/RHTower/DeningerPolarizationAlmostProjection.lean`.  Axiom audit for
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerPolarizationAlmostProjection.lean`.  Axiom audit for
 all 12 declarations: `propext, Classical.choice, Quot.sound` or less.
 
 The nuclearity statements `(5)` and `(6)` are Meyer's published analytic theorems and enter as

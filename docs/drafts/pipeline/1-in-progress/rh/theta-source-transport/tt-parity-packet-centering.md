@@ -124,7 +124,7 @@ Follow-up corpus check: `CCMThetaGroundRHCriterion` and
 form with the Weil form for compact smooth source profiles. That global
 bridge is not missing. The tilted differential-packet domain and its sign
 remain separate obligations. See
-[C52](../../tt-complete-source-charged-poincare.md) for the exact polar variance
+[C52](tt-complete-source-charged-poincare.md) for the exact polar variance
 and odd-charge payment and the unsuccessful mixed-Ward sign attempt.
 
 ## Assessment and continuation

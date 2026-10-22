@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.BurnolPrimeTailFoldedModeWittBridge
-import GaloisForLFunctions.RHTower.CCMUnitRieszVolterraLaplace
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszVolterraLaplace
 
 /-!
 # Exact rank-one compression of the folded prime-tail half-Laplace port

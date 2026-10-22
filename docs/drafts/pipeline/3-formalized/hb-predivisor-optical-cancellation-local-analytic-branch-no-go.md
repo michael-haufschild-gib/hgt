@@ -75,7 +75,7 @@ analytic-branch obstruction. Bounded, not exhaustive, priority claim.
 - 2026-08-28 — Formalized in
   `ThetaCuspHawkingPreDivisorOpticalCancellationLocalAnalyticBranchNoGo.lean`. Direct
   `lake env lean` passed; target-only
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingPreDivisorOpticalCancellationLocalAnalyticBranchNoGo`
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingPreDivisorOpticalCancellationLocalAnalyticBranchNoGo`
   passed (`12141/12141`). All three exported theorem axiom audits report only `propext`,
   `Classical.choice`, and `Quot.sound`; umbrella import present. Formal lint reports no finding in
   this module and remains nonzero only for unrelated unreachable modules in the shared worktree.

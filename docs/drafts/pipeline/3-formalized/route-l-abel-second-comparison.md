@@ -4,7 +4,7 @@
 - **Date:** 2026-09-11
 - **Stage:** 3-formalized; targeted build, complete axiom audit and global lint passed
 - **Type:** THEOREM (Lean); 27 theorems checked
-- **Module:** `GaloisForLFunctions.RHTower.DeningerGammaSixAbelSecondComparison`
+- **Module:** `GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixAbelSecondComparison`
 - **Source:** [source-selected completion attack](../1-in-progress/route-l-source-selected-completion-attack.md), C26
 - **Statement:** The actual second boundary discrepancy reads the complete summable correction through divisibility sums; these measurements and the scalar first variation determine every diagonal correction coefficient. A finite diagonal repair cannot remove the discrepancy at every ordinary dilation from an admitted multiplicity-top source.
 - **RH status:** unproved; source-to-fixed-physical-reader agreement remains open.
@@ -150,7 +150,7 @@ premise.
 
 All 27 theorems passed without warnings in
 `lake env lean /tmp/route_l_abel_second_order.lean`.
-`lake build GaloisForLFunctions.RHTower.DeningerGammaSixAbelSecondComparison`
+`lake build GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixAbelSecondComparison`
 passed (154 seconds for the new module). All 27 theorem axiom reports
 contain only `propext`, `Classical.choice`, and `Quot.sound`.
 The Route L module is wired into `RHTower.lean`; whitespace checks passed.

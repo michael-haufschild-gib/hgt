@@ -115,7 +115,7 @@ formal theorem package; it is not an exhaustive literature-wide priority claim.
 Module:
 
 ```text
-GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEPacketPeierlsClassification
+GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEPacketPeierlsClassification
 ```
 
 Principal declarations:
@@ -134,7 +134,7 @@ Principal declarations:
 Verification:
 
 - direct `lake env lean` check passed;
-- targeted `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceFEPacketPeierlsClassification`
+- targeted `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceFEPacketPeierlsClassification`
   passed (`11919/11919`); no umbrella/full build was run;
 - all 19 public theorem axiom audits report only `propext`, `Classical.choice`, and `Quot.sound`;
 - formal lint reports no HC51 issue; repository-wide lint still reports unrelated unreachable

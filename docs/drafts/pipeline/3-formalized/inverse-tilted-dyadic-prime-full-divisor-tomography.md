@@ -89,7 +89,7 @@ the line-selection statement for its polar divisor.
 The unconditional Lean module is
 
 ```text
-GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography
+GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedDyadicPrimeTomography
 ```
 
 Its main declarations are:

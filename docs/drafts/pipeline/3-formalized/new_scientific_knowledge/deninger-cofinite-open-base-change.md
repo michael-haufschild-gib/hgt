@@ -9,14 +9,14 @@
   suspension, and degreewise coarse invariant coefficient restrict
   canonically to every cofinite arithmetic open.
 - **Lean modules:**
-  `GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`
+  `GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteOpenBaseChange`
   (the quotient/saturated-open topology of clause 3),
-  `GaloisForLFunctions.RHTower.DeningerInvariantRestriction` (the invariant restriction `(5)`),
-  `GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen` (the projection-level content of
+  `GaloisForLFunctions.RHTower.Deninger.DeningerInvariantRestriction` (the invariant restriction `(5)`),
+  `GaloisForLFunctions.RHTower.Deninger.DeningerCharacterProjectionOpen` (the projection-level content of
   clauses 1--2),
-  `GaloisForLFunctions.RHTower.DeningerSchemeCharacterSpace` (the character space itself, with
+  `GaloisForLFunctions.RHTower.Deninger.DeningerSchemeCharacterSpace` (the character space itself, with
   Lemmas 7.1--7.3),
-  `GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace` (the Frobenius colimit,
+  `GaloisForLFunctions.RHTower.Deninger.DeningerFrobeniusColimitSpace` (the Frobenius colimit,
   Proposition 7.4, and the colimit-level open embedding of clause 2)
 
 ## Goal
@@ -223,7 +223,7 @@ Those assertions remain in
 
 ## Formalized statement
 
-`GaloisForLFunctions/RHTower/DeningerArithmeticCofiniteOpenBaseChange.lean` already encodes the
+`GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticCofiniteOpenBaseChange.lean` already encodes the
 elementary quotient lemma used for clause 3, in the saturated-open form:
 
 - `DeningerSaturatedOpen q V` : `V` is the full inverse image of its image, i.e. `V` is
@@ -237,7 +237,7 @@ elementary quotient lemma used for clause 3, in the saturated-open form:
   the domain of the restricted quotient map is canonically homeomorphic to `V` — this is
   "`V/G → q(V)` is a homeomorphism".
 
-`GaloisForLFunctions/RHTower/DeningerInvariantRestriction.lean` encodes clause 4, equation
+`GaloisForLFunctions/RHTower/Deninger/DeningerInvariantRestriction.lean` encodes clause 4, equation
 `(5)`.  The reason `(5)` holds, and the reason no invariants are moved past anything, is that an
 invariant `π` makes every preimage stable:
 
@@ -275,18 +275,18 @@ construction card rather than further work here.
 - [x] 0 → 1 in-progress: precise source-local statement
 - [x] 1 → 2 fully-proven: topological and equalizer proof complete
 - [x] 2 → 3 formalized, quotient-open part
-  (`GaloisForLFunctions.RHTower.DeningerArithmeticCofiniteOpenBaseChange`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCofiniteOpenBaseChange`)
 - [x] 2 → 3 formalized, invariant-restriction part `(5)`
-  (`GaloisForLFunctions.RHTower.DeningerInvariantRestriction`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerInvariantRestriction`)
 - [x] 2 → 3 formalized, clauses 1--2, projection-level content
-  (`GaloisForLFunctions.RHTower.DeningerCharacterProjectionOpen`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerCharacterProjectionOpen`)
 - [x] 2 → 3 formalized, clauses 1--2, the character space itself, constructed with such a
   projection, together with Lemmas 7.1--7.3 for it
-  (`GaloisForLFunctions.RHTower.DeningerSchemeCharacterSpace`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerSchemeCharacterSpace`)
 - [x] 2 → 3 formalized, clause 2, the Frobenius colimit and Proposition 7.4
-  (`GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace`)
+  (`GaloisForLFunctions.RHTower.Deninger.DeningerFrobeniusColimitSpace`)
 - [x] 2 → 3 formalized, clause 2, the colimit-level open embedding `Ǔ_N(ℂ) ↪ Š(ℂ)` with image
-  `p̌r⁻¹(U_N)` (`GaloisForLFunctions.RHTower.DeningerFrobeniusColimitSpace`)
+  `p̌r⁻¹(U_N)` (`GaloisForLFunctions.RHTower.Deninger.DeningerFrobeniusColimitSpace`)
 - [ ] 3 → 4 publication-ready: integrate with analytic purity proof
 
 ## References
@@ -317,7 +317,7 @@ construction card rather than further work here.
 
 ### Clauses 1--2, projection level
 
-`formal/GaloisForLFunctions/RHTower/DeningerCharacterProjectionOpen.lean` (8 declarations; the
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerCharacterProjectionOpen.lean` (8 declarations; the
 set-theoretic ones depend on no axioms at all, the topological ones on `propext` alone) formalizes
 everything in clauses 1--2 that does not mention the internal structure of the character space:
 
@@ -344,7 +344,7 @@ in the corpus first.
 The earlier note that "no character-space object exists anywhere in the formal tree, so this needs
 its own construction card" is superseded: the space is now built.
 
-`formal/GaloisForLFunctions/RHTower/DeningerSchemeCharacterSpace.lean` (27 declarations, axiom
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerSchemeCharacterSpace.lean` (27 declarations, axiom
 audit `propext, Classical.choice, Quot.sound` throughout) defines
 
 - `DeningerCharacterSpace X` — a point is a point of the scheme together with a character of the
@@ -373,7 +373,7 @@ For an open immersion the residue field map is an isomorphism (mathlib's
 
 ### The Frobenius colimit, constructed
 
-`formal/GaloisForLFunctions/RHTower/DeningerFrobeniusColimitSpace.lean` (25 declarations, same
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerFrobeniusColimitSpace.lean` (25 declarations, same
 axiom audit) builds `Š(ℂ)`:
 
 - `DeningerFrobeniusColimit X` — the quotient of one copy of the character space per Frobenius

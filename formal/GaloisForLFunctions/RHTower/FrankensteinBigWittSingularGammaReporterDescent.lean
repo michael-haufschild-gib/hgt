@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion
+import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion
 import GaloisForLFunctions.RHTower.FrankensteinThetaTerminalGammaSharedGhost
 
 /-!

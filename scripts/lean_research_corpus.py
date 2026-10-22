@@ -28,6 +28,11 @@ CHUNK_CHARS = 5000
 CHUNK_OVERLAP = 300
 PRIORITY_VERSION = 'rhtower-htgeometry-1'
 PATH_PRIORITY_SQL = "CASE WHEN instr(lower(path),'/rhtower/')>0 THEN 0 WHEN instr(lower(path),'/htgeometry/')>0 THEN 100 ELSE 200 END"
+# Installed dependencies are lexically searchable but never embedded: an agent
+# already knows Mathlib from training, so the vector budget goes to the research
+# corpus, which exists in no model's training data.
+DEPENDENCY_PATH_SQL = "instr({0}.path,'/.lake/packages/')>0"
+SCOPES = ('ours', 'mathlib', 'all')
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY,value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS files(
@@ -49,7 +54,7 @@ CREATE TABLE IF NOT EXISTS documents(
  id INTEGER PRIMARY KEY,decl_id TEXT REFERENCES declarations(id) ON DELETE CASCADE,
  path TEXT NOT NULL REFERENCES files(path) ON DELETE CASCADE,module TEXT NOT NULL,
  view TEXT NOT NULL,line INTEGER NOT NULL,end_line INTEGER NOT NULL,text TEXT NOT NULL,
- content_hash TEXT NOT NULL,provenance TEXT NOT NULL);
+ embed_text TEXT NOT NULL DEFAULT '',content_hash TEXT NOT NULL,provenance TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS document_decl ON documents(decl_id,view);
 CREATE INDEX IF NOT EXISTS document_path ON documents(path);
 CREATE INDEX IF NOT EXISTS document_view ON documents(view);
@@ -57,14 +62,14 @@ CREATE TABLE IF NOT EXISTS embedding_queue(
  doc_id INTEGER PRIMARY KEY REFERENCES documents(id) ON DELETE CASCADE,
  content_hash TEXT NOT NULL,priority INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS embedding_priority ON embedding_queue(priority,doc_id);
-CREATE TRIGGER IF NOT EXISTS embedding_insert_priority AFTER INSERT ON documents WHEN new.view<>'lean' BEGIN
+CREATE TRIGGER IF NOT EXISTS embedding_insert_priority_v3 AFTER INSERT ON documents WHEN new.view<>'lean' AND instr(new.path,'/.lake/packages/')=0 BEGIN
  INSERT OR REPLACE INTO embedding_queue VALUES(new.id,new.content_hash,
  (CASE WHEN instr(lower(new.path),'/rhtower/')>0 THEN 0 WHEN instr(lower(new.path),'/htgeometry/')>0 THEN 100 ELSE 200 END) +
- CASE new.view WHEN 'method' THEN 0 WHEN 'type' THEN 1 WHEN 'statement' THEN 2 WHEN 'proof' THEN 3 WHEN 'shape' THEN 4 ELSE 5 END); END;
-CREATE TRIGGER IF NOT EXISTS embedding_update_priority AFTER UPDATE ON documents WHEN new.view<>'lean' AND new.content_hash<>old.content_hash BEGIN
+ CASE new.view WHEN 'method' THEN 0 WHEN 'type' THEN 1 WHEN 'statement' THEN 2 WHEN 'doc' THEN 3 WHEN 'proof' THEN 4 ELSE 5 END); END;
+CREATE TRIGGER IF NOT EXISTS embedding_update_priority_v3 AFTER UPDATE ON documents WHEN new.view<>'lean' AND new.content_hash<>old.content_hash AND instr(new.path,'/.lake/packages/')=0 BEGIN
  INSERT OR REPLACE INTO embedding_queue VALUES(new.id,new.content_hash,
  (CASE WHEN instr(lower(new.path),'/rhtower/')>0 THEN 0 WHEN instr(lower(new.path),'/htgeometry/')>0 THEN 100 ELSE 200 END) +
- CASE new.view WHEN 'method' THEN 0 WHEN 'type' THEN 1 WHEN 'statement' THEN 2 WHEN 'proof' THEN 3 WHEN 'shape' THEN 4 ELSE 5 END); END;
+ CASE new.view WHEN 'method' THEN 0 WHEN 'type' THEN 1 WHEN 'statement' THEN 2 WHEN 'doc' THEN 3 WHEN 'proof' THEN 4 ELSE 5 END); END;
 CREATE VIRTUAL TABLE IF NOT EXISTS document_fts USING fts5(text,module,view,
  content='documents',content_rowid='id',tokenize='unicode61 remove_diacritics 0');
 CREATE TRIGGER IF NOT EXISTS doc_insert AFTER INSERT ON documents BEGIN
@@ -94,6 +99,7 @@ CREATE TABLE IF NOT EXISTS method_chunks(
  PRIMARY KEY(decl_id,chunk_hash,model_version,prompt_version));
 CREATE TABLE IF NOT EXISTS vector_shards(
  id TEXT PRIMARY KEY,filename TEXT NOT NULL,model TEXT NOT NULL,count INTEGER NOT NULL,created REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS vector_shard_tombstones(filename TEXT PRIMARY KEY,removed REAL NOT NULL);
 CREATE TABLE IF NOT EXISTS vectors(
  doc_id INTEGER PRIMARY KEY REFERENCES documents(id) ON DELETE CASCADE,content_hash TEXT NOT NULL,
  shard TEXT NOT NULL REFERENCES vector_shards(id),position INTEGER NOT NULL,model TEXT NOT NULL);
@@ -135,6 +141,20 @@ CREATE TABLE IF NOT EXISTS embedding_cache(
 CREATE INDEX IF NOT EXISTS embedding_cache_shard ON embedding_cache(shard);
 CREATE TABLE IF NOT EXISTS cache(key TEXT PRIMARY KEY,generation INTEGER NOT NULL,result TEXT NOT NULL,created REAL NOT NULL);
 """
+
+
+# Below this length a proof is `by simp`, `rfl`, `by trivial` -- thousands of
+# identical copies that currently share one vector. A per-declaration header
+# would make each unique, so short proofs stay bare and keep deduplicating;
+# their bodies carry no retrieval signal that the header would place.
+PROOF_HEADER_MIN_CHARS = 200
+
+
+def context_header(module: str, name: str, kind: str) -> str:
+    """Place a chunk for the embedder. In this corpus the namespace carries
+    real meaning: Mathlib.Analysis.SpecialFunctions.Gamma against RHTower.Weil
+    says more than most proof bodies do."""
+    return f'{module} | {name} | {kind}\n'
 
 
 def digest(value: str | bytes) -> str:
@@ -381,8 +401,12 @@ class Corpus:
             self.con.execute("PRAGMA journal_mode=WAL")
             self.con.execute("PRAGMA synchronous=NORMAL")
             self.con.executescript(SCHEMA)
-            self.con.execute('DROP TRIGGER IF EXISTS embedding_insert')
-            self.con.execute('DROP TRIGGER IF EXISTS embedding_update')
+            # Superseded definitions: these triggers carry the view priority,
+            # so a changed body must replace the previous name, not coexist.
+            for trigger in ('embedding_insert', 'embedding_update',
+                            'embedding_insert_priority', 'embedding_update_priority',
+                            'embedding_insert_priority_v2', 'embedding_update_priority_v2'):
+                self.con.execute('DROP TRIGGER IF EXISTS ' + trigger)
             if 'extractor_version' not in {r[1] for r in self.con.execute('PRAGMA table_info(files)')}:
                 self.con.execute("ALTER TABLE files ADD COLUMN extractor_version TEXT NOT NULL DEFAULT ''")
             self.con.execute("INSERT OR IGNORE INTO meta VALUES('generation','0')")
@@ -413,12 +437,21 @@ class Corpus:
         if source:
             self.con.execute("UPDATE meta SET value=CAST(value AS INTEGER)+1 WHERE key='evidence_epoch'")
 
-    def _document(self, decl_id, path, module, view, text, line, end_line, provenance):
+    def _document(self, decl_id, path, module, view, text, line, end_line, provenance, *, header=''):
+        """Store the lexical text and the embedding input separately.
+
+        A proof or type chunk on its own carries no name, namespace or kind, so
+        the embedder sees `by simp [foo]` with nothing to place it. The header
+        supplies that for the vector only: adding a module path to the FTS text
+        would match every chunk in a module, and `document_fts` already indexes
+        module as its own low-weight column.
+        """
         if not text.strip():
             return
-        self.con.execute("INSERT INTO documents(decl_id,path,module,view,line,end_line,text,content_hash,provenance) "
-                         "VALUES(?,?,?,?,?,?,?,?,?)", (decl_id, path, module, view, line, end_line,
-                                                      text, digest(text), json.dumps(provenance)))
+        embedded = header + text if header else text
+        self.con.execute("INSERT INTO documents(decl_id,path,module,view,line,end_line,text,embed_text,content_hash,provenance) "
+                         "VALUES(?,?,?,?,?,?,?,?,?,?)", (decl_id, path, module, view, line, end_line,
+                                                        text, embedded, digest(embedded), json.dumps(provenance)))
 
     def refresh(self, root: Path, *, deadline: float = float("inf"), progress=None) -> dict:
         with (self.directory / 'source.lock').open('a') as lock:
@@ -426,7 +459,7 @@ class Corpus:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 return dict(changed=0, removed=0, failed=0, complete=False,
-                            reason='source_indexer_busy', coverage=self.coverage())
+                            reason='source_indexer_busy', coverage=self.coverage(counts=False))
             return self._refresh(root, deadline=deadline, progress=progress)
 
     def _refresh(self, root: Path, *, deadline: float, progress=None) -> dict:
@@ -490,19 +523,33 @@ class Corpus:
                     stage = next((p for p in Path(item['path']).parts if re.match(r'^[0-5]-(backlog|in-progress|fully-proven|formalized|publication-ready|failed)$', p)), None)
                     provenance = dict(kind="source", source_hash=digest(raw), toolchain=toolchain, status="source_only",
                                       extraction_version=EXTRACTION_VERSION, package=item['package'], manifest_hash=manifest_hash, recorded_stage=stage)
+                    # Conservative source references support dependency
+                    # expansion and invalidation. They are not proof edges, and
+                    # there are ~20 per declaration -- 19M rows for this corpus
+                    # -- so they go in one statement per file, not one per row.
+                    self.con.executemany(
+                        "INSERT INTO declarations(id,path,name,module,kind,line,end_line,statement,proof,doc,source_hash) "
+                        "VALUES(:id,:path,:name,:module,:kind,:line,:end_line,:statement,:proof,:doc,:source_hash)",
+                        declarations)
+                    self.con.executemany(
+                        "INSERT OR IGNORE INTO dependencies VALUES(?,?,'source_reference')",
+                        [(d['id'], token) for d in declarations
+                         for token in set(re.findall(r"[\w][\w'.]*", mask_comments_strings(d['proof'])))])
                     for d in declarations:
-                        self.con.execute("INSERT INTO declarations(id,path,name,module,kind,line,end_line,statement,proof,doc,source_hash) "
-                                         "VALUES(:id,:path,:name,:module,:kind,:line,:end_line,:statement,:proof,:doc,:source_hash)", d)
-                        # Conservative source references support invalidation
-                        # before compiler enrichment. They are not proof edges.
-                        for token in set(re.findall(r"[\w][\w'.]*", mask_comments_strings(d['proof']))):
-                            self.con.execute("INSERT OR IGNORE INTO dependencies VALUES(?,?,'source_reference')", (d['id'], token))
+                        header = context_header(item["module"], d["name"], d["kind"])
                         statement_text = d["name"] + "\n" + split_identifier(d["name"]) + "\n" + d["doc"] + "\n" + d["statement"]
                         for part, first, last in chunks(statement_text, d["line"]):
                             self._document(d["id"], item["path"], item["module"], "statement", part, d["line"], d["end_line"], provenance)
+                        # A docstring is the one natural-language field here, and
+                        # agents search in natural language. Sharing a vector with
+                        # the formal statement averages that signal away.
+                        if d["doc"].strip():
+                            for part, first, last in chunks(d["doc"], d["line"]):
+                                self._document(d["id"], item["path"], item["module"], "doc", part, d["line"], d["end_line"], provenance, header=header)
                         if d["proof"]:
                             for part, first, last in chunks(d["proof"], d["proof_line"]):
-                                self._document(d["id"], item["path"], item["module"], "proof", part, first, last, provenance)
+                                self._document(d["id"], item["path"], item["module"], "proof", part, first, last, provenance,
+                                               header=header if len(part) >= PROOF_HEADER_MIN_CHARS else '')
                     # The source view is exhaustive, even for unsupported syntax,
                     # anonymous examples, commands, comments and prose documents.
                     for part, first, last in chunks(text):
@@ -537,7 +584,7 @@ class Corpus:
                                "inventory_complete": complete, "inventory_at": time.time()}.items():
                 self.con.execute("INSERT OR REPLACE INTO meta VALUES(?,?)", (key, json.dumps(value)))
         return dict(changed=changed, removed=removed, failed=failed, complete=complete,
-                    inventory_errors=errors, coverage=self.coverage(include_enrichment=False))
+                    inventory_errors=errors, coverage=self.coverage(include_enrichment=False, counts=False))
 
     def _invalidate_paths(self, paths, *, deadline=float('inf'), drain=True):
         if not paths or not self.con.execute("SELECT 1 FROM methods UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
@@ -597,22 +644,31 @@ class Corpus:
                 self.bump(source=True)
         return visited
 
-    def coverage(self, *, include_enrichment=True) -> dict:
-        counts = lambda table, field: {r[0]: r[1] for r in self.con.execute(f"SELECT {field},COUNT(*) FROM {table} GROUP BY {field}")}
+    def coverage(self, *, include_enrichment=True, counts=True) -> dict:
+        """File-level outcomes are cheap; the row counts are million-row scans.
+
+        `counts=False` keeps every freshness field a caller acts on and omits
+        only the three display totals.
+        """
+        group = lambda table, field: {r[0]: r[1] for r in self.con.execute(f"SELECT {field},COUNT(*) FROM {table} GROUP BY {field}")}
         total = self.con.execute("SELECT COUNT(*) FROM files").fetchone()[0]
         meta = {r[0]: r[1] for r in self.con.execute("SELECT key,value FROM meta")}
         inventory_count = int(meta.get("inventory_count", total))
         pending = self.con.execute("SELECT COUNT(*) FROM files WHERE status IN ('pending','stale')").fetchone()[0]
         result = dict(files=total, inventoried=inventory_count, pending_files=pending + max(0, inventory_count - total),
-                    outcomes=counts("files", "status"), compiler=counts("files", "compile_status"),
-                    collections=counts("files", "collection"), declarations=self.con.execute("SELECT COUNT(*) FROM declarations").fetchone()[0],
-                    documents=self.con.execute("SELECT COUNT(*) FROM documents").fetchone()[0],
-                    vectors=self.con.execute("SELECT COUNT(*) FROM vectors").fetchone()[0],
+                    outcomes=group("files", "status"), compiler=group("files", "compile_status"),
+                    collections=group("files", "collection"),
                     method_invalidation_pending=self.invalidation_pending(),
                     inventory_errors=json.loads(meta.get("inventory_errors", "[]")),
                     inventory_complete=json.loads(meta.get("inventory_complete", "false")), generation=self.generation)
+        if counts:
+            result.update(declarations=self.con.execute("SELECT COUNT(*) FROM declarations").fetchone()[0],
+                          documents=self.con.execute("SELECT COUNT(*) FROM documents").fetchone()[0],
+                          vectors=self.con.execute("SELECT COUNT(*) FROM vectors").fetchone()[0])
+        else:
+            result['row_counts_deferred'] = True
         if include_enrichment:
-            result['methods'] = counts('methods', 'status')
+            result['methods'] = group('methods', 'status')
         else:
             result['enrichment_counts_pending'] = True
         return result
@@ -659,10 +715,16 @@ class Corpus:
                     for target in row.get(field, []) or []:
                         self.con.execute("INSERT OR IGNORE INTO dependencies VALUES(?,?,?)", (did, target, kind))
                 self.con.execute("DELETE FROM documents WHERE decl_id=? AND view IN ('type','shape')", (did,))
-                for view, field in (("type", "type_text"), ("shape", "type_shape")):
+                # `type_shape` is a lean-expr-json-v1 tree (hundreds of KB per
+                # declaration). It stays on the declaration row for structural
+                # work; chunking it into a text index indexed JSON punctuation,
+                # not mathematics, and dominated both FTS and the vector store.
+                compiler_header = context_header(match["module"], row["name"], row.get("kind") or match["kind"])
+                for view, field in (("type", "type_text"),):
                     for part, _, _ in chunks(row.get(field) or ""):
                         self._document(did, path, match["module"], view, part, match["line"], match["end_line"],
-                                       dict(kind="compiler", source_hash=source_hash, status=status, toolchain=current["toolchain"]))
+                                       dict(kind="compiler", source_hash=source_hash, status=status, toolchain=current["toolchain"]),
+                                       header=compiler_header)
                 applied += 1
             self.con.execute("UPDATE files SET compile_status=? WHERE path=?", (status, path))
             if applied:
@@ -682,7 +744,7 @@ class Corpus:
         return out
 
     def search(self, query: str, *, views=("statement", "type"), limit=100, any_terms=False,
-               exact=False, module="", exclude_modules=(), deadline=float("inf")) -> list[dict]:
+               exact=False, module="", exclude_modules=(), scope='ours', deadline=float("inf")) -> list[dict]:
         if 'method' in views and self.invalidation_pending():
             views = tuple(view for view in views if view != 'method')
         if not views:
@@ -692,6 +754,12 @@ class Corpus:
             return []
         clauses = ["document_fts MATCH ?", "d.view IN (%s)" % ",".join("?" for _ in views)]
         params = [expression, *views]
+        if scope == 'ours':
+            clauses.append(DEPENDENCY_PATH_SQL.format('d').replace('>0', '=0'))
+        elif scope == 'mathlib':
+            clauses.append("instr(d.path,'/.lake/packages/mathlib/')>0")
+        elif scope != 'all':
+            raise ValueError('scope must be one of ' + ', '.join(SCOPES))
         if module:
             clauses.append("instr(lower(d.module),lower(?))>0")
             params.append(module)

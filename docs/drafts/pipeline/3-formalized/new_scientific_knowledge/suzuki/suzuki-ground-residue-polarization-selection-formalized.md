@@ -7,14 +7,14 @@
 
 ## Lean modules
 
-- `formal/GaloisForLFunctions/RHTower/SuzukiGroundProjectionReflectionCone.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiGroundResiduePolarizationSelection.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundProjectionReflectionCone.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGroundResiduePolarizationSelection.lean`
 
 ## Formal theorem surface
 
 Every declaration below was resolved against the tree and its axiom surface checked.
 
-`GaloisForLFunctions.RHTower.SuzukiGroundProjectionReflectionCone`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiGroundProjectionReflectionCone`:
 
 ```text
 RHTower.primeArchSuzukiGroundProjection_admitted_iff_reflectionCone
@@ -28,7 +28,7 @@ RHTower.primeArchSuzukiGroundProjection_reflectionCorrelation_gt_seventySeven_di
 RHTower.primeArchSuzukiGroundProjection_reflectionDistance_sq_lt
 ```
 
-`GaloisForLFunctions.RHTower.SuzukiGroundResiduePolarizationSelection`:
+`GaloisForLFunctions.RHTower.Suzuki.SuzukiGroundResiduePolarizationSelection`:
 
 ```text
 RHTower.exists_isGreatest_suzukiDefectMatchingShiftSet_of_two_limits

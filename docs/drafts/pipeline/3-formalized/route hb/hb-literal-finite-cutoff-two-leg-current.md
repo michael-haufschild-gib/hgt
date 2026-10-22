@@ -61,7 +61,7 @@ Lean axioms only.
 
 ## Formalized (2026-09-27)
 
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFiniteCutoffTwoLegCurrent.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFiniteCutoffTwoLegCurrent.lean`
 (namespace `RHTower.D4BMPhysicalModeAction`): `contactRenormalizedCurrent`
 (`R_o = J_o + K_o N`), `modeSourceIntegral` (`I_o`), `contactRenormalizedCurrent_transport`
 (`R_o(t) - R_o(s) = -c I_o N`), `twoLegCurrent`, `twoLegCurrent_transport`

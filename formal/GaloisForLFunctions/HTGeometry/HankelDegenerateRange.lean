@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CohenMacaulayTransport
 import GaloisForLFunctions.HTGeometry.PolynomialCohenMacaulay
-import GaloisForLFunctions.RHTower.DeningerHankelHigherRankGroebner
+import GaloisForLFunctions.RHTower.Deninger.DeningerHankelHigherRankGroebner
 
 /-!
 # The degenerate range of the Hankel stratification

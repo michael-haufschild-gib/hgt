@@ -244,7 +244,7 @@ RH-bearing return operator.
 The load-bearing analytic implication and exact splitting lock are formalized unconditionally in
 
 ```text
-formal/GaloisForLFunctions/RHTower/SuzukiPhysicalLogBoundaryMomentLock.lean
+formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPhysicalLogBoundaryMomentLock.lean
 ```
 
 as:

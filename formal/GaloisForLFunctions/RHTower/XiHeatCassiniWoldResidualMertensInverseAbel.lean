@@ -1,8 +1,8 @@
 import GaloisForLFunctions.RHTower.XiHeatCassiniWoldResidualBorelTerminalClassification
 import GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory
 import GaloisForLFunctions.HTGeometry.RpowPartialSumBound
-import GaloisForLFunctions.RHTower.CCMGeneralizedVonKoch
-import GaloisForLFunctions.RHTower.CCMSharpPrimeWindowSquareEnergyWidthCollision
+import GaloisForLFunctions.RHTower.CCM.CCMGeneralizedVonKoch
+import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowSquareEnergyWidthCollision
 
 /-!
 # Wold residual inverse Abel criterion

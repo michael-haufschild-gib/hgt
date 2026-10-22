@@ -561,7 +561,7 @@ the Lean tree.  No wrapper is added while their decisive sign remains open.
 - [x] `RHTower.finitePrimeThetaCuspPacketCriticalFlux_eq_arch_sub_generator` is equation `(26)` in
   the genuine half-line `L²` pairing, with the complete generator term retained.
 - [x] Direct `lake env lean` and targeted
-  `lake build GaloisForLFunctions.RHTower.ThetaCuspFinitePrimeFluxWindow` passed.  No umbrella build
+  `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspFinitePrimeFluxWindow` passed.  No umbrella build
   was run.
 - [x] `#print axioms` for all 42 new theorems reports only `propext`, `Classical.choice`, and
   `Quot.sound`.

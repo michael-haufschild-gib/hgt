@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiWeilConstrainedKernelForm
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiWeilConstrainedKernelForm
 
 /-!
 # The constrained restricted Weil form as a Fourier multiplier

@@ -3,7 +3,7 @@
 ## Status
 
 Formalized unconditionally in
-`GaloisForLFunctions.RHTower.CCMActualHeadMatchedBoundaryCoverageSeam`.
+`GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedBoundaryCoverageSeam`.
 
 Targeted source check and exact-module build pass. Axiom audit reports only `propext`,
 `Classical.choice`, and `Quot.sound`. No RH premise, numerical certificate, added axiom, or

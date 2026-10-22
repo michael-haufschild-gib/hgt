@@ -46,7 +46,7 @@ corrected future field leaves an explicit cap contribution.
 The corpus's original pulse is supported in ingoing time `[0,1]`; this does
 not make it compact in the radial variable. The corresponding future
 identity and its independently specified cap are fixed in
-[the future reconstruction card](../../hb-eu-future-onset-pulse-reconstruction.md).
+[the future reconstruction card](hb-eu-future-onset-pulse-reconstruction.md).
 
 Source evidence: `FullSourceRadialReciprocity` supplies the absolutely
 admitted event integral and reciprocity; `OriginalRetardedIdentity` supplies
@@ -65,7 +65,7 @@ or QNM matching. Cap contact, reconstruction and the noncompact physical
 reader boundary action must still be proved for this difference.
 
 **Formal status:**
-[OriginalCausalDifference](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCausalDifference.lean),
+[OriginalCausalDifference](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalCausalDifference.lean),
 namespace `RHTower.D4BMOriginalCausalDifference`:
 `retardedResponse_eq_fullNullResponse`, `original_causal_difference`,
 `original_field_pair_integrable`, `causalSourcePair_original_fields`,

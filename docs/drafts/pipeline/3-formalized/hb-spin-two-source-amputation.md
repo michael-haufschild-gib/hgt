@@ -96,13 +96,13 @@ points, not on any Xi zero or fitted radial target.
 
 ## Formal verification
 
-Module: `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`.
 Imported by `formal/GaloisForLFunctions/RHTower.lean`; generated indexes refreshed.
 
 - Scratch `lake env lean /tmp/hb-source-amputation.qB7SLP/Amputation.lean`: passed.
-- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`:
+- Direct `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalSpinTwoAmputation.lean`:
   passed without warnings.
-- Final `lake --old build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalSpinTwoAmputation`:
+- Final `lake --old build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCanonicalSpinTwoAmputation`:
   passed, exactly one leaf compiled (49 seconds). The preceding `--old --no-build` preflight
   listed only this leaf. Cached dependency warnings were replayed; the leaf emitted none.
   Ordinary preflight listed 38 stale targets. This audit uses existing dependency artifacts;

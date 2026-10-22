@@ -48,7 +48,7 @@ problem.  Remaining work is uniquely pushed into signed canonical anomaly/coerci
 - Paper and Lean certificate:
   `../3-formalized/new_scientific_knowledge/suzuki-completed-mellin-positive-domain-no-go.md`.
 - Lean module:
-  `formal/GaloisForLFunctions/RHTower/SuzukiCompletedMellinPositiveDomainNoGo.lean`.
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCompletedMellinPositiveDomainNoGo.lean`.
 - Build passed 2026-07-22; key theorems use only standard Lean axioms.
 - Full Suzuki lane is not retired: signed Burnol anomaly remains a logically live source class.
 

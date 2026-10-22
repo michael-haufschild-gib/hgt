@@ -5,7 +5,7 @@ import GaloisForLFunctions.HTGeometry.DigammaFieldValuationRational
 import GaloisForLFunctions.HTGeometry.PolynomialWeightedValuationBoundary
 import GaloisForLFunctions.HTGeometry.IteratedDerivTranslate
 import GaloisForLFunctions.HTGeometry.RemotePairEscapeGauge
-import GaloisForLFunctions.RHTower.DeningerArithmeticCompactOpen
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticCompactOpen
 
 /-!
 # Symmetry-complete remote passport surgery

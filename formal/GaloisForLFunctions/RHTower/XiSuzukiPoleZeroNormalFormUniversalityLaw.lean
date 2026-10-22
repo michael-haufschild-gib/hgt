@@ -1,7 +1,7 @@
-import GaloisForLFunctions.RHTower.SuzukiAdmissibleTwoShiftAffineSewing
-import GaloisForLFunctions.RHTower.SuzukiCarlemanJumpEulerDefectWeld
-import GaloisForLFunctions.RHTower.SuzukiOppositeShiftCrossSewnExterior
-import GaloisForLFunctions.RHTower.SuzukiShiftedXiTargetFlatPencil
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiAdmissibleTwoShiftAffineSewing
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiCarlemanJumpEulerDefectWeld
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiOppositeShiftCrossSewnExterior
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiShiftedXiTargetFlatPencil
 
 /-!
 # Xi--Suzuki pole--zero normal-form universality

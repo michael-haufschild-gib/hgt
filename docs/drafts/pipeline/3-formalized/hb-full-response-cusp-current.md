@@ -172,9 +172,9 @@ extinction and RH remain open.
 ## Formal validation
 
 Five definitions and eight public theorems are closed in
-[ThetaCuspHawkingBMQuarticFullResponseCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMQuarticFullResponseCurrent.lean).
+[ThetaCuspHawkingBMQuarticFullResponseCurrent.lean](../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMQuarticFullResponseCurrent.lean).
 The assembled scratch passed without diagnostics. The exact cached
-392-line leaf audit then passed `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMQuarticFullResponseCurrent`
+392-line leaf audit then passed `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMQuarticFullResponseCurrent`
 in 134 seconds, without resource overrides. One umbrella import was added;
 no umbrella or full build was run. Source SHA256:
 `f68adba5bdee434d4ea3cdc4d703c4e3d2faee82ce27336692b9ec3ffcbf118a`.

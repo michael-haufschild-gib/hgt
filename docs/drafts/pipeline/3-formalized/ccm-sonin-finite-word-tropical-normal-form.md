@@ -87,10 +87,10 @@ zero/live interval state faithfully, and adjunction supplies its canonical inver
 
 The corpus proves the complete theorem without project axioms or analytic interfaces in:
 
-- `formal/GaloisForLFunctions/RHTower/CCMSoninFiniteWordNormalForm.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMSoninFiniteWordFaithfulness.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMSoninInverseSemigroup.lean`;
-- `formal/GaloisForLFunctions/RHTower/CCMSoninPathTropicalMemory.lean`.
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninFiniteWordNormalForm.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninInverseSemigroup.lean`;
+- `formal/GaloisForLFunctions/RHTower/CCM/CCMSoninPathTropicalMemory.lean`.
 
 The capstones are:
 

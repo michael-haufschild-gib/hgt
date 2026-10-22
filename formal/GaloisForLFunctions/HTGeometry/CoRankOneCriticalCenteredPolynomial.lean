@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.CoRankOneCenteredObservationCoordinates
 import GaloisForLFunctions.HTGeometry.RankOneCriticalCenteredPolynomial
-import GaloisForLFunctions.HTGeometry.CriticalReciprocalNumerator
+import GaloisForLFunctions.HTGeometry.Critical.Reciprocal.Numerator
 
 /-!
 # The actual co-rank-one critical extension as a centered generic polynomial

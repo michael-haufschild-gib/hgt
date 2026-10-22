@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMIntegerLogGapCrossBound
-import GaloisForLFunctions.RHTower.CCMThetaModulusObstruction
+import GaloisForLFunctions.RHTower.CCM.CCMIntegerLogGapCrossBound
+import GaloisForLFunctions.RHTower.CCM.CCMThetaModulusObstruction
 
 /-!
 # Decay of the full Weil polarization across complete integer-log gaps

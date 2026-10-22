@@ -103,11 +103,11 @@ Therefore it cannot be used as terminal Suzuki verdict.
 ## Lean
 
 - `formal/GaloisForLFunctions/HTGeometry/GeometricPhaseLightCoercivity.lean`
-- `formal/GaloisForLFunctions/RHTower/SuzukiValuationDepthLightCoercivity.lean`
+- `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiValuationDepthLightCoercivity.lean`
 
 Direct checks:
 
 ```text
 lake env lean GaloisForLFunctions/HTGeometry/GeometricPhaseLightCoercivity.lean
-lake env lean GaloisForLFunctions/RHTower/SuzukiValuationDepthLightCoercivity.lean
+lake env lean GaloisForLFunctions/RHTower/Suzuki/SuzukiValuationDepthLightCoercivity.lean
 ```

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.SuzukiRectangularWardDefectBoundedness
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiRectangularWardDefectBoundedness
 
 /-!
 # The source-energy freedom in the Ward-defect criterion is vacuous, and the prime second

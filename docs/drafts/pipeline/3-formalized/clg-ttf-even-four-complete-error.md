@@ -113,6 +113,6 @@ This is the actual canonical quadratic form, bounded by a finite retained expres
 
 ## Lean verification
 
-Eight new modules: `HTGeometry/LogarithmicLaplaceScoreTwelve`; `RHTower/ThetaCuspDeepTailExtendedSupport`, `ThetaCuspDeepTailPeakTwelve`, `ThetaCuspDeepTailCoolingTwelve`, `ThetaCuspTwoAtomSourceTwelve`, `ThetaCuspTwoAtomReflectedTwelve`, `ThetaCuspTwoAtomCompensationError`, `ThetaCuspEvenFourTwoAtomError`.
+Eight new modules: `HTGeometry/LogarithmicLaplaceScoreTwelve`; `RHTower/ThetaCusp/ThetaCuspDeepTailExtendedSupport`, `ThetaCuspDeepTailPeakTwelve`, `ThetaCuspDeepTailCoolingTwelve`, `ThetaCuspTwoAtomSourceTwelve`, `ThetaCuspTwoAtomReflectedTwelve`, `ThetaCuspTwoAtomCompensationError`, `ThetaCuspEvenFourTwoAtomError`.
 
 Each was checked in scratch with one foreground `lake env lean` process at a time. Only needed oleans were emitted. The sharper peak bound was propagated through the four affected new error modules and checked. Imports are wired into the umbrellas without umbrella or full builds. Six new capstones were audited once; their only axioms are `propext`, `Classical.choice` and `Quot.sound`. The formal lint gate passed.

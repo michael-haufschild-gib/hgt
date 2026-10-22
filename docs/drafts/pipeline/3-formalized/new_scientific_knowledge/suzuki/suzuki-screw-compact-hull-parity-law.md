@@ -15,7 +15,7 @@
   `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewRecurrence.lean`;
   `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewDistribution.lean`;
   `formal/GaloisForLFunctions/HTGeometry/SummableSpectrumScrewHilbert.lean`;
-  `formal/GaloisForLFunctions/RHTower/SuzukiScrewCompactHullParityLaw.lean`
+  `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiScrewCompactHullParityLaw.lean`
 
 ## 1. Significance and exact novelty boundary
 
@@ -451,7 +451,7 @@ sufficient but not necessary.
 
 ### Suzuki specialization
 
-`RHTower/SuzukiScrewCompactHullParityLaw.lean` instantiates the universal laws at the
+`RHTower/Suzuki/SuzukiScrewCompactHullParityLaw.lean` instantiates the universal laws at the
 Suzuki weights `a_gamma = 2 m_gamma / gamma^2`, giving
 `suzukiScrewFunction_liminf_eq_zero`, `suzukiScrewFunction_limsup_eq`,
 `closure_suzukiScrewFunction_image_Ici`, `exists_window_suzukiScrewFunction_near`,

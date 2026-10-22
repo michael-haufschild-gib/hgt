@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.CausalL2LaplaceHolomorphy
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePShiftedAnalyticRigidity
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourcePoleResidue
-import GaloisForLFunctions.RHTower.SuzukiScrewNonintegrability
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiScrewNonintegrability
 
 /-!
 # The literal Route-P ray has infinite critical square energy

@@ -23,7 +23,7 @@ The proof uses the existing kernel's actual first and second derivatives and its
 
 ## Lean statements
 
-Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSpinTwoKernelPrimitive`.
+Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSpinTwoKernelPrimitive`.
 Namespace: `RHTower.D4BMSpinTwoKernel`.
 
 - `primitive_derivatives`: the two actual derivative identities.
@@ -40,6 +40,6 @@ Those native-circle, time-transfer and integrated-limit statements are not prove
 
 ## Validation
 
-The new leaf passed foreground `lake env lean` in scratch. Its final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSpinTwoKernelPrimitive`, with 2623 existing own-module caches and 11 package caches frozen. It built the new leaf in 80 seconds and reported three jobs. No old dependency, full or umbrella build ran.
+The new leaf passed foreground `lake env lean` in scratch. Its final audit used only `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSpinTwoKernelPrimitive`, with 2623 existing own-module caches and 11 package caches frozen. It built the new leaf in 80 seconds and reported three jobs. No old dependency, full or umbrella build ran.
 
 Only the five new public theorems received `#print axioms` checks. Each reports exactly `propext`, `Classical.choice`, and `Quot.sound`. Installed source, olean and ilean are byte-identical to the audited files. One umbrella import is wired without building the umbrella. `scripts/formal_tools.py lint` passed with existing large-file warnings. A module-filtered lexical search returned all eight declarations, including all five public theorems.

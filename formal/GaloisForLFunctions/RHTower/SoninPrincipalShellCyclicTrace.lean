@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSoninFiniteWordFaithfulness
+import GaloisForLFunctions.RHTower.CCM.CCMSoninFiniteWordFaithfulness
 import GaloisForLFunctions.RHTower.SoninSemilocalRelativeTrace
 
 /-!

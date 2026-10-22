@@ -1,7 +1,7 @@
 import GaloisForLFunctions.HTGeometry.LoweringChainIndependence
 import GaloisForLFunctions.RHTower.PaperThetaSpatialModule
 import GaloisForLFunctions.RHTower.PaperThetaConfluentAdmission
-import GaloisForLFunctions.RHTower.DeningerMeyerHedenmalmSourceRealization
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerHedenmalmSourceRealization
 
 /-! # Faithful finite source realization in native theta functions
 

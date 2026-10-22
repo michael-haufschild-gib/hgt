@@ -67,15 +67,15 @@
               {
                 "id": "8e39bfe503ad96ac26726648d79b6e2276cffc7cdbce15bb3e0f222fcbfbef9e",
                 "name": "RHTower.HedenmalmClosedWeightedDerivative.thetaShiftedWeightedDerivative_adjoint_kernel",
-                "module": "GaloisForLFunctions.RHTower.HedenmalmShiftedCokernel",
-                "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmShiftedCokernel.lean",
+                "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmShiftedCokernel",
+                "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedCokernel.lean",
                 "line": 420
               },
               {
                 "id": "1fbb35e296a3321a4e74eb89b937e8a570139ab4785d55d4dce5f94272e8db33",
                 "name": "RHTower.HedenmalmClosedWeightedDerivative.thetaWeightedDerivative_adjoint_kernel",
-                "module": "GaloisForLFunctions.RHTower.HedenmalmClosedWeightedDerivative",
-                "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmClosedWeightedDerivative.lean",
+                "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmClosedWeightedDerivative",
+                "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmClosedWeightedDerivative.lean",
                 "line": 571
               }
             ],
@@ -118,16 +118,16 @@
     "candidate_lemmas": [
       {
         "name": "RHTower.HedenmalmClosedWeightedDerivative.thetaShiftedWeightedDerivative_adjoint_kernel",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmShiftedCokernel",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmShiftedCokernel.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmShiftedCokernel",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmShiftedCokernel.lean",
         "line": 420,
         "statement": "theorem thetaShiftedWeightedDerivative_adjoint_kernel (α : ℂ) :\n    (thetaShiftedWeightedDerivative α).adjoint.kernel =\n      ℂ ∙ thetaCokernelVector α",
         "compiler_status": "source_only"
       },
       {
         "name": "RHTower.HedenmalmClosedWeightedDerivative.thetaWeightedDerivative_adjoint_kernel",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmClosedWeightedDerivative",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmClosedWeightedDerivative.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmClosedWeightedDerivative",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmClosedWeightedDerivative.lean",
         "line": 571,
         "statement": "theorem thetaWeightedDerivative_adjoint_kernel :\n    thetaWeightedDerivative.adjoint.kernel = ℂ ∙ pinnedOne",
         "compiler_status": "source_only"
@@ -190,8 +190,8 @@
       },
       {
         "name": "RHTower.HedenmalmThetaSource.adjoint_kernelOperator_eq",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmTransposeKernelField",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmTransposeKernelField.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmTransposeKernelField",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmTransposeKernelField.lean",
         "line": 482,
         "statement": "theorem adjoint_kernelOperator_eq (S : PositiveDensitySource) (hfin : HasFiniteKernelEnergy S) :\n    ContinuousLinearMap.adjoint\n        (kernelOperator (E := Lp ℂ 2 unitIntervalMeasure) unitIntervalMeasure\n          (pinnedKernelL2 S hfin))\n      = kernelOperator (E := Lp ℂ 2 unitIntervalMeasure) unitIntervalMeasure\n          (transposeKernelL2 S hfin)",
         "compiler_status": "source_only"
@@ -309,8 +309,8 @@
       },
       {
         "name": "RHTower.ccmGuinandWeilContinuousSourceCoordinateObserver",
-        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilContinuousSourceQuotient",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilContinuousSourceQuotient",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilContinuousSourceQuotient.lean",
         "line": 60,
         "statement": "def ccmGuinandWeilContinuousSourceCoordinateObserver (N : ℕ)\n    (source : CCMGuinandWeilContinuousSource) : CCMGuinandWeilSourceCoordinates N",
         "compiler_status": "source_only",
@@ -344,8 +344,8 @@
       },
       {
         "name": "RHTower.ccmGuinandWeilContinuousDiagonalValue",
-        "module": "GaloisForLFunctions.RHTower.CCMGuinandWeilContinuousSourceQuotient",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMGuinandWeilContinuousSourceQuotient.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilContinuousSourceQuotient",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilContinuousSourceQuotient.lean",
         "line": 74,
         "statement": "def ccmGuinandWeilContinuousDiagonalValue\n    (source : CCMGuinandWeilContinuousSource) (n : ℤ) : ℝ",
         "compiler_status": "source_only",
@@ -373,8 +373,8 @@
       },
       {
         "name": "RHTower.HBXiPeierlsUnitDiagonalSourceIncidence",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingDiagonalPeierlsSourceIncidenceRigidity.lean",
         "line": 166,
         "statement": "def HBXiPeierlsUnitDiagonalSourceIncidence\n    (n : ℕ) (w : XiZeroCopy → ℂ) (q : XiZeroCopy) : Prop",
         "compiler_status": "source_only",
@@ -406,8 +406,8 @@
       },
       {
         "name": "RHTower.HedenmalmQuantile.sourceToLebesgue",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmQuantileNormalForm",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmQuantileNormalForm.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileNormalForm",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmQuantileNormalForm.lean",
         "line": 60,
         "statement": "def sourceToLebesgue : (SourceSpace S) ≃ₗᵢ[ℂ] Lp ℂ 2 (volume : Measure ℝ)",
         "compiler_status": "source_only",
@@ -535,8 +535,8 @@
       },
       {
         "name": "RHTower.HedenmalmThetaSource.memLp_sourceModeF_thetaSource_weighted",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmThetaCompactDivisorEigenmode",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaCompactDivisorEigenmode.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaCompactDivisorEigenmode",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaCompactDivisorEigenmode.lean",
         "line": 261,
         "statement": "theorem memLp_sourceModeF_thetaSource_weighted {z : ℂ} (hz : |z.im| < 1)\n    (hzero : xiC thetaSource z = 0) :\n    MemLp (sourceModeF thetaSource z) 2\n      ((volume : Measure ℝ).withDensity (realDensity (sourceWeight thetaSource)))",
         "compiler_status": "source_only",
@@ -600,8 +600,8 @@
       },
       {
         "name": "RHTower.D4BMZeroDelayCurrent.sourceMoment_eta_endpoint",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMZeroDelayCurrent",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMZeroDelayCurrent.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMZeroDelayCurrent",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMZeroDelayCurrent.lean",
         "line": 431,
         "statement": "theorem sourceMoment_eta_endpoint (s : ℂ) :\n    eta s*sourceMoment s 1 = 1+4*s*profile s 1",
         "compiler_status": "source_only",
@@ -732,8 +732,8 @@
       },
       {
         "name": "RHTower.hbXiPeierlsArbitraryResponseProfile_has_weightedSkewRealization",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMSourceProbeRangeClassification",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMSourceProbeRangeClassification.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMSourceProbeRangeClassification",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMSourceProbeRangeClassification.lean",
         "line": 125,
         "statement": "theorem hbXiPeierlsArbitraryResponseProfile_has_weightedSkewRealization\n    (response : HBXiPeierlsCarrier → HBXiPeierlsCarrier) :\n    ∃ w : XiZeroCopy → ℂ,\n      (∀ f g : HBXiPeierlsCarrier,\n        hbXiPeierlsPairing (hbXiPeierlsWeightedPropagator w f) g =\n          -hbXiPeierlsPairing (hbXiPeierlsWeightedPropagator w g) f) ∧\n      ∀ q, hbXiPeierlsSourceProbeProfile\n          (fun r => hbXiPeierlsWeightedPropagator w (hbXiPeierlsPlusSource 1 r)) q =\n        hbXiPeierlsSourceProbeProfile\n          (fun r => response (hbXiPeierlsPlusSource 1 r)) q",
         "compiler_status": "source_only",
@@ -833,8 +833,8 @@
       },
       {
         "name": "GaloisForLFunctions.RHTower.unitRieszCompletedSourceResponse_laplace",
-        "module": "GaloisForLFunctions.RHTower.CCMUnitRieszCompletedSourceLaplaceWeld",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMUnitRieszCompletedSourceLaplaceWeld.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMUnitRieszCompletedSourceLaplaceWeld",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMUnitRieszCompletedSourceLaplaceWeld.lean",
         "line": 111,
         "statement": "theorem unitRieszCompletedSourceResponse_laplace {z : ℂ} (hz : 0 < z.re) :\n    (∫ t in Ioi (0 : ℝ), Complex.exp (-(z * (t : ℂ))) * unitRieszCompletedSourceResponse t) =\n      (3 * (z + ((3 / 2 : ℝ) : ℂ))⁻¹ - (3 / 2) * (z + ((1 : ℝ) : ℂ))⁻¹) *\n        ∫ h in Ioi (0 : ℝ),\n          Complex.exp (-(z * (h : ℂ))) * ((unitRieszCompletedCurrent h : ℝ) : ℂ)",
         "compiler_status": "source_only",
@@ -992,8 +992,8 @@
               {
                 "id": "335cd9583a5a39cbfe3b93ccff1f22d89380d9a86c574392faa48356e92eaf53",
                 "name": "RHTower.deningerSymm_of_closed",
-                "module": "GaloisForLFunctions.RHTower.DeningerClosedOneForm",
-                "relpath": "formal/GaloisForLFunctions/RHTower/DeningerClosedOneForm.lean",
+                "module": "GaloisForLFunctions.RHTower.Deninger.DeningerClosedOneForm",
+                "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerClosedOneForm.lean",
                 "line": 51
               },
               {
@@ -1059,8 +1059,8 @@
       },
       {
         "name": "RHTower.deningerSymm_of_closed",
-        "module": "GaloisForLFunctions.RHTower.DeningerClosedOneForm",
-        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerClosedOneForm.lean",
+        "module": "GaloisForLFunctions.RHTower.Deninger.DeningerClosedOneForm",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerClosedOneForm.lean",
         "line": 51,
         "statement": "theorem deningerSymm_of_closed {ω : E → E [⋀^Fin 1]→L[ℂ] ℂ} {x : E} (hana : AnalyticAt ℂ ω x)\n    (hclosed : extDeriv ω x = 0) (u v : E) :\n    fderiv ℂ (deningerFormFunctional ω) x u v = fderiv ℂ (deningerFormFunctional ω) x v u",
         "compiler_status": "source_only"
@@ -1107,8 +1107,8 @@
       },
       {
         "name": "RHTower.D4BMModularCore.fieldVector",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMModularEnergyDomain",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMModularEnergyDomain.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMModularEnergyDomain",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMModularEnergyDomain.lean",
         "line": 21,
         "statement": "def fieldVector (f : CoreField) : Space",
         "compiler_status": "source_only"
@@ -1123,8 +1123,8 @@
       },
       {
         "name": "RHTower.D4BMVectorLinearEquation.field",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingBMVectorLinearEinsteinEquation",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMVectorLinearEinsteinEquation.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMVectorLinearEinsteinEquation",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMVectorLinearEinsteinEquation.lean",
         "line": 20,
         "statement": "def field (s a : ℂ) (V : D4BMHorizon.Covector) (x : Fin 4 → ℝ) :\n    Matrix (Fin 4) (Fin 4) ℂ",
         "compiler_status": "source_only"
@@ -1171,8 +1171,8 @@
       },
       {
         "name": "RHTower.teukolskyResonantOperatorInsertion_gaugeInvariant",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingTeukolskyMassMemoryDoublePole",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingTeukolskyMassMemoryDoublePole.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingTeukolskyMassMemoryDoublePole",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingTeukolskyMassMemoryDoublePole.lean",
         "line": 49,
         "statement": "theorem teukolskyResonantOperatorInsertion_gaugeInvariant\n    {V : Type*} [AddCommGroup V] [Module ℂ V]\n    (L deltaL X : V →ₗ[ℂ] V) (ell : V →ₗ[ℂ] ℂ) (psi : V)\n    (hright : L psi = 0) (hleft : ∀ v, ell (L v) = 0) :\n    ell ((deltaL + L.comp X - X.comp L) psi) = ell (deltaL psi)",
         "compiler_status": "source_only"
@@ -1825,8 +1825,8 @@
       },
       {
         "name": "RHTower.suzukiPositionTorquePrimeUpperEndCarrier_differentialIndependent_over_localEulerResidueFusionCompletion",
-        "module": "GaloisForLFunctions.RHTower.SuzukiPositionTorquePrimeClockIrreducibility",
-        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiPositionTorquePrimeClockIrreducibility.lean",
+        "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiPositionTorquePrimeClockIrreducibility",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiPositionTorquePrimeClockIrreducibility.lean",
         "line": 130,
         "statement": "theorem suzukiPositionTorquePrimeUpperEndCarrier_differentialIndependent_over_localEulerResidueFusionCompletion\n    {ι : Type u} [Fintype ι]\n    (A : ι → Type u) [∀ i, Fintype (A i)] [∀ i, DecidableEq (A i)]\n    [∀ i, One (A i)]\n    [TopologicalSpace (∀ i, A i)] [DiscreteTopology (∀ i, A i)]\n    (y : Nat.Primes → ∀ i, A i)\n    (hy : CofiniteTailDenseOn y Set.univ) :\n    DifferentialIndependent\n      (primeResidueValuationLocalEulerFusionCompletionField A y)\n      (fun _ : Unit => suzukiPositionTorquePrimeUpperEndCarrier)",
         "compiler_status": "source_only",
@@ -2077,8 +2077,8 @@
       },
       {
         "name": "RHTower.thetaCusp_evenTaylorTerm_le_cosh",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspContinuousHalfDensityResidualTail",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspContinuousHalfDensityResidualTail.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspContinuousHalfDensityResidualTail",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspContinuousHalfDensityResidualTail.lean",
         "line": 748,
         "statement": "theorem thetaCusp_evenTaylorTerm_le_cosh {t : ℝ} (ht : 0 ≤ t) (j : ℕ) :\n    (t / 2) ^ (2 * j) / (Nat.factorial (2 * j) : ℝ) ≤ Real.cosh (t / 2)",
         "compiler_status": "source_only"
@@ -2117,8 +2117,8 @@
       },
       {
         "name": "GaloisForLFunctions.RHTower.exp_weight_block_le",
-        "module": "GaloisForLFunctions.RHTower.SuzukiFlatFluxWeightedL2",
-        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiFlatFluxWeightedL2.lean",
+        "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiFlatFluxWeightedL2",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiFlatFluxWeightedL2.lean",
         "line": 28,
         "statement": "theorem exp_weight_block_le {δ : ℝ} (hδ : 0 ≤ δ) {n : ℤ} {L : ℝ}\n    (hL : L ∈ Ico (n : ℝ) ((n : ℝ) + 1)) :\n    ENNReal.ofReal (Real.exp (2 * δ * L))\n      ≤ ENNReal.ofReal (Real.exp (2 * δ * ((n : ℝ) + 1)))",
         "compiler_status": "source_only"
@@ -2159,8 +2159,8 @@
     "source_arguments": [
       {
         "name": "RHTower.ccmXiScrew_all_exponential_moments_of_firstClockSource",
-        "module": "GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterraReflection",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean",
         "line": 1733,
         "statement": "theorem ccmXiScrew_all_exponential_moments_of_firstClockSource\n    (hsource : CCMFirstClockPublishedSourceNonnegative) :\n    CCMXiScrewAllExponentialMoments",
         "compiler_status": "source_only",
@@ -2223,8 +2223,8 @@
       },
       {
         "name": "RHTower.ccmXiScrewAllExponentialMoments_iff_rh",
-        "module": "GaloisForLFunctions.RHTower.CCMFirstClockVolterraReflection",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockVolterraReflection.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockVolterraReflection",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockVolterraReflection.lean",
         "line": 1778,
         "statement": "theorem ccmXiScrewAllExponentialMoments_iff_rh :\n    CCMXiScrewAllExponentialMoments ↔ RiemannHypothesis",
         "compiler_status": "source_only",
@@ -2319,8 +2319,8 @@
       },
       {
         "name": "RHTower.ccmW02CorrelationPairing_centeredNegativeSineMode",
-        "module": "GaloisForLFunctions.RHTower.CCMConnesConsaniW02Correction",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMConnesConsaniW02Correction.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMConnesConsaniW02Correction",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMConnesConsaniW02Correction.lean",
         "line": 557,
         "statement": "theorem ccmW02CorrelationPairing_centeredNegativeSineMode\n    (L : CCMPositiveAperture) (m n : ℕ) :\n    ccmW02CorrelationPairing (ccmCenteredNegativeSineMode L m)\n        (ccmCenteredNegativeSineMode L n) =\n      ccmW02PublishedOddValue L m n",
         "compiler_status": "source_only",
@@ -2487,8 +2487,8 @@
       },
       {
         "name": "RHTower.CCMXiScrewAllExponentialMoments",
-        "module": "GaloisForLFunctions.RHTower.CCMFirstClockLandauCompleteness",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMFirstClockLandauCompleteness.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMFirstClockLandauCompleteness",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockLandauCompleteness.lean",
         "line": 723,
         "statement": "def CCMXiScrewAllExponentialMoments : Prop",
         "compiler_status": "source_only",
@@ -2580,8 +2580,8 @@
       },
       {
         "name": "RHTower.integrable_pow_mul_exp_neg_thetaCuspDeepTailSpectralMeasure",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspC5SharpTailMeasures",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspC5SharpTailMeasures.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspC5SharpTailMeasures",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspC5SharpTailMeasures.lean",
         "line": 81,
         "statement": "theorem integrable_pow_mul_exp_neg_thetaCuspDeepTailSpectralMeasure (m : ℕ) {B : ℝ}\n    (hB : 0 < B) :\n    Integrable (fun t : ℝ => t ^ m * Real.exp (-B * t)) thetaCuspDeepTailSpectralMeasure",
         "compiler_status": "source_only",
@@ -2677,8 +2677,8 @@
       },
       {
         "name": "RHTower.SuzukiSmoothZeroMeanTest.translate_apply",
-        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilPolarBombieriYoshidaSharp",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilPolarBombieriYoshidaSharp.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilPolarBombieriYoshidaSharp",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilPolarBombieriYoshidaSharp.lean",
         "line": 43,
         "statement": "@[simp] theorem SuzukiSmoothZeroMeanTest.translate_apply {a : ℝ} (φ : SuzukiSmoothZeroMeanTest a)\n    (s : ℝ) {l r a' : ℝ} (hsupp : Function.support (φ : ℝ → ℂ) ⊆ Icc l r)\n    (hfit : Icc (l - s) (r - s) ⊆ Icc (-a') a') (x : ℝ) :\n    (φ.translate s hsupp hfit : ℝ → ℂ) x = (φ : ℝ → ℂ) (x + s)",
         "compiler_status": "source_only",
@@ -2979,16 +2979,16 @@
       },
       {
         "name": "RHTower.pwSingularWeightedReflection",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo.lean",
         "line": 112,
         "statement": "def pwSingularWeightedReflection (f : ℝ → ℝ) (x : ℝ) : ℝ",
         "compiler_status": "source_only"
       },
       {
         "name": "RHTower.ccmArchimedeanWeightedToL2_reflection",
-        "module": "GaloisForLFunctions.RHTower.CCMRestrictedWeilGroundParity",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRestrictedWeilGroundParity.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMRestrictedWeilGroundParity",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRestrictedWeilGroundParity.lean",
         "line": 80,
         "statement": "theorem ccmArchimedeanWeightedToL2_reflection\n    (f : CCMArchimedeanFourierL2) :\n    ccmArchimedeanWeightedToL2 (ccmArchimedeanFourierReflection f) =\n      l2Reflection (ccmArchimedeanWeightedToL2 f)",
         "compiler_status": "source_only"
@@ -3003,8 +3003,8 @@
       },
       {
         "name": "RHTower.pwSingularWeightedReflection_gauge_conjugacy",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularCarrierRescalingGaugeNoGo.lean",
         "line": 122,
         "statement": "theorem pwSingularWeightedReflection_gauge_conjugacy\n    (f : ℝ → ℝ) {x : ℝ} (hx : 0 < x) :\n    pwSingularGaugeMultiplication\n        (pwBareReciprocalReflection\n          (pwSingularGaugeInverseMultiplication f)) x =\n      pwSingularWeightedReflection f x",
         "compiler_status": "source_only"
@@ -3035,24 +3035,24 @@
       },
       {
         "name": "RHTower.pwLogWeightedEnergyDensity_reflection_neg",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo.lean",
         "line": 293,
         "statement": "theorem pwLogWeightedEnergyDensity_reflection_neg\n    {w : ℝ → ℝ} (hw : PWLogReflectionUnitaryDensityLaw w)\n    (f : ℝ → ℝ) (t : ℝ) :\n    pwLogWeightedEnergyDensity w (pwLogSingularWeightedReflection f) (-t) =\n      pwLogWeightedEnergyDensity w f t",
         "compiler_status": "source_only"
       },
       {
         "name": "GaloisForLFunctions.RHTower.ccmRationalPeriodicWeightedEulerIterate_reflection",
-        "module": "GaloisForLFunctions.RHTower.CCMRationalPeriodicWeightedStrongLogDecay",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMRationalPeriodicWeightedStrongLogDecay.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMRationalPeriodicWeightedStrongLogDecay",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMRationalPeriodicWeightedStrongLogDecay.lean",
         "line": 429,
         "statement": "theorem ccmRationalPeriodicWeightedEulerIterate_reflection\n    (M : ℕ) [NeZero M] (w : Fin M → ℂ)\n    (f : CCMRationalArchimedeanSchwartz) (k : ℕ) (t : ℝ) :\n    ccmRationalPeriodicWeightedLogTrace M w\n        (RHTower.deningerMeyerEulerIterate k f) t =\n      ccmRationalPeriodicWeightedLogReflection M w\n        (RHTower.deningerMeyerReflectedEulerIterate k (𝓕 f)) t",
         "compiler_status": "source_only"
       },
       {
         "name": "RHTower.integral_pwLogWeightedEnergyDensity_reflection",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularGaugeConnectionIndexNoGo.lean",
         "line": 322,
         "statement": "theorem integral_pwLogWeightedEnergyDensity_reflection\n    {w : ℝ → ℝ} (hw : PWLogReflectionUnitaryDensityLaw w)\n    (f : ℝ → ℝ) :\n    ∫ t, pwLogWeightedEnergyDensity w (pwLogSingularWeightedReflection f) t =\n      ∫ t, pwLogWeightedEnergyDensity w f t",
         "compiler_status": "source_only"
@@ -3116,8 +3116,8 @@
       },
       {
         "name": "RHTower.meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource",
-        "module": "GaloisForLFunctions.RHTower.CCMInverseTiltedDyadicPrimeTomography",
-        "relpath": "formal/GaloisForLFunctions/RHTower/CCMInverseTiltedDyadicPrimeTomography.lean",
+        "module": "GaloisForLFunctions.RHTower.CCM.CCMInverseTiltedDyadicPrimeTomography",
+        "relpath": "formal/GaloisForLFunctions/RHTower/CCM/CCMInverseTiltedDyadicPrimeTomography.lean",
         "line": 1048,
         "statement": "theorem meromorphicOrderAt_and_trailingCoeffAt_inverseTiltedDyadicContinuedSource\n    (rho : XiDivisorSupport) :\n    meromorphicOrderAt inverseTiltedDyadicContinuedSource\n        (inverseTiltedXiPole rho) = ((-1 : ℤ) : WithTop ℤ) ∧\n      meromorphicTrailingCoeffAt inverseTiltedDyadicContinuedSource\n          (inverseTiltedXiPole rho) =\n        2 * inverseTiltedDyadicMellin (inverseTiltedXiPole rho) *\n          (inverseTiltedXiMultiplicity rho : ℂ)",
         "compiler_status": "source_only",
@@ -3152,8 +3152,8 @@
       },
       {
         "name": "RHTower.deningerGammaSixCofinalFinitePacketTrace_single",
-        "module": "GaloisForLFunctions.RHTower.DeningerGammaSixCofinalSingularGraphSoninTransport",
-        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerGammaSixCofinalSingularGraphSoninTransport.lean",
+        "module": "GaloisForLFunctions.RHTower.Deninger.DeningerGammaSixCofinalSingularGraphSoninTransport",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerGammaSixCofinalSingularGraphSoninTransport.lean",
         "line": 63,
         "statement": "@[simp] theorem deningerGammaSixCofinalFinitePacketTrace_single\n    (n : ℕ) (c : ℂ) :\n    deningerGammaSixCofinalFinitePacketTrace (Finsupp.single n c) = c",
         "compiler_status": "source_only",
@@ -3182,8 +3182,8 @@
       },
       {
         "name": "RHTower.HedenmalmThetaSource.CompleteMinimalSingular.sourceHeadCoeff",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean",
         "line": 374,
         "statement": "def sourceHeadCoeff (rho : ℂ) (sigma : ℝ) (n : ℕ) : ℂ",
         "compiler_status": "source_only",
@@ -3215,8 +3215,8 @@
       },
       {
         "name": "RHTower.SuzukiCausalDepthGammaBoundedSupportRationalAssembly.schur",
-        "module": "GaloisForLFunctions.RHTower.SuzukiCausalDepthGammaBoundedSupportRationalResidueNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/SuzukiCausalDepthGammaBoundedSupportRationalResidueNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.Suzuki.SuzukiCausalDepthGammaBoundedSupportRationalResidueNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCausalDepthGammaBoundedSupportRationalResidueNoGo.lean",
         "line": 200,
         "statement": "theorem SuzukiCausalDepthGammaBoundedSupportRationalAssembly.schur\n    {A₀ A₁ B₀ B₁ C₀ C₁ D₀ D₁ : GammaOp}\n    (hA : SuzukiCausalDepthGammaBoundedSupportRationalAssembly A₀ A₁)\n    (hB : SuzukiCausalDepthGammaBoundedSupportRationalAssembly B₀ B₁)\n    (hC : SuzukiCausalDepthGammaBoundedSupportRationalAssembly C₀ C₁)\n    (hD : SuzukiCausalDepthGammaBoundedSupportRationalAssembly D₀ D₁)\n    (d₀ : SuzukiCausalDepthGammaSupportedGeneralizedInverse D₀)\n    (d₁ : SuzukiCausalDepthGammaSupportedGeneralizedInverse D₁) :\n    SuzukiCausalDepthGammaBoundedSupportRationalAssembly\n      (A₀ - (B₀ ∘L d₀.inverse) ∘L C₀)\n      (A₁ - (B₁ ∘L d₁.inverse) ∘L C₁)",
         "compiler_status": "source_only",
@@ -3345,8 +3345,8 @@
       },
       {
         "name": "RHTower.deningerBigWittCrossPairSelectedEdge_add_punctured_eq_coherent",
-        "module": "GaloisForLFunctions.RHTower.DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion",
-        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion.lean",
+        "module": "GaloisForLFunctions.RHTower.Deninger.DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerBigWittFrobeniusCrossPairSingularOneLegGraphCompletion.lean",
         "line": 260,
         "statement": "theorem deningerBigWittCrossPairSelectedEdge_add_punctured_eq_coherent\n    (a : Nat.Primes → ℂ) (s : Finset Nat.Primes)\n    (i : DeningerCalderonWittCrossPrimePacketIndex) :\n    Finsupp.single i (deningerBigWittCrossPairRightLeg a i.1.1 i.1.2) +\n        deningerBigWittCrossPairSelectedPuncturedRightLegPacket a s i =\n      deningerBigWittCrossPairFiniteRightLegPacket a s",
         "compiler_status": "source_only",
@@ -3409,8 +3409,8 @@
       },
       {
         "name": "RHTower.HedenmalmThetaSource.CompleteMinimalSingular.exists_mscPhysicalOverlapCompleteMinimalNonBesselRealization",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherCompleteMinimalSingularRealization.lean",
         "line": 682,
         "statement": "theorem exists_mscPhysicalOverlapCompleteMinimalNonBesselRealization\n    (rho : ℂ) {sigma : ℝ} (hsigma : 1 < sigma)\n    (hrho0 : 0 < rho.re) (hrho1 : rho.re ≤ 1) :\n    ∃ (modes : ℕ → H) (source overlap : H),\n      IsMSCPhysicalOverlapCompleteMinimalHilbertRealization\n        rho sigma modes source overlap ∧\n      ∀ B : ℝ, ∃ packet : Finset ℕ, ∃ x : H,\n        B * ‖x‖ ^ 2 <\n          ∑ n ∈ packet,\n            ‖inner ℂ\n              (RHTower.HedenmalmThetaSource.mscSignGaugeNormalizedMode modes n) x‖ ^ 2",
         "compiler_status": "source_only",
@@ -3443,8 +3443,8 @@
       },
       {
         "name": "RHTower.deningerCalderonWittCrossPrimeSingularCoronaClass",
-        "module": "GaloisForLFunctions.RHTower.DeningerCalderonWittCrossPrimeSingularCorona",
-        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerCalderonWittCrossPrimeSingularCorona.lean",
+        "module": "GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittCrossPrimeSingularCorona",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerCalderonWittCrossPrimeSingularCorona.lean",
         "line": 75,
         "statement": "def deningerCalderonWittCrossPrimeSingularCoronaClass :\n    DeningerCalderonWittCrossPrimePacketHilbert →ₗ[ℂ]\n      DeningerCalderonWittCrossPrimeSingularCorona",
         "compiler_status": "source_only",
@@ -3501,8 +3501,8 @@
       },
       {
         "name": "RHTower.DeningerMeyerGaussianGreen.reflectedGaussianHorizonAdmissionWeight",
-        "module": "GaloisForLFunctions.RHTower.DeningerMeyerReflectedGaussianHorizonAdmission",
-        "relpath": "formal/GaloisForLFunctions/RHTower/DeningerMeyerReflectedGaussianHorizonAdmission.lean",
+        "module": "GaloisForLFunctions.RHTower.Deninger.DeningerMeyerReflectedGaussianHorizonAdmission",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Deninger/DeningerMeyerReflectedGaussianHorizonAdmission.lean",
         "line": 136,
         "statement": "def reflectedGaussianHorizonAdmissionWeight (q : XiZeroCopy) : ℂ",
         "compiler_status": "source_only",
@@ -3530,8 +3530,8 @@
       },
       {
         "name": "RHTower.HedenmalmThetaSource.thetaMetricBound_nonneg",
-        "module": "GaloisForLFunctions.RHTower.HedenmalmThetaSourceUnconditional",
-        "relpath": "formal/GaloisForLFunctions/RHTower/HedenmalmThetaSourceUnconditional.lean",
+        "module": "GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaSourceUnconditional",
+        "relpath": "formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSourceUnconditional.lean",
         "line": 171,
         "statement": "theorem thetaMetricBound_nonneg : 0 ≤ thetaBound / thetaSource.mass",
         "compiler_status": "source_only",
@@ -3621,8 +3621,8 @@
       },
       {
         "name": "RHTower.pwSingularReflectionEnergy_min_coefficient_pos",
-        "module": "GaloisForLFunctions.RHTower.ThetaCuspHawkingParikhWilczekSingularUniformlyConditionedEnergyBundleNoGo",
-        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekSingularUniformlyConditionedEnergyBundleNoGo.lean",
+        "module": "GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingParikhWilczekSingularUniformlyConditionedEnergyBundleNoGo",
+        "relpath": "formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekSingularUniformlyConditionedEnergyBundleNoGo.lean",
         "line": 144,
         "statement": "theorem pwSingularReflectionEnergy_min_coefficient_pos\n    {x : ℝ} (hx : 0 < x) :\n    0 < min (pwSingularReflectionGain x)⁻¹\n      (pwSingularReflectionGain x)",
         "compiler_status": "source_only",

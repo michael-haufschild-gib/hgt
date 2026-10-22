@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMPrimePolePolynomialBoundary
+import GaloisForLFunctions.RHTower.CCM.CCMPrimePolePolynomialBoundary
 import GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact
 
 /-!

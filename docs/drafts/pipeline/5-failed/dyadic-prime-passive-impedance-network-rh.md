@@ -323,20 +323,20 @@ Unconditional Lean formalization is complete:
 - `GaloisForLFunctions.HTGeometry.DirichletHalfPlaneSignRigidity` proves finite-abscissa stability
   under power twists, normalized first-mode imaginary limits, peeled/raw imaginary equality for
   real coefficients, and both eventual sign orientations for an arbitrary first surviving mode.
-- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` proves the literal window identity
+- `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPassiveNoGo` proves the literal window identity
   `dyadicWeightedPrimeWindow_two`, exact coefficient identity
   `dyadicSharpPrimeSourceCoefficient_two`, its strict positivity, the two exact dyadic high-line
   signs, witnesses above every height, and
   `dyadicSharpPrimeImpedance_not_upperHalfPlaneValued_above` plus
   `dyadicSharpPrimeImpedance_not_lowerHalfPlaneValued_above`.
-- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowMobiusPassiveNoGo` proves the determinant law and
+- `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowMobiusPassiveNoGo` proves the determinant law and
   both terminal no-go orientations for every nondegenerate real Möbius postcomposition.
-- `GaloisForLFunctions.RHTower.CCMSharpPrimeWindowCompletedPassiveTransfer` proves exact recovery of
+- `GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowCompletedPassiveTransfer` proves exact recovery of
   shifted `zeta'/zeta`, exact equality of the completed source response with `logDeriv XiC(-z)`,
   RH-equivalence of its global sign, and strict Sondow--Dumitrescu orientation beyond every closed
   horizontal divisor bound.
 - `lake env lean` passed for both files; targeted
-  `lake build GaloisForLFunctions.RHTower.CCMSharpPrimeWindowPassiveNoGo` passed.  Axiom audit reports
+  `lake build GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowPassiveNoGo` passed.  Axiom audit reports
   only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The raw passive-network card remains terminally failed. A later all-width audit also retires Route

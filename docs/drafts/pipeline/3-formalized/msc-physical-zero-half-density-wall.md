@@ -29,7 +29,7 @@ The coefficient norm-square equals squarefree mass at shifted exponent `a=σ+2u(
 - **Exact killing theorem/mechanism:** physical fixed-divisor coordinate crosses the sharp squarefree-Möbius `ℓ²` abscissa at every finite `σ>1`, not merely in the cofinal limit.
 - **Strongest positive survivor:** maximal source domain is exactly the open half-plane `Re u>-1/2`; algebraic regular-germ/residue laws survive only in a rigged or distributional completion.
 - **New insight:** singular graph normalization fixes gain but cannot repair source-domain loss; standard Hilbert graph convergence and divisor landing are incompatible objects.
-- **Status:** formalized in `RHTower/HedenmalmGammaSewnSquarefreeFisherPhysicalHilbertWall.lean`; targeted build passed; `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`; umbrella wired. Corpus audit found no prior converse/application, and targeted arXiv audit through 2026-08 found no physical-zero/domain incompatibility theorem. Global lint remains blocked only by pre-existing unreachable modules, none from this result.
+- **Status:** formalized in `RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeFisherPhysicalHilbertWall.lean`; targeted build passed; `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`; umbrella wired. Corpus audit found no prior converse/application, and targeted arXiv audit through 2026-08 found no physical-zero/domain incompatibility theorem. Global lint remains blocked only by pre-existing unreachable modules, none from this result.
 
 ## Log
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMSawtoothDilationMean
+import GaloisForLFunctions.RHTower.CCM.CCMSawtoothDilationMean
 import GaloisForLFunctions.RHTower.OddHarmonicExpConvergence
 import Mathlib.Analysis.Complex.AbelLimit
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds

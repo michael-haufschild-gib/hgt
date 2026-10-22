@@ -180,13 +180,13 @@ cross-correlation and its first variation.
 The actual tilted source and its Fourier--Laplace continuation are formalized in
 
 ```text
-formal/GaloisForLFunctions/RHTower/ThetaCuspTiltedSchwartz.lean
-formal/GaloisForLFunctions/RHTower/ThetaCuspFourierLaplace.lean.
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspTiltedSchwartz.lean
+formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspFourierLaplace.lean.
 ```
 
 The latter proves strip analyticity by dominated differentiation and identifies the whole strip
 with `XiC` by the identity theorem.  The source-space capstone is in
-`formal/GaloisForLFunctions/RHTower/HedenmalmLocalFrameObstruction.lean`:
+`formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmLocalFrameObstruction.lean`:
 
 ```text
 fourier_thetaCuspRightLineSource_scaled

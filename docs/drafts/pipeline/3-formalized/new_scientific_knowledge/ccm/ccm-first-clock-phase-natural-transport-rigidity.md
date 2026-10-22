@@ -178,7 +178,7 @@ projection and must be sourced, not normalized away.
   monotonicity parents are classical; novelty claim is limited to the physical-family
   classification, literal CCM source specialization, and unavoidable connection-defect
   consequence. Formal certificate:
-  `RHTower/CCMFirstClockPhaseNaturalTransportRigidity.lean`.
+  `RHTower/CCM/CCMFirstClockPhaseNaturalTransportRigidity.lean`.
 
 ## Anti-theatre boundary
 

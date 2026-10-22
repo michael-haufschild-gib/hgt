@@ -78,7 +78,7 @@ Normalization by `-log(k)/(2*pi)` recovers the exact critical-Mellin/von-Mangold
 Formal module and capstones:
 
 ```text
-formal/GaloisForLFunctions/RHTower/CCMFirstClockPrimeEntrySlopeTomography.lean
+formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimeEntrySlopeTomography.lean
 ccmFirstClockPrimeEntrySlope_recovers_weight
 ccmFirstClockPrimeEntrySlope_primePower_neg
 ccmFirstClockEnteredPrimePacket_entry_smoothDecomposition
@@ -124,7 +124,7 @@ an external novelty claim. Elementary chain rule and generic kink calculus are n
 
 ## Formal audit
 
-- Direct check: `lake env lean GaloisForLFunctions/RHTower/CCMFirstClockPrimeEntrySlopeTomography.lean`
+- Direct check: `lake env lean GaloisForLFunctions/RHTower/CCM/CCMFirstClockPrimeEntrySlopeTomography.lean`
 - Final build: `9262/9262`, successful.
 - Axioms for four capstones: exactly `[propext, Classical.choice, Quot.sound]`.
 - Formal lint: no `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` issue in new module. Global lint

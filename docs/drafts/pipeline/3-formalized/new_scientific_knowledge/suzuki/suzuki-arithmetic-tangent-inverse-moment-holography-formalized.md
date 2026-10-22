@@ -5,10 +5,10 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-arithmetic-tangent-inverse-moment-holography.md`
 - **Lean:**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiArithmeticTangentHolography.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiArithmeticTangentHolography.lean`
   - determinacy input: `formal/GaloisForLFunctions/HTGeometry/CompactMomentDeterminacy.lean`
-  - `(15)`'s convergence half: `formal/GaloisForLFunctions/RHTower/SuzukiStrongResolventLimit.lean`
-  - Cayley layer: `formal/GaloisForLFunctions/RHTower/SuzukiDonoghueHerglotzTransform.lean`,
+  - `(15)`'s convergence half: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiStrongResolventLimit.lean`
+  - Cayley layer: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiDonoghueHerglotzTransform.lean`,
     `SuzukiFiniteApertureHermiteBiehler.lean`
 
 ## Formal content

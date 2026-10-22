@@ -7,7 +7,7 @@
 - **External priority:** targeted primary-source and corpus search found no statement of the matrix
   decomposition or its CCM four-unit consequence; priority remains unverified
 - **Formal source:**
-  `formal/GaloisForLFunctions/RHTower/CCMGuinandWeilSourceReflection.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMGuinandWeilSourceReflection.lean`
 
 ## Exact theorem
 
@@ -110,6 +110,6 @@ does not construct canonical `Pi(lambda,k)`, and does not prove RH.
 - `ccmGuinandWeilEventMatrix_half_not_posSemidef`
 
 Targeted `lake env lean` and `lake build
-GaloisForLFunctions.RHTower.CCMGuinandWeilSourceReflection` both pass. `#print axioms` reports only
+GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilSourceReflection` both pass. `#print axioms` reports only
 Lean's standard `propext`, `Classical.choice`, and `Quot.sound`; no project axiom, `sorry`, `admit`,
 `opaque`, or `unsafe` declaration is used.

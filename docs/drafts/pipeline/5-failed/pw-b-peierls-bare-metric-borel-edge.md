@@ -26,7 +26,7 @@ Literal rates are `r₊=q−2` and `r₋=−q−1`, so `(r₊+2,r₋+2)=(q,1−q
 - **Exact killing theorem/mechanism:** `d4BMPeierlsMetricSquareNumerator_ne_forwardBorelEdge` rules out direct bare metric coefficient as PW recoil edge for every `k : Nat` and actual `XiZeroCopy`.
 - **Strongest positive survivor:** `d4BMPeierlsFunctionalEquationPair_eq_xi_reflected` and `d4BMPeierlsFunctionalEquationPair_borelEdge` give literal all-grade source realization of PW spectral labels `(q,1−q)`. Coordinate/pairing premise is discharged.
 - **New insight:** Remaining PW-B seam is not a spectral-coordinate problem. It is a coefficient-transmutation problem: exchange-odd contact including lift defect must correct displayed natural-grade mismatch. This does not revive B2 as RH producer; it supplies its previously missing direct PW spectral bridge.
-- **Status:** Paper proof is expansion of physical rates and imaginary parts of two quadratics. Lean module `formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingParikhWilczekLiteralPeierlsSpectralBridge.lean`; direct `lake env lean` passed and `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`. Leaf `lake build` remains deferred because targeted builds replay thousands of unrelated dependencies.
+- **Status:** Paper proof is expansion of physical rates and imaginary parts of two quadratics. Lean module `formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingParikhWilczekLiteralPeierlsSpectralBridge.lean`; direct `lake env lean` passed and `#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`. Leaf `lake build` remains deferred because targeted builds replay thousands of unrelated dependencies.
 
 ## Log
 

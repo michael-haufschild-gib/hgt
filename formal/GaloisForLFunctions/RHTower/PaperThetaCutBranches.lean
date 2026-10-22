@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperThetaCutParametrix
 import GaloisForLFunctions.RHTower.PaperThetaQuantileDerivative
-import GaloisForLFunctions.RHTower.HedenmalmQuantileSliceMoment
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmQuantileSliceMoment
 
 /-! # Actual integrable derivatives on both compact theta branches
 

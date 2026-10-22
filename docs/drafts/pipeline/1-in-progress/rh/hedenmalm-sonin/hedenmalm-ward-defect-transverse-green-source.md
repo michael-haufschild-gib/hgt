@@ -4,7 +4,7 @@
 - **Stage:** `1-in-progress`
 - **Status:** `[PAPER-PROVED] [LEAN-PROVED] [CORPUS-NEW SYNTHESIS] [NOT RH]`
 - **Parents:** `P-G124`, `P-G148`
-- **Module:** `formal/GaloisForLFunctions/RHTower/HedenmalmWardDefectTransverseGreenSource.lean`
+- **Module:** `formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmWardDefectTransverseGreenSource.lean`
 
 ## Conjecture loop
 

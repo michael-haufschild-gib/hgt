@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PaperThetaContourSpace
 import GaloisForLFunctions.RHTower.PaperThetaBoundedResolvent
-import GaloisForLFunctions.RHTower.DeningerMeyerXiContourSeries
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerXiContourSeries
 
 /-! # Literal native blocks on the original Xi contour schedule -/
 

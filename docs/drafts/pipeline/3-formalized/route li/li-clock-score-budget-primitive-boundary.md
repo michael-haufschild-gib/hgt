@@ -389,8 +389,8 @@ All15 author primary hashes match current bytes. All56 author record-path hashes
 |RHTower/LiClockPairedEtaFinitePartitionVolterra|Complete unchanged prior source1139 review; exact returned710–745 record|Same wrong-source/factor objection; all source intervals preserved in its own theorem.|
 |HTGeometry/VolterraLinearIntegralEquation|289–336 complete volterraSolution_eq|Supplied **global** kernel/forcing norm bounds prove equation, not sign; actual K not globally bounded.|
 |RHTower/XiThetaConvolutionDefectTrilemma|90–141 complete relevant operator/symmetry bodies|Actual Fourier-conjugate source symmetry does not prove inverse sign.|
-|RHTower/SuzukiLagariasMeromorphicInner|341–375 full predicate + relevant neighboring proof portion|Strict half-plane source bound is an explicit receiver hypothesis.|
-|RHTower/ThetaCuspTiltFluxSourceWeld|126–151 full source-identity/RH-receiver bodies|Universal source Bezoutian sign is exactly a conditional RH receiver.|
+|RHTower/Suzuki/SuzukiLagariasMeromorphicInner|341–375 full predicate + relevant neighboring proof portion|Strict half-plane source bound is an explicit receiver hypothesis.|
+|RHTower/ThetaCusp/ThetaCuspTiltFluxSourceWeld|126–151 full source-identity/RH-receiver bodies|Universal source Bezoutian sign is exactly a conditional RH receiver.|
 |RHTower/PrimeArchHankelDeterminantCriterion|ALL153, not merely indexed1–52|Entries exactly actual cumulants, first determinant positive, higher all-degree sign/reconstruction criteria conditional.|
 
 Precise note on the main packet's phrase “full live L3 source1–52”:1–52 is its relevant matrix/first-minor block; current file has153 lines. This audit read all153, including the remaining conditional reconstruction criteria. No mathematical inference depends on mislabeling52 lines as the whole file. Exact SHA `a454be10c7e54428ed9d3bac4c1ca23c5de2d95f6d95245c567260511481570f` unchanged.

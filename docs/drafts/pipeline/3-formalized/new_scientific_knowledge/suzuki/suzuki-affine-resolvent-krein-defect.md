@@ -5,7 +5,7 @@
 - **Formalized companion:** `./suzuki-affine-resolvent-krein-defect-formalized.md`
 - **Type:** exact obstruction + positive survivor + revised RH frontier
 - **Status:** `[PROVED] [UNCONDITIONAL] [SOURCE-CONNECTED]`
-- **Lean:** `formal/GaloisForLFunctions/RHTower/SuzukiAffineResolventKreinDefect.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiAffineResolventKreinDefect.lean`
 - **Parent:** `../../1-in-progress/suzuki-jump-kernel-loewner-growth.md`
 
 ## 1. Frontier isolated by corpus audit

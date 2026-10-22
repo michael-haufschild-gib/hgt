@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SourceHorizontalGammaSixPairedDefectGaussHodgeCurvature
 import GaloisForLFunctions.RHTower.SeamSuspensionTrace
-import GaloisForLFunctions.RHTower.HedenmalmThetaMobiusHyperbolicRapidity
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaMobiusHyperbolicRapidity
 import GaloisForLFunctions.HTGeometry.SourceFormationHarmonicMechanics
 
 open Complex Matrix

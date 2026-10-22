@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.RealCoronaHolomorphicReflectionCrossedProduct
-import GaloisForLFunctions.RHTower.DeningerMeyerGaussianResidueNonadmission
+import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaussianResidueNonadmission
 import GaloisForLFunctions.RHTower.CentralReciprocalMoments
 
 /-!

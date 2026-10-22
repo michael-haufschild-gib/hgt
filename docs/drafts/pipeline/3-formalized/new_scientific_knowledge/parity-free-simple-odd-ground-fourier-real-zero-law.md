@@ -6,9 +6,9 @@
 - **Type:** THEOREM
 - **Scientific status:** `[LEAN-PROVED] [PAPER-PROVED] [NOVELTY UNVERIFIED] [NO RH CLAIM]`
 - **Lean module:**
-  `formal/GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean` and
-  `formal/GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean` and
-  `formal/GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilParityBlocks.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMParityFreeOddGroundFourier.lean` and
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMCompactFourierMeanSquareZeroTransfer.lean` and
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMPublishedRestrictedWeilParityBlocks.lean`
 - **Paper parent:**
   `docs/drafts/pipeline/2-fully-proven/new_scientific_knowledge/parity-free-simple-ground-fourier-real-zero-law.md`
 
@@ -66,12 +66,12 @@ resolvent zero to satisfy `Im z = 0`.
 
 ## Audit
 
-- `lake env lean GaloisForLFunctions/RHTower/CCMParityFreeOddGroundFourier.lean`: pass.
-- `lake build GaloisForLFunctions.RHTower.CCMParityFreeOddGroundFourier`: pass.
-- `lake env lean GaloisForLFunctions/RHTower/CCMCompactFourierMeanSquareZeroTransfer.lean`: pass.
-- `lake build GaloisForLFunctions.RHTower.CCMCompactFourierMeanSquareZeroTransfer`: pass.
-- `lake env lean GaloisForLFunctions/RHTower/CCMPublishedRestrictedWeilParityBlocks.lean`: pass.
-- `lake build GaloisForLFunctions.RHTower.CCMPublishedRestrictedWeilParityBlocks`: pass; exact
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMParityFreeOddGroundFourier.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMParityFreeOddGroundFourier`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMCompactFourierMeanSquareZeroTransfer.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMCompactFourierMeanSquareZeroTransfer`: pass.
+- `lake env lean GaloisForLFunctions/RHTower/CCM/CCMPublishedRestrictedWeilParityBlocks.lean`: pass.
+- `lake build GaloisForLFunctions.RHTower.CCM.CCMPublishedRestrictedWeilParityBlocks`: pass; exact
   leaf `.olean` built.
 - `#print axioms` on the three load-bearing endpoints: only `propext`, `Classical.choice`, and
   `Quot.sound`.

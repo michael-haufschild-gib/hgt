@@ -63,7 +63,7 @@ The cap pairing is absolutely convergent, proved separately from the zero
 identity. No wave equation or convergence premise is supplied.
 
 Proof:
-[ThetaCuspHawkingBMOriginalCapWeakWave.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMOriginalCapWeakWave.lean),
+[ThetaCuspHawkingBMOriginalCapWeakWave.lean](../../../../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMOriginalCapWeakWave.lean),
 namespace `D4BMOriginalCapWave`:
 
 - `horizon_kernel_test_limit`, `horizon_kernel_weak_wave`;

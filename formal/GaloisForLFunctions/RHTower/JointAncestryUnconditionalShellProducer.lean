@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.JointAncestryShellAmplitudeAbscissaDuality
-import GaloisForLFunctions.RHTower.CCMRectangularTwoEdge
+import GaloisForLFunctions.RHTower.CCM.CCMRectangularTwoEdge
 import GaloisForLFunctions.RHTower.JointAncestryShellPowerSumCriterion
 import GaloisForLFunctions.RHTower.JointAncestryConstantVectorDyadicShellDetection
 

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.SelbergThetaNativeMoments
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMStripMeanAdmission
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMStripMeanAdmission
 
 /-!
 # Nonzero native theta source from its complete Eisenstein pairing

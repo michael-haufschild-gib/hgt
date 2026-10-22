@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM / FORMALIZATION / BRIDGE / NOT NEW SCIENTIFIC KNOWLEDGE
 - **Lean umbrella:**
-  `formal/GaloisForLFunctions/RHTower/CCMUnconditionalFoundation.lean`
+  `formal/GaloisForLFunctions/RHTower/CCM/CCMUnconditionalFoundation.lean`
 - **Scientific status:** `[PROVED IN LEAN] [BRIDGE] [NOT AN RH PROOF]`
 
 ## Statement

@@ -68,7 +68,7 @@ isolates that estimate as
 ## Lean
 
 Formalized in
-`formal/GaloisForLFunctions/RHTower/DeningerArithmeticPositiveCalderonKoszul.lean`:
+`formal/GaloisForLFunctions/RHTower/Deninger/DeningerArithmeticPositiveCalderonKoszul.lean`:
 
 - `deningerLocalEnergy_summable_of_summable_majorant`;
 - `deningerSummedGreenForm`;
@@ -89,7 +89,7 @@ majorant claim.
 - Direct command: `lake env lean` on the module — passes with no errors
   and no warnings.
 - Cached module build: `lake build
-  GaloisForLFunctions.RHTower.DeningerArithmeticPositiveCalderonKoszul`
+  GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticPositiveCalderonKoszul`
   completes (3084 jobs).
 - Scratch `#print axioms` on all six declarations: only `propext`,
   `Classical.choice`, `Quot.sound`.

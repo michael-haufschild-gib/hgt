@@ -177,7 +177,7 @@ occur in these dependencies.
 `scripts/formal_tools.py lint` ran and exited 1, reporting:
 
 ```text
-error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.DeningerMeyerStrongLogSourceEquivalence
+error: owned module unreachable from theorem-area umbrella GaloisForLFunctions.RHTower: GaloisForLFunctions.RHTower.Deninger.DeningerMeyerStrongLogSourceEquivalence
 ```
 
 That unrelated module was already untracked in the shared working tree;

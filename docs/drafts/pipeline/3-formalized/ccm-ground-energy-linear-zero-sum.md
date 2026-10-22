@@ -38,7 +38,7 @@ nonnegative even bump on `[−1,1]` with `b̂(0) > 0`, so that `|b̂| ≤ b̂(0)
 
 ## Lean certificate (2026-10-09)
 
-Modules `RHTower/CanonicalProductE1RealLineBounds`, `RHTower/CCMGroundEnergyZeroSumBound` (wired in
+Modules `RHTower/CanonicalProductE1RealLineBounds`, `RHTower/CCM/CCMGroundEnergyZeroSumBound` (wired in
 `RHTower.lean`; `lake env lean` clean on both; `lake --old build` green). `#print axioms` gives
 `[propext, Classical.choice, Quot.sound]` for each item below.
 

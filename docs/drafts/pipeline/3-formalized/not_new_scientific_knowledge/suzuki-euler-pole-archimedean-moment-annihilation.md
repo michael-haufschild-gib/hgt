@@ -134,7 +134,7 @@ theory.
 
 ## Lean formalization
 
-Module: `formal/GaloisForLFunctions/RHTower/SuzukiEulerPoleArchimedeanMomentAnnihilation.lean`.
+Module: `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiEulerPoleArchimedeanMomentAnnihilation.lean`.
 
 The kernel is the corpus's literal Suzuki kernel `suzukiSourceG` (Suzuki (2012), equation (204)) and
 its literal once-integrated primitive `suzukiSourceGOne` (equation (a202)); the archimedean factor is

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.XiWeilHardyCriticalLocusPoissonReserve
-import GaloisForLFunctions.RHTower.HedenmalmStokesFourthTraceCurvatureBudgetBand
+import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmStokesFourthTraceCurvatureBudgetBand
 
 /-!
 # Critical-locus reserve on source-certified verified-height bands

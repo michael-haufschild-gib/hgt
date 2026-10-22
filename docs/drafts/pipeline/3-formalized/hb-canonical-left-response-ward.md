@@ -45,7 +45,7 @@ optical darkness.
 - `d4BMXiSecondHarmonicCanonicalComplementaryUnitLeftWard_iff_canonicalOpticalWard`
 
 Module:
-`formal/GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalLeftResponseWard.lean`
+`formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalLeftResponseWard.lean`
 
 ## New knowledge
 
@@ -81,8 +81,8 @@ not generic QNM projection or excitation-factor theory.
 
 ## Verification
 
-- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMCanonicalLeftResponseWard.lean`
-- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMCanonicalLeftResponseWard`
+- Direct: `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMCanonicalLeftResponseWard.lean`
+- Target audit: `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCanonicalLeftResponseWard`
 - Build result: success, 11915 jobs after dependency replay
 - `#print axioms` on ten endpoints: `[propext, Classical.choice, Quot.sound]` only
 - Forbidden-token and diff-whitespace scans: clean

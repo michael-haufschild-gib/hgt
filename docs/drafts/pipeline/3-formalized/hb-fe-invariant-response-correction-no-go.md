@@ -38,13 +38,13 @@ If `K` is everywhere nonzero, its cancellation locus is exactly the critical wal
 
 ## Lean certificate
 
-- Module: `GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo`
+- Module: `GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo`
 - Sharp classification: `d4BMXiSecondHarmonicPeierlsResponseCorrectedReflectionCurrent_eq_zero_iff_of_feInvariant`
 - Route kill: `d4BMXiSecondHarmonicFEInvariantNonzeroResponseCorrectionRouteKilled`
 - RH receiver: `forall_d4BMXiSecondHarmonicPeierlsResponseCorrectedReflectionCurrent_eq_zero_iff_rh_of_feInvariant_of_ne_zero`
 - Positive survivor: `d4BMXiSecondHarmonicCrossPairResponseCorrection_feInvariant_iff_rh`
-- `lake env lean GaloisForLFunctions/RHTower/ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo.lean`: PASS
-- `lake build GaloisForLFunctions.RHTower.ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo`: PASS
+- `lake env lean GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo.lean`: PASS
+- `lake build GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMFEInvariantResponseCorrectionNoGo`: PASS
 - `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`
 - Umbrella: wired into `GaloisForLFunctions.RHTower`
 - Repository lint: new module reachable and clean; global command remains red solely on unrelated shared-tree modules already absent from umbrellas.

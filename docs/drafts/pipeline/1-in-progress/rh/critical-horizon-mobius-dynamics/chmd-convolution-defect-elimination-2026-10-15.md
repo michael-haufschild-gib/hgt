@@ -420,7 +420,7 @@ positive jump terms alone cannot be treated as a proof.
 - `scripts/formal_tools.py index`: exit 0; refreshed API, gaps, overview and
   search index, with eight changed source files across concurrent work.
 - `scripts/formal_tools.py lint`: exit 1 solely for the unrelated concurrently
-  unwired `GaloisForLFunctions.RHTower.DeningerMeyerStrictCoupledSolvability`.
+  unwired `GaloisForLFunctions.RHTower.Deninger.DeningerMeyerStrictCoupledSolvability`.
   No diagnostic concerns this CHMD leaf. Other sessions' files preserved.
 - Umbrella imports the new leaf exactly once. Scoped tracked whitespace check:
   exit 0. New-file `git diff --no-index --check`: no diagnostics (exit 1 denotes

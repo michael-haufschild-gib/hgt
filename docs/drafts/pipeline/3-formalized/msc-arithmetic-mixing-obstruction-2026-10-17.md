@@ -48,7 +48,7 @@ W(s) = (s/(s-1), s k_s) for Re s > 1/2, s != 1. These definitions use the counti
 ## Implementation
 
 - `RHTower/SquarefreeDiscrepancyHilbertTransport.lean`: fixed L2 source, explicit evaluation/jet family, strong holomorphy, exact Mellin pairing, interval recovery of counts and coefficient differences.
-- `RHTower/HedenmalmSquarefreeSummatoryConormalTransport.lean`: density channel, full partition value/jet vectors, exact overlap/Fisher/conormal identities, germ and divisor preservation, premise-free physical-admission theorem.
+- `RHTower/Hedenmalm/HedenmalmSquarefreeSummatoryConormalTransport.lean`: density channel, full partition value/jet vectors, exact overlap/Fisher/conormal identities, germ and divisor preservation, premise-free physical-admission theorem.
 - Serena symbol lookup is unavailable for these ignored Lean paths; new modules use standard file edits.
 
 ## Internal source audit

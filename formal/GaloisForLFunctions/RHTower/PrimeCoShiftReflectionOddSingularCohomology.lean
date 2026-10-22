@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeCoShiftModel
 import GaloisForLFunctions.RHTower.RiemannComplexModularCharacterLaw
-import GaloisForLFunctions.RHTower.DeningerArithmeticThreeTermCohomology
+import GaloisForLFunctions.RHTower.Deninger.DeningerArithmeticThreeTermCohomology
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
 /-!

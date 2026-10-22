@@ -122,7 +122,7 @@ External literature novelty remains open and must not be advertised as settled.
 
 ## Formal declarations
 
-Module `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean`:
+Module `formal/GaloisForLFunctions/RHTower/CCM/CCMFiniteRamifiedBoundaryNoGo.lean`:
 
 - `analyticRamifiedBoundaryDensity`;
 - `finiteRamifiedAnalyticBoundaryDensity`;
@@ -147,7 +147,7 @@ Module `formal/GaloisForLFunctions/RHTower/CCMFiniteRamifiedBoundaryNoGo.lean`:
 - [x] formal lint attribution audit: no finding in this module; repository-wide lint fails on
   pre-existing umbrella-reachability findings in other dirty-tree modules
 - [x] targeted final module build:
-  `GaloisForLFunctions.RHTower.CCMFiniteRamifiedBoundaryNoGo`
+  `GaloisForLFunctions.RHTower.CCM.CCMFiniteRamifiedBoundaryNoGo`
 - [ ] external novelty audit
 - [ ] RH or whole-lane no-go
 

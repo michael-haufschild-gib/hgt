@@ -5,11 +5,11 @@
 - **Claim:** `[PROVED HERE] [UNCONDITIONAL]`
 - **Paper proof:** `./suzuki-gamma-weighted-tail-coercivity.md`
 - **Lean (card-specific):**
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWeightedTailCoercivity.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaShiftKappa.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiShiftedGammaForm.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaMollifiedEquation.lean`
-  - `formal/GaloisForLFunctions/RHTower/SuzukiGammaWeakDomainUpgrade.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWeightedTailCoercivity.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaShiftKappa.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiShiftedGammaForm.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaMollifiedEquation.lean`
+  - `formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiGammaWeakDomainUpgrade.lean`
 - **Lean (reusable layer built for this card):**
   - `formal/GaloisForLFunctions/HTGeometry/GammaTransportKernel.lean`,
     `GammaJumpTranslationEnergy.lean`, `ShiftedSecondDifferenceBounds.lean`,
