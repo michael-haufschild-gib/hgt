@@ -29,6 +29,8 @@ MAX_ROUNDS = 3
 MAX_QUERIES = 8
 # Documents staged into one published shard; must stay <= MAX_SHARD_DOCUMENTS.
 PUBLISH_BATCH = 1024
+# Report the coverage snapshot as stale only past this age, in seconds.
+COVERAGE_SNAPSHOT_MAX_AGE = 900
 
 
 def json_object(text: str) -> dict:
@@ -140,13 +142,10 @@ class Engine:
         # sent to a local model, not the public candidate record.
         return dict(id=d["id"], name=d["name"], module=d["module"], relpath=d["path"],
                     line=d["line"], end_line=d["end_line"], kind=d["kind"],
-                    statement=(d["type_text"] if d['compiler_status'] == 'checked' and d['type_text'] else d['statement']),
-                    compiled_statement=d['type_text'] or None, source_statement=d["statement"],
+                    statement=(d["type_text"] if d['type_text'] else d['statement']),
+                    source_statement=d["statement"],
                     binders=d["binders"], axioms=d["axioms"], dependencies=d["dependencies"],
-                    compiler_status=d["compiler_status"], file_status=d["file_status"],
-                    compiler_metadata=({k: v for k, v in d['compiler_metadata'].items()
-                                        if k in ('value_status', 'proof_dependencies_status', 'axioms_status', 'source', 'status', 'error', 'is_unsafe', 'is_partial')}
-                                       if d['compiler_metadata'] else None),
+                    file_status=d["file_status"],
                     source_hash=d["source_hash"], applicability="not_checked",
                     score=hit.get("retrieval_score", 0), matched_view=hit.get("view", "dependency"))
 
@@ -260,7 +259,7 @@ class Engine:
             for c in values:
                 statement_limit = 1200 if key == 'candidates' else 800
                 item = dict(id=c["id"], name=c["name"], statement=c["statement"][:statement_limit],
-                            statement_complete=len(c["statement"]) <= statement_limit, status=c["compiler_status"])
+                            statement_complete=len(c["statement"]) <= statement_limit)
                 if key == "source_arguments":
                     item['proof'] = c['proof_excerpt'][:1200]
                     if c.get('method'):
@@ -559,8 +558,14 @@ class Engine:
             result['coverage'] = {**coverage, 'status': 'snapshot',
                 'snapshot_written_at': snapshot.get('updated_at'),
                 'current_generation': self.corpus.generation}
-            if coverage['generation'] != result['coverage']['current_generation']:
-                result['index_warnings'].append('coverage_snapshot_older_generation')
+            # The generation counter advances on every indexed file and every
+            # published batch, so exact equality is never true while indexing
+            # runs. What a caller can act on is the snapshot being genuinely
+            # old, not the counter having moved.
+            age = time.time() - (snapshot.get('updated_at') or 0)
+            if age > COVERAGE_SNAPSHOT_MAX_AGE:
+                result['coverage']['snapshot_age_seconds'] = round(age)
+                result['index_warnings'].append('coverage_snapshot_stale')
         except (OSError, ValueError, KeyError, TypeError):
             if time.monotonic() < reporting_deadline:
                 self.corpus.con.set_progress_handler(lambda: int(time.monotonic() >= reporting_deadline), 1000)
@@ -594,7 +599,9 @@ class Engine:
         elif not self.vectors:
             result["unfinished_stages"].append("semantic_index_unavailable")
         elif (self.vector_coverage or {}).get('complete') is False:
-            result['index_warnings'].append('semantic_index_incomplete')
+            lag = (self.vector_coverage or {}).get('outstanding')
+            result['index_warnings'].append(
+                'semantic_index_incomplete' if lag is None else f'semantic_index_lagging_{lag}_documents')
         elif (self.vector_coverage or {}).get('complete') is not True:
             result['index_warnings'].append('semantic_coverage_unavailable')
         if self.vectors:
@@ -688,7 +695,8 @@ def pending_method_ids(corpus: Corpus, generation_model: str, reusable: list[str
     return rows
 
 
-def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=False, progress=None) -> dict:
+def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=False, progress=None,
+           coverage=True, sync=False, max_priority=None) -> dict:
     from lean_research_vectors import Vectors
     status = runtime.status()
     model = embedding_version(status)
@@ -780,7 +788,7 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
         from research_runtime.config import ENRICHMENT_ITEMS as EMBED_ITEMS
         index = Vectors(corpus)
         while time.monotonic() < deadline:
-            docs = index.pending(model, limit=PUBLISH_BATCH)
+            docs = index.pending(model, limit=PUBLISH_BATCH, max_priority=max_priority)
             if not docs:
                 break
             staged_docs: list[dict] = []
@@ -790,6 +798,10 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
                     report['vectors'] += index.publish(staged_docs, staged_vectors, model)
                     staged_docs.clear()
                     staged_vectors.clear()
+                    if sync:
+                        # Push straight to Qdrant: queued vectors are not searchable.
+                        from lean_research_qdrant import sync as push
+                        push(corpus, deadline=min(deadline, time.monotonic() + 30))
             try:
                 by_hash = index.reuse(docs, model)
                 for start in range(0, len(docs), EMBED_ITEMS):
@@ -816,6 +828,8 @@ def enrich(corpus: Corpus, runtime, *, deadline: float, methods=False, vectors=F
             flush()
             if progress:
                 progress(report)
+    if not coverage:
+        return report
     # Coverage is a corpus-wide scan, so it must share the maintenance budget.
     # Searches read the measurement this writes; they never scan it themselves.
     corpus.con.set_progress_handler(lambda: time.monotonic() >= deadline, 10000)

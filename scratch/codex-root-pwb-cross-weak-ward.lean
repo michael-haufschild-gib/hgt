@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspHawkingBMPWWeakSourceOpticalWard
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMPWWeakSourceOpticalWard
 
 open Complex
 open scoped InnerProductSpace

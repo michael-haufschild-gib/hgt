@@ -9,7 +9,8 @@ from unittest.mock import patch
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from lean_research_corpus import Corpus, chunks, inventory, mask_comments_strings, source_declarations, EvidenceChanged
+from lean_research_corpus import (Corpus, chunks, inventory, mask_comments_strings, own_snapshot,
+                                  source_declarations, source_item, EvidenceChanged)
 
 
 class ExtractionTests(unittest.TestCase):
@@ -139,6 +140,40 @@ class CorpusTests(unittest.TestCase):
         self.assertNotIn('declarations', stats['coverage'])
         self.assertEqual(self.db.coverage()['declarations'], 2)
         self.assertEqual(len(self.db.search('conditional', views=('prose',))), 1)
+
+    def test_fast_path_agrees_with_the_full_inventory(self):
+        self.write('formal/GaloisForLFunctions/RHTower/A.lean', 'theorem a : True := trivial')
+        self.write('docs/drafts/note.md', '# note')
+        self.write('formal/GaloisForLFunctions/tmp/Scratch.lean', 'theorem s : True := trivial')
+        self.write('formal/.lake/packages/mathlib/Mathlib/M.lean', 'theorem m : True := trivial')
+        self.write('docs/LEAN_API.md', 'catalog')
+        items, _ = inventory(self.root)
+        ours = {i['path']: i for i in items if i['package'] in ('project', 'research')}
+        self.assertEqual(set(own_snapshot(self.root)), set(ours))
+        for path, item in ours.items():
+            fast = source_item(self.root, path)
+            self.assertEqual({k: fast[k] for k in ('module', 'package', 'collection')},
+                             {k: item[k] for k in ('module', 'package', 'collection')})
+        for excluded in ('formal/GaloisForLFunctions/tmp/Scratch.lean', 'docs/LEAN_API.md',
+                         'formal/.lake/packages/mathlib/Mathlib/M.lean'):
+            self.assertIsNone(source_item(self.root, excluded))
+
+    def test_refresh_paths_adds_changes_and_removes_one_file(self):
+        path = 'formal/GaloisForLFunctions/A.lean'
+        self.write(path, 'theorem firstName : True := trivial')
+        self.db.refresh(self.root)
+        other = self.db.con.execute('SELECT COUNT(*) FROM documents').fetchone()[0]
+        self.write(path, '/-- renamed -/\ntheorem secondName : True := trivial')
+        report = self.db.refresh_paths(self.root, [path])
+        self.assertEqual((report['changed'], report['removed']), (1, 0))
+        self.assertTrue(self.db.search('secondName'))
+        self.assertFalse(self.db.search('firstName'))
+        self.assertEqual(self.db.refresh_paths(self.root, [path])['changed'], 0, 'unchanged is a no-op')
+        (self.root / path).unlink()
+        self.assertEqual(self.db.refresh_paths(self.root, [path])['removed'], 1)
+        self.assertFalse(self.db.search('secondName'))
+        self.assertIsNone(self.db.con.execute('SELECT 1 FROM files WHERE path=?', (path,)).fetchone())
+        self.assertLess(self.db.con.execute('SELECT COUNT(*) FROM documents').fetchone()[0], other)
 
     def test_refresh_purges_files_once_they_sit_under_tmp(self):
         self.write('formal/GaloisForLFunctions/A.lean', 'theorem keptdecl : True := trivial')

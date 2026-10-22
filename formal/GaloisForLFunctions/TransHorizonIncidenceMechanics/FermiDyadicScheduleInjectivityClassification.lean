@@ -41,7 +41,8 @@ def FermiSlotObserved (N : ℕ) (S : Set ℕ) (k : ℕ) : Prop :=
 
 /-! ### Dyadic rays -/
 
-private theorem padicValNat_two_pow_mul_odd {b : ℕ} (hb : ¬ 2 ∣ b) (k : ℕ) :
+/-- The dyadic level of `2 ^ k * b` at odd `b` is `k`. -/
+theorem padicValNat_two_pow_mul_odd {b : ℕ} (hb : ¬ 2 ∣ b) (k : ℕ) :
     padicValNat 2 (2 ^ k * b) = k := by
   have hb0 : b ≠ 0 := by rintro rfl; simp at hb
   rw [padicValNat.mul (by positivity) hb0, padicValNat.prime_pow,
@@ -72,12 +73,14 @@ theorem sieveSeq_two_pow_mul_saturate (N : ℕ) (c : ℕ → ℝ) (b : ℕ) {k :
   · intro h
     exact h.trans (mul_dvd_mul_right (Nat.pow_dvd_pow 2 hk) b)
 
-private theorem jump_level_zero (N : ℕ) (c : ℕ → ℝ) {b : ℕ} (hb : ¬ 2 ∣ b) :
+/-- The level-`0` boundary of a dyadic ray reads minus the response at the odd base. -/
+theorem fermiBoundaryJump_level_zero (N : ℕ) (c : ℕ → ℝ) {b : ℕ} (hb : ¬ 2 ∣ b) :
     fermiBoundaryJump N c b = -sieveSeq N c b := by
   obtain ⟨m, rfl⟩ : ∃ m, b = 2 * m + 1 := ⟨b / 2, by omega⟩
   exact fermiBoundaryJump_odd N c m
 
-private theorem jump_level_succ (N : ℕ) (c : ℕ → ℝ) {b : ℕ} (hb : ¬ 2 ∣ b) (k : ℕ) :
+/-- The level-`k+1` boundary of a dyadic ray reads twice the level-`k` response minus its own. -/
+theorem fermiBoundaryJump_level_succ (N : ℕ) (c : ℕ → ℝ) {b : ℕ} (hb : ¬ 2 ∣ b) (k : ℕ) :
     fermiBoundaryJump N c (2 ^ (k + 1) * b) =
       2 * sieveSeq N c (2 ^ k * b) - sieveSeq N c (2 ^ (k + 1) * b) := by
   have hb1 : 1 ≤ b := Nat.one_le_iff_ne_zero.mpr (by rintro rfl; simp at hb)
@@ -127,13 +130,16 @@ private theorem pinned_chain_vanish {L : ℕ} (z : ℕ → ℝ) (obs : ℕ → P
 
 /-! ### Powers-of-two rows -/
 
-/-- The row `c(2^j) = g(j)` for `j ≤ L`, zero elsewhere. -/
-private def dyadicRow (L : ℕ) (g : ℕ → ℝ) (d : ℕ) : ℝ :=
+/-- The row `c(2^j) = g(j)` for `j ≤ L`, zero elsewhere: it synthesizes a prescribed dyadic
+ray profile from its discrete differences. -/
+def fermiDyadicPowerRow (L : ℕ) (g : ℕ → ℝ) (d : ℕ) : ℝ :=
   if d = 2 ^ Nat.log 2 d ∧ Nat.log 2 d ≤ L then g (Nat.log 2 d) else 0
 
-private theorem sieveSeq_dyadicRow {N L : ℕ} (hLN : 2 ^ L ≤ N) (g : ℕ → ℝ) {b : ℕ}
+/-- The response of a powers-of-two row along a dyadic ray is the prefix sum of its weights,
+saturating at level `L`. -/
+theorem sieveSeq_fermiDyadicPowerRow {N L : ℕ} (hLN : 2 ^ L ≤ N) (g : ℕ → ℝ) {b : ℕ}
     (hb : ¬ 2 ∣ b) (k : ℕ) :
-    sieveSeq N (dyadicRow L g) (2 ^ k * b) = ∑ j ∈ range (min k L + 1), g j := by
+    sieveSeq N (fermiDyadicPowerRow L g) (2 ^ k * b) = ∑ j ∈ range (min k L + 1), g j := by
   have hb0 : b ≠ 0 := by rintro rfl; simp at hb
   unfold sieveSeq
   have himg : (range (min k L + 1)).image (fun j => 2 ^ j) ⊆
@@ -147,10 +153,10 @@ private theorem sieveSeq_dyadicRow {N L : ℕ} (hLN : 2 ^ L ≤ N) (g : ℕ → 
   rw [← sum_subset himg ?_, sum_image fun i _ j _ h => Nat.pow_right_injective le_rfl h]
   · refine sum_congr rfl fun j hj => ?_
     have hjm := mem_range.mp hj
-    unfold dyadicRow
+    unfold fermiDyadicPowerRow
     rw [Nat.log_pow (by norm_num), if_pos ⟨rfl, by omega⟩]
   · intro d hd hnot
-    unfold dyadicRow
+    unfold fermiDyadicPowerRow
     rw [if_neg]
     rintro ⟨hdp, hdL⟩
     apply hnot
@@ -159,7 +165,8 @@ private theorem sieveSeq_dyadicRow {N L : ℕ} (hLN : 2 ^ L ≤ N) (g : ℕ → 
     exact mem_image.mpr ⟨Nat.log 2 d, mem_range.mpr (by
       have := (two_pow_dvd_two_pow_mul_odd_iff hb _ k).mp hdvd; omega), rfl⟩
 
-private theorem sum_range_telescope (z : ℕ → ℝ) (m : ℕ) :
+/-- Discrete differences telescope to the profile value. -/
+theorem sum_range_discreteDiff_telescope (z : ℕ → ℝ) (m : ℕ) :
     ∑ j ∈ range (m + 1), (z j - if j = 0 then 0 else z (j - 1)) = z m := by
   induction m with
   | zero => simp
@@ -185,10 +192,10 @@ theorem fermiScheduleInjective_iff {N : ℕ} (hN : 1 ≤ N) (S : Set ℕ) :
     · exact this b₀ a₀ hb₀ ha₀ hnb₀ hna₀ hne.symm (by omega)
     set z : ℕ → ℝ := fun j => if a₀ ≤ j ∧ j < b₀ then (2 : ℝ) ^ j else 0
     set g : ℕ → ℝ := fun j => z j - if j = 0 then 0 else z (j - 1)
-    have hs : ∀ b, ¬ 2 ∣ b → ∀ k, sieveSeq N (dyadicRow L g) (2 ^ k * b) = z (min k L) := by
+    have hs : ∀ b, ¬ 2 ∣ b → ∀ k, sieveSeq N (fermiDyadicPowerRow L g) (2 ^ k * b) = z (min k L) := by
       intro b hb k
-      rw [sieveSeq_dyadicRow hLN g hb k, sum_range_telescope]
-    have hread : ∀ n, 1 ≤ n → padicValNat 2 n ∈ S → fermiBoundaryJump N (dyadicRow L g) n = 0 := by
+      rw [sieveSeq_fermiDyadicPowerRow hLN g hb k, sum_range_discreteDiff_telescope]
+    have hread : ∀ n, 1 ≤ n → padicValNat 2 n ∈ S → fermiBoundaryJump N (fermiDyadicPowerRow L g) n = 0 := by
       intro n hn hS
       obtain ⟨k, b, hb, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd (by omega : n ≠ 0) 2 (by norm_num)
       rw [padicValNat_two_pow_mul_odd hb] at hS
@@ -197,10 +204,10 @@ theorem fermiScheduleInjective_iff {N : ℕ} (hN : 1 ≤ N) (S : Set ℕ) :
         have hobs : FermiSlotObserved N S 0 := by
           unfold FermiSlotObserved; rw [if_pos (Nat.zero_le _)]; exact hS
         have ha1 : a₀ ≠ 0 := fun h => hna₀ (h ▸ hobs)
-        rw [pow_zero, one_mul, jump_level_zero N _ hb, show b = 2 ^ 0 * b by simp, hs b hb 0]
+        rw [pow_zero, one_mul, fermiBoundaryJump_level_zero N _ hb, show b = 2 ^ 0 * b by simp, hs b hb 0]
         simp [z]; omega
       obtain ⟨k, rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
-      rw [jump_level_succ N _ hb k, hs b hb k, hs b hb (k + 1)]
+      rw [fermiBoundaryJump_level_succ N _ hb k, hs b hb k, hs b hb (k + 1)]
       by_cases hkL : k + 1 ≤ L
       · have hobs : FermiSlotObserved N S (k + 1) := by
           unfold FermiSlotObserved; rw [if_pos hkL]; exact hS
@@ -220,7 +227,7 @@ theorem fermiScheduleInjective_iff {N : ℕ} (hN : 1 ≤ N) (S : Set ℕ) :
         rw [if_neg (by omega)]; ring
     have h := hinj _ hread (2 ^ a₀) (mem_Icc.mpr ⟨Nat.one_le_two_pow,
       le_trans (Nat.pow_le_pow_right (by norm_num) (by omega)) hLN⟩)
-    unfold dyadicRow at h
+    unfold fermiDyadicPowerRow at h
     rw [Nat.log_pow (by norm_num), if_pos ⟨rfl, by omega⟩] at h
     simp only [g, z] at h
     rw [if_pos ⟨le_rfl, hab⟩] at h
@@ -238,14 +245,14 @@ theorem fermiScheduleInjective_iff {N : ℕ} (hN : 1 ≤ N) (S : Set ℕ) :
       · intro hobs
         unfold FermiSlotObserved at hobs; rw [if_pos (Nat.zero_le _)] at hobs
         have h := hread b hb1 (by rw [padicValNat.eq_zero_of_not_dvd hb]; exact hobs)
-        rw [jump_level_zero N c hb] at h
+        rw [fermiBoundaryJump_level_zero N c hb] at h
         simp only [pow_zero, one_mul]; linarith
       · intro k hk1 hkL hobs
         unfold FermiSlotObserved at hobs; rw [if_pos hkL] at hobs
         obtain ⟨k, rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
         have h := hread (2 ^ (k + 1) * b) (Nat.one_le_iff_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ two_ne_zero) (by omega)))
           (by rw [padicValNat_two_pow_mul_odd hb]; exact hobs)
-        rw [jump_level_succ N c hb k] at h
+        rw [fermiBoundaryJump_level_succ N c hb k] at h
         simp only [Nat.add_sub_cancel]; linarith
       · intro hobs
         unfold FermiSlotObserved at hobs; rw [if_neg (by omega)] at hobs
@@ -253,7 +260,7 @@ theorem fermiScheduleInjective_iff {N : ℕ} (hN : 1 ≤ N) (S : Set ℕ) :
         obtain ⟨j, rfl⟩ : ∃ j', j = j' + 1 := ⟨j - 1, by omega⟩
         have h := hread (2 ^ (j + 1) * b) (Nat.one_le_iff_ne_zero.mpr (mul_ne_zero (pow_ne_zero _ two_ne_zero) (by omega)))
           (by rw [padicValNat_two_pow_mul_odd hb]; exact hjS)
-        rw [jump_level_succ N c hb j, sieveSeq_two_pow_mul_saturate N c b (by omega : L ≤ j),
+        rw [fermiBoundaryJump_level_succ N c hb j, sieveSeq_two_pow_mul_saturate N c b (by omega : L ≤ j),
           sieveSeq_two_pow_mul_saturate N c b (by omega : L ≤ j + 1)] at h
         linarith
     apply eq_zero_of_sieveSeq_initial

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileOddWindowActivePath
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowActivePath
 
 #print axioms RHTower.sourceActiveNoCoherentPrimeEdge_of_sorted_complete
 #print axioms RHTower.ccmOddLogWindow_actualActivePath_noCoherentPrimeEdge

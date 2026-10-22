@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import signal
 import time
 
@@ -43,12 +44,18 @@ class Encoder:
     def __init__(self, bundle, spec, *, dtype='bfloat16', cpu_audit=False,
                  token_budget=65536, max_batch=256):
         import torch
-        from transformers import AutoModel, AutoTokenizer
+        from transformers import AutoConfig, AutoModel, AutoTokenizer
         self.torch = torch
-        for name, version in (('torch', '2.8.0'), ('transformers', '4.56.2'),
-                              ('tokenizers', '0.22.2'), ('numpy', '2.3.3'), ('safetensors', '0.8.0')):
-            if importlib.metadata.version(name).split('+')[0] != version:
-                raise RuntimeError(f'Expected pinned {name}=={version}; run setup.sh')
+        # Read the pins from the bundled lock rather than repeating them here,
+        # so bumping the lock cannot leave this check behind.
+        lock = (Path(bundle) / 'requirements-linux.lock').read_text()
+        pinned = dict(re.findall(r'^([\w.-]+)==([^\s\\]+)', lock, re.M))
+        for name in ('torch', 'transformers', 'tokenizers', 'numpy', 'safetensors'):
+            expected = pinned.get(name, '').split('+')[0]
+            if not expected:
+                raise RuntimeError(f'{name} is not pinned in requirements-linux.lock')
+            if importlib.metadata.version(name).split('+')[0] != expected:
+                raise RuntimeError(f'Expected pinned {name}=={expected}; run setup.sh')
         self.device = 'cpu' if cpu_audit else 'cuda'
         if cpu_audit:
             dtype = 'float32'
@@ -61,9 +68,19 @@ class Encoder:
         self.token_budget, self.max_batch = token_budget, max_batch
         self.tokenizer = AutoTokenizer.from_pretrained(str(Path(bundle) / 'model'),
             local_files_only=True, trust_remote_code=False, padding_side='right')
-        self.model = AutoModel.from_pretrained(str(Path(bundle) / 'model'),
+        # Retrieval uses the text tower alone, and nulling the other towers is
+        # required rather than economical: the audio tower has no SDPA kernel,
+        # so building it fails the load. The 512->768 projection lives in the
+        # text tower, where projecting per token equals projecting after the
+        # mean pool.
+        config = AutoConfig.from_pretrained(str(Path(bundle) / 'model'), local_files_only=True)
+        for tower in ('vision_config', 'audio_config'):
+            if getattr(config, tower, None) is not None:
+                setattr(config, tower, None)
+        wrapper = AutoModel.from_pretrained(str(Path(bundle) / 'model'), config=config,
             local_files_only=True, trust_remote_code=False,
-            dtype=getattr(torch, dtype), attn_implementation='sdpa').eval().to(self.device)
+            dtype=getattr(torch, dtype), attn_implementation='sdpa').eval()
+        self.model = getattr(wrapper, 'language_model', wrapper).to(self.device)
 
     def encode(self, texts, *, query=False):
         import numpy as np

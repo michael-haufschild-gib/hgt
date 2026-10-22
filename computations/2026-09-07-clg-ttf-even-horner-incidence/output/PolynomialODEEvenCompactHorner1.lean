@@ -1,6 +1,6 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapGrade1
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactHorner2
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitCoordinates
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactGapGrade1
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactHorner2
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactUnitCoordinates
 
 /-! # A single linear-factor Horner step for the compact determinant -/
 namespace HTGeometry

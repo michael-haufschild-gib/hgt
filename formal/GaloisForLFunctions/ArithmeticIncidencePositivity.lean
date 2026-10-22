@@ -61,6 +61,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeCombEnergyReductio
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeDefectCoordinate
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AlternatingTrainWitness
 import GaloisForLFunctions.ArithmeticIncidencePositivity.BiLatticeTrainWitness
+import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
 
 /-!
 # Arithmetic Incidence Positivity

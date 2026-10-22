@@ -371,6 +371,23 @@ class AdapterPolicyTests(unittest.TestCase):
             models._torch_model('embedding', cpu=True)
         self.assertEqual(factory.from_pretrained.call_args.kwargs['attn_implementation'], 'sdpa')
 
+    def test_reranker_uses_eager_attention_on_mps_and_sdpa_on_cpu(self):
+        """SDPA on MPS makes padded rerank batches non-finite; eager does not."""
+        from unittest.mock import MagicMock
+        torch = MagicMock()
+        torch.backends.mps.is_available.return_value = True
+        factory = MagicMock()
+        transformer = SimpleNamespace(AutoConfig=MagicMock(), AutoModel=MagicMock(),
+                                      AutoModelForCausalLM=factory, AutoTokenizer=MagicMock())
+        models = adapters.LocalModels(Path('/unused'))
+        with patch.dict(sys.modules, {'torch': torch, 'transformers': transformer}), patch.object(
+                models, '_path', return_value='/local/snapshot'):
+            models._torch_model('reranker')
+            self.assertEqual(factory.from_pretrained.call_args.kwargs['attn_implementation'], 'eager')
+            models.loaded.clear()
+            models._torch_model('reranker', cpu=True)
+            self.assertEqual(factory.from_pretrained.call_args.kwargs['attn_implementation'], 'sdpa')
+
     def test_nonfinite_mps_retries_once_on_cpu_and_reports_reason(self):
         from unittest.mock import MagicMock
         models = adapters.LocalModels(Path('/unused'))
@@ -651,6 +668,19 @@ class WorkerTests(unittest.TestCase):
             self.assertEqual(self.client.status()['child_pid'], child)
             events = self.events()
             self.assertEqual([e[0] for e in events], ['start', 'end'] * (len(events)//2))
+
+    def test_waiting_indexing_is_not_starved_by_continuous_searches(self):
+        """Past its maximum wait, indexing is served in arrival order with searches."""
+        with concurrent.futures.ThreadPoolExecutor(4) as pool:
+            busy = pool.submit(self.client.embed, ['slow-busy'], deadline=time.monotonic()+12)
+            self.wait_for(lambda: bool(self.events()))
+            index = pool.submit(self.client.embed, ['indexing'], priority='enrichment', deadline=time.monotonic()+12)
+            time.sleep(worker.ENRICHMENT_MAX_WAIT_SECONDS + 0.5)
+            search = pool.submit(self.client.embed, ['later-search'], deadline=time.monotonic()+12)
+            for f in (busy, index, search):
+                f.result(timeout=15)
+        order = [e[1] for e in self.events() if e[0] == 'start']
+        self.assertLess(order.index('indexing'), order.index('later-search'))
 
     def test_expired_queued_request_never_reaches_model(self):
         with concurrent.futures.ThreadPoolExecutor(2) as pool:

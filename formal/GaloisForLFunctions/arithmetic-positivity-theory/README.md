@@ -186,7 +186,9 @@ dictionary of §2.2 (one form, five names), and most of its analytic inputs come
   other direction BiScale owns the test models (the shifted pair `ζ(s−a)ζ(s+a)`, Beurling
   systems, the Liouville twist) and the function-field calibration against which every APT
   positivity statement is audited; the windows-of-scales theorem of §3.13 is the APT statement
-  whose proof is selective, because it uses the temperedness the shifted pair lacks.
+  whose proof is selective, and the separation is now a theorem rather than a remark: the
+  summability hypothesis the proof consumes, `Σ Λ(r) r^{−1−ε(L)} ≤ 6(3 + log L)`, fails for the
+  shifted pair at every exponent `ε ≤ |a|`, hence on every window of width `log L ≥ 1/|a| − 2`.
 - **Square-Root Threshold supplies the zero side.** APT never locates a zero. The configuration
   object, the pairing `𝒲`, the mass `𝒵`, the reflection defect `ℛ` and the visibility laws
   (isolated pairs, finite off-line sets, depth gaps, equal-depth clusters, attained depths, large
@@ -1112,11 +1114,26 @@ $\lvert P\rvert\le C_W(3+\log L)\sum b_j^2$ (`abs_criticalPrimeEnergy_le_of_wind
 The archimedean gain is $\log$ of the smallest scale and the prime cost $\log$ of
 the width, so the form is positive definite on every window $[M,M^{1+\delta}]$
 spanning polynomially many dyadic blocks (`exists_criticalCompleteEnergy_pos_of_window`).
-The proof uses the temperedness of the prime channel of $\zeta$, which the shifted
-pair $\zeta(s-a)\zeta(s+a)$ does not have: its von Mangoldt weight
-$\Lambda(r)(r^a+r^{-a})r^{-1-\varepsilon}$ is not summable once
-$\varepsilon\le\lvert a\rvert$. That separates the proof from the shifted pair, not
-the statement.
+**The temperedness gate.** The exponent $\varepsilon(L)=1/(2+\log L)$ is the hinge of
+the window bound, and it is a gate rather than a convenience. On one side the raw
+critical-line weight $\Lambda(r)/r$ diverges, while the window exponent restores
+summability with an explicit width-logarithmic sum,
+$\sum_r\Lambda(r)r^{-1-\varepsilon(L)}\le6(3+\log L)$ for every $L\ge1$
+(`summable_vonMangoldt_windowDilationExponent`). On the other side the shifted pair
+$\zeta(s-a)\zeta(s+a)$, $a\ne0$, has von Mangoldt weight
+$\Lambda(r)(r^a+r^{-a})$, which dominates $\Lambda(r)r^{\lvert a\rvert}$, so
+$\sum_r\Lambda(r)(r^a+r^{-a})r^{-1-\varepsilon}$ diverges for *every*
+$\varepsilon\le\lvert a\rvert$ and in particular on every window with
+$\log L\ge1/\lvert a\rvert-2$
+(`not_summable_shiftedPairVonMangoldt_div_rpow_of_le_abs`,
+`not_summable_shiftedPairVonMangoldt_windowDilationExponent`). The separation is
+therefore proved, not observed: the shifted pair does not merely fail to satisfy the
+window conclusion, it fails the single summability hypothesis the proof consumes, and it
+fails it on all wide windows at once. This is the one place where the selectivity
+criterion of the shared target is met by an identified arithmetic input — the
+temperedness of the prime channel of $\zeta$ — rather than by a sign. It separates the
+*proof* from the shifted pair; whether the *statement* also separates them is open, since
+nothing here forbids a wide-window positivity for a non-tempered twin proved another way.
 
 **Compact truncations.** The doubly collared source $g^V=\chi(e^{-x}/V)\,g_c$ is
 compact, supported in $[-\log2V,0]$. The two cutoffs merge in the correlation law,
@@ -1130,6 +1147,41 @@ support at every high block, unconditionally
 (`exists_compactFullWeilEnergy_criticalTruncatedTest_pos`). This positivity is not
 the small-support regime: it comes from the logarithmic coercivity of the critical
 family against an $\ell^2$-uniform prime channel.
+
+**Windows and truncations together.** The two mechanisms compose, and the composition is
+the strongest unconditional positivity statement the theory has on compact tests. The
+window correlation bound holds for the *truncated* collar weight with a constant
+independent of the truncation, so the window prime energy of a compact doubly collared
+source obeys $\lvert P\rvert\le C_{TW}(3+\log L)\sum b_j^2$ uniformly in $V>0$
+(`abs_criticalTruncatedWindowCorrelation_le`,
+`abs_criticalTruncatedPrimeAtom_le_of_window`,
+`abs_criticalTruncatedPrimeEnergy_le_of_window`). Against the truncated archimedean
+slope this gives
+$$
+E(g^V)\ \ge\ \bigl(s_T(\log M-c_T)-K_{T,0}-2C_{TW}(3+\log L)\bigr)\sum_jb_j^2
+$$
+for every window $[M,LM]$ and every $V\ge V_0$, with no constant depending on $V$. Hence
+there are $\delta>0$ and $M_0$ such that on every polynomial window $L\le M^\delta$ with
+$M\ge M_0$, every truncation $V\ge V_0$ and every nonzero pattern, the compact test
+$g^V$ — of support $[-\log2V,0]$ and therefore of *arbitrary* length, covering every prime
+power $r\le\lceil2V\rceil$ — has strictly positive energy with margin
+$(s_T/4)\log M\sum b_j^2$, simultaneously in four of the five names of §2.2 — the complete
+critical energy, the compact full energy, the full zero form of Arithmetic Criticality Theory, and
+the real part of the literal $\Lambda$-weighted explicit-formula functional, all equal on $g^V$
+(`exists_polynomial_window_compact_weil_and_fullZeroForm_pos`). Mollifying into
+$C^2_c(\mathbb R,\mathbb R)$ at rate $O(1/(k+1))$ carries half the margin into the fifth
+name, the actual zeta divisor:
+$$
+\mathcal R(F_k)+\tfrac{s_T}8\log M\sum_jb_j^2\ \le\ \mathcal Z(F_k)
+$$
+for all large $k$ (`exists_smooth_actual_zeta_reflection_coercivity_of_compact_window`).
+So on arbitrarily long compact tests, built from arbitrarily wide polynomial scale
+windows, the readout of the literal zeta zero divisor at a zero is strictly closer to the
+readout at its mirror image than the trivial mass allows — unconditionally, with an
+explicit margin growing like $\log M$. The margin is still the archimedean gain, so this
+is reach, not selectivity; what it removes is every remaining suspicion that the critical
+family's positivity is an artefact of short support, of a single dyadic block, or of a
+noncompact source.
 
 **Across blocks.** The multi-scale prime coupling is an $\ell^2$-sum over dilations:
 Cauchy–Schwarz over $r$ with the Mertens partial sum gives the cross-block decay law
@@ -1291,6 +1343,9 @@ see.
 | Replace the conditionally convergent polar readout by a Lebesgue integral | At $\beta=1/2$ the endpoint is defined through the bounded primitive, $-G(1)+\int_1^\infty G(v)v^{-2}dv$, with cutoff error $\le(24/T)\sum\lvert b_n\rvert/(n+1)$. |
 | An endpoint value of the $L^1$ periodisation is a sign witness | The $L^1$ kernel and its continuous representative differ at integers; only pattern integrals matter. |
 | Zero-density bounds exclude a zero | They are upper counts; a single fixed off-line zero survives all of them. |
+| A window bound that holds for $\zeta$ holds for any twin | The window exponent $\varepsilon(L)=1/(2+\log L)$ is a gate: $\sum\Lambda(r)r^{-1-\varepsilon(L)}\le6(3+\log L)$, but the shifted pair's weight $\Lambda(r)(r^a+r^{-a})r^{-1-\varepsilon}$ diverges for every $\varepsilon\le\lvert a\rvert$. The hypothesis fails before the conclusion is reached, on all wide windows at once. |
+| The temperedness gate makes the window theorem selective | It separates the *proof*. Nothing proved here forbids wide-window positivity for a non-tempered twin obtained by another argument; selectivity of the statement is open. |
+| Compact support of arbitrary length is the receiver's regime | The truncated window positivity holds at every support length $[-\log2V,0]$ with constants uniform in $V$, yet its margin is still the archimedean $\log M$. Long support removes the short-support objection, not the subsidy. |
 | Window or high-height positivity is critical-scale progress | Windows through $3/10$ (all profiles) and $181/500$ (odd) are paid by sign-changing gauges on the archimedean conductance and one prime atom, heights beyond the horizon by the Gamma factor alone; neither sees the critical scale, and the block positivity of the critical family sees no small aperture. |
 | A window through $3/10$ is a theorem about $\zeta$ | No prime power enters an aperture-$3/10$ window ($\log 2>3/5$), so *every* arithmetic weight is Weil-positive there; inside that aperture the certificate is a constant reading and certifies nothing about any source. |
 | A sign is required of the complete form | A floor losing less than an exponential in the aperture already gives RH: $\hat Z(F)\ge-C\int F^2$ on all odd $C^2_c$ tests is RH, and $-C_\sigma e^{2\sigma r}$ at aperture $r$ is the strip $\Theta\le\frac12+\sigma$. The demand is an exponent, not a sign. |
@@ -1325,9 +1380,14 @@ inside an equivalence.
 
 **Low scales.** The complete critical form, collared or not, is positive definite
 on every dyadic block beyond an absolute $M_0$, on polynomial windows, on compact
-truncations uniformly in the truncation, and on lacunary unions of blocks. Below
-$M_0$ nothing is proved; the constants (the threshold and the slope) decide how
-much of the form is covered.
+truncations uniformly in the truncation, on polynomial windows *and* compact
+truncations jointly — hence on compact tests of arbitrary support length, in all five
+names of the form — and on lacunary unions of blocks. Below $M_0$ nothing is proved;
+the constants (the threshold and the slope) decide how much of the form is covered.
+The low-scale gap is the only remaining restriction on the scale variable that is not
+a width restriction, and it is an unavoidable one: the archimedean gain is $\log M$, so
+no argument of this shape reaches $M=O(1)$, where the prime atoms of the smallest
+primes are not yet dominated.
 
 **Explicit thresholds and the range of $R$.** Every block threshold is the
 closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its slope $s$,
@@ -1344,13 +1404,21 @@ Whether $R$ is monotone on $[0,1/2]$ is open.
 **Dense windows.** Across blocks the prime coupling decays like $\tau(m,n)$ and
 lacunary families are covered; windows wider than $M^\delta$ that are not
 lacunary, where $\log L\asymp\log M$ and the constants $s$ and $C_W$ decide, are
-open. The resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense
+open. The exponent $\delta$ is now the single quantity separating the proved regime
+from the full scale range, at every support length: the window and truncation
+constants are independent of each other and of $V$, so $\delta=s/(4(W+1))$ is
+determined by the archimedean slope against the width cost alone. A window with
+$\log L\ge\delta^{-1}$ times the archimedean gain is beyond reach by this argument,
+and whether the width cost $3+\log L$ is sharp — the correlation of two dilation rings
+is $O(\min(1,\sqrt{L/r}))$, and only the $\varepsilon$-trick converts it — is open. The resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense
 windows uniform survives only for scale ratios up to about the square root of the
 scale.
 
 **From the family to the receiver.** The tent family is Weil-complete and
-detects every actual off-line zero, and doubly collared truncations carry block
-positivity to compact tests of every length. What is missing is the passage to
+detects every actual off-line zero, and doubly collared truncations carry block *and
+polynomial-window* positivity to compact tests of every length, through to the actual
+zeta divisor as reflection dominance $\mathcal R(F)<\mathcal Z(F)$ with an explicit
+margin. What is missing is the passage to
 the compact tests of the receiver on which RH is decided, those without the
 archimedean gain $\log M$: every positivity theorem on the critical family is paid
 by that gain, and on the RH-complete cone it is absent. The passage is now a
@@ -1413,8 +1481,15 @@ and whether their cell kernels are also sign-definite, is open.
    `Re Tr ϑG` open. The candidate source class is the complete critical family on blocks, windows,
    compact truncations and lacunary unions; a positivity theorem and a realization theorem would be
    the same theorem.
-5. **Selectivity audit.** Which block-positivity and admissible-source statements fail for
-   `ζ(s−a)ζ(s+a)` and for a Beurling system, and which survive and are therefore not about RH.
+5. **Selectivity audit.** One separation is now proved: the window bound's own hypothesis, the
+   tempered critical-line sum `Σ Λ(r) r^{−1−ε}` at `ε(L) = 1/(2 + log L)`, diverges for
+   `ζ(s−a)ζ(s+a)` at every `ε ≤ |a|`, so no wide window admits the proof for the shifted pair. The
+   audit is unfinished in both directions. Upwards: is the *statement* selective — does some
+   non-tempered twin satisfy wide-window positivity by another route, or does the conclusion itself
+   fail there? Downwards: which of block positivity, the admissible-source law, the collared
+   dilation inequality and the Montgomery–Vaughan endpoint bound survive verbatim for a Beurling
+   system with an off-line zero, and are therefore not about RH. A statement that survives all
+   three test models is infrastructure, and should be labelled as such in place.
 6. **The source class of the one-point cone.** The full Weil cone contains exactly one weight, so
    the realization problem is the identification of `Λ` index by index rather than an inequality.
    Which admissible sources of this theory present a weight whose single-index perturbations are

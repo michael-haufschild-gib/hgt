@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactModel
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactModel
 namespace HTGeometry
 noncomputable section
 set_option maxHeartbeats 1500000

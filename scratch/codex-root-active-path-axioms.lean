@@ -1,3 +1,3 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileActivePathCount
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileActivePathCount
 
 #print axioms RHTower.sourceActivePath_prime_count_le_twice_mismatch_add_nonprime

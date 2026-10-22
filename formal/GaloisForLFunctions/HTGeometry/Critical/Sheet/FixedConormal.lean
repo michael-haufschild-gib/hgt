@@ -88,8 +88,6 @@ theorem criticalSheet_horizonJacobian_mulVec_fixedConormal (σ : criticalGeometr
   criticalSheet_jacobian_eq_horizon_reduced K σ hsing ▸
     criticalSheet_jacobian_mulVec_conormal K σ hsing _ (criticalSchurBranchNonUnit_mem K)
 
-omit [IsAlgClosed K] in
-omit [IsAlgClosed K] in
 /-- **Corank one for the reduced horizon Jacobian at a singular sheet.** -/
 theorem criticalSheet_finrank_ker_horizonJacobian [DecidableEq K]
     (σ : criticalGeometricSheet K m n)
@@ -105,6 +103,7 @@ theorem criticalSheet_finrank_ker_horizonJacobian [DecidableEq K]
   criticalSheet_jacobian_eq_horizon_reduced K σ hsing ▸
     criticalSheet_finrank_ker_reduced_jacobian_eq_one K σ hsing
 
+omit [IsAlgClosed K] in
 theorem criticalSheetReducedRawPolynomial_eq (σ : criticalGeometricSheet K m n) :
     criticalSheetReducedRawPolynomial K σ
       = (criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.1
@@ -115,6 +114,7 @@ theorem criticalSheetReducedRawPolynomial_eq (σ : criticalGeometricSheet K m n)
   -- the reduced label is the componentwise reduction, so this is additivity of the reduction map
   Polynomial.map_add _
 
+omit [IsAlgClosed K] in
 theorem criticalSheetReducedRecipPolynomial_eq (σ : criticalGeometricSheet K m n) :
     criticalSheetReducedRecipPolynomial K σ
       = (criticalGeometricSheetToSchurReducedFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.2
@@ -124,6 +124,7 @@ theorem criticalSheetReducedRecipPolynomial_eq (σ : criticalGeometricSheet K m 
             (Fact.out : 0 < m) (Fact.out : 0 < n))) :=
   Polynomial.map_add _
 
+omit [IsAlgClosed K] in
 theorem criticalSheetReducedRawPolynomial_eq' (σ : criticalGeometricSheet K m n) :
     criticalSheetReducedRawPolynomial K σ
       = (criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.1.map
@@ -135,6 +136,7 @@ theorem criticalSheetReducedRawPolynomial_eq' (σ : criticalGeometricSheet K m n
             (Fact.out : 0 < m) (Fact.out : 0 < n))) :=
   Polynomial.map_add _
 
+omit [IsAlgClosed K] in
 theorem criticalSheetReducedRecipPolynomial_eq' (σ : criticalGeometricSheet K m n) :
     criticalSheetReducedRecipPolynomial K σ
       = (criticalGeometricSheetToSchurFibre K (Fact.out : 1 < m) (Fact.out : 1 < n) σ).1.2.map
@@ -146,6 +148,7 @@ theorem criticalSheetReducedRecipPolynomial_eq' (σ : criticalGeometricSheet K m
             (Fact.out : 0 < m) (Fact.out : 0 < n))) :=
   Polynomial.map_add _
 
+omit [IsAlgClosed K] in
 /-- The reduced jets of a sheet are inverse to each other through the horizon. -/
 theorem criticalSheet_reduced_inv (σ : criticalGeometricSheet K m n) :
     (X : (IsLocalRing.ResidueField (criticalNormalClosureSchurValuationSubring K

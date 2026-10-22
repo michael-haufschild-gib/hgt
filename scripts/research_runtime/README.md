@@ -17,9 +17,13 @@ From the repository root:
 ```
 
 These manage Qdrant, the shared inference worker, automatic corpus indexing and
-unfinished local GPU-result receivers. New/edited/deleted sources are handled
-incrementally, in RHTower → HTGeometry → remaining-corpus order. Remote GPU jobs
-continue independently. Services continue after closing Codex while the Mac is awake.
+unfinished local GPU-result receivers. Remote GPU jobs continue independently.
+Services continue after closing Codex while the Mac is awake.
+
+The indexer diffs `formal/` and `docs/` every 2 seconds and re-indexes only the
+added, edited or removed files: lexical rows first, then their embeddings at top
+priority, pushed straight to Qdrant. A full reconciliation runs every 10 minutes.
+Dependencies under `.lake/packages` (Mathlib) are lexical only, never embedded.
 
 SQLite holds source metadata, lexical search and a durable Qdrant update queue.
 Qdrant serves vector queries. Bounded FAISS files remain as the audited vector
@@ -137,15 +141,17 @@ cache keys: PID, queue, loaded models and devices are operational fields.
   mask is load-bearing. Query and document sides take different task prefixes.
   Only the text tower is loaded (271M of 740M); the audio tower has no SDPA
   kernel, so building it fails the load outright.
-  Reranking: one text on MPS, four on CPU, left padding. Both cap at
-  2048 tokens per text/pair. Truncation applies
+  Reranking: every candidate in one batch on MPS, four per batch on CPU, left
+  padded to a multiple of 64 tokens. Both cap at 2048 tokens per text/pair. Truncation applies
   to embedding text or reranker body; reranker prefix/suffix always survive.
 - Generation, only if a model is pinned: 8192 tokens including chat template and requested output;
   1–2048 output tokens; 256-token prefill chunks; deterministic greedy sampling.
 - Interactive work precedes enrichment in the queue and never cancels it:
   killing indexing to serve a query starved indexing outright once several
-  agents searched continuously. Indexing requests are small, so a query waits
-  well under a second behind one. Interactive calls do not preempt each other.
+  agents searched continuously. An indexing request that has waited 2 seconds
+  joins interactive work in arrival order, so continuous searching cannot starve
+  it. Indexing requests are small, so a query waits well under a second behind
+  one. Interactive calls do not preempt each other.
 - Supervisor I/O (including child IPC) is nonblocking, polled every 20ms.
   Client deadlines include startup, queueing, tokenization, loading and compute.
   Closing a request socket cancels it. `client.close()` cancels only that

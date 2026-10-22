@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileActiveGapResonance
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileActiveGapResonance
 
 noncomputable section
 namespace RHTower

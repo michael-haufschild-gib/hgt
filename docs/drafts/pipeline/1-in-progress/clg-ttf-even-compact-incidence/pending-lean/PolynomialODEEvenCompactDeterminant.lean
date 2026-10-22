@@ -1,7 +1,7 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactUnitRaw
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactRawDeterminant
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactRelativeHorner
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactHornerLanding
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactUnitRaw
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactGapDeterminantIdentity
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactRelativeHorner
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactHornerLanding
 
 /-! # Exact determinant incidence of the positive compact polynomial certificate -/
 namespace HTGeometry

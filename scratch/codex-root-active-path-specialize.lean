@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileActivePathCount
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileActiveGapResonance
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileActivePathCount
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileActiveGapResonance
 
 namespace RHTower
 

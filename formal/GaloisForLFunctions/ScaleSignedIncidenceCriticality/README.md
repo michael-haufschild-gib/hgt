@@ -191,7 +191,14 @@ depth-`δ` off-line configuration amplifies by `e^{2δa}`, and the two exponents
   invisibility theorems into exact limits, adds the units in which the *same* readings are sharp
   (scale, visibility frequency, horizon frequency), and returns the design specification a
   counterexample would have to meet. SRT's graded dictionary — a floor at rate `2σ` is the strip
-  `½ + σ` — is the reason a rate reading, and not a sign reading, is the faithful one.
+  `½ + σ` — is the reason a rate reading, and not a sign reading, is the faithful one. SRT also
+  proves the fact that makes this programme's pricing binding rather than advisory: at every
+  aperture the positivity routes (the CCM ground energy, the ACT variation inequality, the OWU
+  capacity inequality, the EWU blind minimum, the AIP and APT windows, the SRT window and lag
+  functional) are *one* statement, window positivity of the full zero form, and every route's graded
+  receiver reads the one number `zetaZeroWidth`. So the blindness theorems here are not about one
+  route's weakness: the aperture certificate whose resolution limit is `½` is the certificate of all
+  of them simultaneously, and a price computed once applies to every language it is stated in.
 * **Arithmetic Criticality Theory** owns the ground-energy path this programme prices: bounded
   apertures read the scale and never the depth, a margin at a fixed aperture is worthless, a uniform
   gain at all apertures is already RH, and past the Nyquist aperture only the *size* of the deficit
@@ -672,7 +679,14 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    deficit in the aperture. For the configuration of `ζ` that rate is the zero width, so an estimate
    of it is the target of the whole corpus; what belongs here is the admissibility question: which
    classes of readings determine the *rate* rather than any single value, and what the floor of a
-   rate-reading class is when the rate is estimated only along a sparse set of apertures.
+   rate-reading class is when the rate is estimated only along a sparse set of apertures. One half of
+   this is now settled in `SquareRootThreshold` with a hypothesis that is itself a reading: the
+   ground-energy rate equals the zero width whenever the off-line copies are bounded in number on
+   unit height windows, and the alternative is unbounded clustering. So the local count of off-line
+   copies per window is precisely the *third datum* that makes the rate reading faithful — the
+   aperture-face analogue of the local on-line mass in the productive seam. Price that datum: what
+   is the floor of the class of readings that see the certificate and the local count, against the
+   class that sees the certificate alone?
 5. **The design specification of a counterexample.** The reach law says the free part of the hiding
    is linear in the dilution `ℓ` and the bought part only logarithmic in the mass. What is the
    largest reach of a configuration subject to the arithmetic constraints the explicit formula
@@ -687,7 +701,14 @@ Open, in this programme's own unit (a class of readings and its exact limit):
 7. **A numerical unit for the incidence ledger.** The node face is quantitative through the
    membership bits and the node scale. The ledger of `ArithmeticIncidencePositivity` is graded by the
    width on the analytic side; its admissibility unit — what class of readings of the ledger's terms
-   can certify a rate — is not computed.
+   can certify a rate — is not computed. There is now a sharp instance to price. The comb-energy
+   reduction factors the ledger's whole exponential obstruction through a *single scalar*, the
+   weighted cross-prime aggregate, and is therefore a reading in this programme's sense, with an
+   unusually small codomain. Its good regime is a sign condition on that scalar, and the bi-lattice
+   train is a witness that the condition fails exactly on the multiplicatively aligned tests, the
+   ones carrying the large cost — so the reading is a candidate for a *collapse*: compute whether the
+   aligned family and a benign family share its value, and if so the reduction's sign condition is
+   unprovable rather than merely unproved, and only the aggregate's size can be read.
 
 ### Research topics toward the shared target
 

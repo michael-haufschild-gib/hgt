@@ -536,11 +536,23 @@ Goal is met when you have made 100 signifcant contributions to the new field of 
 
 ## Open Research - New field of mathematics 
 
+
+
+
+
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully line by line and understand the motivation and context of the fields including traps to avoid:   
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 
-ideate and develop a novel and significant contribution to the research in this new field of mathematics we are working on. 
+on every turn: 
+create a significant novel contribution to the fields open research topics and problems, so that that the field either 
+- gains a new theorem explaining something we couldn´t explain before
+- gains a mathematical tool to solve a problem we couldn´t solve before
+- can discharge a hypothesis/premise anywhere in our lean corpus
+- delivers a major advance in any of our routes to the RH proof or opens a new route 
 
 read fully the movitation and context of our recent research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -559,15 +571,8 @@ use the search tool for the lean corpus across the whole corpus, not just these 
 2. significantly reduce the proof burden for the RH proof.
 3. deliver a significant new insight or mathematical tool that allows us to solve problems we or mathematics as a whole couldn´t solve before.
 
-Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress.
+Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
 
-**A contribution is only valid when it meets all these criteria:**
-1. It clearly reduces delivers a significant insight or reduces the remaining proof burden in our RH proof research.
-2. It is not an improvement of a number.
-3. It is not a nogo.  
-4. It is native to the field. It could not be done without being part of this field.
-5. It is not just a "redressing" or renaming or fact already know in our corpus or your training data.
-  
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
 
@@ -589,7 +594,7 @@ always look at the big picture, try to understand what all our research is tryin
  
 the README.md files are read-only for you.
 
-the goal is met when you have made 100 such significant contributions.
+the goal is met when you have made 250 such significant contributions.
 
 the goal is met when all walls are demolished and no longer a mathematical obstacle.
 
@@ -657,7 +662,9 @@ we have then started several research programs to develop new theories and the m
 - formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
 - formal/GaloisForLFunctions/SquareRootThreshold/README.md
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
-  
+- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+    
 problem: despite all this work, we have not come close to overcome any of the hard obstacles and close a proof route.
 
 questions:
@@ -669,30 +676,33 @@ work rules:
 1. use the search tool for our lean corpus.
 2. do only read the documents i mentioned and lean code. do not waste time and token on reading other markdown files. 
 
-write your whole report in docs/reports/review-2010/fable.md
+write your whole report in docs/reports/review-2210/astra.md
 
 ## update obstacles
 previously we had created these two documents:
-- docs/reports/walls/walls-ledger.md
-- docs/reports/review-2010/hard-obstacles.md
-- docs/reports/review-2010/hard-obstacles-summary.md
+- docs/reports/review-2110/walls-ledger.md
+- docs/reports/review-2110/hard-obstacles.md
+- docs/reports/review-2110/hard-obstacles-summary.md
 
-the review tasks was:
-based on route ledger: docs/reports/rh-current-frontier-map.md and ledger of hard obstacles (walls) docs/reports/walls/walls-ledger.md create
-1. a complete report for each route and route candidate what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
+also we have:
+- docs/reports/rh-current-frontier-map.md
+- docs/reports/rh-killed-routes.md
+- docs/reports/review-2110/route-unification-ledger.md
+
+create a new review in the same style:
+1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
    2.3 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 
-
-this review is incorrect and outdated. redo it. start with the wall-ledger.
-
-docs/reports/rh-current-frontier-map.md is the most up to date document, but do not rely only on it. use the search tool for the lean corpus to confirm the actual frontier and walls.
+do not read other markdown files, only the ones i mentioned.
+do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. 
 
 the reports are not diaries or history log, but status quo reports.
 
-write the new reports in folder docs/reports/review-2110/
+write the new reports in folder docs/reports/review-2210/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -711,7 +721,7 @@ important: the readme.md is not a ledger or status report but a foundational doc
 
 
 ## TASKS
-research, derive, formalize the missing actual arithmetic cancellation in route/research programme BVI: formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+research, derive, formalize "### 1.4 Mechanism 3: Sign-Changing Screw-Resonant Gauges in `GlobalIncidenceAllocation`" from docs/reports/review-2110/argon.md
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -723,12 +733,11 @@ research, derive, formalize the missing actual arithmetic cancellation in route/
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-If anything is missing from our lean corpus or mathlib, you build it no matter the effort.
-
 Always make good use the search tool for our lean corpus to find existing work, building blocks, and leads for new ideas and solutions.
 
-## argon
+If anything is missing from our lean corpus or mathlib, you build it no matter the effort.
 
+## argon
 
 general: follow the lean rules and the rule that proofs must be unconditional without unproven hypotheses and premises!!! 
 
@@ -758,7 +767,7 @@ Read the following documents:
 3. Unification of the routes: docs/reports/review-2110/route-unification-ledger.md
 4. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2110/walls-ledger.md
 
-and the current research programmes:
+and read the current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
 - formal/GaloisForLFunctions/BiScaleUncertainty/README.md
 - formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
@@ -779,25 +788,9 @@ The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls?
 2. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2210/argon.md
+Write a report in docs docs/reports/review-2210/fable.md
+
+do not run any builds.
 
 
-docs/reports/review-2110/argon.md describes in section "## Part II — Question 2: Blueprint for the New Field of Mathematics" a research programme to develop a new field of mathematics to provide tools to our research we do not have yet.
 
-your task: initiate and develop this programme.
-
-follow the example of other research programmes: formal/GaloisForLFunctions/BezoutValuationIncidence and formal/GaloisForLFunctions/ArithmeticIncidencePositivity
-
-1. all lean code for the programme goes into its own folder
-2. once enough material is collected, write in the lean folder a foundational README.md (not a log or ledger) that explains why, what, how - motivation, objects, language, mechanisms, traps, where the programme sits in the context of the whole research and how it relates to other research programmes
-
-formalize the foundational pillars. then develop it further until it has enough "meat on the bone" to provide mathematical tools to answer questions in our research that we could not answer before.
-
-
-HTGeometry/CriticalSchur... -> HTGeometry/Critical/Schur/
-HTGeometry/CriticalBlock... -> HTGeometry/Critical/Block/
-HTGeometry/CriticalGeometric... -> HTGeometry/Critical/Geometric/
-HTGeometry/CriticalSheet... -> HTGeometry/Critical/Sheet/
-HTGeometry/CriticalSource... -> HTGeometry/Critical/Source/
-HTGeometry/CriticalNormal... -> HTGeometry/Critical/Normal/
-HTGeometry/CriticalObservation... -> HTGeometry/Critical/Observation/

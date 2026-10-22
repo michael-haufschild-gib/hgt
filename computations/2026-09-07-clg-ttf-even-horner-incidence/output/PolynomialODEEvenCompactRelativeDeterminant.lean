@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactRawDeterminant
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactRawModel
 
 namespace HTGeometry
 noncomputable section

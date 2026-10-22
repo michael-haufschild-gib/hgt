@@ -1,5 +1,5 @@
 import SQB99CoefficientPublicCore
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentFiveInteger
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactMomentFiveInteger
 import Mathlib.Tactic.Ring
 namespace SQBCompactRow
 noncomputable section

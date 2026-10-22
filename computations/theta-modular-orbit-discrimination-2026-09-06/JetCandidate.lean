@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeLyapunovClosure
+import GaloisForLFunctions.HTGeometry.PolynomialODE.JetRankThreeLyapunovClosure
 import Mathlib.Algebra.MvPolynomial.Funext
 
 open MvPolynomial

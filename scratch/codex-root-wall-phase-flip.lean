@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ThetaCuspTwoAtomMellinOffLineCountermodel
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspTwoAtomMellinOffLineCountermodel
 
 open Complex MeasureTheory
 

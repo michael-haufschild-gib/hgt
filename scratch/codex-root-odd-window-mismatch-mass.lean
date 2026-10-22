@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileOddWindowCofinalCount
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowCofinalCount
 import GaloisForLFunctions.RHTower.Sieve.ProperPrimePowerCount
 
 namespace RHTower

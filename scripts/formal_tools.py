@@ -33,6 +33,7 @@ from lean_search_index import (
     SourceFile,
     SCHEMA_FINGERPRINT,
     build_match_expression,
+    content_parts,
     matches_fields,
     module_matches,
     query_parts,
@@ -1259,7 +1260,7 @@ def research_scan(args: argparse.Namespace) -> int:
     """Index-free fallback, using the same extractor, query grammar and diversity."""
     query = " ".join(args.query).strip()
     options = research_options(args)
-    parts = query_parts(query)
+    parts = content_parts(query_parts(query))
     match_options = {k: options[k] for k in ("any_terms", "exact")}
     hits: list[DeclHit] = []
     markers: list[MarkerHit] = []

@@ -572,6 +572,26 @@ pairing. Five facts fix what a proof of its sign can look like.
   plus two explicit *linear* functionals of `A_ε − 1` plus the residual's own dilation form
   (`ThePositiveCoreOfTheDilationForm`); renormalisation neutrality makes the quadratic residual the
   only unpaid part, and it vanishes with the deviation from constancy.
+- **The core's size is the prime harmonic series, and that is the whole obstruction.** The core is
+  not merely positive; integrated over a damping interval it is a classical divergent sum, and this
+  identifies the layer's difficulty with a fact about primes that has been known since Euler. Sum
+  the integrated core by *scales* rather than by horizons: the pronic weights telescope,
+  `Σ_{n = j}^{T} 1/(n(n+1)) = 1/j − 1/(T+1)`, leaving one sum over scales
+  `∫_η^ε core_x(T) dx = Σ_{j ≤ T} (Λ(j)/log j)(j^{−η} − j^{−ε})(1/j − 1/(T+1))`
+  (`integral_workCore_eq_scaleSum`). The density `Λ(j)/log j` is `1` at a prime and `1/k` at a
+  `k`-th prime power, so the scale sum *is* a prime harmonic series, its prime terms being
+  `(p^{−η} − p^{−ε})/p` times the telescoping factor. Hence the integrated core grows without bound
+  in the horizon, at the rate of `Σ_{p ≤ T} 1/p ≍ log log T`
+  (`exists_horizon_integral_workCore_ge`). The explicit positive core is therefore a **debt of size
+  `log log T`**, and under any energy budget the integrated deviation must carry it: it tends to
+  `−∞` along the horizons (`exists_horizon_integral_workDeviation_le`). This is the sharpest
+  statement of what admission demands. The only way the critical energy can stay bounded is that the
+  source's deviation from constancy cancels, to leading order, the prime harmonic growth of its own
+  tangent — a cancellation of exactly `log log T`, neither more nor less. Two consequences for
+  method choice: any argument that bounds the deviation terms in absolute value is dead on arrival,
+  because their integral is unbounded; and the required cancellation is *slow*, which is why the
+  function-field calibration, where the deviation is identically zero, says nothing about the size
+  of the number-field cancellation.
 
 ### The self-improving identity: admission at a single damping
 
@@ -717,6 +737,11 @@ transport mechanism.
 - **Size-blind arguments are refuted, not merely unselective.** The majorant row `d^{−ε}` has the
   same sizes and is never admitted at or below half damping, so any argument surviving the removal of
   the Möbius signs proves a false statement.
+- **The deviation terms cannot be bounded in absolute value.** The integrated core is a prime
+  harmonic series of size `log log T`, so admission forces the integrated deviation to `−∞` along
+  the horizons. Any estimate that discards the deviation's sign — a majorant, a triangle
+  inequality, an `ℓ¹` bound — contradicts a proved divergence. What is required is a cancellation of
+  exactly `log log T`, so the mechanism has to be signed and slow.
 - **Ratio smallness is not a bound.** A complete energy can tend to infinity while its ratio to a
   sector energy tends to zero. A proved ratio limit is evidence of a mechanism, not an admission
   statement; what must improve is the rate in the complete norm, with the horizon and cutoff
@@ -772,7 +797,11 @@ transport mechanism.
 5. **Which terms obstruct.** Express the work through the owned divisor, Vaughan and logarithmic
    covariance identities and classify the terms whose negative part is not controlled uniformly in
    the horizon. The Markov face says one such term is the jump energy of the arithmetic chain; the
-   window-mean form says the object is a smoothing of the source against itself.
+   window-mean form says the object is a smoothing of the source against itself. The size is now
+   known: the integrated core is a prime harmonic series of size `log log T`, so the terms to be
+   classified are exactly those that supply a signed cancellation of that order. A classification
+   that produces only `O(1)` or `o(log log T)` cancellation is a proof that the chosen decomposition
+   is insufficient, not a partial result.
 6. **Propagating the complementary-sector cancellation.** Turn the proved leading-order
    anti-alignment between a large-prime denominator sector and its literal complement into a
    quantitative residual surviving a second compatible scale transition, in the shape

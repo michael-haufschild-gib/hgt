@@ -17,7 +17,7 @@ MAX_FRAME = 2 * 1024 * 1024
 MAX_ITEMS = 64
 # Indexing requests are small so an agent's query waits well under a second
 # behind one. Queries are served first but never cancel work in flight.
-ENRICHMENT_ITEMS = 8
+ENRICHMENT_ITEMS = 2
 MAX_TEXT = 32768
 MAX_TOTAL_TEXT = 262144
 MAX_PENDING = 32
@@ -30,6 +30,7 @@ BATCH_SIZE = 4
 TOKEN_BUDGET = 8192
 MAX_BATCH_SIZE = 64
 PAD_MULTIPLE = 32
+RERANK_PAD_MULTIPLE = 64
 GENERATION_CONTEXT = 8192
 # EmbeddingGemma's task prefixes are a fixed set from its model card, not a
 # free-text instruction: queries and documents use DIFFERENT prefixes, and the

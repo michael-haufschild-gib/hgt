@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactBlock8
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactBlock8
 
 namespace HTGeometry
 noncomputable section

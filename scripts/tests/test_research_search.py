@@ -161,7 +161,8 @@ class ResearchCommandTests(unittest.TestCase):
         # silently reverts to OR or the old 500-marker pre-filter.
         for query, flags in [('integer carry', []), ('carry absent', []),
                              ('carry absent', ['--any']), ('"exotic tail" terminology', []),
-                             ('car', ['--exact']), ('carry', ['--module', 'Integer'])]:
+                             ('car', ['--exact']), ('carry', ['--module', 'Integer']),
+                             ('the integer carry of a number', [])]:
             with self.subTest(query=query, flags=flags):
                 a = self.run_cli(query, *flags, '--json')
                 b = self.run_cli(query, *flags, '--json', '--scan')

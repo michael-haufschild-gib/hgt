@@ -938,11 +938,15 @@ this one real function of one variable never crosses zero.
 * **The mean-zero sector.** The `μ_a`-mean-zero profiles, on which the zeros are seen, are exactly the
   pole-vanishing sources, so `μ₀(A)∫F² ≤ Ẑ(F)` for real smooth pole-vanishing `F` in `(−A, A)`
   (`polarGroundEnergy_mul_le_fullZeroForm`) and `D_a(u) + μ₀(A)∫(m_a u)² ≤ 2S_a(u) + V_a(u)` for every
-  shift (`reflectedDifferenceEnergy_add_le_poleFree_of_meanZero`). The corpus certificates of `μ₀` give
-  margin `1/10` through the prime-free threshold `½ log 2` and margin `1/20` through
-  `½(log 2 + 1/50)`, where the prime `2` acts; for all even profiles, mean-zero or not, the margin is
-  `1/30` on `[−21/200, 21/200]` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`). These are
-  the first regions of the frontier inequality that are not regions of pole domination.
+  shift (`reflectedDifferenceEnergy_add_le_poleFree_of_meanZero`). The corpus certificates of `μ₀` give two explicit
+  regimes: margin `1/10` on `[−1/3, 1/3]`, where the test support has length `2/3 < log 2` and no
+  prime enters the form (`…_of_support_le_third`), and margin `1/20` on `[−7/20, 7/20]`, where the
+  support has length `7/10 > log 2` and the prime `2` contributes
+  (`…_of_support_le_seven_twentieths`). For all even profiles, mean-zero or not, the margin is `1/30`
+  on `[−21/200, 21/200]` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`). The mean-zero
+  sector therefore reaches `10/3` times further than the all-profile theorem, and `[−7/20, 7/20]` is
+  the first certified region of the frontier inequality in which a prime contributes at all: these
+  are the first regions that are not regions of pole domination.
 * **The lag face.** On the centred difference test of `SquareRootThreshold` at `A = v/2 + w`,
   `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`, and a bound `μ(A) ≥ −Ce^{2σA}` forces every zero into
   `|Re ρ − ½| ≤ σ`: the no-crossing of `μ` and the absence of a first negative lag are one law,
@@ -1081,7 +1085,8 @@ the prime number theorem enters only through proved corpus forms.
    absence of a contact aperture (3.14), and a near-top zero seen at lag `V` would place the
    contact aperture below `V/2 + w`. Open: any floor past `3/10` on all profiles, in particular
    past `½ log 2`, where the folded conductances across `log 2` are negative on even tests (the odd
-   sector is paid through `181/500`); the size of `μ(A)` on the stretch where it is doubly
+   sector is paid through `181/500`, and the mean-zero sector through `7/20`, both past the first
+   prime — so the unpaid case is specifically the pole directions on even tests); the size of `μ(A)` on the stretch where it is doubly
    exponentially small; and a mechanism excluding contact that sees every prime at critical
    strength while losing nothing at the archimedean place. The graded form is the usable target:
    a floor `μ(A) ≥ −Ce^{2σA}` is the strip `½ + σ`, the converse holds unconditionally in the

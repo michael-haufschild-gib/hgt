@@ -312,7 +312,7 @@ def import_results(cache, bundle, output, *, budget_seconds=600, lock_seconds=15
         # chunks whose document IDs moved while the remote job was running.
         corpus.con.execute('CREATE TEMP TABLE batch_current AS SELECT d.id,d.content_hash '
             'FROM documents d JOIN files f ON f.path=d.path LEFT JOIN vectors v ON v.doc_id=d.id '
-            "WHERE d.view<>'lean' AND f.status='indexed' AND "
+            "WHERE d.view<>'lean' AND instr(d.path,'/.lake/packages/')=0 AND f.status='indexed' AND "
             '(v.doc_id IS NULL OR v.content_hash<>d.content_hash OR v.model<>?)', (model,))
         corpus.con.execute('CREATE INDEX batch_hash ON batch_current(content_hash)')
         corpus.con.execute('CREATE TEMP TABLE batch_incoming(hash TEXT PRIMARY KEY, position INTEGER)')

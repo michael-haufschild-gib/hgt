@@ -68,12 +68,20 @@ class MatchExpressionTests(unittest.TestCase):
         expression = build_match_expression("de-Branges (space) ^rank a*b")
         self.assertNotIn("-", expression)
         self.assertNotIn("^", expression)
-        # Single letters stay exact: `a*` would match the whole corpus.
+        # Single letters stay exact: `b*` would match the whole corpus. `a` is
+        # also a function word, so it is dropped while other terms remain.
         self.assertEqual(
             expression,
             '("de" OR "de"*) AND ("branges" OR "branges"*) AND ("space" OR "space"*)'
-            ' AND ("rank" OR "rank"*) AND "a" AND "b"',
+            ' AND ("rank" OR "rank"*) AND "b"',
         )
+
+    def test_function_words_are_dropped_but_phrases_and_lone_words_kept(self) -> None:
+        self.assertEqual(build_match_expression("bound for the number of zeros"),
+                         '("bound" OR "bound"*) AND ("number" OR "number"*) AND ("zeros" OR "zeros"*)')
+        self.assertIn('"the critical line"', build_match_expression('"the critical line" zero'))
+        # A query made only of function words still searches for them.
+        self.assertEqual(build_match_expression("of the"), '("of" OR "of"*) AND ("the" OR "the"*)')
 
     def test_keeps_non_ascii_terms(self) -> None:
         # Names and docstrings here are full of Greek; dropping it would make

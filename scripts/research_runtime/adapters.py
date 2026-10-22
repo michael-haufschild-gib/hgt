@@ -11,8 +11,8 @@ import sys
 from pathlib import Path
 
 from .config import (BATCH_SIZE, CONTEXT_TOKENS, DOCUMENT_TEMPLATE, EMBEDDING_DIMENSIONS,
-                     GENERATION_CONTEXT, MLX_EMBEDDING_MODULE, QUERY_TEMPLATE,
-                     installation_status, offline_environment)
+                     GENERATION_CONTEXT, MLX_EMBEDDING_MODULE, PAD_MULTIPLE, QUERY_TEMPLATE,
+                     RERANK_PAD_MULTIPLE, installation_status, offline_environment)
 from .protocol import RuntimeDeadline, RuntimeUnavailable, remaining
 
 RERANK_PREFIX = ('<|im_start|>system\nJudge whether the Document meets the requirements '
@@ -28,7 +28,8 @@ def embedding_text(text: str, query: bool) -> str:
     return (QUERY_TEMPLATE if query else DOCUMENT_TEMPLATE).format(text=text)
 
 
-def reranker_inputs(tokenizer, query: str, documents: list[str], max_length=CONTEXT_TOKENS):
+def reranker_inputs(tokenizer, query: str, documents: list[str], max_length=CONTEXT_TOKENS,
+                    pad_to_multiple_of=None):
     prefix = tokenizer.encode(RERANK_PREFIX, add_special_tokens=False)
     suffix = tokenizer.encode(RERANK_SUFFIX, add_special_tokens=False)
     budget = max_length - len(prefix) - len(suffix)
@@ -39,7 +40,8 @@ def reranker_inputs(tokenizer, query: str, documents: list[str], max_length=CONT
                        return_attention_mask=False, max_length=budget,
                        add_special_tokens=False)
     inputs['input_ids'] = [prefix + ids + suffix for ids in inputs['input_ids']]
-    return tokenizer.pad(inputs, padding=True, return_tensors='pt', max_length=max_length)
+    return tokenizer.pad(inputs, padding=True, return_tensors='pt', max_length=max_length,
+                         pad_to_multiple_of=pad_to_multiple_of)
 
 
 def mean_pool(hidden, attention_mask):
@@ -130,7 +132,7 @@ class LocalModels:
         else:
             model = AutoModelForCausalLM.from_pretrained(path, local_files_only=True, trust_remote_code=False,
                                                          dtype=torch.float32,
-                                                         attn_implementation='sdpa').eval()
+                                                         attn_implementation='eager' if device == 'mps' else 'sdpa').eval()
         # Record selected device before transfer so a failed MPS transfer can retry on CPU.
         self.devices[role] = device
         model = model.to(device)
@@ -142,10 +144,10 @@ class LocalModels:
         model, tokenizer = self._torch_model(role)
         values = request['texts' if role == 'embedding' else 'documents']
         result = []
-        # Right-padding + last-nonpad pooling permits real embedding batches on
-        # MPS. Rerank must keep its last-position chat suffix, so use unpadded
-        # single items there to avoid the MPS mixed-left-padding NaN path.
-        batch_size = 1 if role == 'reranker' and self.devices[role] == 'mps' else BATCH_SIZE
+        # Eager attention on MPS makes padded batches finite, so reranking scores
+        # every candidate in one forward pass instead of one pass per candidate.
+        mps = self.devices[role] == 'mps'
+        batch_size = max(1, len(values)) if role == 'reranker' and mps else BATCH_SIZE
         with torch.inference_mode():
             for start in range(0, len(values), batch_size):
                 remaining(request['deadline'])
@@ -153,6 +155,7 @@ class LocalModels:
                 if role == 'embedding':
                     inputs = tokenizer([embedding_text(t, request.get('query', False)) for t in batch],
                                        padding=True, truncation=True, max_length=CONTEXT_TOKENS,
+                                       pad_to_multiple_of=PAD_MULTIPLE,
                                        return_tensors='pt').to(self.devices[role])
                     hidden = model(**inputs, use_cache=False).last_hidden_state
                     if hidden.shape[-1] != EMBEDDING_DIMENSIONS:
@@ -162,7 +165,8 @@ class LocalModels:
                     pooled = mean_pool(hidden, inputs['attention_mask'])
                     output = torch.nn.functional.normalize(pooled, p=2, dim=1)
                 else:
-                    inputs = reranker_inputs(tokenizer, request['query'], batch).to(self.devices[role])
+                    inputs = reranker_inputs(tokenizer, request['query'], batch,
+                                             pad_to_multiple_of=RERANK_PAD_MULTIPLE).to(self.devices[role])
                     no, yes = yes_no_ids(tokenizer)
                     # Official last-position logits; avoid allocating all sequence vocabulary logits.
                     logits = model(**inputs, use_cache=False, logits_to_keep=1).logits[:, -1, :]

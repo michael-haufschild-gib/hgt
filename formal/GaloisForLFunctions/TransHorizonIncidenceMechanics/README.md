@@ -1170,6 +1170,47 @@ Collar splits with the $\cosh(R/2)$ denominator bound the ground potential by
 collar plus far field at any radius. A premised four-term positive-lobe excess
 over the ground potential would give RH; nothing here proves it.
 
+**The pole reading is canonical, and the odd gap is exactly one square.** The odd polar ground
+vectors at two different admissible shifts differ by an element of the signed radical, so every
+pairing against them agrees: $\mathrm{sourcePair}(\Psi_a,q)=\mathrm{sourcePair}(\Psi_b,q)=\langle q,\tanh_L\rangle$
+for every graph vector and every pair of nonzero shifts. The shift is therefore not a parameter of
+the theory but a gauge, and the quantity it reads is one *shift-independent pole moment*. In that
+reading the odd sector has an exact two-term decomposition: for every primitive — in particular
+every odd — graph vector,
+$$
+\mathrm{sourceEnergy}(q)=\mathrm{weilForm}(q)+2\,\langle q,\tanh_L\rangle^2 .
+$$
+The odd Weil form is the source energy minus twice one squared pole moment, with no remainder and
+no choice of shift; the odd primitive part — the vector with its pole moment subtracted — is
+$\mathrm{sourcePair}$-orthogonal to every polar ground vector, at every shift. This is the quotient
+coordinate the section's name promises: the whole polar risk of the odd sector is rank one, it is
+computed by a single canonical functional, and the open question is a statement about
+$\mathrm{sourceEnergy}$ on its kernel. It is the source-graph counterpart of the parity decoupling
+of Arithmetic Positivity Theory, where odd compact tests carry the whole pole risk $S(g)^2/2$.
+
+**Two unconditional tightenings on the lobes.** First, a Rayleigh excess: for a primitive resolvent
+eigenvector the modulus–primitive excess equals, exactly, four times a cross-lobe combination of a
+resolvent pairing and the rank-one ground-vector products, and the cross-lobe resolvent pairing is
+bounded below by $-\nu^2\mathrm{sourcePair}(q^+,q^-)>0$ at positive eigenvalue. Second, a chiral
+drift inequality holding on *both* lobes of every odd graph vector,
+$$
+\langle \mathrm{primeShift}\,q^+,q^+\rangle^2+\tfrac14\langle\mathrm{oddPrimeDrift}\,q,\lvert q\rvert\rangle^2
+\ \le\ \langle\mathrm{primeDiagonal}\,q^+,q^+\rangle^2 ,
+$$
+because the odd prime-drift operator has vanishing diagonal on odd vectors. Both are
+unconditional and lobe-local; neither supplies the four-term excess, and the gap between them and
+it is where the odd sector stands.
+
+**Fermi curvature against the Bézout gradient.** On the second trans-horizon octave the two
+observers are reciprocal rather than independent: for $m\in[N,2N)$ the second difference of the
+Fermi cell response at $2m+1$ plus the forward Bézout gradient of the sieve response at the same
+point equals exactly $-2\mu(m+1)$, the Möbius value of the half-scale parent in the *first*
+octave. Cauchy–Schwarz turns the identity into a coercivity statement with no cancellation
+hypothesis: the combined second-octave Fermi curvature energy and Bézout gradient energy is at
+least twice the first-octave odd squarefree count, hence at least a positive density of the
+window. The two trans-horizon observers cannot both be small, and the quantity that forbids it is
+an octave below.
+
 ### 3.14 Collar transport
 
 Across a prime cut every edge $(m,k)$ straddles the origin, so for an odd
@@ -1420,6 +1461,10 @@ Poincaré law of that theory with its variance bounded below.
 | A bounded difference of two uncontrolled energies bounds either | Only the difference is controlled. |
 | Off-line chain excess excludes a zero | It is a lower bound for an inserted mode, not an upper constraint on the same complete energy. |
 | The signed quotient inherits the source mass | Source mass does not descend through the signed radical; only the signed form does. |
+| The polar shift is a parameter that can be tuned | It is a gauge: two odd polar ground vectors differ by an element of the signed radical, so all their pairings agree and equal one shift-independent moment $\langle q,\tanh_L\rangle$. |
+| The odd gap between source energy and Weil form is an inequality to be estimated | It is the exact identity $\mathrm{sourceEnergy}=\mathrm{weilForm}+2\langle q,\tanh_L\rangle^2$; the content is nonnegativity on the kernel of that one functional. |
+| A lobe-local inequality settles the odd sector | The Rayleigh excess and the chiral drift bound are both lobe-local; the four-term excess is a cross-lobe statement. |
+| Two trans-horizon observers can be small together | On the second octave the Fermi second difference plus the Bézout forward gradient equals $-2\mu$ of the first-octave parent, so their combined energy is at least twice the odd squarefree count of the window. |
 | Finite multiplicity above $1/2$ gives compactness | Eigenvalues may accumulate at $1/2$; the threshold radical is infinite-dimensional. |
 | A fixed cosh/sinh absorption coefficient | Fails for every $R\ge\log2$; the literal ratio grows like $\pi e^{2x}$. |
 | Rewriting an eigenvalue bound as a four-term inequality proves it | It restates the RH-equivalent criterion in new coordinates. |
@@ -1493,7 +1538,14 @@ an independently quantified bound on the low-prime diagonal potential, or an
 actual-source nodal estimate paying the primitive ground-projection defect. The
 cosh/sinh ratio cannot be made $\le1$ on compact profiles; the minimal local
 correction must be paid by jump energy, or the source class restricted so that
-the confinement law suffices.
+the confinement law suffices. The coordinates are now canonical: the polar risk is
+rank one, read by the single shift-independent moment $\langle q,\tanh_L\rangle$ with
+$\mathrm{sourceEnergy}=\mathrm{weilForm}+2\langle q,\tanh_L\rangle^2$ exactly, so the question is
+nonnegativity of $\mathrm{sourceEnergy}$ on the kernel of one functional, and the shift can no
+longer be tuned. Two unconditional lobe inequalities are available — the cross-lobe Rayleigh
+excess at positive eigenvalue and the chiral drift bound on both lobes — and neither closes the
+four-term excess. What a new mechanism must add is a *cross-lobe* estimate: both tightenings are
+lobe-local, and the obstruction is the pairing between the lobes.
 
 **Fermi–Nyman.** Origin and bulk tightness on one explicit approximation
 sequence; the observation theory of dyadic schedules is complete for one gap,

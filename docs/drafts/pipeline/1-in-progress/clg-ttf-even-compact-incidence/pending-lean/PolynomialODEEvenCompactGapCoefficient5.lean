@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactGapLowCoefficients
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactGapLowCoefficients
 
 namespace HTGeometry
 noncomputable section

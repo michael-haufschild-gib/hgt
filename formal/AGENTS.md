@@ -29,11 +29,19 @@ both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
 `QECLean` rest on `native_decide` and so depend on `Lean.ofReduceBool` — check
 `#print axioms` before citing one of its distance certificates.
 
+## Follow The Whole Prompt, Every Turn
+
+Read the user's prompt in full and follow every rule in it exactly, including the ones that look
+like boilerplate.  The rules hold for the entire session, not the first few minutes: re-read this
+file at the start of every turn, and before each tool call name the rule that governs it and
+confirm the call matches.  Convenience, an earlier plan, and default habits never override a rule.
+
 ## Start Here
 
 1. Read `README.md`.
 2. Read `LEAN_OVERVIEW.md` for the current map.
-3. Search before proving:
+3. Search before proving -- this is the research tool, and it comes before mathlib and before
+   `rg`/`grep`:
    `../scripts/formal_tools.py research "<query>"`
    Run this command directly. Do not run `research --help` or read the search Python implementation
    as preparation. Consult help/source only to diagnose a command execution failure or when explicitly
@@ -45,26 +53,39 @@ both are kept (see `PNTPlus/PROVENANCE.md` for the overlap map).  Parts of
    installed Mathlib, which is lexical only. Describe the goal in words -- docstrings and
    statements are embedded. Default request budget: 300 seconds; override with `--budget-seconds`.
    Spaces mean AND; `--any` means OR. See "How Search Works Here" in `README.md`.
-4. Use `rg` for exact syntax or for proof-body text the index does not cover:
+4. Only after the search tool has named the declarations and modules, use `rg` for exact
+   source-text confirmation (a literal name's spelling, a tactic string, an import line):
    `rg "<name-or-concept>" GaloisForLFunctions`
+   Never research the corpus with `rg`/`grep` instead of the search tool.
 
 ## Build And Check
 
-Run from `formal/` unless noted:
+Never run `lake build`.  The one compile/audit command, run from `formal/`:
 
 ```bash
-lake env lean GaloisForLFunctions/<path>.lean
-lake build +GaloisForLFunctions.<Area>
+lake --old env lean GaloisForLFunctions/<path>.lean
+```
+
+`--old` is a *lake* flag and must come before `env` (`lean` rejects it); it keeps unchanged
+modules from being rebuilt.  This single command also compiles whatever imports the file needs,
+so never reach for `lake build` to prepare them.
+
+Rules that are not negotiable:
+
+- Foreground only -- never backgrounded.
+- One build process per agent/chat session at a time.
+- A missing `.olean` is an instruction, not a blocker: compile exactly the module the error names
+  (`GaloisForLFunctions.A.B.C` -> `GaloisForLFunctions/A/B/C.lean`) with the plain command, then
+  retry the original file, repeating per missing olean.  Never pass `-o`/`-i` to place an olean by
+  hand, and never widen it to `lake build` or an umbrella target.
+- No full builds, no umbrella builds, no large aggregate targets.  Wire a finished module into
+  its area umbrella with an import line, but do not build the umbrella to check it.
+
+Linting is separate and cheap:
+
+```bash
 ../scripts/formal_tools.py lint --check-generated
 ```
-
-Full local gate:
-
-```bash
-../scripts/formal_tools.py lint --check-generated --build --build-target GaloisForLFunctions.MainTheorems
-```
-
-This gate fails on Lean build warnings.
 
 ## Keep It Organized
 
@@ -80,16 +101,26 @@ This gate fails on Lean build warnings.
   That level is reserved for `Core.lean`, the six area umbrellas,
   `MainTheorems.lean`, and the two cross-area aggregators
   `FullyProvenNewTargets.lean` and `KummerRootApplications.lean`.
-- No active `sorry`, `admit`, `axiom`, `opaque`, or `unsafe` declarations.
+- **Every result must be unconditional: no added hypotheses or premises.** No `sorry`, `admit`,
+  `axiom`, `opaque`, `unsafe` or `native_decide`; no assumption binder added to make a proof go
+  through; no `Prop`-valued interface standing in for an analytic input the proof needs. Only the
+  genuine typing side-conditions of the objects involved belong in a statement.
 - **Comments are mathematics, not diary.** No references to research docs, task numbers,
   sessions, dates, or process notes ("pre-certified", "banked", "round N") — in two days
   nobody can decode them. A Lean project is self-contained: it stands for itself as a
   proof. A docstring states what the declaration says mathematically and, briefly, the
   proof mechanism — nothing else.
-- Represent missing analytic inputs as explicit hypotheses or `Prop` interfaces.
+- A missing analytic input is not a hypothesis to add: it means the theorem is not ready. Prove
+  it, weaken the conclusion until the statement is unconditional, or record the gap on the
+  pipeline card.
 - Verify mathlib names in `/tmp` scratch files before using them.
 - Prefer the narrowest import that contains the needed declarations.
 - Keep Lean implementation files below 1500 lines where practical; split by proof phase.
+- **Optimize proofs; never raise a budget to make one compile.** No `set_option maxHeartbeats`
+  (raised or `0`), `maxRecDepth`, or `synthInstance.maxHeartbeats`/`maxSize` bumps. A timeout is a
+  badly written proof: give `nlinarith` exactly the products it needs, prefer `simp only [...]`
+  over bare `simp`, split a long proof into cheap named lemmas, and prove a rewrite lemma once
+  rather than unfolding a definition repeatedly.
 - Regenerate indexes after moving, adding, or renaming declarations:
   `../scripts/formal_tools.py index`.
 - Update umbrella imports when adding modules.

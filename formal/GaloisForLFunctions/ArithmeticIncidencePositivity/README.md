@@ -977,6 +977,39 @@ inequality among the **lag charges** of one test, with no gauge, no fold and no 
     charges of its primes at once, with weights the allocation may choose freely
     (`SquarefreeIncidencePositivity`). The cases `|s| = 1, 2` are the one-shift bound
     `2λ A(a) ≤ (1 + λ²)A(0)` and the two-shift coupling law.
+50. **The cost side is one prime-comb energy: the exponential obstruction is a single scalar.** After
+    mechanism 47 the cost side is a weighted sum of *first-power* charges `Σ_p w_p A(log p)` with the
+    Euler weights `w_p ≍ log p/√p`. Read as a pairing it is `⟪F, Σ_p w_p F(· + log p)⟫`, so
+    Cauchy–Schwarz bounds it by `A(0)` times the **prime-comb energy**
+    `E_w(F) = Σ_{p,q} w_p w_q A(log q − log p)`, the Gram form of the weighted prime comb
+    (`PrimeCombEnergyReduction`). Split it:
+    `E_w(F) = (Σ_p w_p²) A(0) + Σ_{p ≠ q} w_p w_q A(log(q/p))`.
+    The diagonal is harmless — with the Euler weights `Σ_{p ≤ e^{2r}} (log p)²/p` is *polynomial* in
+    the aperture, while the trivial `ℓ¹` bound on the cost side is `(Σ_p w_p)² ≍ e^{2r}`. Hence if the
+    weighted cross-prime aggregate `Σ_{p ≠ q} w_p w_q A(log(q/p))` is nonpositive, or merely
+    polynomially large, the cost side obeys `Σ_p w_p A(log p) ≤ √(Σ_p w_p²)·A(0)`
+    (`cost_le_sqrt_diagonal_mul_mass`), turning the exponential rate-`1` bound into a polynomial one —
+    precisely the loss the grading of mechanism 43 treats as free. The whole exponential obstruction
+    of the cost side therefore sits in **one scalar**: the mean square of a prime Dirichlet
+    polynomial against the test's spectral measure. No pointwise sign at any pair is needed any
+    more. This is the sharpest reduction the programme has: it converts the pair-by-pair ledger into
+    a single second-moment question about `Σ_p w_p p^{−iξ}`.
+51. **The bi-lattice train: two towers resonate at once, and the reduction's good regime is empty
+    where it matters.** The single-tower sector is closed — both the arithmetic envelope and its
+    parity twin are attained by trains on one multiplicative progression (mechanism 46). The
+    cross-tower sector needs a test aligned with *two* primes at once: the **bi-lattice train**, unit
+    copies of one bump at the shifts `S = {ia + jb : i, j < M}`, `a = log p`, `b = log q` — the
+    logarithms of the `{p, q}`-smooth numbers of a square box. Since `log p` and `log q` are
+    `ℤ`-independent, the lag `ka` is matched exactly by the lattice pairs differing by `k` in the
+    first exponent and agreeing in the second, so `A_S(ka) = (M − k)·M·A_g(0)` and
+    `A_S(0) = M²·A_g(0)`, symmetrically in `b` (`BiLatticeTrainWitness`). Both towers resonate to the
+    full fraction `(M − k)/M → 1`: **the two Euler envelopes add**, so the prime-side bound is sharp
+    already on a pair of aligned towers. The consequence for mechanism 50 is negative and exact: the
+    cross lags `log(p^i/q^j)` carry positive counts, so the cross-prime aggregate of an aligned test
+    is *strictly positive*. The polynomial regime of the comb-energy reduction, which needs a
+    nonpositive aggregate, therefore fails exactly on the multiplicatively aligned tests — the ones
+    where the cost side is large. The reduction is not wrong; its hypothesis is simply false on the
+    extremal family, and what has to be estimated is the size of the aggregate there, not its sign.
 
 ---
 
@@ -1007,6 +1040,9 @@ inequality among the **lag charges** of one test, with no gauge, no fold and no 
 | Expecting the proper prime powers to carry their own obstruction | Beyond the Euler constants they do not: the whole tower of `p` is controlled by `A(log p)`, so the cost side reduces to the primes below the horizon. |
 | Using the Möbius row as a test direction on a divisor lattice | On the resonant direction the divisor-lattice form of the Möbius row is `(Σ_{d ∣ q} μ_d)²A(0) = 0` for every `q ≠ 1`: the comb is blind exactly where the charges are largest. The trivial row gives the maximum `τ(q)²A(0)`. |
 | Expecting oddness, edge decay or the strip structure to give a power saving in the floor | The Krein chord inequality caps the far correlations at `(3/4)a(0)`, a constant; on the edge tent the pole charge and the prime correlation are both `≍ e^{r}` with opposite signs. The rate-`1` obstruction is the prime–polar balance, and a sub-trivial rate is a fixed zero-free strip. |
+| Treating the comb-energy reduction as a bound | It is conditional on the cross-prime aggregate being nonpositive or polynomial, and mechanism 51 shows the aggregate is strictly positive on exactly the multiplicatively aligned tests, where the cost side is large. The hypothesis fails on the extremal family. |
+| Expecting a pointwise sign at pairs to be needed after the reduction | After mechanism 50 the whole exponential obstruction is one scalar, the mean square of `Σ_p w_p p^{−iξ}` against the test's spectral measure. The remaining question is that scalar's size, not any pair's sign. |
+| Expecting the single-tower envelope to bound an aligned pair of towers | On the bi-lattice train both towers resonate to the full fraction `(M − k)/M → 1` and the two Euler envelopes **add**; the prime-side bound is sharp already on two aligned towers. |
 
 ---
 
@@ -1101,7 +1137,8 @@ inequality among the **lag charges** of one test, with no gauge, no fold and no 
    aperture for one `σ < ½`, which is the strip `½ + σ`, and by a constant times the mass for RH.
    The unconditional rate is `1`; the obstruction at that rate is the prime–polar balance, not the
    allocation of the surplus.
-7. **The discount in the tower laws.** The envelopes of mechanisms 45 and 48 are attained, so the
+7. **The discount in the tower laws.** The envelopes of mechanisms 45, 46, 48 and 51 are attained —
+   on one multiplicative progression, and on two at once, where the two Euler envelopes add — so the
    content is the fold defect `A(0) − A(log p)` and, for two towers, the ladder charge at the lag
    `log p`. Turn the reduced cost side of mechanism 47 — the primes below the horizon weighted by
    `log p/(p − 1)` and `√p log p/(p − 1)` against `A(log p)` — into a lower bound for the ledger at
@@ -1109,6 +1146,18 @@ inequality among the **lag charges** of one test, with no gauge, no fold and no 
    lattice (mechanism 49) make the subset form pay the first-power charges. The unit is the rate
    obtained in topic 6; the test models of `BiScaleUncertainty` decide selectivity, since the
    translate calculus itself is blind to the arithmetic of the shifts.
+8. **The cross-prime aggregate.** This is now the sharpest single question the programme has, and it
+   is a scalar one. Mechanism 50 reduces the entire exponential obstruction of the cost side to the
+   size of `Σ_{p ≠ q} w_p w_q A(log(q/p))` with the Euler weights, the mean square of the prime
+   Dirichlet polynomial `Σ_p w_p p^{−iξ}` against the test's spectral measure; a nonpositive or
+   polynomially large aggregate already gives the polynomial rate the grading calls free. Mechanism
+   51 shows the sign hypothesis is false exactly where it is needed — on the multiplicatively
+   aligned bi-lattice trains, whose cross lags carry positive counts — so the target is a *bound*,
+   not a sign: show the aggregate is `O(poly(r))` on every odd test of aperture `r`, or exhibit the
+   family on which it is exponentially large and read its rate. Being a single second moment of a
+   prime Dirichlet polynomial, this is the first statement of the programme that can be attacked by
+   mean-value machinery rather than by pair geometry — and by the no-family-average criterion of the
+   shared target, the bound must hold for one test at a time, not on average over a family.
 
 ---
 

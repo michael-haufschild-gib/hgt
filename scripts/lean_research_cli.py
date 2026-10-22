@@ -289,7 +289,7 @@ def render_discovery(extra: dict) -> None:
             continue
         print(label + ":")
         for hit in values:
-            print("- %s %s:%s [%s]" % (hit['name'], hit['relpath'], hit['line'], hit.get('compiler_status', 'source_only')))
+            print("- %s %s:%s" % (hit['name'], hit['relpath'], hit['line']))
             if hit.get("transfer"):
                 print("  Transfer: " + hit["transfer"])
                 print("  Obligations: " + "; ".join(hit.get("obligations", [])))

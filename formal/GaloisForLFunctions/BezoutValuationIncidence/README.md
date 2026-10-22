@@ -327,10 +327,38 @@ its **recurrence complexity** is $\sum_{Y(q)\ne0}\varphi(q)$; the **cyclotomic i
 polynomial** $Q_N=\prod_{q\le N}\Phi_q$ has degree $\Phi(N)=\sum_{q\le N}\varphi(q)$, with
 $N^2/8+N-\tfrac N2H_N\le\Phi(N)\le N(N+1)/2$.
 
+A fifth coordinate system sits on top of the Selberg one and explains where the totient weight
+comes from. The **Witt ghost coordinates** are the ghost components $g_w(q)$ of a real Big-Witt
+vector $w$ — the coefficients of the logarithmic series of its defining power series, the
+Deninger presentation. Ramanujan inversion of the data $q\mapsto\sqrt{\varphi(q)}\,g_w(q)$ produces a
+row whose Selberg coordinates are exactly the ghosts, $Y_{N}(q)=g_w(q)$ for $1\le q\le N$, so
+$$
+\lVert c_w\rVert^2=\sum_{q\le N}\varphi(q)\,g_w(q)^2 :
+$$
+the sieve norm of the row *is* the totient-weighted ghost energy, and $w\mapsto c_w$ is additive.
+In these coordinates the two Witt operations become finite, explicit coordinate moves on rows.
+**Frobenius at two** reads the ghosts at doubled index, $g_{F_2w}(q)=g_w(2q)$, so the row at
+horizon $N$ built from $F_2w$ has the Selberg coordinates of the row at horizon $2N$ built from $w$,
+read at the even indices: Frobenius does not invent data beyond the cutoff, it *consumes a larger
+cutoff*. **Verschiebung at $m$** is the substitution $T\mapsto T^m$ on the defining series and acts
+as the exact dilation
+$$
+g_{V_mw}(q)=\begin{cases}m\,g_w(q/m)&m\mid q\\0&\text{otherwise,}\end{cases}
+$$
+a sparsification onto the multiples of $m$ with a factor $m$ — the same up-set structure the
+divisibility edges of §2.5 carry. The native lag compression of §3.5 acts diagonally on the same
+ghosts, multiplying the $q$-th by the lag multiplier $\lambda_q(h)$, so translation, Frobenius and
+Verschiebung are three commuting families of explicit operations on one coordinate vector. This
+identifies the finite sieve receiver as a *finite-cutoff truncation of the Big-Witt ring*, with the
+cutoff retained in every statement: whether the Witt ring structure supplies an estimate the
+Selberg coordinates do not already give is open, but the dictionary is exact and the arithmetic of
+the operations is finite.
+
 The first discipline of the theory: say in which coordinates a statement lives, and whether it
 concerns the period, a prefix, or a window at an arbitrary phase. A statement about the period
 mean square says nothing about a prefix of length $N$; a window law says nothing below its
-horizon.
+horizon. The Witt dictionary does not relax this: Frobenius changes the cutoff, so a ghost
+statement at horizon $N$ is a Selberg statement at horizon $2N$, not at $N$.
 
 ### 2.2 Horizons and windows
 
@@ -607,6 +635,7 @@ $\theta=2\log P/\log Q$, and the receiver sits at $\theta=2$.
 | Fermi cell response | §2.8 | `fermiCellResponse` |
 | GCD–LCM modular class | §2.6 | `IsGcdLcmModular`, `radicalPrimeProd` |
 | cross-scale form, residue potential, Bernoulli kernel | $B(c,c')$, $\Phi_d$, $\mathfrak B$ | `rowBilinear`, `residuePotential`, `bernoulliKernel` |
+| Witt ghost coordinate, ghost row, Frobenius, Verschiebung | $g_w(q)$, $c_w$, $F_2$, $V_m$ | `nativeWittGhost`, `wittSieveReceiver`, `deningerBigWittFrobeniusTwoRingHom`, `nativeWittVerschiebung` |
 | cubic potential and kernel, residue discrepancy, kernel statistic | $\Psi_d$, $\mathfrak B_3$, $\Delta_d$, $\Lambda_d$ | `cubicPotential`, `cubicKernel`, `residueDiscrepancy`, `kernelStatistic`, `kernelStatisticAll` |
 
 ---
@@ -851,6 +880,21 @@ odd layers are relatively invisible through degree five, and $\{2p,2r\}$ for dis
 has visibility degree exactly six, through $\zeta\zeta\zeta^{p-2}\xi\xi\xi^{r-2}=1$. The cost of a
 sign pattern is measured as well as decided: the mean square of the moment-array difference is
 four times the energy of the zero-product relations of odd $\varepsilon$-weight.
+
+**The ambiguity is exactly one involution.** The visibility laws close into a classification. The
+relation spectrum of a row in all degrees — equivalently, by the Parseval isometry of §3.4, the
+full array of translated moments in all degrees — determines the row up to a single explicit
+**companion**: the reflection by the canonical half period, which flips the signs on the top
+dyadic layer and fixes everything else. Two rows have the same relation spectra in degrees five
+and six if and only if they have them in every degree, if and only if they agree on $[1,N]$ or one
+is the companion of the other. So degrees five and six are not a convenient truncation but the
+exact closure point of the hierarchy: nothing above degree six is informative, and nothing below
+degree five is sufficient. The theory's observation problem therefore has a complete answer —
+*additive moment data of a divisor row determine it up to one half-period involution* — and the
+invisibility of the top dyadic layer is not a residual gap but the whole of the kernel. Any
+mechanism that must separate a row from its companion has to leave the additive-moment coordinates
+altogether; labelled moments, which break the half-period symmetry by construction, are the
+corpus's instance of that.
 
 ### 3.6 Pronic duality and the Gram calculus
 
@@ -1384,6 +1428,7 @@ $R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what
 | Window constants carry a logarithm. | The sandwich constant $2N^2-1$, the inverse $\ell^1$ constant $e^{19/2}N^2$ and the window covariance bound at every lag are log-free. |
 | Compressed lags form a semigroup. | $\lambda_q(h_1+h_2)\ne\lambda_q(h_1)\lambda_q(h_2)$; at $p^{a+1}$ all lags below $p^a$ are erased and two of them revive the mode with defect $-1/(p-1)$; even on squarefree support $\lambda_q(2)-\lambda_q(1)^2=-3/4$ at $q=3,6$. |
 | Quadratic or bounded-degree data determine the row. | All two-point data see $Y(q)^2$; sign visibility is a valuation law: the top dyadic layer is invisible at every degree, $\{2p,2r\}$ needs degree six, and every layer-admissible relation is realized. |
+| Higher-degree moments narrow the ambiguity further. | Degrees five and six already close the hierarchy: equal relation spectra there are equal in every degree, and the residual ambiguity is exactly the half-period companion. More degrees buy nothing. |
 | Universal lag inequalities need infinitely many checks. | For every lag horizon the covariance cone is finitely generated by explicit modes; an inequality is universal iff it holds on the generators. |
 | Short windows read valuation phase. | Observing $t\mapsto\gcd(k+t,p^a)$ on fewer than $\varphi(p^a)$ points cannot distinguish $k=1$ from $k=1+p^{a-1}$; the threshold $\varphi(p^a)$ is sharp. |
 | The raw Möbius defect is small. | The unrenormalized combined defect at $M=N$ exceeds every $CN^\alpha$, $\alpha<1$; only the renormalized defect, which keeps the diagonal main term, is bounded. |
@@ -1411,6 +1456,8 @@ $R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what
 | A Mertens rate bounds the receiver at a fixed $\varepsilon<\tfrac12$. | It moves the damping unit only to $\tfrac12-(\text{rate})/\log T$ at horizon $T$; a band of fixed width is a zero-free strip, and every receiver bound below one half is a zero-free region. |
 | The single-modulus statistics of the prime row are small. | At fixed $p$ they are $\asymp p/Q$, the sieve term of the omitted residue class $0$; only rows equidistributed in every class modulo $p$ have $o(1/Q)$. |
 | Dilation $k\mapsto pk$ alone reads enough of the signs. | A Kátai-type single-modulus law saves only $(\log\log)^{-1/2}$ and is dominated by the $\ell^2$ large-sieve dispersion except at $P\asymp Q$. |
+| Frobenius on Witt ghosts is a free operation at a fixed horizon. | $g_{F_2w}(q)=g_w(2q)$, so a ghost statement at horizon $N$ is a Selberg statement at horizon $2N$; the cutoff is consumed, not preserved. |
+| The Witt ring structure is an extra estimate. | It is an exact dictionary: the ghost row's sieve norm is the totient-weighted ghost energy and the operations are finite coordinate moves. Whether it yields a bound the Selberg coordinates do not already give is open. |
 
 **Lean conventions.** Capstones are stated on data parameters and carry no analytic premise;
 where a finite statement has hypotheses they are arithmetic side conditions on the data
@@ -1493,8 +1540,11 @@ statement about the constant, not about the exponent.
 shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
 gap between a quadratic universal horizon and a linear special one is open, and any linear law
 must be incidence-algebraic. The exact window sandwich constant in $[\Phi(N)-2,N(N-1)]$. The sign of a general signed prime packet in the energy-centered Gram.
-Which rows are determined by
-their relation spectrum, beyond translation and the Galois action. Rates in the cofinal Möbius
+The relation-spectrum question is closed — the spectrum in all
+degrees, equivalently degrees five and six, determines a row up to the half-period companion — so
+what remains there is quantitative: an explicit stability constant for that recovery on windows at
+unknown phase, and the corresponding law for rows that are only approximately equal in degrees
+five and six. Rates in the cofinal Möbius
 laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue
 cells, which are positive when the cells share a factor and start together.
 

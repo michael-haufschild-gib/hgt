@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeSourcePositiveFiniteModuleNoGo
+import GaloisForLFunctions.HTGeometry.PolynomialODE.JetRankThreeSourcePositiveFiniteModuleNoGo
 
 open Complex Real
 

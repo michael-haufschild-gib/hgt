@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DeningerQ8ActualMonomialSourceLaw
+import GaloisForLFunctions.RHTower.Deninger.DeningerQ8ActualMonomialSourceLaw
 import GaloisForLFunctions.RHTower.FieldOnePadicRamifiedTateFunctionalEquation
 import Mathlib.RingTheory.ZMod.UnitsCyclic
 

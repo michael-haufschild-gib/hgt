@@ -343,9 +343,61 @@ def import_dependents(files, modules) -> set[str]:
     return affected
 
 
+# `tmp` holds scratch proofs and temporary data at any depth; it is never corpus.
+IGNORED_DIRS = frozenset({".lake", ".git", "node_modules", "__pycache__", ".venv", "tmp"})
+CATALOGS = frozenset({"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"})
+OWN_ROOTS = (("formal", "project"), ("docs", "research"))
+
+
+def source_item(root: Path, path: str) -> dict | None:
+    """The inventory record for one root-relative path, or None if it is not
+    an existing source in our corpus. Installed dependencies are excluded:
+    they change only on a toolchain update, which the full inventory handles."""
+    rel = Path(path)
+    parts = rel.parts
+    package = dict(OWN_ROOTS).get(parts[0]) if parts else None
+    if (package is None or len(parts) < 2 or rel.suffix not in {".lean", ".md"}
+            or rel.name in CATALOGS or any(part in IGNORED_DIRS for part in parts[:-1])):
+        return None
+    absolute = root / rel
+    try:
+        stat = absolute.stat()
+    except FileNotFoundError:
+        return None
+    module = ".".join(Path(*parts[1:]).with_suffix("").parts)
+    return dict(path=str(rel), abspath=str(absolute), module=module, package=package,
+                collection="lean" if rel.suffix == ".lean" else "prose",
+                size=stat.st_size, mtime_ns=stat.st_mtime_ns)
+
+
+def own_snapshot(root: Path) -> dict[str, tuple[int, int]]:
+    """(size, mtime_ns) of every source in our corpus, keyed like `files.path`.
+    A full pass over the project costs a fraction of a second, which is what
+    makes change detection by rescanning cheap enough to run every few seconds."""
+    out: dict[str, tuple[int, int]] = {}
+    for top, _ in OWN_ROOTS:
+        stack = [root / top]
+        while stack:
+            try:
+                entries = list(os.scandir(stack.pop()))
+            except OSError:
+                continue
+            for entry in entries:
+                if entry.is_dir(follow_symlinks=False):
+                    if entry.name not in IGNORED_DIRS:
+                        stack.append(Path(entry.path))
+                elif entry.name.endswith((".lean", ".md")) and entry.name not in CATALOGS:
+                    try:
+                        stat = entry.stat(follow_symlinks=False)
+                    except OSError:
+                        continue
+                    out[os.path.relpath(entry.path, root)] = (stat.st_size, stat.st_mtime_ns)
+    return out
+
+
 def inventory(root: Path) -> tuple[list[dict], list[dict]]:
     """All project sources and installed package sources; no traversal failures hidden."""
-    roots = [(root / "formal", "project"), (root / "docs", "research")]
+    roots = [(root / top, package) for top, package in OWN_ROOTS]
     package_dir = root / "formal" / ".lake" / "packages"
     errors: list[dict] = []
     if package_dir.exists():
@@ -355,23 +407,20 @@ def inventory(root: Path) -> tuple[list[dict], list[dict]]:
             errors.append(dict(path=str(package_dir), error=str(exc)))
     items = []
     seen: set[str] = set()
-    # `tmp` holds scratch proofs and temporary data at any depth; it is never corpus.
-    ignored = {".lake", ".git", "node_modules", "__pycache__", ".venv", "tmp"}
-    catalogs = {"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"}
     for base, package in roots:
         if not base.exists():
             continue
         def onerror(exc: OSError) -> None:
             errors.append(dict(path=str(exc.filename), error=str(exc)))
         for directory, dirs, files in os.walk(base, onerror=onerror, followlinks=False):
-            dirs[:] = sorted(d for d in dirs if d not in ignored)
+            dirs[:] = sorted(d for d in dirs if d not in IGNORED_DIRS)
             # Derive prefixes once per directory, not twice per source file.
             relative = os.path.relpath(directory, root)
             module_dir = os.path.relpath(directory, base)
             module_prefix = "" if module_dir == "." else module_dir.replace(os.sep, ".") + "."
             for filename in sorted(files):
                 stem, suffix = os.path.splitext(filename)
-                if suffix not in {".lean", ".md"} or filename in catalogs:
+                if suffix not in {".lean", ".md"} or filename in CATALOGS:
                     continue
                 path = os.path.join(relative, filename)
                 if path in seen:
@@ -493,77 +542,10 @@ class Corpus:
             previous = current.get(item["path"])
             if previous and previous["size"] == item["size"] and previous["mtime_ns"] == item["mtime_ns"] and previous["status"] == "indexed" and previous['extractor_version'] == EXTRACTION_VERSION:
                 continue
-            try:
-                if item.get("error"):
-                    raise OSError(item["error"])
-                p = Path(item["abspath"])
-                before = p.stat()
-                raw = p.read_bytes()
-                after = p.stat()
-                if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
-                    raise OSError("source changed during extraction; retry pending")
-                text = raw.decode("utf-8")
-                source_changed = not previous or previous['source_hash'] != digest(raw) or previous['toolchain'] != toolchain
-                if not source_changed and previous['extractor_version'] == EXTRACTION_VERSION:
-                    with self.con:
-                        self.con.execute("UPDATE files SET size=?,mtime_ns=?,status='indexed',error='',compile_status=?,updated=? WHERE path=?",
-                                         (after.st_size, after.st_mtime_ns, previous['compile_status'], time.time(), item['path']))
-                    continue
-                declarations = source_declarations(text, item["module"], item["path"]) if item["collection"] == "lean" else []
-                imports = [n for m in IMPORT.finditer(mask_comments_strings(text)) for n in m.group(1).split()]
-                with self.con:
-                    if source_changed:
-                        self._invalidate_paths([item['path']], deadline=deadline, drain=False)
-                    self.con.execute("DELETE FROM files WHERE path=?", (item["path"],))
-                    self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,source_hash,status,imports,toolchain,updated) "
-                                     "VALUES(?,?,?,?,?,?,?,?,?,?,?)", (item["path"], item["module"], item["package"],
-                                     item["collection"], after.st_size, after.st_mtime_ns, digest(raw), "indexed", json.dumps(imports), toolchain, time.time()))
-                    self.con.execute('UPDATE files SET extractor_version=?,compile_status=? WHERE path=?',
-                                     (EXTRACTION_VERSION, 'pending' if item['collection']=='lean' else 'not_applicable', item['path']))
-                    stage = next((p for p in Path(item['path']).parts if re.match(r'^[0-5]-(backlog|in-progress|fully-proven|formalized|publication-ready|failed)$', p)), None)
-                    provenance = dict(kind="source", source_hash=digest(raw), toolchain=toolchain, status="source_only",
-                                      extraction_version=EXTRACTION_VERSION, package=item['package'], manifest_hash=manifest_hash, recorded_stage=stage)
-                    # Conservative source references support dependency
-                    # expansion and invalidation. They are not proof edges, and
-                    # there are ~20 per declaration -- 19M rows for this corpus
-                    # -- so they go in one statement per file, not one per row.
-                    self.con.executemany(
-                        "INSERT INTO declarations(id,path,name,module,kind,line,end_line,statement,proof,doc,source_hash) "
-                        "VALUES(:id,:path,:name,:module,:kind,:line,:end_line,:statement,:proof,:doc,:source_hash)",
-                        declarations)
-                    self.con.executemany(
-                        "INSERT OR IGNORE INTO dependencies VALUES(?,?,'source_reference')",
-                        [(d['id'], token) for d in declarations
-                         for token in set(re.findall(r"[\w][\w'.]*", mask_comments_strings(d['proof'])))])
-                    for d in declarations:
-                        header = context_header(item["module"], d["name"], d["kind"])
-                        statement_text = d["name"] + "\n" + split_identifier(d["name"]) + "\n" + d["doc"] + "\n" + d["statement"]
-                        for part, first, last in chunks(statement_text, d["line"]):
-                            self._document(d["id"], item["path"], item["module"], "statement", part, d["line"], d["end_line"], provenance)
-                        # A docstring is the one natural-language field here, and
-                        # agents search in natural language. Sharing a vector with
-                        # the formal statement averages that signal away.
-                        if d["doc"].strip():
-                            for part, first, last in chunks(d["doc"], d["line"]):
-                                self._document(d["id"], item["path"], item["module"], "doc", part, d["line"], d["end_line"], provenance, header=header)
-                        if d["proof"]:
-                            for part, first, last in chunks(d["proof"], d["proof_line"]):
-                                self._document(d["id"], item["path"], item["module"], "proof", part, first, last, provenance,
-                                               header=header if len(part) >= PROOF_HEADER_MIN_CHARS else '')
-                    # The source view is exhaustive, even for unsupported syntax,
-                    # anonymous examples, commands, comments and prose documents.
-                    for part, first, last in chunks(text):
-                        self._document(None, item["path"], item["module"], item["collection"], part, first, last, provenance)
-                    self.bump(source=True)
-                changed += 1
-            except (OSError, UnicodeError, ValueError) as exc:
-                with self.con:
-                    # Keep last-good records, but never label them current.
-                    self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,status,error,updated) "
-                                     "VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET status=excluded.status,error=excluded.error,updated=excluded.updated",
-                                     (item["path"], item["module"], item["package"], item["collection"], item["size"], item["mtime_ns"], "failed", str(exc), time.time()))
-                    self.bump(source=True)
-                failed += 1
+            outcome = self._index_file(item, previous, toolchain=toolchain, manifest_hash=manifest_hash,
+                                       deadline=deadline)
+            changed += outcome == 'changed'
+            failed += outcome == 'failed'
             if progress and (changed + failed) % 10 == 0:
                 progress(dict(visited=number + 1, total=len(items), changed=changed, failed=failed))
         removed = 0
@@ -585,6 +567,125 @@ class Corpus:
                 self.con.execute("INSERT OR REPLACE INTO meta VALUES(?,?)", (key, json.dumps(value)))
         return dict(changed=changed, removed=removed, failed=failed, complete=complete,
                     inventory_errors=errors, coverage=self.coverage(include_enrichment=False, counts=False))
+
+    def _index_file(self, item: dict, previous, *, toolchain: str, manifest_hash, deadline: float) -> str:
+        """Parse one source and replace its rows; returns changed, unchanged or failed."""
+        try:
+            if item.get("error"):
+                raise OSError(item["error"])
+            p = Path(item["abspath"])
+            before = p.stat()
+            raw = p.read_bytes()
+            after = p.stat()
+            if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
+                raise OSError("source changed during extraction; retry pending")
+            text = raw.decode("utf-8")
+            source_changed = not previous or previous['source_hash'] != digest(raw) or previous['toolchain'] != toolchain
+            if not source_changed and previous['extractor_version'] == EXTRACTION_VERSION:
+                with self.con:
+                    self.con.execute("UPDATE files SET size=?,mtime_ns=?,status='indexed',error='',compile_status=?,updated=? WHERE path=?",
+                                     (after.st_size, after.st_mtime_ns, previous['compile_status'], time.time(), item['path']))
+                return 'unchanged'
+            declarations = source_declarations(text, item["module"], item["path"]) if item["collection"] == "lean" else []
+            imports = [n for m in IMPORT.finditer(mask_comments_strings(text)) for n in m.group(1).split()]
+            with self.con:
+                if source_changed:
+                    self._invalidate_paths([item['path']], deadline=deadline, drain=False)
+                self.con.execute("DELETE FROM files WHERE path=?", (item["path"],))
+                self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,source_hash,status,imports,toolchain,updated) "
+                                 "VALUES(?,?,?,?,?,?,?,?,?,?,?)", (item["path"], item["module"], item["package"],
+                                 item["collection"], after.st_size, after.st_mtime_ns, digest(raw), "indexed", json.dumps(imports), toolchain, time.time()))
+                self.con.execute('UPDATE files SET extractor_version=?,compile_status=? WHERE path=?',
+                                 (EXTRACTION_VERSION, 'pending' if item['collection']=='lean' else 'not_applicable', item['path']))
+                stage = next((p for p in Path(item['path']).parts if re.match(r'^[0-5]-(backlog|in-progress|fully-proven|formalized|publication-ready|failed)$', p)), None)
+                provenance = dict(kind="source", source_hash=digest(raw), toolchain=toolchain, status="source_only",
+                                  extraction_version=EXTRACTION_VERSION, package=item['package'], manifest_hash=manifest_hash, recorded_stage=stage)
+                # Conservative source references support dependency
+                # expansion and invalidation. They are not proof edges, and
+                # there are ~20 per declaration -- 19M rows for this corpus
+                # -- so they go in one statement per file, not one per row.
+                self.con.executemany(
+                    "INSERT INTO declarations(id,path,name,module,kind,line,end_line,statement,proof,doc,source_hash) "
+                    "VALUES(:id,:path,:name,:module,:kind,:line,:end_line,:statement,:proof,:doc,:source_hash)",
+                    declarations)
+                self.con.executemany(
+                    "INSERT OR IGNORE INTO dependencies VALUES(?,?,'source_reference')",
+                    [(d['id'], token) for d in declarations
+                     for token in set(re.findall(r"[\w][\w'.]*", mask_comments_strings(d['proof'])))])
+                for d in declarations:
+                    header = context_header(item["module"], d["name"], d["kind"])
+                    statement_text = d["name"] + "\n" + split_identifier(d["name"]) + "\n" + d["doc"] + "\n" + d["statement"]
+                    for part, first, last in chunks(statement_text, d["line"]):
+                        self._document(d["id"], item["path"], item["module"], "statement", part, d["line"], d["end_line"], provenance)
+                    # A docstring is the one natural-language field here, and
+                    # agents search in natural language. Sharing a vector with
+                    # the formal statement averages that signal away.
+                    if d["doc"].strip():
+                        for part, first, last in chunks(d["doc"], d["line"]):
+                            self._document(d["id"], item["path"], item["module"], "doc", part, d["line"], d["end_line"], provenance, header=header)
+                    if d["proof"]:
+                        for part, first, last in chunks(d["proof"], d["proof_line"]):
+                            self._document(d["id"], item["path"], item["module"], "proof", part, first, last, provenance,
+                                           header=header if len(part) >= PROOF_HEADER_MIN_CHARS else '')
+                # The source view is exhaustive, even for unsupported syntax,
+                # anonymous examples, commands, comments and prose documents.
+                for part, first, last in chunks(text):
+                    self._document(None, item["path"], item["module"], item["collection"], part, first, last, provenance)
+                self.bump(source=True)
+            return 'changed'
+        except (OSError, UnicodeError, ValueError) as exc:
+            with self.con:
+                # Keep last-good records, but never label them current.
+                self.con.execute("INSERT INTO files(path,module,package,collection,size,mtime_ns,status,error,updated) "
+                                 "VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET status=excluded.status,error=excluded.error,updated=excluded.updated",
+                                 (item["path"], item["module"], item["package"], item["collection"], item["size"], item["mtime_ns"], "failed", str(exc), time.time()))
+                self.bump(source=True)
+            return 'failed'
+
+    def refresh_paths(self, root: Path, paths, *, deadline: float = float("inf")) -> dict:
+        """Reindex just these root-relative paths: the fast path for edited files.
+
+        A path that no longer exists, or is no longer a corpus source, has its
+        rows removed. Re-running on an unchanged file is a cheap no-op, so a
+        caller can retry a whole batch after an interruption.
+        """
+        toolchain_file = root / "formal" / "lean-toolchain"
+        toolchain = toolchain_file.read_text().strip() if toolchain_file.exists() else "unknown"
+        manifest = root / 'formal' / 'lake-manifest.json'
+        manifest_hash = digest(manifest.read_bytes()) if manifest.exists() else None
+        changed = removed = failed = 0
+        complete = True
+        for path in sorted(set(paths), key=lambda p: (source_priority(p), p)):
+            if time.monotonic() >= deadline:
+                complete = False
+                break
+            previous = self.con.execute(
+                "SELECT path,size,mtime_ns,status,extractor_version,source_hash,toolchain,compile_status "
+                "FROM files WHERE path=?", (path,)).fetchone()
+            item = source_item(root, path)
+            if item is None:
+                if previous is not None:
+                    with self.con:
+                        self._invalidate_paths([path], deadline=deadline, drain=False)
+                        self.con.execute("DELETE FROM files WHERE path=?", (path,))
+                        self.bump(source=True)
+                    removed += 1
+                continue
+            if (previous and (previous["size"], previous["mtime_ns"]) == (item["size"], item["mtime_ns"])
+                    and previous["status"] == "indexed" and previous['extractor_version'] == EXTRACTION_VERSION):
+                continue
+            outcome = self._index_file(item, previous, toolchain=toolchain, manifest_hash=manifest_hash,
+                                       deadline=deadline)
+            changed += outcome == 'changed'
+            failed += outcome == 'failed'
+        return dict(changed=changed, removed=removed, failed=failed, complete=complete)
+
+    def prioritise_paths(self, paths, *, offset: int = 100000) -> None:
+        """Move these paths' queued documents ahead of any embedding backlog."""
+        with self.con:
+            for path in set(paths):
+                self.con.execute("UPDATE embedding_queue SET priority=priority-? WHERE priority>=0 AND doc_id IN "
+                                 "(SELECT id FROM documents WHERE path=?)", (offset, path))
 
     def _invalidate_paths(self, paths, *, deadline=float('inf'), drain=True):
         if not paths or not self.con.execute("SELECT 1 FROM methods UNION ALL SELECT 1 FROM method_chunks LIMIT 1").fetchone():
@@ -656,7 +757,7 @@ class Corpus:
         inventory_count = int(meta.get("inventory_count", total))
         pending = self.con.execute("SELECT COUNT(*) FROM files WHERE status IN ('pending','stale')").fetchone()[0]
         result = dict(files=total, inventoried=inventory_count, pending_files=pending + max(0, inventory_count - total),
-                    outcomes=group("files", "status"), compiler=group("files", "compile_status"),
+                    outcomes=group("files", "status"),
                     collections=group("files", "collection"),
                     method_invalidation_pending=self.invalidation_pending(),
                     inventory_errors=json.loads(meta.get("inventory_errors", "[]")),

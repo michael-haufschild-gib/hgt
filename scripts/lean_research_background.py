@@ -19,7 +19,7 @@ import threading
 import time
 import uuid
 
-from lean_research_corpus import Corpus, cache_directory
+from lean_research_corpus import Corpus, cache_directory, own_snapshot
 from research_runtime.processes import terminate_owned as stop_owned_group
 
 
@@ -113,8 +113,9 @@ def small_shard_count(directory):
         return 0
     try:
         with Corpus(directory, readonly=True) as corpus:
-            return corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<8192 '
-                'AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)').fetchone()[0]
+            from lean_research_vectors import COMPACT_BELOW
+            return corpus.con.execute('SELECT COUNT(*) FROM vector_shards s WHERE count<? '
+                'AND EXISTS(SELECT 1 FROM vectors WHERE shard=s.id)', (COMPACT_BELOW,)).fetchone()[0]
     except sqlite3.DatabaseError:
         return 0
 
@@ -123,6 +124,45 @@ def maintenance_contention(tail):
     return any(message in tail for message in (
         'database is locked', 'database table is locked',
         'Another enrichment process owns the resumable queue.'))
+
+
+FAST_TICK_SECONDS = 2.0
+FULL_CYCLE_SECONDS = 600.0
+FAST_EMBED_SECONDS = 30.0
+
+
+def fast_update(root: Path, directory: Path, paths) -> dict:
+    """Reindex, embed and publish just these paths, in this process.
+
+    The full cycle starts a subprocess and opens the database for each phase;
+    doing that per edit is what put minutes between saving a file and finding
+    it. Unchanged files cost a hash check; the work is retried whole on failure.
+    """
+    from lean_research_cli import MaintenanceBusy, maintenance_locks
+    from lean_research_engine import enrich, runtime_for
+    from lean_research_qdrant import sync
+    started = time.monotonic()
+    qdrant = (directory / 'qdrant.json').exists()
+    try:
+        with maintenance_locks(directory), Corpus(directory) as corpus:
+            report = corpus.refresh_paths(root, paths, deadline=time.monotonic() + 60)
+            corpus.prioritise_paths(paths)
+            vectors, failures = 0, []
+            if not (directory / 'embeddings-paused.json').exists():
+                runtime = runtime_for(directory)
+                if runtime is not None:
+                    done = enrich(corpus, runtime, deadline=time.monotonic() + FAST_EMBED_SECONDS, vectors=True,
+                                  coverage=False, sync=qdrant, max_priority=0)
+                    vectors, failures = done['vectors'], done['failures']
+            if qdrant:
+                sync(corpus, deadline=time.monotonic() + 30)
+            backlog = bool(corpus.con.execute('SELECT EXISTS(SELECT 1 FROM embedding_queue WHERE priority<0)').fetchone()[0])
+        return dict(ok=not failures, paths=len(paths), seconds=round(time.monotonic() - started, 2),
+                    vectors=vectors, backlog=backlog, failures=failures[-3:], **report)
+    except MaintenanceBusy as exc:
+        return dict(ok=False, reason='maintenance_busy', lock=str(exc))
+    except Exception as exc:
+        return dict(ok=False, error=f'{type(exc).__name__}: {exc}'[:500])
 
 
 def run(root: Path, *, once=False) -> int:
@@ -202,50 +242,76 @@ def run(root: Path, *, once=False) -> int:
                                 completed={k: last[k] for k in ('changed', 'vectors') if k in last})
             record(last_phase=name, last_exit_code=child.returncode, last_result=last,
                    errors=errors, deferred=deferred, last_error=error)
+        def full_cycle() -> bool:
+            """Whole-corpus pass: dependencies, backlog, compaction and coverage.
+            Returns False when the source pass ran out of budget and must rerun."""
+            phase('sources', 300, ['--corpus'])
+            if stopped():
+                return True
+            source_result = state.get('last_result', {})
+            if source_result.get('complete') is False and not source_result.get('reason'):
+                return False
+            if (directory / 'qdrant.json').exists():
+                phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
+                    '--cache-dir', str(directory), '--budget-seconds', '30'])
+            from lean_research_runtime import RuntimeClient
+            with RuntimeClient(directory) as client:
+                ready = client.status().get('available', False)
+                if not ready and (directory / 'services.json').exists() and not (directory / 'services-stopped').exists():
+                    try:
+                        ready = client.start().get('available', False)
+                    except Exception as exc:
+                        record(last_error=str(exc))
+            if not ready:
+                record(last_error='Local models unavailable; source indexing continues. Run research-setup to enable enrichment.')
+                return True
+            paused = (directory / 'embeddings-paused.json').exists()
+            record(embeddings_paused=paused)
+            if not paused:
+                phase('embeddings', 90, ['--vectors'])
+            if not stopped() and (directory / 'qdrant.json').exists():
+                phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
+                    '--cache-dir', str(directory), '--budget-seconds', '30'])
+            # Compaction is not a Qdrant alternative: publication writes
+            # one small immutable file per batch and `sync` reconstructs
+            # vectors out of those files, whoever serves the queries.
+            if not stopped() and small_shard_count(directory) > 256:
+                phase('compaction', 30, ['--compact'])
+            return True
+
         record()
         try:
+            snapshot, last_full, retry, backlog = {}, None, set(), False
             while not stopped():
-                phase('sources', 300, ['--corpus'])
-                if stopped():
-                    break
-                source_result = state.get('last_result', {})
-                if source_result.get('complete') is False and not source_result.get('reason'):
-                    record(cycles=state['cycles'] + 1)
+                if last_full is None or time.monotonic() - last_full >= FULL_CYCLE_SECONDS:
+                    # Snapshot before the source pass, so an edit made while the
+                    # cycle runs still differs from it on the first fast tick.
+                    snapshot = own_snapshot(root)
+                    if not full_cycle():
+                        continue
+                    last_full = time.monotonic()
+                    record(cycles=state['cycles'] + 1, phase='watching')
+                    if once:
+                        break
                     continue
-                if (directory / 'qdrant.json').exists():
-                    phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
-                        '--cache-dir', str(directory), '--budget-seconds', '30'])
-                from lean_research_runtime import RuntimeClient
-                with RuntimeClient(directory) as client:
-                    ready = client.status().get('available', False)
-                    if not ready and (directory / 'services.json').exists() and not (directory / 'services-stopped').exists():
-                        try:
-                            ready = client.start().get('available', False)
-                        except Exception as exc:
-                            record(last_error=str(exc))
-                if ready:
-                    paused = (directory / 'embeddings-paused.json').exists()
-                    record(embeddings_paused=paused)
-                    if not paused:
-                        phase('embeddings', 90, ['--vectors'])
-                    if not stopped() and (directory / 'qdrant.json').exists():
-                        phase('qdrant', 30, [], [sys.executable, str(root / 'scripts/lean_research_qdrant.py'),
-                            '--cache-dir', str(directory), '--budget-seconds', '30'])
-                    # Compaction is not a Qdrant alternative: publication writes
-                    # one small immutable file per batch and `sync` reconstructs
-                    # vectors out of those files, whoever serves the queries.
-                    if not stopped():
-                        if small_shard_count(directory) > 256:
-                            phase('compaction', 30, ['--compact'])
-                else:
-                    record(last_error='Local models unavailable; source indexing continues. Run research-setup to enable enrichment.')
-                record(cycles=state['cycles'] + 1, phase='idle')
-                if once:
-                    break
-                for _ in range(50 if ready else 300):
+                for _ in range(int(FAST_TICK_SECONDS * 10)):
                     if stopped():
                         break
                     time.sleep(.1)
+                if stopped():
+                    break
+                current = own_snapshot(root)
+                paths = ({path for path, stamp in current.items() if snapshot.get(path) != stamp}
+                         | (snapshot.keys() - current.keys()) | retry)
+                snapshot = current
+                if not paths and not backlog:
+                    continue
+                record(phase='fast_update')
+                result = fast_update(root, directory, paths)
+                retry = set() if result.get('ok') else paths
+                backlog = bool(result.get('backlog'))
+                state['fast'] = {**result, 'at': time.time()}
+                record(phase='watching', fast_updates=state.get('fast_updates', 0) + 1)
         finally:
             record(phase='stopped', stopped_at=time.time())
     return 0

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileOddWindowMismatchMass
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowMismatchMass
 import GaloisForLFunctions.HTGeometry.AbelianZetaGas.PrimeWindowCount
 import GaloisForLFunctions.RHTower.MassBesselRadiationDivergence
 

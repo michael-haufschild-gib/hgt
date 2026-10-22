@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePWeightedChebyshevCredit
-import GaloisForLFunctions.RHTower.CCMCriticalMellinRieszMobiusRenewal
-import GaloisForLFunctions.RHTower.CCMUnitRieszExponentialCoherentTrace
+import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinRieszMobiusRenewal
+import GaloisForLFunctions.RHTower.CCM.CCMUnitRieszExponentialCoherentTrace
 
 open scoped BigOperators Chebyshev
 open ArithmeticFunction

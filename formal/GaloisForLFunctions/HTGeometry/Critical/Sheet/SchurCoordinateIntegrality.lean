@@ -41,8 +41,9 @@ set_option maxSynthPendingDepth 3
 
 variable (K : Type*) [Field K] [CharZero K] {m n : ℕ}
 
+omit [CharZero K] in
 /-- A raw source coordinate above the depth is an observation coordinate. -/
-theorem criticalSourceRaw_of_le (hm : 0 < m) (hn : 0 < n) {j : Fin (m + n)} (hj : m ≤ (j : ℕ)) :
+theorem criticalSourceRaw_of_le (_hm : 0 < m) (_hn : 0 < n) {j : Fin (m + n)} (hj : m ≤ (j : ℕ)) :
     criticalSourceRaw K m n j
       = algebraMap (criticalObservationField K m n) (criticalSourceField K m n)
           (criticalObservationRaw K m n ⟨(j : ℕ) - m, by omega⟩) := by
@@ -96,7 +97,7 @@ theorem criticalSourceNormalizedPositive_mem_pullback (hm : 1 < m) (hn : 1 < n)
       = σ (criticalSourceRaw K m n (Fin.cast (by omega) j.succ))
         * (σ (criticalSourceScale K (by omega : 0 < m) (by omega : 0 < n)))⁻¹ := by
     show σ (normalizedFiniteJet (criticalSourceRawReindexed K _ _) j.succ) = _
-    rw [normalizedFiniteJet, if_neg (by simp [Fin.succ_ne_zero]), map_div₀, div_eq_mul_inv]
+    rw [normalizedFiniteJet, if_neg (by simp), map_div₀, div_eq_mul_inv]
     rfl
   rw [mem_criticalSheetPullbackSubring, hval]
   refine Subring.mul_mem _ hraw ?_

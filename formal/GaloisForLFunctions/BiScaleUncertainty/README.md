@@ -985,6 +985,26 @@ every $\varepsilon>0$, $(1/M)\int_0^M\tilde E^2\ge\sum_{\rho\in S}m_\rho^2/\lver
 all large $M$ (`cramer_liminf_law`), not only infinitely often: Cramér's lower bound in liminf form,
 through the gauge bridge from the packet to the Chebyshev gauge convolution.
 
+**Synchronized packets without orthogonality: the triangular Gram split.** Packet families are
+never orthogonal, and the natural device — a Gram matrix with controlled off-diagonal — is not
+available because nothing bounds the arithmetic cross entries. The usable substitute is an
+*ordering*. Truncate the cross Gram matrix of two finite families to its strictly upper triangular
+part; the truncation is nilpotent of index $n+1$ by construction, with no nilpotence hypothesis
+required, and the discarded lower-diagonal entries are kept as an explicit operator error that
+measures the failure of arithmetic triangularity. A nilpotent operator of chain length $n+1$ has
+numerical radius at most $\cos(\pi/(n+2))$ times its operator norm — the sharp finite-chain sine
+constant, $\tfrac12$ at two levels and strictly below one at every finite length — so
+$$
+\lvert\langle Tx,x\rangle\rvert\le\cos\!\bigl(\tfrac\pi{n+2}\bigr)\lVert T\rVert\,\lVert x\rVert^2
+$$
+for the triangular part, and finite synthesis is bounded by the diagonal energy plus the actual
+Gram defect. The gain $1-\cos(\pi/(n+2))$ is positive at every finite length and decays like
+$\pi^2/(2(n+2)^2)$, so this is a mechanism for *synchronized* finite chains and not a substitute
+for a frame bound: it buys an unconditional numerical-radius inequality while assuming neither
+orthogonality, nor contractivity, nor exact arithmetic zeros of the correlations. The price of
+synchronization is that the constant degrades with the chain length, which is why the mechanism
+applies to packet blocks of bounded depth rather than to the whole family.
+
 ### 3.12 Producers
 
 Receivers rewrite the explicit formula; producers bound it. The theory insists on both.
@@ -1012,7 +1032,17 @@ Receivers rewrite the explicit formula; producers bound it. The theory insists o
   omitted tail is exactly the negative-logarithmic part; after the unique polar correction it has
   a uniform envelope $12(n+1)^{-1/2}e^{-3|x|/2}$, its prime and pole costs are $O(1/(n+1))$ times its
   mass, but its archimedean energy grows like $\tfrac12\log(n+1)$ times its mass: the smoothed
-  correction tails have **unbounded normalized Weil energy**.
+  correction tails have **unbounded normalized Weil energy**. The vanishing is a two-sided
+  bookkeeping identity rather than an estimate: at *every* zero $\rho$ with $\Re\rho>0$ the actual
+  compact ramp's readout equals minus the tail's readout exactly, with a source-derived
+  quantitative bound on both, and the literal reflected source used as the ramp diagonal of the
+  full Weil Gram matrix has fixed-zero readouts tending to zero as the scale grows — *regardless of
+  which side of the critical line the zero sits on*. The family therefore cannot separate on-line
+  from off-line zeros through its diagonal, which is exactly why the Gram off-diagonal and the
+  polar correction carry the whole question. The seed of the construction is explicit and
+  elementary: a zero-mean bounded-variation combination of three dilated positive ramps on the
+  collar, uniformly bounded by $9$, with the collar and dyadic coefficients cancelling its integral
+  identically — no smoothing and no limit is needed to admit it to Stieltjes pairings.
 - **Nyquist polar producers.** $\cosh(\tfrac12\log n)$ approximates $\cosh(x/2)$ on its cell with
   $L^2$ error $\le1/(16n^2)$, $\le 1/(16N)$ over a dyadic window, and the all-tail residual is an
   explicit positive bounded operator. Taylor producers of order $m$ for $\cosh(\beta x)$ have an
@@ -1117,8 +1147,18 @@ with its successor recurrence, the $\ker P$ projection, and the Barban–Vehov l
 On the sieve side: large-value level sets and Halász $L^1$ bounds on the atomic polynomial, the
 Vinogradov–Korobov rate for the Chebyshev sequences, the Ramaré ladder with discharged
 Halász–Montgomery–Huxley steps, Watt and Heath-Brown mean values, prime-log Rajchman clocks,
-Hurwitz anchor contact, the squarefree discrepancy carriers, and the valuation core of Robin
-counterexamples. On the zero side: the unconditional explicit formula of the zero configuration,
+Hurwitz anchor contact, the squarefree discrepancy carriers with the Mertens-to-squarefree
+transfer — finite Abel summation that retains *both* signed tails of the squarefree divisor
+identity, so a linear Mertens bound $|M(n)|\le\delta n$ beyond a cutoff becomes a quantitative
+squarefree-count error at a cutoff chosen freely, not forced to the square root of the range, and
+inverse-logarithmic cancellation improves the square-root error with the arithmetic source
+unchanged — and the valuation core of Robin counterexamples. One guest lives in this directory rather than in its own route's: the theta-cusp
+enriched clock current, where source *action* $Z(u,t)=t\,E(u,t)$ rather than displacement alone
+pays the complete clock, so the current is positive on the inner chamber $0<t\le\min(2,u)$ once
+$Z\ge710e^4$, and the mass-payment method reaches every action above $(5625/8)e^4$. The bounded-action
+inner region, and any transfer to the global signed receiver, stay open; it is filed here because
+its coordinates are this programme's, not because the route is. On the zero side: the
+unconditional explicit formula of the zero configuration,
 the critical-Mellin resolvent continuation and generalized von Koch bound, the one-sided Landau
 engine, the exponential-type non-annihilation theorem and the superlinear count of simple critical
 zeros, which the packet laws of §3.11 consume; the blind symbol slacks of §3.6 refine the
@@ -1234,6 +1274,10 @@ read GRH.
 | A compact packet converges, or has bounded energy per unit source energy. | Every nonzero packet oscillates with amplitude at least $\sqrt{E(f)}$, and for width-$t$ probes the energy ratio grows like $\log(1/t)$. |
 | Packet energy equals Weil energy. | $W\le E$ always; equality holds exactly when the critical zeros seen are simple. |
 | A bound for the compact factorial source bounds its completion. | The omitted Müntz tail has unbounded normalized Weil energy. |
+| The Müntz ramp diagonal distinguishes on-line from off-line zeros. | Its fixed-zero readouts tend to zero for every zero with $\Re\rho>0$, whichever side of the line it is on, and the ramp readout is exactly minus the tail readout at every such zero. The separation must come from the Gram off-diagonal and the polar correction. |
+| A cross Gram bound needs orthogonality, contractivity, or exact correlation zeros. | Strictly upper triangular truncation is nilpotent by construction, the chain sine constant $\cos(\pi/(n+2))<1$ bounds its numerical radius at its actual operator norm, and the discarded lower-diagonal entries are kept as an explicit error. |
+| The chain sine gain is uniform in the family. | $1-\cos(\pi/(n+2))\asymp\pi^2/(2(n+2)^2)$ decays with the chain length; the mechanism is for synchronized blocks of bounded depth, not for the whole packet family. |
+| A Mertens bound transfers to squarefree counting only at the square-root cutoff. | Finite Abel summation retaining both signed tails lets the cutoff be chosen freely; inverse-log cancellation then improves the square-root error with the same arithmetic source. |
 | Coherent price controls source energy. | A nonzero kernel family has zero coherent price and arbitrary energy. |
 | Prime clock kernels are lag-only. | They retain the centre and cutoff; no translation invariance or sign of edge minus mass is proved. |
 | Rebuilding polynomial-horizon moment transfer here. | It is owned by the Bézout–Valuation Incidence programme; search the whole Lean tree, including other programmes' folders, before building arithmetic-observation tools. |
@@ -1304,7 +1348,13 @@ mixed-stratum formulation are open.
 
 **Producers.** The Müntz correction tail shows that the compact factorial family cannot be
 completed inside the decay-class Weil domain at bounded normalized energy; a producer family with
-bounded completion cost, or a proof that none exists, is open. For the prime clocks the arithmetic
+bounded completion cost, or a proof that none exists, is open. The obstruction is now localized:
+the construction's seed is an explicit zero-mean bounded-variation ramp combination, and the
+diagonal readout identities hold at every zero with $\Re\rho>0$ on both sides of the line, so
+neither the seed's regularity nor the diagonal's arithmetic is the missing ingredient — the
+unbounded cost sits entirely in the archimedean energy of the omitted negative-logarithmic tail,
+which grows like $\tfrac12\log(n+1)$ against an $O(1/(n+1))$ prime-and-pole cost. A completion at
+bounded cost therefore has to redistribute archimedean energy, not improve the seed. For the prime clocks the arithmetic
 estimates for the mass and edge kernels and the sign of their difference are open.
 
 ### Research topics toward the shared target

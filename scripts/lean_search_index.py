@@ -298,10 +298,22 @@ def _fts5_available(con: sqlite3.Connection) -> bool:
     return True
 
 
+# Function words occur in nearly every document: as AND terms each one costs a
+# posting-list merge and filters nothing, and as OR terms each matches all.
+STOPWORDS = frozenset('a an the of to for from with by in on at and or is are be as '
+                      'that this its it into via'.split())
+
+
+def content_parts(parts: list[tuple[tuple[str, ...], bool]]) -> list[tuple[tuple[str, ...], bool]]:
+    """Drop bare function words, keeping quoted phrases and any query made only of them."""
+    kept = [(terms, phrase) for terms, phrase in parts if phrase or terms[0] not in STOPWORDS]
+    return kept or parts
+
+
 def build_match_expression(query: str, *, any_terms: bool = False, exact: bool = False) -> str:
     """Require every term/phrase by default; prefix alternatives stay grouped."""
     clauses = []
-    for terms, phrase in query_parts(query):
+    for terms, phrase in content_parts(query_parts(query)):
         text = " ".join(terms)
         clause = f'"{text}"'
         if not phrase and not exact and len(text) >= 2:

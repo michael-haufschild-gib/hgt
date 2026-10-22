@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenCompactSourceCoordinates
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactDeterminant
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactDeterminant
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspEvenFourExplicitTail
 
 /-! # Explicit complete-source even rank-four positivity through the energy interval -/

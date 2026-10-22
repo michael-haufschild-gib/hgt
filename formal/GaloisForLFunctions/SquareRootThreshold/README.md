@@ -156,6 +156,15 @@ height rather than almost every, the control of near-top zeros beyond a finite h
 the Bagchi lane of `RHTower`, the recurrence of `ζ` on a prescribed disc, which holds on every
 zero-free disc and around an off-line zero is literally the exclusion of that zero.
 
+SRT also keeps the corpus commensurable, and this is the part of its role a new agent should read
+first. Two dictionary theorems establish that the routes are not independent: at every aperture the
+positivity routes (RW, ACT, OWU, EWU, AIP, APT, the SRT window) are *one* statement, window
+positivity of the full zero form, so an improvement counts once; and every route's graded receiver —
+PBM, WL, TT, HCF, SZ, TH, RW/HF, FU/MC, PA, LA — reads the *one* number `zetaZeroWidth`, so partial
+progress anywhere is an exponent in that unit and nothing else. Before adopting a new route, price
+it here: if its certificate is a bounded aperture, it reports nothing in the width unit, and if its
+receiver is one of the dictionary's, its progress is already comparable to every other route's.
+
 ### How the programme connects to the other programmes
 
 SRT is the zero-side and height-side coordinate system of the family: it owns the configuration
@@ -713,6 +722,144 @@ argument becomes quantitative.
     unsigned conjugate-difference energy, not the signed Weil floor, so this is the sampling
     counterpart of the visibility laws: it bounds how much depth a window can hold without deciding
     any sign, and it is the shape in which a local non-clustering hypothesis becomes usable.
+34. **Sampling an interval source on a locally bounded point set.** The analytic tool behind the
+    floors is elementary and costs no zero-density input. Let `f` be continuous and supported in
+    `[−a, a]`, `Φ(z) = ∫ f(u)e^{izu}du` its entire transform, and let `z_q = x_q + iy_q` be points
+    with at most `M` heights in any unit interval and depths `|y_q| ≤ σ`. Then
+    `Σ_q |Φ(z_q)|² ≤ M(2a + 2π)e^{2π}e^{2σa}∫|f|²`
+    (`sum_norm_sq_testTransform_le_of_locallyBounded`). The proof is a grid Parseval identity on the
+    window of length `L = 2a + 2π` plus a factorial expansion: each point is a grid point `g ∈ hℤ`,
+    `h = 2π/L ≤ 1`, plus an offset `w` with `|w| ≤ h + σ`; expanding `e^{iwu}` writes `Φ(z)` as a
+    series in the transforms of the moment sources `u^jf(u)`, whose grid energies are
+    `L∫|u^jf|² ≤ La^{2j}∫|f|²`, and weighted Cauchy–Schwarz sums the factorial series twice. Two
+    separate exponentials appear and must not be confused: `e^{2σa}` is the *depth* cost — the only
+    place the configuration enters — while `M(2a + 2π)e^{2π}` is the *density* cost, linear in the
+    aperture.
+35. **The unconditional floor in the archimedean normalisation.** The unconditional local zero count
+    is logarithmic in the height, so sampling at depth against a logarithmic density bounds the whole
+    zero side by the *logarithmically weighted* transform energy — which is precisely the archimedean
+    weight of the form:
+    `Re W(f, f) ≥ −C(a) ∫ ‖𝓕f(y)‖² log(|y| + 3) dy`
+    for every `C²` test supported in `[−a, a]`
+    (`TheUnconditionalWeilFloorInTheArchimedeanNormalisation`). Nothing is assumed about how the
+    zeros are distributed; the three inputs are the unconditional window count, the strip
+    `0 ≤ β ≤ 1` (which bounds every depth), and the sampling inequality, and all that is used of the
+    Weil summand is `Re(u conj v) ≥ −(|u|² + |v|²)/2`. This is the correct reading of mechanism 31:
+    the Weil form of `ζ` is *never* unbounded below in its own archimedean normalisation, so every
+    difficulty of the aperture face is a difficulty of normalisation, not of boundedness.
+36. **The width is the ground-energy rate when the off-line zeros do not cluster.** The arrow from a
+    ground-energy rate to the width is unconditional (mechanism 27); the converse now holds under
+    one explicit single-window hypothesis, `OffLineCopiesLocallyBounded M` — at most `M` off-line
+    copies in any unit height window. Then
+    `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` at every aperture, `σ = zetaZeroWidth`
+    (`neg_clusterFloorConst_le_ccmRestrictedWeilGroundEnergy`): on the zero side the on-line copies
+    contribute `|Φ(−z_q)|² ≥ 0` and each off-line copy at least `−(|Φ(−z_q)|² + |Φ(−z̄_q)|²)/2`, and
+    mechanism 34 bounds that sum since every depth is at most the width; density carries the floor
+    from smooth sources to the form vectors, and a pure-parity ground state turns it into a bound on
+    `μ`. Three consequences. The *exponent identity*: the polar ground-energy exponent equals the
+    zero width (`polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded`). The
+    *finite case*: if only finitely many zeros are off the line, they form a top layer at depth
+    exactly `zetaZeroWidth` and the fall is two-sided, `c e^{2σA} ≤ −μ(A) ≤ C e^{2σA}`. And the
+    *dichotomy* (`polarGroundEnergyRate_eq_zetaZeroWidth_or_offLineCopies_cluster`): either the
+    ground-energy exponent equals the width, or the off-line zeros cluster without bound on unit
+    windows — in particular a strict inequality between exponent and width forces infinitely many
+    off-line zeros. So the `L²`-normalised arrow is not missing an idea; it is missing exactly one
+    arithmetic fact, a local non-clustering bound for off-line zeros, and a counterexample to the
+    exponent identity would itself be a strong statement about the zeros.
+37. **The coupling of finitely many primes to the prime tail.** At aperture `a` the localized Weil
+    form splits as `W_ζ(S_ξf, S_ξf) = A_f(ξ) − Π_f(ξ)`, with `Π_f` a polynomial over the *finitely
+    many* prime powers `n ≤ e^{2a}` and `A_f` the pole term plus the archimedean term. The pole of
+    `ζ` at `s = 1` is the contribution of the whole infinite prime tail, and the archimedean growth
+    `μ(τ) ≈ log|τ|/2π` is the zero density, which the functional equation transports from that same
+    tail. RH is exactly `Re Π_f(ξ) ≤ Re A_f(ξ)` at every aperture, profile and height
+    (`riemannHypothesis_iff_primePolynomial_le_archPart`). The coupling of the two sides is
+    *necessary*, not an artefact: for the odd profile `sinh(u/2)(a² − u²)₊^{5/2}` the pole terms are
+    `−2(∫ f sinh(u/2))²`, the depth-`½` pair at height `0` with its extremal witness, and for large
+    `a` this dominates the archimedean term, so `Re A_f(0) < 0`; since `Π_f` has windowed mean zero
+    it is nonnegative at some height, and the inequality with the archimedean–pole side frozen at
+    height `0` fails (`exists_archPart_zero_lt_primePolynomial`). Under RH, therefore, the primes at
+    height `0` must themselves be negative (`re_primePolynomial_zero_neg`): **the finitely many
+    primes below `e^{2a}` must cancel the pole**, which is the tail they are not. In minimal form the
+    criterion is the rank-two `2 × 2` prime–Gamma inequality on the two pole directions `e^{±u/2}`
+    (`primePolynomial_le_archPart_iff_poleCompression`), so the depth-`½` pair sector at height zero
+    already carries the whole statement; Bagchi's strong recurrence implies it
+    (`primePolynomial_le_archPart_of_zetaStronglyRecurrent`); and both criteria have unconditional
+    density-zero shadows, the heights with `Re W_ζ < 0` having proportion `O((log X/log T)²)`.
+38. **Companions for the one-parameter family, from the zero count alone.** Mechanism 23 gives the
+    twin radius for the *modulated* family. For the unmodulated lag function
+    `φ(v) = Σ_z D(z)e^{zv}`, `P_v = φ(0) − φ(v)`, the same conclusion holds with the attainment
+    premise removed entirely. At the lag `V` the loudness `|D(z)|e^{Re z·V}` of the exponents right
+    of the line attains its maximum at a **Legendre record** `z*`, because the coefficients are
+    summable and only finitely many exponents are louder than any given one
+    (`exists_right_record`) — whether or not the largest real part is attained. The local count
+    bounds the exponents in a unit height window by `160 log(180(|a| + 5))`, hence a cubic potential
+    bound `Σ|z − s|^{−3} ≤ 480 L_s(r^{−3} + 3)` for families at distance `≥ r`. Evaluating the Fejér
+    window at `s = Re z* − κ/V + i Im z*` gives the **companion law** (`zeta_companion_law`): at every
+    lag `V`, positivity of `P_v` on `[0, V]` forces one of three things — the record is quiet, the lag
+    family is already negative on `[0, V]`, or another zero lies within
+    `r ≍ κ(log|Im z*|)^{1/3}/V` of that point. A companion just below the record, closer as `V`
+    grows, with nothing but the local zero count used.
+
+### The dictionary: one aperture, one zero width
+
+The programme's second job, after the lag face itself, is to keep the corpus's routes commensurable.
+Two theorems do that, and they are the reason a partial result anywhere in the family can be priced.
+
+39. **The positivity routes measure one aperture.** The routes that attack RH through positivity of
+    the Weil form state their certificates in different languages: the restricted Weil ground energy
+    `μ(A)` of the Connes–Consani–Moscovici operator (route RW), the single-shift variation inequality
+    on even profiles (ACT), the sinh-capacity inequality on odd tests (OWU), the even blind minimum
+    (EWU), the all-profile and odd windows `Ẑ(F) ≥ c∫F²` (AIP, APT), the complex window
+    `Re W_ζ(f, f) ≥ 0` and the lag functional `P_v` (SRT). At every aperture these are **one
+    statement** (`TheRoutesMeasureOneAperture`), namely window positivity of the full zero form,
+    `ZetaWindowPositive A : Ẑ(F) ≥ 0` for every real `C²_c` test vanishing outside `[−A, A]`:
+    * `0 ≤ μ(A)` iff `ZetaWindowPositive A'` for every `0 < A' < A`; the forward arrow mollifies a
+      `C²` window test into the strict interior, where a smooth source's Rayleigh quotient is bounded
+      by `μ(A)`, and the backward arrow uses Suzuki's continuity of `μ`. Window positivity at the
+      closed aperture gives `0 ≤ μ(A)` directly.
+    * Parity splits it exactly: `ZetaWindowPositive A` iff the even and odd windows are both
+      positive, since `Ẑ(F) = Ẑ(F_e) + Ẑ(F_o)`.
+    * The odd window *is* the OWU capacity inequality: it holds iff every odd window test satisfies
+      `sinhPairing g² ≤ 2·markovForm N g` at the prime cutoff `N = ⌈e^{2A}⌉`.
+    * The odd window pays ACT's single-shift inequality, because ACT's tests `Φ(ω_a u)` are odd
+      window tests and on odd tests the pole term `−2|F̂(i/2)|²` is `≤ 0`, so the pole-free Markov
+      energy dominates `Ẑ`.
+    * `0 ≤ μ(A)` gives EWU's even blind minimum by the dominance chain, and SRT's lag floor by the
+      Rayleigh bridge of mechanism 27.
+    * At the endpoint, RH iff every aperture is window positive iff every ground energy is
+      nonnegative.
+
+    So **the aperture through which all-profile positivity is proved is the common unit of RW, ACT,
+    OWU, EWU, AIP, APT and the SRT window, and an improvement on one face counts once.** A result
+    announced in one of these languages is not independent evidence for the others; it is the same
+    number read in another chart.
+40. **The prime-side and zero-side routes measure one zero width.** The walls dictionary reads
+    `zetaZeroWidth = sup|Re ρ − ½|` in the languages of the walls (Chebyshev deficit, mean-square
+    band, window ceiling, lag family, ground-energy floor, heat time, Jensen integral); this extends
+    it to the frontier map's routes, so each route's "quantitative progress" is the same number
+    (`TheRoutesMeasureOneZeroWidth`). `zetaZeroWidth ≤ σ` iff:
+    * **PBM** — the series `Σ((Λ(n) − 1)/log n)n^{−s}` converges at every real `s > ½ + σ`,
+      equivalently the regularized prime zeta series does, equivalently the `Λ − 1` series does;
+    * **WL** — one-sided packet growth at exponent `σ` for every test, equivalently the
+      spline-weighted prime inequality at exponent `1 + σ`;
+    * **TT** — finite natural Wold energy at every radius `t < ½ − σ`, equivalently the raw directed
+      covariance bounded above at every such radius;
+    * **HCF** — the complete Gaussian Hedenmalm Hankel tail cone above `σ`;
+    * **SZ** — zero-freeness right of the shifted critical line;
+    * **TH** — the thermal projective moments grow at most like `σ^m`;
+    * **RW / HF** — analyticity of the critical Mellin defect, and of the inverse-tilted dyadic
+      source, above `½ + σ`;
+    * **FU / MC** — a dyadic weighted prime-window power bound at exponent `σ`;
+    * **PA** — vertical type of the canonical Poisson trace at most `σ`;
+    * the horizontal support radius of the Xi divisor equals the width; and
+    * **LA / TT / SZ / TH** — every cosine shift `cos(hD)Ξ` with `h > zetaZeroWidth` lies in the
+      Laguerre–Pólya class, the unconditional `h ≥ ½` and the RH case `h > 0` being the two ends of
+      the strip.
+
+    Every one of these is a composition of the width dictionary with a receiver the corpus proves
+    for the half-plane bound, and **none of them supplies a bound on the width.** That is the point
+    of the dictionary: it converts route-local progress into one comparable exponent, and it makes
+    visible that no route has yet produced an exponent below `½` at all.
 
 ---
 
@@ -753,7 +900,12 @@ argument becomes quantitative.
 | Treating the ground-energy floor and the lag floor as different problems | `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`: aperture floors are lag floors, and the two no-crossing laws are one. |
 | Treating the sign of the critical form as the thing to be proved | An estimate losing less than an exponential in the aperture suffices (mechanism 32); the floor's exact rate is `2 · width`, so the demand is an exponent and the criterion is sharp. |
 | Accumulating bounded-aperture windows into a width bound | The gradation quantifies over every aperture. A family of windows with a bounded supremum of apertures reports nothing in the width unit, whatever its constants. |
-| Reading the energy-normalised floor as the `L²` one | The unconditional arrow from the width costs an `H¹` datum, the sup of the gauge derivative of the autocorrelation; the `L²`-normalised floor needs the local density of off-line zeros in one window, which no averaged zero-density theorem supplies. |
+| Reading the energy-normalised floor as the `L²` one | The unconditional arrow from the width costs an `H¹` datum, the sup of the gauge derivative of the autocorrelation; the `L²`-normalised floor needs the local density of off-line zeros in one window, which no averaged zero-density theorem supplies. Under an explicit local bound `M` per unit window it is a theorem, with the exponent equal to the width; without one the alternative is unbounded clustering. |
+| Reading the Weil form of `ζ` as unbounded below | It is not: `Re W(f, f) ≥ −C(a)∫‖𝓕f‖² log(|y| + 3)dy` unconditionally, from the local zero count alone. Every difficulty of the aperture face is one of normalisation. |
+| Taking the depth cost and the density cost of a sampling bound as one factor | `e^{2σa}` is the depth cost, the only place the configuration enters; `M(2a + 2π)e^{2π}` is the density cost, linear in the aperture. A method improving one does not improve the other. |
+| Treating a positivity result in one route's language as independent evidence for the others | At every aperture RW, ACT, OWU, EWU, AIP, APT and the SRT window are one statement, window positivity of `Ẑ`; an improvement counts once (mechanism 39). |
+| Reading a graded receiver of some route as progress on the width | Every route's graded receiver is the width dictionary composed with a proved half-plane receiver; none of them bounds the width (mechanism 40). |
+| Expecting the finitely many primes below `e^{2a}` to be bounded by the archimedean part alone | They must cancel the pole, which is the whole infinite prime tail: with the archimedean–pole side frozen at height `0` the inequality fails, so under RH the primes at height `0` are themselves negative (mechanism 37). |
 
 ---
 
@@ -841,13 +993,22 @@ argument becomes quantitative.
    with `Re z > 1/2`, which leave `Σ_{p ≤ N} Λ(p) p^{−1/2} k_f(log p) ω_p` free once `N` exceeds the
    base cutoff: the orbit reads the prime phases at bandwidth zero, the localized criterion needs
    them at `√X ≳ log T`. The two lanes meet only at the square-root threshold (open problem 1).
-8. **The `L²`-normalised width arrow.** Mechanism 31 proves `width < β ⟹` floor at rate `2β` with
-   an `H¹` datum in the normalisation; the `L²` form, which is what the ground-energy path and the
-   graded ledger consume, needs a bound on the off-line zeros in a *single* unit-height window. The
-   unsigned sampling law (mechanism 33) bounds squared depths per window from one aperture, and the
-   log-mean route cannot be pushed further: Littlewood's lemma on a unit window has horizontal edges
-   of size `S(T)`, which mechanism 28 proves unbounded. The unit is the rate the arrow preserves,
-   and the question is which single-window input replaces averaged zero density.
+8. **The `L²`-normalised width arrow, and the clustering alternative.** Mechanism 31 proves
+   `width < β ⟹` floor at rate `2β` with an `H¹` datum in the normalisation. The `L²` form, which is
+   what the ground-energy path and the graded ledger consume, is now proved under one explicit
+   single-window hypothesis: at most `M` off-line copies per unit height window gives
+   `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` and the exponent identity, and the alternative is sharp — either
+   the ground-energy exponent equals the width, or the off-line zeros cluster without bound on unit
+   windows (mechanism 36). So the open problem has changed shape. It is no longer "which
+   single-window input replaces averaged zero density": it is to rule out the clustering branch, or
+   to prove the exponent identity without a local count. Note what the clustering branch would cost:
+   unboundedly many off-line copies per unit window, which is far stronger than anything a
+   zero-density theorem permits on average — and yet no unconditional theorem excludes it, because
+   the log-mean route cannot be pushed further (Littlewood's lemma on a unit window has horizontal
+   edges of size `S(T)`, which mechanism 28 proves unbounded). The unconditional archimedean-
+   normalised floor (mechanism 35) shows the difficulty is purely one of normalisation: the form is
+   bounded below in the weight that the zero count naturally supplies, and the question is whether
+   `L²` is reachable from it.
 
 ---
 

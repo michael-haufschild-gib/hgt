@@ -18,8 +18,18 @@ from lean_research_corpus import Corpus, DEPENDENCY_PATH_SQL, PATH_PRIORITY_SQL,
 from lean_search_index import module_matches
 
 MAX_SHARD_DOCUMENTS = 8192
+# Only merge shards small enough that merging is worth republishing them.
+# Selecting everything under MAX_SHARD_DOCUMENTS re-merged near-full shards on
+# every cycle, and each republish re-queues its vectors for Qdrant, so coverage
+# never settled. Merged output is at least this size, so it is not reselected.
+COMPACT_BELOW = 2048
 EMBED_VIEWS = ('statement', 'type', 'doc', 'proof', 'method', 'prose')
 SEMANTIC_COVERAGE_KEY = 'semantic_coverage:'
+# An index serving agents who are editing Lean always has a little work in
+# flight. Treat that as current, and report a shortfall only once it is large
+# enough to actually cost a search its results.
+SEMANTIC_LAG_TOLERANCE = 2000
+OUTSTANDING_CAP = 5000
 # A reader may hold a shard filename read from SQLite but not yet opened.
 TOMBSTONE_GRACE_SECONDS = 3600.0
 
@@ -77,7 +87,7 @@ class FaissVectors:
         finally:
             temporary.unlink(missing_ok=True)
 
-    def pending(self, model: str, *, limit=64) -> list[dict]:
+    def pending(self, model: str, *, limit=64, max_priority=None) -> list[dict]:
         active = self.corpus.con.execute("SELECT value FROM meta WHERE key='embedding_queue_model'").fetchone()
         priority = self.corpus.con.execute("SELECT value FROM meta WHERE key='embedding_queue_priority'").fetchone()
         if not priority or priority[0] != PRIORITY_VERSION:
@@ -93,8 +103,13 @@ class FaissVectors:
                     + DEPENDENCY_PATH_SQL.format('d').replace('>0', '=0') +
                     ' AND (v.doc_id IS NULL OR v.content_hash<>d.content_hash OR v.model<>?)', (model,))
                 self.corpus.con.execute("INSERT OR REPLACE INTO meta VALUES('embedding_queue_model',?)", (model,))
+        # max_priority selects only documents moved ahead of the backlog, which is
+        # how the fast path embeds just what was edited.
+        bound = '' if max_priority is None else ' AND q.priority<?'
         return [dict(r) for r in self.corpus.con.execute(
-            "SELECT d.* FROM embedding_queue q JOIN documents d ON d.id=q.doc_id JOIN files f ON f.path=d.path WHERE f.status='indexed' ORDER BY q.priority,q.doc_id LIMIT ?", (limit,))]
+            "SELECT d.* FROM embedding_queue q JOIN documents d ON d.id=q.doc_id JOIN files f ON f.path=d.path "
+            "WHERE f.status='indexed'" + bound + " ORDER BY q.priority,q.doc_id LIMIT ?",
+            (limit,) if max_priority is None else (max_priority, limit))]
 
     def reuse(self, documents: list[dict], model: str) -> dict[str, list[float]]:
         """Reuse identical source chunks without repeated model inference."""
@@ -155,7 +170,7 @@ class FaissVectors:
 
     def compact(self, model: str, *, deadline=float("inf")) -> dict:
         """Merge small immutable shards; never allocate more than one bounded batch."""
-        shards = self.corpus.con.execute("SELECT * FROM vector_shards WHERE model=? AND count<? ORDER BY created", (model, MAX_SHARD_DOCUMENTS)).fetchall()
+        shards = self.corpus.con.execute("SELECT * FROM vector_shards WHERE model=? AND count<? ORDER BY created", (model, COMPACT_BELOW)).fetchall()
         docs, vectors, old = [], [], []
         parents = set()
         total = 0
@@ -269,9 +284,11 @@ class Vectors:
         # coverage must not scan every proof document before the first query.
         ready = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_points WHERE model=?', (model,)).fetchone()[0]
         pending = self.corpus.con.execute('SELECT COUNT(*) FROM qdrant_queue').fetchone()[0]
-        value = dict(expected=expected, ready=ready, complete=expected > 0 and ready == expected and not pending,
-                     backend='qdrant', pending=pending, measured_at=time.time(),
-                     measured_generation=self.corpus.generation)
+        unembedded = self.corpus.con.execute('SELECT COUNT(*) FROM embedding_queue').fetchone()[0]
+        value = dict(expected=expected, ready=ready, backend='qdrant', pending=pending,
+                     unembedded=unembedded,
+                     complete=expected > 0 and not pending and not unembedded and ready >= expected,
+                     measured_at=time.time(), measured_generation=self.corpus.generation)
         with self.corpus.con:
             self.corpus.con.execute('INSERT OR REPLACE INTO meta VALUES(?,?)',
                                     (SEMANTIC_COVERAGE_KEY + model, json.dumps(value)))
@@ -289,9 +306,15 @@ class Vectors:
         value = json.loads(row[0])
         # EXISTS is constant time; counting a queue that holds a whole reindex
         # would reintroduce the scan this method exists to avoid.
-        queued = bool(self.corpus.con.execute('SELECT EXISTS(SELECT 1 FROM qdrant_queue)').fetchone()[0])
-        value.update(status='snapshot', queue_nonempty=queued, current_generation=self.corpus.generation,
-                     complete=bool(value.get('expected')) and value.get('ready') == value.get('expected') and not queued)
+        # Live outstanding work, counted under a cap so a bulk reindex cannot
+        # turn a search's reporting step into a multi-million-row scan.
+        outstanding = sum(self.corpus.con.execute(
+            f'SELECT COUNT(*) FROM (SELECT 1 FROM {table} LIMIT {OUTSTANDING_CAP + 1})').fetchone()[0]
+            for table in ('embedding_queue', 'qdrant_queue'))
+        value.update(status='snapshot', outstanding=outstanding, outstanding_capped=outstanding > OUTSTANDING_CAP,
+                     current_generation=self.corpus.generation,
+                     complete=bool(value.get('expected')) and outstanding <= SEMANTIC_LAG_TOLERANCE
+                              and (value.get('ready') or 0) >= value['expected'])
         return value
 
     def search(self, embedding, **kwargs):

@@ -75,7 +75,10 @@ class Qdrant:
             self.request('PUT', path, dict(vectors=dict(size=dimensions, distance='Cosine', memory='cold'),
                 hnsw_config=dict(m=16, ef_construct=100, max_indexing_threads=4),
                 quantization_config=dict(scalar=dict(type='int8', memory='pinned')),
-                optimizers_config=dict(max_optimization_threads=1, default_segment_number=4), on_disk_payload=True), deadline=deadline)
+                optimizers_config=dict(max_optimization_threads=1, default_segment_number=4,
+                    # Build the HNSW graph once after the bulk load instead of
+                    # incrementally per batch; restored by restore_indexing().
+                    indexing_threshold=0), on_disk_payload=True), deadline=deadline)
             for key in ('module', 'view'):
                 self.request('PUT', path + '/index?wait=true', dict(field_name=key, field_schema='keyword'), deadline=deadline)
             # A token index on the module lets `--exclude-module` be answered
@@ -276,6 +279,17 @@ def reconcile(corpus):
             'FROM qdrant_points p LEFT JOIN vectors v ON v.doc_id=p.doc_id AND v.model=p.model WHERE v.doc_id IS NULL')
 
 
+def restore_indexing(corpus, *, threshold=20000, deadline=float('inf')):
+    """Re-enable HNSW construction after a bulk load and report each collection."""
+    client = Qdrant(corpus.directory)
+    done = []
+    for model in [r[0] for r in corpus.con.execute('SELECT DISTINCT model FROM vector_shards')]:
+        client.request('PATCH', '/collections/' + client.collection(model),
+                       dict(optimizers_config=dict(indexing_threshold=threshold)), deadline=deadline)
+        done.append(model)
+    return dict(restored=done, indexing_threshold=threshold)
+
+
 def prune_collections(corpus, *, apply=False, deadline=float('inf')):
     """Report, and optionally drop, collections for retired embedding models.
 
@@ -312,6 +326,8 @@ if __name__ == '__main__':
     parser.add_argument('--cache-dir', required=True, type=Path)
     parser.add_argument('--budget-seconds', type=float, default=30)
     parser.add_argument('--reconcile', action='store_true')
+    parser.add_argument('--restore-indexing', action='store_true',
+                        help='re-enable HNSW construction after the bulk load')
     parser.add_argument('--prune-collections', action='store_true',
                         help='report collections belonging to retired embedding models')
     parser.add_argument('--apply', action='store_true',
@@ -320,6 +336,9 @@ if __name__ == '__main__':
     directory = args.cache_dir.resolve()
     try:
         with locks([directory/n for n in ('source.lock','compiler.lock','enrichment.lock')], seconds=5), Corpus(directory) as corpus:
+            if args.restore_indexing:
+                print(json.dumps(restore_indexing(corpus, deadline=time.monotonic()+args.budget_seconds)), flush=True)
+                raise SystemExit(0)
             if args.prune_collections:
                 print(json.dumps(prune_collections(corpus, apply=args.apply,
                     deadline=time.monotonic()+args.budget_seconds), indent=2), flush=True)

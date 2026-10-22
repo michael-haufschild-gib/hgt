@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.CCMActualHeadMatchedQuantileOddWindowActivePath
+import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowActivePath
 
 namespace RHTower
 

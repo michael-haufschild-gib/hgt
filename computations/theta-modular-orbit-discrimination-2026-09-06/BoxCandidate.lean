@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEJetRankThreeCompactExpansion
+import GaloisForLFunctions.HTGeometry.PolynomialODE.JetRankThreeCompactExpansion
 open HTGeometry
 namespace HTGeometry
 noncomputable section

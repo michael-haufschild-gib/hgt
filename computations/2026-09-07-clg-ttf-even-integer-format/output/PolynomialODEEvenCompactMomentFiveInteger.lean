@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.PolynomialODEEvenCompactMomentFive
+import GaloisForLFunctions.HTGeometry.PolynomialODE.EvenCompactMomentFive
 
 /-! # Exact integer numerator for compact even moment five -/
 namespace HTGeometry

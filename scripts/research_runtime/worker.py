@@ -25,6 +25,7 @@ from .protocol import ChildChannel, RuntimeDeadline, RuntimeUnavailable, frame, 
 
 POLL_SECONDS = 0.02
 IDLE_SECONDS = 300.0
+ENRICHMENT_MAX_WAIT_SECONDS = 2.0
 
 
 def socket_directory(cache_dir: Path) -> Path:
@@ -225,9 +226,16 @@ class WorkerServer:
                 self._reply(peer, {'error': 'deadline', 'message': 'local runtime deadline expired'})
 
     def _schedule(self):
+        # Searches go first, but an indexing request that has waited past
+        # ENRICHMENT_MAX_WAIT joins them in arrival order. Strict priority let
+        # continuous searching from several agents starve indexing indefinitely.
+        now = time.monotonic()
+        def urgent(p):
+            return (p.request.get('priority', 'interactive') == 'interactive'
+                    or now - p.accepted >= ENRICHMENT_MAX_WAIT_SECONDS)
         pending = sorted((p for p in self.peers if p.request and not p.outgoing
                           and p is not self.active and p.request['op'] != 'status'),
-                         key=lambda p: (p.request.get('priority', 'interactive') != 'interactive', p.sequence))
+                         key=lambda p: (not urgent(p), p.sequence))
         # Interactive requests sort first and wait out the running one; nothing
         # is killed. Killing indexing to serve a query starved indexing
         # completely once several agents searched continuously, and threw away
