@@ -46,3 +46,12 @@ formal/.lean_search.db
 formal/.lean_search.db-wal
 formal/.lean_search.db-shm
 formal/.lean_search-*.db*
+
+# Lean build artifacts written outside .lake (e.g. hand-run `lean -o`)
+*.olean
+*.olean.private
+*.olean.server
+*.ilean
+
+# Scratch folder for throwaway Lean files
+/formal/.scratch/

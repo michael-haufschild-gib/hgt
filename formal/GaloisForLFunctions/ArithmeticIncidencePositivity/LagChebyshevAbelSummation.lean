@@ -2846,4 +2846,42 @@ theorem chebyshevTwoPoleDefect_le_liouville (s : ℝ) :
     chebyshevTwoPoleDefect s ≤ lagSourceDefect liouvilleTwistWeight s :=
   chebyshevTwoPoleDefect_le_lagSourceDefect liouvilleTwistWeight_le s
 
+
+/-! ### The citable estimates: approximation error, not size
+
+The two gauge invariances turn the ledger's deficit into an *approximation error*.  At first
+order it is bounded by the distance of the Chebyshev defect from any constant; at second order,
+on a band, by the distance of the critical-scale functional from any affine function.  Taking the
+best constant and the best affine fit, the deficit is the oscillation and the affine deviation of
+the receiver across the band — never its size. -/
+
+/-- **First-order estimate: the deficit is bounded by the distance of `E` from any level.** -/
+theorem abs_residue_le_centred (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) (h0 : h 0 = 0) {N : ℕ} (hN : Real.exp S ≤ N) (c : ℝ) :
+    |(∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) * h (Real.log n))
+        - ∫ s in Ioi (0:ℝ), (Real.exp s + 1) * h s|
+      ≤ ∫ s in Ioi (0:ℝ), |chebyshevTwoPoleDefect s - c| * |deriv h s| := by
+  rw [sum_vonMangoldt_sub_polar_eq_chebyshev_centred hh hS hvan h0 hN c]
+  refine le_trans abs_integral_le_integral_abs (le_of_eq ?_)
+  exact setIntegral_congr_fun measurableSet_Ioi fun s _ => abs_mul _ _
+
+/-- **Second-order estimate: on a band the deficit is bounded by the distance of the
+critical-scale functional from any affine function.** -/
+theorem abs_residue_band_le_affine (hh : ContDiff ℝ 1 h) (hh' : ContDiff ℝ 1 (deriv h))
+    (hS : 0 < S) (hvan : ∀ s, S ≤ s → h s = 0) {s₁ : ℝ} (hs₁ : 0 < s₁)
+    (hvan0 : ∀ s, s ≤ s₁ → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) (α β : ℝ) :
+    |(∑ n ∈ Finset.filter (fun n : ℕ => s₁ < Real.log n) (Finset.range (N + 1)),
+          (ArithmeticFunction.vonMangoldt n : ℝ) * h (Real.log n))
+        - ∫ s in Ioi (0:ℝ), (Real.exp s + 1) * h s|
+      ≤ ∫ s in Ioi (0:ℝ),
+          |criticalScalePrefix s + s ^ 2 / 2 - s + (α * s + β)| * |deriv (deriv h) s| := by
+  rw [sum_vonMangoldt_band_eq_receiver_curvature hh hh' hS hvan hs₁ hvan0 hN α β, abs_neg]
+  refine le_trans abs_integral_le_integral_abs (le_of_eq ?_)
+  exact setIntegral_congr_fun measurableSet_Ioi fun s _ => abs_mul _ _
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
+
+open GaloisForLFunctions.ArithmeticIncidencePositivity in
+#print axioms abs_residue_le_centred
+open GaloisForLFunctions.ArithmeticIncidencePositivity in
+#print axioms abs_residue_band_le_affine

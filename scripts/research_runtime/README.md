@@ -194,7 +194,11 @@ are pinned in `pyproject.toml` and transitively locked in `uv.lock`.
   on MPS, because SDPA there returns non-finite values for this model whenever a
   batch carries real padding; the probe needs MPS and padding and sdpa together
   to reproduce, and CPU is unaffected, so sdpa stays where it is correct.
-  Unpadded per-text reranking avoids the same kernel path. CPU float32 fallback
+  The reranker uses eager attention on MPS for the same reason, which makes
+  padded batches finite; batched scores match per-text scores to 2.4e-7 with
+  identical order. bfloat16 is not used: against float32 on 20 real queries it
+  changed the rerank order on 14 and the top retrieval hit on 1, with no speed
+  gain on MPS. CPU float32 fallback
   is explicit and reported; automatic hidden per-operator MPS fallback is
   disabled. Finite output is checked.
 - [Transformers offline mode](https://huggingface.co/docs/transformers/v5.20.2/installation#offline-mode):
