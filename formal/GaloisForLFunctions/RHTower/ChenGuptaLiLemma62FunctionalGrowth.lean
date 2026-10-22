@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62GammaBounds
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62FiniteContour
 
+/-!
+# Chen–Gupta–Li Lemma 6.2: polynomial growth of the functional-equation factor
+
+For a primitive Dirichlet character `χ` modulo `q`, the functional equation relates `L(z, χ)`
+and `L(1 - z, χ̄)` through the factor `q^(1/2 - z) ε(χ) γ(1 - z, χ̄)/γ(z, χ)`, where `γ` is the
+archimedean Gamma factor and `ε(χ)` the root number. This module shows that on the high strip
+`-1 ≤ Re z ≤ 1/2`, `|Im z| ≥ 2`, the ratio of Gamma factors is at most `(3/2) e^8 (Im z)²`, and
+hence the whole functional-equation factor is bounded by `C (Im z)²` with
+`C = q^(3/2) |ε(χ)| (3/2) e^8`.
+
+## Main results
+
+- `CGLLemma62HighStripPoint`: a point `z` with `-1 ≤ Re z ≤ 1/2` and `|Im z| ≥ 2`.
+- `cgl_norm_Gamma_real_sub_I`: `|Γ(a - ir)| = |Γ(a + ir)|` for real `a, r`.
+- `cglLemma62_primitiveFunctionalFactor_highHeight_bound`: there is `C ≥ 0` with
+  `|q^(1/2 - z) ε(χ) γ(1 - z, χ̄)/γ(z, χ)| ≤ C (Im z)²` for every point of the high strip.
+
+## Hypotheses
+
+Unconditional; the strip conditions are bundled in `CGLLemma62HighStripPoint`, and the Gamma
+ratio bound comes from the formalized vertical Gamma ratio estimates.
+-/
+
 open Complex MeasureTheory Filter Set Asymptotics LSeries
 open scoped Topology LSeries.notation BigOperators
 
@@ -8,12 +31,14 @@ namespace RHTower
 
 noncomputable section
 
+/-- A point of the high strip: `-1 ≤ Re z ≤ 1/2` and `|Im z| ≥ 2`. -/
 structure CGLLemma62HighStripPoint where
   value : ℂ
   lower : (-1 : ℝ) ≤ value.re
   upper : value.re ≤ 1 / 2
   high : 2 ≤ |value.im|
 
+/-- Conjugation symmetry of the Gamma function on vertical lines: `|Γ(a - ir)| = |Γ(a + ir)|`. -/
 theorem cgl_norm_Gamma_real_sub_I (a r : ℝ) :
     ‖Complex.Gamma ((a : ℂ) - (r : ℂ) * I)‖ =
       ‖Complex.Gamma ((a : ℂ) + (r : ℂ) * I)‖ := by
@@ -22,6 +47,8 @@ theorem cgl_norm_Gamma_real_sub_I (a r : ℝ) :
         apply Complex.ext <;> simp,
     Complex.Gamma_conj, Complex.norm_conj]
 
+/-- For `z` on the high strip and parity `d ∈ {0, 1}`,
+`|Γ((1 - z + d)/2)| / |Γ((z + d)/2)| ≤ (3/2) e^8 (Im z)²`. -/
 private theorem cglGammaRatio_raw_high (z : ℂ)
     (hlower : (-1 : ℝ) ≤ z.re) (hupper : z.re ≤ 1 / 2)
     (hhigh : 2 ≤ |z.im|) (d : ℝ) (hd : d = 0 ∨ d = 1) :
@@ -202,6 +229,8 @@ private theorem cglGammaRatio_raw_high (z : ℂ)
             (3 / 2 : ℝ) * Real.exp 8 * |z.im| ^ 2 := by ring
         _ = (3 / 2 : ℝ) * Real.exp 8 * z.im ^ 2 := by rw [habsSq]
 
+/-- For `z` on the high strip, the ratio of Dirichlet Gamma factors satisfies
+`|γ(1 - z, χ̄)/γ(z, χ)| ≤ (3/2) e^8 (Im z)²`. -/
 private theorem cglGammaFactor_reflection_high (χ : DirichletCharacter ℂ q)
     (z : ℂ) (hlower : (-1 : ℝ) ≤ z.re) (hupper : z.re ≤ 1 / 2)
     (hhigh : 2 ≤ |z.im|) :
@@ -242,6 +271,8 @@ private theorem cglGammaFactor_reflection_high (χ : DirichletCharacter ℂ q)
     _ ≤ 1 * ((3 / 2 : ℝ) * Real.exp 8 * z.im ^ 2) := by gcongr
     _ = (3 / 2 : ℝ) * Real.exp 8 * z.im ^ 2 := by ring
 
+/-- For a primitive character modulo `q` there is `C ≥ 0` such that the functional-equation factor
+`q^(1/2 - z) ε(χ) γ(1 - z, χ̄)/γ(z, χ)` is at most `C (Im z)²` on the whole high strip. -/
 theorem cglLemma62_primitiveFunctionalFactor_highHeight_bound
     (P : CGLLemma62PrimitiveCharacter) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : CGLLemma62HighStripPoint,

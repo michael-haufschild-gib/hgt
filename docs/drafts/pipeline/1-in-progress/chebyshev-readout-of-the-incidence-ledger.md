@@ -290,6 +290,133 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         shifted pair displaced by a full `ψ` on the other side (#18) and the rigidity theorem
         (#19) saying the defect is a complete invariant, the three test models the shared target
         names are all separated from `ζ` at the level of the mechanism.
+      * **`abs_residue_le_centred`**, **`abs_residue_band_le_affine`** — the citable estimates.
+        The two gauge invariances turn the ledger's deficit into an *approximation error*:
+        bounded at first order by `∫|E − c||h'|` for every level `c`, and at second order on a
+        band by `∫|D + s²/2 − s + αs + β||h''|` for every affine function.  Optimising, the
+        deficit is the oscillation, respectively the affine deviation, of the critical-scale
+        receiver across the band — never its size.  This is the sharpest form of the grading the
+        programme asks for, and it is what a user of the dictionary actually cites.
+      * `secondCrossCorrelation`, `hasDerivAt_crossCorrelation`,
+        `continuous_secondCrossCorrelation`, `contDiff_one_crossCorrelation`,
+        `contDiff_one_deriv_lagTestWeight`, **`testBalance_band_receiver_curvature`** — **the
+        second-order calculus of a test.**  For a `C²` test the cross-correlation is itself
+        differentiable with the second cross-correlation as derivative, so the lag weight is `C²`
+        with `h'' = 2e^{−s/2}(A'' − A' + ¼A)`, and the band/curvature capstone applies to actual
+        tests: the prime channel and the pole plane of a `C²` test, restricted to a band, are the
+        curvature of the critical-scale receiver paired with the test's own second-order lag
+        weight.
+      * `autoCorrelation_translate`, `eq_zero_of_odd`, `continuous_rightPart_of_odd`,
+        **`autoCorrelation_rightPart_le_chainConstant`** — **the half-test ladder.**  For an odd
+        test the right half is continuous (oddness gives `F 0 = 0`) and lives on `[0, r]`, so
+        after centring it is a test of aperture `r/2` and the ladder applies with that aperture:
+
+            A_v(t) ≤ cos(π/(⌊r/t⌋ + 2))·A_v(0).
+
+        The Gram matrix of the bipartite reduction (#13), whose entries are exactly these
+        half-test correlations at the lag differences, therefore decays by the ladder at **half**
+        the aperture — twice as fast as the full test's, which is the quantitative content of the
+        bipartite halving.
+      * `autoCorrelation_rightPart_le_chainConstant_abs`, **`sum_gram_le_ladder`** — **the Gram
+        bound.**  Assembling the bipartite reduction with the half-test ladder: every entry of
+        the Gram matrix of the bipartite reduction is the half-test's mass on the diagonal and
+        ladder-damped at aperture `r/2` off it.  The prime side beyond the aperture is therefore
+        controlled by an explicit matrix whose off-diagonal decay is known exactly — the
+        cross-prime aggregate is no longer an opaque bilinear form.
+      * **`one_div_le_log_sub_log`**, `chainRungs_eq_three`,
+        **`autoCorrelation_rightPart_le_half_of_annulus`** — **where the Gram damping bites.**
+        Distinct integers below `N` have logarithms at least `1/N` apart, so almost every lag
+        difference of the prime side is far below the aperture and the ladder damps it not at
+        all.  The damping is effective exactly on the annulus `r/2 < |δ| ≤ r` — prime ratios
+        between `e^{r/2}` and `e^{r}` — where the Gram entry is at most *half* the half-test's
+        mass.  This is the exact reach of the bipartite route: a factor two on that annulus and
+        nothing elsewhere, so any further gain in the cross-prime aggregate must come from the
+        arithmetic of the ratios, not from the geometry of the test.
+      * **`sub_div_le_log_sub_log`**, **`abs_sub_le_of_abs_log_sub_le`**,
+        `abs_sub_le_of_dyadic_window` — **the arithmetic input for the near-diagonal block.**  A
+        small lag difference forces a small *integer* difference, by a factor equal to the size:
+        `|b − a| ≤ M·δ` whenever `a, b ≤ M` and `|log b − log a| ≤ δ`.  On a dyadic window this
+        says the pairs in the Gram's near-diagonal block — the one place the ladder cannot act
+        (#32) — are exactly those within `2Xδ` of each other, converting the remaining question
+        about prime ratios into one about prime differences in short intervals.
+      * **`card_lagClose_le`** — **the near-diagonal block is banded.**  On a dyadic window each
+        row of the Gram has at most `2⌊2Xδ⌋ + 1` entries with lag gap below `δ`.  So the block
+        the ladder cannot damp (#32) is a banded matrix whose bandwidth is set by the integer
+        spacing of the window, not by the number of atoms in it: the cross-prime aggregate is a
+        banded form with explicitly damped tails, which is the shape a Schur or Gershgorin bound
+        can use.
+      * **`sum_mul_mul_le_rowSum`** (the Schur test), **`two_mul_sum_lag_le_schur`** — **the
+        `ℓ²` form of the prime side beyond the aperture.**  A symmetric form with nonnegative
+        weights is bounded by its largest absolute row sum times the coefficient energy, so
+
+            2 Σ_n c_n A(t_n) ≤ ε‖F|_{x<0}‖² + ε⁻¹·R·Σ_n c_n² ,
+
+        with `R` the largest row sum of the half-test's correlations at the lag differences.  The
+        atoms now enter through `Σ c_n²` — an `ℓ²` norm, not `ℓ¹` — and the whole rate question
+        is concentrated in `R`, a banded matrix with ladder-damped tails (#31–#34).  This is the
+        exact shape the programme needs for a power saving: the remaining unknown is a row sum of
+        prime-ratio correlations, nothing else.
+      * `hasCompactSupport_rightPart`, **`rowSum_le_bandwidth`**,
+        **`two_mul_sum_lag_le_of_schurConstant`** — **the row sum and the replacement
+        hypothesis.**  The Gram's row sums are carried by the lag-gap ball of radius `r`, so the
+        Schur constant is the half-test's mass times the bandwidth.  Because the ladder is
+        *one-sided* it cannot shrink an absolute row sum, so the honest conclusion is a
+        replacement hypothesis, proved sufficient: a Schur constant `κ` for the prime-ratio
+        correlations gives
+
+            2 Σ_n c_n A(t_n) ≤ ε‖F|_{x<0}‖² + ε⁻¹ κ A_v(0) Σ_n c_n² ,
+
+        an `ℓ²` bound.  A power saving over the `ℓ¹` cost is therefore *equivalent* to a bounded
+        Schur constant for the prime-ratio correlations, and no further property of the test can
+        supply one — the test side of the problem is closed.
+      * **`log_sub_log_eq_iff`**, **`autoCorrelation_rightPart_ratio_eq`** — **the Gram is
+        multiplicatively Toeplitz.**  Two pairs have the same lag difference exactly when they
+        have the same ratio (`log a − log b = log c − log d ↔ ad = cb`), so the bipartite Gram is
+        a function of the *ratio* alone.  Its entries are indexed by rationals and its
+        multiplicities by the divisor structure of the window — which is precisely the incidence
+        structure AIP's ratio pairs describe, now realised inside the bilinear form that carries
+        the rate.
+      * **`ratio_param`**, **`card_ratioFirsts_le`** — **the multiplicity of a ratio.**  The
+        pairs of a window realising a reduced ratio `a/b` are exactly the multiples `(ka, kb)`,
+        so a ratio of height `a` occurs at most `Y/a` times below `Y`.  With #37 this organises
+        the Gram completely: its entries are indexed by rationals, their sizes are given by the
+        half-test's correlation at `log(a/b)`, and their multiplicities fall off like the
+        reciprocal of the height — the Gram's mass concentrates on ratios of small height, which
+        is the divisor structure of the window acting directly on the bilinear form that carries
+        the rate.
+      * `le_sqrt_mul_of_two_mul_le`, **`sum_lag_le_sqrt`** — **the optimised `ℓ²` bound.**
+        Optimising the free parameter of the bipartite split turns the two-term estimate into a
+        single geometric mean:
+
+            Σ_n c_n A(t_n) ≤ √( ‖F|_{x<0}‖² · R · Σ_n c_n² ) .
+
+        The prime side beyond the aperture is at most the geometric mean of the left half's mass
+        and the Schur constant times the coefficient energy — the final form of the bipartite
+        route, with the atoms entering only in `ℓ²`.
+      * **`autoCorrelation_dilate`**, `sum_lag_dilate`, `lam_mul_log_eq_log_rpow` — **dilating
+        the test is a change of source.**  `A(F(λ·))(t) = λ⁻¹A(F)(λt)`, so the dilated test reads
+        the original at the lags `λ log n = log n^λ`: it is the Beurling system of `λ`-th powers,
+        whose zeta has its pole at `1/λ`.  A dilation-invariant positivity statement would
+        therefore be a statement about a whole family of pole positions, not about `ζ`.
+      * **`sum_gram_eq_integral_sq`**, `sum_gram_nonneg`, `sum_gram_split`,
+        **`sum_gram_offDiag_ge`** — **the Gram form is a square.**  The full lag Gram form of any
+        family of atoms is `∫(Σ cₙF(·+tₙ))²`, hence nonnegative with no arithmetic input: all the
+        content of a positivity statement lies in the comparison with the polar side.  Splitting
+        off the diagonal gives the sharp lower bound `−A(0)Σcₙ²` for the off-diagonal sum, the
+        matching counterpart of the ladder and Schur upper bounds.
+      * **`two_mul_displacement_eq`**, **`displacement_add_le`**, `displacement_two_mul_le`,
+        `autoCorrelation_two_mul_ge`, `autoCorrelation_le_seven_eighths` — **the displacement
+        energy is the square of a metric.**  `D(t) = A(0) − A(t)` is half the squared `L²`
+        distance to the translate, so `D(s+t) ≤ 2D(s)+2D(t)` and `D(2t) ≤ 4D(t)`.  Read
+        backwards, a gap at a large lag forces a gap at every smaller dyadic lag: the half law
+        past the aperture already yields `A ≤ 7A(0)/8` at *half* the aperture, where no overlap
+        argument applies.
+      * **`displacement_two_pow_le`**, **`autoCorrelation_le_of_two_pow`**, `exists_gap_of_pos` —
+        **a quantitative gap at every positive lag.**  `D(2ʲt) ≤ 4ʲD(t)` is exact square scaling
+        along dyadic multiples; against the half law it gives
+        `A(u) ≤ A(0)(1 − 1/(2·4ʲ))` whenever `u` reaches past the aperture in `j` doublings, and
+        hence a strict gap at every `u > 0`.  This is the first quantitative control below the
+        aperture, where the one-sided ladder is vacuous.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route

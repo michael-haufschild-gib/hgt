@@ -1,5 +1,30 @@
 import GaloisForLFunctions.HTGeometry.NumberFieldArchimedeanJacobiActionReduction
 
+/-!
+# Siegel-set reduction of positive archimedean forms over a number field
+
+Combines determinant-one Dirichlet-unit balancing of Jacobi weights with integral size reduction of
+the unipotent Jacobi coordinates. Every positive archimedean form over `K` in dimension `m + 1` is
+moved by a product-one unit diagonal and then by an element of `SL_{m+1}(𝓞 K)` to a form whose
+Jacobi data has bounded unipotent part and weights that are, up to a factor `exp(± 2(m+1)R)`,
+determined by the weighted place mean and the centered place profile average of the original log
+weights. This is a reduction-theory (Siegel set) statement with constants depending only on `K`.
+
+## Main results
+
+- `numberFieldArchimedeanJacobiWeight_transposeConj`: acting by `Nᵀ` as in the size reduction
+  leaves all Jacobi weights unchanged.
+- `exists_numberFieldArchimedeanSiegelReductionRadius`: there are `R > 0` and `C ≥ 0` depending
+  only on `K` such that every positive archimedean form `A` in dimension `m + 1` has Jacobi data `J`,
+  units `u` with `∏ uᵢ = 1`, `g₂ ∈ SL_{m+1}(𝓞 K)` and Jacobi data `J₂` for `g₂ • (diag u • A)` with
+  all strictly upper unipotent entries at most `C` and each weight `J₂(i, w)` within a factor
+  `exp(± 2(m+1)R)` of `exp(mean_v log J(i, v)) · exp(centered profile average at w)`.
+
+## Hypotheses
+
+The main theorem is unconditional; all Jacobi data, units and integral matrices are constructed.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix NumberField
@@ -11,6 +36,7 @@ variable {K : Type*} [Field K] [NumberField K]
 variable {n : ℕ}
 
 omit [NumberField K] in
+/-- The transpose-conjugated Jacobi data has the same weights at every coordinate and place. -/
 theorem numberFieldArchimedeanJacobiWeight_transposeConj
     (A : numberFieldArchimedeanPositiveForms K n)
     (J : NumberFieldArchimedeanJacobiData A)
@@ -25,6 +51,9 @@ theorem numberFieldArchimedeanJacobiWeight_transposeConj
     numberFieldArchimedeanJacobiWeight]
   split_ifs <;> rfl
 
+/-- Siegel-set reduction over `K`: field-only constants `R > 0`, `C ≥ 0` such that each positive
+archimedean form, after a product-one unit diagonal and an `SL_{m+1}(𝓞 K)` element, has Jacobi
+data with unipotent entries at most `C` and weights balanced to within `exp(± 2(m+1)R)`. -/
 theorem exists_numberFieldArchimedeanSiegelReductionRadius
     (K : Type*) [Field K] [NumberField K] :
     ∃ R C : ℝ, 0 < R ∧ 0 ≤ C ∧ ∀ (m : ℕ)

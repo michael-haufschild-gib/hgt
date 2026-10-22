@@ -3,6 +3,30 @@ import GaloisForLFunctions.HTGeometry.GammaVerticalRatioBound
 import GaloisForLFunctions.HTGeometry.GammaCriticalLineModulus
 import GaloisForLFunctions.HTGeometry.HardyStieltjesDeterminacy
 
+/-!
+# The archimedean Gamma measure is determined by its moments
+
+The semilocal archimedean Gamma measure has density `(2π)^(-3/2) |Γ(1/4 + i s/2)|²` on `ℝ`. This
+module bounds that density by `C · e^(-(π/2)|s|)` with an explicit constant built from
+`Γ(1/4)/Γ(1/2)`, deduces that `e^((π/4)|s|)` and every power `s^n` are integrable against it,
+and that it is a probability measure. A Hamburger-type determinacy argument with a bilateral
+exponential window then shows that it is the only probability measure on `ℝ` with the same
+moment sequence.
+
+## Main results
+
+- `semilocalArchimedeanGammaDensity_le_exponentialMajorant`: the density is at most
+  `ccmMetaplecticGammaExponentialMajorantConstant · e^(-(π/2)|s|)` for every real `s`.
+- `integrable_exp_pi_div_four_abs_semilocalArchimedeanGammaMeasure`: `e^((π/4)|s|)` is integrable.
+- `semilocalArchimedeanGammaMeasure_isProbabilityMeasure`: the measure has total mass `1`.
+- `ccmMetaplecticGammaMomentFiber_eq_singleton`: a probability measure on `ℝ` whose moments
+  all exist and equal those of the Gamma measure is the Gamma measure itself.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 noncomputable section
 
 open Complex Filter MeasureTheory ProbabilityTheory Real Set
@@ -10,6 +34,8 @@ open scoped ENNReal
 
 namespace RHTower
 
+/-- The explicit constant `(2π)^(-3/2) (Γ(1/4)/Γ(1/2))² · 2π` in the exponential majorant of the
+archimedean Gamma density. -/
 def ccmMetaplecticGammaExponentialMajorantConstant : ℝ :=
   (2 * Real.pi) ^ (-(3 : ℝ) / 2) *
     (Real.Gamma (1 / 4) / Real.Gamma (1 / 2)) ^ 2 * (2 * Real.pi)
@@ -21,6 +47,8 @@ theorem ccmMetaplecticGammaExponentialMajorantConstant_nonneg :
   have hG2 : 0 < Real.Gamma (1 / 2) := Real.Gamma_pos_of_pos (by norm_num)
   positivity
 
+/-- The archimedean Gamma density `(2π)^(-3/2) |Γ(1/4 + i s/2)|²` decays exponentially: it is at
+most `ccmMetaplecticGammaExponentialMajorantConstant · e^(-(π/2)|s|)` for all real `s`. -/
 theorem semilocalArchimedeanGammaDensity_le_exponentialMajorant (s : ℝ) :
     semilocalArchimedeanGammaDensity s ≤
       ccmMetaplecticGammaExponentialMajorantConstant *
@@ -94,6 +122,7 @@ theorem integrable_exp_neg_mul_abs_metaplectic {d : ℝ} (hd : 0 < d) :
     ring
   simpa [Ioi_union_Iic] using hpos.union hneg
 
+/-- The archimedean Gamma density remains integrable after multiplication by `e^((π/4)|s|)`. -/
 theorem integrable_exp_pi_div_four_abs_mul_semilocalArchimedeanGammaDensity :
     Integrable (fun s : ℝ =>
       Real.exp ((Real.pi / 4) * |s|) * semilocalArchimedeanGammaDensity s) := by
@@ -133,6 +162,8 @@ theorem integrable_exp_pi_div_four_abs_mul_semilocalArchimedeanGammaDensity :
             ring_nf
         _ = _ := by congr 2 <;> ring
 
+/-- The function `s ↦ e^((π/4)|s|)` is integrable against the archimedean Gamma measure, so the
+measure has a bilateral exponential moment. -/
 theorem integrable_exp_pi_div_four_abs_semilocalArchimedeanGammaMeasure :
     Integrable (fun s : ℝ => Real.exp ((Real.pi / 4) * |s|))
       semilocalArchimedeanGammaMeasure := by
@@ -146,6 +177,7 @@ theorem integrable_exp_pi_div_four_abs_semilocalArchimedeanGammaMeasure :
     semilocalArchimedeanGammaDensity s * Real.exp ((Real.pi / 4) * |s|)
   ring
 
+/-- The archimedean Gamma measure is a probability measure. -/
 noncomputable instance semilocalArchimedeanGammaMeasure_isProbabilityMeasure :
     IsProbabilityMeasure semilocalArchimedeanGammaMeasure := by
   constructor
@@ -164,17 +196,22 @@ noncomputable instance semilocalArchimedeanGammaMeasure_isProbabilityMeasure :
     integral_semilocalArchimedeanGammaDensity_eq_one]
   norm_num
 
+/-- The archimedean Gamma measure bundled as a probability measure on `ℝ`. -/
 def ccmMetaplecticGammaProbabilityMeasure : ProbabilityMeasure ℝ :=
   ⟨semilocalArchimedeanGammaMeasure, inferInstance⟩
 
+/-- The `n`-th moment `∫ s^n dμ` of the archimedean Gamma measure. -/
 def ccmMetaplecticGammaMoment (n : ℕ) : ℝ :=
   ∫ s : ℝ, s ^ n ∂semilocalArchimedeanGammaMeasure
 
+/-- The set of probability measures on `ℝ` whose moments all exist and coincide with those of the
+archimedean Gamma measure. -/
 def ccmMetaplecticGammaMomentFiber : Set (ProbabilityMeasure ℝ) :=
   {ν | ∀ n : ℕ,
     Integrable (fun s : ℝ => s ^ n) (ν : Measure ℝ) ∧
       (∫ s : ℝ, s ^ n ∂(ν : Measure ℝ)) = ccmMetaplecticGammaMoment n}
 
+/-- Every power `s^n` is integrable against the archimedean Gamma measure. -/
 theorem integrable_pow_semilocalArchimedeanGammaMeasure (n : ℕ) :
     Integrable (fun s : ℝ => s ^ n) semilocalArchimedeanGammaMeasure := by
   rw [semilocalArchimedeanGammaMeasure,
@@ -192,6 +229,8 @@ theorem ccmMetaplecticGammaProbabilityMeasure_mem_momentFiber :
   intro n
   exact ⟨integrable_pow_semilocalArchimedeanGammaMeasure n, rfl⟩
 
+/-- Moment determinacy: the only probability measure on `ℝ` with the moment sequence of the
+archimedean Gamma measure is that measure itself. -/
 theorem ccmMetaplecticGammaMomentFiber_eq_singleton :
     ccmMetaplecticGammaMomentFiber = {ccmMetaplecticGammaProbabilityMeasure} := by
   ext ν

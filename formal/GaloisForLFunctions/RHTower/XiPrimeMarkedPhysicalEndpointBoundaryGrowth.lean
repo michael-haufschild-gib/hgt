@@ -5,12 +5,39 @@ import GaloisForLFunctions.RHTower.XiWardInteriorTraceSplit
 import GaloisForLFunctions.HTGeometry.GammaProjectiveBoundary
 import GaloisForLFunctions.HTGeometry.ReflectedDigammaAnomaly
 
+/-!
+# Polynomial growth of `-ξ'/ξ` on the line `Re s = 1`
+
+On the boundary line `s = 1 + it`, `ξ = s(s - 1)/2 · Γ_ℝ(s) · ζ(s)` has no zeros, and its
+logarithmic derivative splits as the archimedean part plus `ζ'/ζ`. The archimedean part equals
+`1/s + 1/(s - 1) - (log π)/2 + ψ(s/2)/2`, which is `O(log |t|)` by the vertical digamma bound,
+while `ζ'/ζ(1 + it) = O(log⁹ |t|)` for `|t| ≥ 9`. Combining these with continuity on the compact
+range `|t| ≤ 9` gives a global polynomial bound `‖-ξ'/ξ(1 + it)‖ ≤ C (1 + |t|)^9`.
+
+## Main results
+
+- `logDeriv_xi_boundary_split`: for `t ≠ 0`, `ξ'/ξ(1 + it)` is the archimedean log-derivative
+  plus `ζ'/ζ(1 + it)`.
+- `norm_logDeriv_archFactor_boundary_le`: for `|t| ≥ 9`, the archimedean log-derivative is at
+  most `(log |t|)/2 + routeKArchBoundaryConstant`.
+- `norm_seamFluxCochain_boundary_le`: for `|t| ≥ 9`,
+  `‖-ξ'/ξ(1 + it)‖ ≤ routeKBoundaryGrowthConstant · (1 + |t|)^9`.
+- `exists_norm_seamFluxCochain_boundary_global_le`: some `C ≥ 0` gives
+  `‖-ξ'/ξ(1 + it)‖ ≤ C (1 + |t|)^9` for all real `t`.
+
+## Hypotheses
+
+All results are unconditional; the only side conditions are `t ≠ 0` or `9 ≤ |t|` on the height.
+-/
+
 open Complex Filter Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `t ≠ 0`, the logarithmic derivative of `ξ` at `1 + it` is the archimedean
+log-derivative of `s(s - 1)/2 · Γ_ℝ(s)` plus `ζ'/ζ(1 + it)`. -/
 theorem logDeriv_xi_boundary_split {t : ℝ} (ht : t ≠ 0) :
     logDeriv xi ((1 : ℂ) + (t : ℂ) * I) =
       logDeriv archFactor ((1 : ℂ) + (t : ℂ) * I) +
@@ -50,6 +77,7 @@ theorem logDeriv_xi_boundary_split {t : ℝ} (ht : t ≠ 0) :
   rw [logDeriv_apply]
   rfl
 
+/-- For `|t| ≥ 9`, `‖ψ((1 + it)/2)‖ ≤ log |t| + digammaVerticalLogConstant`. -/
 theorem norm_digamma_one_add_I_div_two_le {t : ℝ} (ht : 9 ≤ |t|) :
     ‖Complex.digamma (((1 : ℂ) + (t : ℂ) * I) / 2)‖ ≤
       Real.log |t| + GaloisForLFunctions.digammaVerticalLogConstant := by
@@ -83,10 +111,13 @@ theorem norm_digamma_one_add_I_div_two_le {t : ℝ} (ht : 9 ≤ |t|) :
   rw [hnorm]
   linarith
 
+/-- Additive constant in the boundary bound for the archimedean log-derivative. -/
 def routeKArchBoundaryConstant : ℝ :=
   2 + |Real.log Real.pi| / 2 +
     GaloisForLFunctions.digammaVerticalLogConstant / 2
 
+/-- For `|t| ≥ 9`, the archimedean log-derivative at `1 + it` is bounded by
+`(log |t|)/2 + routeKArchBoundaryConstant`. -/
 theorem norm_logDeriv_archFactor_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
     ‖logDeriv archFactor ((1 : ℂ) + (t : ℂ) * I)‖ ≤
       Real.log |t| / 2 + routeKArchBoundaryConstant := by
@@ -152,9 +183,12 @@ theorem norm_logDeriv_archFactor_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
       rw [routeKArchBoundaryConstant]
       ring
 
+/-- Constant in the large-height polynomial bound for `-ξ'/ξ` on `Re s = 1`. -/
 def routeKBoundaryGrowthConstant : ℝ :=
   1 / 2 + routeKArchBoundaryConstant + 2240 / zetaLowerA
 
+/-- For `|t| ≥ 9`, `‖-ξ'/ξ(1 + it)‖ ≤ routeKBoundaryGrowthConstant · (1 + |t|)^9`, from the
+archimedean bound and `‖ζ'/ζ(1 + it)‖ ≤ (2240 / A) log⁹ |t|`. -/
 theorem norm_seamFluxCochain_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
     ‖seamFluxCochain ((1 : ℂ) + (t : ℂ) * I)‖ ≤
       routeKBoundaryGrowthConstant * (1 + |t|) ^ (9 : ℕ) := by
@@ -208,6 +242,8 @@ theorem norm_seamFluxCochain_boundary_le {t : ℝ} (ht : 9 ≤ |t|) :
       rw [routeKBoundaryGrowthConstant]
       ring
 
+/-- Global polynomial growth on the boundary line: there is `C ≥ 0` with
+`‖-ξ'/ξ(1 + it)‖ ≤ C (1 + |t|)^9` for every real `t`. -/
 theorem exists_norm_seamFluxCochain_boundary_global_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
       ‖seamFluxCochain ((1 : ℂ) + (t : ℂ) * I)‖ ≤

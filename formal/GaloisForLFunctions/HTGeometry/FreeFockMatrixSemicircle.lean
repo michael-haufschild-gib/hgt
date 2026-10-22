@@ -3,6 +3,43 @@ import GaloisForLFunctions.HTGeometry.HamburgerExistence
 import Mathlib.LinearAlgebra.Finsupp.Defs
 import Mathlib.RingTheory.PowerSeries.Substitution
 
+/-!
+# Free Fock model of the matrix-valued semicircle and positivity of its moments
+
+For a finite family of complex matrices `A_k` (`k ∈ K`) acting on `ℂ^I`, this module builds the
+operator `S = Σ_k A_k ⊗ (ℓ_k + ℓ_k^*)` on the finitely supported vectors of `ℂ^I ⊗` (full Fock space
+over `ℂ^K`), with basis `(i, w)` for `i ∈ I` and words `w` in `K`. When every `A_k` is Hermitian,
+`S` is symmetric, and its vacuum moments `⟨e_(i, ∅), S^n e_(j, ∅)⟩` are computed exactly: they
+vanish for odd `n` and equal the `n/2`-th coefficient of the formal solution of the matrix Dyson
+equation `H = 1 + u · η(H) H`, `η(H) = Σ_k A_k H A_k^*`, for even `n`. The normalized trace
+moments therefore form a moment sequence whose Hankel form is a sum of squared Fock norms, and
+it is positive definite when the `A_k` have no common kernel vector.
+
+## Main results
+
+- `freeFockAction_symmetric`: for Hermitian `A_k`, `⟨S x, y⟩ = ⟨x, S y⟩`.
+- `matrixDysonResolventSeries_eq`: the even substitution `G(X) = H(X^2)` of the formal Dyson
+  branch satisfies `G = 1 + X^2 η(G) G`.
+- `coeff_freeFockFormalResolvent_eq_freeFockPower`: the `n`-th coefficient of the formal Fock
+  resolvent is `S^n e_(j, ∅)`.
+- `freeFockPower_vacuumCoefficient`: the vacuum entry of `S^n e_(j, ∅)` at `(i, ∅)` is the
+  `(i, j)` entry of the `n/2`-th Dyson coefficient if `n` is even, and `0` otherwise.
+- `freeFockInner_power_power`: `⟨S^m e_(i, ∅), S^n e_(j, ∅)⟩` is the vacuum entry of
+  `S^(m+n) e_(j, ∅)` at `(i, ∅)`.
+- `momentInner_freeFockTraceMoment_eq_energy`: the Hankel form of the normalized trace moments at
+  a real polynomial `p` equals the averaged squared Fock norm of `p(S) e_(j, ∅)`.
+- `freeFockPolynomialVector_ne_zero`: without a common kernel vector, `p(S) e_(j, ∅) ≠ 0` for every
+  nonzero real polynomial `p`.
+- `freeFockTraceMoment_positiveMomentForm`: for Hermitian `A_k` without a common kernel vector,
+  the normalized trace moments form a positive definite moment sequence.
+
+## Hypotheses
+
+No analytic inputs. The results about `S` assume `hA`: every `A_k` is Hermitian. The positivity
+results additionally assume `hker : HasTrivialCommonKernel A`, i.e. the only vector `x` with
+`A_k x = 0` for all `k` is `x = 0`. `I` must be nonempty where a normalized trace is taken.
+-/
+
 open scoped BigOperators Matrix
 open Matrix
 open GaloisForLFunctions.HTGeometry
@@ -13,12 +50,17 @@ noncomputable section
 
 variable {I K : Type*} [Fintype I] [DecidableEq I] [Fintype K] [DecidableEq K]
 
+/-- Finitely supported vectors in `ℂ^I ⊗` (full Fock space over `ℂ^K`), with basis vectors
+`(i, w)` for `i ∈ I` and words `w` in the letters `K`. -/
 abbrev FreeFockVector (I K : Type*) := (I × List K) →₀ ℂ
 
+/-- Matrix-weighted creation on a basis vector: `(j, w) ↦ Σ_k Σ_i A_k(i, j) (i, k :: w)`. -/
 def freeFockCreationBasisAction (A : K → Matrix I I ℂ) (jw : I × List K) :
     FreeFockVector I K :=
   ∑ k : K, ∑ i : I, Finsupp.single (i, k :: jw.2) (A k i jw.1)
 
+/-- Matrix-weighted annihilation on a basis vector: `(j, k :: w) ↦ Σ_i A_k(i, j) (i, w)`, and the
+empty word is sent to `0`. -/
 def freeFockAnnihilationBasisAction (A : K → Matrix I I ℂ) (jw : I × List K) :
     FreeFockVector I K :=
   match jw.2 with
@@ -29,6 +71,8 @@ def freeFockBasisAction (A : K → Matrix I I ℂ) (jw : I × List K) :
     FreeFockVector I K :=
   freeFockCreationBasisAction A jw + freeFockAnnihilationBasisAction A jw
 
+/-- The free Fock operator `S = Σ_k A_k ⊗ (ℓ_k + ℓ_k^*)`, creation plus annihilation, extended
+linearly to finitely supported vectors. -/
 def freeFockAction (A : K → Matrix I I ℂ) :
     FreeFockVector I K →ₗ[ℂ] FreeFockVector I K :=
   Finsupp.linearCombination ℂ (freeFockBasisAction A)
@@ -39,6 +83,7 @@ omit [DecidableEq I] [DecidableEq K] in
     freeFockAction A (Finsupp.single jw c) = c • freeFockBasisAction A jw := by
   simp [freeFockAction]
 
+/-- The standard Hermitian inner product `⟨x, y⟩ = Σ_a conj(x a) · y a` on Fock vectors. -/
 def freeFockInner (x y : FreeFockVector I K) : ℂ :=
   x.sum fun a c => star c * y a
 
@@ -98,6 +143,8 @@ theorem freeFockAnnihilationBasisAction_apply_cons
     intro h
     exact (hwu h).elim
 
+/-- For Hermitian `A_k`, the matrix of `S` in the Fock basis is Hermitian: creation and
+annihilation are adjoint to each other entrywise. -/
 theorem star_freeFockBasisAction_apply
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (a b : I × List K) :
@@ -227,6 +274,8 @@ theorem freeFockInner_basis_action
         Finsupp.add_apply, ih, freeFockInner_basis_single A hA a b c,
         freeFockAction_single, Finsupp.smul_apply, smul_eq_mul]
 
+/-- Assuming every `A_k` is Hermitian, the free Fock operator is symmetric:
+`⟨S x, y⟩ = ⟨x, S y⟩`. -/
 theorem freeFockAction_symmetric
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (x y : FreeFockVector I K) :
@@ -239,6 +288,7 @@ theorem freeFockAction_symmetric
         freeFockAction_single, freeFockInner_smul_left, freeFockInner_single_left,
         freeFockInner_basis_action A hA]
 
+/-- The substitution `f(X) ↦ f(X^2)` as a `ℂ`-algebra map on power series. -/
 noncomputable def evenPowerSeriesSubstHom : PowerSeries ℂ →ₐ[ℂ] PowerSeries ℂ :=
   PowerSeries.substAlgHom (PowerSeries.HasSubst.X_pow (by omega : 2 ≠ 0))
 
@@ -260,11 +310,15 @@ theorem evenPowerSeriesSubstHom_C (c : ℂ) :
   rw [PowerSeries.C_eq_algebraMap]
   exact AlgHom.commutes evenPowerSeriesSubstHom c
 
+/-- The resolvent-variable Dyson series `G(X) = H(X^2)`, where `H` is the formal solution of
+`H = 1 + u · η(H) H`. -/
 def matrixDysonResolventSeries (A : K → Matrix I I ℂ) :
     Matrix I I (PowerSeries ℂ) :=
   fun i j => evenPowerSeriesSubstHom (matrixDysonFormalSeries A i j)
 
 omit [DecidableEq K] in
+/-- The `n`-th coefficient of `G(X) = H(X^2)` is the `n/2`-th Dyson coefficient for even `n` and
+`0` for odd `n`. -/
 @[simp]
 theorem matrixDysonResolventSeries_coeff (A : K → Matrix I I ℂ) (n : ℕ) (i j : I) :
     PowerSeries.coeff n (matrixDysonResolventSeries A i j) =
@@ -296,6 +350,8 @@ theorem evenPowerSeriesSubstHom_covariance_mul
     evenPowerSeriesSubstHom_covariance]
 
 omit [DecidableEq K] in
+/-- The even Dyson series satisfies the resolvent form of the matrix Dyson equation,
+`G = 1 + X^2 · η(G) G` with `η(G) = Σ_k A_k G A_k^*`. -/
 theorem matrixDysonResolventSeries_eq (A : K → Matrix I I ℂ) :
     matrixDysonResolventSeries A = 1 + (PowerSeries.X ^ (2 : ℕ) : PowerSeries ℂ) •
       (matrixSemicircleCovariancePowerSeries A (matrixDysonResolventSeries A) *
@@ -320,6 +376,8 @@ theorem matrixDysonResolventSeries_eq (A : K → Matrix I I ℂ) :
     simp
   · simp [hij']
 
+/-- Word-indexed resolvent matrices: `G` for the empty word and `G A_k G_w` for the word `k :: w`,
+with `G` the even Dyson series. -/
 def freeFockResolventWordMatrix (A : K → Matrix I I ℂ) :
     List K → Matrix I I (PowerSeries ℂ)
   | [] => matrixDysonResolventSeries A
@@ -339,6 +397,8 @@ theorem freeFockResolventWordMatrix_cons (A : K → Matrix I I ℂ) (k : K) (w :
         freeFockResolventWordMatrix A w := rfl
 
 omit [DecidableEq K] in
+/-- For Hermitian `A_k`, the empty-word resolvent matrix satisfies
+`G_∅ = 1 + X^2 Σ_k A_k G_[k]`. -/
 theorem freeFockResolventWordMatrix_nil_eq
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) :
     freeFockResolventWordMatrix A [] = 1 +
@@ -354,6 +414,8 @@ theorem freeFockResolventWordMatrix_nil_eq
   simp_rw [Matrix.mul_assoc]
 
 omit [DecidableEq K] in
+/-- For Hermitian `A_k`, the word resolvent matrices satisfy
+`G_(k :: w) = A_k G_w + X^2 Σ_l A_l G_(l :: k :: w)`. -/
 theorem freeFockResolventWordMatrix_cons_eq
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (k : K) (w : List K) :
     freeFockResolventWordMatrix A (k :: w) =
@@ -373,6 +435,7 @@ theorem freeFockResolventWordMatrix_cons_eq
   rw [Finset.sum_mul]
   simp_rw [Matrix.mul_assoc]
 
+/-- The formal Fock resolvent column at `j`: the coordinate `(i, w)` is `X^|w| · G_w(i, j)`. -/
 def freeFockFormalResolvent (A : K → Matrix I I ℂ) (j : I)
     (iw : I × List K) : PowerSeries ℂ :=
   PowerSeries.X ^ iw.2.length * freeFockResolventWordMatrix A iw.2 iw.1 j
@@ -380,6 +443,8 @@ def freeFockFormalResolvent (A : K → Matrix I I ℂ) (j : I)
 def freeFockFormalVacuum (j : I) (iw : I × List K) : PowerSeries ℂ :=
   if iw.2 = [] then PowerSeries.C (if iw.1 = j then 1 else 0) else 0
 
+/-- The free Fock operator acting coordinatewise on power-series-valued Fock vectors (written in the
+form valid for Hermitian `A_k`). -/
 def freeFockFormalAction (A : K → Matrix I I ℂ)
     (R : I × List K → PowerSeries ℂ) (iw : I × List K) : PowerSeries ℂ :=
   match iw.2 with
@@ -389,6 +454,8 @@ def freeFockFormalAction (A : K → Matrix I I ℂ)
         ∑ l : K, ∑ p : I, PowerSeries.C (A l iw.1 p) * R (p, l :: k :: w)
 
 omit [DecidableEq K] in
+/-- For Hermitian `A_k`, the formal Fock resolvent solves the fixed-point equation
+`R = e_(j, ∅) + X · S R`, i.e. it is the formal series `Σ_n X^n S^n e_(j, ∅)`. -/
 theorem freeFockFormalResolvent_eq
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (j : I)
     (iw : I × List K) :
@@ -464,6 +531,7 @@ theorem freeFockInner_finset_sum_right
   | @insert a s ha ih =>
       simp only [Finset.sum_insert ha, freeFockInner_add_right, ih]
 
+/-- For Hermitian `A_k`, the empty-word coordinate of `S x` is `Σ_k Σ_p A_k(i, p) x(p, [k])`. -/
 theorem freeFockAction_apply_nil
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (x : FreeFockVector I K) (i : I) :
@@ -482,6 +550,8 @@ theorem freeFockAction_apply_nil
   change star (A k p i) * x (p, [k]) = A k i p * x (p, [k])
   rw [hentry]
 
+/-- For Hermitian `A_k`, the coordinate of `S x` at `(i, k :: w)` is
+`Σ_p A_k(i, p) x(p, w) + Σ_l Σ_p A_l(i, p) x(p, l :: k :: w)`. -/
 theorem freeFockAction_apply_cons
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (x : FreeFockVector I K) (i : I) (k : K) (w : List K) :
@@ -511,6 +581,7 @@ theorem freeFockAction_apply_cons
     change star (A l p i) * x (p, l :: k :: w) = A l i p * x (p, l :: k :: w)
     rw [hentry]
 
+/-- The vacuum vector `e_(j, ∅)` with matrix index `j` and empty word. -/
 def freeFockVacuum (j : I) : FreeFockVector I K :=
   Finsupp.single (j, []) 1
 
@@ -524,6 +595,7 @@ theorem freeFockVacuum_apply (j i : I) (w : List K) :
     by_cases hw : w = [] <;> simp [freeFockVacuum, hw]
   · simp [freeFockVacuum, hi]
 
+/-- The Krylov vectors `S^n e_(j, ∅)`. -/
 def freeFockPower (A : K → Matrix I I ℂ) (j : I) : ℕ → FreeFockVector I K
   | 0 => freeFockVacuum j
   | n + 1 => freeFockAction A (freeFockPower A j n)
@@ -572,6 +644,8 @@ theorem coeff_succ_freeFockFormalVacuum (j : I) (iw : I × List K) (n : ℕ) :
     by_cases hij : i = j <;> simp [freeFockFormalVacuum, hij]
   · simp [freeFockFormalVacuum, hw]
 
+/-- For Hermitian `A_k`, the `n`-th coefficient of the formal Fock resolvent is the Krylov vector
+`S^n e_(j, ∅)`, coordinatewise. -/
 theorem coeff_freeFockFormalResolvent_eq_freeFockPower
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (j : I) (n : ℕ)
     (iw : I × List K) :
@@ -596,6 +670,9 @@ theorem coeff_freeFockFormalResolvent_eq_freeFockPower
             (freeFockFormalResolvent A j) (freeFockPower A j n) n ih iw
         _ = freeFockPower A j (n + 1) iw := rfl
 
+/-- Vacuum moments of the free Fock operator, for Hermitian `A_k`: the `(i, ∅)` coordinate of
+`S^n e_(j, ∅)` is the `(i, j)` entry of the `n/2`-th matrix Dyson coefficient if `n` is even, and
+`0` otherwise. -/
 theorem freeFockPower_vacuumCoefficient
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (n : ℕ) (i j : I) :
@@ -620,6 +697,8 @@ theorem freeFockPower_vacuumCoefficient_odd
   rw [freeFockPower_vacuumCoefficient A hA]
   simp
 
+/-- For Hermitian `A_k`, `⟨S^m e_(i, ∅), S^n e_(j, ∅)⟩` equals the `(i, ∅)` coordinate of
+`S^(m+n) e_(j, ∅)`, by symmetry of `S`. -/
 theorem freeFockInner_power_power
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (m n : ℕ) (i j : I) :
@@ -634,6 +713,7 @@ theorem freeFockInner_power_power
       congr 2
       omega
 
+/-- The vector `p(S) e_(j, ∅)` for a real polynomial `p`. -/
 def freeFockPolynomialVector (A : K → Matrix I I ℂ)
     (p : Polynomial ℝ) (j : I) : FreeFockVector I K :=
   ∑ n ∈ p.support, ((p.coeff n : ℝ) : ℂ) • freeFockPower A j n
@@ -674,6 +754,7 @@ theorem re_freeFockInner_self_nonneg (x : FreeFockVector I K) :
   exact Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
 
 omit [Fintype I] [DecidableEq I] [Fintype K] [DecidableEq K] in
+/-- The Fock inner product is positive definite: `Re ⟨x, x⟩ > 0` for `x ≠ 0`. -/
 theorem re_freeFockInner_self_pos (x : FreeFockVector I K) (hx : x ≠ 0) :
     0 < (freeFockInner x x).re := by
   rw [re_freeFockInner_self_eq_sum_normSq]
@@ -683,6 +764,8 @@ theorem re_freeFockInner_self_pos (x : FreeFockVector I K) (hx : x ≠ 0) :
   · refine ⟨a, Finsupp.mem_support_iff.mpr ha, ?_⟩
     exact Complex.normSq_pos.mpr ha
 
+/-- Normalized trace moments `m_n = |I|⁻¹ Σ_i Re ⟨e_(i, ∅), S^n e_(i, ∅)⟩` of the free Fock
+operator. -/
 def freeFockTraceMoment [Nonempty I]
     (A : K → Matrix I I ℂ) (n : ℕ) : ℝ :=
   (Fintype.card I : ℝ)⁻¹ *
@@ -698,6 +781,7 @@ theorem momentInner_X_pow_X_pow (s : ℕ → ℝ) (m n : ℕ) :
     HTGeometry.momentInner s (Polynomial.X ^ m) (Polynomial.X ^ n) = s (m + n) := by
   rw [HTGeometry.momentInner, ← pow_add, HTGeometry.momentFunctional_X_pow]
 
+/-- The Hankel moment form of `s` at `p` expands as `Σ_m Σ_n p_m p_n s(m + n)`. -/
 theorem momentInner_eq_double_support_sum (s : ℕ → ℝ) (p : Polynomial ℝ) :
     HTGeometry.momentInner s p p =
       ∑ m ∈ p.support, ∑ n ∈ p.support,
@@ -716,12 +800,15 @@ theorem momentInner_eq_double_support_sum (s : ℕ → ℝ) (p : Polynomial ℝ)
   rw [HTGeometry.momentInner_smul_right, momentInner_X_pow_X_pow]
   ring
 
+/-- Averaged squared Fock norm `|I|⁻¹ Σ_j ‖p(S) e_(j, ∅)‖^2` of a real polynomial `p`. -/
 def freeFockPolynomialEnergy [Nonempty I]
     (A : K → Matrix I I ℂ) (p : Polynomial ℝ) : ℝ :=
   (Fintype.card I : ℝ)⁻¹ *
     ∑ j : I, (freeFockInner (freeFockPolynomialVector A p j)
       (freeFockPolynomialVector A p j)).re
 
+/-- For Hermitian `A_k`, the Hankel form of the normalized trace moments at `p` equals the averaged
+squared Fock norm of `p(S) e_(j, ∅)`. -/
 theorem momentInner_freeFockTraceMoment_eq_energy [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (p : Polynomial ℝ) :
@@ -755,6 +842,7 @@ theorem momentInner_freeFockTraceMoment_eq_energy [Nonempty I]
   intro n hn
   ring
 
+/-- For Hermitian `A_k`, `S^n e_(j, ∅)` has no component on words longer than `n`. -/
 theorem freeFockPower_apply_of_lt_length
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (j i : I) (w : List K) (n : ℕ) (h : n < w.length) :
@@ -778,10 +866,13 @@ theorem freeFockPower_apply_of_lt_length
           simp_rw [ih _ _ htail, ih _ _ (hdeep _), mul_zero, Finset.sum_const_zero,
             zero_add]
 
+/-- The ordered matrix product `A_(k_1) ⋯ A_(k_r)` along a word `k_1 ⋯ k_r`. -/
 def freeFockCreationProduct (A : K → Matrix I I ℂ) : List K → Matrix I I ℂ
   | [] => 1
   | k :: w => A k * freeFockCreationProduct A w
 
+/-- For Hermitian `A_k`, the top-length component of `S^|w| e_(j, ∅)` at `(i, w)` is the matrix
+product entry `(A_(k_1) ⋯ A_(k_r))(i, j)`: only pure creation reaches length `|w|`. -/
 theorem freeFockPower_apply_at_length
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (j i : I) (w : List K) :
@@ -802,10 +893,14 @@ theorem freeFockPower_apply_at_length
       simp_rw [hdeep, mul_zero, Finset.sum_const_zero, add_zero]
       simp [freeFockCreationProduct, Matrix.mul_apply]
 
+/-- The matrices `A_k` have no common nonzero kernel vector: `A_k x = 0` for all `k` forces
+`x = 0`. -/
 def HasTrivialCommonKernel (A : K → Matrix I I ℂ) : Prop :=
   ∀ x : I → ℂ, (∀ k i, ∑ p : I, A k i p * x p = 0) → x = 0
 
 omit [Fintype K] [DecidableEq K] in
+/-- Assuming the `A_k` have no common kernel vector, for every column `j` and length `n` some word
+`w` of length `n` has a nonzero entry `(A_(k_1) ⋯ A_(k_n))(i, j)`. -/
 theorem exists_freeFockCreationProduct_entry_ne_zero [Nonempty I]
     (A : K → Matrix I I ℂ) (hker : HasTrivialCommonKernel A)
     (j : I) (n : ℕ) :
@@ -828,6 +923,8 @@ theorem exists_freeFockCreationProduct_entry_ne_zero [Nonempty I]
       refine ⟨k :: w, by simp [hw], i', ?_⟩
       simpa [freeFockCreationProduct, Matrix.mul_apply, x] using hki
 
+/-- For Hermitian `A_k` and nonzero `p`, the component of `p(S) e_(j, ∅)` on a word of length
+`deg p` is the leading coefficient of `p` times the corresponding matrix product entry. -/
 theorem freeFockPolynomialVector_apply_top
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (p : Polynomial ℝ) (hp : p ≠ 0) (j i : I) (w : List K)
@@ -846,6 +943,8 @@ theorem freeFockPolynomialVector_apply_top
   · intro hnot
     exact (hnot (Polynomial.natDegree_mem_support_of_nonzero hp)).elim
 
+/-- Assuming Hermitian `A_k` with no common kernel vector, `p(S) e_(j, ∅) ≠ 0` for every nonzero
+real polynomial `p`. -/
 theorem freeFockPolynomialVector_ne_zero [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A) (p : Polynomial ℝ) (hp : p ≠ 0) (j : I) :
@@ -857,6 +956,9 @@ theorem freeFockPolynomialVector_ne_zero [Nonempty I]
   rw [freeFockPolynomialVector_apply_top A hA p hp j i w hw]
   exact mul_ne_zero (by exact_mod_cast Polynomial.leadingCoeff_ne_zero.mpr hp) hi
 
+/-- Assuming every `A_k` is Hermitian (`hA`) and the family has no common kernel vector (`hker`),
+the normalized trace moments of the free Fock operator form a positive definite moment sequence:
+their Hankel form is positive on every nonzero real polynomial. -/
 theorem freeFockTraceMoment_positiveMomentForm [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (hker : HasTrivialCommonKernel A) :

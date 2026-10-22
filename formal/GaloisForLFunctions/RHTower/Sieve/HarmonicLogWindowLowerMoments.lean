@@ -1,5 +1,33 @@
 import GaloisForLFunctions.RHTower.Sieve.HarmonicLogWindowMoments
 
+/-!
+# Low harmonic logarithmic window moments
+
+The harmonic logarithmic moments `H_m(A, B) = ∑_{A < j ≤ B} (log j)^m / j` are compared with their
+integrals. For an antitone weight `(log t)^m / t` the sum differs from the integral over
+`[A+1, B+1]` by at most the drop of the weight across the window; the weights for `m = 0, 1` are
+antitone on `[8, ∞)`. Together with explicit bounds on the initial segment `j ≤ 8`, this gives
+uniform estimates `|H_0(A, B) - (log(B+1) - log(A+1))| ≤ 40` and
+`|H_1(A, B) - ((log(B+1))²/2 - (log(A+1))²/2)| ≤ 200` for all `A ≤ B`.
+
+## Main results
+
+- `abs_harmonicLogWindowMoment_sub_integral_le`: sum-integral comparison for an antitone weight.
+- `antitoneOn_logPowDivId_zero`, `antitoneOn_logPowDivId_one`: `1/t` and `log t / t` are antitone
+  on `[8, ∞)`.
+- `abs_harmonicLogWindowMoment_zero_sub_log_le`, `abs_harmonicLogWindowMoment_one_sub_logSquare_le`:
+  windowed comparisons for `8 ≤ A ≤ B`.
+- `abs_harmonicLogWindowMoment_zero_zero_sub_log_le`: `|H_0(0, N) - log(N+1)| ≤ 20`.
+- `abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le`: `|H_1(0, N) - (log(N+1))²/2| ≤ 100`.
+- `abs_harmonicLogWindowMoment_zero_sub_log_uniform_le`,
+  `abs_harmonicLogWindowMoment_one_sub_logSquare_uniform_le`: uniform window bounds `40` and `200`.
+
+## Hypotheses
+
+All main results are unconditional. The general sum-integral comparison takes antitonicity of the
+weight on `[A+1, ∞)` as an argument; it is proved for `m = 0, 1` on `[8, ∞)` and used only there.
+-/
+
 open Finset MeasureTheory Set
 open scoped BigOperators
 
@@ -7,6 +35,8 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Assuming the weight `(log t)^m / t` is antitone on `[A+1, ∞)`, `H_m(A, B)` differs from
+`∫_{A+1}^{B+1} (log t)^m / t dt` by at most the weight at `A+1` minus the weight at `B+1`. -/
 theorem abs_harmonicLogWindowMoment_sub_integral_le
     (m : ℕ) {A B : ℕ} (hAB : A ≤ B)
     (hanti : AntitoneOn (RHTower.logPowDivId m) (Set.Ici ((A + 1 : ℕ) : ℝ))) :
@@ -29,6 +59,7 @@ theorem abs_harmonicLogWindowMoment_sub_integral_le
   rw [← hend]
   simpa only [RHTower.logPowDivId, Nat.cast_add, Nat.cast_one] using h
 
+/-- `t ↦ 1/t` is antitone on `[8, ∞)`. -/
 theorem antitoneOn_logPowDivId_zero :
     AntitoneOn (RHTower.logPowDivId 0) (Set.Ici 8) := by
   apply antitoneOn_of_deriv_nonpos (convex_Ici (8 : ℝ))
@@ -47,6 +78,7 @@ theorem antitoneOn_logPowDivId_zero :
     norm_num
     exact div_nonpos_of_nonpos_of_nonneg (by norm_num) (sq_nonneg x)
 
+/-- `t ↦ log t / t` is antitone on `[8, ∞)`. -/
 theorem antitoneOn_logPowDivId_one :
     AntitoneOn (RHTower.logPowDivId 1) (Set.Ici 8) := by
   apply antitoneOn_of_deriv_nonpos (convex_Ici (8 : ℝ))
@@ -66,6 +98,7 @@ theorem antitoneOn_logPowDivId_one :
     norm_num
     exact div_nonpos_of_nonpos_of_nonneg (by linarith) (sq_nonneg x)
 
+/-- For `8 ≤ A ≤ B`, `|H_0(A, B) - (log(B+1) - log(A+1))| ≤ 1/(A+1) - 1/(B+1)`. -/
 theorem abs_harmonicLogWindowMoment_zero_sub_log_le
     {A B : ℕ} (hA : 8 ≤ A) (hAB : A ≤ B) :
     |harmonicLogWindowMoment 0 A B -
@@ -84,6 +117,8 @@ theorem abs_harmonicLogWindowMoment_zero_sub_log_le
   norm_num [harmonicLogMomentPrimitive] at h ⊢
   exact h
 
+/-- For `8 ≤ A ≤ B`, `H_1(A, B)` is within `log(A+1)/(A+1) - log(B+1)/(B+1)` of
+`(log(B+1))²/2 - (log(A+1))²/2`. -/
 theorem abs_harmonicLogWindowMoment_one_sub_logSquare_le
     {A B : ℕ} (hA : 8 ≤ A) (hAB : A ≤ B) :
     |harmonicLogWindowMoment 1 A B -
@@ -102,6 +137,7 @@ theorem abs_harmonicLogWindowMoment_one_sub_logSquare_le
   norm_num [harmonicLogMomentPrimitive] at h ⊢
   exact h
 
+/-- `∑_{j ≤ 8} 1/j ≤ 8`. -/
 theorem harmonicLogWindowMoment_zero_zero_eight_le :
     harmonicLogWindowMoment 0 0 8 ≤ 8 := by
   rw [harmonicLogWindowMoment]
@@ -117,6 +153,7 @@ theorem harmonicLogWindowMoment_zero_zero_eight_le :
       exact_mod_cast (Finset.mem_Ioc.mp hj).1
     _ = 8 := by norm_num
 
+/-- `∑_{j ≤ 8} log j / j ≤ 56`. -/
 theorem harmonicLogWindowMoment_one_zero_eight_le :
     harmonicLogWindowMoment 1 0 8 ≤ 56 := by
   rw [harmonicLogWindowMoment]
@@ -246,12 +283,14 @@ private theorem abs_harmonicLogWindowMoment_zero_zero_sub_log_le_of_eight_le
     _ ≤ 16 + 1 := add_le_add hheadAbs htailAbs
     _ ≤ 20 := by norm_num
 
+/-- For every `N`, `|∑_{j ≤ N} 1/j - log(N+1)| ≤ 20`. -/
 theorem abs_harmonicLogWindowMoment_zero_zero_sub_log_le (N : ℕ) :
     |harmonicLogWindowMoment 0 0 N - Real.log (N + 1 : ℕ)| ≤ 20 := by
   by_cases hN : N ≤ 8
   · exact abs_harmonicLogWindowMoment_zero_zero_sub_log_le_of_le_eight hN
   · exact abs_harmonicLogWindowMoment_zero_zero_sub_log_le_of_eight_le (by omega)
 
+/-- For all `A ≤ B`, `|∑_{A < j ≤ B} 1/j - (log(B+1) - log(A+1))| ≤ 40`. -/
 theorem abs_harmonicLogWindowMoment_zero_sub_log_uniform_le
     {A B : ℕ} (hAB : A ≤ B) :
     |harmonicLogWindowMoment 0 A B -
@@ -350,12 +389,14 @@ private theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_eight_l
     _ ≤ 88 + 1 := add_le_add hheadAbs htailAbs
     _ ≤ 100 := by norm_num
 
+/-- For every `N`, `|∑_{j ≤ N} log j / j - (log(N+1))²/2| ≤ 100`. -/
 theorem abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le (N : ℕ) :
     |harmonicLogWindowMoment 1 0 N - Real.log (N + 1 : ℕ) ^ (2 : ℕ) / 2| ≤ 100 := by
   by_cases hN : N ≤ 8
   · exact abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_le_eight hN
   · exact abs_harmonicLogWindowMoment_one_zero_sub_logSquare_le_of_eight_le (by omega)
 
+/-- For all `A ≤ B`, `|∑_{A < j ≤ B} log j / j - ((log(B+1))²/2 - (log(A+1))²/2)| ≤ 200`. -/
 theorem abs_harmonicLogWindowMoment_one_sub_logSquare_uniform_le
     {A B : ℕ} (hAB : A ≤ B) :
     |harmonicLogWindowMoment 1 A B -

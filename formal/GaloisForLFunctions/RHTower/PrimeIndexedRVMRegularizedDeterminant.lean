@@ -3,6 +3,36 @@ import GaloisForLFunctions.HTGeometry.RegularizedDeterminantEntire
 import GaloisForLFunctions.HTGeometry.CanonicalProduct
 import GaloisForLFunctions.HTGeometry.FredholmDeterminantZeta
 
+/-!
+# Regularized determinant of the prime-indexed signed Riemann–von Mangoldt kernel
+
+Let `T_n > 2πe` be the smooth Riemann–von Mangoldt quantiles, defined by
+`(T/2π) log(T/(2πe)) + 7/8 = n + 1`. The signed prime-indexed kernel is the diagonal
+Hilbert–Schmidt kernel on two copies of the primes with entries `± 1/T_{π'(p)}`, where `π'(p)`
+counts the primes below `p`. The module builds the even genus-one canonical product
+`P(z) = E_1-product over T_n at z times the same at -z`, shows it is entire with
+`P(z) = ∏_n (1 - z²/T_n²)`, and identifies it with the regularized Fredholm determinant
+`det₂(1 - zK)` of the signed kernel, first on a small disc and then as the unique entire
+regularized determinant.
+
+## Main results
+
+- `summable_routeKRVMCanonicalZero_inv_norm_sq`: `∑ 1/T_n²` converges.
+- `routeKRVMSmoothCanonicalProduct_analytic`: the even canonical product is entire.
+- `routeKRVMSmoothCanonicalProduct_eq_tprod`: `P(z) = ∏' n, (1 - z²/T_n²)`.
+- `summable_norm_routeKSignedPrimeRVMMultiplier_sq`: the signed diagonal entries are square
+  summable, so the kernel is Hilbert–Schmidt.
+- `fredholmDet_routeKSignedPrimeRVMKernel_eq_canonicalProduct`: on a disc of radius `r` with
+  `r ‖K‖_HS < 1`, `det₂(1 - zK) = P(z)`.
+- `routeKSignedPrimeRVMKernel_isRegularizedDet`: `P` is the entire regularized determinant of the
+  signed kernel.
+
+## Hypotheses
+
+All results are unconditional. The local determinant identity takes the disc condition
+`r ‖K‖_HS < 1` and `|z| < r`, which is the domain on which `det₂` is defined by its series.
+-/
+
 open scoped BigOperators InnerProductSpace Nat.Prime
 open Filter
 
@@ -10,15 +40,18 @@ namespace RHTower
 
 noncomputable section
 
+/-- The `n`-th smooth Riemann–von Mangoldt quantile `T_n`, viewed as a complex zero. -/
 def routeKRVMCanonicalZero (n : ℕ) : ℂ :=
   (routeKRVMQuantile n : ℂ)
 
+/-- Each quantile zero is nonzero, since `T_n > 2πe > 0`. -/
 theorem routeKRVMCanonicalZero_ne_zero (n : ℕ) :
     routeKRVMCanonicalZero n ≠ 0 := by
   rw [routeKRVMCanonicalZero]
   exact_mod_cast
     (routeKRVMBase_pos.trans (routeKRVMBase_lt_quantile n)).ne'
 
+/-- The reciprocal squares `1/|T_n|²` of the quantile zeros are summable. -/
 theorem summable_routeKRVMCanonicalZero_inv_norm_sq :
     Summable (fun n : ℕ => 1 / ‖routeKRVMCanonicalZero n‖ ^ (2 : ℕ)) := by
   exact summable_routeKRVMQuantile_reciprocal_sq.congr fun n => by
@@ -27,19 +60,23 @@ theorem summable_routeKRVMCanonicalZero_inv_norm_sq :
     field_simp [(routeKRVMBase_pos.trans
       (routeKRVMBase_lt_quantile n)).ne']
 
+/-- Genus-one canonical product `∏ (1 - z/T_n) e^{z/T_n}` over the quantile zeros. -/
 def routeKRVMSmoothPositiveCanonicalProduct (z : ℂ) : ℂ :=
   canonicalProductE1 routeKRVMCanonicalZero z
 
+/-- The genus-one canonical product over the quantiles is entire. -/
 theorem routeKRVMSmoothPositiveCanonicalProduct_analytic :
     AnalyticOnNhd ℂ routeKRVMSmoothPositiveCanonicalProduct Set.univ := by
   exact canonicalProductE1_analytic routeKRVMCanonicalZero
     routeKRVMCanonicalZero_ne_zero
     summable_routeKRVMCanonicalZero_inv_norm_sq
 
+/-- The even canonical product `P(z) = Π(z) Π(-z)`, with zeros at `± T_n`. -/
 def routeKRVMSmoothCanonicalProduct (z : ℂ) : ℂ :=
   routeKRVMSmoothPositiveCanonicalProduct z *
     routeKRVMSmoothPositiveCanonicalProduct (-z)
 
+/-- The even canonical product is entire. -/
 theorem routeKRVMSmoothCanonicalProduct_analytic :
     AnalyticOnNhd ℂ routeKRVMSmoothCanonicalProduct Set.univ := by
   have hpos := routeKRVMSmoothPositiveCanonicalProduct_analytic
@@ -53,6 +90,8 @@ theorem routeKRVMSmoothCanonicalProduct_differentiable :
   rw [← differentiableOn_univ]
   exact routeKRVMSmoothCanonicalProduct_analytic.differentiableOn
 
+/-- The even canonical product is the convergent product `∏' n, (1 - z²/T_n²)`; the exponential
+factors cancel in pairs. -/
 theorem routeKRVMSmoothCanonicalProduct_eq_tprod (z : ℂ) :
     routeKRVMSmoothCanonicalProduct z =
       ∏' n : ℕ, (1 - z ^ (2 : ℕ) / (routeKRVMQuantile n : ℂ) ^ (2 : ℕ)) := by
@@ -95,10 +134,13 @@ theorem routeKRVMSmoothCanonicalProduct_eq_tprod (z : ℂ) :
       field_simp [ha]
       ring_nf
 
+/-- Diagonal kernel on two copies of the primes with entries `1/T_{π'(p)}` on the first copy and
+`-1/T_{π'(p)}` on the second. -/
 def routeKSignedPrimeRVMKernel :
     RouteKSignedPrimeIndex × RouteKSignedPrimeIndex → ℂ :=
   HilbertSchmidt.diagMul routeKSignedPrimeRVMMultiplier
 
+/-- The squared moduli of the signed diagonal entries are summable. -/
 theorem summable_norm_routeKSignedPrimeRVMMultiplier_sq :
     Summable (fun i : RouteKSignedPrimeIndex =>
       ‖routeKSignedPrimeRVMMultiplier i‖ ^ (2 : ℕ)) := by
@@ -112,6 +154,8 @@ theorem summable_norm_routeKSignedPrimeRVMMultiplier_sq :
       abs_of_pos (routeKPrimeRVMReciprocal_pos _)] using
       summable_routeKPrimeRVMReciprocal_sq
 
+/-- For `r ‖K‖_HS < 1` and `|z| < r`, the regularized Fredholm determinant `det₂(1 - zK)` of the
+signed kernel equals the even canonical product `P(z)`. -/
 theorem fredholmDet_routeKSignedPrimeRVMKernel_eq_canonicalProduct
     (r : ℝ) (hr : r * HilbertSchmidt.hsNorm routeKSignedPrimeRVMKernel < 1)
     (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) r) :
@@ -179,6 +223,8 @@ theorem fredholmDet_routeKSignedPrimeRVMKernel_eq_canonicalProduct
   change (∏' i, f i) = routeKRVMSmoothCanonicalProduct z
   exact (hprimePos.sum hprimeNeg).tprod_eq
 
+/-- The even canonical product is the entire regularized determinant `det₂(1 - zK)` of the signed
+prime-indexed kernel. -/
 theorem routeKSignedPrimeRVMKernel_isRegularizedDet :
     GaloisForLFunctions.HTGeometry.IsRegularizedDet
       routeKSignedPrimeRVMKernel routeKRVMSmoothCanonicalProduct := by

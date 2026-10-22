@@ -2,6 +2,34 @@ import GaloisForLFunctions.HTGeometry.HardyHorizontalLayerLeakage
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelCompressionBridge
 import GaloisForLFunctions.HTGeometry.HalfLineExponentialGram
 
+/-!
+# Paley–Wiener unitaries from `L²(0,∞)` onto the Hardy spaces of the line
+
+A function `f ∈ L²((0,∞), dx)` is extended by zero to `ℝ` and dilated unitarily to
+`x ↦ √(2π) f(2π x)`; this positive datum lies in `L²(0,∞) ⊆ L²(ℝ)` and its reflection
+`x ↦ √(2π) f(-2π x)` lies in `L²(-∞,0)`. Composing with Mathlib's `L²` Fourier transform yields
+unitary equivalences of `L²(0,∞)` with `hardyL2ᗮ` (`LowerHardyL2`) and with the upper-half-plane
+Hardy space `hardyL2` (`UpperHardyL2`). The exponential `e^{-a x}` (`a > 0`) is sent to explicit
+multiples of the Cauchy kernels `(x - i a)⁻¹` and `(x + i a)⁻¹`, so the rank-one Hardy operator
+`-π⁻¹ |(x - i a)⁻¹⟩⟨(x + i a)⁻¹|` is intertwined with `2 |e^{-a·}⟩⟨e^{-a·}|` on `L²(0,∞)`.
+
+## Main results
+
+- `lowerHardyPaleyWienerUnitary`: unitary `L²(0,∞) ≃ hardyL2ᗮ`, the Fourier transform of the
+  positive datum.
+- `upperHardyPaleyWienerUnitary`: unitary `L²(0,∞) ≃ hardyL2`, the Fourier transform of the
+  reflected datum.
+- `lowerHardyPaleyWiener_expFeature`: `e^{-a x} ↦ (-i / √(2π)) (x - i a)⁻¹`.
+- `upperHardyPaleyWiener_expFeature`: `e^{-a x} ↦ (i / √(2π)) (x + i a)⁻¹`.
+- `paleyWiener_rankOne_intertwining`: with `U₊`, `U₋` the upper and lower isometries,
+  `(-π⁻¹ |(x - i a)⁻¹⟩⟨(x + i a)⁻¹|) (U₊ f) = U₋ (2 ⟨e^{-a·}, f⟩ e^{-a·})`.
+
+## Hypotheses
+
+All results are unconditional. The only side condition is `0 < a` for the exponential rate,
+which makes `e^{-a x}` square integrable and places `± i a` off the real line.
+-/
+
 open Complex Filter Topology MeasureTheory Set
 open scoped InnerProductSpace
 
@@ -9,18 +37,24 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- The Hilbert space `L²((0,∞), dx)` carrying the exponentials `e^{-a x}`. -/
 abbrev HalfLineExponentialL2 := Lp ℂ 2 halfLineLaplaceMeasure
 
+/-- The dilation factor `2π` relating the half-line variable to Mathlib's Fourier kernel
+`e^{-2πi x ξ}`. -/
 def paleyWienerScale : ℝ := 2 * Real.pi
 
 theorem paleyWienerScale_pos : 0 < paleyWienerScale := by
   unfold paleyWienerScale
   positivity
 
+/-- Isometry `L²(0,∞) → L²(ℝ)`: zero extension to the line followed by the unitary dilation
+`g ↦ √(2π) g(2π x)`. -/
 def paleyPositiveDatumIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] RealLineL2 :=
   (RHTower.dilation paleyWienerScale paleyWienerScale_pos).comp
     RHTower.suzukiPositiveZeroExtensionIsometry
 
+/-- The positive datum vanishes almost everywhere on `(-∞,0)`, so it lies in `L²(0,∞) ⊆ L²(ℝ)`. -/
 theorem paleyPositiveDatum_mem_halfLineL2 (f : HalfLineExponentialL2) :
     paleyPositiveDatumIsometry f ∈ RHTower.halfLineL2 := by
   rw [RHTower.mem_halfLineL2_iff]
@@ -43,9 +77,11 @@ theorem paleyPositiveDatum_mem_halfLineL2 (f : HalfLineExponentialL2) :
     indicator_of_notMem (show paleyWienerScale * x ∉ Ioi (0 : ℝ) by simpa using hsneg.le)]
   simp
 
+/-- The reflected datum `x ↦ (positive datum)(-x)`, an isometry of `L²(0,∞)` into `L²(ℝ)`. -/
 def paleyNegativeDatumIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] RealLineL2 :=
   RHTower.l2ReflectionIsometry.comp paleyPositiveDatumIsometry
 
+/-- The reflected datum vanishes almost everywhere on `(0,∞)`, so it lies in `L²(-∞,0)`. -/
 theorem paleyNegativeDatum_mem_lowerHalfLineL2 (f : HalfLineExponentialL2) :
     paleyNegativeDatumIsometry f ∈ RHTower.lowerHalfLineL2 := by
   rw [RHTower.mem_lowerHalfLineL2_iff]
@@ -59,6 +95,8 @@ theorem paleyNegativeDatum_mem_lowerHalfLineL2 (f : HalfLineExponentialL2) :
   rw [href]
   exact hx (by linarith)
 
+/-- Fourier transform of the positive datum: an isometry of `L²(0,∞)` into `hardyL2ᗮ`, the
+orthogonal complement of the upper Hardy space. -/
 def lowerHardyPaleyWienerIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] LowerHardyL2 where
   toFun f := ⟨RHTower.fourierUnitary (paleyPositiveDatumIsometry f), by
     change RHTower.fourierUnitary (paleyPositiveDatumIsometry f) ∈ RHTower.hardyL2ᗮ
@@ -74,6 +112,8 @@ def lowerHardyPaleyWienerIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] LowerHa
     change ‖RHTower.fourierUnitary (paleyPositiveDatumIsometry f)‖ = ‖f‖
     rw [RHTower.fourierUnitary.norm_map, paleyPositiveDatumIsometry.norm_map]
 
+/-- Fourier transform of the reflected datum: an isometry of `L²(0,∞)` into the upper Hardy space
+`hardyL2`, the Fourier image of `L²(-∞,0)`. -/
 def upperHardyPaleyWienerIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] UpperHardyL2 where
   toFun f := ⟨RHTower.fourierUnitary (paleyNegativeDatumIsometry f), by
     exact ⟨paleyNegativeDatumIsometry f, paleyNegativeDatum_mem_lowerHalfLineL2 f, rfl⟩⟩
@@ -87,6 +127,7 @@ def upperHardyPaleyWienerIsometry : HalfLineExponentialL2 →ₗᵢ[ℂ] UpperHa
     change ‖RHTower.fourierUnitary (paleyNegativeDatumIsometry f)‖ = ‖f‖
     rw [RHTower.fourierUnitary.norm_map, paleyNegativeDatumIsometry.norm_map]
 
+/-- For `q > 0`, the unitary dilation `g ↦ √q g(q x)` preserves `L²(0,∞) ⊆ L²(ℝ)`. -/
 theorem dilation_mem_halfLineL2 {q : ℝ} (hq : 0 < q) {f : RealLineL2}
     (hf : f ∈ RHTower.halfLineL2) :
     RHTower.dilation q hq f ∈ RHTower.halfLineL2 := by
@@ -96,6 +137,8 @@ theorem dilation_mem_halfLineL2 {q : ℝ} (hq : 0 < q) {f : RealLineL2}
   rw [hd, hzero (mul_neg_of_pos_of_neg hq hx)]
   simp
 
+/-- For `f ∈ L²(ℝ)` vanishing on `(-∞,0)`, zero extension of its restriction to `(0,∞)` gives back
+`f`. -/
 theorem suzukiPositiveZeroExtension_soninHalfLine_eq_of_mem_halfLineL2
     {f : RealLineL2} (hf : f ∈ RHTower.halfLineL2) :
     RHTower.suzukiPositiveZeroExtension (RHTower.soninHalfLine f) = f := by
@@ -112,6 +155,7 @@ theorem suzukiPositiveZeroExtension_soninHalfLine_eq_of_mem_halfLineL2
   · have hxneg : x < 0 := lt_of_le_of_ne (le_of_not_gt hx) hx0
     rw [indicator_of_notMem (show x ∉ Ioi (0 : ℝ) by simpa using hx), hzero hxneg]
 
+/-- Every element of `L²(0,∞) ⊆ L²(ℝ)` is the positive datum of some `f ∈ L²((0,∞), dx)`. -/
 theorem paleyPositiveDatumIsometry_surjective_halfLine
     (g : RHTower.halfLineL2) :
     ∃ f : HalfLineExponentialL2,
@@ -129,6 +173,7 @@ theorem paleyPositiveDatumIsometry_surjective_halfLine
   rw [hext]
   exact RHTower.dilation_dilation_inv paleyWienerScale paleyWienerScale_pos g
 
+/-- The lower Paley–Wiener isometry is onto `hardyL2ᗮ`. -/
 theorem lowerHardyPaleyWienerIsometry_surjective :
     Function.Surjective lowerHardyPaleyWienerIsometry := by
   intro g
@@ -142,10 +187,12 @@ theorem lowerHardyPaleyWienerIsometry_surjective :
   rw [hf]
   exact hfourier
 
+/-- Paley–Wiener unitary `L²(0,∞) ≃ hardyL2ᗮ`. -/
 def lowerHardyPaleyWienerUnitary : HalfLineExponentialL2 ≃ₗᵢ[ℂ] LowerHardyL2 :=
   LinearIsometryEquiv.ofSurjective lowerHardyPaleyWienerIsometry
     lowerHardyPaleyWienerIsometry_surjective
 
+/-- Reflection `x ↦ -x` maps `L²(-∞,0)` into `L²(0,∞)`. -/
 theorem l2Reflection_mem_halfLineL2_of_mem_lowerHalfLineL2 {f : RealLineL2}
     (hf : f ∈ RHTower.lowerHalfLineL2) :
     RHTower.l2Reflection f ∈ RHTower.halfLineL2 := by
@@ -156,6 +203,7 @@ theorem l2Reflection_mem_halfLineL2_of_mem_lowerHalfLineL2 {f : RealLineL2}
   rw [href]
   exact hzero (by linarith)
 
+/-- The upper Paley–Wiener isometry is onto the upper Hardy space `hardyL2`. -/
 theorem upperHardyPaleyWienerIsometry_surjective :
     Function.Surjective upperHardyPaleyWienerIsometry := by
   intro g
@@ -174,6 +222,7 @@ theorem upperHardyPaleyWienerIsometry_surjective :
   rw [hnegative]
   exact hfourier
 
+/-- Paley–Wiener unitary `L²(0,∞) ≃ hardyL2` onto the upper Hardy space. -/
 def upperHardyPaleyWienerUnitary : HalfLineExponentialL2 ≃ₗᵢ[ℂ] UpperHardyL2 :=
   LinearIsometryEquiv.ofSurjective upperHardyPaleyWienerIsometry
     upperHardyPaleyWienerIsometry_surjective
@@ -188,6 +237,8 @@ theorem paleyWienerSqrtScale_sq : paleyWienerSqrtScale ^ (2 : ℕ) = paleyWiener
   unfold paleyWienerSqrtScale
   exact Real.sq_sqrt paleyWienerScale_pos.le
 
+/-- For `a > 0`, the positive datum of `e^{-a x}` is `(-i / √(2π))` times the one-sided datum
+`cauchyDatumUpper (i a) = 2πi e^{-2π a x} 1_{x > 0}`. -/
 theorem paleyPositiveDatum_expFeature {a : ℝ} (ha : 0 < a) :
     paleyPositiveDatumIsometry (expFeature a ha) =
       ((-I) / (paleyWienerSqrtScale : ℂ)) •
@@ -292,6 +343,8 @@ theorem paleyPositiveDatum_expFeature {a : ℝ} (ha : 0 < a) :
       RHTower.cauchyDatumUpper, indicator_of_notMem hxnot]
     simp
 
+/-- Reflecting the upper one-sided datum at `i a` gives minus the lower one-sided datum
+`cauchyDatum (-i a)`, supported on `(-∞,0)`. -/
 theorem l2Reflection_cauchyDatumUpper_eq_neg_cauchyDatum {a : ℝ} (ha : 0 < a) :
     RHTower.l2Reflection
         ((RHTower.memLp_cauchyDatumUpper
@@ -339,6 +392,7 @@ theorem l2Reflection_cauchyDatumUpper_eq_neg_cauchyDatum {a : ℝ} (ha : 0 < a) 
       RHTower.cauchyDatum, indicator_of_notMem hxnot]
     simp
 
+/-- For `a > 0`, the reflected datum of `e^{-a x}` is `(i / √(2π)) · cauchyDatum (-i a)`. -/
 theorem paleyNegativeDatum_expFeature {a : ℝ} (ha : 0 < a) :
     paleyNegativeDatumIsometry (expFeature a ha) =
       (I / (paleyWienerSqrtScale : ℂ)) •
@@ -350,6 +404,7 @@ theorem paleyNegativeDatum_expFeature {a : ℝ} (ha : 0 < a) :
     l2Reflection_cauchyDatumUpper_eq_neg_cauchyDatum ha]
   module
 
+/-- For `a > 0`, the lower Paley–Wiener isometry sends `e^{-a x}` to `(-i / √(2π)) (x - i a)⁻¹`. -/
 theorem lowerHardyPaleyWiener_expFeature {a : ℝ} (ha : 0 < a) :
     lowerHardyPaleyWienerIsometry (expFeature a ha) =
       ((-I) / (paleyWienerSqrtScale : ℂ)) • upperCauchyFeature a ha := by
@@ -372,6 +427,7 @@ theorem lowerHardyPaleyWiener_expFeature {a : ℝ} (ha : 0 < a) :
   rw [paleyPositiveDatum_expFeature ha, map_smul, hF]
   rfl
 
+/-- For `a > 0`, the upper Paley–Wiener isometry sends `e^{-a x}` to `(i / √(2π)) (x + i a)⁻¹`. -/
 theorem upperHardyPaleyWiener_expFeature {a : ℝ} (ha : 0 < a) :
     upperHardyPaleyWienerIsometry (expFeature a ha) =
       (I / (paleyWienerSqrtScale : ℂ)) • lowerCauchyFeature a ha := by
@@ -394,6 +450,8 @@ theorem upperHardyPaleyWiener_expFeature {a : ℝ} (ha : 0 < a) :
   rw [paleyNegativeDatum_expFeature ha, map_smul, hF]
   rfl
 
+/-- The Cauchy atom `(x - i a)⁻¹ ∈ hardyL2ᗮ` is `i √(2π)` times the lower Paley–Wiener image of
+`e^{-a x}`. -/
 theorem upperCauchyFeature_eq_paleyWiener {a : ℝ} (ha : 0 < a) :
     upperCauchyFeature a ha =
       (I * (paleyWienerSqrtScale : ℂ)) •
@@ -406,6 +464,8 @@ theorem upperCauchyFeature_eq_paleyWiener {a : ℝ} (ha : 0 < a) :
   ring_nf
   simp
 
+/-- The Cauchy atom `(x + i a)⁻¹ ∈ hardyL2` is `-i √(2π)` times the upper Paley–Wiener image of
+`e^{-a x}`. -/
 theorem lowerCauchyFeature_eq_paleyWiener {a : ℝ} (ha : 0 < a) :
     lowerCauchyFeature a ha =
       (-I * (paleyWienerSqrtScale : ℂ)) •
@@ -418,6 +478,8 @@ theorem lowerCauchyFeature_eq_paleyWiener {a : ℝ} (ha : 0 < a) :
   ring_nf
   simp
 
+/-- Intertwining of rank-one operators: applying `-π⁻¹ |(x - i a)⁻¹⟩⟨(x + i a)⁻¹|` to the upper
+Paley–Wiener image of `f` equals the lower Paley–Wiener image of `2 |e^{-a·}⟩⟨e^{-a·}| f`. -/
 theorem paleyWiener_rankOne_intertwining {a : ℝ} (ha : 0 < a)
     (f : HalfLineExponentialL2) :
     (((-(Real.pi : ℂ)⁻¹) •

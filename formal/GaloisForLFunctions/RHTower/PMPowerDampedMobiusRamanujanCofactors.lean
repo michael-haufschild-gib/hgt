@@ -1,11 +1,39 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanWeights
 import GaloisForLFunctions.RHTower.EulerDeletionRemainderMobiusInversion
 
+/-!
+# Divisor cofactors of the truncated Ramanujan expansion
+
+Writing the Ramanujan sum as `c_q(n) = ∑_{dm=q} d·1_{d|n} μ(m)` and swapping summation turns
+the truncated expansion `∑_{q≤Q} w_ε(q) c_q(n)` into the divisor sum `∑_{d≤Q, d|n} K_Q(d)` with
+cofactors `K_Q(d) = d ∑_{m≤Q/d} μ(m) w_ε(dm)`. Summing over `n ≤ N`, the cumulative centered
+Ramanujan prefix equals `∑_{d≤Q+1} K_{Q+1}(d) ⌊N/d⌋ − N/ζ(1+ε)`, and since
+`∑_d K_Q(d)/d = 1/ζ(1+ε)` exactly, it also equals `−∑_{d≤Q+1} K_{Q+1}(d) {N/d}`. Möbius inversion
+over multiples gives `∑_m μ(m) w_ε(dm) = μ(d) d^(−ε)/d`, hence
+`∑_m |w_ε(dm)| = μ(d)² d^(−1−ε)` and the uniform cofactor bound `|K_Q(d)| ≤ d^(−ε)`.
+
+## Main results
+
+- `pmPowerDampedRamanujanCofactor_expansion`: `∑_{q≤Q} w_ε(q) c_q(n) = ∑_{d≤Q, d|n} K_Q(d)` for `n > 0`.
+- `pmPowerDampedRamanujanCofactor_density`: for `ε > 0`, `Q ≥ 1`, `∑_{d≤Q} K_Q(d)/d = 1/ζ(1+ε)`.
+- `pmPowerDampedRamanujanCumulativePrefix_eq_cofactor_fract`: the cumulative centered prefix equals `−∑_{d≤Q+1} K_{Q+1}(d) {N/d}`.
+- `pmPowerDampedRamanujanWeight_multiples_inversion`: `∑'_m μ(m) w_ε(dm) = μ(d) d^(−ε)/d`.
+- `hasSum_norm_pmPowerDampedRamanujanWeight_multiples`: `∑_m |w_ε(dm)| = μ(d)² d^(−ε)/d` for `d > 0`.
+- `pmPowerDampedRamanujanCofactor_mobius_re`: `μ(d) Re K_Q(d) = d ∑_{m≤Q/d} |w_ε(dm)|`.
+- `norm_pmPowerDampedRamanujanCofactor_le`: `|K_Q(d)| ≤ d^(−ε)` for `ε > 0`, `d > 0`.
+
+## Hypotheses
+
+All results are unconditional; the analytic statements assume only `0 < ε` (and `0 < n`,
+`0 < d` or `1 ≤ Q` where stated).
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- Swap `∑_{q≤Q} A(q) ∑_{dm=q} F(d,m) = ∑_{d≤Q} ∑_{m≤Q/d} A(dm) F(d,m)`. -/
 theorem pm_weighted_divisor_antidiagonal_swap (A : ℕ → ℂ) (F : ℕ → ℕ → ℂ) (Q : ℕ) :
     (∑ q ∈ Finset.Icc 1 Q, A q * ∑ x ∈ q.divisorsAntidiagonal, F x.1 x.2) =
       ∑ d ∈ Finset.Icc 1 Q, ∑ m ∈ Finset.Icc 1 (Q/d), A (d*m) * F d m := by
@@ -17,6 +45,7 @@ theorem pm_weighted_divisor_antidiagonal_swap (A : ℕ → ℂ) (F : ℕ → ℕ
   intro x hx
   rw [(Nat.mem_divisorsAntidiagonal.mp hx).1]
 
+/-- For `n > 0`, `c_q(n) = ∑_{dm=q} d·1_{d|n} μ(m)`. -/
 theorem pm_ramanujan_eq_antidiagonal {n : ℕ} (hn : 0 < n) (q : ℕ) :
     d4BMRamanujanNaturalCoefficient n q =
       ∑ x ∈ q.divisorsAntidiagonal,
@@ -31,10 +60,13 @@ theorem pm_ramanujan_eq_antidiagonal {n : ℕ} (hn : 0 < n) (q : ℕ) :
     exact hm.2 hm.1.symm
   simp [d4BMRamanujanDivisorSeed, d4BMMoebiusArithmeticC, moebiusCoeffC, hx0]
 
+/-- The Ramanujan cofactor `K_Q(d) = d ∑_{m≤Q/d} μ(m) w_ε(dm)`. -/
 def pmPowerDampedRamanujanCofactor (ε : ℝ) (Q d : ℕ) : ℂ :=
   (d : ℂ) * ∑ m ∈ Finset.Icc 1 (Q/d),
     (moebius m : ℂ) * pmPowerDampedRamanujanWeight ε (d*m)
 
+/-- For `n > 0`, the truncated Ramanujan expansion `∑_{q≤Q} w_ε(q) c_q(n)` equals the divisor sum
+`∑_{d≤Q, d|n} K_Q(d)`. -/
 theorem pmPowerDampedRamanujanCofactor_expansion (ε : ℝ) (Q : ℕ)
     {n : ℕ} (hn : 0 < n) :
     (∑ q ∈ Finset.Icc 1 Q,
@@ -53,6 +85,7 @@ theorem pmPowerDampedRamanujanCofactor_expansion (ε : ℝ) (Q : ℕ)
     ring
   · simp [hdn]
 
+/-- The number of multiples of `d` in `[1, N]` is `⌊N/d⌋`. -/
 theorem pm_sum_dvd_indicator (N d : ℕ) :
     (∑ n ∈ Finset.Icc 1 N, if d ∣ n then (1 : ℂ) else 0) = (N/d : ℕ) := by
   classical
@@ -63,6 +96,7 @@ theorem pm_sum_dvd_indicator (N d : ℕ) :
     omega
   simp [hset, Nat.Ioc_filter_dvd_card_eq_div]
 
+/-- Summed over `n ≤ N`, the truncated expansion equals `∑_{d≤Q} K_Q(d) ⌊N/d⌋`. -/
 theorem pmPowerDampedRamanujanCofactor_cumulative (ε : ℝ) (Q N : ℕ) :
     (∑ n ∈ Finset.Icc 1 N, ∑ q ∈ Finset.Icc 1 Q,
       pmPowerDampedRamanujanWeight ε q * d4BMRamanujanNaturalCoefficient n q) =
@@ -78,6 +112,7 @@ theorem pmPowerDampedRamanujanCofactor_cumulative (ε : ℝ) (Q N : ℕ) :
   intro n hn
   split_ifs <;> simp
 
+/-- `∑_{dm=q} μ(m) = 1` if `q = 1` and `0` otherwise. -/
 theorem pm_mobius_antidiagonal_sum (q : ℕ) :
     (∑ x ∈ q.divisorsAntidiagonal, (moebius x.2 : ℂ)) = if q = 1 then 1 else 0 := by
   rw [Nat.sum_divisorsAntidiagonal (fun _ m => (moebius m : ℂ)), Nat.sum_div_divisors (f := fun m => (moebius m : ℂ))]
@@ -86,6 +121,7 @@ theorem pm_mobius_antidiagonal_sum (q : ℕ) :
   simpa only [ArithmeticFunction.coe_mul_zeta_apply, intCoe_apply,
     ArithmeticFunction.one_apply] using h
 
+/-- For `ε > 0` and `Q ≥ 1`, the cofactors satisfy `∑_{d≤Q} K_Q(d)/d = 1/ζ(1+ε)` exactly. -/
 theorem pmPowerDampedRamanujanCofactor_density {ε : ℝ} (hε : 0 < ε)
     {Q : ℕ} (hQ : 1 ≤ Q) :
     (∑ d ∈ Finset.Icc 1 Q, pmPowerDampedRamanujanCofactor ε Q d/(d : ℂ)) =
@@ -102,6 +138,7 @@ theorem pmPowerDampedRamanujanCofactor_density {ε : ℝ} (hε : 0 < ε)
   simp_rw [pm_mobius_antidiagonal_sum]
   simp [Finset.mem_Icc, hQ, pmPowerDampedRamanujanWeight_one hε]
 
+/-- For `ε > 0`, the centered Ramanujan prefix is `∑_{1≤q≤Q+1} w_ε(q) c_q(n) − 1/ζ(1+ε)`. -/
 theorem pmPowerDampedRamanujanCenteredPrefix_eq_Icc {ε : ℝ} (hε : 0 < ε)
     (Q n : ℕ) :
     pmPowerDampedRamanujanCenteredPrefix ε Q n =
@@ -118,6 +155,7 @@ theorem pmPowerDampedRamanujanCenteredPrefix_eq_Icc {ε : ℝ} (hε : 0 < ε)
     rw [ih, Finset.sum_Icc_succ_top (a := 1) (b := Q+1) (by omega)]
     ring
 
+/-- For `ε > 0`, the cumulative centered prefix equals `∑_{d≤Q+1} K_{Q+1}(d) ⌊N/d⌋ − N/ζ(1+ε)`. -/
 theorem pmPowerDampedRamanujanCumulativePrefix_eq_cofactor_floor {ε : ℝ}
     (hε : 0 < ε) (Q N : ℕ) :
     pmPowerDampedRamanujanCumulativePrefix ε Q N =
@@ -136,6 +174,7 @@ theorem pm_nat_div_eq_sub_fract (N d : ℕ) :
     Int.cast_natCast, Nat.floor_div_natCast, Nat.floor_natCast]
   norm_cast
 
+/-- For `ε > 0`, the cumulative centered prefix equals `−∑_{d≤Q+1} K_{Q+1}(d) {N/d}`. -/
 theorem pmPowerDampedRamanujanCumulativePrefix_eq_cofactor_fract {ε : ℝ}
     (hε : 0 < ε) (Q N : ℕ) :
     pmPowerDampedRamanujanCumulativePrefix ε Q N =
@@ -160,6 +199,7 @@ theorem pmPowerDampedRamanujanCumulativePrefix_eq_cofactor_fract {ε : ℝ}
   rw [he]
   ring
 
+/-- For `ε > 0`, `(a, b) ↦ |μ(dab)(dab)^(−ε)/(dab)|` is summable over pairs of positive integers. -/
 theorem summable_pmPowerDampedMobiusCoeff_multiple_pair {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
     Summable (fun x : ℕ+ × ℕ+ =>
       ‖pmPowerDampedMobiusCoeff ε (d*((x.1 : ℕ)*x.2)) /
@@ -179,6 +219,7 @@ theorem summable_pmPowerDampedMobiusCoeff_multiple_pair {ε : ℝ} (hε : 0 < ε
   simp only [a, one_div, mul_inv_rev]
   ring
 
+/-- Möbius inversion over multiples: for `ε > 0`, `∑'_m μ(m) w_ε(dm) = μ(d) d^(−ε)/d`. -/
 theorem pmPowerDampedRamanujanWeight_multiples_inversion {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
     (∑' m : ℕ, (moebius m : ℂ) * pmPowerDampedRamanujanWeight ε (d*m)) =
       pmPowerDampedMobiusCoeff ε d/(d : ℂ) := by
@@ -195,6 +236,7 @@ theorem pmPowerDampedRamanujanWeight_multiples_inversion {ε : ℝ} (hε : 0 < �
     (f := fun m : ℕ => (moebius m : ℂ)*pmPowerDampedRamanujanWeight ε (d*m)) (by simp)] at h
   simpa only [mul_one] using h
 
+/-- For `ε > 0`, `μ(d) μ(m) w_ε(dm) = |w_ε(dm)|`. -/
 theorem pmPowerDampedRamanujanWeight_mobius_pair {ε : ℝ} (hε : 0 < ε) (d m : ℕ) :
     (moebius d : ℂ) * (moebius m : ℂ) * pmPowerDampedRamanujanWeight ε (d*m) =
       (‖pmPowerDampedRamanujanWeight ε (d*m)‖ : ℂ) := by
@@ -209,6 +251,7 @@ theorem pmPowerDampedRamanujanWeight_mobius_pair {ε : ℝ} (hε : 0 < ε) (d m 
       Complex.ofReal_intCast, hreal, hmu]
   · simp [pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree ε hdm]
 
+/-- For `ε > 0` and `d > 0`, `∑_m |w_ε(dm)| = μ(d)² d^(−ε)/d`. -/
 theorem hasSum_norm_pmPowerDampedRamanujanWeight_multiples {ε : ℝ} (hε : 0 < ε)
     {d : ℕ} (hd : 0 < d) :
     HasSum (fun m : ℕ => ‖pmPowerDampedRamanujanWeight ε (d*m)‖)
@@ -234,6 +277,7 @@ theorem hasSum_norm_pmPowerDampedRamanujanWeight_multiples {ε : ℝ} (hε : 0 <
     exact_mod_cast he.trans hcast
   simpa only [Function.comp_def, ht] using hs.hasSum
 
+/-- For `ε > 0`, `μ(d) Re K_Q(d) = d ∑_{m≤Q/d} |w_ε(dm)|`. -/
 theorem pmPowerDampedRamanujanCofactor_mobius_re {ε : ℝ} (hε : 0 < ε) (Q d : ℕ) :
     (moebius d : ℝ) * (pmPowerDampedRamanujanCofactor ε Q d).re =
       (d : ℝ) * ∑ m ∈ Finset.Icc 1 (Q/d), ‖pmPowerDampedRamanujanWeight ε (d*m)‖ := by
@@ -248,6 +292,7 @@ theorem pmPowerDampedRamanujanCofactor_mobius_re {ε : ℝ} (hε : 0 < ε) (Q d 
   rw [mul_left_comm, Finset.mul_sum]
   simp_rw [ht]
 
+/-- For `ε > 0` and `d > 0`, the cofactor is bounded uniformly in `Q`: `|K_Q(d)| ≤ d^(−ε)`. -/
 theorem norm_pmPowerDampedRamanujanCofactor_le {ε : ℝ} (hε : 0 < ε)
     (Q : ℕ) {d : ℕ} (hd : 0 < d) :
     ‖pmPowerDampedRamanujanCofactor ε Q d‖ ≤ (d : ℝ)^(-ε) := by

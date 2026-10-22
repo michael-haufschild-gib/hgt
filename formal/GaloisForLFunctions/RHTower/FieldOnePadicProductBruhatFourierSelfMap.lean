@@ -1,5 +1,30 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicProductBruhatFourierPlancherel
 
+/-!
+# The Bruhat–Fourier transform maps Schwartz–Bruhat functions on `∏ᵢ ℚ_{pᵢ}` to themselves
+
+For a finite family of primes `p i`, this module shows that the Fourier transform
+`𝓕f(y) = ∫ ψ(-x·y) f(x) dx` of a compactly supported locally constant function `f` on
+`∏ᵢ ℚ_{pᵢ}` is again compactly supported and locally constant. If `f` is supported in
+`∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`, then `𝓕f` is invariant under `∏ pᵢ^{nᵢ} ℤ_{pᵢ}`; support of `𝓕f` in
+`∏ pᵢ^{-mᵢ} ℤ_{pᵢ}` comes from the annihilator vanishing law. The transform is packaged as a
+`ℂ`-linear endomorphism of the space of Schwartz–Bruhat functions.
+
+## Main results
+
+- `fieldOnePadicProductBruhatFourier_add_primePow`: if `tsupport f ⊆ ∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`, then
+  `𝓕f(y + pⁿ z) = 𝓕f(y)` for all `z ∈ ∏ ℤ_{pᵢ}`.
+- `fieldOnePadicProductBruhatFourier_isLocallyConstant`: `𝓕f` is locally constant.
+- `fieldOnePadicProductBruhatFourier_hasCompactSupport`: `𝓕f` has compact support.
+- `fieldOnePadicProductBruhatFourierLinear`: `𝓕` as a `ℂ`-linear map on Schwartz–Bruhat functions.
+
+## Hypotheses
+
+All results are unconditional except `fieldOnePadicProductBruhatFourier_add_primePow`, which
+takes the support hypothesis `tsupport f ⊆ ∏ pᵢ^{-nᵢ} ℤ_{pᵢ}` (satisfied by every
+Schwartz–Bruhat function for some `n`).
+-/
+
 namespace GaloisForLFunctions.RHTower
 noncomputable section
 open MeasureTheory Set TopologicalSpace
@@ -8,6 +33,7 @@ open scoped BigOperators
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable (p : ι → ℕ) [∀ i, Fact (p i).Prime]
 
+/-- The additive chart `ℤ_q → ℚ_q`, `u ↦ qⁿ u`, onto the lattice `qⁿ ℤ_q`. -/
 def fieldOnePadicPowIntCoeAddMonoidHom (q n : ℕ) [Fact q.Prime] : ℤ_[q] →+ ℚ_[q] where
   toFun u := (q : ℚ_[q]) ^ n * (u : ℚ_[q])
   map_zero' := by simp
@@ -23,12 +49,14 @@ theorem fieldOnePadicPowIntCoeAddMonoidHom_openEmbedding (q n : ℕ) [Fact q.Pri
   exact (Homeomorph.mulLeft₀ ((q : ℚ_[q]) ^ n) hq).isOpenEmbedding.comp
     PadicInt.isOpenEmbedding_coe
 
+/-- Coordinatewise chart `∏ ℤ_{pᵢ} → ∏ ℚ_{pᵢ}`, `u ↦ (pᵢ^{nᵢ} uᵢ)ᵢ`. -/
 def fieldOnePadicProductPowIntCoeAddMonoidHom (n : ι → ℕ) :
     FieldOnePadicIntProduct p →+ FieldOnePadicProduct p where
   toFun u i := (p i : ℚ_[p i]) ^ n i * (u i : ℚ_[p i])
   map_zero' := by ext i; simp
   map_add' x y := by ext i; simp [mul_add]
 
+/-- The chart `u ↦ (pᵢ^{nᵢ} uᵢ)ᵢ` is an open embedding, so `∏ pᵢ^{nᵢ} ℤ_{pᵢ}` is open. -/
 theorem fieldOnePadicProductPowIntCoeAddMonoidHom_openEmbedding (n : ι → ℕ) :
     Topology.IsOpenEmbedding (fieldOnePadicProductPowIntCoeAddMonoidHom p n) := by
   change Topology.IsOpenEmbedding
@@ -37,6 +65,8 @@ theorem fieldOnePadicProductPowIntCoeAddMonoidHom_openEmbedding (n : ι → ℕ)
   exact Topology.IsOpenEmbedding.piMap fun i =>
     fieldOnePadicPowIntCoeAddMonoidHom_openEmbedding (p i) (n i)
 
+/-- Assuming `tsupport f ⊆ ∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`, the Fourier transform is invariant under
+translation by `∏ pᵢ^{nᵢ} ℤ_{pᵢ}`: `𝓕f(y + pⁿ z) = 𝓕f(y)`. -/
 theorem fieldOnePadicProductBruhatFourier_add_primePow
     (n : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
@@ -82,6 +112,7 @@ theorem fieldOnePadicProductBruhatFourier_add_primePow
       ring]
     rw [fieldOnePadicProductStandardAddChar_add, hchar, mul_one]
 
+/-- The Fourier transform of a Schwartz–Bruhat function on `∏ᵢ ℚ_{pᵢ}` is locally constant. -/
 theorem fieldOnePadicProductBruhatFourier_isLocallyConstant
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p)) :
     IsLocallyConstant (fieldOnePadicProductBruhatFourier p f) := by
@@ -106,6 +137,8 @@ theorem fieldOnePadicProductBruhatFourier_isLocallyConstant
   rw [hwrep]
   exact fieldOnePadicProductBruhatFourier_add_primePow p n f hsupport y z
 
+/-- The Fourier transform of a Schwartz–Bruhat function on `∏ᵢ ℚ_{pᵢ}` has compact support,
+contained in a compact stage `∏ pᵢ^{-mᵢ} ℤ_{pᵢ}`. -/
 theorem fieldOnePadicProductBruhatFourier_hasCompactSupport
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p)) :
     HasCompactSupport (fieldOnePadicProductBruhatFourier p f) := by
@@ -123,6 +156,7 @@ theorem fieldOnePadicProductBruhatFourier_hasCompactSupport
   exact hy (fieldOnePadicProductBruhatFourier_eq_zero_outside_annihilator
     p m f hperiod hyout)
 
+/-- The Fourier transform as a self-map of compactly supported locally constant functions. -/
 def fieldOnePadicProductBruhatFourierBruhat
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p)) :
     compactlySupportedLocallyConstant (FieldOnePadicProduct p) :=
@@ -151,6 +185,8 @@ theorem fieldOnePadicProductBruhatFourier_integrand_integrable
     rw [fieldOnePadicProductStandardAddChar, norm_prod]
     simp [fieldOnePadicStandardAddChar]
 
+/-- The Fourier transform as a `ℂ`-linear endomorphism of the Schwartz–Bruhat space of
+`∏ᵢ ℚ_{pᵢ}`. -/
 def fieldOnePadicProductBruhatFourierLinear :
     compactlySupportedLocallyConstant (FieldOnePadicProduct p) →ₗ[ℂ]
       compactlySupportedLocallyConstant (FieldOnePadicProduct p) where

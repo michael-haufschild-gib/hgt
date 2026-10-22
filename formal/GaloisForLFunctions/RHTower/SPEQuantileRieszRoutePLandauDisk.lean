@@ -1,12 +1,36 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourceSpectralPole
 import GaloisForLFunctions.RHTower.XiEndpointStrongHeightGap
 
+/-!
+# Analyticity of the Route P source transform on a Landau disk
+
+The Route P source continuation is `R(z) = (E(z) - 2/3) / (z + 1)` with
+`E(z) = -(U'/U(z + 1/2) + 1) / (z + 1/2)`, where `U(s) = (s - 1) ζ(s)` is the zeta residue
+unit. Using the unconditional zero-free band of `ξ` for `|Im s| ≤ 4`, this module shows that
+`U` has no zeros in `Re s > 0, |Im s| ≤ 4`, so `R` is analytic on the low-height region
+`Re z > -1/2, |Im z| ≤ 4`, and in particular on the closed disk of radius `5/4` about `1`.
+
+## Main results
+
+- `analyticAt_routePSourceLaplaceContinuation_of_low_height`: `R` is analytic at every `z`
+  with `-1/2 < Re z` and `|Im z| ≤ 4`.
+- `analyticOnNhd_routePSourceLaplaceContinuation_closedBall_one`: `R` is analytic on a
+  neighbourhood of each point of the closed disk `|z - 1| ≤ 5/4`.
+
+## Hypotheses
+
+Unconditional. The pointwise result assumes only the region constraints `-1/2 < Re z` and
+`|Im z| ≤ 4`; the zero-freeness of `ξ` at height at most `4` is a proved input.
+-/
+
 open Complex Filter Topology
 
 noncomputable section
 
 namespace RHTower
 
+/-- The residue unit `(s - 1) ζ(s)` has no zeros with `0 < Re s` and `|Im s| ≤ 4`,
+by the zero-free band of `ξ` at height at most `4`. -/
 private theorem zetaResidueUnit_ne_zero_low_height {s : ℂ}
     (hre : 0 < s.re) (him : |s.im| ≤ 4) : zetaResidueUnit s ≠ 0 := by
   by_cases hs1 : s = 1
@@ -18,6 +42,8 @@ private theorem zetaResidueUnit_ne_zero_low_height {s : ℂ}
     have hxi : xi s = 0 := (xi_eq_zero_iff hre hs1).2 hzeta
     exact xi_ne_zero_of_abs_im_le_four him hxi
 
+/-- Assuming `-1/2 < Re z` and `|Im z| ≤ 4`, the Route P source continuation
+`(E(z) - 2/3) / (z + 1)` is complex analytic at `z`. -/
 theorem analyticAt_routePSourceLaplaceContinuation_of_low_height
     {z : ℂ} (hre : -(1 / 2 : ℝ) < z.re) (him : |z.im| ≤ 4) :
     AnalyticAt ℂ routePSourceLaplaceContinuation z := by
@@ -45,6 +71,8 @@ theorem analyticAt_routePSourceLaplaceContinuation_of_low_height
     (fun w : ℂ => (criticalNormalizedChebyshevErrorContinuation w - 2 / 3) / (w + 1)) z
   exact (hE.sub analyticAt_const).div (analyticAt_id.add analyticAt_const) hone
 
+/-- The Route P source continuation is analytic on the closed disk `|z - 1| ≤ 5/4`,
+which lies inside the low-height region `Re z > -1/2, |Im z| ≤ 4`. -/
 theorem analyticOnNhd_routePSourceLaplaceContinuation_closedBall_one :
     AnalyticOnNhd ℂ routePSourceLaplaceContinuation
       (Metric.closedBall (1 : ℂ) (5 / 4 : ℝ)) := by

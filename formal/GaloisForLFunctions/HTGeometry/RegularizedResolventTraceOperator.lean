@@ -2,12 +2,43 @@ import GaloisForLFunctions.HTGeometry.HilbertSchmidtAlgebra
 import GaloisForLFunctions.HTGeometry.HilbertSchmidtTrace
 import Mathlib.Analysis.Normed.Ring.Units
 
+/-!
+# The regularized resolvent trace as an operator trace
+
+For a Hilbert-Schmidt kernel `K` on `ι × ι` with operator `T` on `ℓ²(ι)`, the regularized
+resolvent trace is the power series `resolventTrace K z = ∑_{n ≥ 0} z^(n+1) tr(K^(n+2))`, built
+from diagonal sums of kernel powers. This module proves that, inside the disc
+`‖z‖ · ‖K‖_HS < 1`, the double series converges absolutely, the Neumann series gives
+`z T² (1 - z T)⁻¹ = ∑ z^(n+1) T^(n+2)` in operator norm, and the resolvent trace equals the
+operator trace `tr(T ∘ z T (1 - z T)⁻¹)`. Supporting bounds: for Hilbert-Schmidt `A`, `B` the
+diagonal of `A B` in any Hilbert basis is absolutely summable with sum at most
+`‖A‖_HS ‖B‖_HS`, hence `∑ᵢ |K^(n+2)(i,i)| ≤ ‖K‖_HS^(n+2)`.
+
+## Main results
+
+- `resolventTrace_eq_opTrace_regularizedResolvent`: for `‖z‖ ‖K‖_HS < 1`,
+  `resolventTrace K z = tr(T ∘ (z T (1 - z T)⁻¹))`.
+- `regularizedResolventOperator_eq_tsum`: `z T² (1 - z T)⁻¹ = ∑ₙ z^(n+1) T^(n+2)` for
+  `‖z‖ ‖K‖_HS < 1`.
+- `summable_resolventTrace_diagonal`: the double series `∑_{n,i} z^(n+1) K^(n+2)(i,i)` is summable
+  in the same disc.
+- `tsum_norm_inner_diag_comp_le`: `∑ᵢ |⟨bᵢ, A B bᵢ⟩| ≤ ‖A‖_HS ‖B‖_HS` for Hilbert-Schmidt `A`, `B`.
+
+## Hypotheses
+
+Unconditional apart from explicit hypotheses: the kernel is Hilbert-Schmidt (`IsHS K`, square
+summable entries; operators satisfy `IsHilbertSchmidt`), and the resolvent statements assume the
+radius bound `‖z‖ * hsNorm K < 1`.
+-/
+
 open scoped BigOperators ComplexConjugate InnerProductSpace
 
 namespace HilbertSchmidt
 
 variable {ι : Type*} [DecidableEq ι]
 
+/-- For Hilbert-Schmidt `A`, `B` on `ℓ²(ι)`, the operator trace of `A B` is the sum of the
+diagonal matrix entries of `A B` in the standard basis. -/
 theorem opTrace_comp_eq_tsum_matrixOf
     {A B : lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2}
     (hA : A.IsHilbertSchmidt) (hB : B.IsHilbertSchmidt) :
@@ -18,6 +49,7 @@ theorem opTrace_comp_eq_tsum_matrixOf
   rw [lpBasis_apply, lp.inner_single_left]
   simp [RCLike.inner_apply, matrixOf]
 
+/-- The operator of the kernel power `hsPow K n = K^(n+1)` is the operator power `T^(n+1)`. -/
 theorem toOperator_hsPow {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) :
     toOperator (isHS_hsPow hK n) = (toOperator hK) ^ (n + 1) := by
   induction n with
@@ -30,10 +62,13 @@ theorem toOperator_hsPow {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) :
       simp [pow_succ', ContinuousLinearMap.mul_def]
 
 omit [DecidableEq ι] in
+/-- The Hilbert-Schmidt norm of the realized operator equals the kernel Hilbert-Schmidt norm. -/
 theorem hsNorm_toOperator {K : ι × ι → ℂ} (hK : IsHS K) :
     ContinuousLinearMap.hsNorm (toOperator hK) = hsNorm K := by
   rw [ContinuousLinearMap.hsNorm, hsNorm, hsNormSq_toOperator hK]
 
+/-- The `i`-th diagonal entry of the product of two kernel operators is the diagonal entry of the
+kernel product: `⟨eᵢ, T_K T_L eᵢ⟩ = (K L)(i, i)`. -/
 theorem inner_lpBasis_comp_eq_hsComp
     {K L : ι × ι → ℂ} (hK : IsHS K) (hL : IsHS L) (i : ι) :
     inner ℂ (lpBasis ι i)
@@ -43,6 +78,7 @@ theorem inner_lpBasis_comp_eq_hsComp
   simp only [RCLike.inner_apply, map_one, mul_one]
   rw [← toOperator_hsComp hK hL, toOperator_single]
 
+/-- The `i`-th diagonal entry of a kernel operator is `K (i, i)`. -/
 theorem inner_lpBasis_toOperator
     {K : ι × ι → ℂ} (hK : IsHS K) (i : ι) :
     inner ℂ (lpBasis ι i) (toOperator hK (lpBasis ι i)) = K (i, i) := by
@@ -50,6 +86,8 @@ theorem inner_lpBasis_toOperator
   simp only [RCLike.inner_apply, map_one, mul_one]
   rw [toOperator_single]
 
+/-- For Hilbert-Schmidt `A : F → E` and `B : E → F`, the diagonal `|⟨bᵢ, A B bᵢ⟩|` is summable
+over every Hilbert basis `b` of `E`. -/
 theorem summable_norm_inner_diag_comp
     {E F : Type*}
     [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
@@ -70,6 +108,8 @@ theorem summable_norm_inner_diag_comp
   rw [ContinuousLinearMap.inner_comp_apply]
   exact norm_inner_le_norm _ _
 
+/-- For Hilbert-Schmidt `A`, `B`, `∑ᵢ |⟨bᵢ, A B bᵢ⟩| ≤ ‖A‖_HS ‖B‖_HS` in any Hilbert basis, by
+Cauchy-Schwarz applied to `‖A* bᵢ‖ ‖B bᵢ‖`. -/
 theorem tsum_norm_inner_diag_comp_le
     {E F : Type*}
     [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
@@ -106,6 +146,7 @@ theorem tsum_norm_inner_diag_comp_le
       rw [hA.hsNormSq_adjoint]
       rfl
 
+/-- For a Hilbert-Schmidt kernel, the diagonal of `K^(n+2)` is absolutely summable. -/
 theorem summable_norm_hsPow_diag {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) :
     Summable (fun i => ‖hsPow K (n + 1) (i, i)‖) := by
   have h := summable_norm_inner_diag_comp
@@ -113,6 +154,7 @@ theorem summable_norm_hsPow_diag {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) 
     (isHilbertSchmidt_toOperator (isHS_hsPow hK n)) (lpBasis ι)
   simpa only [inner_lpBasis_comp_eq_hsComp hK (isHS_hsPow hK n), hsPow] using h
 
+/-- For a Hilbert-Schmidt kernel, `∑ᵢ |K^(n+2)(i, i)| ≤ ‖K‖_HS^(n+2)`. -/
 theorem tsum_norm_hsPow_diag_le {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) :
     (∑' i, ‖hsPow K (n + 1) (i, i)‖) ≤ (hsNorm K) ^ (n + 2) := by
   have h := tsum_norm_inner_diag_comp_le
@@ -129,6 +171,8 @@ theorem tsum_norm_hsPow_diag_le {K : ι × ι → ℂ} (hK : IsHS K) (n : ℕ) :
         mul_le_mul_of_nonneg_left (hsNorm_hsPow_le hK n) (hsNorm_nonneg K)
       _ = (hsNorm K) ^ (n + 2) := by ring)
 
+/-- Assuming `‖z‖ ‖K‖_HS < 1`, the double series `∑_{n,i} z^(n+1) K^(n+2)(i, i)` is summable,
+dominated by a geometric series. -/
 theorem summable_resolventTrace_diagonal
     {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ)
     (hz : ‖z‖ * hsNorm K < 1) :
@@ -166,6 +210,7 @@ theorem summable_resolventTrace_diagonal
   apply Summable.of_norm
   simpa [f, Function.uncurry] using hfnorm
 
+/-- Term identity `(z T²) (z T)^n = z^(n+1) T^(n+2)` for the kernel operator `T`. -/
 theorem regularizedResolventOperatorTerm_eq
     {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ) (n : ℕ) :
     let T := toOperator hK
@@ -178,6 +223,8 @@ theorem regularizedResolventOperatorTerm_eq
   intro x
   simp [ContinuousLinearMap.comp_apply, smul_smul, mul_comm]
 
+/-- Assuming `‖z‖ ‖K‖_HS < 1`, the operator series `∑ₙ z^(n+1) T^(n+2)` converges in operator
+norm. -/
 theorem summable_regularizedResolventOperator
     {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ)
     (hz : ‖z‖ * hsNorm K < 1) :
@@ -199,6 +246,7 @@ theorem summable_regularizedResolventOperator
   simpa only [C, ContinuousLinearMap.compL_apply, X] using
     regularizedResolventOperatorTerm_eq hK z n
 
+/-- Assuming `‖z‖ ‖K‖_HS < 1`, the Neumann series gives `z T² (1 - z T)⁻¹ = ∑ₙ z^(n+1) T^(n+2)`. -/
 theorem regularizedResolventOperator_eq_tsum
     {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ)
     (hz : ‖z‖ * hsNorm K < 1) :
@@ -233,6 +281,8 @@ theorem regularizedResolventOperator_eq_tsum
       simpa only [C, ContinuousLinearMap.compL_apply, X] using
         regularizedResolventOperatorTerm_eq hK z n
 
+/-- Assuming `‖z‖ ‖K‖_HS < 1`, the kernel resolvent trace `∑ₙ z^(n+1) tr(K^(n+2))` equals the
+operator trace of `T ∘ (z T (1 - z T)⁻¹)`. -/
 theorem resolventTrace_eq_opTrace_regularizedResolvent
     {K : ι × ι → ℂ} (hK : IsHS K) (z : ℂ)
     (hz : ‖z‖ * hsNorm K < 1) :

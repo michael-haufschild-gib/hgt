@@ -2,12 +2,37 @@ import GaloisForLFunctions.RHTower.FinitePeeling
 import GaloisForLFunctions.RHTower.RectangleLocalWeightedCauchyResidue
 import GaloisForLFunctions.RHTower.WeightedLittlewoodRectangle
 
+/-!
+# Weighted Littlewood lemma on rectangles for entire functions
+
+For an entire function `f` that is not identically zero, every zero has finite order and only
+finitely many zeros lie in any closed rectangle. For a rectangle `[c, d] × [T₁, T₂]` whose
+boundary contains no zero of `f`, this module proves the weighted Littlewood identity:
+`2π ∑_ρ m(ρ)(Re ρ - c)` over the zeros `ρ` in the rectangle, counted with multiplicity `m(ρ)`,
+equals `∫ log |f(c + it)| dt - ∫ log |f(d + it)| dt + (d - c) ∫ Re (f'/f)(d + it) dt
++ ∫ (x - c) Im (f'/f)(x + iT₁) dx - ∫ (x - c) Im (f'/f)(x + iT₂) dx`.
+
+## Main results
+
+- `analyticOrderAt_ne_top_of_entire_exists_ne_zero`: a nonzero entire function has finite
+  analytic order at every point.
+- `entire_zeros_closedRectangle_finite`: its zero set in a closed rectangle is finite.
+- `exists_entire_weighted_littlewood_rectangle`: the weighted Littlewood identity above, with
+  `Z` the finite set of zeros in the rectangle.
+
+## Hypotheses
+
+Unconditional for entire `f` with `f(z) ≠ 0` for some `z`. The Littlewood identity assumes
+`c < d`, `T₁ < T₂`, and that `f` has no zero on the four edges of the rectangle.
+-/
+
 open Complex Filter MeasureTheory intervalIntegral Set Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- An entire function that is not identically zero has finite analytic order at every point. -/
 theorem analyticOrderAt_ne_top_of_entire_exists_ne_zero
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hne : ∃ z : ℂ, f z ≠ 0) (rho : ℂ) :
@@ -20,6 +45,7 @@ theorem analyticOrderAt_ne_top_of_entire_exists_ne_zero
   obtain ⟨z, hz⟩ := hne
   exact hz (heq (Set.mem_univ z))
 
+/-- An entire function that is not identically zero has only finitely many zeros in any closed rectangle. -/
 theorem entire_zeros_closedRectangle_finite
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hne : ∃ z : ℂ, f z ≠ 0) (z₁ z₂ : ℂ) :
@@ -46,6 +72,9 @@ private theorem analyticAt_logDeriv_of_ne {f : ℂ → ℂ} {z : ℂ}
   filter_upwards with w
   rw [logDeriv_apply]
 
+/-- Weighted Littlewood lemma: if `f` is entire, not identically zero, and zero-free on the boundary of
+`[c, d] × [T₁, T₂]`, then `2π ∑ m(ρ)(Re ρ - c)` over the zeros in the rectangle equals the boundary
+expression in `log |f|` and `f'/f` stated in the module doc. -/
 theorem exists_entire_weighted_littlewood_rectangle
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f Set.univ)
     (hne : ∃ z : ℂ, f z ≠ 0)

@@ -1,12 +1,36 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaSquareInghamCriticalMoment
 import Mathlib.Data.Nat.Log
 
+/-!
+# Global critical-line fourth moment of the Riemann zeta function
+
+This module upgrades the dyadic critical-line fourth-moment bound
+`∫_N^{2N} |ζ(1/2+it)|^4 dt ≤ C N^{101/100}` to initial segments `[0, N]` and to symmetric
+windows `[-N, N]`. The initial-segment bound follows by summing dyadic shells up to the next power
+of two above `N`; the symmetric bound uses the reflection `ζ(conj s) = conj ζ(s)`, which makes the
+fourth-moment density even in `t`.
+
+## Main results
+
+- `exists_inghamCriticalZetaFourthMoment_initial_nat_le_routeTBudget`: there is `D ≥ 0` with
+  `∫_0^N |ζ(1/2+it)|^4 dt ≤ D N^{101/100}` for every natural `N ≥ 4`.
+- `exists_inghamCriticalZetaFourthMoment_symmetric_nat_le_routeTBudget`: there is `D ≥ 0` with
+  `∫_{-N}^{N} |ζ(1/2+it)|^4 dt ≤ D N^{101/100}` for every natural `N ≥ 4`.
+
+## Hypotheses
+
+The main results are unconditional. They rest on the imported unconditional dyadic bound
+`exists_inghamCriticalZetaFourthMoment_dyadic_le_routeTBudget`; the only range condition is
+`4 ≤ N`.
+-/
+
 open Complex Set MeasureTheory intervalIntegral
 
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- The fourth-moment density `t ↦ |ζ(1/2+it)|^4` on the critical line. -/
 private def criticalZetaFourthDensity (t : ℝ) : ℝ :=
   ‖riemannZeta (inghamCriticalPoint t)‖ ^ (4 : ℝ)
 
@@ -24,6 +48,7 @@ private theorem inghamCriticalZetaFourthMoment_eq_intervalIntegral
     ← MeasureTheory.integral_Icc_eq_integral_Ioc]
   rfl
 
+/-- Additivity of the critical fourth moment over adjacent intervals `[a,b] ∪ [b,c]`. -/
 private theorem inghamCriticalZetaFourthMoment_add_adjacent
     {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c) :
     inghamCriticalZetaFourthMoment a c =
@@ -49,6 +74,8 @@ private theorem inghamCriticalZetaFourthMoment_mono_right
   rw [inghamCriticalZetaFourthMoment_add_adjacent hab hbc]
   exact le_add_of_nonneg_right inghamCriticalZetaFourthMoment_nonneg
 
+/-- Dyadic summation: assuming the shell bound `∫_N^{2N} |ζ(1/2+it)|^4 ≤ C N^{101/100}` for all
+`N ≥ 4`, the segment `[4, 4·2^k]` satisfies `∫ |ζ(1/2+it)|^4 ≤ C (4·2^k)^{101/100}`. -/
 private theorem dyadic_initial_inghamCriticalZetaFourthMoment_le
     (C : ℝ) (hC : 0 ≤ C)
     (hbound : ∀ {N : ℕ}, 4 ≤ N →
@@ -102,6 +129,7 @@ private theorem dyadic_initial_inghamCriticalZetaFourthMoment_le
             rw [Real.mul_rpow (by norm_num) hN0]
             ring
 
+/-- For `N > 1`, the least power of two that is at least `N` is less than `2N`. -/
 private theorem pow_clog_two_lt_two_mul {N : ℕ} (hN : 1 < N) :
     2 ^ Nat.clog 2 N < 2 * N := by
   have hkpos : 0 < Nat.clog 2 N := Nat.clog_pos (by norm_num) hN
@@ -109,6 +137,8 @@ private theorem pow_clog_two_lt_two_mul {N : ℕ} (hN : 1 < N) :
   rw [← Nat.succ_pred_eq_of_pos hkpos, pow_succ]
   omega
 
+/-- Unconditional initial-segment fourth moment: some `D ≥ 0` gives
+`∫_0^N |ζ(1/2+it)|^4 dt ≤ D N^{101/100}` for all natural `N ≥ 4`. -/
 theorem exists_inghamCriticalZetaFourthMoment_initial_nat_le_routeTBudget :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {N : ℕ}, 4 ≤ N →
       inghamCriticalZetaFourthMoment 0 (N : ℝ) ≤
@@ -175,6 +205,7 @@ theorem exists_inghamCriticalZetaFourthMoment_initial_nat_le_routeTBudget :
       dsimp only [D]
       ring
 
+/-- The density `|ζ(1/2+it)|^4` is even in `t`, by `ζ(conj s) = conj ζ(s)`. -/
 private theorem criticalZetaFourthDensity_neg (t : ℝ) :
     criticalZetaFourthDensity (-t) = criticalZetaFourthDensity t := by
   have hpoint : inghamCriticalPoint (-t) = starRingEnd ℂ (inghamCriticalPoint t) := by
@@ -198,6 +229,8 @@ private theorem inghamCriticalZetaFourthMoment_neg_eq
       intro t _
       exact criticalZetaFourthDensity_neg t
 
+/-- Unconditional symmetric fourth moment: some `D ≥ 0` gives
+`∫_{-N}^{N} |ζ(1/2+it)|^4 dt ≤ D N^{101/100}` for all natural `N ≥ 4`. -/
 theorem exists_inghamCriticalZetaFourthMoment_symmetric_nat_le_routeTBudget :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {N : ℕ}, 4 ≤ N →
       inghamCriticalZetaFourthMoment (-(N : ℝ)) (N : ℝ) ≤

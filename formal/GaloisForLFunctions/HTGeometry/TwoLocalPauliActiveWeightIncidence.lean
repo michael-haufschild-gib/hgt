@@ -1,16 +1,39 @@
 import GaloisForLFunctions.HTGeometry.TwoLocalPauliBoundaryIncidence
 
+/-!
+# Active-weight lower bound for two-local Pauli strings anticommuting with a given string
+
+Let `P` be a nonzero Pauli string on `n` qubits with support of size `|P|`. For each ordered pair
+`(i, j)` of distinct sites with `i` in the support, the weight-two string with axis `prev(P_i)` at
+`i` and the axis matching `P_j` at `j` (axis `0` if `j` is idle) anticommutes with `P`: it
+anticommutes at `i` and commutes at `j`. The construction is injective, so at least `|P| (n - 1)`
+nonidentity Pauli strings of weight at most `q ≥ 2` anticommute with `P`. This strengthens the
+boundary bound `|P| (n - |P|)`.
+
+## Main results
+
+- `card_filter_twoLocalPauli_anticommuting_ge_activeWeight`: for `2 ≤ q`, the number of
+  nonidentity Pauli strings of weight at most `q` anticommuting with `P` is at least `|P| (n - 1)`.
+- `activeFanPauliAnticommutingLabel_injective`: the fan construction is injective.
+
+## Hypotheses
+
+Unconditional; the only premise is `2 ≤ q`.
+-/
+
 open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Ordered pairs `(i, j)` of distinct sites with `i` in the support of `P`. -/
 abbrev PauliActiveFanPair
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :=
   Σ i : {i : Fin n // i ∈ pauliSupport P.1},
     {j : Fin n // j ≠ i.1}
 
+/-- The weight-two string with axis `prev(P_i)` at `i` and the axis matching `P_j` at `j`. -/
 def activeFanPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliActiveFanPair P) : Fin n → Option (Fin 3) :=
@@ -18,6 +41,7 @@ def activeFanPauliAnticommutingLabel
     (pauliAxisPrev (matchingPauliAxis (P.1 z.1.1)))
     (matchingPauliAxis (P.1 z.2.1))
 
+/-- The fan string has Pauli weight exactly two. -/
 theorem pauliWeight_activeFanPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliActiveFanPair P) :
@@ -35,6 +59,7 @@ theorem activeFanPauliAnticommutingLabel_mem
     pauliWeight_activeFanPauliAnticommutingLabel]
   omega
 
+/-- The fan string anticommutes with `P` (conjugation sign `-1`). -/
 theorem finitePauliConjugationSign_activeFanPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliActiveFanPair P) :
@@ -55,6 +80,7 @@ theorem finitePauliConjugationSign_activeFanPauliAnticommutingLabel
         norm_num
       simpa [hpi, matchingPauliAxis] using hmul
 
+/-- Distinct active fan pairs give distinct fan strings. -/
 theorem activeFanPauliAnticommutingLabel_injective
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :
     Function.Injective (activeFanPauliAnticommutingLabel P) := by
@@ -94,6 +120,7 @@ theorem card_sites_ne_site {n : ℕ} (i : Fin n) :
   rw [Fintype.card_subtype_compl]
   simp
 
+/-- There are `|P| (n - 1)` active fan pairs. -/
 theorem card_pauliActiveFanPair
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :
     Fintype.card (PauliActiveFanPair P) =
@@ -105,6 +132,8 @@ theorem card_pauliActiveFanPair
     ← pauliWeight_eq_card_pauliSupport]
   simp
 
+/-- For `2 ≤ q`, at least `|P| (n - 1)` nonidentity Pauli strings of weight at most `q`
+anticommute with the nonzero string `P`. -/
 theorem card_filter_twoLocalPauli_anticommuting_ge_activeWeight
     {n q : ℕ} (hq : 2 ≤ q)
     (P : NonzeroPauliCharacter (Fin n)) :

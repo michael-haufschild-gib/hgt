@@ -6,16 +6,47 @@ import Mathlib.Data.Complex.Basic
 import Mathlib.Analysis.Complex.Basic
 import GaloisForLFunctions.HTGeometry.ConstitutivePositiveProfileFormation
 
+/-!
+# The positive envelope of a reflected function algebra
+
+An involution `r` of a set `X` (a functional reflection) makes the functions `X → ℂ` into a commutative
+complex star-algebra with the reflected star `f*(x) = conj(f(r x))`. For finite `X`, every star-algebra
+map from this algebra into a C*-ring kills the indicator of every point that `r` moves, because
+`e_x* e_x = 0` there. Hence every such map factors uniquely through restriction to the fixed points of
+`r`, so the positive (C*) envelope of the reflected algebra is the commutative algebra of functions on
+the fixed-point set. In particular the characters are exactly evaluations at fixed points, the elements
+invisible to all receivers are those vanishing on fixed points, and a faithful star-representation into
+`X → ℂ` exists only when `r` is the identity.
+
+## Main results
+
+- `receiver_kills_atom`: a star-algebra map into a C*-ring kills the atom at every non-fixed point.
+- `receiver_factors_uniquely`: every star-algebra map into a C*-ring factors uniquely through
+  `restrictFixed`, restriction to the fixed points.
+- `positiveCharacter_unique_fixedPoint`: every star-character is evaluation at a unique fixed point.
+- `invisible_fixedReceiver_iff`: an element is killed by every receiver into functions on the fixed
+  points iff it vanishes on the fixed points.
+- `faithful_positive_receiver_iff`: an injective star-algebra map into `X → ℂ` exists iff `r` fixes
+  every point.
+
+## Hypotheses
+
+Unconditional. `X` is finite with decidable equality where sums over atoms are used, and the target `B`
+is a normed C*-ring that is a complex star-algebra.
+-/
+
 open scoped ComplexConjugate
 
 universe u v
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- A functional reflection: an involution `act` of the set `X`. -/
 structure FunctionalReflection (X : Type u) where
   act : X → X
   involutive : Function.Involutive act
 
+/-- Complex functions on `X`, to be equipped with the star operation twisted by the reflection `r`. -/
 structure ReflectedFunction {X : Type u} (r : FunctionalReflection X) where
   val : X → ℂ
 
@@ -61,6 +92,7 @@ instance : Algebra ℂ (ReflectedFunction r) := Equiv.algebra ℂ (equiv r)
   change (equiv r (c • f)) x = _
   simpa [Algebra.smul_def] using congrFun (map_smul (Equiv.algEquiv ℂ (equiv r)) c f) x
 
+/-- The reflected star `f*(x) = conj(f(r x))`. -/
 instance : Star (ReflectedFunction r) where
   star f := ⟨fun x => star (f (r.act x))⟩
 
@@ -77,6 +109,7 @@ instance : StarRing (ReflectedFunction r) where
 instance : StarModule ℂ (ReflectedFunction r) where
   star_smul c f := by ext x; simp
 
+/-- The fixed points of the reflection. -/
 def FixedPoint := {x : X // r.act x = x}
 
 variable [Fintype X] [DecidableEq X]
@@ -90,6 +123,7 @@ instance fixedPointFintype : Fintype (FixedPoint r) :=
 instance fixedPointDecidableEq : DecidableEq (FixedPoint r) :=
   fun x y => decidable_of_iff (x.1 = y.1) Subtype.coe_injective.eq_iff
 
+/-- The indicator function of the point `x`. -/
 def atom (x : X) : ReflectedFunction r :=
   ⟨fun y => if y = x then 1 else 0⟩
 
@@ -105,6 +139,7 @@ theorem atom_ne_zero (x : X) : atom r x ≠ 0 := by
   exact one_ne_zero h'
 
 omit [Fintype X] in
+/-- The reflected star of the atom at `x` is the atom at `r x`. -/
 @[simp] theorem star_atom (x : X) : star (atom r x) = atom r (r.act x) := by
   ext y
   have hiff : r.act y = x ↔ y = r.act x := by
@@ -120,6 +155,7 @@ omit [Fintype X] in
   simp [atom, hiff]
 
 omit [Fintype X] in
+/-- At a point moved by the reflection, the atom satisfies `e_x* e_x = 0`. -/
 theorem star_atom_mul_self (x : X) (hx : r.act x ≠ x) :
     star (atom r x) * atom r x = 0 := by
   rw [star_atom]
@@ -128,6 +164,7 @@ theorem star_atom_mul_self (x : X) (hx : r.act x ≠ x) :
   · simp [atom, hy, Ne.symm hx]
   · simp [atom, hy]
 
+/-- Restriction to the fixed points, a star-algebra map onto the functions on the fixed-point set. -/
 def restrictFixed : ReflectedFunction r →⋆ₐ[ℂ] (FixedPoint r → ℂ) where
   toFun f := fun x => f x.1
   map_one' := by ext x; simp
@@ -145,6 +182,7 @@ omit [Fintype X] [DecidableEq X] in
 @[simp] theorem restrictFixed_apply (f : ReflectedFunction r) (x : FixedPoint r) :
     restrictFixed r f x = f x.1 := rfl
 
+/-- Extension by zero from the fixed points to all of `X`. -/
 def extendFixed (g : FixedPoint r → ℂ) : ReflectedFunction r :=
   ⟨fun x => if hx : r.act x = x then g ⟨x, hx⟩ else 0⟩
 
@@ -155,9 +193,11 @@ omit [Fintype X] in
   simp [extendFixed, x.property]
 
 omit [Fintype X] in
+/-- Restriction to the fixed points is surjective. -/
 theorem restrictFixed_surjective : Function.Surjective (restrictFixed r) :=
   fun g => ⟨extendFixed r g, restrictFixed_extendFixed r g⟩
 
+/-- Every reflected function is the finite sum `Σ_x f(x) e_x` of its atoms. -/
 theorem atom_expansion (f : ReflectedFunction r) :
     f = ∑ x : X, f x • atom r x := by
   ext y
@@ -168,11 +208,14 @@ theorem atom_expansion (f : ReflectedFunction r) :
 variable {B : Type v} [NormedRing B] [StarRing B] [CStarRing B] [Algebra ℂ B]
 
 omit [Fintype X] in
+/-- A star-algebra map into a C*-ring kills the atom at every point moved by the reflection, by the C*
+identity applied to `e_x* e_x = 0`. -/
 theorem receiver_kills_atom (π : ReflectedFunction r →⋆ₐ[ℂ] B) (x : X)
     (hx : r.act x ≠ x) : π (atom r x) = 0 := by
   rw [← CStarRing.star_mul_self_eq_zero_iff (π (atom r x))]
   rw [← map_star π, ← map_mul, star_atom_mul_self r x hx, map_zero]
 
+/-- A star-algebra map into a C*-ring kills every function that vanishes on the fixed points. -/
 theorem receiver_kills_restrictKernel (π : ReflectedFunction r →⋆ₐ[ℂ] B)
     {f : ReflectedFunction r} (hf : restrictFixed r f = 0) : π f = 0 := by
   rw [atom_expansion r f, map_sum]
@@ -186,6 +229,7 @@ theorem receiver_kills_restrictKernel (π : ReflectedFunction r →⋆ₐ[ℂ] B
     simp [hfx]
   · simp [receiver_kills_atom r π x hx]
 
+/-- A star-algebra map into a C*-ring depends only on the restriction to the fixed points. -/
 theorem receiver_eq_of_restrict_eq (π : ReflectedFunction r →⋆ₐ[ℂ] B)
     {f g : ReflectedFunction r} (h : restrictFixed r f = restrictFixed r g) :
     π f = π g := by
@@ -196,6 +240,7 @@ theorem receiver_eq_of_restrict_eq (π : ReflectedFunction r →⋆ₐ[ℂ] B)
   have hx := congrFun h x
   simpa using sub_eq_zero.mpr hx
 
+/-- The induced star-algebra map on functions on the fixed points, `g ↦ π(extendFixed g)`. -/
 noncomputable def factorReceiver (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
     (FixedPoint r → ℂ) →⋆ₐ[ℂ] B where
   toFun g := π (extendFixed r g)
@@ -225,6 +270,7 @@ noncomputable def factorReceiver (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
     apply receiver_eq_of_restrict_eq r π
     rw [restrictFixed_extendFixed, map_star, restrictFixed_extendFixed]
 
+/-- The induced map composed with restriction recovers the original receiver. -/
 @[simp] theorem factorReceiver_comp_restrictFixed
     (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
     (factorReceiver r π).comp (restrictFixed r) = π := by
@@ -232,6 +278,7 @@ noncomputable def factorReceiver (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
   apply receiver_eq_of_restrict_eq r π
   simp
 
+/-- Uniqueness of the factorization through restriction to the fixed points. -/
 theorem factorReceiver_unique (π : ReflectedFunction r →⋆ₐ[ℂ] B)
     (φ : (FixedPoint r → ℂ) →⋆ₐ[ℂ] B)
     (hφ : φ.comp (restrictFixed r) = π) :
@@ -242,6 +289,7 @@ theorem factorReceiver_unique (π : ReflectedFunction r →⋆ₐ[ℂ] B)
   change φ g = π (extendFixed r g)
   simpa [StarAlgHom.comp_apply] using h
 
+/-- Every star-algebra map into a C*-ring factors uniquely through restriction to the fixed points. -/
 theorem receiver_factors_uniquely (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
     ∃! φ : (FixedPoint r → ℂ) →⋆ₐ[ℂ] B,
       φ.comp (restrictFixed r) = π := by
@@ -249,6 +297,7 @@ theorem receiver_factors_uniquely (π : ReflectedFunction r →⋆ₐ[ℂ] B) :
   intro φ hφ
   exact factorReceiver_unique r π φ hφ
 
+/-- The indicator function of a fixed point, as a function on the fixed-point set. -/
 def fixedAtom (x : FixedPoint r) : FixedPoint r → ℂ :=
   fun y => if y = x then 1 else 0
 
@@ -274,6 +323,7 @@ theorem fixedAtom_mul_eq_zero {x y : FixedPoint r} (hxy : x ≠ y) :
   · simp [fixedAtom, hzx, hxy]
   · simp [fixedAtom, hzx]
 
+/-- Every star-character of the function algebra on the fixed points is evaluation at a unique point. -/
 theorem productCharacter_unique_coordinate
     (φ : (FixedPoint r → ℂ) →⋆ₐ[ℂ] ℂ) :
     ∃! x : FixedPoint r, ∀ g, φ g = g x := by
@@ -315,6 +365,8 @@ theorem productCharacter_unique_coordinate
       _ = 0 := map_zero φ
   exact one_ne_zero this
 
+/-- Every star-character of the reflected function algebra is evaluation at a unique fixed point of the
+reflection. -/
 theorem positiveCharacter_unique_fixedPoint
     (π : ReflectedFunction r →⋆ₐ[ℂ] ℂ) :
     ∃! x : FixedPoint r, ∀ f, π f = f x.1 := by
@@ -335,6 +387,8 @@ theorem positiveCharacter_unique_fixedPoint
       _ = extendFixed r g y.1 := hy _
       _ = g y := by simp [extendFixed, y.property]
 
+/-- A reflected function is killed by every star-algebra map into functions on the fixed points iff it
+vanishes on the fixed points. -/
 theorem invisible_fixedReceiver_iff (f : ReflectedFunction r) :
     GaloisForLFunctions.HTGeometry.StarReceiverInvisible (FixedPoint r → ℂ) f ↔
       restrictFixed r f = 0 := by
@@ -345,6 +399,7 @@ theorem invisible_fixedReceiver_iff (f : ReflectedFunction r) :
     exact receiver_kills_restrictKernel r π hf
 
 omit [Fintype X] in
+/-- An injective star-algebra map into a C*-ring forces the reflection to be the identity. -/
 theorem injective_receiver_forces_fixed (π : ReflectedFunction r →⋆ₐ[ℂ] B)
     (hπ : Function.Injective π) : ∀ x : X, r.act x = x := by
   intro x
@@ -353,6 +408,7 @@ theorem injective_receiver_forces_fixed (π : ReflectedFunction r →⋆ₐ[ℂ]
   apply hπ
   simpa using receiver_kills_atom r π x hx
 
+/-- When the reflection is the identity, the identity map into `X → ℂ` is a star-algebra map. -/
 def standardPositiveReceiver (hfix : ∀ x : X, r.act x = x) :
     ReflectedFunction r →⋆ₐ[ℂ] (X → ℂ) where
   toAlgHom := (Equiv.algEquiv ℂ (equiv r)).toAlgHom
@@ -365,6 +421,8 @@ theorem standardPositiveReceiver_injective (hfix : ∀ x : X, r.act x = x) :
     Function.Injective (standardPositiveReceiver r hfix) :=
   (equiv r).injective
 
+/-- A faithful star-representation of the reflected algebra into `X → ℂ` exists iff the reflection
+fixes every point. -/
 theorem faithful_positive_receiver_iff :
     (∃ π : ReflectedFunction r →⋆ₐ[ℂ] (X → ℂ), Function.Injective π) ↔
       ∀ x : X, r.act x = x := by
@@ -374,6 +432,7 @@ theorem faithful_positive_receiver_iff :
   · intro hfix
     exact ⟨standardPositiveReceiver r hfix, standardPositiveReceiver_injective r hfix⟩
 
+/-- The reflection acting on ordinary functions `X → ℂ` by `f ↦ f ∘ r`, a star-algebra automorphism. -/
 def standardReflection : (X → ℂ) ≃⋆ₐ[ℂ] (X → ℂ) where
   toFun f := fun x => f (r.act x)
   invFun f := fun x => f (r.act x)
@@ -387,6 +446,7 @@ def standardReflection : (X → ℂ) ≃⋆ₐ[ℂ] (X → ℂ) where
 def standardAtom (x : X) : X → ℂ := fun y => if y = x then 1 else 0
 
 omit [Fintype X] in
+/-- The standard reflection sends the atom at `x` to the atom at `r x`. -/
 @[simp] theorem standardReflection_atom (x : X) :
     standardReflection r (standardAtom x) = standardAtom (r.act x) := by
   ext y

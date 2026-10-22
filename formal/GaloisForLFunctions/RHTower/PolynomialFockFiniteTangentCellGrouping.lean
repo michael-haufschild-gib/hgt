@@ -1,11 +1,37 @@
 import GaloisForLFunctions.RHTower.PolynomialFockFiniteTangentTrace
 
+/-!
+# Grouping critical primes by adapted cells
+
+Each prime `p` is assigned the adapted cell index `I(p) = ⌊(log p)^(m/2)⌋`. For a finite set `T`
+of primes with `log p ≥ 2`, the total critical weight `∑ (log p)² / p` of the primes in one fiber
+`I(p) = n` is bounded by the scaled adapted cell mass `M_n`: the prime-log window mass centered at
+`n^(2/m)` with radius `s_m ρ_m(n^(2/m))`, where `s_m = 2^(m/2 - 1) + 2` is the overlap cell scale.
+Grouping by fibers then turns the weighted sum `∑_{p ∈ T} w_p M_{I(p)}^(q-1)` into a bound by
+`∑_n M_n^q`.
+
+## Main results
+
+- `sum_criticalPrimeSamplingWeight_adaptedCellIndex_fiber_le_scaledCellMass`: the critical weight
+  of a nonempty fiber of `I` on `T` is at most `M_n`.
+- `sum_weight_mul_scaledCellMass_rpow_sub_one_le_tsum_rpow_scaledCellMass`:
+  `∑_{p ∈ T} w_p M_{I(p)}^(q-1) ≤ ∑'_n M_n^q`.
+
+## Hypotheses
+
+The results assume `4 ≤ m` and that every prime of `T` satisfies `2 ≤ log p`. The second result
+also assumes `1 < q` and takes as a hypothesis the summability of `n ↦ M_n^q`; its conclusion is
+stated relative to that summability input.
+-/
+
 open MeasureTheory Set Filter Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- Assuming `4 ≤ m` and `2 ≤ log p` on `T`, the primes of `T` in the adapted cell `n` (an index
+attained on `T`) have total weight `∑ (log p)² / p` at most the scaled adapted cell mass `M_n`. -/
 theorem sum_criticalPrimeSamplingWeight_adaptedCellIndex_fiber_le_scaledCellMass
     {m : ℝ} (hm : 4 ≤ m) (T : Finset Nat.Primes)
     (hT : ∀ p ∈ T, 2 ≤ Real.log (p : ℝ))
@@ -69,6 +95,8 @@ theorem sum_criticalPrimeSamplingWeight_adaptedCellIndex_fiber_le_scaledCellMass
       Finset.sum_le_sum_of_subset_of_nonneg hsub
         (fun k _ _ => primeLogPowWeight_two_nonneg k)
 
+/-- Assuming `4 ≤ m`, `1 < q`, `2 ≤ log p` on `T`, and summability of `n ↦ M_n^q`,
+`∑_{p ∈ T} w_p M_{I(p)}^(q-1) ≤ ∑'_n M_n^q`, by grouping primes into adapted-cell fibers. -/
 theorem sum_weight_mul_scaledCellMass_rpow_sub_one_le_tsum_rpow_scaledCellMass
     {m q : ℝ} (hm : 4 ≤ m) (hq : 1 < q)
     (T : Finset Nat.Primes)

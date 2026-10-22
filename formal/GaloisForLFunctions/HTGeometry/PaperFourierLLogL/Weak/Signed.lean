@@ -1,5 +1,32 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Weak.Cover
 
+/-!
+# From a median bound to a weak-type bound by translations and random signs
+
+A Stein–Nikishin type argument for the symmetric Fourier maximal function
+`M f(x) = sup_N |S_N f(x)|` on the circle. Partial sums commute with translations, and the modular
+unit ball `inside f` (`f ∈ L log L` with `∫ |f| log(2 + |f|) ≤ 1`) is stable under translation and
+under signed averages `(1/n) ∑ ±f(zᵢ + ·)`. If the level set `{M f > p}` has positive measure, `n`
+translates of it with `n · |S| ≤ 4` cover half the circle; at each covered point at least half of
+the `2ⁿ` sign patterns make the signed average exceed `p/n`. Combining with a median bound yields
+the weak-type estimate `p · |{M f > p}| ≤ v` on the modular unit ball.
+
+## Main results
+
+- `translated_sum`: `S_N (f(z + ·))(x) = S_N f(z + x)`.
+- `family_in`: signed translation averages of a function in the modular unit ball stay in it.
+- `signed_window`: pointwise, `2ⁿ · 1_{spread}(x) ≤ 2 ∑_c 1_{{M(slate c) > p/n}}(x)`.
+- `circle_bill`: assuming `GoodBound`, there is `v > 0` with `p · |{M f > p}| ≤ v` for all `p > 0`
+  and all `f` in the modular unit ball.
+
+## Hypotheses
+
+`circle_bill` is conditional on `GoodBound`, the Prop-valued good-set estimate for the maximal
+partial-sum operator on bounded functions at exponential heights (proved elsewhere in the
+development as `FourierLLogL.maximal_good_sets`). The remaining lemmas are unconditional, under the
+membership `inside f` where stated.
+-/
+
 noncomputable section
 open MeasureTheory Filter Set Function
 open scoped ENNReal BigOperators Topology
@@ -11,6 +38,7 @@ open Real
 open scoped Classical
 variable {f : Torus → ℂ} {n : ℕ} {w : ℝ}
 
+/-- Translation `x ↦ f(z + x)`. -/
 def drag (z : Torus) (f : Torus → ℂ) (x : Torus) := f (z+x)
 
 lemma translated_bill (f : Torus → ℂ) (z : Torus) :
@@ -18,6 +46,7 @@ lemma translated_bill (f : Torus → ℂ) (z : Torus) :
   unfold modBill drag circleMeasure
   exact integral_add_left_eq_self (fun x : Torus => priceΦ (‖f x‖/w)) z
 
+/-- The modular unit ball is translation invariant. -/
 lemma translated_in (z : Torus) (h : inside f) : inside (drag z f) := by
   have HE := flow z
   have hi (g : Torus → ℂ) (h : Integrable g law) :
@@ -30,6 +59,7 @@ lemma fourier_drag (k : ℤ) (x y : Torus) :
     fourier k (x+y)=fourier k x * fourier k y := by
   simp_rw [fourier_apply,smul_add,AddCircle.toCircle_add,Circle.coe_mul]
 
+/-- Partial sums commute with translation: `S_N (f(z + ·))(x) = S_N f(z + x)`. -/
 lemma translated_sum (z x : Torus) (f : Torus→ℂ) (N : ℕ) :
     symmetricPartialSum (drag z f) N x=symmetricPartialSum f N (z+x) := by
   have HE (k : ℤ) : fourierCoeff (drag z f) k = fourier k z * fourierCoeff f k := by
@@ -52,9 +82,11 @@ abbrev Toss (n : ℕ) := Fin n → Bool
 
 def mark (b : Bool) : ℂ := if b then -1 else 1
 lemma norm_mark (b) : ‖mark b‖=1 := by cases b <;> norm_num [mark]
+/-- Signed translation average `(1/n) ∑ᵢ ±f(zᵢ + x)` with signs given by `c`. -/
 def slate (f : Torus→ℂ) (z : Fin n → Torus) (c : Toss n) :=
     fun (x : Torus) => (n:ℝ)⁻¹ • ∑ i, mark (c i)*drag (z i) f x
 
+/-- For `n > 0`, signed translation averages of a function in the modular unit ball stay in it. -/
 lemma family_in (f : Torus→ℂ) (z : Fin n→ Torus) (h : inside f) (hp : 0 < n)
     (c : Toss n) : inside (slate f z c) := by
   let : NeZero n := ⟨hp.ne'⟩
@@ -80,6 +112,7 @@ lemma symm_sum (s : Finset (Fin n)) (f : Fin n→Torus→ℂ)
     change symmetricPartialSum (f i+(fun y => ∑ j∈t,f j y)) _ _=_
     rw [symmetricPartialSum_add (h i) (integrable_finsetSum _ (fun i _ => h i)),ih]
 
+/-- Partial sums of a signed average: `S_k (slate f z c)(x) = (1/n) ∑ᵢ ±S_k f(zᵢ + x)`. -/
 lemma slate_sum (z : Fin n→Torus) (x : Torus) (h : inside f) (k : ℕ) (c : Toss n) :
     symmetricPartialSum (slate f z c) k x =
       (((n:ℝ)⁻¹:ℝ):ℂ)*∑ i,mark (c i)*symmetricPartialSum f k (z i+x) := by
@@ -98,6 +131,7 @@ def switch (i : Fin n) : Toss n ≃ Toss n :=
       funext p; by_cases h : p=i <;> simp [w,h]
     ⟨w,w,he,he⟩
 
+/-- Flipping the `j`-th sign changes a signed sum by exactly `2 · (±gⱼ)`. -/
 lemma flipsum_bill (g : Fin n → ℂ) (j : Fin n) (c : Toss n) :
     let f (c : Toss n) := ∑ i,mark (c i)*g i
     f c-f (switch j c)=2*mark (c j)*g j := by
@@ -110,6 +144,8 @@ lemma flipsum_bill (g : Fin n → ℂ) (j : Fin n) (c : Toss n) :
   simp
 
 def appears (s : Set Torus) (x : Torus) := if x∈s then (1:ℝ) else 0
+/-- At each point of the union of translates of `{M f > p}`, at least half of the `2ⁿ` sign
+patterns `c` put the point in `{M (slate f z c) > p/n}`. -/
 lemma signed_window (h : inside f) (p : ℝ) (hp : 0 < p)
     (z : Fin n → Torus) (hn : 0 < n) (x : Torus) :
     let q := fun c : Toss n => cloudSet (slate f z c) (p/n)
@@ -159,6 +195,8 @@ lemma occurs_meas (S : Set Torus) (h : MeasurableSet S) :
     funext x; by_cases h : x∈S <;> simp [appears,h]]
   refine ⟨(integrable_const _).indicator h,?_⟩; rw [integral_indicator h]; simp
 
+/-- Assuming `GoodBound`, there is `v > 0` such that `p · |{M f > p}| ≤ v` for every `p > 0` and
+every `f` in the modular unit ball. -/
 lemma circle_bill (hp : GoodBound) :
     ∃ v : ℝ, 0 < v ∧ ∀ f : Torus→ℂ, inside f →
       ∀ p : ℝ, 0 < p → p*law.real (cloudSet f p) ≤ v := by

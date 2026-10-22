@@ -4,6 +4,50 @@ import GaloisForLFunctions.HTGeometry.AnalyticNevanlinnaCarrierRelationFree
 import GaloisForLFunctions.HTGeometry.InjectiveShiftConfigurationTopology
 import GaloisForLFunctions.HTGeometry.NevanlinnaNoncriticalProjectiveCompactPatch
 
+/-!
+# Generic full rank of moving canonical jet evaluation matrices
+
+For a bounded real sequence `θ`, `L_θ(z) = Σ_n ((a_n(θ) - z)⁻¹ - a_n(θ)⁻¹)` is the moving canonical
+log-derivative with zeros `a_n(θ) = n + 1 + δ(θ n)`. On the upper half-plane its derivatives are
+`L_θ^{(k)}(z) = k! J_k(θ, z)` with `J_k = Σ_n (a_n - z)^{-(k+1)}` for `k ≥ 1`, and the jets are
+jointly continuous in `(θ, z)`. Perturbing finitely many coordinates of `θ` gives smooth
+finite-dimensional jet families whose derivative in the perturbation is surjective at injective
+upper-half-plane nodes. A transversality argument on compact patches then shows that the expanded
+evaluation matrix of a finite differential pattern (rows: evaluation points; columns: monomials in
+`z` and jets) has full column rank for a dense open set of `θ`. Covering compact sets of shift
+configurations by finitely many row packets and applying the Baire category theorem over the
+countably many finite patterns yields a dense residual set of `θ` for which every finite pattern
+and every injective shift configuration have a full-rank witness, hence have only the zero
+pattern relation.
+
+## Main results
+
+- `iteratedDeriv_movingCanonicalLogDerivative_eq_factorial_mul_normalizedJet`:
+  `L_θ^{(k)}(z) = k! · movingCanonicalNormalizedJet θ k z` for `Im z > 0`.
+- `continuousAt_iteratedDeriv_movingCanonicalLogDerivative_joint`: joint continuity of
+  `(θ, z) ↦ L_θ^{(k)}(z)` on bounded sequences times the upper half-plane.
+- `fderiv_movingCanonicalExpandedJetFamily_probe_surjective`: surjectivity of the probe derivative.
+- `compact_movingCanonicalExpandedActualEvaluation_avoidance_dense`: density of `θ` avoiding the
+  rank-defect locus over a compact patch.
+- `movingCanonicalExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness`: a full-rank
+  witness forces every pattern relation to have zero coefficients.
+- `allFinitePatterns_movingCanonicalExpandedFullRankWitness_dense_residual` and
+  `allFinitePatterns_movingCanonicalExpandedRelationFree_dense_residual`: full-rank witnesses and
+  relation-freeness hold simultaneously for all finite patterns and all injective shifts on a dense
+  residual set of `θ`.
+
+## Hypotheses
+
+The final dense-residual theorems over all finite patterns are unconditional. Intermediate results
+take explicit dimension-counting hypotheses (`hrows`: `#columns + degree < #rows`; `hdim`: the
+real dimension of the node-parameter space is below `2 (#rows - #columns - degree + 1)`),
+injectivity of the exponent map,
+smoothness of the node map, and injective upper-half-plane nodes; for canonical finite patterns
+these are discharged by the `carrierPattern_*` lemmas. `movingCanonicalExpandedFullRankWitness`
+and `movingCanonicalExpandedPatternRelationHolds` are Prop-valued definitions describing rank and
+relation conditions, not assumed inputs of the final theorems.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Set Topology
@@ -11,6 +55,7 @@ open ClassicalAnalyticNevanlinnaCarrierFamily
 
 noncomputable section
 
+/-- Uniform zero majorant: `1 / a_n(θ)² ≤ 4 / (n + 1)²` for every bounded `θ`. -/
 theorem movingCanonicalZero_inv_sq_le_nat_majorant
     (θ : BoundedRealSequence) (a : ℕ) :
     1 / ‖(movingCanonicalZero θ a : ℂ)‖ ^ (2 : ℕ) ≤
@@ -41,6 +86,8 @@ theorem summable_movingCanonicalNatMajorant :
     simpa only [Nat.cast_add, Nat.cast_one] using hshift
   simpa [div_eq_mul_inv] using hone.mul_left 4
 
+/-- A summable majorant, uniform in `θ`, for the `a`-th normalized jet term of order `k` on the ball
+of radius `Im z / 2` around `z`. -/
 def movingCanonicalLocalJetMajorant (k : ℕ) (z : ℂ) (a : ℕ) : ℝ :=
   let y := z.im / 2
   let R := ‖z‖ + y
@@ -58,6 +105,8 @@ theorem summable_movingCanonicalLocalJetMajorant
     else (1 + (‖z‖ + z.im / 2) / (z.im / 2)) ^ (2 : ℕ) *
       (z.im / 2)⁻¹ ^ (k - 1))
 
+/-- For `Im z₀ > 0` and `z` in the ball of radius `Im z₀ / 2` around `z₀`, the normalized jet term
+is bounded by the local majorant, uniformly in `θ`. -/
 theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
     (k a : ℕ) (θ : BoundedRealSequence) {z₀ z : ℂ}
     (hz₀ : 0 < z₀.im) (hz : z ∈ Metric.ball z₀ (z₀.im / 2)) :
@@ -175,6 +224,8 @@ theorem movingCanonicalNormalizedJetTerm_norm_le_localMajorant
     have hconst : 0 ≤ C ^ (2 : ℕ) * y⁻¹ ^ m := by positivity
     exact hbound.trans (mul_le_mul_of_nonneg_left hAmajor hconst)
 
+/-- The normalized jet `(θ, z) ↦ J_k(θ, z)` is jointly continuous at every `(θ, z)` with
+`Im z > 0`. -/
 theorem continuousAt_movingCanonicalNormalizedJet
     (k : ℕ) (θ : BoundedRealSequence) {z : ℂ} (hz : 0 < z.im) :
     ContinuousAt
@@ -212,6 +263,7 @@ theorem continuousAt_movingCanonicalNormalizedJet
     exact ⟨Set.mem_univ _, Metric.mem_ball_self (half_pos hz)⟩
   exact hcontOn.continuousAt hSn
 
+/-- `HasDerivAt` for maps `ℂ → ℂ` with the module instance path fixed explicitly. -/
 abbrev HasCoherentComplexDerivAt
     (f : ℂ → ℂ) (f' x : ℂ) : Prop :=
   @HasDerivAt ℂ inferInstance ℂ
@@ -219,6 +271,8 @@ abbrev HasCoherentComplexDerivAt
     (NormedAlgebra.toNormedSpace ℂ).toModule
     inferInstance inferInstance f f' x
 
+/-- Termwise derivative: for `Im z > 0` the `a`-th jet term of order `k` has derivative
+`(k + 1)` times the term of order `k + 1`. -/
 theorem movingCanonicalNormalizedJetTerm_hasDerivAt
     (θ : BoundedRealSequence) (k a : ℕ) {z : ℂ} (hz : 0 < z.im) :
     HasCoherentComplexDerivAt
@@ -267,6 +321,8 @@ theorem movingCanonicalNormalizedJetTerm_hasDerivAt
       rw [pow_add]
       ring
 
+/-- For `Im z > 0`, `J_k(θ, ·)` has derivative `(k + 1) J_{k+1}(θ, z)`, by locally uniform
+summation of the termwise derivatives. -/
 theorem movingCanonicalNormalizedJet_hasDerivAt
     (θ : BoundedRealSequence) (k : ℕ) {z : ℂ} (hz : 0 < z.im) :
     HasCoherentComplexDerivAt
@@ -319,6 +375,8 @@ theorem movingCanonicalNormalizedJet_hasDerivAt
   · simp only [movingCanonicalNormalizedJet, nsmul_eq_mul]
     rw [tsum_mul_left]
 
+/-- For `Im z > 0`, the `k`-th derivative of `L_θ` is `k! · J_k(θ, z)`, where
+`J_k = Σ_n (a_n - z)^{-(k+1)}` for `k ≥ 1`. -/
 theorem iteratedDeriv_movingCanonicalLogDerivative_eq_factorial_mul_normalizedJet
     (θ : BoundedRealSequence) (k : ℕ) {z : ℂ} (hz : 0 < z.im) :
     iteratedDeriv k (movingCanonicalLogDerivative θ) z =
@@ -344,6 +402,7 @@ theorem iteratedDeriv_movingCanonicalLogDerivative_eq_factorial_mul_normalizedJe
       rw [Nat.cast_add, Nat.cast_one]
       ring
 
+/-- `(θ, z) ↦ L_θ^{(k)}(z)` is jointly continuous at every `(θ, z)` with `Im z > 0`. -/
 theorem continuousAt_iteratedDeriv_movingCanonicalLogDerivative_joint
     (k : ℕ) (θ : BoundedRealSequence) {z : ℂ} (hz : 0 < z.im) :
     ContinuousAt
@@ -365,6 +424,7 @@ theorem continuousAt_iteratedDeriv_movingCanonicalLogDerivative_joint
   exact iteratedDeriv_movingCanonicalLogDerivative_eq_factorial_mul_normalizedJet
     p.1 k hp
 
+/-- The jet family `(θ, h) ↦ (L_θ^{(k)}(nodes h i))_{i, k < n i}` at parametrized nodes. -/
 def movingCanonicalActualJetFamily
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -374,6 +434,8 @@ def movingCanonicalActualJetFamily
   fun s => iteratedDeriv s.2.1
     (movingCanonicalLogDerivative p.1) (nodes p.2 s.1)
 
+/-- For continuous nodes lying in the upper half-plane over `U`, the jet family is continuous on
+`(bounded sequences) × U`. -/
 theorem continuousOn_movingCanonicalActualJetFamily
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -396,6 +458,7 @@ theorem continuousOn_movingCanonicalActualJetFamily
       (f := fun q : BoundedRealSequence × H =>
         (q.1, nodes q.2 s.1)) hinner |>.continuousWithinAt
 
+/-- The jet family at row-by-shift nodes, reshaped into rows of jet coordinates. -/
 def movingCanonicalExpandedActualJetFamily
     {H row ι : Type*}
     [NormedAddCommGroup H] [NormedSpace ℝ H]
@@ -421,6 +484,8 @@ theorem continuousOn_movingCanonicalExpandedActualJetFamily
     (continuousOn_movingCanonicalActualJetFamily
       nodes hnodes (fun x : row × ι => orders x.2) U hupper)
 
+/-- Jet family in the finite chart `p ↦ θ + (finitely supported perturbation p)`, jointly in `p`
+and the node parameter. -/
 def movingCanonicalFiniteJointJetFamily
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -429,6 +494,8 @@ def movingCanonicalFiniteJointJetFamily
     (Σ i, Fin (n i)) → ℂ :=
   movingCanonicalFiniteActualJetFamily (nodes p.2) n θ p.1
 
+/-- Smooth model of the finite-chart jet family: the base jet plus the finitely many perturbed
+zero terms minus the unperturbed ones. -/
 def movingCanonicalFiniteJointJetSmoothModel
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -445,6 +512,7 @@ def movingCanonicalFiniteJointJetSmoothModel
           movingCanonicalDifferentialJetTerm
             θ s.2.1 a.1 (nodes p.2 s.1))
 
+/-- At upper-half-plane nodes, the finite-chart jet family equals its smooth model. -/
 theorem movingCanonicalFiniteJointJetFamily_eq_smoothModel
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -457,6 +525,8 @@ theorem movingCanonicalFiniteJointJetFamily_eq_smoothModel
   exact iteratedDeriv_movingCanonicalLogDerivative_finiteChart
     (movingCanonicalLocationProbeCard n) θ p.1 s.2.1 (hupper s.1)
 
+/-- For smooth nodes lying in the upper half-plane over `U`, the smooth model is `C^∞` on
+`(chart parameters) × U`. -/
 theorem contDiffOn_movingCanonicalFiniteJointJetSmoothModel
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -559,6 +629,8 @@ theorem contDiffOn_movingCanonicalFiniteJointJetSmoothModel
   exact (hbase.add
     (ContDiffAt.sum (s := Finset.univ) (fun a _ => hterm a))).contDiffWithinAt
 
+/-- For smooth upper-half-plane nodes over `U`, the finite-chart jet family is `C^∞` on
+`(chart parameters) × U`. -/
 theorem contDiffOn_movingCanonicalFiniteJointJetFamily
     {H ι : Type*} [NormedAddCommGroup H] [NormedSpace ℝ H]
     [Fintype ι]
@@ -574,6 +646,7 @@ theorem contDiffOn_movingCanonicalFiniteJointJetFamily
   exact movingCanonicalFiniteJointJetFamily_eq_smoothModel
     nodes n θ p (hupper p.2 hp.2)
 
+/-- The finite-chart jet family at row-by-shift nodes, reshaped into rows of jet coordinates. -/
 def movingCanonicalExpandedJetFamily
     {H row ι : Type*}
     [NormedAddCommGroup H] [NormedSpace ℝ H]
@@ -588,6 +661,7 @@ def movingCanonicalExpandedJetFamily
     (movingCanonicalFiniteJointJetFamily nodes
       (fun x : row × ι => orders x.2) θ p)
 
+/-- The reshaped finite-chart jet family is `C^∞` on `(chart parameters) × U`. -/
 theorem contDiffOn_movingCanonicalExpandedJetFamily
     {H row ι : Type*}
     [NormedAddCommGroup H] [NormedSpace ℝ H]
@@ -603,6 +677,8 @@ theorem contDiffOn_movingCanonicalExpandedJetFamily
     (contDiffOn_movingCanonicalFiniteJointJetFamily
       nodes hnodes (fun x : row × ι => orders x.2) θ U hupper)
 
+/-- At injective upper-half-plane nodes, the derivative of the reshaped jet family with respect to
+the finite chart parameters is surjective. -/
 theorem fderiv_movingCanonicalExpandedJetFamily_probe_surjective
     {H row ι : Type*}
     [NormedAddCommGroup H] [NormedSpace ℝ H]
@@ -652,6 +728,9 @@ theorem fderiv_movingCanonicalExpandedJetFamily_probe_surjective
         (movingCanonicalFiniteChart
           (movingCanonicalLocationProbeCard nodeOrders) θ p))
 
+/-- Under `hrows` and `hdim`, for smooth injective upper-half-plane nodes on an open `U ⊇ K`, the
+chart parameters whose jet family avoids the rank-defect locus over the whole patch `K` are
+dense. -/
 theorem compact_movingCanonicalExpandedEvaluation_avoidance_dense
     {H row κ ι : Type}
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
@@ -698,6 +777,8 @@ theorem movingCanonicalFiniteChart_zero
   ext a
   simp [movingCanonicalFiniteChart]
 
+/-- Under the same hypotheses, the bounded sequences `θ` for which the expanded evaluation matrix
+has full column rank at every parameter of the compact patch `K` form a dense set. -/
 theorem compact_movingCanonicalExpandedActualEvaluation_avoidance_dense
     {H row κ ι : Type}
     [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
@@ -751,6 +832,7 @@ theorem compact_movingCanonicalExpandedActualEvaluation_avoidance_dense
   intro h hh
   exact hpgood h hh
 
+/-- Jet values of `L_θ` at the row-by-shift nodes `packet r + shift i`, reshaped into rows. -/
 def movingCanonicalExpandedPacketValue
     {row ι : Type} [Fintype row] [DecidableEq row]
     [Fintype ι] [DecidableEq ι]
@@ -763,6 +845,8 @@ def movingCanonicalExpandedPacketValue
         combinedProjectiveRowShiftPacket packet shift)
       (fun x : row × ι => orders x.2) (θ, ()))
 
+/-- A row packet whose row-by-shift nodes are distinct and in the upper half-plane and whose
+expanded evaluation matrix for `θ` is injective (full column rank). -/
 def movingCanonicalExpandedFullRankWitness
     {row κ ι : Type}
     [Fintype row] [DecidableEq row]
@@ -780,6 +864,8 @@ def movingCanonicalExpandedFullRankWitness
           (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
           (movingCanonicalExpandedPacketValue orders packet θ shift)).mulVec
 
+/-- The coefficient vector `coeff` is a pattern relation for `θ` and `shift`: for every admissible
+row packet, every row of the expanded evaluation matrix is annihilated by `coeff`. -/
 def movingCanonicalExpandedPatternRelationHolds
     {row κ ι : Type}
     [Fintype row] [DecidableEq row]
@@ -798,6 +884,7 @@ def movingCanonicalExpandedPatternRelationHolds
         (Fintype.card (Σ i, Fin (orders i))) packet.1 exponent
         (movingCanonicalExpandedPacketValue orders packet θ shift) r col = 0
 
+/-- Given a full-rank witness, every pattern relation for `θ` and `shift` has zero coefficients. -/
 theorem movingCanonicalExpandedPatternRelation_coefficients_eq_zero_of_fullRankWitness
     {row κ ι : Type}
     [Fintype row] [DecidableEq row]
@@ -826,6 +913,9 @@ theorem movingCanonicalExpandedPatternRelation_coefficients_eq_zero_of_fullRankW
   intro col
   exact congrFun hcoeff col
 
+/-- Under `hexponent`, `hrows`, `hdim`, every compact set of injective shift configurations is
+covered by finitely many compact pieces with row packets such that a dense open set of `θ` has a
+full-rank witness for every shift in the compact set. -/
 theorem compact_injectiveShiftPatch_has_dense_completeAtlas_movingCanonical
     {row κ ι : Type}
     [Fintype row] [DecidableEq row]
@@ -947,6 +1037,8 @@ theorem compact_injectiveShiftPatch_has_dense_completeAtlas_movingCanonical
         (family j (θ, shift.1))).mulVec
     exact hinjective
 
+/-- Under `hexponent`, `hrows`, `hdim`, the `θ` having a full-rank witness for every injective
+shift configuration form a dense residual set (σ-compactness of shifts and Baire category). -/
 theorem global_injectiveShifts_movingCanonicalExpandedFullRankWitness_dense_residual
     {row κ ι : Type}
     [Fintype row] [DecidableEq row]
@@ -981,6 +1073,8 @@ theorem global_injectiveShifts_movingCanonicalExpandedFullRankWitness_dense_resi
       degree orders exponent hexponent hrows Kshift hKshift hdim
   exact ⟨_, hOpen, hDense, hWitness⟩
 
+/-- For a countable label type `Γ`, the `θ` having full-rank witnesses for every finite
+differential pattern over `Γ` and every injective shift configuration form a dense residual set. -/
 theorem allFinitePatterns_movingCanonicalExpandedFullRankWitness_dense_residual
     {Γ : Type} [Countable Γ] :
     let fullRank : Set BoundedRealSequence := {θ |
@@ -1035,6 +1129,8 @@ theorem allFinitePatterns_movingCanonicalExpandedFullRankWitness_dense_residual
   rw [heq] at hresidual
   exact ⟨dense_of_mem_residual hresidual, hresidual⟩
 
+/-- The `θ` for which every finite pattern relation, for every injective shift configuration, has
+zero coefficients form a dense residual set of bounded real sequences. -/
 theorem allFinitePatterns_movingCanonicalExpandedRelationFree_dense_residual
     {Γ : Type} [Countable Γ] :
     let relationFree : Set BoundedRealSequence := {θ |

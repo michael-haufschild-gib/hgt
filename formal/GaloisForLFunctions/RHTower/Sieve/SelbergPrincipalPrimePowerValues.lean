@@ -1,5 +1,30 @@
 import GaloisForLFunctions.RHTower.Sieve.SelbergPrincipalPrimePowerSum
 
+/-!
+# Explicit values of the Selberg principal coefficient at prime powers
+
+Evaluates `selbergPrincipalCoeff (p^i) (p^j)` for a prime `p` from the finite-sum formula. Because
+`μ(p^e) = 0` for `e ≥ 2`, only the terms with exponent gap at most one survive: the coefficient is
+`μ(p^i)/p^i` against `1`, `p^(-(i+1)) + p^(-(i+2))` on the diagonal `i = j ≥ 1`, `-p^(-(i+1))` for
+adjacent exponents, and `0` once the exponents differ by at least two. It is symmetric in `i, j`.
+
+## Main results
+
+- `selbergPrincipalCoeff_prime_pow_zero`, `selbergPrincipalCoeff_zero_prime_pow`:
+  `coeff(p^i, 1) = coeff(1, p^i) = μ(p^i)/p^i`.
+- `selbergPrincipalCoeff_prime_pow_diagonal_succ`:
+  `coeff(p^(i+1), p^(i+1)) = 1/p^(i+1) + 1/p^(i+2)`.
+- `selbergPrincipalCoeff_prime_pow_adjacent`, `selbergPrincipalCoeff_prime_pow_adjacent_symm`:
+  `coeff(p^(i+1), p^i) = coeff(p^i, p^(i+1)) = -1/p^(i+1)`.
+- `selbergPrincipalCoeff_prime_pow_distant`, `selbergPrincipalCoeff_prime_pow_distant_symm`:
+  `coeff(p^(i+t+2), p^i) = coeff(p^i, p^(i+t+2)) = 0`.
+- `selbergPrincipalCoeff_prime_pow_comm`: `coeff(p^i, p^j) = coeff(p^j, p^i)`.
+
+## Hypotheses
+
+Unconditional; `p` is assumed prime.
+-/
+
 open ArithmeticFunction Finset
 open scoped BigOperators ArithmeticFunction.Moebius
 
@@ -20,16 +45,19 @@ noncomputable section
     ArithmeticFunction.moebius_apply_prime_pow hp (by omega), if_neg (by omega)]
   norm_num
 
+/-- For a prime `p`, `selbergPrincipalCoeff (p^i) 1 = μ(p^i)/p^i`. -/
 theorem selbergPrincipalCoeff_prime_pow_zero {p i : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) 1 = selbergMoebiusReciprocalCoeff (p ^ i) := by
   rw [show (1 : ℕ) = p ^ (0 : ℕ) by simp, selbergPrincipalCoeff_prime_pow_sum hp]
   simp
 
+/-- For a prime `p`, `selbergPrincipalCoeff 1 (p^j) = μ(p^j)/p^j`. -/
 theorem selbergPrincipalCoeff_zero_prime_pow {p j : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff 1 (p ^ j) = selbergMoebiusReciprocalCoeff (p ^ j) := by
   rw [show (1 : ℕ) = p ^ (0 : ℕ) by simp, selbergPrincipalCoeff_prime_pow_sum hp]
   simp
 
+/-- Diagonal value: for a prime `p`, `selbergPrincipalCoeff (p^(i+1)) (p^(i+1)) = 1/p^(i+1) + 1/p^(i+2)`. -/
 theorem selbergPrincipalCoeff_prime_pow_diagonal_succ
     {p i : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ (i + 1)) (p ^ (i + 1)) =
@@ -78,6 +106,7 @@ theorem selbergPrincipalCoeff_prime_pow_diagonal_succ
       push_cast
       ring
 
+/-- Adjacent exponents: for a prime `p`, `selbergPrincipalCoeff (p^(i+1)) (p^i) = -1/p^(i+1)`. -/
 theorem selbergPrincipalCoeff_prime_pow_adjacent
     {p i : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ (i + 1)) (p ^ i) =
@@ -99,6 +128,7 @@ theorem selbergPrincipalCoeff_prime_pow_adjacent
   · intro hnot
     exact (hnot (Finset.mem_range.mpr (by omega))).elim
 
+/-- Exponents at distance at least two: `selbergPrincipalCoeff (p^(i+t+2)) (p^i) = 0` for prime `p`. -/
 theorem selbergPrincipalCoeff_prime_pow_distant
     {p i t : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ (i + t + 2)) (p ^ i) = 0 := by
@@ -111,6 +141,8 @@ theorem selbergPrincipalCoeff_prime_pow_distant
   rw [hsub, selbergMoebiusReciprocalCoeff_prime_pow_two_add hp]
   ring
 
+/-- On powers of a prime, the principal coefficient is symmetric:
+`selbergPrincipalCoeff (p^i) (p^j) = selbergPrincipalCoeff (p^j) (p^i)`. -/
 theorem selbergPrincipalCoeff_prime_pow_comm {p i j : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) (p ^ j) = selbergPrincipalCoeff (p ^ j) (p ^ i) := by
   rw [selbergPrincipalCoeff_prime_pow_sum hp, selbergPrincipalCoeff_prime_pow_sum hp,
@@ -119,6 +151,7 @@ theorem selbergPrincipalCoeff_prime_pow_comm {p i j : ℕ} (hp : p.Prime) :
   intro k hk
   ring
 
+/-- Adjacent exponents, transposed: `selbergPrincipalCoeff (p^i) (p^(i+1)) = -1/p^(i+1)`. -/
 theorem selbergPrincipalCoeff_prime_pow_adjacent_symm
     {p i : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) (p ^ (i + 1)) =
@@ -126,6 +159,7 @@ theorem selbergPrincipalCoeff_prime_pow_adjacent_symm
   rw [selbergPrincipalCoeff_prime_pow_comm hp]
   exact selbergPrincipalCoeff_prime_pow_adjacent hp
 
+/-- Distant exponents, transposed: `selbergPrincipalCoeff (p^i) (p^(i+t+2)) = 0`. -/
 theorem selbergPrincipalCoeff_prime_pow_distant_symm
     {p i t : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) (p ^ (i + t + 2)) = 0 := by

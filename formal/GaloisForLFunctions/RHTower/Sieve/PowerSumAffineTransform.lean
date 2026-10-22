@@ -1,12 +1,36 @@
 import GaloisForLFunctions.RHTower.Sieve.FiniteFiberInjectiveTransform
 import Mathlib.Algebra.Field.ZMod
 
+/-!
+# Power-sum signatures under affine maps modulo q
+
+Over `ZMod q`, the vector of power sums `s_j = ∑_i (p u_i + r)^(j+1)`, `j < k`, is an affine image
+of the original power-sum vector `∑_i u_i^(j+1)`: a constant vector `b r^(j+1)` plus a lower
+triangular additive map whose `j`-th coordinate is
+`∑_{m ≤ j} p^(m+1) r^(j-m) C(j+1, m+1) s_m`. When `p` is a unit the triangular map is injective,
+so distinct power-sum signatures stay distinct after the affine change of variables.
+
+## Main results
+
+- `powerSumAffineLinearTransform`: the lower triangular additive map on `Fin k → ZMod q`.
+- `powerSumAffineLinearTransform_injective`: it is injective when `p` is a unit.
+- `powerSumAffine_signature`: the affine power-sum vector equals
+  `powerSumAffineConstant q k b r + powerSumAffineLinearTransform q k p r (power sums of u)`.
+
+## Hypotheses
+
+Unconditional. Injectivity assumes that `p` is a unit in `ZMod q`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Lower triangular additive map on `Fin k → ZMod q` sending `s` to
+`j ↦ ∑_{m ≤ j} p^(m+1) r^(j-m) C(j+1, m+1) s_m`; it records how power sums transform under
+`x ↦ p x + r`. -/
 def powerSumAffineLinearTransform (q k : ℕ) [NeZero q]
     (p r : ZMod q) : (Fin k → ZMod q) →+ (Fin k → ZMod q) where
   toFun s j := ∑ m : Fin (j.val + 1),
@@ -28,6 +52,8 @@ theorem powerSumAffineLinearTransform_apply
           (j.val + 1).choose (m.val + 1) *
             s (Fin.castLE (Nat.succ_le_of_lt j.isLt) m) := rfl
 
+/-- If `p` is a unit in `ZMod q`, the affine power-sum transform is injective; the proof solves
+the triangular system coordinate by coordinate. -/
 theorem powerSumAffineLinearTransform_injective
     {q k : ℕ} [NeZero q] {p : ZMod q} (hp : IsUnit p) (r : ZMod q) :
     Function.Injective (powerSumAffineLinearTransform q k p r) := by
@@ -71,10 +97,13 @@ theorem powerSumAffineLinearTransform_injective
         exact (hp.pow (n + 1)).mul_left_cancel htop
   exact hcoord j.val j.isLt
 
+/-- Constant part `j ↦ b · r^(j+1)` of the affine power-sum transform for `b` summands. -/
 def powerSumAffineConstant (q k b : ℕ) [NeZero q]
     (r : ZMod q) : Fin k → ZMod q :=
   fun j => b * r ^ (j.val + 1)
 
+/-- Binomial expansion modulo `q`: `(∑_i (p u_i + r)^(j+1))_j` equals the constant vector plus the
+triangular transform applied to the power-sum vector `(∑_i u_i^(j+1))_j`. -/
 theorem powerSumAffine_signature
     {q k b : ℕ} [NeZero q] (p r : ZMod q)
     (u : Fin b → ZMod q) :

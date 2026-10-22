@@ -3,24 +3,58 @@ import GaloisForLFunctions.RHTower.Suzuki.SuzukiDeBrangesSpace
 import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 import GaloisForLFunctions.HTGeometry.EntireZeroSetNull
 
+/-!
+# Gauge multiplication is a unitary map between de Branges spaces
+
+For a nonzero entire function `E`, this module defines the de Branges-type space `H(E)` of
+entire functions `F` such that `F/E` and `F#/E` restricted to `ℝ` lie in `L²(ℝ)` and in the
+Hardy subspace `hardyL2`, where `F#(z) = conj (F (conj z))`. The space is normed through the
+boundary map `F ↦ F/E` in `L²(ℝ)`, which is injective because an entire function vanishing almost
+everywhere on `ℝ` is zero. For an entire gauge `H` that is zero-free and real (`H# = H`),
+multiplication by `H` is a linear isometric isomorphism `H(E) ≃ H(HE)`, since the boundary
+quotients `F/E` and `HF/(HE)` coincide.
+
+## Main results
+
+- `GenericMemDeBranges`, `genericDeBrangesSubmodule`: the membership predicate and the
+  `ℂ`-subspace `H(E)` of entire functions.
+- `genericDeBrangesBoundaryMap_injective`: the boundary map `F ↦ F/E ∈ L²(ℝ)` is injective.
+- `deBrangesGaugeLinearEquiv`: multiplication by `H` is a linear equivalence `H(E) ≃ H(HE)`.
+- `deBrangesGaugeUnitary`: the same map is a linear isometric equivalence, acting by
+  `F ↦ H · F`.
+
+## Hypotheses
+
+The gauge results take as hypotheses that `H` is entire, zero-free (`ZeroFreeGauge H`) and fixed
+by Schwarz reflection (`SchwarzRealGauge H`); these are Prop-valued conditions on the gauge, not
+analytic inputs. `EntireDeBrangesDatum` bundles an entire `E` that is not identically zero. No
+Hermite–Biehler condition on `E` is assumed.
+-/
+
 namespace GaloisForLFunctions.RHTower
 
 open Complex Filter Topology Set MeasureTheory
 
 noncomputable section
 
+/-- An entire function `E` that is not identically zero, used as the structure function of a
+de Branges-type space. -/
 structure EntireDeBrangesDatum where
   E : ℂ → ℂ
   analytic : AnalyticOnNhd ℂ E Set.univ
   nontrivial : ∃ z, E z ≠ 0
 
+/-- The boundary quotient `x ↦ F(x)/E(x)` on the real line. -/
 def deBrangesBoundaryQuotient (D : EntireDeBrangesDatum) (F : ℂ → ℂ) (x : ℝ) : ℂ :=
   F (x : ℂ) / D.E (x : ℂ)
 
+/-- The reflected boundary quotient `x ↦ F#(x)/E(x)`, with `F#(z) = conj (F (conj z))`. -/
 def deBrangesSharpBoundaryQuotient (D : EntireDeBrangesDatum) (F : ℂ → ℂ)
     (x : ℝ) : ℂ :=
   suzukiEntireSharp F (x : ℂ) / D.E (x : ℂ)
 
+/-- Membership in the de Branges-type space `H(E)`: `F` is entire and both `F/E` and `F#/E` on `ℝ`
+lie in `L²(ℝ)` and in the Hardy subspace `hardyL2`. -/
 structure GenericMemDeBranges (D : EntireDeBrangesDatum) (F : ℂ → ℂ) : Prop where
   entire : Differentiable ℂ F
   memLp : MemLp (deBrangesBoundaryQuotient D F) 2 (volume : Measure ℝ)
@@ -100,6 +134,7 @@ theorem genericMemDeBranges_smul (D : EntireDeBrangesDatum) (c : ℂ) {F : ℂ �
     rw [htc, hF.memLpSharp.toLp_const_smul (star c)]
     exact _root_.RHTower.hardyL2.smul_mem (star c) hF.hardySharp
 
+/-- The space `H(E)` as a `ℂ`-linear subspace of functions `ℂ → ℂ`. -/
 def genericDeBrangesSubmodule (D : EntireDeBrangesDatum) : Submodule ℂ (ℂ → ℂ) where
   carrier := {F | GenericMemDeBranges D F}
   zero_mem' := genericMemDeBranges_zero D
@@ -108,6 +143,7 @@ def genericDeBrangesSubmodule (D : EntireDeBrangesDatum) : Submodule ℂ (ℂ �
 
 abbrev GenericDeBrangesSpace (D : EntireDeBrangesDatum) := genericDeBrangesSubmodule D
 
+/-- The linear boundary map `H(E) → L²(ℝ)`, `F ↦ F/E` on the real line. -/
 def genericDeBrangesBoundaryMap (D : EntireDeBrangesDatum) :
     GenericDeBrangesSpace D →ₗ[ℂ] _root_.RHTower.L2R where
   toFun F := F.property.memLp.toLp _
@@ -135,6 +171,8 @@ def genericDeBrangesBoundaryMap (D : EntireDeBrangesDatum) :
           (Filter.Eventually.of_forall fun x => congrFun hq x)
       _ = _ := F.property.memLp.toLp_const_smul c
 
+/-- The boundary map `F ↦ F/E` is injective: since `E` vanishes only on a null subset of `ℝ`, equal
+quotients force `F = G` almost everywhere on `ℝ`, hence everywhere by analyticity. -/
 theorem genericDeBrangesBoundaryMap_injective (D : EntireDeBrangesDatum) :
     Function.Injective (genericDeBrangesBoundaryMap D) := by
   intro F G hFG
@@ -157,6 +195,7 @@ theorem genericDeBrangesBoundaryMap_injective (D : EntireDeBrangesDatum) :
     (F.property.entire.sub G.property.entire) (t₀ := 0) (r := 1) (by norm_num)
     (MeasureTheory.ae_restrict_of_ae hreal) z)
 
+/-- `H(E)` carries the norm `‖F‖ = ‖F/E‖_{L²(ℝ)}` induced by the injective boundary map. -/
 noncomputable instance genericDeBrangesNormedAddCommGroup (D : EntireDeBrangesDatum) :
     NormedAddCommGroup (GenericDeBrangesSpace D) :=
   NormedAddCommGroup.induced (GenericDeBrangesSpace D) _
@@ -170,6 +209,8 @@ theorem norm_genericDeBranges_eq_boundary (D : EntireDeBrangesDatum)
     (F : GenericDeBrangesSpace D) :
     ‖F‖ = ‖genericDeBrangesBoundaryMap D F‖ := rfl
 
+/-- Membership transfers between structure functions: if `F₂` is entire and its two boundary quotients
+for `E₂` equal those of `F₁ ∈ H(E₁)` for `E₁`, then `F₂ ∈ H(E₂)`. -/
 theorem genericMemDeBranges_of_quotients_eq
     {D₁ D₂ : EntireDeBrangesDatum} {F₁ F₂ : ℂ → ℂ}
     (hF₁ : GenericMemDeBranges D₁ F₁) (hF₂entire : Differentiable ℂ F₂)
@@ -196,6 +237,7 @@ theorem genericMemDeBranges_of_quotients_eq
     rw [ht]
     exact hF₁.hardySharp
 
+/-- The gauged structure function `H · E`, for an entire zero-free gauge `H`. -/
 def EntireDeBrangesDatum.mulGauge (D : EntireDeBrangesDatum) (H : ℂ → ℂ)
     (hH : AnalyticOnNhd ℂ H Set.univ) (hHzero : ZeroFreeGauge H) :
     EntireDeBrangesDatum where
@@ -209,6 +251,7 @@ def deBrangesGaugeMul (H F : ℂ → ℂ) (z : ℂ) : ℂ := H z * F z
 
 def deBrangesGaugeDiv (H F : ℂ → ℂ) (z : ℂ) : ℂ := F z / H z
 
+/-- For an entire, zero-free gauge `H` with `H# = H`, `F ∈ H(E)` implies `H · F ∈ H(H E)`. -/
 theorem genericMemDeBranges_gaugeMul (D : EntireDeBrangesDatum)
     {H F : ℂ → ℂ} (hH : AnalyticOnNhd ℂ H Set.univ)
     (hHzero : ZeroFreeGauge H) (hHreal : SchwarzRealGauge H)
@@ -229,6 +272,7 @@ theorem genericMemDeBranges_gaugeMul (D : EntireDeBrangesDatum)
     rw [suzukiEntireSharp_mul_of_schwarzReal hHreal]
     exact mul_div_mul_left _ _ (hHzero (x : ℂ))
 
+/-- For an entire, zero-free gauge `H` with `H# = H`, `F ∈ H(H E)` implies `F / H ∈ H(E)`. -/
 theorem genericMemDeBranges_gaugeDiv (D : EntireDeBrangesDatum)
     {H F : ℂ → ℂ} (hH : AnalyticOnNhd ℂ H Set.univ)
     (hHzero : ZeroFreeGauge H) (hHreal : SchwarzRealGauge H)
@@ -262,6 +306,8 @@ theorem genericMemDeBranges_gaugeDiv (D : EntireDeBrangesDatum)
         rw [hHrealx, starRingEnd_apply]
       _ = _ := div_div _ _ _
 
+/-- For an entire, zero-free, Schwarz-real gauge `H`, multiplication by `H` is a `ℂ`-linear
+equivalence `H(E) ≃ H(H E)` with inverse division by `H`. -/
 def deBrangesGaugeLinearEquiv (D : EntireDeBrangesDatum) (H : ℂ → ℂ)
     (hH : AnalyticOnNhd ℂ H Set.univ) (hHzero : ZeroFreeGauge H)
     (hHreal : SchwarzRealGauge H) :
@@ -289,6 +335,7 @@ def deBrangesGaugeLinearEquiv (D : EntireDeBrangesDatum) (H : ℂ → ℂ)
     funext z
     simp [deBrangesGaugeMul, smul_eq_mul, mul_left_comm]
 
+/-- Gauge multiplication preserves the boundary vector: `(H F)/(H E) = F/E` in `L²(ℝ)`. -/
 theorem deBrangesGaugeLinearEquiv_boundary (D : EntireDeBrangesDatum) (H : ℂ → ℂ)
     (hH : AnalyticOnNhd ℂ H Set.univ) (hHzero : ZeroFreeGauge H)
     (hHreal : SchwarzRealGauge H) (F : GenericDeBrangesSpace D) :
@@ -303,6 +350,8 @@ theorem deBrangesGaugeLinearEquiv_boundary (D : EntireDeBrangesDatum) (H : ℂ �
     (F : ℂ → ℂ) (x : ℂ) / D.E (x : ℂ)
   exact mul_div_mul_left _ _ (hHzero (x : ℂ))
 
+/-- For an entire, zero-free, Schwarz-real gauge `H`, multiplication by `H` is a linear isometric
+equivalence (unitary) from `H(E)` onto `H(H E)`. -/
 noncomputable def deBrangesGaugeUnitary (D : EntireDeBrangesDatum) (H : ℂ → ℂ)
     (hH : AnalyticOnNhd ℂ H Set.univ) (hHzero : ZeroFreeGauge H)
     (hHreal : SchwarzRealGauge H) :

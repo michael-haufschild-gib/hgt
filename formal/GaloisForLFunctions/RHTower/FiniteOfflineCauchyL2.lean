@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.FiniteOfflineCauchyEnergy
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
+/-!
+# The finite off-line Cauchy energy as an `L²` norm on the half-line
+
+For finitely many modes with damping `a j`, frequency `γ j` and multiplicity `m j`, this module
+defines the exponential profile `F(t) = ∑ⱼ 2 mⱼ e^{-(aⱼ + i γⱼ) t}` and computes its `L²` norm
+on `(0, ∞)`. Expanding `|F|²` as a Gram double sum and integrating each exponential exactly gives
+`∫₀^∞ |F(t)|² dt = 4 ∑ⱼ ∑ₖ mⱼ mₖ (aⱼ + aₖ) / ((aⱼ + aₖ)² + (γⱼ - γₖ)²)`, which is the finite
+off-line Cauchy energy. In particular that energy is an `L²` norm, hence nonnegative.
+
+## Main results
+
+- `integral_norm_sq_finiteOfflineProfile`: `∫_{(0,∞)} |F(t)|² dt = finiteOfflineCauchyEnergy a γ m`.
+- `integral_finiteOfflinePairIntegrand`: each Gram entry integrates to
+  `4 mⱼ mₖ / ((aⱼ + aₖ) - i(γⱼ - γₖ))`.
+- `re_integral_finiteOfflinePairIntegrand`: its real part is `4 mⱼ mₖ` times the transverse
+  Cauchy kernel `(aⱼ + aₖ) / ((aⱼ + aₖ)² + (γⱼ - γₖ)²)`.
+
+## Hypotheses
+
+Unconditional apart from the positivity hypothesis `ha : ∀ j, 0 < a j` on all damping rates,
+which every integral statement takes and which ensures convergence on `(0, ∞)`.
+-/
+
 open MeasureTheory Set
 open scoped BigOperators
 
@@ -8,15 +31,18 @@ noncomputable section
 
 namespace RHTower
 
+/-- A single damped mode `t ↦ 2 mⱼ e^{-(aⱼ + i γⱼ) t}`. -/
 def finiteOfflineMode {n : ℕ} (a gamma : Fin n → ℝ) (m : Fin n → ℕ)
     (j : Fin n) (t : ℝ) : ℂ :=
   (2 * (m j : ℂ)) * Complex.exp
     (-((a j : ℝ) : ℂ) * t - Complex.I * (gamma j : ℂ) * t)
 
+/-- The profile `F(t) = ∑ⱼ 2 mⱼ e^{-(aⱼ + i γⱼ) t}` of finitely many damped modes. -/
 def finiteOfflineProfile {n : ℕ} (a gamma : Fin n → ℝ) (m : Fin n → ℕ)
     (t : ℝ) : ℂ :=
   ∑ j, finiteOfflineMode a gamma m j t
 
+/-- Gram entry `4 mⱼ mₖ e^{(-(aⱼ + aₖ) + i(γⱼ - γₖ)) t}`, equal to `conj(mode j) · mode k`. -/
 def finiteOfflinePairIntegrand {n : ℕ} (a gamma : Fin n → ℝ) (m : Fin n → ℕ)
     (j k : Fin n) (t : ℝ) : ℂ :=
   (4 * (m j : ℂ) * (m k : ℂ)) *
@@ -60,6 +86,8 @@ theorem finiteOfflinePairIntegrand_integrableOn {n : ℕ}
   simp
   nlinarith [ha j, ha k]
 
+/-- Assuming `0 < a j` for all `j`, the Gram entry integrates over `(0, ∞)` to
+`4 mⱼ mₖ / ((aⱼ + aₖ) - i(γⱼ - γₖ))`. -/
 theorem integral_finiteOfflinePairIntegrand {n : ℕ}
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ) (ha : ∀ j, 0 < a j) (j k : Fin n) :
     ∫ t in Ioi (0 : ℝ), finiteOfflinePairIntegrand a gamma m j k t =
@@ -86,6 +114,8 @@ theorem integral_finiteOfflinePairIntegrand {n : ℕ}
     ring
   rw [hquot]
 
+/-- Assuming `0 < a j` for all `j`, the real part of the integrated Gram entry is
+`4 mⱼ mₖ (aⱼ + aₖ) / ((aⱼ + aₖ)² + (γⱼ - γₖ)²)`. -/
 theorem re_integral_finiteOfflinePairIntegrand {n : ℕ}
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ) (ha : ∀ j, 0 < a j) (j k : Fin n) :
     (∫ t in Ioi (0 : ℝ), finiteOfflinePairIntegrand a gamma m j k t).re =
@@ -107,6 +137,7 @@ theorem re_integral_finiteOfflinePairIntegrand {n : ℕ}
   simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   rw [hinvre]
 
+/-- Gram expansion `conj(F(t)) F(t) = ∑ⱼ ∑ₖ (Gram entry j k)(t)`. -/
 theorem finiteOfflineProfile_gramExpansion {n : ℕ}
     (a gamma : Fin n → ℝ) (m : Fin n → ℕ) (t : ℝ) :
     (starRingEnd ℂ) (finiteOfflineProfile a gamma m t) *
@@ -148,6 +179,8 @@ theorem finiteOfflineProfile_gramIntegrableOn {n : ℕ}
   intro k hk
   exact finiteOfflinePairIntegrand_integrableOn m ha j k
 
+/-- Assuming `0 < a j` for all `j`, `∫_{(0,∞)} conj(F) F` equals the double sum of the
+integrated Gram entries. -/
 theorem integral_finiteOfflineProfile_gram {n : ℕ}
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ) (ha : ∀ j, 0 < a j) :
     ∫ t in Ioi (0 : ℝ),
@@ -172,6 +205,8 @@ theorem integral_finiteOfflineProfile_gram {n : ℕ}
     intro k hk
     exact finiteOfflinePairIntegrand_integrableOn m ha j k
 
+/-- Assuming `0 < a j` for all `j`, `∫_{(0,∞)} |F(t)|² dt` equals the finite off-line Cauchy
+energy `4 ∑ⱼ ∑ₖ mⱼ mₖ (aⱼ + aₖ) / ((aⱼ + aₖ)² + (γⱼ - γₖ)²)`. -/
 theorem integral_norm_sq_finiteOfflineProfile {n : ℕ}
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ) (ha : ∀ j, 0 < a j) :
     ∫ t in Ioi (0 : ℝ), ‖finiteOfflineProfile a gamma m t‖ ^ (2 : ℕ) =

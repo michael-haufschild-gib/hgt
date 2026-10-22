@@ -1,5 +1,36 @@
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiCanonicalHankelApertureContinuity
 
+/-!
+# Aperture continuity of Suzuki's Hankel integral-equation solutions
+
+Fix a window `L^2(0, B)` with `B > 1`, the compressed Hankel operator `H_ω` with kernel
+`h_ω(xy)` (for `ω > 1/2`), the sharp aperture cutoff `P_a` to `(0, a]`, and a sign `ε = ±1`.
+Since `‖H_ω‖ < 1` (Suzuki 2012, Lemma 4.4(iii)), the operator `1 + ε H_ω P_a` is invertible, so
+the fixed-window equation `φ_a + ε H_ω(P_a φ_a) = s_a` with the Hankel kernel row `s_a` has a
+unique solution. This module proves a resolvent stability estimate for `φ_b - φ_a`, deduces that
+`a ↦ φ_a` is continuous on `[0, B]`, identifies `φ_a` with Suzuki's extended solution, and shows
+that for `ω > 1` the pointwise global extension formula (404.1) depends continuously on the
+aperture `a > 1`.
+
+## Main results
+
+- `suzukiFixedWindowResolventOperator_isUnit`: `1 + ε H_ω P_a` is invertible on `L^2(0, B)`.
+- `suzukiFixedWindowPhi_equation_expanded`: `φ_a + ε H_ω(P_a φ_a) = s_a`.
+- `norm_suzukiFixedWindowPhi_sub_le`:
+  `‖φ_b - φ_a‖ ≤ (‖s_b - s_a‖ + ‖H_ω‖ ‖P_b φ_a - P_a φ_a‖) / (1 - ‖H_ω‖)`.
+- `continuousOn_suzukiFixedWindowPhi`: `a ↦ φ_a` is continuous on `[0, B]`.
+- `suzukiFixedWindowPhi_eq_extended`: for `1 < a ≤ B`, `φ_a` is Suzuki's extended solution.
+- `suzukiFixedWindowPhiPoint_eq_global`: the pointwise fixed-window formula equals the global
+  extension `h_ω(a x) - ε ∫_0^a h_ω(x y) φ(y) dy` for `x > 0`.
+- `continuous_suzukiHankelPhiGlobalAperture`: for `ω > 1` and `x > 0`, the global solution value
+  at `x` is continuous in the aperture `a ∈ (1, ∞)`.
+
+## Hypotheses
+
+Unconditional. The results assume only the parameter ranges `ω > 1/2` (or `ω > 1` for the
+pointwise formulas), `B > 1`, and the stated aperture ranges such as `1 < a ≤ B` and `x > 0`.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology
 open scoped ENNReal
 
@@ -9,6 +40,7 @@ namespace RHTower
 
 attribute [local instance] Measure.Subtype.measureSpace
 
+/-- The signed aperture section `ε H_ω P_a` on the fixed window `L^2(0, B)`. -/
 def suzukiFixedWindowSignedSection
     (epsilon : SuzukiHankelSign) (omega B : ℝ)
     (homega : 1 / 2 < omega) (a : ℝ) :
@@ -17,6 +49,8 @@ def suzukiFixedWindowSignedSection
     (suzukiCompressedHankelOperator omega B homega ∘L
       suzukiApertureCutoff a B)
 
+/-- For `ω > 1/2` and `B > 1`, the signed section `ε H_ω P_a` has operator norm `< 1`, by
+Suzuki's Lemma 4.4(iii) and `‖P_a‖ ≤ 1`. -/
 theorem norm_suzukiFixedWindowSignedSection_lt_one
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
@@ -36,12 +70,14 @@ theorem norm_suzukiFixedWindowSignedSection_lt_one
     _ < 1 := by
       simpa only [mul_one] using suzuki2012_lemma_four_four_iii homega hB
 
+/-- The fixed-window operator `1 + ε H_ω P_a` on `L^2(0, B)`. -/
 def suzukiFixedWindowResolventOperator
     (epsilon : SuzukiHankelSign) (omega B : ℝ)
     (homega : 1 / 2 < omega) (a : ℝ) :
     IntervalL2 0 B →L[ℂ] IntervalL2 0 B :=
   1 + suzukiFixedWindowSignedSection epsilon omega B homega a
 
+/-- For `ω > 1/2` and `B > 1`, the operator `1 + ε H_ω P_a` is invertible (Neumann series). -/
 theorem suzukiFixedWindowResolventOperator_isUnit
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
@@ -51,11 +87,13 @@ theorem suzukiFixedWindowResolventOperator_isUnit
   rw [norm_neg]
   exact norm_suzukiFixedWindowSignedSection_lt_one epsilon homega hB a
 
+/-- The boundary source `s_a`: the compressed Hankel kernel row at `a` in `L^2(0, B)`. -/
 def suzukiFixedWindowBoundarySource
     (omega B : ℝ) (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
     IntervalL2 0 B :=
   suzukiCompressedHankelRow omega B homega hB a
 
+/-- The fixed-window solution `φ_a = (1 + ε H_ω P_a)⁻¹ s_a`. -/
 def suzukiFixedWindowPhi
     (epsilon : SuzukiHankelSign) (omega B : ℝ)
     (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
@@ -64,6 +102,7 @@ def suzukiFixedWindowPhi
   ((↑(hunit.unit⁻¹) : IntervalL2 0 B →L[ℂ] IntervalL2 0 B)
     (suzukiFixedWindowBoundarySource omega B homega hB a))
 
+/-- The fixed-window solution satisfies `(1 + ε H_ω P_a) φ_a = s_a`. -/
 theorem suzukiFixedWindowPhi_equation
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
@@ -81,6 +120,7 @@ theorem suzukiFixedWindowPhi_equation
   rw [← mul_apply_eq_comp, Units.mul_inv]
   simp
 
+/-- Expanded form of the fixed-window equation: `φ_a + ε H_ω(P_a φ_a) = s_a`. -/
 theorem suzukiFixedWindowPhi_equation_expanded
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (a : ℝ) :
@@ -92,6 +132,8 @@ theorem suzukiFixedWindowPhi_equation_expanded
   simpa [suzukiFixedWindowResolventOperator, suzukiFixedWindowSignedSection]
     using suzukiFixedWindowPhi_equation epsilon homega hB a
 
+/-- Resolvent stability: for `ω > 1/2` and `B > 1`,
+`‖φ_b - φ_a‖ ≤ (‖s_b - s_a‖ + ‖H_ω‖ ‖P_b φ_a - P_a φ_a‖) / (1 - ‖H_ω‖)`. -/
 theorem norm_suzukiFixedWindowPhi_sub_le
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (a b : ℝ) :
@@ -163,6 +205,7 @@ theorem norm_suzukiFixedWindowPhi_sub_le
   nlinarith [norm_nonneg (ub - ua), norm_nonneg (sb - sa),
     norm_nonneg (Pb ua - Pa ua), norm_nonneg H]
 
+/-- For `ω > 1/2` and `B > 1`, the solution `a ↦ φ_a ∈ L^2(0, B)` is continuous on `[0, B]`. -/
 theorem continuousOn_suzukiFixedWindowPhi
     (epsilon : SuzukiHankelSign) {omega B : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) :
@@ -221,6 +264,8 @@ theorem continuousOn_suzukiFixedWindowPhi
     (𝓝[Icc 0 B] a) (𝓝 ua)
   simpa only [sub_add_cancel, zero_add] using hadd
 
+/-- The sharp aperture cutoff `P_a` on `L^2(0, B)` equals restriction to `(0, a)` followed by
+extension by zero back to `(0, B)`. -/
 theorem suzukiApertureCutoff_eq_inclusion_restriction
     (a B : ℝ) (f : IntervalL2 0 B) :
     suzukiApertureCutoff a B f =
@@ -285,6 +330,8 @@ theorem suzukiApertureCutoff_eq_inclusion_restriction
     rw [suzukiPhysicalIntervalZeroExtendFun_eq_zero_of_notMem]
     exact fun hx => hxa hx.2
 
+/-- For `ω > 1/2` and `1 < a ≤ B`, the fixed-window solution `φ_a` coincides with Suzuki's
+extended solution on `(0, B)`. -/
 theorem suzukiFixedWindowPhi_eq_extended
     (epsilon : SuzukiHankelSign) {omega a B : ℝ}
     (homega : 1 / 2 < omega) (ha : 1 < a) (hB : 1 < B) (haB : a ≤ B) :
@@ -298,6 +345,8 @@ theorem suzukiFixedWindowPhi_eq_extended
     suzukiHankelExtendedBoundary, suzukiHankelBoundarySourceOn,
     eq_sub_iff_add_eq] using hEq
 
+/-- Pointwise fixed-window formula `h_ω(a x) - ε (H_ω P_a φ_a)(x)`, using the continuous
+representative of the Hankel output. -/
 def suzukiFixedWindowPhiPoint
     (epsilon : SuzukiHankelSign) (omega B : ℝ)
     (homega : 1 < omega) (hB : 1 < B) (a : ℝ)
@@ -307,6 +356,7 @@ def suzukiFixedWindowPhiPoint
       (suzukiApertureCutoff a B
         (suzukiFixedWindowPhi epsilon omega B (by linarith) hB a)) x
 
+/-- For `ω > 1/2`, `B > 1` and `0 < a < B`, the map `b ↦ φ_b` is continuous at `a`. -/
 theorem continuousAt_suzukiFixedWindowPhi
     (epsilon : SuzukiHankelSign) {omega B a : ℝ}
     (homega : 1 / 2 < omega) (hB : 1 < B) (ha0 : 0 < a) (haB : a < B) :
@@ -314,6 +364,8 @@ theorem continuousAt_suzukiFixedWindowPhi
   exact ((continuousOn_suzukiFixedWindowPhi epsilon homega hB).continuousAt
     (Icc_mem_nhds ha0 haB))
 
+/-- For `ω > 1`, `B > 1`, `0 < a < B` and a point `x > 0`, the pointwise fixed-window value at `x`
+is continuous in the aperture at `a`. -/
 theorem continuousAt_suzukiFixedWindowPhiPoint
     (epsilon : SuzukiHankelSign) {omega B a : ℝ}
     (homega : 1 < omega) (hB : 1 < B) (ha0 : 0 < a) (haB : a < B)
@@ -342,6 +394,8 @@ theorem continuousAt_suzukiFixedWindowPhiPoint
       hmul rfl
   exact hsource.sub (continuousAt_const.mul hout)
 
+/-- For `ω > 1`, `1 < a ≤ B` and `x > 0`, the pointwise fixed-window value equals Suzuki's global
+extension `h_ω(a x) - ε ∫_0^a h_ω(x y) φ_a(y) dy`. -/
 theorem suzukiFixedWindowPhiPoint_eq_global
     (epsilon : SuzukiHankelSign) {omega a B : ℝ}
     (homega : 1 < omega) (ha : 1 < a) (hB : 1 < B) (haB : a ≤ B)
@@ -363,11 +417,15 @@ theorem suzukiFixedWindowPhiPoint_eq_global
   rw [suzukiIntegral_physicalIntervalInclusion homegaHalf (by linarith) hB haB
     phi x hx]
 
+/-- The aperture profile `a ↦ φ^glob_a(x)` of Suzuki's global solution at a fixed point `x`,
+for apertures `a > 1`. -/
 def suzukiHankelPhiGlobalAperture
     (epsilon : SuzukiHankelSign) (omega x : ℝ) (homega : 1 < omega) :
     Ioi (1 : ℝ) → ℂ := fun a =>
   suzukiHankelPhiGlobal epsilon omega (a : ℝ) homega a.property x
 
+/-- For `ω > 1` and `x > 0`, the global solution value `φ^glob_a(x)` is continuous in the
+aperture `a ∈ (1, ∞)`. -/
 theorem continuous_suzukiHankelPhiGlobalAperture
     (epsilon : SuzukiHankelSign) {omega x : ℝ}
     (homega : 1 < omega) (hx : 0 < x) :

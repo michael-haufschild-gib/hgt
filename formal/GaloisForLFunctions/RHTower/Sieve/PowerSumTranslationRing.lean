@@ -1,11 +1,31 @@
 import GaloisForLFunctions.RHTower.Sieve.PowerSumAffineEquivalence
 
+/-!
+# Translation invariance of equal power sums
+
+In any commutative ring, two families `u, v : Fin b → R` with equal power sums
+`∑ u_i^j = ∑ v_i^j` for `1 ≤ j ≤ k` keep equal power sums of the same orders after translating
+every entry by a common constant `c`. The proof expands `(u_i + c)^j` by the binomial theorem.
+
+## Main results
+
+- `sum_translate_pow_eq_of_powerSums_eq`: equal power sums of orders `1..k` imply
+  `∑ (u_i + c)^j = ∑ (v_i + c)^j` for `1 ≤ j ≤ k`.
+
+## Hypotheses
+
+Unconditional algebraic identity; the only premise is the equality of the power sums of orders
+`1` through `k`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- In a commutative ring, if `∑ u_i^j = ∑ v_i^j` for `1 ≤ j ≤ k`, then
+`∑ (u_i + c)^j = ∑ (v_i + c)^j` for `1 ≤ j ≤ k`. -/
 theorem sum_translate_pow_eq_of_powerSums_eq
     {R : Type*} [CommRing R] {b k : ℕ} (c : R)
     (u v : Fin b → R)

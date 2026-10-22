@@ -1,3 +1,17 @@
+/-
+# Monodromy blocks of the critical horizon and their normalizations
+
+Bundles the block-cover argument for primitivity of the critical geometric monodromy. For a
+monodromy block containing the canonical sheet, the block-stabilizer fixed field lies inside the
+critical source field, and it is a nontrivial extension of the observation field when the block is
+proper. Its integral closure over the observation chart (the block normalization) is module-finite,
+embeds in the source chart, and is a linear retract of it via normalized trace, so it inherits
+flatness. Schur inertia stabilizes every non-singleton block, so the normalization is unramified at
+every Schur valuation; it is also unramified away from the Schur divisor, and purity makes it finite
+etale. On complex points it is a proper, surjective, path-connected covering of the observation chart,
+and the two explicit source meridians force its fibre to be a singleton.
+-/
+
 import GaloisForLFunctions.HTGeometry.Critical.Block.AwaySchurUnramified
 import GaloisForLFunctions.HTGeometry.Critical.Block.ConjugateInertia
 import GaloisForLFunctions.HTGeometry.Critical.Block.FieldAllSchurUnramified

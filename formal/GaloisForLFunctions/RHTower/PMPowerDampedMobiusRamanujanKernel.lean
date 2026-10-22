@@ -1,13 +1,40 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanTransfer
 
+/-!
+# Closed form of the Ramanujan transfer kernel
+
+For `ε > 0` the Ramanujan column `k_m(d) = d μ(m) w_ε(dm)` factors as
+`μ(m) w_ε(m) · d^(−ε) · μ_{g_m}(d)`, where `μ_g(d) = μ(d) ∏_{p|d} g(p)` is the damped Möbius
+function of the prime correction `g_m(p) = 0` for `p | m` and `g_m(p) = p^(1+ε)/(p^(1+ε) − 1)`
+otherwise. Convolving with `n ↦ n^(−ε)` then gives the transfer kernel in closed form:
+`T_m(n) = |w_ε(m)| n^(−ε) ∏_{p|n} (1 if p | m, else −1/(p^(1+ε) − 1))`, and
+`|T_m(n)| = |w_ε(m)| n^(−ε) ∏_{p|n, p∤m} 1/(p^(1+ε) − 1)`. The absolute prime product lies in
+`[0, 1]` because `p^(1+ε) − 1 > 1` for every prime `p`.
+
+## Main results
+
+- `pmPowerDampedRamanujanColumn_eq_dampedMobius`: `k_m(d) = μ(m) w_ε(m) d^(−ε) μ_{g_m}(d)`.
+- `pmPowerDampedRamanujanTransfer_eq_divisorSum`: `T_m(n) = |w_ε(m)| n^(−ε) ∏_{p|n} (1 − g_m(p))`.
+- `pmPowerDampedRamanujanTransfer_eq_prod`: the explicit prime-product form of `T_m(n)` for `n ≠ 0`.
+- `norm_pmPowerDampedRamanujanTransfer`: `|T_m(n)| = |w_ε(m)| n^(−ε) ∏_{p|n} (1 if p | m, else 1/(p^(1+ε) − 1))`.
+- `pmPowerDampedRamanujanAbsProduct_nonneg`, `pmPowerDampedRamanujanAbsProduct_le_one`: the absolute prime product is in `[0,1]`.
+
+## Hypotheses
+
+All results are unconditional; they assume `0 < ε` (and primality of the indexing primes,
+`n ≠ 0`, where stated).
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- The prime correction `g_m(p) = 0` if `p | m`, else `p^(1+ε)/(p^(1+ε) − 1)`. -/
 def pmPowerDampedRamanujanPrimeCorrection (ε : ℝ) (m p : ℕ) : ℝ :=
   if p ∣ m then 0 else (p : ℝ)^(1+ε)/((p : ℝ)^(1+ε)-1)
 
+/-- For prime `p`, `μ_f(pq) = 0` if `p | q`, else `−f(p) μ_f(q)`. -/
 theorem pm_dampedMobius_prime_mul (f : ℕ → ℝ) {p q : ℕ} (hp : p.Prime) :
     DampedMobius.dampedMobius f (p*q) =
       if p ∣ q then 0 else -f p*DampedMobius.dampedMobius f q := by
@@ -21,6 +48,7 @@ theorem pm_dampedMobius_prime_mul (f : ℕ → ℝ) {p q : ℕ} (hp : p.Prime) :
     rw [if_neg hpq, (DampedMobius.isMultiplicative_dampedMobius f).map_mul_of_coprime
       (hp.coprime_iff_not_dvd.mpr hpq), hprime]
 
+/-- For `ε > 0` and prime `p`: `k_m(pq) = 0` if `p | qm`, else `−p/(p^(1+ε) − 1) · k_m(q)`. -/
 theorem pmPowerDampedRamanujanColumn_prime_mul {ε : ℝ} (hε : 0 < ε)
     {p q : ℕ} (hp : p.Prime) (m : ℕ) :
     pmPowerDampedRamanujanColumn ε m (p*q) =
@@ -36,6 +64,7 @@ theorem pmPowerDampedRamanujanColumn_prime_mul {ε : ℝ} (hε : 0 < ε)
       Nat.cast_mul]
     ring
 
+/-- For prime `p ∤ m`, `p^(−ε) g_m(p) = p/(p^(1+ε) − 1)`. -/
 theorem pmPowerDampedRamanujanPrimeCorrection_balance (ε : ℝ) {p m : ℕ}
     (hp : p.Prime) (hpm : ¬p ∣ m) :
     (p : ℝ)^(-ε)*pmPowerDampedRamanujanPrimeCorrection ε m p =
@@ -44,6 +73,7 @@ theorem pmPowerDampedRamanujanPrimeCorrection_balance (ε : ℝ) {p m : ℕ}
     ← Real.rpow_add (by exact_mod_cast hp.pos)]
   rw [show -ε+(1+ε) = (1 : ℝ) by ring, Real.rpow_one]
 
+/-- For `ε > 0`, the column factors as `k_m(d) = μ(m) w_ε(m) · d^(−ε) μ_{g_m}(d)`. -/
 theorem pmPowerDampedRamanujanColumn_eq_dampedMobius {ε : ℝ} (hε : 0 < ε)
     (m d : ℕ) :
     pmPowerDampedRamanujanColumn ε m d =
@@ -76,6 +106,7 @@ theorem pmPowerDampedRamanujanColumn_eq_dampedMobius {ε : ℝ} (hε : 0 < ε)
       (((q : ℝ)^(-ε) : ℝ) : ℂ)*
       ((DampedMobius.dampedMobius (pmPowerDampedRamanujanPrimeCorrection ε m) q : ℝ) : ℂ)*hw
 
+/-- `∑_{d|n} μ_f(d) = ∏_{p|n} (1 − f(p))`. -/
 theorem pm_dampedMobius_antidiagonal_sum (f : ℕ → ℝ) (n : ℕ) :
     (∑ x ∈ n.divisorsAntidiagonal, DampedMobius.dampedMobius f x.2) =
       DampedMobius.divisorSum f n := by
@@ -84,6 +115,7 @@ theorem pm_dampedMobius_antidiagonal_sum (f : ℕ → ℝ) (n : ℕ) :
   have h := congrArg (fun a : ArithmeticFunction ℝ => a n) (DampedMobius.dampedMobius_mul_zeta f)
   simpa only [ArithmeticFunction.coe_mul_zeta_apply] using h
 
+/-- For `ε > 0`, `T_m(n) = |w_ε(m)| n^(−ε) ∏_{p|n} (1 − g_m(p))`. -/
 theorem pmPowerDampedRamanujanTransfer_eq_divisorSum {ε : ℝ} (hε : 0 < ε) (m n : ℕ) :
     pmPowerDampedRamanujanTransfer ε m n =
       (‖pmPowerDampedRamanujanWeight ε m‖ : ℂ) *
@@ -114,6 +146,7 @@ theorem pmPowerDampedRamanujanTransfer_eq_divisorSum {ε : ℝ} (hε : 0 < ε) (
     pm_dampedMobius_antidiagonal_sum, Complex.ofReal_mul]
   ring
 
+/-- For `ε > 0` and prime `p`, `1 − g_m(p) = 1` if `p | m`, else `−1/(p^(1+ε) − 1)`. -/
 theorem pmPowerDampedRamanujanPrimeCorrection_complement {ε : ℝ} (hε : 0 < ε)
     (m : ℕ) {p : ℕ} (hp : p.Prime) :
     1-pmPowerDampedRamanujanPrimeCorrection ε m p =
@@ -127,6 +160,8 @@ theorem pmPowerDampedRamanujanPrimeCorrection_complement {ε : ℝ} (hε : 0 < �
     field_simp
     ring
 
+/-- For `ε > 0` and `n ≠ 0`,
+`T_m(n) = |w_ε(m)| n^(−ε) ∏_{p|n} (1 if p | m, else −1/(p^(1+ε) − 1))`. -/
 theorem pmPowerDampedRamanujanTransfer_eq_prod {ε : ℝ} (hε : 0 < ε)
     (m : ℕ) {n : ℕ} (hn : n ≠ 0) :
     pmPowerDampedRamanujanTransfer ε m n =
@@ -140,9 +175,11 @@ theorem pmPowerDampedRamanujanTransfer_eq_prod {ε : ℝ} (hε : 0 < ε)
   intro p hp
   exact pmPowerDampedRamanujanPrimeCorrection_complement hε m (Nat.prime_of_mem_primeFactors hp)
 
+/-- The absolute prime product `∏_{p∈S} (1 if p | m, else 1/(p^(1+ε) − 1))`. -/
 def pmPowerDampedRamanujanAbsProduct (ε : ℝ) (S : Finset ℕ) (m : ℕ) : ℝ :=
   ∏ p ∈ S, if p ∣ m then 1 else 1/((p : ℝ)^(1+ε)-1)
 
+/-- For `ε > 0` and prime `p`, `p^(1+ε) − 1 > 1`. -/
 theorem pmPowerDampedRamanujan_prime_denominator_one_lt {ε : ℝ} (hε : 0 < ε)
     {p : ℕ} (hp : p.Prime) : 1 < (p : ℝ)^(1+ε)-1 := by
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
@@ -151,6 +188,7 @@ theorem pmPowerDampedRamanujan_prime_denominator_one_lt {ε : ℝ} (hε : 0 < ε
   rw [Real.rpow_add (by linarith : (0 : ℝ) < p), Real.rpow_one]
   nlinarith
 
+/-- For `ε > 0` and a set of primes `S`, the absolute prime product is nonnegative. -/
 theorem pmPowerDampedRamanujanAbsProduct_nonneg {ε : ℝ} (hε : 0 < ε)
     (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) (m : ℕ) :
     0 ≤ pmPowerDampedRamanujanAbsProduct ε S m := by
@@ -161,6 +199,7 @@ theorem pmPowerDampedRamanujanAbsProduct_nonneg {ε : ℝ} (hε : 0 < ε)
   · exact div_nonneg (by norm_num) (le_trans (by norm_num)
       (pmPowerDampedRamanujan_prime_denominator_one_lt hε (hS p hp)).le)
 
+/-- For `ε > 0` and a set of primes `S`, the absolute prime product is at most `1`. -/
 theorem pmPowerDampedRamanujanAbsProduct_le_one {ε : ℝ} (hε : 0 < ε)
     (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) (m : ℕ) :
     pmPowerDampedRamanujanAbsProduct ε S m ≤ 1 := by
@@ -176,6 +215,8 @@ theorem pmPowerDampedRamanujanAbsProduct_le_one {ε : ℝ} (hε : 0 < ε)
     · have hd := pmPowerDampedRamanujan_prime_denominator_one_lt hε (hS p hp)
       exact (div_le_one (by linarith)).mpr hd.le
 
+/-- For `ε > 0` and `n ≠ 0`, `|T_m(n)| = |w_ε(m)| n^(−ε)` times the absolute prime product over
+the prime factors of `n`. -/
 theorem norm_pmPowerDampedRamanujanTransfer {ε : ℝ} (hε : 0 < ε)
     (m : ℕ) {n : ℕ} (hn : n ≠ 0) :
     ‖pmPowerDampedRamanujanTransfer ε m n‖ =

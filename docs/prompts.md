@@ -765,7 +765,8 @@ Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
 3. Unification of the routes: docs/reports/review-2110/route-unification-ledger.md
-4. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2110/walls-ledger.md
+4. Hard obstacles: docs/reports/review-2210/hard-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2210/walls-ledger.md
 
 and read the current research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md

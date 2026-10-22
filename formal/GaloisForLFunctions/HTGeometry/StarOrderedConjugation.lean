@@ -1,9 +1,30 @@
 import Mathlib.Analysis.CStarAlgebra.CStarMatrix
 
+/-!
+# Congruence preserves positivity in star-ordered rings
+
+In a star-ordered ring the nonnegative elements are the additive closure of the elements
+`star s * s`. Conjugating such a sum by `c` gives a sum of `star (s c) * (s c)`, so `0 ≤ a` implies
+`0 ≤ star c * a * c`. For a matrix over a non-unital C*-algebra that is nonnegative in the C*-matrix
+order, each diagonal entry is a sum of terms `star (S i k) * S i k` and hence nonnegative.
+
+## Main results
+
+- `star_conjugate_nonneg_of_nonneg`: `0 ≤ a` implies `0 ≤ star c * a * c` in a star-ordered ring.
+- `cstarMatrix_diagonal_nonneg_of_nonneg`: a nonnegative `CStarMatrix` has nonnegative diagonal
+  entries.
+
+## Hypotheses
+
+Unconditional; the only premises are the positivity hypotheses `0 ≤ a` and `0 ≤ M`.
+-/
+
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- In a star-ordered ring, conjugation preserves nonnegativity: `0 ≤ a` implies
+`0 ≤ star c * a * c`. -/
 theorem star_conjugate_nonneg_of_nonneg {R : Type*} [NonUnitalRing R]
     [PartialOrder R] [StarRing R] [StarOrderedRing R]
     {a : R} (ha : 0 ≤ a) (c : R) : 0 ≤ star c * a * c := by
@@ -28,6 +49,7 @@ theorem star_conjugate_nonneg_of_nonneg {R : Type*} [NonUnitalRing R]
   exact (StarOrderedRing.le_iff 0 (star c * p * c)).mpr
     ⟨star c * p * c, hclosed, by simp⟩
 
+/-- Every diagonal entry of a nonnegative matrix over a non-unital C*-algebra is nonnegative. -/
 theorem cstarMatrix_diagonal_nonneg_of_nonneg
     {A ι : Type*} [NonUnitalCStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
     [Fintype ι] (M : CStarMatrix ι ι A) (hM : 0 ≤ M) (k : ι) : 0 ≤ M k k := by

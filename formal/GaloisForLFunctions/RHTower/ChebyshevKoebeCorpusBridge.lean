@@ -1,11 +1,36 @@
 import GaloisForLFunctions.RHTower.ChebyshevKoebeFiniteAtoms
 import GaloisForLFunctions.RHTower.ChebyshevMomentCorpusBridge
 
+/-!
+# Koebe resolvent form for arithmetic theta packets and finite sets of ξ zeros
+
+This module specializes the finite Chebyshev-to-Koebe identity to two concrete node families.
+For the centered arithmetic theta nodes of stage `k`, with unit weights and node `x`, and for a
+finite set `S` of zeros `ρ` of `ξ`, with weight the divisor multiplicity and node the centered
+reciprocal square `θ_ρ = -(ρ - 1/2)^(-2)`, the Chebyshev generating sum equals
+`(1 - v²)/(4v)` times a Koebe resolvent sum with poles at `K(v) = -(27/4)/θ`, for all `v ≠ 0`
+near `0`.
+
+## Main results
+
+- `thetaArithmeticChebyshevKoebe_eventually`: the identity for the stage-`k` arithmetic theta
+  nodes.
+- `xiFiniteChebyshevKoebe_eventually`: the identity for any finite set of ξ zeros with their
+  multiplicities.
+
+## Hypotheses
+
+Unconditional; the finite set `S` is arbitrary and nothing is assumed about the location of the
+zeros.
+-/
+
 open Filter Topology
 open scoped BigOperators
 
 namespace RHTower
 
+/-- For the stage-`k` centered arithmetic theta nodes `x`, and all `v ≠ 0` near `0`,
+`∑ x(1 - v²)/(1 - 2v(1 - 2x) + v²) = (1 - v²)/(4v) · ∑_{x ≠ 0} K(v)/(K(v) + (27/4)/x)`. -/
 theorem thetaArithmeticChebyshevKoebe_eventually (k : ℕ) :
     ∀ᶠ v in 𝓝 (0 : ℂ), v ≠ 0 →
       (∑ x ∈ thetaArithmeticCenteredNodes k,
@@ -22,6 +47,8 @@ theorem thetaArithmeticChebyshevKoebe_eventually (k : ℕ) :
   simpa only [finiteChebyshevCenteredRational, finiteKoebeResolvent,
     one_mul] using hv hv0
 
+/-- For any finite set `S` of ξ zeros, weighted by multiplicity with nodes `θ_ρ = -(ρ - 1/2)^(-2)`,
+the Chebyshev generating sum equals `(1 - v²)/(4v)` times the Koebe resolvent sum, for `v ≠ 0` near `0`. -/
 theorem xiFiniteChebyshevKoebe_eventually (S : Finset XiDivisorSupport) :
     ∀ᶠ v in 𝓝 (0 : ℂ), v ≠ 0 →
       (∑ ρ ∈ S,

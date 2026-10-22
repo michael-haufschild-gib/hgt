@@ -1,5 +1,35 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Snapshot.Rec
 
+/-!
+# Snapshot boards: invariants, caught frequencies and activation latency
+
+In the dyadic stopping procedure on `Grid M = ℤ/2^M`, a `Board` stores a Riesz-product chart and
+optionally a previous snapshot scene. `Plot.Comes` is the board invariant along a running thread:
+the chart is sound and the stored scene is an admissible, settled ancestor sharing fund, flag and
+norm with the current scene. The invariant is preserved when passing to children. A frequency is
+`catches`-ed when it is intense and already within reach of the chart's frequency span; such a
+frequency is then `aligned` with an element of the separated net of the stored snapshot scene.
+Finally, after `latency p j` further dyadic levels the chart's growth radius falls below the
+frequency tolerance of the deeper node.
+
+## Main results
+
+- `vacant_comes`, `comes_down`: the empty board satisfies the invariant, and the turned board
+  satisfies it at each child scene of a running thread step.
+- `effort_bounds`: eventually in `j`, `64 · tolerance + 20 · sharp ≤ amp / 2` for every admissible
+  plot.
+- `currently`: eventually in `j`, along a following thread with the board invariant and the chart
+  size cap, every caught frequency `x` is aligned with an element `y` of the net of a stored ancestor
+  snapshot.
+- `waiting`: if node `t` lies at least `latency p j` levels below `s` and `q ≤ rangeIx p.cap`, then
+  `horizon s p.ix q ≤ tolerance j p.ix p.main · 2^{lev t}`.
+
+## Hypotheses
+
+Unconditional finite statements; `effort_bounds` and `currently` hold for all sufficiently large
+`j`, and `currently` assumes the thread-following, board-invariant and size-cap conditions stated.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -12,6 +42,8 @@ open scoped Classical
 
 namespace Plot
 
+/-- Board invariant at scene `s`: the chart is sound, and a stored previous scene is safe, working,
+settled, below level `M`, an ancestor of `s`, and shares `s`'s fund, flag and norm. -/
 structure Comes (w : Board M) (s : Scene M) (j J : ℕ) (f : Grid M → ℝ) : Prop where
   valid : w.chart.Sound
   stored :
@@ -20,9 +52,12 @@ structure Comes (w : Board M) (s : Scene M) (j J : ℕ) (f : Grid M → ℝ) : P
         q.here.lev < M ∧ below s.here q.here ∧
         q.fund=s.fund ∧ q.live=s.live ∧ q.norm=s.norm
 
+/-- The empty board satisfies the invariant at every scene. -/
 lemma vacant_comes (s : Scene M) : Comes (vacant M) s j J f := by
   refine ⟨classic_sound _,?_⟩
   simp [vacant]
+/-- Along a running step `s → q` of a following thread, the invariant at `s` passes to the turned
+board at each child of `q`. -/
 lemma comes_down (p : Plot) {s q : Scene M} {l}
     (h : Following j J f (.ran s q l)) {g : Board M}
     (hp : Comes g s j J f) (b) :
@@ -40,13 +75,19 @@ lemma comes_down (p : Plot) {s q : Scene M} {l}
   rw [hb.1.fund,hb.1.flat,hb.1.mode,hb.1.here]
   exact ⟨ha,hc,hE,h₁,below_trans (child_below _ _) h₂,h₃,h₄,h₅⟩
 
+/-- `x` is intense at strength `side p.ix` and already within `spotLimit` of the span of the current
+chart's frequencies. -/
 def catches (p : Plot) (s : Scene M) (c : Board M) (j : ℕ) (x : Grid M) :=
     intense p.main s (side p.ix) x ∧ atReach (p.now c s).items (spotLimit s j p.ix p.main) x
 
+/-- `x - y` lies within `2 · spotLimit` of `0` (non-main), or of a frequency `k` with
+`delta mood k ≤ sepRad j` (main). -/
 def aligned (p : Plot) (s : Scene M) (j : ℕ) (x y : Grid M) :=
     let r := 2*spotLimit s j p.ix p.main
     if p.main then ∃ k, delta s.fund.mood k ≤ sepRad j ∧ rad (x-y-k) ≤ r else rad (x-y) ≤ r
 
+/-- Eventually in `j`, every plot (with `ix ≤ mainIx j` in the main case) satisfies
+`64 · tolerance + 20 · sharp ≤ amp / 2`. -/
 lemma effort_bounds :
     ∀ᶠ j : ℕ in atTop, ∀ p : Plot, (p.main=true → p.ix ≤ mainIx j) →
       64*tolerance j p.ix p.main +20*sharp p.ix ≤ amp p.ix p.main / 2 := by
@@ -75,6 +116,8 @@ lemma effort_bounds :
     unfold a at *
     nlinarith [sq_nonneg b]
 
+/-- Eventually in `j`: along a following thread with the board invariant and size cap, every caught
+frequency `x` has a stored ancestor snapshot `v` and a net element `y` of `v` aligned with `x`. -/
 lemma currently :
     ∀ᶠ j : ℕ in atTop, ∀ (p : Plot), (p.main=true → p.ix ≤ mainIx j) →
     ∀ M J : ℕ, ∀ f : Grid M → ℝ, ∀ s q : Scene M, ∀ l,
@@ -162,8 +205,11 @@ lemma currently :
     exact ⟨c,by change strength B _ ≤ _; linarith⟩
 
 
+/-- Number of dyadic levels `1000 (1 + cap + ix + ell j)` after which a snapshot activates. -/
 def latency (p : Plot) (j : ℕ) :=
     1000*(1+p.cap+p.ix+ell j)
+/-- If `t` lies at least `latency p j` levels below `s` and `q ≤ rangeIx p.cap`, then the chart
+growth radius `horizon s p.ix q` is at most `tolerance j p.ix p.main · 2^{lev t}`. -/
 lemma waiting (p : Plot) (j : ℕ) (s t : Node)
     (h : s.lev+latency p j ≤ t.lev)
     (q : ℕ) (hh : q ≤ rangeIx p.cap) :

@@ -5,6 +5,37 @@ import GaloisForLFunctions.RHTower.LiClockPairedEtaArithmeticCancellation
 import GaloisForLFunctions.RHTower.LiClockPairedEtaCompletionMoments
 import GaloisForLFunctions.RHTower.LiClockPairedEtaContiguousComparison
 
+/-!
+# Relative Volterra law for the finite paired-eta gap clock
+
+Let `Z_N(s) = ∑_{n<N} ∫_{log(2n+1)}^{log(2n+2)} e^{-su} du` be the finite paired-eta Laplace
+partition and `U_L(s) = ∫_0^L e^{-su} du` its filled contiguous model with `L = log(2N)`. Their
+half-tilted, normalized difference measures have even Borel kernels `K_N` and `K_L`; the
+independent mixed source has Borel kernel `M_N(t) = ∑_j E[(X+Y)^{2j}] t^{2j}/((2j)!)²` and signed
+forcing `F_N(t) = ∑_j E[(X-Y)(X+Y)^{2j+1}] t^{2j+2}/((2j+2)!(2j+1)!)`. This module identifies
+`M_N` and `F_N` as derivatives of Volterra convolutions of `K_N` and `K_L`, splits the clock of
+the gap ratio `Z_N/U_L` as partition clock minus contiguous clock, and combines the two
+individual clock Volterra laws into the relative law `2 ∫_0^t Re(gap clock)(s) M_N(t-s) ds = F_N(t)`.
+
+## Main results
+
+- `hasDerivAt_liClockPairedEtaPartitionMixedPrimitive`: `(K_N ⋆ K_L)' = M_N`.
+- `hasDerivAt_liClockPairedEtaPartitionSignedConvolution`:
+  `((s K_N'(s)) ⋆ K_L - K_N ⋆ (s K_L'(s)))' = F_N`.
+- `liClockPairedEtaFiniteGapClockResponse_eq_partition_sub_contiguous`: gap clock = partition
+  clock minus contiguous partition clock, on a zero-free disk.
+- `liClockPairedEtaPartitionRelativeForcing_volterra`: the relative Volterra identity for `t ≥ 0`.
+- `liClockPairedEtaPartition_exists_relative_forcing_radius`: for every `N > 0` some radius
+  `r ∈ (0, 1/2)` makes both partitions zero-free on the closed disk and the relative identity hold.
+
+## Hypotheses
+
+All results take `0 < N`. The clock identities additionally take a radius `0 < r < 1/2` and the
+hypothesis `hclosed` that `Z_N(1/2 + z i) ≠ 0` for `|z| ≤ r`; this is a genuine contour
+precondition, and `liClockPairedEtaPartition_exists_relative_forcing_radius` discharges it
+unconditionally by producing such a radius.
+-/
+
 open Complex Filter Set Metric Topology MeasureTheory ProbabilityTheory RiemannGaussian
 open GaloisForLFunctions.HTGeometry
 open scoped BigOperators
@@ -134,6 +165,8 @@ private theorem relEtaSphereGuard {N : ℕ} {r : ℝ} (hrhalf : r<1/2)
     simpa only [mem_closedBall, dist_zero_right] using hn.le))
 
 
+/-- For `N > 0`, the Volterra convolution of the actual Borel kernel `K_N` with the contiguous
+kernel `K_L` (`L = log 2N`) has derivative the mixed Borel kernel `M_N(t)` at every `t`. -/
 theorem hasDerivAt_liClockPairedEtaPartitionMixedPrimitive
     {N : ℕ} (hN : 0<N) (t : ℝ) :
   HasDerivAt (GaloisForLFunctions.HTGeometry.volterraConv
@@ -147,6 +180,8 @@ theorem hasDerivAt_liClockPairedEtaPartitionMixedPrimitive
     ← relReferenceBorel_eq_generic (Real.log (2*(N:ℝ))),
     ← relMixedBorel_eq_generic hN] using h
 
+/-- For `N > 0`, the skew convolution `(s K_N'(s)) ⋆ K_L - K_N ⋆ (s K_L'(s))` has derivative
+the signed relative forcing `F_N(t)` at every `t`. -/
 theorem hasDerivAt_liClockPairedEtaPartitionSignedConvolution
     {N : ℕ} (hN : 0<N) (t : ℝ) :
   HasDerivAt (fun u =>
@@ -165,6 +200,8 @@ theorem hasDerivAt_liClockPairedEtaPartitionSignedConvolution
     ← relReferenceBorel_eq_generic (Real.log (2*(N:ℝ))),
     ← relSignedForcing_eq_generic hN] using h
 
+/-- For `N > 0`, `0 < r < 1/2`, and assuming `hclosed` (`Z_N(1/2 + z i) ≠ 0` on `|z| ≤ r`), the
+clock of the gap ratio `Z_N/U_{log 2N}` is the partition clock minus the contiguous clock. -/
 theorem liClockPairedEtaFiniteGapClockResponse_eq_partition_sub_contiguous
     {N : ℕ} (hN : 0<N) {r : ℝ} (hr : 0<r) (hrhalf : r<1/2)
     (hclosed : ∀z∈closedBall (0:ℂ) r,
@@ -192,6 +229,8 @@ private theorem relVolterra_orientation (f g : ℝ → ℝ) (t : ℝ) :
   intro s _
   ring
 
+/-- Relative Volterra law: for `N > 0`, `0 < r < 1/2`, assuming `hclosed` (zero-free closed
+disk for `Z_N`), and `t ≥ 0`, `2 ∫_0^t Re(gap clock)(s) M_N(t - s) ds = F_N(t)`. -/
 theorem liClockPairedEtaPartitionRelativeForcing_volterra
     {N : ℕ} (hN : 0<N) {r : ℝ} (hr : 0<r) (hrhalf : r<1/2)
     (hclosed : ∀z∈closedBall (0:ℂ) r,
@@ -230,6 +269,8 @@ theorem liClockPairedEtaPartitionRelativeForcing_volterra
       hN hr hrhalf hclosed, Complex.sub_re, liClockPairedEtaPartitionClockResponseReal,
     liClockPairedEtaContiguousPartitionClockReal] using h
 
+/-- Unconditionally, for every `N > 0` there is `r ∈ (0, 1/2)` with `Z_N` and `U_{log 2N}` both
+nonzero at `1/2 + z i` for `|z| ≤ r`, and the relative Volterra law holds for all `t ≥ 0`. -/
 theorem liClockPairedEtaPartition_exists_relative_forcing_radius
     {N : ℕ} (hN : 0<N) :
   ∃r:ℝ, 0<r ∧ r<1/2 ∧

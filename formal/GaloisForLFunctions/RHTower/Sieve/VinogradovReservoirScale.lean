@@ -1,18 +1,50 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovReservoirRecurrence
 
+/-!
+# Scale of the Bertrand prime reservoir in the Vinogradov induction
+
+The Vinogradov induction uses a reservoir of `k (k^2 - k) + 1` primes obtained from Bertrand's
+postulate above `y + k`, where `y = ⌈N^(1/k)⌉` is the least natural number with `y^k ≥ N`; all of
+them are at most `2^(size) (y + k + 2)`. This module turns that into explicit scale bounds: every
+reservoir prime satisfies `p^k ≤ C_k N`; if the reservoir bound exceeds `N` then `N` is below an
+explicit threshold depending only on `k`; and otherwise `p ⌈N/p⌉ ≤ 2N`.
+
+## Main results
+
+- `vinogradovReservoirBound_le_linear_root`: for `k, N ≠ 0`, the reservoir bound is at most
+  `2^(size) (k + 3) · y`.
+- `vinogradovReservoirPrime_pow_le_scale`: each reservoir prime satisfies
+  `p^k ≤ vinogradovReservoirPrimePowerConstant k · N`.
+- `vinogradovReservoirBound_failure_small`: for `k ≥ 2`, `N ≠ 0`, if `N` is less than the reservoir
+  bound then `N ≤ (2 · 2^(size) (k + 3))^k`.
+- `vinogradovReservoirPrime_mul_ceilDiv_le_two_mul`: if the reservoir bound is at most `N`, each
+  reservoir prime satisfies `p ⌈N/p⌉ ≤ 2N`.
+
+## Hypotheses
+
+Unconditional; the statements assume `k ≠ 0` (or `k ≥ 2`), `N ≠ 0`, and where stated that the
+reservoir bound is below or above `N`.
+-/
+
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Constant `2^(size) (k + 3)` comparing the reservoir bound with `⌈N^(1/k)⌉`. -/
 def vinogradovReservoirLinearConstant (k : ℕ) : ℕ :=
   2 ^ (vinogradovReservoirSize k) * (k + 3)
 
+/-- Constant `2^(size · k + k) (k + 3)^k` in the bound `p^k ≤ C_k N` for reservoir primes. -/
 def vinogradovReservoirPrimePowerConstant (k : ℕ) : ℕ :=
   2 ^ (vinogradovReservoirSize k * k + k) * (k + 3) ^ k
 
+/-- Small-scale threshold `(2 · vinogradovReservoirLinearConstant k)^k`; below it the trivial bound
+is used. -/
 def vinogradovReservoirSmallThreshold (k : ℕ) : ℕ :=
   (2 * vinogradovReservoirLinearConstant k) ^ k
 
+/-- For `k, N ≠ 0`, the reservoir bound `2^(size) (⌈N^(1/k)⌉ + k + 2)` is at most
+`2^(size) (k + 3) ⌈N^(1/k)⌉`. -/
 theorem vinogradovReservoirBound_le_linear_root
     {N k : ℕ} (hk : k ≠ 0) (hN : N ≠ 0) :
     vinogradovReservoirBound N k ≤
@@ -30,6 +62,7 @@ theorem vinogradovReservoirBound_le_linear_root
     y, mul_assoc] using
       (Nat.mul_le_mul_left (2 ^ vinogradovReservoirSize k) hyk)
 
+/-- For `k, N ≠ 0`, every reservoir prime `p` satisfies `p^k ≤ vinogradovReservoirPrimePowerConstant k · N`. -/
 theorem vinogradovReservoirPrime_pow_le_scale
     {N k : ℕ} (hk : k ≠ 0) (hN : N ≠ 0)
     (i : Fin (vinogradovReservoirSize k)) :
@@ -55,6 +88,8 @@ theorem vinogradovReservoirPrime_pow_le_scale
         vinogradovReservoirPrimePowerConstant, mul_pow]
       ring
 
+/-- For `k ≥ 2` and `N ≠ 0`: if `N` is smaller than the reservoir bound, then `N` is at most the
+small threshold `(2 · 2^(size) (k + 3))^k`. -/
 theorem vinogradovReservoirBound_failure_small
     {N k : ℕ} (hk2 : 2 ≤ k) (hN : N ≠ 0)
     (hfail : N < vinogradovReservoirBound N k) :
@@ -87,6 +122,7 @@ theorem vinogradovReservoirBound_failure_small
         _ < N := pred_vinogradovCeilRoot_pow_lt hk hN
     omega
 
+/-- If the reservoir bound is at most `N`, every reservoir prime `p` satisfies `p ⌈N/p⌉ ≤ 2N`. -/
 theorem vinogradovReservoirPrime_mul_ceilDiv_le_two_mul
     {N k : ℕ} (_hN : N ≠ 0)
     (i : Fin (vinogradovReservoirSize k))

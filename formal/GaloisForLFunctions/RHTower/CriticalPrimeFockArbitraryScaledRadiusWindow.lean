@@ -1,12 +1,34 @@
 import GaloisForLFunctions.RHTower.CriticalPrimeFockScaledRadiusWindow
 import GaloisForLFunctions.RHTower.PolynomialFockPrimeBallOverlap
 
+/-!
+# Prime mass in scaled polynomial-Fock radius windows (arbitrary scale `s > 0`)
+
+Extends `CriticalPrimeFockScaledRadiusWindow` from scales `0 < s ≤ 1` to every scale `s > 0`.
+With the Fock radius `r(x) = (√x)^(2 - m)`, the prime-log mass
+`∑_{e^(x - s r(x)) < p ≤ e^(x + s r(x))} (log p)²/p` is asymptotic to `2x · s r(x)` as
+`x → ∞`, for every `m > 2` and `s > 0`.
+
+## Main results
+
+- `tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius_of_pos`: for `m ≥ 2`,
+  `a > 0`, `s > 0`, `e^(-a√(x - s r(x))) / (s r(x)) → 0` as `x → ∞`.
+- `tendsto_primeLogWindowMass_div_scaledCriticalPrimeFockModel_of_pos`: for `m > 2`, `s > 0`, the
+  window mass divided by `2x · s r(x)` tends to `1`.
+
+## Hypotheses
+
+Unconditional. The premises are the parameter ranges; the prime-sum input is the proved
+remainder bound `exists_primeLogSquareRemainder_bound`.
+-/
+
 open Filter Topology Set MeasureTheory
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `m ≥ 2`, `a > 0` and any `s > 0`, `e^(-a√(x - s r(x))) / (s r(x)) → 0` as `x → ∞`. -/
 theorem tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius_of_pos
     {m a s : ℝ} (hm : 2 ≤ m) (ha : 0 < a) (hs : 0 < s) :
     Tendsto (fun x : ℝ =>
@@ -67,6 +89,8 @@ theorem tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius_of_po
             criticalPrimeFockRadius m x) := by field_simp
   exact squeeze_zero' hnonneg hle (by simpa using hmajor)
 
+/-- For `m > 2` and any `s > 0`, the prime-log mass of the window of radius `s r(x)` around `x` is
+asymptotic to `2x · s r(x)` as `x → ∞`. -/
 theorem tendsto_primeLogWindowMass_div_scaledCriticalPrimeFockModel_of_pos
     {m s : ℝ} (hm : 2 < m) (hs : 0 < s) :
     Tendsto (fun x : ℝ =>

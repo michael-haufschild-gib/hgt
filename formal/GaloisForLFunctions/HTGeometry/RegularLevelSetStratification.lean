@@ -1,12 +1,45 @@
 import GaloisForLFunctions.HTGeometry.ClassicalStratifiedParametricAvoidance
 import Mathlib.Data.Fintype.Pi
 
+/-!
+# Regular zero sets and finite regular stratifications
+
+The set of surjective continuous linear maps `X → Y` is open when `Y` is finite-dimensional
+(a right inverse stays invertible after composition under small perturbation, by continuity of the
+determinant). Consequently the zero set of a smooth map `g : Y → ℝᵐ` (or into any
+finite-dimensional `Z`) whose derivative is surjective at every zero is locally a smooth regular
+level set of codimension at least `c ≤ m`, also after intersecting with an open set. The module
+then provides constructors for `FiniteRegularStratification`: from finitely many pairwise disjoint
+regular strata, from one regular set, and by adjoining a disjoint regular stratum.
+
+## Main results
+
+- `isOpen_surjectiveContinuousLinearMapLocus`: surjectivity is an open condition on
+  `X →L[ℝ] Y` for finite-dimensional `Y`.
+- `isLocalRegularLevelSetOfCodimAtLeast_zeroSet`: the zero set of a smooth `g : Y → ℝᵐ` that is a
+  submersion along its zeros is a local regular level set of codimension at least `c ≤ m`.
+- `isLocalRegularLevelSetOfCodimAtLeast_zeroSet_finiteDimensional`: the same for targets any
+  finite-dimensional `Z`, with `c ≤ dim Z`; `_inter_isOpen` variants restrict to an open set.
+- `IsLocalRegularLevelSetOfCodimAtLeast.inter_isOpen`: local regularity is preserved by
+  intersecting with an open set.
+- `finiteRegularStratification_of_pairwise`, `finiteRegularStratification_of_regular`,
+  `FiniteRegularStratification.cons`: constructors for finite regular stratifications.
+
+## Hypotheses
+
+Unconditional. The zero-set theorems assume `g` is `C^∞` and that its Fréchet derivative is
+surjective at each zero (in `O` for the open variants), with `c` at most the target dimension.
+The stratification constructors take the regularity predicate `IsLocalRegularLevelSetOfCodimAtLeast`
+of each stratum and the disjointness of strata as inputs.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Set Filter Topology
 
 noncomputable section
 
+/-- For finite-dimensional `Y`, the surjective continuous linear maps `X → Y` form an open set. -/
 theorem isOpen_surjectiveContinuousLinearMapLocus
     {X Y : Type*}
     [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -35,6 +68,8 @@ theorem isOpen_surjectiveContinuousLinearMapLocus
   change g L' (e.symm y) = y
   exact e.apply_symm_apply y
 
+/-- If `g : Y → ℝᵐ` is `C^∞` with surjective derivative at every zero and `c ≤ m`, then the zero
+set of `g` is locally a regular level set of codimension at least `c`. -/
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {m c : ℕ} (g : Y → (Fin m → ℝ)) (hcm : c ≤ m)
@@ -53,6 +88,8 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet
   · intro x hx
     simpa only [fderivWithin_of_isOpen hU hx] using! hx
 
+/-- If `g : Y → ℝᵐ` is `C^∞` with surjective derivative at every zero in the open set `O` and
+`c ≤ m`, then `{g = 0} ∩ O` is locally a regular level set of codimension at least `c`. -/
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {m c : ℕ} (g : Y → (Fin m → ℝ)) (hcm : c ≤ m)
@@ -71,6 +108,8 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen
   · intro x hx
     simpa only [fderivWithin_of_isOpen hU hx] using! hx.2
 
+/-- Finite-dimensional target version: for `C^∞` `g : Y → Z` submersive along its zeros and
+`c ≤ dim Z`, the zero set is a local regular level set of codimension at least `c`. -/
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_finiteDimensional
     {Y Z : Type*}
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -102,6 +141,8 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_finiteDimensional
   ext x
   simp [phi]
 
+/-- Finite-dimensional target version on an open set `O`: `{g = 0} ∩ O` is a local regular level
+set of codimension at least `c ≤ dim Z` when `g` is submersive at zeros in `O`. -/
 theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen_finiteDimensional
     {Y Z : Type*}
     [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -135,6 +176,8 @@ theorem isLocalRegularLevelSetOfCodimAtLeast_zeroSet_inter_isOpen_finiteDimensio
   ext x
   simp [phi]
 
+/-- A local regular level set of codimension at least `c` stays one after intersecting with an
+open set. -/
 theorem IsLocalRegularLevelSetOfCodimAtLeast.inter_isOpen
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {S O : Set Y} {c : ℕ}
@@ -154,6 +197,8 @@ theorem IsLocalRegularLevelSetOfCodimAtLeast.inter_isOpen
     simpa only [fderivWithin_of_isOpen (hU.inter hO) hx,
       fderivWithin_of_isOpen hU hx.1] using hsurj x hx.1
 
+/-- Finitely many pairwise disjoint local regular level sets of codimension at least `c` form a
+finite regular stratification of their union. -/
 def finiteRegularStratification_of_pairwise
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {n c : ℕ} (stratum : Fin n → Set Y)
@@ -166,6 +211,7 @@ def finiteRegularStratification_of_pairwise
   cover := rfl
   regular := hregular
 
+/-- A single local regular level set is a one-stratum finite regular stratification. -/
 def finiteRegularStratification_of_regular
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {S : Set Y} {c : ℕ}
@@ -178,6 +224,8 @@ def finiteRegularStratification_of_regular
   have h := finiteRegularStratification_of_pairwise stratum hpair (fun _ => hregular)
   simpa only [stratum, iUnion_const] using h
 
+/-- Adjoin a regular stratum `R`, disjoint from `T`, to a finite regular stratification of `T` to
+stratify `S = R ∪ T`. -/
 def FiniteRegularStratification.cons
     {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {S R T : Set Y} {c : ℕ}

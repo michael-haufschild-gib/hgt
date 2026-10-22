@@ -2,12 +2,36 @@ import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilThirdGradeAbelCompleteness
 import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinDivisorTomography
 import GaloisForLFunctions.RHTower.XiWeilHardyReferenceLorentzianPlane
 
+/-!
+# The regularized critical-Mellin defect cannot be continued past `Re u = -1/2`
+
+The regularized critical-Mellin defect is `D(u) = 1/(u + 1) + ζ_reg'(u + 1)/ζ_reg(u + 1)`, where
+`ζ_reg(s) = (s - 1) ζ(s)` with the pole at `s = 1` filled. It is analytic on `Re u > 0`. This
+module shows that no analytic function on a half-plane `Re u > c` with `-1 < c < -1/2` can agree
+with `D` on `Re u > 0`. By the identity theorem such an extension would agree with `D` near every
+pole `ρ - 1`, and Hardy's theorem supplies a zero `ρ` of `ξ` with `Re ρ = 1/2`, at which `D` has
+a simple pole with `Re (ρ - 1) = -1/2 > c`.
+
+## Main results
+
+- `no_analytic_extension_regularizedCriticalMellinDefect_pastHardy`: for `-1 < c < -1/2`, there
+  is no `A` analytic on `{Re u > c}` with `A = D` on `{Re u > 0}`.
+
+## Hypotheses
+
+Unconditional. The range `-1 < c < -1/2` is a hypothesis of the theorem; the critical-line zero
+comes from the formalized Hardy theorem (`exists_criticalLine_xiDivisorSupport_of_hardy`).
+-/
+
 open Complex Filter Set Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- Assuming `-1 < c < -1/2`, no function analytic on `Re u > c` agrees with the regularized
+critical-Mellin defect `D` on `Re u > 0`: the critical-line zero from Hardy's theorem gives `D` a
+simple pole at real part `-1/2`. -/
 theorem no_analytic_extension_regularizedCriticalMellinDefect_pastHardy
     {c : ℝ} (hcLow : -1 < c) (hcHigh : c < -1 / 2)
     (A : ℂ → ℂ)

@@ -330,7 +330,7 @@ class EngineTests(unittest.TestCase):
                 limits = {}
                 runtime = FakeRuntime()
                 vectors = EmptyVectors()
-                search = self.db.search
+                search = self.db.search_lanes
                 def text_search(*args, **kwargs):
                     limits.setdefault('text', []).append(kwargs['deadline']-time.monotonic())
                     return search(*args, **kwargs)
@@ -349,7 +349,7 @@ class EngineTests(unittest.TestCase):
                 def capture(*args, **kwargs):
                     limits['retrieval'] = kwargs['deadline']-time.monotonic()
                     return retrieve(*args, **kwargs)
-                with patch.object(self.db, 'search', side_effect=text_search), \
+                with patch.object(self.db, 'search_lanes', side_effect=text_search), \
                         patch.object(engine, 'retrieve', side_effect=capture):
                     result = engine.search('alpha', budget_seconds=budget)
                 self.assertTrue(result['candidate_lemmas'])

@@ -1,6 +1,33 @@
 import GaloisForLFunctions.HTGeometry.NumberFieldIntegerMatrixReduction
 import GaloisForLFunctions.HTGeometry.OrderSizeReduction
 
+/-!
+# Size reduction of unipotent matrices over the mixed embedding space
+
+For a number field `K`, matrices over `𝓞 K` act on matrices over the mixed space
+`ℝ^{r₁} × ℂ^{r₂}` through the mixed embedding. A unipotent upper triangular mixed matrix `V` is
+size-reduced diagonal by diagonal: at superdiagonal offset `k + 1` one right-multiplies by an
+integral shear whose entries are nearest algebraic integers, which leaves the lower superdiagonals
+untouched. Since `𝓞 K` has finite covering radius in the mixed space, this yields a uniform bound.
+
+## Main results
+
+- `IsMixedUnipotentUpper`: unipotent upper triangular matrices over the mixed space, closed under
+  multiplication (`IsMixedUnipotentUpper.mul`).
+- `MixedSizeReduced`: all entries on superdiagonals of offset `1, …, k` have norm at most `C`.
+- `exists_numberFieldMixedOrderSweep`: one shear step extends size reduction from offset `k` to
+  `k + 1`, assuming every mixed point lies within `C` of an embedded algebraic integer.
+- `exists_numberFieldMixed_unipotentUpperReduction`: there is `C ≥ 0` depending only on `K` such
+  that every mixed unipotent upper `V` admits an integral `N` with `det N = 1`, unipotent upper
+  mixed embedding, and every strictly upper entry of `V N` of norm at most `C`.
+
+## Hypotheses
+
+The final theorem is unconditional. The sweep lemma takes the covering property of `𝓞 K` with
+radius `C` as an explicit hypothesis; the final theorem discharges it with the proved finite
+covering radius of the ring of integers.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix NumberField
@@ -11,6 +38,8 @@ noncomputable section
 variable {K : Type*} [Field K] [NumberField K]
 variable {n : ℕ}
 
+/-- Entrywise mixed embedding `𝓞 K → ℝ^{r₁} × ℂ^{r₂}` of a square matrix over the ring of
+integers. -/
 def numberFieldMixedOrderMatrix
     (M : Matrix (Fin n) (Fin n) (𝓞 K)) :
     Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K) :=
@@ -40,12 +69,15 @@ theorem numberFieldMixedOrderMatrix_superShear
   ext i j <;> by_cases h : (j : ℕ) = (i : ℕ) + (k + 1) <;>
     simp [numberFieldMixedOrderMatrix, superShear_apply, h]
 
+/-- A matrix over the mixed space is unipotent upper triangular: zero below the diagonal and `1` on
+the diagonal. -/
 structure IsMixedUnipotentUpper
     (V : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K)) : Prop where
   upper : ∀ i j, j < i → V i j = 0
   unit : ∀ i, V i i = 1
 
 omit [NumberField K] in
+/-- Products of mixed unipotent upper triangular matrices are unipotent upper triangular. -/
 theorem IsMixedUnipotentUpper.mul
     {V W : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K)}
     (hV : IsMixedUnipotentUpper V) (hW : IsMixedUnipotentUpper W) :
@@ -74,6 +106,8 @@ theorem isMixedUnipotentUpper_superShear
     IsMixedUnipotentUpper (superShear k e) :=
   ⟨superShear_upper k e, superShear_diag k e⟩
 
+/-- `V` is size-reduced up to offset `k` with bound `C`: every entry `V i j` with
+`i < j ≤ i + k` has norm at most `C`. -/
 def MixedSizeReduced (C : ℝ) (k : ℕ)
     (V : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K)) : Prop :=
   ∀ i j : Fin n, i < j → (j : ℕ) ≤ (i : ℕ) + k → ‖V i j‖ ≤ C
@@ -85,6 +119,8 @@ theorem mixedSizeReduced_zero (C : ℝ)
   exact absurd (Fin.lt_def.1 hij) (not_lt_of_ge (by simpa only [Nat.add_zero] using hle))
 
 omit [NumberField K] in
+/-- For unipotent upper `V`, right multiplication by the shear on superdiagonal `k + 1` fixes the
+entries on offsets `1, …, k` and adds `eᵢ` to the entry `(i, i + k + 1)`. -/
 theorem mixed_mul_superShear_apply
     {V : Matrix (Fin n) (Fin n) (mixedEmbedding.mixedSpace K)}
     (hV : IsMixedUnipotentUpper V) (k : ℕ)
@@ -131,6 +167,9 @@ theorem mixed_mul_superShear_apply
       · rw [hEval i j hij, hV.2 i, one_mul]
     rw [hprod, hnew]
 
+/-- One reduction sweep: assuming `hC`, that every mixed point is within `C` of an embedded
+algebraic integer, a matrix size-reduced up to offset `k` becomes size-reduced up to `k + 1` after
+an integral shear on superdiagonal `k + 1`. -/
 theorem exists_numberFieldMixedOrderSweep
     {C : ℝ}
     (hC : ∀ x : mixedEmbedding.mixedSpace K,
@@ -178,6 +217,9 @@ theorem exists_numberFieldMixedOrderSweep
     rw [hEq, norm_neg]
     exact hespec
 
+/-- Uniform mixed size reduction: a constant `C ≥ 0` depending only on `K` such that every mixed
+unipotent upper `V` admits `N` over `𝓞 K` with `det N = 1`, unipotent upper mixed embedding, and all
+strictly upper entries of `V N` of norm at most `C`. -/
 theorem exists_numberFieldMixed_unipotentUpperReduction
     (K : Type*) [Field K] [NumberField K] :
     ∃ C : ℝ, 0 ≤ C ∧

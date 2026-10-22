@@ -1,5 +1,24 @@
 import GaloisForLFunctions.HTGeometry.SteinbergUpperTetrahedronNormalForm
 
+/-!
+# Tetrahedron elements in `K₂`
+
+`K₂(n, R)` is the kernel of the map from the Steinberg group `St(n, R)` to `GL_n(R)`. For pairwise
+distinct indices `i, j, k, l` over a commutative ring, a tetrahedron element
+`x_ij(a) x_ik(b) x_jk(c) x_il(d) x_jl(e) x_kl(f)` lies in `K₂` exactly when all six coordinates
+vanish, since its matrix image has entries `a, b + ac, c, d + ae + (b + ac) f, e + cf, f` above the
+diagonal.
+
+## Main results
+
+- `steinbergUpperTetrahedron_mem_KTwo_iff`: a tetrahedron element is in `K₂` iff
+  `a = b = c = d = e = f = 0`.
+
+## Hypotheses
+
+Unconditional; the only premises are that the four indices are pairwise distinct.
+-/
+
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
@@ -8,6 +27,7 @@ open Matrix
 
 variable {R : Type*} [CommRing R] {n : Type*} [DecidableEq n] [Fintype n]
 
+/-- A tetrahedron element lies in `K₂` iff all six of its coordinates are zero. -/
 theorem steinbergUpperTetrahedron_mem_KTwo_iff {i j k l : n} (hij : i ≠ j) (hjk : j ≠ k)
     (hik : i ≠ k) (hil : i ≠ l) (hjl : j ≠ l) (hkl : k ≠ l) (a b c d e f : R) :
     steinbergUpperTetrahedron hij hjk hik hil hjl hkl a b c d e f ∈ KTwo R n

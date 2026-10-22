@@ -4,17 +4,52 @@ import GaloisForLFunctions.HTGeometry.EternityObservableHorizonLaw
 import Mathlib.LinearAlgebra.Matrix.Kronecker
 import Mathlib.Tactic
 
+/-!
+# Linear growth of two-qubit gate count for a static inverse-square chain
+
+On `L` pairs of qubits `(j, false), (j, true)` consider the diagonal Hamiltonian with energy
+`E(x) = ∑ⱼ [x(j,0) ∧ x(j,1)] / (j+1)² + L⁻³ ∑ⱼ [x(j,1) ∧ x(j+1,0)]`. A circuit is a product of
+unitary gates acting on at most two qubits; a gate that is disjoint from, or contained in, a qubit
+set `A` factorizes as a tensor product across `A` and its complement. If the circuit avoids
+the pairs indexed by `S`, its matrix factorizes across the first endpoints of `S`, which forces the
+four-point diagonal identity `W₀₀ W₁₁ = W₀₁ W₁₀`. Fewer than `K` two-qubit gates leave a set `S` of
+untouched pairs in the block `4K < j + 1 ≤ 8K` whose accumulated phase lies in `[3πε, 5πε]`; an
+`ε`-approximation of `exp(-i t H)` is then impossible, because the factorization caps the phase
+chord at `4ε` while the chord lower bound `2φ/π` exceeds it.
+
+## Main results
+
+- `inverseSquareChain_twoGateCount_ge`: if `8 ≤ K`, `8K ≤ L`, `0 < ε ≤ 1/100`,
+  `128πεK ≤ t < 128πε(K+1)`, `t ≤ εL/2` and the circuit is within `ε` of `exp(-i t H)` in operator
+  norm, then it has at least `K` two-qubit gates.
+- `circuitMatrix_separatesAcross`: a circuit whose two-qubit gates avoid `A` factorizes across `A`.
+- `SeparatesAcross.fourPoint_diagonal`: a matrix factorizing across the first endpoints of `S`
+  satisfies the four-point diagonal identity on the configurations `pairFourConfig S a b`.
+- `circuit_exists_inverseSquare_phase_subset`: with fewer than `K` two-qubit gates, some untouched
+  subset of the block carries phase in `[3πε, 5πε]`.
+- `phase_chord_lower`: `2φ/π ≤ |exp(-iφ) - 1|` for `0 ≤ φ ≤ π`.
+
+## Hypotheses
+
+Unconditional. The main theorem's premises are the explicit numeric ranges on `K`, `L`, `ε`, `t`
+and the approximation bound `‖circuitMatrix c - exp(-i t H)‖ ≤ ε`. Locality of gates is part of
+the structure `LocalGate`: support of size at most two, unitarity, and tensor factorization
+across every set containing or disjoint from the support.
+-/
+
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
 open Matrix Kronecker
 
 namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
+/-- Classical basis configurations of qubits indexed by `Q`. -/
 abbrev Config (Q : Type*) := Q → Bool
 abbrev On {Q : Type*} (A : Finset Q) := A → Bool
 abbrev Off {Q : Type*} (A : Finset Q) := {q : Q // q ∉ A} → Bool
 
 variable {Q : Type*} [Fintype Q] [DecidableEq Q]
 
+/-- Splitting a configuration into its restriction to `A` and to the complement of `A`. -/
 def splitConfig (A : Finset Q) : Config Q ≃ On A × Off A where
   toFun x := (fun q => x q.1, fun q => x q.1)
   invFun p q := if h : q ∈ A then p.1 ⟨q, h⟩ else p.2 ⟨q, h⟩
@@ -37,6 +72,8 @@ omit [Fintype Q] in
 @[simp] theorem splitConfig_snd_apply (A : Finset Q) (x : Config Q)
     (q : {q : Q // q ∉ A}) : (splitConfig A x).2 q = x q := rfl
 
+/-- A matrix on configurations factorizes as a tensor product `M_A ⊗ M_B` across `A` and its
+complement. -/
 def SeparatesAcross (A : Finset Q) (M : Matrix (Config Q) (Config Q) ℂ) : Prop :=
   ∃ MA : Matrix (On A) (On A) ℂ, ∃ MB : Matrix (Off A) (Off A) ℂ,
     ∀ x y, M x y = MA (splitConfig A x).1 (splitConfig A y).1 *
@@ -49,6 +86,7 @@ theorem SeparatesAcross.exists_apply {A : Finset Q} {M : Matrix (Config Q) (Conf
       ∀ x y, M x y = MA (splitConfig A x).1 (splitConfig A y).1 *
         MB (splitConfig A x).2 (splitConfig A y).2 := h
 
+/-- The identity matrix factorizes across every set. -/
 theorem SeparatesAcross.one (A : Finset Q) :
     SeparatesAcross A (1 : Matrix (Config Q) (Config Q) ℂ) := by
   refine ⟨1, 1, fun x y => ?_⟩
@@ -64,6 +102,7 @@ theorem SeparatesAcross.one (A : Finset Q) :
       simp [hsnd]
     · simp [hfst]
 
+/-- Products of matrices that factorize across `A` factorize across `A`. -/
 theorem SeparatesAcross.mul {A : Finset Q} {M N : Matrix (Config Q) (Config Q) ℂ}
     (hM : SeparatesAcross A M) (hN : SeparatesAcross A N) :
     SeparatesAcross A (M * N) := by
@@ -92,6 +131,8 @@ theorem SeparatesAcross.mul {A : Finset Q} {M N : Matrix (Config Q) (Config Q) �
           (∑ b : Off A, MB (splitConfig A x).2 b * NB b (splitConfig A y).2) := by
       rw [Finset.sum_mul_sum]
 
+/-- A local unitary gate: support of at most two qubits, unitary matrix, and tensor factorization
+across every set that contains or is disjoint from the support. -/
 structure LocalGate (Q : Type*) [Fintype Q] [DecidableEq Q] where
   support : Finset Q
   matrix : Matrix (Config Q) (Config Q) ℂ
@@ -100,10 +141,12 @@ structure LocalGate (Q : Type*) [Fintype Q] [DecidableEq Q] where
   separates : ∀ A : Finset Q, support ⊆ A ∨ Disjoint support A →
     SeparatesAcross A matrix
 
+/-- The matrix of a circuit, the ordered product of its gate matrices. -/
 def circuitMatrix : List (LocalGate Q) → Matrix (Config Q) (Config Q) ℂ
   | [] => 1
   | g :: c => g.matrix * circuitMatrix c
 
+/-- A circuit matrix is unitary. -/
 theorem circuitMatrix_unitary (c : List (LocalGate Q)) :
     circuitMatrix c ∈ Matrix.unitaryGroup (Config Q) ℂ := by
   induction c with
@@ -112,6 +155,7 @@ theorem circuitMatrix_unitary (c : List (LocalGate Q)) :
       exact (Matrix.unitaryGroup (Config Q) ℂ).mul_mem g.unitary ih
 
 omit [Fintype Q] in
+/-- A set with at most one element is either contained in or disjoint from any set `A`. -/
 theorem finset_subset_or_disjoint_of_card_le_one {S A : Finset Q} (hS : S.card ≤ 1) :
     S ⊆ A ∨ Disjoint S A := by
   by_cases h : ∃ q ∈ S, q ∈ A
@@ -131,6 +175,8 @@ theorem finset_subset_or_disjoint_of_card_le_one {S A : Finset Q} (hS : S.card �
     intro q hqS hqA
     exact h ⟨q, hqS, hqA⟩
 
+/-- If every two-qubit gate of a circuit is disjoint from `A`, the circuit matrix factorizes
+across `A`. -/
 theorem circuitMatrix_separatesAcross (c : List (LocalGate Q)) (A : Finset Q)
     (havoid : ∀ g ∈ c, g.support.card = 2 → Disjoint g.support A) :
     SeparatesAcross A (circuitMatrix c) := by
@@ -148,8 +194,10 @@ theorem circuitMatrix_separatesAcross (c : List (LocalGate Q)) (A : Finset Q)
         intro h hh hc
         exact havoid h (by simp [hh]) hc
 
+/-- Qubits arranged as `L` pairs `(j, false), (j, true)`. -/
 abbrev PairQubit (L : ℕ) := Fin L × Bool
 
+/-- Number of two-qubit gates in a circuit. -/
 def twoGateCount {L : ℕ} : List (LocalGate (PairQubit L)) → ℕ
   | [] => 0
   | g :: c => (if g.support.card = 2 then 1 else 0) + twoGateCount c
@@ -157,6 +205,7 @@ def twoGateCount {L : ℕ} : List (LocalGate (PairQubit L)) → ℕ
 def gateTouchedPairs {L : ℕ} (g : LocalGate (PairQubit L)) : Finset (Fin L) :=
   if g.support.card = 2 then g.support.image Prod.fst else ∅
 
+/-- The pair indices touched by some two-qubit gate of the circuit. -/
 def circuitTouchedPairs {L : ℕ} : List (LocalGate (PairQubit L)) → Finset (Fin L)
   | [] => ∅
   | g :: c => gateTouchedPairs g ∪ circuitTouchedPairs c
@@ -168,6 +217,7 @@ theorem gateTouchedPairs_card_le_two {L : ℕ} (g : LocalGate (PairQubit L)) :
   · exact le_trans (Finset.card_image_le) g.arity_le_two
   · simp
 
+/-- A circuit touches at most twice as many pairs as it has two-qubit gates. -/
 theorem circuitTouchedPairs_card_le {L : ℕ} (c : List (LocalGate (PairQubit L))) :
     (circuitTouchedPairs c).card ≤ 2 * twoGateCount c := by
   induction c with
@@ -195,6 +245,7 @@ theorem gateTouchedPairs_subset_circuitTouchedPairs {L : ℕ}
       · exact Finset.subset_union_left
       · exact Finset.Subset.trans (ih hg) Finset.subset_union_right
 
+/-- The first qubits `(j, false)` of the pairs `j ∈ S`. -/
 def firstEndpointSites {L : ℕ} (S : Finset (Fin L)) : Finset (PairQubit L) :=
   S ×ˢ {false}
 
@@ -218,6 +269,8 @@ theorem twoGateSupport_disjoint_firstEndpoints_of_untouched {L : ℕ}
     gateTouchedPairs_subset_circuitTouchedPairs hg hpairGate
   exact (Finset.disjoint_left.mp hdisj) hpairS hpairCircuit
 
+/-- If `S` avoids all pairs touched by two-qubit gates, the circuit matrix factorizes across the
+first endpoints of `S`. -/
 theorem circuitMatrix_separates_firstEndpoints {L : ℕ}
     (c : List (LocalGate (PairQubit L))) (S : Finset (Fin L))
     (hdisj : Disjoint S (circuitTouchedPairs c)) :
@@ -226,6 +279,8 @@ theorem circuitMatrix_separates_firstEndpoints {L : ℕ}
   intro g hg htwo
   exact twoGateSupport_disjoint_firstEndpoints_of_untouched hdisj hg htwo
 
+/-- The configuration putting `a` on the first and `b` on the second qubit of every pair in `S`,
+and `false` elsewhere. -/
 def pairFourConfig {L : ℕ} (S : Finset (Fin L)) (a b : Bool) : Config (PairQubit L) :=
   fun q => if q.1 ∈ S then if q.2 = false then a else b else false
 
@@ -250,6 +305,8 @@ theorem pairFourConfig_off_eq {L : ℕ} (S : Finset (Fin L)) (a a' b : Bool) :
     simp [pairFourConfig, hS, hbool]
   · simp [pairFourConfig, hS]
 
+/-- Four-point diagonal identity `W₀₀ W₁₁ = W₀₁ W₁₀` for a matrix factorizing across the first
+endpoints of `S`. -/
 theorem SeparatesAcross.fourPoint_diagonal {L : ℕ} {S : Finset (Fin L)}
     {W : Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ}
     (hW : SeparatesAcross (firstEndpointSites S) W) :
@@ -295,6 +352,8 @@ theorem separatesAcross_diagonal_snd (A : Finset Q) (f : Off A → ℂ) :
     · simp [Matrix.diagonal, hxy, hfst]
     · simp [Matrix.diagonal, hxy, hsnd]
 
+/-- Discrete intermediate value: if the weights on `T` are each at most `δ` and sum to at least
+`a ≥ 0`, some subset of `T` has weight sum in `[a, a + δ]`. -/
 theorem exists_subset_sum_between {α : Type*} [DecidableEq α]
     (T : Finset α) (w : α → ℝ) {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 ≤ δ)
     (hw : ∀ j ∈ T, w j ≤ δ) (htotal : a ≤ ∑ j ∈ T, w j) :
@@ -326,6 +385,7 @@ theorem inverseSquareBlockEmbedding_injective {L K : ℕ} (hKL : 8 * K ≤ L) :
   apply Fin.ext
   exact Nat.add_left_cancel (congrArg Fin.val hij)
 
+/-- The block of pair indices `j` with `4K < j + 1 ≤ 8K`, of size `4K`. -/
 def inverseSquareBlock {L K : ℕ} (hKL : 8 * K ≤ L) : Finset (Fin L) :=
   Finset.univ.image (inverseSquareBlockEmbedding hKL)
 
@@ -343,6 +403,7 @@ theorem inverseSquareBlock_index_bounds {L K : ℕ} (hKL : 8 * K ≤ L)
   change 4 * K < (4 * K + i.val) + 1 ∧ (4 * K + i.val) + 1 ≤ 8 * K
   constructor <;> omega
 
+/-- Phase `t / (j + 1)²` accumulated by pair `j` at time `t`. -/
 noncomputable def inverseSquarePhaseWeight {L : ℕ} (t : ℝ) (j : Fin L) : ℝ :=
   t / ((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)
 
@@ -351,6 +412,7 @@ theorem inverseSquarePhaseWeight_nonneg {L : ℕ} {t : ℝ} (ht : 0 ≤ t) (j : 
   unfold inverseSquarePhaseWeight
   positivity
 
+/-- For `8 ≤ K`, `ε > 0` and `t < 128πε(K+1)`, each block phase weight is at most `2πε`. -/
 theorem inverseSquarePhaseWeight_le {L K : ℕ} {t ε : ℝ}
     (hK : 8 ≤ K) (hε : 0 < ε) (ht : t < 128 * Real.pi * ε * (K + 1))
     (hKL : 8 * K ≤ L) {j : Fin L} (hj : j ∈ inverseSquareBlock hKL) :
@@ -381,6 +443,7 @@ theorem inverseSquarePhaseWeight_le {L K : ℕ} {t ε : ℝ}
   rw [div_le_iff₀ (sq_pos_of_pos hjpos)]
   simpa [mul_assoc] using htarget
 
+/-- Each block phase weight is at least `t / (64 K²)`. -/
 theorem inverseSquarePhaseWeight_lower {L K : ℕ} {t : ℝ}
     (hK : 0 < K) (ht : 0 ≤ t) (hKL : 8 * K ≤ L)
     {j : Fin L} (hj : j ∈ inverseSquareBlock hKL) :
@@ -394,6 +457,8 @@ theorem inverseSquarePhaseWeight_lower {L K : ℕ} {t : ℝ}
   rw [div_le_div_iff₀ (by positivity) (sq_pos_of_pos hjpos)]
   nlinarith
 
+/-- With fewer than `K` two-qubit gates and `128πεK ≤ t < 128πε(K+1)`, some subset of the block
+untouched by two-qubit gates has total phase in `[3πε, 5πε]`. -/
 theorem circuit_exists_inverseSquare_phase_subset {L K : ℕ}
     (c : List (LocalGate (PairQubit L))) {t ε : ℝ}
     (hK : 8 ≤ K) (hKL : 8 * K ≤ L) (hε : 0 < ε)
@@ -465,32 +530,39 @@ theorem circuit_exists_inverseSquare_phase_subset {L K : ℕ}
     exact (Finset.mem_sdiff.mp (hST hjS)).2 hjTouched
   · nlinarith
 
+/-- Inverse-square matching energy `∑ⱼ [x(j,0) ∧ x(j,1)] / (j+1)²`. -/
 noncomputable def inverseSquareMatchingEnergy {L : ℕ} (x : Config (PairQubit L)) : ℝ :=
   ∑ j : Fin L, if x (j, false) = true ∧ x (j, true) = true
     then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0
 
+/-- Bridge energy `L⁻³ ∑ⱼ [x(j,1) ∧ x(j+1,0)]` coupling neighbouring pairs. -/
 noncomputable def inverseCubeBridgeEnergy {L : ℕ} (x : Config (PairQubit L)) : ℝ :=
   (1 / (L : ℝ) ^ (3 : ℕ)) *
     ∑ j : Fin L, if h : j.val + 1 < L then
       if x (j, true) = true ∧ x (⟨j.val + 1, h⟩, false) = true then 1 else 0
     else 0
 
+/-- Total classical energy: matching energy plus bridge energy. -/
 noncomputable def inverseSquareChainEnergy {L : ℕ} (x : Config (PairQubit L)) : ℝ :=
   inverseSquareMatchingEnergy x + inverseCubeBridgeEnergy x
 
+/-- The diagonal Hamiltonian with the chain energy on each configuration. -/
 noncomputable def inverseSquareChainHamiltonian (L : ℕ) :
     Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ :=
   Matrix.diagonal (fun x => (inverseSquareChainEnergy x : ℂ))
 
+/-- Time-`t` evolution `exp(-i t H)` of the inverse-square chain Hamiltonian. -/
 noncomputable def inverseSquareChainEvolution (L : ℕ) (t : ℝ) :
     Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ :=
   unitaryEvolution (inverseSquareChainHamiltonian L) t
 
+/-- The evolution is diagonal with entries `exp(-i t E(x))`. -/
 theorem inverseSquareChainEvolution_diagonal (L : ℕ) (t : ℝ) :
     inverseSquareChainEvolution L t =
       Matrix.diagonal (fun x => Complex.exp (-(Complex.I * (t * inverseSquareChainEnergy x)))) := by
   exact unitaryEvolution_diagonal _ _
 
+/-- A diagonal matrix with unimodular entries is unitary. -/
 theorem mem_unitaryGroup_diagonal_general {ι : Type*} [Fintype ι] [DecidableEq ι]
     (w : ι → ℂ) (hw : ∀ i, ‖w i‖ = 1) :
     Matrix.diagonal w ∈ Matrix.unitaryGroup ι ℂ := by
@@ -527,6 +599,7 @@ theorem inverseCubeBridgeEnergy_nonneg {L : ℕ} (x : Config (PairQubit L)) :
     intro j hj
     split_ifs <;> norm_num
 
+/-- The bridge energy is at most `1 / L²`. -/
 theorem inverseCubeBridgeEnergy_le {L : ℕ} (hL : 0 < L) (x : Config (PairQubit L)) :
     inverseCubeBridgeEnergy x ≤ 1 / (L : ℝ) ^ (2 : ℕ) := by
   have hLR : (0 : ℝ) < L := by exact_mod_cast hL
@@ -594,6 +667,7 @@ theorem inverseSquareChainEnergy_pairFourConfig_true {L : ℕ}
         inverseCubeBridgeEnergy (pairFourConfig S true true) := by
   rw [inverseSquareChainEnergy, inverseSquareMatchingEnergy_pairFourConfig_true]
 
+/-- Chord lower bound `2φ/π ≤ |exp(-iφ) - 1|` for `0 ≤ φ ≤ π`, from Jordan's inequality. -/
 theorem phase_chord_lower {φ : ℝ} (hφ0 : 0 ≤ φ) (hφpi : φ ≤ Real.pi) :
     2 * φ / Real.pi ≤ ‖Complex.exp (-(Complex.I * (φ : ℂ))) - 1‖ := by
   have hsin := Real.mul_le_sin (x := φ / 2) (by positivity) (by linarith)
@@ -612,6 +686,7 @@ theorem phase_chord_lower {φ : ℝ} (hφ0 : 0 ≤ φ) (hφpi : φ ≤ Real.pi) 
   rw [htarget]
   exact mul_le_mul_of_nonneg_left hsin (by norm_num)
 
+/-- For `2 ≤ L`, `0 ≤ t ≤ εL/2`, the bridge contribution `t · E_bridge(x)` is at most `ε / 4`. -/
 theorem time_mul_inverseCubeBridgeEnergy_le_quarter {L : ℕ} {t ε : ℝ}
     (hL : 2 ≤ L) (hε : 0 ≤ ε) (ht0 : 0 ≤ t) (ht : t ≤ ε * L / 2)
     (x : Config (PairQubit L)) :
@@ -633,6 +708,9 @@ theorem time_mul_inverseCubeBridgeEnergy_le_quarter {L : ℕ} {t ε : ℝ}
     nlinarith
   linarith
 
+/-- Gate-count lower bound: under `8 ≤ K`, `8K ≤ L`, `0 < ε ≤ 1/100`,
+`128πεK ≤ t < 128πε(K+1)` and `t ≤ εL/2`, any local circuit within operator-norm distance `ε` of
+`exp(-i t H)` contains at least `K` two-qubit gates. -/
 theorem inverseSquareChain_twoGateCount_ge {L K : ℕ}
     (c : List (LocalGate (PairQubit L))) {t ε : ℝ}
     (hK : 8 ≤ K) (hKL : 8 * K ≤ L) (hε : 0 < ε) (hεsmall : ε ≤ 1 / 100)

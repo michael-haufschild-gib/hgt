@@ -2,6 +2,30 @@ import GaloisForLFunctions.RHTower.Suzuki.SuzukiHlogHilbertFormDomain
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 import Mathlib.Analysis.InnerProductSpace.Projection.Submodule
 
+/-!
+# Density of the `H^log` form domain in `L^2(-a, a)`
+
+The `H^log(-a, a)` form domain consists of Fourier-side vectors in `L^2((1 + log⁺|ξ|) dξ)` whose
+inverse Fourier transforms vanish outside the aperture `[-a, a]`. This module shows that Schwartz
+functions lie in this weighted `L^2` space (since `1 + log⁺|x| ≤ 1 + |x|`), that every smooth
+compactly supported real test function supported in `(-a, a)` comes from the form domain, and,
+by the fundamental lemma of the calculus of variations, that the form domain embeds densely into
+the aperture Hilbert space `L^2(-a, a) ⊆ L^2(ℝ)`.
+
+## Main results
+
+- `SchwartzMap.memLp_two_suzukiHlogMeasure`: every Schwartz function lies in
+  `L^2((1 + log⁺|ξ|) dξ)`.
+- `exists_suzukiHlogFormDomain_eq_smoothRealTest`: each smooth real test function with support
+  in `(-a, a)` is the time-side image of a form-domain vector.
+- `denseRange_suzukiHlogFormToAperture`: the form domain has dense image in `L^2(-a, a)`.
+
+## Hypotheses
+
+Unconditional. Test functions are assumed smooth with compact support inside `(-a, a)`; `a` is a
+positive aperture.
+-/
+
 open MeasureTheory Set
 open scoped ENNReal InnerProduct FourierTransform SchwartzMap
 
@@ -9,6 +33,7 @@ noncomputable section
 
 namespace RHTower
 
+/-- The log weight is dominated linearly: `1 + log⁺|x| ≤ 1 + |x|`. -/
 theorem suzukiLogWeight_le_one_add_abs (x : ℝ) :
     suzukiLogWeight x ≤ 1 + |x| := by
   unfold suzukiLogWeight
@@ -23,6 +48,7 @@ theorem suzukiLogWeight_le_one_add_abs (x : ℝ) :
     · exact abs_nonneg x
   linarith
 
+/-- For a Schwartz function `F`, `x ↦ (1 + log⁺|x|) |F(x)|^2` is integrable. -/
 theorem _root_.SchwartzMap.integrable_suzukiLogWeight_mul_norm_sq
     (F : SchwartzMap ℝ ℂ) :
     Integrable (fun x : ℝ => suzukiLogWeight x * ‖F x‖ ^ 2) := by
@@ -61,6 +87,7 @@ theorem _root_.SchwartzMap.integrable_suzukiLogWeight_mul_norm_sq
     abs_of_nonneg (mul_nonneg hweight (sq_nonneg _)),
     abs_of_nonneg (mul_nonneg hC0 (mul_nonneg (add_nonneg zero_le_one habs) hn))] using hcalc
 
+/-- Every Schwartz function lies in `L^2` of the log-weighted measure `(1 + log⁺|ξ|) dξ`. -/
 theorem _root_.SchwartzMap.memLp_two_suzukiHlogMeasure (F : SchwartzMap ℝ ℂ) :
     MemLp (F : ℝ → ℂ) 2 suzukiHlogMeasure := by
   apply (memLp_two_iff_integrable_sq_norm
@@ -84,11 +111,13 @@ theorem hasCompactSupport_suzukiRealTestComplex {g : ℝ → ℝ}
   change HasCompactSupport (Complex.ofRealCLM ∘ g)
   exact hg.comp_left (show Complex.ofRealCLM (0 : ℝ) = 0 by simp)
 
+/-- A smooth compactly supported real function, viewed as a complex Schwartz function. -/
 def suzukiRealTestSchwartz (g : ℝ → ℝ)
     (hgdiff : ContDiff ℝ (⊤ : ℕ∞) g) (hgsupp : HasCompactSupport g) : SchwartzMap ℝ ℂ :=
   (hasCompactSupport_suzukiRealTestComplex hgsupp).toSchwartzMap
     (contDiff_suzukiRealTestComplex hgdiff)
 
+/-- A smooth compactly supported real function, viewed as an element of `L^2(ℝ; ℂ)`. -/
 def suzukiRealTestL2 (g : ℝ → ℝ)
     (hgdiff : ContDiff ℝ (⊤ : ℕ∞) g) (hgsupp : HasCompactSupport g) : SoninL2 :=
   (suzukiRealTestSchwartz g hgdiff hgsupp).toLp 2 volume
@@ -99,9 +128,12 @@ theorem suzukiRealTestL2_coeFn (g : ℝ → ℝ)
       suzukiRealTestComplex g := by
   exact (suzukiRealTestSchwartz g hgdiff hgsupp).coeFn_toLp 2 volume
 
+/-- The aperture Hilbert space: functions in `L^2(ℝ)` supported in `[-a, a]`. -/
 abbrev suzukiApertureHilbert (a : SuzukiPositiveAperture) : Submodule ℂ SoninL2 :=
   physicalForbidden (centralInterval a.1) (measurableSet_centralInterval a.1)
 
+/-- The form-domain embedding `H^log(-a, a) → L^2(-a, a)`, with codomain restricted to the aperture
+Hilbert space. -/
 def suzukiHlogFormToAperture (a : SuzukiPositiveAperture) :
     SuzukiHlogFormDomain a →L[ℂ] suzukiApertureHilbert a :=
   (suzukiHlogFormEmbedding a).codRestrict (suzukiApertureHilbert a) fun f => by
@@ -113,6 +145,8 @@ def suzukiHlogFormToAperture (a : SuzukiPositiveAperture) :
     (a : SuzukiPositiveAperture) (f : SuzukiHlogFormDomain a) :
     (suzukiHlogFormToAperture a f : SoninL2) = suzukiHlogFormEmbedding a f := rfl
 
+/-- Every smooth compactly supported real `g` with `tsupport g ⊆ (-a, a)` is the time-side image of a
+vector in the `H^log(-a, a)` form domain (namely the Fourier transform of `g`). -/
 theorem exists_suzukiHlogFormDomain_eq_smoothRealTest
     (a : SuzukiPositiveAperture) (g : ℝ → ℝ)
     (hgdiff : ContDiff ℝ (⊤ : ℕ∞) g) (hgsupp : HasCompactSupport g)
@@ -166,6 +200,7 @@ theorem exists_suzukiHlogFormDomain_eq_smoothRealTest
   change suzukiHlogFourierToTime w = suzukiRealTestL2 g hgdiff hgsupp
   exact htime
 
+/-- Elements of the aperture Hilbert space are fixed by the cutoff to `[-a, a]`. -/
 theorem indicatorCutoff_suzukiApertureHilbert
     (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
     indicatorCutoff (centralInterval a.1) (measurableSet_centralInterval a.1) f.1 = f.1 := by
@@ -185,6 +220,8 @@ theorem indicatorCutoff_suzukiApertureHilbert
       rw [hidem]
     _ = f.1 := hg
 
+/-- The `H^log(-a, a)` form domain embeds with dense range into `L^2(-a, a)`: a vector orthogonal to
+all smooth test functions supported in `(-a, a)` vanishes. -/
 theorem denseRange_suzukiHlogFormToAperture (a : SuzukiPositiveAperture) :
     DenseRange (suzukiHlogFormToAperture a) := by
   letI : CompleteSpace (suzukiApertureHilbert a) :=

@@ -1,5 +1,30 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62TailHorizontalEdges
 
+/-!
+# Chen–Gupta–Li Lemma 6.2: integrability of the tail contour integrand on vertical lines
+
+The tail contour integrand of Lemma 6.2 is
+`w̃(s) N^s F(s - it) E(s - it) (L(1 - s + it, χ̄) - ∑_{n ≤ M} χ̄(n) n^(-(1 - s + it)))`, where `w̃`
+is the Mellin transform of the smooth bump, `F` the primitive functional-equation factor and
+`E` the finite Euler correction. For a contour depth `d ≥ 1`, this module shows that the
+integrand is integrable along every vertical line `Re s = σ` with `-2d ≤ σ ≤ -1`. It is
+continuous there, and far up the line it is bounded by `C/|Im s|²` by the horizontal-edge
+point bound, which is integrable.
+
+## Main results
+
+- `CGLLemma62TailVerticalAbscissa`: an abscissa `σ` with `-2d ≤ σ ≤ -1`.
+- `cglLemma62_tailContour_vertical_integrable`: the integrand is integrable on `Re s = σ`.
+- `cglLemma62_tailContour_left_integrable`, `cglLemma62_tailContour_right_integrable`: the
+  special cases `σ = -2d` and `σ = -1`.
+
+## Hypotheses
+
+Unconditional. The bump `w`, length `N`, induced character `B`, cutoff `M ≥ 1` and depth
+`d ≥ 1` are typed data; the decay comes from the proved bound
+`cglLemma62_tailContour_horizontal_point_bound`.
+-/
+
 open Complex MeasureTheory Filter Set Asymptotics LSeries
 open scoped Topology LSeries.notation BigOperators
 
@@ -7,11 +32,13 @@ namespace RHTower
 
 noncomputable section
 
+/-- A real abscissa `σ` between the far tail line and the shifted line: `-2d ≤ σ ≤ -1`. -/
 structure CGLLemma62TailVerticalAbscissa (d : CGLLemma62TailContourDepth) where
   value : ℝ
   lower : -2 * (d.value : ℝ) ≤ value
   upper : value ≤ -1
 
+/-- For `r < -1` and `c > 0`, `|y|^r` is integrable on `{y : c < |y|}`. -/
 private theorem cgl_tail_abs_rpow_integrable {r c : ℝ} (hr : r < -1) (hc : 0 < c) :
     IntegrableOn (fun y : ℝ => |y|^r) {y : ℝ | c < |y|} := by
   have hset : {y : ℝ | c < |y|} = Iio (-c) ∪ Ioi c := by
@@ -72,6 +99,8 @@ private theorem cgl_tailContour_line_continuous
   change Continuous (cglLemma62TailContourIntegrand w N B t M.value ∘ line)
   exact hcont.comp_continuous hline hmaps
 
+/-- For every abscissa `-2d ≤ σ ≤ -1`, the Lemma 6.2 tail contour integrand is integrable along the
+vertical line `Re s = σ`. -/
 theorem cglLemma62_tailContour_vertical_integrable
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (B : CGLLemma62InducedCharacter)
     (t : ℝ) (M : CGLLemma62TailCutoff) (d : CGLLemma62TailContourDepth)
@@ -122,6 +151,7 @@ theorem cglLemma62_tailContour_vertical_integrable
   rw [←integrableOn_univ,←hcover]
   exact htail.union hmiddle
 
+/-- The Lemma 6.2 tail contour integrand is integrable along the far left line `Re s = -2d`. -/
 theorem cglLemma62_tailContour_left_integrable
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (B : CGLLemma62InducedCharacter)
     (t : ℝ) (M : CGLLemma62TailCutoff) (d : CGLLemma62TailContourDepth) :
@@ -132,6 +162,7 @@ theorem cglLemma62_tailContour_left_integrable
       have hd : (1:ℝ)≤d.value := by exact_mod_cast d.positive
       linarith⟩
 
+/-- The Lemma 6.2 tail contour integrand is integrable along the line `Re s = -1`. -/
 theorem cglLemma62_tailContour_right_integrable
     (w : CGLRealSmoothBump) (N : CGLPositiveLength) (B : CGLLemma62InducedCharacter)
     (t : ℝ) (M : CGLLemma62TailCutoff) (d : CGLLemma62TailContourDepth) :

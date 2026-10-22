@@ -4,6 +4,34 @@ import GaloisForLFunctions.HTGeometry.CausalFourierBridge
 import GaloisForLFunctions.RHTower.L2FourierIntegralBridge
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 
+/-!
+# Fourier transform of |Γ(1/4 + is/2)|^2 via a Gamma autocorrelation
+
+The kernel `k(x) = e^(-x/4) exp(-e^(-x))` has Fourier transform `Γ(1/4 + 2πiξ)`. Its
+autocorrelation `A = k ⋆ k(-·)` therefore has Fourier transform `|Γ(1/4 + 2πiξ)|^2`, and a direct
+computation of the convolution integral gives `A(x) = √π (2 cosh(x/2))^(-1/2)`. Fourier inversion
+then evaluates the characteristic integral
+`∫ e^(its) |Γ(1/4 + is/2)|^2 ds = 4π √π 2^(-1/2) (cosh t)^(-1/2)`, and the normalizing constant
+`(2π)^(-3/2) · 4π √π 2^(-1/2)` equals `1`. So `(cosh t)^(-1/2)` is the normalized Fourier transform
+of the measure with density proportional to `|Γ(1/4 + is/2)|^2`.
+
+## Main results
+
+- `semilocalGammaAutocorrelation`: the autocorrelation `k ⋆ k(-·)` of the quarter kernel.
+- `fourier_semilocalGammaQuarterKernel`: `k̂(ξ) = Γ(1/4 + 2πiξ)`.
+- `fourier_semilocalGammaAutocorrelation`: `Â(ξ) = |Γ(1/4 + 2πiξ)|^2`.
+- `semilocalGammaAutocorrelation_eq_scale_mul_sqrt_pi`: `A(x) = √π (2 cosh(x/2))^(-1/2)`.
+- `integral_fourier_semilocalGammaAutocorrelation`: Fourier inversion
+  `∫ e^(2πiξt) |Γ(1/4 + 2πiξ)|^2 dξ = A(t)`.
+- `integral_semilocalGammaCharacteristicKernel_closedForm`:
+  `∫ e^(its) |Γ(1/4 + is/2)|^2 ds = 4π √π 2^(-1/2) (cosh t)^(-1/2)`.
+- `semilocalGammaNormalization_constant`: `(2π)^(-3/2) · 4π √π 2^(-1/2) = 1`.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 noncomputable section
 
 open Complex Filter MeasureTheory Real Set
@@ -11,6 +39,7 @@ open scoped BoundedContinuousFunction Convolution ENNReal FourierTransform
 
 namespace RHTower
 
+/-- For `0 < a < 1`, the kernel `e^(-a x) exp(-e^(-x))` is bounded by `1` in absolute value. -/
 theorem norm_semilocalGammaLogKernel_le_one
     {a : ℝ} (ha0 : 0 < a) (ha1 : a < 1) (x : ℝ) :
     ‖semilocalGammaLogKernel a x‖ ≤ 1 := by
@@ -32,6 +61,7 @@ theorem norm_semilocalGammaLogKernel_le_one
               (sub_nonneg.mpr ha1.le) hx')
           _ = 1 := Real.exp_zero
 
+/-- An integrable bounded function on `ℝ` has an `L^2` Fourier transform. -/
 theorem memLp_two_fourier_of_integrable_of_norm_le
     {f : ℝ → ℂ} (hf : Integrable f) {C : ℝ}
     (hbound : ∀ x, ‖f x‖ ≤ C) :
@@ -56,12 +86,15 @@ theorem memLp_two_fourier_of_integrable_of_norm_le
   exact (memLp_congr_ae hfourAE).mp
     (Lp.memLp (FourierTransform.fourier f2))
 
+/-- The quarter kernel `k(x) = e^(-x/4) exp(-e^(-x))`, whose Fourier transform is `Γ(1/4 + 2πiξ)`. -/
 def semilocalGammaQuarterKernel : ℝ → ℂ :=
   semilocalGammaLogKernel (1 / 4)
 
+/-- The reflected quarter kernel `x ↦ k(-x)`. -/
 def semilocalGammaQuarterReflection (x : ℝ) : ℂ :=
   semilocalGammaQuarterKernel (-x)
 
+/-- The autocorrelation `A = k ⋆ k(-·)` of the quarter kernel. -/
 def semilocalGammaAutocorrelation : ℝ → ℂ :=
   semilocalGammaQuarterKernel ⋆[ContinuousLinearMap.mul ℂ ℂ]
     semilocalGammaQuarterReflection
@@ -81,6 +114,7 @@ theorem integrable_semilocalGammaAutocorrelation :
     (ContinuousLinearMap.mul ℂ ℂ)
     integrable_semilocalGammaQuarterReflection
 
+/-- The Fourier transform of the quarter kernel is `ξ ↦ Γ(1/4 + 2πiξ)`. -/
 theorem fourier_semilocalGammaQuarterKernel (xi : ℝ) :
     FourierTransform.fourier semilocalGammaQuarterKernel xi =
       Complex.Gamma ((1 : ℝ) / 4 + (2 * Real.pi * xi) * Complex.I) := by
@@ -88,6 +122,7 @@ theorem fourier_semilocalGammaQuarterKernel (xi : ℝ) :
     (fourier_semilocalGammaLogKernel_frequency
       (a := (1 : ℝ) / 4) (by norm_num) xi)
 
+/-- The Fourier transform of the reflected quarter kernel is the complex conjugate of `Γ(1/4 + 2πiξ)`. -/
 theorem fourier_semilocalGammaQuarterReflection (xi : ℝ) :
     FourierTransform.fourier semilocalGammaQuarterReflection xi =
       (starRingEnd ℂ)
@@ -100,6 +135,7 @@ theorem fourier_semilocalGammaQuarterReflection (xi : ℝ) :
   congr 2
   apply Complex.ext <;> simp
 
+/-- The Fourier transform of the autocorrelation is `|Γ(1/4 + 2πiξ)|^2`. -/
 theorem fourier_semilocalGammaAutocorrelation (xi : ℝ) :
     FourierTransform.fourier semilocalGammaAutocorrelation xi =
       (Complex.normSq
@@ -112,6 +148,7 @@ theorem fourier_semilocalGammaAutocorrelation (xi : ℝ) :
     fourier_semilocalGammaQuarterReflection,
     fourier_semilocalGammaQuarterKernel, Complex.mul_conj]
 
+/-- `ξ ↦ |Γ(1/4 + 2πiξ)|^2` is integrable, since the quarter kernel is integrable and bounded. -/
 theorem integrable_norm_sq_fourier_semilocalGammaQuarterKernel :
     Integrable (fun xi : ℝ =>
       ‖FourierTransform.fourier semilocalGammaQuarterKernel xi‖ ^ 2) := by
@@ -132,9 +169,11 @@ theorem integrable_fourier_semilocalGammaAutocorrelation :
     fourier_semilocalGammaQuarterKernel, Complex.normSq_eq_norm_sq]
   simp only [Complex.ofRealCLM_apply]
 
+/-- The shift `log(1 + e^x)` arising in the autocorrelation integral. -/
 def semilocalGammaAutocorrelationShift (x : ℝ) : ℝ :=
   Real.log (1 + Real.exp x)
 
+/-- The scale `exp(x/4 - log(1 + e^x)/2)`, which equals `(2 cosh(x/2))^(-1/2)`. -/
 def semilocalGammaAutocorrelationScale (x : ℝ) : ℝ :=
   Real.exp (x / 4 - semilocalGammaAutocorrelationShift x / 2)
 
@@ -204,6 +243,7 @@ theorem semilocalGammaAutocorrelation_integrand_eq (x u : ℝ) :
             Complex.exp
               (-Complex.exp (-(u - semilocalGammaAutocorrelationShift x)))) := by ring
 
+/-- Closed form of the autocorrelation: `A(x) = exp(x/4 - log(1 + e^x)/2) · Γ(1/2)`. -/
 theorem semilocalGammaAutocorrelation_eq_scale_mul_Gamma (x : ℝ) :
     semilocalGammaAutocorrelation x =
       (semilocalGammaAutocorrelationScale x : ℂ) *
@@ -220,6 +260,7 @@ theorem semilocalGammaAutocorrelation_eq_scale_mul_Gamma (x : ℝ) :
   push_cast
   rfl
 
+/-- Closed form of the autocorrelation: `A(x) = exp(x/4 - log(1 + e^x)/2) · √π`. -/
 theorem semilocalGammaAutocorrelation_eq_scale_mul_sqrt_pi (x : ℝ) :
     semilocalGammaAutocorrelation x =
       (semilocalGammaAutocorrelationScale x : ℂ) *
@@ -252,6 +293,7 @@ theorem log_one_add_exp_eq_half_add_log_two_cosh (x : ℝ) :
   rw [one_add_exp_eq_exp_half_mul_two_cosh,
     Real.log_mul (Real.exp_ne_zero _) (by positivity), Real.log_exp]
 
+/-- The autocorrelation scale equals `(2 cosh(x/2))^(-1/2)`. -/
 theorem semilocalGammaAutocorrelationScale_eq_two_cosh_rpow (x : ℝ) :
     semilocalGammaAutocorrelationScale x =
       (2 * Real.cosh (x / 2)) ^ (-(1 : ℝ) / 2) := by
@@ -262,6 +304,7 @@ theorem semilocalGammaAutocorrelationScale_eq_two_cosh_rpow (x : ℝ) :
   congr 1
   ring
 
+/-- The autocorrelation scale equals `2^(-1/2) (cosh(x/2))^(-1/2)`. -/
 theorem semilocalGammaAutocorrelationScale_eq_characteristic (x : ℝ) :
     semilocalGammaAutocorrelationScale x =
       (2 : ℝ) ^ (-(1 : ℝ) / 2) *
@@ -292,6 +335,7 @@ theorem continuous_semilocalGammaAutocorrelation :
   exact (Complex.ofRealCLM.continuous.comp
     continuous_semilocalGammaAutocorrelationScale).mul continuous_const
 
+/-- Fourier inversion: `∫ e^(2πiξt) |Γ(1/4 + 2πiξ)|^2 dξ = A(t)`. -/
 theorem integral_fourier_semilocalGammaAutocorrelation (t : ℝ) :
     (∫ xi : ℝ,
         Complex.exp (((2 * Real.pi * xi * t : ℝ) : ℂ) * Complex.I) *
@@ -312,11 +356,13 @@ theorem integral_fourier_semilocalGammaAutocorrelation (t : ℝ) :
     exact fourier_semilocalGammaAutocorrelation xi] at hinv
   simpa only [smul_eq_mul, Real.inner_apply, Complex.ofReal_mul, mul_assoc] using hinv
 
+/-- The integrand `e^(its) |Γ(1/4 + is/2)|^2` of the archimedean characteristic integral. -/
 def semilocalGammaCharacteristicKernel (t s : ℝ) : ℂ :=
   Complex.exp (((t * s : ℝ) : ℂ) * Complex.I) *
     (Complex.normSq
       (Complex.Gamma ((1 : ℝ) / 4 + (s / 2) * Complex.I)) : ℂ)
 
+/-- `∫ e^(its) |Γ(1/4 + is/2)|^2 ds = 4π A(2t)`, by the substitution `s = 4πξ`. -/
 theorem integral_semilocalGammaCharacteristicKernel (t : ℝ) :
     (∫ s : ℝ, semilocalGammaCharacteristicKernel t s) =
       (4 * Real.pi : ℂ) * semilocalGammaAutocorrelation (2 * t) := by
@@ -355,6 +401,7 @@ theorem integral_semilocalGammaCharacteristicKernel (t : ℝ) :
     _ = (4 * Real.pi : ℂ) *
         semilocalGammaAutocorrelation (2 * t) := by rw [hscaled]
 
+/-- `∫ e^(its) |Γ(1/4 + is/2)|^2 ds = 4π √π 2^(-1/2) (cosh t)^(-1/2)`. -/
 theorem integral_semilocalGammaCharacteristicKernel_closedForm (t : ℝ) :
     (∫ s : ℝ, semilocalGammaCharacteristicKernel t s) =
       ((4 * Real.pi * Real.sqrt Real.pi *
@@ -366,6 +413,7 @@ theorem integral_semilocalGammaCharacteristicKernel_closedForm (t : ℝ) :
   push_cast
   ring_nf
 
+/-- The normalizing constant is exact: `(2π)^(-3/2) · 4π √π 2^(-1/2) = 1`. -/
 theorem semilocalGammaNormalization_constant :
     (2 * Real.pi) ^ (-(3 : ℝ) / 2) *
         (4 * Real.pi * Real.sqrt Real.pi *

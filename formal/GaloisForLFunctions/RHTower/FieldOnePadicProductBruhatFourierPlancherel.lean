@@ -1,5 +1,34 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicProductCyclicFourierPlancherel
 
+/-!
+# Plancherel theorem for the Bruhat–Fourier transform on a finite product of `p`-adic fields
+
+For a finite family of primes `p i`, this module defines the standard additive character
+`ψ(x) = ∏ᵢ ψ_{pᵢ}(xᵢ)` on `∏ᵢ ℚ_{pᵢ}` and the Fourier transform
+`𝓕f(y) = ∫ ψ(-x·y) f(x) dx` of a compactly supported locally constant (Schwartz–Bruhat)
+function `f`, integrated against the product of unit-ball-normalized Haar measures.
+At a finite level (support in `∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`, invariance under `∏ pᵢ^{mᵢ} ℤ_{pᵢ}`)
+the transform is identified with the finite cyclic Fourier transform on
+`∏ ℤ/pᵢ^{nᵢ+mᵢ}` of a rescaled function, it vanishes off `∏ pᵢ^{-mᵢ} ℤ_{pᵢ}`, and the
+finite Plancherel identity transfers to the `L²` identity `∫ |𝓕f|² = ∫ |f|²`.
+
+## Main results
+
+- `fieldOnePadicProductBruhatFourier_plancherel`: `∫ |𝓕f(y)|² dy = ∫ |f(x)|² dx` for every
+  compactly supported locally constant `f` on `∏ᵢ ℚ_{pᵢ}`.
+- `fieldOnePadicProductBruhatFourier_eq_zero_outside_annihilator`: if `f` is invariant under
+  `∏ pᵢ^{mᵢ} ℤ_{pᵢ}`, then `𝓕f` vanishes outside `∏ pᵢ^{-mᵢ} ℤ_{pᵢ}`.
+- `fieldOnePadicProductBruhatFourier_invPow_coeff`: on `∏ pᵢ^{-mᵢ} ℤ_{pᵢ}`, `𝓕f` equals
+  `∏ pᵢ^{nᵢ}` times a finite cyclic Fourier coefficient modulo `∏ pᵢ^{nᵢ+mᵢ}`.
+
+## Hypotheses
+
+The Plancherel theorem is unconditional. The finite-level lemmas take a support hypothesis
+(`tsupport f ⊆ ∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`) and/or a periodicity hypothesis (invariance under
+`∏ pᵢ^{mᵢ} ℤ_{pᵢ}`); every Schwartz–Bruhat function satisfies both for some levels, which is
+how the main theorem discharges them.
+-/
+
 namespace GaloisForLFunctions.RHTower
 noncomputable section
 open MeasureTheory Set TopologicalSpace
@@ -8,15 +37,20 @@ open scoped BigOperators ENNReal NNReal Pointwise
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable (p : ι → ℕ) [∀ i, Fact (p i).Prime]
 
+/-- Standard additive character on `∏ᵢ ℚ_{pᵢ}`: the product of the standard characters
+`ψ_{pᵢ}` of the coordinates. -/
 def fieldOnePadicProductStandardAddChar (x : FieldOnePadicProduct p) : ℂ :=
   ∏ i, fieldOnePadicStandardAddChar (p i) (x i)
 
+/-- Fourier transform of a Schwartz–Bruhat function on `∏ᵢ ℚ_{pᵢ}`:
+`𝓕f(y) = ∫ ψ(-x·y) f(x) dx` against the unit-ball-normalized product Haar measure. -/
 def fieldOnePadicProductBruhatFourier
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
     (y : FieldOnePadicProduct p) : ℂ :=
   ∫ x, fieldOnePadicProductStandardAddChar p (fun i => -(x i * y i)) * f.1 x
     ∂fieldOnePadicProductUnitBallNormalizedHaar p
 
+/-- Pullback of `f` to `∏ ℤ_{pᵢ}` along the chart `u ↦ (pᵢ^{-nᵢ} uᵢ)ᵢ`. -/
 def fieldOnePadicProductBruhatScaled (n : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p)) :
     FieldOnePadicIntProduct p → ℂ :=
@@ -44,6 +78,8 @@ theorem fieldOnePadicProductBruhatScaled_normSq_integrable (n : ι → ℕ)
           p n).continuous))
   · exact HasCompactSupport.of_compactSpace _
 
+/-- Assuming `f` is invariant under `∏ pᵢ^{mᵢ} ℤ_{pᵢ}`, the rescaled function is invariant under
+the lattice `∏ pᵢ^{nᵢ+mᵢ} ℤ_{pᵢ}`. -/
 theorem fieldOnePadicProductBruhatScaled_period
     (n m : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
@@ -93,6 +129,9 @@ theorem fieldOnePadicProductBruhatScaled_period
         rw [inv_mul_cancel₀ (pow_ne_zero (n i) hp0), one_mul]]
   exact hperiod _ z
 
+/-- Assuming `tsupport f ⊆ ∏ pᵢ^{-nᵢ} ℤ_{pᵢ}`, the value `𝓕f(p^{-m} v)` equals `∏ pᵢ^{nᵢ}`
+times the cyclic Fourier coefficient modulo `∏ pᵢ^{nᵢ+mᵢ}` of the rescaled function at the
+residue of `v`. -/
 theorem fieldOnePadicProductBruhatFourier_invPow_coeff
     (n m : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
@@ -158,6 +197,7 @@ theorem fieldOnePadicProductBruhatFourier_invPow_coeff
   rw [hprod, fieldOnePadicStandardAddChar_neg_invPow_mul_coe]
   rw [map_mul]
 
+/-- The product standard character is additive: `ψ(x + y) = ψ(x) ψ(y)`. -/
 theorem fieldOnePadicProductStandardAddChar_add
     (x y : FieldOnePadicProduct p) :
     fieldOnePadicProductStandardAddChar p (x + y) =
@@ -167,6 +207,8 @@ theorem fieldOnePadicProductStandardAddChar_add
     AddChar.map_add_eq_mul]
   exact Finset.prod_mul_distrib
 
+/-- Assuming `f` is invariant under `∏ pᵢ^{mᵢ} ℤ_{pᵢ}`, its Fourier transform vanishes at every
+`y` outside the annihilator `∏ pᵢ^{-mᵢ} ℤ_{pᵢ}` (a nontrivial character averages to zero). -/
 theorem fieldOnePadicProductBruhatFourier_eq_zero_outside_annihilator
     (m : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
@@ -260,6 +302,8 @@ private theorem fieldOnePadicProduct_normSq_real_product_pow (n : ι → ℕ) :
   rw [Complex.normSq_ofReal]
   ring
 
+/-- Plancherel at a fixed finite level: given support in `∏ pᵢ^{-nᵢ} ℤ_{pᵢ}` and invariance
+under `∏ pᵢ^{mᵢ} ℤ_{pᵢ}`, `∫ |𝓕f|² = ∫ |f|²`, via the finite cyclic Plancherel identity. -/
 private theorem fieldOnePadicProductBruhatFourier_plancherel_of_finiteLevel
     (n m : ι → ℕ)
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p))
@@ -385,6 +429,8 @@ private theorem fieldOnePadicProductBruhatFourier_plancherel_of_finiteLevel
   rw [hNM]
   ring
 
+/-- Plancherel theorem on `∏ᵢ ℚ_{pᵢ}`: for every compactly supported locally constant `f`,
+`∫ |𝓕f(y)|² dy = ∫ |f(x)|² dx` with unit-ball-normalized Haar measure. -/
 theorem fieldOnePadicProductBruhatFourier_plancherel
     (f : compactlySupportedLocallyConstant (FieldOnePadicProduct p)) :
     ∫ y, Complex.normSq (fieldOnePadicProductBruhatFourier p f y)

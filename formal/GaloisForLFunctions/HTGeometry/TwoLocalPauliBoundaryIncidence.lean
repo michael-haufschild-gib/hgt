@@ -1,11 +1,33 @@
 import GaloisForLFunctions.HTGeometry.TwoLocalPauliAnticommutingFan
 
+/-!
+# Boundary lower bound for two-local Pauli strings anticommuting with a given string
+
+Let `P` be a nonzero Pauli string on `n` qubits with support of size `|P|`. For each pair
+`(i, j)` with `i` in the support and `j` outside it, the weight-two string with axis `prev(P_i)` at
+`i` and axis `0` at `j` anticommutes with `P`: it anticommutes at site `i` and commutes at the
+idle site `j`. These strings are pairwise distinct, so at least `|P| (n - |P|)` nonidentity Pauli
+strings of weight at most `q ≥ 2` anticommute with `P`.
+
+## Main results
+
+- `card_filter_twoLocalPauli_anticommuting_ge_boundary`: for `2 ≤ q`, the number of nonidentity
+  Pauli strings of weight at most `q` anticommuting with `P` is at least `|P| (n - |P|)`.
+- `boundaryPauliAnticommutingLabel_injective`: the boundary construction is injective on
+  support-boundary pairs.
+
+## Hypotheses
+
+Unconditional; the only premise is `2 ≤ q`.
+-/
+
 open scoped BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Pairs `(i, j)` with `i` in the support of `P` and `j` outside it. -/
 abbrev PauliSupportBoundaryPair
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :=
   {i : Fin n // i ∈ pauliSupport P.1} ×
@@ -17,6 +39,7 @@ theorem pauliSupportBoundaryPair_ne
   intro h
   exact z.2.2 (h ▸ z.1.2)
 
+/-- The weight-two string with axis `prev(P_i)` at `i` and axis `0` at `j`. -/
 def boundaryPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliSupportBoundaryPair P) :
@@ -24,6 +47,7 @@ def boundaryPauliAnticommutingLabel
   pairLabel z.1.1 z.2.1
     (pauliAxisPrev (matchingPauliAxis (P.1 z.1.1))) 0
 
+/-- The boundary string has Pauli weight exactly two. -/
 theorem pauliWeight_boundaryPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliSupportBoundaryPair P) :
@@ -41,6 +65,7 @@ theorem boundaryPauliAnticommutingLabel_mem
     pauliWeight_boundaryPauliAnticommutingLabel]
   omega
 
+/-- The boundary string anticommutes with `P` (conjugation sign `-1`). -/
 theorem finitePauliConjugationSign_boundaryPauliAnticommutingLabel
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n))
     (z : PauliSupportBoundaryPair P) :
@@ -60,6 +85,7 @@ theorem finitePauliConjugationSign_boundaryPauliAnticommutingLabel
       rw [boolPauliConjugationSign_prev_source_eq_neg_one]
       simp [hj, boolPauliConjugationSign]
 
+/-- Distinct support-boundary pairs give distinct boundary strings. -/
 theorem boundaryPauliAnticommutingLabel_injective
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :
     Function.Injective (boundaryPauliAnticommutingLabel P) := by
@@ -82,6 +108,7 @@ theorem boundaryPauliAnticommutingLabel_injective
       hz2i, hz2w1, hne] at hvalue
   exact Prod.ext (Subtype.ext hi) (Subtype.ext hj)
 
+/-- There are `|P| (n - |P|)` support-boundary pairs. -/
 theorem card_pauliSupportBoundaryPair
     {n : ℕ} (P : NonzeroPauliCharacter (Fin n)) :
     Fintype.card (PauliSupportBoundaryPair P) =
@@ -91,6 +118,8 @@ theorem card_pauliSupportBoundaryPair
     Fintype.card_coe,
     ← pauliWeight_eq_card_pauliSupport]
 
+/-- For `2 ≤ q`, at least `|P| (n - |P|)` nonidentity Pauli strings of weight at most `q`
+anticommute with the nonzero string `P`. -/
 theorem card_filter_twoLocalPauli_anticommuting_ge_boundary
     {n q : ℕ} (hq : 2 ≤ q)
     (P : NonzeroPauliCharacter (Fin n)) :

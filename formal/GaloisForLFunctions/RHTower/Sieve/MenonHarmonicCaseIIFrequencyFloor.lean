@@ -1,12 +1,33 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIFrequencyRange
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCentralDiscSchedule
 
+/-!
+# Case II frequency floor lies inside the central disc
+
+For a final-range block with lower endpoint `a ≤ 3x`, the Case II frequency floor is
+`6 (K + 1) (log a)^{1856} + 3 · ceil((log a)^{200})`, where `K` is the Case II cross constant. This
+module shows that, for all large `x`, every block's floor is at most `2π (log x)^{2000}`, that is,
+`2π` times the central disc radius `menonHarmonicCentralRadius x`. The proof uses
+`log a ≤ 2 log x` and absorbs the constant `6 (K + 2) 2^{1856}` into `(log x)^{144}`.
+
+## Main results
+
+- `menonHarmonicCaseIIFloorEnvelopeConstant`: the constant `6 (K + 2) 2^{1856}`.
+- `eventually_menonHarmonicCaseIIFrequencyFloor_le_central`: eventually, for every block `j`,
+  `menonHarmonicCaseIIFrequencyFloor a_j ≤ 2π (log x)^{2000}`.
+
+## Hypotheses
+
+The result is unconditional and holds for all sufficiently large `x`.
+-/
+
 namespace RHTower.Sieve
 
 open Filter Finset
 
 noncomputable section
 
+/-- Envelope constant `6 (K + 2) 2^{1856}`, with `K` the Case II cross constant. -/
 def menonHarmonicCaseIIFloorEnvelopeConstant : ℝ :=
   6 * (menonHarmonicCaseIICrossConstant + 2) * (2 : ℝ) ^ (1856 : ℕ)
 
@@ -16,6 +37,8 @@ theorem menonHarmonicCaseIIFloorEnvelopeConstant_nonneg :
   positivity [menonHarmonicCaseIICrossConstant_nonneg]
 
 set_option maxHeartbeats 800000 in
+/-- For all large `x`, every final-range block's Case II frequency floor is at most
+`2π (log x)^{2000}`. -/
 theorem eventually_menonHarmonicCaseIIFrequencyFloor_le_central :
     ∀ᶠ x : ℝ in atTop,
       ∀ j ∈ Finset.range (menonFinalRangeLadderSteps x),

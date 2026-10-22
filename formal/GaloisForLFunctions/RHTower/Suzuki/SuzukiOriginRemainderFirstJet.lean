@@ -2,17 +2,42 @@ import GaloisForLFunctions.RHTower.Suzuki.SuzukiOriginLogarithmicRemainder
 import GaloisForLFunctions.RHTower.DigammaQuarter
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
 
+/-!
+# First jet of Suzuki's origin remainder
+
+With Lerch exponents `λ_k = 2k + 1/2`, let `L₁(t) = -Σ_k e^(-λ_k t) / λ_k` and
+`L₂(t) = Σ_k e^(-λ_k t) = e^(-t/2) / (1 - e^(-2t))`. This module evaluates `L₁` in closed form,
+`L₁(t) = -arctan(e^(-t/2)) - (1/2) log((1 + e^(-t/2)) / (1 - e^(-t/2)))` for `t > 0`, derives
+`L₁(t) - (1/2) log t → -π/4 - log 2` as `t → 0+`, and uses `ψ(1/4)` and `ψ(2) = 1 - γ` to show that
+the first-jet remainder of Suzuki's screw function at the origin tends to `0`.
+
+## Main results
+
+- `screwLerchTail₁_eq_suzukiLerchTailOneClosed`: the arctan/log closed form of `L₁(t)`, `t > 0`.
+- `tendsto_suzukiLerchTailOneClosed_sub_half_log`: `L₁(t) - (1/2) log t → -π/4 - log 2` as
+  `t → 0+`.
+- `digamma_two_re`: `Re ψ(2) = 1 - γ`.
+- `tendsto_suzukiOriginRemainderFirstJet`: the first-jet origin remainder tends to `0` as `t → 0+`.
+
+## Hypotheses
+
+Unconditional; pointwise identities assume `t > 0`.
+-/
+
 open Filter Topology Set
 
 noncomputable section
 
 namespace GaloisForLFunctions.RHTower
 
+/-- Closed form `-arctan(e^(-t/2)) - (1/2) log((1 + e^(-t/2)) / (1 - e^(-t/2)))` for the first Lerch
+tail derivative. -/
 def suzukiLerchTailOneClosed (t : ℝ) : ℝ :=
   -Real.arctan (Real.exp (-(t / 2))) -
     (1 / 2 : ℝ) * Real.log
       ((1 + Real.exp (-(t / 2))) / (1 - Real.exp (-(t / 2))))
 
+/-- For `t > 0`, the closed form has derivative `L₂(t) = Σ_k e^(-λ_k t)`. -/
 theorem hasDerivAt_suzukiLerchTailOneClosed {t : ℝ} (ht : 0 < t) :
     HasDerivAt suzukiLerchTailOneClosed (screwLerchTail₂ t) t := by
   let y : ℝ := Real.exp (-(t / 2))
@@ -56,6 +81,7 @@ theorem hasDerivAt_suzukiLerchTailOneClosed {t : ℝ} (ht : 0 < t) :
   field_simp [hy1p, hy1m, hyden]
   ring
 
+/-- `L₂(t) = e^(-t/2) / (1 - e^(-2t)) → 0` as `t → ∞`. -/
 theorem tendsto_screwLerchTail₂_atTop :
     Tendsto screwLerchTail₂ atTop (𝓝 0) := by
   have hhalf : Tendsto (fun t : ℝ => Real.exp (-(t / 2))) atTop (𝓝 0) := by
@@ -80,6 +106,7 @@ theorem tendsto_screwLerchTail₂_atTop :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
   exact (screwLerchTail₂_eq ht).symm
 
+/-- For `t > 0`, `|L₁(t)| ≤ 2 L₂(t)`, since every exponent satisfies `λ_k ≥ 1/2`. -/
 theorem abs_screwLerchTail₁_le {t : ℝ} (ht : 0 < t) :
     |screwLerchTail₁ t| ≤ 2 * screwLerchTail₂ t := by
   rw [show |screwLerchTail₁ t| = ‖screwLerchTail₁ t‖ by rw [Real.norm_eq_abs]]
@@ -101,6 +128,7 @@ theorem abs_screwLerchTail₁_le {t : ℝ} (ht : 0 < t) :
     _ = 2 * screwLerchTail₂ t := by
           rw [screwLerchTail₂, tsum_mul_left]
 
+/-- `L₁(t) → 0` as `t → ∞`. -/
 theorem tendsto_screwLerchTail₁_atTop :
     Tendsto screwLerchTail₁ atTop (𝓝 0) := by
   apply squeeze_zero_norm'
@@ -108,6 +136,7 @@ theorem tendsto_screwLerchTail₁_atTop :
     simpa [Real.norm_eq_abs] using abs_screwLerchTail₁_le ht
   · simpa using tendsto_screwLerchTail₂_atTop.const_mul 2
 
+/-- The arctan/log closed form tends to `0` as `t → ∞`. -/
 theorem tendsto_suzukiLerchTailOneClosed_atTop : Tendsto suzukiLerchTailOneClosed atTop (𝓝 0) := by
   have hy : Tendsto (fun t : ℝ => Real.exp (-(t / 2))) atTop (𝓝 0) := by
     apply Real.tendsto_exp_atBot.comp
@@ -140,6 +169,8 @@ theorem tendsto_suzukiLerchTailOneClosed_atTop : Tendsto suzukiLerchTailOneClose
     simpa using hquot.log (by norm_num : (1 : ℝ) ≠ 0)
   simpa using hatan.neg.sub (hlog.const_mul (1 / 2 : ℝ))
 
+/-- For `t > 0`, `L₁(t) = -arctan(e^(-t/2)) - (1/2) log((1 + e^(-t/2)) / (1 - e^(-t/2)))`: both sides
+have derivative `L₂` on `(0, ∞)` and vanish at infinity. -/
 theorem screwLerchTail₁_eq_suzukiLerchTailOneClosed {t : ℝ} (ht : 0 < t) :
     screwLerchTail₁ t = suzukiLerchTailOneClosed t := by
   have hd : ∀ x ∈ Ioi (0 : ℝ),
@@ -173,6 +204,7 @@ theorem screwLerchTail₁_eq_suzukiLerchTailOneClosed {t : ℝ} (ht : 0 < t) :
     exact tendsto_nhds_unique tendsto_const_nhds hconstlim
   linarith [hconst t ht]
 
+/-- Origin asymptotic of the closed form: `L₁(t) - (1/2) log t → -π/4 - log 2` as `t → 0+`. -/
 theorem tendsto_suzukiLerchTailOneClosed_sub_half_log :
     Tendsto (fun t : ℝ => suzukiLerchTailOneClosed t - (1 / 2 : ℝ) * Real.log t)
       (𝓝[>] 0) (𝓝 (-Real.pi / 4 - Real.log 2)) := by
@@ -252,10 +284,14 @@ theorem tendsto_suzukiLerchTailOneClosed_sub_half_log :
     (mul_ne_zero ht0 hplus0) hminus0, Real.log_mul ht0 hplus0]
   ring
 
+/-- First-jet origin remainder
+`-2e^(t/2) + 2e^(-t/2) - (ψ(1/4) - log π)/2 + L₁(t) - (1/2)(log t + 1) - A`, with
+`A = (log(2π) - ψ(2))/2` Suzuki's linear coefficient. -/
 def suzukiOriginRemainderFirstJet (t : ℝ) : ℝ :=
   -2 * Real.exp (t / 2) + 2 * Real.exp (-(t / 2)) - screwLinearCoeff / 2 +
     screwLerchTail₁ t - (1 / 2 : ℝ) * (Real.log t + 1) - suzukiOriginLinearCoeff
 
+/-- The digamma value `Re ψ(2) = 1 - γ`, from `ψ(2) = ψ(1) + 1` and `ψ(1) = -γ`. -/
 theorem digamma_two_re : (Complex.digamma 2).re = 1 - Real.eulerMascheroniConstant := by
   have h := Complex.digamma_apply_add_one (1 : ℂ) (by
     intro m hm
@@ -268,6 +304,8 @@ theorem digamma_two_re : (Complex.digamma 2).re = 1 - Real.eulerMascheroniConsta
   norm_num at hre ⊢
   linarith
 
+/-- The first-jet origin remainder tends to `0` as `t → 0+`: the constants `-π/4 - log 2`,
+`ψ(1/4)` and `ψ(2)` cancel exactly. -/
 theorem tendsto_suzukiOriginRemainderFirstJet : Tendsto suzukiOriginRemainderFirstJet (𝓝[>] 0) (𝓝 0) := by
   have hexp : Tendsto
       (fun t : ℝ => -2 * Real.exp (t / 2) + 2 * Real.exp (-(t / 2)))

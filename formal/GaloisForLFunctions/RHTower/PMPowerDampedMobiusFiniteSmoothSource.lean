@@ -1,10 +1,35 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusFiniteDeletion
 import Mathlib.NumberTheory.EulerProduct.Basic
 
+/-!
+# Deleting a finite prime set: smooth Haar sources and Euler-product energy
+
+For a finite set `E`, the `E`-factored numbers (positive integers whose prime factors all lie
+in `E`) have convergent Euler product `∑ n^(−σ) = ∏_{p∈E prime} (1 − p^(−σ))⁻¹` for `σ > 0`.
+The finite smooth Haar source `∑'_{n E-factored} h(n t)` is therefore in `L²(0,∞)` and
+integrable with integral zero, and its energy is the explicit Gram double series. Deleting the
+primes of `E` from the Möbius Fermi source produces exactly this smooth Haar source, so the
+deleted source has energy at least the Mertens-type product `∏_{p∈E prime} (1 − 1/p)⁻¹`.
+
+## Main results
+
+- `pmFactoredNumbers_tsum_neg_rpow`: for `σ > 0`, `∑'_{n E-factored} n^(−σ) = ∏_{p∈E prime} (1 − p^(−σ))⁻¹`.
+- `memLp_pmFiniteSmoothHaarSource`, `pmFiniteSmoothHaarSource_integral`: the finite smooth Haar source is in `L²(0,∞)` and has integral `0`.
+- `pmFiniteSmoothHaarSource_energy_eq_tsum_gram`: its energy is `∑'_{m,n} max 0 (2/max m n − 1/min m n)` over `E`-factored `m, n`.
+- `pmDeletedMobiusFermiSource_eq_finiteSmoothHaar`: deleting `E` from the Möbius Fermi source gives the finite smooth Haar source on `(0,∞)`.
+- `pmDeletedMobiusFermiSource_finite_euler_product_le_energy`: the deleted source has energy `≥ ∏_{p∈E prime} (1 − 1/p)⁻¹`.
+
+## Hypotheses
+
+All results are unconditional; the only numerical hypothesis is `0 < σ` in the Euler-product
+summation lemmas.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- The completely multiplicative map `n ↦ n^(−σ)` as a monoid homomorphism `ℕ →* ℝ`. -/
 def pmNaturalRpowHom (σ : ℝ) : ℕ →* ℝ where
   toFun n := (n : ℝ) ^ (-σ)
   map_one' := by simp
@@ -18,6 +43,7 @@ theorem pmNaturalRpowHom_prime_norm_lt_one {σ : ℝ} (hσ : 0 < σ)
   rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg p) _)]
   exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast hp.one_lt) (by linarith)
 
+/-- For `σ > 0` and finite `E`, `n ↦ n^(−σ)` is summable over the `E`-factored numbers. -/
 theorem summable_pmFactoredNumbers_neg_rpow (E : Finset ℕ) {σ : ℝ} (hσ : 0 < σ) :
     Summable (fun n : Nat.factoredNumbers E => (n : ℝ) ^ (-σ)) := by
   have h := (EulerProduct.summable_and_hasSum_factoredNumbers_prod_filter_prime_geometric
@@ -25,12 +51,16 @@ theorem summable_pmFactoredNumbers_neg_rpow (E : Finset ℕ) {σ : ℝ} (hσ : 0
   simpa only [pmNaturalRpowHom, MonoidHom.coe_mk, OneHom.coe_mk, Real.norm_eq_abs,
     abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _)] using h
 
+/-- Euler product over a finite prime set: for `σ > 0`,
+`∑'_{n E-factored} n^(−σ) = ∏_{p∈E prime} (1 − p^(−σ))⁻¹`. -/
 theorem pmFactoredNumbers_tsum_neg_rpow (E : Finset ℕ) {σ : ℝ} (hσ : 0 < σ) :
     (∑' n : Nat.factoredNumbers E, (n : ℝ) ^ (-σ)) =
       ∏ p ∈ E with p.Prime, (1 - (p : ℝ) ^ (-σ))⁻¹ := by
   exact (EulerProduct.summable_and_hasSum_factoredNumbers_prod_filter_prime_geometric
     (f := pmNaturalRpowHom σ) (fun {_} hp => pmNaturalRpowHom_prime_norm_lt_one hσ hp) E).2.tsum_eq
 
+/-- The finite smooth Haar source `∑'_{n E-factored} h(n t)`, with `h` the dyadic Haar function
+supported on `(0,1]`. -/
 def pmFiniteSmoothHaarSource (E : Finset ℕ) : ℝ → ℂ :=
   pmHaarDilationSeries (fun n : Nat.factoredNumbers E => (n : ℝ))
 
@@ -43,10 +73,12 @@ theorem summable_pmFiniteSmoothHaarSource_term_norm (E : Finset ℕ) :
     rw [← pmHaarDilationVector_norm _ (pm_factored_cast_pos E n), pmHaarDilationVector_norm_rpow]
   simpa only [heq] using summable_pmFactoredNumbers_neg_rpow E (σ := 1 / 2) (by norm_num)
 
+/-- The finite smooth Haar source lies in `L²(0,∞)`. -/
 theorem memLp_pmFiniteSmoothHaarSource (E : Finset ℕ) :
     MemLp (pmFiniteSmoothHaarSource E) 2 (volume.restrict (Ioi (0 : ℝ))) :=
   memLp_pmHaarDilationSeries (pm_factored_cast_pos E) (summable_pmFiniteSmoothHaarSource_term_norm E)
 
+/-- For `t > 0`, the smooth Haar series reduces to the finite sum over `E`-factored `n ≤ 1/t`. -/
 theorem pmFiniteSmoothHaarSource_eq_sum (E : Finset ℕ) {t : ℝ} (ht : 0 < t) :
     pmFiniteSmoothHaarSource E t = ∑ n ∈ Finset.Icc 1 ⌊1 / t⌋₊,
       if n ∈ Nat.factoredNumbers E then pmSupportedDyadicHaar ((n : ℝ) * t) else 0 := by
@@ -70,6 +102,7 @@ theorem pmFiniteSmoothHaarSource_eq_sum (E : Finset ℕ) {t : ℝ} (ht : 0 < t) 
         nlinarith)
     · exact Set.indicator_of_notMem hs _
 
+/-- The finite smooth Haar source has integral zero over `(0,∞)`. -/
 theorem pmFiniteSmoothHaarSource_integral (E : Finset ℕ) :
     (∫ t in Ioi (0 : ℝ), pmFiniteSmoothHaarSource E t) = 0 := by
   have hs : Summable (fun n : Nat.factoredNumbers E => 1 / (n : ℝ)) := by
@@ -91,6 +124,7 @@ theorem pmFiniteSmoothHaarSource_eq_zero (E : Finset ℕ) {t : ℝ} (ht : 1 < t)
     nlinarith
   simp only [pmFiniteSmoothHaarSource, pmHaarDilationSeries, hz, tsum_zero]
 
+/-- The finite smooth Haar source is integrable on `(0,∞)` (it vanishes for `t > 1`). -/
 theorem integrable_pmFiniteSmoothHaarSource (E : Finset ℕ) :
     Integrable (pmFiniteSmoothHaarSource E) (volume.restrict (Ioi (0 : ℝ))) := by
   have hi : IntegrableOn (pmFiniteSmoothHaarSource E) (Ioc (0 : ℝ) 1) :=
@@ -106,6 +140,8 @@ theorem integrable_pmFiniteSmoothHaarSource (E : Finset ℕ) :
   · exact Set.indicator_of_mem (show t ∈ Ioc (0 : ℝ) 1 from ⟨ht, ht1⟩) _
   · rw [Set.indicator_of_notMem (by simp [ht1]), pmFiniteSmoothHaarSource_eq_zero E (lt_of_not_ge ht1)]
 
+/-- The energy of the finite smooth Haar source is the Gram double series
+`∑'_{m,n E-factored} max 0 (2/max m n − 1/min m n)`. -/
 theorem pmFiniteSmoothHaarSource_energy_eq_tsum_gram (E : Finset ℕ) :
     (∫ t in Ioi (0 : ℝ), ‖pmFiniteSmoothHaarSource E t‖ ^ (2 : ℕ)) =
       ∑' m : Nat.factoredNumbers E, ∑' n : Nat.factoredNumbers E,
@@ -118,6 +154,8 @@ theorem pmFiniteSmoothHaarSource_energy_eq_tsum_gram (E : Finset ℕ) :
   intro n
   exact pmHaarDilationGram_eq_max (pm_factored_cast_pos E m) (pm_factored_cast_pos E n)
 
+/-- The finite smooth Haar source has energy at least `∏_{p∈E prime} (1 − 1/p)⁻¹`, the sum of
+its diagonal Gram entries `1/n`. -/
 theorem pmFiniteSmoothHaarSource_euler_product_le_energy (E : Finset ℕ) :
     (∏ p ∈ E with p.Prime, (1 - 1 / (p : ℝ))⁻¹) ≤
       (∫ t in Ioi (0 : ℝ), ‖pmFiniteSmoothHaarSource E t‖ ^ (2 : ℕ)) := by
@@ -138,6 +176,8 @@ theorem pm_smoothAF_factoredNumbers (E : Finset ℕ) (n : ℕ) :
     exact Nat.mem_factoredNumbers_iff_primeFactors_subset.symm
   simp only [CoprimeMobius.smoothAF_apply, he]
 
+/-- For `t > 0`, the finite smooth Haar source equals
+`#{n ≤ 1/t : E-factored} − 2 #{n ≤ 1/(2t) : E-factored}`. -/
 theorem pmFiniteSmoothHaarSource_eq_counts (E : Finset ℕ) {t : ℝ} (ht : 0 < t) :
     pmFiniteSmoothHaarSource E t =
       (∑ n ∈ Finset.Icc 1 ⌊1 / t⌋₊, (CoprimeMobius.smoothAF (↑E : Set ℕ) n : ℂ)) -
@@ -172,10 +212,13 @@ theorem pmFiniteSmoothHaarSource_eq_counts (E : Finset ℕ) {t : ℝ} (ht : 0 < 
   change (∑ n ∈ Finset.Icc 1 K, _) = (∑ n ∈ Finset.Icc 1 K, c n) - 2 * (∑ n ∈ Finset.Icc 1 L, c n)
   rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, ← Finset.mul_sum, hhalf]
 
+/-- Deleting the finite prime set `E` from the Möbius Fermi source yields the finite smooth Haar
+source at every `t > 0`. -/
 theorem pmDeletedMobiusFermiSource_eq_finiteSmoothHaar (E : Finset ℕ) {t : ℝ} (ht : 0 < t) :
     pmDeletedMobiusFermiSource (↑E : Set ℕ) t = pmFiniteSmoothHaarSource E t := by
   rw [pmDeletedMobiusFermiSource_eq_counts _ ht, pmFiniteSmoothHaarSource_eq_counts E ht]
 
+/-- The Möbius Fermi source with a finite prime set deleted lies in `L²(0,∞)`. -/
 theorem memLp_pmDeletedMobiusFermiSource_finite (E : Finset ℕ) :
     MemLp (pmDeletedMobiusFermiSource (↑E : Set ℕ)) 2 (volume.restrict (Ioi (0 : ℝ))) := by
   apply (memLp_congr_ae (show pmDeletedMobiusFermiSource (↑E : Set ℕ) =ᵐ[volume.restrict (Ioi 0)]
@@ -190,11 +233,14 @@ theorem integrable_pmDeletedMobiusFermiSource_finite (E : Finset ℕ) :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact pmDeletedMobiusFermiSource_eq_finiteSmoothHaar E ht
 
+/-- The Möbius Fermi source with a finite prime set deleted has integral zero over `(0,∞)`. -/
 theorem pmDeletedMobiusFermiSource_finite_integral (E : Finset ℕ) :
     (∫ t in Ioi (0 : ℝ), pmDeletedMobiusFermiSource (↑E : Set ℕ) t) = 0 := by
   rw [← pmFiniteSmoothHaarSource_integral E]
   exact setIntegral_congr_fun measurableSet_Ioi (fun t ht => pmDeletedMobiusFermiSource_eq_finiteSmoothHaar E ht)
 
+/-- The energy of the `E`-deleted Möbius Fermi source is the Gram double series over the
+`E`-factored numbers. -/
 theorem pmDeletedMobiusFermiSource_finite_energy_eq_tsum_gram (E : Finset ℕ) :
     (∫ t in Ioi (0 : ℝ), ‖pmDeletedMobiusFermiSource (↑E : Set ℕ) t‖ ^ (2 : ℕ)) =
       ∑' m : Nat.factoredNumbers E, ∑' n : Nat.factoredNumbers E,
@@ -205,6 +251,7 @@ theorem pmDeletedMobiusFermiSource_finite_energy_eq_tsum_gram (E : Finset ℕ) :
   dsimp only
   rw [pmDeletedMobiusFermiSource_eq_finiteSmoothHaar E ht]
 
+/-- The `E`-deleted Möbius Fermi source has energy at least `∏_{p∈E prime} (1 − 1/p)⁻¹`. -/
 theorem pmDeletedMobiusFermiSource_finite_euler_product_le_energy (E : Finset ℕ) :
     (∏ p ∈ E with p.Prime, (1 - 1 / (p : ℝ))⁻¹) ≤
       (∫ t in Ioi (0 : ℝ), ‖pmDeletedMobiusFermiSource (↑E : Set ℕ) t‖ ^ (2 : ℕ)) := by

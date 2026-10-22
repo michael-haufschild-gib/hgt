@@ -1,5 +1,24 @@
 import GaloisForLFunctions.RHTower.Sieve.NatDivLogEndpointError
 
+/-!
+# Endpoint error for squared and cubed logarithms of integer quotients
+
+Compares `log(⌊N/q⌋ + 1)` with `log(N/q)` after raising both to the second or third power. Both
+logarithms lie in `[0, log(N + 1)]` when `0 < q ≤ N`, and their difference is at most `q/N`, so
+factoring `y^2 - x^2` and `y^3 - x^3` gives an error of order `(log N)^(k-1) · q/N`.
+
+## Main results
+
+- `abs_log_natDiv_add_one_sq_sub_log_div_sq_le`:
+  `|log(⌊N/q⌋ + 1)^2 - log(N/q)^2| ≤ 2 log(N + 1) · q/N`.
+- `abs_log_natDiv_add_one_cube_sub_log_div_cube_le`:
+  `|log(⌊N/q⌋ + 1)^3 - log(N/q)^3| ≤ 3 log(N + 1)^2 · q/N`.
+
+## Hypotheses
+
+Unconditional, for natural numbers with `0 < N`, `0 < q` and `q ≤ N`.
+-/
+
 namespace RHTower.Sieve
 
 private theorem log_natDiv_endpoint_bounds
@@ -29,6 +48,7 @@ private theorem log_natDiv_endpoint_bounds
     Real.log_nonneg hyone,
     Real.log_le_log (by positivity) hyle⟩
 
+/-- For `0 < q ≤ N`: `|log(⌊N/q⌋ + 1)^2 - log(N/q)^2| ≤ 2 log(N + 1) · (q/N)`. -/
 theorem abs_log_natDiv_add_one_sq_sub_log_div_sq_le
     {N q : ℕ} (hN : 0 < N) (hq : 0 < q) (hqN : q ≤ N) :
     |Real.log ((N / q + 1 : ℕ) : ℝ) ^ (2 : ℕ) -
@@ -50,6 +70,7 @@ theorem abs_log_natDiv_add_one_sq_sub_log_div_sq_le
       mul_le_mul hgap hsumK hsum0 (by positivity)
     _ = 2 * K * ((q : ℝ) / (N : ℝ)) := by ring
 
+/-- For `0 < q ≤ N`: `|log(⌊N/q⌋ + 1)^3 - log(N/q)^3| ≤ 3 log(N + 1)^2 · (q/N)`. -/
 theorem abs_log_natDiv_add_one_cube_sub_log_div_cube_le
     {N q : ℕ} (hN : 0 < N) (hq : 0 < q) (hqN : q ≤ N) :
     |Real.log ((N / q + 1 : ℕ) : ℝ) ^ (3 : ℕ) -

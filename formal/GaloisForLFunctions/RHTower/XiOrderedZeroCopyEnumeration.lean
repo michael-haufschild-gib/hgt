@@ -3,12 +3,45 @@ import GaloisForLFunctions.RHTower.PrimeArchThermalKrylovEquivalence
 import GaloisForLFunctions.RHTower.XiHadamardGrowth
 import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
 
+/-!
+# Ordinate-ordered enumeration of Xi zero copies by signed primes
+
+A zero copy is a zero `ρ` of `ξ` together with one of its multiplicity slots. Ordering the copies
+lexicographically by ordinate `Im ρ` and then by a fixed multiplicity-exact enumeration index, the
+copies with positive ordinate are put in bijection with `ℕ` so that the `n`-th copy has ordinate
+`γ_n`, the `n`-th positive Xi ordinate counted with multiplicity. Complex conjugation, together
+with the absence of real-ordinate zeros, splits all copies into two positive halves, which gives
+explicit bijections `ℕ ⊕ ℕ ≃ copies` and, through the increasing enumeration of primes,
+`Primes ⊕ Primes ≃ copies`. Under RH the spectral point `(ρ - 1/2)(-i)` of the copy attached to
+the signed prime `(±, p)` equals `±γ_{π'(p)}`, the reciprocal of the ordered signed prime
+multiplier, where `π'(p)` is the index of `p` among the primes.
+
+## Main results
+
+- `intCast_card_xiCopiesPos`: for `T ≥ 0`, the number of zero copies with ordinate in `(0, T]` is
+  the zero-counting function `N(T)`.
+- `xiOrderedPositiveZeroCopy_im_eq`: the `n`-th ordered positive copy has ordinate `γ_n`.
+- `xiOrderedPositiveZeroCopyEquiv`: a bijection `ℕ ≃` positive-ordinate zero copies.
+- `xiOrderedSignedPrimeZeroCopyEquiv`: a bijection `Primes ⊕ Primes ≃` all zero copies.
+- `xiSpectralPoint_orderedPositive_eq_of_rh`: under RH, the `n`-th positive copy has spectral
+  point `γ_n`.
+- `xiSpectralPoint_orderedSignedPrimeZeroCopyEquiv_eq_of_rh`: under RH, the copy indexed by the
+  signed prime `i` has spectral point `(xiOrderedSignedPrimeMultiplier i)⁻¹`.
+
+## Hypotheses
+
+The enumeration and counting results are unconditional. The two spectral-point identities are
+conditional on `RiemannHypothesis`, taken as the premise `hRH`; it is used to place every zero on
+`Re ρ = 1/2`, so that the spectral point is real.
+-/
+
 open Complex Set
 
 namespace RHTower
 
 noncomputable section
 
+/-- The finite set of Xi zero copies whose ordinate lies in `(0, T]`. -/
 def xiCopiesPos (T : ℝ) : Finset XiZeroCopy :=
   (xiSupportsPos T).biUnion xiZeroCopyFiber
 
@@ -24,6 +57,8 @@ theorem mem_xiCopiesPos {T : ℝ} {q : XiZeroCopy} :
   · intro h
     exact ⟨q.1, mem_xiSupportsPos.mpr h, mem_xiZeroCopyFiber.mpr rfl⟩
 
+/-- The number of copies with ordinate in `(0, T]` is the sum of the multiplicities of the
+zeros there. -/
 theorem card_xiCopiesPos (T : ℝ) :
     (xiCopiesPos T).card =
       ∑ rho ∈ xiSupportsPos T, xiSupportMultiplicity rho := by
@@ -37,6 +72,8 @@ theorem card_xiCopiesPos (T : ℝ) :
       hab ((mem_xiZeroCopyFiber.mp hqa).symm.trans
         (mem_xiZeroCopyFiber.mp hqb))
 
+/-- For `T ≥ 0`, the number of copies with ordinate in `(0, T]` equals the Xi zero-counting
+function `N(T)`. -/
 theorem intCast_card_xiCopiesPos {T : ℝ} (hT : 0 ≤ T) :
     ((xiCopiesPos T).card : ℤ) = xiZeroCount T := by
   rw [card_xiCopiesPos, xiZeroCount_eq_pos_sum hT]
@@ -46,6 +83,8 @@ theorem intCast_card_xiCopiesPos {T : ℝ} (hT : 0 ≤ T) :
 def xiZeroCopyThermalEquiv : ℕ ≃ XiZeroCopy :=
   Equiv.ofBijective xiThermalEnumeration xiThermalEnumeration_bijective
 
+/-- Lexicographic sort key of a copy: its ordinate, then its index in a fixed enumeration of all
+copies. -/
 def xiZeroCopyOrderKey (q : XiZeroCopy) : ℝ ×ₗ ℕ :=
   toLex ((q.1 : ℂ).im, xiZeroCopyThermalEquiv.symm q)
 
@@ -97,6 +136,8 @@ theorem succ_le_card_xiCopiesPos_ordered (n : ℕ) :
     xiZeroCount (xiOrderedPositiveOrdinate n) at hcount
   omega
 
+/-- The `n`-th positive-ordinate copy (from `0`) in the lexicographic order: the `n`-th element of
+the copies with ordinate in `(0, γ_n]`. -/
 def xiOrderedPositiveZeroCopy (n : ℕ) : XiZeroCopy :=
   ((Finset.orderIsoOfFin
     (xiCopiesPos (xiOrderedPositiveOrdinate n)) rfl)
@@ -109,6 +150,8 @@ theorem xiOrderedPositiveZeroCopy_mem (n : ℕ) :
     (xiCopiesPos (xiOrderedPositiveOrdinate n)) rfl)
       ⟨n, Nat.lt_of_succ_le (succ_le_card_xiCopiesPos_ordered n)⟩).2
 
+/-- The `n`-th ordered positive copy has ordinate exactly `γ_n`, the `n`-th positive Xi ordinate
+counted with multiplicity. -/
 theorem xiOrderedPositiveZeroCopy_im_eq (n : ℕ) :
     ((xiOrderedPositiveZeroCopy n).1 : ℂ).im =
       xiOrderedPositiveOrdinate n := by
@@ -168,10 +211,13 @@ theorem xiOrderedPositiveZeroCopy_im_eq (n : ℕ) :
   have hgammaLe := xiOrderedPositiveOrdinate_le_iff.mpr hcount
   linarith
 
+/-- Rank of a copy: the number of positive copies, up to its ordinate, that precede it in the
+lexicographic order. -/
 def xiPositiveZeroCopyRank (q : XiZeroCopy) : ℕ :=
   ((xiCopiesPos ((q.1 : ℂ).im)).filter
     (fun r => xiZeroCopyOrderKey r < xiZeroCopyOrderKey q)).card
 
+/-- The rank is strictly monotone in the order key on positive-ordinate copies. -/
 theorem xiPositiveZeroCopyRank_lt_of_key_lt {q r : XiZeroCopy}
     (hq : 0 < (q.1 : ℂ).im)
     (hqr : xiZeroCopyOrderKey q < xiZeroCopyOrderKey r) :
@@ -210,6 +256,7 @@ theorem xiPositiveZeroCopyRank_lt_of_key_lt {q r : XiZeroCopy}
     rw [heq]
     exact hqMemRight⟩
 
+/-- The `n`-th ordered positive copy has rank `n`. -/
 theorem xiPositiveZeroCopyRank_ordered (n : ℕ) :
     xiPositiveZeroCopyRank (xiOrderedPositiveZeroCopy n) = n := by
   let F : Finset XiZeroCopy := xiCopiesPos (xiOrderedPositiveOrdinate n)
@@ -302,6 +349,7 @@ theorem xiPositiveZeroCopyRank_ordered (n : ℕ) :
   change P.card = n
   simpa using hcard.symm
 
+/-- Xi zero copies with positive ordinate. -/
 abbrev XiPositiveZeroCopy :=
   {q : XiZeroCopy // 0 < (q.1 : ℂ).im}
 
@@ -340,6 +388,7 @@ theorem xiOrderedPositiveZeroCopyMap_surjective :
   refine ⟨n, Subtype.ext ?_⟩
   exact xiZeroCopyOrderKey_injective hkeyEq
 
+/-- Ordinate-ordered bijection between `ℕ` and the positive-ordinate zero copies. -/
 def xiOrderedPositiveZeroCopyEquiv : ℕ ≃ XiPositiveZeroCopy :=
   Equiv.ofBijective xiOrderedPositiveZeroCopyMap
     ⟨xiOrderedPositiveZeroCopyMap_injective,
@@ -405,21 +454,29 @@ theorem xiSignedPositiveZeroCopyMap_surjective :
     refine ⟨Sum.inr qpos, ?_⟩
     exact xiZeroCopyConjEquiv_apply_apply q
 
+/-- All zero copies split as two copies of the positive half: the left summand is the identity,
+the right summand is complex conjugation. Uses that no Xi zero has ordinate zero. -/
 def xiSignedPositiveZeroCopyEquiv :
     Sum XiPositiveZeroCopy XiPositiveZeroCopy ≃ XiZeroCopy :=
   Equiv.ofBijective xiSignedPositiveZeroCopyMap
     ⟨xiSignedPositiveZeroCopyMap_injective,
       xiSignedPositiveZeroCopyMap_surjective⟩
 
+/-- Bijection `ℕ ⊕ ℕ ≃` zero copies: `inl n` is the `n`-th positive copy and `inr n` its
+conjugate. -/
 def xiOrderedSignedZeroCopyEquiv : Sum ℕ ℕ ≃ XiZeroCopy :=
   (Equiv.sumCongr xiOrderedPositiveZeroCopyEquiv
     xiOrderedPositiveZeroCopyEquiv).trans xiSignedPositiveZeroCopyEquiv
 
+/-- Bijection `Primes ⊕ Primes ≃` zero copies, obtained by indexing `ℕ` by the increasing
+enumeration of primes. -/
 def xiOrderedSignedPrimeZeroCopyEquiv :
     RouteKSignedPrimeIndex ≃ XiZeroCopy :=
   (Equiv.sumCongr nthPrimeEquiv.symm nthPrimeEquiv.symm).trans
     xiOrderedSignedZeroCopyEquiv
 
+/-- Assuming `hRH : RiemannHypothesis`, the spectral point `(ρ - 1/2)(-i)` of the `n`-th positive
+copy is the real number `γ_n`. -/
 theorem xiSpectralPoint_orderedPositive_eq_of_rh
     (hRH : RiemannHypothesis) (n : ℕ) :
     xiSpectralPoint (xiOrderedPositiveZeroCopyEquiv n).1 =
@@ -429,6 +486,8 @@ theorem xiSpectralPoint_orderedPositive_eq_of_rh
   · simp [xiSpectralPoint,
       xi_divisor_support_re_eq_half_of_rh hRH]
 
+/-- Assuming `hRH : RiemannHypothesis`, the copy indexed by the signed prime `i = (±, p)` has
+spectral point `±γ_{π'(p)}`, the reciprocal of `xiOrderedSignedPrimeMultiplier i`. -/
 theorem xiSpectralPoint_orderedSignedPrimeZeroCopyEquiv_eq_of_rh
     (hRH : RiemannHypothesis) (i : RouteKSignedPrimeIndex) :
     xiSpectralPoint (xiOrderedSignedPrimeZeroCopyEquiv i) =

@@ -3,12 +3,33 @@ import GaloisForLFunctions.HTGeometry.VerticalContourShift
 import GaloisForLFunctions.RHTower.StripHorizontalShift
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 
+/-!
+# Half-residue formula for even functions on a horizontal line below the real axis
+
+Let `F` be holomorphic on the strip `|Im z| < a`, even (`F(-z) = F(z)`), and exponentially
+decaying on the closed substrip `|Im z| ≤ d` for some `0 < d < a`. This module shows that the
+integral of `F(z)/z` along the horizontal line `Im z = -d` equals `π i F(0)`. The rectangle
+Cauchy formula gives `2π i F(0)` for the difference of the lines `Im z = -d` and `Im z = d`,
+and evenness of `F` makes the two line integrals negatives of each other.
+
+## Main results
+
+- `integral_even_horizontal_cauchy_of_decay`: `∫_ℝ F(x - id)/(x - id) dx = π i F(0)`.
+
+## Hypotheses
+
+Unconditional given its explicit premises: `0 < d < a`, `F` holomorphic on `|Im z| < a`, `F`
+even, and the decay bound `|F(z)| ≤ C e^(-r |Re z|)` on `|Im z| ≤ d` with `C ≥ 0`, `r > 0`.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `F` holomorphic on `|Im z| < a`, even, and bounded by `C e^(-r |Re z|)` on `|Im z| ≤ d` with
+`0 < d < a`, the integral of `F(z)/z` over the line `Im z = -d` equals `π i F(0)`. -/
 theorem integral_even_horizontal_cauchy_of_decay
     {F : ℂ → ℂ} {a d C r : ℝ}
     (hd : 0 < d) (hda : d < a) (hC : 0 ≤ C) (hr : 0 < r)

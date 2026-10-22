@@ -1,6 +1,34 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSurvivalMixedCurrent
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailMobiusConstraint
 
+/-!
+# Möbius reflection of the theta-tail survival function
+
+The survival function `S = thetaCuspTailSurvival = -4 θ'` of the positive logarithmic Gaussian
+theta tail `θ` obeys the reflection law `S(-x) = -S(x) + e^{x/2} + e^{-x/2}`, inherited from the
+theta functional equation. Applying the completion-balanced finite Möbius packet (which kills the
+characters `1` and `n⁻¹`) to the critically weighted translates `n^{-1/2} S(x ± log n)` cancels
+both elementary modes, so the right-translate packet at `-x` is minus the left-shift packet at
+`x`. Since the finite Taylor-core source derivatives are odd polynomials in `x`, a half-line
+pairing of the left-shift packet on `(0, ∞)` equals the pairing of the right-translate packet on
+`(-∞, 0]`.
+
+## Main results
+
+- `thetaCuspTailSurvival_neg`: `S(-x) = -S(x) + e^{x/2} + e^{-x/2}`.
+- `thetaCuspTailSurvivalBalancedMobiusTranslate_neg`: the balanced Möbius translate packet
+  satisfies `T_N(-x) = -L_N(x)`, with `L_N` the left-shift packet.
+- `integral_Ioi_balancedMobiusSurvivalLeft_mul_coreAtomSourceDerivative_eq_integral_Iic_right`:
+  `∫_{(0,∞)} L_N · s = ∫_{(-∞,0]} T_N · s` for the core-atom source derivative `s`.
+- `integral_Ioi_balancedMobiusSurvivalLeft_mul_coreAtomSourceSpectralDerivative_eq_integral_Iic_right`:
+  the same identity for the spectral (z-derivative) source.
+
+## Hypotheses
+
+All results are unconditional. The integral identities are change-of-variables identities for
+Bochner integrals and assume no integrability.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology Polynomial ArithmeticFunction Nat
 open scoped BigOperators
 
@@ -8,6 +36,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- Reflection law of the theta-tail survival function: `S(-x) = -S(x) + e^{x/2} + e^{-x/2}`,
+obtained by differentiating the functional-equation reflection of the theta tail. -/
 theorem thetaCuspTailSurvival_neg (x : ℝ) :
     thetaCuspTailSurvival (-x) =
       -thetaCuspTailSurvival x + Real.exp (x / 2) + Real.exp (-x / 2) := by
@@ -31,6 +61,8 @@ theorem thetaCuspTailSurvival_neg (x : ℝ) :
   unfold thetaCuspReflectionModeDeriv at h
   linarith
 
+/-- For `n > 0`, the critical weight `n^{-1/2}` turns the shifted reflection modes
+`e^{(x - log n)/2} + e^{(log n - x)/2}` into the characters `e^{x/2} / n + e^{-x/2}`. -/
 theorem exp_neg_half_log_mul_thetaCuspTailSurvival_reflectionModes
     {n : ℕ} (hn : 0 < n) (x : ℝ) :
     Real.exp (-(Real.log n) / 2) *
@@ -55,6 +87,8 @@ theorem exp_neg_half_log_mul_thetaCuspTailSurvival_reflectionModes
     ring
   rw [mul_add, hfirst, hsecond]
 
+/-- Reflection of one critically weighted survival translate with real coefficient `c`, `n > 0`:
+`c n^{-1/2} S(log n - x) = -c n^{-1/2} S(x - log n) + c e^{x/2} / n + c e^{-x/2}`. -/
 theorem coeff_mul_exp_neg_half_log_mul_thetaCuspTailSurvival_neg_add_log
     {n : ℕ} (hn : 0 < n) (c x : ℝ) :
     c * Real.exp (-(Real.log n) / 2) *
@@ -79,18 +113,25 @@ theorem coeff_mul_exp_neg_half_log_mul_thetaCuspTailSurvival_neg_add_log
             Real.exp (-(x - Real.log n) / 2))) := by ring
     _ = _ := by rw [hmodes]; ring
 
+/-- The completion-balanced finite Möbius packet of length `N` applied to the critically
+weighted right translates `n^{-1/2} S(x + log n)` of the survival function. -/
 def thetaCuspTailSurvivalBalancedMobiusTranslate
     (N : ℕ) (x : ℝ) : ℝ :=
   finiteMoebiusBalancedCoefficientMoment N (fun n =>
     Real.exp (-(Real.log n) / 2) *
       thetaCuspTailSurvival (x + Real.log n))
 
+/-- The completion-balanced finite Möbius packet of length `N` applied to the critically
+weighted left shifts `n^{-1/2} S(x - log n)` of the survival function. -/
 def thetaCuspTailSurvivalBalancedMobiusLeftShift
     (N : ℕ) (x : ℝ) : ℝ :=
   finiteMoebiusBalancedCoefficientMoment N (fun n =>
     Real.exp (-(Real.log n) / 2) *
       thetaCuspTailSurvival (x - Real.log n))
 
+/-- Balanced Möbius reflection: because the balanced packet annihilates the characters `1` and
+`n⁻¹`, the elementary reflection modes cancel and the right-translate packet at `-x` equals minus
+the left-shift packet at `x`. -/
 theorem thetaCuspTailSurvivalBalancedMobiusTranslate_neg
     (N : ℕ) (x : ℝ) :
     thetaCuspTailSurvivalBalancedMobiusTranslate N (-x) =
@@ -156,6 +197,7 @@ theorem thetaCuspTailSurvivalBalancedMobiusTranslate_neg
   linear_combination Real.exp (x / 2) * hzeroInv +
     Real.exp (-x / 2) * hzeroOne
 
+/-- The degree-`d` section source derivative is an odd polynomial in `x`. -/
 theorem thetaCuspTailSecondSectionSourceDerivative_neg
     (d : ℕ) (z : ℂ) (x : ℝ) :
     thetaCuspTailSecondSectionSourceDerivative d z (-x) =
@@ -172,6 +214,7 @@ theorem thetaCuspTailSecondSectionSourceDerivative_neg
   rw [hpow]
   ring
 
+/-- The spectral (z-derivative) section source derivative is an odd polynomial in `x`. -/
 theorem thetaCuspTailSecondSectionSourceSpectralDerivative_neg
     (d : ℕ) (z : ℂ) (x : ℝ) :
     thetaCuspTailSecondSectionSourceSpectralDerivative d z (-x) =
@@ -205,6 +248,9 @@ theorem thetaCuspTailSecondCoreAtomSourceSpectralDerivative_neg
     thetaCuspTailSecondSectionSourceSpectralDerivative_neg]
   ring
 
+/-- The pairing of the balanced left-shift packet with the core-atom source derivative over
+`(0, ∞)` equals the pairing of the right-translate packet with the same source over `(-∞, 0]`;
+proved by `x ↦ -x` together with the two oddness laws. -/
 theorem integral_Ioi_balancedMobiusSurvivalLeft_mul_coreAtomSourceDerivative_eq_integral_Iic_right
     (N d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,
@@ -232,6 +278,8 @@ theorem integral_Ioi_balancedMobiusSurvivalLeft_mul_coreAtomSourceDerivative_eq_
       simpa only [neg_zero] using integral_comp_neg_Ioi 0 f
     _ = _ := rfl
 
+/-- Spectral version: the `(0, ∞)` pairing of the balanced left-shift packet with the core-atom
+spectral source derivative equals the `(-∞, 0]` pairing of the right-translate packet. -/
 theorem integral_Ioi_balancedMobiusSurvivalLeft_mul_coreAtomSourceSpectralDerivative_eq_integral_Iic_right
     (N d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,

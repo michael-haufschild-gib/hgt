@@ -3,14 +3,40 @@ import GaloisForLFunctions.RHTower.EulerDeletionQuasiShuffleConvergence
 import GaloisForLFunctions.RHTower.Sieve.TotientMoebiusNormalisation
 import GaloisForLFunctions.RHTower.EulerDeletionCoprimeCrossCompletion
 
+/-!
+# Primitives of Ramanujan sums: periodicity, period mean and harmonic mean
+
+The primitive `C_q(N) = ∑_{n≤N} c_q(n)` of the Ramanujan sum equals
+`∑_{dm=q} d μ(m) ⌊N/d⌋`. For `q > 1` it vanishes at `N = q` and is therefore `q`-periodic and
+bounded. Using `∑_{n≤q} n c_q(n) = qφ(q)/2` (Euler's totient `φ`), its sum over a period is
+`−qφ(q)/2`, so the Cesàro mean of `N ↦ C_q(N)` is `−φ(q)/2`; the logarithmic (harmonic) mean
+`(1/log N) ∑_{n≤N} Re C_q(n)/n` has the same limit.
+
+## Main results
+
+- `pmRamanujanPrimitive_eq_floor`: `C_q(N) = ∑_{dm=q} d μ(m) ⌊N/d⌋`.
+- `pmRamanujanPrimitive_period_sum`: `C_q(q) = 0` for `q > 1`.
+- `pm_ramanujan_first_moment`: `2 ∑_{n≤q} n c_q(n) = q φ(q)` for `q > 1`.
+- `pmRamanujanPrimitive_period_mean`: `∑_{N≤q} C_q(N) = −q φ(q)/2` for `q > 1`.
+- `pmRamanujanPrimitive_periodic`, `norm_pmRamanujanPrimitive_le`: `C_q` is `q`-periodic and bounded by its sum of absolute values over one period.
+- `tendsto_pmRamanujanPrimitive_mean`: `(1/N) ∑_{n≤N} Re C_q(n) → −φ(q)/2`.
+- `tendsto_pmRamanujanPrimitive_harmonic`: `(1/log N) ∑_{n≤N} Re C_q(n)/n → −φ(q)/2`.
+
+## Hypotheses
+
+All results are unconditional; the periodicity and mean statements assume `1 < q`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- The Ramanujan primitive `C_q(N) = ∑_{n≤N} c_q(n)`. -/
 def pmRamanujanPrimitive (q N : ℕ) : ℂ :=
   ∑ n ∈ Finset.Icc 1 N, d4BMRamanujanNaturalCoefficient n q
 
+/-- `∑_{n≤N} f(n) c_q(n) = ∑_{dm=q} d μ(m) ∑_{n≤N, d|n} f(n)`. -/
 theorem pm_ramanujan_weighted_sum (f : ℕ → ℂ) (N q : ℕ) :
     (∑ n ∈ Finset.Icc 1 N, f n * d4BMRamanujanNaturalCoefficient n q) =
       ∑ x ∈ q.divisorsAntidiagonal, (x.1 : ℂ)*(moebius x.2 : ℂ) *
@@ -26,6 +52,7 @@ theorem pm_ramanujan_weighted_sum (f : ℕ → ℂ) (N q : ℕ) :
       split_ifs <;> ring
     _ = _ := by rw [Finset.sum_comm]; simp_rw [← Finset.mul_sum]
 
+/-- `C_q(N) = ∑_{dm=q} d μ(m) ⌊N/d⌋`. -/
 theorem pmRamanujanPrimitive_eq_floor (q N : ℕ) :
     pmRamanujanPrimitive q N =
       ∑ x ∈ q.divisorsAntidiagonal,
@@ -33,6 +60,7 @@ theorem pmRamanujanPrimitive_eq_floor (q N : ℕ) :
   simpa only [one_mul, pmRamanujanPrimitive, pm_sum_dvd_indicator] using
     pm_ramanujan_weighted_sum (fun _ => 1) N q
 
+/-- For `q > 1`, the Ramanujan sums over a full period cancel: `C_q(q) = 0`. -/
 theorem pmRamanujanPrimitive_period_sum {q : ℕ} (hq : 1 < q) :
     pmRamanujanPrimitive q q = 0 := by
   rw [pmRamanujanPrimitive_eq_floor]
@@ -48,6 +76,7 @@ theorem pmRamanujanPrimitive_period_sum {q : ℕ} (hq : 1 < q) :
   rw [Finset.sum_congr rfl ht, ← Finset.mul_sum, pm_mobius_antidiagonal_sum]
   simp [ne_of_gt hq]
 
+/-- Gauss: `2 ∑_{n≤N} n = N(N+1)`. -/
 theorem pm_twice_sum_Icc_natCast (N : ℕ) :
     2*(∑ n ∈ Finset.Icc 1 N, (n : ℂ)) = (N : ℂ)*((N : ℂ)+1) := by
   induction N with
@@ -57,6 +86,7 @@ theorem pm_twice_sum_Icc_natCast (N : ℕ) :
     push_cast
     linear_combination ih
 
+/-- For `d | q`, `2 ∑_{n≤q, d|n} n = q(q/d + 1)`. -/
 theorem pm_twice_sum_Icc_dvd_natCast {q d : ℕ} (hd : 0 < d) (hdq : d ∣ q) :
     2*(∑ n ∈ Finset.Icc 1 q, if d ∣ n then (n : ℂ) else 0) =
       (q : ℂ)*(((q/d : ℕ) : ℂ)+1) := by
@@ -70,6 +100,7 @@ theorem pm_twice_sum_Icc_dvd_natCast {q d : ℕ} (hd : 0 < d) (hdq : d ∣ q) :
     _ = (d : ℂ)*(2*∑ n ∈ Finset.Icc 1 (q/d), (n : ℂ)) := by ring
     _ = _ := by rw [pm_twice_sum_Icc_natCast, ← mul_assoc, hm]
 
+/-- For `q > 0`, `∑_{dm=q} d μ(m) = φ(q)`. -/
 theorem pm_totient_antidiagonal {q : ℕ} (hq : 0 < q) :
     (∑ x ∈ q.divisorsAntidiagonal, (x.1 : ℂ)*(moebius x.2 : ℂ)) = (q.totient : ℂ) := by
   rw [Nat.sum_divisorsAntidiagonal' (fun a b => (a : ℂ)*(moebius b : ℂ))]
@@ -78,6 +109,7 @@ theorem pm_totient_antidiagonal {q : ℕ} (hq : 0 < q) :
   push_cast at hc
   simpa only [mul_comm] using hc.symm
 
+/-- For `q > 1`, `2 ∑_{n≤q} n c_q(n) = q φ(q)`. -/
 theorem pm_ramanujan_first_moment {q : ℕ} (hq : 1 < q) :
     2*(∑ n ∈ Finset.Icc 1 q, (n : ℂ)*d4BMRamanujanNaturalCoefficient n q) =
       (q : ℂ)*(q.totient : ℂ) := by
@@ -102,6 +134,7 @@ theorem pm_ramanujan_first_moment {q : ℕ} (hq : 1 < q) :
     pm_totient_antidiagonal (by omega)]
   simp [ne_of_gt hq]
 
+/-- Summation by parts: `∑_{k≤N} ∑_{n≤k} f(n) = (N+1)∑_{n≤N} f(n) − ∑_{n≤N} n f(n)`. -/
 theorem pm_sum_cumulative_eq_first_moment (f : ℕ → ℂ) (N : ℕ) :
     (∑ k ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 k, f n) =
       ((N : ℂ)+1)*(∑ n ∈ Finset.Icc 1 N, f n) -
@@ -114,6 +147,7 @@ theorem pm_sum_cumulative_eq_first_moment (f : ℕ → ℂ) (N : ℕ) :
     push_cast
     ring
 
+/-- For `q > 1`, `∑_{1≤N≤q} C_q(N) = −q φ(q)/2`. -/
 theorem pmRamanujanPrimitive_period_mean {q : ℕ} (hq : 1 < q) :
     (∑ N ∈ Finset.Icc 1 q, pmRamanujanPrimitive q N) =
       -(q : ℂ)*(q.totient : ℂ)/2 := by
@@ -124,6 +158,7 @@ theorem pmRamanujanPrimitive_period_mean {q : ℕ} (hq : 1 < q) :
   have h := pm_ramanujan_first_moment hq
   linear_combination -h/2
 
+/-- The Ramanujan sum is `q`-periodic in `n`. -/
 theorem pm_ramanujan_periodic (q n : ℕ) :
     d4BMRamanujanNaturalCoefficient (n+q) q = d4BMRamanujanNaturalCoefficient n q := by
   simp [d4BMRamanujanNaturalCoefficient, Nat.cast_add]
@@ -133,6 +168,7 @@ theorem pmRamanujanPrimitive_succ (q N : ℕ) :
       d4BMRamanujanNaturalCoefficient (N+1) q := by
   exact Finset.sum_Icc_succ_top (by omega) _
 
+/-- For `q > 1`, the primitive is `q`-periodic: `C_q(N+q) = C_q(N)`. -/
 theorem pmRamanujanPrimitive_periodic {q : ℕ} (hq : 1 < q) (N : ℕ) :
     pmRamanujanPrimitive q (N+q) = pmRamanujanPrimitive q N := by
   induction N with
@@ -141,9 +177,11 @@ theorem pmRamanujanPrimitive_periodic {q : ℕ} (hq : 1 < q) (N : ℕ) :
     rw [show N+1+q = (N+q)+1 by omega, pmRamanujanPrimitive_succ, ih,
       show N+q+1 = (N+1)+q by omega, pm_ramanujan_periodic, pmRamanujanPrimitive_succ]
 
+/-- The bound `∑_{n<q} |C_q(n)|` on the periodic primitive. -/
 def pmRamanujanPrimitiveBound (q : ℕ) : ℝ :=
   ∑ n ∈ Finset.range q, ‖pmRamanujanPrimitive q n‖
 
+/-- For `q > 1`, `|C_q(N)| ≤ ∑_{n<q} |C_q(n)|` for every `N`. -/
 theorem norm_pmRamanujanPrimitive_le {q : ℕ} (hq : 1 < q) (N : ℕ) :
     ‖pmRamanujanPrimitive q N‖ ≤ pmRamanujanPrimitiveBound q := by
   have hp : Function.Periodic (pmRamanujanPrimitive q) q := pmRamanujanPrimitive_periodic hq
@@ -151,6 +189,7 @@ theorem norm_pmRamanujanPrimitive_le {q : ℕ} (hq : 1 < q) (N : ℕ) :
   exact Finset.single_le_sum (fun _ _ => norm_nonneg _)
     (Finset.mem_range.mpr (Nat.mod_lt N (by omega)))
 
+/-- For `q > 1`, the Cesàro mean `(1/N) ∑_{n≤N} C_q(n)` converges to `−φ(q)/2`. -/
 theorem tendsto_pmRamanujanPrimitive_mean_complex {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, pmRamanujanPrimitive q n)/(N : ℂ))
       atTop (𝓝 (-(q.totient : ℂ)/2)) := by
@@ -187,6 +226,7 @@ theorem tendsto_pmRamanujanPrimitive_mean_complex {q : ℕ} (hq : 1 < q) :
     ring
   simpa only [zero_sub, neg_div] using (hlim.sub tendsto_const_nhds).congr' he
 
+/-- For `q > 1`, the real Cesàro mean `(1/N) ∑_{n≤N} Re C_q(n)` converges to `−φ(q)/2`. -/
 theorem tendsto_pmRamanujanPrimitive_mean {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, (pmRamanujanPrimitive q n).re)/(N : ℝ))
       atTop (𝓝 (-(q.totient : ℝ)/2)) := by
@@ -198,6 +238,7 @@ theorem tendsto_pmRamanujanPrimitive_mean {q : ℕ} (hq : 1 < q) :
   simpa only [Function.comp_def, ← Complex.ofReal_natCast, Complex.div_ofReal_re,
     Complex.re_sum] using h
 
+/-- For `q > 1`, the logarithmic mean `(1/log N) ∑_{n≤N} Re C_q(n)/n` converges to `−φ(q)/2`. -/
 theorem tendsto_pmRamanujanPrimitive_harmonic {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, (pmRamanujanPrimitive q n).re/(n : ℝ))/
       Real.log N) atTop (𝓝 (-(q.totient : ℝ)/2)) :=

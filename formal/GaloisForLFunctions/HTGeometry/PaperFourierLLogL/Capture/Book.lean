@@ -1,6 +1,31 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Capture.Flex
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Dyadic.Span
 
+/-!
+# Fourier support near a signed frequency span, and Riesz-product charts
+
+On the finite circle `Grid M = ℤ/2^M`, a frequency is `atReach d r` when it lies within circular
+distance `r` of a signed combination `∑ εᵢ dᵢ` with `εᵢ ∈ {-1, 0, 1}` of a finite frequency set `d`.
+A real function is `tinted d r` when its discrete Fourier coefficients vanish at every frequency not
+at reach. This support condition is stable under multiplication by functions band-limited to radius
+`s` (radius grows to `r + s`), and under appending a Riesz-product factor `1 + g · Re(c χᵢ)` at a
+new frequency `i`. A `Chart` packages a reference kernel, its frequency set and its radius;
+`Chart.Sound` asks for two-sided bounds `2^{-size} ≤ refs ≤ 2^{size}` and the support condition.
+
+## Main results
+
+- `tinted_mul`: tinted at radius `r` times band-limited at radius `s` is tinted at radius `r + s`.
+- `tinted_cancel`: a tinted function is orthogonal to `Re(c χᵢ)` for every frequency `i` not at reach.
+- `tinted_extend`: appending the factor `1 + g · Re(c χᵢ)` at a frequency `i` not at reach keeps the
+  product tinted for the enlarged set `insert i d`.
+- `Chart.classic_sound`: the trivial chart (constant kernel `1`, no frequencies) is sound.
+
+## Hypotheses
+
+All statements are unconditional finite Fourier analysis on `ℤ/2^M`; the only premises are the
+support and band-limitation conditions named in each lemma.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -12,9 +37,11 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {M : ℕ}
 open scoped Classical
 
+/-- `x` lies within circular distance `r` of a signed sum `∑ εᵢ dᵢ`, `εᵢ ∈ {-1, 0, 1}`, of `d`. -/
 def atReach (d : Finset (Grid M)) (r : ℝ) (x : Grid M) :=
     ∃ i, enclosed d 1 i ∧ rad (x-i) ≤ r
 
+/-- The discrete Fourier coefficients of `f` vanish at every frequency not `atReach d r`. -/
 def tinted (d : Finset (Grid M)) (r : ℝ) (f : Grid M → ℝ) :=
     ∀ i, ¬ atReach d r i → fc (fun x => (↑(f x):ℂ)) i = 0
 
@@ -23,6 +50,8 @@ lemma atReach_neg {d : Finset (Grid M)} {r : ℝ} {x : Grid M} (h : atReach d r 
   obtain ⟨i,h1,h2⟩ := h
   exact ⟨-i,enclosed_neg h1,by rw [show -x- -i= -(x-i) by ring,rad_even]; exact h2⟩
 
+/-- Multiplying a function tinted at radius `r` by one band-limited to radius `s` gives a function
+tinted at radius `r + s`. -/
 lemma tinted_mul {d : Finset (Grid M)} {r s : ℝ} {f g : Grid M → ℝ} (hf : tinted d r f)
     (hg : limitR g s) : tinted d (r+s) (fun i => f i*g i) := by
   intro i hi
@@ -37,6 +66,8 @@ lemma tinted_mul {d : Finset (Grid M)} {r s : ℝ} {f g : Grid M → ℝ} (hf : 
     rw [hg _ hX,mul_zero]
   rw [hf j h,zero_mul]
 
+/-- If `f` is tinted and frequency `i` is not at reach, then the uniform average of
+`f · Re(c χᵢ)` is zero. -/
 lemma tinted_cancel {d : Finset (Grid M)} {r : ℝ} {f : Grid M → ℝ} (hf : tinted d r f)
     {i : Grid M} (hh : ¬ atReach d r i) (c : ℂ) :
     expU (fun x => f x*(c*chi i x).re)=0 := by
@@ -55,6 +86,9 @@ lemma tinted_one (d : Finset (Grid M)) {r : ℝ} (h : 0 ≤ r) : tinted d r (fun
     intro H; apply hi; exact ⟨i,H,by simp [rad,h]⟩
   simp only [Complex.ofReal_one]; exact spanned_one _ _ hn
 
+/-- Riesz-product extension: if `f` is tinted at radius `r`, `g` is band-limited to radius `s`, and
+`i` is not at reach at radius `r + s`, then `i ∉ d` and `f · (1 + g · Re(c χᵢ))` is tinted for
+`insert i d` at radius `r + s`. -/
 lemma tinted_extend (f g : Grid M → ℝ) (d : Finset (Grid M)) (r s : ℝ) (hf : tinted d r f)
     (hg : limitR g s) (hr : 0 ≤ r) (hs : 0 ≤ s)
     (i : Grid M) (hi : ¬ atReach d (r+s) i) (c : ℂ) :
@@ -89,6 +123,8 @@ lemma tinted_extend (f g : Grid M → ℝ) (d : Finset (Grid M)) (r s : ℝ) (hf
   simp_rw [h₁,fc_add,Hf x hX] at ht
   exact ht.trans (by ring)
 
+/-- A Riesz-product chart: a reference kernel `refs z y`, its captured frequencies `items`, and
+the Fourier-support radius `wide`. -/
 structure Chart (M : ℕ) where
   refs : ProductRef M
   items : Finset (Grid M)
@@ -97,6 +133,8 @@ structure Chart (M : ℕ) where
 namespace Chart
 def classic (M : ℕ) : Chart M := ⟨fun _ _ => 1,∅,0⟩
 def size (c : Chart M) := c.items.card
+/-- A chart is sound when `0 ≤ wide`, `2^{-size} ≤ refs z y ≤ 2^{size}`, and every row `refs z` is
+tinted by `items` at radius `wide`. -/
 structure Sound (c : Chart M) : Prop where
   bound : 0 ≤ c.wide
   total z y : side c.size ≤ c.refs z y ∧ c.refs z y ≤ 2^c.size

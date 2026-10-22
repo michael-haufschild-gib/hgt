@@ -10,6 +10,48 @@ import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Topology.Homotopy.Contractible
 import Mathlib.Analysis.Normed.Module.Connected
 
+/-!
+# Surjective stabilization of the fundamental groups of unitary groups
+
+This module proves that the block embedding `V ↦ diag(1, V)` of `U(n + 1)` into `U(n + 2)` induces
+a surjection on fundamental groups based at the identity. The argument uses the first-column map
+`U(n + 2) → S^(2n+3)`, `U ↦ U e_0`. Over the sphere minus one point it has an explicit continuous
+section built from the unitary completion `-1 + c⁻¹ a a^*` (with `a = e_0 + x`,
+`c = 1 + conj(x_0)`), which sends `e_0` to the unit vector `x`. The fibre over `e_0` is
+homeomorphic to `U(n + 1)`. Two charts (first column avoiding `-e_1`, respectively `+e_1`) cover
+`U(n + 2)` with path-connected pairwise intersections, so every loop is homotopic to a
+concatenation of loops each lying in one chart. In a chart a loop factors pointwise as a section
+loop times a fibre loop, the section loop is null-homotopic because the punctured sphere is
+contractible, and the fibre loop comes from `U(n + 1)`.
+
+## Main results
+
+- `completion_unitary`, `completion_mulVec_e`: for a unit vector `x ≠ -e_(a0)`, the completion
+  matrix is unitary and sends `e_(a0)` to `x`.
+- `rotatedCompletion_firstColumn`: the rotated completion is a continuous section of the
+  first-column map over the sphere minus one point.
+- `unitaryStabilizerHomeomorph`: `U(n)` is homeomorphic to the stabilizer of `e_0` in `U(n + 1)`.
+- `unitSphere_isPathConnected_compl_antipodes`: the unit sphere minus a pair of antipodal points
+  is path-connected when the real orthogonal complement of the point has rank greater than one.
+- `unitaryFirstColumn_preimage_isPathConnected`: the preimage in `U(n + 2)` of a path-connected
+  subset of a chart of the sphere is path-connected.
+- `twoChartSet_cover`, `twoChartSet_inter_isPathConnected`: the two chart sets are open, cover
+  `U(n + 2)`, and have path-connected pairwise intersections.
+- `chartSectionLoop_nullhomotopic`: the section part of a chart loop is null-homotopic.
+- `chartLoop_class_mem_unitaryEmbedSucc_range`: a loop at `1` inside one chart represents a class
+  in the image of `π₁(U(n + 1))`.
+- `unitaryEmbedSuccFundamentalGroupMap_surjective`: the induced map
+  `π₁(U(n + 1), 1) → π₁(U(n + 2), 1)` is surjective for every `n`.
+- `det_embedSucc`: `det (diag(1, V)) = det V`.
+
+## Hypotheses
+
+Unconditional. Local statements assume only the natural side conditions: unit-norm vectors, a
+point not equal to the excluded antipode, and, for the antipodal complement lemma, the rank bound
+`1 < rank` of the real orthogonal complement (proved for `ℂ^(n+2)` in
+`one_lt_rank_real_orthogonal_unitSphere_fin`).
+-/
+
 open Matrix Finset
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry
@@ -22,15 +64,21 @@ noncomputable section
 
 variable {α : Type*} [Fintype α] [DecidableEq α]
 
+/-- The standard basis vector `e_(a0)`. -/
 def e (a0 : α) : α → ℂ := fun i => if i = a0 then 1 else 0
 
+/-- The vector `a = e_(a0) + x` used by the unitary completion. -/
 def a (a0 : α) (x : α → ℂ) : α → ℂ := e a0 + x
 
+/-- The scalar `c = 1 + conj(x_(a0))`; for a unit vector, `‖a‖^2 = c + conj c`. -/
 def c (a0 : α) (x : α → ℂ) : ℂ := 1 + star (x a0)
 
+/-- The rank-one matrix `Q = c⁻¹ a a^*`. -/
 def Q (a0 : α) (x : α → ℂ) : Matrix α α ℂ :=
   Matrix.vecMulVec ((c a0 x)⁻¹ • a a0 x) (star (a a0 x))
 
+/-- The unitary completion `-1 + c⁻¹ a a^*` of a unit vector `x`, a matrix sending `e_(a0)` to
+`x`. -/
 def completion (a0 : α) (x : α → ℂ) : Matrix α α ℂ := -1 + Q a0 x
 
 lemma star_e_dot_x (a0 : α) (x : α → ℂ) :
@@ -58,6 +106,7 @@ lemma rootNorm_a (a0 : α) (x : α → ℂ)
   simp [c]
   ring
 
+/-- For a unit vector `x ≠ -e_(a0)`, the scalar `c = 1 + conj(x_(a0))` is nonzero. -/
 lemma c_ne_zero (a0 : α) (x : α → ℂ)
     (hx : star x ⬝ᵥ x = 1) (hne : x ≠ -e a0) : c a0 x ≠ 0 := by
   intro hc
@@ -93,6 +142,7 @@ lemma Q_conjTranspose (a0 : α) (x : α → ℂ) :
   simp [Q, Matrix.conjTranspose_apply, Matrix.vecMulVec_apply]
   ring
 
+/-- For a unit vector `x` with `c ≠ 0`, the rank-one matrix satisfies `Q^* Q = Q^* + Q`. -/
 lemma Qstar_mul_Q (a0 : α) (x : α → ℂ)
     (hx : star x ⬝ᵥ x = 1) (hc : c a0 x ≠ 0) :
     (Q a0 x)ᴴ * Q a0 x = (Q a0 x)ᴴ + Q a0 x := by
@@ -110,6 +160,7 @@ lemma Qstar_mul_Q (a0 : α) (x : α → ℂ)
   have hsc : star (c a0 x) ≠ 0 := star_ne_zero.mpr hc
   field_simp
 
+/-- For a unit vector `x ≠ -e_(a0)`, the completion `-1 + c⁻¹ a a^*` is unitary. -/
 theorem completion_unitary (a0 : α) (x : α → ℂ)
     (hx : star x ⬝ᵥ x = 1) (hne : x ≠ -e a0) :
     (completion a0 x)ᴴ * completion a0 x = 1 := by
@@ -122,6 +173,7 @@ theorem completion_unitary (a0 : α) (x : α → ℂ)
       noncomm_ring
     _ = 1 := by rw [Qstar_mul_Q a0 x hx hc]; noncomm_ring
 
+/-- For a unit vector `x ≠ -e_(a0)`, the completion sends `e_(a0)` to `x`. -/
 theorem completion_mulVec_e (a0 : α) (x : α → ℂ)
     (hx : star x ⬝ᵥ x = 1) (hne : x ≠ -e a0) :
     completion a0 x *ᵥ e a0 = x := by
@@ -134,6 +186,7 @@ theorem completion_mulVec_e (a0 : α) (x : α → ℂ)
     exact star_x_dot_e a0 (a a0 x), hstar]
   simp [hc, a]
 
+/-- The unit sphere of `EuclideanSpace ℂ α`. -/
 abbrev UnitSphere (α : Type*) [Fintype α] :=
   Metric.sphere (0 : EuclideanSpace ℂ α) 1
 
@@ -166,6 +219,7 @@ lemma star_mulVec_dot_mulVec_of_unitary (a0 : α)
   change (U : Matrix α α ℂ)ᴴ * U = 1 at hU
   rw [hU, Matrix.one_mulVec, star_e_dot_e]
 
+/-- The column map `U ↦ U e_(a0)` from the unitary group to the unit sphere. -/
 def unitaryFirstColumn (a0 : α) (U : Matrix.unitaryGroup α ℂ) : UnitSphere α := by
   let y : α → ℂ := (U : Matrix α α ℂ) *ᵥ e a0
   refine ⟨WithLp.toLp 2 y, ?_⟩
@@ -193,11 +247,13 @@ lemma raw_unitaryFirstColumn (a0 : α) (U : Matrix.unitaryGroup α ℂ) :
   rw [raw_unitaryFirstColumn]
   simp [Matrix.mulVec, dotProduct, e]
 
+/-- The column map `U ↦ U e_(a0)` is continuous. -/
 theorem continuous_unitaryFirstColumn (a0 : α) :
     Continuous (unitaryFirstColumn a0 : Matrix.unitaryGroup α ℂ → UnitSphere α) := by
   apply continuous_induced_rng.2
   exact (PiLp.lipschitzWith_toLp 2 (fun _ : α => ℂ)).continuous.comp (by fun_prop)
 
+/-- The action `x ↦ U x` of the unitary group on the unit sphere. -/
 def unitarySphereAction (U : Matrix.unitaryGroup α ℂ) (x : UnitSphere α) :
     UnitSphere α := by
   let y : α → ℂ := (U : Matrix α α ℂ) *ᵥ raw x.1
@@ -248,6 +304,7 @@ theorem unitarySphereAction_mul (U V : Matrix.unitaryGroup α ℂ) (x : UnitSphe
     ((U : Matrix α α ℂ) *ᵥ ((V : Matrix α α ℂ) *ᵥ raw x.1)) i
   rw [Matrix.mulVec_mulVec]
 
+/-- The antipodal map `x ↦ -x` on the unit sphere. -/
 def sphereNeg (x : UnitSphere α) : UnitSphere α :=
   ⟨-x.1, by
     rw [mem_sphere_zero_iff_norm, norm_neg]
@@ -265,6 +322,7 @@ theorem unitarySphereAction_neg (U : Matrix.unitaryGroup α ℂ) (x : UnitSphere
     (-((U : Matrix α α ℂ) *ᵥ raw x.1)) i
   rw [Matrix.mulVec_neg]
 
+/-- The basis vector `e_(a0)` as a point of the unit sphere. -/
 def basisSphere (a0 : α) : UnitSphere α :=
   unitaryFirstColumn a0 1
 
@@ -283,6 +341,7 @@ lemma unitaryFirstColumn_eq_action (a0 : α) (U : Matrix.unitaryGroup α ℂ) :
     ((U : Matrix α α ℂ) *ᵥ raw (basisSphere a0).1) i
   rw [raw_basisSphere]
 
+/-- The chart domain: the unit sphere minus the antipode of the column `R e_(a0)`. -/
 abbrev SphereChart (a0 : α) (R : Matrix.unitaryGroup α ℂ) :=
   {x : UnitSphere α // x ≠ sphereNeg (unitaryFirstColumn a0 R)}
 
@@ -306,6 +365,8 @@ lemma rotated_raw_ne (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     simpa using congrFun hy i]
   rw [unitarySphereAction_neg, ← unitaryFirstColumn_eq_action]
 
+/-- The local section over a chart: `x ↦ R · completion(R⁻¹ x)`, a unitary matrix whose
+`a0`-column is `x`. -/
 def rotatedCompletion (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     (x : SphereChart a0 R) : Matrix.unitaryGroup α ℂ := by
   let y : UnitSphere α := unitarySphereAction R⁻¹ x.1
@@ -325,6 +386,7 @@ noncomputable def matrixVecLinearEquiv :
       map_smul' := Matrix.vec_smul }
     Matrix.vec_bijective
 
+/-- The chart section `x ↦ R · completion(R⁻¹ x)` is continuous. -/
 theorem continuous_rotatedCompletion (a0 : α) (R : Matrix.unitaryGroup α ℂ) :
     Continuous (rotatedCompletion a0 R : SphereChart a0 R → Matrix.unitaryGroup α ℂ) := by
   apply continuous_induced_rng.2
@@ -390,6 +452,7 @@ theorem continuous_rotatedCompletion (a0 : α) (R : Matrix.unitaryGroup α ℂ) 
   exact hcomp.comp (f := fun x : SphereChart a0 R =>
     raw (unitarySphereAction R⁻¹ x.1).1) hraw
 
+/-- Section property: the `a0`-column of the chart section at `x` is `x`. -/
 theorem rotatedCompletion_firstColumn (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     (x : SphereChart a0 R) :
     unitaryFirstColumn a0 (rotatedCompletion a0 R x) = x.1 := by
@@ -427,10 +490,12 @@ theorem rotatedCompletion_firstColumn (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     rw [hy', unitarySphereAction_neg, ← unitaryFirstColumn_eq_action]
 
 omit [DecidableEq α] in
+/-- The unit sphere minus one point is contractible. -/
 theorem unitSphere_compl_singleton_contractible (v : UnitSphere α) :
     ContractibleSpace ({v}ᶜ : Set (UnitSphere α)) :=
   sphereComplementPoint_contractible v
 
+/-- The unit sphere minus one point is path-connected. -/
 theorem unitSphere_isPathConnected_compl_singleton (v : UnitSphere α) :
     IsPathConnected ({v}ᶜ : Set (UnitSphere α)) := by
   rw [isPathConnected_iff_pathConnectedSpace]
@@ -438,6 +503,8 @@ theorem unitSphere_isPathConnected_compl_singleton (v : UnitSphere α) :
     unitSphere_compl_singleton_contractible v
   infer_instance
 
+/-- For a partial equivalence `f` and `b` in its target, the inverse image of `target \ {b}` is
+`source \ {f.symm b}`. -/
 theorem PartialEquiv.symm_image_target_minus_singleton_eq_local
     {A B : Type*} (f : PartialEquiv A B) {b : B} (hb : b ∈ f.target) :
     f.symm '' (f.target \ {b}) = f.source \ {f.symm b} := by
@@ -445,6 +512,8 @@ theorem PartialEquiv.symm_image_target_minus_singleton_eq_local
   · exact f.symm.injOn
   · exact Set.singleton_subset_iff.mpr hb
 
+/-- Assuming the real orthogonal complement of `v` has rank greater than one, the unit sphere minus
+the antipodal pair `{v, -v}` is path-connected (stereographic projection from `v`). -/
 theorem unitSphere_isPathConnected_compl_antipodes (v : UnitSphere α)
     (hrank : 1 < Module.rank ℝ ((ℝ ∙ (v : EuclideanSpace ℂ α))ᗮ)) :
     IsPathConnected ({v}ᶜ ∩ {sphereNeg v}ᶜ : Set (UnitSphere α)) := by
@@ -474,6 +543,7 @@ theorem unitSphere_isPathConnected_compl_antipodes (v : UnitSphere α)
     exact isPathConnected_compl_singleton_of_one_lt_rank hrank 0
   · exact ContinuousOn.mono proj.continuousOn_invFun Set.sdiff_subset
 
+/-- In `ℂ^(n+2)`, the real orthogonal complement of a unit vector has real rank greater than one. -/
 theorem one_lt_rank_real_orthogonal_unitSphere_fin (n : ℕ)
     (v : UnitSphere (Fin (n + 2))) :
     1 < Module.rank ℝ
@@ -494,6 +564,7 @@ theorem one_lt_rank_real_orthogonal_unitSphere_fin (n : ℕ)
   rw [← Module.finrank_eq_rank]
   exact_mod_cast hfin
 
+/-- The block embedding `U(n) → U(n + 1)`, `V ↦ diag(1, V)`, as a group homomorphism. -/
 def unitaryEmbedSucc (n : ℕ) :
     Matrix.unitaryGroup (Fin n) ℂ →* Matrix.unitaryGroup (Fin (n + 1)) ℂ where
   toFun V := ⟨embedSucc V, Matrix.mem_unitaryGroup_iff.mpr
@@ -546,13 +617,17 @@ theorem continuous_unitaryEmbedSucc (n : ℕ) : Continuous (unitaryEmbedSucc n) 
   rw [raw_basisSphere]
   induction i using Fin.cases <;> simp [Matrix.mulVec, dotProduct, e]
 
+/-- The stabilizer of `e_0` in `U(n + 1)`: unitary matrices whose first column is `e_0`. -/
 abbrev FirstColumnStabilizer (n : ℕ) :=
   {U : Matrix.unitaryGroup (Fin (n + 1)) ℂ //
     unitaryFirstColumn 0 U = basisSphere 0}
 
+/-- The lower-right `n × n` block of a matrix in the stabilizer of `e_0`. -/
 def stabilizerTail (n : ℕ) (U : FirstColumnStabilizer n) :
     Matrix (Fin n) (Fin n) ℂ := fun i j => U.1 i.succ j.succ
 
+/-- A unitary matrix with first column `e_0` also has first row `e_0^T`: its off-diagonal
+first-row entries vanish. -/
 theorem stabilizer_zero_succ (n : ℕ) (U : FirstColumnStabilizer n) (j : Fin n) :
     (U.1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) 0 j.succ = 0 := by
   have hstar := Matrix.UnitaryGroup.star_mul_self U.1
@@ -571,6 +646,7 @@ theorem stabilizer_zero_succ (n : ℕ) (U : FirstColumnStabilizer n) (j : Fin n)
     simpa using congrArg Fin.val hzero
   simpa [Matrix.one_apply, hne] using h'
 
+/-- The lower-right block of a matrix in the stabilizer of `e_0` is unitary. -/
 theorem stabilizerTail_star_mul_self (n : ℕ) (U : FirstColumnStabilizer n) :
     (stabilizerTail n U)ᴴ * stabilizerTail n U = 1 := by
   have hstar := Matrix.UnitaryGroup.star_mul_self U.1
@@ -586,6 +662,7 @@ def stabilizerTailUnitary (n : ℕ) (U : FirstColumnStabilizer n) :
   ⟨stabilizerTail n U, Matrix.mem_unitaryGroup_iff.mpr
     (mul_eq_one_comm.mp (stabilizerTail_star_mul_self n U))⟩
 
+/-- Every matrix in the stabilizer of `e_0` is `diag(1, V)` for its lower-right block `V`. -/
 theorem unitaryEmbedSucc_stabilizerTail (n : ℕ) (U : FirstColumnStabilizer n) :
     unitaryEmbedSucc n (stabilizerTailUnitary n U) = U.1 := by
   apply Subtype.ext
@@ -634,6 +711,7 @@ theorem continuous_stabilizerTailUnitary (n : ℕ) :
   exact (continuous_finiteUnitaryEntry i.succ j.succ).comp
     continuous_subtype_val
 
+/-- `U(n)` is homeomorphic to the stabilizer of `e_0` in `U(n + 1)` via `V ↦ diag(1, V)`. -/
 noncomputable def unitaryStabilizerHomeomorph (n : ℕ) :
     Matrix.unitaryGroup (Fin n) ℂ ≃ₜ FirstColumnStabilizer n where
   toFun := unitaryEmbedSuccStabilizer n
@@ -643,12 +721,14 @@ noncomputable def unitaryStabilizerHomeomorph (n : ℕ) :
   continuous_toFun := continuous_unitaryEmbedSuccStabilizer n
   continuous_invFun := continuous_stabilizerTailUnitary n
 
+/-- The stabilizer of `e_0` in `U(n + 1)` is path-connected. -/
 theorem isPathConnected_univ_firstColumnStabilizer (n : ℕ) :
     IsPathConnected (Set.univ : Set (FirstColumnStabilizer n)) := by
   rw [← (unitaryStabilizerHomeomorph n).surjective.range_eq]
   simpa only [Set.image_univ] using
     isPathConnected_univ.image (unitaryStabilizerHomeomorph n).continuous
 
+/-- A chosen unitary matrix in `U(m + 1)` whose first column is the given unit vector. -/
 noncomputable def unitaryWithFirstColumn (m : ℕ)
     (x : UnitSphere (Fin (m + 1))) : Matrix.unitaryGroup (Fin (m + 1)) ℂ := by
   let h := exists_unitary_firstColumn (raw x.1) (norm_eq_of_mem_sphere x)
@@ -668,6 +748,7 @@ noncomputable def unitaryWithFirstColumn (m : ℕ)
 
 def transverseIndex (n : ℕ) : Fin (n + 2) := ⟨1, by omega⟩
 
+/-- The transverse sphere point `e_1 ∈ S(ℂ^(n+2))`, used to centre the two charts. -/
 def transverseSphere (n : ℕ) : UnitSphere (Fin (n + 2)) := basisSphere (transverseIndex n)
 
 noncomputable def transverseUnitary (n : ℕ) :
@@ -686,6 +767,7 @@ noncomputable def negativeTransverseUnitary (n : ℕ) :
     unitaryFirstColumn 0 (negativeTransverseUnitary n) = sphereNeg (transverseSphere n) :=
   unitaryFirstColumn_unitaryWithFirstColumn _ _
 
+/-- Right multiplication by an element fixing `e_(a0)` does not change the `a0`-column. -/
 theorem unitaryFirstColumn_mul_of_right_stabilizes (a0 : α)
     (U V : Matrix.unitaryGroup α ℂ)
     (hV : unitaryFirstColumn a0 V = basisSphere a0) :
@@ -705,6 +787,8 @@ def chartBase (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     (hbase : basisSphere a0 ≠ sphereNeg (unitaryFirstColumn a0 R)) :
     SphereChart a0 R := ⟨basisSphere a0, hbase⟩
 
+/-- The chart section normalized to equal `1` at the base point `e_(a0)`:
+`x ↦ s(x) s(e_(a0))⁻¹`; it still has `a0`-column `x`. -/
 def normalizedRotatedCompletion (a0 : α) (R : Matrix.unitaryGroup α ℂ)
     (hbase : basisSphere a0 ≠ sphereNeg (unitaryFirstColumn a0 R))
     (x : SphereChart a0 R) : Matrix.unitaryGroup α ℂ :=
@@ -748,6 +832,7 @@ theorem transverseSphere_ne_neg (n : ℕ) :
     transverseSphere n ≠ sphereNeg (transverseSphere n) := by
   exact ne_neg_of_mem_unit_sphere ℝ (transverseSphere n)
 
+/-- The stabilizer of `e_0` in `U(n + 1)` is a path-connected space. -/
 noncomputable instance firstColumnStabilizerPathConnectedSpace (n : ℕ) :
     PathConnectedSpace (FirstColumnStabilizer n) where
   nonempty := ⟨unitaryEmbedSuccStabilizer n 1⟩
@@ -757,6 +842,7 @@ noncomputable instance firstColumnStabilizerPathConnectedSpace (n : ℕ) :
       ((unitaryStabilizerHomeomorph n).symm V)
     exact ⟨by simpa using p.map (unitaryStabilizerHomeomorph n).continuous⟩
 
+/-- Equivariance of the column map: `(U V) e_(a0) = U (V e_(a0))`. -/
 theorem unitaryFirstColumn_mul (a0 : α)
     (U V : Matrix.unitaryGroup α ℂ) :
     unitaryFirstColumn a0 (U * V) =
@@ -778,6 +864,8 @@ theorem unitaryFirstColumn_inv_mul_eq_basis (a0 : α)
       (unitaryFirstColumn_mul a0 S⁻¹ S).symm
     _ = basisSphere a0 := by simp [basisSphere]
 
+/-- Local trivialization over a subset `s` of a chart: `(x, F) ↦ s(x) · F` with `F` in the
+stabilizer of `e_0`. -/
 def chartParam (n : ℕ) (R : Matrix.unitaryGroup (Fin (n + 2)) ℂ)
     (s : Set (UnitSphere (Fin (n + 2))))
     (hsub : s ⊆ {sphereNeg (unitaryFirstColumn 0 R)}ᶜ)
@@ -816,6 +904,7 @@ theorem continuous_chartParamToPreimage (n : ℕ)
   apply continuous_induced_rng.2
   exact continuous_chartParam n R s hsub
 
+/-- The local trivialization maps onto the full preimage of `s` under the first-column map. -/
 theorem surjective_chartParam (n : ℕ)
     (R : Matrix.unitaryGroup (Fin (n + 2)) ℂ)
     (s : Set (UnitSphere (Fin (n + 2))))
@@ -835,6 +924,8 @@ theorem surjective_chartParam (n : ℕ)
   change S * (S⁻¹ * U.1) = U.1
   simp
 
+/-- If `s` is a path-connected subset of the sphere avoiding the antipode of `R e_0`, then its
+preimage in `U(n + 2)` under the first-column map is path-connected. -/
 theorem unitaryFirstColumn_preimage_isPathConnected (n : ℕ)
     (R : Matrix.unitaryGroup (Fin (n + 2)) ℂ)
     (s : Set (UnitSphere (Fin (n + 2))))
@@ -867,6 +958,8 @@ noncomputable def twoChartUnitary (n : ℕ) :
   | false => transverseUnitary n
   | true => negativeTransverseUnitary n
 
+/-- The two chart sets of `U(n + 2)`: unitary matrices whose first column avoids `-e_1`
+(`b = false`), respectively `+e_1` (`b = true`). -/
 def twoChartSet (n : ℕ) (b : Bool) :
     Set (Matrix.unitaryGroup (Fin (n + 2)) ℂ) :=
   unitaryFirstColumn 0 ⁻¹'
@@ -886,6 +979,7 @@ theorem one_mem_twoChartSet (n : ℕ) (b : Bool) :
         (unitaryFirstColumn 0 (negativeTransverseUnitary n))
       simpa using basisSphere_zero_ne_transverseSphere n
 
+/-- The two chart sets cover `U(n + 2)`. -/
 theorem twoChartSet_cover (n : ℕ) :
     Set.univ ⊆ ⋃ b : Bool, twoChartSet n b := by
   intro U _
@@ -902,6 +996,8 @@ theorem twoChartSet_cover (n : ℕ) :
     refine ⟨true, ?_⟩
     simpa [twoChartSet, twoChartUnitary, x] using hpos
 
+/-- Every pairwise intersection of the two chart sets (including each set with itself) is
+path-connected. -/
 theorem twoChartSet_inter_isPathConnected (n : ℕ) (b c : Bool) :
     IsPathConnected (twoChartSet n b ∩ twoChartSet n c) := by
   have hrank := one_lt_rank_real_orthogonal_unitSphere_fin n (transverseSphere n)
@@ -959,6 +1055,8 @@ noncomputable def firstColumnChartPath (n : ℕ) (b : Bool)
     rw [D.target]
     rfl
 
+/-- For a loop `D` at `1` inside a chart set, the section loop `t ↦ s(D(t) e_0)` given by the
+normalized chart section. -/
 noncomputable def chartSectionLoop (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -970,6 +1068,7 @@ noncomputable def chartSectionLoop (n : ℕ) (b : Bool)
   source' := by simp
   target' := by simp
 
+/-- The fibre loop `t ↦ s(D(t) e_0)⁻¹ D(t)`, which lies in the stabilizer of `e_0`. -/
 noncomputable def chartFiberLoop (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -979,6 +1078,7 @@ noncomputable def chartFiberLoop (n : ℕ) (b : Bool)
   source' := by simp
   target' := by simp
 
+/-- Each value of the fibre loop fixes `e_0`. -/
 theorem chartFiberLoop_stabilizes (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) (t : unitInterval) :
@@ -1012,6 +1112,7 @@ noncomputable def chartStabilizerLoop (n : ℕ) (b : Bool)
         simp }
   exact p
 
+/-- The fibre loop read as a loop at `1` in `U(n + 1)` through the lower-right block. -/
 noncomputable def chartLowerLoop (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -1033,6 +1134,7 @@ noncomputable def embeddedChartLowerLoop (n : ℕ) (b : Bool)
   source' := by simp
   target' := by simp
 
+/-- Re-embedding the lower loop by `V ↦ diag(1, V)` recovers the fibre loop exactly. -/
 theorem embeddedChartLowerLoop_eq_chartFiberLoop (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -1048,6 +1150,8 @@ theorem embeddedChartLowerLoop_eq_chartFiberLoop (n : ℕ) (b : Bool)
     ⟨chartFiberLoop n b D hD t, chartFiberLoop_stabilizes n b D hD t⟩)
   exact congrFun (congrFun h i) j
 
+/-- The section loop of a chart loop is null-homotopic, because it factors through the contractible
+punctured sphere. -/
 theorem chartSectionLoop_nullhomotopic (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -1111,6 +1215,8 @@ noncomputable local instance finiteUnitaryFundamentalGroupCommGroup (m : ℕ) :
     CommGroup (FundamentalGroup (Matrix.unitaryGroup (Fin m) ℂ) 1) :=
   fundamentalGroupCommGroup
 
+/-- A loop at `1` inside a chart set is homotopic to the embedded image of its lower loop: the
+pointwise factorization `D = section · fibre` has null-homotopic section factor. -/
 theorem chartLoop_class_eq_embeddedLower (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -1136,6 +1242,7 @@ theorem chartLoop_class_eq_embeddedLower (n : ℕ) (b : Bool)
         (congrArg Path.Homotopic.Quotient.mk
           (embeddedChartLowerLoop_eq_chartFiberLoop n b D hD).symm)))
 
+/-- Pushforward of a loop at `1` in `U(n)` to `U(n + 1)` by `V ↦ diag(1, V)`. -/
 def unitaryEmbedSuccPath (n : ℕ)
     (p : Path (1 : Matrix.unitaryGroup (Fin n) ℂ) 1) :
     Path (1 : Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 where
@@ -1156,6 +1263,7 @@ theorem unitaryEmbedSuccPath_homotopic (n : ℕ)
     map_one_left := fun t => congrArg (unitaryEmbedSucc n) (H.map_one_left t)
     prop' := fun t z hz => congrArg (unitaryEmbedSucc n) (H.prop' t z hz) }⟩
 
+/-- The map `π₁(U(n), 1) → π₁(U(n + 1), 1)` induced by the block embedding `V ↦ diag(1, V)`. -/
 noncomputable def unitaryEmbedSuccFundamentalGroupMap (n : ℕ) :
     FundamentalGroup (Matrix.unitaryGroup (Fin n) ℂ) 1 →
       FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1 :=
@@ -1170,6 +1278,7 @@ theorem unitaryEmbedSuccPath_trans (n : ℕ)
   simp only [unitaryEmbedSuccPath, Path.trans_apply, Path.coe_mk_mk]
   split_ifs <;> rfl
 
+/-- The image of the induced map on fundamental groups is closed under loop concatenation. -/
 theorem unitaryEmbedSuccFundamentalGroupMap_range_trans (n : ℕ)
     {x y : FundamentalGroup (Matrix.unitaryGroup (Fin (n + 1)) ℂ) 1}
     (hx : x ∈ Set.range (unitaryEmbedSuccFundamentalGroupMap n))
@@ -1185,6 +1294,8 @@ theorem unitaryEmbedSuccFundamentalGroupMap_range_trans (n : ℕ)
           (Path.Homotopic.Quotient.mk (unitaryEmbedSuccPath n q))
       rw [unitaryEmbedSuccPath_trans, Path.Homotopic.Quotient.mk_trans]
 
+/-- The class of a loop at `1` lying in one chart set of `U(n + 2)` lies in the image of
+`π₁(U(n + 1))`. -/
 theorem chartLoop_class_mem_unitaryEmbedSucc_range (n : ℕ) (b : Bool)
     (D : Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1)
     (hD : Set.range D ⊆ twoChartSet n b) :
@@ -1200,6 +1311,8 @@ theorem chartLoop_class_mem_unitaryEmbedSucc_range (n : ℕ) (b : Bool)
   rw [hpath]
   exact (chartLoop_class_eq_embeddedLower n b D hD).symm
 
+/-- A finite concatenation of loops whose classes lie in the image of `π₁(U(n + 1))` has class in
+that image. -/
 theorem concat_loop_classes_mem_unitaryEmbedSucc_range (n : ℕ) :
     ∀ (m : ℕ)
       (D : Fin (m + 1) → Path (1 : Matrix.unitaryGroup (Fin (n + 2)) ℂ) 1),
@@ -1234,6 +1347,8 @@ theorem concat_loop_classes_mem_unitaryEmbedSucc_range (n : ℕ) :
         exact hD k.castSucc
       · exact hD (Fin.last (m + 1))
 
+/-- Surjective stabilization: the block embedding `V ↦ diag(1, V)` induces a surjection
+`π₁(U(n + 1), 1) → π₁(U(n + 2), 1)` for every `n`. -/
 theorem unitaryEmbedSuccFundamentalGroupMap_surjective (n : ℕ) :
     Function.Surjective (unitaryEmbedSuccFundamentalGroupMap (n + 1)) := by
   intro q
@@ -1250,6 +1365,7 @@ theorem unitaryEmbedSuccFundamentalGroupMap_surjective (n : ℕ) :
       rw [heq] at hconcat
       exact hconcat
 
+/-- The determinant of the block matrix `diag(1, V)` equals `det V`. -/
 @[simp] theorem det_embedSucc (n : ℕ) (V : Matrix (Fin n) (Fin n) ℂ) :
     (embedSucc V).det = V.det := by
   rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]

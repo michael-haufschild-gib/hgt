@@ -1,10 +1,39 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanKernel
 
+/-!
+# Uniform `r^(−1/2)`-weighted mass of the Ramanujan transfer kernel
+
+For a finite set of primes `S` define `A_S(m) = ∏_{p∈S} (1 if p | m, else 1/(p^(1+ε) − 1))`.
+Splitting `∑_m` according to `p | m` and using `|w_ε(pm)| = |w_ε(m)|/(p^(1+ε) − 1)` for `p ∤ m`
+gives the exact column sums `∑_m |w_ε(m)| A_S(m) = ∏_{p∈S} 2p^(−1−ε)`, starting from
+`∑_m |w_ε(m)| = 1`. Hence the transfer kernel has row mass
+`∑_m |T_m(r)| = r^(−ε) ∏_{p|r} 2p^(−1−ε)`. The multiplicative majorant
+`M(n) = n^(−1/2) ∏_{p|n} 2/p` is summable by an Euler-product criterion, and dominates the
+`r^(−1/2)`-weighted row masses for every `ε > 0`. Consequently the weighted kernel mass
+`∑_{m≤Q} ∑_{r≤Q/m} |T_m(r)| r^(−1/2)` is bounded by `∑_r M(r)`, uniformly in `Q` and in `ε > 0`.
+
+## Main results
+
+- `tsum_pmPowerDampedRamanujanAbsProduct`: `∑'_m |w_ε(m)| A_S(m) = ∏_{p∈S} 2p^(−(1+ε))` for a finite set of primes `S`.
+- `hasSum_norm_pmPowerDampedRamanujanTransfer`: `∑_m |T_m(r)| = r^(−ε) ∏_{p|r} 2p^(−(1+ε))` for `r ≠ 0`.
+- `pm_summable_of_multiplicative_local_bound`: a nonnegative multiplicative `f` with `∑_k f(p^k) ≤ exp(b_p)` and `∑ b_p < ∞` is summable.
+- `summable_pmRamanujanKernelMajorant`: `∑_n n^(−1/2) ∏_{p|n} 2/p` converges.
+- `pmPowerDampedRamanujanTransfer_weighted_row_le_majorant`: `∑_m |T_m(r)| r^(−1/2) ≤ M(r)`.
+- `summable_pmPowerDampedRamanujanTransfer_weighted_pair`: `(r, m) ↦ |T_m(r)| r^(−1/2)` is summable.
+- `pmPowerDampedRamanujanTransfer_finite_mass_le`: `∑_{m≤Q} ∑_{r≤Q/m} |T_m(r)| r^(−1/2) ≤ ∑'_r M(r)`.
+
+## Hypotheses
+
+All results are unconditional; they assume `0 < ε` and, where stated, that `S` consists of
+primes. The final bound is uniform in both `Q` and `ε > 0`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- For `ε > 0` and prime `p`: `|w_ε(pn)| = 0` if `p | n`, else `|w_ε(n)|/(p^(1+ε) − 1)`. -/
 theorem norm_pmPowerDampedRamanujanWeight_prime_mul {ε : ℝ} (hε : 0 < ε)
     {p : ℕ} (hp : p.Prime) (n : ℕ) :
     ‖pmPowerDampedRamanujanWeight ε (p*n)‖ =
@@ -18,6 +47,7 @@ theorem norm_pmPowerDampedRamanujanWeight_prime_mul {ε : ℝ} (hε : 0 < ε)
       abs_of_pos (lt_trans (by norm_num)
         (pmPowerDampedRamanujan_prime_denominator_one_lt hε hp))]
 
+/-- For a prime `p ∉ S` (with `S` a set of primes), `A_S(pn) = A_S(n)`. -/
 theorem pmPowerDampedRamanujanAbsProduct_prime_mul (ε : ℝ)
     (S : Finset ℕ) (hS : ∀ q ∈ S, q.Prime) {p : ℕ} (hp : p.Prime) (hpS : p ∉ S) (n : ℕ) :
     pmPowerDampedRamanujanAbsProduct ε S (p*n) =
@@ -31,6 +61,7 @@ theorem pmPowerDampedRamanujanAbsProduct_prime_mul (ε : ℝ)
     · exact hpS (heq ▸ hq)
   simp only [(hS q hq).dvd_mul, hqp, false_or]
 
+/-- For `ε > 0`, `m ↦ |w_ε(m)| A_S(m)` is summable. -/
 theorem summable_pmPowerDampedRamanujanAbsProduct_weight {ε : ℝ} (hε : 0 < ε)
     (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) :
     Summable (fun m : ℕ => ‖pmPowerDampedRamanujanWeight ε m‖*
@@ -40,6 +71,7 @@ theorem summable_pmPowerDampedRamanujanAbsProduct_weight {ε : ℝ} (hε : 0 < �
     (fun m => mul_le_of_le_one_right (norm_nonneg _) (pmPowerDampedRamanujanAbsProduct_le_one hε S hS m))
     (hasSum_norm_pmPowerDampedRamanujanWeight hε).summable
 
+/-- Reindexing `∑'_n 1_{p|n} f(n) = ∑'_n f(pn)` for `p > 0`. -/
 theorem pm_real_tsum_dvd (f : ℕ → ℝ) {p : ℕ} (hp : 0 < p) :
     (∑' n : ℕ, if p ∣ n then f n else 0) = ∑' n : ℕ, f (p*n) := by
   classical
@@ -55,6 +87,8 @@ theorem pm_real_tsum_dvd (f : ℕ → ℝ) {p : ℕ} (hp : 0 < p) :
   rw [← hinj.tsum_eq (f := F) hsupp]
   exact tsum_congr fun n => by simp [F]
 
+/-- For `ε > 0` and a new prime `p ∉ S`, adding `p` to `S` multiplies `∑'_m |w_ε(m)| A_S(m)`
+by `2p^(−(1+ε))`. -/
 theorem tsum_pmPowerDampedRamanujanAbsProduct_insert {ε : ℝ} (hε : 0 < ε)
     (S : Finset ℕ) (hS : ∀ q ∈ S, q.Prime) {p : ℕ} (hp : p.Prime) (hpS : p ∉ S) :
     (∑' n : ℕ, ‖pmPowerDampedRamanujanWeight ε n‖*
@@ -114,6 +148,7 @@ theorem tsum_pmPowerDampedRamanujanAbsProduct_insert {ε : ℝ} (hε : 0 < ε)
       have hp0 : (p : ℝ)^(1+ε) ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos (by exact_mod_cast hp.pos) _)
       field_simp
 
+/-- For `ε > 0` and a finite set of primes `S`, `∑'_m |w_ε(m)| A_S(m) = ∏_{p∈S} 2p^(−(1+ε))`. -/
 theorem tsum_pmPowerDampedRamanujanAbsProduct {ε : ℝ} (hε : 0 < ε)
     (S : Finset ℕ) (hS : ∀ p ∈ S, p.Prime) :
     (∑' m : ℕ, ‖pmPowerDampedRamanujanWeight ε m‖*
@@ -129,6 +164,8 @@ theorem tsum_pmPowerDampedRamanujanAbsProduct {ε : ℝ} (hε : 0 < ε)
     rw [tsum_pmPowerDampedRamanujanAbsProduct_insert hε S hS' hp hpS,
       ih hS', Finset.prod_insert hpS]
 
+/-- For `ε > 0` and `r ≠ 0`, the transfer kernel row mass is
+`∑_m |T_m(r)| = r^(−ε) ∏_{p|r} 2p^(−(1+ε))`. -/
 theorem hasSum_norm_pmPowerDampedRamanujanTransfer {ε : ℝ} (hε : 0 < ε)
     {r : ℕ} (hr : r ≠ 0) :
     HasSum (fun m : ℕ => ‖pmPowerDampedRamanujanTransfer ε m r‖)
@@ -141,6 +178,8 @@ theorem hasSum_norm_pmPowerDampedRamanujanTransfer {ε : ℝ} (hε : 0 < ε)
   rw [norm_pmPowerDampedRamanujanTransfer hε m hr]
   ring
 
+/-- Euler-product summability criterion: a nonnegative multiplicative `f` whose prime-power
+series satisfy `∑_k f(p^k) ≤ exp(b_p)`, with `b ≥ 0` summable, is summable over `ℕ`. -/
 theorem pm_summable_of_multiplicative_local_bound (f : ArithmeticFunction ℝ)
     (hm : f.IsMultiplicative) (hf0 : ∀ n, 0 ≤ f n)
     (hloc : ∀ {p : ℕ}, p.Prime → Summable (fun k : ℕ => f (p^k)))
@@ -181,6 +220,7 @@ theorem pm_summable_of_multiplicative_local_bound (f : ArithmeticFunction ℝ)
   exact hle.trans (hprod.trans (Real.exp_le_exp.mpr
     (hb.sum_le_tsum _ (fun p _ => hb0 p))))
 
+/-- The multiplicative majorant `M(n) = n^(−1/2) ∏_{p|n} 2/p`. -/
 def pmRamanujanKernelMajorant : ArithmeticFunction ℝ where
   toFun n := (n : ℝ)^(-1/2 : ℝ)*ArithmeticFunction.prodPrimeFactors (fun p => 2/(p : ℝ)) n
   map_zero' := by simp
@@ -197,6 +237,7 @@ theorem pmRamanujanKernelMajorant_nonneg (n : ℕ) : 0 ≤ pmRamanujanKernelMajo
   apply mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)
   exact Finset.prod_nonneg fun p _ => by positivity
 
+/-- The majorant `M` is multiplicative. -/
 theorem isMultiplicative_pmRamanujanKernelMajorant : pmRamanujanKernelMajorant.IsMultiplicative := by
   constructor
   · simp [pmRamanujanKernelMajorant]
@@ -215,6 +256,7 @@ theorem pmRamanujanKernelMajorant_prime_pow {p k : ℕ} (hp : p.Prime) (hk : k �
   rw [mul_comm (k : ℝ) (-1/2), Real.rpow_mul_natCast (Nat.cast_nonneg p)]
   ring
 
+/-- For prime `p`, `∑_k M(p^k) = 1 + (2/p) p^(−1/2)/(1 − p^(−1/2))`. -/
 theorem hasSum_pmRamanujanKernelMajorant_prime_pow {p : ℕ} (hp : p.Prime) :
     HasSum (fun k : ℕ => pmRamanujanKernelMajorant (p^k))
       (1+(2/(p : ℝ))*(p : ℝ)^(-1/2 : ℝ)/(1-(p : ℝ)^(-1/2 : ℝ))) := by
@@ -236,6 +278,7 @@ theorem hasSum_pmRamanujanKernelMajorant_prime_pow {p : ℕ} (hp : p.Prime) :
   simpa only [Finset.sum_range_one, pow_zero, isMultiplicative_pmRamanujanKernelMajorant.map_one,
     add_comm, q] using h
 
+/-- For prime `p`, `∑_k M(p^k) ≤ exp(C p^(−3/2))` with `C = 2/(1 − 2^(−1/2))`. -/
 theorem pmRamanujanKernelMajorant_prime_sum_le_exp {p : ℕ} (hp : p.Prime) :
     (∑' k : ℕ, pmRamanujanKernelMajorant (p^k)) ≤
       Real.exp ((2/(1-(2 : ℝ)^(-1/2 : ℝ)))*(p : ℝ)^(-3/2 : ℝ)) := by
@@ -259,6 +302,7 @@ theorem pmRamanujanKernelMajorant_prime_sum_le_exp {p : ℕ} (hp : p.Prime) :
       simpa only [add_comm] using
         Real.add_one_le_exp ((2/(1-(2 : ℝ)^(-1/2 : ℝ)))*(p : ℝ)^(-3/2 : ℝ))
 
+/-- The majorant `M(n) = n^(−1/2) ∏_{p|n} 2/p` is summable. -/
 theorem summable_pmRamanujanKernelMajorant : Summable (fun n : ℕ => pmRamanujanKernelMajorant n) := by
   let C : ℝ := 2/(1-(2 : ℝ)^(-1/2 : ℝ))
   have hC : 0 ≤ C := by
@@ -272,12 +316,14 @@ theorem summable_pmRamanujanKernelMajorant : Summable (fun n : ℕ => pmRamanuja
     ((Real.summable_nat_rpow.mpr (by norm_num : (-3/2 : ℝ) < -1)).mul_left C)
     (fun hp => pmRamanujanKernelMajorant_prime_sum_le_exp hp)
 
+/-- For `ε > 0`, each weighted row `m ↦ |T_m(r)| r^(−1/2)` is summable. -/
 theorem summable_pmPowerDampedRamanujanTransfer_weighted_row {ε : ℝ} (hε : 0 < ε) (r : ℕ) :
     Summable (fun m : ℕ => ‖pmPowerDampedRamanujanTransfer ε m r‖*(r : ℝ)^(-1/2 : ℝ)) := by
   by_cases hr : r = 0
   · subst r; simp
   · exact (hasSum_norm_pmPowerDampedRamanujanTransfer hε hr).summable.mul_right _
 
+/-- For `ε > 0` and `r ≠ 0`, `∑'_m |T_m(r)| r^(−1/2) = r^(−(ε+1/2)) ∏_{p|r} 2p^(−(1+ε))`. -/
 theorem tsum_pmPowerDampedRamanujanTransfer_weighted_row {ε : ℝ} (hε : 0 < ε)
     {r : ℕ} (hr : r ≠ 0) :
     (∑' m : ℕ, ‖pmPowerDampedRamanujanTransfer ε m r‖*(r : ℝ)^(-1/2 : ℝ)) =
@@ -287,6 +333,7 @@ theorem tsum_pmPowerDampedRamanujanTransfer_weighted_row {ε : ℝ} (hε : 0 < �
     Real.rpow_add (by exact_mod_cast Nat.pos_of_ne_zero hr)]
   ring
 
+/-- For `ε > 0`, the weighted row mass is dominated by the majorant: `∑'_m |T_m(r)| r^(−1/2) ≤ M(r)`. -/
 theorem pmPowerDampedRamanujanTransfer_weighted_row_le_majorant {ε : ℝ} (hε : 0 < ε) (r : ℕ) :
     (∑' m : ℕ, ‖pmPowerDampedRamanujanTransfer ε m r‖*(r : ℝ)^(-1/2 : ℝ)) ≤
       pmRamanujanKernelMajorant r := by
@@ -308,6 +355,7 @@ theorem pmPowerDampedRamanujanTransfer_weighted_row_le_majorant {ε : ℝ} (hε 
     mul_nonneg (by norm_num) (Real.rpow_nonneg (Nat.cast_nonneg p) _))
     (Real.rpow_nonneg (Nat.cast_nonneg r) _)
 
+/-- For `ε > 0`, `(r, m) ↦ |T_m(r)| r^(−1/2)` is summable over `ℕ × ℕ`. -/
 theorem summable_pmPowerDampedRamanujanTransfer_weighted_pair {ε : ℝ} (hε : 0 < ε) :
     Summable (fun x : ℕ × ℕ => ‖pmPowerDampedRamanujanTransfer ε x.2 x.1‖*
       (x.1 : ℝ)^(-1/2 : ℝ)) := by
@@ -319,6 +367,8 @@ theorem summable_pmPowerDampedRamanujanTransfer_weighted_pair {ε : ℝ} (hε : 
       (pmPowerDampedRamanujanTransfer_weighted_row_le_majorant hε)
       summable_pmRamanujanKernelMajorant⟩
 
+/-- For `ε > 0`, `∑_{m≤Q} ∑_{r≤Q/m} |T_m(r)| r^(−1/2) ≤ ∑'_r M(r)`, a bound independent of
+`Q` and `ε`. -/
 theorem pmPowerDampedRamanujanTransfer_finite_mass_le {ε : ℝ} (hε : 0 < ε) (Q : ℕ) :
     (∑ m ∈ Finset.Icc 1 Q, ∑ r ∈ Finset.Icc 1 (Q/m),
       ‖pmPowerDampedRamanujanTransfer ε m r‖*(r : ℝ)^(-1/2 : ℝ)) ≤

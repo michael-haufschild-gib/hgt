@@ -1,12 +1,40 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamMovingRightEdgePowerSaving
 import GaloisForLFunctions.RHTower.Sieve.InghamDivisorSquareNearPole
 
+/-!
+# Explicit power saving for Ingham's mollified error on the line `Re s = 1 + δ`
+
+Let `M_X(s) = ∑_{n ≤ X} μ(n) n^{-s}`. For `δ > 0`, the Dirichlet coefficients `a_n` of
+`1 - ζ(s) M_X(s)` vanish for `n ≤ X` and satisfy `|a_n| ≤ d(n)`. This module bounds the plain and
+`n`-weighted square masses `∑ |a_n|^2 n^{-2(1+δ)}` and `∑ n |a_n|^2 n^{-2(1+δ)}` by
+`X^{-1-δ} (1 + 1/δ)^4` and `X^{-δ} (1 + 1/δ)^4`, using the divisor-square bound near `σ = 1`. The
+affine mean-value bound for Dirichlet series on vertical windows then gives an explicit mean square for
+`ζ(s) M_X(s) - 1` on `Re s = 1 + δ`, with an `X^{-δ}` power saving on the window `[-X, X]`.
+
+## Main results
+
+- `tsum_inghamMovingRightExplicitWeightedSquareMass_le_explicit`: the weighted square mass is at
+  most `X^{-δ} (1 + 1/δ)^4`.
+- `tsum_inghamMovingRightExplicitSquareMass_le_explicit`: the plain square mass is at most
+  `X^{-(1+δ)} (1 + 1/δ)^4`.
+- `integral_Icc_normSq_inghamMollifiedError_movingRightEdge_symmetric_le_explicit`:
+  `∫_{-N}^{N} |ζ M_X - 1|^2 (1+δ+it) dt ≤ 5π e X^{-δ}(1+1/δ)^4 + (5π/2) X^{-(1+δ)} (1+1/δ)^4 N`.
+- `integral_Icc_normSq_inghamMollifiedError_movingRightEdge_le_explicit`:
+  `∫_{-X}^{X} |ζ M_X - 1|^2 (1+δ+it) dt ≤ (5π e + 5π/2) (1 + 1/δ)^4 X^{-δ}`.
+
+## Hypotheses
+
+The results are unconditional; they assume only `0 < δ`, `1 ≤ X` and, for the symmetric window
+bound, `1 ≤ N`.
+-/
+
 open Complex MeasureTheory Set Finset ArithmeticFunction
 
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- The damped square mass `|a_n n^{-(1+δ)}|^2` of the `n`-th coefficient of `1 - ζ M_X`. -/
 private noncomputable def inghamMovingRightExplicitSquareMass
     (delta : ℝ) (X n : ℕ) : ℝ :=
   ‖complexCoeff (moebiusZetaDefect X) n *
@@ -19,6 +47,7 @@ private theorem inghamMovingRightExplicitSquareMass_zero_of_le
     (moebiusZetaDefect_vanishesBelow X) n (by omega)
   simp [inghamMovingRightExplicitSquareMass, hz, complexCoeff]
 
+/-- Termwise divisor bound: `|a_n n^{-(1+δ)}|^2 ≤ d(n)^2 n^{-(2+2δ)}` for `X, n ≥ 1`. -/
 private theorem inghamMovingRightExplicitSquareMass_le
     {delta : ℝ} {X n : ℕ} (hX : 1 ≤ X) (hn : 1 ≤ n) :
     inghamMovingRightExplicitSquareMass delta X n ≤
@@ -112,6 +141,8 @@ private theorem tsum_inghamMovingRightExplicit_eq_shift
   rw [hzero, zero_add] at hsplit
   simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hsplit.symm
 
+/-- Assuming `δ > 0` and `X ≥ 1`, the weighted square mass of the coefficients of `1 - ζ M_X`
+satisfies `∑ n |a_n n^{-(1+δ)}|^2 ≤ X^{-δ} (1 + 1/δ)^4`. -/
 theorem tsum_inghamMovingRightExplicitWeightedSquareMass_le_explicit
     {delta : ℝ} (hdelta : 0 < delta) {X : ℕ} (hX : 1 ≤ X) :
     ∑' n : ℕ, (n : ℝ) * inghamMovingRightExplicitSquareMass delta X n ≤
@@ -184,6 +215,8 @@ theorem tsum_inghamMovingRightExplicitWeightedSquareMass_le_explicit
       apply mul_le_mul_of_nonneg_left _ (Real.rpow_nonneg (Nat.cast_nonneg X) _)
       simpa only [base, add_sub_cancel_left] using hnear
 
+/-- Assuming `δ > 0` and `X ≥ 1`, the plain square mass of the coefficients of `1 - ζ M_X`
+satisfies `∑ |a_n n^{-(1+δ)}|^2 ≤ X^{-(1+δ)} (1 + 1/δ)^4`. -/
 theorem tsum_inghamMovingRightExplicitSquareMass_le_explicit
     {delta : ℝ} (hdelta : 0 < delta) {X : ℕ} (hX : 1 ≤ X) :
     ∑' n : ℕ, inghamMovingRightExplicitSquareMass delta X n ≤
@@ -258,6 +291,8 @@ theorem tsum_inghamMovingRightExplicitSquareMass_le_explicit
       apply mul_le_mul_of_nonneg_left _ (Real.rpow_nonneg (Nat.cast_nonneg X) _)
       simpa only [base, add_sub_cancel_left] using hnear
 
+/-- Explicit mean square on `Re s = 1 + δ` (`δ > 0`, `X, N ≥ 1`):
+`∫_{-N}^{N} |ζ(s) M_X(s) - 1|^2 dt ≤ 5π e X^{-δ} (1+1/δ)^4 + (5π/2) X^{-(1+δ)} (1+1/δ)^4 N`. -/
 theorem integral_Icc_normSq_inghamMollifiedError_movingRightEdge_symmetric_le_explicit
     {delta : ℝ} (hdelta : 0 < delta) :
     ∀ {X N : ℕ}, 1 ≤ X → 1 ≤ N →
@@ -325,6 +360,8 @@ theorem integral_Icc_normSq_inghamMollifiedError_movingRightEdge_symmetric_le_ex
         (mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hP (by positivity)) (by positivity))
 
+/-- Power saving on the window `[-X, X]`: for `δ > 0` and `X ≥ 1`,
+`∫_{-X}^{X} |ζ(1+δ+it) M_X(1+δ+it) - 1|^2 dt ≤ (5π e + 5π/2) (1 + 1/δ)^4 X^{-δ}`. -/
 theorem integral_Icc_normSq_inghamMollifiedError_movingRightEdge_le_explicit
     {delta : ℝ} (hdelta : 0 < delta) :
     ∀ {X : ℕ}, 1 ≤ X →

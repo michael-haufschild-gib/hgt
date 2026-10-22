@@ -1,9 +1,30 @@
 import GaloisForLFunctions.RHTower.Sieve.DivisorSumMeanSquareSmooth
 
+/-!
+# Bilinear divisor-sum mean values via lcm
+
+For arithmetic weights `a, b : ℕ → ℝ`, the summatory function of the product of divisor sums
+`A(k) = ∑_{m ∣ k} a(m)` and `B(k) = ∑_{n ∣ k} b(n)` up to `N` is an exact lcm bilinear form:
+`∑_{k ≤ N} A(k) B(k) = ∑_{m, n ≤ N} a(m) b(n) ⌊N / lcm(m, n)⌋`. Replacing the floor by
+`N / lcm(m, n)` costs at most `∑ |a(m)| |b(n)|`.
+
+## Main results
+
+- `sum_mul_divisorSum_eq_lcm_bilinear`: the exact lcm bilinear identity.
+- `abs_sum_mul_divisorSum_sub_lcm_main_le`:
+  `|∑_{k ≤ N} A(k) B(k) - N ∑_{m, n ≤ N} a(m) b(n) / lcm(m, n)| ≤ ∑_{m, n ≤ N} |a(m)| |b(n)|`.
+
+## Hypotheses
+
+Both results are unconditional, for arbitrary real weights.
+-/
+
 open Finset GaloisForLFunctions.HTGeometry
 
 namespace RHTower.Sieve
 
+/-- `∑_{k ≤ N} (∑_{m ∣ k} a(m)) (∑_{n ∣ k} b(n)) = ∑_{m, n ≤ N} a(m) b(n) ⌊N / lcm(m, n)⌋`, counting
+the multiples of `lcm(m, n)` up to `N`. -/
 theorem sum_mul_divisorSum_eq_lcm_bilinear
     (N : ℕ) (a b : ℕ → ℝ) :
     ∑ k ∈ Finset.Icc 1 N,
@@ -54,6 +75,8 @@ theorem sum_mul_divisorSum_eq_lcm_bilinear
   rw [Finset.sum_const, card_filter_dvd_Icc hlcmpos, nsmul_eq_mul]
   ring
 
+/-- The bilinear divisor-sum mean differs from its smooth main term
+`∑_{m, n ≤ N} a(m) b(n) N / lcm(m, n)` by at most `∑_{m, n ≤ N} |a(m)| |b(n)|`. -/
 theorem abs_sum_mul_divisorSum_sub_lcm_main_le
     (N : ℕ) (a b : ℕ → ℝ) :
     |(∑ k ∈ Finset.Icc 1 N,

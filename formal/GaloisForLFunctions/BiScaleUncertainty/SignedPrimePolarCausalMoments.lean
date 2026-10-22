@@ -1,6 +1,28 @@
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarCausalSource
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarRampMoments
 
+/-!
+# Exponential moments of the causal factorial source
+
+The causal source `sourceFactorialCausal N` is the average of the shifted ramps `e^(t/2) R_N(x - t)` over
+the exponential tent density on `[0, 2 δ_N]`. By Fubini and translation, each exponential moment
+`∫ e^(s x) C_N` factors as a tent moment times the same moment of the ramp `R_N`. At `s = ± 1/2` this gives
+closed forms in terms of the harmonic correction and the Chebyshev bi-null producer.
+
+## Main results
+
+- `integral_exp_sourceFactorialCausal`: for every real `s`,
+  `∫ e^(s x) C_N(x) dx = (∫_0^(2 δ_N) τ(t) e^((s + 1/2) t) dt) · ∫ e^(s x) R_N(x) dx`.
+- `integral_exp_half_sourceFactorialCausal`:
+  `∫ e^(x/2) C_N = sourceFactorialCoefficient N · harmonicCorrection N / sqrt N`.
+- `integral_exp_neg_half_sourceFactorialCausal`:
+  `∫ e^(-x/2) C_N = -chebyshevBiNullProducer N / sqrt N`.
+
+## Hypotheses
+
+All results are unconditional; the only side condition is `1 ≤ N`.
+-/
+
 open MeasureTheory Set
 namespace GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
 open _root_.RHTower
@@ -15,6 +37,8 @@ private theorem finite_rectangle_swap (F : ℝ → ℝ → ℝ)
   rw [Measure.prod_restrict]
   exact hF.continuousOn.integrableOn_compact (isCompact_Icc.prod isCompact_Icc)
 
+/-- Since the causal source vanishes on `x ≤ 0`, every weighted integral over `ℝ` equals the integral
+over `[0, ∞)`. -/
 theorem integral_weight_sourceFactorialCausal_eq_halfLine {N : ℕ} (hN : 1 ≤ N) (w : ℝ → ℝ) :
     (∫ x : ℝ, w x*sourceFactorialCausal N x) = ∫ x in Ici 0, w x*sourceFactorialCausal N x := by
   symm
@@ -23,6 +47,9 @@ theorem integral_weight_sourceFactorialCausal_eq_halfLine {N : ℕ} (hN : 1 ≤ 
   have hneg : x ≤ 0 := by by_contra! hh; exact hx hh.le
   rw [sourceFactorialCausal_zero_of_nonpos hN hneg, mul_zero]
 
+/-- Moment factorization: for `N ≥ 1` and real `s`, the exponential moment of the causal source is the
+tent moment `∫_0^(2 δ_N) τ(t) e^((s + 1/2) t) dt` times the exponential moment `∫ e^(s x) R_N(x) dx` of
+the ramp. -/
 theorem integral_exp_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) (s : ℝ) :
     (∫ x : ℝ, Real.exp (s*x)*sourceFactorialCausal N x) =
       (∫ t in Icc 0 (2*sourceFactorialWidth N), exponentialTentDensity (sourceFactorialWidth N) t *
@@ -90,6 +117,8 @@ theorem integral_exp_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) (s : ℝ) :
       exact hi t ht
     _ = _ := integral_mul_const _ _
 
+/-- Growing polar moment: `∫ e^(x/2) C_N = sourceFactorialCoefficient N · harmonicCorrection N / sqrt N`,
+where `sourceFactorialCoefficient N = ((1 + e^(δ_N)) / 2)^3`. -/
 theorem integral_exp_half_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) :
     (∫ x : ℝ, Real.exp (x/2)*sourceFactorialCausal N x) =
       sourceFactorialCoefficient N*harmonicCorrection N/Real.sqrt N := by
@@ -105,6 +134,8 @@ theorem integral_exp_half_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) :
   unfold sourceFactorialCoefficient sourceFactorialCollar
   ring
 
+/-- Decaying polar moment: `∫ e^(-x/2) C_N = -chebyshevBiNullProducer N / sqrt N`; the tent average has
+total mass one, so the ramp moment passes through unchanged. -/
 theorem integral_exp_neg_half_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) :
     (∫ x : ℝ, Real.exp (-(x/2))*sourceFactorialCausal N x) =
       -chebyshevBiNullProducer N/Real.sqrt N := by

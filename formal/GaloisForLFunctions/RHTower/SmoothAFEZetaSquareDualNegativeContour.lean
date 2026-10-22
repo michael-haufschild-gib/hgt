@@ -2,18 +2,51 @@ import GaloisForLFunctions.RHTower.SmoothAFEZetaSquareDualWeightDerivativeBound
 import GaloisForLFunctions.RHTower.SmoothAFEZetaChiPowerBound
 import GaloisForLFunctions.RHTower.RectangleCauchyFormulaOn
 
+/-!
+# Shifting the square-dual AFE weight to the line Re w = -1/4
+
+The square-dual weight of the smoothed approximate functional equation for `ζ(s)^2`,
+`s = 1/2 + iτ`, is `W_τ(Y) = (1/2π) ∫ G(1 + iv) dv` with
+`G(w) = (χ(s - w)/χ(s))^2 Y^(-w) e^(w^2) / w`. The numerator of `G` is analytic on `Re w > -1/2`
+and equals `1` at `w = 0`, so the only pole between `Re w = -1/4` and `Re w = 1` is the simple pole
+at `0` with residue `1`. The module proves the rectangle identity, the Gaussian decay of the
+horizontal edges for `Y > 0`, integrability on `Re w = -1/4`, and the resulting identity
+`W_τ(Y) = 1 + W_τ^(-1/4)(Y)`.
+
+## Main results
+
+- `smoothAFEZetaSquareDualWeightAt`: the weight integral on the vertical line `Re w = a`.
+- `smoothAFEZetaSquareDualNumerator_analyticOnNhd`: the numerator
+  `(χ(s - w)/χ(s))^2 Y^(-w) e^(w^2)` is analytic on `Re w > -1/2` for `Y > 0`.
+- `smoothAFEZetaSquareDualWeight_finite_contour_quarter`: the rectangle integral of `G` over
+  `[-1/4, 1] × [-T, T]` equals `2πi` for `Y, T > 0`.
+- `norm_smoothAFEZetaSquareDualIntegrand_horizontal_quarter_le`: an explicit Gaussian bound
+  `C_Y (1 + |τ - T|)^2 e^(-T^2)` on the horizontal edges.
+- `smoothAFEZetaSquareDual_infinite_contour_quarter`: the line integral on `Re w = 1` minus the one
+  on `Re w = -1/4`, both times `i`, equals `2πi`.
+- `smoothAFEZetaSquareDualWeight_eq_one_add_at_neg_quarter`: `W_τ(Y) = 1 + W_τ^(-1/4)(Y)`.
+
+## Hypotheses
+
+Unconditional; the analytic statements assume `Y > 0`, and the horizontal edge bound assumes
+`-1/4 ≤ u ≤ 1`, `|T| ≥ 1` and `|τ - T| ≥ 256`.
+-/
+
 noncomputable section
 
 open Complex MeasureTheory Set Filter Topology
 
 namespace RHTower
 
+/-- Square-dual weight on the line `Re w = a`:
+`(1/2π) ∫ (χ(s - a - iv)/χ(s))^2 Y^(-(a + iv)) e^((a + iv)^2)/(a + iv) dv`, `s = 1/2 + iτ`. -/
 def smoothAFEZetaSquareDualWeightAt (a tau Y : ℝ) : ℂ :=
   (1 / (2 * Real.pi)) • ∫ v : ℝ,
     (smoothAFEZetaChiShiftRatio (linePt tau)
       (-((a : ℂ) + (v : ℂ) * I))) ^ 2 *
     smoothAFEMellinIntegrand Y ((a : ℂ) + (v : ℂ) * I)
 
+/-- Numerator `(χ(s - w)/χ(s))^2 Y^(-w) e^(w^2)` of the square-dual integrand, `s = 1/2 + iτ`. -/
 def smoothAFEZetaSquareDualNumerator (tau Y : ℝ) (w : ℂ) : ℂ :=
   (smoothAFEZetaChiShiftRatio (linePt tau) (-w)) ^ 2 *
     (Y : ℂ) ^ (-w) * Complex.exp (w ^ 2)
@@ -23,12 +56,14 @@ theorem smoothAFEZetaSquareDualWeight_eq_at_one (tau Y : ℝ) :
       smoothAFEZetaSquareDualWeightAt 1 tau Y := by
   rfl
 
+/-- The square-dual numerator equals `1` at `w = 0`, so the residue of the integrand at `0` is `1`. -/
 theorem smoothAFEZetaSquareDualNumerator_zero (tau Y : ℝ) :
     smoothAFEZetaSquareDualNumerator tau Y 0 = 1 := by
   unfold smoothAFEZetaSquareDualNumerator smoothAFEZetaChiShiftRatio
   rw [neg_zero, add_zero, div_self (zetaChi_line_ne_zero tau)]
   norm_num
 
+/-- For `Y > 0`, the square-dual numerator is analytic on the half-plane `Re w > -1/2`. -/
 theorem smoothAFEZetaSquareDualNumerator_analyticOnNhd
     (tau : ℝ) {Y : ℝ} (hY : 0 < Y) :
     AnalyticOnNhd ℂ (smoothAFEZetaSquareDualNumerator tau Y)
@@ -77,6 +112,8 @@ theorem smoothAFEZetaSquareDualIntegrand_eq_numerator_div
   rw [sub_zero, div_eq_mul_inv]
   ring
 
+/-- For `Y, T > 0`, the boundary integral of the square-dual integrand over the rectangle with
+corners `-1/4 - iT` and `1 + iT` equals `2πi` (residue `1` at `w = 0`). -/
 theorem smoothAFEZetaSquareDualWeight_finite_contour_quarter
     {Y T : ℝ} (hY : 0 < Y) (hT : 0 < T) (tau : ℝ) :
     rectIntegral
@@ -114,6 +151,7 @@ theorem smoothAFEZetaSquareDualWeight_finite_contour_quarter
   rw [smoothAFEZetaSquareDualNumerator_zero tau Y] at hcauchy
   simpa [z1, z2] using hcauchy
 
+/-- For `Y > 0`, the square-dual integrand is integrable along the line `Re w = -1/4`. -/
 theorem smoothAFEZetaSquareDualWeightAt_neg_quarter_integrable
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     Integrable (fun v : ℝ =>
@@ -191,6 +229,8 @@ theorem smoothAFEZetaSquareDualWeightAt_neg_quarter_integrable
           norm_num [abs_of_nonneg]
           ring
 
+/-- For `Y > 0`, `-1/4 ≤ u ≤ 1`, `|T| ≥ 1` and `|τ - T| ≥ 256`, the square-dual integrand at
+`u + iT` is at most `e^4 e^|log Y| e · (1 + |τ - T|)^2 e^(-T^2)` in norm. -/
 theorem norm_smoothAFEZetaSquareDualIntegrand_horizontal_quarter_le
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) {u T : ℝ}
     (huLow : -1 / 4 ≤ u) (huHigh : u ≤ 1)
@@ -251,6 +291,7 @@ theorem norm_smoothAFEZetaSquareDualIntegrand_horizontal_quarter_le
         norm_num]
       ring
 
+/-- `C (1 + A + T)^2 e^(-T^2) → 0` as `T → ∞`. -/
 theorem tendsto_quadratic_mul_exp_neg_sq (A C : ℝ) :
     Tendsto
       (fun T : ℝ =>
@@ -268,6 +309,8 @@ theorem tendsto_quadratic_mul_exp_neg_sq (A C : ℝ) :
   simpa only [one_mul, zero_add, mul_zero, zero_mul, add_zero] using
     hscaled.congr' (Filter.Eventually.of_forall fun T => by ring)
 
+/-- For `Y > 0`, the integral of the square-dual integrand along the top edge `[-1/4, 1] + iT`
+tends to `0` as `T → ∞`. -/
 theorem tendsto_smoothAFEZetaSquareDual_horizontal_top_quarter
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     Tendsto
@@ -339,6 +382,8 @@ theorem tendsto_smoothAFEZetaSquareDual_horizontal_top_quarter
           ((1 + |tau| + T) ^ 2 * Real.exp (-(T ^ 2))) := by positivity
       nlinarith
 
+/-- For `Y > 0`, the integral of the square-dual integrand along the bottom edge `[-1/4, 1] - iT`
+tends to `0` as `T → ∞`. -/
 theorem tendsto_smoothAFEZetaSquareDual_horizontal_bottom_quarter
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     Tendsto
@@ -411,6 +456,7 @@ theorem tendsto_smoothAFEZetaSquareDual_horizontal_bottom_quarter
           ((1 + |tau| + T) ^ 2 * Real.exp (-(T ^ 2))) := by positivity
       nlinarith
 
+/-- For `Y > 0`, truncated integrals over `Re w = 1`, `|v| ≤ T`, converge to the full line integral. -/
 theorem tendsto_smoothAFEZetaSquareDual_right_intervalIntegral
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     Tendsto
@@ -430,6 +476,7 @@ theorem tendsto_smoothAFEZetaSquareDual_right_intervalIntegral
     (smoothAFEZetaSquareDualWeightAt_one_integrable hY tau)
     tendsto_neg_atTop_atBot tendsto_id
 
+/-- For `Y > 0`, truncated integrals over `Re w = -1/4`, `|v| ≤ T`, converge to the full line integral. -/
 theorem tendsto_smoothAFEZetaSquareDual_left_intervalIntegral_quarter
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     Tendsto
@@ -449,6 +496,7 @@ theorem tendsto_smoothAFEZetaSquareDual_left_intervalIntegral_quarter
     (smoothAFEZetaSquareDualWeightAt_neg_quarter_integrable hY tau)
     tendsto_neg_atTop_atBot tendsto_id
 
+/-- Infinite contour shift for `Y > 0`: `i ∫ G(1 + iv) dv - i ∫ G(-1/4 + iv) dv = 2πi`. -/
 theorem smoothAFEZetaSquareDual_infinite_contour_quarter
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     I • (∫ v : ℝ,
@@ -500,6 +548,8 @@ theorem smoothAFEZetaSquareDual_infinite_contour_quarter
       atTop (𝓝 (2 * Real.pi * I)) := tendsto_const_nhds
   exact tendsto_nhds_unique (hlimit'.congr' hevent) hrhs
 
+/-- For `Y > 0`, the square-dual weight is `1` plus the same weight integral taken on the line
+`Re w = -1/4`: `W_τ(Y) = 1 + W_τ^(-1/4)(Y)`. -/
 theorem smoothAFEZetaSquareDualWeight_eq_one_add_at_neg_quarter
     {Y : ℝ} (hY : 0 < Y) (tau : ℝ) :
     smoothAFEZetaSquareDualWeight tau Y =

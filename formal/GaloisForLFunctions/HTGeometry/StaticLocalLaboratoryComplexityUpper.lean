@@ -1,25 +1,56 @@
 import GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
+/-!
+# Upper bound on two-qubit gate count for the static inverse-square chain
+
+Complements the lower bound in `StaticLocalLaboratoryComplexityGrowthLaw`. For each pair `j` the
+two-qubit diagonal phase gate multiplies the configurations with both qubits of the pair set by
+`exp(-iθ)`. Applying it with `θ = t / (j + 1)²` to the first `K` pairs gives a circuit with exactly
+`K` two-qubit gates whose matrix is `exp(-i t E₀)`, where `E₀` is the matching energy truncated to
+those pairs. The neglected energy, the tail `∑_{K < n ≤ L} 1/n²` plus the bridge term, is at most
+`1/K + 1/L²`, so the circuit is within `ε` of `exp(-i t H)` once `2t/ε ≤ K` and `t ≤ εL/2`.
+Together with the lower bound this shows the two-qubit gate complexity grows linearly in `t / ε`.
+
+## Main results
+
+- `inverseSquareChain_upper_approximation`: for `1 ≤ K ≤ L`, `2 ≤ L`, `ε > 0`, `t ≥ 0`,
+  `2t/ε ≤ K` and `t ≤ εL/2`, some local circuit with exactly `K` two-qubit gates is within
+  operator-norm distance `< ε` of `exp(-i t H)`.
+- `matchingPhaseCircuit_matrix`: the pair-phase circuit on a list of pairs is the diagonal matrix
+  `exp(-i t E_list(x))`.
+- `inverseSquareChainEnergy_sub_initial_le`: the chain energy minus the truncated matching energy
+  is at most `1/K + 1/L²`.
+- `norm_exp_phase_sub_le`: `|exp(-ia) - exp(-ib)| ≤ |a - b|`.
+
+## Hypotheses
+
+Unconditional; the premises of the main theorem are the explicit numeric ranges listed above.
+-/
+
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
 open Matrix
 
 namespace GaloisForLFunctions.HTGeometry.StaticLocalLaboratoryComplexityGrowthLaw
 
+/-- The two qubits `(j, false), (j, true)` of pair `j`. -/
 def pairSupport {L : ℕ} (j : Fin L) : Finset (PairQubit L) :=
   {(j, false), (j, true)}
 
 @[simp] theorem pairSupport_card {L : ℕ} (j : Fin L) : (pairSupport j).card = 2 := by
   simp [pairSupport]
 
+/-- Diagonal entry of the pair phase gate: `exp(-iθ)` when both qubits of pair `j` are set, else 1. -/
 noncomputable def pairPhaseValue {L : ℕ} (j : Fin L) (θ : ℝ)
     (x : Config (PairQubit L)) : ℂ :=
   if x (j, false) = true ∧ x (j, true) = true
     then Complex.exp (-(Complex.I * (θ : ℂ))) else 1
 
+/-- The diagonal pair phase matrix on all configurations. -/
 noncomputable def pairPhaseMatrix {L : ℕ} (j : Fin L) (θ : ℝ) :
     Matrix (Config (PairQubit L)) (Config (PairQubit L)) ℂ :=
   Matrix.diagonal (pairPhaseValue j θ)
 
+/-- The pair phase matrix is unitary. -/
 theorem pairPhaseMatrix_unitary {L : ℕ} (j : Fin L) (θ : ℝ) :
     pairPhaseMatrix j θ ∈ Matrix.unitaryGroup (Config (PairQubit L)) ℂ := by
   apply mem_unitaryGroup_diagonal_general
@@ -31,6 +62,8 @@ theorem pairPhaseMatrix_unitary {L : ℕ} (j : Fin L) (θ : ℝ) :
   · norm_num
 
 set_option maxHeartbeats 10000 in
+/-- The pair phase matrix factorizes across every qubit set containing or disjoint from the
+pair. -/
 theorem pairPhaseMatrix_separates {L : ℕ} (j : Fin L) (θ : ℝ)
     (A : Finset (PairQubit L))
     (hcut : pairSupport j ⊆ A ∨ Disjoint (pairSupport j) A) :
@@ -65,6 +98,7 @@ theorem pairPhaseMatrix_separates {L : ℕ} (j : Fin L) (θ : ℝ)
       simp [pairPhaseMatrix, pairPhaseValue, f]
     · simp [pairPhaseMatrix, Matrix.diagonal, hxy]
 
+/-- The pair phase matrix packaged as a local two-qubit gate. -/
 noncomputable def pairPhaseGate {L : ℕ} (j : Fin L) (θ : ℝ) :
     LocalGate (PairQubit L) where
   support := pairSupport j
@@ -73,16 +107,19 @@ noncomputable def pairPhaseGate {L : ℕ} (j : Fin L) (θ : ℝ) :
   unitary := pairPhaseMatrix_unitary j θ
   separates := pairPhaseMatrix_separates j θ
 
+/-- The circuit of pair phase gates with angles `t / (j + 1)²` over a list of pairs. -/
 noncomputable def matchingPhaseCircuit {L : ℕ} (js : List (Fin L)) (t : ℝ) :
     List (LocalGate (PairQubit L)) :=
   js.map (fun j => pairPhaseGate j (t / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ))))
 
+/-- Matching energy `∑ [x(j,0) ∧ x(j,1)] / (j+1)²` summed over a list of pairs. -/
 noncomputable def listMatchingEnergy {L : ℕ} (js : List (Fin L))
     (x : Config (PairQubit L)) : ℝ :=
   (js.map fun j => if x (j, false) = true ∧ x (j, true) = true
     then 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) else 0).sum
 
 set_option maxHeartbeats 10000 in
+/-- The pair-phase circuit has diagonal matrix `exp(-i t E_list(x))`. -/
 theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
     circuitMatrix (matchingPhaseCircuit js t) =
       Matrix.diagonal (fun x =>
@@ -108,6 +145,7 @@ theorem matchingPhaseCircuit_matrix {L : ℕ} (js : List (Fin L)) (t : ℝ) :
         ring
       · simp [hx]
 
+/-- The pair-phase circuit has one two-qubit gate per listed pair. -/
 @[simp] theorem matchingPhaseCircuit_twoGateCount {L : ℕ} (js : List (Fin L)) (t : ℝ) :
     twoGateCount (matchingPhaseCircuit js t) = js.length := by
   induction js with
@@ -133,6 +171,7 @@ theorem inverseSquareMatchingEnergy_eq_sum_pairMatchingWeight {L : ℕ}
 def initialPairEmbedding {L K : ℕ} (hKL : K ≤ L) : Fin K → Fin L :=
   fun i => ⟨i.val, lt_of_lt_of_le i.isLt hKL⟩
 
+/-- The list of the first `K` pairs `0, …, K - 1`. -/
 def initialPairList {L K : ℕ} (hKL : K ≤ L) : List (Fin L) :=
   List.ofFn (initialPairEmbedding hKL)
 
@@ -168,6 +207,7 @@ theorem initialPairList_twoGateCount {L K : ℕ} (hKL : K ≤ L) (t : ℝ) :
     twoGateCount (matchingPhaseCircuit (initialPairList hKL) t) = K := by
   simp
 
+/-- The inverse-square weights of pairs `j ≥ K` sum to `∑_{K < n ≤ L} 1/n²`. -/
 theorem sum_tailPairs_inv_sq_eq_Ioc (L K : ℕ) :
     ∑ j ∈ tailPairs L K, 1 / (((j.val + 1 : ℕ) : ℝ) ^ (2 : ℕ)) =
       ∑ n ∈ Finset.Ioc K L, (1 : ℝ) / (n : ℝ) ^ (2 : ℕ) := by
@@ -203,6 +243,8 @@ theorem pairMatchingWeight_le_inv_sq {L : ℕ} (x : Config (PairQubit L)) (j : F
   · exact le_rfl
   · positivity
 
+/-- The full matching energy is at most the first-`K` matching energy plus the tail
+`∑_{K < n ≤ L} 1/n²`. -/
 theorem inverseSquareMatchingEnergy_le_initial_add_tail {L K : ℕ}
     (hKL : K ≤ L) (x : Config (PairQubit L)) :
     inverseSquareMatchingEnergy x ≤ listMatchingEnergy (initialPairList hKL) x +
@@ -222,6 +264,7 @@ theorem inverseSquareMatchingEnergy_le_initial_add_tail {L K : ℕ}
   intro j hj
   exact pairMatchingWeight_le_inv_sq x j
 
+/-- The first-`K` matching energy is at most the full matching energy. -/
 theorem listMatchingEnergy_initial_le_inverseSquareMatchingEnergy {L K : ℕ}
     (hKL : K ≤ L) (x : Config (PairQubit L)) :
     listMatchingEnergy (initialPairList hKL) x ≤ inverseSquareMatchingEnergy x := by
@@ -237,6 +280,8 @@ theorem listMatchingEnergy_initial_le_inverseSquareMatchingEnergy {L K : ℕ}
   rw [← hsplit]
   exact le_add_of_nonneg_right (Finset.sum_nonneg fun j _ => pairMatchingWeight_nonneg x j)
 
+/-- For `1 ≤ K ≤ L`, the chain energy minus the first-`K` matching energy is at most
+`1/K + 1/L²`. -/
 theorem inverseSquareChainEnergy_sub_initial_le {L K : ℕ}
     (hK : 1 ≤ K) (hKL : K ≤ L) (x : Config (PairQubit L)) :
     inverseSquareChainEnergy x - listMatchingEnergy (initialPairList hKL) x ≤
@@ -249,6 +294,7 @@ theorem inverseSquareChainEnergy_sub_initial_le {L K : ℕ}
   unfold inverseSquareChainEnergy
   linarith
 
+/-- The first-`K` matching energy is at most the chain energy. -/
 theorem listMatchingEnergy_initial_le_inverseSquareChainEnergy {L K : ℕ}
     (hKL : K ≤ L) (x : Config (PairQubit L)) :
     listMatchingEnergy (initialPairList hKL) x ≤ inverseSquareChainEnergy x := by
@@ -257,6 +303,8 @@ theorem listMatchingEnergy_initial_le_inverseSquareChainEnergy {L K : ℕ}
   unfold inverseSquareChainEnergy
   linarith
 
+/-- Scalar estimate: if `R ≤ 1/K + 1/L²`, `2t/ε ≤ K`, `t ≤ εL/2`, `L > 1` and `t ≥ 0`, then
+`t R < ε`. -/
 theorem ramp_total_invSq_lt {t ε L K R : ℝ}
     (hε : 0 < ε) (hL : 1 < L) (ht : 0 ≤ t) (hK : 0 < K)
     (hKlb : 2 * t / ε ≤ K) (htL : t ≤ ε * L / 2)
@@ -284,6 +332,7 @@ theorem ramp_total_invSq_lt {t ε L K R : ℝ}
   rw [mul_add] at hmul
   linarith
 
+/-- Phase Lipschitz bound `|exp(-ia) - exp(-ib)| ≤ |a - b|`. -/
 theorem norm_exp_phase_sub_le (a b : ℝ) :
     ‖Complex.exp (-(Complex.I * (a : ℂ))) -
         Complex.exp (-(Complex.I * (b : ℂ)))‖ ≤ |a - b| := by
@@ -301,12 +350,16 @@ theorem norm_exp_phase_sub_le (a b : ℝ) :
   rw [habs] at hsin
   linarith
 
+/-- The operator norm of a difference of diagonal matrices is the sup norm of the entry
+differences. -/
 theorem l2_opNorm_diagonal_sub {n : Type*} [Fintype n] [DecidableEq n]
     (f g : n → ℂ) :
     ‖Matrix.diagonal f - Matrix.diagonal g‖ = ‖fun i => f i - g i‖ := by
   rw [Matrix.diagonal_sub, Matrix.l2_opNorm_diagonal]
 
 set_option maxHeartbeats 400000 in
+/-- For `1 ≤ K ≤ L`, `2 ≤ L`, `ε > 0`, `t ≥ 0`, `2t/ε ≤ K` and `t ≤ εL/2`, the pair-phase circuit
+on the first `K` pairs has exactly `K` two-qubit gates and is within `ε` of `exp(-i t H)`. -/
 theorem inverseSquareChain_upper_approximation {L K : ℕ} {t ε : ℝ}
     (hK : 1 ≤ K) (hKL : K ≤ L) (hL : 2 ≤ L)
     (hε : 0 < ε) (ht0 : 0 ≤ t)

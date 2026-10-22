@@ -1,22 +1,59 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovReservoirScale
 
+/-!
+# An explicit Vinogradov mean value bound by Linnik's p-adic induction
+
+Let `J_{b,k}(N)` be the number of pairs of `b`-tuples in `[0, N)` with equal power sums of orders
+`1..k`. This module proves, by induction on `r`, the bound
+`J_{kr,k}(N) ≤ C(k, r) · N^(k + (2k - 2)(r - 1))` for `k ≥ 2`, `r ≥ 1` and all `N ≥ 1`, under an
+explicit arithmetic admissibility condition on `(k, r)`. The base case is Linnik's diagonal count
+`J_{k,k}(N) ≤ k! N^k`; small `N` use the trivial bound `N^(2b)`; large `N` use a reservoir prime `p`
+with `p^k` comparable to `N`, the Linnik partner count `k! p^(k(k-1)/2)`, the induction hypothesis at
+scale `⌈N/p⌉`, and the collision recurrence. For `k = 100 s` and `r = 2500 s^2 - 200 s` the exponent
+equals `2kr - k(k+1)/2 + 350 s + 2`, which exceeds the main-conjecture exponent `2kr - k(k+1)/2` by
+`350 s + 2`.
+
+## Main results
+
+- `vinogradovMeanExponent`, `VinogradovMeanAdmissible`, `vinogradovMeanConstant`: the exponent
+  `k + (2k - 2)(r - 1)`, the admissibility condition, and the recursively defined constant.
+- `vinogradovMeanAdmissible_of_budget`: admissibility follows from `2r + k(k-1)/2 ≤ (k - 1)(k - 2)`.
+- `vinogradov_mean_value_bound`: for `k ≥ 2`, `r ≥ 1`, admissible `(k, r)` and `N ≠ 0`,
+  `J_{kr,k}(N) ≤ vinogradovMeanConstant k r · N^(vinogradovMeanExponent k r)`.
+- `vinogradovRouteT_admissible`: `(100 s, 2500 s^2 - 200 s)` is admissible for `s ≥ 1`.
+- `vinogradovRouteT_mean_value_bound`: for `s ≥ 1`, `k = 100 s`, `r = 2500 s^2 - 200 s`,
+  `J_{kr,k}(N) ≤ C · N^(2kr - k(k+1)/2 + 350 s + 2)`.
+
+## Hypotheses
+
+Unconditional. The general bound takes `k ≥ 2`, `r ≥ 1`, `N ≠ 0` and the arithmetic condition
+`VinogradovMeanAdmissible k r` (an explicit inequality between natural numbers, not an analytic
+input); the specialised bound only needs `s ≥ 1` and `N ≠ 0`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Exponent `k(k-1)/2` of `p` in Linnik's nested-congruence count `k! p^(k(k-1)/2)`. -/
 def vinogradovLinnikWeight (k : ℕ) : ℕ :=
   k * (k - 1) / 2
 
+/-- Exponent `k + (2k - 2)(r - 1)` in the bound for `J_{kr,k}(N)`. -/
 def vinogradovMeanExponent (k r : ℕ) : ℕ :=
   k + (2 * k - 2) * (r - 1)
 
+/-- Admissibility of `(k, r)`: for every `1 ≤ u < r`,
+`2ku + k(k-1)/2 ≤ (k + (2k - 2)(u - 1)) + k(k - 2)`. -/
 def VinogradovMeanAdmissible (k r : ℕ) : Prop :=
   ∀ u : ℕ, 1 ≤ u → u < r →
     2 * k * u + vinogradovLinnikWeight k ≤
       vinogradovMeanExponent k u + k * (k - 2)
 
+/-- Recursively defined constant `C(k, r)` of the Vinogradov mean value bound, collecting the
+small-scale, Linnik, reservoir and collision contributions at each step. -/
 def vinogradovMeanConstant (k : ℕ) : ℕ → ℕ
   | 0 => 1
   | r + 1 =>
@@ -58,6 +95,8 @@ theorem vinogradovMeanAdmissible_last
       vinogradovMeanExponent k r + k * (k - 2) :=
   h r hr (by omega)
 
+/-- For `k ≥ 2`, the budget inequality `2r + k(k-1)/2 ≤ (k - 1)(k - 2)` implies that `(k, r)` is
+admissible. -/
 theorem vinogradovMeanAdmissible_of_budget
     {k r : ℕ} (hk2 : 2 ≤ k)
     (hbudget : 2 * r + vinogradovLinnikWeight k ≤ (k - 1) * (k - 2)) :
@@ -87,8 +126,10 @@ theorem vinogradovMeanAdmissible_of_budget
       _ = (vinogradovMeanExponent k u + k * (k - 2)) + 2 * u := hku.symm
   omega
 
+/-- Degree `k = 100 s` used in the specialised bound. -/
 def vinogradovRouteTOrder (s : ℕ) : ℕ := 100 * s
 
+/-- Number of induction steps `r = 2500 s^2 - 200 s` used in the specialised bound. -/
 def vinogradovRouteTMomentSteps (s : ℕ) : ℕ :=
   2500 * s ^ (2 : ℕ) - 200 * s
 
@@ -98,6 +139,7 @@ theorem vinogradovRouteTMomentSteps_pos {s : ℕ} (hs : 1 ≤ s) :
   apply Nat.le_sub_of_add_le
   nlinarith [sq_nonneg (s - 1)]
 
+/-- For `s ≥ 1`, the pair `(100 s, 2500 s^2 - 200 s)` is admissible. -/
 theorem vinogradovRouteT_admissible {s : ℕ} (hs : 1 ≤ s) :
     VinogradovMeanAdmissible
       (vinogradovRouteTOrder s) (vinogradovRouteTMomentSteps s) := by
@@ -118,6 +160,7 @@ theorem vinogradovRouteT_admissible {s : ℕ} (hs : 1 ≤ s) :
   have hk2 : 100 * s - 2 + 2 = 100 * s := by omega
   nlinarith
 
+/-- Trivial bound `J_{b,k}(N) ≤ N^(2b)`. -/
 theorem card_vinogradovDiagonalSolution_le_trivial (N b k : ℕ) :
     Fintype.card (VinogradovDiagonalSolution N b k) ≤ N ^ (2 * b) := by
   calc
@@ -154,6 +197,8 @@ theorem vinogradovMeanConstant_ge_step
   simp only [vinogradovMeanConstant]
   omega
 
+/-- For `0 < N ≤` the reservoir small threshold, `J_{k(r+1),k}(N) ≤ C(k, r+1) N^(k + (2k - 2) r)`,
+from the trivial bound. -/
 theorem vinogradov_small_scale_moment_bound
     {N k r : ℕ} (hN : N ≠ 0)
     (hsmall : N ≤ vinogradovReservoirSmallThreshold k) :
@@ -200,6 +245,8 @@ theorem vinogradov_small_scale_moment_bound
     _ = vinogradovMeanConstant k (r + 1) *
         N ^ (vinogradovMeanExponent k (r + 1)) := Nat.mul_comm _ _
 
+/-- Scale bookkeeping: if `p M ≤ 2N`, `p^k ≤ C N` and `A ≤ E + k(k - 2)`, then
+`p^A M^E ≤ 2^E C^(k-2) N^(E + k - 2)`. -/
 theorem pow_mul_pow_vinogradov_scale
     {p M N E k C A : ℕ} (hp : 0 < p)
     (hpm : p * M ≤ 2 * N) (hpk : p ^ k ≤ C * N)
@@ -219,6 +266,9 @@ theorem pow_mul_pow_vinogradov_scale
       simp only [mul_pow, pow_add]
       ring
 
+/-- Good-term step: for a prime `p` with `p ⌈N/p⌉ ≤ 2N` and `p^k ≤ C N`, the induction hypothesis
+at scale `⌈N/p⌉` and the admissibility inequality bound
+`p^(2kr) N^k k! p^(k(k-1)/2) J_{kr,k}(⌈N/p⌉)` by a constant times `N^(k + (2k - 2) r)`. -/
 theorem vinogradov_large_scale_good_term
     {N k r p : ℕ} (hk2 : 2 ≤ k) (hr : 1 ≤ r)
     (hp : p.Prime) (hpm : p * (N ⌈/⌉ p) ≤ 2 * N)
@@ -280,6 +330,8 @@ theorem vinogradov_large_scale_good_term
             congr 1
             exact congrArg (N ^ ·) hexpcombine
 
+/-- Collision step: if `J_{kr,k}(N) ≤ C(k, r) N^E`, then
+`((k^2 - k) N^(k-1))^2 J_{kr,k}(N) ≤ C(k, r) (k^2 - k)^2 N^(E + 2k - 2)`. -/
 theorem vinogradov_collision_induction_term
     {N k r : ℕ} (hk2 : 2 ≤ k) (hr : 1 ≤ r)
     (hIH : Fintype.card (VinogradovDiagonalSolution N (k * r) k) ≤
@@ -311,6 +363,8 @@ theorem vinogradov_collision_induction_term
     _ = vinogradovMeanConstant k r * (k * k - k) ^ (2 : ℕ) *
         N ^ (vinogradovMeanExponent k (r + 1)) := by rw [hEsucc]
 
+/-- Vinogradov mean value bound: for `k ≥ 2`, `r ≥ 1`, admissible `(k, r)` and `N ≠ 0`,
+`J_{kr,k}(N) ≤ vinogradovMeanConstant k r · N^(k + (2k - 2)(r - 1))`. -/
 theorem vinogradov_mean_value_bound
     (k r : ℕ) (hk2 : 2 ≤ k) (hr : 1 ≤ r)
     (hadm : VinogradovMeanAdmissible k r) (N : ℕ) (hN : N ≠ 0) :
@@ -437,6 +491,8 @@ theorem vinogradov_mean_value_bound
             simpa only [R] using hrec
           exact hrec'.trans (by simpa [X] using hRHS)
 
+/-- For `s ≥ 1`, `k = 100 s` and `r = 2500 s^2 - 200 s`, the mean exponent equals
+`2kr - k(k+1)/2 + 350 s + 2`. -/
 theorem vinogradovRouteT_meanExponent_exact
     {s : ℕ} (hs : 1 ≤ s) :
     vinogradovMeanExponent
@@ -477,6 +533,8 @@ theorem vinogradovRouteT_meanExponent_exact
     nlinarith
   omega
 
+/-- For `s ≥ 1`, `N ≠ 0`, `k = 100 s` and `r = 2500 s^2 - 200 s`:
+`J_{kr,k}(N) ≤ C(k, r) · N^(2kr - k(k+1)/2 + 350 s + 2)`. -/
 theorem vinogradovRouteT_mean_value_bound
     {s N : ℕ} (hs : 1 ≤ s) (hN : N ≠ 0) :
     Fintype.card (VinogradovDiagonalSolution N

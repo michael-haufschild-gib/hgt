@@ -2879,9 +2879,981 @@ theorem abs_residue_band_le_affine (hh : ContDiff ℝ 1 h) (hh' : ContDiff ℝ 1
   refine le_trans abs_integral_le_integral_abs (le_of_eq ?_)
   exact setIntegral_congr_fun measurableSet_Ioi fun s _ => abs_mul _ _
 
-end GaloisForLFunctions.ArithmeticIncidencePositivity
 
-open GaloisForLFunctions.ArithmeticIncidencePositivity in
-#print axioms abs_residue_le_centred
-open GaloisForLFunctions.ArithmeticIncidencePositivity in
-#print axioms abs_residue_band_le_affine
+/-! ### The second-order calculus of a test
+
+For a `C²` test the cross-correlation is itself differentiable, with the second cross-correlation
+as derivative, so the lag weight of a test is `C²` and its second derivative is explicit.  The
+second-order balance then applies to tests, and the receiver's curvature is paired with
+`2e^{−s/2}(A'' − A' + ¼A)`. -/
+
+/-- The second cross-correlation `∫ F(x) F''(x+t) dx`. -/
+def secondCrossCorrelation (F : ℝ → ℝ) (t : ℝ) : ℝ := ∫ x, F x * deriv (deriv F) (x + t)
+
+theorem hasDerivAt_crossCorrelation (hF : ContDiff ℝ 1 F) (hF' : ContDiff ℝ 1 (deriv F))
+    (hFc : HasCompactSupport F) (t : ℝ) :
+    HasDerivAt (crossCorrelation F) (secondCrossCorrelation F t) t := by
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  have hd2cont : Continuous (deriv (deriv F)) := hF'.continuous_deriv le_rfl
+  obtain ⟨M, hM⟩ := hFc.deriv.deriv.exists_bound_of_continuous hd2cont
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := volume)
+    (F := fun (u : ℝ) (x : ℝ) => F x * deriv F (x + u))
+    (F' := fun (u : ℝ) (x : ℝ) => F x * deriv (deriv F) (x + u))
+    (x₀ := t) (bound := fun x => ‖F x‖ * M) (s := Set.univ) Filter.univ_mem
+    (Filter.Eventually.of_forall fun u =>
+      (hFcont.mul (hdcont.comp (continuous_id.add continuous_const))).aestronglyMeasurable)
+    ((hFcont.mul (hdcont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      (hFc.mul_right))
+    ((hFcont.mul (hd2cont.comp (continuous_id.add continuous_const))).aestronglyMeasurable)
+    (Filter.Eventually.of_forall fun x u _ => by
+      rw [Real.norm_eq_abs, abs_mul, ← Real.norm_eq_abs, ← Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_left (hM (x + u)) (norm_nonneg _))
+    (integrable_bound hF hFc M)
+    (Filter.Eventually.of_forall fun x u _ =>
+      (HasDerivAt.comp_const_add x u
+        ((hF'.differentiable one_ne_zero (x + u)).hasDerivAt)).const_mul (F x))
+  exact key.2
+
+theorem continuous_secondCrossCorrelation (hF : ContDiff ℝ 1 F) (hF' : ContDiff ℝ 1 (deriv F))
+    (hFc : HasCompactSupport F) : Continuous (secondCrossCorrelation F) := by
+  have hFcont : Continuous F := hF.continuous
+  have hd2cont : Continuous (deriv (deriv F)) := hF'.continuous_deriv le_rfl
+  obtain ⟨M, hM⟩ := hFc.deriv.deriv.exists_bound_of_continuous hd2cont
+  refine continuous_of_dominated (bound := fun x => ‖F x‖ * M)
+    (fun u => (hFcont.mul (hd2cont.comp (continuous_id.add continuous_const))).aestronglyMeasurable)
+    (fun u => Filter.Eventually.of_forall fun x => ?_) (integrable_bound hF hFc M)
+    (Filter.Eventually.of_forall fun x => ?_)
+  · rw [Real.norm_eq_abs, abs_mul, ← Real.norm_eq_abs, ← Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left (hM (x + u)) (norm_nonneg _)
+  · exact continuous_const.mul (hd2cont.comp (continuous_const.add continuous_id))
+
+theorem contDiff_one_crossCorrelation (hF : ContDiff ℝ 1 F) (hF' : ContDiff ℝ 1 (deriv F))
+    (hFc : HasCompactSupport F) : ContDiff ℝ 1 (crossCorrelation F) := by
+  rw [contDiff_one_iff_deriv]
+  refine ⟨fun t => (hasDerivAt_crossCorrelation hF hF' hFc t).differentiableAt, ?_⟩
+  have hd : deriv (crossCorrelation F) = secondCrossCorrelation F :=
+    funext fun t => (hasDerivAt_crossCorrelation hF hF' hFc t).deriv
+  rw [hd]
+  exact continuous_secondCrossCorrelation hF hF' hFc
+
+/-- The lag weight of a `C²` test is `C¹` in its derivative. -/
+theorem contDiff_one_deriv_lagTestWeight (hF : ContDiff ℝ 1 F) (hF' : ContDiff ℝ 1 (deriv F))
+    (hFc : HasCompactSupport F) : ContDiff ℝ 1 (deriv (lagTestWeight F)) := by
+  have hd : deriv (lagTestWeight F)
+      = fun s => 2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2) :=
+    funext fun s => deriv_lagTestWeight hF hFc s
+  rw [hd]
+  exact (contDiff_const.mul ((contDiff_id.neg.div_const 2).exp)).mul
+    ((contDiff_one_crossCorrelation hF hF' hFc).sub
+      ((contDiff_one_autoCorrelation hF hFc).div_const 2))
+
+/-- **The second-order balance at the level of a test.** The prime channel and the pole plane of
+a `C²` test, restricted to a band, are the curvature of the critical-scale receiver paired with
+the test's own second-order lag weight. -/
+theorem testBalance_band_receiver_curvature (hF : ContDiff ℝ 1 F) (hF' : ContDiff ℝ 1 (deriv F))
+    (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {s₁ : ℝ}
+    (hs₁ : 0 < s₁) (hvan0 : ∀ s, s ≤ s₁ → lagTestWeight F s = 0) {N : ℕ}
+    (hN : Real.exp (2 * r) ≤ N) (α β : ℝ) :
+    (∑ n ∈ Finset.filter (fun n : ℕ => s₁ < Real.log n) (Finset.range (N + 1)),
+          (ArithmeticFunction.vonMangoldt n : ℝ) * lagTestWeight F (Real.log n))
+        - ∫ s in Ioi (0:ℝ), (Real.exp s + 1) * lagTestWeight F s
+      = -∫ s in Ioi (0:ℝ), (criticalScalePrefix s + s ^ 2 / 2 - s + (α * s + β)) *
+          deriv (deriv (lagTestWeight F)) s := by
+  have hS : (0:ℝ) < 2 * r := by linarith
+  have hvan : ∀ s, 2 * r ≤ s → lagTestWeight F s = 0 := fun s hs => by
+    rw [lagTestWeight, autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  exact sum_vonMangoldt_band_eq_receiver_curvature (contDiff_one_lagTestWeight hF hFc)
+    (contDiff_one_deriv_lagTestWeight hF hF' hFc) hS hvan hs₁ hvan0 hN α β
+
+
+/-! ### The half-test obeys the ladder at half the aperture
+
+For an odd test the right half is continuous and lives on `[0, r]`, a window of half the
+diameter, so after centring it is a test of aperture `r/2` and the ladder applies to it with that
+aperture.  The Gram matrix of the bipartite reduction — whose entries are the half-test's
+autocorrelation at the lag differences — therefore decays by the ladder at `r/2`, twice as fast
+as the full test's. -/
+
+theorem autoCorrelation_translate (F : ℝ → ℝ) (c t : ℝ) :
+    autoCorrelation (fun x => F (x + c)) t = autoCorrelation F t := by
+  rw [autoCorrelation, autoCorrelation]
+  have h := MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+    (fun y => F y * F (y + t)) c
+  rw [← h]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show F (x + c) * F (x + t + c) = F (x + c) * F (x + c + t)
+  rw [show x + t + c = x + c + t by ring]
+
+theorem eq_zero_of_odd (hodd : ∀ x, F (-x) = -F x) : F 0 = 0 := by
+  have h := hodd 0
+  rw [neg_zero] at h
+  linarith
+
+theorem continuous_rightPart_of_odd (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x) :
+    Continuous (rightPart F) := by
+  have h0 : F 0 = 0 := eq_zero_of_odd hodd
+  have heq : rightPart F = fun x => if (0:ℝ) ≤ x then F x else 0 := rfl
+  rw [heq]
+  exact Continuous.if_le hF continuous_const continuous_const continuous_id
+    (fun x hx => by rw [← hx, h0])
+
+/-- **The half-test ladder.** For an odd test of aperture `r` the right half obeys the ladder at
+aperture `r/2`. -/
+theorem autoCorrelation_rightPart_le_chainConstant (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x)
+    {r t : ℝ} (hr : 0 < r) (ht : 0 < t) (hsupp : ∀ y, r < |y| → F y = 0) :
+    autoCorrelation (rightPart F) t
+      ≤ Real.cos (Real.pi / (chainRungs (r / 2) t : ℝ)) * autoCorrelation (rightPart F) 0 := by
+  have hrc : Continuous (rightPart F) := continuous_rightPart_of_odd hF hodd
+  set w : ℝ → ℝ := fun x => rightPart F (x + r / 2) with hw
+  have hwc : Continuous w := hrc.comp (continuous_id.add continuous_const)
+  have hwsupp : ∀ y, r / 2 < |y| → w y = 0 := by
+    intro y hy
+    show rightPart F (y + r / 2) = 0
+    rcases lt_or_ge y 0 with hneg | hpos
+    · have hy' : r / 2 < -y := by rwa [abs_of_neg hneg] at hy
+      rw [rightPart, if_neg (not_le.mpr (by linarith : y + r / 2 < 0))]
+    · have hy' : r / 2 < y := by rwa [abs_of_nonneg hpos] at hy
+      rw [rightPart, if_pos (by linarith : (0:ℝ) ≤ y + r / 2)]
+      exact hsupp _ (by rw [abs_of_pos (by linarith)]; linarith)
+  have hwcs : HasCompactSupport w :=
+    HasCompactSupport.intro (isCompact_Icc (a := -(r / 2)) (b := r / 2)) fun y hy => by
+      refine hwsupp y ?_
+      rcases not_and_or.mp (fun hc => hy (Set.mem_Icc.mpr hc)) with hc | hc
+      · rw [abs_of_neg (by linarith [not_le.mp hc] : y < 0)]; linarith [not_le.mp hc]
+      · rw [abs_of_pos (by linarith [not_le.mp hc] : 0 < y)]; linarith [not_le.mp hc]
+  have hlad := autoCorrelation_le_chainConstant hwc hwcs (by linarith : (0:ℝ) < r / 2) ht hwsupp
+  rwa [autoCorrelation_translate, autoCorrelation_translate] at hlad
+
+
+/-! ### The Gram matrix of the bipartite reduction, bounded by the half-test ladder
+
+Assembling: the bipartite reduction expresses the prime side beyond the aperture through the
+Gram matrix of the half-test at the lag differences, and the half-test ladder bounds every
+off-diagonal entry of that matrix.  The diagonal is the half-test's mass; every other entry is
+damped by the ladder at aperture `r/2`. -/
+
+/-- The half-test ladder for lags of either sign. -/
+theorem autoCorrelation_rightPart_le_chainConstant_abs (hF : Continuous F)
+    (hodd : ∀ x, F (-x) = -F x) {r t : ℝ} (hr : 0 < r) (ht : t ≠ 0)
+    (hsupp : ∀ y, r < |y| → F y = 0) :
+    autoCorrelation (rightPart F) t
+      ≤ Real.cos (Real.pi / (chainRungs (r / 2) |t| : ℝ)) * autoCorrelation (rightPart F) 0 := by
+  rcases lt_or_gt_of_ne ht with hneg | hpos
+  · rw [← autoCorrelation_neg (rightPart F) t, abs_of_neg hneg]
+    exact autoCorrelation_rightPart_le_chainConstant hF hodd hr (by linarith) hsupp
+  · rw [abs_of_pos hpos]
+    exact autoCorrelation_rightPart_le_chainConstant hF hodd hr hpos hsupp
+
+/-- **The Gram bound.** Every entry of the bipartite Gram matrix is the half-test's mass on the
+diagonal and ladder-damped off it. -/
+theorem sum_gram_le_ladder (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) {T : Finset ℕ} {c lag : ℕ → ℝ}
+    (hc : ∀ n ∈ T, 0 ≤ c n) :
+    ∑ n ∈ T, ∑ m ∈ T, c n * c m * autoCorrelation (rightPart F) (lag m - lag n)
+      ≤ ∑ n ∈ T, ∑ m ∈ T, c n * c m *
+          ((if lag m - lag n = 0 then (1:ℝ)
+            else Real.cos (Real.pi / (chainRungs (r / 2) |lag m - lag n| : ℝ)))
+            * autoCorrelation (rightPart F) 0) := by
+  refine Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun m hm => ?_
+  have hcc : 0 ≤ c n * c m := mul_nonneg (hc n hn) (hc m hm)
+  refine mul_le_mul_of_nonneg_left ?_ hcc
+  by_cases hz : lag m - lag n = 0
+  · rw [if_pos hz, hz, one_mul]
+  · rw [if_neg hz]
+    exact autoCorrelation_rightPart_le_chainConstant_abs hF hodd hr hz hsupp
+
+
+/-! ### Where the Gram damping bites
+
+Two distinct integers below the horizon have logarithms separated by at least `1/N`, so most
+lag differences of the prime side are far below the aperture and the ladder damps them not at
+all.  The damping is effective exactly on the annulus `r/2 < |δ| ≤ r` of lag differences — prime
+ratios between `e^{r/2}` and `e^{r}` — where the Gram entry is at most half the half-test's
+mass.  That is the exact reach of the bipartite route, and it is where the cross-prime aggregate
+can be improved without new arithmetic. -/
+
+/-- **Logarithmic separation.** Distinct positive integers below `n` have logarithms at least
+`1/n` apart. -/
+theorem one_div_le_log_sub_log {m n : ℕ} (hm : 0 < m) (hmn : m < n) :
+    1 / (n : ℝ) ≤ Real.log n - Real.log m := by
+  have hn : (0:ℝ) < n := by exact_mod_cast lt_of_le_of_lt (Nat.zero_le m) hmn
+  have hm' : (0:ℝ) < m := by exact_mod_cast hm
+  have hratio : (0:ℝ) < (m : ℝ) / n := by positivity
+  have hlog := Real.log_le_sub_one_of_pos hratio
+  rw [Real.log_div (ne_of_gt hm') (ne_of_gt hn)] at hlog
+  have hmn' : (m : ℝ) + 1 ≤ n := by exact_mod_cast hmn
+  have : (m : ℝ) / n ≤ 1 - 1 / n := by
+    rw [div_le_iff₀ hn]
+    field_simp
+    linarith
+  linarith
+
+theorem chainRungs_eq_three {r δ : ℝ} (hr : 0 < r) (h1 : r / 2 < δ) (h2 : δ ≤ r) :
+    chainRungs (r / 2) δ = 3 := by
+  have hδ : 0 < δ := by linarith
+  have hd1 : (1:ℝ) ≤ 2 * (r / 2) / δ := by
+    rw [le_div_iff₀ hδ]; linarith
+  have hd2 : 2 * (r / 2) / δ < 2 := by
+    rw [div_lt_iff₀ hδ]; linarith
+  have : ⌊2 * (r / 2) / δ⌋ = 1 := by
+    rw [Int.floor_eq_iff]
+    constructor
+    · exact_mod_cast hd1
+    · push_cast; linarith
+  rw [chainRungs, this]
+  norm_num
+
+/-- On the annulus the Gram entry is at most half the half-test's mass. -/
+theorem autoCorrelation_rightPart_le_half_of_annulus (hF : Continuous F)
+    (hodd : ∀ x, F (-x) = -F x) {r t : ℝ} (hr : 0 < r) (h1 : r / 2 < t) (h2 : t ≤ r)
+    (hsupp : ∀ y, r < |y| → F y = 0) :
+    autoCorrelation (rightPart F) t ≤ autoCorrelation (rightPart F) 0 / 2 := by
+  have ht : 0 < t := by linarith
+  have hlad := autoCorrelation_rightPart_le_chainConstant hF hodd hr ht hsupp
+  rw [chainRungs_eq_three hr h1 h2] at hlad
+  have hcos : Real.cos (Real.pi / ((3:ℤ) : ℝ)) = 1 / 2 := by
+    norm_num [Real.cos_pi_div_three]
+  rw [hcos] at hlad
+  linarith
+
+
+/-! ### The arithmetic input: lag differences against integer differences
+
+The Gram's remaining difficulty is the near-diagonal block, where the ladder does not act.  What
+controls that block is the conversion between a lag difference and an integer difference: a small
+lag difference forces the two integers to be close in the ordinary sense, by a factor equal to
+their size.  On a dyadic window this says that the pairs contributing to the near-diagonal block
+are those within `2Xδ` of each other. -/
+
+/-- **Logarithmic separation, relative form.** -/
+theorem sub_div_le_log_sub_log {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    (b - a) / b ≤ Real.log b - Real.log a := by
+  have hb : (0:ℝ) < b := lt_of_lt_of_le ha hab
+  have hratio : (0:ℝ) < a / b := by positivity
+  have hlog := Real.log_le_sub_one_of_pos hratio
+  rw [Real.log_div (ne_of_gt ha) (ne_of_gt hb)] at hlog
+  have hdiv : a / b = 1 - (b - a) / b := by field_simp; ring
+  rw [hdiv] at hlog
+  linarith
+
+/-- **A small lag difference forces a small integer difference.** -/
+theorem abs_sub_le_of_abs_log_sub_le {a b M δ : ℝ} (ha : 0 < a) (hb : 0 < b) (haM : a ≤ M)
+    (hbM : b ≤ M) (hδ : 0 ≤ δ) (hlog : |Real.log b - Real.log a| ≤ δ) :
+    |b - a| ≤ M * δ := by
+  rcases le_total a b with hab | hba
+  · have hkey := sub_div_le_log_sub_log ha hab
+    have hb0 : (0:ℝ) < b := hb
+    have hle : Real.log b - Real.log a ≤ δ := le_trans (le_abs_self _) hlog
+    have : (b - a) / b ≤ δ := le_trans hkey hle
+    rw [div_le_iff₀ hb0] at this
+    rw [abs_of_nonneg (by linarith)]
+    nlinarith [hbM, hδ]
+  · have hkey := sub_div_le_log_sub_log hb hba
+    have ha0 : (0:ℝ) < a := ha
+    have hle : Real.log a - Real.log b ≤ δ := by
+      have := neg_le_of_abs_le hlog
+      linarith
+    have : (a - b) / a ≤ δ := le_trans hkey hle
+    rw [div_le_iff₀ ha0] at this
+    rw [abs_of_nonpos (by linarith)]
+    nlinarith [haM, hδ]
+
+/-- On a dyadic window a lag difference below `δ` means the integers are within `2Xδ`. -/
+theorem abs_sub_le_of_dyadic_window {X : ℝ} (hX : 0 < X) {a b δ : ℝ} (ha1 : X < a)
+    (ha2 : a ≤ 2 * X) (hb1 : X < b) (hb2 : b ≤ 2 * X) (hδ : 0 ≤ δ)
+    (hlog : |Real.log b - Real.log a| ≤ δ) : |b - a| ≤ 2 * X * δ :=
+  abs_sub_le_of_abs_log_sub_le (lt_trans hX ha1) (lt_trans hX hb1) ha2 hb2 hδ hlog
+
+
+/-! ### Counting the near-diagonal block
+
+The Gram's near-diagonal block is small: on a dyadic window, each row has at most
+`2⌊2Xδ⌋ + 1` entries with lag gap below `δ`.  So the block the ladder cannot damp is a banded
+matrix whose bandwidth is governed by the integer spacing, not by the number of atoms. -/
+
+theorem card_lagClose_le {X : ℕ} {δ : ℝ} (hX : 0 < X) (hδ : 0 ≤ δ) {n : ℕ}
+    (hn : n ∈ Finset.Ioc X (2 * X)) :
+    (Finset.filter (fun m : ℕ => |Real.log m - Real.log n| ≤ δ)
+        (Finset.Ioc X (2 * X))).card
+      ≤ 2 * ⌊2 * (X : ℝ) * δ⌋₊ + 1 := by
+  classical
+  set k : ℕ := ⌊2 * (X : ℝ) * δ⌋₊ with hk
+  have hXr : (0:ℝ) < X := by exact_mod_cast hX
+  have hsub : Finset.filter (fun m : ℕ => |Real.log m - Real.log n| ≤ δ)
+      (Finset.Ioc X (2 * X)) ⊆ Finset.Icc (n - k) (n + k) := by
+    intro m hm
+    rw [Finset.mem_filter, Finset.mem_Ioc] at hm
+    obtain ⟨⟨hm1, hm2⟩, hmlog⟩ := hm
+    rw [Finset.mem_Ioc] at hn
+    have hn1 : (X : ℝ) < n := by exact_mod_cast hn.1
+    have hn2 : (n : ℝ) ≤ 2 * X := by exact_mod_cast hn.2
+    have hm1' : (X : ℝ) < m := by exact_mod_cast hm1
+    have hm2' : (m : ℝ) ≤ 2 * X := by exact_mod_cast hm2
+    have habs := abs_sub_le_of_dyadic_window hXr hn1 hn2 hm1' hm2' hδ hmlog
+    have hdist : ((if m ≤ n then n - m else m - n : ℕ) : ℝ) = |(m : ℝ) - n| := by
+      by_cases hc : m ≤ n
+      · rw [if_pos hc, Nat.cast_sub hc, abs_of_nonpos (by
+          have : (m:ℝ) ≤ n := by exact_mod_cast hc
+          linarith)]
+        ring
+      · rw [if_neg hc, Nat.cast_sub (le_of_lt (not_le.mp hc)), abs_of_nonneg (by
+          have : (n:ℝ) ≤ m := by exact_mod_cast le_of_lt (not_le.mp hc)
+          linarith)]
+    have hle : (if m ≤ n then n - m else m - n : ℕ) ≤ k := by
+      refine Nat.le_floor ?_
+      rw [hdist]
+      exact habs
+    rw [Finset.mem_Icc]
+    by_cases hc : m ≤ n
+    · rw [if_pos hc] at hle
+      exact ⟨by omega, by omega⟩
+    · rw [if_neg hc] at hle
+      exact ⟨by omega, by omega⟩
+  refine le_trans (Finset.card_le_card hsub) ?_
+  rw [Nat.card_Icc]
+  omega
+
+
+/-! ### The Schur test for the bipartite Gram
+
+A symmetric form with nonnegative weights is bounded by its largest absolute row sum times the
+coefficient energy.  Applied to the bipartite Gram, this turns the prime side beyond the aperture
+into an `ℓ²` statement: the atoms enter through `Σ c_n²`, and the only remaining datum is the
+largest row sum of the half-test's correlations at the lag differences — a banded matrix with
+ladder-damped tails by #31–#34. -/
+
+/-- **The Schur test.** -/
+theorem sum_mul_mul_le_rowSum {T : Finset ℕ} {c : ℕ → ℝ} {G : ℕ → ℕ → ℝ} {R : ℝ}
+    (hc : ∀ n ∈ T, 0 ≤ c n) (hsym : ∀ n ∈ T, ∀ m ∈ T, |G n m| = |G m n|)
+    (hR : ∀ n ∈ T, ∑ m ∈ T, |G n m| ≤ R) :
+    ∑ n ∈ T, ∑ m ∈ T, c n * c m * G n m ≤ R * ∑ n ∈ T, c n ^ 2 := by
+  have hstep : ∀ n ∈ T, ∀ m ∈ T,
+      c n * c m * G n m ≤ (c n ^ 2 + c m ^ 2) / 2 * |G n m| := by
+    intro n hn m hm
+    have h1 : c n * c m * G n m ≤ c n * c m * |G n m| :=
+      mul_le_mul_of_nonneg_left (le_abs_self _) (mul_nonneg (hc n hn) (hc m hm))
+    have h2 : c n * c m ≤ (c n ^ 2 + c m ^ 2) / 2 := by nlinarith [sq_nonneg (c n - c m)]
+    exact le_trans h1 (mul_le_mul_of_nonneg_right h2 (abs_nonneg _))
+  have hmain : ∑ n ∈ T, ∑ m ∈ T, c n * c m * G n m
+      ≤ ∑ n ∈ T, ∑ m ∈ T, (c n ^ 2 + c m ^ 2) / 2 * |G n m| :=
+    Finset.sum_le_sum fun n hn => Finset.sum_le_sum fun m hm => hstep n hn m hm
+  have hsplit : ∑ n ∈ T, ∑ m ∈ T, (c n ^ 2 + c m ^ 2) / 2 * |G n m|
+      = (∑ n ∈ T, ∑ m ∈ T, c n ^ 2 / 2 * |G n m|)
+        + ∑ n ∈ T, ∑ m ∈ T, c m ^ 2 / 2 * |G n m| := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun m _ => by ring
+  have hA : ∑ n ∈ T, ∑ m ∈ T, c n ^ 2 / 2 * |G n m| ≤ R / 2 * ∑ n ∈ T, c n ^ 2 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun n hn => ?_
+    rw [← Finset.mul_sum]
+    have := hR n hn
+    nlinarith [sq_nonneg (c n), this]
+  have hB : ∑ n ∈ T, ∑ m ∈ T, c m ^ 2 / 2 * |G n m| ≤ R / 2 * ∑ n ∈ T, c n ^ 2 := by
+    rw [Finset.sum_comm]
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun m hm => ?_
+    rw [← Finset.mul_sum]
+    have hrow : ∑ n ∈ T, |G n m| ≤ R := by
+      have := hR m hm
+      calc ∑ n ∈ T, |G n m| = ∑ n ∈ T, |G m n| :=
+            Finset.sum_congr rfl fun n hn => hsym n hn m hm
+        _ ≤ R := this
+    nlinarith [sq_nonneg (c m), hrow]
+  have : (R / 2 * ∑ n ∈ T, c n ^ 2) + R / 2 * ∑ n ∈ T, c n ^ 2 = R * ∑ n ∈ T, c n ^ 2 := by
+    ring
+  linarith [hmain, hsplit ▸ hmain, hA, hB]
+
+/-- **The `ℓ²` form of the prime side beyond the aperture.** -/
+theorem two_mul_sum_lag_le_schur (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → F y = 0) {T : Finset ℕ} {c lag : ℕ → ℝ}
+    (hc : ∀ n ∈ T, 0 ≤ c n) (hlag : ∀ n ∈ T, r < lag n) {ε R : ℝ} (hε : 0 < ε)
+    (hR : ∀ n ∈ T, ∑ m ∈ T, |autoCorrelation (rightPart F) (lag m - lag n)| ≤ R) :
+    2 * ∑ n ∈ T, c n * autoCorrelation F (lag n)
+      ≤ ε * (∫ x, leftPart F x ^ 2) + ε⁻¹ * (R * ∑ n ∈ T, c n ^ 2) := by
+  have hsym : ∀ n ∈ T, ∀ m ∈ T,
+      |autoCorrelation (rightPart F) (lag m - lag n)|
+        = |autoCorrelation (rightPart F) (lag n - lag m)| := by
+    intro n _ m _
+    rw [show lag n - lag m = -(lag m - lag n) by ring, autoCorrelation_neg]
+  have hschur := sum_mul_mul_le_rowSum (T := T) (c := c)
+    (G := fun n m => autoCorrelation (rightPart F) (lag m - lag n)) (R := R) hc hsym hR
+  have hbip := two_mul_sum_lag_le_bipartite (c := c) hF hFc hsupp hlag hε
+  have hεinv : 0 < ε⁻¹ := by positivity
+  nlinarith [hbip, hschur, hεinv]
+
+
+/-! ### The row sum, and the replacement hypothesis
+
+The row sums of the bipartite Gram are supported on the lag-gap ball of radius `r`, so the Schur
+constant is the half-test's mass times the bandwidth.  Because the ladder is one-sided it does
+not shrink an *absolute* row sum, so the honest conclusion is a replacement hypothesis: a power
+saving over the `ℓ¹` cost is equivalent to a bounded Schur constant for the prime-ratio
+correlations, and nothing weaker about the test can supply it. -/
+
+theorem hasCompactSupport_rightPart {r : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) :
+    HasCompactSupport (rightPart F) := by
+  refine HasCompactSupport.intro (isCompact_Icc (a := (0:ℝ)) (b := r)) fun y hy => ?_
+  rcases not_and_or.mp (fun hc => hy (Set.mem_Icc.mpr hc)) with hc | hc
+  · rw [rightPart, if_neg (by exact hc)]
+  · rw [rightPart]
+    by_cases h0 : (0:ℝ) ≤ y
+    · rw [if_pos h0, hsupp y (by rw [abs_of_nonneg h0]; exact not_le.mp hc)]
+    · rw [if_neg h0]
+
+/-- **The row sum is carried by the lag-gap ball of radius `r`.** -/
+theorem rowSum_le_bandwidth (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → F y = 0) (T : Finset ℕ) (lag : ℕ → ℝ) (n : ℕ) :
+    ∑ m ∈ T, |autoCorrelation (rightPart F) (lag m - lag n)|
+      ≤ autoCorrelation (rightPart F) 0 *
+          ((Finset.filter (fun m : ℕ => |lag m - lag n| ≤ r) T).card : ℝ) := by
+  classical
+  have hrc : Continuous (rightPart F) := continuous_rightPart_of_odd hF hodd
+  have hrcs : HasCompactSupport (rightPart F) := hasCompactSupport_rightPart hsupp
+  have hterm : ∀ m ∈ T, |autoCorrelation (rightPart F) (lag m - lag n)|
+      ≤ (if |lag m - lag n| ≤ r then autoCorrelation (rightPart F) 0 else 0) := by
+    intro m _
+    by_cases hc : |lag m - lag n| ≤ r
+    · rw [if_pos hc]
+      exact abs_autoCorrelation_le hrc hrcs _
+    · rw [if_neg hc,
+        autoCorrelation_rightPart_eq_zero hsupp (not_le.mp hc), abs_zero]
+  refine le_trans (Finset.sum_le_sum hterm) (le_of_eq ?_)
+  rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
+
+/-- **The replacement hypothesis, proved sufficient.** A bounded Schur constant for the
+prime-ratio correlations turns the prime side beyond the aperture into an `ℓ²` bound. -/
+theorem two_mul_sum_lag_le_of_schurConstant (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) {T : Finset ℕ} {c lag : ℕ → ℝ}
+    (hc : ∀ n ∈ T, 0 ≤ c n) (hlag : ∀ n ∈ T, r < lag n) {κ : ℝ}
+    (hκ : ∀ n ∈ T, ∑ m ∈ T, |autoCorrelation (rightPart F) (lag m - lag n)|
+        ≤ κ * autoCorrelation (rightPart F) 0) {ε : ℝ} (hε : 0 < ε) :
+    2 * ∑ n ∈ T, c n * autoCorrelation F (lag n)
+      ≤ ε * (∫ x, leftPart F x ^ 2)
+        + ε⁻¹ * (κ * autoCorrelation (rightPart F) 0 * ∑ n ∈ T, c n ^ 2) :=
+  two_mul_sum_lag_le_schur hF hFc hsupp hc hlag hε hκ
+
+
+/-! ### The Gram is multiplicatively Toeplitz
+
+A lag difference of two atoms is the logarithm of their ratio, and two pairs give the same lag
+difference exactly when they give the same ratio.  The bipartite Gram is therefore a function of
+the *ratio* alone — the incidence structure of the integers read by the form — so its entries are
+indexed by rationals and its multiplicities by the divisor structure of the window. -/
+
+/-- Two pairs have the same lag difference exactly when they have the same ratio. -/
+theorem log_sub_log_eq_iff {a b c d : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d) :
+    Real.log a - Real.log b = Real.log c - Real.log d ↔ a * d = c * b := by
+  have ha' : (0:ℝ) < a := by exact_mod_cast ha
+  have hb' : (0:ℝ) < b := by exact_mod_cast hb
+  have hc' : (0:ℝ) < c := by exact_mod_cast hc
+  have hd' : (0:ℝ) < d := by exact_mod_cast hd
+  rw [← Real.log_div (ne_of_gt ha') (ne_of_gt hb'), ← Real.log_div (ne_of_gt hc') (ne_of_gt hd')]
+  constructor
+  · intro hlog
+    have hpos1 : (0:ℝ) < (a : ℝ) / b := by positivity
+    have hpos2 : (0:ℝ) < (c : ℝ) / d := by positivity
+    have heq : (a : ℝ) / b = (c : ℝ) / d := by
+      have h1 := Real.exp_log hpos1
+      have h2 := Real.exp_log hpos2
+      rw [← h1, ← h2, hlog]
+    rw [div_eq_div_iff (ne_of_gt hb') (ne_of_gt hd')] at heq
+    exact_mod_cast heq
+  · intro hmul
+    have heq : (a : ℝ) / b = (c : ℝ) / d := by
+      rw [div_eq_div_iff (ne_of_gt hb') (ne_of_gt hd')]
+      exact_mod_cast hmul
+    rw [heq]
+
+/-- **The Gram depends only on the ratio.** -/
+theorem autoCorrelation_rightPart_ratio_eq {m n m' n' : ℕ} (hm : 0 < m) (hn : 0 < n)
+    (hm' : 0 < m') (hn' : 0 < n') (hratio : m * n' = m' * n) :
+    autoCorrelation (rightPart F) (Real.log m - Real.log n)
+      = autoCorrelation (rightPart F) (Real.log m' - Real.log n') := by
+  rw [(log_sub_log_eq_iff hm hn hm' hn').mpr hratio]
+
+
+/-! ### The multiplicity of a ratio
+
+Since the Gram depends only on the ratio, its total weight is organised by multiplicity: the
+pairs of a window realising a reduced ratio `a/b` are exactly the multiples `(ka, kb)`, so a
+ratio of height `max(a,b)` occurs at most `Y / max(a,b)` times below `Y`.  The Gram's mass
+therefore concentrates on ratios of small height — the divisor structure of the window controls
+the bilinear form. -/
+
+/-- **The ratio parametrisation.** Pairs with a given reduced ratio are the multiples of it. -/
+theorem ratio_param {a b n m : ℕ} (hab : Nat.Coprime a b) (ha : 0 < a) (h : n * b = m * a) :
+    ∃ k, n = k * a ∧ m = k * b := by
+  have hdvdnb : a ∣ n * b := ⟨m, by rw [h]; ring⟩
+  have hdvd : a ∣ n := (Nat.Coprime.dvd_of_dvd_mul_right hab hdvdnb)
+  obtain ⟨k, hk⟩ := hdvd
+  refine ⟨k, by rw [hk]; ring, ?_⟩
+  have hcancel : a * (k * b) = a * m := by
+    rw [hk] at h
+    calc a * (k * b) = a * k * b := by ring
+      _ = m * a := h
+      _ = a * m := by ring
+  exact (Nat.eq_of_mul_eq_mul_left ha hcancel).symm
+
+/-- A reduced ratio of height `a` occurs at most `Y / a` times below `Y`: the first coordinates
+of the pairs realising it are multiples of `a`. -/
+theorem card_ratioFirsts_le {a b Y : ℕ} (hab : Nat.Coprime a b) (ha : 0 < a) (S : Finset ℕ)
+    (hS : ∀ n ∈ S, ∃ m, n * b = m * a) (hSY : ∀ n ∈ S, 1 ≤ n ∧ n ≤ Y) :
+    S.card ≤ Y / a := by
+  classical
+  have hsub : S ⊆ Finset.image (fun k => k * a) (Finset.Icc 1 (Y / a)) := by
+    intro n hn
+    obtain ⟨m, hnm⟩ := hS n hn
+    obtain ⟨hn1, hn2⟩ := hSY n hn
+    obtain ⟨k, hk, -⟩ := ratio_param hab ha hnm
+    refine Finset.mem_image.mpr ⟨k, ?_, hk.symm⟩
+    rw [Finset.mem_Icc]
+    constructor
+    · rcases Nat.eq_zero_or_pos k with h0 | h0
+      · exfalso; rw [h0, zero_mul] at hk; omega
+      · exact h0
+    · rw [Nat.le_div_iff_mul_le ha]
+      omega
+  refine le_trans (Finset.card_le_card hsub) ?_
+  exact le_trans Finset.card_image_le (by simp [Nat.card_Icc])
+
+
+/-! ### The optimised `ℓ²` bound
+
+Optimising the free parameter of the bipartite split turns the two-term estimate into a single
+geometric mean: the prime side beyond the aperture is at most the geometric mean of the left
+half's mass and the Schur constant times the coefficient energy. -/
+
+/-- Optimising a two-term bound over its free parameter. -/
+theorem le_sqrt_mul_of_two_mul_le {P A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (h : ∀ ε : ℝ, 0 < ε → 2 * P ≤ ε * A + ε⁻¹ * B) : P ≤ Real.sqrt (A * B) := by
+  rcases le_or_gt P 0 with hP | hP
+  · exact le_trans hP (Real.sqrt_nonneg _)
+  rcases eq_or_lt_of_le hA with hA0 | hA0
+  · exfalso
+    have hspec := h (B / (2 * P) + 1) (by positivity)
+    rw [← hA0, mul_zero, zero_add] at hspec
+    have hεpos : (0:ℝ) < B / (2 * P) + 1 := by positivity
+    rw [inv_mul_eq_div] at hspec
+    have hlt : B / (B / (2 * P) + 1) < 2 * P := by
+      rw [div_lt_iff₀ hεpos]
+      have hexp : 2 * P * (B / (2 * P) + 1) = B + 2 * P := by field_simp
+      rw [hexp]
+      linarith
+    linarith
+  · have hεpos : (0:ℝ) < P / A := by positivity
+    have hspec := h (P / A) hεpos
+    rw [inv_div] at hspec
+    have hkey : P ^ 2 ≤ A * B := by
+      have hmul : (P / A) * A = P := by field_simp
+      have hmul2 : (A / P) * B = A * B / P := by field_simp
+      rw [hmul, hmul2] at hspec
+      rw [← sub_nonneg] at hspec
+      have : 0 ≤ A * B / P - P := by linarith
+      rw [sub_nonneg, le_div_iff₀ hP] at this
+      nlinarith [this]
+    exact (Real.le_sqrt hP.le (mul_nonneg hA hB)).mpr hkey
+
+/-- **The optimised bipartite bound.** -/
+theorem sum_lag_le_sqrt (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → F y = 0) {T : Finset ℕ} {c lag : ℕ → ℝ}
+    (hc : ∀ n ∈ T, 0 ≤ c n) (hlag : ∀ n ∈ T, r < lag n) {R : ℝ} (hR0 : 0 ≤ R)
+    (hR : ∀ n ∈ T, ∑ m ∈ T, |autoCorrelation (rightPart F) (lag m - lag n)| ≤ R) :
+    ∑ n ∈ T, c n * autoCorrelation F (lag n)
+      ≤ Real.sqrt ((∫ x, leftPart F x ^ 2) * (R * ∑ n ∈ T, c n ^ 2)) := by
+  refine le_sqrt_mul_of_two_mul_le ?_ ?_ fun ε hε => ?_
+  · exact MeasureTheory.integral_nonneg fun x => sq_nonneg _
+  · exact mul_nonneg hR0 (Finset.sum_nonneg fun n _ => sq_nonneg _)
+  · exact two_mul_sum_lag_le_schur hF hFc hsupp hc hlag hε hR
+
+
+/-! ### Dilating the test is a change of source
+
+Dilating a test by `λ` rescales its autocorrelation and moves the lags: the dilated test reads
+the original one at the lags `λ log n = log n^λ`.  So a dilation of the test is exactly a passage
+to the Beurling system whose generalised primes are the `λ`-th powers of the ordinary ones — and
+by source rigidity that system has a different defect.  Dilation invariance of a positivity
+statement would therefore be a statement about a whole family of sources, not about `ζ`. -/
+
+/-- **The dilation law for the autocorrelation.** -/
+theorem autoCorrelation_dilate {lam : ℝ} (hlam : 0 < lam) (F : ℝ → ℝ) (t : ℝ) :
+    autoCorrelation (fun x => F (lam * x)) t = lam⁻¹ * autoCorrelation F (lam * t) := by
+  rw [autoCorrelation, autoCorrelation]
+  have hstep : (∫ x, F (lam * x) * F (lam * (x + t)))
+      = ∫ x, (fun y => F y * F (y + lam * t)) (lam * x) := by
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show F (lam * x) * F (lam * (x + t)) = F (lam * x) * F (lam * x + lam * t)
+    rw [show lam * (x + t) = lam * x + lam * t by ring]
+  rw [hstep, MeasureTheory.Measure.integral_comp_mul_left
+      (fun y => F y * F (y + lam * t)) lam, abs_of_pos (inv_pos.mpr hlam), smul_eq_mul]
+
+/-- The dilated test's prime side reads the original test at the dilated lags. -/
+theorem sum_lag_dilate {lam : ℝ} (hlam : 0 < lam) (F : ℝ → ℝ) (T : Finset ℕ) (c : ℕ → ℝ) :
+    ∑ n ∈ T, c n * autoCorrelation (fun x => F (lam * x)) (Real.log n)
+      = lam⁻¹ * ∑ n ∈ T, c n * autoCorrelation F (lam * Real.log n) := by
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [autoCorrelation_dilate hlam]
+  ring
+
+/-- The dilated lags are the logarithms of the generalised primes `n^λ`. -/
+theorem lam_mul_log_eq_log_rpow {lam : ℝ} {n : ℕ} (hn : 0 < n) :
+    lam * Real.log n = Real.log ((n : ℝ) ^ lam) := by
+  have hn' : (0:ℝ) < n := by exact_mod_cast hn
+  rw [Real.log_rpow hn']
+
+
+/-! ### The lag Gram form is a square
+
+The full Gram form of a family of atoms is the squared norm of the superposition
+`∑ cₙ F(· + tₙ)`, so it is nonnegative for every family of atoms, weights and lags — no arithmetic
+input enters.  Positivity of the arithmetic side alone is therefore automatic, and all the content
+of a positivity statement sits in the comparison with the polar side.  Splitting off the diagonal
+turns the identity into the sharp lower bound `-A(0)·∑ cₙ²` for the off-diagonal sum, the exact
+counterpart of the ladder and Schur upper bounds. -/
+
+theorem integrable_shift_mul (hF : Continuous F) (hFc : HasCompactSupport F) (a b : ℝ) :
+    Integrable fun x => F (x + a) * F (x + b) := by
+  have h : Integrable fun x => F x * F (x + (b - a)) :=
+    (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  refine (h.comp_add_right a).congr (Filter.Eventually.of_forall fun x => ?_)
+  show F (x + a) * F (x + a + (b - a)) = F (x + a) * F (x + b)
+  rw [show x + a + (b - a) = x + b by ring]
+
+theorem integral_shift_mul (a b : ℝ) :
+    (∫ x, F (x + a) * F (x + b)) = autoCorrelation F (b - a) := by
+  rw [autoCorrelation]
+  have h := MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+    (fun y => F y * F (y + (b - a))) a
+  rw [← h]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show F (x + a) * F (x + b) = F (x + a) * F (x + a + (b - a))
+  rw [show x + a + (b - a) = x + b by ring]
+
+/-- **The Gram form is a square.**  The double lag sum is the energy of the superposition. -/
+theorem sum_gram_eq_integral_sq (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c t : ℕ → ℝ) :
+    ∑ m ∈ T, ∑ n ∈ T, c m * c n * autoCorrelation F (t n - t m)
+      = ∫ x, (∑ n ∈ T, c n * F (x + t n)) ^ 2 := by
+  have hint2 : ∀ m : ℕ, ∀ n ∈ T,
+      Integrable fun x => c m * c n * (F (x + t m) * F (x + t n)) :=
+    fun m n _ => (integrable_shift_mul hF hFc (t m) (t n)).const_mul (c m * c n)
+  have hint : ∀ m ∈ T,
+      Integrable fun x => ∑ n ∈ T, c m * c n * (F (x + t m) * F (x + t n)) :=
+    fun m _ => MeasureTheory.integrable_finsetSum T (hint2 m)
+  have hexp : ∀ x : ℝ, (∑ n ∈ T, c n * F (x + t n)) ^ 2
+      = ∑ m ∈ T, ∑ n ∈ T, c m * c n * (F (x + t m) * F (x + t n)) := by
+    intro x
+    rw [sq, Finset.sum_mul_sum]
+    exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n _ => by ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexp),
+    MeasureTheory.integral_finsetSum T hint]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [MeasureTheory.integral_finsetSum T (hint2 m)]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [MeasureTheory.integral_const_mul, integral_shift_mul]
+
+/-- The lag Gram form is nonnegative for every family of weights and lags. -/
+theorem sum_gram_nonneg (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c t : ℕ → ℝ) :
+    0 ≤ ∑ m ∈ T, ∑ n ∈ T, c m * c n * autoCorrelation F (t n - t m) := by
+  rw [sum_gram_eq_integral_sq hF hFc]
+  exact MeasureTheory.integral_nonneg fun x => sq_nonneg _
+
+/-- Splitting the Gram form into its diagonal and its off-diagonal part. -/
+theorem sum_gram_split (T : Finset ℕ) (c t : ℕ → ℝ) :
+    ∑ m ∈ T, ∑ n ∈ T, c m * c n * autoCorrelation F (t n - t m)
+      = autoCorrelation F 0 * ∑ m ∈ T, c m ^ 2
+        + ∑ m ∈ T, ∑ n ∈ T.erase m, c m * c n * autoCorrelation F (t n - t m) := by
+  rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  rw [← Finset.add_sum_erase T _ hm]
+  congr 1
+  rw [sub_self]
+  ring
+
+/-- **The sharp lower bound for the off-diagonal lag sum.**  No arrangement of atoms can drive the
+off-diagonal part below minus the diagonal energy. -/
+theorem sum_gram_offDiag_ge (hF : Continuous F) (hFc : HasCompactSupport F)
+    (T : Finset ℕ) (c t : ℕ → ℝ) :
+    -(autoCorrelation F 0 * ∑ m ∈ T, c m ^ 2)
+      ≤ ∑ m ∈ T, ∑ n ∈ T.erase m, c m * c n * autoCorrelation F (t n - t m) := by
+  have h := sum_gram_nonneg hF hFc T c t
+  rw [sum_gram_split] at h
+  linarith
+
+
+/-! ### The displacement energy and its triangle law
+
+`D(t) = A(0) − A(t)` is half the squared `L²` distance between a test and its translate, so it is
+the square of a translation-invariant metric.  Subadditivity of that metric gives
+`D(s+t) ≤ 2D(s) + 2D(t)`, and hence `D(2t) ≤ 4D(t)`: a test that is almost translation-invariant
+at a lag is almost translation-invariant at twice the lag.  Read backwards, a lower bound on `D`
+at a large lag forces a lower bound at every smaller dyadic lag, which is exactly what the
+one-sided aperture law cannot supply by itself: the half law past the aperture now yields a
+nontrivial gap at *half* the aperture, where no overlap argument applies. -/
+
+/-- The displacement energy of a test at a lag. -/
+def displacement (F : ℝ → ℝ) (t : ℝ) : ℝ := autoCorrelation F 0 - autoCorrelation F t
+
+theorem autoCorrelation_zero_eq (F : ℝ → ℝ) : autoCorrelation F 0 = ∫ x, F x ^ 2 := by
+  rw [autoCorrelation]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show F x * F (x + 0) = F x ^ 2
+  rw [add_zero, sq]
+
+theorem integral_shift_sq (F : ℝ → ℝ) (t : ℝ) : (∫ x, F (x + t) ^ 2) = autoCorrelation F 0 := by
+  rw [autoCorrelation_zero_eq]
+  exact MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+    (fun y => F y ^ 2) t
+
+theorem integrable_sq (hF : Continuous F) (hFc : HasCompactSupport F) :
+    Integrable fun x => F x ^ 2 :=
+  ((hF.mul hF).integrable_of_hasCompactSupport hFc.mul_right).congr
+    (Filter.Eventually.of_forall fun _ => (sq _).symm)
+
+theorem integrable_diff_sq (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    Integrable fun x => (F x - F (x + t)) ^ 2 := by
+  have hc : Continuous fun x => F x - F (x + t) :=
+    hF.sub (hF.comp (continuous_id.add continuous_const))
+  have hs : HasCompactSupport fun x => F x - F (x + t) :=
+    hFc.sub (hFc.comp_homeomorph (Homeomorph.addRight t))
+  exact ((hc.mul hc).integrable_of_hasCompactSupport hs.mul_right).congr
+    (Filter.Eventually.of_forall fun _ => (sq _).symm)
+
+/-- **The displacement energy is half the squared distance to the translate.** -/
+theorem two_mul_displacement_eq (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    2 * displacement F t = ∫ x, (F x - F (x + t)) ^ 2 := by
+  have hsq := integrable_sq hF hFc
+  have hsqt : Integrable fun x => F (x + t) ^ 2 := by
+    simpa using hsq.comp_add_right t
+  have hprod : Integrable fun x => F x * F (x + t) :=
+    (hF.mul (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hexp : ∀ x : ℝ, (F x - F (x + t)) ^ 2
+      = F x ^ 2 - 2 * (F x * F (x + t)) + F (x + t) ^ 2 := fun x => by ring
+  have hpc : Integrable fun x => 2 * (F x * F (x + t)) := hprod.const_mul 2
+  have hdiff : Integrable fun x => F x ^ 2 - 2 * (F x * F (x + t)) := hsq.sub hpc
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexp),
+    MeasureTheory.integral_add hdiff hsqt, MeasureTheory.integral_sub hsq hpc,
+    MeasureTheory.integral_const_mul, integral_shift_sq]
+  have ht : (∫ x, F x * F (x + t)) = autoCorrelation F t := rfl
+  rw [← autoCorrelation_zero_eq, ht, displacement]
+  ring
+
+theorem displacement_nonneg (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    0 ≤ displacement F t := by
+  have he := two_mul_displacement_eq hF hFc t
+  have hi : (0:ℝ) ≤ ∫ x, (F x - F (x + t)) ^ 2 :=
+    MeasureTheory.integral_nonneg fun x => sq_nonneg _
+  linarith
+
+/-- **The triangle law for the displacement energy.** -/
+theorem displacement_add_le (hF : Continuous F) (hFc : HasCompactSupport F) (s t : ℝ) :
+    displacement F (s + t) ≤ 2 * displacement F s + 2 * displacement F t := by
+  have hshift := MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+    (fun y => (F y - F (y + t)) ^ 2) s
+  have hvi : Integrable fun x => (F (x + s) - F (x + s + t)) ^ 2 := by
+    simpa using (integrable_diff_sq hF hFc t).comp_add_right s
+  have hpt : ∀ x : ℝ, (F x - F (x + (s + t))) ^ 2
+      ≤ 2 * (F x - F (x + s)) ^ 2 + 2 * (F (x + s) - F (x + s + t)) ^ 2 := by
+    intro x
+    rw [show x + (s + t) = x + s + t by ring]
+    nlinarith [sq_nonneg (F x - 2 * F (x + s) + F (x + s + t))]
+  have hu2 : Integrable fun x => 2 * (F x - F (x + s)) ^ 2 :=
+    (integrable_diff_sq hF hFc s).const_mul 2
+  have hv2 : Integrable fun x => 2 * (F (x + s) - F (x + s + t)) ^ 2 := hvi.const_mul 2
+  have hsum : Integrable fun x =>
+      2 * (F x - F (x + s)) ^ 2 + 2 * (F (x + s) - F (x + s + t)) ^ 2 := hu2.add hv2
+  have hmono := MeasureTheory.integral_mono (integrable_diff_sq hF hFc (s + t)) hsum hpt
+  rw [MeasureTheory.integral_add hu2 hv2, MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_const_mul, hshift] at hmono
+  have e1 := two_mul_displacement_eq hF hFc (s + t)
+  have e2 := two_mul_displacement_eq hF hFc s
+  have e3 := two_mul_displacement_eq hF hFc t
+  linarith
+
+/-- Doubling a lag multiplies the displacement energy by at most four. -/
+theorem displacement_two_mul_le (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    displacement F (2 * t) ≤ 4 * displacement F t := by
+  have h := displacement_add_le hF hFc t t
+  rw [show t + t = 2 * t by ring] at h
+  linarith
+
+/-- The doubling law in terms of the autocorrelation. -/
+theorem autoCorrelation_two_mul_ge (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    4 * autoCorrelation F t - 3 * autoCorrelation F 0 ≤ autoCorrelation F (2 * t) := by
+  have h := displacement_two_mul_le hF hFc t
+  simp only [displacement] at h
+  linarith
+
+/-- **A gap at half the aperture.**  Past the aperture the half law forces `D ≥ A(0)/2`; the
+triangle law transports that gap down to half the aperture, where no overlap argument applies:
+the autocorrelation there is at most `7/8` of the mass. -/
+theorem autoCorrelation_le_seven_eighths (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r t : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) (ht : r < 2 * t) :
+    autoCorrelation F t ≤ 7 * autoCorrelation F 0 / 8 := by
+  have hhalf := autoCorrelation_le_half hF hFc hsupp ht
+  have hdbl := autoCorrelation_two_mul_ge hF hFc t
+  linarith
+
+
+/-! ### Dyadic transport of the aperture gap
+
+Iterating the doubling law gives `D(2ʲt) ≤ 4ʲ D(t)`, the exact square scaling along the dyadic
+multiples of a lag.  Running it against the half law transports the gap past the aperture down to
+*every* positive lag: at a lag `u` the autocorrelation is bounded away from the full mass by an
+explicit factor depending only on how many doublings separate `u` from the aperture.  Below the
+aperture no overlap argument gives anything, so this is the first quantitative statement there. -/
+
+/-- Square scaling of the displacement energy along dyadic multiples of a lag. -/
+theorem displacement_two_pow_le (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) :
+    ∀ j : ℕ, displacement F (2 ^ j * t) ≤ 4 ^ j * displacement F t := by
+  intro j
+  induction j with
+  | zero => simp
+  | succ j ih =>
+      have hstep := displacement_two_mul_le hF hFc (2 ^ j * t)
+      have hre : (2:ℝ) ^ (j + 1) * t = 2 * (2 ^ j * t) := by ring
+      have hpow : (4:ℝ) ^ (j + 1) = 4 * 4 ^ j := by ring
+      rw [hre, hpow]
+      linarith
+
+/-- **A gap at every positive lag.**  If `u` reaches past the aperture after `j` doublings, the
+autocorrelation at `u` falls short of the full mass by at least `1/(2·4ʲ)` of it. -/
+theorem autoCorrelation_le_of_two_pow (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r u : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) {j : ℕ} (hj : r < 2 ^ j * u) :
+    autoCorrelation F u ≤ autoCorrelation F 0 * (1 - 1 / (2 * 4 ^ j)) := by
+  have hhalf := autoCorrelation_le_half hF hFc hsupp hj
+  have hscale := displacement_two_pow_le hF hFc u j
+  simp only [displacement] at hscale
+  rw [mul_sub, mul_one, mul_one_div, le_sub_iff_add_le]
+  have h1 : autoCorrelation F 0
+      ≤ (autoCorrelation F 0 - autoCorrelation F u) * (2 * 4 ^ j) := by linarith
+  have h2 : autoCorrelation F 0 / (2 * 4 ^ j) ≤ autoCorrelation F 0 - autoCorrelation F u :=
+    (div_le_iff₀ (by positivity : (0:ℝ) < 2 * 4 ^ j)).mpr h1
+  linarith
+
+/-- Every positive lag is reached from the aperture by finitely many doublings, so the
+autocorrelation is bounded away from the full mass at every positive lag. -/
+theorem exists_gap_of_pos (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r u : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) (hu : 0 < u) :
+    ∃ j : ℕ, autoCorrelation F u ≤ autoCorrelation F 0 * (1 - 1 / (2 * 4 ^ j)) := by
+  obtain ⟨j, hjr⟩ := pow_unbounded_of_one_lt (r / u) (by norm_num : (1:ℝ) < 2)
+  exact ⟨j, autoCorrelation_le_of_two_pow hF hFc hsupp
+    ((div_lt_iff₀ hu).mp hjr)⟩
+
+
+/-! ### The quadratic aperture gap
+
+Chaining `k` unit steps instead of doubling gives the sharp square law `D(kt) ≤ k²D(t)`, because
+the displacement telescopes along the chain and the finite Cauchy–Schwarz inequality costs exactly
+the length.  Against the half law this bounds the normalised autocorrelation of *any* test of
+aperture `r` by `1 − u²/(8r²)` at every lag `0 < u ≤ r`: the translate family of a compactly
+supported test has a universal quadratic spectral gap, with no hypothesis beyond the aperture. -/
+
+theorem integrable_diff_sq_shift (hF : Continuous F) (hFc : HasCompactSupport F) (a t : ℝ) :
+    Integrable fun x => (F (x + a) - F (x + a + t)) ^ 2 := by
+  simpa using (integrable_diff_sq hF hFc t).comp_add_right a
+
+theorem integral_diff_sq_shift (hF : Continuous F) (hFc : HasCompactSupport F) (a t : ℝ) :
+    (∫ x, (F (x + a) - F (x + a + t)) ^ 2) = 2 * displacement F t := by
+  rw [two_mul_displacement_eq hF hFc t]
+  exact MeasureTheory.integral_add_right_eq_self (μ := (volume : Measure ℝ))
+    (fun y => (F y - F (y + t)) ^ 2) a
+
+/-- **The square law for the displacement energy.**  Telescoping the displacement along a chain of
+`k` equal steps and paying the finite Cauchy–Schwarz cost gives exactly the square of the length. -/
+theorem displacement_nat_mul_le (hF : Continuous F) (hFc : HasCompactSupport F) (t : ℝ) (k : ℕ) :
+    displacement F (k * t) ≤ k ^ 2 * displacement F t := by
+  have hpt : ∀ x : ℝ, (F x - F (x + k * t)) ^ 2
+      ≤ k * ∑ i ∈ Finset.range k, (F (x + i * t) - F (x + i * t + t)) ^ 2 := by
+    intro x
+    have hcong : ∀ i ∈ Finset.range k,
+        F (x + (i : ℝ) * t) - F (x + ((i : ℕ) + 1 : ℕ) * t)
+          = F (x + (i : ℝ) * t) - F (x + (i : ℝ) * t + t) := by
+      intro i _
+      push_cast
+      rw [show x + ((i : ℝ) + 1) * t = x + (i : ℝ) * t + t by ring]
+    have htel : ∑ i ∈ Finset.range k, (F (x + (i : ℝ) * t) - F (x + (i : ℝ) * t + t))
+        = F x - F (x + k * t) := by
+      rw [← Finset.sum_congr rfl hcong,
+        Finset.sum_range_sub' (fun i : ℕ => F (x + (i : ℝ) * t)) k]
+      norm_num
+    rw [← htel]
+    have hcs := sq_sum_le_card_mul_sum_sq (s := Finset.range k)
+      (f := fun i : ℕ => F (x + (i : ℝ) * t) - F (x + (i : ℝ) * t + t))
+    simpa using hcs
+  have hint_sum : Integrable fun x =>
+      ∑ i ∈ Finset.range k, (F (x + (i : ℝ) * t) - F (x + (i : ℝ) * t + t)) ^ 2 :=
+    MeasureTheory.integrable_finsetSum _
+      (fun i _ => integrable_diff_sq_shift hF hFc ((i : ℝ) * t) t)
+  have hmono := MeasureTheory.integral_mono (integrable_diff_sq hF hFc ((k : ℝ) * t))
+    (hint_sum.const_mul (k : ℝ)) hpt
+  rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_finsetSum _
+      (fun i _ => integrable_diff_sq_shift hF hFc ((i : ℝ) * t) t)] at hmono
+  simp only [integral_diff_sq_shift hF hFc, Finset.sum_const, Finset.card_range,
+    nsmul_eq_mul] at hmono
+  have e1 := two_mul_displacement_eq hF hFc ((k : ℝ) * t)
+  nlinarith [hmono, e1]
+
+theorem autoCorrelation_zero_nonneg (hF : Continuous F) (hFc : HasCompactSupport F) :
+    0 ≤ autoCorrelation F 0 := by
+  rw [autoCorrelation_zero_eq]
+  exact MeasureTheory.integral_nonneg fun x => sq_nonneg _
+
+/-- The aperture gap transported down a chain of `k` equal steps. -/
+theorem autoCorrelation_le_of_nat_mul (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r u : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) {k : ℕ} (hk : r < k * u) :
+    autoCorrelation F u ≤ autoCorrelation F 0 * (1 - 1 / (2 * k ^ 2)) := by
+  rcases Nat.eq_zero_or_pos k with hk0 | hkpos
+  · subst hk0
+    have := le_of_abs_le (abs_autoCorrelation_le hF hFc u)
+    simpa using this
+  have hkR : (0:ℝ) < k := by exact_mod_cast hkpos
+  have hhalf := autoCorrelation_le_half hF hFc hsupp hk
+  have hscale := displacement_nat_mul_le hF hFc u k
+  simp only [displacement] at hscale
+  rw [mul_sub, mul_one, mul_one_div, le_sub_iff_add_le]
+  have h1 : autoCorrelation F 0
+      ≤ (autoCorrelation F 0 - autoCorrelation F u) * (2 * (k : ℝ) ^ 2) := by linarith
+  have h2 : autoCorrelation F 0 / (2 * (k : ℝ) ^ 2)
+      ≤ autoCorrelation F 0 - autoCorrelation F u :=
+    (div_le_iff₀ (by positivity : (0:ℝ) < 2 * (k : ℝ) ^ 2)).mpr h1
+  linarith
+
+/-- **The universal quadratic gap.**  For every test of aperture `r` and every lag `0 < u ≤ r`,
+the normalised autocorrelation is at most `1 − u²/(8r²)`. -/
+theorem autoCorrelation_le_quadratic (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r u : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) (hu : 0 < u) (hur : u ≤ r) :
+    autoCorrelation F u ≤ autoCorrelation F 0 * (1 - u ^ 2 / (8 * r ^ 2)) := by
+  have hr : 0 < r := lt_of_lt_of_le hu hur
+  set k : ℕ := ⌊r / u⌋₊ + 1 with hkdef
+  have hkR : (k : ℝ) = (⌊r / u⌋₊ : ℝ) + 1 := by rw [hkdef]; push_cast; ring
+  have hone : (1:ℝ) ≤ r / u := (one_le_div hu).mpr hur
+  have hgt : r / u < (k : ℝ) := by rw [hkR]; exact Nat.lt_floor_add_one (r / u)
+  have hk : r < (k : ℝ) * u := by
+    rw [← div_lt_iff₀ hu]; exact hgt
+  have hle : (k : ℝ) ≤ 2 * (r / u) := by
+    have := Nat.floor_le (le_trans zero_le_one hone)
+    rw [hkR]; linarith
+  have hkpos : (0:ℝ) < (k : ℝ) := by rw [hkR]; positivity
+  have hmain := autoCorrelation_le_of_nat_mul hF hFc hsupp hk
+  have hA0 := autoCorrelation_zero_nonneg hF hFc
+  have hku : (k : ℝ) * u ≤ 2 * r := by
+    have : (k : ℝ) * u ≤ 2 * (r / u) * u := by nlinarith
+    rwa [show 2 * (r / u) * u = 2 * r by field_simp] at this
+  have hsq : ((k : ℝ) * u) ^ 2 ≤ (2 * r) ^ 2 := by nlinarith [mul_pos hkpos hu]
+  have hfrac : u ^ 2 / (8 * r ^ 2) ≤ 1 / (2 * (k : ℝ) ^ 2) := by
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [hsq]
+  have hstep : autoCorrelation F 0 * (1 - 1 / (2 * (k : ℝ) ^ 2))
+      ≤ autoCorrelation F 0 * (1 - u ^ 2 / (8 * r ^ 2)) := by
+    apply mul_le_mul_of_nonneg_left _ hA0
+    linarith
+  linarith
+
+end GaloisForLFunctions.ArithmeticIncidencePositivity

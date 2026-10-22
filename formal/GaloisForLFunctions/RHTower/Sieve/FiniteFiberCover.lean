@@ -1,12 +1,33 @@
 import GaloisForLFunctions.RHTower.Sieve.FiniteFiberPartition
 import Mathlib.Algebra.Order.Chebyshev
 
+/-!
+# Fibre counts and additive energy under a finite cover
+
+For a map `f : α → β` on a finite set and a predicate `p`, the restricted fibre count of `b` is
+`#{a : p a ∧ f a = b}` and the restricted energy is `∑_b (fibre count)²`. If the `p`-points are
+covered by finitely many pieces `cover i`, each fibre count is at most the sum of the piece counts,
+and by Cauchy–Schwarz the energy is at most `#ι` times the sum of the piece energies.
+
+## Main results
+
+- `finiteFiberCountWith_le_cover`: `count_p(b) ≤ ∑_i count_{p ∧ cover i}(b)`.
+- `finiteFiberEnergyWith_le_cover`: `energy_p ≤ #ι · ∑_i energy_{p ∧ cover i}`.
+
+## Hypotheses
+
+Both results are unconditional finite combinatorics; they take as input the covering hypothesis
+that every `a` with `p a` satisfies `cover i a` for some `i`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- If every `p`-point lies in some piece `cover i`, the `p`-restricted fibre count of `b` is at most
+the sum over pieces of the fibre counts restricted to `p ∧ cover i`. -/
 theorem finiteFiberCountWith_le_cover
     {α β ι : Type*} [Fintype α] [Fintype ι] [DecidableEq β]
     (f : α → β) (p : α → Prop) [DecidablePred p]
@@ -33,6 +54,8 @@ theorem finiteFiberCountWith_le_cover
       intro i _
       rfl
 
+/-- If every `p`-point lies in some piece `cover i`, the `p`-restricted fibre energy is at most
+`#ι` times the sum of the piece energies, by Cauchy–Schwarz on each fibre. -/
 theorem finiteFiberEnergyWith_le_cover
     {α β ι : Type*} [Fintype α] [Fintype β] [Fintype ι]
     [DecidableEq β]

@@ -8,6 +8,53 @@ import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 import Mathlib.Algebra.Homology.EulerCharacteristic
 import Mathlib.CategoryTheory.Abelian.Exact
 
+/-!
+# Higher-arity serial observer formation: coefficient complexes and their homology
+
+A coefficient system `C : Coeff k ι E` over a finite linearly ordered index set `ι` assigns to every
+finset `s ⊆ ι` a subspace `C(s) ⊆ E`, antitone in `s`; its chains in degree `p` are `E`-valued
+functions on `p`-element subsets `s` with values in `C(s)`, with the alternating face boundary.
+For a family of subspaces `W i ⊆ V` the formation system takes `⋂_{i ∈ s} W i` on nonempty `s`
+and the join `⨆ i, W i` on `s = ∅`; composable linear observations `L : V → E`, `M : E → Z`
+give the upstream system `L(formation)`, the composite system `M(L(formation))`, and the retained
+system
+`s ↦ M(⋂_{i ∈ s} L(W i))`. The module builds the coefficient chain complexes, proves that the
+observer-erasure sequence `C ∩ ker f → C → f(C)` and the retention sequence (inclusion followed by
+its cokernel) are short exact, derives their long exact homology sequences, treats the neutral case
+where `M` is injective on `L(⨆ i, W i)`, and proves Euler-characteristic additivity, both at chain
+level and in homology with the connecting-map rank as the exact defect.
+
+## Main results
+
+- `observerErasure_shortExact`, `serialErasure_shortExact`, `serialRetention_shortExact`,
+  `erasure_shortExact`, `retention_shortExact`: short exactness of the coefficient sequences.
+- `serialErasure_exact_sameDegree`, `serialErasure_exact_toConnecting`,
+  `serialErasure_exact_fromConnecting` and the `serialRetention_` analogues: exactness of the long
+  homology sequences at each position.
+- `twoLeg_serialObserver_fiveTerm_exact`: the two-subspace five-term exact sequence
+  `0 → E_M(L;A,B) → O_L(A,B) → O_{M∘L}(A,B) → O_M(L A, L B) → 0`.
+- `serialNeutral_homologyMap_isIso`: if `M` is injective on `L(⨆ i, W i)`, then `M` induces an
+  isomorphism on the homology of the upstream complex.
+- `homologyEulerDefect_eq_connectingRank`: for a short exact sequence of complexes with
+  finite-dimensional homology, `χ_{n+1}(X₁) - χ_{n+1}(X₂) + χ_{n+1}(X₃) = (-1)^n rank δ_n`.
+- `serialErasure_homologyEuler`, `serialRetention_homologyEuler`: additivity of truncated homology
+  Euler characteristics through degree `|ι|`.
+- `observerErasure_euler`, `serialErasure_euler`, `serialRetention_euler`: additivity of truncated
+  chain-level Euler characteristics.
+- `positiveHodge_finrank`: in finite-dimensional inner product spaces, the kernel of the Hodge
+  Laplacian of `A → B → D` has the dimension of the homology `ker d₁ / im d₂`.
+
+## Hypotheses
+
+All results are unconditional. Euler statements assume finite-dimensionality of the relevant
+ambient spaces (instance arguments); `homologyEulerDefect_eq_connectingRank` and
+`shortExact_homologyEuler_of_topConnecting_zero` take finite-dimensionality of every homology group
+as explicit arguments, and the latter also assumes the top connecting rank is zero. The neutral-case
+results assume `M` injective on `L(⨆ i, W i)`. `erasure_shortExact` takes a
+`SerialFormationCoefficients` bundle whose fields include degreewise exactness and surjectivity of
+the erasure maps.
+-/
+
 open CategoryTheory CategoryTheory.Limits
 
 noncomputable section
@@ -23,6 +70,8 @@ universe uR uI uE
 variable (k : Type uR) [Field k] (ι : Type uI) [Fintype ι] [LinearOrder ι]
 variable (E : Type uE) [AddCommGroup E] [Module k E]
 
+/-- The chain complex of a coefficient system: degree-`p` chains on `p`-element subsets with values
+in `C(s)`, with the alternating face boundary. -/
 def coefficientComplex (C : Coeff k ι E) : ChainComplex (ModuleCat k) ℕ :=
   ChainComplex.of
     (fun p => ModuleCat.of k (Chains k ι E C p))
@@ -39,6 +88,7 @@ theorem coefficientBoundary_range_le_ker (C : Coeff k ι E) (p : ℕ) :
 
 variable (E' : Type uE) [AddCommGroup E'] [Module k E']
 
+/-- A morphism of coefficient systems induces a chain map of coefficient complexes. -/
 def coefficientComplexMap {C : Coeff k ι E} {C' : Coeff k ι E'}
     (F : CoeffMorphism k ι E C E' C') :
     coefficientComplex k ι E C ⟶ coefficientComplex k ι E' C' :=
@@ -52,6 +102,8 @@ def coefficientComplexMap {C : Coeff k ι E} {C' : Coeff k ι E'}
 
 variable (S : SerialFormationCoefficients k ι E)
 
+/-- The erasure sequence `K_{M/L} → F_L → F_{ML}` of a serial formation coefficient bundle, as a
+short complex of chain complexes. -/
 def erasureShortComplex :
     ShortComplex (ChainComplex (ModuleCat k) ℕ) :=
   ShortComplex.mk
@@ -68,6 +120,8 @@ def erasureShortComplex :
       rw [← S.erase_exact p]
       exact ⟨x, rfl⟩)
 
+/-- The erasure sequence is short exact, from the bundle's degreewise exactness and surjectivity
+fields and injectivity of coefficient inclusions. -/
 theorem erasure_shortExact : (erasureShortComplex k ι E S).ShortExact := by
   apply HomologicalComplex.shortExact_of_degreewise_shortExact
   intro p
@@ -88,6 +142,7 @@ theorem erasure_shortExact : (erasureShortComplex k ι E S).ShortExact := by
 
 variable {P Q : Coeff k ι E} (h : CoeffLE k ι E P Q)
 
+/-- The monic chain map of coefficient complexes induced by an inclusion `P ≤ Q` of systems. -/
 def retentionInclusion : coefficientComplex k ι E P ⟶ coefficientComplex k ι E Q :=
   coefficientComplexMap k ι E E (coefficientInclusion k ι E h)
 
@@ -96,11 +151,13 @@ instance retentionInclusion_mono : Mono (retentionInclusion k ι E h) :=
     (ModuleCat.mono_iff_injective _).2
       (coefficientInclusion_injective k ι E h (p := p))
 
+/-- The retention sequence: the inclusion of coefficient complexes followed by its cokernel. -/
 def retentionShortComplex : ShortComplex (ChainComplex (ModuleCat k) ℕ) :=
   ShortComplex.mk (retentionInclusion k ι E h)
     (cokernel.π (retentionInclusion k ι E h))
     (cokernel.condition (retentionInclusion k ι E h))
 
+/-- The retention sequence is short exact. -/
 theorem retention_shortExact : (retentionShortComplex k ι E h).ShortExact := by
   refine ShortComplex.ShortExact.mk'
     (ShortComplex.exact_cokernel (retentionInclusion k ι E h)) ?_ ?_
@@ -111,9 +168,11 @@ theorem retention_shortExact : (retentionShortComplex k ι E h).ShortExact := by
 
 variable (V : Type uE) [AddCommGroup V] [Module k V]
 
+/-- The intersection `⋂_{i ∈ s} W i` of a family of subspaces over a finset. -/
 def familyIntersection (W : ι → Submodule k V) (s : Finset ι) : Submodule k V :=
   ⨅ i, ⨅ (_ : i ∈ s), W i
 
+/-- The join `⨆ i, W i` of a family of subspaces. -/
 def familyJoin (W : ι → Submodule k V) : Submodule k V :=
   ⨆ i, W i
 
@@ -130,9 +189,11 @@ theorem familyIntersection_le_leg (W : ι → Submodule k V) {s : Finset ι}
   simp only [familyIntersection, Submodule.mem_iInf] at hx
   exact hx i hi
 
+/-- Formation object: `⋂_{i ∈ s} W i` for nonempty `s`, and the join `⨆ i, W i` for `s = ∅`. -/
 def formationObject (W : ι → Submodule k V) (s : Finset ι) : Submodule k V :=
   if s.Nonempty then familyIntersection k ι V W s else familyJoin k ι V W
 
+/-- The formation coefficient system of a family of subspaces `W`. -/
 def formationCoeff (W : ι → Submodule k V) : Coeff k ι V where
   obj := formationObject k ι V W
   anti := by
@@ -148,10 +209,12 @@ def formationCoeff (W : ι → Submodule k V) : Coeff k ι V where
         exact (familyIntersection_le_leg k ι V W hi).trans (le_iSup W i)
       · rw [if_neg hs]
 
+/-- The image coefficient system `s ↦ f(C(s))`. -/
 def imageCoeff (C : Coeff k ι V) (f : V →ₗ[k] E) : Coeff k ι E where
   obj s := (C.obj s).map f
   anti := fun h => Submodule.map_mono (C.anti h)
 
+/-- The kernel coefficient system `s ↦ C(s) ∩ ker f`. -/
 def kernelCoeff (C : Coeff k ι V) (f : V →ₗ[k] E) : Coeff k ι V where
   obj s := C.obj s ⊓ LinearMap.ker f
   anti := fun h => inf_le_inf (C.anti h) le_rfl
@@ -160,11 +223,14 @@ theorem kernelCoeffLE (C : Coeff k ι V) (f : V →ₗ[k] E) :
     CoeffLE k ι V (kernelCoeff k ι E V C f) C :=
   fun _ => inf_le_left
 
+/-- `f` as a morphism from `C` to its image system `f(C)`. -/
 def imageCoeffMorphism (C : Coeff k ι V) (f : V →ₗ[k] E) :
     CoeffMorphism k ι V C E (imageCoeff k ι E V C f) where
   map := f
   map_obj _ x hx := ⟨x, hx, rfl⟩
 
+/-- Every chain of the image system `f(C)` is the image of a chain of `C`: the induced chain map is
+surjective in each degree. -/
 theorem imageCoeffMap_surjective (C : Coeff k ι V) (f : V →ₗ[k] E) (p : ℕ) :
     Function.Surjective
       (coeffMap k ι V C E (imageCoeff k ι E V C f)
@@ -233,6 +299,8 @@ theorem component_ambientCoeffMap {C : Coeff k ι V} {C' : Coeff k ι E}
     F.map (DirectSum.component k (Simplex ι p) (fun _ => V) t x)) s
   exact hsum
 
+/-- Degreewise exactness on chains of `C ∩ ker f → C → f(C)`: the range of the inclusion is the
+kernel of the image map. -/
 theorem kernel_image_chain_exact (C : Coeff k ι V) (f : V →ₗ[k] E) (p : ℕ) :
     LinearMap.range
         (coeffMap k ι V (kernelCoeff k ι E V C f) V C
@@ -278,6 +346,7 @@ theorem kernel_image_chain_exact (C : Coeff k ι V) (f : V →ₗ[k] E) (p : ℕ
     exact LinearMap.congr_fun
       (ambientCoeffMap_inclusion_eq_id k ι V (kernelCoeffLE k ι E V C f)) x.1
 
+/-- The observer-erasure sequence `C ∩ ker f → C → f(C)` of coefficient complexes. -/
 def observerErasureShortComplex (C : Coeff k ι V) (f : V →ₗ[k] E) :
     ShortComplex (ChainComplex (ModuleCat k) ℕ) :=
   ShortComplex.mk
@@ -295,6 +364,8 @@ def observerErasureShortComplex (C : Coeff k ι V) (f : V →ₗ[k] E) :
       rw [← kernel_image_chain_exact k ι E V C f p]
       exact ⟨x, rfl⟩)
 
+/-- For every linear map `f`, `0 → (C ∩ ker f) → C → f(C) → 0` is a short exact sequence of
+coefficient complexes. -/
 theorem observerErasure_shortExact (C : Coeff k ι V) (f : V →ₗ[k] E) :
     (observerErasureShortComplex k ι E V C f).ShortExact := by
   apply HomologicalComplex.shortExact_of_degreewise_shortExact
@@ -318,13 +389,17 @@ theorem observerErasure_shortExact (C : Coeff k ι V) (f : V →ₗ[k] E) :
 
 variable (Z : Type uE) [AddCommGroup Z] [Module k Z]
 
+/-- The upstream system: the image under `L` of the formation system of `W`. -/
 def upstreamCoeff (W : ι → Submodule k V) (L : V →ₗ[k] E) : Coeff k ι E :=
   imageCoeff k ι E V (formationCoeff k ι V W) L
 
+/-- The composite system: the image under `M ∘ L` of the formation system of `W`. -/
 def compositeCoeff (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     Coeff k ι Z :=
   imageCoeff k ι Z E (upstreamCoeff k ι E V W L) M
 
+/-- Images of intersections sit inside intersections of images:
+`L(⋂_{i ∈ s} W i) ≤ ⋂_{i ∈ s} L(W i)`. -/
 theorem map_familyIntersection_le (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (s : Finset ι) :
     (familyIntersection k ι V W s).map L ≤
@@ -332,6 +407,7 @@ theorem map_familyIntersection_le (W : ι → Submodule k V) (L : V →ₗ[k] E)
   refine le_iInf fun i => le_iInf fun hi => ?_
   exact Submodule.map_mono (familyIntersection_le_leg k ι V W hi)
 
+/-- Retained object: `M(⋂_{i ∈ s} L(W i))` for nonempty `s`, and `M(L(⨆ i, W i))` for `s = ∅`. -/
 def retainedObject (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (s : Finset ι) : Submodule k Z :=
   if s.Nonempty then
@@ -339,6 +415,7 @@ def retainedObject (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[
   else
     (compositeCoeff k ι E V Z W L M).obj s
 
+/-- The retained coefficient system built from `retainedObject`. -/
 def retainedCoeff (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     Coeff k ι Z where
   obj := retainedObject k ι E V Z W L M
@@ -364,6 +441,7 @@ def retainedCoeff (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k
         subst s
         exact le_rfl
 
+/-- The composite system is contained in the retained system. -/
 theorem directCoeffLE (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     CoeffLE k ι Z (compositeCoeff k ι E V Z W L M)
       (retainedCoeff k ι E V Z W L M) := by
@@ -376,28 +454,36 @@ theorem directCoeffLE (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →�
     subst s
     simp [retainedCoeff, retainedObject]
 
+/-- Serial erasure sequence: the observer-erasure sequence of `M` on the upstream system,
+`upstream ∩ ker M → upstream → composite`. -/
 def serialErasureShortComplex (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) : ShortComplex (ChainComplex (ModuleCat k) ℕ) :=
   observerErasureShortComplex k ι Z E (upstreamCoeff k ι E V W L) M
 
+/-- The serial erasure sequence is short exact. -/
 theorem serialErasure_shortExact (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) : (serialErasureShortComplex k ι E V Z W L M).ShortExact :=
   observerErasure_shortExact k ι Z E (upstreamCoeff k ι E V W L) M
 
+/-- Serial retention sequence: composite system → retained system → cokernel. -/
 def serialRetentionShortComplex (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) : ShortComplex (ChainComplex (ModuleCat k) ℕ) :=
   retentionShortComplex k ι Z (directCoeffLE k ι E V Z W L M)
 
+/-- The serial retention sequence is short exact. -/
 theorem serialRetention_shortExact (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) : (serialRetentionShortComplex k ι E V Z W L M).ShortExact :=
   retention_shortExact k ι Z (directCoeffLE k ι E V Z W L M)
 
+/-- Connecting homomorphism `H_{p+1}(composite) → H_p(upstream ∩ ker M)` of the serial erasure
+sequence. -/
 noncomputable def serialErasureConnecting (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (serialErasureShortComplex k ι E V Z W L M).X₃.homology (p + 1) ⟶
       (serialErasureShortComplex k ι E V Z W L M).X₁.homology p :=
   (serialErasure_shortExact k ι E V Z W L M).δ (p + 1) p (by simp)
 
+/-- Long exact sequence of serial erasure, exactness at `H_p(upstream)`. -/
 theorem serialErasure_exact_sameDegree (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -411,6 +497,7 @@ theorem serialErasure_exact_sameDegree (W : ι → Submodule k V) (L : V →ₗ[
           HomologicalComplex.homologyMap_zero])).Exact :=
   (serialErasure_shortExact k ι E V Z W L M).homology_exact₂ p
 
+/-- Long exact sequence of serial erasure, exactness at `H_{p+1}(composite)`. -/
 theorem serialErasure_exact_toConnecting (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -423,6 +510,7 @@ theorem serialErasure_exact_toConnecting (W : ι → Submodule k V) (L : V →�
   simpa [serialErasureConnecting] using
     (serialErasure_shortExact k ι E V Z W L M).homology_exact₃ (p + 1) p (by simp)
 
+/-- Long exact sequence of serial erasure, exactness at `H_p(upstream ∩ ker M)`. -/
 theorem serialErasure_exact_fromConnecting (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -435,12 +523,15 @@ theorem serialErasure_exact_fromConnecting (W : ι → Submodule k V) (L : V →
   simpa [serialErasureConnecting] using
     (serialErasure_shortExact k ι E V Z W L M).homology_exact₁ (p + 1) p (by simp)
 
+/-- Connecting homomorphism `H_{p+1}(cokernel) → H_p(composite)` of the serial retention
+sequence. -/
 noncomputable def serialRetentionConnecting (W : ι → Submodule k V)
     (L : V →ₗ[k] E) (M : E →ₗ[k] Z) (p : ℕ) :
     (serialRetentionShortComplex k ι E V Z W L M).X₃.homology (p + 1) ⟶
       (serialRetentionShortComplex k ι E V Z W L M).X₁.homology p :=
   (serialRetention_shortExact k ι E V Z W L M).δ (p + 1) p (by simp)
 
+/-- Long exact sequence of serial retention, exactness at `H_p(retained)`. -/
 theorem serialRetention_exact_sameDegree (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -454,6 +545,7 @@ theorem serialRetention_exact_sameDegree (W : ι → Submodule k V) (L : V →�
           HomologicalComplex.homologyMap_zero])).Exact :=
   (serialRetention_shortExact k ι E V Z W L M).homology_exact₂ p
 
+/-- Long exact sequence of serial retention, exactness at `H_{p+1}(cokernel)`. -/
 theorem serialRetention_exact_toConnecting (W : ι → Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -466,6 +558,7 @@ theorem serialRetention_exact_toConnecting (W : ι → Submodule k V) (L : V →
   simpa [serialRetentionConnecting] using
     (serialRetention_shortExact k ι E V Z W L M).homology_exact₃ (p + 1) p (by simp)
 
+/-- Long exact sequence of serial retention, exactness at `H_p(composite)`. -/
 theorem serialRetention_exact_fromConnecting (W : ι → Submodule k V)
     (L : V →ₗ[k] E) (M : E →ₗ[k] Z) (p : ℕ) :
     (ShortComplex.mk
@@ -478,6 +571,9 @@ theorem serialRetention_exact_fromConnecting (W : ι → Submodule k V)
   simpa [serialRetentionConnecting] using
     (serialRetention_shortExact k ι E V Z W L M).homology_exact₁ (p + 1) p (by simp)
 
+/-- Two-subspace case: the five-term sequence
+`0 → E_M(L;A,B) → O_L(A,B) → O_{M∘L}(A,B) → O_M(L A, L B) → 0` of observer-created overlaps
+`O_T(A,B) = (T A ∩ T B) / T(A ∩ B)` is exact. -/
 theorem twoLeg_serialObserver_fiveTerm_exact (A B : Submodule k V) (L : V →ₗ[k] E)
     (M : E →ₗ[k] Z) :
     Function.Injective (GaloisForLFunctions.HTGeometry.erasedToOverlap M L A B)
@@ -488,6 +584,8 @@ theorem twoLeg_serialObserver_fiveTerm_exact (A B : Submodule k V) (L : V →ₗ
       ∧ Function.Surjective (GaloisForLFunctions.HTGeometry.overlapProject M L A B) :=
   GaloisForLFunctions.HTGeometry.serialObserver_exact M L A B
 
+/-- Naturality of the connecting homomorphism for a morphism of short exact sequences of chain
+complexes of `k`-modules. -/
 theorem connecting_natural
     {S₁ S₂ : ShortComplex (ChainComplex (ModuleCat k) ℕ)}
     (φ : S₁ ⟶ S₂) (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact) (p : ℕ) :
@@ -495,6 +593,8 @@ theorem connecting_natural
       HomologicalComplex.homologyMap φ.τ₃ (p + 1) ≫ hS₂.δ (p + 1) p (by simp) :=
   HomologicalComplex.HomologySequence.δ_naturality φ hS₁ hS₂ (p + 1) p (by simp)
 
+/-- Naturality of connecting homomorphisms, stated for erasure sequences (same as
+`connecting_natural`). -/
 theorem erasureConnecting_natural
     {S₁ S₂ : ShortComplex (ChainComplex (ModuleCat k) ℕ)}
     (φ : S₁ ⟶ S₂) (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact) (p : ℕ) :
@@ -502,6 +602,8 @@ theorem erasureConnecting_natural
       HomologicalComplex.homologyMap φ.τ₃ (p + 1) ≫ hS₂.δ (p + 1) p (by simp) :=
   connecting_natural k φ hS₁ hS₂ p
 
+/-- Naturality of connecting homomorphisms, stated for retention sequences (same as
+`connecting_natural`). -/
 theorem retentionConnecting_natural
     {S₁ S₂ : ShortComplex (ChainComplex (ModuleCat k) ℕ)}
     (φ : S₁ ⟶ S₂) (hS₁ : S₁.ShortExact) (hS₂ : S₂.ShortExact) (p : ℕ) :
@@ -509,6 +611,7 @@ theorem retentionConnecting_natural
       HomologicalComplex.homologyMap φ.τ₃ (p + 1) ≫ hS₂.δ (p + 1) p (by simp) :=
   connecting_natural k φ hS₁ hS₂ p
 
+/-- `f` is injective on the top object `C(∅)`, which contains every `C(s)`. -/
 def InjectiveOnTop (C : Coeff k ι V) (f : V →ₗ[k] E) : Prop :=
   Set.InjOn f (C.obj ∅)
 
@@ -516,6 +619,7 @@ theorem coefficient_obj_le_top (C : Coeff k ι V) (s : Finset ι) :
     C.obj s ≤ C.obj ∅ :=
   C.anti (Finset.empty_subset s)
 
+/-- If `f` is injective on `C(∅)`, the kernel system `C ∩ ker f` is zero. -/
 theorem kernelCoeff_obj_eq_bot_of_injectiveOnTop
     (C : Coeff k ι V) (f : V →ₗ[k] E) (hinj : InjectiveOnTop k ι E V C f)
     (s : Finset ι) : (kernelCoeff k ι E V C f).obj s = ⊥ := by
@@ -526,6 +630,7 @@ theorem kernelCoeff_obj_eq_bot_of_injectiveOnTop
     simpa using LinearMap.mem_ker.mp hx.2
   · exact bot_le
 
+/-- If `f` is injective on `C(∅)`, the chain map `C → f(C)` is injective in each degree. -/
 theorem coeffMap_injective_of_injectiveOnTop
     (C : Coeff k ι V) (f : V →ₗ[k] E) (hinj : InjectiveOnTop k ι E V C f)
     (p : ℕ) :
@@ -552,6 +657,7 @@ theorem coeffMap_injective_of_injectiveOnTop
         (imageCoeffMorphism k ι E V C f) y.1) at hs
   simpa [component_ambientCoeffMap, imageCoeffMorphism] using hs
 
+/-- If `f` is injective on `C(∅)`, the chain map `C → f(C)` is an isomorphism of complexes. -/
 theorem neutralCoefficientComplexMap_isIso
     (C : Coeff k ι V) (f : V →ₗ[k] E) (hinj : InjectiveOnTop k ι E V C f) :
     IsIso (coefficientComplexMap k ι V E (imageCoeffMorphism k ι E V C f)) := by
@@ -562,6 +668,7 @@ theorem neutralCoefficientComplexMap_isIso
         imageCoeffMap_surjective k ι E V C f p⟩
   exact HomologicalComplex.Hom.isIso_of_components F
 
+/-- If `f` is injective on `C(∅)`, the induced map `H_p(C) → H_p(f(C))` is an isomorphism. -/
 theorem neutralHomologyMap_isIso
     (C : Coeff k ι V) (f : V →ₗ[k] E) (hinj : InjectiveOnTop k ι E V C f)
     (p : ℕ) :
@@ -570,6 +677,8 @@ theorem neutralHomologyMap_isIso
   letI := neutralCoefficientComplexMap_isIso k ι E V C f hinj
   infer_instance
 
+/-- If `f` is injective on `⨆ i, W i`, then `f(⋂_{i ∈ s} W i) = ⋂_{i ∈ s} f(W i)` for
+nonempty `s`. -/
 theorem map_familyIntersection_eq_of_injectiveOnJoin
     (W : ι → Submodule k V) (f : V →ₗ[k] E)
     (hinj : Set.InjOn f (familyJoin k ι V W)) {s : Finset ι} (hs : s.Nonempty) :
@@ -592,6 +701,7 @@ theorem map_familyIntersection_eq_of_injectiveOnJoin
     simpa [hinj hyJoin hzJoin heq.symm] using hz
   simpa [familyIntersection] using hyAll
 
+/-- If `M` is injective on `L(⨆ i, W i)`, the erased system `upstream ∩ ker M` is zero. -/
 theorem serialNeutral_kernel_zero
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (hinj : Set.InjOn M ((familyJoin k ι V W).map L)) (s : Finset ι) :
@@ -601,6 +711,8 @@ theorem serialNeutral_kernel_zero
   exact hinj (by simpa [upstreamCoeff, imageCoeff, formationCoeff, formationObject] using hx)
     (by simpa [upstreamCoeff, imageCoeff, formationCoeff, formationObject] using hy) hxy
 
+/-- If `M` is injective on `L(⨆ i, W i)`, then `M` commutes with the intersections
+`⋂_{i ∈ s} L(W i)` for nonempty `s`. -/
 theorem serialNeutral_intersections
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (hinj : Set.InjOn M ((familyJoin k ι V W).map L))
@@ -615,6 +727,7 @@ theorem serialNeutral_intersections
   · exact iSup_le (fun i => Submodule.map_mono (le_iSup W i)) hy
   · exact hxy
 
+/-- A linear map injective on a subspace `S` restricts to a linear equivalence `S ≃ f(S)`. -/
 noncomputable def submoduleMapEquivOfInjOn
     (S : Submodule k V) (f : V →ₗ[k] E) (hinj : Set.InjOn f S) :
     S ≃ₗ[k] S.map f := by
@@ -631,6 +744,7 @@ noncomputable def submoduleMapEquivOfInjOn
       apply Subtype.ext
       exact hxy)⟩
 
+/-- For `N ≤ S` and `f` injective on `S`, `f` induces `S / N ≃ f(S) / f(N)`. -/
 noncomputable def subquotientMapEquivOfInjOn
     (S N : Submodule k V) (hNS : N ≤ S) (f : V →ₗ[k] E)
     (hinj : Set.InjOn f S) :
@@ -653,6 +767,8 @@ noncomputable def subquotientMapEquivOfInjOn
         apply Subtype.ext
         exact hvx)
 
+/-- If `M` is injective on `L(⨆ i, W i)`, the comparison quotient
+`(⋂_{i ∈ s} L(W i)) / L(⋂_{i ∈ s} W i)` is carried isomorphically by `M` onto its image quotient. -/
 noncomputable def serialNeutral_comparisonQuotientEquiv
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (hinj : Set.InjOn M ((familyJoin k ι V W).map L))
@@ -675,6 +791,7 @@ noncomputable def serialNeutral_comparisonQuotientEquiv
       (Submodule.map_mono (le_iSup W i₀))) hy
   · exact hxy
 
+/-- If `M` is injective on `L(⨆ i, W i)`, the chain map upstream → composite is an isomorphism. -/
 theorem serialNeutral_chainMap_isIso
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (hinj : Set.InjOn M ((familyJoin k ι V W).map L)) :
@@ -685,6 +802,8 @@ theorem serialNeutral_chainMap_isIso
   exact hinj (by simpa [upstreamCoeff, imageCoeff, formationCoeff, formationObject] using hx)
     (by simpa [upstreamCoeff, imageCoeff, formationCoeff, formationObject] using hy) hxy
 
+/-- If `M` is injective on `L(⨆ i, W i)`, then `M` induces isomorphisms
+`H_p(upstream) ≅ H_p(composite)` in every degree. -/
 theorem serialNeutral_homologyMap_isIso
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z)
     (hinj : Set.InjOn M ((familyJoin k ι V W).map L)) (p : ℕ) :
@@ -694,6 +813,8 @@ theorem serialNeutral_homologyMap_isIso
   letI := serialNeutral_chainMap_isIso k ι E V Z W L M hinj
   infer_instance
 
+/-- Rank–nullity at an exact middle term: if `range f = ker g` with `B` finite-dimensional, then
+`dim B = rank f + rank g`. -/
 theorem finrank_middle_of_exact
     {A B D : Type uE} [AddCommGroup A] [Module k A]
     [AddCommGroup B] [Module k B] [FiniteDimensional k B]
@@ -706,14 +827,18 @@ theorem finrank_middle_of_exact
   rw [← hexact] at hrank
   exact hrank.symm.trans (Nat.add_comm _ _)
 
+/-- Truncated homology Euler characteristic `Σ_{p < n} (-1)^p dim H_p(K)`. -/
 noncomputable def homologyBoundedEuler
     (K : ChainComplex (ModuleCat k) ℕ) (n : ℕ) : ℤ :=
   ∑ p ∈ Finset.range n, ((-1 : ℤ) ^ p) * Module.finrank k (K.homology p)
 
+/-- Rank of the connecting homomorphism `δ : H_{p+1}(X₃) → H_p(X₁)` of a short exact sequence. -/
 noncomputable def connectingRank
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact) (p : ℕ) : ℕ :=
   Module.finrank k (LinearMap.range (hT.δ (p + 1) p (by simp)).hom)
 
+/-- Degree zero: given finite-dimensional `H_0(X₁)` and `H_0(X₂)`,
+`dim H_0(X₁) - dim H_0(X₂) + dim H_0(X₃) = rank δ_0`. -/
 theorem homologyEuler_point_zero
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact)
     (hfin₁ : FiniteDimensional k (T.X₁.homology 0))
@@ -744,6 +869,8 @@ theorem homologyEuler_point_zero
     Module.finrank k (LinearMap.range δ)
   omega
 
+/-- Degree `p + 1`: given finite-dimensional homology there,
+`dim H_{p+1}(X₁) - dim H_{p+1}(X₂) + dim H_{p+1}(X₃) = rank δ_{p+1} + rank δ_p`. -/
 theorem homologyEuler_point_succ
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact) (p : ℕ)
     (hfin₁ : FiniteDimensional k (T.X₁.homology (p + 1)))
@@ -772,6 +899,7 @@ theorem homologyEuler_point_succ
     Module.finrank k (LinearMap.range δnext) + Module.finrank k (LinearMap.range δprev)
   omega
 
+/-- Euler defect `χ_n(X₁) - χ_n(X₂) + χ_n(X₃)` of truncated homology Euler characteristics. -/
 noncomputable def homologyEulerDefect
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (n : ℕ) : ℤ :=
   homologyBoundedEuler k T.X₁ n - homologyBoundedEuler k T.X₂ n +
@@ -786,6 +914,8 @@ theorem homologyEulerDefect_succ
   simp only [homologyEulerDefect, homologyBoundedEuler, Finset.sum_range_succ]
   ring
 
+/-- For a short exact sequence of complexes with finite-dimensional homology, the truncated Euler
+defect through degree `n` is `(-1)^n` times the rank of `δ : H_{n+1}(X₃) → H_n(X₁)`. -/
 theorem homologyEulerDefect_eq_connectingRank
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact)
     (hfin₁ : ∀ p, FiniteDimensional k (T.X₁.homology p))
@@ -805,6 +935,8 @@ theorem homologyEulerDefect_eq_connectingRank
       rw [pow_succ]
       ring
 
+/-- If homology is finite-dimensional and the connecting map `δ_n` has rank zero, truncated
+homology Euler characteristics through degree `n` are additive: `χ(X₂) = χ(X₁) + χ(X₃)`. -/
 theorem shortExact_homologyEuler_of_topConnecting_zero
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact)
     (hfin₁ : ∀ p, FiniteDimensional k (T.X₁.homology p))
@@ -840,12 +972,15 @@ theorem coefficientComplex_isZero_above_card (C : Coeff k ι E) :
     chains_subsingleton_above_card k ι E C
   exact ModuleCat.isZero_of_subsingleton _
 
+/-- There are no `(|ι| + 1)`-element subsets, so coefficient complexes have zero homology in
+degree `|ι| + 1`. -/
 theorem coefficientComplex_homology_isZero_above_card (C : Coeff k ι E) :
     IsZero ((coefficientComplex k ι E C).homology (Fintype.card ι + 1)) :=
   ShortComplex.isZero_homology_of_isZero_X₂
     ((coefficientComplex k ι E C).sc (Fintype.card ι + 1))
     (coefficientComplex_isZero_above_card k ι E C)
 
+/-- The connecting map `δ_p` has rank zero when its source `H_{p+1}(X₃)` is zero. -/
 theorem connectingRank_eq_zero_of_isZero_source
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact) (p : ℕ)
     (hzero : IsZero (T.X₃.homology (p + 1))) : connectingRank k T hT p = 0 := by
@@ -856,6 +991,7 @@ theorem connectingRank_eq_zero_of_isZero_source
   rw [hδhom]
   rw [ModuleCat.hom_zero, LinearMap.range_zero, finrank_bot]
 
+/-- Finite-dimensional chains give finite-dimensional homology in the same degree. -/
 theorem finiteDimensional_homology_of_finite
     (K : ChainComplex (ModuleCat k) ℕ) (p : ℕ) [FiniteDimensional k (K.X p)] :
     FiniteDimensional k (K.homology p) := by
@@ -870,6 +1006,7 @@ theorem finiteDimensional_homology_of_finite
   exact FiniteDimensional.of_injective S.moduleCatHomologyIso.hom.hom
     ((ModuleCat.mono_iff_injective _).mp inferInstance)
 
+/-- The serial erasure connecting map `δ_{|ι|}` has rank zero. -/
 theorem serialErasure_topConnecting_zero
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     connectingRank k (serialErasureShortComplex k ι E V Z W L M)
@@ -894,6 +1031,7 @@ theorem serialRetention_topObject_isZero
       (Fintype.card ι + 1))
   exact coefficientComplex_isZero_above_card k ι Z _
 
+/-- The serial retention connecting map `δ_{|ι|}` has rank zero. -/
 theorem serialRetention_topConnecting_zero
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     connectingRank k (serialRetentionShortComplex k ι E V Z W L M)
@@ -903,6 +1041,8 @@ theorem serialRetention_topConnecting_zero
     ((serialRetentionShortComplex k ι E V Z W L M).X₃.sc (Fintype.card ι + 1))
     (serialRetention_topObject_isZero k ι E V Z W L M)
 
+/-- For finite-dimensional `E` and `Z`, homology Euler characteristics summed over degrees
+`p ≤ |ι|` are additive along the serial erasure sequence. -/
 theorem serialErasure_homologyEuler [FiniteDimensional k E] [FiniteDimensional k Z]
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     homologyBoundedEuler k (serialErasureShortComplex k ι E V Z W L M).X₂
@@ -935,6 +1075,8 @@ theorem serialErasure_homologyEuler [FiniteDimensional k E] [FiniteDimensional k
     (Fintype.card ι)
   exact serialErasure_topConnecting_zero k ι E V Z W L M
 
+/-- For finite-dimensional `Z`, homology Euler characteristics summed over degrees `p ≤ |ι|` are
+additive along the serial retention sequence. -/
 theorem serialRetention_homologyEuler [FiniteDimensional k Z]
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) :
     homologyBoundedEuler k (serialRetentionShortComplex k ι E V Z W L M).X₂
@@ -971,6 +1113,8 @@ theorem serialRetention_homologyEuler [FiniteDimensional k Z]
     (Fintype.card ι)
   exact serialRetention_topConnecting_zero k ι E V Z W L M
 
+/-- Dimension is additive on a short exact sequence `0 → A → B → D → 0` of finite-dimensional
+spaces. -/
 theorem finrank_of_shortExact_linear
     {A B D : Type uE} [AddCommGroup A] [Module k A] [FiniteDimensional k A]
     [AddCommGroup B] [Module k B] [FiniteDimensional k B]
@@ -990,6 +1134,7 @@ theorem finrank_of_shortExact_linear
       simp
     _ = Module.finrank k A + Module.finrank k D := Nat.add_comm _ _
 
+/-- In every degree, `dim Chains(C) = dim Chains(C ∩ ker f) + dim Chains(f(C))`. -/
 theorem observerErasure_degree_finrank [FiniteDimensional k V] [FiniteDimensional k E]
     (C : Coeff k ι V) (f : V →ₗ[k] E) (p : ℕ) :
     Module.finrank k (Chains k ι V C p) =
@@ -1004,9 +1149,12 @@ theorem observerErasure_degree_finrank [FiniteDimensional k V] [FiniteDimensiona
     (coefficientInclusion_injective k ι V (kernelCoeffLE k ι E V C f))
     (imageCoeffMap_surjective k ι E V C f p)
 
+/-- Truncated chain-level Euler characteristic `Σ_{p < n} (-1)^p dim K_p`. -/
 noncomputable def boundedEuler (K : ChainComplex (ModuleCat k) ℕ) (n : ℕ) : ℤ :=
   ∑ p ∈ Finset.range n, ((-1 : ℤ) ^ p) * Module.finrank k (K.X p)
 
+/-- Degreewise additivity of dimensions below `n` gives additivity of truncated Euler
+characteristics. -/
 theorem boundedEuler_add_of_degree_finrank
     (K₁ K₂ K₃ : ChainComplex (ModuleCat k) ℕ) (n : ℕ)
     (h : ∀ p < n, Module.finrank k (K₂.X p) =
@@ -1019,6 +1167,8 @@ theorem boundedEuler_add_of_degree_finrank
   push_cast
   ring
 
+/-- Chain-level Euler characteristics are additive along `C ∩ ker f → C → f(C)`, for
+finite-dimensional `V` and `E`. -/
 theorem observerErasure_euler [FiniteDimensional k V] [FiniteDimensional k E]
     (C : Coeff k ι V) (f : V →ₗ[k] E) (n : ℕ) :
     boundedEuler k (coefficientComplex k ι V C) n =
@@ -1028,6 +1178,8 @@ theorem observerErasure_euler [FiniteDimensional k V] [FiniteDimensional k E]
   intro p _
   exact observerErasure_degree_finrank k ι E V C f p
 
+/-- Degreewise dimension additivity for a short exact sequence of complexes with finite-dimensional
+terms. -/
 theorem chainShortExact_degree_finrank
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact) (p : ℕ)
     [FiniteDimensional k (T.X₁.X p)] [FiniteDimensional k (T.X₂.X p)]
@@ -1039,6 +1191,8 @@ theorem chainShortExact_degree_finrank
     (T.f.f p).hom (T.g.f p).hom hp.exact.moduleCat_range_eq_ker
     hp.moduleCat_injective_f hp.moduleCat_surjective_g
 
+/-- Truncated chain-level Euler characteristics are additive along a short exact sequence of
+complexes with finite-dimensional terms. -/
 theorem shortExact_boundedEuler
     (T : ShortComplex (ChainComplex (ModuleCat k) ℕ)) (hT : T.ShortExact) (n : ℕ)
     (hfin₁ : ∀ p, FiniteDimensional k (T.X₁.X p))
@@ -1052,6 +1206,7 @@ theorem shortExact_boundedEuler
   letI := hfin₃ p
   exact chainShortExact_degree_finrank k T hT p
 
+/-- Chain-level Euler characteristics are additive along the serial erasure sequence. -/
 theorem serialErasure_euler [FiniteDimensional k E] [FiniteDimensional k Z]
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) (n : ℕ) :
     boundedEuler k (serialErasureShortComplex k ι E V Z W L M).X₂ n =
@@ -1059,6 +1214,7 @@ theorem serialErasure_euler [FiniteDimensional k E] [FiniteDimensional k Z]
         boundedEuler k (serialErasureShortComplex k ι E V Z W L M).X₃ n :=
   observerErasure_euler k ι Z E (upstreamCoeff k ι E V W L) M n
 
+/-- Chain-level Euler characteristics are additive along the serial retention sequence. -/
 theorem serialRetention_euler [FiniteDimensional k Z]
     (W : ι → Submodule k V) (L : V →ₗ[k] E) (M : E →ₗ[k] Z) (n : ℕ) :
     boundedEuler k (serialRetentionShortComplex k ι E V Z W L M).X₂ n =
@@ -1093,6 +1249,8 @@ variable {A B D : Type uE}
   [NormedAddCommGroup B] [InnerProductSpace 𝕜 B] [FiniteDimensional 𝕜 B]
   [NormedAddCommGroup D] [InnerProductSpace 𝕜 D] [FiniteDimensional 𝕜 D]
 
+/-- For `d₂ : A → B`, `d₁ : B → D` with `d₁ ∘ d₂ = 0` on finite-dimensional inner product spaces,
+the kernel of the Hodge Laplacian `d₂ d₂* + d₁* d₁` is linearly equivalent to `ker d₁ / im d₂`. -/
 noncomputable def positiveHodgeRealization
     (d₂ : A →ₗ[𝕜] B) (d₁ : B →ₗ[𝕜] D)
     (h : LinearMap.range d₂ ≤ LinearMap.ker d₁) :
@@ -1101,6 +1259,7 @@ noncomputable def positiveHodgeRealization
         Submodule.comap (LinearMap.ker d₁).subtype (LinearMap.range d₂)) :=
   GaloisForLFunctions.HTGeometry.harmonicEquivHomology d₂ d₁ h
 
+/-- The harmonic space has the dimension of the homology `ker d₁ / im d₂`. -/
 theorem positiveHodge_finrank
     (d₂ : A →ₗ[𝕜] B) (d₁ : B →ₗ[𝕜] D)
     (h : LinearMap.range d₂ ≤ LinearMap.ker d₁) :
@@ -1110,6 +1269,7 @@ theorem positiveHodge_finrank
         Submodule.comap (LinearMap.ker d₁).subtype (LinearMap.range d₂)) :=
   (positiveHodgeRealization d₂ d₁ h).finrank_eq
 
+/-- The Hodge Laplacian is injective exactly when the homology `ker d₁ / im d₂` vanishes. -/
 theorem positiveHodge_zeroRank_iff
     (d₂ : A →ₗ[𝕜] B) (d₁ : B →ₗ[𝕜] D)
     (h : LinearMap.range d₂ ≤ LinearMap.ker d₁) :

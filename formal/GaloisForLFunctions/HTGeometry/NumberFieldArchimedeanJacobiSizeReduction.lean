@@ -1,6 +1,29 @@
 import GaloisForLFunctions.HTGeometry.NumberFieldMixedSizeReduction
 import GaloisForLFunctions.HTGeometry.NumberFieldArchimedeanJacobiReduction
 
+/-!
+# Simultaneous size reduction of archimedean Jacobi coordinates
+
+The unipotent parts of a simultaneous Jacobi decomposition of a positive archimedean form over a
+number field `K` (real places and conjugated complex places) assemble into one unipotent upper
+triangular matrix over the mixed embedding space `ℝ^{r₁} × ℂ^{r₂}`. Applying the mixed
+size-reduction theorem to this matrix gives an integral determinant-one matrix `N` that bounds all
+strictly upper entries of `U N` at every place simultaneously, with a bound depending only on `K`.
+
+## Main results
+
+- `numberFieldArchimedeanJacobiMixedU`: the mixed-space unipotent matrix built from the Jacobi data.
+- `exists_numberFieldArchimedeanJacobi_sizeReductionRadius`: there is `C ≥ 0` depending only on `K`
+  such that for all Jacobi data `J` of any positive archimedean form there is `N` over `𝓞 K` with
+  `det N = 1`, unipotent upper mixed embedding, and every strictly upper entry of `U_w N_w` (real
+  places) and `U_w (N_wᵀ)ᴴ` (complex places) bounded by `C` in absolute value.
+
+## Hypotheses
+
+The main theorem is unconditional; the constant comes from the finite covering radius of the
+embedded ring of integers.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix NumberField
@@ -25,6 +48,8 @@ def mixedComplexEval (w : {w : InfinitePlace K // w.IsComplex}) :
   map_zero' := rfl
   map_add' _ _ := rfl
 
+/-- The Jacobi unipotent parts packaged as one matrix over the mixed space: real-place entries
+`U_w i j` and complex-place entries `conj (U_w i j)`. -/
 def numberFieldArchimedeanJacobiMixedU
     {A : numberFieldArchimedeanPositiveForms K n}
     (J : NumberFieldArchimedeanJacobiData A) :
@@ -33,6 +58,7 @@ def numberFieldArchimedeanJacobiMixedU
     (fun w => J.realU w i j, fun w => star (J.complexU w i j))
 
 omit [NumberField K] in
+/-- The packaged mixed Jacobi matrix is unipotent upper triangular. -/
 theorem numberFieldArchimedeanJacobiMixedU_unipotentUpper
     {A : numberFieldArchimedeanPositiveForms K n}
     (J : NumberFieldArchimedeanJacobiData A) :
@@ -63,6 +89,8 @@ theorem numberFieldArchimedeanJacobiMixedU_mul_real
   rfl
 
 omit [NumberField K] in
+/-- At a complex place, an entry of the mixed product equals the conjugate of the corresponding
+entry of `U_w (N_wᵀ)ᴴ`. -/
 theorem numberFieldArchimedeanJacobiMixedU_mul_complex
     {A : numberFieldArchimedeanPositiveForms K n}
     (J : NumberFieldArchimedeanJacobiData A)
@@ -97,6 +125,9 @@ theorem norm_mixed_complex_apply_le
     (w : {w : InfinitePlace K // w.IsComplex}) : ‖x.2 w‖ ≤ ‖x‖ :=
   (norm_pi_apply_le x.2 w).trans (norm_snd_le x)
 
+/-- Uniform simultaneous size reduction: one `C ≥ 0` depending only on `K` such that any Jacobi
+data admits a determinant-one integral `N` with unipotent upper mixed embedding making every
+strictly upper unipotent entry at every place at most `C` in absolute value. -/
 theorem exists_numberFieldArchimedeanJacobi_sizeReductionRadius
     (K : Type*) [Field K] [NumberField K] :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ)

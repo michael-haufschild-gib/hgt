@@ -1,9 +1,32 @@
 import GaloisForLFunctions.RHTower.PolynomialFockNormalizedTangentResponse
 
+/-!
+# Two-sided norm comparison for polynomial Fock tangent vectors
+
+In the degree-`m` polynomial moment Fock space with potential `φ_m(r) = (1 + r²)^(m/2)`, the
+tangent exponential `v_x` at a real point `x` takes value one at `x`. Its squared norm is
+comparable to the area of the tangent ball times the weight: with tangent radius
+`r_m(x) = (m (1 + x²)^(m/2 - 1))^(-1/2)`,
+`π r_m(x)² e^{-2 φ_m(x) - 2C/m} ≤ ‖v_x‖² ≤ π r_m(x)² e^{-2 φ_m(x)}`, where `C` is the local Bregman
+constant.
+
+## Main results
+
+- `normSq_polynomialMomentFockTangentVector_lower`: the lower bound, for `m ≥ 4` and `x ≥ 0`.
+- `normSq_polynomialMomentFockTangentVector_upper_radius`: the upper bound, for `m ≥ 2`.
+
+## Hypotheses
+
+Both results are unconditional; the parameter ranges are `4 ≤ m`, `0 ≤ x` for the lower bound and
+`2 ≤ m` for the upper bound.
+-/
+
 namespace RHTower
 
 noncomputable section
 
+/-- Assuming `4 ≤ m` and `0 ≤ x`, `π r_m(x)² e^{-(2 φ_m(x) + 2C/m)} ≤ ‖v_x‖²`, from `v_x(x) = 1` and
+the upper bound on the reproducing kernel norm at `x`. -/
 theorem normSq_polynomialMomentFockTangentVector_lower
     {m x : ℝ} (hm : 4 ≤ m) (hx : 0 ≤ x) :
     Real.pi * polynomialFockTangentRadius m x ^ (2 : ℕ) *
@@ -48,6 +71,7 @@ theorem normSq_polynomialMomentFockTangentVector_lower
   change A / E ≤ V ^ (2 : ℕ)
   exact (div_le_iff₀ hE).2 (by simpa [mul_comm] using hAE)
 
+/-- For `2 ≤ m`, `‖v_x‖² ≤ π r_m(x)² e^{-2 φ_m(x)}`, with `r_m` the tangent radius. -/
 theorem normSq_polynomialMomentFockTangentVector_upper_radius
     {m x : ℝ} (hm : 2 ≤ m) :
     ‖polynomialMomentFockTangentVector m hm x‖ ^ (2 : ℕ) ≤

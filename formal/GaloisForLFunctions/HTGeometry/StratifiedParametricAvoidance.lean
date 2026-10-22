@@ -2,6 +2,39 @@ import GaloisForLFunctions.HTGeometry.ClassicalStratifiedParametricAvoidance
 import Mathlib.Analysis.Calculus.Implicit
 import Mathlib.Topology.MetricSpace.HausdorffDimension
 
+/-!
+# Parametric transversality: avoiding a stratified bad set
+
+Let `F : P × H → Y` be a smooth family of maps between finite-dimensional real spaces, indexed by
+a parameter `p ∈ P` and smooth on `P × U` for an open `U ⊆ H`, whose derivative in the parameter
+direction is surjective everywhere. If a bad set `S ⊆ Y` is locally a regular level set of
+codimension `c > dim H`, then the composite of `F` with a local defining submersion is a submersion,
+the implicit function theorem parametrizes its level sets Lipschitz-continuously by a kernel of
+dimension `< dim P`, and so the parameters `p` for which `F(p, h) ∈ S` for some `h ∈ K` form a set
+of Hausdorff dimension at most `dim P - 1`. Summing over finitely many strata and using that a set
+of Hausdorff dimension below `dim P` has dense complement, the parameters whose whole configuration
+patch `K` avoids the bad set are dense.
+
+## Main results
+
+- `exists_nhds_dimH_parameter_image_levelSet_le_finrank_ker`: near a point where `φ : P × H → Z`
+  is `C¹` with surjective derivative, the projection to `P` of the level set has Hausdorff
+  dimension at most `dim ker dφ`.
+- `dimH_parameter_preimage_stratum_le_pred`: the bad parameters for one regular stratum have
+  Hausdorff dimension at most `dim P - 1`.
+- `dimH_parameter_preimage_finite_stratification_le_pred`: the same for a finite regular
+  stratification.
+- `compactConfigurationAvoidance_dense_of_finiteRegularStratification`: the parameters `p` with
+  `F(p, h) ∉ bad` for all `h ∈ K` form a dense subset of `P`.
+
+## Hypotheses
+
+Unconditional; every result states its geometric inputs explicitly: `F` is `C^∞` on `P × U` with
+`U` open and `K ⊆ U`, the parameter derivative `d_p F(·, h)` is surjective for every `h ∈ U`, the
+bad set carries a finite regular stratification (or is a local regular level set) of codimension
+`c`, and `dim H < c`.
+-/
+
 open Set Filter Topology MeasureTheory Module
 open scoped ENNReal
 
@@ -9,6 +42,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- If the partial derivative of `F` in the parameter variable is surjective at `(p, h)`, so is the
+full derivative of `F` there. -/
 theorem surjective_fderiv_of_surjective_parameter_fderiv
     {P H Y : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -32,6 +67,8 @@ theorem surjective_fderiv_of_surjective_parameter_fderiv
   rw [hslice] at hv'
   simpa using hv'
 
+/-- If the parameter derivative of `F` and the derivative of `g` at `F(p, h)` are surjective, then
+`g ∘ F` has surjective derivative at `(p, h)`. -/
 theorem surjective_fderiv_comp_of_surjective_parameter_fderiv
     {P H Y Z : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
@@ -49,6 +86,8 @@ theorem surjective_fderiv_comp_of_surjective_parameter_fderiv
   rw [fderiv_fun_comp (f := F) (g := g) (p, h) hg hF]
   exact hgSurj.comp hfull
 
+/-- For `φ : P × H → Z` that is `C¹` at `x` with surjective derivative, some neighbourhood `N` of
+`x` has `dimH (fst (N ∩ φ⁻¹{φ x})) ≤ dim ker dφ(x)`, via the implicit function theorem. -/
 theorem exists_nhds_dimH_parameter_image_levelSet_le_finrank_ker
     {P H Z : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -112,6 +151,7 @@ theorem exists_nhds_dimH_parameter_image_levelSet_le_finrank_ker
     _ = Module.finrank ℝ (fderiv ℝ phi x).ker := by
       simpa only [L] using Real.dimH_univ_eq_finrank L.ker
 
+/-- Rank count: a surjection `P × H → ℝᵐ` with `dim H < c ≤ m` has kernel of dimension `< dim P`. -/
 theorem finrank_ker_lt_parameter_finrank_of_surjective
     {P H : Type*} {m c : ℕ}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -128,6 +168,8 @@ theorem finrank_ker_lt_parameter_finrank_of_surjective
     Module.finrank_prod] at hrank
   omega
 
+/-- Local bound: near a point with `F x` in a regular stratum of codimension `c > dim H`, the
+parameter projection of `F⁻¹ S` has Hausdorff dimension at most `dim P - 1`. -/
 theorem exists_nhds_dimH_parameter_image_preimage_stratum_lt
     {P H Y : Type*} {S : Set Y} {c : ℕ}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -182,6 +224,8 @@ theorem exists_nhds_dimH_parameter_image_preimage_stratum_lt
     exact_mod_cast hkerle
   exact (dimH_mono hsubset |>.trans hN0dim).trans hkerle'
 
+/-- Global bound for one regular stratum: `{p | ∃ h ∈ K, F(p, h) ∈ S}` has Hausdorff dimension at
+most `dim P - 1`, by a countable (Lindelöf) cover with the local bound. -/
 theorem dimH_parameter_preimage_stratum_le_pred
     {P H Y : Type*} {S : Set Y} {c : ℕ}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -227,6 +271,8 @@ theorem dimH_parameter_preimage_stratum_le_pred
   rw [dimH_iUnion]
   exact iSup_le fun x => hNdim x x.1.2
 
+/-- If the family meets a regular stratum of codimension `c > dim H`, the parameter space has
+positive dimension. -/
 theorem parameter_finrank_pos_of_hits_regular_stratum
     {P H Y : Type*} {S : Set Y} {c : ℕ}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -262,6 +308,8 @@ theorem parameter_finrank_pos_of_hits_regular_stratum
       (fderiv ℝ phi (p, h)) hphiSurj hcm hdim
   omega
 
+/-- For a finite regular stratification of codimension `c > dim H`, the bad parameter set
+`{p | ∃ h ∈ K, F(p, h) ∈ bad}` has Hausdorff dimension at most `dim P - 1`. -/
 theorem dimH_parameter_preimage_finite_stratification_le_pred
     {P H Y : Type*} {bad : Set Y} {c : ℕ}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
@@ -293,6 +341,8 @@ theorem dimH_parameter_preimage_finite_stratification_le_pred
   exact iSup_le fun i => dimH_parameter_preimage_stratum_le_pred
     F U K hU hKU hF hparameter (hstrata.regular i) hdim
 
+/-- Parametric avoidance: under the smoothness, parameter-submersion and codimension
+`dim H < c` hypotheses, the parameters whose configuration patch `K` avoids the bad set are dense. -/
 theorem compactConfigurationAvoidance_dense_of_finiteRegularStratification
     {P H Y : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]

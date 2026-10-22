@@ -1,11 +1,46 @@
 import GaloisForLFunctions.HTGeometry.PolynomialPhaseMomentGap
 
+/-!
+# Minimal clusters of multiplicity patterns under power valuations
+
+For a finite set `S` of multiplicity patterns `p : Fin M → Fin (D + 1)` of common total count `D`,
+compare the power valuations `V_β(p, x) = ∑_r p r (x + r)^β` as `x → ∞`, for `β > 2`. Patterns with
+larger source sum `∑ r · p r` exceed the least-source class by at least `c x^{β - 1}`. Within a set
+of equal source sum, patterns outside the minimal moment-signature cluster exceed a cluster member by
+at least `c x^{β - (⌈β⌉ - 1)}`, uniformly over the set, while all members of the minimal cluster stay
+within a bounded distance of each other. Hence each cluster valuation lies within `[0, 2C]` of the
+cluster minimum.
+
+## Main results
+
+- `polynomialPatternLeastSourceClass`: patterns of `S` with minimal source sum.
+- `eventually_polynomialPatternPower_gap_of_sourceSum_lt`: a strictly larger source sum gives a gap
+  `c x^{β - 1}` eventually.
+- `eventually_uniform_polynomialPatternPower_source_gap`: the gap is uniform over all patterns
+  outside the least-source class.
+- `eventually_uniform_polynomialPatternPower_gap`: uniform gap `c x^{β - (⌈β⌉ - 1)}` outside the
+  minimal signature cluster, for sets with constant source sum.
+- `polynomialPowerFiniteDifference_natCast_eq_stretchedMoment`: for integer exponent `k` and vanishing
+  lower moments, the finite power difference equals the `k`-th moment.
+- `eventually_abs_polynomialPatternPower_sub_le_of_same_signature`: patterns with the same
+  signature have eventually bounded valuation difference.
+- `eventually_uniform_polynomialPatternPower_cluster_bound`,
+  `eventually_polynomialPatternPower_cluster_delta_bounds`: uniform bounded spread within the
+  minimal cluster.
+
+## Hypotheses
+
+All results are unconditional. The asymptotic statements assume `2 < β`, equal total counts `D`
+for the patterns in `S`, and, where stated, a common source sum `Csum`.
+-/
+
 open Filter Finset PowerSeries MvPolynomial Polynomial Topology Asymptotics Set
 
 namespace GaloisForLFunctions
 
 noncomputable section
 
+/-- The source sum (first moment) `∑_r r · p r` of a pattern. -/
 def polynomialPatternSourceSum {M D : ℕ}
     (p : Fin M → Fin (D + 1)) : ℕ :=
   ∑ r : Fin M, (r : ℕ) * (p r : ℕ)
@@ -15,6 +50,7 @@ noncomputable def minimalPolynomialPatternSourceSum {M D : ℕ}
   (S.image polynomialPatternSourceSum).min'
     (Finset.image_nonempty.mpr hS)
 
+/-- The patterns of `S` with minimal source sum. -/
 noncomputable def polynomialPatternLeastSourceClass {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty) :
     Finset (Fin M → Fin (D + 1)) :=
@@ -55,6 +91,8 @@ theorem minimalSourceSum_lt_of_mem_not_class {M D : ℕ}
     exact hpC (Finset.mem_filter.mpr ⟨hpS, heq.symm⟩)
   exact lt_of_le_of_ne hle hne
 
+/-- Assuming `2 < β`, equal counts `D` and a strictly smaller source sum for `p₀`, there is `c > 0`
+with `c x^{β - 1} ≤ V_β(p, x) - V_β(p₀, x)` for all large `x`. -/
 theorem eventually_polynomialPatternPower_gap_of_sourceSum_lt
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (p₀ p : Fin M → Fin (D + 1))
@@ -102,6 +140,7 @@ theorem eventually_polynomialPatternPower_gap_of_sourceSum_lt
   rw [polynomialPatternPowerValuation_sub β x p₀ p hcount₀ hcount]
   convert hx using 1 ; ring
 
+/-- Finitely many eventual lower bounds `c_a x^η ≤ V a x` combine into one uniform constant. -/
 theorem exists_uniform_eventually_finset_rpow_gap {α : Type*}
     [DecidableEq α] (T : Finset α) (η : ℝ) (V : α → ℝ → ℝ)
     (hgap : ∀ a ∈ T, ∃ c : ℝ, 0 < c ∧ ∀ᶠ x : ℝ in atTop,
@@ -132,6 +171,8 @@ theorem exists_uniform_eventually_finset_rpow_gap {α : Type*}
     subst T
     exact ⟨1, one_pos, Eventually.of_forall (fun x a ha => by simp at ha)⟩
 
+/-- Assuming `2 < β` and count `D` on `S`: for `p₀` in the least-source class, one `c > 0` gives
+`c x^{β - 1} ≤ V_β(p, x) - V_β(p₀, x)` eventually, for every `p` of `S` outside that class. -/
 theorem eventually_uniform_polynomialPatternPower_source_gap
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)
@@ -166,6 +207,9 @@ theorem eventually_uniform_polynomialPatternPower_source_gap
     (fun p x => polynomialPatternPowerValuation β p x -
       polynomialPatternPowerValuation β p₀ x) hgap
 
+/-- Assuming `2 < β`, count `D` and constant source sum on `S`: for `p₀` in the minimal signature
+cluster, one `c > 0` gives `c x^{β - (⌈β⌉ - 1)} ≤ V_β(p, x) - V_β(p₀, x)` eventually, for every
+`p` of `S` outside the cluster. -/
 theorem eventually_uniform_polynomialPatternPower_gap
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)
@@ -202,6 +246,8 @@ theorem eventually_uniform_polynomialPatternPower_gap
     (fun p x => polynomialPatternPowerValuation β p x -
       polynomialPatternPowerValuation β p₀ x) hgap
 
+/-- For an integer exponent `k` and a coefficient vector whose moments below `k` vanish, the finite
+power difference of `x^k` is the constant `k`-th moment. -/
 theorem polynomialPowerFiniteDifference_natCast_eq_stretchedMoment
     (d : ℕ →₀ ℝ) (k : ℕ) (hcancel : ∀ j < k, stretchedMoment d j = 0)
     (x : ℝ) :
@@ -237,6 +283,8 @@ theorem polynomialPowerFiniteDifference_natCast_eq_stretchedMoment
       · simp
     _ = stretchedMoment d k := by simp
 
+/-- Assuming `2 < β`, equal counts, equal source sums and equal signatures, the valuation
+difference `|V_β(p, x) - V_β(p₀, x)|` is eventually bounded. -/
 theorem eventually_abs_polynomialPatternPower_sub_le_of_same_signature
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (p₀ p : Fin M → Fin (D + 1))
@@ -330,6 +378,7 @@ theorem eventually_abs_polynomialPatternPower_sub_le_of_same_signature
     rw [polynomialPatternPowerValuation_sub β x p₀ p hcount₀ hcount]
     exact hx.le
 
+/-- Finitely many eventual bounds `|V a x| ≤ C_a` combine into one uniform constant. -/
 theorem exists_uniform_eventually_finset_abs_bound {α : Type*}
     [DecidableEq α] (T : Finset α) (V : α → ℝ → ℝ)
     (hbound : ∀ a ∈ T, ∃ C : ℝ, 0 < C ∧ ∀ᶠ x : ℝ in atTop,
@@ -359,6 +408,8 @@ theorem exists_uniform_eventually_finset_abs_bound {α : Type*}
     subst T
     exact ⟨1, one_pos, Eventually.of_forall (fun x a ha => by simp at ha)⟩
 
+/-- Assuming `2 < β`, count `D` and constant source sum on `S`: one `C > 0` bounds
+`|V_β(p, x) - V_β(p₀, x)|` eventually for all `p` in the minimal signature cluster. -/
 theorem eventually_uniform_polynomialPatternPower_cluster_bound
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)
@@ -392,6 +443,7 @@ theorem eventually_uniform_polynomialPatternPower_cluster_bound
     (fun p x => polynomialPatternPowerValuation β p x -
       polynomialPatternPowerValuation β p₀ x) hbound
 
+/-- The minimum of `V_β(p, x)` over a nonempty finite set of patterns. -/
 noncomputable def polynomialPatternClusterMinValuation {M D : ℕ}
     (β : ℝ) (C : Finset (Fin M → Fin (D + 1))) (hC : C.Nonempty)
     (x : ℝ) : ℝ :=
@@ -415,6 +467,8 @@ theorem exists_pattern_eq_clusterMinValuation {M D : ℕ}
     Finset.min'_mem _ _
   exact Finset.mem_image.mp hmem
 
+/-- Assuming `2 < β`, count `D` and constant source sum on `S`: eventually every member of the
+minimal signature cluster has valuation within `[0, 2C]` above the cluster minimum. -/
 theorem eventually_polynomialPatternPower_cluster_delta_bounds
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty)

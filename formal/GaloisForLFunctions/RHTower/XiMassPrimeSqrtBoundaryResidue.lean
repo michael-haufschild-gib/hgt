@@ -1,5 +1,22 @@
 import GaloisForLFunctions.RHTower.XiMassPrimeSqrtDilation
 
+/-!
+# Vertical boundedness of the square-root-masked prime layer
+
+The prime layer masked by `p^{-1/2}` is twice the prime-square layer at the rescaled parameters
+`(a/2, 2τ)`. Since the prime-square layer is bounded on every positive vertical line, so is the
+square-root-masked layer.
+
+## Main results
+
+- `exists_norm_xiMassPrimeSqrtMaskLayer_vertical_bound`: for `a, σ > 0`, the square-root-masked
+  prime layer is bounded on the line `Re τ = σ`, uniformly in `Im τ`.
+
+## Hypotheses
+
+The result is unconditional; it uses only `0 < a` and `0 < σ`.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -7,6 +24,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- For `a, σ > 0`, the square-root-masked prime layer is bounded on the vertical line
+`Re τ = σ`, by twice the prime-square layer bound at `(a/2, 2σ)`. -/
 theorem exists_norm_xiMassPrimeSqrtMaskLayer_vertical_bound
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) :
     ∃ B : ℝ, ∀ u : ℝ,

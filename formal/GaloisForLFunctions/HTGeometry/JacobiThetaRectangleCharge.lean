@@ -3,6 +3,33 @@ import GaloisForLFunctions.HTGeometry.JacobiThetaBoundaryRegular
 import GaloisForLFunctions.HTGeometry.RectangleResidue
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
+/-!
+# Theta logarithmic-derivative charge of an axis-parallel rectangle
+
+For `Im τ > 0` let `θ(z) = jacobiTheta₂ z τ`. Fix a base point `z₁` and the axis-parallel rectangle
+with lower-left corner `z₁` and upper-right corner `z₁ + 1 + i Im τ`. If `θ` has no zeros on the
+bottom edge and on the left edge, then by `θ(z + 1) = θ(z)` and the quasi-periodicity
+`θ(z + τ) = e^{(...)} θ(z)` it has no zeros on the full bottom line, the top line, or the right
+edge, and the positively oriented contour integral of `θ'/θ` around the rectangle equals `2πi`.
+A base point with this boundary regularity exists for every `τ` in the upper half-plane.
+
+## Main results
+
+- `thetaRectangleIntegral_eq_two_pi_I`: `∮ θ'/θ = 2πi` around the rectangle, for boundary-regular
+  `z₁`.
+- `exists_thetaRectangleBoundaryRegular`: for `Im τ > 0` a boundary-regular base point exists.
+- `thetaRectangle_bottom_ne_zero_all`, `thetaRectangle_top_ne_zero`,
+  `thetaRectangle_right_ne_zero`: nonvanishing of `θ` on the bottom and top lines and the right
+  edge.
+
+## Hypotheses
+
+`thetaRectangleIntegral_eq_two_pi_I` assumes `0 < Im τ` and `ThetaRectangleBoundaryRegular τ z₁`, a
+concrete nonvanishing condition for `θ` on the bottom and left edges.
+`exists_thetaRectangleBoundaryRegular` proves that such `z₁` exists for every `τ` with `0 < Im τ`,
+so the integral identity is available unconditionally for a suitable base point.
+-/
+
 open Complex Set intervalIntegral MeasureTheory
 
 namespace GaloisForLFunctions
@@ -11,12 +38,15 @@ noncomputable section
 
 open Metric
 
+/-- `θ(·, τ)` has no zeros on the bottom edge `[Re z₁, Re z₁ + 1] + i Im z₁` and on the left edge
+`Re z₁ + i [Im z₁, Im z₁ + Im τ]` of the rectangle based at `z₁`. -/
 def ThetaRectangleBoundaryRegular (τ z₁ : ℂ) : Prop :=
   (∀ x : ℝ, x ∈ uIcc z₁.re (z₁.re + 1) →
       jacobiTheta₂ ((x : ℂ) + z₁.im * I) τ ≠ 0) ∧
     ∀ y : ℝ, y ∈ uIcc z₁.im (z₁.im + τ.im) →
       jacobiTheta₂ ((z₁.re : ℂ) + y * I) τ ≠ 0
 
+/-- Upper-right corner `(Re z₁ + 1) + i (Im z₁ + Im τ)` of the theta rectangle. -/
 def thetaRectangleUpperRight (τ z₁ : ℂ) : ℂ :=
   (z₁.re + 1 : ℝ) + (z₁.im + τ.im : ℝ) * I
 
@@ -26,6 +56,8 @@ theorem thetaRectangleUpperRight_re (τ z₁ : ℂ) :
 theorem thetaRectangleUpperRight_im (τ z₁ : ℂ) :
     (thetaRectangleUpperRight τ z₁).im = z₁.im + τ.im := by simp [thetaRectangleUpperRight]
 
+/-- Boundary regularity on the bottom edge extends, by `1`-periodicity, to the whole horizontal line
+`ℝ + i Im z₁`. -/
 theorem thetaRectangle_bottom_ne_zero_all {z₁ τ : ℂ}
     (h : ThetaRectangleBoundaryRegular τ z₁) (x : ℝ) :
     jacobiTheta₂ ((x : ℂ) + z₁.im * I) τ ≠ 0 := by
@@ -52,6 +84,8 @@ theorem thetaRectangle_bottom_ne_zero_all {z₁ τ : ℂ}
   push_cast
   ring
 
+/-- Under boundary regularity, `θ` has no zeros on the top line `ℝ + i (Im z₁ + Im τ)`, by the
+quasi-periodicity of `θ` under `z ↦ z + τ`. -/
 theorem thetaRectangle_top_ne_zero {z₁ τ : ℂ}
     (h : ThetaRectangleBoundaryRegular τ z₁) (x : ℝ) :
     jacobiTheta₂ ((x : ℂ) + (z₁.im + τ.im : ℝ) * I) τ ≠ 0 := by
@@ -64,6 +98,8 @@ theorem thetaRectangle_top_ne_zero {z₁ τ : ℂ}
   rw [← harg, jacobiTheta₂_add_left']
   exact mul_ne_zero (Complex.exp_ne_zero _) hz
 
+/-- Under boundary regularity, `θ` has no zeros on the right edge, the unit translate of the left
+edge. -/
 theorem thetaRectangle_right_ne_zero {z₁ τ : ℂ}
     (h : ThetaRectangleBoundaryRegular τ z₁) (y : ℝ)
     (hy : y ∈ uIcc z₁.im (z₁.im + τ.im)) :
@@ -73,6 +109,9 @@ theorem thetaRectangle_right_ne_zero {z₁ τ : ℂ}
       ((z₁.re : ℂ) + y * I) + 1 by push_cast; ring, jacobiTheta₂_add_left]
   exact hl
 
+/-- For `Im τ > 0` and a boundary-regular base point `z₁`, the positively oriented contour integral
+of `θ'/θ` around the rectangle from `z₁` to `z₁ + 1 + i Im τ` equals `2πi`: the vertical sides
+cancel by `1`-periodicity and the top side differs from the bottom side by `-2πi`. -/
 theorem thetaRectangleIntegral_eq_two_pi_I {z₁ τ : ℂ} (hτ : 0 < τ.im)
     (hregular : ThetaRectangleBoundaryRegular τ z₁) :
     RHTower.rectIntegral (fun z => thetaLogDeriv z τ) z₁ (thetaRectangleUpperRight τ z₁) =
@@ -147,6 +186,9 @@ noncomputable section
 
 open Metric
 
+/-- For `Im τ > 0` some base point `z₁` with `Re z₁, Im z₁ ∈ (1/4, 1/3)` is boundary-regular: the
+theta zeros in a large closed ball are finite, so finitely many real and imaginary parts are
+avoided. -/
 theorem exists_thetaRectangleBoundaryRegular {τ : ℂ} (hτ : 0 < τ.im) :
     ∃ z₁ : ℂ, ThetaRectangleBoundaryRegular τ z₁ := by
   let R : ℝ := 4 + 2 * ‖τ‖

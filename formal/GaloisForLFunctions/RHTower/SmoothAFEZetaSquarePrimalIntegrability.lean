@@ -1,5 +1,24 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaSquarePrimalAffineMeanSquare
 
+/-!
+# Integrability of the primal zeta-square AFE source field
+
+The primal side of the smoothed approximate functional equation for `ζ(s)^2` at `s = 1/2 + it` is
+`P_N(t) = ∑_n d(n) n^(-s) φ(n/N)` with a smooth cutoff `φ`. This module proves that `P_N` is
+measurable and that `|P_N(t)|^2` is integrable on `[N, 2N]`, using the absolutely summable Dirichlet
+coefficients to bound `P_N` uniformly.
+
+## Main results
+
+- `measurable_smoothAFEZetaSquarePrimalSourceField`: `t ↦ P_N(t)` is measurable.
+- `integrableOn_normSq_smoothAFEZetaSquarePrimalSourceField`: for `N ≥ 4`, `|P_N(t)|^2` is
+  integrable on `[N, 2N]`.
+
+## Hypotheses
+
+Unconditional; integrability assumes `N ≥ 4`.
+-/
+
 noncomputable section
 
 open Complex Set MeasureTheory
@@ -18,6 +37,8 @@ theorem measurable_smoothAFEZetaSquarePrimalSourceField (N : ℕ) :
       unfold linePt
       fun_prop)).measurable).mul measurable_const
 
+/-- For `N ≥ 4`, `|P_N(t)|^2` is integrable on `[N, 2N]`; `P_N` is bounded by the sum of the absolute
+values of its Dirichlet coefficients. -/
 theorem integrableOn_normSq_smoothAFEZetaSquarePrimalSourceField
     {N : ℕ} (hN : 4 ≤ N) :
     IntegrableOn (fun t : ℝ => ‖smoothAFEZetaSquarePrimalSourceField N t‖ ^ (2 : ℕ))

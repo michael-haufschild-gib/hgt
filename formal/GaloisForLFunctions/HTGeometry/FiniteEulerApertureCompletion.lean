@@ -4,6 +4,40 @@ import GaloisForLFunctions.HTGeometry.EulerFactorRankOne
 import GaloisForLFunctions.HTGeometry.LinearOdeBohrSpectrum
 import GaloisForLFunctions.RHTower.FiniteIndexEulerHeadFredholmResponseUniversalityLaw
 
+/-!
+# Autonomous differential order of finite Euler products and their logarithmic derivatives
+
+For a finite set `S` of primes, the finite Euler product and its logarithmic-derivative flux are
+quasiperiodic functions of `t` with frequencies `-log p`, `p ∈ S`, obtained by evaluating a rational
+observable along the phase flow `z_p = p^(-i t)`. This module shows that the determinant
+`Π_(p ∈ S) (1 - p^(-1 - i t))` of the diagonal characteristic matrix has minimal autonomous order `|S|`,
+that the orders of finite Euler products are unbounded, and that the flux
+`Σ_(p ∈ S) log p · p^(-1-it) / (1 - p^(-1-it))` (the finite-`S` analogue of `-ζ'/ζ(1 + it)`) has
+minimal autonomous order exactly `|S|`. The lower bound comes from the Bohr spectrum: the flux has
+Bohr coefficient `log p / p` at frequency `-log p`, so its Bohr frequency module has rational rank at
+least `|S|`, and the rank bounds the autonomous order from below. The upper bound is an explicit nonzero
+autonomous annihilator of order `|S|`.
+
+## Main results
+
+- `autonomousMinimalOrder_finiteEulerCharacteristicDet_eq`: the inverse finite Euler product
+  `t ↦ Π_(p ∈ S) (1 - p^(-1 - i t))` has minimal autonomous order `|S|`.
+- `finiteEulerAutonomousOrders_cofinal`: for every `n` some finite Euler product phase has minimal
+  autonomous order greater than `n`.
+- `bohrCoefficient_finiteEulerFluxPhase_prime`: the Bohr coefficient of the flux at frequency `-log p`
+  is `log p / p`.
+- `cardinal_finitePrimePacket_le_rank_finiteEulerFluxPhase`: the Bohr frequency module of the flux has
+  rational rank at least `|S|`.
+- `exists_realAutonomousAnnihilator_finiteEulerFluxPhase`: the flux satisfies a nonzero autonomous
+  algebraic differential equation of order `|S|` along the real axis.
+- `autonomousMinimalOrder_finiteEulerFluxPhase_eq`: the flux has minimal autonomous order exactly `|S|`.
+
+## Hypotheses
+
+All results are unconditional; the only input is the finite set `S` of primes. Linear independence of
+the `log p` over `ℚ` is proved, not assumed.
+-/
+
 open Complex Set Filter Topology Matrix
 
 namespace GaloisForLFunctions.HTGeometry
@@ -12,6 +46,8 @@ open GaloisForLFunctions Bottcher
 
 noncomputable section
 
+/-- Bohr coefficients are additive: for continuous Bohr almost periodic `f, g`, the coefficient of
+`f - g` at `λ` is the difference of the coefficients. -/
 theorem bohrCoefficient_sub_local {f g : ℝ → ℂ}
     (hfc : Continuous f) (hfa : HTGeometry.IsBohrAlmostPeriodic f)
     (hgc : Continuous g) (hga : HTGeometry.IsBohrAlmostPeriodic g) (lam : ℝ) :
@@ -31,6 +67,7 @@ theorem bohrCoefficient_sub_local {f g : ℝ → ℂ}
       (hgc.mul (continuous_bohrChar lam))
       (isBohrAlmostPeriodic_mul_bohrChar hgc hga lam))
 
+/-- The Bohr coefficient of a constant `c` is `c` at frequency `0` and `0` elsewhere. -/
 theorem bohrCoefficient_const_local (c : ℂ) (lam : ℝ) :
     bohrCoefficient (fun _ : ℝ => c) lam = if lam = 0 then c else 0 := by
   have hfun : (fun _ : ℝ => c) = fun t => c * bohrExp 0 t := by
@@ -40,14 +77,19 @@ theorem bohrCoefficient_const_local (c : ℂ) (lam : ℝ) :
     (isBohrAlmostPeriodic_bohrExp 0), bohrCoefficient_bohrExp]
   by_cases h : lam = 0 <;> simp [h]
 
+/-- The diagonal characteristic matrix `diag(1 - p^(-1) z_p)` evaluated along the phase flow
+`z_p = e^(-i t log p)` at complex time `t`. -/
 def finiteEulerCharacteristicMatrix (S : Finset Nat.Primes) (z : ℂ) :
     Matrix (Fin (Fintype.card ↥S)) (Fin (Fintype.card ↥S)) ℂ :=
   Matrix.diagonal fun i =>
     1 - finitePrimeDamping S i * phasePoint (finitePrimeFrequency S) z i
 
+/-- The characteristic determinant `Π_(p ∈ S) (1 - p^(-1 - i t))`, the inverse finite Euler product. -/
 def finiteEulerCharacteristicDet (S : Finset Nat.Primes) (z : ℂ) : ℂ :=
   Matrix.det (finiteEulerCharacteristicMatrix S z)
 
+/-- The characteristic determinant is the phase function of the inverse-anchor polynomial
+`Π_p (1 - X_p / p)`. -/
 theorem finiteEulerCharacteristicDet_eq_inverseAnchor (S : Finset Nat.Primes) :
     finiteEulerCharacteristicDet S =
       phaseFunction (finitePrimeFrequency S)
@@ -60,16 +102,19 @@ theorem finiteEulerCharacteristicDet_eq_inverseAnchor (S : Finset Nat.Primes) :
     eulerInverseAnchorPolynomial, map_prod, map_sub, map_one, map_mul,
     MvPolynomial.eval_C, MvPolynomial.eval_X]
 
+/-- The inverse finite Euler product over `S` has minimal autonomous order `|S|`. -/
 theorem autonomousMinimalOrder_finiteEulerCharacteristicDet_eq
     (S : Finset Nat.Primes) :
     autonomousMinimalOrder (finiteEulerCharacteristicDet S) = Fintype.card ↥S := by
   rw [finiteEulerCharacteristicDet_eq_inverseAnchor]
   exact autonomousMinimalOrder_finiteEulerInverseAnchor_eq S
 
+/-- The set of the first `n` primes. -/
 def firstPrimePacket (n : ℕ) : Finset Nat.Primes :=
   Finset.univ.image fun i : Fin n =>
     (⟨Nat.nth Nat.Prime (i : ℕ), Nat.prime_nth_prime (i : ℕ)⟩ : Nat.Primes)
 
+/-- The packet of the first `n` primes has exactly `n` elements. -/
 theorem card_firstPrimePacket (n : ℕ) : (firstPrimePacket n).card = n := by
   rw [firstPrimePacket, Finset.card_image_of_injective]
   · simp
@@ -78,6 +123,8 @@ theorem card_firstPrimePacket (n : ℕ) : (firstPrimePacket n).card = n := by
     apply Nat.nth_injective Nat.infinite_setOf_prime
     exact congrArg Subtype.val hij
 
+/-- Autonomous orders of finite Euler products are unbounded: for every `n`, the product over the first
+`n + 1` primes has minimal autonomous order `n + 1 > n`. -/
 theorem finiteEulerAutonomousOrders_cofinal (n : ℕ) :
     ∃ S : Finset Nat.Primes,
       n < autonomousMinimalOrder (finiteEulerProductPhase S) := by
@@ -86,15 +133,19 @@ theorem finiteEulerAutonomousOrders_cofinal (n : ℕ) :
     card_firstPrimePacket]
   omega
 
+/-- The flux observable `Σ_p log p · (z_p / p) / (1 - z_p / p)` on the polyannulus. -/
 def finiteEulerFluxObservable (S : Finset Nat.Primes)
     (z : Fin (Fintype.card ↥S) → ℂ) : ℂ :=
   ∑ i, (-(finitePrimeFrequency S i : ℂ)) *
     (finitePrimeDamping S i * z i) /
       (1 - finitePrimeDamping S i * z i)
 
+/-- The finite Euler flux `t ↦ Σ_(p ∈ S) log p · p^(-1-it) / (1 - p^(-1-it))`, the logarithmic-derivative
+analogue `-ζ_S'/ζ_S(1 + it)`, as a phase function. -/
 def finiteEulerFluxPhase (S : Finset Nat.Primes) : ℂ → ℂ :=
   phaseFunction (finitePrimeFrequency S) (finiteEulerFluxObservable S)
 
+/-- On the real axis, `p^(-1) · e^(-i t log p) = p^(-(1 + i t))`. -/
 theorem finitePrimeDamping_mul_phasePoint_eq_basePowerLine
     (S : Finset Nat.Primes) (i : Fin (Fintype.card ↥S)) (t : ℝ) :
     finitePrimeDamping S i * phasePoint (finitePrimeFrequency S) (t : ℂ) i =
@@ -116,6 +167,7 @@ theorem finitePrimeDamping_mul_phasePoint_eq_basePowerLine
   push_cast
   ring
 
+/-- On the real axis the flux is `Σ_p log p · ((1 - p^(-1-it))⁻¹ - 1)`. -/
 theorem finiteEulerFluxPhase_ofReal_eq_sum_eulerFactorLine
     (S : Finset Nat.Primes) (t : ℝ) :
     finiteEulerFluxPhase S (t : ℂ) =
@@ -136,6 +188,8 @@ theorem finiteEulerFluxPhase_ofReal_eq_sum_eulerFactorLine
   field_simp
   ring
 
+/-- For distinct primes `p ≠ q` in `S`, the frequency `-log p` is not in the Bohr frequency module of the
+Euler factor at `q`, by rational independence of logarithms of primes. -/
 theorem finitePrimeFrequency_not_mem_other_eulerFactorModule
     (S : Finset Nat.Primes) {i j : Fin (Fintype.card ↥S)} (hij : i ≠ j) :
     finitePrimeFrequency S i ∉
@@ -171,6 +225,7 @@ theorem finitePrimeFrequency_not_mem_other_eulerFactorModule
       simpa using hrel) i (by simp)
   simp at hcoeff
 
+/-- The Bohr coefficient of the finite Euler flux at frequency `-log p` is `log p / p`. -/
 theorem bohrCoefficient_finiteEulerFluxPhase_prime
     (S : Finset Nat.Primes) (i : Fin (Fintype.card ↥S)) :
     bohrCoefficient (fun t : ℝ => finiteEulerFluxPhase S (t : ℂ))
@@ -259,6 +314,7 @@ theorem bohrCoefficient_finiteEulerFluxPhase_prime
     Finset.univ i]
   simp
 
+/-- Every frequency `-log p`, `p ∈ S`, lies in the Bohr spectrum of the finite Euler flux. -/
 theorem finitePrimeFrequency_mem_bohrSpectrum_finiteEulerFluxPhase
     (S : Finset Nat.Primes) (i : Fin (Fintype.card ↥S)) :
     finitePrimeFrequency S i ∈
@@ -274,6 +330,7 @@ theorem finitePrimeFrequency_mem_bohrSpectrum_finiteEulerFluxPhase
   · apply inv_ne_zero
     exact_mod_cast (finitePrimeAt S i).2.ne_zero
 
+/-- The Bohr frequency module of the finite Euler flux has rational rank at least `|S|`. -/
 theorem cardinal_finitePrimePacket_le_rank_finiteEulerFluxPhase
     (S : Finset Nat.Primes) :
     (Fintype.card ↥S : Cardinal) ≤
@@ -298,6 +355,7 @@ theorem cardinal_finitePrimePacket_le_rank_finiteEulerFluxPhase
     exact hindQ
   simpa [M] using hindw.cardinal_le_rank
 
+/-- On the polyannulus `1/p < |z_p| < p` the flux denominators `1 - z_p / p` do not vanish. -/
 theorem finiteEulerFluxDenominator_ne_zero (S : Finset Nat.Primes)
     {z : Fin (Fintype.card ↥S) → ℂ}
     (hz : z ∈ polyannulus (finitePrimeRadius S)) (i : Fin (Fintype.card ↥S)) :
@@ -321,6 +379,7 @@ theorem finiteEulerFluxDenominator_ne_zero (S : Finset Nat.Primes)
   rw [← heq, norm_one] at hnorm
   exact lt_irrefl 1 hnorm
 
+/-- The flux observable is analytic on the polyannulus `1/p < |z_p| < p`. -/
 theorem analyticOnNhd_finiteEulerFluxObservable (S : Finset Nat.Primes) :
     AnalyticOnNhd ℂ (finiteEulerFluxObservable S)
       (polyannulus (finitePrimeRadius S)) := by
@@ -362,6 +421,8 @@ theorem analyticOnNhd_finiteEulerFluxObservable (S : Finset Nat.Primes) :
       funext z
       rfl
 
+/-- The finite Euler flux satisfies a nonzero autonomous algebraic differential equation of order `|S|`
+along the real axis. -/
 theorem exists_realAutonomousAnnihilator_finiteEulerFluxPhase
     (S : Finset Nat.Primes) :
     ∃ P : Polynomial (MvPolynomial (Fin (Fintype.card ↥S)) ℂ), P ≠ 0 ∧
@@ -591,6 +652,8 @@ theorem exists_realAutonomousAnnihilator_finiteEulerFluxPhase
   rw [hcard] at hex
   exact hex
 
+/-- Lower bound: the minimal autonomous order of the finite Euler flux is at least `|S|`, since it
+dominates the rational rank of the Bohr frequency module. -/
 theorem card_finitePrimePacket_le_autonomousMinimalOrder_finiteEulerFluxPhase
     (S : Finset Nat.Primes) :
     Fintype.card ↥S ≤ autonomousMinimalOrder (finiteEulerFluxPhase S) := by
@@ -604,6 +667,7 @@ theorem card_finitePrimePacket_le_autonomousMinimalOrder_finiteEulerFluxPhase
     (cardinal_finitePrimePacket_le_rank_finiteEulerFluxPhase S).trans hbudget
   exact_mod_cast hcard
 
+/-- The finite Euler flux over `S` has minimal autonomous order exactly `|S|`. -/
 theorem autonomousMinimalOrder_finiteEulerFluxPhase_eq
     (S : Finset Nat.Primes) :
     autonomousMinimalOrder (finiteEulerFluxPhase S) = Fintype.card ↥S := by

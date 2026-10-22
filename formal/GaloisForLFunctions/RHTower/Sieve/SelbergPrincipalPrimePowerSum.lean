@@ -1,5 +1,23 @@
 import GaloisForLFunctions.RHTower.Sieve.SelbergEulerCorrectionPrimePowers
 
+/-!
+# Selberg principal coefficient at powers of one prime
+
+The principal bivariate coefficient `selbergPrincipalCoeff` is the bivariate Dirichlet convolution
+of the diagonal reciprocal coefficient `D(x, y) = [x = y]/x` with the pair `μ(m)/m · μ(n)/n`; it is
+the coefficient array of the Euler factor `(1 - X/p)(1 - Y/p)/(1 - XY/p)`. This module computes it on
+two powers of the same prime as a finite sum over the common exponent.
+
+## Main results
+
+- `selbergPrincipalCoeff_prime_pow_sum`: for a prime `p`,
+  `selbergPrincipalCoeff (p^i) (p^j) = ∑_{k ≤ min(i, j)} p^(-k) · μ(p^(i-k))/p^(i-k) · μ(p^(j-k))/p^(j-k)`.
+
+## Hypotheses
+
+Unconditional; `p` is assumed prime.
+-/
+
 open ArithmeticFunction Finset
 open scoped BigOperators ArithmeticFunction.Moebius
 
@@ -13,6 +31,8 @@ private theorem sum_divisor_subtype_eq_sum {M : Type*} [AddCommMonoid M]
   change (∑ x ∈ s.attach, f x.1) = _
   exact Finset.sum_attach s f
 
+/-- For a prime `p`, `selbergPrincipalCoeff (p^i) (p^j)` equals
+`∑_{k ≤ min(i, j)} (1/p^k) · (μ(p^(i-k))/p^(i-k)) · (μ(p^(j-k))/p^(j-k))`. -/
 theorem selbergPrincipalCoeff_prime_pow_sum {p i j : ℕ} (hp : p.Prime) :
     selbergPrincipalCoeff (p ^ i) (p ^ j) =
       ∑ k ∈ Finset.range (min i j + 1),

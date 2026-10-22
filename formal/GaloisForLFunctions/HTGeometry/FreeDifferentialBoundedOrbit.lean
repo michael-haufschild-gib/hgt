@@ -1,11 +1,40 @@
 import GaloisForLFunctions.HTGeometry.FreeDifferentialCartanTranslationSpeed
 
+/-!
+# Bounded building orbits of free differential automorphisms
+
+Let `σ` be a differential automorphism of the free differential field in `r + 1` differential
+indeterminates over a characteristic-zero constant field `C`, and let `ord(σ)` be its differential
+order (the degree of its Fréchet Jacobian). This module compares `ord(σ^n)` with the Euclidean
+distance `d_n` between the standard projective lattice point and its image under `σ^n` in the
+projective completed-lattice building, proving `ord(σ^n) ≤ d_n ≤ (r + 1)^2 ord(σ^n)`. Hence the
+building orbit of `σ` is bounded exactly when the differential orders of its iterates are bounded.
+
+## Main results
+
+- `antitone_sum_zero_abs_le_card_mul_top`: an antitone real vector of length `r + 1` with zero sum
+  satisfies `|v i| ≤ (r + 1) v 0` for every `i`.
+- `euclideanNorm_le_card_sq_mul_top_of_antitone_sum_zero`: such a vector has Euclidean norm at most
+  `(r + 1)^2 v 0`.
+- `freeDifferentialOrder_le_euclideanOrbitDistance`: `ord(σ^n) ≤ d_n`.
+- `euclideanOrbitDistance_le_card_sq_mul_freeDifferentialOrder`: `d_n ≤ (r + 1)^2 ord(σ^n)`.
+- `freeDifferentialEuclideanOrbitBounded_iff_orderPowersBounded`: the Euclidean building orbit of
+  `σ` is bounded if and only if `ord(σ^n)` is bounded in `n`.
+
+## Hypotheses
+
+Unconditional. The real-vector lemmas assume the vector is antitone with zero sum; the remaining
+results hold for every free differential automorphism over a characteristic-zero constant field.
+-/
+
 open scoped Differential BigOperators
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- If `v : Fin (r + 1) → ℝ` is antitone with `Σ v i = 0`, then `|v i| ≤ (r + 1) v 0` for each
+`i`: the top entry controls every entry. -/
 theorem antitone_sum_zero_abs_le_card_mul_top {r : ℕ}
     (v : Fin (r + 1) → ℝ) (hv : Antitone v) (hsum : ∑ i, v i = 0)
     (i : Fin (r + 1)) :
@@ -38,6 +67,8 @@ theorem antitone_sum_zero_abs_le_card_mul_top {r : ℕ}
   rw [abs_le]
   constructor <;> nlinarith
 
+/-- If `v : Fin (r + 1) → ℝ` is antitone with `Σ v i = 0`, its Euclidean norm is at most
+`(r + 1)^2 v 0`. -/
 theorem euclideanNorm_le_card_sq_mul_top_of_antitone_sum_zero {r : ℕ}
     (v : Fin (r + 1) → ℝ) (hv : Antitone v) (hsum : ∑ i, v i = 0) :
     ‖(WithLp.toLp 2 v : EuclideanSpace ℝ (Fin (r + 1)))‖ ≤
@@ -80,10 +111,13 @@ namespace DifferentialFieldAut
 
 variable {C : Type u} [Field C] [CharZero C] {r : ℕ}
 
+/-- The differential orders of the iterates `σ^n` are bounded uniformly in `n`. -/
 def FreeDifferentialOrderPowersBounded
     (σ : FreeAut (C := C) (ι := Fin (r + 1))) : Prop :=
   ∃ B : ℕ, ∀ n : ℕ, freeDifferentialOrder (σ ^ n) ≤ B
 
+/-- The orbit of the standard projective lattice point under the iterates `σ^n` stays at bounded
+Euclidean vertex distance from that point in the projective completed-lattice building. -/
 def FreeDifferentialEuclideanOrbitBounded
     (σ : FreeAut (C := C) (ι := Fin (r + 1))) : Prop :=
   ∃ B : ℝ, ∀ n : ℕ,
@@ -93,6 +127,9 @@ def FreeDifferentialEuclideanOrbitBounded
         (freeVariationalOreBasis (C := C) (r := r + 1))
         (freeDifferentialProjectiveBasePoint (C := C) (r + 1))) ≤ B
 
+/-- The differential order of `σ^n` is at most the Euclidean vertex distance from the standard
+projective lattice point to its image under `σ^n`; the order is the top relative-position
+coordinate. -/
 theorem freeDifferentialOrder_le_euclideanOrbitDistance
     (σ : FreeAut (C := C) (ι := Fin (r + 1))) (n : ℕ) :
     (freeDifferentialOrder (σ ^ n) : ℝ) ≤
@@ -116,6 +153,8 @@ theorem freeDifferentialOrder_le_euclideanOrbitDistance
       rw [DiffOp.differentialVariationalProjectiveEuclideanVertexDistance]
       exact DiffOp.differentialVariationalProjectiveEuclideanRelativePosition_norm_comm x y
 
+/-- The Euclidean vertex distance from the standard projective lattice point to its image under
+`σ^n` is at most `(r + 1)^2` times the differential order of `σ^n`. -/
 theorem euclideanOrbitDistance_le_card_sq_mul_freeDifferentialOrder
     (σ : FreeAut (C := C) (ι := Fin (r + 1))) (n : ℕ) :
     DiffOp.differentialVariationalProjectiveEuclideanVertexDistance
@@ -142,6 +181,8 @@ theorem euclideanOrbitDistance_le_card_sq_mul_freeDifferentialOrder
   rw [htop]
   exact hnorm
 
+/-- A free differential automorphism has a bounded Euclidean building orbit if and only if the
+differential orders of its iterates are bounded. -/
 theorem freeDifferentialEuclideanOrbitBounded_iff_orderPowersBounded
     (σ : FreeAut (C := C) (ι := Fin (r + 1))) :
     FreeDifferentialEuclideanOrbitBounded σ ↔

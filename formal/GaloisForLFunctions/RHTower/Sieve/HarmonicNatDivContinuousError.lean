@@ -2,6 +2,28 @@ import GaloisForLFunctions.RHTower.Sieve.NatDivLogPowerEndpointError
 import GaloisForLFunctions.RHTower.Sieve.HarmonicLogWindowLowerMoments
 import GaloisForLFunctions.RHTower.Sieve.GhsScaleSequence
 
+/-!
+# Harmonic moments on floor-divided windows versus continuous logarithms
+
+For a modulus `e` and a window `L ≤ U` with `8e ≤ L`, the harmonic log moments over the rescaled
+integer window `(⌊L/e⌋, ⌊U/e⌋]` are compared with the continuous expressions in `log(U/e)` and
+`log(L/e)`. The error from replacing `⌊L/e⌋ + 1`, `⌊U/e⌋ + 1` by `L/e`, `U/e` and from the
+sum-integral comparison is `O(e/L)`, with a factor `log(U+1)^m` for the `m`-th moment.
+
+## Main results
+
+- `abs_harmonicLogWindowMoment_zero_natDiv_sub_continuous_le`:
+  `|∑ 1/j - (log(U/e) - log(L/e))| ≤ 3e/L`.
+- `abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le`:
+  `|∑ log j / j - (log²(U/e) - log²(L/e))/2| ≤ 3 log(U+1) · e/L`.
+- `abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le`:
+  `|∑ log² j / j - (log³(U/e) - log³(L/e))/3| ≤ 3 log²(U+1) · e/L`.
+
+## Hypotheses
+
+All results are unconditional explicit inequalities; they assume `0 < e`, `8e ≤ L` and `L ≤ U`.
+-/
+
 open Finset
 
 namespace RHTower.Sieve
@@ -33,6 +55,8 @@ private theorem log_nat_succ_le_log_nat_succ {L U : ℕ} (hLU : L ≤ U) :
   apply Real.log_le_log (by positivity)
   exact_mod_cast Nat.add_le_add_right hLU 1
 
+/-- Assuming `0 < e`, `8e ≤ L ≤ U`, the harmonic sum over `(⌊L/e⌋, ⌊U/e⌋]` is within `3e/L` of
+`log(U/e) - log(L/e)`. -/
 theorem abs_harmonicLogWindowMoment_zero_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (hscale : 8 * e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMoment 0 (L / e) (U / e) -
@@ -97,6 +121,8 @@ theorem abs_harmonicLogWindowMoment_zero_natDiv_sub_continuous_le
     _ ≤ (e : ℝ) / (L : ℝ) + 2 * ((e : ℝ) / (L : ℝ)) := add_le_add hquad hend
     _ = 3 * (e : ℝ) / (L : ℝ) := by ring
 
+/-- Assuming `0 < e`, `8e ≤ L ≤ U`, `∑ log j / j` over `(⌊L/e⌋, ⌊U/e⌋]` is within
+`3 log(U+1) · e/L` of `(log²(U/e) - log²(L/e))/2`. -/
 theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (hscale : 8 * e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMoment 1 (L / e) (U / e) -
@@ -214,6 +240,8 @@ theorem abs_harmonicLogWindowMoment_one_natDiv_sub_continuous_le
       dsimp [K]
       ring
 
+/-- Assuming `0 < e`, `8e ≤ L ≤ U`, `∑ log² j / j` over `(⌊L/e⌋, ⌊U/e⌋]` is within
+`3 log²(U+1) · e/L` of `(log³(U/e) - log³(L/e))/3`. -/
 theorem abs_harmonicLogWindowMoment_two_natDiv_sub_continuous_le
     {L U e : ℕ} (he : 0 < e) (hscale : 8 * e ≤ L) (hLU : L ≤ U) :
     |harmonicLogWindowMoment 2 (L / e) (U / e) -

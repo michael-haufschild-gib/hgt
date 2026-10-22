@@ -1,6 +1,28 @@
 import GaloisForLFunctions.RHTower.ThetaTiltFluxCarrier
 import GaloisForLFunctions.HTGeometry.HorizontalModulusDerivative
 
+/-!
+# Horizontal flux extraction for theta-source Laplace transforms
+
+Let `F(w) = ∫ k(x) e^(w x) dx` be the bilateral Laplace transform of a theta source `k` (even,
+positive, continuous, faster than exponential decay), and let
+`B(w, v) = (F'(w) conj F(v) + F(w) conj F'(v)) / (w + conj v)` be its source Bezoutian. On the
+horizontal line `Im w = b`, the diagonal `B(w, w)` equals `(d/da |F(a + ib)|^2) / (2a)`. By the mean
+value theorem, if `F` vanishes at `A + ib` with `A > 0` but not at `ib`, then `|F|^2` must decrease
+somewhere on the segment, so the diagonal Bezoutian has negative real part at some `a + ib` with
+`0 < a < A`.
+
+## Main results
+
+- `exists_sourceBezoutian_diagonal_neg_of_horizontal_zero`: a zero of `F` at `A + ib` (`A > 0`)
+  with `F(ib) ≠ 0` forces `Re B(a + ib, a + ib) < 0` for some `a ∈ (0, A)`.
+
+## Hypotheses
+
+The theorem is an implication: it assumes `A > 0`, a zero `F(A + ib) = 0`, and the nonvanishing
+`F(ib) ≠ 0`. No further analytic input is used; the theta-source axioms are part of the data.
+-/
+
 open Complex Set
 open scoped ComplexConjugate
 
@@ -8,6 +30,9 @@ namespace RHTower
 
 noncomputable section
 
+/-- Assuming `A > 0`, `F(A + ib) = 0` and `F(ib) ≠ 0` for the bilateral Laplace transform `F` of a
+theta source, the diagonal source Bezoutian has negative real part at some `a + ib` with
+`0 < a < A`. -/
 theorem exists_sourceBezoutian_diagonal_neg_of_horizontal_zero
     (S : ThetaSource) {A b : ℝ} (hA : 0 < A)
     (hzero : bilateralLaplace S ((A : ℂ) + (b : ℂ) * I) = 0)

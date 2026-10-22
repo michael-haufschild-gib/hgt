@@ -1,12 +1,38 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovLinnikPartner
 import GaloisForLFunctions.RHTower.Sieve.PowerSumTranslationRing
 
+/-!
+# Shifted Linnik partners of a Vinogradov block
+
+Translating a block `x ∈ [0, N)^k` whose entries are distinct modulo the prime `p` by a residue `a`
+gives a Linnik tuple `x - a` in `ZMod (p^k)`, still distinct modulo `p`. Two blocks are shifted
+nested-compatible when their translates have equal `j`-th power sums modulo `p^j` for `j = 1..k`.
+For `N < p^k` the shifted partners of a block embed into the solutions of Linnik's nested
+congruences, so there are at most `k! p^(k(k-1)/2)` of them.
+
+## Main results
+
+- `vinogradovShiftedBlock`: the translate `x - a` as a Linnik tuple modulo `p^k`.
+- `vinogradovShiftedNestedCompatible`, `VinogradovShiftedCompatiblePartner`: the shifted nested
+  congruence relation and the partners of a block.
+- `vinogradovShiftedCompatiblePartnerEmbedding`: an embedding of the partners into
+  `VinogradovLinnikSolution p k` with the block's shifted nested signature.
+- `card_vinogradovShiftedCompatiblePartner_le`: for prime `p`, `k < p` and `N < p^k`, at most
+  `k! · p^(k(k-1)/2)` shifted partners.
+
+## Hypotheses
+
+Unconditional. The count assumes `p` prime, `k < p` and `N < p^k`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- The translate `x - a` of a block injective modulo `p`, as a `k`-tuple in `ZMod (p^k)` with
+distinct reductions modulo `p`. -/
 def vinogradovShiftedBlock
     {N p k : ℕ} [NeZero p] (_hp : p.Prime) (hNp : N < p ^ k)
     (a : ZMod p) (x : VinogradovInjectiveBlock N p k) :
@@ -28,6 +54,7 @@ def vinogradovShiftedBlock
       simpa only [map_sub, map_natCast] using h'
     exact sub_left_inj.mp h''⟩
 
+/-- Shifted nested compatibility at `a`: `∑ (x_i - a)^j ≡ ∑ (y_i - a)^j (mod p^j)` for `j = 1..k`. -/
 def vinogradovShiftedNestedCompatible
     {N p k : ℕ} [NeZero p] (hp : p.Prime) (hNp : N < p ^ k)
     (a : ZMod p) (x y : VinogradovInjectiveBlock N p k) : Prop :=
@@ -37,6 +64,7 @@ def vinogradovShiftedNestedCompatible
       (vinogradovFullPowerSignature (vinogradovShiftedBlock hp hNp a y) j).val %
         p ^ (j.val + 1)
 
+/-- The blocks that are shifted nested-compatible with a fixed block `x` at residue `a`. -/
 def VinogradovShiftedCompatiblePartner
     {N p k : ℕ} [NeZero p] (hp : p.Prime) (hNp : N < p ^ k)
     (a : ZMod p) (x : VinogradovInjectiveBlock N p k) :=
@@ -54,6 +82,7 @@ noncomputable instance vinogradovShiftedCompatiblePartnerFintype
     (a : ZMod p) (x : VinogradovInjectiveBlock N p k) :
     Fintype (VinogradovShiftedCompatiblePartner hp hNp a x) := Fintype.ofFinite _
 
+/-- Nested signature of the shifted block: its `j`-th power sum reduced modulo `p^j`, `j = 1..k`. -/
 def vinogradovShiftedBlockNestedSignature
     {N p k : ℕ} [NeZero p] (hp : p.Prime) (hNp : N < p ^ k)
     (a : ZMod p) (x : VinogradovInjectiveBlock N p k)
@@ -62,6 +91,8 @@ def vinogradovShiftedBlockNestedSignature
       p ^ (j.val + 1),
     Nat.mod_lt _ (pow_pos (Nat.pos_of_ne_zero (NeZero.ne p)) _)⟩
 
+/-- For `N < p^k`, `y ↦ y - a` embeds the shifted partners of `x` into the Linnik solutions with the
+shifted nested signature of `x`. -/
 def vinogradovShiftedCompatiblePartnerEmbedding
     {N p k : ℕ} [NeZero p] (hp : p.Prime) (hNp : N < p ^ k)
     (a : ZMod p) (x : VinogradovInjectiveBlock N p k) :
@@ -85,6 +116,8 @@ def vinogradovShiftedCompatiblePartnerEmbedding
     simpa [ZMod.val_cast_of_lt hylt, ZMod.val_cast_of_lt hzlt] using
       congrArg ZMod.val hcast
 
+/-- For prime `p`, `k < p` and `N < p^k`, a block has at most `k! · p^(k(k-1)/2)` shifted
+nested-compatible partners at any residue `a`. -/
 theorem card_vinogradovShiftedCompatiblePartner_le
     {N p k : ℕ} [NeZero p] (hp : p.Prime) (hkp : k < p)
     (hNp : N < p ^ k) (a : ZMod p) (x : VinogradovInjectiveBlock N p k) :

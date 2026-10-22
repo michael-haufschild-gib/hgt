@@ -1,6 +1,34 @@
 import GaloisForLFunctions.HTGeometry.MovingCanonicalFullTranslationRankGenericity
 import GaloisForLFunctions.HTGeometry.SingularContinuousFullTranslationFamilyFreenessUniversalityLaw
 
+/-!
+# Full-translation differential freeness of moving canonical log-derivatives
+
+For a bounded real sequence `θ` (supremum norm), the moving canonical divisor has simple positive
+zeros `a_n(θ) = n + 1 + δ(θ n)` with displacement `δ ∈ (-1/4, 1/4)`, and
+`L_θ(z) = Σ_n ((a_n(θ) - z)⁻¹ - a_n(θ)⁻¹)` is the negative logarithmic derivative of the associated
+canonical product. For a dense residual set of `θ`, for every `m` and every configuration of `m`
+distinct complex shifts `s_i`, the family of translates `z ↦ L_θ(z + s_i)` satisfies no nonzero
+polynomial relation in `z` and finitely many derivatives of the family members on the set of `z`
+with every `z + s_i` in the upper half-plane.
+
+## Main results
+
+- `not_familyDifferentiallyAlgebraicOn_movingCanonicalLogDerivative_of_relationFree`: if `θ`
+  has no nonzero coefficient vector for any finite expanded pattern relation, then no
+  distinct-translate family of `L_θ` is differentially algebraic.
+- `movingCanonical_fullTranslationFreeness_denseResidual`: the pattern-relation-free `θ` form a
+  dense residual set, and for each of them every distinct-translate family of `L_θ` is not
+  differentially algebraic on the common upper translation domain.
+
+## Hypotheses
+
+`movingCanonical_fullTranslationFreeness_denseResidual` is unconditional. The intermediate theorem
+`not_familyDifferentiallyAlgebraicOn_movingCanonicalLogDerivative_of_relationFree` takes the
+all-patterns relation-freeness of `θ` as a hypothesis; the main theorem discharges it on a dense
+residual set via `allFinitePatterns_movingCanonicalExpandedRelationFree_dense_residual`.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open GaloisForLFunctions Set Topology
@@ -8,6 +36,8 @@ open ClassicalAnalyticNevanlinnaCarrierFamily
 
 noncomputable section
 
+/-- The expanded packet entry at row `r` and jet slot `(i, k)` is the `k`-th derivative of
+`L_θ(· + s_i)` at the row point, the matching coordinate of `familyJetVec`. -/
 theorem movingCanonicalExpandedPacketValue_eq_familyJetVec
     {m n : ℕ} {row : Type} [Fintype row] [DecidableEq row]
     (packet : InjectiveProjectiveRowPacket row)
@@ -29,6 +59,9 @@ theorem movingCanonicalExpandedPacketValue_eq_familyJetVec
   rw [iteratedDeriv_comp_add_right]
   rfl
 
+/-- Assuming `hfree` (every expanded pattern relation satisfied by `θ` has zero coefficients), no
+family of distinct translates `z ↦ L_θ(z + s_i)` satisfies a nonzero polynomial differential
+relation on the common upper translation domain. -/
 theorem not_familyDifferentiallyAlgebraicOn_movingCanonicalLogDerivative_of_relationFree
     (m : ℕ) (θ : BoundedRealSequence)
     (hfree : ∀ (p : FiniteDifferentialPattern ℕ)
@@ -145,6 +178,9 @@ theorem not_familyDifferentiallyAlgebraicOn_movingCanonicalLogDerivative_of_rela
         exact hpatternZero b)
   exact hPne hP
 
+/-- For a dense residual set of bounded real sequences `θ`, every finite family of distinct
+translates `z ↦ L_θ(z + s_i)` of the moving canonical log-derivative is not differentially
+algebraic on `{z | ∀ i, 0 < Im (z + s_i)}`. -/
 theorem movingCanonical_fullTranslationFreeness_denseResidual :
     let universalPhase : Set BoundedRealSequence := {θ |
       ∀ (p : FiniteDifferentialPattern ℕ)

@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinFullPhysicalMass
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinPrimePowerLeakage
 
+/-!
+# Hoheisel-type primes in Route T's short intervals
+
+With `N_X = X^{1000/299}` and `H_X = N_X / X^{999/1000}` (so `H_X = N_X^{701299/1000000}`), this
+module proves that for all sufficiently large `X` the interval `(N_X, N_X + 2H_X]` contains a
+prime. The normalized smoothed von Mangoldt mass of the window tends to `1`, while in a prime-free
+window that mass is bounded by the prime-power leakage, which tends to `0`; hence the Chebyshev
+increment `θ(N_X + 2H_X) - θ(N_X)` is eventually nonzero.
+
+## Main results
+
+- `inghamRouteTBufferedNormalizedVonMangoldtMass_re_eq`: the real part of the normalized mass is
+  `H_X⁻¹ ∑ Λ(n) w_X(n)`.
+- `eventually_inghamRouteTBuffered_theta_window_ne_zero`: eventually
+  `θ(N_X + 2H_X) - θ(N_X) ≠ 0`.
+- `exists_eventually_inghamRouteTBuffered_prime`: eventually there is a prime `p` with
+  `N_X < p ≤ N_X + 2H_X`.
+
+## Hypotheses
+
+The results are unconditional; the conclusions hold for all sufficiently large `X`.
+-/
+
 open Complex Filter Topology Set Finset
 open MeasureTheory ArithmeticFunction
 open GaloisForLFunctions.HTGeometry
@@ -9,6 +32,7 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- The real part of the normalized mass is the real smoothed sum `H_X⁻¹ ∑ Λ(n) w_X(n)`. -/
 theorem inghamRouteTBufferedNormalizedVonMangoldtMass_re_eq
     (X : ℕ) :
     (inghamRouteTBufferedNormalizedVonMangoldtMass X).re =
@@ -35,6 +59,8 @@ theorem inghamRouteTBufferedNormalizedVonMangoldtMass_re_eq
   rw [← Complex.ofReal_inv, ← Complex.ofReal_mul]
   exact Complex.ofReal_re _
 
+/-- For all large `X`, the Chebyshev increment `θ(N_X + 2H_X) - θ(N_X)` is nonzero: the mass
+tends to `1` while a prime-free window would force it below the vanishing leakage. -/
 theorem eventually_inghamRouteTBuffered_theta_window_ne_zero :
     ∀ᶠ X : ℕ in atTop,
       Chebyshev.theta
@@ -99,6 +125,8 @@ theorem eventually_inghamRouteTBuffered_theta_window_ne_zero :
   rw [hmassEq] at hmass
   linarith
 
+/-- Unconditional short-interval primes: for all large `X` there is a prime `p` with
+`N_X < p ≤ N_X + 2H_X`, where `N_X = X^{1000/299}` and `H_X = N_X^{701299/1000000}`. -/
 theorem exists_eventually_inghamRouteTBuffered_prime :
     ∀ᶠ X : ℕ in atTop,
       ∃ p : ℕ, p.Prime ∧

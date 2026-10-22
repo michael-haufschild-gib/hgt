@@ -23,7 +23,7 @@ from pathlib import Path
 from lean_research_corpus import Corpus, cache_directory, digest, PATH_PRIORITY_SQL, EvidenceChanged, mask_comments_strings
 from lean_search_index import module_matches, query_parts
 
-ENGINE_VERSION = "deep-6-shard-batched"
+ENGINE_VERSION = "deep-7-formal-only"
 METHOD_PROMPT_VERSION = "method-3-code-lines"
 MAX_ROUNDS = 3
 MAX_QUERIES = 8
@@ -174,25 +174,20 @@ class Engine:
                 on_partial([c for h in reciprocal_rank_fusion(direct) if (c := self._candidate(h))],
                            [c for h in reciprocal_rank_fusion(methods) if (c := self._method_candidate(h))],
                            reciprocal_rank_fusion(prose, key='id')[:10])
-        for views, target in lanes:
-            stage('text:' + views[0])
-            try:
-                hits = self.corpus.search(query, views=views, any_terms=options.get("any_terms", False), exact=options.get("exact", False),
-                                         **{**lexical, 'deadline': min(deadline, time.monotonic() + 10)})
-                target.append(hits)
-            except (ValueError, sqlite3.DatabaseError) as exc:
-                self.fail("text_retrieval", exc)
-            publish()
+        text_lanes = list(lanes)
         # Whole-file source chunks preserve anonymous examples, notation and
         # unusual syntax. They remain searchable without duplicating all
         # declaration text in the expensive embedding index.
         if options.get('retrieval_views', 'all') == 'all':
-            stage('text:lean')
-            try:
-                prose.append(self.corpus.search(query, views=('lean',), any_terms=options.get('any_terms', False), exact=options.get('exact', False),
-                                                **{**lexical, 'deadline': min(deadline, time.monotonic() + 10)}))
-            except (ValueError, sqlite3.DatabaseError) as exc:
-                self.fail('source_retrieval', exc)
+            text_lanes.append((('lean',), prose))
+        stage('text')
+        try:
+            found = self.corpus.search_lanes(query, [views for views, _ in text_lanes], any_terms=options.get("any_terms", False),
+                                             exact=options.get("exact", False), **{**lexical, 'deadline': min(deadline, time.monotonic() + 10)})
+            for (_, target), hits in zip(text_lanes, found):
+                target.append(hits)
+        except (ValueError, sqlite3.DatabaseError) as exc:
+            self.fail("text_retrieval", exc)
         publish()
         if options.get('lexical_only'):
             return ([c for h in reciprocal_rank_fusion(direct) if (c := self._candidate(h))],

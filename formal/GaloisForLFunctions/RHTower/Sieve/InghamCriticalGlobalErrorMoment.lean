@@ -1,11 +1,37 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamCriticalGlobalMoment
 
+/-!
+# Symmetric critical-line moments of the Möbius mollifier and Ingham's mollified error
+
+Let `M_X(s) = ∑_{n ≤ X} μ(n) n^{-s}` be the finite Möbius mollifier. This module bounds, on the
+symmetric window `[-N, N]` of the critical line, the mollifier second moment
+`∫ |M_X(1/2+it)|^2 dt` by `C N^{1001/1000}` and Ingham's mollified-error moment
+`∫ |ζ(1/2+it) M_X(1/2+it) - 1|^{4/3} dt` by `C N^{251/250}`, uniformly in `4 ≤ X ≤ N`. The
+first uses the affine mean-square bound `O(X + N log X)` with `1 + log X ≤ 1001 X^{1/1000}`; the
+second combines Hölder's inequality with the symmetric zeta fourth-moment bound.
+
+## Main results
+
+- `exists_inghamCriticalMollifierSecondMoment_symmetric_nat_le_routeTBudget`: there is `C ≥ 0`
+  with `∫_{-N}^{N} |M_X(1/2+it)|^2 dt ≤ C N^{1001/1000}` whenever `4 ≤ X ≤ N`.
+- `exists_inghamCriticalErrorFourThirdMoment_symmetric_nat_le_routeTBudget`: there is `C ≥ 0`
+  with `∫_{-N}^{N} |ζ(1/2+it) M_X(1/2+it) - 1|^{4/3} dt ≤ C N^{251/250}` whenever `4 ≤ X ≤ N`.
+
+## Hypotheses
+
+The main results are unconditional; the only conditions are the ranges `4 ≤ X ≤ N` on the
+natural numbers `X` (mollifier length) and `N` (window height).
+-/
+
 noncomputable section
 
 open Complex Set MeasureTheory
 
 namespace RHTower.Sieve
 
+/-- Unconditional symmetric mollifier second moment: some `C ≥ 0` gives
+`∫_{-N}^{N} |M_X(1/2+it)|^2 dt ≤ C N^{1001/1000}` for all naturals `4 ≤ X ≤ N`, where
+`M_X(s) = ∑_{n ≤ X} μ(n) n^{-s}`. -/
 theorem exists_inghamCriticalMollifierSecondMoment_symmetric_nat_le_routeTBudget :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {X N : ℕ}, 4 ≤ X → X ≤ N →
       inghamCriticalMollifierSecondMoment X (-(N : ℝ)) (N : ℝ) ≤
@@ -69,6 +95,9 @@ theorem exists_inghamCriticalMollifierSecondMoment_symmetric_nat_le_routeTBudget
       dsimp only [C]
       ring
 
+/-- Unconditional symmetric `4/3` moment of Ingham's mollified error: some `C ≥ 0` gives
+`∫_{-N}^{N} |ζ(1/2+it) M_X(1/2+it) - 1|^{4/3} dt ≤ C N^{251/250}` for all naturals
+`4 ≤ X ≤ N`, by Hölder against the zeta fourth moment and the mollifier second moment. -/
 theorem exists_inghamCriticalErrorFourThirdMoment_symmetric_nat_le_routeTBudget :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {X N : ℕ}, 4 ≤ X → X ≤ N →
       inghamCriticalErrorFourThirdMoment X (-(N : ℝ)) (N : ℝ) ≤

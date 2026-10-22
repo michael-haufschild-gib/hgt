@@ -2,12 +2,45 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIFrequencyRange
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicPrimeScaledBound
 import GaloisForLFunctions.RHTower.Sieve.TwoRangeHighBound
 
+/-!
+# Case I frequency range for Menon's harmonic prime blocks
+
+Menon's final range is cut into geometric prime blocks `(a_j, Y_j]` starting at the prime cutoff
+`⌊exp((log x/80) · log log log x / log log x)⌋` and ending at `⌊3x⌋`. For the harmonic prime block
+polynomial `P_j(w) = ∑_{a_j < p ≤ Y_j} μ(p) p^{-1} p^{2πiw}`, this module treats the Case I range
+of frequencies, from the Case II ceiling `(3/4) a_j^e` (with `e = menonHarmonicCaseIICoreExponent`)
+up to `twoRangeTop (2/3) x`. It shows that the cutoff eventually exceeds
+`exp((log x)^{19/20})`, that the Route T contour height `(log x)^{311}` lies below every block's
+Case II ceiling, and that on the Case I range the scaled Route T prime estimate yields
+`|P_j(w)| ≤ C1 / (log a_j)^{20}`.
+
+## Main results
+
+- `eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNat`: eventually
+  `exp((log x)^{19/20}) ≤ menonFinalRangePrimeCutoffNat x`.
+- `menonFinalRangePrimeCutoffNat_le_blockLower`: every block lower endpoint is at least the cutoff.
+- `eventually_twoRangeT0_le_menonHarmonicCaseIIFrequencyCeiling`: eventually
+  `(log x)^{311} ≤ (3/4) a_j^e` for every block `j`.
+- `tendsto_logPow_forty_mul_menonHarmonicCaseIRelMajorant`: `(log x)^{40}` times the relative
+  scaled majorant of the two-range schedule tends to `0`.
+- `exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_caseI_range`: some
+  `C1 ≥ 0` gives, for all large `x`, every block `j` and every `w` with
+  `(3/4) a_j^e ≤ 2π|w|` and `|w| ≤ twoRangeTop (2/3) x`, the bound `|P_j(w)| ≤ C1 / (log a_j)^{20}`.
+
+## Hypotheses
+
+The main results are unconditional; they hold for all sufficiently large `x`. The majorant limit
+assumes `δ > 0` and `C_tot > 0`, and the cutoff comparison assumes a nonnegative ladder increment.
+-/
+
 namespace RHTower.Sieve
 
 open Filter Topology
 
 noncomputable section
 
+/-- For all large `x`, `exp((log x)^{19/20})` is at most Menon's integer prime cutoff
+`⌊exp((log x/80) · log log log x / log log x)⌋`. -/
 theorem eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNat :
     ∀ᶠ x : ℝ in atTop,
       cardLength ((19 : ℝ) / 20) x ≤ (menonFinalRangePrimeCutoffNat x : ℝ) := by
@@ -65,6 +98,8 @@ theorem eventually_cardLength_nineteen_twentieth_le_menonFinalRangePrimeCutoffNa
     cardLength ((19 : ℝ) / 20) x <
       ((⌊menonFinalRangePrimeCutoff x⌋₊ : ℕ) : ℝ) from by linarith))
 
+/-- With a nonnegative ladder increment `η`, every block lower endpoint
+`⌊cutoff · (1 + η)^j⌋` is at least the prime cutoff. -/
 theorem menonFinalRangePrimeCutoffNat_le_blockLower
     {x : ℝ} {j : ℕ} (heta : 0 ≤ menonFinalRangeLadderEta x) :
     menonFinalRangePrimeCutoffNat x ≤ menonFinalRangeBlockLowerNat x j := by
@@ -76,6 +111,8 @@ theorem menonFinalRangePrimeCutoffNat_le_blockLower
   have hpow : 1 ≤ (1 + menonFinalRangeLadderEta x) ^ j := one_le_pow₀ hstep
   exact le_mul_of_one_le_right (by positivity) hpow
 
+/-- For all large `x`, the Route T contour height `(log x)^{311}` is at most the Case II frequency
+ceiling `(3/4) a_j^e` of every final-range block `j`. -/
 theorem eventually_twoRangeT0_le_menonHarmonicCaseIIFrequencyCeiling :
     ∀ᶠ x : ℝ in atTop,
       ∀ j ∈ Finset.range (menonFinalRangeLadderSteps x),
@@ -135,6 +172,8 @@ theorem eventually_twoRangeT0_le_menonHarmonicCaseIIFrequencyCeiling :
   rw [hcardpow] at harpow
   nlinarith [mul_le_mul_of_nonneg_left harpow (by norm_num : (0 : ℝ) ≤ 3 / 4)]
 
+/-- Assuming `δ > 0` and `C_tot > 0`, `(log x)^{40}` times the relative scaled majorant of the
+two-range schedule (parameters `b = 2`, `A₃ = 100`, `β = 2/3`, `19/20`) tends to `0`. -/
 theorem tendsto_logPow_forty_mul_menonHarmonicCaseIRelMajorant
     {A delta Ctot : ℝ} (hdelta : 0 < delta) (hCtot : 0 < Ctot) :
     Tendsto (fun x : ℝ => (Real.log x) ^ (40 : ℝ) *
@@ -184,6 +223,9 @@ theorem tendsto_logPow_forty_mul_menonHarmonicCaseIRelMajorant
       (by norm_num) (by norm_num)) hxpos hexpq hxmin
 
 set_option maxHeartbeats 800000 in
+/-- Case I block bound: some `C1 ≥ 0` gives, for all large `x`, every final-range block `j` and
+every `w` with `(3/4) a_j^e ≤ 2π|w| ≤ 2π · twoRangeTop (2/3) x`,
+`|∑_{a_j < p ≤ Y_j} μ(p) p^{-1} p^{2πiw}| ≤ C1 / (log a_j)^{20}`. -/
 theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_caseI_range :
     ∃ C1 : ℝ, 0 ≤ C1 ∧
       ∀ᶠ x : ℝ in atTop,

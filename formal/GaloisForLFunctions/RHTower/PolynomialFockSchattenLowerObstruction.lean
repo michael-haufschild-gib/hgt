@@ -2,12 +2,39 @@ import GaloisForLFunctions.RHTower.PolynomialFockAdaptedTangentPacketSynthesis
 import GaloisForLFunctions.RHTower.PositiveSchattenBoundedPacketDiagonal
 import GaloisForLFunctions.HTGeometry.OperatorLoewnerVectorBounds
 
+/-!
+# Schatten lower obstruction for the polynomial Fock critical-prime incidence
+
+For `m > 4`, the critical-prime incidence operator `I = S* S` on the degree-`m` polynomial moment
+Fock space is not in the Schatten class `S_q` for any `0 < q ≤ m / (m - 4)`. The proof tests `I`
+against the bounded synthesis operator of the shifted adapted tangent packets: Schatten membership
+would make the packet responses `Re ⟨φ_n, I φ_n⟩` `q`-summable, these responses dominate the
+inner-window adapted cell masses, and those masses are not `q`-summable at or below the threshold.
+The range `q < 1` is reduced to the known failure of trace-class membership.
+
+## Main results
+
+- `not_summable_rpow_shifted_criticalPrimeFockInnerWindowAdaptedCellMass`: for `0 < q ≤ m / (m - 4)`,
+  `n ↦ M_{n+1}^q` is not summable.
+- `polynomialCriticalPrimeSamplingIncidence_not_memSchattenClass_of_le_threshold`: for
+  `1 ≤ q ≤ m / (m - 4)`, the incidence operator is not in `S_q`.
+- `polynomialCriticalPrimeSamplingIncidence_not_memSchattenClass_of_pos_of_le_threshold`: for
+  `0 < q ≤ m / (m - 4)`, the incidence operator is not in `S_q`.
+
+## Hypotheses
+
+All results are unconditional. They assume `4 < m` and `q ≤ m / (m - 4)`, with `0 < q` (or `1 ≤ q`
+in the first Schatten statement).
+-/
+
 open scoped InnerProductSpace
 
 namespace RHTower
 
 noncomputable section
 
+/-- Assuming `4 < m` and `0 < q ≤ m / (m - 4)`, the shifted inner-window adapted cell masses
+`n ↦ M_{n+1}^q` are not summable. -/
 theorem not_summable_rpow_shifted_criticalPrimeFockInnerWindowAdaptedCellMass
     {m q : ℝ} (hm : 4 < m) (hq : 0 < q)
     (hqThreshold : q ≤ criticalPrimeFockSchattenThreshold m) :
@@ -25,6 +52,9 @@ theorem not_summable_rpow_shifted_criticalPrimeFockInnerWindowAdaptedCellMass
     (summable_rpow_criticalPrimeFockInnerWindowAdaptedCellMass_iff hm hq).mp hall
   exact (not_lt_of_ge hqThreshold) hlt
 
+/-- Assuming `4 < m` and `1 ≤ q ≤ m / (m - 4)`, the polynomial Fock critical-prime incidence
+operator is not in the Schatten class `S_q`; the adapted packet responses would otherwise be
+`q`-summable and dominate the non-summable cell masses. -/
 theorem polynomialCriticalPrimeSamplingIncidence_not_memSchattenClass_of_le_threshold
     {m q : ℝ} (hm : 4 < m) (hq : 1 ≤ q)
     (hqThreshold : q ≤ criticalPrimeFockSchattenThreshold m) :
@@ -113,6 +143,8 @@ theorem polynomialCriticalPrimeSamplingIncidence_not_memSchattenClass_of_le_thre
   exact not_summable_rpow_shifted_criticalPrimeFockInnerWindowAdaptedCellMass
     hm hq0 hqThreshold hsumMass
 
+/-- Assuming `4 < m` and `0 < q ≤ m / (m - 4)`, the polynomial Fock critical-prime incidence
+operator is not in `S_q`; for `q < 1` this follows from the failure of trace-class membership. -/
 theorem polynomialCriticalPrimeSamplingIncidence_not_memSchattenClass_of_pos_of_le_threshold
     {m q : ℝ} (hm : 4 < m) (hq : 0 < q)
     (hqThreshold : q ≤ criticalPrimeFockSchattenThreshold m) :

@@ -1,6 +1,25 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinFullTwoTail
 import GaloisForLFunctions.RHTower.Sieve.MaynardLocalPrimePowerLeakage
 
+/-!
+# Prime-power leakage in Route T's short window is negligible
+
+With `N_X = X^{1000/299}` and `H_X = N_X / X^{999/1000}`, this module defines the normalized
+prime-power leakage `L_X = (log(N_X + 2H_X)/log 2) (√(2H_X) + 1) log(N_X + 2H_X) / H_X`, which
+bounds the contribution of proper prime powers to a smoothed von Mangoldt sum over
+`[N_X, N_X + 2H_X]`, and proves `L_X → 0`. The proof uses `√H_X = X^{701299/598000}` and
+`log(N_X + 2H_X) ≤ log 3 + (1000/299) log X`, so `L_X` is dominated by `(log X)^2 / X^{701299/598000}`.
+
+## Main results
+
+- `inghamRouteTBufferedPrimePowerLeakage`: the leakage `L_X`.
+- `tendsto_inghamRouteTBufferedPrimePowerLeakage_zero`: `L_X → 0` as `X → ∞`.
+
+## Hypotheses
+
+The result is unconditional.
+-/
+
 open Complex Filter Topology Set Finset
 open MeasureTheory ArithmeticFunction
 open GaloisForLFunctions.HTGeometry
@@ -9,6 +28,8 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Normalized prime-power leakage
+`(log(N_X + 2H_X)/log 2) (√(2H_X) + 1) log(N_X + 2H_X) / H_X` of Route T's window. -/
 def inghamRouteTBufferedPrimePowerLeakage (X : ℕ) : ℝ :=
   (Real.log (inghamRouteTMellinPhysicalCenter X +
       2 * inghamRouteTMellinBufferedPhysicalWidth X) / Real.log 2) *
@@ -17,6 +38,7 @@ def inghamRouteTBufferedPrimePowerLeakage (X : ℕ) : ℝ :=
       2 * inghamRouteTMellinBufferedPhysicalWidth X) /
     inghamRouteTMellinBufferedPhysicalWidth X
 
+/-- The envelope `((√2 + 1)/log 2) (log 3 + (1000/299) log x)^2 / x^{701299/598000}` tends to `0`. -/
 private theorem tendsto_routeT_leakage_envelope_zero :
     Tendsto (fun x : ℝ =>
       ((Real.sqrt 2 + 1) / Real.log 2) *
@@ -34,6 +56,7 @@ private theorem tendsto_routeT_leakage_envelope_zero :
   simpa only [pow_zero, pow_one, mul_one, mul_zero, add_zero] using
     hscaled.congr' (Filter.Eventually.of_forall fun x => by ring)
 
+/-- The normalized prime-power leakage of Route T's short window tends to `0` as `X → ∞`. -/
 theorem tendsto_inghamRouteTBufferedPrimePowerLeakage_zero :
     Tendsto inghamRouteTBufferedPrimePowerLeakage atTop (nhds 0) := by
   have henv := tendsto_routeT_leakage_envelope_zero.comp

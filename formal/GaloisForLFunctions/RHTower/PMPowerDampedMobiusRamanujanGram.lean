@@ -1,11 +1,35 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanPrimitive
 import GaloisForLFunctions.HTGeometry.TrigammaLeadingAsymptotic
 
+/-!
+# Gram entries of Ramanujan primitives and their logarithmic growth at primes
+
+For moduli `p, q > 1` the Gram entry `G(p,q) = ∑_N Re C_p(N) Re C_q(N) / (N(N+1))` of the
+Ramanujan primitives `C_q(N) = ∑_{n≤N} c_q(n)` converges absolutely because both primitives
+are periodic and bounded. For a prime `p`, `C_p(N) = −(N mod p)`, which turns the first `p` terms
+of `G(p,q)` into `−∑_{n<p} Re C_q(n)/(n+1)` and bounds the tail by `∑_{n<q} |C_q(n)|`. With the
+logarithmic mean `−φ(q)/2` of `C_q`, this gives `G(p,q)/log p → φ(q)/2` as `p → ∞` over primes.
+
+## Main results
+
+- `pmRamanujanPrimitive_prime`: for prime `p`, `C_p(N) = −(N mod p)`.
+- `tendsto_pmRamanujanPrimitive_div_nat`: `C_q(N)/N → 0` for `q > 1`.
+- `tendsto_pmRamanujanPrimitive_shift_harmonic`: `(1/log N) ∑_{n<N} Re C_q(n)/(n+1) → −φ(q)/2`.
+- `summable_pmRamanujanPrimitiveGramTerm`: the Gram series converges for `p, q > 1`.
+- `pmRamanujanPrimitiveGram_harmonic_error_le`: for prime `p`, `|G(p,q) + ∑_{n<p} Re C_q(n)/(n+1)| ≤ ∑_{n<q} |C_q(n)|`.
+- `tendsto_pmRamanujanPrimitiveGram_prime_div_log`: `G(p,q)/log p → φ(q)/2` as `p → ∞` through the primes.
+
+## Hypotheses
+
+All results are unconditional; they assume `1 < q` (and `p` prime or `1 < p` where stated).
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- For prime `p`, the Ramanujan primitive is `C_p(N) = −(N mod p)`. -/
 theorem pmRamanujanPrimitive_prime {p : ℕ} (hp : p.Prime) (N : ℕ) :
     pmRamanujanPrimitive p N = -((N%p : ℕ) : ℂ) := by
   have he : pmRamanujanPrimitive p N = (p : ℂ)*((N/p : ℕ) : ℂ)-(N : ℂ) := by
@@ -18,11 +42,13 @@ theorem pmRamanujanPrimitive_prime {p : ℕ} (hp : p.Prime) (N : ℕ) :
   push_cast at hm
   linear_combination hm
 
+/-- For prime `p`, `|C_p(N)| ≤ p`. -/
 theorem norm_pmRamanujanPrimitive_prime_le {p : ℕ} (hp : p.Prime) (N : ℕ) :
     ‖pmRamanujanPrimitive p N‖ ≤ (p : ℝ) := by
   rw [pmRamanujanPrimitive_prime hp, norm_neg, Complex.norm_natCast]
   exact_mod_cast (Nat.mod_lt N hp.pos).le
 
+/-- For `q > 1`, `C_q(N)/N → 0` (the primitive is bounded). -/
 theorem tendsto_pmRamanujanPrimitive_div_nat {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => pmRamanujanPrimitive q N/(N : ℂ)) atTop (𝓝 0) := by
   apply squeeze_zero_norm (fun N => ?_)
@@ -40,6 +66,7 @@ theorem pmRamanujanPrimitive_range_sum (q N : ℕ) :
     rw [Finset.sum_range_succ, Finset.sum_Icc_succ_top (by omega), ih]
     ring
 
+/-- For `q > 1`, the Cesàro mean of the shifted primitive `n ↦ Re C_q(n−1)` tends to `−φ(q)/2`. -/
 theorem tendsto_pmRamanujanPrimitive_predecessor_mean {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, (pmRamanujanPrimitive q (n-1)).re)/(N : ℝ))
       atTop (𝓝 (-(q.totient : ℝ)/2)) := by
@@ -59,6 +86,7 @@ theorem tendsto_pmRamanujanPrimitive_predecessor_mean {q : ℕ} (hq : 1 < q) :
     simpa only [Complex.re_sum, Complex.sub_re] using congrArg (fun r : ℝ => r/(N : ℝ)) hr.symm
   simpa only [sub_zero] using h.congr he
 
+/-- For `q > 1`, `(1/log N) ∑_{n<N} Re C_q(n)/(n+1) → −φ(q)/2`. -/
 theorem tendsto_pmRamanujanPrimitive_shift_harmonic {q : ℕ} (hq : 1 < q) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N,
       (pmRamanujanPrimitive q n).re/((n : ℝ)+1))/Real.log N)
@@ -68,13 +96,16 @@ theorem tendsto_pmRamanujanPrimitive_shift_harmonic {q : ℕ} (hq : 1 < q) :
   simpa only [sum_Icc_eq_sum_range_succ, Nat.add_sub_cancel, Nat.cast_add,
     Nat.cast_one] using h
 
+/-- The Gram term `Re C_p(N) Re C_q(N) / (N(N+1))`. -/
 def pmRamanujanPrimitiveGramTerm (p q N : ℕ) : ℝ :=
   (pmRamanujanPrimitive p N).re*(pmRamanujanPrimitive q N).re/
     ((N : ℝ)*((N : ℝ)+1))
 
+/-- The Gram entry `G(p,q) = ∑'_N Re C_p(N) Re C_q(N) / (N(N+1))` of two Ramanujan primitives. -/
 def pmRamanujanPrimitiveGram (p q : ℕ) : ℝ :=
   ∑' N : ℕ, pmRamanujanPrimitiveGramTerm p q N
 
+/-- For `p, q > 1`, the Gram series is summable. -/
 theorem summable_pmRamanujanPrimitiveGramTerm {p q : ℕ} (hp : 1 < p) (hq : 1 < q) :
     Summable (pmRamanujanPrimitiveGramTerm p q) := by
   apply (summable_nat_add_iff 1).mp
@@ -95,6 +126,7 @@ theorem summable_pmRamanujanPrimitiveGramTerm {p q : ℕ} (hp : 1 < p) (hq : 1 <
         (((n : ℝ)+1)*((n : ℝ)+1+1)) := by gcongr
     _ = _ := by ring
 
+/-- For prime `p`, the first `p` Gram terms sum to `−∑_{n<p} Re C_q(n)/(n+1)`. -/
 theorem pmRamanujanPrimitiveGram_head {p : ℕ} (hp : p.Prime) (q : ℕ) :
     (∑ n ∈ Finset.range p, pmRamanujanPrimitiveGramTerm p q n) =
       -∑ n ∈ Finset.range p, (pmRamanujanPrimitive q n).re/((n : ℝ)+1) := by
@@ -110,6 +142,7 @@ theorem pmRamanujanPrimitiveGram_head {p : ℕ} (hp : p.Prime) (q : ℕ) :
     have hnR : (n : ℝ) ≠ 0 := by exact_mod_cast hn0
     field_simp
 
+/-- For prime `p` and `q > 1`, the Gram tail from `N = p` is bounded by `∑_{n<q} |C_q(n)|`. -/
 theorem pmRamanujanPrimitiveGram_tail_le {p q : ℕ} (hp : p.Prime) (hq : 1 < q) :
     |∑' k : ℕ, pmRamanujanPrimitiveGramTerm p q (p+k)| ≤ pmRamanujanPrimitiveBound q := by
   have hpR : (0 : ℝ) < p := by exact_mod_cast hp.pos
@@ -139,6 +172,7 @@ theorem pmRamanujanPrimitiveGram_tail_le {p q : ℕ} (hp : p.Prime) (hq : 1 < q)
       Summable.tsum_le_tsum ht hs.norm hmajor
     _ = _ := by rw [tsum_mul_left, htel.tsum_eq]; field_simp
 
+/-- For prime `p` and `q > 1`, `|G(p,q) + ∑_{n<p} Re C_q(n)/(n+1)| ≤ ∑_{n<q} |C_q(n)|`. -/
 theorem pmRamanujanPrimitiveGram_harmonic_error_le {p q : ℕ} (hp : p.Prime) (hq : 1 < q) :
     |pmRamanujanPrimitiveGram p q +
       ∑ n ∈ Finset.range p, (pmRamanujanPrimitive q n).re/((n : ℝ)+1)| ≤
@@ -156,6 +190,7 @@ theorem pmRamanujanPrimitiveGram_harmonic_error_le {p q : ℕ} (hp : p.Prime) (h
   rw [he]
   exact pmRamanujanPrimitiveGram_tail_le hp hq
 
+/-- For `q > 1`, `G(p,q)/log p → φ(q)/2` as `p → ∞` through the primes. -/
 theorem tendsto_pmRamanujanPrimitiveGram_prime_div_log {q : ℕ} (hq : 1 < q) :
     Tendsto (fun p : {p : ℕ // p.Prime} => pmRamanujanPrimitiveGram p q/Real.log (p : ℕ))
       atTop (𝓝 ((q.totient : ℝ)/2)) := by

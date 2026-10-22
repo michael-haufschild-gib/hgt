@@ -1,5 +1,30 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicBruhatFourierDilation
 
+/-!
+# Ramified radial packets on `ℚ_p` and their Fourier transforms
+
+For a primitive Dirichlet character `χ` of conductor exactly `pⁿ`, the angular packet is the
+Schwartz–Bruhat function `x ↦ χ(x mod pⁿ)` on `ℤ_p` (zero off `ℤ_p`), and the radial packet of
+height `m ∈ ℤ` is its dilate `x ↦ packet(p^{-m} x)`. In the coordinates
+`ℚ_p^× ≅ ℤ × ℤ_p^×`, `(k, u) ↦ p^k u`, the module computes both the packet and its Fourier
+transform exactly: the radial packet is `χ(ū)` on the shell `k = m` and zero elsewhere, and its
+Fourier transform is concentrated on the single shell `k = -m - n`, where it equals
+`p^{-m} · p^{-n} · χ⁻¹(-ū) · g(χ)` with `g(χ)` the Gauss sum.
+
+## Main results
+
+- `fieldOnePadicPrimitiveRadialPacket_coordinates`: the radial packet at `p^k u` is
+  `χ(ū)` if `k = m` and `0` otherwise.
+- `fieldOnePadicPrimitiveAngularPacket_fourier_coordinates`: the Fourier transform of the
+  angular packet at `p^k u` is `p^{-n} χ⁻¹(-ū) g(χ)` if `k = -n` and `0` otherwise.
+- `fieldOnePadicPrimitiveRadialPacket_fourier_coordinates`: the Fourier transform of the radial
+  packet at `p^k u` is `p^{-m} · p^{-n} χ⁻¹(-ū) g(χ)` if `k = -m - n` and `0` otherwise.
+
+## Hypotheses
+
+Unconditional. The coordinate formulas assume `0 < n`, i.e. the character is genuinely ramified.
+-/
+
 namespace GaloisForLFunctions.RHTower
 
 noncomputable section
@@ -9,6 +34,8 @@ open scoped NNReal ENNReal
 
 variable (p : ℕ) [Fact p.Prime]
 
+/-- The inverse `χ⁻¹` of a primitive character of conductor `pⁿ`, again primitive of conductor
+`pⁿ`. -/
 def fieldOnePadicPrimitiveAngularCharacterInv (n : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n) :
     FieldOnePadicPrimitiveAngularCharacter p n :=
@@ -25,6 +52,8 @@ omit [Fact p.Prime] in
     (fieldOnePadicPrimitiveAngularCharacterInv p n χ).1 x = χ.1⁻¹ x :=
   rfl
 
+/-- Radial packet of height `m`: the dilate `x ↦ packet_χ(p^{-m} x)` of the angular packet,
+supported on `p^m ℤ_p`. -/
 def fieldOnePadicPrimitiveRadialPacket (n : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n) (m : ℤ) :
     compactlySupportedLocallyConstant ℚ_[p] :=
@@ -40,6 +69,7 @@ def fieldOnePadicPrimitiveRadialPacket (n : ℕ)
         (((fieldOnePadicPrimeUnit p) ^ (-m) : ℚ_[p]ˣ) * x) :=
   rfl
 
+/-- For `0 < n`, the residue of `p` is not a unit in `ℤ/pⁿ`. -/
 theorem fieldOnePadicPrime_nonunit_zmod_pow
     (n : ℕ) (hn : 0 < n) :
     ¬IsUnit (p : ZMod (p ^ n)) := by
@@ -47,6 +77,8 @@ theorem fieldOnePadicPrime_nonunit_zmod_pow
   rw [Nat.Prime.coprime_iff_not_dvd (Fact.out : Nat.Prime p)]
   exact fun h => h (dvd_pow_self p hn.ne')
 
+/-- For `0 < n` and `r ∈ ℕ`, the angular packet at `p^r u` (`u` a unit) is `χ(ū)` if `r = 0`
+and `0` otherwise. -/
 theorem fieldOnePadicPrimitiveAngularPacket_primePow_unit
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -71,6 +103,8 @@ theorem fieldOnePadicPrimitiveAngularPacket_primePow_unit
       MulChar.map_nonunit χ.1 (fieldOnePadicPrime_nonunit_zmod_pow p n hn)
     rw [map_mul, map_pow, hpzero, zero_pow hr, zero_mul]
 
+/-- For `0 < n` and `k ∈ ℤ`, the angular packet at `p^k u` (`u` a unit) is `χ(ū)` if `k = 0`
+and `0` otherwise; negative `k` lies outside `ℤ_p`. -/
 theorem fieldOnePadicPrimitiveAngularPacket_primeZPow_unit
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -100,6 +134,8 @@ theorem fieldOnePadicPrimitiveAngularPacket_primeZPow_unit
     rw [fieldOnePadicPrimitiveAngularPacketLC_eq_zero_of_notMem p n χ hout]
     rw [if_neg (ne_of_lt hkneg)]
 
+/-- For `0 < n`, the radial packet of height `m` at `p^k u` is `χ(ū)` if `k = m` and `0`
+otherwise: it lives on the single shell `p^m ℤ_p^×`. -/
 theorem fieldOnePadicPrimitiveRadialPacket_coordinates
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -127,6 +163,8 @@ theorem fieldOnePadicPrimitiveRadialPacket_coordinates
       rw [if_neg hsub, if_neg hkm]
   · exact_mod_cast (Fact.out : Nat.Prime p).ne_zero
 
+/-- For `0 < n`, the Fourier transform of the angular packet at `p^k u` equals
+`p^{-n} χ⁻¹(-ū) g(χ)` (Gauss sum `g(χ)`) when `k = -n`, and vanishes on every other shell. -/
 theorem fieldOnePadicPrimitiveAngularPacket_fourier_coordinates
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -230,6 +268,8 @@ theorem fieldOnePadicPrimitiveAngularPacket_fourier_coordinates
       not_ne_iff.mp hnotSupport
     rw [hzeroVal, if_neg hklt.ne]
 
+/-- For `0 < n`, the Fourier transform of the radial packet of height `m` at `p^k u` equals
+`p^{-m} · p^{-n} χ⁻¹(-ū) g(χ)` when `k = -m - n`, and vanishes on every other shell. -/
 theorem fieldOnePadicPrimitiveRadialPacket_fourier_coordinates
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)

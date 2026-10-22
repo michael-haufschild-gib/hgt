@@ -5,6 +5,53 @@ import GaloisForLFunctions.RHTower.LiClockPairedEtaPartitionEndpointComparison
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Topology.Algebra.Order.Field
 
+/-!
+# Order-of-limits boundary for the paired-eta partition clock versus its contiguous comparison
+
+The finite paired-eta source is the union of the logarithmic intervals
+`(log(2n+1), log(2n+2)]`, `n < N`, and its contiguous comparison is `(0, log 2N]`; both are
+tilted by `e^{-u/2}` with normalizers `A_N` and `U_{log 2N}`, and the infinite and half-line
+versions have normalizers `A_∞` and `U_∞ = 2`. From two independent half-tilted copies one forms
+difference densities, their ratio `ρ_N(x)`, even difference moments, and Borel kernels
+`G(t) = ∑ⱼ m_{2j} t^{2j} / ((2j)!)²`. This module compares the regimes `N → ∞` and `x, t, j → ∞`.
+The endpoint scale `κ_N = (U_{log 2N}/A_N)²` tends to `4/A_∞²` with error `O((2N)^{-1/2})`,
+whereas in the spatial bulk `ρ_N(x)` tends to `c_∞ = 2 log 2 / A_∞²`. Since
+`c_∞ < 1 < 4/A_∞²`, the two iterated limits differ. For the Borel kernels, in the window
+`t ≤ c log 2N` with `0 < c < 1/16`, `e^{-2t} G_N(t) → c_∞/2` while the contiguous kernel gives
+`1/2`, so `G_N - G^{cont} → -∞` there, whereas for each fixed `N ≥ 2` the same difference tends
+to `+∞` as `t → ∞`.
+
+## Main results
+
+- `liClockPairedEtaPartitionComparisonScale_tendsto` and
+  `liClockPairedEtaPartitionComparisonScale_error_le`: `κ_N → 4/A_∞²`, with an explicit
+  `O(e^{-log(2N)/2})` error.
+- `liClockPairedEtaInfinitePartitionSpatialBulk_uniform`: for every `ε > 0` there is `K > 0` with
+  `|ρ_N(x) - c_∞| < ε` for all `N ≥ 1` and `K ≤ x ≤ log 2N - K`.
+- `liClockPairedEtaInfinitePartitionSpatialBulk_joint_limits`: if `N, x → ∞` and
+  `log 2N - x → ∞`, then `e^{x/2}` times the raw difference density tends to `log 2 / 2` and
+  `ρ_N(x) → c_∞`.
+- `liClockPairedEtaPartitionRawDifferenceDensity_iterated_limits`: the iterated limits of the
+  scaled raw density in `x` and `N` are `0` and `log 2 / 2`, which differ.
+- `liClockPairedEtaInfinitePartitionBorel_qualified_joint_limits`: in the window above,
+  `e^{-2t} G_N(t) → c_∞/2`, `e^{-2t} G^{cont}(t) → 1/2`, `G_N/G^{cont} → c_∞` and
+  `G_N - G^{cont} → -∞`.
+- `liClockPairedEtaInfinitePartitionBorel_uniform_negative_gap`: eventually in `N`,
+  `G_N(t) - G^{cont}(t) ≤ -1/2` for `T ≤ t ≤ c log 2N`.
+- `liClockPairedEtaInfinitePartition_comparison_limits_distinct`: `c_∞ < 1 < 4/A_∞²`.
+- `liClockPairedEtaInfinitePartition_moment_ratio_order_boundary` and
+  `liClockPairedEtaInfinitePartition_Borel_ratio_order_boundary`: the moment and Borel ratios have
+  iterated limits `4/A_∞²` (first `j` or `t`, then `N`) and `c_∞` (first `N`), which differ.
+- `liClockPairedEtaInfinitePartition_Borel_opposite_boundary_escapes`: for fixed `N ≥ 2`,
+  `G_N - G^{cont} → +∞` as `t → ∞`, but `→ -∞` along the joint window.
+
+## Hypotheses
+
+Unconditional. Statements take `0 < N` (or `2 ≤ N`), window hypotheses such as `0 < c < 1/16` and
+`0 ≤ t ≤ c log 2N`, and divergence hypotheses on the sequences `N`, `x`, `t`; no zero-location,
+functional-equation or Riemann-hypothesis premise is used.
+-/
+
 open Filter Topology
 
 namespace RHTower
@@ -47,6 +94,8 @@ private theorem boundary_negative_gap
     rw [hx]
     simp)
 
+/-- Abstract kernel comparison: if `t → ∞`, `A - A_∞ → 0`, `U - U_∞ → 0`,
+`e^{-2t} A_∞ → ℓ/2`, `e^{-2t} U_∞ → 1/2` and `ℓ < 1`, then `A/U → ℓ` and `A - U → -∞`. -/
 private theorem boundary_qualified_kernel_limits
     {A U Ainf Uinf t : ℕ → ℝ} {ell : ℝ}
     (ht : Tendsto t atTop atTop)
@@ -129,6 +178,7 @@ private theorem boundary_normalizationScale_error {s a b u E:ℝ}
       (mul_le_mul_of_nonneg_left hi.2 (by norm_num))
     _=_:=by ring
 
+/-- The endpoint comparison scale `κ_N = (U_{log 2N}/A_N)²` tends to `4/A_∞²`. -/
 theorem liClockPairedEtaPartitionComparisonScale_tendsto :
     Tendsto liClockPairedEtaPartitionComparisonScale atTop
       (𝓝 (4/liClockPairedEtaInfinitePartitionNormalizer^2)) := by
@@ -141,6 +191,7 @@ theorem liClockPairedEtaPartitionComparisonScale_tendsto :
   simpa only [Pi.div_apply,div_pow,
     show (2:ℝ)^2=4 by norm_num] using h
 
+/-- For `N ≥ 1`, `κ_N ≤ 4/(2 - √2)²`. -/
 theorem liClockPairedEtaPartitionComparisonScale_le_halfLine {N:ℕ} (hN:0<N) :
     liClockPairedEtaPartitionComparisonScale N≤4/(2-Real.sqrt 2)^2 := by
   have hs:=boundary_firstMass_pos
@@ -158,6 +209,7 @@ theorem liClockPairedEtaPartitionComparisonScale_le_halfLine {N:ℕ} (hN:0<N) :
     liClockPairedEtaContiguousPartitionNormalizer (Real.log (2*(N:ℝ)))^2≤4) (sq_nonneg _)).trans
       (div_le_div_of_nonneg_left (by norm_num) (by positivity) (by nlinarith))
 
+/-- For `N ≥ 1`, `|κ_N - 4/A_∞²| ≤ (8/(2-√2)² + 32/(2-√2)⁴) e^{-log(2N)/2}`. -/
 theorem liClockPairedEtaPartitionComparisonScale_error_le {N:ℕ} (hN:0<N) :
     |liClockPairedEtaPartitionComparisonScale N-4/liClockPairedEtaInfinitePartitionNormalizer^2|≤
       (8/(2-Real.sqrt 2)^2+32/(2-Real.sqrt 2)^4)*
@@ -173,6 +225,8 @@ theorem liClockPairedEtaPartitionComparisonScale_error_le {N:ℕ} (hN:0<N) :
     (by linarith [Real.exp_pos (-Real.log (2*(N:ℝ))/2)])
     (Real.exp_pos _).le (liClockPairedEtaInfinitePartitionNormalizer_sub_finite_le hN).2 hu.le
 
+/-- For each fixed `N`, `e^{x/2}` times the finite raw difference density tends to `0` as
+`x → ∞` (it vanishes for `|x| ≥ log 2N`). -/
 theorem liClockPairedEtaPartitionRawDifferenceDensity_scaled_tendsto_zero (N:ℕ) :
     Tendsto (fun x:ℝ=>Real.exp (x/2)*liClockPairedEtaPartitionRawDifferenceDensity N x)
       atTop (𝓝 0) := by
@@ -180,6 +234,8 @@ theorem liClockPairedEtaPartitionRawDifferenceDensity_scaled_tendsto_zero (N:ℕ
   filter_upwards [eventually_ge_atTop (Real.log (2*(N:ℝ))),eventually_ge_atTop (0:ℝ)] with x hL hx
   rw [liClockPairedEtaPartitionRawDifferenceDensity_zero_of_log_le_abs (by simpa only [abs_of_nonneg hx] using hL),mul_zero]
 
+/-- For `N ≥ 1` and `0 ≤ x ≤ log 2N`, the scaled deficit `e^{x/2}(raw_∞(x) - raw_N(x))` lies in
+`[0, e^{x - log 2N}]`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_deficit_le
     {N:ℕ} (hN:0<N) {x:ℝ} (hx:0≤x) (hxL:x≤Real.log (2*(N:ℝ))) :
     0≤Real.exp (x/2)*(liClockPairedEtaInfinitePartitionRawDifferenceDensity x-
@@ -205,6 +261,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_deficit_le
       mul_le_mul_of_nonneg_left (h.2.trans_eq hbound) (Real.exp_pos _).le
     _=_:=by rw [←Real.exp_add]; congr 1; ring
 
+/-- For `N ≥ 1` and `0 ≤ x < log 2N`, `ρ_N(x) = κ_N · e^{x/2} raw_N(x) / (1 - e^{x - log 2N})`. -/
 theorem liClockPairedEtaPartitionDensityRatio_eq_scaled
     {N:ℕ} (hN:0<N) {x:ℝ} (hx:0≤x) (hxL:x<Real.log (2*(N:ℝ))) :
     liClockPairedEtaPartitionDensityRatio N x=
@@ -222,6 +279,8 @@ theorem liClockPairedEtaPartitionDensityRatio_eq_scaled
     show -x/2= -(x/2) by ring,Real.exp_neg]
   field_simp
 
+/-- For each fixed `j`, the ratio of finite to contiguous even difference moments tends, as
+`N → ∞`, to the ratio of infinite to half-line moments. -/
 theorem tendsto_liClockPairedEtaPartitionEvenMomentRatio (j:ℕ) :
     Tendsto (fun N:ℕ=>liClockPairedEtaSymmetrizedEvenMoment N j/
       liClockPairedEtaContiguousSymmetrizedEvenMoment (Real.log (2*(N:ℝ))) j)
@@ -231,6 +290,7 @@ theorem tendsto_liClockPairedEtaPartitionEvenMomentRatio (j:ℕ) :
     (tendsto_liClockPairedEtaHalfLineSymmetrizedEvenMoment j)
     (liClockPairedEtaHalfLineSymmetrizedEvenMoment_pos j).ne'
 
+/-- The endpoint limit scale exceeds one: `1 < 4/A_∞²`. -/
 theorem liClockPairedEtaInfinitePartitionEndpointScale_gt_one :
     1<4/liClockPairedEtaInfinitePartitionNormalizer^2 := by
   have hp:=liClockPairedEtaInfinitePartitionNormalizer_pos
@@ -238,6 +298,7 @@ theorem liClockPairedEtaInfinitePartitionEndpointScale_gt_one :
   apply (lt_div_iff₀ (sq_pos_of_pos hp)).mpr
   nlinarith
 
+/-- For each fixed `x`, `e^{x/2} raw_N(x) → e^{x/2} raw_∞(x)` as `N → ∞`. -/
 theorem tendsto_liClockPairedEtaPartitionRawDifferenceDensity_scaled_fixed (x:ℝ) :
     Tendsto (fun N:ℕ=>Real.exp (x/2)*liClockPairedEtaPartitionRawDifferenceDensity N x)
       atTop (𝓝 (Real.exp (x/2)*liClockPairedEtaInfinitePartitionRawDifferenceDensity x)) :=
@@ -248,6 +309,9 @@ end RHTower
 
 namespace RHTower
 
+/-- Uniform transfer of a diverging negative gap: if `A_n`, `U_n` are uniformly `E_n`-close to
+`A_∞`, `U_∞` on `[0, W_n]` with `E_n → 0` and `A_∞ - U_∞ → -∞`, then eventually
+`A_n - U_n ≤ -1/2` on `[T, W_n]`. -/
 private theorem boundary_uniform_negative_gap
     {A U : ℕ → ℝ → ℝ} {Ainf Uinf : ℝ → ℝ} {E W : ℕ → ℝ}
     (hE : Tendsto E atTop (𝓝 0))
@@ -356,6 +420,8 @@ private theorem boundary_comparisonLimit_eq :
   unfold liClockPairedEtaInfinitePartitionComparisonLimit
   ring
 
+/-- For `N ≥ 1` and `0 ≤ x ≤ log 2N`,
+`|e^{x/2} raw_N(x) - log 2 / 2| ≤ (π²/16) e^{-x} + e^{x - log 2N}`. -/
 theorem liClockPairedEtaPartitionRawDifferenceDensity_scaled_error_le
     {N:ℕ} (hN:0<N) {x:ℝ} (hx:0≤x) (hxL:x≤Real.log (2*(N:ℝ))) :
     |Real.exp (x/2)*liClockPairedEtaPartitionRawDifferenceDensity N x-Real.log 2/2|≤
@@ -376,6 +442,8 @@ theorem liClockPairedEtaPartitionRawDifferenceDensity_scaled_error_le
           liClockPairedEtaPartitionRawDifferenceDensity N x)))
     _≤_ := add_le_add he (by rw [abs_of_nonneg hd.1]; exact hd.2)
 
+/-- For `N ≥ 1` and `0 ≤ x < log 2N`, explicit bound on `|ρ_N(x) - κ_N log 2 / 2|` by
+`κ_N ((π²/16) e^{-x} + e^{x - log 2N}) / (1 - e^{x - log 2N})`. -/
 theorem liClockPairedEtaPartitionDensityRatio_scaled_error_le
     {N:ℕ} (hN:0<N) {x:ℝ} (hx:0≤x) (hxL:x<Real.log (2*(N:ℝ))) :
     |liClockPairedEtaPartitionDensityRatio N x-
@@ -390,6 +458,8 @@ theorem liClockPairedEtaPartitionDensityRatio_scaled_error_le
     hd.1 hd.2 boundary_mean_bounds.1 boundary_mean_bounds.2
     (by ring) (liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_error_le hx)
 
+/-- For `N ≥ 1` and `0 ≤ x < log 2N`, explicit bound on `|ρ_N(x) - c_∞|` combining the
+spatial error and the endpoint-scale error. -/
 theorem liClockPairedEtaPartitionDensityRatio_bulk_error_le
     {N:ℕ} (hN:0<N) {x:ℝ} (hx:0≤x) (hxL:x<Real.log (2*(N:ℝ))) :
     |liClockPairedEtaPartitionDensityRatio N x-liClockPairedEtaInfinitePartitionComparisonLimit|≤
@@ -405,10 +475,13 @@ theorem liClockPairedEtaPartitionDensityRatio_bulk_error_le
     (liClockPairedEtaPartitionComparisonScale_error_le hN)
     (liClockPairedEtaPartitionDensityRatio_scaled_error_le hN hx hxL)
 
+/-- Explicit bulk error at distance `K` from both ends of `[0, log 2N]`; it is `O(e^{-K})`. -/
 def liClockPairedEtaPartitionSpatialBulkError (K:ℝ) : ℝ :=
   (4/(2-Real.sqrt 2)^2)*(Real.pi^2/16+1)*Real.exp (-K)/(1-Real.exp (-K))+
     (Real.log 2/2)*(8/(2-Real.sqrt 2)^2+32/(2-Real.sqrt 2)^4)*Real.exp (-K)
 
+/-- For `N ≥ 1`, `K > 0` and `K ≤ x ≤ log 2N - K`, `|ρ_N(x) - c_∞|` is at most the bulk error
+at `K`, uniformly in `N`. -/
 theorem liClockPairedEtaPartitionDensityRatio_uniform_bulk_error_le
     {N:ℕ} (hN:0<N) {K x:ℝ} (hK:0<K) (hx:K≤x)
     (hxL:x≤Real.log (2*(N:ℝ))-K) :
@@ -417,6 +490,7 @@ theorem liClockPairedEtaPartitionDensityRatio_uniform_bulk_error_le
   exact (liClockPairedEtaPartitionDensityRatio_bulk_error_le hN (by linarith) (by linarith)).trans
     (boundary_bulk_error (by positivity) boundary_mean_bounds.1 (by positivity) (by positivity) hK hx hxL)
 
+/-- The bulk error tends to `0` as `K → ∞`. -/
 theorem tendsto_liClockPairedEtaPartitionSpatialBulkError_zero :
     Tendsto liClockPairedEtaPartitionSpatialBulkError atTop (𝓝 0) := by
   have he : Tendsto (fun K:ℝ=>Real.exp (-K)) atTop (𝓝 0) :=
@@ -432,6 +506,8 @@ end RHTower
 
 namespace RHTower
 
+/-- If `N → ∞`, `x → ∞` and `log 2N - x → ∞`, then `e^{x/2} raw_N(x) → log 2 / 2` and
+`ρ_N(x) → c_∞ = 2 log 2 / A_∞²`. -/
 theorem liClockPairedEtaInfinitePartitionSpatialBulk_joint_limits
     {N:ℕ→ℕ} {x:ℕ→ℝ} (hN:Tendsto N atTop atTop) (hx:Tendsto x atTop atTop)
     (hbulk:Tendsto (fun n=>Real.log (2*(N n:ℝ))-x n) atTop atTop) :
@@ -477,6 +553,8 @@ theorem liClockPairedEtaInfinitePartitionSpatialBulk_joint_limits
   filter_upwards [hnpos,hxpos,hinside] with n hn hxn hxnL
   exact (liClockPairedEtaPartitionDensityRatio_eq_scaled hn hxn hxnL).symm
 
+/-- Non-commuting iterated limits of `e^{x/2} raw_N(x)`: `x → ∞` at fixed `N` gives `0`;
+`N → ∞` at fixed `x` gives `e^{x/2} raw_∞(x)`, which tends to `log 2 / 2 ≠ 0` as `x → ∞`. -/
 theorem liClockPairedEtaPartitionRawDifferenceDensity_iterated_limits :
     (∀N:ℕ,Tendsto (fun x:ℝ=>Real.exp (x/2)*liClockPairedEtaPartitionRawDifferenceDensity N x)
       atTop (𝓝 0)) ∧
@@ -494,6 +572,8 @@ end RHTower
 
 namespace RHTower
 
+/-- Uniform spatial bulk law: for every `ε > 0` there is `K > 0` such that
+`|ρ_N(x) - c_∞| < ε` for all `N ≥ 1` and all `K ≤ x ≤ log 2N - K`. -/
 theorem liClockPairedEtaInfinitePartitionSpatialBulk_uniform
     {ε:ℝ} (hε:0<ε) :
     ∃K:ℝ,0<K ∧ ∀N:ℕ,0<N→∀x:ℝ,K≤x→x≤Real.log (2*(N:ℝ))-K→
@@ -534,6 +614,7 @@ private theorem boundary_reference_kernel_error {c:ℝ} (hc0:0≤c) (hc:c<1/16)
     liClockPairedEtaHalfLineBorelKernelComplex_ofReal,←Complex.ofReal_sub,
     Complex.norm_real,Real.norm_eq_abs] using h
 
+/-- The half-line Borel kernel satisfies `e^{-2t} G^{half}(t) → 1/2` as `t → ∞`. -/
 theorem tendsto_liClockPairedEtaHalfLineBorelKernel_scaled :
     Tendsto (fun t:ℝ=>Real.exp (-2*t)*liClockPairedEtaHalfLineBorelKernel t)
       atTop (𝓝 (1/2)) := by
@@ -544,6 +625,9 @@ theorem tendsto_liClockPairedEtaHalfLineBorelKernel_scaled :
   rw [heq] at h
   exact h.congr (fun t=>by ring)
 
+/-- For `0 < c < 1/16`, if `N, t → ∞` with eventually `0 ≤ t ≤ c log 2N`, then
+`e^{-2t} G_N(t) → c_∞/2`, `e^{-2t} G^{cont}(t) → 1/2`, `G_N/G^{cont} → c_∞` and
+`G_N - G^{cont} → -∞`. -/
 theorem liClockPairedEtaInfinitePartitionBorel_qualified_joint_limits
     {c:ℝ} (hc0:0<c) (hc:c<1/16) {N:ℕ→ℕ} {t:ℕ→ℝ}
     (hN:Tendsto N atTop atTop) (ht:Tendsto t atTop atTop)
@@ -576,6 +660,8 @@ theorem liClockPairedEtaInfinitePartitionBorel_qualified_joint_limits
     (tendsto_liClockPairedEtaHalfLineBorelKernel_scaled.comp ht)
     liClockPairedEtaInfinitePartitionComparisonLimit_lt_one
 
+/-- For `0 < c < 1/16` there is `T > 0` such that, for all large `N`,
+`G_N(t) - G^{cont}(t) ≤ -1/2` whenever `T ≤ t ≤ c log 2N`. -/
 theorem liClockPairedEtaInfinitePartitionBorel_uniform_negative_gap
     {c:ℝ} (hc0:0<c) (hc:c<1/16) :
     ∃T:ℝ,0<T ∧ ∀ᶠ N:ℕ in atTop,∀t:ℝ,T≤t→t≤c*Real.log (2*(N:ℝ))→
@@ -594,6 +680,7 @@ theorem liClockPairedEtaInfinitePartitionBorel_uniform_negative_gap
     intro t ht hw
     exact boundary_reference_kernel_error hc0.le hc (by omega) ht hw
 
+/-- For fixed `t`, the finite Borel kernel `G_N(t)` tends to the infinite kernel `G_∞(t)`. -/
 theorem tendsto_liClockPairedEtaPartitionBorelKernel_fixed (t:ℝ) :
     Tendsto (fun N:ℕ=>liClockPairedEtaPartitionBorelKernel N t) atTop
       (𝓝 (liClockPairedEtaInfinitePartitionBorelKernel t)) := by
@@ -609,6 +696,7 @@ theorem tendsto_liClockPairedEtaPartitionBorelKernel_fixed (t:ℝ) :
   filter_upwards [eventually_ge_atTop 1] with N hN
   rw [liClockPairedEtaPartitionBorelKernelComplex_ofReal (by omega),Complex.ofReal_re]
 
+/-- For fixed `t`, the contiguous Borel kernel on `(0, log 2N]` tends to the half-line kernel. -/
 theorem tendsto_liClockPairedEtaContiguousBorelKernel_fixed (t:ℝ) :
     Tendsto (fun N:ℕ=>liClockPairedEtaContiguousBorelKernel (Real.log (2*(N:ℝ))) t) atTop
       (𝓝 (liClockPairedEtaHalfLineBorelKernel t)) := by
@@ -625,6 +713,7 @@ theorem tendsto_liClockPairedEtaContiguousBorelKernel_fixed (t:ℝ) :
   rw [liClockPairedEtaContiguousBorelKernelComplex_ofReal (boundary_logEndpoint_pos (by omega)),
     Complex.ofReal_re]
 
+/-- For fixed `t`, `G_N(t)/G^{cont}(t) → G_∞(t)/G^{half}(t)` as `N → ∞`. -/
 theorem tendsto_liClockPairedEtaPartitionBorelRatio_fixed (t:ℝ) :
     Tendsto (fun N:ℕ=>liClockPairedEtaPartitionBorelKernel N t/
       liClockPairedEtaContiguousBorelKernel (Real.log (2*(N:ℝ))) t) atTop
@@ -635,6 +724,7 @@ theorem tendsto_liClockPairedEtaPartitionBorelRatio_fixed (t:ℝ) :
   exact (tendsto_liClockPairedEtaPartitionBorelKernel_fixed t).div
     (tendsto_liClockPairedEtaContiguousBorelKernel_fixed t) hp.ne'
 
+/-- The bulk and endpoint limits are separated: `c_∞ < 1 < 4/A_∞²`, so `4/A_∞² ≠ c_∞`. -/
 theorem liClockPairedEtaInfinitePartition_comparison_limits_distinct :
     liClockPairedEtaInfinitePartitionComparisonLimit<1 ∧
     1<4/liClockPairedEtaInfinitePartitionNormalizer^2 ∧
@@ -644,6 +734,8 @@ theorem liClockPairedEtaInfinitePartition_comparison_limits_distinct :
     ne_of_gt (liClockPairedEtaInfinitePartitionComparisonLimit_lt_one.trans
       liClockPairedEtaInfinitePartitionEndpointScale_gt_one)⟩
 
+/-- Order-of-limits boundary for even moment ratios: `j → ∞` then `N → ∞` gives `4/A_∞²`, while
+`N → ∞` then `j → ∞` gives `c_∞`, and these differ. -/
 theorem liClockPairedEtaInfinitePartition_moment_ratio_order_boundary :
     (∀N:ℕ,0<N→Tendsto (fun j:ℕ=>liClockPairedEtaSymmetrizedEvenMoment N j/
       liClockPairedEtaContiguousSymmetrizedEvenMoment (Real.log (2*(N:ℝ))) j) atTop
@@ -661,6 +753,8 @@ theorem liClockPairedEtaInfinitePartition_moment_ratio_order_boundary :
     tendsto_liClockPairedEtaInfinitePartitionMomentRatio,
     liClockPairedEtaInfinitePartition_comparison_limits_distinct.2.2⟩
 
+/-- Order-of-limits boundary for Borel kernel ratios: `t → ∞` then `N → ∞` gives `4/A_∞²`, while
+`N → ∞` then `t → ∞` gives `c_∞`, and these differ. -/
 theorem liClockPairedEtaInfinitePartition_Borel_ratio_order_boundary :
     (∀N:ℕ,0<N→Tendsto (fun t:ℝ=>liClockPairedEtaPartitionBorelKernel N t/
       liClockPairedEtaContiguousBorelKernel (Real.log (2*(N:ℝ))) t) atTop
@@ -678,6 +772,8 @@ theorem liClockPairedEtaInfinitePartition_Borel_ratio_order_boundary :
     tendsto_liClockPairedEtaInfinitePartitionBorelKernel_div_halfLine,
     liClockPairedEtaInfinitePartition_comparison_limits_distinct.2.2⟩
 
+/-- At `N = 1` the source coincides with the contiguous interval `(0, log 2]`: equal moments,
+equal Borel kernels, and `κ_1 = 1`. -/
 theorem liClockPairedEtaInfinitePartition_first_prefix_equalities :
     (∀j:ℕ,liClockPairedEtaSymmetrizedEvenMoment 1 j=
       liClockPairedEtaContiguousSymmetrizedEvenMoment (Real.log 2) j) ∧
@@ -687,6 +783,8 @@ theorem liClockPairedEtaInfinitePartition_first_prefix_equalities :
   ⟨liClockPairedEtaSymmetrizedEvenMoment_one_eq_contiguous,
     liClockPairedEtaBorelKernel_one_eq_contiguous,liClockPairedEtaPartitionComparisonScale_one⟩
 
+/-- Opposite escapes: for each fixed `N ≥ 2`, `G_N(t) - G^{cont}(t) → +∞` as `t → ∞`, while for
+`0 < c < 1/16` along any joint window `0 ≤ t ≤ c log 2N` with `N, t → ∞` it tends to `-∞`. -/
 theorem liClockPairedEtaInfinitePartition_Borel_opposite_boundary_escapes
     {c:ℝ} (hc0:0<c) (hc:c<1/16) :
     (∀N:ℕ,2≤N→Tendsto (fun t:ℝ=>liClockPairedEtaPartitionBorelKernel N t-

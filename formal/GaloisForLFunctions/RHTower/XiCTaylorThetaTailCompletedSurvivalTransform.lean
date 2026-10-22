@@ -1,11 +1,35 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailCompletedSurvivalRemainder
 
+/-!
+# Completed survival transform of the theta-tail core atom
+
+With the theta-tail second density `D = 4 Θ''`, survival function `S = -4 Θ'`, completed survival
+remainder `R(x) = e^(-x/2) - S(x)`, and the core atom `A_d(z, x) = 1 - (z^2 + 1/4) σ_d(z, x)` built
+from the truncated second section `σ_d`, this module evaluates the exponential part of the
+survival integration by parts exactly. Using `∫_0^∞ x^k e^(-x/2) dx = k! 2^(k+1)` and a geometric
+sum, `∫_0^∞ e^(-x/2) ∂_x A_d(z, x) dx = (-4z^2)^(d+1) - 1`, which turns
+`∫_0^∞ D A_d = 1 + ∫_0^∞ S ∂_x A_d` into a formula involving only the remainder `R`.
+
+## Main results
+
+- `integral_pow_mul_exp_neg_half`: `∫_0^∞ x^k e^(-x/2) dx = k! 2^(k+1)`.
+- `integral_exp_neg_half_mul_coreAtomSourceDerivative`:
+  `∫_0^∞ e^(-x/2) ∂_x A_d(z, x) dx = (-4z^2)^(d+1) - 1`.
+- `integral_density_mul_coreAtom_eq_pow_sub_completedSurvival`:
+  `∫_0^∞ D(x) A_d(z, x) dx = (-4z^2)^(d+1) - ∫_0^∞ R(x) ∂_x A_d(z, x) dx`.
+
+## Hypotheses
+
+Unconditional; the identities hold for every `d : ℕ` and every complex `z`.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology Polynomial
 
 namespace RHTower
 
 noncomputable section
 
+/-- Gamma integral: `∫_0^∞ x^k e^(-x/2) dx = k! 2^(k+1)`. -/
 theorem integral_pow_mul_exp_neg_half (k : ℕ) :
     (∫ x : ℝ in Ioi 0, x ^ k * Real.exp (-x / 2)) =
       k.factorial * 2 ^ (k + 1) := by
@@ -23,6 +47,7 @@ theorem integral_pow_mul_exp_neg_half (k : ℕ) :
   norm_num [div_pow]
   ring
 
+/-- `x^k e^(-x/2)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_pow_mul_exp_neg_half (k : ℕ) :
     IntegrableOn (fun x : ℝ => x ^ k * Real.exp (-x / 2)) (Ioi 0) := by
   have h := integrableOn_rpow_mul_exp_neg_mul_rpow
@@ -53,6 +78,8 @@ theorem integral_pow_mul_exp_neg_half_complex (k : ℕ) :
       push_cast
       rfl
 
+/-- `∫_0^∞ e^(-x/2) ∂_x A_d(z, x) dx = (-4z^2)^(d+1) - 1`: the moment integrals collapse to a
+geometric sum in `-4z^2`. -/
 theorem integral_exp_neg_half_mul_coreAtomSourceDerivative
     (d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,
@@ -124,6 +151,7 @@ theorem integral_exp_neg_half_mul_coreAtomSourceDerivative
   · intro k _hk
     exact (integrableOn_pow_mul_exp_neg_half (2 * k + 1)).ofReal.const_mul _
 
+/-- `e^(-x/2) ∂_x A_d(z, x)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_exp_neg_half_mul_coreAtomSourceDerivative
     (d : ℕ) (z : ℂ) :
     IntegrableOn (fun x : ℝ =>
@@ -150,6 +178,8 @@ theorem integrableOn_exp_neg_half_mul_coreAtomSourceDerivative
   exact MeasureTheory.integrable_finsetSum _ fun k _hk =>
     (integrableOn_pow_mul_exp_neg_half (2 * k + 1)).ofReal.const_mul _
 
+/-- `∫_0^∞ D(x) A_d(z, x) dx = (-4z^2)^(d+1) - ∫_0^∞ R(x) ∂_x A_d(z, x) dx`, with `R` the completed
+survival remainder. -/
 theorem integral_density_mul_coreAtom_eq_pow_sub_completedSurvival
     (d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,

@@ -1,6 +1,26 @@
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtSelfConvHarmonicSquareAsymptotic
 import GaloisForLFunctions.RHTower.Sieve.VonMangoldtSelfConvCrossHarmonicBound
 
+/-!
+# Asymptotics of von Mangoldt harmonic moments
+
+Normalized limits of two harmonic moments of the von Mangoldt function:
+`∑_{2 ≤ k ≤ N} Λ(k)^2 / k ~ (log N)^2 / 2`, and the cross moment
+`∑_{2 ≤ k ≤ N} Λ(k) (Λ * Λ)(k) / k = o((log N)^3)`. Both follow from explicit error bounds
+(`39 log N + 25` and `24 log N (1 + log N)`) proved elsewhere.
+
+## Main results
+
+- `tendsto_vonMangoldtHarmonicSquareSum_div_logSquare`:
+  `(∑_{2 ≤ k ≤ N} Λ(k)^2/k) / (log N)^2 → 1/2`.
+- `tendsto_vonMangoldtSelfConvCrossHarmonicSum_div_logCube`:
+  `(∑_{2 ≤ k ≤ N} Λ(k) (Λ * Λ)(k)/k) / (log N)^3 → 0`.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 noncomputable section
 
 open Filter Topology ArithmeticFunction Finset
@@ -16,6 +36,7 @@ private theorem tendsto_inv_log_nat_zero :
     Tendsto (fun N : ℕ => (1 : ℝ) / Real.log N) atTop (nhds 0) :=
   Filter.Tendsto.div_atTop tendsto_const_nhds tendsto_log_nat_atTop
 
+/-- The harmonic square moment of `Λ` satisfies `(∑_{2 ≤ k ≤ N} Λ(k)^2/k) / (log N)^2 → 1/2`. -/
 theorem tendsto_vonMangoldtHarmonicSquareSum_div_logSquare :
     Tendsto (fun N : ℕ =>
       vonMangoldtHarmonicSquareSum N / Real.log N ^ (2 : ℕ))
@@ -56,6 +77,7 @@ theorem vonMangoldtSelfConvCrossHarmonicSum_nonneg (N : ℕ) :
   exact Finset.sum_nonneg fun k hk =>
     div_nonneg (mul_nonneg vonMangoldt_nonneg (vonMangoldtSelfConv_nonneg k)) (by positivity)
 
+/-- The cross moment `∑_{2 ≤ k ≤ N} Λ(k) (Λ * Λ)(k)/k` is `o((log N)^3)`. -/
 theorem tendsto_vonMangoldtSelfConvCrossHarmonicSum_div_logCube :
     Tendsto (fun N : ℕ =>
       vonMangoldtSelfConvCrossHarmonicSum N / Real.log N ^ (3 : ℕ))

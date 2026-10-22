@@ -4,6 +4,28 @@ import GaloisForLFunctions.HTGeometry.StateFieldTrdeg
 import GaloisForLFunctions.HTGeometry.JetHorizonTorsorTower
 import GaloisForLFunctions.HTGeometry.ScalarDifferentialOrderUpperBound
 
+/-!
+# Order bound for observables of a finite-dimensional differential state
+
+Let `K / F` be an extension of differential fields and `state : d → K` a finite family whose
+derivatives lie in the field `F(state)` it generates, i.e. a finite-dimensional autonomous
+first-order system over `F`. This module proves that every element `x` of `F(state)` satisfies an
+algebraic differential equation of order at most `|d|` over `F`: the jets `x, x', …, x^(|d|)` are
+algebraically dependent over `F`. The reason is that `F(state)` is closed under the derivation and
+has transcendence degree at most `|d|` over `F`.
+
+## Main results
+
+- `not_algebraicIndependent_jets_of_mem_finite_derivationClosed_state`: if each `(state i)′` lies
+  in `F(state)` and `x ∈ F(state)`, then the `|d| + 1` jets `x^(0), …, x^(|d|)` are not
+  algebraically independent over `F`.
+
+## Hypotheses
+
+Unconditional. The theorem assumes only the closure hypothesis `hstate` (each derivative of a state
+component lies in `F(state)`) and membership `x ∈ F(state)`; `d` is a finite type.
+-/
+
 open Set
 open scoped Differential
 
@@ -13,6 +35,9 @@ open GaloisForLFunctions
 
 noncomputable section
 
+/-- If `state : d → K` is a finite family with every `(state i)′ ∈ F(state)` (`hstate`), then for
+each `x ∈ F(state)` the jets `x, x', …, x^(|d|)` are algebraically dependent over `F`; that is,
+`x` satisfies an algebraic differential equation of order at most `|d|`. -/
 theorem not_algebraicIndependent_jets_of_mem_finite_derivationClosed_state
     {F K d : Type} [Field F] [Field K] [Algebra F K]
     [Differential F] [Differential K] [DifferentialAlgebra F K]

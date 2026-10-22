@@ -2,6 +2,40 @@ import GaloisForLFunctions.RHTower.FrankensteinParacyclicGhostTwoSheetAnomaly
 import GaloisForLFunctions.RHTower.Deninger.DeningerBigWittFrobeniusCrossPairStrictGammaBVDescent
 import GaloisForLFunctions.RHTower.Deninger.DeningerCalderonWittTwoPrimeOrientationBoundaryWall
 
+/-!
+# Prime-clock paracyclic anomaly read through the Big Witt ghost and Calderón–Witt incidence
+
+For a zero `ρ` of `Ξ`, the prime-clock anomaly `a_ρ(p)` is the paracyclic anomaly coefficient
+at scale `p` and depth `0`, equal to `(p^{2 Re ρ - 1} - 1) · c(ρ)` with `c(ρ) ≠ 0`. Feeding the
+vector `p ↦ a_ρ(p)` into the Frobenius-transgressed Big Witt prime-seam pair source at the primes
+`2, 3` gives the first-ghost coefficient `-2 · (1/6) · |a_ρ(2) - a_ρ(3)|²`, which is nonpositive
+and vanishes iff `Re ρ = 1/2`. The module reads this coefficient through the boundary of a
+Hochschild BV Green chain and through a Calderón–Witt incidence source, and shows that the
+existence of a linear descent of the Gamma-polarized boundary reflection defect through the
+(vanishing) oriented boundary is again equivalent to `Re ρ = 1/2`.
+
+## Main results
+
+- `frankensteinPrimeClockParacyclicAnomaly_two_eq_three_iff`: `a_ρ(2) = a_ρ(3)` iff `Re ρ = 1/2`.
+- `deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_two_three_eq_zero_iff`:
+  the `(2, 3)` ghost coefficient vanishes iff `Re ρ = 1/2`.
+- `deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_two_three_re_lt_zero_iff`:
+  its real part is negative iff `Re ρ ≠ 1/2`.
+- `frankensteinPrimeClockParacyclicSelectedWardDescendsAt_iff`: the selected Ward descent at `ρ`
+  exists iff `Re ρ = 1/2`.
+- `everyFrankensteinPrimeClockParacyclicTwoThreeBVGroundReadoutVanishes_iff_riemannHypothesis`
+  and `everyFrankensteinPrimeClockParacyclicSelectedWardDescends_iff_riemannHypothesis`: the
+  corresponding statements for all zeros of `Ξ` are each equivalent to the Riemann hypothesis.
+
+## Hypotheses
+
+Unconditional. The Riemann-hypothesis statements are equivalences, not proofs of either side; the
+`Prop`-valued definitions `EveryFrankensteinPrimeClockParacyclicTwoThreeBVGroundReadoutVanishes`,
+`FrankensteinPrimeClockParacyclicSelectedWardDescendsAt` and
+`EveryFrankensteinPrimeClockParacyclicSelectedWardDescends` appear only as sides of these
+equivalences, never as premises.
+-/
+
 open Complex Matrix GaloisForLFunctions.HTGeometry
 open scoped TensorProduct
 
@@ -9,10 +43,13 @@ namespace RHTower
 
 noncomputable section
 
+/-- Prime-clock anomaly `a_ρ(p)`: the paracyclic anomaly coefficient of `ρ` at scale `p` and
+prime-power datum `(p, 0)`. -/
 def frankensteinPrimeClockParacyclicAnomaly
     (rho : XiDivisorSupport) (p : Nat.Primes) : ℂ :=
   frankensteinParacyclicAnomalyCoefficient (p : ℕ) rho (p, 0)
 
+/-- `a_ρ(p) = (p^{2 Re ρ - 1} - 1) · c(ρ)`, with `c(ρ)` the leading physical source coefficient. -/
 theorem frankensteinPrimeClockParacyclicAnomaly_eq
     (rho : XiDivisorSupport) (p : Nat.Primes) :
     frankensteinPrimeClockParacyclicAnomaly rho p =
@@ -21,6 +58,7 @@ theorem frankensteinPrimeClockParacyclicAnomaly_eq
   rw [frankensteinPrimeClockParacyclicAnomaly,
     frankensteinParacyclicAnomalyCoefficient_eq]
 
+/-- `a_ρ(p) - a_ρ(q) = (p^{2 Re ρ - 1} - q^{2 Re ρ - 1}) · c(ρ)`. -/
 theorem frankensteinPrimeClockParacyclicAnomaly_sub_eq
     (rho : XiDivisorSupport) (p q : Nat.Primes) :
     frankensteinPrimeClockParacyclicAnomaly rho p -
@@ -32,6 +70,7 @@ theorem frankensteinPrimeClockParacyclicAnomaly_sub_eq
     frankensteinPrimeClockParacyclicAnomaly_eq]
   ring
 
+/-- The prime-clock anomalies at `2` and `3` agree iff `Re ρ = 1/2`. -/
 theorem frankensteinPrimeClockParacyclicAnomaly_two_eq_three_iff
     (rho : XiDivisorSupport) :
     frankensteinPrimeClockParacyclicAnomaly rho deningerCalderonWittPrimeTwo =
@@ -61,6 +100,8 @@ theorem frankensteinPrimeClockParacyclicAnomaly_two_eq_three_iff
       (deningerHalfDensityMateGain_two_eq_three_iff (rho : ℂ)).2 hline
     rw [hgain]
 
+/-- The Big Witt `(2, 3)` seam-pair ghost coefficient `-2 · (1/6) · |a_ρ(2) - a_ρ(3)|²` of the
+prime-clock anomaly vanishes iff `Re ρ = 1/2`. -/
 theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_two_three_eq_zero_iff
     (rho : XiDivisorSupport) :
     deningerBigWittFrobeniusPrimeSeamPairCoefficient
@@ -94,6 +135,8 @@ theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_tw
     rw [heq, sub_self, norm_zero]
     norm_num
 
+/-- The real part of the `(2, 3)` seam-pair ghost coefficient is strictly negative iff
+`Re ρ ≠ 1/2`. -/
 theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_two_three_re_lt_zero_iff
     (rho : XiDivisorSupport) :
     (deningerBigWittFrobeniusPrimeSeamPairCoefficient
@@ -131,6 +174,7 @@ theorem deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_tw
       mul_pos hatom (sq_pos_of_pos hnorm)
     nlinarith
 
+/-- Hochschild BV Green chain of the prime-clock anomaly at the primes `2, 3`. -/
 def frankensteinPrimeClockParacyclicTwoThreeBVGreenChain
     (rho : XiDivisorSupport) :
     DeningerOrdinaryIntegerEnd ⊗[ℂ] DeningerOrdinaryIntegerEnd :=
@@ -138,6 +182,8 @@ def frankensteinPrimeClockParacyclicTwoThreeBVGreenChain
     (frankensteinPrimeClockParacyclicAnomaly rho)
     deningerCalderonWittPrimeTwo deningerCalderonWittPrimeThree
 
+/-- The ground diagonal coefficient of the Hochschild boundary of the BV Green chain equals the
+`(2, 3)` seam-pair ghost coefficient. -/
 theorem frankensteinPrimeClockParacyclicTwoThreeBVGreenChain_groundReadout
     (rho : XiDivisorSupport) :
     deningerOrdinaryIntegerDiagonalCoefficient 1
@@ -149,6 +195,7 @@ theorem frankensteinPrimeClockParacyclicTwoThreeBVGreenChain_groundReadout
   rw [frankensteinPrimeClockParacyclicTwoThreeBVGreenChain,
     deningerBigWittFrobeniusPrimeSeamPairBVGreenChain_groundReadout]
 
+/-- The BV ground readout of `ρ` vanishes iff `Re ρ = 1/2`. -/
 theorem frankensteinPrimeClockParacyclicTwoThreeBVGreenChain_groundReadout_eq_zero_iff
     (rho : XiDivisorSupport) :
     deningerOrdinaryIntegerDiagonalCoefficient 1
@@ -158,12 +205,15 @@ theorem frankensteinPrimeClockParacyclicTwoThreeBVGreenChain_groundReadout_eq_ze
   rw [frankensteinPrimeClockParacyclicTwoThreeBVGreenChain_groundReadout,
     deningerBigWittFrobeniusPrimeSeamPairCoefficient_primeClockParacyclic_two_three_eq_zero_iff]
 
+/-- The statement that the BV ground readout vanishes for every zero `ρ` of `Ξ`. -/
 def EveryFrankensteinPrimeClockParacyclicTwoThreeBVGroundReadoutVanishes : Prop :=
   ∀ rho : XiDivisorSupport,
     deningerOrdinaryIntegerDiagonalCoefficient 1
       (hochschildBoundaryOne
         (frankensteinPrimeClockParacyclicTwoThreeBVGreenChain rho)) = 0
 
+/-- The BV ground readouts of all zeros of `Ξ` vanish iff the Riemann hypothesis holds (an
+equivalence, proving neither side). -/
 theorem everyFrankensteinPrimeClockParacyclicTwoThreeBVGroundReadoutVanishes_iff_riemannHypothesis :
     EveryFrankensteinPrimeClockParacyclicTwoThreeBVGroundReadoutVanishes ↔
       RiemannHypothesis := by
@@ -182,12 +232,16 @@ theorem frankensteinDeningerCalderonWittPrimeTwo_ne_primeThree :
   norm_num [deningerCalderonWittPrimeTwo,
     deningerCalderonWittPrimeThree] at hv
 
+/-- Calderón–Witt global Milnor incidence source: the `(2, 3)` seam-pair ghost coefficient times
+the cross-prime Gamma witness. -/
 def frankensteinPrimeClockParacyclicTwoThreeIncidenceSource
     (rho : XiDivisorSupport) : deningerCalderonWittGlobalMilnorIncidence :=
   deningerBigWittFrobeniusPrimeSeamPairIncidenceSource
     (frankensteinPrimeClockParacyclicAnomaly rho)
     frankensteinDeningerCalderonWittPrimeTwo_ne_primeThree
 
+/-- The global oriented boundary of the incidence source is zero, by exactness of the Milnor
+incidence complex. -/
 theorem deningerCalderonWittGlobalOrientedBoundary_primeClockParacyclicTwoThreeIncidence_zero
     (rho : XiDivisorSupport) :
     deningerCalderonWittGlobalOrientedBoundary
@@ -201,6 +255,8 @@ theorem deningerCalderonWittGlobalOrientedBoundary_primeClockParacyclicTwoThreeI
   rw [deningerCalderonWittGlobalOrientedBoundary, LinearMap.comp_apply,
     hcup, map_zero]
 
+/-- Selected Ward descent at `ρ`: some linear map sends the oriented boundary of the incidence
+source to its Gamma-polarized boundary reflection defect at `α = 1`. -/
 def FrankensteinPrimeClockParacyclicSelectedWardDescendsAt
     (rho : XiDivisorSupport) : Prop :=
   ∃ F : (DeningerCalderonWittAlgebraicGlobalDegreeTwo × ℂ) →ₗ[ℂ]
@@ -210,6 +266,8 @@ def FrankensteinPrimeClockParacyclicSelectedWardDescendsAt
       deningerCalderonWittGammaPolarizedBoundaryReflectionDefect 1
         (frankensteinPrimeClockParacyclicTwoThreeIncidenceSource rho)
 
+/-- The selected Ward descent at `ρ` exists iff `Re ρ = 1/2`: the boundary is zero, so descent
+forces the reflection defect, hence the ghost coefficient, to vanish. -/
 theorem frankensteinPrimeClockParacyclicSelectedWardDescendsAt_iff
     (rho : XiDivisorSupport) :
     FrankensteinPrimeClockParacyclicSelectedWardDescendsAt rho ↔
@@ -261,10 +319,13 @@ theorem frankensteinPrimeClockParacyclicSelectedWardDescendsAt_iff
       deningerBigWittFrobeniusPrimeSeamPairIncidenceSource, hcoeff, zero_smul,
       map_zero]
 
+/-- The statement that the selected Ward descent exists for every zero `ρ` of `Ξ`. -/
 def EveryFrankensteinPrimeClockParacyclicSelectedWardDescends : Prop :=
   ∀ rho : XiDivisorSupport,
     FrankensteinPrimeClockParacyclicSelectedWardDescendsAt rho
 
+/-- The selected Ward descent exists for all zeros of `Ξ` iff the Riemann hypothesis holds (an
+equivalence, proving neither side). -/
 theorem everyFrankensteinPrimeClockParacyclicSelectedWardDescends_iff_riemannHypothesis :
     EveryFrankensteinPrimeClockParacyclicSelectedWardDescends ↔
       RiemannHypothesis := by

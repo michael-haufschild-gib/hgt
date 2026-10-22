@@ -1,10 +1,31 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanCofactors
 
+/-!
+# Pointwise decay and logarithmic square mass of the Ramanujan weights
+
+From the cofactor bound `|K_q(q)| = q|w_ε(q)| ≤ q^(−ε)` the power-damped Ramanujan weights
+satisfy `|w_ε(q)| ≤ q^(−1−ε)` for `ε > 0`. Combined with `log(2q) ≤ (2^ε/ε) q^ε`, this gives
+convergence of the logarithmic square mass `∑_q q log(2q) |w_ε(q)|²`, each term being at most
+`(2^ε/ε) q^(−1−ε)`.
+
+## Main results
+
+- `norm_pmPowerDampedRamanujanWeight_le`: `|w_ε(q)| ≤ 1/q^(1+ε)` for `ε > 0`, `q > 0`.
+- `pmPowerDampedRamanujanLogSquareTerm_le`: `q log(2q) |w_ε(q)|² ≤ (2^ε/ε)/q^(1+ε)`.
+- `summable_pmPowerDampedRamanujanLogSquareTerm`: `∑_q q log(2q) |w_ε(q)|²` converges for `ε > 0`.
+
+## Hypotheses
+
+All results are unconditional; they assume only `0 < ε` (and `0 < q` for the pointwise bound).
+The summability constant `2^ε/ε` blows up as `ε → 0⁺`; no uniformity in `ε` is claimed.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- For `ε > 0` and `q > 0`, the Ramanujan weight decays as `|w_ε(q)| ≤ 1/q^(1+ε)`. -/
 theorem norm_pmPowerDampedRamanujanWeight_le {ε : ℝ} (hε : 0 < ε)
     {q : ℕ} (hq : 0 < q) :
     ‖pmPowerDampedRamanujanWeight ε q‖ ≤ 1/(q : ℝ)^(1+ε) := by
@@ -19,6 +40,7 @@ theorem norm_pmPowerDampedRamanujanWeight_le {ε : ℝ} (hε : 0 < ε)
       rw [Real.rpow_add hqR, Real.rpow_one, Real.rpow_neg hqR.le]
       simp [div_eq_mul_inv, mul_inv_rev, mul_comm]
 
+/-- The logarithmic square-mass term `q log(2q) |w_ε(q)|²`. -/
 def pmPowerDampedRamanujanLogSquareTerm (ε : ℝ) (q : ℕ) : ℝ :=
   (q : ℝ)*Real.log (2*(q : ℝ))*‖pmPowerDampedRamanujanWeight ε q‖^2
 
@@ -30,6 +52,7 @@ theorem pmPowerDampedRamanujanLogSquareTerm_nonneg (ε : ℝ) (q : ℕ) :
     exact mul_nonneg (mul_nonneg (Nat.cast_nonneg q)
       (Real.log_nonneg (by linarith))) (sq_nonneg _)
 
+/-- For `ε > 0`, `q log(2q) |w_ε(q)|² ≤ (2^ε/ε) · 1/q^(1+ε)`. -/
 theorem pmPowerDampedRamanujanLogSquareTerm_le {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     pmPowerDampedRamanujanLogSquareTerm ε q ≤
       ((2 : ℝ)^ε/ε)*(1/(q : ℝ)^(1+ε)) := by
@@ -50,6 +73,7 @@ theorem pmPowerDampedRamanujanLogSquareTerm_le {ε : ℝ} (hε : 0 < ε) (q : �
       have hp : (q : ℝ)^ε ≠ 0 := ne_of_gt (Real.rpow_pos_of_pos hqR ε)
       field_simp
 
+/-- For `ε > 0`, the logarithmic square mass `∑_q q log(2q) |w_ε(q)|²` converges. -/
 theorem summable_pmPowerDampedRamanujanLogSquareTerm {ε : ℝ} (hε : 0 < ε) :
     Summable (pmPowerDampedRamanujanLogSquareTerm ε) := by
   apply Summable.of_nonneg_of_le (pmPowerDampedRamanujanLogSquareTerm_nonneg ε)

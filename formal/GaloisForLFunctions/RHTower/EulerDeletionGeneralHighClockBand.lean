@@ -1,10 +1,32 @@
 import GaloisForLFunctions.RHTower.EulerDeletionDyadicHighClockBand
 
+/-!
+# The predictable Möbius drift has vanishing energy in the upper half of the layers
+
+Generalizes the dyadic high-clock band estimate to arbitrary bands. For `K ≤ N`, the energy of
+the predictable Möbius drift `predictableDrift N` in the history layers `K ≤ l < N` is at most
+`(N - K)(8N² + 2)/(lcm(1, ..., K) + 1)`. Taking `K = ⌊N/2⌋` and using
+`L³ / lcm(1, ..., L) → 0`, the energy in the upper half of the layers tends to `0`.
+
+## Main results
+
+- `predictableDrift_highClock_band_energy_le`: the band bound
+  `∑_{K ≤ l < N} ‖historyLayer l (predictableDrift N)‖² ≤ (N - K)(8N² + 2)/(lcm(1..K) + 1)`.
+- `predictableDrift_upperHalf_band_energy_tendsto_zero`:
+  `∑_{⌊N/2⌋ ≤ l < N} ‖historyLayer l (predictableDrift N)‖² → 0` as `N → ∞`.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 noncomputable section
 set_option autoImplicit false
 open Finset MeasureTheory Filter Topology
 namespace RHTower.DeletionResidueMartingale
 
+/-- The energy of `predictableDrift N` in the history layers `K ≤ l < N` is at most
+`(N - K)(8N² + 2)/(lcm(1, ..., K) + 1)`. -/
 theorem predictableDrift_highClock_band_energy_le (N K : ℕ) :
     (∑ l ∈ Ico K N,
       ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ)) ≤
@@ -27,6 +49,8 @@ theorem predictableDrift_highClock_band_energy_le (N K : ℕ) :
       simp [Nat.card_Ico]
       ring
 
+/-- The energy of `predictableDrift N` in the upper half `⌊N/2⌋ ≤ l < N` of the history layers tends to `0`
+as `N → ∞`. -/
 theorem predictableDrift_upperHalf_band_energy_tendsto_zero :
     Tendsto
       (fun N : ℕ => ∑ l ∈ Ico (N / 2) N,

@@ -1,6 +1,33 @@
 import GaloisForLFunctions.RHTower.EulerLogPrimePowerHerglotzMass
 import GaloisForLFunctions.HTGeometry.PrimeLogHerglotz
 
+/-!
+# Simple poles of the Euler-log prime-power Herglotz function
+
+The Euler-log Herglotz function is
+`H(z) = ∑_{p, k ≥ 1} (1/(k p^k)) (1/(k log p - z) - k log p/(1 + (k log p)²))`, the regularized
+Cauchy transform of the atoms `1/(k p^k)` at the prime-power logarithms `log p^k`. This module
+shows that the set of these logarithms is closed in `ℂ`, that the series converges
+locally uniformly off it so `H` is holomorphic there, and that the series converges at every
+point (including the poles, with Lean's convention for division by zero). At each atom
+`log p^k` the function `H` has a simple pole with residue `-1/(k p^k)`: adding
+`(1/(k p^k)) (z - log p^k)⁻¹` leaves a function holomorphic at that point.
+
+## Main results
+
+- `isOpen_compl_eulerLogPrimePowerPoleSet`: the pole set `{log p^k}` has open complement.
+- `differentiableOn_eulerLogPrimePowerHerglotz_off_poles`: `H` is holomorphic off the poles.
+- `summable_eulerLogPrimePowerHerglotzTerm_all`: the defining series is summable at every `z`.
+- `eulerLogPrimePowerHerglotz_add_polar_eq_regularPart`: `H(z) + w₀ (z - t₀)⁻¹` equals the
+  tail series over the other atoms minus the constant `w₀ t₀/(1 + t₀²)`.
+- `hasSimplePoleAt_eulerLogPrimePowerHerglotz`: `H` has a simple pole at every `log p^k` with
+  nonzero residue `-1/(k p^k)`.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 namespace GaloisForLFunctions.RHTower
 
 open GaloisForLFunctions.HTGeometry
@@ -8,9 +35,12 @@ open Set Filter Topology
 
 noncomputable section
 
+/-- The pole set of the Euler-log Herglotz function: all prime-power logarithms `log p^k` viewed in `ℂ`. -/
 def eulerLogPrimePowerPoleSet : Set ℂ :=
   Set.range fun x : PrimePowerClockIndex => (eulerLogPrimePowerSupport x : ℂ)
 
+/-- The complement of the prime-power logarithm set is open: only finitely many atoms lie below any
+height, so the set is closed. -/
 theorem isOpen_compl_eulerLogPrimePowerPoleSet :
     IsOpen eulerLogPrimePowerPoleSetᶜ := by
   rw [isOpen_iff_forall_mem_open]
@@ -43,6 +73,7 @@ theorem isOpen_compl_eulerLogPrimePowerPoleSet :
       apply hz
       exact ⟨x, hxz⟩
 
+/-- Away from the atom, the regularized Herglotz kernel equals `(1 + t²)⁻¹ (z + (1 + z²)/(t - z))`. -/
 lemma regularizedHerglotzKernel_eq_of_sub_ne
     {t : ℝ} {z : ℂ} (hden : (t : ℂ) - z ≠ 0) :
     regularizedHerglotzKernel t z =
@@ -57,6 +88,8 @@ lemma regularizedHerglotzKernel_eq_of_sub_ne
   field_simp
   ring
 
+/-- The weighted regularized Cauchy series defining `H` converges locally uniformly on the complement
+of the prime-power logarithm set. -/
 theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz_off_poles :
     SummableLocallyUniformlyOn
       (fun x : PrimePowerClockIndex => fun z : ℂ =>
@@ -136,6 +169,7 @@ theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz_off_poles :
     _ = C * (eulerLogPrimePowerWeight x.1 x.2 *
         nevanlinnaWeight (eulerLogPrimePowerSupport x)) := by ring
 
+/-- The Euler-log Herglotz function is holomorphic on the complement of the prime-power logarithms. -/
 theorem differentiableOn_eulerLogPrimePowerHerglotz_off_poles :
     DifferentiableOn ℂ eulerLogPrimePowerHerglotz
       eulerLogPrimePowerPoleSetᶜ := by
@@ -160,9 +194,11 @@ theorem differentiableOn_eulerLogPrimePowerHerglotz_off_poles :
     simpa [one_div] using hdiff
   · exact differentiableAt_const _
 
+/-- The prime-power logarithms indexed by a subset `S` of the prime-power atoms. -/
 def eulerLogPrimePowerPoleSetOn (S : Set PrimePowerClockIndex) : Set ℂ :=
   Set.range fun x : S => (eulerLogPrimePowerSupport x : ℂ)
 
+/-- For any subset `S` of atoms, the complement of the corresponding logarithm set is open. -/
 theorem isOpen_compl_eulerLogPrimePowerPoleSetOn
     (S : Set PrimePowerClockIndex) :
     IsOpen (eulerLogPrimePowerPoleSetOn S)ᶜ := by
@@ -306,6 +342,7 @@ private theorem summableLocallyUniformlyOn_eulerLogPrimePowerHerglotz_on_off_pol
           nevanlinnaWeight (eulerLogPrimePowerSupport (x : PrimePowerClockIndex))) := by
             ring
 
+/-- The Herglotz series with the single atom `x₀` removed. -/
 def eulerLogPrimePowerHerglotzTail
     (x₀ : PrimePowerClockIndex) (z : ℂ) : ℂ :=
   ∑' x : {x : PrimePowerClockIndex // x ∉ ({x₀} : Finset PrimePowerClockIndex)},
@@ -314,6 +351,7 @@ def eulerLogPrimePowerHerglotzTail
       regularizedHerglotzKernel
         (eulerLogPrimePowerSupport (x : PrimePowerClockIndex)) z
 
+/-- The logarithm of the atom `x₀` is not the logarithm of any other atom (`log p^k` is injective). -/
 theorem eulerLogPrimePowerCenter_notMem_otherPoleSet
     (x₀ : PrimePowerClockIndex) :
     (eulerLogPrimePowerSupport x₀ : ℂ) ∈
@@ -326,6 +364,7 @@ theorem eulerLogPrimePowerCenter_notMem_otherPoleSet
   apply eulerLogPrimePowerSupport_injective
   exact Complex.ofReal_injective hx
 
+/-- The Herglotz series with the atom `x₀` removed is holomorphic at the point `log` of `x₀`. -/
 theorem differentiableAt_eulerLogPrimePowerHerglotzTail
     (x₀ : PrimePowerClockIndex) :
     DifferentiableAt ℂ (eulerLogPrimePowerHerglotzTail x₀)
@@ -360,6 +399,7 @@ theorem differentiableAt_eulerLogPrimePowerHerglotzTail
     ((isOpen_compl_eulerLogPrimePowerPoleSetOn S).mem_nhds
       (eulerLogPrimePowerCenter_notMem_otherPoleSet x₀))
 
+/-- The weighted regularized Cauchy series converges absolutely at every `z ∈ ℂ`. -/
 theorem summable_eulerLogPrimePowerHerglotzTerm_all (z : ℂ) :
     Summable fun x : PrimePowerClockIndex =>
       (eulerLogPrimePowerWeight x.1 x.2 : ℂ) *
@@ -428,6 +468,7 @@ theorem summable_eulerLogPrimePowerHerglotzTerm_all (z : ℂ) :
     _ = C * (eulerLogPrimePowerWeight x.1 x.2 *
         nevanlinnaWeight (eulerLogPrimePowerSupport x)) := by ring
 
+/-- The regular part of `H` at the atom `x₀`: the tail series minus the constant `w₀ t₀/(1 + t₀²)`. -/
 def eulerLogPrimePowerHerglotzRegularPart
     (x₀ : PrimePowerClockIndex) (z : ℂ) : ℂ :=
   eulerLogPrimePowerHerglotzTail x₀ z -
@@ -442,6 +483,8 @@ theorem differentiableAt_eulerLogPrimePowerHerglotzRegularPart
   exact (differentiableAt_eulerLogPrimePowerHerglotzTail x₀).sub
     (differentiableAt_const _)
 
+/-- Polar decomposition at an atom `x₀` with weight `w₀` and position `t₀`:
+`H(z) + w₀ (z - t₀)⁻¹` equals the regular part at `x₀`, for every `z`. -/
 theorem eulerLogPrimePowerHerglotz_add_polar_eq_regularPart
     (x₀ : PrimePowerClockIndex) (z : ℂ) :
     eulerLogPrimePowerHerglotz z +
@@ -467,6 +510,8 @@ theorem eulerLogPrimePowerHerglotz_add_polar_eq_regularPart
     eulerLogPrimePowerHerglotzRegularPart]
   ring
 
+/-- At every prime-power logarithm `log p^k` the Euler-log Herglotz function has a simple pole with
+nonzero residue `-1/(k p^k)`. -/
 theorem hasSimplePoleAt_eulerLogPrimePowerHerglotz
     (x₀ : PrimePowerClockIndex) :
     HasSimplePoleAt eulerLogPrimePowerHerglotz

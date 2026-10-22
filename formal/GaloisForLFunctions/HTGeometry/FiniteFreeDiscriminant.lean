@@ -1,12 +1,42 @@
 import Mathlib.RingTheory.Smooth.Fiber
 import Mathlib.RingTheory.Discriminant
 
+/-!
+# Discriminant criterion for formally unramified finite free algebras
+
+For a finite free algebra `B` over a commutative ring `R` with basis `b`, this module proves that
+`B` is formally unramified over `R` if and only if the discriminant `discr R b` (the determinant of
+the trace matrix `Tr(b_i b_j)`) is a unit of `R`. The forward direction reduces to residue fields,
+where a finite formally unramified algebra is étale, hence a finite product of finite separable
+field extensions, whose trace form is nondegenerate. The converse builds the trace-dual basis
+`b_i^∨` and the separability element `Σ_i b_i^∨ ⊗ b_i` in `B ⊗[R] B`.
+
+## Main results
+
+- `traceForm_nondegenerate_of_formallyUnramified_field`: a finite free formally unramified algebra
+  over a field has nondegenerate trace form.
+- `traceMatrix_baseChange`: the trace matrix of a base-changed basis is the image of the original
+  trace matrix.
+- `isUnit_discr_of_formallyUnramified`: if `B` is finite free and formally unramified over `R`, the
+  discriminant of every basis is a unit.
+- `formallyUnramified_of_isUnit_discr`: if the discriminant of some basis is a unit, then `B` is
+  formally unramified over `R`.
+
+## Hypotheses
+
+All results are unconditional. Besides typing side conditions (`B` finite free over `R`, a finite
+index type for the basis), the only premises are the two sides of the equivalence:
+`Algebra.FormallyUnramified R B` for one direction and `IsUnit (discr R b)` for the other.
+-/
+
 open scoped TensorProduct
 
 namespace Algebra
 
 universe u v
 
+/-- Nondegeneracy of the trace form over a field `K` is transported along a `K`-algebra
+isomorphism `A ≃ₐ[K] B`, since the isomorphism preserves traces. -/
 theorem traceForm_nondegenerate_of_algEquiv
     {K A B : Type*} [Field K] [CommRing A] [CommRing B]
     [Algebra K A] [Algebra K B]
@@ -32,6 +62,8 @@ theorem traceForm_nondegenerate_of_algEquiv
     rw [traceForm_apply, ← map_mul, trace_eq_of_algEquiv]
     exact hy x
 
+/-- The trace form of a product algebra `A × B` over a field is nondegenerate when the trace
+forms of both factors are nondegenerate. -/
 theorem traceForm_nondegenerate_prod
     {K A B : Type*} [Field K] [CommRing A] [CommRing B]
     [Algebra K A] [Algebra K B]
@@ -62,6 +94,8 @@ theorem traceForm_nondegenerate_prod
       have h := hy (0, x)
       simpa [traceForm_apply, trace_prod_apply] using h
 
+/-- The `K`-algebra isomorphism `(Π i : Option I, A i) ≃ A none × Π i : I, A (some i)` splitting
+off the `none` factor of a product indexed by `Option I`. -/
 noncomputable def piOptionAlgEquivProd
     {K I : Type*} [CommRing K]
     (A : Option I → Type*) [∀ i, Semiring (A i)] [∀ i, Algebra K (A i)] :
@@ -70,6 +104,8 @@ noncomputable def piOptionAlgEquivProd
     intro x
     ext i <;> rfl)
 
+/-- A finite product of finite separable field extensions of `K` has nondegenerate trace form over
+`K`; proved by induction on the finite index type. -/
 theorem traceForm_nondegenerate_pi_fields
     (K : Type u) [Field K] :
     ∀ (I : Type v) [Finite I] (A : I → Type v)
@@ -100,6 +136,8 @@ theorem traceForm_nondegenerate_pi_fields
       (traceForm_nondegenerate K (A none))
       (hα inferInstance (fun i => A (some i)))
 
+/-- A finite free, formally unramified algebra `A` over a field `K` has nondegenerate trace form:
+such an algebra is étale, hence isomorphic to a finite product of finite separable extensions. -/
 theorem traceForm_nondegenerate_of_formallyUnramified_field
     (K A : Type*) [Field K] [CommRing A] [Algebra K A]
     [Module.Free K A] [Module.Finite K A]
@@ -119,6 +157,8 @@ theorem traceForm_nondegenerate_of_formallyUnramified_field
   exact traceForm_nondegenerate_of_algEquiv e
     (traceForm_nondegenerate_pi_fields K I Ai)
 
+/-- Trace commutes with base change: for `B` finite free over `R` and any `R`-algebra `A`, the
+`A`-trace of `1 ⊗ x` in `A ⊗[R] B` is the image in `A` of the `R`-trace of `x`. -/
 theorem trace_baseChange_apply
     {R B A : Type*} [CommRing R] [CommRing B] [CommRing A]
     [Algebra R B] [Algebra R A] [Module.Free R B] [Module.Finite R B]
@@ -129,6 +169,8 @@ theorem trace_baseChange_apply
     algebraMap R A (LinearMap.trace R B (Algebra.lmul R B x))
   rw [← Algebra.baseChange_lmul, LinearMap.trace_baseChange]
 
+/-- The trace matrix over `A` of the base-changed basis `b.baseChange A` is the entrywise image
+under `R → A` of the trace matrix of `b`. -/
 theorem traceMatrix_baseChange
     {R B A : Type*} [CommRing R] [CommRing B] [CommRing A]
     [Algebra R B] [Algebra R A] [Module.Free R B] [Module.Finite R B]
@@ -139,6 +181,9 @@ theorem traceMatrix_baseChange
   simp [traceMatrix_apply, traceForm_apply, trace_baseChange_apply,
     Module.Basis.baseChange_apply, TensorProduct.tmul_mul_tmul]
 
+/-- If `B` is finite free and formally unramified over `R`, the discriminant of any basis is a unit:
+otherwise it lies in a maximal ideal `m`, contradicting nondegeneracy of the trace form of the
+formally unramified fibre `(R/m) ⊗[R] B`. -/
 theorem isUnit_discr_of_formallyUnramified
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]
@@ -163,12 +208,16 @@ theorem isUnit_discr_of_formallyUnramified
   apply hdet
   rw [traceMatrix_baseChange, ← RingHom.map_det, ← discr_def, hdzero]
 
+/-- The trace-dual vector `b_i^∨ = Σ_j (T⁻¹)_{ij} b_j`, where `T` is the trace matrix of the
+basis `b`; it is the dual basis for the trace pairing when the discriminant is a unit. -/
 noncomputable def traceDualVector
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (b : Module.Basis ι R B) (i : ι) : B :=
   ∑ j, (traceMatrix R b)⁻¹ i j • b j
 
+/-- Assuming `h : IsUnit (discr R b)`, the trace-dual vectors satisfy
+`Tr(b_i^∨ * b_j) = δ_{ij}`. -/
 theorem trace_traceDualVector_mul_basis
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]
@@ -181,6 +230,8 @@ theorem trace_traceDualVector_mul_basis
   rw [← Matrix.mul_apply, Matrix.nonsing_inv_mul _ (by simpa [discr_def] using h),
     Matrix.one_apply]
 
+/-- Assuming `h : IsUnit (discr R b)`, the `i`-th coordinate of `x` in the basis `b` is
+`Tr(b_i^∨ * x)`. -/
 theorem basis_repr_eq_trace_traceDualVector_mul
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]
@@ -193,12 +244,16 @@ theorem basis_repr_eq_trace_traceDualVector_mul
     trace_traceDualVector_mul_basis b h]
   simp
 
+/-- The candidate separability element `Σ_i b_i^∨ ⊗ b_i` in `B ⊗[R] B` built from the trace-dual
+basis. -/
 noncomputable def traceSeparabilityElem
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (b : Module.Basis ι R B) : B ⊗[R] B :=
   ∑ i, traceDualVector b i ⊗ₜ[R] b i
 
+/-- Assuming `h : IsUnit (discr R b)`, the element `e = Σ_i b_i^∨ ⊗ b_i` is balanced:
+`(1 ⊗ s) e = (s ⊗ 1) e` for every `s : B`. -/
 theorem traceSeparabilityElem_comm
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]
@@ -248,6 +303,8 @@ theorem traceSeparabilityElem_comm
   congr 1
   ring
 
+/-- Assuming `h : IsUnit (discr R b)`, the multiplication map `B ⊗[R] B → B` sends
+`Σ_i b_i^∨ ⊗ b_i` to `1`, i.e. `Σ_i b_i^∨ b_i = 1`. -/
 theorem traceSeparabilityElem_lmul_eq_one
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]
@@ -278,6 +335,8 @@ theorem traceSeparabilityElem_lmul_eq_one
     basis_repr_eq_trace_traceDualVector_mul b h]
   simpa only [mul_one, mul_comm] using hz (traceDualVector b i)
 
+/-- A finite free `R`-algebra `B` whose basis `b` has unit discriminant (`h : IsUnit (discr R b)`)
+is formally unramified, witnessed by the separability element `Σ_i b_i^∨ ⊗ b_i`. -/
 theorem formallyUnramified_of_isUnit_discr
     {R B : Type*} [CommRing R] [CommRing B] [Algebra R B]
     [Module.Free R B] [Module.Finite R B]

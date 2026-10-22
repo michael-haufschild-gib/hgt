@@ -1,6 +1,28 @@
 import GaloisForLFunctions.HTGeometry.MeromorphicDomainField
 import GaloisForLFunctions.HTGeometry.MeromorphicPlaneReflection
 
+/-!
+# Point reflection on the meromorphic field of a symmetric domain
+
+Let `D` be a nonempty connected open subset of `ℂ` and `c ∈ ℂ` such that `z ∈ D` implies
+`c - z ∈ D`. The reflection `z ↦ c - z` preserves the codiscrete filter of `D` and induces a ring
+endomorphism `f ↦ f(c - ·)` of the field of meromorphic functions on `D`. It is an involution,
+hence a ring automorphism, and it is compatible with the restriction map from the meromorphic field
+of the plane and the plane reflection.
+
+## Main results
+
+- `reflectHom`: the ring endomorphism `f ↦ f(c - ·)` of `D.Field`.
+- `reflectHom_involutive`, `reflectEquiv`: it is an involution, packaged as a ring automorphism.
+- `reflectEquiv_restrictPlane`: reflecting the restriction of a plane meromorphic function equals
+  restricting its plane reflection.
+
+## Hypotheses
+
+All results are unconditional apart from the symmetry hypothesis `hc : ∀ z ∈ D.carrier,
+c - z ∈ D.carrier`, which is needed for `f(c - ·)` to be defined on `D`.
+-/
+
 open Filter Topology
 namespace GaloisForLFunctions.HTGeometry.MeromorphicDomainData
 noncomputable section
@@ -8,6 +30,8 @@ variable (D : MeromorphicDomainData) (c : ℂ)
 variable (hc : ∀ z ∈ D.carrier, c - z ∈ D.carrier)
 
 include hc in
+/-- For `D` symmetric about `c / 2`, the reflection `z ↦ c - z` maps the codiscrete filter of `D`
+to itself. -/
 theorem tendsto_const_sub_codiscrete :
     Tendsto (fun z : ℂ => c - z) D.codiscrete D.codiscrete := by
   refine Filter.tendsto_def.mpr fun S hS => ?_
@@ -35,6 +59,8 @@ private def reflectGerm : Germ D.codiscrete ℂ →+* Germ D.codiscrete ℂ wher
     | _ f => induction b using Germ.inductionOn with
       | _ g => simp only [← Germ.coe_add, Germ.coe_compTendsto]; rfl
 
+/-- The ring endomorphism `f ↦ f(c - ·)` of the meromorphic field of a domain symmetric under
+`z ↦ c - z`. -/
 def reflectHom : D.Field →+* D.Field where
   toFun a := ⟨D.reflectGerm c hc (D.germ a), by
     obtain ⟨f, hf, rfl⟩ := D.exists_rep a
@@ -45,11 +71,13 @@ def reflectHom : D.Field →+* D.Field where
   map_add' a b := Subtype.ext ((D.reflectGerm c hc).map_add (D.germ a) (D.germ b))
   map_mul' a b := Subtype.ext ((D.reflectGerm c hc).map_mul (D.germ a) (D.germ b))
 
+/-- On the class of a meromorphic representative `f`, reflection is the class of `z ↦ f(c - z)`. -/
 theorem reflectHom_ofMeromorphic (f : ℂ → ℂ) (hf : MeromorphicOn f D.carrier) :
     D.reflectHom c hc (D.ofMeromorphic f hf) =
       D.ofMeromorphic (fun z => f (c - z))
         (fun z hz => (hf (c - z) (hc z hz)).comp_analyticAt (by fun_prop)) := rfl
 
+/-- Reflection `f ↦ f(c - ·)` is an involution of the meromorphic field. -/
 theorem reflectHom_involutive : Function.Involutive (D.reflectHom c hc) := by
   intro a
   obtain ⟨f, hf, rfl⟩ := D.exists_rep a
@@ -58,6 +86,7 @@ theorem reflectHom_involutive : Function.Involutive (D.reflectHom c hc) := by
   intro z _
   exact Filter.Eventually.of_forall fun w => by simp only [sub_sub_cancel]
 
+/-- Reflection as a ring automorphism of the meromorphic field, its own inverse. -/
 def reflectEquiv : D.Field ≃+* D.Field where
   __ := D.reflectHom c hc
   invFun := D.reflectHom c hc
@@ -67,6 +96,8 @@ def reflectEquiv : D.Field ≃+* D.Field where
 theorem reflectEquiv_involutive : Function.Involutive (D.reflectEquiv c hc) :=
   D.reflectHom_involutive c hc
 
+/-- Reflection commutes with restriction from the plane: reflecting the restriction of a plane
+meromorphic function equals restricting its plane reflection about `c`. -/
 theorem reflectEquiv_restrictPlane (a : MeromorphicPlane) :
     D.reflectEquiv c hc (D.restrictPlane a) = D.restrictPlane (planeReflectEquiv c a) := by
   obtain ⟨f, hf, rfl⟩ := a.exists_rep

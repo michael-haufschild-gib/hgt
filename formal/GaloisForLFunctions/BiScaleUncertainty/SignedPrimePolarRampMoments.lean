@@ -1,6 +1,33 @@
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarRampCore
 import GaloisForLFunctions.BiScaleUncertainty.ClampedExponentialBranchMoments
 
+/-!
+# Exponential moments of the ramp-smoothed factorial bi-null test
+
+The smooth factorial lift `smoothFactorialLift ε K x = e^(x/2) Σ_(j ≤ K) r_ε(j e^x / K)` replaces each
+rectangle of the factorial lift by the clamped linear ramp `r_ε` (equal to `1` below `1`, to `0` above
+`1 + ε`). This module computes its two exponential moments `∫_0^∞ e^(± x/2) · (lift)` exactly, and from
+them the two moments of the bi-null combination `rampBiNull ε N = (L_(4N) - 4 L_(2N) + 4 L_N) / sqrt N`.
+The `e^(x/2)` moment is a harmonic-number expression (`harmonicCorrection`), the `e^(-x/2)` moment is the
+Chebyshev bi-null producer `S(4N) - 4 S(2N) + 4 S(N)` with `S(k) = Σ_(d ≤ k) ψ(⌊k/d⌋)`, and the prime sum
+of the unsmoothed factorial bi-null test is the same producer.
+
+## Main results
+
+- `integral_exp_half_lift`: `∫_0^∞ e^(x/2) smoothFactorialLift ε K = (1 + ε/2) K H_K - K`.
+- `integral_exp_neg_half_lift`:
+  `∫_0^∞ e^(-x/2) smoothFactorialLift ε K = K log K - S(K) + K · rampLogCorrection ε`.
+- `integral_exp_half_rampBiNull`:
+  `∫ e^(x/2) rampBiNull ε N = (1 + ε/2) harmonicCorrection N / sqrt N`.
+- `integral_exp_neg_half_rampBiNull`: `∫ e^(-x/2) rampBiNull ε N = -chebyshevBiNullProducer N / sqrt N`.
+- `tsum_primeTerm_factorialBiNull`:
+  `Σ_n Λ(n) n^(-1/2) factorialBiNull N (log n) = chebyshevBiNullProducer N / sqrt N`.
+
+## Hypotheses
+
+All results are unconditional; they assume only the ramp width `0 < ε` and, where stated, `1 ≤ N`.
+-/
+
 open MeasureTheory Set
 open scoped BigOperators
 namespace GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
@@ -40,16 +67,20 @@ private theorem ratio_ge_one {K j : ℕ} (hj : j ∈ Finset.Icc 1 K) : 1 ≤ (K 
   apply (le_div_iff₀ hj0).2
   simpa only [one_mul] using (show (j : ℝ) ≤ K by exact_mod_cast (Finset.mem_Icc.mp hj).2)
 
+/-- For `ε > 0`, `e^(x/2) · smoothFactorialLift ε K` is integrable on `[0, ∞)`. -/
 theorem integrableOn_exp_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
     IntegrableOn (fun x => Real.exp (x/2)*smoothFactorialLift ε K x) (Ici 0) := by
   simp_rw [exp_half_mul_lift]
   exact integrable_finsetSum _ (fun j hj => integrableOn_ramp_exp hε (ratio_ge_one hj))
 
+/-- For `ε > 0`, `e^(-x/2) · smoothFactorialLift ε K` is integrable on `[0, ∞)`. -/
 theorem integrableOn_exp_neg_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
     IntegrableOn (fun x => Real.exp (-(x/2))*smoothFactorialLift ε K x) (Ici 0) := by
   simp_rw [exp_neg_half_mul_lift]
   exact integrable_finsetSum _ (fun j hj => integrableOn_ramp_plain hε (ratio_ge_one hj))
 
+/-- Growing exponential moment of the smooth factorial lift: for `ε > 0`,
+`∫_0^∞ e^(x/2) smoothFactorialLift ε K = (1 + ε/2) K H_K - K`, with `H_K` the harmonic number. -/
 theorem integral_exp_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
     (∫ x in Ici (0 : ℝ), Real.exp (x/2)*smoothFactorialLift ε K x) =
       (1+ε/2)*(K : ℝ)*realHarmonic K-K := by
@@ -65,6 +96,8 @@ theorem integral_exp_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
   simp only [Finset.sum_sub_distrib, ← Finset.mul_sum, Finset.sum_const,
     Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, realHarmonic, mul_one]
 
+/-- Decaying exponential moment of the smooth factorial lift: for `ε > 0`,
+`∫_0^∞ e^(-x/2) smoothFactorialLift ε K = K log K - Σ_(d ≤ K) ψ(⌊K/d⌋) + K · rampLogCorrection ε`. -/
 theorem integral_exp_neg_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
     (∫ x in Ici (0 : ℝ), Real.exp (-(x/2))*smoothFactorialLift ε K x) =
       (K : ℝ)*Real.log K-floorSummatory chebyshevPsi K+(K : ℝ)*rampLogCorrection ε := by
@@ -84,6 +117,8 @@ theorem integral_exp_neg_half_lift {ε : ℝ} (hε : 0 < ε) (K : ℕ) :
   simp only [Finset.sum_sub_distrib, Finset.sum_add_distrib, Finset.sum_const,
     Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
 
+/-- Since `rampBiNull ε N` vanishes on `x ≤ 0`, every weighted integral over `ℝ` equals the integral over
+`[0, ∞)`. -/
 theorem integral_weight_rampBiNull_eq_halfLine {ε : ℝ} (hε : 0 < ε) (N : ℕ) (w : ℝ → ℝ) :
     (∫ x : ℝ, w x*rampBiNull ε N x) = ∫ x in Ici 0, w x*rampBiNull ε N x := by
   symm
@@ -111,6 +146,7 @@ private theorem integral_weight_rampBiNull (ε : ℝ) (N : ℕ) (w : ℝ → ℝ
   rw [he, integral_div, integral_add his hi1, integral_sub (hi (4*N)) hi2,
     integral_const_mul, integral_const_mul]
 
+/-- For `ε > 0`, `∫ e^(x/2) rampBiNull ε N = (1 + ε/2) · harmonicCorrection N / sqrt N`. -/
 theorem integral_exp_half_rampBiNull {ε : ℝ} (hε : 0 < ε) (N : ℕ) :
     (∫ x : ℝ, Real.exp (x/2)*rampBiNull ε N x) =
       ((1+ε/2)*harmonicCorrection N)/Real.sqrt N := by
@@ -121,6 +157,8 @@ theorem integral_exp_half_rampBiNull {ε : ℝ} (hε : 0 < ε) (N : ℕ) :
   push_cast
   ring
 
+/-- For `ε > 0` and `N ≥ 1`, `∫ e^(-x/2) rampBiNull ε N = -chebyshevBiNullProducer N / sqrt N`: the
+ramp correction `rampLogCorrection ε` cancels in the `(1, -4, 4)` stencil. -/
 theorem integral_exp_neg_half_rampBiNull {ε : ℝ} {N : ℕ} (hε : 0 < ε) (hN : 1 ≤ N) :
     (∫ x : ℝ, Real.exp (-(x/2))*rampBiNull ε N x) =
       -chebyshevBiNullProducer N/Real.sqrt N := by
@@ -140,6 +178,8 @@ theorem integral_exp_neg_half_rampBiNull {ε : ℝ} {N : ℕ} (hε : 0 < ε) (hN
   rw [hlog2,hlog4]
   ring
 
+/-- The prime side of the factorial bi-null test is the Chebyshev bi-null producer:
+`Σ_(n ≥ 2) Λ(n) n^(-1/2) factorialBiNull N (log n) = chebyshevBiNullProducer N / sqrt N`. -/
 theorem tsum_primeTerm_factorialBiNull (N : ℕ) :
     (∑' n, primeTerm (factorialBiNull N) n) = chebyshevBiNullProducer N/Real.sqrt N := by
   have hs (K : ℕ) : Summable (primeTerm (factorialLift K)) := (factorialLift_admissible K).2.1.of_abs

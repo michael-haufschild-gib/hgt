@@ -1,11 +1,30 @@
 import GaloisForLFunctions.RHTower.Sieve.DivisorSquareSummability
 import GaloisForLFunctions.RHTower.Sieve.ZetaRealBound
 
+/-!
+# Divisor-square Dirichlet series near `σ = 1`
+
+For real `σ > 1` this module proves that `∑ d(n)^2 n^{-σ}` converges and is at most
+`(1 + 1/(σ - 1))^4`, where `d(n)` is the number of divisors. The proof compares `d(n)^2` with the
+four-fold divisor function `d_4 = 1 * 1 * 1 * 1`, identifies `∑ d_4(n) n^{-σ}` with `ζ(σ)^4`, and
+uses the real bound `|ζ(σ)| ≤ 1 + 1/(σ - 1)`.
+
+## Main results
+
+- `summable_divisorSquare_mul_rpow_neg`: for `σ > 1`, `n ↦ d(n)^2 n^{-σ}` is summable.
+- `tsum_divisorSquare_rpow_le_near_one`: for `σ > 1`, `∑ d(n)^2 n^{-σ} ≤ (1 + 1/(σ - 1))^4`.
+
+## Hypotheses
+
+The results are unconditional apart from the range `1 < σ`.
+-/
+
 open Complex ArithmeticFunction
 open scoped ArithmeticFunction.zeta
 
 namespace RHTower.Sieve
 
+/-- The four-fold divisor function `d_4 = ζ * ζ * ζ * ζ` as a natural-valued arithmetic function. -/
 private def zetaFourNat : ArithmeticFunction ℕ :=
   ((ArithmeticFunction.zeta : ArithmeticFunction ℕ) * ArithmeticFunction.zeta) *
     (ArithmeticFunction.zeta * ArithmeticFunction.zeta)
@@ -20,12 +39,14 @@ private theorem zetaFourNat_cast (n : ℕ) :
   unfold zetaFourNat zetaFourComplex
   simp only [ArithmeticFunction.natCoe_mul]
 
+/-- Pointwise comparison `d(n)^2 ≤ d_4(n)` for `n ≠ 0`. -/
 private theorem card_divisors_sq_le_zetaFourNat (n : ℕ) (hn : n ≠ 0) :
     n.divisors.card ^ 2 ≤ zetaFourNat n := by
   have h := card_divisors_pow_le_zeta_pow 2 n hn
   simpa only [zetaFourNat, show (2 ^ 2 : ℕ) = 4 by norm_num,
     pow_succ, pow_zero, one_mul, mul_assoc] using h
 
+/-- For `Re s > 1`, the Dirichlet series of `d_4` equals `ζ(s)^4`. -/
 private theorem LSeries_zetaFourComplex_eq {s : ℂ} (hs : 1 < s.re) :
     LSeries (fun n : ℕ => zetaFourComplex n) s = riemannZeta s ^ 4 := by
   have hz : LSeriesSummable
@@ -41,6 +62,7 @@ private theorem LSeries_zetaFourComplex_eq {s : ℂ} (hs : 1 < s.re) :
     ArithmeticFunction.LSeries_mul' hz hz, hzval]
   ring
 
+/-- Assuming `σ > 1`, the divisor-square series `∑ d(n)^2 n^{-σ}` converges. -/
 theorem summable_divisorSquare_mul_rpow_neg
     {sigma : ℝ} (hsigma : 1 < sigma) :
     Summable fun n : ℕ =>
@@ -58,6 +80,8 @@ theorem summable_divisorSquare_mul_rpow_neg
     push_cast
     rw [Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
+/-- Assuming `σ > 1`, `∑ d(n)^2 n^{-σ} ≤ (1 + 1/(σ - 1))^4`, via `d(n)^2 ≤ d_4(n)` and
+`∑ d_4(n) n^{-σ} = ζ(σ)^4`. -/
 theorem tsum_divisorSquare_rpow_le_near_one
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (∑' n : ℕ, (n.divisors.card : ℝ) ^ 2 * (n : ℝ) ^ (-sigma)) ≤

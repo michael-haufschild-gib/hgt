@@ -3,6 +3,31 @@ import GaloisForLFunctions.RHTower.FourierPlancherelIntegral
 import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
 import GaloisForLFunctions.HTGeometry.GagliardoFourierConstant
 
+/-!
+# Plancherel identity for the Abel-weighted difference energy
+
+For a Schwartz function `f` on `ℝ` and `δ > 0`, the physical Abel difference energy
+`∫_0^∞ (e^(-δh) / h) ∫ |f(x) - f(x + h)|^2 dx dh` is rewritten by Plancherel and Tonelli as a
+spectral energy. Plancherel gives `∫ |f(x) - f(x + h)|^2 dx = ∫ |m_h(ξ)|^2 |𝓕f(ξ)|^2 dξ` with
+`|m_h(ξ)|^2 = 4 sin^2(π h ξ)`, and the Frullani-type Abel kernel integral
+`∫_0^∞ (e^(-δh) / h) |m_h(ξ)|^2 dh = log(1 + (2πξ/δ)^2)` identifies the weight.
+
+## Main results
+
+- `integral_norm_sq_schwartzTranslationDifference_eq`: Plancherel for the translation difference
+  `f(x) - f(x + h)`.
+- `abelSchwartzPhysicalEnergyL_eq_spectralJoint`: the physical energy equals the joint
+  `(h, ξ)` spectral integral.
+- `integral_abelDifferenceSymbolWeight_eq_log_one_add_sq_of_pos`:
+  `∫_0^∞ (e^(-δh) / h) |m_h(ξ)|^2 dh = log(1 + (2πξ/δ)^2)` for `δ > 0`.
+- `abelSchwartzPhysicalEnergyL_eq_spectralEnergy`: for `δ > 0` the physical energy equals
+  `∫ log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2 dξ` (as extended nonnegative reals).
+
+## Hypotheses
+
+Unconditional for Schwartz `f`; the kernel and energy identities assume `δ > 0`.
+-/
+
 open Complex Filter MeasureTheory Set
 open FourierTransform
 open scoped Topology
@@ -11,9 +36,12 @@ namespace RHTower
 
 noncomputable section
 
+/-- The translation difference `x ↦ f(x) - f(x + h)` of a Schwartz function. -/
 def schwartzTranslationDifference (f : SchwartzMap ℝ ℂ) (h x : ℝ) : ℂ :=
   f x - f (x + h)
 
+/-- Plancherel for the translation difference: `∫ |f(x) - f(x + h)|^2 dx` equals
+`∫ |m_h(ξ)|^2 |𝓕f(ξ)|^2 dξ`, where `m_h` is the Fourier symbol of the difference operator. -/
 theorem integral_norm_sq_schwartzTranslationDifference_eq
     (f : SchwartzMap ℝ ℂ) (h : ℝ) :
     (∫ x : ℝ, ‖schwartzTranslationDifference f h x‖ ^ 2) =
@@ -68,6 +96,7 @@ theorem integrable_schwartzDifferenceSpectralDensity
   simp only [GaloisForLFunctions.HTGeometry.differenceSymbol]
   ring
 
+/-- The Plancherel identity for the translation difference, as lower Lebesgue integrals. -/
 theorem lintegral_norm_sq_schwartzTranslationDifference_eq
     (f : SchwartzMap ℝ ℂ) (h : ℝ) :
     (∫⁻ x : ℝ, ENNReal.ofReal (‖schwartzTranslationDifference f h x‖ ^ 2)) =
@@ -82,17 +111,23 @@ theorem lintegral_norm_sq_schwartzTranslationDifference_eq
       (Filter.Eventually.of_forall fun xi => mul_nonneg (sq_nonneg _) (sq_nonneg _)),
     integral_norm_sq_schwartzTranslationDifference_eq]
 
+/-- Physical Abel difference energy `∫_0^∞ (e^(-δh) / h) ∫ |f(x) - f(x + h)|^2 dx dh`, valued in
+`[0, ∞]`. -/
 def abelSchwartzPhysicalEnergyL (delta : ℝ) (f : SchwartzMap ℝ ℂ) : ENNReal :=
   ∫⁻ h in Ioi (0 : ℝ),
     ENNReal.ofReal (Real.exp (-(delta * h)) / h) *
       ∫⁻ x : ℝ, ENNReal.ofReal (‖schwartzTranslationDifference f h x‖ ^ 2)
 
+/-- Joint spectral form `∫_0^∞ ∫ (e^(-δh) / h) |m_h(ξ)|^2 |𝓕f(ξ)|^2 dξ dh` of the Abel
+difference energy. -/
 def abelSchwartzSpectralJointL (delta : ℝ) (f : SchwartzMap ℝ ℂ) : ENNReal :=
   ∫⁻ h in Ioi (0 : ℝ), ∫⁻ xi : ℝ, ENNReal.ofReal
     ((Real.exp (-(delta * h)) / h) *
       (‖GaloisForLFunctions.HTGeometry.differenceSymbol h xi‖ ^ 2 *
         ‖𝓕 (f : ℝ → ℂ) xi‖ ^ 2))
 
+/-- The physical Abel difference energy equals its joint spectral form, by Plancherel at each
+fixed shift `h > 0`. -/
 theorem abelSchwartzPhysicalEnergyL_eq_spectralJoint
     (delta : ℝ) (f : SchwartzMap ℝ ℂ) :
     abelSchwartzPhysicalEnergyL delta f = abelSchwartzSpectralJointL delta f := by
@@ -130,6 +165,7 @@ theorem measurable_abelSchwartzSpectralJointKernel
   unfold GaloisForLFunctions.HTGeometry.differenceSymbol
   fun_prop
 
+/-- Tonelli: the joint spectral integral may be computed with the `h`-integral inside. -/
 theorem abelSchwartzSpectralJointL_swap (delta : ℝ) (f : SchwartzMap ℝ ℂ) :
     abelSchwartzSpectralJointL delta f =
       ∫⁻ xi : ℝ, ∫⁻ h in Ioi (0 : ℝ), ENNReal.ofReal
@@ -141,6 +177,7 @@ theorem abelSchwartzSpectralJointL_swap (delta : ℝ) (f : SchwartzMap ℝ ℂ) 
     (μ := volume.restrict (Ioi (0 : ℝ))) (ν := volume)
     (measurable_abelSchwartzSpectralJointKernel delta f).aemeasurable
 
+/-- For `δ > 0`, the weight `h ↦ (e^(-δh) / h) |m_h(ξ)|^2` is integrable on `(0, ∞)`. -/
 theorem integrableOn_abelDifferenceSymbolWeight {delta xi : ℝ} (hdelta : 0 < delta) :
     IntegrableOn (fun h : ℝ => Real.exp (-(delta * h)) / h *
       ‖GaloisForLFunctions.HTGeometry.differenceSymbol h xi‖ ^ 2) (Ioi 0) := by
@@ -162,6 +199,8 @@ theorem integrableOn_abelDifferenceSymbolWeight {delta xi : ℝ} (hdelta : 0 < d
   rw [hcos]
   ring
 
+/-- For `δ > 0`, `∫_0^∞ (e^(-δh) / h) |m_h(ξ)|^2 dh = log(1 + (2πξ/δ)^2)`, using
+`|m_h(ξ)|^2 = 2 (1 - cos(2πξh))` and the Abel log-kernel integral. -/
 theorem integral_abelDifferenceSymbolWeight_eq_log_one_add_sq_of_pos
     {delta : ℝ} (hdelta : 0 < delta) (xi : ℝ) :
     (∫ h in Ioi (0 : ℝ), Real.exp (-(delta * h)) / h *
@@ -206,6 +245,8 @@ theorem lintegral_abelDifferenceSymbolWeight_eq_ofReal_log
       exact mul_nonneg (div_nonneg (Real.exp_pos _).le hh.le) (sq_nonneg _)),
     integral_abelDifferenceSymbolWeight_eq_log_one_add_sq_of_pos hdelta]
 
+/-- For `δ > 0`, the inner `h`-integral of the joint spectral kernel at frequency `ξ` equals
+`log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2`. -/
 theorem lintegral_abelSpectralJoint_inner
     {delta : ℝ} (hdelta : 0 < delta) (f : SchwartzMap ℝ ℂ) (xi : ℝ) :
     (∫⁻ h in Ioi (0 : ℝ), ENNReal.ofReal
@@ -247,11 +288,14 @@ theorem lintegral_abelSpectralJoint_inner
     Real.log_nonneg (by nlinarith [sq_nonneg ((2 * Real.pi * xi) / delta)])
   rw [← ENNReal.ofReal_mul hlog]
 
+/-- Spectral Abel energy `∫ log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2 dξ`, valued in `[0, ∞]`. -/
 def abelSchwartzSpectralEnergyL (delta : ℝ) (f : SchwartzMap ℝ ℂ) : ENNReal :=
   ∫⁻ xi : ℝ, ENNReal.ofReal
     (Real.log (1 + ((2 * Real.pi * xi) / delta) ^ 2) *
       ‖𝓕 (f : ℝ → ℂ) xi‖ ^ 2)
 
+/-- Abel difference Plancherel identity: for `δ > 0` and Schwartz `f`, the physical Abel difference
+energy equals the spectral energy `∫ log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2 dξ`. -/
 theorem abelSchwartzPhysicalEnergyL_eq_spectralEnergy
     {delta : ℝ} (hdelta : 0 < delta) (f : SchwartzMap ℝ ℂ) :
     abelSchwartzPhysicalEnergyL delta f = abelSchwartzSpectralEnergyL delta f := by

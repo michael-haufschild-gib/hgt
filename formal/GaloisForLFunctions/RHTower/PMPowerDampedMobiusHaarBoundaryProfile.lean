@@ -3,6 +3,32 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusCenteredEnergy
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
+/-!
+# Boundary profile of the positive Haar prefixes: linear energy growth and `L¹` defect
+
+The boundary profile `β(u) = min(1,1/u) − 2 min(1,1/(2u))` equals `−1` on `(0,1/2]`,
+`1 − 1/u` on `[1/2,1]` and `0` for `u ≥ 1`; it lies in `L²(0,∞)` with
+`∫ β² = 2 − 2 log 2 > 0` and `∫ β = −log 2`. For damping `ε > 0` the rescaled positive Haar
+prefixes `P_{N+1}(u/(N+1))/(N+1)` converge to `β(u)/ζ(1+ε)` in `L²(0,∞)` by dominated
+convergence, so `‖P_{N+1}‖²/(N+1) → |1/ζ(1+ε)|²(2 − 2 log 2)`. Hence the prefix energies grow
+linearly and are unbounded, and since each prefix has integral `0` while the Fermi source has
+integral `log 2/ζ(1+ε)`, the prefixes never converge to the source in `L¹(0,∞)`.
+
+## Main results
+
+- `pmPositiveHaarBoundaryProfile_energy`: `∫₀^∞ β(u)² du = 2 − 2 log 2`.
+- `pmPositiveHaarBoundaryProfile_integral`: `∫₀^∞ β(u) du = −log 2`.
+- `tendsto_pmPowerDampedRescaledHaarPrefix_L2`: for `ε > 0`, the rescaled prefixes converge to `β/ζ(1+ε)` in `L²(0,∞)`.
+- `tendsto_pmPowerDampedPositiveHaarPrefix_energy_div`: `‖P_{N+1}‖²/(N+1) → |1/ζ(1+ε)|²(2 − 2 log 2)`.
+- `not_bounded_pmPowerDampedPositiveHaarPrefix_energy`: for `ε > 0`, the prefix energies are unbounded.
+- `pmPowerDampedPositiveHaarPrefix_L1_defect_lower`: `|log 2/ζ(1+ε)| ≤ ∫₀^∞ |P_N − F_ε|` for every `N`.
+- `not_tendsto_pmPowerDampedPositiveHaarPrefix_L1`: for `ε > 0`, `P_N` does not converge to the Fermi source `F_ε` in `L¹(0,∞)`.
+
+## Hypotheses
+
+All results are unconditional; the asymptotic and obstruction statements assume only `0 < ε`.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
@@ -11,6 +37,7 @@ theorem measurable_pmPositiveHaarBoundaryProfile : Measurable pmPositiveHaarBoun
   unfold pmPositiveHaarBoundaryProfile
   fun_prop
 
+/-- On `(0,1/2]` the boundary profile equals `−1`. -/
 theorem pmPositiveHaarBoundaryProfile_first {u : ℝ} (hu : 0 < u) (hu2 : u ≤ 1 / 2) :
     pmPositiveHaarBoundaryProfile u = -1 := by
   have h1 : (1 : ℝ) ≤ 1 / u := (le_div_iff₀ hu).mpr (by linarith)
@@ -18,6 +45,7 @@ theorem pmPositiveHaarBoundaryProfile_first {u : ℝ} (hu : 0 < u) (hu2 : u ≤ 
   rw [pmPositiveHaarBoundaryProfile, min_eq_left h1, min_eq_left h2]
   norm_num
 
+/-- On `[1/2,1]` the boundary profile equals `1 − 1/u`. -/
 theorem pmPositiveHaarBoundaryProfile_middle {u : ℝ} (hu : 1 / 2 ≤ u) (hu1 : u ≤ 1) :
     pmPositiveHaarBoundaryProfile u = 1 - 1 / u := by
   have hup : 0 < u := by linarith
@@ -26,6 +54,7 @@ theorem pmPositiveHaarBoundaryProfile_middle {u : ℝ} (hu : 1 / 2 ≤ u) (hu1 :
   rw [pmPositiveHaarBoundaryProfile, min_eq_left h1, min_eq_right h2]
   field_simp
 
+/-- For `u ≥ 1` the boundary profile vanishes. -/
 theorem pmPositiveHaarBoundaryProfile_tail {u : ℝ} (hu : 1 ≤ u) :
     pmPositiveHaarBoundaryProfile u = 0 := by
   have hup : 0 < u := lt_of_lt_of_le zero_lt_one hu
@@ -35,6 +64,7 @@ theorem pmPositiveHaarBoundaryProfile_tail {u : ℝ} (hu : 1 ≤ u) :
   field_simp
   ring
 
+/-- For `u > 0`, `|β(u)| ≤ min(1,1/u)`. -/
 theorem norm_pmPositiveHaarBoundaryProfile_le {u : ℝ} (hu : 0 < u) :
     ‖pmPositiveHaarBoundaryProfile u‖ ≤ min 1 (1 / u) := by
   have ha : 0 ≤ min (1 : ℝ) (1 / u) := by positivity
@@ -44,6 +74,7 @@ theorem norm_pmPositiveHaarBoundaryProfile_le {u : ℝ} (hu : 0 < u) :
   rw [Real.norm_eq_abs, pmPositiveHaarBoundaryProfile, abs_le]
   constructor <;> linarith
 
+/-- The envelope `min(1,1/u)²` is integrable on `(0,∞)`. -/
 theorem integrableOn_pmPositiveHaarEnvelope :
     IntegrableOn (fun u : ℝ => (min 1 (1 / u)) ^ 2) (Ioi (0 : ℝ)) := by
   rw [← Ioc_union_Ioi_eq_Ioi (show (0 : ℝ) ≤ 1 by norm_num), integrableOn_union]
@@ -62,6 +93,7 @@ theorem integrableOn_pmPositiveHaarEnvelope :
     dsimp only
     rw [min_eq_right hh, one_div, inv_sq_eq_rpow hup]
 
+/-- The boundary profile lies in `L²(0,∞)`. -/
 theorem memLp_pmPositiveHaarBoundaryProfile :
     MemLp pmPositiveHaarBoundaryProfile 2 (volume.restrict (Ioi (0 : ℝ))) := by
   rw [memLp_two_iff_integrable_sq_norm measurable_pmPositiveHaarBoundaryProfile.aestronglyMeasurable]
@@ -76,6 +108,8 @@ theorem measurable_pmPowerDampedRescaledHaarPrefix (ε : ℝ) (N : ℕ) :
   ((measurable_pmPowerDampedPositiveHaarPrefix ε (N + 1)).comp
     (measurable_id.div measurable_const)).div measurable_const
 
+/-- For `ε > 0`, the rescaled prefixes `P_{N+1}(u/(N+1))/(N+1)` converge to `β(u)/ζ(1+ε)` in
+`L²(0,∞)` (dominated convergence with majorant `36 min(1,1/u)²`). -/
 theorem tendsto_pmPowerDampedRescaledHaarPrefix_L2 {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ => ∫ u in Ioi (0 : ℝ),
       ‖pmPowerDampedRescaledHaarPrefix ε N u -
@@ -113,6 +147,7 @@ theorem tendsto_pmPowerDampedRescaledHaarPrefix_L2 {ε : ℝ} (hε : 0 < ε) :
     simpa using ((tendsto_pmPowerDampedRescaledHaarPrefix hε hu).sub_const
       (pmPowerDampedDivisorDensity ε * (pmPositiveHaarBoundaryProfile u : ℂ))).norm.pow 2
 
+/-- The boundary profile has energy `∫₀^∞ β(u)² du = 2 − 2 log 2`. -/
 theorem pmPositiveHaarBoundaryProfile_energy :
     (∫ u in Ioi (0 : ℝ), (pmPositiveHaarBoundaryProfile u) ^ 2) = 2 - 2 * Real.log 2 := by
   have hi : IntegrableOn (fun u => (pmPositiveHaarBoundaryProfile u) ^ 2) (Ioi (0 : ℝ)) := by
@@ -164,10 +199,12 @@ theorem pmPositiveHaarBoundaryProfile_energy :
   · exact hi.mono_set (fun u hu => hu.1)
   · exact hi.mono_set (fun u hu => lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hu.1)
 
+/-- The profile energy `2 − 2 log 2` is positive. -/
 theorem pmPositiveHaarBoundaryProfile_energy_pos : 0 < 2 - 2 * Real.log 2 := by
   have h := Real.log_lt_sub_one_of_pos (by norm_num : (0 : ℝ) < 2) (by norm_num : (2 : ℝ) ≠ 1)
   linarith
 
+/-- The boundary profile has integral `∫₀^∞ β(u) du = −log 2`. -/
 theorem pmPositiveHaarBoundaryProfile_integral :
     (∫ u in Ioi (0 : ℝ), pmPositiveHaarBoundaryProfile u) = -Real.log 2 := by
   have hi : IntegrableOn pmPositiveHaarBoundaryProfile (Ioc (0 : ℝ) 1) := by
@@ -208,6 +245,7 @@ theorem pmPositiveHaarBoundaryProfile_integral :
   · exact hi.mono_set (fun u hu => ⟨hu.1, hu.2.trans (by norm_num)⟩)
   · exact hi.mono_set (fun u hu => ⟨lt_trans (by norm_num : (0 : ℝ) < 1 / 2) hu.1, hu.2⟩)
 
+/-- Rescaling identity: the energy of the rescaled prefix is `‖P_{N+1}‖²_{L²(0,∞)}/(N+1)`. -/
 theorem pmPowerDampedRescaledHaarPrefix_energy (ε : ℝ) (N : ℕ) :
     (∫ u in Ioi (0 : ℝ), ‖pmPowerDampedRescaledHaarPrefix ε N u‖ ^ 2) =
       (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedPositiveHaarPrefix ε (N + 1) t‖ ^ 2) / ((N : ℝ) + 1) := by
@@ -216,6 +254,7 @@ theorem pmPowerDampedRescaledHaarPrefix_energy (ε : ℝ) (N : ℕ) :
   simpa only [pmPowerDampedRescaledHaarPrefix, pmBackwardDilation, Complex.ofReal_add,
     Complex.ofReal_natCast, Complex.ofReal_one, div_eq_mul_inv, mul_comm] using hh
 
+/-- For `ε > 0`, the rescaled prefix energies converge to `|1/ζ(1+ε)|²(2 − 2 log 2)`. -/
 theorem tendsto_pmPowerDampedRescaledHaarPrefix_energy {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ => ∫ u in Ioi (0 : ℝ), ‖pmPowerDampedRescaledHaarPrefix ε N u‖ ^ 2)
       atTop (𝓝 (‖pmPowerDampedDivisorDensity ε‖ ^ 2 * (2 - 2 * Real.log 2))) := by
@@ -238,6 +277,8 @@ theorem tendsto_pmPowerDampedRescaledHaarPrefix_energy {ε : ℝ} (hε : 0 < ε)
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
     exact (tendsto_pmPowerDampedRescaledHaarPrefix hε hu).norm.pow 2
 
+/-- For `ε > 0`, `‖P_{N+1}‖²/(N+1) → |1/ζ(1+ε)|²(2 − 2 log 2)`: the prefix energy grows
+linearly in `N`. -/
 theorem tendsto_pmPowerDampedPositiveHaarPrefix_energy_div {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ =>
       (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedPositiveHaarPrefix ε (N + 1) t‖ ^ 2) / ((N : ℝ) + 1))
@@ -245,6 +286,7 @@ theorem tendsto_pmPowerDampedPositiveHaarPrefix_energy_div {ε : ℝ} (hε : 0 <
   simpa only [pmPowerDampedRescaledHaarPrefix_energy] using
     tendsto_pmPowerDampedRescaledHaarPrefix_energy hε
 
+/-- For `ε > 0`, the energies `‖P_{N+1}‖²_{L²(0,∞)}` tend to infinity. -/
 theorem tendsto_pmPowerDampedPositiveHaarPrefix_energy_atTop {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ => ∫ t in Ioi (0 : ℝ), ‖pmPowerDampedPositiveHaarPrefix ε (N + 1) t‖ ^ 2)
       atTop atTop := by
@@ -258,6 +300,7 @@ theorem tendsto_pmPowerDampedPositiveHaarPrefix_energy_atTop {ε : ℝ} (hε : 0
   filter_upwards with N
   exact div_mul_cancel₀ _ (ne_of_gt (show (0 : ℝ) < (N : ℝ) + 1 by positivity))
 
+/-- For `ε > 0`, no real `B` bounds the energies of all positive Haar prefixes `P_N`. -/
 theorem not_bounded_pmPowerDampedPositiveHaarPrefix_energy {ε : ℝ} (hε : 0 < ε) :
     ¬ ∃ B : ℝ, ∀ N : ℕ,
       (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedPositiveHaarPrefix ε N t‖ ^ 2) ≤ B := by
@@ -267,6 +310,8 @@ theorem not_bounded_pmPowerDampedPositiveHaarPrefix_energy {ε : ℝ} (hε : 0 <
   rcases hh.exists with ⟨N, hN⟩
   exact (not_lt_of_ge (hB (N + 1))) hN
 
+/-- For `ε > 0` and every `N`, `|log 2/ζ(1+ε)| ≤ ∫₀^∞ |P_N(t) − F_ε(t)| dt`, because `P_N` has
+integral `0` and the Fermi source has integral `log 2/ζ(1+ε)`. -/
 theorem pmPowerDampedPositiveHaarPrefix_L1_defect_lower {ε : ℝ} (hε : 0 < ε) (N : ℕ) :
     ‖pmPowerDampedDivisorDensity ε * (Real.log 2 : ℂ)‖ ≤
       ∫ t in Ioi (0 : ℝ), ‖pmPowerDampedPositiveHaarPrefix ε N t - pmPowerDampedFermiSource ε t‖ := by
@@ -277,6 +322,8 @@ theorem pmPowerDampedPositiveHaarPrefix_L1_defect_lower {ε : ℝ} (hε : 0 < ε
     pmPowerDampedFermiSource_integral hε, zero_sub, norm_neg] at hh
   simpa only [pmPowerDampedDivisorDensity, one_div, div_eq_mul_inv, one_mul, mul_comm] using hh
 
+/-- For `ε > 0`, the positive Haar prefixes do not converge to the power-damped Fermi source in
+`L¹(0,∞)`. -/
 theorem not_tendsto_pmPowerDampedPositiveHaarPrefix_L1 {ε : ℝ} (hε : 0 < ε) :
     ¬ Tendsto (fun N : ℕ => ∫ t in Ioi (0 : ℝ),
       ‖pmPowerDampedPositiveHaarPrefix ε N t - pmPowerDampedFermiSource ε t‖) atTop (𝓝 0) := by

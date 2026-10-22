@@ -1,9 +1,28 @@
 import GaloisForLFunctions.HTGeometry.PositiveSummabilityComparison
 
+/-!
+# Summability comparison for eventually comparable nonnegative sequences
+
+If two nonnegative real sequences satisfy `c f(n) ≤ g(n) ≤ C f(n)` for all large `n` with `c > 0`, then
+one is summable exactly when the other is. Both directions are comparison tests applied to the tails
+beyond the threshold, and summability is insensitive to dropping finitely many terms.
+
+## Main results
+
+- `summable_iff_of_eventually_nat_mul_le_of_le`: under eventual two-sided comparability, `Σ g` converges
+  iff `Σ f` converges.
+
+## Hypotheses
+
+Unconditional; assumes `f, g ≥ 0`, `c > 0`, and the eventual two-sided bound.
+-/
+
 open Filter
 
 namespace HTGeometry
 
+/-- For nonnegative `f, g` with `c f(n) ≤ g(n) ≤ C f(n)` for all large `n` and `c > 0`, `g` is summable
+iff `f` is summable. -/
 theorem summable_iff_of_eventually_nat_mul_le_of_le
     (f g : ℕ → ℝ) {c C : ℝ}
     (hf : ∀ n, 0 ≤ f n) (hg : ∀ n, 0 ≤ g n) (hc : 0 < c)

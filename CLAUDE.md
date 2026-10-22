@@ -27,25 +27,46 @@ Card template: docs/drafts/pipeline/_card-template.md
 - High level facts about things the RH proof must or can not be like: docs/reports/STATUS.md (ignore if not working on RH)
 
 ## Use the search tool for our lean corpus
-- Run the documented search command directly. Do not run `research --help` or read the search Python
-  implementation as preparation. Consult help/source only to diagnose a command execution failure
-  or when explicitly tasked with changing the search tool.
-- With partial results, use the available hits and reported coverage. With no useful hits, broaden
-  or rephrase the query, try `--any`, or switch search mode.
-- Search: `scripts/formal_tools.py research "clock inverse"`. Default hybrid searches declaration
-  names, docstrings, statements, proof bodies and research notes, lexically and semantically.
-- Scope defaults to this project. `--scope mathlib` searches installed Mathlib instead, `--scope all`
-  searches both. Only our corpus has semantic vectors; Mathlib results are lexical.
-- Describe the goal or proof mechanism in the query: docstrings and statements are embedded, so a
-  natural-language goal matches. `--budget-seconds 300` sets the request budget (default: 300).
-- Lexical matching: spaces mean AND; `--any` means OR. Use inner quotes for phrases:
-  `research '"critical line" zero'`. `--exact` disables prefix expansion; `--mode lexical` uses only lexical search.
-- Default: 20 hits per ranked section, at most 2 per module, plus 5 lexical exploration hits.
-  Use `--per-module 0` to remove the cap, `--explore 0` to hide extras, `--offset 20` for the next page.
-- Filter with `--module <substring>` or `--exclude-module <substring>`; `--json` gives structured results.
-- In JSON, inspect `candidate_lemmas` and `prose` alongside `declarations`.
-- Check `partial` and coverage; verify candidate applicability in Lean before relying on a hit.
-- `--no-refresh` searches the cached index without refreshing it. Use `rg` for exhaustive source-text searches.
+Command: `scripts/formal_tools.py research "<query>"`. Run it directly; do not run `--help` or read
+the search code first (only to diagnose a failed command, or when asked to change the tool).
+
+By default it searches keywords and meaning together, then reranks: declaration names, statements,
+docstrings, proof bodies, the Markdown in `formal/`, and the formalized pipeline cards
+(`docs/drafts/pipeline/3-formalized`: paper proofs naming their Lean declarations). The rest of
+`docs/` is not indexed. Edits are indexed automatically within about 10 seconds.
+
+What to use when:
+- Know a name or part of one: `research inverseClockK`. `--mode lexical` is a keyword-only lookup in
+  under a second.
+- Looking for a result: state it in words, e.g. `research "zero-free region near the line Re s = 1"`.
+- Looking for a proof technique: describe the mechanism, e.g.
+  `research "bound a bilinear form by Cauchy-Schwarz"`.
+- Mathlib, only after our corpus: `--scope mathlib` (`--scope all` for both). Mathlib is matched by
+  keyword only: query Lean names and terms, not sentences; add `--exact` for a known full name.
+- `rg`/`grep`: only to confirm the exact text of something the search surfaced, or to list every
+  literal occurrence of a known name.
+
+Reading results:
+- `Declarations`: keyword hits in this project, every term required.
+- `Candidate lemmas`: best matches by meaning and keyword, reranked. Read this first for any query
+  phrased in words; Mathlib hits appear only here.
+- `Source arguments`: proofs whose method matches the query.
+- `Markdown notes`: matching Markdown in `formal/` and formalized pipeline cards. `Source passages`:
+  whole-file Lean chunks, for notation and examples outside declarations.
+- `--json` keys: `declarations`, `candidate_lemmas`, `source_arguments`, `prose`, `source_passages`.
+- A hit is a lead: check its statement in Lean before relying on it.
+- `partial search`: the time budget ran out; use what came back. `semantic_index_lagging_N_documents`:
+  the newest edits may not be found by meaning yet.
+
+Query syntax and paging:
+- Spaces mean AND, `--any` means OR, inner quotes require a phrase: `research '"critical line" zero'`.
+  `--exact` turns off prefix matching. These change keyword matching only.
+- 20 hits per section, at most 2 per module, plus 5 from other modules. `--per-module 0` removes the
+  cap, `--offset 20` shows the next page, `--explore 0` hides the extras.
+- `--module <substring>` / `--exclude-module <substring>` filter by module; `--json` gives structured
+  output.
+- No useful hits: rephrase, drop terms, try `--any`, or describe the goal in words.
+- "Local Qdrant unavailable": run `./launch.sh`, then retry.
 
 ## Python scratch jobs
 - Run potentially long Python jobs through `python3 scripts/run_guarded.py --timeout 600 -- python3 /tmp/job.py`.

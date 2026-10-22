@@ -1,24 +1,58 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIActualBlockParameters
 
+/-!
+# Menon harmonic Case II: explicit polylogarithmic constants
+
+Scalar bookkeeping for the Case-II large-value count of Menon's harmonic prime blocks `(a, Y]` with
+`a < Y ≤ 2a`. The module fixes explicit numerical constants and bounds each factor of the Case-II
+measure estimate by a power of `log a`: the divisor-count factor
+`D = 3 (log₂(4Y) + 1)^3 (log₂ a + 1)^3`, the polylog envelope `maynardLongPolylogEnvelope (4Y)`, the
+complement height `Hmax`, and the core exponent term. The end result bounds the full measure
+expression by `menonHarmonicCaseIIMeasureConstant · ((log a)^1241 / T + 1)`.
+
+## Main results
+
+- `menonHarmonicCaseII_D_cast_le`: `D ≤ 3 · 17^6 · (log a)^6`.
+- `maynardLongPolylogEnvelope_caseII_le`: `maynardLongPolylogEnvelope (4Y) ≤ 8 log a`.
+- `menonHarmonicCaseII_Hmax_le`: the Case-II complement height is at most
+  `menonHarmonicCaseIIComplementConstant · (log a)^1035 · (T + 1)`.
+- `menonHarmonicCaseII_VexpCore_lower`: `a^e / (C_core (log a)^307)` is a lower bound for the
+  exponent-core quantity, with `e = menonHarmonicCaseIICoreExponent`.
+- `menonHarmonicCaseII_measureEnvelope_le`: the Case-II measure envelope is at most
+  `menonHarmonicCaseIIMeasureConstant · ((log a)^1241 / T + 1)`.
+
+## Hypotheses
+
+All results are unconditional elementary inequalities. They assume the block-scale ranges
+`8 ≤ a` or `256 ≤ a`, `1 ≤ log a`, `a < Y ≤ 2a`, and, where `T` appears, `0 ≤ T` or `1 ≤ T`; the
+measure bound also assumes that `T` is at most the exponent-core quantity.
+-/
+
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Constant `12 · 32^2 · 3^1035` in the polylogarithmic bound for the Case-II complement height. -/
 def menonHarmonicCaseIIComplementConstant : ℝ :=
   12 * 32 ^ (2 : ℕ) * 3 ^ (1035 : ℕ)
 
+/-- Constant `C_core` in the lower bound `a^e / (C_core (log a)^307)` for the exponent core. -/
 def menonHarmonicCaseIICoreDenominatorConstant : ℝ :=
   5120 * 8 * (3 * 17 ^ (6 : ℕ)) * 8 / 2
 
+/-- Core exponent `e = (1/8) · maynardDerivativeDeficit 26 = 1/(24 · 2^26)`. -/
 def menonHarmonicCaseIICoreExponent : ℝ :=
   (1 / 8 : ℝ) * maynardDerivativeDeficit 26
 
 def menonHarmonicCaseIIMeasureNumeratorConstant : ℝ :=
   2 * (3 * 17 ^ (6 : ℕ)) * 12 * menonHarmonicCaseIIComplementConstant
 
+/-- Final constant of the Case-II measure bound: `16 · (measure numerator constant) + 8`. -/
 def menonHarmonicCaseIIMeasureConstant : ℝ :=
   16 * menonHarmonicCaseIIMeasureNumeratorConstant + 8
 
+/-- For `8 ≤ a`, `1 ≤ log a` and `a < Y ≤ 2a`, the dyadic divisor-count factor satisfies
+`3 (log₂(4Y) + 1)^3 (log₂ a + 1)^3 ≤ 3 · 17^6 · (log a)^6`. -/
 theorem menonHarmonicCaseII_D_cast_le
     {a Y : ℕ} (ha : 8 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) :
@@ -58,6 +92,8 @@ theorem menonHarmonicCaseII_D_cast_le
       3 * (17 * la) ^ (3 : ℕ) * (17 * la) ^ (3 : ℕ) := by gcongr
     _ = 3 * 17 ^ (6 : ℕ) * la ^ (6 : ℕ) := by ring
 
+/-- For `8 ≤ a`, `1 ≤ log a` and `a < Y ≤ 2a`, the long-factor polylog envelope at `4Y` is at most
+`8 log a`. -/
 theorem maynardLongPolylogEnvelope_caseII_le
     {a Y : ℕ} (ha : 8 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) :
@@ -69,6 +105,9 @@ theorem maynardLongPolylogEnvelope_caseII_le
   have : 4 * Y ≤ a ^ 2 := h4Y.trans h8a
   exact_mod_cast this
 
+/-- For `256 ≤ a`, `1 ≤ log a`, `a < Y ≤ 2a` and `T ≥ 0`, the Case-II complement height
+`12 W^2 (1 + log(W·4Y))^(P+2) (T + 1) (a/64)^(2 - 2σ)` (width `W = 32`, polylog exponent `P`) is at
+most `menonHarmonicCaseIIComplementConstant · (log a)^1035 · (T + 1)`, using `σ > 1`. -/
 theorem menonHarmonicCaseII_Hmax_le
     {a Y : ℕ} (ha : 256 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) {T : ℝ} (hT : 0 ≤ T) :
@@ -123,6 +162,8 @@ theorem menonHarmonicCaseII_Hmax_le
     _ = 12288 * 3 ^ (1035 : ℕ) *
         la ^ (1035 : ℕ) * (T + 1) := by ring
 
+/-- For `256 ≤ a`, `1 ≤ log a` and `a < Y ≤ 2a`, the exponent-core quantity is bounded below by
+`a^e / (menonHarmonicCaseIICoreDenominatorConstant · (log a)^307)`. -/
 theorem menonHarmonicCaseII_VexpCore_lower
     {a Y : ℕ} (ha : 256 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) :
@@ -190,6 +231,9 @@ theorem menonHarmonicCaseII_VexpCore_lower
   exact div_le_div_of_nonneg_left hnum0 hden0 hden
 
 set_option maxRecDepth 10000 in
+/-- For `256 ≤ a`, `1 ≤ log a`, `a < Y ≤ 2a`, `1 ≤ T` and `T` at most the exponent-core quantity,
+the Case-II measure expression `2 (2π)⁻¹ · 4 (cells · D · 12 · Hmax / Vexp^2 + 1)` is at most
+`menonHarmonicCaseIIMeasureConstant · ((log a)^1241 / T + 1)`. -/
 theorem menonHarmonicCaseII_measureEnvelope_le
     {a Y : ℕ} (ha : 256 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) {T : ℝ} (hT : 1 ≤ T)

@@ -1,14 +1,38 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHeathBrownCaseIIAbsorptionSchedule
 
+/-!
+# Heath-Brown Case II: absorption envelope of order four hundred
+
+The Case-II absorption envelope `menonHeathBrownCaseIIAbsorptionEnvelope A L X a` is
+`#(degree-three Heath-Brown box choices) · 8 · (log a^(1/8))^(-A) · maynardLongPolylogEnvelope X`.
+This module shows that for `A = 400` and polynomially supported parameters (`L ≤ X ≤ a^3`) the
+envelope is eventually below `(log a)^(-300)`. The proof bounds the box count by `3 (21 log a)^6`
+and the polylog envelope by `21 log a`, giving `C / (log a)^393`.
+
+## Main results
+
+- `eventually_menonHeathBrownCaseIIAbsorptionEnvelope_fourHundred_lt_logPow_of_polynomial_support`:
+  for all large `a` and all `1 ≤ L ≤ X` with `X ≤ a^3`, the order-400 absorption envelope is
+  strictly less than `(log a)^(-300)`.
+
+## Hypotheses
+
+Unconditional. The only assumptions are the support conditions `1 ≤ L`, `1 ≤ X`, `L ≤ X` and
+`X ≤ a^3`.
+-/
+
 namespace RHTower.Sieve
 
 noncomputable section
 
 open Filter
 
+/-- Explicit constant `24 · 21^7 · 8^400` with envelope `≤ constant / (log a)^393` at order 400. -/
 def menonHeathBrownCaseIIOrderFourHundredAbsorptionConstant : ℝ :=
   24 * 21 ^ (7 : ℕ) * 8 ^ (400 : ℕ)
 
+/-- Eventually in `a`, for all `1 ≤ L ≤ X ≤ a^3`, the order-400 Heath-Brown Case-II absorption
+envelope is strictly less than `(log a)^(-300)`. -/
 theorem eventually_menonHeathBrownCaseIIAbsorptionEnvelope_fourHundred_lt_logPow_of_polynomial_support :
     ∀ᶠ a : ℕ in atTop, ∀ {L X : ℕ},
       1 ≤ L → 1 ≤ X → L ≤ X → (X : ℝ) ≤ (a : ℝ) ^ (3 : ℕ) →

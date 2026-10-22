@@ -1,5 +1,25 @@
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiAbelDifferencePlancherel
 
+/-!
+# Finiteness of the Abel difference energy of a Schwartz function
+
+For `δ > 0` and Schwartz `f`, the spectral density `log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2` is integrable,
+since `log(1 + u) ≤ u` dominates it by `(2π/δ)^2 |ξ|^2 |𝓕f(ξ)| sup|𝓕f|`. Hence the spectral Abel
+energy is the real integral of this density, and by the Abel difference Plancherel identity the
+physical energy `∫_0^∞ (e^(-δh) / h) ∫ |f(x) - f(x + h)|^2 dx dh` is finite.
+
+## Main results
+
+- `integrable_abelSchwartzSpectralDensity`: `ξ ↦ log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2` is integrable.
+- `abelSchwartzSpectralEnergyL_eq_ofReal_integral`: the spectral energy is the real integral of
+  that density.
+- `abelSchwartzPhysicalEnergyL_lt_top`: the physical Abel difference energy is finite.
+
+## Hypotheses
+
+Unconditional for Schwartz `f`, assuming only `δ > 0`.
+-/
+
 open Complex Filter MeasureTheory Set
 open FourierTransform
 open scoped Topology
@@ -8,6 +28,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- For `δ > 0` and Schwartz `f`, the spectral density `log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2` is integrable
+on `ℝ`. -/
 theorem integrable_abelSchwartzSpectralDensity
     {delta : ℝ} (hdelta : 0 < delta) (f : SchwartzMap ℝ ℂ) :
     Integrable (fun xi : ℝ =>
@@ -56,6 +78,8 @@ theorem integrable_abelSchwartzSpectralDensity
       _ ≤ (K * |xi| ^ 2 * ‖F xi‖) * C := by gcongr
       _ = K * C * (|xi| ^ 2 * ‖F xi‖) := by ring
 
+/-- For `δ > 0`, the spectral Abel energy equals the (finite) real integral
+`∫ log(1 + (2πξ/δ)^2) |𝓕f(ξ)|^2 dξ`. -/
 theorem abelSchwartzSpectralEnergyL_eq_ofReal_integral
     {delta : ℝ} (hdelta : 0 < delta) (f : SchwartzMap ℝ ℂ) :
     abelSchwartzSpectralEnergyL delta f = ENNReal.ofReal
@@ -68,6 +92,8 @@ theorem abelSchwartzSpectralEnergyL_eq_ofReal_integral
       mul_nonneg (Real.log_nonneg
         (by nlinarith [sq_nonneg ((2 * Real.pi * xi) / delta)])) (sq_nonneg _))).symm
 
+/-- For `δ > 0` and Schwartz `f`, the physical Abel difference energy
+`∫_0^∞ (e^(-δh) / h) ∫ |f(x) - f(x + h)|^2 dx dh` is finite. -/
 theorem abelSchwartzPhysicalEnergyL_lt_top
     {delta : ℝ} (hdelta : 0 < delta) (f : SchwartzMap ℝ ℂ) :
     abelSchwartzPhysicalEnergyL delta f < ⊤ := by

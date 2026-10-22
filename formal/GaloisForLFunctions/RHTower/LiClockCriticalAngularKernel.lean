@@ -8,21 +8,52 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 import Mathlib.Tactic
 
+/-!
+# Angular integrals and Laplace transform of the critical Li-clock Bessel kernels
+
+This module defines the entire series `K(w) = ∑ₘ wᵐ / (m!)²` (classically `I₀(2√w)`), its
+alternating version `K⁻(w) = ∑ₘ (-1)ᵐ wᵐ / (m!)²` (classically `J₀(2√w)`), and the even part
+`E(w) = ∑ⱼ w^{2j} / ((2j)!)² = (K(w) + K⁻(w)) / 2`. Expanding the exponential and integrating
+the cosine moments term by term gives the angular averages
+`∫_{-π}^{π} e^{q cos θ} dθ = 2π K(q²/4)` for complex `q` and
+`∫_{-π}^{π} cos(q cos θ) dθ = 2π K⁻(q²/4)` for real `q`. These yield `|K⁻(w)| ≤ 1` and
+`E(w) ≤ e^{2√w}` for `w ≥ 0`, hence integrability of `r ↦ e^{-a r} E(t r)` on `(0, ∞)`, and a
+termwise Gamma-integral computation gives its Laplace transform `(1/a) cosh(t/a)`.
+
+## Main results
+
+- `liClockCriticalAngularIntegral_exp`: `∫_{-π}^{π} e^{q cos θ} dθ = 2π K(q²/4)` for `q ∈ ℂ`.
+- `liClockCriticalAngularIntegral_real_cos`: `∫_{-π}^{π} cos(q cos θ) dθ = 2π K⁻(q²/4)`.
+- `abs_liClockCriticalOscillatoryKernel_le_one`: `|K⁻(w)| ≤ 1` for `w ≥ 0`.
+- `liClockCriticalEvenKernel_eq_half`: `E(w) = (K(w) + K⁻(w)) / 2`.
+- `liClockCriticalEvenKernel_decay_integral`: `∫₀^∞ e^{-a r} E(t r) dr = (1/a) cosh(t/a)` for
+  `a > 0`, `t ≥ 0`.
+
+## Hypotheses
+
+Unconditional. The decay statements take the range hypotheses `0 < a` and `0 ≤ t`; the bound on
+`K⁻` takes `0 ≤ w`.
+-/
+
 open MeasureTheory Set Filter Topology
 open scoped BigOperators
 
 noncomputable section
 namespace RHTower
 
+/-- Complex Bessel-type kernel `K(w) = ∑ₘ wᵐ / (m!)²`. -/
 def liClockCriticalScalarKernelComplex (w : ℂ) : ℂ :=
   ∑' m : ℕ, w^m / ((m.factorial : ℂ)^2)
 
+/-- Real kernel `K(w) = ∑ₘ wᵐ / (m!)²` (classically `I₀(2√w)` for `w ≥ 0`). -/
 def liClockCriticalPositiveKernel (w : ℝ) : ℝ :=
   ∑' m : ℕ, w^m / ((m.factorial : ℝ)^2)
 
+/-- Oscillatory kernel `K⁻(w) = ∑ₘ (-1)ᵐ wᵐ / (m!)² = K(-w)` (classically `J₀(2√w)`). -/
 def liClockCriticalOscillatoryKernel (w : ℝ) : ℝ :=
   ∑' m : ℕ, (-1 : ℝ)^m * w^m / ((m.factorial : ℝ)^2)
 
+/-- Even kernel `E(w) = ∑ⱼ w^{2j} / ((2j)!)²`. -/
 def liClockCriticalEvenKernel (w : ℝ) : ℝ :=
   ∑' j : ℕ, w^(2*j) / (((2*j).factorial : ℝ)^2)
 
@@ -37,6 +68,7 @@ private theorem ca_norm_term_le (w : ℂ) (n : ℕ) :
   apply div_le_div_of_nonneg_left (pow_nonneg (norm_nonneg w) n) (by positivity)
   nlinarith
 
+/-- The series `∑ₘ wᵐ / (m!)²` converges absolutely for every `w ∈ ℂ`. -/
 theorem summable_norm_liClockCriticalScalarTermComplex (w : ℂ) :
   Summable (fun m : ℕ => ‖w^m / ((m.factorial : ℂ)^2)‖) := by
   exact (Real.summable_pow_div_factorial ‖w‖).of_nonneg_of_le
@@ -76,6 +108,8 @@ private theorem ca_complex_ofReal (w : ℝ) :
   simp only [liClockCriticalScalarKernelComplex, liClockCriticalPositiveKernel,
     Complex.ofReal_tsum, Complex.ofReal_div, Complex.ofReal_pow, Complex.ofReal_natCast]
 
+/-- The even kernel is the average of the positive and oscillatory kernels:
+`E(w) = (K(w) + K⁻(w)) / 2`. -/
 theorem liClockCriticalEvenKernel_eq_half (w : ℝ) :
   liClockCriticalEvenKernel w =
     (liClockCriticalPositiveKernel w + liClockCriticalOscillatoryKernel w)/2 := by
@@ -145,6 +179,7 @@ theorem continuous_liClockCriticalEvenKernel :
     liClockCriticalOscillatoryKernel x)/2) at h
   simpa only [← liClockCriticalEvenKernel_eq_half] using h
 
+/-- Even cosine moments: `∫_{-π}^{π} cos^{2j} θ dθ = 2π (2j)! / (4ʲ (j!)²)`. -/
 private theorem ca_cos_moment_even (j : ℕ) :
     (∫ θ in (-Real.pi)..Real.pi, Real.cos θ^(2*j)) =
       (2*Real.pi)*((2*j).factorial : ℝ) / (4^j*(j.factorial : ℝ)^2) := by
@@ -208,6 +243,7 @@ private theorem ca_integrated_term (q : ℂ) (n : ℕ) :
       ring
     _ = _ := by rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_ofReal]
 
+/-- Angular average of the exponential: `∫_{-π}^{π} e^{q cos θ} dθ = 2π K(q²/4)` for `q ∈ ℂ`. -/
 theorem liClockCriticalAngularIntegral_exp (q : ℂ) :
   (∫ θ in (-Real.pi)..Real.pi,
     Complex.exp (q * (Real.cos θ : ℂ))) =
@@ -234,6 +270,7 @@ theorem liClockCriticalAngularIntegral_exp (q : ℂ) :
   have hh := (ca_taylor_integral q).unique (he.even_add_odd ho)
   simpa only [add_zero] using hh
 
+/-- Real form: `∫_{-π}^{π} e^{q cos θ} dθ = 2π K(q²/4)` for `q ∈ ℝ`. -/
 theorem liClockCriticalAngularIntegral_real_exp (q : ℝ) :
   (∫ θ in (-Real.pi)..Real.pi, Real.exp (q*Real.cos θ)) =
     2*Real.pi * liClockCriticalPositiveKernel (q^2/4) := by
@@ -254,6 +291,7 @@ theorem liClockCriticalAngularIntegral_real_exp (q : ℝ) :
       push_cast
       rfl
 
+/-- `∫_{-π}^{π} cos(q cos θ) dθ = 2π K⁻(q²/4)` for `q ∈ ℝ`. -/
 theorem liClockCriticalAngularIntegral_real_cos (q : ℝ) :
   (∫ θ in (-Real.pi)..Real.pi, Real.cos (q*Real.cos θ)) =
     2*Real.pi * liClockCriticalOscillatoryKernel (q^2/4) := by
@@ -283,6 +321,7 @@ theorem liClockCriticalAngularIntegral_real_cos (q : ℝ) :
   rw [hq, ca_complex_ofReal, ← ca_oscillatory_eq_neg] at he
   simpa using he
 
+/-- For `w ≥ 0`, `|K⁻(w)| ≤ 1`, since `2π K⁻(w)` is an angular average of a cosine. -/
 theorem abs_liClockCriticalOscillatoryKernel_le_one {w : ℝ} (hw : 0≤w) :
   |liClockCriticalOscillatoryKernel w|≤1 := by
   have hq : (2*Real.sqrt w)^2/4 = w := by nlinarith [Real.sq_sqrt hw]
@@ -301,6 +340,7 @@ theorem abs_liClockCriticalOscillatoryKernel_le_one {w : ℝ} (hw : 0≤w) :
   rw [Real.norm_eq_abs, abs_mul, abs_of_pos hp, hlen, one_mul] at hb
   exact (mul_le_mul_iff_right₀ hp).mp (by simpa only [mul_one] using hb)
 
+/-- For `w ≥ 0`, `K(w) ≤ e^{2√w}`. -/
 private theorem ca_positive_le_exp_sqrt {w : ℝ} (hw : 0≤w) :
     liClockCriticalPositiveKernel w ≤ Real.exp (2*Real.sqrt w) := by
   have hq : (2*Real.sqrt w)^2/4 = w := by nlinarith [Real.sq_sqrt hw]
@@ -328,6 +368,7 @@ private theorem ca_positive_le_exp_sqrt {w : ℝ} (hw : 0≤w) :
     _ ≤ Real.exp (2*Real.sqrt w)*(2*Real.pi) := hb
     _ = (2*Real.pi)*Real.exp (2*Real.sqrt w) := by ring
 
+/-- For `w ≥ 0`, `E(w) ≤ e^{2√w}`. -/
 private theorem ca_even_le_exp_sqrt {w : ℝ} (hw : 0≤w) :
     liClockCriticalEvenKernel w ≤ Real.exp (2*Real.sqrt w) := by
   have hh := ca_positive_le_exp_sqrt hw
@@ -339,6 +380,7 @@ private theorem ca_even_le_exp_sqrt {w : ℝ} (hw : 0≤w) :
   rw [liClockCriticalEvenKernel_eq_half]
   linarith
 
+/-- For `a > 0`, `t ≥ 0`, `r > 0`: `e^{-a r} E(t r) ≤ e^{2t/a} e^{-a r / 2}`. -/
 private theorem ca_decay_majorant {a t r : ℝ} (ha : 0<a) (ht : 0≤t) (hr : 0<r) :
     ‖Real.exp (-a*r)*liClockCriticalEvenKernel (t*r)‖ ≤
       Real.exp (2*t/a)*Real.exp ((-a/2)*r) := by
@@ -357,6 +399,7 @@ private theorem ca_decay_majorant {a t r : ℝ} (ha : 0<a) (ht : 0≤t) (hr : 0<
     _ ≤ Real.exp (2*t/a+(-a/2)*r) := Real.exp_le_exp.mpr (by linarith)
     _ = _ := Real.exp_add _ _
 
+/-- For `a > 0` and `t ≥ 0`, `r ↦ e^{-a r} E(t r)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_liClockCriticalEvenKernel_decay
     {a t : ℝ} (ha : 0<a) (ht : 0≤t) :
   IntegrableOn (fun r : ℝ => Real.exp (-a*r)*liClockCriticalEvenKernel (t*r))
@@ -379,6 +422,7 @@ private theorem ca_power_decay_integrable {a : ℝ} (ha : 0<a) (m : ℕ) :
     (p:=1) (s:=(m:ℝ)) (b:=a) hm (by norm_num) ha
   simpa only [Real.rpow_one,Real.rpow_natCast] using h
 
+/-- Gamma integral `∫₀^∞ rᵐ e^{-a r} dr = m! / a^{m+1}` for `a > 0`. -/
 private theorem ca_power_decay_integral {a : ℝ} (ha : 0<a) (m : ℕ) :
     (∫ r in Set.Ioi 0, r^m * Real.exp (-a*r)) = (m.factorial:ℝ)/a^(m+1) := by
   have hm : (-1:ℝ)<(m:ℝ) := by
@@ -417,6 +461,8 @@ private theorem ca_decay_term_integral {a : ℝ} (ha : 0<a) (t : ℝ) (j : ℕ) 
   rw [div_pow, show a^(2*j+1)=a^(2*j)*a by rw [pow_succ]]
   field_simp
 
+/-- Laplace transform of the even kernel: for `a > 0` and `t ≥ 0`,
+`∫₀^∞ e^{-a r} E(t r) dr = (1/a) cosh(t/a)`. -/
 theorem liClockCriticalEvenKernel_decay_integral
     {a t : ℝ} (ha : 0<a) (ht : 0≤t) :
   (∫ r in Set.Ioi 0, Real.exp (-a*r)*liClockCriticalEvenKernel (t*r)) =

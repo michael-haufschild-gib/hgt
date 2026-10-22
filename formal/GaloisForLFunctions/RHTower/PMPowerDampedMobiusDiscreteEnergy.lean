@@ -2,6 +2,38 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusNymanSeries
 import GaloisForLFunctions.RHTower.StepFunctionCarrier
 import GaloisForLFunctions.RHTower.EulerDeletionAveragedDivisorCovariance
 
+/-!
+# Discrete energy criterion for the power-damped Möbius Fermi source
+
+Centering the divisor coefficients `c_ε(n) = ∑_{d ∣ n} μ(d) d^{-ε}` at their mean density
+`Re(1/ζ(1+ε))` gives centered prefixes `P_ε(n) = ∑_{j ≤ n} (c_ε(j) - Re(1/ζ(1+ε)))`, and the
+divisor remainder becomes `R_ε(x) = P_ε(⌊x⌋) - {x}/ζ(1+ε)`. Since a step function `s(⌊x⌋)/x`
+lies in `L²(1, ∞)` iff `∑ s(n+1)²/((n+1)(n+2))` converges, the continuous divisor-energy
+criterion becomes a discrete one: for `ε > 0`, the Fermi source `F_ε` lies in `L²(0, ∞)` iff
+the discrete energies `E_ε(T) = ∑_{n ≤ T} P_ε(n)²/(n(n+1))` are bounded in `T`. The energy is
+also written as the covariance form `∑_{j,k ≤ T} c̃_j c̃_k (1/max(j,k) - 1/(T+1))`.
+
+## Main results
+
+- `memLp_stepFun_iff_summable`: `s(⌊x⌋)/x ∈ L²(1, ∞)` iff `∑ s(n+1)²/((n+1)(n+2)) < ∞`.
+- `pmPowerDampedDivisorRemainder_eq_centered_prefix`: `R_ε(x) = P_ε(⌊x⌋) - {x}/ζ(1+ε)` for
+  `ε > 0`, `x ≥ 0`.
+- `pmPowerDampedFermiSource_memLp_iff_discrete_energy`: for `ε > 0`, `F_ε ∈ L²(0, ∞)` iff
+  `∑ P_ε(n+1)²/((n+1)(n+2))` converges.
+- `pmPowerDampedDivisorDiscreteEnergy_eq_covariance`: covariance form of `E_ε(T)`.
+- `pmPowerDampedFermiSource_memLp_iff_discrete_budget`: for `ε > 0`, `F_ε ∈ L²(0, ∞)` iff
+  `E_ε(T)` is bounded above uniformly in `T`.
+- `exists_pmPowerDampedDivisorDiscreteEnergy_budget_of_half_le`: `E_ε(T)` is bounded for `ε ≥ 1/2`.
+- `riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget`: bounded discrete energy at
+  arbitrarily small `ε > 0` implies the Riemann hypothesis.
+
+## Hypotheses
+
+The equivalences and the `ε ≥ 1/2` bound are unconditional, given the stated ranges `0 < ε`
+or `1/2 ≤ ε`. `riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget` is conditional on the
+unproved cofinal premise that for every `δ > 0` some `ε ∈ (0, δ)` has `E_ε(T)` bounded in `T`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
@@ -23,6 +55,8 @@ theorem integrableOn_tailCell_stepEnergy (s : ℕ → ℝ) (n : ℕ) :
     constructor <;> push_cast <;> linarith [hx.1, hx.2])
   simp only [hfloor]
 
+/-- `s(⌊x⌋)² / x²` is integrable on `(1, ∞)` iff `∑_n s(n+1)²/((n+1)(n+2))` converges
+(cell-by-cell integration over `(n+1, n+2]`). -/
 theorem integrableOn_stepEnergy_iff_summable (s : ℕ → ℝ) :
     IntegrableOn (fun x : ℝ => s ⌊x⌋₊ * s ⌊x⌋₊ * (x⁻¹) ^ 2) (Ioi 1) ↔
       Summable (fun n : ℕ => s (n + 1) ^ 2 / (((n : ℝ) + 1) * ((n : ℝ) + 2))) := by
@@ -46,6 +80,7 @@ theorem integrableOn_stepEnergy_iff_summable (s : ℕ → ℝ) :
     simpa only [iUnion_tailCell] using
       integrableOn_iUnion_of_summable_integral_norm (integrableOn_tailCell_stepEnergy s) hn
 
+/-- The step function `s(⌊x⌋)/x` lies in `L²(1, ∞)` iff `∑_n s(n+1)²/((n+1)(n+2))` converges. -/
 theorem memLp_stepFun_iff_summable (s : ℕ → ℝ) :
     MemLp (stepFun s) 2 bdMeasure ↔
       Summable (fun n : ℕ => s (n + 1) ^ 2 / (((n : ℝ) + 1) * ((n : ℝ) + 2))) := by
@@ -58,9 +93,11 @@ theorem memLp_stepFun_iff_summable (s : ℕ → ℝ) :
   rw [he]
   exact integrableOn_stepEnergy_iff_summable s
 
+/-- The centered divisor coefficient `c̃_ε(n) = c_ε(n) - Re(1/ζ(1+ε))`. -/
 def pmPowerDampedCenteredDivisorCoeff (ε : ℝ) (n : ℕ) : ℝ :=
   pmPowerDampedDivisorCoeff ε n - (pmPowerDampedDivisorDensity ε).re
 
+/-- The centered prefix `P_ε(n) = ∑_{1 ≤ j ≤ n} c̃_ε(j)`. -/
 def pmPowerDampedCenteredDivisorPrefix (ε : ℝ) (n : ℕ) : ℝ :=
   ∑ j ∈ Finset.Icc 1 n, pmPowerDampedCenteredDivisorCoeff ε j
 
@@ -71,6 +108,7 @@ theorem pmPowerDampedCenteredDivisorPrefix_eq (ε : ℝ) (n : ℕ) :
   simp [pmPowerDampedCenteredDivisorPrefix, pmPowerDampedCenteredDivisorCoeff,
     Finset.sum_sub_distrib, mul_comm]
 
+/-- For `ε > 0` and `x ≥ 0`, `R_ε(x) = P_ε(⌊x⌋) - {x}/ζ(1+ε)`. -/
 theorem pmPowerDampedDivisorRemainder_eq_centered_prefix {ε : ℝ} (hε : 0 < ε)
     {x : ℝ} (hx : 0 ≤ x) :
     pmPowerDampedDivisorRemainder ε x =
@@ -91,6 +129,7 @@ theorem pmPowerDampedDivisorRemainder_eq_centered_prefix {ε : ℝ} (hε : 0 < �
   simp only [Complex.ofReal_re]
   ring
 
+/-- The function `{x}/x` lies in `L²(1, ∞)`. -/
 theorem memLp_fract_div_bdMeasure :
     MemLp (fun x : ℝ => ((Int.fract x : ℝ) : ℂ) / (x : ℂ)) 2 bdMeasure := by
   have hm : Measurable (fun x : ℝ => ((Int.fract x : ℝ) : ℂ) / (x : ℂ)) :=
@@ -103,6 +142,7 @@ theorem memLp_fract_div_bdMeasure :
   rw [he]
   exact integrableOn_fractSqInvSq_Ioi one_pos
 
+/-- For `ε > 0`, `R_ε(x)/x ∈ L²(1, ∞)` iff the step function `P_ε(⌊x⌋)/x ∈ L²(1, ∞)`. -/
 theorem pmPowerDampedDivisorRemainder_tail_memLp_iff {ε : ℝ} (hε : 0 < ε) :
     MemLp (fun x : ℝ => pmPowerDampedDivisorRemainder ε x / (x : ℂ)) 2 bdMeasure ↔
       MemLp (stepFun (pmPowerDampedCenteredDivisorPrefix ε)) 2 bdMeasure := by
@@ -130,6 +170,8 @@ theorem pm_norm_div_real_sq (z : ℂ) (x : ℝ) :
     ‖z / (x : ℂ)‖ ^ 2 = ‖z‖ ^ 2 / x ^ 2 := by
   simp only [norm_div, div_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
+/-- The divisor energy `|R_ε(x)|²/x²` is integrable on `(0, 1]`: on `(0, 1)` it equals the
+constant `|1/ζ(1+ε)|²`. -/
 theorem integrableOn_pmPowerDampedDivisorEnergy_head (ε : ℝ) :
     IntegrableOn (fun x => ‖pmPowerDampedDivisorRemainder ε x‖ ^ 2 / x ^ 2)
       (Ioc (0 : ℝ) 1) := by
@@ -148,6 +190,7 @@ theorem integrableOn_pmPowerDampedDivisorEnergy_head (ε : ℝ) :
   change ‖pmPowerDampedDivisorDensity ε‖ ^ 2 = ‖pmPowerDampedDivisorRemainder ε x‖ ^ 2 / x ^ 2
   rw [← pm_norm_div_real_sq, he, norm_neg]
 
+/-- For `ε > 0`, `F_ε ∈ L²(0, ∞)` iff `∑_n P_ε(n+1)²/((n+1)(n+2))` converges. -/
 theorem pmPowerDampedFermiSource_memLp_iff_discrete_energy {ε : ℝ} (hε : 0 < ε) :
     MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))) ↔
       Summable (fun n : ℕ => pmPowerDampedCenteredDivisorPrefix ε (n + 1) ^ 2 /
@@ -165,10 +208,12 @@ theorem pmPowerDampedFermiSource_memLp_iff_discrete_energy {ε : ℝ} (hε : 0 <
   exact (pmPowerDampedDivisorRemainder_tail_memLp_iff hε).trans
     (memLp_stepFun_iff_summable _)
 
+/-- The discrete divisor energy `E_ε(T) = ∑_{1 ≤ n ≤ T} P_ε(n)²/(n(n+1))`. -/
 def pmPowerDampedDivisorDiscreteEnergy (ε : ℝ) (T : ℕ) : ℝ :=
   ∑ n ∈ Finset.Icc 1 T, pmPowerDampedCenteredDivisorPrefix ε n ^ 2 /
     ((n : ℝ) * ((n : ℝ) + 1))
 
+/-- Covariance form: `E_ε(T) = ∑_{j,k ≤ T} c̃_ε(j) c̃_ε(k) (1/max(j,k) - 1/(T+1))`. -/
 theorem pmPowerDampedDivisorDiscreteEnergy_eq_covariance (ε : ℝ) (T : ℕ) :
     pmPowerDampedDivisorDiscreteEnergy ε T =
       ∑ j ∈ Finset.Icc 1 T, ∑ k ∈ Finset.Icc 1 T,
@@ -188,6 +233,7 @@ theorem pmPowerDampedDivisorDiscreteEnergy_eq_range (ε : ℝ) (T : ℕ) :
     rw [Finset.sum_range_succ, Finset.sum_Icc_succ_top (by omega), ih]
     norm_num [Nat.cast_add, Nat.cast_one, add_assoc]
 
+/-- For `ε > 0`, `F_ε ∈ L²(0, ∞)` iff there is `B` with `E_ε(T) ≤ B` for every `T`. -/
 theorem pmPowerDampedFermiSource_memLp_iff_discrete_budget {ε : ℝ} (hε : 0 < ε) :
     MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))) ↔
       ∃ B : ℝ, ∀ T : ℕ, pmPowerDampedDivisorDiscreteEnergy ε T ≤ B := by
@@ -206,12 +252,15 @@ theorem pmPowerDampedFermiSource_memLp_iff_discrete_budget {ε : ℝ} (hε : 0 <
     intro T
     simpa only [pmPowerDampedDivisorDiscreteEnergy_eq_range] using hB T
 
+/-- Unconditionally, for `ε ≥ 1/2` the discrete energies `E_ε(T)` are bounded uniformly in `T`. -/
 theorem exists_pmPowerDampedDivisorDiscreteEnergy_budget_of_half_le {ε : ℝ}
     (hε : (1 / 2 : ℝ) ≤ ε) :
     ∃ B : ℝ, ∀ T : ℕ, pmPowerDampedDivisorDiscreteEnergy ε T ≤ B :=
   (pmPowerDampedFermiSource_memLp_iff_discrete_budget (by linarith : 0 < ε)).mp
     (memLp_pmPowerDampedFermiSource_of_half_le hε)
 
+/-- Conditional RH criterion: assuming `h`, that for every `δ > 0` some `ε ∈ (0, δ)` has
+`E_ε(T)` bounded uniformly in `T`, the Riemann hypothesis holds. -/
 theorem riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget
     (h : ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
       ∃ B : ℝ, ∀ T : ℕ, pmPowerDampedDivisorDiscreteEnergy ε T ≤ B) :

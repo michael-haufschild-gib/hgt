@@ -1,14 +1,43 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanMoment
 import GaloisForLFunctions.HTGeometry.RealDirichletSeries
 
+/-!
+# Mean–variance split of the Ramanujan Gram quadratic form
+
+For `ε > 0` the `Q`-truncated cumulative Ramanujan prefix `P_Q(N) = ∑_{2≤q<Q+2} w_ε(q) C_q(N)`
+has weighted mean `μ_Q = ∑_N Re P_Q(N)/(N(N+1)) = −∑_{2≤q<Q+2} w_ε(q) Λ(q)`, and this mean is
+bounded uniformly in `Q` because `|w_ε(q)| ≤ q^(−1−ε)` makes `∑ w_ε(q) Λ(q)` absolutely
+convergent. The Gram quadratic form splits as `Γ_Q = μ_Q² + V_Q`, where
+`V_Q = ∑_N (Re P_Q(N) − μ_Q)²/(N(N+1)) ≥ 0`. Hence `Γ_Q` is uniformly bounded iff `V_Q` is, and a
+uniform variance bound gives `L²` admission of the Fermi source. For the `Λ`-centered Gram
+entries, `Ĝ(p,q)/log p → φ(q)/2 − Λ(q)` along primes `p`.
+
+## Main results
+
+- `hasSum_pmPowerDampedRamanujanCumulativeMean`: `∑_N Re P_Q(N)/(N(N+1)) = μ_Q`.
+- `exists_pmPowerDampedRamanujanEnergyMean_bound`: `|μ_Q| ≤ C` uniformly in `Q`, for `ε > 0`.
+- `pmPowerDampedRamanujanGramQuadratic_eq_mean_sq_add_variance`: `Γ_Q = μ_Q² + V_Q`.
+- `pmPowerDampedRamanujan_gram_budget_iff_variance`: `sup_Q Γ_Q < ∞` iff `sup_Q V_Q < ∞`.
+- `pmPowerDampedFermiSource_memLp_of_ramanujan_variance`: `V_Q ≤ B` for all `Q` implies `F_ε ∈ L²(0,∞)`.
+- `tendsto_pmRamanujanEnergyCenteredGram_prime_div_log`: `Ĝ(p,q)/log p → φ(q)/2 − Λ(q)` as `p → ∞` over primes.
+
+## Hypotheses
+
+Unconditional apart from `0 < ε` (and `1 < q` for the prime asymptotic).
+`pmPowerDampedFermiSource_memLp_of_ramanujan_variance` is conditional on the hypothesis `hB`
+that one real `B` bounds `V_Q` for every `Q`; this variance budget is not proved here.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- The weighted mean `μ_Q = −∑_{q<Q} Re w_ε(q+2) Λ(q+2)` of the truncated cumulative prefix. -/
 def pmPowerDampedRamanujanEnergyMean (ε : ℝ) (Q : ℕ) : ℝ :=
   -∑ q ∈ Finset.range Q, (pmPowerDampedRamanujanWeight ε (q+2)).re*vonMangoldt (q+2)
 
+/-- For `ε > 0`, `∑_N Re P_Q(N)/(N(N+1)) = μ_Q`. -/
 theorem hasSum_pmPowerDampedRamanujanCumulativeMean {ε : ℝ} (hε : 0 < ε) (Q : ℕ) :
     HasSum (fun N : ℕ => (pmPowerDampedRamanujanCumulativePrefix ε Q N).re/
       ((N : ℝ)*((N : ℝ)+1))) (pmPowerDampedRamanujanEnergyMean ε Q) := by
@@ -24,6 +53,7 @@ theorem hasSum_pmPowerDampedRamanujanCumulativeMean {ε : ℝ} (hε : 0 < ε) (Q
   intro q hq
   ring
 
+/-- For `ε > 0`, `∑_q Re w_ε(q) Λ(q)` converges absolutely (dominated by `∑ Λ(q) q^(−1−ε)`). -/
 theorem summable_pmPowerDampedRamanujanVonMangoldt {ε : ℝ} (hε : 0 < ε) :
     Summable (fun q : ℕ => (pmPowerDampedRamanujanWeight ε q).re*vonMangoldt q) := by
   apply Summable.of_norm_bounded
@@ -41,6 +71,7 @@ theorem summable_pmPowerDampedRamanujanVonMangoldt {ε : ℝ} (hε : 0 < ε) :
         vonMangoldt_nonneg
     _ = _ := by rw [Real.rpow_neg (Nat.cast_nonneg q)]; ring
 
+/-- For `ε > 0`, the means `μ_Q` are bounded uniformly in `Q`. -/
 theorem exists_pmPowerDampedRamanujanEnergyMean_bound {ε : ℝ} (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ Q : ℕ, |pmPowerDampedRamanujanEnergyMean ε Q| ≤ C := by
   let g : ℕ → ℝ := fun q => (pmPowerDampedRamanujanWeight ε (q+2)).re*vonMangoldt (q+2)
@@ -52,10 +83,12 @@ theorem exists_pmPowerDampedRamanujanEnergyMean_bound {ε : ℝ} (hε : 0 < ε) 
   rw [abs_neg, ← Real.norm_eq_abs]
   exact (norm_sum_le _ _).trans (hs.norm.sum_le_tsum (Finset.range Q) (fun _ _ => norm_nonneg _))
 
+/-- The weighted variance `V_Q = ∑'_N (Re P_Q(N) − μ_Q)²/(N(N+1))`. -/
 def pmPowerDampedRamanujanEnergyVariance (ε : ℝ) (Q : ℕ) : ℝ :=
   ∑' N : ℕ, ((pmPowerDampedRamanujanCumulativePrefix ε Q N).re-
     pmPowerDampedRamanujanEnergyMean ε Q)^2/((N : ℝ)*((N : ℝ)+1))
 
+/-- For `ε > 0`, the variance series sums to `Γ_Q − μ_Q²`. -/
 theorem hasSum_pmPowerDampedRamanujanEnergyVariance {ε : ℝ} (hε : 0 < ε) (Q : ℕ) :
     HasSum (fun N : ℕ => ((pmPowerDampedRamanujanCumulativePrefix ε Q N).re-
       pmPowerDampedRamanujanEnergyMean ε Q)^2/((N : ℝ)*((N : ℝ)+1)))
@@ -79,6 +112,7 @@ theorem pmPowerDampedRamanujanEnergyVariance_nonneg (ε : ℝ) (Q : ℕ) :
     0 ≤ pmPowerDampedRamanujanEnergyVariance ε Q :=
   tsum_nonneg (fun _ => div_nonneg (sq_nonneg _) (by positivity))
 
+/-- For `ε > 0`, the Gram quadratic form splits as `Γ_Q = μ_Q² + V_Q`. -/
 theorem pmPowerDampedRamanujanGramQuadratic_eq_mean_sq_add_variance {ε : ℝ}
     (hε : 0 < ε) (Q : ℕ) :
     pmPowerDampedRamanujanGramQuadratic ε Q = pmPowerDampedRamanujanEnergyMean ε Q^2+
@@ -87,11 +121,13 @@ theorem pmPowerDampedRamanujanGramQuadratic_eq_mean_sq_add_variance {ε : ℝ}
   change pmPowerDampedRamanujanEnergyVariance ε Q = _ at h
   linarith
 
+/-- For `ε > 0`, `V_Q ≤ Γ_Q`. -/
 theorem pmPowerDampedRamanujanEnergyVariance_le_gram {ε : ℝ} (hε : 0 < ε) (Q : ℕ) :
     pmPowerDampedRamanujanEnergyVariance ε Q ≤ pmPowerDampedRamanujanGramQuadratic ε Q := by
   rw [pmPowerDampedRamanujanGramQuadratic_eq_mean_sq_add_variance hε Q]
   exact le_add_of_nonneg_left (sq_nonneg _)
 
+/-- For `ε > 0`, the Gram forms `Γ_Q` are uniformly bounded iff the variances `V_Q` are. -/
 theorem pmPowerDampedRamanujan_gram_budget_iff_variance {ε : ℝ} (hε : 0 < ε) :
     (∃ B : ℝ, ∀ Q : ℕ, pmPowerDampedRamanujanGramQuadratic ε Q ≤ B) ↔
       (∃ B : ℝ, ∀ Q : ℕ, pmPowerDampedRamanujanEnergyVariance ε Q ≤ B) := by
@@ -106,12 +142,16 @@ theorem pmPowerDampedRamanujan_gram_budget_iff_variance {ε : ℝ} (hε : 0 < ε
     have hsq := sq_abs (pmPowerDampedRamanujanEnergyMean ε Q)
     nlinarith [hB Q]
 
+/-- Conditional admission: for `ε > 0`, if `hB` gives `V_Q ≤ B` for every `Q`, then
+`F_ε ∈ L²(0,∞)`. -/
 theorem pmPowerDampedFermiSource_memLp_of_ramanujan_variance {ε B : ℝ} (hε : 0 < ε)
     (hB : ∀ Q : ℕ, pmPowerDampedRamanujanEnergyVariance ε Q ≤ B) :
     MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))) := by
   obtain ⟨C, hC⟩ := (pmPowerDampedRamanujan_gram_budget_iff_variance hε).mpr ⟨B, hB⟩
   exact pmPowerDampedFermiSource_memLp_of_ramanujan_gram hε hC
 
+/-- For `q > 1`, the `Λ`-centered Gram entry satisfies `Ĝ(p,q)/log p → φ(q)/2 − Λ(q)` as `p → ∞`
+through the primes. -/
 theorem tendsto_pmRamanujanEnergyCenteredGram_prime_div_log {q : ℕ} (hq : 1 < q) :
     Tendsto (fun p : {p : ℕ // p.Prime} =>
       pmRamanujanEnergyCenteredGram p q/Real.log (p : ℕ)) atTop

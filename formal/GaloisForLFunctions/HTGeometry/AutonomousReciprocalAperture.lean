@@ -3,6 +3,35 @@ import GaloisForLFunctions.HTGeometry.AnalyticMeroPolynomialEval
 import GaloisForLFunctions.HTGeometry.InverseJetIndependence
 import GaloisForLFunctions.HTGeometry.AllJetLevelSet
 
+/-!
+# Autonomous differential order is invariant under reciprocals; finite Euler products
+
+For a nonzero element `u` of a differential field extension, the jets `u, u', ..., u^(n)` are
+algebraically independent over the base exactly when the jets of `u⁻¹` are, since both generate the same
+jet field at each order. Transported to analytic functions through the field of meromorphic functions
+on a domain, this shows that a nonvanishing analytic `f` satisfies a nonzero autonomous algebraic
+differential equation of order `n` along the real axis if and only if `1/f` does, so the minimal
+autonomous order of `f` and `1/f` coincide. Applied to the finite Euler product
+`t ↦ Π_(p ∈ S) (1 - p^(-1 - i t))⁻¹`, written as the reciprocal of a polynomial phase observable on the
+strip `|Im t| < 1`, its minimal autonomous order equals the number of primes in `S`.
+
+## Main results
+
+- `algebraicIndependent_fin_jets_inv_iff`: for `u ≠ 0`, the jets of `u⁻¹` up to order `n` are
+  algebraically independent iff those of `u` are.
+- `exists_realAutonomousAnnihilator_inv_iff`: a nonvanishing analytic `f` has a nonzero order-`n`
+  autonomous real-axis annihilator iff `1/f` has one.
+- `autonomousMinimalOrder_inv_eq`: `autonomousMinimalOrder (1/f) = autonomousMinimalOrder f`.
+- `autonomousMinimalOrder_finiteEulerProductPhase_eq`: the finite Euler product phase over a finite set
+  `S` of primes has minimal autonomous order `|S|`.
+
+## Hypotheses
+
+The results are unconditional. The analytic statements assume that the domain `U` is open, preconnected,
+contains `0` (and, for the converse direction, the whole real axis), and that `f` is analytic and
+nonvanishing on `U`. The Euler product result has no hypotheses beyond the finite set of primes.
+-/
+
 open Complex Set Filter Topology
 open scoped Differential
 
@@ -13,6 +42,9 @@ open GaloisForLFunctions Bottcher
 noncomputable section
 
 
+/-- For `u ≠ 0` in a differential field extension, algebraic independence of the jets of `u` of order
+at most `n` implies that of the jets of `u⁻¹`; the inductive step uses that `u` and `u⁻¹` have the same
+jet field at every order. -/
 theorem algebraicIndepOn_jets_inv_Iic_of
     {F K : Type*} [Field F] [Field K] [Differential F] [Differential K]
     [Algebra F K] [DifferentialAlgebra F K]
@@ -60,6 +92,8 @@ theorem algebraicIndepOn_jets_inv_Iic_of
       intro halg
       exact hu_trans ((isAlgebraic_differentialJet_succ_inv_iff hu n).mp halg)
 
+/-- For `u ≠ 0`, the jets `u⁻¹, (u⁻¹)', ..., (u⁻¹)^(n)` are algebraically independent over `F` if and
+only if `u, u', ..., u^(n)` are. -/
 theorem algebraicIndependent_fin_jets_inv_iff
     {F K : Type*} [Field F] [Field K] [Differential F] [Differential K]
     [Algebra F K] [DifferentialAlgebra F K]
@@ -105,6 +139,9 @@ theorem algebraicIndependent_fin_jets_inv_iff
 
 variable {U : Set ℂ}
 
+/-- On an open preconnected nonempty `U`, a polynomial vanishes on the jets of the meromorphic element
+of an analytic `f` iff the same polynomial in the iterated derivatives of `f` vanishes at every point
+of `U`. -/
 theorem aeval_analyticMero_jets_eq_zero_iff
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U) {m : ℕ}
@@ -162,6 +199,8 @@ theorem analyticMeroElement_congrOn
   rw [Germ.coe_eq]
   exact eventually_principal.mpr hfg
 
+/-- For `f` analytic and nonvanishing on `U`, the meromorphic element of `1/f` is the inverse of the
+meromorphic element of `f`. -/
 theorem analyticMeroElement_inv
     [IsDomain (analyticSubring U)]
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U)
@@ -179,6 +218,8 @@ theorem analyticMeroElement_inv
     exact map_one (constToMero U)
   simpa [g] using eq_inv_of_mul_eq_one_right hmul
 
+/-- Identity principle on the real axis: an analytic function on a preconnected `U ∋ 0` that vanishes at
+every real point vanishes on all of `U`. -/
 theorem eqOn_zero_of_analyticOnNhd_of_eq_ofReal
     {E : ℂ → ℂ} (hUc : IsPreconnected U) (hzero : (0 : ℂ) ∈ U)
     (hE : AnalyticOnNhd ℂ E U) (hreal : ∀ t : ℝ, E (t : ℂ) = 0) :
@@ -200,6 +241,9 @@ theorem eqOn_zero_of_analyticOnNhd_of_eq_ofReal
     hpunc.frequently (Filter.Frequently.of_forall fun n => hreal _)
   exact hE.eqOn_zero_of_preconnected_of_frequently_eq_zero hUc hzero hfreq
 
+/-- A nonzero autonomous algebraic differential relation of order `n` satisfied by `f` along the real
+axis makes the jets of `f` up to order `n` algebraically dependent over `ℂ` in the meromorphic function
+field of `U`. -/
 theorem not_algebraicIndependent_analyticMero_jets_of_realAutonomousAnnihilator
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hzero : (0 : ℂ) ∈ U)
     {f : ℂ → ℂ} (hf : AnalyticOnNhd ℂ f U) {n : ℕ}
@@ -232,6 +276,9 @@ theorem not_algebraicIndependent_analyticMero_jets_of_realAutonomousAnnihilator
   apply hH
   exact (algebraicIndependent_iff.mp hAI) H hfield
 
+/-- Conversely, if `U` contains the real axis and the jets of `f` up to order `n` are algebraically
+dependent in the meromorphic function field, then `f` has a nonzero autonomous real-axis annihilator of
+order `n`. -/
 theorem exists_realAutonomousAnnihilator_of_not_algebraicIndependent_analyticMero_jets
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hzero : (0 : ℂ) ∈ U)
     (hreal : ∀ t : ℝ, (t : ℂ) ∈ U)
@@ -263,6 +310,7 @@ theorem exists_realAutonomousAnnihilator_of_not_algebraicIndependent_analyticMer
   rw [← eval_jetLift a, lastVariableJetLift_jetUnlift]
   exact hpoint (t : ℂ) (hreal t)
 
+/-- Constants have zero derivative in the differential field of meromorphic functions on `U`. -/
 theorem meroField_deriv_constToMero_eq_zero
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hUne : U.Nonempty)
     (c : ℂ) :
@@ -291,6 +339,9 @@ theorem meroField_deriv_constToMero_eq_zero
       _ = 0 := (Germ.coeRingHom (Filter.principal U)).map_zero
   rw [hconst, map_zero]
 
+/-- Reciprocal invariance of autonomous relations: for `f` analytic and nonvanishing on an open
+preconnected `U` containing the real axis, `1/f` satisfies a nonzero autonomous algebraic differential
+equation of order `n` along the real axis iff `f` does. -/
 theorem exists_realAutonomousAnnihilator_inv_iff
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hzero : (0 : ℂ) ∈ U)
     (hreal : ∀ t : ℝ, (t : ℂ) ∈ U)
@@ -351,6 +402,8 @@ theorem exists_realAutonomousAnnihilator_inv_iff
     exact exists_realAutonomousAnnihilator_of_not_algebraicIndependent_analyticMero_jets
       hUo hUc hzero hreal hg (by simpa [v, g] using hdepv)
 
+/-- Under the same domain and nonvanishing hypotheses, the minimal autonomous order of `1/f` equals that
+of `f`. -/
 theorem autonomousMinimalOrder_inv_eq
     (hUo : IsOpen U) (hUc : IsPreconnected U) (hzero : (0 : ℂ) ∈ U)
     (hreal : ∀ t : ℝ, (t : ℂ) ∈ U)
@@ -363,6 +416,7 @@ theorem autonomousMinimalOrder_inv_eq
   exact exists_realAutonomousAnnihilator_inv_iff
     hUo hUc hzero hreal hf hne n
 
+/-- The polyannulus radii `log p` attached to the primes of a finite set `S`. -/
 def finitePrimeRadius (S : Finset Nat.Primes) :
     Fin (Fintype.card ↥S) → ℝ :=
   fun i => Real.log ((((finitePrimeAt S i : Nat.Primes) : ℕ) : ℝ))
@@ -372,6 +426,8 @@ theorem finitePrimeRadius_pos (S : Finset Nat.Primes)
   apply Real.log_pos
   exact_mod_cast (finitePrimeAt S i).2.one_lt
 
+/-- On the phase strip, the inverse Euler factor product `Π_(p ∈ S) (1 - p^(-1) p^(-i t))` never vanishes,
+since each term `p^(-1) p^(-i t)` has modulus less than one there. -/
 theorem finiteEulerInverseAnchorPhase_ne_zero
     (S : Finset Nat.Primes) :
     ∀ z ∈ phaseStrip (finitePrimeRadius S) (finitePrimeFrequency S),
@@ -410,12 +466,16 @@ theorem finiteEulerInverseAnchorPhase_ne_zero
   rw [← heq, norm_one] at hnorm
   exact lt_irrefl 1 hnorm
 
+/-- The finite Euler product `t ↦ Π_(p ∈ S) (1 - p^(-1 - i t))⁻¹`, written as the reciprocal of the phase
+function of the polynomial `Π_i (1 - X_i / p_i)` along the frequencies `-log p`. -/
 def finiteEulerProductPhase (S : Finset Nat.Primes) : ℂ → ℂ :=
   fun z =>
     (phaseFunction (finitePrimeFrequency S)
       (polynomialPhaseObservable
         (eulerInverseAnchorPolynomial (finitePrimeDamping S))) z)⁻¹
 
+/-- The finite Euler product phase over `S` has minimal autonomous order exactly `|S|`: the polynomial
+phase has order `|S|` by rational independence of the `log p`, and reciprocals preserve the order. -/
 theorem autonomousMinimalOrder_finiteEulerProductPhase_eq
     (S : Finset Nat.Primes) :
     autonomousMinimalOrder (finiteEulerProductPhase S) = Fintype.card ↥S := by

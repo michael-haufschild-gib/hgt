@@ -1,11 +1,34 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovModularMoment
 
+/-!
+# Power sums under an affine change of variables over ℕ
+
+For natural-number families `u, v : Fin b → ℕ`, equality of the power sums of orders `1..k` is
+preserved by the affine map `x ↦ p x + r`, and for `p ≠ 0` it is also reflected. This is the
+affine invariance of the Vinogradov system of equations: solutions are unchanged by dilation and
+translation. The reverse direction runs a strong induction on the order, cancelling the lower
+binomial terms and then the factor `p^j`.
+
+## Main results
+
+- `sum_affine_pow_eq_of_powerSums_eq`: equal power sums of orders `1..k` give
+  `∑ (p u_i + r)^j = ∑ (p v_i + r)^j` for `1 ≤ j ≤ k`.
+- `powerSums_eq_of_sum_affine_pow_eq`: for `p ≠ 0`, the converse.
+- `affine_powerSums_eq_iff`: for `p ≠ 0`, the two systems of power-sum equalities are equivalent.
+
+## Hypotheses
+
+Unconditional. The converse direction and the equivalence need `p ≠ 0`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- If `∑ u_i^j = ∑ v_i^j` in `ℕ` for `1 ≤ j ≤ k`, then `∑ (p u_i + r)^j = ∑ (p v_i + r)^j`
+for `1 ≤ j ≤ k`. -/
 theorem sum_affine_pow_eq_of_powerSums_eq
     {b k : ℕ} (p r : ℕ) (u v : Fin b → ℕ)
     (hpower : ∀ j : ℕ, 1 ≤ j → j ≤ k →
@@ -41,6 +64,8 @@ theorem sum_affine_pow_eq_of_powerSums_eq
         rw [mul_pow]
         ring
 
+/-- Assuming `p ≠ 0`: equal affine power sums `∑ (p u_i + r)^j = ∑ (p v_i + r)^j` for `1 ≤ j ≤ k`
+force `∑ u_i^j = ∑ v_i^j` for `1 ≤ j ≤ k`. -/
 theorem powerSums_eq_of_sum_affine_pow_eq
     {b k : ℕ} {p : ℕ} (hp : p ≠ 0) (r : ℕ) (u v : Fin b → ℕ)
     (haffine : ∀ j : ℕ, 1 ≤ j → j ≤ k →
@@ -138,6 +163,8 @@ theorem powerSums_eq_of_sum_affine_pow_eq
             rw [mul_pow]
       exact Nat.eq_of_mul_eq_mul_left (pow_pos (Nat.pos_of_ne_zero hp) j) htop'
 
+/-- For `p ≠ 0`, the Vinogradov power-sum system of orders `1..k` is invariant under `x ↦ p x + r`:
+the affine power sums agree iff the original power sums agree. -/
 theorem affine_powerSums_eq_iff
     {b k : ℕ} {p : ℕ} (hp : p ≠ 0) (r : ℕ) (u v : Fin b → ℕ) :
     (∀ j : ℕ, 1 ≤ j → j ≤ k →

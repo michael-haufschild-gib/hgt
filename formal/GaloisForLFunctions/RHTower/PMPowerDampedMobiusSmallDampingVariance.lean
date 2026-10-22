@@ -1,9 +1,36 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusCovarianceCancellation
 
+/-!
+# Small-damping asymptotics of the divisor variance: `V_ε / ε → 1/2`
+
+Let `S_ε = ∏_p (1 − 2p^(−1−ε) + p^(−1−2ε))` be the second-moment density of the divisor
+coefficients `a_ε(n) = ∏_{p|n} (1 − p^(−ε))` and `V_ε = S_ε − (1/ζ(1+ε))²` their variance. The
+correction factor `K_ε = S_ε · (1/ζ(1+2ε)) / (1/ζ(1+ε))²` (real parts) is the Euler product
+`∏_p (1 − δ_p(ε))` with `δ_p(ε) = ((t − t²)/(p − t))²`, `t = p^(−ε)`. The deficits satisfy
+`0 ≤ δ_p ≤ min(1, 4/p²)` and vanish as `ε → 0⁺`, so `K_ε → 1` by dominated convergence. With
+`1/ζ(1+ε) ∼ ε` (from the simple pole of `ζ` at `1`), this yields `S_ε/ε → 1/2` and
+`V_ε/ε → 1/2` as `ε → 0⁺`.
+
+## Main results
+
+- `pm_hasProd_one_sub_bounds`: an infinite product `∏ (1 − d_i)` with `0 ≤ d_i ≤ 1` summable lies in `[1 − ∑ d_i, 1]`.
+- `pmPowerDampedVarianceCorrection_hasProd`: for `ε > 0`, `K_ε = ∏_p (1 − δ_p(ε))`.
+- `tendsto_pmPowerDampedVarianceCorrection`: `K_ε → 1` as `ε → 0⁺`.
+- `tendsto_pmPowerDampedDivisorDensity_re_div_parameter`: `Re(1/ζ(1+ε))/ε → 1` as `ε → 0⁺`.
+- `tendsto_pmPowerDampedSecondDensity_div_parameter`: `S_ε/ε → 1/2` as `ε → 0⁺`.
+- `tendsto_pmPowerDampedDivisorVariance_div_parameter`: `V_ε/ε → 1/2` as `ε → 0⁺`.
+
+## Hypotheses
+
+All results are unconditional. Pointwise statements assume `0 ≤ ε` or `0 < ε`; the limits are
+taken along `ε → 0⁺`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
 
+/-- Weierstrass product inequality: for `0 ≤ d_i ≤ 1`, `1 − ∑_{i∈s} d_i ≤ ∏_{i∈s} (1 − d_i)`. -/
 theorem pm_prod_one_sub_ge {ι : Type*} (s : Finset ι) (d : ι → ℝ)
     (hd0 : ∀ i, 0 ≤ d i) (hd1 : ∀ i, d i ≤ 1) :
     1 - ∑ i ∈ s, d i ≤ ∏ i ∈ s, (1-d i) := by
@@ -16,6 +43,7 @@ theorem pm_prod_one_sub_ge {ι : Type*} (s : Finset ι) (d : ι → ℝ)
     have hn := mul_nonneg (hd0 i) (Finset.sum_nonneg (s := s) fun j hj => hd0 j)
     nlinarith
 
+/-- If `0 ≤ d_i ≤ 1`, `∑ d_i` converges and `∏ (1 − d_i) = C`, then `1 − ∑' d_i ≤ C ≤ 1`. -/
 theorem pm_hasProd_one_sub_bounds {ι : Type*} {d : ι → ℝ} {C : ℝ}
     (hd0 : ∀ i, 0 ≤ d i) (hd1 : ∀ i, d i ≤ 1) (hs : Summable d)
     (hp : HasProd (fun i => 1-d i) C) : 1-(∑' i, d i) ≤ C ∧ C ≤ 1 := by
@@ -32,9 +60,11 @@ theorem pm_hasProd_one_sub_bounds {ι : Type*} {d : ι → ℝ} {C : ℝ}
     exact Finset.prod_le_one (fun i hi => sub_nonneg.mpr (hd1 i))
       (fun i hi => by linarith [hd0 i])
 
+/-- The prime deficit `δ_p(ε) = ((t − t²)/(p − t))²` with `t = p^(−ε)`. -/
 def pmPowerDampedVariancePrimeDeficit (ε : ℝ) (p : Nat.Primes) : ℝ :=
   (((p : ℝ)^(-ε) - ((p : ℝ)^(-ε))^2) / ((p : ℝ)-(p : ℝ)^(-ε)))^2
 
+/-- For `ε ≥ 0` and every prime `p`, `0 ≤ δ_p(ε) ≤ 1` and `δ_p(ε) ≤ 4/p²`. -/
 theorem pmPowerDampedVariancePrimeDeficit_bounds {ε : ℝ} (hε : 0 ≤ ε) (p : Nat.Primes) :
     0 ≤ pmPowerDampedVariancePrimeDeficit ε p ∧
       pmPowerDampedVariancePrimeDeficit ε p ≤ 1 ∧
@@ -70,12 +100,14 @@ theorem summable_pm_variance_prime_majorant :
   funext p
   simp only [Function.comp_def, mul_one_div]
 
+/-- For `ε ≥ 0`, the prime deficits `δ_p(ε)` are summable over primes. -/
 theorem summable_pmPowerDampedVariancePrimeDeficit {ε : ℝ} (hε : 0 ≤ ε) :
     Summable (pmPowerDampedVariancePrimeDeficit ε) :=
   Summable.of_nonneg_of_le (fun p => (pmPowerDampedVariancePrimeDeficit_bounds hε p).1)
     (fun p => (pmPowerDampedVariancePrimeDeficit_bounds hε p).2.2)
     summable_pm_variance_prime_majorant
 
+/-- For each prime `p`, `δ_p(ε) → 0` as `ε → 0⁺`. -/
 theorem tendsto_pmPowerDampedVariancePrimeDeficit (p : Nat.Primes) :
     Tendsto (fun ε : ℝ => pmPowerDampedVariancePrimeDeficit ε p) (𝓝[>] 0) (𝓝 0) := by
   have hp1 : (1 : ℝ) < p := by exact_mod_cast p.property.one_lt
@@ -88,6 +120,7 @@ theorem tendsto_pmPowerDampedVariancePrimeDeficit (p : Nat.Primes) :
     (sub_ne_zero.mpr (ne_of_gt hp1))).pow 2
   simpa [pmPowerDampedVariancePrimeDeficit] using h
 
+/-- The total deficit `∑_p δ_p(ε)` tends to `0` as `ε → 0⁺` (dominated by `∑ 4/p²`). -/
 theorem tendsto_tsum_pmPowerDampedVariancePrimeDeficit :
     Tendsto (fun ε : ℝ => ∑' p : Nat.Primes, pmPowerDampedVariancePrimeDeficit ε p)
       (𝓝[>] 0) (𝓝 0) := by
@@ -101,6 +134,7 @@ theorem tendsto_tsum_pmPowerDampedVariancePrimeDeficit :
         exact h.2.2)
   simpa using h
 
+/-- For `ε > 0`, `Re(1/ζ(1+ε)) ≠ 0`. -/
 theorem pmPowerDampedDivisorDensity_re_ne_zero {ε : ℝ} (hε : 0 < ε) :
     (pmPowerDampedDivisorDensity ε).re ≠ 0 := by
   intro hz
@@ -114,10 +148,12 @@ theorem pm_prime_rpow_double (ε : ℝ) (p : Nat.Primes) :
   congr 1
   ring
 
+/-- The correction factor `K_ε = S_ε · Re(1/ζ(1+2ε)) / Re(1/ζ(1+ε))²`. -/
 def pmPowerDampedVarianceCorrection (ε : ℝ) : ℝ :=
   pmPowerDampedSecondDensity ε * (pmPowerDampedDivisorDensity (2*ε)).re /
     (pmPowerDampedDivisorDensity ε).re ^ 2
 
+/-- For `ε > 0`, the correction factor has Euler product `K_ε = ∏_p (1 − δ_p(ε))`. -/
 theorem pmPowerDampedVarianceCorrection_hasProd {ε : ℝ} (hε : 0 < ε) :
     HasProd (fun p : Nat.Primes => 1-pmPowerDampedVariancePrimeDeficit ε p)
       (pmPowerDampedVarianceCorrection ε) := by
@@ -151,6 +187,7 @@ theorem pmPowerDampedVarianceCorrection_hasProd {ε : ℝ} (hε : 0 < ε) :
   field_simp [hp0.ne', hd, hf]
   ring
 
+/-- For `ε > 0`, `1 − ∑_p δ_p(ε) ≤ K_ε ≤ 1`. -/
 theorem pmPowerDampedVarianceCorrection_bounds {ε : ℝ} (hε : 0 < ε) :
     1-(∑' p : Nat.Primes, pmPowerDampedVariancePrimeDeficit ε p) ≤
         pmPowerDampedVarianceCorrection ε ∧ pmPowerDampedVarianceCorrection ε ≤ 1 :=
@@ -160,6 +197,7 @@ theorem pmPowerDampedVarianceCorrection_bounds {ε : ℝ} (hε : 0 < ε) :
     (summable_pmPowerDampedVariancePrimeDeficit hε.le)
     (pmPowerDampedVarianceCorrection_hasProd hε)
 
+/-- The correction factor `K_ε` tends to `1` as `ε → 0⁺`. -/
 theorem tendsto_pmPowerDampedVarianceCorrection :
     Tendsto pmPowerDampedVarianceCorrection (𝓝[>] 0) (𝓝 1) := by
   have hlo : Tendsto
@@ -172,6 +210,7 @@ theorem tendsto_pmPowerDampedVarianceCorrection :
   · filter_upwards [self_mem_nhdsWithin] with ε hε
     exact (pmPowerDampedVarianceCorrection_bounds hε).2
 
+/-- `Re(1/ζ(1+ε))/ε → 1` as `ε → 0⁺`, from the residue `1` of `ζ` at `s = 1`. -/
 theorem tendsto_pmPowerDampedDivisorDensity_re_div_parameter :
     Tendsto (fun ε : ℝ => (pmPowerDampedDivisorDensity ε).re/ε) (𝓝[>] 0) (𝓝 1) := by
   have hz : Tendsto (fun ε : ℝ => 1+(ε : ℂ)) (𝓝[>] 0) (𝓝 (1 : ℂ)) := by
@@ -206,6 +245,7 @@ theorem tendsto_pmPowerDampedDivisorDensity_re_div_parameter :
   rw [pmPowerDampedDivisorDensity_eq_ofReal_re hε, ← Complex.ofReal_div, Complex.ofReal_re]
   simp only [Complex.ofReal_re]
 
+/-- The second-moment density satisfies `S_ε/ε → 1/2` as `ε → 0⁺`. -/
 theorem tendsto_pmPowerDampedSecondDensity_div_parameter :
     Tendsto (fun ε : ℝ => pmPowerDampedSecondDensity ε/ε) (𝓝[>] 0) (𝓝 (1/2 : ℝ)) := by
   have hd : Tendsto (fun ε : ℝ => 2*ε) (𝓝[>] 0) (𝓝[>] 0) := by
@@ -234,6 +274,7 @@ theorem tendsto_pmPowerDampedSecondDensity_div_parameter :
   dsimp only [pmPowerDampedVarianceCorrection]
   field_simp
 
+/-- The divisor variance satisfies `V_ε/ε → 1/2` as `ε → 0⁺`. -/
 theorem tendsto_pmPowerDampedDivisorVariance_div_parameter :
     Tendsto (fun ε : ℝ => pmPowerDampedDivisorVariance ε/ε) (𝓝[>] 0) (𝓝 (1/2 : ℝ)) := by
   have he : Tendsto (fun ε : ℝ => ε) (𝓝[>] 0) (𝓝 0) :=

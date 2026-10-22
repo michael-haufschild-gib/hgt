@@ -1,11 +1,38 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovShiftedCompatibility
 
+/-!
+# Counting good completions with tails in one residue class
+
+A good completion is a pair of `(k + b)`-tuples in `[0, N)` whose leading `k`-blocks have entries
+distinct modulo the prime `p`, whose tails lie in one residue class `a` modulo `p`, and whose power
+sums of orders `1..k` agree modulo `q`. For large `q` such a solution forces the shifted leading
+blocks to be nested-compatible, so the count factors as: at most `N^k` first blocks, at most
+`k! p^(k(k-1)/2)` Linnik partners for each, and at most `J_{b,k}(⌈N/p⌉)` tail pairs for each pair
+of blocks.
+
+## Main results
+
+- `VinogradovResidueGoodCompletion`: the good completions with tails in the class `a`.
+- `vinogradovResidueGoodCompletionEquiv`: they are in bijection with triples (block, shifted
+  compatible partner, tail solution).
+- `card_vinogradovInjectiveBlock_le`: there are at most `N^k` blocks.
+- `card_vinogradovResidueGoodCompletion_le`: the number of good completions is at most
+  `N^k · k! p^(k(k-1)/2) · J_{b,k}(⌈N/p⌉)`.
+
+## Hypotheses
+
+Unconditional. The count assumes `p` prime, `k < p`, `N < p^k`, `N ≠ 0`, `⌈N/p⌉ ≠ 0`, the size
+conditions `2 (k + b) N^k < q` and `2 b ⌈N/p⌉^k < q`, and that `p` is a unit modulo `q`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Pairs `((x, u), (y, v))` with `x, y` blocks injective modulo `p`, tails `u, v` in the residue
+class `a` modulo `p`, and equal power sums of orders `1..k` modulo `q` for `x ++ u` and `y ++ v`. -/
 def VinogradovResidueGoodCompletion
     (q N p k b : ℕ) [NeZero q] [NeZero p] (a : ZMod p) :=
   {z :
@@ -27,6 +54,8 @@ noncomputable instance vinogradovResidueGoodCompletionFintype
     (q N p k b : ℕ) [NeZero q] [NeZero p] (a : ZMod p) :
     Fintype (VinogradovResidueGoodCompletion q N p k b a) := Fintype.ofFinite _
 
+/-- Triples: a block `x`, a shifted nested-compatible partner `y` of `x`, and a tail pair `(u, v)`
+in the class `a` completing `(x, y)` to a solution modulo `q`. -/
 abbrev VinogradovResidueGoodDecomposition
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hp : p.Prime) (hNp : N < p ^ k) (_hN : N ≠ 0)
@@ -41,6 +70,8 @@ abbrev VinogradovResidueGoodDecomposition
           vinogradovPowerSignatureMod q k
             (Fin.append y.1.1 (fun i => (uv.2 i).1))}
 
+/-- For `p` prime, `N < p^k`, `N ≠ 0` and `2 (k + b) N^k < q`, good completions are equivalent to
+the decomposition triples; the solution forces the shifted blocks to be nested-compatible. -/
 def vinogradovResidueGoodCompletionEquiv
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hp : p.Prime) (hNp : N < p ^ k) (hN : N ≠ 0)
@@ -58,6 +89,7 @@ def vinogradovResidueGoodCompletionEquiv
     rintro ⟨x, y, uv⟩
     rfl
 
+/-- There are at most `N^k` blocks in `[0, N)^k` that are injective modulo `p`. -/
 theorem card_vinogradovInjectiveBlock_le (N p k : ℕ) :
     Fintype.card (VinogradovInjectiveBlock N p k) ≤ N ^ k := by
   calc
@@ -66,6 +98,9 @@ theorem card_vinogradovInjectiveBlock_le (N p k : ℕ) :
       Fintype.card_le_of_embedding ⟨Subtype.val, Subtype.val_injective⟩
     _ = N ^ k := by rw [Fintype.card_fun]; simp
 
+/-- For `p` prime with `k < p`, `N < p^k`, `N ≠ 0`, `⌈N/p⌉ ≠ 0`, `p` a unit modulo `q`,
+`2 (k + b) N^k < q` and `2 b ⌈N/p⌉^k < q`: the good completions with tails in one residue class number
+at most `N^k · k! p^(k(k-1)/2) · J_{b,k}(⌈N/p⌉)`. -/
 theorem card_vinogradovResidueGoodCompletion_le
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hp : p.Prime) (hkp : k < p) (hNp : N < p ^ k) (hN : N ≠ 0)

@@ -1,12 +1,36 @@
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiAbelDifferenceRenormalization
 import GaloisForLFunctions.HTGeometry.LogExpTailIntegral
 
+/-!
+# Exponential-integral tail asymptotics with the Euler constant
+
+This module studies the exponential integral tail `E_1(a) = ∫_a^∞ e^(-u) / u du`. Integration by
+parts gives `E_1(a) = ∫_a^∞ log u · e^(-u) du - log a · e^(-a)`, and from this the classical
+small-argument asymptotic `E_1(a) + log a → -γ` as `a → 0+`, with `γ` the Euler-Mascheroni
+constant. Rescaling gives the Abel tail asymptotic
+`∫_R^∞ e^(-δh) / h dh + log δ → -γ - log R` as `δ → 0+`.
+
+## Main results
+
+- `integral_exp_neg_div_id_Ioi_eq_log_tail`: `E_1(a) = ∫_a^∞ log u · e^(-u) du - log a · e^(-a)`
+  for `a > 0`.
+- `tendsto_integral_exp_neg_div_id_add_log_nhdsGT_zero`: `E_1(a) + log a → -γ` as `a → 0+`.
+- `integral_exp_neg_scaled_div_id_Ioi_eq`: `∫_R^∞ e^(-δh) / h dh = E_1(δR)`.
+- `tendsto_scaled_exp_tail_add_log_nhdsGT_zero`: for fixed `R > 0`,
+  `∫_R^∞ e^(-δh) / h dh + log δ → -γ - log R` as `δ → 0+`.
+
+## Hypotheses
+
+Unconditional; the only assumptions are positivity of `a`, `δ` and `R`.
+-/
+
 open Filter Topology MeasureTheory Set
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `a > 0`, `u ↦ e^(-u) / u` is integrable on `(a, ∞)`. -/
 theorem integrableOn_exp_neg_div_id_Ioi {a : ℝ} (ha : 0 < a) :
     IntegrableOn (fun u : ℝ => Real.exp (-u) / u) (Ioi a) := by
   have hmajor := (integrableOn_exp_neg_Ioi a).const_mul a⁻¹
@@ -21,6 +45,8 @@ theorem integrableOn_exp_neg_div_id_Ioi {a : ℝ} (ha : 0 < a) :
   simpa only [one_div] using
     mul_le_mul_of_nonneg_left hinv' (Real.exp_pos _).le
 
+/-- Integration by parts on `[a, T]` with `0 < a ≤ T`:
+`∫_a^T e^(-u) / u du = ∫_a^T log u · e^(-u) du + log T · e^(-T) - log a · e^(-a)`. -/
 theorem intervalIntegral_exp_neg_div_id_eq
     {a T : ℝ} (ha : 0 < a) (hT : a ≤ T) :
     (∫ u in a..T, Real.exp (-u) / u) =
@@ -58,6 +84,7 @@ theorem intervalIntegral_exp_neg_div_id_eq
   rw [hdiv] at hip
   linarith
 
+/-- `log T · e^(-T) → 0` as `T → ∞`. -/
 theorem tendsto_log_mul_exp_neg_atTop :
     Tendsto (fun T : ℝ => Real.log T * Real.exp (-T)) atTop (𝓝 0) := by
   have hlogdiv : Tendsto (fun T : ℝ => Real.log T / T) atTop (𝓝 0) := by
@@ -71,6 +98,7 @@ theorem tendsto_log_mul_exp_neg_atTop :
     field_simp
   simpa using hprod.congr' heq
 
+/-- For `a > 0`, `∫_a^∞ e^(-u) / u du = ∫_a^∞ log u · e^(-u) du - log a · e^(-a)`. -/
 theorem integral_exp_neg_div_id_Ioi_eq_log_tail
     {a : ℝ} (ha : 0 < a) :
     (∫ u in Ioi a, Real.exp (-u) / u) =
@@ -91,6 +119,8 @@ theorem integral_exp_neg_div_id_Ioi_eq_log_tail
   have huniq := tendsto_nhds_unique hE hR'
   simpa only [add_zero] using huniq
 
+/-- Small-argument asymptotic of the exponential integral: `∫_a^∞ e^(-u) / u du + log a → -γ`
+as `a → 0+`, with `γ` the Euler-Mascheroni constant. -/
 theorem tendsto_integral_exp_neg_div_id_add_log_nhdsGT_zero :
     Tendsto (fun a : ℝ => (∫ u in Ioi a, Real.exp (-u) / u) + Real.log a)
       (𝓝[>] 0) (𝓝 (-Real.eulerMascheroniConstant)) := by
@@ -127,6 +157,8 @@ theorem tendsto_integral_exp_neg_div_id_add_log_nhdsGT_zero :
   rw [integral_exp_neg_div_id_Ioi_eq_log_tail ha]
   ring
 
+/-- For `δ > 0` and `R > 0`, the substitution `u = δh` gives
+`∫_R^∞ e^(-δh) / h dh = ∫_(δR)^∞ e^(-u) / u du`. -/
 theorem integral_exp_neg_scaled_div_id_Ioi_eq
     {delta R : ℝ} (hdelta : 0 < delta) (_hR : 0 < R) :
     (∫ h in Ioi R, Real.exp (-(delta * h)) / h) =
@@ -140,6 +172,7 @@ theorem integral_exp_neg_scaled_div_id_Ioi_eq
   rw [hpoint, integral_const_mul, smul_eq_mul] at hcv
   exact (mul_left_cancel₀ (inv_ne_zero hdelta.ne')) hcv
 
+/-- For fixed `R > 0`, `∫_R^∞ e^(-δh) / h dh + log δ → -γ - log R` as `δ → 0+`. -/
 theorem tendsto_scaled_exp_tail_add_log_nhdsGT_zero
     (R : {R : ℝ // 0 < R}) :
     Tendsto (fun delta : ℝ =>

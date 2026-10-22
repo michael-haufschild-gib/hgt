@@ -2,21 +2,53 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIICountNumerator
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIThresholdBound
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicPrimeBlockSymmetry
 
+/-!
+# Menon harmonic prime blocks: the Case-II frequency range
+
+This module turns the Case-II block estimate for Menon's harmonic prime polynomial
+`harmonicPrimeBlockPoly B w = ∑_{p ∈ B} μ(p) p^(-1) exp(2πi w log p)` into a bound that holds on an
+explicit frequency interval. For a block with lower endpoint `a` it defines the frequency floor
+`6 (K + 1) (log a)^1856 + 3 · cells(a)` and ceiling `(3/4) a^((1/8) δ)`, where
+`δ = maynardDerivativeDeficit 26 = 1/(3·2^26)` and `K = menonHarmonicCaseIICrossConstant`. For `u`
+between floor and ceiling, the choice `T = 2u/3` satisfies every scalar side condition of the
+Case-II threshold theorem, so the block polynomial is `O((log a)^(-20))` throughout the range.
+
+## Main results
+
+- `menonHarmonicCaseII_scalar_geometry`: if `1 ≤ a`, `1 ≤ log a` and `u` lies between the Case-II
+  floor and ceiling, then `T = 2u/3` satisfies `1 ≤ T`, `cells/4 ≤ T`, `T + cells/2 ≤ u ≤ 2T - cells/2`,
+  `2T ≤ a^3` and `K (log a)^1855 (T + 1) < min(T, a^(δ/8))^2`.
+- `exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_caseII_range`: there is
+  an absolute `C0 ≥ 0` such that for all large `x`, every final-range block `(a_j, Y_j]` and every
+  real `w` with `2π|w|` in the Case-II range of `a_j`, the harmonic prime polynomial of the primes in
+  `(a_j, Y_j]` at frequency `w` has norm at most `menonHarmonicCaseIIThresholdConstant C0 / (log a_j)^20`.
+
+## Hypotheses
+
+The main results are unconditional. The scalar-geometry lemma assumes `1 ≤ a`, `1 ≤ log a` and the
+frequency range `floor(a) ≤ u ≤ ceiling(a)`; the block bound only restricts `2π|w|` to that range.
+-/
+
 namespace RHTower.Sieve
 
 open Filter Finset
 
 noncomputable section
 
+/-- The cross constant `K` of the Case-II budget: the measure numerator constant times the square of
+the core denominator constant. -/
 def menonHarmonicCaseIICrossConstant : ℝ :=
   menonHarmonicCaseIIMeasureNumeratorConstant *
     menonHarmonicCaseIICoreDenominatorConstant ^ (2 : ℕ)
 
+/-- Lower end of the Case-II frequency range for a block with lower endpoint `a`:
+`6 (K + 1) (log a)^1856 + 3 · menonHarmonicCaseIICells a`. -/
 def menonHarmonicCaseIIFrequencyFloor (a : ℕ) : ℝ :=
   6 * (menonHarmonicCaseIICrossConstant + 1) *
       (Real.log (a : ℝ)) ^ (1856 : ℕ) +
     3 * (menonHarmonicCaseIICells a : ℝ)
 
+/-- Upper end of the Case-II frequency range: `(3/4) a^e` with `e = menonHarmonicCaseIICoreExponent`. -/
 def menonHarmonicCaseIIFrequencyCeiling (a : ℕ) : ℝ :=
   (3 / 4 : ℝ) * (a : ℝ) ^ menonHarmonicCaseIICoreExponent
 
@@ -41,6 +73,9 @@ private theorem caseII_core_power_eq (a : ℕ) :
     simp [menonHarmonicCaseIICoreExponent, maynardDerivativeDeficit]
   · rw [menonHarmonicCaseIICoreExponent, Real.rpow_mul (by positivity)]
 
+/-- For `1 ≤ a`, `1 ≤ log a` and `u` in the Case-II frequency range, `T = 2u/3` meets all scalar
+side conditions of the Case-II threshold theorem, including the strict cross inequality
+`K (log a)^1855 (T + 1) < min(T, a^(δ/8))^2`. -/
 theorem menonHarmonicCaseII_scalar_geometry
     {a : ℕ} (ha : 1 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ)) {u : ℝ}
     (hfloor : menonHarmonicCaseIIFrequencyFloor a ≤ u)
@@ -140,6 +175,9 @@ private theorem norm_harmonicPrimeBlockPoly_eq_neg_abs (B : Finset ℕ) (w : ℝ
     exact (norm_harmonicPrimeBlockPoly_neg B w).symm
 
 set_option maxHeartbeats 800000 in
+/-- Unconditional Case-II bound: for an absolute `C0 ≥ 0`, eventually in `x`, every final-range
+harmonic prime block has norm at most `menonHarmonicCaseIIThresholdConstant C0 / (log a_j)^20` at
+every frequency `w` with `2π|w|` between the Case-II floor and ceiling of `a_j`. -/
 theorem exists_absolute_eventually_norm_menonFinalRangeActualBlock_le_logPow_of_caseII_range :
     ∃ C0 : ℝ, 0 ≤ C0 ∧
       ∀ᶠ x : ℝ in atTop,

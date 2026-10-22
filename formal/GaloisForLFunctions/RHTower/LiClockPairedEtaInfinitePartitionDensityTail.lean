@@ -14,17 +14,64 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import GaloisForLFunctions.RHTower.RiemannGaussian.RiemannXiSuzukiPositiveCriticalStripEtaInfiniteLaplaceMeasure
 import GaloisForLFunctions.RHTower.LiClockPairedEtaInfinitePartitionMeasure
 
+/-!
+# Tail of the infinite paired-eta half-tilt difference density
+
+The paired-eta logarithmic support `⋃_n (log(2n+1), log(2n+2)]` corresponds under `w = e^u` to
+the arithmetic indicator `α(w)` of `⋃_k (2k+1, 2k+2]`. Its raw half-tilt difference density
+`ρ(x) = ∫ w(v+x) w(v) dv` (with `w(v) = e^{-v/2}` on the support) satisfies
+`ρ(x) = e^{-|x|/2} H(e^{|x|})`, where `H(r) = ∫_1^∞ α(w) α(rw)/w² dw`. Integrating by parts
+against the periodic primitives `B` of `α - 1/2` (with `|B| ≤ 1/4`) and `D` of `B`
+(with `|D| ≤ 1/16`) gives `|H(r) - (log 2)/2| ≤ π²/(16 r)` and the second-order expansion
+`H(r) = (log 2)/2 + P(r)/r + O(1/r²)` with an explicit continuous 2-periodic correction `P`,
+equal to `-π²/48` at even integers and `π²/24` at odd integers. Consequently
+`ρ(x) = (log 2/2) e^{-|x|/2} + O(e^{-3|x|/2})` with an oscillating, non-vanishing
+`e^{-3x/2}` correction. The module also evaluates the normalizer `Z = ∫ e^{-u/2} dη(u)` as
+`2 ∑_n (1/√(2n+1) - 1/√(2n+2))`, bounds it below by `71/60`, and shows the limiting ratio
+`2 log 2/Z²` of the normalized density to the half-line reference density lies in `(0, 1)`.
+
+## Main results
+
+- `liClockPairedEtaInfinitePartitionPrimitiveB_interval_error_le`:
+  `|∫_a^b (α(rw) - 1/2)/w² dw| ≤ 1/(2 r a²)` for `r > 0`, `0 < a ≤ b`.
+- `liClockPairedEtaInfinitePartition_retained_inverse_mass`: `∫_1^∞ α(w)/w² dw = log 2`.
+- `liClockPairedEtaInfinitePartitionAveragingH_error_le`: `|H(r) - (log 2)/2| ≤ π²/(16 r)` for `r ≥ 1`.
+- `liClockPairedEtaInfinitePartitionAveragingH_correction_error_le`:
+  `|H(r) - (log 2)/2 - P(r)/r| ≤ (∑_n (2n+1)^{-3})/(4 r²)` for `r ≥ 1`.
+- `liClockPairedEtaInfinitePartitionCorrectionP_even_nat`, `..._odd_nat`: `P(2m) = -π²/48`,
+  `P(2m+1) = π²/24`.
+- `liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_H`: `ρ(x) = e^{-|x|/2} H(e^{|x|})`.
+- `liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_le`:
+  `|ρ(x) - (log 2/2) e^{-|x|/2}| ≤ (π²/16) e^{-3|x|/2}`.
+- `liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_not_isLittleO`: the error is not
+  `o(e^{-3x/2})`.
+- `liClockPairedEtaInfinitePartitionNormalizer_eq_tsum`: `Z = 2 ∑_n (1/√(2n+1) - 1/√(2n+2))`.
+- `liClockPairedEtaInfinitePartitionNormalizer_gt_seventy_one_div_sixty`: `71/60 < Z`.
+- `liClockPairedEtaInfinitePartitionDifferenceDensity_ratio_tendsto`: the normalized density
+  divided by the half-line reference density tends to `2 log 2/Z²`.
+- `liClockPairedEtaInfinitePartitionComparisonLimit_lt_one`: `0 < 2 log 2/Z² < 1`.
+
+## Hypotheses
+
+All results are unconditional. The analytic estimates assume only the stated ranges of the
+real variables (`r > 0` or `r ≥ 1`, `0 < a ≤ b`, `x ≥ 0` where indicated).
+-/
+
 noncomputable section
 open Set Filter MeasureTheory Function
 open scoped Topology
 namespace RHTower
 
+/-- The arithmetic indicator `α(w)`: `1` when `{w/2} > 1/2` or `{w/2} = 0`, i.e. on
+`⋃_k (2k+1, 2k+2]`, and `0` otherwise. -/
 def liClockPairedEtaInfinitePartitionArithmeticIndicator (w : ℝ) : ℝ :=
   if 1 / 2 < Int.fract (w / 2) ∨ Int.fract (w / 2) = 0 then 1 else 0
 
+/-- The periodic sawtooth `B(s) = |{s/2} - 1/2| - 1/4`, a primitive of `α - 1/2`. -/
 def liClockPairedEtaInfinitePartitionPrimitiveB (s : ℝ) : ℝ :=
   |Int.fract (s / 2) - 1 / 2| - 1 / 4
 
+/-- The second primitive `D(s) = ∫_0^s B(u) du`. -/
 def liClockPairedEtaInfinitePartitionPrimitiveD (s : ℝ) : ℝ :=
   ∫ u in (0 : ℝ)..s, liClockPairedEtaInfinitePartitionPrimitiveB u
 
@@ -52,6 +99,7 @@ private theorem indicator_mem_iff (w : ℝ) :
       have heq : (2 * (k : ℝ) + 2) / 2 = ((k + 1 : ℤ) : ℝ) := by push_cast; ring
       rw [heq, Int.fract_intCast]
 
+/-- `α` is the indicator of the union of intervals `⋃_{k ∈ ℤ} (2k+1, 2k+2]`. -/
 theorem liClockPairedEtaInfinitePartitionArithmeticIndicator_eq_indicator (w : ℝ) :
     liClockPairedEtaInfinitePartitionArithmeticIndicator w =
       (⋃ k : ℤ, Ioc (2 * (k : ℝ) + 1) (2 * (k : ℝ) + 2)).indicator (fun _ => (1 : ℝ)) w := by
@@ -76,6 +124,7 @@ theorem liClockPairedEtaInfinitePartitionArithmeticIndicator_le_one (w : ℝ) :
   unfold liClockPairedEtaInfinitePartitionArithmeticIndicator
   split_ifs <;> norm_num
 
+/-- The arithmetic indicator `α` is `2`-periodic. -/
 theorem liClockPairedEtaInfinitePartitionArithmeticIndicator_periodic :
     Periodic liClockPairedEtaInfinitePartitionArithmeticIndicator 2 := by
   intro w
@@ -95,6 +144,7 @@ theorem liClockPairedEtaInfinitePartitionPrimitiveB_periodic :
   unfold liClockPairedEtaInfinitePartitionPrimitiveB
   rw [show (w + 2) / 2 = w / 2 + 1 by ring, Int.fract_add_one]
 
+/-- The sawtooth is bounded: `|B(s)| ≤ 1/4`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveB_abs_le (s : ℝ) :
     |liClockPairedEtaInfinitePartitionPrimitiveB s| ≤ 1 / 4 := by
   have h0 := Int.fract_nonneg (s / 2)
@@ -147,6 +197,7 @@ private theorem integral_B_one_two :
         intervalIntegral.integral_const]
       norm_num
 
+/-- The sawtooth `B` has mean zero over a period: `∫_0^2 B = 0`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveB_integral_period :
     (∫ s in (0 : ℝ)..2, liClockPairedEtaInfinitePartitionPrimitiveB s) = 0 := by
   rw [← intervalIntegral.integral_add_adjacent_intervals (intervalIntegrable_B 0 1) (intervalIntegrable_B 1 2),
@@ -163,6 +214,7 @@ theorem hasDerivAt_liClockPairedEtaInfinitePartitionPrimitiveD (s : ℝ) :
     continuous_liClockPairedEtaInfinitePartitionPrimitiveB.stronglyMeasurable.stronglyMeasurableAtFilter
     continuous_liClockPairedEtaInfinitePartitionPrimitiveB.continuousAt
 
+/-- The second primitive `D` is `2`-periodic, since `B` has mean zero. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveD_periodic :
     Periodic liClockPairedEtaInfinitePartitionPrimitiveD 2 := by
   intro s
@@ -197,6 +249,7 @@ private theorem fract_half_ne_half {x : ℝ} (hx : x ∉ range (fun k : ℤ => (
   push_cast
   linarith
 
+/-- Off the integers, `B` is differentiable with `B'(x) = α(x) - 1/2`. -/
 theorem hasDerivAt_liClockPairedEtaInfinitePartitionPrimitiveB {x : ℝ}
     (hx : x ∉ range (fun k : ℤ => (k : ℝ))) :
     HasDerivAt liClockPairedEtaInfinitePartitionPrimitiveB
@@ -261,6 +314,7 @@ theorem liClockPairedEtaInfinitePartitionPrimitiveD_eq_on_Icc_one_two {s : ℝ}
       simp only [smul_eq_mul, one_pow]
       ring
 
+/-- The second primitive is bounded: `|D(s)| ≤ 1/16`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveD_abs_le (s : ℝ) :
     |liClockPairedEtaInfinitePartitionPrimitiveD s| ≤ 1 / 16 := by
   have hmem : liClockPairedEtaInfinitePartitionPrimitiveD s ∈
@@ -340,6 +394,8 @@ private theorem reciprocal_integral {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (n 
       simpa only [one_div] using h
     _ = _ := by rw [div_neg]; simp only [Nat.cast_add, Nat.cast_one, one_div]; ring
 
+/-- Integration by parts against `B`: for `r > 0`, `0 < a ≤ b`,
+`∫_a^b (α(rw) - 1/2)/w² dw = B(rb)/(r b²) - B(ra)/(r a²) + (2/r) ∫_a^b B(rw)/w³ dw`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveB_interval_ibp {r a b : ℝ}
     (hr : 0 < r) (ha : 0 < a) (hab : a ≤ b) :
     (∫ w in a..b, (αₑ (r * w) - 1 / 2) / w ^ 2) =
@@ -384,6 +440,8 @@ theorem liClockPairedEtaInfinitePartitionPrimitiveB_interval_ibp {r a b : ℝ}
   dsimp [F] at h
   linarith
 
+/-- Integration by parts against `D`: for `r > 0`, `0 < a ≤ b`,
+`∫_a^b B(rw)/w³ dw = D(rb)/(r b³) - D(ra)/(r a³) + (3/r) ∫_a^b D(rw)/w⁴ dw`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveD_interval_ibp {r a b : ℝ}
     (hr : 0 < r) (ha : 0 < a) (hab : a ≤ b) :
     (∫ w in a..b, Bₑ (r * w) / w ^ 3) =
@@ -452,6 +510,7 @@ private theorem D_endpoint_norm_le {r w : ℝ} (hr : 0 < r) (hw : 0 < w) :
   exact div_le_div_of_nonneg_right (liClockPairedEtaInfinitePartitionPrimitiveD_abs_le _)
     (mul_pos hr (pow_pos hw _)).le
 
+/-- For `r > 0`, `0 < a ≤ b`: `|∫_a^b (α(rw) - 1/2)/w² dw| ≤ 1/(2 r a²)`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveB_interval_error_le {r a b : ℝ}
     (hr : 0 < r) (ha : 0 < a) (hab : a ≤ b) :
     |∫ w in a..b, (αₑ (r * w) - 1 / 2) / w ^ 2| ≤ 1 / (2 * r * a ^ 2) := by
@@ -472,6 +531,7 @@ theorem liClockPairedEtaInfinitePartitionPrimitiveB_interval_error_le {r a b : �
       · norm_num at hint ⊢; exact hint
     _ = _ := by field_simp; ring
 
+/-- For `r > 0`, `0 < a ≤ b`: `|∫_a^b B(rw)/w³ dw| ≤ 1/(8 r a³)`. -/
 theorem liClockPairedEtaInfinitePartitionPrimitiveD_interval_error_le {r a b : ℝ}
     (hr : 0 < r) (ha : 0 < a) (hab : a ≤ b) :
     |∫ w in a..b, Bₑ (r * w) / w ^ 3| ≤ 1 / (8 * r * a ^ 3) := by
@@ -504,6 +564,7 @@ private theorem summable_reciprocal_even_square :
     (show Injective (fun n : ℕ => 2 * n + 2) by intro n m h; dsimp only at h; omega) using 1
   simp only [Function.comp_def, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat]
 
+/-- `∑_{n ≥ 0} 1/(2n+1)² = π²/8`. -/
 theorem liClockPairedEtaInfinitePartition_odd_square_mass :
     (∑' n : ℕ, 1 / (2 * (n : ℝ) + 1) ^ 2) = Real.pi ^ 2 / 8 := by
   have he : Summable (fun n : ℕ => 1 / (2 * (n : ℝ)) ^ 2) := by
@@ -528,6 +589,7 @@ theorem liClockPairedEtaInfinitePartition_odd_square_mass :
   rw [heq, hasSum_zeta_two.tsum_eq] at h
   linarith
 
+/-- `∑_{n ≥ 0} 1/(2n+2)² = π²/24`. -/
 theorem liClockPairedEtaInfinitePartition_even_square_mass :
     (∑' n : ℕ, 1 / (2 * (n : ℝ) + 2) ^ 2) = Real.pi ^ 2 / 24 := by
   have he : Summable (fun n : ℕ => 1 / (2 * (n : ℝ)) ^ 2) := by
@@ -545,6 +607,7 @@ theorem liClockPairedEtaInfinitePartition_even_square_mass :
   rw [← hs]
   linarith
 
+/-- The odd cube mass `∑_{n ≥ 0} 1/(2n+1)³`. -/
 def liClockPairedEtaInfinitePartitionOddCubeMass : ℝ :=
   ∑' n : ℕ, 1 / (2 * (n : ℝ) + 1) ^ 3
 
@@ -648,6 +711,7 @@ private theorem summable_arithmetic_intervals (f : ℝ → ℝ)
   exact (hasSum_integral_measure hi).summable.congr
     (fun n => (intervalIntegral.integral_of_le (by linarith : 2 * (n : ℝ) + 1 ≤ 2 * (n : ℝ) + 2)).symm)
 
+/-- The averaging function `H(r) = ∫_1^∞ α(w) α(rw)/w² dw`. -/
 def liClockPairedEtaInfinitePartitionAveragingH (r : ℝ) : ℝ :=
   ∫ w in Ioi (1 : ℝ), αₑ w * (αₑ (r * w) / w ^ 2)
 
@@ -659,11 +723,13 @@ private theorem integrableOn_indicator_weight_Ioi (r : ℝ) :
     (fun w => by simpa only [abs_of_nonneg (liClockPairedEtaInfinitePartitionArithmeticIndicator_nonneg _)] using
       liClockPairedEtaInfinitePartitionArithmeticIndicator_le_one (r * w)) 0
 
+/-- `H(r) = ∑_n ∫_{2n+1}^{2n+2} α(rw)/w² dw`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_eq_tsum (r : ℝ) :
     liClockPairedEtaInfinitePartitionAveragingH r =
       ∑' n : ℕ, ∫ w in (2 * (n : ℝ) + 1)..(2 * (n : ℝ) + 2), αₑ (r * w) / w ^ 2 := by
   exact integral_alpha_eq_tsum _ (integrableOn_indicator_weight_Ioi r)
 
+/-- `∫_1^∞ α(w)/w² dw = ∑_n (1/(2n+1) - 1/(2n+2)) = log 2`. -/
 theorem liClockPairedEtaInfinitePartition_retained_inverse_mass :
     (∫ w in Ioi (1 : ℝ), αₑ w / w ^ 2) = Real.log 2 := by
   have h := integral_alpha_eq_tsum (fun w : ℝ => 1 / w ^ 2) (integrableOn_reciprocal_Ioi 0)
@@ -722,6 +788,7 @@ private theorem correctionTerm_norm_le (n : ℕ) (r : ℝ) :
         (div_le_div_of_nonneg_right (liClockPairedEtaInfinitePartitionPrimitiveB_abs_le _) ha.le)
     _ = _ := by ring
 
+/-- The correction `P(r) = ∑_n (B(r(2n+2))/(2n+2)² - B(r(2n+1))/(2n+1)²)`. -/
 def liClockPairedEtaInfinitePartitionCorrectionP (r : ℝ) : ℝ :=
   ∑' n : ℕ, correctionTerm n r
 
@@ -733,6 +800,7 @@ theorem summable_norm_liClockPairedEtaInfinitePartitionCorrectionP (r : ℝ) :
     Summable (fun n : ℕ => ‖correctionTerm n r‖) :=
   (summable_liClockPairedEtaInfinitePartitionCorrectionP r).norm
 
+/-- The series defining `P` converges uniformly on `ℝ`. -/
 theorem hasSumUniformlyOn_liClockPairedEtaInfinitePartitionCorrectionP :
     HasSumUniformlyOn correctionTerm liClockPairedEtaInfinitePartitionCorrectionP univ := by
   exact HasSumUniformlyOn.of_norm_le_summable summable_correctionMajorant
@@ -746,6 +814,7 @@ theorem continuous_liClockPairedEtaInfinitePartitionCorrectionP :
     ((continuous_liClockPairedEtaInfinitePartitionPrimitiveB.comp
       (continuous_id.mul continuous_const)).div_const _)
 
+/-- The correction `P` is `2`-periodic. -/
 theorem liClockPairedEtaInfinitePartitionCorrectionP_periodic :
     Periodic liClockPairedEtaInfinitePartitionCorrectionP 2 := by
   intro r
@@ -757,6 +826,7 @@ theorem liClockPairedEtaInfinitePartitionCorrectionP_periodic :
   have hb : 2 * (n : ℝ) + 2 = ((2 * n + 2 : ℕ) : ℝ) := by push_cast; rfl
   rw [ha, hb, B_shift_two_nat, B_shift_two_nat]
 
+/-- At even natural numbers the correction is `P(2m) = -π²/48`. -/
 theorem liClockPairedEtaInfinitePartitionCorrectionP_even_nat (m : ℕ) :
     liClockPairedEtaInfinitePartitionCorrectionP (2 * (m : ℝ)) = -Real.pi ^ 2 / 48 := by
   calc
@@ -774,6 +844,7 @@ theorem liClockPairedEtaInfinitePartitionCorrectionP_even_nat (m : ℕ) :
         liClockPairedEtaInfinitePartition_even_square_mass, liClockPairedEtaInfinitePartition_odd_square_mass]
     _ = _ := by ring
 
+/-- At odd natural numbers the correction is `P(2m+1) = π²/24`. -/
 theorem liClockPairedEtaInfinitePartitionCorrectionP_odd_nat (m : ℕ) :
     liClockPairedEtaInfinitePartitionCorrectionP (2 * (m : ℝ) + 1) = Real.pi ^ 2 / 24 := by
   calc
@@ -858,6 +929,7 @@ private theorem deviation_tsum_eq (r : ℝ) :
         ← liClockPairedEtaInfinitePartitionAveragingH_eq_tsum]
       ring
 
+/-- First-order tail: for `r ≥ 1`, `|H(r) - (log 2)/2| ≤ π²/(16 r)`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_error_le {r : ℝ} (hr : 1 ≤ r) :
     |liClockPairedEtaInfinitePartitionAveragingH r - Real.log 2 / 2| ≤ Real.pi ^ 2 / (16 * r) := by
   have hr0 : 0 < r := lt_of_lt_of_le (by norm_num) hr
@@ -876,6 +948,7 @@ theorem liClockPairedEtaInfinitePartitionAveragingH_error_le {r : ℝ} (hr : 1 �
   field_simp
   ring
 
+/-- For `r > 0`, `H(r) - (log 2)/2 = P(r)/r + (2/r) ∑_n ∫_{2n+1}^{2n+2} B(rw)/w³ dw`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_eq_correction {r : ℝ} (hr : 0 < r) :
     liClockPairedEtaInfinitePartitionAveragingH r - Real.log 2 / 2 =
       liClockPairedEtaInfinitePartitionCorrectionP r / r + (2 / r) * ∑' n, BIntervalTerm n r := by
@@ -896,6 +969,8 @@ theorem liClockPairedEtaInfinitePartitionAveragingH_eq_correction {r : ℝ} (hr 
         (summable_BIntervalTerm r).tsum_mul_left]
       simp only [liClockPairedEtaInfinitePartitionCorrectionP, one_div_mul_eq_div]
 
+/-- Second-order tail: for `r ≥ 1`,
+`|H(r) - (log 2)/2 - P(r)/r| ≤ (∑_n 1/(2n+1)³)/(4 r²)`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_correction_error_le {r : ℝ} (hr : 1 ≤ r) :
     |liClockPairedEtaInfinitePartitionAveragingH r - Real.log 2 / 2 -
       liClockPairedEtaInfinitePartitionCorrectionP r / r| ≤
@@ -949,6 +1024,7 @@ private theorem continuous_BInterval_tsum : Continuous (fun r : ℝ => ∑' n, B
   simp only [BIntervalTerm, div_eq_mul_inv]
   ring
 
+/-- `H` is continuous on `(0, ∞)`. -/
 theorem continuousOn_liClockPairedEtaInfinitePartitionAveragingH :
     ContinuousOn liClockPairedEtaInfinitePartitionAveragingH (Ioi (0 : ℝ)) := by
   have hc : ContinuousOn (fun r : ℝ => Real.log 2 / 2 +
@@ -972,6 +1048,7 @@ private theorem tendsto_zero_of_abs_le_const_div {f : ℝ → ℝ} {C : ℝ}
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
   simpa only [sub_zero, Real.norm_eq_abs] using ha
 
+/-- `H(r) → (log 2)/2` as `r → ∞`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_tendsto :
     Tendsto liClockPairedEtaInfinitePartitionAveragingH atTop (𝓝 (Real.log 2 / 2)) := by
   have h := tendsto_zero_of_abs_le_const_div
@@ -983,6 +1060,7 @@ theorem liClockPairedEtaInfinitePartitionAveragingH_tendsto :
     simpa only [sub_zero, Real.norm_eq_abs] using
       (tendsto_iff_norm_sub_tendsto_zero.mp h)))
 
+/-- `r (H(r) - (log 2)/2) - P(r) → 0` as `r → ∞`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_scaled_correction_tendsto :
     Tendsto (fun r : ℝ => r * (liClockPairedEtaInfinitePartitionAveragingH r - Real.log 2 / 2) -
       liClockPairedEtaInfinitePartitionCorrectionP r) atTop (𝓝 0) := by
@@ -1001,6 +1079,7 @@ theorem liClockPairedEtaInfinitePartitionAveragingH_scaled_correction_tendsto :
       mul_le_mul_of_nonneg_left (liClockPairedEtaInfinitePartitionAveragingH_correction_error_le hr) hr0.le
     _ = _ := by field_simp
 
+/-- Along even integers `r = 2(n+1)`, `r (H(r) - (log 2)/2) → -π²/48`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_even_lattice_tendsto :
     Tendsto (fun n : ℕ => (2 * ((n : ℝ) + 1)) *
       (liClockPairedEtaInfinitePartitionAveragingH (2 * ((n : ℝ) + 1)) - Real.log 2 / 2))
@@ -1016,6 +1095,7 @@ theorem liClockPairedEtaInfinitePartitionAveragingH_even_lattice_tendsto :
   have ha := h.add_const (-Real.pi ^ 2 / 48)
   simpa only [Function.comp_apply, heq, sub_add_cancel, zero_add] using ha
 
+/-- Along odd integers `r = 2n+1`, `r (H(r) - (log 2)/2) → π²/24`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_odd_lattice_tendsto :
     Tendsto (fun n : ℕ => (2 * (n : ℝ) + 1) *
       (liClockPairedEtaInfinitePartitionAveragingH (2 * (n : ℝ) + 1) - Real.log 2 / 2))
@@ -1250,6 +1330,7 @@ private theorem normalizer_retained_tail_lower :
     _ = 2 - Real.sqrt 2 + 2 * (1 / Real.sqrt 3 - 1 / 2) + (1 / 2) * (2 / Real.sqrt 5) := by ring
     _ ≤ _ := hb
 
+/-- For `w ≥ 1`, `α(w)` is the indicator of the paired-eta log support evaluated at `log w`. -/
 theorem liClockPairedEtaInfinitePartitionArithmeticIndicator_eq_log_support {w : ℝ} (hw : 1 ≤ w) :
     αₑ w = RiemannGaussian.pairedEtaLogSupport.indicator (fun _ => (1 : ℝ)) (Real.log w) := by
   have hp : 0 < w := zero_lt_one.trans_le hw
@@ -1263,6 +1344,7 @@ theorem liClockPairedEtaInfinitePartitionPrimitiveB_even_nat (m : ℕ) :
 theorem liClockPairedEtaInfinitePartitionPrimitiveB_odd_nat (m : ℕ) :
     Bₑ (2 * (m : ℝ) + 1) = -1 / 4 := B_odd_nat m
 
+/-- For almost every `x`, `B'(x) = α(x) - 1/2`. -/
 theorem hasDerivAt_liClockPairedEtaInfinitePartitionPrimitiveB_ae :
     ∀ᵐ x : ℝ, HasDerivAt liClockPairedEtaInfinitePartitionPrimitiveB (αₑ x - 1 / 2) x := by
   filter_upwards [(Set.countable_range (fun k : ℤ => (k : ℝ))).ae_notMem volume] with x hx
@@ -1286,6 +1368,7 @@ private theorem normalizer_scalar_certificate {Z : ℝ}
     linarith
   exact hb.trans_le hZ
 
+/-- Numerical bound `log 2 < 7/10`. -/
 theorem liClockPairedEtaInfinitePartition_log_two_lt_seven_div_ten : Real.log 2 < (7 / 10 : ℝ) := by
   apply (Real.log_lt_iff_lt_exp (by norm_num)).mpr
   have h := Real.sum_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 7 / 10) 4
@@ -1296,6 +1379,7 @@ theorem liClockPairedEtaInfinitePartition_rational_certificate_eq :
     (9697 / 8190 : ℝ) = 71 / 60 + 11 / 16380 := by norm_num
 
 
+/-- The half-tilt normalizer is `Z = ∫_1^∞ α(w) w^{-3/2} dw`. -/
 theorem liClockPairedEtaInfinitePartitionNormalizer_eq_arithmetic :
     liClockPairedEtaInfinitePartitionNormalizer = ∫ w in Ioi (1 : ℝ), αₑ w * w ^ (-3 / 2 : ℝ) :=
   normalizer_integral_arithmetic
@@ -1308,12 +1392,14 @@ theorem summable_liClockPairedEtaInfinitePartitionNormalizer :
   rw [half_power_integral (by positivity) (by linarith)]
   ring
 
+/-- `Z = 2 ∑_{n ≥ 0} (1/√(2n+1) - 1/√(2n+2))`. -/
 theorem liClockPairedEtaInfinitePartitionNormalizer_eq_tsum :
     liClockPairedEtaInfinitePartitionNormalizer = 2 * ∑' n : ℕ,
       (1 / Real.sqrt (2 * (n : ℝ) + 1) - 1 / Real.sqrt (2 * (n : ℝ) + 2)) := by
   rw [liClockPairedEtaInfinitePartitionNormalizer, normalizer_integral_intervals, ← tsum_mul_left]
   exact tsum_congr (fun n => half_power_integral (by positivity) (by linarith))
 
+/-- For `x ≥ 0`, the raw difference density satisfies `e^{x/2} ρ(x) = H(e^x)`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_arithmetic {x : ℝ} (hx : 0 ≤ x) :
     Real.exp (x / 2) * liClockPairedEtaInfinitePartitionRawDifferenceDensity x =
       liClockPairedEtaInfinitePartitionAveragingH (Real.exp x) := raw_density_eq_arithmetic hx
@@ -1325,6 +1411,7 @@ private theorem raw_density_abs (x : ℝ) :
   · rw [abs_of_nonneg hx]
   · rw [abs_of_nonpos hx, liClockPairedEtaInfinitePartitionRawDifferenceDensity_even]
 
+/-- For all real `x`, `ρ(x) = e^{-|x|/2} H(e^{|x|})`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_H (x : ℝ) :
     liClockPairedEtaInfinitePartitionRawDifferenceDensity x = Real.exp (-|x| / 2) *
       liClockPairedEtaInfinitePartitionAveragingH (Real.exp |x|) := by
@@ -1337,6 +1424,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_H (x : ℝ) :
       liClockPairedEtaInfinitePartitionRawDifferenceDensity x := by rw [he, one_mul]
     _ = _ := by rw [mul_assoc, h]
 
+/-- Uniform tail bound: `|ρ(x) - (log 2/2) e^{-|x|/2}| ≤ (π²/16) e^{-3|x|/2}` for all `x`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_le (x : ℝ) :
     |liClockPairedEtaInfinitePartitionRawDifferenceDensity x - (Real.log 2 / 2) * Real.exp (-|x| / 2)| ≤
       (Real.pi ^ 2 / 16) * Real.exp (-3 * |x| / 2) := by
@@ -1359,6 +1447,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_le (x : ℝ)
       rw [show Real.exp (-|x| / 2) * (Real.pi ^ 2 / (16 * Real.exp |x|)) =
         (Real.pi ^ 2 / 16) * (Real.exp (-|x| / 2) / Real.exp |x|) by rw [div_mul_eq_div_div]; ring, heq]
 
+/-- For `x ≥ 0`, `|e^{x/2} ρ(x) - (log 2)/2| ≤ (π²/16) e^{-x}`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_error_le {x : ℝ} (hx : 0 ≤ x) :
     |Real.exp (x / 2) * liClockPairedEtaInfinitePartitionRawDifferenceDensity x - Real.log 2 / 2| ≤
       (Real.pi ^ 2 / 16) * Real.exp (-x) := by
@@ -1368,6 +1457,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_error_le {x
       liClockPairedEtaInfinitePartitionAveragingH_error_le (Real.one_le_exp_iff.mpr hx)
     _ = _ := by rw [div_mul_eq_div_div, div_eq_mul_inv, ← Real.exp_neg]
 
+/-- The raw difference density `ρ` is continuous on `ℝ`. -/
 theorem continuous_liClockPairedEtaInfinitePartitionRawDifferenceDensity :
     Continuous liClockPairedEtaInfinitePartitionRawDifferenceDensity := by
   have hH : Continuous (fun x : ℝ => liClockPairedEtaInfinitePartitionAveragingH (Real.exp |x|)) :=
@@ -1376,6 +1466,7 @@ theorem continuous_liClockPairedEtaInfinitePartitionRawDifferenceDensity :
   exact ((Real.continuous_exp.comp ((continuous_abs : Continuous (fun x : ℝ => |x|)).neg.div_const 2)).mul hH).congr
     (fun x => (liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_H x).symm)
 
+/-- `e^{x/2} ρ(x) → (log 2)/2` as `x → ∞`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_tendsto :
     Tendsto (fun x : ℝ => Real.exp (x / 2) * liClockPairedEtaInfinitePartitionRawDifferenceDensity x)
       atTop (𝓝 (Real.log 2 / 2)) := by
@@ -1384,6 +1475,8 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_scaled_tendsto :
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
   exact (liClockPairedEtaInfinitePartitionRawDifferenceDensity_eq_arithmetic hx).symm
 
+/-- The normalized infinite-partition difference density divided by the half-line reference
+density tends to the comparison limit `2 log 2/Z²` as `x → ∞`. -/
 theorem liClockPairedEtaInfinitePartitionDifferenceDensity_ratio_tendsto :
     Tendsto (fun x : ℝ => liClockPairedEtaInfinitePartitionDifferenceDensity x /
       liClockPairedEtaHalfLineDifferenceDensity x) atTop
@@ -1417,6 +1510,7 @@ private theorem raw_density_scaled_error_eq {x : ℝ} (hx : 0 ≤ x) :
       (liClockPairedEtaInfinitePartitionAveragingH (Real.exp x) - Real.log 2 / 2) := by ring
     _ = _ := by rw [← Real.exp_add, show 3 * x / 2 + -x / 2 = x by ring]
 
+/-- Along `x = log(2(n+1))`, `e^{3x/2} (ρ(x) - (log 2/2) e^{-x/2}) → -π²/48`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_even_lattice_tendsto :
     Tendsto (fun n : ℕ =>
       let x := Real.log (2 * ((n : ℝ) + 1))
@@ -1428,6 +1522,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_even_lattice_tends
     dsimp only
     rw [raw_density_scaled_error_eq (Real.log_nonneg (by nlinarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ (n : ℝ))])), Real.exp_log hp])
 
+/-- Along `x = log(2n+1)`, `e^{3x/2} (ρ(x) - (log 2/2) e^{-x/2}) → π²/24`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_odd_lattice_tendsto :
     Tendsto (fun n : ℕ =>
       let x := Real.log (2 * (n : ℝ) + 1)
@@ -1439,6 +1534,7 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_odd_lattice_tendst
     dsimp only
     rw [raw_density_scaled_error_eq (Real.log_nonneg (by nlinarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ (n : ℝ))])), Real.exp_log hp])
 
+/-- Sharpness: `ρ(x) - (log 2/2) e^{-x/2}` is not `o(e^{-3x/2})` as `x → ∞`. -/
 theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_not_isLittleO :
     ¬Asymptotics.IsLittleO atTop
       (fun x : ℝ => liClockPairedEtaInfinitePartitionRawDifferenceDensity x -
@@ -1465,24 +1561,29 @@ theorem liClockPairedEtaInfinitePartitionRawDifferenceDensity_error_not_isLittle
   have hp : 0 < Real.pi ^ 2 := by positivity
   linarith
 
+/-- Lower bound `Z ≥ 1 - √2 + 2/√3 + 1/√5` from the first two intervals and a half-period tail. -/
 theorem liClockPairedEtaInfinitePartitionNormalizer_ge_halfPeriodTail :
     1 - Real.sqrt 2 + 2 / Real.sqrt 3 + 1 / Real.sqrt 5 ≤
       liClockPairedEtaInfinitePartitionNormalizer := normalizer_retained_tail_lower
 
+/-- `9697/8190 < Z`. -/
 theorem liClockPairedEtaInfinitePartitionNormalizer_gt_9697_div_8190 :
     (9697 / 8190 : ℝ) < liClockPairedEtaInfinitePartitionNormalizer :=
   normalizer_scalar_certificate liClockPairedEtaInfinitePartitionNormalizer_ge_halfPeriodTail
 
+/-- `71/60 < Z`. -/
 theorem liClockPairedEtaInfinitePartitionNormalizer_gt_seventy_one_div_sixty :
     (71 / 60 : ℝ) < liClockPairedEtaInfinitePartitionNormalizer :=
   lt_trans (by norm_num) liClockPairedEtaInfinitePartitionNormalizer_gt_9697_div_8190
 
+/-- The comparison limit `2 log 2/Z²` is positive. -/
 theorem liClockPairedEtaInfinitePartitionComparisonLimit_pos :
     0 < liClockPairedEtaInfinitePartitionComparisonLimit := by
   unfold liClockPairedEtaInfinitePartitionComparisonLimit
   exact div_pos (mul_pos (by norm_num) (Real.log_pos (by norm_num)))
     (sq_pos_of_pos liClockPairedEtaInfinitePartitionNormalizer_pos)
 
+/-- `2 log 2/Z² < 5040/5041`, using `log 2 < 7/10` and `Z > 71/60`. -/
 theorem liClockPairedEtaInfinitePartitionComparisonLimit_lt_5040_div_5041 :
     liClockPairedEtaInfinitePartitionComparisonLimit < (5040 / 5041 : ℝ) := by
   unfold liClockPairedEtaInfinitePartitionComparisonLimit
@@ -1492,10 +1593,12 @@ theorem liClockPairedEtaInfinitePartitionComparisonLimit_lt_5040_div_5041 :
   have hl := liClockPairedEtaInfinitePartition_log_two_lt_seven_div_ten
   nlinarith [sq_nonneg (liClockPairedEtaInfinitePartitionNormalizer - 71 / 60)]
 
+/-- The comparison limit `2 log 2/Z²` is strictly less than `1`. -/
 theorem liClockPairedEtaInfinitePartitionComparisonLimit_lt_one :
     liClockPairedEtaInfinitePartitionComparisonLimit < 1 :=
   lt_trans liClockPairedEtaInfinitePartitionComparisonLimit_lt_5040_div_5041 (by norm_num)
 
+/-- For `r > 0`, `H(r) - (log 2)/2 = P(r)/r + (2/r) ∫_1^∞ α(w) B(rw)/w³ dw`. -/
 theorem liClockPairedEtaInfinitePartitionAveragingH_eq_correction_integral {r : ℝ} (hr : 0 < r) :
     liClockPairedEtaInfinitePartitionAveragingH r - Real.log 2 / 2 =
       liClockPairedEtaInfinitePartitionCorrectionP r / r + (2 / r) *

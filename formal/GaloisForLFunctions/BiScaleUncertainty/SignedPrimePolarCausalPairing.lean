@@ -1,11 +1,37 @@
 import GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolarCausalMoments
 
+/-!
+# The signed prime-polar pairing of the causal factorial source
+
+The full pairing of a test `H` is `Σ_(n ≥ 2) Λ(n) n^(-1/2) H(log n) - ∫_0^∞ 2 cosh(x/2) H(x) dx`. For the
+continuous, compactly supported causal factorial source `C_N`, the prime side equals that of the
+factorial bi-null test and the polar side is computed from the two exponential moments. This gives an
+exact closed form for the pairing and the explicit bound `O(log N / sqrt N)`.
+
+## Main results
+
+- `primeTerm_sourceFactorialCausal`: the prime sequence of `C_N` equals that of `factorialBiNull N`.
+- `sourceFactorialCausal_admissible`: `C_N` has finite prime support, absolutely summable prime terms
+  and an integrable polar term on `[0, ∞)`.
+- `fullPairing_sourceFactorialCausal_eq`: `fullPairing C_N =
+  (2 chebyshevBiNullProducer N - sourceFactorialCoefficient N · harmonicCorrection N) / sqrt N`.
+- `abs_fullPairing_sourceFactorialCausal_le`:
+  `|fullPairing C_N| ≤ (10 log(4N + 1) + 3 + 1/(4N)) / sqrt N`.
+
+## Hypotheses
+
+All results are unconditional; the only side condition is `1 ≤ N`. No bound on the error term of the
+prime number theorem is assumed.
+-/
+
 open MeasureTheory Set
 namespace GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
 open _root_.RHTower
 noncomputable section
 set_option autoImplicit false
 
+/-- The prime-power terms of the causal source coincide with those of the factorial bi-null test,
+because the two functions agree at every `log n`. -/
 theorem primeTerm_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) :
     primeTerm (sourceFactorialCausal N) = primeTerm (factorialBiNull N) := by
   funext n
@@ -14,6 +40,8 @@ theorem primeTerm_sourceFactorialCausal {N : ℕ} (hN : 1 ≤ N) :
   · rw [sourceFactorialCausal_at_log hN (by omega)]
   · rfl
 
+/-- Admissibility of the causal source for the full pairing: finite prime support, absolutely summable
+prime terms, and integrability of `2 cosh(x/2) · C_N(x)` on `[0, ∞)`. -/
 theorem sourceFactorialCausal_admissible {N : ℕ} (hN : 1 ≤ N) :
     (Function.support (primeTerm (sourceFactorialCausal N))).Finite ∧
       Summable (fun n => |primeTerm (sourceFactorialCausal N) n|) ∧
@@ -23,6 +51,8 @@ theorem sourceFactorialCausal_admissible {N : ℕ} (hN : 1 ≤ N) :
   exact ((continuous_polarDensity.mul (continuous_sourceFactorialCausal N)).integrable_of_hasCompactSupport
     ((hasCompactSupport_sourceFactorialCausal hN).mul_left (f := polarDensity))).integrableOn
 
+/-- Exact pairing: `fullPairing C_N =
+(2 chebyshevBiNullProducer N - sourceFactorialCoefficient N · harmonicCorrection N) / sqrt N`. -/
 theorem fullPairing_sourceFactorialCausal_eq {N : ℕ} (hN : 1 ≤ N) :
     fullPairing (sourceFactorialCausal N) =
       (2*chebyshevBiNullProducer N-sourceFactorialCoefficient N*harmonicCorrection N)/Real.sqrt N := by
@@ -47,6 +77,7 @@ theorem fullPairing_sourceFactorialCausal_eq {N : ℕ} (hN : 1 ≤ N) :
     integral_exp_neg_half_sourceFactorialCausal hN]
   ring
 
+/-- Unconditional size bound: `|fullPairing C_N| ≤ (10 log(4N + 1) + 3 + 1/(4N)) / sqrt N` for `N ≥ 1`. -/
 theorem abs_fullPairing_sourceFactorialCausal_le {N : ℕ} (hN : 1 ≤ N) :
     |fullPairing (sourceFactorialCausal N)| ≤
       (10*Real.log (4*(N : ℝ)+1)+3+1/(4*(N : ℝ)))/Real.sqrt N := by

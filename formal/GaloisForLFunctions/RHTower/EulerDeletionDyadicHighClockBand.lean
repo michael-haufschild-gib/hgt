@@ -1,10 +1,34 @@
 import GaloisForLFunctions.RHTower.EulerDeletionHighClockLayerTail
 
+/-!
+# The predictable Möbius drift has vanishing energy in the dyadic high-clock band
+
+In the residue-martingale model of Euler deletion, `historySpace l` is the `L²` subspace of
+observables determined by residues modulo the clock `lcm(1, ..., l)`, `historyLayer l` is the
+orthogonal increment `P_{l+1} - P_l`, and `predictableDrift N` is the accumulated conditional
+mean `∑_{i < N} μ(i+1) P_i(residue_{i+1})` of the Möbius-weighted residue increments. Using the
+per-layer bound `‖historyLayer l (drift N)‖² ≤ (8N² + 2)/(lcm(1..l) + 1)` and the Chebyshev
+growth `2^L ≤ (L + 1) lcm(1..L)`, this module shows that the energy of `predictableDrift (2L)`
+in the layers `L ≤ l < 2L` is at most `L(32L² + 2)/(lcm(1..L) + 1)` and tends to `0`.
+
+## Main results
+
+- `tendsto_cube_div_clock_zero`: `L³ / lcm(1, ..., L) → 0`.
+- `predictableDrift_dyadic_upperHalf_energy_le`: the energy bound for the dyadic band.
+- `predictableDrift_dyadic_upperHalf_energy_tendsto_zero`:
+  `∑_{L ≤ l < 2L} ‖historyLayer l (predictableDrift (2L))‖² → 0` as `L → ∞`.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 noncomputable section
 set_option autoImplicit false
 open Finset MeasureTheory Filter Topology
 namespace RHTower.DeletionResidueMartingale
 
+/-- The clock `lcm(1, ..., L)` grows faster than `L³`: `L³ / lcm(1, ..., L) → 0`. -/
 theorem tendsto_cube_div_clock_zero :
     Tendsto (fun L : ℕ => (L : ℝ) ^ 3 / (clock L : ℝ)) atTop (𝓝 0) := by
   have h4 : Tendsto (fun L : ℕ => (L : ℝ) ^ 4 / (2 : ℝ) ^ L) atTop (𝓝 0) :=
@@ -29,6 +53,8 @@ theorem tendsto_cube_div_clock_zero :
           mul_le_mul_of_nonneg_left hpow (by positivity)
         _ = ((L : ℝ) ^ 4 + (L : ℝ) ^ 3) * (clock L : ℝ) := by ring
 
+/-- The energy of the predictable drift `predictableDrift (2L)` in the history layers `L ≤ l < 2L` is at
+most `L(32L² + 2)/(lcm(1, ..., L) + 1)`. -/
 theorem predictableDrift_dyadic_upperHalf_energy_le (L : ℕ) :
     (∑ l ∈ Ico L (2 * L),
       ‖historyLayer l (predictableDrift (2 * L))‖ ^ (2 : ℕ)) ≤
@@ -56,6 +82,8 @@ theorem predictableDrift_dyadic_upperHalf_energy_le (L : ℕ) :
       simp [Nat.card_Ico, show 2 * L - L = L by omega]
       ring
 
+/-- The energy of `predictableDrift (2L)` in the dyadic high-clock band `L ≤ l < 2L` tends to `0` as
+`L → ∞`. -/
 theorem predictableDrift_dyadic_upperHalf_energy_tendsto_zero :
     Tendsto
       (fun L : ℕ => ∑ l ∈ Ico L (2 * L),

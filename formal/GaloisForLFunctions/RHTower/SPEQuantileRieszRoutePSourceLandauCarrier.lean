@@ -3,6 +3,38 @@ import GaloisForLFunctions.RHTower.CCM.CCMCriticalMellinResolventExponentialWidt
 import GaloisForLFunctions.RHTower.LandauIntegralTransfer
 import GaloisForLFunctions.HTGeometry.ClockParametricIntegralHolomorphy
 
+/-!
+# Landau carrier measure for the Route P source signal
+
+Let `S(t)` be the unit-Riesz Chebyshev resolvent ray representative
+`S(t) = e^(-t) (I(t) - 2/3)` for `t ≥ 0`, with `I` the integrated Chebyshev ray density;
+its Laplace transform continues to the Route P source function `R(z)`. For a sign `ε` and a cutoff `T ≥ 0` this module builds the
+measure on `(T, ∞)` with density `ε e^(-r t) S(t)`, identifies its complex moment generating
+function with the tail Laplace transform `∫_T^∞ e^(-(r - z) t) ε S(t) dt`, and writes that tail
+as `ε R(z)` minus an entire head integral over `[0, T]`. Since `R` is analytic on the disk
+`|z - 1| ≤ 5/4`, Landau's theorem for nonnegative measures then gives exponential
+integrability of order `9/8`.
+
+## Main results
+
+- `complexMGF_id_routePSourceLandauMeasure_eq_tailLaplace`: under the sign hypothesis, the
+  complex MGF of the carrier measure at `z` is the tail Laplace transform at `r - z`.
+- `routePSourceSignedTailLaplace_eq_continuation_sub_head`: for `T ≥ 0` and `Re z > 1/2`, the
+  tail Laplace transform equals `ε R(z)` minus the head integral over `[0, T]`.
+- `differentiableOn_routePSourceLandauContinuation_closedBall`: `w ↦ ε R(1 - w) - head(1 - w)`
+  is holomorphic on the closed disk `|w| ≤ 5/4`.
+- `routePSourceLandauContinuation_eventuallyEq_complexMGF`: near `0` this function coincides with
+  the complex MGF of the carrier measure with `r = 1`.
+- `integrable_exp_nine_eighth_routePSourceLandauMeasure`: `e^(9t/8)` is integrable against the
+  carrier measure with `r = 1`.
+
+## Hypotheses
+
+The holomorphy and Laplace identities are unconditional (with `T ≥ 0` and `Re z > 1/2` where
+stated). The measure-theoretic results, in particular the integrability of `e^(9t/8)`, are
+conditional on the one-sided sign hypothesis `hpos`: `0 ≤ ε S(t)` for every `t > T`.
+-/
+
 open Complex MeasureTheory Set Filter Topology ProbabilityTheory
 open scoped ENNReal NNReal
 
@@ -10,10 +42,14 @@ namespace RHTower
 
 noncomputable section
 
+/-- The signed density `ε e^(-r t) S(t)`, where `S` is the unit-Riesz Chebyshev resolvent
+ray representative. -/
 def routePSourceSignedDensity (epsilon r t : ℝ) : ℝ :=
   epsilon * (Real.exp (-r * t) *
     GaloisForLFunctions.RHTower.criticalMellinChebyshevResolventRayRepresentative t)
 
+/-- The Landau carrier measure on `(T, ∞)`: Lebesgue measure with density the positive part
+of `ε e^(-r t) S(t)`. -/
 def routePSourceLandauMeasure (epsilon r T : ℝ) : Measure ℝ :=
   (volume.restrict (Ioi T)).withDensity
     (fun t => ENNReal.ofReal (routePSourceSignedDensity epsilon r t))
@@ -25,6 +61,8 @@ theorem measurable_routePSourceSignedDensity (epsilon r : ℝ) :
     ((by fun_prop : Measurable (fun t : ℝ => Real.exp (-r * t))).mul
       GaloisForLFunctions.RHTower.continuous_criticalMellinChebyshevResolventRayRepresentative.measurable)
 
+/-- For `T ≥ 0` and `r > 1/2`, the signed density `ε e^(-r t) S(t)` is integrable on `(T, ∞)`,
+by the half-exponential bound on `S`. -/
 theorem integrableOn_routePSourceSignedDensity
     (epsilon T r : ℝ) (hT : 0 ≤ T) (hr : 1 / 2 < r) :
     IntegrableOn (routePSourceSignedDensity epsilon r) (Ioi T) := by
@@ -53,6 +91,8 @@ theorem routePSourceSignedDensity_nonneg_ae
       GaloisForLFunctions.RHTower.criticalMellinChebyshevResolventRayRepresentative t) by ring]
   exact mul_nonneg (Real.exp_pos _).le (hpos t ht)
 
+/-- Assuming `0 ≤ ε S(t)` for `t > T`, with `T ≥ 0` and `r - ρ > 1/2`, the exponential `e^(ρ t)`
+is integrable against the carrier measure. -/
 theorem integrable_exp_mul_id_routePSourceLandauMeasure
     {epsilon r T rho : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -79,6 +119,8 @@ theorem integrable_exp_mul_id_routePSourceLandauMeasure
   rw [show -(r - rho) * t = -r * t + rho * t by ring, Real.exp_add]
   ring
 
+/-- Assuming `0 ≤ ε S(t)` for `t > T`, `T ≥ 0` and `r > 1/2`, the exponent `0` lies in the
+interior of the set of exponents with integrable moment generating function. -/
 theorem zero_mem_interior_integrableExpSet_routePSourceLandauMeasure
     {epsilon r T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -96,6 +138,7 @@ theorem zero_mem_interior_integrableExpSet_routePSourceLandauMeasure
     dsimp only [delta] at hrho
     linarith [hrho.2])
 
+/-- For `T ≥ 0` the carrier measure is concentrated on nonnegative times. -/
 theorem id_nonneg_ae_routePSourceLandauMeasure
     {epsilon r T : ℝ} (hT : 0 ≤ T) :
     ∀ᵐ t ∂routePSourceLandauMeasure epsilon r T, 0 ≤ id t := by
@@ -105,11 +148,14 @@ theorem id_nonneg_ae_routePSourceLandauMeasure
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact le_trans hT ht.le
 
+/-- The tail Laplace transform `∫_T^∞ e^(-z t) ε S(t) dt`. -/
 def routePSourceSignedTailLaplace (epsilon T : ℝ) (z : ℂ) : ℂ :=
   ∫ t in Ioi T, Complex.exp (-z * (t : ℂ)) *
     ((epsilon *
       GaloisForLFunctions.RHTower.criticalMellinChebyshevResolventRayRepresentative t : ℝ) : ℂ)
 
+/-- Assuming `0 ≤ ε S(t)` for `t > T`, the complex moment generating function of the carrier
+measure at `z` equals the tail Laplace transform at `r - z`. -/
 theorem complexMGF_id_routePSourceLandauMeasure_eq_tailLaplace
     {epsilon r T : ℝ}
     (hpos : ∀ t, T < t →
@@ -146,11 +192,13 @@ theorem complexMGF_id_routePSourceLandauMeasure_eq_tailLaplace
   congr 1
   ring
 
+/-- The head Laplace transform `∫_0^T e^(-z t) ε S(t) dt` over a compact interval. -/
 def routePSourceSignedHeadLaplace (epsilon T : ℝ) (z : ℂ) : ℂ :=
   ∫ t in (0 : ℝ)..T, Complex.exp (-z * (t : ℂ)) *
     ((epsilon *
       GaloisForLFunctions.RHTower.criticalMellinChebyshevResolventRayRepresentative t : ℝ) : ℂ)
 
+/-- The head Laplace transform over `[0, T]` is an entire function of `z`. -/
 theorem differentiable_routePSourceSignedHeadLaplace (epsilon T : ℝ) :
     Differentiable ℂ (routePSourceSignedHeadLaplace epsilon T) := by
   intro z
@@ -194,6 +242,7 @@ theorem differentiable_routePSourceSignedHeadLaplace (epsilon T : ℝ) :
   exact GaloisForLFunctions.HTGeometry.differentiableAt_intervalIntegral_of_holomorphic
     hrho hcont hdiff hz
 
+/-- For `Re z > 1/2`, the kernel `e^(-z t) ε S(t)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_routePSourceSignedComplexKernel
     (epsilon : ℝ) {z : ℂ} (hz : 1 / 2 < z.re) :
     IntegrableOn (fun t : ℝ => Complex.exp (-z * (t : ℂ)) *
@@ -220,6 +269,8 @@ theorem integrableOn_routePSourceSignedComplexKernel
     apply le_of_eq
     ring
 
+/-- For `T ≥ 0` and `Re z > 1/2`, the tail Laplace transform over `(T, ∞)` equals
+`ε R(z)` minus the head transform over `[0, T]`, where `R` is the Route P source continuation. -/
 theorem routePSourceSignedTailLaplace_eq_continuation_sub_head
     {epsilon T : ℝ} (hT : 0 ≤ T) {z : ℂ} (hz : 1 / 2 < z.re) :
     routePSourceSignedTailLaplace epsilon T z =
@@ -261,10 +312,14 @@ theorem routePSourceSignedTailLaplace_eq_continuation_sub_head
   rw [← hheadEq, ← htailEq, hfullEq] at hsplit
   linear_combination -hsplit
 
+/-- The candidate continuation `w ↦ ε R(1 - w) - head(1 - w)` of the carrier measure's
+complex moment generating function (with `r = 1`). -/
 def routePSourceLandauContinuation (epsilon T : ℝ) (w : ℂ) : ℂ :=
   (epsilon : ℂ) * routePSourceLaplaceContinuation ((1 : ℂ) - w) -
     routePSourceSignedHeadLaplace epsilon T ((1 : ℂ) - w)
 
+/-- The candidate continuation is holomorphic on the closed disk `|w| ≤ 5/4`, since `R` is
+analytic on `|z - 1| ≤ 5/4` and the head transform is entire. -/
 theorem differentiableOn_routePSourceLandauContinuation_closedBall
     (epsilon T : ℝ) :
     DifferentiableOn ℂ (routePSourceLandauContinuation epsilon T)
@@ -289,6 +344,8 @@ theorem differentiableOn_routePSourceLandauContinuation_closedBall
     (hF.const_mul (epsilon : ℂ)).sub hHead
   exact (houter.comp w hinner).differentiableWithinAt
 
+/-- Assuming `T ≥ 0` and `0 ≤ ε S(t)` for `t > T`, the candidate continuation agrees near `0`
+with the complex moment generating function of the carrier measure with `r = 1`. -/
 theorem routePSourceLandauContinuation_eventuallyEq_complexMGF
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -310,6 +367,8 @@ theorem routePSourceLandauContinuation_eventuallyEq_complexMGF
     (complexMGF_id_routePSourceLandauMeasure_eq_tailLaplace
       (r := 1) hpos w).symm
 
+/-- Landau consequence: assuming `T ≥ 0` and the sign condition `0 ≤ ε S(t)` for all `t > T`,
+`e^(9t/8)` is integrable against the carrier measure with `r = 1`. -/
 theorem integrable_exp_nine_eighth_routePSourceLandauMeasure
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →

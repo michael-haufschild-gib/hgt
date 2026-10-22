@@ -1,12 +1,46 @@
 import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovStrongScaleMain
 import GaloisForLFunctions.RHTower.SmoothAFEZetaCriticalDetectorFullLongMomentExpansion
 
+/-!
+# Strong-scale asymptotics of the differentiated Barban–Vehov long moments
+
+Take the long window `(L, L M]` at the strong scale `L = M³`. The exact base, cross and
+differentiated Barban–Vehov lcm forms are compared with their polynomial main terms with
+explicit errors `3/M`, `30/M` and `300/M` after normalization by `log² M`, `log³ M` and `log⁴ M`.
+Consequently the harmonic moments `∑_{M³ < k ≤ M⁴} b_M(k)² / k`, the cross moment with the
+log-differentiated coefficient, and the differentiated moment converge after normalization to
+`1`, `-(3 + 1/2)` and `3² + 3 + 2/3`. The full differentiated Levinson detector energy at
+`λ = r / log M` therefore converges to `1 - 7r + (38/3) r²`.
+
+## Main results
+
+- `abs_barbanVehovFullLongBaseLcm_cube_div_log_sq_sub_polynomial_le`,
+  `abs_barbanVehovFullLongCrossLcm_cube_div_log_cube_sub_polynomial_le`,
+  `abs_barbanVehovFullLongDerivativeLcm_cube_div_log_four_sub_polynomial_le`: explicit error
+  bounds `3/M`, `30/M`, `300/M` for `M ≥ 8`.
+- `tendsto_barbanVehovFullLongBaseLcm_cube_div_log_sq_one`,
+  `tendsto_barbanVehovFullLongCrossLcm_cube_div_log_cube`,
+  `tendsto_barbanVehovFullLongDerivativeLcm_cube_div_log_four`: limits `1`, `-(3 + 1/2)`,
+  `3² + 3 + 2/3` of the normalized lcm forms.
+- `tendsto_levinsonCriticalDetectorFullLongBaseMoment_cube_div_log_sq_one`,
+  `tendsto_levinsonCriticalDetectorFullLongCrossMoment_cube_div_log_cube`,
+  `tendsto_levinsonCriticalDetectorFullLongDerivativeMoment_cube_div_log_four`: the same limits for
+  the harmonic moments of the Barban–Vehov coefficients.
+- `tendsto_levinsonCriticalDetectorFullLongEnergy_cube`: the full differentiated long energy at
+  `λ = r / log M` tends to `1 - 7r + (38/3) r²`.
+
+## Hypotheses
+
+All results are unconditional; the explicit error bounds assume `M ≥ 8`.
+-/
+
 open Filter Topology
 
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- For `M ≥ 2`, `log(M³ M + 1) ≤ 5 log M`. -/
 theorem log_cube_mul_add_one_le_five_log
     {M : ℕ} (hM : 2 ≤ M) :
     Real.log (M ^ (3 : ℕ) * M + 1 : ℕ) ≤ 5 * Real.log M := by
@@ -27,6 +61,8 @@ theorem log_cube_mul_add_one_le_five_log
   norm_num [Nat.cast_pow]
   exact hlog
 
+/-- For `M ≥ 8`, the base lcm form at `L = M³`, normalized by `log² M`, is within `3/M` of its
+normalized polynomial main term. -/
 theorem abs_barbanVehovFullLongBaseLcm_cube_div_log_sq_sub_polynomial_le
     {M : ℕ} (hM : 8 ≤ M) :
     |barbanVehovFullLongBaseLcm (M ^ (3 : ℕ)) M / Real.log M ^ (2 : ℕ) -
@@ -47,6 +83,8 @@ theorem abs_barbanVehovFullLongBaseLcm_cube_div_log_sq_sub_polynomial_le
       norm_num [Nat.cast_pow]
       field_simp [hlog]
 
+/-- For `M ≥ 8`, the cross lcm form at `L = M³`, normalized by `log³ M`, is within `30/M` of its
+normalized polynomial main term. -/
 theorem abs_barbanVehovFullLongCrossLcm_cube_div_log_cube_sub_polynomial_le
     {M : ℕ} (hM : 8 ≤ M) :
     |barbanVehovFullLongCrossLcm (M ^ (3 : ℕ)) M / Real.log M ^ (3 : ℕ) -
@@ -76,6 +114,8 @@ theorem abs_barbanVehovFullLongCrossLcm_cube_div_log_cube_sub_polynomial_le
       field_simp [hMR.ne']
       nlinarith
 
+/-- For `M ≥ 8`, the differentiated lcm form at `L = M³`, normalized by `log⁴ M`, is within `300/M`
+of its normalized polynomial main term. -/
 theorem abs_barbanVehovFullLongDerivativeLcm_cube_div_log_four_sub_polynomial_le
     {M : ℕ} (hM : 8 ≤ M) :
     |barbanVehovFullLongDerivativeLcm (M ^ (3 : ℕ)) M / Real.log M ^ (4 : ℕ) -
@@ -119,6 +159,7 @@ private theorem tendsto_const_div_nat (c : ℝ) :
     Tendsto (fun M : ℕ => c / (M : ℝ)) atTop (𝓝 0) := by
   exact tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
 
+/-- The base lcm form at `L = M³` divided by `log² M` tends to `1`. -/
 theorem tendsto_barbanVehovFullLongBaseLcm_cube_div_log_sq_one :
     Tendsto (fun M : ℕ =>
       barbanVehovFullLongBaseLcm (M ^ (3 : ℕ)) M / Real.log M ^ (2 : ℕ))
@@ -138,6 +179,7 @@ theorem tendsto_barbanVehovFullLongBaseLcm_cube_div_log_sq_one :
   simpa only [sub_add_cancel, zero_add] using
     hdiff.add tendsto_barbanVehovLongBasePolynomialMain_div_log_sq_one
 
+/-- The cross lcm form at `L = M³` divided by `log³ M` tends to `-(3 + 1/2)`. -/
 theorem tendsto_barbanVehovFullLongCrossLcm_cube_div_log_cube :
     Tendsto (fun M : ℕ =>
       barbanVehovFullLongCrossLcm (M ^ (3 : ℕ)) M / Real.log M ^ (3 : ℕ))
@@ -157,6 +199,7 @@ theorem tendsto_barbanVehovFullLongCrossLcm_cube_div_log_cube :
   simpa only [sub_add_cancel, zero_add] using
     hdiff.add (tendsto_barbanVehovLongCrossPolynomialMain_div_log_cube 3)
 
+/-- The differentiated lcm form at `L = M³` divided by `log⁴ M` tends to `3² + 3 + 2/3`. -/
 theorem tendsto_barbanVehovFullLongDerivativeLcm_cube_div_log_four :
     Tendsto (fun M : ℕ =>
       barbanVehovFullLongDerivativeLcm (M ^ (3 : ℕ)) M / Real.log M ^ (4 : ℕ))
@@ -182,6 +225,7 @@ private theorem self_le_cube {M : ℕ} (hM : 0 < M) : M ≤ M ^ (3 : ℕ) := by
     _ ≤ (M * M) * M := Nat.le_mul_of_pos_right (M * M) hM
     _ = M ^ (3 : ℕ) := by ring
 
+/-- The harmonic moment `∑_{M³ < k ≤ M⁴} b_M(k)² / k` divided by `log² M` tends to `1`. -/
 theorem tendsto_levinsonCriticalDetectorFullLongBaseMoment_cube_div_log_sq_one :
     Tendsto (fun M : ℕ =>
       RHTower.levinsonCriticalDetectorFullLongBaseMoment (M ^ (3 : ℕ)) M /
@@ -191,6 +235,8 @@ theorem tendsto_levinsonCriticalDetectorFullLongBaseMoment_cube_div_log_sq_one :
   rw [levinsonCriticalDetectorFullLongBaseMoment_eq_lcm
     (by omega) (self_le_cube (by omega))]
 
+/-- The cross harmonic moment of the base and log-differentiated Barban–Vehov coefficients on
+`(M³, M⁴]`, divided by `log³ M`, tends to `-(3 + 1/2)`. -/
 theorem tendsto_levinsonCriticalDetectorFullLongCrossMoment_cube_div_log_cube :
     Tendsto (fun M : ℕ =>
       RHTower.levinsonCriticalDetectorFullLongCrossMoment (M ^ (3 : ℕ)) M /
@@ -200,6 +246,7 @@ theorem tendsto_levinsonCriticalDetectorFullLongCrossMoment_cube_div_log_cube :
   rw [levinsonCriticalDetectorFullLongCrossMoment_eq_lcm
     (by omega) (self_le_cube (by omega))]
 
+/-- The differentiated harmonic moment on `(M³, M⁴]` divided by `log⁴ M` tends to `3² + 3 + 2/3`. -/
 theorem tendsto_levinsonCriticalDetectorFullLongDerivativeMoment_cube_div_log_four :
     Tendsto (fun M : ℕ =>
       RHTower.levinsonCriticalDetectorFullLongDerivativeMoment (M ^ (3 : ℕ)) M /
@@ -209,6 +256,8 @@ theorem tendsto_levinsonCriticalDetectorFullLongDerivativeMoment_cube_div_log_fo
   rw [levinsonCriticalDetectorFullLongDerivativeMoment_eq_lcm
     (by omega) (self_le_cube (by omega))]
 
+/-- The full differentiated long Levinson detector energy on `(M³, M⁴]` at `λ = r / log M` tends to
+`1 - 7r + (38/3) r²`. -/
 theorem tendsto_levinsonCriticalDetectorFullLongEnergy_cube (r : ℝ) :
     Tendsto (fun M : ℕ =>
       RHTower.levinsonCriticalDetectorFullLongEnergy

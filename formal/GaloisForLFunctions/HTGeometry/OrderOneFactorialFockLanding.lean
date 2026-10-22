@@ -1,12 +1,37 @@
 import GaloisForLFunctions.HTGeometry.OrderOneEnvelope
 import GaloisForLFunctions.HTGeometry.FactorialFockInfiniteRadius
 
+/-!
+# Entire functions of order one lie in the factorial Fock space at every center
+
+A function with an order-one growth envelope `‖f s‖ ≤ exp(C (1+‖s‖) log(2+‖s‖))` satisfies, for
+each center `a` and each `ε > 0`, a Gaussian bound `‖f z‖ ≤ K exp(ε ‖z - a‖²)`. For an entire such
+`f`, Cauchy estimates on the circle of radius `√(n / 2ε)` with `ε = 1/(8e)` bound the Taylor jet,
+so the factorial Fock energy `∑ₙ ‖f⁽ⁿ⁾(a)‖² / n!` is finite, being dominated by a geometric
+series of ratio `1/4`.
+
+## Main results
+
+- `OrderOneEnvelope.gaussian_bound_at`: for every center `a` and `ε > 0` there is `K > 0` with
+  `‖f z‖ ≤ K exp(ε ‖z - a‖²)` for all `z`.
+- `OrderOneEnvelope.summable_rawJetFactorialFockEnergy`: for entire `f` with an order-one
+  envelope, `n ↦ ‖f⁽ⁿ⁾(a)‖² / n!` is summable at every `a ∈ ℂ`.
+
+## Hypotheses
+
+Both results assume `OrderOneEnvelope f`, a Prop-valued global growth bound of order one; the
+summability result also assumes that `f` is complex differentiable on all of `ℂ`. Under these
+hypotheses the results are unconditional.
+-/
+
 open Complex Filter Topology Metric
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Assuming the order-one envelope `hf`, for every center `a` and every `ε > 0` there is `K > 0`
+with `‖f z‖ ≤ K exp(ε ‖z - a‖²)` for all `z ∈ ℂ`. -/
 theorem OrderOneEnvelope.gaussian_bound_at
     {f : ℂ → ℂ} (hf : OrderOneEnvelope f) (a : ℂ) {eps : ℝ} (heps : 0 < eps) :
     ∃ K : ℝ, 0 < K ∧ ∀ z : ℂ, ‖f z‖ ≤ K * Real.exp (eps * ‖z - a‖ ^ 2) := by
@@ -98,6 +123,9 @@ theorem OrderOneEnvelope.gaussian_bound_at
       _ = Real.exp D * Real.exp (eps * ‖z - a‖ ^ 2) := by
         rw [Real.exp_add]
 
+/-- Assuming `f` is entire and has an order-one envelope, the factorial Fock energy of its Taylor
+jet at any `a` is finite: `∑ₙ ‖f⁽ⁿ⁾(a)‖² / n!` converges, by Cauchy estimates and a geometric
+comparison with ratio `1/4`. -/
 theorem OrderOneEnvelope.summable_rawJetFactorialFockEnergy
     {f : ℂ → ℂ} (hf : OrderOneEnvelope f) (hfd : Differentiable ℂ f) (a : ℂ) :
     Summable (fun n : ℕ => ‖iteratedDeriv n f a‖ ^ 2 / n.factorial) := by

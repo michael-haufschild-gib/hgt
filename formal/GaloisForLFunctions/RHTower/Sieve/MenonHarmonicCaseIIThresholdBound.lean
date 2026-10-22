@@ -2,12 +2,34 @@ import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIBlockBudget
 import GaloisForLFunctions.RHTower.Sieve.MenonPrimeTwistRangeReverseAbel
 import GaloisForLFunctions.RHTower.BurnolPrimeLogSummability
 
+/-!
+# Menon harmonic Case II: the logarithmic-power threshold
+
+For a harmonic prime block `(a, Y]` with `a < Y ≤ 2a`, the Case-II argument bounds the block
+polynomial by `(B + E + P) / (log(a + 1) · (a + 1))`, where `B` is the Perron budget
+`menonHarmonicCaseIIBudget`, `E` the cost of the two smoothing transition windows and `P` the
+proper-prime-power von Mangoldt mass on `(a, Y]`. This module shows that this threshold is
+eventually at most `(budget constant + 24) / (log a)^20`, using `(log a)^20 ≤ √a` for large `a` and
+the bound `P ≤ 2 √Y log Y`.
+
+## Main results
+
+- `eventually_menonHarmonicCaseII_threshold_le`: for every `C0 ≥ 0`, for all sufficiently large `a`
+  and all `Y` with `a < Y ≤ 2a`, the Case-II threshold is at most
+  `menonHarmonicCaseIIThresholdConstant C0 / (log a)^20`.
+
+## Hypotheses
+
+Unconditional. The only assumptions are `0 ≤ C0` and the block range `a < Y ≤ 2a`.
+-/
+
 namespace RHTower.Sieve
 
 open Filter Finset ArithmeticFunction
 
 noncomputable section
 
+/-- Threshold constant `menonHarmonicCaseIIBudgetConstant C0 + 24` of the Case-II block bound. -/
 def menonHarmonicCaseIIThresholdConstant (C0 : ℝ) : ℝ :=
   menonHarmonicCaseIIBudgetConstant C0 + 24
 
@@ -32,6 +54,9 @@ private theorem primePowerDefectIoc_le_full (a Y : ℕ) :
     · rw [if_neg hp, sub_zero]
       exact vonMangoldt_nonneg
 
+/-- Assuming `0 ≤ C0`: eventually in `a`, for all `Y` with `a < Y ≤ 2a`,
+`((B + E + P) / log(a + 1)) / (a + 1) ≤ menonHarmonicCaseIIThresholdConstant C0 / (log a)^20`, where
+`B` is the Case-II budget, `E` the transition-window envelope and `P` the prime-power defect on `(a, Y]`. -/
 theorem eventually_menonHarmonicCaseII_threshold_le (C0 : ℝ) (hC0 : 0 ≤ C0) :
     ∀ᶠ a : ℕ in atTop, ∀ {Y : ℕ}, a < Y → Y ≤ 2 * a →
       (((menonHarmonicCaseIIBudget C0 a Y +

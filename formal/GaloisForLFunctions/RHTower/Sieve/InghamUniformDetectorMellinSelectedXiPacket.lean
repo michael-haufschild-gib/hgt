@@ -3,6 +3,43 @@ import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinFullXiSum
 import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitGlobalZeroCount
 import GaloisForLFunctions.RHTower.ZetaXiZeroCorrespondence
 
+/-!
+# The selected zeta-zero Mellin packet in Route T tends to zero
+
+Let `N_X = X^{1000/299}`, `H_X = N_X / X^{999/1000}` and let `K_X(s)` be the width-normalized
+Mellin transform `H_X⁻¹ ∫ w(x) x^{s-1} dx` of the smooth window
+`w = smoothWeight(N_X + H_X, H_X) - smoothWeight(N_X, H_X)`, supported in `[N_X, N_X + 2H_X]`
+(`routeTNormalizedSmoothWindowMellin`). The contour residue packet
+`2πi ∑ ord_w((s-1)ζ) K_X(w)`, over the zeros `w` of `(s-1)ζ(s)` in the rectangle
+`[-1/2, 2] × [-T_X, T_X]` at the selected height `T_X ∈ (X-3, X-2)`, is rewritten as `2πi` times a
+sum of `K_X(ρ)` over multiplicity copies of the zeros `ρ` of `ξ` with `|Im ρ| ≤ T_X`. Splitting at
+`Re ρ = 7/10`, the low-real part is bounded with the global zero count and `|K_X(ρ)| ≤ N_X^{Re ρ - 1}`
+by `O(X log X · X^{-300/299})`, and the high-real part by the physical high-zero weighted mass,
+which tends to zero by the imported zero-density estimate. Hence the whole packet tends to zero.
+
+## Main results
+
+- `routeTSelectedXiSupport_map_eq_zetaZeros`: for `T ≥ 0`, the distinct `ξ` zeros with
+  `|Im ρ| ≤ T` are exactly the zeros of `(s-1)ζ(s)` in `[-1/2, 2] × [-T, T]`.
+- `routeTSelectedZetaMultiplicitySum_eq_xiCopySum`: the multiplicity-weighted zeta-zero sum of
+  `K` over that rectangle equals the sum of `K` over `ξ` zero copies.
+- `norm_inghamRouteTBufferedSelectedXiMellinLowRealPacket_le`: the `Re ρ < 7/10` part has norm at
+  most `C (1 + X) log(2 + X) X^{-300/299}` for `X ≥ 12`.
+- `norm_inghamRouteTBufferedSelectedXiMellinHighRealPacket_le`: the `Re ρ ≥ 7/10` part is at most
+  `inghamRouteTHighZeroWeightedMass X` for `X ≥ 12`.
+- `tendsto_inghamRouteTBufferedSelectedXiMellinPacket_zero`: the full `ξ`-zero Mellin packet tends
+  to `0` as `X → ∞`.
+- `inghamRouteTBufferedSelectedNegativeHalfZeroPacket_eq_xiPacket`,
+  `tendsto_inghamRouteTBufferedSelectedNegativeHalfZeroPacket_zero`: the selected contour zero
+  packet equals `2πi` times the `ξ` packet and tends to `0`.
+
+## Hypotheses
+
+The main results are unconditional: the statements take no analytic premise. The only conditions
+are `T ≥ 0` for the zero correspondence and `X ≥ 12` for the explicit bounds; the limits are as
+`X → ∞`.
+-/
+
 open Complex Filter Topology Set Finset
 open RHTower RHTower.Sieve
 
@@ -10,6 +47,7 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- The divisor multiplicity of a zero `ρ` of `ξ` equals its analytic order `ord_ρ ξ`. -/
 theorem routeT_xiSupportMultiplicity_eq_analyticOrderAt_toNat
     (rho : RHTower.XiDivisorSupport) :
     RHTower.xiSupportMultiplicity rho =
@@ -40,10 +78,13 @@ def routeTSelectedZetaLower (T : ℝ) : ℂ :=
 def routeTSelectedZetaUpper (T : ℝ) : ℂ :=
   ((2 : ℝ) : ℂ) + ((T : ℝ) : ℂ) * I
 
+/-- Multiplicity copies of the zeros `ρ` of `ξ` whose spectral point lies in
+`[-T, T] × [-1/2, 1/2]`, that is, with `|Im ρ| ≤ T`. -/
 def routeTSelectedXiCopyPacket (T : ℝ) : Finset RHTower.XiZeroCopy :=
   RHTower.xiZeroCopyClosedRectangle
     (routeTSelectedXiSpectralLower T) (routeTSelectedXiSpectralUpper T)
 
+/-- The distinct zeros of `ξ` underlying `routeTSelectedXiCopyPacket T`. -/
 def routeTSelectedXiSupportPacket (T : ℝ) : Finset RHTower.XiDivisorSupport :=
   (routeTSelectedXiCopyPacket T).image Sigma.fst
 
@@ -55,6 +96,8 @@ theorem routeTSelectedXiCopyPacket_fst_eq_mem
   simp only [routeTSelectedXiCopyPacket, RHTower.mem_xiZeroCopyClosedRectangle,
     hspectral]
 
+/-- For `T ≥ 0`, the distinct zeros of `ξ` with `|Im ρ| ≤ T` are exactly the zeros of
+`(s-1)ζ(s)` in the closed rectangle `[-1/2, 2] × [-T, T]`. -/
 theorem routeTSelectedXiSupport_map_eq_zetaZeros
     {T : ℝ} (hT : 0 ≤ T) :
     (routeTSelectedXiSupportPacket T).map routeTSelectedXiSupportValEmbedding =
@@ -154,6 +197,8 @@ theorem routeTSelectedXiSupport_map_eq_zetaZeros
         routeTSelectedXiSpectralUpper,
         uIcc_of_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 1 / 2)] using him
 
+/-- Summing a function of the underlying zero over multiplicity copies equals the
+multiplicity-weighted sum over distinct zeros. -/
 theorem sum_routeTSelectedXiCopyPacket_eq_supportMultiplicitySum
     (target : RHTower.XiDivisorSupport → ℂ) (T : ℝ) :
     ∑ q ∈ routeTSelectedXiCopyPacket T, target q.1 =
@@ -209,6 +254,8 @@ theorem sum_routeTSelectedXiCopyPacket_eq_supportMultiplicitySum
       rw [RHTower.card_xiZeroCopyFiber]
       simp [RHTower.xiSupportMultiplicity, nsmul_eq_mul]
 
+/-- For `T ≥ 0`, `∑ ord_w((s-1)ζ) K_{N,H}(w)` over the zeros of `(s-1)ζ(s)` in
+`[-1/2, 2] × [-T, T]` equals `∑ K_{N,H}(ρ_q)` over the `ξ` zero copies with `|Im ρ| ≤ T`. -/
 theorem routeTSelectedZetaMultiplicitySum_eq_xiCopySum
     {N H T : ℝ} (hT : 0 ≤ T) :
     (∑ w ∈ zetaResidueUnitClosedRectangleZeros
@@ -250,6 +297,7 @@ theorem routeTSelectedZetaMultiplicitySum_eq_xiCopySum
       simpa only [B] using sum_routeTSelectedXiCopyPacket_eq_supportMultiplicitySum
         (fun rho => routeTNormalizedSmoothWindowMellin N H (rho : ℂ)) T
 
+/-- The `ξ` zero copies with `|Im ρ| ≤ T_X`, at the selected contour height `T_X`. -/
 def inghamRouteTBufferedSelectedXiCopyPacket (X : ℕ) : Finset RHTower.XiZeroCopy :=
   routeTSelectedXiCopyPacket (inghamRouteTBufferedNegativeHalfHeight X)
 
@@ -319,12 +367,15 @@ def inghamRouteTBufferedSelectedXiMellinHighRealPacket (X : ℕ) : ℂ :=
       (inghamRouteTMellinPhysicalCenter X)
       (inghamRouteTMellinBufferedPhysicalWidth X) (q.1 : ℂ)
 
+/-- The `ξ`-zero Mellin packet `∑ K_X(ρ_q)` over the selected zero copies. -/
 def inghamRouteTBufferedSelectedXiMellinPacket (X : ℕ) : ℂ :=
   ∑ q ∈ inghamRouteTBufferedSelectedXiCopyPacket X,
     routeTNormalizedSmoothWindowMellin
       (inghamRouteTMellinPhysicalCenter X)
       (inghamRouteTMellinBufferedPhysicalWidth X) (q.1 : ℂ)
 
+/-- For `X ≥ 12`, the part of the packet from zeros with `Re ρ < 7/10` has norm at most
+`C_ξ (1 + X) log(2 + X) X^{-300/299}`, by `|K_X(ρ)| ≤ N_X^{Re ρ - 1}` and the global zero count. -/
 theorem norm_inghamRouteTBufferedSelectedXiMellinLowRealPacket_le
     {X : ℕ} (hX : 12 ≤ X) :
     ‖inghamRouteTBufferedSelectedXiMellinLowRealPacket X‖ ≤
@@ -383,6 +434,8 @@ theorem norm_inghamRouteTBufferedSelectedXiMellinLowRealPacket_le
       mul_le_mul_of_nonneg_right hcard hE0
     _ = _ := by rfl
 
+/-- For `X ≥ 12`, the part of the packet from zeros with `Re ρ ≥ 7/10` has norm at most the
+physical high-zero weighted mass `∑ X^{(1000/299)(Re w - 1)} · mult(w)`. -/
 theorem norm_inghamRouteTBufferedSelectedXiMellinHighRealPacket_le
     {X : ℕ} (hX : 12 ≤ X) :
     ‖inghamRouteTBufferedSelectedXiMellinHighRealPacket X‖ ≤
@@ -439,6 +492,7 @@ theorem inghamRouteTBufferedSelectedXiMellinPacket_eq_low_add_high (X : ℕ) :
       (inghamRouteTMellinPhysicalCenter X)
       (inghamRouteTMellinBufferedPhysicalWidth X) (q.1 : ℂ))).symm
 
+/-- The low-real (`Re ρ < 7/10`) part of the `ξ` packet tends to zero as `X → ∞`. -/
 theorem tendsto_norm_inghamRouteTBufferedSelectedXiMellinLowRealPacket_zero :
     Tendsto (fun X : ℕ =>
       ‖inghamRouteTBufferedSelectedXiMellinLowRealPacket X‖) atTop (𝓝 0) := by
@@ -498,6 +552,8 @@ theorem tendsto_norm_inghamRouteTBufferedSelectedXiMellinLowRealPacket_zero :
       rw [← hcollapse]
       ring
 
+/-- The high-real (`Re ρ ≥ 7/10`) part of the `ξ` packet tends to zero as `X → ∞`, via the
+zero-density limit of the high-zero weighted mass. -/
 theorem tendsto_norm_inghamRouteTBufferedSelectedXiMellinHighRealPacket_zero :
     Tendsto (fun X : ℕ =>
       ‖inghamRouteTBufferedSelectedXiMellinHighRealPacket X‖) atTop (𝓝 0) := by
@@ -506,6 +562,7 @@ theorem tendsto_norm_inghamRouteTBufferedSelectedXiMellinHighRealPacket_zero :
   filter_upwards [eventually_ge_atTop (12 : ℕ)] with X hX
   exact norm_inghamRouteTBufferedSelectedXiMellinHighRealPacket_le hX
 
+/-- The full selected `ξ`-zero Mellin packet `∑ K_X(ρ_q)` tends to `0` as `X → ∞`. -/
 theorem tendsto_inghamRouteTBufferedSelectedXiMellinPacket_zero :
     Tendsto inghamRouteTBufferedSelectedXiMellinPacket atTop (𝓝 0) := by
   have hlo : Tendsto inghamRouteTBufferedSelectedXiMellinLowRealPacket atTop (𝓝 0) :=
@@ -518,6 +575,8 @@ theorem tendsto_inghamRouteTBufferedSelectedXiMellinPacket_zero :
     inghamRouteTBufferedSelectedXiMellinPacket_eq_low_add_high X)).mpr
   simpa using hlo.add hhi
 
+/-- For `X ≥ 12`, the contour zero packet on `[-1/2, 2] × [-T_X, T_X]` equals `2πi` times the
+selected `ξ`-zero Mellin packet. -/
 theorem inghamRouteTBufferedSelectedNegativeHalfZeroPacket_eq_xiPacket
     {X : ℕ} (hX : 12 ≤ X) :
     inghamRouteTBufferedSelectedNegativeHalfZeroPacket X =
@@ -544,6 +603,7 @@ theorem inghamRouteTBufferedSelectedNegativeHalfZeroPacket_eq_xiPacket
     inghamRouteTBufferedSelectedXiCopyPacket]
   rw [hlower, hupper, hsum]
 
+/-- The selected contour zero packet `2πi ∑ ord_w K_X(w)` tends to `0` as `X → ∞`. -/
 theorem tendsto_inghamRouteTBufferedSelectedNegativeHalfZeroPacket_zero :
     Tendsto inghamRouteTBufferedSelectedNegativeHalfZeroPacket atTop (𝓝 0) := by
   have hscaled : Tendsto (fun X : ℕ =>

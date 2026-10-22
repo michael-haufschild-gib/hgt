@@ -1,6 +1,29 @@
 import GaloisForLFunctions.HTGeometry.InfiniteSupportCayleyGram
 import GaloisForLFunctions.RHTower.Hedenmalm.HedenmalmThetaTrace
 
+/-!
+# The Hilbert basis index of the theta quantile space is infinite
+
+The quantile space `L²([0,1])` (Lebesgue measure restricted to the unit interval) is identified
+with `ℓ²(thetaIndex)` by a coordinate isometry. This module shows that the unit-interval measure
+has infinite support, that the conjugate Cayley monomials `x ↦ conj(c(x))ⁿ` (with `c` the real
+Cayley map onto the unit circle) are linearly independent in `L²([0,1])` because a nonzero
+polynomial has finitely many roots, and hence that `L²([0,1])` is infinite-dimensional and
+`thetaIndex` is an infinite type.
+
+## Main results
+
+- `unitIntervalMeasure_support_infinite`: the support of the unit-interval measure is infinite.
+- `linearIndependent_cayleyConjugateMonomialLp_unitInterval`: the conjugate Cayley monomials are
+  linearly independent in `L²([0,1])`.
+- `unitIntervalL2_not_finiteDimensional`: `L²([0,1])` is not finite-dimensional.
+- `thetaIndex_infinite`: the index set `thetaIndex` is infinite.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 open Filter Set Topology MeasureTheory
 
 namespace RHTower.HedenmalmThetaSource
@@ -9,6 +32,7 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- The support of Lebesgue measure restricted to `[0,1]` is infinite (it contains `(0,1)`). -/
 theorem unitIntervalMeasure_support_infinite : unitIntervalMeasure.support.Infinite := by
   refine (Set.Ioo_infinite (show (0 : ℝ) < 1 by norm_num)).mono ?_
   intro x hx
@@ -27,6 +51,8 @@ theorem unitIntervalMeasure_support_infinite : unitIntervalMeasure.support.Infin
     exact lt_of_lt_of_le hvolpos (measure_mono hsmall)
   exact lt_of_lt_of_le hVpos (measure_mono hVU)
 
+/-- The conjugate Cayley monomials `conj(c(x))ⁿ` are linearly independent in `L²([0,1])`: a
+vanishing combination is a polynomial vanishing on an infinite set of points. -/
 theorem linearIndependent_cayleyConjugateMonomialLp_unitInterval :
     LinearIndependent ℂ (cayleyConjugateMonomialLp unitIntervalMeasure) := by
   rw [linearIndependent_iff']
@@ -77,6 +103,7 @@ theorem linearIndependent_cayleyConjugateMonomialLp_unitInterval :
   simp [p] at hcoeff
   exact hcoeff hi
 
+/-- `L²([0,1])` is infinite-dimensional over `ℂ`. -/
 theorem unitIntervalL2_not_finiteDimensional :
     ¬ FiniteDimensional ℂ (Lp ℂ 2 unitIntervalMeasure) := by
   intro hfinite
@@ -85,6 +112,8 @@ theorem unitIntervalL2_not_finiteDimensional :
     (cayleyConjugateMonomialLp unitIntervalMeasure)
     linearIndependent_cayleyConjugateMonomialLp_unitInterval
 
+/-- The Hilbert basis index `thetaIndex` of the quantile space is infinite, since a finite index
+would make `L²([0,1]) ≅ ℓ²(thetaIndex)` finite-dimensional. -/
 noncomputable instance thetaIndex_infinite : Infinite thetaIndex := by
   rw [← not_finite_iff_infinite]
   intro hfinite

@@ -1,6 +1,40 @@
 import GaloisForLFunctions.RHTower.LiClockCriticalAngularKernel
 import Mathlib
 
+/-!
+# Gaussian cutoff law for the critical Li-clock radial measures
+
+Let `X, Y` be independent standard Gaussians and `R²_t = (2√t + X)² + Y²` (a noncentral
+chi-square law with two degrees of freedom). For `t ≥ 0`, polar coordinates and the angular
+Bessel integral show that the law of `R²_t` has density `½ e^{-2t - r/2} K(t r)` on `(0, ∞)`, with
+`K(w) = ∑ wᵐ/(m!)²`. The cutoff measure `μ_t` uses instead the even kernel `E = (K + K⁻)/2`, so
+`μ_t(s) = (P(R²_t ∈ s) + ∫_{s ∩ (0,∞)} ½ e^{-2t - r/2} K⁻(t r) dr) / 2`, where the oscillatory
+part has total variation at most `e^{-2t}`. In the critical window `L → ∞`,
+`(t - L/4)/√L → u`, the central limit for `R²_t` gives `P(R²_t ≤ L) → Φ(-2u)` and
+`μ_t([0, L]) → Φ(-2u)/2`, with `Φ` the standard normal CDF; bands `[L - K, L]` of fixed width
+have vanishing `μ_t`-mass, and the exponentially weighted cutoff loss
+`∫_{[0,L]} e^{-(L - r)} dμ_t(r)` tends to `0`.
+
+## Main results
+
+- `tendsto_liClockCriticalRadialGaussian_cutoff`: in the window, `P(R²_t ∈ [0, L]) → Φ(-2u)`.
+- `liClockCriticalRadialGaussian_eq_withDensity`: for `t ≥ 0`, the law of `R²_t` has density
+  `½ e^{-2t - r/2} K(t r)` on `(0, ∞)`.
+- `liClockCriticalCutoffMeasure_real_eq_half`: `μ_t` is half the law of `R²_t` plus half the
+  oscillatory signed density.
+- `liClockCriticalCutoffMeasure_mass_le_one`: `μ_t(ℝ) ≤ 1` for `t ≥ 0`.
+- `tendsto_liClockCriticalCutoffMeasure_cutoff`: in the window, `μ_t([0, L]) → Φ(-2u)/2`.
+- `tendsto_liClockCriticalCutoffMeasure_band`: in the window, `μ_t([L - K, L]) → 0` for `K > 0`.
+- `tendsto_liClockCriticalCutoffLoss`: in the window, `∫_{[0,L]} e^{-(L - r)} dμ_t(r) → 0`.
+- `liClockCriticalCutoffLoss_raw_integral`:
+  `e^{-2t} ∫₀ᴸ e^{-L + r/2} E(t r) dr = 2 ∫_{[0,L]} e^{-(L - r)} dμ_t(r)`.
+
+## Hypotheses
+
+Unconditional. The window theorems assume `L n → ∞` and `(t n - L n / 4) / √(L n) → u`; the
+density and mass statements assume `0 ≤ t`; band and loss bounds assume `0 < K < L`.
+-/
+
 noncomputable section
 open MeasureTheory ProbabilityTheory Set Filter Topology
 open scoped NNReal ENNReal Classical
@@ -10,16 +44,20 @@ namespace RHTower
 private abbrev cgGaussian : Measure ℝ :=
   ProbabilityTheory.gaussianReal 0 (1 : ℝ≥0)
 
+/-- Standard normal cumulative distribution function `Φ(x)`. -/
 def liClockCriticalGaussianCDF (x : ℝ) : ℝ :=
   ProbabilityTheory.cdf (ProbabilityTheory.gaussianReal 0 (1 : ℝ≥0)) x
 
+/-- The standard Gaussian measure on `ℝ²` (product of two standard normals). -/
 def liClockCriticalGaussianProduct : Measure (ℝ × ℝ) :=
   (ProbabilityTheory.gaussianReal 0 (1 : ℝ≥0)).prod
     (ProbabilityTheory.gaussianReal 0 (1 : ℝ≥0))
 
+/-- Squared radius `(2√t + x)² + y²` of the shifted Gaussian point. -/
 def liClockCriticalGaussianRadiusSq (t : ℝ) (p : ℝ × ℝ) : ℝ :=
   (2 * Real.sqrt t + p.1)^2 + p.2^2
 
+/-- Law of `R²_t = (2√t + X)² + Y²` for independent standard Gaussians `X, Y`. -/
 def liClockCriticalRadialGaussian (t : ℝ) : Measure ℝ :=
   Measure.map (liClockCriticalGaussianRadiusSq t) liClockCriticalGaussianProduct
 
@@ -47,6 +85,7 @@ private theorem cg_iio_complement (x : ℝ) :
   simpa only [compl_Iic, probReal_univ, cg_cdf_eq_real] using
     (measureReal_compl (μ := cgGaussian) (s := Iic x) measurableSet_Iic)
 
+/-- `Φ(x) = (2π)^{-1/2} ∫_{y ≤ x} e^{-y²/2} dy`. -/
 theorem liClockCriticalGaussianCDF_eq_integral (x : ℝ) :
   liClockCriticalGaussianCDF x = (Real.sqrt (2 * Real.pi))⁻¹ *
     ∫ y in Set.Iic x, Real.exp (-(y^2)/2) := by
@@ -63,6 +102,7 @@ theorem liClockCriticalGaussianCDF_eq_integral (x : ℝ) :
         using (integral_const_mul (μ := volume.restrict (Iic x))
           ((Real.sqrt (2 * Real.pi))⁻¹) (fun y : ℝ => Real.exp (-(y^2)/2)))
 
+/-- `0 < Φ(x) < 1` for every real `x`. -/
 theorem liClockCriticalGaussianCDF_pos_lt_one (x : ℝ) :
     0 < liClockCriticalGaussianCDF x ∧ liClockCriticalGaussianCDF x < 1 := by
   have hp : 0 < cgGaussian.real (Iic x) :=
@@ -75,6 +115,7 @@ theorem liClockCriticalGaussianCDF_pos_lt_one (x : ℝ) :
   rw [← cg_cdf_eq_real] at hp
   exact ⟨hp, by linarith⟩
 
+/-- Symmetry of the normal CDF: `Φ(-x) = 1 - Φ(x)`. -/
 theorem liClockCriticalGaussianCDF_neg (x : ℝ) :
     liClockCriticalGaussianCDF (-x) = 1 - liClockCriticalGaussianCDF x := by
   letI : NullSingletonClass cgGaussian :=
@@ -94,6 +135,7 @@ theorem liClockCriticalGaussianCDF_neg (x : ℝ) :
       measureReal_congr (Ioi_ae_eq_Ici (μ := cgGaussian) (a := x)).symm
     _ = 1 - liClockCriticalGaussianCDF x := cg_iio_complement x
 
+/-- `Φ(0) = 1/2`. -/
 theorem liClockCriticalGaussianCDF_zero : liClockCriticalGaussianCDF 0 = 1 / 2 := by
   have h := liClockCriticalGaussianCDF_neg 0
   simp only [neg_zero] at h
@@ -121,6 +163,7 @@ private theorem cg_vertical_null (a : ℝ) :
   rw [Measure.prod_prod]
   simp
 
+/-- The law of `R²_t` is a probability measure. -/
 theorem isProbabilityMeasure_liClockCriticalRadialGaussian (t : ℝ) :
     IsProbabilityMeasure (liClockCriticalRadialGaussian t) := by
   haveI : IsProbabilityMeasure liClockCriticalGaussianProduct := by
@@ -128,6 +171,8 @@ theorem isProbabilityMeasure_liClockCriticalRadialGaussian (t : ℝ) :
     infer_instance
   exact Measure.isProbabilityMeasure_map (cg_radius_measurable t).aemeasurable
 
+/-- Critical-window kinematics: if `L → ∞` and `(t - L/4)/√L → u`, then `t → ∞`, `t/L → 1/4`,
+`√t/√L → 1/2` and `(L - 4t)/(4√t) → -2u`. -/
 theorem liClockCriticalWindow_kinematics
     {L t : ℕ → ℝ} {u : ℝ}
     (hL : Tendsto L atTop atTop)
@@ -214,6 +259,8 @@ private theorem cg_indicator_integral (a : ℝ) :
       exact measureReal_prod_prod _ _
     _ = liClockCriticalGaussianCDF a := by rw [probReal_univ, mul_one, cg_cdf_eq_real]
 
+/-- Moving-threshold limit: if `Xₙ(p) → p₁` a.e. under the planar Gaussian and `bₙ → a`, then
+`P(Xₙ ≤ bₙ) → Φ(a)` (dominated convergence; the line `p₁ = a` is null). -/
 private theorem cg_moving_threshold
     {a : ℝ} {X : ℕ → (ℝ × ℝ) → ℝ} {b : ℕ → ℝ}
     (hb : Tendsto b atTop (nhds a))
@@ -256,6 +303,7 @@ private theorem cg_moving_threshold
     (fun _ : ℝ × ℝ => (1 : ℝ)) hmeas hbound (integrable_const _) hlim
   simpa only [cg_indicator_integral] using h
 
+/-- In the critical window (`L → ∞`, `(t - L/4)/√L → u`), `P(R²_t ∈ [0, L]) → Φ(-2u)`. -/
 theorem tendsto_liClockCriticalRadialGaussian_cutoff
     {L t : ℕ → ℝ} {u : ℝ}
     (hL : Tendsto L atTop atTop)
@@ -440,19 +488,24 @@ private theorem cg_squared_radius_integral (f : ℝ → ℝ) :
     (integral_comp_rpow_Ioi f (p := 2) (by norm_num))
 
 
+/-- Positive radial density `½ e^{-2t - r/2} K(t r)`. -/
 def liClockCriticalPositiveRadialDensity (t r : ℝ) : ℝ :=
   (1 / 2) * Real.exp (-2 * t - r / 2) * liClockCriticalPositiveKernel (t * r)
 
+/-- Oscillatory radial density `½ e^{-2t - r/2} K⁻(t r)`. -/
 def liClockCriticalOscillatoryRadialDensity (t r : ℝ) : ℝ :=
   (1 / 2) * Real.exp (-2 * t - r / 2) * liClockCriticalOscillatoryKernel (t * r)
 
+/-- Even radial density `½ e^{-2t - r/2} E(t r)`. -/
 def liClockCriticalEvenRadialDensity (t r : ℝ) : ℝ :=
   (1 / 2) * Real.exp (-2 * t - r / 2) * liClockCriticalEvenKernel (t * r)
 
+/-- Cutoff measure `μ_t` on `(0, ∞)` with density `½ e^{-2t - r/2} E(t r)`. -/
 def liClockCriticalCutoffMeasure (t : ℝ) : Measure ℝ :=
   (volume.restrict (Ioi 0)).withDensity
     (fun r => ENNReal.ofReal (liClockCriticalEvenRadialDensity t r))
 
+/-- Cutoff loss `∫_{[0,L]} e^{-(L - r)} dμ_t(r)`. -/
 def liClockCriticalCutoffLoss (t L : ℝ) : ℝ :=
   ∫ r in Icc 0 L, Real.exp (-(L - r)) ∂liClockCriticalCutoffMeasure t
 
@@ -474,6 +527,8 @@ private theorem cg_oscillatory_density_norm_le {t r : ℝ} (ht : 0 ≤ t) (hr : 
     abs_of_pos (Real.exp_pos _)]
   exact mul_le_of_le_one_right (by positivity) ha
 
+/-- For `t ≥ 0`, the oscillatory radial density is integrable on `(0, ∞)` with
+`∫ |½ e^{-2t - r/2} K⁻(t r)| dr ≤ e^{-2t}`. -/
 theorem liClockCriticalOscillatoryRadialDensity_integrable_bound
     {t : ℝ} (ht : 0 ≤ t) :
     IntegrableOn (liClockCriticalOscillatoryRadialDensity t) (Ioi 0) ∧
@@ -534,6 +589,8 @@ private theorem cg_planar_test_integral_eq_polar (t : ℝ) {s : Set ℝ} (hs : M
       simp only [f, A, Set.indicator_apply, mem_preimage, cg_polar_radius_sq,
         mul_ite, mul_zero]
 
+/-- For `t ≥ 0`, integrating the shifted planar Gaussian density over the circle of radius `r`
+gives `2 r · ½ e^{-2t - r²/2} K(t r²)`. -/
 private theorem cg_planar_angular_integral {t : ℝ} (ht : 0 ≤ t) (r : ℝ) :
     (∫ θ in Ioo (-Real.pi) Real.pi, r * cg_planar_pdf t (polarCoord.symm (r, θ))) =
       2 * r * liClockCriticalPositiveRadialDensity t (r^2) := by
@@ -553,6 +610,8 @@ private theorem cg_planar_angular_integral {t : ℝ} (ht : 0 ≤ t) (r : ℝ) :
   unfold liClockCriticalPositiveRadialDensity
   field_simp [Real.pi_ne_zero]
 
+/-- For `t ≥ 0`, the law of `R²_t` is the measure on `(0, ∞)` with density
+`½ e^{-2t - r/2} K(t r)`. -/
 theorem liClockCriticalRadialGaussian_eq_withDensity {t : ℝ} (ht : 0 ≤ t) :
     liClockCriticalRadialGaussian t = (volume.restrict (Ioi 0)).withDensity
       (fun r => ENNReal.ofReal (liClockCriticalPositiveRadialDensity t r)) := by
@@ -577,6 +636,7 @@ theorem liClockCriticalRadialGaussian_eq_withDensity {t : ℝ} (ht : 0 ≤ t) :
         exact mul_nonneg (by positivity) (liClockCriticalPositiveKernel_nonneg (mul_nonneg ht hr.le))))
     exact (ae_restrict_iff' hs).mpr (hpos.mono (fun r hr _ => hr))
 
+/-- For `t ≥ 0`, the cutoff measure `μ_t` is finite. -/
 theorem isFiniteMeasure_liClockCriticalCutoffMeasure {t : ℝ} (ht : 0 ≤ t) :
     IsFiniteMeasure (liClockCriticalCutoffMeasure t) :=
   isFiniteMeasure_withDensity_ofReal (cg_even_density_integrable ht).hasFiniteIntegral
@@ -609,6 +669,7 @@ private theorem cg_positive_density_nonneg_ae {t : ℝ} (ht : 0 ≤ t) :
     unfold liClockCriticalPositiveRadialDensity
     exact mul_nonneg (by positivity) (liClockCriticalPositiveKernel_nonneg (mul_nonneg ht hr.le))))
 
+/-- For `t ≥ 0` and measurable `s`, `μ_t(s) = (P(R²_t ∈ s) + ∫_{s ∩ (0,∞)} ½ e^{-2t - r/2} K⁻(t r) dr) / 2`. -/
 theorem liClockCriticalCutoffMeasure_real_eq_half {t : ℝ} (ht : 0 ≤ t)
     {s : Set ℝ} (hs : MeasurableSet s) :
     (liClockCriticalCutoffMeasure t).real s =
@@ -626,6 +687,7 @@ theorem liClockCriticalCutoffMeasure_real_eq_half {t : ℝ} (ht : 0 ≤ t)
   simp_rw [cg_density_half]
   rw [integral_div, integral_add hp ho]
 
+/-- For `t ≥ 0`, the cutoff measure has total mass at most `1`. -/
 theorem liClockCriticalCutoffMeasure_mass_le_one {t : ℝ} (ht : 0 ≤ t) :
     (liClockCriticalCutoffMeasure t).real univ ≤ 1 := by
   letI := isProbabilityMeasure_liClockCriticalRadialGaussian t
@@ -642,6 +704,7 @@ theorem liClockCriticalCutoffMeasure_mass_le_one {t : ℝ} (ht : 0 ≤ t) :
   rw [liClockCriticalCutoffMeasure_real_eq_half ht MeasurableSet.univ, probReal_univ, univ_inter]
   linarith
 
+/-- For `t ≥ 0`, `L > 0`: `μ_t([0, L]) = ∫_{[0,L]} ½ e^{-2t - r/2} E(t r) dr`. -/
 theorem liClockCriticalCutoffMeasure_real_Icc {t L : ℝ} (ht : 0 ≤ t) (_hL : 0 < L) :
     (liClockCriticalCutoffMeasure t).real (Icc 0 L) =
       ∫ r in Icc 0 L, liClockCriticalEvenRadialDensity t r := by
@@ -669,6 +732,7 @@ private theorem cg_oscillatory_setIntegral_abs_le {t : ℝ} (ht : 0 ≤ t)
         (setIntegral_le_integral (s := s) ho.norm (ae_of_all _ (fun r => norm_nonneg _)))
     _ ≤ _ := (liClockCriticalOscillatoryRadialDensity_integrable_bound ht).2
 
+/-- In the critical window (`L → ∞`, `(t - L/4)/√L → u`), `μ_t([0, L]) → Φ(-2u)/2`. -/
 theorem tendsto_liClockCriticalCutoffMeasure_cutoff {L t : ℕ → ℝ} {u : ℝ}
     (hL : Tendsto L atTop atTop)
     (hT : Tendsto (fun n => (t n - L n / 4) / Real.sqrt (L n)) atTop (nhds u)) :
@@ -690,6 +754,8 @@ theorem tendsto_liClockCriticalCutoffMeasure_cutoff {L t : ℕ → ℝ} {u : ℝ
   exact (liClockCriticalCutoffMeasure_real_eq_half hn measurableSet_Icc).symm
 
 
+/-- For a finite measure of mass `≤ 1` and `0 < K < L`, the exponentially weighted cutoff
+`∫_{[0,L]} e^{-(L - r)} dμ` lies in `[0, e^{-K} + μ([L - K, L])]`. -/
 private theorem cg_cutoff_loss_split {μ : Measure ℝ} [IsFiniteMeasure μ]
     (hmass : μ.real univ ≤ 1) {K L : ℝ} (_hK : 0 < K) (hKL : K < L) :
     0 ≤ (∫ r in Icc 0 L, Real.exp (-(L-r)) ∂μ) ∧
@@ -796,6 +862,7 @@ private theorem cg_band_measure_eq {μ : Measure ℝ} [IsFiniteMeasure μ]
   rw [← measureReal_sdiff hsub measurableSet_Icc, he]
   exact measureReal_congr Ioc_ae_eq_Icc.symm
 
+/-- In the critical window, for fixed `K > 0`, the band mass `μ_t([L - K, L])` tends to `0`. -/
 theorem tendsto_liClockCriticalCutoffMeasure_band {L t : ℕ → ℝ} {u K : ℝ} (hK : 0 < K)
     (hL : Tendsto L atTop atTop)
     (hT : Tendsto (fun n => (t n - L n / 4) / Real.sqrt (L n)) atTop (nhds u)) :
@@ -813,6 +880,7 @@ theorem tendsto_liClockCriticalCutoffMeasure_band {L t : ℕ → ℝ} {u K : ℝ
   letI := nullSingletonClass_liClockCriticalCutoffMeasure (t n)
   exact (cg_band_measure_eq hK hn).symm
 
+/-- For `t ≥ 0` and `0 < K < L`, `0 ≤ loss(t, L) ≤ e^{-K} + μ_t([L - K, L])`. -/
 theorem liClockCriticalCutoffLoss_split_bound {t L K : ℝ} (ht : 0 ≤ t)
     (hK : 0 < K) (hKL : K < L) :
     0 ≤ liClockCriticalCutoffLoss t L ∧
@@ -821,6 +889,8 @@ theorem liClockCriticalCutoffLoss_split_bound {t L K : ℝ} (ht : 0 ≤ t)
   letI := isFiniteMeasure_liClockCriticalCutoffMeasure ht
   exact cg_cutoff_loss_split (liClockCriticalCutoffMeasure_mass_le_one ht) hK hKL
 
+/-- In the critical window (`L → ∞`, `(t - L/4)/√L → u`), the cutoff loss
+`∫_{[0,L]} e^{-(L - r)} dμ_t(r)` tends to `0`. -/
 theorem tendsto_liClockCriticalCutoffLoss {L t : ℕ → ℝ} {u : ℝ}
     (hL : Tendsto L atTop atTop)
     (hT : Tendsto (fun n => (t n - L n / 4) / Real.sqrt (L n)) atTop (nhds u)) :
@@ -838,6 +908,7 @@ theorem tendsto_liClockCriticalCutoffLoss {L t : ℕ → ℝ} {u : ℝ}
   rw [Real.dist_eq, sub_zero, abs_of_nonneg hs.1]
   linarith
 
+/-- Raw form of the loss: `e^{-2t} ∫₀ᴸ e^{-L + r/2} E(t r) dr = 2 · loss(t, L)`. -/
 theorem liClockCriticalCutoffLoss_raw_integral {t L : ℝ} (_ht : 0 ≤ t) (_hL : 0 < L) :
     Real.exp (-2 * t) *
       (∫ r in Icc 0 L, Real.exp (-L + r / 2) * liClockCriticalEvenKernel (t * r)) =

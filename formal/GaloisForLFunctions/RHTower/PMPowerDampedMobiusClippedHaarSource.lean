@@ -1,10 +1,43 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusHaarBoundaryProfile
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusDiscreteEnergy
 
+/-!
+# Clipped centered sources and repaired Haar prefixes
+
+The clipped centered source `G_{ε,a}(t) = R_ε(min(a, 1/t))` freezes the divisor remainder
+`R_ε(x) = ∑_{n ≤ x} c_ε(n) - x/ζ(1+ε)` at height `a`: it is the constant `R_ε(a)` on `(0, 1/a]`
+and agrees with the centered source `G_ε(t) = R_ε(1/t)` for `t ≥ 1/a`. The linear bound
+`|R_ε(x)| ≤ (1 + |1/ζ(1+ε)|) x` shows `G_{ε,a} ∈ L²(0, ∞)` for every `ε ≥ 0`, `a > 0`, with
+energy `|R_ε(a)|²/a + ∫_{t > 1/a} |G_ε(t)|² dt`. The repaired Haar prefix (the positive Haar
+prefix minus a density-weighted boundary profile) equals the dyadic difference
+`G_{ε,N}(t) - 2 G_{ε,N}(2t)`, so it is square integrable and coincides with `F_ε(t)` once
+`N ≥ 1/t`. The forward dyadic difference `f(t) - 2 f(2t)` has `L²` norm between
+`(√2 - 1) ‖f‖` and `(√2 + 1) ‖f‖`.
+
+## Main results
+
+- `memLp_pmPowerDampedClippedCenteredSource`: `G_{ε,a} ∈ L²(0, ∞)` for `ε ≥ 0`, `a > 0`.
+- `pmPowerDampedRepairedHaarPrefix_eq_clipped`: the repaired prefix equals
+  `G_{ε,N}(t) - 2 G_{ε,N}(2t)` for `N ≥ 1`, `t > 0`.
+- `memLp_pmPowerDampedRepairedHaarPrefix`: the repaired prefix is in `L²(0, ∞)`.
+- `pmPowerDampedClippedCenteredSource_energy`: `‖G_{ε,a}‖₂² = ∫_{(0,a]} |R_ε(x)|²/x² dx + |R_ε(a)|²/a`.
+- `pmPowerDampedClippedCenteredSource_physical_energy`:
+  `‖G_{ε,a}‖₂² = |R_ε(a)|²/a + ∫_{t > 1/a} |G_ε(t)|² dt`.
+- `pmForwardDyadicDifference_lpNorm_bounds`: `(√2 - 1)‖f‖₂ ≤ ‖f - 2 f(2·)‖₂ ≤ (√2 + 1)‖f‖₂`.
+- `tendsto_pmPowerDampedRepairedHaarPrefix`: the repaired prefixes converge pointwise to `F_ε(t)`.
+
+## Hypotheses
+
+All results are unconditional. They assume only `0 ≤ ε`, positivity of the clipping height `a`
+or `N ≥ 1`, positivity of `t`, and, for the dyadic difference bounds, measurability and square
+integrability of `f`.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- The clipped centered source `G_{ε,a}(t) = R_ε(min(a, 1/t))`. -/
 def pmPowerDampedClippedCenteredSource (ε a t : ℝ) : ℂ :=
   pmPowerDampedDivisorRemainder ε (min a (1 / t))
 
@@ -13,12 +46,14 @@ theorem measurable_pmPowerDampedClippedCenteredSource (ε a : ℝ) :
   exact (measurable_pmPowerDampedDivisorRemainder ε).comp
     (measurable_const.min (measurable_const.div measurable_id))
 
+/-- For `a > 0` and `t ∈ (0, 1/a]`, the clipped source is the constant `R_ε(a)`. -/
 theorem pmPowerDampedClippedCenteredSource_initial (ε : ℝ) {a t : ℝ}
     (ha : 0 < a) (ht : t ∈ Ioc 0 (1 / a)) :
     pmPowerDampedClippedCenteredSource ε a t = pmPowerDampedDivisorRemainder ε a := by
   have h : a ≤ 1 / t := (le_div_iff₀ ht.1).mpr (by simpa only [mul_comm] using (le_div_iff₀ ha).mp ht.2)
   rw [pmPowerDampedClippedCenteredSource, min_eq_left h]
 
+/-- For `a > 0` and `t ≥ 1/a`, the clipped source equals the centered source `G_ε(t)`. -/
 theorem pmPowerDampedClippedCenteredSource_tail (ε : ℝ) {a t : ℝ}
     (ha : 0 < a) (ht : 1 / a ≤ t) :
     pmPowerDampedClippedCenteredSource ε a t = pmPowerDampedCenteredSource ε t := by
@@ -33,6 +68,7 @@ theorem pm_scaled_min_inv {a : ℝ} (ha : 0 < a) (t : ℝ) :
   congr 1
   field_simp
 
+/-- For `a > 0`, `t ↦ min(a, 1/t)²` is integrable on `(0, ∞)`. -/
 theorem integrableOn_pm_clipped_inv_sq {a : ℝ} (ha : 0 < a) :
     IntegrableOn (fun t : ℝ => (min a (1 / t)) ^ 2) (Ioi (0 : ℝ)) := by
   have hi := (integrableOn_Ioi_comp_mul_left_iff
@@ -45,6 +81,8 @@ theorem integrableOn_pm_clipped_inv_sq {a : ℝ} (ha : 0 < a) :
   dsimp only
   rw [← mul_pow, pm_scaled_min_inv ha]
 
+/-- Linear bound on the remainder: for `ε ≥ 0` and `x ≥ 0`,
+`|R_ε(x)| ≤ (1 + |1/ζ(1+ε)|) x`. -/
 theorem norm_pmPowerDampedDivisorRemainder_le {ε : ℝ} (hε : 0 ≤ ε)
     {x : ℝ} (hx : 0 ≤ x) :
     ‖pmPowerDampedDivisorRemainder ε x‖ ≤ (1 + ‖pmPowerDampedDivisorDensity ε‖) * x := by
@@ -59,6 +97,7 @@ theorem norm_pmPowerDampedDivisorRemainder_le {ε : ℝ} (hε : 0 ≤ ε)
       by linarith [pmPowerDampedDivisorSum_le hε hx]
     _ = _ := by ring
 
+/-- For `ε ≥ 0` and `a > 0`, the clipped centered source `G_{ε,a}` lies in `L²(0, ∞)`. -/
 theorem memLp_pmPowerDampedClippedCenteredSource {ε a : ℝ}
     (hε : 0 ≤ ε) (ha : 0 < a) :
     MemLp (pmPowerDampedClippedCenteredSource ε a) 2 (volume.restrict (Ioi (0 : ℝ))) := by
@@ -76,10 +115,14 @@ theorem memLp_pmPowerDampedClippedCenteredSource {ε a : ℝ}
       pow_le_pow_left₀ (norm_nonneg _) (norm_pmPowerDampedDivisorRemainder_le hε hn) 2
     _ = _ := mul_pow _ _ _
 
+/-- The repaired Haar prefix `∑_{n ≤ N} c_ε(n) H(n t) - N B(N t)/ζ(1+ε)`, where
+`B(u) = min(1, 1/u) - 2 min(1, 1/(2u))` is the positive Haar boundary profile. -/
 def pmPowerDampedRepairedHaarPrefix (ε : ℝ) (N : ℕ) (t : ℝ) : ℂ :=
   pmPowerDampedPositiveHaarPrefix ε N t -
     pmPowerDampedDivisorDensity ε * (N : ℂ) * (pmPositiveHaarBoundaryProfile ((N : ℝ) * t) : ℂ)
 
+/-- For `N ≥ 1` and `t > 0`, the repaired Haar prefix is the dyadic difference of the clipped
+source: `G_{ε,N}(t) - 2 G_{ε,N}(2t)`. -/
 theorem pmPowerDampedRepairedHaarPrefix_eq_clipped (ε : ℝ) {N : ℕ}
     (hN : 1 ≤ N) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedRepairedHaarPrefix ε N t =
@@ -99,6 +142,7 @@ theorem pmPowerDampedRepairedHaarPrefix_eq_clipped (ε : ℝ) {N : ℕ}
   push_cast at hbc
   linear_combination -pmPowerDampedDivisorDensity ε * hbc
 
+/-- For `ε ≥ 0` and `N ≥ 1`, the repaired Haar prefix lies in `L²(0, ∞)`. -/
 theorem memLp_pmPowerDampedRepairedHaarPrefix {ε : ℝ} (hε : 0 ≤ ε)
     {N : ℕ} (hN : 1 ≤ N) :
     MemLp (pmPowerDampedRepairedHaarPrefix ε N) 2 (volume.restrict (Ioi (0 : ℝ))) := by
@@ -110,6 +154,7 @@ theorem memLp_pmPowerDampedRepairedHaarPrefix {ε : ℝ} (hε : 0 ≤ ε)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact (pmPowerDampedRepairedHaarPrefix_eq_clipped ε hN ht).symm
 
+/-- For `ε ≥ 0` and `a > 0`, `∫_0^∞ |G_{ε,a}(t)|² dt = ∫_{(0,a]} |R_ε(x)|²/x² dx + |R_ε(a)|²/a`. -/
 theorem pmPowerDampedClippedCenteredSource_energy {ε a : ℝ}
     (hε : 0 ≤ ε) (ha : 0 < a) :
     (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedClippedCenteredSource ε a t‖ ^ 2) =
@@ -143,6 +188,7 @@ theorem pmPowerDampedClippedCenteredSource_energy {ε a : ℝ}
     rw [ht, integral_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) ha]
     norm_num [Real.rpow_neg_one, div_eq_mul_inv]
 
+/-- For `ε ≥ 0` and `a > 0`, `∫_0^∞ |G_{ε,a}(t)|² dt = |R_ε(a)|²/a + ∫_{t > 1/a} |G_ε(t)|² dt`. -/
 theorem pmPowerDampedClippedCenteredSource_physical_energy {ε a : ℝ}
     (hε : 0 ≤ ε) (ha : 0 < a) :
     (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedClippedCenteredSource ε a t‖ ^ 2) =
@@ -168,6 +214,7 @@ theorem pmPowerDampedClippedCenteredSource_physical_energy {ε a : ℝ}
     dsimp only
     rw [pmPowerDampedClippedCenteredSource_tail ε ha (le_of_lt ht)]
 
+/-- The forward dyadic difference `(Δ f)(t) = f(t) - 2 f(2t)`. -/
 def pmForwardDyadicDifference (f : ℝ → ℂ) (t : ℝ) : ℂ := f t - 2 * f (2 * t)
 
 theorem measurable_pmForwardDyadicDifference {f : ℝ → ℂ} (hm : Measurable f) :
@@ -189,6 +236,7 @@ theorem memLp_pmForwardDyadicDifference {f : ℝ → ℂ} (hm : Measurable f)
   rw [pmForwardDyadicDifference_eq]
   exact hf.sub (memLp_pmBackwardDilation hm hf (by norm_num))
 
+/-- For measurable `f ∈ L²(0, ∞)`, `t ↦ 2 f(2t)` has norm `√2 ‖f‖₂`. -/
 theorem pmBackwardDilation_half_lpNorm {f : ℝ → ℂ} (hm : Measurable f)
     (hf : MemLp f 2 (volume.restrict (Ioi (0 : ℝ)))) :
     lpNorm (pmBackwardDilation f (1 / 2)) 2 (volume.restrict (Ioi (0 : ℝ))) =
@@ -203,6 +251,8 @@ theorem pmBackwardDilation_half_lpNorm {f : ℝ → ℂ} (hm : Measurable f)
   nlinarith [sq_nonneg (lpNorm (pmBackwardDilation f (1 / 2)) 2
     (volume.restrict (Ioi (0 : ℝ))) + Real.sqrt 2 * lpNorm f 2 (volume.restrict (Ioi (0 : ℝ))))]
 
+/-- Two-sided norm bounds for the dyadic difference on `L²(0, ∞)`:
+`(√2 - 1) ‖f‖₂ ≤ ‖f(·) - 2 f(2·)‖₂ ≤ (√2 + 1) ‖f‖₂`. -/
 theorem pmForwardDyadicDifference_lpNorm_bounds {f : ℝ → ℂ} (hm : Measurable f)
     (hf : MemLp f 2 (volume.restrict (Ioi (0 : ℝ)))) :
     (Real.sqrt 2 - 1) * lpNorm f 2 (volume.restrict (Ioi (0 : ℝ))) ≤
@@ -222,6 +272,7 @@ theorem measurable_pmPowerDampedRepairedHaarPrefix (ε : ℝ) (N : ℕ) :
     (measurable_const.mul (Complex.measurable_ofReal.comp
       (measurable_pmPositiveHaarBoundaryProfile.comp (measurable_const.mul measurable_id))))
 
+/-- For `t > 0` and `N ≥ 1/t`, the repaired Haar prefix equals the Fermi source `F_ε(t)`. -/
 theorem pmPowerDampedRepairedHaarPrefix_eq_source (ε : ℝ) (N : ℕ)
     {t : ℝ} (ht : 0 < t) (hN : 1 / t ≤ (N : ℝ)) :
     pmPowerDampedRepairedHaarPrefix ε N t = pmPowerDampedFermiSource ε t := by
@@ -231,6 +282,8 @@ theorem pmPowerDampedRepairedHaarPrefix_eq_source (ε : ℝ) (N : ℕ)
     pmPositiveHaarBoundaryProfile_tail hNt]
   simp
 
+/-- For `t > 0`, the repaired Haar prefixes converge to `F_ε(t)` as `N → ∞` (they are
+eventually constant). -/
 theorem tendsto_pmPowerDampedRepairedHaarPrefix (ε : ℝ) {t : ℝ} (ht : 0 < t) :
     Tendsto (fun N : ℕ => pmPowerDampedRepairedHaarPrefix ε N t) atTop
       (𝓝 (pmPowerDampedFermiSource ε t)) := by

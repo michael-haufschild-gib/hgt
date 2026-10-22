@@ -1,6 +1,48 @@
 import GaloisForLFunctions.HTGeometry.FirstOrderWimanTerminalPuiseuxRoot
 import GaloisForLFunctions.HTGeometry.FirstOrderStateEvaluation
 
+/-!
+# Terminal Puiseux embedding of the first-order state field
+
+Let `K̄` be the algebraic closure of the Laurent field `ℂ((t))` and consider the iterated Laurent
+field `K̄((s))`. This module shows that the monomials `U = t^(e_U)` and `V = s^(e_V)` with nonzero
+exponents are algebraically independent over `ℂ` inside `K̄((s))`. Hence the clock/value state
+ring `ℂ[U, V]` embeds into `K̄((s))`, and the evaluation extends to the rational state field
+`ℂ(U, V)`. Applied to the two-stage Newton–Puiseux root attached to the Wiman initial data of an
+entire function satisfying an irreducible first-order algebraic differential equation
+`P(z, f, f') = 0`, it exhibits that root as a root of `P` viewed as a polynomial in the derivative
+coordinate over `ℂ(U, V)`. Two field-theoretic lemmas about lifting `K(x)` along a root of the
+minimal polynomial are included.
+
+## Main results
+
+- `polynomial_eval₂_laurent_single_ne_zero`: a nonzero polynomial over a field `K` does not vanish
+  at a Laurent monomial `t^e` with `e ≠ 0`.
+- `firstOrderTerminalStateRingEval_injective`: evaluation `ℂ[U][V] → K̄((s))` at
+  `U = t^(e_U)`, `V = s^(e_V)` with `e_U, e_V ≠ 0` is injective.
+- `algebraicIndependent_firstOrderTerminalState`: these clock and value coordinates are
+  algebraically independent over `ℂ`.
+- `firstOrderStatePolynomialEval_terminal_injective`: state evaluation at the terminal jet
+  `(U, V, W)` is injective, for any `W`.
+- `exists_entireFirstOrderWiman_rationalDerivativePuiseuxRoot`: for Wiman initial data of `f`
+  there are covers `N, q`, slope data `M, a` with `slope = (M - a) / q`, and a terminal power
+  series `z` such that `W = s^(-R) z` is a root of the derivative polynomial of `P` over the
+  rational state field embedded via `U = t^(-N q)`, `V = s^(-R)`.
+- `exists_adjoinSimple_algHom_of_minpoly_root`: for `x` integral over `K` and `y` a root of the
+  minimal polynomial of `x`, there is a `K`-algebra map `K(x) → M` sending `x` to `y`.
+- `minpoly_isRoot_of_associated_mapped_isRoot`: a root of a polynomial associated to the minimal
+  polynomial is a root of the minimal polynomial.
+
+## Hypotheses
+
+The embedding results are unconditional apart from nonzero exponents `e_U, e_V ≠ 0`. The Puiseux
+root theorem takes as argument a structure `EntireFirstOrderWimanInitialData f`, which bundles an
+irreducible relation `P(z, f(z), f'(z)) = 0` holding for all `z` together with exact Newton-edge
+data; such data exist for every transcendental entire `f` satisfying a first-order algebraic
+differential equation (`exists_entireFirstOrderWimanInitialData`). The minimal-polynomial lemmas
+assume integrality of `x` and the stated root conditions.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open HahnSeries Polynomial PowerSeries
@@ -43,6 +85,8 @@ private theorem laurent_single_one_pow
         ring_nf
       · simp
 
+/-- A nonzero polynomial `P` over a field `K` does not vanish at the Laurent monomial `t^e` when
+`e ≠ 0`: its leading coefficient survives at exponent `deg P · e`. -/
 theorem polynomial_eval₂_laurent_single_ne_zero
     {K : Type} [Field K] (P : Polynomial K) (hP : P ≠ 0)
     (e : ℤ) (he : e ≠ 0) :
@@ -65,11 +109,15 @@ theorem polynomial_eval₂_laurent_single_ne_zero
     apply hne
     exact Int.ofNat_injective (mul_right_cancel₀ he heq)
 
+/-- Evaluation `ℂ[U] → K̄` at a Laurent series `U`, where `K̄` is the algebraic closure of
+`ℂ((t))`. -/
 noncomputable def firstOrderTerminalInnerStateEval
     (U : LaurentSeries ℂ) : Polynomial ℂ →+* FirstOrderTerminalCoefficientField :=
   (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField).comp
     (Polynomial.eval₂RingHom (algebraMap ℂ (LaurentSeries ℂ)) U)
 
+/-- Two-step evaluation `ℂ[U][V] → K̄((s))`: inner coefficients at `U ∈ ℂ((t))`, outer variable at
+`V ∈ K̄((s))`. -/
 noncomputable def firstOrderTerminalStateRingEval
     (U : LaurentSeries ℂ) (V : FirstOrderTerminalLaurentField) :
     Polynomial (Polynomial ℂ) →+* FirstOrderTerminalLaurentField :=
@@ -77,6 +125,7 @@ noncomputable def firstOrderTerminalStateRingEval
     (algebraMap FirstOrderTerminalCoefficientField FirstOrderTerminalLaurentField) V).comp
       (Polynomial.mapRingHom (firstOrderTerminalInnerStateEval U))
 
+/-- A nonzero `A ∈ ℂ[U]` does not vanish at `U = t^e` with `e ≠ 0`. -/
 theorem firstOrderTerminalInnerStateEval_ne_zero
     (A : Polynomial ℂ) (hA : A ≠ 0) (e : ℤ) (he : e ≠ 0) :
     firstOrderTerminalInnerStateEval (HahnSeries.single e (1 : ℂ)) A ≠ 0 := by
@@ -87,6 +136,8 @@ theorem firstOrderTerminalInnerStateEval_ne_zero
     (algebraMap (LaurentSeries ℂ) FirstOrderTerminalCoefficientField)).mpr
       (polynomial_eval₂_laurent_single_ne_zero A hA e he)
 
+/-- A nonzero `P ∈ ℂ[U][V]` does not vanish at `U = t^(e_U)`, `V = s^(e_V)` when both exponents are
+nonzero. -/
 theorem firstOrderTerminalStateRingEval_ne_zero
     (P : Polynomial (Polynomial ℂ)) (hP : P ≠ 0)
     (eU eV : ℤ) (heU : eU ≠ 0) (heV : eV ≠ 0) :
@@ -111,6 +162,7 @@ theorem firstOrderTerminalStateRingEval_ne_zero
       (HahnSeries.single eV (1 : FirstOrderTerminalCoefficientField)) ≠ 0
   exact polynomial_eval₂_laurent_single_ne_zero (P.map g) hPmap eV heV
 
+/-- Evaluation of `ℂ[U][V]` at `U = t^(e_U)`, `V = s^(e_V)` with nonzero exponents is injective. -/
 theorem firstOrderTerminalStateRingEval_injective
     (eU eV : ℤ) (heU : eU ≠ 0) (heV : eV ≠ 0) :
     Function.Injective (firstOrderTerminalStateRingEval
@@ -125,6 +177,8 @@ theorem firstOrderTerminalStateRingEval_injective
     rw [map_sub, hPQ, sub_self]
   exact firstOrderTerminalStateRingEval_ne_zero (P - Q) hsub eU eV heU heV hmapzero
 
+/-- The terminal jet with its clock and value entries swapped: `(V, U, W)` instead of
+`(U, V, W)`. -/
 noncomputable def firstOrderTerminalSwappedJet
     (U : LaurentSeries ℂ) (V W : FirstOrderTerminalLaurentField) :
     Fin 3 → FirstOrderTerminalLaurentField :=
@@ -149,6 +203,8 @@ theorem firstOrderStatePolynomialEquiv_X_one : firstOrderStatePolynomialEquiv
   rw [MvPolynomial.finSuccEquiv_X_succ, Polynomial.map_C]
   simp [MvPolynomial.finSuccEquiv_X_zero]
 
+/-- Evaluating the state polynomial ring at the swapped terminal jet is the two-step evaluation
+`ℂ[U][V] → K̄((s))` at `(U, V)`. -/
 theorem firstOrderStatePolynomialEval_terminalSwapped
     (U : LaurentSeries ℂ) (V W : FirstOrderTerminalLaurentField) :
     letI : Algebra ℂ FirstOrderTerminalLaurentField :=
@@ -236,6 +292,8 @@ theorem firstOrderStateIndexEquiv_symm_one :
   apply firstOrderStateIndexEquiv.injective
   simp [firstOrderStateIndexEquiv]
 
+/-- For nonzero exponents, the clock `U = t^(e_U)` and value `V = s^(e_V)` coordinates of the
+terminal jet are algebraically independent over `ℂ` in `K̄((s))`. -/
 theorem algebraicIndependent_firstOrderTerminalState
     (eU eV : ℤ) (heU : eU ≠ 0) (heV : eV ≠ 0)
     (W : FirstOrderTerminalLaurentField) :
@@ -306,6 +364,8 @@ theorem algebraicIndependent_firstOrderTerminalState
   rw [heq] at hcomp
   exact hcomp
 
+/-- For nonzero exponents, evaluation of the clock/value state ring at the terminal jet
+`(t^(e_U), s^(e_V), W)` is injective, for every `W`. -/
 theorem firstOrderStatePolynomialEval_terminal_injective
     (eU eV : ℤ) (heU : eU ≠ 0) (heV : eV ≠ 0)
     (W : FirstOrderTerminalLaurentField) :
@@ -322,6 +382,9 @@ theorem firstOrderStatePolynomialEval_terminal_injective
   exact firstOrderStatePolynomialEval_injective_of_algebraicIndependent _
     (algebraicIndependent_firstOrderTerminalState eU eV heU heV W)
 
+/-- Given Wiman initial data for `f` (an irreducible relation `P(z, f, f') = 0` with Newton-edge
+data), the terminal Puiseux series `W = s^(-R) z` is a root of `P`, viewed as a polynomial in the
+derivative coordinate over `ℂ(U, V)` embedded via `U = t^(-N q)`, `V = s^(-R)`. -/
 theorem exists_entireFirstOrderWiman_rationalDerivativePuiseuxRoot
     {f : ℂ → ℂ} (data : EntireFirstOrderWimanInitialData f) :
     ∃ (M a q N : ℕ) (_hN : N ≠ 0) (z₀ : PowerSeries ℂ)
@@ -386,6 +449,8 @@ theorem exists_entireFirstOrderWiman_rationalDerivativePuiseuxRoot
       (firstOrderTerminalJet U V W) data.P = 0
   exact hfull
 
+/-- If `x ∈ L` is integral over `K` and `y ∈ M` is a root of the minimal polynomial of `x`, then
+there is a `K`-algebra map `K(x) → M` sending `x` to `y`. -/
 theorem exists_adjoinSimple_algHom_of_minpoly_root
     {K L M : Type*} [Field K] [Field L] [Field M]
     [Algebra K L] [Algebra K M] (x : L) (hx : IsIntegral K x)
@@ -412,6 +477,8 @@ theorem exists_adjoinSimple_algHom_of_minpoly_root
   rw [← IntermediateField.adjoin.powerBasis_gen hx]
   exact pb.lift_gen y hy'
 
+/-- If the minimal polynomial of `a` is associated to `p` and `y ∈ M` is a root of `p` mapped to
+`M`, then `y` is a root of the minimal polynomial of `a`. -/
 theorem minpoly_isRoot_of_associated_mapped_isRoot
     {K M : Type*} [Field K] [Field M] [Algebra K M]
     {p : Polynomial K} {x : Type*} [Field x] [Algebra K x]

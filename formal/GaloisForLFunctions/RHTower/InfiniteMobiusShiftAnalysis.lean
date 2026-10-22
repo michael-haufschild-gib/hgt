@@ -1,14 +1,36 @@
 import GaloisForLFunctions.RHTower.InfiniteMobiusCausalShift
 
+/-!
+# Isometric Möbius shift analysis map `L²(ℝ) → ℓ²(ℕ, L²(ℝ))`
+
+For `σ > 1`, this module defines the analysis map sending `f ∈ L²(ℝ)` to the sequence
+`n ↦ μ(n) √π_σ(n) · f(· - log n)`, where `π_σ(n) = n^{-σ} / ∑_{m squarefree} m^{-σ}` is the
+squarefree probability weight. Since each shift is unitary and `∑ₙ |μ(n)|² π_σ(n) = 1`, the
+sequence lies in `ℓ²` and the map is a linear isometry.
+
+## Main results
+
+- `norm_infiniteMobiusShiftAnalysisValue_sq`: `‖(μ(n) √π_σ(n) f(· - log n))ₙ‖² = ‖f‖²`.
+- `infiniteMobiusShiftAnalysis`: the analysis map as a `ℂ`-linear isometry
+  `L²(ℝ) →ₗᵢ ℓ²(ℕ, L²(ℝ))`.
+
+## Hypotheses
+
+Unconditional apart from the range hypothesis `hsigma : 1 < σ`, which makes the squarefree
+weights summable.
+-/
+
 open Complex MeasureTheory
 open scoped BigOperators
 
 noncomputable section
 namespace RHTower
 
+/-- The channel space `ℓ²(ℕ, L²(ℝ))` of square-summable sequences of `L²(ℝ)` functions. -/
 abbrev InfiniteMobiusShiftChannel :=
   lp (fun _ : ℕ => Lp ℂ 2 (volume : Measure ℝ)) 2
 
+/-- For `σ > 1`, the channel sequence `n ↦ μ(n) √π_σ(n) · f(· - log n)` in `ℓ²(ℕ, L²(ℝ))`. -/
 def infiniteMobiusShiftAnalysisValue
     (sigma : ℝ) (hsigma : 1 < sigma)
     (f : Lp ℂ 2 (volume : Measure ℝ)) : InfiniteMobiusShiftChannel :=
@@ -27,6 +49,8 @@ theorem infiniteMobiusShiftAnalysisValue_apply
       infiniteMobiusSignedWeight sigma n •
         MellinL2.additiveTranslationUnitary (-Real.log n) f := rfl
 
+/-- For `σ > 1`, the channel sequence has squared norm `‖f‖²`, because the weights
+`|μ(n)|² π_σ(n)` sum to `1`. -/
 theorem norm_infiniteMobiusShiftAnalysisValue_sq
     (sigma : ℝ) (hsigma : 1 < sigma)
     (f : Lp ℂ 2 (volume : Measure ℝ)) :
@@ -41,6 +65,7 @@ theorem norm_infiniteMobiusShiftAnalysisValue_sq
     norm_infiniteMobiusSignedWeight_sq hsigma]
   rw [tsum_mul_right, tsum_squarefreeMobiusProbability hsigma, one_mul]
 
+/-- For `σ > 1`, the channel sequence has norm `‖f‖`. -/
 theorem norm_infiniteMobiusShiftAnalysisValue
     (sigma : ℝ) (hsigma : 1 < sigma)
     (f : Lp ℂ 2 (volume : Measure ℝ)) :
@@ -48,6 +73,8 @@ theorem norm_infiniteMobiusShiftAnalysisValue
   nlinarith [norm_infiniteMobiusShiftAnalysisValue_sq sigma hsigma f,
     norm_nonneg (infiniteMobiusShiftAnalysisValue sigma hsigma f), norm_nonneg f]
 
+/-- For `σ > 1`, the Möbius shift analysis map `L²(ℝ) →ₗᵢ ℓ²(ℕ, L²(ℝ))`,
+`f ↦ (μ(n) √π_σ(n) f(· - log n))ₙ`, as a linear isometry. -/
 def infiniteMobiusShiftAnalysis
     (sigma : ℝ) (hsigma : 1 < sigma) :
     Lp ℂ 2 (volume : Measure ℝ) →ₗᵢ[ℂ] InfiniteMobiusShiftChannel where

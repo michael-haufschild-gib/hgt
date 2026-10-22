@@ -1,15 +1,43 @@
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixSemicircleSpectralLaw
 import Mathlib.Analysis.Normed.Ring.InfiniteSum
 
+/-!
+# Evaluating complex formal power series at points of absolute convergence
+
+A formal power series `f = ∑ aₙ Xⁿ` over `ℂ` is absolutely summable at `u` when `∑ |aₙ uⁿ| < ∞`;
+its value there is `∑ aₙ uⁿ`. Absolute summability is preserved by sums, products (Cauchy product)
+and powers, and evaluation is a ring homomorphism on absolutely summable series; on polynomials it
+is ordinary polynomial evaluation. Consequently a polynomial relation `P(X, f) = 0` with
+coefficients in `ℂ[X]` specializes to the numerical relation `P(u, f(u)) = 0` at every point `u` of
+absolute convergence.
+
+## Main results
+
+- `AbsoluteSummableAt`, `absoluteEval`: absolute summability at `u` and the value `∑ aₙ uⁿ`.
+- `absoluteEval_add`, `absoluteEval_sum`, `absoluteEval_mul`, `absoluteEval_pow`: evaluation
+  respects sums, finite sums, products and powers of absolutely summable series.
+- `coe_absoluteEval`: on a polynomial, absolute evaluation is `Polynomial.eval`.
+- `eval₂_absoluteSummableAt_and_eval`: for `P ∈ ℂ[X][Y]`, `P(X, f)` is absolutely summable at `u`
+  and evaluates to `P(u, f(u))`.
+- `polynomial_relation_absoluteEval`: if `P(X, f) = 0` as power series then `P(u, f(u)) = 0`.
+
+## Hypotheses
+
+All results are unconditional; the only premise is absolute summability of the series involved at
+the evaluation point.
+-/
+
 open scoped BigOperators
 
 noncomputable section
 
 namespace PowerSeries
 
+/-- The series `∑ aₙ uⁿ` converges absolutely: `∑ |aₙ uⁿ| < ∞`. -/
 def AbsoluteSummableAt (f : PowerSeries ℂ) (u : ℂ) : Prop :=
   Summable fun n : ℕ => ‖PowerSeries.coeff n f * u ^ n‖
 
+/-- The value `∑ aₙ uⁿ` of a complex power series at `u` (meaningful under absolute summability). -/
 def absoluteEval (f : PowerSeries ℂ) (u : ℂ) : ℂ :=
   ∑' n : ℕ, PowerSeries.coeff n f * u ^ n
 
@@ -41,6 +69,7 @@ theorem AbsoluteSummableAt.add {f g : PowerSeries ℂ} {u : ℂ}
   rw [AbsoluteSummableAt] at hf hg ⊢
   simpa only [map_add, add_mul] using (hf.of_norm.add hg.of_norm).norm
 
+/-- Evaluation is additive on series absolutely summable at `u`. -/
 theorem absoluteEval_add {f g : PowerSeries ℂ} {u : ℂ}
     (hf : f.AbsoluteSummableAt u) (hg : g.AbsoluteSummableAt u) :
     (f + g).absoluteEval u = f.absoluteEval u + g.absoluteEval u := by
@@ -59,6 +88,7 @@ theorem AbsoluteSummableAt.sum {L : Type*} (s : Finset L)
       exact (hf l (Finset.mem_insert_self l s)).add
         (ih fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))
 
+/-- Evaluation commutes with finite sums of series absolutely summable at `u`. -/
 theorem absoluteEval_sum {L : Type*} (s : Finset L)
     (f : L → PowerSeries ℂ) {u : ℂ}
     (hf : ∀ l ∈ s, (f l).AbsoluteSummableAt u) :
@@ -72,6 +102,7 @@ theorem absoluteEval_sum {L : Type*} (s : Finset L)
           ((AbsoluteSummableAt.sum s f fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))),
         ih (fun a ha ↦ hf a (Finset.mem_insert_of_mem ha))]
 
+/-- The `n`-th term of `f g` at `u` is the antidiagonal sum of products of terms of `f` and `g`. -/
 theorem coeff_mul_term (f g : PowerSeries ℂ) (u : ℂ) (n : ℕ) :
     PowerSeries.coeff n (f * g) * u ^ n =
       ∑ kl ∈ Finset.HasAntidiagonal.antidiagonal n,
@@ -84,6 +115,7 @@ theorem coeff_mul_term (f g : PowerSeries ℂ) (u : ℂ) (n : ℕ) :
     (Finset.HasAntidiagonal.mem_antidiagonal.mp hkl).symm, pow_add]
   ring
 
+/-- The Cauchy product of two series absolutely summable at `u` is absolutely summable at `u`. -/
 theorem AbsoluteSummableAt.mul {f g : PowerSeries ℂ} {u : ℂ}
     (hf : f.AbsoluteSummableAt u) (hg : g.AbsoluteSummableAt u) :
     (f * g).AbsoluteSummableAt u := by
@@ -93,6 +125,7 @@ theorem AbsoluteSummableAt.mul {f g : PowerSeries ℂ} {u : ℂ}
   ext n
   rw [coeff_mul_term]
 
+/-- Evaluation is multiplicative on series absolutely summable at `u`. -/
 theorem absoluteEval_mul {f g : PowerSeries ℂ} {u : ℂ}
     (hf : f.AbsoluteSummableAt u) (hg : g.AbsoluteSummableAt u) :
     (f * g).absoluteEval u = f.absoluteEval u * g.absoluteEval u := by
@@ -112,6 +145,7 @@ theorem AbsoluteSummableAt.pow {f : PowerSeries ℂ} {u : ℂ}
   | zero => change (PowerSeries.C 1).AbsoluteSummableAt u; exact absoluteSummableAt_C 1 u
   | succ n ih => rw [pow_succ]; exact ih.mul hf
 
+/-- `(fⁿ)(u) = f(u)ⁿ` when `f` is absolutely summable at `u`. -/
 theorem absoluteEval_pow {f : PowerSeries ℂ} {u : ℂ}
     (hf : f.AbsoluteSummableAt u) (n : ℕ) :
     (f ^ n).absoluteEval u = (f.absoluteEval u) ^ n := by
@@ -133,6 +167,7 @@ theorem X_absoluteSummableAt (u : ℂ) :
   · intro m hm
     simp [PowerSeries.coeff_X, hm]
 
+/-- Every polynomial, viewed as a power series, is absolutely summable at every point. -/
 theorem coe_absoluteSummableAt (p : Polynomial ℂ) (u : ℂ) :
     (p : PowerSeries ℂ).AbsoluteSummableAt u := by
   induction p using Polynomial.induction_on' with
@@ -144,6 +179,7 @@ theorem coe_absoluteSummableAt (p : Polynomial ℂ) (u : ℂ) :
         Polynomial.coe_C, Polynomial.coe_pow, Polynomial.coe_X]
       exact (absoluteSummableAt_C c u).mul ((X_absoluteSummableAt u).pow n)
 
+/-- Absolute evaluation of a polynomial is ordinary polynomial evaluation. -/
 theorem coe_absoluteEval (p : Polynomial ℂ) (u : ℂ) :
     (p : PowerSeries ℂ).absoluteEval u = p.eval u := by
   induction p using Polynomial.induction_on' with
@@ -161,6 +197,8 @@ theorem coe_absoluteEval (p : Polynomial ℂ) (u : ℂ) :
         Polynomial.eval_pow]
       simp
 
+/-- For `P ∈ ℂ[X][Y]` and `f` absolutely summable at `u`, the series `P(X, f)` is absolutely
+summable at `u` and evaluates to `P(u, f(u))`. -/
 theorem eval₂_absoluteSummableAt_and_eval
     (P : Polynomial (Polynomial ℂ)) (f : PowerSeries ℂ) (u : ℂ)
     (hf : f.AbsoluteSummableAt u) :
@@ -183,6 +221,8 @@ theorem eval₂_absoluteSummableAt_and_eval
         Polynomial.eval₂_pow, Polynomial.eval₂_X]
       rfl
 
+/-- A polynomial relation `P(X, f) = 0` among power series specializes to `P(u, f(u)) = 0` at
+every point `u` where `f` is absolutely summable. -/
 theorem polynomial_relation_absoluteEval
     (P : Polynomial (Polynomial ℂ)) (f : PowerSeries ℂ) (u : ℂ)
     (hf : f.AbsoluteSummableAt u)

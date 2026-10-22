@@ -1,13 +1,37 @@
 import GaloisForLFunctions.RHTower.Deninger.DeningerHazewinkelLowTailCoordinates
 import Mathlib.LinearAlgebra.Matrix.Permutation
 
+/-!
+# Consecutive universal Hankel determinants do not divide each other
+
+Let `c₀ = 1` and `c_{k+1} = X_k` in the polynomial ring `ℤ[X₀, X₁, ...]`, and let `D_n` be the
+leading `n × n` Hankel determinant `det (c_{i+j})_{i,j<n}`. This module evaluates at the point
+`X_n = 1`, `X_k = 0` for `k ≠ n`, so that `c_s ↦ 1` exactly when `s = 0` or `s = n + 1`. Under
+this evaluation `D_n ↦ 0` for `n ≥ 2` (its second row vanishes), while `D_{n+1} ↦ ±1` (the matrix
+becomes a block of `1` and a reversal permutation). Hence `D_n` does not divide `D_{n+1}`.
+
+## Main results
+
+- `deningerHazewinkelBoundaryMinorEval`: the evaluation ring homomorphism `ℤ[X] → ℤ` above.
+- `deningerHazewinkelBoundaryMinorEval_leading_eq_zero`: for `n ≥ 2`, `D_n` evaluates to `0`.
+- `deningerHazewinkelBoundaryMinorEval_leading_succ_isUnit`: `D_{n+1}` evaluates to a unit of `ℤ`.
+- `deningerHazewinkelLeading_not_dvd_leading_succ`: for `n ≥ 2`, `D_n ∤ D_{n+1}`.
+
+## Hypotheses
+
+Unconditional; the only premise is `2 ≤ n`.
+-/
+
 namespace RHTower
 noncomputable section
 
+/-- Evaluation `ℤ[X₀, X₁, ...] → ℤ` sending `X_n` to `1` and every other variable to `0`. -/
 def deningerHazewinkelBoundaryMinorEval (n : ℕ) :
     MvPolynomial ℕ ℤ →+* ℤ :=
   MvPolynomial.eval₂Hom (RingHom.id ℤ) fun k => if k = n then 1 else 0
 
+/-- Under the evaluation, the universal Hankel coefficient `c_s` becomes `1` if `s = 0` or `s = n + 1`,
+and `0` otherwise. -/
 theorem deningerHazewinkelBoundaryMinorEval_coeff (n s : ℕ) :
     deningerHazewinkelBoundaryMinorEval n
       (deningerHazewinkelUniversalCoeff s) =
@@ -19,6 +43,7 @@ theorem deningerHazewinkelBoundaryMinorEval_coeff (n s : ℕ) :
       simp [deningerHazewinkelBoundaryMinorEval,
         deningerHazewinkelUniversalCoeff]
 
+/-- For `n ≥ 2`, the leading Hankel determinant `D_n` evaluates to `0`. -/
 theorem deningerHazewinkelBoundaryMinorEval_leading_eq_zero
     (n : ℕ) (hn : 2 ≤ n) :
     deningerHazewinkelBoundaryMinorEval n
@@ -35,6 +60,7 @@ theorem deningerHazewinkelBoundaryMinorEval_leading_eq_zero
   rw [if_neg]
   omega
 
+/-- The next leading Hankel determinant `D_{n+1}` evaluates to a unit `±1` of `ℤ`. -/
 theorem deningerHazewinkelBoundaryMinorEval_leading_succ_isUnit
     (n : ℕ) :
     IsUnit (deningerHazewinkelBoundaryMinorEval n
@@ -109,6 +135,8 @@ theorem deningerHazewinkelBoundaryMinorEval_leading_succ_isUnit
   rw [Matrix.det_permutation]
   exact (Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin n))).isUnit
 
+/-- For `n ≥ 2`, the universal Hankel determinant `D_n` does not divide `D_{n+1}` in
+`ℤ[X₀, X₁, ...]`. -/
 theorem deningerHazewinkelLeading_not_dvd_leading_succ
     (n : ℕ) (hn : 2 ≤ n) :
     ¬ deningerHazewinkelLeadingDeterminant n ∣

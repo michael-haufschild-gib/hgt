@@ -2,10 +2,39 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusFiniteSmoothSource
 import GaloisForLFunctions.RHTower.DampedMobiusSumsZeroFree
 import Mathlib.Analysis.Normed.Group.Tannery
 
+/-!
+# Divisor-sum and Haar form of the power-damped Möbius Fermi source
+
+For damping `ε` the divisor coefficient `c_ε(n) = ∑_{d ∣ n} μ(d) d^{-ε} = ∏_{p ∣ n} (1 - p^{-ε})`
+lies in `[0, 1]` and is positive for `ε > 0`. With summatory function `A_ε(x) = ∑_{n ≤ x} c_ε(n)`,
+the power-damped Möbius Fermi source is `F_ε(t) = A_ε(1/t) - 2 A_ε(1/(2t))`, equivalently the
+combination `∑_{n ≤ 1/t} c_ε(n) H(n t)` of dilates of the supported dyadic Haar function `H`
+(equal to `-1` on `(0, 1/2]`, `1` on `(1/2, 1]`, `0` beyond).
+For `ε > 0` the mean value `A_ε(x)/x` tends to `1/ζ(1+ε)`; the centered remainder
+`R_ε(x) = A_ε(x) - x/ζ(1+ε)` defines the centered source `G_ε(t) = R_ε(1/t)`, which satisfies
+`F_ε(t) = G_ε(t) - 2 G_ε(2t)` and is recovered as the dyadic series `-∑_k F_ε(t/2^{k+1})/2^{k+1}`.
+
+## Main results
+
+- `pmPowerDampedDivisorCoeff_eq_prod`: `c_ε(n) = ∏_{p ∣ n} (1 - p^{-ε})` for `n ≠ 0`.
+- `pmPowerDampedFermiSource_eq_divisor_counts`: `F_ε(t) = A_ε(1/t) - 2 A_ε(1/(2t))` for `t > 0`.
+- `tendsto_pmPowerDampedDivisorSum_div`: `A_ε(x)/x → 1/ζ(1+ε)` as `x → ∞`, for `ε > 0`.
+- `pmPowerDampedFermiSource_eq_weighted_haar`: `F_ε(t) = ∑_{n ≤ 1/t} c_ε(n) H(n t)`.
+- `pmPowerDampedFermiSource_eq_centered_difference`: `F_ε(t) = G_ε(t) - 2 G_ε(2t)`.
+- `tendsto_pmPowerDampedCenteredSource_dyadic_sum`: `G_ε(t)` is the limit of
+  `-∑_{k < N} F_ε(t/2^{k+1})/2^{k+1}`, for `ε > 0` and `t > 0`.
+
+## Hypotheses
+
+All results are unconditional. The analytic statements assume only the range `0 < ε`
+(nonnegativity statements use `0 ≤ ε`) and positivity `0 < t` or `0 ≤ x` of the variable.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
 
+/-- The power-damped divisor coefficient `c_ε(n) = ∑_{d ∣ n} μ(d) d^{-ε}`. -/
 def pmPowerDampedDivisorCoeff (ε : ℝ) (n : ℕ) : ℝ :=
   ∑ d ∈ n.divisors, (moebius d : ℝ) * (d : ℝ) ^ (-ε)
 
@@ -15,6 +44,7 @@ theorem pmPowerDampedDivisorCoeff_zero (ε : ℝ) : pmPowerDampedDivisorCoeff ε
 theorem pmPowerDampedDivisorCoeff_one (ε : ℝ) : pmPowerDampedDivisorCoeff ε 1 = 1 := by
   simp [pmPowerDampedDivisorCoeff]
 
+/-- The damped Möbius function with prime weight `p^{-ε}` equals `μ(n) n^{-ε}`. -/
 theorem pm_dampedMobius_rpow (ε : ℝ) (n : ℕ) :
     DampedMobius.dampedMobius (fun p => (p : ℝ) ^ (-ε)) n =
       (moebius n : ℝ) * (n : ℝ) ^ (-ε) := by
@@ -35,10 +65,12 @@ theorem pmPowerDampedDivisorCoeff_eq_divisorSum (ε : ℝ) (n : ℕ) :
     (DampedMobius.dampedMobius_mul_zeta (fun p => (p : ℝ) ^ (-ε)))
   simpa only [coe_mul_zeta_apply, pm_dampedMobius_rpow, pmPowerDampedDivisorCoeff] using h
 
+/-- Euler-product form: `c_ε(n) = ∏_{p ∣ n} (1 - p^{-ε})` for `n ≠ 0`. -/
 theorem pmPowerDampedDivisorCoeff_eq_prod (ε : ℝ) {n : ℕ} (hn : n ≠ 0) :
     pmPowerDampedDivisorCoeff ε n = ∏ p ∈ n.primeFactors, (1 - (p : ℝ) ^ (-ε)) := by
   rw [pmPowerDampedDivisorCoeff_eq_divisorSum, DampedMobius.divisorSum, prodPrimeFactors_apply hn]
 
+/-- For `ε > 0` and `n ≠ 0` the divisor coefficient `c_ε(n)` is strictly positive. -/
 theorem pmPowerDampedDivisorCoeff_pos {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hn : n ≠ 0) :
     0 < pmPowerDampedDivisorCoeff ε n := by
   rw [pmPowerDampedDivisorCoeff_eq_prod ε hn]
@@ -56,6 +88,7 @@ theorem pmPowerDampedDivisorCoeff_nonneg {ε : ℝ} (hε : 0 ≤ ε) (n : ℕ) :
   rw [abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg p) _)]
   exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hp.one_le) (by linarith)
 
+/-- For `ε ≥ 0` the divisor coefficient satisfies `c_ε(n) ≤ 1`. -/
 theorem pmPowerDampedDivisorCoeff_le_one {ε : ℝ} (hε : 0 ≤ ε) (n : ℕ) :
     pmPowerDampedDivisorCoeff ε n ≤ 1 := by
   by_cases hn : n = 0
@@ -70,9 +103,12 @@ theorem pmPowerDampedDivisorCoeff_le_one {ε : ℝ} (hε : 0 ≤ ε) (n : ℕ) :
   · intro p hp
     linarith [Real.rpow_nonneg (Nat.cast_nonneg p) (-ε)]
 
+/-- The summatory function `A_ε(x) = ∑_{1 ≤ n ≤ x} c_ε(n)`. -/
 def pmPowerDampedDivisorSum (ε x : ℝ) : ℝ :=
   ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, pmPowerDampedDivisorCoeff ε n
 
+/-- Divisor-sum interchange: `A_ε(x) = ∑_{d ≤ N} μ(d) d^{-ε} ⌊x/d⌋` for `x ≥ 0` and any
+`N ≥ ⌊x⌋`. -/
 theorem pmPowerDampedDivisorSum_eq_floor_sum (ε : ℝ) {x : ℝ} (hx : 0 ≤ x)
     {N : ℕ} (hN : ⌊x⌋₊ ≤ N) :
     (pmPowerDampedDivisorSum ε x : ℂ) =
@@ -81,6 +117,8 @@ theorem pmPowerDampedDivisorSum_eq_floor_sum (ε : ℝ) {x : ℝ} (hx : 0 ≤ x)
   simp only [pmPowerDampedDivisorSum, pmPowerDampedDivisorCoeff, pmPowerDampedMobiusCoeff,
     Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast]
 
+/-- For `t > 0` the Fermi source is a dyadic difference of divisor counts:
+`F_ε(t) = A_ε(1/t) - 2 A_ε(1/(2t))`. -/
 theorem pmPowerDampedFermiSource_eq_divisor_counts (ε : ℝ) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedFermiSource ε t = (pmPowerDampedDivisorSum ε (1 / t) : ℂ) -
       2 * (pmPowerDampedDivisorSum ε (1 / (2 * t)) : ℂ) := by
@@ -99,6 +137,7 @@ theorem pmPowerDampedFermiSource_eq_divisor_counts (ε : ℝ) {t : ℝ} (ht : 0 
   push_cast
   ring
 
+/-- The mean density `α_ε = 1/ζ(1+ε)` of the divisor coefficients. -/
 def pmPowerDampedDivisorDensity (ε : ℝ) : ℂ := 1 / riemannZeta (1 + (ε : ℂ))
 
 theorem pmPowerDampedMobiusCoeff_term_one (ε : ℝ) (n : ℕ) :
@@ -113,6 +152,7 @@ theorem summable_pmPowerDampedDivisorDensity_terms {ε : ℝ} (hε : 0 < ε) :
   have hs := pmPowerDampedMobiusCoeff_lSeriesSummable ε (s := 1) (by simpa using hε)
   exact hs.congr (pmPowerDampedMobiusCoeff_term_one ε)
 
+/-- For `ε > 0`, `1/ζ(1+ε) = ∑_n μ(n) n^{-ε}/n` as an absolutely convergent series. -/
 theorem pmPowerDampedDivisorDensity_eq_tsum {ε : ℝ} (hε : 0 < ε) :
     pmPowerDampedDivisorDensity ε = ∑' n : ℕ, pmPowerDampedMobiusCoeff ε n / (n : ℂ) := by
   rw [pmPowerDampedDivisorDensity, ← pmPowerDampedMobiusCoeff_lSeries ε (s := 1) (by simpa using hε)]
@@ -140,6 +180,8 @@ theorem pmPowerDampedDivisorSum_div_eq_tsum (ε : ℝ) {x : ℝ} (hx : 0 < x) :
     rw [Nat.floor_eq_zero.mpr hxd]
     simp
 
+/-- Mean value theorem for the divisor coefficients: for `ε > 0`, `A_ε(x)/x → 1/ζ(1+ε)` as
+`x → ∞`, by dominated convergence (Tannery) on `∑_d μ(d) d^{-ε} ⌊x/d⌋/x`. -/
 theorem tendsto_pmPowerDampedDivisorSum_div {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun x : ℝ => (pmPowerDampedDivisorSum ε x : ℂ) / (x : ℂ)) atTop
       (𝓝 (pmPowerDampedDivisorDensity ε)) := by
@@ -177,6 +219,8 @@ theorem tendsto_pmPowerDampedDivisorSum_div {ε : ℝ} (hε : 0 < ε) :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   exact (pmPowerDampedDivisorSum_div_eq_tsum ε hx).symm
 
+/-- For `t > 0` the Fermi source is a divisor-weighted sum of dilated supported dyadic Haar
+functions: `F_ε(t) = ∑_{1 ≤ n ≤ 1/t} c_ε(n) H(n t)`. -/
 theorem pmPowerDampedFermiSource_eq_weighted_haar (ε : ℝ) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedFermiSource ε t = ∑ n ∈ Finset.Icc 1 ⌊1 / t⌋₊,
       (pmPowerDampedDivisorCoeff ε n : ℂ) * pmSupportedDyadicHaar ((n : ℝ) * t) := by
@@ -212,9 +256,11 @@ theorem measurable_pmPowerDampedDivisorSum (ε : ℝ) : Measurable (pmPowerDampe
   exact (measurable_of_countable (fun N : ℕ => ∑ n ∈ Finset.Icc 1 N,
     pmPowerDampedDivisorCoeff ε n)).comp Nat.measurable_floor
 
+/-- The centered divisor remainder `R_ε(x) = A_ε(x) - x/ζ(1+ε)`. -/
 def pmPowerDampedDivisorRemainder (ε x : ℝ) : ℂ :=
   (pmPowerDampedDivisorSum ε x : ℂ) - pmPowerDampedDivisorDensity ε * (x : ℂ)
 
+/-- The centered source `G_ε(t) = R_ε(1/t)`. -/
 def pmPowerDampedCenteredSource (ε t : ℝ) : ℂ := pmPowerDampedDivisorRemainder ε (1 / t)
 
 theorem measurable_pmPowerDampedDivisorRemainder (ε : ℝ) :
@@ -226,6 +272,8 @@ theorem measurable_pmPowerDampedCenteredSource (ε : ℝ) :
     Measurable (pmPowerDampedCenteredSource ε) := by
   exact (measurable_pmPowerDampedDivisorRemainder ε).comp (measurable_const.div measurable_id)
 
+/-- For `t > 0`, `F_ε(t) = G_ε(t) - 2 G_ε(2t)`: the linear density term cancels in the
+dyadic difference. -/
 theorem pmPowerDampedFermiSource_eq_centered_difference (ε : ℝ) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedFermiSource ε t =
       pmPowerDampedCenteredSource ε t - 2 * pmPowerDampedCenteredSource ε (2 * t) := by
@@ -235,6 +283,7 @@ theorem pmPowerDampedFermiSource_eq_centered_difference (ε : ℝ) {t : ℝ} (ht
   field_simp
   ring
 
+/-- For `ε > 0` the remainder is `o(x)`: `R_ε(x)/x → 0` as `x → ∞`. -/
 theorem tendsto_pmPowerDampedDivisorRemainder_div {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun x : ℝ => pmPowerDampedDivisorRemainder ε x / (x : ℂ)) atTop (𝓝 0) := by
   have h := (tendsto_pmPowerDampedDivisorSum_div hε).sub_const (pmPowerDampedDivisorDensity ε)
@@ -245,6 +294,7 @@ theorem tendsto_pmPowerDampedDivisorRemainder_div {ε : ℝ} (hε : 0 < ε) :
   have hx0 : (x : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
   field_simp
 
+/-- For `ε > 0` and `t > 0`, the dyadic boundary term `G_ε(t/2^N)/2^N` tends to `0`. -/
 theorem tendsto_pmPowerDampedCenteredSource_dyadic_boundary {ε : ℝ} (hε : 0 < ε)
     {t : ℝ} (ht : 0 < t) :
     Tendsto (fun N : ℕ => pmPowerDampedCenteredSource ε (t / (2 : ℝ) ^ N) / (2 : ℂ) ^ N)
@@ -261,6 +311,7 @@ theorem tendsto_pmPowerDampedCenteredSource_dyadic_boundary {ε : ℝ} (hε : 0 
   have ht0 : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ht.ne'
   field_simp
 
+/-- Finite dyadic telescope: `G_ε(t) = G_ε(t/2^N)/2^N - ∑_{k < N} F_ε(t/2^{k+1})/2^{k+1}`. -/
 theorem pmPowerDampedCenteredSource_dyadic_telescope (ε : ℝ) {t : ℝ} (ht : 0 < t) (N : ℕ) :
     pmPowerDampedCenteredSource ε t =
       pmPowerDampedCenteredSource ε (t / (2 : ℝ) ^ N) / (2 : ℂ) ^ N -
@@ -278,6 +329,8 @@ theorem pmPowerDampedCenteredSource_dyadic_telescope (ε : ℝ) {t : ℝ} (ht : 
     field_simp
     ring
 
+/-- For `ε > 0` and `t > 0`, the centered source is the dyadic series
+`G_ε(t) = -∑_{k ≥ 0} F_ε(t/2^{k+1})/2^{k+1}` (limit of partial sums). -/
 theorem tendsto_pmPowerDampedCenteredSource_dyadic_sum {ε : ℝ} (hε : 0 < ε)
     {t : ℝ} (ht : 0 < t) :
     Tendsto (fun N : ℕ => -∑ k ∈ Finset.range N,

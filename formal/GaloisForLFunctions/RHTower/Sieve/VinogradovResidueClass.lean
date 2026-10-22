@@ -2,12 +2,36 @@ import GaloisForLFunctions.RHTower.Sieve.PowerSumAffineTransform
 import GaloisForLFunctions.RHTower.Sieve.VinogradovBlockCorrelation
 import Mathlib.Algebra.Order.Floor.Div
 
+/-!
+# Residue classes in Vinogradov's p-adic descent
+
+For a modulus `p` and a residue `a`, the integers `n ∈ [0, N)` with `n ≡ a (mod p)` are written
+`n = p m + a` with `m < ⌈N/p⌉`. This module sets up that decomposition, shows that `n ↦ m` is an
+embedding into `[0, ⌈N/p⌉)`, and proves that the power-sum signature modulo `q` of a tuple from one
+residue class is the affine transform (constant vector plus triangular map with parameters `p, a`)
+of the signature of the quotient tuple.
+
+## Main results
+
+- `VinogradovResidueClass`: the elements of `[0, N)` congruent to `a` modulo `p`.
+- `vinogradovResidue_decomposition`: `n = p · ⌊n/p⌋ + a`.
+- `vinogradovResidueQuotientEmbedding`: `n ↦ ⌊n/p⌋` embeds the class into `Fin ⌈N/p⌉`.
+- `vinogradovResidue_powerSignature_affine`: the power-sum signature modulo `q` of a tuple from the
+  class equals `powerSumAffineConstant + powerSumAffineLinearTransform p a` applied to the
+  signature of the quotients.
+
+## Hypotheses
+
+Unconditional; `p` and `q` are nonzero moduli.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- The elements `n ∈ [0, N)` with `n ≡ a (mod p)`. -/
 def VinogradovResidueClass (N p : ℕ) (a : ZMod p) :=
   {n : Fin N // ((n.val : ℕ) : ZMod p) = a}
 
@@ -19,6 +43,7 @@ noncomputable instance vinogradovResidueClassFintype
     (N p : ℕ) (a : ZMod p) : Fintype (VinogradovResidueClass N p a) :=
   Fintype.ofFinite _
 
+/-- The quotient `⌊n/p⌋` of an element of a residue class. -/
 def vinogradovResidueQuotient {N p : ℕ} {a : ZMod p}
     (n : VinogradovResidueClass N p a) : ℕ := n.1.val / p
 
@@ -28,6 +53,7 @@ theorem vinogradovResidueClass_modEq
   apply (ZMod.natCast_eq_natCast_iff' n.1.val a.val p).mp
   exact n.2.trans a.natCast_zmod_val.symm
 
+/-- Every `n` in the residue class of `a` modulo `p` satisfies `n = p ⌊n/p⌋ + a.val`. -/
 theorem vinogradovResidue_decomposition
     {N p : ℕ} [NeZero p] {a : ZMod p}
     (n : VinogradovResidueClass N p a) :
@@ -41,6 +67,7 @@ theorem vinogradovResidue_decomposition
       rw [hmod, Nat.mod_eq_of_lt a.val_lt]
     _ = p * (n.1.val / p) + a.val := Nat.add_comm _ _
 
+/-- The quotient of an element of `[0, N)` by `p` is less than `⌈N/p⌉`. -/
 theorem vinogradovResidueQuotient_lt_ceilDiv
     {N p : ℕ} [NeZero p] {a : ZMod p}
     (n : VinogradovResidueClass N p a) :
@@ -71,11 +98,15 @@ theorem vinogradovResidueQuotientFin_injective
     (vinogradovResidueClass_modEq m |>.trans
       (vinogradovResidueClass_modEq n).symm)
 
+/-- The quotient map `n ↦ ⌊n/p⌋` as an embedding of a residue class into `Fin ⌈N/p⌉`. -/
 def vinogradovResidueQuotientEmbedding
     {N p : ℕ} [NeZero p] (a : ZMod p) :
     VinogradovResidueClass N p a ↪ Fin (N ⌈/⌉ p) :=
   ⟨vinogradovResidueQuotientFin, vinogradovResidueQuotientFin_injective⟩
 
+/-- For a `b`-tuple `u` from the residue class of `a` modulo `p`, the power-sum signature modulo `q`
+of `u` equals `powerSumAffineConstant q k b a + powerSumAffineLinearTransform q k p a` applied to
+the signature of the quotient tuple. -/
 theorem vinogradovResidue_powerSignature_affine
     {q N p k b : ℕ} [NeZero q] [NeZero p] (a : ZMod p)
     (u : Fin b → VinogradovResidueClass N p a) :

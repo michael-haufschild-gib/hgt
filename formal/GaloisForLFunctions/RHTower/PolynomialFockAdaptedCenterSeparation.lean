@@ -1,9 +1,39 @@
 import GaloisForLFunctions.RHTower.PolynomialFockNormalizedTangentGaussianOverlap
 
+/-!
+# Separation of adapted tangent centers in the polynomial Fock space
+
+For a weight exponent `m ≥ 4` the adapted centers of the normalized tangent vectors are
+`x = N^(2/m)` and `y = K^(2/m)`, with local curvatures `c(x) = m (1 + x²)^(m/2 - 1)`. The Gaussian
+overlap bound of two tangent vectors decays like `exp(-G)` with the harmonic-curvature gap
+`G = c(x) c(y) / (2 (c(x) + c(y))) · (x - y)²`. This module bounds `G` from below in terms of the
+original indices `K ≤ N`: quadratically in `N - K` when `N ≤ 2K`, and by `(N - K)^(4/m)` when
+`2K ≤ N`.
+
+## Main results
+
+- `adapted_rpow_gap_near`: for `1 ≤ K ≤ N ≤ 2K`,
+  `N - K ≤ (m/2) 2^(m/2 - 1) K^(1 - 2/m) (N^(2/m) - K^(2/m))`.
+- `adapted_rpow_gap_far`: for `1 ≤ K`, `2K ≤ N`,
+  `(1 - 2^(-2/m)) (N - K)^(2/m) ≤ K^(1 - 2/m) (N^(2/m) - K^(2/m))`.
+- `polynomialFockHarmonicCurvatureGap_lower_adapted`: `G ≥ (m/4) (K^(1 - 2/m) (N^(2/m) - K^(2/m)))²`.
+- `polynomialFockHarmonicCurvatureGap_lower_near`: for `N ≤ 2K`,
+  `G ≥ m / (4 ((m/2) 2^(m/2 - 1))²) · (N - K)²`.
+- `polynomialFockHarmonicCurvatureGap_lower_far`: for `2K ≤ N`,
+  `G ≥ (m/4) (1 - 2^(-2/m))² (N - K)^(4/m)`.
+
+## Hypotheses
+
+All results are unconditional real inequalities. They assume the parameter range `4 ≤ m`,
+`1 ≤ K ≤ N`, and, for the near and far regimes respectively, `N ≤ 2K` or `2K ≤ N`.
+-/
+
 namespace RHTower
 
 noncomputable section
 
+/-- Near regime: assuming `4 ≤ m` and `1 ≤ K ≤ N ≤ 2K`, the index gap `N - K` is at most
+`(m/2) 2^(m/2 - 1) K^(1 - 2/m)` times the adapted-center gap `N^(2/m) - K^(2/m)`. -/
 theorem adapted_rpow_gap_near
     {m K N : ℝ} (hm : 4 ≤ m) (hK : 1 ≤ K) (hKN : K ≤ N)
     (hN2 : N ≤ 2 * K) :
@@ -74,6 +104,8 @@ theorem adapted_rpow_gap_near
       dsimp [p, α, x, y]
       ring
 
+/-- Far regime: assuming `4 ≤ m`, `1 ≤ K` and `2K ≤ N`,
+`(1 - 2^(-2/m)) (N - K)^(2/m) ≤ K^(1 - 2/m) (N^(2/m) - K^(2/m))`. -/
 theorem adapted_rpow_gap_far
     {m K N : ℝ} (hm : 4 ≤ m) (hK : 1 ≤ K) (hKN2 : 2 * K ≤ N) :
     (1 - 2 ^ (-(2 / m))) * (N - K) ^ (2 / m) ≤
@@ -138,6 +170,8 @@ theorem adapted_rpow_gap_far
       simpa only [one_mul] using mul_le_mul_of_nonneg_right hKpow hgap0
     _ = K ^ (1 - 2 / m) * (N ^ (2 / m) - K ^ (2 / m)) := by rfl
 
+/-- Assuming `4 ≤ m` and `1 ≤ K ≤ N`, the harmonic-curvature gap of the adapted centers
+`N^(2/m)`, `K^(2/m)` is at least `(m/4) (K^(1 - 2/m) (N^(2/m) - K^(2/m)))²`. -/
 theorem polynomialFockHarmonicCurvatureGap_lower_adapted
     {m K N : ℝ} (hm : 4 ≤ m) (hK : 1 ≤ K) (hKN : K ≤ N) :
     (m / 4) *
@@ -210,6 +244,8 @@ theorem polynomialFockHarmonicCurvatureGap_lower_adapted
       (cx * cy / (2 * (cx + cy))) * (x - y) ^ 2
   nlinarith
 
+/-- Assuming `4 ≤ m` and `1 ≤ K ≤ N ≤ 2K`, the harmonic-curvature gap is at least
+`m / (4 ((m/2) 2^(m/2 - 1))²) · (N - K)²`. -/
 theorem polynomialFockHarmonicCurvatureGap_lower_near
     {m K N : ℝ} (hm : 4 ≤ m) (hK : 1 ≤ K) (hKN : K ≤ N)
     (hN2 : N ≤ 2 * K) :
@@ -240,6 +276,8 @@ theorem polynomialFockHarmonicCurvatureGap_lower_near
   exact hscaled.trans (by
     simpa [S] using polynomialFockHarmonicCurvatureGap_lower_adapted hm hK hKN)
 
+/-- Assuming `4 ≤ m`, `1 ≤ K` and `2K ≤ N`, the harmonic-curvature gap is at least
+`(m/4) (1 - 2^(-2/m))² (N - K)^(4/m)`. -/
 theorem polynomialFockHarmonicCurvatureGap_lower_far
     {m K N : ℝ} (hm : 4 ≤ m) (hK : 1 ≤ K) (hKN2 : 2 * K ≤ N) :
     (m / 4) * (1 - 2 ^ (-(2 / m))) ^ 2 * (N - K) ^ (4 / m) ≤

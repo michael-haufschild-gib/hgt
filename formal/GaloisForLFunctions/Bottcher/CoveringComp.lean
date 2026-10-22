@@ -1,8 +1,30 @@
 import Mathlib.Tactic
 import GaloisForLFunctions.Bottcher.ProperLocalHomeoCovering
+
+/-!
+# Composition of covering maps with finite fibres
+
+A composite `g ∘ f` of covering maps `f : E → Y` and `g : Y → Z` is again a covering map when every
+fibre of `g` is finite. Over an evenly covered neighbourhood `U` of `z` for `g`, the finitely many
+sheets through the points of `g⁻¹(z)` are each shrunk into an evenly covered neighbourhood for `f`; the
+finite intersection `W` is open, and over `W` the composite is trivialized with fibre `(g ∘ f)⁻¹(z)`.
+
+## Main results
+
+- `isCoveringMap_comp`: if `f` and `g` are covering maps and `g` has finite fibres, then `g ∘ f` is a
+  covering map.
+
+## Hypotheses
+
+Unconditional apart from the stated finiteness of the fibres of `g`, which is needed to make the
+intersection of the shrunk neighbourhoods open.
+-/
+
 open Topology
 namespace Bottcher
 variable {E Y Z : Type*} [TopologicalSpace E] [TopologicalSpace Y] [TopologicalSpace Z]
+/-- The composite of two covering maps is a covering map, assuming the fibres of the outer map `g` are
+finite (`hfin`). -/
 theorem isCoveringMap_comp {f : E → Y} {g : Y → Z} (hf : IsCoveringMap f) (hg : IsCoveringMap g)
     (hfin : ∀ z, (g ⁻¹' {z}).Finite) : IsCoveringMap (g ∘ f) := by
   intro z

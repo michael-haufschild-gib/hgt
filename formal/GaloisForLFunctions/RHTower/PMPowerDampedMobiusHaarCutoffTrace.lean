@@ -1,9 +1,45 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusClippedHaarSource
 
+/-!
+# Cutoff traces of repaired Haar prefixes and an RH criterion
+
+Let `R_ε(x) = A_ε(x) − x/ζ(1+ε)` be the divisor remainder, `C_ε(t) = R_ε(1/t)` the centered
+source, and `C_ε^(a)(t) = R_ε(min(a,1/t))` its clipping at height `a`. The clipping error
+`‖C_ε^(a) − C_ε‖²_{L²(0,∞)}` is two-sided comparable to the cutoff trace `|R_ε(a)|²/a` plus the
+initial energy `∫_{(0,1/a]} |C_ε|²`, and that initial energy tends to zero. The dyadic
+difference `f ↦ f − 2 f(2·)` distorts `L²` energy by at most the factor `(√2+1)²` in either
+direction, and the repaired Haar prefix error is the dyadic difference of the clipping error.
+Hence, when the Fermi source `F_ε` is in `L²`, repaired prefixes converge to `F_ε` along a
+sequence `N_n → ∞` iff `|R_ε(N_n)|²/N_n → 0`. Summability of the discrete energy then produces
+such a cofinal sequence, giving the equivalence: `F_ε ∈ L²` iff some strictly increasing
+subsequence of repaired Haar prefixes is `L²`-bounded.
+
+## Main results
+
+- `pmPowerDampedClippedCenteredSource_error_bounds`: two-sided bounds of the clipping error by `|R_ε(a)|²/a` and `∫_{(0,1/a]} |C_ε|²`.
+- `tendsto_pm_initial_energy`: for `f ∈ L²(0,∞)` and `a_n → ∞`, `∫_{(0,1/a_n]} |f|² → 0`.
+- `pmForwardDyadicDifference_energy_bounds`: `‖f − 2f(2·)‖² ≤ (√2+1)²‖f‖²` and `‖f‖² ≤ (√2+1)²‖f − 2f(2·)‖²`.
+- `pmPowerDampedRepairedHaarPrefix_L2_iff_trace`: given `F_ε ∈ L²`, repaired prefixes along `N_n → ∞` converge to `F_ε` in `L²` iff `|R_ε(N_n)|²/N_n → 0`.
+- `pm_exists_strictMono_weighted_trace_zero`: a nonnegative summable `w` admits strictly increasing `k` with `(k_n+2) w(k_n) → 0`.
+- `exists_pmPowerDamped_cofinal_repairedHaar_L2`: if `F_ε ∈ L²` then some strictly increasing subsequence of repaired prefixes converges to `F_ε` in `L²`.
+- `pmPowerDampedFermiSource_memLp_iff_repairedHaar_budget`: for `ε > 0`, `F_ε ∈ L²(0,∞)` iff a strictly increasing subsequence of repaired prefixes is uniformly `L²`-bounded.
+- `riemannHypothesis_of_pmPowerDamped_cofinal_repairedHaar_budget`: RH, conditional on such bounded subsequences existing for dampings `ε` arbitrarily close to `0`.
+
+## Hypotheses
+
+The analytic statements are unconditional given their explicit inputs: `0 ≤ ε` or `0 < ε`,
+`a > 0`, `N_n ≥ 1` with `N_n → ∞`, and membership of `C_ε` or `F_ε` in `L²(0,∞)` where stated.
+`riemannHypothesis_of_pmPowerDamped_cofinal_repairedHaar_budget` is conditional on the
+hypothesis `hbudget`: for every `δ > 0` there are `ε ∈ (0,δ)`, a strictly increasing
+`N_n ≥ 1` and a real `C` with `‖repaired prefix(ε, N_n)‖_{L²(0,∞)} ≤ C` for all `n`. This
+budget is not proved here.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- Parallelogram-type bound `|z − w|² ≤ 2|z|² + 2|w|²`. -/
 theorem pm_norm_sub_sq_le (z w : ℂ) : ‖z - w‖ ^ 2 ≤ 2 * ‖z‖ ^ 2 + 2 * ‖w‖ ^ 2 := by
   have h := pow_le_pow_left₀ (norm_nonneg (z - w)) (norm_sub_le z w) 2
   nlinarith [sq_nonneg (‖z‖ - ‖w‖)]
@@ -12,6 +48,8 @@ theorem pm_norm_sq_le_sub_sq (z w : ℂ) : ‖z‖ ^ 2 ≤ 2 * ‖z - w‖ ^ 2 +
   have h := pm_norm_sub_sq_le (z - w) (-w)
   simpa only [sub_neg_eq_add, sub_add_cancel, norm_neg] using h
 
+/-- For `a > 0`, the clipping error `C_ε^(a) − C_ε` vanishes beyond `1/a`, so its energy is
+an integral over `(0,1/a]`. -/
 theorem pmPowerDampedClippedCenteredSource_error_energy (ε : ℝ) {a : ℝ} (ha : 0 < a) :
     (∫ t in Ioi (0 : ℝ),
       ‖pmPowerDampedClippedCenteredSource ε a t - pmPowerDampedCenteredSource ε t‖ ^ 2) =
@@ -22,6 +60,9 @@ theorem pmPowerDampedClippedCenteredSource_error_energy (ε : ℝ) {a : ℝ} (ha
   intro t ht
   simp only [pmPowerDampedClippedCenteredSource_tail ε ha (le_of_lt ht), sub_self, norm_zero, zero_pow (by decide : 2 ≠ 0)]
 
+/-- For `ε ≥ 0`, `a > 0` and `C_ε ∈ L²(0,∞)`: the clipping error energy is at most
+`2|R_ε(a)|²/a + 2∫_{(0,1/a]} |C_ε|²`, and `|R_ε(a)|²/a` is at most twice the error energy plus
+`2∫_{(0,1/a]} |C_ε|²`. -/
 theorem pmPowerDampedClippedCenteredSource_error_bounds {ε a : ℝ}
     (hε : 0 ≤ ε) (ha : 0 < a)
     (hf : MemLp (pmPowerDampedCenteredSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
@@ -69,6 +110,8 @@ theorem pmPowerDampedClippedCenteredSource_error_bounds {ε a : ℝ}
     integral_const_mul, hcint, ← pmPowerDampedClippedCenteredSource_error_energy ε ha] at hl
   exact ⟨hu, hl⟩
 
+/-- For measurable `f ∈ L²(0,∞)` and positive `a_n → ∞`, the initial energies
+`∫_{(0,1/a_n]} |f|²` tend to `0` (dominated convergence). -/
 theorem tendsto_pm_initial_energy {f : ℝ → ℂ} (hm : Measurable f)
     (hf : MemLp f 2 (volume.restrict (Ioi (0 : ℝ))))
     {a : ℕ → ℝ} (ha : ∀ n, 0 < a n) (hat : Tendsto a atTop atTop) :
@@ -100,6 +143,8 @@ theorem tendsto_pm_initial_energy {f : ℝ → ℂ} (hm : Measurable f)
     exact (indicator_of_notMem (show t ∉ Ioc (0 : ℝ) (1 / a n) from
       fun hx => (not_le_of_gt hlt) hx.2) _).symm
 
+/-- For `ε ≥ 0`, `C_ε ∈ L²(0,∞)` and positive `a_n → ∞`: `C_ε^(a_n) → C_ε` in `L²` iff the cutoff
+trace `|R_ε(a_n)|²/a_n → 0`. -/
 theorem pmPowerDampedClippedCenteredSource_L2_iff_trace {ε : ℝ} (hε : 0 ≤ ε)
     (hf : MemLp (pmPowerDampedCenteredSource ε) 2 (volume.restrict (Ioi (0 : ℝ))))
     {a : ℕ → ℝ} (ha : ∀ n, 0 < a n) (hat : Tendsto a atTop atTop) :
@@ -118,6 +163,8 @@ theorem pmPowerDampedClippedCenteredSource_L2_iff_trace {ε : ℝ} (hε : 0 ≤ 
       (fun n => (pmPowerDampedClippedCenteredSource_error_bounds hε (ha n) hf).1)
     simpa using (ht.const_mul 2).add (htail.const_mul 2)
 
+/-- For measurable `f ∈ L²(0,∞)`, the dyadic difference `Δf(t) = f(t) − 2f(2t)` satisfies
+`‖Δf‖² ≤ (√2+1)²‖f‖²` and `‖f‖² ≤ (√2+1)²‖Δf‖²`. -/
 theorem pmForwardDyadicDifference_energy_bounds {f : ℝ → ℂ} (hm : Measurable f)
     (hf : MemLp f 2 (volume.restrict (Ioi (0 : ℝ)))) :
     (∫ t in Ioi (0 : ℝ), ‖pmForwardDyadicDifference f t‖ ^ 2) ≤
@@ -140,6 +187,8 @@ theorem pmForwardDyadicDifference_energy_bounds {f : ℝ → ℂ} (hm : Measurab
     toReal_eLpNorm hf.aestronglyMeasurable]
   simpa only [mul_pow] using And.intro hu2 hl2
 
+/-- For `N ≥ 1`, the repaired Haar prefix error `‖repaired_N − F_ε‖²` equals the energy of the
+dyadic difference of the clipping error `C_ε^(N) − C_ε`. -/
 theorem pmPowerDampedRepairedHaarPrefix_error_energy (ε : ℝ) {N : ℕ} (hN : 1 ≤ N) :
     (∫ t in Ioi (0 : ℝ),
       ‖pmPowerDampedRepairedHaarPrefix ε N t - pmPowerDampedFermiSource ε t‖ ^ 2) =
@@ -154,6 +203,8 @@ theorem pmPowerDampedRepairedHaarPrefix_error_energy (ε : ℝ) {N : ℕ} (hN : 
   simp only [pmForwardDyadicDifference, Pi.sub_apply]
   ring
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, for `N_n ≥ 1` with `N_n → ∞`: the repaired Haar prefixes
+converge to `F_ε` in `L²` iff `|R_ε(N_n)|²/N_n → 0`. -/
 theorem pmPowerDampedRepairedHaarPrefix_L2_iff_trace {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))))
     {N : ℕ → ℕ} (hN : ∀ n, 1 ≤ N n) (hNt : Tendsto N atTop atTop) :
@@ -179,6 +230,8 @@ theorem pmPowerDampedRepairedHaarPrefix_L2_iff_trace {ε : ℝ} (hε : 0 < ε)
     apply squeeze_zero (fun n => integral_nonneg (fun _ => sq_nonneg _)) (fun n => (he n).1)
     simpa only [mul_zero] using h.const_mul ((Real.sqrt 2 + 1) ^ 2)
 
+/-- Averaging on a dyadic block: for nonnegative summable `w` and `M ≥ 1` there is
+`k ∈ [M, 2M)` with `(k+2) w(k) ≤ 3 ∑'_j w(j+M)`. -/
 theorem pm_exists_dyadic_small_weight {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
     (hs : Summable w) {M : ℕ} (hM : 1 ≤ M) :
     ∃ k : ℕ, M ≤ k ∧ k < 2 * M ∧
@@ -206,6 +259,7 @@ theorem pm_exists_dyadic_small_weight {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
     _ = 3 * ((M : ℝ) * w (j + M)) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hsmall' (by norm_num)
 
+/-- For nonnegative summable `w` there is a strictly increasing `k` with `(k_n + 2) w(k_n) → 0`. -/
 theorem pm_exists_strictMono_weighted_trace_zero {w : ℕ → ℝ}
     (hw : ∀ n, 0 ≤ w n) (hs : Summable w) :
     ∃ k : ℕ → ℕ, StrictMono k ∧
@@ -233,12 +287,15 @@ theorem pm_exists_strictMono_weighted_trace_zero {w : ℕ → ℝ}
   apply squeeze_zero (fun n => mul_nonneg (by positivity) (hw _)) hbound
   simpa only [Function.comp_def, mul_zero] using ht.const_mul 3
 
+/-- For `ε > 0` and integer `n`, `|R_ε(n)|²` is the square of the centered divisor prefix at `n`. -/
 theorem pmPowerDampedDivisorRemainder_nat_norm_sq {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
     ‖pmPowerDampedDivisorRemainder ε n‖ ^ 2 = pmPowerDampedCenteredDivisorPrefix ε n ^ 2 := by
   rw [pmPowerDampedDivisorRemainder_eq_centered_prefix hε (Nat.cast_nonneg n)]
   simp only [Nat.floor_natCast, Int.fract_natCast, Complex.ofReal_zero, mul_zero,
     sub_zero, Complex.norm_real, Real.norm_eq_abs, sq_abs]
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, there is a strictly increasing `N_n ≥ 1` with
+`|R_ε(N_n)|²/N_n → 0` (from summability of the discrete energy). -/
 theorem exists_pmPowerDamped_cofinal_trace_zero {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
     ∃ N : ℕ → ℕ, StrictMono N ∧ (∀ n, 1 ≤ N n) ∧
@@ -258,6 +315,8 @@ theorem exists_pmPowerDamped_cofinal_trace_zero {ε : ℝ} (hε : 0 < ε)
     push_cast
     field_simp
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, some strictly increasing subsequence of repaired Haar
+prefixes converges to `F_ε` in `L²(0,∞)`. -/
 theorem exists_pmPowerDamped_cofinal_repairedHaar_L2 {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
     ∃ N : ℕ → ℕ, StrictMono N ∧ (∀ n, 1 ≤ N n) ∧
@@ -268,6 +327,8 @@ theorem exists_pmPowerDamped_cofinal_repairedHaar_L2 {ε : ℝ} (hε : 0 < ε)
   exact ⟨N, hN, hNp,
     (pmPowerDampedRepairedHaarPrefix_L2_iff_trace hε hf hNp hN.tendsto_atTop).mpr ht⟩
 
+/-- For `ε > 0`: `F_ε ∈ L²(0,∞)` iff there are a strictly increasing `N_n ≥ 1` and a real `C`
+bounding the `L²` norms of all repaired Haar prefixes at `N_n`. -/
 theorem pmPowerDampedFermiSource_memLp_iff_repairedHaar_budget {ε : ℝ} (hε : 0 < ε) :
     MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))) ↔
       ∃ N : ℕ → ℕ, StrictMono N ∧ (∀ n, 1 ≤ N n) ∧ ∃ C : ℝ,
@@ -310,6 +371,8 @@ theorem pmPowerDampedFermiSource_memLp_iff_repairedHaar_budget {ε : ℝ} (hε :
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact (tendsto_pmPowerDampedRepairedHaarPrefix ε ht).comp hN.tendsto_atTop
 
+/-- RH, conditional on `hbudget`: for every `δ > 0` some damping `ε ∈ (0,δ)` has a strictly
+increasing `N_n ≥ 1` along which the repaired Haar prefixes are uniformly `L²`-bounded. -/
 theorem riemannHypothesis_of_pmPowerDamped_cofinal_repairedHaar_budget
     (hbudget : ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
       ∃ N : ℕ → ℕ, StrictMono N ∧ (∀ n, 1 ≤ N n) ∧ ∃ C : ℝ,

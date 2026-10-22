@@ -1,5 +1,38 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma45HeightPacking
 
+/-!
+# Chen–Gupta–Li Lemma 4.5: real-height source scale for fibre-separated packets
+
+A fibre-separated packet consists of `R` rows, each with a real ordinate and a Dirichlet
+character modulo `q + 1`, such that rows with the same character have ordinates separated by
+the packet spacing. This module shows that if all ordinates have absolute value at most a real
+height `T` and the spacing is at least `1`, each character fibre has at most `4T + 1` rows, so
+`R ≤ φ(q + 1)(4T + 1)`. It then packages the paper's source conditions (time `T ≥ 1`, base
+`X = (q + 1)T ≥ 5`, length `N ≤ X`, and `X^a ≤ spacing^b` for positive integers `a, b`, or
+`X^ε ≤ spacing` for some `ε > 0`) into the source-scale structure of the Lemma 4.5 argument,
+with row count `R ≤ X³`. As a consequence the zero-frequency off-diagonal term of Lemma 4.5 is
+bounded by `C / X^k` for every target exponent `k`.
+
+## Main results
+
+- `cglLemma45RealHeight_fibre_card_le`: each character fibre has at most `4T + 1` rows.
+- `cglLemma45RealHeight_row_card_le`: `R ≤ φ(q + 1)(4T + 1)`.
+- `cglLemma45PaperSourcePacket_rowCount_le_cube`: under the paper source conditions, `R ≤ X³`.
+- `CGLLemma45PaperSourcePacket.toSourceScale`: the paper conditions yield a
+  `CGLLemma45SourceScale`.
+- `norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_paperSourcePower` and
+  `norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_literalEpsilonSourcePower`: for every
+  `k : ℕ`, the zero-frequency off-diagonal term is at most an explicit bump-dependent constant
+  divided by `X^k`.
+
+## Hypotheses
+
+The results are conditional on the finite packet data satisfying the bundled source conditions:
+`CGLLemma45RealHeightBounded` (ordinates bounded by a real height), `CGLLemma45UnitSeparatedPacket`
+(spacing at least `1`), and `CGLLemma45PaperSourcePacket` or `CGLLemma45LiteralEpsilonSourcePacket`
+(the conditions on `T`, `X`, `N` and the spacing listed above). No analytic input is assumed.
+-/
+
 noncomputable section
 
 namespace RHTower
@@ -8,6 +41,7 @@ open scoped BigOperators
 open Metric
 open MeasureTheory
 
+/-- A real height `T ≥ 0` bounding the absolute value of every ordinate in the packet. -/
 structure CGLLemma45RealHeightBounded {q R : ℕ} (P : CGLFibreSeparatedPacket q R) where
   height : ℝ
   height_nonneg : 0 ≤ height
@@ -20,6 +54,8 @@ theorem cglLemma45RealHeight_ordinates_bound {q R : ℕ} (P : CGLFibreSeparatedP
   rcases Finset.mem_image.mp hx with ⟨r, hr, rfl⟩
   exact H.ordinate_bound r
 
+/-- If all ordinates lie in `[-T, T]` and same-character ordinates are separated by at least `1`,
+then every Dirichlet-character fibre contains at most `4T + 1` rows (a one-dimensional packing bound). -/
 theorem cglLemma45RealHeight_fibre_card_le {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (H : CGLLemma45RealHeightBounded P) (U : CGLLemma45UnitSeparatedPacket P)
     (χ : DirichletCharacter ℂ (q + 1)) :
@@ -39,6 +75,8 @@ theorem cglLemma45RealHeight_fibre_card_le {q R : ℕ} (P : CGLFibreSeparatedPac
   norm_num at hpack
   linarith
 
+/-- Summing the fibre bound over the `φ(q + 1)` Dirichlet characters: with ordinates bounded by `T`
+and unit spacing, the packet has `R ≤ φ(q + 1)(4T + 1)` rows. -/
 theorem cglLemma45RealHeight_row_card_le {q R : ℕ} (P : CGLFibreSeparatedPacket q R)
     (H : CGLLemma45RealHeightBounded P) (U : CGLLemma45UnitSeparatedPacket P) :
     (R : ℝ) ≤ ((q + 1).totient : ℝ) * (4 * H.height + 1) := by
@@ -59,6 +97,8 @@ theorem cglLemma45RealHeight_row_card_le {q R : ℕ} (P : CGLFibreSeparatedPacke
       ring
     _ = ((q + 1).totient : ℝ) * (4 * H.height + 1) := by rw [hc]
 
+/-- The source conditions of the paper for Lemma 4.5: time `T ≥ 1`, base `X = (q + 1)T ≥ 5`,
+length `N ≤ X`, ordinates bounded by `T`, and `X^a ≤ spacing^b` for positive integers `a, b`. -/
 structure CGLLemma45PaperSourcePacket {q R : ℕ}
     (P : CGLFibreSeparatedPacket q R) (N : CGLPositiveLength) where
   time : ℝ
@@ -80,6 +120,8 @@ def CGLLemma45PaperSourcePacket.toRealHeightBounded {q R : ℕ} {P : CGLFibreSep
   height_nonneg := by linarith [S.time_one]
   ordinate_bound := S.ordinate_bound
 
+/-- Under the paper source conditions the packet spacing is at least `1`, since `X ≥ 5` and
+`X^a ≤ spacing^b`. -/
 theorem cglLemma45PaperSourcePacket_spacing_one {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45PaperSourcePacket P N) : 1 ≤ P.spacing := by
   have hb : (1 : ℝ) ≤ S.base := by linarith [S.base_five]
@@ -107,6 +149,8 @@ theorem cglLemma45PaperSourcePacket_time_le_base {q R : ℕ} {P : CGLFibreSepara
     _ ≤ (q + 1 : ℝ) * S.time := mul_le_mul_of_nonneg_right hq ht
     _ = S.base := S.base_eq_modulus_mul_time.symm
 
+/-- Under the paper source conditions the number of rows is at most the cube of the base:
+`R ≤ X³`, from `R ≤ φ(q + 1)(4T + 1)`, `φ(q + 1) ≤ X`, `T ≤ X` and `X ≥ 5`. -/
 theorem cglLemma45PaperSourcePacket_rowCount_le_cube {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45PaperSourcePacket P N) : (R : ℝ) ≤ S.base ^ 3 := by
   have hb0 : 0 ≤ S.base := by linarith [S.base_five]
@@ -126,6 +170,8 @@ theorem cglLemma45PaperSourcePacket_rowCount_le_cube {q R : ℕ} {P : CGLFibreSe
         S.base * (5 * S.base) ≤ S.base * (S.base * S.base) := mul_le_mul_of_nonneg_left hf hb0
         _ = S.base ^ 3 := by ring
 
+/-- The paper source conditions produce the `CGLLemma45SourceScale` used by the Lemma 4.5 zero-mode
+estimate, with base `X`, Fourier scale `N/(q + 1) ≤ X`, `φ(q + 1) ≤ X` and row exponent `3`. -/
 def CGLLemma45PaperSourcePacket.toSourceScale {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45PaperSourcePacket P N) : CGLLemma45SourceScale P N where
   separation :=
@@ -145,6 +191,8 @@ def CGLLemma45PaperSourcePacket.toSourceScale {q R : ℕ} {P : CGLFibreSeparated
   rowCountExponent := 3
   rowCount_le := cglLemma45PaperSourcePacket_rowCount_le_cube S
 
+/-- Under the paper source conditions, for every target exponent `k` the zero-frequency off-diagonal
+term of Lemma 4.5 is bounded by a product of Fourier-amplitude budgets of the bump `w` divided by `X^k`. -/
 theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_paperSourcePower {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45PaperSourcePacket P N) (w : CGLRealSmoothBump) (targetExponent : ℕ) :
     ‖cglLemma45OffDiagonalFrequencyTerm w N (cglLemma45FibreModulus q) R (cglLemma45FibreRows P) 0‖ ≤
@@ -154,6 +202,8 @@ theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_paperSourcePower {q R : 
   simpa [CGLLemma45PaperSourcePacket.toSourceScale] using
     norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_any_sourcePower S.toSourceScale w targetExponent
 
+/-- The paper source conditions with the spacing hypothesis stated literally as `X^ε ≤ spacing` for a
+real `ε > 0`. -/
 structure CGLLemma45LiteralEpsilonSourcePacket {q R : ℕ}
     (P : CGLFibreSeparatedPacket q R) (N : CGLPositiveLength)
     extends CGLLemma45PaperSourcePacket P N where
@@ -178,6 +228,8 @@ theorem cglLemma45LiteralEpsilonSourcePacket_epsilonDenominator_inv_lt
   simpa [CGLLemma45LiteralEpsilonSourcePacket.epsilonDenominator, Nat.cast_add, Nat.cast_one] using
     (exists_nat_one_div_lt S.epsilon_pos).choose_spec
 
+/-- From `X^ε ≤ spacing` with `ε > 0`, choosing an integer `d` with `1/d < ε` gives the rational
+spacing condition `X ≤ spacing^d`. -/
 theorem cglLemma45LiteralEpsilonSourcePacket_spacing_power
     {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45LiteralEpsilonSourcePacket P N) :
@@ -197,6 +249,7 @@ theorem cglLemma45LiteralEpsilonSourcePacket_spacing_power
   rw [hmul, Real.rpow_one] at hp
   simpa using hp
 
+/-- The literal `ε` source conditions imply the rational-exponent paper source conditions. -/
 def CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket
     {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45LiteralEpsilonSourcePacket P N) : CGLLemma45PaperSourcePacket P N where
@@ -213,6 +266,8 @@ def CGLLemma45LiteralEpsilonSourcePacket.toPaperSourcePacket
   spacing_power := cglLemma45LiteralEpsilonSourcePacket_spacing_power S
   ordinate_bound := S.ordinate_bound
 
+/-- Under the literal `ε` source conditions, for every target exponent `k` the zero-frequency
+off-diagonal term of Lemma 4.5 is at most an explicit bump-dependent constant divided by `X^k`. -/
 theorem norm_cglLemma45OffDiagonalFrequencyTerm_zero_le_literalEpsilonSourcePower
     {q R : ℕ} {P : CGLFibreSeparatedPacket q R} {N : CGLPositiveLength}
     (S : CGLLemma45LiteralEpsilonSourcePacket P N) (w : CGLRealSmoothBump)

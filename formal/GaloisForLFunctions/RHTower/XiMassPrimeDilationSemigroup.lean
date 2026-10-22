@@ -1,5 +1,36 @@
 import GaloisForLFunctions.RHTower.XiMassPrimeMaskBoundaryQuotient
 
+/-!
+# Dilation masks: prime-power layers as rescaled prime layers
+
+The mass test `g_{a,τ}(x) = exp(-τ √(x² + a²))` satisfies the dilation law
+`g_{a,τ}(x) = g_{a/q, qτ}(x/q)` for `q > 0`, so its Fourier transform obeys
+`ĝ_{a,τ}(w) = q ĝ_{a/q, qτ}(q w)`. Since `log p^r = r log p`, multiplying the prime atom at `p` by
+the dilation mask `m_r(p) = Λ(p^r) p^{-r/2} / (Λ(p) p^{-1/2}) = p^{-(r-1)/2}` produces `r` times
+the atom at `p^r` for the rescaled parameters `(a/r, rτ)`. Thus each dilation-masked prime layer is
+a rescaled prime-power layer. Every prime-power layer with `r ≥ 2` is bounded on positive vertical
+lines (the case `r = 2` uses the prime-square boundary residue; `r ≥ 3` is absolutely summable),
+hence so is every dilation-masked layer with `r ≥ 2`.
+
+## Main results
+
+- `stripFourier_xiMassAnalyticTest_dilation`: `ĝ_{a,τ}(w) = q ĝ_{a/q, qτ}(q w)` for `a, q > 0`.
+- `xiMassPrimeDilationLayer_eq_primePowerLayer`: for `r > 0`, the `m_r`-masked prime layer at
+  `(a, τ)` equals `r` times the `p^r` layer at `(a/r, rτ)`.
+- `exists_norm_xiMassPrimePowerLayer_vertical_bound`: for `r ≥ 2`, the prime-power layer
+  `∑_p atom(p^r)` is bounded on `Re τ = σ`.
+- `exists_norm_xiMassPrimeDilationLayer_vertical_bound`: for `r ≥ 2`, the dilation-masked layer is
+  bounded on `Re τ = σ`.
+- `norm_xiMassPrimeDilationMask_eq`: `‖m_r(p)‖ = p^{-(r-1)/2}`.
+- `summable_norm_xiMassPrimeDilationMask_mul_criticalWeight_high`: for `r ≥ 3`, the mask is
+  summable against the critical weights `log p · p^{-1/2}`.
+
+## Hypotheses
+
+All results are unconditional. They use only parameter ranges such as `0 < a`, `0 < q`,
+`0 < σ`, `0 < Re τ` and integer constraints `0 < r`, `2 ≤ r` or `3 ≤ r`.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -7,6 +38,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- Dilation law of the mass test on the real line: for `a, q > 0`,
+`g_{a,τ}(x) = g_{a/q, qτ}(x/q)`. -/
 theorem xiMassAnalyticTest_real_dilation
     {a q : ℝ} (ha : 0 < a) (hq : 0 < q)
     (τ : ℂ) (x : ℝ) :
@@ -28,6 +61,7 @@ theorem xiMassAnalyticTest_real_dilation
   push_cast
   field_simp [hq.ne']
 
+/-- Fourier form of the dilation law: for `a, q > 0`, `ĝ_{a,τ}(w) = q ĝ_{a/q, qτ}(q w)`. -/
 theorem stripFourier_xiMassAnalyticTest_dilation
     {a q : ℝ} (ha : 0 < a) (hq : 0 < q)
     (τ w : ℂ) :
@@ -59,21 +93,25 @@ theorem stripFourier_xiMassAnalyticTest_dilation
   simp only [Complex.real_smul]
   rfl
 
+/-- The `r`-th prime-power layer `∑_p atom(p^r)`. -/
 def xiMassPrimePowerLayer (r : ℕ) (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ r)
 
+/-- The dilation mask `m_r(p)`: ratio of the critical von Mangoldt terms at `p^r` and at `p`. -/
 def xiMassPrimeDilationMask (r : ℕ) (p : Nat.Primes) : ℂ :=
   LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) ((p : ℕ) ^ r) /
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) (p : ℕ)
 
+/-- The dilation-masked prime layer `∑_p m_r(p) · atom(p)`. -/
 def xiMassPrimeDilationLayer (r : ℕ) (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     xiMassPrimeDilationMask r p *
       xiMassCenteredPrimeAtom a τ (p : ℕ)
 
+/-- For `r > 0` and `a > 0`, `m_r(p) · atom_{a,τ}(p) = r · atom_{a/r, rτ}(p^r)`. -/
 theorem xiMassPrimeDilationMask_mul_centeredAtom_eq
     {r : ℕ} (hr : 0 < r) {a : ℝ} (ha : 0 < a)
     (τ : ℂ) (p : Nat.Primes) :
@@ -120,6 +158,8 @@ theorem xiMassPrimeDilationMask_mul_centeredAtom_eq
       rw [hlogpowC]
       ring
 
+/-- For `r > 0` and `a > 0`, the dilation-masked layer at `(a, τ)` equals `r` times the `r`-th
+prime-power layer at `(a/r, rτ)`. -/
 theorem xiMassPrimeDilationLayer_eq_primePowerLayer
     {r : ℕ} (hr : 0 < r) {a : ℝ} (ha : 0 < a) (τ : ℂ) :
     xiMassPrimeDilationLayer r a τ =
@@ -130,6 +170,7 @@ theorem xiMassPrimeDilationLayer_eq_primePowerLayer
   exact tsum_congr
     (xiMassPrimeDilationMask_mul_centeredAtom_eq hr ha τ)
 
+/-- For `r ≥ 3`, `∑_p log p · p^{-r/2} < ∞`. -/
 theorem summable_xiMassPrimePowerCriticalWeight_fixed_high
     {r : ℕ} (hr : 3 ≤ r) :
     Summable (fun p : Nat.Primes =>
@@ -168,6 +209,8 @@ theorem summable_xiMassPrimePowerLayerAtom_high
   summable_norm_iff.mp
     (summable_norm_xiMassPrimePowerLayerAtom_high hr ha hσ u)
 
+/-- For `r ≥ 3` and `a, σ > 0`, the `r`-th prime-power layer on `Re τ = σ` is bounded by
+`(∑_p log p · p^{-r/2}) · ∫ e^{-σ|x|} dx`. -/
 theorem norm_xiMassPrimePowerLayer_vertical_le_high
     {r : ℕ} (hr : 3 ≤ r) {a σ : ℝ}
     (ha : 0 < a) (hσ : 0 < σ) (u : ℝ) :
@@ -208,6 +251,7 @@ theorem exists_norm_xiMassPrimePowerLayer_vertical_bound_high
         (∫ x : ℝ, Real.exp (-(σ * |x|))),
     norm_xiMassPrimePowerLayer_vertical_le_high hr ha hσ⟩
 
+/-- For `r ≥ 2`, `a > 0` and `0 < Re τ`, the atoms at `p^r` are absolutely summable over primes. -/
 theorem summable_norm_xiMassPrimePowerLayerAtom
     {r : ℕ} (hr : 2 ≤ r) {a : ℝ} (ha : 0 < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -229,6 +273,8 @@ theorem summable_xiMassPrimePowerLayerAtom
   summable_norm_iff.mp
     (summable_norm_xiMassPrimePowerLayerAtom hr ha hτ)
 
+/-- For `r ≥ 2` and `a, σ > 0`, the `r`-th prime-power layer is bounded on the vertical line
+`Re τ = σ`; the case `r = 2` is the prime-square boundary residue bound. -/
 theorem exists_norm_xiMassPrimePowerLayer_vertical_bound
     {r : ℕ} (hr : 2 ≤ r) {a σ : ℝ}
     (ha : 0 < a) (hσ : 0 < σ) :
@@ -240,6 +286,7 @@ theorem exists_norm_xiMassPrimePowerLayer_vertical_bound
   · exact exists_norm_xiMassPrimePowerLayer_vertical_bound_high
       (r := r) (by omega) ha hσ
 
+/-- For `r ≥ 2`, `a > 0` and `0 < Re τ`, the dilation-masked prime atoms are summable. -/
 theorem summable_xiMassPrimeDilationMaskedAtom
     {r : ℕ} (hr : 2 ≤ r) {a : ℝ} (ha : 0 < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -256,6 +303,8 @@ theorem summable_xiMassPrimeDilationMaskedAtom
   exact (hpow.mul_left ((r : ℝ) : ℂ)).congr (fun p =>
     (xiMassPrimeDilationMask_mul_centeredAtom_eq hr0 ha τ p).symm)
 
+/-- For `r ≥ 2` and `a, σ > 0`, the dilation-masked prime layer is bounded on the vertical line
+`Re τ = σ`, via its identification with a rescaled prime-power layer. -/
 theorem exists_norm_xiMassPrimeDilationLayer_vertical_bound
     {r : ℕ} (hr : 2 ≤ r) {a σ : ℝ}
     (ha : 0 < a) (hσ : 0 < σ) :
@@ -276,6 +325,7 @@ theorem exists_norm_xiMassPrimeDilationLayer_vertical_bound
     norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hrR, harg]
   exact mul_le_mul_of_nonneg_left (hB ((r : ℝ) * u)) hrR.le
 
+/-- For `r > 0`, the dilation mask has modulus `‖m_r(p)‖ = p^{-(r-1)/2}`. -/
 theorem norm_xiMassPrimeDilationMask_eq
     {r : ℕ} (hr : 0 < r) (p : Nat.Primes) :
     ‖xiMassPrimeDilationMask r p‖ =
@@ -303,6 +353,7 @@ theorem norm_xiMassPrimeDilationMask_eq
   congr 1
   ring
 
+/-- For `r > 0`, `‖m_r(p)‖ · log p · p^{-1/2} = log p · p^{-r/2}`, the critical weight of `p^r`. -/
 theorem norm_xiMassPrimeDilationMask_mul_criticalWeight_eq
     {r : ℕ} (hr : 0 < r) (p : Nat.Primes) :
     ‖xiMassPrimeDilationMask r p‖ *
@@ -328,6 +379,8 @@ theorem norm_xiMassPrimeDilationMask_mul_criticalWeight_eq
       simpa using xiMassPrimeCriticalTerm_ne_zero p)
   exact div_mul_cancel₀ _ hw0
 
+/-- For `r ≥ 3`, the dilation mask is summable against the critical weights:
+`∑_p ‖m_r(p)‖ · log p · p^{-1/2} < ∞`. -/
 theorem summable_norm_xiMassPrimeDilationMask_mul_criticalWeight_high
     {r : ℕ} (hr : 3 ≤ r) :
     Summable (fun p : Nat.Primes =>

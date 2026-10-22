@@ -1,12 +1,38 @@
 import GaloisForLFunctions.HTGeometry.BoundedPhaseHardyHalfToeplitz
 import GaloisForLFunctions.HTGeometry.SmirnovToeplitzKernel
 
+/-!
+# Circle `L¹` integrability of the reflected side of a Smirnov Toeplitz kernel element
+
+Almost-everywhere equality transfers from the real line to the unit circle through the Cayley
+map: if two a.e.-measurable circle functions agree a.e. after composition with the Cayley
+parametrization, they agree a.e. for circle Lebesgue measure. For an element of the Smirnov
+Toeplitz kernel with unimodular real-line symbol `U`, the reflected boundary function has the same
+modulus as the forward one a.e., so the reflected circle boundary is integrable whenever the
+forward circle boundary is.
+
+## Main results
+
+- `circle_eventuallyEq_of_line_eventuallyEq_ae`: a.e. equality along the Cayley parametrization
+  implies a.e. equality on the circle, for a.e.-measurable functions.
+- `SmirnovToeplitzKernelElement.integrable_reflected_circleBoundary`: assuming `|U| = 1` a.e. and
+  circle integrability of the forward boundary, the reflected boundary is circle integrable.
+
+## Hypotheses
+
+Unconditional apart from the explicit inputs: a.e.-measurability in the transfer lemma, and in
+the integrability theorem the unimodularity `‖U x‖ = 1` for a.e. `x` and integrability of the
+forward circle boundary.
+-/
+
 open Complex MeasureTheory
 
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- If a.e.-measurable `f g : Circle → β` agree a.e. on `ℝ` after composing with the Cayley map,
+then `f = g` almost everywhere for circle Lebesgue measure. -/
 theorem circle_eventuallyEq_of_line_eventuallyEq_ae
     {β : Type*} [MeasurableSpace β] [MeasurableEq β]
     {f g : Circle → β}
@@ -33,6 +59,8 @@ theorem circle_eventuallyEq_of_line_eventuallyEq_ae
       hf.measurable_mk hg.measurable_mk hmkLine
   exact hf.ae_eq_mk.trans (hmk.trans hg.ae_eq_mk.symm)
 
+/-- For a Smirnov Toeplitz kernel element with symbol `U`, assuming `|U| = 1` a.e. on `ℝ` and that
+the forward circle boundary is integrable, the reflected circle boundary is integrable. -/
 theorem SmirnovToeplitzKernelElement.integrable_reflected_circleBoundary
     {U : ℝ → ℂ} (K : SmirnovToeplitzKernelElement U)
     (hU : ∀ᵐ x ∂volume, ‖U x‖ = 1)

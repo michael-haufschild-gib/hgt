@@ -1,12 +1,35 @@
 import GaloisForLFunctions.RHTower.CriticalPrimeFockArbitraryScaledRadiusWindow
 import GaloisForLFunctions.RHTower.CriticalPrimeFockScaledAdaptedCellMass
 
+/-!
+# Schatten summability of scaled adapted-cell prime masses (arbitrary scale `s > 0`)
+
+Extends `CriticalPrimeFockScaledAdaptedCellMass` from `0 < s ≤ 1` to every scale `s > 0`. The
+prime-log mass of the window of radius `s r(x_n)` around the cell centre `x_n = n^(2/m)` is
+asymptotic to its main term `s · 2 x_n r(x_n)`, and for `m > 4`, `q > 0` the masses are
+`q`-summable iff `q > m/(m - 4)`.
+
+## Main results
+
+- `tendsto_criticalPrimeFockScaledAdaptedCellMass_div_main_of_pos`: for `m > 2`, `s > 0`,
+  mass/main → 1.
+- `summable_rpow_criticalPrimeFockScaledAdaptedCellMass_iff_main_of_pos`: for `m > 4`, `s > 0`,
+  `q > 0`, masses and main terms are `q`-summable together.
+- `summable_rpow_criticalPrimeFockScaledAdaptedCellMass_iff_of_pos`: for `m > 4`, `s > 0`,
+  `q > 0`, `∑ mass_n^q < ∞ ↔ m/(m - 4) < q`.
+
+## Hypotheses
+
+Unconditional; only the parameter ranges are assumed.
+-/
+
 open Filter Topology
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `m > 2` and any `s > 0`, the scaled adapted-cell mass divided by its main term tends to `1`. -/
 theorem tendsto_criticalPrimeFockScaledAdaptedCellMass_div_main_of_pos
     {m s : ℝ} (hm : 2 < m) (hs : 0 < s) :
     Tendsto (fun n : ℕ =>
@@ -23,6 +46,7 @@ theorem tendsto_criticalPrimeFockScaledAdaptedCellMass_div_main_of_pos
   congr 1
   ring
 
+/-- For `m > 2` and any `s > 0`, eventually `1/2 ≤ mass/main ≤ 3/2`. -/
 theorem eventually_criticalPrimeFockScaledAdaptedCellMass_ratio_bounds_of_pos
     {m s : ℝ} (hm : 2 < m) (hs : 0 < s) :
     ∀ᶠ n : ℕ in atTop,
@@ -35,6 +59,8 @@ theorem eventually_criticalPrimeFockScaledAdaptedCellMass_ratio_bounds_of_pos
     (by norm_num : (1 : ℝ) < 3 / 2))] with n hn
   exact ⟨hn.1.le, hn.2.le⟩
 
+/-- For `m > 4`, `s > 0`, `q > 0`, the `q`-th powers of scaled cell masses are summable iff those of the
+main terms are. -/
 theorem summable_rpow_criticalPrimeFockScaledAdaptedCellMass_iff_main_of_pos
     {m s q : ℝ} (hm : 4 < m) (hs : 0 < s) (hq : 0 < q) :
     Summable (fun n : ℕ => criticalPrimeFockScaledAdaptedCellMass m s n ^ q) ↔
@@ -63,6 +89,8 @@ theorem summable_rpow_criticalPrimeFockScaledAdaptedCellMass_iff_main_of_pos
       (Real.rpow_le_rpow (le_trans (by norm_num : (0 : ℝ) ≤ 1 / 2) hratio.1)
         hratio.2 hq.le) hmainnonneg
 
+/-- Schatten threshold for every scale: for `m > 4`, `s > 0`, `q > 0`, the scaled adapted-cell masses are
+`q`-summable iff `q > m/(m - 4)`. -/
 theorem summable_rpow_criticalPrimeFockScaledAdaptedCellMass_iff_of_pos
     {m s q : ℝ} (hm : 4 < m) (hs : 0 < s) (hq : 0 < q) :
     Summable (fun n : ℕ => criticalPrimeFockScaledAdaptedCellMass m s n ^ q) ↔

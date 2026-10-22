@@ -1,5 +1,31 @@
 import GaloisForLFunctions.HTGeometry.PolynomialPhaseLockAssembly
 
+/-!
+# A residue class of coefficients carrying a Prouhet-locked pattern cluster
+
+For a polynomial `Q` in `n + 2` variables with integer coefficients and positive maximal jet degree
+`D` (largest number of dependent-variable factors in a monomial), fix a residue `τ < D`. Along the
+coefficient indices `N = D q + τ`, the atom weights of `Q(X, F, …, F⁽ⁿ⁾)` at window-shifted
+multiplicity patterns are values `W_p(q)` of nonzero integer polynomials, for all `q ≥ K + n`. The
+module produces a nonempty finite set `S` of such surviving patterns together with a nonempty
+sub-cluster `C ⊆ S` whose members share all moments below `⌈β⌉` and whose pairwise difference
+polynomials are divisible by `(X - 1)^{⌈β⌉}`.
+
+## Main results
+
+- `exists_residueProuhetCluster`: for `2 < β`, integer-coefficient `Q` with `D > 0` and `τ < D`,
+  there exist `K, M`, patterns `S ⊇ C` (both nonempty) and nonzero integer polynomials `W p` with
+  `aevalWeight n (D q + τ) Q (shiftedAtomPatternKey q K p) = W_p(q)` for `p ∈ S`, `q ≥ K + n`, and
+  for `p, r ∈ C`: `m_j(p) = m_j(r)` for `j < ⌈β⌉` and `(X - 1)^{⌈β⌉}` divides
+  `atomPatternDifferencePolynomial p r`.
+
+## Hypotheses
+
+Unconditional. The theorem assumes `2 < β`, integrality of every coefficient of `Q`,
+`0 < magnitudeMaxJetDegree n Q`, and `τ < magnitudeMaxJetDegree n Q`. No differential relation for
+a power series is assumed.
+-/
+
 open Filter Finset PowerSeries MvPolynomial Polynomial Topology Asymptotics Set
 
 namespace GaloisForLFunctions
@@ -7,6 +33,10 @@ namespace GaloisForLFunctions
 noncomputable section
 
 set_option maxHeartbeats 600000 in
+/-- Assuming `2 < β`, integer coefficients, `D = magnitudeMaxJetDegree n Q > 0` and `τ < D`: a
+nonempty set `S` of surviving patterns with integer-polynomial weights `W_p(q)` on the residue class
+`N = D q + τ`, and a nonempty cluster `C ⊆ S` with equal moments below `⌈β⌉` and `(X - 1)^{⌈β⌉}`
+dividing every pairwise difference polynomial. -/
 theorem exists_residueProuhetCluster
     {β : ℝ} (hβ : 2 < β) {n : ℕ}
     (Q : MvPolynomial (Fin (n + 2)) ℂ)

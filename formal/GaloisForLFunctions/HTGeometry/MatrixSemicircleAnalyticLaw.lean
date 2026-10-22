@@ -1,6 +1,47 @@
 import GaloisForLFunctions.HTGeometry.PowerSeriesAbsoluteEvaluation
 import GaloisForLFunctions.HTGeometry.AlgebraicStieltjesAbsoluteContinuity
 
+/-!
+# Analytic law of the matrix semicircle trace: algebraic Stieltjes transform
+
+For a finite family of complex matrices `A k` (indices `I × I`), the formal branch `H(u)` of the
+rescaled matrix Dyson equation `H = 1 + u · η(H) H`, `η(X) = Σ_k A k X (A k)ᴴ`, has normalized trace
+series `m(u) = |I|⁻¹ Σ_i H_ii(u)`. This series is integral over `ℂ(X)`, so `P(u, m(u)) = 0` for a
+bivariate polynomial `P` with nonzero leading coefficient. For Hermitian `A k` the coefficients of
+`m` are the even free-Fock trace moments (the normalized trace of vacuum moments of the free Fock
+operator built from the `A k`), the odd moments vanish, and the `n`-th coefficient is bounded by
+`R^{2n}` with `R = freeFockSpectralRadius A`. Hence, for a probability measure `μ` on `[-R, R]`
+with these moments, the Stieltjes transform `S(z) = ∫ (x - z)⁻¹ dμ` satisfies
+`P(z⁻², -z S(z)) = 0` for `|z| > R` and, by analytic continuation, on the whole upper half-plane.
+Separately, a finite measure whose Stieltjes transform satisfies such a relation on the upper
+half-plane is absolutely continuous on the nonexceptional set where `x ≠ 0` and the leading
+coefficient of `P` does not vanish at `x⁻²`; if `μ` has no atoms, `μ` is absolutely continuous.
+
+## Main results
+
+- `matrixDysonFormalTraceSeries_exists_bivariateRelation`: a nonzero-leading-coefficient bivariate
+  polynomial relation for the trace series.
+- `coeff_matrixDysonFormalTraceSeries`: for Hermitian `A k`, the `n`-th coefficient is the
+  free-Fock trace moment of order `2n`.
+- `compactMomentGeneratingFunction_freeFockTrace_eq_absoluteEval`: `∫ (1 - u x)⁻¹ dμ = m(u²)` for
+  `|u| R < 1`.
+- `matrixDysonFormalTraceSeries_upperHalfPlane_stieltjes_relation`: `P(z⁻², -z S(z)) = 0` for all
+  `z` with `Im z > 0`.
+- `reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous`: `μ` restricted to the
+  nonexceptional set is absolutely continuous with respect to Lebesgue measure.
+- `atomless_reciprocal_algebraic_stieltjes_absolutelyContinuous`: an atomless finite measure with an
+  algebraic reciprocal Stieltjes relation is absolutely continuous.
+
+## Hypotheses
+
+The bivariate relation for the formal series is unconditional. Coefficient and moment statements
+assume `A k` Hermitian. The Stieltjes relations are conditional on a probability measure `μ` whose
+Hamburger moments are the free-Fock trace moments (`HasHamburgerMoments`) and which is carried by
+`[-R, R]`; existence of such a `μ` is not proved here. The absolute-continuity theorems take the
+upper-half-plane relation `∀ z, 0 < Im z → reciprocalStieltjesRelation P μ z = 0` as a hypothesis,
+and the atomless version also assumes `μ` has no atoms and `P` has nonzero leading coefficient.
+-/
+
 open scoped BigOperators Matrix LaurentSeries RatFunc
 open Matrix MeasureTheory
 
@@ -10,12 +51,14 @@ noncomputable section
 
 variable {I K : Type*} [Fintype I] [DecidableEq I] [Fintype K] [DecidableEq K]
 
+/-- Normalized trace `|I|⁻¹ Σ_i H_ii(u)` of the formal matrix Dyson branch. -/
 def matrixDysonFormalTraceSeries [Nonempty I]
     (A : K → Matrix I I ℂ) : PowerSeries ℂ :=
   PowerSeries.C ((Fintype.card I : ℂ)⁻¹) *
     ∑ i : I, matrixDysonFormalSeries A i i
 
 omit [DecidableEq K] in
+/-- The trace series, viewed as a Laurent series, is integral over `ℂ(X)`. -/
 theorem matrixDysonFormalTraceSeriesLaurent_isIntegral_ratFunc [Nonempty I]
     (A : K → Matrix I I ℂ) :
     IsIntegral (RatFunc ℂ)
@@ -33,6 +76,8 @@ theorem matrixDysonFormalTraceSeriesLaurent_isIntegral_ratFunc [Nonempty I]
         exact (matrixDysonFormalSeriesLaurent_isIntegral_ratFunc A i i).add ih
 
 omit [DecidableEq K] in
+/-- There is `P ∈ ℂ[X][Y]` with nonzero leading coefficient such that `P(u, m(u)) = 0` as formal
+power series. -/
 theorem matrixDysonFormalTraceSeries_exists_bivariateRelation [Nonempty I]
     (A : K → Matrix I I ℂ) :
     ∃ P : Polynomial (Polynomial ℂ), P.leadingCoeff ≠ 0 ∧
@@ -48,6 +93,8 @@ theorem freeFockInner_self_eq_ofReal_re
   simp_rw [← Complex.normSq_eq_conj_mul_self]
   simp
 
+/-- For Hermitian `A k`, the `n`-th coefficient of the trace series is the free-Fock trace moment of
+order `2n`. -/
 theorem coeff_matrixDysonFormalTraceSeries [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (n : ℕ) :
     PowerSeries.coeff n (matrixDysonFormalTraceSeries A) =
@@ -65,6 +112,7 @@ theorem coeff_matrixDysonFormalTraceSeries [Nonempty I]
   rw [freeFockInner]
   exact freeFockInner_self_eq_ofReal_re (freeFockPower A i n)
 
+/-- For Hermitian `A k`, even free-Fock trace moments are nonnegative. -/
 theorem freeFockTraceMoment_even_nonneg [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (n : ℕ) :
     0 ≤ freeFockTraceMoment A (2 * n) := by
@@ -77,6 +125,8 @@ theorem freeFockTraceMoment_even_nonneg [Nonempty I]
       ← freeFockInner_power_power A hA n n i i]
     exact re_freeFockInner_self_nonneg _
 
+/-- For Hermitian `A k`, the `n`-th coefficient of the trace series has modulus at most `(R²)^n`,
+`R = freeFockSpectralRadius A`. -/
 theorem matrixDysonFormalTraceSeries_coeff_bound [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (n : ℕ) :
     ‖PowerSeries.coeff n (matrixDysonFormalTraceSeries A)‖ ≤
@@ -88,6 +138,7 @@ theorem matrixDysonFormalTraceSeries_coeff_bound [Nonempty I]
   simpa [freeFockSpectralRadius, pow_mul] using
     freeFockTraceMoment_even_le_radius A n
 
+/-- For Hermitian `A k`, the trace series converges absolutely at every `v` with `R² |v| < 1`. -/
 theorem matrixDysonFormalTraceSeries_absoluteSummableAt [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (v : ℂ)
     (hv : freeFockSpectralRadius A ^ (2 : ℕ) * ‖v‖ < 1) :
@@ -106,6 +157,7 @@ theorem matrixDysonFormalTraceSeries_absoluteSummableAt [Nonempty I]
           exact matrixDysonFormalTraceSeries_coeff_bound A hA n
     _ = q ^ n := by simp [q, norm_pow, mul_pow]
 
+/-- For Hermitian `A k`, odd free-Fock trace moments vanish. -/
 theorem freeFockTraceMoment_odd [Nonempty I]
     (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k) (n : ℕ) :
     freeFockTraceMoment A (2 * n + 1) = 0 := by
@@ -113,9 +165,12 @@ theorem freeFockTraceMoment_odd [Nonempty I]
   simp_rw [freeFockPower_vacuumCoefficient_odd A hA n]
   simp
 
+/-- The moment generating function `u ↦ ∫ (1 - u x)⁻¹ dμ(x)`. -/
 def compactMomentGeneratingFunction (mu : Measure ℝ) (u : ℂ) : ℂ :=
   ∫ x : ℝ, (1 - u * (x : ℂ))⁻¹ ∂mu
 
+/-- For a probability measure carried by `[-R, R]` with Hamburger moments `s`, and `|u| R < 1`,
+`∫ (1 - u x)⁻¹ dμ = Σ_n s_n u^n`. -/
 theorem compactMomentGeneratingFunction_eq_tsum
     (mu : Measure ℝ) [IsProbabilityMeasure mu]
     (s : ℕ → ℝ) (hmu : HasHamburgerMoments s mu)
@@ -189,6 +244,8 @@ theorem compactMomentGeneratingFunction_eq_tsum
     _ = ∑' n, (s n : ℂ) * u ^ n := tsum_congr hFintValue
 
 set_option maxHeartbeats 3000000 in
+/-- For Hermitian `A k` and a probability measure on `[-R, R]` whose moments are the free-Fock trace
+moments, `∫ (1 - u x)⁻¹ dμ = m(u²)` whenever `|u| R < 1`. -/
 theorem compactMomentGeneratingFunction_freeFockTrace_eq_absoluteEval
     [Nonempty I] (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (mu : Measure ℝ) [IsProbabilityMeasure mu]
@@ -224,6 +281,7 @@ theorem compactMomentGeneratingFunction_freeFockTrace_eq_absoluteEval
   intro n
   rw [coeff_matrixDysonFormalTraceSeries A hA, pow_mul]
 
+/-- For `u ≠ 0`, `∫ (x - u⁻¹)⁻¹ dμ = -u ∫ (1 - u x)⁻¹ dμ`. -/
 theorem stieltjesTransform_inv_eq_neg_mul_compactMomentGeneratingFunction
     (mu : Measure ℝ) (u : ℂ) (hu : u ≠ 0) :
     (∫ x : ℝ, ((x : ℂ) - u⁻¹)⁻¹ ∂mu) =
@@ -237,6 +295,9 @@ theorem stieltjesTransform_inv_eq_neg_mul_compactMomentGeneratingFunction
   rw [_root_.mul_inv_rev, inv_neg, inv_inv]
   ring
 
+/-- Under the Hermitian, moment and support hypotheses, there is `P` with nonzero leading
+coefficient such that `P(z⁻², -z S(z)) = 0` for all `|z| > R`, where `S` is the Stieltjes
+transform of `μ`. -/
 theorem matrixDysonFormalTraceSeries_exterior_stieltjes_relation
     [Nonempty I] (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (mu : Measure ℝ) [IsProbabilityMeasure mu]
@@ -291,11 +352,14 @@ theorem matrixDysonFormalTraceSeries_exterior_stieltjes_relation
   rw [← hu2, ← hMstieltjes, hM]
   exact hrel
 
+/-- The value `P(z⁻², -z S(z))` of a bivariate polynomial on the reciprocal Stieltjes pair of `μ`,
+with `S(z) = ∫ (x - z)⁻¹ dμ`. -/
 def reciprocalStieltjesRelation
     (P : Polynomial (Polynomial ℂ)) (mu : Measure ℝ) (z : ℂ) : ℂ :=
   P.eval₂ (Polynomial.evalRingHom (z⁻¹ ^ (2 : ℕ)))
     (-z * (∫ x : ℝ, ((x : ℂ) - z)⁻¹ ∂mu))
 
+/-- For a finite measure, `z ↦ P(z⁻², -z S(z))` is holomorphic on the upper half-plane. -/
 theorem reciprocalStieltjesRelation_differentiableOn
     (P : Polynomial (Polynomial ℂ)) (mu : Measure ℝ) [IsFiniteMeasure mu] :
     DifferentiableOn ℂ (reciprocalStieltjesRelation P mu) {z : ℂ | 0 < z.im} := by
@@ -330,6 +394,9 @@ theorem reciprocalStieltjesRelation_differentiableOn
         simp [reciprocalStieltjesRelation]]
       exact hterm
 
+/-- Under the Hermitian, moment and support hypotheses, there is `P` with nonzero leading
+coefficient such that `P(z⁻², -z S(z)) = 0` on the whole upper half-plane (identity theorem from
+the exterior region `|z| > R`). -/
 theorem matrixDysonFormalTraceSeries_upperHalfPlane_stieltjes_relation
     [Nonempty I] (A : K → Matrix I I ℂ) (hA : ∀ k, (A k)ᴴ = A k)
     (mu : Measure ℝ) [IsProbabilityMeasure mu]
@@ -369,10 +436,12 @@ theorem matrixDysonFormalTraceSeries_upperHalfPlane_stieltjes_relation
   intro z hz
   exact hEq hz
 
+/-- Real points `x ≠ 0` at which the leading coefficient of `P` does not vanish at `x⁻²`. -/
 def reciprocalStieltjesNonexceptionalSet
     (P : Polynomial (Polynomial ℂ)) : Set ℝ :=
   {x | x ≠ 0 ∧ P.leadingCoeff.eval (((x : ℂ)⁻¹) ^ (2 : ℕ)) ≠ 0}
 
+/-- Complex points `z ≠ 0` at which the leading coefficient of `P` does not vanish at `z⁻²`. -/
 def reciprocalStieltjesComplexNonexceptionalSet
     (P : Polynomial (Polynomial ℂ)) : Set ℂ :=
   {z | z ≠ 0 ∧ P.leadingCoeff.eval (z⁻¹ ^ (2 : ℕ)) ≠ 0}
@@ -405,6 +474,9 @@ theorem isOpen_reciprocalStieltjesNonexceptionalSet
     Complex.continuous_ofReal
 
 set_option maxHeartbeats 3000000 in
+/-- If a finite measure satisfies `P(z⁻², -z S(z)) = 0` for all `Im z > 0`, then its restriction to
+the nonexceptional set is absolutely continuous; the root bound for `P` keeps `S` locally bounded
+near nonexceptional real points. -/
 theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
     (mu : Measure ℝ) [IsFiniteMeasure mu] (P : Polynomial (Polynomial ℂ))
     (hAlg : ∀ z : ℂ, 0 < z.im → reciprocalStieltjesRelation P mu z = 0) :
@@ -513,9 +585,11 @@ theorem reciprocal_algebraic_stieltjes_restrict_absolutelyContinuous
       _ ≤ D * C := mul_le_mul (hD z hzL) hrootC (norm_nonneg _) hDnonneg
   exact (Complex.im_le_norm S).trans hSbound
 
+/-- Real `x ≠ 0` with `x⁻² = r`. -/
 def reciprocalRootFiber (r : ℂ) : Set ℝ :=
   {x | x ≠ 0 ∧ ((x : ℂ)⁻¹) ^ (2 : ℕ) = r}
 
+/-- Each fiber `{x ≠ 0 | x⁻² = r}` is finite. -/
 theorem reciprocalRootFiber_finite (r : ℂ) :
     (reciprocalRootFiber r).Finite := by
   let q : Polynomial ℂ := Polynomial.C r * Polynomial.X ^ (2 : ℕ) - 1
@@ -539,6 +613,7 @@ theorem reciprocalRootFiber_finite (r : ℂ) :
       rw [hx.2]
     _ = 0 := by field_simp; ring
 
+/-- If `P` has nonzero leading coefficient, the exceptional real set is finite. -/
 theorem reciprocalStieltjesNonexceptionalSet_compl_finite
     (P : Polynomial (Polynomial ℂ)) (hlead : P.leadingCoeff ≠ 0) :
     (reciprocalStieltjesNonexceptionalSet P)ᶜ.Finite := by
@@ -559,6 +634,9 @@ theorem reciprocalStieltjesNonexceptionalSet_compl_finite
     exact Set.mem_iUnion₂.mpr
       ⟨((x : ℂ)⁻¹) ^ (2 : ℕ), hroot, ⟨hx0, rfl⟩⟩
 
+/-- An atomless finite measure whose Stieltjes transform satisfies `P(z⁻², -z S(z)) = 0` on the
+upper half-plane, with `P` of nonzero leading coefficient, is absolutely continuous with respect to
+Lebesgue measure. -/
 theorem atomless_reciprocal_algebraic_stieltjes_absolutelyContinuous
     (mu : Measure ℝ) [IsFiniteMeasure mu] [NullSingletonClass mu]
     (P : Polynomial (Polynomial ℂ)) (hlead : P.leadingCoeff ≠ 0)

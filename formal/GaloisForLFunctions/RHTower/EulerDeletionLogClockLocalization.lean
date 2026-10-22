@@ -1,13 +1,38 @@
 import GaloisForLFunctions.RHTower.EulerDeletionGeneralHighClockBand
 
+/-!
+# The predictable Möbius drift localizes below a logarithmic clock threshold
+
+In the residue-martingale model of Euler deletion, the predictable drift
+`predictableDrift N = ∑_{i < N} μ(i+1) P_i(residue_{i+1})` decomposes orthogonally over the
+history layers `P_{l+1} - P_l`, where `P_l` projects onto observables determined by residues
+modulo `lcm(1, ..., l)`. With the threshold `K(N) = 5(⌊log₂(N + 1)⌋ + 1)`, the Chebyshev bound
+`2^K ≤ (K + 1) lcm(1..K)` gives `(N + 1)^5 ≤ (K + 1) lcm(1..K)`. Hence the drift energy in the
+layers `K(N) ≤ l < N` is at most `110/(N + 1)`, and it tends to `0`.
+
+## Main results
+
+- `logarithmicClockThreshold`: `K(N) = 5(⌊log₂(N + 1)⌋ + 1)`.
+- `predictableDrift_logarithmic_highClock_energy_le`:
+  `∑_{K(N) ≤ l < N} ‖historyLayer l (predictableDrift N)‖² ≤ 110/(N + 1)`.
+- `predictableDrift_logarithmic_highClock_energy_tendsto_zero`: this energy tends to `0`.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 noncomputable section
 set_option autoImplicit false
 open Finset MeasureTheory Filter Topology
 namespace RHTower.DeletionResidueMartingale
 
+/-- The logarithmic clock threshold `K(N) = 5(⌊log₂(N + 1)⌋ + 1)`. -/
 def logarithmicClockThreshold (N : ℕ) : ℕ :=
   5 * (Nat.log2 (N + 1) + 1)
 
+/-- The energy of `predictableDrift N` in the history layers `K(N) ≤ l < N` above the logarithmic clock
+threshold is at most `110/(N + 1)`. -/
 theorem predictableDrift_logarithmic_highClock_energy_le (N : ℕ) :
     (∑ l ∈ Ico (logarithmicClockThreshold N) N,
       ‖historyLayer l (predictableDrift N)‖ ^ (2 : ℕ)) ≤
@@ -80,6 +105,7 @@ theorem predictableDrift_logarithmic_highClock_energy_le (N : ℕ) :
     _ ≤ 110 / (M : ℝ) := (div_le_div_iff₀ hC hMpos).mpr hcross
     _ = 110 / (((N + 1 : ℕ) : ℝ)) := rfl
 
+/-- The energy of `predictableDrift N` above the logarithmic clock threshold tends to `0` as `N → ∞`. -/
 theorem predictableDrift_logarithmic_highClock_energy_tendsto_zero :
     Tendsto
       (fun N : ℕ => ∑ l ∈ Ico (logarithmicClockThreshold N) N,

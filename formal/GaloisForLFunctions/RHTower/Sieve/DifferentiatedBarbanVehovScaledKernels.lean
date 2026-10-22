@@ -1,11 +1,37 @@
 import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovLcmExpansion
 import GaloisForLFunctions.RHTower.Sieve.MoebiusScaledReindex
 
+/-!
+# Rescaling the long Barban–Vehov lcm kernels
+
+The long lcm kernels sum over multiples `k ∈ (L, U]` of `e = lcm(q, r)`. Writing `k = e j` with
+`j ∈ (⌊L/e⌋, ⌊U/e⌋]` turns each kernel into `1/e` times a harmonic sum over `j`, with logarithms
+`log(k/r) = log(e/r) + log j` and `log(k/q) = log(e/q) + log j` split accordingly.
+
+## Main results
+
+- `sum_filter_dvd_Ioc_eq_sum_scaled`: a sum over multiples of `e` in `(L, U]` equals the sum over
+  `j ∈ (⌊L/e⌋, ⌊U/e⌋]` of the values at `e j`.
+- `log_lcmMul_natDiv_eq_add_log`: `log(lcm(q, r) j / r) = log(lcm(q, r) / r) + log j`.
+- `barbanVehovLongHarmonicKernel_eq_scaled`: the harmonic kernel equals `(1/e) ∑_j 1/j`.
+- `barbanVehovLongFirstLogKernel_eq_scaled`: the first log kernel equals
+  `(1/e) ∑_j (log(e/r) + log j) / j`.
+- `barbanVehovLongSecondLogKernel_eq_scaled`: the second log kernel equals
+  `(1/e) ∑_j (log(e/q) + log j)(log(e/r) + log j) / j`.
+
+## Hypotheses
+
+All results are unconditional identities; they assume `0 < e`, respectively `0 < q`, `0 < r`
+(and `0 < j` for the logarithm splitting).
+-/
+
 open Finset
 open scoped BigOperators
 
 namespace RHTower.Sieve
 
+/-- For `e > 0`, summing `f` over the multiples of `e` in `(L, U]` equals summing `f(e j)` over
+`j ∈ (⌊L/e⌋, ⌊U/e⌋]`. -/
 theorem sum_filter_dvd_Ioc_eq_sum_scaled
     {R : Type*} [AddCommMonoid R] {e L U : ℕ} (he : 0 < e) (f : ℕ → R) :
     ∑ k ∈ (Finset.Ioc L U).filter (fun k => e ∣ k), f k =
@@ -31,6 +57,7 @@ theorem sum_filter_dvd_Ioc_eq_sum_scaled
   rw [hset]
   exact Finset.sum_image fun x _ y _ hxy => Nat.eq_of_mul_eq_mul_left he hxy
 
+/-- For positive `q, r, j`, `log(lcm(q, r) j / r) = log(lcm(q, r) / r) + log j`. -/
 theorem log_lcmMul_natDiv_eq_add_log
     {q r j : ℕ} (hq : 0 < q) (hr : 0 < r) (hj : 0 < j) :
     Real.log (((Nat.lcm q r * j / r : ℕ) : ℝ)) =
@@ -47,6 +74,8 @@ theorem log_lcmMul_natDiv_eq_add_log
   push_cast
   exact Real.log_mul (by exact_mod_cast herpos.ne') (by exact_mod_cast hj.ne')
 
+/-- For positive `q, r`, the long harmonic lcm kernel equals `(1/lcm(q, r)) ∑_j 1/j` over the
+rescaled window. -/
 theorem barbanVehovLongHarmonicKernel_eq_scaled
     {L U q r : ℕ} (hq : 0 < q) (hr : 0 < r) :
     barbanVehovLongHarmonicKernel L U q r =
@@ -62,6 +91,8 @@ theorem barbanVehovLongHarmonicKernel_eq_scaled
   push_cast
   field_simp
 
+/-- For positive `q, r`, the first log lcm kernel equals
+`(1/lcm(q, r)) ∑_j (log(lcm(q, r)/r) + log j) / j` over the rescaled window. -/
 theorem barbanVehovLongFirstLogKernel_eq_scaled
     {L U q r : ℕ} (hq : 0 < q) (hr : 0 < r) :
     barbanVehovLongFirstLogKernel L U q r =
@@ -79,6 +110,8 @@ theorem barbanVehovLongFirstLogKernel_eq_scaled
   push_cast
   field_simp
 
+/-- For positive `q, r`, the second log lcm kernel equals
+`(1/lcm(q, r)) ∑_j (log(lcm/q) + log j)(log(lcm/r) + log j) / j` over the rescaled window. -/
 theorem barbanVehovLongSecondLogKernel_eq_scaled
     {L U q r : ℕ} (hq : 0 < q) (hr : 0 < r) :
     barbanVehovLongSecondLogKernel L U q r =

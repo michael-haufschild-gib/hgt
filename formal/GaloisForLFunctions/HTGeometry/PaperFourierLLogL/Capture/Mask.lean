@@ -1,5 +1,29 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Capture.MaskKernel
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Finite.Tail
+
+/-!
+# Band-limited masks for dyadic child intervals
+
+On the finite circle `Grid M = ℤ/2^M`, the indicator of a dyadic child interval of a node `p` is
+approximated by a function `f` with values in `[0, 1]` whose discrete Fourier transform vanishes
+beyond radius `band p i j = 2^{lev p + reach i + 10} · 2(j + 10)`. The mask is obtained by smoothing
+the inner part of the child interval with a concentrated band-limited probability law. It is within
+`2^{-j}` of the child indicator at every point of `p`'s block outside the thin boundary strips of the
+children, and its mass outside `p`'s block is at most `len p · 2^{-j}`.
+
+## Main results
+
+- `margins`: a valid dyadic node `p` satisfies `0 ≤ p.a` and `p.a + p.len ≤ 1`.
+- `inner_strip`: a point of a child block outside the flanking strips is at distance at least
+  `len p · 2^{-reach i}` from both ends of the child interval.
+- `circle_near`: points within circular distance `r` of such an inner point stay in the block.
+- `make_mask`: existence of the band-limited mask with the three properties above.
+
+## Hypotheses
+
+Unconditional finite statements. `make_mask` assumes the node is valid and has level below `M`.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -11,6 +35,7 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {p : Node} {M : ℕ}
 open scoped Classical
 
+/-- A valid dyadic node's interval `[a, a + len)` lies inside `[0, 1]`. -/
 lemma margins (p : Node) (hp : p.valid) : 0 ≤ p.a ∧ p.a+p.len ≤ 1 := by
   unfold a
   have he : 0 < p.len := p.len_pos
@@ -21,6 +46,8 @@ lemma margins (p : Node) (hp : p.valid) : 0 ≤ p.a ∧ p.a+p.len ≤ 1 := by
       mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hp) he.le
     _ = _ := by unfold len; push_cast; rw [mul_comm,side_card]
 
+/-- A point of the child block `child p b` not in any flanking strip lies at distance at least
+`r = len p · 2^{-reach i}` from both endpoints of the child interval. -/
 lemma inner_strip (p : Node) (b : Bool) (i : ℕ) (x : Grid M)
     (hx : x∈(child p b).block M) (hh : ¬ flanked p i x) :
     let q := child p b; let r := p.len*side (reach i)
@@ -44,6 +71,8 @@ lemma inner_strip (p : Node) (b : Bool) (i : ℕ) (x : Grid M)
     change pos x∈Ico _ _
     rw [h2,h3]; exact ⟨by linarith,Hp.2⟩
 
+/-- If `x` lies at least `r > 0` inside the interval of a valid node `p`, every grid point within
+circular distance `r` of `x` belongs to the block of `p`. -/
 lemma circle_near (p : Node) (hp : p.valid) (x y : Grid M) (r : ℝ)
     (hr : 0 < r) (hx : p.a+r ≤ pos x) (he : pos x ≤ p.a+p.len-r)
     (hy : Dyadic.diam (x-y)<r) : y∈p.block M := by
@@ -67,6 +96,8 @@ private lemma limit_full {f : Grid M → ℝ} (s : ℝ) (h : 2^M ≤ s) : limitR
   have hh : (x.val:ℝ) < 2^M := by exact_mod_cast ZMod.val_lt x
   linarith
 
+/-- Convolving an indicator with a law band-limited to radius `r` gives a function band-limited to
+radius `r`. -/
 private lemma smoothing_limit (P : Law (Grid M)) (q : Grid M → Prop) (r : ℝ)
     (h : limitR P r) : limitR (fun x => P.prob fun y => q (x-y)) r := by
   have He (x : Grid M) :
@@ -85,8 +116,12 @@ private lemma smoothing_limit (P : Law (Grid M)) (q : Grid M → Prop) (r : ℝ)
     rw [fc_right_translate (fun x => (P x:ℂ)) x i, h _ hi,mul_zero]
   · simp only [H,ite_false,fc, Complex.ofReal_zero,zero_mul,expU,Finset.sum_const_zero,smul_zero]
 
+/-- Fourier radius of the mask for node `p`, strip index `i` and precision `j`. -/
 def band (p : Node) (i j : ℕ) : ℝ := (2:ℝ)^(p.lev+reach i+10)*(2*(j+10))
 
+/-- For a valid node `p` of level below `M` there is `f : Grid M → [0, 1]`, band-limited to radius
+`band p i j`, within `2^{-j}` of the indicator of `child p b` on `p`'s block away from the flanking
+strips, and with mass at most `len p · 2^{-j}` outside `p`'s block. -/
 lemma make_mask (p : Node) (h : p.valid) (hp : p.lev < M) (b : Bool) (i j : ℕ) :
     let q := p.child b
     ∃ f : Grid M → ℝ, limitR f (band p i j) ∧ (∀ x, 0 ≤ f x ∧ f x ≤ 1) ∧

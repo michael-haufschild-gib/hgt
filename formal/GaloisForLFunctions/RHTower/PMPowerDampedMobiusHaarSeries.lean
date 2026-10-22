@@ -1,13 +1,42 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusHaarGram
 import Mathlib.MeasureTheory.Function.LpSpace.InfiniteSum
 
+/-!
+# Infinite series of dilated dyadic Haar functions in `L²(0,∞)`
+
+With `h` the dyadic Haar function supported on `(0,1]`, this module treats a countable
+family of positive dilation parameters `a_i` and the pointwise series
+`∑' i, h(a_i t)` (`pmHaarDilationSeries`). Each dilation is an `L²(0,∞)` vector of norm
+`a_i^(−1/2)`, so summability of `√(1/a_i)` makes the vector series absolutely convergent;
+its `L²` limit agrees almost everywhere with the pointwise series. The energy of the
+series is then the double Gram series, it dominates every finite partial sum's energy,
+and it is at least every finite diagonal sum `∑_{i∈S} 1/a_i`.
+
+## Main results
+
+- `pmHaarDilationVector_norm_rpow`: `‖h(a·)‖_{L²} = a^(−1/2)` for `a > 0`.
+- `memLp_pmHaarDilationSeries`: the series `∑' i, h(a_i t)` is in `L²(0,∞)`.
+- `pmHaarDilationSeries_energy_eq_tsum_gram`: its energy equals `∑' i, ∑' j, Gram(a_i, a_j)`.
+- `pmHaarDilationSum_energy_le_series`: finite subsums have energy at most the full series.
+- `pmHaarDilationSeries_diagonal_le_energy`: `∑_{i∈S} 1/a_i ≤` energy of the series.
+- `pmHaarDilationVector_inner`: the `L²` inner product of two dilations is the real Gram entry.
+
+## Hypotheses
+
+Unconditional apart from the explicit inputs: all `a_i > 0` and summability of
+`i ↦ √(1/a_i)` (equivalently of the `L²` norms). The index type is countable.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- The dilation `t ↦ h(a t)` (`a > 0`) of the supported dyadic Haar function as an element
+of `L²(0,∞)`. -/
 def pmHaarDilationVector (a : ℝ) (ha : 0 < a) : Lp ℂ 2 (volume.restrict (Ioi (0 : ℝ))) :=
   (memLp_pmSupportedDyadicHaar_dilation ha).toLp (fun t => pmSupportedDyadicHaar (a * t))
 
+/-- For `a > 0`, the squared `L²(0,∞)` norm of `h(a·)` is `1/a`. -/
 theorem pmHaarDilationVector_norm_sq (a : ℝ) (ha : 0 < a) :
     ‖pmHaarDilationVector a ha‖ ^ (2 : ℕ) = 1 / a := by
   rw [← pmSupportedDyadicHaar_dilation_energy ha,
@@ -22,19 +51,24 @@ theorem pmHaarDilationVector_norm (a : ℝ) (ha : 0 < a) :
   have hp := Real.sqrt_nonneg (1 / a)
   nlinarith
 
+/-- For `a > 0`, the `L²(0,∞)` norm of `h(a·)` is `a^(−1/2)`. -/
 theorem pmHaarDilationVector_norm_rpow (a : ℝ) (ha : 0 < a) :
     ‖pmHaarDilationVector a ha‖ = a ^ (-(1 / 2 : ℝ)) := by
   rw [pmHaarDilationVector_norm, Real.sqrt_eq_rpow, one_div, Real.inv_rpow ha.le, Real.rpow_neg ha.le]
 
+/-- The pointwise series `∑' i, h(a_i t)` of dilated supported dyadic Haar functions. -/
 def pmHaarDilationSeries {ι : Type*} (a : ι → ℝ) (t : ℝ) : ℂ :=
   ∑' i : ι, pmSupportedDyadicHaar (a i * t)
 
+/-- If all `a_i > 0` and `∑ √(1/a_i)` converges, the `L²` vectors `h(a_i ·)` are summable. -/
 theorem summable_pmHaarDilationVector {ι : Type*} {a : ι → ℝ} (ha : ∀ i, 0 < a i)
     (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     Summable (fun i => pmHaarDilationVector (a i) (ha i)) := by
   apply Summable.of_norm
   simpa only [pmHaarDilationVector_norm] using hs
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the `L²` sum of the dilation vectors agrees
+almost everywhere on `(0,∞)` with the pointwise series `pmHaarDilationSeries a`. -/
 theorem pmHaarDilationVector_tsum_coe {ι : Type*} [Countable ι] {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     (fun t => (∑' i, pmHaarDilationVector (a i) (ha i)) t) =ᵐ[volume.restrict (Ioi (0 : ℝ))]
@@ -48,11 +82,14 @@ theorem pmHaarDilationVector_tsum_coe {ι : Type*} [Countable ι] {a : ι → �
   filter_upwards [hcoe, hterm] with t ht hv
   exact ht.trans (tsum_congr hv)
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the series `∑' i, h(a_i t)` lies in `L²(0,∞)`. -/
 theorem memLp_pmHaarDilationSeries {ι : Type*} [Countable ι] {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     MemLp (pmHaarDilationSeries a) 2 (volume.restrict (Ioi (0 : ℝ))) := by
   exact (memLp_congr_ae (pmHaarDilationVector_tsum_coe ha hs)).mp (Lp.memLp _)
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the energy of the pointwise series equals the
+squared norm of the `L²` sum of dilation vectors. -/
 theorem pmHaarDilationSeries_energy {ι : Type*} [Countable ι] {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     (∫ t in Ioi (0 : ℝ), ‖pmHaarDilationSeries a t‖ ^ (2 : ℕ)) =
@@ -73,6 +110,8 @@ theorem pmHaarDilationVector_sum_coe {ι : Type*} [Countable ι] (S : Finset ι)
   rw [ht]
   exact Finset.sum_congr rfl (fun i _ => hv i)
 
+/-- For a finite set `S` and positive `a_i`, the squared norm of `∑_{i∈S} h(a_i ·)` in `L²`
+equals the integral energy of `pmHaarDilationSum S a`. -/
 theorem pmHaarDilationVector_sum_norm_sq {ι : Type*} [Countable ι] (S : Finset ι)
     {a : ι → ℝ} (ha : ∀ i, 0 < a i) :
     ‖∑ i ∈ S, pmHaarDilationVector (a i) (ha i)‖ ^ (2 : ℕ) =
@@ -82,6 +121,8 @@ theorem pmHaarDilationVector_sum_norm_sq {ι : Type*} [Countable ι] (S : Finset
     Lp.ext (hf.coeFn_toLp.trans (pmHaarDilationVector_sum_coe S ha).symm)
   rw [pm_integral_norm_sq_toLp hf, hv]
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the energy of every finite partial sum over
+`S` is at most the energy of the full series (Gram nonnegativity plus norm continuity). -/
 theorem pmHaarDilationSum_energy_le_series {ι : Type*} [Countable ι] (S : Finset ι)
     {a : ι → ℝ} (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     (∫ t in Ioi (0 : ℝ), ‖pmHaarDilationSum S a t‖ ^ (2 : ℕ)) ≤
@@ -96,12 +137,16 @@ theorem pmHaarDilationSum_energy_le_series {ι : Type*} [Countable ι] (S : Fins
   rw [pmHaarDilationVector_sum_norm_sq T ha]
   exact pmHaarDilationSum_energy_mono hT a (fun i _ => ha i)
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, every finite diagonal sum `∑_{i∈S} 1/a_i`
+is a lower bound for the energy of `∑' i, h(a_i t)`. -/
 theorem pmHaarDilationSeries_diagonal_le_energy {ι : Type*} [Countable ι] (S : Finset ι)
     {a : ι → ℝ} (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     (∑ i ∈ S, 1 / a i) ≤ (∫ t in Ioi (0 : ℝ), ‖pmHaarDilationSeries a t‖ ^ (2 : ℕ)) :=
   (pmHaarDilationSum_diagonal_le_energy S a (fun i _ => ha i)).trans
     (pmHaarDilationSum_energy_le_series S ha hs)
 
+/-- For `a, b > 0`, the `L²(0,∞)` inner product of `h(a·)` and `h(b·)` is the real Gram entry
+`pmHaarDilationGram a b`. -/
 theorem pmHaarDilationVector_inner (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
     inner ℂ (pmHaarDilationVector a ha) (pmHaarDilationVector b hb) = (pmHaarDilationGram a b : ℂ) := by
   rw [L2.inner_def]
@@ -119,6 +164,8 @@ theorem pmHaarDilationVector_inner (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
       exact congrArg₂ (inner ℂ) ht hu
     _ = _ := by simp_rw [hpoint]; exact integral_complex_ofReal
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the real part of the inner product of
+`h(a_i ·)` with the full vector sum is the Gram row series `∑' j, Gram(a_i, a_j)`. -/
 theorem pmHaarDilationVector_inner_tsum_re {ι : Type*} {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) (i : ι) :
     (inner ℂ (pmHaarDilationVector (a i) (ha i))
@@ -131,6 +178,8 @@ theorem pmHaarDilationVector_inner_tsum_re {ι : Type*} {a : ι → ℝ}
         (pmHaarDilationVector (a j) (ha j))).re at h
   simpa only [pmHaarDilationVector_inner, Complex.ofReal_re] using h
 
+/-- Under `a_i > 0` and summability of `√(1/a_i)`, the energy of `∑' i, h(a_i t)` is the
+iterated Gram series `∑' i, ∑' j, Gram(a_i, a_j)`. -/
 theorem pmHaarDilationSeries_energy_eq_tsum_gram {ι : Type*} [Countable ι] {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hs : Summable (fun i => Real.sqrt (1 / a i))) :
     (∫ t in Ioi (0 : ℝ), ‖pmHaarDilationSeries a t‖ ^ (2 : ℕ)) =

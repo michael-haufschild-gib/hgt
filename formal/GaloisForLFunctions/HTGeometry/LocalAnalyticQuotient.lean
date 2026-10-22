@@ -1,12 +1,38 @@
 import GaloisForLFunctions.HTGeometry.EntireQuotientNormalForm
 
+/-!
+# Local analytic quotients with matching zero orders
+
+`localQuotientOn f g U` is the meromorphic normal form on `U` of the quotient `f / g`. When `f`
+and `g` are analytic on a neighbourhood of every point of `U`, `f` is not locally identically zero
+at any point of `U`, and `f` and `g` vanish to the same order at every point of `U`, the quotient is
+analytic and nowhere zero on `U`, and `f = (f / g) · g` holds pointwise on `U`.
+
+## Main results
+
+- `localQuotientOn_analytic_nonvanishing_factorization`: under equal orders, `localQuotientOn f g U`
+  is analytic on `U`, nonvanishing on `U`, and satisfies `f z = localQuotientOn f g U z * g z` for
+  `z ∈ U`.
+
+## Hypotheses
+
+The theorem assumes `f` and `g` analytic on a neighbourhood of `U`, finite analytic order of `f`
+at every point of `U`, and `analyticOrderAt f z = analyticOrderAt g z` for every `z ∈ U`. It is
+otherwise unconditional.
+-/
+
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- The meromorphic normal form on `U` of `f / g` (`toMeromorphicNFOn`), which fills in removable
+singularities of the pointwise quotient. -/
 def localQuotientOn (f g : ℂ → ℂ) (U : Set ℂ) : ℂ → ℂ :=
   toMeromorphicNFOn (f / g) U
 
+/-- If `f`, `g` are analytic on `U`, `f` has finite order at each point of `U`, and the orders of
+`f` and `g` agree on `U`, then `q = localQuotientOn f g U` is analytic and nonvanishing on `U` and
+`f = q · g` on `U`. -/
 theorem localQuotientOn_analytic_nonvanishing_factorization
     {f g : ℂ → ℂ} {U : Set ℂ}
     (hf : AnalyticOnNhd ℂ f U) (hg : AnalyticOnNhd ℂ g U)

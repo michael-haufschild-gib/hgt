@@ -1,11 +1,36 @@
 import GaloisForLFunctions.RHTower.InfiniteMobiusSignedChannel
 import GaloisForLFunctions.RHTower.XiThetaSquareRateCausalSource
 
+/-!
+# Causality of the signed Möbius shift average on `L²(ℝ)`
+
+Right translation `f ↦ f(· - h)` by `h ≥ 0` preserves the class of `L²(ℝ)` functions vanishing
+almost everywhere on `(-∞, 0)`. Applying this to the shifts by `log n`, the module shows that each
+term `μ(n) π_σ(n) f(· - log n)` of the signed Möbius shift average, and for `σ > 1` the whole
+`L²`-convergent average `∑ₙ μ(n) π_σ(n) f(· - log n)`, again vanishes a.e. on `(-∞, 0)`. Here
+`π_σ(n) = n^{-σ} / ∑_{m squarefree} m^{-σ}` on squarefree `n` (and `0` otherwise).
+
+## Main results
+
+- `additiveTranslationUnitary_hasAELowerSupport_zero`: right shifts by `h ≥ 0` preserve a.e.
+  vanishing on `(-∞, 0)`.
+- `infiniteMobiusShiftTerm_hasAELowerSupport_zero`: each signed shift term preserves it.
+- `infiniteMobiusShiftAverage_hasAELowerSupport_zero`: for `σ > 1`, the full signed Möbius shift
+  average preserves it.
+
+## Hypotheses
+
+Unconditional. The theorems take the support hypothesis that `f` vanishes a.e. on `(-∞, 0)`
+(this is the property being propagated), `0 ≤ h` for the shift, and `1 < σ` for the infinite
+average, which guarantees its convergence.
+-/
+
 open Complex MeasureTheory Set Filter
 
 noncomputable section
 namespace RHTower
 
+/-- If `f ∈ L²(ℝ)` vanishes a.e. on `(-∞, 0)` and `h ≥ 0`, then so does `f(· - h)`. -/
 theorem additiveTranslationUnitary_hasAELowerSupport_zero
     {h : ℝ} (hh : 0 ≤ h) (f : Lp ℂ 2 (volume : Measure ℝ))
     (hf : HasAELowerSupport (fun t : ℝ => f t) 0) :
@@ -28,6 +53,7 @@ theorem additiveTranslationUnitary_hasAELowerSupport_zero
     simpa [MellinL2.realTranslationEquiv] using! hsupp
   exact hsupp' (by linarith)
 
+/-- If `f` vanishes a.e. on `(-∞, 0)`, so does each term `μ(n) π_σ(n) f(· - log n)`. -/
 theorem infiniteMobiusShiftTerm_hasAELowerSupport_zero
     {sigma : ℝ} (n : ℕ)
     (f : Lp ℂ 2 (volume : Measure ℝ))
@@ -52,6 +78,8 @@ theorem infiniteMobiusShiftTerm_hasAELowerSupport_zero
     simp only [Pi.smul_apply]
     rw [hs ht0, smul_zero]
 
+/-- Assuming `1 < σ`, if `f` vanishes a.e. on `(-∞, 0)` then so does the signed Möbius shift
+average `∑ₙ μ(n) π_σ(n) f(· - log n)`. -/
 theorem infiniteMobiusShiftAverage_hasAELowerSupport_zero
     {sigma : ℝ} (hsigma : 1 < sigma)
     (f : Lp ℂ 2 (volume : Measure ℝ))

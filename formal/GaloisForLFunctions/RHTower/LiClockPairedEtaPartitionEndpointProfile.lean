@@ -6,22 +6,57 @@ import Mathlib.Analysis.PSeries
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 import Mathlib.Tactic
 
+/-!
+# Endpoint profile of the finite paired-eta half-tilt difference density
+
+Let `S_N = ⋃_{n<N} (log(2n+1), log(2n+2)]` be the finite paired-eta logarithmic support,
+`L = log(2N)`, and `ρ_N` the raw half-tilt difference density of `S_N`. The endpoint profile
+`g_N(y) = e^{(L-y)/2} ρ_N(L - y)` reads the density at distance `y` from its right edge. For
+`0 ≤ y ≤ L` it equals `∫_0^y e^{-v} 1_S(v) 1_S(v + L - y) dv` (with `S` the infinite support),
+it lies between `0` and the contiguous-model profile `1 - e^{-y}`, and as `N → ∞` it converges
+to the limit profile `g(y) = (1/2) ∫_{[0,y]} e^{-v} dμ(v)`, where `μ` is Lebesgue measure on `S`.
+The proof averages the second indicator over its period via the sawtooth bound on
+`∫ (α(rw) - 1/2)/w² dw`. The source function `η(b) = b ∫ e^{-bv} dμ(v)` is the alternating
+Dirichlet series `∑ (-1)^n (n+1)^{-b}` for `b > 1`, lies in `[1 - 2^{-b}, 1]`, equals `log 2`
+at `b = 1`, and gives the Laplace transform of the limit profile.
+
+## Main results
+
+- `liClockPairedEtaPartitionSourceEta_bounds`: `1 - 2^{-b} ≤ η(b) ≤ 1` for `b > 0`.
+- `liClockPairedEtaPartitionSourceEta_eq_alternating_tsum`: `η(b) = ∑_n (-1)^n (n+1)^{-b}` for `b > 1`.
+- `liClockPairedEtaPartitionSourceEta_one`: `η(1) = log 2`.
+- `liClockPairedEtaPartitionEndpointProfileLimit_laplace`:
+  `∫_0^∞ e^{-ay} g(y) dy = η(a+1)/(2a(a+1))` for `a > 0`.
+- `liClockPairedEtaPartitionEndpointProfile_eq_source`: integral formula for `g_N(y)`.
+- `liClockPairedEtaPartitionEndpointProfile_bounds`: `0 ≤ g_N(y) ≤ 1 - e^{-y} ≤ 1`.
+- `tendsto_liClockPairedEtaPartitionEndpointProfile`: `g_N(y) → g(y)` as `N → ∞`, for `y ≥ 0`.
+
+## Hypotheses
+
+All results are unconditional. They assume only `N > 0`, `0 ≤ y ≤ log(2N)` for the
+finite-`N` formulas, `y ≥ 0` for the limit, and the stated ranges `b > 0`, `b > 1`, `a > 0`.
+-/
+
 open MeasureTheory Set Filter RiemannGaussian
 open scoped Topology Interval BigOperators
 noncomputable section
 namespace RHTower
 
+/-- The source function `η(b) = b ∫ e^{-bv} dμ(v)`, with `μ` the infinite paired-eta log measure
+(Lebesgue measure on `⋃_n (log(2n+1), log(2n+2)]`). -/
 def liClockPairedEtaPartitionSourceEta (b : ℝ) : ℝ :=
   b*(∫ v : ℝ, Real.exp (-b*v) ∂ RiemannGaussian.pairedEtaLogMeasure)
 
 -- P2: all finite coordinates and both half-tilts remain in g_A,N.
 
+/-- The endpoint profile `g_N(y) = e^{(L-y)/2} ρ_N(L - y)` with `L = log(2N)`. -/
 def liClockPairedEtaPartitionEndpointProfile (N : ℕ) (y : ℝ) : ℝ :=
   Real.exp ((Real.log (2*(N:ℝ))-y)/2)*
     liClockPairedEtaPartitionRawDifferenceDensity N (Real.log (2*(N:ℝ))-y)
 
 -- P3: exactly one upper-factor half-average.
 
+/-- The limit profile `g(y) = (1/2) ∫_{[0,y]} e^{-v} dμ(v)` over the paired-eta log measure `μ`. -/
 def liClockPairedEtaPartitionEndpointProfileLimit (y : ℝ) : ℝ :=
   (1/2)*(∫ v in Icc 0 y, Real.exp (-v) ∂ RiemannGaussian.pairedEtaLogMeasure)
 
@@ -40,6 +75,7 @@ private theorem ep_exp_log {b x : ℝ} (hx : 0<x) :
   congr 1
   ring
 
+/-- For `b > 0`, `1 - 2^{-b} ≤ η(b) ≤ 1`. -/
 theorem liClockPairedEtaPartitionSourceEta_bounds
     {b : ℝ} (hb : 0<b) :
   1-(2:ℝ)^(-b)≤liClockPairedEtaPartitionSourceEta b ∧
@@ -66,6 +102,7 @@ theorem liClockPairedEtaPartitionSourceEta_bounds
     have h:=mul_le_mul_of_nonneg_left hup hb.le
     simpa only [mul_inv_cancel₀ hb.ne'] using h
 
+/-- For `b > 0`, `η(b) > 0`. -/
 theorem liClockPairedEtaPartitionSourceEta_pos
     {b : ℝ} (hb : 0<b) :
   0<liClockPairedEtaPartitionSourceEta b := by
@@ -90,6 +127,7 @@ private theorem ep_paired_source {b : ℝ} (hb : 0<b) :
     ep_exp_log (by positivity : 0<2*(n:ℝ)+2)]
   field_simp
 
+/-- For `b > 1`, the alternating Dirichlet series `∑ (-1)^n (n+1)^{-b}` converges absolutely. -/
 theorem summable_norm_liClockPairedEtaPartitionSourceEtaDirichlet
     {b : ℝ} (hb : 1<b) :
   Summable (fun n : ℕ => ‖(-1:ℝ)^n*((n:ℝ)+1)^(-b)‖) := by
@@ -99,12 +137,14 @@ theorem summable_norm_liClockPairedEtaPartitionSourceEtaDirichlet
   simpa only [Function.comp_def, Nat.cast_succ, norm_mul, norm_pow,
     norm_neg, norm_one, one_pow, one_mul] using hn
 
+/-- For `b > 1`, `η(b) = ∑_n ((2n+1)^{-b} - (2n+2)^{-b})`. -/
 theorem liClockPairedEtaPartitionSourceEta_eq_paired_tsum
     {b : ℝ} (hb : 1<b) :
   liClockPairedEtaPartitionSourceEta b =
     ∑' n : ℕ, ((2*(n:ℝ)+1)^(-b)-(2*(n:ℝ)+2)^(-b)) :=
   ep_paired_source (by linarith)
 
+/-- For `b > 1`, `η(b)` is the Dirichlet eta value `∑_n (-1)^n (n+1)^{-b}`. -/
 theorem liClockPairedEtaPartitionSourceEta_eq_alternating_tsum
     {b : ℝ} (hb : 1<b) :
   liClockPairedEtaPartitionSourceEta b =
@@ -122,6 +162,7 @@ theorem liClockPairedEtaPartitionSourceEta_eq_alternating_tsum
   rw [show 2*(n:ℝ)+1+1=2*(n:ℝ)+2 by ring]
   ring
 
+/-- `η(1) = log 2`, via the alternating harmonic series. -/
 theorem liClockPairedEtaPartitionSourceEta_one :
   liClockPairedEtaPartitionSourceEta 1=Real.log 2 := by
   rw [ep_paired_source (by norm_num)]
@@ -136,6 +177,7 @@ private theorem ep_source_positive : ∀ᵐ v ∂pairedEtaLogMeasure, 0<v := by
   filter_upwards [ae_restrict_mem measurableSet_pairedEtaLogSupport] with v hv
   exact pairedEtaLogSupport_subset_Ioi_zero hv
 
+/-- `η(b) → log 2` as `b → 1⁺`. -/
 theorem tendsto_liClockPairedEtaPartitionSourceEta_one_right :
   Tendsto liClockPairedEtaPartitionSourceEta
     (nhdsWithin (1:ℝ) (Ioi 1)) (nhds (Real.log 2)) := by
@@ -164,6 +206,7 @@ theorem tendsto_liClockPairedEtaPartitionSourceEta_one_right :
   change Tendsto (fun b : ℝ => b*(∫v:ℝ,Real.exp (-b*v) ∂pairedEtaLogMeasure)) _ _
   simpa only [he, one_mul] using h
 
+/-- `η(b) → 1` as `b → ∞`. -/
 theorem tendsto_liClockPairedEtaPartitionSourceEta_atTop :
   Tendsto liClockPairedEtaPartitionSourceEta atTop (nhds (1:ℝ)) := by
   have hp := (tendsto_rpow_atBot_of_base_gt_one (2:ℝ) (by norm_num)).comp
@@ -234,6 +277,8 @@ private theorem ep_cumulative_laplace {η : Measure ℝ} [SFinite η]
       exact hleft v hv
     _ = _ := integral_const_mul _ _
 
+/-- For `a > 0`, `e^{-ay} g(y)` is integrable on `(0, ∞)` and
+`∫_0^∞ e^{-ay} g(y) dy = η(a+1)/(2a(a+1))`. -/
 theorem liClockPairedEtaPartitionEndpointProfileLimit_laplace
     {a : ℝ} (ha : 0<a) :
   IntegrableOn (fun y : ℝ => Real.exp (-a*y)*
@@ -336,6 +381,8 @@ private theorem ep_scaled_product {N : ℕ} (hN : 0<N) {y : ℝ}
       · simp [ep_indicator,hva]
     · simp only [indicator_of_notMem hyv]
 
+/-- For `N > 0` and `0 ≤ y ≤ L = log(2N)`,
+`g_N(y) = ∫_{[0,y]} e^{-v} 1_S(v) 1_S(v + L - y) dv` with `S` the infinite paired-eta log support. -/
 theorem liClockPairedEtaPartitionEndpointProfile_eq_source
     {N : ℕ} (hN : 0<N) {y : ℝ} (hy : 0≤y)
     (hyL : y≤Real.log (2*(N:ℝ))) :
@@ -367,6 +414,8 @@ theorem liClockPairedEtaPartitionEndpointProfile_eq_source
       exact Eventually.of_forall (fun v => by simpa [sub_eq_add_neg,add_assoc] using heq v)
     _ = _ := by rw [integral_indicator measurableSet_Icc]; rfl
 
+/-- For the contiguous model on `(0, L]`, `L = log(2N)`, the endpoint profile is exactly
+`1 - e^{-y}` for `0 ≤ y ≤ L`. -/
 theorem liClockPairedEtaContiguousEndpointProfile_eq
     {N : ℕ} (hN : 0<N) {y : ℝ} (hy : 0≤y)
     (hyL : y≤Real.log (2*(N:ℝ))) :
@@ -387,6 +436,7 @@ theorem liClockPairedEtaContiguousEndpointProfile_eq
     rw [show Real.log (2*(N:ℝ))-y-Real.log (2*(N:ℝ)) = -y by ring,
       ←mul_assoc,he,one_mul]
 
+/-- For `N > 0` and `0 ≤ y ≤ log(2N)`, `0 ≤ g_N(y) ≤ 1 - e^{-y} ≤ 1`. -/
 theorem liClockPairedEtaPartitionEndpointProfile_bounds
     {N : ℕ} (hN : 0<N) {y : ℝ} (hy : 0≤y)
     (hyL : y≤Real.log (2*(N:ℝ))) :
@@ -823,6 +873,7 @@ private theorem ep_scale_tendsto (y : ℝ) :
   rw [Real.exp_sub,Real.exp_log (by exact_mod_cast (show 0<2*N by omega)),Real.exp_neg]
   ring
 
+/-- For `y ≥ 0`, the endpoint profiles converge: `g_N(y) → g(y)` as `N → ∞`. -/
 theorem tendsto_liClockPairedEtaPartitionEndpointProfile
     {y : ℝ} (hy : 0≤y) :
   Tendsto (fun N : ℕ => liClockPairedEtaPartitionEndpointProfile N y)

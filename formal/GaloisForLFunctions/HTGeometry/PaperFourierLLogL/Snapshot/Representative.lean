@@ -1,5 +1,33 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Snapshot.Display
 
+/-!
+# Separated nets of intense frequencies and frequency-Lipschitz bounds
+
+In the finite dyadic model `Grid M = ℤ/2^M`, a scene carries a weighted exponential sum
+`scalar s u = ∑ₓ wt(x) χ_u(x)`. Frequencies are compared at the scale
+`spotLimit s j i main = tolerance j i main · 2^{lev}` of the scene's node. A `net` is a maximal set of
+intense frequencies (strength `side (i+1)`) that are pairwise not `adjacent`; every intense
+frequency is adjacent to a net element. The module also proves that `|scalar s ·|` is Lipschitz in
+the frequency at scale `len`, and a Parseval bound on `∑ᵤ |scalar s u|²`.
+
+## Main results
+
+- `net_ok`, `exists_net`, `net`, `net_spec`: existence of a maximal separated net of intense
+  frequencies.
+- `net_len_main`: for a settled live scene, the main net at index `i` with `i + 1 ≤ testIx j` has
+  at most `exp(kappa j (codeWeight capA) (i+1))` elements.
+- `share_child`: if `share s ≤ 2`, each child scene has `share ≤ 4`.
+- `scalar_point`, `scalar_compare`: `| |scalar s i| - |scalar s k| | ≤ b · 8 · len · rad(i - k)`
+  whenever `share s ≤ b`.
+- `scalar_power`: if `wage ≤ d` and `share s ≤ b`, then
+  `∑ᵤ |scalar s u|² ≤ 2^{lev} · b · d / norm`.
+
+## Hypotheses
+
+Unconditional finite statements; the premises are the scene admissibility conditions (`ReadyAt`,
+nonnegative or positive `norm`, bounds on `share` and `wage`) named in each lemma.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -11,8 +39,10 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {M J j : ℕ} {s : Scene M} {f : Grid M → ℝ}
 open scoped Classical
 
+/-- Relative frequency tolerance: `sig j` for the main test, `2^{-4i}/65536` otherwise. -/
 def tolerance (j i : ℕ) (main : Bool) :=
     if main then sig j else side i ^4/65536
+/-- Absolute frequency radius at a scene: `tolerance j i main · 2^{lev}`. -/
 def spotLimit (s : Scene M) (j i : ℕ) (main : Bool) :=
     tolerance j i main * s.here.invlen
 
@@ -21,6 +51,8 @@ lemma tolerance_pos (j i : ℕ) (b : Bool) : 0 < tolerance j i b := by
 lemma spotLimit_pos (s : Scene M) (j i : ℕ) (b : Bool) : 0 < spotLimit s j i b :=
     mul_pos (tolerance_pos _ _ _) s.here.invlen_pos
 
+/-- Frequency difference `x` counts as adjacent: within `spotLimit` of `0` (non-main test), or of a
+frequency `k` with `delta mood k ≤ sepRad j` (main test). -/
 def adjacent (s : Scene M) (j i : ℕ) (main : Bool) (x : Grid M) :=
     if main then fnear s.fund.mood (sepRad j) (spotLimit s j i main) x else rad x ≤ spotLimit s j i main
 
@@ -47,10 +79,14 @@ lemma adjacent_neg (s : Scene M) (j i : ℕ) (b : Bool) {x : Grid M} (hx : adjac
     · rw [delta_even _ v]; exact hv
     rw [show -x- -v= -(x-v) by ring,rad_even]; exact h
 
+/-- `d` is a separated net of intense frequencies: its elements are intense at strength
+`side (i+1)`, pairwise not adjacent, and every intense frequency is adjacent to some element. -/
 def net_ok (s : Scene M) (j i : ℕ) (b : Bool) (d : Finset (Grid M)) :=
     (∀ x∈d, intense b s (side (i+1)) x) ∧
     (∀ x ∈ d,∀ y∈d,x≠y → ¬ adjacent s j i b (x-y)) ∧
     ∀ x, intense b s (side (i+1)) x → ∃ y∈d, adjacent s j i b (x-y)
+/-- A separated net exists: take a pairwise non-adjacent set of intense frequencies of maximal
+cardinality. -/
 lemma exists_net (s : Scene M) (j i : ℕ) (b : Bool) : ∃ d, net_ok s j i b d := by
   classical
   let L := intense b s (side (i+1)); let H := adjacent s j i b
@@ -81,10 +117,13 @@ lemma exists_net (s : Scene M) (j i : ℕ) (b : Bool) : ∃ d, net_ok s j i b d 
   have hi := hh _ hh'
   rw [Finset.card_insert_of_notMem hn] at hi; omega
 
+/-- A chosen separated net of intense frequencies. -/
 def net (s : Scene M) (j i : ℕ) (b : Bool) := Classical.choose (exists_net s j i b)
 lemma net_spec (s : Scene M) (j i : ℕ) (b : Bool) :
     net_ok s j i b (net s j i b) := Classical.choose_spec _
 
+/-- For a settled live scene and `i + 1 ≤ testIx j`, the main net has at most
+`exp(kappa j (codeWeight capA) (i+1))` elements. -/
 lemma net_len_main (s : Scene M) (j i : ℕ) (h : i+1 ≤ testIx j) (hs : s.settled j)
     (he : s.live=true) : ((net s j i true).card:ℝ) ≤ exp (kappa j (codeWeight capA) (i+1)) := by
   apply le_of_not_gt
@@ -100,6 +139,7 @@ lemma share_small {s : Scene M} (hb : work s j J f) : 0 < s.norm ∧ share s ≤
   unfold enter at hi
   refine ⟨by linarith,?_⟩
   exact (div_le_iff₀ (by linarith)).mpr (le_of_not_gt hi)
+/-- If `share s ≤ 2` with `0 < norm`, then each child scene has `share ≤ 4`. -/
 lemma share_child (s : Scene M) (hp : s.here.valid) (h : s.here.lev < M)
     (hs : 0 ≤ s.wage) (hh : 0 < s.norm) (hb : share s ≤ 2) (b) :
     share (s.smaller b) ≤ 4 := by
@@ -108,6 +148,8 @@ lemma share_child (s : Scene M) (hp : s.here.valid) (h : s.here.lev < M)
     ⟨s.here.child_ok hp h i,hs⟩ hh.le
   cases b <;> linarith [HF false,HF true]
 
+/-- For `x` in an ancestor block `p` of the scene's node:
+`|scalar s i - χ_{i-k}(x) · scalar s k| ≤ share s · 8 · len p · rad(i - k)`. -/
 lemma scalar_point (s : Scene M) (i : Grid M) (hp : ReadyAt s) (hh : 0 ≤ s.norm)
     {p : Node} (ht : below s.here p) (x : Grid M) (he : x∈p.block M)
     (k : Grid M) :
@@ -133,6 +175,8 @@ lemma scalar_point (s : Scene M) (i : Grid M) (hp : ReadyAt s) (hh : 0 ≤ s.nor
   rw [wt,dice_apply hp.1,if_neg H,zero_mul,zero_div]
   simp
 
+/-- Frequency-Lipschitz bound: if `share s ≤ b`, then
+`| |scalar s i| - |scalar s k| | ≤ b · 8 · len · rad(i - k)`. -/
 lemma scalar_compare (s : Scene M) (i k : Grid M) (hp : ReadyAt s) (hh : 0 ≤ s.norm)
     (b : ℝ) (hb : share s ≤ b) :
     |‖scalar s i‖-‖scalar s k‖| ≤ b * (8*s.here.len*rad (i-k)) := by
@@ -144,6 +188,8 @@ lemma scalar_compare (s : Scene M) (i k : Grid M) (hp : ReadyAt s) (hh : 0 ≤ s
   exact mul_le_mul_of_nonneg_right hb (by have := s.here.len_pos; have := rad_nonneg (i-k); positivity)
 
 
+/-- Parseval bound: if `0 < norm`, `wage ≤ d` and `share s ≤ b`, then
+`∑ᵤ |scalar s u|² ≤ 2^{lev} · b · d / norm`. -/
 lemma scalar_power (s : Scene M) (hp : ReadyAt s) (hh : 0 < s.norm) (d b : ℝ)
     (h : ∀ x, s.wage x ≤ d) (he : share s ≤ b) (hd : 0 ≤ d) :
     ∑ i, ‖scalar s i‖^2 ≤ s.here.invlen * b * d / s.norm := by

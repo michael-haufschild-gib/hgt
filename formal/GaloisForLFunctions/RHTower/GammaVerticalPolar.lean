@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.GammaVerticalPhaseAsymptotic
 import GaloisForLFunctions.RHTower.GammaJumpMultiplierBounds
 import GaloisForLFunctions.HTGeometry.UnitaryReflectionPhaseHalving
+
+/-!
+# Polar form of the Gamma function on vertical lines
+
+For `σ > 0`, this module studies `t ↦ Γ(σ + it)` on the vertical line `Re s = σ`. It computes
+`d/dt Γ(σ + it) = i Γ(σ + it) ψ(σ + it)` and shows that the unit phase `conj Γ / |Γ|` has
+derivative `-i Re ψ(σ + it)` times itself. Integrating, the argument of `Γ(σ + it)` is the
+phase `θ_σ(t) = ∫₀ᵗ Re ψ(σ + iu) du`, giving the exact polar decomposition
+`Γ(σ + it) = |Γ(σ + it)| e^{i θ_σ(t)}`; the phase is odd in `t`.
+
+## Main results
+
+- `gammaVerticalConjPhase_eq_exp_neg_phase`: `conj Γ(σ + it) / |Γ(σ + it)| = e^{-i θ_σ(t)}`.
+- `gammaVerticalValue_eq_norm_mul_exp_phase`: `Γ(σ + it) = |Γ(σ + it)| e^{i θ_σ(t)}`.
+- `hasDerivAt_gammaVerticalPhase`: `θ_σ'(t) = Re ψ(σ + it)`.
+- `gammaVerticalPhase_neg`: `θ_σ(-t) = -θ_σ(t)`.
+
+## Hypotheses
+
+Unconditional apart from the range hypothesis `hσ : 0 < σ`, which keeps the vertical line away
+from the poles of `Γ`.
+-/
+
 open Complex Filter Topology intervalIntegral
 
 
@@ -10,12 +33,15 @@ noncomputable section
 
 namespace RHTower
 
+/-- The Gamma function on the vertical line: `t ↦ Γ(σ + it)`. -/
 def gammaVerticalValue (σ t : ℝ) : ℂ :=
   Complex.Gamma ((σ : ℂ) + (t : ℂ) * I)
 
+/-- Conjugate unit phase `conj Γ(σ + it) / |Γ(σ + it)|`. -/
 def gammaVerticalConjPhase (σ t : ℝ) : ℂ :=
   (starRingEnd ℂ) (gammaVerticalValue σ t) / ‖gammaVerticalValue σ t‖
 
+/-- For `σ > 0`, `Γ(σ + it) ≠ 0`. -/
 theorem gammaVerticalValue_ne_zero {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     gammaVerticalValue σ t ≠ 0 := by
   apply Complex.Gamma_ne_zero
@@ -25,6 +51,7 @@ theorem gammaVerticalValue_ne_zero {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
   have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
   linarith
 
+/-- For `σ > 0`, `d/dt Γ(σ + it) = Γ(σ + it) ψ(σ + it) i`, with `ψ` the digamma function. -/
 theorem hasDerivAt_gammaVerticalValue {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     HasDerivAt (gammaVerticalValue σ)
       (gammaVerticalValue σ t * Complex.digamma ((σ : ℂ) + (t : ℂ) * I) * I) t := by
@@ -53,6 +80,7 @@ theorem hasDerivAt_gammaVerticalValue {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     (gammaVerticalValue σ t * Complex.digamma ((σ : ℂ) + (t : ℂ) * I) * I) t at hcomp
   exact hcomp
 
+/-- For `σ > 0`, the conjugate unit phase `u(t)` satisfies `u'(t) = -i Re ψ(σ + it) u(t)`. -/
 theorem hasDerivAt_gammaVerticalConjPhase {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     HasDerivAt (gammaVerticalConjPhase σ)
       (-I * ((Complex.digamma ((σ : ℂ) + (t : ℂ) * I)).re : ℂ) *
@@ -69,6 +97,7 @@ theorem hasDerivAt_gammaVerticalConjPhase {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     rw [hcancel]
     simp [gammaVerticalConjPhase]
 
+/-- For `σ > 0`, the phase `θ_σ(t) = ∫₀ᵗ Re ψ(σ + iu) du` has derivative `Re ψ(σ + it)`. -/
 theorem hasDerivAt_gammaVerticalPhase {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     HasDerivAt (gammaVerticalPhase σ)
       (Complex.digamma ((σ : ℂ) + (t : ℂ) * I)).re t :=
@@ -100,6 +129,8 @@ private theorem hasDerivAt_gammaVerticalPhaseGauge {σ : ℝ} (hσ : 0 < σ) (t 
   convert hprod' using 1
   ring
 
+/-- For `σ > 0`, `conj Γ(σ + it) / |Γ(σ + it)| = e^{-i θ_σ(t)}`: the gauge `u(t) e^{i θ_σ(t)}` has
+zero derivative and equals `1` at `t = 0`. -/
 theorem gammaVerticalConjPhase_eq_exp_neg_phase {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     gammaVerticalConjPhase σ t =
       Complex.exp (-I * (gammaVerticalPhase σ t : ℂ)) := by
@@ -131,6 +162,7 @@ theorem gammaVerticalConjPhase_eq_exp_neg_phase {σ : ℝ} (hσ : 0 < σ) (t : �
       ring
     _ = _ := by rw [hconst, one_mul]
 
+/-- Polar form on the vertical line: for `σ > 0`, `Γ(σ + it) = |Γ(σ + it)| e^{i θ_σ(t)}`. -/
 theorem gammaVerticalValue_eq_norm_mul_exp_phase {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     gammaVerticalValue σ t =
       (‖gammaVerticalValue σ t‖ : ℂ) *
@@ -145,6 +177,7 @@ theorem gammaVerticalValue_eq_norm_mul_exp_phase {σ : ℝ} (hσ : 0 < σ) (t : 
   rw [← Complex.exp_conj] at h
   simpa [mul_comm] using h
 
+/-- For `σ > 0`, the vertical Gamma phase is odd: `θ_σ(-t) = -θ_σ(t)`. -/
 @[simp] theorem gammaVerticalPhase_neg {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     gammaVerticalPhase σ (-t) = -gammaVerticalPhase σ t := by
   unfold gammaVerticalPhase

@@ -2,6 +2,38 @@ import GaloisForLFunctions.HTGeometry.HaferkampFlattenedTerminalPhaseRank
 import GaloisForLFunctions.HTGeometry.ObserverCriticalCarrierConfinementLaw
 import Mathlib.Analysis.Matrix.Normed
 
+/-!
+# Generic full real rank of the terminal-phase chart of a flattened light-cone assembly
+
+A terminal-aware backwards-light-cone block assembly on `n` qubits, built for a list of `L` Pauli
+labels, carries one real phase parameter per retained terminal gate. The terminal-phase chart
+sends `z ∈ ℝ^L` to the product of the resulting matrix word. This module shows that, for the
+identity prefix and complex-linearly independent Pauli labels, the chart has real differential
+rank at least `L` for Lebesgue-almost every parameter. The proof composes the chart with a
+continuous left inverse of its tangent map at `0`, producing a real-analytic map `ℝ^L → ℝ^L`
+whose derivative at `0` is the identity, so its critical set is Lebesgue-null.
+
+## Main results
+
+- `TerminalBlockPrefixAssembly.terminalPhaseTangentMap_injective`: the tangent map of the chart at
+  `0` is injective.
+- `TerminalBlockPrefixAssembly.hasFDerivAt_terminalPhaseObservedMap_zero`: the observed map has
+  derivative equal to the identity at `0`.
+- `TerminalBlockPrefixAssembly.observedPhaseCriticalSet_volume_zero`: the observed map has
+  surjective derivative off a Lebesgue-null set.
+- `finrank_range_comp_le`: the range of `C ∘ A` has dimension at most that of the range of `A`.
+- `TerminalBlockPrefixAssembly.euclideanPhaseChart_lowRank_volume_zero`: the set of parameters
+  where the chart's real differential has rank `< L` is Lebesgue-null.
+- `TerminalBlockPrefixAssembly.euclideanPhaseChart_lowRank_measure_zero`: the same set is null for
+  every measure absolutely continuous with respect to Lebesgue measure.
+
+## Hypotheses
+
+No analytic inputs. The rank results assume that the assembly has the identity prefix and
+(`hlabels`) that the Pauli matrices of the label list are linearly independent over `ℂ`; the last
+theorem additionally assumes `μ ≪ volume`.
+-/
+
 open scoped Matrix.Norms.Operator
 open MeasureTheory
 
@@ -11,6 +43,8 @@ noncomputable section
 
 namespace BackwardsLightCone
 
+/-- For the identity prefix and complex-linearly independent Pauli labels (`hlabels`), the real
+tangent map of the terminal-phase chart at `0` is injective. -/
 theorem TerminalBlockPrefixAssembly.terminalPhaseTangentMap_injective
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -51,6 +85,8 @@ theorem TerminalBlockPrefixAssembly.terminalPhaseTangentMap_injective
           exact DFunLike.congr_fun hD x]
   exact hLI.fintypeLinearCombination_injective
 
+/-- A continuous real-linear map from matrices back to `ℝ^L`, chosen as a left inverse of the
+terminal-phase tangent map (it is one whenever that map is injective). -/
 def TerminalBlockPrefixAssembly.terminalPhaseTangentLeftInverse
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -60,6 +96,8 @@ def TerminalBlockPrefixAssembly.terminalPhaseTangentLeftInverse
     Matrix (Fin n → Bool) (Fin n → Bool) ℂ →L[ℝ] (Fin labels.length → ℝ) :=
   assembly.terminalPhaseTangentMap.toLinearMap.leftInverse.toContinuousLinearMap
 
+/-- Under `hlabels` and the identity prefix, the chosen left inverse composed with the tangent map
+is the identity on `ℝ^L`. -/
 theorem TerminalBlockPrefixAssembly.terminalPhaseTangentLeftInverse_comp
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -77,6 +115,8 @@ theorem TerminalBlockPrefixAssembly.terminalPhaseTangentLeftInverse_comp
   exact LinearMap.leftInverse_apply_of_inj
     (LinearMap.ker_eq_bot_of_injective hinj) x
 
+/-- The observed phase map `ℝ^L → ℝ^L`: the left inverse of the tangent map applied to the matrix
+product of the terminal-phase word at parameter `z`. -/
 def TerminalBlockPrefixAssembly.terminalPhaseObservedMap
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -89,6 +129,7 @@ def TerminalBlockPrefixAssembly.terminalPhaseObservedMap
       ((assembly.terminalPhaseLiftedWord
         ((EuclideanSpace.equiv (Fin labels.length) ℝ) z)).reverse.prod))
 
+/-- The observed phase map is real-analytic at every point. -/
 theorem TerminalBlockPrefixAssembly.analyticAt_terminalPhaseObservedMap
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -118,6 +159,8 @@ theorem TerminalBlockPrefixAssembly.analyticAt_terminalPhaseObservedMap
     (g := fun q : Fin labels.length → ℝ => einv q) heinv hLC
   exact h
 
+/-- Under `hlabels` and the identity prefix, the observed phase map has Fréchet derivative equal to
+the identity at `0`. -/
 theorem TerminalBlockPrefixAssembly.hasFDerivAt_terminalPhaseObservedMap_zero
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -162,6 +205,8 @@ theorem TerminalBlockPrefixAssembly.hasFDerivAt_terminalPhaseObservedMap_zero
       (fun z => einv (L (C (e z)))) by rfl]
   exact h.congr_fderiv hderiv
 
+/-- Under `hlabels` and the identity prefix, the set of parameters where the observed phase map has
+non-surjective derivative has Lebesgue measure zero. -/
 theorem TerminalBlockPrefixAssembly.observedPhaseCriticalSet_volume_zero
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -196,6 +241,8 @@ theorem TerminalBlockPrefixAssembly.observedPhaseCriticalSet_volume_zero
     exact one_ne_zero
   exact analytic_observer_criticalSet_volume_zero hF u hminor
 
+/-- The terminal-phase chart on Euclidean parameters: `z` maps to the matrix product of the
+terminal-phase lifted word. -/
 def TerminalBlockPrefixAssembly.terminalPhaseEuclideanChart
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -207,6 +254,8 @@ def TerminalBlockPrefixAssembly.terminalPhaseEuclideanChart
   fun z => (assembly.terminalPhaseLiftedWord
     ((EuclideanSpace.equiv (Fin labels.length) ℝ) z)).reverse.prod
 
+/-- The linear observer output: the tangent left inverse followed by the identification of
+`ℝ^L` with Euclidean space. -/
 def TerminalBlockPrefixAssembly.terminalPhaseObserverOutput
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -218,6 +267,7 @@ def TerminalBlockPrefixAssembly.terminalPhaseObserverOutput
   (EuclideanSpace.equiv (Fin labels.length) ℝ).symm.toContinuousLinearMap.comp
     assembly.terminalPhaseTangentLeftInverse
 
+/-- The terminal-phase chart is real-analytic at every point. -/
 theorem TerminalBlockPrefixAssembly.analyticAt_terminalPhaseEuclideanChart
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -236,6 +286,8 @@ theorem TerminalBlockPrefixAssembly.analyticAt_terminalPhaseEuclideanChart
   have h := AnalyticAt.comp (f := fun w => e w) (g := C) hC he
   exact h
 
+/-- Chain rule: the derivative of the observed phase map is the observer output composed with the
+derivative of the chart. -/
 theorem TerminalBlockPrefixAssembly.fderiv_observed_eq_output_comp_fderiv_chart
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -257,6 +309,8 @@ theorem TerminalBlockPrefixAssembly.fderiv_observed_eq_output_comp_fderiv_chart
   rw [show assembly.terminalPhaseObservedMap = fun z => L (C z) by rfl]
   exact h.fderiv
 
+/-- Composition cannot increase rank: `dim range (C ∘ A) ≤ dim range A` for continuous linear maps
+with finite-dimensional middle space. -/
 theorem finrank_range_comp_le
     {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [FiniteDimensional ℝ Y]
@@ -277,6 +331,8 @@ theorem finrank_range_comp_le
   rw [show (C.comp A).range = (C.comp A).toLinearMap.range by rfl, hrange]
   exact LinearMap.finrank_range_le g
 
+/-- At any parameter where the observed phase map has surjective derivative, the chart's real
+differential has rank at least `L`. -/
 theorem TerminalBlockPrefixAssembly.finrank_chart_fderiv_of_surjective_observer_fderiv
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -303,6 +359,8 @@ theorem TerminalBlockPrefixAssembly.finrank_chart_fderiv_of_surjective_observer_
         finrank_top]
     _ ≤ Module.finrank ℝ A.range := finrank_range_comp_le A C
 
+/-- Under `hlabels` and the identity prefix, the parameters where the terminal-phase chart's real
+differential has rank below `L` form a Lebesgue-null set. -/
 theorem TerminalBlockPrefixAssembly.euclideanPhaseChart_lowRank_volume_zero
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}
@@ -319,6 +377,8 @@ theorem TerminalBlockPrefixAssembly.euclideanPhaseChart_lowRank_volume_zero
       (assembly.finrank_chart_fderiv_of_surjective_observer_fderiv z hsurj)) hz
   · exact assembly.observedPhaseCriticalSet_volume_zero hlabels
 
+/-- Under `hlabels` and the identity prefix, for any measure `μ ≪ volume` the low-rank set of the
+terminal-phase chart is `μ`-null. -/
 theorem TerminalBlockPrefixAssembly.euclideanPhaseChart_lowRank_measure_zero
     {n : ℕ} {edges : List (Fin n × Fin n)} {root : Fin n}
     {cone : BackwardsLightCone n edges root}

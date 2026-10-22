@@ -1,12 +1,38 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovPowerSumRigidity
 import Mathlib.Algebra.Field.ZMod
 
+/-!
+# Newton identities and Linnik lifting for power sums modulo p^k
+
+If two families in a commutative ring have the same power sums of orders `1..b` and the integers
+`1, ..., b` are units, Newton's identities force equal elementary symmetric functions, hence equal
+monic polynomials `∏ (X - x_i)`. Over `ZMod (p^k)` with `k < p`, for `k`-tuples whose reductions
+modulo `p` are distinct, this gives Linnik's lifting lemma: equal power sums of orders `1..k`
+modulo `p^k` force the two tuples to be permutations of each other.
+
+## Main results
+
+- `esymm_eq_of_powerSums_eq_of_isUnit`: equal power sums of orders `1..b`, with `1, ..., b` units,
+  give equal elementary symmetric polynomials `e_j` for `j ≤ b`.
+- `polynomial_prod_eq_of_powerSums_eq_of_isUnit`: under the same hypotheses,
+  `∏ (X - x_i) = ∏ (X - y_i)`.
+- `zmod_multiset_eq_of_powerSums_eq`: for a prime `p` with `k < p`, `k`-tuples in `ZMod (p^k)` that
+  are injective modulo `p` and have equal power sums of orders `1..k` agree as multisets.
+
+## Hypotheses
+
+Unconditional. The algebraic statements assume equal power sums and that `1, ..., b` are units; the
+modular statement assumes `p` prime, `k < p`, and that both tuples are injective modulo `p`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Newton's identities: if `∑ x_i^j = ∑ y_i^j` for `1 ≤ j ≤ b` and each `j ≤ b` is a unit in `R`,
+then `e_j(x) = e_j(y)` for all `j ≤ b`. -/
 theorem esymm_eq_of_powerSums_eq_of_isUnit
     {R : Type*} [CommRing R] {b : ℕ} (x y : Fin b → R)
     (hpower : ∀ j : ℕ, 1 ≤ j → j ≤ b →
@@ -52,6 +78,8 @@ theorem esymm_eq_of_powerSums_eq_of_isUnit
           (j : R) * (Finset.univ.val.map y).esymm j := hx.trans hy.symm
       exact (hunit j hjpos hj).mul_left_cancel hmul
 
+/-- If `∑ x_i^j = ∑ y_i^j` for `1 ≤ j ≤ b` and `1, ..., b` are units, then
+`∏ (X - x_i) = ∏ (X - y_i)`. -/
 theorem polynomial_prod_eq_of_powerSums_eq_of_isUnit
     {R : Type*} [CommRing R] {b : ℕ} (x y : Fin b → R)
     (hpower : ∀ j : ℕ, 1 ≤ j → j ≤ b →
@@ -78,6 +106,8 @@ private theorem isUnit_finset_prod
       exact (h a (Finset.mem_insert_self a s)).mul
         (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
+/-- Linnik lifting: for a prime `p` with `k < p`, two `k`-tuples in `ZMod (p^k)` with distinct
+reductions modulo `p` and equal power sums of orders `1..k` are equal as multisets. -/
 theorem zmod_multiset_eq_of_powerSums_eq
     {p k : ℕ} (hp : p.Prime) (hkp : k < p)
     (x y : Fin k → ZMod (p ^ k))

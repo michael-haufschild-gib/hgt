@@ -1,18 +1,44 @@
 import GaloisForLFunctions.RHTower.Sieve.FinitePowerSumFourier
 import GaloisForLFunctions.RHTower.Sieve.FiniteFiberCorrelation
 
+/-!
+# Hölder splitting of power-sum energies into residue classes
+
+Consider signatures `σ(ℓ, a₁, …, a_b) = lead(ℓ) + ∑_i atom(a_i)` in `(ℤ/qℤ)^k`. Their character sum
+factors as `S_lead(ξ) · S_atom(ξ)^b`. Splitting the atoms into classes `c : A → ι` and applying
+Hölder to `|∑_i S_i(ξ)|^(2b)` gives a pointwise bound, and Parseval (`∑_ξ |S(ξ)|² = q^k · energy`)
+converts it into an energy inequality: the fibre energy of the full signature is at most
+`#ι^(2b-1)` times the sum of the energies of the class-restricted signatures.
+
+## Main results
+
+- `finiteCharacterSum_leadTail_factor`: `S_σ(ξ) = S_lead(ξ) · S_atom(ξ)^b`.
+- `sum_normSq_finiteCharacterSum_eq_finiteFiberEnergy`: `∑_ξ |S_f(ξ)|² = q^k · energy(f)`.
+- `norm_finiteCharacterSum_pow_le_classes`: `|S_atom(ξ)|^(2b) ≤ #ι^(2b-1) ∑_i |S_i(ξ)|^(2b)`.
+- `normSq_finiteCharacterSum_leadTail_le_classes`: the corresponding bound for `|S_σ(ξ)|²`.
+- `finiteFiberEnergy_le_residueClasses`:
+  `energy(σ) ≤ #ι^(2b-1) ∑_i energy(σ restricted to atoms of class i)`.
+
+## Hypotheses
+
+All results are unconditional finite statements; they assume `b ≠ 0` for the Hölder bounds and a
+nonzero modulus `q`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators ComplexConjugate
 
 noncomputable section
 
+/-- Lead-tail signature `(ℓ, a) ↦ lead(ℓ) + ∑_{i < b} atom(a_i)` in `(ℤ/qℤ)^k`. -/
 def finiteLeadTailSignature {L A : Type*}
     (q k b : ℕ) [NeZero q]
     (lead : L → Fin k → ZMod q) (atom : A → Fin k → ZMod q) :
     L × (Fin b → A) → Fin k → ZMod q :=
   fun z => lead z.1 + ∑ i : Fin b, atom (z.2 i)
 
+/-- The product character of a finite sum is the product of the characters. -/
 theorem finiteProductCharacter_sum (q k b : ℕ) [NeZero q]
     (ξ : Fin k → ZMod q) (atom : Fin b → Fin k → ZMod q) :
     finiteProductCharacter q k ξ (∑ i : Fin b, atom i) =
@@ -23,6 +49,7 @@ theorem finiteProductCharacter_sum (q k b : ℕ) [NeZero q]
       rw [Fin.sum_univ_succ, finiteProductCharacter_add, ih]
       rw [Fin.prod_univ_succ]
 
+/-- The character sum of the lead-tail signature factors as `S_lead(ξ) · S_atom(ξ)^b`. -/
 theorem finiteCharacterSum_leadTail_factor
     {L A : Type*} [Fintype L] [Fintype A]
     (q k b : ℕ) [NeZero q]
@@ -38,6 +65,7 @@ theorem finiteCharacterSum_leadTail_factor
   congr 1
   rw [Fintype.sum_pow]
 
+/-- Parseval in energy form: `∑_ξ |S_f(ξ)|² = q^k · energy(f)`. -/
 theorem sum_normSq_finiteCharacterSum_eq_finiteFiberEnergy
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) :
@@ -48,12 +76,14 @@ theorem sum_normSq_finiteCharacterSum_eq_finiteFiberEnergy
   push_cast
   rw [finiteFiberEnergy_eq_card]
 
+/-- Character sum of the atoms lying in class `i`. -/
 def finiteClassCharacterSum {A ι : Type*}
     [Fintype A] [Fintype ι] [DecidableEq ι]
     (q k : ℕ) [NeZero q] (atom : A → Fin k → ZMod q)
     (c : A → ι) (i : ι) (ξ : Fin k → ZMod q) : ℂ :=
   ∑ a : {a : A // c a = i}, finiteProductCharacter q k ξ (atom a.1)
 
+/-- The atom character sum is the sum of its class character sums. -/
 theorem finiteCharacterSum_eq_sum_classes
     {A ι : Type*} [Fintype A] [Fintype ι] [DecidableEq ι]
     (q k : ℕ) [NeZero q] (atom : A → Fin k → ZMod q)
@@ -64,6 +94,7 @@ theorem finiteCharacterSum_eq_sum_classes
   exact (Fintype.sum_fiberwise c
     (fun a => finiteProductCharacter q k ξ (atom a))).symm
 
+/-- Hölder over classes: for `b ≠ 0`, `|S_atom(ξ)|^(2b) ≤ #ι^(2b-1) ∑_i |S_i(ξ)|^(2b)`. -/
 theorem norm_finiteCharacterSum_pow_le_classes
     {A ι : Type*} [Fintype A] [Fintype ι] [DecidableEq ι]
     (q k b : ℕ) [NeZero q] (hb : b ≠ 0)
@@ -88,6 +119,8 @@ theorem norm_finiteCharacterSum_pow_le_classes
       have hexp : 2 * b - 1 + 1 = 2 * b := by omega
       simpa only [Finset.card_univ, hexp] using h
 
+/-- For `b ≠ 0`, `|S_σ(ξ)|²` is at most `#ι^(2b-1)` times the sum over classes of the squared
+character sums of the class-restricted lead-tail signatures. -/
 theorem normSq_finiteCharacterSum_leadTail_le_classes
     {L A ι : Type*} [Fintype L] [Fintype A] [Fintype ι]
     [DecidableEq ι]
@@ -129,6 +162,8 @@ theorem normSq_finiteCharacterSum_leadTail_le_classes
       simp_rw [Finset.mul_sum, mul_pow, pow_mul]
       ring_nf
 
+/-- For `b ≠ 0`, the fibre energy of the lead-tail signature is at most `#ι^(2b-1)` times the sum of
+the energies of the class-restricted signatures. -/
 theorem finiteFiberEnergy_le_residueClasses
     {L A ι : Type*} [Fintype L] [Fintype A] [Fintype ι]
     [DecidableEq ι]

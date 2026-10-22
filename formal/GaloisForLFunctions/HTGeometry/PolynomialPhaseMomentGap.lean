@@ -2,12 +2,42 @@ import GaloisForLFunctions.HTGeometry.PolynomialPatternWeight
 import GaloisForLFunctions.HTGeometry.PolynomialPowerConvexConfinement
 import Mathlib.Order.PiLex
 
+/-!
+# Moment signatures of multiplicity patterns and power-sum gaps
+
+A pattern `p : Fin M → Fin (D + 1)` places multiplicity `p r` at the integer point `r`; its moments
+are `m_j(p) = ∑_r p r · r^j` and its power valuation is `V_β(p, x) = ∑_r p r · (x + r)^β`. Patterns
+in a finite set are ordered lexicographically by their moment signature `(m_2, …, m_{R+1})`, and the
+minimal cluster is the set of patterns attaining the minimal signature. If two patterns have the same
+total count `D` and the same first moment, and their moments agree below index `j` with
+`m_j(p₀) < m_j(p)` for some `2 ≤ j ≤ ⌈β⌉ - 1`, then the asymptotics of finite differences of `x^β`
+give a power gap `V_β(p, x) - V_β(p₀, x) ≥ c x^{β - (⌈β⌉ - 1)}` for all large `x`.
+
+## Main results
+
+- `polynomialPatternMoment`, `polynomialPatternSignature`: moments and moment signature.
+- `polynomialPatternMinimalCluster`: patterns of minimal signature; nonempty and contained in `S`.
+- `exists_first_signature_moment_lt_of_mem_not_cluster`: a pattern outside the minimal cluster has
+  a first signature index where its moment strictly exceeds that of a cluster member.
+- `polynomialPatternPowerValuation_sub`: the difference of power valuations is a finite power
+  difference of the pattern-difference polynomial.
+- `eventually_polynomialPatternPower_gap_of_signature_lt`: for `β > 2`, equal counts, equal first
+  moments and a first moment gap at index `i + 2`, there is `c > 0` with
+  `c · x^{β - (⌈β⌉ - 1)} ≤ V_β(p, x) - V_β(p₀, x)` eventually as `x → ∞`.
+
+## Hypotheses
+
+All results are unconditional. The gap theorem assumes `2 < β`, equal total counts `D`, equal first
+moments, and the stated first strict moment inequality.
+-/
+
 open Filter Finset PowerSeries MvPolynomial Polynomial Topology Asymptotics Set
 
 namespace GaloisForLFunctions
 
 noncomputable section
 
+/-- The `j`-th moment `∑_r p r · r^j` of a multiplicity pattern. -/
 def polynomialPatternMoment {M D : ℕ} (p : Fin M → Fin (D + 1)) (j : ℕ) : ℕ :=
   ∑ r : Fin M, (p r : ℕ) * (r : ℕ) ^ j
 
@@ -31,6 +61,8 @@ theorem atomPatternKey_moment {M D : ℕ} (p : Fin M → Fin (D + 1)) (j : ℕ) 
     push_cast
     ring
 
+/-- For patterns of equal total count `D`, the `j`-th stretched moment of their difference
+polynomial is `m_j(p₁) - m_j(p₀)`. -/
 theorem stretchedMoment_atomPatternDifference {M D : ℕ}
     (p₀ p₁ : Fin M → Fin (D + 1))
     (hcount₀ : (∑ r, (p₀ r : ℕ)) = D)
@@ -52,15 +84,18 @@ theorem stretchedMoment_atomPatternDifference {M D : ℕ}
       key_tupleOfFinsupp, atomPatternKey_moment]
   simpa only [t₁, t₀] using congrArg₂ (· - ·) ht₁ ht₀
 
+/-- The moment signature `[m_2(p), …, m_{R+1}(p)]`, compared lexicographically. -/
 def polynomialPatternSignature {M D : ℕ} (R : ℕ)
     (p : Fin M → Fin (D + 1)) : List ℕ :=
   List.ofFn fun i : Fin R => polynomialPatternMoment p ((i : ℕ) + 2)
 
+/-- The lexicographically minimal moment signature over a nonempty finite set of patterns. -/
 noncomputable def minimalPolynomialPatternSignature {M D R : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty) : List ℕ :=
   (S.image (polynomialPatternSignature R)).min'
     (Finset.image_nonempty.mpr hS)
 
+/-- The patterns of `S` attaining the minimal moment signature. -/
 noncomputable def polynomialPatternMinimalCluster {M D R : ℕ}
     (S : Finset (Fin M → Fin (D + 1))) (hS : S.Nonempty) :
     Finset (Fin M → Fin (D + 1)) :=
@@ -88,6 +123,7 @@ theorem signature_eq_of_mem_polynomialPatternMinimalCluster {M D R : ℕ}
     polynomialPatternSignature R p = minimalPolynomialPatternSignature (R := R) S hS :=
   (Finset.mem_filter.mp hp).2
 
+/-- A pattern of `S` outside the minimal cluster has a strictly larger signature. -/
 theorem minimalSignature_lt_of_mem_not_cluster {M D R : ℕ}
     {S : Finset (Fin M → Fin (D + 1))} (hS : S.Nonempty)
     {p : Fin M → Fin (D + 1)} (hpS : p ∈ S)
@@ -101,6 +137,8 @@ theorem minimalSignature_lt_of_mem_not_cluster {M D R : ℕ}
     exact hpC (Finset.mem_filter.mpr ⟨hpS, heq.symm⟩)
   exact lt_of_le_of_ne hle hne
 
+/-- Lexicographic order on `List.ofFn`: `f < g` gives a first index where `f` is smaller and
+all earlier entries agree. -/
 theorem exists_first_ofFn_lt {R : ℕ} {f g : Fin R → ℕ}
     (h : List.ofFn f < List.ofFn g) :
     ∃ i : Fin R, (∀ k : Fin R, k < i → f k = g k) ∧ f i < g i := by
@@ -127,6 +165,8 @@ theorem exists_first_ofFn_lt {R : ℕ} {f g : Fin R → ℕ}
         intro k hk
         exact (Fin.not_lt_zero k hk).elim
 
+/-- For `p₀` in the minimal cluster and `p ∈ S` outside it, there is a first index `i` with
+`m_{k+2}(p₀) = m_{k+2}(p)` for `k < i` and `m_{i+2}(p₀) < m_{i+2}(p)`. -/
 theorem exists_first_signature_moment_lt_of_mem_not_cluster {M D R : ℕ}
     {S : Finset (Fin M → Fin (D + 1))} (hS : S.Nonempty)
     {p₀ p : Fin M → Fin (D + 1)}
@@ -155,10 +195,13 @@ theorem polynomialPatternMoment_one {M D : ℕ}
   intro r _
   simp [Nat.mul_comm]
 
+/-- The power valuation `V_β(p, x) = ∑_r p r · (x + r)^β`. -/
 def polynomialPatternPowerValuation {M D : ℕ} (β : ℝ)
     (p : Fin M → Fin (D + 1)) (x : ℝ) : ℝ :=
   ∑ r : Fin M, (p r : ℝ) * (x + (r : ℝ)) ^ β
 
+/-- For patterns of equal count `D`, `V_β(p₁, x) - V_β(p₀, x)` is the finite power difference of
+`x^β` along the pattern-difference polynomial. -/
 theorem polynomialPatternPowerValuation_sub {M D : ℕ}
     (β x : ℝ) (p₀ p₁ : Fin M → Fin (D + 1))
     (hcount₀ : (∑ r, (p₀ r : ℕ)) = D)
@@ -199,6 +242,7 @@ theorem polynomialPatternPowerValuation_sub {M D : ℕ}
       ring
   rw [ht p₁ hcount₁, ht p₀ hcount₀]
 
+/-- If `j < β` then the falling factorial `β (β - 1) ⋯ (β - j + 1)` is positive. -/
 theorem descPochhammer_eval_pos_of_natCast_lt {β : ℝ} {j : ℕ}
     (hjβ : (j : ℝ) < β) : 0 < (descPochhammer ℝ j).eval β := by
   rw [descPochhammer_eval_eq_prod_range]
@@ -208,6 +252,7 @@ theorem descPochhammer_eval_pos_of_natCast_lt {β : ℝ} {j : ℕ}
   have : (k : ℝ) < β := (Nat.cast_lt.mpr hklt).trans hjβ
   linarith
 
+/-- If `f ~ g` at infinity and `g` is eventually positive, then eventually `g / 2 ≤ f`. -/
 theorem eventually_half_le_of_isEquivalent_positive {f g : ℝ → ℝ}
     (hfg : f ~[atTop] g) (hg : ∀ᶠ x in atTop, 0 < g x) :
     ∀ᶠ x in atTop, g x / 2 ≤ f x := by
@@ -218,6 +263,9 @@ theorem eventually_half_le_of_isEquivalent_positive {f g : ℝ → ℝ}
   have hneg : -(f x - g x) ≤ |f x - g x| := neg_le_abs _
   linarith
 
+/-- Assuming `2 < β`, equal counts `D`, equal first moments, and moments agreeing below index
+`i + 2` with `m_{i+2}(p₀) < m_{i+2}(p)`, there is `c > 0` with
+`c · x^{β - (⌈β⌉ - 1)} ≤ V_β(p, x) - V_β(p₀, x)` for all large `x`. -/
 theorem eventually_polynomialPatternPower_gap_of_signature_lt
     {β : ℝ} (hβ : 2 < β) {M D : ℕ}
     (p₀ p : Fin M → Fin (D + 1))

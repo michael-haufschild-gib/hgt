@@ -2,18 +2,48 @@ import GaloisForLFunctions.RHTower.SymmetricShiftEulerGlobalDiscrepancy
 import GaloisForLFunctions.HTGeometry.CanonicalEulerLog
 import GaloisForLFunctions.HTGeometry.LSeriesPowerTwist
 
+/-!
+# Symmetric-shift Euler discrepancy and the zeta product ratio
+
+For a positive shift `a`, the symmetric-shift Euler-log discrepancy has Dirichlet coefficients
+`(Λ(n) / log n) (n^a + n^(-a) - 2)`. For `Re s > 1 + a` its Dirichlet series equals
+`log ζ(s - a) + log ζ(s + a) - 2 log ζ(s)` (canonical Euler logarithms), so its exponential is the
+ratio `ζ(s - a) ζ(s + a) / ζ(s)^2`. On the real axis `σ > 1 + a` the sum of the global
+prime-power discrepancy terms over all `(p, k)` is identified with this Dirichlet series, giving
+`exp(Σ_(p,k) term) = Re(ζ(σ - a) ζ(σ + a) / ζ(σ)^2)`.
+
+## Main results
+
+- `symmetricShiftEulerLogDiscrepancyCoeff_apply`: the coefficient formula
+  `(Λ(n) / log n)(n^a + n^(-a) - 2)`.
+- `LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq`: the Dirichlet series is
+  `log ζ(s - a) + log ζ(s + a) - 2 log ζ(s)` for `Re s > 1 + a`.
+- `exp_LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq_zeta_product_ratio`: its exponential is
+  `ζ(s - a) ζ(s + a) / ζ(s)^2`.
+- `exp_tsum_symmetricShiftEulerGlobalDiscrepancyTerm_eq_zeta_product_ratio`: for real `σ > 1 + a`,
+  the exponential of the total prime-power discrepancy equals `Re(ζ(σ - a) ζ(σ + a) / ζ(σ)^2)`.
+
+## Hypotheses
+
+Unconditional; the analytic statements assume only the convergence range `Re s > 1 + a`
+(respectively `σ > 1 + a`), with `a > 0` built into the shift type.
+-/
+
 open Complex LSeries
 
 namespace GaloisForLFunctions.RHTower
 
 noncomputable section
 
+/-- Dirichlet coefficients of the symmetric-shift Euler-log discrepancy: the Euler-log
+coefficients twisted by `n^a` plus those twisted by `n^(-a)`, minus twice the untwisted ones. -/
 def symmetricShiftEulerLogDiscrepancyCoeff
     (a : SymmetricPositiveShift) : ℕ → ℂ :=
   lseriesPowerTwistCoeff RHTower.eulerLogDirichletCoeff (a.1 : ℂ) +
     lseriesPowerTwistCoeff RHTower.eulerLogDirichletCoeff (-(a.1 : ℂ)) -
       RHTower.eulerLogDirichletCoeff - RHTower.eulerLogDirichletCoeff
 
+/-- The discrepancy coefficient at `n` is `(Λ(n) / log n)(n^a + n^(-a) - 2)`. -/
 theorem symmetricShiftEulerLogDiscrepancyCoeff_apply
     (a : SymmetricPositiveShift) (n : ℕ) :
     symmetricShiftEulerLogDiscrepancyCoeff a n =
@@ -23,6 +53,7 @@ theorem symmetricShiftEulerLogDiscrepancyCoeff_apply
     lseriesPowerTwistCoeff]
   ring_nf
 
+/-- For `Re s > 1 + a`, the discrepancy Dirichlet series converges absolutely. -/
 theorem symmetricShiftEulerLogDiscrepancyCoeff_summable
     (a : SymmetricPositiveShift) {s : ℂ} (hs : 1 + a.1 < s.re) :
     LSeriesSummable (symmetricShiftEulerLogDiscrepancyCoeff a) s := by
@@ -45,6 +76,8 @@ theorem symmetricShiftEulerLogDiscrepancyCoeff_summable
     simpa only [sub_neg_eq_add] using hplus
   exact ((htwistMinus.add htwistPlus).sub hbase).sub hbase
 
+/-- For `Re s > 1 + a`, the discrepancy Dirichlet series equals
+`log ζ(s - a) + log ζ(s + a) - 2 log ζ(s)` with the canonical Euler logarithm. -/
 theorem LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq
     (a : SymmetricPositiveShift) {s : ℂ} (hs : 1 + a.1 < s.re) :
     LSeries (symmetricShiftEulerLogDiscrepancyCoeff a) s =
@@ -76,6 +109,8 @@ theorem LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq
     LSeries_powerTwist, LSeries_powerTwist]
   simp only [RHTower.canonicalEulerLogZeta, sub_neg_eq_add]
 
+/-- For `Re s > 1 + a`, the exponential of the discrepancy Dirichlet series is
+`ζ(s - a) ζ(s + a) / ζ(s)^2`. -/
 theorem exp_LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq_zeta_product_ratio
     (a : SymmetricPositiveShift) {s : ℂ} (hs : 1 + a.1 < s.re) :
     Complex.exp (LSeries (symmetricShiftEulerLogDiscrepancyCoeff a) s) =
@@ -95,6 +130,8 @@ theorem exp_LSeries_symmetricShiftEulerLogDiscrepancyCoeff_eq_zeta_product_ratio
     RHTower.exp_canonicalEulerLogZeta_eq_riemannZeta hbaseRe]
   ring_nf
 
+/-- At the prime power `p^(k+1)` and real `σ`, the Dirichlet term of the discrepancy coefficients
+equals the global prime-power discrepancy term indexed by `(p, k)`. -/
 theorem term_symmetricShiftEulerLogDiscrepancyCoeff_prime_pow_eq_global
     (a : SymmetricPositiveShift) (sigma : ℝ) (p : Nat.Primes) (k : ℕ) :
     LSeries.term (symmetricShiftEulerLogDiscrepancyCoeff a) (sigma : ℂ)
@@ -120,6 +157,8 @@ theorem term_symmetricShiftEulerLogDiscrepancyCoeff_prime_pow_eq_global
   rw [div_eq_mul_inv, ← Complex.cpow_neg]
   ring_nf
 
+/-- For real `σ > 1 + a`, the sum of the global discrepancy terms over all `(p, k)` equals the
+discrepancy Dirichlet series at `σ`. -/
 theorem ofReal_tsum_symmetricShiftEulerGlobalDiscrepancyTerm_eq_LSeries
     (a : SymmetricPositiveShift) {sigma : ℝ} (hsigma : 1 + a.1 < sigma) :
     ((∑' z : Nat.Primes × ℕ,
@@ -154,6 +193,7 @@ theorem ofReal_tsum_symmetricShiftEulerGlobalDiscrepancyTerm_eq_LSeries
   intro k
   exact (term_symmetricShiftEulerLogDiscrepancyCoeff_prime_pow_eq_global a sigma p k).symm
 
+/-- For real `σ > 1 + a`, `exp(Σ_(p,k) discrepancy term) = Re(ζ(σ - a) ζ(σ + a) / ζ(σ)^2)`. -/
 theorem exp_tsum_symmetricShiftEulerGlobalDiscrepancyTerm_eq_zeta_product_ratio
     (a : SymmetricPositiveShift) {sigma : ℝ} (hsigma : 1 + a.1 < sigma) :
     Real.exp (∑' z : Nat.Primes × ℕ,

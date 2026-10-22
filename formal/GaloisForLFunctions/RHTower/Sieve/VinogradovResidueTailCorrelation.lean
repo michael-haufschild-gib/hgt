@@ -1,11 +1,38 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovResidueClass
 
+/-!
+# Tails in one residue class: reduction to a smaller Vinogradov moment
+
+Fix two leading blocks `x, y ∈ [0, N)^k` and count tail pairs `u, v` of length `b`, with all entries
+in one residue class `a` modulo `p`, such that `x ++ u` and `y ++ v` have the same power sums of
+orders `1..k` modulo `q`. Writing each tail entry as `p m + a` makes the tail signature an injective
+affine image of the signature of the quotients `m < ⌈N/p⌉` when `p` is a unit modulo `q`. The count
+is therefore at most the fibre energy of the quotient signature, which equals `J_{b,k}(⌈N/p⌉)` once
+`q > 2 b ⌈N/p⌉^k`.
+
+## Main results
+
+- `vinogradovResidueTupleEmbedding`: the quotient map on `b`-tuples from a residue class.
+- `card_vinogradovFixedBlocksResidueTails_le_energy`: for `p` a unit modulo `q`, the tail count is at
+  most the fibre energy of the quotient power-sum signature.
+- `finiteFiberEnergy_residueQuotients_le`: that energy is at most the full energy on `[0, ⌈N/p⌉)^b`.
+- `card_vinogradovFixedBlocksResidueTails_le_moment`: under `⌈N/p⌉ ≠ 0` and `2 b ⌈N/p⌉^k < q`, the
+  tail count is at most `J_{b,k}(⌈N/p⌉)`.
+
+## Hypotheses
+
+Unconditional. The bounds assume `p` is a unit modulo `q`; the moment form also assumes
+`⌈N/p⌉ ≠ 0` and `2 b ⌈N/p⌉^k < q`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Embedding of `b`-tuples from the residue class `a` modulo `p` into `b`-tuples in `[0, ⌈N/p⌉)`,
+via `n ↦ ⌊n/p⌋`. -/
 def vinogradovResidueTupleEmbedding
     {N p : ℕ} [NeZero p] (a : ZMod p) (b : ℕ) :
     (Fin b → VinogradovResidueClass N p a) ↪
@@ -16,6 +43,8 @@ def vinogradovResidueTupleEmbedding
     funext i
     exact vinogradovResidueQuotientFin_injective (congrFun h i)
 
+/-- If `p` is a unit modulo `q`, then for fixed leading blocks `x, y` the tail pairs in the class `a`
+completing them to a solution modulo `q` number at most the fibre energy of the quotient signature. -/
 theorem card_vinogradovFixedBlocksResidueTails_le_energy
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hpunit : IsUnit (p : ZMod q)) (a : ZMod p)
@@ -83,6 +112,8 @@ theorem card_vinogradovFixedBlocksResidueTails_le_energy
       card_transformed_fixed_shift_le_energy f A
         (powerSumAffineLinearTransform_injective hpunit _) cx cy
 
+/-- The fibre energy of the quotient signature on residue-class tails is at most the power-sum fibre
+energy on all `b`-tuples in `[0, ⌈N/p⌉)`. -/
 theorem finiteFiberEnergy_residueQuotients_le
     {q N p k b : ℕ} [NeZero q] [NeZero p] (a : ZMod p) :
     finiteFiberEnergy
@@ -105,6 +136,8 @@ theorem finiteFiberEnergy_residueQuotients_le
   rw [hfun]
   exact finiteFiberEnergy_le_of_domain_embedding E f
 
+/-- If `p` is a unit modulo `q`, `⌈N/p⌉ ≠ 0` and `2 b ⌈N/p⌉^k < q`, then for fixed leading blocks the
+residue-class tail pairs completing them number at most `J_{b,k}(⌈N/p⌉)`. -/
 theorem card_vinogradovFixedBlocksResidueTails_le_moment
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hpunit : IsUnit (p : ZMod q)) (a : ZMod p)

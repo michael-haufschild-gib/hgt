@@ -2,6 +2,38 @@ import GaloisForLFunctions.HTGeometry.DifferentialVariationalSemilinearMatrixAct
 import GaloisForLFunctions.HTGeometry.DifferentialVariationalProjectiveInterleavingAction
 import GaloisForLFunctions.HTGeometry.DifferentialVariationalProjectiveInterleavingStandardApartment
 
+/-!
+# Interleaving distance of operator-matrix lattices over completed pseudodifferential operators
+
+Over a differential field `K`, differential operators embed into the completed skew field of
+pseudodifferential operators, whose valuation has uniformizer `∂⁻¹`; a nonzero operator of order `d`
+has additive valuation `-d`. This module computes when a lattice in `(completed pseudodifferential
+operators)^ι` obtained from the standard lattice by a unit matrix is contained in, or interleaved with,
+the standard lattice: containment is entrywise integrality of the matrix, and interleaving at radius `n`
+is an entrywise integrality condition on the matrix and its inverse after shifting by `∂^(-n)`. For an
+invertible matrix `U` of differential operators this becomes an explicit order bound: the standard
+lattice and its image under `U` are left-orbit interleaved at radius `n` iff for some integer `z` every
+nonzero entry of `U⁻¹` has order at most `n - z` and every nonzero entry of `U` has order at most `n + z`.
+
+## Main results
+
+- `diffOpToCompletedPseudoRingHom_mem_integer_iff`: a differential operator is integral in the completed
+  ring iff it is zero or has order zero.
+- `uniformizer_zpow_mul_diffOpToCompletedPseudoRingHom_mem_integer_iff_int`: `∂^(-z) p` is integral iff
+  `p = 0` or `ord p ≤ z`.
+- `mapMatrix_standard_carrier_le_iff`, `leftScale_mapMatrix_standard_carrier_le_iff`: the image of the
+  standard lattice under a unit matrix `A` (optionally left-scaled by `a`) lies in the standard lattice iff
+  every entry of `A` (respectively `a · A`) is integral.
+- `standard_interleavedAt_leftScale_mapMatrix_iff`: interleaving at radius `n` with `a · A(standard)` is
+  integrality of `a⁻¹ ∂^(-n) (A⁻¹)_(ij)` and `∂^(-n) a A_(ij)` for all `i, j`.
+- `standard_leftOrbitInterleavedAt_operatorMatrix_iff`: the order criterion for an invertible matrix of
+  differential operators.
+
+## Hypotheses
+
+Unconditional. `K` is a differential field and the index type `ι` is finite with decidable equality.
+-/
+
 open scoped Differential
 open nonZeroDivisors OreLocalization
 
@@ -13,6 +45,8 @@ namespace DiffOp
 
 variable {K : Type u} [Field K] [Differential K]
 
+/-- A nonzero differential operator of order `d` has additive valuation `-d` in the completed
+pseudodifferential ring. -/
 theorem completedPseudoDiffOpAddValue_diffOpToCompletedPseudoRingHom_of_ne_zero
     (p : DiffOp K) (hp : p ≠ 0) :
     completedPseudoDiffOpAddValue (diffOpToCompletedPseudoRingHom p) =
@@ -28,6 +62,8 @@ theorem completedPseudoDiffOpAddValue_diffOpToCompletedPseudoRingHom_of_ne_zero
   rw [if_neg hnum, ordQ_numeratorRingHom, if_neg hp]
   norm_cast
 
+/-- A differential operator is integral in the completed pseudodifferential ring iff it is zero or has
+order zero. -/
 theorem diffOpToCompletedPseudoRingHom_mem_integer_iff
     (p : DiffOp K) :
     diffOpToCompletedPseudoRingHom p ∈ CompletedPseudoDiffOpInteger (K := K) ↔
@@ -44,6 +80,7 @@ theorem diffOpToCompletedPseudoRingHom_mem_integer_iff
     norm_cast
     omega
 
+/-- For natural `n`, `∂^(-n) p` is integral iff the operator `p` has order at most `n`. -/
 theorem uniformizer_zpow_mul_diffOpToCompletedPseudoRingHom_mem_integer_iff
     (n : ℕ) (p : DiffOp K) :
     ((completedPseudoDiffOpUniformizerUnit (K := K) ^ (n : ℤ) :
@@ -64,6 +101,7 @@ theorem uniformizer_zpow_mul_diffOpToCompletedPseudoRingHom_mem_integer_iff
     norm_cast
     omega
 
+/-- For integer `z`, `∂^(-z) p` is integral iff `p = 0` or the order of `p` is at most `z`. -/
 theorem uniformizer_zpow_mul_diffOpToCompletedPseudoRingHom_mem_integer_iff_int
     (z : ℤ) (p : DiffOp K) :
     ((completedPseudoDiffOpUniformizerUnit (K := K) ^ z :
@@ -87,6 +125,8 @@ theorem uniformizer_zpow_mul_diffOpToCompletedPseudoRingHom_mem_integer_iff_int
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
+/-- The image of the standard lattice under a unit matrix `A` lies in the standard lattice iff every entry
+of `A` is integral. -/
 theorem mapMatrix_standard_carrier_le_iff
     (A : (Matrix ι ι (CompletedPseudoDiffOp K))ˣ) :
     (mapCompletedPseudoDiffOpLatticeLinear
@@ -117,6 +157,8 @@ theorem mapMatrix_standard_carrier_le_iff
       CompletedPseudoDiffOpInteger (K := K)
     exact Subring.sum_mem _ fun i _ => Subring.mul_mem _ (hx i) (h i j)
 
+/-- The left `a`-scaled image of the standard lattice under `A` lies in the standard lattice iff every
+entry `a · A_(ij)` is integral. -/
 theorem leftScale_mapMatrix_standard_carrier_le_iff
     (a : (CompletedPseudoDiffOp K)ˣ)
     (A : (Matrix ι ι (CompletedPseudoDiffOp K))ˣ) :
@@ -174,6 +216,8 @@ theorem leftScale_mapMatrix_standard_carrier_le_iff
     exact Subring.mul_mem _
       (innerCompletedPseudoDiffOp_mem_integer a ⟨x i, hx i⟩) (h i j)
 
+/-- The standard lattice lies in the left `a`-scaled image under `A` iff every entry
+`a⁻¹ · (A⁻¹)_(ij)` is integral. -/
 theorem standard_carrier_le_leftScale_mapMatrix_iff
     (a : (CompletedPseudoDiffOp K)ˣ)
     (A : (Matrix ι ι (CompletedPseudoDiffOp K))ˣ) :
@@ -197,6 +241,8 @@ theorem standard_carrier_le_leftScale_mapMatrix_iff
     mapCompletedPseudoDiffOpLatticeLinear_refl]
   exact leftScale_mapMatrix_standard_carrier_le_iff a⁻¹ A⁻¹
 
+/-- Interleaving at radius `n` of the standard lattice with `a · A(standard)` is equivalent to
+integrality of `a⁻¹ ∂^(-n) (A⁻¹)_(ij)` and of `∂^(-n) a A_(ij)` for all `i, j`. -/
 theorem standard_interleavedAt_leftScale_mapMatrix_iff
     (n : ℕ) (a : (CompletedPseudoDiffOp K)ˣ)
     (A : (Matrix ι ι (CompletedPseudoDiffOp K))ˣ) :
@@ -260,6 +306,8 @@ theorem standard_interleavedAt_leftScale_mapMatrix_iff
       exact hleft
     · simpa only [leftScaleCompletedPseudoDiffOpLattice_mul] using hright'
 
+/-- The inverse of an operator matrix unit, embedded in the completed ring, is the entrywise image of the
+inverse operator matrix. -/
 @[simp] theorem completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit_inv_val
     (U : (Matrix ι ι (DiffOp K))ˣ) :
     ((completedPseudoDiffOpMatrixUnitOfOperatorMatrixUnit U)⁻¹ :
@@ -268,6 +316,9 @@ theorem standard_interleavedAt_leftScale_mapMatrix_iff
         diffOpToCompletedPseudoRingHom := by
   rfl
 
+/-- Order criterion: for an invertible matrix `U` of differential operators, the standard lattice and its
+image under `U` are left-orbit interleaved at radius `n` iff there is `z ∈ ℤ` with every nonzero entry
+of `U⁻¹` of order at most `n - z` and every nonzero entry of `U` of order at most `n + z`. -/
 theorem standard_leftOrbitInterleavedAt_operatorMatrix_iff
     (n : ℕ) (U : (Matrix ι ι (DiffOp K))ˣ) :
     (standardCompletedPseudoDiffOpLattice (K := K) (ι := ι)).LeftOrbitInterleavedAt n

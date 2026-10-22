@@ -1,6 +1,37 @@
 import GaloisForLFunctions.RHTower.DirectAdaptiveStaticChoiShortcutActionLaw
 import GaloisForLFunctions.HTGeometry.KrylovCarrierProjectionLaw
 
+/-!
+# Krylov carrier dichotomy for static Choi target capture
+
+For a finite static Hamiltonian with energies `E_i` and a unit target vector in
+`ℂ^(d × d)`, the overlap of the time-`t` spectral Choi state with the target equals the
+normalized spectral amplitude `d^(-1/2) Σ_i x_i e^(-i t E_i)` of the target's diagonal
+`x_i = target(i, i)`. Combining this with Krylov carrier projection bounds, this module shows
+that capturing a target within trace distance `ε` at a time `|t| ≤ T` forces the diagonal to have
+a large projection onto the degree-`K` spectral Krylov subspace, and conversely that a small
+total (or replica) Krylov carrier load over a finite family of targets rules out capture for all
+`|t| ≤ T`.
+
+## Main results
+
+- `normalizedSpectralAmplitude_directStaticChoiTargetDiagonal`: the Choi-target overlap equals
+  the normalized spectral amplitude of the target diagonal at frequencies `-E_i`.
+- `staticChoiTargetCapture_implies_krylovCarrier`: capture within `ε` at time `t` gives
+  `‖P_K x‖ ≥ sqrt(1 - ε^2) - B^(K+1) |t|^(K+1) / (K+1)!`.
+- `no_staticChoiTargetCapture_of_krylovCarrierLoad`: if
+  `sqrt(Σ_w ‖P_K x_w‖^2) + B^(K+1) T^(K+1) / (K+1)! < sqrt(1 - ε^2)`, no target is captured at
+  any `|t| ≤ T`.
+- `no_staticChoiTargetCapture_of_krylovCarrierReplicaLoad`: the same exclusion from the replica
+  load bound `Σ_w ‖P_K x_w‖^(2r) < (sqrt(1 - ε^2) - B^(K+1) T^(K+1) / (K+1)!)^(2r)`.
+
+## Hypotheses
+
+Unconditional finite-dimensional statements. They assume `d > 0`, unit-norm targets, the energy
+bound `|E_i| ≤ B` with `B ≥ 0`, `0 ≤ ε ≤ 1`, and, for the exclusion theorems, the explicit
+carrier-load budget inequality (plus nonnegativity of the threshold in the replica version).
+-/
+
 open scoped BigOperators ComplexConjugate
 
 noncomputable section
@@ -9,11 +40,13 @@ namespace RHTower
 
 open GaloisForLFunctions.HTGeometry
 
+/-- The diagonal `(target(i, i))_i` of a vector in `ℂ^(d × d)`, as a vector in `ℂ^d`. -/
 def directStaticChoiTargetDiagonal
     {d : ℕ} (target : EuclideanSpace ℂ (Fin d × Fin d)) :
     EuclideanSpace ℂ (Fin d) :=
   WithLp.toLp 2 fun i => target (i, i)
 
+/-- Extracting the diagonal does not increase the Euclidean norm. -/
 theorem norm_directStaticChoiTargetDiagonal_le
     {d : ℕ} (target : EuclideanSpace ℂ (Fin d × Fin d)) :
     ‖directStaticChoiTargetDiagonal target‖ ≤ ‖target‖ := by
@@ -36,6 +69,8 @@ theorem norm_directStaticChoiTargetDiagonal_le
     simpa [directStaticChoiTargetDiagonal] using hdiag
   nlinarith [norm_nonneg (directStaticChoiTargetDiagonal target), norm_nonneg target]
 
+/-- The inner product of the time-`t` spectral Choi state with a target equals the normalized
+spectral amplitude `d^(-1/2) Σ_i target(i, i) e^(-i t E_i)` of the target's diagonal. -/
 theorem normalizedSpectralAmplitude_directStaticChoiTargetDiagonal
     {d : ℕ} (t : ℝ) (energy : Fin d → ℝ)
     (target : EuclideanSpace ℂ (Fin d × Fin d)) :
@@ -53,6 +88,8 @@ theorem normalizedSpectralAmplitude_directStaticChoiTargetDiagonal
   push_cast
   ring_nf
 
+/-- Total Krylov carrier load `Σ_w ‖P_K x_w‖^2` of the target diagonals `x_w`, with `P_K` the
+projection onto the span of the spectral power vectors `((-E_i)^k)_i`, `k ≤ K`. -/
 def directStaticChoiKrylovCarrierLoad
     {d : ℕ} {W : Type*} [Fintype W]
     (target : W → EuclideanSpace ℂ (Fin d × Fin d))
@@ -61,6 +98,9 @@ def directStaticChoiKrylovCarrierLoad
     (fun w => directStaticChoiTargetDiagonal (target w))
     (fun i => -energy i) K
 
+/-- Assuming `d > 0`, `‖target‖ = 1`, `|t| ≤ T`, `|E_i| ≤ B` and `0 ≤ ε ≤ 1`: if the Choi state at
+time `t` is within trace distance `ε` of the target, then the Krylov carrier of the diagonal has
+norm at least `sqrt(1 - ε^2) - B^(K+1) |t|^(K+1) / (K+1)!`. -/
 theorem staticChoiTargetCapture_implies_krylovCarrier
     {d : ℕ} (hd : 0 < d) {energy : Fin d → ℝ}
     {target : EuclideanSpace ℂ (Fin d × Fin d)}
@@ -87,6 +127,9 @@ theorem staticChoiTargetCapture_implies_krylovCarrier
   exact krylovCarrier_norm_ge_of_large_normalizedSpectralAmplitude
     (K := K) hd hdiag htBound hB hfreq hlarge
 
+/-- Assuming unit targets, `|E_i| ≤ B`, `0 ≤ ε ≤ 1` and the load budget
+`sqrt(load) + B^(K+1) T^(K+1) / (K+1)! < sqrt(1 - ε^2)`, no target of the family is captured within
+trace distance `ε` at any time `|t| ≤ T`. -/
 theorem no_staticChoiTargetCapture_of_krylovCarrierLoad
     {d : ℕ} (hd : 0 < d) {W : Type*} [Fintype W]
     {target : W → EuclideanSpace ℂ (Fin d × Fin d)}
@@ -118,6 +161,7 @@ theorem no_staticChoiTargetCapture_of_krylovCarrierLoad
   rw [← inner_staticSpectralChoiVector_target_eq_directTwistedAmplitude] at hlarge
   exact (not_lt_of_ge hlarge) hnone
 
+/-- Replica Krylov carrier load `Σ_w ‖P_K x_w‖^(2r)` of the target diagonals. -/
 def directStaticChoiKrylovCarrierReplicaLoad
     {d : ℕ} {W : Type*} [Fintype W]
     (target : W → EuclideanSpace ℂ (Fin d × Fin d))
@@ -126,6 +170,9 @@ def directStaticChoiKrylovCarrierReplicaLoad
     (fun w => directStaticChoiTargetDiagonal (target w))
     (fun i => -energy i) K r
 
+/-- Replica exclusion: assuming unit targets, `|E_i| ≤ B`, `0 ≤ ε ≤ 1`, a nonnegative threshold
+`θ = sqrt(1 - ε^2) - B^(K+1) T^(K+1) / (K+1)!` and replica load below `θ^(2r)`, no target is
+captured within trace distance `ε` at any `|t| ≤ T`. -/
 theorem no_staticChoiTargetCapture_of_krylovCarrierReplicaLoad
     {d : ℕ} (hd : 0 < d) {W : Type*} [Fintype W]
     {target : W → EuclideanSpace ℂ (Fin d × Fin d)}

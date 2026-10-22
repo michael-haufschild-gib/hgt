@@ -3,12 +3,46 @@ import GaloisForLFunctions.RHTower.PolynomialFockSharpPhaseTransition
 import GaloisForLFunctions.RHTower.CriticalPrimeSamplingQuadraticForm
 import GaloisForLFunctions.HTGeometry.NormalizeApply
 
+/-!
+# Incidence response of normalized tangent vectors in the polynomial Fock space
+
+In the degree-`m` polynomial moment Fock space, `v_x` is the holomorphic tangent exponential at a
+real point `x`, normalized to value one at `x`, and `u_x = v_x / ‖v_x‖` is its unit
+normalization. The critical-prime incidence operator is `I = S* S`, where `S` samples normalized
+reproducing kernels at the points `log p` with weights `(log p)² / p`, so `Re ⟨I f, f⟩ = ‖S f‖²`.
+The module bounds the response `Re ⟨I u_x, u_x⟩` from below by the prime-log window mass
+`∑_{e^{x-r} < p ≤ e^{x+r}} (log p)² / p` at radius `r = s_m ρ_m(x)`, where
+`s_m = (m 2^(m/2 - 1))^(-1/2)` and `ρ_m` is the adapted radius. It then specializes to the adapted
+packets centered at `n^(2/m)` and records the exact Schatten summability threshold of the
+corresponding cell masses.
+
+## Main results
+
+- `polynomialFockInnerWindowFactor_le_one`: `s_m ≤ 1` for `m ≥ 4`.
+- `norm_polynomialMomentFockNormalizedTangentVector`: `‖u_x‖ = 1`.
+- `scaledWindow_tangentVector_incidence_response_lower`: for `x ≥ 1`,
+  `e^{-4C/m} ‖v_x‖² · mass(x, s_m ρ_m(x)) ≤ 3^(m/2 - 1) Re ⟨I v_x, v_x⟩`.
+- `scaledWindow_normalizedTangentVector_incidence_response_lower`: the same bound for `u_x`
+  without the factor `‖v_x‖²`.
+- `adaptedCell_normalizedTangentPacket_incidence_response_lower`: for the adapted packet `φ_n`
+  with center `n^(2/m) ≥ 1`, `e^{-4C/m} M_n ≤ 3^(m/2 - 1) Re ⟨φ_n, I φ_n⟩`.
+- `summable_rpow_criticalPrimeFockInnerWindowAdaptedCellMass_iff`: for `m > 4`, `q > 0`,
+  `∑_n M_n^q < ∞` iff `m / (m - 4) < q`.
+
+## Hypotheses
+
+All results are unconditional. They assume the parameter range `4 ≤ m` (strictly `4 < m` for the
+summability criterion), `1 ≤ x` for the response bounds, and `0 < q` for the summability
+criterion. Here `C` is the local Bregman constant of the degree-`m` potential.
+-/
+
 open scoped InnerProductSpace ComplexConjugate
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `4 ≤ m` the inner window factor `(m 2^(m/2 - 1))^(-1/2)` is at most one. -/
 theorem polynomialFockInnerWindowFactor_le_one
     {m : ℝ} (hm : 4 ≤ m) : polynomialFockInnerWindowFactor m ≤ 1 := by
   have he : 0 ≤ m / 2 - 1 := by linarith
@@ -24,6 +58,7 @@ theorem polynomialFockInnerWindowFactor_le_one
   unfold polynomialFockInnerWindowFactor
   exact (inv_le_one₀ (Real.sqrt_pos.2 (lt_of_lt_of_le zero_lt_one hprod))).2 hsqrt
 
+/-- The tangent exponential `v_x` is nonzero, since it takes value one at its base point. -/
 theorem polynomialMomentFockTangentVector_ne_zero_of_two_le
     (m : ℝ) (hm : 2 ≤ m) (x : ℝ) :
     polynomialMomentFockTangentVector m hm x ≠ 0 := by
@@ -32,11 +67,13 @@ theorem polynomialMomentFockTangentVector_ne_zero_of_two_le
   rw [hzero, map_zero] at hbase
   norm_num at hbase
 
+/-- The unit tangent vector `u_x = v_x / ‖v_x‖` at the real point `x`. -/
 def polynomialMomentFockNormalizedTangentVector
     (m : ℝ) (hm : 2 ≤ m) (x : ℝ) : MomentFock :=
   ((‖polynomialMomentFockTangentVector m hm x‖ : ℂ))⁻¹ •
     polynomialMomentFockTangentVector m hm x
 
+/-- The normalized tangent vector has norm one. -/
 theorem norm_polynomialMomentFockNormalizedTangentVector
     (m : ℝ) (hm : 2 ≤ m) (x : ℝ) :
     ‖polynomialMomentFockNormalizedTangentVector m hm x‖ = 1 := by
@@ -46,6 +83,9 @@ theorem norm_polynomialMomentFockNormalizedTangentVector
     Complex.norm_real, Real.norm_eq_abs, abs_of_pos hvpos]
   exact inv_mul_cancel₀ hvpos.ne'
 
+/-- Assuming `4 ≤ m` and `1 ≤ x`, the incidence response of the tangent vector dominates the
+prime-log window mass at radius `s_m ρ_m(x)`:
+`e^{-4C/m} ‖v_x‖² · mass(x, s_m ρ_m(x)) ≤ 3^(m/2 - 1) Re ⟨I v_x, v_x⟩`. -/
 theorem scaledWindow_tangentVector_incidence_response_lower
     {m x : ℝ} (hm : 4 ≤ m) (hx : 1 ≤ x) :
     Real.exp (-4 * (polynomialFockLocalBregmanConstant m / m)) *
@@ -110,6 +150,7 @@ theorem scaledWindow_tangentVector_incidence_response_lower
       rw [hresponse]
       rfl
 
+/-- For a sampling map `S`, the incidence quadratic form is `Re ⟨S* S f, f⟩ = ‖S f‖²`. -/
 theorem re_inner_criticalPrimeSamplingIncidence_apply_eq_norm_sq
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (S : H →L[ℂ] CriticalPrimeEllTwo) (f : H) :
@@ -121,6 +162,8 @@ theorem re_inner_criticalPrimeSamplingIncidence_apply_eq_norm_sq
     rfl
   exact hcast
 
+/-- The incidence quadratic form is homogeneous of degree two: its value at `v / ‖v‖` times `‖v‖²`
+is its value at `v`, for `v ≠ 0`. -/
 theorem re_inner_criticalPrimeSamplingIncidence_normalize_mul_norm_sq
     {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (S : H →L[ℂ] CriticalPrimeEllTwo) {v : H} (hv : v ≠ 0) :
@@ -136,6 +179,8 @@ theorem re_inner_criticalPrimeSamplingIncidence_normalize_mul_norm_sq
   rw [abs_of_pos hvpos]
   field_simp
 
+/-- Assuming `4 ≤ m` and `1 ≤ x`,
+`e^{-4C/m} · mass(x, s_m ρ_m(x)) ≤ 3^(m/2 - 1) Re ⟨I u_x, u_x⟩` for the unit tangent vector `u_x`. -/
 theorem scaledWindow_normalizedTangentVector_incidence_response_lower
     {m x : ℝ} (hm : 4 ≤ m) (hx : 1 ≤ x) :
     Real.exp (-4 * (polynomialFockLocalBregmanConstant m / m)) *
@@ -192,17 +237,22 @@ theorem re_inner_comm_complex
   have h := congrArg Complex.re (inner_conj_symm x y)
   simpa only [Complex.conj_re] using h.symm
 
+/-- The adapted packet `φ_n`: the unit tangent vector at the adapted cell center `n^(2/m)`. -/
 def polynomialFockAdaptedNormalizedTangentPacket
     (m : ℝ) (hm : 4 ≤ m) (n : ℕ) : MomentFock :=
   polynomialMomentFockNormalizedTangentVector m (by linarith)
     (criticalPrimeFockAdaptedCellCenter m n)
 
+/-- Adapted packets have norm one. -/
 theorem norm_polynomialFockAdaptedNormalizedTangentPacket
     (m : ℝ) (hm : 4 ≤ m) (n : ℕ) :
     ‖polynomialFockAdaptedNormalizedTangentPacket m hm n‖ = 1 := by
   exact norm_polynomialMomentFockNormalizedTangentVector m (by linarith)
     (criticalPrimeFockAdaptedCellCenter m n)
 
+/-- Assuming `4 ≤ m` and that the cell center `n^(2/m)` is at least one,
+`e^{-4C/m} M_n ≤ 3^(m/2 - 1) Re ⟨φ_n, I φ_n⟩`, with `M_n` the adapted cell mass at the inner
+window scale. -/
 theorem adaptedCell_normalizedTangentPacket_incidence_response_lower
     {m : ℝ} (hm : 4 ≤ m) {n : ℕ}
     (hn : 1 ≤ criticalPrimeFockAdaptedCellCenter m n) :
@@ -219,6 +269,8 @@ theorem adaptedCell_normalizedTangentPacket_incidence_response_lower
   simpa [criticalPrimeFockScaledAdaptedCellMass,
     polynomialFockAdaptedNormalizedTangentPacket] using h
 
+/-- Assuming `4 < m` and `0 < q`, the inner-window adapted cell masses satisfy
+`∑_n M_n^q < ∞` exactly when `q > m / (m - 4)`. -/
 theorem summable_rpow_criticalPrimeFockInnerWindowAdaptedCellMass_iff
     {m q : ℝ} (hm : 4 < m) (hq : 0 < q) :
     Summable (fun n : ℕ =>

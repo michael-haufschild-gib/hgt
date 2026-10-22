@@ -5,10 +5,40 @@ import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
+/-!
+# Smoothness of multivariate polynomial evaluation and regular complex zero loci
+
+Evaluation of a multivariate polynomial over `ℝ` or `ℂ` in `n` variables is a real-`C^∞` map.
+A chain rule expresses the complex derivative of `s ↦ P(g₁(s), …, gₙ(s))` through the partial
+derivatives of `P`. If some partial derivative `∂ᵢP` is nonzero at `x`, the real Fréchet derivative
+of evaluation at `x` is surjective onto `ℂ`. Consequently the regular part of the zero set of one
+complex polynomial is locally a smooth regular level set of real codimension at least `2`, and the
+regular part of the common zero set of `m` complex polynomials has real codimension at least `2m`.
+
+## Main results
+
+- `contDiff_mvPolynomial_eval_real`, `contDiff_mvPolynomial_eval_complex_real`: polynomial
+  evaluation is real-`C^∞` on `ℝⁿ` and on `ℂⁿ`.
+- `hasDerivAt_mvPolynomial_eval_curve_complex`: chain rule for a polynomial along a curve in `ℂⁿ`.
+- `surjective_fderiv_mvPolynomial_eval_complex_real_of_pderiv_ne_zero`: a nonvanishing partial
+  derivative makes the real derivative of evaluation surjective.
+- `complexMvPolynomialRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast_two`: the regular
+  zero locus of `P` is a local regular level set of real codimension at least `2`.
+- `complexMvPolynomialFamilyRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast`: the
+  submersive common zero locus of `m` polynomials has real codimension at least `2m`.
+
+## Hypotheses
+
+All results are unconditional. The only pointwise hypotheses are the nonvanishing of a partial
+derivative (for the surjectivity lemma) and the differentiability of the coordinate curves (for
+the chain rule); regularity is built into the definitions of the zero loci.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Evaluation `x ↦ P(x)` of a real polynomial in `n` variables is `C^∞` on `ℝⁿ`. -/
 theorem contDiff_mvPolynomial_eval_real {n : ℕ}
     (P : MvPolynomial (Fin n) ℝ) :
     ContDiff ℝ ⊤ (fun x : Fin n → ℝ => MvPolynomial.eval x P) := by
@@ -18,6 +48,7 @@ theorem contDiff_mvPolynomial_eval_real {n : ℕ}
   | mul_X P i hP =>
       simpa using hP.mul (contDiff_apply ℝ ℝ i)
 
+/-- Evaluation of a complex polynomial in `n` variables is real-`C^∞` on `ℂⁿ`. -/
 theorem contDiff_mvPolynomial_eval_complex_real {n : ℕ}
     (P : MvPolynomial (Fin n) ℂ) :
     ContDiff ℝ ⊤ (fun x : Fin n → ℂ => MvPolynomial.eval x P) := by
@@ -27,6 +58,8 @@ theorem contDiff_mvPolynomial_eval_complex_real {n : ℕ}
   | mul_X P i hP =>
       simpa using hP.mul (contDiff_apply ℝ ℂ i)
 
+/-- Chain rule: if each coordinate `gⱼ` has complex derivative `g'ⱼ` at `x`, then
+`s ↦ P(g(s))` has derivative `∑ⱼ (∂ⱼP)(g(x)) · g'ⱼ` at `x`. -/
 theorem hasDerivAt_mvPolynomial_eval_curve_complex {n : ℕ}
     (P : MvPolynomial (Fin n) ℂ)
     (g : Fin n → ℂ → ℂ) (g' : Fin n → ℂ) (x : ℂ)
@@ -71,6 +104,8 @@ theorem hasDerivAt_mvPolynomial_eval_curve_complex {n : ℕ}
         · intro h
           simp at h
 
+/-- Assuming `(∂ᵢP)(x) ≠ 0`, the real Fréchet derivative at `x` of `y ↦ P(y)` on `ℂⁿ` is
+surjective onto `ℂ`; proved by restricting to the complex line in coordinate `i`. -/
 theorem surjective_fderiv_mvPolynomial_eval_complex_real_of_pderiv_ne_zero
     {n : ℕ} (P : MvPolynomial (Fin n) ℂ) (x : Fin n → ℂ) (i : Fin n)
     (hi : MvPolynomial.eval x (MvPolynomial.pderiv i P) ≠ 0) :
@@ -128,11 +163,14 @@ theorem surjective_fderiv_mvPolynomial_eval_complex_real_of_pderiv_ne_zero
   rw [hcomp] at ht'
   exact ht'
 
+/-- The regular zero locus of a complex polynomial: points `x` with `P(x) = 0` at which some
+partial derivative `∂ᵢP` does not vanish. -/
 def complexMvPolynomialRegularZeroLocus {n : ℕ}
     (P : MvPolynomial (Fin n) ℂ) : Set (Fin n → ℂ) :=
   {x | MvPolynomial.eval x P = 0 ∧
     ∃ i, MvPolynomial.eval x (MvPolynomial.pderiv i P) ≠ 0}
 
+/-- The set of points where some partial derivative of `P` is nonzero is open in `ℂⁿ`. -/
 theorem isOpen_exists_mvPolynomial_pderiv_eval_ne_zero_complex {n : ℕ}
     (P : MvPolynomial (Fin n) ℂ) :
     IsOpen {x : Fin n → ℂ |
@@ -147,6 +185,8 @@ theorem isOpen_exists_mvPolynomial_pderiv_eval_ne_zero_complex {n : ℕ}
   exact isOpen_compl_singleton.preimage
     (contDiff_mvPolynomial_eval_complex_real (MvPolynomial.pderiv i P)).continuous
 
+/-- The regular zero locus of a complex polynomial in `n` variables is locally a smooth regular
+level set of real codimension at least `2` in `ℂⁿ`. -/
 theorem complexMvPolynomialRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast_two
     {n : ℕ} (P : MvPolynomial (Fin n) ℂ) :
     IsLocalRegularLevelSetOfCodimAtLeast
@@ -167,6 +207,7 @@ theorem complexMvPolynomialRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast
       (contDiff_mvPolynomial_eval_complex_real P) hO hsurj
   simpa [complexMvPolynomialRegularZeroLocus, O] using! hreg
 
+/-- Joint evaluation `x ↦ (P₁(x), …, Pₘ(x))` of a family of `m` complex polynomials. -/
 def complexMvPolynomialFamilyEval {n m : ℕ}
     (P : Fin m → MvPolynomial (Fin n) ℂ) (x : Fin n → ℂ) : Fin m → ℂ :=
   fun j => MvPolynomial.eval x (P j)
@@ -178,11 +219,15 @@ theorem contDiff_complexMvPolynomialFamilyEval_real {n m : ℕ}
   intro j
   exact contDiff_mvPolynomial_eval_complex_real (P j)
 
+/-- Common zeros of a polynomial family at which the real derivative of the joint evaluation
+map `ℂⁿ → ℂᵐ` is surjective. -/
 def complexMvPolynomialFamilyRegularZeroLocus {n m : ℕ}
     (P : Fin m → MvPolynomial (Fin n) ℂ) : Set (Fin n → ℂ) :=
   {x | complexMvPolynomialFamilyEval P x = 0 ∧
     Function.Surjective (fderiv ℝ (complexMvPolynomialFamilyEval P) x)}
 
+/-- The submersive common zero locus of `m` complex polynomials is locally a smooth regular level
+set of real codimension at least `2m`. -/
 theorem complexMvPolynomialFamilyRegularZeroLocus_isLocalRegularLevelSetOfCodimAtLeast
     {n m : ℕ} (P : Fin m → MvPolynomial (Fin n) ℂ) :
     IsLocalRegularLevelSetOfCodimAtLeast

@@ -3,12 +3,33 @@ import GaloisForLFunctions.RHTower.XiHeatCassiniWoldResidualBorelCarrier
 import GaloisForLFunctions.RHTower.SquaredXiChebyshevWindow
 import GaloisForLFunctions.HTGeometry.L1PeriodizationFourier
 
+/-!
+# Laplace transform of the second-factorial Borel kernel
+
+The second-factorial Borel kernel is `B(z) = ∑ z^k / (k!)²`. This module shows that its Laplace
+transform at unit rate inverts one factorial: for every complex `w`,
+`∫_{(0,∞)} e^{-t} B(w t) dt = e^w`. The proof expands `e^{-t} B(w t)` as the series of terms
+`w^k t^k e^{-t} / (k!)²`, integrates each term with the Gamma moment `∫ t^k e^{-t} = k!`, and
+exchanges sum and integral because the integrated norms `‖w‖^k / k!` are summable.
+
+## Main results
+
+- `integrableOn_exp_neg_mul_secondFactorialBorelKernel`: `t ↦ e^{-t} B(w t)` is integrable on
+  `(0, ∞)` for every `w : ℂ`.
+- `integral_secondFactorialBorelKernel_eq_exp`: `∫_{(0,∞)} e^{-t} B(w t) dt = exp w`.
+
+## Hypotheses
+
+Both results are unconditional and hold for every complex `w`.
+-/
+
 open Complex MeasureTheory Set
 
 namespace RHTower
 
 noncomputable section
 
+/-- The `k`-th term `w^k t^k e^{-t} / (k!)²` of the series for `e^{-t} B(w t)`. -/
 private def secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) (t : ℝ) : ℂ :=
   (w ^ k / ((k.factorial : ℂ) ^ (2 : ℕ))) *
     ((t ^ k * Real.exp (-t) : ℝ) : ℂ)
@@ -35,6 +56,8 @@ private theorem integrableOn_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ)
   rfl
   exact measurableSet_Ioi
 
+/-- Termwise Laplace integral: the Gamma moment `∫_{(0,∞)} t^k e^{-t} dt = k!` turns the `k`-th
+term into `w^k / k!`. -/
 private theorem integral_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) :
     (∫ t : ℝ in Ioi 0, secondFactorialBorelLaplaceTerm w k t) =
       w ^ k / (k.factorial : ℂ) := by
@@ -58,6 +81,7 @@ private theorem integral_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) :
   field_simp
   norm_num
 
+/-- The `L¹` norm on `(0, ∞)` of the `k`-th term is `‖w‖^k / k!`. -/
 private theorem integral_norm_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ) :
     (∫ t : ℝ in Ioi 0, ‖secondFactorialBorelLaplaceTerm w k t‖) =
       ‖w‖ ^ k / (k.factorial : ℝ) := by
@@ -85,6 +109,7 @@ private theorem integral_norm_secondFactorialBorelLaplaceTerm (w : ℂ) (k : ℕ
       have hk : (k.factorial : ℝ) ≠ 0 := by exact_mod_cast k.factorial_ne_zero
       field_simp
 
+/-- The termwise `L¹` norms are summable, being the exponential series of `‖w‖`. -/
 private theorem summable_integral_norm_secondFactorialBorelLaplaceTerm (w : ℂ) :
     Summable (fun k : ℕ =>
       ∫ t : ℝ in Ioi 0, ‖secondFactorialBorelLaplaceTerm w k t‖) := by
@@ -93,6 +118,7 @@ private theorem summable_integral_norm_secondFactorialBorelLaplaceTerm (w : ℂ)
   intro k
   rw [integral_norm_secondFactorialBorelLaplaceTerm]
 
+/-- The term series sums pointwise to `e^{-t} B(w t)`. -/
 private theorem tsum_secondFactorialBorelLaplaceTerm (w : ℂ) (t : ℝ) :
     (∑' k : ℕ, secondFactorialBorelLaplaceTerm w k t) =
       ((Real.exp (-t) : ℝ) : ℂ) * secondFactorialBorelKernel (w * t) := by
@@ -104,6 +130,8 @@ private theorem tsum_secondFactorialBorelLaplaceTerm (w : ℂ) (t : ℝ) :
   rw [mul_pow]
   ring
 
+/-- For every complex `w`, `t ↦ e^{-t} B(w t)` is integrable on `(0, ∞)`, where
+`B(z) = ∑ z^k / (k!)²` is the second-factorial Borel kernel. -/
 theorem integrableOn_exp_neg_mul_secondFactorialBorelKernel (w : ℂ) :
     IntegrableOn (fun t : ℝ =>
       ((Real.exp (-t) : ℝ) : ℂ) * secondFactorialBorelKernel (w * t))
@@ -113,6 +141,8 @@ theorem integrableOn_exp_neg_mul_secondFactorialBorelKernel (w : ℂ) :
     (fun k => integrableOn_secondFactorialBorelLaplaceTerm w k)
     (summable_integral_norm_secondFactorialBorelLaplaceTerm w)
 
+/-- The unit-rate Laplace transform of the second-factorial Borel kernel removes one factorial:
+`∫_{(0,∞)} e^{-t} B(w t) dt = exp w` for every complex `w`. -/
 theorem integral_secondFactorialBorelKernel_eq_exp (w : ℂ) :
     (∫ t : ℝ in Ioi 0,
       ((Real.exp (-t) : ℝ) : ℂ) * secondFactorialBorelKernel (w * t)) =

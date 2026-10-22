@@ -1,6 +1,28 @@
 import GaloisForLFunctions.RHTower.PolynomialFockFiniteTangentCellGrouping
 import GaloisForLFunctions.RHTower.CriticalPrimeSamplingQuadraticForm
 
+/-!
+# Uniform upper bound for finite critical-prime responses of greedy singular vectors
+
+Let `u_j` be the greedy singular vectors of the critical-prime incidence operator on the degree-`m`
+polynomial moment Fock space, and for a finite set `T` of primes let
+`R_T(u) = ∑_{p ∈ T} (log p)² / p · |⟨k̂_{log p}, u⟩|²` be the finite critical-prime response with
+normalized reproducing kernels `k̂`. For every Schatten exponent `q` above the threshold
+`m / (m - 4)`, the `q`-th powers `R_T(u_j)^q`, summed over any finite set of indices `j`, are
+bounded by an explicit constant times `∑_n M_n^q`, where `M_n` is the scaled adapted cell mass at
+the overlap scale. The bound is uniform in `T` and in the index set.
+
+## Main results
+
+- `sum_rpow_finiteTailCriticalPrimeResponse_svVec_le_cellMassTsum`:
+  `∑_{j ∈ S} R_T(u_j)^q ≤ e^{2Cq/m} · e^{2C/m} 3^(m/2 - 1) · ∑'_n M_n^q`.
+
+## Hypotheses
+
+The result is unconditional. It assumes `4 < m`, `m / (m - 4) < q`, and `2 ≤ log p` for every
+`p ∈ T`; the summability of `n ↦ M_n^q` is proved from `q > m / (m - 4)`, not assumed.
+-/
+
 open MeasureTheory Set Filter Topology Metric
 open scoped InnerProductSpace ComplexConjugate
 
@@ -10,6 +32,9 @@ noncomputable section
 
 open ContinuousLinearMap
 
+/-- Assuming `4 < m`, `m / (m - 4) < q` and `2 ≤ log p` on `T`, the finite critical-prime responses
+of the greedy singular vectors satisfy
+`∑_{j ∈ S} (∑_{p ∈ T} |√w_p ⟨k̂_{log p}, u_j⟩|²)^q ≤ e^{2Cq/m} e^{2C/m} 3^(m/2 - 1) ∑'_n M_n^q`. -/
 theorem sum_rpow_finiteTailCriticalPrimeResponse_svVec_le_cellMassTsum
     {m q : ℝ} (hm : 4 < m) (hq : criticalPrimeFockSchattenThreshold m < q)
     (T : Finset Nat.Primes)

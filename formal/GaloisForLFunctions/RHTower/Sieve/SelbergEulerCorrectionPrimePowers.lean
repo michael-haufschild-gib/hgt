@@ -1,5 +1,27 @@
 import GaloisForLFunctions.RHTower.Sieve.SelbergPrincipalOriginalCoefficients
 
+/-!
+# Selberg Euler correction coefficients at prime powers
+
+The bivariate Euler correction coefficient is
+`selbergEulerCorrectionCoeff m n = ∑_{r | gcd(m, n)} μ(r)/r^2 · A_r(m/r) · A_r(n/r)`, where `A_r` is
+the reciprocal Möbius amplitude `μ * (1/n)` restricted to integers whose prime factors divide `r`.
+This module evaluates it on pairs of powers of one prime `p`: it vanishes when exactly one argument
+is a nontrivial power of `p` and the other is `1`, and on two nontrivial powers only the divisor
+`r = p` contributes.
+
+## Main results
+
+- `selbergEulerCorrectionCoeff_prime_pow_succ_one`: `coeff(p^(i+1), 1) = 0`.
+- `selbergEulerCorrectionCoeff_one_prime_pow_succ`: `coeff(1, p^(j+1)) = 0`.
+- `selbergEulerCorrectionCoeff_prime_pow_succ`:
+  `coeff(p^(i+1), p^(j+1)) = -(1/p^2) · A(p^i) · A(p^j)` with `A = reciprocalMoebiusAmplitude`.
+
+## Hypotheses
+
+Unconditional; `p` is assumed prime.
+-/
+
 open ArithmeticFunction Finset
 open scoped BigOperators ArithmeticFunction.Moebius
 
@@ -7,6 +29,7 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- For a prime `p`, the Euler correction coefficient vanishes at `(p^(i+1), 1)`. -/
 theorem selbergEulerCorrectionCoeff_prime_pow_succ_one
     {p i : ℕ} (hp : p.Prime) :
     selbergEulerCorrectionCoeff (p ^ (i + 1)) 1 = 0 := by
@@ -23,6 +46,7 @@ theorem selbergEulerCorrectionCoeff_prime_pow_succ_one
     apply Subtype.ext
     exact Nat.dvd_one.mp (Nat.dvd_of_mem_divisors z.2)
 
+/-- For a prime `p`, the Euler correction coefficient vanishes at `(1, p^(j+1))`. -/
 theorem selbergEulerCorrectionCoeff_one_prime_pow_succ
     {p j : ℕ} (hp : p.Prime) :
     selbergEulerCorrectionCoeff 1 (p ^ (j + 1)) = 0 := by
@@ -45,6 +69,8 @@ private theorem gcd_prime_pow_eq_pow_min {p i j : ℕ} :
   · rw [min_eq_left hij, Nat.gcd_eq_left_iff_dvd.mpr (pow_dvd_pow p hij)]
   · rw [min_eq_right hji, Nat.gcd_eq_right_iff_dvd.mpr (pow_dvd_pow p hji)]
 
+/-- For a prime `p`, `selbergEulerCorrectionCoeff (p^(i+1)) (p^(j+1)) = -(1/p^2) · A(p^i) · A(p^j)`,
+where `A = reciprocalMoebiusAmplitude`; only the divisor `r = p` of the gcd contributes. -/
 theorem selbergEulerCorrectionCoeff_prime_pow_succ
     {p i j : ℕ} (hp : p.Prime) :
     selbergEulerCorrectionCoeff (p ^ (i + 1)) (p ^ (j + 1)) =

@@ -1,6 +1,33 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinSelectedXiPacket
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinFullTwoTail
 
+/-!
+# Smoothed short-interval prime mass tends to one in Route T
+
+Let `N_X = X^{1000/299}`, `H_X = N_X / X^{999/1000}` (so `H_X = N_X^{701299/1000000}`), and let
+`w_X = smoothWeight(N_X + H_X, H_X) - smoothWeight(N_X, H_X)`, a smooth window supported in
+`[N_X, N_X + 2H_X]`. This module proves that the normalized smoothed von Mangoldt mass
+`H_X⁻¹ ∑ Λ(n) w_X(n)` tends to `1` as `X → ∞`. The proof assembles three limits: the selected
+arithmetic edge on `Re s = 2` minus its polar part tends to `0` (from the contour explicit formula
+and the vanishing zero packet), the polar edge tends to the residue `2π`, and the tail beyond the
+selected height tends to `0`. A Mellin–Perron identity identifies the full edge integral with
+`2π H_X⁻¹ ∑ Λ(n) w_X(n)`.
+
+## Main results
+
+- `tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_two_pi`: the full edge
+  `∫_ℝ (∑ Λ(n) n^{-(2+it)}) K_X(2+it) dt` tends to `2π`.
+- `smul_tsum_vonMangoldt_normalized_routeTSmoothWindowWeight_eq_logDeriv_integral`: for `N, H > 0`,
+  `2π H⁻¹ ∑ Λ(n) w_{N,H}(n) = ∫_ℝ (-ζ'/ζ)(2+iy) K_{N,H}(2+iy) dy`.
+- `inghamRouteTBufferedNormalizedVonMangoldtMass`: the normalized mass `H_X⁻¹ ∑ Λ(n) w_X(n)`.
+- `tendsto_inghamRouteTBufferedNormalizedVonMangoldtMass_one`: that mass tends to `1`.
+
+## Hypotheses
+
+The main results are unconditional: no analytic premise appears in any statement. The Perron
+identity needs only `0 < N` and `0 < H`, and the edge identity `X ≥ 1`.
+-/
+
 open Complex Filter Topology Set Finset
 open MeasureTheory ArithmeticFunction
 open GaloisForLFunctions.HTGeometry
@@ -9,6 +36,8 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- The selected von Mangoldt edge on `Re s = 2` minus its polar edge `∫ (s-1)⁻¹ K_X(s)` tends to
+`0`, by the explicit formula and the vanishing of the selected zero packet. -/
 theorem tendsto_inghamRouteTBufferedSelectedTwoVonMangoldtEdge_sub_pole_zero :
     Tendsto (fun X : ℕ =>
       inghamRouteTBufferedSelectedTwoVonMangoldtEdge X -
@@ -35,6 +64,7 @@ theorem tendsto_inghamRouteTBufferedSelectedTwoVonMangoldtEdge_sub_pole_zero :
       _ = z := by rw [neg_mul, I_mul_I]; ring
   simpa only [hpoint, mul_zero] using hmul
 
+/-- `i` times the selected von Mangoldt edge tends to the residue value `2πi`. -/
 theorem tendsto_inghamRouteTBufferedSelectedTwoVonMangoldtEdge_residue :
     Tendsto (fun X : ℕ => I • inghamRouteTBufferedSelectedTwoVonMangoldtEdge X)
       atTop (𝓝 (2 * Real.pi * I)) := by
@@ -53,6 +83,7 @@ theorem tendsto_inghamRouteTBufferedSelectedTwoVonMangoldtEdge_residue :
     module)).mpr
   simpa using hadd
 
+/-- `i` times the full (untruncated) von Mangoldt edge tends to `2πi`. -/
 theorem tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_residue :
     Tendsto (fun X : ℕ => I • inghamRouteTBufferedFullTwoVonMangoldtEdge X)
       atTop (𝓝 (2 * Real.pi * I)) := by
@@ -72,6 +103,7 @@ theorem tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_residue :
     module)).mpr
   simpa using hadd
 
+/-- The full von Mangoldt edge `∫_ℝ (∑ Λ(n) n^{-(2+it)}) K_X(2+it) dt` tends to `2π`. -/
 theorem tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_two_pi :
     Tendsto inghamRouteTBufferedFullTwoVonMangoldtEdge atTop
       (𝓝 ((2 * Real.pi : ℝ) : ℂ)) := by
@@ -90,6 +122,7 @@ theorem tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_two_pi :
         norm_num
   simpa only [hpoint, htarget] using hmul
 
+/-- For `H > 0`, `n ↦ Λ(n) smoothWeight(N, H, n)` is summable, being supported on `n < N + H`. -/
 theorem summable_complex_vonMangoldt_mul_smoothWeight
     {N H : ℝ} (hH : 0 < H) :
     Summable fun n : ℕ => ((vonMangoldt n : ℝ) : ℂ) *
@@ -107,6 +140,8 @@ theorem summable_complex_vonMangoldt_mul_smoothWeight
   rw [hzero]
   simp
 
+/-- Mellin–Perron identity for the smooth window: for `N, H > 0`,
+`2π H⁻¹ ∑ Λ(n) w_{N,H}(n) = ∫_ℝ (-ζ'/ζ)(2+iy) K_{N,H}(2+iy) dy`. -/
 theorem smul_tsum_vonMangoldt_normalized_routeTSmoothWindowWeight_eq_logDeriv_integral
     {N H : ℝ} (hN : 0 < N) (hH : 0 < H) :
     (2 * Real.pi : ℝ) • ((H : ℂ)⁻¹ *
@@ -226,6 +261,7 @@ theorem smul_tsum_vonMangoldt_normalized_routeTSmoothWindowWeight_eq_logDeriv_in
       dsimp only [F, Mroute]
       ring
 
+/-- The normalized smoothed prime mass `H_X⁻¹ ∑ Λ(n) w_X(n)` of Route T's short window. -/
 def inghamRouteTBufferedNormalizedVonMangoldtMass (X : ℕ) : ℂ :=
   (inghamRouteTMellinBufferedPhysicalWidth X : ℂ)⁻¹ *
     (∑' n : ℕ, ((vonMangoldt n : ℝ) : ℂ) *
@@ -233,6 +269,7 @@ def inghamRouteTBufferedNormalizedVonMangoldtMass (X : ℕ) : ℂ :=
         (inghamRouteTMellinPhysicalCenter X)
         (inghamRouteTMellinBufferedPhysicalWidth X) (n : ℝ) : ℝ) : ℂ))
 
+/-- For `X ≥ 1`, the full von Mangoldt edge equals `2π` times the normalized prime mass. -/
 theorem inghamRouteTBufferedFullTwoVonMangoldtEdge_eq_physicalMass
     {X : ℕ} (hX : 1 ≤ X) :
     inghamRouteTBufferedFullTwoVonMangoldtEdge X =
@@ -264,6 +301,8 @@ theorem inghamRouteTBufferedFullTwoVonMangoldtEdge_eq_physicalMass
         rw [tsum_vonMangoldt_cpow_eq (by norm_num)]
     _ = _ := hperron.symm
 
+/-- Short-interval prime mass: `H_X⁻¹ ∑ Λ(n) w_X(n) → 1` as `X → ∞`, where `w_X` is the smooth
+window at `N_X = X^{1000/299}` of width `H_X = N_X / X^{999/1000}`. -/
 theorem tendsto_inghamRouteTBufferedNormalizedVonMangoldtMass_one :
     Tendsto inghamRouteTBufferedNormalizedVonMangoldtMass atTop (𝓝 1) := by
   have hfull := tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_two_pi

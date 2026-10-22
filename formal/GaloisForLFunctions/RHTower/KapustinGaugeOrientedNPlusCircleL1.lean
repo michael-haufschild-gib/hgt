@@ -2,6 +2,31 @@ import GaloisForLFunctions.HTGeometry.BoundedPhaseNPlusCircleL1
 import GaloisForLFunctions.HTGeometry.SmirnovToeplitzCircleL1
 import GaloisForLFunctions.RHTower.KapustinGaugeOrientedNPlusCollision
 
+/-!
+# Circle `L¹` boundary values of the oriented Kapustin `N⁺` kernel element
+
+Let `Φ` be a bounded analytic function on the unit disk, not identically zero, whose rotated
+Kapustin boundary product `Q(x) = G(-x) Φ(x)` (with `G` the universal Gamma carrier and `Φ(x)`
+the boundary value on the line) has real part of one sign almost everywhere. The Smirnov
+`N⁺` kernel element for the one-sided reciprocal-Gamma Toeplitz symbol built from `Φ` is the
+bounded-phase `p = 1` element multiplied by a bounded square root of the outer factor of `Φ`.
+This module shows that both its forward and its reflected boundary functions are integrable on
+the unit circle, in each sign case.
+
+## Main results
+
+- `integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative`
+  and its `_nonpositive` variant: the forward circle boundary is in `L¹(circle)`.
+- `integrable_reflected_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative`
+  and its `_nonpositive` variant: the reflected circle boundary is in `L¹(circle)`.
+
+## Hypotheses
+
+Conditional on two hypotheses on `Φ`: that `Φ` is not identically zero on the disk, and the
+one-sided sign condition `0 ≤ Re Q(x)` a.e. (respectively `Re Q(x) ≤ 0` a.e.). No other analytic
+input is assumed.
+-/
+
 open Complex MeasureTheory Metric
 
 namespace RHTower
@@ -10,6 +35,8 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Assuming `Φ ≢ 0` on the disk and `0 ≤ Re Q(x)` a.e., the forward circle boundary of the
+oriented Kapustin `N⁺` element is integrable on the circle. -/
 theorem integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     (Phi : DiskMultiplier)
     (hPhi : ∃ z ∈ ball (0 : ℂ) 1, Phi.fn z ≠ 0)
@@ -49,6 +76,8 @@ theorem integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of
   change Integrable KH.toKernelElement.forward.circleBoundary circleLebesgue
   exact hKH
 
+/-- Assuming `Φ ≢ 0` on the disk and `Re Q(x) ≤ 0` a.e., the forward circle boundary of the
+oriented Kapustin `N⁺` element is integrable on the circle (reduction to `-Φ`). -/
 theorem integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonpositive
     (Phi : DiskMultiplier)
     (hPhi : ∃ z ∈ ball (0 : ℂ) 1, Phi.fn z ≠ 0)
@@ -74,6 +103,8 @@ theorem integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of
     integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
       Phi.neg hPhiNeg hnonnegNeg
 
+/-- Assuming `Φ ≢ 0` on the disk and `0 ≤ Re Q(x)` a.e., the reflected circle boundary of the
+oriented Kapustin `N⁺` element is integrable on the circle. -/
 theorem integrable_reflected_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
     (Phi : DiskMultiplier)
     (hPhi : ∃ z ∈ ball (0 : ℂ) 1, Phi.fn z ≠ 0)
@@ -89,6 +120,8 @@ theorem integrable_reflected_circleBoundary_kapustinSmirnovToeplitzNPlusElement_
     (integrable_forward_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonnegative
       Phi hPhi hnonneg)
 
+/-- Assuming `Φ ≢ 0` on the disk and `Re Q(x) ≤ 0` a.e., the reflected circle boundary of the
+oriented Kapustin `N⁺` element is integrable on the circle. -/
 theorem integrable_reflected_circleBoundary_kapustinSmirnovToeplitzNPlusElement_of_rotated_nonpositive
     (Phi : DiskMultiplier)
     (hPhi : ∃ z ∈ ball (0 : ℂ) 1, Phi.fn z ≠ 0)

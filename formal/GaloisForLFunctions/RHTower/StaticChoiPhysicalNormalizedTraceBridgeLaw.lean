@@ -1,6 +1,26 @@
 import GaloisForLFunctions.RHTower.StaticChoiQuantitativeRecurrenceUpperLaw
 import GaloisForLFunctions.HTGeometry.SpectralObservedOrbitDimension
 
+/-!
+# Choi survival amplitude equals the normalized trace of the evolution
+
+For a Hermitian matrix `H` on `ℂ^d` with eigenvalues `λ_i`, the trace of the unitary evolution
+`U(t)` is the spectral phase sum `Σ_i e^(-i t λ_i)`. Consequently the overlap between the
+spectral Choi state of `H` at time `t` and at time `0` has the same modulus as the normalized
+trace `d^(-1) tr U(t)`, which links the static Choi survival amplitude to the physical
+normalized trace of the evolution.
+
+## Main results
+
+- `trace_unitaryEvolution_eq_sum_spectralPhase`: `tr U(t) = Σ_i exp(-i t λ_i)`.
+- `norm_inner_staticSpectralChoiVector_zero_eq_norm_normalizedTrace_unitaryEvolution`:
+  `|⟨Choi(t), Choi(0)⟩| = |d^(-1) tr U(t)|` for `d > 0`.
+
+## Hypotheses
+
+Unconditional; the only assumptions are that `H` is Hermitian and, for the second result, `d > 0`.
+-/
+
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
 open Matrix
 
@@ -10,6 +30,8 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- For Hermitian `H` with eigenvalues `λ_i`, the trace of the unitary evolution at time `t` is
+the spectral phase sum `Σ_i exp(-i t λ_i)`. -/
 theorem trace_unitaryEvolution_eq_sum_spectralPhase
     {d : ℕ} {H : Matrix (Fin d) (Fin d) ℂ}
     (hH : H.IsHermitian) (t : ℝ) :
@@ -28,6 +50,8 @@ theorem trace_unitaryEvolution_eq_sum_spectralPhase
     _ = Matrix.trace D := by rw [Matrix.mul_assoc, hV, Matrix.mul_one]
     _ = _ := by simp [D]
 
+/-- For Hermitian `H` on `ℂ^d` with `d > 0`, the modulus of the overlap of the spectral Choi states at
+times `t` and `0` equals the modulus of the normalized trace `d^(-1) tr U(t)`. -/
 theorem norm_inner_staticSpectralChoiVector_zero_eq_norm_normalizedTrace_unitaryEvolution
     {d : ℕ} (hd : 0 < d) {H : Matrix (Fin d) (Fin d) ℂ}
     (hH : H.IsHermitian) (t : ℝ) :

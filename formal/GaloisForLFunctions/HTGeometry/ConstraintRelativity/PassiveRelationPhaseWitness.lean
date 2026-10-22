@@ -2,15 +2,41 @@ import GaloisForLFunctions.HTGeometry.ConstraintRelativity.PassiveRelationTriang
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Tactic.FinCases
 
+/-!
+# Leak energies of a passive relation triangle do not determine its holonomy phase
+
+On the qubit space `ℂ^2` take the raw-flat passive relation triangle with identity transports and the
+three projection lines spanned by `(1, 0)`, `(1, 1)` and `u₂`. For the two choices `u₂ = (1, i)` and
+`u₂ = (1, -i)`, and input `(1, 0)`, every stage, every leak and the selected holonomy are computed
+explicitly. Both triangles have the same three leak energies `1/2, 1/4, 1/8` and the same total work
+`7/8`, but their selected holonomies are `((1 - i)/4, 0)` and `((1 + i)/4, 0)`: complex conjugate and
+distinct. So the positive leakage data do not determine the holonomy phase.
+
+## Main results
+
+- `phase_selected_plus`, `phase_selected_minus`: the selected holonomies are `((1 - i)/4, 0)` and
+  `((1 + i)/4, 0)`.
+- `phase_selected_conjugate`, `phase_selected_ne`: these holonomies are complex conjugate and distinct.
+- `positiveLeakage_not_determine_phase`: both triangles have leak energies `1/2, 1/4, 1/8` and work
+  `7/8`, yet different selected holonomies.
+
+## Hypotheses
+
+Unconditional explicit computations in `EuclideanSpace ℂ (Fin 2)`.
+-/
+
 namespace HTGeometry.ConstraintRelativity.PassiveRelationTriangle
 
+/-- The qubit Hilbert space `ℂ^2` with its Euclidean inner product. -/
 abbrev PhaseQubit := EuclideanSpace ℂ (Fin 2)
 
+/-- The vector `(z₀, z₁)` of the qubit space. -/
 def phaseVec (z₀ z₁ : ℂ) : PhaseQubit := WithLp.toLp 2 ![z₀, z₁]
 
 @[simp] theorem phaseVec_zero (z₀ z₁ : ℂ) : phaseVec z₀ z₁ 0 = z₀ := rfl
 @[simp] theorem phaseVec_one (z₀ z₁ : ℂ) : phaseVec z₀ z₁ 1 = z₁ := rfl
 
+/-- The qubit inner product `⟨(z₀, z₁), (w₀, w₁)⟩ = conj z₀ · w₀ + conj z₁ · w₁`. -/
 theorem phase_inner (z₀ z₁ w₀ w₁ : ℂ) :
     inner ℂ (phaseVec z₀ z₁) (phaseVec w₀ w₁) =
       (starRingEnd ℂ) z₀ * w₀ + (starRingEnd ℂ) z₁ * w₁ := by
@@ -18,6 +44,8 @@ theorem phase_inner (z₀ z₁ w₀ w₁ : ℂ) :
   simp [phaseVec, RCLike.inner_apply]
   ring
 
+/-- Characterization of the orthogonal projection onto a line: if `v` lies on the line spanned by `u`
+and `x - v` is orthogonal to `u`, then `v` is the projection of `x`. -/
 theorem starProjection_span_eq_of_inner_sub_eq_zero
     (u x v : PhaseQubit) (hv : v ∈ ℂ ∙ u) (horth : inner ℂ (x - v) u = 0) :
     (ℂ ∙ u).starProjection x = v := by
@@ -26,6 +54,8 @@ theorem starProjection_span_eq_of_inner_sub_eq_zero
   obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hw
   simp [inner_smul_right, horth]
 
+/-- The raw-flat passive relation triangle on `ℂ^2` with identity transports and projection lines
+spanned by `(1, 0)`, `(1, 1)` and `u₂`. -/
 noncomputable def phaseTriangle (u₂ : PhaseQubit) :
     PassiveRelationTriangle PhaseQubit PhaseQubit PhaseQubit where
   L₀ := ℂ ∙ phaseVec 1 0
@@ -39,8 +69,11 @@ noncomputable def phaseTriangle (u₂ : PhaseQubit) :
   U₂ := LinearIsometryEquiv.refl ℂ PhaseQubit
   rawFlat := by simp
 
+/-- Third-line direction `(1, i)`. -/
 def phaseU₂Plus : PhaseQubit := phaseVec 1 Complex.I
+/-- Third-line direction `(1, -i)`. -/
 def phaseU₂Minus : PhaseQubit := phaseVec 1 (-Complex.I)
+/-- The input vector `(1, 0)`. -/
 def phaseInput : PhaseQubit := phaseVec 1 0
 
 theorem phase_project₁ :
@@ -126,22 +159,26 @@ theorem phase_cycle_minus :
 theorem phaseInput_mem (u₂ : PhaseQubit) : phaseInput ∈ (phaseTriangle u₂).L₀ := by
   exact Submodule.mem_span_singleton_self _
 
+/-- For `u₂ = (1, i)` the selected holonomy of `(1, 0)` is `((1 - i)/4, 0)`. -/
 theorem phase_selected_plus :
     (phaseTriangle phaseU₂Plus).selectedHolonomy phaseInput =
       phaseVec ((1 - Complex.I) / 4) 0 := by
   rw [(phaseTriangle phaseU₂Plus).selectedHolonomy_of_mem (phaseInput_mem _), phase_cycle_plus]
 
+/-- For `u₂ = (1, -i)` the selected holonomy of `(1, 0)` is `((1 + i)/4, 0)`. -/
 theorem phase_selected_minus :
     (phaseTriangle phaseU₂Minus).selectedHolonomy phaseInput =
       phaseVec ((1 + Complex.I) / 4) 0 := by
   rw [(phaseTriangle phaseU₂Minus).selectedHolonomy_of_mem (phaseInput_mem _), phase_cycle_minus]
 
+/-- The two selected holonomies are complex conjugate in the first coordinate. -/
 theorem phase_selected_conjugate :
     (starRingEnd ℂ) ((phaseTriangle phaseU₂Plus).selectedHolonomy phaseInput 0) =
       (phaseTriangle phaseU₂Minus).selectedHolonomy phaseInput 0 := by
   rw [phase_selected_plus, phase_selected_minus]
   apply Complex.ext <;> norm_num [phaseVec, Complex.div_re, Complex.div_im]
 
+/-- The two selected holonomies are different. -/
 theorem phase_selected_ne :
     (phaseTriangle phaseU₂Plus).selectedHolonomy phaseInput ≠
       (phaseTriangle phaseU₂Minus).selectedHolonomy phaseInput := by
@@ -194,11 +231,13 @@ theorem phase_leakC_minus :
   ext i
   fin_cases i <;> simp [phaseVec]
 
+/-- The first leak energy is `1/2` for every choice of `u₂`. -/
 theorem phase_leakA_energy (u₂ : PhaseQubit) :
     ‖(phaseTriangle u₂).leakA phaseInput‖ ^ (2 : ℕ) = 1 / 2 := by
   rw [phase_leakA, phase_norm_sq]
   norm_num [Complex.sq_norm, Complex.normSq_apply]
 
+/-- For `u₂ = (1, i)` the second leak energy is `1/4`. -/
 theorem phase_leakB_plus_energy :
     ‖(phaseTriangle phaseU₂Plus).leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 := by
   rw [phase_leakB_plus, phase_norm_sq]
@@ -211,6 +250,7 @@ theorem phase_leakB_plus_energy :
   rw [norm_div, norm_div, div_pow, div_pow, hp, hm]
   norm_num
 
+/-- For `u₂ = (1, -i)` the second leak energy is `1/4`. -/
 theorem phase_leakB_minus_energy :
     ‖(phaseTriangle phaseU₂Minus).leakB phaseInput‖ ^ (2 : ℕ) = 1 / 4 := by
   rw [phase_leakB_minus, phase_norm_sq]
@@ -223,6 +263,7 @@ theorem phase_leakB_minus_energy :
   rw [norm_div, norm_div, div_pow, div_pow, hp, hm]
   norm_num
 
+/-- For `u₂ = (1, i)` the third leak energy is `1/8`. -/
 theorem phase_leakC_plus_energy :
     ‖(phaseTriangle phaseU₂Plus).leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 := by
   rw [phase_leakC_plus, phase_norm_sq]
@@ -232,6 +273,7 @@ theorem phase_leakC_plus_energy :
   rw [norm_zero, zero_pow (by norm_num), zero_add, norm_div, div_pow, hp]
   norm_num
 
+/-- For `u₂ = (1, -i)` the third leak energy is `1/8`. -/
 theorem phase_leakC_minus_energy :
     ‖(phaseTriangle phaseU₂Minus).leakC phaseInput‖ ^ (2 : ℕ) = 1 / 8 := by
   rw [phase_leakC_minus, phase_norm_sq]
@@ -241,6 +283,8 @@ theorem phase_leakC_minus_energy :
   rw [norm_zero, zero_pow (by norm_num), zero_add, norm_div, div_pow, hm]
   norm_num
 
+/-- Leakage does not determine phase: the triangles with `u₂ = (1, ± i)` have identical leak energies
+`1/2, 1/4, 1/8` and work `7/8`, but selected holonomies `((1 ∓ i)/4, 0)`. -/
 theorem positiveLeakage_not_determine_phase :
     let Tplus := phaseTriangle phaseU₂Plus
     let Tminus := phaseTriangle phaseU₂Minus

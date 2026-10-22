@@ -2,6 +2,30 @@ import GaloisForLFunctions.RHTower.SmoothAFEZetaDisplacedDirichletMeanValueBridg
 import GaloisForLFunctions.RHTower.Sieve.CDPolyConjugateReflection
 import GaloisForLFunctions.RHTower.Sieve.LevinsonLinearMollifier
 
+/-!
+# Reality of the reflected displaced AFE coefficients
+
+The reflected finite Dirichlet head of the displaced approximate functional equation has
+coefficients `(n + 1)^(-1/2 - d)` and, with the detector factor, `(n + 1)^(-1/2 - d) (1 + λ log(n + 1))`,
+for real `d` and `λ`. These coefficients are real, so the corresponding Dirichlet polynomials have
+norm even in the height. This lets the positive-frequency `Sieve.dirPoly` be replaced by the
+`cdpoly` convention without changing norms; the same holds for the Levinson linear mollifier.
+
+## Main results
+
+- `star_smoothAFEZetaDisplacedReflectedBaseCoeff`: the base coefficient is fixed by complex conjugation.
+- `star_smoothAFEZetaDisplacedReflectedDetectorCoeff`: the detector coefficient is fixed by complex
+  conjugation.
+- `norm_sieveDirPoly_reflectedBase_eq_cdpoly`, `norm_sieveDirPoly_reflectedDetector_eq_cdpoly`:
+  `‖∑_{n < L} a_n (n + 1)^(iτ)‖` equals the norm of the `cdpoly` with shifted coefficients on
+  `[1, L]` at height `τ`.
+- `norm_levinsonLinearMollifier_neg`: `‖M(-τ)‖ = ‖M(τ)‖` for the Levinson linear mollifier.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 noncomputable section
 
 namespace RHTower
@@ -9,6 +33,7 @@ namespace RHTower
 open Complex
 open GaloisForLFunctions.HTGeometry
 
+/-- For real `d`, the reflected base coefficient `(n + 1)^(-1/2 - d)` is real. -/
 @[simp] theorem star_smoothAFEZetaDisplacedReflectedBaseCoeff
     (d : ℝ) (n : ℕ) :
     (starRingEnd ℂ) (smoothAFEZetaDisplacedReflectedBaseCoeff d n) =
@@ -25,6 +50,7 @@ open GaloisForLFunctions.HTGeometry
   rw [← hpow]
   simp
 
+/-- For real `λ, d`, the reflected detector coefficient `(n + 1)^(-1/2 - d) (1 + λ log(n + 1))` is real. -/
 @[simp] theorem star_smoothAFEZetaDisplacedReflectedDetectorCoeff
     (lam d : ℝ) (n : ℕ) :
     (starRingEnd ℂ) (smoothAFEZetaDisplacedReflectedDetectorCoeff lam d n) =
@@ -38,6 +64,8 @@ open GaloisForLFunctions.HTGeometry
   rw [← hlog]
   simp
 
+/-- With the real reflected base coefficients, the positive-frequency Dirichlet polynomial
+`Sieve.dirPoly` at height `τ` has the same norm as the `cdpoly` on `[1, L]` at height `τ`. -/
 theorem norm_sieveDirPoly_reflectedBase_eq_cdpoly
     (d tau : ℝ) (L : ℕ) :
     ‖Sieve.dirPoly L
@@ -50,6 +78,8 @@ theorem norm_sieveDirPoly_reflectedBase_eq_cdpoly
     intro n hn
     simp [natPredCoeff])
 
+/-- With the real reflected detector coefficients, the positive-frequency Dirichlet polynomial
+`Sieve.dirPoly` at height `τ` has the same norm as the `cdpoly` on `[1, L]` at height `τ`. -/
 theorem norm_sieveDirPoly_reflectedDetector_eq_cdpoly
     (lam d tau : ℝ) (L : ℕ) :
     ‖Sieve.dirPoly L
@@ -62,6 +92,8 @@ theorem norm_sieveDirPoly_reflectedDetector_eq_cdpoly
     intro n hn
     simp [natPredCoeff])
 
+/-- The Levinson linear mollifier has real coefficients, so its norm is even in the height:
+`‖M(-τ)‖ = ‖M(τ)‖`. -/
 theorem norm_levinsonLinearMollifier_neg (M : ℕ) (tau : ℝ) :
     ‖Sieve.levinsonLinearMollifier M (-tau)‖ =
       ‖Sieve.levinsonLinearMollifier M tau‖ := by

@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.AnharmonicCubicCriticalLine
 import Mathlib.Topology.Order.IntermediateValue
 
+/-!
+# The critical-line coordinate of the anharmonic cubic is an increasing bijection of ℝ
+
+On the critical line the anharmonic quotient satisfies `q(1/2 + it) = i·c(t)` with the real
+coordinate `c(t) = t(4t² + 9) / (4t² + 1)`. This module shows that `c` is continuous, strictly
+increasing with derivative `((4t² - 3) / (4t² + 1))²`, tends to `±∞` at `±∞`, and hence is a
+bijection `ℝ → ℝ`. Consequently `t ↦ q(1/2 + it)²` maps the critical line onto the closed
+negative real half-line.
+
+## Main results
+
+- `chebyshevCriticalLineCoordinate_strictMono`: `c` is strictly increasing.
+- `chebyshevCriticalLineCoordinate_deriv`: `c'(t) = ((4t² - 3) / (4t² + 1))²`.
+- `chebyshevCriticalLineCoordinate_bijective`: `c : ℝ → ℝ` is a bijection.
+- `chebyshevCriticalLineCoordinate_neg_sq_range`: the range of `t ↦ -c(t)²` is `(-∞, 0]`.
+- `chebyshevAnharmonicQ_criticalLine_sq_range`: the set of values `q(1/2 + it)²`, `t ∈ ℝ`, is
+  exactly the image of `(-∞, 0]` in `ℂ`.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 open Filter
 
 namespace RHTower
@@ -15,6 +38,7 @@ private theorem chebyshevCriticalLineCoordinate_sub (a b : ℝ) :
   field_simp [ha, hb]
   ring
 
+/-- The critical-line coordinate `c(t) = t(4t² + 9) / (4t² + 1)` is strictly increasing on `ℝ`. -/
 theorem chebyshevCriticalLineCoordinate_strictMono :
     StrictMono chebyshevCriticalLineCoordinate := by
   intro a b hab
@@ -35,6 +59,8 @@ theorem chebyshevCriticalLineCoordinate_continuous :
   · intro t
     positivity
 
+/-- The derivative of the critical-line coordinate is the square
+`c'(t) = ((4t² - 3) / (4t² + 1))²`. -/
 theorem chebyshevCriticalLineCoordinate_deriv (t : ℝ) :
     deriv chebyshevCriticalLineCoordinate t =
       ((4 * t ^ 2 - 3) / (4 * t ^ 2 + 1)) ^ 2 := by
@@ -85,6 +111,7 @@ private theorem chebyshevCriticalLineCoordinate_le_self {t : ℝ} (ht : t ≤ 0)
   apply (div_le_iff₀ hden).2
   nlinarith
 
+/-- The critical-line coordinate tends to `+∞` as `t → +∞` (indeed `c(t) ≥ t` for `t ≥ 0`). -/
 theorem chebyshevCriticalLineCoordinate_tendsto_atTop :
     Tendsto chebyshevCriticalLineCoordinate atTop atTop := by
   refine tendsto_atTop.2 ?_
@@ -93,6 +120,7 @@ theorem chebyshevCriticalLineCoordinate_tendsto_atTop :
   exact (le_max_left b 0).trans (ht.trans
     (chebyshevCriticalLineCoordinate_ge_self ((le_max_right b 0).trans ht)))
 
+/-- The critical-line coordinate tends to `-∞` as `t → -∞` (indeed `c(t) ≤ t` for `t ≤ 0`). -/
 theorem chebyshevCriticalLineCoordinate_tendsto_atBot :
     Tendsto chebyshevCriticalLineCoordinate atBot atBot := by
   refine tendsto_atBot.2 ?_
@@ -101,17 +129,20 @@ theorem chebyshevCriticalLineCoordinate_tendsto_atBot :
   exact (chebyshevCriticalLineCoordinate_le_self (ht.trans (min_le_right b 0))).trans
     (ht.trans (min_le_left b 0))
 
+/-- The critical-line coordinate is surjective onto `ℝ`, by the intermediate value theorem. -/
 theorem chebyshevCriticalLineCoordinate_surjective :
     Function.Surjective chebyshevCriticalLineCoordinate :=
   chebyshevCriticalLineCoordinate_continuous.surjective
     chebyshevCriticalLineCoordinate_tendsto_atTop
     chebyshevCriticalLineCoordinate_tendsto_atBot
 
+/-- The critical-line coordinate `c : ℝ → ℝ` is a bijection. -/
 theorem chebyshevCriticalLineCoordinate_bijective :
     Function.Bijective chebyshevCriticalLineCoordinate :=
   ⟨chebyshevCriticalLineCoordinate_strictMono.injective,
     chebyshevCriticalLineCoordinate_surjective⟩
 
+/-- The range of `t ↦ -c(t)²` is exactly the closed half-line `(-∞, 0]`. -/
 theorem chebyshevCriticalLineCoordinate_neg_sq_range :
     Set.range (fun t : ℝ => -chebyshevCriticalLineCoordinate t ^ 2) =
       Set.Iic (0 : ℝ) := by
@@ -128,6 +159,8 @@ theorem chebyshevCriticalLineCoordinate_neg_sq_range :
     rw [ht, Real.sq_sqrt (neg_nonneg.mpr hx)]
     ring
 
+/-- As `t` ranges over `ℝ`, the squared anharmonic quotient `q(1/2 + it)²` takes exactly the values
+of the real half-line `(-∞, 0] ⊂ ℂ`. -/
 theorem chebyshevAnharmonicQ_criticalLine_sq_range :
     Set.range (fun t : ℝ =>
       chebyshevAnharmonicQ ((1 / 2 : ℂ) + (t : ℂ) * Complex.I) ^ 2) =

@@ -1,12 +1,30 @@
 import GaloisForLFunctions.HTGeometry.SteinbergFinFourUpperNormalForm
 import GaloisForLFunctions.HTGeometry.SteinbergUpperKernelNormalForm
 
+/-!
+# The rank-four upper Steinberg subgroup meets `K₂` trivially
+
+Over a field `F`, every element of the upper Steinberg subgroup of `St(4, F)` has the tetrahedron
+normal form, and a tetrahedron element lies in `K₂` only if all its coordinates vanish. Hence the
+upper unipotent subgroup injects into `GL_4(F)`.
+
+## Main results
+
+- `upperSteinbergSubgroup_fin4_inter_KTwo_eq_bot`: the intersection of the upper Steinberg
+  subgroup of `St(4, F)` with `K₂(4, F)` is trivial.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
 variable {F : Type*} [Field F]
 
+/-- Over a field, the upper Steinberg subgroup of `St(4, F)` intersects `K₂` trivially. -/
 theorem upperSteinbergSubgroup_fin4_inter_KTwo_eq_bot :
     upperSteinbergSubgroup (F := F) (Fin 4) ⊓ KTwo F (Fin 4) = ⊥ := by
   apply bot_unique

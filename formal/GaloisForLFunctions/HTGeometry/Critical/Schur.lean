@@ -1,3 +1,17 @@
+/-
+# The Schur place of the critical horizon
+
+Bundles the analysis of the rectangular-Schur ramification divisor. The Schur coordinates (positive
+coefficients of the normalized reciprocal square) present the source field; the Schur ramification
+polynomial is irreducible and defines a height-one prime whose local ring is a DVR; it is the only
+ramified prime over its centre on the chart algebra. The observation Jacobian has corank one there,
+the Schur place ramifies with index exactly two, and its inertia group is cyclic with order equal to
+the ramification index, namely two.
+Reduction of the geometric sheets at the Schur place is constructed, inertia preserves reduced sheet
+labels, all collisions happen at one point of the reduced fibre, and at most two sheets collide, so
+Schur inertia acts as a single transposition.
+-/
+
 import GaloisForLFunctions.HTGeometry.Critical.Schur.ChartAlgebra
 import GaloisForLFunctions.HTGeometry.Critical.Schur.ChartClearing
 import GaloisForLFunctions.HTGeometry.Critical.Schur.ChartHeight

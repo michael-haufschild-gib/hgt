@@ -1,11 +1,39 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSurvivalPolarization
 
+/-!
+# Survival form of the oriented current of the theta-tail core polynomial
+
+With the theta-tail survival function `S = -4 Θ'`, second density `D = 4 Θ'' = -S'`, truncated
+second section `σ_d(z, x) = Σ_(k ≤ d) (-1)^k z^(2k) x^(2k+2) / (2k+2)!` and core atom
+`A_d(z, x) = 1 - (z^2 + 1/4) σ_d(z, x)`, this module integrates `∫_0^∞ D ∂_z A_d` by parts against
+`S` (the boundary terms vanish at `0` and at `∞`). Writing `V_d(z) = ∫_0^∞ S ∂_x A_d` and
+`W_d(z) = ∫_0^∞ S ∂_x ∂_z A_d`, the core polynomial is `Q_d(z) = (1 + V_d(z))/2` with
+`Q_d'(z) = W_d(z)/2`, so its oriented current `Im(Q_d'(z) conj Q_d(z))` equals
+`(1/4) Im(W_d conj(1 + V_d))`.
+
+## Main results
+
+- `integral_density_mul_coreAtomDerivative_eq_survival_sourceSpectralDerivative`:
+  `∫_0^∞ D(x) ∂_z A_d(z, x) dx = ∫_0^∞ S(x) ∂_x ∂_z A_d(z, x) dx`.
+- `xiCTaylorThetaTailCorePolynomial_eval_eq_survival`: `Q_d(z) = (1 + V_d(z))/2`.
+- `xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_survival`: `Q_d'(z) = W_d(z)/2`.
+- `xiCTaylorThetaTailCore_current_eq_survival_mixed`: the oriented current of `Q_d` at `z` is
+  `(1/4) Im(W_d(z) conj(1 + V_d(z)))`.
+- `xiCTaylorThetaTailCore_current_eq_survival_seam_add_cross`: the same current split as
+  `(1/4) Im W_d + (1/4) Im(W_d conj V_d)`.
+
+## Hypotheses
+
+Unconditional; all identities hold for every `d : ℕ` and complex `z`.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology Polynomial
 
 namespace RHTower
 
 noncomputable section
 
+/-- The mixed derivative `∂_x ∂_z σ_d(z, x)` of the truncated second section. -/
 def thetaCuspTailSecondSectionSourceSpectralDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
   ∑ k ∈ Finset.range (d + 1),
@@ -13,6 +41,7 @@ def thetaCuspTailSecondSectionSourceSpectralDerivative
       ((2 * k + 2 : ℕ) : ℂ) *
         ((x : ℂ) ^ (2 * k + 1) / (2 * k + 2).factorial)
 
+/-- The `x`-derivative of `∂_z σ_d(z, x)` is the mixed derivative `∂_x ∂_z σ_d`. -/
 theorem hasDerivAt_thetaCuspTailSecondSectionDerivative_source
     (d : ℕ) (z : ℂ) (x : ℝ) :
     HasDerivAt (fun t : ℝ => thetaCuspTailSecondSectionDerivative d z t)
@@ -43,12 +72,14 @@ theorem hasDerivAt_thetaCuspTailSecondSectionDerivative_source
   filter_upwards with t
   simp only [Finset.sum_apply]
 
+/-- The mixed derivative `∂_x ∂_z A_d(z, x)` of the core atom. -/
 def thetaCuspTailSecondCoreAtomSourceSpectralDerivative
     (d : ℕ) (z : ℂ) (x : ℝ) : ℂ :=
   -2 * z * thetaCuspTailSecondSectionSourceDerivative d z x -
     (z ^ (2 : ℕ) + 1 / 4) *
       thetaCuspTailSecondSectionSourceSpectralDerivative d z x
 
+/-- The `x`-derivative of `∂_z A_d(z, x)` is the mixed derivative `∂_x ∂_z A_d`. -/
 theorem hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source
     (d : ℕ) (z : ℂ) (x : ℝ) :
     HasDerivAt (fun t : ℝ => thetaCuspTailSecondCoreAtomDerivative d z t)
@@ -60,6 +91,7 @@ theorem hasDerivAt_thetaCuspTailSecondCoreAtomDerivative_source
       ((hasDerivAt_thetaCuspTailSecondSectionDerivative_source d z x).const_mul
         (z ^ (2 : ℕ) + 1 / 4))
 
+/-- `S(x) ∂_x σ_d(z, x)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceDerivative
     (d : ℕ) (z : ℂ) :
     IntegrableOn (fun x : ℝ =>
@@ -84,6 +116,7 @@ theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceDerivative
   exact MeasureTheory.integrable_finsetSum _ fun k _hk =>
     ((integrableOn_pow_mul_thetaCuspTailDerivative (2 * k + 1) 1).ofReal).const_mul _
 
+/-- `S(x) ∂_x ∂_z σ_d(z, x)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceSpectralDerivative
     (d : ℕ) (z : ℂ) :
     IntegrableOn (fun x : ℝ =>
@@ -110,6 +143,7 @@ theorem integrableOn_thetaCuspTailSurvival_mul_sectionSourceSpectralDerivative
   exact MeasureTheory.integrable_finsetSum _ fun k _hk =>
     ((integrableOn_pow_mul_thetaCuspTailDerivative (2 * k + 1) 1).ofReal).const_mul _
 
+/-- `S(x) ∂_x ∂_z A_d(z, x)` is integrable on `(0, ∞)`. -/
 theorem integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceSpectralDerivative
     (d : ℕ) (z : ℂ) :
     IntegrableOn (fun x : ℝ =>
@@ -131,6 +165,7 @@ theorem integrableOn_thetaCuspTailSurvival_mul_coreAtomSourceSpectralDerivative
     ring]
   exact (hs.const_mul (-2 * z)).sub (hsd.const_mul (z ^ (2 : ℕ) + 1 / 4))
 
+/-- `S(x) σ_d(z, x) → 0` as `x → ∞`, since `S` decays faster than every polynomial grows. -/
 theorem thetaCuspTailSurvival_mul_section_tendsto_atTop_zero
     (d : ℕ) (z : ℂ) :
     Tendsto (fun x : ℝ =>
@@ -157,6 +192,7 @@ theorem thetaCuspTailSurvival_mul_section_tendsto_atTop_zero
         (((2 * k + 2).factorial : ℕ) : ℂ)))
   simpa using hs
 
+/-- `S(x) ∂_z σ_d(z, x) → 0` as `x → ∞`. -/
 theorem thetaCuspTailSurvival_mul_sectionDerivative_tendsto_atTop_zero
     (d : ℕ) (z : ℂ) :
     Tendsto (fun x : ℝ =>
@@ -187,6 +223,7 @@ theorem thetaCuspTailSurvival_mul_sectionDerivative_tendsto_atTop_zero
           (((2 * k + 2).factorial : ℕ) : ℂ)))
   simpa using hs
 
+/-- `S(x) ∂_z A_d(z, x) → 0` as `x → ∞`. -/
 theorem thetaCuspTailSurvival_mul_coreAtomDerivative_tendsto_atTop_zero
     (d : ℕ) (z : ℂ) :
     Tendsto (fun x : ℝ =>
@@ -217,6 +254,8 @@ theorem thetaCuspTailSurvival_mul_coreAtomDerivative_tendsto_atTop_zero
     thetaCuspTailSecondSectionDerivative
   simp
 
+/-- Integration by parts with `D = -S'`: `∫_0^∞ D(x) ∂_z A_d(z, x) dx = ∫_0^∞ S(x) ∂_x ∂_z A_d(z, x) dx`,
+the boundary terms vanishing because `∂_z A_d(z, 0) = 0` and `S ∂_z A_d → 0` at infinity. -/
 theorem integral_density_mul_coreAtomDerivative_eq_survival_sourceSpectralDerivative
     (d : ℕ) (z : ℂ) :
     (∫ x : ℝ in Ioi 0,
@@ -279,18 +318,21 @@ theorem integral_density_mul_coreAtomDerivative_eq_survival_sourceSpectralDeriva
     ∫ x : ℝ in Ioi 0, u x * v' x
   linear_combination -hibp
 
+/-- The survival value transform `V_d(z) = ∫_0^∞ S(x) ∂_x A_d(z, x) dx`. -/
 def thetaCuspTailSurvivalValueTransform
     (d : ℕ) (z : ℂ) : ℂ :=
   ∫ x : ℝ in Ioi 0,
     (thetaCuspTailSurvival x : ℂ) *
       thetaCuspTailSecondCoreAtomSourceDerivative d z x
 
+/-- The survival derivative transform `W_d(z) = ∫_0^∞ S(x) ∂_x ∂_z A_d(z, x) dx`. -/
 def thetaCuspTailSurvivalDerivativeTransform
     (d : ℕ) (z : ℂ) : ℂ :=
   ∫ x : ℝ in Ioi 0,
     (thetaCuspTailSurvival x : ℂ) *
       thetaCuspTailSecondCoreAtomSourceSpectralDerivative d z x
 
+/-- The truncated theta-tail core polynomial is `Q_d(z) = (1 + V_d(z))/2`. -/
 theorem xiCTaylorThetaTailCorePolynomial_eval_eq_survival
     (d : ℕ) (z : ℂ) :
     (xiCTaylorThetaTailCorePolynomial d).eval z =
@@ -299,6 +341,7 @@ theorem xiCTaylorThetaTailCorePolynomial_eval_eq_survival
     integral_density_mul_coreAtom_eq_one_add_survival_sourceDerivative]
   rfl
 
+/-- The derivative of the core polynomial is `Q_d'(z) = W_d(z)/2`. -/
 theorem xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_survival
     (d : ℕ) (z : ℂ) :
     (xiCTaylorThetaTailCorePolynomial d).derivative.eval z =
@@ -307,6 +350,8 @@ theorem xiCTaylorThetaTailCorePolynomial_derivative_eval_eq_survival
     integral_density_mul_coreAtomDerivative_eq_survival_sourceSpectralDerivative]
   rfl
 
+/-- The oriented current `Im(Q_d'(z) conj Q_d(z))` of the core polynomial equals
+`(1/4) Im(W_d(z) conj(1 + V_d(z)))`. -/
 theorem xiCTaylorThetaTailCore_current_eq_survival_mixed
     (d : ℕ) (z : ℂ) :
     orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z =
@@ -327,6 +372,7 @@ theorem xiCTaylorThetaTailCore_current_eq_survival_mixed
   rw [Complex.mul_im]
   norm_num
 
+/-- The oriented current of the core polynomial splits as `(1/4) Im W_d(z) + (1/4) Im(W_d(z) conj V_d(z))`. -/
 theorem xiCTaylorThetaTailCore_current_eq_survival_seam_add_cross
     (d : ℕ) (z : ℂ) :
     orientedPolynomialCurrent (xiCTaylorThetaTailCorePolynomial d) z =

@@ -2,6 +2,35 @@ import GaloisForLFunctions.HTGeometry.FiniteFreeDiscriminant
 import Mathlib.RingTheory.Localization.BaseChange
 import Mathlib.RingTheory.UniqueFactorizationDomain.Basic
 
+/-!
+# Purity of the branch locus for finite free algebras over a UFD
+
+Let `A` be a unique factorization domain and `B` a finite free `A`-algebra. This module proves a
+purity statement for unramifiedness: if `B` is formally unramified after localizing at every
+principal prime `(p)` of `A`, and the discriminant of a basis is nonzero (for instance because the
+generic fibre over `Frac A` is formally unramified), then `B` is formally unramified over `A`.
+The argument factors the discriminant: a non-unit nonzero discriminant has a prime factor `p`,
+and its image in `A_(p)` must be a unit by the local hypothesis, which is impossible.
+
+## Main results
+
+- `discr_ne_zero_of_fraction_formallyUnramified`: for an injective finite free extension of domains
+  with formally unramified generic fibre, the discriminant of every basis is nonzero.
+- `formallyUnramified_of_discr_nonzero_of_prime_localizations`: over a UFD, nonzero discriminant
+  plus formal unramifiedness at every principal prime localization implies `B` is formally
+  unramified over `A`.
+- `formallyUnramified_of_fraction_formallyUnramified_of_prime_localizations`: over a UFD, formally
+  unramified generic fibre plus formal unramifiedness at every principal prime localization implies
+  `B` is formally unramified over `A`.
+
+## Hypotheses
+
+No analytic inputs. The theorems are implications whose substantive algebraic hypotheses are:
+formal unramifiedness of the generic fibre `Localization (algebraMapSubmonoid B A⁰)` over
+`FractionRing A` (an instance argument), formal unramifiedness of `B_(p)` over `A_(p)` for every
+prime element `p` (the argument `hprime`), and, in the middle theorem, `discr A b ≠ 0`.
+-/
+
 open scoped TensorProduct
 
 namespace Algebra
@@ -11,6 +40,9 @@ open nonZeroDivisors
 
 universe u v w
 
+/-- Let `A ⊆ B` be domains with `B` finite free over `A`. Assuming the generic fibre (`B` localized
+at the nonzero elements of `A`) is formally unramified over `Frac A`, the discriminant of every
+basis of `B` over `A` is nonzero. -/
 theorem discr_ne_zero_of_fraction_formallyUnramified
     {A : Type u} {B : Type v} [CommRing A] [IsDomain A]
     [CommRing B] [IsDomain B] [Algebra A B] [FaithfulSMul A B]
@@ -46,6 +78,9 @@ theorem discr_ne_zero_of_fraction_formallyUnramified
   rw [hbase, hzero, map_zero] at hunit
   exact not_isUnit_zero hunit
 
+/-- Over a UFD `A`, a finite free algebra `B` with basis `b` is formally unramified, assuming
+`hdiscr : discr A b ≠ 0` and `hprime`: `B_(p)` is formally unramified over `A_(p)` for every prime
+element `p`. -/
 theorem formallyUnramified_of_discr_nonzero_of_prime_localizations
     {A : Type u} {B : Type v} [CommRing A] [IsDomain A]
     [UniqueFactorizationMonoid A] [CommRing B] [Algebra A B]
@@ -97,6 +132,9 @@ theorem formallyUnramified_of_discr_nonzero_of_prime_localizations
     exact Ideal.mem_span_singleton_self p
   exact ((IsLocalRing.mem_maximalIdeal _).mp hpmem) hpmapunit
 
+/-- Purity over a UFD: if `A ⊆ B` are domains with `B` finite free over the UFD `A`, the generic
+fibre is formally unramified, and (`hprime`) `B_(p)` is formally unramified over `A_(p)` for every
+prime element `p`, then `B` is formally unramified over `A`. -/
 theorem formallyUnramified_of_fraction_formallyUnramified_of_prime_localizations
     {A : Type u} {B : Type v} [CommRing A] [IsDomain A]
     [UniqueFactorizationMonoid A] [CommRing B] [IsDomain B]

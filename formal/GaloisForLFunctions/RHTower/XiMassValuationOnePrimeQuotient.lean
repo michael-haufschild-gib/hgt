@@ -1,6 +1,34 @@
 import GaloisForLFunctions.RHTower.XiMassPrimeSquareBoundaryResidue
 import GaloisForLFunctions.RHTower.XiMassPrimeOpenCore
 
+/-!
+# RH as vertical boundedness of the prime-only mass layer
+
+The valuation-one prime layer is `∑_p Λ(p) p^{-1/2} ĝ(log p)`, the sum of centered mass atoms
+over primes only, where `ĝ` is the Fourier transform of the mass test
+`exp(-τ √(x² + a²))`. On a legal Euler line the von Mangoldt bottom integral equals this layer
+plus the prime-square layer plus the cube-and-higher tail, and the last two are bounded on every
+positive vertical line. So boundedness of the bottom integral on `Re τ = σ` is equivalent to
+boundedness of the prime layer there, and by the existing equivalence between RH and the bottom
+prime line bound, RH is equivalent to the prime layer being bounded on one vertical line.
+
+## Main results
+
+- `xiMassBottomPrimeIntegral_eq_valuationOne_add_square_add_high`: bottom prime integral
+  `=` prime layer `+` square layer `+` high tail.
+- `xiMassBottomPrimeLineBound_iff_valuationOnePrimeLineBound`: the bottom integral is bounded on
+  `Re τ = σ` iff the prime layer is.
+- `riemannHypothesis_iff_xiMassValuationOnePrimeLineBound`: `RiemannHypothesis` holds iff
+  `u ↦ ∑_p Λ(p) p^{-1/2} ĝ_{a, σ + iu}(log p)` is bounded on `ℝ`.
+
+## Hypotheses
+
+The results are unconditional biconditionals and identities; the line-bound predicates
+`XiMassValuationOnePrimeLineBound` and `XiMassBottomPrimeLineBound` appear only as sides of the
+equivalences, not as premises. The parameters satisfy `1/2 < c < a` and `0 < σ`
+(or `0 < Re τ` for the decomposition).
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -8,13 +36,17 @@ namespace RHTower
 
 noncomputable section
 
+/-- The valuation-one prime layer `∑_p Λ(p) p^{-1/2} ĝ(log p)`: centered mass atoms at primes. -/
 def xiMassValuationOnePrimeLayer (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes, xiMassCenteredPrimeAtom a τ (p : ℕ)
 
+/-- The prime layer is bounded along the vertical line `τ = σ + iu`, `u ∈ ℝ`. -/
 def XiMassValuationOnePrimeLineBound (a σ : ℝ) : Prop :=
   ∃ C : ℝ, ∀ u : ℝ,
     ‖xiMassValuationOnePrimeLayer a ((σ : ℂ) + u * I)‖ ≤ C
 
+/-- For `1/2 < c < a` and `0 < Re τ`, the von Mangoldt bottom integral is the prime layer plus
+the prime-square layer plus the high prime-power tail. -/
 theorem xiMassBottomPrimeIntegral_eq_valuationOne_add_square_add_high
     {a c : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -27,6 +59,8 @@ theorem xiMassBottomPrimeIntegral_eq_valuationOne_add_square_add_high
     hhalf hca hτ]
   rfl
 
+/-- For `a, σ > 0`, the non-prime remainder (prime-square layer plus high tail) is bounded on
+the vertical line `Re τ = σ`. -/
 theorem exists_norm_xiMassNonPrimeRemainder_vertical_bound
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) :
     ∃ B : ℝ, ∀ u : ℝ,
@@ -50,6 +84,8 @@ theorem exists_norm_xiMassNonPrimeRemainder_vertical_bound
         simpa only [neg_mul] using
           norm_xiMassHighPrimePowerTail_vertical_le ha hσ u)
 
+/-- For `1/2 < c < a` and `0 < σ`, the bottom prime integral is bounded on `Re τ = σ` iff the
+prime layer is, since they differ by a bounded remainder. -/
 theorem xiMassBottomPrimeLineBound_iff_valuationOnePrimeLineBound
     {a c σ : ℝ} (hhalf : 1 / 2 < c) (hca : c < a) (hσ : 0 < σ) :
     XiMassBottomPrimeLineBound a c σ ↔
@@ -88,6 +124,8 @@ theorem xiMassBottomPrimeLineBound_iff_valuationOnePrimeLineBound
     rw [heq]
     exact (norm_add_le _ _).trans (add_le_add (hC u) (hB u))
 
+/-- RH criterion: for any `1/2 < c < a` and `0 < σ`, the Riemann Hypothesis is equivalent to
+boundedness of the prime-only mass layer on the vertical line `Re τ = σ`. -/
 theorem riemannHypothesis_iff_xiMassValuationOnePrimeLineBound
     {a c σ : ℝ} (hhalf : 1 / 2 < c) (hca : c < a) (hσ : 0 < σ) :
     RiemannHypothesis ↔ XiMassValuationOnePrimeLineBound a σ := by

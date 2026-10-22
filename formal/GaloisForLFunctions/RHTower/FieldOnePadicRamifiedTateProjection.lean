@@ -1,5 +1,31 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicRamifiedTateLinear
 
+/-!
+# Angular projection of Schwartz–Bruhat functions on `ℚ_p` onto a ramified character
+
+For a primitive Dirichlet character `χ` of conductor `pⁿ`, viewed as a character of `ℤ_p^×`,
+this module defines the angular projection `P_χ f(x) = ∫_{ℤ_p^×} χ(u) f(u x) du` (normalized
+Haar measure on the units) of a compactly supported locally constant function `f` on `ℚ_p`.
+It shows that `P_χ f` is again Schwartz–Bruhat, satisfies `P_χ f(v x) = χ(v)⁻¹ P_χ f(x)`,
+vanishes at `0` and on all shells `p^k ℤ_p^×` outside a finite window when `n ≥ 1`, and is
+therefore a finite linear combination of the radial packets of `χ⁻¹`.
+
+## Main results
+
+- `fieldOnePadicPrimitiveAngularProjection`: `P_χ` as a self-map of Schwartz–Bruhat functions.
+- `fieldOnePadicPrimitiveAngularProjectionValue_unit_covariance`: `P_χ f(v x) = χ(v)⁻¹ P_χ f(x)`
+  for every unit `v`.
+- `fieldOnePadicPrimitiveUnitCharacter_integral_eq_zero`: `∫_{ℤ_p^×} χ = 0` when `n ≥ 1`.
+- `fieldOnePadicPrimitiveAngularProjection_exists_radialPacketInvSynthesis`: for `n ≥ 1`,
+  `P_χ f = ∑ₘ cₘ · (radial packet of χ⁻¹ at height m)` for some finitely supported `c : ℤ →₀ ℂ`.
+
+## Hypotheses
+
+Unconditional. Several statements require positive conductor exponent (`n : ℕ+` or `0 < n`);
+finite-level lemmas take a support hypothesis `tsupport f ⊆ p^{-N} ℤ_p` or an invariance
+hypothesis under `p^L ℤ_p`, which every Schwartz–Bruhat function satisfies for some `N`, `L`.
+-/
+
 namespace GaloisForLFunctions.RHTower
 
 noncomputable section
@@ -9,6 +35,7 @@ open scoped BigOperators NNReal ENNReal
 
 variable (p : ℕ) [Fact p.Prime]
 
+/-- The inclusion `ℤ_p^× → ℚ_p^×`, as the valuation-zero coordinate `(0, u) ↦ u`. -/
 def fieldOnePadicUnitEmbedding (u : ℤ_[p]ˣ) : ℚ_[p]ˣ :=
   fieldOnePadicValuationUnitContinuousMulEquiv p
     (Multiplicative.ofAdd 0, u)
@@ -19,6 +46,8 @@ def fieldOnePadicUnitEmbedding (u : ℤ_[p]ˣ) : ℚ_[p]ˣ :=
   change (p : ℚ_[p]) ^ (0 : ℤ) * ((u : ℤ_[p]) : ℚ_[p]) = _
   simp
 
+/-- The character `u ↦ χ(u mod pⁿ)` of `ℤ_p^×` attached to a primitive character of
+conductor `pⁿ`. -/
 def fieldOnePadicPrimitiveUnitCharacter (n : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n) (u : ℤ_[p]ˣ) : ℂ :=
   χ.1 (fieldOnePadicUnitReduction p n u)
@@ -36,6 +65,7 @@ def fieldOnePadicPrimitiveUnitCharacter (n : ℕ)
         fieldOnePadicPrimitiveUnitCharacter p n χ v := by
   simp [fieldOnePadicPrimitiveUnitCharacter, map_mul]
 
+/-- The unit character never vanishes (its values have absolute value one). -/
 theorem fieldOnePadicPrimitiveUnitCharacter_ne_zero
     (n : ℕ) (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (u : ℤ_[p]ˣ) :
@@ -73,6 +103,7 @@ theorem integrable_fieldOnePadicPrimitiveUnitCharacter
   (continuous_fieldOnePadicPrimitiveUnitCharacter p n χ).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
+/-- A primitive character of conductor `pⁿ` with `n ≥ 1` is not the trivial character. -/
 theorem fieldOnePadicPrimitiveAngularCharacter_ne_one
     (n : ℕ+) (χ : FieldOnePadicPrimitiveAngularCharacter p (n : ℕ)) :
     χ.1 ≠ 1 := by
@@ -86,6 +117,8 @@ theorem fieldOnePadicPrimitiveAngularCharacter_ne_one
     one_lt_pow₀ (Fact.out : Nat.Prime p).one_lt n.pos.ne'
   omega
 
+/-- Orthogonality: for `n ≥ 1`, the integral of the unit character over `ℤ_p^×` against
+normalized Haar measure is `0`. -/
 theorem fieldOnePadicPrimitiveUnitCharacter_integral_eq_zero
     (n : ℕ+) (χ : FieldOnePadicPrimitiveAngularCharacter p (n : ℕ)) :
     ∫ u, fieldOnePadicPrimitiveUnitCharacter p (n : ℕ) χ u
@@ -103,6 +136,8 @@ theorem fieldOnePadicPrimitiveUnitCharacter_integral_eq_zero
       ∂fieldOnePadicUnitNormalizedHaar p = 0
   rw [hquad, hsumUnits, mul_zero]
 
+/-- Angular projection value `P_χ f(x) = ∫_{ℤ_p^×} χ(u) f(u x) du`, with normalized Haar
+measure on the units. -/
 def fieldOnePadicPrimitiveAngularProjectionValue (n : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (f : compactlySupportedLocallyConstant ℚ_[p]) (x : ℚ_[p]) : ℂ :=
@@ -131,6 +166,7 @@ theorem integrable_fieldOnePadicPrimitiveAngularProjectionValue_integrand
       (f.1.continuous.comp (hu.mul continuous_const))
   · exact HasCompactSupport.of_compactSpace _
 
+/-- Multiplication by a unit preserves each stage `p^{-N} ℤ_p`: `u x ∈ p^{-N} ℤ_p ↔ x ∈ p^{-N} ℤ_p`. -/
 theorem fieldOnePadicDenominatorStage_unit_mul_iff
     (N : ℕ) (u : ℤ_[p]ˣ) (x : ℚ_[p]) :
     ((u : ℤ_[p]) : ℚ_[p]) * x ∈ fieldOnePadicDenominatorStage p N ↔
@@ -143,6 +179,7 @@ theorem fieldOnePadicDenominatorStage_unit_mul_iff
       (((u : ℤ_[p]) : ℚ_[p])) * ((p : ℚ_[p]) ^ N * x) by ring,
     norm_mul, hu, one_mul]
 
+/-- Assuming `tsupport f ⊆ p^{-N} ℤ_p`, the projection `P_χ f` vanishes outside `p^{-N} ℤ_p`. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_eq_zero_outside
     (n N : ℕ) (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (f : compactlySupportedLocallyConstant ℚ_[p])
@@ -165,6 +202,7 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_eq_zero_outside
   rw [hzero]
   simp
 
+/-- Assuming `f` is invariant under `p^L ℤ_p`, so is its angular projection `P_χ f`. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_add_primePow
     (n L : ℕ) (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (f : compactlySupportedLocallyConstant ℚ_[p])
@@ -191,6 +229,7 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_add_primePow
           ring]
     exact hperiod _ ((u : ℤ_[p]) * z)
 
+/-- Any function `g : ℚ_p → ℂ` invariant under translation by `p^L ℤ_p` is locally constant. -/
 theorem fieldOnePadic_isLocallyConstant_of_primePower_period
     (L : ℕ) (g : ℚ_[p] → ℂ)
     (hperiod : ∀ x : ℚ_[p], ∀ z : ℤ_[p],
@@ -220,6 +259,7 @@ theorem fieldOnePadic_isLocallyConstant_of_primePower_period
   rw [hwrep]
   exact hperiod y z
 
+/-- Each stage `p^{-N} ℤ_p` is compact. -/
 theorem fieldOnePadicDenominatorStage_isCompact (N : ℕ) :
     IsCompact (fieldOnePadicDenominatorStage p N : Set ℚ_[p]) := by
   rw [← fieldOnePadicInvPowIntCoeAddMonoidHom_range p N]
@@ -252,6 +292,8 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_hasCompactSupport
   exact hx (fieldOnePadicPrimitiveAngularProjectionValue_eq_zero_outside
     p n N χ f hsupport hout)
 
+/-- The angular projection `P_χ` as a self-map of compactly supported locally constant
+functions on `ℚ_p`. -/
 def fieldOnePadicPrimitiveAngularProjection (n : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (f : compactlySupportedLocallyConstant ℚ_[p]) :
@@ -266,6 +308,8 @@ def fieldOnePadicPrimitiveAngularProjection (n : ℕ)
     (fieldOnePadicPrimitiveAngularProjection p n χ f).1 x =
       fieldOnePadicPrimitiveAngularProjectionValue p n χ f x := rfl
 
+/-- Unit covariance: `P_χ f(v x) = χ(v)⁻¹ · P_χ f(x)` for every `v ∈ ℤ_p^×`, by invariance of
+Haar measure on the units. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_unit_covariance
     (n : ℕ) (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (f : compactlySupportedLocallyConstant ℚ_[p])
@@ -303,6 +347,7 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_unit_covariance
   unfold fieldOnePadicPrimitiveAngularProjectionValue
   rw [← hleft, htranslate, hright, integral_const_mul]
 
+/-- For `n ≥ 1`, the angular projection vanishes at the origin: `P_χ f(0) = 0`. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_zero
     (n : ℕ+) (χ : FieldOnePadicPrimitiveAngularCharacter p (n : ℕ))
     (f : compactlySupportedLocallyConstant ℚ_[p]) :
@@ -313,6 +358,7 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_zero
     fieldOnePadicPrimitiveUnitCharacter_integral_eq_zero p n χ,
     zero_mul]
 
+/-- If `L ≤ k`, then `p^k u ∈ p^L ℤ_p`. -/
 theorem fieldOnePadicValuationUnitCoordinate_mem_primePowerLattice
     (L : ℕ) (k : ℤ) (u : ℤ_[p]ˣ) (hk : (L : ℤ) ≤ k) :
     ∃ z : ℤ_[p],
@@ -334,6 +380,7 @@ theorem fieldOnePadicValuationUnitCoordinate_mem_primePowerLattice
   · rw [hr, show (L : ℤ) + (k - (L : ℤ)) = k by omega]
   · exact_mod_cast (Fact.out : Nat.Prime p).ne_zero
 
+/-- Assuming `tsupport f ⊆ p^{-N} ℤ_p`, `P_χ f(p^k u) = 0` for every shell `k < -N`. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_coordinates_eq_zero_of_lt
     (n : ℕ) (N : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -349,6 +396,8 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_coordinates_eq_zero_of_lt
   rw [fieldOnePadicDenominatorStage_coordinates_iff]
   omega
 
+/-- For `n ≥ 1` and `f` invariant under `p^L ℤ_p`, `P_χ f(p^k u) = 0` for every shell `k ≥ L`,
+since there `P_χ f` agrees with its value `0` at the origin. -/
 theorem fieldOnePadicPrimitiveAngularProjectionValue_coordinates_eq_zero_of_ge
     (n : ℕ+) (L : ℕ)
     (χ : FieldOnePadicPrimitiveAngularCharacter p (n : ℕ))
@@ -366,6 +415,7 @@ theorem fieldOnePadicPrimitiveAngularProjectionValue_coordinates_eq_zero_of_ge
       p (n : ℕ) L χ f hperiod]
   exact fieldOnePadicPrimitiveAngularProjectionValue_zero p n χ f
 
+/-- The unit character of `χ⁻¹` is the pointwise inverse of the unit character of `χ`. -/
 theorem fieldOnePadicPrimitiveUnitCharacter_characterInv
     (n : ℕ) (χ : FieldOnePadicPrimitiveAngularCharacter p n)
     (u : ℤ_[p]ˣ) :
@@ -376,6 +426,7 @@ theorem fieldOnePadicPrimitiveUnitCharacter_characterInv
   rw [fieldOnePadicPrimitiveAngularCharacterInv_apply,
     MulChar.inv_apply_eq_inv']
 
+/-- Evaluation at a point `x` as a `ℂ`-linear functional on Schwartz–Bruhat functions. -/
 def fieldOnePadicBruhatEvalLinear (x : ℚ_[p]) :
     compactlySupportedLocallyConstant ℚ_[p] →ₗ[ℂ] ℂ where
   toFun f := f.1 x
@@ -386,6 +437,8 @@ def fieldOnePadicBruhatEvalLinear (x : ℚ_[p]) :
     (x : ℚ_[p]) (f : compactlySupportedLocallyConstant ℚ_[p]) :
     fieldOnePadicBruhatEvalLinear p x f = f.1 x := rfl
 
+/-- For `0 < n`, the synthesis `∑ₘ cₘ · (radial packet of χ⁻¹ at height m)` takes the value
+`c_k · χ(u)⁻¹` at `p^k u`. -/
 theorem fieldOnePadicPrimitiveRadialPacketInvSynthesis_coordinates
     (n : ℕ) (hn : 0 < n)
     (χ : FieldOnePadicPrimitiveAngularCharacter p n)
@@ -419,6 +472,8 @@ theorem fieldOnePadicPrimitiveRadialPacketInvSynthesis_coordinates
   · intro hk
     rw [Finsupp.notMem_support_iff.mp hk, zero_mul]
 
+/-- For `n ≥ 1`, the angular projection `P_χ f` of any Schwartz–Bruhat `f` is a finite linear
+combination `∑ₘ cₘ · (radial packet of χ⁻¹ at height m)` with `c : ℤ →₀ ℂ`. -/
 theorem fieldOnePadicPrimitiveAngularProjection_exists_radialPacketInvSynthesis
     (n : ℕ+) (χ : FieldOnePadicPrimitiveAngularCharacter p (n : ℕ))
     (f : compactlySupportedLocallyConstant ℚ_[p]) :

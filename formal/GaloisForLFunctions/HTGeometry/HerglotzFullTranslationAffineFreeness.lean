@@ -1,5 +1,33 @@
 import GaloisForLFunctions.HTGeometry.HerglotzFullTranslationRegularizedFreeness
 
+/-!
+# Affine-gauge full-translation freeness of regularized Herglotz transforms
+
+For a positive Borel measure `μ` on `ℝ` and `u ∈ L^∞(μ)`, let
+`H_u(z) = ∫ ((t - z)⁻¹ - t / (1 + t²)) e^{u(t)} dμ(t)` be the regularized Herglotz transform of the
+reweighted measure. The dense-residual full-translation freeness of `H_u` is extended to its affine
+gauges: for a dense residual set of `u`, all `α, β ∈ ℂ` and every finite tuple of distinct complex
+shifts `s_i`, the family `z ↦ α + β (z + s_i) + H_u(z + s_i)` satisfies no nonzero polynomial
+relation in `z` and finitely many derivatives on the set of `z` with all `z + s_i` in the upper
+half-plane.
+
+## Main results
+
+- `contDiffAt_regularizedHerglotzTransform_translate`: `w ↦ H_u(w + c)` is complex smooth at every
+  `z` with `Im (z + c) ≠ 0`.
+- `herglotz_fullTranslationFreeness_affine_denseResidual`: the set of `u` that are relation-free
+  for all finite differential patterns is dense and residual in `L^∞(μ)`, and for each such `u`
+  every affine gauge of every finite distinct-translate family of `H_u` is not differentially
+  algebraic on the common upper translation domain.
+
+## Hypotheses
+
+`contDiffAt_regularizedHerglotzTransform_translate` assumes that the measure
+`(1 + t²)⁻¹ e^{u(t)} dμ` is finite (instance argument) and `Im (z + c) ≠ 0`. The main theorem
+assumes that `μ` has infinite support and that `t ↦ (1 + t²)⁻¹` is `μ`-integrable (the Nevanlinna
+growth condition); it has no other premise.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open GaloisForLFunctions MeasureTheory Set Topology
@@ -8,6 +36,10 @@ open scoped ENNReal
 
 noncomputable section
 
+/-- If `(1 + t²)⁻¹ e^{u(t)} dμ` is finite and `Im (z + c) ≠ 0`, the translated regularized Herglotz
+transform `w ↦ ∫ ((t - (w + c))⁻¹ - t / (1 + t²)) e^{u(t)} dμ` is complex smooth at `z`; near `z`
+it equals `(w + c) ν(ℝ) + (1 + (w + c)²) · cauchyTransform ν (w + c)` with
+`ν = (1 + t²)⁻¹ e^{u(t)} dμ`. -/
 theorem contDiffAt_regularizedHerglotzTransform_translate
     (μ : Measure ℝ) (u : Lp ℝ ⊤ μ)
     [IsFiniteMeasure
@@ -60,6 +92,10 @@ theorem contDiffAt_regularizedHerglotzTransform_translate
       μ (fun t => u t) hu hw
   simpa only [hν, ν, M, cauchyTransform] using hreg
 
+/-- For `μ` with infinite support and `∫ (1 + t²)⁻¹ dμ < ∞`, the pattern-relation-free bounded
+weights `u` form a dense residual subset of `L^∞(μ)`, and for each such `u`, all `α, β` and all
+distinct shifts `s_i`, the family `z ↦ α + β (z + s_i) + H_u(z + s_i)` is not differentially
+algebraic on `{z | ∀ i, 0 < Im (z + s_i)}`. -/
 theorem
     herglotz_fullTranslationFreeness_affine_denseResidual
     (μ : Measure ℝ) (hμ : μ.support.Infinite)

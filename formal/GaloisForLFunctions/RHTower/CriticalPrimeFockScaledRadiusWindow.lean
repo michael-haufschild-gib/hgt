@@ -1,11 +1,36 @@
 import GaloisForLFunctions.RHTower.CriticalPrimeFockRadiusWindow
 
+/-!
+# Prime mass in scaled polynomial-Fock radius windows (scales `0 < s ≤ 1`)
+
+For the degree-`m` polynomial Fock potential the adapted radius at `x > 0` is
+`r(x) = (√x)^(2 - m)`. This module studies the prime-log mass
+`∑_{e^(x-sr) < p ≤ e^(x+sr)} (log p)²/p` of the window of radius `s·r(x)` around `x`, for a scale
+`0 < s ≤ 1`. Using the unconditional remainder bound for `∑_{p ≤ e^y} (log p)²/p`, with error
+`O(y e^(-c√y))`, it shows that this mass is asymptotic to the main term `2x · s r(x)` as
+`x → ∞`, for every `m > 2`.
+
+## Main results
+
+- `tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius`: for `m ≥ 2`, `a > 0`,
+  `e^(-a√(x - s r(x))) / (s r(x)) → 0` as `x → ∞`.
+- `tendsto_primeLogWindowMass_div_scaledCriticalPrimeFockModel`: for `m > 2`, the window mass
+  divided by `2x · s r(x)` tends to `1`.
+
+## Hypotheses
+
+Unconditional. The premises are the parameter ranges `m > 2` (or `m ≥ 2`), `a > 0` and
+`0 < s ≤ 1`; the prime-sum remainder bound is the proved `exists_primeLogSquareRemainder_bound`.
+-/
+
 open Filter Topology Set MeasureTheory
 
 namespace RHTower
 
 noncomputable section
 
+/-- For `m ≥ 2`, `a > 0` and `0 < s ≤ 1`, the error ratio `e^(-a√(x - s r(x))) / (s r(x))` tends to `0`
+as `x → ∞`, where `r(x) = (√x)^(2 - m)` is the Fock radius. -/
 theorem tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius
     {m a s : ℝ} (hm : 2 ≤ m) (ha : 0 < a) (hs : 0 < s) (hs1 : s ≤ 1) :
     Tendsto (fun x : ℝ =>
@@ -52,6 +77,8 @@ theorem tendsto_exp_neg_sqrt_sub_scaled_radius_div_criticalPrimeFockRadius
             field_simp
   exact squeeze_zero' hnonneg hle (by simpa using hmajor)
 
+/-- For `m > 2` and `0 < s ≤ 1`, the prime-log mass `∑ (log p)²/p` over `e^(x - s r(x)) < p ≤ e^(x + s r(x))`
+is asymptotic to `2x · s r(x)` as `x → ∞`. -/
 theorem tendsto_primeLogWindowMass_div_scaledCriticalPrimeFockModel
     {m s : ℝ} (hm : 2 < m) (hs : 0 < s) (hs1 : s ≤ 1) :
     Tendsto (fun x : ℝ =>

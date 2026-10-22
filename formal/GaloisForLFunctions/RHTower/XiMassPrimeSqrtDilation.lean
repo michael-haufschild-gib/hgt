@@ -1,5 +1,28 @@
 import GaloisForLFunctions.RHTower.XiMassPrimeMaskL1Quotient
 
+/-!
+# The square-root prime mask as a half dilation of the prime-square layer
+
+The square-root mask `m(p) = Λ(p²) p^{-1} / (Λ(p) p^{-1/2}) = p^{-1/2}` reweights the prime atom
+`Λ(p) p^{-1/2} ĝ(log p)` into the boundary term `Λ(p²) p^{-1} ĝ(log p)`. The mass test obeys the
+half-dilation law `g_{a,τ}(x) = g_{a/2, 2τ}(x/2)`, so `ĝ_{a,τ}(w) = 2 ĝ_{a/2, 2τ}(2w)`, and since
+`log p² = 2 log p` each boundary term is twice the centered atom at `p²` for the parameters
+`(a/2, 2τ)`. Hence the square-root-masked prime layer at `(a, τ)` is exactly twice the
+prime-square layer at `(a/2, 2τ)`.
+
+## Main results
+
+- `stripFourier_xiMassAnalyticTest_half_dilation`: `ĝ_{a,τ}(w) = 2 ĝ_{a/2, 2τ}(2w)` for `a > 0`.
+- `xiMassPrimeSqrtMaskLayer_eq_boundaryLayer`: the masked layer equals
+  `∑_p Λ(p²) p^{-1} ĝ(log p)`.
+- `xiMassPrimeSqrtMaskLayer_eq_two_mul_primeSquareLayer`: the masked layer at `(a, τ)` equals
+  `2 ·` prime-square layer at `(a/2, 2τ)`.
+
+## Hypotheses
+
+All results are unconditional; the dilation identities need only `0 < a`.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -8,6 +31,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- Half-dilation law of the mass test on the real line: for `a > 0`,
+`g_{a,τ}(x) = g_{a/2, 2τ}(x/2)`. -/
 theorem xiMassAnalyticTest_real_half_dilation
     {a : ℝ} (ha : 0 < a) (τ : ℂ) (x : ℝ) :
     xiMassAnalyticTest a τ (x : ℂ) =
@@ -31,6 +56,7 @@ theorem xiMassAnalyticTest_real_half_dilation
   push_cast
   ring
 
+/-- Fourier form of the half dilation: for `a > 0`, `ĝ_{a,τ}(w) = 2 ĝ_{a/2, 2τ}(2w)`. -/
 theorem stripFourier_xiMassAnalyticTest_half_dilation
     {a : ℝ} (ha : 0 < a) (τ w : ℂ) :
     stripFourier (xiMassAnalyticTest a τ) w =
@@ -59,22 +85,27 @@ theorem stripFourier_xiMassAnalyticTest_half_dilation
   rw [MeasureTheory.Measure.integral_comp_mul_left G (1 / 2)]
   norm_num [G, Complex.real_smul]
 
+/-- The square-root prime mask: ratio of the critical von Mangoldt terms at `p²` and at `p`,
+equal to `p^{-1/2}`. -/
 def xiMassPrimeSqrtMask (p : Nat.Primes) : ℂ :=
   LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) /
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) (p : ℕ)
 
+/-- The prime layer masked by the square-root mask. -/
 def xiMassPrimeSqrtMaskLayer (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     xiMassPrimeSqrtMask p * xiMassCenteredPrimeAtom a τ (p : ℕ)
 
+/-- Boundary layer `∑_p Λ(p²) p^{-1} ĝ(log p)`: square weights at prime frequencies. -/
 def xiMassPrimeSqrtBoundaryLayer (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
         (1 / 2 : ℂ) ((p : ℕ) ^ (2 : ℕ)) *
       stripFourier (xiMassAnalyticTest a τ) (Real.log (p : ℕ) : ℂ)
 
+/-- The critical von Mangoldt term `Λ(p) p^{-1/2}` of a prime is nonzero. -/
 theorem xiMassPrimeCriticalTerm_ne_zero (p : Nat.Primes) :
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (1 / 2 : ℂ) (p : ℕ) ≠ 0 := by
@@ -98,11 +129,14 @@ theorem xiMassPrimeSqrtMask_mul_centeredAtom_eq_boundaryTerm
   unfold xiMassPrimeSqrtMask xiMassCenteredPrimeAtom
   exact div_mul_mul_eq_mul (xiMassPrimeCriticalTerm_ne_zero p)
 
+/-- The square-root-masked prime layer equals the boundary layer `∑_p Λ(p²) p^{-1} ĝ(log p)`. -/
 theorem xiMassPrimeSqrtMaskLayer_eq_boundaryLayer (a : ℝ) (τ : ℂ) :
     xiMassPrimeSqrtMaskLayer a τ = xiMassPrimeSqrtBoundaryLayer a τ := by
   unfold xiMassPrimeSqrtMaskLayer xiMassPrimeSqrtBoundaryLayer
   exact tsum_congr (xiMassPrimeSqrtMask_mul_centeredAtom_eq_boundaryTerm a τ)
 
+/-- For `a > 0`, each boundary term `Λ(p²) p^{-1} ĝ_{a,τ}(log p)` is twice the centered atom
+at `p²` for the parameters `(a/2, 2τ)`. -/
 theorem xiMassPrimeSqrtBoundaryTerm_eq_two_mul_squareAtom
     {a : ℝ} (ha : 0 < a) (τ : ℂ) (p : Nat.Primes) :
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
@@ -137,6 +171,8 @@ theorem xiMassPrimeSqrtBoundaryTerm_eq_two_mul_squareAtom
       rw [hlogpowC]
       ring
 
+/-- For `a > 0`, the square-root-masked prime layer at `(a, τ)` is twice the prime-square layer
+at `(a/2, 2τ)`. -/
 theorem xiMassPrimeSqrtMaskLayer_eq_two_mul_primeSquareLayer
     {a : ℝ} (ha : 0 < a) (τ : ℂ) :
     xiMassPrimeSqrtMaskLayer a τ =

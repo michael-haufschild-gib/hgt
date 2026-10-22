@@ -1,16 +1,39 @@
 import Mathlib.Analysis.Fourier.ZMod
 import Mathlib.Algebra.Order.Chebyshev
 
+/-!
+# Parseval identity for character sums over `(ℤ/qℤ)^k`
+
+For a map `f : α → (ℤ/qℤ)^k` on a finite set, the character sums
+`S(ξ) = ∑_a e_q(ξ · f(a))` over frequencies `ξ ∈ (ℤ/qℤ)^k` satisfy the Parseval identity
+`∑_ξ |S(ξ)|² = q^k · #{(a, b) : f(a) = f(b)}`. The module proves the orthogonality relation
+`∑_ξ e_q(ξ · x) = q^k [x = 0]`, the multiplicativity and conjugation laws of the product
+characters, and the pointwise expansion of `|S(ξ)|²` as a sum over pairs.
+
+## Main results
+
+- `sum_stdAddChar_mul`, `sum_finiteProductCharacter`: orthogonality `∑_ξ e_q(ξ x) = q [x = 0]`,
+  and its `k`-dimensional form with value `q^k`.
+- `normSq_finiteCharacterSum_eq`: `|S(ξ)|² = ∑_{(a, b)} e_q(ξ · (f(b) - f(a)))`.
+- `sum_normSq_finiteCharacterSum_eq_energy`: `∑_ξ |S(ξ)|² = q^k · #{(a, b) : f(a) = f(b)}`.
+
+## Hypotheses
+
+All results are unconditional; `q` is a nonzero modulus.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators ComplexConjugate
 
 noncomputable section
 
+/-- Product character `x ↦ ∏_j e_q(ξ_j x_j)` on `(ℤ/qℤ)^k` with frequency `ξ`. -/
 def finiteProductCharacter (q k : ℕ) [NeZero q]
     (ξ x : Fin k → ZMod q) : ℂ :=
   ∏ j : Fin k, ZMod.stdAddChar (ξ j * x j)
 
+/-- Orthogonality: `∑_{ξ ∈ ℤ/qℤ} e_q(ξ x)` is `q` if `x = 0` and `0` otherwise. -/
 theorem sum_stdAddChar_mul (q : ℕ) [NeZero q] (x : ZMod q) :
     (∑ ξ : ZMod q, (ZMod.stdAddChar (ξ * x) : ℂ)) =
       if x = 0 then q else 0 := by
@@ -20,6 +43,8 @@ theorem sum_stdAddChar_mul (q : ℕ) [NeZero q] (x : ZMod q) :
     simpa [AddChar.mulShift, mul_comm] using
       AddChar.sum_eq_zero_of_ne_one (ZMod.isPrimitive_stdAddChar q hx)
 
+/-- Orthogonality on `(ℤ/qℤ)^k`: summing the product character over all frequencies gives `q^k` at
+`x = 0` and `0` otherwise. -/
 theorem sum_finiteProductCharacter (q k : ℕ) [NeZero q]
     (x : Fin k → ZMod q) :
     (∑ ξ : Fin k → ZMod q, finiteProductCharacter q k ξ x) =
@@ -45,6 +70,7 @@ theorem sum_finiteProductCharacter (q k : ℕ) [NeZero q]
         obtain ⟨j, hj⟩ := this
         exact Finset.prod_eq_zero (Finset.mem_univ j) (by simp [hj])
 
+/-- The product character is additive in its argument: `χ_ξ(x + y) = χ_ξ(x) χ_ξ(y)`. -/
 theorem finiteProductCharacter_add (q k : ℕ) [NeZero q]
     (ξ x y : Fin k → ZMod q) :
     finiteProductCharacter q k ξ (x + y) =
@@ -52,6 +78,7 @@ theorem finiteProductCharacter_add (q k : ℕ) [NeZero q]
   simp only [finiteProductCharacter, Pi.add_apply, mul_add,
     AddChar.map_add_eq_mul, Finset.prod_mul_distrib]
 
+/-- The conjugate of `χ_ξ(x)` is `χ_ξ(-x)`. -/
 theorem conj_finiteProductCharacter (q k : ℕ) [NeZero q]
     (ξ x : Fin k → ZMod q) :
     conj (finiteProductCharacter q k ξ x) =
@@ -66,11 +93,13 @@ theorem conj_finiteProductCharacter (q k : ℕ) [NeZero q]
   rw [AddChar.inv_apply]
   simp
 
+/-- Character sum `S(ξ) = ∑_a χ_ξ(f(a))` of a map `f : α → (ℤ/qℤ)^k`. -/
 def finiteCharacterSum {α : Type*} [Fintype α]
     (q k : ℕ) [NeZero q] (f : α → Fin k → ZMod q)
     (ξ : Fin k → ZMod q) : ℂ :=
   ∑ a : α, finiteProductCharacter q k ξ (f a)
 
+/-- `|S(ξ)|² = ∑_{(a, b)} χ_ξ(f(b) - f(a))`. -/
 theorem normSq_finiteCharacterSum_eq
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) (ξ : Fin k → ZMod q) :
@@ -91,6 +120,7 @@ theorem normSq_finiteCharacterSum_eq
   rw [← finiteProductCharacter_add]
   simp [sub_eq_add_neg, add_comm]
 
+/-- Parseval: `∑_ξ |S(ξ)|² = q^k · #{(a, b) : f(a) = f(b)}`. -/
 theorem sum_normSq_finiteCharacterSum_eq_energy
     {α : Type*} [Fintype α] (q k : ℕ) [NeZero q]
     (f : α → Fin k → ZMod q) :

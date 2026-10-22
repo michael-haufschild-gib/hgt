@@ -1,11 +1,37 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusRamanujanExpansion
 import GaloisForLFunctions.RHTower.Sieve.CoprimeMoebiusSeries
 
+/-!
+# Closed form and total mass of the power-damped Ramanujan weights
+
+The Ramanujan weights `w_ε(q) = ∑_m μ(qm) (qm)^(−1−ε)` of the expansion
+`a_ε(n) = ∑_q w_ε(q) c_q(n)` are computed in closed form: for `ε > 0`,
+`w_ε(q) = (1/ζ(1+ε)) μ(q) / ∏_{p|q} (p^(1+ε) − 1)`. The proof is a prime recursion
+`w_ε(pq) = −w_ε(q)/(p^(1+ε) − 1)` for `p ∤ q`, obtained by splitting `∑_m` according to
+`p | m`; non-squarefree `q` have `w_ε(q) = 0`. Consequently `μ(q) w_ε(q) ≥ 0`,
+`|w_ε(q)| = μ(q) Re w_ε(q)`, and evaluating the expansion at `n = 1` (where `c_q(1) = μ(q)`)
+gives total absolute mass `∑_q |w_ε(q)| = 1`.
+
+## Main results
+
+- `pmPowerDampedRamanujanWeight_prime_mul`: for `ε > 0`, `p` prime, `p ∤ q`: `w_ε(pq) = −w_ε(q)/(p^(1+ε) − 1)`.
+- `pmPowerDampedRamanujanWeight_eq_euler`: for `ε > 0`, `w_ε(q) = (1/ζ(1+ε)) μ(q) / ∏_{p|q} (p^(1+ε) − 1)`.
+- `pmPowerDampedDivisorDensity_re_pos`: `Re(1/ζ(1+ε)) > 0` for `ε > 0`.
+- `norm_pmPowerDampedRamanujanWeight`: `|w_ε(q)| = μ(q) Re w_ε(q)`.
+- `hasSum_norm_pmPowerDampedRamanujanWeight`: `∑_q |w_ε(q)| = 1` for `ε > 0`.
+
+## Hypotheses
+
+All results are unconditional; the main statements assume only `0 < ε` and, for the recursion,
+that `p` is prime and does not divide `q`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 open scoped BigOperators
 noncomputable section
 namespace RHTower
 
+/-- For prime `p`, `μ(pn)(pn)^(−ε)/(pn) = −p^(−1−ε) · (μ(n) n^(−ε)/n if p ∤ n, else 0)`. -/
 theorem pm_reciprocal_mobius_prime_mul (ε : ℝ) {p : ℕ} (hp : p.Prime) (n : ℕ) :
     (moebius (p*n) : ℝ) * ((p*n : ℕ) : ℝ)^(-ε) / ((p*n : ℕ) : ℝ) =
       -(1/(p : ℝ)^(1+ε)) *
@@ -19,6 +45,7 @@ theorem pm_reciprocal_mobius_prime_mul (ε : ℝ) {p : ℕ} (hp : p.Prime) (n : 
     simp only [div_eq_mul_inv, one_mul, mul_inv_rev]
     ring
 
+/-- Complex form of the prime-multiplication rule for `μ(k) k^(−ε)/k`. -/
 theorem pmPowerDampedMobiusCoeff_div_prime_mul (ε : ℝ) {p : ℕ} (hp : p.Prime) (n : ℕ) :
     pmPowerDampedMobiusCoeff ε (p*n) / ((p*n : ℕ) : ℂ) =
       -((1/(p : ℝ)^(1+ε) : ℝ) : ℂ) *
@@ -26,6 +53,7 @@ theorem pmPowerDampedMobiusCoeff_div_prime_mul (ε : ℝ) {p : ℕ} (hp : p.Prim
   have h := congrArg (fun x : ℝ => (x : ℂ)) (pm_reciprocal_mobius_prime_mul ε hp n)
   by_cases hpn : p ∣ n <;> simpa [pmPowerDampedMobiusCoeff, hpn] using h
 
+/-- For `ε > 0`, the series defining `w_ε(q)` is summable. -/
 theorem summable_pmPowerDampedRamanujanWeight_terms {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     Summable (fun m : ℕ => pmPowerDampedMobiusCoeff ε (q*m) / ((q*m : ℕ) : ℂ)) := by
   rcases Nat.eq_zero_or_pos q with rfl | hq
@@ -33,6 +61,7 @@ theorem summable_pmPowerDampedRamanujanWeight_terms {ε : ℝ} (hε : 0 < ε) (q
   · exact (summable_pmPowerDampedDivisorDensity_terms hε).comp_injective
       (fun a b hab => Nat.eq_of_mul_eq_mul_left hq hab)
 
+/-- The Ramanujan weight vanishes at non-squarefree `q`. -/
 theorem pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree (ε : ℝ) {q : ℕ}
     (hq : ¬Squarefree q) : pmPowerDampedRamanujanWeight ε q = 0 := by
   have hz (m : ℕ) : pmPowerDampedMobiusCoeff ε (q*m) / ((q*m : ℕ) : ℂ) = 0 := by
@@ -40,6 +69,7 @@ theorem pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree (ε : ℝ) {q : �
     simp [pmPowerDampedMobiusCoeff, ArithmeticFunction.moebius_eq_zero_of_not_squarefree hqm]
   simp only [pmPowerDampedRamanujanWeight, hz, tsum_zero]
 
+/-- Reindexing: `∑'_m 1_{p|m} w(qm) = ∑'_m w(pqm)` for `p > 0`. -/
 theorem pm_tsum_dvd_multiples (w : ℕ → ℂ) {p : ℕ} (hp : 0 < p) (q : ℕ) :
     (∑' m : ℕ, if p ∣ m then w (q*m) else 0) = ∑' m : ℕ, w ((p*q)*m) := by
   classical
@@ -61,6 +91,7 @@ theorem pm_tsum_dvd_multiples (w : ℕ → ℂ) {p : ℕ} (hp : 0 < p) (q : ℕ)
   congr 1
   ac_rfl
 
+/-- For `ε > 0`, prime `p ∤ q`: `w_ε(pq) = −p^(−1−ε) (w_ε(q) − w_ε(pq))`. -/
 theorem pmPowerDampedRamanujanWeight_prime_recursion {ε : ℝ} (hε : 0 < ε)
     {p q : ℕ} (hp : p.Prime) (hpq : ¬p ∣ q) :
     pmPowerDampedRamanujanWeight ε (p*q) =
@@ -90,6 +121,7 @@ theorem pmPowerDampedRamanujanWeight_prime_recursion {ε : ℝ} (hε : 0 < ε)
   rw [tsum_congr ht, tsum_mul_left, hs.tsum_sub hd, hre]
   rfl
 
+/-- For `ε > 0`, prime `p ∤ q`: `w_ε(pq) = −w_ε(q)/(p^(1+ε) − 1)`. -/
 theorem pmPowerDampedRamanujanWeight_prime_mul {ε : ℝ} (hε : 0 < ε)
     {p q : ℕ} (hp : p.Prime) (hpq : ¬p ∣ q) :
     pmPowerDampedRamanujanWeight ε (p*q) =
@@ -107,9 +139,11 @@ theorem pmPowerDampedRamanujanWeight_prime_mul {ε : ℝ} (hε : 0 < ε)
   field_simp [hr0] at h
   linear_combination h
 
+/-- The Euler denominator `∏_{p|q} (p^(1+ε) − 1)`. -/
 def pmPowerDampedRamanujanDenominator (ε : ℝ) (q : ℕ) : ℝ :=
   ∏ p ∈ q.primeFactors, ((p : ℝ)^(1+ε)-1)
 
+/-- For `ε > 0`, the Euler denominator is positive. -/
 theorem pmPowerDampedRamanujanDenominator_pos {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     0 < pmPowerDampedRamanujanDenominator ε q := by
   apply Finset.prod_pos
@@ -125,6 +159,7 @@ theorem pmPowerDampedRamanujanDenominator_prime_mul (ε : ℝ) {p q : ℕ}
   simp only [pmPowerDampedRamanujanDenominator, Nat.primeFactors_mul hp.ne_zero hq,
     hp.primeFactors, Finset.singleton_union, Finset.prod_insert hnot]
 
+/-- Closed form: for `ε > 0`, `w_ε(q) = (1/ζ(1+ε)) μ(q) / ∏_{p|q} (p^(1+ε) − 1)`. -/
 theorem pmPowerDampedRamanujanWeight_eq_euler (ε : ℝ) (hε : 0 < ε) (q : ℕ) :
     pmPowerDampedRamanujanWeight ε q =
       pmPowerDampedDivisorDensity ε * (moebius q : ℂ) /
@@ -153,6 +188,7 @@ theorem pmPowerDampedRamanujanWeight_eq_euler (ε : ℝ) (hε : 0 < ε) (q : ℕ
       simp only [div_eq_mul_inv, mul_inv_rev]
       ring
 
+/-- For `ε > 0`, `w_ε(q)` is the real number `Re(1/ζ(1+ε)) μ(q) / ∏_{p|q} (p^(1+ε) − 1)`. -/
 theorem pmPowerDampedRamanujanWeight_eq_ofReal {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     pmPowerDampedRamanujanWeight ε q =
       (((pmPowerDampedDivisorDensity ε).re * (moebius q : ℝ) /
@@ -162,6 +198,7 @@ theorem pmPowerDampedRamanujanWeight_eq_ofReal {ε : ℝ} (hε : 0 < ε) (q : �
   push_cast
   rfl
 
+/-- For `ε > 0`, `Re(1/ζ(1+ε)) > 0` (from positivity of the divisor variance and `S_ε ≤ 1/ζ(1+ε)`). -/
 theorem pmPowerDampedDivisorDensity_re_pos {ε : ℝ} (hε : 0 < ε) :
     0 < (pmPowerDampedDivisorDensity ε).re := by
   have hv := pmPowerDampedDivisorVariance_pos hε
@@ -169,6 +206,7 @@ theorem pmPowerDampedDivisorDensity_re_pos {ε : ℝ} (hε : 0 < ε) :
   dsimp only [pmPowerDampedDivisorVariance] at hv
   nlinarith [sq_nonneg (pmPowerDampedDivisorDensity ε).re]
 
+/-- For `ε > 0`, `μ(q) Re w_ε(q) ≥ 0`: the weight carries the sign of `μ(q)`. -/
 theorem pmPowerDampedRamanujanWeight_mobius_re_nonneg {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     0 ≤ (moebius q : ℝ) * (pmPowerDampedRamanujanWeight ε q).re := by
   rw [pmPowerDampedRamanujanWeight_eq_ofReal hε, Complex.ofReal_re]
@@ -182,6 +220,7 @@ theorem pmPowerDampedRamanujanWeight_mobius_re_nonneg {ε : ℝ} (hε : 0 < ε) 
     (mul_nonneg (pmPowerDampedDivisorDensity_re_pos hε).le (sq_nonneg _))
     (pmPowerDampedRamanujanDenominator_pos hε q).le
 
+/-- The Ramanujan sum at `n = 1` is the Möbius function: `c_q(1) = μ(q)`. -/
 theorem pm_ramanujan_at_one (q : ℕ) :
     d4BMRamanujanNaturalCoefficient 1 q = (moebius q : ℂ) := by
   rcases Nat.eq_zero_or_pos q with rfl | hq
@@ -189,6 +228,7 @@ theorem pm_ramanujan_at_one (q : ℕ) :
   · rw [d4BMRamanujanNaturalCoefficient_eq_gcd_mobiusDivisorSum hq]
     simp
 
+/-- For `ε > 0`, `|w_ε(q)| = μ(q) Re w_ε(q)`. -/
 theorem norm_pmPowerDampedRamanujanWeight {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
     ‖pmPowerDampedRamanujanWeight ε q‖ =
       (moebius q : ℝ) * (pmPowerDampedRamanujanWeight ε q).re := by
@@ -212,6 +252,7 @@ theorem norm_pmPowerDampedRamanujanWeight {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
   · rw [pmPowerDampedRamanujanWeight_eq_zero_of_not_squarefree ε hq]
     simp
 
+/-- For `ε > 0`, the Ramanujan weights have total absolute mass `∑_q |w_ε(q)| = 1`. -/
 theorem hasSum_norm_pmPowerDampedRamanujanWeight {ε : ℝ} (hε : 0 < ε) :
     HasSum (fun q : ℕ => ‖pmPowerDampedRamanujanWeight ε q‖) 1 := by
   have hs := (summable_pmPowerDampedRamanujanExpansion hε (n := 1) (by norm_num)).hasSum

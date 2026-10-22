@@ -1,16 +1,44 @@
 import GaloisForLFunctions.RHTower.Sieve.FiniteFiberPartition
 import GaloisForLFunctions.RHTower.Sieve.VinogradovCollisionContribution
 
+/-!
+# Vinogradov mean value: the collision recurrence
+
+Splits each `(k + b)`-tuple in `[0, N)` into a leading `k`-block and a tail of length `b`, and
+partitions the fibre energy of the power-sum signature by whether the leading block is injective.
+Combined with the colliding-block bound this gives a recurrence for the Vinogradov mean value:
+`J_{k+b,k}(N)` is at most twice the energy restricted to injective leading blocks plus
+`((k^2 - k) N^(k-1))^2 J_{b,k}(N)`.
+
+## Main results
+
+- `vinogradovSplitPowerSignature`: power-sum signature modulo `q` of a concatenated pair `(x, u)`.
+- `finiteFiberEnergy_vinogradovSplitPowerSignature_eq`: its fibre energy equals that of the signature
+  on `(k + b)`-tuples.
+- `vinogradov_moment_collision_partition`: the energy is at most twice the sum of the
+  injective-block energy and the number of colliding completions.
+- `vinogradov_moment_collision_recurrence`: for `N ≠ 0`,
+  `J_{k+b,k}(N) ≤ 2 (E_inj + ((k^2 - k) N^(k-1))^2 J_{b,k}(N))`.
+
+## Hypotheses
+
+Unconditional. The recurrence assumes `N ≠ 0`.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Power-sum signature modulo `q` (orders `1..k`) of the concatenation of a leading `k`-block and a
+tail of length `b`. -/
 def vinogradovSplitPowerSignature (q N k b : ℕ) [NeZero q] :
     ((Fin k → Fin N) × (Fin b → Fin N)) → Fin k → ZMod q :=
   fun z => vinogradovPowerSignatureMod q k (Fin.append z.1 z.2)
 
+/-- Splitting a `(k + b)`-tuple into block and tail does not change the fibre energy of the power-sum
+signature modulo `q`. -/
 theorem finiteFiberEnergy_vinogradovSplitPowerSignature_eq
     {q N k b : ℕ} [NeZero q] :
     finiteFiberEnergy (vinogradovSplitPowerSignature q N k b) =
@@ -40,6 +68,8 @@ theorem finiteFiberEnergy_vinogradovSplitPowerSignature_eq
   rw [finiteFiberEnergy_eq_card, finiteFiberEnergy_eq_card]
   exact Fintype.card_congr e
 
+/-- The fibre energy restricted to non-injective leading blocks counts exactly the colliding
+completions `VinogradovCollidingBlockCompletion q N k b`. -/
 theorem finiteFiberEnergyWith_noninjective_split_eq_card
     {q N k b : ℕ} [NeZero q] :
     finiteFiberEnergyWith (vinogradovSplitPowerSignature q N k b)
@@ -62,6 +92,8 @@ theorem finiteFiberEnergyWith_noninjective_split_eq_card
       right_inv := fun z => Sigma.ext rfl (by simp) }
   exact Fintype.card_congr e
 
+/-- The power-sum fibre energy on `(k + b)`-tuples modulo `q` is at most twice the sum of the energy
+with injective leading block and the number of colliding completions. -/
 theorem vinogradov_moment_collision_partition
     {q N k b : ℕ} [NeZero q] :
     finiteFiberEnergy
@@ -83,6 +115,8 @@ theorem vinogradov_moment_collision_partition
         Fintype.card (VinogradovCollidingBlockCompletion q N k b)) := by
       rw [finiteFiberEnergyWith_noninjective_split_eq_card]
 
+/-- Collision recurrence: for `N ≠ 0`, `J_{k+b,k}(N) ≤ 2 (E_inj + ((k^2 - k) N^(k-1))^2 J_{b,k}(N))`,
+where `E_inj` is the split-signature energy restricted to injective leading blocks. -/
 theorem vinogradov_moment_collision_recurrence
     {N k b : ℕ} (hN : N ≠ 0) :
     Fintype.card (VinogradovDiagonalSolution N (k + b) k) ≤

@@ -1,6 +1,28 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamDetectorDensity
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorCenterLogMomentPolylog
 
+/-!
+# Polylogarithmic horizontal boundary for Ingham's detector at the uniform Gabriel center
+
+Fix `7/10 ≤ σ ≤ 1` and the counting-dependent center `c_σ = σ - (1 - σ)/1000`. For every
+mollifier length `X ≥ 10` this module selects heights `T₁ ∈ (-X, -X+1)` and `T₂ ∈ (X-2, X-1)`
+such that Ingham's pole-regularized detector `D_X` has no zeros on the horizontal segments
+`[c_σ, 4] + iT₁` and `[c_σ, 4] + iT₂`, and the horizontal argument-variation term
+`∫_{c_σ}^{4} (x - c_σ) Im (F'/F)(x+iT₁) dx - ∫_{c_σ}^{4} (x - c_σ) Im (F'/F)(x+iT₂) dx` of the
+classical detector `F = 1 - (ζ M_X - 1)^2` is at most `K (1 + log X)^2`. The selected edges come
+from an imported polylogarithmic bound for `D_X'/D_X`, transferred to `F'/F`.
+
+## Main results
+
+- `exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog`: for `7/10 ≤ σ ≤ 1` there is
+  `K ≥ 0` such that for every `X ≥ 10` suitable edges `T₁`, `T₂` exist, `D_X` is zero-free on both
+  horizontal segments, and `inghamClassicalHorizontalBoundary X c_σ 4 T₁ T₂ ≤ K (1 + log X)^2`.
+
+## Hypotheses
+
+The result is unconditional; it assumes only the range `7/10 ≤ σ ≤ 1` and `X ≥ 10`.
+-/
+
 open Complex Filter Metric Set ArithmeticFunction Finset
 
 namespace RHTower.Sieve
@@ -8,6 +30,9 @@ namespace RHTower.Sieve
 noncomputable section
 
 
+/-- For `7/10 ≤ σ ≤ 1` there is `K ≥ 0` such that every `X ≥ 10` admits heights
+`T₁ ∈ (-X, -X+1)`, `T₂ ∈ (X-2, X-1)` with `D_X` zero-free on `[c_σ, 4] + iT₁` and
+`[c_σ, 4] + iT₂`, and horizontal boundary term at most `K (1 + log X)^2`. -/
 theorem exists_inghamClassicalHorizontalBoundary_uniformCenter_polylog
     {sigma : ℝ} (hsigma0 : 7 / 10 ≤ sigma) (hsigma1 : sigma ≤ 1) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {X : ℕ}, 10 ≤ X →

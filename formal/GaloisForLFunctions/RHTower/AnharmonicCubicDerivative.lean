@@ -1,9 +1,31 @@
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevMovingFiber
 
+/-!
+# Derivative of the anharmonic cubic quotient
+
+For the degree-three anharmonic quotient `q(s) = (s - 2)(s + 1)(2s - 1) / (2s(s - 1))`, this
+module computes the complex derivative away from the poles: `q'(s) = 1 + 1/s² + 1/(s - 1)²`,
+which equals the perfect square `((s² - s + 1) / (s(s - 1)))²`. It deduces that `q'` does not
+vanish at real points other than the poles.
+
+## Main results
+
+- `chebyshevAnharmonicQ_deriv`: for `s ≠ 0, 1`, `deriv q s = chebyshevAnharmonicQPrime s`,
+  i.e. `1 + 1/s² + 1/(s - 1)²`.
+- `chebyshevAnharmonicQ_deriv_sq`: for `s ≠ 0, 1`, `q'(s) = ((s² - s + 1) / (s(s - 1)))²`.
+- `chebyshevAnharmonicQ_deriv_ofReal_ne_zero`: for real `s ≠ 0, 1`, `q'(s) ≠ 0`.
+
+## Hypotheses
+
+Unconditional; the only premises are `s ≠ 0` and `s ≠ 1`, which exclude the poles of `q`.
+-/
+
 open Complex
 
 namespace RHTower
 
+/-- Away from the poles `s = 0, 1`, the derivative of the anharmonic quotient
+`q(s) = (s - 2)(s + 1)(2s - 1) / (2s(s - 1))` is `1 + 1/s² + 1/(s - 1)²`. -/
 theorem chebyshevAnharmonicQ_deriv
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     deriv chebyshevAnharmonicQ s = chebyshevAnharmonicQPrime s := by
@@ -41,6 +63,8 @@ theorem chebyshevAnharmonicQ_deriv
   field_simp [hs0, sub_ne_zero.mpr hs1]
   ring
 
+/-- For `s ≠ 0, 1`, the derivative of the anharmonic quotient is a perfect square:
+`q'(s) = ((s² - s + 1) / (s(s - 1)))²`. -/
 theorem chebyshevAnharmonicQ_deriv_sq
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     deriv chebyshevAnharmonicQ s =
@@ -50,6 +74,8 @@ theorem chebyshevAnharmonicQ_deriv_sq
   field_simp [hs0, sub_ne_zero.mpr hs1]
   ring
 
+/-- At every real point `s ≠ 0, 1` the derivative of the anharmonic quotient is nonzero, so `q`
+has no real critical points. -/
 theorem chebyshevAnharmonicQ_deriv_ofReal_ne_zero
     {s : ℝ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     deriv chebyshevAnharmonicQ (s : ℂ) ≠ 0 := by

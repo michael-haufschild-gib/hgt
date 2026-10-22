@@ -1,5 +1,34 @@
 import GaloisForLFunctions.Hurwitz.JointPowerOrbit
 
+/-!
+# Monodromy propagation of polynomial relations among several Hurwitz ladders
+
+Fix exponents `s_j` (`j ∈ ι`) with `Re s_j > 1` and a polynomial `P` in the variables `(j, k)`,
+`k ≤ N`, with coefficients in `ℂ[a]`. `jointRelA s M P c a` evaluates `P` on the deformed Hurwitz
+ladders `ζ(s_j + k, a) + ∑_{n ≤ M} (c_{j,n} - 1)(n + a)^{-(s_j + k)}` on the upper half-plane, and
+`jointRelZ` evaluates it on the local models near the branch point `a = -n`, in the logarithmic
+coordinate `a = -n + e^z`. The two agree on the strip `0 < Im z < π`; shifting `z ↦ z + 2πi`
+multiplies each coefficient `c_{j,n}` by the monodromy scalar `q_j = exp(-2πi s_j)`. By analytic
+continuation, a relation vanishing on the upper half-plane for coefficients `c` also vanishes after
+this move, and iterating from the undeformed point `c = 1` gives vanishing on the whole lattice
+`c_{j,n} = q_j^{m_n}`.
+
+## Main results
+
+- `jointRelA_eq_jointRelZ`: on `0 < Im z < π`, the relation at `a = -n + e^z` equals its
+  logarithmic model.
+- `jointRelZ_shift`: the shift `z ↦ z + 2πi` is the coefficient move `c_{j,n} ↦ q_j c_{j,n}`.
+- `jointRelA_move`: if the relation vanishes on the upper half-plane for `c`, it vanishes for the
+  moved coefficients at any branch point `n ≤ M`.
+- `jointRelA_grid`: if the relation vanishes on the upper half-plane at `c = 1`, it vanishes for
+  every coefficient pattern `c_{j,n} = q_j^{m_n}`, `m : Fin (M + 1) → ℕ`.
+
+## Hypotheses
+
+Unconditional apart from explicit premises: `Re s_j > 1` for every `j`, and the vanishing of the
+relation on the upper half-plane (or on the logarithmic strip) that is being propagated.
+-/
+
 open Complex HurwitzZetaShift HurwitzN2Tail HurwitzN2HZeta HurwitzSpine HurwitzOrbit
 
 namespace HurwitzJointLadder
@@ -8,22 +37,30 @@ open HurwitzLadder
 
 variable {ι : Type*} {N : ℕ}
 
+/-- A polynomial relation `P` evaluated at `a` on the deformed ladders `dzeta (s j) M (c j) k a`, with
+coefficient polynomials evaluated at `a`. -/
 noncomputable def jointRelA (s : ι → ℂ) (M : ℕ)
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (a : ℂ) : ℂ :=
   MvPolynomial.eval₂ (Polynomial.evalRingHom a)
     (fun jk => dzeta (s jk.1) M (c jk.1) (jk.2 : ℕ) a) P
 
+/-- The same relation evaluated on the local models at branch point `n`, in the coordinate
+`a = -n + e^z`. -/
 noncomputable def jointRelZ (s : ι → ℂ) (M : ℕ)
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1)) (z : ℂ) : ℂ :=
   MvPolynomial.eval₂ (Polynomial.evalRingHom (-((n : ℕ) : ℂ) + Complex.exp z))
     (fun jk => dmodel (s jk.1) M (c jk.1) n (jk.2 : ℕ) z) P
 
+/-- The monodromy move at branch point `n`: multiply each coefficient `c_{j,n}` by
+`q_j = exp(-2πi s_j)`. -/
 noncomputable def jointMove (s : ι → ℂ) {M : ℕ}
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1)) : ι → Fin (M + 1) → ℂ :=
   fun j => Function.update (c j) n (monoScalar (s j) * c j n)
 
+/-- Assuming `Re s_j > 1`, on the strip `0 < Im z < π` the relation at `a = -n + e^z` equals its
+logarithmic model. -/
 theorem jointRelA_eq_jointRelZ {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1))
@@ -36,6 +73,7 @@ theorem jointRelA_eq_jointRelZ {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : 
     exact dzeta_eq_dmodel (hs jk.1) (c jk.1) n (jk.2 : ℕ) h0 hπ
   rw [jointRelA, jointRelZ, hg]
 
+/-- Shifting `z` by `2πi` in the model is the monodromy move on the coefficients. -/
 theorem jointRelZ_shift (s : ι → ℂ) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1)) (z : ℂ) :
@@ -52,6 +90,7 @@ theorem jointRelZ_shift (s : ι → ℂ) {M : ℕ}
     exact dmodel_shift (s jk.1) (c jk.1) n (jk.2 : ℕ) z
   rw [jointRelZ, jointRelZ, harg, hg]
 
+/-- Assuming `Re s_j > 1`, the model relation is holomorphic on the half-plane `Re z < -log 2`. -/
 theorem jointRelZ_differentiableOn {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1)) :
@@ -82,6 +121,7 @@ theorem jointRelZ_differentiableOn {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {
     intro z _
     rw [Finset.prod_apply]
 
+/-- Assuming `Re s_j > 1`, the deformed relation is holomorphic on the upper half-plane. -/
 theorem jointRelA_differentiableOn {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) :
@@ -108,6 +148,8 @@ theorem jointRelA_differentiableOn {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {
     intro a _
     rw [Finset.prod_apply]
 
+/-- Identity theorem: assuming `Re s_j > 1`, if the model relation vanishes on the part of
+`Re z < -log 2` with `0 < Im z < π`, it vanishes on all of `Re z < -log 2`. -/
 theorem jointRelZ_zero_of_upper {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1))
@@ -146,6 +188,8 @@ theorem jointRelZ_zero_of_upper {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M :
   intro z hz
   exact hzero hz
 
+/-- Monodromy propagation: assuming `Re s_j > 1` and that the relation vanishes on the upper
+half-plane for coefficients `c`, it also vanishes there for `jointMove s c n`. -/
 theorem jointRelA_move {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (c : ι → Fin (M + 1) → ℂ) (n : Fin (M + 1))
@@ -244,6 +288,8 @@ theorem jointRelA_move {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
   intro a ha
   exact hzero ha
 
+/-- Assuming `Re s_j > 1` and that the relation vanishes on the upper half-plane at `c = 1`, it
+vanishes there for every coefficient pattern `c_{j,n} = q_j^{m_n}` with `m : Fin (M + 1) → ℕ`. -/
 theorem jointRelA_grid {s : ι → ℂ} (hs : ∀ j, 1 < (s j).re) {M : ℕ}
     (P : MvPolynomial (ι × Fin (N + 1)) (Polynomial ℂ))
     (h1 : ∀ a : ℂ, 0 < a.im → jointRelA s M P (fun _ _ => 1) a = 0) :

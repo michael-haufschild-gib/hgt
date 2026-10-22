@@ -1,10 +1,35 @@
 import GaloisForLFunctions.HTGeometry.GammaShiftAugmentedDeterminant
 
+/-!
+# One- and two-shift examples of Gamma-jet annihilators and Casoratians
+
+This module computes the general consecutive-shift Gamma-jet annihilator explicitly for one and
+two simple shifts. For a single shift `λ` the annihilator is the first-order operator
+`f ↦ f(s + 1) - (s + λ) f(s)`, matching `Γ(s + λ + 1) = (s + λ) Γ(s + λ)`. For two simple shifts
+`λ₁, λ₂` it is the second-order operator
+`f ↦ f(s + 2) - (2s + λ₁ + λ₂ + 1) f(s + 1) + (s + λ₁)(s + λ₂) f(s)`, and the `2 × 2` Casoratian
+of `Γ(s + λ₁), Γ(s + λ₂)` equals `(λ₂ - λ₁) Γ(s + λ₁) Γ(s + λ₂)`.
+
+## Main results
+
+- `gammaJetAnnihilator_singleton`: the one-shift annihilator is `f(s + 1) - (s + λ) f(s)`.
+- `gammaJetAnnihilator_pair`: the two-shift annihilator is
+  `f(s + 2) - (2s + λ₁ + λ₂ + 1) f(s + 1) + (s + λ₁)(s + λ₂) f(s)`.
+- `det_confluentGammaShiftMatrix_pair`: the two-shift Gamma Casoratian determinant is
+  `(λ₂ - λ₁) Γ(s + λ₁) Γ(s + λ₂)`.
+
+## Hypotheses
+
+Unconditional. The operator identities hold for every `s`, every shift and every function `f`.
+The determinant formula assumes only that `s + λ₁` and `s + λ₂` are not poles of `Γ`.
+-/
+
 open scoped BigOperators Matrix
 namespace GaloisForLFunctions
 open Polynomial Filter LSeries
 noncomputable section
 
+/-- The one-element shift packet `{λ}`, used with multiplicity one. -/
 def singletonGammaShift (lambda : ℂ) : Fin 1 → ℂ := fun _ => lambda
 def singletonGammaMult : Fin 1 → ℕ := fun _ => 1
 
@@ -17,6 +42,8 @@ theorem gammaJetAnnihilatorCoeff_singleton_zero (s lambda : ℂ) :
   rw [gammaJetAnnihilatorCoeff, gammaJetRootPolynomial_zeroCoeff]
   simp [gammaJetOrder_singleton, singletonGammaShift, singletonGammaMult]
 
+/-- For a single simple shift `λ`, the Gamma-jet annihilator is the first-order difference operator
+`f ↦ f(s + 1) - (s + λ) f(s)`. -/
 theorem gammaJetAnnihilator_singleton (s lambda : ℂ) (f : ℂ → ℂ) :
     gammaJetAnnihilator s (singletonGammaShift lambda) singletonGammaMult f =
       f (s + 1) - (s + lambda) * f s := by
@@ -27,6 +54,7 @@ theorem gammaJetAnnihilator_singleton (s lambda : ℂ) (f : ℂ → ℂ) :
   simp
   ring
 
+/-- The two-element shift packet `(λ₁, λ₂)`, used with multiplicities one. -/
 def pairGammaShift (lambda1 lambda2 : ℂ) : Fin 2 → ℂ :=
   Fin.cases lambda1 (fun _ => lambda2)
 
@@ -49,6 +77,8 @@ theorem gammaJetAnnihilatorCoeff_pair_zero (s lambda1 lambda2 : ℂ) :
     Fin.prod_univ_two, pairGammaShift_zero, pairGammaShift_one, pow_two]
   ring
 
+/-- The middle coefficient of the two-shift annihilator is `-(2s + λ₁ + λ₂ + 1)`, read off from
+the expansion of `(X - (s + λ₁))(X - (s + λ₂))` in the rising-factorial basis. -/
 theorem gammaJetAnnihilatorCoeff_pair_one (s lambda1 lambda2 : ℂ) :
     gammaJetAnnihilatorCoeff s (pairGammaShift lambda1 lambda2) pairGammaMult 1 =
       -(2 * s + lambda1 + lambda2 + 1) := by
@@ -94,6 +124,8 @@ theorem gammaJetAnnihilatorCoeff_pair_one (s lambda1 lambda2 : ℂ) :
   norm_num [Polynomial.coeff_one] at hc
   linear_combination -hc
 
+/-- For two simple shifts `λ₁, λ₂`, the Gamma-jet annihilator is the second-order difference
+operator `f ↦ f(s + 2) - (2s + λ₁ + λ₂ + 1) f(s + 1) + (s + λ₁)(s + λ₂) f(s)`. -/
 theorem gammaJetAnnihilator_pair (s lambda1 lambda2 : ℂ) (f : ℂ → ℂ) :
     gammaJetAnnihilator s (pairGammaShift lambda1 lambda2) pairGammaMult f =
       f (s + 2) - (2 * s + lambda1 + lambda2 + 1) * f (s + 1) +
@@ -105,6 +137,8 @@ theorem gammaJetAnnihilator_pair (s lambda1 lambda2 : ℂ) (f : ℂ → ℂ) :
   norm_num
   ring
 
+/-- The Casoratian `det [Γ(s + λ_a + k)]` for two simple shifts equals
+`(λ₂ - λ₁) Γ(s + λ₁) Γ(s + λ₂)`, assuming `hpole`: neither `s + λ₁` nor `s + λ₂` is a pole of `Γ`. -/
 theorem det_confluentGammaShiftMatrix_pair (s lambda1 lambda2 : ℂ)
     (hpole : ∀ i (p : ℕ),
       s + pairGammaShift lambda1 lambda2 i ≠ -(p : ℂ)) :

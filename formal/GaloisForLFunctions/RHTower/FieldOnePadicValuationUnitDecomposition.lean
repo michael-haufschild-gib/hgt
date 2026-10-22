@@ -1,6 +1,26 @@
 import GaloisForLFunctions.RHTower.FieldOnePadicMultiplicativeHaarTatePairing
 import Mathlib.Analysis.Normed.Group.Ultra
 
+/-!
+# Valuation–unit decomposition `ℚ_p^× ≅ ℤ × ℤ_p^×`
+
+This module builds the multiplicative isomorphism `ℤ × ℤ_p^× → ℚ_p^×`, `(k, u) ↦ p^k u`, and
+shows it is a homeomorphism. The inverse sends `a` to its `p`-adic valuation `v(a)` and its
+angular unit `p^{-v(a)} a ∈ ℤ_p^×`. Along the way it proves that the valuation is locally
+constant on `ℚ_p^×` (by the ultrametric inequality) and that the angular unit map is continuous.
+
+## Main results
+
+- `fieldOnePadicValuationUnitMulEquiv`: the group isomorphism `ℤ × ℤ_p^× ≃* ℚ_p^×`.
+- `fieldOnePadicValuationUnitMulEquiv_symm_apply`: its inverse is `a ↦ (v(a), p^{-v(a)} a)`.
+- `fieldOnePadic_valuation_isLocallyConstant`: the valuation `ℚ_p^× → ℤ` is locally constant.
+- `fieldOnePadicValuationUnitHomeomorph`: the same map as a homeomorphism.
+
+## Hypotheses
+
+Unconditional.
+-/
+
 open scoped NNReal BigOperators
 
 namespace GaloisForLFunctions.RHTower
@@ -10,6 +30,7 @@ noncomputable section
 variable (p : ℕ) [Fact p.Prime]
 
 
+/-- The group homomorphism `ℤ × ℤ_p^× → ℚ_p^×`, `(k, u) ↦ p^k u`. -/
 def fieldOnePadicValuationUnitForward :
     Multiplicative ℤ × ℤ_[p]ˣ →* ℚ_[p]ˣ where
   toFun z := Units.mk0
@@ -32,6 +53,7 @@ def fieldOnePadicValuationUnitForward :
     simp only [Units.val_mul, PadicInt.coe_mul]
     ring
 
+/-- A `p`-adic unit has valuation `0` in `ℚ_p`. -/
 theorem fieldOnePadic_valuation_coe_unit (u : ℤ_[p]ˣ) :
     Padic.valuation (((u : ℤ_[p]) : ℚ_[p])) = 0 := by
   rw [PadicInt.valuation_coe]
@@ -45,6 +67,7 @@ theorem fieldOnePadic_valuation_coe_unit (u : ℤ_[p]ˣ) :
   rw [u.val_inv, PadicInt.valuation_one] at hval
   omega
 
+/-- The valuation of `p^k u` is `k`. -/
 theorem fieldOnePadic_valuation_forward
     (z : Multiplicative ℤ × ℤ_[p]ˣ) :
     Padic.valuation ((fieldOnePadicValuationUnitForward p z : ℚ_[p])) =
@@ -60,6 +83,7 @@ theorem fieldOnePadic_valuation_forward
       (Fact.out : Nat.Prime p).ne_zero)
   · exact PadicInt.coe_ne_zero.mpr (Units.ne_zero z.2)
 
+/-- The map `(k, u) ↦ p^k u` is injective. -/
 theorem fieldOnePadicValuationUnitForward_injective :
     Function.Injective (fieldOnePadicValuationUnitForward p) := by
   intro x y hxy
@@ -79,6 +103,7 @@ theorem fieldOnePadicValuationUnitForward_injective :
           (Fact.out : Nat.Prime p).ne_zero)) hxyval
     exact Subtype.coe_injective hucoe
 
+/-- Angular unit of `a ∈ ℚ_p^×`: the unit `p^{-v(a)} a ∈ ℤ_p^×`. -/
 def fieldOnePadicAngularUnit (a : ℚ_[p]ˣ) : ℤ_[p]ˣ := by
   let v : ℤ := Padic.valuation (a : ℚ_[p])
   let u : ℚ_[p] := (p : ℚ_[p]) ^ (-v) * (a : ℚ_[p])
@@ -98,6 +123,8 @@ def fieldOnePadicAngularUnit (a : ℚ_[p]ˣ) : ℤ_[p]ˣ := by
       (p : ℚ_[p]) ^ (-Padic.valuation (a : ℚ_[p])) * (a : ℚ_[p]) := by
   rfl
 
+/-- Every `a ∈ ℚ_p^×` equals `p^{v(a)}` times its angular unit, so `(k, u) ↦ p^k u` is
+surjective. -/
 theorem fieldOnePadicValuationUnitForward_surjective :
     Function.Surjective (fieldOnePadicValuationUnitForward p) := by
   intro a
@@ -111,12 +138,14 @@ theorem fieldOnePadicValuationUnitForward_surjective :
   · simp [v]
   · exact_mod_cast (Fact.out : Nat.Prime p).ne_zero
 
+/-- The group isomorphism `ℤ × ℤ_p^× ≃* ℚ_p^×`, `(k, u) ↦ p^k u`. -/
 def fieldOnePadicValuationUnitMulEquiv :
     Multiplicative ℤ × ℤ_[p]ˣ ≃* ℚ_[p]ˣ :=
   MulEquiv.ofBijective (fieldOnePadicValuationUnitForward p)
     ⟨fieldOnePadicValuationUnitForward_injective p,
       fieldOnePadicValuationUnitForward_surjective p⟩
 
+/-- The inverse isomorphism sends `a` to `(v(a), p^{-v(a)} a)`. -/
 @[simp] theorem fieldOnePadicValuationUnitMulEquiv_symm_apply
     (a : ℚ_[p]ˣ) :
     (fieldOnePadicValuationUnitMulEquiv p).symm a =
@@ -144,6 +173,7 @@ def fieldOnePadicValuationUnitMulEquiv :
   rw [fieldOnePadicValuationUnitMulEquiv_symm_apply] at h
   exact h
 
+/-- Nonzero `p`-adic numbers of equal norm have equal valuation. -/
 theorem fieldOnePadic_valuation_eq_of_norm_eq
     {x y : ℚ_[p]} (hx : x ≠ 0) (hy : y ≠ 0)
     (h : ‖x‖ = ‖y‖) : Padic.valuation x = Padic.valuation y := by
@@ -157,6 +187,8 @@ theorem fieldOnePadic_valuation_eq_of_norm_eq
     (zpow_right_inj₀ hpPos hpNeOne).mp h
   exact neg_injective hneg
 
+/-- The valuation `ℚ_p^× → ℤ` is locally constant: on the ball of radius `‖a‖` around `a` the
+norm, hence the valuation, is constant by the ultrametric inequality. -/
 theorem fieldOnePadic_valuation_isLocallyConstant :
     IsLocallyConstant
       (fun a : ℚ_[p]ˣ => Multiplicative.ofAdd
@@ -204,6 +236,7 @@ theorem fieldOnePadic_coe_unit_inv (u : ℤ_[p]ˣ) :
   exact ((mul_eq_one_iff_inv_eq₀
     (PadicInt.coe_ne_zero.mpr (Units.ne_zero u))).mp hQ).symm
 
+/-- The angular unit map `ℚ_p^× → ℤ_p^×`, `a ↦ p^{-v(a)} a`, is continuous. -/
 theorem continuous_fieldOnePadicAngularUnit :
     Continuous (fieldOnePadicAngularUnit p) := by
   have hpow : Continuous (fun a : ℚ_[p]ˣ =>
@@ -286,6 +319,7 @@ theorem continuous_fieldOnePadicValuationUnitMulEquiv_symm :
   exact (continuous_fieldOnePadic_valuation p).prodMk
     (continuous_fieldOnePadicAngularUnit p)
 
+/-- The decomposition `ℤ × ℤ_p^× ≅ ℚ_p^×`, `(k, u) ↦ p^k u`, as a homeomorphism. -/
 def fieldOnePadicValuationUnitHomeomorph :
     Multiplicative ℤ × ℤ_[p]ˣ ≃ₜ ℚ_[p]ˣ where
   toEquiv := fieldOnePadicValuationUnitMulEquiv p

@@ -1,5 +1,31 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62FunctionalGrowth
 
+/-!
+# Chen–Gupta–Li Lemma 6.2: elementary bounds on finite pieces
+
+This module proves three elementary bounds used in the contour argument of Chen–Gupta–Li
+Lemma 6.2 for a nonprincipal Dirichlet character `χ` modulo `q` induced by a primitive
+character `χ*`. The finite Dirichlet polynomial `∑_{n ≤ M} χ̄(n) n^(-s)` has absolute value at
+most `M + 1` when `Re s ≥ 0`. The finite Euler correction
+`∏_{p | q} (1 - χ*(p) p^(-z)) / (1 - χ̄*(p) p^(-(1-z)))` is bounded by
+`∏_{p | q} (1 + p)/(1 - p^(-1/2))` on the strip `-1 ≤ Re z ≤ 1/2`, `|Im z| ≥ 2`. Finally
+`|N^z| ≤ N²` there.
+
+## Main results
+
+- `cglLemma62_dirichletHead_norm_le`: `|∑_{n ≤ M} χ̄(n) n^(-s)| ≤ M + 1` for `Re s ≥ 0`.
+- `cglLemma62EulerCorrectionAt_highStrip_norm_le`: on the high strip the Euler correction is at
+  most `cglLemma62EulerCorrectionBudget B = ∏_{p | q} (1 + p)/(1 - p^(-1/2))`.
+- `cglLemma62_lengthPower_highStrip_norm_le`: `|N^z| ≤ N²` on the high strip.
+
+## Hypotheses
+
+Unconditional. The point structures `CGLLemma62NonnegativePoint` (`Re s ≥ 0`) and
+`CGLLemma62HighStripPoint` (`-1 ≤ Re z ≤ 1/2`, `|Im z| ≥ 2`) only record the range of the
+variable; `CGLLemma62InducedCharacter` bundles a nonprincipal character with its primitive
+inducing character.
+-/
+
 open Complex MeasureTheory Filter Set Asymptotics LSeries
 open scoped Topology LSeries.notation BigOperators
 
@@ -7,6 +33,7 @@ namespace RHTower
 
 noncomputable section
 
+/-- A complex point `s` with `Re s ≥ 0`. -/
 structure CGLLemma62NonnegativePoint where
   value : ℂ
   nonnegative : 0 ≤ value.re
@@ -32,6 +59,8 @@ private theorem cglLemma62_norm_dirichletTerm_le_one
         norm_dirichletCharacter_le_one B.character⁻¹ _
       _ ≤ (n : ℝ) ^ s.value.re := hpow
 
+/-- For `Re s ≥ 0`, the finite Dirichlet polynomial `∑_{n ≤ M} χ̄(n) n^(-s)` has absolute value at
+most `M + 1`, since each term has absolute value at most `1`. -/
 theorem cglLemma62_dirichletHead_norm_le
     (B : CGLLemma62InducedCharacter) (M : ℕ) (s : CGLLemma62NonnegativePoint) :
     ‖cglLemma62DirichletHead B.character⁻¹ M s.value‖ ≤ M + 1 := by
@@ -45,6 +74,8 @@ theorem cglLemma62_dirichletHead_norm_le
     _ = M + 1 := by
       simp
 
+/-- The explicit Euler-correction budget `∏_{p | q} (1 + p)/(1 - p^(-1/2))` over the primes dividing
+the ambient modulus `q`. -/
 def cglLemma62EulerCorrectionBudget (B : CGLLemma62InducedCharacter) : ℝ :=
   ∏ p ∈ B.ambient.value.primeFactors,
     (1 + (p : ℝ)) / (1 - (p : ℝ) ^ (-(1 / 2 : ℝ)))
@@ -133,6 +164,8 @@ private theorem cglLemma62EulerCorrection_factor_bound
   exact div_le_div₀ (by positivity) (cglLemma62EulerCorrection_left_factor_bound B z p)
     hdenpos (cglLemma62EulerCorrection_right_factor_lower B z p)
 
+/-- On the high strip `-1 ≤ Re z ≤ 1/2`, `|Im z| ≥ 2`, the reflected finite Euler correction
+`∏_{p | q} (1 - χ*(p) p^(-z)) / (1 - χ̄*(p) p^(-(1-z)))` is at most `∏_{p | q} (1 + p)/(1 - p^(-1/2))`. -/
 theorem cglLemma62EulerCorrectionAt_highStrip_norm_le
     (B : CGLLemma62InducedCharacter) (z : CGLLemma62HighStripPoint) :
     ‖cglLemma62EulerCorrectionAt B z.value‖ ≤ cglLemma62EulerCorrectionBudget B := by
@@ -145,6 +178,7 @@ theorem cglLemma62EulerCorrectionAt_highStrip_norm_le
   · intro p hp
     exact cglLemma62EulerCorrection_factor_bound B z ⟨p, hp⟩
 
+/-- For a positive integer length `N` and `Re z ≤ 1/2` on the high strip, `|N^z| ≤ N²`. -/
 theorem cglLemma62_lengthPower_highStrip_norm_le
     (N : CGLPositiveLength) (z : CGLLemma62HighStripPoint) :
     ‖(N.value : ℂ) ^ z.value‖ ≤ (N.value : ℝ) ^ (2 : ℝ) := by

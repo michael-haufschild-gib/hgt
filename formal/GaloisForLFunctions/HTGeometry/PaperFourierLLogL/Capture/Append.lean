@@ -1,5 +1,30 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Capture.Book
 
+/-!
+# Appending a captured frequency to a Riesz-product chart
+
+Part of the finite dyadic model `Grid M = ℤ/2^M` used in the proof of almost everywhere convergence
+of Fourier series in `L log L`. A `Chart` carries a positive reference kernel `refs` with Fourier
+support near the signed span of a finite frequency set. When a scene `q` has an intense frequency
+`x` (a large correlation of strength `amp i main`) lying outside the current support region, the
+reference kernel is multiplied by a Riesz-product factor `1 + t · f(y) · Re(g(z) χ_x(y))` built from
+a band-limited mask `f` with `t = amp i main / 128`. The new chart stays sound, gains the frequency
+`x`, widens its support radius by `band q.here i (offset i D.size)`, and lowers the relative-entropy
+budget `flex` by at least `price main i = amp i main ^ 2 / 2048`.
+
+## Main results
+
+- `append_choose`: one capture step; the new sound chart `C` satisfies
+  `flex q main C.refs + price main i ≤ flex q main D.refs`.
+
+## Hypotheses
+
+Unconditional finite statement. `append_choose` assumes the scene is admissible (valid node below
+level `M`, nonnegative wage, `0 < norm`, `0 < mass ≤ 2 · norm`), no boundary hazard at index `i`, a
+sound input chart, an intense frequency `x`, and that `x` is not within reach of the chart's
+frequency span at the widened radius.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -12,8 +37,10 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {M : ℕ}
 open scoped Classical
 
+/-- Mask precision exponent used when appending the `(n+1)`-st frequency at strength index `i`. -/
 def offset (i n : ℕ) := 16+i*2+n*2
 
+/-- Guaranteed drop of the `flex` budget per captured frequency: `amp i b ^ 2 / 2048`. -/
 def price (b : Bool) (i : ℕ) := amp i b^2/2048
 
 private lemma leak_gate (i n : ℕ) (main : Bool) :
@@ -38,6 +65,8 @@ private lemma leak_gate (i n : ℕ) (main : Bool) :
             (2^n * side n)*(side n*(side 16*side i^2)) by ring,hQ,one_mul]
     _ ≤ _ := by gcongr
 
+/-- If `|F| ≤ g`, `F` has mean zero and the mass of `g` outside the block of `p` is at most
+`L · len p`, then the conditional average of `F` on the block of `p` is at most `L`. -/
 private lemma boundary_leak (p : Node) (hp : p.ok M) (F g : Grid M → ℝ)
     (hF : ∀ x, 0 ≤ g x ∧ |F x| ≤ g x) (hG : expU F=0) (L : ℝ)
     (he : expU (fun x => if x∈p.block M then 0 else g x) ≤ L*p.len) :
@@ -58,6 +87,9 @@ private lemma boundary_leak (p : Node) (hp : p.ok M) (F g : Grid M → ℝ)
   rw [hh]
   exact (div_le_iff₀ p.len_pos).mpr hX
 
+/-- One capture step: for an admissible hazard-free scene, a sound chart `D`, and an intense
+frequency `x` outside the reach of `D`, there is a sound chart `C` with items `insert x D.items`,
+one more element, widened radius, and `flex` lowered by at least `price main i`. -/
 theorem append_choose (main : Bool) (i : ℕ) {q : Scene M}
     (hp : q.here.valid) (he : q.here.lev < M) (ha : 0 ≤ q.wage) (hn : 0 < q.norm)
     (hm : 0 < q.mass) (hM : q.mass ≤ 2*q.norm) (hE : ¬ hazard q main i)

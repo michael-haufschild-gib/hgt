@@ -1,14 +1,39 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIBlockBounds
 
+/-!
+# Size of the Case II Perron budget for one prime block
+
+The Case II Perron budget of a prime block `(a, Y]` is
+`P · C · (π - 2 arctan(cells/2)) + 2 · cells · C · (log a)^{-300}`, where `P` is the Heath-Brown
+fixed polylogarithmic bound, `C` the wide-interval kernel majorant and
+`cells = ceil((log a)^{200})`. Combining `P ≤ K_P (log a)^{134}`, `C ≤ K(C0) a (log a)^{40}` and the
+arctan tail `≤ 4/cells`, this module shows that the budget is `O(a/(log a)^{20})` with an explicit
+constant.
+
+## Main results
+
+- `menonHarmonicCaseIIBudgetConstant`: the constant `4 K_P K(C0) + 4 K(C0)`.
+- `menonHarmonicCaseIIBudget_le`: for `C0 ≥ 0`, `a ≥ 64`, `log a ≥ 1` and `a < Y ≤ 2a`, the budget
+  is at most `menonHarmonicCaseIIBudgetConstant C0 · a / (log a)^{20}`.
+
+## Hypotheses
+
+The result is unconditional, under the stated ranges `C0 ≥ 0`, `64 ≤ a`, `1 ≤ log a`,
+`a < Y ≤ 2a`.
+-/
+
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Budget constant `4 K_P K(C0) + 4 K(C0)` from the fixed polylog and kernel constants. -/
 def menonHarmonicCaseIIBudgetConstant (C0 : ℝ) : ℝ :=
   4 * menonHarmonicCaseIIFixedPolylogConstant *
       menonHarmonicCaseIIKernelConstant C0 +
     4 * menonHarmonicCaseIIKernelConstant C0
 
+/-- For `C0 ≥ 0`, `a ≥ 64`, `log a ≥ 1` and `a < Y ≤ 2a`, the Case II Perron budget is at most
+`menonHarmonicCaseIIBudgetConstant C0 · a / (log a)^{20}`. -/
 theorem menonHarmonicCaseIIBudget_le
     {C0 : ℝ} (hC0 : 0 ≤ C0) {a Y : ℕ} (ha64 : 64 ≤ a)
     (hlog : 1 ≤ Real.log (a : ℝ)) (haY : a < Y) (hYa : Y ≤ 2 * a) :

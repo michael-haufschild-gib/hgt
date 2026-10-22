@@ -1,5 +1,27 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Weak.Signed
 
+/-!
+# Weak-type `L log L` bound for the symmetric Fourier maximal function
+
+Rescales the modular-ball weak-type estimate to all of `L log L` via the Luxemburg norm
+`‖f‖_Φ = inf {b > 0 | ∫ Φ(|f|/b) ≤ 1}` with `Φ(t) = t log(2 + t)`. The Luxemburg set of an `L log L`
+function is nonempty, and dividing `f` by any admissible `b` places it in the modular unit ball,
+where the level set of the maximal function scales accordingly.
+
+## Main results
+
+- `bill_renorm`: `∫ Φ(|f/b|) = ∫ Φ(|f|/b)`.
+- `lux_exists`: every `f ∈ L log L` has a nonempty Luxemburg set.
+- `consequence_maximal`: assuming `GoodBound`, there is `C > 0` such that for every `f ∈ L log L`
+  and `w > 0`, `w · |{x | sup_N |S_N f(x)| > w}| ≤ C · ‖f‖_Φ`.
+
+## Hypotheses
+
+`consequence_maximal` is conditional on `GoodBound`, the Prop-valued good-set estimate for the
+maximal partial-sum operator (proved elsewhere in the development as
+`FourierLLogL.maximal_good_sets`). The other lemmas are unconditional.
+-/
+
 noncomputable section
 open MeasureTheory Filter Set Function
 open scoped ENNReal BigOperators Topology
@@ -10,15 +32,18 @@ namespace FourierLLogL.Weak
 open Real
 open scoped Classical
 
+/-- The rescaled function `f / b`. -/
 def renorm (f : Torus → ℂ) (b : ℝ) := fun x => ((b⁻¹:ℝ):ℂ)*f x
 
 lemma young_renorm (f : Torus → ℂ) (b : ℝ) (hh : 0 < b) :
     Young (renorm f b)=fun x => priceΦ (‖f x‖/b) := by
   funext x; unfold Young renorm
   rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (inv_pos.2 hh),←div_eq_inv_mul]
+/-- For `b > 0`, the unit-scale modular of `f / b` equals the modular of `f` at scale `b`. -/
 lemma bill_renorm (f : Torus → ℂ) (b : ℝ) (hh : 0 < b) :
     modBill (renorm f b) 1= modBill f b := by
   rw [mod_unit,show (fun x => Young (renorm f b) x)=_ from young_renorm _ _ hh]; rfl
+/-- Every `L log L` function has some `b > 0` with `∫ Φ(|f|/b) ≤ 1`. -/
 lemma lux_exists {f : Torus → ℂ} (h : MemLLogL f) : (luxSet f).Nonempty := by
   let T := modBill f 1; let b := max T 1
   have hb : 1 ≤ b := le_max_right _ _
@@ -44,6 +69,8 @@ lemma lux_exists {f : Torus → ℂ} (h : MemLLogL f) : (luxSet f).Nonempty := b
     rw [show (∫ x, Young f x ∂law) = T from (mod_unit f).symm,←div_eq_inv_mul]
     exact (div_le_one hh).mpr (le_max_left _ _)
 
+/-- Assuming `GoodBound`: weak-type `L log L` bound `w · |{M f > w}| ≤ C · ‖f‖_Φ` for the symmetric
+Fourier maximal function, with `‖f‖_Φ` the Luxemburg norm for `Φ(t) = t log(2 + t)`. -/
 lemma consequence_maximal (h : GoodBound) :
     ∃ C : ℝ, 0 < C ∧ ∀ (f : Torus → ℂ), MemLLogL f →
       ∀ w : ℝ, 0 < w →

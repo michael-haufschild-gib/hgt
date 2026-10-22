@@ -1,21 +1,55 @@
 import Mathlib
 
+/-!
+# Boundary symbols of a horizontal Blaschke layer and their first-order expansion
+
+For real `a`, `ω` and `x`, the horizontal layer factor is the product of two half-plane Blaschke
+boundary factors
+`b_{a,ω}(x) = ((x - i(a+ω)) / (x + i(a+ω))) · ((x + i(a-ω)) / (x - i(a-ω)))`,
+equal to `1` at `ω = 0`. Its derivative in `ω` at `0` is the infinitesimal symbol
+`-2i / (x - i a) - 2i / (x + i a)`. The module gives exact rational formulas for the difference
+quotient `(b_{a,ω}(x) - 1) / ω` and its deviation from the infinitesimal symbol, and the uniform
+bound `48 |ω| / a²` on that deviation over all real `x`.
+
+## Main results
+
+- `horizontalLayerFactorRaw_zero`: `b_{a,0}(x) = 1` for `a ≠ 0`.
+- `horizontalLayerFactorRaw_normalized`: `(b_{a,ω}(x) - 1) / ω = -4 i x / D_{a,ω}(x)` with
+  `D_{a,ω}(x) = (x + i(a+ω)) (x - i(a-ω))`.
+- `horizontalLayerFullInfinitesimalSymbol_eq`: the infinitesimal symbol equals
+  `-4 i x / D_{a,0}(x)`.
+- `horizontalLayerFactorRaw_normalized_sub`: exact formula for the deviation of the difference
+  quotient from the infinitesimal symbol.
+- `norm_horizontalLayerFactorRaw_normalized_sub_le`: for `0 < a`, `ω ≠ 0`, `|ω| ≤ a/2`, the
+  deviation is at most `48 |ω| / a²` for every real `x`.
+
+## Hypotheses
+
+All results are unconditional. The statements carry only explicit nondegeneracy conditions
+(`a ≠ 0`, `ω ≠ 0`, `a ± ω ≠ 0`) and, for the uniform bounds, `0 < a` and `|ω| ≤ a/2`.
+-/
+
 open Complex
 
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- Boundary value at real `x` of one horizontal Blaschke layer:
+`((x - i(a+ω)) / (x + i(a+ω))) · ((x + i(a-ω)) / (x - i(a-ω)))`. -/
 def horizontalLayerFactorRaw (a ω x : ℝ) : ℂ :=
   ((((x : ℝ) : ℂ) - ((a + ω : ℝ) : ℂ) * I) /
       (((x : ℝ) : ℂ) + ((a + ω : ℝ) : ℂ) * I)) *
     ((((x : ℝ) : ℂ) + ((a - ω : ℝ) : ℂ) * I) /
       (((x : ℝ) : ℂ) - ((a - ω : ℝ) : ℂ) * I))
 
+/-- The infinitesimal layer symbol `-2i / (x - i a) - 2i / (x + i a)`, the `ω`-derivative of the
+layer factor at `ω = 0`. -/
 def horizontalLayerFullInfinitesimalSymbol (a x : ℝ) : ℂ :=
   (-2 * I) / (((x : ℝ) : ℂ) - (a : ℂ) * I) +
     (-2 * I) / (((x : ℝ) : ℂ) + (a : ℂ) * I)
 
+/-- The common denominator `D_{a,ω}(x) = (x + i(a+ω)) (x - i(a-ω))`. -/
 def horizontalLayerDenominator (a ω x : ℝ) : ℂ :=
   (((x : ℝ) : ℂ) + ((a + ω : ℝ) : ℂ) * I) *
     (((x : ℝ) : ℂ) - ((a - ω : ℝ) : ℂ) * I)
@@ -34,6 +68,7 @@ lemma real_sub_mul_I_ne_zero {x r : ℝ} (hr : r ≠ 0) :
   simp at hi
   exact hr hi
 
+/-- For `a ≠ 0` the layer factor at `ω = 0` is identically `1`. -/
 theorem horizontalLayerFactorRaw_zero {a : ℝ} (ha : a ≠ 0) (x : ℝ) :
     horizontalLayerFactorRaw a 0 x = 1 := by
   have hp := real_add_mul_I_ne_zero (x := x) ha
@@ -42,6 +77,8 @@ theorem horizontalLayerFactorRaw_zero {a : ℝ} (ha : a ≠ 0) (x : ℝ) :
   norm_num
   field_simp
 
+/-- For `ω ≠ 0` and `a ± ω ≠ 0`, the difference quotient is
+`(b_{a,ω}(x) - 1) / ω = -4 i x / D_{a,ω}(x)`. -/
 theorem horizontalLayerFactorRaw_normalized {a ω : ℝ}
     (hω : ω ≠ 0) (hplus : a + ω ≠ 0) (hminus : a - ω ≠ 0) (x : ℝ) :
     (horizontalLayerFactorRaw a ω x - 1) / (ω : ℂ) =
@@ -61,6 +98,7 @@ theorem horizontalLayerFactorRaw_normalized {a ω : ℝ}
   push_cast
   ring
 
+/-- For `a ≠ 0`, the infinitesimal symbol equals `-4 i x / D_{a,0}(x)`. -/
 theorem horizontalLayerFullInfinitesimalSymbol_eq {a : ℝ} (ha : a ≠ 0) (x : ℝ) :
     horizontalLayerFullInfinitesimalSymbol a x =
       (-4 * I * (x : ℂ)) / horizontalLayerDenominator a 0 x := by
@@ -78,6 +116,8 @@ theorem horizontalLayerFullInfinitesimalSymbol_eq {a : ℝ} (ha : a ≠ 0) (x : 
   field_simp [hp', hm']
   ring
 
+/-- Exact deviation of the difference quotient from the infinitesimal symbol:
+`-4 i x (ω² - 2 i ω x) / (D_{a,ω}(x) D_{a,0}(x))`, for `a, ω, a ± ω` nonzero. -/
 theorem horizontalLayerFactorRaw_normalized_sub {a ω : ℝ} (ha : a ≠ 0)
     (hω : ω ≠ 0) (hplus : a + ω ≠ 0) (hminus : a - ω ≠ 0) (x : ℝ) :
     (horizontalLayerFactorRaw a ω x - 1) / (ω : ℂ) -
@@ -104,6 +144,7 @@ theorem horizontalLayerFactorRaw_normalized_sub {a ω : ℝ} (ha : a ≠ 0)
   rw [Complex.I_sq]
   ring
 
+/-- `|D_{a,0}(x)| = x² + a²`. -/
 theorem norm_horizontalLayerDenominator_zero (a x : ℝ) :
     ‖horizontalLayerDenominator a 0 x‖ = x ^ (2 : ℕ) + a ^ (2 : ℕ) := by
   have hmul :
@@ -121,6 +162,7 @@ theorem norm_horizontalLayerDenominator_zero (a x : ℝ) :
   rw [← norm_mul, hmul, norm_real, Real.norm_eq_abs, abs_of_nonneg]
   positivity
 
+/-- For `0 < a` and `|ω| ≤ a/2`, `a²/4 ≤ |D_{a,ω}(x)|` for every real `x`. -/
 theorem norm_horizontalLayerDenominator_lower {a ω : ℝ} (ha : 0 < a)
     (hsmall : |ω| ≤ a / 2) (x : ℝ) :
     a ^ (2 : ℕ) / 4 ≤ ‖horizontalLayerDenominator a ω x‖ := by
@@ -149,6 +191,7 @@ theorem norm_horizontalLayerDenominator_lower {a ω : ℝ} (ha : 0 < a)
         ‖(x : ℂ) - (a - ω : ℂ) * I‖ :=
       mul_le_mul hp hm (by linarith) (norm_nonneg _)
 
+/-- `|ω² - 2 i ω x| ≤ |ω| (|ω| + 2|x|)`. -/
 theorem norm_horizontalLayerRemainderNumerator_le (ω x : ℝ) :
     ‖(ω : ℂ) ^ (2 : ℕ) - 2 * I * (ω : ℂ) * (x : ℂ)‖ ≤
       |ω| * (|ω| + 2 * |x|) := by
@@ -159,6 +202,7 @@ theorem norm_horizontalLayerRemainderNumerator_le (ω x : ℝ) :
       simp only [norm_pow, norm_real, norm_mul, norm_ofNat, norm_I, Real.norm_eq_abs]
       ring
 
+/-- For `0 < a` and `|ω| ≤ a/2`, `|x| (|ω| + 2|x|) ≤ 3 (x² + a²)`. -/
 lemma abs_mul_horizontalLayerRemainder_le {a ω : ℝ} (ha : 0 < a)
     (hsmall : |ω| ≤ a / 2) (x : ℝ) :
     |x| * (|ω| + 2 * |x|) ≤ 3 * (x ^ (2 : ℕ) + a ^ (2 : ℕ)) := by
@@ -168,6 +212,8 @@ lemma abs_mul_horizontalLayerRemainder_le {a ω : ℝ} (ha : 0 < a)
   have hxa := sq_nonneg (|x| - a)
   nlinarith [sq_abs x]
 
+/-- Uniform first-order expansion: for `0 < a`, `ω ≠ 0`, `|ω| ≤ a/2` and every real `x`,
+`|(b_{a,ω}(x) - 1) / ω - (infinitesimal symbol)(x)| ≤ 48 |ω| / a²`. -/
 theorem norm_horizontalLayerFactorRaw_normalized_sub_le {a ω : ℝ} (ha : 0 < a)
     (hω : ω ≠ 0) (hsmall : |ω| ≤ a / 2) (x : ℝ) :
     ‖(horizontalLayerFactorRaw a ω x - 1) / (ω : ℂ) -

@@ -1,3 +1,16 @@
+/-
+# The critical source chart
+
+Bundles the source chart of the critical horizon: the principal open of affine space in the raw
+coordinates whose fraction field is the critical source field, its finite type and path-connected
+complex points, its integrality and local miracle-flatness data over the observation chart, the
+global Jacobian factorization and ramification divisor (unramified away from the Schur divisor), the
+Schur prime in its presentation, and the explicit marked analytic coordinates. It constructs explicit
+raw-coordinate source meridians around both marked torus divisors, the Kummer obstruction from the
+two independent coordinate valuations, and the fact that, given full monodromy, any element of the
+source field not in the observation field generates it.
+-/
+
 import GaloisForLFunctions.HTGeometry.Critical.Source.AnalyticProjectionCoordinates
 import GaloisForLFunctions.HTGeometry.Critical.Source.BlockComplexPoints
 import GaloisForLFunctions.HTGeometry.Critical.Source.ChartAwaySchurUnramified

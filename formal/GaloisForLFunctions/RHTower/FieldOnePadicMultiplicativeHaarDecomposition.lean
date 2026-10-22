@@ -2,6 +2,30 @@ import GaloisForLFunctions.RHTower.FieldOnePadicValuationUnitDecomposition
 import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
 import Mathlib.MeasureTheory.Integral.Prod
 
+/-!
+# Multiplicative Haar measure on `ℚ_p^×` via the valuation–unit decomposition
+
+The map `(k, u) ↦ p^k u` is an isomorphism of topological groups `ℤ × ℤ_p^× ≅ ℚ_p^×`. This
+module transports the product of counting measure on `ℤ` and the normalized Haar probability
+measure on `ℤ_p^×` along this isomorphism to obtain a Haar measure on `ℚ_p^×`. The unit shell
+`{a : v_p(a) = 0} = ℤ_p^×` has measure `1`, and integrals of integrable functions decompose as a
+sum over valuations: `∫ f = ∑_{k ∈ ℤ} ∫_{ℤ_p^×} f(p^k u) du`.
+
+## Main results
+
+- `fieldOnePadicValuationUnitContinuousMulEquiv`: the topological group isomorphism
+  `ℤ × ℤ_p^× ≃ₜ* ℚ_p^×`, `(k, u) ↦ p^k u`.
+- `fieldOnePadicMultiplicativeHaar`: the transported measure, a Haar measure on `ℚ_p^×`.
+- `fieldOnePadicMultiplicativeHaar_unitShell`: the unit shell has measure `1`.
+- `fieldOnePadicMultiplicativeHaar_integral_eq_tsum`: for integrable `f`,
+  `∫ f = ∑_{k ∈ ℤ} ∫_{ℤ_p^×} f(p^k u) du`.
+
+## Hypotheses
+
+Unconditional; the integral decomposition assumes `f` integrable for the multiplicative Haar
+measure.
+-/
+
 namespace GaloisForLFunctions.RHTower
 
 noncomputable section
@@ -23,6 +47,7 @@ noncomputable instance fieldOnePadicNonzeroMeasurableSpace :
 
 instance fieldOnePadicNonzeroBorelSpace : BorelSpace ℚ_[p]ˣ := ⟨rfl⟩
 
+/-- Counting measure on the discrete group `ℤ` (written multiplicatively) is a Haar measure. -/
 instance fieldOneMultiplicativeIntCountIsHaar :
     IsHaarMeasure (Measure.count : Measure (Multiplicative ℤ)) where
   toIsMulLeftInvariant := inferInstance
@@ -31,6 +56,7 @@ instance fieldOneMultiplicativeIntCountIsHaar :
     exact hK.finite_of_discrete
   open_pos U _hU hne := Measure.count_ne_zero hne
 
+/-- Product of counting measure on `ℤ` and the normalized Haar probability measure on `ℤ_p^×`. -/
 def fieldOnePadicValuationUnitProductHaar :
     Measure (Multiplicative ℤ × ℤ_[p]ˣ) :=
   Measure.count.prod (fieldOnePadicUnitNormalizedHaar p)
@@ -40,21 +66,27 @@ instance fieldOnePadicValuationUnitProductHaar_isHaar :
   unfold fieldOnePadicValuationUnitProductHaar
   infer_instance
 
+/-- The valuation–unit decomposition `ℤ × ℤ_p^× ≃ₜ* ℚ_p^×`, `(k, u) ↦ p^k u`, as an isomorphism of
+topological groups. -/
 def fieldOnePadicValuationUnitContinuousMulEquiv :
     Multiplicative ℤ × ℤ_[p]ˣ ≃ₜ* ℚ_[p]ˣ where
   toMulEquiv := fieldOnePadicValuationUnitMulEquiv p
   continuous_toFun := continuous_fieldOnePadicValuationUnitForward p
   continuous_invFun := continuous_fieldOnePadicValuationUnitMulEquiv_symm p
 
+/-- Multiplicative Haar measure on `ℚ_p^×`: the pushforward of counting measure times normalized unit
+Haar measure along `(k, u) ↦ p^k u`. -/
 def fieldOnePadicMultiplicativeHaar : Measure ℚ_[p]ˣ :=
   (fieldOnePadicValuationUnitProductHaar p).map
     (fieldOnePadicValuationUnitContinuousMulEquiv p)
 
+/-- The transported measure on `ℚ_p^×` is a Haar measure. -/
 instance fieldOnePadicMultiplicativeHaar_isHaar :
     IsHaarMeasure (fieldOnePadicMultiplicativeHaar p) := by
   unfold fieldOnePadicMultiplicativeHaar
   infer_instance
 
+/-- The unit shell `{a ∈ ℚ_p^× : v_p(a) = 0}`. -/
 def fieldOnePadicUnitShell : Set ℚ_[p]ˣ :=
   {a | Padic.valuation (a : ℚ_[p]) = 0}
 
@@ -86,6 +118,7 @@ theorem fieldOnePadicValuationUnitContinuousMulEquiv_preimage_unitShell :
       exact fieldOnePadic_valuation_forward p z]
   exact Multiplicative.toAdd.injective.eq_iff.symm
 
+/-- The unit shell `{v_p(a) = 0}` has multiplicative Haar measure `1`. -/
 @[simp] theorem fieldOnePadicMultiplicativeHaar_unitShell :
     fieldOnePadicMultiplicativeHaar p (fieldOnePadicUnitShell p) = 1 := by
   let e := (fieldOnePadicValuationUnitContinuousMulEquiv p).toHomeomorph.toMeasurableEquiv
@@ -102,6 +135,8 @@ theorem fieldOnePadicValuationUnitContinuousMulEquiv_preimage_unitShell :
   rw [fieldOnePadicValuationUnitProductHaar, Measure.prod_prod]
   simp
 
+/-- Valuation decomposition of multiplicative Haar integrals: for integrable `f` on `ℚ_p^×`,
+`∫ f = ∑_{k ∈ ℤ} ∫_{ℤ_p^×} f(p^k u) du`. -/
 theorem fieldOnePadicMultiplicativeHaar_integral_eq_tsum
     (f : ℚ_[p]ˣ → ℂ)
     (hf : Integrable f (fieldOnePadicMultiplicativeHaar p)) :

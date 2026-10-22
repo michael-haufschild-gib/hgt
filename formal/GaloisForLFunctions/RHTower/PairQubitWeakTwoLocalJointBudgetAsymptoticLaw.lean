@@ -1,5 +1,32 @@
 import GaloisForLFunctions.RHTower.PairQubitWeakTwoLocalSpectralActionLaw
 
+/-!
+# Large-size asymptotics of the pair-qubit weak two-local joint budget
+
+On the pair-qubit chain with `L` sites (`2L` qubits) two explicit failure budgets control a
+standard-Gaussian two-local Pauli draw: the growth-failure budget
+`#{traceless Pauli labels of weight ≤ 2 on 2L qubits} · 2 exp(-(2L)²/2)` and, for a projective
+trace-deficit floor `η`, the uniform carrier budget `exp(-(m²/2)(6·2L - 4) η)/κ`, where `m` is the
+standard Gaussian mass of `[1, 2]`. Bounding the label count by `18 (2L)²` dominates the first by
+`144 L² e^{-L}`, and the second decays like `e^{-8 (m²/2) η L}`. Both tend to `0`, so their sum
+drops below `1` for all sufficiently large `L`, which is the joint-budget input of the
+same-draw growth and carrier existence theorem.
+
+## Main results
+
+- `tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop`: the growth-failure budget tends to `0`.
+- `tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop`: for `η, κ > 0` the uniform carrier
+  budget tends to `0`.
+- `tendsto_pairQubitWeakTwoLocalUniformJointBudget_atTop`: their sum tends to `0`.
+- `exists_pairQubitWeakTwoLocalUniformJointBudgetThreshold`: for `η, κ > 0` there is `L₀` with
+  joint budget `< 1` for all `L ≥ L₀`.
+
+## Hypotheses
+
+All results are unconditional; the carrier statements assume only the positivity `0 < η` and
+`0 < κ` of the deficit floor and the normalising constant.
+-/
+
 open scoped BigOperators Matrix
 open Matrix Set MeasureTheory ProbabilityTheory Filter Topology
 
@@ -9,6 +36,8 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- The growth-failure budget `#labels · 2 exp(-(2L)²/2)` tends to `0` as `L → ∞`, dominated by
+`144 L² e^{-L}`. -/
 theorem tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop :
     Tendsto pairQubitWeakTwoLocalGrowthFailureBudget atTop (nhds 0) := by
   have hmajorReal : Tendsto
@@ -49,10 +78,13 @@ theorem tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop :
       push_cast
       ring
 
+/-- The uniform carrier budget `exp(-(m²/2)(6·2L - 4) η)/κ`, with `m` the standard Gaussian
+mass of `[1, 2]` and `η` a projective trace-deficit floor. -/
 def pairQubitWeakTwoLocalUniformCarrierBudget (L : ℕ) (η κ : ℝ) : ℝ :=
   Real.exp (-(gaussianIntervalActivationMass ^ (2 : ℕ) / 2) *
     (((6 * (L * 2) - 4 : ℕ) : ℝ) * η)) / κ
 
+/-- For `η > 0` and `κ > 0` the uniform carrier budget tends to `0` as `L → ∞`. -/
 theorem tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop
     {η κ : ℝ} (hη : 0 < η) (hκ : 0 < κ) :
     Tendsto (fun L => pairQubitWeakTwoLocalUniformCarrierBudget L η κ)
@@ -97,6 +129,7 @@ theorem tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop
       push_cast
       ring
 
+/-- For `η, κ > 0` the joint budget (growth failure plus uniform carrier) tends to `0`. -/
 theorem tendsto_pairQubitWeakTwoLocalUniformJointBudget_atTop
     {η κ : ℝ} (hη : 0 < η) (hκ : 0 < κ) :
     Tendsto (fun L => pairQubitWeakTwoLocalGrowthFailureBudget L +
@@ -105,6 +138,7 @@ theorem tendsto_pairQubitWeakTwoLocalUniformJointBudget_atTop
   simpa using tendsto_pairQubitWeakTwoLocalGrowthFailureBudget_atTop.add
     (tendsto_pairQubitWeakTwoLocalUniformCarrierBudget_atTop hη hκ)
 
+/-- For `η, κ > 0` the joint budget is eventually `< 1` as `L → ∞`. -/
 theorem eventually_pairQubitWeakTwoLocalUniformJointBudget_lt_one
     {η κ : ℝ} (hη : 0 < η) (hκ : 0 < κ) :
     ∀ᶠ L : ℕ in atTop,
@@ -113,6 +147,8 @@ theorem eventually_pairQubitWeakTwoLocalUniformJointBudget_lt_one
   (tendsto_pairQubitWeakTwoLocalUniformJointBudget_atTop hη hκ).eventually_lt_const
     zero_lt_one
 
+/-- Explicit threshold: for `η, κ > 0` there is `L₀` such that the joint budget is `< 1` for
+every `L ≥ L₀`. -/
 theorem exists_pairQubitWeakTwoLocalUniformJointBudgetThreshold
     {η κ : ℝ} (hη : 0 < η) (hκ : 0 < κ) :
     ∃ L₀ : ℕ, ∀ L : ℕ, L₀ ≤ L →

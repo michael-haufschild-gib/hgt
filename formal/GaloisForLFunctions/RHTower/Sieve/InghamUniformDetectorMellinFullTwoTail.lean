@@ -2,6 +2,40 @@ import GaloisForLFunctions.HTGeometry.PowerTailBochnerBoundInward
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorMellinNegativeHalfPoleContour
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevSeriesBound
 
+/-!
+# Tail of the full von Mangoldt Mellin edge on `Re s = 2`
+
+Let `N_X = X^{1000/299}`, `F_X = X^{999/1000}`, `H_X = N_X / F_X`, and let `K_X(s)` be the
+width-normalized Mellin transform of Route T's smooth window
+`smoothWeight(N_X + H_X, H_X) - smoothWeight(N_X, H_X)`. This module defines the full edge integral
+`∫_ℝ (∑ Λ(n) n^{-(2+it)}) K_X(2+it) dt` and shows that truncating it to `|t| ≤ T_X`, the selected
+contour height in `(X-3, X-2)`, costs at most `E X^{-196/299}`. The proof combines a generic
+power-tail estimate for integrals, the bound `|ζ'/ζ(2+it)| ≤ 8`, and order-`5000` Mellin decay
+`|t|^{5000} |K_X(2+it)| ≤ D N_X F_X^{5000}`.
+
+## Main results
+
+- `norm_integral_sub_interval_le_powerTail`: if `f` is integrable and `|f(t)| ≤ C |t|^{-q}` for
+  `|t| ≥ T` with `q > 1`, then `|∫_ℝ f - ∫_{-T}^{T} f| ≤ 2C T^{1-q}/(q-1)`.
+- `norm_routeT_two_vonMangoldt_full_sub_interval_le_natOrder`: given `|t|^j |K(2+it)| ≤ C` with
+  `j ≥ 2`, the truncation error of `∫ (-ζ'/ζ) K` on `Re s = 2` is at most `16 C T^{1-j}/(j-1)`.
+- `exists_routeTBufferedMellin_two_natOrder_frequency_bound`: for each `j ≥ 1`,
+  `|t|^j |K_X(2+it)| ≤ D N_X F_X^j` uniformly in `X ≥ 3` and `t ≠ 0`.
+- `inghamRouteTBufferedFullTwoVonMangoldtEdge`: the full edge integral.
+- `exists_norm_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_rpow_le`: the full edge
+  minus the edge truncated at `T_X` has norm at most `E X^{-196/299}` for `X ≥ 12`.
+- `tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_zero`: that difference tends to
+  `0` as `X → ∞`.
+
+## Hypotheses
+
+The Route T results are unconditional; the only conditions are ranges such as `X ≥ 12`. The generic
+lemmas `norm_integral_sub_interval_le_powerTail` and
+`norm_routeT_two_vonMangoldt_full_sub_interval_le_natOrder` take an explicit power-decay bound on
+the integrand or kernel as a hypothesis, together with integrability and positivity of `N`, `H`,
+`T`.
+-/
+
 open Complex Filter Topology intervalIntegral
 open MeasureTheory Set
 open ArithmeticFunction
@@ -12,6 +46,8 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Power-tail truncation: assuming `f` is integrable and `|f(t)| ≤ C |t|^{-q}` for `|t| ≥ T`
+(with `C ≥ 0`, `q > 1`, `T > 0`), `|∫_ℝ f - ∫_{-T}^{T} f| ≤ 2C T^{1-q}/(q-1)`. -/
 theorem norm_integral_sub_interval_le_powerTail
     {f : ℝ → ℂ} (hf : Integrable f) {C q T : ℝ}
     (hC : 0 ≤ C) (hq : 1 < q) (hT : 0 < T)
@@ -68,6 +104,8 @@ theorem norm_integral_sub_interval_le_powerTail
           C * (T ^ (1 - q) / (q - 1)) := add_le_add hleft hright
     _ = 2 * C * (T ^ (1 - q) / (q - 1)) := by ring
 
+/-- Assuming the kernel decay `|t|^j |K_{N,H}(2+it)| ≤ C` for `t ≠ 0` with `j ≥ 2`, truncating
+`∫_ℝ (-ζ'/ζ)(2+it) K_{N,H}(2+it) dt` to `[-T, T]` costs at most `16 C T^{1-j}/(j-1)`. -/
 theorem norm_routeT_two_vonMangoldt_full_sub_interval_le_natOrder
     {N H T C : ℝ} (hN : 0 < N) (hH : 0 < H) (hT : 0 < T)
     {j : ℕ} (hj : 2 ≤ j) (hC : 0 ≤ C)
@@ -142,6 +180,8 @@ theorem norm_routeT_two_vonMangoldt_full_sub_interval_le_natOrder
     (norm_integral_sub_interval_le_powerTail hFKint
       (mul_nonneg (by norm_num) hC) hjR hT htail)
 
+/-- Order-`j` Mellin decay of Route T's buffered kernel on `Re s = 2`: for `j ≥ 1` there is
+`D ≥ 0` with `|t|^j |K_X(2+it)| ≤ D N_X F_X^j` for all `X ≥ 3` and `t ≠ 0`. -/
 theorem exists_routeTBufferedMellin_two_natOrder_frequency_bound (j : ℕ) (hj : 1 ≤ j) :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {X : ℕ} {t : ℝ}, 3 ≤ X → 0 < |t| →
       |t| ^ j * ‖routeTNormalizedSmoothWindowMellin
@@ -175,6 +215,7 @@ theorem exists_routeTBufferedMellin_two_natOrder_frequency_bound (j : ℕ) (hj :
     ring
   simpa only [N, H, F, hscale] using hbound
 
+/-- The full von Mangoldt edge `∫_ℝ (∑ Λ(n) n^{-(2+it)}) K_X(2+it) dt` on the line `Re s = 2`. -/
 def inghamRouteTBufferedFullTwoVonMangoldtEdge (X : ℕ) : ℂ :=
   ∫ t : ℝ,
     (∑' n : ℕ, ((vonMangoldt n : ℝ) : ℂ) *
@@ -184,6 +225,8 @@ def inghamRouteTBufferedFullTwoVonMangoldtEdge (X : ℕ) : ℂ :=
         (inghamRouteTMellinBufferedPhysicalWidth X)
         (((2 : ℝ) : ℂ) + (t : ℂ) * I)
 
+/-- For `X ≥ 12`, the full edge minus the edge truncated at `T_X` is at most
+`16 D N_X F_X^{5000} T_X^{-4999}/4999`. -/
 theorem exists_norm_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_le :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {X : ℕ}, 12 ≤ X →
       ‖inghamRouteTBufferedFullTwoVonMangoldtEdge X -
@@ -262,6 +305,7 @@ theorem exists_norm_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_le :
   dsimp only [N, H, F, T] at hlog ⊢
   convert hlog using 1 <;> norm_num
 
+/-- Exponent bookkeeping: `N_X F_X^{5000} / X^{4999} = X^{-196/299}` for `X ≥ 1`. -/
 theorem inghamRouteTMellinCenter_mul_bufferedFrequency_pow_5000_div_height_pow_4999
     {X : ℕ} (hX : 1 ≤ X) :
     inghamRouteTMellinPhysicalCenter X *
@@ -306,6 +350,8 @@ theorem inghamRouteTMellinCenter_mul_bufferedFrequency_pow_5000_mul_halfHeight_r
     _ = _ := by
       rw [inghamRouteTMellinCenter_mul_bufferedFrequency_pow_5000_div_height_pow_4999 hX]
 
+/-- Power saving for the edge tail: some `E ≥ 0` gives
+`|full edge - selected edge| ≤ E X^{-196/299}` for all `X ≥ 12`. -/
 theorem exists_norm_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_rpow_le :
     ∃ E : ℝ, 0 ≤ E ∧ ∀ {X : ℕ}, 12 ≤ X →
       ‖inghamRouteTBufferedFullTwoVonMangoldtEdge X -
@@ -372,6 +418,7 @@ theorem exists_norm_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_rpow
             dsimp only [E]
             ring
 
+/-- The full von Mangoldt edge minus its truncation at `T_X` tends to `0` as `X → ∞`. -/
 theorem tendsto_inghamRouteTBufferedFullTwoVonMangoldtEdge_sub_selected_zero :
     Tendsto (fun X : ℕ =>
       inghamRouteTBufferedFullTwoVonMangoldtEdge X -

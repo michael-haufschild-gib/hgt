@@ -1,6 +1,30 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Capture.Dual
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Capture.Curve
 
+/-!
+# Quantized phases of captured frequencies and their information cost
+
+On `Grid M = ℤ/2^M`, the phase `s x` of a frequency `s` at a point `x` is rounded to the coarser
+ring `ℤ/2^{min(e, M)}` (`shade`), and the character of the rounded phase (`shine`) is within
+`8 · 2^{-e}` of `χ_s(x)`. For a finite frequency set `d`, `tiles e d x` records these rounded phases
+for all frequencies of `d`. Enriching the observation channel of a scene with the tiles of the
+observed point (`sight`) increases the scene's information deficit by at most `|d| · e`. Every
+character `χ_u` with `u` a signed `{-1, 0, 1}` combination of `d` is approximated within
+`|d| · 8 · 2^{-e}` by a unimodular function of the tiles.
+
+## Main results
+
+- `shade_close`: `|χ_s(x) - shine e M (shade e x s)| ≤ 8 · 2^{-e}`.
+- `sight_budget`: `v ≤ deficit s (sight s b d e) ≤ v + |d| · e`, where `v` is the deficit of the
+  plain channel.
+- `painted`: for `u` in the signed span of `d`, some unimodular `f` on tiles satisfies
+  `|χ_u(x) - f(tiles e d x)| ≤ |d| · 8 · 2^{-e}` for all `x`.
+
+## Hypotheses
+
+All results are unconditional; `painted` assumes `u` is a signed `{-1, 0, 1}` combination of `d`.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -12,12 +36,16 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {M : ℕ}
 open scoped Classical
 
+/-- The coarse phase ring `ℤ/2^{min(e, M)}`. -/
 abbrev RingN (e M : ℕ) := Grid (min e M)
+/-- The phase `s x` projected to the coarse ring `ℤ/2^{min(e, M)}`. -/
 def shade (e : ℕ) (x s : Grid M) : RingN e M :=
     down (min_le_right e M) (s*x)
+/-- The unit character of a coarse phase, lifted back to `Grid M`. -/
 def shine (e M : ℕ) (z : RingN e M) : ℂ :=
     chi 1 (raise (min_le_right e M) z)
 
+/-- Rounding error of phases: `|χ_s(x) - shine e M (shade e x s)| ≤ 8 · 2^{-e}`. -/
 lemma shade_close (e : ℕ) (x s : Grid M) : ‖chi s x-shine e M (shade e x s)‖ ≤ 8*side e := by
   let p := s*x
   let r := raise (min_le_right e M) (shade e x s)
@@ -44,11 +72,13 @@ lemma shade_close (e : ℕ) (x s : Grid M) : ‖chi s x-shine e M (shade e x s)�
 
 abbrev TileN (e : ℕ) (d : Finset (Grid M)) := d → RingN e M
 
+/-- The vector of rounded phases `(shade e x i)_{i ∈ d}` of `x` against the frequencies of `d`. -/
 def tiles (e : ℕ) (d : Finset (Grid M)) (x : Grid M) : TileN e d :=
     fun i => shade e x i
 
 abbrev Dome (e : ℕ) (d : Finset (Grid M)) := Grid M × TileN e d
 
+/-- The scene's observation channel at `x`, enriched with the tiles of `x`. -/
 def sight (s : Scene M) (b : Bool) (d : Finset (Grid M)) (e : ℕ) (x : Grid M) :
     Law (Dome e d) := (channel (optic s b) x).send (fun y => (y,tiles e d x))
 
@@ -66,6 +96,8 @@ private lemma see_as_H (s : Scene M) (b : Bool) (d : Finset (Grid M)) (e : ℕ) 
     rfl
   rw [privateH,H,Hcond_send]
 
+/-- The enriched channel's deficit lies between the plain deficit `v` and `v + |d| · e`, since the
+tiles carry at most `|d| · e` units of entropy. -/
 lemma sight_budget (s : Scene M) (b : Bool) (d : Finset (Grid M)) (e : ℕ) :
     let v := deficit s (channel (optic s b))
     v ≤ deficit s (sight s b d e) ∧ deficit s (sight s b d e) ≤ v+d.card*e := by
@@ -102,6 +134,8 @@ lemma sight_budget (s : Scene M) (b : Bool) (d : Finset (Grid M)) (e : ℕ) :
 
 private def switch (n : ℤ) (z : ℂ) :=
     if n=0 then 1 else if n=1 then z else conj z
+/-- If `u` is a signed `{-1, 0, 1}` combination of `d`, there is a unimodular `f` on tiles with
+`|χ_u(x) - f(tiles e d x)| ≤ |d| · 8 · 2^{-e}` for every `x`. -/
 theorem painted (u : Grid M) (d : Finset (Grid M)) (h : enclosed d 1 u) (e : ℕ) :
     ∃ f : TileN e d → ℂ, (∀ i, ‖f i‖=1) ∧
       ∀ x, ‖chi u x-f (tiles e d x)‖ ≤ d.card*(8*side e) := by

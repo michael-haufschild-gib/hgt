@@ -1,12 +1,34 @@
 import GaloisForLFunctions.RHTower.Sieve.FiniteFiberCorrelation
 import Mathlib.Tactic
 
+/-!
+# Fibre energy under injective affine transforms and domain embeddings
+
+For a map `f : α → β` into a finite additive group, the fibre energy `∑_b #f⁻¹(b)²` counts pairs
+with `f(z₁) = f(z₂)`. Pairs satisfying an affine relation `c + A(f z₁) = d + A(f z₂)` through an
+injective additive map `A` all share one difference `f z₁ - f z₂`, so they are counted by a single
+fibre correlation and hence by the energy. Restricting `f` along an embedding of the domain cannot
+increase its energy.
+
+## Main results
+
+- `card_transformed_fixed_shift_le_energy`: for injective additive `A`,
+  `#{(z₁, z₂) : c + A(f z₁) = d + A(f z₂)} ≤ energy(f)`.
+- `finiteFiberEnergy_le_of_domain_embedding`: `energy(f ∘ e) ≤ energy(f)` for an embedding `e`.
+
+## Hypotheses
+
+Both results are unconditional finite combinatorics; the first assumes `A` is injective.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- For an injective additive map `A` and shifts `c, d`, the number of pairs with
+`c + A(f z₁) = d + A(f z₂)` is at most the fibre energy of `f`. -/
 theorem card_transformed_fixed_shift_le_energy
     {α β γ : Type*} [Fintype α] [Fintype β] [Fintype γ]
     [DecidableEq β] [DecidableEq γ]
@@ -63,6 +85,7 @@ theorem card_transformed_fixed_shift_le_energy
       Fintype.card_eq_zero
     omega
 
+/-- Composing with an embedding of the domain does not increase the fibre energy. -/
 theorem finiteFiberEnergy_le_of_domain_embedding
     {α α' β : Type*} [Fintype α] [Fintype α'] [Fintype β]
     [DecidableEq β] (e : α ↪ α') (f : α' → β) :

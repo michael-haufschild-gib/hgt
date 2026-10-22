@@ -1,14 +1,37 @@
 import GaloisForLFunctions.RHTower.XiCTaylorThetaTailSurvivalMobiusReflection
 
+/-!
+# Completed survival remainder of the theta tail
+
+Let `Θ(x) = Σ_(n ≥ 1) e^(x/2) exp(-π n^2 e^(2x))` be the logarithmic Gaussian theta tail, with
+survival function `S = -4 Θ'` (so `S(0) = 1`) and second density `D = 4 Θ'' = -S'`. This module
+shows atom by atom that `D(x) ≥ S(x)/2` for `x ≥ 0`, using `π > 3`. Hence `e^(x/2) S(x)` is
+nonincreasing on `[0, ∞)`, and the completed survival remainder `R(x) = e^(-x/2) - S(x)` is
+nonnegative there. `R` vanishes at `0` and is odd.
+
+## Main results
+
+- `thetaCuspTailSurvival_eq_tsum_atom`: `S` is the sum of its Gaussian atoms over `n ≥ 1`.
+- `thetaCuspTailSecondDensity_ge_half_survival`: `S(x)/2 ≤ D(x)` for `x ≥ 0`.
+- `thetaCuspCompletedSurvivalRemainder_neg`: `R(-x) = -R(x)`.
+- `thetaCuspCompletedSurvivalRemainder_nonneg`: `R(x) ≥ 0` for `x ≥ 0`, i.e. `S(x) ≤ e^(-x/2)`.
+
+## Hypotheses
+
+Unconditional; the inequalities hold for `x ≥ 0`.
+-/
+
 open Complex Real MeasureTheory Set Filter Topology Polynomial
 
 namespace RHTower
 
 noncomputable section
 
+/-- The `n`-th Gaussian atom of the survival function `S = -4 Θ'`. -/
 def thetaCuspTailSurvivalAtom (n : ℕ) (x : ℝ) : ℝ :=
   -4 * thetaCuspPolynomialAtom (thetaCuspTailDerivativePolynomial 1) n x
 
+/-- The survival function is the sum of its atoms: `S(x) = Σ_(n ≥ 1) S_n(x)`. -/
 theorem thetaCuspTailSurvival_eq_tsum_atom (x : ℝ) :
     thetaCuspTailSurvival x =
       ∑' n : ℕ, thetaCuspTailSurvivalAtom (n + 1) x := by
@@ -22,6 +45,8 @@ theorem summable_thetaCuspTailSurvivalAtom (x : ℝ) :
   unfold thetaCuspTailSurvivalAtom
   exact (summable_thetaCuspTailDerivative 1 x).mul_left (-4)
 
+/-- For `n ≥ 1` and `x ≥ 0`, each second-density atom dominates half the survival atom:
+`S_n(x)/2 ≤ D_n(x)`, from a polynomial inequality in `u = n e^x ≥ 1` using `π > 3`. -/
 theorem thetaCuspTailSecondDensityAtom_ge_half_survivalAtom
     {n : ℕ} (hn : 0 < n) {x : ℝ} (hx : 0 ≤ x) :
     (1 / 2 : ℝ) * thetaCuspTailSurvivalAtom n x ≤
@@ -66,6 +91,7 @@ theorem thetaCuspTailSecondDensityAtom_ge_half_survivalAtom
         eval ((n : ℝ) * Real.exp x) (thetaCuspTailDerivativePolynomial 2) *
           Real.exp (-Real.pi * ((n : ℝ) * Real.exp x) ^ (2 : ℕ))) := by ring
 
+/-- For `x ≥ 0`, the second density dominates half the survival function: `S(x)/2 ≤ D(x)`. -/
 theorem thetaCuspTailSecondDensity_ge_half_survival
     {x : ℝ} (hx : 0 ≤ x) :
     (1 / 2 : ℝ) * thetaCuspTailSurvival x ≤ thetaCuspTailSecondDensity x := by
@@ -78,6 +104,7 @@ theorem thetaCuspTailSecondDensity_ge_half_survival
     ((summable_thetaCuspTailSurvivalAtom x).mul_left (1 / 2 : ℝ))
     (summable_thetaCuspTailDerivative 2 x |>.mul_left 4)
 
+/-- The completed survival remainder `R(x) = e^(-x/2) - S(x)`. -/
 def thetaCuspCompletedSurvivalRemainder (x : ℝ) : ℝ :=
   Real.exp (-x / 2) - thetaCuspTailSurvival x
 
@@ -85,6 +112,7 @@ def thetaCuspCompletedSurvivalRemainder (x : ℝ) : ℝ :=
     thetaCuspCompletedSurvivalRemainder 0 = 0 := by
   simp [thetaCuspCompletedSurvivalRemainder]
 
+/-- The completed survival remainder is odd: `R(-x) = -R(x)`. -/
 theorem thetaCuspCompletedSurvivalRemainder_neg (x : ℝ) :
     thetaCuspCompletedSurvivalRemainder (-x) =
       -thetaCuspCompletedSurvivalRemainder x := by
@@ -92,6 +120,8 @@ theorem thetaCuspCompletedSurvivalRemainder_neg (x : ℝ) :
   rw [thetaCuspTailSurvival_neg]
   ring_nf
 
+/-- For `x ≥ 0`, `R(x) = e^(-x/2) - S(x) ≥ 0`, because `e^(x/2) S(x)` is nonincreasing on `[0, ∞)`
+and equals `1` at `0`. -/
 theorem thetaCuspCompletedSurvivalRemainder_nonneg
     {x : ℝ} (hx : 0 ≤ x) :
     0 ≤ thetaCuspCompletedSurvivalRemainder x := by

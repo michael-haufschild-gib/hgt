@@ -2,6 +2,32 @@ import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Fourier.Translate
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Fourier.Kernel
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Fourier.Affine
 
+/-!
+# Averaging dyadic Haar shifts over scales gives a truncated kernel convolution
+
+A dyadic Haar shift of depth `J` with top interval `[a, a + s)` is averaged over origins
+`a ∈ [-2, 2)` and over scales `s ∈ [1/2, 1)` with weight `1/s²`. For bounded measurable `F` and a
+point `x ∈ [0, 1)`, this double average equals the convolution `∫_{[-1,1)} K_{2^{-J}}(t) F(x - t) dt`
+with the truncated kernel `K_δ(t) = ∫_δ^1 κ(t/r)/r² dr`, where `κ` is the translation-averaged Haar
+kernel. As a consequence, the maximal modulated convolution `sup_u |K * (ρ e(u ·))|` has set
+integral over `G ⊆ [0, 1)` at most `16 Q` whenever every maximal modulated Haar shift has set
+integral at most `Q` over `G`.
+
+## Main results
+
+- `averageH`, `convK`: the scale-and-origin average of Haar shifts, and the kernel convolution.
+- `convolution_average`: `averageH F x J = convK F x J` for bounded measurable `F` and `x ∈ [0, 1)`.
+- `maxConvK`: supremum over integer modulations `u` of `|convK (ρ · e(u ·)) x J|`.
+- `convolution_cost`: transfers uniform set-integral bounds for maximal modulated Haar shifts to
+  the maximal modulated kernel convolution, with constant `16`.
+
+## Hypotheses
+
+Unconditional. `convolution_average` assumes `F` measurable with `‖F‖ ≤ B`; `convolution_cost`
+assumes `ρ` measurable, nonnegative and bounded, `G` measurable inside `[0, 1)`, and takes the
+shift bound `Q` for every scale and origin as an explicit hypothesis.
+-/
+
 open MeasureTheory Filter Set Function
 open scoped ENNReal BigOperators Topology Real
 
@@ -10,11 +36,15 @@ namespace GaloisForLFunctions.HTGeometry
 namespace FourierLLogL.Period
 noncomputable section
 
+/-- The range `[1/2, 1)` of top-interval scales. -/
 def scales : Set ℝ := Ico (1/2) 1
 
+/-- Average of the depth-`J` Haar shift of `F` at `x` over origins in `[-2, 2)` and scales in
+`[1/2, 1)`, with scale weight `1/s²`. -/
 def averageH (F : ℝ → ℂ) (x : ℝ) (J : ℕ) :=
   ∫ s in scales, (1/s^2) • ∫ a in origins, shift F a s J x
 
+/-- Convolution of `F` at `x` with the truncated kernel `kernel (2^{-J})` over the window `[-1, 1)`. -/
 def convK (F : ℝ → ℂ) (x : ℝ) (J : ℕ) :=
   ∫ t in window, kernel (side J) t • F (x-t)
 
@@ -58,6 +88,7 @@ private instance origins_fin : IsFiniteMeasure (volume.restrict origins) :=
 private instance window_fin : IsFiniteMeasure (volume.restrict window) :=
   show IsFiniteMeasure (volume.restrict (Ico (-1:ℝ) 1)) from inferInstance
 
+/-- Passing from depth `J` to `J + 1` adds the averaged `J`-th Haar layer. -/
 private lemma average_succ (F : ℝ → ℂ) (hf : Measurable F) (B : ℝ) (hb : ∀ y, ‖F y‖ ≤ B)
     (x : ℝ) (J : ℕ) :
     averageH F x (J+1) = averageH F x J +
@@ -91,6 +122,7 @@ private lemma average_succ (F : ℝ → ℂ) (hf : Measurable F) (B : ℝ) (hb :
   simp_rw [heq, integral_add hUI' hVI']
   rfl
 
+/-- The kernel piece `∫_a^b κ(t/r)/r² dr` contributed by scales `r ∈ [a, b)`. -/
 def portion (a b t : ℝ) : ℝ := ∫ r in Ico a b, kappa (t/r) / r^2
 
 private lemma scale_subst (n : ℕ) (t : ℝ) :
@@ -115,6 +147,7 @@ private lemma scale_subst (n : ℕ) (t : ℝ) :
   rw [integral_smul, hh, smul_smul, mul_inv_cancel₀ hp.ne', one_smul, side_succ]
   simp only [f, div_eq_mul_inv, one_mul]
 
+/-- `K_{2^{-(J+1)}} = K_{2^{-J}} + portion(2^{-(J+1)}, 2^{-J})`. -/
 private lemma kernel_split (J : ℕ) (t : ℝ) :
     kernel (side (J+1)) t = kernel (side J) t + portion (side (J+1)) (side J) t := by
   let f (r : ℝ) := kappa (t/r)/r^2
@@ -130,6 +163,8 @@ private lemma kernel_split (J : ℕ) (t : ℝ) :
     seg_eq_interval f hlt, add_comm (a:=(∫ x in side J..1, f x)), intervalIntegral.integral_add_adjacent_intervals
       (hi (side_pos _) hlt) (hi (side_pos _) (side_le J))]
 
+/-- For measurable `F` with `‖F‖ ≤ B` and `x ∈ [0, 1)`, the scale-and-origin average of the
+depth-`J` Haar shifts equals convolution with the truncated kernel `K_{2^{-J}}`. -/
 lemma convolution_average (F : ℝ → ℂ) (hf : Measurable F) (B : ℝ) (hb : ∀ y, ‖F y‖ ≤ B)
     {x : ℝ} (hx : x ∈ unitInt) (J) :
     averageH F x J = convK F x J := by
@@ -189,6 +224,7 @@ lemma convolution_average (F : ℝ → ℂ) (hf : Measurable F) (B : ℝ) (hb : 
     rfl
 
 
+/-- Maximal modulated kernel convolution: `sup_{u ∈ ℤ} |convK (ρ · e(u ·)) x J|`. -/
 def maxConvK (ρ : ℝ → ℝ) (J : ℕ) (x : ℝ) : ℝ≥0∞ :=
   ⨆ u : ℤ, ENNReal.ofReal ‖convK (modρ ρ u) x J‖
 
@@ -202,6 +238,9 @@ lemma measurable_maxConvK {ρ : ℝ → ℝ} (hρ : Measurable ρ) (J : ℕ) :
     (((kernel_measurable _).comp measurable_snd).smul
       ((measurable_mod hρ _).comp (measurable_fst.sub measurable_snd))))
 
+/-- For measurable `0 ≤ ρ ≤ B` and measurable `G ⊆ [0, 1)`: if every maximal modulated Haar shift
+`maxShift ρ a s J` with `s ∈ [1/2, 1)`, `a ∈ [-2, 2)` has integral at most `Q` over `G`, then
+`∫_G maxConvK ρ J ≤ 16 Q`. -/
 lemma convolution_cost {ρ : ℝ → ℝ} (hρ : Measurable ρ) (h0 : ∀ x, 0 ≤ ρ x)
     (B : ℝ) (hb : ∀ y, ρ y ≤ B) (G : Set ℝ) (hG : MeasurableSet G)
     (hGu : G ⊆ unitInt) (Q : ℝ≥0∞) (J : ℕ)

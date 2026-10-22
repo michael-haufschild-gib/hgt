@@ -6,6 +6,38 @@ import GaloisForLFunctions.HTGeometry.ActivePauliShellSpectralLaw
 import GaloisForLFunctions.HTGeometry.PauliBoundedHamiltonianLocalityLaw
 import GaloisForLFunctions.HTGeometry.TwoLocalPauliGaussianEnergyCap
 
+/-!
+# Gaussian two-local Pauli perturbations preserve maximally projective spectra
+
+A Hermitian spectrum `E` is maximally projective when no nonzero integer vector `k` with
+`Σ k_i = 0` satisfies `Σ k_i E_i = 0`. This module proves a one-witness genericity law for
+Gaussian Pauli perturbations on `n` qubits: if a Hermitian base Hamiltonian `H₀` has maximally
+projective spectrum, then for every real scale `s`, almost surely with respect to the standard
+Gaussian on the coefficients `x` of the nonidentity Pauli strings of weight at most two,
+`H₀ + Σ_P s x_P P` also has maximally projective spectrum. It is obtained by viewing
+`H₀ + s Σ x_P P` as a real-affine Hermitian family, whose maximal set has Lebesgue-null complement
+once it contains one point, and transferring null sets through the absolute continuity of the
+Gaussian.
+
+## Main results
+
+- `Matrix.IsHermitian.maximallyProjective_reindexAlgEquiv`: maximal projectivity of the spectrum
+  is invariant under reindexing the basis.
+- `stdGaussian_absolutelyContinuous_volume_finEuclidean`: the standard Gaussian on
+  `EuclideanSpace ℝ (Fin m)` is absolutely continuous with respect to Lebesgue measure.
+- `realAffineMatrix_scaledActivePauli_eq`: the real-affine family with generators `s · P` is
+  `H₀ + s · Σ_t p_t P_t`.
+- `maximallyProjective_scaledAffine_activePauli_ae`: if `H₀` has maximally projective spectrum,
+  then for every real `s` and almost every Gaussian two-local Pauli coefficient vector `x`, the
+  spectrum of `H₀ + H(s x)` is maximally projective.
+
+## Hypotheses
+
+The main theorem is conditional on `hmax`: the Hermitian base matrix `H₀` itself has maximally
+projective spectrum (`MaximallyProjectiveEnergy hH₀.eigenvalues`). No other substantive input is
+assumed; the scale `s` is arbitrary.
+-/
+
 open scoped BigOperators Matrix Matrix.Norms.L2Operator
 open Matrix MeasureTheory ProbabilityTheory Set
 
@@ -13,6 +45,8 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- Reindexing a Hermitian matrix along `e : I ≃ J` preserves maximal projectivity of its spectrum
+(no nonzero balanced integer relation among the eigenvalues). -/
 theorem Matrix.IsHermitian.maximallyProjective_reindexAlgEquiv
     {I J : Type*} [Fintype I] [DecidableEq I]
     [Fintype J] [DecidableEq J]
@@ -34,6 +68,8 @@ theorem Matrix.IsHermitian.maximallyProjective_reindexAlgEquiv
     maximallyProjectiveEnergy_of_rootMultiset hH hmax energy hroots
   simpa [energy, hHr] using henergy.comp_equiv e.symm
 
+/-- The standard Gaussian measure on `EuclideanSpace ℝ (Fin m)` is absolutely continuous with
+respect to Lebesgue measure. -/
 theorem stdGaussian_absolutelyContinuous_volume_finEuclidean (m : ℕ) :
     stdGaussian (EuclideanSpace ℝ (Fin m)) ≪ volume := by
   rw [← map_pi_eq_stdGaussian]
@@ -45,6 +81,8 @@ theorem stdGaussian_absolutelyContinuous_volume_finEuclidean (m : ℕ) :
   simpa only [MeasurableEquiv.coe_toLp,
     (PiLp.volume_preserving_toLp (Fin m)).map_eq] using hmap
 
+/-- The linear isometry relabelling Euclidean coefficient vectors indexed by nonidentity Pauli
+strings of weight at most `q` into numbered coordinates. -/
 def pauliTracelessEuclideanReindex (n q : ℕ) :
     EuclideanSpace ℝ (PauliTracelessLabel n q) ≃ₗᵢ[ℝ]
       EuclideanSpace ℝ (ActivePauliCoordinate n q) :=
@@ -61,6 +99,8 @@ theorem activePauliFinHamiltonian_pauliTracelessEuclideanReindex
     activePauliHamiltonian, LinearIsometryEquiv.piLpCongrLeft_apply,
     Equiv.piCongrLeft']
 
+/-- Coefficient vectors `p` for which `H₀ + s · Σ_t p_t P_t` (sum over the nonidentity Pauli
+strings of weight at most `q`) has maximally projective spectrum. -/
 def scaledAffineActivePauliMaximalSet
     {n q : ℕ} (H₀ : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ) (hH₀ : H₀.IsHermitian)
@@ -77,6 +117,8 @@ def scaledAffineActivePauliMaximalSet
             ((pauliTracelessLabelEquivFin n q).symm t).1)).star_eq]
       simp)
 
+/-- The real-affine matrix with base `H₀` and generators `s · P_t` at parameter `p` equals
+`H₀ + s · Σ_t p_t P_t`. -/
 theorem realAffineMatrix_scaledActivePauli_eq
     {n q : ℕ} (H₀ : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ) (scale : ℝ)
@@ -107,6 +149,9 @@ theorem realAffineMatrix_scaledActivePauli_eq
       intro Q
       simp
 
+/-- Assuming `hmax`: the Hermitian `H₀` has maximally projective spectrum. Then for every real
+`scale`, for almost every standard Gaussian two-local Pauli coefficient vector `x`, the spectrum of
+`H₀ + H(scale • x)` is again maximally projective. -/
 theorem maximallyProjective_scaledAffine_activePauli_ae
     {n : ℕ} (H₀ : Matrix (FiniteQubitConfiguration (Fin n))
       (FiniteQubitConfiguration (Fin n)) ℂ) (hH₀ : H₀.IsHermitian)

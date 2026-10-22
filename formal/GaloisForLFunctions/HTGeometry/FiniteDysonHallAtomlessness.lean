@@ -1,6 +1,37 @@
 import GaloisForLFunctions.HTGeometry.FreeFockMatrixSemicircleCoordinateLaw
 import Mathlib.Combinatorics.Hall.Basic
 
+/-!
+# Hall's condition rules out atoms in solutions of a finite Dyson equation
+
+Consider a finite index set `I`, symmetric nonnegative weights `w_ij`, and functions `g_i` on the upper
+half plane satisfying the finite Dyson (quadratic vector) equation `1 + g_i(z)(z + Σ_j w_ij g_j(z)) = 0`.
+If each `g_i` has an atom profile at a real point `a` (that is, `y g_i(a + iy) → i r_i` as `y → 0`), the
+Dyson equation forces the balance laws `1 - r_i = r_i Σ_(j ∈ N) w_ij l_j` and `l_j Σ_(i ∈ H) w_ji r_i = 1` on
+the atom support `H` and its positive-weight neighbourhood `N`. Summing gives `|H| - Σ r_i = |N|`, which
+contradicts the weighted Hall condition `|N(s)| ≥ |s|` unless `H` is empty. Applied to Stieltjes
+transforms of probability measures, this shows that the measures are atomless.
+
+## Main results
+
+- `finiteWeightHall_of_injective_positiveNeighbor`: an injective choice of positive-weight neighbours
+  gives the weighted Hall condition.
+- `finiteWeightHall_no_atomProfile`: under the Hall condition, the balance laws force an empty atom
+  support.
+- `finiteDyson_atomProfile_eq_zero`: every atom profile of a solution of the finite Dyson equation
+  vanishes.
+- `probabilityStieltjes_atomless_of_finiteDyson`: if the Stieltjes transforms of probability measures
+  `μ_i` on `ℝ` solve the finite Dyson equation, every `μ_i` has no atoms.
+
+## Hypotheses
+
+Unconditional as implications. The main theorems assume symmetric nonnegative weights, the weighted
+Hall condition `FiniteWeightHall w` (a combinatorial Prop on the weight graph), and that the functions
+(for the last result, the Stieltjes transforms `∫ (t - z)⁻¹ dμ_i(t)`) satisfy the Dyson equation at
+every `z` with `Im z > 0`. The atom-profile lemmas additionally assume the stated boundary limits
+`y g_i(a + iy) → i r_i`.
+-/
+
 open Filter Topology MeasureTheory
 open scoped BigOperators
 
@@ -10,12 +41,16 @@ noncomputable section
 
 variable {I : Type*} [Fintype I] [DecidableEq I]
 
+/-- The positive-weight neighbourhood of a set `s`: all `j` with `w_ij > 0` for some `i ∈ s`. -/
 def positiveWeightNeighbors (w : I → I → ℝ) (s : Finset I) : Finset I :=
   Finset.univ.filter fun j ↦ ∃ i ∈ s, 0 < w i j
 
+/-- Weighted Hall condition: every finite set has at least as many positive-weight neighbours as
+elements. -/
 def FiniteWeightHall (w : I → I → ℝ) : Prop :=
   ∀ s : Finset I, s.card ≤ (positiveWeightNeighbors w s).card
 
+/-- An injective map `f` with `w_(i, f i) > 0` for all `i` gives the weighted Hall condition. -/
 theorem finiteWeightHall_of_injective_positiveNeighbor
     (w : I → I → ℝ) (f : I → I) (hf : Function.Injective f)
     (hpos : ∀ i, 0 < w i (f i)) : FiniteWeightHall w := by
@@ -29,6 +64,7 @@ theorem finiteWeightHall_of_injective_positiveNeighbor
     s.card = (s.image f).card := (Finset.card_image_of_injective s hf).symm
     _ ≤ (positiveWeightNeighbors w s).card := Finset.card_le_card hsubset
 
+/-- Hall obstruction: for symmetric weights under the Hall condition, real data `r, l` satisfying the two balance laws on the support `H = {r > 0}` and its neighbourhood `N` force `H = ∅`. -/
 theorem finiteWeightHall_no_atomProfile
     (w : I → I → ℝ) (hsymm : ∀ i j, w i j = w j i)
     (hHall : FiniteWeightHall w) (r l : I → ℝ)
@@ -70,10 +106,13 @@ theorem finiteWeightHall_no_atomProfile
     exact_mod_cast (show (N.card : ℝ) < H.card by rw [← hbalance]; linarith)
   exact (not_lt_of_ge (by simpa [FiniteWeightHall, hN] using hHall H)) hlt
 
+/-- The residual `1 + g_i(z)(z + Σ_j w_ij g_j(z))` of the finite Dyson equation at index `i`. -/
 def finiteDysonResidual (w : I → I → ℝ) (g : I → ℂ → ℂ) (i : I) (z : ℂ) : ℂ :=
   1 + g i z * (z + ∑ j : I, (w i j : ℂ) * g j z)
 
 omit [DecidableEq I] in
+/-- Assuming the Dyson equation in the upper half plane and atom profiles `y g_i(a + iy) → i r_i`, if
+`R_j = Σ_i w_ji r_i > 0` then `g_j(a + iy) / y → i / R_j` as `y → 0⁺`. -/
 theorem finiteDyson_neighbor_ratio
     (w : I → I → ℝ) (g : I → ℂ → ℂ) (a : ℝ) (r : I → ℝ)
     (hres : ∀ i z, 0 < z.im → finiteDysonResidual w g i z = 0)
@@ -161,6 +200,7 @@ theorem finiteDyson_neighbor_ratio
   exact htarget.congr' (hratio.mono fun _ h ↦ h.symm)
 
 omit [Fintype I] [DecidableEq I] in
+/-- If `y g_i(a + iy) → i r_i` with `r_i > 0`, then `Im(-g_i(a + iy)⁻¹ / y) → 1 / r_i` as `y → 0⁺`. -/
 theorem finiteDyson_inverse_im_limit
     (g : I → ℂ → ℂ) (a : ℝ) (r : I → ℝ)
     (hboundary : ∀ i, Tendsto (fun y : ℝ =>
@@ -200,6 +240,8 @@ theorem finiteDyson_inverse_im_limit
   convert (Complex.continuous_im.tendsto _).comp hcomplex using 1
   simp
 
+/-- For symmetric nonnegative weights satisfying the Hall condition, every nonnegative atom profile
+`r` of a solution of the finite Dyson equation at a real point `a` is identically zero. -/
 theorem finiteDyson_atomProfile_eq_zero
     (w : I → I → ℝ) (hsymm : ∀ i j, w i j = w j i)
     (hw : ∀ i j, 0 ≤ w i j) (hHall : FiniteWeightHall w)
@@ -339,9 +381,13 @@ theorem finiteDyson_atomProfile_eq_zero
     simp at hi
   exact le_antisymm (le_of_not_gt hnpos) (hr i)
 
+/-- The Stieltjes transform `z ↦ ∫ (t - z)⁻¹ dμ_i(t)` of the probability measure `μ_i`. -/
 def probabilityStieltjesTransform (μ : I → ProbabilityMeasure ℝ) (i : I) (z : ℂ) : ℂ :=
   ∫ t : ℝ, ((t : ℂ) - z)⁻¹ ∂(μ i : Measure ℝ)
 
+/-- Atomlessness: if the Stieltjes transforms of probability measures `μ_i` on `ℝ` solve the finite Dyson
+equation in the upper half plane, with symmetric nonnegative weights satisfying the Hall condition, then
+`μ_i {a} = 0` for every `i` and every real `a`. -/
 theorem probabilityStieltjes_atomless_of_finiteDyson
     (w : I → I → ℝ) (hsymm : ∀ i j, w i j = w j i)
     (hw : ∀ i j, 0 ≤ w i j) (hHall : FiniteWeightHall w)

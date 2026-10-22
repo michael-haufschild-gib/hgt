@@ -1,15 +1,44 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaPoleDecay
 import GaloisForLFunctions.RHTower.Sieve.SmoothAFEZetaSquareExactAFE
 
+/-!
+# Mean-square budget for the pole term of the zeta-square AFE
+
+In the smoothed approximate functional equation for `ζ(s)^2` at `s = 1/2 + it` with length `N`, the
+double pole at `w = 1 - s` contributes
+`P_N(t) = (N^(1-s) e^((1-s)^2)/(1-s)) · (log N + 2(1 - s) + 2 Z'(1) - 1/(1 - s))`, where `Z` is the
+regularized zeta function. For `t ∈ [N, 2N]` the Gaussian factor `e^(-t^2)` makes the prefactor
+`O(√N/N^2)` while the bracket is `O(N)`, so `P_N` is uniformly bounded there and its mean square
+over `[N, 2N]` is `O(N) ⊆ O(N^(101/100))`.
+
+## Main results
+
+- `smoothAFEZetaSquarePoleAFESummand`: the pole term `P_N(t)`.
+- `smoothAFEZetaSquarePoleAFESummand_eq_exact_confluent_term`: its explicit form.
+- `exists_norm_smoothAFEZetaSquarePoleAFESummandBracket_le`: the bracket is at most `D N` for
+  `N ≥ 4` and `t ∈ [N, 2N]`.
+- `exists_norm_smoothAFEZetaSquarePoleAFESummand_le`: `|P_N(t)| ≤ C` uniformly for `N ≥ 4`,
+  `t ∈ [N, 2N]`.
+- `exists_integral_normSq_smoothAFEZetaSquarePoleAFESummand_le_routeTBudget`:
+  `∫_{[N, 2N]} |P_N(t)|^2 dt ≤ K N^(101/100)` for all `N ≥ 4`.
+
+## Hypotheses
+
+Unconditional; the bounds hold for `N ≥ 4` with absolute constants.
+-/
+
 noncomputable section
 open Complex Set MeasureTheory
 namespace RHTower
 
+/-- Pole term of the zeta-square AFE at `s = 1/2 + it`: the shifted pole residue
+`N^(1-s) e^((1-s)^2)/(1-s)` times `log N + 2(1 - s) + 2 Z'(1) - 1/(1 - s)`. -/
 def smoothAFEZetaSquarePoleAFESummand (N : ℕ) (t : ℝ) : ℂ :=
   smoothAFEZetaShiftedPoleResidue (linePt t) (N : ℝ) *
     ((Real.log (N : ℝ) : ℂ) + 2 * (1 - linePt t) +
       2 * deriv regularizedRiemannZeta 1 - (1 - linePt t)⁻¹)
 
+/-- Explicit form of the pole term: `(N^(1-s) e^((1-s)^2)/(1-s)) (log N + 2(1-s) + 2 Z'(1) - 1/(1-s))`. -/
 theorem smoothAFEZetaSquarePoleAFESummand_eq_exact_confluent_term
     (N : ℕ) (t : ℝ) :
     smoothAFEZetaSquarePoleAFESummand N t =
@@ -19,6 +48,7 @@ theorem smoothAFEZetaSquarePoleAFESummand_eq_exact_confluent_term
           2 * deriv regularizedRiemannZeta 1 - (1 - linePt t)⁻¹)) := by
   rfl
 
+/-- For `t ≥ 1`, `e^(-t^2) ≤ 1/t^2`. -/
 theorem exp_neg_sq_le_inv_sq {t : ℝ} (ht : 1 ≤ t) :
     Real.exp (-(t ^ 2)) ≤ 1 / (t ^ 2) := by
   rw [Real.exp_neg]
@@ -51,6 +81,8 @@ theorem norm_inv_one_sub_linePt_le_one {t : ℝ} (ht : 1 ≤ t) :
   have hden : 1 ≤ ‖(1 : ℂ) - linePt t‖ := ht.trans htden
   exact (inv_le_one₀ (zero_lt_one.trans_le hden)).2 hden
 
+/-- There is `D ≥ 0` such that for `N ≥ 4` and `t ∈ [N, 2N]` the bracket
+`log N + 2(1 - s) + 2 Z'(1) - 1/(1 - s)` has norm at most `D N`. -/
 theorem exists_norm_smoothAFEZetaSquarePoleAFESummandBracket_le :
     ∃ D : ℝ, 0 ≤ D ∧ ∀ {N : ℕ} {t : ℝ}, 4 ≤ N →
       (N : ℝ) ≤ t → t ≤ 2 * (N : ℝ) →
@@ -100,6 +132,7 @@ theorem exists_norm_smoothAFEZetaSquarePoleAFESummandBracket_le :
       dsimp only [D]
       nlinarith [mul_le_mul_of_nonneg_left hNR hE]
 
+/-- There is `C ≥ 0` with `|P_N(t)| ≤ C` for all `N ≥ 4` and `t ∈ [N, 2N]`. -/
 theorem exists_norm_smoothAFEZetaSquarePoleAFESummand_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {N : ℕ} {t : ℝ}, 4 ≤ N →
       (N : ℝ) ≤ t → t ≤ 2 * (N : ℝ) → ‖smoothAFEZetaSquarePoleAFESummand N t‖ ≤ C := by
@@ -153,6 +186,7 @@ theorem exists_norm_smoothAFEZetaSquarePoleAFESummand_le :
       exact (div_le_one hNpos).2 hsqrt
     _ = C := by simp [C]
 
+/-- For `N > 0`, the pole term `t ↦ P_N(t)` is continuous. -/
 theorem continuous_smoothAFEZetaSquarePoleAFESummand {N : ℕ} (hN : 0 < N) :
     Continuous (smoothAFEZetaSquarePoleAFESummand N) := by
   unfold smoothAFEZetaSquarePoleAFESummand smoothAFEZetaShiftedPoleResidue
@@ -183,6 +217,7 @@ theorem continuous_smoothAFEZetaSquarePoleAFESummand {N : ℕ} (hN : 0 < N) :
     fun_prop
   exact hres.mul hbracket
 
+/-- There is `K ≥ 0` such that `∫_{[N, 2N]} |P_N(t)|^2 dt ≤ K N^(101/100)` for every `N ≥ 4`. -/
 theorem exists_integral_normSq_smoothAFEZetaSquarePoleAFESummand_le_routeTBudget :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {N : ℕ}, 4 ≤ N →
       (∫ t in Set.Icc (N : ℝ) (2 * N : ℝ), ‖smoothAFEZetaSquarePoleAFESummand N t‖ ^ 2) ≤

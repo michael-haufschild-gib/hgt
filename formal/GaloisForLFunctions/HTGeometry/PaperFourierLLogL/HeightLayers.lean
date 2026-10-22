@@ -5,6 +5,39 @@ import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Order.Filter.AtTopBot.Interval
 import Mathlib.Tactic
 
+/-!
+# The `L log L` class on the circle and its height-layer decomposition
+
+Sets up the objects of the almost everywhere convergence theorem for Fourier series in `L log L`:
+the circle `Torus = ℝ/2πℤ` with normalized Haar probability measure, the class `MemLLogL` of
+measurable `f` with `∫ |f| log(2 + |f|) < ∞`, and the symmetric partial sums
+`S_N f(x) = ∑_{|k| ≤ N} f̂(k) e^{ikx}`. A function is split into a bounded part `|f| < e²` and height
+layers `e^{2^{j+1}} ≤ |f| < e^{2^{j+2}}`. For `f ∈ L log L` the layer masses `m_j = ∫_{layer j} |f|`
+satisfy `∑ 2^{j+1} m_j < ∞`, hence the entropy-sensitive cost `∑ m_j (2^{j+2} + log⁺(1/m_j))` is
+finite, and partial sums commute with the layer decomposition.
+
+## Main results
+
+- `MemLLogL.integrable`: `L log L` functions are integrable.
+- `norm_symmetricPartialSum_le`: `|S_N f(x)| ≤ (2N + 1) ‖f‖₁`.
+- `ae_convergence_iff_exists_measurable_null`: a.e. convergence of `S_N f` is equivalent to
+  convergence off a measurable null set.
+- `tendsto_symmetricPartialSum_tsum`: dominated convergence for partial sums of a series of
+  functions with summable `L¹` norms.
+- `summable_mass_logMinus`, `summable_layerCost`: if `∑ 2^j m_j < ∞` with `m_j ≥ 0`, then
+  `∑ m_j log⁺(1/m_j) < ∞` and `∑ m_j (2^{j+1} + log⁺(1/m_j)) < ∞`.
+- `MemLLogL.summable_weighted_heightLayerMass`, `MemLLogL.summable_heightLayerCost`: the layer
+  masses of an `L log L` function satisfy these summability conditions.
+- `boundedPart_add_tsum_heightLayer`: `f = boundedPart f + ∑_j heightLayer f j` pointwise.
+- `MemLLogL.symmetricPartialSum_heightDecomposition`: `S_N f = S_N (boundedPart f) + ∑_j S_N (layer j)`.
+
+## Hypotheses
+
+All results are unconditional. The analytic results assume `MemLLogL f` (a.e.-strong measurability
+and integrability of `|f| log(2 + |f|)`), integrability of the summands, or summability of the
+stated weighted masses, as written in each statement.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 
@@ -16,22 +49,27 @@ open scoped BigOperators Topology
 
 namespace FourierLLogL
 
+/-- The circle `ℝ / 2πℤ`. -/
 abbrev Torus := AddCircle (2 * Real.pi)
 
 instance circlePeriod_pos : Fact (0 < 2 * Real.pi) :=
   ⟨mul_pos (by norm_num) Real.pi_pos⟩
 
 
+/-- Normalized Haar probability measure on the circle. -/
 def circleMeasure : Measure Torus := AddCircle.haarAddCircle
 
 
 
+/-- The Orlicz class `L log L`: `f` is a.e. strongly measurable and `|f| log(2 + |f|)` is
+integrable on the circle. -/
 def MemLLogL (f : Torus → ℂ) : Prop :=
   AEStronglyMeasurable f circleMeasure ∧
     Integrable (fun x ↦ ‖f x‖ * Real.log (2 + ‖f x‖)) circleMeasure
 
 
 
+/-- The symmetric Fourier partial sum `S_N f(x) = ∑_{k = -N}^{N} f̂(k) e^{ikx}`. -/
 def symmetricPartialSum (f : Torus → ℂ) (N : ℕ) (x : Torus) : ℂ :=
   ∑ k ∈ Finset.Icc (-(N : ℤ)) (N : ℤ), fourierCoeff f k * fourier k x
 
@@ -61,6 +99,7 @@ theorem fourierCoeff_eq_integral (f : Torus → ℂ) (k : ℤ) :
 
 
 
+/-- `f̂(k) = (1/2π) ∫_0^{2π} f(x) e^{-ikx} dx`. -/
 theorem fourierCoeff_eq_normalized_intervalIntegral (f : Torus → ℂ) (k : ℤ) :
     fourierCoeff f k = (1 / (2 * Real.pi) : ℝ) •
       ∫ x in (0 : ℝ)..(2 * Real.pi),
@@ -82,6 +121,7 @@ theorem orliczDensity_nonneg (z : ℂ) :
   linarith [norm_nonneg z]
 
 
+/-- Every `L log L` function is integrable on the circle. -/
 theorem MemLLogL.integrable {f : Torus → ℂ} (hf : MemLLogL f) :
     Integrable f circleMeasure := by
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
@@ -112,6 +152,7 @@ theorem measurable_symmetricPartialSum (f : Torus → ℂ) (N : ℕ) :
   (continuous_symmetricPartialSum f N).measurable
 
 
+/-- Partial sums depend only on the a.e. class of `f`. -/
 theorem symmetricPartialSum_congr_ae {f g : Torus → ℂ}
     (hfg : f =ᵐ[circleMeasure] g) (N : ℕ) (x : Torus) :
     symmetricPartialSum f N x = symmetricPartialSum g N x := by
@@ -141,6 +182,7 @@ theorem symmetricPartialSum_const_mul (f : Torus → ℂ) (c : ℂ)
   simp only [symmetricPartialSum, fourierCoeff.const_mul, Finset.mul_sum, mul_assoc]
 
 
+/-- `|f̂(k)| ≤ ‖f‖₁`. -/
 theorem norm_fourierCoeff_le (f : Torus → ℂ) (k : ℤ) :
     ‖fourierCoeff f k‖ ≤ ∫ x, ‖f x‖ ∂circleMeasure := by
   calc
@@ -153,6 +195,7 @@ theorem norm_fourierCoeff_le (f : Torus → ℂ) (k : ℤ) :
 
 
 
+/-- Trivial pointwise bound `|S_N f(x)| ≤ (2N + 1) ‖f‖₁`. -/
 theorem norm_symmetricPartialSum_le (f : Torus → ℂ) (N : ℕ) (x : Torus) :
     ‖symmetricPartialSum f N x‖ ≤
       (2 * N + 1 : ℕ) * ∫ y, ‖f y‖ ∂circleMeasure := by
@@ -174,6 +217,7 @@ theorem norm_symmetricPartialSum_le (f : Torus → ℂ) (N : ℕ) (x : Torus) :
 
 
 
+/-- A property holding a.e. holds off a measurable null set. -/
 theorem exists_measurable_null_of_ae {p : Torus → Prop}
     (hp : ∀ᵐ x ∂circleMeasure, p x) :
     ∃ E : Set Torus, MeasurableSet E ∧ circleMeasure E = 0 ∧ ∀ x ∉ E, p x := by
@@ -185,6 +229,7 @@ theorem exists_measurable_null_of_ae {p : Torus → Prop}
 
 
 
+/-- `S_N f → f` almost everywhere iff it converges off some measurable null set. -/
 theorem ae_convergence_iff_exists_measurable_null (f : Torus → ℂ) :
     (∀ᵐ x ∂circleMeasure,
         Tendsto (fun N : ℕ ↦ symmetricPartialSum f N x) atTop (𝓝 (f x))) ↔
@@ -203,6 +248,8 @@ theorem ae_convergence_iff_exists_measurable_null (f : Torus → ℂ) :
 
 
 
+/-- For continuous `f` with absolutely summable Fourier coefficients, `S_N f(x) → f(x)` at every
+point. -/
 theorem tendsto_symmetricPartialSum_of_summable (f : C(Torus, ℂ))
     (hf : Summable (fourierCoeff f)) (x : Torus) :
     Tendsto (fun N : ℕ ↦ symmetricPartialSum f N x) atTop (𝓝 (f x)) := by
@@ -212,6 +259,8 @@ theorem tendsto_symmetricPartialSum_of_summable (f : C(Torus, ℂ))
 
 
 
+/-- Fourier coefficients commute with a series of integrable functions whose `L¹` norms are
+summable. -/
 theorem fourierCoeff_tsum {F : ℕ → Torus → ℂ}
     (hF : ∀ j, Integrable (F j) circleMeasure)
     (hsum : Summable (fun j ↦ ∫ x, ‖F j x‖ ∂circleMeasure)) (k : ℤ) :
@@ -225,6 +274,7 @@ theorem fourierCoeff_tsum {F : ℕ → Torus → ℂ}
 
 
 
+/-- `S_N (∑_j F_j) = ∑_j S_N F_j` when the `F_j` are integrable with summable `L¹` norms. -/
 theorem symmetricPartialSum_tsum {F : ℕ → Torus → ℂ}
     (hF : ∀ j, Integrable (F j) circleMeasure)
     (hsum : Summable (fun j ↦ ∫ x, ‖F j x‖ ∂circleMeasure)) (N : ℕ) (x : Torus) :
@@ -238,6 +288,8 @@ theorem symmetricPartialSum_tsum {F : ℕ → Torus → ℂ}
 
 
 
+/-- Dominated convergence for partial sums of a series: if each `S_N F_j(x) → F_j(x)` and
+`|S_N F_j(x)| ≤ b_j` with `∑ b_j < ∞`, then `S_N (∑_j F_j)(x) → ∑_j F_j(x)`. -/
 theorem tendsto_symmetricPartialSum_tsum {F : ℕ → Torus → ℂ}
     (hF : ∀ j, Integrable (F j) circleMeasure)
     (hsum : Summable (fun j ↦ ∫ y, ‖F j y‖ ∂circleMeasure))
@@ -254,6 +306,7 @@ theorem tendsto_symmetricPartialSum_tsum {F : ℕ → Torus → ℂ}
 
 
 
+/-- For `m, a ≥ 0`: `m · log⁺(1/m) ≤ a m + e^{-a}`. -/
 theorem mass_logMinus_le {m a : ℝ} (hm : 0 ≤ m) (ha : 0 ≤ a) :
     m * max 0 (-Real.log m) ≤ a * m + Real.exp (-a) := by
   rcases eq_or_lt_of_le hm with rfl | hm
@@ -270,6 +323,7 @@ theorem mass_logMinus_le {m a : ℝ} (hm : 0 ≤ m) (ha : 0 ≤ a) :
 
 
 
+/-- If `m_j ≥ 0` and `∑ 2^j m_j < ∞`, then `∑ m_j log⁺(1/m_j) < ∞`. -/
 theorem summable_mass_logMinus {m : ℕ → ℝ} (hm : ∀ j, 0 ≤ m j)
     (hweight : Summable (fun j ↦ (2 : ℝ) ^ j * m j)) :
     Summable (fun j ↦ m j * max 0 (-Real.log (m j))) := by
@@ -285,6 +339,7 @@ theorem summable_mass_logMinus {m : ℕ → ℝ} (hm : ∀ j, 0 ≤ m j)
 
 
 
+/-- If `m_j ≥ 0` and `∑ 2^j m_j < ∞`, then `∑ m_j (2^{j+1} + log⁺(1/m_j)) < ∞`. -/
 theorem summable_layerCost {m : ℕ → ℝ} (hm : ∀ j, 0 ≤ m j)
     (hweight : Summable (fun j ↦ (2 : ℝ) ^ j * m j)) :
     Summable (fun j ↦ m j * ((2 : ℝ) ^ (j + 1) + max 0 (-Real.log (m j)))) := by
@@ -296,15 +351,18 @@ theorem summable_layerCost {m : ℕ → ℝ} (hm : ∀ j, 0 ≤ m j)
 
 
 
+/-- The `j`-th height layer `{x | e^{2^{j+1}} ≤ |f x| < e^{2^{j+2}}}`. -/
 def heightLayerSet (f : Torus → ℂ) (j : ℕ) : Set Torus :=
   {x | Real.exp ((2 : ℝ) ^ (j + 1)) ≤ ‖f x‖ ∧
     ‖f x‖ < Real.exp ((2 : ℝ) ^ (j + 2))}
 
 
+/-- `f` restricted to its `j`-th height layer. -/
 def heightLayer (f : Torus → ℂ) (j : ℕ) : Torus → ℂ :=
   (heightLayerSet f j).indicator f
 
 
+/-- The layer mass `m_j = ∫_{layer j} |f|`. -/
 def heightLayerMass (f : Torus → ℂ) (j : ℕ) : ℝ :=
   ∫ x in heightLayerSet f j, ‖f x‖ ∂circleMeasure
 
@@ -313,6 +371,7 @@ theorem heightLayerSet_nullMeasurable {f : Torus → ℂ} (hf : MemLLogL f) (j :
   exact (nullMeasurableSet_le aemeasurable_const hf.1.norm.aemeasurable).inter
     (nullMeasurableSet_lt hf.1.norm.aemeasurable aemeasurable_const)
 
+/-- Distinct height layers are disjoint. -/
 theorem heightLayerSet_pairwise_disjoint (f : Torus → ℂ) :
     Pairwise (fun i j ↦ Disjoint (heightLayerSet f i) (heightLayerSet f j)) := by
   intro i j hij
@@ -339,6 +398,7 @@ theorem heightLayerMass_eq_integral_norm {f : Torus → ℂ} (hf : MemLLogL f) (
 
 
 
+/-- For `f ∈ L log L`, `∑_j 2^{j+1} m_j < ∞`, since `log(2 + |f|) ≥ 2^{j+1}` on layer `j`. -/
 theorem MemLLogL.summable_weighted_heightLayerMass {f : Torus → ℂ} (hf : MemLLogL f) :
     Summable (fun j ↦ (2 : ℝ) ^ (j + 1) * heightLayerMass f j) := by
   have hD : Summable (fun j ↦ ∫ x in heightLayerSet f j,
@@ -360,6 +420,7 @@ theorem MemLLogL.summable_weighted_heightLayerMass {f : Torus → ℂ} (hf : Mem
   simpa only [mul_comm] using mul_le_mul_of_nonneg_right hlog (norm_nonneg (f x))
 
 
+/-- For `f ∈ L log L`, the `L¹` norms of the height layers are summable. -/
 theorem MemLLogL.summable_heightLayer_norm {f : Torus → ℂ} (hf : MemLLogL f) :
     Summable (fun j ↦ ∫ x, ‖heightLayer f j x‖ ∂circleMeasure) := by
   simp_rw [← heightLayerMass_eq_integral_norm hf]
@@ -371,6 +432,8 @@ theorem MemLLogL.summable_heightLayer_norm {f : Torus → ℂ} (hf : MemLLogL f)
 
 
 
+/-- For `f ∈ L log L`, the entropy-sensitive layer cost `∑_j m_j (2^{j+2} + log⁺(1/m_j))` is
+finite. -/
 theorem MemLLogL.summable_heightLayerCost {f : Torus → ℂ} (hf : MemLLogL f) :
     Summable (fun j ↦ heightLayerMass f j *
       ((2 : ℝ) ^ (j + 2) + max 0 (-Real.log (heightLayerMass f j)))) := by
@@ -386,6 +449,7 @@ theorem MemLLogL.summable_heightLayerCost {f : Torus → ℂ} (hf : MemLLogL f) 
   ring
 
 
+/-- The bounded part of `f`: `f` restricted to `{|f| < e²}`. -/
 def boundedPart (f : Torus → ℂ) : Torus → ℂ :=
   {x | ‖f x‖ < Real.exp 2}.indicator f
 
@@ -407,6 +471,7 @@ theorem norm_heightLayer_le (f : Torus → ℂ) (j : ℕ) (x : Torus) :
     exact Real.exp_nonneg _
 
 
+/-- Every point has `|f x| < e²` or lies in some height layer. -/
 theorem mem_boundedPart_or_heightLayerSet (f : Torus → ℂ) (x : Torus) :
     ‖f x‖ < Real.exp 2 ∨ ∃ j : ℕ, x ∈ heightLayerSet f j := by
   classical
@@ -431,6 +496,7 @@ theorem mem_boundedPart_or_heightLayerSet (f : Torus → ℂ) (x : Torus) :
 
 
 
+/-- Pointwise decomposition `f = boundedPart f + ∑_j heightLayer f j`. -/
 theorem boundedPart_add_tsum_heightLayer (f : Torus → ℂ) (x : Torus) :
     boundedPart f x + ∑' j, heightLayer f j x = f x := by
   classical
@@ -459,6 +525,7 @@ theorem boundedPart_add_tsum_heightLayer (f : Torus → ℂ) (x : Torus) :
 
 
 
+/-- For `f ∈ L log L`, `S_N f(x) = S_N (boundedPart f)(x) + ∑_j S_N (heightLayer f j)(x)`. -/
 theorem MemLLogL.symmetricPartialSum_heightDecomposition {f : Torus → ℂ}
     (hf : MemLLogL f) (N : ℕ) (x : Torus) :
     symmetricPartialSum f N x = symmetricPartialSum (boundedPart f) N x +

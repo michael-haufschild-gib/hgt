@@ -1,11 +1,38 @@
 import GaloisForLFunctions.RHTower.SmoothAFEZetaSquareDualNegativeContour
 
+/-!
+# Height derivative of the chi ratio on the line Re w = -1/4
+
+On the shifted line `w = -1/4 + iv` of the square-dual AFE weight, the chi ratio
+`R(τ) = χ(s - w)/χ(s)` with `s = 1/2 + iτ` is differentiable in the height `τ`, with derivative
+`i R(τ) ((χ'/χ)(s - w) - (χ'/χ)(s))`; its square has derivative `2 R R'`. The logarithmic-derivative
+increment is controlled by a digamma mean value estimate: for `τ ≥ 4` and `2|v| ≤ τ` it is at most
+`(16/τ^2 + 2π/τ)(1 + |v|)`.
+
+## Main results
+
+- `hasDerivAt_smoothAFEZetaChiShiftRatio_quarter`: the height derivative of the chi ratio at
+  `w = -1/4 + iv`.
+- `hasDerivAt_smoothAFEZetaChiShiftRatioSq_quarter`: the height derivative of its square.
+- `norm_digamma_positive_conductor_increment_quarter_le`: for `τ ≥ 4`, `2|v| ≤ τ` and
+  `1/8 ≤ a ≤ 3/8`, `|ψ(a + i(τ - v)/2) - ψ(1/4 + iτ/2)| ≤ (16/τ^2 + 2π/τ)(1 + |v|)`.
+- `norm_logDeriv_zetaChi_quarter_shift_sub_line_le`: for `τ ≥ 4` and `2|v| ≤ τ`,
+  `|(χ'/χ)(s + 1/4 - iv) - (χ'/χ)(s)| ≤ (16/τ^2 + 2π/τ)(1 + |v|)`.
+
+## Hypotheses
+
+Unconditional. The derivative formulas hold for all real `τ, v`; the bounds assume `τ ≥ 4` and
+`2|v| ≤ τ` (and `1/8 ≤ a ≤ 3/8` for the digamma estimate).
+-/
+
 noncomputable section
 
 open Complex MeasureTheory Set Filter Topology
 
 namespace RHTower
 
+/-- Height derivative `i R(τ) ((χ'/χ)(s - w) - (χ'/χ)(s))` of the chi ratio `R(τ) = χ(s - w)/χ(s)`,
+with `s = 1/2 + iτ` and `w = -1/4 + iv`. -/
 def smoothAFEZetaChiShiftQuarterHeightDerivative (tau v : ℝ) : ℂ :=
   I * smoothAFEZetaChiShiftRatio (linePt tau)
       (-(((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)) *
@@ -13,12 +40,15 @@ def smoothAFEZetaChiShiftQuarterHeightDerivative (tau v : ℝ) : ℂ :=
         (linePt tau - (((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)) -
       logDeriv zetaChi (linePt tau))
 
+/-- Height derivative `2 R R'` of the squared chi ratio on the line `Re w = -1/4`. -/
 def smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative
     (tau v : ℝ) : ℂ :=
   2 * smoothAFEZetaChiShiftRatio (linePt tau)
       (-(((-1 / 4 : ℝ) : ℂ) + (v : ℂ) * I)) *
     smoothAFEZetaChiShiftQuarterHeightDerivative tau v
 
+/-- For all real `τ, v`, `τ ↦ χ(1/2 + iτ + 1/4 - iv)/χ(1/2 + iτ)` has derivative
+`smoothAFEZetaChiShiftQuarterHeightDerivative τ v`. -/
 theorem hasDerivAt_smoothAFEZetaChiShiftRatio_quarter
     (tau v : ℝ) :
     HasDerivAt
@@ -45,6 +75,8 @@ theorem hasDerivAt_smoothAFEZetaChiShiftRatio_quarter
   have h := hasDerivAt_smoothAFEZetaChiShiftRatio_line_logDeriv hnumA hnum0
   simpa [w, smoothAFEZetaChiShiftQuarterHeightDerivative, sub_eq_add_neg] using h
 
+/-- For all real `τ, v`, the squared chi ratio on `Re w = -1/4` has height derivative
+`smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative τ v`. -/
 theorem hasDerivAt_smoothAFEZetaChiShiftRatioSq_quarter
     (tau v : ℝ) :
     HasDerivAt
@@ -64,6 +96,8 @@ theorem hasDerivAt_smoothAFEZetaChiShiftRatioSq_quarter
       (smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative tau v) tau
   simpa [smoothAFEZetaChiShiftRatioSqQuarterHeightDerivative] using hp
 
+/-- For `τ ≥ 4`, `2|v| ≤ τ` and `1/8 ≤ a ≤ 3/8`:
+`|ψ(a + i(τ - v)/2) - ψ(1/4 + iτ/2)| ≤ (16/τ^2 + 2π/τ)(1 + |v|)`, by the mean value inequality. -/
 theorem norm_digamma_positive_conductor_increment_quarter_le
     {tau v a : ℝ} (htau : 4 ≤ tau) (hv : 2 * |v| ≤ tau)
     (haLow : 1 / 8 ≤ a) (haHigh : a ≤ 3 / 8) :
@@ -181,6 +215,8 @@ theorem norm_digamma_positive_conductor_increment_quarter_le
   dsimp only [z0, z1] at hmvt
   exact hmvt.trans (mul_le_mul_of_nonneg_left hnorm (by positivity))
 
+/-- For `τ ≥ 4` and `2|v| ≤ τ`, with `s = 1/2 + iτ`:
+`|(χ'/χ)(s + 1/4 - iv) - (χ'/χ)(s)| ≤ (16/τ^2 + 2π/τ)(1 + |v|)`. -/
 theorem norm_logDeriv_zetaChi_quarter_shift_sub_line_le
     {tau v : ℝ} (htau : 4 ≤ tau) (hv : 2 * |v| ≤ tau) :
     ‖logDeriv zetaChi

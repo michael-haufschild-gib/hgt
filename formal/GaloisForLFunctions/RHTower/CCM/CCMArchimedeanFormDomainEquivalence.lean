@@ -1,5 +1,32 @@
 import GaloisForLFunctions.RHTower.CCM.CCMArchimedeanLogWeightEquivalence
 
+/-!
+# The exact CCM archimedean form domain equals Suzuki's `H^log` form domain
+
+The exact archimedean (digamma) Fourier weight `ccmArchimedeanFormWeight` and Suzuki's
+logarithmic weight `1 + log⁺ |ξ|` dominate each other up to a finite constant. Hence the two
+weighted measures are mutually absolutely continuous with bounded densities, and the identity
+on functions induces a continuous `ℂ`-linear isomorphism between the weighted Fourier spaces
+`L²(ccmArchimedeanFormMeasure)` and `L²(suzukiHlogMeasure)`. The isomorphism commutes with the
+maps to the time side (weight removal followed by inverse Fourier transform), so for every
+aperture `a > 0` it restricts to an isomorphism between the form domains of vectors whose time
+functions vanish off `[-a, a]`.
+
+## Main results
+
+- `ccmArchimedeanLogFourierEquiv`: `SuzukiHlogFourierL2 ≃L[ℂ] CCMArchimedeanFourierL2`, acting
+  as the identity on representatives.
+- `ccmArchimedeanFourierToTime_logToArchimedean`: the inverse-Fourier time functions agree under
+  the identification.
+- `ccmArchimedeanLogFormDomainEquiv`: for each `a > 0`,
+  `SuzukiHlogFormDomain a ≃L[ℂ] CCMArchimedeanFormDomain a`.
+
+## Hypotheses
+
+Unconditional. The aperture `a : SuzukiPositiveAperture` bundles `a > 0`; the measure
+comparisons are proved in `CCMArchimedeanLogWeightEquivalence`.
+-/
+
 open MeasureTheory Set Filter
 open scoped ENNReal InnerProduct Topology
 
@@ -13,6 +40,8 @@ private def ccmLogToArchimedeanReal :
     ccmArchimedeanLogComparisonENNReal_ne_top
     ccmArchimedeanFormMeasure_le_logComparison_smul
 
+/-- The real-linear inclusion of Suzuki's weighted `L²` into the CCM weighted `L²` is the identity
+on representatives, almost everywhere for the CCM measure. -/
 theorem ccmLogToArchimedeanReal_coeFn (f : SuzukiHlogFourierL2) :
     ccmLogToArchimedeanReal f =ᵐ[ccmArchimedeanFormMeasure] f :=
   MeasureTheory.Lp.coeFn_LpToLpOfMeasureLeSMul
@@ -39,6 +68,8 @@ private def ccmLogToArchimedeanLinear :
     change c * f xi = c * (ccmLogToArchimedeanReal f : ℝ → ℂ) xi
     rw [hff]
 
+/-- The continuous `ℂ`-linear inclusion `L²(suzukiHlogMeasure) → L²(ccmArchimedeanFormMeasure)`,
+well defined because the CCM measure is bounded by a finite multiple of Suzuki's measure. -/
 def ccmLogToArchimedean :
     SuzukiHlogFourierL2 →L[ℂ] CCMArchimedeanFourierL2 :=
   LinearMap.mkContinuous ccmLogToArchimedeanLinear ‖ccmLogToArchimedeanReal‖ fun f => by
@@ -81,6 +112,8 @@ private def ccmArchimedeanToLogLinear :
     change c * f xi = c * (ccmArchimedeanToLogReal f : ℝ → ℂ) xi
     rw [hff]
 
+/-- The continuous `ℂ`-linear inclusion `L²(ccmArchimedeanFormMeasure) → L²(suzukiHlogMeasure)`,
+well defined because Suzuki's measure is bounded by a finite multiple of the CCM measure. -/
 def ccmArchimedeanToLog :
     CCMArchimedeanFourierL2 →L[ℂ] SuzukiHlogFourierL2 :=
   LinearMap.mkContinuous ccmArchimedeanToLogLinear ‖ccmArchimedeanToLogReal‖ fun f => by
@@ -91,6 +124,8 @@ theorem ccmArchimedeanToLog_coeFn (f : CCMArchimedeanFourierL2) :
     ccmArchimedeanToLog f =ᵐ[suzukiHlogMeasure] f :=
   ccmArchimedeanToLogReal_coeFn f
 
+/-- The two inclusions are mutually inverse: going from Suzuki's space to the CCM space and back
+is the identity. -/
 theorem ccmArchimedeanToLog_logToArchimedean (f : SuzukiHlogFourierL2) :
     ccmArchimedeanToLog (ccmLogToArchimedean f) = f := by
   apply MeasureTheory.Lp.ext
@@ -102,6 +137,8 @@ theorem ccmArchimedeanToLog_logToArchimedean (f : SuzukiHlogFourierL2) :
     with xi hback hforward
   rw [hback, hforward]
 
+/-- The two inclusions are mutually inverse: going from the CCM space to Suzuki's space and back
+is the identity. -/
 theorem ccmLogToArchimedean_archimedeanToLog (f : CCMArchimedeanFourierL2) :
     ccmLogToArchimedean (ccmArchimedeanToLog f) = f := by
   apply MeasureTheory.Lp.ext
@@ -113,6 +150,8 @@ theorem ccmLogToArchimedean_archimedeanToLog (f : CCMArchimedeanFourierL2) :
     with xi hforward hback
   rw [hforward, hback]
 
+/-- The weighted Fourier `L²` spaces for the exact CCM archimedean weight and for Suzuki's
+logarithmic weight are isomorphic as topological `ℂ`-vector spaces, by the identity on functions. -/
 def ccmArchimedeanLogFourierEquiv :
     SuzukiHlogFourierL2 ≃L[ℂ] CCMArchimedeanFourierL2 where
   toLinearEquiv :=
@@ -125,6 +164,8 @@ def ccmArchimedeanLogFourierEquiv :
   continuous_toFun := ccmLogToArchimedean.continuous
   continuous_invFun := ccmArchimedeanToLog.continuous
 
+/-- Removing the weight (the map to plain `L²`) commutes with the identification of the two weighted
+spaces. -/
 theorem ccmArchimedeanWeightedToL2_logToArchimedean
     (f : SuzukiHlogFourierL2) :
     ccmArchimedeanWeightedToL2 (ccmLogToArchimedean f) =
@@ -136,6 +177,8 @@ theorem ccmArchimedeanWeightedToL2_logToArchimedean
     hforward, suzukiHlogWeightedToL2_coeFn f] with xi hex hforward hlog
   rw [hex, hforward, hlog]
 
+/-- The time-side function (inverse Fourier transform of the unweighted vector) is the same whether
+a vector is viewed in Suzuki's space or in the CCM space. -/
 theorem ccmArchimedeanFourierToTime_logToArchimedean
     (f : SuzukiHlogFourierL2) :
     ccmArchimedeanFourierToTime (ccmLogToArchimedean f) =
@@ -158,6 +201,8 @@ theorem suzukiHlogFourierToTime_archimedeanToLog
     _ = ccmArchimedeanFourierToTime f := by
       rw [ccmLogToArchimedean_archimedeanToLog]
 
+/-- For each aperture `a`, the support defect (the part of the time function outside `[-a, a]`)
+is preserved by the identification from Suzuki's space to the CCM space. -/
 theorem ccmArchimedeanSupportDefect_logToArchimedean
     (a : SuzukiPositiveAperture) (f : SuzukiHlogFourierL2) :
     ccmArchimedeanSupportDefect a (ccmLogToArchimedean f) =
@@ -180,6 +225,8 @@ theorem suzukiHlogSupportDefect_archimedeanToLog
       (measurableSet_centralInterval a.1)) (ccmArchimedeanFourierToTime f)
   rw [suzukiHlogFourierToTime_archimedeanToLog]
 
+/-- Restriction of the identification to form domains: Suzuki's `H^log(-a, a)` domain maps into
+the CCM archimedean form domain on `[-a, a]`. -/
 def ccmLogFormToArchimedean (a : SuzukiPositiveAperture) :
     SuzukiHlogFormDomain a →L[ℂ] CCMArchimedeanFormDomain a :=
   (ccmLogToArchimedean.domRestrict (suzukiHlogSupportDefect a).ker).codRestrict
@@ -189,6 +236,8 @@ def ccmLogFormToArchimedean (a : SuzukiPositiveAperture) :
       rw [ccmArchimedeanSupportDefect_logToArchimedean]
       exact LinearMap.mem_ker.mp f.property
 
+/-- Restriction of the inverse identification: the CCM archimedean form domain on `[-a, a]` maps
+into Suzuki's `H^log(-a, a)` domain. -/
 def ccmArchimedeanFormToLog (a : SuzukiPositiveAperture) :
     CCMArchimedeanFormDomain a →L[ℂ] SuzukiHlogFormDomain a :=
   (ccmArchimedeanToLog.domRestrict (ccmArchimedeanSupportDefect a).ker).codRestrict
@@ -210,6 +259,8 @@ theorem ccmLogFormToArchimedean_archimedeanFormToLog
   apply Subtype.ext
   exact ccmLogToArchimedean_archimedeanToLog f.1
 
+/-- For every aperture `a > 0`, Suzuki's form domain `H^log(-a, a)` and the exact CCM archimedean
+form domain on `[-a, a]` are isomorphic as topological `ℂ`-vector spaces. -/
 def ccmArchimedeanLogFormDomainEquiv (a : SuzukiPositiveAperture) :
     SuzukiHlogFormDomain a ≃L[ℂ] CCMArchimedeanFormDomain a where
   toLinearEquiv :=

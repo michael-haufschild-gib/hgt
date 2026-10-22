@@ -2,23 +2,56 @@ import GaloisForLFunctions.RHTower.PolynomialFockAdaptedCenterSeparation
 import GaloisForLFunctions.RHTower.CriticalPrimeKernelSchurSampling
 import GaloisForLFunctions.HTGeometry.ShiftLatticeThetaSeries
 
+/-!
+# Bessel bound for adapted normalized tangent packets in the polynomial Fock space
+
+The shifted adapted packets `φ_n` (`n ≥ 0`) are the unit-norm tangent vectors of the degree-`m`
+polynomial moment Fock space centered at the adapted cell points `(n+1)^(2/m)`. Combining the
+Gaussian overlap bound with the near/far lower bounds on the harmonic-curvature gap, the Gram
+entries satisfy `|⟨φ_n, φ_k⟩| ≤ E_m(|n - k|)` for an explicit envelope
+`E_m(d) = e^{2C/m} (exp(-a_m d²) + exp(-b_m d^(4/m)))`, which is summable over `ℤ` when `m > 4`.
+A Schur row-sum test then gives a Bessel inequality for the packet family.
+
+## Main results
+
+- `summable_polynomialFockAdaptedGramEnvelope`: the envelope `d ↦ E_m(d)` is summable for `m > 4`.
+- `norm_inner_polynomialFockShiftedAdaptedNormalizedTangentPacket_le`:
+  `|⟨φ_n, φ_k⟩| ≤ E_m(dist n k)` for all `n, k`.
+- `finset_gramRow_polynomialFockShiftedAdaptedNormalizedTangentPacket_le`: every finite Gram row
+  sum `∑_{k ∈ T} |⟨φ_n, φ_k⟩|` is at most `Δ_m = ∑_{z ∈ ℤ} E_m(|z|)`.
+- `summable_norm_inner_sq_polynomialFockShiftedAdaptedNormalizedTangentPacket`: for each `x`,
+  `n ↦ |⟨φ_n, x⟩|²` is summable.
+- `tsum_norm_inner_sq_polynomialFockShiftedAdaptedNormalizedTangentPacket_le`: the Bessel bound
+  `∑_n |⟨φ_n, x⟩|² ≤ Δ_m ‖x‖²`.
+
+## Hypotheses
+
+All results are unconditional; the only parameter assumption is the strict range `4 < m`
+(positivity of the envelope rates and its summability need `m > 4`).
+-/
+
 open scoped InnerProductSpace
 
 namespace RHTower
 
 noncomputable section
 
+/-- Near-diagonal Gaussian rate `a_m = m / (4 ((m/2) 2^(m/2 - 1))²)` of the Gram envelope. -/
 def polynomialFockAdaptedNearGramRate (m : ℝ) : ℝ :=
   m / (4 * ((m / 2) * 2 ^ (m / 2 - 1)) ^ 2)
 
+/-- Far-off-diagonal rate `b_m = (m/4) (1 - 2^(-2/m))²` of the Gram envelope. -/
 def polynomialFockAdaptedFarGramRate (m : ℝ) : ℝ :=
   (m / 4) * (1 - 2 ^ (-(2 / m))) ^ 2
 
+/-- Gram envelope `E_m(d) = exp(2C/m) (exp(-a_m d²) + exp(-b_m d^(4/m)))`, with `C` the local
+Bregman constant of the degree-`m` potential. -/
 def polynomialFockAdaptedGramEnvelope (m : ℝ) (d : ℕ) : ℝ :=
   Real.exp (2 * (polynomialFockLocalBregmanConstant m / m)) *
     (Real.exp (-(polynomialFockAdaptedNearGramRate m * (d : ℝ) ^ 2)) +
       Real.exp (-(polynomialFockAdaptedFarGramRate m * (d : ℝ) ^ (4 / m))))
 
+/-- The adapted normalized tangent packet with index shifted by one, centered at `(n+1)^(2/m)`. -/
 def polynomialFockShiftedAdaptedNormalizedTangentPacket
     (m : ℝ) (hm : 4 ≤ m) (n : ℕ) : MomentFock :=
   polynomialFockAdaptedNormalizedTangentPacket m hm (n + 1)
@@ -40,6 +73,7 @@ theorem polynomialFockAdaptedFarGramRate_pos
   rw [polynomialFockAdaptedFarGramRate]
   exact mul_pos (by positivity) (sq_pos_of_pos (sub_pos.mpr hlt))
 
+/-- For `4 < m` the Gram envelope is summable over `ℕ`. -/
 theorem summable_polynomialFockAdaptedGramEnvelope
     {m : ℝ} (hm : 4 < m) :
     Summable (polynomialFockAdaptedGramEnvelope m) := by
@@ -61,12 +95,15 @@ theorem polynomialFockAdaptedGramEnvelope_nonneg (m : ℝ) (d : ℕ) :
   unfold polynomialFockAdaptedGramEnvelope
   positivity
 
+/-- For `4 < m` the two-sided envelope `z ↦ E_m(|z|)` is summable over `ℤ`. -/
 theorem summable_int_polynomialFockAdaptedGramEnvelope_natAbs
     {m : ℝ} (hm : 4 < m) :
     Summable (fun z : ℤ => polynomialFockAdaptedGramEnvelope m z.natAbs) := by
   rw [summable_int_iff_summable_nat_and_neg]
   constructor <;> simpa using summable_polynomialFockAdaptedGramEnvelope hm
 
+/-- Assuming `4 < m` and `k ≤ n`, `|⟨φ_n, φ_k⟩| ≤ E_m(n - k)`; the near regime `n+1 ≤ 2(k+1)` uses
+the quadratic gap bound and the far regime the `(n - k)^(4/m)` bound. -/
 theorem norm_inner_polynomialFockShiftedAdaptedNormalizedTangentPacket_le_of_le
     {m : ℝ} (hm : 4 < m) {k n : ℕ} (hkn : k ≤ n) :
     ‖inner ℂ
@@ -167,6 +204,8 @@ theorem norm_inner_polynomialFockShiftedAdaptedNormalizedTangentPacket_le_of_le
       _ = polynomialFockAdaptedGramEnvelope m (Nat.dist n k) := by
         rw [polynomialFockAdaptedGramEnvelope, ← hDdist]
 
+/-- Assuming `4 < m`, the Gram entries of the shifted adapted packets satisfy
+`|⟨φ_n, φ_k⟩| ≤ E_m(dist n k)`. -/
 theorem norm_inner_polynomialFockShiftedAdaptedNormalizedTangentPacket_le
     {m : ℝ} (hm : 4 < m) (n k : ℕ) :
     ‖inner ℂ
@@ -180,6 +219,8 @@ theorem norm_inner_polynomialFockShiftedAdaptedNormalizedTangentPacket_le
     rw [← inner_conj_symm, RCLike.norm_conj] at h
     simpa [Nat.dist_comm] using h
 
+/-- Assuming `4 < m`, every finite Gram row sum `∑_{k ∈ T} |⟨φ_n, φ_k⟩|` is bounded by
+`∑_{z ∈ ℤ} E_m(|z|)`, uniformly in `n` and `T`. -/
 theorem finset_gramRow_polynomialFockShiftedAdaptedNormalizedTangentPacket_le
     {m : ℝ} (hm : 4 < m) (n : ℕ) (T : Finset ℕ) :
     ∑ k ∈ T,
@@ -217,6 +258,7 @@ theorem finset_gramRow_polynomialFockShiftedAdaptedNormalizedTangentPacket_le
       (summable_int_polynomialFockAdaptedGramEnvelope_natAbs hm).sum_le_tsum
         (T.image shift) (fun z _ => polynomialFockAdaptedGramEnvelope_nonneg m z.natAbs)
 
+/-- Assuming `4 < m`, `n ↦ |⟨φ_n, x⟩|²` is summable for every `x` in the moment Fock space. -/
 theorem summable_norm_inner_sq_polynomialFockShiftedAdaptedNormalizedTangentPacket
     {m : ℝ} (hm : 4 < m) (x : MomentFock) :
     Summable fun n =>
@@ -232,6 +274,7 @@ theorem summable_norm_inner_sq_polynomialFockShiftedAdaptedNormalizedTangentPack
   exact summable_norm_inner_sq_of_forall_finset_gram_row_le
     (H := MomentFock) (ι := ℕ) φ hΔ hrow x
 
+/-- Bessel inequality: assuming `4 < m`, `∑_n |⟨φ_n, x⟩|² ≤ (∑_{z ∈ ℤ} E_m(|z|)) ‖x‖²`. -/
 theorem tsum_norm_inner_sq_polynomialFockShiftedAdaptedNormalizedTangentPacket_le
     {m : ℝ} (hm : 4 < m) (x : MomentFock) :
     ∑' n,

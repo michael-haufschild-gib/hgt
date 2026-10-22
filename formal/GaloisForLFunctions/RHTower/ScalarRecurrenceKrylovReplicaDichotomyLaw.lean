@@ -1,6 +1,36 @@
 import GaloisForLFunctions.RHTower.ScalarRecurrenceTracelessCircuitSplit
 import GaloisForLFunctions.RHTower.StaticChoiKrylovCarrierDichotomyLaw
 
+/-!
+# Krylov replica dichotomy after removing the scalar Choi return
+
+For a finite static Hamiltonian with spectrum `energy : Fin d → ℝ`, let `χ(t)` be the normalized
+Choi state of its evolution at time `t`, written in the spectral basis. A unit Choi target splits
+orthogonally into its component along the identity Choi state `χ(0)` and a traceless residual. The
+module bounds the residual and its diagonal by one, defines the scalar-removed Krylov replica load
+`∑_w ‖Krylov_K(diag(residual_w))‖^(2r)` of a finite family of targets, and proves a dichotomy: if
+some target is captured at time `t` (trace distance at most `ε` from `χ(t)`) while the scalar
+return `|⟨χ(t), χ(0)⟩|` is below `ρ`, the replica load is at least
+`(√(1 - ε²) - ρ - B^(K+1) |t|^(K+1) / (K+1)!)^(2r)`; so a load below that threshold excludes capture
+off the scalar return.
+
+## Main results
+
+- `norm_staticChoiTracelessResidual_le_one`, `norm_staticChoiTracelessDiagonal_le_one`: the
+  traceless residual of a unit target and its diagonal have norm at most one.
+- `scalarRemovedKrylovReplicaLoad_ge_of_capture`: capture at time `t` off the scalar return forces
+  the lower bound on the scalar-removed replica load.
+- `no_staticChoiTargetCapture_off_scalarReturn_of_krylovReplicaLoad`: if the replica load is below
+  the threshold computed with `T ≥ |t|`, no target is captured at time `t`.
+
+## Hypotheses
+
+All results are unconditional finite-dimensional statements. They assume `0 < d`, unit-norm
+targets, `|t| ≤ T`, a spectral bound `|energy i| ≤ B` with `B ≥ 0`, `0 ≤ ε ≤ 1`, a scalar-return
+bound `|⟨χ(t), χ(0)⟩| < ρ`, nonnegativity of the threshold, and, for the exclusion statement, the
+load budget inequality.
+-/
+
 open scoped BigOperators ComplexConjugate
 
 noncomputable section
@@ -9,6 +39,8 @@ namespace RHTower
 
 open GaloisForLFunctions.HTGeometry
 
+/-- For `d > 0` and a unit Choi target, the traceless residual (the target minus its component along
+the identity Choi state) has norm at most one, by Pythagoras. -/
 theorem norm_staticChoiTracelessResidual_le_one
     {d : ℕ} (hd : 0 < d) (energy : Fin d → ℝ)
     {target : EuclideanSpace ℂ (Fin d × Fin d)}
@@ -29,12 +61,14 @@ theorem norm_staticChoiTracelessResidual_le_one
   rw [hsplit, htarget] at hpy
   nlinarith [norm_nonneg residual, sq_nonneg ‖a • v‖]
 
+/-- Diagonal `(r(i, i))_i` of the traceless residual of a Choi target. -/
 def staticChoiTracelessDiagonal
     {d : ℕ} (energy : Fin d → ℝ)
     (target : EuclideanSpace ℂ (Fin d × Fin d)) :
     EuclideanSpace ℂ (Fin d) :=
   directStaticChoiTargetDiagonal (staticChoiTracelessResidual energy target)
 
+/-- For `d > 0` and a unit Choi target, the diagonal of the traceless residual has norm at most one. -/
 theorem norm_staticChoiTracelessDiagonal_le_one
     {d : ℕ} (hd : 0 < d) (energy : Fin d → ℝ)
     {target : EuclideanSpace ℂ (Fin d × Fin d)}
@@ -44,6 +78,8 @@ theorem norm_staticChoiTracelessDiagonal_le_one
     (staticChoiTracelessResidual energy target)).trans
       (norm_staticChoiTracelessResidual_le_one hd energy htarget)
 
+/-- Scalar-removed Krylov replica load: `∑_w ‖Krylov_K(diag residual_w)‖^(2r)` with frequencies
+`-energy`, summed over a finite family of Choi targets. -/
 def scalarRemovedStaticChoiKrylovReplicaLoad
     {d : ℕ} {W : Type*} [Fintype W]
     (target : W → EuclideanSpace ℂ (Fin d × Fin d))
@@ -52,6 +88,9 @@ def scalarRemovedStaticChoiKrylovReplicaLoad
     (fun w => staticChoiTracelessDiagonal energy (target w))
     (fun i => -energy i) K r
 
+/-- Assuming unit targets, `|t| ≤ T`, `|energy i| ≤ B`, `0 ≤ ε ≤ 1`, scalar return
+`|⟨χ(t), χ(0)⟩| < ρ`, and capture of target `w` at time `t` within trace distance `ε`, the
+scalar-removed replica load is at least `(√(1 - ε²) - ρ - B^(K+1) |t|^(K+1) / (K+1)!)^(2r)`. -/
 theorem scalarRemovedKrylovReplicaLoad_ge_of_capture
     {d : ℕ} (hd : 0 < d) {W : Type*} [Fintype W]
     {target : W → EuclideanSpace ℂ (Fin d × Fin d)}
@@ -85,6 +124,9 @@ theorem scalarRemovedKrylovReplicaLoad_ge_of_capture
     (fun v => norm_staticChoiTracelessDiagonal_le_one hd energy (htarget v))
     htBound hB (fun i => by simpa using henergy i) hresidual hthreshold
 
+/-- Assuming the same bounds and that the replica load is below
+`(√(1 - ε²) - ρ - B^(K+1) T^(K+1) / (K+1)!)^(2r)`, no target is captured within `ε` at any time `t`
+with `|t| ≤ T` whose scalar return is below `ρ`. -/
 theorem no_staticChoiTargetCapture_off_scalarReturn_of_krylovReplicaLoad
     {d : ℕ} (hd : 0 < d) {W : Type*} [Fintype W]
     {target : W → EuclideanSpace ℂ (Fin d × Fin d)}

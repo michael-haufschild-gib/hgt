@@ -2,6 +2,36 @@ import GaloisForLFunctions.RHTower.PolynomialFockFiniteTangentJensen
 import GaloisForLFunctions.RHTower.PolynomialFockTangentBallAdaptedCellMass
 import GaloisForLFunctions.HTGeometry.SVDExpansion
 
+/-!
+# Kernel-trace bounds for finite critical-prime tangent-ball overlaps
+
+Work in the degree-`m` polynomial moment Fock space with potential `φ_m`. The finite overlap mass
+`W_T(z) = ∑_{p ∈ T} [|z - log p| < r_m(log p)] (log p)² / p` counts the critical-prime tangent balls
+containing `z`, and `K(z) = ‖k_z‖² e^{-2 φ_m(|z|)}` is the weighted diagonal of the reproducing
+kernel. The module bounds the weighted square densities of the greedy singular vectors of the
+critical-prime incidence operator by `K`, and bounds the integral of `W_T^q K` over the union of
+closed tangent balls by a weighted sum of scaled adapted-cell masses raised to `q - 1`.
+
+## Main results
+
+- `sum_polynomialMomentFockWeightedNormSq_svVec_le_kernelDiagonalDensity`: for any finite set of
+  greedy singular vectors `u_j` of the incidence energy operator,
+  `∑_j |u_j(z)|² e^{-2 φ_m(|z|)} ≤ K(z)`.
+- `integrableOn_polynomialMomentFockKernelDiagonalDensity_tangentBall`: `K` is integrable on each
+  tangent ball centered at `x ≥ 1`.
+- `integral_rpow_finiteCriticalPrimeTangentBallMass_mul_kernelDiagonalDensity_le`:
+  `∫_U W_T^q K ≤ e^{2C/m} 3^(m/2 - 1) ∑_{p ∈ T} (log p)² / p · M_{I(p)}^(q-1)`, with `M` the
+  scaled adapted cell mass at the overlap scale and `I(p) = ⌊(log p)^(m/2)⌋`.
+- `integrableOn_rpow_finiteCriticalPrimeTangentBallMass_mul_kernelDiagonalDensity`: `W_T^q K` is
+  integrable on the closed tangent-ball union.
+
+## Hypotheses
+
+All results are unconditional. The parameter assumptions are `4 < m` for the singular-vector
+bound (compactness of the incidence operator), and `4 ≤ m`, `1 < q`, and `2 ≤ log p` for every
+`p ∈ T` for the overlap integrals.
+-/
+
 open MeasureTheory Set Filter Topology Metric
 open scoped InnerProductSpace ComplexConjugate
 
@@ -11,6 +41,9 @@ noncomputable section
 
 open ContinuousLinearMap
 
+/-- Assuming `4 < m`, the weighted square densities of any finitely many greedy singular vectors of
+the critical-prime incidence operator sum to at most the kernel diagonal density `K(z)`
+(finite Bessel inequality against the reproducing kernel at `z`). -/
 theorem sum_polynomialMomentFockWeightedNormSq_svVec_le_kernelDiagonalDensity
     {m : ℝ} (hm2 : 2 ≤ m) (hm4 : 4 ≤ m) (hm : 4 < m)
     (S : Finset ℕ) (z : ℂ) :
@@ -27,6 +60,8 @@ theorem sum_polynomialMomentFockWeightedNormSq_svVec_le_kernelDiagonalDensity
     polynomialMomentFockEvaluation, momentFockEvaluation_apply,
     K, norm_inner_symm] using hbessel
 
+/-- Assuming `4 ≤ m` and `1 ≤ x`, the kernel diagonal density is integrable on the tangent ball of
+radius `r_m(x)` around `x`, being bounded there by an anchor-curvature constant. -/
 theorem integrableOn_polynomialMomentFockKernelDiagonalDensity_tangentBall
     {m x : ℝ} (hm : 4 ≤ m) (hx : 1 ≤ x) :
     IntegrableOn (polynomialMomentFockKernelDiagonalDensity m (by linarith))
@@ -44,6 +79,9 @@ theorem integrableOn_polynomialMomentFockKernelDiagonalDensity_tangentBall
     (polynomialMomentFockKernelDiagonalDensity_nonneg m (by linarith) z)]
   exact polynomialFockKernelDiagonalDensity_le_anchorCurvature_of_mem_tangentBall hm hx hz
 
+/-- Assuming `4 ≤ m`, `1 < q` and `2 ≤ log p` on `T`, the integral of `W_T^q K` over the closed
+tangent-ball union is at most `e^{2C/m} 3^(m/2 - 1) ∑_{p ∈ T} (log p)² / p · M_{I(p)}^(q-1)`, using
+that `W_T ≤ M_{I(p)}` on the ball of `p` and the kernel-trace bound on each ball. -/
 theorem integral_rpow_finiteCriticalPrimeTangentBallMass_mul_kernelDiagonalDensity_le
     {m q : ℝ} (hm : 4 ≤ m) (hq : 1 < q)
     (T : Finset Nat.Primes)
@@ -204,6 +242,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- Assuming `4 ≤ m`, `1 < q` and `2 ≤ log p` on `T`, `W_T^q K` is integrable on the closed
+tangent-ball union. -/
 theorem integrableOn_rpow_finiteCriticalPrimeTangentBallMass_mul_kernelDiagonalDensity
     {m q : ℝ} (hm : 4 ≤ m) (hq : 1 < q)
     (T : Finset Nat.Primes)

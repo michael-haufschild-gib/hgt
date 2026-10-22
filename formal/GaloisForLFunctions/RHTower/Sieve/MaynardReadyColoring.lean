@@ -1,10 +1,40 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardCanonicalReadyAllShort
 
+/-!
+# Finite coloring of large-value ordinates by Heath-Brown selection labels
+
+A selection label is a Heath-Brown box together with a factor group. At a height `T0` satisfying
+`IsMaynardLongScaleReady`, this module assigns to every ordinate `λ_r` of a finite set `S` in
+`[T0, 2T0]` at which the eligible aggregate is large a label that is an eligible robust selection
+at `σ + iλ_r`. At degree `60` the Möbius cutoff is chosen canonically with `X < (L+1)^{60}` and
+`L ≤ T0^{2t}`, so all Möbius factors are short.
+
+## Main results
+
+- `exists_heathBrownEligibleSelection_label_of_ready_scale`: one ordinate with a large eligible
+  aggregate admits an eligible selection label.
+- `exists_heathBrownEligibleSelection_coloring_of_ready_scale`: a coloring `r ↦ label` that is an
+  eligible selection at every `r ∈ S`.
+- `exists_canonical_sixty_eligibleSelection_coloring_of_ready_scale`: at degree `60`, a cutoff
+  `1 ≤ L ≤ T0^{2t}` with `X < (L+1)^{60}` and such a coloring.
+
+## Hypotheses
+
+The results are conditional. They assume `IsMaynardLongScaleReady T0` (explicit scalar
+inequalities on `T0`, true for all large `T0`), `4/3 ≤ μ ≤ 19/9`, `t = μ/120`, `1 ≤ X ≤ T0^μ`,
+`σ ≥ 0`, `V > 0`, ordinates in `[T0, 2T0]`, the large-value premise
+`V ≤ |eligible aggregate(σ+iλ_r)|` at every point, the reserve inequality on eligible boxes, and,
+for general degree `k > 0`, shortness of every Möbius factor.
+-/
+
 noncomputable section
 namespace RHTower.Sieve
 
 open Finset ArithmeticFunction
 
+/-- Pointwise label. Assuming readiness, the scale ranges, `V ≤ |eligible aggregate(σ+iy)|`,
+short Möbius factors and the reserve inequality, some selection label is an eligible robust
+selection at `σ + iy`. -/
 theorem exists_heathBrownEligibleSelection_label_of_ready_scale
     (L X k : ℕ) (hk : 0 < k) {T0 t mu sigma y V : ℝ}
     (hready : IsMaynardLongScaleReady T0)
@@ -36,6 +66,9 @@ theorem exists_heathBrownEligibleSelection_label_of_ready_scale
   refine ⟨label, helig, ?_⟩
   exact ⟨hune, hulower, huupper, hucard, hulength, hularge⟩
 
+/-- Finite coloring. Assuming readiness, the scale ranges, `λ_r ∈ [T0, 2T0]` and a large eligible
+aggregate at every `σ + iλ_r` (`r ∈ S`), there is a coloring by labels that is an eligible
+selection at each `r ∈ S`. -/
 theorem exists_heathBrownEligibleSelection_coloring_of_ready_scale
     (L X k : ℕ) (hk : 0 < k) {T0 t mu sigma V : ℝ}
     (hready : IsMaynardLongScaleReady T0)
@@ -80,6 +113,9 @@ theorem exists_heathBrownEligibleSelection_coloring_of_ready_scale
   intro r hr
   simpa [color, hr] using hselected r hr
 
+/-- Degree-60 coloring. Under readiness, the scale ranges and the large-value and reserve premises
+for every admissible cutoff, there is `1 ≤ L ≤ T0^{2t}` with `X < (L+1)^{60}` and a coloring of `S`
+by eligible degree-60 selection labels. -/
 theorem exists_canonical_sixty_eligibleSelection_coloring_of_ready_scale
     {X : ℕ} {T0 t mu sigma V : ℝ}
     (hready : IsMaynardLongScaleReady T0)

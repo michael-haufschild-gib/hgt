@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import fcntl
 import os
+import re
 import selectors
 import sqlite3
 import subprocess
@@ -279,7 +280,18 @@ def refresh_main():
     print(json.dumps(dict(candidate_lemmas=[], refresh=refresh)), flush=True)
 
 
-def render_discovery(extra: dict) -> None:
+def matching_line(text: str, query: str, width: int = 160) -> str:
+    """The line naming the most query words (else the first), cut around the first match."""
+    from lean_search_index import STOPWORDS
+    words = {w for w in re.findall(r"\w+", query.casefold()) if len(w) > 2 and w not in STOPWORDS}
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    best = max(lines, key=lambda line: sum(w in line.casefold() for w in words), default='')
+    hits = [i for w in words if (i := best.casefold().find(w)) >= 0]
+    start = max(0, min(hits) - width // 3) if hits and len(best) > width else 0
+    return ('…' if start else '') + best[start:start + width]
+
+
+def render_discovery(extra: dict, query: str = '') -> None:
     print("\nResearch discovery: %s%s (%.2fs)" % (extra.get("mode", "deep"),
           "; partial search" if extra.get("partial") else "; search complete", extra.get("elapsed_seconds", 0)))
     for label, key in (("Candidate lemmas", "candidate_lemmas"), ("Proof ideas", "proof_ideas"),
@@ -305,12 +317,13 @@ def render_discovery(extra: dict) -> None:
                 print("  Obligations: " + "; ".join(step["obligations"]))
     if extra.get("unfinished_stages"):
         print("Unfinished search stages: " + ", ".join(extra["unfinished_stages"]))
+    for label, key in (("Markdown notes", "prose"), ("Source passages", "source_passages")):
+        if extra.get(key):
+            print(label + ":")
+            for hit in extra[key]:
+                print("- %s:%s-%s  %s" % (hit['path'], hit['line'], hit['end_line'], matching_line(hit.get('text', ''), query)))
     if extra.get('index_warnings'):
         print("Index coverage/freshness: " + ", ".join(extra['index_warnings']))
-    if extra.get('semantic_coverage'):
-        print("Semantic coverage: " + json.dumps(extra['semantic_coverage'], ensure_ascii=False))
-    if extra.get("coverage"):
-        print("Coverage: " + json.dumps(extra["coverage"], ensure_ascii=False))
 
 
 def corpus_index(root: Path, args) -> int:

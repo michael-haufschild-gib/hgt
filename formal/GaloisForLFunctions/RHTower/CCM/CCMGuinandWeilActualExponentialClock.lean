@@ -1,5 +1,28 @@
 import GaloisForLFunctions.RHTower.CCM.CCMGuinandWeilActualDampedEnvelope
 
+/-!
+# Exponential clock on the third-grade prime-minus-polar source
+
+For a wall `b > 0` and a real exponent `a`, this module defines the exponentially clocked
+third-grade cumulative window: the prime-minus-polar window tested against the weight
+`h ↦ e^(a h) · 32 / h³`. It proves that this clocked window equals the abstract operator
+`expClockOnDampedSource a φ H` applied to the damped source `φ = ccmThirdGradeDampedSource b`,
+namely `e^((1+a)H) φ(H) - a e^((1+a)H) ∫_0^H e^(-(1+a)(H-h)) φ(h) dh`. The proof combines the
+clock-commutator (integration by parts) identity for prime-polar windows with a direct
+evaluation of the damped integral.
+
+## Main results
+
+- `ccmThirdGradeExponentialClockCumulative`: the window
+  `∑_{log k > b} Λ(k) k^(-1/2) e^(a log k) 32/(log k)³ - ∫_b^H e^(a h) (32/h³) 2 cosh(h/2) dh`.
+- `ccmThirdGradeExponentialClockCumulative_eq_expClockOnDampedSource`: for `0 < b < H` and any
+  real `a`, the clocked window equals `expClockOnDampedSource a (ccmThirdGradeDampedSource b) H`.
+
+## Hypotheses
+
+Unconditional; the premises are `0 < b` and `b < H`.
+-/
+
 open Set MeasureTheory
 open GaloisForLFunctions.RHTower
 
@@ -7,6 +30,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- The third-grade prime-minus-polar window up to height `H` above the wall `b`, tested against the
+exponentially clocked weight `h ↦ e^(a h) · 32 / h³`. -/
 def ccmThirdGradeExponentialClockCumulative (b a H : ℝ) : ℝ :=
   ccmGuinandWeilPrimePolarWeightedWindow b H
     (fun h => Real.exp (a * h) * ccmGuinandWeilThirdGradeWeight h)
@@ -52,6 +77,8 @@ private theorem expClockDamped_integral_eq_literal
       exact ⟨⟨hb.trans hmem.1, hmem.2⟩, hmem.1⟩
   rw [hset, ← intervalIntegral.integral_of_le hbH]
 
+/-- For `0 < b < H` and any `a`, the exponentially clocked third-grade window equals the clock
+operator `expClockOnDampedSource a` applied to the damped source `e^(-h) Q_b(h)`, evaluated at `H`. -/
 theorem ccmThirdGradeExponentialClockCumulative_eq_expClockOnDampedSource
     {b H : ℝ} (hb : 0 < b) (hbh : b < H) (a : ℝ) :
     ccmThirdGradeExponentialClockCumulative b a H =

@@ -1,6 +1,35 @@
 import GaloisForLFunctions.RHTower.XiMassBottomPrimeAtomization
 import Mathlib.NumberTheory.LSeries.PrimesInAP
 
+/-!
+# Prime-power layers of the mass prime source and the bounded high tail
+
+The centered prime atom at `n` is `Λ(n) n^{-1/2} ĝ(log n)`, where `ĝ` is the Fourier transform of
+the mass test `g(x) = exp(-τ √(x² + a²))`. On a vertical line `τ = σ + iu` with `a, σ > 0`, the
+Fourier factor is bounded by `∫ e^{-σ|x|} dx` uniformly in `u` and the frequency, so the atom at
+`p^{k+1}` is bounded by the critical weight `log p · p^{-(k+1)/2}` times that constant. These
+weights are summable over all primes and exponents `≥ 3`, hence the cube-and-higher prime-power
+tail is bounded on every positive vertical line. On a legal Euler line (`1/2 < c < a`,
+`Re τ > 0`) the literal von Mangoldt bottom integral splits exactly into the prime layer, the
+prime-square layer and this high tail.
+
+## Main results
+
+- `norm_stripFourier_xiMassAnalyticTest_vertical_le`: `‖ĝ(w)‖ ≤ ∫ e^{-σ|x|} dx` for real `w`.
+- `xiMassPrimePowerCriticalWeight_eq`: `‖Λ(p^{k+1}) p^{-(k+1)/2}‖ = log p · p^{-(k+1)/2}`.
+- `xiMassCenteredPrimeAtom_support_primePower`: the atoms vanish off prime powers.
+- `summable_xiMassPrimePowerCriticalWeight_high`: `∑_{p, k ≥ 0} log p · p^{-(k+3)/2} < ∞`.
+- `norm_xiMassHighPrimePowerTail_vertical_le`: the high tail is bounded on the line `Re τ = σ`
+  by `(∑ weights) · ∫ e^{-σ|x|} dx`, uniformly in `Im τ`.
+- `integral_xiMassBottomPrimeIntegrand_eq_prime_add_square_add_high`: bottom prime integral
+  `=` prime layer `+` prime-square layer `+` high tail.
+
+## Hypotheses
+
+All results are unconditional. They use only the parameter ranges `0 < a`, `0 < σ` for the
+vertical bounds and `1/2 < c < a`, `0 < Re τ` for the exact decomposition.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -8,6 +37,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- For `a, σ > 0`, the Fourier transform of the mass test `exp(-τ √(x² + a²))` at
+`τ = σ + iu` and real frequency `w` is bounded by `∫ e^{-σ|x|} dx`, uniformly in `u` and `w`. -/
 theorem norm_stripFourier_xiMassAnalyticTest_vertical_le
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u w : ℝ) :
     ‖stripFourier (xiMassAnalyticTest a ((σ : ℂ) + u * I)) (w : ℂ)‖ ≤
@@ -26,10 +57,13 @@ theorem norm_stripFourier_xiMassAnalyticTest_vertical_le
     rw [hphase, Real.exp_zero, mul_one]
     simpa using hg
 
+/-- Critical weight of the prime power `p^{k+1}`: the norm of its von Mangoldt Dirichlet term
+at `s = 1/2`. -/
 def xiMassPrimePowerCriticalWeight (p : Nat.Primes) (k : ℕ) : ℝ :=
   ‖LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
     (1 / 2 : ℂ) ((p : ℕ) ^ (k + 1))‖
 
+/-- Closed form of the critical weight: `log p · p^{-(k+1)/2}`. -/
 theorem xiMassPrimePowerCriticalWeight_eq (p : Nat.Primes) (k : ℕ) :
     xiMassPrimePowerCriticalWeight p k =
       Real.log (p : ℝ) * (p : ℝ) ^ (-((k + 1 : ℝ) / 2)) := by
@@ -47,6 +81,8 @@ theorem xiMassPrimePowerCriticalWeight_eq (p : Nat.Primes) (k : ℕ) :
   norm_num
   ring
 
+/-- For `a, σ > 0`, the centered atom at `p^{k+1}` on the line `τ = σ + iu` is bounded by the
+critical weight of `p^{k+1}` times `∫ e^{-σ|x|} dx`. -/
 theorem norm_xiMassCenteredPrimeAtom_primePower_le
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u : ℝ)
     (p : Nat.Primes) (k : ℕ) :
@@ -59,6 +95,7 @@ theorem norm_xiMassCenteredPrimeAtom_primePower_le
       (Real.log ((((p : ℕ) ^ (k + 1) : ℕ)) : ℝ)))
     (norm_nonneg _)
 
+/-- The centered atoms are supported on prime powers, since `Λ` vanishes elsewhere. -/
 theorem xiMassCenteredPrimeAtom_support_primePower {a : ℝ} {τ : ℂ} :
     Function.support (xiMassCenteredPrimeAtom a τ) ⊆ {n : ℕ | IsPrimePow n} := by
   intro n hn
@@ -72,6 +109,8 @@ theorem xiMassCenteredPrimeAtom_support_primePower {a : ℝ} {τ : ℂ} :
   · rw [LSeries.term_of_ne_zero hn0, hΛ]
     simp
 
+/-- Assuming `1/2 < c < a` and `0 < Re τ`, the sum of centered atoms over all `n` equals the
+double sum over primes `p` and exponents `k + 1 ≥ 1` of the atoms at `p^{k+1}`. -/
 theorem tsum_xiMassCenteredPrimeAtom_eq_primePower
     {a c : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -82,6 +121,8 @@ theorem tsum_xiMassCenteredPrimeAtom_eq_primePower
     (summable_xiMassCenteredPrimeAtom hhalf hca hτ)
     xiMassCenteredPrimeAtom_support_primePower
 
+/-- For `β > 1`, the double series `∑_{p, k} log p · p^{-(k + β)}` over primes and `k ≥ 0`
+converges. -/
 theorem summable_primeLog_mul_inv_rpow_add
     (β : ℝ) (hβ : 1 < β) :
     Summable (fun pk : Nat.Primes × ℕ =>
@@ -144,6 +185,8 @@ theorem summable_primeLog_mul_inv_rpow_add
         mul_le_mul_of_nonneg_left hinv hcoeffNonneg
       _ = 2 * (Real.log (p : ℝ) * ((p : ℝ)⁻¹) ^ β) := by ring
 
+/-- The critical weights of cubes and higher prime powers are summable:
+`∑_{p, k ≥ 0} log p · p^{-(k+3)/2} < ∞`. -/
 theorem summable_xiMassPrimePowerCriticalWeight_high :
     Summable (fun pk : Nat.Primes × ℕ =>
       xiMassPrimePowerCriticalWeight pk.1 (pk.2 + 2)) := by
@@ -185,10 +228,14 @@ theorem summable_xiMassPrimePowerCriticalWeight_high :
       Equiv.refl_apply, Equiv.natSumNatEquivNat_apply, Sum.elim_inr,
       Prod.fst, Prod.snd] using ho
 
+/-- The high prime-power tail: the sum of centered atoms over all prime powers `p^{k+3}`,
+i.e. exponents at least three. -/
 def xiMassHighPrimePowerTail (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' pk : Nat.Primes × ℕ,
     xiMassCenteredPrimeAtom a τ ((pk.1 : ℕ) ^ (pk.2 + 3))
 
+/-- For `a, σ > 0`, the high prime-power atoms are absolutely summable on each line
+`τ = σ + iu`. -/
 theorem summable_norm_xiMassHighPrimePowerAtom
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u : ℝ) :
     Summable (fun pk : Nat.Primes × ℕ =>
@@ -210,6 +257,8 @@ theorem summable_xiMassHighPrimePowerAtom
         ((pk.1 : ℕ) ^ (pk.2 + 3))) :=
   summable_norm_iff.mp (summable_norm_xiMassHighPrimePowerAtom ha hσ u)
 
+/-- For `a, σ > 0`, the high prime-power tail is bounded on the vertical line `Re τ = σ` by
+`(∑_{p, k} log p · p^{-(k+3)/2}) · ∫ e^{-σ|x|} dx`, uniformly in `Im τ`. -/
 theorem norm_xiMassHighPrimePowerTail_vertical_le
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) (u : ℝ) :
     ‖xiMassHighPrimePowerTail a ((σ : ℂ) + u * I)‖ ≤
@@ -237,6 +286,8 @@ theorem norm_xiMassHighPrimePowerTail_vertical_le
       · exact hmajorant
     _ = _ := tsum_mul_right
 
+/-- Assuming `1/2 < c < a` and `0 < Re τ`, the full centered atom series splits as the prime
+layer plus the prime-square layer plus the high prime-power tail. -/
 theorem tsum_xiMassCenteredPrimeAtom_eq_prime_add_square_add_high
     {a c : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -322,6 +373,8 @@ theorem tsum_xiMassCenteredPrimeAtom_eq_prime_add_square_add_high
       rw [← hhigh.tsum_prod]
       rfl
 
+/-- Assuming `1/2 < c < a` and `0 < Re τ`, the literal von Mangoldt bottom integral equals the
+prime layer plus the prime-square layer plus the high prime-power tail. -/
 theorem integral_xiMassBottomPrimeIntegrand_eq_prime_add_square_add_high
     {a c : ℝ} (hhalf : 1 / 2 < c) (hca : c < a)
     {τ : ℂ} (hτ : 0 < τ.re) :

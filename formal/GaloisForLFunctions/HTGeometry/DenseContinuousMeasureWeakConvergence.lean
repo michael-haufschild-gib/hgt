@@ -1,5 +1,29 @@
 import GaloisForLFunctions.HTGeometry.InfiniteTorusFourierWeakConvergenceLaw
 
+/-!
+# Probability measures are determined by a dense set of continuous test functions
+
+On a compact, Hausdorff, second-countable Borel space `X`, integration against two probability measures
+gives bounded linear functionals on `C(X, ℂ)` whose difference has norm at most `2`. If the two integrals
+agree on a family `F` whose linear span is dense in `C(X, ℂ)`, the difference vanishes on the closure of
+that span, hence on all continuous functions, and the measures coincide. Since the space of probability
+measures on compact `X` has the needed compactness, convergence of integrals on a dense-span family then
+forces weak convergence.
+
+## Main results
+
+- `probabilityMeasure_ext_of_denseSpan_integral_eq`: if `∫ f dμ = ∫ f dν` for all `f ∈ F` and the span of
+  `F` is dense in `C(X, ℂ)`, then `μ = ν`.
+- `probabilityMeasure_tendsto_of_denseSpan_integral_tendsto`: if `∫ f dμ_a → ∫ f dμ` along a filter for
+  every `f ∈ F`, with `F` of dense span, then `μ_a → μ` in the weak topology of probability measures.
+
+## Hypotheses
+
+Unconditional. `X` is compact, Hausdorff, second countable and Borel; the only substantive hypothesis is
+density of the complex linear span of `F` in `C(X, ℂ)`, plus the stated agreement or convergence of the
+integrals on `F`.
+-/
+
 open Filter MeasureTheory Set Topology
 open scoped BoundedContinuousFunction
 
@@ -55,6 +79,8 @@ private def integralDifference
   (integralDifferenceLinearMap μ ν).mkContinuous 2
     (norm_integralDifferenceLinearMap_le μ ν)
 
+/-- Two probability measures on a compact Hausdorff second-countable space agree if their integrals agree on a
+family `F` of continuous complex functions whose linear span is dense in `C(X, ℂ)`. -/
 theorem probabilityMeasure_ext_of_denseSpan_integral_eq
     (F : Set C(X, ℂ))
     (hF : (Submodule.span ℂ F).topologicalClosure = ⊤)
@@ -92,6 +118,9 @@ theorem probabilityMeasure_ext_of_denseSpan_integral_eq
   rw [hμ, hν] at hre
   exact sub_eq_zero.mp hre
 
+/-- Weak convergence from a dense-span family: if `∫ f dμ_a → ∫ f dμ` for every `f` in a family with
+dense linear span in `C(X, ℂ)`, then `μ_a → μ` as probability measures; every cluster point has the same
+integrals on `F` as `μ`. -/
 theorem probabilityMeasure_tendsto_of_denseSpan_integral_tendsto
     {α : Type*}
     {l : Filter α}

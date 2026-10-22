@@ -1,12 +1,36 @@
 import GaloisForLFunctions.RHTower.Sieve.VinogradovShiftedLinnikPartner
 import GaloisForLFunctions.RHTower.Sieve.VinogradovResidueTailCorrelation
 
+/-!
+# Solutions with residue-class tails force shifted nested compatibility
+
+Let `x, y` be leading `k`-blocks with entries distinct modulo the prime `p`, and `u, v` tails whose
+entries are all `≡ a (mod p)`. If `x ++ u` and `y ++ v` have equal power sums of orders `1..k`
+modulo a large `q`, they have equal integer power sums. Translating every entry by `-a` keeps the
+power sums equal, and each translated tail entry is a multiple of `p`, so its `j`-th power vanishes
+modulo `p^j`. Hence the translated blocks `x - a` and `y - a` have equal `j`-th power sums modulo
+`p^j` for `j = 1..k`.
+
+## Main results
+
+- `vinogradovShiftedNestedCompatible_of_residueTail_solution`: under `p` prime, `N < p^k`, `N ≠ 0`
+  and `2 (k + b) N^k < q`, such a solution makes `x, y` shifted nested-compatible at `a`.
+
+## Hypotheses
+
+Unconditional. It assumes `p` prime, `N < p^k`, `N ≠ 0` and `2 (k + b) N^k < q`, together with the
+solution equation itself.
+-/
+
 namespace RHTower.Sieve
 
 open scoped BigOperators
 
 noncomputable section
 
+/-- Assuming `p` prime, `N < p^k`, `N ≠ 0` and `2 (k + b) N^k < q`: if `x ++ u` and `y ++ v` have equal
+power sums of orders `1..k` modulo `q` and all tail entries are `≡ a (mod p)`, then the shifted blocks
+`x - a`, `y - a` have equal `j`-th power sums modulo `p^j` for `j = 1..k`. -/
 theorem vinogradovShiftedNestedCompatible_of_residueTail_solution
     {q N p k b : ℕ} [NeZero q] [NeZero p]
     (hp : p.Prime) (hNp : N < p ^ k) (hN : N ≠ 0)

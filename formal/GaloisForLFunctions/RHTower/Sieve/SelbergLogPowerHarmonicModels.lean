@@ -1,6 +1,31 @@
 import GaloisForLFunctions.RHTower.Sieve.SelbergHigherLogHarmonicModels
 import GaloisForLFunctions.RHTower.Sieve.HarmonicLogWindowThirdMoment
 
+/-!
+# Harmonic models for Selberg fourth-power logarithmic main terms
+
+Two harmonic sums of degree four in logarithms that model Selberg sieve main terms:
+`selbergOneFourHarmonicMain b c N = ∑_{d ≤ N/c} 4 log(N/(b d))^3 / d` and
+`selbergTwoThreeHarmonicMain a b c N = ∑_{d ≤ N/c} 6 log(N/(a d)) log(N/(b d))^2 / d`.
+Expanding `log(N/(b d)) = (log N - log b) - log d` writes each as a combination of the harmonic number
+`H_{⌊N/c⌋}` and the log-moments `∑_{j ≤ N/c} (log j)^m / j`, `m = 1, 2, 3`. From the asymptotics of
+those moments, the sums divided by `(log N)^4` tend to `1` and `3/2` respectively.
+
+## Main results
+
+- `selbergOneFourHarmonicMain_eq_moments`: exact expansion of the `(1,4)` model in harmonic log-moments.
+- `selbergTwoThreeHarmonicMain_eq_moments`: exact expansion of the `(2,3)` model.
+- `tendsto_selbergOneFourHarmonicMain_div_log_fourth_one`:
+  `selbergOneFourHarmonicMain b c N / (log N)^4 → 1` as `N → ∞`.
+- `tendsto_selbergTwoThreeHarmonicMain_div_log_fourth_three_halves`:
+  `selbergTwoThreeHarmonicMain a b c N / (log N)^4 → 3/2` as `N → ∞`.
+
+## Hypotheses
+
+Unconditional. The parameters `a`, `b`, `c` are positive natural numbers, and the exact expansions
+also assume `N > 0`.
+-/
+
 open Finset Filter Topology
 open scoped BigOperators
 
@@ -8,15 +33,19 @@ namespace RHTower.Sieve
 
 noncomputable section
 
+/-- Harmonic model `∑_{d=1}^{⌊N/c⌋} 4 log(N/(b d))^3 / d`. -/
 def selbergOneFourHarmonicMain (b c N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 (N / c),
     4 * Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ (3 : ℕ) / (d : ℝ)
 
+/-- Harmonic model `∑_{d=1}^{⌊N/c⌋} 6 log(N/(a d)) log(N/(b d))^2 / d`. -/
 def selbergTwoThreeHarmonicMain (a b c N : ℕ) : ℝ :=
   ∑ d ∈ Finset.Icc 1 (N / c),
     6 * (Real.log ((N : ℝ) / ((a * d : ℕ) : ℝ)) *
       Real.log ((N : ℝ) / ((b * d : ℕ) : ℝ)) ^ (2 : ℕ)) / (d : ℝ)
 
+/-- For `b, N > 0`, with `L = log N - log b` and `M_m = ∑_{j ≤ N/c} (log j)^m / j`:
+the `(1,4)` model equals `4 (L^3 H_{⌊N/c⌋} - 3 L^2 M_1 + 3 L M_2 - M_3)`. -/
 theorem selbergOneFourHarmonicMain_eq_moments
     {b c N : ℕ} (hb : 0 < b) (hN : 0 < N) :
     selbergOneFourHarmonicMain b c N =
@@ -45,6 +74,8 @@ theorem selbergOneFourHarmonicMain_eq_moments
     Real.log_mul hbR.ne' hdR.ne']
   ring
 
+/-- For `a, b, N > 0`, with `A = log N - log a`, `B = log N - log b` and `M_m` the harmonic log-moments:
+the `(2,3)` model equals `6 (A B^2 H - (B^2 + 2AB) M_1 + (A + 2B) M_2 - M_3)`. -/
 theorem selbergTwoThreeHarmonicMain_eq_moments
     {a b c N : ℕ} (ha : 0 < a) (hb : 0 < b) (hN : 0 < N) :
     selbergTwoThreeHarmonicMain a b c N =
@@ -78,6 +109,7 @@ theorem selbergTwoThreeHarmonicMain_eq_moments
     Real.log_mul haR.ne' hdR.ne', Real.log_mul hbR.ne' hdR.ne']
   ring
 
+/-- For positive `b, c`: `selbergOneFourHarmonicMain b c N / (log N)^4 → 1` as `N → ∞`. -/
 theorem tendsto_selbergOneFourHarmonicMain_div_log_fourth_one
     {b c : ℕ} (hb : 0 < b) (hc : 0 < c) :
     Tendsto (fun N : ℕ =>
@@ -102,6 +134,7 @@ theorem tendsto_selbergOneFourHarmonicMain_div_log_fourth_one
   rw [selbergOneFourHarmonicMain_eq_moments hb hNpos]
   field_simp [hlogN]
 
+/-- For positive `a, b, c`: `selbergTwoThreeHarmonicMain a b c N / (log N)^4 → 3/2` as `N → ∞`. -/
 theorem tendsto_selbergTwoThreeHarmonicMain_div_log_fourth_three_halves
     {a b c : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) :
     Tendsto (fun N : ℕ =>

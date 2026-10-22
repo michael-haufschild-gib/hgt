@@ -1,18 +1,47 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIBlockParameters
 import GaloisForLFunctions.RHTower.Sieve.ChebyshevBracketBound
 
+/-!
+# Elementary bounds on the Case II block parameters
+
+For a prime block `(a, Y]` with `a < Y ≤ 2a`, Case II uses `cells = ceil((log a)^{200})`, smoothing
+width `H = a/(log a)^{20}` and the line `σ = 1 + 1/log(4Y + 1)`. This module records the scalar
+bounds that feed the Case II budget: two-sided bounds on the cell count, the arctan tail, the
+identity `(4Y + 1)^σ = e (4Y + 1)`, a bound `K(C0) a (log a)^{40}` for the wide-interval kernel
+majorant, and a bound `K_P (log a)^{134}` for the Heath-Brown window fixed polylogarithmic bound at
+degree `3`.
+
+## Main results
+
+- `menonHarmonicCaseIICells_cast_bounds`: `(log a)^{200} ≤ cells ≤ 2 (log a)^{200}` when `log a ≥ 1`.
+- `menonHarmonicCaseII_arctanTail_le`: `π - 2 arctan(cells/2) ≤ 4/cells` for `a > 1`.
+- `rpow_menonHarmonicCaseIISigma_eq`: `(4Y + 1)^σ = (4Y + 1) e` for `Y > 0`.
+- `menonWideIntervalAmbientKernelMajorant_caseII_le`: the kernel majorant at `(4Y, H, σ)` is at
+  most `menonHarmonicCaseIIKernelConstant C0 · a · (log a)^{40}`.
+- `heathBrownWindowRelevantFixedPolylogBound_caseII_le`: the fixed polylog bound is at most
+  `menonHarmonicCaseIIFixedPolylogConstant · (log a)^{134}` for `a ≥ 64`.
+
+## Hypotheses
+
+The results are unconditional elementary estimates, under ranges such as `C0 ≥ 0`, `a > 1` or
+`a ≥ 64`, `log a ≥ 1` and `a < Y ≤ 2a`.
+-/
+
 namespace RHTower.Sieve
 
 open Filter
 
 noncomputable section
 
+/-- Kernel constant `K(C0) = 1 + 36e + 2916 e C0`. -/
 def menonHarmonicCaseIIKernelConstant (C0 : ℝ) : ℝ :=
   1 + 36 * Real.exp 1 + 2916 * Real.exp 1 * C0
 
+/-- Fixed polylog constant `K_P = 32768 · 3 · 17^6 · 8 · 512 · 513^{127}`. -/
 def menonHarmonicCaseIIFixedPolylogConstant : ℝ :=
   32768 * (3 * 17 ^ (6 : ℕ)) * 8 * 512 * 513 ^ (127 : ℕ)
 
+/-- For `log a ≥ 1`, the Case II cell count satisfies `(log a)^{200} ≤ cells ≤ 2 (log a)^{200}`. -/
 theorem menonHarmonicCaseIICells_cast_bounds
     {a : ℕ} (hlog : 1 ≤ Real.log (a : ℝ)) :
     (Real.log (a : ℝ)) ^ (200 : ℕ) ≤ (menonHarmonicCaseIICells a : ℝ) ∧
@@ -27,6 +56,7 @@ theorem menonHarmonicCaseIICells_cast_bounds
     rw [menonHarmonicCaseIICells]
     linarith
 
+/-- For `a > 1`, the arctan tail satisfies `π - 2 arctan(cells/2) ≤ 4/cells`. -/
 theorem menonHarmonicCaseII_arctanTail_le
     {a : ℕ} (ha : 1 < a) :
     Real.pi - 2 * Real.arctan ((menonHarmonicCaseIICells a : ℝ) / 2) ≤
@@ -43,6 +73,7 @@ theorem menonHarmonicCaseII_arctanTail_le
       field_simp
       norm_num
 
+/-- For `Y > 0` and `σ = 1 + 1/log(4Y + 1)`, `(4Y + 1)^σ = (4Y + 1) e`. -/
 theorem rpow_menonHarmonicCaseIISigma_eq
     {Y : ℕ} (hY : 0 < Y) :
     ((((4 * Y : ℕ) : ℝ) + 1) ^ menonHarmonicCaseIISigma Y) =
@@ -61,6 +92,8 @@ theorem rpow_menonHarmonicCaseIISigma_eq
     field_simp
   simpa only [Z] using congrArg (fun z : ℝ => Z * z) hsmall
 
+/-- For `C0 ≥ 0`, `a > 1`, `log a ≥ 1` and `a < Y ≤ 2a`, the wide-interval kernel majorant at
+`(4Y, a/(log a)^{20}, σ)` is at most `K(C0) · a · (log a)^{40}`. -/
 theorem menonWideIntervalAmbientKernelMajorant_caseII_le
     {C0 : ℝ} (hC0 : 0 ≤ C0) {a Y : ℕ} (ha : 1 < a)
     (hlog : 1 ≤ Real.log (a : ℝ)) (haY : a < Y) (hYa : Y ≤ 2 * a) :
@@ -143,6 +176,8 @@ theorem menonWideIntervalAmbientKernelMajorant_caseII_le
         _ = (1 + 36 * Real.exp 1 + 2916 * Real.exp 1 * C0) *
               (a : ℝ) * la ^ (40 : ℕ) := by ring
 
+/-- For `a ≥ 64`, `log a ≥ 1` and `a < Y ≤ 2a`, the degree-3 Heath-Brown window fixed polylog bound
+at `(a, 4Y, σ)` is at most `K_P · (log a)^{134}`. -/
 theorem heathBrownWindowRelevantFixedPolylogBound_caseII_le
     {a Y : ℕ} (ha64 : 64 ≤ a) (hlog : 1 ≤ Real.log (a : ℝ))
     (haY : a < Y) (hYa : Y ≤ 2 * a) :

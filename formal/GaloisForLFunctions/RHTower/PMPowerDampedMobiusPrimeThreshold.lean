@@ -5,10 +5,44 @@ import GaloisForLFunctions.HTGeometry.WeightedHolder
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusMean
 import Mathlib.Analysis.Analytic.IsolatedZeros
 
+/-!
+# Canonical finite-prime sources blow up in `L²` below damping `1/2`
+
+For a finite set of primes `S`, the finite-prime power-damped source
+`F_{S,ε}(t) = −∑_{d | ∏S} μ(d) d^(−ε) φ_d(t)` has Mellin transform
+`(1 − 2^(1−s)) ζ(s)/s · ∏_{p∈S} (1 − p^(−s−ε))` on `0 < Re s < 1`. For damping `ε > 1/2` the
+triangle inequality bounds every such source by the absolute budget `∑_d 3 d^(−ε−1/2)`. For the
+canonical apertures `S_N = {p ≤ N}` and `0 < ε < 1/2`, the Euler factor tends to `0` at each
+real `x` with `0 < x + ε ≤ 1`. The sources agree with the full source `F_ε` for
+`t > 1/(N+1)`, and a Cauchy–Schwarz bound for Mellin transforms of functions supported near `0`
+shows: if some subsequence of canonical sources were uniformly `L²`-bounded, then
+`F_ε ∈ L²(0,∞)`, its Mellin transform would vanish on `(1/2, 1−ε)` and hence, by analytic
+continuation, at `s = 1`, contradicting `M F_ε(1) = log 2/ζ(1+ε) ≠ 0`. Therefore the
+`L²(0,∞)` norms of the canonical finite-prime sources tend to infinity for every `0 < ε < 1/2`.
+
+## Main results
+
+- `pmFinitePrimePowerDampedFermiSource_norm_le_absolute_budget`: for `ε > 1/2`, `‖F_{S,ε}‖₂ ≤ ∑_d 3 d^(−ε−1/2)` for every finite `S`.
+- `mellin_pmFinitePrimePowerDampedFermiSource`: Mellin transform `(1 − 2^(1−s)) ζ(s)/s · ∏_{p∈S}(1 − p^(−(s+ε)))` for `0 < Re s < 1`.
+- `pm_mellin_norm_le_of_cutoff`: for `f ∈ L²` vanishing beyond `c ≤ 1` and `Re s > 1/2`, `|M f(s)| ≤ ‖f‖₂ √(c^(2Re s − 1)/(2Re s − 1))`.
+- `pm_mellin_tendsto_of_cofinal_prime_budget`: a uniform `L²` bound along a cofinal subsequence of canonical sources forces Mellin convergence to `M F_ε(s)` for `Re s > 1/2`.
+- `pmCanonicalPrime_no_bounded_cofinal_subsequence`: for `0 < ε < 1/2`, no cofinal subsequence of canonical sources is uniformly `L²`-bounded.
+- `pmCanonicalPrime_eventually_exceeds_every_budget`: for `0 < ε < 1/2` and every real `C`, eventually `‖F_{S_N,ε}‖₂ > C`.
+- `tendsto_pmCanonicalPrime_norm_atTop`: for `0 < ε < 1/2`, `‖F_{S_N,ε}‖_{L²(0,∞)} → ∞`.
+
+## Hypotheses
+
+All results are unconditional. The blow-up statements assume `0 < ε < 1/2`; the absolute
+budget assumes `1/2 < ε`. Auxiliary lemmas take explicit inputs (sets of primes, `L²`
+membership, support in `(0,c]`, uniform norm bounds) that are discharged in the main theorems.
+The divergence concerns the canonical finite-prime truncations, not the full source `F_ε`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
 
+/-- For `d ≥ 1`, each finite-prime damped term has `L²(0,∞)` norm at most `3 d^(−ε−1/2)`. -/
 theorem pm_eLpNorm_finite_prime_damped_term_le (S : Finset ℕ) (ε : ℝ) {d : ℕ}
     (hd : 1 ≤ d) :
     eLpNorm (fun t => finitePrimeApertureMobiusCoefficient S d *
@@ -20,6 +54,7 @@ theorem pm_eLpNorm_finite_prime_damped_term_le (S : Finset ℕ) (ε : ℝ) {d : 
       Complex.ofReal_mul, Complex.ofReal_intCast] using pm_eLpNorm_power_damped_term_le ε hd
   · simp [finitePrimeApertureMobiusCoefficient, hc]
 
+/-- The absolute budget `∑'_d 3 d^(−ε−1/2)`, finite for `ε > 1/2`. -/
 def pmPrimeApertureAbsoluteBudget (ε : ℝ) : ℝ :=
   ∑' d : ℕ, 3 * (d : ℝ) ^ (-ε - 1 / 2)
 
@@ -29,6 +64,8 @@ theorem pmPrimeApertureAbsoluteBudget_nonneg (ε : ℝ) :
   intro d
   positivity
 
+/-- For `ε > 1/2` and every finite `S`, the finite-prime source has `L²(0,∞)` norm at most the
+absolute budget `∑'_d 3 d^(−ε−1/2)`. -/
 theorem pmFinitePrimePowerDampedFermiSource_norm_le_absolute_budget (S : Finset ℕ)
     {ε : ℝ} (hε : 1 / 2 < ε) :
     eLpNorm (pmFinitePrimePowerDampedFermiSource S ε) 2 (volume.restrict (Ioi (0 : ℝ))) ≤
@@ -51,12 +88,14 @@ theorem pmFinitePrimePowerDampedFermiSource_norm_le_absolute_budget (S : Finset 
     _ ≤ ∑' d : ℕ, ENNReal.ofReal (3 * (d : ℝ) ^ (-ε - 1 / 2)) := ENNReal.sum_le_tsum _
     _ = _ := (ENNReal.ofReal_tsum_of_nonneg (fun d => by positivity) hs).symm
 
+/-- The canonical apertures `{p ≤ N}` consist of primes and eventually contain every prime. -/
 theorem primeExhaustion_mobiusFinitePrimeAperture : PrimeExhaustion mobiusFinitePrimeAperture where
   prime _ _ hp := (Finset.mem_filter.mp hp).2
   eventually_mem p hp := by
     filter_upwards [eventually_ge_atTop p] with N hN
     exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (by omega), hp⟩
 
+/-- For `0 < u ≤ 1`, `∏_{p≤N} (1 − p^(−u)) → 0` as `N → ∞`. -/
 theorem pmCanonicalPrimeEulerProduct_tendsto_zero {u : ℝ} (hu : 0 < u) (hu1 : u ≤ 1) :
     Tendsto (fun N : ℕ => ∏ p ∈ mobiusFinitePrimeAperture N, (1 - (p : ℝ) ^ (-u)))
       atTop (𝓝 0) := by
@@ -65,6 +104,7 @@ theorem pmCanonicalPrimeEulerProduct_tendsto_zero {u : ℝ} (hu : 0 < u) (hu1 : 
   have he : -(1 / 2 : ℝ) - (u - 1 / 2) = -u := by ring
   simpa only [he] using h
 
+/-- For a finite set of primes `S`, `∑_{T⊆S} (−1)^|T| f(∏T) = ∑'_{d≠0, primes of d in S} μ(d) f(d)`. -/
 theorem pm_sum_powerset_eq_tsum_moebius_complex (S : Finset ℕ)
     (hS : ∀ p ∈ S, p.Prime) (f : ℕ → ℂ) :
     (∑ T ∈ S.powerset, (-1 : ℂ) ^ T.card * f (∏ p ∈ T, p)) =
@@ -88,6 +128,8 @@ theorem pm_sum_powerset_eq_tsum_moebius_complex (S : Finset ℕ)
         simp
     · rfl
 
+/-- For a finite set of primes `S`, the aperture-weighted sum over `d ≤ ∏S` equals the subset sum
+`∑_{T⊆S} (−1)^|T| f(∏T)`. -/
 theorem pm_finitePrime_coefficient_sum_eq_powerset (S : Finset ℕ)
     (hS : ∀ p ∈ S, p.Prime) (f : ℕ → ℂ) :
     (∑ d ∈ Finset.Icc 1 (∏ p ∈ S, p), finitePrimeApertureMobiusCoefficient S d * f d) =
@@ -112,12 +154,14 @@ theorem pm_finitePrime_coefficient_sum_eq_powerset (S : Finset ℕ)
       omega
     rw [pm_finitePrime_coefficient_eq_zero_above_product hS hgt, zero_mul]
 
+/-- For a finite set of primes `S`, `∑_{d≤∏S} μ_S(d) d^(−s) = ∏_{p∈S} (1 − p^(−s))`. -/
 theorem pm_finitePrime_coefficient_cpow_sum (S : Finset ℕ)
     (hS : ∀ p ∈ S, p.Prime) (s : ℂ) :
     (∑ d ∈ Finset.Icc 1 (∏ p ∈ S, p), finitePrimeApertureMobiusCoefficient S d * (d : ℂ) ^ (-s)) =
       finitePrimeEulerProduct S s := by
   rw [pm_finitePrime_coefficient_sum_eq_powerset S hS, finiteEulerProduct_eq_sum_powerset]
 
+/-- For `0 < Re s < 1` and `a > 0`, the alternating Nyman generator `φ_a` is Mellin convergent at `s`. -/
 theorem pmFinitePrime_fermi_mellinConvergent {s : ℂ}
     (hs0 : 0 < s.re) (hs1 : s.re < 1) {a : ℝ} (ha : 0 < a) :
     MellinConvergent (fermiNymanGen a) s := by
@@ -128,6 +172,8 @@ theorem pmFinitePrime_fermi_mellinConvergent {s : ℂ}
     2 * GaloisForLFunctions.NymanMellin.nymanGen (2 * a) t) s
   simpa only [smul_eq_mul] using (hasMellin_sub h1 (h2.const_smul (2 : ℂ))).1
 
+/-- For a finite set of primes `S` and `0 < Re s < 1`, the Mellin transform of the finite-prime
+source is `(1 − 2^(1−s)) ζ(s)/s · ∏_{p∈S} (1 − p^(−(s+ε)))`. -/
 theorem mellin_pmFinitePrimePowerDampedFermiSource (S : Finset ℕ)
     (hS : ∀ p ∈ S, p.Prime) (ε : ℝ) {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
     mellin (pmFinitePrimePowerDampedFermiSource S ε) s =
@@ -173,6 +219,8 @@ theorem mellin_pmFinitePrimePowerDampedFermiSource (S : Finset ℕ)
   linear_combination finitePrimeApertureMobiusCoefficient S d *
     ((1 - (2 : ℂ) ^ (1 - s)) * riemannZeta s / s) * hp
 
+/-- Cauchy–Schwarz for Mellin transforms: if `f ∈ L²(0,∞)` vanishes for `t > c` with
+`0 < c ≤ 1`, then for `Re s > 1/2`, `|M f(s)| ≤ ‖f‖₂ √(c^(2Re s − 1)/(2Re s − 1))`. -/
 theorem pm_mellin_norm_le_of_cutoff {f : ℝ → ℂ}
     (hf : MemLp f 2 (volume.restrict (Ioi (0 : ℝ))))
     {c : ℝ} (hc : 0 < c) (hc1 : c ≤ 1) (hsupp : ∀ t : ℝ, c < t → f t = 0)
@@ -220,6 +268,7 @@ theorem pm_mellin_norm_le_of_cutoff {f : ℝ → ℂ}
       rw [integral_Ioc_normSq_powerWitness hs hc]
       exact mul_le_mul_of_nonneg_right hnorm (Real.sqrt_nonneg _)
 
+/-- For `t > 1/(N+1)`, the canonical source on the primes `≤ N` equals the full source `F_ε(t)`. -/
 theorem pmFinitePrimePowerDampedFermiSource_eq_of_inverse_cutoff (ε : ℝ) (N : ℕ)
     {t : ℝ} (ht : 1 / ((N : ℝ) + 1) < t) :
     pmFinitePrimePowerDampedFermiSource (mobiusFinitePrimeAperture N) ε t =
@@ -239,6 +288,8 @@ theorem pmFinitePrimePowerDampedFermiSource_eq_of_inverse_cutoff (ε : ℝ) (N :
   simp only [mobiusFinitePrimeAperture, Finset.mem_filter, Finset.mem_range] at hp ⊢
   exact ⟨by omega, hp.2⟩
 
+/-- If `f_n ∈ L²` are uniformly bounded by `C ≥ 0` and vanish beyond cutoffs `c_n ∈ (0,1]` with
+`c_n → 0`, then `M f_n(s) → 0` for every `Re s > 1/2`. -/
 theorem pm_mellin_tendsto_zero_of_cutoffs {f : ℕ → ℝ → ℂ}
     (hf : ∀ n, MemLp (f n) 2 (volume.restrict (Ioi (0 : ℝ))))
     {c : ℕ → ℝ} (hc0 : ∀ n, 0 < c n) (hc1 : ∀ n, c n ≤ 1)
@@ -262,6 +313,8 @@ theorem pm_mellin_tendsto_zero_of_cutoffs {f : ℕ → ℝ → ℂ}
   exact (pm_mellin_norm_le_of_cutoff (hf n) (hc0 n) (hc1 n) (hsupp n) hs).trans
     (mul_le_mul_of_nonneg_right hb (Real.sqrt_nonneg _))
 
+/-- If the canonical sources along `k_n → ∞` all have `L²` norm at most `C`, then
+`‖F_ε‖_{L²(0,∞)} ≤ C` (Fatou). -/
 theorem pmPowerDampedFermiSource_norm_le_of_cofinal_prime_budget (ε : ℝ) {k : ℕ → ℕ}
     (hk : Tendsto k atTop atTop) {C : ENNReal}
     (hC : ∀ n, eLpNorm (pmFinitePrimePowerDampedFermiSource (mobiusFinitePrimeAperture (k n)) ε)
@@ -272,6 +325,8 @@ theorem pmPowerDampedFermiSource_norm_le_of_cofinal_prime_budget (ε : ℝ) {k :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact (tendsto_pmFinitePrimePowerDampedFermiSource ε ht).comp hk
 
+/-- Given `k_n → ∞` and a uniform bound `C ≥ 0` on the canonical sources' `L²` norms, their
+Mellin transforms converge to `M F_ε(s)` for every `Re s > 1/2`. -/
 theorem pm_mellin_tendsto_of_cofinal_prime_budget (ε : ℝ) {k : ℕ → ℕ}
     (hk : Tendsto k atTop atTop) {C : ℝ} (hC : 0 ≤ C)
     (hbound : ∀ n, eLpNorm (pmFinitePrimePowerDampedFermiSource (mobiusFinitePrimeAperture (k n)) ε)
@@ -314,6 +369,8 @@ theorem pm_mellin_tendsto_of_cofinal_prime_budget (ε : ℝ) {k : ℕ → ℕ}
   simp_rw [hsub] at hz
   simpa only [sub_add_cancel, zero_add] using hz.add_const (mellin A s)
 
+/-- Identity theorem: a function analytic on `Re z > 1/2` that vanishes on a real interval
+`(a, b)` with `1/2 ≤ a < b` vanishes at `z = 1`. -/
 theorem pm_analytic_halfplane_zero_of_real_interval {f : ℂ → ℂ}
     (hf : AnalyticOnNhd ℂ f {z : ℂ | 1 / 2 < z.re}) {a b : ℝ}
     (ha : 1 / 2 ≤ a) (hab : a < b)
@@ -351,6 +408,7 @@ theorem pm_analytic_halfplane_zero_of_real_interval {f : ℂ → ℂ}
     hclosure
   exact he (by norm_num : (1 : ℂ) ∈ {z : ℂ | 1 / 2 < z.re})
 
+/-- At real `u`, the finite Euler product is the real product `∏_{p∈S} (1 − p^(−u))`. -/
 theorem pm_finitePrimeEulerProduct_ofReal (S : Finset ℕ) (u : ℝ) :
     finitePrimeEulerProduct S (u : ℂ) =
       ((∏ p ∈ S, (1 - (p : ℝ) ^ (-u)) : ℝ) : ℂ) := by
@@ -360,6 +418,8 @@ theorem pm_finitePrimeEulerProduct_ofReal (S : Finset ℕ) (u : ℝ) :
   rw [Complex.ofReal_sub, Complex.ofReal_one, Complex.ofReal_cpow (Nat.cast_nonneg p),
     Complex.ofReal_natCast, Complex.ofReal_neg]
 
+/-- For `0 < x < 1` and `0 < x + ε ≤ 1`, the Mellin transforms of the canonical sources at `x`
+tend to `0` as `N → ∞`. -/
 theorem pmCanonicalPrimeMellin_tendsto_zero {ε x : ℝ}
     (hx0 : 0 < x) (hx1 : x < 1) (hu0 : 0 < x + ε) (hu1 : x + ε ≤ 1) :
     Tendsto (fun N : ℕ => mellin
@@ -380,6 +440,8 @@ theorem pmCanonicalPrimeMellin_tendsto_zero {ε x : ℝ}
   change K * _ = K * _
   rw [← Complex.ofReal_add, pm_finitePrimeEulerProduct_ofReal]
 
+/-- For `0 < ε < 1/2`, `k_n → ∞` and any `C ≥ 0`, the canonical sources along `k_n` are not
+all bounded by `C` in `L²(0,∞)`. -/
 theorem pmCanonicalPrime_no_bounded_cofinal_subsequence {ε : ℝ}
     (hε0 : 0 < ε) (hε1 : ε < 1 / 2) {k : ℕ → ℕ} (hk : Tendsto k atTop atTop)
     {C : ℝ} (hC : 0 ≤ C) :
@@ -404,6 +466,8 @@ theorem pmCanonicalPrime_no_bounded_cofinal_subsequence {ε : ℝ}
     (Complex.ofReal_ne_zero.mpr (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne')
     (riemannZeta_ne_zero_of_one_lt_re (by simp only [add_re, one_re, ofReal_re]; linarith))) hmean
 
+/-- For `0 < ε < 1/2` and every real `C`, the canonical source on the primes `≤ N` eventually
+has `L²` norm exceeding `C`. -/
 theorem pmCanonicalPrime_eventually_exceeds_every_budget {ε : ℝ}
     (hε0 : 0 < ε) (hε1 : ε < 1 / 2) (C : ℝ) :
     ∀ᶠ N : ℕ in atTop, ENNReal.ofReal C <
@@ -419,6 +483,7 @@ theorem pmCanonicalPrime_eventually_exceeds_every_budget {ε : ℝ}
   intro n
   exact (hkb n).trans (ENNReal.ofReal_le_ofReal (le_max_left _ _))
 
+/-- For `0 < ε < 1/2`, the `L²(0,∞)` norms of the canonical finite-prime sources tend to `∞`. -/
 theorem tendsto_pmCanonicalPrime_norm_atTop {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1 / 2) :
     Tendsto (fun N : ℕ =>
       (eLpNorm (pmFinitePrimePowerDampedFermiSource (mobiusFinitePrimeAperture N) ε)

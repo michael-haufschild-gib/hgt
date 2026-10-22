@@ -5,6 +5,48 @@ import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Topology.Piecewise
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
+/-!
+# Source-envelope majorant for the outside history correlation and its obstruction
+
+Let `K = B'` be the slope of the actual theta-source Borel kernel, `K1 = K'`,
+`e(t) = K(t)/(4 K1(t))` the history scale, `P` the primitive of the actual clock response,
+`Dens(s) = P(s)/s` and `D(s) = ∫_0^s Dens` the log history, and
+`Cout(t) = ∫_{e(t)}^t D(s) (s K1(t-s) - K(t-s)) ds` the outside correlation. The module proves
+that `Dens` and `D` are smooth, bounds `|D(s)| ≤ A₀ s²/4 · e^{γ s}` for `γ ≥ 1/300` (with `A₀` the
+absolute reciprocal-square mass of the Xi zeros), and, at a hypothetical first zero `t > 20` of a
+nonnegative history, dominates `D` by the terminal envelope `(A₀/2) ∫_s^t u e^{γu} du`. This
+majorises `Cout` by a norm majorant `N(t)` and bounds the comparison budget
+`t K(t) + (K(t)/2) ∫_0^{e(t)} D` by an envelope budget `V(t)`. It then shows `N(t)/V(t) → ∞`
+(the ratio grows like `e^{3γt/4}/t²`), so for large `t` the budget is strictly below the
+majorant: the absolute envelope cannot certify the budget. Finally `D` is the signed prefix
+mass of two compact marked gamma measures, and `Cout(t)` is the difference of the integrals of
+an explicit continuous marked cost against them.
+
+## Main results
+
+- `contDiff_liEvenCrossActualClockLogHistory`: the log history `D` is `C^∞`.
+- `abs_liEvenCrossActualClockLogHistory_le_source_envelope`: `|D(s)| ≤ A₀ s²/4 · e^{γ s}` for
+  `γ ≥ 1/300`, `s ≥ 0`.
+- `liEvenCrossActualClockSourceTerminalEnvelope_bound`: at a first zero `t`, `0 ≤ D(s) ≤`
+  terminal envelope on `[0, t]`.
+- `liEvenCrossActualClockSourceEnvelope_budget_bound`: at a first zero `t`, `Cout(t) ≤ N(t)` and
+  `0 < t K(t) ≤ budget(t) ≤ V(t)`.
+- `tendsto_liEvenCrossActualClockSourceEnvelope_ratio_atTop`: `N(t)/V(t) → ∞` for `M, γ > 0`.
+- `liEvenCrossActualClockSourceEnvelope_eventual_budget_obstruction`: for `γ ≥ 1/300`, eventually
+  every first zero `t` has `budget(t) < N(t)`.
+- `liClockThetaCompactMarkedGammaMeasure_signed_prefix`: `μ⁺(0, x] - μ⁻(0, x] = D(x)`.
+- `liEvenCrossActualClockHistoryOutsideCorrelation_eq_marked_cost`: `Cout(t) = ∫ c_t dμ⁺ - ∫ c_t dμ⁻`.
+
+## Hypotheses
+
+Smoothness, the growth bound, the majorant lower bounds, the ratio divergence and the marked
+measure identities are unconditional (given ranges such as `γ ≥ 1/300`, `M, γ > 0`, `t ≥ 2`,
+`p > 1`, and explicit lower bounds on `e(t)` or `t`). The terminal-envelope and budget bounds,
+and the obstruction, take the Prop-valued premise `liEvenCrossActualClockSourceFirstZeroGuard t`
+(`t > 20`, `D(t) = 0`, `D ≥ 0` on `[0, t]`), i.e. they describe a hypothetical first zero of the
+history; no such zero is shown to exist or not to exist.
+-/
+
 open Set MeasureTheory Filter Topology
 namespace RHTower
 noncomputable section
@@ -20,28 +62,34 @@ local notation "D" => liEvenCrossActualClockLogHistory
 local notation "Cout" => liEvenCrossActualClockHistoryOutsideCorrelation
 local notation "A0" => xiShiftAbsoluteMass 0
 
+/-- First-zero guard at clock `t`: `t > 20`, `D(t) = 0`, and `D(s) ≥ 0` for all `s ∈ [0, t]`. -/
  def liEvenCrossActualClockSourceFirstZeroGuard (t : ℝ) : Prop :=
   20 < t ∧ D t = 0 ∧ ∀ s ∈ Icc 0 t, 0 ≤ D s
 
 -- E02: arbitrary MATHEMATICAL mass/rate envelope on true oriented interval
+/-- Terminal envelope `E_{M,γ}(t, s) = (M/2) ∫_s^t u e^{γu} du`. -/
  def liEvenCrossActualClockSourceTerminalEnvelope (M γ t s : ℝ) : ℝ :=
   M/2 * ∫ u in s..t, u * Real.exp (γ*u)
 
 -- E03: full compact norm majorant, never actual Cout itself
+/-- Norm majorant `N(t) = ∫_{e(t)}^t E_{M,γ}(t, s) · max(s K1(t-s) - K(t-s), 0) ds`. -/
  def liEvenCrossActualClockSourceNormMajorant (M γ t : ℝ) : ℝ :=
   ∫ s in e t..t,
     liEvenCrossActualClockSourceTerminalEnvelope M γ t s *
       max (s*K1 (t-s)-K (t-s)) 0
 
 -- E04: literal M15 comparison budget
+/-- Comparison budget `t K(t) + (K(t)/2) ∫_0^{e(t)} D(s) ds`. -/
  def liEvenCrossActualClockSourceCorrelationBudget (t : ℝ) : ℝ :=
   t*K t + K t/2 * ∫ s in 0..e t, D s
 
 -- E05: mathematical upper-envelope budget, same actual K and e
+/-- Envelope budget `V(t) = K(t) (t + (M/24) e(t)³ e^{γ e(t)})`. -/
  def liEvenCrossActualClockSourceEnvelopeBudget (M γ t : ℝ) : ℝ :=
   K t * (t + M/24 * (e t)^3 * Real.exp (γ*(e t)))
 
 -- E06: exact compact signed cost; values outside Ioc0t never used as bounded test
+/-- Marked cost `c_t(u)`: the constant `e(t) K(t - e(t))` for `u ≤ e(t)`, and `u K(t - u)` beyond. -/
  def liEvenCrossActualClockHistoryMarkedCost (t u : ℝ) : ℝ :=
   if u ≤ e t then e t * K (t-e t) else u * K (t-u)
 
@@ -203,9 +251,11 @@ private theorem hgt_ek_scale_atTop : Tendsto ell atTop atTop := by
 end KernelHelpers
 
 
+/-- The log history density `Dens(s) = P(s)/s` is `C^∞` (the origin value is removable). -/
 theorem contDiff_liEvenCrossActualClockLogHistoryDensity :
     ContDiff ℝ (⊤ : ℕ∞) Dens := hgt_hs_quotient_smooth
 
+/-- The log history `D(t) = ∫_0^t Dens` is `C^∞`. -/
 theorem contDiff_liEvenCrossActualClockLogHistory :
     ContDiff ℝ (⊤ : ℕ∞) D := by
   apply contDiff_infty_iff_deriv.mpr
@@ -219,6 +269,7 @@ theorem contDiff_liEvenCrossActualClockLogHistory :
 
 section ResponseFormula
 local notation "F" => liEvenCrossActualClockResponse
+/-- Jet formula: `Dens^{(n)}(s) = ∫_0^1 vⁿ F^{(n)}(v s) dv`, with `F` the clock response. -/
 theorem liEvenCrossActualClockLogHistoryDensity_iteratedDeriv (n : ℕ) (s : ℝ) :
     IntervalIntegrable (fun v : ℝ => v^n * iteratedDeriv n F (v*s)) volume 0 1 ∧
     iteratedDeriv n Dens s = ∫ v in 0..1, v^n * iteratedDeriv n F (v*s) := by
@@ -226,6 +277,7 @@ theorem liEvenCrossActualClockLogHistoryDensity_iteratedDeriv (n : ℕ) (s : ℝ
   exact congrFun (hgt_hs_quotient_iteratedDeriv n) s
 end ResponseFormula
 
+/-- The history scale `e(t) = K(t)/(4 K1(t))` tends to `∞`. -/
 theorem tendsto_liEvenCrossActualClockHistoryScale_atTop : Tendsto e atTop atTop :=
   hgt_ek_scale_atTop
 
@@ -247,6 +299,8 @@ private theorem hgt_se_outer_coefficient_cont (t : ℝ) :
   exact continuous_id.mul (hgt_ek_curvature_continuous.comp (continuous_const.sub continuous_id)) |>.sub
     (hgt_ek_slope_smooth.continuous.comp (continuous_const.sub continuous_id))
 
+/-- Continuity of the terminal envelope and interval integrability of `Dens`, `D` and the
+majorant integrand on the relevant compact intervals. -/
 theorem liEvenCrossActualClockSourceEnvelope_compact_admission (M γ t : ℝ) :
     Continuous (fun s => liEvenCrossActualClockSourceTerminalEnvelope M γ t s) ∧
     IntervalIntegrable Dens volume 0 t ∧
@@ -282,6 +336,7 @@ private theorem hgt_se_density_bound {γ u : ℝ}
     |P u| ≤ A0*u^2/2 * Real.exp (γ*u) := hp'
     _ = (A0*u/2 * Real.exp (γ*u))*u := by ring
 
+/-- Growth bound: for `γ ≥ 1/300` and `s ≥ 0`, `|D(s)| ≤ A₀ s²/4 · e^{γ s}`. -/
 theorem abs_liEvenCrossActualClockLogHistory_le_source_envelope
     {γ s : ℝ} (hγ : (1/300 : ℝ) ≤ γ) (hs : 0 ≤ s) :
     |D s| ≤ A0*s^2/4 * Real.exp (γ*s) := by
@@ -309,6 +364,8 @@ theorem abs_liEvenCrossActualClockLogHistory_le_source_envelope
       rw [hi]
       ring
 
+/-- Assuming `hZ` (first-zero guard at `t`) and `γ ≥ 1/300`: for `s ∈ [0, t]`,
+`0 ≤ D(s) ≤ (A₀/2) ∫_s^t u e^{γu} du`. -/
 theorem liEvenCrossActualClockSourceTerminalEnvelope_bound
     {γ t : ℝ} (hγ : (1/300 : ℝ) ≤ γ)
     (hZ : liEvenCrossActualClockSourceFirstZeroGuard t) :
@@ -338,6 +395,8 @@ theorem liEvenCrossActualClockSourceTerminalEnvelope_bound
       ring
     _ = liEvenCrossActualClockSourceTerminalEnvelope A0 γ t s := rfl
 
+/-- Assuming `hZ` (first-zero guard at `t`) and `γ ≥ 1/300`: `Cout(t) ≤ N(t)` and
+`0 < t K(t) ≤ budget(t) ≤ V(t)`, with `M = A₀`. -/
 theorem liEvenCrossActualClockSourceEnvelope_budget_bound
     {γ t : ℝ} (hγ : (1/300 : ℝ) ≤ γ)
     (hZ : liEvenCrossActualClockSourceFirstZeroGuard t) :
@@ -568,6 +627,8 @@ private theorem eeTerminal_unit_floor {M γ t s : ℝ} (hM : 0 < M)
   have hm : 0 ≤ M*Real.exp (γ*(t-1)) := mul_nonneg hM.le he.le
   nlinarith
 
+/-- For `M, γ > 0`, `t ≥ 2` and `e(t) ≥ max(1, 4K(1)/b)` (`b` the origin slope),
+`N(t) ≥ M t e(t) K(t) e^{γ(t-1)}/8`. -/
 theorem liEvenCrossActualClockSourceNormMajorant_lower {M γ t : ℝ}
     (hM : 0 < M) (hγ : 0 < γ) (ht : 2 ≤ t)
     (he : max 1 (4*(K 1)/b) ≤ ell t) :
@@ -620,6 +681,8 @@ private theorem eeEnvelopeBudget_upper {M γ t : ℝ} (hM : 0 < M)
       (1+M/1536)*t^3*Real.exp (γ*t/4) := by nlinarith
   nlinarith [mul_le_mul_of_nonneg_left hsum hK.le]
 
+/-- Under the hypotheses of `liEvenCrossActualClockSourceNormMajorant_lower`, `V(t) > 0` and
+`N(t)/V(t) ≥ M e^{-γ}/(8(1 + M/1536)) · e^{3γt/4}/t²`. -/
 theorem liEvenCrossActualClockSourceEnvelope_ratio_lower {M γ t : ℝ}
     (hM : 0 < M) (hγ : 0 < γ) (ht : 2 ≤ t)
     (he : max 1 (4*(K 1)/b) ≤ ell t) :
@@ -653,6 +716,7 @@ theorem liEvenCrossActualClockSourceEnvelope_ratio_lower {M γ t : ℝ}
   refine ⟨hbudget.1, (le_div_iff₀ hbudget.1).mpr ?_⟩
   exact hmul.trans (halgebra.le.trans (hscale_mul.trans hlower))
 
+/-- For `M, γ > 0`, the ratio `N(t)/V(t)` of norm majorant to envelope budget tends to `∞`. -/
 theorem tendsto_liEvenCrossActualClockSourceEnvelope_ratio_atTop {M γ : ℝ} (hM : 0 < M) (hγ : 0 < γ) :
     Tendsto (fun t : ℝ => liEvenCrossActualClockSourceNormMajorant M γ t / liEvenCrossActualClockSourceEnvelopeBudget M γ t) atTop atTop := by
   have hc : 0 < M*Real.exp (-γ)/(8*(1+M/1536)) := by positivity
@@ -685,6 +749,8 @@ private theorem eeSlope_mono {a z : ℝ} (ha : 0 ≤ a) (haz : a ≤ z) : K a �
         (hgt_ek_source_basics.2.2.1 u (ha.trans hu.1)).2)
   linarith
 
+/-- For `M, γ > 0`, `t ≥ 2` and `t ≥ 2(1 + K(1)/b)`, the terminal band `[t-1, t-1/2]` alone gives
+`N(t) ≥ M b t² e^{γ(t-1)}/32`. -/
 theorem liEvenCrossActualClockSourceNormMajorant_terminal_lower {M γ t : ℝ}
     (hM : 0 < M) (hγ : 0 < γ) (ht : 2 ≤ t)
     (hb : 2*(1+(K 1)/b) ≤ t) :
@@ -732,6 +798,8 @@ theorem liEvenCrossActualClockSourceNormMajorant_terminal_lower {M γ t : ℝ}
 
 end EnvelopeEstimates
 
+/-- Obstruction: for `γ ≥ 1/300`, for all sufficiently large `t`, if the first-zero guard holds
+at `t` then `budget(t) < N(t)`, so the absolute envelope majorant cannot certify the budget. -/
 theorem liEvenCrossActualClockSourceEnvelope_eventual_budget_obstruction
     {γ : ℝ} (hγ : (1/300 : ℝ) ≤ γ) :
     ∀ᶠ t : ℝ in atTop, liEvenCrossActualClockSourceFirstZeroGuard t →
@@ -767,6 +835,8 @@ private theorem hgt_se_signed_test {p t : ℝ} (hp : 1 < p) (ht : 0 < t)
     indicator_of_mem (show u ∈ Ioi (0:ℝ) from hu.1)]
   rfl
 
+/-- For `p > 1`, `T > 0` and `0 ≤ x ≤ T`, the positive and negative compact marked gamma
+measures on `(0, T]` differ on `(0, x]` by exactly the log history `D(x)`. -/
 theorem liClockThetaCompactMarkedGammaMeasure_signed_prefix
     {p T x : ℝ} (hp : 1 < p) (hT : 0 < T) (hx : 0 ≤ x) (hxT : x ≤ T) :
     (liClockThetaCompactMarkedGammaMeasure p true T).real (Ioc 0 x) -
@@ -866,6 +936,8 @@ private theorem hgt_se_marked_cost_density {t : ℝ} (ht : 0 < t) :
       nlinarith [hip]
     _ = ∫ u in (0:ℝ)..t, liEvenCrossActualClockHistoryMarkedCost t u * Dens u := hsplit
 
+/-- For `p > 1` and `t > 0`, the marked cost `c_t` is integrable for both compact marked gamma
+measures `μ^±` on `(0, t]`, and `Cout(t) = ∫ c_t dμ⁺ - ∫ c_t dμ⁻` (integration by parts). -/
 theorem liEvenCrossActualClockHistoryOutsideCorrelation_eq_marked_cost
     {p t : ℝ} (hp : 1 < p) (ht : 0 < t) :
     Integrable (liEvenCrossActualClockHistoryMarkedCost t)

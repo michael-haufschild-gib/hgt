@@ -1,6 +1,30 @@
 import GaloisForLFunctions.HTGeometry.StokesFirstQuadrantTotalExact
 import Mathlib.Algebra.Homology.Embedding.ExtendHomology
 
+/-!
+# Totalization of a bicomplex concentrated in one outer degree
+
+Work with chain complexes, indexed by `ℕ`, of module presheaves over a presheaf of commutative
+rings `A` on a small category. For a chain complex `R` and `p : ℕ`, place `R` in outer degree `p`
+to get a first-quadrant bicomplex. Its total complex is isomorphic to `R` shifted up by `p` with
+every differential multiplied by the sign `ε(p) = (-1)^p`; the sign twist is itself isomorphic to
+`R` by rescaling degree `n` by `ε(p)^n`. These isomorphisms are natural in `R`, so totalizing the
+single-row bicomplex preserves quasi-isomorphisms.
+
+## Main results
+
+- `totalSingleIso`: the total complex of the bicomplex with `R` in outer degree `p` is isomorphic
+  to the sign-twisted shift `shiftedSignTwist A R p`.
+- `totalSingleIso_naturality`: this isomorphism is natural in `R`.
+- `signTwistIso`: the sign-twisted complex is isomorphic to `R`.
+- `totalSingleMap_quasiIso`: if `φ : R ⟶ S` is a quasi-isomorphism, so is the induced map of
+  total complexes of the single-row bicomplexes.
+
+## Hypotheses
+
+Unconditional. The quasi-isomorphism statements take `[QuasiIso φ]` as their input.
+-/
+
 open CategoryTheory Category Limits
 
 universe u
@@ -10,9 +34,11 @@ namespace GaloisForLFunctions.IrregularStokes.FirstQuadrantTotalSingle
 variable {C : Type u} [SmallCategory C]
 variable (A : Cᵒᵖ ⥤ CommRingCat.{u})
 
+/-- Module presheaves over the ring presheaf `A`. -/
 abbrev M :=
   GaloisForLFunctions.IrregularStokes.FirstQuadrantTotalExact.ModulePresheaf A
 
+/-- Multiplication by a sign `s ∈ ℤˣ` as an automorphism of an object. -/
 noncomputable def unitsSmulIso (X : M A) (s : ℤˣ) : X ≅ X where
   hom := s • 𝟙 X
   inv := s⁻¹ • 𝟙 X
@@ -21,6 +47,7 @@ noncomputable def unitsSmulIso (X : M A) (s : ℤˣ) : X ≅ X where
   inv_hom_id := by
     simp [Linear.comp_units_smul, smul_smul]
 
+/-- The complex `R` with every differential multiplied by the sign `ε(p) = (-1)^p`. -/
 noncomputable def signTwist (R : ChainComplex (M A) ℕ) (p : ℕ) :
     ChainComplex (M A) ℕ where
   X := R.X
@@ -30,6 +57,7 @@ noncomputable def signTwist (R : ChainComplex (M A) ℕ) (p : ℕ) :
     simp [Linear.units_smul_comp, Linear.comp_units_smul,
       R.d_comp_d i j k]
 
+/-- A chain map induces a chain map between sign twists, with the same components. -/
 noncomputable def signTwistMap {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S) (p : ℕ) :
     signTwist A R p ⟶ signTwist A S p where
   f := φ.f
@@ -37,6 +65,7 @@ noncomputable def signTwistMap {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S) (p 
     dsimp [signTwist]
     rw [Linear.comp_units_smul, Linear.units_smul_comp, φ.comm i j]
 
+/-- The sign twist of `R` is isomorphic to `R`, rescaling degree `n` by `ε(p)^n`. -/
 noncomputable def signTwistIso (R : ChainComplex (M A) ℕ) (p : ℕ) :
     signTwist A R p ≅ R :=
   HomologicalComplex.Hom.isoOfComponents
@@ -60,6 +89,7 @@ lemma signTwistIso_inv_f (R : ChainComplex (M A) ℕ) (p n : ℕ) :
     (signTwistIso A R p).inv.f n =
       (((ComplexShape.down ℕ).ε p) ^ n)⁻¹ • 𝟙 (R.X n) := rfl
 
+/-- The isomorphism `signTwistIso` is natural in the complex. -/
 lemma signTwistIso_naturality {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S) (p : ℕ) :
     signTwistMap A φ p ≫ (signTwistIso A S p).hom =
       (signTwistIso A R p).hom ≫ φ := by
@@ -69,6 +99,7 @@ lemma signTwistIso_naturality {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S) (p :
     (((ComplexShape.down ℕ).ε p) ^ n • 𝟙 (R.X n)) ≫ φ.f n
   rw [Linear.comp_units_smul, Linear.units_smul_comp, comp_id, id_comp]
 
+/-- Sign twisting preserves quasi-isomorphisms. -/
 theorem signTwistMap_quasiIso {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S)
     [QuasiIso φ] (p : ℕ) : QuasiIso (signTwistMap A φ p) := by
   haveI : QuasiIso (signTwistMap A φ p ≫ (signTwistIso A S p).hom) := by
@@ -77,28 +108,35 @@ theorem signTwistMap_quasiIso {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S)
   exact quasiIso_of_comp_right
     (signTwistMap A φ p) (signTwistIso A S p).hom
 
+/-- The embedding `n ↦ n + p` of the descending `ℕ` complex shape into itself. -/
 abbrev shiftEmbedding (p : ℕ) :
     (ComplexShape.down ℕ).Embedding (ComplexShape.down ℕ) :=
   ComplexShape.embeddingDown'Add 1 p
 
+/-- The sign twist of `R` shifted up by `p`, padded with zeros in degrees below `p`. -/
 noncomputable def shiftedSignTwist (R : ChainComplex (M A) ℕ) (p : ℕ) :
     ChainComplex (M A) ℕ :=
   (signTwist A R p).extend (shiftEmbedding p)
 
+/-- The chain map induced on shifted sign twists. -/
 noncomputable def shiftedSignTwistMap {R S : ChainComplex (M A) ℕ}
     (φ : R ⟶ S) (p : ℕ) : shiftedSignTwist A R p ⟶ shiftedSignTwist A S p :=
   HomologicalComplex.extendMap (signTwistMap A φ p) (shiftEmbedding p)
 
+/-- Shifted sign twisting preserves quasi-isomorphisms. -/
 theorem shiftedSignTwistMap_quasiIso {R S : ChainComplex (M A) ℕ} (φ : R ⟶ S)
     [QuasiIso φ] (p : ℕ) : QuasiIso (shiftedSignTwistMap A φ p) := by
   change QuasiIso (HomologicalComplex.extendMap (signTwistMap A φ p) (shiftEmbedding p))
   rw [HomologicalComplex.quasiIso_extendMap_iff]
   exact signTwistMap_quasiIso A φ p
 
+/-- The bicomplex with `R` in outer degree `p` and zero elsewhere. -/
 noncomputable abbrev outerSingle (R : ChainComplex (M A) ℕ) (p : ℕ) :
     HomologicalComplex₂ (M A) (ComplexShape.down ℕ) (ComplexShape.down ℕ) :=
   (HomologicalComplex.single (ChainComplex (M A) ℕ) (ComplexShape.down ℕ) p).obj R
 
+/-- Cofan exhibiting the degree-`n` object of the shifted sign twist as the antidiagonal coproduct
+of the single-row bicomplex in total degree `n`. -/
 noncomputable def totalSingleCofan (R : ChainComplex (M A) ℕ) (p n : ℕ) :
     (outerSingle A R p).toGradedObject.CofanMapObjFun
       (ComplexShape.π (ComplexShape.down ℕ) (ComplexShape.down ℕ)
@@ -138,6 +176,7 @@ lemma totalSingleCofan_inj (R : ChainComplex (M A) ℕ) (p j n : ℕ)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+/-- The total-degree cofan is a colimit: only the summand `(p, n - p)` is nonzero. -/
 noncomputable def totalSingleCofanIsColimit (R : ChainComplex (M A) ℕ) (p n : ℕ) :
     IsColimit (totalSingleCofan A R p n) :=
   by
@@ -213,6 +252,7 @@ noncomputable def totalSingleCofanIsColimit (R : ChainComplex (M A) ℕ) (p n : 
       · exact ((signTwist A R p).isZero_extend_X (shiftEmbedding p) n
           (fun j hj => h ⟨j, hj⟩)).eq_of_src _ _)
 
+/-- Degreewise isomorphism between the total complex and the shifted sign twist. -/
 noncomputable def totalSingleXIso (R : ChainComplex (M A) ℕ) (p n : ℕ) :
     ((outerSingle A R p).total (ComplexShape.down ℕ)).X n ≅
       (shiftedSignTwist A R p).X n :=
@@ -238,6 +278,8 @@ lemma outerSingle_ιTotal_totalSingleXIso_hom
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+/-- The total complex of the bicomplex with `R` in outer degree `p` is isomorphic to the shifted
+sign twist of `R`. -/
 noncomputable def totalSingleIso (R : ChainComplex (M A) ℕ) (p : ℕ) :
     (outerSingle A R p).total (ComplexShape.down ℕ) ≅ shiftedSignTwist A R p :=
   HomologicalComplex.Hom.isoOfComponents
@@ -388,6 +430,7 @@ lemma shiftedSignTwistMap_f {R S : ChainComplex (M A) ℕ}
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+/-- Naturality of `totalSingleIso` with respect to chain maps `R ⟶ S`. -/
 lemma totalSingleIso_naturality {R S : ChainComplex (M A) ℕ}
     (φ : R ⟶ S) (p : ℕ) :
     HomologicalComplex₂.total.map (outerSingleMap A φ p)
@@ -437,6 +480,7 @@ lemma totalSingleIso_naturality {R S : ChainComplex (M A) ℕ}
       (HomologicalComplex.isZero_single_obj_X
         (ComplexShape.down ℕ) p R a ha)).eq_of_src _ _
 
+/-- Totalization of single-row bicomplexes preserves quasi-isomorphisms. -/
 theorem totalSingleMap_quasiIso {R S : ChainComplex (M A) ℕ}
     (φ : R ⟶ S) [QuasiIso φ] (p : ℕ) :
     QuasiIso (HomologicalComplex₂.total.map (outerSingleMap A φ p)

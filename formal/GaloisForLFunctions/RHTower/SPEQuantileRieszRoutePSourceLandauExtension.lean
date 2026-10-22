@@ -1,6 +1,32 @@
 import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePSourceLandauCarrier
 import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowContinuation
 
+/-!
+# Analytic extension of the Route P source transform under a one-sided sign
+
+Let `S` be the unit-Riesz Chebyshev resolvent ray representative and `R` its Route P source
+continuation. If `ε S(t)` has a fixed sign `0 ≤ ε S(t)` for all `t > T`, the Landau carrier
+measure has exponential moments of every order below `9/8`, so its complex moment generating
+function is analytic on `Re w < 9/8`. Undoing the shift and adding back the entire head
+integral gives an analytic function on `Re z > -1/8` that equals `R(z)` for `Re z > 1/2`.
+
+## Main results
+
+- `routePSourceLandauMeasure_moments_below_nine_eighth`: every exponent `ρ < 9/8` lies in the
+  interior of the integrable-exponential set of the carrier measure.
+- `analyticOnNhd_routePSourceLandauMGF`: the carrier measure's complex MGF is analytic on
+  `Re w < 9/8`.
+- `analyticOnNhd_routePSourceLaplaceUnderSign`: the reconstructed transform is analytic on
+  `Re z > -1/8`.
+- `routePSourceLaplaceUnderSign_eq_continuation`: on `Re z > 1/2` it equals the Route P source
+  continuation `R(z)`.
+
+## Hypotheses
+
+All main results are conditional on `T ≥ 0` and the one-sided sign hypothesis `hpos`:
+`0 ≤ ε S(t)` for every `t > T`. The last two also assume `ε ≠ 0`.
+-/
+
 open Complex MeasureTheory Set Filter Topology ProbabilityTheory
 open scoped ENNReal NNReal
 
@@ -8,6 +34,8 @@ namespace RHTower
 
 noncomputable section
 
+/-- Assuming `T ≥ 0` and `0 ≤ ε S(t)` for `t > T`, every real exponent below `9/8` lies in the
+interior of the set of exponents for which `e^(ρ t)` is integrable against the carrier measure. -/
 theorem routePSourceLandauMeasure_moments_below_nine_eighth
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -26,6 +54,8 @@ theorem routePSourceLandauMeasure_moments_below_nine_eighth
     exact Real.exp_le_exp.mpr
       (mul_le_mul_of_nonneg_right hrho.le ht)
 
+/-- Assuming `T ≥ 0` and `0 ≤ ε S(t)` for `t > T`, the complex moment generating function of the
+carrier measure (with `r = 1`) is analytic on the half-plane `Re w < 9/8`. -/
 theorem analyticOnNhd_routePSourceLandauMGF
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -37,10 +67,14 @@ theorem analyticOnNhd_routePSourceLandauMGF
   exact analyticAt_complexMGF
     (routePSourceLandauMeasure_moments_below_nine_eighth hT hpos hw)
 
+/-- Reconstruction of the source transform from the carrier measure:
+`(MGF(1 - z) + head(z)) / ε`, with `head` the Laplace integral over `[0, T]`. -/
 def routePSourceLaplaceUnderSign (epsilon T : ℝ) (z : ℂ) : ℂ :=
   (complexMGF id (routePSourceLandauMeasure epsilon 1 T) ((1 : ℂ) - z) +
     routePSourceSignedHeadLaplace epsilon T z) / (epsilon : ℂ)
 
+/-- Assuming `T ≥ 0`, `ε ≠ 0` and `0 ≤ ε S(t)` for `t > T`, the reconstructed source transform is
+analytic on the half-plane `Re z > -1/8`. -/
 theorem analyticOnNhd_routePSourceLaplaceUnderSign
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →
@@ -66,6 +100,8 @@ theorem analyticOnNhd_routePSourceLaplaceUnderSign
   have hene : (epsilon : ℂ) ≠ 0 := by exact_mod_cast hepsilon
   exact (hcomp.add hhead).div analyticAt_const hene
 
+/-- Assuming `T ≥ 0`, `ε ≠ 0` and `0 ≤ ε S(t)` for `t > T`, the reconstructed transform equals the
+Route P source continuation `R(z)` whenever `Re z > 1/2`. -/
 theorem routePSourceLaplaceUnderSign_eq_continuation
     {epsilon T : ℝ} (hT : 0 ≤ T)
     (hpos : ∀ t, T < t →

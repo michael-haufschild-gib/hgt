@@ -1,11 +1,36 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStageFiniteFourierPlancherel
 import GaloisForLFunctions.RHTower.FieldOnePadicProductBruhatFourierSelfMap
 
+/-!
+# The finite-stage Fourier transform maps Bruhat–Schwartz functions to themselves
+
+For a finite set `S` of primes, the Fourier transform on `∏_{p ∈ S} ℚ_p` (with the self-dual
+Haar measure and the standard additive character) sends a compactly supported locally constant
+function to another such function. This module packages the transform as a map of the
+Bruhat–Schwartz space to itself, transported from the `p`-adic product model, and shows that it
+is `ℂ`-linear.
+
+## Main results
+
+- `fieldOneFiniteStageFiniteBruhatFourierBruhat`: the Fourier transform as a self-map of
+  `FieldOneFiniteStageFiniteBruhatSchwartz S`.
+- `fieldOneFiniteStageFiniteBruhatFourierBruhat_apply`: its values are `f̂(y)`.
+- `fieldOneFiniteStageFiniteBruhatFourier_integrand_integrable`: the Fourier integrand
+  `x ↦ ψ(-x y) f(x)` is integrable.
+- `fieldOneFiniteStageFiniteBruhatFourierLinear`: the Fourier transform as a `ℂ`-linear map.
+
+## Hypotheses
+
+All results are unconditional.
+-/
+
 namespace GaloisForLFunctions.RHTower
 noncomputable section
 open IsDedekindDomain MeasureTheory Set TopologicalSpace
 open scoped BigOperators
 
+/-- The Fourier transform on `∏_{p ∈ S} ℚ_p` as a map from compactly supported locally constant functions to
+compactly supported locally constant functions. -/
 def fieldOneFiniteStageFiniteBruhatFourierBruhat
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S) :
@@ -20,6 +45,7 @@ def fieldOneFiniteStageFiniteBruhatFourierBruhat
   refine ⟨F', ?_⟩
   exact Fp.2.comp_homeomorph e.toHomeomorph
 
+/-- The Bruhat-valued Fourier transform takes the values `f̂(y)` of the integral Fourier transform. -/
 @[simp] theorem fieldOneFiniteStageFiniteBruhatFourierBruhat_apply
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S)
@@ -33,6 +59,8 @@ def fieldOneFiniteStageFiniteBruhatFourierBruhat
       (fieldOneFiniteStagePadicProductAddEquiv S y) = _
   exact (fieldOneFiniteStageFiniteBruhatFourier_eq_padic S f y).symm
 
+/-- For a Bruhat–Schwartz function `f` and any `y`, the Fourier integrand `x ↦ ψ(-x y) f(x)` is integrable
+for the self-dual Haar measure. -/
 theorem fieldOneFiniteStageFiniteBruhatFourier_integrand_integrable
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S)
@@ -59,6 +87,7 @@ theorem fieldOneFiniteStageFiniteBruhatFourier_integrand_integrable
     rw [fieldOneFiniteStageFiniteStandardAddChar, norm_prod]
     simp [fieldOneLocalStandardAddChar]
 
+/-- The finite-stage Fourier transform as a `ℂ`-linear endomorphism of the Bruhat–Schwartz space. -/
 def fieldOneFiniteStageFiniteBruhatFourierLinear
     (S : Finset (HeightOneSpectrum ℤ)) :
     FieldOneFiniteStageFiniteBruhatSchwartz S →ₗ[ℂ]

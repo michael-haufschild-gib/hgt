@@ -116,21 +116,32 @@ the shared local inference worker, background indexing and unfinished local
 GPU-result receivers. Remote Runpod jobs continue independently.
 
 Default hybrid search combines lexical matches with Qdrant vector retrieval
-across declaration names, docstrings, statements, proofs and research notes.
+across declaration names, docstrings, statements, proofs and the Markdown in
+`formal/` and the formalized pipeline cards in
+`docs/drafts/pipeline/3-formalized`, then reranks. The rest of `docs/` and
+hidden directories are not indexed.
 Scope defaults to this project; `--scope mathlib` or `--scope all` reaches the
 installed dependencies, which are lexically indexed but carry no vectors.
 `--mode lexical` uses lexical search alone. The default request budget is
 300 seconds; change it with `--budget-seconds`.
 
+Output sections: `Declarations` (keyword hits in this project), `Candidate
+lemmas` (meaning and keyword, reranked; Mathlib hits appear only here),
+`Source arguments` (proofs whose method matches), `Markdown notes` and
+`Source passages` (whole-file Lean chunks). `--json` names them
+`declarations`, `candidate_lemmas`, `source_arguments`, `prose` and
+`source_passages`.
+
 ### What keeps it current
 
-While services run, the indexer scans for added, edited and deleted sources.
+While services run, the indexer scans for added, edited and deleted sources
+every 2 seconds; an edit is searchable by meaning within about 10 seconds.
 Changed content is reparsed and queued for embedding; Qdrant updates resume
 after interruptions. Searches are served first and never cancel queued
 indexing, so both make progress while agents work. Work is prioritized RHTower, then
 HTGeometry, then the remaining corpus. New content can be found lexically
-before its embeddings are ready. Source/compiler freshness and partial coverage
-remain visible in search results. No Lean builds run in the background.
+before its embeddings are ready. A lagging index or partial search is reported
+as a warning in the results. No Lean builds run in the background.
 
 `--no-refresh` searches cached content. Ordinary searches also refresh the
 lexical index when needed. No manual reindex is needed for normal edits.
@@ -170,8 +181,9 @@ filename words: a heuristic for discovery, not a mathematical classification
 or a measure of novelty. `--explore 0` disables it; `--exclude-module` removes
 a literal module substring and can be repeated. Results are deterministic.
 
-Use `rg` for theorem statements, types, proof bodies, mathlib, and pipeline
-cards: they are outside this metadata index. Extraction is source-based, not
+The `Declarations` list comes from this metadata index of names, docstrings
+and modules; statements, proof bodies and Mathlib are searched by the sections
+below it. Use `rg` only to confirm exact text the search surfaced. Extraction is source-based, not
 Lean elaboration, and cannot detect mathematical equivalence. The scan fallback
 uses the same extraction and AND/OR/phrase/filter rules, with approximate token
 ranking. Gap markers are text mentions, not verified open obligations.

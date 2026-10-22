@@ -1,5 +1,29 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Procedure.Play
 
+/-!
+# Existence of a complete play tree for the dyadic stopping procedure
+
+In the finite dyadic model `Grid M = ℤ/2^M`, the stopping procedure is a tree of moves on scenes
+(a dyadic node with a nonnegative weight `wage`, a fund and flags): rest, freeze, ticket (renormalize),
+jump (split into the two children), and attempt (split the weight by an update `u` into a losing
+and a winning part). `plant` shows that for every sufficiently large parameter `j`, every admissible
+density `f` on the grid admits a play tree from the root that obeys the procedure's rules at every
+scene. Termination comes from a potential combining remaining fund uses, the support size of the
+weight, and the scene flags, together with induction on the remaining depth.
+
+## Main results
+
+- `split_pos`: the losing and winning parts of a nonnegative weight are nonnegative and bounded by it.
+- `plant`: eventually in `j`, for all `J ≤ M` and all `f ≥ 0` on `Grid M` with uniform average at
+  most `2` and `f ≤ exp(height j)`, and either initial flag `b`, there is a `Play` tree from
+  `beginPlay f b` satisfying `Follows J f`.
+
+## Hypotheses
+
+Unconditional finite statement; `plant` holds for all sufficiently large `j` and assumes only the
+stated nonnegativity, average and height bounds on `f`.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -12,6 +36,7 @@ open Law Node Real Period Compress.Params Thermal Fund Scene
 variable {M J j : ℕ} {s : Scene M}
 open scoped Classical
 
+/-- The average over the root node is the uniform average over the grid. -/
 lemma top_avg {E : Type*} [AddCommMonoid E] [MulAction ℝ E] (f : Grid M → E) :
     root.avg f = expU f := by
   rw [avg_sum, group_top,len_top,inv_one,one_smul]
@@ -24,6 +49,8 @@ lemma win_eq (u : Update j M s.here) (x : Grid M) :
     (win s u).wage x = if u.take s.fund.mood x then s.wage x else 0 := by
   by_cases H : u.take s.fund.mood x <;> simp [win,Set.indicator,H]
 
+/-- For a nonnegative weight, both the losing and the winning parts of an update split are
+nonnegative and bounded above by the original weight. -/
 lemma split_pos (u : Update j M s.here) (h : 0 ≤ s.wage) :
     (0 ≤ (lose s u).wage ∧ (lose s u).wage ≤ s.wage) ∧
       (0 ≤ (win s u).wage ∧ (win s u).wage ≤ s.wage) := by
@@ -40,6 +67,7 @@ private def playing (s : Scene M) :=
     Finset.univ.filter fun x => 0 < s.wage x
 
 private def totalUse (j : ℕ) := Nat.ceil (capA*H j)
+/-- Termination potential: remaining fund uses, then support size of the weight, then flags. -/
 private def stage (j : ℕ) (s : Scene M) : ℕ :=
     ((totalUse j-s.fund.uses) * (Fintype.card (Grid M)+1)+(playing s).card)*4+bonus s
 
@@ -55,6 +83,8 @@ private lemma begin_ok :
   have h1 : 1 ≤ ((j:ℝ)+1)^3 := one_le_pow₀ (by linarith)
   linarith
 
+/-- Eventually in `j`: for `J ≤ M` and every `f ≥ 0` on `Grid M` with uniform average at most `2`
+and `f ≤ exp(height j)`, each initial scene `beginPlay f b` has a play tree following the rules. -/
 theorem plant :
     ∀ᶠ j : ℕ in atTop, ∀ M J : ℕ, J ≤ M → ∀ f : Grid M → ℝ,
     0 ≤ f → expU f ≤ 2 → (∀ x, f x ≤ exp (height j)) →

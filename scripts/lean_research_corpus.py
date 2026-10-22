@@ -344,9 +344,27 @@ def import_dependents(files, modules) -> set[str]:
 
 
 # `tmp` holds scratch proofs and temporary data at any depth; it is never corpus.
-IGNORED_DIRS = frozenset({".lake", ".git", "node_modules", "__pycache__", ".venv", "tmp"})
+IGNORED_DIRS = frozenset({"node_modules", "__pycache__", "tmp"})
+
+
+def ignored_dir(name: str) -> bool:
+    """Hidden directories (.lake, .git, agent memories, scratch) and tool output."""
+    return name.startswith(".") or name in IGNORED_DIRS
+
 CATALOGS = frozenset({"LEAN_API.md", "LEAN_OVERVIEW.md", "LEAN_GAPS.md"})
-OWN_ROOTS = (("formal", "project"), ("docs", "research"))
+# `formal/` (Lean and Markdown) and the formalized pipeline cards, which carry
+# the paper proofs and name their Lean declarations. The rest of `docs/` holds
+# drafts and superseded reports, which flooded results with outdated claims.
+OWN_ROOTS = (("formal", "project"), ("docs/drafts/pipeline/3-formalized", "research"))
+
+
+def own_root(parts: tuple[str, ...]) -> tuple[int, str] | None:
+    """(length of the root's path, package) for the OWN_ROOTS entry strictly containing `parts`."""
+    for top, package in OWN_ROOTS:
+        head = Path(top).parts
+        if len(parts) > len(head) and parts[:len(head)] == head:
+            return len(head), package
+    return None
 
 
 def source_item(root: Path, path: str) -> dict | None:
@@ -355,16 +373,17 @@ def source_item(root: Path, path: str) -> dict | None:
     they change only on a toolchain update, which the full inventory handles."""
     rel = Path(path)
     parts = rel.parts
-    package = dict(OWN_ROOTS).get(parts[0]) if parts else None
-    if (package is None or len(parts) < 2 or rel.suffix not in {".lean", ".md"}
-            or rel.name in CATALOGS or any(part in IGNORED_DIRS for part in parts[:-1])):
+    owner = own_root(parts)
+    if (owner is None or rel.suffix not in {".lean", ".md"}
+            or rel.name in CATALOGS or any(ignored_dir(part) for part in parts[:-1])):
         return None
+    depth, package = owner
     absolute = root / rel
     try:
         stat = absolute.stat()
     except FileNotFoundError:
         return None
-    module = ".".join(Path(*parts[1:]).with_suffix("").parts)
+    module = ".".join(Path(*parts[depth:]).with_suffix("").parts)
     return dict(path=str(rel), abspath=str(absolute), module=module, package=package,
                 collection="lean" if rel.suffix == ".lean" else "prose",
                 size=stat.st_size, mtime_ns=stat.st_mtime_ns)
@@ -384,7 +403,7 @@ def own_snapshot(root: Path) -> dict[str, tuple[int, int]]:
                 continue
             for entry in entries:
                 if entry.is_dir(follow_symlinks=False):
-                    if entry.name not in IGNORED_DIRS:
+                    if not ignored_dir(entry.name):
                         stack.append(Path(entry.path))
                 elif entry.name.endswith((".lean", ".md")) and entry.name not in CATALOGS:
                     try:
@@ -413,7 +432,7 @@ def inventory(root: Path) -> tuple[list[dict], list[dict]]:
         def onerror(exc: OSError) -> None:
             errors.append(dict(path=str(exc.filename), error=str(exc)))
         for directory, dirs, files in os.walk(base, onerror=onerror, followlinks=False):
-            dirs[:] = sorted(d for d in dirs if d not in IGNORED_DIRS)
+            dirs[:] = sorted(d for d in dirs if not ignored_dir(d))
             # Derive prefixes once per directory, not twice per source file.
             relative = os.path.relpath(directory, root)
             module_dir = os.path.relpath(directory, base)
@@ -597,9 +616,8 @@ class Corpus:
                                  item["collection"], after.st_size, after.st_mtime_ns, digest(raw), "indexed", json.dumps(imports), toolchain, time.time()))
                 self.con.execute('UPDATE files SET extractor_version=?,compile_status=? WHERE path=?',
                                  (EXTRACTION_VERSION, 'pending' if item['collection']=='lean' else 'not_applicable', item['path']))
-                stage = next((p for p in Path(item['path']).parts if re.match(r'^[0-5]-(backlog|in-progress|fully-proven|formalized|publication-ready|failed)$', p)), None)
                 provenance = dict(kind="source", source_hash=digest(raw), toolchain=toolchain, status="source_only",
-                                  extraction_version=EXTRACTION_VERSION, package=item['package'], manifest_hash=manifest_hash, recorded_stage=stage)
+                                  extraction_version=EXTRACTION_VERSION, package=item['package'], manifest_hash=manifest_hash)
                 # Conservative source references support dependency
                 # expansion and invalidation. They are not proof edges, and
                 # there are ~20 per declaration -- 19M rows for this corpus
@@ -844,17 +862,27 @@ class Corpus:
         out['compiler_metadata'] = json.loads(metadata[0]) if metadata else None
         return out
 
-    def search(self, query: str, *, views=("statement", "type"), limit=100, any_terms=False,
-               exact=False, module="", exclude_modules=(), scope='ours', deadline=float("inf")) -> list[dict]:
-        if 'method' in views and self.invalidation_pending():
-            views = tuple(view for view in views if view != 'method')
-        if not views:
-            return []
+    def search(self, query: str, *, views=("statement", "type"), **options) -> list[dict]:
+        return self.search_lanes(query, [tuple(views)], **options)[0]
+
+    def search_lanes(self, query: str, lanes, *, limit=100, any_terms=False, exact=False, module="",
+                     exclude_modules=(), scope='ours', deadline=float("inf")) -> list[list[dict]]:
+        """The top `limit` hits of each lane (a tuple of views) from one full-text match.
+
+        Matching, prefix expansion above all, dominates the cost, and a query per
+        lane repeated it per lane. Order and limit within a lane are exactly those
+        of a separate query for that lane.
+        """
+        if any('method' in views for views in lanes) and self.invalidation_pending():
+            lanes = [tuple(view for view in views if view != 'method') for views in lanes]
+        views = [view for views in lanes for view in views]
         expression = build_match_expression(query, any_terms=any_terms, exact=exact)
-        if not expression:
-            return []
+        if not expression or not views:
+            return [[] for _ in lanes]
+        lane = "CASE " + " ".join("WHEN d.view IN (%s) THEN %d" % (",".join("?" for _ in group), number)
+                                  for number, group in enumerate(lanes) if group) + " END"
         clauses = ["document_fts MATCH ?", "d.view IN (%s)" % ",".join("?" for _ in views)]
-        params = [expression, *views]
+        params = [*views, expression, *views]
         if scope == 'ours':
             clauses.append(DEPENDENCY_PATH_SQL.format('d').replace('>0', '=0'))
         elif scope == 'mathlib':
@@ -867,13 +895,20 @@ class Corpus:
         for excluded in exclude_modules:
             clauses.append("instr(lower(d.module),lower(?))=0")
             params.append(excluded)
-        sql = ("SELECT d.*,bm25(document_fts,1.0,0.15,0.0) AS score FROM document_fts JOIN documents d ON d.id=document_fts.rowid WHERE "
-               + " AND ".join(clauses) + " ORDER BY score,d.id LIMIT ?")
+        sql = ("SELECT * FROM (SELECT *,ROW_NUMBER() OVER (PARTITION BY lane ORDER BY score,id) AS lane_rank FROM ("
+               "SELECT d.*," + lane + " AS lane,bm25(document_fts,1.0,0.15,0.0) AS score "
+               "FROM document_fts JOIN documents d ON d.id=document_fts.rowid WHERE " + " AND ".join(clauses) +
+               ")) WHERE lane_rank<=? ORDER BY lane,lane_rank")
+        out = [[] for _ in lanes]
         self.con.set_progress_handler(lambda: int(time.monotonic() >= deadline), 1000)
         try:
-            return [dict(r) for r in self.con.execute(sql, [*params, limit])]
+            for row in self.con.execute(sql, [*params, limit]):
+                hit = dict(row)
+                out[hit.pop('lane')].append(hit)
+                hit.pop('lane_rank')
         finally:
             self.con.set_progress_handler(None, 0)
+        return out
 
     def neighbors(self, ids: list[str], *, limit=100) -> list[dict]:
         if not ids:

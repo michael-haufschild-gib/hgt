@@ -2,16 +2,51 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusDyadicResolvent
 import GaloisForLFunctions.RHTower.MertensOddWindowKnapsack
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusPrimeGrowth
 
+/-!
+# Deleting the prime 2 from the undamped Möbius Fermi source
+
+The odd Möbius Fermi source `O(t) = -∑_{d ≤ 1/t, d odd} μ(d) φ_d(t)`, built from the
+alternating Nyman generators `φ_a(t) = {1/(at)} - 2{1/(2at)}`, satisfies the dyadic recursion
+`O(t) = H(t) + O(2t)` with `H` the supported dyadic Haar function, because
+`μ(2m) φ_{2m}(t) = -μ(m) φ_m(2t)` for odd `m` and vanishes for even `m`. Hence `O` is the dyadic Haar resolvent
+`∑_k H(2^k t)`, which lies in `L²(0, ∞)` with norm `√2` and integral `0`. The finite-prime
+power-damped source on the odd primes up to `N`, at damping `0`, equals `O(t)` once
+`N ≥ ⌊1/t⌋`; by Fatou and continuity in the damping, any `L²` bound `C` on finite-prime sources
+uniform over small positive dampings forces `C ≥ √2`. So every positive damping window contains
+a finite prime set whose source has `L²` norm above any `C < √2`, in particular above `1`.
+
+## Main results
+
+- `pmOddMobiusFermiSource_eq`: `O(t) = H(t) + O(2t)` for `t > 0`.
+- `pmOddMobiusFermiSource_eq_resolvent`: `O(t) = ∑_k H(2^k t)` for `t > 0`.
+- `pmOddMobiusFermiSource_eLpNorm`: `‖O‖_{L²(0, ∞)} = √2`.
+- `pmOddMobiusFermiSource_integral`: `∫_0^∞ O(t) dt = 0`.
+- `pmFinitePrimePowerDampedFermiSource_odd_eq_of_covers`: the damping-zero finite-prime source on
+  the odd primes `≤ N` equals `O(t)` when `⌊1/t⌋ ≤ N`.
+- `pmFinitePrimePowerDampedFermiSource_all_subset_budget_floor`: a uniform `L²` bound `C` over all
+  finite prime sets and all dampings in `(0, δ)` forces `√2 ≤ C`.
+- `pmFinitePrimePowerDampedFermiSource_exceeds_unit_budget`: for every `δ > 0` there are
+  `ε ∈ (0, δ)` and a finite prime set `S` whose finite-prime source has `L²` norm `> 1`.
+
+## Hypotheses
+
+All results are unconditional. The budget-floor lemmas are implications whose premise is the
+norm bound being refuted; the existence statements need only `0 < δ` (and `C < √2`).
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- The odd raw Möbius prefix `-∑_{d ≤ N, d odd} μ(d) φ_d(t)`. -/
 def pmOddRawFermiPrefix (N : ℕ) (t : ℝ) : ℂ :=
   -(∑ d ∈ (Finset.Icc 1 N).filter Odd,
     (ArithmeticFunction.moebius d : ℂ) * fermiNymanGen (d : ℝ) t)
 
+/-- The odd Möbius Fermi source `O(t)`: the odd prefix truncated at `N = ⌊1/t⌋`. -/
 def pmOddMobiusFermiSource (t : ℝ) : ℂ := pmOddRawFermiPrefix ⌊1 / t⌋₊ t
 
+/-- Doubling the generator index halves the time scale: `φ_{2m}(t) = φ_m(2t)`. -/
 theorem pm_fermiNymanGen_two_mul_nat (m : ℕ) (t : ℝ) :
     fermiNymanGen ((2 * m : ℕ) : ℝ) t = fermiNymanGen (m : ℝ) (2 * t) := by
   rw [pm_fermiNymanGen_dilate ((2 * m : ℕ) : ℝ) t, pm_fermiNymanGen_dilate (m : ℝ) (2 * t)]
@@ -19,6 +54,8 @@ theorem pm_fermiNymanGen_two_mul_nat (m : ℕ) (t : ℝ) :
   push_cast
   ring
 
+/-- Odd/even split of the raw Möbius combination: the full prefix at `(N, t)` equals the odd
+prefix at `(N, t)` minus the odd prefix at `(N/2, 2t)`. -/
 theorem pm_rawMobiusFermiApprox_odd_split (N : ℕ) (t : ℝ) :
     rawMobiusFermiApprox N t = pmOddRawFermiPrefix N t - pmOddRawFermiPrefix (N / 2) (2 * t) := by
   classical
@@ -58,6 +95,8 @@ theorem pmOddMobiusFermiSource_eq_zero {t : ℝ} (ht : 1 < t) : pmOddMobiusFermi
   rw [pmOddMobiusFermiSource, hfloor]
   simp [pmOddRawFermiPrefix]
 
+/-- At damping `0`, the power-damped Fermi source is the supported dyadic Haar function `H(t)`
+for every `t > 0`. -/
 theorem pmPowerDampedFermiSource_zero_eq_supportedHaar {t : ℝ} (ht : 0 < t) :
     pmPowerDampedFermiSource 0 t = pmSupportedDyadicHaar t := by
   by_cases ht1 : t ≤ 1
@@ -66,6 +105,7 @@ theorem pmPowerDampedFermiSource_zero_eq_supportedHaar {t : ℝ} (ht : 0 < t) :
   · rw [pmPowerDampedFermiSource_eq_zero_of_one_lt 0 (lt_of_not_ge ht1),
       pmSupportedDyadicHaar_eq_zero (lt_of_not_ge ht1)]
 
+/-- Dyadic recursion of the odd source: `O(t) = H(t) + O(2t)` for `t > 0`. -/
 theorem pmOddMobiusFermiSource_eq {t : ℝ} (ht : 0 < t) :
     pmOddMobiusFermiSource t = pmSupportedDyadicHaar t + pmOddMobiusFermiSource (2 * t) := by
   have h := pm_rawMobiusFermiApprox_odd_split ⌊1 / t⌋₊ t
@@ -75,11 +115,13 @@ theorem pmOddMobiusFermiSource_eq {t : ℝ} (ht : 0 < t) :
   rw [pm_floor_reciprocal_double]
   linear_combination -h
 
+/-- For `t > 0` the odd source is the dyadic Haar resolvent `O(t) = ∑_{k ≥ 0} H(2^k t)`. -/
 theorem pmOddMobiusFermiSource_eq_resolvent {t : ℝ} (ht : 0 < t) :
     pmOddMobiusFermiSource t = pmDyadicHaarResolvent t :=
   pmDyadicHaarResolvent_unique (fun _ hx => pmOddMobiusFermiSource_eq hx)
     (fun _ hx => pmOddMobiusFermiSource_eq_zero hx) ht
 
+/-- The odd Möbius Fermi source lies in `L²(0, ∞)`. -/
 theorem memLp_pmOddMobiusFermiSource :
     MemLp pmOddMobiusFermiSource 2 (volume.restrict (Ioi 0)) := by
   apply (memLp_congr_ae (show pmOddMobiusFermiSource =ᵐ[volume.restrict (Ioi (0 : ℝ))]
@@ -87,6 +129,7 @@ theorem memLp_pmOddMobiusFermiSource :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact pmOddMobiusFermiSource_eq_resolvent ht
 
+/-- The `L²(0, ∞)` norm of the odd Möbius Fermi source is exactly `√2`. -/
 theorem pmOddMobiusFermiSource_eLpNorm :
     eLpNorm pmOddMobiusFermiSource 2 (volume.restrict (Ioi 0)) = ENNReal.ofReal (Real.sqrt 2) := by
   rw [← pmDyadicHaarResolvent_eLpNorm]
@@ -94,17 +137,21 @@ theorem pmOddMobiusFermiSource_eLpNorm :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   exact pmOddMobiusFermiSource_eq_resolvent ht
 
+/-- The odd Möbius Fermi source has integral `0` over `(0, ∞)`. -/
 theorem pmOddMobiusFermiSource_integral :
     (∫ t in Ioi (0 : ℝ), pmOddMobiusFermiSource t) = 0 := by
   rw [← pmDyadicHaarResolvent_integral]
   exact setIntegral_congr_fun measurableSet_Ioi (fun _ ht => pmOddMobiusFermiSource_eq_resolvent ht)
 
+/-- The odd prime aperture: the primes `p ≤ N` with `p ≠ 2`. -/
 def pmOddPrimeAperture (N : ℕ) : Finset ℕ := (mobiusFinitePrimeAperture N).erase 2
 
 theorem pmOddPrimeAperture_prime (N : ℕ) : ∀ p ∈ pmOddPrimeAperture N, Nat.Prime p := by
   intro p hp
   exact (Finset.mem_filter.mp (Finset.mem_of_mem_erase hp)).2
 
+/-- For `n ≤ N`, the Möbius coefficient restricted to the odd prime aperture is `μ(n)` for
+odd `n` and `0` for even `n`. -/
 theorem pmOddPrimeAperture_coefficient {N n : ℕ} (hn : n ≤ N) :
     finitePrimeApertureMobiusCoefficient (pmOddPrimeAperture N) n =
       if Odd n then (ArithmeticFunction.moebius n : ℂ) else 0 := by
@@ -132,6 +179,7 @@ theorem pmOddPrimeAperture_coefficient {N n : ℕ} (hn : n ≤ N) :
       simp [pmOddPrimeAperture] at hh
     simp [finitePrimeApertureMobiusCoefficient, hc, ho]
 
+/-- For `t > 0`, the generator `φ_n(t)` vanishes once `n > ⌊1/t⌋`. -/
 theorem pm_fermiNymanGen_eq_zero_of_floor_lt {t : ℝ} (ht : 0 < t) {n : ℕ}
     (hn : ⌊1 / t⌋₊ < n) : fermiNymanGen (n : ℝ) t = 0 := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
@@ -161,6 +209,8 @@ theorem pmOddMobiusFermiSource_eq_sum {t : ℝ} (ht : 0 < t) {N : ℕ} (hN : ⌊
     omega
   rw [pm_fermiNymanGen_eq_zero_of_floor_lt ht hfloor, mul_zero]
 
+/-- For `t > 0` and `⌊1/t⌋ ≤ N`, the damping-zero finite-prime source on the odd primes `≤ N`
+equals the odd Möbius Fermi source `O(t)`. -/
 theorem pmFinitePrimePowerDampedFermiSource_odd_eq_of_covers {N : ℕ} {t : ℝ}
     (ht : 0 < t) (hN : ⌊1 / t⌋₊ ≤ N) :
     pmFinitePrimePowerDampedFermiSource (pmOddPrimeAperture N) 0 t = pmOddMobiusFermiSource t := by
@@ -186,6 +236,7 @@ theorem pmFinitePrimePowerDampedFermiSource_odd_eq_of_covers {N : ℕ} {t : ℝ}
   · rw [pmOddPrimeAperture_coefficient (hsmall.trans hN)]
   · rw [pm_fermiNymanGen_eq_zero_of_floor_lt ht (lt_of_not_ge hsmall), mul_zero, mul_zero]
 
+/-- For `t > 0`, the damping-zero odd-aperture sources converge to `O(t)` as `N → ∞`. -/
 theorem tendsto_pmFinitePrimePowerDampedFermiSource_odd {t : ℝ} (ht : 0 < t) :
     Tendsto (fun N : ℕ => pmFinitePrimePowerDampedFermiSource (pmOddPrimeAperture N) 0 t)
       atTop (𝓝 (pmOddMobiusFermiSource t)) := by
@@ -193,6 +244,8 @@ theorem tendsto_pmFinitePrimePowerDampedFermiSource_odd {t : ℝ} (ht : 0 < t) :
   filter_upwards [eventually_ge_atTop ⌊1 / t⌋₊] with N hN
   exact (pmFinitePrimePowerDampedFermiSource_odd_eq_of_covers ht hN).symm
 
+/-- If every damping-zero odd-aperture source has `L²(0, ∞)` norm at most `C`, then `√2 ≤ C`
+(Fatou along the pointwise limit `O`). -/
 theorem pmOddPrimeFermiSource_norm_budget_floor {C : ENNReal}
     (hC : ∀ N : ℕ, eLpNorm (pmFinitePrimePowerDampedFermiSource (pmOddPrimeAperture N) 0) 2
       (volume.restrict (Ioi (0 : ℝ))) ≤ C) : ENNReal.ofReal (Real.sqrt 2) ≤ C := by
@@ -214,6 +267,8 @@ theorem continuous_pmFinitePrimePowerDampedFermiSource_parameter (S : Finset ℕ
     (Real.continuous_const_rpow hd0.ne').comp continuous_neg
   exact (continuous_const.mul (Complex.continuous_ofReal.comp hp)).mul continuous_const
 
+/-- If the finite-prime source on `S` has `L²` norm at most `C` for all small positive dampings,
+then the same bound holds at damping `0`. -/
 theorem pmFinitePrimePowerDampedFermiSource_zero_norm_le {S : Finset ℕ} {C : ENNReal}
     (hC : ∀ᶠ (ε : ℝ) in 𝓝[>] (0 : ℝ),
       eLpNorm (pmFinitePrimePowerDampedFermiSource S ε) 2 (volume.restrict (Ioi (0 : ℝ))) ≤ C) :
@@ -223,6 +278,8 @@ theorem pmFinitePrimePowerDampedFermiSource_zero_norm_le {S : Finset ℕ} {C : E
   exact Eventually.of_forall fun t =>
     (continuous_pmFinitePrimePowerDampedFermiSource_parameter S t).tendsto 0 |>.mono_left nhdsWithin_le_nhds
 
+/-- A uniform bound `‖F_{S,ε}‖₂ ≤ C` over all finite prime sets `S` and all `ε ∈ (0, δ)`
+forces `√2 ≤ C`. -/
 theorem pmFinitePrimePowerDampedFermiSource_all_subset_budget_floor {C : ENNReal}
     {δ : ℝ} (hδ : 0 < δ)
     (hC : ∀ ε : ℝ, 0 < ε → ε < δ → ∀ S : Finset ℕ, (∀ p ∈ S, Nat.Prime p) →
@@ -235,6 +292,8 @@ theorem pmFinitePrimePowerDampedFermiSource_all_subset_budget_floor {C : ENNReal
     (eventually_lt_nhds hδ).filter_mono nhdsWithin_le_nhds] with ε hε hεδ
   exact hC ε hε hεδ (pmOddPrimeAperture N) (pmOddPrimeAperture_prime N)
 
+/-- For any budget `C < √2` and `δ > 0`, some `ε ∈ (0, δ)` and finite prime set `S` give a
+finite-prime source with `L²(0, ∞)` norm exceeding `C`. -/
 theorem pmFinitePrimePowerDampedFermiSource_exceeds_dyadic_budget {C : ENNReal}
     (hC : C < ENNReal.ofReal (Real.sqrt 2)) {δ : ℝ} (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ ∃ S : Finset ℕ, (∀ p ∈ S, Nat.Prime p) ∧
@@ -245,6 +304,8 @@ theorem pmFinitePrimePowerDampedFermiSource_exceeds_dyadic_budget {C : ENNReal}
   intro ε hε hεδ S hS
   exact le_of_not_gt (fun hg => hn ⟨ε, hε, hεδ, S, hS, hg⟩)
 
+/-- For every `δ > 0` some `ε ∈ (0, δ)` and finite prime set `S` give a finite-prime source with
+`L²(0, ∞)` norm greater than `1`: no unit-norm contraction holds uniformly near damping `0`. -/
 theorem pmFinitePrimePowerDampedFermiSource_exceeds_unit_budget {δ : ℝ} (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ ∃ S : Finset ℕ, (∀ p ∈ S, Nat.Prime p) ∧
       1 < eLpNorm (pmFinitePrimePowerDampedFermiSource S ε) 2 (volume.restrict (Ioi (0 : ℝ))) := by

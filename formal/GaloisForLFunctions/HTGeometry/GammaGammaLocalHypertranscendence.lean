@@ -1,18 +1,44 @@
 import GaloisForLFunctions.HTGeometry.GammaGammaFactorialBlowUp
 import GaloisForLFunctions.HTGeometry.GammaFactorialCompositionLocal
 
+/-!
+# Local hypertranscendence of `Γ ∘ Γ`
+
+This module proves that `z ↦ Γ(Γ(z))` satisfies no algebraic differential equation
+`P(z, f, f', …, f^(n)) = 0` on any nonempty open subset of its regular set, the set of `z` with
+`Γ(z)` not a nonpositive integer. A relation on such an open set extends, by the identity theorem
+on the connected regular set, to the whole regular set. The factorial blow-up points
+`-n + ε_n x` (with `Re x < 0`, `ε_n = (-1)^(n+1) / n!`) eventually lie in the regular set, so the
+relation holds eventually along them, which the local jet rigidity of `Γ` at `1` rules out.
+
+## Main results
+
+- `differentialRelation_GammaGamma_propagates`: a differential relation for `Γ ∘ Γ` on a nonempty
+  open subset of the regular set holds on the whole regular set.
+- `eventually_factorialBlowUp_input_gammaGammaRegular`: for `Re x < 0`, the points
+  `-n + ε_n x` lie in the regular set for all large `n`.
+- `no_local_differential_relation_Gamma_comp_Gamma`: `Γ ∘ Γ` is not differentially algebraic on
+  any nonempty open subset of the regular set.
+
+## Hypotheses
+
+Unconditional. The open set must be nonempty and contained in the regular set of `Γ ∘ Γ`.
+-/
+
 namespace GaloisForLFunctions
 
 open Complex Filter Topology
 
 noncomputable section
 
+/-- The regular set of `Γ ∘ Γ`: points `z` where `Γ(z)` is not a nonpositive integer. -/
 def gammaGammaRegularSet : Set ℂ := digammaGammaRegularSet
 
 theorem gammaGammaRegularSet_input_offPoles {z : ℂ}
     (hz : z ∈ gammaGammaRegularSet) : ∀ n : ℕ, z ≠ -(n : ℂ) := by
   exact digammaGammaRegularSet_input_offPoles hz
 
+/-- `Γ ∘ Γ` is analytic at every point of its regular set. -/
 theorem analyticAt_Gamma_comp_Gamma {z : ℂ}
     (hz : z ∈ gammaGammaRegularSet) :
     AnalyticAt ℂ (fun w => Complex.Gamma (Complex.Gamma w)) z := by
@@ -24,12 +50,16 @@ theorem analyticAt_Gamma_comp_Gamma {z : ℂ}
 theorem isOpen_gammaGammaRegularSet : IsOpen gammaGammaRegularSet := by
   exact isOpen_digammaGammaRegularSet
 
+/-- The complement of the regular set of `Γ ∘ Γ` is countable. -/
 theorem gammaGammaRegularSet_compl_countable : gammaGammaRegularSetᶜ.Countable := by
   exact digammaGammaRegularSet_compl_countable
 
+/-- The regular set of `Γ ∘ Γ` is preconnected, so the identity theorem applies on it. -/
 theorem gammaGammaRegularSet_isPreconnected : IsPreconnected gammaGammaRegularSet := by
   exact digammaGammaRegularSet_isPreconnected
 
+/-- For a polynomial `P`, the function `w ↦ P(w, f(w), …, f^(n)(w))` with `f = Γ ∘ Γ` is analytic
+at every point of the regular set. -/
 theorem analyticAt_gammaGammaDifferentialEval (n : ℕ)
     (P : MvPolynomial (Fin (n + 2)) ℂ) {z : ℂ}
     (hz : z ∈ gammaGammaRegularSet) :
@@ -75,6 +105,8 @@ theorem analyticAt_gammaGammaDifferentialEval (n : ℕ)
           simp only [Fin.cons_succ]
           exact analyticAt_iteratedDeriv_of_analyticAt hf (j : ℕ)
 
+/-- Identity-theorem propagation: if `P(z, f, …, f^(n)) = 0` for `f = Γ ∘ Γ` on a nonempty open set
+`V` inside the regular set, the relation holds on the entire regular set. -/
 theorem differentialRelation_GammaGamma_propagates
     {n : ℕ} {P : MvPolynomial (Fin (n + 2)) ℂ}
     {V : Set ℂ} (hVopen : IsOpen V) (hVne : V.Nonempty)
@@ -102,6 +134,8 @@ theorem differentialRelation_GammaGamma_propagates
   exact han.eqOn_zero_of_preconnected_of_frequently_eq_zero
     gammaGammaRegularSet_isPreconnected hz₀reg hfreq
 
+/-- For `Re x < 0`, the factorial blow-up point `-n + ε_n x` lies in the regular set of `Γ ∘ Γ`
+for all large `n`, because `Γ` at these points tends to `1 / (-x)`, which has positive real part. -/
 theorem eventually_factorialBlowUp_input_gammaGammaRegular
     {x : ℂ} (hx : x ∈ gammaFactorialMicroscopeDomain) :
     ∀ᶠ n : ℕ in atTop,
@@ -123,6 +157,8 @@ theorem eventually_factorialBlowUp_input_gammaGammaRegular
   have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   linarith
 
+/-- Local hypertranscendence of `Γ ∘ Γ`: on no nonempty open set `V` contained in the regular set
+does `Γ ∘ Γ` satisfy a nonzero polynomial differential equation `P(z, f, …, f^(n)) = 0`. -/
 theorem no_local_differential_relation_Gamma_comp_Gamma
     {V : Set ℂ} (hVopen : IsOpen V) (hVne : V.Nonempty)
     (hVreg : V ⊆ gammaGammaRegularSet) :

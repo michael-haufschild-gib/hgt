@@ -1,6 +1,29 @@
 import GaloisForLFunctions.RHTower.XiAtomicIncrementCorrection
 import GaloisForLFunctions.HTGeometry.SmallGrowthDifferentialField
 
+/-!
+# Differential independence of complex shifts of `ξ` over the small-growth field
+
+Let `F_s` be Nagoshi's field of meromorphic functions with Nevanlinna characteristic
+`T(r, f) = o(r)`, and consider germs at the complex upper end. This module proves that the
+translates by `i h`, `h ∈ ℂ`, of the rotated completed zeta function `z ↦ ξ(-i z)` are
+differentially algebraically independent over `F_s`. The proof transfers the corresponding
+independence of the translated logarithmic derivatives: the logarithmic derivative of each
+translate is a nonzero constant multiple (`-i`) of the translated logarithmic-derivative carrier,
+and differential independence of a family follows from that of its logarithmic derivatives.
+
+## Main results
+
+- `xiRotated_fullComplexShiftOrbit_differentialIndependent_over_smallGrowth`: the family
+  `h ↦ (translate by i h of z ↦ ξ(-i z))`, `h ∈ ℂ`, is differentially algebraically independent over
+  the small-growth field.
+
+## Hypotheses
+
+Unconditional: the statement takes no hypotheses, and it rests on the proved differential
+independence of the logarithmic-derivative orbit.
+-/
+
 namespace RHTower
 
 open Complex Filter Function Set
@@ -30,6 +53,8 @@ local instance xiSmallGrowthCarrierSmallGrowthDifferentialAlgebra :
     DifferentialAlgebra SmallGrowthMeromorphicField upperEndMeroField :=
   smallGrowthDifferentialAlgebra
 
+/-- The upper-end germs of the translates by `i h` (`h ∈ ℂ`) of `z ↦ ξ(-i z)` are differentially
+algebraically independent over the small-growth meromorphic field. -/
 theorem xiRotated_fullComplexShiftOrbit_differentialIndependent_over_smallGrowth :
     DifferentialIndependent SmallGrowthMeromorphicField
       (fun h : ℂ => upperEndTranslationMeroEquiv (I * h)

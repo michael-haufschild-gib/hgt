@@ -1,6 +1,42 @@
 import GaloisForLFunctions.RHTower.FixedWindowWeylRigidity
 import GaloisForLFunctions.RHTower.ShiftPairLocalIntersectionAlgebra
 
+/-!
+# Weyl classification of window jet Jordan operators
+
+A finite window of zeros with multiplicities is modelled by the block Jordan operator
+`J = ⊕_i (μ_i + N_(m_i))` on `⊕_i ℂ^(m_i)`, or equivalently by multiplication by
+`(μ_i + x)_i` on the jet algebra `∏_i ℂ[x]/(x^(m_i))`. This module computes the kernel profile
+`n ↦ dim ker (J - ν)^n = Σ_(μ_i = ν) min(n, m_i)`, shows that it determines the multiset of
+(eigenvalue, block size) pairs, and classifies Weyl symmetries `W J W⁻¹ = ζ J`: a linear such `W`
+exists iff the pairs `(μ_i, m_i)` are permuted by `μ ↦ ζ μ`; a conjugate-linear one exists iff
+they are permuted by `conj μ ↦ ζ μ`; and a jet-algebra semilinear one exists iff the linear
+condition holds. When all `μ_i ≠ 0` and `ζ` is a primitive `n`-th root of unity, a Weyl symmetry
+forces `n` to divide the total jet dimension `Σ m_i`.
+
+## Main results
+
+- `finrank_ker_blockJordan_pencil_pow`: `dim ker (J - ν)^n = Σ_(μ_i = ν) min(n, m_i)`.
+- `exists_pairPreservingEquiv_of_profile_eq`: equal kernel profiles (positive block sizes) give a
+  bijection of blocks preserving eigenvalue and size.
+- `linearWeyl_iff_pairRotationInvariant`: a linear `W` with `W J W⁻¹ = ζ J` exists iff the
+  (eigenvalue, size) pairs are invariant under `μ ↦ ζ μ`.
+- `conjugateLinearWeyl_iff_pairReflectionRotationInvariant`: the conjugate-linear analogue, where
+  some size-preserving permutation `e` satisfies `conj(μ_(e i)) = ζ μ_i`.
+- `semilinearAlgebraWeyl_iff_pairRotationInvariant`: the jet-algebra semilinear analogue.
+- `primitiveRoot_dvd_totalJetDimension_of_linearWeyl`: with all `μ_i ≠ 0` and `ζ` a primitive
+  `n`-th root of unity, a linear Weyl symmetry forces `n ∣ Σ m_i`.
+- `exponentialJetValue_verticalTranslate`: the vertical translate `ρ - 2πi a / (q log p)` multiplies
+  `p^(-ρ)` by `e^(2πi a / q)`.
+- `fixedWindowWeylRigidityClassification_unconditional`: the three equivalences bundled.
+
+## Hypotheses
+
+Unconditional finite-dimensional linear algebra. The classification assumes positive block sizes
+`m_i > 0` and `ζ ≠ 0`; the divisibility results assume all eigenvalues `μ_i ≠ 0` and that `ζ` is a
+primitive `n`-th root of unity (`n ≠ 0` in the semilinear version).
+-/
+
 noncomputable section
 
 namespace GaloisForLFunctions
@@ -9,6 +45,7 @@ namespace WindowJetWeylClassification
 
 open GaloisForLFunctions.RHTower.FixedWindowWeylRigidity
 
+/-- The truncated shift `N_r` on `ℂ^m`: `(N_r v)_j = v_(j+r)` when `j + r < m` and `0` otherwise. -/
 def tailShift (m r : ℕ) : Module.End ℂ (Fin m → ℂ) where
   toFun v j := if h : (j : ℕ) + r < m then v ⟨(j : ℕ) + r, h⟩ else 0
   map_add' v w := by
@@ -32,6 +69,7 @@ theorem tailShift_zero (m : ℕ) : tailShift m 0 = 1 := by
   ext v j
   simp [tailShift]
 
+/-- Truncated shifts compose additively: `N_a N_b = N_(a+b)`. -/
 theorem tailShift_add (m a b : ℕ) :
     tailShift m a * tailShift m b = tailShift m (a + b) := by
   apply LinearMap.ext
@@ -64,6 +102,7 @@ theorem tailShift_one_pow (m n : ℕ) :
   | succ n ih =>
       rw [pow_succ, ih, tailShift_add]
 
+/-- `v` lies in the kernel of `N_n` iff `v_j = 0` for every index `j ≥ n`. -/
 theorem mem_ker_tailShift_iff (m n : ℕ) (v : Fin m → ℂ) :
     v ∈ LinearMap.ker (tailShift m n) ↔
       ∀ j : Fin m, n ≤ (j : ℕ) → v j = 0 := by
@@ -121,11 +160,13 @@ def initialSegmentEquiv (m n : ℕ) :
     · simp only [dif_pos h, Pi.smul_apply]
     · simp only [dif_neg h, smul_zero]
 
+/-- The kernel of `N_n` on `ℂ^m` has dimension `min(n, m)`. -/
 theorem finrank_ker_tailShift (m n : ℕ) :
     Module.finrank ℂ (LinearMap.ker (tailShift m n)) = min n m := by
   rw [← (initialSegmentEquiv m n).finrank_eq]
   simp
 
+/-- The blockwise truncated shift on `⊕_i ℂ^(m_i)`. -/
 def blockTailShift {ι : Type*} (m : ι → ℕ) (r : ℕ) :
     Module.End ℂ ((i : ι) → Fin (m i) → ℂ) where
   toFun v i := tailShift (m i) r (v i)
@@ -176,6 +217,7 @@ def blockKerEquiv {ι : Type*} (m : ι → ℕ) (n : ℕ) :
   map_add' v w := by rfl
   map_smul' c v := by rfl
 
+/-- The kernel of the blockwise shift `N_n` has dimension `Σ_i min(n, m_i)`. -/
 theorem finrank_ker_blockTailShift {ι : Type*} [Fintype ι] (m : ι → ℕ) (n : ℕ) :
     Module.finrank ℂ (LinearMap.ker (blockTailShift m n)) =
       ∑ i, min n (m i) := by
@@ -189,6 +231,7 @@ theorem tailShift_self_eq_zero (m : ℕ) : tailShift m m = 0 := by
   funext j
   exact tailShift_apply_of_not_lt v j (by omega)
 
+/-- The `m × m` Jordan block `μ + N_1` with eigenvalue `μ`. -/
 def localJordan (m : ℕ) (μ : ℂ) : Module.End ℂ (Fin m → ℂ) :=
   μ • 1 + tailShift m 1
 
@@ -203,10 +246,12 @@ theorem localJordan_sub (m : ℕ) (μ nu : ℂ) :
   simp [localJordan]
   ring
 
+/-- The finite Neumann series `a⁻¹ Σ_(i < m) (-a⁻¹ N_1)^i`, an inverse of `a + N_1`. -/
 def localJordanLeftInverse (m : ℕ) (a : ℂ) : Module.End ℂ (Fin m → ℂ) :=
   let x : Module.End ℂ (Fin m → ℂ) := (-a⁻¹) • tailShift m 1
   (∑ i ∈ Finset.range m, x ^ i) * (a⁻¹ • 1)
 
+/-- For `a ≠ 0`, the Neumann series is a left inverse of `a + N_1`. -/
 theorem localJordanLeftInverse_mul (m : ℕ) {a : ℂ} (ha : a ≠ 0) :
     localJordanLeftInverse m a * (a • 1 + tailShift m 1) = 1 := by
   let N := tailShift m 1
@@ -225,6 +270,7 @@ theorem localJordanLeftInverse_mul (m : ℕ) {a : ℂ} (ha : a ≠ 0) :
   change S * (a⁻¹ • 1) * (a • 1 + N) = 1
   rw [mul_assoc, hscale, hgeom]
 
+/-- For `a ≠ 0`, the shifted Jordan block `a + N_1` is injective. -/
 theorem localJordan_injective_of_ne_zero (m : ℕ) {a : ℂ} (ha : a ≠ 0) :
     Function.Injective (a • (1 : Module.End ℂ (Fin m → ℂ)) + tailShift m 1) := by
   rw [← LinearMap.ker_eq_bot]
@@ -246,6 +292,7 @@ theorem localJordan_pow_injective_of_ne_zero (m n : ℕ) {a : ℂ} (ha : a ≠ 0
       apply hL
       exact ih h
 
+/-- `dim ker (J_m(μ) - ν)^n` equals `min(n, m)` if `μ = ν` and `0` otherwise. -/
 theorem finrank_ker_localJordan_sub_pow (m n : ℕ) (μ nu : ℂ) :
     Module.finrank ℂ (LinearMap.ker ((localJordan m μ - nu • 1) ^ n)) =
       if μ = nu then min n m else 0 := by
@@ -261,6 +308,7 @@ theorem finrank_ker_localJordan_sub_pow (m n : ℕ) (μ nu : ℂ) :
       exact LinearMap.ker_eq_bot.mpr (localJordan_pow_injective_of_ne_zero m n hne)]
     simp
 
+/-- The block-diagonal Jordan operator `⊕_i J_(m_i)(μ_i)` on `⊕_i ℂ^(m_i)`. -/
 def blockJordan {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     Module.End ℂ ((i : ι) → Fin (m i) → ℂ) where
   toFun v i := localJordan (m i) (μ i) (v i)
@@ -308,6 +356,7 @@ def blockJordanKerEquiv {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) (nu : �
   map_add' v w := by rfl
   map_smul' c v := by rfl
 
+/-- `dim ker (J - ν)^n = Σ_(μ_i = ν) min(n, m_i)` for the block Jordan operator `J`. -/
 theorem finrank_ker_blockJordan_pencil_pow {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (nu : ℂ) (n : ℕ) :
     Module.finrank ℂ (LinearMap.ker ((blockJordan m μ - nu • 1) ^ n)) =
@@ -317,10 +366,12 @@ theorem finrank_ker_blockJordan_pencil_pow {ι : Type*} [Fintype ι]
   intro i _
   exact finrank_ker_localJordan_sub_pow (m i) n (μ i) nu
 
+/-- The kernel profile `(ν, n) ↦ dim ker (T - ν)^n` of an endomorphism `T`. -/
 noncomputable def kernelProfile {V : Type*} [AddCommGroup V] [Module ℂ V]
     (T : Module.End ℂ V) (nu : ℂ) (n : ℕ) : ℕ :=
   Module.finrank ℂ (LinearMap.ker ((T - nu • 1) ^ n))
 
+/-- The kernel profile is invariant under conjugation by a linear automorphism. -/
 theorem kernelProfile_conj {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (e : V ≃ₗ[ℂ] V) (T : Module.End ℂ V) (nu : ℂ) (n : ℕ) :
     kernelProfile (e.conj T) nu n = kernelProfile T nu n := by
@@ -330,6 +381,7 @@ theorem kernelProfile_conj {V : Type*} [AddCommGroup V] [Module ℂ V]
     GaloisForLFunctions.RHTower.FixedWindowWeylRigidity.ker_conj]
   exact LinearEquiv.finrank_map_eq e _
 
+/-- For `ζ ≠ 0`, the profile of `ζ T` at `ν` equals the profile of `T` at `ν / ζ`. -/
 theorem kernelProfile_smul {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] {zeta : ℂ} (hzeta : zeta ≠ 0)
     (T : Module.End ℂ V) (nu : ℂ) (n : ℕ) :
@@ -340,6 +392,7 @@ theorem kernelProfile_smul {V : Type*} [AddCommGroup V] [Module ℂ V]
     rw [smul_sub, smul_smul, mul_div_cancel₀ nu hzeta]
   rw [hpencil, smul_pow, LinearMap.ker_smul _ _ (pow_ne_zero _ hzeta)]
 
+/-- If `W T W⁻¹ = ζ T` with `ζ ≠ 0`, the kernel profile of `T` is invariant under `ν ↦ ζ ν`. -/
 theorem kernelProfile_rotation {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] {W : V ≃ₗ[ℂ] V} {T : Module.End ℂ V}
     {zeta : ℂ} (hzeta : zeta ≠ 0) (hW : W.conj T = zeta • T)
@@ -349,19 +402,23 @@ theorem kernelProfile_rotation {V : Type*} [AddCommGroup V] [Module ℂ V]
   rw [hW, kernelProfile_smul hzeta] at h
   rwa [mul_div_cancel_left₀ nu hzeta] at h
 
+/-- The combinatorial Jordan profile `Σ_(μ_i = ν) min(n, m_i)`. -/
 def jordanProfile {ι : Type*} [Fintype ι] (μ : ι → ℂ) (m : ι → ℕ)
     (nu : ℂ) (n : ℕ) : ℕ :=
   ∑ i, if μ i = nu then min n (m i) else 0
 
+/-- The kernel profile of a block Jordan operator is its combinatorial Jordan profile. -/
 theorem kernelProfile_blockJordan {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (nu : ℂ) (n : ℕ) :
     kernelProfile (blockJordan m μ) nu n = jordanProfile μ m nu n := by
   exact finrank_ker_blockJordan_pencil_pow m μ nu n
 
+/-- The number of blocks with eigenvalue `ν` and size greater than `n`. -/
 def jordanLargeCount {ι : Type*} [Fintype ι] (μ : ι → ℂ) (m : ι → ℕ)
     (nu : ℂ) (n : ℕ) : ℕ :=
   ∑ i, if μ i = nu ∧ n < m i then 1 else 0
 
+/-- The number of blocks with eigenvalue `ν` and size exactly `q`. -/
 def jordanPairCount {ι : Type*} [Fintype ι] (μ : ι → ℂ) (m : ι → ℕ)
     (nu : ℂ) (q : ℕ) : ℕ :=
   ∑ i, if μ i = nu ∧ m i = q then 1 else 0
@@ -370,6 +427,7 @@ lemma min_succ_eq_min_add_indicator (n q : ℕ) :
     min (n + 1) q = min n q + if n < q then 1 else 0 := by
   by_cases h : n < q <;> simp [h] <;> omega
 
+/-- The profile increment from `n` to `n + 1` counts the blocks of eigenvalue `ν` larger than `n`. -/
 theorem jordanProfile_succ {ι : Type*} [Fintype ι] (μ : ι → ℂ) (m : ι → ℕ)
     (nu : ℂ) (n : ℕ) :
     jordanProfile μ m nu (n + 1) =
@@ -384,6 +442,7 @@ theorem jordanProfile_succ {ι : Type*} [Fintype ι] (μ : ι → ℂ) (m : ι �
     exact min_succ_eq_min_add_indicator n (m i)
   · simp [hμ]
 
+/-- Equal Jordan profiles give equal counts of blocks larger than each size. -/
 theorem jordanLargeCount_eq_of_profile_eq {ι κ : Type*} [Fintype ι] [Fintype κ]
     (μ : ι → ℂ) (m : ι → ℕ) (ν : κ → ℂ) (q : κ → ℕ)
     (hprofile : ∀ z n, jordanProfile μ m z n = jordanProfile ν q z n)
@@ -394,6 +453,7 @@ theorem jordanLargeCount_eq_of_profile_eq {ι κ : Type*} [Fintype ι] [Fintype 
   rw [jordanProfile_succ, jordanProfile_succ, hn] at hs
   omega
 
+/-- For `q > 0`, blocks larger than `q - 1` are those of size exactly `q` plus those larger than `q`. -/
 theorem jordanLargeCount_pred (μ : ι → ℂ) (m : ι → ℕ) [Fintype ι]
     (nu : ℂ) {q : ℕ} (hq : 0 < q) :
     jordanLargeCount μ m nu (q - 1) =
@@ -415,6 +475,8 @@ theorem jordanLargeCount_pred (μ : ι → ℂ) (m : ι → ℕ) [Fintype ι]
         simp [hm, hlt, hpred]
   · simp [hμ]
 
+/-- With positive block sizes, equal Jordan profiles give equal multiplicities of each
+(eigenvalue, size) pair. -/
 theorem jordanPairCount_eq_of_profile_eq {ι κ : Type*} [Fintype ι] [Fintype κ]
     (μ : ι → ℂ) (m : ι → ℕ) (ν : κ → ℂ) (q : κ → ℕ)
     (hm_pos : ∀ i, 0 < m i) (hq_pos : ∀ j, 0 < q j)
@@ -460,6 +522,8 @@ theorem card_pairFiber_eq_jordanPairCount {ι : Type*} [Fintype ι]
   intro i _
   simp [Prod.ext_iff]
 
+/-- Uniqueness of Jordan data: with positive block sizes, equal Jordan profiles yield a bijection of
+blocks preserving eigenvalue and size. -/
 theorem exists_pairPreservingEquiv_of_profile_eq
     {ι κ : Type*} [Fintype ι] [Fintype κ]
     (μ : ι → ℂ) (m : ι → ℕ) (ν : κ → ℂ) (q : κ → ℕ)
@@ -487,6 +551,7 @@ theorem exists_pairPreservingEquiv_of_profile_eq
     exact Equiv.ofFiberEquiv_apply fiberEquiv i]
   exact ((fiberEquiv (leftPair i)) ((Equiv.sigmaFiberEquiv leftPair).symm i).2).2
 
+/-- The clock scaling `v_j ↦ ζ^(-j) v_j` on `ℂ^m`. -/
 def localClockEquiv (m : ℕ) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     (Fin m → ℂ) ≃ₗ[ℂ] (Fin m → ℂ) where
   toFun v j := (zeta⁻¹) ^ (j : ℕ) * v j
@@ -507,6 +572,7 @@ def localClockEquiv (m : ℕ) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     simp
     ring
 
+/-- Reindexing of `⊕_i ℂ^(m_i)` along a size-preserving permutation of blocks. -/
 def jetReindexEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
     (hm : ∀ i, m (e i) = m i) :
     ((i : ι) → Fin (m i) → ℂ) ≃ₗ[ℂ] ((i : ι) → Fin (m i) → ℂ) :=
@@ -534,6 +600,7 @@ def blockClockEquiv {ι : Type*} (m : ι → ℕ) (zeta : ℂ) (hzeta : zeta ≠
 
 abbrev JetIndex {ι : Type*} (m : ι → ℕ) := (i : ι) × Fin (m i)
 
+/-- The block Jordan operator on functions of the flattened jet index `(i, j)` with `j < m_i`. -/
 def sigmaBlockJordan {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     Module.End ℂ (JetIndex m → ℂ) where
   toFun v x := localJordan (m x.1) (μ x.1) (fun j => v ⟨x.1, j⟩) x.2
@@ -601,6 +668,7 @@ def sigmaBlockJordanKerEquiv {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     funext j
     rfl
 
+/-- The flattened block Jordan operator has kernel profile `Σ_(μ_i = ν) min(n, m_i)`. -/
 theorem finrank_ker_sigmaBlockJordan_pencil_pow {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (nu : ℂ) (n : ℕ) :
     Module.finrank ℂ (LinearMap.ker ((sigmaBlockJordan m μ - nu • 1) ^ n)) =
@@ -660,6 +728,8 @@ def sigmaBlockClockEquiv {ι : Type*} (m : ι → ℕ) (zeta : ℂ) (hzeta : zet
     simp
     ring
 
+/-- The linear Weyl map: reindex blocks along `e`, then apply the clock scaling
+`v_(i, j) ↦ ζ^(-j) v_(i, j)`. -/
 def sigmaWeylEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
     (hm : ∀ i, m (e i) = m i) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     (JetIndex m → ℂ) ≃ₗ[ℂ] (JetIndex m → ℂ) :=
@@ -673,6 +743,7 @@ def sigmaWeylEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
   simp [sigmaWeylEquiv, sigmaJetReindexEquiv, sigmaBlockClockEquiv,
     jetIndexEquiv_apply]
 
+/-- If `e` preserves block sizes and `μ_(e i) = ζ μ_i`, the Weyl map intertwines `J` with `ζ J`. -/
 theorem sigmaWeylEquiv_intertwine {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     (e : ι ≃ ι) (hm : ∀ i, m (e i) = m i)
     (zeta : ℂ) (hzeta : zeta ≠ 0) (hμ : ∀ i, μ (e i) = zeta * μ i)
@@ -704,6 +775,7 @@ theorem sigmaWeylEquiv_intertwine {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ
     rw [dif_neg hj, dif_neg hjs, hμ]
     ring
 
+/-- If `e` preserves block sizes and `μ_(e i) = ζ μ_i`, the Weyl map satisfies `W J W⁻¹ = ζ J`. -/
 theorem sigmaWeylEquiv_conj {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     (e : ι ≃ ι) (hm : ∀ i, m (e i) = m i)
     (zeta : ℂ) (hzeta : zeta ≠ 0) (hμ : ∀ i, μ (e i) = zeta * μ i) :
@@ -715,9 +787,12 @@ theorem sigmaWeylEquiv_conj {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     ((sigmaWeylEquiv m e hm zeta hzeta).symm v)
   simpa [LinearEquiv.conj_apply] using h
 
+/-- Some permutation `e` of blocks satisfies `μ_(e i) = ζ μ_i` and `m_(e i) = m_i`: the multiset of
+(eigenvalue, size) pairs is invariant under `μ ↦ ζ μ`. -/
 def PairRotationInvariant {ι : Type*} (μ : ι → ℂ) (m : ι → ℕ) (zeta : ℂ) : Prop :=
   ∃ e : ι ≃ ι, ∀ i, μ (e i) = zeta * μ i ∧ m (e i) = m i
 
+/-- Scaling all eigenvalues by `ζ ≠ 0` moves the Jordan profile from `z / ζ` to `z`. -/
 theorem jordanProfile_scaled_values {ι : Type*} [Fintype ι]
     (μ : ι → ℂ) (m : ι → ℕ) {zeta : ℂ} (hzeta : zeta ≠ 0)
     (z : ℂ) (n : ℕ) :
@@ -741,6 +816,8 @@ theorem kernelProfile_sigmaBlockJordan {ι : Type*} [Fintype ι]
     kernelProfile (sigmaBlockJordan m μ) nu n = jordanProfile μ m nu n := by
   exact finrank_ker_sigmaBlockJordan_pencil_pow m μ nu n
 
+/-- With positive block sizes and `ζ ≠ 0`, any linear `W` with `W J W⁻¹ = ζ J` forces the pairs
+`(μ_i, m_i)` to be invariant under `μ ↦ ζ μ`. -/
 theorem pairRotationInvariant_of_linearWeyl {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
     {zeta : ℂ} (hzeta : zeta ≠ 0)
@@ -763,6 +840,8 @@ theorem pairRotationInvariant_of_linearWeyl {ι : Type*} [Fintype ι]
   have hp := he i
   exact ⟨congrArg Prod.fst hp, congrArg Prod.snd hp⟩
 
+/-- For `ζ ≠ 0`, rotation invariance of the pairs `(μ_i, m_i)` produces a linear `W` with
+`W J W⁻¹ = ζ J`. -/
 theorem exists_linearWeyl_of_pairRotationInvariant {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) {zeta : ℂ} (hzeta : zeta ≠ 0)
     (hinv : PairRotationInvariant μ m zeta) :
@@ -774,6 +853,8 @@ theorem exists_linearWeyl_of_pairRotationInvariant {ι : Type*} [Fintype ι]
   exact ⟨sigmaWeylEquiv m e hm zeta hzeta,
     sigmaWeylEquiv_conj m μ e hm zeta hzeta hμ⟩
 
+/-- Linear Weyl classification: with positive block sizes and `ζ ≠ 0`, a linear `W` with
+`W J W⁻¹ = ζ J` exists iff the (eigenvalue, size) pairs are invariant under `μ ↦ ζ μ`. -/
 theorem linearWeyl_iff_pairRotationInvariant {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
     {zeta : ℂ} (hzeta : zeta ≠ 0) :
@@ -785,6 +866,7 @@ theorem linearWeyl_iff_pairRotationInvariant {ι : Type*} [Fintype ι]
     exact pairRotationInvariant_of_linearWeyl m μ hm_pos hzeta W hW
   · exact exists_linearWeyl_of_pairRotationInvariant m μ hzeta
 
+/-- Coordinatewise complex conjugation, a conjugate-linear automorphism of `ℂ^I`. -/
 def sigmaCoordinateConjEquiv (I : Type*) :
     (I → ℂ) ≃ₛₗ[starRingEnd ℂ] (I → ℂ) where
   toFun v x := star (v x)
@@ -802,6 +884,7 @@ def sigmaCoordinateConjEquiv (I : Type*) :
     funext x
     simp
 
+/-- The conjugate-linear Weyl map: reindex along `e`, conjugate coordinates, then clock-scale. -/
 def sigmaConjugateWeylEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
     (hm : ∀ i, m (e i) = m i) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     (JetIndex m → ℂ) ≃ₛₗ[starRingEnd ℂ] (JetIndex m → ℂ) :=
@@ -816,10 +899,13 @@ def sigmaConjugateWeylEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
   simp [sigmaConjugateWeylEquiv, sigmaJetReindexEquiv, sigmaCoordinateConjEquiv,
     sigmaBlockClockEquiv, jetIndexEquiv_apply]
 
+/-- Some permutation `e` of blocks satisfies `conj(μ_(e i)) = ζ μ_i` and `m_(e i) = m_i`. -/
 def PairReflectionRotationInvariant {ι : Type*}
     (μ : ι → ℂ) (m : ι → ℕ) (zeta : ℂ) : Prop :=
   ∃ e : ι ≃ ι, ∀ i, star (μ (e i)) = zeta * μ i ∧ m (e i) = m i
 
+/-- If `e` preserves sizes and `conj(μ_(e i)) = ζ μ_i`, the conjugate-linear Weyl map satisfies
+`W J = ζ J W`. -/
 theorem sigmaConjugateWeylEquiv_intertwine {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     (e : ι ≃ ι) (hm : ∀ i, m (e i) = m i)
     (zeta : ℂ) (hzeta : zeta ≠ 0) (hμ : ∀ i, star (μ (e i)) = zeta * μ i)
@@ -855,12 +941,14 @@ theorem sigmaConjugateWeylEquiv_intertwine {ι : Type*} (m : ι → ℕ) (μ : �
     rw [add_zero, star_mul, hμ]
     ring
 
+/-- Existence of a conjugate-linear bijection `W` of the jet space with `W J = ζ J W`. -/
 def ConjugateLinearWeylExists {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     (zeta : ℂ) : Prop :=
   ∃ W : (JetIndex m → ℂ) ≃ₛₗ[starRingEnd ℂ] (JetIndex m → ℂ),
     ∀ v, W (sigmaBlockJordan m μ v) =
       (zeta • sigmaBlockJordan m μ) (W v)
 
+/-- For `ζ ≠ 0`, reflection-rotation invariance of the pairs yields a conjugate-linear Weyl map. -/
 theorem exists_conjugateLinearWeyl_of_pairReflectionRotationInvariant
     {ι : Type*} [Fintype ι] (m : ι → ℕ) (μ : ι → ℂ)
     {zeta : ℂ} (hzeta : zeta ≠ 0)
@@ -872,6 +960,7 @@ theorem exists_conjugateLinearWeyl_of_pairReflectionRotationInvariant
   exact ⟨sigmaConjugateWeylEquiv m e hm zeta hzeta,
     sigmaConjugateWeylEquiv_intertwine m μ e hm zeta hzeta hμ⟩
 
+/-- Coordinate conjugation intertwines `J(μ)` with the block Jordan operator of `conj μ`. -/
 theorem sigmaCoordinateConjEquiv_intertwine {ι : Type*}
     (m : ι → ℕ) (μ : ι → ℂ) (v : JetIndex m → ℂ) :
     sigmaCoordinateConjEquiv (JetIndex m) (sigmaBlockJordan m μ v) =
@@ -889,6 +978,8 @@ theorem sigmaCoordinateConjEquiv_intertwine {ι : Type*}
   · rw [dif_neg hj, add_zero, star_mul, dif_neg hj, add_zero]
     ring
 
+/-- With positive block sizes and `ζ ≠ 0`, a conjugate-linear `W` with `W J = ζ J W` forces
+reflection-rotation invariance of the pairs `(μ_i, m_i)`. -/
 theorem pairReflectionRotationInvariant_of_conjugateLinearWeyl
     {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
@@ -938,6 +1029,8 @@ theorem pairReflectionRotationInvariant_of_conjugateLinearWeyl
   have hstar := congrArg star hfirst
   simpa [map_mul] using hstar
 
+/-- Conjugate-linear Weyl classification: with positive block sizes and `ζ ≠ 0`, a conjugate-linear
+`W` with `W J = ζ J W` exists iff some size-preserving `e` has `conj(μ_(e i)) = ζ μ_i`. -/
 theorem conjugateLinearWeyl_iff_pairReflectionRotationInvariant
     {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
@@ -948,12 +1041,14 @@ theorem conjugateLinearWeyl_iff_pairReflectionRotationInvariant
   · exact pairReflectionRotationInvariant_of_conjugateLinearWeyl m μ hm_pos hzeta
   · exact exists_conjugateLinearWeyl_of_pairReflectionRotationInvariant m μ hzeta
 
+/-- The truncated jet algebra `ℂ[x]/(x^m)`. -/
 abbrev TruncatedJet (m : ℕ) :=
   GaloisForLFunctions.RHTower.ShiftPairLocalIntersectionAlgebra.TruncatedRootAlgebra m
 
 def truncatedJetPowerBasis (m : ℕ) : PowerBasis ℂ (TruncatedJet m) :=
   GaloisForLFunctions.RHTower.ShiftPairLocalIntersectionAlgebra.truncatedRootPowerBasis m
 
+/-- The power basis `1, x, ..., x^(m-1)` of `ℂ[x]/(x^m)` in reversed order. -/
 def reverseTruncatedJetBasis (m : ℕ) : Module.Basis (Fin m) ℂ (TruncatedJet m) := by
   let pb := truncatedJetPowerBasis m
   have hdim : pb.dim = m := by
@@ -961,15 +1056,18 @@ def reverseTruncatedJetBasis (m : ℕ) : Module.Basis (Fin m) ℂ (TruncatedJet 
     exact GaloisForLFunctions.RHTower.ShiftPairLocalIntersectionAlgebra.finrank_truncatedRootAlgebra m
   exact (pb.basis.reindex (finCongr hdim)).reindex Fin.revPerm
 
+/-- Coordinates of `ℂ[x]/(x^m)` in the reversed power basis. -/
 def localJetJordanEquiv (m : ℕ) : TruncatedJet m ≃ₗ[ℂ] (Fin m → ℂ) :=
   (reverseTruncatedJetBasis m).equivFun
 
 def truncatedJetRoot (m : ℕ) : TruncatedJet m :=
   AdjoinRoot.root ((Polynomial.X : Polynomial ℂ) ^ m)
 
+/-- The local jet carrier `μ + x` in `ℂ[x]/(x^m)`. -/
 def localJetCarrier (m : ℕ) (μ : ℂ) : TruncatedJet m :=
   algebraMap ℂ (TruncatedJet m) μ + truncatedJetRoot m
 
+/-- Multiplication by `μ + x` on `ℂ[x]/(x^m)`. -/
 def localJetMultiplication (m : ℕ) (μ : ℂ) : Module.End ℂ (TruncatedJet m) :=
   LinearMap.mulLeft ℂ (localJetCarrier m μ)
 
@@ -1014,6 +1112,7 @@ theorem localJetCarrier_mul_reverseBasis (m : ℕ) (μ : ℂ) (i : Fin m) :
     rw [← pow_succ']
     rw [show m - 1 + 1 = m by omega, truncatedJetRoot_pow_eq_zero, add_zero]
 
+/-- In the reversed power basis, multiplication by `μ + x` is the Jordan block `J_m(μ)`. -/
 theorem localJetJordanEquiv_intertwine (m : ℕ) (μ : ℂ) (v : TruncatedJet m) :
     localJetJordanEquiv m (localJetMultiplication m μ v) =
       localJordan m μ (localJetJordanEquiv m v) := by
@@ -1049,6 +1148,7 @@ theorem localJetJordanEquiv_intertwine (m : ℕ) (μ : ℂ) (v : TruncatedJet m)
         else 0
     split_ifs <;> simp_all [Fin.ext_iff]
 
+/-- The algebra endomorphism `x ↦ ζ x` of `ℂ[x]/(x^m)`. -/
 def localJetScaleAlgHom (m : ℕ) (zeta : ℂ) :
     TruncatedJet m →ₐ[ℂ] TruncatedJet m := by
   let x := truncatedJetRoot m
@@ -1068,6 +1168,7 @@ def localJetScaleAlgHom (m : ℕ) (zeta : ℂ) :
       zeta • truncatedJetRoot m := by
   simp [localJetScaleAlgHom, truncatedJetRoot, AdjoinRoot.lift_root]
 
+/-- For `ζ ≠ 0`, the algebra automorphism `x ↦ ζ x` of `ℂ[x]/(x^m)`. -/
 def localJetScaleAlgEquiv (m : ℕ) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     TruncatedJet m ≃ₐ[ℂ] TruncatedJet m := by
   let f := localJetScaleAlgHom m zeta
@@ -1089,13 +1190,16 @@ def localJetScaleAlgEquiv (m : ℕ) (zeta : ℂ) (hzeta : zeta ≠ 0) :
       zeta • truncatedJetRoot m := by
   simp [localJetScaleAlgEquiv]
 
+/-- The window jet algebra `∏_i ℂ[x]/(x^(m_i))`. -/
 abbrev WindowJetAlgebra {ι : Type*} (m : ι → ℕ) :=
   (i : ι) → TruncatedJet (m i)
 
+/-- The window carrier `(μ_i + x)_i` in the window jet algebra. -/
 def windowJetCarrier {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     WindowJetAlgebra m :=
   fun i => localJetCarrier (m i) (μ i)
 
+/-- Multiplication by the window carrier on the window jet algebra. -/
 def windowJetMultiplication {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     Module.End ℂ (WindowJetAlgebra m) :=
   LinearMap.mulLeft ℂ (windowJetCarrier m μ)
@@ -1109,6 +1213,7 @@ def piSigmaLinearEquiv {ι : Type*} (m : ι → ℕ) :
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
+/-- Linear identification of the window jet algebra with the flattened jet space. -/
 def windowJetJordanEquiv {ι : Type*} (m : ι → ℕ) :
     WindowJetAlgebra m ≃ₗ[ℂ] (JetIndex m → ℂ) :=
   (LinearEquiv.piCongrRight fun i => localJetJordanEquiv (m i)).trans
@@ -1118,6 +1223,7 @@ def windowJetJordanEquiv {ι : Type*} (m : ι → ℕ) :
     (v : WindowJetAlgebra m) (i : ι) (j : Fin (m i)) :
     windowJetJordanEquiv m v ⟨i, j⟩ = localJetJordanEquiv (m i) (v i) j := rfl
 
+/-- Under the jet coordinates, multiplication by the window carrier is the block Jordan operator. -/
 theorem windowJetJordanEquiv_intertwine {ι : Type*}
     (m : ι → ℕ) (μ : ι → ℂ) (v : WindowJetAlgebra m) :
     windowJetJordanEquiv m (windowJetMultiplication m μ v) =
@@ -1129,6 +1235,7 @@ theorem windowJetJordanEquiv_intertwine {ι : Type*}
     localJordan (m i) (μ i) (localJetJordanEquiv (m i) (v i)) j
   exact congrFun (localJetJordanEquiv_intertwine (m i) (μ i) (v i)) j
 
+/-- Multiplication by `(μ_i + x)_i` is conjugate to the block Jordan operator `⊕_i J_(m_i)(μ_i)`. -/
 theorem windowJetJordanEquiv_conj {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     (windowJetJordanEquiv m).conj (windowJetMultiplication m μ) =
       sigmaBlockJordan m μ := by
@@ -1151,6 +1258,8 @@ def windowJetReindexAlgEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
       (by simpa using hm (e.symm i))).trans
     (AlgEquiv.piCongrLeft ℂ (fun i => TruncatedJet (m i)) e.symm)
 
+/-- The window algebra automorphism: permute factors along a size-preserving `e`, then apply
+`x ↦ ζ x` in each factor. -/
 def windowJetAlgEquiv {ι : Type*} (m : ι → ℕ) (e : ι ≃ ι)
     (hm : ∀ i, m (e i) = m i) (zeta : ℂ) (hzeta : zeta ≠ 0) :
     WindowJetAlgebra m ≃ₐ[ℂ] WindowJetAlgebra m :=
@@ -1185,6 +1294,7 @@ theorem piCongrLeft_apply_heq {α β : Type*} (P : β → Type*)
   subst b
   rfl
 
+/-- If `μ_(e i) = ζ μ_i`, the window algebra automorphism maps the carrier to `ζ` times itself. -/
 theorem windowJetAlgEquiv_carrier {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ)
     (e : ι ≃ ι) (hm : ∀ i, m (e i) = m i)
     (zeta : ℂ) (hzeta : zeta ≠ 0) (hμ : ∀ i, μ (e i) = zeta * μ i) :
@@ -1205,6 +1315,8 @@ theorem windowJetAlgEquiv_carrier {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ
   rw [map_add, map_smul, map_one, localJetScaleAlgEquiv_root]
   simp [smul_add, mul_smul]
 
+/-- If `μ_(e i) = ζ μ_i`, conjugating carrier multiplication by the window algebra automorphism
+gives `ζ` times carrier multiplication. -/
 theorem windowJetAlgEquiv_conj_multiplication {ι : Type*}
     (m : ι → ℕ) (μ : ι → ℂ)
     (e : ι ≃ ι) (hm : ∀ i, m (e i) = m i)
@@ -1222,6 +1334,8 @@ theorem windowJetAlgEquiv_conj_multiplication {ι : Type*}
   rw [map_mul, hcarrier]
   simp
 
+/-- Existence of an algebra automorphism `σ` and a `σ`-semilinear module bijection `W`
+(`W(f v) = σ(f) W(v)`) of the window jet algebra with `W M W⁻¹ = ζ M`, `M` carrier multiplication. -/
 def SemilinearAlgebraWeylExists {ι : Type*}
     (m : ι → ℕ) (μ : ι → ℂ) (zeta : ℂ) : Prop :=
   ∃ σ : WindowJetAlgebra m ≃ₐ[ℂ] WindowJetAlgebra m,
@@ -1230,6 +1344,8 @@ def SemilinearAlgebraWeylExists {ι : Type*}
         W.conj (windowJetMultiplication m μ) =
           zeta • windowJetMultiplication m μ
 
+/-- For `ζ ≠ 0`, rotation invariance of the pairs `(μ_i, m_i)` yields a jet-algebra semilinear Weyl
+symmetry. -/
 theorem exists_semilinearAlgebraWeyl_of_pairRotationInvariant
     {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) {zeta : ℂ} (hzeta : zeta ≠ 0)
@@ -1244,6 +1360,8 @@ theorem exists_semilinearAlgebraWeyl_of_pairRotationInvariant
     exact map_mul σ f v
   · exact windowJetAlgEquiv_conj_multiplication m μ e hm zeta hzeta hμ
 
+/-- With positive block sizes and `ζ ≠ 0`, a jet-algebra semilinear Weyl symmetry forces rotation
+invariance of the pairs `(μ_i, m_i)`. -/
 theorem pairRotationInvariant_of_semilinearAlgebraWeyl
     {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
@@ -1284,6 +1402,8 @@ theorem pairRotationInvariant_of_semilinearAlgebraWeyl
     simpa [LinearEquiv.conj_apply] using h
   exact pairRotationInvariant_of_linearWeyl m μ hm_pos hzeta B hBconj
 
+/-- Semilinear Weyl classification: with positive block sizes and `ζ ≠ 0`, a jet-algebra semilinear
+Weyl symmetry exists iff the pairs `(μ_i, m_i)` are invariant under `μ ↦ ζ μ`. -/
 theorem semilinearAlgebraWeyl_iff_pairRotationInvariant
     {ι : Type*} [Fintype ι]
     (m : ι → ℕ) (μ : ι → ℂ) (hm_pos : ∀ i, 0 < m i)
@@ -1293,6 +1413,7 @@ theorem semilinearAlgebraWeyl_iff_pairRotationInvariant
   · exact pairRotationInvariant_of_semilinearAlgebraWeyl m μ hm_pos hzeta
   · exact exists_semilinearAlgebraWeyl_of_pairRotationInvariant m μ hzeta
 
+/-- The determinant is invariant under conjugation by a linear automorphism. -/
 theorem det_conj {V : Type*} [AddCommGroup V] [Module ℂ V]
     [FiniteDimensional ℂ V] (W : V ≃ₗ[ℂ] V) (T : Module.End ℂ V) :
     LinearMap.det (W.conj T) = LinearMap.det T := by
@@ -1309,6 +1430,8 @@ theorem det_conj {V : Type*} [AddCommGroup V] [Module ℂ V]
           LinearMap.det T := by ring
     _ = LinearMap.det T := by rw [hdetInverse, one_mul]
 
+/-- If `ζ` is a primitive `n`-th root of unity, `W T W⁻¹ = ζ T` and `T` has a left inverse, then
+`n` divides `dim V` (since `ζ^(dim V) = 1` by taking determinants). -/
 theorem primitiveRoot_dvd_finrank_of_conj_smul_of_leftInverse
     {V : Type*} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     {n : ℕ} {zeta : ℂ} (hprimitive : IsPrimitiveRoot zeta n)
@@ -1327,6 +1450,7 @@ theorem primitiveRoot_dvd_finrank_of_conj_smul_of_leftInverse
     simpa [mul_comm] using hdet.symm
   exact (hprimitive.pow_eq_one_iff_dvd _).mp hpow
 
+/-- Blockwise Neumann-series inverse of the block Jordan operator. -/
 def sigmaBlockJordanLeftInverse {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) :
     Module.End ℂ (JetIndex m → ℂ) where
   toFun v x := localJordanLeftInverse (m x.1) (μ x.1)
@@ -1340,6 +1464,7 @@ def sigmaBlockJordanLeftInverse {ι : Type*} (m : ι → ℕ) (μ : ι → ℂ) 
     exact congrFun ((localJordanLeftInverse (m x.1) (μ x.1)).map_smul c
       (fun j => v ⟨x.1, j⟩)) x.2
 
+/-- If all eigenvalues `μ_i ≠ 0`, the blockwise Neumann series is a left inverse of `J`. -/
 theorem sigmaBlockJordanLeftInverse_mul {ι : Type*}
     (m : ι → ℕ) (μ : ι → ℂ) (hμ : ∀ i, μ i ≠ 0) :
     sigmaBlockJordanLeftInverse m μ * sigmaBlockJordan m μ = 1 := by
@@ -1353,11 +1478,14 @@ theorem sigmaBlockJordanLeftInverse_mul {ι : Type*}
     (fun q => v ⟨i, q⟩)
   exact congrFun h j
 
+/-- The flattened jet space has dimension `Σ_i m_i`. -/
 theorem finrank_jetSpace {ι : Type*} [Fintype ι] (m : ι → ℕ) :
     Module.finrank ℂ (JetIndex m → ℂ) = ∑ i, m i := by
   rw [Module.finrank_pi_fintype]
   simp [JetIndex, Fintype.card_sigma]
 
+/-- If all `μ_i ≠ 0`, `ζ` is a primitive `n`-th root of unity and some linear `W` has
+`W J W⁻¹ = ζ J`, then `n` divides the total jet dimension `Σ m_i`. -/
 theorem primitiveRoot_dvd_totalJetDimension_of_linearWeyl
     {ι : Type*} [Fintype ι] (m : ι → ℕ) (μ : ι → ℂ)
     (hμ : ∀ i, μ i ≠ 0) {n : ℕ} {zeta : ℂ}
@@ -1370,6 +1498,8 @@ theorem primitiveRoot_dvd_totalJetDimension_of_linearWeyl
     hprimitive hW (sigmaBlockJordanLeftInverse_mul m μ hμ)
   rwa [finrank_jetSpace] at hdvd
 
+/-- If all `m_i > 0` and `μ_i ≠ 0`, `ζ` is a primitive `n`-th root with `n ≠ 0`, and a jet-algebra
+semilinear Weyl symmetry exists, then `n ∣ Σ m_i`. -/
 theorem primitiveRoot_dvd_totalJetDimension_of_semilinearAlgebraWeyl
     {ι : Type*} [Fintype ι] (m : ι → ℕ) (μ : ι → ℂ)
     (hm_pos : ∀ i, 0 < m i) (hμ : ∀ i, μ i ≠ 0) {n : ℕ} {zeta : ℂ}
@@ -1383,15 +1513,20 @@ theorem primitiveRoot_dvd_totalJetDimension_of_semilinearAlgebraWeyl
   exact primitiveRoot_dvd_totalJetDimension_of_linearWeyl m μ hμ hprimitive
     (exists_linearWeyl_of_pairRotationInvariant m μ hzeta hinv)
 
+/-- The exponential value `exp(-ρ log p) = p^(-ρ)`. -/
 def exponentialJetValue (logp : ℝ) (rho : ℂ) : ℂ :=
   Complex.exp (-(logp : ℂ) * rho)
 
+/-- The rotation phase `exp(2πi a / q)`. -/
 def exponentialRotationPhase (q a : ℝ) : ℂ :=
   Complex.exp (((2 * Real.pi * a / q : ℝ) : ℂ) * Complex.I)
 
+/-- The vertical translate `ρ - 2πi a / (q log p)`. -/
 def exponentialVerticalTranslate (logp q a : ℝ) (rho : ℂ) : ℂ :=
   rho - (((2 * Real.pi * a / (q * logp) : ℝ) : ℂ) * Complex.I)
 
+/-- For `log p ≠ 0` and `q ≠ 0`, translating `ρ` by `-2πi a / (q log p)` multiplies `p^(-ρ)` by the
+phase `exp(2πi a / q)`. -/
 theorem exponentialJetValue_verticalTranslate
     {logp q : ℝ} (hlogp : logp ≠ 0) (hq : q ≠ 0) (a : ℝ) (rho : ℂ) :
     exponentialJetValue logp (exponentialVerticalTranslate logp q a rho) =
@@ -1405,6 +1540,9 @@ theorem exponentialJetValue_verticalTranslate
   field_simp [hlogpC, hqC]
   ring
 
+/-- Fixed-window Weyl classification: for positive block sizes and `ζ ≠ 0`, linear and semilinear
+Weyl symmetries exist iff the pairs are invariant under `μ ↦ ζ μ`, and conjugate-linear ones iff
+some size-preserving permutation has `conj(μ_(e i)) = ζ μ_i`. -/
 theorem fixedWindowWeylRigidityClassification_unconditional :
     ∀ (ι : Type) [Fintype ι] (m : ι → ℕ) (μ : ι → ℂ),
       (∀ i, 0 < m i) → ∀ zeta : ℂ, zeta ≠ 0 →

@@ -2,16 +2,52 @@ import GaloisForLFunctions.HTGeometry.PurePairNormalFracture
 import GaloisForLFunctions.HTGeometry.HiggsCausalOrbit
 import Mathlib.LinearAlgebra.UnitaryGroup
 
+/-!
+# Normal fibers and color stabilizer at a compatible Spin(10) pure-spinor pair
+
+In the even-form chart `ℂ × Λ²ℂ⁵ × Λ⁴ℂ⁵` (scalar, skew matrix, five four-form coordinates) the
+linearized Cartan pure-spinor equations at the pair `1` and `e⁴ ∧ e⁵` are packaged as linear maps.
+The tangent space to the Cartan locus at `e⁴ ∧ e⁵` maps onto the agreement space `ℂ³` (first three
+four-form coordinates) with zero disagreement part, so its compatibility quotient is `ℂ³`. The
+linearized Cartan map at `1` is the four-form coordinate split as `ℂ³ × ℂ²`; it is surjective, so
+the normal fiber at `1` is `ℂ³ × ℂ²`. Letting `SU(3)` act on the `ℂ³` factor, the fixed subspace is
+exactly `0 × ℂ²`, of complex dimension 2 and real dimension 4.
+
+## Main results
+
+- `purePairTangentCompatibilityQuotientEquivAgreement`: the tangent space at `e⁴ ∧ e⁵` modulo the
+  kernel of the agreement differential is linearly isomorphic to `ℂ³`.
+- `purePairTangent_disagreement_eq_zero`: tangent variations at `e⁴ ∧ e⁵` have zero disagreement
+  reporter.
+- `firstPurePairProjectiveNormalFiberEquiv`: the chart modulo the kernel of the linearized Cartan
+  map at `1` is linearly isomorphic to `ℂ³ × ℂ²`.
+- `mem_purePairColorFixedSubspace_iff`: a vector of `ℂ³ × ℂ²` is fixed by every element of `SU(3)`
+  iff its `ℂ³` component is zero.
+- `finrank_purePairColorFixedSubspace_complex`, `finrank_purePairColorFixedSubspace_real`: the
+  fixed subspace has dimension 2 over `ℂ` and 4 over `ℝ`.
+- `purePair_normalActualityFracture`: the conjunction of these facts with the unique decomposition
+  `x = ⟪q, x⟫ q + a q`, `a` purely imaginary, for a unit quaternion `q`.
+
+## Hypotheses
+
+All results are unconditional linear algebra on explicit coordinates. The only premise is
+`inner ℝ q q = 1` (a unit quaternion) in the quaternion clause of
+`purePair_normalActualityFracture`. No physical interpretation is asserted.
+-/
+
 open Matrix
 
 noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- The agreement normal space `ℂ³` (first three four-form coordinates). -/
 abbrev PurePairAgreementNormal := Fin 3 → ℂ
 
+/-- Model normal space `ℂ³ × ℂ²`: agreement part times the color-preserving doublet. -/
 abbrev PurePairNormalModel := PurePairAgreementNormal × ColorPreservingNormal
 
+/-- The linear isomorphism `ℂ⁵ ≃ ℂ³ × ℂ²` splitting off the first three coordinates. -/
 def purePairNormalSplit : (Fin 5 → ℂ) ≃ₗ[ℂ] PurePairNormalModel where
   toFun w := (![w 0, w 1, w 2], ![w 3, w 4])
   invFun x := ![x.1 0, x.1 1, x.1 2, x.2 0, x.2 1]
@@ -25,6 +61,7 @@ def purePairNormalSplit : (Fin 5 → ℂ) ≃ₗ[ℂ] PurePairNormalModel where
   map_smul' c x := by
     ext i <;> fin_cases i <;> simp
 
+/-- The agreement reporter (first three four-form coordinates) as a `ℂ`-linear map on the chart. -/
 def purePairAgreementDifferential :
     SpinTenEvenCoordinate →ₗ[ℂ] PurePairAgreementNormal where
   toFun := purePairAgreementReporter
@@ -37,6 +74,8 @@ def purePairAgreementDifferential :
     fin_cases i <;>
       simp [purePairAgreementReporter, firstPairVectorReporter, spinTenFour]
 
+/-- Linear constraint map at `e⁴ ∧ e⁵`: the two-form entries `(0,1), (0,2), (1,2)` and the
+four-form entries `3, 4`; its kernel is the Cartan tangent space there. -/
 def secondPurePairTangentConstraintDifferential :
     SpinTenEvenCoordinate →ₗ[ℂ] (Fin 5 → ℂ) where
   toFun v := ![spinTenTwo v 0 1, spinTenTwo v 0 2,
@@ -48,9 +87,11 @@ def secondPurePairTangentConstraintDifferential :
     funext i
     fin_cases i <;> simp [spinTenTwo, spinTenFour]
 
+/-- Tangent space to the Cartan pure-spinor locus at the second spinor `e⁴ ∧ e⁵`. -/
 def purePairTangentAtSecondSubmodule : Submodule ℂ SpinTenEvenCoordinate :=
   LinearMap.ker secondPurePairTangentConstraintDifferential
 
+/-- Membership in the tangent submodule is exactly the linearized Cartan system at `e⁴ ∧ e⁵`. -/
 theorem mem_purePairTangentAtSecondSubmodule_iff
     (v : SpinTenEvenCoordinate) :
     v ∈ purePairTangentAtSecondSubmodule ↔ tangentCartanAtSecond v := by
@@ -70,10 +111,13 @@ theorem mem_purePairTangentAtSecondSubmodule_iff
       simp [secondPurePairTangentConstraintDifferential,
         h01, h02, h12, h3, h4]
 
+/-- The agreement reporter restricted to the tangent space at `e⁴ ∧ e⁵`. -/
 def purePairTangentAgreementDifferential :
     purePairTangentAtSecondSubmodule →ₗ[ℂ] PurePairAgreementNormal :=
   purePairAgreementDifferential.domRestrict purePairTangentAtSecondSubmodule
 
+/-- Every agreement vector in `ℂ³` is the agreement reporter of some tangent variation at
+`e⁴ ∧ e⁵`. -/
 theorem purePairTangentAgreementDifferential_surjective :
     Function.Surjective purePairTangentAgreementDifferential := by
   intro c
@@ -82,12 +126,15 @@ theorem purePairTangentAgreementDifferential_surjective :
       (pureTangentVariationOfAgreement_is_tangent c)⟩, ?_⟩
   exact purePairAgreementReporter_variationOfAgreement c
 
+/-- Tangent variations at `e⁴ ∧ e⁵` with zero agreement reporter. -/
 abbrev PurePairJointlyPureTangentAtSecond :=
   LinearMap.ker purePairTangentAgreementDifferential
 
+/-- The tangent space at `e⁴ ∧ e⁵` modulo the agreement-silent tangent variations. -/
 abbrev PurePairTangentCompatibilityQuotient :=
   purePairTangentAtSecondSubmodule ⧸ PurePairJointlyPureTangentAtSecond
 
+/-- The range of the tangent agreement differential is all of `ℂ³`, as a linear equivalence. -/
 def purePairTangentAgreementRangeEquiv :
     LinearMap.range purePairTangentAgreementDifferential ≃ₗ[ℂ]
       PurePairAgreementNormal :=
@@ -98,22 +145,28 @@ def purePairTangentAgreementRangeEquiv :
       obtain ⟨v, hv⟩ := purePairTangentAgreementDifferential_surjective c
       exact ⟨⟨c, ⟨v, hv⟩⟩, rfl⟩⟩
 
+/-- First isomorphism theorem: the tangent compatibility quotient at `e⁴ ∧ e⁵` is `ℂ³`. -/
 def purePairTangentCompatibilityQuotientEquivAgreement :
     PurePairTangentCompatibilityQuotient ≃ₗ[ℂ] PurePairAgreementNormal :=
   (LinearMap.quotKerEquivRange purePairTangentAgreementDifferential).trans
     purePairTangentAgreementRangeEquiv
 
+/-- The tangent agreement differential has full range `ℂ³`. -/
 theorem purePairTangent_image_eq_agreement :
     LinearMap.range purePairTangentAgreementDifferential = ⊤ := by
   exact LinearMap.range_eq_top.mpr
     purePairTangentAgreementDifferential_surjective
 
+/-- Every tangent variation at `e⁴ ∧ e⁵` has zero disagreement reporter (four-form
+coordinates 3 and 4). -/
 theorem purePairTangent_disagreement_eq_zero
     (v : purePairTangentAtSecondSubmodule) :
     purePairDisagreementReporter v.1 = 0 := by
   apply purePairDisagreementReporter_eq_zero_of_tangent v.1
   exact (mem_purePairTangentAtSecondSubmodule_iff v.1).mp v.property
 
+/-- Linearized Cartan map at the first spinor `1`: the four-form coordinate, split as
+`ℂ³ × ℂ²`. -/
 def firstPurePairCartanDifferential :
     SpinTenEvenCoordinate →ₗ[ℂ] PurePairNormalModel where
   toFun v := purePairNormalSplit (spinTenFour v)
@@ -122,6 +175,7 @@ def firstPurePairCartanDifferential :
   map_smul' c x := by
     simp [spinTenFour]
 
+/-- The linearized Cartan map at `1` is the pair (agreement reporter, disagreement reporter). -/
 theorem firstPurePairCartanDifferential_eq_reporters
     (v : SpinTenEvenCoordinate) :
     firstPurePairCartanDifferential v =
@@ -131,6 +185,8 @@ theorem firstPurePairCartanDifferential_eq_reporters
       purePairAgreementReporter, purePairDisagreementReporter,
       firstPairVectorReporter, spinTenFour]
 
+/-- The Cartan polarization at `1` has upper part equal to the linearized Cartan map (after the
+`ℂ³ × ℂ²` split) and vanishing lower part. -/
 theorem firstPurePairCartanDifferential_eq_cartanPolar
     (v : SpinTenEvenCoordinate) :
     purePairNormalSplit (spinTenCartanPolar firstPurePairSpinor v).1 =
@@ -141,6 +197,7 @@ theorem firstPurePairCartanDifferential_eq_cartanPolar
     rfl
   · exact firstPair_cartanPolar_lower_eq_zero v
 
+/-- The linearized Cartan map at `1` is surjective onto `ℂ³ × ℂ²`. -/
 theorem firstPurePairCartanDifferential_surjective :
     Function.Surjective firstPurePairCartanDifferential := by
   rintro ⟨a, b⟩
@@ -148,6 +205,8 @@ theorem firstPurePairCartanDifferential_surjective :
   ext i <;> fin_cases i <;>
     simp [firstPurePairCartanDifferential, purePairNormalSplit, spinTenFour]
 
+/-- The kernel of the linearized Cartan map at `1` is exactly the zero set of the full Cartan
+polarization at `1`. -/
 theorem mem_firstPurePairCartanDifferential_ker_iff
     (v : SpinTenEvenCoordinate) :
     v ∈ LinearMap.ker firstPurePairCartanDifferential ↔
@@ -172,9 +231,11 @@ theorem mem_firstPurePairCartanDifferential_ker_iff
     apply congrArg purePairNormalSplit
     simpa [firstPairVectorReporter] using hu
 
+/-- Normal fiber at `1`: the chart modulo the kernel of the linearized Cartan map. -/
 abbrev FirstPurePairProjectiveNormalFiber :=
   SpinTenEvenCoordinate ⧸ LinearMap.ker firstPurePairCartanDifferential
 
+/-- The range of the linearized Cartan map at `1` is all of `ℂ³ × ℂ²`. -/
 def firstPurePairCartanDifferentialRangeEquiv :
     LinearMap.range firstPurePairCartanDifferential ≃ₗ[ℂ]
       PurePairNormalModel :=
@@ -185,11 +246,14 @@ def firstPurePairCartanDifferentialRangeEquiv :
       obtain ⟨v, hv⟩ := firstPurePairCartanDifferential_surjective y
       exact ⟨⟨y, ⟨v, hv⟩⟩, rfl⟩⟩
 
+/-- First isomorphism theorem: the normal fiber at `1` is linearly isomorphic to `ℂ³ × ℂ²`. -/
 def firstPurePairProjectiveNormalFiberEquiv :
     FirstPurePairProjectiveNormalFiber ≃ₗ[ℂ] PurePairNormalModel :=
   (LinearMap.quotKerEquivRange firstPurePairCartanDifferential).trans
     firstPurePairCartanDifferentialRangeEquiv
 
+/-- Diagonal of a determinant-one sign matrix negating coordinate `i` and one other
+coordinate of `ℂ³`. -/
 def purePairColorSignDiagonal (i : Fin 3) : Fin 3 → ℂ :=
   match i with
   | ⟨0, _⟩ => ![-1, -1, 1]
@@ -199,6 +263,7 @@ def purePairColorSignDiagonal (i : Fin 3) : Fin 3 → ℂ :=
 def purePairColorSignFlipMatrix (i : Fin 3) : Matrix (Fin 3) (Fin 3) ℂ :=
   Matrix.diagonal (purePairColorSignDiagonal i)
 
+/-- The sign-flip diagonal matrix lies in the special unitary group `SU(3)`. -/
 theorem purePairColorSignFlipMatrix_mem (i : Fin 3) :
     purePairColorSignFlipMatrix i ∈
       Matrix.specialUnitaryGroup (Fin 3) ℂ := by
@@ -214,6 +279,8 @@ theorem purePairColorSignFlipMatrix_mem (i : Fin 3) :
     fin_cases i <;>
       simp [purePairColorSignDiagonal, Fin.prod_univ_succ]
 
+/-- `SU(3)` acts on `ℂ³ × ℂ²` by matrix multiplication on the `ℂ³` factor and trivially on
+`ℂ²`. -/
 def purePairColorAction
     (U : Matrix.specialUnitaryGroup (Fin 3) ℂ) :
     PurePairNormalModel →ₗ[ℂ] PurePairNormalModel where
@@ -234,6 +301,7 @@ theorem purePairColorAction_mul
       purePairColorAction U (purePairColorAction V x) := by
   ext i <;> simp [purePairColorAction, Matrix.mulVec_mulVec]
 
+/-- The subspace of `ℂ³ × ℂ²` fixed by every element of `SU(3)`. -/
 def purePairColorFixedSubspace : Submodule ℂ PurePairNormalModel where
   carrier := {x | ∀ U, purePairColorAction U x = x}
   zero_mem' := by
@@ -260,6 +328,8 @@ theorem purePairColorSignFlipMatrix_mulVec_apply
     simp [purePairColorSignFlipMatrix, purePairColorSignDiagonal,
       Matrix.mulVec, dotProduct, Fin.sum_univ_succ]
 
+/-- A vector is `SU(3)`-fixed iff its `ℂ³` component is zero; the sign-flip matrices already
+force each coordinate to vanish. -/
 theorem mem_purePairColorFixedSubspace_iff
     (x : PurePairNormalModel) :
     x ∈ purePairColorFixedSubspace ↔ x.1 = 0 := by
@@ -285,6 +355,7 @@ theorem mem_purePairColorFixedSubspace_iff
     subst a
     ext i <;> simp [purePairColorAction]
 
+/-- The `SU(3)`-fixed subspace is linearly isomorphic to the color-preserving doublet `ℂ²`. -/
 def purePairColorFixedEquivWeak :
     purePairColorFixedSubspace ≃ₗ[ℂ] ColorPreservingNormal where
   toFun x := x.1.2
@@ -299,16 +370,21 @@ def purePairColorFixedEquivWeak :
   map_add' x y := rfl
   map_smul' c x := rfl
 
+/-- The `SU(3)`-fixed subspace has complex dimension 2. -/
 theorem finrank_purePairColorFixedSubspace_complex :
     Module.finrank ℂ purePairColorFixedSubspace = 2 := by
   rw [LinearEquiv.finrank_eq purePairColorFixedEquivWeak]
   exact finrank_colorPreservingNormal_complex
 
+/-- The `SU(3)`-fixed subspace has real dimension 4. -/
 theorem finrank_purePairColorFixedSubspace_real :
     Module.finrank ℝ purePairColorFixedSubspace = 4 := by
   rw [← Module.finrank_mul_finrank ℝ ℂ purePairColorFixedSubspace,
     Complex.finrank_real_complex, finrank_purePairColorFixedSubspace_complex]
 
+/-- Summary: tangent agreement differential onto `ℂ³` with zero disagreement, surjective Cartan
+map at `1`, `SU(3)`-fixed subspace `0 × ℂ²` of dimensions 2 over `ℂ` and 4 over `ℝ`, and, for
+a unit quaternion `q`, unique decomposition `x = ⟪q, x⟫ q + a q` with `a` purely imaginary. -/
 theorem purePair_normalActualityFracture :
     LinearMap.range purePairTangentAgreementDifferential = ⊤ ∧
       (∀ v : purePairTangentAtSecondSubmodule,

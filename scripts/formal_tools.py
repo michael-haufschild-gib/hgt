@@ -1161,9 +1161,12 @@ def render_search(args: argparse.Namespace, result: SearchResults,
     options = research_options(args)
     expression = build_match_expression(query, any_terms=options["any_terms"], exact=options["exact"])
     extra = {}
-    if getattr(args, "mode", "lexical") != "lexical":
+    lexical = getattr(args, "mode", "lexical") == "lexical"
+    # Mathlib is only in the discovery corpus, so a lexical Mathlib search runs
+    # discovery keyword-only instead of returning nothing.
+    if not lexical or options['scope'] != 'ours':
         from lean_research_cli import discovery
-        extra = discovery(ROOT, args, options)
+        extra = discovery(ROOT, args, {**options, 'lexical_only': True} if lexical else options)
     if getattr(args, "json", False):
         print(json.dumps({"query": query, "match": expression, "backend": backend,
                           "options": options, **dataclasses.asdict(result),
@@ -1174,9 +1177,6 @@ def render_search(args: argparse.Namespace, result: SearchResults,
               'all': 'this project and Mathlib'}
     print(f"Query: {mode}; {'exact tokens' if options['exact'] else 'prefix expansion'}; {backend}")
     print(f"Scope: {scopes.get(options['scope'], options['scope'])}")
-    print(f"Matches: {result.total} declarations in {result.modules} modules; "
-          f"{result.eligible} after module cap ({options['per_module'] or 'off'}).")
-    print(f"Declarations (offset {options['offset']}, showing {len(result.declarations)}):")
 
     def show(hit: DeclHit) -> None:
         print(f"- {hit.name} ({hit.kind}) {hit.module} {hit.relpath}:{hit.line}")
@@ -1184,8 +1184,11 @@ def render_search(args: argparse.Namespace, result: SearchResults,
             print(f"  {hit.doc[:240]}{'…' if len(hit.doc) > 240 else ''}")
 
     if options['scope'] == 'mathlib':
-        print("  (declaration list covers this project only; Mathlib hits appear under research discovery)")
+        print("Mathlib hits are listed under Candidate lemmas.")
     else:
+        print(f"Matches: {result.total} declarations in {result.modules} modules; "
+              f"{result.eligible} after module cap ({options['per_module'] or 'off'}).")
+        print(f"Declarations (offset {options['offset']}, showing {len(result.declarations)}):")
         for hit in result.declarations:
             show(hit)
     if result.exploration:
@@ -1199,11 +1202,14 @@ def render_search(args: argparse.Namespace, result: SearchResults,
     if options["offset"] + len(result.declarations) < result.eligible:
         print(f"\nMore: --offset {options['offset'] + len(result.declarations)}; "
               "--module <substring> to focus; --per-module 0 to show all matches per module.")
-    if not result.total:
-        print("No declarations matched. Try fewer terms or --any, alternate names, and rg on Lean sources.")
+    if not result.total and options['scope'] != 'mathlib':
+        if extra.get('candidate_lemmas'):
+            print("No declaration matches every keyword; see Candidate lemmas below.")
+        else:
+            print("No declarations matched. Try fewer terms, --any, alternate names, or describe the goal in words.")
     if extra:
         from lean_research_cli import render_discovery
-        render_discovery(extra)
+        render_discovery(extra, query)
 
 
 def research(args: argparse.Namespace) -> int:
@@ -1239,12 +1245,16 @@ def research(args: argparse.Namespace) -> int:
             if getattr(args, "no_refresh", False) and not index.counts()["files"]:
                 print("index is empty or requires rebuilding; rerun without --no-refresh", file=sys.stderr)
                 return 2
-            result = index.search(query, limit=args.limit,
-                                  **{k: v for k, v in options.items() if k != 'scope'})
-            marker_hits = index.search_markers(
-                query, args.limit, **{k: options[k] for k in
-                ("any_terms", "exact", "module", "exclude_modules")}
-            )
+            if options['scope'] == 'mathlib':
+                # This index holds only our project; Mathlib hits come from discovery.
+                result, marker_hits = SearchResults([], [], 0, 0, 0), []
+            else:
+                result = index.search(query, limit=args.limit,
+                                      **{k: v for k, v in options.items() if k != 'scope'})
+                marker_hits = index.search_markers(
+                    query, args.limit, **{k: options[k] for k in
+                    ("any_terms", "exact", "module", "exclude_modules")}
+                )
         except (SearchIndexUnavailable, sqlite3.DatabaseError) as error:
             print(f"search index unavailable ({error}); scanning instead", file=sys.stderr)
         else:

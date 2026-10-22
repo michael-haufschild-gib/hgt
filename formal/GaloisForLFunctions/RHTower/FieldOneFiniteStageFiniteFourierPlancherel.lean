@@ -1,16 +1,43 @@
 import GaloisForLFunctions.RHTower.FieldOneFiniteStagePadicProductTransport
 import GaloisForLFunctions.RHTower.FieldOnePadicProductBruhatFourierPlancherel
 
+/-!
+# Plancherel theorem for the finite part of the stage-`S` adeles of `ℚ`
+
+For a finite set `S` of primes, the finite part of the stage-`S` adeles is `∏_{p ∈ S} ℚ_p`,
+realized through the adic completions of `ℚ`. It carries the product of the self-dual additive
+Haar measures (each giving `ℤ_p` mass `1`) and the standard additive character
+`ψ(x) = ∏_{p ∈ S} ψ_p(x_p)`. This module defines the Fourier transform
+`f̂(y) = ∫ ψ(-x y) f(x) dx` of a compactly supported locally constant function `f`. It identifies
+this transform with the Fourier transform on the literal product of `p`-adic fields `ℚ_p`, and
+deduces Plancherel: `∫ |f̂|² = ∫ |f|²`.
+
+## Main results
+
+- `fieldOneFiniteStageFiniteStandardAddChar`: the product character `∏_{p ∈ S} ψ_p(x_p)`.
+- `fieldOneFiniteStageFiniteBruhatFourier`: the Fourier transform on `∏_{p ∈ S} ℚ_p`.
+- `fieldOneFiniteStageFiniteBruhatFourier_eq_padic`: it agrees with the Fourier transform on
+  the `p`-adic product model under the canonical additive equivalence.
+- `fieldOneFiniteStageFiniteBruhatFourier_plancherel`: `∫ |f̂(y)|² dy = ∫ |f(x)|² dx`.
+
+## Hypotheses
+
+Unconditional for every finite set `S` of primes and every compactly supported locally constant
+function `f`.
+-/
+
 namespace GaloisForLFunctions.RHTower
 noncomputable section
 open IsDedekindDomain MeasureTheory Set TopologicalSpace
 open scoped BigOperators
 
+/-- The standard additive character on `∏_{p ∈ S} ℚ_p`: the product of the local standard characters. -/
 def fieldOneFiniteStageFiniteStandardAddChar
     (S : Finset (HeightOneSpectrum ℤ))
     (x : FieldOneFiniteStageFinitePart S) : ℂ :=
   ∏ v : ↑S, fieldOneLocalStandardAddChar v.1 (x v)
 
+/-- The product character agrees with the standard character of the literal `p`-adic product model. -/
 theorem fieldOneFiniteStageFiniteStandardAddChar_eq_padic
     (S : Finset (HeightOneSpectrum ℤ))
     (x : FieldOneFiniteStageFinitePart S) :
@@ -22,6 +49,8 @@ theorem fieldOneFiniteStageFiniteStandardAddChar_eq_padic
   intro v _
   exact fieldOneLocalStandardAddChar_eq_padic v.1 (x v)
 
+/-- Fourier transform `f̂(y) = ∫ ψ(-x y) f(x) dx` of a Bruhat–Schwartz function on `∏_{p ∈ S} ℚ_p`, with the
+product of self-dual Haar measures. -/
 def fieldOneFiniteStageFiniteBruhatFourier
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S)
@@ -30,6 +59,8 @@ def fieldOneFiniteStageFiniteBruhatFourier
     ∂(Measure.pi fun v : ↑S => fieldOneLocalSelfDualAddHaar v.1)
 
 set_option backward.isDefEq.respectTransparency false in
+/-- The stage-`S` finite Fourier transform equals the Fourier transform on the literal `p`-adic product,
+transported along the canonical additive equivalence. -/
 theorem fieldOneFiniteStageFiniteBruhatFourier_eq_padic
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S)
@@ -78,6 +109,8 @@ theorem fieldOneFiniteStageFiniteBruhatFourier_eq_padic
     exact e.symm_apply_apply x]
 
 set_option backward.isDefEq.respectTransparency false in
+/-- Plancherel on `∏_{p ∈ S} ℚ_p`: for every compactly supported locally constant `f`,
+`∫ |f̂(y)|² dy = ∫ |f(x)|² dx` with respect to the self-dual Haar measure. -/
 theorem fieldOneFiniteStageFiniteBruhatFourier_plancherel
     (S : Finset (HeightOneSpectrum ℤ))
     (f : FieldOneFiniteStageFiniteBruhatSchwartz S) :

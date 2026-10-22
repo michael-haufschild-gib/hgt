@@ -9,6 +9,45 @@ import GaloisForLFunctions.HTGeometry.AlgebraicIndependenceFromDifferentials
 import GaloisForLFunctions.HTGeometry.MvLinearIrreducible
 import GaloisForLFunctions.HTGeometry.LogPrimeExponentialCarrier
 
+/-!
+# Minimal autonomous differential order of polynomial quasi-periodic functions
+
+For a polynomial `Q ∈ ℂ[z₁, …, z_k]` and real frequencies `ω`, consider the quasi-periodic function
+`f(t) = Q(e^{iω₁t}, …, e^{iω_kt})`. The torus derivation `δ = ∑ⱼ iωⱼ zⱼ ∂ⱼ` acts on polynomials,
+and the time derivatives of `f` are the observables of `δʲ Q`. At the origin the Jacobian of
+`(Q, δQ, …, δ^{k-1}Q)` is a diagonal matrix of the linear coefficients of `Q` times the Vandermonde
+matrix of `iω`; so if the `ωᵢ` are distinct and every linear coefficient of `Q` is nonzero, these
+`k` polynomials are algebraically independent, and so are the first `k` phase jets. Since any
+`k + 1` polynomials in `k` variables are dependent, `f` satisfies a nonzero autonomous algebraic
+differential equation of order `k`, and for rationally independent frequencies no lower order is
+possible. Applied to `∏_{p ∈ S} (1 - p^{-1} z_p)` with `ω_p = -log p`, i.e. to the finite inverse
+Euler product `t ↦ ∏_{p ∈ S} (1 - p^{-1-it})`, the minimal autonomous order is exactly `|S|`.
+
+## Main results
+
+- `originPolynomialJetJacobian_eq_weightedVandermonde`: the jet Jacobian at `0` is
+  `diag(∂ᵢQ(0)) · Vandermonde(iω)`.
+- `symbolicPolynomialJet_algebraicIndependent`: for injective `ω` and `∂ᵢQ(0) ≠ 0` for all `i`,
+  `Q, δQ, …, δ^{k-1}Q` are algebraically independent.
+- `exists_polynomialPhase_realAutonomousAnnihilator`: `f` satisfies a nonzero autonomous algebraic
+  differential relation of order `k` along the real axis.
+- `autonomousMinimalOrder_eq_of_phaseJetElem_algebraicIndependent`: algebraically independent first
+  `k` phase jets plus an order-`k` relation force minimal autonomous order exactly `k`.
+- `autonomousMinimalOrder_polynomialPhase_eq`: under rational independence, injectivity and nonzero
+  linear coefficients, the minimal autonomous order of `f` is `k`.
+- `autonomousMinimalOrder_finiteEulerInverseAnchor_eq`: for every finite set `S` of primes, the
+  minimal autonomous order of `t ↦ ∏_{p ∈ S} (1 - p^{-1} e^{-it log p})` is `|S|`.
+
+## Hypotheses
+
+The prime application `autonomousMinimalOrder_finiteEulerInverseAnchor_eq` is unconditional; its
+frequency hypotheses are discharged from the `ℤ`-linear independence of `log p`. The general
+theorems assume positive log-radii `ρ`, `RationallyIndependentFrequency ω` (no nonzero integer
+relation among the frequencies), injectivity of `ω`, and nonvanishing of every linear coefficient
+`∂ᵢQ(0)`; `autonomousMinimalOrder_eq_of_phaseJetElem_algebraicIndependent` additionally takes the
+algebraic independence of the jets and the existence of an order-`k` relation as premises.
+-/
+
 open Complex Set Filter Topology Matrix
 
 namespace GaloisForLFunctions.HTGeometry
@@ -17,11 +56,13 @@ noncomputable section
 
 variable {d : Type} [Fintype d] [DecidableEq d]
 
+/-- The torus derivation `δQ = ∑ᵢ iωᵢ Xᵢ ∂ᵢQ` on polynomials. -/
 def diagonalPolynomialDerivation (omega : d → ℝ) (Q : MvPolynomial d ℂ) :
     MvPolynomial d ℂ :=
   ∑ i, MvPolynomial.C (Complex.I * (omega i : ℂ)) * MvPolynomial.X i *
     MvPolynomial.pderiv i Q
 
+/-- The polynomial `Q` as a function `z ↦ Q(z)` on `ℂ^d`. -/
 def polynomialPhaseObservable (Q : MvPolynomial d ℂ) : (d → ℂ) → ℂ :=
   fun z ↦ MvPolynomial.eval z Q
 
@@ -57,6 +98,7 @@ theorem coordDeriv_polynomialPhaseObservable (Q : MvPolynomial d ℂ) (i : d) (z
     simp [hxi]
   · simp
 
+/-- The analytic torus derivation of a polynomial observable is the observable of `δQ`. -/
 theorem torusDerivation_polynomialPhaseObservable (omega : d → ℝ)
     (Q : MvPolynomial d ℂ) :
     torusDerivation omega (polynomialPhaseObservable Q) =
@@ -69,6 +111,7 @@ theorem torusDerivation_polynomialPhaseObservable (omega : d → ℝ)
   rw [coordDeriv_polynomialPhaseObservable, map_mul, map_mul,
     MvPolynomial.eval_C, MvPolynomial.eval_X]
 
+/-- The `j`-th phase jet of a polynomial observable is the observable of `δʲQ`. -/
 theorem phaseJet_polynomialPhaseObservable (omega : d → ℝ)
     (Q : MvPolynomial d ℂ) (j : ℕ) :
     phaseJet omega (polynomialPhaseObservable Q) j =
@@ -95,6 +138,7 @@ theorem eval_zero_pderiv_diagonalPolynomialDerivation (omega : d → ℝ)
     simp [Derivation.leibniz, hji]
   · simp
 
+/-- `∂ᵢ(δʲQ)(0) = (iωᵢ)ʲ · ∂ᵢQ(0)`. -/
 theorem eval_zero_pderiv_iterate_diagonalPolynomialDerivation (omega : d → ℝ)
     (Q : MvPolynomial d ℂ) (i : d) (j : ℕ) :
     MvPolynomial.eval (0 : d → ℂ)
@@ -108,11 +152,13 @@ theorem eval_zero_pderiv_iterate_diagonalPolynomialDerivation (omega : d → ℝ
         eval_zero_pderiv_diagonalPolynomialDerivation, ih, pow_succ]
       ring
 
+/-- The Jacobian matrix `(∂ᵢ(δʲQ)(0))_{i,j}` of the first `k` polynomial jets at the origin. -/
 def originPolynomialJetJacobian {k : ℕ} (omega : Fin k → ℝ)
     (Q : MvPolynomial (Fin k) ℂ) : Matrix (Fin k) (Fin k) ℂ :=
   fun i j ↦ MvPolynomial.eval (0 : Fin k → ℂ)
     (MvPolynomial.pderiv i ((diagonalPolynomialDerivation omega)^[j] Q))
 
+/-- The origin jet Jacobian factors as `diag(∂ᵢQ(0)) · Vandermonde(iω)`. -/
 theorem originPolynomialJetJacobian_eq_weightedVandermonde {k : ℕ}
     (omega : Fin k → ℝ) (Q : MvPolynomial (Fin k) ℂ) :
     originPolynomialJetJacobian omega Q =
@@ -128,6 +174,7 @@ theorem originPolynomialJetJacobian_eq_weightedVandermonde {k : ℕ}
     rw [Matrix.diagonal_apply_ne _ (Ne.symm hli), zero_mul]
   · simp
 
+/-- For injective `ω` and every `∂ᵢQ(0) ≠ 0`, the origin jet Jacobian is nonsingular. -/
 theorem originPolynomialJetJacobian_det_ne_zero {k : ℕ}
     (omega : Fin k → ℝ) (homega : Function.Injective omega)
     (Q : MvPolynomial (Fin k) ℂ)
@@ -145,6 +192,8 @@ theorem originPolynomialJetJacobian_det_ne_zero {k : ℕ}
     apply homega
     exact_mod_cast hcast
 
+/-- For injective `ω` and every `∂ᵢQ(0) ≠ 0`, the polynomials `Q, δQ, …, δ^{k-1}Q` are
+algebraically independent over `ℂ` (Jacobian criterion). -/
 theorem symbolicPolynomialJet_algebraicIndependent {k : ℕ}
     (omega : Fin k → ℝ) (homega : Function.Injective omega)
     (Q : MvPolynomial (Fin k) ℂ)
@@ -168,6 +217,7 @@ theorem symbolicPolynomialJet_algebraicIndependent {k : ℕ}
       (fun j : Fin k ↦ (diagonalPolynomialDerivation omega)^[(j : ℕ)] Q) id)).det = 0
   rw [← RingHom.map_det, hzero, map_zero]
 
+/-- Evaluating a composite `P(Φ)` at `z` equals evaluating `P` at the values `Φᵢ(z)`. -/
 theorem eval_aeval_polynomialFamily {ι κ : Type*} (z : κ → ℂ)
     (Phi : ι → MvPolynomial κ ℂ) (P : MvPolynomial ι ℂ) :
     MvPolynomial.eval z (MvPolynomial.aeval Phi P) =
@@ -178,6 +228,7 @@ theorem eval_aeval_polynomialFamily {ι κ : Type*} (z : κ → ℂ)
   | add p q hp hq => simp [map_add, hp, hq]
   | mul_X p i hp => simp [map_mul, hp]
 
+/-- The permutation of `Fin (n + 1)` sending the last index to `0` and `i` to `i + 1`. -/
 def lastToFirstIndexEquiv (n : ℕ) : Fin (n + 1) ≃ Fin (n + 1) where
   toFun := Fin.lastCases 0 Fin.succ
   invFun := Fin.cases (Fin.last n) Fin.castSucc
@@ -219,6 +270,7 @@ theorem finSuccEquiv_rename_lastToFirst_lastVariableJetLift {R : Type*}
         MvPolynomial.finSuccEquiv_X_zero, finSuccEquiv_rename_succ,
         Polynomial.C_mul_X_pow_eq_monomial]
 
+/-- Presenting a polynomial in the top jet as a polynomial in `n + 1` variables is injective. -/
 theorem lastVariableJetLift_injective {R : Type*} [Field R] {n : ℕ} :
     Function.Injective
       (lastVariableJetLift : Polynomial (MvPolynomial (Fin n) R) →
@@ -237,6 +289,8 @@ theorem lastVariableJetLift_ne_zero {R : Type*} [Field R] {n : ℕ}
   apply lastVariableJetLift_injective
   simpa [jetLift_zero] using h
 
+/-- For positive log-radii, injective `ω` and every `∂ᵢQ(0) ≠ 0`, the first `k` phase jets of the
+polynomial observable are algebraically independent holomorphic functions on the polyannulus. -/
 theorem polynomialPhaseJetElem_algebraicIndependent {k : ℕ}
     {rho : Fin k → ℝ} (hrho : ∀ i, 0 < rho i)
     (omega : Fin k → ℝ) (homega : Function.Injective omega)
@@ -259,6 +313,8 @@ theorem polynomialPhaseJetElem_algebraicIndependent {k : ℕ}
   rw [eval_aeval_polynomialFamily]
   simpa [phaseJet_polynomialPhaseObservable, polynomialPhaseObservable] using hzP
 
+/-- The quasi-periodic function `t ↦ Q(e^{iω₁t}, …, e^{iω_kt})` satisfies a nonzero autonomous
+algebraic differential relation of order `k` along the real axis. -/
 theorem exists_polynomialPhase_realAutonomousAnnihilator {k : ℕ}
     {rho : Fin k → ℝ} (hrho : ∀ i, 0 < rho i)
     (omega : Fin k → ℝ) (Q : MvPolynomial (Fin k) ℂ) :
@@ -287,6 +343,8 @@ theorem exists_polynomialPhase_realAutonomousAnnihilator {k : ℕ}
   simpa [Phi, a, phaseJet_polynomialPhaseObservable,
     polynomialPhaseObservable] using hzero
 
+/-- Assuming rationally independent frequencies, algebraically independent first `k` phase jets and
+an order-`k` autonomous relation, the minimal autonomous order of the phase function is `k`. -/
 theorem autonomousMinimalOrder_eq_of_phaseJetElem_algebraicIndependent
     {d : Type} [Fintype d] [DecidableEq d]
     {rho omega : d → ℝ} (hrho : ∀ i, 0 < rho i)
@@ -328,6 +386,8 @@ theorem autonomousMinimalOrder_eq_of_phaseJetElem_algebraicIndependent
   apply lastVariableJetLift_injective
   simpa [jetLift_zero] using hLiftZero
 
+/-- For rationally independent, injective frequencies and every `∂ᵢQ(0) ≠ 0`, the function
+`t ↦ Q(e^{iω₁t}, …, e^{iω_kt})` has minimal autonomous order exactly `k`. -/
 theorem autonomousMinimalOrder_polynomialPhase_eq {k : ℕ}
     {rho : Fin k → ℝ} (hrho : ∀ i, 0 < rho i)
     (omega : Fin k → ℝ) (hindep : RationallyIndependentFrequency omega)
@@ -343,10 +403,12 @@ theorem autonomousMinimalOrder_polynomialPhase_eq {k : ℕ}
       hrho omega homega Q hlinear
   · exact exists_polynomialPhase_realAutonomousAnnihilator hrho omega Q
 
+/-- The finite inverse Euler-product polynomial `∏ᵢ (1 - cᵢ Xᵢ)`. -/
 def eulerInverseAnchorPolynomial {k : ℕ} (c : Fin k → ℂ) :
     MvPolynomial (Fin k) ℂ :=
   ∏ i, (1 - MvPolynomial.C (c i) * MvPolynomial.X i)
 
+/-- The linear coefficients of `∏ⱼ (1 - cⱼ Xⱼ)` are `∂ᵢ(·)(0) = -cᵢ`. -/
 theorem eval_zero_pderiv_eulerInverseAnchorPolynomial {k : ℕ}
     (c : Fin k → ℂ) (i : Fin k) :
     MvPolynomial.eval (0 : Fin k → ℂ)
@@ -371,6 +433,8 @@ theorem eval_zero_pderiv_eulerInverseAnchorPolynomial {k : ℕ}
         · simp [hai, Ne.symm hai, Derivation.leibniz]
   simpa [eulerInverseAnchorPolynomial] using haux Finset.univ
 
+/-- For rationally independent, injective frequencies and all `cᵢ ≠ 0`, the phase function of
+`∏ᵢ (1 - cᵢ Xᵢ)` has minimal autonomous order `k`. -/
 theorem autonomousMinimalOrder_eulerInverseAnchorPhase_eq {k : ℕ}
     {rho : Fin k → ℝ} (hrho : ∀ i, 0 < rho i)
     (omega : Fin k → ℝ) (hindep : RationallyIndependentFrequency omega)
@@ -384,6 +448,7 @@ theorem autonomousMinimalOrder_eulerInverseAnchorPhase_eq {k : ℕ}
   rw [eval_zero_pderiv_eulerInverseAnchorPolynomial]
   exact neg_ne_zero.mpr (hc i)
 
+/-- `ℤ`-linearly independent frequencies are rationally independent. -/
 theorem rationallyIndependentFrequency_of_linearIndependent_int
     {d : Type*} [Fintype d] [DecidableEq d] {omega : d → ℝ}
     (h : LinearIndependent ℤ omega) : RationallyIndependentFrequency omega := by
@@ -394,12 +459,15 @@ theorem rationallyIndependentFrequency_of_linearIndependent_int
   · simpa [finiteTorusCharacterDetuning, zsmul_eq_mul] using hn
   · exact Finset.mem_univ i
 
+/-- An enumeration of the primes of a finite set `S`. -/
 def finitePrimeAt (S : Finset Nat.Primes) (i : Fin (Fintype.card ↥S)) : Nat.Primes :=
   ((Fintype.equivFin ↥S).symm i).1
 
+/-- Prime frequencies `ω_p = -log p` for `p ∈ S`. -/
 def finitePrimeFrequency (S : Finset Nat.Primes) : Fin (Fintype.card ↥S) → ℝ :=
   fun i ↦ -Real.log (((finitePrimeAt S i : Nat.Primes) : ℕ) : ℝ)
 
+/-- Prime damping coefficients `c_p = 1/p` for `p ∈ S`. -/
 def finitePrimeDamping (S : Finset Nat.Primes) : Fin (Fintype.card ↥S) → ℂ :=
   fun i ↦ ((((finitePrimeAt S i : Nat.Primes) : ℕ) : ℂ))⁻¹
 
@@ -409,6 +477,7 @@ theorem finitePrimeAt_injective (S : Finset Nat.Primes) :
   apply (Fintype.equivFin ↥S).symm.injective
   exact Subtype.ext hij
 
+/-- The frequencies `-log p`, `p ∈ S`, are `ℤ`-linearly independent. -/
 theorem finitePrimeFrequency_linearIndependent (S : Finset Nat.Primes) :
     LinearIndependent ℤ (finitePrimeFrequency S) := by
   have hlog : LinearIndependent ℤ
@@ -458,6 +527,8 @@ theorem finitePrimeDamping_ne_zero (S : Finset Nat.Primes)
   apply inv_ne_zero
   exact_mod_cast (finitePrimeAt S i).2.ne_zero
 
+/-- For every finite set `S` of primes, the finite inverse Euler product
+`t ↦ ∏_{p ∈ S} (1 - p^{-1} e^{-it log p})` has minimal autonomous order exactly `|S|`. -/
 theorem autonomousMinimalOrder_finiteEulerInverseAnchor_eq
     (S : Finset Nat.Primes) :
     autonomousMinimalOrder

@@ -11,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lean_research_corpus import (Corpus, chunks, inventory, mask_comments_strings, own_snapshot,
                                   source_declarations, source_item, EvidenceChanged)
+from lean_search_index import build_match_expression
 
 
 class ExtractionTests(unittest.TestCase):
@@ -20,7 +21,9 @@ class ExtractionTests(unittest.TestCase):
             paths = ['formal/GaloisForLFunctions/RHTower/First.lean',
                      'formal/GaloisForLFunctions/HTGeometry/Second.lean',
                      'formal/space dir/ξ.part.lean', 'formal/Root.lean',
-                     'docs/notes/a.b.md', 'formal/.lake/packages/mathlib/Mathlib/X.lean',
+                     'formal/notes/a.b.md', 'formal/.lake/packages/mathlib/Mathlib/X.lean',
+                     'docs/drafts/pipeline/3-formalized/route li/card.md',
+                     'docs/notes/old.md', 'docs/drafts/pipeline/1-in-progress/draft.md',
                      'formal/LEAN_API.md', 'formal/.git/Hidden.lean',
                      'formal/.lake/build/Hidden.lean', 'formal/no.txt', 'formal/.lean']
             for path in paths:
@@ -31,10 +34,12 @@ class ExtractionTests(unittest.TestCase):
             self.assertFalse(errors)
             self.assertEqual([i['path'] for i in items[:2]], paths[:2])
             got = {i['path']: i for i in items}
-            self.assertEqual(set(got), {*paths[:6], 'formal/broken.lean'})
+            self.assertEqual(set(got), {*paths[:7], 'formal/broken.lean'})
+            self.assertEqual(got[paths[6]]['module'], 'route li.card')
+            self.assertEqual(got[paths[6]]['package'], 'research')
             for path in paths[:6]:
                 item = got[path]
-                base = root/'formal/.lake/packages/mathlib' if item['package']=='mathlib' else root/('docs' if path.startswith('docs/') else 'formal')
+                base = root/'formal/.lake/packages/mathlib' if item['package']=='mathlib' else root/'formal'
                 self.assertEqual(item['module'], '.'.join((root/path).relative_to(base).with_suffix('').parts))
                 self.assertEqual(item['abspath'], str(root/path))
                 self.assertEqual(item['mtime_ns'], (root/path).stat().st_mtime_ns)
@@ -98,12 +103,13 @@ class ExtractionTests(unittest.TestCase):
             start += 1
 
 
-    def test_inventory_never_includes_tmp_directories(self):
+    def test_inventory_never_includes_tmp_or_hidden_directories(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            kept = ['formal/GaloisForLFunctions/RHTower/Kept.lean', 'docs/notes/kept.md']
+            kept = ['formal/GaloisForLFunctions/RHTower/Kept.lean', 'formal/notes/kept.md']
             dropped = ['formal/tmp/Scratch.lean', 'formal/tmp/l30/Deep.lean',
-                       'formal/GaloisForLFunctions/tmp/Nested.lean', 'docs/drafts/card/tmp/notes.md',
+                       'formal/GaloisForLFunctions/tmp/Nested.lean', 'formal/notes/tmp/notes.md', 'docs/notes/old.md',
+                       'formal/.serena/memories/note.md', 'formal/.scratch/Try.lean',
                        'formal/.lake/packages/mathlib/tmp/X.lean']
             for path in kept + dropped:
                 f = root/path; f.parent.mkdir(parents=True, exist_ok=True); f.write_text('theorem t : True := trivial')
@@ -130,7 +136,9 @@ class CorpusTests(unittest.TestCase):
         self.write('formal/GaloisForLFunctions/A.lean', 'theorem a : True := trivial')
         self.write('formal/.lake/packages/mathlib/Mathlib/A.lean', 'theorem b : True := trivial')
         self.write('formal/.lake/packages/mathlib/.lake/build/junk.lean', 'bad')
-        self.write('docs/drafts/pipeline/1-in-progress/test.md', '# Plan\nconditional result')
+        self.write('formal/notes/test.md', '# Plan\nconditional result')
+        # `docs/` holds drafts and superseded reports; it is never corpus.
+        self.write('docs/drafts/pipeline/1-in-progress/old.md', '# Plan\nconditional result')
         stats = self.db.refresh(self.root)
         self.assertEqual(stats['coverage']['files'], 3)
         self.assertEqual(stats['coverage']['outcomes'], {'indexed': 3})
@@ -143,20 +151,43 @@ class CorpusTests(unittest.TestCase):
 
     def test_fast_path_agrees_with_the_full_inventory(self):
         self.write('formal/GaloisForLFunctions/RHTower/A.lean', 'theorem a : True := trivial')
+        self.write('formal/notes/note.md', '# note')
+        self.write('docs/drafts/pipeline/3-formalized/route li/card.md', '# card')
         self.write('docs/drafts/note.md', '# note')
         self.write('formal/GaloisForLFunctions/tmp/Scratch.lean', 'theorem s : True := trivial')
         self.write('formal/.lake/packages/mathlib/Mathlib/M.lean', 'theorem m : True := trivial')
-        self.write('docs/LEAN_API.md', 'catalog')
+        self.write('formal/LEAN_API.md', 'catalog')
         items, _ = inventory(self.root)
         ours = {i['path']: i for i in items if i['package'] in ('project', 'research')}
+        self.assertIn('docs/drafts/pipeline/3-formalized/route li/card.md', ours)
         self.assertEqual(set(own_snapshot(self.root)), set(ours))
         for path, item in ours.items():
             fast = source_item(self.root, path)
             self.assertEqual({k: fast[k] for k in ('module', 'package', 'collection')},
                              {k: item[k] for k in ('module', 'package', 'collection')})
-        for excluded in ('formal/GaloisForLFunctions/tmp/Scratch.lean', 'docs/LEAN_API.md',
+        for excluded in ('formal/GaloisForLFunctions/tmp/Scratch.lean', 'formal/LEAN_API.md', 'docs/drafts/note.md',
+                         'docs/drafts/pipeline/3-formalized',
                          'formal/.lake/packages/mathlib/Mathlib/M.lean'):
             self.assertIsNone(source_item(self.root, excluded))
+
+    def test_search_lanes_match_a_separate_query_per_lane(self):
+        self.write('formal/GaloisForLFunctions/A.lean',
+                   '/-- alpha doc -/\ntheorem alphaOne : True := by\n  exact trivial -- alpha\n\n'
+                   'theorem alphaTwo : True := trivial\n\ntheorem alphaThree : True := trivial\n')
+        self.write('formal/notes/alpha.md', '# alpha note')
+        self.db.refresh(self.root)
+        lanes = [('statement', 'type', 'doc'), ('proof', 'method'), ('prose',), ('lean',)]
+        expression = build_match_expression('alpha')
+        def separate(views):
+            return [r['id'] for r in self.db.con.execute(
+                'SELECT d.id,bm25(document_fts,1.0,0.15,0.0) AS score FROM document_fts JOIN documents d '
+                'ON d.id=document_fts.rowid WHERE document_fts MATCH ? AND d.view IN (%s) ORDER BY score,d.id LIMIT 2'
+                % ','.join('?' for _ in views), [expression, *views])]
+        combined = self.db.search_lanes('alpha', lanes, limit=2)
+        self.assertEqual([[hit['id'] for hit in hits] for hits in combined], [separate(v) for v in lanes])
+        self.assertEqual(len(combined[0]), 2)
+        self.assertTrue(combined[2] and combined[3])
+        self.assertTrue(all('lane' not in hit and 'score' in hit for hits in combined for hit in hits))
 
     def test_refresh_paths_adds_changes_and_removes_one_file(self):
         path = 'formal/GaloisForLFunctions/A.lean'

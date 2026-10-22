@@ -1,5 +1,28 @@
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Snapshot.Representative
 
+/-!
+# Size of the scalar net and frequency continuity of test magnitudes
+
+Two estimates for the finite dyadic model `Grid M = ℤ/2^M`. First, the separated net of intense
+frequencies for the scalar (non-main) test is small: every net point carries a whole arc of nearby
+frequencies on which a child exponential sum stays large, these arcs are disjoint, and Parseval caps
+the total, giving `|net| ≤ exp(scLimit s i j)` with
+`scLimit s i j = 1000 (height j + max(-log norm, 0) + i + 1)`. Second, the test magnitude of a scene
+moves by at most `b · 16 · len · rad(i - k)` when the frequency moves from `k` to `i`.
+
+## Main results
+
+- `net_len_scalar`: for an admissible scene below level `M` with `0 < norm`, `share s ≤ 2` and
+  `wage ≤ exp(height j)`, the scalar net has at most `exp(scLimit s i j)` elements.
+- `magnitude_near`: if `share s ≤ b`, then
+  `magnitude main s i ≤ magnitude main s k + b · 16 · len · rad(i - k)`.
+
+## Hypotheses
+
+Unconditional finite statements; the premises are the scene admissibility and size bounds listed
+above.
+-/
+
 open Function Set Filter
 open scoped Topology BigOperators ComplexConjugate
 noncomputable section
@@ -10,9 +33,13 @@ open Law Node Real Period Compress.Params Thermal Fund Scene Fork Road Event Jou
 variable {M J j : ℕ} {s : Scene M} {f : Grid M → ℝ}
 open scoped Classical
 
+/-- Log-size budget `1000 (height j + max(-log norm, 0) + i + 1)` for the scalar net. -/
 def scLimit (s : Scene M) (i j : ℕ) :=
     1000*(height j+max (-log s.norm) 0 + i +1)
 
+/-- For an admissible scene with `lev < M`, `0 < norm`, `share s ≤ 2` and `wage ≤ exp(height j)`,
+the scalar net at index `i` has at most `exp(scLimit s i j)` elements (disjoint arcs plus
+Parseval). -/
 lemma net_len_scalar {s : Scene M} (j i : ℕ) (h : ReadyAt s) (hm : s.here.lev<M)
     (hx : 0<s.norm) (hq : share s ≤ 2) (he : ∀ x, s.wage x ≤ exp (height j)) :
     ((net s j i false).card:ℝ) ≤ exp (scLimit s i j) := by
@@ -110,6 +137,8 @@ lemma net_len_scalar {s : Scene M} (j i : ℕ) (h : ReadyAt s) (hm : s.here.lev<
   exact le_trans (b:=exp (log _)) (le_of_eq (exp_log (by positivity)).symm) (exp_monotone h1)
 
 
+/-- Frequency continuity of the test magnitude: if `share s ≤ b`, then
+`magnitude main s i ≤ magnitude main s k + b · 16 · len · rad(i - k)`. -/
 lemma magnitude_near (main : Bool) (s : Scene M) (i k : Grid M) (hp : ReadyAt s) (hh : 0 ≤ s.norm)
     (b : ℝ) (hb : share s ≤ b) :
     magnitude main s i ≤ magnitude main s k + b * (16*s.here.len*rad (i-k)) := by

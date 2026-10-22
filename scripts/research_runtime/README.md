@@ -20,7 +20,8 @@ These manage Qdrant, the shared inference worker, automatic corpus indexing and
 unfinished local GPU-result receivers. Remote GPU jobs continue independently.
 Services continue after closing Codex while the Mac is awake.
 
-The indexer diffs `formal/` and `docs/` every 2 seconds and re-indexes only the
+The indexer diffs `formal/` and `docs/drafts/pipeline/3-formalized` every 2
+seconds and re-indexes only the
 added, edited or removed files: lexical rows first, then their embeddings at top
 priority, pushed straight to Qdrant. A full reconciliation runs every 10 minutes.
 Dependencies under `.lake/packages` (Mathlib) are lexical only, never embedded.
@@ -219,7 +220,11 @@ model is installed, so `generate` raises RuntimeUnavailable by design.
 
 Offline snapshot hashes verified for both roles. The smoke returned normalized
 768-D embeddings and correct relevance ordering (0.9921975 versus 0.00004685);
-both models ran on MPS float32 with no fallback. 367 tests pass.
+both models ran on MPS float32 with no fallback. 333 tests pass; the FAISS
+vector tests must run in their own process, apart from Torch.
+
+An added, renamed or deleted file is searchable by meaning within ~2-3 seconds
+on a quiet machine, and within ~9-11 seconds while 8 agents search back to back.
 
 The text tower loads at 271M parameters of the checkpoint's 740M: vision and
 audio tower configs are nulled before loading, which is required rather than

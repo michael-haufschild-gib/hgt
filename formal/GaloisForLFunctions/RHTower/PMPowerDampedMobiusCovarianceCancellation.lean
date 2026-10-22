@@ -3,10 +3,45 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusPositiveHaarPrefix
 import GaloisForLFunctions.RHTower.SummableDivisorHarmonicMean
 import GaloisForLFunctions.HTGeometry.EtemadiWeightedAverage
 
+/-!
+# Diagonal growth and forced off-diagonal cancellation in the discrete divisor energy
+
+The discrete divisor energy `E_ε(N) = ∑_{j,k ≤ N} c̃_j c̃_k (1/max(j,k) - 1/(N+1))` of the
+centered coefficients `c̃_n = c_ε(n) - Re(1/ζ(1+ε))` splits into a diagonal part `D_ε(N)` and an
+off-diagonal part `O_ε(N)`. Comparing the Euler products `Re(1/ζ(1+ε)) = ∏_p (1 - p^{-ε}/p)` and
+the second-moment density, the variance `σ²_ε` of the coefficients is strictly positive for
+`ε > 0`. A weighted-average (Etemadi) argument converts the Cesàro mean of `c̃_n²` into the
+logarithmic mean, giving `D_ε(N)/log N → σ²_ε`; in particular the diagonal is unbounded. If the
+Fermi source `F_ε` is square integrable, `E_ε(N)` is bounded, so the off-diagonal part must
+cancel the diagonal exactly at logarithmic scale: `O_ε(N)/log N → -σ²_ε`.
+
+## Main results
+
+- `pmPowerDampedDivisorDensity_hasProd_real`: `Re(1/ζ(1+ε)) = ∏_p (1 - p^{-ε}/p)` for `ε > 0`.
+- `pmPowerDampedDivisorVariance_pos`: `σ²_ε > 0` for `ε > 0`.
+- `pm_tendsto_harmonic_average_of_mean`: Cesàro mean `→ L` implies logarithmic mean `→ L`.
+- `tendsto_pmPowerDampedDivisorCovarianceDiagonal_div_log`: `D_ε(N)/log N → σ²_ε` for `ε > 0`.
+- `not_bounded_pmPowerDampedDivisorCovarianceDiagonal`: `D_ε(N)` is not bounded above for `ε > 0`.
+- `tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log`: if `F_ε ∈ L²(0, ∞)`, then
+  `O_ε(N)/log N → -σ²_ε`.
+- `tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log_of_half_le`: unconditionally
+  `O_ε(N)/log N → -σ²_ε` for `ε ≥ 1/2`.
+
+## Hypotheses
+
+The positivity, diagonal asymptotics and the `ε ≥ 1/2` cancellation are unconditional, given the
+range `0 < ε` or `1/2 ≤ ε`. `tendsto_pmPowerDampedDivisorDiscreteEnergy_div_log` and
+`tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log` take as hypothesis that
+`F_ε ∈ L²(0, ∞)` (square integrability of the power-damped Möbius Fermi source); they are
+conditional on that input for `0 < ε < 1/2`.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
 
+/-- Strict comparison of infinite products: if `∏ f = a > 0`, `∏ g = b`, `0 ≤ f ≤ g` pointwise
+and `f i < g i` at one index, then `a < b`. -/
 theorem pm_hasProd_lt_real {ι : Type*} {f g : ι → ℝ} {a b : ℝ}
     (hf : HasProd f a) (hg : HasProd g b) (hf0 : ∀ i, 0 ≤ f i)
     (hfg : ∀ i, f i ≤ g i) (ha : 0 < a) {i : ι} (hi : f i < g i) : a < b := by
@@ -30,6 +65,7 @@ theorem pm_hasProd_lt_real {ι : Type*} {f g : ι → ℝ} {a b : ℝ}
   have hgap := mul_pos (sub_pos.mpr hi) ha
   nlinarith
 
+/-- Euler product of the mean density: for `ε > 0`, `Re(1/ζ(1+ε)) = ∏_p (1 - p^{-ε}/p)`. -/
 theorem pmPowerDampedDivisorDensity_hasProd_real {ε : ℝ} (hε : 0 < ε) :
     HasProd (fun p : Nat.Primes => 1 - (p : ℝ)^(-ε)/(p : ℝ))
       (pmPowerDampedDivisorDensity ε).re := by
@@ -64,6 +100,8 @@ theorem pmPowerDampedDivisorDensity_hasProd_real {ε : ℝ} (hε : 0 < ε) :
     have hk1 : k ≠ 1 := fun h => hk (by simp [h])
     simp [a, DampedMobius.dampedMobius_apply_prime_pow, p.property, hk0, hk1]
 
+/-- Local Euler-factor gap: with `w(p) = 2p^{-ε} - p^{-2ε}`,
+`(1 - w(p)/p) - (1 - p^{-ε}/p)² = p^{-2ε} (p - 1)/p²`. -/
 theorem pmPowerDampedSecondFactor_gap (ε : ℝ) {p : ℕ} (hp : 0 < p) :
     (1 - pmPowerDampedSecondWeight ε p / (p : ℝ)) -
       (1 - (p : ℝ)^(-ε)/(p : ℝ))^2 =
@@ -73,6 +111,8 @@ theorem pmPowerDampedSecondFactor_gap (ε : ℝ) {p : ℕ} (hp : 0 < p) :
   field_simp [hpR]
   ring
 
+/-- For `ε > 0` the coefficient variance `σ²_ε` (second-moment density minus squared mean
+density) is strictly positive. -/
 theorem pmPowerDampedDivisorVariance_pos {ε : ℝ} (hε : 0 < ε) :
     0 < pmPowerDampedDivisorVariance ε := by
   have hlocal (p : Nat.Primes) :
@@ -94,6 +134,8 @@ theorem pmPowerDampedDivisorVariance_pos {ε : ℝ} (hε : 0 < ε) :
     (hlocal ⟨2, Nat.prime_two⟩)
   exact sub_pos.mpr h
 
+/-- Cesàro to logarithmic means: if `(1/N) ∑_{n ≤ N} a_n → L`, then
+`(1/log N) ∑_{n ≤ N} a_n/n → L`. -/
 theorem pm_tendsto_harmonic_average_of_mean {a : ℕ → ℝ} {L : ℝ}
     (ha : Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, a n)/(N : ℝ)) atTop (𝓝 L)) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.Icc 1 N, a n/(n : ℝ))/Real.log N)
@@ -148,6 +190,7 @@ theorem pm_tendsto_harmonic_average_of_mean {a : ℕ → ℝ} {L : ℝ}
     have hlog : Real.log N ≠ 0 := (Real.log_pos (by exact_mod_cast hN)).ne'
     field_simp)
 
+/-- For `ε > 0`, `(1/N) ∑_{n ≤ N} c̃_ε(n)² → σ²_ε`. -/
 theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_nat_mean {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.Icc 1 N, pmPowerDampedCenteredDivisorCoeff ε n ^ 2)/(N : ℝ))
@@ -156,21 +199,25 @@ theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_nat_mean {ε : ℝ} (hε : 
     (tendsto_natCast_atTop_atTop : Tendsto (fun N : ℕ => (N : ℝ)) atTop atTop)
   simpa only [Function.comp_def, Nat.floor_natCast] using h
 
+/-- For `ε > 0`, `(1/log N) ∑_{n ≤ N} c̃_ε(n)²/n → σ²_ε`. -/
 theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_harmonic {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ =>
       (∑ n ∈ Finset.Icc 1 N, pmPowerDampedCenteredDivisorCoeff ε n ^ 2/(n : ℝ))/Real.log N)
       atTop (𝓝 (pmPowerDampedDivisorVariance ε)) :=
   pm_tendsto_harmonic_average_of_mean (tendsto_pmPowerDampedCenteredDivisorCoeff_sq_nat_mean hε)
 
+/-- Diagonal part `D_ε(N) = ∑_{n ≤ N} c̃_ε(n)² (1/n - 1/(N+1))` of the discrete energy. -/
 def pmPowerDampedDivisorCovarianceDiagonal (ε : ℝ) (N : ℕ) : ℝ :=
   ∑ n ∈ Finset.Icc 1 N, pmPowerDampedCenteredDivisorCoeff ε n ^ 2 *
     (1/(n : ℝ) - 1/((N : ℝ)+1))
 
+/-- Off-diagonal part `O_ε(N) = ∑_{j ≠ k ≤ N} c̃_ε(j) c̃_ε(k) (1/max(j,k) - 1/(N+1))`. -/
 def pmPowerDampedDivisorCovarianceOffDiagonal (ε : ℝ) (N : ℕ) : ℝ :=
   ∑ j ∈ Finset.Icc 1 N, ∑ k ∈ (Finset.Icc 1 N).erase j,
     pmPowerDampedCenteredDivisorCoeff ε j * pmPowerDampedCenteredDivisorCoeff ε k *
       (1/(max j k : ℕ) - 1/((N : ℝ)+1))
 
+/-- The discrete energy splits as `E_ε(N) = D_ε(N) + O_ε(N)`. -/
 theorem pmPowerDampedDivisorDiscreteEnergy_split (ε : ℝ) (N : ℕ) :
     pmPowerDampedDivisorDiscreteEnergy ε N = pmPowerDampedDivisorCovarianceDiagonal ε N +
       pmPowerDampedDivisorCovarianceOffDiagonal ε N := by
@@ -207,6 +254,7 @@ theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_shift_mean {ε : ℝ} (hε 
     have hn : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
     field_simp)
 
+/-- For `ε > 0` the diagonal grows logarithmically: `D_ε(N)/log N → σ²_ε`. -/
 theorem tendsto_pmPowerDampedDivisorCovarianceDiagonal_div_log {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun N : ℕ => pmPowerDampedDivisorCovarianceDiagonal ε N/Real.log N)
       atTop (𝓝 (pmPowerDampedDivisorVariance ε)) := by
@@ -218,6 +266,7 @@ theorem tendsto_pmPowerDampedDivisorCovarianceDiagonal_div_log {ε : ℝ} (hε :
     rw [pmPowerDampedDivisorCovarianceDiagonal_eq]
     ring)
 
+/-- For `ε > 0` the diagonal part `D_ε(N)` is not bounded above. -/
 theorem not_bounded_pmPowerDampedDivisorCovarianceDiagonal {ε : ℝ} (hε : 0 < ε) :
     ¬ ∃ B : ℝ, ∀ N : ℕ, pmPowerDampedDivisorCovarianceDiagonal ε N ≤ B := by
   rintro ⟨B, hB⟩
@@ -231,6 +280,8 @@ theorem not_bounded_pmPowerDampedDivisorCovarianceDiagonal {ε : ℝ} (hε : 0 <
       exact div_le_div_of_nonneg_right (hB N) (Real.log_pos (by exact_mod_cast hN)).le)
   exact (not_le.mpr (pmPowerDampedDivisorVariance_pos hε)) h
 
+/-- Assuming `hf : F_ε ∈ L²(0, ∞)` with `ε > 0`, the discrete energy is bounded, so
+`E_ε(N)/log N → 0`. -/
 theorem tendsto_pmPowerDampedDivisorDiscreteEnergy_div_log {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
     Tendsto (fun N : ℕ => pmPowerDampedDivisorDiscreteEnergy ε N/Real.log N)
@@ -249,6 +300,8 @@ theorem tendsto_pmPowerDampedDivisorDiscreteEnergy_div_log {ε : ℝ} (hε : 0 <
   · filter_upwards [eventually_ge_atTop 2] with N hN
     exact div_le_div_of_nonneg_right (hB N) (Real.log_pos (by exact_mod_cast hN)).le
 
+/-- Forced cancellation: assuming `hf : F_ε ∈ L²(0, ∞)` with `ε > 0`, the off-diagonal part
+satisfies `O_ε(N)/log N → -σ²_ε`. -/
 theorem tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
     Tendsto (fun N : ℕ => pmPowerDampedDivisorCovarianceOffDiagonal ε N/Real.log N)
@@ -259,6 +312,7 @@ theorem tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log {ε : ℝ} (h�
     rw [pmPowerDampedDivisorDiscreteEnergy_split]
     ring)
 
+/-- Unconditionally, for `ε ≥ 1/2` the off-diagonal part satisfies `O_ε(N)/log N → -σ²_ε`. -/
 theorem tendsto_pmPowerDampedDivisorCovarianceOffDiagonal_div_log_of_half_le
     {ε : ℝ} (hε : (1/2 : ℝ) ≤ ε) :
     Tendsto (fun N : ℕ => pmPowerDampedDivisorCovarianceOffDiagonal ε N/Real.log N)

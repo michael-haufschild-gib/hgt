@@ -1,11 +1,48 @@
 import GaloisForLFunctions.HTGeometry.GammaGammaLocalHypertranscendence
 
+/-!
+# Hypertranscendence of all iterates of `Γ`
+
+For `k ≥ 1` let `Γ^[k] = Γ ∘ ⋯ ∘ Γ` be the `k`-fold iterate of the Gamma function. This module
+proves that every such iterate is hypertranscendental, and even satisfies no algebraic
+differential equation on any nonempty open subset of its regular set (the points where every
+intermediate value avoids the poles of `Γ`). The proof is an induction on local polynomial-jet
+rigidity at `1`: a relation for `Γ^[k+1] = Γ^[k] ∘ Γ` near `1` spreads to the whole regular set by
+the identity theorem (its complement is countable, so it is connected), hence holds eventually
+along the factorial blow-up points `-n + ε_n x` near the poles of `Γ`, and the blow-up limit then
+gives a relation for `Γ^[k]` near `1`, contradicting the inductive hypothesis. The base case is the
+rigidity of `Γ` itself.
+
+## Main results
+
+- `gammaFiber_countable`: each level set `{z | Γ(z) = c}` is countable.
+- `gammaIterateRegularSet_compl_countable`: the complement of the regular set of `Γ^[k]` is
+  countable.
+- `no_eventual_differential_relation_outer_comp_Gamma_local`: for `u` analytic on an open set
+  containing `1` and locally polynomial-jet rigid at `1`, `u ∘ Γ` admits no nonzero differential
+  relation holding eventually along the factorial blow-up points.
+- `hypertranscendental_of_locallyPolynomialJetRigidAt`: local polynomial-jet rigidity at `1`
+  implies hypertranscendence.
+- `locallyPolynomialJetRigidAt_gammaIterate`: `Γ^[k]` is locally polynomial-jet rigid at `1` for
+  every `k ≥ 1`.
+- `hypertranscendental_gammaIterate`: `Γ^[k]` is hypertranscendental for every `k ≥ 1`.
+- `no_local_differential_relation_gammaIterate`: `Γ^[k]` (`k ≥ 1`) is not differentially algebraic
+  on any nonempty open subset of its regular set.
+
+## Hypotheses
+
+The theorems about `Γ^[k]` are unconditional apart from `1 ≤ k`. The general composition lemmas
+take as hypotheses that `u` is analytic on an open set `Ω` containing `1` and the Prop-valued
+predicate `LocallyPolynomialJetRigidAt u 1`; these are discharged for `u = Γ^[k]` by induction.
+-/
+
 namespace GaloisForLFunctions
 
 open Complex Filter Topology
 
 noncomputable section
 
+/-- The `k`-fold iterate `Γ^[k] = Γ ∘ ⋯ ∘ Γ`, with `Γ^[0] = id`. -/
 def gammaIterate : ℕ → ℂ → ℂ
   | 0 => id
   | k + 1 => fun z => gammaIterate k (Complex.Gamma z)
@@ -15,6 +52,8 @@ def gammaIterate : ℕ → ℂ → ℂ
 @[simp] theorem gammaIterate_succ (k : ℕ) (z : ℂ) :
     gammaIterate (k + 1) z = gammaIterate k (Complex.Gamma z) := rfl
 
+/-- The regular set of `Γ^[k]`: `z` is regular for `k + 1` iff `z` is not a pole of `Γ` and
+`Γ(z)` is regular for `k`; every point is regular for `k = 0`. -/
 def gammaIterateRegularSet : ℕ → Set ℂ
   | 0 => Set.univ
   | k + 1 => {z : ℂ | (∀ m : ℕ, z ≠ -(m : ℂ)) ∧
@@ -27,6 +66,7 @@ theorem gammaIterateRegularSet_succ (k : ℕ) :
       {z : ℂ | (∀ m : ℕ, z ≠ -(m : ℂ)) ∧
         Complex.Gamma z ∈ gammaIterateRegularSet k} := rfl
 
+/-- The point `1` is regular for every iterate, since `Γ(1) = 1`. -/
 theorem one_mem_gammaIterateRegularSet : ∀ k : ℕ, (1 : ℂ) ∈ gammaIterateRegularSet k
   | 0 => Set.mem_univ 1
   | k + 1 => by
@@ -43,6 +83,7 @@ theorem one_mem_gammaIterateRegularSet : ∀ k : ℕ, (1 : ℂ) ∈ gammaIterate
   | 0 => rfl
   | k + 1 => by simp [gammaIterate, gammaIterate_one k]
 
+/-- `Γ^[k]` is analytic at every point of its regular set. -/
 theorem analyticAt_gammaIterate : ∀ {k : ℕ} {z : ℂ},
     z ∈ gammaIterateRegularSet k → AnalyticAt ℂ (gammaIterate k) z
   | 0, z, _ => by simpa [gammaIterate] using (analyticAt_id : AnalyticAt ℂ id z)
@@ -51,6 +92,7 @@ theorem analyticAt_gammaIterate : ∀ {k : ℕ} {z : ℂ},
       exact AnalyticAt.comp (f := Complex.Gamma) (x := z)
         (analyticAt_gammaIterate hz.2) (analyticAt_Gamma z hz.1)
 
+/-- The regular set of `Γ^[k]` is open. -/
 theorem isOpen_gammaIterateRegularSet : ∀ k : ℕ, IsOpen (gammaIterateRegularSet k)
   | 0 => isOpen_univ
   | k + 1 => by
@@ -61,6 +103,8 @@ theorem isOpen_gammaIterateRegularSet : ∀ k : ℕ, IsOpen (gammaIterateRegular
       exact inter_mem (offPoles_isOpen.mem_nhds hz.1)
         (hGamma ((isOpen_gammaIterateRegularSet k).mem_nhds hz.2))
 
+/-- Every level set `{z | Γ(z) = c}` of the Gamma function is countable: off the poles the zeros
+of the nonconstant analytic function `Γ - c` are discrete, and the poles are countable. -/
 theorem gammaFiber_countable (c : ℂ) :
     {z : ℂ | Complex.Gamma z = c}.Countable := by
   let Ω : Set ℂ := {z : ℂ | ∀ n : ℕ, z ≠ -(n : ℂ)}
@@ -120,6 +164,7 @@ theorem gammaFiber_countable (c : ℂ) :
     ring
   · exact Or.inl hzΩ
 
+/-- The preimage under `Γ` of a countable set is countable. -/
 theorem gamma_preimage_countable {S : Set ℂ} (hS : S.Countable) :
     (Complex.Gamma ⁻¹' S).Countable := by
   letI := hS.to_subtype
@@ -130,6 +175,7 @@ theorem gamma_preimage_countable {S : Set ℂ} (hS : S.Countable) :
   rw [heq]
   exact Set.countable_iUnion fun c => gammaFiber_countable c.1
 
+/-- The complement of the regular set of `Γ^[k]` is countable. -/
 theorem gammaIterateRegularSet_compl_countable : ∀ k : ℕ,
     (gammaIterateRegularSet k)ᶜ.Countable
   | 0 => by simp
@@ -157,6 +203,7 @@ theorem gammaIterateRegularSet_compl_countable : ∀ k : ℕ,
         exact hz
       exact (hpoles.union hpre).mono hsub
 
+/-- The regular set of `Γ^[k]` is preconnected, being the complement of a countable set in `ℂ`. -/
 theorem gammaIterateRegularSet_isPreconnected (k : ℕ) :
     IsPreconnected (gammaIterateRegularSet k) := by
   rw [show gammaIterateRegularSet k = (gammaIterateRegularSet k)ᶜᶜ by simp]
@@ -165,6 +212,8 @@ theorem gammaIterateRegularSet_isPreconnected (k : ℕ) :
   rw [Complex.rank_real_complex]
   norm_num
 
+/-- The blow-up domain attached to `Ω`: nonzero `x` with `1 / (-x) ∈ Ω`, i.e. the points where
+the factorial zoom of `Γ` near its poles converges into `Ω`. -/
 def localGammaMicroscopeDomain (Ω : Set ℂ) : Set ℂ :=
   {x : ℂ | x ≠ 0 ∧ (-x)⁻¹ ∈ Ω}
 
@@ -186,6 +235,8 @@ theorem neg_one_mem_localGammaMicroscopeDomain {Ω : Set ℂ} (h1 : (1 : ℂ) �
   refine ⟨by norm_num, ?_⟩
   simpa using h1
 
+/-- Assuming `u` is analytic on `Ω`, the zooms `x ↦ u(Γ(-n + ε_n x))` converge locally uniformly
+to `x ↦ u(1 / (-x))` on the blow-up domain of `Ω`. -/
 theorem tendsto_outer_Gamma_factorialBlowUp_locallyUniformlyOn_local
     (u : ℂ → ℂ) {Ω : Set ℂ} (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z) :
     TendstoLocallyUniformlyOn
@@ -200,6 +251,8 @@ theorem tendsto_outer_Gamma_factorialBlowUp_locallyUniformlyOn_local
   intro x hx
   exact (hu ((-x)⁻¹) hx.2).continuousAt
 
+/-- Assuming `u` is analytic on the open set `Ω`, each point of the blow-up domain of `Ω` has an
+open neighbourhood on which the zooms of `u ∘ Γ` are eventually complex differentiable. -/
 theorem exists_eventually_differentiable_outerGammaZoom_near_local
     (u : ℂ → ℂ) {Ω : Set ℂ} (hΩ : IsOpen Ω)
     (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z)
@@ -278,6 +331,8 @@ theorem exists_eventually_differentiable_outerGammaZoom_near_local
   simpa [factorialBlowUpZoom, input, gammaValue, Function.comp_def] using!
     hcomp.differentiableWithinAt
 
+/-- Assuming `u` is analytic on the open set `Ω`, every derivative of the zooms of `u ∘ Γ`
+converges on the blow-up domain to the corresponding derivative of `x ↦ u(1 / (-x))`. -/
 theorem iteratedDeriv_outerGamma_factorialBlowUp_tendsto_local
     (u : ℂ → ℂ) {Ω : Set ℂ} (hΩ : IsOpen Ω)
     (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z)
@@ -302,6 +357,9 @@ theorem mobiusJetValue_outer_eq_limitJet_local
   exact (iteratedDeriv_outerReciprocalLimit_neg_inv_eq_mobiusJetExpansion_local
     hΩ hu (j : ℕ) z hz hz0).symm
 
+/-- Assuming `u` is analytic on an open `Ω ∋ 1` and `hrigid : LocallyPolynomialJetRigidAt u 1`, no
+nonzero `P` gives a differential relation for `u ∘ Γ` holding eventually along `-n + ε_n x` for all
+`x` in the blow-up domain of `Ω`. -/
 theorem no_eventual_differential_relation_outer_comp_Gamma_local
     (u : ℂ → ℂ) {Ω : Set ℂ} (hΩ : IsOpen Ω) (h1 : (1 : ℂ) ∈ Ω)
     (hu : ∀ z ∈ Ω, AnalyticAt ℂ u z)
@@ -340,6 +398,7 @@ theorem no_eventual_differential_relation_outer_comp_Gamma_local
   rw [show G = mobiusJetPullback r Q from rfl, eval₂_mobiusJetPullback, hmv]
   exact hvalue
 
+/-- Evaluation at `z` of a jet polynomial with `ℂ[z]` coefficients on the jets of `Γ^[k]`. -/
 def gammaIteratePolyJetEval (k m : ℕ) (z : ℂ) :
     MvPolynomial (Fin m) (Polynomial ℂ) →+* ℂ :=
   MvPolynomial.eval₂Hom (Polynomial.evalRingHom z)
@@ -375,6 +434,8 @@ theorem analyticAt_gammaIteratePolyJetEval {k m : ℕ}
       rw [heq]
       exact hP.mul (analyticAt_iteratedDeriv_of_analyticAt hf (i : ℕ))
 
+/-- A jet-polynomial relation for `Γ^[k]` holding near `1` holds on the whole regular set
+(identity theorem). -/
 theorem gammaIteratePolyJetEval_propagates {k m : ℕ}
     (G : MvPolynomial (Fin m) (Polynomial ℂ))
     (hlocal : ∀ᶠ z in 𝓝 1, gammaIteratePolyJetEval k m z G = 0) :
@@ -397,6 +458,8 @@ theorem zero_not_mem_gammaIterateRegularSet {k : ℕ} (hk : 1 ≤ k) :
   intro h
   exact h.1 0 (by norm_num)
 
+/-- For `k ≥ 1` and `x` in the blow-up domain of the regular set of `Γ^[k]`, the points
+`-n + ε_n x` are eventually regular for `Γ^[k+1]`. -/
 theorem eventually_factorialBlowUp_input_gammaIterateRegular
     {k : ℕ} (hk : 1 ≤ k) {x : ℂ}
     (hx : x ∈ localGammaMicroscopeDomain (gammaIterateRegularSet k)) :
@@ -419,6 +482,7 @@ theorem eventually_factorialBlowUp_input_gammaIterateRegular
   rw [hzero] at hn
   exact zero_not_mem_gammaIterateRegularSet hk hn
 
+/-- A function that is locally polynomial-jet rigid at `1` is hypertranscendental. -/
 theorem hypertranscendental_of_locallyPolynomialJetRigidAt
     {u : ℂ → ℂ} (hrigid : LocallyPolynomialJetRigidAt u 1) :
     Hypertranscendental u := by
@@ -431,6 +495,8 @@ theorem hypertranscendental_of_locallyPolynomialJetRigidAt
   rw [show G = reshapeJet r P from rfl, eval₂_reshapeJet]
   exact hP z
 
+/-- Inductive step: for `k ≥ 1`, if `Γ^[k]` is locally polynomial-jet rigid at `1`, so is
+`Γ^[k+1]`. -/
 theorem locallyPolynomialJetRigidAt_gammaIterate_succ
     {k : ℕ} (hk : 1 ≤ k)
     (hrigid : LocallyPolynomialJetRigidAt (gammaIterate k) 1) :
@@ -463,6 +529,8 @@ theorem locallyPolynomialJetRigidAt_gammaIterate_succ
   rw [← eval₂_reshapeJet r z v P, hreshape]
   exact hGzero
 
+/-- Every iterate `Γ^[k]` with `k ≥ 1` is locally polynomial-jet rigid at `1`: no nonzero
+polynomial relation with `ℂ[z]` coefficients among its jets holds near `1`. -/
 theorem locallyPolynomialJetRigidAt_gammaIterate :
     ∀ (k : ℕ), 1 ≤ k → LocallyPolynomialJetRigidAt (gammaIterate k) 1
   | 0, hk => by omega
@@ -474,11 +542,15 @@ theorem locallyPolynomialJetRigidAt_gammaIterate :
         exact locallyPolynomialJetRigidAt_gammaIterate_succ hk
           (locallyPolynomialJetRigidAt_gammaIterate k hk)
 
+/-- Every iterate `Γ^[k]` with `k ≥ 1` is hypertranscendental: it satisfies no nonzero polynomial
+differential equation `P(z, f, f', …, f^(n)) ≡ 0`. -/
 theorem hypertranscendental_gammaIterate (k : ℕ) (hk : 1 ≤ k) :
     Hypertranscendental (gammaIterate k) :=
   hypertranscendental_of_locallyPolynomialJetRigidAt
     (locallyPolynomialJetRigidAt_gammaIterate k hk)
 
+/-- A jet-polynomial relation for `Γ^[k]` on a nonempty open subset of the regular set holds on the
+whole regular set. -/
 theorem gammaIteratePolyJetEval_propagates_from_open
     {k m : ℕ} (G : MvPolynomial (Fin m) (Polynomial ℂ))
     {V : Set ℂ} (hVopen : IsOpen V) (hVne : V.Nonempty)
@@ -500,6 +572,8 @@ theorem gammaIteratePolyJetEval_propagates_from_open
   exact han.eqOn_zero_of_preconnected_of_frequently_eq_zero
     (gammaIterateRegularSet_isPreconnected k) hz₀reg hfreq
 
+/-- Local hypertranscendence of `Γ^[k]` for `k ≥ 1`: it is not differentially algebraic on any
+nonempty open set `V` contained in its regular set. -/
 theorem no_local_differential_relation_gammaIterate
     {k : ℕ} (hk : 1 ≤ k)
     {V : Set ℂ} (hVopen : IsOpen V) (hVne : V.Nonempty)

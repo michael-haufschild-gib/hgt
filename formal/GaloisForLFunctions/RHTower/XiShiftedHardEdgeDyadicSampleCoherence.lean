@@ -1,5 +1,34 @@
 import GaloisForLFunctions.RHTower.XiShiftedHardEdgeComplexPaleyWienerDivisorLimit
 
+/-!
+# Dyadic even/odd coherence of hard-edge lattice samples at Xi spectral points
+
+At hard-edge scale `r` the lattice sample of a Xi zero copy `q` is the Riemann sum
+`h ∑_j exp(i φ h j) f_n(h j)` with mesh `h = 2/(1 + |r|)`, Cayley phase
+`φ = (1 + |r|) arctan(γ_q / (1 + |r|))` of the spectral point `γ_q`, and `f_n` the compactly
+supported cutoff of a Schwartz function `f`. Along the fine scales `2k + 1` the mesh is exactly half
+the mesh at scale `k`, so the fine lattice splits into an even sublattice, which is the coarse
+lattice, and an odd sublattice. As `k → ∞` the full fine sample converges to the positive Fourier
+extension `F_n(γ_q)`, the even part converges to `F_n(γ_q)/2`, and hence the odd part also
+converges to `F_n(γ_q)/2`: both sublattices carry exactly half of the limit.
+
+## Main results
+
+- `routeUDyadicFineEvenLatticeSample_eq_evenSample`: the even-sublattice part of the fine sample
+  equals the even sample built on the coarse mesh.
+- `routeUXiComplexHardEdgeSample_fine_eq_even_add_odd`: fine sample `=` even `+` odd sample.
+- `tendsto_routeUXiComplexHardEdgeSample_fine`: the fine samples converge to `F_n(γ_q)`.
+- `tendsto_routeUDyadicEvenSample_half`: the even samples converge to `F_n(γ_q)/2`.
+- `tendsto_routeUDyadicOddSample_half`: the odd samples converge to `F_n(γ_q)/2`.
+
+## Hypotheses
+
+All results are unconditional and hold for every cutoff level `n`, Schwartz function `f` and Xi
+zero copy `q`, with no assumption on the location of the zero. The periodization identity
+`routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail` assumes the phase window
+`|Re z| ≤ π (1 + |r|) / 2`.
+-/
+
 open scoped BigOperators SchwartzMap FourierTransform
 open Complex Filter MeasureTheory
 
@@ -7,6 +36,7 @@ noncomputable section
 
 namespace RHTower
 
+/-- Fine dyadic scale `2k + 1`, at which the hard-edge mass doubles relative to scale `k`. -/
 def routeUDyadicFineIndex (k : ℕ) : ℕ := 2 * k + 1
 
 theorem tendsto_routeUDyadicFineIndex_atTop :
@@ -17,14 +47,17 @@ theorem tendsto_routeUDyadicFineIndex_atTop :
   simp only [routeUDyadicFineIndex]
   omega
 
+/-- Cayley phase of `alpha` at the fine scale `2k + 1`. -/
 def routeUDyadicFinePhase (k : ℕ) (alpha : ℂ) : ℂ :=
   routeUComplexHardEdgePhase (routeUDyadicFineIndex k : ℝ) alpha
 
+/-- The fine-scale Cayley phase of `alpha` converges to `alpha`. -/
 theorem tendsto_routeUDyadicFinePhase (alpha : ℂ) :
     Tendsto (fun k : ℕ => routeUDyadicFinePhase k alpha) atTop (nhds alpha) := by
   exact (tendsto_routeUComplexHardEdgePhase_natCast alpha).comp
     tendsto_routeUDyadicFineIndex_atTop
 
+/-- The hard-edge mass at scale `2k + 1` is twice the mass at scale `k`. -/
 theorem routeUHardEdgeMass_fineIndex (k : ℕ) :
     routeUHardEdgeMass (routeUDyadicFineIndex k : ℝ) =
       2 * routeUHardEdgeMass (k : ℝ) := by
@@ -34,6 +67,7 @@ theorem routeUHardEdgeMass_fineIndex (k : ℕ) :
   simp only [routeUDyadicFineIndex, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat]
   ring
 
+/-- The mesh at scale `2k + 1` is half the mesh at scale `k`. -/
 theorem routeUHardEdgeMesh_fineIndex (k : ℕ) :
     2 * routeUHardEdgeMesh (routeUDyadicFineIndex k : ℝ) =
       routeUHardEdgeMesh (k : ℝ) := by
@@ -43,6 +77,8 @@ theorem routeUHardEdgeMesh_fineIndex (k : ℕ) :
     ne_of_gt (routeUHardEdgeMass_pos (k : ℝ))
   field_simp [hmass]
 
+/-- Lattice Riemann sum `h ∑_j exp(i z h j) f_n(h j)` at mesh `h = 2/(1 + |r|)` and an arbitrary
+complex frequency `z`. -/
 def routeUComplexHardEdgePeriodizationAt
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (z : ℂ) : ℂ :=
   ((routeUHardEdgeMesh r : ℝ) : ℂ) *
@@ -53,6 +89,8 @@ def routeUComplexHardEdgePeriodizationAt
         SchwartzMap.compactSupportApproximation n f
           (routeUHardEdgeMesh r * (j : ℝ))
 
+/-- Periodization splitting: within the phase window `|Re z| ≤ π (1 + |r|) / 2`, the lattice sum is
+the positive Fourier extension at `z` plus the noncentral alias tail. -/
 theorem routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (r : ℝ) (z : ℂ)
     (hz : |z.re| ≤ routeUHardEdgeAliasPeriod r / 2) :
@@ -63,11 +101,14 @@ theorem routeUComplexHardEdgePeriodizationAt_eq_extension_add_tail
     routeU_complex_hardEdge_periodization]
   exact tsum_routeUComplexAlias_eq_extension_add_tail n f r z hz
 
+/-- Even sample: half the coarse-mesh (scale `k`) lattice sum at the fine-scale phase of the
+spectral point of `q`. -/
 def routeUDyadicEvenSample
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) : ℂ :=
   (1 / 2 : ℂ) * routeUComplexHardEdgePeriodizationAt n f (k : ℝ)
     (routeUDyadicFinePhase k (xiSpectralPoint q))
 
+/-- The part of the fine-scale lattice sample supported on even lattice indices `2j`. -/
 def routeUDyadicFineEvenLatticeSample
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) : ℂ :=
   ((routeUHardEdgeMesh (routeUDyadicFineIndex k : ℝ) : ℝ) : ℂ) *
@@ -80,6 +121,8 @@ def routeUDyadicFineEvenLatticeSample
           (routeUHardEdgeMesh (routeUDyadicFineIndex k : ℝ) *
             ((2 * j : ℤ) : ℝ))
 
+/-- The even-sublattice part of the fine sample equals the even sample, because the fine
+points `2j · h(2k + 1)` are the coarse points `j · h(k)`. -/
 theorem routeUDyadicFineEvenLatticeSample_eq_evenSample
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) :
     routeUDyadicFineEvenLatticeSample n f k q =
@@ -125,6 +168,7 @@ theorem routeUDyadicFineEvenLatticeSample_eq_evenSample
     routeUComplexHardEdgePeriodizationAt, hsum, hmeshHalf]
   ring
 
+/-- Odd sample: the fine-scale lattice sample minus the even sample. -/
 def routeUDyadicOddSample
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (k : ℕ) (q : XiZeroCopy) : ℂ :=
   routeUXiComplexHardEdgeSample n f (routeUDyadicFineIndex k : ℝ) q -
@@ -137,6 +181,8 @@ theorem routeUXiComplexHardEdgeSample_fine_eq_even_add_odd
   rw [routeUDyadicOddSample]
   ring
 
+/-- As `k → ∞`, the even samples converge to half the positive Fourier extension at the spectral
+point of `q`; the alias tail decays like the inverse square of the alias period. -/
 theorem tendsto_routeUDyadicEvenSample_half
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (q : XiZeroCopy) :
     Tendsto (fun k : ℕ => routeUDyadicEvenSample n f k q) atTop
@@ -217,6 +263,8 @@ theorem tendsto_routeUDyadicEvenSample_half
   simpa only [routeUDyadicEvenSample, z] using
     (tendsto_const_nhds.mul hperiodization)
 
+/-- Along the fine scales `2k + 1`, the hard-edge lattice samples converge to the positive Fourier
+extension at the spectral point of `q`. -/
 theorem tendsto_routeUXiComplexHardEdgeSample_fine
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (q : XiZeroCopy) :
     Tendsto (fun k : ℕ =>
@@ -267,6 +315,8 @@ theorem tendsto_routeUXiComplexHardEdgeSample_fine
       (routeUXiComplexHardEdgeSample_eq_central_add_aliasTail n f
         (routeUDyadicFineIndex k : ℝ) q).symm)
 
+/-- Dyadic coherence: the odd samples also converge to half the positive Fourier extension at the
+spectral point of `q`, so even and odd sublattices contribute equally in the limit. -/
 theorem tendsto_routeUDyadicOddSample_half
     (n : ℕ) (f : SchwartzMap ℝ ℂ) (q : XiZeroCopy) :
     Tendsto (fun k : ℕ => routeUDyadicOddSample n f k q) atTop

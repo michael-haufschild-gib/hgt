@@ -1,3 +1,41 @@
+/-
+Gaussian detectors, spectral xi, Suzuki screw functions and paired eta (umbrella)
+
+This file only imports the `RHTower.RiemannGaussian` development together with the general
+`HTGeometry.RiemannGaussian` umbrella (Gaussian test functions, finite Hardy models, Hermitian
+rank-trace inequalities, the Montgomery-Vaughan Hilbert inequality). The imported modules study
+the Riemann xi function in the rotated spectral coordinate through four connected programs.
+
+* Gaussian zero detectors: digamma growth bounds, growth and Jensen counting for the pole-cleared
+  xi function, inverse-square summability of its zero divisor, contour identities on safe lines,
+  absolute convergence of the Gaussian-weighted von Mangoldt series, Abel summation of the
+  Gaussian prime discrepancy, and the Gaussian packet geometry of zeta zeros. The equivalence of
+  RH with nonnegativity of all translated Gaussian zero sums is proved conditionally on the
+  explicit-formula `HasSum` representations stated in `GaussianZetaGeometry`. Gauss's
+  quarter-line digamma integral is proved, discharging the digamma screw-transform interface.
+* Finite-to-entire Hardy route: separable real polynomial approximants of spectral xi with an
+  exactly pinned root, Rouché and root-count control on circles, radial and proper-time heat sums,
+  Poisson and Blaschke defect masses, their boundary limits and rigidity, and the reduction from
+  `¬ RiemannHypothesis` to the finite Hardy frontier.
+* Suzuki's screw function and Weil formula: Suzuki's coefficient Hilbert vector and spectral
+  series, his pointwise arithmetic function with an unconditional local positivity proof, the
+  Weil test and its safe-line and vertical contour analysis, the arithmetic-spectral meeting
+  identity on `Im z > 1/2`, real-axis `L²` bounds, the carrier Herglotz transform, finite
+  Nevanlinna measure and Cayley-unitary realization, and static contour deformations to the real
+  boundary.
+* Paired eta in the positive critical strip: the positive Laplace measure behind paired eta, its
+  Gaussian-Laplace Gram identities, reflection-multiplier rigidity, arithmetic eta-gap moments and
+  their asymptotics, finite eta zero-window matrices with rank-trace, trace and pair-correlation
+  identities, signed spectral heat certificates, and a degree-four moment certificate with an
+  independent heat separator.
+
+Many component theorems are unconditional. Others are explicitly conditional or frontier
+statements: they take named propositions or analytic inputs as arguments (explicit-formula
+representations, certificate soundness obligations, bounded-synthesis or summability frontiers),
+or derive consequences from `¬ RiemannHypothesis` as a reductio hypothesis. No imported module
+proves the Riemann hypothesis.
+-/
+
 import GaloisForLFunctions.HTGeometry.RiemannGaussian
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianDigammaGrowth
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianDigammaStripGrowth

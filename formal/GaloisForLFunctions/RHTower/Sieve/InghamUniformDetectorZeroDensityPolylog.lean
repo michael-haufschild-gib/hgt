@@ -1,11 +1,39 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamUniformDetectorDensityPolylog
 
+/-!
+# Uniform zero-density estimate with polylogarithmic loss for `7/10 ≤ σ < 1`
+
+This module converts the weighted zeta-zero mass bound at the uniform Gabriel center
+`c_σ = σ - (1 - σ)/1000` into a zero-density estimate. Zeros with `Re w ≥ σ` carry weight
+`Re w - c_σ ≥ (1 - σ)/1000`, so the multiplicity count of zeros of `(s-1)ζ(s)` in
+`[c_σ, 4] × [-(X-2), X-2]` with `Re w ≥ σ` is at most
+`K (1 + X^{e(σ)} (1 + log X)^{2θ(σ)} + (1 + log X)^2)` for all large `X`, where
+`e(σ) = inghamUniformGabrielConservativeExponent σ` and `θ(σ) = inghamUniformGabrielCriticalShare σ`.
+
+## Main results
+
+- `zetaLittlewoodZeroCountAbove_mul_le_selectedRectangleMass`: `(σ - c)` times the count of zeros
+  with `Re w ≥ σ` in `[c, d] × [-T, T]` is at most the weighted zero mass of any taller rectangle
+  `[c, d] × [T₁, T₂]` with `T₁ ≤ -T`, `T ≤ T₂`.
+- `exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielPolylog`: for `7/10 ≤ σ < 1`
+  there is `K ≥ 0` with zero count above `σ` in `[c_σ, 4] × [-(X-2), X-2]` at most
+  `K (1 + X^{e(σ)} (1 + log X)^{2θ(σ)} + (1 + log X)^2)` for all large `X`.
+
+## Hypotheses
+
+The results are unconditional. The density estimate assumes only `7/10 ≤ σ < 1` and holds
+eventually in `X`; the comparison lemma assumes `c ≤ d`, `0 ≤ T`, `T₁ ≤ -T` and `T ≤ T₂`.
+-/
+
 open Complex Filter Metric Set ArithmeticFunction Finset
 
 namespace RHTower.Sieve
 
 noncomputable section
 
+/-- For `c ≤ d`, `0 ≤ T`, `T₁ ≤ -T`, `T ≤ T₂`: `(σ - c)` times the multiplicity count of zeros of
+`(s-1)ζ(s)` in `[c, d] × [-T, T]` with `Re w ≥ σ` is at most `∑ ord_w (Re w - c)` over the zeros
+in `[c, d] × [T₁, T₂]`. -/
 theorem zetaLittlewoodZeroCountAbove_mul_le_selectedRectangleMass
     {c d T T₁ T₂ sigma : ℝ} (hcd : c ≤ d) (hT : 0 ≤ T)
     (hbot : T₁ ≤ -T) (htop : T ≤ T₂) :
@@ -50,6 +78,9 @@ theorem zetaLittlewoodZeroCountAbove_mul_le_selectedRectangleMass
         ((analyticOrderAt zetaResidueUnit w).toNat : ℝ) * (w.re - c) := hmono
     _ = _ := rfl
 
+/-- Zero density for `7/10 ≤ σ < 1`: some `K ≥ 0` bounds the multiplicity count of zeta zeros in
+`[c_σ, 4] × [-(X-2), X-2]` with `Re w ≥ σ` by `K (1 + X^{e(σ)} (1 + log X)^{2θ(σ)} + (1 + log X)^2)`
+for all large `X`. -/
 theorem exists_eventually_zetaLittlewoodZeroCountAbove_le_uniformGabrielPolylog
     {sigma : ℝ} (hsigma0 : 7 / 10 ≤ sigma) (hsigma1 : sigma < 1) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ X : ℕ in Filter.atTop,

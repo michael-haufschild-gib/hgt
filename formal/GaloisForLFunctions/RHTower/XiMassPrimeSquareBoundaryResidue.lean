@@ -3,6 +3,38 @@ import GaloisForLFunctions.RHTower.EvenHorizontalCauchyResidue
 import GaloisForLFunctions.RHTower.Sieve.ZetaLogDerivRegLowBox
 import GaloisForLFunctions.PNTPlus.ZetaBounds
 
+/-!
+# The prime-square layer of the mass prime source is vertically bounded
+
+The prime-square layer is `∑_p Λ(p²) p^{-1} ĝ(2 log p)`, the part of the centered von Mangoldt
+atom series carried by squares of primes, where `ĝ` is the Fourier transform of the mass test
+`g(z) = exp(-τ √(z² + a²))`. Transporting each atom to the depth-`d` bottom line identifies the
+layer with `∫ g(x - di) P(1 + 2d + 2ix) dx`, where `P(s) = ∑_p log p · p^{-s}` is the prime-log
+Dirichlet series. On `Re s > 1`, `P(s) = 1/(s - 1) + R(s) - H(s)` with `R` the regular part of
+`-ζ'/ζ` and `H` the absolutely bounded higher-valuation part. The pole term is evaluated by an even
+horizontal Cauchy residue as `(π/2) g(0)`, `R` obeys a polynomial envelope `K (1 + |t|)^9` on
+`1 ≤ Re s ≤ D` (from the uniform log-derivative bound of PNT+), and choosing the depth
+`d = min(a/2, 1/(1 + |u|))` keeps `e^{|u| d} ≤ e`. Hence the layer is bounded on every positive
+vertical line.
+
+## Main results
+
+- `integral_test_mul_xiPrimeLogDirichlet_eq_primeSquareLayer`: for `0 < d < a`, `0 < Re τ`, the
+  prime-square layer equals `∫ g(x - di) P(1 + 2d + 2ix) dx`.
+- `xiPrimeLogDirichlet_eq_pole_add_regular_sub_higherValuation`: `P(s) = 1/(s - 1) + R(s) - H(s)`
+  for `Re s > 1`.
+- `exists_norm_zetaLogDerivReg_right_envelope`: `‖R(σ + it)‖ ≤ K (1 + |t|)^9` for `1 ≤ σ ≤ D`.
+- `integral_xiMassBottomTest_mul_naturalPole`: the pole term integrates to `(π/2) g(0)`.
+- `exists_norm_xiMassPrimeSquareLayer_vertical_bound`: for `a, σ > 0` the prime-square layer is
+  bounded on the line `Re τ = σ`, uniformly in `Im τ`.
+
+## Hypotheses
+
+All results are unconditional. They use only parameter ranges: `0 < a`, `0 < σ`, depths
+`0 ≤ d < a` or `0 < d < a`, `0 < Re τ`, and `1 < Re s` or `1 ≤ Re s` for the Dirichlet series
+identities and bounds.
+-/
+
 open Complex Filter MeasureTheory Set Topology
 open scoped BigOperators
 
@@ -10,13 +42,16 @@ namespace RHTower
 
 noncomputable section
 
+/-- The prime-square layer: the sum over primes `p` of the centered mass atoms at `p²`. -/
 def xiMassPrimeSquareLayer (a : ℝ) (τ : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     xiMassCenteredPrimeAtom a τ ((p : ℕ) ^ 2)
 
+/-- Absolute von Mangoldt weight of `p²` on the Euler line `Re s = 1/2 + d`. -/
 def xiMassPrimeSquareEulerWeight (d : ℝ) (p : Nat.Primes) : ℝ :=
   xiMassBottomPrimeAtomWeight d ((p : ℕ) ^ 2)
 
+/-- Closed form of the square weight: `log p · p^{-(1 + 2d)}`. -/
 theorem xiMassPrimeSquareEulerWeight_eq
     (d : ℝ) (p : Nat.Primes) :
     xiMassPrimeSquareEulerWeight d p =
@@ -35,6 +70,7 @@ theorem xiMassPrimeSquareEulerWeight_eq
   norm_num
   ring
 
+/-- For every depth `d > 0` the square weights `log p · p^{-(1 + 2d)}` are summable over primes. -/
 theorem summable_xiMassPrimeSquareEulerWeight
     {d : ℝ} (hd : 0 < d) :
     Summable (xiMassPrimeSquareEulerWeight d) := by
@@ -67,6 +103,8 @@ theorem continuous_xiMassBottomTest_of_nonneg
   exact ((hasDerivAt_xiMassAnalyticTest ha τ
     (xiMassBottomPoint_mem_strip_of_nonneg hd hda)).comp x hz).continuousAt
 
+/-- For `0 ≤ d < a` and `0 ≤ Re τ`, the mass test on the depth-`d` bottom line obeys
+`‖g(x - di)‖ ≤ e^{|Im τ| d} e^{-Re τ · |x|}`. -/
 theorem norm_xiMassBottomTest_le_of_nonneg
     {a d x : ℝ} (hd : 0 ≤ d) (hda : d < a)
     {τ : ℂ} (hτ : 0 ≤ τ.re) :
@@ -88,6 +126,9 @@ theorem norm_xiMassBottomTest_le_of_nonneg
       congr 1
       ring
 
+/-- Depth erasure for one atom, including depth zero: for `0 ≤ d < a` and `0 < Re τ`, the
+depth-`d` bottom-line integral of the von Mangoldt atom at `n` equals the centered atom
+`Λ(n) n^{-1/2} ĝ(log n)`. Proved by horizontal strip transport. -/
 theorem integral_xiMassBottomPrimeAtom_eq_centered_of_nonneg
     {a d : ℝ} (hd : 0 ≤ d) (hda : d < a)
     {τ : ℂ} (hτ : 0 < τ.re) (n : ℕ) :
@@ -186,6 +227,8 @@ theorem integrable_xiMassBottomPrimeSquareAtomIntegrand
     (Filter.Eventually.of_forall fun x =>
       norm_xiMassBottomPrimeSquareAtomIntegrand_le hd hda hτ.le p)
 
+/-- For `0 < d < a` and `0 < Re τ`, the `L¹` norms of the prime-square bottom atoms are
+summable over primes, which permits exchanging sum and integral. -/
 theorem summable_integral_norm_xiMassBottomPrimeSquareAtomIntegrand
     {a d : ℝ} (hd : 0 < d) (hda : d < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -223,16 +266,19 @@ theorem summable_integral_norm_xiMassBottomPrimeSquareAtomIntegrand
     hbound
     ((summable_xiMassPrimeSquareEulerWeight hd).mul_left (E * J))
 
+/-- Pointwise sum over primes of the depth-`d` bottom-line atoms at `p²`. -/
 def xiMassBottomPrimeSquareIntegrand
     (a d : ℝ) (τ : ℂ) (x : ℝ) : ℂ :=
   ∑' p : Nat.Primes,
     xiMassBottomPrimeAtomIntegrand a d τ ((p : ℕ) ^ 2) x
 
+/-- The prime-log Dirichlet series `P(s) = ∑_p Λ(p²) (p²)^{-s/2} = ∑_p log p · p^{-s}`. -/
 def xiPrimeLogDirichlet (s : ℂ) : ℂ :=
   ∑' p : Nat.Primes,
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       (s / 2) ((p : ℕ) ^ 2)
 
+/-- The prime-square bottom integrand factors as `g(x - di) · P(1 + 2d + 2ix)`. -/
 theorem xiMassBottomPrimeSquareIntegrand_eq_test_mul_primeLogDirichlet
     (a d : ℝ) (τ : ℂ) (x : ℝ) :
     xiMassBottomPrimeSquareIntegrand a d τ x =
@@ -249,6 +295,8 @@ theorem xiMassBottomPrimeSquareIntegrand_eq_test_mul_primeLogDirichlet
   push_cast
   ring
 
+/-- For `0 < d < a` and `0 < Re τ`, the integral of the prime-square bottom integrand is the
+prime-square layer. -/
 theorem integral_xiMassBottomPrimeSquareIntegrand_eq_layer
     {a d : ℝ} (hd : 0 < d) (hda : d < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -269,6 +317,8 @@ theorem integral_xiMassBottomPrimeSquareIntegrand_eq_layer
       exact tsum_congr fun p =>
         integral_xiMassBottomPrimeAtom_eq_centered_of_nonneg hd.le hda hτ _
 
+/-- For `0 < d < a` and `0 < Re τ`, the prime-square layer equals
+`∫ g(x - di) P(1 + 2d + 2ix) dx`. -/
 theorem integral_test_mul_xiPrimeLogDirichlet_eq_primeSquareLayer
     {a d : ℝ} (hd : 0 < d) (hda : d < a)
     {τ : ℂ} (hτ : 0 < τ.re) :
@@ -279,6 +329,7 @@ theorem integral_test_mul_xiPrimeLogDirichlet_eq_primeSquareLayer
   exact integral_congr_ae (Filter.Eventually.of_forall fun x =>
     (xiMassBottomPrimeSquareIntegrand_eq_test_mul_primeLogDirichlet a d τ x).symm)
 
+/-- The von Mangoldt term of `p²` at `s/2` is `log p / p^s`. -/
 theorem xiPrimeLogDirichlet_term_eq (s : ℂ) (p : Nat.Primes) :
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
         (s / 2) ((p : ℕ) ^ 2) =
@@ -300,6 +351,7 @@ theorem xiPrimeLogDirichlet_term_eq (s : ℂ) (p : Nat.Primes) :
   norm_cast
   rw [hpow]
 
+/-- For `Re s > 1` the series `P(s)` converges absolutely. -/
 theorem summable_xiPrimeLogDirichlet_term
     {s : ℂ} (hs : 1 < s.re) :
     Summable (fun p : Nat.Primes =>
@@ -321,6 +373,7 @@ theorem summable_xiPrimeLogDirichlet_term
   dsimp only [d]
   ring
 
+/-- `P(s) = ∑_p log p / p^s` (the hypothesis `1 < Re s` is not used in the proof). -/
 theorem xiPrimeLogDirichlet_eq_tsum_primeLog_div_cpow
     {s : ℂ} (_hs : 1 < s.re) :
     xiPrimeLogDirichlet s =
@@ -328,11 +381,14 @@ theorem xiPrimeLogDirichlet_eq_tsum_primeLog_div_cpow
   unfold xiPrimeLogDirichlet
   exact tsum_congr (xiPrimeLogDirichlet_term_eq s)
 
+/-- The higher-valuation part `H(s) = ∑_{p, k ≥ 0} Λ(p^{k+2}) p^{-(k+2)s}` of the von Mangoldt
+Dirichlet series. -/
 def xiPrimeLogHigherValuation (s : ℂ) : ℂ :=
   ∑' pk : Nat.Primes × ℕ,
     LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
       s ((pk.1 : ℕ) ^ (pk.2 + 2))
 
+/-- For `Re s > 1` the terms of `H(s)` are summable. -/
 theorem summable_xiPrimeLogHigherValuation_term
     {s : ℂ} (hs : 1 < s.re) :
     Summable (fun pk : Nat.Primes × ℕ =>
@@ -376,6 +432,8 @@ theorem vonMangoldtLSeriesTerm_support_primePower (s : ℂ) :
   · rw [LSeries.term_of_ne_zero hn0, hΛ]
     simp
 
+/-- For `Re s > 1`, `∑_n Λ(n) n^{-s} = P(s) + H(s)`: the von Mangoldt series splits into its
+prime and higher-valuation parts. -/
 theorem tsum_vonMangoldtLSeriesTerm_eq_primeLog_add_higherValuation
     {s : ℂ} (hs : 1 < s.re) :
     (∑' n : ℕ,
@@ -429,6 +487,7 @@ theorem tsum_vonMangoldtLSeriesTerm_eq_primeLog_add_higherValuation
       · rw [← htail.tsum_prod]
         rfl
 
+/-- For `Re s > 1`, `-ζ'(s)/ζ(s) = P(s) + H(s)`. -/
 theorem infinitePrimeFlux_eq_primeLog_add_higherValuation
     {s : ℂ} (hs : 1 < s.re) :
     infinitePrimeFlux s =
@@ -436,6 +495,8 @@ theorem infinitePrimeFlux_eq_primeLog_add_higherValuation
   rw [infinitePrimeFlux_eq_vonMangoldtLSeries hs]
   exact tsum_vonMangoldtLSeriesTerm_eq_primeLog_add_higherValuation hs
 
+/-- For `Re s > 1`, `P(s) = 1/(s - 1) + R(s) - H(s)`, where `R` is the regular part of
+`-ζ'/ζ` (the negated log-derivative of `(s - 1) ζ(s)`). -/
 theorem xiPrimeLogDirichlet_eq_pole_add_regular_sub_higherValuation
     {s : ℂ} (hs : 1 < s.re) :
     xiPrimeLogDirichlet s =
@@ -453,6 +514,7 @@ theorem xiPrimeLogDirichlet_eq_pole_add_regular_sub_higherValuation
   rw [infinitePrimeFlux, hpole] at hflux
   exact eq_sub_iff_add_eq.mpr hflux.symm
 
+/-- Majorant `log p · p^{-(k+2)}` for the term of `H` at `p^{k+2}` on `Re s ≥ 1`. -/
 def xiPrimeLogHigherValuationWeight (pk : Nat.Primes × ℕ) : ℝ :=
   Real.log (pk.1 : ℝ) * ((pk.1 : ℝ)⁻¹) ^ ((pk.2 : ℝ) + 2)
 
@@ -460,6 +522,7 @@ theorem summable_xiPrimeLogHigherValuationWeight :
     Summable xiPrimeLogHigherValuationWeight := by
   exact summable_primeLog_mul_inv_rpow_add 2 (by norm_num)
 
+/-- For `Re s ≥ 1`, the von Mangoldt term at `p^{k+2}` has norm at most `log p · p^{-(k+2)}`. -/
 theorem norm_vonMangoldtLSeriesTerm_primePower_le_higherValuationWeight
     {s : ℂ} (hs : 1 ≤ s.re) (pk : Nat.Primes × ℕ) :
     ‖LSeries.term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
@@ -485,6 +548,7 @@ theorem norm_vonMangoldtLSeriesTerm_primePower_le_higherValuationWeight
       push_cast
       ring
 
+/-- For `Re s ≥ 1`, `‖H(s)‖ ≤ ∑_{p, k} log p · p^{-(k+2)}`, a bound independent of `s`. -/
 theorem norm_xiPrimeLogHigherValuation_le
     {s : ℂ} (hs : 1 ≤ s.re) :
     ‖xiPrimeLogHigherValuation s‖ ≤
@@ -507,6 +571,9 @@ theorem norm_xiPrimeLogHigherValuation_le
         (norm_vonMangoldtLSeriesTerm_primePower_le_higherValuationWeight hs)
         summable_xiPrimeLogHigherValuationWeight
 
+/-- Polynomial envelope for the regular part `R` of `-ζ'/ζ` on the closed right strip: for
+`D ≥ 1` there is `K ≥ 0` with `‖R(σ + it)‖ ≤ K (1 + |t|)^9` whenever `1 ≤ σ ≤ D`. Combines a
+low-height box bound with the uniform PNT+ log-derivative bound near `Re s = 1`. -/
 theorem exists_norm_zetaLogDerivReg_right_envelope
     (D : ℝ) (hD : 1 ≤ D) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ σ : ℝ, 1 ≤ σ → σ ≤ D → ∀ t : ℝ,
@@ -600,6 +667,8 @@ theorem exists_norm_zetaLogDerivReg_right_envelope
         dsimp only [K]
         nlinarith
 
+/-- Even horizontal Cauchy residue: for `a, σ, d > 0` with `d < a`,
+`∫ g(x - di) / (x - di) dx = π i g(0)` with `τ = σ + iu`. -/
 theorem integral_xiMassBottomTest_mul_cauchy
     {a σ d : ℝ} (ha : 0 < a) (hσ : 0 < σ) (hd : 0 < d) (hda : d < a)
     (u : ℝ) :
@@ -631,6 +700,8 @@ theorem integral_xiMassBottomTest_mul_cauchy
       _ = Real.exp (|u| * d) * Real.exp (-(σ * |z.re|)) := by
         rw [neg_mul]
 
+/-- The pole term `1/(s - 1)` of `P` on the line `s = 1 + 2d + 2ix` integrates against the
+bottom test to `(π/2) g(0)`, for `a, σ, d > 0` with `d < a`. -/
 theorem integral_xiMassBottomTest_mul_naturalPole
     {a σ d : ℝ} (ha : 0 < a) (hσ : 0 < σ) (hd : 0 < d) (hda : d < a)
     (u : ℝ) :
@@ -709,9 +780,11 @@ theorem integrable_one_add_two_abs_pow_nine_mul_exp_neg
   rw [← integrableOn_univ, ← Set.Iic_union_Ioi]
   exact hneg'.union hpos
 
+/-- Height-adapted contour depth `d(u) = min(a/2, 1/(1 + |u|))`, chosen so that `|u| d ≤ 1`. -/
 def xiMassPrimeSquareAdaptiveDepth (a u : ℝ) : ℝ :=
   min (a / 2) (1 / (1 + |u|))
 
+/-- For `a > 0`, the adaptive depth satisfies `0 < d < a`, `|u| d ≤ 1` and `1 + 2d ≤ 1 + a`. -/
 theorem xiMassPrimeSquareAdaptiveDepth_spec
     {a : ℝ} (ha : 0 < a) (u : ℝ) :
     0 < xiMassPrimeSquareAdaptiveDepth a u ∧
@@ -837,6 +910,9 @@ theorem aestronglyMeasurable_xiPrimeLogHigherValuation_line
     exact cpow_ne_zero_iff.mpr (Or.inl hbase)
 
 set_option maxHeartbeats 600000 in
+/-- For `a, σ > 0`, the prime-square layer is bounded on the vertical line `Re τ = σ`, uniformly
+in `Im τ`: splitting `P = pole + R - H` at the adaptive depth bounds the three contributions by
+`π/2`, `e K ∫ (1 + 2|x|)^9 e^{-σ|x|} dx` and `e (∑ weights) ∫ e^{-σ|x|} dx`. -/
 theorem exists_norm_xiMassPrimeSquareLayer_vertical_bound
     {a σ : ℝ} (ha : 0 < a) (hσ : 0 < σ) :
     ∃ B : ℝ, ∀ u : ℝ,

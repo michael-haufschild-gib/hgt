@@ -1,5 +1,32 @@
 import GaloisForLFunctions.RHTower.AnharmonicChebyshevCubicDescentCriterion
 
+/-!
+# Where the anharmonic cubic quotient is purely imaginary
+
+For the anharmonic quotient `q(s) = (s - 2)(s + 1)(2s - 1) / (2s(s - 1))`, this module
+determines the locus `Re q(s) = 0`. Using the reflection `q(1 - s) = -q(s)` and the
+three-point fibers of `q` (orbits under `s ↦ (s - 1)/s`), it shows that away from the poles
+`Re q(s) = 0` holds exactly on the critical line `Re s = 1/2`, the unit circle `|s| = 1`, and
+the shifted unit circle `|1 - s| = 1`. For zeros of the completed zeta function `ξ`, which
+satisfy `|Im ρ| > 1`, the two circles are excluded and only the critical line remains.
+
+## Main results
+
+- `chebyshevAnharmonicQ_re_zero_iff_fiberBranches`: for `s ≠ 0, 1`, `Re q(s) = 0` iff
+  `1 - conj s` lies in the fiber `{s, w(s), w²(s)}`.
+- `chebyshevAnharmonicQ_re_zero_iff_realityLocus`: for `s ≠ 0, 1`, `Re q(s) = 0` iff
+  `Re s = 1/2`, `conj s · s = 1`, or `conj (1 - s) · (1 - s) = 1`.
+- `chebyshevAnharmonicQ_re_zero_iff_line_or_circles`: for `s ≠ 0, 1`, `Re q(s) = 0` iff
+  `Re s = 1/2 ∨ ‖s‖ = 1 ∨ ‖1 - s‖ = 1`.
+- `xiZeroCopy_chebyshevAnharmonicQ_re_zero_iff_criticalLine`: for every zero `ρ` of `ξ`,
+  `Re q(ρ) = 0 ↔ Re ρ = 1/2`.
+
+## Hypotheses
+
+Unconditional. The premises `s ≠ 0, 1` only exclude the poles; the statement about `ξ` uses the
+proved fact `1 < (Im ρ)²` for zeros of `ξ` and does not assume anything about their real parts.
+-/
+
 open Complex
 
 namespace RHTower
@@ -17,6 +44,8 @@ private theorem chebyshevQ_re_zero_iff_neg_conj (s : ℂ) :
     simp at hr
     linarith
 
+/-- For `s ≠ 0, 1`, the anharmonic quotient is purely imaginary at `s` iff `1 - conj s` is one of
+the three points of the `q`-fiber of `s`: `s`, `w(s) = (s - 1)/s`, or `w²(s)`. -/
 theorem chebyshevAnharmonicQ_re_zero_iff_fiberBranches
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     (chebyshevAnharmonicQ s).re = 0 ↔
@@ -91,6 +120,8 @@ private theorem shiftedUnitCircle_branch_iff {s : ℂ} (hs1 : s ≠ 1) :
     apply (eq_div_iff hsub).2
     simpa only [map_sub, map_one] using h
 
+/-- For `s ≠ 0, 1`, `Re q(s) = 0` iff `Re s = 1/2`, or `conj s · s = 1`, or
+`conj (1 - s) · (1 - s) = 1`. -/
 theorem chebyshevAnharmonicQ_re_zero_iff_realityLocus
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     (chebyshevAnharmonicQ s).re = 0 ↔
@@ -113,6 +144,8 @@ private theorem conjugate_mul_self_eq_one_iff_norm_eq_one (z : ℂ) :
   · intro h
     simp [h]
 
+/-- For `s ≠ 0, 1`, `Re q(s) = 0` iff `s` lies on the critical line `Re s = 1/2`, the unit circle
+`‖s‖ = 1`, or the circle `‖1 - s‖ = 1`. -/
 theorem chebyshevAnharmonicQ_re_zero_iff_line_or_circles
     {s : ℂ} (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
     (chebyshevAnharmonicQ s).re = 0 ↔
@@ -121,6 +154,8 @@ theorem chebyshevAnharmonicQ_re_zero_iff_line_or_circles
     conjugate_mul_self_eq_one_iff_norm_eq_one,
     conjugate_mul_self_eq_one_iff_norm_eq_one]
 
+/-- For every zero `ρ` of the completed zeta function `ξ` (counted with multiplicity copies),
+`Re q(ρ) = 0` iff `Re ρ = 1/2`; the circles are excluded because `(Im ρ)² > 1`. -/
 theorem xiZeroCopy_chebyshevAnharmonicQ_re_zero_iff_criticalLine (q : XiZeroCopy) :
     (chebyshevAnharmonicQ (q.1 : ℂ)).re = 0 ↔ (q.1 : ℂ).re = 1 / 2 := by
   let s : ℂ := q.1

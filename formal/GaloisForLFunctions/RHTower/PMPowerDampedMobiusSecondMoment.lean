@@ -2,16 +2,47 @@ import GaloisForLFunctions.RHTower.PMPowerDampedMobiusDiscreteEnergy
 import GaloisForLFunctions.RHTower.FourthMomentDiagonal
 import GaloisForLFunctions.RHTower.Sieve.SquarefreeDivisorCount
 
+/-!
+# Second moment and variance of the power-damped divisor coefficients
+
+The coefficients `a_ε(n) = ∑_{d|n} μ(d) d^(−ε) = ∏_{p|n} (1 − p^(−ε))` have square
+`a_ε(n)² = ∑_{d|n} b_ε(d)`, where `b_ε` is the damped Möbius function with prime weight
+`w(p) = 2p^(−ε) − p^(−2ε)`. Since `|b_ε(n)| ≤ τ(n) n^(−ε)`, the series `∑ b_ε(n)/n` converges
+for `ε > 0`; dominated convergence then gives the mean value
+`(1/x) ∑_{n≤x} a_ε(n)² → S_ε := ∑ b_ε(n)/n`, with Euler product
+`S_ε = ∏_p (1 − 2p^(−1−ε) + p^(−1−2ε))`. Centering by the density `1/ζ(1+ε)` gives the
+variance `V_ε = S_ε − (1/ζ(1+ε))²` as the mean square of `a_ε(n) − 1/ζ(1+ε)`, so `V_ε ≥ 0`,
+and `S_ε ≤ 1/ζ(1+ε)` because `0 ≤ a_ε ≤ 1`.
+
+## Main results
+
+- `pmPowerDampedDivisorCoeff_sq`: `a_ε(n)² = ∑_{d|n} b_ε(d)`.
+- `abs_pmPowerDampedSecondCoeff_le`: for `ε ≥ 0`, `|b_ε(n)| ≤ τ(n) n^(−ε)`.
+- `pmPowerDampedSecondDensity_euler`: for `ε > 0`, `S_ε = ∏_p (1 − 2p^(−1−ε) + p^(−1−2ε))`.
+- `pm_tendsto_divisor_average`: if `∑ a(n)/n` converges absolutely, `(1/x)∑_{n≤x}∑_{d|n} a(d) → ∑ a(n)/n`.
+- `tendsto_pmPowerDampedDivisorCoeff_sq_mean`: for `ε > 0`, `(1/x)∑_{n≤x} a_ε(n)² → S_ε`.
+- `tendsto_pmPowerDampedCenteredDivisorCoeff_sq_mean`: for `ε > 0`, `(1/x)∑_{n≤x} (a_ε(n) − 1/ζ(1+ε))² → V_ε`.
+- `pmPowerDampedDivisorVariance_nonneg`, `pmPowerDampedSecondDensity_le_density`: `0 ≤ V_ε` and `S_ε ≤ 1/ζ(1+ε)` for `ε > 0`.
+
+## Hypotheses
+
+All results are unconditional; the analytic statements assume only `0 < ε` (or `0 ≤ ε` for the
+coefficient bound). `pm_tendsto_divisor_average` takes summability of `a(n)/n` as an explicit input.
+-/
+
 open MeasureTheory Set Filter Topology Complex ArithmeticFunction
 noncomputable section
 namespace RHTower
 
+/-- The prime weight `w(p) = 2p^(−ε) − p^(−2ε)`, so that `1 − w(p) = (1 − p^(−ε))²`. -/
 def pmPowerDampedSecondWeight (ε : ℝ) (p : ℕ) : ℝ :=
   2 * (p : ℝ) ^ (-ε) - ((p : ℝ) ^ (-ε)) ^ 2
 
+/-- The damped Möbius function `b_ε(n) = μ(n) ∏_{p|n} w(p)` whose divisor sums give `a_ε(n)²`. -/
 def pmPowerDampedSecondCoeff (ε : ℝ) : ArithmeticFunction ℝ :=
   DampedMobius.dampedMobius (pmPowerDampedSecondWeight ε)
 
+/-- The square of the divisor coefficient is a divisor sum: `a_ε(n)² = ∑_{d|n} b_ε(d)`. -/
 theorem pmPowerDampedDivisorCoeff_sq (ε : ℝ) (n : ℕ) :
     pmPowerDampedDivisorCoeff ε n ^ 2 =
       ∑ d ∈ n.divisors, pmPowerDampedSecondCoeff ε d := by
@@ -30,6 +61,7 @@ theorem pmPowerDampedDivisorCoeff_sq (ε : ℝ) (n : ℕ) :
   dsimp only [pmPowerDampedSecondWeight]
   ring
 
+/-- For `ε ≥ 0`, `|b_ε(n)| ≤ τ(n) n^(−ε)`, with `τ` the divisor-counting function. -/
 theorem abs_pmPowerDampedSecondCoeff_le {ε : ℝ} (hε : 0 ≤ ε) (n : ℕ) :
     |pmPowerDampedSecondCoeff ε n| ≤ (n.divisors.card : ℝ) * (n : ℝ) ^ (-ε) := by
   by_cases hn : n = 0
@@ -67,6 +99,7 @@ theorem abs_pmPowerDampedSecondCoeff_le {ε : ℝ} (hε : 0 ≤ ε) (n : ℕ) :
       intCoe_apply, moebius_eq_zero_of_not_squarefree hsq,
       mul_nonneg (Nat.cast_nonneg n.divisors.card) (Real.rpow_nonneg (Nat.cast_nonneg n) _)]
 
+/-- For `ε > 0`, the series `∑ b_ε(n)/n` converges absolutely. -/
 theorem summable_pmPowerDampedSecondCoeff_div {ε : ℝ} (hε : 0 < ε) :
     Summable (fun n : ℕ => pmPowerDampedSecondCoeff ε n / (n : ℝ)) := by
   apply summable_norm_iff.mp
@@ -92,9 +125,11 @@ theorem summable_pmPowerDampedSecondCoeff_div {ε : ℝ} (hε : 0 < ε) :
       congr 2
       ring
 
+/-- The second-moment density `S_ε = ∑' n, b_ε(n)/n`. -/
 def pmPowerDampedSecondDensity (ε : ℝ) : ℝ :=
   ∑' n : ℕ, pmPowerDampedSecondCoeff ε n / (n : ℝ)
 
+/-- For `ε > 0`, `S_ε = ∏_p (1 − w(p)/p)` (Euler product of the multiplicative `b_ε(n)/n`). -/
 theorem pmPowerDampedSecondDensity_hasProd {ε : ℝ} (hε : 0 < ε) :
     HasProd (fun p : Nat.Primes =>
       1 - pmPowerDampedSecondWeight ε p / (p : ℕ)) (pmPowerDampedSecondDensity ε) := by
@@ -118,6 +153,7 @@ theorem pmPowerDampedSecondDensity_hasProd {ε : ℝ} (hε : 0 < ε) :
     simp [pmPowerDampedSecondCoeff, DampedMobius.dampedMobius_apply_prime_pow,
       p.property, hk0, hk1]
 
+/-- For `x > 0`, `(1/x) ∑_{n≤x} ∑_{d|n} a(d) = ∑'_d a(d) ⌊x/d⌋/x`. -/
 theorem pm_divisor_average_eq_tsum (a : ℕ → ℝ)
     {x : ℝ} (hx : 0 < x) :
     (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, ∑ d ∈ n.divisors, a d) / x =
@@ -144,6 +180,8 @@ theorem pm_divisor_average_eq_tsum (a : ℕ → ℝ)
     rw [Nat.floor_eq_zero.mpr hxd]
     simp
 
+/-- Assuming `∑ a(n)/n` is summable, `(1/x) ∑_{n≤x} ∑_{d|n} a(d) → ∑' n, a(n)/n` as `x → ∞`
+(dominated convergence for series). -/
 theorem pm_tendsto_divisor_average {a : ℕ → ℝ}
     (hs : Summable (fun n : ℕ => a n / (n : ℝ))) :
     Tendsto (fun x : ℝ => (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, ∑ d ∈ n.divisors, a d) / x)
@@ -176,6 +214,7 @@ theorem pm_tendsto_divisor_average {a : ℕ → ℝ}
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   exact (pm_divisor_average_eq_tsum a hx).symm
 
+/-- For `ε > 0`, the mean square `(1/x) ∑_{n≤x} a_ε(n)²` converges to `S_ε`. -/
 theorem tendsto_pmPowerDampedDivisorCoeff_sq_mean {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun x : ℝ => (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, pmPowerDampedDivisorCoeff ε n ^ 2) / x)
       atTop (𝓝 (pmPowerDampedSecondDensity ε)) := by
@@ -183,12 +222,14 @@ theorem tendsto_pmPowerDampedDivisorCoeff_sq_mean {ε : ℝ} (hε : 0 < ε) :
     pm_tendsto_divisor_average (a := pmPowerDampedSecondCoeff ε)
       (summable_pmPowerDampedSecondCoeff_div hε)
 
+/-- For `ε > 0`, `A_ε(x)/x → Re(1/ζ(1+ε))` as real numbers. -/
 theorem tendsto_pmPowerDampedDivisorSum_div_real {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun x : ℝ => pmPowerDampedDivisorSum ε x / x) atTop
       (𝓝 (pmPowerDampedDivisorDensity ε).re) := by
   have h := (Complex.continuous_re.tendsto _).comp (tendsto_pmPowerDampedDivisorSum_div hε)
   simpa only [Function.comp_def, ← Complex.ofReal_div, Complex.ofReal_re] using h
 
+/-- Expansion `∑_{n≤N} (c(n) − a)² = ∑ c(n)² − 2a ∑ c(n) + a² N`. -/
 theorem pm_centered_square_sum (c : ℕ → ℝ) (a : ℝ) (N : ℕ) :
     (∑ n ∈ Finset.Icc 1 N, (c n - a)^2) =
       (∑ n ∈ Finset.Icc 1 N, c n ^ 2) - 2*a*(∑ n ∈ Finset.Icc 1 N, c n) + a^2*N := by
@@ -196,9 +237,12 @@ theorem pm_centered_square_sum (c : ℕ → ℝ) (a : ℝ) (N : ℕ) :
   simp only [Finset.sum_add_distrib, Finset.sum_sub_distrib]
   simp [Finset.mul_sum, Finset.sum_mul, mul_comm, mul_left_comm]
 
+/-- The divisor variance `V_ε = S_ε − Re(1/ζ(1+ε))²`. -/
 def pmPowerDampedDivisorVariance (ε : ℝ) : ℝ :=
   pmPowerDampedSecondDensity ε - (pmPowerDampedDivisorDensity ε).re ^ 2
 
+/-- For `ε > 0`, the mean square of the centered coefficients `a_ε(n) − Re(1/ζ(1+ε))` over
+`n ≤ x` converges to `V_ε`. -/
 theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_mean {ε : ℝ} (hε : 0 < ε) :
     Tendsto (fun x : ℝ =>
       (∑ n ∈ Finset.Icc 1 ⌊x⌋₊, pmPowerDampedCenteredDivisorCoeff ε n ^ 2) / x)
@@ -225,6 +269,7 @@ theorem tendsto_pmPowerDampedCenteredDivisorCoeff_sq_mean {ε : ℝ} (hε : 0 < 
     pm_centered_square_sum (pmPowerDampedDivisorCoeff ε) (pmPowerDampedDivisorDensity ε).re ⌊x⌋₊]
   ring
 
+/-- For `ε > 0`, the divisor variance `V_ε` is nonnegative. -/
 theorem pmPowerDampedDivisorVariance_nonneg {ε : ℝ} (hε : 0 < ε) :
     0 ≤ pmPowerDampedDivisorVariance ε := by
   apply le_of_tendsto_of_tendsto tendsto_const_nhds
@@ -232,6 +277,7 @@ theorem pmPowerDampedDivisorVariance_nonneg {ε : ℝ} (hε : 0 < ε) :
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
   exact div_nonneg (Finset.sum_nonneg fun n hn => sq_nonneg _) hx.le
 
+/-- For `p > 0`, `w(p)/p = 2p^(−1−ε) − p^(−1−2ε)`. -/
 theorem pmPowerDampedSecondWeight_div (ε : ℝ) {p : ℕ} (hp : 0 < p) :
     pmPowerDampedSecondWeight ε p / (p : ℝ) =
       2 * (p : ℝ)^(-1-ε) - (p : ℝ)^(-1-2*ε) := by
@@ -244,6 +290,7 @@ theorem pmPowerDampedSecondWeight_div (ε : ℝ) {p : ℕ} (hp : 0 < p) :
     ← Real.rpow_sub_one hpR.ne', ← Real.rpow_sub_one hpR.ne']
   rw [show -ε-1 = -1-ε by ring, show -(2*ε)-1 = -1-2*ε by ring]
 
+/-- For `ε > 0`, `S_ε = ∏_p (1 − 2p^(−1−ε) + p^(−1−2ε))`. -/
 theorem pmPowerDampedSecondDensity_euler {ε : ℝ} (hε : 0 < ε) :
     HasProd (fun p : Nat.Primes =>
       1 - 2 * (p : ℝ)^(-1-ε) + (p : ℝ)^(-1-2*ε))
@@ -253,6 +300,7 @@ theorem pmPowerDampedSecondDensity_euler {ε : ℝ} (hε : 0 < ε) :
   rw [pmPowerDampedSecondWeight_div ε p.property.pos]
   ring
 
+/-- For `ε > 0`, `S_ε ≤ Re(1/ζ(1+ε))`, since `0 ≤ a_ε(n) ≤ 1` gives `a_ε(n)² ≤ a_ε(n)`. -/
 theorem pmPowerDampedSecondDensity_le_density {ε : ℝ} (hε : 0 < ε) :
     pmPowerDampedSecondDensity ε ≤ (pmPowerDampedDivisorDensity ε).re := by
   apply le_of_tendsto_of_tendsto (tendsto_pmPowerDampedDivisorCoeff_sq_mean hε)

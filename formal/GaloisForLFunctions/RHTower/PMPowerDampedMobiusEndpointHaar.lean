@@ -1,9 +1,42 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusHaarCutoffTrace
 
+/-!
+# Endpoint-corrected Haar prefixes and a uniform-budget RH criterion
+
+Subtracting the endpoint Haar term `R_ε(N) h(N t)` from the repaired Haar prefix gives the
+endpoint Haar prefix `E_N` (`pmPowerDampedEndpointHaarPrefix`), where `R_ε(x) = A_ε(x) − x/ζ(1+ε)`
+is the divisor remainder and `h` the dyadic Haar function on `(0,1]`. On `(0,∞)`, `E_N` is
+exactly the dyadic difference `Δg(t) = g(t) − 2g(2t)` of the tail `g = 1_{(1/N,∞)} C_ε` of the
+centered source `C_ε(t) = R_ε(1/t)`, and `E_N − F_ε = −Δ(1_{(0,1/N]} C_ε)`. Consequently
+`E_N(t) = F_ε(t)` once `N > 1/t`, the error energy is two-sided comparable to the initial
+energy `∫_{(0,1/N]} |C_ε|²`, and, for `ε > 0`, `F_ε ∈ L²(0,∞)` holds iff the energies of all
+`E_N` (`N ≥ 1`) are uniformly bounded. Feeding this into the cofinal admission criterion yields
+RH from such uniform budgets at dampings arbitrarily close to `0`.
+
+## Main results
+
+- `pmPowerDampedEndpointHaarPrefix_eq_tail`: `E_N(t) = Δ(1_{(1/N,∞)} C_ε)(t)` for `N ≥ 1`, `t > 0`.
+- `pmPowerDampedEndpointHaarPrefix_error`: `E_N(t) − F_ε(t) = −Δ(1_{(0,1/N]} C_ε)(t)`.
+- `tendsto_pmPowerDampedEndpointHaarPrefix`: `E_N(t) → F_ε(t)` pointwise for `t > 0`.
+- `pmPowerDampedEndpointHaarPrefix_energy_le`: given `F_ε ∈ L²`, `‖E_N‖² ≤ (√2+1)² ‖C_ε‖²`.
+- `pmPowerDampedEndpointHaarPrefix_error_bounds`: `‖E_N − F_ε‖²` and `∫_{(0,1/N]} |C_ε|²` agree up to the factor `(√2+1)²`.
+- `tendsto_pmPowerDampedEndpointHaarPrefix_L2`: given `F_ε ∈ L²`, `E_{N+1} → F_ε` in `L²(0,∞)`.
+- `pmPowerDampedFermiSource_memLp_iff_endpointHaar_budget`: for `ε > 0`, `F_ε ∈ L²(0,∞)` iff `sup_{N≥1} ‖E_N‖² < ∞`.
+- `riemannHypothesis_of_pmPowerDamped_endpointHaar_budget`: RH, conditional on uniform endpoint-prefix budgets for dampings arbitrarily close to `0`.
+
+## Hypotheses
+
+The identities are unconditional (for `N ≥ 1`, `t > 0`). The energy statements assume `0 < ε`
+and `F_ε ∈ L²(0,∞)` where stated. `riemannHypothesis_of_pmPowerDamped_endpointHaar_budget` is
+conditional on the hypothesis `hbudget`: for every `δ > 0` there are `ε ∈ (0,δ)` and a real
+`B` with `∫₀^∞ |E_N|² ≤ B` for all `N ≥ 1`. This budget is not proved here.
+-/
+
 open MeasureTheory Set Filter Topology Complex
 noncomputable section
 namespace RHTower
 
+/-- For `a > 0` and `t > 0`, the dyadic difference of the box `z·1_{(0,1/a]}` is `z h(a t)`. -/
 theorem pmForwardDyadicDifference_initial_box {a : ℝ} (ha : 0 < a)
     (z : ℂ) {t : ℝ} (ht : 0 < t) :
     pmForwardDyadicDifference ((Ioc (0 : ℝ) (1 / a)).indicator (fun _ => z)) t =
@@ -19,6 +52,8 @@ theorem pmForwardDyadicDifference_initial_box {a : ℝ} (ha : 0 < a)
   simp only [Set.indicator, Set.mem_Ioc, ht, show 0 < 2 * t by positivity, true_and]
   split_ifs <;> ring
 
+/-- For `a > 0` and `t > 0`, removing the constant initial box `R_ε(a)·1_{(0,1/a]}` from the
+clipped source `C_ε^(a)` leaves the tail `1_{(1/a,∞)} C_ε`. -/
 theorem pmPowerDampedClippedCenteredSource_sub_initial (ε : ℝ) {a : ℝ}
     (ha : 0 < a) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedClippedCenteredSource ε a t -
@@ -33,6 +68,7 @@ theorem pmPowerDampedClippedCenteredSource_sub_initial (ε : ℝ) {a : ℝ}
       indicator_of_notMem (show t ∉ Ioc (0 : ℝ) (1 / a) from fun h => hc h.2),
       indicator_of_mem (show t ∈ Ioi (1 / a) from hct), sub_zero]
 
+/-- The endpoint Haar prefix: the repaired Haar prefix minus the endpoint term `R_ε(N) h(N t)`. -/
 def pmPowerDampedEndpointHaarPrefix (ε : ℝ) (N : ℕ) (t : ℝ) : ℂ :=
   pmPowerDampedRepairedHaarPrefix ε N t -
     pmPowerDampedDivisorRemainder ε N * pmSupportedDyadicHaar ((N : ℝ) * t)
@@ -43,6 +79,7 @@ theorem measurable_pmPowerDampedEndpointHaarPrefix (ε : ℝ) (N : ℕ) :
     (measurable_const.mul (measurable_pmSupportedDyadicHaar.comp
       (measurable_const.mul measurable_id)))
 
+/-- For `ε ≥ 0` and `N ≥ 1`, the endpoint Haar prefix lies in `L²(0,∞)`. -/
 theorem memLp_pmPowerDampedEndpointHaarPrefix {ε : ℝ} (hε : 0 ≤ ε)
     {N : ℕ} (hN : 1 ≤ N) :
     MemLp (pmPowerDampedEndpointHaarPrefix ε N) 2 (volume.restrict (Ioi (0 : ℝ))) := by
@@ -50,6 +87,7 @@ theorem memLp_pmPowerDampedEndpointHaarPrefix {ε : ℝ} (hε : 0 ≤ ε)
   exact (memLp_pmPowerDampedRepairedHaarPrefix hε hN).sub
     ((memLp_pmSupportedDyadicHaar_dilation hNp).const_mul (pmPowerDampedDivisorRemainder ε N))
 
+/-- For `N ≥ 1` and `t > 0`, `E_N(t)` is the dyadic difference of the tail `1_{(1/N,∞)} C_ε`. -/
 theorem pmPowerDampedEndpointHaarPrefix_eq_tail (ε : ℝ) {N : ℕ}
     (hN : 1 ≤ N) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedEndpointHaarPrefix ε N t =
@@ -63,6 +101,7 @@ theorem pmPowerDampedEndpointHaarPrefix_eq_tail (ε : ℝ) {N : ℕ}
     ← pmPowerDampedClippedCenteredSource_sub_initial ε hNp (by positivity : 0 < 2 * t)]
   ring
 
+/-- For `N ≥ 1` and `t > 0`, `E_N(t) − F_ε(t) = −Δ(1_{(0,1/N]} C_ε)(t)`. -/
 theorem pmPowerDampedEndpointHaarPrefix_error (ε : ℝ) {N : ℕ}
     (hN : 1 ≤ N) {t : ℝ} (ht : 0 < t) :
     pmPowerDampedEndpointHaarPrefix ε N t - pmPowerDampedFermiSource ε t =
@@ -81,12 +120,14 @@ theorem pmPowerDampedEndpointHaarPrefix_error (ε : ℝ) {N : ℕ}
   simp only [pmForwardDyadicDifference, hsplit ht, hsplit (by positivity : 0 < 2 * t)]
   ring
 
+/-- For `t > 0` and `1/t < N`, the endpoint Haar prefix equals the Fermi source at `t`. -/
 theorem pmPowerDampedEndpointHaarPrefix_eq_source (ε : ℝ) (N : ℕ)
     {t : ℝ} (ht : 0 < t) (hN : 1 / t < (N : ℝ)) :
     pmPowerDampedEndpointHaarPrefix ε N t = pmPowerDampedFermiSource ε t := by
   rw [pmPowerDampedEndpointHaarPrefix, pmPowerDampedRepairedHaarPrefix_eq_source ε N ht hN.le,
     pmSupportedDyadicHaar_eq_zero ((div_lt_iff₀ ht).mp hN), mul_zero, sub_zero]
 
+/-- At each `t > 0`, `E_N(t)` converges to `F_ε(t)` (it is eventually equal). -/
 theorem tendsto_pmPowerDampedEndpointHaarPrefix (ε : ℝ) {t : ℝ} (ht : 0 < t) :
     Tendsto (fun N : ℕ => pmPowerDampedEndpointHaarPrefix ε N t) atTop
       (𝓝 (pmPowerDampedFermiSource ε t)) := by
@@ -103,6 +144,7 @@ theorem pm_integral_indicator_norm_sq (f : ℝ → ℂ) {s : Set ℝ} (hs : Meas
     by_cases ht : t ∈ s <;> simp [ht]
   rw [he, setIntegral_indicator hs]
 
+/-- For `N ≥ 1`, the energy of `E_N` equals the energy of `Δ(1_{(1/N,∞)} C_ε)`. -/
 theorem pmPowerDampedEndpointHaarPrefix_energy (ε : ℝ) {N : ℕ} (hN : 1 ≤ N) :
     (∫ t in Ioi (0 : ℝ), ‖pmPowerDampedEndpointHaarPrefix ε N t‖ ^ 2) =
       ∫ t in Ioi (0 : ℝ), ‖pmForwardDyadicDifference
@@ -111,6 +153,7 @@ theorem pmPowerDampedEndpointHaarPrefix_energy (ε : ℝ) {N : ℕ} (hN : 1 ≤ 
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   rw [pmPowerDampedEndpointHaarPrefix_eq_tail ε hN ht]
 
+/-- For `N ≥ 1`, the error energy `‖E_N − F_ε‖²` equals the energy of `Δ(1_{(0,1/N]} C_ε)`. -/
 theorem pmPowerDampedEndpointHaarPrefix_error_energy (ε : ℝ) {N : ℕ} (hN : 1 ≤ N) :
     (∫ t in Ioi (0 : ℝ),
       ‖pmPowerDampedEndpointHaarPrefix ε N t - pmPowerDampedFermiSource ε t‖ ^ 2) =
@@ -120,6 +163,8 @@ theorem pmPowerDampedEndpointHaarPrefix_error_energy (ε : ℝ) {N : ℕ} (hN : 
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
   rw [pmPowerDampedEndpointHaarPrefix_error ε hN ht, norm_neg]
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, every `E_N` (`N ≥ 1`) has energy at most
+`(√2+1)² ∫₀^∞ |C_ε|²`. -/
 theorem pmPowerDampedEndpointHaarPrefix_energy_le {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))))
     {N : ℕ} (hN : 1 ≤ N) :
@@ -141,6 +186,8 @@ theorem pmPowerDampedEndpointHaarPrefix_energy_le {ε : ℝ} (hε : 0 < ε)
     ((measurable_pmPowerDampedCenteredSource ε).indicator measurableSet_Ioi) hfi).1.trans
       (mul_le_mul_of_nonneg_left hi (sq_nonneg _))
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, for `N ≥ 1` the error energy `‖E_N − F_ε‖²` and the
+initial energy `∫_{(0,1/N]} |C_ε|²` bound each other up to the factor `(√2+1)²`. -/
 theorem pmPowerDampedEndpointHaarPrefix_error_bounds {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))))
     {N : ℕ} (hN : 1 ≤ N) :
@@ -160,6 +207,8 @@ theorem pmPowerDampedEndpointHaarPrefix_error_bounds {ε : ℝ} (hε : 0 < ε)
     ← pmPowerDampedEndpointHaarPrefix_error_energy ε hN] at h
   exact h
 
+/-- Assuming `ε > 0` and `F_ε ∈ L²(0,∞)`, the endpoint Haar prefixes `E_{N+1}` converge to `F_ε`
+in `L²(0,∞)`. -/
 theorem tendsto_pmPowerDampedEndpointHaarPrefix_L2 {ε : ℝ} (hε : 0 < ε)
     (hf : MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ)))) :
     Tendsto (fun N : ℕ => ∫ t in Ioi (0 : ℝ),
@@ -175,6 +224,7 @@ theorem tendsto_pmPowerDampedEndpointHaarPrefix_L2 {ε : ℝ} (hε : 0 < ε)
     (fun N => (pmPowerDampedEndpointHaarPrefix_error_bounds hε hf (Nat.succ_le_succ (Nat.zero_le N))).1)
   simpa only [mul_zero] using ht.const_mul ((Real.sqrt 2 + 1) ^ 2)
 
+/-- For `ε > 0`: `F_ε ∈ L²(0,∞)` iff some real `B` bounds `∫₀^∞ |E_N|²` for every `N ≥ 1`. -/
 theorem pmPowerDampedFermiSource_memLp_iff_endpointHaar_budget {ε : ℝ} (hε : 0 < ε) :
     MemLp (pmPowerDampedFermiSource ε) 2 (volume.restrict (Ioi (0 : ℝ))) ↔
       ∃ B : ℝ, ∀ N : ℕ, 1 ≤ N →
@@ -202,6 +252,8 @@ theorem pmPowerDampedFermiSource_memLp_iff_endpointHaar_budget {ε : ℝ} (hε :
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact (tendsto_pmPowerDampedEndpointHaarPrefix ε ht).comp (tendsto_add_atTop_nat 1)
 
+/-- RH, conditional on `hbudget`: for every `δ > 0` some damping `ε ∈ (0,δ)` has endpoint Haar
+prefix energies `∫₀^∞ |E_N|²` bounded uniformly in `N ≥ 1`. -/
 theorem riemannHypothesis_of_pmPowerDamped_endpointHaar_budget
     (hbudget : ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ ∃ B : ℝ,
       ∀ N : ℕ, 1 ≤ N →

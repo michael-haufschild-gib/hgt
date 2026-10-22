@@ -1,6 +1,48 @@
 import GaloisForLFunctions.HTGeometry.GammaInversePoleBranchCoefficientFreeness
 import GaloisForLFunctions.HTGeometry.SimpleZeroBellHorizon
 
+/-!
+# The simple-zero Bell horizon for reciprocal Gamma at its zeros
+
+The reciprocal Gamma function `1/Γ` has a simple zero at each `-n`. Zooming in with the factorial
+scale, `G_n(x) = 1/Γ(-n + ε_n x)` with `ε_n = (-1)^(n+1) / n!`, this module shows that near
+`x = 0` one has `G_n(x) = -x / U_n(x)`, where `U_n` is the analytic unit
+`Γ(ε_n x + 1) / ∏_{j<n} (1 - ε_n x / (j + 1))`. Consequently the covariant residues
+`G_n^(j+2)(0) / G_n'(0)` equal `(j + 2)!` times the Taylor coefficients of `1/U_n`. As germs of
+sequences in `n → ∞` these residues are algebraically independent over `ℂ`, so the universal
+simple-zero Bell-horizon classification applies to `1/Γ` with these actual residues: the pole
+profile of a jet polynomial has `T`-degree equal to its total degree, and a raw jet polynomial
+has at most a simple-pole profile exactly when it is the Bell substitution of an affine
+polynomial.
+
+## Main results
+
+- `analyticJetPowerSeries_mul`: the Taylor series at `x` of a product of functions smooth at `x`
+  is the product of their Taylor series.
+- `analyticJetPowerSeries_inv_eq_unitInverse`: if `f(x) = 1`, the Taylor series of `1/f` at `x`
+  is the formal inverse unit built from the positive Taylor coefficients of `f`.
+- `gammaPoleSimpleZeroSection_eventuallyEq_reciprocalGammaFactorialZoom`: near `0`,
+  `1/Γ(-n + ε_n x) = -x / U_n(x)`.
+- `reciprocalGammaFactorialZoom_covariantResidue`: `G_n^(j+2)(0) / G_n'(0)` equals `(j + 2)!`
+  times the `(j + 1)`-th Taylor coefficient of `1/U_n` at `0`.
+- `AlgebraicIndependent.diagonalScale`: multiplying an algebraically independent family by
+  nonzero constants keeps it algebraically independent.
+- `algebraicIndependent_gammaSimpleZeroCovariantResidueGerm`: the sequence germs of the covariant
+  residues of `1/Γ` at its zeros are algebraically independent over `ℂ`.
+- `gammaSimpleZeroPrincipalProfile_natDegree_eq_totalDegree`: for nonzero `P`, the `T`-degree of
+  its Gamma principal profile equals its total degree.
+- `gammaSimpleZeroRawJetPrincipalProfile_natDegree_le_one_iff_exists_bellAffine`: a raw jet
+  polynomial has profile degree at most one iff it is the Bell substitution of an affine
+  polynomial.
+
+## Hypotheses
+
+Unconditional for the Gamma statements. The general Taylor-series lemmas assume smoothness of
+all orders at the base point (`ContDiffAt ℂ n f x` for every `n`) and `f x ≠ 0` or `f x = 1`
+where an inverse is taken; `AlgebraicIndependent.diagonalScale` assumes all scaling constants
+are nonzero.
+-/
+
 open PowerSeries MvPolynomial Filter Topology
 
 namespace GaloisForLFunctions
@@ -10,9 +52,12 @@ noncomputable section
 local instance analyticJetNatGermAlgebra : Algebra ℂ NatGerm :=
   complexNatGerm.toAlgebra
 
+/-- The formal Taylor series `Σ_n f^(n)(x) / n! · X^n` of `f` at `x`. -/
 def analyticJetPowerSeries (f : ℂ → ℂ) (x : ℂ) : ℂ⟦X⟧ :=
   PowerSeries.mk fun n => ((n.factorial : ℂ)⁻¹) * iteratedDeriv n f x
 
+/-- Leibniz rule for Taylor series: if `f` and `g` are `C^n` at `x` for every `n`, the Taylor
+series of `f * g` at `x` is the product of the Taylor series of `f` and `g`. -/
 theorem analyticJetPowerSeries_mul
     {f g : ℂ → ℂ} {x : ℂ}
     (hf : ∀ n : ℕ, ContDiffAt ℂ n f x)
@@ -54,6 +99,7 @@ theorem analyticJetPowerSeries_mul
     _ = (i.factorial : ℂ)⁻¹ * iteratedDeriv i f x *
           (((n - i).factorial : ℂ)⁻¹ * iteratedDeriv (n - i) g x) := by ring
 
+/-- The positive-degree Taylor coefficients `f^(j+1)(x) / (j + 1)!` of `f` at `x`. -/
 def analyticPositiveJet (f : ℂ → ℂ) (x : ℂ) (j : ℕ) : ℂ :=
   (((j + 1).factorial : ℂ)⁻¹) * iteratedDeriv (j + 1) f x
 
@@ -66,6 +112,8 @@ theorem analyticJetPowerSeries_eq_unitPowerSeriesOfCoefficients
   · simp [analyticJetPowerSeries, hfx]
   · simp [analyticJetPowerSeries, analyticPositiveJet]
 
+/-- If `f` is smooth of all orders at `x` and `f x ≠ 0`, the Taylor series of `f` and of `1/f`
+at `x` multiply to `1`. -/
 theorem analyticJetPowerSeries_mul_inv
     {f : ℂ → ℂ} {x : ℂ}
     (hf : ∀ n : ℕ, ContDiffAt ℂ n f x) (hfx : f x ≠ 0) :
@@ -89,6 +137,8 @@ theorem analyticJetPowerSeries_mul_inv
     rw [iteratedDeriv_const, if_neg (Nat.succ_ne_zero n)]
     simp
 
+/-- If `f` is smooth of all orders at `x` and `f x = 1`, the Taylor series of `1/f` at `x` is the
+formal inverse unit specialized at the positive Taylor coefficients of `f`. -/
 theorem analyticJetPowerSeries_inv_eq_unitInverse
     {f : ℂ → ℂ} {x : ℂ}
     (hf : ∀ n : ℕ, ContDiffAt ℂ n f x) (hfx : f x = 1) :
@@ -109,6 +159,8 @@ theorem analyticJetPowerSeries_inv_eq_unitInverse
     _ = W * (U * V) := by rw [mul_assoc]
     _ = W := by rw [hUV, mul_one]
 
+/-- The positive Taylor coefficients at `0` of `1/U_n` are the universal inverse-unit
+coefficients evaluated at the positive Taylor coefficients of the Gamma pole unit `U_n`. -/
 theorem analyticPositiveJet_inv_gammaPoleRegularUnit (j n : ℕ) :
     analyticPositiveJet (fun z => (gammaPoleRegularUnit n z)⁻¹) 0 j =
       unitInverseCoefficientOfCoefficients
@@ -122,11 +174,15 @@ theorem analyticPositiveJet_inv_gammaPoleRegularUnit (j n : ℕ) :
   simpa [analyticJetPowerSeries, analyticPositiveJet,
     unitInverseCoefficientOfCoefficients] using hcoeff
 
+/-- The sequence germ `N ↦` (the `(j + 1)`-th Taylor coefficient at `0` of `1/U_(N-1)`), taken
+from the actual analytic Gamma pole units. -/
 def gammaPoleActualReciprocalUnitCoefficientGerm (j : ℕ) : NatGerm :=
   fun N : ℕ =>
     analyticPositiveJet
       (fun z => (gammaPoleRegularUnit (N - 1) z)⁻¹) 0 j
 
+/-- The analytic reciprocal-unit coefficient germs agree with the formal reciprocal-unit
+coefficient germs `gammaPoleReciprocalUnitCoefficientGerm`. -/
 theorem gammaPoleActualReciprocalUnitCoefficientGerm_eq (j : ℕ) :
     gammaPoleActualReciprocalUnitCoefficientGerm j =
       gammaPoleReciprocalUnitCoefficientGerm j := by
@@ -150,6 +206,7 @@ theorem gammaPoleActualReciprocalUnitCoefficientGerm_eq (j : ℕ) :
     rw [unitInverseCoefficientOfCoefficients_eq_aeval] at hp
     simpa [MvPolynomial.aeval_def, MvPolynomial.algebraMap_eq] using hp.symm
 
+/-- The simple-zero section `z ↦ -z / U_n(z)` built from the Gamma pole unit `U_n`. -/
 def gammaPoleSimpleZeroSection (n : ℕ) (z : ℂ) : ℂ :=
   -z * (gammaPoleRegularUnit n z)⁻¹
 
@@ -179,6 +236,7 @@ theorem analyticJetPowerSeries_gammaPoleSimpleZeroSection (n : ℕ) :
   rw [analyticJetPowerSeries_neg_id_zero] at hmul
   exact hmul
 
+/-- The section `-z / U_n(z)` has derivative `-1` at its simple zero `0`. -/
 theorem deriv_gammaPoleSimpleZeroSection_zero (n : ℕ) :
     deriv (gammaPoleSimpleZeroSection n) 0 = -1 := by
   have hcoeff := congrArg (PowerSeries.coeff 1)
@@ -186,6 +244,8 @@ theorem deriv_gammaPoleSimpleZeroSection_zero (n : ℕ) :
   simpa [analyticJetPowerSeries, iteratedDeriv_one,
     gammaPoleRegularUnit_zero] using hcoeff
 
+/-- Covariant residues of the section `G = -z / U_n(z)`: `G^(j+2)(0) / G'(0)` equals `(j + 2)!`
+times the `(j + 1)`-th Taylor coefficient of `1/U_n` at `0`. -/
 theorem gammaPoleSimpleZeroSection_covariantResidue (j n : ℕ) :
     iteratedDeriv (j + 2) (gammaPoleSimpleZeroSection n) 0 /
         deriv (gammaPoleSimpleZeroSection n) 0 =
@@ -238,6 +298,8 @@ theorem gammaPoleSimpleZeroSection_covariantResidue (j n : ℕ) :
         (((j + 1).factorial : ℂ)⁻¹ *
           iteratedDeriv (j + 1) (fun z => (gammaPoleRegularUnit n z)⁻¹) 0) := by ring
 
+/-- Near `x = 0`, the factorial zoom of reciprocal Gamma at its zero `-n` equals the simple-zero
+section: `1/Γ(-n + ε_n x) = -x / U_n(x)`. -/
 theorem gammaPoleSimpleZeroSection_eventuallyEq_reciprocalGammaFactorialZoom (n : ℕ) :
     gammaPoleSimpleZeroSection n =ᶠ[𝓝 0] reciprocalGammaFactorialZoom n := by
   have haff : ContinuousAt
@@ -281,6 +343,8 @@ theorem gammaPoleSimpleZeroSection_iteratedDeriv_eq_zoom (k n : ℕ) :
       iteratedDeriv k (reciprocalGammaFactorialZoom n) 0 :=
   (gammaPoleSimpleZeroSection_eventuallyEq_reciprocalGammaFactorialZoom n).iteratedDeriv_eq k
 
+/-- For the zoom `G_n(x) = 1/Γ(-n + ε_n x)`, the covariant residue `G_n^(j+2)(0) / G_n'(0)` is
+`(j + 2)!` times the `(j + 1)`-th Taylor coefficient of `1/U_n` at `0`. -/
 theorem reciprocalGammaFactorialZoom_covariantResidue (j n : ℕ) :
     iteratedDeriv (j + 2) (reciprocalGammaFactorialZoom n) 0 /
         deriv (reciprocalGammaFactorialZoom n) 0 =
@@ -292,11 +356,13 @@ theorem reciprocalGammaFactorialZoom_covariantResidue (j n : ℕ) :
   rw [iteratedDeriv_one]
   exact gammaPoleSimpleZeroSection_covariantResidue j n
 
+/-- The diagonal linear substitution `X_i ↦ c_i X_i` on multivariate polynomials. -/
 def diagonalCoordinateMap {ι : Type*} (c : ι → ℂ) :
     MvPolynomial ι ℂ →+* MvPolynomial ι ℂ :=
   MvPolynomial.eval₂Hom MvPolynomial.C
     (fun i => MvPolynomial.C (c i) * MvPolynomial.X i)
 
+/-- Assuming every `c_i ≠ 0`, the diagonal substitution `X_i ↦ c_i X_i` is injective. -/
 theorem diagonalCoordinateMap_injective {ι : Type*} {c : ι → ℂ}
     (hc : ∀ i, c i ≠ 0) : Function.Injective (diagonalCoordinateMap c) := by
   let invMap := diagonalCoordinateMap (fun i => (c i)⁻¹)
@@ -311,6 +377,8 @@ theorem diagonalCoordinateMap_injective {ι : Type*} {c : ι → ℂ}
       rw [← mul_assoc, ← map_mul, mul_inv_cancel₀ (hc i), map_one, one_mul]
   exact RingHom.congr_fun hcomp P
 
+/-- If `x` is algebraically independent over `ℂ` and every `c_i ≠ 0`, then the rescaled family
+`c_i x_i` is algebraically independent over `ℂ`. -/
 theorem AlgebraicIndependent.diagonalScale
     {ι A : Type*} [CommRing A] [Algebra ℂ A]
     {x : ι → A} (hx : AlgebraicIndependent ℂ x)
@@ -331,11 +399,15 @@ theorem AlgebraicIndependent.diagonalScale
   rw [hhom]
   exact hxinj.comp (diagonalCoordinateMap_injective hc)
 
+/-- The sequence germ `N ↦ G^(j+2)(0) / G'(0)` for `G` the factorial zoom of `1/Γ` at its zero
+`-(N - 1)`: the `j`-th covariant residue along the zeros of reciprocal Gamma. -/
 def gammaSimpleZeroCovariantResidueGerm (j : ℕ) : NatGerm :=
   fun N : ℕ =>
     iteratedDeriv (j + 2) (reciprocalGammaFactorialZoom (N - 1)) 0 /
       deriv (reciprocalGammaFactorialZoom (N - 1)) 0
 
+/-- The `j`-th covariant residue germ is `(j + 2)!` times the `j`-th reciprocal-unit coefficient
+germ of the Gamma pole family. -/
 theorem gammaSimpleZeroCovariantResidueGerm_eq (j : ℕ) :
     gammaSimpleZeroCovariantResidueGerm j =
       algebraMap ℂ NatGerm ((j + 2).factorial : ℂ) *
@@ -352,6 +424,8 @@ theorem gammaSimpleZeroCovariantResidueGerm_eq (j : ℕ) :
   exact Filter.Eventually.of_forall fun N =>
     reciprocalGammaFactorialZoom_covariantResidue j (N - 1)
 
+/-- The covariant residue germs of reciprocal Gamma at its zeros are algebraically independent
+over `ℂ` in the ring of sequence germs at infinity. -/
 theorem algebraicIndependent_gammaSimpleZeroCovariantResidueGerm :
     AlgebraicIndependent ℂ gammaSimpleZeroCovariantResidueGerm := by
   have hscaled := AlgebraicIndependent.diagonalScale
@@ -366,6 +440,8 @@ theorem algebraicIndependent_gammaSimpleZeroCovariantResidueGerm :
     exact gammaSimpleZeroCovariantResidueGerm_eq j
   rwa [heq]
 
+/-- The simple-zero principal profile `Z₀ ↦ T`, `Z_(i+1) ↦ T · R_i`, with the boundary residues
+`R_i` specialized to the actual Gamma covariant residue germs. -/
 def gammaSimpleZeroPrincipalProfile (n : ℕ) :
     MvPolynomial (Fin (n + 1)) ℂ →+* Polynomial NatGerm :=
   (Polynomial.mapRingHom
@@ -373,6 +449,8 @@ def gammaSimpleZeroPrincipalProfile (n : ℕ) :
         (fun i : Fin n => gammaSimpleZeroCovariantResidueGerm i.val)).toRingHom).comp
     (HTGeometry.simpleZeroPrincipalProfile n)
 
+/-- For nonzero `P`, the `T`-degree of its Gamma principal profile equals its total degree; no
+cancellation occurs because the Gamma residues are algebraically independent. -/
 theorem gammaSimpleZeroPrincipalProfile_natDegree_eq_totalDegree
     {n : ℕ} {P : MvPolynomial (Fin (n + 1)) ℂ} (hP0 : P ≠ 0) :
     (gammaSimpleZeroPrincipalProfile n P).natDegree = P.totalDegree := by
@@ -389,6 +467,8 @@ theorem gammaSimpleZeroPrincipalProfile_natDegree_eq_totalDegree
   rw [Polynomial.natDegree_map_eq_of_injective hinj]
   exact HTGeometry.simpleZeroPrincipalProfile_natDegree_eq_totalDegree hP0
 
+/-- The Gamma principal profile of `P` has `T`-degree at most one iff `P` has total degree at most
+one. -/
 theorem gammaSimpleZeroPrincipalProfile_natDegree_le_one_iff
     {n : ℕ} (P : MvPolynomial (Fin (n + 1)) ℂ) :
     (gammaSimpleZeroPrincipalProfile n P).natDegree ≤ 1 ↔ P.totalDegree ≤ 1 := by
@@ -396,6 +476,8 @@ theorem gammaSimpleZeroPrincipalProfile_natDegree_le_one_iff
   · simp [hP0]
   · rw [gammaSimpleZeroPrincipalProfile_natDegree_eq_totalDegree hP0]
 
+/-- The raw-jet principal profile (inverse Bell change of coordinates followed by the profile map),
+with boundary residues specialized to the actual Gamma covariant residue germs. -/
 def gammaSimpleZeroRawJetPrincipalProfile (n : ℕ) :
     MvPolynomial (Fin (n + 1)) ℂ →+* Polynomial NatGerm :=
   (Polynomial.mapRingHom
@@ -403,6 +485,9 @@ def gammaSimpleZeroRawJetPrincipalProfile (n : ℕ) :
         (fun i : Fin n => gammaSimpleZeroCovariantResidueGerm i.val)).toRingHom).comp
     (HTGeometry.simpleZeroRawJetPrincipalProfile n)
 
+/-- Raw-jet horizon classification for reciprocal Gamma: the Gamma raw-jet profile of `P` has
+`T`-degree at most one iff `P` is the Bell substitution of a polynomial of total degree at most
+one. -/
 theorem gammaSimpleZeroRawJetPrincipalProfile_natDegree_le_one_iff_exists_bellAffine
     {n : ℕ} (P : MvPolynomial (Fin (n + 1)) ℂ) :
     (gammaSimpleZeroRawJetPrincipalProfile n P).natDegree ≤ 1 ↔

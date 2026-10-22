@@ -1,12 +1,38 @@
 import GaloisForLFunctions.RHTower.InfiniteMobiusCausalShift
 import GaloisForLFunctions.RHTower.XiThetaSquareRateLaplace
 
+/-!
+# The signed Möbius shift average acts on Laplace transforms by a zeta-ratio multiplier
+
+For `f ∈ L²(ℝ)` vanishing a.e. on `(-∞, 0)` and `x > 0`, the causal Laplace pairing
+`L_x f = ∫ e^{-π x y} f(y) dy` turns a right shift by `h ≥ 0` into multiplication by
+`e^{-π x h}`. Hence for `σ > 1` the signed Möbius shift average
+`A_σ f = ∑ₙ μ(n) π_σ(n) f(· - log n)` satisfies `L_x(A_σ f) = M_σ(x) · L_x f` with the multiplier
+`M_σ(x) = ∑ₙ μ(n) π_σ(n) n^{-π x}`. Using `∑_{n squarefree} n^{-σ} = ζ(σ)/ζ(2σ)` and
+`∑ μ(n) n^{-s} = 1/ζ(s)` for `Re s > 1`, the multiplier is identified in closed form as
+`M_σ(x) = ζ(2σ) / (ζ(σ) ζ(σ + π x))`.
+
+## Main results
+
+- `causalLaplacePairing_infiniteMobiusShiftAverage`: `L_x(A_σ f) = M_σ(x) · L_x f`.
+- `infiniteMobiusLaplaceMultiplier_eq_zetaRatio`: `M_σ(x) = ζ(2σ) / (ζ(σ) ζ(σ + π x))`.
+- `ofReal_squarefreeMobiusTotal_eq_zetaRatio`: `∑_{n squarefree} n^{-σ} = ζ(σ)/ζ(2σ)`.
+- `causalLaplacePairing_additiveTranslationUnitary_neg`: `L_x(f(· - h)) = e^{-π x h} L_x f`.
+
+## Hypotheses
+
+Unconditional. The theorems take the range hypotheses `1 < σ`, `0 < x` (or `0 ≤ x` for the
+multiplier formulas) and `0 ≤ h`, and the causal-support hypothesis that `f` vanishes a.e. on
+`(-∞, 0)`.
+-/
+
 open Complex MeasureTheory Set Filter ArithmeticFunction LSeries
 open scoped BigOperators LSeries.notation Moebius
 
 noncomputable section
 namespace RHTower
 
+/-- Shift law for the Laplace integral: `∫ e^{-π x y} f(y - h) dy = e^{-π x h} ∫ e^{-π x y} f(y) dy`. -/
 theorem causalLaplaceIntegral_sub_shift
     (x h : ℝ) (f : ℝ → ℂ) :
     causalLaplaceIntegral x (fun y => f (y - h)) =
@@ -46,6 +72,8 @@ theorem additiveTranslationUnitary_neg_ae
     (Lp.coeFn_compMeasurePreserving f
       (MellinL2.realTranslation_measurePreserving (-h)))
 
+/-- For `x > 0`, `h ≥ 0` and `f` vanishing a.e. on `(-∞, 0)`, the Laplace pairing of the right
+shift `f(· - h)` is `e^{-π x h}` times that of `f`. -/
 theorem causalLaplacePairing_additiveTranslationUnitary_neg
     {x : ℝ} (hx : 0 < x) {h : ℝ} (hh : 0 ≤ h)
     (f : Lp ℂ 2 (volume : Measure ℝ))
@@ -60,13 +88,16 @@ theorem causalLaplacePairing_additiveTranslationUnitary_neg
   rw [causalLaplaceIntegral_sub_shift]
   rw [← causalLaplacePairing_eq_integral_of_lowerSupport hx f hf]
 
+/-- Multiplier term `μ(n) π_σ(n) e^{-π x log n}`. -/
 def infiniteMobiusLaplaceMultiplierTerm (sigma x : ℝ) (n : ℕ) : ℂ :=
   signedMobiusProbability sigma n *
     Complex.exp (-(Real.pi * x * Real.log n : ℝ))
 
+/-- Laplace multiplier `M_σ(x) = ∑ₙ μ(n) π_σ(n) n^{-π x}` of the signed Möbius shift average. -/
 def infiniteMobiusLaplaceMultiplier (sigma x : ℝ) : ℂ :=
   ∑' n : ℕ, infiniteMobiusLaplaceMultiplierTerm sigma x n
 
+/-- For `σ > 1`, the squarefree normalizer `∑_{n squarefree} n^{-σ}` equals `ζ(σ)/ζ(2σ)`. -/
 theorem ofReal_squarefreeMobiusTotal_eq_zetaRatio
     {sigma : ℝ} (hsigma : 1 < sigma) :
     (squarefreeMobiusTotal sigma : ℂ) =
@@ -85,6 +116,7 @@ theorem ofReal_squarefreeMobiusTotal_eq_zetaRatio
     _ = riemannZeta (sigma : ℂ) / riemannZeta (2 * (sigma : ℂ)) :=
       tsum_squarefree_cpow (by simpa using hsigma)
 
+/-- For `σ > 1` and `x ≥ 0`, the multiplier terms are absolutely summable. -/
 theorem summable_infiniteMobiusLaplaceMultiplierTerm
     {sigma x : ℝ} (hsigma : 1 < sigma) (hx : 0 ≤ x) :
     Summable (infiniteMobiusLaplaceMultiplierTerm sigma x) := by
@@ -103,6 +135,8 @@ theorem summable_infiniteMobiusLaplaceMultiplierTerm
   exact mul_le_of_le_one_right
     (squarefreeMobiusProbability_nonneg hsigma n) hexp
 
+/-- For `x > 0` and `f` vanishing a.e. on `(-∞, 0)`, the Laplace pairing of the `n`-th signed
+shift term is the `n`-th multiplier term times `L_x f`. -/
 theorem causalLaplacePairing_infiniteMobiusShiftTerm
     {sigma x : ℝ} (hx : 0 < x) (n : ℕ)
     (f : Lp ℂ 2 (volume : Measure ℝ))
@@ -125,6 +159,8 @@ theorem causalLaplacePairing_infiniteMobiusShiftTerm
     unfold infiniteMobiusLaplaceMultiplierTerm
     ring
 
+/-- For `σ > 1`, `x > 0` and `f` vanishing a.e. on `(-∞, 0)`, the Laplace pairing of the signed
+Möbius shift average is `M_σ(x) · L_x f`. -/
 theorem causalLaplacePairing_infiniteMobiusShiftAverage
     {sigma x : ℝ} (hsigma : 1 < sigma) (hx : 0 < x)
     (f : Lp ℂ 2 (volume : Measure ℝ))
@@ -147,6 +183,8 @@ theorem causalLaplacePairing_infiniteMobiusShiftAverage
   rw [tsum_mul_right]
   rfl
 
+/-- Each multiplier term is the normalizer inverse times the `n`-th term of the Möbius
+`L`-series at `s = σ + π x`. -/
 theorem infiniteMobiusLaplaceMultiplierTerm_eq_LSeries_term
     (sigma x : ℝ) (n : ℕ) :
     infiniteMobiusLaplaceMultiplierTerm sigma x n =
@@ -185,6 +223,7 @@ theorem infiniteMobiusLaplaceMultiplierTerm_eq_LSeries_term
         LSeries.term_of_ne_zero hn0]
       simp [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hsq]
 
+/-- For `σ > 1` and `x ≥ 0`, `M_σ(x) = (∑_{n squarefree} n^{-σ})⁻¹ · ζ(σ + π x)⁻¹`. -/
 theorem infiniteMobiusLaplaceMultiplier_eq_invTotal_mul_invZeta
     {sigma x : ℝ} (hsigma : 1 < sigma) (hx : 0 ≤ x) :
     infiniteMobiusLaplaceMultiplier sigma x =
@@ -205,6 +244,7 @@ theorem infiniteMobiusLaplaceMultiplier_eq_invTotal_mul_invZeta
   exact lt_of_lt_of_le hsigma
     (le_add_of_nonneg_right (mul_nonneg Real.pi_pos.le hx))
 
+/-- For `σ > 1` and `x ≥ 0`, the Laplace multiplier is `M_σ(x) = ζ(2σ) / (ζ(σ) ζ(σ + π x))`. -/
 theorem infiniteMobiusLaplaceMultiplier_eq_zetaRatio
     {sigma x : ℝ} (hsigma : 1 < sigma) (hx : 0 ≤ x) :
     infiniteMobiusLaplaceMultiplier sigma x =

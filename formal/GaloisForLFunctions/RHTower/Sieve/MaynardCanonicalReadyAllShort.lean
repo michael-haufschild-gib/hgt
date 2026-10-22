@@ -1,10 +1,36 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardReadyAllShort
 
+/-!
+# Canonical degree-60 Heath-Brown robust group at a ready height
+
+At degree `60`, a canonical Möbius cutoff `L` with `X < (L+1)^{60}` makes every Möbius factor of
+every Heath-Brown box short. This module combines that cutoff with the eligible-aggregate robust
+group selection: if the eligible aggregate is large at `s = σ + iy` for every admissible cutoff,
+then for some admissible `L` there is an eligible box and a nonempty factor group `u` of total
+logarithmic length `α ∈ [t, 4t)` with grouped lower edge `T0^α` and
+`|∏_{i ∈ u} L(block_i, s)| ≥ (T0^α)^{1-σ}`.
+
+## Main results
+
+- `exists_canonical_sixty_robust_group_of_ready_scale`: the degree-60 robust group selection.
+
+## Hypotheses
+
+The result is conditional. It assumes the scale predicate `IsMaynardLongScaleReady T0` (explicit
+scalar inequalities on `T0`, true for all large `T0`), `4/3 ≤ μ ≤ 19/9`, `t = μ/120`,
+`1 ≤ X ≤ T0^μ`, `σ ≥ 0`, `T0 ≤ y ≤ 2T0`, `V > 0`, and, for every cutoff `L ≥ 1` with
+`X < (L+1)^{60}`, the large-value premise `V ≤ |eligible aggregate(σ+iy)|` and the reserve
+inequality on eligible boxes.
+-/
+
 noncomputable section
 namespace RHTower.Sieve
 
 open Finset ArithmeticFunction
 
+/-- Degree-60 robust group. Assuming `IsMaynardLongScaleReady T0`, the scale ranges, and the
+large-value and reserve premises for every cutoff `L` with `X < (L+1)^{60}`, some such `L` has an
+eligible box with a factor group of length `α ∈ [t, 4t)` and `|∏ L(block_i, σ+iy)| ≥ (T0^α)^{1-σ}`. -/
 theorem exists_canonical_sixty_robust_group_of_ready_scale
     {X : ℕ} {T0 t mu sigma y V : ℝ}
     (hready : IsMaynardLongScaleReady T0)

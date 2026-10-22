@@ -8,6 +8,31 @@ import Mathlib.RingTheory.Localization.LocalizationLocalization
 import Mathlib.RingTheory.Localization.NormTrace
 import Mathlib.GroupTheory.MonoidLocalization.UniqueFactorization
 
+/-!
+# Purity of the branch locus for finite flat algebras over a Noetherian UFD
+
+Let `A` be a Noetherian unique factorization domain and `A ⊆ B` a finite flat extension of domains.
+This module proves that `B` is formally unramified over `A` as soon as it is formally unramified
+generically and at every height-one prime of `A`. The proof checks unramifiedness at each maximal
+ideal `m`: the localization `B_m` is free over the local ring `A_m`, its discriminant is nonzero by
+the generic hypothesis, and a prime factor `q` of a non-unit discriminant in the UFD `A_m`
+contracts to a height-one prime `P` of `A`, where the local hypothesis forces `q` to be a unit.
+
+## Main results
+
+- `formallyUnramified_of_flat_fraction_formallyUnramified_of_height_one_localizations`: for a finite
+  flat extension of domains `A ⊆ B` with `A` a Noetherian UFD, formal unramifiedness of the generic
+  fibre and of `B_P` over `A_P` for every height-one prime `P` implies `B` is formally unramified
+  over `A`.
+
+## Hypotheses
+
+No analytic inputs. The main theorem is an implication whose substantive algebraic hypotheses are:
+formal unramifiedness of the generic fibre `Localization (algebraMapSubmonoid B A⁰)` over
+`FractionRing A` (an instance argument), and `hprime`: formal unramifiedness of `B_P` over `A_P`
+for every prime `P` of height one.
+-/
+
 open scoped TensorProduct
 
 namespace Algebra
@@ -16,6 +41,9 @@ open nonZeroDivisors
 
 universe u v
 
+/-- Purity of the branch locus over a Noetherian UFD `A`: a finite flat extension of domains
+`A ⊆ B` is formally unramified, assuming its generic fibre is formally unramified over `Frac A` and
+(`hprime`) `B_P` is formally unramified over `A_P` for every height-one prime `P`. -/
 theorem formallyUnramified_of_flat_fraction_formallyUnramified_of_height_one_localizations
     {A : Type u} {B : Type v} [CommRing A] [IsDomain A]
     [UniqueFactorizationMonoid A] [IsNoetherianRing A] [CommRing B] [IsDomain B]

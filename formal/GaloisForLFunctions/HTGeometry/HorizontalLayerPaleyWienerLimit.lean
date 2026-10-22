@@ -2,6 +2,32 @@ import GaloisForLFunctions.HTGeometry.HorizontalLayerLeakageLimit
 import GaloisForLFunctions.HTGeometry.HardyPaleyWienerTransport
 import GaloisForLFunctions.HTGeometry.FiniteExponentialHankel
 
+/-!
+# Paley–Wiener transport of horizontal layer leakage to exponential Hankel operators
+
+Operators `T : hardyL2 → hardyL2ᗮ` are transported to `L²(0,∞)` by the Paley–Wiener unitaries,
+`T ↦ U₋⁻¹ T U₊`; the transport is linear and norm-nonincreasing. It sends the rank-one Hardy
+leakage `-π⁻¹ |(x - i a)⁻¹⟩⟨(x + i a)⁻¹|` to `2 |e^{-a·}⟩⟨e^{-a·}|`. For positive rates `a j`
+with multiplicities `m j` and projective layer symbols `b_a(ω) = horizontalLayerProjective a ω`, the
+transported Hardy leakage of the normalized layer product `(∏_j b_{a_j}(ω)^{m_j} - 1) / ω`
+converges in operator norm, as `ω → 0` with `ω ≠ 0`, to the finite exponential Hankel operator
+`Σ_j 2 m_j |e^{-a_j·}⟩⟨e^{-a_j·}|` on `L²(0,∞)`, whose kernel is `Σ_j 2 m_j e^{-a_j (x + y)}`.
+
+## Main results
+
+- `norm_paleyWienerOperatorTransport_le`: the transport does not increase operator norm.
+- `paleyWienerOperatorTransport_rankOne`: rank-one Cauchy leakage transports to
+  `2 |e^{-a·}⟩⟨e^{-a·}|`.
+- `paleyWienerOperatorTransport_finiteHorizontalLayerInfinitesimal`: the transported leakage of the
+  summed infinitesimal layer symbol with multiplicities is `finiteExponentialHankel a ha m`.
+- `tendsto_horizontalLayerPaleyWienerNormalized`: the transported normalized layer leakages converge
+  in operator norm to `finiteExponentialHankel a ha m`.
+
+## Hypotheses
+
+All results are unconditional; the only side condition is positivity of the rates, `0 < a j`.
+-/
+
 open Complex Filter Topology
 open scoped BigOperators InnerProductSpace
 
@@ -10,12 +36,15 @@ noncomputable section
 
 namespace GaloisForLFunctions.HTGeometry
 
+/-- Transport of an operator `T : hardyL2 → hardyL2ᗮ` to `L²(0,∞)` through the Paley–Wiener
+unitaries: `U₋⁻¹ ∘ T ∘ U₊`. -/
 def paleyWienerOperatorTransport
     (T : UpperHardyL2 →L[ℂ] LowerHardyL2) :
     HalfLineExponentialL2 →L[ℂ] HalfLineExponentialL2 :=
   lowerHardyPaleyWienerUnitary.symm.toLinearIsometry.toContinuousLinearMap.comp
     (T.comp upperHardyPaleyWienerUnitary.toLinearIsometry.toContinuousLinearMap)
 
+/-- The Paley–Wiener operator transport as a linear map. -/
 def paleyWienerOperatorTransportLinear :
     (UpperHardyL2 →L[ℂ] LowerHardyL2) →ₗ[ℂ]
       (HalfLineExponentialL2 →L[ℂ] HalfLineExponentialL2) where
@@ -27,6 +56,7 @@ def paleyWienerOperatorTransportLinear :
     ext f
     simp [paleyWienerOperatorTransport]
 
+/-- The transport does not increase operator norm: `‖U₋⁻¹ T U₊‖ ≤ ‖T‖`. -/
 theorem norm_paleyWienerOperatorTransport_le
     (T : UpperHardyL2 →L[ℂ] LowerHardyL2) :
     ‖paleyWienerOperatorTransport T‖ ≤ ‖T‖ := by
@@ -42,6 +72,7 @@ theorem norm_paleyWienerOperatorTransport_le
     _ ≤ ‖T‖ * ‖upperHardyPaleyWienerUnitary f‖ := T.le_opNorm _
     _ = ‖T‖ * ‖f‖ := by rw [upperHardyPaleyWienerUnitary.norm_map]
 
+/-- The Paley–Wiener operator transport as a continuous linear map of operator spaces. -/
 def paleyWienerOperatorTransportCLM :
     (UpperHardyL2 →L[ℂ] LowerHardyL2) →L[ℂ]
       (HalfLineExponentialL2 →L[ℂ] HalfLineExponentialL2) :=
@@ -56,6 +87,7 @@ theorem paleyWienerOperatorTransportCLM_apply
     (T : UpperHardyL2 →L[ℂ] LowerHardyL2) :
     paleyWienerOperatorTransportCLM T = paleyWienerOperatorTransport T := rfl
 
+/-- For `a > 0`, the transport of `-π⁻¹ |(x - i a)⁻¹⟩⟨(x + i a)⁻¹|` is `2 |e^{-a·}⟩⟨e^{-a·}|`. -/
 theorem paleyWienerOperatorTransport_rankOne {a : ℝ} (ha : 0 < a) :
     paleyWienerOperatorTransport
         ((-(Real.pi : ℂ)⁻¹) •
@@ -78,6 +110,7 @@ theorem paleyWienerOperatorTransport_rankOne {a : ℝ} (ha : 0 < a) :
   rw [lowerHardyPaleyWienerUnitary.apply_symm_apply]
   exact paleyWiener_rankOne_intertwining ha f
 
+/-- The transport commutes with finite sums. -/
 theorem paleyWienerOperatorTransport_sum {ι : Type*} (s : Finset ι)
     (T : ι → (UpperHardyL2 →L[ℂ] LowerHardyL2)) :
     paleyWienerOperatorTransport (s.sum T) =
@@ -87,12 +120,15 @@ theorem paleyWienerOperatorTransport_sum {ι : Type*} (s : Finset ι)
     s.sum fun i => paleyWienerOperatorTransportCLM (T i)
   exact map_sum paleyWienerOperatorTransportCLM T s
 
+/-- Index type of layer copies: rate index `j` repeated `m j` times. -/
 abbrev HorizontalLayerCopy {r : ℕ} (m : Fin r → ℕ) :=
   Σ j : Fin r, Fin (m j)
 
+/-- The rate `a j` carried by a copy of layer `j`. -/
 def horizontalLayerCopyRate {r : ℕ} (a : Fin r → ℝ) {m : Fin r → ℕ}
     (i : HorizontalLayerCopy m) : ℝ := a i.1
 
+/-- The layer product over all copies is `∏_j b_{a_j}(ω)^{m_j}`. -/
 theorem finiteHorizontalLayerProjective_copies {r : ℕ} (a : Fin r → ℝ)
     (m : Fin r → ℕ) (ω : ℝ) :
     finiteHorizontalLayerProjective
@@ -108,6 +144,8 @@ theorem finiteHorizontalLayerProjective_copies {r : ℕ} (a : Fin r → ℝ)
     horizontalLayerProjective (a j) ω ^ m j
   simp
 
+/-- Summing `2 |e^{-a_j·}⟩⟨e^{-a_j·}|` over all copies gives the finite exponential Hankel operator
+`Σ_j 2 m_j |e^{-a_j·}⟩⟨e^{-a_j·}|`. -/
 theorem sum_horizontalLayerCopies_rankOne_eq_finiteExponentialHankel
     {r : ℕ} (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (m : Fin r → ℕ) :
     ∑ i : HorizontalLayerCopy m,
@@ -131,14 +169,17 @@ theorem sum_horizontalLayerCopies_rankOne_eq_finiteExponentialHankel
   push_cast
   ring
 
+/-- The projective layer power product `∏_j b_{a_j}(ω)^{m_j}`. -/
 def horizontalLayerPowerProduct {r : ℕ} (a : Fin r → ℝ) (m : Fin r → ℕ)
     (ω : ℝ) : ProjectiveBoundary :=
   ∏ j, horizontalLayerProjective (a j) ω ^ m j
 
+/-- The normalized power product `(∏_j b_{a_j}(ω)^{m_j} - 1) / ω`. -/
 def horizontalLayerPowerNormalizedProjective {r : ℕ} (a : Fin r → ℝ)
     (m : Fin r → ℕ) (ω : ℝ) : ProjectiveBoundary :=
   ((ω : ℂ)⁻¹) • (horizontalLayerPowerProduct a m ω - 1)
 
+/-- The normalized layer product over copies is the normalized power product. -/
 theorem finiteHorizontalLayerNormalizedProjective_copies {r : ℕ}
     (a : Fin r → ℝ) (m : Fin r → ℕ) (ω : ℝ) :
     finiteHorizontalLayerNormalizedProjective
@@ -149,6 +190,7 @@ theorem finiteHorizontalLayerNormalizedProjective_copies {r : ℕ}
     horizontalLayerPowerNormalizedProjective, horizontalLayerPowerProduct,
     finiteHorizontalLayerProjective_copies]
 
+/-- Paley–Wiener transport to `L²(0,∞)` of the Hardy leakage of the normalized power product. -/
 def horizontalLayerPaleyWienerNormalized {r : ℕ} (a : Fin r → ℝ)
     (m : Fin r → ℕ) (ω : ℝ) :
     HalfLineExponentialL2 →L[ℂ] HalfLineExponentialL2 :=
@@ -156,6 +198,8 @@ def horizontalLayerPaleyWienerNormalized {r : ℕ} (a : Fin r → ℝ)
     (hardyLeakage (projectiveBoundaryMul
       (horizontalLayerPowerNormalizedProjective a m ω)))
 
+/-- For positive rates, the transported Hardy leakage of the summed infinitesimal symbol over all
+copies equals `finiteExponentialHankel a ha m = Σ_j 2 m_j |e^{-a_j·}⟩⟨e^{-a_j·}|`. -/
 theorem paleyWienerOperatorTransport_finiteHorizontalLayerInfinitesimal
     {r : ℕ} (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (m : Fin r → ℕ) :
     paleyWienerOperatorTransport
@@ -191,6 +235,9 @@ theorem paleyWienerOperatorTransport_finiteHorizontalLayerInfinitesimal
     _ = finiteExponentialHankel a ha m :=
       sum_horizontalLayerCopies_rankOne_eq_finiteExponentialHankel a ha m
 
+/-- For positive rates `a j` and multiplicities `m j`, the transported Hardy leakages of
+`(∏_j b_{a_j}(ω)^{m_j} - 1) / ω` converge in operator norm on `L²(0,∞)`, as `ω → 0` with
+`ω ≠ 0`, to the exponential Hankel operator `finiteExponentialHankel a ha m`. -/
 theorem tendsto_horizontalLayerPaleyWienerNormalized {r : ℕ}
     (a : Fin r → ℝ) (ha : ∀ j, 0 < a j) (m : Fin r → ℕ) :
     Tendsto (horizontalLayerPaleyWienerNormalized a m) (𝓝[≠] 0)

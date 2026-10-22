@@ -1,5 +1,30 @@
 import GaloisForLFunctions.RHTower.Sieve.MenonHarmonicCaseIIActualBlock
 
+/-!
+# Case II exceptional-frequency measure for Menon's actual final-range blocks
+
+For each geometric block `(a, Y]` of Menon's final range, Case II uses
+`ceil((log a)^{200})` cells, smoothing width `H = a/(log a)^{20}`, the line
+`σ = 1 + 1/log(4Y + 1)` and the Perron budget `B = menonHarmonicCaseIIBudget C0 a Y`. This module
+instantiates the order-four-hundred narrow-smoothing measure estimate at these actual block
+parameters: the Lebesgue measure of the Gallagher-frequency set where the harmonic prime block
+`∑_{a < p ≤ Y} μ(p) p^{-1} p^{2πiw}` exceeds its wide-smoothed threshold, at scale `T`, is bounded
+by an explicit expression in the cell count, the Heath-Brown box count `D`, a large-value
+threshold `V_exp` and a mean-value majorant `H_max`.
+
+## Main results
+
+- `exists_absolute_eventually_volume_real_menonFinalRangeActualBlock_caseII_scheduled_le`: some
+  `C0 ≥ 0` gives, for all large `x`, every block `j` and every `T` with `1 ≤ T`, `cells/4 ≤ T` and
+  `2T ≤ a^3`, the bound
+  `vol(exceptional set) ≤ 2 (2π)⁻¹ · 4 (cells · D · 12 · H_max / V_exp^2 + 1)`.
+
+## Hypotheses
+
+The result is unconditional; it holds for all sufficiently large `x`, with the stated ranges for
+`T`.
+-/
+
 namespace RHTower.Sieve
 
 open Filter Finset MeasureTheory
@@ -7,6 +32,9 @@ open Filter Finset MeasureTheory
 noncomputable section
 
 set_option maxHeartbeats 800000 in
+/-- Case II measure bound at the actual block parameters: for all large `x`, every final-range
+block and every `T` with `1 ≤ T`, `cells/4 ≤ T`, `2T ≤ a^3`, the order-four-hundred Gallagher
+exceptional set has measure at most `2 (2π)⁻¹ · 4 (cells · D · 12 · H_max / V_exp^2 + 1)`. -/
 theorem exists_absolute_eventually_volume_real_menonFinalRangeActualBlock_caseII_scheduled_le :
     ∃ C0 : ℝ, 0 ≤ C0 ∧
       ∀ᶠ x : ℝ in atTop,

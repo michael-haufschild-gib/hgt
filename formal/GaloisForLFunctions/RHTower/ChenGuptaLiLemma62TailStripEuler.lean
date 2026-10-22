@@ -1,5 +1,25 @@
 import GaloisForLFunctions.RHTower.ChenGuptaLiLemma62TailFunctionalStrip
 
+/-!
+# Chen–Gupta–Li Lemma 6.2: the finite Euler correction on the tail strip
+
+For a nonprincipal Dirichlet character modulo `q` induced by a primitive character `χ*`, the
+reflected finite Euler correction is
+`E(z) = ∏_{p | q} (1 - χ*(p) p^(-z)) / (1 - χ̄*(p) p^(-(1-z)))`. This module bounds `E` on the
+tail strip `-2d ≤ Re z ≤ -1` (with contour depth `d ≥ 1`) by
+`∏_{p | q} (1 + p^(2d)) / (1 - p^(-1/2))`, uniformly in `Im z`.
+
+## Main results
+
+- `CGLLemma62TailEulerStripPoint`: a point `z` with `-2d ≤ Re z ≤ -1`.
+- `cglLemma62EulerCorrectionAt_tail_strip_norm_le`: `|E(z)| ≤ cglLemma62TailEulerCorrectionBudget B d`
+  on the tail strip.
+
+## Hypotheses
+
+Unconditional; the strip condition is bundled in the point structure.
+-/
+
 open Complex MeasureTheory Filter Set Asymptotics LSeries
 open scoped Topology LSeries.notation BigOperators
 
@@ -7,6 +27,7 @@ namespace RHTower
 
 noncomputable section
 
+/-- A point `z` of the tail strip `-2d ≤ Re z ≤ -1`. -/
 structure CGLLemma62TailEulerStripPoint (d : CGLLemma62TailContourDepth) where
   value : ℂ
   lower : -2 * (d.value : ℝ) ≤ value.re
@@ -88,6 +109,8 @@ private theorem cgl_tailEuler_strip_factor
   exact div_le_div₀ (by positivity) (cgl_tailEuler_strip_left B d z p) hden
     (cgl_tailEuler_strip_right B d z p)
 
+/-- On the tail strip `-2d ≤ Re z ≤ -1`, the reflected finite Euler correction is bounded by
+`∏_{p | q} (1 + p^(2d)) / (1 - p^(-1/2))`, independently of `Im z`. -/
 theorem cglLemma62EulerCorrectionAt_tail_strip_norm_le
     (B : CGLLemma62InducedCharacter) (d : CGLLemma62TailContourDepth)
     (z : CGLLemma62TailEulerStripPoint d) :

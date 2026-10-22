@@ -1,12 +1,40 @@
 import GaloisForLFunctions.RHTower.Sieve.InghamCriticalGaussianTranslatedMoment
 import GaloisForLFunctions.RHTower.Sieve.InghamRightEdgePowerSaving
 
+/-!
+# Translated Gaussian moment of Ingham's pole-cleared error on the line `Re s = 181/180`
+
+Let `M_X(s) = ∑_{n ≤ X} μ(n) n^{-s}` and let `E_X(z) = exp((z/X)^2) ((z-1)ζ(z) M_X(z) - (z-1)) / z`
+be the Gaussian-regularized pole-cleared mollified zeta error (`inghamGabrielPoleClearedError`
+with `κ = 1`, `T = X`). This module proves that on the fixed right line `Re z = 181/180` every
+window of length `2X`, centred at any height, satisfies `∫_{-X}^{X} |E_X(z+it)|^2 dt ≤ C X^{-1/180}`
+with `C` independent of the centre. The proof bounds the raw mean square of `ζ M_X - 1` on
+symmetric windows `[-N, N]`, covers the translated window by `N = ⌈|Im z| + X⌉`, and absorbs the
+linear growth in `N` by the Gaussian decay `exp(-2 (max(0, |Im z| - X)/X)^2)`.
+
+## Main results
+
+- `gaussianLinearWindowAbsorption`: for `X ≥ 4` and `N = ⌈|τ| + X⌉`,
+  `exp(-2 (max(0, |τ| - X)/X)^2) N ≤ 4 e^{1/2} X`.
+- `integral_Icc_normSq_inghamMollifiedError_powerSavingRightEdge_symmetric_le`: explicit bound
+  for `∫_{-N}^{N} |ζ M_X - 1|^2 (181/180 + it) dt` of the form `A X^{-1/180} + B X^{-181/180} N`.
+- `exists_inghamGabrielPoleClearedError_powerSavingRight_translatedMoment_le`: some `C ≥ 0` gives
+  `∫_{-X}^{X} |E_X(z+it)|^2 dt ≤ C X^{-1/180}` for all `X ≥ 4` and all `z` with `Re z = 181/180`.
+
+## Hypotheses
+
+The main results are unconditional. The only conditions are the ranges `X ≥ 4` (or `X, N ≥ 1` for
+the raw symmetric bound) and the abscissa condition `Re z = 181/180`.
+-/
+
 noncomputable section
 
 open Complex Set MeasureTheory intervalIntegral
 
 namespace RHTower.Sieve
 
+/-- Gaussian absorption of linear window growth: for `X ≥ 4`, any real `τ` and
+`N = ⌈|τ| + X⌉`, `exp(-2 (max(0, |τ| - X)/X)^2) N ≤ 4 e^{1/2} X`. -/
 theorem gaussianLinearWindowAbsorption
     (X : ℕ) (tau : ℝ) (hX : 4 ≤ X) :
     let N := Nat.ceil (|tau| + (X : ℝ))
@@ -81,6 +109,9 @@ theorem gaussianLinearWindowAbsorption
     _ ≤ (X : ℝ) * (4 * Real.exp (1 / 2 : ℝ)) := by gcongr
     _ = 4 * Real.exp (1 / 2 : ℝ) * (X : ℝ) := by ring
 
+/-- Raw mean square on the line `Re s = 181/180` for `X, N ≥ 1`:
+`∫_{-N}^{N} |ζ(s) M_X(s) - 1|^2 dt ≤ A X^{-1/180} + B X^{-181/180} N`, with explicit constants
+`A`, `B` built from the divisor-bound constant `inghamPowerSavingDivisorConstant`. -/
 theorem integral_Icc_normSq_inghamMollifiedError_powerSavingRightEdge_symmetric_le
     {X N : ℕ} (hX : 1 ≤ X) (hN : 1 ≤ N) :
     (∫ t in Set.Icc (-(N : ℝ)) (N : ℝ),
@@ -163,6 +194,7 @@ theorem integral_Icc_normSq_inghamMollifiedError_powerSavingRightEdge_symmetric_
 private def powerSavingRightPoint (t : ℝ) : ℂ :=
   (inghamPowerSavingRightEdge : ℂ) + (t : ℂ) * I
 
+/-- The raw density `|ζ(s) M_X(s) - 1|^2` at `s = 181/180 + it`. -/
 private def powerSavingRightRawDensity (X : ℕ) (t : ℝ) : ℝ :=
   ‖riemannZeta (powerSavingRightPoint t) *
       inghamMollifier X (powerSavingRightPoint t) - 1‖ ^ (2 : ℝ)
@@ -199,6 +231,8 @@ private theorem right_setIntegral_Icc_eq_intervalIntegral
   rw [intervalIntegral.integral_of_le hab,
     ← MeasureTheory.integral_Icc_eq_integral_Ioc]
 
+/-- A window `[τ - X, τ + X]` lies inside `[-N, N]` when `|τ| + X ≤ N`, so its raw mean square is
+at most the symmetric one. -/
 private theorem translated_powerSavingRightRawDensity_integral_le
     (X N : ℕ) (tau : ℝ) (hcover : |tau| + (X : ℝ) ≤ N) :
     (∫ t in Icc (-(X : ℝ)) (X : ℝ),
@@ -268,6 +302,8 @@ private theorem right_max_sub_le_abs_add
   apply max_le (abs_nonneg _)
   linarith
 
+/-- Pointwise comparison on a translated window: for `Re z = 181/180`, `X ≥ 4` and `|t| ≤ X`,
+`|E_X(z+it)|^2 ≤ e^8 exp(-2 (max(0, |Im z| - X)/X)^2) |ζ M_X - 1|^2 (z+it)`. -/
 private theorem poleCleared_powerSavingRight_shift_rpow_le
     (X : ℕ) {z : ℂ} (hz : z.re = inghamPowerSavingRightEdge) (hX : 4 ≤ X)
     {t : ℝ} (ht : t ∈ Icc (-(X : ℝ)) (X : ℝ)) :
@@ -352,6 +388,9 @@ private theorem poleCleared_powerSavingRight_shift_rpow_le
   rw [Real.mul_rpow (by positivity) (norm_nonneg _), hconst] at hrpow
   simpa only [powerSavingRightRawDensity, d, y] using hrpow
 
+/-- Uniform translated moment on `Re z = 181/180`: some `C ≥ 0` gives
+`∫_{-X}^{X} |E_X(z+it)|^2 dt ≤ C X^{-1/180}` for every `X ≥ 4` and every `z` with
+`Re z = 181/180`, where `E_X` is the Gaussian pole-cleared mollified zeta error. -/
 theorem exists_inghamGabrielPoleClearedError_powerSavingRight_translatedMoment_le :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {X : ℕ}, 4 ≤ X → ∀ z : ℂ,
       z.re = inghamPowerSavingRightEdge →

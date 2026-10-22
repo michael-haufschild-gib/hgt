@@ -1,6 +1,29 @@
 import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
 import GaloisForLFunctions.HTGeometry.PaperFourierLLogL.Weak.Layers
 
+/-!
+# A median bound for the Fourier maximal function on the `L log L` unit ball
+
+The level set `cloudSet f θ = {x | sup_N |S_N f(x)| > θ}` of the symmetric Fourier maximal
+function. Assuming the good-set estimate `GoodBound` for bounded functions at exponential heights,
+each height piece of `f` (bounded part and height layers, normalized by their allowance) receives a
+good set with small complement and controlled maximal integral. Markov's inequality on the summed
+majorant then gives one threshold `L > 0` with `|{M f > L}| ≤ 1/16` for every `f` in the modular
+unit ball `inside f` (`f ∈ L log L` with `∫ |f| log(2 + |f|) ≤ 1`).
+
+## Main results
+
+- `cloudSet`, `cloud_meas`, `cloudy`: the maximal level set, its measurability, and
+  `x ∈ cloudSet f s ↔ ∃ N, s < |S_N f(x)|` for `s ≥ 0`.
+- `median_budget`: assuming `GoodBound`, there is `L > 0` with `|cloudSet f L| ≤ 1/16` for all `f`
+  in the modular unit ball.
+
+## Hypotheses
+
+`median_budget` is conditional on `GoodBound`, the Prop-valued good-set estimate for the maximal
+partial-sum operator (proved elsewhere in the development as `FourierLLogL.maximal_good_sets`).
+-/
+
 noncomputable section
 open MeasureTheory Filter Set Function
 open scoped ENNReal BigOperators Topology
@@ -8,6 +31,7 @@ open scoped ENNReal BigOperators Topology
 namespace GaloisForLFunctions.HTGeometry
 
 namespace FourierLLogL
+/-- Level set `{x | θ < sup_N |S_N f(x)|}` of the symmetric Fourier maximal function. -/
 def cloudSet (f : Torus → ℂ) (th : ℝ) :=
     {x : Torus | ENNReal.ofReal th < symmetricMaximal f x}
 
@@ -18,12 +42,16 @@ variable {f : Torus → ℂ}
 lemma cloud_meas (f : Torus → ℂ) (s : ℝ) : MeasurableSet (cloudSet f s) :=
     measurableSet_lt measurable_const (measurable_symmetricMaximal f)
 
+/-- For `s ≥ 0`, `x ∈ cloudSet f s` iff some partial sum satisfies `s < |S_N f(x)|`. -/
 lemma cloudy (f : Torus → ℂ) {s : ℝ} (hs : 0 ≤ s) (x : Torus) :
     x ∈ cloudSet f s ↔ ∃ N, s < ‖symmetricPartialSum f N x‖ := by
   change _ < ⨆ N, ENNReal.ofReal ‖symmetricPartialSum f N x‖ ↔ _
   rw [lt_iSup_iff]
   simp only [ENNReal.ofReal_lt_ofReal_iff_of_nonneg hs]
 
+/-- Assuming `GoodBound`: constants `d ≥ 0`, `L ≥ 4` with `∑ₙ d/(n+L+1)² ≤ 1/32`, and for each
+height piece `n` of `f` a good set of complement at most `d/(n+L+1)²` on which the maximal
+function of the piece integrates to at most `allowance f n · d · 2^{n+L}`. -/
 private lemma good_law (h : GoodBound) :
     ∃ (d : ℝ), 0 ≤ d ∧ ∃ (L : ℕ), 4 ≤ L ∧
     (∑' (n : ℕ), ENNReal.ofReal (d/((n+L:ℕ)+1:ℝ)^2)) ≤ ENNReal.ofReal (1/32:ℝ) ∧
@@ -71,6 +99,8 @@ private lemma good_law (h : GoodBound) :
     ENNReal.ofReal_mul ha.le]
   exact mul_le_mul_right hT _
 
+/-- Assuming `GoodBound`, one threshold `L > 0` satisfies `|{M f > L}| ≤ 1/16` for every `f` in
+the modular unit ball. -/
 lemma median_budget (hp : GoodBound) :
     ∃ L : ℝ, 0 < L ∧ ∀ (f : Torus → ℂ), inside f → circleMeasure.real (cloudSet f L) ≤ 1/16 := by
   classical

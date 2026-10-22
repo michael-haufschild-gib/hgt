@@ -5,11 +5,35 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 
+/-!
+# Positivity of the damped cos–cosh Li-clock cutoff integral
+
+This module studies the truncated integral
+`C(u, v, a, T) = ∫₀ᵀ e^{-a t} (1 - cos(u t) cosh(v t)) / t dt` and proves it is strictly positive
+whenever `0 ≤ v ≤ u`, `0 < u`, `v ≤ a` and `T > 0`. The case `v = 0` is direct, since the
+integrand is nonnegative and positive near `0`. For `v > 0`, the diagonal `C(v, v, v, T)` is
+rescaled to `C(1, 1, 1, vT)`, whose positivity follows from `cos x cosh x < 1` on `(0, π/2]` and an
+integration by parts against `sin` beyond `π/2`; `C` is monotone increasing in the frequency `u`
+(its `u`-derivative is a nonnegative damped sine integral), and extra damping `a > v` is handled
+by an integration by parts in `T`.
+
+## Main results
+
+- `liClockCoshCosCutoff_pos`: if `0 ≤ v ≤ u`, `0 < u`, `v ≤ a` and `0 < T`, then
+  `∫₀ᵀ e^{-a t} (1 - cos(u t) cosh(v t)) / t dt > 0`.
+
+## Hypotheses
+
+Unconditional; the theorem holds on the stated parameter range `0 ≤ v ≤ u`, `0 < u`, `v ≤ a`,
+`0 < T`.
+-/
+
 open MeasureTheory Set Filter
 open scoped Topology
 namespace RHTower
 noncomputable section
 
+/-- Damped cos–cosh cutoff `C(u, v, a, T) = ∫₀ᵀ e^{-a t} (1 - cos(u t) cosh(v t)) / t dt`. -/
 def liClockCoshCosCutoff (u v a T : ℝ) : ℝ :=
   ∫ t in (0 : ℝ)..T,
     Real.exp (-a * t) *
@@ -59,6 +83,8 @@ private theorem cgCutoff_continuous (u v a : ℝ) :
     Continuous (liClockCoshCosCutoff u v a) :=
   continuous_iff_continuousAt.mpr (fun T => (cgCutoff_hasDerivAt_time u v a T).continuousAt)
 
+/-- If `w ≥ 0` is nonincreasing on `[0, R]`, then `∫₀ᴿ w(x) sin x dx ≥ 0` (integration by parts
+against `1 - cos x`). -/
 private theorem cgWeightedSine_nonneg {w w' : ℝ → ℝ} {R : ℝ} (hR : 0 ≤ R)
     (hw : ContinuousOn w (Icc 0 R)) (hw' : ContinuousOn w' (Icc 0 R))
     (hd : ∀ x ∈ Icc 0 R, HasDerivAt w (w' x) x)
@@ -86,6 +112,7 @@ private theorem cgWeightedSine_nonneg {w w' : ℝ → ℝ} {R : ℝ} (hR : 0 ≤
     mul_nonneg (hn R ⟨hR,le_rfl⟩) (sub_nonneg.mpr (Real.cos_le_one R))
   linarith
 
+/-- For `b ≥ 0`, `u > 0`, `T ≥ 0`: `∫₀ᵀ e^{-b t} sin(u t) dt ≥ 0`. -/
 private theorem cgDampedSine_nonneg {b u T : ℝ} (hb : 0 ≤ b) (hu : 0 < u)
     (hT : 0 ≤ T) : 0 ≤ ∫ t in 0..T, Real.exp (-b*t)*Real.sin (u*t) := by
   let w := fun x : ℝ => Real.exp (-(b/u)*x)
@@ -123,6 +150,7 @@ private theorem cgCosCosh_hasDerivAt (x : ℝ) :
   convert (Real.hasDerivAt_cos x).mul (Real.hasDerivAt_cosh x) using 1 <;>
     first | rfl | (dsimp [cgCosCoshDerivative]; ring)
 
+/-- `cos x cosh x < 1` for `0 < x ≤ π/2`. -/
 private theorem cgCosCosh_lt_one {x : ℝ} (hx : 0 < x) (hB : x ≤ Real.pi/2) :
     Real.cos x*Real.cosh x < 1 := by
   have hq : StrictAntiOn cgCosCoshDerivative (Icc 0 (Real.pi/2)) :=
@@ -224,6 +252,7 @@ private theorem cgCutoff_frequency_derivative_nonneg {u v a T : ℝ}
     (cgDampedSine_nonneg (sub_nonneg.mpr ha) hu hT)
     (cgDampedSine_nonneg (by linarith) hu hT))
 
+/-- For `0 ≤ v ≤ a` and `T ≥ 0`, the cutoff `C(u, v, a, T)` is monotone in the frequency `u > 0`. -/
 private theorem cgCutoff_monotone_frequency {v a T : ℝ}
     (hv : 0 ≤ v) (ha : v ≤ a) (hT : 0 ≤ T) :
     MonotoneOn (fun u => liClockCoshCosCutoff u v a T) (Ioi 0) := by
@@ -326,6 +355,7 @@ private theorem cgDiagonal_tail_eq {X : ℝ} (hX : Real.pi/2 ≤ X) :
         intervalIntegral.integral_add hE hW.intervalIntegrable, ← htr]
       ring
 
+/-- The unit diagonal cutoff `C(1, 1, 1, X)` is positive for every `X > 0`. -/
 private theorem cgDiagonal_pos {X : ℝ} (hX : 0 < X) :
     0 < liClockCoshCosCutoff 1 1 1 X := by
   by_cases hB : X ≤ Real.pi/2
@@ -339,6 +369,7 @@ private theorem cgDiagonal_pos {X : ℝ} (hX : 0 < X) :
     have h2 := cgShiftedSine_nonneg (sub_nonneg.mpr hBX)
     linarith
 
+/-- Scaling law on the diagonal: `C(v, v, v, T) = C(1, 1, 1, v T)` for `v > 0`. -/
 private theorem cgDiagonal_scale {v T : ℝ} (hv : 0 < v) :
     liClockCoshCosCutoff v v v T = liClockCoshCosCutoff 1 1 1 (v*T) := by
   have he : cgProfile v v v = fun t => v*cgProfile 1 1 1 (v*t) := by
@@ -362,6 +393,8 @@ private theorem cgBaseline_pos {u v T : ℝ} (hv : 0 < v) (huv : v ≤ u) (hT : 
   have h1 := cgCutoff_monotone_frequency hv.le le_rfl hT.le hv (hv.trans_le huv) huv
   exact h0.trans_le h1
 
+/-- Damping transfer by parts: `C(u, v, a, T) = e^{-(a-v)T} C(u, v, v, T)
++ (a - v) ∫₀ᵀ e^{-(a-v)t} C(u, v, v, t) dt`. -/
 private theorem cgDamping_eq (u v a T : ℝ) :
     liClockCoshCosCutoff u v a T =
       Real.exp (-(a-v)*T)*liClockCoshCosCutoff u v v T+
@@ -426,6 +459,7 @@ private theorem cgZeroHyperbolic_profile_nonneg {u a t : ℝ} (ht : 0 ≤ t) :
     simp only [zero_mul,Real.cosh_zero,mul_one]
     exact div_nonneg (mul_nonneg (Real.exp_pos _).le (sub_nonneg.mpr (Real.cos_le_one _))) ht
 
+/-- With no hyperbolic part, `C(u, 0, a, T) > 0` for `u > 0`, `T > 0`. -/
 private theorem cgZeroHyperbolic_pos {u a T : ℝ} (hu : 0 < u) (hT : 0 < T) :
     0 < liClockCoshCosCutoff u 0 a T := by
   let E := min T (Real.pi/u)
@@ -456,6 +490,8 @@ private theorem cgZeroHyperbolic_pos {u a T : ℝ} (hu : 0 < u) (hT : 0 < T) :
   rw [← hi]
   exact add_pos_of_pos_of_nonneg h0 h1
 
+/-- For `0 ≤ v ≤ u`, `0 < u`, `v ≤ a` and `0 < T`,
+`∫₀ᵀ e^{-a t} (1 - cos(u t) cosh(v t)) / t dt > 0`. -/
 theorem liClockCoshCosCutoff_pos {u v a T : ℝ}
     (hv : 0 ≤ v) (huv : v ≤ u) (hu : 0 < u)
     (ha : v ≤ a) (hT : 0 < T) :

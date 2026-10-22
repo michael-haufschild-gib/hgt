@@ -1,6 +1,36 @@
 import GaloisForLFunctions.RHTower.SelbergMaassModalMixedLoss
 import GaloisForLFunctions.RHTower.SelbergMaassPhaseProductLossLimit
 
+/-!
+# Vanishing horizontal mean of the mixed loss for exceptional Maass cusp forms
+
+Let `f` be a Maass cusp eigenform for the principal congruence subgroup `Γ(N+1)` and consider the
+vector of its deck-coordinate fields. The mixed loss `lossPair(v, w) = Re⟨v, w⟩ - Re⟨Tv, Tw⟩`
+measures the failure of the inversion transfer `T` (for fixed residues `r, s`) to preserve the real
+Gram pairing. The module expresses the period mean
+`∫_0^1 lossPair(∂_x F, ∂_y F)(t(N+1) + i) dt` of the loss between horizontal and vertical
+derivatives on the line `Im z = 1` as the real part of a normalized phase-averaged `L²` pairing of
+rescaled derivative readouts, approximates it by Fourier partial sums, and shows that for an
+exceptional eigenvalue `λ ∈ (0, 1/4)` every partial pairing has zero real part. Hence the period
+mean of the mixed loss vanishes for such forms.
+
+## Main results
+
+- `phasePairExact_re_eq_unitLossMean`: the real part of the exact phase pairing equals the period
+  mean of the mixed loss at height one.
+- `phasePairPartial_re_eq_zero`: for `λ ∈ (0, 1/4)`, the degree-`M` Fourier partial pairing has
+  zero real part, since each diagonal Fourier mode contributes zero loss.
+- `tendsto_phasePairPartial`: the Fourier partial pairings converge to the exact pairing.
+- `unitLossMean_eq_zero`: for `λ ∈ (0, 1/4)`, the period mean of the mixed loss at height one is
+  zero.
+
+## Hypotheses
+
+All results are unconditional statements about an arbitrary Maass cusp eigenform (a nonzero smooth
+cuspidal Laplace eigenfunction for `Γ(N+1)`). The vanishing results assume the eigenvalue lies in
+the exceptional range `(0, 1/4)`; the existence of such a form is not assumed.
+-/
+
 open Complex MeasureTheory Set Filter Topology UpperHalfPlane ModularGroup
 open scoped BigOperators
 namespace GaloisForLFunctions.RHTower.SelbergMaassPhaseProductMean
@@ -20,6 +50,8 @@ variable (N : ℕ) {lam : ℝ}
   (f : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) lam)
   (r s : ZMod (N + 1))
 
+/-- Normalized phase average `(N+1)^(-3) / 2 · ∑_i ⟨S_M H_i, S_M V_i⟩` of the `L²` pairings of the
+degree-`M` Fourier partial sums of the rescaled horizontal and vertical derivative readouts. -/
 def phasePairPartial (M : ℕ) : ℂ :=
   ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
@@ -29,6 +61,8 @@ def phasePairPartial (M : ℕ) : ℂ :=
         (fourierPartialSum
           (unitRescaledVerticalReadout N f (phaseReadout N r s i) 1) M)
 
+/-- Normalized phase average of the `L²(0,1)` pairings of the full rescaled horizontal and vertical
+derivative readouts at height one. -/
 def phasePairExact : ℂ :=
   ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ) *
     ∑ i : PhaseIndex N,
@@ -36,6 +70,8 @@ def phasePairExact : ℂ :=
         (unitRescaledHorizontalReadout N f (phaseReadout N r s i) 1)
         (unitRescaledVerticalReadout N f (phaseReadout N r s i) 1)
 
+/-- The real part of the exact phase pairing equals the period mean
+`∫_0^1 lossPair(∂_x F, ∂_y F)(t(N+1) + i) dt` of the mixed transfer loss at height one. -/
 theorem phasePairExact_re_eq_unitLossMean :
     (phasePairExact N f r s).re =
       ∫ t in (0 : ℝ)..1, lossPair N r s
@@ -124,6 +160,8 @@ private theorem diagonal_modal_loss_eq_zero
   rw [mul_sub, Complex.sub_re] at h
   exact h
 
+/-- For a Maass cusp eigenform with exceptional eigenvalue in `(0, 1/4)`, every Fourier partial phase
+pairing has zero real part, because each diagonal Fourier mode has vanishing mixed loss. -/
 theorem phasePairPartial_re_eq_zero
     (e : Ioo (0 : ℝ) (1 / 4))
     (g : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (e : ℝ))
@@ -215,6 +253,7 @@ theorem phasePairPartial_re_eq_zero
   exact Finset.sum_eq_zero fun n hn => hdiag n
 
 
+/-- The Fourier partial phase pairings converge to the exact phase pairing as `M → ∞`. -/
 theorem tendsto_phasePairPartial :
     Tendsto (phasePairPartial N f r s) atTop (nhds (phasePairExact N f r s)) := by
   classical
@@ -242,6 +281,8 @@ theorem tendsto_phasePairPartial :
   simpa only [Finset.sum_const_zero, Finset.sum_const] using
     (hsum Finset.univ).const_mul ((((N + 1 : ℕ) : ℝ)⁻¹ ^ (3 : ℕ) / 2 : ℝ) : ℂ)
 
+/-- For a Maass cusp eigenform for `Γ(N+1)` with exceptional eigenvalue in `(0, 1/4)`, the period
+mean of the mixed transfer loss between horizontal and vertical derivatives at height one is zero. -/
 theorem unitLossMean_eq_zero
     (e : Ioo (0 : ℝ) (1 / 4))
     (g : MaassCuspEigenform (realImage (CongruenceSubgroup.Gamma (N + 1))) (e : ℝ)) :

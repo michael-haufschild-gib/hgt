@@ -40,19 +40,16 @@ confirm the call matches.  Convenience, an earlier plan, and default habits neve
 
 1. Read `README.md`.
 2. Read `LEAN_OVERVIEW.md` for the current map.
-3. Search before proving -- this is the research tool, and it comes before mathlib and before
-   `rg`/`grep`:
+3. Search before proving -- the search tool comes before Mathlib and before `rg`/`grep`:
    `../scripts/formal_tools.py research "<query>"`
-   Run this command directly. Do not run `research --help` or read the search Python implementation
-   as preparation. Consult help/source only to diagnose a command execution failure or when explicitly
-   tasked with changing the search tool. Use available partial results; broaden or rephrase unhelpful queries.
-   Start services with `../launch.sh`; use `../launch.sh --restart` or `../launch.sh --stop`
-   to restart or stop them. New, edited and deleted Lean sources are indexed automatically.
-   Search covers declaration names, docstrings, statements and proof bodies, lexically and
-   semantically, and defaults to this project; `--scope mathlib` or `--scope all` reaches
-   installed Mathlib, which is lexical only. Describe the goal in words -- docstrings and
-   statements are embedded. Default request budget: 300 seconds; override with `--budget-seconds`.
-   Spaces mean AND; `--any` means OR. See "How Search Works Here" in `README.md`.
+   Run it directly; do not run `--help` or read the search code first. It searches keywords and
+   meaning together over this project's Lean and Markdown and the formalized pipeline cards;
+   edits are indexed automatically.
+   - A name or part of one: `research inverseClockK`; `--mode lexical` for a sub-second lookup.
+   - A result or a proof technique: describe it in words, then read `Candidate lemmas` first.
+   - Mathlib, only after our corpus: `--scope mathlib`, keyword-only -- query Lean names and terms.
+   - "Local Qdrant unavailable": run `../launch.sh` and retry.
+   Details: "How Search Works Here" in `README.md`.
 4. Only after the search tool has named the declarations and modules, use `rg` for exact
    source-text confirmation (a literal name's spelling, a tactic string, an import line):
    `rg "<name-or-concept>" GaloisForLFunctions`

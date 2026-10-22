@@ -1,5 +1,33 @@
 import GaloisForLFunctions.HTGeometry.NumberFieldArchimedeanJacobiSizeReduction
 
+/-!
+# Size reduction of Jacobi coordinates by the action of `SL_n(𝓞 K)`
+
+For a number field `K`, a positive archimedean form `A` is a positive-definite real symmetric
+matrix at every real place and a positive-definite Hermitian matrix at every complex place, with
+`SL_n(𝓞 K)` acting by placewise congruence. If `A = Uᵀ D U` (resp. `Uᴴ D U`) is a simultaneous
+Jacobi decomposition and `N` is a determinant-one integral matrix whose mixed embedding is
+unipotent upper triangular, then acting by `Nᵀ` transports the Jacobi data to `U N` with the same
+diagonal. Combined with the mixed size-reduction theorem, every positive archimedean form lies in
+the `SL_n(𝓞 K)`-orbit of a form with Jacobi data whose strictly upper unipotent entries are bounded
+by a constant depending only on `K`.
+
+## Main results
+
+- `numberFieldArchimedeanJacobiTransposeConj`: Jacobi data for `Nᵀ • A`, obtained by
+  right-multiplying the unipotent parts by the place evaluations of `N`.
+- `exists_numberFieldArchimedeanJacobi_actionSizeReductionRadius`: there is `C ≥ 0` depending
+  only on `K` such that every positive archimedean form `A` has some `g ∈ SL_n(𝓞 K)` and Jacobi
+  data for `g • A` with all strictly upper unipotent entries of absolute value at most `C`, at
+  every real and complex place.
+
+## Hypotheses
+
+The main theorem is unconditional. The transport construction takes as inputs `det N = 1` and
+the unipotent upper triangularity of the mixed embedding of `N`, both genuine properties of the
+matrix being acted with.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Matrix NumberField
@@ -26,12 +54,15 @@ theorem numberFieldComplexOrderMatrixAt_transpose
       (numberFieldComplexOrderMatrixAt w N)ᵀ := by
   rfl
 
+/-- The transpose `Nᵀ` of a determinant-one integral matrix, as an element of `SL_n(𝓞 K)`. -/
 def numberFieldTransposeSpecialLinear
     (N : Matrix (Fin n) (Fin n) (𝓞 K)) (hN : N.det = 1) :
     Matrix.SpecialLinearGroup (Fin n) (𝓞 K) :=
   ⟨Nᵀ, by simpa using hN⟩
 
 omit [NumberField K] in
+/-- If the mixed embedding of `N` is unipotent upper triangular, so is its evaluation at each
+real place. -/
 theorem numberFieldRealOrderMatrixAt_unipotentUpper
     (N : Matrix (Fin n) (Fin n) (𝓞 K))
     (hN : IsMixedUnipotentUpper (numberFieldMixedOrderMatrix N))
@@ -70,6 +101,9 @@ theorem numberFieldComplexOrderMatrixAt_unit
   exact h
 
 omit [NumberField K] in
+/-- Given Jacobi data `A = Uᵀ D U` (real places) and `Uᴴ D U` (complex places) and an integral
+`N` with `det N = 1` and unipotent upper mixed embedding, Jacobi data for `Nᵀ • A` with unipotent
+parts `U N_w` (real) and `U (N_wᵀ)ᴴ` (complex) and the same diagonals. -/
 def numberFieldArchimedeanJacobiTransposeConj
     (A : numberFieldArchimedeanPositiveForms K n)
     (J : NumberFieldArchimedeanJacobiData A)
@@ -145,6 +179,9 @@ def numberFieldArchimedeanJacobiTransposeConj
     simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose,
       Matrix.mul_assoc]
 
+/-- Size reduction in the orbit: there is `C ≥ 0` depending only on `K` such that every positive
+archimedean form `A` admits `g ∈ SL_n(𝓞 K)` and Jacobi data for `g • A` whose strictly upper
+unipotent entries are bounded by `C` at every real and complex place. -/
 theorem exists_numberFieldArchimedeanJacobi_actionSizeReductionRadius
     (K : Type*) [Field K] [NumberField K] :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (n : ℕ)

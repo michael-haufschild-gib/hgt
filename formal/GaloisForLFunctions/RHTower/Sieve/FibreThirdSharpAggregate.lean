@@ -1,24 +1,50 @@
 import GaloisForLFunctions.RHTower.Sieve.FibreThirdSharpPowerBound
 import GaloisForLFunctions.RHTower.CarrierLineSup
 
+/-!
+# Aggregating the sharp third-derivative fibre bounds over divisors
+
+The sharp third-derivative bound for the Type I fibre at divisor `b` of a dyadic range
+`A ≤ B ≤ 2A` is dominated by the factored envelope `C₁ b^(-1/2) + C₂ b^(-1)`, with coefficients
+`C₁, C₂` depending on `T, r, A`. Summing over `1 ≤ b ≤ K ≤ A` gives the aggregate bound
+`2 C₁ √K + C₂ H_K` with `H_K` the harmonic number, together with the log-weighted variants used
+for the Vaughan Type I sums.
+
+## Main results
+
+- `sum_sharpThirdDerivativeFibreBound_le`: `∑_{b ≤ K} F(b) ≤ 2 C₁ √K + C₂ H_K`.
+- `sum_log_sharpThirdDerivativeFibreBound_le`: `∑_{b ≤ K} log b · F(b) ≤ log K (2 C₁ √K + C₂ H_K)`.
+- `sum_two_sharpThirdDerivativeFibreBound_log_le`: `∑_{b ≤ K} 2 F(b) log(⌊(B-1)/b⌋) ≤
+  2 log B (2 C₁ √K + C₂ H_K)`.
+
+## Hypotheses
+
+All results are unconditional explicit inequalities. They assume `T, r > 0`, `1 ≤ A`, `K ≤ A`, the
+dyadic range `A ≤ B ≤ 2A`, and `1 ≤ K` for the log-weighted bound.
+-/
+
 namespace RHTower.Sieve
 
 open RHTower
 
 noncomputable section
 
+/-- The first envelope coefficient `C₁` is nonnegative for `T, r > 0`, `A ≥ 1`. -/
 theorem sharpThirdDerivativeFibreFirstCoefficient_nonneg {T r : ℝ}
     (hT : 0 < T) (hr : 0 < r) {A : ℕ} (hA : 1 ≤ A) :
     0 ≤ sharpThirdDerivativeFibreFirstCoefficient T r A := by
   rw [sharpThirdDerivativeFibreFirstCoefficient]
   positivity
 
+/-- The second envelope coefficient `C₂` is nonnegative for `T, r > 0`, `A ≥ 1`. -/
 theorem sharpThirdDerivativeFibreSecondCoefficient_nonneg {T r : ℝ}
     (hT : 0 < T) (hr : 0 < r) {A : ℕ} (hA : 1 ≤ A) :
     0 ≤ sharpThirdDerivativeFibreSecondCoefficient T r A := by
   rw [sharpThirdDerivativeFibreSecondCoefficient]
   positivity
 
+/-- Assuming `T, r > 0`, `1 ≤ A`, `K ≤ A` and `A ≤ B ≤ 2A`, the sharp third-derivative fibre bounds
+over divisors `1 ≤ b ≤ K` sum to at most `2 C₁ √K + C₂ H_K`. -/
 theorem sum_sharpThirdDerivativeFibreBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A B K : ℕ} (hA : 1 ≤ A) (hKA : K ≤ A)
     (hAB : A ≤ B) (hBA : B ≤ 2 * A) :
@@ -54,6 +80,8 @@ theorem sum_sharpThirdDerivativeFibreBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 <
   have hfirst := mul_le_mul_of_nonneg_left hhalf hC1
   nlinarith
 
+/-- Under the same assumptions and `1 ≤ K`, the `log b`-weighted fibre bounds sum to at most
+`log K (2 C₁ √K + C₂ H_K)`. -/
 theorem sum_log_sharpThirdDerivativeFibreBound_le {T r : ℝ} (hT : 0 < T) (hr : 0 < r)
     {A B K : ℕ} (hA : 1 ≤ A) (hK : 1 ≤ K) (hKA : K ≤ A)
     (hAB : A ≤ B) (hBA : B ≤ 2 * A) :
@@ -77,6 +105,7 @@ theorem sum_log_sharpThirdDerivativeFibreBound_le {T r : ℝ} (hT : 0 < T) (hr :
     (sum_sharpThirdDerivativeFibreBound_le hT hr hA hKA hAB hBA)
     (Real.log_nonneg hK1)
 
+/-- Under the same assumptions, `∑_{b ≤ K} 2 F(b) log(⌊(B-1)/b⌋) ≤ 2 log B (2 C₁ √K + C₂ H_K)`. -/
 theorem sum_two_sharpThirdDerivativeFibreBound_log_le {T r : ℝ}
     (hT : 0 < T) (hr : 0 < r) {A B K : ℕ} (hA : 1 ≤ A) (hKA : K ≤ A)
     (hAB : A ≤ B) (hBA : B ≤ 2 * A) :

@@ -1,5 +1,23 @@
 import GaloisForLFunctions.RHTower.Sieve.BivariateDiagonalShift
 
+/-!
+# Bivariate Dirichlet convolution at prime powers
+
+The bivariate Dirichlet convolution `(f ⋆ g)(m, n) = ∑_{x ∣ m, y ∣ n} f(x, y) g(m/x, n/y)`, evaluated
+at a pair of powers `(p^i, p^j)` of one prime `p`, reduces to the additive bivariate convolution of
+the exponent arrays `(a, b) ↦ f(p^a, p^b)` and `(a, b) ↦ g(p^a, p^b)`. This is the local Euler-factor
+step that turns bivariate multiplicative arithmetic into bivariate power-series algebra.
+
+## Main results
+
+- `bivariateDirichletConvolution_prime_pow`: for a prime `p`,
+  `(f ⋆ g)(p^i, p^j) = ∑_{a ≤ i, b ≤ j} f(p^a, p^b) g(p^(i-a), p^(j-b))`.
+
+## Hypotheses
+
+The result is unconditional; it assumes only that `p` is prime.
+-/
+
 open Finset
 open scoped BigOperators
 
@@ -13,6 +31,8 @@ private theorem sum_divisor_subtype_eq_sum' {M : Type*} [AddCommMonoid M]
   change (∑ x ∈ s.attach, f x.1) = _
   exact Finset.sum_attach s f
 
+/-- For a prime `p`, the bivariate Dirichlet convolution at `(p^i, p^j)` equals the additive
+bivariate convolution of the prime-power exponent arrays of `f` and `g` at `(i, j)`. -/
 theorem bivariateDirichletConvolution_prime_pow
     (f g : ℕ → ℕ → ℝ) {p i j : ℕ} (hp : p.Prime) :
     bivariateDirichletConvolution f g (p ^ i) (p ^ j) =

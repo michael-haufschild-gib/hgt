@@ -4,6 +4,33 @@ import GaloisForLFunctions.HTGeometry.ConstitutiveToeplitzDefectIndex
 import GaloisForLFunctions.HTGeometry.CircleSingularWitness
 import GaloisForLFunctions.Bottcher.ZeroSet
 
+/-!
+# Boundary values of nonzero bounded analytic functions on the disk vanish only on a null set
+
+This is the Privalov-type uniqueness statement for disk multipliers (bounded analytic functions on the
+unit disk): if the function is not identically zero in the disk, its boundary function on the unit
+circle is nonzero almost everywhere. The analytic input is an abstract no-extinction lemma: a uniformly
+bounded sequence of functions on a probability space whose `log |F_n|` integrals are bounded below
+cannot tend to zero on a set of positive measure. It is applied to the dilations `z ↦ g(r z)`, `r → 1`,
+of the quotient `g = f / z^n` (`n` the order of vanishing of `f` at the origin, so `g(0) ≠ 0`), using
+Jensen's lower bound for `log |g|` on circles.
+
+## Main results
+
+- `no_positive_measure_boundary_extinction_of_jensen_lower`: if `|F_n| ≤ B` a.e., `F_n` vanishes only on
+  null sets, `log |F_n|` is integrable with `∫ log |F_n| ≥ L`, then `F_n` cannot converge to `0` almost
+  everywhere on a set of positive measure.
+- `diskMultiplierBoundary_ne_zero_ae`: a disk multiplier that is nonzero at some point of the open unit
+  disk has boundary values that are nonzero for almost every point of the circle.
+
+## Hypotheses
+
+Unconditional. The extinction lemma takes as explicit hypotheses the uniform bound `B ≥ 1`, measurability,
+null zero sets, integrability of `log |F_n|` and the uniform lower bound `L` on its integral, on a
+probability space without atoms. The boundary theorem assumes only that the multiplier is not
+identically zero in the disk.
+-/
+
 open MeasureTheory Filter Topology Complex Metric
 open scoped ENNReal NNReal lp
 
@@ -11,11 +38,14 @@ namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
+/-- The backward shift by `n` on Hardy-space coefficient sequences: `(hardyBack n f)_k = f_(k+n)`. -/
 def hardyBack (n : ℕ) (f : HardyDisk) : HardyDisk := backOp n f
 
 @[simp] theorem hardyBack_apply (n : ℕ) (f : HardyDisk) (k : ℕ) :
     hardyBack n f k = f (k + n) := rfl
 
+/-- Shifting the coefficient sequence forward by `n` multiplies the Hardy function by `z^n` in the
+open unit disk. -/
 theorem hardyFun_shiftFun (n : ℕ) (f : HardyDisk) {z : ℂ} (hz : ‖z‖ < 1) :
     hardyFun ⟨shiftFun n f, memℓp_shiftFun (lp.memℓp f) n⟩ z =
       z ^ n * hardyFun f z := by
@@ -37,6 +67,7 @@ theorem hardyFun_shiftFun (n : ℕ) (f : HardyDisk) {z : ℂ} (hz : ‖z‖ < 1)
           ring
     _ = z ^ n * ∑' k, f k * z ^ k := tsum_mul_left
 
+/-- The value of a Hardy function at the origin is its zeroth coefficient. -/
 theorem hardyFun_zero (f : HardyDisk) : hardyFun f 0 = f 0 := by
   rw [hardyFun]
   rw [tsum_eq_single 0]
@@ -44,6 +75,9 @@ theorem hardyFun_zero (f : HardyDisk) : hardyFun f 0 = f 0 := by
   · intro b hb
     rw [zero_pow hb, mul_zero]
 
+/-- No extinction on positive measure: on an atomless probability space, a sequence `F_n` with
+`|F_n| ≤ B` (`B ≥ 1`), null zero sets, integrable `log |F_n|` and `∫ log |F_n| ≥ L` for all `n` cannot
+tend to `0` almost everywhere on a measurable set of positive measure. -/
 theorem no_positive_measure_boundary_extinction_of_jensen_lower
     {X : Type*} [MeasurableSpace X] {μ : Measure X} [IsProbabilityMeasure μ]
     [NullSingletonClass μ]
@@ -172,6 +206,8 @@ theorem no_positive_measure_boundary_extinction_of_jensen_lower
       _ < L := by linarith
   exact lt_irrefl L this
 
+/-- A disk multiplier that is nonzero at some point of the open unit disk has boundary function nonzero
+almost everywhere on the unit circle. -/
 theorem diskMultiplierBoundary_ne_zero_ae
     (φ : DiskMultiplier)
     (hφ : ∃ z ∈ Metric.ball (0 : ℂ) 1, φ.fn z ≠ 0) :

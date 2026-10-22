@@ -1,11 +1,44 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardLongFactorAbsorption
 import GaloisForLFunctions.RHTower.Sieve.MaynardCanonicalFactorDichotomy
 
+/-!
+# Robust factor groups in Heath-Brown boxes at a ready height
+
+In the degree-`k` Heath-Brown decomposition with Möbius cutoff `L`, each dyadic box `c` is a
+product of Dirichlet polynomials of truncated Möbius, constant-one and logarithm coefficients on
+dyadic blocks `[2^q, 2^{q+1})`, and a factor has logarithmic length `log_{T0} 2^q`. At a height `T0`
+satisfying `IsMaynardLongScaleReady` and a point `s = σ + iy` with `T0 ≤ y ≤ 2T0`, this module shows
+that a large box core forces a robust factor group: a nonempty set `u` of factors with total
+logarithmic length `α ∈ [t, 4t)`, grouped lower edge exactly `T0^α`, and
+`|∏_{i ∈ u} L(block_i, s)| ≥ (T0^α)^{1-σ}`. Long zeta or logarithm factors are first excluded by
+the readiness condition, so every factor is short and greedy grouping applies.
+
+## Main results
+
+- `exists_heathBrown_box_dyadic_robust_group_of_ready_scale`: one box with short Möbius factors,
+  total length at least `t` and a large core product contains a robust factor group.
+- `exists_heathBrown_eligible_robust_group_of_ready_scale`: if the eligible aggregate is at least
+  `V` at `s` and every eligible box satisfies the reserve inequality, some eligible box contains a
+  robust factor group.
+
+## Hypotheses
+
+The results are conditional. They take the scale predicate `IsMaynardLongScaleReady T0` (explicit
+scalar inequalities on `T0`, which hold for all large `T0`), the ranges `4/3 ≤ μ ≤ 19/9`,
+`t = μ/120`, `1 ≤ X ≤ T0^μ`, `σ ≥ 0`, `T0 ≤ y ≤ 2T0`, and: shortness of every Möbius factor
+(length `≤ 2t`); for the box lemma, total length `≥ t` and the core lower bound
+`|core(s)| ≥ (lower edge)^{1-σ}`; for the aggregate lemma, `V > 0`, the large-value premise
+`V ≤ |eligible aggregate(s)|` and the reserve inequality `cost · (lower edge)^{1-σ} ≤ V`.
+-/
+
 noncomputable section
 namespace RHTower.Sieve
 
 open Finset ArithmeticFunction
 
+/-- Robust group in one box. Assuming `IsMaynardLongScaleReady T0`, `4/3 ≤ μ ≤ 19/9`,
+`t = μ/120`, `X ≤ T0^μ`, `T0 ≤ y ≤ 2T0`, short Möbius factors, total length `≥ t` and a large core
+`|core(σ+iy)| ≥ (lower edge)^{1-σ}`, some factor group of length `α ∈ [t, 4t)` is large. -/
 theorem exists_heathBrown_box_dyadic_robust_group_of_ready_scale
     (L X k : ℕ) (c : HeathBrownBoxChoice L X k)
     {T0 t mu sigma y : ℝ} (hready : IsMaynardLongScaleReady T0)
@@ -58,6 +91,10 @@ theorem exists_heathBrown_box_dyadic_robust_group_of_ready_scale
     L X k c.m c.a c.b c.q hT0 ht0 hshort htotal
       ((sigma : ℂ) + (y : ℝ) * Complex.I) hcore
 
+/-- Robust group from a large eligible aggregate. Under the same scale hypotheses, assuming
+`V ≤ |eligible aggregate(σ+iy)|`, short Möbius factors in every box and the reserve inequality,
+some eligible box has a factor group `u` of length `α ∈ [t, 4t)` with
+`|∏_{u} L(block_i, σ+iy)| ≥ (T0^α)^{1-σ}`. -/
 theorem exists_heathBrown_eligible_robust_group_of_ready_scale
     (L X k : ℕ) (hk : 0 < k) {T0 t mu sigma y V : ℝ}
     (hready : IsMaynardLongScaleReady T0)

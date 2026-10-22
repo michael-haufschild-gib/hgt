@@ -5,6 +5,35 @@ import GaloisForLFunctions.HTGeometry.Critical.Source.AnalyticProjectionCoordina
 import GaloisForLFunctions.HTGeometry.Critical.Source.MeridianAssignments
 import GaloisForLFunctions.HTGeometry.TopologicalGroupTranslatedLoop
 
+/-!
+# Explicit source meridians of the critical horizon
+
+For horizon depths `m, n ≥ 2`, this module builds two explicit loops in the complex points of the
+critical source chart (the principal open of affine space in the raw coordinates) and identifies their
+images in the analytic observation chart `(ℂˣ)^2 × ℂ^(n+m-2)`. A loop representing the generator of
+`π₁(ℂˣ)` is scaled into the open unit disk; the raw-coordinate meridian assignments then vary one marked
+torus coordinate along this loop while keeping the source-chart denominator nonzero. Under the
+source-to-observation projection, the first loop winds once around the first torus coordinate while
+the second coordinate stays null-homotopic, and symmetrically for the second loop. After conjugating by
+connecting paths (the source chart and the torus-affine chart are path connected), the projected loops
+represent exactly the two fundamental generators of the torus-affine chart.
+
+## Main results
+
+- `criticalFirstGlobalProjectedMeridian_mk`, `criticalSecondGlobalProjectedMeridian_mk`: the conjugated
+  projected meridians represent the first and second fundamental generators of
+  `π₁((ℂˣ)^2 × ℂ^(n+m-2), 1)`.
+- `criticalFirstSourceMeridian_conjugate_mk`: the image of the first local source meridian, conjugated
+  by the chart connector, is the first torus generator.
+- `criticalSecondSourceMeridian_conjugate_mk`: the image of the second source meridian (based at the
+  first base point) is the second torus generator.
+
+## Hypotheses
+
+Unconditional for `m, n ≥ 2`, supplied as `Fact` instances. The connecting paths are chosen by path
+connectedness and do not affect the homotopy classes stated.
+-/
+
 namespace GaloisForLFunctions.HTGeometry
 
 open Path MvPolynomial
@@ -13,6 +42,7 @@ noncomputable section
 
 set_option maxHeartbeats 1000000
 
+/-- A nonzero scale `ε` such that `ε` times the chosen generator loop of `ℂˣ` stays in the open unit disk. -/
 noncomputable def criticalMeridianScale : ℂ :=
   Classical.choose
     (exists_scale_mul_complexUnitsPath_norm_lt_one complexUnitsFundamentalGeneratorPath)
@@ -22,6 +52,7 @@ theorem criticalMeridianScale_ne_zero : criticalMeridianScale ≠ 0 :=
     (exists_scale_mul_complexUnitsPath_norm_lt_one
       complexUnitsFundamentalGeneratorPath)).1
 
+/-- The scaled generator loop has norm strictly less than one at every time. -/
 theorem criticalMeridianScale_norm_lt_one (t : unitInterval) :
     ‖criticalMeridianScale * (complexUnitsFundamentalGeneratorPath t : ℂ)‖ < 1 :=
   (Classical.choose_spec
@@ -31,6 +62,7 @@ theorem criticalMeridianScale_norm_lt_one (t : unitInterval) :
 noncomputable def criticalMeridianScaleUnit : Units ℂ :=
   Units.mk0 criticalMeridianScale criticalMeridianScale_ne_zero
 
+/-- The generator loop of `ℂˣ` translated to the base point `ε`. -/
 def criticalMeridianScaledGeneratorPath :
     Path criticalMeridianScaleUnit criticalMeridianScaleUnit :=
   translatedLoopPath criticalMeridianScaleUnit complexUnitsFundamentalGeneratorPath
@@ -40,6 +72,7 @@ def criticalMeridianUnitBallBase : ComplexOpenUnitBall :=
     have h := criticalMeridianScale_norm_lt_one (0 : unitInterval)
     simpa [Metric.mem_ball, dist_zero_right] using h⟩
 
+/-- The scaled generator loop, viewed as a loop in the open unit disk. -/
 def criticalMeridianUnitBallPath :
     Path criticalMeridianUnitBallBase criticalMeridianUnitBallBase where
   toFun t := ⟨criticalMeridianScale * (complexUnitsFundamentalGeneratorPath t : ℂ), by
@@ -56,6 +89,8 @@ def criticalMeridianUnitBallPath :
 
 variable (m n : ℕ) [Fact (0 < m)] [Fact (0 < n)] [Fact (1 < m)] [Fact (1 < n)]
 
+/-- Base point of the first meridian: the first raw-coordinate meridian assignment at `ε`, a point of
+the source chart (chart polynomial nonzero). -/
 def criticalFirstMeridianAwayBase :
     {v : Fin (m + n) → ℂ //
       MvPolynomial.eval v (criticalSourceChartPoly ℂ m n) ≠ 0} :=
@@ -63,6 +98,7 @@ def criticalFirstMeridianAwayBase :
     criticalFirstMeridianRaw_chartPoly_ne_zero criticalMeridianScale_ne_zero
       (by simpa using criticalMeridianScale_norm_lt_one (0 : unitInterval))⟩
 
+/-- Base point of the second meridian: the second raw-coordinate meridian assignment at `ε`. -/
 def criticalSecondMeridianAwayBase :
     {v : Fin (m + n) → ℂ //
       MvPolynomial.eval v (criticalSourceChartPoly ℂ m n) ≠ 0} :=
@@ -70,6 +106,8 @@ def criticalSecondMeridianAwayBase :
     criticalSecondMeridianRaw_chartPoly_ne_zero criticalMeridianScale_ne_zero
       (by simpa using criticalMeridianScale_norm_lt_one (0 : unitInterval))⟩
 
+/-- The first meridian as a loop of raw-coordinate vectors avoiding the chart denominator: the first
+meridian assignment along the scaled generator loop. -/
 def criticalFirstMeridianAwayPath :
     Path (criticalFirstMeridianAwayBase m n) (criticalFirstMeridianAwayBase m n) where
   toFun t :=
@@ -90,6 +128,7 @@ def criticalFirstMeridianAwayPath :
     funext i
     simp [criticalFirstMeridianAwayBase]
 
+/-- The second meridian as a loop of raw-coordinate vectors avoiding the chart denominator. -/
 def criticalSecondMeridianAwayPath :
     Path (criticalSecondMeridianAwayBase m n) (criticalSecondMeridianAwayBase m n) where
   toFun t :=
@@ -110,6 +149,7 @@ def criticalSecondMeridianAwayPath :
     funext i
     simp [criticalSecondMeridianAwayBase]
 
+/-- The first meridian as a loop in the complex points of the critical source chart. -/
 def criticalFirstSourceLocalMeridian :
     Path
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -119,6 +159,7 @@ def criticalFirstSourceLocalMeridian :
   (criticalFirstMeridianAwayPath m n).map
     (AlgSpec.continuous_awayAlgPoint (criticalSourceChartPoly ℂ m n))
 
+/-- The second meridian as a loop in the complex points of the critical source chart. -/
 def criticalSecondSourceLocalMeridian :
     Path
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -128,6 +169,7 @@ def criticalSecondSourceLocalMeridian :
   (criticalSecondMeridianAwayPath m n).map
     (AlgSpec.continuous_awayAlgPoint (criticalSourceChartPoly ℂ m n))
 
+/-- The image of the first source meridian in the analytic observation torus-affine chart. -/
 def criticalFirstProjectedMeridian :
     Path
       (criticalSourceAnalyticProjectionContinuousMap (m := m) (n := n)
@@ -140,6 +182,7 @@ def criticalFirstProjectedMeridian :
     (criticalSourceAnalyticProjectionContinuousMap
       (m := m) (n := n)).continuous
 
+/-- The image of the second source meridian in the analytic observation torus-affine chart. -/
 def criticalSecondProjectedMeridian :
     Path
       (criticalSourceAnalyticProjectionContinuousMap (m := m) (n := n)
@@ -152,6 +195,7 @@ def criticalSecondProjectedMeridian :
     (criticalSourceAnalyticProjectionContinuousMap
       (m := m) (n := n)).continuous
 
+/-- The first torus coordinate of the first meridian's base point is `ε`. -/
 theorem criticalFirstProjectedMeridian_base_first :
     (criticalSourceAnalyticProjection
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -161,6 +205,7 @@ theorem criticalFirstProjectedMeridian_base_first :
   rw [criticalSourceAnalyticProjection_awayAlgPoint_first_val]
   exact criticalFirstMeridianRaw_marked (m := m) (n := n) criticalMeridianScale
 
+/-- The second torus coordinate of the second meridian's base point is `ε`. -/
 theorem criticalSecondProjectedMeridian_base_second :
     (criticalSourceAnalyticProjection
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -173,6 +218,7 @@ theorem criticalSecondProjectedMeridian_base_second :
   · exact criticalSecondMeridianRaw_zero
       (m := m) (n := n) criticalMeridianScale
 
+/-- The first torus coordinate of the projected first meridian is the scaled generator loop. -/
 theorem criticalFirstProjectedMeridian_first :
     (criticalFirstProjectedMeridian m n).map ContinuousMap.fst.continuous =
       criticalMeridianScaledGeneratorPath.cast
@@ -191,6 +237,7 @@ theorem criticalFirstProjectedMeridian_first :
   exact criticalFirstMeridianRaw_marked (m := m) (n := n)
     (criticalMeridianScale * (complexUnitsFundamentalGeneratorPath t : ℂ))
 
+/-- The second torus coordinate of the projected second meridian is the scaled generator loop. -/
 theorem criticalSecondProjectedMeridian_second :
     ((criticalSecondProjectedMeridian m n).map ContinuousMap.snd.continuous).map
         ContinuousMap.fst.continuous =
@@ -223,6 +270,7 @@ private theorem pathQuotient_mk_eq_refl_of_eq_cast
   subst y
   simpa using hp ▸ hq
 
+/-- For `|c| = 1`, the subtraction map sends a point `z` of the open unit disk to the unit `c - z`. -/
 @[simp] theorem complexOpenUnitBallSubtractionMap_coe
     (c : ℂ) (hc : ‖c‖ = 1) (z : ComplexOpenUnitBall) :
     ((complexOpenUnitBallSubtractionMap c hc z : Units ℂ) : ℂ) = c - z.1 := by
@@ -237,6 +285,7 @@ private theorem pathQuotient_mk_eq_refl_of_eq_cast
       exact (lt_self_iff_false 1).mp hz⟩ : {w : ℂ // w ≠ 0})
   exact congrArg Subtype.val h
 
+/-- When `n = m`, the second torus coordinate of the first base point is `(-1)^m - ε`. -/
 theorem criticalFirstProjectedMeridian_base_second_of_eq (h : n = m) :
     ContinuousMap.fst (ContinuousMap.snd
       (criticalSourceAnalyticProjectionContinuousMap (m := m) (n := n)
@@ -258,6 +307,7 @@ theorem criticalFirstProjectedMeridian_base_second_of_eq (h : n = m) :
     simp [criticalMeridianUnitBallBase]
   · exact criticalFirstMeridianRaw_zero (m := m) (n := m) criticalMeridianScale
 
+/-- When `n = m`, the first torus coordinate of the second base point is `(-1)^m - ε`. -/
 theorem criticalSecondProjectedMeridian_base_first_of_eq (h : n = m) :
     ContinuousMap.fst
       (criticalSourceAnalyticProjectionContinuousMap (m := m) (n := n)
@@ -277,6 +327,7 @@ theorem criticalSecondProjectedMeridian_base_first_of_eq (h : n = m) :
   rw [criticalSecondMeridianRaw_marked]
   simp [criticalMeridianUnitBallBase]
 
+/-- Along the projected first meridian, the second torus coordinate is null-homotopic. -/
 theorem criticalFirstProjectedMeridian_second_mk_eq_refl :
     Path.Homotopic.Quotient.mk
         (((criticalFirstProjectedMeridian m n).map
@@ -349,6 +400,7 @@ theorem criticalFirstProjectedMeridian_second_mk_eq_refl :
         (criticalMeridianScale *
           (complexUnitsFundamentalGeneratorPath t : ℂ))
 
+/-- Along the projected second meridian, the first torus coordinate is null-homotopic. -/
 theorem criticalSecondProjectedMeridian_first_mk_eq_refl :
     Path.Homotopic.Quotient.mk
         ((criticalSecondProjectedMeridian m n).map
@@ -495,6 +547,8 @@ private theorem conjugate_two_paths_cast_translatedLoopPath_mk
   simpa only [Path.Homotopic.Quotient.trans_assoc,
     Path.Homotopic.Quotient.mk_cast] using h
 
+/-- A path in the complex points of the source chart from the first meridian base point to the second,
+chosen using path connectedness of the source chart. -/
 def criticalSourceMeridianConnector :
     Path
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -505,6 +559,7 @@ def criticalSourceMeridianConnector :
     pathConnectedSpace_algSpec_criticalSourceChartRing m n
   exact PathConnectedSpace.somePath _ _
 
+/-- A path in the torus-affine chart from the identity to the projected first base point. -/
 def criticalChartMeridianConnector :
     Path (1 : ComplexTorusAffineChart (n + m - 2))
       (criticalSourceAnalyticProjectionContinuousMap (m := m) (n := n)
@@ -517,12 +572,14 @@ def criticalChartMeridianConnector :
     inferInstance
   exact PathConnectedSpace.somePath _ _
 
+/-- The projected first meridian conjugated to a loop at the identity of the torus-affine chart. -/
 def criticalFirstGlobalProjectedMeridian :
     Path (1 : ComplexTorusAffineChart (n + m - 2)) 1 :=
   (criticalChartMeridianConnector m n).trans
     ((criticalFirstProjectedMeridian m n).trans
       (criticalChartMeridianConnector m n).symm)
 
+/-- The projected second meridian conjugated to a loop at the identity of the torus-affine chart. -/
 def criticalSecondGlobalProjectedMeridian :
     Path (1 : ComplexTorusAffineChart (n + m - 2)) 1 :=
   let etaProjected := (criticalSourceMeridianConnector m n).map
@@ -540,6 +597,8 @@ def criticalSecondGlobalProjectedMeridian :
     ContinuousMap.fst (ContinuousMap.snd
       (1 : ComplexTorusAffineChart k)) = (1 : Units ℂ) := rfl
 
+/-- The conjugated projected first meridian represents the first fundamental generator of the
+torus-affine chart `(ℂˣ)^2 × ℂ^(n+m-2)`. -/
 theorem criticalFirstGlobalProjectedMeridian_mk :
     Path.Homotopic.Quotient.mk (criticalFirstGlobalProjectedMeridian m n) =
       torusChartFirstFundamentalGenerator (n + m - 2) := by
@@ -588,6 +647,8 @@ theorem criticalFirstGlobalProjectedMeridian_mk :
       (criticalFirstProjectedMeridian_second_mk_eq_refl m n)
     simpa using h
 
+/-- The conjugated projected second meridian represents the second fundamental generator of the
+torus-affine chart. -/
 theorem criticalSecondGlobalProjectedMeridian_mk :
     Path.Homotopic.Quotient.mk (criticalSecondGlobalProjectedMeridian m n) =
       torusChartSecondFundamentalGenerator (n + m - 2) := by
@@ -630,6 +691,7 @@ theorem criticalSecondGlobalProjectedMeridian_mk :
     case e'_2 => rfl
     case e'_3 => rfl
 
+/-- The second source meridian moved to the first base point by conjugating with the source connector. -/
 def criticalSecondSourceMeridian :
     Path
       (AlgSpec.awayAlgPoint (criticalSourceChartPoly ℂ m n)
@@ -640,6 +702,8 @@ def criticalSecondSourceMeridian :
     ((criticalSecondSourceLocalMeridian m n).trans
       (criticalSourceMeridianConnector m n).symm)
 
+/-- The class of the first local source meridian, pushed to the observation chart and conjugated by the
+chart connector, is the first torus generator. -/
 theorem criticalFirstSourceMeridian_conjugate_mk :
     (Path.Homotopic.Quotient.mk (criticalChartMeridianConnector m n)).trans
         (((Path.Homotopic.Quotient.mk
@@ -671,6 +735,8 @@ theorem criticalFirstSourceMeridian_conjugate_mk :
     (criticalChartMeridianConnector m n)] at h
   exact h
 
+/-- The class of the second source meridian (based at the first base point), pushed to the observation
+chart and conjugated by the chart connector, is the second torus generator. -/
 theorem criticalSecondSourceMeridian_conjugate_mk :
     (Path.Homotopic.Quotient.mk (criticalChartMeridianConnector m n)).trans
         (((Path.Homotopic.Quotient.mk
