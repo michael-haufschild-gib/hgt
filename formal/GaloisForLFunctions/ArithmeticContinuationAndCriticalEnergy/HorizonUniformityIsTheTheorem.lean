@@ -58,7 +58,8 @@ theorem escapeEnergy_nonneg {ε : ℝ} (hε : ε ≤ 1 / 2) (T : ℕ) : 0 ≤ es
   simp [escapeEnergy]
 
 /-- The endpoint budget is available with constant `0`. -/
-theorem admits_escapeEnergy_half : Admits escapeEnergy (1 / 2) := ⟨0, fun T => by simp⟩
+theorem admits_escapeEnergy_half : Admits escapeEnergy (1 / 2) :=
+  ⟨0, fun T => le_of_eq (escapeEnergy_half T)⟩
 
 /-- **The exact horizonwise continuation identity.**  For each horizon the loss is linear in
 `1 + Esc_T`, with the constant rate `2 log(T+1)`. -/
@@ -97,7 +98,7 @@ theorem not_cofinallyAdmits_escapeEnergy : ¬ CofinallyAdmits escapeEnergy := by
 /-- **The quantifier order is the mathematics.**  On no interval `[a, ½]` with `a > 0` does the
 escape family admit a horizon-free linear continuation budget — although it satisfies an exact
 linear continuation identity for each horizon separately, and is admitted at the endpoint. -/
-theorem not_linearContinuation_escapeEnergy {a : ℝ} (ha : 0 < a) (ha2 : a < 1 / 2) :
+theorem not_linearContinuation_escapeEnergy {a : ℝ} (ha2 : a < 1 / 2) :
     ¬ LinearContinuation escapeEnergy escapeEnergyDeriv a (1 / 2) := by
   intro hcont
   refine not_admits_escapeEnergy ha2 (Admits.of_linearContinuation (le_of_lt ha2) ?_ ?_ hcont

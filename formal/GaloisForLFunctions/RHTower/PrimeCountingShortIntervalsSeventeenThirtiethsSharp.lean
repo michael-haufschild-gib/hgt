@@ -141,7 +141,9 @@ theorem log_add_sub_log_le_div {x y : ℝ} (hx : 0 < x) (hy : 0 ≤ y) :
   have h1 : Real.log ((x + y) / x) ≤ (x + y) / x - 1 :=
     Real.log_le_sub_one_of_pos (by positivity)
   rw [Real.log_div (by linarith) hx.ne'] at h1
-  have h2 : (x + y) / x - 1 = y / x := by field_simp
+  have h2 : (x + y) / x - 1 = y / x := by
+    field_simp
+    ring
   linarith
 
 /-- `y/x ≤ x^{-1/100}` once `y ≤ x^{99/100}`. -/
@@ -195,7 +197,6 @@ theorem abs_psi_sub_theta_window_le {x y : ℝ} (hx : 4 ≤ x) (hy0 : 0 ≤ y) (
     have hstep : 2 * Real.sqrt (x + y) * Real.log (x + y)
         ≤ 2 * (2 * Real.sqrt x) * (2 * Real.log x) := by
       gcongr
-      exact Real.sqrt_nonneg _
     linarith
   rw [abs_le]
   constructor <;> linarith
@@ -326,8 +327,9 @@ theorem exists_abs_primeCounting_short_interval_le (hGM : GuthMaynardLargeValues
     have hLne : Real.log x ≠ 0 := hL0.ne'
     have hsplit : (N - Θ / Real.log x) + (Θ - y) / Real.log x = N - y / Real.log x := by
       field_simp
+      ring
     rw [hNeq, ← hsplit, ← hηdef]
-    exact le_trans (abs_add _ _) (transfer_pieces_le hA hΘb hp0 hp1 hB hs0 hq1 hq2 hq3)
+    exact le_trans (abs_add_le _ _) (transfer_pieces_le hA hΘb hp0 hp1 hB hs0 hq1 hq2 hq3)
   obtain ⟨x₀, hx₀⟩ := eventually_atTop.1 hmain
   exact ⟨max x₀ 4, le_max_right _ _, fun x hx => hx₀ x (le_trans (le_max_left _ _) hx)⟩
 

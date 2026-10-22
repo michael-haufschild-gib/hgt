@@ -92,6 +92,7 @@ private theorem entrance_boundary_tendsto {η : ℝ} (hη : 0 < η) :
       _ = ((N : ℝ) + 1) ^ (1 + (-1 - η)) := by
         rw [Real.rpow_add hN, Real.rpow_one]
       _ = _ := by congr 1; ring
+  dsimp only [Function.comp_def]
   push_cast
   rw [← he]
   field_simp [hN.ne']
@@ -141,8 +142,9 @@ theorem hasSum_arithmeticDampingEntrance_reciprocal_tail {η : ℝ} (hη : 0 < �
     (tendsto_atTop_add_const_right atTop (1 : ℝ)
       (tendsto_atTop_add_const_left atTop (N : ℝ)
         (tendsto_natCast_atTop_atTop (R := ℝ))))
-  have h := (tendsto_const_nhds.sub hp).const_mul (pmPowerDampedDivisorDensity η).re
-  simpa only [neg_add_rev, neg_one_mul, Nat.cast_add, Nat.cast_one,
+  have h := ((tendsto_const_nhds (x := ((N + 1 : ℕ) : ℝ) ^ (-1 - η))
+    (f := atTop (α := ℕ))).sub hp).const_mul (pmPowerDampedDivisorDensity η).re
+  simpa only [Function.comp_def, Nat.cast_add, Nat.cast_one,
     show -(1 + η) = -1 - η by ring, sub_zero] using h
 
 private theorem tendsto_arithmeticDampingPrefix_quotient {η : ℝ} (hη : 0 < η)
@@ -164,7 +166,7 @@ theorem tendsto_arithmeticDampingTransition {η : ℝ} (hη : 0 < η) (k : ℕ) 
     Tendsto (fun n : ℕ => arithmeticDampingTransition η n k) atTop
       (𝓝 (arithmeticDampingEntrance η k)) := by
   rcases eq_or_ne k 0 with rfl | hk
-  · simpa using (tendsto_const_nhds (x := (0 : ℝ)) (f := atTop (α := ℕ)))
+  · simp
   have hkpos : 0 < k := Nat.pos_of_ne_zero hk
   have h := (((tendsto_arithmeticDampingPrefix_quotient hη hkpos).const_mul
       ((k : ℝ) ^ (-η))).sub
