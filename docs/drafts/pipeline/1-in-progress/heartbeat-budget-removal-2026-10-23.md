@@ -207,7 +207,7 @@ valid.
 - [ ] `RHTower/MobiusThetaInternalJetPrimeNormalComplexGraph.lean` (depth 9, 1)
 - [x] `RHTower/Sieve/MaynardReceiverMargin.lean` (depth 9, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellRouteTAllAmplitudeCount.lean` (depth 9, 1)
-- [ ] `RHTower/SoninCouplingBranchEstimate.lean` (depth 9, 1)
+- [x] `RHTower/SoninCouplingBranchEstimate.lean` (depth 9, 1)
 - [ ] `RHTower/SoninEulerCrossShellOverlap.lean` (depth 9, 1)
 - [ ] `RHTower/SoninPacketFourierModulation.lean` (depth 9, 1)
 - [ ] `RHTower/SoninShellProductIdeal.lean` (depth 9, 1)
@@ -513,7 +513,7 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/ZetaWideBand.lean` — narrowed order-transfer arithmetic; check and build passed.
 - [x] `RHTower/Sieve/ZetaWideRectangle.lean` — narrowed truncation-bound arithmetic; check and build passed.
 - [x] `RHTower/SoninApertureFourierParityNoGo.lean` — check and build passed; olean/ilean written.
-- `RHTower/SoninCouplingBranchEstimate.lean`
+- [x] `RHTower/SoninCouplingBranchEstimate.lean` — check and build passed; olean/ilean written.
 - `RHTower/SoninDilationSumFourierInjective.lean`
 - `RHTower/SoninEulerCornerConcrete.lean`
 - `RHTower/SoninMixedPhysicalBlockNonvanishing.lean`

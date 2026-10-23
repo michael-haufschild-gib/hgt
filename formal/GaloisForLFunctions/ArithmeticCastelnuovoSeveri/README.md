@@ -246,7 +246,13 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     already the two-prime orbit `ℤ log p + ℤ log q`, suffice; RH iff the Weil Gram matrices of these
     translates of one test are positive semidefinite (`zeta_cyclic_hodgeDefect_iff`,
     `riemannHypothesis_iff_ratHecke_negIndex_eq_zero`,
-    `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`). A single prime tower `g(· − k log p)` is
+    `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`). Symmetrizing the Hecke translates into
+    `symmTranslate s d g = ½(T_d g + s · testNeg (T_d g))` gives the **cyclic sector Pontryagin law**
+    (`cyclic_sector_pontryagin_law`, `zeta_cyclic_sector_hodgeDefect_ratHecke`,
+    `zeta_cyclic_sector_hodgeDefect_twoPrimes`): the `s`-symmetrized Hecke orbit of any one generic
+    test carries the exact sector cardinal `(sectorZeros Z s).encard`, and the degree-filtered
+    cyclic defect `cyclicHodgeDefectAt Z D g a` exhausts `(rightZeros Z).encard` as `a → ∞`
+    (`iSup_cyclicHodgeDefectAt`). A single prime tower `g(· − k log p)` is
     the period quotient (`TheHeckeTowerOfAPrimeIsThePeriodQuotient`): its Gram matrix is Toeplitz,
     `T_{p^k}` multiplies the coordinate at `ρ` by the Frobenius eigenvalue `p^{ρ − ½}`, and when the
     outer eigenvalues are finitely many the tower defect is exactly the number of them with nonzero
@@ -477,9 +483,19 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
    adjunction, Bézout positivity, Adams operations and Hecke graphs: all exact. Riemann–Roch: absent,
    and its existence with ample degrees is RH.
 2. **What does the failure of the Hodge index measure?** The number of distinct zeros right of the
-   line, filtered by degree, split by reflection sector, and carried by the Hecke orbit of any one
-   generic test; never depth or multiplicity. The growth of the defect floor in the degree is the
-   zero width.
+   line, filtered by degree (`iSup_hodgeDefectAt = (rightZeros Z).encard`), split additively by
+   reflection sector both globally (`rightZeros_encard_eq_sectorZeros_add`) and at every individual
+   degree (`hodgeDefectAt_eq_sectorHodgeDefectAt_add`, with `hodgeDefectAt zetaZeroConfig a = sectorHodgeDefectAt zetaZeroConfig 1 a`
+   for `a ≤ 181/500`, `zeta_hodgeDefectAt_eq_even_sectorHodgeDefectAt_of_le`), and carried by the
+   Hecke orbit — and sector-by-sector by the symmetrized Hecke orbit `symmTranslate s d g` — of any
+   one spectrally generic test (`cyclic_pontryagin_law`, `cyclic_sector_pontryagin_law`,
+   `zeta_cyclic_sector_hodgeDefect_ratHecke`, `zeta_cyclic_sector_hodgeDefect_twoPrimes`,
+   `iSup_cyclicHodgeDefectAt`); never depth or multiplicity
+   (`iSup_hodgeDefectAt_eq_of_rightZeros_encard_eq`, `multiPairConfig_depth_invariance`,
+   contrasted with the multiplicity-sensitive raw `L²` floor in
+   `offLineClusterConfig_hodgeDefect_vs_l2_floor`). The growth rate of the `H¹`-normalised defect
+   floor in the degree equals the zero width unconditionally (`oddDefectFloorRate_eq_zetaZeroWidth`,
+   `fullDefectFloorRate_eq_zetaZeroWidth`, `whatTheFailureOfTheHodgeIndexMeasures`).
 3. **Which arithmetic data force the sign?** Not span data, integrality, functional equation or
    positive Euler data — the golden datum has all of them and fails (`WhichArithmeticDataForceTheSign`).
    Raw point-count positivity `N_k ≥ 0` only tests `trace k ≤ q^{k/2} + q^{−k/2}` (`pointCount_nonneg_iff_trace_le_pole`),
@@ -671,3 +687,4 @@ Weil's argument.
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector reflected-prime/polar and Chebyshev ledgers, `(8 + ε) e^r` floor, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | universal Toeplitz–Rosati reflection identity, lag-2 trace–reflection–oscillation law, pole-masking equivalence `N_k ≥ 0 ⟺ trace k ≤ q^{k/2} + q^{−k/2}`, 9-way forcing TFAE over `𝔽_q` (`forcing_arithmetic_data_tfae`), forward light-cone Bézout (`hodgeIndex_bezout_tfae`, `goldenForwardPair_violates_openPositiveCone_bezout`), dual nef cone order-unit ampleness and ambient realizability obstruction, 9-way forcing TFAE on `scalingSurface` (`scalingSurface_forcing_tfae`) |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity` | double-null nef quadrant (`hodgeIndex_iff_openPositiveCone_subset_nefQuadrant`), Hecke/Adams stability of ample degrees (`forall_heckeCorrespondence_mem_ampleHalfSpace_iff_mem_nefQuadrant`), single-scale `heckeCorrespondence 2` ampleness equivalence (`scalingSurface_hodgeIndex_iff_heckeCorrespondence_openPositiveCone_ample`, `scalingSurface_hodgeIndex_iff_heckeStable_effectivity`), `(DoF) − (node count) = E(s)` (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`), shifted-pair node inflation (`generalizedTwoPoleDefect_shiftedPair_lt`), `99/4` & `69/2` prime-blind section vanishing (`primeBlind_eq_zero_of_spectralSecondMoment_le_sixty_nine_halves`, `finrank_primeBlind_subspace_eq_zero`), and diagonal relabeling invariance (`h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`, `sectionCount_riemannRoch_and_selectivity_master`) |
+| `WhatTheFailureOfTheHodgeIndexMeasures` | Hermitian inertia sub/superadditivity (`negIndex_add_le`, `add_le_negIndex_fromBlocks_zero`), exact reflection-sector orthogonality and degree-by-degree sector additivity (`W_eq_zero_of_even_odd`, `rightZeros_encard_eq_sectorZeros_add`, `hodgeDefectAt_eq_sectorHodgeDefectAt_add`, `zeta_hodgeDefectAt_eq_even_sectorHodgeDefectAt_of_le`), cyclic sector Pontryagin law and degree-filtered cyclic exhaustion (`cyclic_sector_pontryagin_law`, `zeta_cyclic_sector_hodgeDefect_ratHecke`, `zeta_cyclic_sector_hodgeDefect_twoPrimes`, `iSup_cyclicHodgeDefectAt`), multiplicity and depth invariance vs. `L²` floor scaling (`iSup_hodgeDefectAt_eq_of_rightZeros_encard_eq`, `multiPairConfig_depth_invariance`, `offLineClusterConfig_hodgeDefect_vs_l2_floor`), unconditional `H¹` Sobolev defect-floor equivalence and rate identity (`zetaZeroWidth_le_iff_scalingSubsurface_odd_sobolev_defect_floor`, `oddDefectFloorRate_eq_zetaZeroWidth`, `fullDefectFloorRate_eq_zetaZeroWidth`, `whatTheFailureOfTheHodgeIndexMeasures`) |

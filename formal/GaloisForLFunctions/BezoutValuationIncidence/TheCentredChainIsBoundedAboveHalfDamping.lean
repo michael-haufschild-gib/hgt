@@ -430,6 +430,72 @@ theorem sum_range_col_largeDivisorSum_le {η : ℝ} (hη : 1 / 2 < η) (k T : �
         mul_le_mul_of_nonneg_left hfinal hKpos
     _ = _ := hKpow
 
+/-! ### The pieces of an entry -/
+
+/-- Derivative part `(K/N) η K^{−1−η} (ρ + c_P (N/K)^β)`. -/
+def chainDerivativeTerm (η : ℝ) (n k : ℕ) : ℝ :=
+  ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) *
+    (η * ((k + 1 : ℕ) : ℝ) ^ (-1 - η) * ((pmPowerDampedDivisorDensity η).re +
+      chainSourceConstant η * (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) ^ (1 - chainSourceExponent η)))
+
+/-- Short-interval part `(K/N) K^{−η} (2ρ + c_P (2N/K²)^β + J)`. -/
+def chainShortTerm (η : ℝ) (n k : ℕ) : ℝ :=
+  ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) *
+    (((k + 1 : ℕ) : ℝ) ^ (-η) * (2 * (pmPowerDampedDivisorDensity η).re +
+      chainSourceConstant η *
+        (2 * ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2) ^ (1 - chainSourceExponent η) +
+      largeDivisorSum η ((n + 1) / (k + 1 + 1)) ((n + 1) / (k + 1))))
+
+/-- Jump-and-ramp part `(K/N) K^{−η} ((1 + 2ρ)(⌊N/K⌋ − ⌊N/(K+1)⌋) + ρ N/K²)`. -/
+def chainJumpTerm (η : ℝ) (n k : ℕ) : ℝ :=
+  ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) *
+    (((k + 1 : ℕ) : ℝ) ^ (-η) * ((1 + 2 * (pmPowerDampedDivisorDensity η).re) *
+        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) +
+      (pmPowerDampedDivisorDensity η).re * ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2))
+
+/-- The weight `w(i) = (i+1)^{−1/2}`. -/
+def chainWeight (i : ℕ) : ℝ := ((i + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))
+
+theorem chainWeight_pos (i : ℕ) : 0 < chainWeight i := Real.rpow_pos_of_pos (by positivity) _
+
+/-- The small-`K` regime `(k+1)(k+2) ≤ n+1`. -/
+def chainSmall (n k : ℕ) : Prop := (k + 1) * (k + 1 + 1) ≤ n + 1
+
+instance (n k : ℕ) : Decidable (chainSmall n k) := by unfold chainSmall; infer_instance
+
+theorem chainSmall_le {n k : ℕ} (h : chainSmall n k) : k ≤ n := by unfold chainSmall at h; nlinarith
+
+section Pieces
+
+variable {η : ℝ} (h1 : 1 / 2 < η) (h2 : η ≤ 1)
+include h1 h2
+
+theorem abs_centeredRow_le_pieces (n k : ℕ) :
+    |arithmeticDampingCenteredRow η n k| ≤
+      (if n < k then (1 + η) * (pmPowerDampedDivisorDensity η).re * ((k + 1 : ℕ) : ℝ) ^ (-1 - η)
+        else 0) +
+      (if k ≤ n then chainDerivativeTerm η n k else 0) +
+      (if chainSmall n k then chainShortTerm η n k else 0) +
+      (if k ≤ n ∧ ¬ chainSmall n k then chainJumpTerm η n k else 0) := by
+  have hη : 0 < η := by linarith
+  by_cases hnk : n < k
+  · have hs : ¬ chainSmall n k := fun h => absurd (chainSmall_le h) (by omega)
+    rw [if_pos hnk, if_neg (by omega), if_neg hs, if_neg (by tauto)]
+    simpa using abs_centeredRow_le_entrance hη hnk
+  · have hkn : k ≤ n := by omega
+    rw [if_neg hnk, if_pos hkn, zero_add]
+    by_cases hs : chainSmall n k
+    · rw [if_pos hs, if_neg (by tauto), add_zero]
+      have := abs_centeredRow_le_small h1 h2 hs
+      unfold chainDerivativeTerm chainShortTerm
+      rw [← mul_add]; exact this
+    · rw [if_neg hs, if_pos ⟨hkn, hs⟩, add_zero]
+      have := abs_centeredRow_le_large h1 h2 hkn
+      unfold chainDerivativeTerm chainJumpTerm
+      rw [← mul_add]; exact this
+
+end Pieces
+
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

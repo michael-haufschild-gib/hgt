@@ -32,7 +32,7 @@ jump is at `log 5 / 2` (`goldenDatum_hodgeDefectAt`).
 -/
 
 open Complex MeasureTheory Finset
-open scoped Real ComplexConjugate
+open scoped Real ComplexConjugate Matrix
 open Zeta23 GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig)
 
@@ -78,17 +78,17 @@ theorem integral_eq_sum_cells {h : ℝ → ℂ} (hh : Continuous h) {L : ℝ} (h
   rw [h1, ← hadj]
   refine Finset.sum_nbij' (fun k => (k : ℤ) - N) (fun j => (j + N).toNat) ?_ ?_ ?_ ?_ ?_
   · intro k hk
-    simp only [coe_range, Set.mem_Iio] at hk
-    simp only [coe_Ico, Set.mem_Ico]
+    rw [Finset.mem_range] at hk
+    rw [Finset.mem_Ico]
     omega
   · intro j hj
-    simp only [coe_Ico, Set.mem_Ico] at hj
-    simp only [coe_range, Set.mem_Iio]
+    rw [Finset.mem_Ico] at hj
+    rw [Finset.mem_range]
     omega
   · intro k _
     omega
   · intro j hj
-    simp only [coe_Ico, Set.mem_Ico] at hj
+    rw [Finset.mem_Ico] at hj
     omega
   · intro k _
     rw [intervalIntegral.integral_comp_add_right h]
@@ -120,7 +120,9 @@ theorem sum_eq_sum_window (S : Finset ℤ) (F U : ℤ → ℂ) (j₀ : ℤ) (n :
     (fun b _ _ c _ _ h => Fin.ext (by omega)) (fun j _ hj => ?_) (fun _ _ _ => rfl)
   obtain ⟨h1, h2⟩ := hwin j (hU j hj)
   have hj' : j₀ + (((j - j₀).toNat : ℕ) : ℤ) = j := by omega
-  exact ⟨⟨(j - j₀).toNat, by omega⟩, Finset.mem_univ _, by simpa [hj'] using hj, hj'⟩
+  refine ⟨⟨(j - j₀).toNat, by omega⟩, Finset.mem_univ _, ?_, hj'⟩
+  show U (j₀ + (((j - j₀).toNat : ℕ) : ℤ)) ≠ 0
+  rwa [hj']
 
 /-- Two offsets `2iw`, `2jw` (`i ≠ j < r`) stay more than `w` apart modulo `L` when
 `(2r − 1) w < L`. -/
@@ -414,38 +416,41 @@ theorem exists_narrow_test {w : ℝ} (hw : 0 < w) :
     ∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Set.Icc (-(w / 2)) (w / 2) ∧
       0 < ∫ u, ‖g u‖ ^ 2 := by
   have hw2 : 0 < w / 2 := half_pos hw
-  set ψ := smallBump (w / 2) hw2
   refine ⟨bumpTest (w / 2) hw2 0, bumpTest_contDiff hw2 0, ?_, ?_⟩
   · refine closure_minimal (fun u hu => ?_) isClosed_Icc
-    have hu' : u - 0 ∈ Function.support ψ := fun h => hu (by simp [bumpTest, ψ, h])
-    rw [ContDiffBump.support_eq, Metric.mem_ball, Real.dist_eq, sub_zero, sub_zero] at hu'
+    have hu' : u - 0 ∈ Function.support (smallBump (w / 2) hw2) := fun h =>
+      hu (show ((smallBump (w / 2) hw2 (u - 0) : ℝ) : ℂ) = 0 by rw [h, Complex.ofReal_zero])
+    have hr : (smallBump (w / 2) hw2).rOut = w / 2 := rfl
+    rw [ContDiffBump.support_eq, Metric.mem_ball, Real.dist_eq, sub_zero, sub_zero, hr] at hu'
     exact ⟨by linarith [neg_abs_le u], by linarith [le_abs_self u]⟩
-  · have h0 : ψ 0 = 1 := ψ.one_of_mem_closedBall (Metric.mem_closedBall_self ψ.rIn_pos.le)
-    exact ((bumpTest_contDiff hw2 0).continuous.norm.pow 2).integral_pos_of_hasCompactSupport_nonneg_nonzero
-      ((bumpTest_hasCompactSupport hw2 0).comp_left (g := fun z : ℂ => ‖z‖ ^ 2) (by simp))
-      (fun u => sq_nonneg _) (show (fun u => ‖bumpTest (w / 2) hw2 0 u‖ ^ 2) 0 ≠ 0 by
-        simp [bumpTest, ψ, h0])
+  · have h0 : smallBump (w / 2) hw2 0 = 1 := (smallBump (w / 2) hw2).one_of_mem_closedBall
+      (Metric.mem_closedBall_self (smallBump (w / 2) hw2).rIn_pos.le)
+    have hval : ∀ u, ‖bumpTest (w / 2) hw2 0 u‖ ^ 2 =
+        smallBump (w / 2) hw2 u * smallBump (w / 2) hw2 u := fun u => by
+      simp only [bumpTest, sub_zero, Complex.norm_real, Real.norm_eq_abs, sq_abs, sq]
+    simp only [hval]
+    exact ((smallBump (w / 2) hw2).continuous.mul
+      (smallBump (w / 2) hw2).continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
+        (smallBump (w / 2) hw2).hasCompactSupport.mul_left
+        (fun t => mul_self_nonneg (smallBump (w / 2) hw2 t))
+        (show (fun t => smallBump (w / 2) hw2 t * smallBump (w / 2) hw2 t) 0 ≠ 0 by simp [h0])
 
 /-- **Infinite defect above the threshold.** If the Frobenius window of size `⌈2a / log q⌉` has a
 negative square, the Hodge defect of the curve at degree `a` is infinite. -/
-theorem hodgeDefectAt_curveConfig_eq_top {a : ℝ} {v : Fin ⌈2 * a / Real.log D.q⌉₊ → ℂ}
-    (hv : hermQuad (D.spanGram ⌈2 * a / Real.log D.q⌉₊) v < 0) :
+theorem hodgeDefectAt_curveConfig_eq_top {a : ℝ} {n : ℕ} (hn : n = ⌈2 * a / Real.log D.q⌉₊)
+    {v : Fin n → ℂ} (hv : hermQuad (D.spanGram n) v < 0) :
     hodgeDefectAt (D.curveConfig hD) a = ⊤ := by
   classical
   have hL := D.log_q_pos
-  set n := ⌈2 * a / Real.log D.q⌉₊ with hn
   -- the window is nonempty, so `(n − 1) log q < 2a`
   have hn0 : 0 < n := by
     rcases Nat.eq_zero_or_pos n with h0 | h0
-    · exfalso
-      have : hermQuad (D.spanGram n) v = 0 := by
-        haveI : IsEmpty (Fin n) := by rw [h0]; infer_instance
-        simp [hermQuad, dotProduct]
-      linarith
+    · subst h0
+      simp [hermQuad, dotProduct] at hv
     · exact h0
   have hpos : 0 < 2 * a / Real.log D.q := by
     by_contra h
-    push_neg at h
+    push Not at h
     have : n = 0 := Nat.ceil_eq_zero.mpr h
     omega
   have hgap : ((n : ℝ) - 1) * Real.log D.q < 2 * a := by
@@ -540,9 +545,9 @@ theorem hodgeDefectAt_curveConfig (a : ℝ) :
       D.re_W_curveConfig_nonneg_of_window hD hf hfs (hermQuad_nonneg_of_negIndex_eq_zero h)
   · obtain ⟨v, hv⟩ : ∃ v, hermQuad (D.spanGram ⌈2 * a / Real.log D.q⌉₊) v < 0 := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       exact h (negIndex_eq_zero_of_hermQuad_nonneg hcon)
-    exact D.hodgeDefectAt_curveConfig_eq_top hD hv
+    exact D.hodgeDefectAt_curveConfig_eq_top hD rfl hv
 
 /-- The first window `G₁ = (t₀)` is positive semidefinite. -/
 theorem negIndex_spanGram_eq_zero_of_le_one {n : ℕ} (hn : n ≤ 1) :
@@ -591,7 +596,7 @@ theorem goldenDatum_hodgeDefectAt (a : ℝ) :
     rw [if_pos (goldenDatum.negIndex_spanGram_eq_zero_of_le_one hn), if_pos ha]
   · have hn : 2 ≤ ⌈2 * a / Real.log 5⌉₊ := by
       have h1 : ((1 : ℕ) : ℝ) < 2 * a / Real.log 5 := by
-        rw [Nat.cast_one, lt_div_iff₀ h5]; push_neg at ha; linarith
+        rw [Nat.cast_one, lt_div_iff₀ h5]; push Not at ha; linarith
       have := Nat.lt_ceil.mpr h1
       omega
     rw [if_neg (by rw [goldenDatum_negIndex_spanGram hn]; norm_num), if_neg ha]
