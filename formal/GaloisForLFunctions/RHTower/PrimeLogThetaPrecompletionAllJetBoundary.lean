@@ -70,7 +70,7 @@ theorem not_memℓp_primeLogThetaPrecompletionWeightedBoundaryAllJet
   nlinarith
 
 /-- The prime `3` already lies beyond the all-jet Hilbert threshold. -/
-theorem one_lt_log_three : 1 < Real.log (3 : ℝ) := by
+private theorem one_lt_log_three : 1 < Real.log (3 : ℝ) := by
   rw [Real.lt_log_iff_exp_lt (by norm_num)]
   exact Real.exp_one_lt_d9.trans (by norm_num)
 

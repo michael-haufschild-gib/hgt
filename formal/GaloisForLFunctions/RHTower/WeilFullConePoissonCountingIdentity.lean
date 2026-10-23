@@ -43,7 +43,7 @@ theorem hasDerivAt_arctan_shift (r b t : ℝ) (hb : 0 < b) :
   ring
 
 /-- The Poisson kernel of width `b` integrates over `[0,T]` to an arctangent difference. -/
-theorem integral_poissonKernel_eq (r b T : ℝ) (hb : 0 < b) :
+private theorem integral_poissonKernel_eq (r b T : ℝ) (hb : 0 < b) :
     ∫ t in (0 : ℝ)..T, b / (b ^ 2 + (r - t) ^ 2) =
       Real.arctan ((T - r) / b) + Real.arctan (r / b) := by
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hasDerivAt_arctan_shift r b t hb)

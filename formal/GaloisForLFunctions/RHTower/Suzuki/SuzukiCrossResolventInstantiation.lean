@@ -24,7 +24,7 @@ noncomputable def spectralOperator (b : OrthonormalBasis (Fin n) ℝ V) (t : Fin
   ∑ j, (t j * inner ℝ (b j) v) • b j
 
 /-- The resolvent at `lam` built from the same spectral data. -/
-noncomputable def spectralResolvent (b : OrthonormalBasis (Fin n) ℝ V) (t : Fin n → ℝ)
+private noncomputable def spectralResolvent (b : OrthonormalBasis (Fin n) ℝ V) (t : Fin n → ℝ)
     (lam : ℝ) (v : V) : V :=
   ∑ j, (inner ℝ (b j) v / (t j - lam)) • b j
 

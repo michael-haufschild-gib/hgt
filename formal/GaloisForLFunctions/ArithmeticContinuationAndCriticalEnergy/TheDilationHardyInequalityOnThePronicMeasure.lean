@@ -65,7 +65,7 @@ theorem pronicNorm_rowDilate_sq_le {q : ℕ} (hq : 1 ≤ q) (T : ℕ) (v : ℕ �
       ((1 / Real.sqrt (q : ℝ)) * pronicNorm T v) ^ 2 := by
     have hrhs : 0 ≤ (1 / Real.sqrt (q : ℝ)) * pronicNorm T v :=
       mul_nonneg (by positivity) (pronicNorm_nonneg T v)
-    exact pow_le_pow_left hnn h 2
+    exact pow_le_pow_left₀ hnn h 2
   have hroot : Real.sqrt (q : ℝ) ^ 2 = (q : ℝ) := Real.sq_sqrt hq0.le
   calc pronicNorm T (rowDilate q v) ^ 2
       ≤ ((1 / Real.sqrt (q : ℝ)) * pronicNorm T v) ^ 2 := hsq
@@ -79,8 +79,13 @@ theorem pronicNorm_rowDilate_sq_le {q : ℕ} (hq : 1 ≤ q) (T : ℕ) (v : ℕ �
 private theorem peterPaul_sq {s a b : ℝ} (hs : 1 < s) :
     (a + b) ^ 2 ≤ (s / (s - 1)) * a ^ 2 + s * b ^ 2 := by
   have hs1 : (0 : ℝ) < s - 1 := by linarith
-  rw [div_mul_eq_mul_div, ← sub_nonneg, ← sub_div_eq_sub_div_iff_of_pos hs1] <;>
-    nlinarith [sq_nonneg (a - (s - 1) * b), hs1]
+  -- the defect is the perfect square `(a − (s−1)b)² / (s−1)`
+  have key : (s / (s - 1)) * a ^ 2 + s * b ^ 2 - (a + b) ^ 2 =
+      (a - (s - 1) * b) ^ 2 / (s - 1) := by
+    field_simp
+    ring
+  have hsq := div_nonneg (sq_nonneg (a - (s - 1) * b)) hs1.le
+  linarith [key, hsq]
 
 /-- **The dilation Hardy inequality.**  With the Dirichlet condition at the root, the pronic energy
 of a row is controlled by the energy of its single dilation step, with the explicit constant
@@ -111,11 +116,11 @@ theorem pronicNorm_sq_le_dilationStepEnergy {q : ℕ} (hq : 2 ≤ q) (T : ℕ) (
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
     have hw : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
     have hpp := peterPaul_sq (s := s) (a := v n - v (n / q)) (b := v (n / q)) hs1
-    have hvn : v n = (v n - v (n / q)) + v (n / q) := by ring
-    rw [hvn]
-    rw [div_add_div_same] at *
-    rw [div_le_div_iff_of_pos_right hw] at *
-    · nlinarith [hpp, hw]
+    rw [show v n - v (n / q) + v (n / q) = v n by ring] at hpp
+    -- divide the pointwise split by the pronic weight
+    have hdiv := div_le_div_of_nonneg_right hpp hw.le
+    rw [add_div, mul_div_assoc, mul_div_assoc] at hdiv
+    simpa only [rowDilate] using hdiv
   -- the fibre bound closes the inequality
   have hcontr := pronicNorm_rowDilate_sq_le (q := q) (by omega) T v hv0
   have hqs : (1 / (q : ℝ)) = 1 / s ^ 2 := by rw [hsq]
@@ -127,7 +132,7 @@ theorem pronicNorm_sq_le_dilationStepEnergy {q : ℕ} (hq : 2 ≤ q) (T : ℕ) (
     have : s * pronicNorm T (rowDilate q v) ^ 2 ≤ s * ((1 / (q : ℝ)) * pronicNorm T v ^ 2) :=
       mul_le_mul_of_nonneg_left hcontr hspos.le
     have hred : s * ((1 / (q : ℝ)) * pronicNorm T v ^ 2) = (1 / s) * pronicNorm T v ^ 2 := by
-      rw [← hsq]; field_simp; ring
+      rw [← hsq]; field_simp
     linarith [this, hred.le, hred.ge]
   have hqdiv : (q : ℝ) / (s - 1) ^ 2 = s ^ 2 / (s - 1) ^ 2 := by rw [hsq]
   rw [hqdiv]
@@ -138,14 +143,13 @@ theorem pronicNorm_sq_le_dilationStepEnergy {q : ℕ} (hq : 2 ≤ q) (T : ℕ) (
   have hmul : ((s - 1) / s) * pronicNorm T v ^ 2 ≤ (s / (s - 1)) * dilationStepEnergy q T v :=
     hfinal
   have hpos : (0 : ℝ) < (s - 1) / s := by positivity
-  have := (div_le_div_iff_of_pos_right hpos).mpr
   calc pronicNorm T v ^ 2
       = (((s - 1) / s) * pronicNorm T v ^ 2) / ((s - 1) / s) := by
         field_simp
     _ ≤ ((s / (s - 1)) * dilationStepEnergy q T v) / ((s - 1) / s) := by
-        exact div_le_div_of_nonneg_right hmul hpos
+        exact div_le_div_of_nonneg_right hmul hpos.le
     _ = (s ^ 2 / (s - 1) ^ 2) * dilationStepEnergy q T v := by
-        field_simp; ring
+        field_simp
 
 /-- The reverse comparison: the dilation step energy is bounded by the pronic energy. -/
 theorem dilationStepEnergy_le {q : ℕ} (hq : 1 ≤ q) (T : ℕ) (v : ℕ → ℝ) (hv0 : v 0 = 0) :
@@ -160,7 +164,7 @@ theorem dilationStepEnergy_le {q : ℕ} (hq : 1 ≤ q) (T : ℕ) (v : ℕ → �
     have hn1 : 1 ≤ n := (mem_Icc.mp hn).1
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
     have hw : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
-    rw [div_add_div_same, div_le_div_iff_of_pos_right hw]
+    rw [mul_div_assoc', mul_div_assoc', ← add_div, div_le_div_iff_of_pos_right hw]
     have : (v n - v (n / q)) ^ 2 ≤ 2 * v n ^ 2 + 2 * v (n / q) ^ 2 := by
       nlinarith [sq_nonneg (v n + v (n / q))]
     simpa [rowDilate] using this

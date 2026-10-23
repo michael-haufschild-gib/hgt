@@ -253,16 +253,3 @@ import GaloisForLFunctions.BezoutValuationIncidence.CentredPrimeBlockBeatsTheLar
 import GaloisForLFunctions.BezoutValuationIncidence.ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis
 import GaloisForLFunctions.BezoutValuationIncidence.DualNormOfTheActualRowsBeatsTheLargeSieve
 import GaloisForLFunctions.BezoutValuationIncidence.CentredPrimeRowPassesTheCoherentBlockObstruction
-
-/-!
-# Bézout–Valuation Incidence (`GaloisForLFunctions.BezoutValuationIncidence`)
-
-Umbrella module for **Bézout–Valuation Incidence (BVI)**, a formal library studying the
-finite-horizon inverse observability, integer-lattice Smith normal form geometry, return-window
-reflection kernels, multi-functional spectral convexity, $k$-tuple Hardy–Littlewood admissibility
-coercivity, and non-periodic pronic/sawtooth renormalization of truncated divisor-sum discrepancies.
-
-See `formal/GaloisForLFunctions/BezoutValuationIncidence/README.md` for the motivation, core
-mathematical objects and Lean vocabulary, proof mechanisms, known traps and obstructions, and
-thematic entry points.
--/

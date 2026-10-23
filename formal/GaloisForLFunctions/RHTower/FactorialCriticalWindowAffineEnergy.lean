@@ -72,6 +72,7 @@ theorem integral_criticalWindowMeasure_eq_weight (f : ℝ → ℝ) :
   rw [integral_criticalWindowMeasure]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro v hv
+  dsimp only
   unfold criticalWindowWeight
   rw [Real.rpow_neg (zero_lt_one.trans hv).le, Real.rpow_two]
   ring

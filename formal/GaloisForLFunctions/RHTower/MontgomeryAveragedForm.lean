@@ -105,7 +105,7 @@ theorem integral_mul_triangleFn_one : ∫ β in (-1 : ℝ)..1, β * triangleFn 1
   linarith
 
 /-- The pair form at `T^{α₀ + β/R}` is continuous in `β`. -/
-theorem continuous_montgomeryForm_rpow {T : ℝ} (hT : 0 < T) (α₀ R : ℝ) :
+private theorem continuous_montgomeryForm_rpow {T : ℝ} (hT : 0 < T) (α₀ R : ℝ) :
     Continuous (fun β : ℝ =>
       montgomeryForm (zeroWindow T) (fun q : XiZeroCopy => (q.1 : ℂ)) (T ^ (α₀ + β / R))) := by
   unfold montgomeryForm

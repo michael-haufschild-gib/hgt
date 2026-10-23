@@ -28,7 +28,7 @@ noncomputable section
 variable {a : ℝ}
 
 /-- `x^s ≤ x^{s₁} + x^{s₂}` for `x ≥ 0` and `0 < s₁ ≤ s ≤ s₂`. -/
-theorem rpow_le_add_of_mem_Icc {x s s₁ s₂ : ℝ} (hx : 0 ≤ x) (h0 : 0 < s₁) (h₁ : s₁ ≤ s)
+private theorem rpow_le_add_of_mem_Icc {x s s₁ s₂ : ℝ} (hx : 0 ≤ x) (h0 : 0 < s₁) (h₁ : s₁ ≤ s)
     (h₂ : s ≤ s₂) : x ^ s ≤ x ^ s₁ + x ^ s₂ := by
   rcases hx.eq_or_lt with rfl | hx
   · rw [Real.zero_rpow (by linarith), Real.zero_rpow h0.ne', Real.zero_rpow (by linarith)]

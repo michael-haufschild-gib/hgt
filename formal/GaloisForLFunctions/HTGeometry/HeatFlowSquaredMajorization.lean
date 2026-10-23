@@ -57,7 +57,7 @@ theorem aeval_neg_derivSq_apply (Q : ℝ[X]) {p : ℝ[X]} {N : ℕ} (hN : p.natD
     rw [coeff_eq_zero_of_natDegree_lt (by omega), zero_mul, C_0, zero_mul]
 
 /-- The cosine series `Σ_k h^{2k}/(2k)! Y^k`. -/
-def cosSeries (h : ℝ) : PowerSeries ℝ := PowerSeries.mk (cosCoeff h)
+private def cosSeries (h : ℝ) : PowerSeries ℝ := PowerSeries.mk (cosCoeff h)
 
 theorem natDegree_evenOp_le (a : ℕ → ℝ) (q : ℝ[X]) : (evenOp a q).natDegree ≤ q.natDegree := by
   unfold evenOp

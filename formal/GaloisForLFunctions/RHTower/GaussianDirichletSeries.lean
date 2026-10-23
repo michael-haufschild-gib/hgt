@@ -65,7 +65,7 @@ theorem norm_gaussDirichletTerm_le {τ R : ℝ} (hτ : 0 < τ) (n : ℕ) {w : �
   have h3 : l * -w.re ≤ R * l := by nlinarith
   linarith
 
-theorem summable_inv_succ_sq : Summable (fun n : ℕ => (((n : ℝ) + 1) ^ 2)⁻¹) := by
+private theorem summable_inv_succ_sq : Summable (fun n : ℕ => (((n : ℝ) + 1) ^ 2)⁻¹) := by
   have h := (Real.summable_nat_pow_inv (p := 2)).mpr (by norm_num)
   have := (summable_nat_add_iff 1).mpr h
   simpa using this

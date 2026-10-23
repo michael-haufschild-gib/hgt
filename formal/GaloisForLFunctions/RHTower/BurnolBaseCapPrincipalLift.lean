@@ -37,7 +37,8 @@ theorem burnolBaseCap_principal_lift :
     graphCapBoundary_unique_lift _ h1 hx hxe⟩
 
 
-local instance : MeasurableSpace RoutePPrimitiveIndex := ⊤
+local instance measurableSpaceRoutePPrimitiveIndexCapPrincipalLift :
+    MeasurableSpace RoutePPrimitiveIndex := ⊤
 
 local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 

@@ -82,7 +82,7 @@ theorem lowerPolyaClass_XiC_shift {σ : ℝ} (hσ : ∀ q : XiZeroCopy, (xiSpect
     exact h.symm
 
 /-- `A_h(x) = Re Ξ(x + ih)` is a real zero exactly when the producer vanishes. -/
-theorem cosProducer_ofReal (h x : ℝ) :
+private theorem cosProducer_ofReal (h x : ℝ) :
     cosProducer h x = (((XiC ((x : ℂ) + h * I)).re : ℝ) : ℂ) := by
   unfold cosProducer
   have hconj : XiC ((x : ℂ) - h * I) = (starRingEnd ℂ) (XiC ((x : ℂ) + h * I)) := by

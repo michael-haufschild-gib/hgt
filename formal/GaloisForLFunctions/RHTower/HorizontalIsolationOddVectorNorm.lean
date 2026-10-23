@@ -27,7 +27,7 @@ namespace RHTower
 noncomputable section
 
 /-- `|sinh x| ≤ |x| cosh x`. -/
-theorem abs_sinh_le_abs_mul_cosh (x : ℝ) : |Real.sinh x| ≤ |x| * Real.cosh x := by
+private theorem abs_sinh_le_abs_mul_cosh (x : ℝ) : |Real.sinh x| ≤ |x| * Real.cosh x := by
   have key : ∀ y : ℝ, 0 ≤ y → Real.sinh y ≤ y * Real.cosh y := by
     intro y hy
     rcases eq_or_lt_of_le hy with h0 | hpos

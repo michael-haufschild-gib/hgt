@@ -25,7 +25,7 @@ noncomputable section
 
 namespace RHTower
 
-lemma re_mul_of_im_eq_zero {z w : ℂ} (hz : z.im = 0) (hw : w.im = 0) :
+private lemma re_mul_of_im_eq_zero {z w : ℂ} (hz : z.im = 0) (hw : w.im = 0) :
     (z * w).re = z.re * w.re ∧ (z * w).im = 0 := by
   constructor <;> simp [Complex.mul_re, Complex.mul_im, hz, hw]
 
@@ -63,7 +63,7 @@ theorem exists_siegel_auxiliary {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8)
     refine ⟨N₁, hN₁, χ₁, β, hq₁, h₁, hβ1, hβ2, fun N _ χ _ _ _ => ?_⟩
     rw [hz]; simp
   · push Not at hA
-    refine ⟨4, inferInstance, chiFour, 1 - η, chiFour_sq, chiFour_ne_one, le_rfl, by linarith,
+    refine ⟨4, inferInstance, chiFourChar, 1 - η, chiFour_sq, chiFour_ne_one, le_rfl, by linarith,
       fun N _ χ hq hχ h₁₂ => ?_⟩
     have hβ0 : 0 < 1 - η := by linarith
     have hpos : ∀ {M : ℕ} [NeZero M] (ψ : DirichletCharacter ℂ M), ψ ^ 2 = 1 → ψ ≠ 1 →
@@ -72,12 +72,12 @@ theorem exists_siegel_auxiliary {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8)
       exact LFunction_re_pos_of_no_zero hqψ hψ hβ0
         (fun σ h1 h2 => hA M inferInstance ψ σ hqψ hψ h1 h2) le_rfl (by linarith)
     rw [re_siegelProduct chiFour_sq hq chiFour_ne_one hχ h₁₂ hβ0]
-    have h1 := hpos chiFour chiFour_sq chiFour_ne_one
+    have h1 := hpos chiFourChar chiFour_sq chiFour_ne_one
     have h2 := hpos χ hq hχ
-    have h3 := hpos (productChar chiFour χ) (productChar_sq chiFour_sq hq) h₁₂
+    have h3 := hpos (productChar chiFourChar χ) (productChar_sq chiFour_sq hq) h₁₂
     have h0 := hζ (1 - η) le_rfl (by linarith)
-    have : 0 < (LFunction chiFour (1 - η : ℝ)).re * (LFunction χ (1 - η : ℝ)).re
-        * (LFunction (productChar chiFour χ) (1 - η : ℝ)).re := by positivity
+    have : 0 < (LFunction chiFourChar (1 - η : ℝ)).re * (LFunction χ (1 - η : ℝ)).re
+        * (LFunction (productChar chiFourChar χ) (1 - η : ℝ)).re := by positivity
     nlinarith
 
 /-- The numerical core of Siegel's theorem: from

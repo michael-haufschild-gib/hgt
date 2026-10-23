@@ -30,7 +30,7 @@ noncomputable section
 
 /-! ## The density exponent is below one -/
 
-theorem inghamHuxleyExponent_mul_lt_one {σ : ℝ} (h1 : 1 / 2 < σ) (h2 : σ < 1) :
+private theorem inghamHuxleyExponent_mul_lt_one {σ : ℝ} (h1 : 1 / 2 < σ) (h2 : σ < 1) :
     inghamHuxleyExponent σ * (1 - σ) < 1 := by
   unfold inghamHuxleyExponent
   split_ifs with ha hb

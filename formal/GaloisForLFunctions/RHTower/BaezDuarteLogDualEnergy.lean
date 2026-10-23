@@ -26,7 +26,7 @@ noncomputable section
 
 /-! ## Abel summation with weights of bounded variation -/
 
-theorem sum_mul_eq_abel (a v : ℕ → ℝ) (K : ℕ) :
+private theorem sum_mul_eq_abel (a v : ℕ → ℝ) (K : ℕ) :
     ∑ k ∈ Finset.Icc 1 K, a k * v k =
       (∑ k ∈ Finset.Icc 1 K, a k) * v (K + 1) +
         ∑ k ∈ Finset.Icc 1 K, (∑ i ∈ Finset.Icc 1 k, a i) * (v k - v (k + 1)) := by

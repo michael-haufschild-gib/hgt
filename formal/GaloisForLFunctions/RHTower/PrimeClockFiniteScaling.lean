@@ -450,7 +450,7 @@ lemma abs_sinh_le_abs_mul_cosh {x C : ℝ} (hC : 0 ≤ C) (hx : |x| ≤ C) :
     abs_abs, sub_zero, mul_comm] at hmv
   simpa only [Real.abs_sinh] using hmv
 
-lemma sinh_sq_le_sq_mul_cosh_sq {x C : ℝ} (hC : 0 ≤ C) (hx : |x| ≤ C) :
+private lemma sinh_sq_le_sq_mul_cosh_sq {x C : ℝ} (hC : 0 ≤ C) (hx : |x| ≤ C) :
     Real.sinh x ^ 2 ≤ x ^ 2 * Real.cosh C ^ 2 := by
   have h := abs_sinh_le_abs_mul_cosh hC hx
   have hsq : |Real.sinh x| ^ 2 ≤ (|x| * Real.cosh C) ^ 2 :=

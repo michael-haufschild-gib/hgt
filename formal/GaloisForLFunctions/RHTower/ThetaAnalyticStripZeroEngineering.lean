@@ -89,7 +89,7 @@ theorem abs_mul_exp_growth {f g : ℝ → ℝ} {B₁ C₁ B₂ C₂ : ℝ}
         mul_le_mul (hf x) (hg x) (abs_nonneg _) (by positivity)
     _ = _ := by ring
 
-theorem abs_exp_mul_le (v x : ℝ) : |Real.exp (v * x)| ≤ 1 * Real.exp (|v| * |x|) := by
+private theorem abs_exp_mul_le (v x : ℝ) : |Real.exp (v * x)| ≤ 1 * Real.exp (|v| * |x|) := by
   rw [abs_of_pos (Real.exp_pos _), one_mul]
   exact Real.exp_le_exp.mpr ((le_abs_self _).trans (by rw [abs_mul]))
 

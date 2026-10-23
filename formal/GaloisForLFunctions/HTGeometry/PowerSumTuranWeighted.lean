@@ -118,7 +118,7 @@ theorem norm_sum_sepPoly_values_weighted_ge {ι : Type*} [DecidableEq ι] (z : �
 weight lies in the sector `|β_i| ≤ 2 Re β_i`, then for every `M` some exponent
 `M + 1 ≤ ν ≤ M + N`, `N = #s`, has
 `|Σ_i β_i z_i^ν| ≥ (Σ_{|z_i| ≥ 1} |β_i|) / (4e N (6(N+1)(M+2N+2))^N)`. -/
-theorem exists_norm_weightedPowerSum_ge {ι : Type*} (s : Finset ι) (z β : ι → ℂ)
+private theorem exists_norm_weightedPowerSum_ge {ι : Type*} (s : Finset ι) (z β : ι → ℂ)
     (htop : ∃ i ∈ s, 1 ≤ ‖z i‖) (hβ : ∀ i ∈ s, ‖β i‖ / 2 ≤ (β i).re) (M : ℕ) :
     ∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + s.card ∧
       (∑ i ∈ s.filter (fun i => 1 ≤ ‖z i‖), ‖β i‖) /

@@ -213,7 +213,7 @@ theorem differentiableOn_growthG {θ η t₀ r a M : ℝ} (hθ : ∀ q : XiZeroC
 
 /-- If `a_p ≤ M + p^a` for every prime `p` (`a ≥ 0`), then `Φ(L) ≤ M₃ e^{bL}` with
 `b = max a (1/4)`. -/
-theorem exists_growth_bound_of_primeLag_le_rpow {M a : ℝ} (ha0 : 0 ≤ a)
+private theorem exists_growth_bound_of_primeLag_le_rpow {M a : ℝ} (ha0 : 0 ≤ a)
     (hM : ∀ p : ℕ, p.Prime → integerLag p ≤ M + (p : ℝ) ^ a) :
     ∃ M₃ : ℝ, ∀ L : ℝ, 0 ≤ L → weilLagFunctionReal L ≤ M₃ * Real.exp (max a (1 / 4) * L) := by
   obtain ⟨X₀, hX₀4, hX₀⟩ := exists_prime_short_gap

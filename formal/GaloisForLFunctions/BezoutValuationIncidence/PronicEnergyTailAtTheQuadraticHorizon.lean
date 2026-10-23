@@ -24,7 +24,7 @@ noncomputable section
 set_option autoImplicit false
 
 /-- The pronic weight `1/(k(k+1))`. -/
-def pronicWeight (k : ℕ) : ℝ := 1 / ((k : ℝ) * ((k : ℝ) + 1))
+private def pronicWeight (k : ℕ) : ℝ := 1 / ((k : ℝ) * ((k : ℝ) + 1))
 
 theorem pronicWeight_nonneg (k : ℕ) : 0 ≤ pronicWeight k := by
   unfold pronicWeight
@@ -37,7 +37,7 @@ theorem pronicWeight_eq_sub {k : ℕ} (hk : 1 ≤ k) :
   field_simp
   ring
 
-theorem pronicWeight_succ_le {k : ℕ} (hk : 1 ≤ k) : pronicWeight (k + 1) ≤ pronicWeight k := by
+private theorem pronicWeight_succ_le {k : ℕ} (hk : 1 ≤ k) : pronicWeight (k + 1) ≤ pronicWeight k := by
   have hk' : (1 : ℝ) ≤ k := by exact_mod_cast hk
   unfold pronicWeight
   push_cast

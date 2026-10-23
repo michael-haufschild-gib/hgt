@@ -104,8 +104,8 @@ theorem IsFermiNymanWitness.selfSimilar_of_selfSimilar_near_zero {w : ℝ → �
 /-- The dilation average of a function vanishing a.e. on `(0, δ]` vanishes on `(0, δ]`. -/
 theorem dilationAverage_eq_zero_of_ae_eq_zero {w : ℝ → ℂ} {δ η : ℝ} (hη : 0 < η)
     (h0 : ∀ᵐ u ∂(volume.restrict (Ioc (0 : ℝ) δ)), w u = 0) {t : ℝ} (ht : t ∈ Ioc (0 : ℝ) δ) :
-    dilationAverage η w t = 0 := by
-  unfold dilationAverage
+    haarDilationAverage η w t = 0 := by
+  unfold haarDilationAverage
   rw [integral_Icc_comp_div_eq_primitive hη ht.1]
   have hsub : Ioc (t / (1 + η)) t ⊆ Ioc (0 : ℝ) δ := fun u hu =>
     ⟨lt_trans (div_pos ht.1 (by linarith)) hu.1, hu.2.trans ht.2⟩
@@ -127,10 +127,10 @@ theorem IsL2FermiWitness.setIntegral_div_sq_eq_zero {w : ℝ → ℂ} (hw : IsL2
   have hts : t / (1 + η) = s := by
     rw [hηdef, add_sub_cancel, div_div_eq_mul_div, mul_div_cancel_left₀ s ht0]
   have hwit := hw.dilationAverage_isFermiNymanWitness hη
-  have hvan : ∀ u ∈ Ioc (0 : ℝ) δ, dilationAverage η w u = 0 := fun u hu =>
+  have hvan : ∀ u ∈ Ioc (0 : ℝ) δ, haarDilationAverage η w u = 0 := fun u hu =>
     dilationAverage_eq_zero_of_ae_eq_zero hη h0 hu
   have hzero := hwit.eq_zero_of_eqOn_zero hδ hvan (t := t) ⟨lt_trans hs hst, ht1⟩
-  unfold dilationAverage at hzero
+  unfold haarDilationAverage at hzero
   rw [integral_Icc_comp_div_eq_primitive hη (lt_trans hs hst), hts] at hzero
   rcases mul_eq_zero.1 hzero with h | h
   · exfalso

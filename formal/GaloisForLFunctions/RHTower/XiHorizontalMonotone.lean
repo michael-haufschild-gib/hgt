@@ -23,7 +23,7 @@ private theorem hasDerivAt_of_eq_real {f : ℝ → ℝ} {u v x : ℝ} (h : HasDe
     (huv : u = v) : HasDerivAt f v x := huv ▸ h
 
 /-- The horizontal derivative of `‖ξ‖²`. -/
-theorem hasDerivAt_normSq_xi_horizontal (σ t : ℝ) :
+private theorem hasDerivAt_normSq_xi_horizontal (σ t : ℝ) :
     HasDerivAt (fun u : ℝ => Complex.normSq (xi ((u : ℂ) + (t : ℂ) * I)))
       (2 * ((xi ((σ : ℂ) + (t : ℂ) * I)).re * (deriv xi ((σ : ℂ) + (t : ℂ) * I)).re
           + (xi ((σ : ℂ) + (t : ℂ) * I)).im * (deriv xi ((σ : ℂ) + (t : ℂ) * I)).im)) σ := by

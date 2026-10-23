@@ -207,13 +207,15 @@ theorem dilationCenteredSource_mass_le {a : ℕ → ℂ}
   have hn := ENNReal.toReal_mono ENNReal.ofReal_ne_top
     (dilationCenteredSource_norm_le ha hf)
   rw [toReal_eLpNorm hc.aestronglyMeasurable,
-    ENNReal.toReal_ofReal (by positivity)] at hn
+    ENNReal.toReal_ofReal (mul_nonneg (by positivity) lpNorm_nonneg)] at hn
   rw [pm_integral_norm_sq_toLp hc, pm_integral_norm_sq_toLp hf,
     Lp.norm_toLp, Lp.norm_toLp, toReal_eLpNorm hc.aestronglyMeasurable,
     toReal_eLpNorm hf.aestronglyMeasurable]
   calc
     _ ≤ ((1 + Real.sqrt 2) * lpNorm (dilationFermiSource a) 2
-        (volume.restrict (Ioi 0))) ^ 2 := by gcongr
+        (volume.restrict (Ioi 0))) ^ 2 := by
+      gcongr
+      exact lpNorm_nonneg
     _ = _ := by ring
 
 theorem dilationFloorSum_eq_zero_of_lt_one (a : ℕ → ℂ) {x : ℝ} (hx : x < 1) :
@@ -295,10 +297,11 @@ theorem memLp_reciprocal_halfDensity {f : ℝ → ℂ} (hm : Measurable f)
     (hm.comp (measurable_const.div measurable_id)).div Complex.measurable_ofReal
   rw [memLp_two_iff_integrable_sq_norm hm'.aestronglyMeasurable]
   have hbase : IntegrableOn (fun t => ‖(fun x => f (1 / x)) (1 / t)‖ ^ (2 : ℕ)) (Ioi 0) := by
-    simpa only [one_div_one_div] using
-      (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).mp hf
+    simp only [one_div_one_div]
+    exact (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).mp hf
   have h := (pm_integrable_normSq_reciprocal_iff (fun x => f (1 / x))).mp hbase
-  simpa only [pm_norm_div_real_sq] using h
+  simp only [pm_norm_div_real_sq]
+  exact h
 
 /-- The mean occupies exactly the unit reciprocal-square tail. -/
 theorem integral_norm_sq_dilationCenteredSource_tail (a : ℕ → ℂ) (m : ℂ) :
@@ -307,6 +310,7 @@ theorem integral_norm_sq_dilationCenteredSource_tail (a : ℕ → ℂ) (m : ℂ)
     _ = ∫ t in Ioi (1 : ℝ), ‖m‖ ^ 2 * t ^ (-2 : ℝ) := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro t ht
+      dsimp only
       rw [dilationCenteredSource_eq_neg_mean_div a m ht, norm_div, norm_neg,
         Complex.norm_real, Real.norm_eq_abs, abs_of_pos (zero_lt_one.trans ht),
         div_pow, div_eq_mul_inv, ← inv_pow, inv_sq_eq_rpow (zero_lt_one.trans ht)]
@@ -329,7 +333,7 @@ theorem memLp_stepFun_of_dilationCenteredSource {c : ℕ → ℝ} {m : ℝ}
     MemLp (stepFun (weightCenteredPrefix c m)) 2 bdMeasure := by
   have hr := memLp_reciprocal_halfDensity (measurable_dilationCenteredSource _ _) hc
   have hrt := MemLp.mono_measure
-    (Measure.restrict_mono (Ioi_subset_Ioi.mpr zero_le_one) le_rfl) hr
+    (Measure.restrict_mono (Ioi_subset_Ioi zero_le_one) le_rfl) hr
   have h := hrt.add (memLp_fract_div_bdMeasure.const_mul (m : ℂ))
   apply (memLp_congr_ae ?_).mp h
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -351,7 +355,7 @@ theorem integral_norm_sq_fract_div_le_one :
           memLp_fract_div_bdMeasure.aestronglyMeasurable).mp memLp_fract_div_bdMeasure)
         (integrableOn_Ioi_rpow_of_lt (by norm_num) one_pos)
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-      have hx0 := zero_lt_one.trans hx
+      have hx0 : (0 : ℝ) < x := zero_lt_one.trans (mem_Ioi.mp hx)
       rw [pm_norm_div_real_sq, Complex.norm_real, Real.norm_eq_abs, sq_abs,
         ← inv_sq_eq_rpow hx0, div_eq_mul_inv, ← inv_pow]
       have hfract : Int.fract x ^ 2 ≤ 1 := by
@@ -374,7 +378,7 @@ theorem integral_norm_sq_stepFun_le_dilationCenteredSource_mass {c : ℕ → ℝ
   have hf := memLp_reciprocal_halfDensity (measurable_dilationCenteredSource _ _) hc
   have hfi : IntegrableOn (fun x => ‖f x‖ ^ 2) (Ioi (0 : ℝ)) :=
     (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).mp hf
-  have hfit := hfi.mono_set (Ioi_subset_Ioi.mpr zero_le_one)
+  have hfit := hfi.mono_set (Ioi_subset_Ioi zero_le_one)
   have hg : MemLp g 2 bdMeasure := memLp_fract_div_bdMeasure.const_mul (m : ℂ)
   have hgi := (memLp_two_iff_integrable_sq_norm hg.aestronglyMeasurable).mp hg
   have hs := memLp_stepFun_of_dilationCenteredSource hc

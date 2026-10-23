@@ -117,8 +117,9 @@ theorem dilationEdgeMass_eq (ε : ℝ) (T : ℕ) (v : ℕ → ℝ) :
   rw [dilationEdgeMass, dilationCreationPotential, dilationFibrePotential,
     ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun n _ => ?_
-  rw [div_add_div_same, ← Finset.sum_add_distrib, dampedPrimePrefix, Finset.sum_mul]
+  rw [← add_div]
   congr 1
+  rw [dampedPrimePrefix, Finset.mul_sum, ← Finset.sum_add_distrib]
   exact Finset.sum_congr rfl fun j _ => by ring
 
 theorem dilationFibrePotential_nonneg (ε : ℝ) (T : ℕ) (v : ℕ → ℝ) :
@@ -166,7 +167,7 @@ theorem dilationJumpEnergy_abs_le (ε : ℝ) (T : ℕ) (v : ℕ → ℝ) :
       linarith
   calc (|v n| - |v (n / j)|) ^ 2 = |(|v n| - |v (n / j)|)| ^ 2 := (sq_abs _).symm
     _ ≤ |v n - v (n / j)| ^ 2 := by
-        exact pow_le_pow_left (abs_nonneg _) h2 2
+        exact pow_le_pow_left₀ (abs_nonneg _) h2 2
     _ = (v n - v (n / j)) ^ 2 := sq_abs _
 
 /-- **Normal contraction (Beurling–Deny) for the dilation form.**  Replacing the row by its modulus

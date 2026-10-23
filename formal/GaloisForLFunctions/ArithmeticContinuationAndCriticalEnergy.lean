@@ -1,14 +1,3 @@
-/-
-# Arithmetic continuation and critical energy
-
-Which exact arithmetic relations prevent a complete signed critical energy from escaping as the
-damping decreases, the cutoff is removed or the aperture grows?
-
-The programme's objects are families indexed jointly by a continuous parameter and an observation
-horizon, its only notion of success is a horizon-uniform bound (admission), and its theorems are
-continuation theorems: transport of admission along a parameter interval, paid for by a bound on
-one complete signed quantity.  See `ArithmeticContinuationAndCriticalEnergy/README.md`.
--/
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.CriticalEnergyFamilies
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.BackwardContinuationCalculus
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.ContinuationTransportsAdmission

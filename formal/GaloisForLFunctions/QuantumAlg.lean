@@ -1,14 +1,3 @@
-/-
-# Quantum algorithms area umbrella
-
-Vendored `Lean-QuantumAlg`: a Lean 4 development of quantum states, gates,
-circuits, and algorithm endpoints (phase kickback, QFT, amplitude
-amplification, order finding, Shor-style factoring, quantum signal processing,
-quantum neural networks) over mathlib and CSLib.
-
-This umbrella imports the complete area inventory, so building or scanning it
-omits no leaf module.  Provenance and licensing: `QuantumAlg/PROVENANCE.md`.
--/
 import GaloisForLFunctions.QuantumAlg.Algorithms
 import GaloisForLFunctions.QuantumAlg.Algorithms.AmplitudeEstimation
 import GaloisForLFunctions.QuantumAlg.Algorithms.BernsteinVazirani

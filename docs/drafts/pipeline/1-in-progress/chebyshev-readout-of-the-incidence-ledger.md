@@ -613,6 +613,59 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
       * **`expMoment_odd`**, **`integral_Ioi_cosh_mul_autoCorrelation_odd`** — on an odd test the
         pole pairing is `−½(∫Fe^{αx})²` at *every* `α`: whatever pole a calibration is built
         around, its polar side never charges an odd test.
+      * **`lagTestWeightAt`**, **`testBalanceAt`**, **`testBalanceAt_odd`** — **the critical line
+        of a pole at `ρ` is `ρ/2`.**  With the weight `2e^{−ρs/2}A(s)` the two exponentials of the
+        comparison density recombine into a `cosh` exactly at the normalisation `n^{−ρ/2}`, and
+        the polar side becomes `2(∫Fe^{−ρx/2})(∫Fe^{ρx/2})`.  The symmetry point is read off the
+        balance, not assumed; on an odd test the prime side and the pole charge are both costs.
+      * **`coshMoment`**, `sinhMoment`, **`poleTerm_eq_moment_mul`**, **`capacity_iff`**,
+        **`capacity_odd_iff`** — **the capacity inequality restated** (APT receiver 2).  The pole
+        term `½C² − ½S²` is `2(∫ge^{−u/2})(∫ge^{u/2})`, so `S² ≤ 2M + C²` says the arithmetic part
+        dominates minus that product — on an odd test, twice a perfect square.
+      * **`moebiusSource`**, **`lagMertens`**, **`sum_moebius_sub_unit_eq_defect`**,
+        `lagMertens_eq_zero_of_lt_log_two`, **`abs_lagMertens_le`**, `lagMertens_eq_neg_one` —
+        **the Mertens ledger.**  `1/ζ` has no pole at `1`, so the Möbius source is read against
+        the reflected pole alone, `W(s) = s`; its defect is `s − M(e^s)` and the receiver is the
+        Mertens receiver.  The unconditional rate is again `e^s`, and the first cells are exact.
+      * **`twistSource`**, **`sum_twist_sub_unit_eq_defect`**, `abs_lagPrefix_twist_le` — **the
+        ledger of a real character twist.**  A twist has no pole at `1`, so it is read against the
+        reflected pole alone and its defect is the twisted Chebyshev function; against `ζ`'s
+        two-pole calibration it is off by the whole polar term.
+      * **`thetaSource`**, **`sum_theta_sub_polar_eq_defect`**, `chebyshev_le_theta_defect`,
+        `theta_defect_eq_chebyshev_of_lt_log_four` — **the prime-only source.**  Its defect
+        exceeds `ζ`'s by exactly the prime-power correction `ψ − θ`, which is nonnegative and
+        vanishes below the first prime square: the higher powers are a cost, never a gain.
+      * **`genRampSum`**, **`sum_weight_mul_eq_integral_rampSum`**,
+        **`sum_weight_sub_polar_eq_rampDefect`**, **`sourceScalePrefix_eq`**,
+        **`sum_weight_sub_polar_eq_sourceScalePrefix`** — **every source has its own
+        critical-scale receiver.**  Two summations by parts read any source through its ramp sum,
+        and the second-order balance pairs the source's own critical-scale functional
+        `∫₀^s(W − prefix)` against the curvature of the test.  For `ζ` it is `D(s) + s²/2 − s`;
+        the receiver is a feature of the ledger, not of `ζ`.
+      * **`integral_secondPrimitive_mul_deriv2`**, **`sum_weight_sub_calibration_eq_rampDefect`**
+        — **the second-order dictionary in full generality:** for every source and every
+        calibration the reading minus the comparison integral is the difference of the source's
+        ramp sum and the calibration's second primitive, paired with `h″`.  Every ledger in the
+        theory is an instance.
+      * **`mertensScalePrefix`**, **`mertensScalePrefix_eq`**,
+        **`sum_moebius_sub_unit_eq_mertensScalePrefix`**, `mertensScalePrefix_first_cell`,
+        `mertensScalePrefix_second_cell` — **the Mertens receiver** `∫₀^s(u − M(e^u))du`, with its
+        first two cells exact: `s²/2` below `log 2`, `s²/2 + s − log 2` on `[log 2, log 3)`.
+      * **`pairCorrelation`**, `pairCorrelation_swap`, **`autoCorrelation_add`**,
+        **`sum_pair_gram_eq_integral`** — **the pair correlation of two tests.**  The cross Gram
+        form of two tests is the inner product of their fields, so the Cauchy–Schwarz apparatus
+        applies across tests, not only within one; and the autocorrelation of a sum polarises.
+      * **`abs_sum_pair_gram_le`** — Cauchy–Schwarz for the cross Gram of two different tests:
+        comparing a source with a model is an inner-product bound.
+      * **`logSource`**, **`logWeight`**, **`sum_log_sub_doublePolar_eq_defect`** — **the
+        logarithm source and its double pole.**  `−ζ′` has a double pole at `1`, so the
+        calibration is `(s−1)e^s + 1 + s/2` with density `s e^s + ½`; its defect is the Stirling
+        error, `O(s)` with no hypothesis.  The ledger's difficulty is specific to `Λ`.
+      * **`progression_gram_nonneg`**, **`progression_gram_le`**, `progression_gram_diagonal`,
+        `autoCorrelation_le_min_abs`, **`progression_offdiag_le`** — **the Gram of a
+        multiplicative tower is a banded positive Toeplitz form** (AIP research topic 7): Schur
+        constant `A(0)(2⌊2r/L⌋+1)`, exactly diagonal once the step exceeds `2r`, and every
+        off-diagonal entry discounted by the quadratic gap at its exponent difference.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route

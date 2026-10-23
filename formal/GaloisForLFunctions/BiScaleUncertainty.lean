@@ -608,21 +608,6 @@ import GaloisForLFunctions.BiScaleUncertainty.RamareGeometricLadderAndSharpHalas
 import GaloisForLFunctions.BiScaleUncertainty.TypeIPrimeAmplifierWattMomentAndHeathBrownSparseMeanValue
 import GaloisForLFunctions.BiScaleUncertainty.HurwitzAnchorContactAndPrimeLogRajchmanClocks
 import GaloisForLFunctions.BiScaleUncertainty.PrimeAnchorVisibilityAndSquarefreeInstability
-
-/-!
-# Bi-Scale / Logarithmic-Grid Uncertainty Theory (`GaloisForLFunctions.BiScaleUncertainty`)
-
-Umbrella module for **Bi-Scale / Logarithmic-Grid Uncertainty Theory**, studying the non-local
-geometry, multi-node Bessel/Gram rigidity, convex sphere duality, producer–consumer
-(FZZ-P / Nyman–Beurling) duality, multi-coset Nyquist compression, non-commutative hyperbolic
-parity-intertwining calculus, discrete/continuum coprime shear uncertainty, signed
-arithmetic-archimedean discrepancy, Krein–Kantorovich measure transport, and singular increment
-functionals of positive-definite translation correlation kernels `h = f ⋆ f̃` under simultaneous
-logarithmic-grid and hyperbolic polar constraints.
-
-See `formal/GaloisForLFunctions/BiScaleUncertainty/README.md` for the conceptual overview, core
-mathematical objects, five fundamental mechanisms, and nine structural traps of the field.
--/
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingDeLaValleePoussinRemainder
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingVinogradovKorobovRemainder
 import GaloisForLFunctions.BiScaleUncertainty.GradedPoleCompressionWidthCriterion

@@ -36,7 +36,7 @@ def ContinuesAcross (f : ℂ → ℂ) (D : Set ℂ) (z₀ : ℂ) : Prop :=
 def realSeriesSum (a : ℕ → ℝ) (z : ℂ) : ℂ := ∑' n : ℕ, (a n : ℂ) * z ^ n
 
 /-- The shifted (Taylor) coefficients at a real interior point. -/
-def shiftedCoeff (a : ℕ → ℝ) (r : ℝ) (k : ℕ) : ℝ :=
+private def shiftedCoeff (a : ℕ → ℝ) (r : ℝ) (k : ℕ) : ℝ :=
   ∑' n : ℕ, (n.choose k : ℝ) * a n * r ^ (n - k)
 
 theorem summable_binomial_family {a : ℕ → ℝ} (ha : ∀ n, 0 ≤ a n) {r s : ℝ} (hr : 0 ≤ r)

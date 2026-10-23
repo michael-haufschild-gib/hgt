@@ -33,7 +33,7 @@ noncomputable def zetaShiftRemainder (s₀ : ℂ) (k : ℕ) : ℂ :=
     * Complex.cos ((Real.pi : ℂ) * (1 - s₀ + (k : ℂ)) / 2)
     * riemannZeta (1 - s₀ + (k : ℂ))
 
-theorem shift_ne_zero (hs : ∀ m : ℕ, s₀ ≠ (m : ℂ)) (k : ℕ) :
+private theorem shift_ne_zero (hs : ∀ m : ℕ, s₀ ≠ (m : ℂ)) (k : ℕ) :
     1 - s₀ + (k : ℂ) ≠ 0 := by
   have h := shift_ne_negNat hs k 0
   simpa using h

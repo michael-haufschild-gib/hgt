@@ -60,7 +60,7 @@ theorem truncPole_zero_eq_intervalIntegral (T : ℝ) (z : ℂ) :
 
 /-! ### Uniform bounds on the kernel and its derivative -/
 
-theorem norm_exp_neg_mul_le (t : ℝ) (z : ℂ) :
+private theorem norm_exp_neg_mul_le (t : ℝ) (z : ℂ) :
     ‖Complex.exp (-(t : ℂ) * z)‖ = Real.exp (-(t * z.re)) := by
   rw [Complex.norm_exp]
   congr 1

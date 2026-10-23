@@ -64,7 +64,7 @@ theorem le_jasFejerCount (K : ℕ) (k : ℤ) : K + 1 - k.natAbs ≤ jasFejerCoun
     simp only [Prod.mk.injEq] at h
     omega
 
-theorem sum_range_sum_range_sub (K : ℕ) (F : ℤ → ℂ) :
+private theorem sum_range_sum_range_sub (K : ℕ) (F : ℤ → ℂ) :
     ∑ a ∈ Finset.range (K + 1), ∑ b ∈ Finset.range (K + 1), F ((a : ℤ) - b) =
       ∑' k : ℤ, (jasFejerCount K k : ℂ) * F k := by
   have hprod := Finset.sum_product' (Finset.range (K + 1)) (Finset.range (K + 1))

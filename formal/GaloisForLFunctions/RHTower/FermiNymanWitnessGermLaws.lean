@@ -104,7 +104,7 @@ theorem integral_norm_le_sqrt_witnessMass {w : ℝ → ℂ} (hw : Measurable w)
 theorem IsL2FermiWitness.norm_dilationAverage_le_of_linearMass {w : ℝ → ℂ}
     (hw : IsL2FermiWitness w) {C : ℝ} (hC : ∀ x ∈ Ioc (0 : ℝ) 1, witnessMass w x ≤ C * x)
     {η : ℝ} (hη : 0 < η) {t : ℝ} (ht : t ∈ Ioc (0 : ℝ) 1) :
-    ‖dilationAverage η w t‖ ≤ η⁻¹ * (1 + η) ^ 2 * Real.sqrt C := by
+    ‖haarDilationAverage η w t‖ ≤ η⁻¹ * (1 + η) ^ 2 * Real.sqrt C := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
     ((memLp_two_iff_integrable_sq_norm hw.measurable.aestronglyMeasurable).mpr hw.sq).integrable
       (by norm_num)
@@ -117,7 +117,7 @@ theorem IsL2FermiWitness.norm_dilationAverage_le_of_linearMass {w : ℝ → ℂ}
   have hlow : 0 < t / (1 + η) := div_pos ht0 hη1
   have hsubI : Ioc (t / (1 + η)) t ⊆ Ioc (0 : ℝ) t := Ioc_subset_Ioc_left hlow.le
   have hsub1 : Ioc (0 : ℝ) t ⊆ Ioc 0 1 := Ioc_subset_Ioc_right ht.2
-  unfold dilationAverage
+  unfold haarDilationAverage
   rw [integral_Icc_comp_div_eq_primitive hη ht0, norm_mul, norm_mul, norm_inv, Complex.norm_real,
     Complex.norm_real, Real.norm_of_nonneg hη.le, Real.norm_of_nonneg ht0.le]
   have hpt : ∀ u ∈ Ioc (t / (1 + η)) t, ‖w u / (u : ℂ) ^ 2‖ ≤ ((1 + η) / t) ^ 2 * ‖w u‖ := by
@@ -168,7 +168,7 @@ theorem IsL2FermiWitness.norm_dilationAverage_le_of_linearMass {w : ℝ → ℂ}
 theorem IsL2FermiWitness.setIntegral_sub_comp_half_div_sq_eq_zero {w : ℝ → ℂ}
     (hw : IsL2FermiWitness w)
     (hss : ∀ η : ℝ, 0 < η → ∀ t ∈ Ioc (0 : ℝ) 1,
-      dilationAverage η w (t / 2) = dilationAverage η w t)
+      haarDilationAverage η w (t / 2) = haarDilationAverage η w t)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht1 : t ≤ 1) :
     ∫ u in Ioc s t, (w (u / 2) - w u) / (u : ℂ) ^ 2 = 0 := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
@@ -189,7 +189,7 @@ theorem IsL2FermiWitness.setIntegral_sub_comp_half_div_sq_eq_zero {w : ℝ → �
   have hts2 : t / 2 / (1 + η) = s / 2 := by
     rw [div_right_comm, hts]
   have h := hss η hη t ⟨ht0, ht1⟩
-  unfold dilationAverage at h
+  unfold haarDilationAverage at h
   rw [integral_Icc_comp_div_eq_primitive hη ht0,
     integral_Icc_comp_div_eq_primitive hη (by positivity : (0 : ℝ) < t / 2), hts, hts2] at h
   have hηc : ((η : ℝ) : ℂ)⁻¹ ≠ 0 := inv_ne_zero (by exact_mod_cast hη.ne')
@@ -248,7 +248,7 @@ self-similar.** -/
 theorem IsL2FermiWitness.ae_selfSimilar_of_forall_dilationAverage_selfSimilar {w : ℝ → ℂ}
     (hw : IsL2FermiWitness w)
     (hss : ∀ η : ℝ, 0 < η → ∀ t ∈ Ioc (0 : ℝ) 1,
-      dilationAverage η w (t / 2) = dilationAverage η w t) :
+      haarDilationAverage η w (t / 2) = haarDilationAverage η w t) :
     ∀ᵐ t ∂(volume.restrict (Ioc (0 : ℝ) 1)), w (t / 2) = w t := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
     ((memLp_two_iff_integrable_sq_norm hw.measurable.aestronglyMeasurable).mpr hw.sq).integrable

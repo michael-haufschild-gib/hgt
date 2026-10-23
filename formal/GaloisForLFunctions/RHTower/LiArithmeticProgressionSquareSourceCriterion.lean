@@ -51,7 +51,7 @@ theorem exists_re_tsum_liTerm_neg_on_multiples
       calc
         ‖(v i) ^ k - 1‖
             ≤ (k : ℝ) * max 1 ‖v i‖ ^ k * ‖v i - 1‖ :=
-          norm_pow_sub_one_le (v i) k
+          norm_pow_sub_one_le_geom (v i) k
         _ = (k : ℝ) * ‖v i‖ ^ k * ‖v i - 1‖ := by
           rw [max_eq_right (hv i)]
         _ ≤ (k : ℝ) * M ^ k * ‖v i - 1‖ := by

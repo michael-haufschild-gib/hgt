@@ -15,7 +15,8 @@ namespace RHTower
 open GaloisForLFunctions.HTGeometry
 noncomputable section
 
-local instance : MeasurableSpace RoutePPrimitiveIndex := ⊤
+local instance measurableSpaceRoutePPrimitiveIndexCoefficientCoordinates :
+    MeasurableSpace RoutePPrimitiveIndex := ⊤
 local instance : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 local notation "CSource" => Lp ℂ 2 (Measure.count : Measure RoutePPrimitiveIndex)

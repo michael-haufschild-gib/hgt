@@ -161,7 +161,7 @@ theorem abs_localLog_add_le {r c : ℝ} (hr0 : 0 < r) (hr : r ≤ 1 / 2) (hc : |
     rw [abs_le]
     constructor <;> nlinarith [hlogup, hloglow, hlogr1, hlogr2, hcb.1, hcb.2, hr0, hr, hbig2]
 
-theorem normSq_one_sub_mul_exp (r θ : ℝ) :
+private theorem normSq_one_sub_mul_exp (r θ : ℝ) :
     Complex.normSq (1 - (r : ℂ) * Complex.exp (-(θ : ℝ) * Complex.I))
       = 1 - 2 * r * Real.cos θ + r ^ 2 := by
   have hre : (Complex.exp (-(θ : ℝ) * Complex.I)).re = Real.cos θ := by

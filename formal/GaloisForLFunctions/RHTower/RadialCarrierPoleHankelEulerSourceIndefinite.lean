@@ -36,7 +36,8 @@ open GaloisForLFunctions.HTGeometry
 local instance radialCarrierFactTwoNeTop : Fact ((2 : ENNReal) ≠ ⊤) :=
   ⟨by norm_num⟩
 
-local instance : MeasurableSpace RoutePPrimitiveIndex := ⊤
+local instance measurableSpaceRoutePPrimitiveIndexRadialCarrier :
+    MeasurableSpace RoutePPrimitiveIndex := ⊤
 
 /-! ## Real-rate report and Carleman energy -/
 

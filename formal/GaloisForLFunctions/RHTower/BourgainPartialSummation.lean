@@ -102,7 +102,7 @@ theorem norm_sum_Ioc_invSqrt_mul_le
 
 /-- Exact factorization of the critical-line Dirichlet monomial into its
 square-root weight and unitary logarithmic phase. -/
-theorem natCast_cpow_neg_half_sub_I_mul
+private theorem natCast_cpow_neg_half_sub_I_mul
     (n : ℕ) (hn : 0 < n) (t : ℝ) :
     (n : ℂ) ^ (-(1 / 2 : ℂ) - Complex.I * (t : ℂ)) =
       (((n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)

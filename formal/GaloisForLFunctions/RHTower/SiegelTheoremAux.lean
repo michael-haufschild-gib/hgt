@@ -12,7 +12,7 @@ import Mathlib.NumberTheory.LegendreSymbol.ZModChar
 * `LFunction_one_ge_of_productChar_eq_one`: if `χ₁χ` is principal (the two characters agree on
   integers prime to `N₁N`), then `L(1, χ) ≥ L(1, χ₁) ∏_{p | N₁N} (1 − 1/p)²`, by comparing the two
   L-functions at the common level `N₁N`.
-* `chiFour`: the nontrivial quadratic character modulo `4`.
+* `chiFourChar`: the nontrivial quadratic character modulo `4`.
 -/
 
 open DirichletCharacter Complex
@@ -195,15 +195,15 @@ theorem LFunction_one_ge_of_productChar_eq_one {χ₁ : DirichletCharacter ℂ N
   nlinarith [mul_le_mul_of_nonneg_left hstep hPpos]
 
 /-- The nontrivial quadratic character modulo `4`, with complex values. -/
-def chiFour : DirichletCharacter ℂ 4 := ZMod.χ₄.ringHomComp (Int.castRingHom ℂ)
+def chiFourChar : DirichletCharacter ℂ 4 := ZMod.χ₄.ringHomComp (Int.castRingHom ℂ)
 
-lemma chiFour_sq : chiFour ^ 2 = 1 :=
+lemma chiFour_sq : chiFourChar ^ 2 = 1 :=
   MulChar.isQuadratic_iff_sq_eq_one.mp (ZMod.isQuadratic_χ₄.comp _)
 
-lemma chiFour_ne_one : chiFour ≠ 1 := by
+lemma chiFour_ne_one : chiFourChar ≠ 1 := by
   intro h
-  have h3 : chiFour (3 : ZMod 4) = -1 := by
-    rw [chiFour, MulChar.ringHomComp_apply, show (3 : ZMod 4) = ((3 : ℕ) : ZMod 4) by rfl,
+  have h3 : chiFourChar (3 : ZMod 4) = -1 := by
+    rw [chiFourChar, MulChar.ringHomComp_apply, show (3 : ZMod 4) = ((3 : ℕ) : ZMod 4) by rfl,
       ZMod.χ₄_nat_three_mod_four (by norm_num)]
     simp
   have hu : IsUnit (3 : ZMod 4) := by decide

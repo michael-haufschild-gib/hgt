@@ -193,9 +193,7 @@ theorem window_relation_eq_zero_of_valuation {Y : ℝ} (hY : 0 < Y) {s : Finset 
       exact sum_le_sum_of_subset_of_nonneg hpairsub fun n _ _ => abs_nonneg _
     have hL1 : 2 * (a : ℝ) + 1 ≤ ((∑ n ∈ s, |c n| : ℤ) : ℝ) := by
       have hz : (2 * (a : ℤ) + 1) ≤ ∑ n ∈ s, |c n| := by linarith
-      have hz' := (Int.cast_le (R := ℝ)).mpr hz
-      push_cast at hz'
-      linarith
+      exact_mod_cast hz
     -- the window places `p ^ a` above `Y`, and the prime is at most `3`
     have hp3 : p < 4 := (pow_succ_of_two_in_window hp hxw
       (show InDyadicWindow Y (p ^ (a + 1)) from hs _ (hSs hy)) (by omega)).2

@@ -1,11 +1,3 @@
-/-
-# Böttcher tower — aggregator
-
-Bottom-up Lean formalization toward `q62-bottcher-independence-n2-all-parameters`
-(Nguyen Q6.2, quadratic nonexceptional). See `Bottcher/STATUS.md` for the DAG.
-
-Importing this builds the whole tower. Everything below is fully proved.
--/
 import GaloisForLFunctions.Bottcher.Dynamics
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
@@ -222,7 +214,6 @@ import GaloisForLFunctions.Bottcher.RelativeRigidityLocalSlitModel
 import GaloisForLFunctions.Bottcher.RelativeRigidityHNBCrossing
 import GaloisForLFunctions.Bottcher.RelativeRigidityReturnOrder
 import GaloisForLFunctions.Bottcher.RelativeRigidityMultiplierOnePeriod
-
 import GaloisForLFunctions.Bottcher.AnalyticRoot
 import GaloisForLFunctions.Bottcher.CoveringRoot
 import GaloisForLFunctions.Bottcher.EscapeLevelRoot
@@ -374,8 +365,6 @@ import GaloisForLFunctions.Bottcher.Q62BrolinEquidistribution
 import GaloisForLFunctions.Bottcher.Q62BrolinL2
 import GaloisForLFunctions.Bottcher.Q62BrolinDominated
 import GaloisForLFunctions.Bottcher.Q62FrostmanScaling
-
-/- ## Complete area inventory -/
 import GaloisForLFunctions.Bottcher.BottcherSecondVelocity
 import GaloisForLFunctions.Bottcher.BottcherVelocityMahler
 import GaloisForLFunctions.Bottcher.Brolin.Basic

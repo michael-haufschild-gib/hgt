@@ -200,11 +200,11 @@ theorem wienerHopf_commutator_eq :
 
 local instance fact_two_ne_top_boundaryTrace : Fact ((2 : ℝ≥0∞) ≠ ⊤) := ⟨by norm_num⟩
 
-theorem memSchattenClass_one_add' {S T : L²₊ →L[ℂ] L²₊} (hS : MemSchattenClass 1 S)
+private theorem memSchattenClass_one_add' {S T : L²₊ →L[ℂ] L²₊} (hS : MemSchattenClass 1 S)
     (hT : MemSchattenClass 1 T) : MemSchattenClass 1 (S + T) :=
   memSchattenClass_one_add (hS.isCompactOperator one_pos) (hT.isCompactOperator one_pos) hS hT
 
-theorem memSchattenClass_one_sub' {S T : L²₊ →L[ℂ] L²₊} (hS : MemSchattenClass 1 S)
+private theorem memSchattenClass_one_sub' {S T : L²₊ →L[ℂ] L²₊} (hS : MemSchattenClass 1 S)
     (hT : MemSchattenClass 1 T) : MemSchattenClass 1 (S - T) := by
   rw [sub_eq_add_neg, ← neg_one_smul ℂ T]
   exact memSchattenClass_one_add' hS (memSchattenClass_one_smul hT _)

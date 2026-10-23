@@ -47,7 +47,7 @@ noncomputable section
     (xiSpectralPointSupport ρ).re = (ρ : ℂ).im := by
   simp [xiSpectralPointSupport]
 
-@[simp] theorem xiSpectralPointSupport_im (ρ : XiDivisorSupport) :
+@[simp] private theorem xiSpectralPointSupport_im (ρ : XiDivisorSupport) :
     (xiSpectralPointSupport ρ).im = -((ρ : ℂ).re - 1 / 2) := by
   simp [xiSpectralPointSupport]
 

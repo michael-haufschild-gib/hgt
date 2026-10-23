@@ -27,7 +27,7 @@ namespace RHTower
 noncomputable section
 
 /-- The undeformed divisor coefficients. -/
-def divisorCoeff (N : ℕ) : ℂ := (N.divisors.card : ℂ)
+private def divisorCoeff (N : ℕ) : ℂ := (N.divisors.card : ℂ)
 
 /-- One Euler-factor deformation step at the prime two. -/
 def eulerTwoStep (c : ℂ) (f : ℕ → ℂ) (N : ℕ) : ℂ :=

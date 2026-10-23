@@ -38,11 +38,11 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry
 
 /-- The principal-part sum `Σ_j r_j / (z − p_j)`. -/
-def principalPartSum {m : ℕ} (p r : Fin m → ℂ) (z : ℂ) : ℂ := ∑ j, r j / (z - p j)
+def complexPrincipalPartSum {m : ℕ} (p r : Fin m → ℂ) (z : ℂ) : ℂ := ∑ j, r j / (z - p j)
 
 theorem norm_principalPartSum_le {m : ℕ} {p r : Fin m → ℂ} {z : ℂ} {d : ℝ} (hd : 0 < d)
-    (hz : ∀ j, d ≤ ‖z - p j‖) : ‖principalPartSum p r z‖ ≤ (∑ j, ‖r j‖) / d := by
-  unfold principalPartSum
+    (hz : ∀ j, d ≤ ‖z - p j‖) : ‖complexPrincipalPartSum p r z‖ ≤ (∑ j, ‖r j‖) / d := by
+  unfold complexPrincipalPartSum
   calc ‖∑ j, r j / (z - p j)‖ ≤ ∑ j, ‖r j / (z - p j)‖ := norm_sum_le _ _
     _ ≤ ∑ j, ‖r j‖ / d := by
         refine Finset.sum_le_sum fun j _ => ?_
@@ -51,14 +51,14 @@ theorem norm_principalPartSum_le {m : ℕ} {p r : Fin m → ℂ} {z : ℂ} {d : 
     _ = (∑ j, ‖r j‖) / d := by rw [Finset.sum_div]
 
 theorem differentiableAt_principalPartSum {m : ℕ} {p r : Fin m → ℂ} {z : ℂ}
-    (hz : ∀ j, z ≠ p j) : DifferentiableAt ℂ (principalPartSum p r) z := by
-  have : principalPartSum p r = fun w => ∑ j, r j / (w - p j) := rfl
+    (hz : ∀ j, z ≠ p j) : DifferentiableAt ℂ (complexPrincipalPartSum p r) z := by
+  have : complexPrincipalPartSum p r = fun w => ∑ j, r j / (w - p j) := rfl
   rw [this]
   exact DifferentiableAt.fun_sum fun j _ =>
     (differentiableAt_const _).div (differentiableAt_id.sub_const _) (sub_ne_zero.mpr (hz j))
 
 theorem continuousAt_principalPartSum {m : ℕ} {p r : Fin m → ℂ} {z : ℂ}
-    (hz : ∀ j, z ≠ p j) : ContinuousAt (principalPartSum p r) z :=
+    (hz : ∀ j, z ≠ p j) : ContinuousAt (complexPrincipalPartSum p r) z :=
   (differentiableAt_principalPartSum hz).continuousAt
 
 /-- An absolutely convergent Dirichlet series is bounded on the half-plane right of its line of
@@ -127,7 +127,7 @@ theorem exists_re_le_above_poles {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesS
     (hH : DifferentiableOn ℂ H {z : ℂ | 1 / 2 < z.re}) (hHc : ContinuousOn H {z : ℂ | 1 / 2 ≤ z.re})
     (hgrowth : ∀ κ : ℝ, 0 < κ → ∃ B : ℝ, ∀ z : ℂ, 1 / 2 ≤ z.re →
       (H z).re ≤ B * Real.exp (κ * |z.im|))
-    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + principalPartSum p r z)
+    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + complexPrincipalPartSum p r z)
     (hRL : ∀ z : ℂ, u₀ < z.re → R z = LSeries f z)
     {c T₀ b : ℝ} (hline : ∀ t : ℝ, T₀ ≤ |t| → (R (1 / 2 + t * I)).re ≤ c)
     (hu₀b : u₀ < b) (hpb : ∀ j, (p j).re + 1 ≤ b) (hhalfb : 1 / 2 < b) :
@@ -135,7 +135,7 @@ theorem exists_re_le_above_poles {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesS
   have hρs0 : 0 ≤ ∑ j, ‖r j‖ := Finset.sum_nonneg fun _ _ => norm_nonneg _
   have hS₀ : ∀ z : ℂ, u₀ < z.re → ‖R z‖ ≤ ∑' n, ‖LSeries.term f (u₀ : ℂ) n‖ := fun z hz => by
     rw [hRL z hz]; exact norm_LSeries_le_tsum_term hsum hz.le
-  have hpp : ∀ z : ℂ, (∀ j, 1 ≤ ‖z - p j‖) → ‖principalPartSum p r z‖ ≤ ∑ j, ‖r j‖ :=
+  have hpp : ∀ z : ℂ, (∀ j, 1 ≤ ‖z - p j‖) → ‖complexPrincipalPartSum p r z‖ ≤ ∑ j, ‖r j‖ :=
     fun z hz => by simpa using norm_principalPartSum_le (r := r) one_pos hz
   obtain ⟨C₁, hC₁⟩ : ∃ C₁, ∀ w ∈ (fun t : ℝ => (1 / 2 : ℂ) + t * I) ''
       Icc (-(max T₀ ((∑ j, |(p j).im|) + 1))) (max T₀ ((∑ j, |(p j).im|) + 1)), ‖H w‖ ≤ C₁ :=
@@ -148,12 +148,12 @@ theorem exists_re_le_above_poles {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesS
     · have hT₂z : (∑ j, |(p j).im|) + 1 ≤ |z.im| := (le_max_right _ _).trans hbig
       have hR := hRH z hz.ge (ne_of_one_le_norm_sub hT₂z)
       have hc' : (R z).re ≤ c := by rw [hzeq]; exact hline z.im ((le_max_left _ _).trans hbig)
-      have hHz : H z = R z - principalPartSum p r z := by rw [hR]; ring
+      have hHz : H z = R z - complexPrincipalPartSum p r z := by rw [hR]; ring
       have h1 := hpp z (one_le_norm_sub_of_im hT₂z)
-      have h2 := Complex.abs_re_le_norm (principalPartSum p r z)
-      have h3 := neg_abs_le (principalPartSum p r z).re
+      have h2 := Complex.abs_re_le_norm (complexPrincipalPartSum p r z)
+      have h3 := neg_abs_le (complexPrincipalPartSum p r z).re
       rw [hHz, sub_re]
-      exact (by linarith : (R z).re - (principalPartSum p r z).re ≤ c + ∑ j, ‖r j‖).trans
+      exact (by linarith : (R z).re - (complexPrincipalPartSum p r z).re ≤ c + ∑ j, ‖r j‖).trans
         (le_max_left _ _)
     · have hmem : z ∈ (fun t : ℝ => (1 / 2 : ℂ) + t * I) ''
           Icc (-(max T₀ ((∑ j, |(p j).im|) + 1))) (max T₀ ((∑ j, |(p j).im|) + 1)) :=
@@ -169,10 +169,10 @@ theorem exists_re_le_above_poles {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesS
       linarith [le_abs_self (b - (p j).re)]
     have hne : ∀ j, z ≠ p j := fun j h => by
       have := hdist j; rw [h, sub_self, norm_zero] at this; linarith
-    have hHz : H z = R z - principalPartSum p r z := by
+    have hHz : H z = R z - complexPrincipalPartSum p r z := by
       rw [hRH z (by rw [hz]; linarith) hne]; ring
     calc (H z).re ≤ ‖H z‖ := Complex.re_le_norm _
-      _ ≤ ‖R z‖ + ‖principalPartSum p r z‖ := by rw [hHz]; exact norm_sub_le _ _
+      _ ≤ ‖R z‖ + ‖complexPrincipalPartSum p r z‖ := by rw [hHz]; exact norm_sub_le _ _
       _ ≤ _ := add_le_add (hS₀ z (by rw [hz]; exact hu₀b)) (hpp z hdist)
   refine ⟨max (max (max (c + ∑ j, ‖r j‖) C₁) ((∑' n, ‖LSeries.term f (u₀ : ℂ) n‖) + ∑ j, ‖r j‖) +
       ∑ j, ‖r j‖) (∑' n, ‖LSeries.term f (u₀ : ℂ) n‖), fun z h1 h2 => ?_⟩
@@ -180,7 +180,7 @@ theorem exists_re_le_above_poles {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesS
   · rw [hRH z h1 (ne_of_one_le_norm_sub h2), add_re]
     have hHle := re_le_max_of_strip hhalfb hH hHc hgrowth hleft hright h1 hzb
     have h3 := hpp z (one_le_norm_sub_of_im h2)
-    have h4 := Complex.re_le_norm (principalPartSum p r z)
+    have h4 := Complex.re_le_norm (complexPrincipalPartSum p r z)
     exact le_max_of_le_left (by linarith)
   · exact (Complex.re_le_norm _).trans ((hS₀ z (by linarith)).trans (le_max_right _ _))
 
@@ -190,7 +190,7 @@ half-plane right of all poles. -/
 theorem exists_norm_le_right_of_re_le {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesSummable f (u₀ : ℂ))
     {R H : ℂ → ℂ} {m : ℕ} {p r : Fin m → ℂ}
     (hH : DifferentiableOn ℂ H {z : ℂ | 1 / 2 < z.re}) (hHc : ContinuousOn H {z : ℂ | 1 / 2 ≤ z.re})
-    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + principalPartSum p r z)
+    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + complexPrincipalPartSum p r z)
     (hRL : ∀ z : ℂ, u₀ < z.re → R z = LSeries f z) {CB : ℝ}
     (hReR : ∀ z : ℂ, 1 / 2 ≤ z.re → (∑ j, |(p j).im|) + 1 ≤ |z.im| → (R z).re ≤ CB)
     {x b : ℝ} (hx : 1 / 2 < x) (hpx : ∀ j, (p j).re < x) (hxb : x ≤ b) (hu₀b : u₀ < b) :
@@ -208,7 +208,7 @@ theorem exists_norm_le_right_of_re_le {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSe
       (Icc x b ×ˢ Icc (-T₃) T₃), ‖R w‖ ≤ M₃ := by
     refine ((isCompact_Icc.prod isCompact_Icc).image_of_continuousOn
       (by fun_prop)).exists_bound_of_continuousOn ?_
-    have hGc : ContinuousOn (fun z => H z + principalPartSum p r z)
+    have hGc : ContinuousOn (fun z => H z + complexPrincipalPartSum p r z)
         ((fun q : ℝ × ℝ => (q.1 : ℂ) + q.2 * I) '' (Icc x b ×ˢ Icc (-T₃) T₃)) := by
       rintro w ⟨q, hq, rfl⟩
       have hwre : ((q.1 : ℂ) + q.2 * I).re = q.1 := by simp
@@ -249,10 +249,10 @@ theorem exists_norm_le_right_of_re_le {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSe
     have hRd : DifferentiableOn ℂ R (ball cc ρ) := by
       intro w hw
       obtain ⟨hw1, hw2⟩ := hball w hw
-      have hGd : DifferentiableAt ℂ (fun z => H z + principalPartSum p r z) w :=
+      have hGd : DifferentiableAt ℂ (fun z => H z + complexPrincipalPartSum p r z) w :=
         (hH.differentiableAt ((isOpen_lt continuous_const continuous_re).mem_nhds hw1)).add
           (differentiableAt_principalPartSum (ne_of_one_le_norm_sub hw2))
-      have hev : (fun z => H z + principalPartSum p r z) =ᶠ[𝓝 w] R := by
+      have hev : (fun z => H z + complexPrincipalPartSum p r z) =ᶠ[𝓝 w] R := by
         filter_upwards [isOpen_ball.mem_nhds hw] with v hv
         obtain ⟨hv1, hv2⟩ := hball v hv
         exact (hRH v hv1.le (ne_of_one_le_norm_sub hv2)).symm
@@ -304,7 +304,7 @@ theorem false_of_re_le_criticalLine_of_rightmostPole {f : ℕ → ℂ} {u₀ : �
     (hH : DifferentiableOn ℂ H {z : ℂ | 1 / 2 < z.re}) (hHc : ContinuousOn H {z : ℂ | 1 / 2 ≤ z.re})
     (hgrowth : ∀ κ : ℝ, 0 < κ → ∃ B : ℝ, ∀ z : ℂ, 1 / 2 ≤ z.re →
       (H z).re ≤ B * Real.exp (κ * |z.im|))
-    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + principalPartSum p r z)
+    (hRH : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j) → R z = H z + complexPrincipalPartSum p r z)
     (hRL : ∀ z : ℂ, u₀ < z.re → R z = LSeries f z)
     {c T₀ : ℝ} (hline : ∀ t : ℝ, T₀ ≤ |t| → (R (1 / 2 + t * I)).re ≤ c)
     (j₀ : Fin m) (hj₀ : 1 / 2 < (p j₀).re) (hmax : ∀ j, (p j).re ≤ (p j₀).re)
@@ -319,7 +319,7 @@ theorem false_of_re_le_criticalLine_of_rightmostPole {f : ℕ → ℂ} {u₀ : �
     have := hmax j; rw [← h] at this; linarith
   have hRdiff : ∀ x : ℝ, (p j₀).re ≤ x → DifferentiableOn ℂ R {z : ℂ | x < z.re} := by
     intro x hx
-    have hG : DifferentiableOn ℂ (fun z => H z + principalPartSum p r z) {z : ℂ | x < z.re} :=
+    have hG : DifferentiableOn ℂ (fun z => H z + complexPrincipalPartSum p r z) {z : ℂ | x < z.re} :=
       (hH.mono fun z (hz : x < z.re) => show 1 / 2 < z.re by linarith).add fun z hz =>
         (differentiableAt_principalPartSum (hne_of_re z (by
           have : x < z.re := hz; linarith))).differentiableWithinAt
@@ -342,9 +342,9 @@ theorem false_of_re_le_criticalLine_of_rightmostPole {f : ℕ → ℂ} {u₀ : �
     have hlow : (r j₀).re / η - K₀ - D ≤ (R (p j₀ + (η : ℂ))).re := by
       rw [hRH _ (by rw [hz₀re]; linarith) hne₀, add_re]
       have hH0 : ‖H (p j₀ + (η : ℂ))‖ ≤ K₀ := hK₀ _ ⟨η, ⟨hη.le, hη1⟩, rfl⟩
-      have hsplit : principalPartSum p r (p j₀ + (η : ℂ)) =
+      have hsplit : complexPrincipalPartSum p r (p j₀ + (η : ℂ)) =
           r j₀ / (η : ℂ) + ∑ j ∈ Finset.univ.erase j₀, r j / (p j₀ + (η : ℂ) - p j) := by
-        unfold principalPartSum
+        unfold complexPrincipalPartSum
         rw [← Finset.add_sum_erase _ _ (Finset.mem_univ j₀)]
         congr 1
         ring_nf

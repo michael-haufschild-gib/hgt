@@ -959,7 +959,7 @@ theorem primes_convSquare_eq (hε : 0 < ε) (hsupp : ∀ x, x < ε → f x = 0) 
   ring
 
 /-- `Re(p²) = (|p + p̄|² − |p − p̄|²)/4`. -/
-theorem re_sq_eq (p : ℂ) : (p ^ 2).re = (‖p + conj p‖ ^ 2 - ‖p - conj p‖ ^ 2) / 4 := by
+private theorem re_sq_eq (p : ℂ) : (p ^ 2).re = (‖p + conj p‖ ^ 2 - ‖p - conj p‖ ^ 2) / 4 := by
   have h1 : p - conj p = ((2 * p.im : ℝ) : ℂ) * I :=
     Complex.ext (by simp) (by simp; ring)
   have h2 : p + conj p = ((2 * p.re : ℝ) : ℂ) :=

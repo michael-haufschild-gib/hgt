@@ -30,7 +30,7 @@ namespace RHTower
 
 noncomputable section
 
-theorem weightKernelTransform_neg (w : ℕ → ℝ) (s : ℝ) :
+private theorem weightKernelTransform_neg (w : ℕ → ℝ) (s : ℝ) :
     weightKernelTransform w (-s) = weightKernelTransform w s := by
   unfold weightKernelTransform
   refine tsum_congr fun n => ?_
@@ -41,7 +41,7 @@ theorem weightKernelTransform_neg (w : ℕ → ℝ) (s : ℝ) :
   ring
 
 /-- An odd integrand integrates to zero. -/
-theorem integral_eq_zero_of_odd {f : ℝ → ℝ} (hf : ∀ x, f (-x) = -f x) : ∫ x, f x = 0 := by
+private theorem integral_eq_zero_of_odd {f : ℝ → ℝ} (hf : ∀ x, f (-x) = -f x) : ∫ x, f x = 0 := by
   have h := integral_neg_eq_self f volume
   simp only [hf, integral_neg] at h
   linarith

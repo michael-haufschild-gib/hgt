@@ -45,7 +45,7 @@ private theorem log_div_sq_le_telescope {k : ℕ} (hk : 1 ≤ k) :
     _ ≤ _ := hstep
 
 /-- `∑_{k=1}^{K} log(k+1)/k² ≤ 12`. -/
-theorem sum_log_div_sq_le (K : ℕ) :
+private theorem sum_log_div_sq_le (K : ℕ) :
     ∑ k ∈ Finset.Icc 1 K, Real.log ((k : ℝ) + 1) / (k : ℝ) ^ (2 : ℕ) ≤ 12 := by
   have hbound : ∀ n : ℕ, ∑ k ∈ Finset.Icc 1 n, Real.log ((k : ℝ) + 1) / (k : ℝ) ^ (2 : ℕ)
       ≤ 12 * (1 - 1 / Real.sqrt ((n : ℝ) + 1)) := by

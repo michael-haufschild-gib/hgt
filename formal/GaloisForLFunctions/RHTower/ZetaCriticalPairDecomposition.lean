@@ -25,7 +25,7 @@ open GaloisForLFunctions.HTGeometry (triangleFn triangleFn_nonneg triangleFn_le_
 namespace RHTower
 
 /-- `‖w(z)‖ ≤ 4/(3 + (Im z)²)` for `|Re z| ≤ 1`. -/
-theorem norm_montgomeryWeight_le {z : ℂ} (hz : |z.re| ≤ 1) :
+private theorem norm_montgomeryWeight_le {z : ℂ} (hz : |z.re| ≤ 1) :
     ‖montgomeryWeight z‖ ≤ 4 / (3 + z.im ^ 2) := by
   unfold montgomeryWeight
   have hre2 : z.re ^ 2 ≤ 1 := by
@@ -156,7 +156,7 @@ theorem filter_zeroWindow_eq_map_bulkIndices (Y T : ℝ) :
 
 
 /-- The pair term of two zero copies. -/
-def pairTerm (α₀ R T : ℝ) (q q' : XiZeroCopy) : ℂ :=
+private def pairTerm (α₀ R T : ℝ) (q q' : XiZeroCopy) : ℂ :=
   ((T ^ α₀ : ℝ) : ℂ) ^ ((q.1 : ℂ) + (starRingEnd ℂ) (q'.1 : ℂ) - 1) *
     montgomeryWeight ((q.1 : ℂ) + (starRingEnd ℂ) (q'.1 : ℂ) - 1) *
     fejerKernelC (Real.log T / R) ((q.1 : ℂ) + (starRingEnd ℂ) (q'.1 : ℂ) - 1)

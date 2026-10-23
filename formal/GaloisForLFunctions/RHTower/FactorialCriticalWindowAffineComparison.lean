@@ -59,7 +59,8 @@ theorem abs_integral_criticalWindow_harmonics_sub_affine_le
   have hU := criticalWindowHarmonicBound_nonneg
   have hHm (j : ℕ) : AEStronglyMeasurable (H j) criticalWindowMeasure := by
     apply Continuous.aestronglyMeasurable
-    dsimp [H, realHarmonicLayer]
+    show Continuous fun v => realHarmonicLayer S b j v
+    unfold realHarmonicLayer
     fun_prop
   have hAm (j : ℕ) : AEStronglyMeasurable (A j) criticalWindowMeasure :=
     (continuous_realAffineHarmonicLayer S b j).aestronglyMeasurable
@@ -95,7 +96,8 @@ theorem abs_integral_criticalWindow_harmonics_sub_affine_le
         ∫ v, d k v * d l v ∂criticalWindowMeasure := by
     rw [← integral_sub (integrable_mul_of_sq_integrable (hHm k) (hHm l) (hHi k) (hHi l))
       (integrable_mul_of_sq_integrable (hAm k) (hAm l) (hAi k) (hAi l))]
-    rw [← integral_add hi1 hi2, ← integral_sub (hi1.add hi2) hi3]
+    rw [← integral_add hi1 hi2, ← integral_sub (show Integrable
+      (fun x => d k x * H l x + H k x * d l x) criticalWindowMeasure from hi1.add hi2) hi3]
     apply integral_congr_ae
     exact Eventually.of_forall fun v => by dsimp [d]; ring
   change |_ - _| ≤ criticalWindowAffineCorrelationError k l N * E

@@ -202,7 +202,7 @@ section Blocks
 variable (α : ℝ) (b : ℕ → ℂ) (c₀ R₂ : ℝ)
 
 /-- The `k`-th block sum with phases `U k`. -/
-def blockSum (U : ℕ → ℕ → ℂ) (N₀ k : ℕ) (z : ℂ) : ℂ :=
+private def blockSum (U : ℕ → ℕ → ℂ) (N₀ k : ℕ) (z : ℂ) : ℂ :=
   ∑ n ∈ Finset.Ico (sched α b c₀ R₂ N₀ k) (sched α b c₀ R₂ N₀ (k + 1)), U k n * shiftedTerm α b n z
 
 /-- The phased tail `Σ_k B_k(z)`. -/
@@ -263,7 +263,7 @@ theorem sum_sched_eq (U : ℕ → ℕ → ℂ) (N₀ : ℕ) (v : ℕ → ℂ) (k
     ring
 
 /-- **Uniform block bound.** -/
-theorem norm_blockSum_le (hα : 0 < α) {U : ℕ → ℕ → ℂ} {N₀ : ℕ} {R : ℝ} (hR : 0 ≤ R) (hRR : R < R₂)
+private theorem norm_blockSum_le (hα : 0 < α) {U : ℕ → ℕ → ℂ} {N₀ : ℕ} {R : ℝ} (hR : 0 ≤ R) (hRR : R < R₂)
     (hmass : ∀ k, circleMass (fun θ => blockSum α b c₀ R₂ U N₀ k (circleMap (c₀ : ℂ) R₂ θ)) ≤
       (1 / 4 : ℝ) ^ k) (k : ℕ) {z : ℂ} (hz : z ∈ closedBall (c₀ : ℂ) R) :
     ‖blockSum α b c₀ R₂ U N₀ k z‖ ≤ R₂ / (R₂ - R) * (1 / 2 : ℝ) ^ k := by

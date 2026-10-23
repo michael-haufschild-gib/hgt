@@ -228,7 +228,7 @@ theorem bdMollPoly_one (S : Finset ℕ) (c : ℕ → ℝ) : bdMollPoly S c 1 = 0
   refine Finset.sum_eq_zero fun n _ => ?_
   rw [Complex.cpow_neg_one, sub_self, mul_zero]
 
-theorem hasDerivAt_natCast_cpow_neg {n : ℕ} (hn : 1 ≤ n) (s : ℂ) :
+private theorem hasDerivAt_natCast_cpow_neg {n : ℕ} (hn : 1 ≤ n) (s : ℂ) :
     HasDerivAt (fun s : ℂ => (n : ℂ) ^ (-s)) (-((n : ℂ) ^ (-s) * Complex.log n)) s := by
   have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
   have h := (hasDerivAt_neg s).const_cpow (c := (n : ℂ)) (Or.inl hn0)

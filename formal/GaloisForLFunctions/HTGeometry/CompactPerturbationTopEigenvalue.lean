@@ -74,14 +74,14 @@ theorem norm_sq_le_of_nonneg {S : H →L[ℂ] H} (hS : (S : H →ₗ[ℂ] H).IsS
     simp [this]
 
 omit [CompleteSpace H] in
-theorem unit_inv_apply_apply (U : (H →L[ℂ] H)ˣ) (y : H) :
+private theorem unit_inv_apply_apply (U : (H →L[ℂ] H)ˣ) (y : H) :
     (↑U⁻¹ : H →L[ℂ] H) ((U : H →L[ℂ] H) y) = y := by
   show ((↑U⁻¹ : H →L[ℂ] H) * (U : H →L[ℂ] H)) y = y
   rw [Units.inv_mul]
   rfl
 
 omit [CompleteSpace H] in
-theorem unit_apply_inv_apply (U : (H →L[ℂ] H)ˣ) (y : H) :
+private theorem unit_apply_inv_apply (U : (H →L[ℂ] H)ˣ) (y : H) :
     (U : H →L[ℂ] H) ((↑U⁻¹ : H →L[ℂ] H) y) = y := by
   show ((U : H →L[ℂ] H) * (↑U⁻¹ : H →L[ℂ] H)) y = y
   rw [Units.mul_inv]

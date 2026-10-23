@@ -1,10 +1,3 @@
-/-
-# u0_pui theorem area
-
-Umbrella module for the `u₀` / `φ_b` independence proof program.  The canonical
-all-nonexceptional theorem is unconditional; its connected and disconnected
-window constructions are assembled in `U0AllNonexceptionalDisconnected`.
--/
 import GaloisForLFunctions.U0.ClosedLoopFTC
 import GaloisForLFunctions.U0.MahlerRatFunc
 import GaloisForLFunctions.U0.VelocityJetSeries
@@ -75,8 +68,6 @@ import GaloisForLFunctions.U0.U0ParameterSpace
 import GaloisForLFunctions.U0.U0MStepInstances
 import GaloisForLFunctions.U0.U0Capstone
 import GaloisForLFunctions.U0.U0AllNonexceptionalDisconnected
-
-/- ## Complete area inventory -/
 import GaloisForLFunctions.U0.ThirdVelocityJet
 import GaloisForLFunctions.U0.U0AllNonexceptional
 import GaloisForLFunctions.U0.U0AllNonexceptionalConnected

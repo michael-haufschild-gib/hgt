@@ -62,12 +62,3 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeDefectCoordinate
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AlternatingTrainWitness
 import GaloisForLFunctions.ArithmeticIncidencePositivity.BiLatticeTrainWitness
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
-
-/-!
-# Arithmetic Incidence Positivity
-
-Umbrella for the arithmetic incidence positivity programme: the sign of the critical arithmetic
-form as a property of the incidence structure of the integers (which integers are multiples of
-which, which are consecutive), read pair by pair through the gauge-free conductance kernel of the
-zero form. See `ArithmeticIncidencePositivity/README.md`.
--/

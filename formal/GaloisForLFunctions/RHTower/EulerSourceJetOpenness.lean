@@ -113,7 +113,7 @@ theorem hasDerivAt_const_cpow_neg {p : ℕ} (hp : 0 < p) (s : ℂ) :
   rw [hlog] at h3
   exact h3.congr_deriv (by ring)
 
-theorem differentiable_const_cpow_neg {p : ℕ} (hp : 0 < p) :
+private theorem differentiable_const_cpow_neg {p : ℕ} (hp : 0 < p) :
     Differentiable ℂ (fun s : ℂ => (p : ℂ) ^ (-s)) :=
   fun z => (hasDerivAt_const_cpow_neg hp z).differentiableAt
 

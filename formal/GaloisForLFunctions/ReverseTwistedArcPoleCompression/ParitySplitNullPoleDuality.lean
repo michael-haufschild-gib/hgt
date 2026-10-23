@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ReverseTwistedArcPoleCompression.TwistedArcShiftedGammaPoleProjection
 import GaloisForLFunctions.RHTower.WeilPoleDepthRigidity
+import GaloisForLFunctions.RHTower.WeilPoleWeightSummableDeviationRigidity
 
 /-!
 # Parity-Split Null Duality and Three-Way Decomposition of the `2 × 2` Pole Space
@@ -38,6 +39,46 @@ noncomputable section
 namespace GaloisForLFunctions.ReverseTwistedArcPoleCompression
 
 /-! ### Exact parity decomposition of the bilinear pole pairing -/
+
+/-- A `DecayBound` test is integrable against both pole weights `e^{±u/2}`. -/
+private theorem integrable_mul_exp_half_of_decayBound {F : ℝ → ℝ} {δ C : ℝ} (hδ : 0 < δ)
+    (hF : DecayBound F δ C) :
+    (Integrable fun u => F u * Real.exp (u / 2)) ∧
+      Integrable fun u => F u * Real.exp (-u / 2) := by
+  refine ⟨(integrable_mul_exp_of_decayBound hδ hF (c := 1 / 2) (by norm_num)).congr
+      (Filter.Eventually.of_forall fun u => ?_),
+    (integrable_mul_exp_of_decayBound hδ hF (c := -(1 / 2)) (by norm_num)).congr
+      (Filter.Eventually.of_forall fun u => ?_)⟩
+  · dsimp only
+    rw [show (1 / 2 : ℝ) * u = u / 2 by ring]
+  · dsimp only
+    rw [show -(1 / 2 : ℝ) * u = -u / 2 by ring]
+
+/-- **Even pole projection**: `∫ F cosh(u/2) = (∫ F e^{u/2} + ∫ F e^{-u/2}) / 2` for a
+`DecayBound` test, by `cosh = (exp + exp ∘ neg)/2` and linearity of the convergent integrals. -/
+theorem integral_mul_cosh_half_of_decayBound {F : ℝ → ℝ} {δ C : ℝ} (hδ : 0 < δ)
+    (hF : DecayBound F δ C) :
+    ∫ u, F u * Real.cosh (u / 2) =
+      ((∫ u, F u * Real.exp (u / 2)) + ∫ u, F u * Real.exp (-u / 2)) / 2 := by
+  obtain ⟨h1, h2⟩ := integrable_mul_exp_half_of_decayBound hδ hF
+  rw [← integral_add h1 h2, ← integral_div]
+  congr 1
+  ext u
+  rw [Real.cosh_eq, show -(u / 2) = -u / 2 by ring]
+  ring
+
+/-- **Odd pole projection**: `∫ F sinh(u/2) = (∫ F e^{u/2} - ∫ F e^{-u/2}) / 2` for a
+`DecayBound` test. -/
+theorem integral_mul_sinh_half_of_decayBound {F : ℝ → ℝ} {δ C : ℝ} (hδ : 0 < δ)
+    (hF : DecayBound F δ C) :
+    ∫ u, F u * Real.sinh (u / 2) =
+      ((∫ u, F u * Real.exp (u / 2)) - ∫ u, F u * Real.exp (-u / 2)) / 2 := by
+  obtain ⟨h1, h2⟩ := integrable_mul_exp_half_of_decayBound hδ hF
+  rw [← integral_sub h1 h2, ← integral_div]
+  congr 1
+  ext u
+  rw [Real.sinh_eq, show -(u / 2) = -u / 2 by ring]
+  ring
 
 /-- **Parity-difference-of-squares law for the bilinear pole pairing:**
 For any `DecayBound` test `F`, the bilinear pole pairing `2 (∫ F e^{-u/2}) (∫ F e^{u/2})` equals
@@ -106,6 +147,38 @@ theorem pole_depthNullTest_half :
     2 * ((∫ u, depthNullTest (1 / 2) u * Real.exp (-u / 2)) *
       ∫ u, depthNullTest (1 / 2) u * Real.exp (u / 2)) = 0 := by
   rw [integral_depthNullTest_half_exp_neg_half, integral_depthNullTest_half_exp_half]
+  norm_num
+
+/-! ### Pure even-pole projection of `xiShiftedGammaTest 0` -/
+
+/-- Both pole integrals of `xiShiftedGammaTest 0` are `ξ(0) = ξ(1) = 1/2`. -/
+private theorem integral_xiShiftedGammaTest_zero_exp_halves :
+    (∫ u, xiShiftedGammaTest 0 u * Real.exp (-u / 2)) = 1 / 2 ∧
+      ∫ u, xiShiftedGammaTest 0 u * Real.exp (u / 2) = 1 / 2 := by
+  have h1 := integral_xiShiftedGammaTest_mul_exp_neg_half 0
+  have h2 := integral_xiShiftedGammaTest_mul_exp_half 0
+  simp only [xiShiftedGamma, shiftedGammaPoly, Finset.range_zero, Finset.prod_empty, mul_one,
+    RHTower.XiC] at h1 h2
+  rw [show (1 / 2 : ℂ) + I / 2 * I = 0 by rw [mul_comm, ← mul_div_assoc, Complex.I_mul_I]; ring,
+    xi_zero_eq_half] at h1
+  rw [show (1 / 2 : ℂ) + -I / 2 * I = 1 by
+    rw [mul_comm, ← mul_div_assoc, mul_neg, Complex.I_mul_I]; ring, xi_one] at h2
+  exact ⟨by simpa using congrArg Complex.re h1, by simpa using congrArg Complex.re h2⟩
+
+/-- `xiShiftedGammaTest 0` has even pole projection `∫ · cosh(u/2) = 1/2`. -/
+theorem integral_xiShiftedGammaTest_zero_cosh_half :
+    ∫ u, xiShiftedGammaTest 0 u * Real.cosh (u / 2) = 1 / 2 := by
+  obtain ⟨C, -, hj⟩ := exists_decayBound_xiShiftedGammaTest
+  rw [integral_mul_cosh_half_of_decayBound (by norm_num : (0 : ℝ) < 1 / 4) (hj 0),
+    integral_xiShiftedGammaTest_zero_exp_halves.1, integral_xiShiftedGammaTest_zero_exp_halves.2]
+  norm_num
+
+/-- `xiShiftedGammaTest 0` has vanishing odd pole projection `∫ · sinh(u/2) = 0`. -/
+theorem integral_xiShiftedGammaTest_zero_sinh_half :
+    ∫ u, xiShiftedGammaTest 0 u * Real.sinh (u / 2) = 0 := by
+  obtain ⟨C, -, hj⟩ := exists_decayBound_xiShiftedGammaTest
+  rw [integral_mul_sinh_half_of_decayBound (by norm_num : (0 : ℝ) < 1 / 4) (hj 0),
+    integral_xiShiftedGammaTest_zero_exp_halves.1, integral_xiShiftedGammaTest_zero_exp_halves.2]
   norm_num
 
 /-! ### Three-way `Ξ`-divisible pole basis and two-sided pole rigidity -/

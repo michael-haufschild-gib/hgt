@@ -59,8 +59,8 @@ theorem LSeriesSummable_shift {f : ℕ → ℂ} {u₀ : ℝ} (hsum : LSeriesSumm
   exact hsum
 
 theorem principalPartSum_add_ofReal {m : ℕ} (p r : Fin m → ℂ) (z : ℂ) (δ : ℝ) :
-    principalPartSum p r (z + δ) = principalPartSum (fun j => p j - δ) r z := by
-  unfold principalPartSum
+    complexPrincipalPartSum p r (z + δ) = complexPrincipalPartSum (fun j => p j - δ) r z := by
+  unfold complexPrincipalPartSum
   refine Finset.sum_congr rfl fun j _ => ?_
   congr 1
   ring
@@ -71,7 +71,7 @@ theorem false_of_re_le_interior_of_rightmostPole {f : ℕ → ℂ} {u₀ : ℝ}
     (hp : Function.Injective p)
     (hH : DifferentiableOn ℂ H {z : ℂ | 1 / 2 < z.re}) {C : ℝ}
     (hHle : ∀ z : ℂ, 1 / 2 < z.re → (H z).re ≤ C)
-    (hRH : ∀ z : ℂ, 1 / 2 < z.re → (∀ j, z ≠ p j) → R z = H z + principalPartSum p r z)
+    (hRH : ∀ z : ℂ, 1 / 2 < z.re → (∀ j, z ≠ p j) → R z = H z + complexPrincipalPartSum p r z)
     (hRL : ∀ z : ℂ, u₀ < z.re → R z = LSeries f z)
     (j₀ : Fin m) (hj₀ : 1 / 2 < (p j₀).re) (hmax : ∀ j, (p j).re ≤ (p j₀).re)
     (hres : 0 < (r j₀).re) : False := by
@@ -100,7 +100,7 @@ theorem false_of_re_le_interior_of_rightmostPole {f : ℕ → ℂ} {u₀ : ℝ}
       _ ≤ |C| := le_abs_self C
       _ ≤ |C| * Real.exp (κ * |z.im|) := le_mul_of_one_le_right (abs_nonneg C) h1
   have hRH' : ∀ z : ℂ, 1 / 2 ≤ z.re → (∀ j, z ≠ p j - δ) →
-      R (z + δ) = H (z + δ) + principalPartSum (fun j => p j - δ) r z := by
+      R (z + δ) = H (z + δ) + complexPrincipalPartSum (fun j => p j - δ) r z := by
     intro z hz hne
     rw [← principalPartSum_add_ofReal]
     exact hRH _ (hshift z hz) fun j h => hne j (by rw [← h]; ring)
@@ -113,11 +113,11 @@ theorem false_of_re_le_interior_of_rightmostPole {f : ℕ → ℂ} {u₀ : ℝ}
     have him : |(1 / 2 + t * I + (δ : ℂ)).im| = |t| := by simp
     have ht' : (∑ j, |(p j).im|) + 1 ≤ |(1 / 2 + t * I + (δ : ℂ)).im| := by rw [him]; exact ht
     have hR := hRH _ (hshift _ (by simp)) (ne_of_one_le_norm_sub ht')
-    have hpp : ‖principalPartSum p r (1 / 2 + t * I + δ)‖ ≤ ∑ j, ‖r j‖ := by
+    have hpp : ‖complexPrincipalPartSum p r (1 / 2 + t * I + δ)‖ ≤ ∑ j, ‖r j‖ := by
       simpa using norm_principalPartSum_le (r := r) one_pos (one_le_norm_sub_of_im ht')
     rw [hR, add_re]
     have h1 := hHle _ (hshift (1 / 2 + t * I) (by simp))
-    have h2 := Complex.re_le_norm (principalPartSum p r (1 / 2 + t * I + δ))
+    have h2 := Complex.re_le_norm (complexPrincipalPartSum p r (1 / 2 + t * I + δ))
     linarith
   have hline' : ∀ t : ℝ, (∑ j, |(p j - (δ : ℂ)).im|) + 1 ≤ |t| →
       (R ((1 / 2 + t * I) + δ)).re ≤ C + ∑ j, ‖r j‖ := by

@@ -31,7 +31,7 @@ private theorem powerLaw_diff_le {η t : ℝ} (hη : 0 < η) (ht : 0 < t) :
   have hs : (-1 : ℝ) ≤ -(1 / (t + 1)) := by
     rw [neg_le_neg_iff, div_le_one h1]; linarith
   have key := one_add_mul_self_le_rpow_one_add hs (p := 1 + η) (by linarith)
-  have hrw : (1 : ℝ) + -(1 / (t + 1)) = t / (t + 1) := by field_simp
+  have hrw : (1 : ℝ) + -(1 / (t + 1)) = t / (t + 1) := by field_simp; ring
   rw [hrw, Real.div_rpow ht.le h1.le] at key
   have hmul : t ^ (-1 - η) * t ^ (1 + η) = 1 := by
     rw [← Real.rpow_add ht]; norm_num
@@ -55,7 +55,7 @@ private theorem powerLaw_le_diff {η t : ℝ} (hη : 0 < η) (ht : 0 < t) :
     (1 + η) * t ^ (-1 - η) / (t + 1 + η) ≤ t ^ (-1 - η) - (t + 1) ^ (-1 - η) := by
   have h1 : (0 : ℝ) < t + 1 := by linarith
   have h2 : (0 : ℝ) < t + 1 + η := by linarith
-  have hs : (-1 : ℝ) ≤ 1 / t := le_trans (by norm_num) (by positivity)
+  have hs : (-1 : ℝ) ≤ 1 / t := le_trans (by norm_num : (-1 : ℝ) ≤ 0) (by positivity)
   have key := one_add_mul_self_le_rpow_one_add hs (p := 1 + η) (by linarith)
   have hrw : (1 : ℝ) + 1 / t = (t + 1) / t := by field_simp
   rw [hrw, Real.div_rpow h1.le ht.le] at key
@@ -91,9 +91,13 @@ theorem arithmeticDampingEntrance_le {η : ℝ} (hη : 0 < η) {k : ℕ} (hk : 0
   have hρ := (pmPowerDampedDivisorDensity_re_pos hη).le
   have hd := powerLaw_diff_le hη hk0
   have hcast : (((k + 1 : ℕ) : ℝ)) = (k : ℝ) + 1 := by push_cast; ring
+  -- `k · k^(-1-η) = k^(1 + (-1-η)) = k^(-η)`
   have hkpow : (k : ℝ) * (k : ℝ) ^ (-1 - η) = (k : ℝ) ^ (-η) := by
-    rw [show ((k : ℝ)) = (k : ℝ) ^ (1 : ℝ) by rw [Real.rpow_one], ← Real.rpow_add hk0]
-    norm_num
+    have h := Real.rpow_add hk0 1 (-1 - η)
+    rw [Real.rpow_one] at h
+    rw [← h]
+    congr 1
+    ring
   unfold arithmeticDampingEntrance
   rw [hcast, mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ hρ
@@ -101,7 +105,7 @@ theorem arithmeticDampingEntrance_le {η : ℝ} (hη : 0 < η) {k : ℕ} (hk : 0
   calc (k : ℝ) * ((k : ℝ) ^ (-1 - η) - ((k : ℝ) + 1) ^ (-1 - η))
       ≤ (k : ℝ) * ((1 + η) * (k : ℝ) ^ (-1 - η) / ((k : ℝ) + 1)) := this
     _ = (1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1) := by
-        rw [← hkpow]; field_simp; ring
+        rw [← hkpow]; field_simp
 
 /-- The entrance weight is at least `ρ (1 + η) k ^ (-η) / (k + 1 + η)`. -/
 theorem arithmeticDampingEntrance_ge {η : ℝ} (hη : 0 < η) {k : ℕ} (hk : 0 < k) :
@@ -111,16 +115,20 @@ theorem arithmeticDampingEntrance_ge {η : ℝ} (hη : 0 < η) {k : ℕ} (hk : 0
   have hρ := (pmPowerDampedDivisorDensity_re_pos hη).le
   have hd := powerLaw_le_diff hη hk0
   have hcast : (((k + 1 : ℕ) : ℝ)) = (k : ℝ) + 1 := by push_cast; ring
+  -- `k · k^(-1-η) = k^(1 + (-1-η)) = k^(-η)`
   have hkpow : (k : ℝ) * (k : ℝ) ^ (-1 - η) = (k : ℝ) ^ (-η) := by
-    rw [show ((k : ℝ)) = (k : ℝ) ^ (1 : ℝ) by rw [Real.rpow_one], ← Real.rpow_add hk0]
-    norm_num
+    have h := Real.rpow_add hk0 1 (-1 - η)
+    rw [Real.rpow_one] at h
+    rw [← h]
+    congr 1
+    ring
   unfold arithmeticDampingEntrance
   rw [hcast, mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ hρ
   have hstep := mul_le_mul_of_nonneg_left hd hk0.le
   calc (1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1 + η)
       = (k : ℝ) * ((1 + η) * (k : ℝ) ^ (-1 - η) / ((k : ℝ) + 1 + η)) := by
-        rw [← hkpow]; field_simp; ring
+        rw [← hkpow]; field_simp
     _ ≤ _ := hstep
 
 /-! ### The pronic dual norm of the entrance functional -/
@@ -138,7 +146,7 @@ theorem summable_arithmeticDampingEntrance_pronicDual {η : ℝ} (hη : 1 / 2 < 
   refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_) hmaj
   · exact mul_nonneg (sq_nonneg _) (by positivity)
   rcases Nat.eq_zero_or_pos k with rfl | hk
-  · simp [arithmeticDampingEntrance]
+  · simp [arithmeticDampingEntrance, Real.zero_rpow (by linarith : -(2 * η) ≠ 0)]
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hle := arithmeticDampingEntrance_le hη0 hk
   have hnn := arithmeticDampingEntrance_nonneg hη0 k
@@ -150,7 +158,7 @@ theorem summable_arithmeticDampingEntrance_pronicDual {η : ℝ} (hη : 1 / 2 < 
   have hexp : (ρ * ((1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1))) ^ 2 *
       ((k : ℝ) * ((k : ℝ) + 1)) =
       (ρ * (1 + η)) ^ 2 * (k : ℝ) ^ (-(2 * η)) * ((k : ℝ) / ((k : ℝ) + 1)) := by
-    rw [← hpow]; field_simp; ring
+    rw [← hpow]; field_simp
   have hratio : (k : ℝ) / ((k : ℝ) + 1) ≤ 1 := by
     rw [div_le_one (by linarith)]; linarith
   calc arithmeticDampingEntrance η k ^ 2 * ((k : ℝ) * ((k : ℝ) + 1))
@@ -189,7 +197,7 @@ theorem not_summable_arithmeticDampingEntrance_pronicDual {η : ℝ} (hη : 0 < 
       ((k : ℝ) * ((k : ℝ) + 1)) =
       (ρ * (1 + η)) ^ 2 * (k : ℝ) ^ (-(2 * η)) *
         ((k : ℝ) * ((k : ℝ) + 1) / ((k : ℝ) + 1 + η) ^ 2) := by
-    rw [← hpow]; field_simp; ring
+    rw [← hpow]; field_simp
   have hfrac : (1 : ℝ) / 4 ≤ (k : ℝ) * ((k : ℝ) + 1) / ((k : ℝ) + 1 + η) ^ 2 := by
     rw [div_le_div_iff₀ (by norm_num) (by positivity)]
     nlinarith [sq_nonneg ((k : ℝ) - 1)]
@@ -242,17 +250,21 @@ theorem exists_pronicPairing_bound {η : ℝ} (hη : 1 / 2 < η) :
     have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
     have hw : (0 : ℝ) < (k : ℝ) * ((k : ℝ) + 1) := by positivity
     have := Real.sqrt_pos.mpr hw
-    field_simp [hfdef, hgdef]
+    simp only [hfdef, hgdef]
+    field_simp [this.ne']
+  -- unfold `f`, `g` without letting `simp` split `√(k (k + 1))` into a product of roots
   have hf2 : ∀ k, f k ^ 2 = D k := by
     intro k
     have hw : (0 : ℝ) ≤ (k : ℝ) * ((k : ℝ) + 1) := by positivity
-    simp [hfdef, hDdef, mul_pow, Real.sq_sqrt hw]
+    simp only [hfdef, hDdef]
+    rw [mul_pow, Real.sq_sqrt hw]
   have hg2 : ∀ k, g k ^ 2 = b k ^ 2 / ((k : ℝ) * ((k : ℝ) + 1)) := by
     intro k
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · simp [hgdef]
     have hw : (0 : ℝ) ≤ (k : ℝ) * ((k : ℝ) + 1) := by positivity
-    simp [hgdef, div_pow, Real.sq_sqrt hw]
+    simp only [hgdef]
+    rw [div_pow, Real.sq_sqrt hw]
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq s f g
   have hA : ∑ k ∈ s, f k ^ 2 ≤ ∑' k, D k := by
     simpa [hf2] using hsum.sum_le_tsum s (fun k _ => hDnn k)
@@ -266,8 +278,8 @@ theorem exists_pronicPairing_bound {η : ℝ} (hη : 1 / 2 < η) :
         = (∑ k ∈ s, f k * g k) ^ 2 := by simp [hfg]
       _ ≤ _ := hcs
   refine hsq.trans ?_
-  rw [Real.sqrt_mul hAnn]
-  refine mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt hA) (Real.sqrt_nonneg _)
+  rw [Real.sqrt_mul hAnn, Finset.sum_congr rfl fun k _ => hg2 k]
+  exact mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt hA) (Real.sqrt_nonneg _)
   
 /-- At or below half damping the entrance functional is unbounded on the pronic space:
 its truncated dual vectors give pairing-to-norm ratios beyond every constant.  So the
@@ -298,7 +310,6 @@ theorem exists_pronicPairing_gt {η : ℝ} (hη : 0 < η) (hη' : η ≤ 1 / 2) 
     have hw : (0 : ℝ) < (k : ℝ) * ((k : ℝ) + 1) := by positivity
     rw [hbdef, hDdef]
     field_simp
-    ring
   set S := ∑ k ∈ Finset.range N, D k with hSdef
   have hS1 : C ^ 2 + 1 ≤ S := hN
   have hSpos : 0 < S := by nlinarith [sq_nonneg C]
@@ -331,7 +342,7 @@ theorem exists_pronicWitness_not_summable_pairing {η : ℝ} (hη : 0 < η) (hη
       Real.summable_nat_rpow.mpr (by linarith)
     refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_) hmaj
     rcases Nat.eq_zero_or_pos k with rfl | hk
-    · simp [Real.zero_rpow hα0.ne']
+    · simp [Real.zero_rpow hα0.ne', Real.zero_rpow (by linarith : (2 * α - 2 : ℝ) ≠ 0)]
     have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
     have hw : (0 : ℝ) < (k : ℝ) * ((k : ℝ) + 1) := by positivity
     rw [div_le_iff₀ hw]
@@ -341,9 +352,8 @@ theorem exists_pronicWitness_not_summable_pairing {η : ℝ} (hη : 0 < η) (hη
         (k : ℝ) ^ (2 * α) * (((k : ℝ) + 1) / (k : ℝ)) := by
       rw [show (2 * α - 2 : ℝ) = 2 * α + (-2) by ring, Real.rpow_add hk0]
       rw [show ((k : ℝ)) ^ (-2 : ℝ) = 1 / (k : ℝ) ^ (2 : ℕ) by
-        rw [← Real.rpow_natCast (k : ℝ) 2, ← Real.rpow_neg hk0.le]; norm_num]
+        rw [Real.rpow_neg hk0.le, Real.rpow_two, one_div]]
       field_simp
-      ring
     rw [hsq, hsplit]
     have hone : (1 : ℝ) ≤ ((k : ℝ) + 1) / (k : ℝ) := by
       rw [le_div_iff₀ hk0]; linarith
@@ -362,21 +372,24 @@ theorem exists_pronicWitness_not_summable_pairing {η : ℝ} (hη : 0 < η) (hη
     have hstep : ρ / 3 * (k : ℝ) ^ (α - η - 1) ≤
         ρ * ((1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1 + η)) * (k : ℝ) ^ α := by
       have hden : (k : ℝ) + 1 + η ≤ 3 * (k : ℝ) := by linarith
+      -- `k^(α-η-1) = k^(-η+α) / k`
       have hsplit : (k : ℝ) ^ (α - η - 1) =
           (k : ℝ) ^ (-η) * (k : ℝ) ^ α / (k : ℝ) := by
-        rw [← Real.rpow_add hk0]
-        rw [show ((k : ℝ)) = (k : ℝ) ^ (1 : ℝ) by rw [Real.rpow_one]]
-        rw [← Real.rpow_sub hk0]
-        congr 1
-        ring
+        rw [← Real.rpow_add hk0, show α - η - 1 = (-η + α) - 1 by ring, Real.rpow_sub hk0,
+          Real.rpow_one]
       rw [hsplit]
       have hA : (0 : ℝ) < (k : ℝ) ^ (-η) * (k : ℝ) ^ α := by positivity
-      rw [div_le_iff₀ hk0] at *
+      have hd0 : (k : ℝ) + 1 + η ≠ 0 := by positivity
       have hmono : ρ * ((1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1 + η)) * (k : ℝ) ^ α =
           ρ * (1 + η) * ((k : ℝ) ^ (-η) * (k : ℝ) ^ α) / ((k : ℝ) + 1 + η) := by
-        field_simp; ring
-      rw [hmono, ge_iff_le, le_div_iff₀ (by positivity)]
-      nlinarith [hA.le, mul_le_mul_of_nonneg_left hden (by positivity : (0:ℝ) ≤ ρ * ((k : ℝ) ^ (-η) * (k : ℝ) ^ α))]
+        field_simp
+      have hlhs : ρ / 3 * ((k : ℝ) ^ (-η) * (k : ℝ) ^ α / (k : ℝ)) =
+          ρ * ((k : ℝ) ^ (-η) * (k : ℝ) ^ α) / (3 * (k : ℝ)) := by
+        field_simp
+      -- `ρA/(3k) ≤ ρA/(k+1+η) ≤ ρ(1+η)A/(k+1+η)`, using `k + 1 + η ≤ 3k` and `η ≥ 0`
+      rw [hmono, hlhs, div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_le_mul_of_nonneg_left hden (mul_pos hρ hA).le,
+        mul_nonneg (mul_nonneg hη.le (mul_pos hρ hA).le) hk0.le]
     refine hstep.trans ?_
     exact mul_le_mul_of_nonneg_right hge (Real.rpow_nonneg hk0.le _)
 
@@ -395,7 +408,7 @@ theorem summable_arithmeticDampingEntrance_reciprocal_pronicDual {η : ℝ} (hη
   refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_) hmaj
   · exact mul_nonneg (sq_nonneg _) (by positivity)
   rcases Nat.eq_zero_or_pos k with rfl | hk
-  · simp [arithmeticDampingEntrance]
+  · simp [arithmeticDampingEntrance, Real.zero_rpow (by linarith : (-2 - 2 * η : ℝ) ≠ 0)]
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hle := arithmeticDampingEntrance_le hη hk
@@ -406,7 +419,7 @@ theorem summable_arithmeticDampingEntrance_reciprocal_pronicDual {η : ℝ} (hη
     rw [sq, ← Real.rpow_add hk0]; ring_nf
   have hid : (arithmeticDampingEntrance η k / (k : ℝ)) ^ 2 * ((k : ℝ) * ((k : ℝ) + 1)) =
       arithmeticDampingEntrance η k ^ 2 * (((k : ℝ) + 1) / (k : ℝ)) := by
-    field_simp; ring
+    field_simp
   have hstep : arithmeticDampingEntrance η k ^ 2 * (((k : ℝ) + 1) / (k : ℝ)) ≤
       (ρ * ((1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1))) ^ 2 * 2 := by
     have hr : ((k : ℝ) + 1) / (k : ℝ) ≤ 2 := by
@@ -416,7 +429,7 @@ theorem summable_arithmeticDampingEntrance_reciprocal_pronicDual {η : ℝ} (hη
       2 * (ρ * (1 + η)) ^ 2 * (k : ℝ) ^ (-2 - 2 * η) := by
     have hexp : (ρ * ((1 + η) * (k : ℝ) ^ (-η) / ((k : ℝ) + 1))) ^ 2 * 2 =
         2 * (ρ * (1 + η)) ^ 2 * (k : ℝ) ^ (-(2 * η)) / ((k : ℝ) + 1) ^ 2 := by
-      rw [← hpow]; field_simp; ring
+      rw [← hpow]; field_simp
     have hk2 : (k : ℝ) ^ (2 : ℕ) ≤ ((k : ℝ) + 1) ^ 2 := by nlinarith
     have hpos : (0 : ℝ) < (k : ℝ) ^ (2 : ℕ) := by positivity
     have hshift : (k : ℝ) ^ (-2 - 2 * η) =
@@ -425,7 +438,7 @@ theorem summable_arithmeticDampingEntrance_reciprocal_pronicDual {η : ℝ} (hη
       congr 1
       push_cast
       ring
-    rw [hexp, hshift]
+    rw [hexp, hshift, ← mul_div_assoc]
     refine div_le_div_of_nonneg_left ?_ hpos hk2
     positivity
   rw [hid]

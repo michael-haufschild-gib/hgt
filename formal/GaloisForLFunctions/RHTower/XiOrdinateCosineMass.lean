@@ -196,7 +196,7 @@ theorem xiOrdinateCosine_window_eq (T : ℝ) {Y : ℝ} (hY : 4 ≤ Y) :
 /-- The derivative of the smooth Riemann–von Mangoldt count, `(log y - log 2π)/(2π)`. -/
 def xiSmoothCountDeriv (y : ℝ) : ℝ := (Real.log y - Real.log (2 * Real.pi)) / (2 * Real.pi)
 
-theorem hasDerivAt_routeKSmoothRVMCount {y : ℝ} (hy : 0 < y) :
+private theorem hasDerivAt_routeKSmoothRVMCount {y : ℝ} (hy : 0 < y) :
     HasDerivAt routeKSmoothRVMCount (xiSmoothCountDeriv y) y := by
   have hpi : 0 < 2 * Real.pi := by positivity
   have hb : routeKRVMBase = 2 * Real.pi * Real.exp 1 := rfl

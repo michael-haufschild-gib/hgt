@@ -16,7 +16,7 @@ namespace RHTower
 noncomputable section
 
 /-- The fifth normalized prime--archimedean moment as the exact order-nine theta cumulant. -/
-theorem normalizedPrimeArchMoment_four_eq_thetaCuspNormalizedEvenMoment :
+private theorem normalizedPrimeArchMoment_four_eq_thetaCuspNormalizedEvenMoment :
     normalizedPrimeArchMoment 4 =
       thetaCuspNormalizedEvenMoment 5 / 362880 -
         thetaCuspNormalizedEvenMoment 1 * thetaCuspNormalizedEvenMoment 4 / 8064 +

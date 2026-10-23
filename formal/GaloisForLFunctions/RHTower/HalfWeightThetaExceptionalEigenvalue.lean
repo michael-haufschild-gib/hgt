@@ -86,7 +86,7 @@ theorem thetaMaass_ne_zero (z : ℍ) : thetaMaass z ≠ 0 := by
   unfold thetaMaass thetaMaassC
   exact mul_ne_zero (by exact_mod_cast (Real.rpow_pos_of_pos z.im_pos _).ne') (theta_ne_zero' z)
 
-theorem norm_theta_le (z : ℍ) : ‖theta z‖ ≤ 1 + 1 / √(2 * z.im) := by
+private theorem norm_theta_le (z : ℍ) : ‖theta z‖ ≤ 1 + 1 / √(2 * z.im) := by
   have h2 : 0 < (2 * (z : ℂ)).im := by simp [z.im_pos]
   have hb := norm_jacobiTheta_le h2
   have e : (2 * (z : ℂ)).im = 2 * z.im := by simp

@@ -45,7 +45,7 @@ theorem radialInteractionTotal_nonneg (c : ℝ) (W V : ℝ → ℂ) (x : ℝ) :
   unfold radialInteractionTotal
   positivity
 
-theorem norm_exp_neg_I_mul (c x : ℝ) :
+private theorem norm_exp_neg_I_mul (c x : ℝ) :
     ‖Complex.exp (-Complex.I * (c : ℂ) * (x : ℂ))‖ = 1 := by
   rw [Complex.norm_exp]
   simp

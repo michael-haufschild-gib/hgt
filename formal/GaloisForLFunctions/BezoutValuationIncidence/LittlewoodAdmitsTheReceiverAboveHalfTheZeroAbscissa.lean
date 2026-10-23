@@ -38,7 +38,7 @@ noncomputable section
 set_option autoImplicit false
 
 /-- The Mertens partial sum in real form. -/
-theorem norm_mobiusMertensPartialSum_eq (N : ℕ) :
+private theorem norm_mobiusMertensPartialSum_eq (N : ℕ) :
     ‖mobiusMertensPartialSum N‖ = |∑ e ∈ Icc 1 N, moebiusReal e| := by
   have h : mobiusMertensPartialSum N =
       ((∑ n ∈ range (N + 1), ((ArithmeticFunction.moebius n : ℤ) : ℝ) : ℝ) : ℂ) := by

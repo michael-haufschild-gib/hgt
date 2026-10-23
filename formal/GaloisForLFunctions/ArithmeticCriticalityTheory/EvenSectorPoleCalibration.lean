@@ -59,7 +59,7 @@ theorem phiDoobCoshMass_const_one : phiDoobCoshMass (fun _ => (1 : ℝ)) = 1 / 2
 /-- No even positive function on the whole line is a folded supersolution with the constant profile
 as test coordinate: the source equation of the shifted ground state degenerates to the pole at
 `a = 0`, where the shift difference vanishes identically. -/
-theorem shiftDifference_zero (x : ℝ) : shiftDifference 0 x = 0 := by
+private theorem shiftDifference_zero (x : ℝ) : shiftDifference 0 x = 0 := by
   unfold shiftDifference
   simp
 

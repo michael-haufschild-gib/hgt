@@ -39,7 +39,7 @@ noncomputable def langevin (c : ℝ) : ℝ := rcoth c - 1 / c
 noncomputable def matchedIntensity (u : ℝ) : ℝ :=
   (1 / u ^ 2 - 1 / Real.sinh u ^ 2) / (4 * Real.pi)
 
-theorem exp_neg_two_mul_lt_one {u : ℝ} (hu : 0 < u) : Real.exp (-2 * u) < 1 := by
+private theorem exp_neg_two_mul_lt_one {u : ℝ} (hu : 0 < u) : Real.exp (-2 * u) < 1 := by
   rw [show (1 : ℝ) = Real.exp 0 by rw [Real.exp_zero]]
   exact Real.exp_lt_exp.mpr (by linarith)
 

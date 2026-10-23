@@ -1,24 +1,3 @@
-/-
-# Arithmetic criticality theory of the Weil explicit-formula form
-
-Umbrella for the `ArithmeticCriticalityTheory` modules, which study the quadratic form of Weil's
-explicit formula for the Riemann zeta function (the Markov energy and the full zero form `Ẑ`) as a
-Schrodinger-type jump form in Doob coordinates relative to Riemann's theta kernel `Φ`. The modules
-prove finite and folded ground-state (Allegretto-Piepenbrink) representations of the form, the exact
-source equation of the shifted ground states `ω_a = (Φ(x - a) - Φ(x + a)) / Φ(x)`, and a series of
-no-go results: shifted ground states, their nonnegative, signed and finite superpositions, odd profiles
-and odd theta convolutions all fail the folded supersolution test near the origin or at infinity. They
-establish criticality statements: the odd form admits no Hardy weight, so it is never subcritical
-(`riemannHypothesis_iff_nonneg_and_no_hardyWeight`), and the Connes-Consani-Moscovici restricted Weil
-ground energy tends to zero at infinite aperture. Unconditionally they prove Weil positivity on short
-windows: `Ẑ(F) >= (1/30) ∫ F^2` for real `C^2_c` tests supported in `[-21/200, 21/200]`, transferred
-to every window of length `21/100`, to complex tests and to height windows, and then improved by curved,
-quartic and parity-folded gauges up to `Ẑ(F) >= (1/5000) ∫ F^2` on `[-3/10, 3/10]`
-(`fullZeroForm_ge_of_support_le_threeTenths`). The window bounds and the no-go results are
-unconditional; some other statements are implications from `RiemannHypothesis` or its negation, or
-equivalences with it, and do not assert RH.
--/
-
 import GaloisForLFunctions.ArithmeticCriticalityTheory.GroundStateRepresentationAlgebra
 import GaloisForLFunctions.ArithmeticCriticalityTheory.FiniteJumpFormAllegrettoPiepenbrink
 import GaloisForLFunctions.ArithmeticCriticalityTheory.DoobJumpFoldedGroundStateRepresentation

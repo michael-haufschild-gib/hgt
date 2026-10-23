@@ -22,10 +22,3 @@ import GaloisForLFunctions.SelbergClass.MultipleStandardTwistDataGammaGeometry
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistSpectrum
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistSpectrumGaps
 import GaloisForLFunctions.SelbergClass.MultipleStandardTwistDegreeResonanceTrace
-
-/-!
-# Selberg-class infrastructure
-
-Formal definitions and analytic results for the Selberg class and its
-standard twists.
--/

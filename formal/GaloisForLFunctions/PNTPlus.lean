@@ -1,18 +1,3 @@
-/-
-# PrimeNumberTheoremAnd (PNT+) vendored area umbrella
-
-Vendored unconditional core of the PrimeNumberTheoremAnd project
-(Kontorovich–Tao et al.): Selberg sieve, Brun–Titchmarsh, rectangle residue
-calculus, Perron formulas, Mellin calculus, Wiener–Ikehara Tauberian theorem,
-zeta bounds with an explicit zero-free region, and the prime number theorem
-with error term `O(x · exp(-c (log x)^{1/10}))` (`MediumPNT`) plus its
-consequences (`chebyshev_asymptotic`, `pi_asymp`, `mu_pnt`, `lambda_pnt`,
-`WeakPNT_AP`).
-
-This umbrella imports the complete area inventory, so building or scanning it
-omits no leaf module.  Provenance, licensing, and the map of intentional
-overlaps with `RHTower` and mathlib: `PNTPlus/PROVENANCE.md`.
--/
 import GaloisForLFunctions.PNTPlus.Mathlib.Algebra.Notation.Support
 import GaloisForLFunctions.PNTPlus.Mathlib.Analysis.Asymptotics.Asymptotics
 import GaloisForLFunctions.PNTPlus.Mathlib.Analysis.Asymptotics.Uniformly

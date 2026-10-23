@@ -149,7 +149,7 @@ theorem IsFermiNymanWitness.dilate {w : ℝ → ℂ} (hw : IsFermiNymanWitness w
 /-! ## The dilation average -/
 
 /-- The dilation average `w_δ(t) = δ⁻¹ ∫_1^{1+δ} w(t/μ) dμ`. -/
-def dilationAverage (δ : ℝ) (w : ℝ → ℂ) (t : ℝ) : ℂ :=
+def haarDilationAverage (δ : ℝ) (w : ℝ → ℂ) (t : ℝ) : ℂ :=
   (δ : ℂ)⁻¹ * ∫ μ in Icc (1 : ℝ) (1 + δ), w (t / μ)
 
 theorem measurable_comp_div_prod {w : ℝ → ℂ} (hw : Measurable w) :
@@ -222,13 +222,13 @@ theorem integrable_prod_mul_conj_comp_div {g w : ℝ → ℂ} (hg : Measurable g
 pairings with the dilates `w(·/μ)`. -/
 theorem integral_mul_conj_dilationAverage {g w : ℝ → ℂ} (hg : Measurable g) {B : ℝ}
     (hgB : ∀ t, ‖g t‖ ≤ B) (hw : Measurable w) (hwi : IntegrableOn w (Ioc 0 1)) (δ : ℝ) :
-    (∫ t in Ioc (0 : ℝ) 1, g t * (starRingEnd ℂ) (dilationAverage δ w t)) =
+    (∫ t in Ioc (0 : ℝ) 1, g t * (starRingEnd ℂ) (haarDilationAverage δ w t)) =
       (δ : ℂ)⁻¹ * ∫ μ in Icc (1 : ℝ) (1 + δ),
         ∫ t in Ioc (0 : ℝ) 1, g t * (starRingEnd ℂ) (w (t / μ)) := by
-  have hpt : ∀ t, g t * (starRingEnd ℂ) (dilationAverage δ w t) =
+  have hpt : ∀ t, g t * (starRingEnd ℂ) (haarDilationAverage δ w t) =
       (δ : ℂ)⁻¹ * ∫ μ in Icc (1 : ℝ) (1 + δ), g t * (starRingEnd ℂ) (w (t / μ)) := by
     intro t
-    unfold dilationAverage
+    unfold haarDilationAverage
     rw [map_mul, map_inv₀, Complex.conj_ofReal, ← integral_conj, integral_const_mul]
     ring
   simp_rw [hpt]
@@ -239,7 +239,7 @@ theorem integral_mul_conj_dilationAverage {g w : ℝ → ℂ} (hg : Measurable g
 /-- The dilation average of a square-integrable witness is orthogonal to every generator. -/
 theorem IsL2FermiWitness.integral_gen_mul_conj_dilationAverage {w : ℝ → ℂ}
     (hw : IsL2FermiWitness w) (δ : ℝ) {a : ℝ} (ha : 1 ≤ a) :
-    ∫ t in Ioc (0 : ℝ) 1, fermiNymanGen a t * (starRingEnd ℂ) (dilationAverage δ w t) = 0 := by
+    ∫ t in Ioc (0 : ℝ) 1, fermiNymanGen a t * (starRingEnd ℂ) (haarDilationAverage δ w t) = 0 := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
     ((memLp_two_iff_integrable_sq_norm (hw.measurable.aestronglyMeasurable)).mpr hw.sq).integrable
       (by norm_num)
@@ -341,14 +341,14 @@ theorem intervalIntegrable_div_sq {w : ℝ → ℂ} (hw : Measurable w) (hwi : I
 /-- **Continuity.**  The dilation average of an integrable function is continuous on `(0,1]`. -/
 theorem continuousOn_dilationAverage {w : ℝ → ℂ} (hw : Measurable w)
     (hwi : IntegrableOn w (Ioc 0 1)) {δ : ℝ} (hδ : 0 < δ) :
-    ContinuousOn (dilationAverage δ w) (Ioc 0 1) := by
+    ContinuousOn (haarDilationAverage δ w) (Ioc 0 1) := by
   set P : ℝ → ℂ := fun x => ∫ u in (1 : ℝ)..x, w u / (u : ℂ) ^ 2 with hP
   have hδ1 : 0 < 1 + δ := by linarith
   -- the average as a primitive
-  have hform : ∀ t ∈ Ioc (0 : ℝ) 1, dilationAverage δ w t =
+  have hform : ∀ t ∈ Ioc (0 : ℝ) 1, haarDilationAverage δ w t =
       (δ : ℂ)⁻¹ * ((t : ℂ) * (P t - P (t / (1 + δ)))) := by
     intro t ht
-    unfold dilationAverage
+    unfold haarDilationAverage
     rw [integral_Icc_comp_div_eq_primitive hδ ht.1]
     congr 2
     have h1 : IntervalIntegrable (fun u : ℝ => w u / (u : ℂ) ^ 2) volume 1 t :=
@@ -442,8 +442,8 @@ theorem lintegral_Ioc_comp_div (f : ℝ → ℝ≥0∞) (hf : Measurable f) {μ 
 
 /-- Pointwise bound for the dilation average. -/
 theorem enorm_dilationAverage_le {w : ℝ → ℂ} {δ : ℝ} (hδ : 0 < δ) (t : ℝ) :
-    ‖dilationAverage δ w t‖ₑ ≤ (ENNReal.ofReal δ)⁻¹ * ∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ := by
-  unfold dilationAverage
+    ‖haarDilationAverage δ w t‖ₑ ≤ (ENNReal.ofReal δ)⁻¹ * ∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ := by
+  unfold haarDilationAverage
   rw [enorm_mul]
   have h1 : ‖(δ : ℂ)⁻¹‖ₑ = (ENNReal.ofReal δ)⁻¹ := by
     rw [← ofReal_norm, norm_inv, Complex.norm_real, Real.norm_of_nonneg hδ.le,
@@ -456,7 +456,7 @@ theorem enorm_dilationAverage_le {w : ℝ → ℂ} {δ : ℝ} (hδ : 0 < δ) (t 
 square-integrable on `(0,1]`. -/
 theorem integrableOn_normSq_dilationAverage {w : ℝ → ℂ} (hw : Measurable w)
     (hsq : IntegrableOn (fun t => ‖w t‖ ^ 2) (Ioc 0 1)) {δ : ℝ} (hδ : 0 < δ) :
-    IntegrableOn (fun t => ‖dilationAverage δ w t‖ ^ 2) (Ioc 0 1) := by
+    IntegrableOn (fun t => ‖haarDilationAverage δ w t‖ ^ 2) (Ioc 0 1) := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
     ((memLp_two_iff_integrable_sq_norm hw.aestronglyMeasurable).mpr hsq).integrable (by norm_num)
   have hδ1 : (0 : ℝ) < 1 + δ := by linarith
@@ -473,12 +473,12 @@ theorem integrableOn_normSq_dilationAverage {w : ℝ → ℂ} (hw : Measurable w
   have hmeas2 : Measurable (fun p : ℝ × ℝ => ‖w (p.1 / p.2)‖ₑ ^ 2) :=
     ((hw.comp (measurable_fst.div measurable_snd)).enorm).pow_const 2
   -- pointwise square bound
-  have hpt : ∀ t : ℝ, ‖dilationAverage δ w t‖ₑ ^ 2 ≤
+  have hpt : ∀ t : ℝ, ‖haarDilationAverage δ w t‖ₑ ^ 2 ≤
       (ENNReal.ofReal δ)⁻¹ * ∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ ^ 2 := by
     intro t
     have hf : Measurable (fun μ : ℝ => ‖w (t / μ)‖ₑ) :=
       (hw.comp (measurable_const.div measurable_id)).enorm
-    calc ‖dilationAverage δ w t‖ₑ ^ 2
+    calc ‖haarDilationAverage δ w t‖ₑ ^ 2
         ≤ ((ENNReal.ofReal δ)⁻¹ * ∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ) ^ 2 :=
           ENNReal.pow_le_pow_left (enorm_dilationAverage_le hδ t)
       _ = (ENNReal.ofReal δ)⁻¹ ^ 2 * (∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ) ^ 2 := by
@@ -492,7 +492,7 @@ theorem integrableOn_normSq_dilationAverage {w : ℝ → ℂ} (hw : Measurable w
             mul_comm (∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ ^ 2) (ENNReal.ofReal δ), mul_assoc,
             ← mul_assoc (ENNReal.ofReal δ)⁻¹ (ENNReal.ofReal δ), ENNReal.inv_mul_cancel
             (by simpa using hδ) ENNReal.ofReal_ne_top, one_mul]
-  calc (∫⁻ t in Ioc (0 : ℝ) 1, ‖dilationAverage δ w t‖ₑ ^ 2)
+  calc (∫⁻ t in Ioc (0 : ℝ) 1, ‖haarDilationAverage δ w t‖ₑ ^ 2)
       ≤ ∫⁻ t in Ioc (0 : ℝ) 1, (ENNReal.ofReal δ)⁻¹ *
           ∫⁻ μ in Icc (1 : ℝ) (1 + δ), ‖w (t / μ)‖ₑ ^ 2 := lintegral_mono hpt
     _ = (ENNReal.ofReal δ)⁻¹ * ∫⁻ t in Ioc (0 : ℝ) 1,
@@ -516,7 +516,7 @@ theorem integrableOn_normSq_dilationAverage {w : ℝ → ℂ} (hw : Measurable w
 /-- **The dilation average of a square-integrable witness is a continuous witness.** -/
 theorem IsL2FermiWitness.dilationAverage_isFermiNymanWitness {w : ℝ → ℂ}
     (hw : IsL2FermiWitness w) {δ : ℝ} (hδ : 0 < δ) :
-    IsFermiNymanWitness (dilationAverage δ w) := by
+    IsFermiNymanWitness (haarDilationAverage δ w) := by
   have hwi : IntegrableOn w (Ioc 0 1) :=
     ((memLp_two_iff_integrable_sq_norm hw.measurable.aestronglyMeasurable).mpr hw.sq).integrable
       (by norm_num)
@@ -702,7 +702,7 @@ theorem integral_dyadicHaar_mul_conj_eq_zero_of_riemannHypothesis (hRH : Riemann
     intro δ hδ
     have hwit := hw.dilationAverage_isFermiNymanWitness hδ
     have hss := (riemannHypothesis_iff_fermiNymanWitness_selfSimilar.mp hRH) _ hwit
-    have hint : IntegrableOn (dilationAverage δ w) (Ioc 0 1) :=
+    have hint : IntegrableOn (haarDilationAverage δ w) (Ioc 0 1) :=
       ((memLp_two_iff_integrable_sq_norm (hwit.1.aestronglyMeasurable measurableSet_Ioc)).mpr
         hwit.2.1).integrable (by norm_num)
     have h0 := integral_dyadicHaar_mul_conj_of_selfSimilar hint hss

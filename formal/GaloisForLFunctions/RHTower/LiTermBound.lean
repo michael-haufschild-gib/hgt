@@ -89,7 +89,7 @@ theorem inv_mul_max_sq_le_max {a : ℝ} (ha : 0 < a) :
     exact le_max_right _ _
 
 /-- `‖wⁿ - 1‖ ≤ n (max 1 ‖w‖)ⁿ ‖w - 1‖`. -/
-theorem norm_pow_sub_one_le (w : ℂ) (n : ℕ) :
+theorem norm_pow_sub_one_le_geom (w : ℂ) (n : ℕ) :
     ‖w ^ n - 1‖ ≤ (n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖ := by
   have hgeom : (∑ k ∈ Finset.range n, w ^ k) * (w - 1) = w ^ n - 1 := geom_sum_mul w n
   have hsum : ‖∑ k ∈ Finset.range n, w ^ k‖ ≤ (n : ℝ) * max 1 ‖w‖ ^ n := by
@@ -118,7 +118,7 @@ theorem norm_liTerm_le {w : ℂ} (hw : w ≠ 0) (n : ℕ) :
   have hmax : 0 ≤ max 1 ‖w‖ := le_trans zero_le_one (le_max_left _ _)
   rw [liTerm_eq_neg_mul_sq hw n, norm_neg, norm_mul, norm_pow, norm_pow, norm_inv]
   have h1 : ‖w ^ n - 1‖ ^ (2 : ℕ) ≤ ((n : ℝ) * max 1 ‖w‖ ^ n * ‖w - 1‖) ^ (2 : ℕ) := by
-    have := norm_pow_sub_one_le w n
+    have := norm_pow_sub_one_le_geom w n
     have hnn : (0:ℝ) ≤ ‖w ^ n - 1‖ := norm_nonneg _
     nlinarith
   have h2 : ‖w‖⁻¹ ^ n * ‖w ^ n - 1‖ ^ (2 : ℕ)

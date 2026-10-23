@@ -40,6 +40,7 @@ theorem criticalWindowWeight_cosine_split :
     rw [← integral_add hc he]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro v hv
+    dsimp only
     rw [← add_mul, criticalCollarWeight_add_criticalEndpointWeight
       (zero_lt_one.trans hv)]
     rfl

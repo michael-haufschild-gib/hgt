@@ -19,7 +19,7 @@ namespace RHTower
 
 noncomputable section
 
-theorem sqrt_natCast_pow (p k : ℕ) : Real.sqrt ((p ^ k : ℕ) : ℝ) = Real.sqrt p ^ k := by
+private theorem sqrt_natCast_pow (p k : ℕ) : Real.sqrt ((p ^ k : ℕ) : ℝ) = Real.sqrt p ^ k := by
   have h : (Real.sqrt p ^ k) ^ 2 = ((p ^ k : ℕ) : ℝ) := by
     rw [← pow_mul, mul_comm, pow_mul, Real.sq_sqrt (Nat.cast_nonneg p)]; push_cast; ring
   rw [← h, Real.sqrt_sq (pow_nonneg (Real.sqrt_nonneg _) _)]

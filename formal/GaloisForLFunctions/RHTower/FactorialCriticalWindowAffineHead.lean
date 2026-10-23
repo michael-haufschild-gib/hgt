@@ -37,7 +37,8 @@ private theorem affine_product_integrable (a c : ℝ) :
       (volume.restrict (Ioi (1 : ℝ))))
     (Eventually.of_forall fun v => by
       simpa only [Real.norm_eq_abs] using Real.abs_cos_le_one (2 * Real.pi * c * v))
-  simpa only [mul_assoc] using h
+  simp only [mul_assoc] at h ⊢
+  exact h
 
 private theorem affine_layer_branches (S : Finset ℕ) (b : ℕ → ℝ) (p : ℕ) (v : ℝ) :
     realAffineHarmonicLayer S b p v = ∑ m ∈ S, b m * ∑ i : Bool,
@@ -161,7 +162,7 @@ private theorem affine_slow_integrable (p m n : ℕ) :
   have hcos : IntegrableOn (fun v => criticalWindowWeight v *
       Real.cos (2 * Real.pi * p * ((m : ℝ) - n) * v)) (Ioi 1) := by
     simpa only [mul_assoc] using affine_cos_integrable ((p : ℝ) * ((m : ℝ) - n))
-  apply hcos.mul_bdd (by fun_prop)
+  refine hcos.mul_bdd (c := 2) (by fun_prop) ?_
   filter_upwards [] with v
   rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr (Real.cos_le_one _))]
   linarith [Real.neg_one_le_cos (2 * Real.pi * p * v / 12)]
@@ -293,6 +294,6 @@ theorem abs_integral_criticalWindow_affine_sub_mass_le
         ring
     _ ≤ C * ((δ * N + 1) * ∑ n ∈ S, b n ^ 2) :=
         mul_le_mul_of_nonneg_left (sq_sum_abs_le_critical_scale_window hN0.le hδ S b hS) hC
-    _ = _ := by dsimp only [C]; field_simp [ne_of_gt hN0]; ring
+    _ = _ := by dsimp only [C]; field_simp [ne_of_gt hN0]
 
 end GaloisForLFunctions.ArithmeticPositivityTheory

@@ -498,7 +498,7 @@ theorem re_sq_eq (z : ℂ) : z.re ^ (2 : ℕ) = ((z ^ (2 : ℕ)).re + ‖z‖ ^ 
 
 
 /-- The complex trigonometric polynomial with frequencies `2T j`. -/
-def trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) : ℂ :=
+private def trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) : ℂ :=
   ∑ j, c j * Complex.exp (((2 * a * T j : ℝ) : ℂ) * Complex.I)
 
 theorem trigPoly_sq {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) (a : ℝ) :
@@ -692,7 +692,7 @@ theorem abs_integral_trigPolyRe_sq_sub_le {r : ℕ} (c : Fin r → ℂ) (T : Fin
 
 
 open MeasureTheory in
-theorem continuous_trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) :
+private theorem continuous_trigPoly {r : ℕ} (c : Fin r → ℂ) (T : Fin r → ℝ) :
     Continuous (trigPoly c T) := by
   unfold trigPoly
   exact continuous_finsetSum _ fun j _ => by fun_prop

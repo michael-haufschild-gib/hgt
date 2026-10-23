@@ -72,7 +72,6 @@ import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityNegativeSchurD1NoGo
 import GaloisForLFunctions.HilbertMetric.SecondLevelConcavityRiccatiFifthRootNoGo
 import GaloisForLFunctions.HilbertMetric.FifthRootAtomLikelihoodRiccatiNoGo
 import GaloisForLFunctions.HilbertMetric.RiccatiChargeFifthRootNoGo
-
 import GaloisForLFunctions.HilbertMetric.GreedyBumpBernoulliCompletion
 import GaloisForLFunctions.HilbertMetric.GreedyBumpGaussianCoherentApplications
 import GaloisForLFunctions.HilbertMetric.PseudospectrumSimilarity
@@ -95,7 +94,6 @@ import GaloisForLFunctions.HilbertMetric.SpanAngleFromGramFrame
 import GaloisForLFunctions.HilbertMetric.HorizontalLamzouriRouteToMultiple
 import GaloisForLFunctions.HilbertMetric.HorizontalLamzouriMergeMixed
 import GaloisForLFunctions.HilbertMetric.HorizontalLamzouriMixedRangeSharp
-
 import GaloisForLFunctions.HilbertMetric.GomesReflectedQuarticTensor
 import GaloisForLFunctions.HilbertMetric.GaussianCoherentFisherClock
 import GaloisForLFunctions.HilbertMetric.ResponseCompression
@@ -103,11 +101,3 @@ import GaloisForLFunctions.HilbertMetric.GaussianHarnack
 import GaloisForLFunctions.HilbertMetric.ProjectiveGramRegularization
 import GaloisForLFunctions.HilbertMetric.CrouzeixEvaluationEnergy
 import GaloisForLFunctions.HilbertMetric.SteinitzEvaluationInverse
-
-/-!
-# Hilbert-metric theorem area
-
-This umbrella owns metric and Hilbert-space laws that are mathematically independent of the
-`HTGeometry` and `RHTower` theorem areas.  Parent infrastructure is imported here before the
-Gaussian feature-determinant layer built on top of it.
--/

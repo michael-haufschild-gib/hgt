@@ -81,7 +81,7 @@ theorem evenDeficit_eq [IsProbabilityMeasure μ] {r : ℝ} (hr0 : 0 ≤ r) (hr1 
   ring
 
 /-- **`(245)`, odd half.**  Finiteness of the odd energy is the integrability input. -/
-theorem oddDeficit_eq [IsProbabilityMeasure μ] {r : ℝ} (hr0 : 0 ≤ r)
+private theorem oddDeficit_eq [IsProbabilityMeasure μ] {r : ℝ} (hr0 : 0 ≤ r)
     (hsupp : ∀ᵐ t ∂μ, -r ≤ t ∧ t < 1) (hint : Integrable oddResolvent μ) :
     (∫ t, oddResolvent t ∂μ) - 1 / (1 + r) = ∫ t, oddEdgeWeight r t ∂μ := by
   have hconst : Integrable (fun _ : ℝ => 1 / (1 + r)) μ := integrable_const _

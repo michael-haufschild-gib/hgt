@@ -1,10 +1,3 @@
-/-
-# Hurwitz theorem area
-
-Umbrella module for the Hurwitz quadratic tail-independence proof program.
-Use this import when working on the Hurwitz theorem area; use narrower imports
-inside leaf modules when a file only needs a smaller local API.
--/
 import GaloisForLFunctions.Hurwitz.OrbitObstruction
 import GaloisForLFunctions.Hurwitz.MonodromyScalar
 import GaloisForLFunctions.Hurwitz.ExpIndependence
@@ -55,8 +48,6 @@ import GaloisForLFunctions.Hurwitz.JointAnchorContinuity
 import GaloisForLFunctions.Hurwitz.JointAnchorRegularity
 import GaloisForLFunctions.Hurwitz.AnchorLevelGraph
 import GaloisForLFunctions.Hurwitz.AnchorGraphContact
-
-/- ## Complete area inventory -/
 import GaloisForLFunctions.Hurwitz.AnalyticContinuation
 import GaloisForLFunctions.Hurwitz.ContinuedJointHypertranscendence
 import GaloisForLFunctions.Hurwitz.ContinuedJointLadderDeformationBridge

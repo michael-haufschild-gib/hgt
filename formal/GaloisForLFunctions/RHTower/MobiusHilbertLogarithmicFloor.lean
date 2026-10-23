@@ -35,7 +35,7 @@ namespace RHTower
 /-! ### The complex sinc kernel -/
 
 /-- The entire function `sin w / w`. -/
-def complexSinc : ℂ → ℂ := dslope Complex.sin 0
+private def complexSinc : ℂ → ℂ := dslope Complex.sin 0
 
 theorem differentiable_complexSinc : Differentiable ℂ complexSinc := by
   have h := (Complex.differentiableOn_dslope (f := Complex.sin) (s := univ) (c := 0)

@@ -185,17 +185,3 @@ import GaloisForLFunctions.TransHorizonIncidenceMechanics.FinitePerturbationsOfE
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.DampedMoebiusFirstMomentAndChebyshevTangentBridge
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.DoubleZeroKernelsAndLogarithmicSmoothPowerAtThePole
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.SignBlindDampingsStopAtHalfAndSignedDampingsReadTheZeros
-
-/-!
-# Trans-Horizon Incidence Mechanics (`GaloisForLFunctions.TransHorizonIncidenceMechanics`)
-
-Umbrella module for **Trans-Horizon Incidence Mechanics (`THIM`)** (Multiplicative Valuation-Clock
-Spectral Theory), the unified mathematical framework fusing our continuous/archimedean theory
-(`BiScaleUncertainty`, `RHTower`) and discrete multiplicative-additive incidence theory
-(`BezoutValuationIncidence`) across the **6 Irreducible Uncharted Obstacles** and **5 Foundational
-Pillars** identified in `docs/reports/hard-obstacles-summary-1810.md`.
-
-See `formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md` for the cross-programme
-motivation, unified object dictionary, five foundational pillars and mechanisms, permanent dead ends
-and technical traps, and active research frontier.
--/

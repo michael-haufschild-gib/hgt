@@ -58,7 +58,7 @@ theorem sin_le_self_of_nonneg {θ : ℝ} (hθ : 0 ≤ θ) : Real.sin θ ≤ θ :
   linarith
 
 /-- Step 2 (`f₂`): for all `θ : ℝ`, `1 - Real.cos θ ≤ θ ^ 2 / 2`. -/
-theorem one_sub_cos_le_sq_div_two (θ : ℝ) : 1 - Real.cos θ ≤ θ ^ 2 / 2 := by
+private theorem one_sub_cos_le_sq_div_two (θ : ℝ) : 1 - Real.cos θ ≤ θ ^ 2 / 2 := by
   suffices h : ∀ u : ℝ, 0 ≤ u → 0 ≤ Real.cos u - (1 - u ^ 2 / 2) by
     rcases le_total 0 θ with hθ | hθ
     · linarith [h θ hθ]
