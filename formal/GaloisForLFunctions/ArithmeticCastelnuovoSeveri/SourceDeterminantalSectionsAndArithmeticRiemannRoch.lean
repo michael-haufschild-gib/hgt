@@ -1519,14 +1519,17 @@ theorem markovEnergy_eq_integral_mu_add_PX {a : ℝ} {f : ℝ → ℂ} (hf : Con
   have hsub : EF.literatureRHS k - weilPoleTerm k =
       ∫ τ : ℝ, paperFT k τ * ((mu τ + PX (Real.exp (2 * a)) τ : ℝ) : ℂ) := by
     unfold EF.literatureRHS weilPoleTerm
-    rw [EF.prime_term hkd.continuous hks hFk, EF.gamma_term, ← integral_add hPX hμ]
-    have hring : paperFT k (I / 2) + paperFT k (-I / 2) -
-        (-(∫ r : ℝ, paperFT k r * ↑(PX (Real.exp (2 * a)) r))) +
-        ∫ r : ℝ, paperFT k r * ↑(mu r) -
-        (paperFT k (I / 2) + paperFT k (-I / 2)) =
-      (∫ r : ℝ, paperFT k r * ↑(PX (Real.exp (2 * a)) r)) +
-        ∫ r : ℝ, paperFT k r * ↑(mu r) := by ring
-    rw [hring, ← integral_add hPX hμ]
+    have hcancel :
+        paperFT k (I / 2) + paperFT k (-I / 2) -
+            ∑' n : ℕ, ↑(ArithmeticFunction.vonMangoldt n / √↑n) *
+              (k (Real.log ↑n) + k (-Real.log ↑n)) +
+            1 / (2 * ↑π) * ∫ r : ℝ, paperFT k ↑r * ↑(EF.gammaBracket r) -
+          (paperFT k (I / 2) + paperFT k (-I / 2)) =
+        (-∑' n : ℕ, ↑(ArithmeticFunction.vonMangoldt n / √↑n) *
+            (k (Real.log ↑n) + k (-Real.log ↑n))) +
+          1 / (2 * ↑π) * ∫ r : ℝ, paperFT k ↑r * ↑(EF.gammaBracket r) := by ring
+    rw [hcancel, EF.prime_term hkd.continuous hks hFk, EF.gamma_term, neg_neg,
+      ← integral_add hPX hμ]
     congr 1
     ext τ
     push_cast
@@ -1581,8 +1584,20 @@ theorem neg_horizonExponent_mul_le_markovEnergy_Icc {r : ℝ} {F : ℝ → ℝ}
     simpa [horizonExponent, hsq] using neg_horizonExponent_le_mu_add_PX (Real.exp_pos (2 * r)).le τ
   have hnorm : (∫ u : ℝ, ‖(F u : ℂ)‖ ^ 2) = ∫ u : ℝ, F u ^ 2 := by
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    rw [Complex.norm_real, sq_abs]
-  rwa [hnorm, neg_mul] at hbound
+    simp only [Complex.norm_real, sq_abs]
+  rw [hnorm] at hbound
+  linarith
+
+/-- **The Subspace `evenRealTestsAt r` of Even `C²` Compactly Supported Real Tests in `[-r, r]`:** -/
+def evenRealTestsAt (r : ℝ) : Submodule ℝ realTests where
+  carrier := {f : realTests | tsupport f.1 ⊆ Icc (-r) r ∧ ∀ u : ℝ, f.1 (-u) = f.1 u}
+  add_mem' {f g} hf hg :=
+    ⟨(tsupport_add f.1 g.1).trans (union_subset hf.1 hg.1),
+      fun u => by simp [hf.2 u, hg.2 u]⟩
+  zero_mem' := ⟨by simp [tsupport], fun _ => rfl⟩
+  smul_mem' c {f} hf :=
+    ⟨(tsupport_smul_subset_right (fun _ : ℝ => c) f.1).trans hf.1,
+      fun u => by simp [hf.2 u]⟩
 
 /-- **All-Aperture Chebyshev Defect Floor on `evenRealTestsAt r` (No Pole-Vanishing or `C^∞` Hypothesis):**
 For every `r : ℝ` and every cycle `x : ℝ × ℝ × evenRealTestsAt r`,
@@ -1597,6 +1612,8 @@ theorem even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp (r : ℝ)
   have hFc : HasCompactSupport F := x.2.2.1.2.2
   have hFs : tsupport F ⊆ Icc (-r) r := x.2.2.2.1
   have hodd : oddPoleMoment F = 0 := oddPoleMoment_eq_zero_of_even x.2.2.2.2
+  change -(10 + 68 * Real.exp r) * ∫ u : ℝ, F u ^ 2 + 2 * evenPoleMoment F ^ 2 ≤
+    (scalingSubsurface (evenRealTestsAt r)).defect x x
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc]
   have hM := neg_horizonExponent_mul_le_markovEnergy_Icc hF2 hFs
   unfold fullZeroForm
@@ -1618,6 +1635,8 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hsupp : ∀ u : ℝ, r < |u| → F u = 0 :=
     fun u hu => image_eq_zero_of_notMem_tsupport fun hmem =>
       not_le_of_gt hu (abs_le.mpr (x.2.2.2 hmem))
+  change -(10 + 72 * Real.exp r) * ∫ u : ℝ, F u ^ 2 + 2 * evenPoleMoment F ^ 2 ≤
+    (scalingSubsurface (realTestsAt r)).defect x x
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc,
     fullZeroForm_eq_even_add_odd hF2 hFc,
     integral_sq_eq_even_add_odd hF2.continuous hFc, mul_add]
@@ -1681,13 +1700,13 @@ theorem gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch {r : ℝ} (hr :
   ⟨gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x => by
       have h := realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x
       have hsq : 0 ≤ 2 * evenPoleMoment x.2.2.1.1 ^ 2 := by positivity
-      linarith [show l2SourceEnergy (-(10 + 72 * Real.exp r)) (realTestsAt r) x =
-        -(10 + 72 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 from rfl],
+      unfold l2SourceEnergy
+      linarith,
     gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x => by
       have h := even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x
       have hsq : 0 ≤ 2 * evenPoleMoment x.2.2.1.1 ^ 2 := by positivity
-      linarith [show l2SourceEnergy (-(10 + 68 * Real.exp r)) (evenRealTestsAt r) x =
-        -(10 + 68 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 from rfl]⟩
+      unfold l2SourceEnergy
+      linarith⟩
 
 /-- **Overlapping Two-Prime (`r = 23/40`, `relevantShifts (23/40) = {2, 3}`) Strip-Surplus
 Defect Allocation on `scalingSubsurface (oddRealTestsAt (23/40))`:**
@@ -1725,8 +1744,8 @@ With universal constants `c > 0` and `K > 0`, for every `0 < r < R` and every cy
 `surplusPool + crossingPotentialTerm + gaugeRemainder - K e^r e^{-c√r} (∫ f² + ½ ∫ (f')²) ≤ defect x x`,
 strictly beating the `e^r` barrier by the zero-free-region factor `e^{-c√r}` at all apertures. -/
 theorem exists_scalingSubsurface_odd_defect_deLaValleePoussin_sobolev_floor :
-    ∃ c > 0, ∃ K > 0, ∀ {r R : ℝ} (hr : 0 < r) (hR : r < R)
-      (x : ℝ × ℝ × oddRealTestsAt r),
+    ∃ c > 0, ∃ K > 0, ∀ {r R : ℝ}, 0 < r → r < R →
+      ∀ (x : ℝ × ℝ × oddRealTestsAt r),
       let f : ℝ → ℝ := x.2.2.1.1
       surplusPool (aperturePlateau r R) f +
           crossingPotentialTerm (aperturePlateau r R) f +

@@ -168,6 +168,16 @@ theorem HeightWeight.abs_sub_le_min {ℓ : ℝ} {W : ℝ → ℝ} (hW : HeightWe
   le_min (hW.lipschitz s t) (abs_sub_le_iff.mpr
     ⟨by linarith [hW.le_one s, hW.nonneg t], by linarith [hW.le_one t, hW.nonneg s]⟩)
 
+theorem HeightWeight.continuous {ℓ : ℝ} {W : ℝ → ℝ} (hW : HeightWeight ℓ W) : Continuous W := by
+  rw [Metric.continuous_iff]
+  intro b ε hε
+  refine ⟨ε / (|ℓ| + 1), by positivity, fun a hab => ?_⟩
+  rw [Real.dist_eq] at hab ⊢
+  calc |W a - W b| ≤ ℓ * |a - b| := hW.lipschitz a b
+    _ ≤ (|ℓ| + 1) * |a - b| := mul_le_mul_of_nonneg_right (by linarith [le_abs_self ℓ]) (abs_nonneg _)
+    _ < (|ℓ| + 1) * (ε / (|ℓ| + 1)) := mul_lt_mul_of_pos_left hab (by positivity)
+    _ = ε := by field_simp
+
 variable {cϱ : ℝ} {p : Setting} {F : LocalFun}
 
 /-- Grid weights sampled from a height weight. -/
@@ -401,5 +411,246 @@ theorem abs_integral_KfunW_sq_sub_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} (
       simp only [Finset.mul_sum, Finset.sum_mul]; exact Finset.sum_congr rfl fun k _ => by ring)
   rw [e1, e2, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   exact Finset.sum_le_sum fun k _ => hterm k
+
+/-! ## 5. The second comparison: the grid kernel against the full lattice on the window -/
+
+/-- `√|r|/(1 + r²)` is integrable (it is at most `(1 + r²)^{-3/4}`). -/
+theorem integrable_lor1_mul_sqrt : Integrable fun r => lor1 r * Real.sqrt |r| := by
+  have hI := integrable_rpow_neg_one_add_norm_sq (E := ℝ) (μ := volume) (r := 3 / 2)
+    (by simp; norm_num)
+  refine hI.mono' ((continuous_lor1.mul continuous_abs.sqrt).aestronglyMeasurable)
+    (Eventually.of_forall fun r => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (lor1_pos r).le (Real.sqrt_nonneg _)),
+    Real.norm_eq_abs, sq_abs]
+  set u := 1 + r ^ 2 with hu
+  have hu1 : 1 ≤ u := by rw [hu]; nlinarith [sq_nonneg r]
+  have hu0 : 0 < u := by linarith
+  have hsq : Real.sqrt |r| ≤ u ^ (1 / 4 : ℝ) := by
+    have h1 : |r| ≤ Real.sqrt u := Real.abs_le_sqrt (by rw [hu]; linarith)
+    have h2 : Real.sqrt |r| ≤ Real.sqrt (Real.sqrt u) := Real.sqrt_le_sqrt h1
+    have hq : Real.sqrt (Real.sqrt u) = u ^ (1 / 4 : ℝ) := by
+      rw [Real.sqrt_eq_rpow, Real.sqrt_eq_rpow, ← Real.rpow_mul hu0.le]; norm_num
+    exact h2.trans (le_of_eq hq)
+  have hl : lor1 r = u ^ (-1 : ℝ) := by unfold lor1; rw [Real.rpow_neg_one, hu]
+  rw [hl]
+  calc u ^ (-1 : ℝ) * Real.sqrt |r| ≤ u ^ (-1 : ℝ) * u ^ (1 / 4 : ℝ) :=
+        mul_le_mul_of_nonneg_left hsq (by positivity)
+    _ = u ^ (-(3 / 2 : ℝ) / 2) := by rw [← Real.rpow_add hu0]; norm_num
+
+/-- `|K∞(τ,τ')| = L|Φ(τ − τ')| ≤ L A lor1(τ − τ')`. -/
+theorem abs_Kinf_le_lor1 (hF : LocalHypsCoreW cϱ p F) (τ τ' : ℝ) :
+    |Kinf p F τ τ'| ≤ p.L * ((p.L + cϱ / p.w) * lor1 (τ - τ')) := by
+  unfold Kinf
+  rw [abs_mul, abs_of_pos hF.L_pos]
+  refine mul_le_mul_of_nonneg_left ?_ hF.L_pos.le
+  have h1 := hF.Phi_le_L (τ - τ')
+  have h2 := hF.Phi_le_sq (τ - τ')
+  unfold lor1
+  rw [← div_eq_mul_inv, le_div_iff₀ (by positivity)]
+  nlinarith
+
+/-- `|K(τ,τ')| ≤ A² Σ_k lor1(τ − τ_k) lor1(τ' − τ_k)`. -/
+theorem abs_Kfun_le_lor1 (hF : LocalHypsCoreW cϱ p F) (τ τ' : ℝ) :
+    |Kfun p F τ τ'|
+      ≤ (p.L + cϱ / p.w) ^ 2 * ∑ k : Fin p.d, lor1 (τ - p.tau k) * lor1 (τ' - p.tau k) := by
+  unfold Kfun
+  rw [Finset.mul_sum]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+  rw [abs_mul]
+  have h2 := abs_phiHat_le_lor1 hF (τ - p.tau k)
+  have h3 := abs_phiHat_le_lor1 hF (τ' - p.tau k)
+  calc |F.phiHat (τ - p.tau k)| * |F.phiHat (τ' - p.tau k)|
+      ≤ ((p.L + cϱ / p.w) * lor1 (τ - p.tau k)) * ((p.L + cϱ / p.w) * lor1 (τ' - p.tau k)) :=
+        mul_le_mul h2 h3 (abs_nonneg _) (le_trans (abs_nonneg _) h2)
+    _ = (p.L + cϱ / p.w) ^ 2 * (lor1 (τ - p.tau k) * lor1 (τ' - p.tau k)) := by ring
+
+/-- Deep inside the window the grid kernel equals the full-lattice kernel up to `L R₀`
+whenever `ρ(τ) ≤ R₀²`. -/
+theorem abs_Kinf_sub_Kfun_le_of_rho (hF : LocalHypsCoreW cϱ p F) {R₀ : ℝ} (hR₀ : 0 < R₀) {τ : ℝ}
+    (hρ : rho p F τ ≤ R₀ ^ 2) (τ' : ℝ) :
+    |Kinf p F τ τ' - Kfun p F τ τ'| ≤ p.L * R₀ := by
+  have hL := hF.L_pos
+  have h := abs_Kinf_sub_Kfun_le hF τ τ' (s := p.L / R₀) (by positivity)
+  have hρ' : rho p F τ' ≤ p.L ^ 2 := by
+    unfold rho
+    have ha := hF.a_le_one
+    have : 0 ≤ ∑ k : Fin p.d, F.phiHat (τ' - p.tau k) ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+    nlinarith [sq_nonneg p.L]
+  refine h.trans ?_
+  have e1 : p.L / R₀ * rho p F τ ≤ p.L / R₀ * R₀ ^ 2 := mul_le_mul_of_nonneg_left hρ (by positivity)
+  have e2 : rho p F τ' / (p.L / R₀) ≤ p.L ^ 2 / (p.L / R₀) :=
+    div_le_div_of_nonneg_right hρ' (by positivity)
+  have e3 : p.L / R₀ * R₀ ^ 2 = p.L * R₀ := by field_simp
+  have e4 : p.L ^ 2 / (p.L / R₀) = p.L * R₀ := by field_simp
+  linarith
+
+/-- **Second comparison.** For a weight supported in `S = [s₀, s₁]` with `ρ ≤ R₀²` on `S`, and a
+density with `|ν(τ')| ≤ B₁ + √|τ' − τ|` for `τ ∈ S`:
+`|∬ W(τ)² (K² − K∞²) ν ν'| ≤ L R₀ B₁ (A² Σ_k π ∫ lor1(· − τ_k)|ν| + L A (s₁ − s₀) ∫ k)`,
+`k(r) = lor1(r)(B₁ + √|r|)`. -/
+theorem abs_integral_window_Kfun_sq_sub_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} {W : ℝ → ℝ}
+    (hW : HeightWeight ℓ W) {s₀ s₁ : ℝ} (hs : s₀ ≤ s₁) (hWS : ∀ τ, τ ∉ Icc s₀ s₁ → W τ = 0)
+    {R₀ : ℝ} (hR₀ : 0 < R₀) (hρ : ∀ τ ∈ Icc s₀ s₁, rho p F τ ≤ R₀ ^ 2)
+    {ν : ℝ → ℝ} (hνc : Continuous ν) {B₁ : ℝ} (hB₁ : 0 ≤ B₁)
+    (hνS : ∀ τ ∈ Icc s₀ s₁, ∀ τ', |ν τ'| ≤ B₁ + Real.sqrt |τ' - τ|)
+    (hνi : ∀ a : ℝ, Integrable fun τ => lor1 (τ - a) * |ν τ|) :
+    |∫ q : ℝ × ℝ, W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2) * ν q.1 * ν q.2|
+      ≤ p.L * R₀ * B₁ * ((p.L + cϱ / p.w) ^ 2
+          * (∑ k : Fin p.d, π * ∫ τ, lor1 (τ - p.tau k) * |ν τ|)
+        + p.L * (p.L + cϱ / p.w) * (s₁ - s₀) * ∫ r, lor1 r * (B₁ + Real.sqrt |r|)) := by
+  set A := p.L + cϱ / p.w with hA
+  have hA0 : 0 ≤ A := by
+    have := hF.L_pos; have := hF.four_le_cϱ; have := hF.one_le_w; positivity
+  have hL := hF.L_pos
+  have hWc : ∀ τ, W τ ^ 2 ≤ 1 := fun τ => by
+    have := hW.nonneg τ; have := hW.le_one τ; nlinarith
+  -- the convolution kernel
+  set kk : ℝ → ℝ := fun r => lor1 r * (B₁ + Real.sqrt |r|) with hkk
+  have hkint : Integrable kk := by
+    have h := (integrable_lor1.mul_const B₁).add integrable_lor1_mul_sqrt
+    refine h.congr (Eventually.of_forall fun r => ?_); simp only [hkk, Pi.add_apply]; ring
+  have hkc : Continuous kk := continuous_lor1.mul (continuous_const.add continuous_abs.sqrt)
+  have hk0 : ∀ r, 0 ≤ kk r := fun r => mul_nonneg (lor1_pos r).le (by positivity)
+  -- `W²` is integrable (bounded, continuous, supported in `S`)
+  have hWc' : Continuous fun τ => W τ ^ 2 := hW.continuous.pow 2
+  have hW2 : Integrable fun τ => W τ ^ 2 :=
+    hWc'.integrable_of_hasCompactSupport (HasCompactSupport.intro (isCompact_Icc (a := s₀) (b := s₁))
+      fun x (hx : x ∉ Icc s₀ s₁) => by simp only [hWS x hx]; ring)
+  have hW2lor : ∀ k : Fin p.d, Integrable fun τ => W τ ^ 2 * lor1 (τ - p.tau k) := fun k =>
+    (integrable_lor1.comp_sub_right (p.tau k)).mono' (hWc'.mul (continuous_lor1.comp
+      (continuous_id.sub continuous_const))).aestronglyMeasurable (Eventually.of_forall fun τ => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) (lor1_pos _).le)]
+        exact mul_le_of_le_one_left (lor1_pos _).le (hWc τ))
+  -- the majorant
+  set M : ℝ × ℝ → ℝ := fun q => p.L * R₀ * B₁ * (A ^ 2 * ∑ k : Fin p.d,
+      W q.1 ^ 2 * lor1 (q.1 - p.tau k) * (lor1 (q.2 - p.tau k) * |ν q.2|)
+      + p.L * A * (W q.1 ^ 2 * kk (q.1 - q.2))) with hM
+  have hconv : Integrable fun q : ℝ × ℝ => W q.1 ^ 2 * kk (q.1 - q.2) := by
+    have h := Integrable.convolution_integrand (L := ContinuousLinearMap.mul ℝ ℝ) hW2 hkint
+    have h' := h.swap
+    refine h'.congr (Eventually.of_forall fun q => ?_)
+    simp only [Function.comp, Prod.fst_swap, Prod.snd_swap, ContinuousLinearMap.mul_apply']
+    rw [show q.2 - q.1 = -(q.1 - q.2) by ring]
+    simp only [hkk, lor1_neg, abs_neg]
+  have hsumI : Integrable fun q : ℝ × ℝ => ∑ k : Fin p.d,
+      W q.1 ^ 2 * lor1 (q.1 - p.tau k) * (lor1 (q.2 - p.tau k) * |ν q.2|) :=
+    integrable_finsetSum (Finset.univ : Finset (Fin p.d)) fun k _ =>
+      (hW2lor k).mul_prod (hνi (p.tau k))
+  have hMi : Integrable M :=
+    ((hsumI.const_mul (A ^ 2)).add (hconv.const_mul (p.L * A))).const_mul (p.L * R₀ * B₁)
+  have hpt : ∀ q : ℝ × ℝ, ‖W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2)
+      * ν q.1 * ν q.2‖ ≤ M q := by
+    intro q
+    rw [Real.norm_eq_abs]
+    have hM0 : 0 ≤ M q := by
+      simp only [hM]
+      have : 0 ≤ ∑ k : Fin p.d, W q.1 ^ 2 * lor1 (q.1 - p.tau k) * (lor1 (q.2 - p.tau k) * |ν q.2|) :=
+        Finset.sum_nonneg fun k _ => by have := lor1_pos (q.1 - p.tau k); have := lor1_pos (q.2 - p.tau k); positivity
+      have := hk0 (q.1 - q.2)
+      positivity
+    by_cases hq : q.1 ∈ Icc s₀ s₁
+    · have hdiff := abs_Kinf_sub_Kfun_le_of_rho hF hR₀ (hρ q.1 hq) q.2
+      have hK := abs_Kfun_le_lor1 hF q.1 q.2
+      have hKi := abs_Kinf_le_lor1 hF q.1 q.2
+      have hν1 : |ν q.1| ≤ B₁ := by
+        have := hνS q.1 hq q.1; simp only [sub_self, abs_zero, Real.sqrt_zero, add_zero] at this
+        exact this
+      have hν2 := hνS q.1 hq q.2
+      have hfac : Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2
+          = -((Kinf p F q.1 q.2 - Kfun p F q.1 q.2) * (Kfun p F q.1 q.2 + Kinf p F q.1 q.2)) := by
+        ring
+      rw [hfac, abs_mul, abs_mul, abs_mul, abs_neg, abs_mul, abs_of_nonneg (sq_nonneg (W q.1))]
+      have hsum : |Kfun p F q.1 q.2 + Kinf p F q.1 q.2| * |ν q.2|
+          ≤ A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k) * |ν q.2|
+            + p.L * A * kk (q.1 - q.2) := by
+        have hs1 := abs_add_le (Kfun p F q.1 q.2) (Kinf p F q.1 q.2)
+        have hk : p.L * (A * lor1 (q.1 - q.2)) * |ν q.2| ≤ p.L * A * kk (q.1 - q.2) := by
+          simp only [hkk]
+          rw [show p.L * (A * lor1 (q.1 - q.2)) * |ν q.2| = p.L * A * (lor1 (q.1 - q.2) * |ν q.2|) by
+            ring]
+          refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (lor1_pos _).le)
+            (by positivity)
+          rw [abs_sub_comm]; exact hν2
+        calc |Kfun p F q.1 q.2 + Kinf p F q.1 q.2| * |ν q.2|
+            ≤ (|Kfun p F q.1 q.2| + |Kinf p F q.1 q.2|) * |ν q.2| :=
+              mul_le_mul_of_nonneg_right hs1 (abs_nonneg _)
+          _ ≤ (A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k)
+                + p.L * (A * lor1 (q.1 - q.2))) * |ν q.2| :=
+              mul_le_mul_of_nonneg_right (add_le_add hK hKi) (abs_nonneg _)
+          _ ≤ _ := by
+              have e : (A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k)) * |ν q.2|
+                  = A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k) * |ν q.2| := by
+                rw [mul_assoc, Finset.sum_mul]
+              rw [add_mul, e]; exact add_le_add le_rfl hk
+      have hS0 : 0 ≤ A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k) * |ν q.2|
+            + p.L * A * kk (q.1 - q.2) := by
+        have : 0 ≤ ∑ k : Fin p.d, lor1 (q.1 - p.tau k) * lor1 (q.2 - p.tau k) * |ν q.2| :=
+          Finset.sum_nonneg fun k _ => by
+            have := lor1_pos (q.1 - p.tau k); have := lor1_pos (q.2 - p.tau k); positivity
+        have := hk0 (q.1 - q.2); positivity
+      calc W q.1 ^ 2 * (|Kinf p F q.1 q.2 - Kfun p F q.1 q.2| * |Kfun p F q.1 q.2 + Kinf p F q.1 q.2|)
+            * |ν q.1| * |ν q.2|
+          = W q.1 ^ 2 * |Kinf p F q.1 q.2 - Kfun p F q.1 q.2| * |ν q.1|
+            * (|Kfun p F q.1 q.2 + Kinf p F q.1 q.2| * |ν q.2|) := by ring
+        _ ≤ W q.1 ^ 2 * (p.L * R₀) * B₁ * (A ^ 2 * ∑ k : Fin p.d, lor1 (q.1 - p.tau k)
+              * lor1 (q.2 - p.tau k) * |ν q.2| + p.L * A * kk (q.1 - q.2)) := by
+            refine mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hdiff (sq_nonneg _)) hν1
+              (abs_nonneg _) (by positivity)) hsum (by positivity) (by positivity)
+        _ = M q := by
+            simp only [hM, Finset.mul_sum, mul_add]
+            congr 1
+            · exact Finset.sum_congr rfl fun k _ => by ring
+            · ring
+    · rw [hWS q.1 hq]; simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_mul,
+        abs_zero]; exact hM0
+  have hint := norm_integral_le_of_norm_le hMi (Eventually.of_forall hpt)
+  rw [Real.norm_eq_abs] at hint
+  refine hint.trans ?_
+  -- evaluate the majorant
+  have hP1 : ∀ k : Fin p.d, Integrable (fun z : ℝ × ℝ =>
+      W z.1 ^ 2 * lor1 (z.1 - p.tau k) * (lor1 (z.2 - p.tau k) * |ν z.2|)) := fun k =>
+    (hW2lor k).mul_prod (hνi (p.tau k))
+  have hI1 : ∀ k : Fin p.d, ∫ z : ℝ × ℝ, W z.1 ^ 2 * lor1 (z.1 - p.tau k)
+      * (lor1 (z.2 - p.tau k) * |ν z.2|)
+      = (∫ τ, W τ ^ 2 * lor1 (τ - p.tau k)) * ∫ τ, lor1 (τ - p.tau k) * |ν τ| := fun k => by
+    rw [Measure.volume_eq_prod]
+    exact integral_prod_mul (fun τ => W τ ^ 2 * lor1 (τ - p.tau k)) (fun τ => lor1 (τ - p.tau k) * |ν τ|)
+  have hI2 : ∫ z : ℝ × ℝ, W z.1 ^ 2 * kk (z.1 - z.2) = (∫ τ, W τ ^ 2) * ∫ r, kk r := by
+    rw [Measure.volume_eq_prod, integral_prod _ (by rw [← Measure.volume_eq_prod]; exact hconv),
+      ← integral_mul_const]
+    refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
+    simp only
+    rw [integral_const_mul, integral_sub_left_eq_self (fun r => kk r) (μ := volume) τ]
+  have hIM : ∫ q, M q = p.L * R₀ * B₁ * (A ^ 2 * ∑ k : Fin p.d,
+      (∫ τ, W τ ^ 2 * lor1 (τ - p.tau k)) * (∫ τ, lor1 (τ - p.tau k) * |ν τ|)
+      + p.L * A * ((∫ τ, W τ ^ 2) * ∫ r, kk r)) := by
+    simp only [hM]
+    rw [integral_const_mul, integral_add ((integrable_finsetSum _ fun k _ => hP1 k).const_mul _)
+      (hconv.const_mul _), integral_const_mul, integral_const_mul,
+      integral_finsetSum _ fun k _ => hP1 k, hI2]
+    congr 3
+    exact Finset.sum_congr rfl fun k _ => hI1 k
+  rw [hIM]
+  have hB : 0 ≤ p.L * R₀ * B₁ := by positivity
+  refine mul_le_mul_of_nonneg_left (add_le_add ?_ ?_) hB
+  · refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun k _ => ?_) (sq_nonneg _)
+    have hle : ∫ τ, W τ ^ 2 * lor1 (τ - p.tau k) ≤ π := by
+      calc ∫ τ, W τ ^ 2 * lor1 (τ - p.tau k) ≤ ∫ τ, lor1 (τ - p.tau k) :=
+            integral_mono (hW2lor k) (integrable_lor1.comp_sub_right (p.tau k))
+              fun τ => mul_le_of_le_one_left (lor1_pos _).le (hWc τ)
+        _ = π := by rw [integral_sub_right_eq_self (fun r => lor1 r) (p.tau k), integral_lor1]
+    exact mul_le_mul_of_nonneg_right hle
+      (integral_nonneg fun τ => mul_nonneg (lor1_pos _).le (abs_nonneg _))
+  · have hk1 : 0 ≤ ∫ r, kk r := integral_nonneg hk0
+    have hW2le : ∫ τ, W τ ^ 2 ≤ s₁ - s₀ := by
+      rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Icc s₀ s₁)
+        (fun τ hτ => by simp only [hWS τ hτ]; ring)]
+      calc ∫ τ in Icc s₀ s₁, W τ ^ 2 ≤ ∫ τ in Icc s₀ s₁, (1 : ℝ) :=
+            setIntegral_mono_on hW2.integrableOn (integrableOn_const (by simp))
+              measurableSet_Icc fun τ _ => hWc τ
+        _ = s₁ - s₀ := by
+            rw [setIntegral_const, smul_eq_mul, mul_one, Real.volume_real_Icc_of_le hs]
+    rw [← mul_assoc (p.L * A)]
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hW2le (by positivity)) hk1
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

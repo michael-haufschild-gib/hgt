@@ -235,10 +235,10 @@ theorem classSum_eq_zero_of_wellFounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
         have hτ' : ‖frobEig ℓ ρ‖ ≤ ‖frobEig ℓ τ‖ := by simpa using hτ
         exact ⟨τ, ⟨τ.2, (one_lt_norm_frobEig_iff hℓ _).mp (hb1.trans_le hτ')⟩,
           Complex.norm_conj _⟩
-    have h := tsum_ite_eq_zero_of_moments_of_wellFounded hq (w := fun τ : Z.carrier => conj (frobEig ℓ τ))
-      (norm_conj_frobEig_le Z hℓ)
+    have h := tsum_ite_eq_zero_of_moments_of_wellFounded hq
+      (w := fun τ : Z.carrier => conj (frobEig ℓ τ)) (norm_conj_frobEig_le Z hℓ)
       (fun n => (tsum_congr fun τ => by rw [zpow_natCast]).trans (hmom n))
-      ((map_ne_zero _).mpr hb0) (by simpa only [Complex.norm_conj] using hw)
+      ((map_ne_zero (starRingEnd ℂ)).mpr hb0) (by simpa only [Complex.norm_conj] using hw)
     simpa only [(starRingEnd ℂ).injective.eq_iff] using h
   · -- the reflected class, from the bottom up
     have e : ∀ β : ℂ, (conj β)⁻¹ = frobEig ℓ ρ ↔ β = reflEig (frobEig ℓ ρ) := fun β => by

@@ -445,7 +445,7 @@ theorem pmInterior_strict_interior_contraction_iff_bounded_energy
             (2 / δ) * Real.sqrt (pmPowerDampedDivisorDiscreteEnergy ε T) + 1 / δ ^ 2) =
             (δ / 2) * pmPowerDampedDivisorDiscreteEnergy ε T -
               Real.sqrt (pmPowerDampedDivisorDiscreteEnergy ε T) + 1 / (2 * δ) := by
-          field_simp; ring
+          field_simp
         linarith
       have hint_le : pmBezoutInteriorPronicEnergy ε T ≤
           (1 + δ / 2) * pmPowerDampedDivisorDiscreteEnergy ε T + (1 / (2 * δ) + 1 / 4) := by

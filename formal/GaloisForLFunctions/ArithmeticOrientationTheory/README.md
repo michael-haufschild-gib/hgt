@@ -778,3 +778,12 @@ be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e
   blindness of unsubtracted positivity (`resolves_frobReflectionReading_unitary`,
   `not_resolves_unsubtractedCurveReading_unitary`), the 14-unit master dictionary
   `forcingSignAndWidthDictionary_tfae`, and one-sided pole-subtracted window ceiling forcing.
+- `TheEffectivityConeFromSections` — cycle section reading `cycleH0`, the section effectivity cone
+  `sectionEffectivityCone`, Bézout/Riemann–Roch/Hodge-index equivalence (`sectionEffectivityCone_tfae`),
+  calibration over `𝔽_q` vs. refutation on `goldenDatum`, the four `ℤ` pillars, and
+  `sectionEffectivityCone_widthDictionary_tfae`.
+- `TheIndexTheoremOfTheReceiver` — discrete Euler characteristic `discreteEulerChar`, pole-jet
+  section readings (`poleJetMatrix`, `principalPartReadingOne`, `principalPartReadingTwo`),
+  zeta-jet section readings (`zetaJetDiagReading`), node-divisor Euler characteristic
+  `nodeDivisorEulerChar` and its reflected prime-polar ledger identity, `receiver_index_theorem`,
+  and `receiverIndexAndSectionConeDictionary_tfae`.

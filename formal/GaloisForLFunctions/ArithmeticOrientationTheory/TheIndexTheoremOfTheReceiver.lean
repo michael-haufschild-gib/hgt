@@ -65,6 +65,8 @@ This module resolves Entry 9 of the Arithmetic Orientation Theory programme:
 open Complex Matrix Finset Set MeasureTheory
 open scoped BigOperators
 open Zeta23 GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+  GaloisForLFunctions.ArithmeticCriticalityTheory
+  GaloisForLFunctions.ArithmeticIncidencePositivity
   GaloisForLFunctions.TransHorizonIncidenceMechanics
   GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
   GaloisForLFunctions.HTGeometry RHTower
@@ -420,11 +422,10 @@ theorem nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect (s : ℝ) :
     nodeDivisorEulerChar s = chebyshevTwoPoleDefect s :=
   polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect s
 
-/-- Explicit closed form of `nodeDivisorEulerChar s` for `0 ≤ s`. -/
-theorem nodeDivisorEulerChar_eq_formula {s : ℝ} (hs : 0 ≤ s) :
-    nodeDivisorEulerChar s = Real.exp s + s - 1 - chebyshevPsi (Real.exp s) := by
-  rw [nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect s, chebyshevTwoPoleDefect, twoPoleWeight,
-    lagChebyshev_eq_chebyshevPsi]
+/-- Explicit closed form of `nodeDivisorEulerChar s`. -/
+theorem nodeDivisorEulerChar_eq_formula (s : ℝ) :
+    nodeDivisorEulerChar s = Real.exp s + s - 1 - lagChebyshev s := by
+  rw [nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect s, chebyshevTwoPoleDefect, twoPoleWeight]
 
 /-- For any weight `w : ℕ → ℝ` and `s : ℝ`, `generalizedNodeDivisorEulerChar w s` equals
 `generalizedTwoPoleDefect w s`. -/
@@ -432,15 +433,22 @@ theorem generalizedNodeDivisorEulerChar_eq (w : ℕ → ℝ) (s : ℝ) :
     generalizedNodeDivisorEulerChar w s = generalizedTwoPoleDefect w s :=
   polarBoxDoF_sub_weightedNodeCount_eq_generalizedTwoPoleDefect w s
 
-/-- **Exact evaluation of `nodeDivisorEulerChar` below the first prime (`0 ≤ s < log 2`):** no
+/-- **Exact evaluation of `nodeDivisorEulerChar` below the first prime (`s < log 2`):** no
 prime nodes have fired, so `nodeDivisorEulerChar s = e^s + s - 1`. -/
-theorem nodeDivisorEulerChar_below_first_prime {s : ℝ} (hs0 : 0 ≤ s) (hs2 : s < Real.log 2) :
+theorem nodeDivisorEulerChar_below_first_prime {s : ℝ} (hs2 : s < Real.log 2) :
     nodeDivisorEulerChar s = Real.exp s + s - 1 := by
-  rw [nodeDivisorEulerChar_eq_formula hs0]
+  rw [nodeDivisorEulerChar_eq_formula s]
   have hexp : Real.exp s < 2 := by
     calc Real.exp s < Real.exp (Real.log 2) := Real.exp_lt_exp.mpr hs2
       _ = 2 := Real.exp_log (by norm_num)
-  rw [chebyshevPsi_eq_zero_of_lt_two hexp, sub_zero]
+  have hfl : ⌊Real.exp s⌋₊ < 2 := (Nat.floor_lt (by positivity)).mpr hexp
+  have hlag : lagChebyshev s = 0 := by
+    unfold lagChebyshev
+    refine Finset.sum_eq_zero fun k hk => ?_
+    rw [Finset.mem_Icc] at hk
+    have hk1 : k = 0 ∨ k = 1 := by omega
+    rcases hk1 with rfl | rfl <;> simp
+  rw [hlag, sub_zero]
 
 /-- **Exact evaluation of `nodeDivisorEulerChar` on the first prime window (`log 2 ≤ s < log 3`):**
 only the single node `p = 2` has fired with weight `log 2`, so
@@ -448,15 +456,23 @@ only the single node `p = 2` has fired with weight `log 2`, so
 theorem nodeDivisorEulerChar_first_prime_window {s : ℝ} (hs2 : Real.log 2 ≤ s)
     (hs3 : s < Real.log 3) :
     nodeDivisorEulerChar s = Real.exp s + s - 1 - Real.log 2 := by
-  have hs0 : 0 ≤ s := le_trans (Real.log_nonneg (by norm_num)) hs2
-  rw [nodeDivisorEulerChar_eq_formula hs0]
+  rw [nodeDivisorEulerChar_eq_formula s]
   have hexp2 : 2 ≤ Real.exp s := by
     calc (2 : ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
       _ ≤ Real.exp s := Real.exp_le_exp.mpr hs2
   have hexp3 : Real.exp s < 3 := by
     calc Real.exp s < Real.exp (Real.log 3) := Real.exp_lt_exp.mpr hs3
       _ = 3 := Real.exp_log (by norm_num)
-  rw [chebyshevPsi_eq_log_two_on_first_window hexp2 hexp3]
+  have hfl2 : 2 ≤ ⌊Real.exp s⌋₊ := (Nat.le_floor_iff (by positivity)).mpr hexp2
+  have hfl3 : ⌊Real.exp s⌋₊ < 3 := (Nat.floor_lt (by positivity)).mpr hexp3
+  have hfl : ⌊Real.exp s⌋₊ = 2 := by omega
+  have hlag : lagChebyshev s = Real.log 2 := by
+    unfold lagChebyshev
+    rw [hfl]
+    have hIcc : Finset.Icc 0 2 = ({0, 1, 2} : Finset ℕ) := rfl
+    rw [hIcc]
+    simp [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+  rw [hlag]
 
 /-- **Selectivity of `nodeDivisorEulerChar`:** for any `a ≠ 0` and `s ≥ log 2`, the shifted-pair
 weight `shiftedPairVonMangoldt a` has strictly smaller node-divisor Euler characteristic than `ℤ`. -/
@@ -538,13 +554,13 @@ theorem receiver_index_theorem :
 /-- **The Receiver Index and Section-Cone Width Dictionary:** unites the section effectivity cone
 `E = {x : h⁰(x) ≥ 1}` (both its Bézout and Riemann–Roch axioms on `scalingSurface`), the zero-jet
 section count `h0 (zetaJetDiagReading ε t 1) = 0` below half damping, the oscillating smooth-power
-receiver, the degree-filtered Hodge defect, and the cofinal damped Möbius receiver. -/
+receiver, the vanishing of right zeros, and the cofinal damped Möbius receiver. -/
 theorem receiverIndexAndSectionConeDictionary_tfae : List.TFAE [
     RiemannHypothesis,
     scalingSurface.HodgeIndex,
     scalingSurface.BezoutAxiom (sectionEffectivityCone scalingSurface),
     scalingSurface.RiemannRochAxiom (sectionEffectivityCone scalingSurface),
-    ∀ a : ℝ, hodgeDefectAt zetaZeroConfig a = 0,
+    rightZeros zetaZeroConfig = ∅,
     ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∀ t : ℝ, ¬ ReceiverBounded (oscillatingSmoothPower ε t),
     ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∀ t : ℝ, h0 (zetaJetDiagReading ε t 1) = 0,
     ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
@@ -552,7 +568,7 @@ theorem receiverIndexAndSectionConeDictionary_tfae : List.TFAE [
   tfae_have 1 ↔ 2 := scalingSurface_hodgeIndex_iff.symm
   tfae_have 2 ↔ 3 := (sectionEffectivityCone_bezout_iff_hodgeIndex scalingSurface).symm
   tfae_have 2 ↔ 4 := (sectionEffectivityCone_riemannRoch_iff_hodgeIndex scalingSurface).symm
-  tfae_have 1 ↔ 5 := riemannHypothesis_iff_forall_hodgeDefectAt_eq_zero
+  tfae_have 1 ↔ 5 := riemannHypothesis_iff_rightZeros_zeta_eq_empty
   tfae_have 1 ↔ 6 := riemannHypothesis_iff_forall_not_receiverBounded_oscillatingSmoothPower
   tfae_have 6 ↔ 7 := by
     refine forall_congr' fun ε => imp_congr_right fun hε => imp_congr_right fun hε2 =>

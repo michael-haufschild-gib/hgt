@@ -492,10 +492,15 @@ theorem polarBoxDoF_sub_weightedNodeCount_eq_generalizedTwoPoleDefect (w : ℕ �
     polarBoxDoF s - weightedNodeCount w s = generalizedTwoPoleDefect w s := by
   rw [polarBoxDoF_eq_twoPoleWeight, generalizedTwoPoleDefect]
 
+/-- Shifted-pair von Mangoldt weight `Λ(n) (n^a + n^{-a})` corresponding to a symmetric pair of
+poles at `1 ± a`. -/
+def shiftedPairVonMangoldt (a : ℝ) (n : ℕ) : ℝ :=
+  (ArithmeticFunction.vonMangoldt n : ℝ) * ((n : ℝ) ^ a + (n : ℝ) ^ (-a))
+
 /-- For every `a ≠ 0`, `(2 : ℝ) ^ a + (2 : ℝ) ^ (-a) > 2`. -/
 theorem two_lt_two_rpow_add_two_rpow_neg {a : ℝ} (ha : a ≠ 0) :
     2 < (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) := by
-  have hpos : 0 < (2 : ℝ) ^ a := Real.rpow_pos_of_pos (by norm_num) a
+  have hneg : 0 < (2 : ℝ) ^ (-a) := Real.rpow_pos_of_pos (by norm_num) (-a)
   have hne : (2 : ℝ) ^ a ≠ 1 := by
     intro h1
     have hlog := congrArg Real.log h1
@@ -503,8 +508,11 @@ theorem two_lt_two_rpow_add_two_rpow_neg {a : ℝ} (ha : a ≠ 0) :
     exact mul_ne_zero ha (ne_of_gt (Real.log_pos (by norm_num))) hlog
   have hprod : (2 : ℝ) ^ a * (2 : ℝ) ^ (-a) = 1 := by
     rw [← Real.rpow_add (by norm_num), add_neg_cancel, Real.rpow_zero]
-  have hsq : 0 < ((2 : ℝ) ^ a - 1) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hne)
-  nlinarith
+  have hsq : 0 < (2 : ℝ) ^ (-a) * ((2 : ℝ) ^ a - 1) ^ 2 :=
+    mul_pos hneg (sq_pos_of_ne_zero (sub_ne_zero.mpr hne))
+  have hid : (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) - 2 = (2 : ℝ) ^ (-a) * ((2 : ℝ) ^ a - 1) ^ 2 := by
+    linear_combination -((2 : ℝ) ^ a - 2) * hprod
+  linarith
 
 /-- For every `n ≥ 1` and `a ∈ ℝ`, `2 ≤ n^a + n^{-a}`. -/
 theorem two_le_rpow_add_rpow_neg {n : ℕ} (hn : 1 ≤ n) (a : ℝ) :
@@ -512,8 +520,11 @@ theorem two_le_rpow_add_rpow_neg {n : ℕ} (hn : 1 ≤ n) (a : ℝ) :
   have hn_pos : (0 : ℝ) < n := Nat.cast_pos.mpr (by omega)
   have hprod : (n : ℝ) ^ a * (n : ℝ) ^ (-a) = 1 := by
     rw [← Real.rpow_add hn_pos, add_neg_cancel, Real.rpow_zero]
-  have hsq : 0 ≤ ((n : ℝ) ^ a - 1) ^ 2 := sq_nonneg _
-  nlinarith
+  have hneg : 0 ≤ (n : ℝ) ^ (-a) := Real.rpow_nonneg (Nat.cast_nonneg n) (-a)
+  have hsq : 0 ≤ (n : ℝ) ^ (-a) * ((n : ℝ) ^ a - 1) ^ 2 := mul_nonneg hneg (sq_nonneg _)
+  have hid : (n : ℝ) ^ a + (n : ℝ) ^ (-a) - 2 = (n : ℝ) ^ (-a) * ((n : ℝ) ^ a - 1) ^ 2 := by
+    linear_combination -((n : ℝ) ^ a - 2) * hprod
+  linarith
 
 /-- For every `n ∈ ℕ` and `a ∈ ℝ`, `2 * Λ(n) ≤ shiftedPairVonMangoldt a n`. -/
 theorem two_mul_vonMangoldt_le_shiftedPair (a : ℝ) (n : ℕ) :
@@ -600,12 +611,12 @@ theorem h0_mul_diagonal_eq_of_iff_eq_zero {m n : Type*} [Fintype m] [Fintype n] 
       rw [← hv]
       congr 1
       ext j
-      simp [e, Matrix.diagonal_mulVec_single, ← mul_assoc, hw1_eq]
+      simp [e, Matrix.mulVec_diagonal, ← mul_assoc, hw1_eq]
     · rintro ⟨u, hu, rfl⟩
       rw [← hu]
       congr 1
       ext j
-      simp [e, Matrix.diagonal_mulVec_single, ← mul_assoc, hw2_eq]
+      simp [e, Matrix.mulVec_diagonal, ← mul_assoc, hw2_eq]
   unfold h0
   rw [hker]
   exact LinearEquiv.finrank_map_eq e.symm _
@@ -622,7 +633,7 @@ theorem ringZ_pillar_one_primeTower_and_lattice_balance :
       ∀ {α β : ℝ}, 0 ≤ α → 0 ≤ β → ∀ b : Fin m → ℝ,
         frustrationIndex (oddFold (fun x => Real.log (n x : ℝ)) (weilLedgerKernel α β) b) = 0) :=
   ⟨fun ha hb hab => primeKernel_log_add_le ha hb hab,
-   fun n hn hinj _ _ hα hβ b => frustrationIndex_lattice_eq_zero hn hinj hα hβ b⟩
+   fun _ hn hinj _ _ hα hβ b => frustrationIndex_lattice_eq_zero hn hinj hα hβ b⟩
 
 /-- **Pillar II of `ℤ` (Archimedean collar nonnegativity vs. failure of uncalibrated positivity
 cones):** on the reflected prime-polar ledger of `ℤ`, both the archimedean surplus pool and the
@@ -651,36 +662,35 @@ theorem ringZ_pillar_three_twoPole_selectivity :
    fun ha hs => generalizedTwoPoleDefect_shiftedPair_lt_chebyshev ha hs⟩
 
 /-- **Pillar IVa of `ℤ` (Unconditional Bézout and Riemann–Roch for `E = {x : h⁰(x) ≥ 1}` on the
-odd scaling subsurface past the first prime `2`):** for every `0 < r ≤ 181/500`, the section
+odd scaling subsurface past the first prime `2`):** for every `r ≤ 181/500`, the section
 effectivity cone `sectionEffectivityCone (scalingSubsurface (oddRealTestsAt r))` unconditionally
 satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom`. -/
 theorem scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le {r : ℝ}
-    (hr0 : 0 < r) (hr : r ≤ 181 / 500) :
+    (hr : r ≤ 181 / 500) :
     (scalingSubsurface (oddRealTestsAt r)).AmpleAxiom
         (sectionEffectivityCone (scalingSubsurface (oddRealTestsAt r))) ∧
       (scalingSubsurface (oddRealTestsAt r)).BezoutAxiom
         (sectionEffectivityCone (scalingSubsurface (oddRealTestsAt r))) ∧
       (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom
         (sectionEffectivityCone (scalingSubsurface (oddRealTestsAt r))) := by
-  have hHI := scalingSubsurface_odd_hodgeIndex_of_le_threeHundredSixtyTwoThousandths hr0 hr
+  have hHI := scalingSubsurface_odd_hodgeIndex hr
   exact ⟨(sectionEffectivityCone_ample_iff_hodgeIndex _).2 hHI,
     (sectionEffectivityCone_bezout_iff_hodgeIndex _).2 hHI,
     (sectionEffectivityCone_riemannRoch_iff_hodgeIndex _).2 hHI⟩
 
 /-- **Pillar IVb of `ℤ` (Unconditional Bézout and Riemann–Roch for `E = {x : h⁰(x) ≥ 1}` on the
-primitive smooth scaling subsurface past the first prime `2`):** for every
-`0 < r ≤ (Real.log 2 + 1/50) / 2`, the section effectivity cone
-`sectionEffectivityCone (scalingSubsurface (primitiveSmoothRealTestsAt r))` unconditionally
-satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom`. -/
-theorem scalingSubsurface_primitiveSmooth_sectionEffectivityCone_castelnuovoSeveri_of_le {r : ℝ}
-    (hr0 : 0 < r) (hr : r ≤ (Real.log 2 + 1 / 50) / 2) :
-    (scalingSubsurface (primitiveSmoothRealTestsAt r)).AmpleAxiom
-        (sectionEffectivityCone (scalingSubsurface (primitiveSmoothRealTestsAt r))) ∧
-      (scalingSubsurface (primitiveSmoothRealTestsAt r)).BezoutAxiom
-        (sectionEffectivityCone (scalingSubsurface (primitiveSmoothRealTestsAt r))) ∧
-      (scalingSubsurface (primitiveSmoothRealTestsAt r)).RiemannRochAxiom
-        (sectionEffectivityCone (scalingSubsurface (primitiveSmoothRealTestsAt r))) := by
-  have hHI := scalingSubsurface_primitiveSmooth_hodgeIndex_of_le_past_first_prime hr0 hr
+full scaling subsurface past the first prime `2`):** for every `r ≤ 3/10`, the section effectivity
+cone `sectionEffectivityCone (scalingSubsurface (realTestsAt r))` unconditionally satisfies
+`AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom`. -/
+theorem scalingSubsurface_all_sectionEffectivityCone_castelnuovoSeveri_of_le {r : ℝ}
+    (hr : r ≤ 3 / 10) :
+    (scalingSubsurface (realTestsAt r)).AmpleAxiom
+        (sectionEffectivityCone (scalingSubsurface (realTestsAt r))) ∧
+      (scalingSubsurface (realTestsAt r)).BezoutAxiom
+        (sectionEffectivityCone (scalingSubsurface (realTestsAt r))) ∧
+      (scalingSubsurface (realTestsAt r)).RiemannRochAxiom
+        (sectionEffectivityCone (scalingSubsurface (realTestsAt r))) := by
+  have hHI := (scalingSubsurface_all_hodgeIndex hr).1
   exact ⟨(sectionEffectivityCone_ample_iff_hodgeIndex _).2 hHI,
     (sectionEffectivityCone_bezout_iff_hodgeIndex _).2 hHI,
     (sectionEffectivityCone_riemannRoch_iff_hodgeIndex _).2 hHI⟩
@@ -688,22 +698,24 @@ theorem scalingSubsurface_primitiveSmooth_sectionEffectivityCone_castelnuovoSeve
 /-- **Global Width Dictionary for the Section Effectivity Cone `E = {x : h⁰(x) ≥ 1}`:** on the full
 scaling surface of `ℤ`, the Bézout axiom and Riemann–Roch axiom for
 `sectionEffectivityCone scalingSurface` are unconditionally equivalent to every unit of the width
-dictionary (`RiemannHypothesis`, `scalingSurface.HodgeIndex`, `oddDefectFloorRate = 0`, cofinal
-damping admission, etc.). -/
+dictionary (`RiemannHypothesis`, `scalingSurface.HodgeIndex`, vanishing of right zeros, at most one
+positive square for the Hermitian Gram matrix, and cofinal damping admission). -/
 theorem sectionEffectivityCone_widthDictionary_tfae : List.TFAE [
     scalingSurface.BezoutAxiom (sectionEffectivityCone scalingSurface),
     scalingSurface.RiemannRochAxiom (sectionEffectivityCone scalingSurface),
     scalingSurface.HodgeIndex,
     RiemannHypothesis,
-    oddDefectFloorRate = 0,
-    fullDefectFloorRate = 0,
+    rightZeros zetaZeroConfig = ∅,
+    (∀ (n : ℕ) (f : Fin n → ℝ → ℂ),
+      (∀ i, ContDiff ℝ 2 (f i)) → (∀ i, HasCompactSupport (f i)) →
+      hermPosIndex (intersectionGram (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) f) = 1),
     ∀ δ : ℝ, 0 < δ → ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧
       ∃ B : ℝ, ∀ T : ℕ, pmPowerDampedDivisorDiscreteEnergy ε T ≤ B] := by
   tfae_have 1 ↔ 3 := sectionEffectivityCone_bezout_iff_hodgeIndex scalingSurface
   tfae_have 2 ↔ 3 := sectionEffectivityCone_riemannRoch_iff_hodgeIndex scalingSurface
   tfae_have 4 ↔ 3 := scalingSurface_hodgeIndex_iff.symm
-  tfae_have 4 ↔ 5 := riemannHypothesis_iff_oddDefectFloorRate_eq_zero
-  tfae_have 4 ↔ 6 := riemannHypothesis_iff_fullDefectFloorRate_eq_zero
+  tfae_have 4 ↔ 5 := riemannHypothesis_iff_rightZeros_zeta_eq_empty
+  tfae_have 4 ↔ 6 := riemannHypothesis_iff_one_positive_square
   tfae_have 4 ↔ 7 := riemannHypothesis_iff_cofinal_budget
   tfae_finish
 

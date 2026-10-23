@@ -159,7 +159,7 @@ constant `L_K ≥ 0` and uniform bound `|K u| ≤ M_K`, and any `0 < T`, `0 < m`
 `0 ≤ h ≤ c * m / T`, replacing `(m(m + h))^{-1/2} K(T log(1 + h/m))` by `m⁻¹ K(T h / m)` incurs an
 error at most `m⁻¹ * ((L_K * c² + M_K * c / 2) / T)`. -/
 theorem coalescent_term_linearization_bound {K : ℝ → ℝ} {L_K M_K T m h c : ℝ}
-    (hL : 0 ≤ L_K) (hM : 0 ≤ M_K)
+    (hL : 0 ≤ L_K)
     (hLip : ∀ u v : ℝ, |K u - K v| ≤ L_K * |u - v|)
     (hBnd : ∀ u : ℝ, |K u| ≤ M_K)
     (hT : 0 < T) (hm : 0 < m) (hc : 0 ≤ c) (hh0 : 0 ≤ h) (hhc : h ≤ c * m / T) :
@@ -209,7 +209,7 @@ linearized shifted-prime correlation sum is bounded by
 `((L_K c² + M_K c / 2) / T) Σ_{(m,h)} Λ(m)Λ(m + h) / m`. -/
 theorem coalescent_sum_linearization_bound {K : ℝ → ℝ} {L_K M_K T c : ℝ}
     (P : Finset (ℕ × ℕ))
-    (hL : 0 ≤ L_K) (hM : 0 ≤ M_K)
+    (hL : 0 ≤ L_K)
     (hLip : ∀ u v : ℝ, |K u - K v| ≤ L_K * |u - v|)
     (hBnd : ∀ u : ℝ, |K u| ≤ M_K)
     (hT : 0 < T) (hc : 0 ≤ c)
@@ -238,7 +238,7 @@ theorem coalescent_sum_linearization_bound {K : ℝ → ℝ} {L_K M_K T c : ℝ}
           K (T * Real.log (1 + (p.2 : ℝ) / (p.1 : ℝ))) -
           1 / (p.1 : ℝ) * K (T * ((p.2 : ℝ) / (p.1 : ℝ)))) := by ring
   rw [hsub, abs_mul, abs_of_nonneg hw0]
-  have hterm := coalescent_term_linearization_bound hL hM hLip hBnd hT hm0 hc hh0 hhc
+  have hterm := coalescent_term_linearization_bound hL hLip hBnd hT hm0 hc hh0 hhc
   calc (Λ p.1 : ℝ) * (Λ (p.1 + p.2) : ℝ) *
         |1 / Real.sqrt ((p.1 : ℝ) * ((p.1 : ℝ) + (p.2 : ℝ))) *
           K (T * Real.log (1 + (p.2 : ℝ) / (p.1 : ℝ))) -
@@ -417,7 +417,7 @@ theorem abs_integral_dyadic_frullani_le {ε R : ℝ} (hε : 0 < ε) (hR : 0 < R)
             fun u hu => ?_
           have hu0 : 0 < u := by linarith [hu.1]
           rw [abs_div, abs_of_pos hu0, div_le_one hu0]
-          exact (Real.abs_sin_le_abs u).trans (le_of_eq (abs_of_pos hu0))
+          exact Real.abs_sin_le_abs.trans (le_of_eq (abs_of_pos hu0))
       _ = ε := by simp [intervalIntegral.integral_const]; ring
   have htail := abs_integral_sin_div_two_mul_le hR
   calc |(∫ u in R..(2 * R), Real.sin u / u) - ∫ u in ε..(2 * ε), Real.sin u / u|

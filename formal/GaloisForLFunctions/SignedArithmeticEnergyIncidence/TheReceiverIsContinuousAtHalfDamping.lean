@@ -123,7 +123,8 @@ theorem sum_sq_orbitCoord_sub_le (η η' : ℝ) (T : ℕ)
     have hcoord : orbitCoord η n - orbitCoord η' n = D / ((n : ℝ) + 1) := by
       rw [orbitCoord, orbitCoord, hD, sub_div]
     rw [hcoord]
-    calc (D / ((n : ℝ) + 1)) ^ 2 = D ^ 2 * (1 / ((n : ℝ) + 1) ^ 2) := by ring
+    calc (D / ((n : ℝ) + 1)) ^ 2 = D ^ 2 * (1 / ((n : ℝ) + 1) ^ 2) := by
+          rw [div_pow, div_eq_mul_inv, one_div]
       _ ≤ (2 * (sourceProfile η x - sourceProfile η' x) ^ 2 + 2 * Δ ^ 2) *
             (1 / ((n : ℝ) + 1) ^ 2) := mul_le_mul_of_nonneg_right hD2 (by positivity)
       _ = 2 * (sourceProfile η x - sourceProfile η' x) ^ 2 * (1 / ((n : ℝ) + 1) ^ 2) +
@@ -393,7 +394,7 @@ theorem aestronglyMeasurable_criticalSymbol {η : ℝ} (h0 : 1 / 2 ≤ η) :
   rcases h0.lt_or_eq with h | h
   · exact (continuous_criticalSymbol h).aestronglyMeasurable
   · subst h
-    have hm := continuousOn_criticalSymbol_half.aestronglyMeasurable
+    have hm := continuousOn_criticalSymbol_half.aestronglyMeasurable (μ := volume)
       (measurableSet_singleton (0 : ℝ)).compl
     rwa [restrict_compl_singleton] at hm
 
@@ -491,7 +492,7 @@ theorem tendsto_integral_sq_criticalSymbol_sub :
     (by
       filter_upwards [ae_ne_zero_real] with t ht
       have h := ((continuous_norm.tendsto _).comp
-        ((hlim t ht).sub tendsto_const_nhds)).pow 2
+        ((hlim t ht).sub (tendsto_const_nhds (x := criticalSymbol (1 / 2) t)))).pow 2
       simpa using h)
   simpa using hconv
 
@@ -513,7 +514,7 @@ theorem orbit_l2_tendsto_half :
   set δ : ℝ := ε / (16 / Real.pi + 8) with hδ
   have hδ0 : 0 < δ := by positivity
   have hρδ : ∀ᶠ η in 𝓝[>] (1 / 2 : ℝ), (ρ η - ρ (1 / 2)) ^ 2 < δ := by
-    have h := ((hρc.sub tendsto_const_nhds).pow 2)
+    have h := ((hρc.sub (tendsto_const_nhds (x := ρ (1 / 2)))).pow 2)
     rw [sub_self, zero_pow two_ne_zero] at h
     exact h.eventually (gt_mem_nhds hδ0)
   filter_upwards [hev, hΦ0.eventually (gt_mem_nhds hδ0), hρδ] with η hη hΦη hρη
