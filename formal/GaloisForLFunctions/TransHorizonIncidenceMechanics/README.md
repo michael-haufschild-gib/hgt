@@ -1262,6 +1262,16 @@ Uniform line-energy bounds as $\sigma\downarrow1/2$ are equivalent to payment
 ([TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries](TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries.lean)).
 Pointwise control at the real boundary is weaker than this whole-line condition.
 
+**The general pole law.** For every weight of the half-damped class the Mellin pairing of the
+centred prefix with the cells $n^{-\sigma}-(n+1)^{-\sigma}$ is $\zeta(\sigma)(C(\sigma)-m)$ on
+$1/2<\sigma<1$: one modulus pairs to $\zeta(\sigma)(d^{-\sigma}-1/d)$, because along $N=dM$ the two
+growing terms cancel exactly and leave the partial-sum asymptotic of $\zeta$ inside the strip. Since
+$\lvert\zeta(\sigma)\rvert\ge1$ on $[1/2,1)$, Cauchy–Schwarz gives, for a paid weight,
+$\lvert C(\sigma)-m\rvert\le2\sqrt E\,(2\sigma-1)^{-1/2}$
+(`abs_dirichletSeries_sub_mean_le_of_energy`). The receiver at half damping reads the size of the
+weight's own Dirichlet series as $\sigma\downarrow1/2$, with no factorisation; the pole law of the
+critical Wiener algebra (§3.16) is the special case $c=k\star q$.
+
 The pole law also has a constructive converse. For the smooth power
 $q(d)=d^{-\varepsilon}$, `0 < ε < 1/2`, and every critical Wiener kernel $k$,
 $$
@@ -1297,6 +1307,19 @@ into a finite head and a tail of arbitrarily small energy. It is necessary, not 
 for the complete vertical-line boundary-energy criterion
 ([TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold](TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold.lean)).
 
+**The partial pole sums.** The exact criterion behind the logarithmic threshold is a signed
+energy. With $S_k(n)=\sum_{j\le n}k(j)j^{-1/2}$ the partial sums of the pole value and
+$Z=\lim_N(\sum_{d\le N}d^{-1/2}-2\sqrt N)\le-1$, the receiver of $k\star d^{-1/2}$ satisfies
+$\lvert\sqrt{E_T(k\star q)}-2\lvert Z\rvert\sqrt{L_T(k)}\rvert\le B$ at every cutoff, where
+$L_T(k)=\sum_{n\le T}S_k(n)^2/(n+1)$
+(`abs_sqrt_weightPronicEnergy_dirichletConv_unit_half_sub_le`). Hence $k\star d^{-1/2}$ is paid iff
+$\sum_nS_k(n)^2/(n+1)<\infty$
+(`receiverBounded_dirichletConv_unit_half_iff_summable_partialPoleSum`). The hyperbola method at
+$s=\lfloor\sqrt n\rfloor$ gives $A_q(n)=2Z\sqrt n+O(n^{1/4})$, each dilated remainder has pronic
+norm $O(j^{-1/2})$, and Minkowski sums them: a nonzero pole value makes $L_T$ diverge,
+$\sqrt{\log}$-summable kernels with vanishing pole value make it converge, and the lacunary kernel
+holds its partial pole sums at $-2^{-(R+1)}$ on $[J_R,J_{R+1})$.
+
 Finally, centre every dyadic row at **its own** finite mean. Uniformly paid rows
 always pay their limit when the mean converges. The converse holds throughout
 $\mathcal C(K,\varepsilon)$ exactly from $\varepsilon=1/2$ onwards. Below half
@@ -1305,76 +1328,146 @@ unbounded energy: a horizon can cut a cancelling dipole in half and retain a
 large mean drift. This is the sharp classification, not an unresolved exchange
 of limits
 ([TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping](TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping.lean)).
+On the convolution class the dipole obstruction never occurs: for $0<\varepsilon<1/2$ and every
+critical Wiener kernel, the rows of $k\star d^{-\varepsilon}$ are uniformly paid iff
+$k\star d^{-\varepsilon}$ is paid iff $K(1-\varepsilon)=0$
+(`rows_bounded_iff_dirichletConv_unit_poleValue_eq_zero`). A horizon can only cut such a weight
+into finitely many rows of pole-free dilations, each of energy $O(1/j)$, and one row of the smooth
+power, all tied to the pole by the single number $K(1-\varepsilon)$.
 
-**The oscillating smooth power and the shifted-pole hyperplane law.** For
-$c_{\varepsilon,t}(d)=d^{-\varepsilon}\cos(t\log d)=\operatorname{Re}(d^{\rho-1})$, $\rho=1-\varepsilon+it$,
-$0<\varepsilon\le1/2$, the Dirichlet hyperbola method gives
-$A_{\varepsilon,t}(n)=\operatorname{Re}((\zeta(\rho)/\rho)n^\rho)+O(n^{(1-\varepsilon)/2})$, so
-$\operatorname{ReceiverBounded}(c_{\varepsilon,t})\iff\zeta(1-\varepsilon+it)=0$
-([TheOscillatingSmoothPowerIsPaidExactlyAtTheZerosOfZeta](TheOscillatingSmoothPowerIsPaidExactlyAtTheZerosOfZeta.lean)).
-On $\sigma>1-\varepsilon$ its real-axis Dirichlet series is
-$\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$; when $t\ne0$,
-$1-it\ne1$ is a regular point of $\zeta$, so the real-axis Dirichlet series converges to
-$\operatorname{Re}\zeta(1-it)$ and is Lipschitz at the real abscissa $1-\varepsilon$ for every $t\ne0$
-and every $\varepsilon$, paid or unpaid: the oscillation shifts the pole from $1-\varepsilon$ to the
-conjugate points $1-\varepsilon\pm it$. Unconditionally, $c_{\varepsilon,0}$ is unpaid for all
-$0<\varepsilon\le1/2$, $c_{\varepsilon,t}$ is unpaid on every bounded box $\lvert t\rvert\le T$ for
-$0<\varepsilon\le\min(\delta,1/2)$ and on the Vinogradov–Korobov strip
-$0<\varepsilon<\min(1/2,w_{\mathrm{VK}}(\lvert t\rvert))$ for $\lvert t\rvert\ge T_0$, and the paid
-dampings at each $t$ and paid frequencies in each $[-T,T]$ are finite. For every critical Wiener
-kernel $k$ and $0<\varepsilon<1/2$, the dilated remainders keep pronic norm $O(j^{-1/2})$ and
-$$
-\operatorname{ReceiverBounded}(k\star c_{\varepsilon,t})
-\iff \sum_j k(j)j^{-(1-\varepsilon+it)}=0\ \lor\ \zeta(1-\varepsilon+it)=0
-$$
-([TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa](TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa.lean)).
+### 3.18 Multiplicative phase diagrams: what the receiver reads in a sign pattern
 
-**All-frequency log-power multiplicity laws, the oscillating prime endpoint $a=1$, and small-damping Möbius/Liouville cancellation.**
-Differentiating the floor-sum remainder $k$ times in the exponent gives the complete spectral law
-for oscillating log-polynomials on any finite frequency set without opposite pairs, and for every
-real frequency $t\in\mathbb R$ and $k\in\mathbb N$,
-$\operatorname{ReceiverBounded}(d^{-\varepsilon}\cos(t\log d)(\log d)^k)\iff\forall i\le k,\ \zeta^{(i)}(1-\varepsilon+it)=0$,
-monotonicity in the log-degree $j\le k$, and global order-$\le k$ criteria across $1/2\le\operatorname{Re}s<1$ and on $\operatorname{Re}s=1/2$
-([TheReceiverReadsTheZeroDivisorOfZetaOnTheOscillatingSpectrum](TheReceiverReadsTheZeroDivisorOfZetaOnTheOscillatingSpectrum.lean),
-[AllFrequencyLogPowerReceiverAndMultiplicityLaws](AllFrequencyLogPowerReceiverAndMultiplicityLaws.lean)).
-For the multiplicative oscillating prime pattern $f_{a,t_0}(p)=a\cos(t_0\log p)$ ($a\in[-1,1]$, $t_0\in\mathbb R$),
-the half-damped weight $f_{a,t_0}(d)d^{-1/2}$ is paid iff $(t_0=0\land a<1/2)$ or
-$(t_0\ne0\land(a<1\lor\zeta(1/2+it_0)=0))$: at $a=1$, $t_0\ne0$, a non-zero of $\zeta(1/2+it_0)$
-creates an unpaid $\lvert s-(1/2+it_0)\rvert^{-1}$ singularity in $\lvert C(s)\rvert^2$, whereas a
-critical zero cancels the singularity on the boundary line
-([OscillatingPrimePatternsReadTheCriticalZeros](OscillatingPrimePatternsReadTheCriticalZeros.lean),
-[OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros](OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros.lean),
-[TheEndpointAndPhaseDiagramOfOscillatingPrimePatterns](TheEndpointAndPhaseDiagramOfOscillatingPrimePatterns.lean)).
-For the damped Möbius and Liouville weights across all $0<\varepsilon\le1/2$, removing the
-$\varepsilon\ge1/4$ barrier from the hyperbola split gives
-$\lvert A_\varepsilon(n)\rvert\le3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$ and the
-all-damping Vinogradov–Korobov prefix bound
-$\lvert A_\varepsilon(n)\rvert\le(K/\varepsilon)n^{1-\varepsilon}e^{-\sqrt{\log n}/40}$, uniform
-zero-free band bounds for both Möbius and Liouville above any positive floor $\varepsilon_0>0$,
-subpower partial-sum transfer for $\varepsilon>\beta/2$, and unconditional admission and Liouville
-parity pairs for all $\varepsilon>\Theta-1/2$
-([SmallDampingMoebiusAndLiouvilleCancellationLaws](SmallDampingMoebiusAndLiouvilleCancellationLaws.lean)).
-On the short-horizon Möbius bilinear side, grouping the triple sum by the cofactor $m=bk$ cancels
-half of the principal counterterm $2\sum_{n\le N}\mu(n)w(n)$ against the sub-horizon $m=1$ slice
-and reduces $\sum_{N<n\le N^2}\mu(n)w(n)$ to $-\sum_{a\le N}\mu(a)\sum_{N<m\le\lfloor N^2/a\rfloor}s_{N,\mu}(m)w(am)$;
-at any trans-horizon semiprime $pq>N$ ($p\ne q\le N$ prime), the low-product bilinear sum $-(-3)=+3$
-overcounts $\mu(pq)=1$ by $+2$ and requires the high-product remainder $+2$ to cancel; stepping
-$N\mapsto N+1$ couples $c(N+1)$ linearly to the inherited history $s_{N,c}$ with zero quadratic
-diagonal by pronic coprimality $\gcd(k,k+1)=1$; eventual all-prefix nonpositivity of
-$\widetilde{\mathcal D}_N(M;\mu)$ coexists with linear reserve growth $M\mathcal R_N(\mu)\ge M/576$
-and diagonal growth $\mathcal D_N(N;\mu)\ge N/576-1$; and first-octave defect nonpositivity holds
-for every $\{-1,0,1\}$-valued sequence ($f^2=\lvert f\rvert$), including $\mu^2$ and $1$
-([BilinearCountertermRemainderAndDefectDriftObstructions](BilinearCountertermRemainderAndDefectDriftObstructions.lean)).
-On the oscillating-probe source side, uniform prefix bounds $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$
-and sub-power energy bounds $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are equivalent to $O(1)$
-admission across the polynomial gap $T^{1-2\varepsilon}$, explicit power lower bounds
-$E_{\varepsilon,t}(T)\ge\lambda_{\varepsilon,t}T^{1-2\varepsilon}$ hold on all zero-free boxes and
-the Vinogradov–Korobov collar, and the 3-term planted Euler kernel $k_{\varepsilon_1,t_1}$ shows
-that near-$\varepsilon=0$ collars and finite admitted-parameter sets do not exclude all
-$0<\varepsilon<1/2$
-([OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations](OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations.lean)).
+Completely multiplicative weights $f(d)d^{-\varepsilon}$ with $\lvert f\rvert\le1$ test which
+arithmetic data of a sign pattern decide the receiver. The tool throughout is the boundary-energy
+identity of §3.17 together with Euler-product bounds for $C(s)=\sum f(d)d^{-s}$ beside the line
+$\Re s=1-\varepsilon$.
 
-### 3.18 Bridges
+**The constant-sign pattern.** For $z\in[-1,1]$ and $c_{z,\varepsilon}(d)=z^{\Omega(d)}d^{-\varepsilon}$
+the whole $(z,\varepsilon)$ plane is decided: $c_{z,\varepsilon}$ is paid iff $\varepsilon>1/2$, or
+$\varepsilon=1/2$ and $z<1/2$, or $z=0$, or $z=-1$ and $\mu(d)d^{-\varepsilon}$ is paid
+(`receiverBounded_constantSign_damped_iff`). At half damping this is the **quarter law**
+(`receiverBounded_constantSign_iff_full`). The Euler product gives
+$\lvert F_z(w)\rvert\le e^{2S}\lvert\zeta(w)\rvert^z$, which near $w=1$ is $O(\lvert\Im w\rvert^{-z})$
+and square integrable on the line exactly when $2z<1$; for $z>1/2$ a real-axis lower bound and at
+$z=1/2$ the off-axis bound $\lvert F_{1/2}\rvert^2\gtrsim1/\lvert w-1\rvert$ make the line energy grow
+like $\log(1/u)$; for $z<0$ the bound $1/\lvert\zeta\rvert\ll\lvert\Im w\rvert^{1/4}$ beside the line
+pays. Read as a pattern flipping primes with density $\delta=(1-z)/2$, the threshold is $\delta=1/4$:
+the receiver reads the order of the singularity at $s=1$, and the critical flipped density $1/4$ is
+the order $1/2$.
+
+**The integer-order obstruction.** Below half damping a paid receiver continues
+$\zeta(s)(C(s)-m)$ holomorphically to $\Re s>1/2$, so $C$ is meromorphic at every point of the
+abscissa line and behaves along rays like an integral power. A weight with logarithmic real-axis
+prime mean $\nu$ is therefore unpaid unless $\nu\in\{0,-1\}$ (`not_receiverBounded_of_primeMean`),
+which is why the constant-sign diagram has only the Liouville line below half damping. The same
+holds height by height: $f(p)=a\cos(t_0\log p)$, $t_0\ne0$, has local prime mean $a/2$ at height
+$t_0$, so $f(d)d^{-\varepsilon}$ is paid iff $a=0$ (`receiverBounded_oscPattern_damped_iff`). The
+prime mean is quantized at every height.
+
+**Residue-class flips.** For $f_{q,S}$ flipping the primes in the classes $S\subseteq\mathbb Z/q$,
+the flipped primes have exact logarithmic density $\rho=\#(S\cap(\mathbb Z/q)^\times)/\varphi(q)$
+(Dirichlet's theorem in integrated form). At half damping every flip with $\rho\le1/4$ is unpaid,
+the boundary included (`not_receiverBounded_residueFlip_half_of_le`): the complex class density and
+the Euler lower bound $\log\lvert F\rvert\ge\log\lvert\zeta\rvert-2\sum_{f(p)=-1}\Re p^{-w}-O(1)$ give
+$\lvert C\rvert^2\gtrsim1/\lvert s-1/2\rvert$. Below half damping only $\rho\in\{1/2,1\}$ can be paid
+(`not_receiverBounded_residueFlip`). For $S$ closed under inversion on the units, orthogonality
+gives the Euler bound $\lvert F\rvert\le e^B\lvert\zeta\rvert^{1-2\rho}\prod_{\chi\ne1}\lvert L(\cdot,\chi)\rvert^{e_\chi}$
+with real exponents, and the quarter law is exact: paid at half damping iff $\rho>1/4$
+(`receiverBounded_residueFlip_half_iff`). For a subgroup $H$ of index $k\ge2$, flipping the primes
+outside $H$ gives $\rho=1-1/k$ and $\zeta$-exponent $2/k-1\in[-1,0]$, so only $1/\lvert\zeta\rvert$ and
+$\lvert L\rvert$ from above are needed — no zero-free region for $L$; for $k\ge3$ the receiver of
+$f_H(d)d^{-\varepsilon}$ is paid exactly for $\varepsilon\ge1/2$ (`receiverBounded_subgroupFlip_iff`).
+
+**Oscillating prime patterns, and the limit of prime data.** For $f_{a,t_0}(p)=a\cos(t_0\log p)$,
+$a\in[-1,1]$, the half-damped weight is paid iff $(t_0=0\wedge a<1/2)$ or
+$(t_0\ne0\wedge(a<1\vee\zeta(\tfrac12+it_0)=0))$ (`receiverBounded_oscWeight_phase_diagram_iff`): at
+$a=1$, $t_0\ne0$, a nonvanishing $\zeta(\tfrac12+it_0)$ creates an unpaid
+$\lvert s-(\tfrac12+it_0)\rvert^{-1}$ singularity in $\lvert C\rvert^2$, and a critical zero cancels it.
+For $t_0\ne0$ the real-axis prime sums are bounded, so the prime mean is $0$ for every amplitude
+and the prime signs do not depend on $a>0$. Choosing $\zeta(\tfrac12+it_0)\ne0$, the amplitudes
+$1/2$ and $1$ give a paid and an unpaid weight with the same prime signs and the same prime mean
+(`exists_paid_unpaid_with_same_prime_signs_and_mean`).
+
+**Reading.** Neither the density of flipped primes nor the real-axis prime mean decides the
+receiver of a multiplicative weight; the size of its Dirichlet series beside the line
+$\Re s=1-\varepsilon$, at every height, does. Symmetric residue patterns are the class on which the
+real-axis density happens to determine that size. For the Möbius weight the series is
+$1/\zeta(s+\varepsilon)$, and its size beside the line is exactly what is unknown.
+
+### 3.19 The receiver as an instrument for the zero divisor
+
+**The oscillating smooth power.** For $c_{\varepsilon,t}(d)=d^{-\varepsilon}\cos(t\log d)=\Re(d^{\rho-1})$,
+$\rho=1-\varepsilon+it$, $0<\varepsilon\le1/2$, the hyperbola method gives
+$A(n)=\Re((\zeta(\rho)/\rho)n^\rho)+O(n^{(1-\varepsilon)/2})$, so the probe is paid iff
+$\zeta(1-\varepsilon+it)=0$ (`receiverBounded_oscillatingSmoothPower_iff`), and RH says that no probe
+with $\varepsilon<1/2$ is paid (`riemannHypothesis_iff_forall_not_receiverBounded_oscillatingSmoothPower`).
+For $t\ne0$ the real-axis series $\Re\zeta((\sigma+\varepsilon)-it)$ is regular and Lipschitz at
+$\sigma=1-\varepsilon$ whether the probe is paid or not: the oscillation moves the pole to
+$1-\varepsilon\pm it$, so real-axis tests are blind to it. For every critical Wiener kernel $k$,
+$k\star c_{\varepsilon,t}$ is paid iff $\sum_jk(j)j^{-\rho}=0$ or $\zeta(\rho)=0$
+(`receiverBounded_dirichletConv_oscillatingSmoothPower_iff`).
+
+**Orders of vanishing.** Differentiating the floor-sum remainder in $\rho$ — holomorphic, with
+Cauchy estimates below the exponent $1/2$ — gives: $d^{-\varepsilon}\cos(t\log d)\log d$ is paid iff
+$\zeta(\rho)=\zeta'(\rho)=0$ (`receiverBounded_logOscillatingSmoothPower_iff`); all zeros in
+$\tfrac12\le\Re s<1$ are simple iff no such weight is paid
+(`forall_simple_zero_iff_forall_not_receiverBounded`); and $d^{-\varepsilon}\cos(t\log d)(\log d)^k$ is
+paid iff $\zeta^{(i)}(\rho)=0$ for every $i\le k$ (`receiverBounded_logPowerCosine_iff_all`), with
+global order-$\le k$ criteria on the strip and on the critical line
+(`forall_strip_zero_order_le_iff`, `forall_critical_zero_order_le_iff`). The receiver reads the zero
+divisor of $\zeta$, multiplicities included, on the oscillating spectrum.
+
+**Calibration.** Below half damping $E_T/T^{1-2\varepsilon}$ follows an explicit oscillating profile
+of amplitude $\lvert\zeta(\rho)/\rho\rvert^2$, so $E_T\asymp\lvert\zeta(\rho)\rvert^2T^{1-2\varepsilon}$ for
+$t\ne0$. At half damping $E_T/\log T\to\lvert\zeta(\tfrac12+it)\rvert^2/(2\lvert\tfrac12+it\rvert^2)$
+(`tendsto_probeEnergy_half_div_log`, `norm_sq_riemannZeta_half_eq_limit`): finite divisor-sum
+energies evaluate $\lvert\zeta\rvert$ on the critical line. On finite combinations of half-damped
+probes the receiver is asymptotically the diagonal form with weight
+$\lvert\zeta(\tfrac12+it)\rvert^2/(2\lvert\tfrac12+it\rvert^2)$
+(`tendsto_halfProbeCombination_energy_div_log`): distinct frequencies are orthogonal for the receiver.
+
+**Reading.** These theorems are spectroscopy, not estimates. They evaluate probes whose Dirichlet
+series are known in terms of $\zeta$, and they show the receiver is a faithful instrument for the
+zero divisor. Bounding the actual Möbius receiver is a different problem: its series is
+$1/\zeta(s+\varepsilon)$, the unknown itself.
+
+### 3.20 The actual source at small damping
+
+**Möbius and Liouville.** Removing the $\varepsilon\ge1/4$ restriction from the hyperbola split gives
+$\lvert A_\varepsilon(n)\rvert\le3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$, and with
+Vinogradov–Korobov the all-damping prefix bound
+$\lvert A_\varepsilon(n)\rvert\le(K/\varepsilon)n^{1-\varepsilon}e^{-\sqrt{\log n}/40}$. Uniform receiver
+bounds hold on the horizon-dependent zero-free band above every positive damping floor; Möbius and
+Liouville have the same positive admission set and the same width accumulation threshold
+$\Theta-\tfrac12$; and RH is admission at every positive damping, for either weight
+(`riemannHypothesis_iff_forall_pos_receiverBounded_moebius`,
+`riemannHypothesis_iff_forall_pos_receiverBounded_liouville`,
+`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`). The shrinking band admits no
+fixed $\varepsilon<1/2$ at all horizons.
+
+**The bilinear counterterm.** Grouping the triple sum by the cofactor $m=bk$ cancels half of the
+principal counterterm $2\sum_{n\le N}\mu(n)w(n)$ against the sub-horizon slice and reduces
+$\sum_{N<n\le N^2}\mu(n)w(n)$ to $-\sum_{a\le N}\mu(a)\sum_{N<m\le N^2/a}s_{N,\mu}(m)w(am)$. At a
+trans-horizon semiprime $pq>N$ the low-product bilinear sum overcounts $\mu(pq)=1$ by $2$, which the
+high-product remainder must cancel. Stepping $N\mapsto N+1$ couples $c(N+1)$ linearly to the
+inherited history with zero quadratic diagonal, by pronic coprimality. The eventual all-prefix
+defect sign coexists with linear growth of the reserve, $M\mathcal R_N(\mu)\ge M/576$, and of the
+diagonal, $\mathcal D_N(N;\mu)\ge N/576-1$
+(`eventually_all_prefix_renormalized_nonpos_with_unbounded_reserve`); and first-octave defect
+nonpositivity holds for every $\{-1,0,1\}$-valued sequence, $\mu^2$ and $1$ included
+(`firstOctaveDefectFunctional_nonpos_of_sq_eq_abs`), a sign-blind fact that cannot bound a signed
+receiver.
+
+**Oscillating-probe source estimates.** Uniform prefix bounds
+$\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
+$E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap
+$T^{1-2\varepsilon}$; explicit lower bounds $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and
+on the Vinogradov–Korobov collar; and a three-term planted Euler kernel shows that collars near
+$\varepsilon=0$ and finite admitted-parameter sets do not exclude every $0<\varepsilon<1/2$
+(`plantedEulerKernel_collar_and_finiteness_obstruction`).
+
+### 3.21 Bridges
+
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit
 the Ingham–Huxley, Huxley $12/5$ and density-hypothesis exponents, are
@@ -1401,7 +1494,65 @@ Poincaré law of that theory with its variance bounded below.
 
 ---
 
-## 4. Traps and sharp boundaries
+## 4. Foundational pillar theorems
+
+All unconditional; capstones take data only, and RH appears as the conclusion of an implication or
+inside an equivalence.
+
+1. **The global sign of the defect.** At every sufficiently large horizon the renormalized prefix
+   defect is nonpositive at every prefix, uniformly for $\varepsilon\in[0,1]$ with one threshold, by
+   rough-prime boundaries in polynomial windows and the window Poincaré law beyond $10N^2$
+   (`eventually_pmPowerDamped_renormalizedDefect_nonpos_uniform`); the actual cofactor row has the
+   same sign through one jump of the damped divisor function
+   (`eventually_pmCofactor_renormalizedDefect_nonpos_all`).
+2. **The envelope boundary at ratio five.** The unit envelope holds exactly up to ratio five and
+   fails at $5N+5$ for arbitrarily large horizons, with exact further rungs and a $Q/\log Q$ ladder
+   (`sieveRenormalizedPrefixDefect_moebiusReal_five_succ_nonpos`,
+   `sieveSeq_moebiusReal_rung_two_family`, `sieveSeq_moebiusReal_rung_three_family`).
+3. **Period laws cannot pay the pronic receiver.** The Möbius response is asymptotically white noise
+   on its period (`tendsto_periodCorrelation_moebius`), the damped period variance is bounded
+   uniformly in the horizon, and the primitive energy diverges for $\varepsilon\le1/2$
+   (`tendsto_sievePrimitiveEnergy_pmPowerDamped_atTop`); the response-level pronic energy commutes
+   with the damping limit (`tendsto_sieveTotalPronicEnergy_moebius`), which is not primitive
+   admission.
+4. **Positive weights are decided by their dyadic masses.** A nonnegative weight is paid iff
+   $\sum_kM_k^2/2^k<\infty$ (`bounded_weightPronicEnergy_iff_summable_dyadicMass`).
+5. **The parity barrier.** On the damped class boundedness of the receiver is a function of the
+   Ramanujan amplitudes iff $\varepsilon>1/2$ (`receiverBounded_amplitudeInvariant_iff`,
+   `parity_barrier`); every real character gives an unconditional parity pair at every
+   $\varepsilon\le1/2$ (`char_parityPair`), and sign-blind dampings accumulate only from above at
+   $1/2$ (`derivedSet_signBlindDampings`, `signs_read_below_half_damping`).
+6. **The damping of the Möbius receiver is the zero width.** The infimum of the derived set of
+   admissible dampings is $\Theta-\tfrac12$ (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`), RH is
+   cofinal admission (`riemannHypothesis_iff_cofinal_budget`), and Möbius and Liouville are admitted
+   at the same dampings (`receiverBounded_moebius_iff_liouville`).
+7. **The Wiener algebra and the pole law.** Critical Wiener kernels preserve paid receivers
+   (`receiverBounded_dirichletConv`); against a positive drift a convolution is paid only if the
+   kernel vanishes at the pole (`not_receiverBounded_dirichletConv_of_drift_critical`); on the smooth
+   power the hyperplane law is exact below half damping and has the sharp $\sqrt{\log}$ weight at
+   half damping (`receiverBounded_dirichletConv_unit_iff_critical`,
+   `receiverBounded_dirichletConv_unit_half_iff_summable_partialPoleSum`).
+8. **The receiver is a boundary energy.** At half damping the receiver is the vertical-line energy
+   of $\zeta(s)(C(s)-m)/s$ as $\sigma\downarrow1/2$, and a paid weight has
+   $\lvert C(\sigma)-m\rvert\le2\sqrt E(2\sigma-1)^{-1/2}$ (`weightPronicEnergy_le_of_lineEnergy_le`,
+   `abs_dirichletSeries_sub_mean_le_of_energy`).
+9. **Horizon-limit commutation starts at half damping.** Uniformly paid rows pay the limit, and the
+   converse holds on the damped class exactly from $\varepsilon=1/2$ (`horizonLimit_commutes_with_receiver_iff`).
+10. **Multiplicative phase diagrams.** The constant-sign plane, the quarter law of symmetric residue
+    flips, subgroup flips and oscillating prime patterns are decided exactly
+    (`receiverBounded_constantSign_damped_iff`, `receiverBounded_residueFlip_half_iff`,
+    `receiverBounded_subgroupFlip_iff`, `receiverBounded_oscWeight_phase_diagram_iff`); prime signs and
+    prime means do not decide the receiver (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
+11. **The receiver reads the zero divisor.** Oscillating log-power probes are paid exactly at zeros
+    of $\zeta$ of the matching order, and the half-damped probe energy measures $\lvert\zeta\rvert^2$ on
+    the critical line (`receiverBounded_logPowerCosine_iff_all`, `tendsto_probeEnergy_half_div_log`).
+12. **Fermi observability.** Dyadic schedules are injective exactly when at most one slot is
+    missing, and the optimal physical inverse constant grows like $(4/\pi^2)(\log_2N)^2$
+    (`not_fermiScheduleInjective_of_two_missing_levels`, `fermiPhysicalInverseConstant_logb_limit`).
+
+---
+
+## 5. Traps and sharp boundaries
 
 | Trap | Why it fails |
 |---|---|
@@ -1455,6 +1606,9 @@ Poincaré law of that theory with its variance bounded below.
 | Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
 | A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
 | Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
+| The density of flipped primes decides the receiver of a sign pattern | Only on symmetric residue patterns (quarter law). Oscillating prime patterns with the same prime signs and the same prime mean can be paid and unpaid; the receiver reads the size of the Dirichlet series beside the line at every height. |
+| Below half damping a flipped density near /2$ is enough | A paid weight needs logarithmic prime mean in $\{0,-1\}$ exactly, at every height (integer-order obstruction); subgroup flips of index \ge3$ are unpaid at every $arepsilon<1/2$. |
+| Payment of a probe is an estimate for Möbius | Probe theorems evaluate weights whose series are known in terms of $\zeta$; the Möbius series /\zeta(s+arepsilon)$ is the unknown. |
 | Real-axis abscissa blowup or Lipschitz tests detect unpaid oscillating probes $d^{-\varepsilon}\cos(t\log d)$ ($t\ne0$) | For $t\ne0$, $\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$ converges to $\operatorname{Re}\zeta(1-it)$ and is Lipschitz at $\sigma=1-\varepsilon$ whether $c_{\varepsilon,t}$ is paid or unpaid; the pole sits at $1-\varepsilon\pm it$. |
 
 **Lean conventions.** Everything lives in

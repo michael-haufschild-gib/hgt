@@ -172,10 +172,25 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`hodgeDefectAt_eq_zero_iff`). For `ζ` it is `0` through degree `3/10`
     (`zeta_hodgeDefectAt_eq_zero`), in the odd sector through `181/500`
     (`SchurLendingOddHodgeIndexPastFirstPrime`).
-15. **Visibility and hiding.** An isolated pair `½ ± δ + iγ₀` in an on-line lattice of density `L`
-    is seen exactly from the degree where `sinh(2δa)/δ = 2L + 2a` (`hodgeDefectAt_isolatedPair`);
-    for every degree some configuration with a right zero has defect `0` there
-    (`exists_hidden_at_degree`). Over `𝔽_q` the window `2g` sees everything; over `ℚ` no degree does.
+15. **Visibility and hiding.** Over `𝔽_q` the window `n_0 + 2 n_+ ≤ 2g` sees all `n_+` outer
+    eigenvalues (`card_spectrum_eq_onCircle_add_two_mul_outer`, `negIndex_spanGram_eq_of_onCircle`).
+    Over `ℚ`, an isolated pair `½ ± δ + iγ₀` in an on-line lattice of density `L` is seen exactly
+    from the degree where `sinh(2δa)/δ = 2L + 2a` (`hodgeDefectAt_isolatedPair`). For `n` pairs in
+    density `L`, below `L/2` the Weil form is `2L∫|f|² + Σ_k (|f̂(γ_k − iδ_k) + f̂(γ_k + iδ_k)|² −
+    |f̂(γ_k − iδ_k) − f̂(γ_k + iδ_k)|²)/2` (`re_W_multiPairConfig`), so any subset `S` whose
+    complement has total pair energy `Σ_{k∉S} (sinh(2δ_k a)/δ_k − 2a) ≤ L` bounds the defect by
+    `|S|` (`hodgeDefectAt_multiPairConfig_le`, `hodgeDefectAt_multiPairConfig_eq_zero`,
+    `exists_n_hidden_at_degree`). Conversely, with dual tests `b` on `[−a₀, a₀]` (which exist for
+    every `a₀ > 0`, `exists_dual_tests_Icc`), all right zeros are visible at `a ≥ a₀ + Δ` once
+    `2 · onLineMass Z b + ½ ≤ cosh((Re ρ − ½)Δ) − 1` (`hodgeDefectAt_eq_of_onLineMass`,
+    `hodgeDefectAt_eq_of_log_onLineMass`), with `onLineMass = 2L Σ_ρ ∫|b_ρ|²` in a lattice of
+    density `L` (`onLineMass_multiPairConfig_eq`, `hodgeDefectAt_multiPairConfig_eq_card`),
+    `onLineMass ≤ m₀ M (2a₀ + 2π) e^{2π} Σ_ρ ∫|b_ρ|²` under unit-window density `M`
+    (`onLineMass_le_of_locallyBounded`, `hodgeDefectAt_eq_of_locallyBounded`), and
+    `hodgeDefectAt Z a ≥ |T|` for any `T` separated isolated right zeros with positive
+    `visibleMargin` under logarithmic density `A₀ log(|t| + 3)` (`card_le_hodgeDefectAt_of_visible_pairs`,
+    `zeta_intersectionGram_posIndex_ge_of_visible_pairs`). Over `𝔽_q` the window `2g` sees
+    everything; over `ℚ` no degree does (`exists_hidden_at_degree`).
 16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
     (`recurrent_pontryagin_dichotomy`); periodic ones and those cut out by exponential polynomials
     of any finite rank recur (`verticallyRecurrent_of_periodic`, `expPoly_zero_recurs`,
@@ -286,7 +301,10 @@ them. ACS isolates which of these mechanisms the scaling surface has.
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
    (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`).
 3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible, with explicit
-   constants depending on the local density (exact for an isolated pair, impossible uniformly).
+   constants depending on the local density (exact for an isolated pair, impossible uniformly;
+   resolved in `TheVisibilityDegreeOfRightZeros`: stepwise filtration `Σ_{k∉S} pairEnergy ≤ L` and
+   explicit visibility `a ≥ a₀ + Δ` from `onLineMass`, local density `M`, and logarithmic density
+   `A₀ log(|t| + 3)`).
 4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
    pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
    finite-Euler-product form on lattice tests.
@@ -354,6 +372,7 @@ Weil's argument.
 | `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree; `ζ` below `3/10` |
 | `SchurLendingOddHodgeIndexPastFirstPrime` | odd-sector Hodge index of `ζ` through `181/500` |
 | `TheVisibilityDegreeOfAnIsolatedPair` | degree Hodge index = aperture positivity; isolated pair; hiding over `ℚ` |
+| `TheVisibilityDegreeOfRightZeros` | visibility degree of `n` right zeros from on-line mass, local density, and logarithmic density |
 | `TheKroneckerRankDichotomy` | recurrent configurations have defect `0` or `∞` |
 | `TheZerosOfAnExponentialPolynomialRecur` | recurrence of zeros of exponential polynomials |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |

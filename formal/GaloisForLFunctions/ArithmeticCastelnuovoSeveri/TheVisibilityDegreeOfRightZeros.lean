@@ -803,10 +803,10 @@ theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
     exact h1
   set e := Fintype.equivFin (hR.toFinset × Fin 2)
   have hF_re : hermNegIndex (zeroGram Z (F ∘ e.symm)) = hermNegIndex (zeroGram Z F) := by
-    have hG : zeroGram Z (F ∘ e.symm) = (zeroGram Z F).submatrix e.symm e.symm := rfl
-    rw [hG, hermNegIndex, hermNegIndex, ← Matrix.submatrix_neg, posIndex_reindex]
+    have hG : -(zeroGram Z (F ∘ e.symm)) = (-(zeroGram Z F)).submatrix e.symm e.symm := rfl
+    rw [hermNegIndex, hermNegIndex, hG, posIndex_reindex]
   have hFc : ∀ j, ContDiff ℝ 2 (F j) := pairFamily_contDiff hb (fun ρ => phase Δ ρ) Δ
-  have hFs : ∀ j, tsupport (F j) ⊆ Icc (-Δ - a₀) (Δ + a₀) :=
+  have hFs : ∀ j, tsupport (F j) ⊆ Icc (-(Δ + a₀)) (Δ + a₀) :=
     tsupport_pairFamily_subset hΔ0 hbs (fun ρ => phase Δ ρ)
   have hge : (hR.toFinset.card : ℕ∞) ≤ hodgeDefectAt Z a := by
     refine (ENat.coe_le_coe.mpr (hneg.trans_eq hF_re.symm)).trans
@@ -962,9 +962,9 @@ theorem onLineMass_le_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
         (∑' q : Q, ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2) ≤
           M * ((2 * a₀ + 2 * π) * Real.exp (2 * π)) * ∫ u, ‖b ρ u‖ ^ 2 := by
     intro ρ
-    obtain ⟨hs, hle⟩ := summable_tsum_norm_sq_testTransform_le_of_locallyBounded ha₀ (hsrc ρ) x y
-      (le_refl 0) (fun _ => by simp [y]) hMQ
-    simp only [zero_mul, Real.exp_zero, mul_one] at hle
+    obtain ⟨hs, hle⟩ := summable_tsum_norm_sq_testTransform_le_of_locallyBounded (Y := 0) ha₀
+      (hsrc ρ) x y (le_refl (0 : ℝ)) (fun _ => by simp [y]) hMQ
+    rw [zero_mul, Real.exp_zero, mul_one] at hle
     have hfun : (fun q : Q => ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2) =
         fun q : Q => ‖testTransform (b ρ) ((x q : ℂ) + (y q : ℂ) * I)‖ ^ 2 := by
       funext q

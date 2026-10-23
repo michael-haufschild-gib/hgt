@@ -157,7 +157,6 @@ theorem summable_xiRawReciprocalCoordinate_pow_add_two (n : ℕ) :
     (xiRawReciprocalCoordinate_norm_lt_nine_tenths q).le n
   nlinarith [sq_nonneg ‖xiRawReciprocalCoordinate q‖]
 
-set_option maxHeartbeats 800000 in
 /-- Absolute summability of the full reciprocal-power trace carrier. -/
 theorem summable_xiRawReciprocalNeumann_double :
     Summable (fun p : ℕ × XiZeroCopy =>
@@ -188,9 +187,8 @@ theorem summable_xiRawReciprocalNeumann_double :
   have hp := pow_le_pow_left₀ (norm_nonneg _)
     (xiRawReciprocalCoordinate_norm_lt_nine_tenths q).le n
   dsimp [ratio]
-  nlinarith [sq_nonneg ‖xiRawReciprocalCoordinate q‖]
+  exact mul_le_mul_of_nonneg_right hp (sq_nonneg _)
 
-set_option maxHeartbeats 800000 in
 /-- **Global all-order holomorphic reconstruction of the endpoint cross trace.** -/
 theorem hasSum_xiEndpointCrossTrace_allOrder :
     HasSum (fun n : ℕ => -xiRawReciprocalPowerTrace (n + 2))

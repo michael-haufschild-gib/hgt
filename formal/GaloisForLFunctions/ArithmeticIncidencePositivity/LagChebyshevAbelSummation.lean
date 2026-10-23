@@ -13478,4 +13478,72 @@ theorem chebyshev_pairing_eq_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactS
   rw [← hbal, h1, h2, h3]
   ring
 
+/-! ### The symbol criterion
+
+Because the spectral density is nonnegative with total mass the test's energy, a pointwise floor
+on the signed symbol is a floor on the pairing for *every* test: the sign of the prime–polar part
+of the ledger, a statement quantified over all tests, reduces to the sign of one explicit
+elementary function of frequency.  At the origin that function is the Chebyshev–Mertens
+comparison `Σ_{n≤N} Λ(n)/√n − 4 sinh r`. -/
+
+/-- The total spectral mass is the test's energy. -/
+theorem integral_spectralDensity_eq_mass (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) :
+    (∫ ξ : ℝ, spectralDensity F ξ) = autoCorrelation F 0 := by
+  rw [autoCorrelation_eq_integral_spectral hF hFc 0]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+  show spectralDensity F ξ = Real.cos (2 * Real.pi * 0 * ξ) * spectralDensity F ξ
+  rw [show 2 * Real.pi * 0 * ξ = 0 by ring, Real.cos_zero, one_mul]
+
+/-- The polar symbol at zero frequency is the polar mass of the window. -/
+theorem coshCosKernel_zero (T : ℝ) : coshCosKernel T 0 = 2 * Real.sinh (T / 2) := by
+  rw [coshCosKernel]
+  norm_num
+  linarith
+
+/-- **A floor on the symbol is a floor on the pairing, for every test.** -/
+theorem chebyshev_pairing_ge_of_symbol_ge (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N)
+    {c : ℝ} (hc : ∀ ξ : ℝ, c ≤ primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ)) :
+    2 * c * autoCorrelation F 0
+      ≤ ∫ s in Set.Ioi (0:ℝ), chebyshevTwoPoleDefect s *
+          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hsym : Integrable (fun ξ : ℝ =>
+      (primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ)) * spectralDensity F ξ) := by
+    refine ((integrable_primeSymbol_mul hF hFc N).sub
+      ((integrable_coshCosKernel_mul hF hFc (by linarith : (0:ℝ) ≤ 2 * r)).const_mul 2)).congr
+      (Filter.Eventually.of_forall fun ξ => by simp only [Pi.sub_apply]; ring)
+  have hmono : (∫ ξ : ℝ, c * spectralDensity F ξ)
+      ≤ ∫ ξ : ℝ, (primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ))
+          * spectralDensity F ξ := by
+    refine MeasureTheory.integral_mono (hgi.const_mul c) hsym fun ξ => ?_
+    have hg : 0 ≤ spectralDensity F ξ := by rw [spectralDensity]; positivity
+    exact mul_le_mul_of_nonneg_right (hc ξ) hg
+  rw [MeasureTheory.integral_const_mul, integral_spectralDensity_eq_mass hF hFc] at hmono
+  rw [chebyshev_pairing_eq_spectral hF hFc hr hsupp hN]
+  linarith
+
+/-- **A nonnegative symbol forces the sign of the pairing on every test.** -/
+theorem chebyshev_pairing_nonneg_of_symbol_nonneg (hF : ContDiff ℝ 1 F)
+    (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0)
+    {N : ℕ} (hN : Real.exp (2 * r) ≤ N)
+    (hc : ∀ ξ : ℝ, 0 ≤ primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ)) :
+    0 ≤ ∫ s in Set.Ioi (0:ℝ), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) := by
+  have h := chebyshev_pairing_ge_of_symbol_ge hF hFc hr hsupp hN hc
+  simpa using h
+
+/-- At zero frequency the criterion is the Chebyshev–Mertens comparison. -/
+theorem symbol_zero_eq (N : ℕ) (r : ℝ) :
+    primeSymbol N 0 - 2 * coshCosKernel (2 * r) (2 * Real.pi * 0)
+      = (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹)
+        - 4 * Real.sinh r := by
+  have h1 : primeSymbol N 0
+      = ∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹ := by
+    rw [primeSymbol]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [show 2 * Real.pi * Real.log n * 0 = 0 by ring, Real.cos_zero, mul_one]
+  rw [h1, show 2 * Real.pi * (0:ℝ) = 0 by ring, coshCosKernel_zero, show 2 * r / 2 = r by ring]
+  ring
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity

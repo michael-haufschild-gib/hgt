@@ -535,7 +535,6 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFour_lt_twoThousandFourHundredTh
   have h6 := thetaCuspLikelihoodSourceOrdinaryJetSix_lt_sixtyThousandEightHundred hx
   linarith only [h46, h6]
 
-set_option maxHeartbeats 800000 in
 /-- Quantitative lower orientation: the literal fourth log jet retains more than nineteen
 twentieths of its ordinary one-particle score.  The only Bell losses are controlled by the
 uniform tail probability `p < 1/400` and normalized moment-product inequalities. -/
@@ -579,7 +578,7 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
   have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
-  have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
+  have hp : 0 < p := pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22) he4.le
   have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
@@ -592,33 +591,33 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
   have hAe2 : e1 < A * e2 := by
     have hmul := mul_lt_mul_of_pos_right hA he2
-    nlinarith
+    linarith
   have hb2 : 0 < b2 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
-    nlinarith
+    linarith
   have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
     have hmul := mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hb3 : 0 < b3 := by
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
-    nlinarith [mul_pos hA0 he1]
-  have he13nine : 9 * e1 ≤ e3 := by nlinarith
-  have hA2 : 9 < A ^ (2 : ℕ) := by nlinarith [sq_pos_of_pos (sub_pos.mpr hA)]
+    linarith [mul_pos hA0 he1]
+  have he13nine : 9 * e1 ≤ e3 := by linarith
+  have hA2 : 9 < A ^ (2 : ℕ) := by linarith [sq_pos_of_pos (sub_pos.mpr hA)]
   have hscaleA := mul_lt_mul_of_pos_right hA2 (mul_pos hA0 he1)
   have hfirst : 81 * A * e1 < 9 * A ^ (3 : ℕ) * e1 := by
-    nlinarith
+    linarith
   have hsecond : 9 * A ^ (3 : ℕ) * e1 ≤ A ^ (3 : ℕ) * e3 := by
     have hmul := mul_le_mul_of_nonneg_left he13nine (pow_nonneg hA0.le 3)
-    nlinarith
+    linarith
   have hAe1 : 81 * A * e1 ≤ A ^ (3 : ℕ) * e3 := le_trans hfirst.le hsecond
   have hb3Upper : b3 ≤ (656 / 81 : ℝ) * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
-    nlinarith [mul_nonneg (pow_nonneg hA0.le 2) he2.le]
+    linarith [mul_nonneg (pow_nonneg hA0.le 2) he2.le]
   have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using
       two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
@@ -650,10 +649,10 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
       _ ≤ 16 * A ^ (4 : ℕ) * (p ^ (3 : ℕ) * e4) := by gcongr
       _ = 16 * p ^ (3 : ℕ) * A ^ (4 : ℕ) * e4 := by ring
   have hp3 : p ^ (3 : ℕ) < (1 / 400 : ℝ) ^ (3 : ℕ) :=
-    pow_lt_pow_left₀ (by nlinarith : p < (1 / 400 : ℝ)) hp.le (by norm_num)
+    pow_lt_pow_left₀ (by linarith : p < (1 / 400 : ℝ)) hp.le (by norm_num)
   have hcoef : 4 * (1312 / 81 : ℝ) * p + 48 * p + 96 * p ^ (3 : ℕ) < (8 / 25 : ℝ) := by
     norm_num at hpSmall hp3 ⊢
-    nlinarith
+    linarith
   have hweight : 0 < A ^ (4 : ℕ) * e4 := by positivity
   have hlossBudget :
       4 * ((1312 / 81 : ℝ) * p * A ^ (4 : ℕ) * e4) +
@@ -661,7 +660,7 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
           6 * (16 * p ^ (3 : ℕ) * A ^ (4 : ℕ) * e4) <
         (1 / 20 : ℝ) * b4 := by
     have hc := mul_lt_mul_of_pos_right hcoef hweight
-    nlinarith
+    linarith
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetFour x =
         b4 - 4 * b1 * b3 - 3 * b2 ^ (2 : ℕ) + 12 * b1 ^ (2 : ℕ) * b2 - 6 * b1 ^ (4 : ℕ) := by
@@ -673,7 +672,7 @@ theorem nineteenTwentieths_mul_ordinary_lt_thetaCuspLikelihoodSourceLogPartition
     unfold thetaCuspLikelihoodNormalizedMoment thetaCuspLikelihoodMean
     ring
   rw [hdecomp]
-  nlinarith [mul_nonneg (sq_nonneg b1) hb2.le]
+  linarith [mul_nonneg (sq_nonneg b1) hb2.le]
 
 
 end

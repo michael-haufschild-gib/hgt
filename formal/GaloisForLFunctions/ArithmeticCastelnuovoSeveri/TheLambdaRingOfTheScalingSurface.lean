@@ -296,7 +296,10 @@ theorem hasGhost_sigmaSeries (g : ℕ → ℂ) :
   · rw [coeff_succ_X_mul, coeff_derivative, coeff_sigmaSeries, sigmaCoeff_succ]
     have hm : (m : ℂ) + 1 ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
     rw [mul_comm (((m : ℂ) + 1)⁻¹), mul_assoc, inv_mul_cancel₀ hm, mul_one,
-      coeff_mul, sum_antidiagonal_eq_range, Finset.sum_range_succ]
+      coeff_mul,
+      sum_antidiagonal_eq_range
+        (fun i j => coeff i (sigmaSeries g) * coeff j (ghostSeriesOf g)) (m + 1),
+      Finset.sum_range_succ]
     have hlast : coeff (m + 1) (sigmaSeries g) * coeff (m + 1 - (m + 1)) (ghostSeriesOf g) = 0 := by
       simp [ghostSeriesOf]
     rw [hlast, add_zero]
@@ -365,11 +368,9 @@ theorem sigmaSeries_primTrace :
       (fun i : ι => -geomTail (D.alpha i)) (fun i _ => hasGhost_one_sub (D.alpha i))
     convert hprod using 2
     ext j
-    simp only [ghostSeriesOf, geomTail, coeff_mk, map_sum, map_neg]
     rcases j with _ | j
-    · simp
-    · simp only [Nat.succ_ne_zero, ↓reduceIte]
-      exact Finset.sum_neg_distrib.symm
+    · simp [ghostSeriesOf, geomTail]
+    · simp [ghostSeriesOf, geomTail, Finset.sum_neg_distrib]
   · simp [hOnePoly, map_prod]
 
 /-- **Pole-plane factorization of the curve zeta series via `sigmaSeries`:** the `λ`-ring
@@ -756,7 +757,8 @@ theorem adamsOp_pow {q : ℝ} (hq : 0 < q) (m : ℕ) (x : ScalingCycle) :
   induction m with
   | zero => simp
   | succ m ih =>
-    rw [pow_succ', pow_succ', adamsOp_mul hq (pow_pos hq m), ih, LinearMap.mul_apply]
+    rw [pow_succ', pow_succ', adamsOp_mul hq (pow_pos hq m), ih]
+    rfl
 
 @[simp]
 theorem heckeCorrespondence_one : heckeCorrespondence 1 = LinearMap.id := by
@@ -772,8 +774,8 @@ theorem heckeCorrespondence_pow {q : ℝ} (hq : 0 < q) (m : ℕ) (x : ScalingCyc
   induction m with
   | zero => simp
   | succ m ih =>
-    rw [pow_succ', pow_succ', heckeCorrespondence_mul hq (pow_pos hq m), ih,
-      LinearMap.mul_apply]
+    rw [pow_succ', pow_succ', heckeCorrespondence_mul hq (pow_pos hq m), ih]
+    rfl
 
 private theorem exp_half_log {q : ℝ} (hq : 0 < q) :
     Real.exp (Real.log q / 2) = Real.sqrt q := by
@@ -969,7 +971,7 @@ theorem polarPart_scalingAction (t : ℝ) (x : ScalingCycle) :
   · simp [scalingSurface, scalingAction]
   · simp [scalingSurface, scalingAction]
   · ext u
-    simp [scalingSurface, scalingAction, scaleShift]
+    simp [scalingSurface, scalingAction]
 
 /-- **Primitive-part splitting under Adams operations:** `prim` commutes with `scalingAction t`. -/
 theorem prim_scalingAction (t : ℝ) (x : ScalingCycle) :
@@ -1004,7 +1006,7 @@ theorem prim_heckeCorrespondence (a : ℝ) (x : ScalingCycle) :
     scalingSurface.prim (heckeCorrespondence a x) =
       heckeCorrespondence a (scalingSurface.prim x) := by
   simp only [heckeCorrespondence, LinearMap.smul_apply, PolarSurface.prim_eq_sub_polarPart,
-    PolarSurface.polarPart_smul, polarPart_adamsOp, map_sub, smul_sub]
+    PolarSurface.polarPart_smul, polarPart_adamsOp, map_sub]
 
 /-- Under `heckeCorrespondence a`, the intersection pairing scales by `a`. -/
 theorem pair_heckeCorrespondence {a : ℝ} (ha : 0 ≤ a) (x y : ScalingCycle) :
@@ -1141,8 +1143,14 @@ theorem pair_heckeCycle (g : realTests) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
   rw [pair_adamsOp_div ha hb, Real.sqrt_div (le_of_lt ha)]
   have hsqrt : Real.sqrt b ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hb)
   have hsq : Real.sqrt b * Real.sqrt b = b := Real.mul_self_sqrt (le_of_lt hb)
-  rw [← hsq]
-  field_simp [hsqrt]
+  calc Real.sqrt a * (Real.sqrt b *
+          scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g))
+      = (Real.sqrt b * Real.sqrt b) * (Real.sqrt a / Real.sqrt b *
+          scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
+          field_simp [hsqrt]
+    _ = b * (Real.sqrt a / Real.sqrt b *
+          scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
+          rw [hsq]
 
 /-- **Prime-tower Frobenius graph intersection law:** along any prime or real tower `p^k, p^l`
 (`p > 0`), Hecke cycles intersect by `Γ_{p^k}(g) · Γ_{p^l}(g) = p^{min(k, l)} L(Δ_g, p^{|k - l|})`,
@@ -1337,7 +1345,7 @@ def weightedPrimeComb (lam : ℕ → ℝ) (N : ℕ) (f g : ℝ → ℝ) : ℝ :=
       (EF.weilTest (cx f) (cx g) (Real.log n) +
         EF.weilTest (cx f) (cx g) (-Real.log n)).re
 
-private theorem sum_Icc_mul_eq_div_weight (lam : ℕ → ℝ) (h0 : lam 0 = 0) (h1 : lam 1 = 0)
+private theorem sum_Icc_mul_eq_div_weight (lam : ℕ → ℝ) (h1 : lam 1 = 0)
     {a b N : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hbN : b ≤ N) :
     (∑ n ∈ Finset.Icc 2 N, if b = a * n then lam n else 0) =
       if a ∣ b then lam (b / a) else 0 := by
@@ -1372,12 +1380,12 @@ private theorem sum_Icc_mul_eq_div_weight (lam : ℕ → ℝ) (h0 : lam 0 = 0) (
     exact if_neg hne
 
 /-- **General narrow-bump incidence identity for an arbitrary weight `lam : ℕ → ℝ`:**
-for any arithmetic weight `lam : ℕ → ℝ` with `lam 0 = lam 1 = 0`, any positive integers `a, b ≥ 1`,
+for any arithmetic weight `lam : ℕ → ℝ` with `lam 1 = 0`, any positive integers `a, b ≥ 1`,
 cutoff `N ≥ max a b`, and narrow test bump `φ` supported in `[-δ, δ]` with
 `2δ < log(1 + 1 / (max a b * N))`, the `lam`-weighted prime-comb pairing of `scaleShift (log a) φ`
 and `scaleShift (log b) φ` evaluates to the divisibility ratio weight
 `((if a ∣ b then lam (b / a) else 0) + (if b ∣ a then lam (a / b) else 0)) * ∫ φ^2`. -/
-theorem weightedPrimeComb_scaleShift_narrow_eval (lam : ℕ → ℝ) (h0 : lam 0 = 0) (h1 : lam 1 = 0)
+theorem weightedPrimeComb_scaleShift_narrow_eval (lam : ℕ → ℝ) (h1 : lam 1 = 0)
     {a b N : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hN : max a b ≤ N)
     {φ : ℝ → ℝ} {δ : ℝ} (hφ : ∀ u, δ < |u| → φ u = 0)
     (hδ : 2 * δ < Real.log (1 + 1 / ((max a b * N : ℕ) : ℝ))) :
@@ -1413,8 +1421,8 @@ theorem weightedPrimeComb_scaleShift_narrow_eval (lam : ℕ → ℝ) (h0 : lam 0
     rw [weilTest_scaleShift_nat_eval ha hb hn1 hφ hδ₁ hδ₂, Complex.ofReal_re]
     split_ifs <;> ring
   rw [hstep, ← Finset.sum_mul, Finset.sum_add_distrib,
-    sum_Icc_mul_eq_div_weight lam h0 h1 hb ha (le_trans (le_max_left a b) hN),
-    sum_Icc_mul_eq_div_weight lam h0 h1 ha hb (le_trans (le_max_right a b) hN),
+    sum_Icc_mul_eq_div_weight lam h1 hb ha (le_trans (le_max_left a b) hN),
+    sum_Icc_mul_eq_div_weight lam h1 ha hb (le_trans (le_max_right a b) hN),
     add_comm (if b ∣ a then lam (a / b) else 0)]
 
 /-- **Narrow-bump Hecke prime-incidence theorem (`weightedPrimeComb_scaleShift_eq_heckeIncidence`):**
@@ -1431,9 +1439,8 @@ theorem weightedPrimeComb_scaleShift_eq_heckeIncidence {a b N : ℕ} (ha : 1 ≤
     (hδ : 2 * δ < Real.log (1 + 1 / ((max a b * N : ℕ) : ℝ))) :
     weightedPrimeComb primeAtom N (scaleShift (Real.log a) φ) (scaleShift (Real.log b) φ) =
       heckeIncidence a b * ∫ u, φ u ^ 2 := by
-  have h0 : primeAtom 0 = 0 := by simp [primeAtom]
   have h1 : primeAtom 1 = 0 := by simp [primeAtom]
-  rw [weightedPrimeComb_scaleShift_narrow_eval primeAtom h0 h1 ha hb hN hφ hδ]
+  rw [weightedPrimeComb_scaleShift_narrow_eval primeAtom h1 ha hb hN hφ hδ]
   rfl
 
 /-! ### 7. Zero-Side Eigenlaw, Fake Curve Data, Non-`Λ` Weights, and Positive Tests -/

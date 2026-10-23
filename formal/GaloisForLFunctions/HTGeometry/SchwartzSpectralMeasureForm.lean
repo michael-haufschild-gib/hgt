@@ -17,7 +17,6 @@ namespace SchwartzMap
 
 noncomputable section
 
-set_option maxHeartbeats 2000000 in
 /-- The spectral form represented by a positive measure of temperate growth. -/
 def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
     ContinuousSchwartzSesquilinearForm where
@@ -43,8 +42,7 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
         rw [map_smul, pointwiseMulConj_smul_left]
       _ = c * (integralCLM ℂ μ) (pointwiseMulConj
           ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        rw [map_smul]
-        rfl
+        rw [map_smul, smul_eq_mul]
   map_add_right u v w := by
     calc
       (integralCLM ℂ μ) (pointwiseMulConj
@@ -67,8 +65,7 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
       _ = (starRingEnd ℂ) c *
           (integralCLM ℂ μ) (pointwiseMulConj
             ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        rw [map_smul]
-        rfl
+        rw [map_smul, smul_eq_mul]
   continuous := by
     have hfourier : Continuous
         (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>

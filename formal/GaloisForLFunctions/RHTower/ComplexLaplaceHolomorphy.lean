@@ -45,7 +45,6 @@ theorem integrable_id_mul_cexp_of_gt_abscissa {ν : Measure ℝ} {c b : ℝ} (hc
     refine Real.exp_le_exp.mpr ?_
     nlinarith [hu0, hzb]
 
-set_option maxHeartbeats 1000000 in
 /-- **The complex transform is differentiable right of the abscissa.** -/
 theorem hasDerivAt_complexLaplace {ν : Measure ℝ} {c : ℝ} (hc : IsAbscissa ν c) {z : ℂ}
     (hz : c < z.re) :
@@ -84,7 +83,7 @@ theorem hasDerivAt_complexLaplace {ν : Measure ℝ} {c : ℝ} (hc : IsAbscissa 
     rw [norm_neg, norm_mul, Complex.norm_real, Real.norm_of_nonneg hu0, norm_cexp_neg_mul]
     refine mul_le_mul_of_nonneg_left ?_ hu0
     refine Real.exp_le_exp.mpr ?_
-    nlinarith [hu0, hxre]
+    linarith [mul_le_mul_of_nonneg_right hxre hu0]
   have hderiv : ∀ᵐ u : ℝ ∂(ν.restrict (Ioi (0 : ℝ))), ∀ x ∈ Metric.ball z ε,
       HasDerivAt (fun y : ℂ => Complex.exp (-y * (u : ℂ)))
         (-((u : ℂ) * Complex.exp (-x * (u : ℂ)))) x := by

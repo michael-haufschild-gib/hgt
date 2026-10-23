@@ -192,11 +192,17 @@ theorem exists_prod_LSeries_rpow_le {q : ℕ} [NeZero q] (e : DirichletCharacter
 
 /-! ### Size on the strip and the receiver -/
 
-/-- **The size of a symmetric residue flip on the strip.** With `a₀ = max(1 − 2s_1/φ, 0)`, on
-`1 < Re w ≤ 2`: `|F(w)| ≤ A(|Im w|^{-a₀} + 1)` for `0 < |Im w| ≤ 9`, and `|F(w)| ≤ B₁|Im w|^{1/4}` for
-`|Im w| ≥ 9`. -/
-theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
-    (hS : UnitSymmetric S) :
+/-- **Size on the strip from an Euler bound.** Suppose `|F(w)| ≤ e^B |ζ(w)|^{1 − 2s_1/φ} Φ(w)` on
+`Re w > 1` with `Φ ≥ 0`, `Φ ≤ M` for `|Im w| ≤ 9` and `Φ ≤ C log^N|Im w|` for `|Im w| ≥ 9`. With
+`a₀ = max(1 − 2s_1/φ, 0)`: `|F(w)| ≤ A(|Im w|^{-a₀} + 1)` for `0 < |Im w| ≤ 9` and
+`|F(w)| ≤ B₁|Im w|^{1/4}` for `|Im w| ≥ 9`, on `1 < Re w ≤ 2`. -/
+theorem exists_norm_residueFlip_bounds_of {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    {Φ : ℂ → ℝ} {B Ml Cl : ℝ} {N : ℕ} (hΦ0 : ∀ w, 0 ≤ Φ w) (hMl : 0 ≤ Ml) (hCl : 0 ≤ Cl)
+    (hB : ∀ w : ℂ, 1 < w.re →
+      ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+        Real.exp B * ‖riemannZeta w‖ ^ (1 - 2 * (setCoeff S 1).re / q.totient) * Φ w)
+    (hΦbox : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → |w.im| ≤ 9 → Φ w ≤ Ml)
+    (hΦlarge : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 → 9 ≤ |w.im| → Φ w ≤ Cl * Real.log |w.im| ^ N) :
     ∃ A B₁ : ℝ, 0 ≤ A ∧ ∀ w : ℂ, 1 < w.re → w.re ≤ 2 →
       (0 < |w.im| → |w.im| ≤ 9 →
         ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
@@ -215,27 +221,17 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
     have : 2 * (setCoeff S 1).re / q.totient ≤ 2 := by
       rw [div_le_iff₀ hφ]; linarith
     simp only [e₀]; linarith
-  set e : DirichletCharacter ℂ q → ℝ := fun χ => -(2 / q.totient * (setCoeff S χ).re)
-  have he : ∀ χ, |e χ| ≤ 2 := fun χ => by
-    simp only [e]
-    rw [abs_neg, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / q.totient), div_mul_eq_mul_div,
-      div_le_iff₀ hφ]
-    have := abs_re_setCoeff_le S χ
-    linarith
-  obtain ⟨B, hB⟩ := exists_norm_residueFlip_le_prod hS
-  obtain ⟨Ml, Cl, hMl, hCl, hLprod⟩ := exists_prod_LSeries_rpow_le e he
   obtain ⟨K₀, hK₀, hpole⟩ := exists_norm_zeta_mul_sub_one_le
   obtain ⟨K₂, hK₂, hbox⟩ := exists_inv_norm_zeta_le_box
   obtain ⟨K₁, hK₁, hlarge⟩ := exists_inv_norm_zeta_le_log_pow_large
-  set k := (Finset.univ.erase (1 : DirichletCharacter ℂ q)).card
   set Aζ : ℝ := max (max (K₀ ^ e₀) 14) (1 + K₂)
   have hAζ : 0 ≤ Aζ := le_max_of_le_right (by linarith)
   refine ⟨Real.exp B * Aζ * Ml,
-    Real.exp B * (K₁ + 7) * Cl * (4 * ((10 + 14 * k : ℕ) + 1)) ^ (10 + 14 * k),
+    Real.exp B * (K₁ + 7) * Cl * (4 * ((10 + N : ℕ) + 1)) ^ (10 + N),
     by positivity, fun w hw hw2 => ⟨fun ht0 ht => ?_, fun ht => ?_⟩⟩
   · -- small heights
     have hF := hB w hw
-    have hLp := (hLprod w hw hw2).1 ht
+    have hLp := hΦbox w hw hw2 ht
     have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
     have hζf : ‖riemannZeta w‖ ^ e₀ ≤ Aζ * (|w.im| ^ (-max e₀ 0) + 1) := by
       have hpow0 : 0 ≤ |w.im| ^ (-max e₀ 0) := Real.rpow_nonneg (abs_nonneg _) _
@@ -274,15 +270,13 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
         rw [hinv]
         nlinarith
     calc ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
-        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
-            ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
+        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * Φ w := hF
       _ ≤ Real.exp B * (Aζ * (|w.im| ^ (-max e₀ 0) + 1)) * Ml :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp
-            (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp (hΦ0 w) (by positivity)
       _ = Real.exp B * Aζ * Ml * (|w.im| ^ (-max e₀ 0) + 1) := by ring
   · -- large heights
     have hF := hB w hw
-    have hLp := (hLprod w hw hw2).2 ht
+    have hLp := hΦlarge w hw hw2 ht
     have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
     set L := Real.log |w.im|
     have hL2 : 2 < L := by
@@ -305,27 +299,57 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
         have h2 := hlarge w hw hw2 ht
         rw [hinv]
         nlinarith
-    have hlog := log_pow_le_rpow_quarter (show (1 : ℝ) ≤ |w.im| by linarith) (10 + 14 * k)
-    have hsplit : L ^ 10 * L ^ (14 * k) = L ^ (10 + 14 * k) := by rw [← pow_add]
+    have hlog := log_pow_le_rpow_quarter (show (1 : ℝ) ≤ |w.im| by linarith) (10 + N)
+    have hsplit : L ^ 10 * L ^ N = L ^ (10 + N) := by rw [← pow_add]
     calc ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
-        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
-            ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
-      _ ≤ Real.exp B * ((K₁ + 7) * L ^ 10) * (Cl * L ^ (14 * k)) :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp
-            (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
-      _ = Real.exp B * (K₁ + 7) * Cl * L ^ (10 + 14 * k) := by rw [← hsplit]; ring
+        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * Φ w := hF
+      _ ≤ Real.exp B * ((K₁ + 7) * L ^ 10) * (Cl * L ^ N) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp (hΦ0 w) (by positivity)
+      _ = Real.exp B * (K₁ + 7) * Cl * L ^ (10 + N) := by rw [← hsplit]; ring
       _ ≤ Real.exp B * (K₁ + 7) * Cl *
-            ((4 * ((10 + 14 * k : ℕ) + 1)) ^ (10 + 14 * k) * |w.im| ^ (1 / 4 : ℝ)) :=
+            ((4 * ((10 + N : ℕ) + 1)) ^ (10 + N) * |w.im| ^ (1 / 4 : ℝ)) :=
           mul_le_mul_of_nonneg_left hlog (by positivity)
       _ = _ := by ring
 
-/-- **Symmetric residue flips above the quarter are paid.** If `S` is closed under inversion on the
-units and more than a quarter of the unit classes are flipped, `f_{q,S}(d) d^{-1/2}` is paid. -/
-theorem receiverBounded_residueFlip_half {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
-    (hS : UnitSymmetric S) (h4 : q.totient < 4 * (S.filter IsUnit).card) :
+/-- **The size of a symmetric residue flip on the strip.** -/
+theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    (hS : UnitSymmetric S) :
+    ∃ A B₁ : ℝ, 0 ≤ A ∧ ∀ w : ℂ, 1 < w.re → w.re ≤ 2 →
+      (0 < |w.im| → |w.im| ≤ 9 →
+        ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          A * (|w.im| ^ (-max (1 - 2 * (setCoeff S 1).re / q.totient) 0) + 1)) ∧
+      (9 ≤ |w.im| → ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          B₁ * |w.im| ^ (1 / 4 : ℝ)) := by
+  have hφ : 0 < (q.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr (NeZero.pos q)
+  set e : DirichletCharacter ℂ q → ℝ := fun χ => -(2 / q.totient * (setCoeff S χ).re)
+  have he : ∀ χ, |e χ| ≤ 2 := fun χ => by
+    simp only [e]
+    rw [abs_neg, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / q.totient), div_mul_eq_mul_div,
+      div_le_iff₀ hφ]
+    have := abs_re_setCoeff_le S χ
+    linarith
+  obtain ⟨B, hB⟩ := exists_norm_residueFlip_le_prod hS
+  obtain ⟨Ml, Cl, hMl, hCl, hLprod⟩ := exists_prod_LSeries_rpow_le e he
+  exact exists_norm_residueFlip_bounds_of
+    (Φ := fun w => ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
+      ‖LSeries (fun n => χ n) w‖ ^ e χ)
+    (fun w => Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) hMl hCl hB
+    (fun w hw hw2 ht => (hLprod w hw hw2).1 ht) (fun w hw hw2 ht => (hLprod w hw hw2).2 ht)
+
+/-- **Strip bounds above the quarter pay the receiver.** If `|F| ≤ A(|Im w|^{-a₀} + 1)` on
+`0 < |Im w| ≤ 9` and `|F| ≤ B₁|Im w|^{1/4}` beyond, and more than a quarter of the unit classes are
+flipped, `f_{q,S}(d) d^{-1/2}` is paid. -/
+theorem receiverBounded_residueFlip_half_of_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    {A B₁ : ℝ} (hA : 0 ≤ A)
+    (hbd : ∀ w : ℂ, 1 < w.re → w.re ≤ 2 →
+      (0 < |w.im| → |w.im| ≤ 9 →
+        ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          A * (|w.im| ^ (-max (1 - 2 * (setCoeff S 1).re / q.totient) 0) + 1)) ∧
+      (9 ≤ |w.im| → ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          B₁ * |w.im| ^ (1 / 4 : ℝ)))
+    (h4 : q.totient < 4 * (S.filter IsUnit).card) :
     ReceiverBounded (fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))) := by
   have hφ : 0 < (q.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr (NeZero.pos q)
-  obtain ⟨A, B₁, hA, hbd⟩ := exists_norm_residueFlip_bounds hS
   set a₀ := max (1 - 2 * (setCoeff S 1).re / q.totient) 0
   have ha₀0 : 0 ≤ a₀ := le_max_right _ _
   have ha₀ : 2 * a₀ < 1 := by
@@ -415,6 +439,14 @@ theorem receiverBounded_residueFlip_half {q : ℕ} [NeZero q] {S : Finset (ZMod 
   obtain ⟨M, hM⟩ := exists_lineEnergy_le_of_majorant (c := c) (t₁ := 0) (by norm_num) hg hsmall
     hlarge
   exact ⟨3 * M / (4 * Real.pi), weightPronicEnergy_le_of_lineEnergy_le hc hM⟩
+
+/-- **Symmetric residue flips above the quarter are paid.** If `S` is closed under inversion on the
+units and more than a quarter of the unit classes are flipped, `f_{q,S}(d) d^{-1/2}` is paid. -/
+theorem receiverBounded_residueFlip_half {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    (hS : UnitSymmetric S) (h4 : q.totient < 4 * (S.filter IsUnit).card) :
+    ReceiverBounded (fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))) := by
+  obtain ⟨A, B₁, hA, hbd⟩ := exists_norm_residueFlip_bounds hS
+  exact receiverBounded_residueFlip_half_of_bounds hA hbd h4
 
 /-- **The quarter law of symmetric residue flips.** For `S ⊆ ZMod q` closed under inversion on the
 units, the half-damped weight `f_{q,S}(d) d^{-1/2}` is paid iff more than a quarter of the unit

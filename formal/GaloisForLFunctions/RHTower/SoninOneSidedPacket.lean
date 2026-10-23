@@ -16,7 +16,6 @@ magnitude is bounded by the two lobe magnitudes.
 
 noncomputable section
 
-set_option maxHeartbeats 400000
 
 namespace RHTower
 

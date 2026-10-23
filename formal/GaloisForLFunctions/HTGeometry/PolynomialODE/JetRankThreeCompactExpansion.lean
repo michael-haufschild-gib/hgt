@@ -13,7 +13,6 @@ This module proves identities only; the compact sign is checked separately.
 open MvPolynomial
 namespace HTGeometry
 noncomputable section
-set_option maxRecDepth 100000
 set_option linter.unusedSimpArgs false
 
 
