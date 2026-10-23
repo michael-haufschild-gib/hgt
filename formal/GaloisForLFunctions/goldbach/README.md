@@ -129,6 +129,31 @@ the quadratic tangent, with limiting amplification four. More precisely,
  \longrightarrow 12G(N).
 \]
 
+This limit has finite bounds. For \(\varepsilon>0\), define
+
+\[
+L_N(\varepsilon)=\frac{16O_N(\varepsilon)-O_N(2\varepsilon)}{12\varepsilon^2},
+\qquad
+L_N(\varepsilon)\le G(N)\le\frac{O_N(\varepsilon)}{\varepsilon^2}.
+\]
+
+Three scales supply a positive compensation:
+
+\[
+Q_N(\varepsilon)=O_N(4\varepsilon)-20O_N(2\varepsilon)+64O_N(\varepsilon)\ge0,
+\qquad
+L_N(\varepsilon)-L_N(2\varepsilon)=\frac{Q_N(\varepsilon)}{48\varepsilon^2}.
+\]
+
+Thus halving positive damping increases the lower approximation toward
+the actual prime-pair weight. The proof keeps the arithmetic source:
+prime pairs obey a hyperbolic inequality, while each retained composite
+pair has at least four prime factors across its endpoints. The finite
+Lean inequalities cover every natural target and every real damping;
+the divided upper bound above is written only at positive damping.
+Continuous monotonicity and the fourth-order error remain paper results
+on the [extraction card](../../../docs/drafts/pipeline/2-fully-proven/goldbach-odd-damping-extraction-minorant.md).
+
 Goldbach therefore becomes an existence assertion for a strict two-scale
 inequality in the odd part of the actual RH source. This connects damping
 continuation, hyperbolic multipliers, arithmetic parity and the anchored
@@ -243,7 +268,7 @@ the fixed integer rectangle. They supply no signed cancellation estimate.
 | [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Its micro-fold decomposition becomes the exact ledger \(G=E_+-E_-\); both sectors must stay in the calculation. | Its logarithmic antidiagonals encode products: \(\log a+\log b=\log(ab)\). Goldbach uses sums. The parity algebra transfers, while the incidence kernel changes. |
 | [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | RH is cofinal bounded pronic energy of \(\tau_\varepsilon-c_\varepsilon\); Goldbach is positive quadratic coefficient of the squarefree reflected source. | Same damping parameter and actual divisor family; different projection, kernel and order of limits. |
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | The observation is \(u\mapsto G_u(N)\) with \(N\) retained. Translating a source by \(h\) moves its sum coefficient by \(2h\). | Anchor loss is concrete: \(z^2\) and \(z^3\) have identical magnitudes on the unit circle, but their squared polynomials have different coefficients at degree six. This is a finite-profile witness, not a claim about altered actual primes. |
-| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | \(G=(N+1)m_N^2+\langle r_N,J_Nr_N\rangle\), or the full baseline formula with its mixed term. | Coherent contribution and signed remainder are paired before estimating. The exact identity supplies a research coordinate, not a remainder bound. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | The actual source has nonnegative compensation \(Q_N\) and exact refinement gain \(L_N(\varepsilon)-L_N(2\varepsilon)=Q_N(\varepsilon)/(48\varepsilon^2)\). The spatial reading is \(G=(N+1)m_N^2+\langle r_N,J_Nr_N\rangle\). | Finite damping compensation and its lower bound are proved. Strict positivity of the endpoint remains the arithmetic obligation; the spatial decomposition alone does not estimate its signed remainder. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | \(G\) is the weighted incidence of the prime support with its reflected support; equivalently the weighted intersection of prime pairs with the sum fibre. | This is a concrete finite incidence interpretation. Realizing it in the existing scaling-surface intersection pairing would need a separate construction; that identification is not asserted. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Literally `incidenceEnergy c_N u_N`, with symmetric antidiagonal coupling. | The distinction between a specified state's positive overlap and positivity or local payability of a whole form. The Lean specialization uses the programme's actual definition. |
 
@@ -268,12 +293,19 @@ analytic premise:
 * `oddDampedSource_two_mul`
 * `primeFactorPower_le_dampingDoublingMultiplier`
 * `tendsto_oddDampedDyadicDefect_div_sq`
+* `oddDampedDyadicDefect_le_primePairWeight`
+* `oddDampedExtractionMinorant_le`
+* `tendsto_oddDampedExtractionMinorant`
+* `primePairWeight_mul_sq_le_oddDampedReflectionOverlap`
+* `oddDampedRefinementGain_nonneg`
+* `oddDampedExtractionMinorant_sub_two_mul`
+* `oddDampedExtractionMinorant_two_mul_le`
 * `primePair_iff_positive_oddDampedDyadicDefect`
 * `goldbach_iff_positive_oddDampedDyadicDefect`
 
 The finite CRT expansion, general compensation formula and polynomial reading
 above are paper-level dictionary entries; they are not additional Lean claims.
-The result is a bridge within the research corpus. No new analytic estimate,
+The result is a bridge within the research corpus. No arithmetic cancellation estimate,
 proof of either conjecture, or external novelty claim is attached to it.
 
 The leaf passes `lake --old env lean`. The four new Goldbach equivalences and
@@ -282,3 +314,8 @@ and `Quot.sound`; their closures were checked with `#print axioms`.
 The subsequent damping-parity and two-scale extension also passes the leaf
 check without warnings. Six further closures, including the finite target
 criterion and its all-even formulation, have the same foundational axioms.
+The finite minorant, majorant and three-scale compensation also pass the
+leaf check without warnings. Eight closures, including the simplified
+target criterion and its all-even formulation, have only those same axioms.
+Their proof and audit are recorded on the
+[finite damping card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-finite-damping-bracket.md).

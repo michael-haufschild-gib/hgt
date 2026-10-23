@@ -29,7 +29,7 @@ theorem exists_logDeriv_zeta_bound_routeT_of_region_uniform :
     ∃ (A : ℝ), ∃ C : ℝ, 0 < C ∧ ∀ σ γ : ℝ, routeTLogDerivThreshold + 1 ≤ |γ| → 1 - routeTZeroFreeWidth A (|γ| + 1) / 2 ≤ σ → σ ≤ 9 / 8 → ‖logDeriv riemannZeta ((σ : ℂ) + (γ : ℂ) * Complex.I)‖ ≤ C * Real.log |γ| / routeTZeroFreeWidth A (|γ| + 1) := by
   obtain ⟨A, h_0_0⟩ := RHTower.Sieve.exists_routeT_zero_free_region_abs
   refine ⟨A, ?_⟩
-  apply exists_logDeriv_zeta_bound_routeT_of_region <;> assumption
+  exact exists_logDeriv_zeta_bound_routeT_of_region h_0_0
 
 /-- `dlvp_inequality` with its constants supplied by
 `RHTower.Sieve.exists_pole_bound`. -/

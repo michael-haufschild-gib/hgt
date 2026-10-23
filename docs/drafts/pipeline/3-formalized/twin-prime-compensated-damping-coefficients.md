@@ -1,10 +1,10 @@
 # Cancel the zero-damping axes before estimating
 
 - **ID:** twin-prime-compensated-damping-coefficients
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / BRIDGE
-- **Source:** [balanced CRT estimate](twin-prime-balanced-crt-compensation.md).
-- **Statement:** The normalized physical divisor response has an exact divisor expansion whose coefficients are bounded by `log d`, uniformly in positive damping.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BRIDGE
+- **Source:** [balanced CRT estimate](../2-fully-proven/twin-prime-balanced-crt-compensation.md).
+- **Statement:** Exact divisor and cofactor compensation remove the inverse damping loss; cofactor-one terms vanish and the remaining coefficients are bounded by the cofactor logarithm.
 
 ## Exact statement and complete proof
 
@@ -80,17 +80,56 @@ stationary terms unchanged. No interchange of an infinite conditional
 divisor series and a stationary average is claimed.
 
 In particular this identity is not a source-specific lower bound,
-and does not prove twin-prime infinitude. The logarithmic weights
-are still present at the full-height cofactor endpoint.
+and does not prove twin-prime infinitude. Logarithmic weights and
+both Möbius signs remain on the growing nonunit-cofactor range.
+
+## Corpus and novelty audit
+
+The corpus already has `Lambda=mu*log` and its damped twist in
+`ArithmeticContinuationAndCriticalEnergy/TheTangentFactorsThroughTheMoebiusDilation.lean`:
+`sum_divisors_dampedMoebius_mul_dampedLog` and
+`prefixDilation_dampedPrime_factor`. Their statements were checked.
+The present identity is its finite-difference counterpart for the
+physical source. Verdict **BRIDGE**, no scientific novelty claimed.
+
+The [nonunit-cofactor target](../1-in-progress/twin-prime-nonunit-cofactor-dispersion.md)
+keeps the complete truncated row and all mixed terms. The exact
+endpoint cancellation warns against treating estimates for isolated
+faces as necessary conditions for estimating the full source.
 
 ## Gates
 
 - [x] Complete finite paper proof.
-- [ ] Lean certificate and foundational axiom audit.
-- [ ] Index integration.
+- [x] Lean certificate and foundational axiom audit.
+- [x] Index integration; the nonunit pair capstone is returned by corpus search.
+
+## Lean certificate
+
+Leaf: [DampedPairDiagonal.lean](../../../../formal/GaloisForLFunctions/twin-prime/DampedPairDiagonal.lean).
+
+- `TwinPrime.abs_compensatedDampingCoeff_exp_le_log`
+- `TwinPrime.abs_compensatedDampingCoeff_physical_le_log`
+- `TwinPrime.normalizedDampedResponse_eq_compensated`
+- `TwinPrime.dampedPairAverage_eq_compensated`
+- `TwinPrime.dampedCofactorTerm_one`
+- `TwinPrime.abs_dampedCofactorTerm_exp_le_log`
+- `TwinPrime.abs_dampedCofactorTerm_physical_le_log`
+- `TwinPrime.normalizedDampedResponse_eq_cofactor_compensation`
+- `TwinPrime.normalizedDampedResponse_eq_nonunit_cofactors`
+- `TwinPrime.dampedPairAverage_eq_nonunit_cofactors`
+
+All ten capstones have no proposition-valued premises. The leaf
+check and all ten axiom audits passed with only `propext`,
+`Classical.choice`, and `Quot.sound`. The zero-damping equalities
+use totalized division; the quantitative bounds use the explicit
+positive exponential clock or the proved physical schedule.
+No analytic premise, placeholder or computational certificate
+was introduced. The leaf is already in the own umbrella.
 
 ## Log
 
 - 2026-10-23 — Extracted exact axis compensation while checking the
   normalization of the balanced CRT theorem. No analytic hypothesis
   or conditional Lean interface introduced.
+- 2026-10-23 — Certified both compensations, logarithmic bounds,
+  vanishing unit terms and the exact nonunit pair expansion.

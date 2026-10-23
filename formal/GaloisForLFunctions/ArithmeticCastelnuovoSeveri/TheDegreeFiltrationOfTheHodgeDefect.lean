@@ -42,14 +42,14 @@ theorem le_hodgeDefectAt (Z : ZeroConfig) {a : ℝ} {n : ℕ} (f : Fin n → ℝ
   le_iSup₂_of_le n f (le_iSup_of_le hf le_rfl)
 
 /-- The Hodge defect is nondecreasing in the degree. -/
-theorem hodgeDefectAt_mono (Z : ZeroConfig) : Monotone (hodgeDefectAt Z) := fun a b hab =>
-  iSup₂_mono fun n f => iSup_le fun hf => le_hodgeDefectAt Z f fun i =>
+theorem hodgeDefectAt_mono (Z : ZeroConfig) : Monotone (hodgeDefectAt Z) := fun _ _ hab =>
+  iSup₂_le fun _ f => iSup_le fun hf => le_hodgeDefectAt Z f fun i =>
     ⟨(hf i).1, (hf i).2.trans (Icc_subset_Icc (neg_le_neg hab) hab)⟩
 
 /-- The Hodge defect at any degree is at most the number of zeros right of the line. -/
 theorem hodgeDefectAt_le (Z : ZeroConfig) (hZ : TemperedConfig Z) (a : ℝ) :
     hodgeDefectAt Z a ≤ (rightZeros Z).encard :=
-  iSup₂_le fun n f => iSup_le fun hf => negIndex_zeroGram_le_of_tempered Z hZ f
+  iSup₂_le fun _ f => iSup_le fun hf => negIndex_zeroGram_le_of_tempered Z hZ f
     (fun i => (hf i).1)
     (fun i => isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (hf i).2)
 
@@ -83,7 +83,7 @@ theorem iSup_hodgeDefectAt (Z : ZeroConfig) (hZ : TemperedConfig Z) :
 /-- **No off-line zero of `ζ` is visible below degree `3/10`.** -/
 theorem zeta_hodgeDefectAt_eq_zero {a : ℝ} (ha : a ≤ 3 / 10) :
     hodgeDefectAt zetaZeroConfig a = 0 := by
-  refine le_antisymm (iSup₂_le fun n f => iSup_le fun hf => ?_) (zero_le _)
+  refine le_antisymm (iSup₂_le fun _ f => iSup_le fun hf => ?_) zero_le
   have hfc : ∀ i, HasCompactSupport (f i) := fun i =>
     isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (hf i).2
   rw [negIndex_eq_zero_of_hermQuad_nonneg fun x => ?_, Nat.cast_zero]

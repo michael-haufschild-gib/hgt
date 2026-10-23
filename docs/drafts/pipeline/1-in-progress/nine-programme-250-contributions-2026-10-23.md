@@ -42,13 +42,19 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    damping (`not_receiverBounded_residueFlip_half`); for `0 < ε < 1/2`, `ρ ∉ {1/2, 1}` ⇒ unpaid
    (`not_receiverBounded_residueFlip`, through `not_receiverBounded_of_flippedDensity` of
    `APaidReceiverContinuesTheDirichletSeriesAcrossItsAbscissa`).
-   `TransHorizonIncidenceMechanics/ResidueClassFlipsAndThePrimeDensityLaws.lean`.
+   `TransHorizonIncidenceMechanics/ResidueClassFlipsAndThePrimeDensityLaws.lean`. Boundary included:
+   `4#(S∩units) ≤ φ(q)` ⇒ unpaid at half damping (`not_receiverBounded_residueFlip_half_of_le`,
+   `TheQuarterBoundaryOfResidueClassFlips.lean`: complex class density
+   `Re Σ_{p≡a}p^{-s} = φ(q)^{-1}log(1/|s−1|) + O(1)` near `s = 1` by the mean value theorem on
+   Mathlib's residue-class L-function, Euler lower bound for `±1` patterns, and the generic criterion
+   `not_receiverBounded_of_sq_norm_dirichletSeries_ge`). So a paid residue-class flip has `ρ > 1/4`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — `TheQuarterBoundaryOfResidueClassFlips` compiled, clean, wired (extends 3).
 - 2026-10-23 — `ThePhaseDiagramOfTheConstantSignPattern` compiled, clean, wired (extends 2).
 - 2026-10-23 — `ResidueClassFlipsAndThePrimeDensityLaws` compiled, axioms clean, wired; contribution 3.
 - 2026-10-23 — four THIM leaves compiled (axioms `propext`, `Classical.choice`, `Quot.sound`) and

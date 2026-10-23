@@ -241,9 +241,3 @@ theorem fullHeightOddCrtDefect_normalized_lower (N : ℕ) :
 end
 
 end TwinPrime
-
-#print axioms TwinPrime.upperHalfCrtKernel_eq_shift
-#print axioms TwinPrime.upperHalfCrtForm_eq_shift
-#print axioms TwinPrime.fullHeightOddDivisor_odd
-#print axioms TwinPrime.fullHeightOddCrtDefect_lower
-#print axioms TwinPrime.fullHeightOddCrtDefect_normalized_lower

@@ -26,6 +26,11 @@ spend the companions.
   of freedom than there are companions, `p = (X − t) · Π_i (X − γ_i)` vanishes at every companion
   with `p'(t) ≠ 0`, and `Q(p) < 0` for every positive depth mass.
 
+* **Beyond the local model** (`companions_pay_up_to_error`): for an arbitrary source `f`, any
+  polynomial `p` of degree `< #s` transfers the law at half the price: if `2 w Λ(t) ≤ 1` then
+  `Σ f(γ_i)² − w f'(t)² ≥ −(2 Σ (f − p)(γ_i)² + 4 w (f'(t) − p'(t))²)`.  The loss is the local
+  approximation error at the companions and at `t`, e.g. a Taylor remainder.
+
 So in the local model the signed floor is governed by a **companion count against the source's
 local degrees of freedom**, not by the unsigned local depth mass: this is the signed replacement
 mechanism of open question O5, in the stated model.  Transferring it to Paley–Wiener sources of
@@ -104,6 +109,68 @@ theorem few_companions_never_pay {t : ℝ} (ht : ∀ i ∈ s, v i ≠ t) {w : �
     rw [hd]
     have : 0 < (N.eval t) ^ 2 := by positivity
     nlinarith
+
+/-! ### Beyond the local model -/
+
+/-- The signed sampling form of an arbitrary source `f` with derivative value `f't` at `t`. -/
+def sampleForm (s : Finset ι) (v : ι → ℝ) (w : ℝ) (f : ℝ → ℝ) (f't : ℝ) : ℝ :=
+  ∑ i ∈ s, f (v i) ^ 2 - w * f't ^ 2
+
+/-- **Companions pay up to the local approximation error.**  If a polynomial `p` of degree
+`< #s` approximates the source at the companions with errors `e_i = f(γ_i) − p(γ_i)` and its
+derivative at `t` with error `e₀ = f'(t) − p'(t)`, then at half the Lagrange price
+(`2 w Λ(t) ≤ 1`) the signed form loses at most `2 Σ e_i² + 4 w e₀²`. -/
+theorem companions_pay_up_to_error (hvs : Set.InjOn v s) {p : ℝ[X]} (hp : p.degree < #s)
+    {w t : ℝ} (hw : 0 ≤ w) (hΛ : 2 * w * lagrangePrice s v t ≤ 1) (f : ℝ → ℝ) (f't : ℝ) :
+    -(2 * ∑ i ∈ s, (f (v i) - p.eval (v i)) ^ 2 + 4 * w * (f't - (derivative p).eval t) ^ 2) ≤
+      sampleForm s v w f f't := by
+  set Λ := lagrangePrice s v t
+  set e₀ := f't - (derivative p).eval t
+  set S := ∑ i ∈ s, f (v i) ^ 2
+  set E := ∑ i ∈ s, (f (v i) - p.eval (v i)) ^ 2
+  have hΛ0 : 0 ≤ Λ := lagrangePrice_nonneg t
+  -- `f'(t) = Σ f(γ_i) ℓ_i'(t) − Σ e_i ℓ_i'(t) + e₀`
+  have hder := derivative_eval_eq_sum hvs hp t
+  have hsplit : f't = ∑ i ∈ s, f (v i) * (derivative (Lagrange.basis s v i)).eval t -
+      ∑ i ∈ s, (f (v i) - p.eval (v i)) * (derivative (Lagrange.basis s v i)).eval t + e₀ := by
+    rw [← sum_sub_distrib]
+    have : ∑ i ∈ s, (f (v i) * (derivative (Lagrange.basis s v i)).eval t -
+        (f (v i) - p.eval (v i)) * (derivative (Lagrange.basis s v i)).eval t) =
+        (derivative p).eval t := by
+      rw [hder]; exact sum_congr rfl fun i _ => by ring
+    rw [this]; simp only [e₀]; ring
+  have h1 : (∑ i ∈ s, f (v i) * (derivative (Lagrange.basis s v i)).eval t) ^ 2 ≤ Λ * S := by
+    rw [mul_comm]; exact sum_mul_sq_le_sq_mul_sq s _ _
+  have h2 : (∑ i ∈ s, (f (v i) - p.eval (v i)) * (derivative (Lagrange.basis s v i)).eval t) ^ 2 ≤
+      Λ * E := by
+    rw [mul_comm]; exact sum_mul_sq_le_sq_mul_sq s _ _
+  set a := ∑ i ∈ s, f (v i) * (derivative (Lagrange.basis s v i)).eval t
+  set b := ∑ i ∈ s, (f (v i) - p.eval (v i)) * (derivative (Lagrange.basis s v i)).eval t
+  -- `(a − b + e₀)² ≤ 2a² + 4b² + 4e₀²`
+  have hsq : f't ^ 2 ≤ 2 * a ^ 2 + 4 * b ^ 2 + 4 * e₀ ^ 2 := by
+    rw [hsplit]; nlinarith [sq_nonneg (a + b - e₀), sq_nonneg (b + e₀)]
+  have hS : 0 ≤ S := sum_nonneg fun _ _ => sq_nonneg _
+  have hE : 0 ≤ E := sum_nonneg fun _ _ => sq_nonneg _
+  unfold sampleForm
+  have hwa : w * (2 * a ^ 2) ≤ S := by
+    calc w * (2 * a ^ 2) ≤ w * (2 * (Λ * S)) := by nlinarith
+      _ = (2 * w * Λ) * S := by ring
+      _ ≤ 1 * S := mul_le_mul_of_nonneg_right hΛ hS
+      _ = S := one_mul _
+  have hwb : w * (4 * b ^ 2) ≤ 2 * E := by
+    calc w * (4 * b ^ 2) ≤ w * (4 * (Λ * E)) := by nlinarith
+      _ = 2 * ((2 * w * Λ) * E) := by ring
+      _ ≤ 2 * (1 * E) := by nlinarith
+      _ = 2 * E := by ring
+  nlinarith [mul_le_mul_of_nonneg_left hsq hw]
+
+/-- In the local model the approximation errors vanish and the signed form is nonnegative. -/
+theorem sampleForm_eval_nonneg (hvs : Set.InjOn v s) {p : ℝ[X]} (hp : p.degree < #s) {w t : ℝ}
+    (hw : 0 ≤ w) (hΛ : 2 * w * lagrangePrice s v t ≤ 1) :
+    0 ≤ sampleForm s v w (fun x => p.eval x) ((derivative p).eval t) := by
+  have h := companions_pay_up_to_error hvs hp hw hΛ (fun x => p.eval x) ((derivative p).eval t)
+  simp only [sub_self, zero_pow two_ne_zero, sum_const_zero, mul_zero, add_zero, neg_zero] at h
+  exact h
 
 end
 

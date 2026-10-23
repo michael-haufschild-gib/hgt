@@ -37,7 +37,7 @@ section classDensity
 
 open ArithmeticFunction ArithmeticFunction.vonMangoldt LSeries
 
-variable {q : ℕ} [NeZero q]
+variable {q : ℕ}
 
 /-- The prime indicator of a residue class as a complex sequence. -/
 def classIndC (a : ZMod q) (n : ℕ) : ℂ := ((primeResidueInd a n : ℝ) : ℂ)
@@ -108,7 +108,7 @@ theorem convex_nearOneBox : Convex ℝ nearOneBox :=
 
 /-- **The complex logarithmic density of one unit class.** On the box `1 < Re s < 2`, `|Im s| < 1`:
 `|Re Σ_{p ≡ a} p^{-s} − φ(q)^{-1} log(1/|s − 1|)| ≤ B`. -/
-theorem exists_abs_re_LSeries_classIndC_sub_le {a : ZMod q} (ha : IsUnit a) :
+theorem exists_abs_re_LSeries_classIndC_sub_le [NeZero q] {a : ZMod q} (ha : IsUnit a) :
     ∃ B : ℝ, ∀ s ∈ nearOneBox,
       |(LSeries (classIndC a) s).re - (q.totient : ℝ)⁻¹ * Real.log (1 / ‖s - 1‖)| ≤ B := by
   set φ : ℂ := (((q.totient : ℝ)⁻¹ : ℝ) : ℂ)
@@ -316,6 +316,7 @@ open LSeries
 
 variable {q : ℕ} [NeZero q]
 
+omit [NeZero q] in
 /-- `Re Σ_{p mod q ∈ S} p^{-w} = Σ_{a ∈ S} Re Σ_{p ≡ a} p^{-w}` on `Re w > 1`. -/
 theorem tsum_residueFlip_re_eq (S : Finset (ZMod q)) {w : ℂ} (hw : 1 < w.re) :
     ∑' p : Nat.Primes, (if residueFlip q S p = -1 then (((p : ℕ) : ℂ) ^ (-w)).re else 0) =
@@ -348,8 +349,9 @@ theorem tsum_residueFlip_re_eq (S : Finset (ZMod q)) {w : ℂ} (hw : 1 < w.re) :
       simp_rw [hdiv]
       rw [Finset.sum_ite_eq]
     · simp [hp]
-  rw [hprimes, tsum_congr hterm, Summable.tsum_finsetSum fun a _ =>
-    Complex.reCLM.summable (hsumm a)]
+  have hres : ∀ a : ZMod q, Summable (fun n => (term (classIndC a) w n).re) := fun a =>
+    Complex.reCLM.summable (hsumm a)
+  rw [hprimes, tsum_congr hterm, Summable.tsum_finsetSum fun a _ => hres a]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [LSeries, Complex.re_tsum (hsumm a)]
 
@@ -593,9 +595,10 @@ theorem not_receiverBounded_residueFlip_half_of_le {q : ℕ} [NeZero q] (S : Fin
       have him := Complex.abs_im_le_norm (w - 1)
       have hhalf : ‖w - 1‖ < 1 / 2 := lt_of_lt_of_le hwρ (min_le_right _ _)
       simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im, sub_zero] at hre him
-      rw [abs_lt] at *
+      have h1 := abs_lt.mp (lt_of_le_of_lt hre hhalf)
+      have h2 := abs_lt.mp (lt_of_le_of_lt him hhalf)
       refine ⟨⟨⟨hwre, ?_⟩, ?_⟩, ?_⟩ <;> simp only [Set.mem_setOf_eq] <;>
-        linarith [abs_lt.mp (lt_of_le_of_lt hre hhalf), abs_lt.mp (lt_of_le_of_lt him hhalf)]
+        linarith [h1.1, h1.2, h2.1, h2.2]
     have hwne : w ≠ 1 := fun h => by rw [h, sub_self, norm_zero] at hwpos; exact lt_irrefl _ hwpos
     -- `log|ζ(w)| ≥ ℓ − log 2`, `ℓ = log(1/|w − 1|) ≥ 0`
     set ℓ := Real.log (1 / ‖w - 1‖)
@@ -637,7 +640,8 @@ theorem not_receiverBounded_residueFlip_half_of_le {q : ℕ} [NeZero q] (S : Fin
     rw [← Real.exp_nat_mul] at hsq
     have hval : Real.exp (-(2 * B')) / ‖w - 1‖ = Real.exp (((2 : ℕ) : ℝ) * (ℓ / 2 - B')) := by
       rw [show ((2 : ℕ) : ℝ) * (ℓ / 2 - B') = ℓ + -(2 * B') by push_cast; ring, Real.exp_add,
-        Real.exp_log (by positivity), mul_comm, one_div, ← div_eq_mul_inv]
+        Real.exp_log (by positivity)]
+      ring
     rw [hval]
     exact hsq
 

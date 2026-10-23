@@ -253,7 +253,7 @@ bounded complex product weights. This is a classical deduction, not
 a newly discovered source-specific cancellation theorem. Its analytic
 input is not yet Lean-certified here.
 
-The [full-height boundary](../2-fully-proven/twin-prime-full-height-crt-boundary.md)
+The [full-height boundary](../3-formalized/twin-prime-full-height-crt-boundary.md)
 is different: for `X/2+2<=d,e<=X`, the exact incidence kernel is
 `[e=d+2]`. An explicit odd block with positive constant weights has
 normalized discrepancy at least `1/20`. Thus a uniform estimate for
@@ -264,7 +264,7 @@ There is also an exact finite normalization improvement. Set
 `b_epsilon(d)=mu(d)(1-d^(-epsilon))/epsilon`. Cancelling the complete
 zero-damping divisor sums gives `tau_epsilon(n)/epsilon=-sum_(d|n)b_epsilon(d)`
 for `n>=2`, and `|b_epsilon(d)|<=log d`. The
-[axis-compensation card](../2-fully-proven/twin-prime-compensated-damping-coefficients.md)
+[axis-compensation card](../3-formalized/twin-prime-compensated-damping-coefficients.md)
 records the proof. In these coordinates the balanced paper estimate
 costs `log^2(2Y)` uniformly in damping. Its changed head, tails, and
 stationary terms must be kept together; no conditional infinite-series
@@ -283,6 +283,10 @@ the complete source. This is the finite-difference version of the
 existing Möbius--logarithm dilation in ACCE, not a new cancellation
 theorem. Growing **nonunit** cofactors remain the analytic obligation;
 fixed-form cancellation cannot supply uniformity in that range.
+Both compensations, coefficient bounds, and the full-height boundary
+are now Lean-certified. The next exact target is the
+[complete nonunit-cofactor covariance](twin-prime-nonunit-cofactor-dispersion.md),
+with the mixed terms retained as separate unproved obligations.
 
 **More precise first test.** For odd coprime `d,e`, choose `dbar` with
 `d*dbar=1 (mod e)` and let `r=d*(-2*dbar mod e)`. Then `r` is the
@@ -451,10 +455,11 @@ Do not add an assumption asserting the missing discrepancy bound to a Lean theor
 
 - **Internal context:** all twelve programmes read; selected dependencies checked in Lean source.
 - **External novelty audit:** not performed in this task, following the request for work grounded in the local research rather than further web searching. No assertion of novelty relative to the literature.
-- **Conjecture/attack:** the exact strong discrepancy target is a Hardy–Littlewood reformulation; verdict **BRIDGE**, not a new theorem. The weaker cofinal lower bound remains open. The proposed compensation mechanism has not yet produced its first quantitative estimate.
+- **Conjecture/attack:** the exact strong discrepancy target is a Hardy–Littlewood reformulation; verdict **BRIDGE**, not a new theorem. The weaker cofinal lower bound remains open. The balanced block now has a classical paper estimate, but no bound for the complete source-specific compensation has been proved.
 - **Paper work:** finite mixed-derivative bridge, quantitative diagonal estimate, exact defect ledger and two-parameter Bézout flow derived above. No conjecture used in those derivations.
 - **Formal status:** `DampedPairDiagonal` now certifies the quantitative physical bridge, with five premise-free capstones. The complex `DeterminantParityBridge` has four audited capstones, including exact four-cycle invariance. Both leaf checks passed; all nine capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`. The mixed-derivative, exact flow, and full discrepancy ledger remain paper work. No unproved analytic input is assumed in either leaf.
 - **Anti-theatre assessment:** the endpoint frontier has not moved. What improved is the specification of a common source and of the exact finite-horizon, small-damping obligation. The elementary diagonal estimate is bridge work, not a claimed breakthrough.
+- **Latest formal batch:** the two finite compensations and their coefficient bounds passed ten capstone axiom audits; the exact full-height shift classification and quantitative boundary passed five. Both leaf checks passed. Every audited capstone has no analytic premise and uses only standard foundational axioms. The uniform full-height route is closed with its positive survivor, while the compensated nonunit source remains open. This is bridge and boundary work, not new number-theoretic knowledge.
 - **Next research decision:** attack the source-specific signed CRT/cofactor compensation in §4 first. Use the two-parameter flow to identify the closed family of arithmetic terms. Judge progress by a genuine bound in the normalization `Xε²`, not by the number of equivalent formulations or formalized identities.
 
 ## Gates
@@ -474,3 +479,8 @@ Do not add an assumption asserting the missing discrepancy bound to a Lean theor
   into the exact inverse-residue Fourier expression and identified the
   unresolved varying-modulus and endpoint estimates. No cancellation
   bound, lower prime-pair mass, or infinitude theorem obtained.
+- 2026-10-23 — Paid the balanced CRT block on paper using the
+  checked classical input and complete endpoint estimates. Certified
+  exact axis/cofactor compensation and the full-height boundary in
+  Lean. The unit-cofactor faces vanish in the compensated source;
+  growing nonunit cofactors and mixed terms remain unestimated.

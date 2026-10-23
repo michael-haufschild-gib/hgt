@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** BRIDGE; elementary coefficient extraction, no scientific novelty claimed
 - **Parent:** [damping reflection and parity](../3-formalized/not_new_scientific_knowledge/goldbach-damping-reflection-parity.md)
-- **Lean status:** the source, tangent and finite sign certificate are checked in `goldbach/RiemannHypothesisBridge.lean`; the quantitative minorant below is paper-only.
+- **Lean status:** the finite minorant, majorant, punctured limit, nonnegative three-scale compensation and exact dyadic increment are checked in `goldbach/RiemannHypothesisBridge.lean`. The full coefficient series, continuous monotonicity and fourth-order error remain paper-only.
 
 ## Objects
 
@@ -135,7 +135,7 @@ Q_N(ε)≥0 for every real ε. Direct algebra gives the exact increment
     L_N(ε)−L_N(2ε)=Q_N(ε)/(48ε²) ≥0.
 
 At zero both sides are zero under real division's zero convention.
-Thus halving damping produces an increasing sequence of minorants
+For ε≠0, halving damping produces an increasing sequence of minorants
 converging to G(N). This is a positive compensation law for the actual
 source. It supplies neither a positive starting value nor a positive
 limit at a target where that sign has not been proved.
@@ -155,5 +155,5 @@ lower bound, damping scale, or horizon-limit interchange is asserted.
 
 - Finite Euler-product and hyperbolic identities audited against the local corpus.
 - This is standard two-scale Richardson extraction on the identified source.
-- Paper proof closed; quantitative Lean theorem not yet supplied.
+- Paper proof closed. The [finite inequalities and dyadic compensation](../3-formalized/not_new_scientific_knowledge/goldbach-finite-damping-bracket.md) are formalized; the stronger series assertions remain at stage 2.
 - No computational experiment and no additional analytic premise.

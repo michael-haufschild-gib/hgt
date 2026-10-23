@@ -145,4 +145,6 @@ This scale audit is paper-level and supplies no missing lower bound.
 The first, third, fourth, ninth, tenth and eleventh declarations above
 were the six audited closures. The finite criterion quantifies over all
 natural targets; the final theorem specializes it to every even target
-at least four. The minorant and scale audit remain explicitly paper-only.
+at least four. The [finite minorant and dyadic compensation](goldbach-finite-damping-bracket.md)
+are now formalized. The scale audit and full coefficient-series refinement
+remain explicitly paper-only.

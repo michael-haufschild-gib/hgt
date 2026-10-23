@@ -343,6 +343,15 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     truncations converge in `c₀` and the chain is `c₀`-continuous. So admission is decided by the
     chain on finitely supported sequences; a uniform `ℓ²` bound there would admit `η`. No such
     bound is proved below half damping, and none is assumed in a statement.
+18a. **The chain is Hilbert–Schmidt above damping one.** For `η > 1` the source is bounded,
+    `|P_η(m)| ≤ ζ(η) + 1` (`abs_centeredPrefix_le`): in floor coordinates it is
+    `Σ_{d ≤ m} μ(d) d^{−η}(⌊m/d⌋ − m/d) − m Σ_{d > m} μ(d) d^{−1−η}`. Writing `A_η = ρx + P_η`, the
+    centred entry from state `n + 1` to `k + 1` is at most `2(ρ + ζ(η) + 1)(k+1)^{1−η}/(n+1)` for
+    `k ≤ n` and minus the entrance mass `≤ ρ(k+1)^{−η}` beyond (`abs_centeredRow_le`,
+    `entrance_le`). Every column has `Σ_n C(n,k)² ≲ (k+1)^{1−2η}` (`sum_sq_centeredRow_le`), so on
+    finitely supported sequences `Σ_{n<T}(C_η b)(n)² ≤ M_η Σ b_k²` with an explicit constant
+    (`centeredOperator_l2_le`). The column bound is summable exactly when `η > 1`; between half
+    damping and one the size of the source does not decide `ℓ²`-boundedness.
 19. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -629,8 +638,9 @@ Each question is stated with what is established and where the open part sits.
    nonlocal payment with the competition made explicit as a packing constraint. Open: whether
    optimal canonical-path certificates are exact (sharp) beyond a single cycle, and their cost on
    the actual ledger.
-4. **The centred chain on `ℓ²`.** Decide whether `C_η` is `ℓ²`-bounded on finitely supported
-   sequences for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
+4. **The centred chain on `ℓ²`.** Above damping one `C_η` is Hilbert–Schmidt (mechanism 18a).
+   Decide whether it is `ℓ²`-bounded on finitely supported sequences for `½ < η ≤ 1`, where size
+   alone no longer decides, and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
    Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a

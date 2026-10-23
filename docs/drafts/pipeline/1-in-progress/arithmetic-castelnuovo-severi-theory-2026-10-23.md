@@ -80,6 +80,9 @@ survivor).
 - **Status:** Lean, all modules compiled unconditionally; main theorems depend only on
   `propext, Classical.choice, Quot.sound`.
 
+- `TheDegreeFiltrationOfTheHodgeDefect`: `iSup_hodgeDefectAt` (degree filtration exhausts the right
+  zeros), `zeta_hodgeDefectAt_eq_zero` (nothing visible below degree 3/10).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

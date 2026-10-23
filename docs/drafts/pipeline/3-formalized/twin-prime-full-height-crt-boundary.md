@@ -1,9 +1,9 @@
 # The full-height CRT kernel is the shift itself
 
 - **ID:** twin-prime-full-height-crt-boundary
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / BOUNDARY CLASSIFICATION
-- **Source:** [balanced CRT estimate](twin-prime-balanced-crt-compensation.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BOUNDARY CLASSIFICATION
+- **Source:** [balanced CRT estimate](../2-fully-proven/twin-prime-balanced-crt-compensation.md).
 - **Statement:** Above half the physical horizon, the CRT incidence kernel is exactly the gap-two shift matrix. Its odd unweighted block has an order-horizon positive discrepancy from the period mean.
 
 ## Exact classification
@@ -87,8 +87,28 @@ across that endpoint is silently assumed.
 
 - [x] Exact kernel and complete paper proof.
 - [x] Positive survivor and quantitative boundary identified.
-- [ ] Corpus dependency audit and unconditional Lean certificate.
-- [ ] Leaf and foundational axiom audits; umbrella integration.
+- [x] Corpus dependency audit and unconditional Lean certificate.
+- [x] Leaf and foundational axiom audits; umbrella integration.
+- [x] Index integration; the normalized boundary capstone is returned by corpus search.
+
+## Lean certificate
+
+Leaf: [FullHeightCRTBoundary.lean](../../../../formal/GaloisForLFunctions/twin-prime/FullHeightCRTBoundary.lean).
+
+- `TwinPrime.upperHalfCrtKernel_eq_shift`
+- `TwinPrime.upperHalfCrtForm_eq_shift`
+- `TwinPrime.fullHeightOddDivisor_odd`
+- `TwinPrime.fullHeightOddCrtDefect_lower`
+- `TwinPrime.fullHeightOddCrtDefect_normalized_lower`
+
+All public capstones have no proposition-valued premises. The
+foreground leaf check passed; all five axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound` (the oddness theorem
+uses only `propext`). No analytic input or computational certificate
+was introduced. The own umbrella imports the leaf; it was not built.
+
+The classification and lower bound are elementary bridge work. No
+number-theoretic novelty or proof of infinitude is claimed.
 
 ## Log
 

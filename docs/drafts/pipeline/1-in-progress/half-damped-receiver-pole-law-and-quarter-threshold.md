@@ -110,6 +110,21 @@ Put `α_d(n) = ⌊n/d⌋ − n/d` (`|α_d(n)| ≤ min(1, n/d)`), cells `Δ_n(s) 
     With steps 10, 16–17: `z^{Ω(d)}d^{−1/2}` is paid **iff** `z < 1/2`, for all `z ∈ [−1, 1]`; the
     interior `(−1, 1)` is pretentious to no character, outside `receiver_trichotomy`.
 
+## Phase 6 (in progress): sufficiency for subgroup flips
+
+19. Let `H < G = (ZMod q)ˣ`, index `k ≥ 2`, and `f_H(p) = −1` exactly for primes `p ∤ q` with
+    `p mod q ∉ H`. With `c_χ = Σ_{h∈H} χ(h⁻¹) ∈ {0, |H|}` (real, nonnegative) and
+    `[b ∈ H] = φ(q)^{-1} Σ_χ c_χ χ(b)` for units `b` (orthogonality),
+    `Σ_p f_H(p)p^{-w} = −Σ_p p^{-w} + 2Σ_{p|q}p^{-w} + (2/φ)Σ_χ c_χ Σ_p χ(p)p^{-w}`. Euler logs of
+    `ζ` and `L(·, χ)` (each `= Re Σ χ(p)p^{-w} + O(Σp^{-2})`) give
+    `log|F(w)| ≤ (2/k − 1) log|ζ(w)| + (2/φ) Σ_{χ≠χ₀} c_χ log|L(w,χ)| + B` on `Re w > 1`.
+20. `2/k − 1 ≤ 0`: the `ζ` factor is controlled by `1/|ζ| ≪ |t|^{1/8}` (step 18); `|L(w,χ)| ≤ C_q log|t|`
+    (`RHTower.norm_LFunction_le_log`), and `L(·,χ)`, `χ ≠ χ₀`, is entire hence bounded on the box
+    `|t| ≤ 9`. So `|F(1 + u + it)| ≤ B₁|t|^{1/4}` for `|t| ≥ 2` and `≤ B₀` for `|t| ≤ 2`, and
+    `exists_lineEnergy_le_of_bounds` pays the receiver: `f_H(d)d^{-1/2}` is paid.
+21. For `k ≥ 3`, `ρ = 1 − 1/k ∉ {1/2, 1}`: unpaid for every `0 < ε < 1/2`
+    (`not_receiverBounded_residueFlip`), paid for `ε ≥ 1/2`. The damping threshold is exactly `1/2`.
+
 ## Selectivity and scope
 
 - The density hypothesis is on `P` only through a Dirichlet upper density; it covers primes in

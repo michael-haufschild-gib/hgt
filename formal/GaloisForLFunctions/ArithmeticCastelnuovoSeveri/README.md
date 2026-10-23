@@ -251,7 +251,8 @@ possible section theory must use near-radicals.
 
 ### 3.6 The scaling surface, the signature law and the Pontryagin law
 (`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
-`TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`)
+`TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`,
+`TheDegreeFiltrationOfTheHodgeDefect`)
 
 17. **The scaling surface is a polar surface whose defect is Weil's form**
     (`scalingSurface`, `scalingSurface_defect_self`), so **its Hodge index theorem is RH**
@@ -308,6 +309,13 @@ possible section theory must use near-radicals.
     configuration invariant under `ρ ↦ ρ + iP` (a lattice system) has Hodge defect `0` or `∞`
     (`periodic_pontryagin_dichotomy`); finitely many off-line zeros, possible a priori for `ζ`, are
     impossible in rank one.
+20⁗. **The degree filtration** (`TheDegreeFiltrationOfTheHodgeDefect`). The Hodge defect at degree
+    `a`, `hodgeDefectAt Z a` (negative squares on tests supported in `[−a, a]`), is nondecreasing
+    (`hodgeDefectAt_mono`), bounded by `#{Re ρ > ½}` (`hodgeDefectAt_le`) and exhausts it:
+    `⨆_a hodgeDefectAt Z a = #{Re ρ > ½}` (`iSup_hodgeDefectAt`). For `ζ` it vanishes through
+    degree `3/10` (`zeta_hodgeDefectAt_eq_zero`). The quantitative horizon of the `ε`-negative
+    index at level `a` (off-line pairs below height `H` with `log H = O(e^a + log(1/ε))`, and a
+    matching count for isolated visible pairs) is `RHTower.zeta_weil_inertia_law`.
 
 ### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
 
@@ -451,13 +459,11 @@ possible section theory must use near-radicals.
    the two-sided law, unconditionally in its upper half, and the exact rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` under the zeros-on-the-line hypothesis on an abstract
    configuration.
-3. **The aperture of the Pontryagin law.** The exact count holds unconditionally (item 20‴), but
-   the density argument gives no aperture: it does not say how long the support of the tests must
-   be to see `n` negative squares. The translated pairs of item 20″ give an explicit aperture when
-   the right zeros are finitely many, in terms of the on-line mass `A` of the dual tests. Wanted: a
-   theorem relating the negative index at aperture `a` to the right zeros visible at aperture
-   `a` (depth, height and isolation), with explicit constants, and its comparison with the
-   one-zero visibility apertures of `SquareRootThreshold`.
+3. **The aperture of the Pontryagin law.** The exact count holds unconditionally (item 20‴) and
+   its degree filtration exhausts the right zeros (item 20⁗); `RHTower.zeta_weil_inertia_law`
+   gives the upper horizon and a lower count for isolated visible pairs. Open: a lower count
+   without isolation, i.e. the degree at which `n` arbitrary right zeros (clustered, shallow, or
+   accumulating in depth) become visible, with explicit constants.
 4. **The Kronecker law beyond the prime part.** On resonators the archimedean collar couples the
    towers through `ω(|i log p + j log q|)`; compute the full local intersection of narrow Hecke
    cycles and decide positivity of the finite-Euler-product form `ζ_p ζ_q · Γ` on lattice tests.
@@ -544,6 +550,7 @@ specification of what is missing and the calibration of every step over `𝔽_q`
 | `InfiniteGenusLaw` | no nonzero compact transform annihilating almost all simple critical zeros; RH ⟺ positive definite |
 | `FiniteConfigurationPontryaginLaw` | transform interpolation and exact negative index for finite configurations |
 | `TemperedConfigurationPontryaginLaw` | absolute convergence on tempered configurations, dual tests, translated pairs, exact negative index with finitely many right zeros |
+| `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree: monotone, exhaustive, zero below `3/10` for `ζ` |
 | `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |

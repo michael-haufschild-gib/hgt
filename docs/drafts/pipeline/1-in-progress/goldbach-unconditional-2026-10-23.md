@@ -585,6 +585,34 @@ tests and cycle signs unchanged. A new correspondence argument must retain
 the fixed target, count its integral returns, and estimate the residual
 arithmetic signs with both squarefree masks. It cannot assume any of them.
 
+## Cycle 14 — finite bounds and positive damping compensation
+
+The paper minorant is now an unconditional Lean inequality on the actual
+odd RH source. For every N and real ε,
+
+    L_N(ε)=(16O_N(ε)−O_N(2ε))/(12ε²) ≤G(N),
+    ε²G(N)≤O_N(ε).
+
+The stronger finite survivor is the positive three-scale compensation
+
+    Q_N(ε)=O_N(4ε)−20O_N(2ε)+64O_N(ε)≥0,
+    L_N(ε)−L_N(2ε)=Q_N(ε)/(48ε²).
+
+Thus the lower approximation increases under halving. Its punctured
+limit is G(N). The proof uses the exact hyperbolic factors and the
+prime/composite factor-count distinction, with every zero and negative
+damping case included. It assumes no positivity of a target coefficient.
+
+The [finite damping card](../3-formalized/not_new_scientific_knowledge/goldbach-finite-damping-bracket.md)
+records the closed paper proof, checked declarations and eight dependency
+audits. The leaf passes without warnings; only standard foundational
+axioms occur. Index regeneration and owned diff/source checks pass;
+scratch searches are removed and no owned command remains pending.
+The stronger coefficient series, continuous monotonicity
+and fourth-order error remain paper-only. No arithmetic cancellation
+estimate or scientific novelty is claimed. Strict positivity of L_N at
+each even target remains the exact unproved step.
+
 ## Current verified state and continuation
 
 - Goldbach target is **not proved**; main goal remains active.
@@ -600,8 +628,9 @@ arithmetic signs with both squarefree masks. It cannot assume any of them.
 - Cycle 12's same-source, incidence-energy and finite two-scale extensions
   also pass direct compilation and closure audits. They add unconditional
   reformulations, not the missing all-even positivity theorem. The quantitative
-  [two-scale minorant](../2-fully-proven/goldbach-odd-damping-extraction-minorant.md)
-  is proved on paper and remains unformalized.
+  [two-scale extraction](../2-fully-proven/goldbach-odd-damping-extraction-minorant.md)
+  now has formalized finite bounds and dyadic compensation in Cycle 14;
+  its full coefficient series and continuous error assertions remain paper-only.
 - Exact scientific advance claimed: **none**. The certified bridge prevents
   a false passage from rough negative parity to primality.
 - Research next: attack the actual missing signed estimate, not another
@@ -689,3 +718,7 @@ arithmetic signs with both squarefree masks. It cannot assume any of them.
   sharp positive return law, inversion classification and family budget.
   Direct leaf check and six closure audits passed without analytic premises.
   The missing strict inequality and signed covariance remain open.
+- 2026-10-23 — Formalized the actual-source finite minorant, majorant and
+  nonnegative three-scale compensation, including the exact refinement
+  increment and punctured limit. Direct leaf check and eight closure audits
+  passed without warnings or analytic premises. Goldbach remains unproved.

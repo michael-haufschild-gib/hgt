@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 27 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 28 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -72,6 +72,8 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheReceiverIsTheChainOrbitOfTheReciprocal` — `centeredOperator_reciprocal_apply`,
   `admits_iff_summable_orbit`, `riemannHypothesis_iff_orbit_summable`,
   `tendsto_truncation_partialEnergy`, `not_summable_transition_first_column`.
+- `TheChainIsHilbertSchmidtAboveDampingOne` — `abs_centeredPrefix_le`, `abs_centeredRow_le`,
+  `entrance_le`, `sum_sq_centeredRow_le`, `centeredOperator_l2_le`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
@@ -99,5 +101,5 @@ towers).
 
 Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
 sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
-The bound is unproved below half damping (RH-strength at cofinally small `η`), so the implication is
-recorded here and not stated as a theorem.
+The bound is proved above damping one (`centeredOperator_l2_le`); for `½ < η ≤ 1` it is open, and
+below half damping it is unproved (RH-strength at cofinally small `η`).

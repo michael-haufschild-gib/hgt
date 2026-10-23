@@ -86,6 +86,41 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Current analytic result:
+  [balanced CRT compensation](../2-fully-proven/twin-prime-balanced-crt-compensation.md)
+  has a complete paper bound `O(Y^(2-1/400))` for `Y^2<=X<=4Y^2`,
+  using the checked classical inverse-phase theorem and explicit
+  smoothing/tail bounds. This analytic input is not Lean-certified
+  here; no conditional Lean surrogate was introduced.
+- Current certified compensation:
+  [axis and cofactor identities](../3-formalized/twin-prime-compensated-damping-coefficients.md)
+  remove the inverse damping loss and transfer the coefficient
+  cost to `log m`. Unit-cofactor terms vanish exactly, including
+  both faces of the physical pair expansion. Ten capstones passed
+  the leaf and foundational-axiom audits without analytic premises.
+- Current certified boundary:
+  [full-height CRT kernel](../3-formalized/twin-prime-full-height-crt-boundary.md)
+  is exactly the shift; an explicit positive odd block has
+  normalized period-transfer defect at least `1/20`. Five
+  capstones passed their leaf and foundational-axiom audits. The
+  [uniform full-height extension](../5-failed/twin-prime-uniform-full-height-crt-transfer.md)
+  is closed with this positive survivor, while actual Möbius
+  compensation remains available across the decomposition.
+- Current verification: both changed leaves passed and all fifteen
+  new capstone axiom audits contain only standard foundations.
+  The new umbrella import is wired; no umbrella was built. Index
+  regeneration passed and both new principal capstones are returned
+  by corpus search. Ten owned source/card files passed whitespace
+  and relative-link checks. No forbidden proof directive or temporary
+  axiom-print command remains in the changed Lean leaves.
+- Next source-specific target:
+  [nonunit cofactor dispersion](twin-prime-nonunit-cofactor-dispersion.md).
+  Retain the complete truncated Möbius dilation and its mixed
+  terms. Unit cancellation does not justify termwise estimates
+  for every remaining face. The actual squared Fourier transform's
+  shift-two coefficient still lacks the required bound. The new
+  SAEI path theorem was inspected; its gauge and packing data
+  have not been constructed for this source and are not assumed.
 - Completed RH-language synthesis:
   [twelve-programme reformulation](twin-prime-rh-language-reformulation.md).
   All requested READMEs read and selected source statements checked.
@@ -284,3 +319,13 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   the inverse-residue phases and physical endpoint factor explicitly;
   no varying-modulus cancellation bound or tail compensation has
   been proved. Main completion gates remain unchecked.
+- 2026-10-23 — Obtained a balanced-block paper estimate from a
+  checked classical theorem. Certified both exact compensations
+  and the full-height boundary: two leaf checks, fifteen capstone
+  audits, standard foundational axioms only. The generic full-height
+  extension fails, but the actual source cancels its unit faces
+  algebraically. The next core is growing nonunit cofactors and
+  their mixed terms. No new number-theoretic result beyond the
+  literature, source-specific saving, lower prime-pair mass, or
+  infinitude theorem is claimed. No difficulty was replaced by
+  an unproved Lean premise. Main completion gates stay unchecked.

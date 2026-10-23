@@ -3,6 +3,9 @@ import GaloisForLFunctions.RHTower.SpurRescale
 import Mathlib.Data.Nat.Factorization.PrimePow
 import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.NumberTheory.ArithmeticFunction.Moebius
+import GaloisForLFunctions.BezoutValuationIncidence.PolynomialWindowTranslatedMomentTransfer
+import GaloisForLFunctions.BiScaleUncertainty.TwoLagSievePeriod
+import GaloisForLFunctions.RHTower.Sieve.HarmonicLogBound
 
 /-!
 # The physical damping diagonal of prime pairs
@@ -10,6 +13,9 @@ import Mathlib.NumberTheory.ArithmeticFunction.Moebius
 The normalized divisor response approximates von Mangoldt uniformly on a
 finite interval. The resulting pair error keeps an explicit damping factor,
 so damping can decrease with the physical horizon.
+
+Exact Möbius compensation bounds the normalized coefficients by logarithms.
+Transferring that weight to the complementary divisor removes unit cofactors.
 -/
 
 namespace TwinPrime
@@ -408,7 +414,8 @@ private theorem abs_dampedCofactorTerm_le_log {ε : ℝ} (hε : 0 < ε) (d m : �
     |dampedCofactorTerm ε d (m + 1)| ≤ Real.log (m + 1 : ℕ) := by
   by_cases hd : d = 0
   · subst d
-    simp only [dampedCofactorTerm, map_zero, Int.cast_zero, zero_mul, abs_zero]
+    simp only [dampedCofactorTerm, ArithmeticFunction.map_zero, Int.cast_zero,
+      zero_mul, abs_zero]
     exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ m + 1 by omega))
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hd
   have hpow0 : 0 ≤ (d : ℝ) ^ (-ε) := Real.rpow_nonneg (Nat.cast_nonneg d) _
@@ -499,17 +506,326 @@ theorem dampedPairAverage_eq_nonunit_cofactors (ε : ℝ) (X h : ℕ) :
   rw [normalizedDampedResponse_eq_nonunit_of_ne_one ε n (by omega),
     normalizedDampedResponse_eq_nonunit_of_ne_one ε (n + h) (by omega), sum_mul_sum]
 
+private theorem cofactorDampingWeight_lower {ε : ℝ} (hε : 0 < ε)
+    {m : ℕ} (hm : 1 ≤ m) :
+    (m : ℝ) ^ (-ε) * Real.log m ≤ cofactorDampingWeight ε m := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+  let u := ε * Real.log m
+  have he := mul_le_mul_of_nonneg_right (Real.add_one_le_exp u) (Real.exp_nonneg (-u))
+  have hc : Real.exp u * Real.exp (-u) = 1 := by
+    rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+  rw [hc] at he
+  rw [cofactorDampingWeight, le_div_iff₀ hε, Real.rpow_def_of_pos hm0]
+  have hu : Real.log m * (-ε) = -u := by dsimp [u]; ring
+  rw [hu]
+  calc
+    Real.exp (-u) * Real.log m * ε = u * Real.exp (-u) := by dsimp [u]; ring
+    _ ≤ 1 - Real.exp (-u) := by nlinarith only [he]
+
+private theorem abs_dampedCofactorTerm_sub_log_le {ε : ℝ} (hε : 0 < ε)
+    {d m : ℕ} (hd : 1 ≤ d) (hm : 1 ≤ m) :
+    |dampedCofactorTerm ε d m - (moebius d : ℝ) * Real.log m| ≤
+      ε * Real.log (d * m : ℕ) * Real.log m := by
+  have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hmL : 0 ≤ Real.log m := Real.log_nonneg (by exact_mod_cast hm)
+  have hd0 : 0 ≤ (d : ℝ) ^ (-ε) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+  have hdle : (d : ℝ) ^ (-ε) ≤ 1 :=
+    Real.rpow_le_one_of_one_le_of_nonpos hd1 (neg_nonpos.mpr hε.le)
+  have hw : 0 ≤ cofactorDampingWeight ε m ∧ cofactorDampingWeight ε m ≤ Real.log m := by
+    simpa only [Nat.sub_add_cancel hm] using cofactorDampingWeight_bounds hε (m - 1)
+  have hupper : (d : ℝ) ^ (-ε) * cofactorDampingWeight ε m ≤ Real.log m :=
+    (mul_le_of_le_one_left hw.1 hdle).trans hw.2
+  have hlower : ((d * m : ℕ) : ℝ) ^ (-ε) * Real.log m ≤
+      (d : ℝ) ^ (-ε) * cofactorDampingWeight ε m := by
+    rw [Nat.cast_mul, Real.mul_rpow (Nat.cast_nonneg d) (Nat.cast_nonneg m), mul_assoc]
+    exact mul_le_mul_of_nonneg_left (cofactorDampingWeight_lower hε hm) hd0
+  have hprod : (0 : ℝ) < (d * m : ℕ) := by
+    exact_mod_cast Nat.mul_pos (by omega : 0 < d) (by omega : 0 < m)
+  have hdef : 1 - ((d * m : ℕ) : ℝ) ^ (-ε) ≤ ε * Real.log (d * m : ℕ) := by
+    rw [Real.rpow_def_of_pos hprod]
+    linarith [Real.add_one_le_exp (Real.log (d * m : ℕ) * (-ε))]
+  have hμ : |(moebius d : ℝ)| ≤ 1 := by
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := d)
+  rw [dampedCofactorTerm, mul_assoc, ← mul_sub, abs_mul,
+    abs_of_nonpos (sub_nonpos.mpr hupper), neg_sub]
+  calc
+    _ ≤ Real.log m - (d : ℝ) ^ (-ε) * cofactorDampingWeight ε m :=
+      mul_le_of_le_one_left (sub_nonneg.mpr hupper) hμ
+    _ ≤ (1 - ((d * m : ℕ) : ℝ) ^ (-ε)) * Real.log m := by nlinarith only [hlower]
+    _ ≤ _ := mul_le_mul_of_nonneg_right hdef hmL
+
+/-- A cofactor term approaches its logarithmic extension with an explicit physical error. -/
+theorem dampedCofactorTerm_exp_error (t : ℝ) (d m : ℕ) :
+    |dampedCofactorTerm (Real.exp (-t)) (d + 1) (m + 1) -
+      (moebius (d + 1) : ℝ) * Real.log (m + 1 : ℕ)| ≤
+      Real.exp (-t) * Real.log ((d + 1) * (m + 1) : ℕ) * Real.log (m + 1 : ℕ) :=
+  abs_dampedCofactorTerm_sub_log_le (Real.exp_pos _) (by omega) (by omega)
+
+/-- The physical response restricted by its complementary divisor. -/
+def truncatedCofactorResponse (ε : ℝ) (Z n : ℕ) : ℝ :=
+  ∑ m ∈ Icc 2 Z, if m ∣ n then dampedCofactorTerm ε (n / m) m else 0
+
+/-- The logarithmic extension of the truncated response at zero damping. -/
+def truncatedLogCofactorResponse (Z n : ℕ) : ℝ :=
+  ∑ m ∈ Icc 2 Z, if m ∣ n then (moebius (n / m) : ℝ) * Real.log m else 0
+
+/-- The positive divisor envelope retains the physical cofactor cutoff. -/
+def truncatedDivisorLogMass (Z n : ℕ) : ℝ :=
+  ∑ m ∈ Icc 2 Z, if m ∣ n then Real.log m else 0
+
+private theorem truncatedDivisorLogMass_nonneg (Z n : ℕ) :
+    0 ≤ truncatedDivisorLogMass Z n := by
+  apply sum_nonneg
+  intro m hm
+  split_ifs
+  · exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ m from (by have := mem_Icc.mp hm; omega)))
+  · exact le_refl 0
+
+private theorem abs_truncatedCofactorResponse_le {ε : ℝ} (hε : 0 < ε) (Z n : ℕ) :
+    |truncatedCofactorResponse ε Z n| ≤ truncatedDivisorLogMass Z n := by
+  refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum ?_)
+  intro m hm
+  have hm1 : 1 ≤ m := by have := mem_Icc.mp hm; omega
+  by_cases hmn : m ∣ n
+  · simp only [if_pos hmn]
+    simpa only [Nat.sub_add_cancel hm1] using abs_dampedCofactorTerm_le_log hε (n / m) (m - 1)
+  · simp only [if_neg hmn, abs_zero, le_refl]
+
+private theorem abs_truncatedLogCofactorResponse_le (Z n : ℕ) :
+    |truncatedLogCofactorResponse Z n| ≤ truncatedDivisorLogMass Z n := by
+  refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum ?_)
+  intro m hm
+  have hmL : 0 ≤ Real.log m := Real.log_nonneg
+    (by exact_mod_cast (show 1 ≤ m from (by have := mem_Icc.mp hm; omega)))
+  by_cases hmn : m ∣ n
+  · simp only [if_pos hmn, abs_mul, abs_of_nonneg hmL]
+    apply mul_le_of_le_one_left hmL
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := n / m)
+  · simp only [if_neg hmn, abs_zero, le_refl]
+
+private theorem truncatedCofactorResponse_error {ε : ℝ} (hε : 0 < ε)
+    (Z : ℕ) {n : ℕ} (hn : 2 ≤ n) :
+    |truncatedCofactorResponse ε Z n - truncatedLogCofactorResponse Z n| ≤
+      ε * Real.log n * truncatedDivisorLogMass Z n := by
+  unfold truncatedCofactorResponse truncatedLogCofactorResponse truncatedDivisorLogMass
+  rw [← sum_sub_distrib, mul_sum]
+  refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum ?_)
+  intro m hm
+  have hm1 : 1 ≤ m := by have := mem_Icc.mp hm; omega
+  by_cases hmn : m ∣ n
+  · simp only [if_pos hmn]
+    have hmle : m ≤ n := Nat.le_of_dvd (by omega) hmn
+    have hquot : 1 ≤ n / m := (Nat.le_div_iff_mul_le (by omega)).mpr (by simpa using hmle)
+    simpa only [Nat.div_mul_cancel hmn] using abs_dampedCofactorTerm_sub_log_le hε hquot hm1
+  · simp only [if_neg hmn, sub_self, abs_zero, mul_zero, le_refl]
+
+/-- A positive logarithmic scale for physical cofactor rectangles. -/
+def cofactorLogScale (X : ℕ) : ℝ := 1 + Real.log (X + 2 : ℕ)
+
+private theorem one_le_cofactorLogScale (X : ℕ) : 1 ≤ cofactorLogScale X := by
+  have h := Real.log_nonneg (by exact_mod_cast (show 1 ≤ X + 2 by omega))
+  change 1 ≤ 1 + Real.log (X + 2 : ℕ)
+  linarith
+
+private theorem log_le_cofactorLogScale {X m : ℕ} (hm : 1 ≤ m) (hmX : m ≤ X) :
+    Real.log m ≤ cofactorLogScale X := by
+  have hlog := Real.log_le_log (by exact_mod_cast (show 0 < m by omega))
+    (by exact_mod_cast (show m ≤ X + 2 by omega))
+  change Real.log m ≤ 1 + Real.log (X + 2 : ℕ)
+  linarith
+
+private theorem gapTwoCofactorCount_le {X a b : ℕ} (hX : 1 ≤ X)
+    (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    (((Icc 2 X).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ) ≤
+      2 * (X : ℝ) / ((a : ℝ) * b) + 1 := by
+  let B := max a b
+  let P := B.factorial
+  let d : Fin 2 → ℕ := fun i => if i = 0 then a else b
+  let h : Fin 2 → ℕ := fun i => if i = 0 then 0 else 2
+  have hd : ∀ i, d i ∈ Icc 1 B := by
+    intro i
+    fin_cases i
+    · simpa only [d, if_pos rfl, mem_Icc] using And.intro ha (le_max_left a b)
+    · simpa [d, B] using And.intro hb (le_max_right a b)
+  have hpred (n : ℕ) : (∀ i, d i ∣ n + h i) ↔ a ∣ n ∧ b ∣ n + 2 := by
+    constructor
+    · intro hn
+      exact ⟨by simpa [d, h] using hn 0, by simpa [d, h] using hn 1⟩
+    · rintro ⟨hna, hnb⟩ i
+      fin_cases i
+      · simpa [d, h] using hna
+      · simpa [d, h] using hnb
+  have hw := GaloisForLFunctions.BezoutValuationIncidence.abs_card_joint_incidence_window_sub_le
+    d h hd 1 (X - 1)
+  simp only [hpred, show 1 + 1 = 2 from rfl, show 1 + (X - 1) = X by omega] at hw
+  have hset : Icc 1 P = Ioc 0 P := by
+    ext n
+    simp only [mem_Icc, mem_Ioc]
+    omega
+  change |(((Icc 2 X).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ) -
+    ((X - 1 : ℕ) : ℝ) / P * (((Icc 1 P).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ)| ≤ 1 at hw
+  rw [hset] at hw
+  have hP : Nat.lcm a b ∣ P := Nat.lcm_dvd
+    (Nat.dvd_factorial ha (le_max_left a b)) (Nat.dvd_factorial hb (le_max_right a b))
+  have hden := GaloisForLFunctions.BiScaleUncertainty.TwoLagSieve.joint_density_complete_period
+    (by omega : 0 < a) (by omega : 0 < b) hP (Nat.factorial_pos B)
+  have hrate : (((Ioc 0 P).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ) / P ≤
+      2 / ((a : ℝ) * b) := by
+    rw [hden]
+    split_ifs with hg
+    · have hg2 : (Nat.gcd a b : ℝ) ≤ 2 := by
+        exact_mod_cast Nat.le_of_dvd (by omega : 0 < 2) hg
+      exact div_le_div_of_nonneg_right hg2 (by positivity)
+    · positivity
+  have hmain : ((X - 1 : ℕ) : ℝ) / P *
+      (((Ioc 0 P).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ) ≤
+        2 * (X : ℝ) / ((a : ℝ) * b) := by
+    calc
+      _ = ((X - 1 : ℕ) : ℝ) *
+          ((((Ioc 0 P).filter fun n => a ∣ n ∧ b ∣ n + 2).card : ℝ) / P) := by ring
+      _ ≤ (X : ℝ) * (2 / ((a : ℝ) * b)) :=
+        mul_le_mul (by exact_mod_cast Nat.sub_le X 1) hrate (by positivity) (by positivity)
+      _ = _ := by ring
+  linarith only [(abs_le.mp hw).2, hmain]
+
+private theorem sum_divisorLogMass_pair (X Z W : ℕ) :
+    (∑ n ∈ Icc 2 X, truncatedDivisorLogMass Z n * truncatedDivisorLogMass W (n + 2)) =
+      ∑ m ∈ Icc 2 Z, ∑ k ∈ Icc 2 W,
+        Real.log m * Real.log k *
+          (((Icc 2 X).filter fun n => m ∣ n ∧ k ∣ n + 2).card : ℝ) := by
+  have ht (n : ℕ) : truncatedDivisorLogMass Z n * truncatedDivisorLogMass W (n + 2) =
+      ∑ m ∈ Icc 2 Z, ∑ k ∈ Icc 2 W,
+        if m ∣ n ∧ k ∣ n + 2 then Real.log m * Real.log k else 0 := by
+    rw [truncatedDivisorLogMass, truncatedDivisorLogMass, sum_mul_sum]
+    apply sum_congr rfl
+    intro m _
+    apply sum_congr rfl
+    intro k _
+    by_cases hm : m ∣ n <;> by_cases hk : k ∣ n + 2 <;> simp only
+      [hm, hk, and_true, and_false, true_and, false_and, if_true, if_false, zero_mul, mul_zero]
+  rw [sum_congr rfl (fun n _ => ht n), sum_comm]
+  apply sum_congr rfl
+  intro m _
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro k _
+  rw [← sum_filter, sum_const, nsmul_eq_mul, mul_comm]
+
+private theorem sum_divisorLogMass_pair_le {X : ℕ} (hX : 1 ≤ X) (Z W : ℕ) :
+    (∑ n ∈ Icc 2 X, truncatedDivisorLogMass Z n * truncatedDivisorLogMass W (n + 2)) ≤
+      2 * (X : ℝ) * ((∑ m ∈ Icc 2 Z, Real.log m / m) *
+        (∑ k ∈ Icc 2 W, Real.log k / k)) +
+      (∑ m ∈ Icc 2 Z, Real.log m) * (∑ k ∈ Icc 2 W, Real.log k) := by
+  rw [sum_divisorLogMass_pair]
+  calc
+    _ ≤ ∑ m ∈ Icc 2 Z, ∑ k ∈ Icc 2 W,
+        (2 * (X : ℝ) * ((Real.log m / m) * (Real.log k / k)) + Real.log m * Real.log k) := by
+      apply sum_le_sum
+      intro m hm
+      apply sum_le_sum
+      intro k hk
+      have hm1 : 1 ≤ m := by have := mem_Icc.mp hm; omega
+      have hk1 : 1 ≤ k := by have := mem_Icc.mp hk; omega
+      have hlog : 0 ≤ Real.log m * Real.log k := mul_nonneg
+        (Real.log_nonneg (by exact_mod_cast hm1)) (Real.log_nonneg (by exact_mod_cast hk1))
+      calc
+        _ ≤ Real.log m * Real.log k * (2 * (X : ℝ) / ((m : ℝ) * k) + 1) :=
+          mul_le_mul_of_nonneg_left (gapTwoCofactorCount_le hX hm1 hk1) hlog
+        _ = _ := by simp only [div_eq_mul_inv, mul_inv_rev]; ring
+    _ = _ := by simp only [sum_add_distrib, sum_mul_sum, mul_sum, mul_assoc]
+
+private theorem sum_log_div_le_scale_sq {X Z : ℕ} (hZ : 2 ≤ Z) (hZX : Z ≤ X) :
+    (∑ m ∈ Icc 2 Z, Real.log m / m) ≤ cofactorLogScale X ^ 2 := by
+  have hH : 0 ≤ cofactorLogScale X := (by norm_num : (0 : ℝ) ≤ 1).trans (one_le_cofactorLogScale X)
+  have hsub : Icc 2 Z ⊆ Icc 1 Z := by
+    intro m hm
+    have := mem_Icc.mp hm
+    exact mem_Icc.mpr ⟨by omega, this.2⟩
+  have hsum : (∑ m ∈ Icc 2 Z, 1 / (m : ℝ)) ≤ 1 + Real.log Z :=
+    (sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => by positivity)).trans
+      (RHTower.Sieve.sum_Icc_one_div_le_one_add_log Z)
+  have hlog : 1 + Real.log Z ≤ cofactorLogScale X := by
+    change 1 + Real.log Z ≤ 1 + Real.log (X + 2 : ℕ)
+    apply add_le_add_left
+    exact Real.log_le_log (by exact_mod_cast (show 0 < Z by omega))
+      (by exact_mod_cast (show Z ≤ X + 2 by omega))
+  calc
+    _ ≤ ∑ m ∈ Icc 2 Z, cofactorLogScale X * (1 / (m : ℝ)) := by
+      apply sum_le_sum
+      intro m hm
+      have hmI := mem_Icc.mp hm
+      simpa only [div_eq_mul_inv, one_mul] using mul_le_mul_of_nonneg_right
+        (log_le_cofactorLogScale (by omega : 1 ≤ m) (hmI.2.trans hZX))
+        (inv_nonneg.mpr (Nat.cast_nonneg m))
+    _ = cofactorLogScale X * (∑ m ∈ Icc 2 Z, 1 / (m : ℝ)) := (mul_sum _ _ _).symm
+    _ ≤ cofactorLogScale X * cofactorLogScale X :=
+      mul_le_mul_of_nonneg_left (hsum.trans hlog) hH
+    _ = _ := (pow_two _).symm
+
+private theorem sum_log_le_scale_mul {X Z : ℕ} (hZX : Z ≤ X) :
+    (∑ m ∈ Icc 2 Z, Real.log m) ≤ cofactorLogScale X * Z := by
+  have hH : 0 ≤ cofactorLogScale X := (by norm_num : (0 : ℝ) ≤ 1).trans (one_le_cofactorLogScale X)
+  calc
+    _ ≤ ∑ _m ∈ Icc 2 Z, cofactorLogScale X := by
+      apply sum_le_sum
+      intro m hm
+      have hmI := mem_Icc.mp hm
+      exact log_le_cofactorLogScale (by omega) (hmI.2.trans hZX)
+    _ = ((Icc 2 Z).card : ℝ) * cofactorLogScale X := by rw [sum_const, nsmul_eq_mul]
+    _ ≤ (Z : ℝ) * cofactorLogScale X := mul_le_mul_of_nonneg_right
+      (by exact_mod_cast (show (Icc 2 Z).card ≤ Z by rw [Nat.card_Icc]; omega)) hH
+    _ = _ := mul_comm _ _
+
+private theorem cofactorLogMass_rectangle_bound_aux {X Z W : ℕ}
+    (hZ : 2 ≤ Z) (hW : 2 ≤ W) (hZW : Z * W ≤ X) :
+    (∑ n ∈ Icc 2 X, truncatedDivisorLogMass Z n * truncatedDivisorLogMass W (n + 2)) ≤
+      3 * (X : ℝ) * cofactorLogScale X ^ 4 := by
+  have hZX : Z ≤ X := (Nat.le_mul_of_pos_right Z (by omega : 0 < W)).trans hZW
+  have hWX : W ≤ X := (Nat.le_mul_of_pos_left W (by omega : 0 < Z)).trans hZW
+  have hX : 1 ≤ X := by omega
+  have hH : 0 ≤ cofactorLogScale X := (by norm_num : (0 : ℝ) ≤ 1).trans (one_le_cofactorLogScale X)
+  have hlog0 (R : ℕ) : 0 ≤ ∑ m ∈ Icc 2 R, Real.log m := by
+    apply sum_nonneg
+    intro m hm
+    exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ m from (by have := mem_Icc.mp hm; omega)))
+  have hdiv0 (R : ℕ) : 0 ≤ ∑ m ∈ Icc 2 R, Real.log m / m := by
+    apply sum_nonneg
+    intro m hm
+    exact div_nonneg (Real.log_nonneg
+      (by exact_mod_cast (show 1 ≤ m from (by have := mem_Icc.mp hm; omega)))) (Nat.cast_nonneg m)
+  have hprod1 := mul_le_mul (sum_log_div_le_scale_sq hZ hZX) (sum_log_div_le_scale_sq hW hWX)
+    (hdiv0 W) (sq_nonneg (cofactorLogScale X))
+  have hprod2 := mul_le_mul (sum_log_le_scale_mul hZX) (sum_log_le_scale_mul hWX)
+    (hlog0 W) (mul_nonneg hH (Nat.cast_nonneg Z))
+  have hZWreal : (Z : ℝ) * W ≤ X := by exact_mod_cast hZW
+  have hH2 : cofactorLogScale X ^ 2 ≤ cofactorLogScale X ^ 4 := by
+    have h1 := one_le_cofactorLogScale X
+    nlinarith only [sq_nonneg (cofactorLogScale X - 1), h1,
+      mul_self_le_mul_self hH h1]
+  calc
+    _ ≤ 2 * (X : ℝ) * ((∑ m ∈ Icc 2 Z, Real.log m / m) *
+        (∑ k ∈ Icc 2 W, Real.log k / k)) +
+        (∑ m ∈ Icc 2 Z, Real.log m) * (∑ k ∈ Icc 2 W, Real.log k) :=
+      sum_divisorLogMass_pair_le hX Z W
+    _ ≤ 2 * (X : ℝ) * (cofactorLogScale X ^ 2 * cofactorLogScale X ^ 2) +
+        (cofactorLogScale X * Z) * (cofactorLogScale X * W) :=
+      add_le_add (mul_le_mul_of_nonneg_left hprod1 (by positivity)) hprod2
+    _ = 2 * (X : ℝ) * cofactorLogScale X ^ 4 + ((Z : ℝ) * W) * cofactorLogScale X ^ 2 := by ring
+    _ ≤ 2 * (X : ℝ) * cofactorLogScale X ^ 4 + (X : ℝ) * cofactorLogScale X ^ 4 := by
+      exact add_le_add_left (mul_le_mul hZWreal hH2 (sq_nonneg _) (Nat.cast_nonneg X)) _
+    _ = _ := by ring
+
+/-- The actual cofactor rectangle has a fourth-logarithmic joint divisor envelope. -/
+theorem cofactorLogMass_rectangle_bound (Z W N : ℕ) :
+    (∑ n ∈ Icc 2 ((Z + 2) * (W + 2) + N),
+      truncatedDivisorLogMass (Z + 2) n * truncatedDivisorLogMass (W + 2) (n + 2)) ≤
+      3 * (((Z + 2) * (W + 2) + N : ℕ) : ℝ) *
+        cofactorLogScale ((Z + 2) * (W + 2) + N) ^ 4 :=
+  cofactorLogMass_rectangle_bound_aux (by omega) (by omega) (by omega)
+
 end
 
 end TwinPrime
 
-#print axioms TwinPrime.abs_compensatedDampingCoeff_exp_le_log
-#print axioms TwinPrime.abs_compensatedDampingCoeff_physical_le_log
-#print axioms TwinPrime.normalizedDampedResponse_eq_compensated
-#print axioms TwinPrime.dampedPairAverage_eq_compensated
-#print axioms TwinPrime.dampedCofactorTerm_one
-#print axioms TwinPrime.abs_dampedCofactorTerm_exp_le_log
-#print axioms TwinPrime.abs_dampedCofactorTerm_physical_le_log
-#print axioms TwinPrime.normalizedDampedResponse_eq_cofactor_compensation
-#print axioms TwinPrime.normalizedDampedResponse_eq_nonunit_cofactors
-#print axioms TwinPrime.dampedPairAverage_eq_nonunit_cofactors
+#print axioms TwinPrime.dampedCofactorTerm_exp_error
+#print axioms TwinPrime.cofactorLogMass_rectangle_bound

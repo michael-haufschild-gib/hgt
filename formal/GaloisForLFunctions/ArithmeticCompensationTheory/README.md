@@ -243,6 +243,17 @@ are three different statements and remain visibly different here.
     `exists_abs_combEnergy_sub_le`); `c` and `K` are universal, independent of the test. The rate
     is the prime number theorem's: an error `O(e^{θr})`, `θ < 1`, in `S_r − 2e^r` would be a
     statement about the zeros of `ζ`.
+10″. **The horizon energy is one horizon average, and the translation deficit is inverse-square.**
+    The double average collapses: `J(F) = ∫_{u>0} A_F(u) ½e^{−u/2} du`
+    (`horizonEnergy_eq_horizonIntegral_autoCorr`), by integrating `−¼e^{−v}Φ(−v)`,
+    `Φ(w) = ∫_{s>w} A_F(s)e^{−s/2} ds`, along the half-line with `A_F` even. A `Λ`-Lipschitz test
+    supported in `[−R, R]` has `A(0) − A(s) = ½∫(F(x) − F(x+s))² ≤ Λ²s²(R + |s|)`
+    (`autoCorr_zero_sub_le`), and the horizon moments are `∫u^k dμ = 2^k k!`
+    (`integral_pow_mul_horizonDensity`). On the slowly varying family this gives
+    `A_f(0) − Λ²(8/r² + 48/r³) ≤ J(F_r) ≤ A_f(0)` (`horizonEnergy_rescaledTest_ge`), and since the
+    rate of mechanism 10′ has test-independent constants, the comb itself satisfies
+    `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²` (`exists_combEnergy_rescaledTest_deficit_le`). The deficit
+    is of the order of the resolvent's first correction `−4‖f′‖²/r²`, not of the prime error.
 
 ### Compensation coordinates
 
@@ -266,7 +277,11 @@ are three different statements and remain visibly different here.
     (`exists_compensationDefect_le_inv_log_pow_six`): an explicit logarithmic rate of compensation,
     with an absolute complete energy `O(P^{1−2ε}/log⁸P)` that still grows with the cutoff.
     The rate iterates over scales: the defects at `P = 2^k` are summable
-    (`summable_compensationDefect_dyadic`), while the absolute energies are not.
+    (`summable_compensationDefect_dyadic`), while the absolute energies are not. The moving
+    projection pays a summable connection term: `|1 − α_P| ≤ K/log³P`
+    (`exists_abs_one_sub_pmCompensationAmplitude_le`), so the amplitude has bounded variation
+    over the dyadic scales (`summable_abs_pmCompensationAmplitude_dyadic_sub`), and the relative
+    transverse energies are summable (`summable_pmTransverseEnergy_div_sectorEnergy_dyadic`).
 
 ### Where a blow-up of the receiver goes
 
@@ -373,7 +388,7 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 
 | Question | Answer proved here | What remains |
 |---|---|---|
-| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log⁻⁶P)` and summable over dyadic scales (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
+| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log⁻⁶P)` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
 | Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 10′). | The classification of the receiver's profiles at the horizon itself. |
 | Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity. | A remainder exponent below the trivial one, which is a zero-free strip. |
 | Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 12″); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 12⁗); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
@@ -418,6 +433,9 @@ that every successful route must use the same mechanism.
   lemmas and can be reused with other weights.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
+- **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
+  `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
+  under the horizon law, with explicit moments and a quadratic deficit at the origin.
 - **Quantitative horizon law** (`exists_abs_combMass_sub_le`, `exists_abs_combTail_sub_le`,
   `exists_abs_combAverage_sub_horizonIntegral_le`, `exists_abs_combEnergy_sub_le`): the same laws
   with the explicit error `exp(−c√r)` and universal constants, for Lipschitz statistics and
@@ -473,11 +491,11 @@ that every successful route must use the same mechanism.
    retain scale, cofactor, origin and frequency data, and derive the arithmetic identities that
    survive in the limit; the escape and aliasing examples of the corpus must appear in the defect
    space. The comb resolvent law is the model case.
-4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved, and on Lipschitz tests
-   the comb converges to its resolvent at the prime-number-theorem rate `exp(−c√r)` with universal
-   constants (mechanism 10′). Seek lower bounds on `J` over specified profile classes, and, for
-   sufficiently smooth slowly varying profiles, the predicted first correction `−2∂/r`, keeping
-   both the profile remainder and the prime-distribution error explicit.
+4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved; on Lipschitz tests the
+   comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
+   10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying tests the deficit is
+   `O(r^{−2})` (mechanism 10″). Open: the exact first correction `−4‖f′‖²/r²` for `C¹` profiles,
+   and lower bounds on `J` over specified profile classes uniform in the profile.
 5. **The compensated remainder of the full ledger.** Pair the comb's coherent part with the pole
    charge before squaring, on an expanding test class, and bound the remainder with an explicit
    aperture exponent; any exponent below the trivial one is a strip.
