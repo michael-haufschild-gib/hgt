@@ -11,7 +11,7 @@ greater than the log-degree of `p(t, ·)`
 (`receiverBounded_oscillatingLogPolynomial_iff`). Different frequencies do not interact, and at each
 frequency the paid log-polynomials are exactly those of degree below the multiplicity of `ρ_t`.
 In particular `d^{-ε} cos(t log d) (log d)^k` is paid iff `ζ^{(i)}(ρ_t) = 0` for all `i ≤ k`
-(`receiverBounded_logPowerOscillation_iff`): the receiver reads the complete zero divisor of `ζ` in
+(`receiverBounded_logPowerCosine_iff`): the receiver reads the complete zero divisor of `ζ` in
 `1/2 ≤ Re s < 1`, multiplicities included.
 
 * **Taylor expansion of the floor sum in the exponent.** With `R_n(ρ) = D_ρ(n) − ζ(2 − ρ)n − ζ(ρ)n^ρ/ρ`,
@@ -421,6 +421,427 @@ theorem abs_weightCenteredPrefix_oscillatingLogPolynomial_sub_le {ε : ℝ} (hε
     _ = spectralRate ε J K p * Real.sqrt n ^ (1 - ε / 2) := by
         rw [spectralRate, sum_mul]
         exact sum_congr rfl fun t _ => by rw [sum_mul]
+
+/-! ### Multi-frequency window energy -/
+
+/-- The oscillation `Re(Σ_{t ∈ J} c_t n^{it})`. -/
+def oscSum (J : Finset ℝ) (c : ℝ → ℂ) (n : ℕ) : ℝ :=
+  (∑ t ∈ J, c t * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re
+
+theorem abs_oscSum_le {J : Finset ℝ} (c : ℝ → ℂ) {n : ℕ} (hn : 1 ≤ n) :
+    |oscSum J c n| ≤ ∑ t ∈ J, ‖c t‖ := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  refine (Complex.abs_re_le_norm _).trans ((norm_sum_le _ _).trans (sum_le_sum fun t _ => ?_))
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hn0]
+  simp
+
+/-- `x^{it} conj(x^{is}) = x^{i(t−s)}` for `x > 0`. -/
+theorem ofReal_cpow_mul_conj {x : ℝ} (hx : 0 < x) (t s : ℝ) :
+    ((x : ℝ) : ℂ) ^ ((t : ℂ) * I) * (starRingEnd ℂ) (((x : ℝ) : ℂ) ^ ((s : ℂ) * I)) =
+      ((x : ℝ) : ℂ) ^ (((t - s : ℝ) : ℂ) * I) := by
+  have hx0 : ((x : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
+  have harg : ((x : ℝ) : ℂ).arg ≠ Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg hx.le]; exact Real.pi_ne_zero.symm
+  have hc : (starRingEnd ℂ) (((x : ℝ) : ℂ) ^ ((s : ℂ) * I)) =
+      ((x : ℝ) : ℂ) ^ (((-s : ℝ) : ℂ) * I) := by
+    have h := Complex.cpow_conj ((x : ℝ) : ℂ) ((s : ℂ) * I) harg
+    rw [Complex.conj_ofReal] at h
+    rw [← h]
+    congr 1
+    simp [Complex.conj_ofReal, Complex.conj_I]
+  rw [hc, ← Complex.cpow_add _ _ hx0]
+  congr 1
+  push_cast
+  ring
+
+/-- `Re(Σ_t c_t x^{it})² = ½ Σ_{t,s} [Re(c_t c̄_s x^{i(t−s)}) + Re(c_t c_s x^{i(t+s)})]`. -/
+theorem oscSum_sq_eq {J : Finset ℝ} (c : ℝ → ℂ) {n : ℕ} (hn : 1 ≤ n) :
+    oscSum J c n ^ 2 =
+      (∑ t ∈ J, ∑ s ∈ J,
+        ((c t * (starRingEnd ℂ) (c s) * ((n : ℝ) : ℂ) ^ (((t - s : ℝ) : ℂ) * I)).re +
+          (c t * c s * ((n : ℝ) : ℂ) ^ (((t + s : ℝ) : ℂ) * I)).re)) / 2 := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hx0 : ((n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
+  set z := ∑ t ∈ J, c t * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) with hz
+  have hnorm : ‖z‖ ^ 2 = (z * (starRingEnd ℂ) z).re := by
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
+  have h1 : z * (starRingEnd ℂ) z = ∑ t ∈ J, ∑ s ∈ J,
+      c t * (starRingEnd ℂ) (c s) * ((n : ℝ) : ℂ) ^ (((t - s : ℝ) : ℂ) * I) := by
+    rw [hz, map_sum, sum_mul_sum]
+    refine sum_congr rfl fun t _ => sum_congr rfl fun s _ => ?_
+    rw [map_mul, ← ofReal_cpow_mul_conj hn0 t s]
+    ring
+  have h2 : z ^ 2 = ∑ t ∈ J, ∑ s ∈ J, c t * c s * ((n : ℝ) : ℂ) ^ (((t + s : ℝ) : ℂ) * I) := by
+    rw [hz, sq, sum_mul_sum]
+    refine sum_congr rfl fun t _ => sum_congr rfl fun s _ => ?_
+    rw [show ((t + s : ℝ) : ℂ) * I = (t : ℂ) * I + (s : ℂ) * I by push_cast; ring,
+      Complex.cpow_add _ _ hx0]
+    ring
+  rw [oscSum, ← hz, re_sq_eq_half, hnorm, h1, h2]
+  simp only [Complex.re_sum, ← sum_add_distrib]
+
+theorem oscHarmonicBound_nonneg (τ : ℝ) : 0 ≤ oscHarmonicBound τ := by
+  unfold oscHarmonicBound
+  exact add_nonneg (by positivity) (partialSumRate_nonneg (by simp))
+
+theorem norm_sum_Ioc_cpow_div_le {τ : ℝ} (hτ : τ ≠ 0) {N T : ℕ} (hNT : N ≤ T) :
+    ‖∑ n ∈ Ioc N T, ((n : ℝ) : ℂ) ^ ((τ : ℂ) * I) / ((n : ℝ) : ℂ)‖ ≤ 2 * oscHarmonicBound τ := by
+  rw [sum_Ioc_eq_sub _ hNT]
+  have h1 := norm_sum_Icc_cpow_div_le hτ T
+  have h2 := norm_sum_Icc_cpow_div_le hτ N
+  exact (norm_sub_le _ _).trans (by linarith)
+
+/-- The defect of a multi-frequency window: the cross frequencies `t ± s`. -/
+def windowDefect (J : Finset ℝ) (c : ℝ → ℂ) : ℝ :=
+  ∑ t ∈ J, ∑ s ∈ J, ‖c t‖ * ‖c s‖ * (oscHarmonicBound (t - s) + oscHarmonicBound (t + s))
+
+/-- **Multi-frequency window energy.** For positive frequencies and `N ≤ T`,
+`Σ_{N<n≤T} Re(Σ_t c_t n^{it})²/n ≥ (Σ_t |c_t|²/2) Σ_{N<n≤T} 1/n − D(J, c)`: distinct frequencies are
+orthogonal up to the bounded harmonic sums at `t − s ≠ 0` and `t + s > 0`. -/
+theorem sum_Ioc_oscSum_sq_div_ge {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (c : ℝ → ℂ) {N T : ℕ}
+    (hNT : N ≤ T) :
+    (∑ t ∈ J, ‖c t‖ ^ 2) / 2 * ∑ n ∈ Ioc N T, 1 / (n : ℝ) - windowDefect J c ≤
+      ∑ n ∈ Ioc N T, oscSum J c n ^ 2 / n := by
+  set S : ℝ → ℂ := fun τ => ∑ n ∈ Ioc N T, ((n : ℝ) : ℂ) ^ ((τ : ℂ) * I) / ((n : ℝ) : ℂ)
+    with hS
+  set H := ∑ n ∈ Ioc N T, 1 / (n : ℝ) with hH
+  have hterm : ∀ n ∈ Ioc N T, oscSum J c n ^ 2 / n =
+      (∑ t ∈ J, ∑ s ∈ J, ((c t * (starRingEnd ℂ) (c s) *
+          (((n : ℝ) : ℂ) ^ (((t - s : ℝ) : ℂ) * I) / ((n : ℝ) : ℂ))).re +
+        (c t * c s * (((n : ℝ) : ℂ) ^ (((t + s : ℝ) : ℂ) * I) / ((n : ℝ) : ℂ))).re)) / 2 := by
+    intro n hn
+    have hn1 : 1 ≤ n := by have := (mem_Ioc.mp hn).1; omega
+    rw [oscSum_sq_eq c hn1]
+    simp only [← mul_div_assoc, Complex.div_ofReal_re, ← add_div, ← sum_div]
+    ring
+  have hexp : ∑ n ∈ Ioc N T, oscSum J c n ^ 2 / n =
+      (∑ t ∈ J, ∑ s ∈ J, ((c t * (starRingEnd ℂ) (c s) * S (t - s)).re +
+        (c t * c s * S (t + s)).re)) / 2 := by
+    rw [sum_congr rfl hterm, ← sum_div, sum_comm]
+    congr 1
+    refine sum_congr rfl fun t _ => ?_
+    rw [sum_comm]
+    refine sum_congr rfl fun s _ => ?_
+    rw [sum_add_distrib, ← Complex.re_sum, ← Complex.re_sum, ← mul_sum, ← mul_sum]
+  have hpair : ∀ t ∈ J, ∀ s ∈ J,
+      (if t = s then ‖c t‖ ^ 2 * H else 0) -
+          2 * (‖c t‖ * ‖c s‖ * (oscHarmonicBound (t - s) + oscHarmonicBound (t + s))) ≤
+        (c t * (starRingEnd ℂ) (c s) * S (t - s)).re + (c t * c s * S (t + s)).re := by
+    intro t ht s hs
+    have hts : t + s ≠ 0 := by have := hJ t ht; have := hJ s hs; linarith
+    have hB1 := oscHarmonicBound_nonneg (t - s)
+    have hS2 : ‖S (t + s)‖ ≤ 2 * oscHarmonicBound (t + s) := norm_sum_Ioc_cpow_div_le hts hNT
+    have h2 : -(‖c t‖ * ‖c s‖ * (2 * oscHarmonicBound (t + s))) ≤ (c t * c s * S (t + s)).re := by
+      refine neg_le_of_abs_le ((Complex.abs_re_le_norm _).trans ?_)
+      rw [norm_mul, norm_mul]
+      exact mul_le_mul_of_nonneg_left hS2 (by positivity)
+    split_ifs with hst
+    · rw [← hst] at h2 hB1 ⊢
+      have hS0 : S (t - t) = (H : ℂ) := by simp [hS, hH]
+      have hcc : c t * (starRingEnd ℂ) (c t) = ((‖c t‖ ^ 2 : ℝ) : ℂ) := by
+        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+      rw [hS0, hcc, ← Complex.ofReal_mul, Complex.ofReal_re]
+      nlinarith [mul_nonneg (mul_nonneg (norm_nonneg (c t)) (norm_nonneg (c t))) hB1]
+    · have hne : t - s ≠ 0 := sub_ne_zero.mpr hst
+      have hS1 : ‖S (t - s)‖ ≤ 2 * oscHarmonicBound (t - s) := norm_sum_Ioc_cpow_div_le hne hNT
+      have h1 : -(‖c t‖ * ‖c s‖ * (2 * oscHarmonicBound (t - s))) ≤
+          (c t * (starRingEnd ℂ) (c s) * S (t - s)).re := by
+        refine neg_le_of_abs_le ((Complex.abs_re_le_norm _).trans ?_)
+        rw [norm_mul, norm_mul, Complex.norm_conj]
+        exact mul_le_mul_of_nonneg_left hS1 (by positivity)
+      linarith
+  have hdiag : ∑ t ∈ J, ∑ s ∈ J, (if t = s then ‖c t‖ ^ 2 * H else 0) =
+      (∑ t ∈ J, ‖c t‖ ^ 2) * H := by
+    rw [sum_mul]
+    exact sum_congr rfl fun t ht => by rw [sum_ite_eq, if_pos ht]
+  have hdef : ∑ t ∈ J, ∑ s ∈ J,
+      2 * (‖c t‖ * ‖c s‖ * (oscHarmonicBound (t - s) + oscHarmonicBound (t + s))) =
+        2 * windowDefect J c := by
+    rw [windowDefect, mul_sum]
+    exact sum_congr rfl fun t _ => by rw [mul_sum]
+  have hlow : (∑ t ∈ J, ‖c t‖ ^ 2) * H - 2 * windowDefect J c ≤
+      ∑ t ∈ J, ∑ s ∈ J, ((c t * (starRingEnd ℂ) (c s) * S (t - s)).re +
+        (c t * c s * S (t + s)).re) := by
+    rw [← hdiag, ← hdef, ← sum_sub_distrib]
+    exact sum_le_sum fun t ht => by
+      rw [← sum_sub_distrib]; exact sum_le_sum fun s hs => hpair t ht s hs
+  rw [hexp]
+  linarith
+
+/-! ### Descent in the log-degree -/
+
+/-- **Power-amplified windows.** If `|w(n)| ≤ β (log n)^{K−1}` for `n ≥ 3`, `K ≥ 1`, and the window
+energies of `v` satisfy `Σ_{N<n≤N²} v(n)²/n ≥ κ(log N − 1) − κ'` with `κ > 0`, then
+`Σ_{n ≤ T} ((log n)^K v(n) + w(n))²/n` is unbounded. -/
+theorem exists_lt_sum_sq_div_of_window_pow {v w : ℕ → ℝ} {β κ κ' : ℝ} {K : ℕ} (hK : 1 ≤ K)
+    (hκ : 0 < κ) (hw : ∀ n, 3 ≤ n → |w n| ≤ β * Real.log n ^ (K - 1))
+    (hv : ∀ N : ℕ, 1 ≤ N → κ * (Real.log N - 1) - κ' ≤ ∑ n ∈ Ioc N (N ^ 2), v n ^ 2 / n)
+    (C : ℝ) : ∃ T : ℕ, C < ∑ n ∈ Icc 1 T, (Real.log n ^ K * v n + w n) ^ 2 / n := by
+  have hβ : 0 ≤ β := by
+    have h := (abs_nonneg _).trans (hw 3 le_rfl)
+    have hl : 0 < Real.log ((3 : ℕ) : ℝ) ^ (K - 1) :=
+      pow_pos (Real.log_pos (by norm_num)) _
+    by_contra hneg
+    push_neg at hneg
+    have := mul_neg_of_neg_of_pos hneg hl
+    linarith
+  set γ := β ^ 2 * ((2 : ℝ) ^ (K - 1)) ^ 2 with hγ
+  have hγ0 : 0 ≤ γ := by positivity
+  set D := |C| + 3 * γ + 1 with hD
+  have hD0 : 0 < D := by positivity
+  obtain ⟨N, hN⟩ := exists_nat_gt (max 3 (Real.exp (1 + (|κ'| + 2 * D) / κ)))
+  have hN3 : (3 : ℝ) < N := lt_of_le_of_lt (le_max_left _ _) hN
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hN3' : 3 ≤ N := by exact_mod_cast hN3.le
+  have hN1 : 1 ≤ N := by omega
+  set X := Real.log N with hXdef
+  have hX : 1 + (|κ'| + 2 * D) / κ < X := by
+    rw [hXdef, Real.lt_log_iff_exp_lt hN0]; exact lt_of_le_of_lt (le_max_right _ _) hN
+  have hX1 : 1 ≤ X := by
+    have : 0 ≤ (|κ'| + 2 * D) / κ := by positivity
+    linarith
+  have hX0 : 0 ≤ X := by linarith
+  set P := (X ^ (K - 1)) ^ 2 with hP
+  have hP1 : 1 ≤ P := one_le_pow₀ (one_le_pow₀ hX1)
+  have hwin : P * (X ^ 2 / 2 * (κ * (X - 1) - κ') - γ * (1 + 2 * X)) ≤
+      ∑ n ∈ Ioc N (N ^ 2), (Real.log n ^ K * v n + w n) ^ 2 / n := by
+    have hterm : ∀ n ∈ Ioc N (N ^ 2), P * (X ^ 2 / 2 * (v n ^ 2 / n) - γ * (1 / (n : ℝ))) ≤
+        (Real.log n ^ K * v n + w n) ^ 2 / n := by
+      intro n hn
+      have hNn := mem_Ioc.mp hn
+      have hn3 : 3 ≤ n := by omega
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+      have hL : X ≤ Real.log n := Real.log_le_log hN0 (by exact_mod_cast hNn.1.le)
+      have hL2 : Real.log n ≤ 2 * X := by
+        have h : Real.log n ≤ Real.log ((N : ℝ) ^ 2) :=
+          Real.log_le_log hn0 (by exact_mod_cast hNn.2)
+        rw [Real.log_pow, ← hXdef] at h
+        push_cast at h
+        exact h
+      have hw2 : w n ^ 2 ≤ γ * P := by
+        have h1 : |w n| ≤ β * (2 * X) ^ (K - 1) :=
+          (hw n hn3).trans (mul_le_mul_of_nonneg_left
+            (pow_le_pow_left₀ (by linarith) hL2 _) hβ)
+        have h2 : w n ^ 2 ≤ (β * (2 * X) ^ (K - 1)) ^ 2 := by
+          rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h1 2
+        calc w n ^ 2 ≤ (β * (2 * X) ^ (K - 1)) ^ 2 := h2
+          _ = γ * P := by rw [hγ, hP, mul_pow, mul_pow]; ring
+      have hLv : P * X ^ 2 * v n ^ 2 ≤ (Real.log n ^ K * v n) ^ 2 := by
+        have hXK : X ^ K ≤ Real.log n ^ K := pow_le_pow_left₀ hX0 hL K
+        have e : (X ^ K) ^ 2 = P * X ^ 2 := by
+          rw [hP, ← mul_pow, ← pow_succ, Nat.sub_add_cancel hK]
+        rw [mul_pow, ← e]
+        exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (pow_nonneg hX0 K) hXK 2)
+          (sq_nonneg _)
+      have hkey : P * (X ^ 2 / 2 * v n ^ 2 - γ) ≤ (Real.log n ^ K * v n + w n) ^ 2 := by
+        nlinarith [sq_nonneg (Real.log n ^ K * v n + 2 * w n)]
+      have e : P * (X ^ 2 / 2 * (v n ^ 2 / n) - γ * (1 / (n : ℝ))) =
+          P * (X ^ 2 / 2 * v n ^ 2 - γ) / n := by ring
+      rw [e]
+      exact div_le_div_of_nonneg_right hkey hn0.le
+    have h1 := hv N hN1
+    have h2 := sum_Ioc_one_div_le hN1
+    rw [← hXdef] at h1 h2
+    have hX2 : 0 ≤ X ^ 2 / 2 := by positivity
+    have hP0 : 0 ≤ P := by positivity
+    calc P * (X ^ 2 / 2 * (κ * (X - 1) - κ') - γ * (1 + 2 * X))
+        ≤ P * (X ^ 2 / 2 * ∑ n ∈ Ioc N (N ^ 2), v n ^ 2 / n -
+            γ * ∑ n ∈ Ioc N (N ^ 2), 1 / (n : ℝ)) := by
+          refine mul_le_mul_of_nonneg_left ?_ hP0
+          linarith [mul_le_mul_of_nonneg_left h1 hX2, mul_le_mul_of_nonneg_left h2 hγ0]
+      _ = ∑ n ∈ Ioc N (N ^ 2), P * (X ^ 2 / 2 * (v n ^ 2 / n) - γ * (1 / (n : ℝ))) := by
+          rw [← mul_sum, sum_sub_distrib, ← mul_sum, ← mul_sum]
+      _ ≤ _ := sum_le_sum hterm
+  have hsub : ∑ n ∈ Ioc N (N ^ 2), (Real.log n ^ K * v n + w n) ^ 2 / n ≤
+      ∑ n ∈ Icc 1 (N ^ 2), (Real.log n ^ K * v n + w n) ^ 2 / n := by
+    refine sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) (fun n _ _ => by positivity)
+    rw [mem_Ioc] at hn
+    rw [mem_Icc]
+    omega
+  have hκX : 2 * D < κ * (X - 1) - κ' := by
+    have h1 : (|κ'| + 2 * D) / κ < X - 1 := by linarith
+    rw [div_lt_iff₀ hκ] at h1
+    linarith [le_abs_self κ']
+  have hbr : |C| + 1 ≤ X ^ 2 / 2 * (κ * (X - 1) - κ') - γ * (1 + 2 * X) := by
+    have h1 := mul_le_mul_of_nonneg_left hκX.le (by positivity : (0 : ℝ) ≤ X ^ 2 / 2)
+    have h2 := mul_le_mul_of_nonneg_right (show X ≤ X ^ 2 by nlinarith) hD0.le
+    have h3 := mul_le_mul_of_nonneg_left (show 1 + 2 * X ≤ 3 * X by linarith) hγ0
+    have h5 : |C| ≤ X * |C| := le_mul_of_one_le_left (abs_nonneg C) hX1
+    have h6 : X * D = X * |C| + 3 * γ * X + X := by rw [hD]; ring
+    linarith
+  have hfin : |C| + 1 ≤ P * (X ^ 2 / 2 * (κ * (X - 1) - κ') - γ * (1 + 2 * X)) := by
+    have hb0 : 0 ≤ X ^ 2 / 2 * (κ * (X - 1) - κ') - γ * (1 + 2 * X) := by
+      linarith [abs_nonneg C]
+    nlinarith [mul_nonneg (sub_nonneg.mpr hP1) hb0]
+  exact ⟨N ^ 2, by linarith [le_abs_self C]⟩
+
+/-- **The top log-coefficient of a paid main term vanishes.** If
+`Σ_{n ≤ T} (Σ_{m ≤ K} (log n)^m Re(Σ_t q(t,m) n^{it}))²/n` is bounded, then `q(t, K) = 0` for every
+positive frequency `t ∈ J`. -/
+theorem top_coeff_eq_zero {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (q : ℝ → ℕ → ℂ)
+    {C : ℝ} (hC : ∀ T : ℕ, ∑ n ∈ Icc 1 T,
+      (∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n) ^ 2 / n ≤ C) :
+    ∀ t ∈ J, q t K = 0 := by
+  by_contra hne
+  push_neg at hne
+  obtain ⟨t₀, ht₀, hq₀⟩ := hne
+  have hκ0 : 0 < (∑ t ∈ J, ‖q t K‖ ^ 2) / 2 := by
+    have : 0 < ∑ t ∈ J, ‖q t K‖ ^ 2 :=
+      sum_pos' (fun t _ => sq_nonneg _) ⟨t₀, ht₀, by positivity⟩
+    positivity
+  have hwin : ∀ N : ℕ, 1 ≤ N → (∑ t ∈ J, ‖q t K‖ ^ 2) / 2 * (Real.log N - 1) -
+      windowDefect J (q · K) ≤ ∑ n ∈ Ioc N (N ^ 2), oscSum J (q · K) n ^ 2 / n := by
+    intro N hN
+    have h1 := sum_Ioc_oscSum_sq_div_ge hJ (q · K) (le_self_pow hN two_ne_zero)
+    beta_reduce at h1
+    have h2 := mul_le_mul_of_nonneg_left (log_sub_one_le_sum_Ioc_one_div hN) hκ0.le
+    linarith
+  rcases Nat.eq_zero_or_pos K with rfl | hK
+  · -- degree zero: the window energy alone diverges
+    obtain ⟨N, hN⟩ := exists_nat_gt (Real.exp (1 + (|windowDefect J (q · 0)| + |C| + 1) /
+      ((∑ t ∈ J, ‖q t 0‖ ^ 2) / 2)))
+    have hN0 : (0 : ℝ) < N := lt_trans (Real.exp_pos _) hN
+    have hN1 : 1 ≤ N := Nat.cast_pos.mp hN0
+    have hX := (Real.lt_log_iff_exp_lt hN0).mpr hN
+    have h2 : (|windowDefect J (q · 0)| + |C| + 1) / ((∑ t ∈ J, ‖q t 0‖ ^ 2) / 2) <
+        Real.log N - 1 := by linarith
+    rw [div_lt_iff₀ hκ0] at h2
+    have h1 := hwin N hN1
+    have hsub : ∑ n ∈ Ioc N (N ^ 2), oscSum J (q · 0) n ^ 2 / n ≤
+        ∑ n ∈ Icc 1 (N ^ 2), oscSum J (q · 0) n ^ 2 / n :=
+      sum_le_sum_of_subset_of_nonneg
+        (fun n hn => by rw [mem_Ioc] at hn; rw [mem_Icc]; omega) (fun n _ _ => by positivity)
+    have h3 := hC (N ^ 2)
+    simp only [zero_add, range_one, sum_singleton, pow_zero, one_mul] at h3
+    linarith [le_abs_self C, le_abs_self (windowDefect J (q · 0))]
+  · -- positive degree: the top power amplifies the window energy
+    have hw : ∀ n, 3 ≤ n → |∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n| ≤
+        (∑ m ∈ range K, ∑ t ∈ J, ‖q t m‖) * Real.log n ^ (K - 1) := by
+      intro n hn
+      have hn1 : 1 ≤ n := by omega
+      have hL1 : 1 ≤ Real.log n := by
+        rw [Real.le_log_iff_exp_le (by positivity)]
+        have : (3 : ℝ) ≤ n := by exact_mod_cast hn
+        linarith [Real.exp_one_lt_d9]
+      calc |∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n|
+          ≤ ∑ m ∈ range K, |Real.log n ^ m * oscSum J (q · m) n| := abs_sum_le_sum_abs _ _
+        _ ≤ ∑ m ∈ range K, Real.log n ^ (K - 1) * ∑ t ∈ J, ‖q t m‖ := sum_le_sum fun m hm => by
+            rw [abs_mul, abs_of_nonneg (pow_nonneg (by linarith) m)]
+            exact mul_le_mul (pow_le_pow_right₀ hL1 (by have := mem_range.mp hm; omega))
+              (abs_oscSum_le (q · m) hn1) (abs_nonneg _) (pow_nonneg (by linarith) _)
+        _ = (∑ m ∈ range K, ∑ t ∈ J, ‖q t m‖) * Real.log n ^ (K - 1) := by
+            rw [← mul_sum, mul_comm]
+    obtain ⟨T, hT⟩ := exists_lt_sum_sq_div_of_window_pow hK hκ0 hw hwin C
+    have h := hC T
+    have heq : ∀ n : ℕ, ∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n =
+        Real.log n ^ K * oscSum J (q · K) n +
+          ∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n :=
+      fun n => by rw [sum_range_succ, add_comm]
+    simp only [heq] at h
+    linarith
+
+/-- **A paid main term has no oscillating coefficients.** If
+`Σ_{n ≤ T} (Σ_{m ≤ K} (log n)^m Re(Σ_t q(t,m) n^{it}))²/n` is bounded and all frequencies are
+positive, then every `q(t, m)` vanishes. -/
+theorem coeff_eq_zero_of_bounded {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (q : ℝ → ℕ → ℂ)
+    {C : ℝ} (hC : ∀ T : ℕ, ∑ n ∈ Icc 1 T,
+      (∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n) ^ 2 / n ≤ C) :
+    ∀ t ∈ J, ∀ m ≤ K, q t m = 0 := by
+  induction K with
+  | zero =>
+    intro t ht m hm
+    rw [Nat.le_zero.mp hm]
+    exact top_coeff_eq_zero hJ 0 q hC t ht
+  | succ K ih =>
+    have htop := top_coeff_eq_zero hJ (K + 1) q hC
+    have hv0 : ∀ n : ℕ, oscSum J (q · (K + 1)) n = 0 := fun n => by
+      simp only [oscSum]
+      rw [sum_eq_zero fun t ht => by rw [htop t ht, zero_mul], zero_re]
+    have hC' : ∀ T : ℕ, ∑ n ∈ Icc 1 T,
+        (∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n) ^ 2 / n ≤ C := by
+      intro T
+      have h := hC T
+      simp only [sum_range_succ _ (K + 1), hv0, mul_zero, add_zero] at h
+      exact h
+    intro t ht m hm
+    rcases Nat.lt_or_ge m (K + 1) with hlt | hge
+    · exact ih hC' t ht m (by omega)
+    · rw [show m = K + 1 by omega]
+      exact htop t ht
+
+/-! ### The spectral law -/
+
+/-- **The receiver reads the zero divisor of ζ on the oscillating spectrum.** For `0 < ε ≤ 1/2`,
+a finite set `J` of positive frequencies and coefficients `p(t, k)`, `k ≤ K`, the receiver of
+`Σ_{t ∈ J} Σ_{k ≤ K} Re(p(t,k) d^{ρ_t − 1}(log d)^k)` is bounded iff for every `t ∈ J` and every
+`k ≤ K` with `p(t, k) ≠ 0`, `ζ^{(i)}(1 − ε + it) = 0` for all `i ≤ k`. -/
+theorem receiverBounded_oscillatingLogPolynomial_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
+    {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (p : ℝ → ℕ → ℂ) :
+    ReceiverBounded (oscillatingLogPolynomial ε J K p) ↔
+      ∀ t ∈ J, ∀ k ≤ K, p t k ≠ 0 → ∀ i ≤ k,
+        iteratedDeriv i riemannZeta (((1 - ε : ℝ) : ℂ) + (t : ℂ) * I) = 0 := by
+  have hcoef : (∀ t ∈ J, ∀ m ≤ K, mainCoeff ε K p t m = 0) ↔
+      ∀ t ∈ J, ∀ k ≤ K, p t k ≠ 0 → ∀ i ≤ k,
+        iteratedDeriv i riemannZeta (oscillationExponent ε t) = 0 := by
+    refine forall₂_congr fun t _ => ?_
+    have hre : (oscillationExponent ε t).re = 1 - ε := oscillationExponent_re ε t
+    have h0 : oscillationExponent ε t ≠ 0 := fun h => by rw [h, zero_re] at hre; linarith
+    have h1 : oscillationExponent ε t ≠ 1 := fun h => by rw [h, one_re] at hre; linarith
+    refine (forall_coeff_eq_zero_iff K (p t) (fun i =>
+      iteratedDeriv i (fun s : ℂ => riemannZeta s / s) (oscillationExponent ε t))).trans ?_
+    exact forall₂_congr fun k _ => imp_congr_right fun _ =>
+      forall_iteratedDeriv_zeta_div_eq_zero_iff h0 h1 k
+  refine Iff.trans ?_ hcoef
+  constructor
+  · intro hB
+    obtain ⟨C, hC⟩ := exists_sum_sq_div_le_of_receiverBounded hB hε2
+      (by linarith : (0 : ℝ) < ε / 2)
+      (fun n hn => abs_weightCenteredPrefix_oscillatingLogPolynomial_sub_le hε hε2 J K p hn)
+    exact coeff_eq_zero_of_bounded hJ K (mainCoeff ε K p) hC
+  · intro h
+    refine ⟨spectralRate ε J K p ^ 2 * (1 + 1 / (ε / 2)), fun T => ?_⟩
+    rw [weightPronicEnergy]
+    refine sum_sq_le_of_abs_le_sqrt_rpow (ε := ε / 2) (by linarith) (fun n hn => ?_) T
+    have hb := abs_weightCenteredPrefix_oscillatingLogPolynomial_sub_le hε hε2 J K p hn
+    have hz : ∑ m ∈ range (K + 1), Real.log n ^ m *
+        (∑ t ∈ J, mainCoeff ε K p t m * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re = 0 :=
+      sum_eq_zero fun m hm => by
+        rw [sum_eq_zero fun t ht => by
+          rw [h t ht m (by have := mem_range.mp hm; omega), zero_mul], zero_re, mul_zero]
+    rwa [hz, mul_zero, sub_zero] at hb
+
+/-- The log-power cosine `d^{-ε} cos(t log d) (log d)^k`. -/
+def logPowerCosine (ε t : ℝ) (k d : ℕ) : ℝ := oscillatingSmoothPower ε t d * Real.log d ^ k
+
+theorem logPowerCosine_eq {ε : ℝ} (hε : 0 < ε) (t : ℝ) (k : ℕ) :
+    logPowerCosine ε t k =
+      oscillatingLogPolynomial ε {t} k (fun _ j => if j = k then 1 else 0) := by
+  funext d
+  rw [oscillatingLogPolynomial, sum_singleton, sum_eq_single k
+    (fun j _ hj => by rw [if_neg hj, zero_mul, zero_re])
+    (fun h => absurd (mem_range.mpr (Nat.lt_succ_self k)) h), if_pos rfl, one_mul,
+    logPowerOscillation, logPowerCosine, oscillatingSmoothPower_eq_re hε, ← Complex.ofReal_pow,
+    Complex.re_mul_ofReal]
+
+/-- **The receiver reads the order of every zero.** For `0 < ε ≤ 1/2`, `t > 0` and `k ∈ ℕ`, the
+receiver of `d^{-ε} cos(t log d) (log d)^k` is bounded iff `ζ^{(i)}(1 − ε + it) = 0` for every
+`i ≤ k`, that is, iff `1 − ε + it` is a zero of `ζ` of order greater than `k`. -/
+theorem receiverBounded_logPowerCosine_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {t : ℝ}
+    (ht : 0 < t) (k : ℕ) :
+    ReceiverBounded (logPowerCosine ε t k) ↔
+      ∀ i ≤ k, iteratedDeriv i riemannZeta (((1 - ε : ℝ) : ℂ) + (t : ℂ) * I) = 0 := by
+  rw [logPowerCosine_eq hε,
+    receiverBounded_oscillatingLogPolynomial_iff hε hε2 (by simpa using ht) k]
+  constructor
+  · intro h
+    exact h t (mem_singleton_self t) k le_rfl (by simp)
+  · intro h t' ht' j _ hp i hi
+    rw [mem_singleton] at ht'
+    subst ht'
+    have hjk : j = k := by
+      by_contra hne
+      exact hp (if_neg hne)
+    exact h i (hjk ▸ hi)
 
 end
 

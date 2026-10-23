@@ -317,24 +317,27 @@ def interpExp (η : ℝ) : ℝ := (1 / (2 * (1 + η)) + (1 - 1 / (2 * η))) / 2
 theorem interpExp_bounds {η : ℝ} (h0 : 0 < η) (h2 : 1 / 2 < η ^ 2) :
     0 < interpExp η ∧ interpExp η < 1 ∧ 1 < 2 * interpExp η * (1 + η) ∧
       1 < 2 * η * (1 - interpExp η) := by
-  have hgap : 1 / (2 * (1 + η)) < 1 - 1 / (2 * η) := by
-    rw [div_lt_iff₀ (by positivity)]
-    have : 1 - 1 / (2 * η) = (2 * η - 1) / (2 * η) := by field_simp
-    rw [this, div_mul_eq_mul_div, lt_div_iff₀ (by positivity)]
-    nlinarith
-  have ha : 0 < 1 / (2 * (1 + η)) := by positivity
-  have hb : 1 - 1 / (2 * η) < 1 := by have : 0 < 1 / (2 * η) := by positivity
-                                      linarith
-  unfold interpExp
-  refine ⟨by linarith, by linarith, ?_, ?_⟩
-  · have h := (lt_div_iff₀ (by positivity : (0 : ℝ) < 2 * (1 + η))).1
-      (show 1 / (2 * (1 + η)) < (1 / (2 * (1 + η)) + (1 - 1 / (2 * η))) / 2 by linarith)
-    rw [one_div, inv_mul_eq_div, div_lt_iff₀ (by positivity)] at h
-    nlinarith
-  · have hlt : (1 / (2 * (1 + η)) + (1 - 1 / (2 * η))) / 2 < 1 - 1 / (2 * η) := by linarith
-    have : 1 / (2 * η) < 1 - (1 / (2 * (1 + η)) + (1 - 1 / (2 * η))) / 2 := by linarith
-    rw [div_lt_iff₀ (by positivity)] at this
+  set a := 1 / (2 * (1 + η)) with hadef
+  set b := 1 - 1 / (2 * η) with hbdef
+  have hgap : a < b := by
+    have e : b - a = (2 * η ^ 2 - 1) / (2 * η * (1 + η)) := by
+      simp only [hadef, hbdef]; field_simp; ring
+    have : 0 < (2 * η ^ 2 - 1) / (2 * η * (1 + η)) := div_pos (by linarith) (by positivity)
     linarith
+  have ha : 0 < a := by positivity
+  have hb : b < 1 := by have : 0 < 1 / (2 * η) := by positivity
+                        linarith
+  have hλ : interpExp η = (a + b) / 2 := rfl
+  rw [hλ]
+  refine ⟨by linarith, by linarith, ?_, ?_⟩
+  · have e : a * (2 * (1 + η)) = 1 := by simp only [hadef]; field_simp
+    nlinarith [mul_lt_mul_of_pos_right (show a < (a + b) / 2 by linarith)
+      (by positivity : (0 : ℝ) < 2 * (1 + η))]
+  · have e : 1 / (2 * η) * (2 * η) = 1 := by field_simp
+    have hlt : 1 / (2 * η) < 1 - (a + b) / 2 := by
+      have : (a + b) / 2 < b := by linarith
+      simp only [hbdef] at this ⊢; linarith
+    nlinarith [mul_lt_mul_of_pos_right hlt (by positivity : (0 : ℝ) < 2 * η)]
 
 /-- `min x y ≤ x^λ y^{1−λ}` for `x, y ≥ 0`, `0 ≤ λ ≤ 1`. -/
 theorem min_le_rpow_mul_rpow {x y l : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hl0 : 0 ≤ l) (hl1 : l ≤ 1) :
@@ -369,17 +372,11 @@ theorem min_le_rpow_mul_rpow {x y l : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hl0 : 
 theorem interp_rpow_eq {N K η l : ℝ} (hN : 0 < N) (hK : 0 < K) :
     K ^ (1 - η) / N * ((N / K ^ 2) ^ l * ((N / K) ^ (1 - η)) ^ (1 - l)) =
       N ^ (-(η * (1 - l))) * K ^ (-(l * (1 + η))) := by
-  have hpos1 : 0 < K ^ (1 - η) / N * ((N / K ^ 2) ^ l * ((N / K) ^ (1 - η)) ^ (1 - l)) := by
-    positivity
-  have hpos2 : 0 < N ^ (-(η * (1 - l))) * K ^ (-(l * (1 + η))) := by positivity
-  refine Real.log_injOn_pos hpos1 hpos2 ?_
-  have hK2 : 0 < K ^ 2 := by positivity
-  rw [Real.log_mul hpos1.ne' hpos2.ne' |>.symm.trans rfl |> fun _ => Real.log_mul (by positivity)
-    (by positivity), Real.log_div (by positivity) hN.ne', Real.log_mul (by positivity) (by positivity),
-    Real.log_rpow hK, Real.log_rpow (by positivity), Real.log_rpow (by positivity),
-    Real.log_div hN.ne' hK2.ne', Real.log_rpow (by positivity), Real.log_div hN.ne' hK.ne',
-    Real.log_mul (by positivity) (by positivity), Real.log_rpow hN, Real.log_rpow hK,
-    Real.log_pow]
+  obtain ⟨u, rfl⟩ : ∃ u, N = Real.exp u := ⟨Real.log N, (Real.exp_log hN).symm⟩
+  obtain ⟨v, rfl⟩ : ∃ v, K = Real.exp v := ⟨Real.log K, (Real.exp_log hK).symm⟩
+  rw [← Real.exp_nat_mul]
+  simp only [← Real.exp_mul, ← Real.exp_sub, ← Real.exp_add]
+  congr 1
   push_cast
   ring
 

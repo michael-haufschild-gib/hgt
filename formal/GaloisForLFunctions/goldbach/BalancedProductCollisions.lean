@@ -104,10 +104,8 @@ theorem card_balancedProductCollisionFiber_le_gcd_gate {X : ℕ}
   · exact card_balancedProductCollisionFiber_le_gcd m₁ m₂ h
   · have hempty : balancedProductCollisionFiber m₁ m₂ h = ∅ := by
       ext p
-      change _ ↔ False
-      rw [iff_false]
-      intro hp
-      have he := (mem_filter.mp hp).2
+      simp [balancedProductCollisionFiber]
+      intro he
       have hleft := dvd_mul_of_dvd_left
         (Nat.gcd_dvd_left (balancedIntervalValue m₁) (balancedIntervalValue m₂))
         (balancedIntervalValue p.1)
@@ -115,8 +113,7 @@ theorem card_balancedProductCollisionFiber_le_gcd_gate {X : ℕ}
         (Nat.gcd_dvd_right (balancedIntervalValue m₁) (balancedIntervalValue m₂))
         (balancedIntervalValue p.2)
       rw [← he] at hright
-      have hh := Nat.dvd_sub' hright hleft
-      exact hd (by simpa only [Nat.add_sub_cancel_left] using hh)
+      exact hd ((Nat.dvd_add_iff_left hleft).mp hright)
     rw [hempty, card_empty]
 
 /-- Number of ordered balanced product pairs separated by `h`. -/
@@ -221,6 +218,118 @@ theorem balancedProductCollisionCount_le_reciprocalDivisors (X : ℕ) (h : ℕ+)
         (g : ℝ) * (2 * (X : ℝ) / g) ^ 2 :=
       mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (Nat.cast_nonneg _) hc 2) hgR.le
     _ = _ := by field_simp; ring
+
+/-- At zero difference, every column pair is one common integral scale of the reduced rows. -/
+theorem card_balancedProductCollisionFiber_zero {X : ℕ} (m₁ m₂ : Fin X) :
+    let g := Nat.gcd (balancedIntervalValue m₂) (balancedIntervalValue m₁)
+    let a := balancedIntervalValue m₁ / g
+    let b := balancedIntervalValue m₂ / g
+    (balancedProductCollisionFiber m₁ m₂ 0).card =
+      2 * X / max a b - X / min a b := by
+  classical
+  let g := Nat.gcd (balancedIntervalValue m₂) (balancedIntervalValue m₁)
+  let a := balancedIntervalValue m₁ / g
+  let b := balancedIntervalValue m₂ / g
+  let T := Ioc (X / min a b) (2 * X / max a b)
+  change (balancedProductCollisionFiber m₁ m₂ 0).card = 2 * X / max a b - X / min a b
+  have hm₁ := balancedIntervalValue_pos m₁
+  have hm₂ := balancedIntervalValue_pos m₂
+  have hg : 0 < g := Nat.gcd_pos_of_pos_left (balancedIntervalValue m₁) hm₂
+  have ha : 0 < a := Nat.div_pos
+    (Nat.gcd_le_right (balancedIntervalValue m₂) hm₁) hg
+  have hb : 0 < b := Nat.div_pos
+    (Nat.gcd_le_left (balancedIntervalValue m₁) hm₂) hg
+  have hga : g * a = balancedIntervalValue m₁ :=
+    Nat.mul_div_cancel' (Nat.gcd_dvd_right _ _)
+  have hgb : g * b = balancedIntervalValue m₂ :=
+    Nat.mul_div_cancel' (Nat.gcd_dvd_left _ _)
+  have hcross : balancedIntervalValue m₁ * b = balancedIntervalValue m₂ * a := by
+    calc
+      balancedIntervalValue m₁ * b = (g * a) * b := by rw [hga]
+      _ = (g * b) * a := by ring
+      _ = balancedIntervalValue m₂ * a := by rw [hgb]
+  have hmin : 0 < min a b := lt_min ha hb
+  have hmax : 0 < max a b := ha.trans_le (le_max_left _ _)
+  have hfactor (p : Fin X × Fin X) (hp : p ∈ balancedProductCollisionFiber m₁ m₂ 0) :
+      balancedIntervalValue p.1 = b * (balancedIntervalValue p.1 / b) ∧
+        balancedIntervalValue p.2 = a * (balancedIntervalValue p.1 / b) := by
+    have he : balancedIntervalValue m₁ * balancedIntervalValue p.1 =
+        balancedIntervalValue m₂ * balancedIntervalValue p.2 := by
+      simpa only [Nat.add_zero] using (mem_filter.mp hp).2
+    have hmod : Nat.ModEq (balancedIntervalValue m₂)
+        (balancedIntervalValue m₁ * balancedIntervalValue p.1)
+        (balancedIntervalValue m₁ * 0) := by
+      rw [he]
+      simp only [Nat.mul_zero, Nat.ModEq, Nat.mul_mod_right, Nat.zero_mod]
+    have hd : b ∣ balancedIntervalValue p.1 :=
+      Nat.modEq_zero_iff_dvd.mp (Nat.ModEq.cancel_left_div_gcd hm₂ hmod)
+    have hfirst : b * (balancedIntervalValue p.1 / b) = balancedIntervalValue p.1 :=
+      Nat.mul_div_cancel' hd
+    have hsecond : balancedIntervalValue m₂ * (a * (balancedIntervalValue p.1 / b)) =
+        balancedIntervalValue m₂ * balancedIntervalValue p.2 := by
+      calc
+        _ = (balancedIntervalValue m₂ * a) * (balancedIntervalValue p.1 / b) := by ring
+        _ = (balancedIntervalValue m₁ * b) * (balancedIntervalValue p.1 / b) := by rw [hcross]
+        _ = balancedIntervalValue m₁ * (b * (balancedIntervalValue p.1 / b)) := by ring
+        _ = _ := by rw [hfirst, he]
+    exact ⟨hfirst.symm, (mul_left_cancel₀ (Nat.ne_of_gt hm₂) hsecond).symm⟩
+  have hmem (p : Fin X × Fin X) (hp : p ∈ balancedProductCollisionFiber m₁ m₂ 0) :
+      balancedIntervalValue p.1 / b ∈ T := by
+    have hf := hfactor p hp
+    apply mem_Ioc.mpr
+    constructor
+    · rw [Nat.div_lt_iff_lt_mul hmin]
+      rcases le_total a b with hab | hba
+      · rw [min_eq_left hab, Nat.mul_comm, ← hf.2]
+        exact balancedIntervalValue_gt p.2
+      · rw [min_eq_right hba, Nat.mul_comm, ← hf.1]
+        exact balancedIntervalValue_gt p.1
+    · rw [Nat.le_div_iff_mul_le hmax]
+      rcases le_total a b with hab | hba
+      · rw [max_eq_right hab, Nat.mul_comm, ← hf.1]
+        exact balancedIntervalValue_le p.1
+      · rw [max_eq_left hba, Nat.mul_comm, ← hf.2]
+        exact balancedIntervalValue_le p.2
+  have hcard : (balancedProductCollisionFiber m₁ m₂ 0).card = T.card := by
+    apply card_bij (fun (p : Fin X × Fin X) _ => balancedIntervalValue p.1 / b) hmem
+    · intro p hp p' hp' ht
+      have hf := hfactor p hp
+      have hf' := hfactor p' hp'
+      apply Prod.ext
+      · apply balancedIntervalValue_injective X
+        rw [hf.1, hf'.1, ht]
+      · apply balancedIntervalValue_injective X
+        rw [hf.2, hf'.2, ht]
+    · intro t ht
+      have ht' := mem_Ioc.mp ht
+      have hlo : X < min a b * t := by
+        rw [Nat.mul_comm]
+        exact (Nat.div_lt_iff_lt_mul hmin).mp ht'.1
+      have hhi : max a b * t ≤ 2 * X := by
+        rw [Nat.mul_comm]
+        exact (Nat.le_div_iff_mul_le hmax).mp ht'.2
+      have hbtlo : X < b * t := hlo.trans_le (Nat.mul_le_mul_right t (min_le_right _ _))
+      have hbtup : b * t ≤ 2 * X := (Nat.mul_le_mul_right t (le_max_right _ _)).trans hhi
+      have hatlo : X < a * t := hlo.trans_le (Nat.mul_le_mul_right t (min_le_left _ _))
+      have hatup : a * t ≤ 2 * X := (Nat.mul_le_mul_right t (le_max_left _ _)).trans hhi
+      let i : Fin X := ⟨b * t - X - 1, by omega⟩
+      let j : Fin X := ⟨a * t - X - 1, by omega⟩
+      have hi : balancedIntervalValue i = b * t := by
+        dsimp [i, balancedIntervalValue]
+        omega
+      have hj : balancedIntervalValue j = a * t := by
+        dsimp [j, balancedIntervalValue]
+        omega
+      refine ⟨(i, j), ?_, ?_⟩
+      · apply mem_filter.mpr
+        refine ⟨mem_univ _, ?_⟩
+        change balancedIntervalValue m₁ * balancedIntervalValue i + 0 =
+          balancedIntervalValue m₂ * balancedIntervalValue j
+        rw [hi, hj, Nat.add_zero, ← Nat.mul_assoc, hcross, Nat.mul_assoc]
+      · change balancedIntervalValue i / b = t
+        rw [hi, Nat.mul_div_cancel_left _ hb]
+  rw [hcard]
+  exact Nat.card_Ioc _ _
 
 end
 

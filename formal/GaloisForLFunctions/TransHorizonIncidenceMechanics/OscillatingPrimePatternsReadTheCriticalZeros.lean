@@ -67,7 +67,7 @@ theorem oscPattern_neg (a t₀ : ℝ) : oscPattern a (-t₀) = oscPattern a t₀
 
 /-- At frequency `0` the pattern is the constant-sign model `a^{Ω}`. -/
 theorem oscPattern_zero (a : ℝ) : oscPattern a 0 = constantSignHom a := by
-  ext n
+  refine DFunLike.ext _ _ fun n => ?_
   induction n using Nat.recOnMul with
   | zero => simp
   | one => simp
@@ -103,10 +103,10 @@ theorem cos_mul_cpow_eq {p : ℕ} (hp : 0 < p) (t₀ : ℝ) (w : ℂ) :
   have hlog : Complex.log (p : ℂ) = (Real.log p : ℂ) := by
     rw [← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg p)]
   rw [Complex.cpow_def_of_ne_zero hp0, Complex.cpow_def_of_ne_zero hp0,
-    Complex.cpow_def_of_ne_zero hp0, hlog, Complex.ofReal_cos, Complex.cos, ← Complex.exp_add,
-    ← Complex.exp_add]
-  push_cast
-  ring_nf
+    Complex.cpow_def_of_ne_zero hp0, hlog, Complex.ofReal_cos, Complex.cos, div_mul_eq_mul_div,
+    add_mul, ← Complex.exp_add, ← Complex.exp_add]
+  congr 1
+  congr 1 <;> (congr 1; push_cast; ring)
 
 /-- The two-sided Euler log of `ζ`: `|log|ζ(v)| − Re Σ_p p^{-v}| ≤ S` on `Re v > 1`. -/
 theorem abs_log_norm_riemannZeta_sub_re_le {v : ℂ} (hv : 1 < v.re) :
@@ -225,6 +225,7 @@ theorem exists_norm_zeta_mul_sub_one_le :
   obtain ⟨C, hC, hbound⟩ := RHTower.exists_norm_zetaPoleCleared_le
   refine ⟨12 * C, by positivity, fun w hw hw2 ht => ?_⟩
   have hw1 : w ≠ 1 := by intro h; rw [h] at hw; norm_num at hw
+  have hw0 : w ≠ 0 := by intro h; rw [h] at hw; norm_num at hw
   have hsub : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
   have hζ : riemannZeta w = RHTower.zetaPoleCleared w * w / (w - 1) := by
     rw [RHTower.zetaPoleCleared_eq hw1]; field_simp
@@ -382,18 +383,20 @@ theorem exists_lineEnergy_le_of_majorant {c : ℕ → ℝ} {P T B₁ t₁ : ℝ}
     · simp only [G, if_neg h2]; exact hlarge' u (not_le.mp h2)
   have hhalf : ∫ u in Ioi (0 : ℝ), Φ u ≤ ∫ u in Ioi (0 : ℝ), G u :=
     integral_mono_of_nonneg (Eventually.of_forall hΦ0) hGint hΦle
+  have hG1 : ∫ u in Ioc 0 T, G u = ∫ u in Ioc 0 T, g u :=
+    setIntegral_congr_fun measurableSet_Ioc (fun u hu => by simp only [G, if_pos hu.2])
+  have hG2 : ∫ u in Ioi T, G u =
+      Λ * ∫ u in Ioi T, ‖riemannZeta ((σ : ℂ) + u * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ)) := by
+    rw [setIntegral_congr_fun
+        (g := fun u : ℝ => Λ * (‖riemannZeta ((σ : ℂ) + (u : ℂ) * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ))))
+        measurableSet_Ioi (fun u hu => by
+          have : ¬ u ≤ T := not_le.mpr hu
+          simp only [G, if_neg this]), integral_const_mul]
   have hGval : ∫ u in Ioi (0 : ℝ), G u = ∫ u in Ioc 0 T, g u +
       Λ * ∫ u in Ioi T, ‖riemannZeta ((σ : ℂ) + u * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ)) := by
     rw [hsplit, setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
       (hGint.mono_set (by rw [hsplit]; exact subset_union_left))
-      (hGint.mono_set (by rw [hsplit]; exact subset_union_right))]
-    congr 1
-    · exact setIntegral_congr_fun measurableSet_Ioc (fun u hu => by simp only [G, if_pos hu.2])
-    · rw [setIntegral_congr_fun
-          (g := fun u : ℝ => Λ * (‖riemannZeta ((σ : ℂ) + (u : ℂ) * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ))))
-          measurableSet_Ioi (fun u hu => by
-            have : ¬ u ≤ T := not_le.mpr hu
-            simp only [G, if_neg this]), integral_const_mul]
+      (hGint.mono_set (by rw [hsplit]; exact subset_union_right)), hG1, hG2]
   have htail : ∫ u in Ioi T, ‖riemannZeta ((σ : ℂ) + u * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ)) ≤ M₂ := by
     refine le_trans (setIntegral_mono_set hint2 ?_ (Ioi_subset_Ioi hT).eventuallyLE) hbound2
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun u hu => ?_)
@@ -747,7 +750,7 @@ theorem receiverBounded_oscWeight_pos_of_lt_one {a t₀ : ℝ} (ha0 : 0 < a) (ha
 the half-damped oscillating weight has bounded receiver. -/
 theorem receiverBounded_oscWeight_of_lt_one {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a < 1)
     (ht₀ : t₀ ≠ 0) : ReceiverBounded (oscWeight a t₀) := by
-  rcases le_or_lt a 0 with ha0 | ha0
+  rcases le_or_gt a 0 with ha0 | ha0
   · exact receiverBounded_oscWeight_nonpos ha ha0 t₀
   rcases lt_or_gt_of_ne ht₀ with hneg | hpos
   · rw [← oscWeight_neg a t₀]

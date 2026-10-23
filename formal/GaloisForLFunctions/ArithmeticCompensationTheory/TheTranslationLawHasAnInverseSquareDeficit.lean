@@ -342,6 +342,55 @@ theorem horizonEnergy_rescaledTest_ge {f : ℝ → ℝ} {Λ : ℝ} (hsupp : ∀ 
   rw [horizonEnergy_rescaledTest_eq hf hfc hr]
   linarith
 
+/-- **A lower bound on the horizon energy, uniform over a profile class.** Every `Λ`-Lipschitz test
+supported in `[−R, R]` has `J(F) ≥ A_F(0) − Λ²(8R + 48)`: on the class of unit tests with
+`Λ²(8R + 48) < 1` the horizon energy is uniformly coercive. -/
+theorem horizonEnergy_ge_of_lipschitz {F : ℝ → ℝ} {Λ R : ℝ} (hR : 0 ≤ R)
+    (hsupp : ∀ x, R < |x| → F x = 0) (hΛ : ∀ a b, |F a - F b| ≤ Λ * |a - b|) :
+    autoCorr F 0 - Λ ^ 2 * (8 * R + 48) ≤ horizonEnergy F := by
+  have hF := continuous_of_abs_sub_le hΛ
+  have hFc : HasCompactSupport F := hasCompactSupport_of_eq_zero hsupp
+  have hAf := continuous_autoCorr hF hFc
+  have hAb : ∀ t, |autoCorr F t| ≤ autoCorr F 0 := abs_autoCorr_le_autoCorr_zero hF hFc
+  have hmass : (∫ u in Ioi (0 : ℝ), horizonDensity u) = 1 := by
+    rw [integral_Ioi_horizonDensity]; simp
+  have hci : IntegrableOn (fun u => autoCorr F 0 * horizonDensity u) (Ioi 0) :=
+    (integrableOn_horizonDensity 0).const_mul _
+  have hai : IntegrableOn (fun u => autoCorr F u * horizonDensity u) (Ioi 0) :=
+    integrableOn_mul_horizonDensity hAf hAb 0
+  have hdi : IntegrableOn (fun u => (autoCorr F 0 - autoCorr F u) * horizonDensity u) (Ioi 0) :=
+    IntegrableOn.congr_fun (hci.sub hai) (fun u _ => by simp only [Pi.sub_apply]; ring)
+      measurableSet_Ioi
+  have hmi : IntegrableOn (fun u => Λ ^ 2 * (R * (u ^ 2 * horizonDensity u) +
+      u ^ 3 * horizonDensity u)) (Ioi 0) :=
+    (((integrableOn_pow_mul_horizonDensity 2).const_mul R).add
+      (integrableOn_pow_mul_horizonDensity 3)).const_mul _
+  have hle : (∫ u in Ioi (0 : ℝ), (autoCorr F 0 - autoCorr F u) * horizonDensity u) ≤
+      ∫ u in Ioi (0 : ℝ), Λ ^ 2 * (R * (u ^ 2 * horizonDensity u) + u ^ 3 * horizonDensity u) := by
+    refine setIntegral_mono_on hdi hmi measurableSet_Ioi fun u hu => ?_
+    have hu0 : 0 < u := hu
+    have h := autoCorr_zero_sub_le hR hsupp hΛ u
+    rw [abs_of_pos hu0] at h
+    have hρ := horizonDensity_nonneg u
+    calc (autoCorr F 0 - autoCorr F u) * horizonDensity u
+        ≤ Λ ^ 2 * u ^ 2 * (R + u) * horizonDensity u := mul_le_mul_of_nonneg_right h hρ
+      _ = Λ ^ 2 * (R * (u ^ 2 * horizonDensity u) + u ^ 3 * horizonDensity u) := by ring
+  have hmom : (∫ u in Ioi (0 : ℝ), Λ ^ 2 * (R * (u ^ 2 * horizonDensity u) +
+      u ^ 3 * horizonDensity u)) = Λ ^ 2 * (8 * R + 48) := by
+    rw [integral_const_mul, integral_add ((integrableOn_pow_mul_horizonDensity 2).const_mul R)
+      (integrableOn_pow_mul_horizonDensity 3), integral_const_mul,
+      integral_pow_mul_horizonDensity 2, integral_pow_mul_horizonDensity 3]
+    norm_num [Nat.factorial]
+    ring
+  have hJ : horizonEnergy F = autoCorr F 0 -
+      ∫ u in Ioi (0 : ℝ), (autoCorr F 0 - autoCorr F u) * horizonDensity u := by
+    rw [horizonEnergy_eq_horizonIntegral_autoCorr hF hFc, horizonIntegral]
+    simp only [sub_mul]
+    rw [integral_sub hci hai, integral_const_mul, hmass, mul_one]
+    ring
+  rw [hJ]
+  linarith
+
 /-- `r² exp(−c√r) → 0`. -/
 theorem tendsto_sq_mul_exp_neg_sqrt {c : ℝ} (hc : 0 < c) :
     Tendsto (fun r : ℝ => r ^ 2 * Real.exp (-c * Real.sqrt r)) atTop (𝓝 0) := by

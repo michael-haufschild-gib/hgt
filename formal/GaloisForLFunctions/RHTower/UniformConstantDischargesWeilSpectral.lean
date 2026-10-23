@@ -31,7 +31,8 @@ theorem abs_truncTestDeriv_le_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro F L u
-  apply abs_truncTestDeriv_le <;> assumption
+  apply abs_truncTestDeriv_le
+  assumption
 
 /-- `weighted_truncTest_sub_le_indicator` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
