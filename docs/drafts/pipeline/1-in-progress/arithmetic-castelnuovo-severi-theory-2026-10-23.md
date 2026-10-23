@@ -202,6 +202,16 @@ survivor).
 - `TheHeckeTowerOfAPrimeIsThePeriodQuotient`: `tower_pontryagin_law` (a single prime tower counts the
   outer Frobenius eigenvalues `p^{ρ−½}` of nonzero weight), `negIndex_towerGram_le`.
 
+- `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`: finitely many
+  right zeros ⟹ all but finitely many prime towers carry the whole defect; one test whose tower at
+  every prime has defect = #distinct `p^{ρ−½}`.
+
+- `TheFrobeniusSpanIsTheTowerOfTheScalingSurface`: `W_curveConfig` (explicit formula of a curve),
+  `curve_towerGram_eq_smul_spanGram`.
+
+- `TheDegreeFiltrationOfACurveIsItsWindowFiltration`: `hodgeDefectAt_curveConfig` (degree-`a` defect
+  of a curve is `0` or `∞` by the window `⌈2a/log q⌉`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

@@ -232,6 +232,13 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     zeros cluster without bound (`zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineCopiesLocallyBounded`,
     `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`).
     Over `𝔽_q` the window `2g` sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`).
+    On the scaling surface of a curve the degree filtration *is* the window filtration: the defect
+    at degree `a` is `0` if the Frobenius window of size `⌈2a/log q⌉` is positive semidefinite and
+    `∞` otherwise (`hodgeDefectAt_curveConfig`, via a cell decomposition of the explicit formula into
+    window values and `W`-orthogonal copies of a negative window vector); every curve has Hodge index
+    up to degree `log q/2`, and from the window `2g` on the defect is `0` iff the curve is pure
+    (`hodgeDefectAt_curveConfig_eq_zero_of_le`, `hodgeDefectAt_curveConfig_of_card_le`; golden jump
+    at `log 5/2`, `goldenDatum_hodgeDefectAt`).
 16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
     (`recurrent_pontryagin_dichotomy`); periodic ones and those cut out by exponential polynomials
     of any finite rank recur (`verticallyRecurrent_of_periodic`, `expPoly_zero_recurs`,
@@ -674,6 +681,7 @@ Weil's argument.
 | `AlmostEveryPrimeSeesEveryRightZero` | coincidence of Frobenius eigenvalues, at most one resonant prime per pair of zeros, finitely many resonant primes, one prime tower carries the whole defect |
 | `TheFrobeniusSpanIsTheTowerOfTheScalingSurface` | explicit formula of a curve on its scaling surface (Poisson along tilted lattices), `q`-tower Gram = `log q·‖g‖²·spanGram`, tower Pontryagin law over `𝔽_q` |
 | `TheTowerDefectCountsTheFrobeniusEigenvalues` | Fourier injectivity, class kernels, one test whose tower at every prime has defect = number of distinct outer Frobenius eigenvalues |
+| `TheDegreeFiltrationOfACurveIsItsWindowFiltration` | cell decomposition of the curve explicit formula into Toeplitz window values, `W`-orthogonal offset towers, Hodge defect at degree `a` = `0` or `∞` by the window `⌈2a/log q⌉` |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
 | `TheResonatorRemainderIsNegative` | cross-prime remainder on resonators is negative definite |

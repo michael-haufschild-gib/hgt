@@ -32,7 +32,8 @@ AOT is the programme that makes orientation the primitive object. It supplies
   Riemann–Roch theorem for readings, instantiated on Dirichlet polynomials at separated heights;
 - the **orientation of damped weights**, read exactly at the prime `2` by the first pronic moment,
   and the parity floor as a statement about readings;
-- the **critical Wiener monoid**, the stability group of the class "paid";
+- the **critical Wiener monoid**, the stability group of the class "paid", and **Wiener's lemma**
+  for it: the Banach algebra `𝒲_{1/2}`, whose spectrum is the Bohr polydisk;
 - the **width dictionary** as one theorem.
 
 | Neighbour | Interface |
@@ -345,6 +346,28 @@ This is the square-root threshold of the aperture as a sampling threshold.
    (`isWienerUnit_localFactor_iff`): the local factor law of Trans-Horizon Incidence Mechanics is
    invertibility in the stability monoid, and `√p` is where the inverse tower leaves the class.
 
+### 3.6″ Wiener's lemma on the Bohr polydisk (`TheCriticalWienerAlgebraIsABanachAlgebra`, `WienersLemmaOnTheBohrPolydisk`, `UnitsOfTheWienerMonoidPreservePayment`)
+
+1. **The Banach algebra.** For real `σ`, arithmetic functions with `Σ |f(n)| n^{−σ} < ∞` form a
+   commutative unital Banach algebra `𝒲_σ` under Dirichlet convolution (`WienerAlgebraAt`); the
+   norm is submultiplicative because `n^{−σ}` is completely multiplicative
+   (`wienerNorm_absFn_mul`), and `k ↦ f(k+1)(k+1)^{−σ}` is an isometry onto `ℓ¹` (`isometryLp`).
+   Every element is `Σ f(n) δ_n` in norm (`hasSum_pointMass`).
+2. **The spectrum is the Bohr polydisk.** A Bohr point is a completely multiplicative `ω` with
+   `|ω| ≤ 1` (`BohrPoint`); evaluation `Σ f(n) ω(n) n^{−σ}` is a character (`bohrCharacter`), and
+   every continuous character is one, at `ω(n) = φ(δ_n) n^σ` (`apply_eq_bohrEval`).
+3. **Wiener's lemma.** `f` is a unit of `𝒲_σ` iff its Bohr evaluation vanishes nowhere on the
+   polydisk (`isUnit_iff_forall_bohrEval_ne_zero`); a unit has no zero on `Re s ≥ σ`
+   (`lSeries_ne_zero_of_isUnit`). For real kernels at `σ = ½` the units of `𝒲_{1/2}` are exactly
+   the units of the critical Wiener monoid (`isWienerUnit_iff_isUnit`,
+   `isWienerUnit_iff_forall_bohrEval_ne_zero`).
+4. **Towers and Euler factors of every degree.** A tower-supported `f` is a unit iff its local
+   series `Σ_k f(p^k) p^{−kσ} z^k` has no zero on `|z| ≤ 1` (`isUnit_iff_of_tower`); the local
+   factor `Π_i (δ₁ − α_i δ_p)` is a unit iff every `|α_i| < p^σ` (`isUnit_prod_localFactor_iff`).
+5. **Payment is a unit invariant.** For a unit `k` and a weight with summable mean, `k ⋆ c` is
+   paid iff `c` is (`receiverBounded_dirichletConv_iff_of_isWienerUnit`): the units preserve the
+   unpaid class too.
+
 ### 3.7 The damping flow preserves orientation (`TheDampingFlowPreservesOrientation`)
 
 `C_η (Σ_d a_d v_d) = Σ_d a_d d^{−η} v_d` (`centeredOperator_residueCombination`); the sign of every
@@ -420,7 +443,8 @@ The complete-period lag-covariance reading `completePeriodLagReading N c = (fini
 | The even flip changes the amplitudes. | It twists them by `σ₂ = ±1`; every amplitude reading is blind to it. |
 | The first pronic moment reads the flip everywhere. | It reads it exactly through `W_c(2)`: on weights with `W_c(2) = 0` it is blind too. |
 | Payment is a function of amplitudes. | Not at any `ε ≤ ½` on four-free damped weights (`not_resolves_amplitude_receiverBounded`). |
-| The critical Wiener kernels form a group. | They form a monoid; inverses need Wiener's lemma for Dirichlet series, which is not proved here. |
+| The critical Wiener kernels form a group. | They form a monoid; its units are the kernels whose Bohr evaluation has no zero on the polydisk (`isUnit_iff_forall_bohrEval_ne_zero`). |
+| No zero on `Re s ≥ ½` makes a kernel a unit. | The criterion is the polydisk: the half-plane reaches only the points `ω(p) = p^{½−s}`, with radii tied by one `Re s`. |
 | `δ₁` is a two-sided unit on all of `ℕ`. | Only away from `0`; convolution vanishes at `0`. |
 | The damping flow changes signs. | On residue combinations it scales coefficients by `d^{−η} > 0`; the open question is magnitude, not orientation. |
 | A new unit is progress. | The dictionary is an equivalence; progress is a bound in a unit, with its input class named. |
@@ -445,7 +469,9 @@ first pronic moment identity, the parity pair of the Fermi weight) are proved co
 4. **Which datum reads the even flip?** `W_c(2)`, through the first pronic moment; no amplitude
    reading does, and no amplitude reading resolves payment at or below half damping.
 5. **What is the stability group of "paid"?** The critical Wiener monoid, under which the paid
-   class is a union of orbits; among local factors its units are exactly those with `|a| < √p`.
+   class is a union of orbits; its units are the kernels with no zero on the Bohr polydisk, they
+   preserve the unpaid class as well, and among local factors of any degree they are exactly
+   those with all Satake parameters `|α| < √p`.
 7. **Where is the odd Weil ledger frustrated?** Nowhere on the lattice at any aperture, and at
    the prime triangle between lattice points: frustration is a continuum phenomenon, bounded in
    mass by the prime-sum charge.
@@ -469,7 +495,8 @@ Built and reusable:
 - the *tower comparison* and the *prime-sum charge bound* for the odd ledger;
 - the *coset decomposition* of dilation correlations through the `p`-free part;
 - the *inverse tower* and the *uniqueness of inverses* in the Wiener monoid;
-- the *Euler characteristic* `h⁰ − h¹` of a reading at nodes.
+- the *Euler characteristic* `h⁰ − h¹` of a reading at nodes;
+- the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk.
 
 To be built (§7): a section functor beyond the finite-dimensional skeleton; an orientation-faithful
 norm on damped weights; the aperture-derivative identity.
@@ -494,9 +521,9 @@ norm on damped weights; the aperture-derivative identity.
 4. **An orientation-faithful norm.** A Banach norm on four-free damped weights in which the
    companion class is continuous and the receiver is bounded; the first pronic moment and the
    logarithmic moments are the candidates for its coordinates.
-5. **Inverses in the critical Wiener monoid.** Local factors are units iff `|a| < √p` (§3.6′).
-   Open: Wiener's lemma for Dirichlet series on `Re s ≥ ½` (invertibility of a general kernel iff
-   its series has no zero on `Re s ≥ ½`), and whether units preserve the unpaid class as well.
+5. **Inverses in the critical Wiener monoid.** Answered by §3.6″ (Wiener's lemma on the Bohr
+   polydisk; units preserve both payment classes). Open: the half-plane form
+   (`inf_{Re s ≥ ½} |L| > 0` ⇒ unit) and the orbit structure of the unpaid class.
 6. **Transport in aperture.** An aperture-derivative identity for `μ(A)` with a sign-definite
    jump term, compatible with the doubly exponential ceiling.
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
@@ -592,6 +619,9 @@ contribution of the field is its dictionary and its battery, not a mechanism.
   parity floor for readings.
 - `TheCriticalWienerMonoid` — closure, submultiplicative norm, unit, associativity, orbits.
 - `LocalFactorsAreTheUnitsOfTheWienerMonoid` — inverse towers, uniqueness, the unit law.
+- `TheCriticalWienerAlgebraIsABanachAlgebra` — `𝒲_σ`, its norm, completeness, point masses.
+- `WienersLemmaOnTheBohrPolydisk` — Bohr characters, Wiener's lemma, towers, Euler factors.
+- `UnitsOfTheWienerMonoidPreservePayment` — real kernels in `𝒲_{1/2}`, payment as unit invariant.
 - `TheDampingFlowPreservesOrientation` — transport of residue combinations.
 - `TheWidthDictionary` — the equivalences in one theorem.
 - `PoleSubtractionAndTheForcingSignDictionary` — faithfulness of the Rosati reflection reading vs.

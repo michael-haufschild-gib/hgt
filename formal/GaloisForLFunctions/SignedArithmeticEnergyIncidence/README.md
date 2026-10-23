@@ -445,6 +445,21 @@ is Hilbert–Schmidt, so `ℓ²`-bounded, for every `½ < η < 1` (`sum_sum_sq_c
 `ζ` on the critical line enter: `½` is the sign-blind threshold, as for the residue envelope
 (mechanism 35).
 
+**The chain is bounded at half damping.** For finitely supported `b`, `(C_η b)(n) = G(N)/N` with
+`G = Σ_k K b_k Δ_K` (`centeredOperator_apply_eq_combinedProfile`), so
+`‖C_η b‖² ≤ 8 ∫ G² x^{−2} + 32‖b‖²` (`sum_sq_centeredOperator_le_integral`), and on `Re s = −½`
+`M G = B · M P` with the dilation symbol `B = Σ_k K b_k (K^{s−η} − (K+1)^{s−η})`
+(`mellin_combinedProfile_eq`). The source transform is `M P(s) = −ζ(−s)/(s ζ(η − s))`
+(`mellin_sourceProfile_eq`), so `|M P(−½+it)|² ≪ |t|^{3/4} log⁴|t| / t²` uniformly in `½ < η < 1`
+(`exists_norm_mellin_sourceProfile_sq_le`: convexity for `ζ(½ − it)`, `1/ζ ≪ log²` on and right of
+the `1`-line). On `T ≤ t ≤ 2T` the head `K ≤ T` of `B` is a Dirichlet polynomial and the tail a
+Fourier transform of a step function in `log x`, so `∫_T^{2T} |B|² ≤ 200 T(1 + log 2T)‖b‖²`
+(`integral_norm_sq_dilationSymbol_shell_le`). The dyadic shells sum, uniformly as `η ↓ ½`
+(`exists_centeredOperator_l2_le_uniform`), and the entries are continuous in `η`: `C_{½}` is bounded
+on `ℓ²` (`exists_centeredOperator_l2_le_half`) although it is not Hilbert–Schmidt. Here the signs
+of `μ` enter, as the zero-free `1`-line through `1/ζ(η − s)`; below `½` the same route needs `1/ζ`
+on `Re = η + ½`, inside the critical strip.
+
 29. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -595,7 +610,8 @@ norm the centred chain is Hilbert–Schmidt above damping one, above `1/√2`, a
 short-interval sums of the damped divisor coefficients — above the golden threshold `(√5 − 1)/2`,
 sharply for that method (`centeredOperator_l2_le`, `centeredOperator_l2_le_of_inverseRootTwo`,
 `centeredOperator_l2_le_of_goldenThreshold`); in Mellin coordinates it is Hilbert–Schmidt exactly for
-`½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`).
+`½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`)
+and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`).
 
 **Pillar IV — train capacities.** A single prime's first-lag charge on a train of length `M + 1` is
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned trains the
@@ -705,7 +721,8 @@ Each question is stated with what is established and where the open part sits.
 6. **Which topology preserves the source normalization and the sign?** A completion keeps the sign
    exactly when it keeps the polar functional (mechanisms 22–23); for the damping chain the
    receiver topology is `ℓ²` on the chain coordinate (mechanisms 24–29), where the centred chain is
-   Hilbert–Schmidt exactly above half damping. Boundedness at or below half damping is open (topic 4).
+   Hilbert–Schmidt exactly above half damping and bounded at half damping. Boundedness below half
+   damping is open (topic 4).
 7. **Can a pre-profile orientation law force the local–global defect to vanish?** On complete
    incidence patterns the triangle holonomies are the complete gauge-invariant sign data, their
    alignment forces lossless payment and a single frustrated triangle forces a defect (mechanisms
@@ -725,7 +742,7 @@ Each question is stated with what is established and where the open part sits.
 | Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates; Kron reduction to frustration terminals | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
-| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
+| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt exactly above half damping by Mellin–Plancherel of the columns; bounded at half damping through the symbol `ζ(−s)/(sζ(η−s))` and dyadic mean values of the dilation symbol | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
 | Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |
@@ -764,10 +781,10 @@ Each question is stated with what is established and where the open part sits.
    one frustrated overlap the price is `(t − β)² ≤ αγ`, `β` the effective conductance of the
    aligned interior. Open: the reduced coupling of the actual ledger on its prime-sum terminals and
    its uniformity in the number of terminals.
-4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt, hence bounded, exactly for `½ < η < 1`
-   (Mellin reading after mechanism 28). Decide boundedness for some `η ≤ ½`: Hilbert–Schmidt fails
-   there already on the diagonal, so an answer needs cancellation between columns; by mechanism 25 a
-   positive answer at cofinally small `η` would be RH.
+4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt exactly for `½ < η < 1` and bounded at
+   `η = ½`, where Hilbert–Schmidt fails (paragraphs after mechanism 28). Decide boundedness for some
+   `η < ½`: the Mellin route needs `1/ζ` on `Re = η + ½`, inside the critical strip; by mechanism 25
+   a positive answer at cofinally small `η` would be RH.
    Its first column is exactly the receiver (mechanism 30); the computation of mechanism 30 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a

@@ -93,6 +93,11 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `integral_sq_div_sq_eq_mellin`, `mellin_columnProfile_eq`.
 - `TheChainIsHilbertSchmidtAboveHalfDamping` — `sum_sum_sq_centeredRow_le_halfDamping`,
   `centeredOperator_l2_le_of_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`.
+- `TheSourceOnTheCriticalLineIsZetaOverZeta` — `tsum_sourceCoeff_cpow`, `mellin_sourceProfile_eq`,
+  `exists_norm_mellin_sourceProfile_sq_le`.
+- `TheChainIsBoundedAtHalfDamping` — `centeredOperator_apply_eq_combinedProfile`,
+  `mellin_combinedProfile_eq`, `integral_norm_sq_dilationSymbol_shell_le`,
+  `exists_centeredOperator_l2_le_uniform`, `exists_centeredOperator_l2_le_half`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
@@ -125,5 +130,6 @@ towers).
 Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
 sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
 The chain is Hilbert–Schmidt exactly for `½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`,
-`not_bounded_sum_sum_sq_centeredRow_of_le_half`); at or below half damping boundedness is unproved
-(RH-strength at cofinally small `η`).
+`not_bounded_sum_sum_sq_centeredRow_of_le_half`) and bounded at `η = ½`
+(`exists_centeredOperator_l2_le_half`); below half damping boundedness is unproved (RH-strength at
+cofinally small `η`).

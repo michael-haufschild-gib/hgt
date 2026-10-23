@@ -78,9 +78,9 @@ moment, and double-exponential uniqueness thresholds in `RHTower`:
      the exact missing slack `(3/4 − H(λ))N(T, 2T)` on `[3/4, 1]` (`1/12` at `λ = 1`).
    * **Route II (Prime-Side Surplus & Two-Window Mixture):** While a single flat-top window beyond
      `λ = 1` under `F(α) ≤ B` reaches `3/4` iff `B ≤ 2`, mixing the bandwidth-`4/3` window with the
-     unconditional bandwidth-`1` window (`RHTower.mixQ B ε`) reaches `7/9 > 3/4` at `B = 2`
-     (`ε = 1/3`), reaches `3/4` for all `B ≤ 14/5 = 2.8` (`ε = 7/16`), and strictly beats `2/3` for
-     all `B < 181/18`.
+     unconditional bandwidth-`1` window (`RHTower.mixQ B ε`) reaches `1513/1944 > 3/4` at `B = 2`
+     (`ε = 1/3`), reaches `3/4` iff `B ≤ 117/41 ≈ 2.8537` at `ε = 7/16` (in particular for all
+     `B ≤ 14/5 = 2.8`), and strictly beats `2/3` for all `B < 181/18`.
 
 5. **Corpus-Wide Downstream Upgrades in `RHTower`
    (`eventually_dyadicWindowTail_le_selberg_upper_of_proportion`,
@@ -111,8 +111,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-open RiemannGaussian.HermitianRankTrace.Multiplicity
-open Zeta23 Zeta23.ZeroSide
+open Zeta23 Zeta23.ZeroSide Zeta23.ZeroSide.RankTraceMult _root_.RHTower
 
 /-! ## 1. Strengthened `c = 2` and `c = 3` Multiplicity-Excess and Exclusion Laws -/
 
@@ -410,7 +409,7 @@ theorem two_thirds_lt_HD_one :
       1 / Zeta23.ThmD.cStar 1 < Zeta23.kfun 1 := by
   have hHD := RHTower.HD_one_ge
   have hdef : Zeta23.ThmD.HD 1 = 2 - 1 / Zeta23.ThmD.cStar 1 := rfl
-  have hk1 : Zeta23.kfun 1 = 4 / 3 := kfun_one
+  have hk1 : Zeta23.kfun 1 = 4 / 3 := by unfold Zeta23.kfun; norm_num
   refine ⟨by linarith, by linarith, by linarith, by linarith⟩
 
 /-- **Variational Window Profile Strictly Beats the Flat-Top `5/6` Distinct-Zero Cap at `λ = 1`.**
@@ -579,54 +578,54 @@ theorem subthreshold_spectralSlack_dual_ceiling {lam : ℝ} (h0 : 0 < lam) (h1 :
   have hN0 : 0 ≤ (Zeta23.Ncount T (2 * T) : ℝ) := Nat.cast_nonneg _
   nlinarith
 
-/-- **Two-Window Mixture Exact Value at `B = 2` (`7/9 > 3/4`).**
+/-- **Two-Window Mixture Exact Value at `B = 2` (`1513/1944 > 3/4`).**
 At the Montgomery pair-correlation bound `B = 2`, the single uniform window of length `4/3`
 certifies `certOpt 2 = 3/4 = 0.75`, whereas mixing it with the unconditional length-`1` window at
-weight `ε = 1/3` (`RHTower.mixQ 2 (1/3) = 11/9`) certifies `2 − mixQ 2 (1/3) = 7/9 ≈ 0.7778`,
-gaining an additional `1/36` beyond `3/4`. -/
+weight `ε = 1/3` (`RHTower.mixQ 2 (1/3) = 2375/1944`) certifies `2 − mixQ 2 (1/3) = 1513/1944 ≈ 0.7783`,
+gaining an additional `55/1944` beyond `3/4`. -/
 theorem mixQ_at_two_one_third :
-    2 - RHTower.mixQ 2 (1 / 3) = 7 / 9 ∧
+    2 - RHTower.mixQ 2 (1 / 3) = 1513 / 1944 ∧
       RHTower.certOpt 2 = 3 / 4 ∧
-      2 - RHTower.mixQ 2 (1 / 3) - RHTower.certOpt 2 = 1 / 36 := by
+      2 - RHTower.mixQ 2 (1 / 3) - RHTower.certOpt 2 = 55 / 1944 := by
   unfold RHTower.mixQ RHTower.certOpt
   norm_num
 
-/-- **Exact Linear Form of the Two-Window Mixture at `ε = 7/16` and `B ≤ 14/5` Threshold for `3/4`.**
-At mixture weight `ε = 7/16`, `2 − mixQ B (7/16) = 3/4 + (105 / 4096) * (14/5 − B)`. Thus the
-two-window mixture certifies at least `3/4` if and only if `B ≤ 14/5 = 2.8`, relaxing the
-single-window requirement `B ≤ 2` by `40%`. -/
-theorem mixQ_ge_three_quarters_iff_le_fourteen_fifths (B : ℝ) :
-    2 - RHTower.mixQ B (7 / 16) = 3 / 4 + 105 / 4096 * (14 / 5 - B) ∧
-      (3 / 4 ≤ 2 - RHTower.mixQ B (7 / 16) ↔ B ≤ 14 / 5) := by
-  have hid : 2 - RHTower.mixQ B (7 / 16) = 3 / 4 + 105 / 4096 * (14 / 5 - B) := by
+/-- **Exact Linear Form of the Two-Window Mixture at `ε = 7/16` and `B ≤ 117/41` Threshold for `3/4`.**
+At mixture weight `ε = 7/16`, `2 − mixQ B (7/16) = 3/4 + 3 * (117 − 41 * B) / 4096`. Thus the
+two-window mixture at `ε = 7/16` certifies at least `3/4` if and only if `B ≤ 117/41 ≈ 2.8537`
+(in particular for all `B ≤ 14/5 = 2.8`, relaxing the single-window requirement `B ≤ 2`). -/
+theorem mixQ_ge_three_quarters_iff_le_oneHundredSeventeen_div_fortyOne (B : ℝ) :
+    2 - RHTower.mixQ B (7 / 16) = 3 / 4 + 3 * (117 - 41 * B) / 4096 ∧
+      (3 / 4 ≤ 2 - RHTower.mixQ B (7 / 16) ↔ B ≤ 117 / 41) ∧
+      (B ≤ 14 / 5 → 3 / 4 ≤ 2 - RHTower.mixQ B (7 / 16)) := by
+  have hid : 2 - RHTower.mixQ B (7 / 16) = 3 / 4 + 3 * (117 - 41 * B) / 4096 := by
     unfold RHTower.mixQ; ring
-  refine ⟨hid, ?_⟩
+  refine ⟨hid, ?_, RHTower.mixture_three_quarters⟩
   rw [hid]
   constructor <;> intro h <;> linarith
 
 /-- **Two-Window Mixture Strictly Beats `2/3` Whenever `B < 181/18`.**
 Expanding `mixQ B (1 − δ)` around `ε = 1` (`δ = 0`) gives
-`2 − mixQ B (1 − δ) = 2/3 + δ((181 − 18B)/432 − δ(125 + 18B)/864)`. For every `B < 181/18`,
+`2 − mixQ B (1 − δ) = 2/3 + δ((181 − 18B)/432 − δ(182 + 18B)/864)`. For every `B < 181/18`,
 there exists `ε ∈ (0, 1)` such that `2/3 < 2 − mixQ B ε`. -/
 theorem mixQ_beats_two_thirds_of_lt {B : ℝ} (hB : B < 181 / 18) :
     ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ 2 / 3 < 2 - RHTower.mixQ B ε := by
   have hexp : ∀ δ : ℝ, 2 - RHTower.mixQ B (1 - δ) =
-      2 / 3 + δ * ((181 - 18 * B) / 432 - δ * (125 + 18 * |B|) / 864) -
-        δ ^ 2 * (18 * (|B| - B)) / 864 := by
+      2 / 3 + δ * ((181 - 18 * B) / 432 - δ * (182 + 18 * B) / 864) := by
     intro δ; unfold RHTower.mixQ; ring
   set num : ℝ := 181 - 18 * B
   have hnum : 0 < num := by dsimp [num]; linarith
-  set den : ℝ := 125 + 18 * |B|
+  set den : ℝ := 182 + 18 * |B|
   have hden : 0 < den := by dsimp [den]; positivity
   set δ : ℝ := min (1 / 2) (num / den)
   have hδ0 : 0 < δ := lt_min (by norm_num) (div_pos hnum hden)
   have hδ12 : δ ≤ 1 / 2 := min_le_left _ _
   have hδ_le : δ ≤ num / den := min_le_right _ _
   refine ⟨1 - δ, by linarith, by linarith, ?_⟩
-  have h1 : δ * den ≤ num := (div_le_iff₀ hden).mp hδ_le
+  have h1 : δ * den ≤ num := (le_div_iff₀ hden).mp hδ_le
   have h2 : 2 - RHTower.mixQ B (1 - δ) ≥
       2 / 3 + δ * (num / 432 - δ * den / 864) := by
-    unfold RHTower.mixQ
+    rw [hexp δ]
     have habs : B ≤ |B| := le_abs_self B
     have hδsq : 0 ≤ δ ^ 2 := sq_nonneg δ
     dsimp [num, den]
@@ -991,7 +990,7 @@ theorem ae_eq_zero_of_doubleExp_simpleCritical_of_proportion
   set δ := p / Real.pi - 2 / (Real.pi * b) with hδdef
   have hδ : 0 < δ := by
     rw [hδdef, sub_pos, div_lt_div_iff₀ (by positivity) hπ]
-    linarith
+    nlinarith
   set η := min (min (1 / 10) (p / 2)) (δ / 4) with hηdef
   have hη0 : 0 < η := lt_min (lt_min (by norm_num) (by positivity)) (by linarith)
   have hη10 : η ≤ 1 / 10 := (min_le_left _ _).trans (min_le_left _ _)
@@ -1123,18 +1122,17 @@ theorem ae_eq_zero_of_doubleExp_simpleCritical_of_primeSurplusFourThirds
      (refuted on `(0, 3/4)` by the grid ceiling `d(T) ≤ (λ + ε)N(T, 2T)`), or
    * **Route II (Prime-Side Surplus / Trans-Threshold Pair Correlation):** `PrimeSurplusFourThirds`
      at `λ = 4/3` (`43/36 + 1/18 = 5/4`), or pair correlation `F ≤ B` with `B ≤ 2` for a single
-     flat-top window (`certOpt B ≥ 3/4 ↔ B ≤ 2`) and `B ≤ 14/5` for the two-window mixture
-     (`2 − mixQ B (7/16) ≥ 3/4 ↔ B ≤ 14/5`), which upgrades the dyadic and cumulative off-line
-     moments to `(57/1000)` and the uniqueness threshold to `b > 8/3`. -/
+     flat-top window (`certOpt B ≥ 3/4 ↔ B ≤ 2`) and `B ≤ 117/41` (in particular `B ≤ 14/5`) for
+     the two-window mixture (`2 − mixQ B (7/16) ≥ 3/4 ↔ B ≤ 117/41`), which upgrades the dyadic and
+     cumulative off-line moments to `(57/1000)` and the uniqueness threshold to `b > 8/3`. -/
 theorem what_a_gram_functional_certifies_without_effectivity :
     ((2 / 3 : ℝ) < Zeta23.ThmD.HD 1 ∧
       (1681 / 2500 : ℝ) ≤ Zeta23.ThmD.HD 1 ∧
       Zeta23.ThmD.HD 1 < 3 / 4 ∧
       (5 / 6 : ℝ) < Zeta23.ThmD.GD 1 ∧
       (4181 / 5000 : ℝ) ≤ Zeta23.ThmD.GD 1) ∧
-    (∀ B : ℝ, (3 / 4 ≤ RHTower.certOpt B ↔ B ≤ 2) →
-      (3 / 4 ≤ 2 - RHTower.mixQ B (7 / 16) ↔ B ≤ 14 / 5)) ∧
-    (2 - RHTower.mixQ 2 (1 / 3) = 7 / 9) ∧
+    (∀ B : ℝ, (3 / 4 ≤ 2 - RHTower.mixQ B (7 / 16) ↔ B ≤ 117 / 41)) ∧
+    (2 - RHTower.mixQ 2 (1 / 3) = 1513 / 1944) ∧
     (∀ᶠ T in atTop, RHTower.windowTail 0 (T + 1) (2 * T - 1) ≤ 66 / 1000 * T) ∧
     (RHTower.PrimeSurplusFourThirds →
       (∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀, (3 / 4 - ε) * (Zeta23.Ncount 0 T : ℝ) ≤ Zeta23.N0simple 0 T) ∧
@@ -1142,7 +1140,7 @@ theorem what_a_gram_functional_certifies_without_effectivity :
       (∀ᶠ V in atTop, RHTower.offLineMoment V ≤ 57 / 1000 * V)) := by
   refine ⟨⟨two_thirds_lt_HD_one.1, RHTower.HD_one_ge, HD_one_lt_three_quarters,
       five_sixths_lt_GD_one.1, five_sixths_lt_GD_one.2.1⟩,
-    fun B _ => (mixQ_ge_three_quarters_iff_le_fourteen_fifths B).2,
+    fun B => (mixQ_ge_three_quarters_iff_le_oneHundredSeventeen_div_fortyOne B).2.1,
     mixQ_at_two_one_third.1,
     eventually_dyadicWindowTail_le_sixtySix_thousandths.2,
     fun h => ⟨RHTower.zeta_three_quarters_simple_of_prime_surplus h,

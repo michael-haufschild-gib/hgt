@@ -28,7 +28,7 @@ in all of them, and a reformulation that changes only the unit is not progress.
 -/
 
 open Set MeasureTheory
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri GaloisForLFunctions.BezoutValuationIncidence
+open Zeta23 GaloisForLFunctions.ArithmeticCastelnuovoSeveri GaloisForLFunctions.BezoutValuationIncidence
   GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
   GaloisForLFunctions.ScaleSignedIncidenceCriticality GaloisForLFunctions.HTGeometry RHTower
 

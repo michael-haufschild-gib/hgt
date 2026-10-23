@@ -96,7 +96,6 @@ theorem PX_sq_eq (X τ : ℝ) :
       Real.cos_sub, Real.cos_add]; ring
   rw [h1]
   field_simp
-  ring
 
 theorem integrable_fejer_shift_mul_cos (hb : 0 < b) (c θ : ℝ) :
     Integrable fun τ => fejerBandProfile b (τ - c) * Real.cos (θ * τ) :=
@@ -114,10 +113,9 @@ theorem integral_fejer_mul_PX_sq (hb : 0 < b) (c X : ℝ) :
         * (fejerBandProfile b (τ - c) * Real.cos ((Real.log n - Real.log m) * τ)
           + fejerBandProfile b (τ - c) * Real.cos ((Real.log n + Real.log m) * τ)) := by
     intro τ
-    rw [PX_sq_eq, Finset.mul_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun n _ => ?_
-    rw [Finset.mul_sum]
-    exact Finset.sum_congr rfl fun m _ => by ring
+    rw [PX_sq_eq]
+    simp only [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => Finset.sum_congr rfl fun m _ => by ring
   have hint : ∀ n m : ℕ, Integrable fun τ => (1 / (2 * π ^ 2)) * (acoef n * acoef m)
       * (fejerBandProfile b (τ - c) * Real.cos ((Real.log n - Real.log m) * τ)
         + fejerBandProfile b (τ - c) * Real.cos ((Real.log n + Real.log m) * τ)) := fun n m =>
@@ -131,7 +129,6 @@ theorem integral_fejer_mul_PX_sq (hb : 0 < b) (c X : ℝ) :
     (integrable_fejer_shift_mul_cos hb c _), integral_fejer_shift_mul_cos hb,
     integral_fejer_shift_mul_cos hb]
   field_simp
-  ring
 
 /-! ## 3. Counting the coalescent pairs -/
 
@@ -203,13 +200,11 @@ theorem sum_acoef_triangle_le {X : ℝ} (hX : 1 ≤ X) (hb : 0 < b) (hb1 : b ≤
           rw [mul_assoc, ← Real.exp_add]; simp
         nlinarith [hmS.1, Real.exp_pos 1]
       have ham : acoef m ≤ Real.sqrt (Real.exp 1) * Real.log X / Real.sqrt n := by
-        refine (acoef_le_log_div_sqrt hX hm).trans ?_
-        rw [div_le_div_iff₀ (Real.sqrt_pos.mpr hm0) hsn]
-        have := mul_le_mul_of_nonneg_left hsqm (mul_nonneg (Real.sqrt_nonneg (Real.exp 1)) hlogX)
-        rw [mul_div_assoc', div_mul_eq_mul_div] at this
         have hse : 0 < Real.sqrt (Real.exp 1) := Real.sqrt_pos.mpr (Real.exp_pos 1)
-        field_simp at this
-        nlinarith [this, Real.sqrt_nonneg (m : ℝ)]
+        refine (acoef_le_log_div_sqrt hX hm).trans ?_
+        calc Real.log X / Real.sqrt m ≤ Real.log X / (Real.sqrt n / Real.sqrt (Real.exp 1)) :=
+              div_le_div_of_nonneg_left hlogX (by positivity) hsqm
+          _ = _ := by field_simp
       calc acoef m * triangleFn b (Real.log n - Real.log m) ≤ acoef m * 1 :=
             mul_le_mul_of_nonneg_left ht1 ha0
         _ ≤ _ := by rw [mul_one]; exact ham
@@ -218,13 +213,13 @@ theorem sum_acoef_triangle_le {X : ℝ} (hX : 1 ≤ X) (hb : 0 < b) (hb1 : b ≤
         have hnot : ¬ (n * Real.exp (-b) < m ∧ (m : ℝ) < n * Real.exp b) := fun h =>
           hS (Finset.mem_filter.mpr ⟨hm, h⟩)
         rcases not_and_or.mp hnot with h | h
-        · push_neg at h
+        · replace h := not_lt.mp h
           have : Real.log m ≤ Real.log n - b := by
             rw [← Real.log_exp (Real.log n - b), Real.exp_sub, Real.exp_log hn0, div_eq_mul_inv,
               ← Real.exp_neg]
             exact Real.log_le_log hm0 h
           rw [abs_of_nonneg (by linarith)]; linarith
-        · push_neg at h
+        · replace h := not_lt.mp h
           have : Real.log n + b ≤ Real.log m := by
             rw [← Real.log_exp (Real.log n + b), Real.exp_add, Real.exp_log hn0]
             exact Real.log_le_log (by positivity) h
@@ -308,7 +303,7 @@ theorem lorentzW_le_one (R c τ : ℝ) : lorentzW R c τ ≤ 1 := by
   unfold lorentzW; exact inv_le_one_of_one_le₀ (by nlinarith [sq_nonneg ((τ - c) / R)])
 
 /-- A Fejér value bounded below by its numerator over any `D ≥ (vb + s)²`. -/
-theorem fejer_ge_num_div (hb : 0 < b) (v s : ℝ) {D : ℝ} (hD : 0 < D) (hvD : (v * b + s) ^ 2 ≤ D) :
+theorem fejer_ge_num_div (hb : 0 < b) (v s : ℝ) {D : ℝ} (hvD : (v * b + s) ^ 2 ≤ D) :
     b * (2 - 2 * Real.cos (v * b + s)) / D ≤ fejerBandProfile b (v + s / b) := by
   unfold fejerBandProfile
   split_ifs with h0
@@ -346,8 +341,8 @@ theorem lorentz_le_fejer_add_fejer {R : ℝ} (hR : 0 < R) (c τ : ℝ) :
     refine pow_le_pow_left₀ (abs_nonneg _) ?_ 2
     have := abs_add_le u π
     rw [abs_of_pos hπ] at this; linarith
-  have f1 := fejer_ge_num_div hb (τ - c) 0 hD h1
-  have f2 := fejer_ge_num_div hb (τ - c) π hD h2
+  have f1 := fejer_ge_num_div hb (τ - c) 0 h1
+  have f2 := fejer_ge_num_div hb (τ - c) π h2
   rw [zero_div, add_zero, add_zero, ← hu] at f1
   rw [show π / (1 / R) = π * R by field_simp, ← hu, Real.cos_add_pi] at f2
   have hsum : 4 * (1 / R) / D
@@ -374,13 +369,17 @@ theorem lorentz_le_fejer_add_fejer {R : ℝ} (hR : 0 < R) (c τ : ℝ) :
 theorem integrable_lorentzW {R : ℝ} (hR : 0 < R) (c : ℝ) : Integrable (lorentzW R c) := by
   have h := (integrable_inv_one_add_sq.comp_div (ne_of_gt hR)).comp_sub_right c
   refine h.congr (Filter.Eventually.of_forall fun τ => ?_)
-  simp [lorentzW, Function.comp]
+  simp [lorentzW]
 
 theorem continuous_PX' (X : ℝ) : Continuous (Zeta23.PX X) := by
   unfold Zeta23.PX; fun_prop
 
-theorem abs_PX_le' (X τ : ℝ) : |Zeta23.PX X τ| ≤ (1 / π) * ∑ n ∈ primeRange X, acoef n :=
-  Zeta23.PX_abs_le X τ
+theorem abs_PX_le' (X τ : ℝ) : |Zeta23.PX X τ| ≤ (1 / π) * ∑ n ∈ primeRange X, acoef n := by
+  rw [PX_eq, abs_mul, abs_neg, abs_of_pos (by positivity : (0 : ℝ) < 1 / π)]
+  refine mul_le_mul_of_nonneg_left ((Finset.abs_sum_le_sum_abs _ _).trans
+    (Finset.sum_le_sum fun n _ => ?_)) (by positivity)
+  rw [abs_mul, abs_of_nonneg (acoef_nonneg n)]
+  exact mul_le_of_le_one_right (acoef_nonneg n) (Real.abs_cos_le_one _)
 
 /-- **Lorentz-weighted mean value of the prime polynomial.** For `R ≥ 1`, `X ≥ 1`:
 `∫ P_X(τ)² (1 + ((τ − c)/R)²)⁻¹ dτ ≤ 4π √e log X (3ψ(X) + R Σ_{n≤X} Λ(n)/n)`. -/
