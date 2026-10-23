@@ -64,7 +64,7 @@ theorem continuous_multiplicativeProfile {f : ℝ → ℂ} (hf : Continuous f) {
   intro y
   rcases lt_or_ge y (Real.exp (-a)) with hy | hy
   · have hev : multiplicativeProfile f =ᶠ[nhds y] fun _ => 0 :=
-      (Iio_mem_nhds hy).mono fun z hz => multiplicativeProfile_eq_zero hfs hz
+      Filter.eventuallyEq_of_mem (Iio_mem_nhds hy) fun z hz => multiplicativeProfile_eq_zero hfs hz
     exact (continuousAt_const).congr hev.symm
   · have hpos : 0 < y := lt_of_lt_of_le (Real.exp_pos _) hy
     have hsq : ((Real.sqrt y : ℝ) : ℂ) ≠ 0 :=

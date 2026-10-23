@@ -10108,10 +10108,12 @@ theorem primeSide_translate (F : ℝ → ℝ) (a : ℕ → ℝ) (N : ℕ) (c : �
 
 theorem autoCorrelation_reflect (F : ℝ → ℝ) (t : ℝ) :
     autoCorrelation (fun x => F (-x)) t = autoCorrelation F t := by
-  rw [autoCorrelation, autoCorrelation]
   have hrefl := MeasureTheory.integral_neg_eq_self
-    (μ := (volume : Measure ℝ)) (fun y => F y * F (y + t))
-  rw [← autoCorrelation_neg F t, autoCorrelation, ← hrefl]
+    (μ := (volume : Measure ℝ)) (fun y => F y * F (y + -t))
+  show (∫ x, F (-x) * F (-(x + t))) = autoCorrelation F t
+  rw [← autoCorrelation_neg F t]
+  show (∫ x, F (-x) * F (-(x + t))) = ∫ y, F y * F (y + -t)
+  rw [← hrefl]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   show F (-x) * F (-(x + t)) = F (-x) * F (-x + -t)
   rw [show -(x + t) = -x + -t by ring]
@@ -10127,19 +10129,14 @@ theorem primeSide_reflect (F : ℝ → ℝ) (a : ℕ → ℝ) (N : ℕ) :
 theorem expMomentNeg_reflect (F : ℝ → ℝ) :
     expMomentNeg (fun x => F (-x)) = expMomentPos F := by
   rw [expMomentNeg, expMomentPos]
-  have hrefl := MeasureTheory.integral_neg_eq_self
+  exact MeasureTheory.integral_neg_eq_self
     (μ := (volume : Measure ℝ)) (fun y => F y * Real.exp (y / 2))
-  rw [← hrefl]
-  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-  show F (-x) * Real.exp (-x / 2) = F (-x) * Real.exp (-x / 2)
-  rfl
 
 theorem expMomentPos_reflect (F : ℝ → ℝ) :
     expMomentPos (fun x => F (-x)) = expMomentNeg F := by
-  rw [expMomentPos, expMomentNeg]
   have hrefl := MeasureTheory.integral_neg_eq_self
     (μ := (volume : Measure ℝ)) (fun y => F y * Real.exp (-y / 2))
-  rw [← hrefl]
+  rw [expMomentPos, expMomentNeg, ← hrefl]
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   show F (-x) * Real.exp (x / 2) = F (-x) * Real.exp (-(-x) / 2)
   rw [show -(-x) / 2 = x / 2 by ring]
