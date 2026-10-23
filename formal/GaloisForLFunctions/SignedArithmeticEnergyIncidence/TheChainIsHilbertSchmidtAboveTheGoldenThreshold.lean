@@ -566,3 +566,5 @@ theorem centeredOperator_l2_le_of_goldenThreshold {η : ℝ} (h0 : 0 < η) (h1 :
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
+
+#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.centeredOperator_l2_le_of_goldenThreshold

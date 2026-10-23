@@ -238,16 +238,18 @@ def xiReciprocalSquareCauchyQuartetTerm
       (xiSpectralPoint
         (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q)))
 
-/-- The four symmetry pullbacks of a summable weight on the Xi divisor are jointly summable. -/
+/-- The four symmetry pullbacks of a summable weight on the Xi divisor are jointly summable.
+The pulled-back function is always named, so no unification unfolds the copy equivalences. -/
 private theorem summable_quartet_of_summable {t : XiZeroCopy → ℝ} (ht : Summable t) :
     Summable (fun q => t q + t (xiZeroCopyLineConjEquiv q) + t (xiZeroCopyReflectEquiv q) +
       t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) := by
   have hline : Summable (fun q => t (xiZeroCopyLineConjEquiv q)) :=
-    (xiZeroCopyLineConjEquiv.summable_iff).mpr ht
+    (Equiv.summable_iff (f := t) xiZeroCopyLineConjEquiv).mpr ht
   have hreflect : Summable (fun q => t (xiZeroCopyReflectEquiv q)) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr ht
+    (Equiv.summable_iff (f := t) xiZeroCopyReflectEquiv).mpr ht
   have hboth : Summable (fun q => t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr hline
+    (Equiv.summable_iff (f := fun q => t (xiZeroCopyLineConjEquiv q))
+      xiZeroCopyReflectEquiv).mpr hline
   exact ((ht.add hline).add hreflect).add hboth
 
 /-- Each symmetry pullback has the same sum, so the quartet sums to four times the weight. -/
@@ -255,17 +257,19 @@ private theorem tsum_quartet_of_summable {t : XiZeroCopy → ℝ} (ht : Summable
     ∑' q, (t q + t (xiZeroCopyLineConjEquiv q) + t (xiZeroCopyReflectEquiv q) +
       t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) = 4 * ∑' q, t q := by
   have hline : Summable (fun q => t (xiZeroCopyLineConjEquiv q)) :=
-    (xiZeroCopyLineConjEquiv.summable_iff).mpr ht
+    (Equiv.summable_iff (f := t) xiZeroCopyLineConjEquiv).mpr ht
   have hreflect : Summable (fun q => t (xiZeroCopyReflectEquiv q)) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr ht
+    (Equiv.summable_iff (f := t) xiZeroCopyReflectEquiv).mpr ht
   have hboth : Summable (fun q => t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr hline
+    (Equiv.summable_iff (f := fun q => t (xiZeroCopyLineConjEquiv q))
+      xiZeroCopyReflectEquiv).mpr hline
   have hlineSum : (∑' q, t (xiZeroCopyLineConjEquiv q)) = ∑' q, t q :=
     xiZeroCopyLineConjEquiv.tsum_eq t
   have hreflectSum : (∑' q, t (xiZeroCopyReflectEquiv q)) = ∑' q, t q :=
     xiZeroCopyReflectEquiv.tsum_eq t
+  -- reindex in two steps instead of through `Equiv.trans`
   have hbothSum : (∑' q, t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) = ∑' q, t q :=
-    (xiZeroCopyReflectEquiv.trans xiZeroCopyLineConjEquiv).tsum_eq t
+    (xiZeroCopyReflectEquiv.tsum_eq (fun q => t (xiZeroCopyLineConjEquiv q))).trans hlineSum
   rw [((ht.add hline).add hreflect).tsum_add hboth, (ht.add hline).tsum_add hreflect,
     ht.tsum_add hline, hlineSum, hreflectSum, hbothSum]
   ring

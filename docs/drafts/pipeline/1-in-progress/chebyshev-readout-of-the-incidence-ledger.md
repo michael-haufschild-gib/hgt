@@ -947,11 +947,21 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         `Σ_j w_j A(a_j) − 2∫_0^T cosh(s/2)A(s)ds = ∫ (S(ξ) − 2K_T(2πξ))|F̂(ξ)|²dξ`. The sign
         question of the balance becomes the sign of an explicit function of frequency, weighted
         by a density the test may choose but cannot concentrate below scale `1/r`.
+      * **`coshCosKernel_nonneg`**, **`coshCosKernel_neg`**, **`fourier_ofReal_zero_of_odd`**,
+        **`spectralDensity_le_sq_of_odd`**, **`setIntegral_spectralDensity_le_of_odd`**,
+        **`coshCosKernel_nonneg_band`**, **`setIntegral_spectralDensity_payingBand_le`** — where
+        the pole pays, and whether a test can go there. On a finite lag window the polar symbol
+        is not of one sign: it is nonnegative up to the first quarter period, so for the window
+        `T = 2r` the pole pays only on the band `|ξ| ≤ 1/(8r)`, and at three quarters of a period
+        it is strictly negative, `K_T(3π/(2T)) = −(3π/(2T))cosh(T/2)/(¼+(3π/(2T))²) < 0`: there
+        the pole adds to the cost. An odd test cannot exploit the paying band — its transform
+        vanishes at the origin, so its density is `≤ 4π²r²‖F‖₁²ξ²` and the mass it can place in
+        the band is at most `π²‖F‖₁²/(192r)`, cubically small in the band width.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 351 headline results of this card, in the order the card states them. Every name is a
+The 358 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -961,7 +971,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 279.**  Excluded: 43 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 286.**  Excluded: 43 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1314,6 +1324,13 @@ contributions of the field, and are excluded.
 349. `abs_coshCosKernel_le`
 350. `integral_cosh_mul_autoCorrelation_spectral`
 351. `prime_polar_balance_spectral`
+352. `coshCosKernel_nonneg`
+353. `coshCosKernel_neg`
+354. `fourier_ofReal_zero_of_odd`
+355. `spectralDensity_le_sq_of_odd`
+356. `setIntegral_spectralDensity_le_of_odd`
+357. `coshCosKernel_nonneg_band`
+358. `setIntegral_spectralDensity_payingBand_le`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1331,3 +1348,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — the comb diagonalised in frequency: spectral multiplier, payment as multiplier deficit.
 - 2026-10-23 — frequency anti-concentration: Lipschitz spectral density, window-mass bound, resonance limit at scale 1/r.
 - 2026-10-23 — polar side in spectral coordinates; prime–polar balance as one signed-symbol integral.
+- 2026-10-23 — sign law of the polar symbol and the inaccessibility of its paying band to odd tests.

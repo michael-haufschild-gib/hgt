@@ -13357,8 +13357,4 @@ theorem setIntegral_spectralDensity_payingBand_le (hF : Continuous F)
     ring
   linarith [h, hval]
 
-#print axioms coshCosKernel_neg
-#print axioms setIntegral_spectralDensity_payingBand_le
-#print axioms spectralDensity_le_sq_of_odd
-
 end GaloisForLFunctions.ArithmeticIncidencePositivity

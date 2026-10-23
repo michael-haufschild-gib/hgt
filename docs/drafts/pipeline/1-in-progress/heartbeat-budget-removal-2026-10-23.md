@@ -12,9 +12,11 @@ closure. A proof that needs a raised budget is rewritten: explicit `nlinarith` p
 `simp only`, small named lemmas, reusable rewrites.
 
 ## Method
-One file at a time, nearest dependencies first: delete the option, check with
-`lake --old env lean <file>`, refactor any declaration that then times out, recheck. Statements
-are unchanged, so dependents' oleans stay valid.
+One file at a time, nearest dependencies first: read the declarations under the option and fix
+the visible causes (implicit functions in reindexing lemmas over the copy equivalences,
+`let`/`change` in long proofs, unguided `nlinarith`, large unfold lists), delete the option, then
+check once with `lake --old env lean <file>`. Statements are unchanged, so dependents' oleans stay
+valid.
 
 ## Done (direct dependencies)
 - [x] `RHTower/Sieve/ZetaWideDLVP.lean`

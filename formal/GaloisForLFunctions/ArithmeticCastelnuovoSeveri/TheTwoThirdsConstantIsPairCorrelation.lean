@@ -79,7 +79,50 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
-/-! ## 1. Algebraic selection of `c = 2` in multiplicity-aware rank–trace inertia -/
+/-! ## 1. Calibration over `𝔽_q`: trace and Frobenius norm of the Frobenius span Gram -/
+
+namespace CurveDatum
+
+variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
+
+/-- The span Gram matrix `D.spanGram n` is Hermitian (real symmetric). -/
+theorem spanGram_isHermitian (n : ℕ) : (D.spanGram n).IsHermitian := by
+  ext k l
+  simp only [conjTranspose_apply, spanGram, RCLike.star_def, Complex.conj_ofReal, Nat.dist_comm]
+
+/-- **Trace of the Frobenius span Gram is adjunction (`n · 2g`).** Each diagonal entry `(k, k)` of
+`D.spanGram n` is the lag-zero Lefschetz trace `D.trace 0 = #ι = 2g`. -/
+theorem rtrace_spanGram (n : ℕ) :
+    RHLinalg.rtrace (D.spanGram n) = (n : ℝ) * (Fintype.card ι : ℝ) := by
+  unfold RHLinalg.rtrace spanGram Matrix.trace
+  simp [Nat.dist_self, D.trace_zero]
+
+/-- **Frobenius norm of the Frobenius span Gram: adjunction diagonal plus Lefschetz pair correlation.**
+On a window of `n` Frobenius graphs, `‖D.spanGram n‖_F²` splits into the diagonal adjunction term
+`n · (2g)²` (which after trace normalization `G / (n · 2g)` becomes `1/n`, the `𝔽_q` counterpart of
+`1/λ`) and the off-diagonal power-sum correlation `Σ_{k ≠ l} (Tr F^{|k−l|})²` (the `𝔽_q` counterpart
+of the prime-comb pair-correlation integral). -/
+theorem frobSq_spanGram_eq_diag_add_offDiag (n : ℕ) :
+    RHLinalg.frobSq (D.spanGram n) =
+      (n : ℝ) * (Fintype.card ι : ℝ) ^ (2 : ℕ) +
+        ∑ k : Fin n, ∑ l ∈ Finset.univ.erase k, D.trace (Nat.dist k l) ^ (2 : ℕ) := by
+  unfold RHLinalg.frobSq
+  rw [(D.spanGram_isHermitian n).eq]
+  unfold Matrix.trace
+  simp only [diag_apply, mul_apply, spanGram, map_sum, ← Complex.ofReal_mul, RCLike.re_to_complex,
+    Complex.ofReal_re, ← sq]
+  have hsplit : ∀ k : Fin n,
+      ∑ l : Fin n, D.trace (Nat.dist k l) ^ (2 : ℕ) =
+        (Fintype.card ι : ℝ) ^ (2 : ℕ) +
+          ∑ l ∈ Finset.univ.erase k, D.trace (Nat.dist k l) ^ (2 : ℕ) := by
+    intro k
+    rw [← Finset.add_sum_erase _ _ (Finset.mem_univ k), Nat.dist_self, D.trace_zero]
+  simp_rw [hsplit]
+  rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+
+end CurveDatum
+
+/-! ## 2. Algebraic selection of `c = 2` in multiplicity-aware rank–trace inertia -/
 
 /-- **Weight cancellation identity at `c = 2`.** In the multiplicity-aware rank–trace bound
 `2c tr Â − ‖Â‖_F² ≤ Σ_{on} k_c(m_j) + c² p`, setting `c = 2` gives `k₂(1) = 3` and `k₂(m) = 4 = 2²`
@@ -436,7 +479,66 @@ theorem rankTrace_tight_at_two_thirds (k : ℕ) :
   · rw [hNon2, hN2]; push_cast; ring
   · rw [blockA_doubleZeroBlockData, rtrace_extremalDiag, frobSq_extremalDiag, hN1]; push_cast; ring
 
-/-! ## 3. Where `κ = 4/3` comes from: the sub-threshold pair-correlation identity and escape beyond `2/3` -/
+/-- **Simultaneous tightness of the `c = 3` distinct-zero rank–trace bound (`(3/2 − κ/2)N`).**
+On the same matrix `extremalDiag s₁ d₂` (`N = s₁ + 2d₂`), the `c = 3` distinct-zero rank–trace
+functional `(6 tr Â − ‖Â‖_F² − 3N) / 2` equals `s₁ + d₂` identically, matching the exact number of
+distinct zeros `#ι = s₁ + d₂` of `doubleZeroBlockData s₁ d₂` (and `(5/6)N` at `s₁ = 4k, d₂ = k`). -/
+theorem rankTrace_three_extremalDiag_exact (s₁ d₂ : ℕ) :
+    (6 * RHLinalg.rtrace (extremalDiag s₁ d₂) - RHLinalg.frobSq (extremalDiag s₁ d₂) -
+      3 * ((s₁ : ℝ) + 2 * (d₂ : ℝ))) / 2 = (s₁ : ℝ) + (d₂ : ℝ) := by
+  rw [rtrace_extremalDiag, frobSq_extremalDiag]
+  ring
+
+/-- Every on-line evaluation vector of `coalescedPairBlockData s₁ p` has unit `ℓ²` norm. -/
+theorem norm_sq_v_coalescedPairBlockData (s₁ p : ℕ) (z : Fin s₁ ⊕ (Fin p ⊕ Fin p)) :
+    ∑ k : Fin s₁ ⊕ Fin p, ‖(coalescedPairBlockData s₁ p).v z k‖ ^ (2 : ℕ) = 1 := by
+  have huniv : ∀ w : Fin s₁ ⊕ Fin p, ∑ k : Fin s₁ ⊕ Fin p, ‖unitVec w k‖ ^ (2 : ℕ) = 1 := by
+    intro w
+    have hterm : ∀ k : Fin s₁ ⊕ Fin p, ‖unitVec w k‖ ^ (2 : ℕ) = if k = w then 1 else 0 := by
+      intro k; simp only [unitVec]; split_ifs <;> simp
+    simp_rw [hterm]
+    simp
+  rcases z with i | (j | j)
+  · exact huniv (Sum.inl i)
+  · exact huniv (Sum.inr j)
+  · exact huniv (Sum.inr j)
+
+/-- **Universal matrix-functional barrier (`4 tr Â − ‖Â‖_F² − 2N` is Pareto-optimal).**
+Let `Φ` be **any** real-valued functional of the full evaluation Gram matrix `blockA` and the total
+zero count `Ncount` (including arbitrary higher moments `tr(blockA^m)`, eigenvalues, or nonlinear
+spectral invariants). If `Φ D.blockA D.Ncount ≤ D.Non` holds for every normalized `ZeroBlockData`
+configuration `D` on the probe grid `Fin s₁ ⊕ Fin d₂`, then on `extremalDiag s₁ d₂` (`N = s₁ + 2d₂`),
+`Φ` cannot exceed the linear rank–trace bound `4 tr Â − ‖Â‖_F² − 2N = s₁`. -/
+theorem universal_matrix_functional_barrier (s₁ d₂ : ℕ)
+    (Φ : Matrix (Fin s₁ ⊕ Fin d₂) (Fin s₁ ⊕ Fin d₂) ℂ → ℕ → ℝ)
+    (hΦ : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (D : ZeroBlockData ι (Fin s₁ ⊕ Fin d₂)),
+      (∀ z ∈ D.onLine, ∑ k, ‖D.v z k‖ ^ (2 : ℕ) ≤ 1) →
+      Φ D.blockA D.Ncount ≤ (D.Non : ℝ)) :
+    Φ (extremalDiag s₁ d₂) (s₁ + 2 * d₂) ≤
+      4 * RHLinalg.rtrace (extremalDiag s₁ d₂) - RHLinalg.frobSq (extremalDiag s₁ d₂) -
+        2 * ((s₁ : ℝ) + 2 * (d₂ : ℝ)) := by
+  have h := hΦ (Fin s₁ ⊕ (Fin d₂ ⊕ Fin d₂)) (coalescedPairBlockData s₁ d₂)
+    (fun z _ => (norm_sq_v_coalescedPairBlockData s₁ d₂ z).le)
+  rw [blockA_coalescedPairBlockData, (counts_coalescedPairBlockData s₁ d₂).1,
+    (counts_coalescedPairBlockData s₁ d₂).2.1, ← rankTrace_extremalDiag_exact s₁ d₂] at h
+  exact h
+
+/-- **Universal `2/3` barrier at `κ = 4/3`.** Any functional `Φ(blockA, Ncount)` that is a valid
+lower bound on `N_on` (or `s₁`) for all normalized `ZeroBlockData` configurations on
+`Fin (4k) ⊕ Fin k` satisfies `Φ ((doubleZeroBlockData (4k) k).blockA) (6k) ≤ (2/3) · (6k)`. -/
+theorem universal_matrix_functional_barrier_at_two_thirds (k : ℕ)
+    (Φ : Matrix (Fin (4 * k) ⊕ Fin k) (Fin (4 * k) ⊕ Fin k) ℂ → ℕ → ℝ)
+    (hΦ : ∀ (ι : Type) [Fintype ι] [DecidableEq ι]
+      (D : ZeroBlockData ι (Fin (4 * k) ⊕ Fin k)),
+      (∀ z ∈ D.onLine, ∑ k', ‖D.v z k'‖ ^ (2 : ℕ) ≤ 1) →
+      Φ D.blockA D.Ncount ≤ (D.Non : ℝ)) :
+    Φ ((doubleZeroBlockData (4 * k) k).blockA) (6 * k) ≤ (2 / 3 : ℝ) * (6 * k : ℝ) := by
+  have h := universal_matrix_functional_barrier (4 * k) k Φ hΦ
+  rw [← blockA_doubleZeroBlockData, show 4 * k + 2 * k = 6 * k by omega,
+    blockA_doubleZeroBlockData, rankTrace_extremalDiag_exact] at h
+  linarith
+
+/-! ## 4. Where `κ = 4/3` comes from: the sub-threshold pair-correlation identity and escape beyond `2/3` -/
 
 /-- **Sub-threshold pair-correlation identity (`0 < λ ≤ 1`).** Below the square-root threshold
 `λ ≤ 1`, where only the archimedean self-pairing `1/λ` (adjunction) and the unconditional

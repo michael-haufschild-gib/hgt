@@ -51,8 +51,8 @@ theorem log_pow_le_rpow_quarter {x : ℝ} (hx : 1 ≤ x) (N : ℕ) :
   have hε : (0 : ℝ) < 1 / (4 * (N + 1)) := by positivity
   have hlog : Real.log x ≤ 4 * (N + 1) * x ^ (1 / (4 * (N + 1)) : ℝ) := by
     have h := Real.log_le_rpow_div (by linarith : (0 : ℝ) ≤ x) hε
-    rw [div_eq_mul_inv, one_div, inv_inv] at h
-    linarith
+    rw [div_div_eq_mul_div, div_one, mul_comm] at h
+    exact h
   have h1 := pow_le_pow_left₀ h0 hlog N
   rw [mul_pow, ← Real.rpow_natCast (x ^ (1 / (4 * (N + 1)) : ℝ)),
     ← Real.rpow_mul (by linarith)] at h1
@@ -235,7 +235,7 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
     by positivity, fun w hw hw2 => ⟨fun ht0 ht => ?_, fun ht => ?_⟩⟩
   · -- small heights
     have hF := hB w hw
-    have hΠ := (hLprod w hw hw2).1 ht
+    have hLp := (hLprod w hw hw2).1 ht
     have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
     have hζf : ‖riemannZeta w‖ ^ e₀ ≤ Aζ * (|w.im| ^ (-max e₀ 0) + 1) := by
       have hpow0 : 0 ≤ |w.im| ^ (-max e₀ 0) := Real.rpow_nonneg (abs_nonneg _) _
@@ -262,7 +262,8 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
             have := Real.log_le_sub_one_of_pos (show 0 < |w.im| by linarith); linarith
           have h1 := rpow_le_one_add_self (norm_nonneg (riemannZeta w)) he0 he₀1
           have h14 : (14 : ℝ) ≤ Aζ := le_max_of_le_left (le_max_right _ _)
-          nlinarith
+          have hp : 0 ≤ Aζ * |w.im| ^ (-e₀) := mul_nonneg hAζ (Real.rpow_nonneg (abs_nonneg _) _)
+          linarith
       · rw [max_eq_right he0, neg_zero, Real.rpow_zero]
         have hinv : ‖riemannZeta w‖ ^ e₀ = (‖riemannZeta w‖⁻¹) ^ (-e₀) := by
           rw [Real.inv_rpow hζpos.le, Real.rpow_neg hζpos.le, inv_inv]
@@ -276,12 +277,12 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
         ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
             ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
       _ ≤ Real.exp B * (Aζ * (|w.im| ^ (-max e₀ 0) + 1)) * Ml :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hΠ
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp
             (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
       _ = Real.exp B * Aζ * Ml * (|w.im| ^ (-max e₀ 0) + 1) := by ring
   · -- large heights
     have hF := hB w hw
-    have hΠ := (hLprod w hw hw2).2 ht
+    have hLp := (hLprod w hw hw2).2 ht
     have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
     set L := Real.log |w.im|
     have hL2 : 2 < L := by
@@ -310,7 +311,7 @@ theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)
         ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
             ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
       _ ≤ Real.exp B * ((K₁ + 7) * L ^ 10) * (Cl * L ^ (14 * k)) :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hΠ
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hLp
             (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
       _ = Real.exp B * (K₁ + 7) * Cl * L ^ (10 + 14 * k) := by rw [← hsplit]; ring
       _ ≤ Real.exp B * (K₁ + 7) * Cl *
@@ -431,3 +432,5 @@ theorem receiverBounded_residueFlip_half_iff {q : ℕ} [NeZero q] {S : Finset (Z
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
+
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_residueFlip_half_iff

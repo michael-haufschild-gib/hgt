@@ -77,6 +77,10 @@ Query syntax and paging:
   increases or `0`, `maxRecDepth`, `synthInstance.maxHeartbeats`, `synthInstance.maxSize`, or
   equivalent local/global budget hacks. Reduce tactic work: explicit `nlinarith` inputs,
   targeted `simp only`, small named lemmas, and reusable rewrites instead of repeated unfolding.
+- Optimizing a slow file or removing a raised budget starts with reading the code, not with
+  building or measuring it. Fix the visible causes first (implicit functions in reindexing
+  lemmas over heavy equivalences, `let`/`change` in long proofs, unguided `nlinarith`, large
+  unfold lists), then check once. Measuring is a last resort.
 - Verify mathlib names in `/tmp` scratch files before using them; follow the compilation rules below.
 - Add helpful, crisp comments for module purpose, non-obvious declarations, and key proof steps.
   Do not leave substantial mathematics unexplained; trivial rewrites need no narration.

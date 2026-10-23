@@ -592,32 +592,31 @@ theorem ninety_one_one_eightieths_l2_sub_seventy_one_second_add_geom_le_bochnerR
       have h2 := weilSymmetricLogNumerator_one_eq_two_mul_integral_norm_sq f
       linarith
     have hS_nn : 0 ≤ spectralSecondMoment f.1 := spectralSecondMoment_nonneg f.1
-    have hsqrt_nn : 0 ≤ Real.sqrt
-        (spectralSecondMoment f.1 *
-          (spectralSecondMoment f.1 + 2 * ∫ u : ℝ, ‖f.1 u‖ ^ 2)) := Real.sqrt_nonneg _
     have hres_nn : 0 ≤ bochnerResolventEnergy (EF.weilTest f.1 f.1) :=
       bochnerResolventEnergy_weilTest_nonneg f
     unfold secantNumeratorCellDefect
     rw [Finset.Icc_eq_empty (by omega : ¬ 2 ≤ 1), Finset.sum_empty, hL0]
+    have hsqrt_nn : 0 ≤ Real.sqrt
+        (spectralSecondMoment f.1 * (spectralSecondMoment f.1 + 2 * 0)) := Real.sqrt_nonneg _
     linarith
 
 /-! ## Section 2: Coercivity, Unconditional `0 ≤ markovEnergy`, and Cutoff-Free `EWU` Spectral Gaps up to `33` and `69 / 2 = 34.5` -/
 
-/-- **Universal Tangent Upper Bound `Real.sqrt (S * (S + 2 * L)) ≤ (2313 / 2312) * S + (34 / 35) * L`**:
-evaluating the variational envelope at `b = 17 / 35` (`((2313 / 2312) S + (34 / 35) L)² - S(S + 2L) = ((69 / 2312) S - (34 / 35) L)² ≥ 0`) gives a linear upper bound that is exact at `S / L = 78608 / 2415 ≈ 32.55`. -/
+/-- **Universal Tangent Upper Bound `Real.sqrt (S * (S + 2 * L)) ≤ (2381 / 2380) * S + (34 / 35) * L`**:
+evaluating the variational envelope at `b = 17 / 35` (`((2381 / 2380) S + (34 / 35) L)² - S(S + 2L) = ((69 / 2380) S - (34 / 35) L)² ≥ 0`) gives a linear upper bound that is exact at `S / L = 80920 / 2415 ≈ 33.51`. -/
 theorem sqrt_spectralSecondMoment_mul_add_two_l2_le_add_seventeen_thirty_fifths
     (f : WeilTestFn) :
     Real.sqrt
         (spectralSecondMoment f.1 *
           (spectralSecondMoment f.1 + 2 * ∫ u : ℝ, ‖f.1 u‖ ^ 2)) ≤
-      (2313 / 2312) * spectralSecondMoment f.1 + (34 / 35) * ∫ u : ℝ, ‖f.1 u‖ ^ 2 := by
+      (2381 / 2380) * spectralSecondMoment f.1 + (34 / 35) * ∫ u : ℝ, ‖f.1 u‖ ^ 2 := by
   let S := spectralSecondMoment f.1
   let L := ∫ u : ℝ, ‖f.1 u‖ ^ 2
   have hS_nonneg : 0 ≤ S := spectralSecondMoment_nonneg f.1
   have hL_nonneg : 0 ≤ L := integral_nonneg fun _ => sq_nonneg _
-  rw [← Real.sqrt_sq (by positivity : 0 ≤ (2313 / 2312) * S + (34 / 35) * L)]
+  rw [← Real.sqrt_sq (by positivity : 0 ≤ (2381 / 2380) * S + (34 / 35) * L)]
   refine Real.sqrt_le_sqrt ?_
-  have hsq : 0 ≤ ((69 / 2312) * S - (34 / 35) * L) ^ 2 := sq_nonneg _
+  have hsq : 0 ≤ ((69 / 2380) * S - (34 / 35) * L) ^ 2 := sq_nonneg _
   linarith
 
 /-- **Resolvent-Enhanced Quadrature Coercivity up to Critical Ratio `33` (Upgraded from `51 / 2 = 25.5`)**:
@@ -1005,8 +1004,10 @@ for every prime-blind `f : WeilTestFn` (`logVector f = 0`) and every `2 ≤ n`,
 theorem weilSymmetricLogNumerator_natCast_eq_zero_of_logVector_eq_zero
     (f : WeilTestFn) (hblind : logVector f = 0) {n : ℕ} (hn : 2 ≤ n) :
     weilSymmetricLogNumerator f.1 (n : ℝ) = 0 := by
+  have hlog : logValue f.1 n = 0 := by
+    rw [← logVector_apply f ⟨n, hn⟩, hblind, Finsupp.zero_apply]
   rw [weilSymmetricLogNumerator_natCast_eq_sqrt_mul_logValue f.1 (by omega : 1 ≤ n),
-    logValue_eq_zero_of_logVector_eq_zero hblind hn, mul_zero]
+    hlog, mul_zero]
 
 /-- **Exact Identical Vanishing of Tail Secants (`3 ≤ n`) on the Prime-Blind Cone**:
 for every prime-blind `f : WeilTestFn` (`logVector f = 0`), every tail cell `3 ≤ n`, and every `x : ℝ`,
@@ -1063,7 +1064,6 @@ theorem neg_four_mul_sqrt_sub_pred_l2_le_cell_integral_of_logVector_eq_zero
     · intro x hx
       exact ne_of_gt (Real.sqrt_pos.mpr (by linarith [hx.1, hn2_real]))
   refine intervalIntegral.integral_mono_on hn_le hint_low hint_high fun x hx => ?_
-  dsimp only
   rw [cellSecant_weilSymmetricLogNumerator_eq_zero_of_logVector_eq_zero f hblind hn x, sub_zero,
     div_eq_mul_inv]
   have hx_pos : 0 < Real.sqrt x := Real.sqrt_pos.mpr (by linarith [hx.1, hn2_real])
@@ -1088,7 +1088,7 @@ theorem sum_Icc_three_sqrt_sub_pred_eq {M : ℕ} (hM : 2 ≤ M) :
     have hnotmem : 2 + (k + 1) ∉ Finset.Icc 3 (2 + k) := by
       simp only [Finset.mem_Icc]
       omega
-    rw [hIcc, Finset.sum_insert hnotmem, ih]
+    rw [hIcc, Finset.sum_insert hnotmem, ih (by omega : 2 ≤ 2 + k)]
     have hcast : ((2 + (k + 1) : ℕ) : ℝ) - 1 = ((2 + k : ℕ) : ℝ) := by
       push_cast
       ring
@@ -1275,7 +1275,7 @@ theorem neg_far_tail_geom_le_sum_Icc_succ
     rw [← Finset.mul_sum] at hsum
     have htail := mul_le_mul_of_nonneg_left
       (sum_Icc_succ_hermiteQuinticCellWeight_le hM N) hK_nonneg
-    dsimp [W] at hvar ⊢
+    dsimp [W] at htail ⊢
     linarith
   change -W * Real.sqrt (S * (S + 2 * L)) ≤ _
   rcases eq_or_lt_of_le hS_nonneg with hS0 | hS_pos
@@ -1391,7 +1391,9 @@ theorem multi_cell_clamped_conservation_bound_of_logVector_eq_zero
       intro n hn1 hn2
       simp only [Finset.mem_Icc] at hn1 hn2
       omega
-    rw [hIcc_union, Finset.sum_union hdisj, add_assoc]
+    rw [hIcc_union, Finset.sum_union hdisj,
+      show ((2 : ℕ) : ℝ) - 1 = 1 by norm_num, show ((2 : ℕ) : ℝ) = 2 by norm_num]
+    ring
   linarith
 
 end RHTower
