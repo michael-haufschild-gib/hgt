@@ -19,12 +19,14 @@ eliminated.
 
 
 
+open Complex Filter GaloisForLFunctions GaloisForLFunctions.HTGeometry MeasureTheory Metric Polynomial Set Topology Zeta23 intervalIntegral
+open scoped Real
+
 noncomputable section
 
 namespace RHTower
 
-open Complex Filter GaloisForLFunctions GaloisForLFunctions.HTGeometry MeasureTheory Metric Polynomial Set Topology Zeta23 intervalIntegral
-open scoped Real
+
 
 /-- `abs_thetaIncrement_le_of_inv_cube` with its constants supplied by
 `RHTower.exists_abs_thetaCuspSeed_le_inv_cube`. -/
@@ -34,7 +36,7 @@ theorem abs_thetaIncrement_le_of_inv_cube_uniform :
   obtain ⟨Cg, h_0_0, h_0_1⟩ := RHTower.exists_abs_thetaCuspSeed_le_inv_cube
   refine ⟨Cg, ?_⟩
   intro N r hN hr
-  apply abs_thetaIncrement_le_of_inv_cube <;> assumption
+  apply abs_thetaIncrement_le_of_inv_cube <;> first | assumption | linarith
 
 /-- `abs_thetaCuspSeed_natCast_div_le` with its constants supplied by
 `RHTower.exists_abs_thetaCuspSeed_le_inv_cube`. -/
@@ -44,7 +46,7 @@ theorem abs_thetaCuspSeed_natCast_div_le_uniform :
   obtain ⟨Cg, h_0_0, h_0_1⟩ := RHTower.exists_abs_thetaCuspSeed_le_inv_cube
   refine ⟨Cg, ?_⟩
   intro N hN r
-  apply abs_thetaCuspSeed_natCast_div_le <;> assumption
+  apply abs_thetaCuspSeed_natCast_div_le <;> first | assumption | linarith
 
 /-- `norm_integral_edgeDeriv_cexp_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_bound`. -/
@@ -54,7 +56,7 @@ theorem norm_integral_edgeDeriv_cexp_le_uniform :
   obtain ⟨M₀, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_bound
   refine ⟨M₀, ?_⟩
   intro c
-  apply norm_integral_edgeDeriv_cexp_le <;> assumption
+  apply norm_integral_edgeDeriv_cexp_le <;> first | assumption | linarith
 
 /-- `norm_integral_edgeDerivDeriv_cexp_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_deriv_bound`. -/
@@ -64,7 +66,7 @@ theorem norm_integral_edgeDerivDeriv_cexp_le_uniform :
   obtain ⟨M₀, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_deriv_bound
   refine ⟨M₀, ?_⟩
   intro c
-  apply norm_integral_edgeDerivDeriv_cexp_le <;> assumption
+  apply norm_integral_edgeDerivDeriv_cexp_le <;> first | assumption | linarith
 
 /-- `abs_deriv_plateauBump_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_global_bound`. -/
@@ -74,7 +76,7 @@ theorem abs_deriv_plateauBump_le_uniform :
   obtain ⟨K, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_global_bound
   refine ⟨K, ?_⟩
   intro a u
-  apply abs_deriv_plateauBump_le <;> assumption
+  apply abs_deriv_plateauBump_le <;> first | assumption | linarith
 
 /-- `abs_plateauProfileDeriv_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_global_bound`. -/
@@ -84,7 +86,7 @@ theorem abs_plateauProfileDeriv_le_uniform :
   obtain ⟨K, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_global_bound
   refine ⟨K, ?_⟩
   intro a u
-  apply abs_plateauProfileDeriv_le <;> assumption
+  apply abs_plateauProfileDeriv_le <;> first | assumption | linarith
 
 /-- `norm_deriv_twistedOddTest_plateau_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_global_bound`. -/
@@ -94,7 +96,7 @@ theorem norm_deriv_twistedOddTest_plateau_le_uniform :
   obtain ⟨K, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_global_bound
   refine ⟨K, ?_⟩
   intro a ha0 γ x
-  apply norm_deriv_twistedOddTest_plateau_le <;> assumption
+  apply norm_deriv_twistedOddTest_plateau_le <;> first | assumption | linarith
 
 /-- `norm_sq_twistedPlateau_polarDerivativeSource_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_global_bound`. -/
@@ -104,7 +106,7 @@ theorem norm_sq_twistedPlateau_polarDerivativeSource_le_uniform :
   obtain ⟨K, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_global_bound
   refine ⟨K, ?_⟩
   intro a ha0 γ A hA
-  apply norm_sq_twistedPlateau_polarDerivativeSource_le <;> assumption
+  apply norm_sq_twistedPlateau_polarDerivativeSource_le <;> first | assumption | linarith
 
 /-- `norm_twistedMoment_plateau_le₂` with its constants supplied by
 `RHTower.exists_plateau_coeff_bound₂`. -/
@@ -114,7 +116,7 @@ theorem norm_twistedMoment_plateau_le₂_uniform :
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_plateau_coeff_bound₂
   refine ⟨M, ?_⟩
   intro Θ hΘ a ha ha0 b μ hb
-  apply norm_twistedMoment_plateau_le₂ <;> assumption
+  apply norm_twistedMoment_plateau_le₂ <;> first | assumption | linarith
 
 /-- `norm_dualDiagonalIntegrand_left_le` with its constants supplied by
 `RHTower.exists_norm_zetaChi_le_rightStrip`, `RHTower.exists_norm_riemannZeta_le_leftStrip`. -/
@@ -125,7 +127,7 @@ theorem norm_dualDiagonalIntegrand_left_le_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.exists_norm_riemannZeta_le_leftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro d c x τ hd hd8 hc hx v
-  apply norm_dualDiagonalIntegrand_left_le <;> assumption
+  apply norm_dualDiagonalIntegrand_left_le <;> first | assumption | linarith
 
 /-- `integral_cutSourceDeriv_le` with its constants supplied by
 `RHTower.exists_bound_deriv_unitCutoff`. -/
@@ -135,7 +137,7 @@ theorem integral_cutSourceDeriv_le_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_bound_deriv_unitCutoff
   refine ⟨C₁, ?_⟩
   intro g g' hI0 hI1 c R hR
-  apply integral_cutSourceDeriv_le <;> assumption
+  apply integral_cutSourceDeriv_le <;> first | assumption | linarith
 
 /-- `tendsto_scaled_regPart` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
@@ -144,7 +146,7 @@ theorem tendsto_scaled_regPart_uniform :
       Tendsto (fun ε : ℝ => ((ε : ℂ)) ^ 2 * gammaDampedRegPart (1 + ε) (ε * v)) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
   intro v
-  apply tendsto_scaled_regPart <;> assumption
+  apply tendsto_scaled_regPart <;> first | assumption | linarith
 
 /-- `tendsto_scaledPolePart` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
@@ -153,7 +155,7 @@ theorem tendsto_scaledPolePart_uniform :
       Tendsto (fun ε : ℝ => scaledPolePart ε v) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds ((1 / riemannZeta 2) * ((criticalDirection v)⁻¹ ^ 2 - (criticalDirection v)⁻¹))) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
   intro v
-  apply tendsto_scaledPolePart <;> assumption
+  apply tendsto_scaledPolePart <;> first | assumption | linarith
 
 /-- `tendsto_scaledPoleIntegrand` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
@@ -162,20 +164,20 @@ theorem tendsto_scaledPoleIntegrand_uniform :
       Tendsto (fun ε : ℝ => scaledPoleIntegrand ε v) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds ((((1 / riemannZeta 2) * ((criticalDirection v)⁻¹ ^ 2 - (criticalDirection v)⁻¹)).im) ^ 2 * HTGeometry.gammaCyclicDensity 0)) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
   intro v
-  apply tendsto_scaledPoleIntegrand <;> assumption
+  apply tendsto_scaledPoleIntegrand <;> first | assumption | linarith
 
 /-- `tendsto_integral_scaledPoleIntegrand` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
 theorem tendsto_integral_scaledPoleIntegrand_uniform :
     Tendsto (fun ε : ℝ => ∫ v : ℝ, scaledPoleIntegrand ε v) (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (∫ v : ℝ, (((1 / riemannZeta 2) * ((criticalDirection v)⁻¹ ^ 2 - (criticalDirection v)⁻¹)).im) ^ 2 * HTGeometry.gammaCyclicDensity 0)) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
-  apply tendsto_integral_scaledPoleIntegrand <;> assumption
+  apply tendsto_integral_scaledPoleIntegrand <;> first | assumption | linarith
 
 /-- `tendsto_nearPoleEnergy` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
 theorem tendsto_nearPoleEnergy_uniform :
     Tendsto nearPoleEnergy (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds ((1 / (2 * Real.pi)) * (HTGeometry.gammaCyclicDensity 0 * ((6 / Real.pi ^ 2) ^ 2 * Real.pi)))) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
-  apply tendsto_nearPoleEnergy <;> assumption
+  apply tendsto_nearPoleEnergy <;> first | assumption | linarith
 
 end RHTower

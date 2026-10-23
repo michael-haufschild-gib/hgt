@@ -86,6 +86,16 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- User-requested supporting work:
+  [RH--twin-prime pair-kernel bridge](../3-formalized/twin-prime-rh-pair-kernel-bridge.md).
+  The existing RH square-window correlation criterion and exact
+  twin-prime tail detection can read one von Mangoldt pair kernel.
+  Paper proof and all five Lean capstone audits passed.
+  A sharper formalized deduction shows that deleting the explicit twin
+  slice leaves this RH growth criterion unchanged, because every
+  individual lag already has a uniform subpower bound. This
+  establishes a common arithmetic representation and its precise
+  limitation, not an equivalence between the two conjectures.
 - Completed finite audit:
   [proper-divisor mark boundary](../3-formalized/twin-prime-divisor-mark-transfer-boundary.md).
 - Active analytic target:
@@ -140,26 +150,22 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   remains the research target; no theorem is declared by replacing it with
   a premise. Next cycle must attack that estimate rather than produce
   further equivalent definitions or routine wrappers.
-- Verification: both leaf compiles and capstone axiom audits passed; own
-  umbrella and root import wired without building either umbrella. Index
-  regenerated; both capstones found by the corpus search. Latest global
-  lint reports four unrelated unreachable modules, three unrelated package
-  root leaves, and stale `LEAN_API.md` during concurrent work. No global
-  lint pass is claimed. Earlier own-source and moved-card checks
-  passed. Current research scratch files remain under the owned
-  `/tmp/hgt-twin-prime-` prefix pending this batch's cleanup.
-- Latest finite-transfer batch: `ModulusEnergy.lean` passed its
-  leaf compile and standard-axiom audit, its import is wired, and
-  its capstone is returned by the regenerated corpus index. Owned
-  source/card whitespace and relative links passed. Global lint
-  still fails outside this work: three unreachable receiver modules,
-  five research leaves at package root, and all three generated
-  summaries stale during concurrent edits. No global pass claimed.
-- Semiprime-energy batch: exact coefficient, uniform eventual
-  `E>=T^2/25`, and failure of `o(T^2)` passed the leaf and
-  capstone standard-axiom audits in `SemiprimeEnergy.lean`.
-  This is known mathematics exposing an obstruction, not new
-  signed cancellation or a twin-prime proof.
+- Verification: all five owned research leaves passed their
+  leaf checks and capstone standard-axiom audits. The own umbrella
+  and root import are wired; neither umbrella was built. Indexes
+  were regenerated and the latest RH deletion capstone is returned
+  by the corpus search. All 21 owned source/card files passed
+  whitespace and relative-link checks. Global lint still reports
+  unreachable modules, research leaves at package root, and stale
+  `LEAN_API.md`/`LEAN_OVERVIEW.md` during concurrent work; no global
+  pass is claimed. All owned research scratch files were removed.
+- Latest structural batch: the RH pair-kernel criterion, exact
+  twin-prime tail criterion, pair partition, uniform lag bound,
+  and RH criterion after deleting twins are certified in
+  `RHPairKernelBridge.lean`. This completes the user's supporting
+  bridge request, not the unconditional twin-prime goal. The
+  shared aggregate growth class does not supply the missing
+  fixed-gap positivity estimate.
 
 ## Log
 
@@ -235,3 +241,8 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   explicit prime-product lower bound. The full positive survivor
   is formalized using the corpus's unconditional PNT, with no
   new analytic premise. The signed determinant endpoint remains open.
+- 2026-10-23 — Completed the user-requested RH--twin-prime bridge.
+  Both are expressed through one von Mangoldt pair kernel; the
+  fixed-lag bound and deletion criterion precisely identify the
+  aggregate criterion's limitation. All five capstone axiom audits
+  and the leaf check passed. Neither conjecture is proved.

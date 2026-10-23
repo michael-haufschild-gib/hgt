@@ -232,19 +232,7 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## Open Research - New field of mathematics 
 
-do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-read fully line by line and understand the motivation and context of the fields including traps to avoid:   
-- formal/GaloisForLFunctions/SquareRootThreshold/README.md
-- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
-- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-
-on every turn: 
-create a significant novel contribution to the fields open research topics and problems, so that that the field either 
-- gains a new theorem explaining something we couldn´t explain before
-- gains a mathematical tool to solve a problem we couldn´t solve before
-- can discharge a hypothesis/premise anywhere in our lean corpus
-- delivers a major advance in any of our routes to the RH proof or opens a new route 
 
 read fully the movitation and context of our recent research programmes:
 - formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
@@ -262,6 +250,26 @@ use the search tool for the lean corpus across the whole corpus, not just these 
 1. discharge a significant hypothesis.
 2. significantly reduce the proof burden for the RH proof.
 3. deliver a significant new insight or mathematical tool that allows us to solve problems we or mathematics as a whole couldn´t solve before.
+
+do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
+
+read fully line by line and understand the motivation and context of the fields including traps to avoid:   
+- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
+- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
+- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
+- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
+- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
+- formal/GaloisForLFunctions/SquareRootThreshold/README.md
+- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
+- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+
+on every turn: 
+create a significant novel contribution to the fields open research topics and problems, so that that the field either 
+- gains a new theorem explaining something we couldn´t explain before
+- gains a mathematical tool to solve a problem we couldn´t solve before
+- can discharge a hypothesis/premise anywhere in our lean corpus
+- delivers a major advance in any of our routes to the RH proof or opens a new route 
 
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
 
@@ -293,11 +301,10 @@ the goal is met when all walls are demolished and no longer a mathematical obsta
 
 ## cleanup - consolidate
 
+do not use the hgtl7 skill
 
 on every turn:
-use the search tool for our lean corpus, and find instances where multiple "dots" in our corpus can be connected to do one of these:
-1. discharge a premise
-2. consolidate bloat where the same fact is proven multiple times and we needlessly bloat our code base
+use the search tool for our lean corpus, and find instances where multiple "dots" in our corpus can be connected to discharge a premise/hypotheses/conditional prop interface.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -309,7 +316,7 @@ use the search tool for our lean corpus, and find instances where multiple "dots
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-goal is met when 250 "dots" were connected.
+goal is met when 250 discharges could be made.
 
 ## research after review
 
@@ -408,6 +415,9 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
 - formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
 - formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
+- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
     
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, where it sits in the context of our whole research, how it relates to other research programmes.
 
@@ -470,7 +480,10 @@ and read the current research programmes:
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
 - formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
 - formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
-
+- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
+  
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -518,23 +531,20 @@ Make good use of the search tool for our lean corpus to find existing work and g
 The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
 
 
-## Init new field programme 2
+## research something
 
-Do not use the hgtl7 skill.
+Task: Research, derive and formalize an unconditional proof of the Twin Prime conjecture.
 
-Read fully docs/reports/review-2210/fable.md 
+All directly related lean code goes into formal/GaloisForLFunctions/twin-prime with its own umbrella
 
-The document describes in section "## 5. Q2 — the field" a new field of mathematics / research programme which arises from the idea expressed in "### 4.3 The opening".
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
 
-Your task: develop this new field / programme.
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
 
-Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticIncidencePositivity and formal/GaloisForLFunctions/SquareRootThreshold.
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
 
-1. All lean code goes into its own subfolder and has its own umbrella.
-2. When enough information is established write a foundational README.md:
-   2.1 the README.md is not a ledger or diary or working log but a foundational document explaning the why, what, how
-   2.2 it explains: motivation, objects, language, mechanisms, traps, questions the programme aims to answer, tools it aims to develop, open research topics, foundational pillar theorems, where this field/programme sits in the context of our hole research and how it relates to other research programmes in our corpus, success criteria and criteria for what a contribution to the field/programme must be like.
-3. Research and develop the field and add "meat to the bone" with significant contributions to the core research topics, tools and questions of the new field.
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -546,37 +556,4 @@ Follow the example of other research programmes: formal/GaloisForLFunctions/Arit
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
-
-The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
-
-
-## Init new field programme 3
-
-Read fully docs/reports/review-2210/astra.md
-
-The document describes a new field of mathematics / research programme.
-
-Your task: develop this new field / programme.
-
-Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticIncidencePositivity and formal/GaloisForLFunctions/SquareRootThreshold.
-
-1. All lean code goes into its own subfolder and has its own umbrella.
-2. When enough information is established write a foundational README.md:
-   2.1 the README.md is not a ledger or diary or working log but a foundational document explaning the why, what, how
-   2.2 it explains: motivation, objects, language, mechanisms, traps, questions the programme aims to answer, tools it aims to develop, open research topics, foundational pillar theorems, where this field/programme sits in the context of our hole research and how it relates to other research programmes in our corpus, success criteria and criteria for what a contribution to the field/programme must be like.
-3. Research and develop the field and add "meat to the bone" with significant contributions to the core research topics, tools and questions of the new field.
-
-**Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. No computations
-4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-6. make sure you don't leave staleclean up after yourself.
-7. Optimize lean code. No raising heartbeat hacks.
-8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
-
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
-
-The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
+Goal is met when the conjecture is proven in lean.

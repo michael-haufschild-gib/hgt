@@ -103,6 +103,22 @@ coupled Fourier coefficient without cost.
    conditional energy criteria, but no matched cancellation
    theorem. The existing finite modulus-energy certificate is
    not such an arithmetic theorem.
+5. The current [ordinary two-point correlation manuscript](https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf)
+   gives fixed-affine-form Liouville cancellation with one absolute
+   logarithmic exponent, and qualitative corrected Elliott
+   cancellation. Theorems 1.1--1.2 and Corollary 1.3 were read in
+   the primary PDF. Its introduction explicitly excludes growing
+   affine coefficients. Parametrizing `mn-qh=-2` with `q,n` fixed
+   therefore does not justify a uniform estimate when `q,n` grow
+   with `X`; in balanced blocks the parametrizing interval can
+   have bounded length.
+6. [Pascadi, Theorems 1.1--1.2](https://link.springer.com/article/10.1007/s00039-026-00746-0)
+   gives power savings for bilinear Kloosterman sums at square-root
+   frequency lengths, including composite moduli. The primary
+   theorem statements were inspected. As with the earlier
+   fixed-modulus source, the complete transforms of the actual
+   arithmetic weights have not been localized with the required
+   norm and error bounds. No application is claimed.
 
 **Verdict: BRIDGE.** Exact remaining signed problem; no proof or
 scientific novelty claimed. It does not assume twin primes, but

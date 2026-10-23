@@ -13,11 +13,14 @@ eliminated.
 
 
 
+open Complex Filter GaloisForLFunctions GaloisForLFunctions.HTGeometry MeasureTheory Set Topology
+
 noncomputable section
 
 namespace RHTower.ZetaGateProductAFE
 
-open Complex Filter GaloisForLFunctions GaloisForLFunctions.HTGeometry MeasureTheory RHTower Set Topology
+open RHTower
+
 
 /-- `norm_dualDiagonalIntegrand_rect_le` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_rightOfOne`, `RHTower.ZetaGateProductAFE.exists_norm_riemannZeta_le_wideLeftStrip`. -/
@@ -28,7 +31,7 @@ theorem norm_dualDiagonalIntegrand_rect_le_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.ZetaGateProductAFE.exists_norm_riemannZeta_le_wideLeftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro d c x τ hd hd20 hc hx v
-  apply norm_dualDiagonalIntegrand_rect_le <;> assumption
+  apply norm_dualDiagonalIntegrand_rect_le <;> first | assumption | linarith
 
 /-- `norm_dualDiagonalIntegrand_horizontal_rect_le` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_of_two_le_abs`. -/
@@ -38,7 +41,7 @@ theorem norm_dualDiagonalIntegrand_horizontal_rect_le_uniform :
   obtain ⟨CA, h_0_0, h_0_1⟩ := RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_of_two_le_abs
   refine ⟨CA, ?_⟩
   intro d c x τ hd hd20 hc hx hcx Cζ N hζ hτ u hu1 hu2 ε hε
-  apply norm_dualDiagonalIntegrand_horizontal_rect_le <;> assumption
+  apply norm_dualDiagonalIntegrand_horizontal_rect_le <;> first | assumption | linarith
 
 /-- `norm_intervalIntegral_dualDiagonalIntegrand_rect_le` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_rightOfOne`, `RHTower.ZetaGateProductAFE.exists_norm_riemannZeta_le_wideLeftStrip`. -/
@@ -49,7 +52,7 @@ theorem norm_intervalIntegral_dualDiagonalIntegrand_rect_le_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.ZetaGateProductAFE.exists_norm_riemannZeta_le_wideLeftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro d c x τ hd hd20 hc hx hτ
-  apply norm_intervalIntegral_dualDiagonalIntegrand_rect_le <;> assumption
+  apply norm_intervalIntegral_dualDiagonalIntegrand_rect_le <;> first | assumption | linarith
 
 /-- `norm_intervalIntegral_dualDiagonalIntegrand_horizontal_rect_le` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_of_two_le_abs`. -/
@@ -59,7 +62,7 @@ theorem norm_intervalIntegral_dualDiagonalIntegrand_horizontal_rect_le_uniform :
   obtain ⟨CA, h_0_0, h_0_1⟩ := RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_of_two_le_abs
   refine ⟨CA, ?_⟩
   intro d c x τ hd hd20 hc hx hcx Cζ N hCζ hζ hτ ε hε
-  apply norm_intervalIntegral_dualDiagonalIntegrand_horizontal_rect_le <;> assumption
+  apply norm_intervalIntegral_dualDiagonalIntegrand_horizontal_rect_le <;> first | assumption | linarith
 
 /-- `norm_setIntegral_compl_dualDiagonalIntegrand_left_le` with its constants supplied by
 `RHTower.exists_norm_zetaChi_le_rightStrip`, `RHTower.exists_norm_riemannZeta_le_leftStrip`. -/
@@ -70,7 +73,7 @@ theorem norm_setIntegral_compl_dualDiagonalIntegrand_left_le_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.exists_norm_riemannZeta_le_leftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro d c x τ hd hd20 hc hx hτ
-  apply norm_setIntegral_compl_dualDiagonalIntegrand_left_le <;> assumption
+  apply norm_setIntegral_compl_dualDiagonalIntegrand_left_le <;> first | assumption | linarith
 
 /-- `norm_dualDiagonalIntegrand_deep_le` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_norm_zetaChi_le_rightStrip_deep`, `RHTower.exists_norm_riemannZeta_le_leftStrip`. -/
@@ -81,7 +84,7 @@ theorem norm_dualDiagonalIntegrand_deep_le_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.exists_norm_riemannZeta_le_leftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro d c x τ hd hd20 hc hx v
-  apply norm_dualDiagonalIntegrand_deep_le <;> assumption
+  apply norm_dualDiagonalIntegrand_deep_le <;> first | assumption | linarith
 
 /-- `norm_setIntegral_compl_dualDiagonalIntegrand_left_le_far` with its constants supplied by
 `RHTower.exists_norm_zetaChi_le_rightStrip`, `RHTower.exists_norm_riemannZeta_le_leftStrip`. -/
@@ -92,6 +95,6 @@ theorem norm_setIntegral_compl_dualDiagonalIntegrand_left_le_far_uniform :
   obtain ⟨Cζ, h_1_0, h_1_1⟩ := RHTower.exists_norm_riemannZeta_le_leftStrip
   refine ⟨Cχ, Cζ, ?_⟩
   intro j d c x τ hd hd20 hc hx hτ
-  apply norm_setIntegral_compl_dualDiagonalIntegrand_left_le_far <;> assumption
+  apply norm_setIntegral_compl_dualDiagonalIntegrand_left_le_far <;> first | assumption | linarith
 
 end RHTower.ZetaGateProductAFE

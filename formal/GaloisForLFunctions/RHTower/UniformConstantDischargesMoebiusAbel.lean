@@ -11,11 +11,13 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Topology
+
 noncomputable section
 
 namespace RHTower.MoebiusAbel
 
-open Complex Filter MeasureTheory Topology
+
 
 /-- `abelMoebiusIntegrand_line_le` with its constants supplied by
 `RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re`. -/
@@ -25,7 +27,7 @@ theorem abelMoebiusIntegrand_line_le_uniform :
   obtain ⟨Bz, h_0_0, h_0_1⟩ := RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
   refine ⟨Bz, ?_⟩
   intro x hx A hΓ t
-  apply abelMoebiusIntegrand_line_le <;> assumption
+  apply abelMoebiusIntegrand_line_le <;> first | assumption | linarith
 
 /-- `norm_left_edge_le` with its constants supplied by
 `RHTower.MoebiusAbel.exists_norm_Gamma_le_exp_half`. -/
@@ -35,7 +37,7 @@ theorem norm_left_edge_le_uniform :
   obtain ⟨A, h_0_0, h_0_1⟩ := RHTower.MoebiusAbel.exists_norm_Gamma_le_exp_half
   refine ⟨A, ?_⟩
   intro x c K V hx hc12 hc2 hK0 hinvR
-  apply norm_left_edge_le <;> assumption
+  apply norm_left_edge_le <;> first | assumption | linarith
 
 /-- `norm_horizontal_edge_le` with its constants supplied by
 `RHTower.MoebiusAbel.exists_norm_Gamma_le_exp_half`. -/
@@ -45,7 +47,7 @@ theorem norm_horizontal_edge_le_uniform :
   obtain ⟨A, h_0_0, h_0_1⟩ := RHTower.MoebiusAbel.exists_norm_Gamma_le_exp_half
   refine ⟨A, ?_⟩
   intro x c K V y hx hx1 hc12 hc2 hV hy hinvR
-  apply norm_horizontal_edge_le <;> assumption
+  apply norm_horizontal_edge_le <;> first | assumption | linarith
 
 /-- `norm_integral_abelMoebiusIntegrand_le` with its constants supplied by
 `RHTower.MoebiusAbel.exists_norm_Gamma_le_exp_half`, `RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re`. -/
@@ -56,6 +58,6 @@ theorem norm_integral_abelMoebiusIntegrand_le_uniform :
   obtain ⟨Bz, h_1_0, h_1_1⟩ := RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
   refine ⟨A, Bz, ?_⟩
   intro x K c V hx hx1 hK0 hc12 hc2 hV hinvR hzfR
-  apply norm_integral_abelMoebiusIntegrand_le <;> assumption
+  apply norm_integral_abelMoebiusIntegrand_le <;> first | assumption | linarith
 
 end RHTower.MoebiusAbel

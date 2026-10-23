@@ -410,8 +410,8 @@ theorem abs_neg_log_one_sub_sub_le {y : ℝ} (hy : |y| ≤ 1 / 2) :
     |-Real.log (1 - y) - y| ≤ 2 * y ^ 2 := by
   have h := Real.abs_log_sub_add_sum_range_le (show |y| < 1 by linarith) 1
   norm_num [Finset.sum_range_one] at h
-  have h1 : |y| ^ 2 / (1 - |y|) ≤ 2 * y ^ 2 := by
-    rw [div_le_iff₀ (by linarith), sq_abs]
+  have h1 : y ^ 2 / (1 - |y|) ≤ 2 * y ^ 2 := by
+    rw [div_le_iff₀ (by linarith)]
     nlinarith [mul_nonneg (sq_nonneg y) (show 0 ≤ 1 - 2 * |y| by linarith)]
   rw [show -Real.log (1 - y) - y = -(y + Real.log (1 - y)) by ring, abs_neg]
   exact h.trans h1
@@ -461,7 +461,7 @@ theorem tsum_pattern_mem_exp_primeSum (f : ℕ →*₀ ℝ) (hf : ∀ p : ℕ, p
   have hLs : Summable (fun p => -Real.log (1 - y p)) := (hDs.add hys).congr fun p => by ring
   have hsum : |∑' p, -Real.log (1 - y p) - ∑' p, y p| ≤
       2 * ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-2 : ℝ) := by
-    rw [← tsum_sub hLs hys, ← tsum_mul_left]
+    rw [← hLs.tsum_sub hys, ← tsum_mul_left]
     have h1 : ‖∑' p, (-Real.log (1 - y p) - y p)‖ ≤ ∑' p, ‖-Real.log (1 - y p) - y p‖ :=
       norm_tsum_le_tsum_norm hDs.norm
     have h2 : ∑' p, ‖-Real.log (1 - y p) - y p‖ ≤ ∑' p : Nat.Primes, 2 * ((p : ℕ) : ℝ) ^ (-2 : ℝ) :=
@@ -639,7 +639,7 @@ theorem not_receiverBounded_of_flippedDensity {ε ρ B : ℝ} (hε : 0 < ε) (h�
       fun p => by simp only [hI]; split_ifs <;> simp [Real.rpow_nonneg]
     have hsplit : ∑' p : Nat.Primes, f p * ((p : ℕ) : ℝ) ^ (-w) =
         ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-w) - 2 * ∑' p, I p := by
-      rw [← tsum_mul_left, ← tsum_sub hxs (hIs.mul_left 2)]
+      rw [← tsum_mul_left, ← hxs.tsum_sub (hIs.mul_left 2)]
       refine tsum_congr fun p => ?_
       simp only [hI]
       rcases hf p p.2 with h | h

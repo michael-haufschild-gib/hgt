@@ -11,12 +11,14 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Set Topology Zeta23
+open scoped ComplexConjugate ENNReal NNReal Real
+
 noncomputable section
 
 namespace RHTower.WeilSpectral
 
-open Complex Filter MeasureTheory Set Topology Zeta23
-open scoped ComplexConjugate ENNReal NNReal Real
+
 
 /-- `abs_truncTestDeriv_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -26,7 +28,7 @@ theorem abs_truncTestDeriv_le_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro F L u
-  apply abs_truncTestDeriv_le <;> assumption
+  apply abs_truncTestDeriv_le <;> first | assumption | linarith
 
 /-- `weighted_truncTest_sub_le_indicator` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -36,6 +38,6 @@ theorem weighted_truncTest_sub_le_indicator_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro F L M hLM u
-  apply weighted_truncTest_sub_le_indicator <;> assumption
+  apply weighted_truncTest_sub_le_indicator <;> first | assumption | linarith
 
 end RHTower.WeilSpectral

@@ -21,19 +21,22 @@ eliminated.
 
 
 
+open Complex Filter Function MeasureTheory Metric Set Topology Zeta23
+open scoped ComplexConjugate ENNReal NNReal Real Topology
+
 noncomputable section
 
 namespace RHTower
 
-open Complex Filter Function GaloisForLFunctions.HTGeometry MeasureTheory Metric Set Topology XiAtlasFinitePart Zeta23 intervalIntegral
-open scoped ComplexConjugate ENNReal NNReal Real Topology
+open GaloisForLFunctions.HTGeometry XiAtlasFinitePart intervalIntegral
+
 
 /-- `tendsto_nearRegEnergy` with its constants supplied by
 `RHTower.exists_nearField_bound`. -/
 theorem tendsto_nearRegEnergy_uniform :
     Tendsto nearRegEnergy (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) := by
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_nearField_bound
-  apply tendsto_nearRegEnergy <;> assumption
+  apply tendsto_nearRegEnergy <;> first | assumption | linarith
 
 /-- `norm_filteredCentralGap_le_of_budget` with its constants supplied by
 `RHTower.exists_abs_gaussianCentralGapLog_le_exp`. -/
@@ -43,7 +46,7 @@ theorem norm_filteredCentralGap_le_of_budget_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_abs_gaussianCentralGapLog_le_exp
   refine ⟨C₁, ?_⟩
   intro ε hε τ K hK hbud
-  apply norm_filteredCentralGap_le_of_budget <;> assumption
+  apply norm_filteredCentralGap_le_of_budget <;> first | assumption | linarith
 
 /-- `unconditional_angle_xiZeroCopy` with its constants supplied by
 `RHTower.exists_xiDivisorSupport_abs_im_lower_bound`. -/
@@ -53,7 +56,7 @@ theorem unconditional_angle_xiZeroCopy_uniform :
   obtain ⟨η, h_0_0, h_0_1⟩ := RHTower.exists_xiDivisorSupport_abs_im_lower_bound
   refine ⟨η, ?_⟩
   intro q
-  apply unconditional_angle_xiZeroCopy <;> assumption
+  apply unconditional_angle_xiZeroCopy <;> first | assumption | linarith
 
 /-- `norm_sincGaussWindow_le` with its constants supplied by
 `RHTower.exists_norm_complexSinc_le`. -/
@@ -63,7 +66,7 @@ theorem norm_sincGaussWindow_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_complexSinc_le
   refine ⟨C, ?_⟩
   intro L γ hL z hz hz'
-  apply norm_sincGaussWindow_le <;> assumption
+  apply norm_sincGaussWindow_le <;> first | assumption | linarith
 
 /-- `norm_mobHilbertFloorWindowField_three_le` with its constants supplied by
 `RHTower.exists_norm_complexSinc_le`. -/
@@ -73,7 +76,7 @@ theorem norm_mobHilbertFloorWindowField_three_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_complexSinc_le
   refine ⟨C, ?_⟩
   intro L γ N hN hL y
-  apply norm_mobHilbertFloorWindowField_three_le <;> assumption
+  apply norm_mobHilbertFloorWindowField_three_le <;> first | assumption | linarith
 
 /-- `norm_integral_mobHilbertFloorWindowField_three_le` with its constants supplied by
 `RHTower.exists_norm_complexSinc_le`. -/
@@ -83,7 +86,7 @@ theorem norm_integral_mobHilbertFloorWindowField_three_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_complexSinc_le
   refine ⟨C, ?_⟩
   intro L γ N hN hL
-  apply norm_integral_mobHilbertFloorWindowField_three_le <;> assumption
+  apply norm_integral_mobHilbertFloorWindowField_three_le <;> first | assumption | linarith
 
 /-- `orthonormal_mertensShellVec_shift` with its constants supplied by
 `RHTower.exists_mertensShellMass_gt`. -/
@@ -93,7 +96,7 @@ theorem orthonormal_mertensShellVec_shift_uniform :
   obtain ⟨N, h_0_0⟩ := RHTower.exists_mertensShellMass_gt
   refine ⟨N, ?_⟩
   intro k
-  apply orthonormal_mertensShellVec_shift <;> assumption
+  apply orthonormal_mertensShellVec_shift <;> first | assumption | linarith
 
 /-- `norm_xiCentralReciprocalMoment_le` with its constants supplied by
 `RHTower.exists_xiZeroCopyReciprocalSquare_norm_bound`. -/
@@ -103,7 +106,7 @@ theorem norm_xiCentralReciprocalMoment_le_uniform :
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_xiZeroCopyReciprocalSquare_norm_bound
   refine ⟨M, ?_⟩
   intro n
-  apply norm_xiCentralReciprocalMoment_le <;> assumption
+  apply norm_xiCentralReciprocalMoment_le <;> first | assumption | linarith
 
 /-- `primeTailCount_window` with its constants supplied by
 `RHTower.exists_chebyshevPsiReal_le_linear`. -/
@@ -113,7 +116,7 @@ theorem primeTailCount_window_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_chebyshevPsiReal_le_linear
   refine ⟨C, ?_⟩
   intro ε hε0 hε1
-  apply primeTailCount_window <;> assumption
+  apply primeTailCount_window <;> first | assumption | linarith
 
 /-- `re_arch_le` with its constants supplied by
 `RHTower.exists_abs_gammaBracket_le`. -/
@@ -123,7 +126,7 @@ theorem re_arch_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_abs_gammaBracket_le
   refine ⟨C, ?_⟩
   intro f hf hfc a hfs s hs
-  apply re_arch_le <;> assumption
+  apply re_arch_le <;> first | assumption | linarith
 
 /-- `re_W_edgeTail_le` with its constants supplied by
 `RHTower.exists_abs_gammaBracket_le`. -/
@@ -133,7 +136,7 @@ theorem re_W_edgeTail_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_abs_gammaBracket_le
   refine ⟨C, ?_⟩
   intro L R hL hR s hs
-  apply re_W_edgeTail_le <;> assumption
+  apply re_W_edgeTail_le <;> first | assumption | linarith
 
 /-- `abs_edgeCutoffD2_le` with its constants supplied by
 `RHTower.exists_abs_deriv_deriv_smoothTransition_le`. -/
@@ -143,7 +146,7 @@ theorem abs_edgeCutoffD2_le_uniform :
   obtain ⟨S₂, h_0_0, h_0_1⟩ := RHTower.exists_abs_deriv_deriv_smoothTransition_le
   refine ⟨S₂, ?_⟩
   intro S₁ hS₁ L η hη u
-  apply abs_edgeCutoffD2_le <;> assumption
+  apply abs_edgeCutoffD2_le <;> first | assumption | linarith
 
 /-- `norm_paperFT_edgeTail_le` with its constants supplied by
 `RHTower.exists_abs_deriv_deriv_smoothTransition_le`. -/
@@ -153,7 +156,7 @@ theorem norm_paperFT_edgeTail_le_uniform :
   obtain ⟨S₂, h_0_0, h_0_1⟩ := RHTower.exists_abs_deriv_deriv_smoothTransition_le
   refine ⟨S₂, ?_⟩
   intro S₁ hS₁0 hS₁ L R z hz
-  apply norm_paperFT_edgeTail_le <;> assumption
+  apply norm_paperFT_edgeTail_le <;> first | assumption | linarith
 
 /-- `norm_paperFT_outerTail_le` with its constants supplied by
 `RHTower.exists_abs_deriv_deriv_smoothTransition_le`. -/
@@ -163,7 +166,7 @@ theorem norm_paperFT_outerTail_le_uniform :
   obtain ⟨S₂, h_0_0, h_0_1⟩ := RHTower.exists_abs_deriv_deriv_smoothTransition_le
   refine ⟨S₂, ?_⟩
   intro S₁ hS₁0 hS₁ R z hz
-  apply norm_paperFT_outerTail_le <;> assumption
+  apply norm_paperFT_outerTail_le <;> first | assumption | linarith
 
 /-- `norm_smoothAFEZetaReflectedTerm_displaced_deep_le_strip` with its constants supplied by
 `RHTower.exists_norm_zetaChi_neg_seven_halves_poly_le`. -/
@@ -173,7 +176,7 @@ theorem norm_smoothAFEZetaReflectedTerm_displaced_deep_le_strip_uniform :
   obtain ⟨C, N, h_0_0, h_0_1⟩ := RHTower.exists_norm_zetaChi_neg_seven_halves_poly_le
   refine ⟨C, N, ?_⟩
   intro x d hx hd hdhalf tau n v
-  apply norm_smoothAFEZetaReflectedTerm_displaced_deep_le_strip <;> assumption
+  apply norm_smoothAFEZetaReflectedTerm_displaced_deep_le_strip <;> first | assumption | linarith
 
 /-- `norm_smoothAFEZetaReflectedTerm_displaced_deep_le` with its constants supplied by
 `RHTower.exists_norm_zetaChi_neg_seven_halves_poly_le`. -/
@@ -183,6 +186,6 @@ theorem norm_smoothAFEZetaReflectedTerm_displaced_deep_le_uniform :
   obtain ⟨C, N, h_0_0, h_0_1⟩ := RHTower.exists_norm_zetaChi_neg_seven_halves_poly_le
   refine ⟨C, N, ?_⟩
   intro x d hx hd hdq tau n v
-  apply norm_smoothAFEZetaReflectedTerm_displaced_deep_le <;> assumption
+  apply norm_smoothAFEZetaReflectedTerm_displaced_deep_le <;> first | assumption | linarith
 
 end RHTower

@@ -587,7 +587,7 @@ theorem combDiagonal_le {r : ℝ} (hr : 0 ≤ r) : combDiagonal r ≤ 16 * r ^ 2
     exact mem_Icc.mpr ⟨hpr.one_lt.le, Nat.le_floor hle⟩
   have hharm : ∑ i ∈ Icc 1 N, (i : ℝ)⁻¹ ≤ 1 + Real.log N := by
     have h := harmonic_le_one_add_log N
-    rw [harmonic_eq_sum_Icc] at h
+    rw [_root_.harmonic_eq_sum_Icc] at h
     push_cast at h
     exact h
   calc combDiagonal r ≤ ∑ p ∈ combPrimes r, 16 * r ^ 2 * (p : ℝ)⁻¹ := sum_le_sum hterm
@@ -740,7 +740,7 @@ theorem contDiff_oddBump (n : ℕ) : ContDiff ℝ n oddBump :=
 theorem continuous_oddBump : Continuous oddBump := (contDiff_oddBump 0).continuous
 
 theorem oddBump_neg (x : ℝ) : oddBump (-x) = -oddBump x := by
-  simp [oddBump, neg_sq]
+  simp [oddBump]
 
 theorem oddBump_eq_zero {x : ℝ} (hx : 1 < |x|) : oddBump x = 0 := by
   have h : 1 - x ^ 2 ≤ 0 := by

@@ -237,7 +237,7 @@ theorem exists_abs_rowBilinear_centredPrimeRow_le_seventeenThirtieths {α : ℝ}
 theorem sum_Icc_inv_le_one_add_log (N : ℕ) :
     ∑ k ∈ Icc 1 N, 1 / (k : ℝ) ≤ 1 + Real.log N := by
   have h := harmonic_le_one_add_log N
-  rw [harmonic_eq_sum_Icc] at h
+  rw [_root_.harmonic_eq_sum_Icc] at h
   push_cast at h
   simpa [one_div] using h
 

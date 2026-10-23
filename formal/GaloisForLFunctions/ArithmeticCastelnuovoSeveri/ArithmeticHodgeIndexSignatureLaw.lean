@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.WeilConeUniquenessUnconditional
 import GaloisForLFunctions.HTGeometry.HaynsworthInertia
 import GaloisForLFunctions.RHTower.ZetaSymbolArchimedeanHorizon
 import GaloisForLFunctions.RHTower.WeilPhiDoobPrimeAtoms
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FiniteConfigurationPontryaginLaw
 
 /-!
 # The arithmetic Hodge index theorem: one positive square, and the Pontryagin bound
@@ -107,16 +108,17 @@ theorem isUnit_hadamard : IsUnit (!![1, 1; 1, -1] : Matrix (Fin 2) (Fin 2) ℂ) 
 theorem posIndex_polePlane : hermPosIndex polePlane = 1 := by
   rw [polePlane_eq_congr, posIndex_conjugate _ isUnit_hadamard, posIndex_diagonal]
   have : ({i | 0 < (![1 / 2, -1 / 2] : Fin 2 → ℝ) i} : Finset (Fin 2)) = {0} := by
-    ext i; fin_cases i <;> simp <;> norm_num
+    ext i; fin_cases i <;> simp
   rw [this, Finset.card_singleton]
 
 /-- **The pole plane has one negative square.** -/
 theorem negIndex_polePlane : hermNegIndex polePlane = 1 := by
   rw [polePlane_eq_congr, negIndex_conjugate _ isUnit_hadamard, negIndex_diagonal]
   have : ({i | (![1 / 2, -1 / 2] : Fin 2 → ℝ) i < 0} : Finset (Fin 2)) = {1} := by
-    ext i; fin_cases i <;> simp <;> norm_num
+    ext i; fin_cases i <;> norm_num
   rw [this, Finset.card_singleton]
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Weil's Gram matrix is Hermitian. -/
 theorem weilGram_isHermitian (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) : (weilGram lam f).IsHermitian := by
   ext i j
@@ -129,6 +131,7 @@ theorem localGram_isHermitian (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) : (lo
   rw [Matrix.IsHermitian, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
     Matrix.conjTranspose_conjTranspose, polePlane_isHermitian.eq, Matrix.mul_assoc]
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- The polar part of the Gram is the pole term of Weil's functional:
 `(BᴴJB)_{ij} = h_k(i/2) + h_k(−i/2)` for `k = f_i ⋆ f̃_j`. -/
 theorem polarGram_apply (f : ι → ℝ → ℂ) (hf : ∀ i, Continuous (f i))
@@ -172,44 +175,7 @@ theorem negIndex_intersectionGram (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) :
     (localGram_isHermitian lam f), negIndex_polePlane, polePlane_inv, localGram, sub_sub_cancel_left,
     hermNegIndex, neg_neg]
 
-/-- `hermQuad` scales by `|c|²`. -/
-theorem hermQuad_smul (H : Matrix ι ι ℂ) (c : ℂ) (x : ι → ℂ) :
-    hermQuad H (c • x) = Complex.normSq c * hermQuad H x := by
-  simp only [hermQuad, Matrix.mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul,
-    smul_eq_mul]
-  rw [← mul_assoc, Complex.star_def, Complex.mul_conj, Complex.re_ofReal_mul]
-
-/-- A form with nonnegative quadratic values has no negative square. -/
-theorem negIndex_eq_zero_of_hermQuad_nonneg {H : Matrix ι ι ℂ} (h : ∀ x, 0 ≤ hermQuad H x) :
-    hermNegIndex H = 0 := by
-  obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (-H)
-  rw [hermNegIndex, ← hrank, Submodule.finrank_eq_zero, Submodule.eq_bot_iff]
-  intro x hx
-  by_contra hx0
-  have := hW x hx hx0
-  rw [hermQuad_neg] at this
-  linarith [h x]
-
-/-- A form with no negative square has nonnegative quadratic values. -/
-theorem hermQuad_nonneg_of_negIndex_eq_zero {H : Matrix ι ι ℂ} (h : hermNegIndex H = 0)
-    (x : ι → ℂ) : 0 ≤ hermQuad H x := by
-  by_contra hneg
-  push Not at hneg
-  have hx0 : x ≠ 0 := by
-    rintro rfl
-    simp [hermQuad] at hneg
-  have hpd : IsPosDefOn (-H) (Submodule.span ℂ {x}) := by
-    intro y hy hy0
-    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy
-    have hc : c ≠ 0 := by rintro rfl; simp at hy0
-    rw [hermQuad_neg, hermQuad_smul]
-    have : 0 < Complex.normSq c := Complex.normSq_pos.mpr hc
-    nlinarith
-  have := finrank_le_posIndex hpd
-  rw [finrank_span_singleton hx0] at this
-  rw [hermNegIndex] at h
-  omega
-
+omit [DecidableEq ι] in
 /-- The quadratic form of Weil's Gram matrix is Weil's functional of the combined test. -/
 theorem hermQuad_weilGram (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) (hf : ∀ i, ContDiff ℝ 2 (f i))
     (hfc : ∀ i, HasCompactSupport (f i)) (x : ι → ℂ) :
@@ -222,22 +188,6 @@ theorem hermQuad_weilGram (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) (hf : ∀
     Complex.star_def]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
-
-theorem contDiff_sum_smul (f : ι → ℝ → ℂ) (hf : ∀ i, ContDiff ℝ 2 (f i)) (c : ι → ℂ) :
-    ContDiff ℝ 2 (∑ i, c i • f i) := by
-  have he : (∑ i, c i • f i) = fun x => ∑ i, c i • f i x := by
-    funext x; simp
-  rw [he]
-  exact ContDiff.sum (fun i _ => (hf i).const_smul (c i))
-
-theorem hasCompactSupport_sum_smul (f : ι → ℝ → ℂ) (hfc : ∀ i, HasCompactSupport (f i))
-    (c : ι → ℂ) : HasCompactSupport (∑ i, c i • f i) := by
-  classical
-  induction (Finset.univ : Finset ι) using Finset.induction_on with
-  | empty => simpa using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℂ))
-  | insert a s ha ih =>
-    rw [Finset.sum_insert ha]
-    exact (hfc a).smul_left.add ih
 
 /-- **Weil positivity is the Hodge index**: `W ≥ 0` on all tests iff every finite family of cycles
 has exactly one positive square. -/
@@ -277,86 +227,6 @@ theorem one_positive_square_iff_vonMangoldt (lam : ℕ → ℝ) :
 
 /-! ### The Pontryagin bound -/
 
-/-- **The abstract Pontryagin lemma.** If the form is nonnegative on the common kernel of `P`
-linear functionals, it has at most `P` negative squares. -/
-theorem negIndex_le_card_of_nonneg_on_ker {κ : Type*} [Fintype κ] (H : Matrix ι ι ℂ)
-    (φ : κ → (ι → ℂ) →ₗ[ℂ] ℂ) (h : ∀ x, (∀ k, φ k x = 0) → 0 ≤ hermQuad H x) :
-    hermNegIndex H ≤ Fintype.card κ := by
-  obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (-H)
-  rw [hermNegIndex, ← hrank]
-  set T : (ι → ℂ) →ₗ[ℂ] (κ → ℂ) := LinearMap.pi φ
-  have hker : LinearMap.ker (T.domRestrict W) = ⊥ := by
-    rw [Submodule.eq_bot_iff]
-    intro y hy
-    rw [LinearMap.mem_ker, LinearMap.domRestrict_apply] at hy
-    by_contra hy0
-    have hyv : (y : ι → ℂ) ≠ 0 := fun h0 => hy0 (Subtype.ext h0)
-    have hpos := hW _ y.2 hyv
-    have hzero : ∀ k, φ k y = 0 := fun k => by
-      have := congrFun hy k
-      simpa [T] using this
-    have := h y hzero
-    rw [hermQuad_neg] at hpos
-    linarith
-  have hinj : Function.Injective (T.domRestrict W) := LinearMap.ker_eq_bot.mp hker
-  have := LinearMap.finrank_le_finrank_of_injective hinj
-  rwa [Module.finrank_fintype_fun_eq_card] at this
-
-/-- The transform at `z` of a conjugate-weighted combination, as a linear functional of the
-weights: `x ↦ conj h_{Σ conj(x_i) f_i}(z) = Σ_i x_i conj h_{f_i}(z)`. -/
-def evalFunctional (f : ι → ℝ → ℂ) (z : ℂ) : (ι → ℂ) →ₗ[ℂ] ℂ where
-  toFun x := ∑ i, x i * conj (paperFT (f i) z)
-  map_add' x y := by simp [add_mul, Finset.sum_add_distrib]
-  map_smul' c x := by simp [Finset.mul_sum, mul_assoc]
-
-/-- The transform is linear on finite combinations of compactly supported continuous tests. -/
-theorem paperFT_sum_smul (f : ι → ℝ → ℂ) (hf : ∀ i, Continuous (f i))
-    (hfc : ∀ i, HasCompactSupport (f i)) (c : ι → ℂ) (z : ℂ) :
-    paperFT (∑ i, c i • f i) z = ∑ i, c i * paperFT (f i) z := by
-  have hint : ∀ i, MeasureTheory.Integrable (fun u => f i u * Complex.exp (I * z * u)) := fun i =>
-    ((hf i).mul (by fun_prop)).integrable_of_hasCompactSupport (hfc i).mul_right
-  simp only [paperFT, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.sum_mul]
-  rw [MeasureTheory.integral_finset_sum _ fun i _ => (hint i).const_mul (c i) |>.congr
-    (Filter.Eventually.of_forall fun u => by ring)]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [← MeasureTheory.integral_const_mul]
-  congr 1; funext u; ring
-
-theorem evalFunctional_eq (f : ι → ℝ → ℂ) (hf : ∀ i, Continuous (f i))
-    (hfc : ∀ i, HasCompactSupport (f i)) (z : ℂ) (x : ι → ℂ) :
-    evalFunctional f z x = conj (paperFT (∑ i, conj (x i) • f i) z) := by
-  rw [paperFT_sum_smul f hf hfc, map_sum]
-  simp [evalFunctional, mul_comm]
-
-/-- `γ` of the reflected zero is the conjugate of `γ`. -/
-theorem gammaOf_reflect (ρ : ℂ) : gammaOf (reflect ρ) = conj (gammaOf ρ) := by
-  simp only [gammaOf, reflect, map_div₀, map_sub, Complex.conj_I, map_one, map_ofNat]
-  field_simp
-  ring
-
-/-- The zero summand of `W(F, F)` has nonnegative real part once `h_F` vanishes at the zeros right
-of the line. -/
-theorem re_Wsummand_nonneg {F : ℝ → ℂ}
-    (hF : ∀ ρ ∈ zetaZeroConfig.carrier, 1 / 2 < ρ.re → paperFT F (gammaOf ρ) = 0)
-    (ρ : zetaZeroConfig.carrier) : 0 ≤ (zetaZeroConfig.Wsummand F F ρ).re := by
-  obtain ⟨ρ, hρ⟩ := ρ
-  simp only [ZeroConfig.Wsummand]
-  rcases lt_trichotomy ρ.re (1 / 2) with hlt | heq | hgt
-  · -- the reflected zero lies right of the line and kills the second factor
-    have hr := zetaZeroConfig.reflect_mem ρ hρ
-    have hre : 1 / 2 < (reflect ρ).re := by simp [reflect]; linarith
-    have h0 := hF _ hr hre
-    rw [gammaOf_reflect] at h0
-    simp [h0]
-  · -- on the line `γ` is real and the summand is `m |h_F(γ)|²`
-    have hγ : conj (gammaOf ρ) = gammaOf ρ := by
-      rw [Complex.conj_eq_iff_im]
-      simp [gammaOf, Complex.div_I, heq]
-    rw [hγ, mul_assoc, Complex.mul_conj, ← Complex.ofReal_natCast, ← Complex.ofReal_mul,
-      Complex.ofReal_re]
-    exact mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _)
-  · simp [hF ρ hρ hgt]
-
 /-- **The Pontryagin bound for `ζ`.** Weil's form has at most as many negative squares on any
 finite family of `C²` compactly supported tests as `ζ` has zeros right of the critical line. -/
 theorem negIndex_weilGram_le_offLineCount (f : ι → ℝ → ℂ) (hf : ∀ i, ContDiff ℝ 2 (f i))
@@ -382,7 +252,7 @@ theorem negIndex_weilGram_le_offLineCount (f : ι → ℝ → ℂ) (hf : ∀ i, 
       Complex.re_tsum (RHTower.zeta_Wsummand_summable (contDiff_sum_smul f hf _)
         (contDiff_sum_smul f hf _) (hasCompactSupport_sum_smul f hfc _)
         (hasCompactSupport_sum_smul f hfc _))]
-    exact tsum_nonneg fun ρ => re_Wsummand_nonneg hFv ρ
+    exact tsum_nonneg fun ρ => re_Wsummand_nonneg zetaZeroConfig hFv ρ
   · rw [hR.encard_eq]; exact le_top
 
 /-- **The Hodge defect of the scaling surface.** The arithmetic intersection form has at most

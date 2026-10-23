@@ -497,6 +497,74 @@ theorem sum_Icc_rpow_neg_one_sub_le {ε : ℝ} (hε : 0 < ε) {j : ℕ} (hj : 1 
         ≤ (j : ℝ) ^ (-ε) + (j : ℝ) ^ (-ε) / ε := by linarith
       _ = (1 + 1 / ε) * (j : ℝ) ^ (-ε) := by ring
 
+/-- **Beyond the dilation the energy is `O(1/j)`**, for every `0 < ε < 1`. -/
+theorem sum_Icc_sq_poleFreeDilation_beyond_le {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) {j : ℕ}
+    (hj : 1 ≤ j) (T : ℕ) :
+    ∑ n ∈ Icc j T, weightCenteredPrefix (poleFreeDilation ε j) (poleFreeMean ε j) n ^ 2 /
+        ((n : ℝ) * ((n : ℝ) + 1)) ≤ (8 + 2 * (2 / (1 - ε) + 4) ^ 2 * (1 + 1 / ε)) / j := by
+  have h1ε : 0 < 1 - ε := by linarith
+  have hj0 : (0 : ℝ) < j := by exact_mod_cast hj
+  set C₁ := 2 / (1 - ε) + 4 with hC₁
+  have hC₁0 : 0 ≤ C₁ := by
+    rw [hC₁]; have := div_pos (by norm_num : (0 : ℝ) < 2) h1ε; linarith
+  set A := weightCenteredPrefix (poleFreeDilation ε j) (poleFreeMean ε j) with hAdef
+  set a := (j : ℝ) ^ (-(1 - ε)) with hadef
+  have ha0 : 0 ≤ a := Real.rpow_nonneg hj0.le _
+  have hterm : ∀ n ∈ Icc j T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤
+      8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) + 2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε)) := by
+    intro n hn
+    have hjn := (mem_Icc.mp hn).1
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hj.trans hjn
+    have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
+    have hb := abs_weightCenteredPrefix_poleFreeDilation_le_of_le hε hε1 hj hjn
+    have hr0 : 0 ≤ Real.sqrt ((n : ℝ) / j) := Real.sqrt_nonneg _
+    have hr2 : (Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 = a * (n : ℝ) ^ (1 - ε) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hr0, Real.sqrt_eq_rpow, ← Real.rpow_mul
+        (div_nonneg (Nat.cast_nonneg n) hj0.le), Real.div_rpow (Nat.cast_nonneg n) hj0.le, hadef,
+        Real.rpow_neg hj0.le]
+      push_cast
+      rw [show 1 / 2 * ((1 - ε) * 2) = 1 - ε by ring]
+      ring
+    have hsq : A n ^ 2 ≤ 8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε)) := by
+      have h0 : 0 ≤ C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε) :=
+        mul_nonneg hC₁0 (Real.rpow_nonneg hr0 _)
+      have : A n ^ 2 ≤ (2 + C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := by
+        rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hb 2
+      have key : ∀ X : ℝ, (2 + X) ^ 2 ≤ 8 + 2 * X ^ 2 := fun X => by nlinarith [sq_nonneg (X - 2)]
+      calc A n ^ 2 ≤ (2 + C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := this
+        _ ≤ 8 + 2 * (C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := key _
+        _ = 8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε)) := by rw [mul_pow, hr2]; ring
+    have hpow : (n : ℝ) ^ (1 - ε) / ((n : ℝ) * ((n : ℝ) + 1)) ≤ (n : ℝ) ^ (-(1 + ε)) := by
+      rw [div_le_iff₀ hpr]
+      have : (n : ℝ) ^ (1 - ε) = (n : ℝ) ^ (-(1 + ε)) * ((n : ℝ) * n) := by
+        rw [show (1 - ε) = -(1 + ε) + 1 + 1 by ring, Real.rpow_add_one hn0.ne',
+          Real.rpow_add_one hn0.ne']
+        ring
+      rw [this]
+      have hnε : 0 ≤ (n : ℝ) ^ (-(1 + ε)) := Real.rpow_nonneg hn0.le _
+      exact mul_le_mul_of_nonneg_left (by nlinarith) hnε
+    calc A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
+        ≤ (8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε))) / ((n : ℝ) * ((n : ℝ) + 1)) := by gcongr
+      _ = 8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) +
+            2 * C₁ ^ 2 * a * ((n : ℝ) ^ (1 - ε) / ((n : ℝ) * ((n : ℝ) + 1))) := by ring
+      _ ≤ 8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) + 2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε)) := by
+          gcongr
+  have hpron := sum_Icc_pronic_tail_le hj T
+  have hrp := sum_Icc_rpow_neg_one_sub_le hε hj T
+  have haj : a * (j : ℝ) ^ (-ε) = 1 / j := by
+    rw [hadef, ← Real.rpow_add hj0, show -(1 - ε) + -ε = -1 by ring, Real.rpow_neg_one, one_div]
+  calc ∑ n ∈ Icc j T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
+      ≤ ∑ n ∈ Icc j T, (8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) +
+          2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε))) := sum_le_sum hterm
+    _ = 8 * ∑ n ∈ Icc j T, 1 / ((n : ℝ) * ((n : ℝ) + 1)) +
+          2 * C₁ ^ 2 * a * ∑ n ∈ Icc j T, (n : ℝ) ^ (-(1 + ε)) := by
+        rw [sum_add_distrib, ← mul_sum, ← mul_sum]
+    _ ≤ 8 * (1 / (j : ℝ)) + 2 * C₁ ^ 2 * a * ((1 + 1 / ε) * (j : ℝ) ^ (-ε)) :=
+        add_le_add (mul_le_mul_of_nonneg_left hpron (by norm_num))
+          (mul_le_mul_of_nonneg_left hrp (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg _)) ha0))
+    _ = 8 / j + 2 * C₁ ^ 2 * (1 + 1 / ε) * (a * (j : ℝ) ^ (-ε)) := by ring
+    _ = (8 + 2 * C₁ ^ 2 * (1 + 1 / ε)) / j := by rw [haj]; ring
+
 /-- **A pole-free dilation has receiver energy `O(1/j)`.** For `0 < ε < 1/2` there is `C` with
 `E_T(b_j) ≤ C/j` for every `j ≥ 1` and every cutoff `T`. -/
 theorem exists_weightPronicEnergy_poleFreeDilation_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) :
@@ -597,7 +665,7 @@ theorem exists_weightPronicEnergy_poleFreeDilation_le {ε : ℝ} (hε : 0 < ε) 
           gcongr
       _ = 2 * Cq ^ 2 * (a ^ 2 + a ^ 2 * (j : ℝ) ^ (1 - 2 * ε) / (1 - 2 * ε)) + 2 * Z ^ 2 / j := by
           have hjj : (j : ℝ) * (2 * Z ^ 2 / (j : ℝ) ^ 2) = 2 * Z ^ 2 / j := by
-            field_simp <;> ring_nf
+            field_simp
           rw [hjj]; ring
       _ ≤ 2 * Cq ^ 2 * (1 / j + 1 / j / (1 - 2 * ε)) + 2 * Z ^ 2 / j := by
           rw [ha2j]; gcongr
@@ -608,60 +676,7 @@ theorem exists_weightPronicEnergy_poleFreeDilation_le {ε : ℝ} (hε : 0 < ε) 
     have hfil : (Icc 1 T).filter (fun n => ¬ n < j) = Icc j T := by
       ext n; simp only [mem_filter, mem_Icc, not_lt]; omega
     rw [hfil]
-    have hterm : ∀ n ∈ Icc j T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤
-        8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) + 2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε)) := by
-      intro n hn
-      have hjn := (mem_Icc.mp hn).1
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast hj.trans hjn
-      have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
-      have hb := abs_weightCenteredPrefix_poleFreeDilation_le_of_le hε hε1 hj hjn
-      have hr0 : 0 ≤ Real.sqrt ((n : ℝ) / j) := Real.sqrt_nonneg _
-      have hr2 : (Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 = a * (n : ℝ) ^ (1 - ε) := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hr0, Real.sqrt_eq_rpow, ← Real.rpow_mul
-          (div_nonneg (Nat.cast_nonneg n) hj0.le), Real.div_rpow (Nat.cast_nonneg n) hj0.le, hadef,
-          Real.rpow_neg hj0.le]
-        push_cast
-        rw [show 1 / 2 * ((1 - ε) * 2) = 1 - ε by ring]
-        ring
-      have hsq : A n ^ 2 ≤ 8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε)) := by
-        have h0 : 0 ≤ C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε) :=
-          mul_nonneg hC₁0 (Real.rpow_nonneg hr0 _)
-        have : A n ^ 2 ≤ (2 + C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := by
-          rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hb 2
-        have key : ∀ X : ℝ, (2 + X) ^ 2 ≤ 8 + 2 * X ^ 2 := fun X => by nlinarith [sq_nonneg (X - 2)]
-        calc A n ^ 2 ≤ (2 + C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := this
-          _ ≤ 8 + 2 * (C₁ * Real.sqrt ((n : ℝ) / j) ^ (1 - ε)) ^ 2 := key _
-          _ = 8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε)) := by rw [mul_pow, hr2]; ring
-      have hpow : (n : ℝ) ^ (1 - ε) / ((n : ℝ) * ((n : ℝ) + 1)) ≤ (n : ℝ) ^ (-(1 + ε)) := by
-        rw [div_le_iff₀ hpr]
-        have : (n : ℝ) ^ (1 - ε) = (n : ℝ) ^ (-(1 + ε)) * ((n : ℝ) * n) := by
-          rw [show (1 - ε) = -(1 + ε) + 1 + 1 by ring, Real.rpow_add_one hn0.ne',
-            Real.rpow_add_one hn0.ne']
-          ring
-        rw [this]
-        have hnε : 0 ≤ (n : ℝ) ^ (-(1 + ε)) := Real.rpow_nonneg hn0.le _
-        exact mul_le_mul_of_nonneg_left (by nlinarith) hnε
-      calc A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
-          ≤ (8 + 2 * C₁ ^ 2 * (a * (n : ℝ) ^ (1 - ε))) / ((n : ℝ) * ((n : ℝ) + 1)) := by gcongr
-        _ = 8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) +
-              2 * C₁ ^ 2 * a * ((n : ℝ) ^ (1 - ε) / ((n : ℝ) * ((n : ℝ) + 1))) := by ring
-        _ ≤ 8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) + 2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε)) := by
-            gcongr
-    have hpron := sum_Icc_pronic_tail_le hj T
-    have hrp := sum_Icc_rpow_neg_one_sub_le hε hj T
-    have haj : a * (j : ℝ) ^ (-ε) = 1 / j := by
-      rw [hadef, ← Real.rpow_add hj0, show -(1 - ε) + -ε = -1 by ring, Real.rpow_neg_one, one_div]
-    calc ∑ n ∈ Icc j T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))
-        ≤ ∑ n ∈ Icc j T, (8 * (1 / ((n : ℝ) * ((n : ℝ) + 1))) +
-            2 * C₁ ^ 2 * a * (n : ℝ) ^ (-(1 + ε))) := sum_le_sum hterm
-      _ = 8 * ∑ n ∈ Icc j T, 1 / ((n : ℝ) * ((n : ℝ) + 1)) +
-            2 * C₁ ^ 2 * a * ∑ n ∈ Icc j T, (n : ℝ) ^ (-(1 + ε)) := by
-          rw [sum_add_distrib, ← mul_sum, ← mul_sum]
-      _ ≤ 8 * (1 / (j : ℝ)) + 2 * C₁ ^ 2 * a * ((1 + 1 / ε) * (j : ℝ) ^ (-ε)) :=
-          add_le_add (mul_le_mul_of_nonneg_left hpron (by norm_num))
-            (mul_le_mul_of_nonneg_left hrp (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg _)) ha0))
-      _ = 8 / j + 2 * C₁ ^ 2 * (1 + 1 / ε) * (a * (j : ℝ) ^ (-ε)) := by ring
-      _ = (8 + 2 * C₁ ^ 2 * (1 + 1 / ε)) / j := by rw [haj]; ring
+    exact sum_Icc_sq_poleFreeDilation_beyond_le hε hε1 hj T
   calc _ ≤ (2 * Cq ^ 2 * (1 + 1 / (1 - 2 * ε)) + 2 * Z ^ 2) / j +
         (8 + 2 * C₁ ^ 2 * (1 + 1 / ε)) / j := add_le_add hlow hhigh
     _ = _ := by ring
@@ -680,29 +695,25 @@ theorem weightCenteredPrefix_finset_sum {ι : Type*} (s : Finset ι) (c : ι →
     fun j _ => sum_comm
   rw [sum_congr rfl h, sum_comm]
 
-/-- **Critical Wiener kernels with a vanishing pole value pay the smooth power.** For
-`0 < ε < 1/2`, a kernel with `Σ_j |k(j)| j^{-1/2} < ∞` and `Σ_j k(j) j^{-(1−ε)} = 0` makes
-`k ⋆ d^{-ε}` paid. -/
-theorem receiverBounded_dirichletConv_unit_of_critical {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
-    {k : ℕ → ℝ} (hk : CriticalWiener k) (hK : ∑' j : ℕ, k j * (j : ℝ) ^ (-(1 - ε)) = 0) :
+/-- **The assembly.** Let `0 < ε < 1` and let the pole-free dilations have energies
+`E_T(b_j) ≤ w(j)²`. A kernel with `Σ_j |k(j)| w(j) < ∞`, absolutely convergent at the pole and at
+`s = 1`, with `Σ_j k(j) j^{-(1−ε)} = 0`, makes `k ⋆ d^{-ε}` paid with energy at most
+`(Σ_j |k(j)| w(j))²`: Minkowski over the truncations `Σ_{j ≤ J} k(j) b_j` and continuity of the energy
+at a fixed cutoff. -/
+theorem receiverBounded_dirichletConv_unit_of_poleFree {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1)
+    {k w : ℕ → ℝ}
+    (hw : ∀ j : ℕ, 1 ≤ j → ∀ T : ℕ,
+      weightPronicEnergy (poleFreeDilation ε j) (poleFreeMean ε j) T ≤ w j ^ 2)
+    (hw0 : ∀ j, 0 ≤ w j) (hkw : Summable (fun j : ℕ => |k j| * w j))
+    (hkpole : Summable (fun j : ℕ => k j * (j : ℝ) ^ (-(1 - ε))))
+    (hkdiv : Summable (fun j : ℕ => |k j / j|))
+    (hK : ∑' j : ℕ, k j * (j : ℝ) ^ (-(1 - ε)) = 0) :
     ReceiverBounded (RHTower.dirichletConv k (dampedSignWeight unitSign ε)) := by
-  obtain ⟨C, hC0, hC⟩ := exists_weightPronicEnergy_poleFreeDilation_le hε hε2
-  have hS0 : 0 ≤ ∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ)) := tsum_nonneg fun j => by positivity
-  -- the kernel converges absolutely at the pole and at `s = 1`
-  have hkpole : Summable (fun j : ℕ => k j * (j : ℝ) ^ (-(1 - ε))) := by
-    refine hk.of_norm_bounded fun j => ?_
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)]
-    refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
-    rcases Nat.eq_zero_or_pos j with rfl | hj
-    · simp only [Nat.cast_zero, Real.zero_rpow (show -(1 - ε) ≠ 0 by linarith),
-        Real.zero_rpow (show -(1 / 2 : ℝ) ≠ 0 by norm_num), le_refl]
-    · exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hj) (by linarith)
-  have hkdiv : Summable (fun j : ℕ => k j / j) := hk.summable_abs_div.of_abs
-  refine ⟨C * (∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2, fun T => ?_⟩
+  refine ⟨(∑' j : ℕ, |k j| * w j) ^ 2, fun T => ?_⟩
   -- the truncated energies are bounded by Minkowski
   have hbound : ∀ J : ℕ, weightPronicEnergy (fun d => ∑ j ∈ Icc 1 J, k j * poleFreeDilation ε j d)
       (∑ j ∈ Icc 1 J, k j * poleFreeMean ε j) T ≤
-        C * (∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 := by
+        (∑' j : ℕ, |k j| * w j) ^ 2 := by
     intro J
     have hpre : weightCenteredPrefix (fun d => ∑ j ∈ Icc 1 J, k j * poleFreeDilation ε j d)
         (∑ j ∈ Icc 1 J, k j * poleFreeMean ε j) = fun n => ∑ j ∈ Icc 1 J,
@@ -713,38 +724,24 @@ theorem receiverBounded_dirichletConv_unit_of_critical {ε : ℝ} (hε : 0 < ε)
       exact sum_congr rfl fun j _ => weightCenteredPrefix_smul _ _ _ _
     have hnorm : pronicNorm (weightCenteredPrefix (fun d => ∑ j ∈ Icc 1 J,
         k j * poleFreeDilation ε j d) (∑ j ∈ Icc 1 J, k j * poleFreeMean ε j)) T ≤
-        Real.sqrt C * ∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ)) := by
+        ∑' j : ℕ, |k j| * w j := by
       rw [hpre]
       refine (pronicNorm_sum_le _ _ T).trans ?_
       have hj : ∀ j ∈ Icc 1 J, pronicNorm (fun n => k j *
           weightCenteredPrefix (poleFreeDilation ε j) (poleFreeMean ε j) n) T ≤
-          Real.sqrt C * (|k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) := by
+          |k j| * w j := by
         intro j hj
-        have hj1 := (mem_Icc.mp hj).1
-        have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
         rw [pronicNorm_smul]
-        have hE := hC j hj1 T
+        have hE := hw j (mem_Icc.mp hj).1 T
         rw [weightPronicEnergy_eq_sq_pronicNorm] at hE
         have hsq : pronicNorm (weightCenteredPrefix (poleFreeDilation ε j) (poleFreeMean ε j)) T ≤
-            Real.sqrt C * (j : ℝ) ^ (-(1 / 2 : ℝ)) := by
+            w j := by
           have h1 := Real.sqrt_le_sqrt hE
-          rw [Real.sqrt_sq (pronicNorm_nonneg _ _), Real.sqrt_div' C hj0.le] at h1
-          rwa [Real.sqrt_eq_rpow (j : ℝ), div_eq_mul_inv, ← Real.rpow_neg hj0.le] at h1
-        calc |k j| * pronicNorm (weightCenteredPrefix (poleFreeDilation ε j) (poleFreeMean ε j)) T
-            ≤ |k j| * (Real.sqrt C * (j : ℝ) ^ (-(1 / 2 : ℝ))) :=
-              mul_le_mul_of_nonneg_left hsq (abs_nonneg _)
-          _ = Real.sqrt C * (|k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) := by ring
-      refine (sum_le_sum hj).trans ?_
-      rw [← mul_sum]
-      refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg C)
-      exact hk.sum_le_tsum _ fun j _ => by positivity
+          rwa [Real.sqrt_sq (pronicNorm_nonneg _ _), Real.sqrt_sq (hw0 j)] at h1
+        exact mul_le_mul_of_nonneg_left hsq (abs_nonneg _)
+      exact (sum_le_sum hj).trans (hkw.sum_le_tsum _ fun j _ => mul_nonneg (abs_nonneg _) (hw0 j))
     rw [weightPronicEnergy_eq_sq_pronicNorm]
-    calc pronicNorm (weightCenteredPrefix (fun d => ∑ j ∈ Icc 1 J, k j * poleFreeDilation ε j d)
-          (∑ j ∈ Icc 1 J, k j * poleFreeMean ε j)) T ^ 2
-        ≤ (Real.sqrt C * ∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 :=
-          pow_le_pow_left₀ (pronicNorm_nonneg _ _) hnorm 2
-      _ = C * (∑' j : ℕ, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 := by
-          rw [mul_pow, Real.sq_sqrt hC0]
+    exact pow_le_pow_left₀ (pronicNorm_nonneg _ _) hnorm 2
   -- the partial pole values tend to `0`
   have hpartial : Tendsto (fun J => ∑ j ∈ Icc 1 J, k j * (j : ℝ) ^ (-(1 - ε))) atTop (𝓝 0) := by
     have h := hkpole.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
@@ -805,9 +802,9 @@ theorem receiverBounded_dirichletConv_unit_of_critical {ε : ℝ} (hε : 0 < ε)
   -- the truncated means converge to the mean
   have hmean : Tendsto (fun J => ∑ j ∈ Icc 1 J, k j * poleFreeMean ε j) atTop
       (𝓝 (∑' d : ℕ, RHTower.dirichletConv k (dampedSignWeight unitSign ε) d / d)) := by
-    have hmk : HasSum (fun j : ℕ => k j / j) (∑' j : ℕ, k j / j) := hkdiv.hasSum
+    have hmk : HasSum (fun j : ℕ => k j / j) (∑' j : ℕ, k j / j) := hkdiv.of_abs.hasSum
     have hq := summable_unit_weight hε
-    rw [(hasSum_dirichletConv_div hmk hq.hasSum hk.summable_abs_div hq.abs).tsum_eq]
+    rw [(hasSum_dirichletConv_div hmk hq.hasSum hkdiv hq.abs).tsum_eq]
     have hdivlim : Tendsto (fun J => ∑ j ∈ Icc 1 J, k j / j) atTop (𝓝 (∑' j : ℕ, k j / j)) := by
       refine (hmk.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)).congr fun J => ?_
       simp only [Function.comp_apply]
@@ -820,6 +817,33 @@ theorem receiverBounded_dirichletConv_unit_of_critical {ε : ℝ} (hε : 0 < ε)
     refine sum_congr rfl fun j _ => ?_
     ring
   exact le_of_tendsto' (tendsto_weightPronicEnergy_of_tendsto hconv hmean T) hbound
+
+/-- **Critical Wiener kernels with a vanishing pole value pay the smooth power.** For
+`0 < ε < 1/2`, a kernel with `Σ_j |k(j)| j^{-1/2} < ∞` and `Σ_j k(j) j^{-(1−ε)} = 0` makes
+`k ⋆ d^{-ε}` paid. -/
+theorem receiverBounded_dirichletConv_unit_of_critical {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
+    {k : ℕ → ℝ} (hk : CriticalWiener k) (hK : ∑' j : ℕ, k j * (j : ℝ) ^ (-(1 - ε)) = 0) :
+    ReceiverBounded (RHTower.dirichletConv k (dampedSignWeight unitSign ε)) := by
+  obtain ⟨C, hC0, hC⟩ := exists_weightPronicEnergy_poleFreeDilation_le hε hε2
+  -- the kernel converges absolutely at the pole
+  have hkpole : Summable (fun j : ℕ => k j * (j : ℝ) ^ (-(1 - ε))) := by
+    refine hk.of_norm_bounded fun j => ?_
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)]
+    refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+    rcases Nat.eq_zero_or_pos j with rfl | hj
+    · simp only [Nat.cast_zero, Real.zero_rpow (show -(1 - ε) ≠ 0 by linarith),
+        Real.zero_rpow (show -(1 / 2 : ℝ) ≠ 0 by norm_num), le_refl]
+    · exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hj) (by linarith)
+  -- the weights `w(j) = √C j^{-1/2}`
+  refine receiverBounded_dirichletConv_unit_of_poleFree hε (by linarith) (w := fun j => Real.sqrt C *
+    (j : ℝ) ^ (-(1 / 2 : ℝ))) (fun j hj T => ?_) (fun j => by positivity)
+    ((hk.mul_left (Real.sqrt C)).congr fun j => by ring) hkpole hk.summable_abs_div hK
+  have hj0 : (0 : ℝ) < j := by exact_mod_cast hj
+  have hpow : ((j : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = 1 / j := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hj0.le, show -(1 / 2 : ℝ) * ((2 : ℕ) : ℝ) = -1 by
+      norm_num, Real.rpow_neg_one, one_div]
+  rw [mul_pow, Real.sq_sqrt hC0, hpow, mul_one_div]
+  exact hC j hj T
 
 /-- **Critical Wiener perturbations of the smooth power are decided at the pole.** For
 `0 < ε < 1/2` and `Σ_j |k(j)| j^{-1/2} < ∞`, the receiver of `k ⋆ d^{-ε}` is bounded if and only if

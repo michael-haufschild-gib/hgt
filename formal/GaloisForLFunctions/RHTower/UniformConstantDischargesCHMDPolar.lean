@@ -11,12 +11,15 @@ eliminated.
 
 
 
+open Filter MeasureTheory Set Topology
+open scoped InnerProductSpace
+
 noncomputable section
 
 namespace RHTower.CHMDPolar
 
-open CHMDClosedJump CHMDDoobGraph Filter MeasureTheory Set ThetaSourceWard Topology
-open scoped InnerProductSpace
+open CHMDClosedJump CHMDDoobGraph ThetaSourceWard
+
 
 /-- `abs_symJump_le_lipschitz` with its constants supplied by
 `RHTower.CHMDPolar.exists_theta_bound`. -/

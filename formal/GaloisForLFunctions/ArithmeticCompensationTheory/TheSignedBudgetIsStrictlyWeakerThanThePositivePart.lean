@@ -202,7 +202,7 @@ theorem integral_lacunaryEnergyDeriv_mul_cos_ge (S : ℕ) (a c : ℝ) :
       (8 : ℝ) ^ k * ∫ x in a..c, Real.cos (16 ^ k * x) * Real.cos (m * x) := fun k => by
     rw [← intervalIntegral.integral_const_mul]; congr 1; ext x; ring
   have hsplit : (∫ x in a..c, lacunaryEnergyDeriv (S + 1) x * Real.cos (m * x)) =
-      ∑ k ∈ Icc 1 S, (8 : ℝ) ^ k * ∫ x in a..c, Real.cos (16 ^ k * x) * Real.cos (m * x) +
+      (∑ k ∈ Icc 1 S, (8 : ℝ) ^ k * ∫ x in a..c, Real.cos (16 ^ k * x) * Real.cos (m * x)) +
         (8 : ℝ) ^ (S + 1) * ∫ x in a..c, Real.cos (m * x) * Real.cos (m * x) := by
     have hfun : (fun x => lacunaryEnergyDeriv (S + 1) x * Real.cos (m * x)) =
         fun x => ∑ k ∈ Icc 1 (S + 1), (8 : ℝ) ^ k * Real.cos (16 ^ k * x) * Real.cos (m * x) := by

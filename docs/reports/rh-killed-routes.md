@@ -2,20 +2,47 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [37 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [40 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** checkpoint and codes as in frontier map; [L] committed umbrella-imported Lean declarations, no fresh build; [S] uncommitted or non-umbrella source, no compiler audit; [P] paper only; REF = unlocated legacy evidence. Conditional, model-only and class restrictions retained.
 
 ## Dead mechanisms
+
+<a id="kr-paf"></a>
+### KR-PAF — Uniform positive aperture floor transport
+
+- **Path:** Positive initial CCM ground floor + summably small relative step losses → fixed positive floor at unbounded apertures → RH.
+- **Obstruction [S]:** Actual `μ(A)≤K exp((11/2)A−πe^{2(A−2)})→0`; no fixed positive floor survives along any unbounded aperture sequence, irrespective of RH. Half-summable relative-step producer is impossible for this source.
+- **Survivor [S]:** Every positive floor `m₀e^{−B(A)}` needs `B(A)≥πe^{2(A−2)}−(11/2)A+log(m₀/K)`; positivity at each finite aperture and graded negative floors remain viable.
+- **Needs:** Source-derived nonnegative `μ(A)` at cofinal apertures or every-positive-rate negative floor, without a forbidden uniform positive margin; RW/ACT.
+- **E:** formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean.
+
+<a id="kr-adj"></a>
+### KR-ADJ — Polynomial cross-prime adjunction majorant
+
+- **Path:** Replace raw prime-comb cross terms by polynomial-in-aperture diagonal/Euler-envelope cost → pay AIP prime charge.
+- **Obstruction [L]:** Smooth odd test families have cross-prime aggregate of mean-field order `e^{2r}`, exceeding every proposed polynomial budget; the aggregate is introduced by Cauchy–Schwarz, not an intersection number.
+- **Survivor [L]/[S]:** Genuine Hecke incidence on two-prime resonators is a Kronecker sum of single-prime tower forms [L]; normalized comb translates slowly varying tests and tends to an exponential resolvent on fixed tests [S]. Large raw energy need not mean large first-power adverse charge.
+- **Needs:** Retain prime–pole compensation and signed first-power charge; AIP.
+- **E:** formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheAdjunctionConjectureMeanField.lean; formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ResonatorKroneckerLaw.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/ThePrimeCombIsATranslation.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCombAtTheHorizonIsAResolvent.lean.
+
+<a id="kr-hct"></a>
+### KR-HCT — Generic below-half-damping horizon interchange
+
+- **Path:** Pay infinite signed receiver → infer uniform payment of centred finite/dyadic cutoff rows → pass to critical source.
+- **Obstruction [L]:** For every damping below `1/2`, a signed weight with paid infinite receiver has unbounded dyadic-row energies. Residue modes make backward continuation unbounded in receiver `ℓ²` and `c₀`.
+- **Survivor [L]:** At/above half damping, paid receiver iff dyadic rows uniformly paid; below half damping, first chain column is the exact receiver and retains the source-specific question.
+- **Needs:** Actual Möbius signs and centering/cutoff covariance in a source-specific bound; MC/PM/CTF.
+- **E:** T:TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/ResidueModesAndBackwardContinuation.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheFirstColumnOfTheChainIsTheReceiver.lean.
 
 <a id="kr-aut"></a>
 ### KR-AUT — GL(2) automorphic positivity
 
 - **Path:** Nonnegative trace formula + spectral estimates → zero confinement.
 - **Obstruction:** ζ zeros occur as scattering poles, outside L² Parseval; nonnegative-test ceiling only c/logγ. [L] ceilings; [P] route verdict.
-- **Survivor:** Kuznetsov/Parseval and deck-normalized spectral sieve. Twisted point-pair test-field Dirichlet threshold gives a Laplace eigenvalue in (0,¼); modular-λ winding tests have exact mass/gradient bounds. Neither places ζ scattering poles or gives an individual-zero producer [L].
+- **Survivor:** Kuznetsov/Parseval and deck-normalized spectral sieve. Twisted point-pair test-field Dirichlet threshold gives a Laplace eigenvalue in (0,¼); modular-λ winding tests have exact mass/gradient bounds, and finite-index `Γ(2)` supplies an unconditional cell-energy bound linear in height. Neither places ζ scattering poles or gives an individual-zero producer [L].
 - **Needs:** New arithmetic scattering/source control, not Laplace positivity alone.
-- **E:** R:SelbergLedgerCeiling; R:KuznetsovExplicitIdentity; R:KuznetsovLargeSieveTheorem; R:RepPointPairSmallEigenCriterion; R:ModularLambdaTestEnergy.
+- **E:** R:SelbergLedgerCeiling; R:KuznetsovExplicitIdentity; R:KuznetsovLargeSieveTheorem; R:RepPointPairSmallEigenCriterion; R:ModularLambdaTestEnergy; R:ModularLambdaCellEnergyBoundUnconditional.
 
 <a id="kr-llm"></a>
 ### KR-LLM — Mollified Littlewood–Levinson

@@ -11,240 +11,51 @@ statement is proved on a stated family at a stated scale, and the two universal
 receivers that would deliver RH are treated as destinations and circularity
 checks, never as premises.
 
-This document is the foundational introduction: why the theory exists, which
-objects it speaks about, which mechanisms carry its proofs, where its sharp
-boundaries lie, and how to work inside it. Mathematics only; no ledger.
-
 ---
 
-## The shared target: the sign of the critical arithmetic form
+## Place in the research
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
+APT is the **source theory of the complete Weil form**. Its central distinction is between
+constructing a rich family of positive sources and controlling every compact test. The former
+is available on high arithmetic scales; the latter is an RH-equivalent destination. A long
+support, a dense approximation scheme, and a favourable prime-channel sign do not by themselves
+bridge that distinction.
 
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
+The shared research has three coordinates: pairwise incidence, lag, and aperture. They describe
+the same critical arithmetic form, but expose different missing estimates. APT supplies literal
+sources and complete-form approximation; it does not supply a theorem that their positive
+subfamilies exhaust the receiver.
 
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+| Programme | Mathematical interface with APT |
+|---|---|
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Factorial Müntz sources, signed prime–polar domain, logarithmic increment energy, and countermodels for source selectivity. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Zero configurations, reflection pairing, visibility lags, and the relation between support and zero depth. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Ground-energy path and ground-state coordinates for the same complete compact form. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Prime-power pair conductances, crossing debt, and local allocation of the pole charge. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md), [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Finite arithmetic and sign-sensitive receiver estimates beyond what size-only dilation bounds can prove. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Transport in damping, aperture, and cutoff, retaining the complete signed derivative and a common horizon bound. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Tests whether the data a proposed proof reads can distinguish its target from countermodels. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Signed compensation against the whole energy; explains why an adapted norm or a positive-part bound may merely restate the destination. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Searches for arithmetic effectivity producing the definite form that APT's source estimates alone do not construct. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Converts a signed arithmetic source into energy and cross terms; asks which source estimates survive a growing aperture. |
 
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
+`RHTower` supplies the explicit formula, zero divisor, zero-counting inputs and operator
+realisations. APT's spectral-realisation question is which source space carries a positive
+realisation of the complete arithmetic form. An existing self-adjoint or indefinite
+realisation is not already such a construction.
 
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
+A useful contribution must state its quantifiers: which sources, how many scales, which
+support lengths, and which constants are uniform. Restricted positivity paid for by
+archimedean growth is useful infrastructure. To reach the shared target, a bound must survive
+on the complete receiver without that source-specific gain. Partial results should report a
+quantitative floor or a zero-free strip, rather than describe every positive identity as
+progress towards RH.
 
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-APT is the source theory of the aperture face. It owns the complete Weil form on exact arithmetic
-sources with every endpoint, collar, Gamma and polar term kept, the critical factorial family, block
-positivity, and the two universal receivers as destinations. It must supply the passage from the
-critical family, where the arithmetic is favourable, to the compact tests of the receiver without an
-archimedean subsidy (mechanism 3 and the criteria of complete expression and no subsidy), and the
-admissible source class on which the prime modification of mechanism 4 can be realized. It is the
-programme home of mechanism 4, the definite spectral realization: the operators themselves (HF,
-CHMD, the finite-aperture operators of Connes–Consani–Moscovici) live in `RHTower`, and APT owns
-the question of which sources and which Hilbert space carry a prime modification as large as
-`S(T)`. Every certificate of positivity of the complete form is the critical-zero measure, so a
-positivity proof and such a realization are one object.
-
-The obligation is graded rather than binary. The sign of the complete form on odd compact tests may
-be replaced by any floor that loses less than an exponential in the aperture: a floor
-`Ẑ(F) ≥ −C ∫F²` on all odd `C²_c` tests is RH, and a loss `C_σ e^{2σ r}` at aperture `r` is the
-zero-free strip `Θ ≤ ½ + σ`. The unconditionally available floor has rate `1` — the prime `ℓ¹` norm
-`Σ_{n ≤ e^{2r}} Λ(n) n^{−1/2} ≍ 2e^{r}` — and the true rate of the floor is `2 · width`. So APT is
-asked for an exponent, not a sign, and the exponent must be bought by a power saving over the
-`ℓ¹` cost. What is excluded is paying for the exponent at the archimedean place: an inequality
-boosted by an archimedean term of exponent `θ > ¼` is satisfied by the all-ones weight, which
-differs from `Λ` already at the index `2`, so a boosted cone pins no source at all while the
-unboosted cone pins `Λ` at every index.
-
-### How the programme connects to the other programmes
-
-APT is the one programme of the family built on a concrete noncompact exact source rather than on
-a space of test functions. Everything it proves is transported to the others through the
-dictionary of §2.2 (one form, five names), and most of its analytic inputs come from them.
-
-- **Bi-Scale Uncertainty supplies the sources.** The factorial Müntz family (the tail primitive,
-  the analytic repair of the readout across the negative pole, the zero-side smoothing limit, the
-  prime–polar budget, the Weil smoothing and the Gram decoupling of the tent direction) and the
-  signed prime–polar jump domain are BiScale objects (`SignedPrimePolar`); APT's sampling,
-  Gram-margin and smoothing-limit theorems continue them. The archimedean log-coercivity of the
-  critical scale uses BiScale's logarithmic increment energy and origin-collar leverage; the
-  compact truncations use its compact Lipschitz Lévy energy and its polar moment identity. In the
-  other direction BiScale owns the test models (the shifted pair `ζ(s−a)ζ(s+a)`, Beurling
-  systems, the Liouville twist) and the function-field calibration against which every APT
-  positivity statement is audited; the windows-of-scales theorem of §3.13 is the APT statement
-  whose proof is selective, and the separation is now a theorem rather than a remark: the
-  summability hypothesis the proof consumes, `Σ Λ(r) r^{−1−ε(L)} ≤ 6(3 + log L)`, fails for the
-  shifted pair at every exponent `ε ≤ |a|`, hence on every window of width `log L ≥ 1/|a| − 2`.
-- **Square-Root Threshold supplies the zero side.** APT never locates a zero. The configuration
-  object, the pairing `𝒲`, the mass `𝒵`, the reflection defect `ℛ` and the visibility laws
-  (isolated pairs, finite off-line sets, depth gaps, equal-depth clusters, attained depths, large
-  dyadic prime windows, windowed blindness, the prime-tail coupling criterion, single-height
-  positivity above the archimedean horizon) are SRT theorems; the tent family becomes a detector
-  on the actual zero set by composing them with APT's grid convergence and joint smoothing. SRT's
-  explicit visibility lags `V₀(w, η, δ₀)` and its horizon law are the units in which APT's
-  quantitative-detection problem has to be answered, and SRT's zero width `sup|Re ρ − ½|` is the
-  quantity the tent detectors measure.
-- **Arithmetic Criticality Theory supplies the receiver's coordinates on compact tests.** ACT's
-  full zero form equals APT's complete physical energy on continuous compact sources, its Markov
-  energy equals APT's Markov form beyond the support, and its ground-energy path `μ(A)` is the
-  aperture-face reading of what APT proves at high scale. ACT's all-profile window through `3/10`
-  and the criticality of `μ` at infinity bound APT's task from both sides: positivity through
-  `3/10` is paid by sign-changing gauges with no critical-scale input, APT's block positivity is
-  paid by `log M` with no small-aperture input, and neither crosses into the other's regime.
-- **Arithmetic Incidence Positivity works on the same form at the opposite scale:** pairs of
-  points and single prime atoms at apertures up to `181/500` on odd tests, against APT's
-  unbounded-support patterns at scales beyond `M₀`. APT's parity decoupling (odd tests carry the
-  whole pole risk `S(g)²/2`, §3.9) is the statement AIP's odd gauges address, and AIP's Harnack
-  propagation across the prime shifts is what a passage from APT's family to the receiver would
-  have to reproduce at every scale.
-- **Trans-Horizon Incidence Mechanics and Bézout–Valuation Incidence hold the finite arithmetic
-  APT does not see.** APT's prime channel on dyadic blocks is bounded by mean-value inputs
-  (Montgomery–Vaughan, Mertens) and never by cancellation in a single arithmetic row. THIM's
-  parity pairs explain why such size-only bounds cannot select `ζ` below half damping; BVI's
-  coherent-block ceiling is the general statement that size-only bilinear bounds on arithmetic
-  rows stop short of the receiver, and APT's cross-block decay, a size-only Cauchy–Schwarz bound
-  over dilations, decouples only lacunary blocks for the same reason. The critical-scale receiver
-  `D(T) ≤ B(1+T)e^{T/2}` of §1.2 is the receiver these programmes study at finite modulus.
-- **Arithmetic Continuation and Critical Energy supplies the parameter direction.** APT proves
-  positivity at a fixed scale, a fixed aperture and a fixed damping; the continuation layer owns
-  the transport of such a bound along a parameter towards its critical end, with the observation
-  horizon quantified uniformly. Its aperture instance is APT's own ground-energy path: a bounded
-  *relative* decay of a positive ground floor forbids a crossing, with an explicit floor
-  `μ(a) exp(−(β c − β a))`, and the certified endpoint `3/10` supplies the initial value. In the
-  other direction APT's complete-expression discipline is what forbids the continuation layer from
-  dropping an endpoint or a collar term when it differentiates in the parameter.
-- **Scale-Signed Incidence Criticality prices the receivers.** It proves the two facts APT's
-  central problem turns on: that an archimedean boost of exponent `θ > ¼` admits a weight of
-  maximal defect and therefore removes the criterion, while a loss constant or linear in the
-  aperture leaves it intact; and that the full Weil cone is a single point — a weight in it agrees
-  with `Λ` at every index — so the admissible-source question of mechanism 4 is an identification,
-  index by index, and not an inequality. It also supplies the quiet zone: no arithmetic weight
-  whatsoever fails Weil positivity inside aperture `3/10`, so inside that window a certificate is
-  constant and certifies nothing about any source.
-- **RHTower supplies the analytic infrastructure:** the Weil–Markov–pole split, the full-cone
-  Plancherel and Herglotz representations, the von Mangoldt mollifier mean square, van der Corput
-  and Poisson summation, the CHMD divisor pairing, Baker's theorem, the Selberg near-line and
-  Ingham–Huxley densities, the non-tempered shifted-pair countermodel and the causal von Mangoldt
-  wall, and the operators (HF, CHMD, Connes–Consani–Moscovici) of mechanism 4 whose source class
-  APT is to supply.
-
-The other programmes use APT through its statements rather than its modules: the dictionary of
-§2.2, the dyadic dilation inequality and the admissible-source law (§3.12), the parity decoupling
-of the pole plane (§3.9), and the factorial tent family as an RH-complete receiver (§3.14).
+**Reading route.** Start with the two receivers in §1.2, the one-form dictionary in §2.2,
+and the source/clock definitions in §2.3. Then read logarithmic sampling and relative
+stability (§§3.4–3.6), the critical kernel (§3.11), and the uniform and compact transfer
+mechanisms (§§3.12–3.14). The distinction between a positive subspace and a complete test
+family governs the open questions in §5.
 
 ---
 
@@ -335,7 +146,7 @@ The **absolute square-sampling mass**, the **zero-side Weil pairing** and the
 $$
 \mathcal Z(f)=\sum_\rho m_\rho\lvert F_f(\rho)\rvert^2,\qquad
 \mathcal W(f,g)=\sum_\rho m_\rho F_f(\rho)\,\overline{F_g(1-\overline\rho)},\qquad
-\mathcal R(f)=\sum_\rho\frac{m_\rho}2\bigl\lvert F_f(\rho)-F_f(\overline\rho)\bigr\rvert^2 .
+\mathcal R(f)=\sum_\rho\frac{m_\rho}2\bigl\lvert F_f(\rho)-F_f(1-\overline\rho)\bigr\rvert^2 .
 $$
 Reflection $\rho\mapsto1-\overline\rho$ preserves the zero divisor with
 multiplicities, so $\mathcal W$ is the inner product twisted by a unitary
@@ -1203,6 +1014,25 @@ construction; on the RH-complete cone the gain is absent and the limiting critic
 prime channel is negative definite. The passage from the family to the receiver
 needs a statement that survives the loss of the gain.
 
+**Low modes are controlled, but not proved positive.** The all-scale bounds in
+[MultiScaleLowModeAndGridTentSchurBridge](MultiScaleLowModeAndGridTentSchurBridge.lean)
+include mode `n = 0`. In particular,
+`(Σ |b_n|/(n+1))² ≤ (π²/6) Σ b_n²` bounds the Gamma–polar cost without a
+lower-scale cutoff. For a disjoint low/high split, high-band exclusion gives
+`Lévy(g) ≥ s_T(log M − c_T)(E_high − K_low E_low)` when `log M ≥ c_T` and the
+truncation is sufficiently large. Scaled polarization bounds the prime cost of a high
+window `[M, LM]` and arbitrary lower modes by
+`2 C_TW(3 + log(LM))² E_low + C_TW(4 + log L) E_high`.
+
+When the high blocks are lacunary and `L_low⁸ ≤ M₀`, dyadic slicing improves the
+low-window prime cost to `O(1 + log L_low) E_low`, uniformly in the number of high
+blocks and the compact truncation. This is a complete lower bound with an explicit
+low-mode penalty, not positivity for arbitrary low coefficients: the archimedean
+penalty also contains `log M₀ · E_low`. The same module proves spatial-translation
+invariance and carries positive polynomial-window and lacunary sources directly into
+grid tents and their smooth detectors. It supplies a controlled low/high coupling;
+the remaining question is how to pay its low-mode term without assuming the receiver.
+
 ### 3.14 Full-form stability and the tent family as a receiver
 
 For compact real sources with value bounds $M_f,M_g$, Lipschitz bounds
@@ -1382,12 +1212,13 @@ inside an equivalence.
 on every dyadic block beyond an absolute $M_0$, on polynomial windows, on compact
 truncations uniformly in the truncation, on polynomial windows *and* compact
 truncations jointly — hence on compact tests of arbitrary support length, in all five
-names of the form — and on lacunary unions of blocks. Below $M_0$ nothing is proved;
-the constants (the threshold and the slope) decide how much of the form is covered.
-The low-scale gap is the only remaining restriction on the scale variable that is not
-a width restriction, and it is an unavoidable one: the archimedean gain is $\log M$, so
-no argument of this shape reaches $M=O(1)$, where the prime atoms of the smallest
-primes are not yet dominated.
+names of the form — and on lacunary unions of blocks. Low modes have all-scale Gamma–polar bounds and explicit low/high energy inequalities
+(§3.13), including logarithmic prime penalties against separated lacunary blocks.
+What remains open is positivity of the coupled form for unrestricted low-mode
+coefficients. Increasing the high scale cannot settle this through the existing
+lower bound: its low-mode archimedean penalty grows as well. The target is a
+stronger coupling or an independent low-mode certificate with a controlled Schur
+complement, not the already-proved admission and cross-window estimates.
 
 **Explicit thresholds and the range of $R$.** Every block threshold is the
 closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its slope $s$,
@@ -1490,11 +1321,12 @@ and whether their cell kernels are also sign-definite, is open.
    dilation inequality and the Montgomery–Vaughan endpoint bound survive verbatim for a Beurling
    system with an off-line zero, and are therefore not about RH. A statement that survives all
    three test models is infrastructure, and should be labelled as such in place.
-6. **The source class of the one-point cone.** The full Weil cone contains exactly one weight, so
-   the realization problem is the identification of `Λ` index by index rather than an inequality.
-   Which admissible sources of this theory present a weight whose single-index perturbations are
-   separated by the data the source actually exposes, and what replaces a cone membership proof
-   when the cone is a point.
+6. **Source selection in the full Weil cone.** The cone is empty if RH fails; under RH it consists
+   of the von Mangoldt weight on the visible indices `n≥2`. Full positivity is equivalent to RH
+   together with that source identification. Identifying the coefficients alone does not prove
+   membership. Determine which admissible sources expose enough data to distinguish every
+   single-index perturbation, and which additional estimate proves the sign for the identified
+   source.
 
 ---
 

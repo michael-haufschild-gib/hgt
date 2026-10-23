@@ -782,6 +782,65 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         form**: degree-two homogeneous, translation-invariant (the moments scale by reciprocal
         factors), and dilation-covariant — dilating by `λ` is reading the `λ`-power Beurling
         system at its own pole `1/λ`, with the normalisation `n^{−1/2}` restored exactly.
+      * **`primeSide_translate`**, **`autoCorrelation_reflect`**, `primeSide_reflect`,
+        `expMomentNeg_reflect`, **`poleplane_reflect`**, **`testBalance_source_congr`** — the
+        Weil form is invariant under the affine symmetries of the line, and two tests with the
+        same correlation and the same pole plane give the same form: those two data are
+        everything the arithmetic sees.
+      * **`evenPart`**, `oddPart`, **`sym_pairCorrelation_even_odd`**,
+        **`autoCorrelation_even_odd_split`**, **`poleplane_even_odd`**,
+        **`weilForm_even_odd_split`**, `poleplane_even_nonneg` — **the even and odd parts of a
+        test do not interact.**  The mixed correlations cancel, the pole plane is the even part's
+        squared moment minus the odd part's, and the whole Weil form is additive over the
+        decomposition: the odd sector is a direct summand, with a negative pole charge against
+        the even sector's positive one.
+      * **`weilForm`**, **`weilForm_split`**, **`weilForm_nonneg_iff`**,
+        **`residue_even_odd_split`** — **the positivity problem splits into the two sectors**:
+        positivity on all tests is exactly positivity on even tests together with positivity on
+        odd tests, and the Chebyshev residue splits the same way.
+      * `testBalance_liouville`, `testBalance_shiftedPair`,
+        **`testBalance_vonMangoldt_sub_liouville`**, `autoCorrelation_zero_split` — the
+        selectivity audit at Weil level: each test model has its own Weil-shaped balance with the
+        same pole plane, and is compared with `ζ` by the prefix difference alone.
+      * **`card_window_ge_of_defect_le`**, `twoPole_window_step` — the forced density is
+        scale-local: starting the chain anywhere, a bounded defect forces generalised primes in
+        *every* window.
+      * **`lagPrefix_eq_of_atomfree`**, **`defect_ge_of_atomfree`**,
+        **`chebyshev_defect_ge_of_primePower_free`**,
+        **`exists_primePower_of_chebyshev_defect_le`** — **an atom-free interval forces a defect
+        of at least half its length.**  A prime-power gap below `x` is visible in the Chebyshev
+        defect at full size, and conversely a defect bounded by `K` forces a prime power in every
+        interval longer than `2K`.
+      * **`defect_poleAt_ge_of_atomfree`**, `chebyshevTwoPoleDefect_log_nat`,
+        **`chebyshevTwoPoleDefect_log_two`**, **`chebyshevTwoPoleDefect_log_three`**,
+        `lagChebyshev_eq_log_six`, **`criticalScalePrefix_pos_first_cell`**,
+        **`criticalScalePrefix_pos_second_cell`** — the gap principle at an arbitrary pole, and
+        exact values at the first scales: the defect is `1` at `log 2`, `2 − log 2` at `log 3`,
+        and the receiver is strictly positive on the first two cells.
+      * **`criticalScalePrefix_pos_on_cell`**, **`criticalScalePrefix_succ_pos`**,
+        `log_gap_le_inv`, **`criticalScalePrefix_succ_pos_of_psi`** — positivity of the receiver
+        propagates whenever the cell's loss `ψ(N)·log(1+1/N) ≤ ψ(N)/N` stays below its gain `1`:
+        the receiver's sign is a statement at prime-number-theorem precision, which is why
+        nothing cruder decides it.
+      * **`criticalScalePrefix_succ_ge`**, **`criticalScalePrefix_le_nat`**,
+        **`criticalScalePrefix_ge_sub`**, **`lagChebyshev_le`**,
+        **`criticalScalePrefix_le_exp`**, `integral_id_mul_exp`,
+        **`criticalScalePrefix_ge_explicit`** — unconditional envelopes: each cell contributes at
+        most one unit and at least `1 − ψ(N)/N`, so the receiver lies between
+        `M − Σ ψ(k+1)/(k+1)` and `M` at the integer scales, and between an explicit elementary
+        lower bound and `e^s − 1` at every scale.
+      * **`squarefreeSource`**, `sum_squarefree_sub_scaledPolar_eq_defect`,
+        **`higherPowerSource`**, **`sum_higherPower_sub_halfPolar_eq_defect`**,
+        **`testBalanceAt_source`**, `testBalanceAt_higherPower` — two further sources and where
+        their poles sit: the squarefree indicator at density `6/π²`, the higher prime powers at
+        the pole `1/2` (so their normalisation is `n^{−1/4}` and their symmetry point a
+        quarter); and the Weil-shaped balance of an arbitrary source at an arbitrary pole.
+      * **`lagPrefix_add`**, **`defect_split_calibration`**,
+        **`chebyshevTwoPoleDefect_split`**, `lagPrefix_higherPower_eq_zero_of_lt_log_four`,
+        **`primeSide_source_add`**, **`primeSide_higherPower_eq_zero`**,
+        **`primeSide_vonMangoldt_eq_theta`** — calibrations compose with the source: `ζ`'s defect
+        is the prime-only defect plus the higher-power defect, and below the aperture `log 4 / 2`
+        the higher powers contribute nothing, so `ζ`'s Weil form is `θ`'s.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route

@@ -11,12 +11,14 @@ eliminated.
 
 
 
+open Complex Filter Set Topology
+open scoped Real
+
 noncomputable section
 
 namespace RHTower.DeningerMeyerGaussianGreen
 
-open Complex Filter Set Topology
-open scoped Real
+
 
 /-- `pi_le_norm_Gamma_half_mul` with its constants supplied by
 `RHTower.DeningerMeyerGaussianGreen.exists_gamma_bound_Icc`. -/

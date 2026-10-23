@@ -12,12 +12,15 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Real Set Topology Zeta23
+open scoped ComplexConjugate Real
+
 noncomputable section
 
 namespace RHTower
 
-open Complex Filter MeasureTheory RHTower.CCMFullGroundEigen RHTower.CCMRealRootedGround Real Set Topology Zeta23
-open scoped ComplexConjugate Real
+open RHTower.CCMFullGroundEigen RHTower.CCMRealRootedGround
+
 
 /-- `abs_deriv_bartaCutoff_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/

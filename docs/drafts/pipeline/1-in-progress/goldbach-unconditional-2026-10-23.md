@@ -460,6 +460,70 @@ heat-echo cards likewise distinguish exact reconstruction from the
 missing moving-scale arithmetic estimate; they were inspected as leads,
 not used as new Goldbach inputs.
 
+### Cycle 10: make the RH–Goldbach relationship exact
+
+The user requested Lean bridges between the two problems. The detailed card is
+[RH–Goldbach bridges](../3-formalized/not_new_scientific_knowledge/goldbach-riemann-hypothesis-bridges.md).
+
+Let `w(n)=1_(n prime) log n` and let `B(N,t)` count ordered pairs weighted
+by `w(a)w(b)`, with `a,b≤N` and `a+b=t`. Finite partition gives
+`Σ(t≤2N)B(N,t)=θ(N)²`. The existing corpus von Koch equivalence, mathlib's
+unconditional prime-power correction, and Chebyshev's linear upper bound
+give the dependency-closed paper theorem
+
+`RH ↔ Σ(t≤2⌊x⌋)B(⌊x⌋,t)−x² = O(x sqrt(x) log²x)`.
+
+At a single target, exact expansion gives
+`Σ(a+b=t)w(a)w(b)=2θ(t)−(t+1)+Σ(a+b=t)(w(a)−1)(w(b)−1)`.
+The left side is positive exactly when t is a sum of two primes. Thus the
+two statements use the same actual prime weights, but the RH average bound
+and every-target reflected-correlation lower bound are distinct requirements.
+No equivalence of ordinary RH and ordinary binary Goldbach is inferred.
+
+**Verdict: BRIDGE**, not new scientific knowledge. Published literature
+already supplies the stronger classical triangular-average RH equivalence.
+The finite identities and boxed criterion are formalized in
+`goldbach/RiemannHypothesisBridge.lean`; all fourteen theorem closures passed
+the direct compile and standard-axiom audit. In particular,
+`riemannHypothesis_iff_boxedPrimePairMass_error` and
+`goldbach_iff_reflectedPrimeCorrelation` are unconditional equivalences;
+the triangular criterion is not being represented by an assumed interface.
+The Goldbach task still requires arithmetic
+control of the reflected correlation on the support missed by the marks.
+
+### Cycle 11: move marks onto the predecessor and attack the signed term
+
+Following the user's direction to prioritize original proof work, moved
+the marks from a possible prime complement n to n−1. The old support
+vanished at every large prime n; the new support permits them. This
+changes the sufficient weighted target and avoids requiring subsequent
+removal of these marks. It does not assert a prime pair exists there.
+
+The [new Type I deduction](../2-fully-proven/goldbach-predecessor-mark-type-i.md)
+is complete on paper throughout 2u+θ<1. Its reduced modulus is
+a d r/g at length T/(qg). Aggregating all mark/roughness factorizations
+of that modulus costs a fixed logarithmic power, because their degree
+was truncated at O(log log T). The proof pays both truncation errors
+with the actual root multiplicities. This is a classical BV consequence;
+no scientific novelty or new Lean analytic certificate is claimed.
+
+The [direct balanced-term attempt](goldbach-transverse-mark-correlation.md)
+then bounds the diagonal and nearby slopes and retains the exact
+two-mark CRT. Shared marks force gcd(a₁,a₂)|n₁−n₂. On each resulting
+progression the signs are λ(A_i−Dn_i v), with A_i≡1 mod a_i and
+determinant DT(n₁−n₂). Thus the marks no longer furnish divisors of
+the signed arguments. The old multiplicative cancellation step is
+invalid here; multiplying the signs instead produces a quadratic
+Liouville sum, outside the proved linear Type I estimate.
+For the actual Möbius assembly, both squarefreeness indicators must
+also remain in that quadratic sum; no λ-to-μ transfer is assumed.
+
+The far-slope signed average is still unproved. Its exact sufficient
+bound and the weaker alternative retaining the original coefficient
+signs are recorded on the working card. Neither Goldbach nor RH has
+been proved. No additional external audit is being counted as progress
+on this missing estimate.
+
 ## Current verified state and continuation
 
 - Goldbach target is **not proved**; main goal remains active.
@@ -469,11 +533,18 @@ not used as new Goldbach inputs.
   closures also passed direct compilation and axiom audit. Its period
   classification certifies that a frozen slope cannot be silently removed
   from an arithmetic progression modulus.
+- The RH–Goldbach bridge module and all fourteen theorem closures passed
+  direct compilation and axiom audit. RH is equivalent to a prime-only boxed
+  average error law; Goldbach requires the separate pointwise correlation bound.
 - Exact scientific advance claimed: **none**. The certified bridge prevents
   a false passage from rough negative parity to primality.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
+  **Current priority:** Cycle 11's predecessor-mark far-slope signed
+  covariance. Its Type I deduction is closed on paper. Pursue the
+  original analytic argument, rather than extending the source audits
+  listed below or replacing its missing bound with a Lean premise.
   Audit the claimed dispersion theorem in Cycle 5 after repairing its
   Fourier cutoff; check whether subsequent estimates use only a subpower
   frequency range or rely on its unsupported explicit cutoff.
@@ -496,10 +567,10 @@ not used as new Goldbach inputs.
   that missing arithmetic information, rather than another cutoff transfer.
 - C1–C4 are active targets, not retired routes. No actual
   counterexample to Goldbach has been produced.
-- Integration: `goldbach/Main.lean` imports both audited leaves and is imported by
+- Integration: `goldbach/Main.lean` imports all three audited leaves and is imported by
   `MainTheorems.lean`; umbrellas were not built. Index regeneration passed.
-  Final repository lint has five unrelated failures, documented on the
-  boundary card; it has no Goldbach or generated-freshness finding.
+  The latest Cycle 10 repository lint has thirty unrelated errors, documented
+  on the RH–Goldbach bridge card; it has no Goldbach or generated-freshness finding.
   All owned commands terminated; no pending build or scratch job remains.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
@@ -524,3 +595,11 @@ not used as new Goldbach inputs.
   the actual marked prime root-average transfer at every fixed level
   below one. Recorded all averaged errors and the outstanding external
   zero-free proof closure. Goldbach and signed mark removal remain open.
+- 2026-10-23 — Formalized exact prime-only RH–Goldbach bridges at the user's
+  request. Paper proof, direct compile, and fourteen axiom checks passed. The same
+  prime weights support an averaged RH criterion and a separate pointwise
+  Goldbach criterion. Neither conjecture has been proved.
+- 2026-10-23 — Derived the predecessor-mark Type I estimate and attacked its
+  balanced term directly. Recorded the CRT compatibility, affine determinant,
+  paid diagonal/near-slope contribution and exact unresolved far-slope sum.
+  No new Lean certificate or scientific novelty claimed in this cycle.

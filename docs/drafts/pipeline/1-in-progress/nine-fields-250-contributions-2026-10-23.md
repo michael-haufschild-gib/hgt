@@ -14,9 +14,11 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 1 / 250
+## Accepted contributions: 3 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
+2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
+3. THIM — a paid receiver continues the Dirichlet series across its abscissa; prime-mean quantization (candidate 2).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -48,8 +50,10 @@ flipped primes have Dirichlet density `ρ` is unpaid unless `ρ ∈ {1/2, 1}` (`
 
 **Lean:** `TransHorizonIncidenceMechanics/APaidReceiverContinuesTheDirichletSeriesAcrossItsAbscissa.lean`
 (`exists_holomorphic_continuation`, `exists_abs_dirichletSeries_sub_le_mul`,
-`exists_nat_eq_of_rpow_bounds_at_abscissa`, `not_receiverBounded_of_flippedDensity`). Status:
-written, not yet compiled.
+`exists_nat_eq_of_rpow_bounds_at_abscissa`, `not_receiverBounded_of_primeMean`,
+`not_receiverBounded_of_flippedDensity`). Status: compiled, axioms `propext`, `Classical.choice`,
+`Quot.sound`; wired into the THIM umbrella. General form: a paid completely multiplicative `|f| ≤ 1`
+weight below half damping has logarithmic prime mean `ν ∈ {0, −1}`.
 
 ## Candidate 3 (THIM): the universal hyperplane on the whole critical Wiener algebra
 
@@ -61,8 +65,8 @@ Sufficiency: `k = Σ_j k(j)(δ_j − j^{-(1−ε)}δ_1)`; each pole-free dilatio
 of the energy at fixed cutoff. No divisor-problem asymptotic is needed.
 
 **Lean:** `TransHorizonIncidenceMechanics/CriticalWienerPerturbationsOfTheSmoothPowerAreDecidedAtThePole.lean`
-(`receiverBounded_dirichletConv_unit_iff_critical`). Status: written, compile pending (dependency
-oleans being rebuilt by other agents).
+(`receiverBounded_dirichletConv_unit_iff_critical`). Status: compiled, axioms `propext`,
+`Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
 ## Candidate 4 (THIM): the hyperplane law on the algebra stops exactly at half damping
 

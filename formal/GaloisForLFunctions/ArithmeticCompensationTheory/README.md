@@ -4,34 +4,19 @@
 signed critical-norm estimates do their compatibility conditions force that none of the
 descriptions forces separately?
 
-Arithmetic Compensation Theory — *arithmetic compatibility and compensated coercivity* (ACCC) — is
-the estimate-producing continuation of the nine programmes of this corpus. Those programmes own the
-receivers, the exact identities, the detectors, the counterexamples and a substantial amount of
-leading-order cancellation. What none of them owns is a bound, uniform in the critical cutoff, that
-turns that cancellation into admission. ACCC studies cancellation as data: it keeps the separately
-divergent pieces of one source together, measures how much of their compensation survives each
-change of representation, and asks which joint arithmetic constraints force a *rate*. It is not a
-tenth vocabulary for the same RH-equivalent assertion; every statement here is unconditional, names
-its norm, its cutoff, its source class and its parameter dependence, and is scored by a rate.
+Arithmetic Compensation Theory — *arithmetic compatibility and compensated coercivity* (ACCC) —
+studies cancellation between descriptions of the same arithmetic source. Separately divergent
+pieces can cancel to leading order while their sum still exceeds the critical norm. The task is to
+identify the coherent part, retain its mixed terms, and estimate the absolute remainder with
+constants independent of the cutoff. Relative cancellation is the starting point, not admission.
 
-The programme is the one proposed in `docs/reports/review-2210/astra.md`. Its first theorems settle
-the three concrete items that report leaves to formalization — the exponential prime-comb family
-and its translation survivor, the three quantifier corrections of the continuation problem, and the
-`17/30` short-window transfer — and its own contribution is the comb resolvent law, which
-identifies the coherent part of the prime comb on every test.
+## Place in the research
 
----
-
-## The shared target and where this programme sits
-
-The Riemann Hypothesis is the nonnegativity of one critical arithmetic form, read in three faces —
-the incidence face (`ArithmeticIncidencePositivity`), the lag face (`SquareRootThreshold`) and the
-aperture face (`ArithmeticCriticalityTheory`, `arithmetic-positivity-theory`) — with the finite
-arithmetic programmes (`BezoutValuationIncidence`, `TransHorizonIncidenceMechanics`,
-`BiScaleUncertainty`), the continuation layer (`ArithmeticContinuationAndCriticalEnergy`) and the
-admissibility layer (`ScaleSignedIncidenceCriticality`) around them. The full statement of the
-shared target, with the criteria every contribution to it must meet, is in
-`ArithmeticIncidencePositivity/README.md`; it is not repeated here.
+The programme connects exact source decompositions to estimates. Its model examples explain both
+sides of this distinction: the prime comb has exponentially large energy because it translates a
+profile to the horizon, while that translated profile has little overlap with the original test;
+the large-prime Möbius–Ramanujan sector cancels against its literal complement, but the known
+relative cancellation gives no cutoff-independent bound for their sum.
 
 The governing example of this programme is the actual centred receiver
 
@@ -58,27 +43,27 @@ the bookkeeping that every remainder estimate needs:
 In the shared units its contribution is a rate: a residual exponent, a logarithmic saving, an
 aperture decay, a resolution threshold. Identities and equivalent criteria count as zero.
 
-### How the programme connects to the other programmes
+### Connections and reading route
 
-- **Arithmetic Incidence Positivity.** AIP reduced the exponential obstruction of its cost side to
+- **[Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md).** AIP reduced the exponential obstruction of its cost side to
   one scalar, the cross-prime aggregate of the prime comb, and asked for its size (topic 8). ACCC
   answers: the aggregate is `∼ 4e^{2r}` on a smooth odd family of unit mass, the universal bound
-  is attained, and on every fixed test the comb energy is `4J(F)e^{2r}` with an explicit
+  is attained, and on every fixed nonzero continuous compact test the comb energy is asymptotic to `4J(F)e^{2r}` with an explicit
   horizon energy `J`. The comb is a translation on slowly varying tests and an exponential
-  resolvent on fixed ones; it carries no adverse first-power charge. Shared objects: the pairing
+  resolvent on fixed ones; its first-power charge is `o(e^r)` on the slowly varying compact family. Shared objects: the pairing
   calculus, `primeComb`, `combEnergy`.
-- **Arithmetic Continuation and Critical Energy.** ACCE owns admission, the averaged budget and its
+- **[Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md).** ACCE owns admission, the averaged budget and its
   equivalence with admission, the signed work and its prime-harmonic core. ACCC adds the rung
   between them — the positive-part budget, strictly stronger than the signed one even on monotone
   families — the exact limit of the core debt on positive intervals, the adverse first-cell work,
   and the adapted-energy (corrector) criterion with its exact equivalence. Shared objects:
   `Admits`, `relativeLoss`, `AveragedContinuation`, `signedDampingWork`, `workCore`.
-- **Arithmetic Criticality Theory.** ACT owns the Gaussian ceiling of the restricted Weil ground
+- **[Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md).** ACT owns the Gaussian ceiling of the restricted Weil ground
   energy. ACCC reads it as a forced loss rate: any positive aperture floor must decay doubly
   exponentially, the half-summable transport premise is impossible along unbounded apertures, and
   even the harmonic product is too large along linear ones. Shared object:
   `ccmRestrictedWeilGroundEnergy`.
-- **Bézout–Valuation Incidence.** BVI owns the actual-row estimate for the centred prime row on
+- **[Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md).** BVI owns the actual-row estimate for the centred prime row on
   unbalanced scales, with Huxley's exponent. ACCC transfers the corpus's Guth–Maynard exponent into
   it, widening the range from `Q ≤ P^{12/7−δ}` to `Q ≤ P^{30/17−δ}` with every side condition kept.
   Shared objects: `centredPrimeRow`, `rowBilinear`.
@@ -87,31 +72,33 @@ aperture decay, a resolution threshold. Identities and equivalent criteria count
   cancellation in compensation coordinates and proves the Pythagorean law that ties both
   coordinates to the complete receiver energy. RHTower also supplies the prime number theorem
   through Abel summation and the `17/30` short-window theorem.
-- **Square-Root Threshold.** SRT owns the graded floor in both directions: a floor at rate `2σ` is
+- **[Square-Root Threshold](../SquareRootThreshold/README.md).** SRT owns the graded floor in both directions: a floor at rate `2σ` is
   the strip `½ + σ`, and the width bounds the floor in the energy normalisation. ACCC uses the
   dictionary as its scoring rule and does not reprove it.
-- **Bi-Scale Uncertainty.** Its finite-filter Schur residuals are the abstract projection algebra
+- **[Bi-Scale Uncertainty](../BiScaleUncertainty/README.md).** Its finite-filter Schur residuals are the abstract projection algebra
   of the compensation coordinates; its test models are the selectivity audit every ACCC estimate
   must pass.
-- **Trans-Horizon Incidence Mechanics and Scale-Signed Incidence Criticality.** They own readings,
+- **[Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) and
+  [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md).** They own readings,
   fibres and origin loss. ACCC inherits their rule that recovery is worth something only with a
   stability estimate in the receiver's norm, and its defect profiles are readings with retained
   arithmetic constraints.
 
-ACCC imports these programmes and is imported by none of them.
+- **[Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md).** Supplies the full
+  Weil–Markov–pole target and multiscale Schur estimates to which a compensated remainder must return.
+- **[Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md).** Asks whether
+  source-compatible effectivity can force the sign that compensation alone does not determine.
+- **[Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md).** Keeps
+  Möbius coefficients, residue incidence and signed Gram interactions attached to the source.
+
+Read the comb mechanisms first as a worked example of a failed majorant with a useful survivor;
+then the compensation coordinates, signed budgets and correctors. The short-window transfer shows
+how an existing analytic theorem yields a genuine gain once the receiving estimate's quantifiers
+are matched. `RHTower` supplies the underlying analytic and arithmetic identities.
 
 ---
 
 ## 1. Why: motivation
-
-**The frontier is further along than a generic discussion of RH suggests.** The corpus owns, for
-the actual source: the receiver and its exact rate `Θ − ½`; positivity on large restricted
-families; sharp node prices and finite Schur residuals; all-prefix sign results; compensated
-diagonal and predecessor errors `O_ε(1)`; certified local positivity through radius `0.3` and odd
-positivity through `0.362`; an exact incidence ledger with pole and even parts retained; exact
-transport identities and the equivalence of the averaged budget with admission; and the exact
-calculus of readings. What is missing in every row is the same thing: a quantitative estimate on
-the actual source, uniform in the critical cutoff.
 
 **The walls are failures of particular estimates.** They do not say that every proof must use one
 prescribed set of tools. Source realization without orientation asks for orientation derived from
@@ -165,8 +152,8 @@ is `S_r^{−1} Σ_p w_p f(· + log p/r)` (`normalizedComb`).
 
 **Compensation coordinates.** For a coherent sector `L` and its complement `C`, the **amplitude**
 `α = −⟪L, C⟫/‖L‖²` and the **transverse remainder** `R = C + αL` (`compensationAmplitude`,
-`transverseRemainder`); in scalar Gram data `a = ‖L‖²`, `b = ‖C‖²`, `m = ⟪L, C⟫` they are
-`−m/a` and `b − m²/a` (`gramAmplitude`, `gramTransverse`).
+`transverseRemainder`), with `L ≠ 0`; in scalar Gram data `a = ‖L‖²`, `b = ‖C‖²`, `m = ⟪L, C⟫` they are
+`−m/a` and `b − m²/a` (`gramAmplitude`, `gramTransverse`), with `a > 0`.
 
 **Budgets.** The signed averaged budget (`AveragedContinuation`), the positive-part budget
 (`PositivePartContinuation`), the pointwise budget (`LinearContinuation`), and the adapted energy
@@ -235,11 +222,16 @@ are three different statements and remain visibly different here.
     `tendsto_combEnergy_div_exp_horizonEnergy`), with `0 ≤ J(F) ≤ A_F(0)`
     (`horizonEnergy_nonneg`, `horizonEnergy_le`). In operator language
     `S_r^{−1} C_r ≈ τ_{2r} ∘ Ψ`, `ΨF = ∫_{u>0} ½e^{−u/2} F(· − u) du`, the resolvent of `1 + 2∂`, and
-    `J(F) = ‖ΨF‖²`. On slowly varying tests `Ψ ≈ id` and mechanism 5 is recovered.
+    `J(F) = ‖ΨF‖²`. For every nonzero continuous compactly supported `F`, **`J(F) > 0`**
+    (`horizonEnergy_pos`): vanishing horizon energy forces all exponentially weighted tails of
+    the autocorrelation to vanish, hence `A_F(0) = 0`. Thus every such fixed test has exponential
+    comb energy (`exists_pos_tendsto_combEnergy_div_exp`). This is pointwise positivity in `F`,
+    not a uniform coercive constant over all test profiles. On slowly varying tests `Ψ ≈ id`
+    and mechanism 5 is recovered.
 
 ### Compensation coordinates
 
-11. **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²` with `⟪L, R⟫ = 0`
+11. **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²` for `L ≠ 0`, with `⟪L, R⟫ = 0`
     (`norm_add_sq_eq_compensation`, `inner_transverseRemainder`), hence
     `(1 − α)² + ‖R‖²/‖L‖² = ‖L + C‖²/‖L‖²` (`compensationDefect_eq_relativeEnergy`). The same law
     holds for scalar Gram data, with `‖R‖² ≥ 0` from Cauchy–Schwarz (`gram_add_eq_compensation`,
@@ -255,7 +247,7 @@ are three different statements and remain visibly different here.
 
 13. **The signed budget is strictly weaker than its positive part.** The positive-part budget
     implies the averaged one (`averagedContinuation_of_positivePart`), and the lacunary family
-    `E_T(ε) = Σ_{k ≤ T} 2^{−k}(2 + sin(16^k ε))` — nonnegative, nondecreasing in the horizon,
+    `E_T(ε) = Σ_{1 ≤ k ≤ T} 2^{−k}(2 + sin(16^k ε))` — nonnegative, nondecreasing in the horizon,
     bounded by `3`, hence admitted everywhere with averaged budgets on every interval — has
     `∫_a^c (r_T)_+ → ∞` on every nondegenerate interval
     (`exists_admitted_monotone_not_positivePartContinuation`). The mechanism is lacunary
@@ -271,7 +263,7 @@ are three different statements and remain visibly different here.
     (`tendsto_signedDampingWork_one`), so global nonnegative work fails on the actual source
     (`not_forall_signedDampingWork_nonneg`).
 16. **The aperture floor must decay doubly exponentially.** From the Gaussian ceiling
-    `μ(A) ≤ K e^{(11/2)A − πe^{2(A−2)}}`: no positive floor along any unbounded aperture sequence
+    `μ(A) ≤ K e^{(11/2)A − πe^{2(A−2)}}`: no fixed positive floor along any unbounded aperture sequence
     (`not_exists_positive_floor_along`); the half-summable relative transport, whose conclusion is
     the floor `1/10000`, is impossible there (`not_relative_step_transport`); every floor
     `m₀e^{−B(A)}` has `B(A) ≥ πe^{2(A−2)} − (11/2)A + log(m₀/K)` (`exists_le_floorLoss_of_floor`);
@@ -279,7 +271,8 @@ are three different statements and remain visibly different here.
     harmonic transport fails along linearly growing apertures
     (`exists_groundEnergy_lt_harmonic_transport`).
 17. **An adapted energy is exactly admission.** With the right end admitted, an adapted energy on
-    `[a, c]` exists iff the receiver is admitted at `a` (`adaptedEnergy_iff_admits`); a pointwise
+    `[a, c]` exists iff the receiver is admitted at `a`, under the differentiability and
+    relative-loss integrability assumptions (`adaptedEnergy_iff_admits`); a pointwise
     corrector budget produces one (`adaptedEnergy_of_pointwise`); and cofinal adapted energies on
     `[a, ½]` for the damped Möbius receiver are RH (`riemannHypothesis_iff_cofinal_adaptedEnergy`).
 
@@ -301,10 +294,10 @@ are three different statements and remain visibly different here.
 
 | Trap | What is true instead |
 |---|---|
-| Expecting the raw comb energy, or its cross-prime aggregate, to be polynomial in the aperture | Both are `∼ 4e^{2r}` on unit-mass smooth odd tests, and `∼ 4J(F)e^{2r}` on every fixed test; the universal bound `S_r²A(0)` is attained. |
+| Expecting the raw comb energy, or its cross-prime aggregate, to be polynomial in the aperture | Both are `∼ 4e^{2r}` on unit-mass smooth odd tests, and `∼ 4J(F)e^{2r}` on every fixed nonzero continuous compact test; the universal bound `S_r²A(0)` is attained. |
 | Reading large comb energy as a large adverse charge | The first-power charge is `o(S_r)` on the extremal family; Cauchy–Schwarz discards the translation geometry that kills it. |
 | Treating the comb as a rank-one object | It is a translation on slowly varying profiles and an exponential resolvent on fixed ones. |
-| Reading relative cancellation `‖L + C‖ = o(‖L‖)` as a bounded remainder | The two compensation coordinates add up exactly to the relative complete energy; neither is bounded unless the receiver is. |
+| Reading relative cancellation `‖L + C‖ = o(‖L‖)` as a bounded remainder | The two compensation coordinates add up exactly to the relative complete energy; relative smallness of either coordinate does not bound the complete energy. |
 | Paying every local loss separately | The positive-part budget is strictly stronger than the signed one, even on smooth horizon-monotone families. Keep signed recovery. |
 | Asking for nonnegative signed work | The first cell has `W_1(ε) → −½`. |
 | Reading the core divergence on `[0, ε]` as a divergence on positive intervals | On `[η, ε]`, `η > 0`, the core converges to `log ζ(1+η) − log ζ(1+ε)`. |
@@ -316,20 +309,28 @@ are three different statements and remain visibly different here.
 
 ---
 
-## 5. The questions and their answers
+## 5. What compatibility must contribute
 
-Each question is narrower than RH; some strongest endpoints imply it. The status column says what
-is proved here.
+One decomposition gives a Pythagorean identity, not an extra inequality. A useful second
+representation must constrain the same residual in a different way: shared divisor coefficients,
+overlapping prime/cofactor cuts, a common successor boundary, or a pole term fixed by the source.
+The new estimate must survive the change of representation, including the motion of its projection.
 
-| Question | Answer | Status |
-|---|---|---|
-| Can adjacent arithmetic decompositions force a rate of compensation? | For one split, the amplitude mismatch and the transverse remainder are *exactly* the relative complete energy (mechanism 11). On the actual large-prime sector both are relatively negligible (mechanism 12). A rate for either coordinate is a rate for the receiver itself; a decomposition-level gain must come from a second, compatible decomposition, and none is yet proved to force one. | coordinates and actual instance proved; the two-scale rate open |
-| Can compatible source constraints exclude critical blow-up profiles? | For the raw comb functional the profile is classified completely: the normalized comb converges to the translate on slowly varying tests and to the exponential resolvent on fixed ones, with no mass escaping (mechanisms 5, 10). For the receiver the profile decomposition is open. | comb profile proved; receiver open |
-| Can prime–polar coherence be handled before squaring? | Yes for the comb: the coherent part is identified before the square (translation to the horizon / resolvent), and on the extremal family it contributes nothing to the first-power charge (mechanism 6). The exact prime–polar compensated pairing is the Chebyshev two-pole defect identity of `ArithmeticIncidencePositivity.LagChebyshevAbelSummation`; a power saving in its remainder is a zero-free strip. | comb proved; residual exponent = zero width |
-| Can origin information be recovered stably at the threshold? | The comb answers the anchored side: the translation it performs is by exactly the horizon `2r`, so its coherent part is anchored at the horizon, not at the origin. A stable anchored reconstruction for the receiver is open. | open |
-| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission (mechanism 17); cofinally it is RH. The framework is lossless and adds no strength; the question is entirely the construction of `C_T` from arithmetic cross terms with independently proved constants. | criterion proved; construction open |
-| Can positivity be replaced by the right graded floor? | Yes: the graded floor at rate `2σ` is the strip `½ + σ`, and the width bounds the floor in the energy normalisation (SRT dictionaries). On the aperture face, positive floors are impossible to transport and must decay doubly exponentially (mechanism 16), so the graded *negative* floor is the right target. Any fixed `σ < ½` is a zero-free strip. | dictionary owned by SRT; aperture loss rate proved |
-| What is the exact balanced-scale obstruction for actual rows? | The unbalanced range of the actual centred prime row now reaches `30/17` (mechanism 19); the method stops at `Q ≍ P` because `3P ≤ 2εQ` fails and the cubic tail is of rank-two size there. The omitted-residue-class main term (`BezoutValuationIncidence.OmittedResidueClassLawOfThePrimeRow`) must be kept before a remainder is asked for. | range proved; balanced regime open |
+Three distinctions organize this work:
+
+- **Relative and absolute compensation.** `α → 1` and `‖R‖/‖L‖ → 0` permit an unbounded complete
+  energy. Admission needs bounds on `(1−α)²‖L‖² + ‖R‖²`, in the original normalization.
+- **Large energy and adverse signed charge.** Translation and the resolvent explain the comb's
+  energy. Its overlap with the test, and then its signed pairing with the poles, are different
+  quantities. The exact two-pole defect identity in AIP is the appropriate bridge.
+- **A criterion and its arithmetic producer.** Adapted energies are equivalent to admission.
+  Their value lies in a corrector built from independently estimated source terms, with uniform
+  comparability and signed recovery retained. Defining the corrector from the desired bound is
+  circular.
+
+These distinctions also specify useful partial results: a remainder exponent, a stable transfer
+between decompositions, or a classification of limiting receiver profiles. None requires claiming
+that every successful route must use the same mechanism.
 
 ---
 
@@ -344,9 +345,11 @@ is proved here.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
 - **Compensation coordinates** (abstract and scalar), with the actual PM-Ramanujan instance.
-- **Budget hierarchy**: pointwise ⊋ positive part ⊋ signed = admission, with explicit
-  countermodels on both strict steps (`exists_admits_everywhere_not_linearContinuation`,
-  `exists_admitted_monotone_not_positivePartContinuation`).
+- **Budget hierarchy**: pointwise control implies a positive-part budget, which implies a signed
+  budget; with an admitted right endpoint, the signed budget is equivalent to admission.
+  The lacunary countermodel proves that the positive-part requirement is strictly stronger
+  (`exists_admitted_monotone_not_positivePartContinuation`); admission also need not yield a
+  pointwise budget (`exists_admits_everywhere_not_linearContinuation`).
 - **Adapted-energy criterion** and its arithmetic dictionary.
 - **Aperture loss-rate calculus**: the ceiling exponent, its monotonicity, forced loss rates for
   floors and products.
@@ -365,21 +368,25 @@ is proved here.
    corrector, or a classified defect family.
 2. **Constructing an arithmetic corrector.** On one compact interval `[a, c]`, `a > 0`, build
    `C_T` from the mixed large-prime/complement terms and the Bézout boundary corrections, with
-   comparability (9) and a signed loss bound proved independently. Any interval gives a strip
-   (`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`); the endpoint `a ↓ 0` is RH.
+   `m(1+E_T) ≤ 1+E_T+C_T ≤ M(1+E_T)` and a signed loss bound proved independently.
+   An admitted right endpoint gives admission at the left endpoint. A strip conclusion needs
+   a family of admitted dampings accumulating at the desired boundary, not one isolated
+   admitted damping; adapted energies on `[a, ½]` cofinally as `a ↓ 0` are RH.
 3. **Receiver blow-up profiles.** Normalize an actual receiver sequence by its critical energy,
    retain scale, cofactor, origin and frequency data, and derive the arithmetic identities that
    survive in the limit; the escape and aliasing examples of the corpus must appear in the defect
    space. The comb resolvent law is the model case.
-4. **Strict positivity of the horizon energy.** Prove `J(F) > 0` for every nonzero test (it is the
-   squared norm of the one-sided exponential smoothing), so that the raw comb energy is
-   exponentially large on every nonzero test, and compute the next term of the comb at the horizon
-   (the first-order correction `−2∂/r` of the translation law).
+4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved. Seek lower bounds on
+   specified profile classes and rates for the comb's convergence to its resolvent. For sufficiently
+   smooth slowly varying profiles, test the predicted first correction `−2∂/r`, keeping both the
+   profile remainder and the prime-distribution error explicit.
 5. **The compensated remainder of the full ledger.** Pair the comb's coherent part with the pole
    charge before squaring, on an expanding test class, and bound the remainder with an explicit
    aperture exponent; any exponent below the trivial one is a strip.
 6. **The balanced regime.** Classify or save for the actual centred prime/Möbius incidence at
-   `Q ≍ P`, keeping the omitted-residue-class main term.
+   `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates already
+   give balanced-scale control for the stated centred rows; distinguish that result from a
+   uniform bound for the complete coupled receiver.
 7. **Function-field calibration.** Reproduce the comb laws over a nontrivial curve, where the
    rational zeta function does not make the cancellation degenerate, and identify what replaces
    the horizon law.
@@ -390,7 +397,8 @@ is proved here.
 
 1. `exists_odd_smooth_family_sharp_comb_rate` — the sharp exponential comb family, the translation
    survivor, and the vanishing charge, on the ledger's test class.
-2. `tendsto_combEnergy_div_combMass_sq_horizonEnergy` — the comb resolvent law.
+2. `tendsto_combEnergy_div_combMass_sq_horizonEnergy` and `horizonEnergy_pos` — the comb resolvent
+   law and strict positivity on nonzero continuous compact tests.
 3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation` — the Pythagorean
    compensation law and its actual instance.
 4. `exists_admitted_monotone_not_positivePartContinuation` — signed recovery is strictly weaker
@@ -410,7 +418,8 @@ The programme succeeds in degrees, each measured in the corpus's units:
 - a **two-scale rate**: a bound on a compensation coordinate of the actual source stronger than
   relative cancellation, with all transfer terms included;
 - a **corrector on one interval**: an adapted energy built from arithmetic cross terms on some
-  `[a, c]`, `a > 0`, which is an explicit zero-free strip;
+  `[a, c]`, `a > 0`, transferring admission from `c` to `a`; a boundary-accumulating family
+  then yields a zero-free strip;
 - a **classified defect family** for the receiver, excluding a nontrivial class of profiles;
 - the **endpoint**: cofinal admission, which is RH.
 
@@ -444,5 +453,5 @@ A contribution to ACCC must
 6. **Measure partial progress by a rate.**
 7. **Keep failure constructive.**
 8. **No analytic input hidden in an interface.**
-9. **Search the corpus before proving:** `../scripts/formal_tools.py research "<query>"`; the comb,
+9. **Search the corpus before proving:** `scripts/formal_tools.py research "<query>"` (from the repository root); the comb,
    the pairing calculus, the receiver and its dictionaries already exist and are not redefined.

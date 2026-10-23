@@ -11,11 +11,13 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Set Topology Zeta23
+
 noncomputable section
 
 namespace RHTower.Littlewood
 
-open Complex Filter MeasureTheory Set Topology Zeta23
+
 
 /-- `mu_add_le` with its constants supplied by
 `RHTower.Littlewood.exists_stirling`. -/
@@ -25,7 +27,7 @@ theorem mu_add_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.Littlewood.exists_stirling
   refine ⟨C, ?_⟩
   intro T hT x
-  apply mu_add_le <;> assumption
+  apply mu_add_le <;> first | assumption | linarith
 
 /-- `mu_half_le` with its constants supplied by
 `RHTower.Littlewood.exists_stirling`. -/
@@ -35,7 +37,7 @@ theorem mu_half_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.Littlewood.exists_stirling
   refine ⟨C, ?_⟩
   intro T hT
-  apply mu_half_le <;> assumption
+  apply mu_half_le <;> first | assumption | linarith
 
 /-- `mu_half_sub_ge` with its constants supplied by
 `RHTower.Littlewood.exists_stirling`. -/
@@ -45,6 +47,6 @@ theorem mu_half_sub_ge_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.Littlewood.exists_stirling
   refine ⟨C, ?_⟩
   intro T hT
-  apply mu_half_sub_ge <;> assumption
+  apply mu_half_sub_ge <;> first | assumption | linarith
 
 end RHTower.Littlewood

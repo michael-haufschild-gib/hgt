@@ -69,7 +69,9 @@ theorem summable_rpow_mul_normalizedResidueProfile {η : ℝ} (hη : 0 < η) (n 
     Real.summable_nat_rpow.mpr (by linarith)
   refine Summable.of_norm_bounded hmaj fun d => ?_
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · simp
+  · simp only [normalizedResidueProfile_zero, mul_zero, norm_zero]
+    rw [Nat.cast_zero]
+    exact Real.zero_rpow_nonneg _
   rw [Real.norm_eq_abs]
   exact abs_rpow_mul_normalizedResidueProfile_le hd n
 
@@ -111,7 +113,8 @@ theorem centeredOperator_reciprocal_eq_tsum {η : ℝ} (hη : 0 < η) (n : ℕ) 
       ((residueTerm η d n : ℝ) : ℂ) := by
     intro d
     have hfl : ⌊x / (d : ℝ)⌋₊ = (n + 1) / d := by rw [hx, Nat.floor_div_eq_div]
-    simp only [RHTower.pmPowerDampedMobiusCoeff, residueTerm, normalizedResidueProfile, hfl, hx]
+    rw [hfl]
+    simp only [RHTower.pmPowerDampedMobiusCoeff, residueTerm, normalizedResidueProfile, hx]
     push_cast
     ring
   simp only [hterm] at hdiff
@@ -126,6 +129,8 @@ theorem centeredOperator_reciprocal_eq_tsum {η : ℝ} (hη : 0 < η) (n : ℕ) 
   push_cast
   have : (n : ℝ) + 1 ≠ 0 := by positivity
   field_simp
+  rw [hρ]
+  ring
 
 /-! ### Sign-blind admission -/
 
@@ -141,10 +146,13 @@ theorem orbit_partial_energy_le {η : ℝ} (hη : 0 < η)
   have hS0 : 0 ≤ S := sum_nonneg fun m _ => sq_nonneg _
   -- `S = Σ_d Σ_m u_m · term_d(m) ≤ Σ_d √S · d^{−η} ‖v_d‖ = √S · B`
   have hexp : S = ∑' d : ℕ, ∑ m ∈ range T, u m * residueTerm η d m := by
-    rw [← Summable.tsum_finsetSum fun m _ => (summable_residueTerm hη m).mul_left (u m)]
+    rw [Summable.tsum_finsetSum (f := fun m d => u m * residueTerm η d m)
+      fun m _ => (summable_residueTerm hη m).mul_left (u m)]
     simp only [tsum_mul_left]
     refine sum_congr rfl fun m _ => ?_
-    rw [sq, hu, centeredOperator_reciprocal_eq_tsum]
+    rw [sq]
+    simp only [hu]
+    rw [← centeredOperator_reciprocal_eq_tsum hη m]
   have hbound : ∀ d : ℕ, ∑ m ∈ range T, u m * residueTerm η d m ≤
       Real.sqrt S * ((d : ℝ) ^ (-η) * Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) := by
     intro d
@@ -180,8 +188,8 @@ theorem orbit_partial_energy_le {η : ℝ} (hη : 0 < η)
   have hsumm : Summable fun d : ℕ => ∑ m ∈ range T, u m * residueTerm η d m :=
     summable_sum fun m _ => (summable_residueTerm hη m).mul_left (u m)
   have hSB : S ≤ Real.sqrt S * B := by
-    rw [hexp]
-    calc _ ≤ ∑' d : ℕ, Real.sqrt S * ((d : ℝ) ^ (-η) *
+    calc S = ∑' d : ℕ, ∑ m ∈ range T, u m * residueTerm η d m := hexp
+      _ ≤ ∑' d : ℕ, Real.sqrt S * ((d : ℝ) ^ (-η) *
           Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) :=
           hsumm.tsum_le_tsum hbound (hs.mul_left _)
       _ = _ := by rw [tsum_mul_left]
@@ -215,7 +223,7 @@ theorem positiveTwin_le {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
   have hsum := summable_rpow_mul_normalizedResidueProfile hε n
   have hle : positiveTwin ε n ≤ ∑ d ∈ s, (d : ℝ) ^ (-ε) * normalizedResidueProfile d n := by
     unfold positiveTwin
-    rw [← sum_add_tsum_compl (s := s) hsum]
+    rw [← hsum.sum_add_tsum_compl (s := s)]
     have : ∑' d : ↥(sᶜ : Set ℕ), (d : ℝ) ^ (-ε) * normalizedResidueProfile d n ≤ 0 :=
       tsum_nonpos fun d => mul_nonpos_of_nonneg_of_nonpos (by positivity)
         (normalizedResidueProfile_nonpos _ _)
@@ -234,46 +242,58 @@ theorem positiveTwin_le {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
     apply Real.rpow_le_rpow_of_nonpos hdpos _ (by linarith)
     have : (d : ℝ) ≤ 2 * n + 2 := by exact_mod_cast hd2
     linarith
-  have hcard : (s.card : ℝ) = (n : ℝ) + 1 := by
-    rw [hs, Nat.card_Ioc]
-    push_cast [show n + 1 ≤ 2 * n + 2 by omega]
-    ring
+  have hcardN : s.card = n + 1 := by rw [hs, Nat.card_Ioc]; omega
+  have hcard : (s.card : ℝ) = (n : ℝ) + 1 := by rw [hcardN]; push_cast; ring
   calc positiveTwin ε n ≤ _ := hle
     _ ≤ ∑ _d ∈ s, -((2 : ℝ) * ((n : ℝ) + 1)) ^ (-1 - ε) := sum_le_sum hterm
     _ = _ := by rw [sum_const, nsmul_eq_mul, hcard]; ring
+
+/-- The twin bound in closed form: `(n+1)(2(n+1))^{−1−ε} = 2^{−1−ε} (n+1)^{−ε}`. -/
+private theorem twinBound_eq (ε : ℝ) (n : ℕ) :
+    ((n : ℝ) + 1) * ((2 : ℝ) * ((n : ℝ) + 1)) ^ (-1 - ε) =
+      (2 : ℝ) ^ (-1 - ε) * ((n : ℝ) + 1) ^ (-ε) := by
+  have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  rw [Real.mul_rpow (by norm_num) hn.le]
+  have h : ((n : ℝ) + 1) * ((n : ℝ) + 1) ^ (-1 - ε) = ((n : ℝ) + 1) ^ (-ε) := by
+    have e := Real.rpow_add hn 1 (-1 - ε)
+    rw [Real.rpow_one, show (1 : ℝ) + (-1 - ε) = -ε by ring] at e
+    exact e.symm
+  calc ((n : ℝ) + 1) * ((2 : ℝ) ^ (-1 - ε) * ((n : ℝ) + 1) ^ (-1 - ε))
+      = (2 : ℝ) ^ (-1 - ε) * (((n : ℝ) + 1) * ((n : ℝ) + 1) ^ (-1 - ε)) := by ring
+    _ = _ := by rw [h]
+
+/-- `twin(n)² ≥ 4^{−1−ε} (n+1)^{−2ε}`. -/
+private theorem positiveTwin_sq_ge {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
+    ((2 : ℝ) ^ (-1 - ε)) ^ 2 * ((n : ℝ) + 1) ^ (-(2 * ε)) ≤ positiveTwin ε n ^ 2 := by
+  have h := positiveTwin_le hε n
+  rw [neg_mul, twinBound_eq] at h
+  have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  have ha0 : 0 ≤ (2 : ℝ) ^ (-1 - ε) * ((n : ℝ) + 1) ^ (-ε) := by positivity
+  have h1 : (2 : ℝ) ^ (-1 - ε) * ((n : ℝ) + 1) ^ (-ε) ≤ -positiveTwin ε n := by linarith
+  have hpow : (((n : ℝ) + 1) ^ (-ε)) ^ 2 = ((n : ℝ) + 1) ^ (-(2 * ε)) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hn.le]
+    ring_nf
+  calc ((2 : ℝ) ^ (-1 - ε)) ^ 2 * ((n : ℝ) + 1) ^ (-(2 * ε))
+      = ((2 : ℝ) ^ (-1 - ε) * ((n : ℝ) + 1) ^ (-ε)) ^ 2 := by rw [mul_pow, hpow]
+    _ ≤ (-positiveTwin ε n) ^ 2 := pow_le_pow_left₀ ha0 h1 2
+    _ = positiveTwin ε n ^ 2 := neg_sq _
 
 /-- **The positive twin is not admitted below half damping.** -/
 theorem not_summable_positiveTwin {ε : ℝ} (hε : 0 < ε) (hε' : ε ≤ 1 / 2) :
     ¬ Summable fun n => positiveTwin ε n ^ 2 := by
   intro hsum
-  -- `twin(n)² ≥ 4^{−1−ε} (n+1)^{−2ε}`, and `Σ (n+1)^{−2ε}` diverges
-  have hlow : ∀ n : ℕ, (2 : ℝ) ^ (-2 - 2 * ε) * ((n + 1 : ℕ) : ℝ) ^ (-(2 * ε)) ≤
-      positiveTwin ε n ^ 2 := by
-    intro n
-    have h := positiveTwin_le hε n
-    have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-    set a := ((n : ℝ) + 1) * ((2 : ℝ) * ((n : ℝ) + 1)) ^ (-1 - ε) with ha
-    have ha0 : 0 ≤ a := by positivity
-    have hsq : a ^ 2 ≤ positiveTwin ε n ^ 2 := by nlinarith
-    refine le_trans (le_of_eq ?_) hsq
-    rw [ha, mul_pow, Real.mul_rpow (by norm_num) hn.le]
-    push_cast
-    rw [← Real.rpow_natCast, ← Real.rpow_natCast, ← Real.rpow_mul (by positivity),
-      ← Real.rpow_mul (by positivity)]
-    have e1 : ((n : ℝ) + 1) ^ ((2 : ℕ) : ℝ) = ((n : ℝ) + 1) ^ (2 : ℝ) := by norm_num
-    rw [e1, show ((-1 - ε) * ((2 : ℕ) : ℝ)) = -2 - 2 * ε by push_cast; ring,
-      mul_comm ((2 : ℝ) ^ (-2 - 2 * ε)), mul_assoc, ← Real.rpow_add hn]
-    ring_nf
-  have hdiv : ¬ Summable fun n : ℕ => (2 : ℝ) ^ (-2 - 2 * ε) * ((n + 1 : ℕ) : ℝ) ^ (-(2 * ε)) := by
-    intro h
-    have h1 := h.mul_left ((2 : ℝ) ^ (-2 - 2 * ε))⁻¹
-    have h2 : Summable fun n : ℕ => ((n + 1 : ℕ) : ℝ) ^ (-(2 * ε)) := by
-      refine h1.congr fun n => ?_
-      rw [← mul_assoc, inv_mul_cancel₀ (by positivity), one_mul]
-    have h3 := (summable_nat_add_iff 1).mp h2
-    have := Real.summable_nat_rpow.mp h3
-    linarith
-  exact hdiv (Summable.of_nonneg_of_le (fun n => by positivity) hlow hsum)
+  have hc0 : 0 < ((2 : ℝ) ^ (-1 - ε)) ^ 2 := by positivity
+  have hcomp : Summable fun n : ℕ => ((2 : ℝ) ^ (-1 - ε)) ^ 2 * ((n : ℝ) + 1) ^ (-(2 * ε)) :=
+    Summable.of_nonneg_of_le (fun n => by positivity) (fun n => positiveTwin_sq_ge hε n) hsum
+  have h2 : Summable fun n : ℕ => ((n : ℝ) + 1) ^ (-(2 * ε)) := by
+    refine (hcomp.mul_left (((2 : ℝ) ^ (-1 - ε)) ^ 2)⁻¹).congr fun n => ?_
+    rw [← mul_assoc, inv_mul_cancel₀ hc0.ne', one_mul]
+  have h3 : Summable fun n : ℕ => ((n + 1 : ℕ) : ℝ) ^ (-(2 * ε)) :=
+    h2.congr fun n => by rw [Nat.cast_succ]
+  have h4 : Summable fun m : ℕ => (m : ℝ) ^ (-(2 * ε)) :=
+    (summable_nat_add_iff (f := fun m : ℕ => (m : ℝ) ^ (-(2 * ε))) 1).mp h3
+  have h5 : -(2 * ε) < -1 := Real.summable_nat_rpow.mp h4
+  linarith
 
 end
 

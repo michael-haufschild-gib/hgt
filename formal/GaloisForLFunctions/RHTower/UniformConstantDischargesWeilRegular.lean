@@ -12,12 +12,15 @@ eliminated.
 
 
 
+open Complex Filter FourierTransform MeasureTheory Set Topology
+open scoped ComplexConjugate Real
+
 noncomputable section
 
 namespace RHTower.WeilRegular
 
-open Complex Filter FourierTransform MeasureTheory RHTower.WeilExcess Set Topology
-open scoped ComplexConjugate Real
+open RHTower.WeilExcess
+
 
 /-- `integral_riemannAutocorr_mul_le` with its constants supplied by
 `RHTower.exists_riemannAutocorr_le_exp`. -/
@@ -27,7 +30,7 @@ theorem integral_riemannAutocorr_mul_le_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_riemannAutocorr_le_exp
   refine ⟨C₁, ?_⟩
   intro P hP0 J CP hP c
-  apply integral_riemannAutocorr_mul_le <;> assumption
+  apply integral_riemannAutocorr_mul_le <;> first | assumption | linarith
 
 /-- `integral_riemannAutocorr_mul_le_exp` with its constants supplied by
 `RHTower.exists_riemannAutocorr_le_exp`. -/
@@ -37,7 +40,7 @@ theorem integral_riemannAutocorr_mul_le_exp_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_riemannAutocorr_le_exp
   refine ⟨C₁, ?_⟩
   intro P hP0 b CP hb0 hb hP c
-  apply integral_riemannAutocorr_mul_le_exp <;> assumption
+  apply integral_riemannAutocorr_mul_le_exp <;> first | assumption | linarith
 
 /-- `integral_riemannAutocorr_mul_le_linexp` with its constants supplied by
 `RHTower.exists_riemannAutocorr_le_exp`. -/
@@ -47,6 +50,6 @@ theorem integral_riemannAutocorr_mul_le_linexp_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_riemannAutocorr_le_exp
   refine ⟨C₁, ?_⟩
   intro P hP0 b CP hb0 hb hP c
-  apply integral_riemannAutocorr_mul_le_linexp <;> assumption
+  apply integral_riemannAutocorr_mul_le_linexp <;> first | assumption | linarith
 
 end RHTower.WeilRegular

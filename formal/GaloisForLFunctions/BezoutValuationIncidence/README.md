@@ -16,200 +16,45 @@ equivalences; the theory never asserts such a premise.
 
 ---
 
-## The shared target: the sign of the critical arithmetic form
+## Place in the research
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
+BVI supplies the **finite arithmetic and pronic Gram calculus** of the shared RH research.
+Its defining question is what divisibility and succession force before a full period is
+available. Exact recovery, period orthogonality and an explicit Gram formula are tools for that
+question; none replaces the signed estimate for a growing arithmetic row.
 
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
+The three principal bridges are:
 
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+- From a divisor row to Selberg/Ramanujan coordinates: diagonal period forms and sharp
+  polynomial observation horizons.
+- From a prefix discrepancy to pronic energy: the same norm as reciprocal-cell
+  Nyman–Beurling approximation, with its von Mangoldt readout retained.
+- From the off-diagonal Gram to one-modulus residue statistics: an exact place where
+  cancellation of the actual Möbius or centred prime row can improve generic bounds.
 
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
+The last bridge has two distinct scales of success. Short-window cancellation already gives
+qualitative improvements for those actual rows, including estimates with growing moduli.
+A power saving in the short-window mean square at some fixed power length is equivalent to
+`Θ < 1`, a fixed zero-free strip. The frontier is therefore the quantitative gain and its
+assembly into the complete receiver, not the existence of any arithmetic improvement.
 
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
+| Neighbour | Interface |
+|---|---|
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Uses BVI's window laws, then classifies finite observers, parity pairs, receiver symmetries and horizon-limit failures. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies full-period moment recovery and calibration; BVI determines the window length needed to use it. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Reads BVI's literal damping derivative as signed work and asks for uniform continuation. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Studies the boundary flux and jump-energy cancellation in that derivative. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Keeps cross terms when using an actual signed source to build an energy estimate. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies the continuous pair-conductance problem to which finite additive incidence must eventually connect. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md), [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md), [Square-Root Threshold](../SquareRootThreshold/README.md) | Aperture, source and lag coordinates of the complete-form destination. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Prices the loss from period averages, magnitudes and other coarsened readings. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks whether the finite arithmetic can produce genuine effectivity and a definite intersection form. |
 
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-BVI is the additive finite face. It owns the Bézout relation `pa − qb = h`, the valuation structure of
-moduli, the pronic Gram, the Vasyunin reciprocity law, and the interior martingale whose signed sum
-over moduli is the receiver. It owns mechanism 2 (single-modulus bilinear dispersion) and shares
-mechanism 5 with `TransHorizonIncidenceMechanics`. It supplies the additive window structure
-(consecutive integers, residue classes omitted modulo `p`, the spacing of the jumps of `{N/p}` and
-`{N/q}`) that the incidence face of `ArithmeticIncidencePositivity`, built on divisibility and
-products alone, does not see.
-
-### How the programme connects to the other programmes
-
-BVI is the static incidence algebra of the finite side; everything it proves is an exact
-rearrangement of the bilinear form of a row against the incidence matrix `𝟙_{d∣n}`, and the other
-programmes either move that algebra (THIM), observe it (BiScale) or read its receiver in their own
-units (the three faces).
-
-- **Trans-Horizon Incidence Mechanics is the dynamics of this algebra**; the two programmes are
-  one theory in two folders. BVI's prefix-discrepancy duality, renormalized defect, gradient
-  coercivity, window Poincaré and long-window dissipation (§3.4), Jordan and primitive energies,
-  quotient–octave reciprocity, dilation-pair densities and singular series are consumed by THIM's
-  horizon filtration, band calculus and damped observer; THIM's horizon steps, radical states,
-  clock wavelets, Fermi schedules, parity pairs and the receiver classification of multiplicative
-  weights are consumed here, where the pairs are separated on the zero-free bands (§3.15). BVI's
-  coherent-block Type-II ceiling (§3.13) and THIM's parity barrier are the Gram side and the
-  receiver side of mechanism 5.
-- **Bi-Scale Uncertainty observes the rows BVI builds.** BiScale's sieve phase recoveries (cubic,
-  sixth), affine spectrum and translation anchoring, highest-mode stability, two-lag moment cone,
-  universal Ramanujan covariance, `ker P` centred sieve, Barban–Vehov pinch, signed lcm defect and
-  Vasyunin tail-Gram producer are used in §3.2, §3.5, §3.6 and §3.14; BVI's translation prediction
-  and exact compression, six-mode stability, gcd-orbit projection, Ramanujan lag coefficient,
-  pronic Bézout split and successor moment region are used in BiScale's arithmetic observation
-  theory. The passage from complete periods to windows at unknown phases (§3.4) is owned here and
-  consumed there; the pronic measure of §2.7 is Lebesgue measure on `(0, 1]` read through
-  BiScale's Fermi–Nyman cells.
-- **Arithmetic Incidence Positivity classifies the multiplicative incidence that BVI complements
-  additively.** AIP's lattice pairs `(−log a, log b)` with `a ∣ b` or `ab` a prime power are the
-  divisor edges of one dyadic window; BVI's successor incidence `d₁ ∣ k`, `d₂ ∣ k + 1`, the
-  Bézout seeds `pa − qb = 1` and the residue classes omitted modulo `p` (§3.13) are the additive
-  edges of the same window, which the incidence face cannot see. The omitted-class law of the
-  prime row is the first statement of this programme written in AIP's window.
-- **The three faces read BVI's receiver in their own units.** The receiver `E_T(ε)` is bounded
-  for `ε ≥ 1/2` and on the zero-free bands below it (§3.15); every band is a zero-free region,
-  which `SquareRootThreshold` reads as a zero width and `ArithmeticCriticalityTheory` as the rate
-  of the ground-energy path. The pronic Báez-Duarte criterion of §3.7 is the Nyman–Beurling form
-  of the one critical form the three faces state through lags, apertures and incidence; the
-  critical-scale receiver `D(T) ≤ B(1+T)e^{T/2}` of `ArithmeticPositivityTheory` is the
-  Chebyshev-level form of the same square-root barrier that §1.3 states for rows.
-- **Arithmetic Continuation and Critical Energy differentiates the receiver in the damping.** BVI
-  owns the receiver at a fixed damping and the chain whose time parameter the damping is; the
-  continuation layer owns the transport in that parameter, and the two meet in one identity: the
-  derivative of the critical energy is twice a complete signed pairing, equal to BVI's
-  flux-minus-jump-minus-forcing balance of the arithmetic chain. The damping threshold of the
-  receiver is exactly the zero width, so the chain's small-time limit is the critical end of the
-  transport, and the entrance-tail barrier says which norm cannot carry it there.
-- **Scale-Signed Incidence Criticality prices the Gram and the dispersion.** A new dispersion
-  estimate is admissible only if the reading it uses separates the gate pairs; for the cross-scale
-  form of §3.13 the relevant reading is the pronic Gram at one modulus, and its exact limit in the
-  exponent unit $\theta$ is the quantity a route should report. The coherent prime block of the
-  Type-II no-go is the witness that fixes it.
-- **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
-  cofactor rows, the receiver's zero-translation converse), the sieve library (Farey-point large
-  sieve infrastructure, Kuzmin–Landau, Vinogradov–Korobov, Mertens rates, Selberg and
-  Barban–Vehov diagonals, Dirichlet's theorem in Chebyshev form), the Báez-Duarte criterion with
-  its dual sequence, Estermann's `D(s, a/q)` and the Montgomery–Vaughan cosecant inequality of
-  `HTGeometry`.
+Read the receiver in §1.3, the three Gram normalizations in §2.7, and the complete energy
+split in §3.8 before selecting an estimate. Sections 3.13 and 3.15 distinguish generic
+barriers, source-specific qualitative gains, and a power improvement that would be a new
+zero-free result. Names such as “Type II” are meaningful only together with the coefficient
+class and scale range on which the bound is uniform.
 
 ---
 
@@ -287,8 +132,9 @@ E_T(\varepsilon)=\sum_{n=1}^{T}\frac{A_\varepsilon(n)^2}{n(n+1)} .
 $$
 If for every $\delta>0$ there is some $\varepsilon\in(0,\delta)$ with $\sup_T E_T(\varepsilon)<\infty$,
 then RH holds. The bound is known for every $\varepsilon\ge 1/2$ and unknown for every
-$\varepsilon<1/2$; a horizon-uniform bound at a single fixed $\varepsilon<1/2$ is already a
-zero-free half-plane statement. The energy $E_T(\varepsilon)$ is the pronic-weighted prefix
+$\varepsilon<1/2$; an isolated admitted damping gives zero-translation constraints through the zeta quotient.
+The zero-width conclusion uses accumulation of admitted dampings; a whole interval or a
+sequence accumulating at its lower endpoint supplies that quantifier. The energy $E_T(\varepsilon)$ is the pronic-weighted prefix
 energy of the truncated divisor sum with row $c_\varepsilon(d)=\mu(d)d^{-\varepsilon}$, observed
 below its own horizon. BVI is the exact finite arithmetic of this energy: the identities that
 decompose it, the parts that are bounded or have explicit logarithmic drift, and the single
@@ -348,7 +194,8 @@ $$
 a sparsification onto the multiples of $m$ with a factor $m$ — the same up-set structure the
 divisibility edges of §2.5 carry. The native lag compression of §3.5 acts diagonally on the same
 ghosts, multiplying the $q$-th by the lag multiplier $\lambda_q(h)$, so translation, Frobenius and
-Verschiebung are three commuting families of explicit operations on one coordinate vector. This
+Verschiebung are three families of explicit operations on one coordinate vector. Their individual formulas
+do not assert mutual commutation; Frobenius and Verschiebung change the indices read by a lag. This
 identifies the finite sieve receiver as a *finite-cutoff truncation of the Big-Witt ring*, with the
 cutoff retained in every statement: whether the Witt ring structure supplies an estimate the
 Selberg coordinates do not already give is open, but the dictionary is exact and the arithmetic of
@@ -1152,7 +999,7 @@ equality exactly at primes.
 
 ### 3.13 Cross-scale dispersion of the pronic Gram
 
-This is the theory of mechanism 2 of the shared target: the bilinear form
+The single-modulus dispersion problem is the bilinear form
 $\sum_{p\sim P}\sum_{q\sim Q}a_pb_q\mathcal G^{\mathrm{ec}}(p,q)$ at one modulus, organised by how far apart
 the two scales are.
 
@@ -1236,7 +1083,13 @@ $\alpha>7/12$, by Huxley's theorem in short intervals, so for every row on $(P,2
 remainder is $16\varepsilon$ times the rank-two remainder bound throughout
 $P^{1+\delta}\le Q\le P^{12/7-\delta}$, that is at every exponent $\theta\in(7/6,2)$
 (`CentredPrimeRowPassesTheCoherentBlockObstruction`, with Huxley uniform in the window length,
-`eventually_abs_psi_window_sub_le`); only the balanced regime $Q\asymp P$ remains.
+`eventually_abs_psi_window_sub_le`); this particular block-equidistribution estimate leaves $Q\asymp P$ untreated. The short-window
+mean-square mechanism below reaches further. Compensation Theory also transfers the corpus's
+Guth–Maynard fixed-window theorem to a length-uniform estimate at every $\alpha>17/30$, by tiling
+with shorter power windows. With polynomial horizons $N\le Q^C$, this widens the sufficient
+unbalanced range to $P^{1+\delta}\le Q\le P^{30/17-\delta}$, retaining all block side conditions
+(`ArithmeticCompensationTheory.TheSeventeenThirtiethsWindowWidensTheCentredPrimeRowRange`). This
+transfer itself does not cover $Q\asymp P$.
 
 **Type I passes the barrier one order at a time.** A flat large-scale row has
 $\lvert\sum_{n\in I}\zeta^n/n\rvert\ll1/(A\lvert\zeta-1\rvert)$, and a flat small-scale row is controlled by
@@ -1262,6 +1115,40 @@ the sieve term of the residue class the primes omit, of relative size $\asymp1/p
 trivial bound, while a row equidistributed in every class, such as the Möbius row by the prime
 number theorem in progressions, has statistic $o(1/Q)$. This is a law for fixed moduli; the dual
 norm at moduli $p\sim P$ growing with $Q$ is the open question of §5.
+
+**The actual rows improve the generic bound at growing moduli.** Average the weighted
+large-scale row $x(n)=c'(n)/n^2$ over windows of length $H$. The Fourier multiplier of that
+average satisfies $|1-B_H(\zeta)|\le H|\zeta-1|$. The pronic remainder is consequently bounded
+by a term involving $\|\bar x\|_2$, a smoothing cost of relative order $\sqrt{H/P}$, and the
+explicit block-mass and higher-order terms
+([ShortWindowMeanSquareCarriesTheCrossScaleLoss](ShortWindowMeanSquareCarriesTheCrossScaleLoss.lean)).
+
+For the Möbius block, linear short-window mean squares at $H=\log_2 Q$ give
+$\|\bar x\|_2^2=o(Q^{-3})$. For the centred prime block, Huxley's theorem gives the
+same conclusion at $H=\lceil(2Q)^\alpha\rceil$, $7/12<\alpha<1$. The respective
+small-prime thresholds are `8 log₂ Q ≤ ε² p` and
+`8H(log(2Q)+1)² ≤ ε² p`; choosing $\alpha<3/5$ reaches the balanced scale range
+left by generic Type-II bounds. These estimates apply to arbitrary small-scale coefficient
+vectors satisfying those support conditions
+([MoebiusBlockBeatsTheTypeTwoBarrier](MoebiusBlockBeatsTheTypeTwoBarrier.lean),
+[CentredPrimeBlockBeatsTheLargeSieve](CentredPrimeBlockBeatsTheLargeSieve.lean)).
+
+Choosing the small-row signs to attain the kernel functional converts them into an actual
+bound for $\sum_{p\in S}|\Lambda_p(c')|/p$ with growing $S$
+([DualNormOfTheActualRowsBeatsTheLargeSieve](DualNormOfTheActualRowsBeatsTheLargeSieve.lean)).
+Its leading term is arbitrarily small relative to the large-sieve term; the block mass,
+third-order and fourth-order errors remain explicit. This does not make the uncentred
+prime row equidistributed in its omitted class, and it does not establish a power saving.
+
+**A power gain has a precise arithmetic price.** For either Möbius windows or centred prime
+windows, the existence of some $0<\alpha<1$, $\delta>0$ with mean-square bound
+$C Q^{1+2\alpha-\delta}$ at length $\lceil Q^\alpha\rceil$ is equivalent to
+$\Theta<1$. Telescoping the windows recovers a power saving in the corresponding global
+summatory function; conversely a zero-free strip supplies a suitable window length
+([ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis](ShortWindowMoebiusSavingIsTheQuasiRiemannHypothesis.lean),
+[ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis](ShortWindowPrimeSavingIsTheQuasiRiemannHypothesis.lean)).
+The equivalence quantifies over the window exponent. It is not a theorem that every fixed
+window exponent, or every possible Gram improvement, is equivalent to the strip.
 
 ### 3.14 Bridges to classical sieve estimates
 
@@ -1302,9 +1189,10 @@ theory from complete periods to windows at unknown phases.
 
 ### 3.15 The receiver below half damping: the zero-free bands
 
-The receiver $E_T(\varepsilon)$ is bounded for $\varepsilon\ge\tfrac12$ by size alone (§1.3, and the
-universal law of the damped class in the trans-horizon theory). Below one half it is bounded
-exactly where $1/\zeta$ is known to be zero-free, and the mechanism is a rate transfer.
+Above half damping the absolute majorant pays $E_T(\varepsilon)$; at half damping,
+payment uses Möbius cancellation. A universal size-only bound on the entire damped class
+fails at the endpoint. Below it, known Mertens rates yield horizon-dependent bands by the
+following rate transfer.
 
 **Rate transfer.** If a sign pattern $s$ with $\lvert s\rvert\le1$ has partial sums
 $\lvert S(x)\rvert\le Lx$ from $D$ on, summation by parts against the antitone weights $d^{-\varepsilon}$
@@ -1328,9 +1216,8 @@ $$
 (`exists_receiver_le_on_vinogradovKorobovBand`, `exists_receiver_le_on_zeroFreeBand`): the damping
 unit moves from $\tfrac12$ to $\tfrac12-c/\sqrt{\log T}$ and then to
 $\tfrac12-c(\log T)^{-2/5}(\log\log T)^{-5/3}$ at horizon $T$. The band is exactly the zero-free
-region, in both directions: a band of fixed width would be a zero-free strip, and the corpus's
-converse (zero translation of the power-damped receiver) turns any receiver bound below one half
-into a zero-free half-plane. No bound reaches a fixed $\varepsilon<\tfrac12$.
+region, in both directions: a band of fixed width would be a zero-free strip, and the accumulation-point converse turns admission on an interval of dampings into a
+zero-free half-plane. A single isolated damping has only the zero-translation conclusion. No bound reaches a fixed $\varepsilon<\tfrac12$.
 
 **The band reads the signs.** The damped Möbius row and its parity twin $c'_\varepsilon$ (nonnegative,
 squarefree-supported, with Ramanujan coefficients of equal absolute value) have identical
@@ -1396,8 +1283,23 @@ behaves oppositely: its omitted tail is square-summable at every positive dampin
 damping-free majorant $1/N$. The threshold $\tfrac12$ of the chain is therefore a statement about
 absolute row control, not about the source the receiver reads: total variation is the wrong norm
 below half damping, and the observable that survives is the one with the size bias removed.
-Compactness, likewise, is a statement on $c_0$ and not on the pronic $\ell^2$ where the critical
-energy lives.
+Compactness, likewise, is a statement on $c_0$. The critical energy is pronic on the prefix,
+which is equivalent to **ordinary $\ell^2$ on the normalized chain coordinate**.
+
+**The receiver-coordinate bridge.** Signed Arithmetic Energy Incidence identifies the orbit
+exactly: with $r(n)=1/(n+1)$ and centred prefix $A_\eta$,
+$(C_\eta r)(n)=A_\eta(n+1)/(n+1)$ and
+$E_\eta(T)=\sum_{n<T}(n+1)/(n+2)\,(C_\eta r)(n)^2$.
+Thus admission is square summability of this orbit (`admits_iff_summable_orbit`), already
+equivalent to square summability of the first column (`admits_iff_summable_firstColumn`).
+The residue modes $v_d(n)=\lfloor(n+1)/d\rfloor/(n+1)-1/d$ satisfy
+$C_\eta v_d=d^{-\eta}v_d$ and $(d-1)/d^2\le\|v_d\|_2^2\le2/d$.
+The source is the coordinatewise absolutely convergent series
+$C_\eta r=\sum_d\mu(d)d^{-\eta}v_d$ for $\eta>0$; its absolute norm sum converges exactly
+for $\eta>1/2$ (`summable_signBlind_iff`). No uniform backward bound exists in either $c_0$
+or $\ell^2$ (`not_backward_stable_c0`, `not_backward_stable_l2`). The remaining operator question
+is forward $\ell^2$ boundedness of the centred chain, a stronger demand than controlling this
+particular orbit. The uncentred transition is $\ell^2$-unbounded at every positive damping.
 
 **The residual has a linear cusp.** The Báez-Duarte residual of the damped source at finite horizon,
 $R(\varepsilon,T)=\sum_{n\le T}(\tilde{\mathcal A}_\varepsilon(n)-1)^2/(n(n+1))$, admits an
@@ -1432,14 +1334,14 @@ $R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what
 | Universal lag inequalities need infinitely many checks. | For every lag horizon the covariance cone is finitely generated by explicit modes; an inequality is universal iff it holds on the generators. |
 | Short windows read valuation phase. | Observing $t\mapsto\gcd(k+t,p^a)$ on fewer than $\varphi(p^a)$ points cannot distinguish $k=1$ from $k=1+p^{a-1}$; the threshold $\varphi(p^a)$ is sharp. |
 | The raw Möbius defect is small. | The unrenormalized combined defect at $M=N$ exceeds every $CN^\alpha$, $\alpha<1$; only the renormalized defect, which keeps the diagonal main term, is bounded. |
-| Multiplicative identities can close the problem. | Möbius inversion, Euler products, Gibbs log-submodularity and one-large-prime splits hold for every Beurling system, some of which violate RH. Closure needs $pa-qb=1$. |
+| Multiplicative identities can close the problem. | Möbius inversion, Euler products, Gibbs log-submodularity and one-large-prime splits hold for every Beurling system, some of which violate RH. A closing argument needs additional arithmetic structure; Bézout coupling $pa-qb=1$ is one candidate. |
 | Fixed-depth cancellation. | Within a prime star $\{pr\}$ the Möbius sign is constant and nearby-prime terms $Y(pr)Y(qr)\mathcal G^{\mathrm{ec}}(pr,qr)$ are all positive; the depth-$k$ truncation of $1/\zeta(s+\varepsilon)$ still has the singularity at $1-\varepsilon$. Cancellation is coherent across depths only (§3.6). |
 | The pronic Gram is an infinite, analytic object. | It is a finite cotangent–sawtooth sum in two moduli; its positivity alone yields the cotangent moment law and the Vasyunin reciprocity law with explicit errors. |
 | The three Grams are interchangeable. | $\mathcal G$, $\mathcal G^{\mathrm{ec}}$ and $\mathcal G^{\mathrm{mc}}$ differ by rank-one terms in $\Lambda$ and $\varphi/2-\Lambda$; positivity holds for $\mathcal G^{\mathrm{ec}}$, the dilation laws change their inhomogeneous term with the centering. |
 | The Báez-Duarte criterion is foreign to the theory. | Its residual is the pronic energy of $1+L_N(M,c)$, equal to $(1-\mathcal R(c))^2+Q^{\mathrm{ec}}(c)$; RH is an exact statement about rows. |
 | The damped Báez-Duarte residual can be made $o(\varepsilon)$. | It cannot: a critical zero gives the unconditional floor $\kappa\varepsilon$ with $\kappa=1/(4\lvert\rho\rvert^2)$ at arbitrarily small damping and some finite horizon (§3.16). The approach to the infimum is at best linear in the damping. |
 | Total-variation convergence of the chain's rows controls the receiver. | The entrance tail is at least $\rho_\eta(N+1)^{-\eta}$, so neither it nor the total variation is square-summable for $\eta\le\tfrac12$; what is square-summable at every positive damping is the reciprocal observable's omitted tail, majorant $1/N$. The obstruction is absolute row control, not the signed source. |
-| Compactness of the centered transition bounds the critical energy. | Compactness holds on $c_0$; the receiver is a pronic $\ell^2$ quantity and no $c_0$ statement reaches it. |
+| Compactness of the centered transition bounds the critical energy. | Compactness holds on $c_0$; the receiver is ordinary $\ell^2$ on the normalized orbit, equivalently pronic energy on its prefix. A separate signed bound is needed. |
 | A small readout defect or a small centered energy alone is progress. | They are coupled by the unconditional floor $\kappa/\log N$ and the uncertainty principle $\kappa\mathcal R^2\le(\log N-\kappa)Q^{\mathrm{ec}}$; only their simultaneous decay is RH. |
 | Summation by parts is an estimate. | Along $n$ it is the product rule in reverse and returns $E_T$ with coefficient $1$; it never yields $(1-\delta)E_T$. |
 | Changing the kernel is harmless. | Replacing $w_T(n)=\frac1{n+1}-\frac1{T+1}$ by $H_T-H_n$, or dropping the second difference of the active component from $\tilde\tau_\varepsilon(n+1)=\Delta I_\varepsilon(n)+\Delta^2S_\varepsilon(n)$, changes the target. |
@@ -1453,7 +1355,7 @@ $R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what
 | The second-order coupling has a sign. | It oscillates with $q\bmod p$ at amplitude $\asymp p^2/q$: positive near residue $0$, negative near the half. |
 | $\Lambda_d(c')$ is the von Mangoldt function. | In the cross-scale theory it is the kernel statistic of the large-scale row at the modulus $d$. |
 | The window exponent and the cross-scale exponent are one unit. | On a pronic window $\theta=2\log P/\log X$ and no $\ell^2$ Type-II input passes $1$; across two scales $\theta=2\log P/\log Q$ and Type II reaches $6/5$. Name the coordinates. |
-| A Mertens rate bounds the receiver at a fixed $\varepsilon<\tfrac12$. | It moves the damping unit only to $\tfrac12-(\text{rate})/\log T$ at horizon $T$; a band of fixed width is a zero-free strip, and every receiver bound below one half is a zero-free region. |
+| A Mertens rate bounds the receiver at a fixed $\varepsilon<\tfrac12$. | It moves the damping unit only to $\tfrac12-(\text{rate})/\log T$ at horizon $T$; a band of fixed width is a zero-free strip, and a single damping gives zero translation; a width conclusion needs an accumulation of admitted dampings. |
 | The single-modulus statistics of the prime row are small. | At fixed $p$ they are $\asymp p/Q$, the sieve term of the omitted residue class $0$; only rows equidistributed in every class modulo $p$ have $o(1/Q)$. |
 | Dilation $k\mapsto pk$ alone reads enough of the signs. | A Kátai-type single-modulus law saves only $(\log\log)^{-1/2}$ and is dominated by the $\ell^2$ large-sieve dispersion except at $P\asymp Q$. |
 | Frobenius on Witt ghosts is a free operation at a fixed horizon. | $g_{F_2w}(q)=g_w(2q)$, so a ghost statement at horizon $N$ is a Selberg statement at horizon $2N$; the cutoff is consumed, not preserved. |
@@ -1477,9 +1379,9 @@ assumptions. Every module says in its header what its bounds do not prove.
 $\sup_TE_T(\varepsilon)<\infty$. Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
 or with the strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$ and on
 the zero-free bands $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ below it (§3.15), open at
-every fixed $\varepsilon<\frac12$; a bound at one fixed $\varepsilon<\frac12$ is a zero-free
-half-plane statement and every band of fixed width a zero-free strip, so no routine bookkeeping
-can supply it. On the period torus the primitive energy of the damped row grows like
+every fixed $\varepsilon<\frac12$; a band of fixed positive width supplies an accumulation of admitted dampings and therefore a
+zero-free strip. An isolated damping must not be assigned that stronger conclusion without
+an additional argument. On the period torus the primitive energy of the damped row grows like
 $N^{1-2\varepsilon}$ for $\varepsilon<1/2$, and the receiver is smaller than it by exactly the
 Vinogradov–Korobov factor, so the bound, if it exists, is carried by the pronic weighting of
 small arguments below the first period, and its unconditional size is the zero-free region.
@@ -1516,25 +1418,36 @@ missing is the signed sum over moduli.
    coefficients, sharply; exact loss the $\ell^1$ residue discrepancy; dual norm
    $\sum_p\lvert\Lambda_p(c')\rvert/p$. At fixed moduli the statistics are known: $o(1/Q)$ for the
    Möbius row, and for the prime row the omitted-class value $-\pi^2(p^2-1)^2/(144p^2(p-1)Q)$,
-   which is not small. Missing: a bound on these single-modulus statistics for the actual Möbius
-   or prime row at moduli $p\sim P$ growing with $Q$ in the balanced regime $P\le Q<P^{5/3}$, that
-   is on low-frequency exponential sums of an arithmetic row at the rationals $k/p$, without an
-   external character or modulus average; for the prime row the omitted class must be subtracted
-   first.
+   which is not small. The short-window method already improves the leading large-sieve term for the actual
+   Möbius and centred prime rows at growing moduli (§3.13). Missing: a quantitative gain
+   strong enough, with every displayed remainder summed, to control the complete receiver.
+   A power saving in the stated window mean square is a fixed zero-free strip. The
+   uncentred prime row still requires its omitted-class term.
 4. *A coercive contraction.* An inequality
    $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$
    with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
    arithmetic input across moduli must.
 
-**The damping chain.** The chain is a Markov semigroup in the damping with a compact centered
-generator on $c_0$, an exactly computed entrance law, and an entrance tail that is not
-square-summable below half damping while the reciprocal observable is. What the spectrum of the
-centered compact operator is, whether its eigenvalues or its small-time expansion read the zeros,
-and whether the chain has a version acting on the pronic $\ell^2$ — where compactness would bear on
-the receiver instead of on $c_0$ — are open. The residual's linear cusp fixes the rate on the other
+**The damping chain.** The chain is a Markov semigroup in the damping whose positive-time centered
+operators are compact on $c_0$, an exactly computed entrance law, and an entrance tail that is not
+square-summable below half damping while the reciprocal observable is. The residue eigenmodes and eigenvalues are explicit, and SAEI identifies admission with the
+ordinary $\ell^2$ orbit of the reciprocal (§3.16). What remains is a signed estimate for that orbit,
+or a stronger forward operator bound in $\ell^2$; compactness in $c_0$ supplies neither.
+A relation between the full spectral calculus, small-time behavior and the zeros needs an
+independent quantitative argument. The residual's linear cusp fixes the rate on the other
 side: the approach to the Báez-Duarte infimum is at best linear in the damping, with an explicit
 constant from one critical zero, so a quantitative form of RH in these coordinates must be a
 statement about the constant, not about the exponent.
+
+The damping derivative is also an exact finite Markov boundary-flux identity:
+`E′ = boundaryFlux − jumpEnergy − density forcing`
+([DampingWorkAsArithmeticMarkovBoundaryFlux](DampingWorkAsArithmeticMarkovBoundaryFlux.lean)).
+The jump term is nonnegative, but it and the signed flux can both grow with the cutoff;
+their difference must be estimated together. The zero-damping signed work has the ordered
+limit `lim_T lim_{ε↓0} work(ε,T) = −4γ`, with an absolutely summable harmonic trace
+([ZeroDampingSignedWorkHasFiniteHarmonicTrace](ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean)).
+Neither fact supplies an infinite-horizon derivative bound at positive damping. That is the
+interface with continuation and compensation theory.
 
 **Other open boundaries.** The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the
 shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
@@ -1551,7 +1464,7 @@ cells, which are positive when the cells share a factor and start together.
 ### Research topics toward the shared target
 
 1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
-   `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` (mechanism 2) is reduced exactly to the dual norm
+   `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` (§3.13) is reduced exactly to the dual norm
    `Σ_p |Λ_p(c')|/p` of the large-scale row; bound it for the Möbius and prime rows at moduli
    growing with the window, through the reciprocity `{N/pq} ↔ p̄/q + q̄/p` and without an external
    character or modulus average, after subtracting the omitted-class term of the prime row
@@ -1565,14 +1478,14 @@ cells, which are positive when the cells share a factor and start together.
    `(X/2, 2X)`: which consecutive integers, residue classes and jump spacings of `{N/p}` couple the
    divisor edges that `ArithmeticIncidencePositivity` classifies multiplicatively.
 4. **The parity pair** with `TransHorizonIncidenceMechanics`: what the pronic Gram and the
-   divisor-sum data cannot see (mechanism 5).
-5. **Selectivity.** Each exact law is arithmetic and fails for Beurling systems by construction; say
-   for each estimate whether it still distinguishes `ζ` from `ζ(s−a)ζ(s+a)`.
-6. **The chain on the right norm.** Carry the compactness and the semigroup law of the centered
-   damped transition from `c₀` to the pronic `ℓ²`, or show no such version exists. The entrance-tail
-   barrier closes the absolute norms below half damping, so whatever carries the receiver there must
-   be built from the signed source; the chain's small-time expansion is the natural place to look,
-   since the damping is its time.
+   divisor-sum data cannot see (§3.5 and the THIM parity law).
+5. **Selectivity.** Identify the additive input in each estimate. Multiplicative identities alone survive
+   generalized number systems; ask which additional structure distinguishes `ζ` from `ζ(s−a)ζ(s+a)`.
+6. **The chain in receiver coordinates.** SAEI has identified the correct norm: ordinary `ℓ²`
+   on the normalized chain coordinate, equivalently pronic energy on the prefix. Estimate its
+   reciprocal orbit at fixed subhalf damping, with mixed residue-mode terms and tails retained.
+   Decide whether a forward `ℓ²` operator bound can supply this; the first-column test is already
+   equivalent to admission. A source-blind backward estimate is ruled out by the residue modes.
 
 ---
 

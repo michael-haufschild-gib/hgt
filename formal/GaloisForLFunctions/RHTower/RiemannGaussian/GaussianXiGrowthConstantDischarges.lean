@@ -29,7 +29,7 @@ remaining parameters, the growth hypothesis discharged by the matching growth la
 -/
 
 open Filter MeasureTheory MeromorphicOn Metric Set
-open scoped Topology ENNReal Interval
+open scoped Topology ENNReal Interval Polynomial
 
 noncomputable section
 
@@ -107,7 +107,7 @@ theorem exists_sum_divisor_riemannXi_ball_le :
 `norm_canonicalLogDerivSum_le_of_growth`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_norm_canonicalLogDerivSum_le :
-    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (δ : ℝ), 0 < δ → ‖z‖ ≤ xiCanonicalRadius n / 4 → ∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → δ ≤ ‖z - i‖ →
+    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (δ : ℝ), 0 < δ → ‖z‖ ≤ xiCanonicalRadius n / 4 → (∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → δ ≤ ‖z - i‖) →
       ‖∑ᶠ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i • logDeriv (Complex.canonicalFactor (xiCanonicalRadius n) i) z‖ ≤ (A * (2 * xiCanonicalRadius n + 1) ^ 2 / Real.log 2) * (2 / xiCanonicalRadius n + 1 / δ) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨A, hA, fun n z δ hδ hz hsep => norm_canonicalLogDerivSum_le_of_growth (A := A)
@@ -185,7 +185,7 @@ theorem exists_finiteUpperHeatInRadialAnnulus_le_quadraticMaxGaussian :
 `finiteUpperHeatInSelectedRadialAnnulus_le_majorant`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_finiteUpperHeatInSelectedRadialAnnulus_le_majorant :
-    ∃ K : ℝ, 1 ≤ K ∧ ∀ (P : ℝ[X]) (m : ℕ) (n : ℕ), m < n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n) → ∀ k : ℕ, k + 1 ≤ n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary k) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary k) → ∀ (z : ℂ) (tau : ℝ), 0 < tau →
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ (P : ℝ[X]) (m : ℕ) (n : ℕ), m < n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n) → (∀ k : ℕ, k + 1 ≤ n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary k) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary k)) → ∀ (z : ℂ) (tau : ℝ), 0 < tau →
       finiteUpperHyperbolicHeatSum z (realPolynomialUpperRootMultisetInRadialAnnulus P (quantitativeSpectralRadialBoundary m) (quantitativeSpectralRadialBoundary (m + 1))) tau ≤ selectedRadialHeatShellMajorant K z tau m := by
   obtain ⟨K, hK, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨K, hK, fun P m n hmn hcurrent hearlier z tau htau => finiteUpperHeatInSelectedRadialAnnulus_le_majorant (P := P)
@@ -205,7 +205,7 @@ theorem exists_finiteUpperHeatInSelectedRadialAnnulus_le_majorant :
 `summable_spectralRadialAnnularHeat_and_tendsto_polynomialShellSum`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_summable_spectralRadialAnnularHeat_and_tendsto_polynomialShellSum :
-    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → ∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n) → ∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau →
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → (∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n)) → (∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m)) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau →
       Summable (fun m : ℕ ↦ riemannXiUpperHyperbolicHeatRadialAnnulus z tau (quantitativeSpectralRadialBoundary m) (quantitativeSpectralRadialBoundary (m + 1))) ∧ Tendsto (fun n ↦ ∑ m ∈ Finset.range n, finiteUpperHyperbolicHeatSum z (realPolynomialUpperRootMultisetInRadialAnnulus (B n) (quantitativeSpectralRadialBoundary m) (quantitativeSpectralRadialBoundary (m + 1))) tau) atTop (nhds (∑' m : ℕ, riemannXiUpperHyperbolicHeatRadialAnnulus z tau (quantitativeSpectralRadialBoundary m) (quantitativeSpectralRadialBoundary (m + 1)))) := by
   obtain ⟨K, hK, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨K, hK, fun B hlimit hcurrent hearlier z hz tau htau => summable_spectralRadialAnnularHeat_and_tendsto_polynomialShellSum (B := B)
@@ -224,7 +224,7 @@ theorem exists_summable_spectralRadialAnnularHeat_and_tendsto_polynomialShellSum
 `tendsto_finiteUpperHeatInsideSelectedRadialBall`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_tendsto_finiteUpperHeatInsideSelectedRadialBall :
-    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → ∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n) → ∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau →
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → (∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n)) → (∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m)) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau →
       Tendsto (fun n ↦ finiteUpperHyperbolicHeatSum z (realPolynomialUpperRootMultisetInsideBall (B n) (quantitativeSpectralRadialBoundary n)) tau) atTop (nhds (riemannXiUpperHyperbolicHeatSum z tau)) := by
   obtain ⟨K, hK, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨K, hK, fun B hlimit hcurrent hearlier z hz tau htau => tendsto_finiteUpperHeatInsideSelectedRadialBall (B := B)
@@ -243,7 +243,7 @@ theorem exists_tendsto_finiteUpperHeatInsideSelectedRadialBall :
 `tendsto_realPolynomialUpperHeatSum_of_radialCounts`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_tendsto_realPolynomialUpperHeatSum_of_radialCounts :
-    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → ∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n) → ∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau → Tendsto (fun n ↦ realPolynomialUpperHeatRemainderOutsideRootMultiset (B n) (realPolynomialUpperRootMultisetInsideBall (B n) (quantitativeSpectralRadialBoundary n)) z tau) atTop (nhds 0) →
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ (B : ℕ → ℝ[X]), TendstoLocallyUniformlyOn (fun n w ↦ ((B n).map Complex.ofRealHom).eval w) riemannXiSpectral atTop Set.univ → (∀ n : ℕ, realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary n) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary n)) → (∀ (n m : ℕ), m + 1 ≤ n → realPolynomialRootCountInBall (B n) 0 (quantitativeSpectralRadialBoundary m) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary m)) → ∀ (z : ℂ), 0 < z.im → ∀ (tau : ℝ), 0 < tau → Tendsto (fun n ↦ realPolynomialUpperHeatRemainderOutsideRootMultiset (B n) (realPolynomialUpperRootMultisetInsideBall (B n) (quantitativeSpectralRadialBoundary n)) z tau) atTop (nhds 0) →
       Tendsto (fun n ↦ realPolynomialUpperHyperbolicHeatSum (B n) z tau) atTop (nhds (riemannXiUpperHyperbolicHeatSum z tau)) := by
   obtain ⟨K, hK, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨K, hK, fun B hlimit hcurrent hearlier z hz tau htau htail => tendsto_realPolynomialUpperHeatSum_of_radialCounts (B := B)
@@ -312,7 +312,7 @@ theorem exists_xiQuantitativeRadialBoundaryLowerExponent_le_exponential :
 /-- Uniform-constant form of
 `norm_riemannXiCanonicalResidual_le_of_threeHalves_growth`;
 the growth constant comes from `riemannXi_threeHalvesGrowth`. -/
-theorem exists_norm_riemannXiCanonicalResidual_le_uniform :
+theorem exists_norm_riemannXiCanonicalResidual_le_threeHalves :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ closedBall 0 (xiCanonicalRadius n) →
       ‖riemannXiCanonicalResidual n z‖ ≤ Real.exp (A * (xiCanonicalRadius n + 1) ^ (3 / 2 : ℝ)) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_threeHalvesGrowth
@@ -326,7 +326,7 @@ theorem exists_norm_riemannXiCanonicalResidual_le_uniform :
 /-- Uniform-constant form of
 `riemannXiCanonicalLog_re_le_of_threeHalves_growth`;
 the growth constant comes from `riemannXi_threeHalvesGrowth`. -/
-theorem exists_riemannXiCanonicalLog_re_le_uniform :
+theorem exists_riemannXiCanonicalLog_re_le_threeHalves :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ ball 0 (xiCanonicalRadius n) →
       (riemannXiCanonicalLog n z).re ≤ A * (xiCanonicalRadius n + 1) ^ (3 / 2 : ℝ) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_threeHalvesGrowth
@@ -340,7 +340,7 @@ theorem exists_riemannXiCanonicalLog_re_le_uniform :
 /-- Uniform-constant form of
 `norm_riemannXiCanonicalLog_le_of_threeHalves_growth`;
 the growth constant comes from `riemannXi_threeHalvesGrowth`. -/
-theorem exists_norm_riemannXiCanonicalLog_le_uniform :
+theorem exists_norm_riemannXiCanonicalLog_le_threeHalves :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ ball 0 (xiCanonicalRadius n) →
       ‖riemannXiCanonicalLog n z‖ ≤ 2 * (A * (xiCanonicalRadius n + 1) ^ (3 / 2 : ℝ)) * ‖z‖ / (xiCanonicalRadius n - ‖z‖) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_threeHalvesGrowth
@@ -355,7 +355,7 @@ theorem exists_norm_riemannXiCanonicalLog_le_uniform :
 `exp_neg_xiCanonicalThreeHalvesLowerExponent_le_norm_riemannXi`;
 the growth constant comes from `riemannXi_threeHalvesGrowth`. -/
 theorem exists_exp_neg_xiCanonicalThreeHalvesLowerExponent_le_norm_riemannXi :
-    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → ∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖ →
+    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → (∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖) →
       Real.exp (- ( 2 * A * (xiCanonicalRadius n + 1) ^ (3 / 2 : ℝ) + (A * (2 * xiCanonicalRadius n + 1) ^ (3 / 2 : ℝ) / Real.log 2) * Real.log (1 + 2 * xiCanonicalRadius n / delta))) ≤ ‖riemannXi z‖ := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_threeHalvesGrowth
   exact ⟨A, hA, fun n z delta hdelta hz hxi hsep => exp_neg_xiCanonicalThreeHalvesLowerExponent_le_norm_riemannXi (A := A)
@@ -559,7 +559,7 @@ theorem exists_sum_divisor_riemannXi_ball_le_logLinear :
 /-- Uniform-constant form of
 `norm_riemannXiCanonicalResidual_le_of_logLinear_growth`;
 the growth constant comes from `riemannXi_logLinearGrowth`. -/
-theorem exists_norm_riemannXiCanonicalResidual_le_uniform :
+theorem exists_norm_riemannXiCanonicalResidual_le_logLinear :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ closedBall 0 (xiCanonicalRadius n) →
       ‖riemannXiCanonicalResidual n z‖ ≤ Real.exp (A * xiLogLinearScale (xiCanonicalRadius n + 1)) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_logLinearGrowth
@@ -573,7 +573,7 @@ theorem exists_norm_riemannXiCanonicalResidual_le_uniform :
 /-- Uniform-constant form of
 `riemannXiCanonicalLog_re_le_of_logLinear_growth`;
 the growth constant comes from `riemannXi_logLinearGrowth`. -/
-theorem exists_riemannXiCanonicalLog_re_le_uniform :
+theorem exists_riemannXiCanonicalLog_re_le_logLinear :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ ball 0 (xiCanonicalRadius n) →
       (riemannXiCanonicalLog n z).re ≤ A * xiLogLinearScale (xiCanonicalRadius n + 1) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_logLinearGrowth
@@ -587,7 +587,7 @@ theorem exists_riemannXiCanonicalLog_re_le_uniform :
 /-- Uniform-constant form of
 `norm_riemannXiCanonicalLog_le_of_logLinear_growth`;
 the growth constant comes from `riemannXi_logLinearGrowth`. -/
-theorem exists_norm_riemannXiCanonicalLog_le_uniform :
+theorem exists_norm_riemannXiCanonicalLog_le_logLinear :
     ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ), z ∈ ball 0 (xiCanonicalRadius n) →
       ‖riemannXiCanonicalLog n z‖ ≤ 2 * (A * xiLogLinearScale (xiCanonicalRadius n + 1)) * ‖z‖ / (xiCanonicalRadius n - ‖z‖) := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_logLinearGrowth
@@ -602,7 +602,7 @@ theorem exists_norm_riemannXiCanonicalLog_le_uniform :
 `exp_neg_xiCanonicalLogLinearLowerExponent_le_norm_riemannXi`;
 the growth constant comes from `riemannXi_logLinearGrowth`. -/
 theorem exists_exp_neg_xiCanonicalLogLinearLowerExponent_le_norm_riemannXi :
-    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → ∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖ →
+    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → (∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖) →
       Real.exp (- ( 2 * A * xiLogLinearScale (xiCanonicalRadius n + 1) + (A * xiLogLinearScale (2 * xiCanonicalRadius n + 1) / Real.log 2) * Real.log (1 + 2 * xiCanonicalRadius n / delta))) ≤ ‖riemannXi z‖ := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_logLinearGrowth
   exact ⟨A, hA, fun n z delta hdelta hz hxi hsep => exp_neg_xiCanonicalLogLinearLowerExponent_le_norm_riemannXi (A := A)
@@ -685,7 +685,7 @@ theorem exists_tendsto_criticalZeta_logLinearNegativeMajorant_div_one_add_rpow_z
 `exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi :
-    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → ∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖ →
+    ∃ A : ℝ, 1 ≤ A ∧ ∀ (n : ℕ) (z : ℂ) (delta : ℝ), 0 < delta → ‖z‖ ≤ xiCanonicalRadius n / 4 → riemannXi z ≠ 0 → (∀ i, divisor riemannXi (ball 0 (xiCanonicalRadius n)) i ≠ 0 → delta ≤ ‖z - i‖) →
       Real.exp (- ( 2 * A * (xiCanonicalRadius n + 1) ^ (2 : ℕ) + (A * (2 * xiCanonicalRadius n + 1) ^ (2 : ℕ) / Real.log 2) * Real.log (1 + 2 * xiCanonicalRadius n / delta))) ≤ ‖riemannXi z‖ := by
   obtain ⟨A, hA, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨A, hA, fun n z delta hdelta hz hxi hsep => exp_neg_xiCanonicalLowerExponent_le_norm_riemannXi (A := A)
@@ -795,7 +795,7 @@ theorem exists_finiteUpperHeatInRadialAnnulus_le_quadraticGaussian :
 `finiteUpperHeatInEarlierScheduledRadialAnnulus_le_quadraticGaussian`;
 the growth constant comes from `riemannXi_quadraticGrowth`. -/
 theorem exists_finiteUpperHeatInEarlierScheduledRadialAnnulus_le_quadraticGaussian :
-    ∃ K : ℝ, 1 ≤ K ∧ ∀ (P : ℝ[X]) (m : ℕ) (n : ℕ), m + 2 ≤ n → ∀ k : ℕ, k + 1 ≤ n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary k) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary k) → ∀ (z : ℂ) (tau : ℝ), 0 < tau → ‖z‖ ≤ quantitativeSpectralRadialBoundary m →
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ (P : ℝ[X]) (m : ℕ) (n : ℕ), m + 2 ≤ n → (∀ k : ℕ, k + 1 ≤ n → realPolynomialRootCountInBall P 0 (quantitativeSpectralRadialBoundary k) = riemannXiSpectralRadialDivisorCount (quantitativeSpectralRadialBoundary k)) → ∀ (z : ℂ) (tau : ℝ), 0 < tau → ‖z‖ ≤ quantitativeSpectralRadialBoundary m →
       finiteUpperHyperbolicHeatSum z (realPolynomialUpperRootMultisetInRadialAnnulus P (quantitativeSpectralRadialBoundary m) (quantitativeSpectralRadialBoundary (m + 1))) tau ≤ (K * (2 * (quantitativeSpectralRadialBoundary (m + 1) + 1) + 1) ^ (2 : ℕ) / Real.log 2) * (tau⁻¹ * Real.exp (-((quantitativeSpectralRadialBoundary m - ‖z‖) ^ (2 : ℕ) * tau))) := by
   obtain ⟨K, hK, hbound⟩ := riemannXi_quadraticGrowth
   exact ⟨K, hK, fun P m n hmn hcounts z tau htau hrz => finiteUpperHeatInEarlierScheduledRadialAnnulus_le_quadraticGaussian (P := P)

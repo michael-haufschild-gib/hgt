@@ -1,0 +1,19 @@
+import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimeCombIsATranslation
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCombAtTheHorizonIsAResolvent
+import GaloisForLFunctions.ArithmeticCompensationTheory.CompensationCoordinates
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheSignedBudgetIsStrictlyWeakerThanThePositivePart
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCoreDebtOnAPositiveIntervalIsAZetaLogRatio
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheFirstCellCarriesAdverseWork
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheApertureFloorMustDecayDoublyExponentially
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheAdaptedEnergyIsExactlyAdmission
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWindowWidensTheCentredPrimeRowRange
+
+/-!
+# Arithmetic Compensation Theory
+
+Arithmetic compatibility and compensated coercivity: the prime comb at the critical horizon
+(translation and resolvent laws, the sharp exponential rate), compensation coordinates of a
+divergent sector against its complement, the quantifier corrections of the continuation problem,
+the forced aperture loss rate, the adapted-energy criterion, and the `17/30` short-window transfer
+into the centred prime row. See `ArithmeticCompensationTheory/README.md`.
+-/

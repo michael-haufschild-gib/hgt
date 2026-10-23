@@ -12,12 +12,15 @@ eliminated.
 
 
 
+open Complex MeasureTheory ModularGroup Set UpperHalfPlane
+open scoped MatrixGroups Real
+
 noncomputable section
 
 namespace RHTower
 
-open Bottcher Complex MeasureTheory ModularGroup Set UpperHalfPlane
-open scoped MatrixGroups Real
+open Bottcher
+
 
 /-- `re_chLineInt_ge` with its constants supplied by
 `RHTower.exists_thetaGroupBasis_one_cusp`. -/

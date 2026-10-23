@@ -11,11 +11,13 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Topology
+
 noncomputable section
 
 namespace RHTower.KFreeAbel
 
-open Complex Filter MeasureTheory Topology
+
 
 /-- `norm_kFree_horizontal_edge_le` with its constants supplied by
 `RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re`. -/
@@ -25,7 +27,7 @@ theorem norm_kFree_horizontal_edge_le_uniform :
   obtain ⟨Bz, h_0_0, h_0_1⟩ := RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
   refine ⟨Bz, ?_⟩
   intro k hk t a c K A V y ht ht1 hca hc0 hc2 hK1 hA hV hy hΓζ hinvV
-  apply norm_kFree_horizontal_edge_le <;> assumption
+  apply norm_kFree_horizontal_edge_le <;> first | assumption | linarith
 
 /-- `norm_kFree_line_le` with its constants supplied by
 `RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re`. -/
@@ -35,7 +37,7 @@ theorem norm_kFree_line_le_uniform :
   obtain ⟨Bz, h_0_0, h_0_1⟩ := RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
   refine ⟨Bz, ?_⟩
   intro k hk t a A ht ha2 hΓζ y
-  apply norm_kFree_line_le <;> assumption
+  apply norm_kFree_line_le <;> first | assumption | linarith
 
 /-- `norm_integral_kFree_sub_residue_le` with its constants supplied by
 `RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re`. -/
@@ -45,6 +47,6 @@ theorem norm_integral_kFree_sub_residue_le_uniform :
   obtain ⟨Bz, h_0_0, h_0_1⟩ := RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
   refine ⟨Bz, ?_⟩
   intro k hk t a c K A V ht ht1 ha hca hc34 hkc hK1 hA hV hΓζ hinvV hzf
-  apply norm_integral_kFree_sub_residue_le <;> assumption
+  apply norm_integral_kFree_sub_residue_le <;> first | assumption | linarith
 
 end RHTower.KFreeAbel

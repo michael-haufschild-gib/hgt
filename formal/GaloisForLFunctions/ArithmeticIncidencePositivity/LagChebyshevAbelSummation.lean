@@ -10162,6 +10162,1168 @@ theorem testBalance_source_congr (a : ℕ → ℝ) (N : ℕ) {F G : ℝ → ℝ}
             - (∫ x, G x * Real.sinh (x / 2)) ^ 2) := by
   rw [hA, hM]
 
+
+/-! ### The even and odd parts of a test do not interact
+
+Reflecting the integration variable shows that the two mixed correlations of an even and an odd
+function cancel, so the Gram kernel of a test is the sum of those of its even and odd parts.  The
+pole plane splits the same way — it is the even part's squared moment minus the odd part's — and
+therefore the whole Weil form is additive over the even/odd decomposition.  The odd sector is a
+genuine direct summand of the theory, not an approximation to it. -/
+
+/-- The even part of a test. -/
+def evenPart (F : ℝ → ℝ) (x : ℝ) : ℝ := (F x + F (-x)) / 2
+
+/-- The odd part of a test. -/
+def oddPart (F : ℝ → ℝ) (x : ℝ) : ℝ := (F x - F (-x)) / 2
+
+theorem evenPart_add_oddPart (F : ℝ → ℝ) (x : ℝ) : evenPart F x + oddPart F x = F x := by
+  rw [evenPart, oddPart]
+  ring
+
+theorem evenPart_even (F : ℝ → ℝ) (x : ℝ) : evenPart F (-x) = evenPart F x := by
+  rw [evenPart, evenPart, neg_neg]
+  ring
+
+theorem oddPart_odd (F : ℝ → ℝ) (x : ℝ) : oddPart F (-x) = -oddPart F x := by
+  rw [oddPart, oddPart, neg_neg]
+  ring
+
+/-- **An even and an odd test have cancelling mixed correlations.** -/
+theorem sym_pairCorrelation_even_odd {E O : ℝ → ℝ} (hE : ∀ x, E (-x) = E x)
+    (hO : ∀ x, O (-x) = -O x) (t : ℝ) :
+    pairCorrelation E O t + pairCorrelation O E t = 0 := by
+  have hrefl := MeasureTheory.integral_neg_eq_self
+    (μ := (volume : Measure ℝ)) (fun x => E x * O (x + t))
+  have hshift := MeasureTheory.integral_add_right_eq_self
+    (μ := (volume : Measure ℝ)) (fun y => O (y - t) * E y) t
+  have hEO : pairCorrelation E O t = -∫ x, O (x - t) * E x := by
+    rw [pairCorrelation, ← hrefl]
+    rw [← MeasureTheory.integral_neg]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show E (-x) * O (-x + t) = -(O (x - t) * E x)
+    rw [hE x, show -x + t = -(x - t) by ring, hO (x - t)]
+    ring
+  have hOE : pairCorrelation O E t = ∫ x, O (x - t) * E x := by
+    rw [pairCorrelation, ← hshift]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show O x * E (x + t) = O (x + t - t) * E (x + t)
+    rw [show x + t - t = x by ring]
+  rw [hEO, hOE]
+  ring
+
+/-- **The Gram kernel splits over the even/odd decomposition.** -/
+theorem autoCorrelation_even_odd_split (hF : Continuous F) (hFc : HasCompactSupport F)
+    (t : ℝ) :
+    autoCorrelation F t = autoCorrelation (evenPart F) t + autoCorrelation (oddPart F) t := by
+  have hEc : Continuous (evenPart F) := by
+    unfold evenPart
+    exact ((hF.add (hF.comp continuous_neg)).div_const 2)
+  have hOc : Continuous (oddPart F) := by
+    unfold oddPart
+    exact ((hF.sub (hF.comp continuous_neg)).div_const 2)
+  have hFneg : HasCompactSupport fun x => F (-x) :=
+    hFc.comp_homeomorph (Homeomorph.neg ℝ)
+  have hEcs : HasCompactSupport (evenPart F) := by
+    have h : HasCompactSupport ((fun y : ℝ => y / 2) ∘ (F + fun x => F (-x))) :=
+      (hFc.add hFneg).comp_left (by simp)
+    exact h
+  have hOcs : HasCompactSupport (oddPart F) := by
+    have h : HasCompactSupport ((fun y : ℝ => y / 2) ∘ (F - fun x => F (-x))) :=
+      (hFc.sub hFneg).comp_left (by simp)
+    exact h
+  have hsum : autoCorrelation F t
+      = autoCorrelation (fun x => evenPart F x + oddPart F x) t := by
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show F x * F (x + t)
+      = (evenPart F x + oddPart F x) * (evenPart F (x + t) + oddPart F (x + t))
+    rw [evenPart_add_oddPart, evenPart_add_oddPart]
+  rw [hsum, autoCorrelation_add hEc hEcs hOc hOcs,
+    sym_pairCorrelation_even_odd (evenPart_even F) (oddPart_odd F) t, add_zero]
+
+/-- On an even test the pole plane is a perfect square. -/
+theorem expMomentNeg_even {F : ℝ → ℝ} (heven : ∀ x, F (-x) = F x) :
+    expMomentNeg F = expMomentPos F := by
+  have h := expMomentNeg_reflect F
+  rw [show (fun x => F (-x)) = F from funext heven] at h
+  exact h
+
+
+/-! ### The Weil form splits over the even/odd decomposition
+
+The moments are linear, the odd part's moments are negatives of each other and the even part's
+are equal, so the pole plane of any test is the even part's squared moment minus the odd part's.
+With the splitting of the Gram kernel this makes the whole Weil form additive over the even/odd
+decomposition: the even sector carries a positive pole charge, the odd sector a negative one, and
+they do not interact. -/
+
+theorem continuous_evenPart (hF : Continuous F) : Continuous (evenPart F) := by
+  unfold evenPart
+  exact (hF.add (hF.comp continuous_neg)).div_const 2
+
+theorem continuous_oddPart (hF : Continuous F) : Continuous (oddPart F) := by
+  unfold oddPart
+  exact (hF.sub (hF.comp continuous_neg)).div_const 2
+
+theorem hasCompactSupport_evenPart (hFc : HasCompactSupport F) :
+    HasCompactSupport (evenPart F) := by
+  have hFneg : HasCompactSupport fun x => F (-x) := hFc.comp_homeomorph (Homeomorph.neg ℝ)
+  have h : HasCompactSupport ((fun y : ℝ => y / 2) ∘ (F + fun x => F (-x))) :=
+    (hFc.add hFneg).comp_left (by simp)
+  exact h
+
+theorem hasCompactSupport_oddPart (hFc : HasCompactSupport F) :
+    HasCompactSupport (oddPart F) := by
+  have hFneg : HasCompactSupport fun x => F (-x) := hFc.comp_homeomorph (Homeomorph.neg ℝ)
+  have h : HasCompactSupport ((fun y : ℝ => y / 2) ∘ (F - fun x => F (-x))) :=
+    (hFc.sub hFneg).comp_left (by simp)
+  exact h
+
+theorem expMomentNeg_split (hF : Continuous F) (hFc : HasCompactSupport F) :
+    expMomentNeg F = expMomentNeg (evenPart F) + expMomentNeg (oddPart F) := by
+  have hfun : F = fun x => evenPart F x + oddPart F x :=
+    funext fun x => (evenPart_add_oddPart F x).symm
+  rw [show expMomentNeg F = expMomentNeg (fun x => evenPart F x + oddPart F x) by rw [← hfun]]
+  exact expMomentNeg_add (continuous_evenPart hF) (hasCompactSupport_evenPart hFc)
+    (continuous_oddPart hF) (hasCompactSupport_oddPart hFc)
+
+theorem expMomentPos_split (hF : Continuous F) (hFc : HasCompactSupport F) :
+    expMomentPos F = expMomentPos (evenPart F) + expMomentPos (oddPart F) := by
+  have hfun : F = fun x => evenPart F x + oddPart F x :=
+    funext fun x => (evenPart_add_oddPart F x).symm
+  rw [show expMomentPos F = expMomentPos (fun x => evenPart F x + oddPart F x) by rw [← hfun]]
+  exact expMomentPos_add (continuous_evenPart hF) (hasCompactSupport_evenPart hFc)
+    (continuous_oddPart hF) (hasCompactSupport_oddPart hFc)
+
+/-- **The pole plane in even/odd coordinates.** -/
+theorem poleplane_even_odd (hF : Continuous F) (hFc : HasCompactSupport F) :
+    expMomentNeg F * expMomentPos F
+      = expMomentPos (evenPart F) ^ 2 - expMomentPos (oddPart F) ^ 2 := by
+  have hE : expMomentNeg (evenPart F) = expMomentPos (evenPart F) :=
+    expMomentNeg_even (evenPart_even F)
+  have hO : expMomentPos (oddPart F) = -expMomentNeg (oddPart F) :=
+    expMomentPos_odd (continuous_oddPart hF) (hasCompactSupport_oddPart hFc) (oddPart_odd F)
+  have hO' : expMomentNeg (oddPart F) = -expMomentPos (oddPart F) := by linarith
+  rw [expMomentNeg_split hF hFc, expMomentPos_split hF hFc, hE, hO']
+  ring
+
+/-- On an even test the pole plane is a nonnegative charge. -/
+theorem poleplane_even_nonneg {E : ℝ → ℝ} (hE : ∀ x, E (-x) = E x) :
+    0 ≤ expMomentNeg E * expMomentPos E := by
+  rw [expMomentNeg_even hE]
+  exact mul_self_nonneg _
+
+/-- **The Weil form is additive over the even/odd decomposition.** -/
+theorem weilForm_even_odd_split (hF : Continuous F) (hFc : HasCompactSupport F)
+    (a : ℕ → ℝ) (N : ℕ) :
+    ((∑ n ∈ Finset.range (N + 1),
+          a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        - 2 * (expMomentNeg F * expMomentPos F))
+      = ((∑ n ∈ Finset.range (N + 1),
+            a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation (evenPart F) (Real.log n)))
+          - 2 * (expMomentNeg (evenPart F) * expMomentPos (evenPart F)))
+        + ((∑ n ∈ Finset.range (N + 1),
+              a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation (oddPart F) (Real.log n)))
+            - 2 * (expMomentNeg (oddPart F) * expMomentPos (oddPart F))) := by
+  have hprime : (∑ n ∈ Finset.range (N + 1),
+        a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = (∑ n ∈ Finset.range (N + 1),
+          a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation (evenPart F) (Real.log n)))
+        + ∑ n ∈ Finset.range (N + 1),
+          a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation (oddPart F) (Real.log n)) := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    rw [autoCorrelation_even_odd_split hF hFc]
+    ring
+  have hE : expMomentNeg (evenPart F) = expMomentPos (evenPart F) :=
+    expMomentNeg_even (evenPart_even F)
+  have hO : expMomentPos (oddPart F) = -expMomentNeg (oddPart F) :=
+    expMomentPos_odd (continuous_oddPart hF) (hasCompactSupport_oddPart hFc) (oddPart_odd F)
+  have hpp := poleplane_even_odd hF hFc
+  have hO' : expMomentNeg (oddPart F) = -expMomentPos (oddPart F) := by linarith
+  rw [hprime, hpp, hE, hO']
+  ring
+
+
+/-! ### The positivity problem splits into the two sectors
+
+Because the Weil form is additive over the even/odd decomposition and each part inherits the
+aperture, positivity on all tests is exactly positivity on even tests together with positivity on
+odd tests.  The two sectors can be attacked separately with no loss, which is what the programme's
+concentration on the odd cone presumes. -/
+
+/-- The Weil form of a source against a test. -/
+def weilForm (a : ℕ → ℝ) (N : ℕ) (F : ℝ → ℝ) : ℝ :=
+  (∑ n ∈ Finset.range (N + 1), a n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+    - 2 * (expMomentNeg F * expMomentPos F)
+
+theorem weilForm_split (hF : Continuous F) (hFc : HasCompactSupport F) (a : ℕ → ℝ) (N : ℕ) :
+    weilForm a N F = weilForm a N (evenPart F) + weilForm a N (oddPart F) :=
+  weilForm_even_odd_split hF hFc a N
+
+theorem evenPart_supp {r : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) :
+    ∀ y, r < |y| → evenPart F y = 0 := by
+  intro y hy
+  rw [evenPart, hsupp y hy, hsupp (-y) (by rwa [abs_neg])]
+  ring
+
+theorem oddPart_supp {r : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) :
+    ∀ y, r < |y| → oddPart F y = 0 := by
+  intro y hy
+  rw [oddPart, hsupp y hy, hsupp (-y) (by rwa [abs_neg])]
+  ring
+
+theorem contDiff_one_evenPart (hF : ContDiff ℝ 1 F) : ContDiff ℝ 1 (evenPart F) := by
+  unfold evenPart
+  exact (hF.add (hF.comp contDiff_neg)).div_const 2
+
+theorem contDiff_one_oddPart (hF : ContDiff ℝ 1 F) : ContDiff ℝ 1 (oddPart F) := by
+  unfold oddPart
+  exact (hF.sub (hF.comp contDiff_neg)).div_const 2
+
+/-- **Positivity on all tests is positivity on the even and the odd sectors.** -/
+theorem weilForm_nonneg_iff (a : ℕ → ℝ) (N : ℕ) :
+    (∀ G : ℝ → ℝ, Continuous G → HasCompactSupport G → 0 ≤ weilForm a N G)
+      ↔ ((∀ G : ℝ → ℝ, Continuous G → HasCompactSupport G → (∀ x, G (-x) = G x) →
+            0 ≤ weilForm a N G)
+          ∧ ∀ G : ℝ → ℝ, Continuous G → HasCompactSupport G → (∀ x, G (-x) = -G x) →
+            0 ≤ weilForm a N G) := by
+  constructor
+  · intro h
+    exact ⟨fun G hG hGc _ => h G hG hGc, fun G hG hGc _ => h G hG hGc⟩
+  · rintro ⟨hev, hod⟩ G hG hGc
+    have hsplit := weilForm_split hG hGc a N
+    have h1 := hev (evenPart G) (continuous_evenPart hG) (hasCompactSupport_evenPart hGc)
+      (evenPart_even G)
+    have h2 := hod (oddPart G) (continuous_oddPart hG) (hasCompactSupport_oddPart hGc)
+      (oddPart_odd G)
+    linarith
+
+/-- **The Chebyshev residue splits over the sectors too.** -/
+theorem residue_even_odd_split (a : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∫ s in Ioi (0:ℝ), lagSourceDefect a s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)))
+      = (∫ s in Ioi (0:ℝ), lagSourceDefect a s *
+            (2 * Real.exp (-s / 2) * (crossCorrelation (evenPart F) s
+              - autoCorrelation (evenPart F) s / 2)))
+        + ∫ s in Ioi (0:ℝ), lagSourceDefect a s *
+            (2 * Real.exp (-s / 2) * (crossCorrelation (oddPart F) s
+              - autoCorrelation (oddPart F) s / 2)) := by
+  have hbF := testBalance_source a ha0 ha1 hF hFc hr hsupp hN
+  have hbE := testBalance_source a ha0 ha1 (contDiff_one_evenPart hF)
+    (hasCompactSupport_evenPart hFc) hr (evenPart_supp hsupp) hN
+  have hbO := testBalance_source a ha0 ha1 (contDiff_one_oddPart hF)
+    (hasCompactSupport_oddPart hFc) hr (oddPart_supp hsupp) hN
+  have hsplit := weilForm_split hF.continuous hFc a N
+  rw [weilForm, weilForm, weilForm] at hsplit
+  rw [poleplane_eq_moment_mul hF.continuous hFc] at hbF
+  rw [poleplane_eq_moment_mul (continuous_evenPart hF.continuous)
+    (hasCompactSupport_evenPart hFc)] at hbE
+  rw [poleplane_eq_moment_mul (continuous_oddPart hF.continuous)
+    (hasCompactSupport_oddPart hFc)] at hbO
+  linarith
+
+
+/-! ### The selectivity audit at Weil level
+
+The three test models now have their own Weil-shaped balances, with the same pole plane and their
+own defects, and each is compared with `ζ` by the pairing of the prefix difference alone.  The
+sector masses add, so each sector carries at most the whole mass. -/
+
+/-- **Pythagoras for the even/odd decomposition.** -/
+theorem autoCorrelation_zero_split (hF : Continuous F) (hFc : HasCompactSupport F) :
+    autoCorrelation F 0
+      = autoCorrelation (evenPart F) 0 + autoCorrelation (oddPart F) 0 :=
+  autoCorrelation_even_odd_split hF hFc 0
+
+theorem autoCorrelation_oddPart_zero_le (hF : Continuous F) (hFc : HasCompactSupport F) :
+    autoCorrelation (oddPart F) 0 ≤ autoCorrelation F 0 := by
+  have hsplit := autoCorrelation_zero_split hF hFc
+  have hE := autoCorrelation_zero_nonneg (evenPart F)
+  linarith
+
+/-- **The Weil form of the Liouville twist.** -/
+theorem testBalance_liouville (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1),
+        liouvilleTwistWeight n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2)
+      = ∫ s in Ioi (0:ℝ), lagSourceDefect liouvilleTwistWeight s *
+          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) :=
+  testBalance_source liouvilleTwistWeight liouvilleTwistWeight_zero liouvilleTwistWeight_one
+    hF hFc hr hsupp hN
+
+/-- **The Weil form of the shifted pair.** -/
+theorem testBalance_shiftedPair (α : ℝ) (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ}
+    (hN : Real.exp (2 * r) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1),
+        shiftedPairWeight α n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2)
+      = ∫ s in Ioi (0:ℝ), lagSourceDefect (shiftedPairWeight α) s *
+          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) :=
+  testBalance_source (shiftedPairWeight α) (shiftedPairWeight_zero α) (shiftedPairWeight_one α)
+    hF hFc hr hsupp hN
+
+/-- **`ζ` against the Liouville twist at Weil level:** the pole plane cancels. -/
+theorem testBalance_vonMangoldt_sub_liouville (hF : ContDiff ℝ 1 F)
+    (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0)
+    {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+          (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        - ∑ n ∈ Finset.range (N + 1),
+            liouvilleTwistWeight n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n))
+      = (∫ s in Ioi (0:ℝ), chebyshevTwoPoleDefect s *
+            (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)))
+        - ∫ s in Ioi (0:ℝ), lagSourceDefect liouvilleTwistWeight s *
+            (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) := by
+  have h := testBalance_source_sub (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+    liouvilleTwistWeight (by simp) (by simp) liouvilleTwistWeight_zero
+    liouvilleTwistWeight_one hF hFc hr hsupp hN
+  rw [← chebyshevTwoPoleDefect_eq_lagSourceDefect] at h
+  exact h
+
+
+/-! ### The forced density is scale-local
+
+The chain argument places each of its lags inside the window it was built from, so the count it
+produces is a count *in that window*.  Starting the chain at an arbitrary scale therefore forces
+generalised primes in every window, not merely in total: a bounded defect is incompatible with a
+gap anywhere. -/
+
+open scoped Classical in
+/-- **The chain criterion counts atoms inside the window it ranges over.** -/
+theorem card_window_ge_of_defect_le (T : Finset ℕ) (μ lam : ℕ → ℝ) (W : ℝ → ℝ) {K : ℝ}
+    (sc : ℕ → ℝ) (hmono : Monotone sc) {J : ℕ}
+    (hstep : ∀ j, j < J → 2 * K < W (sc (j + 1)) - W (sc j))
+    (hbound : ∀ j, j ≤ J → |W (sc j) - genPrefix T μ lam (sc j)| ≤ K) :
+    J ≤ (T.filter (fun n : ℕ => μ n ≠ 0 ∧ sc 0 < lam n ∧ lam n ≤ sc J)).card := by
+  have hchoice : ∀ j : ℕ, j < J →
+      ∃ n ∈ T.filter (fun n : ℕ => μ n ≠ 0 ∧ sc 0 < lam n ∧ lam n ≤ sc J),
+        sc j < lam n ∧ lam n ≤ sc (j + 1) := by
+    intro j hj
+    by_contra hcon
+    have hgap : ∀ n ∈ T, μ n = 0 ∨ lam n ≤ sc j ∨ sc (j + 1) < lam n := by
+      intro n hn
+      by_cases h0 : μ n = 0
+      · exact Or.inl h0
+      · refine Or.inr ?_
+        rcases le_or_gt (lam n) (sc j) with hle | hgt
+        · exact Or.inl hle
+        · rcases le_or_gt (lam n) (sc (j + 1)) with hle2 | hgt2
+          · refine absurd ⟨n, Finset.mem_filter.mpr ⟨hn, h0,
+              lt_of_le_of_lt (hmono (Nat.zero_le j)) hgt,
+              le_trans hle2 (hmono (by omega : j + 1 ≤ J))⟩, hgt, hle2⟩ hcon
+          · exact Or.inr hgt2
+    have hcrit := gen_cell_increment_le_two_mul_defect_supp T μ lam W
+      (hmono (by omega : j ≤ j + 1)) hgap
+    have hmax : max |W (sc j) - genPrefix T μ lam (sc j)|
+        |W (sc (j + 1)) - genPrefix T μ lam (sc (j + 1))| ≤ K :=
+      max_le (hbound j (by omega)) (hbound (j + 1) (by omega))
+    linarith [hstep j hj]
+  choose! f hfT hf1 hf2 using hchoice
+  have hinj : Set.InjOn f (Finset.range J : Finset ℕ) := by
+    intro α hα β hβ hab
+    rw [Finset.mem_coe, Finset.mem_range] at hα hβ
+    by_contra hne
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have h1 : lam (f α) ≤ sc (α + 1) := hf2 α hα
+      have h2 : sc β < lam (f β) := hf1 β hβ
+      have h3 : sc (α + 1) ≤ sc β := hmono (by omega)
+      rw [hab] at h1
+      linarith
+    · have h1 : lam (f β) ≤ sc (β + 1) := hf2 β hβ
+      have h2 : sc α < lam (f α) := hf1 α hα
+      have h3 : sc (β + 1) ≤ sc α := hmono (by omega)
+      rw [hab] at h2
+      linarith
+  have hcard := Finset.card_le_card_of_injOn f
+    (fun α hα => hfT α (Finset.mem_range.mp hα)) hinj
+  rwa [Finset.card_range] at hcard
+
+/-- The scale sequence for a window starting at `S`, and its step for the pole at `1`. -/
+theorem twoPole_window_step {K S : ℝ} (hK : 0 < K) (j : ℕ) :
+    2 * K < twoPoleWeight (Real.log (Real.exp S + 3 * K * ((j : ℝ) + 1)))
+      - twoPoleWeight (Real.log (Real.exp S + 3 * K * (j : ℝ))) := by
+  have hj : (0:ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
+  have hp0 : (0:ℝ) < Real.exp S + 3 * K * (j : ℝ) := by
+    have := Real.exp_pos S
+    nlinarith
+  have hp1 : (0:ℝ) < Real.exp S + 3 * K * ((j : ℝ) + 1) := by
+    have := Real.exp_pos S
+    nlinarith
+  have hlog : Real.log (Real.exp S + 3 * K * (j : ℝ))
+      ≤ Real.log (Real.exp S + 3 * K * ((j : ℝ) + 1)) :=
+    Real.log_le_log hp0 (by nlinarith)
+  rw [twoPoleWeight, twoPoleWeight, Real.exp_log hp0, Real.exp_log hp1]
+  linarith
+
+theorem twoPole_window_mono {K S : ℝ} (hK : 0 < K) :
+    Monotone (fun j : ℕ => Real.log (Real.exp S + 3 * K * (j : ℝ))) := by
+  intro α β hab
+  have hj : (0:ℝ) ≤ (α : ℝ) := Nat.cast_nonneg α
+  have hp0 : (0:ℝ) < Real.exp S + 3 * K * (α : ℝ) := by
+    have := Real.exp_pos S
+    nlinarith
+  have hcast : (α : ℝ) ≤ (β : ℝ) := by exact_mod_cast hab
+  exact Real.log_le_log hp0 (by nlinarith)
+
+
+/-! ### An atom-free interval forces a large defect
+
+Across an interval carrying no atom the prefix is frozen while the calibration climbs by at least
+the interval's length, so the defect must absorb it: a stretch of length `L` with no atom forces
+a defect of at least `L/2` at one of its ends.  For `ζ` this says a prime-power gap below `x` is
+visible in the Chebyshev defect at full size, and conversely a defect bounded by `K` forces a
+prime power in every interval longer than `2K`. -/
+
+theorem lagPrefix_eq_of_atomfree (a : ℕ → ℝ) {u v : ℝ} (hu : 0 < u) (huv : u ≤ v)
+    (hfree : ∀ n : ℕ, u < (n : ℝ) → (n : ℝ) ≤ v → a n = 0) :
+    lagPrefix a (Real.log v) = lagPrefix a (Real.log u) := by
+  have hv : 0 < v := lt_of_lt_of_le hu huv
+  have hfu : ⌊Real.exp (Real.log u)⌋₊ = ⌊u⌋₊ := by rw [Real.exp_log hu]
+  have hfv : ⌊Real.exp (Real.log v)⌋₊ = ⌊v⌋₊ := by rw [Real.exp_log hv]
+  have hsub : Finset.Icc 0 ⌊u⌋₊ ⊆ Finset.Icc 0 ⌊v⌋₊ := by
+    intro x hx
+    rw [Finset.mem_Icc] at hx ⊢
+    exact ⟨hx.1, le_trans hx.2 (Nat.floor_le_floor huv)⟩
+  rw [lagPrefix, lagPrefix, hfu, hfv]
+  refine (Finset.sum_subset hsub fun x hx hnot => ?_).symm
+  rw [Finset.mem_Icc] at hx
+  have hxu : ⌊u⌋₊ < x := by
+    by_contra hc
+    exact hnot (Finset.mem_Icc.mpr ⟨hx.1, le_of_not_gt hc⟩)
+  have h1 : u < (x : ℝ) := (Nat.floor_lt hu.le).mp hxu
+  have h2 : (x : ℝ) ≤ v := by
+    have hxv : (x : ℝ) ≤ (⌊v⌋₊ : ℝ) := by exact_mod_cast hx.2
+    exact le_trans hxv (Nat.floor_le hv.le)
+  exact hfree x h1 h2
+
+/-- **An atom-free interval forces a defect of at least half its length.** -/
+theorem defect_ge_of_atomfree (a : ℕ → ℝ) {u v : ℝ} (hu : 0 < u) (huv : u ≤ v)
+    (hfree : ∀ n : ℕ, u < (n : ℝ) → (n : ℝ) ≤ v → a n = 0) :
+    (v - u) / 2
+      ≤ max |lagSourceDefect a (Real.log u)| |lagSourceDefect a (Real.log v)| := by
+  have hv : 0 < v := lt_of_lt_of_le hu huv
+  have hpref := lagPrefix_eq_of_atomfree a hu huv hfree
+  have hincr : v - u ≤ twoPoleWeight (Real.log v) - twoPoleWeight (Real.log u) := by
+    rw [twoPoleWeight, twoPoleWeight, Real.exp_log hu, Real.exp_log hv]
+    have hlog : Real.log u ≤ Real.log v := Real.log_le_log hu huv
+    linarith
+  set x := lagSourceDefect a (Real.log u) with hx
+  set y := lagSourceDefect a (Real.log v) with hy
+  have hdiff : y - x = twoPoleWeight (Real.log v) - twoPoleWeight (Real.log u) := by
+    rw [hx, hy, lagSourceDefect, lagSourceDefect, hpref]
+    ring
+  have hb1 := neg_abs_le x
+  have hb2 := le_abs_self y
+  have hmax1 : |x| ≤ max |x| |y| := le_max_left _ _
+  have hmax2 : |y| ≤ max |x| |y| := le_max_right _ _
+  linarith
+
+/-- **A prime-power gap is visible in the Chebyshev defect at full size.** -/
+theorem chebyshev_defect_ge_of_primePower_free {u v : ℝ} (hu : 0 < u) (huv : u ≤ v)
+    (hfree : ∀ n : ℕ, u < (n : ℝ) → (n : ℝ) ≤ v →
+      (ArithmeticFunction.vonMangoldt n : ℝ) = 0) :
+    (v - u) / 2
+      ≤ max |chebyshevTwoPoleDefect (Real.log u)| |chebyshevTwoPoleDefect (Real.log v)| := by
+  have h := defect_ge_of_atomfree (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) hu huv hfree
+  rwa [← chebyshevTwoPoleDefect_eq_lagSourceDefect] at h
+
+/-- **A bounded Chebyshev defect forces a prime power in every long interval.** -/
+theorem exists_primePower_of_chebyshev_defect_le {u L K : ℝ} (hu : 0 < u) (hL : 0 ≤ L)
+    (h1 : |chebyshevTwoPoleDefect (Real.log u)| ≤ K)
+    (h2 : |chebyshevTwoPoleDefect (Real.log (u + L))| ≤ K) (hbig : 2 * K < L) :
+    ∃ n : ℕ, u < (n : ℝ) ∧ (n : ℝ) ≤ u + L ∧ (ArithmeticFunction.vonMangoldt n : ℝ) ≠ 0 := by
+  by_contra hcon
+  have hfree : ∀ n : ℕ, u < (n : ℝ) → (n : ℝ) ≤ u + L →
+      (ArithmeticFunction.vonMangoldt n : ℝ) = 0 := by
+    intro n hn1 hn2
+    by_contra hc
+    exact hcon ⟨n, hn1, hn2, hc⟩
+  have hlow := chebyshev_defect_ge_of_primePower_free hu (by linarith : u ≤ u + L) hfree
+  have hmax : max |chebyshevTwoPoleDefect (Real.log u)|
+      |chebyshevTwoPoleDefect (Real.log (u + L))| ≤ K := max_le h1 h2
+  have : u + L - u = L := by ring
+  rw [this] at hlow
+  linarith
+
+
+/-! ### The gap principle at an arbitrary pole, and exact values at the first scales
+
+Against a calibration at `ρ` an atom-free interval forces a defect of at least `(v^ρ−u^ρ)/2ρ`:
+the heavier the pole, the more a gap costs.  At the first prime scales the Chebyshev defect can
+be written out exactly — it is `1` at `log 2` and `2 − log 2` at `log 3`. -/
+
+theorem defect_poleAt_ge_of_atomfree (a : ℕ → ℝ) {ρ : ℝ} (hρ : 0 < ρ) {u v : ℝ} (hu : 0 < u)
+    (huv : u ≤ v) (hfree : ∀ n : ℕ, u < (n : ℝ) → (n : ℝ) ≤ v → a n = 0) :
+    (v ^ ρ - u ^ ρ) / (2 * ρ)
+      ≤ max |lagSourceDefectAt ρ a (Real.log u)| |lagSourceDefectAt ρ a (Real.log v)| := by
+  have hv : 0 < v := lt_of_lt_of_le hu huv
+  have hpref := lagPrefix_eq_of_atomfree a hu huv hfree
+  have hvalu : poleWeightAt ρ (Real.log u) = (u ^ ρ - 1) / ρ + Real.log u := by
+    rw [poleWeightAt, exp_mul_log ρ hu]
+  have hvalv : poleWeightAt ρ (Real.log v) = (v ^ ρ - 1) / ρ + Real.log v := by
+    rw [poleWeightAt, exp_mul_log ρ hv]
+  have hlog : Real.log u ≤ Real.log v := Real.log_le_log hu huv
+  have hincr : (v ^ ρ - u ^ ρ) / ρ
+      ≤ poleWeightAt ρ (Real.log v) - poleWeightAt ρ (Real.log u) := by
+    rw [hvalu, hvalv]
+    have : (v ^ ρ - 1) / ρ - (u ^ ρ - 1) / ρ = (v ^ ρ - u ^ ρ) / ρ := by
+      field_simp
+      ring
+    linarith
+  set x := lagSourceDefectAt ρ a (Real.log u) with hx
+  set y := lagSourceDefectAt ρ a (Real.log v) with hy
+  have hdiff : y - x = poleWeightAt ρ (Real.log v) - poleWeightAt ρ (Real.log u) := by
+    rw [hx, hy, lagSourceDefectAt, lagSourceDefectAt, hpref]
+    ring
+  have hb1 := neg_abs_le x
+  have hb2 := le_abs_self y
+  have hmax1 : |x| ≤ max |x| |y| := le_max_left _ _
+  have hmax2 : |y| ≤ max |x| |y| := le_max_right _ _
+  have h2ρ : (0:ℝ) < 2 * ρ := by linarith
+  rw [div_le_iff₀ hρ, ← hdiff] at hincr
+  have hyx : y - x ≤ 2 * max |x| |y| := by linarith
+  have hmul : (y - x) * ρ ≤ (2 * max |x| |y|) * ρ := mul_le_mul_of_nonneg_right hyx hρ.le
+  rw [div_le_iff₀ h2ρ]
+  linarith
+
+/-- The Chebyshev defect at an integer scale. -/
+theorem chebyshevTwoPoleDefect_log_nat {N : ℕ} (hN : 1 ≤ N) :
+    chebyshevTwoPoleDefect (Real.log (N : ℝ))
+      = (N : ℝ) + Real.log (N : ℝ) - 1
+        - ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) := by
+  have hN0 : (0:ℝ) < N := by exact_mod_cast hN
+  rw [chebyshevTwoPoleDefect, twoPoleWeight, Real.exp_log hN0, lagChebyshev,
+    Real.exp_log hN0, Nat.floor_natCast]
+
+/-- **The Chebyshev defect at the first prime scale is exactly one.** -/
+theorem chebyshevTwoPoleDefect_log_two : chebyshevTwoPoleDefect (Real.log 2) = 1 := by
+  have hlt : Real.log 2 < Real.log 3 := Real.log_lt_log (by norm_num) (by norm_num)
+  rw [chebyshevTwoPoleDefect, lagChebyshev_eq_log_two le_rfl hlt, twoPoleWeight,
+    Real.exp_log (by norm_num : (0:ℝ) < 2)]
+  ring
+
+
+/-! ### The receiver's sign at the first scales
+
+The Chebyshev defect is the whole calibration below `log 2`, equals `1` at `log 2` and `2 − log 2`
+at `log 3`; and the critical-scale functional is strictly positive on the first two cells.  The
+receiver starts positive, so any sign change it has is an arithmetic event, not a boundary
+artefact. -/
+
+theorem lagChebyshev_eq_log_six {s : ℝ} (h1 : Real.log 3 ≤ s) (h2 : s < Real.log 4) :
+    lagChebyshev s = Real.log 2 + Real.log 3 := by
+  have hge : (3:ℝ) ≤ Real.exp s := by
+    have := Real.exp_le_exp.mpr h1
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 3)] at this
+  have hlt : Real.exp s < 4 := by
+    have := Real.exp_lt_exp.mpr h2
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 4)] at this
+  have hfl : ⌊Real.exp s⌋₊ = 3 := by
+    rw [Nat.floor_eq_iff (by positivity)]
+    constructor
+    · exact_mod_cast hge
+    · exact_mod_cast hlt
+  have hIcc : Finset.Icc 0 3 = Finset.range 4 := by
+    ext k
+    simp only [Finset.mem_Icc, Finset.mem_range, Nat.zero_le, true_and]
+    omega
+  rw [lagChebyshev, hfl, hIcc]
+  simp [Finset.sum_range_succ, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
+    ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three]
+
+/-- **The Chebyshev defect at the second prime scale.** -/
+theorem chebyshevTwoPoleDefect_log_three :
+    chebyshevTwoPoleDefect (Real.log 3) = 2 - Real.log 2 := by
+  have hlt : Real.log 3 < Real.log 4 := Real.log_lt_log (by norm_num) (by norm_num)
+  rw [chebyshevTwoPoleDefect, lagChebyshev_eq_log_six le_rfl hlt, twoPoleWeight,
+    Real.exp_log (by norm_num : (0:ℝ) < 3)]
+  ring
+
+theorem log_two_le_one : Real.log 2 ≤ 1 := by
+  have := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)
+  linarith
+
+theorem chebyshevTwoPoleDefect_log_three_pos :
+    0 < chebyshevTwoPoleDefect (Real.log 3) := by
+  rw [chebyshevTwoPoleDefect_log_three]
+  linarith [log_two_le_one]
+
+/-- The receiver is strictly positive on the quiet cell. -/
+theorem criticalScalePrefix_pos_first_cell {s : ℝ} (hs0 : 0 < s) (hs : s ≤ Real.log 2) :
+    0 < criticalScalePrefix s := by
+  rw [criticalScalePrefix_first_cell (le_of_lt hs0) hs]
+  have := Real.add_one_lt_exp (ne_of_gt hs0)
+  linarith
+
+/-- **The receiver is strictly positive on the first prime cell too.** -/
+theorem criticalScalePrefix_pos_second_cell {s : ℝ} (h1 : Real.log 2 ≤ s)
+    (h2 : s < Real.log 3) :
+    0 < criticalScalePrefix s := by
+  have hge : (2:ℝ) ≤ Real.exp s := by
+    have := Real.exp_le_exp.mpr h1
+    rwa [Real.exp_log (by norm_num : (0:ℝ) < 2)] at this
+  have hgap : Real.log 3 - Real.log 2 ≤ 1 / 2 := by
+    have hdiv : Real.log (3 / 2) = Real.log 3 - Real.log 2 :=
+      Real.log_div (by norm_num) (by norm_num)
+    have hle := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 3 / 2)
+    rw [hdiv] at hle
+    linarith
+  have hlog2 := log_two_le_one
+  have hlog2pos : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  rw [criticalScalePrefix_second_cell h1 h2]
+  nlinarith [hge, hgap, hlog2, hlog2pos, h2]
+
+
+/-! ### Propagating the receiver's positivity
+
+On a cell the receiver loses at most the frozen Chebyshev count times the logarithmic gap, so
+positivity propagates whenever that loss is below what the cell gains.  Since the loss is at most
+`ψ(N)/N` and the gain is `1`, the propagation condition is exactly the prime number theorem with
+a margin: the receiver's sign is a statement at PNT precision, which is why nothing cruder
+decides it. -/
+
+theorem criticalScalePrefix_pos_on_cell {N : ℕ} (hN : 1 ≤ N)
+    (hloss : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+        * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ))
+      < criticalScalePrefix (Real.log (N : ℝ))) {s : ℝ}
+    (h1 : Real.log (N : ℝ) ≤ s) (h2 : s ≤ Real.log ((N : ℝ) + 1)) :
+    0 < criticalScalePrefix s := by
+  have hN0 : (0:ℝ) < N := by exact_mod_cast hN
+  have hge : (N : ℝ) ≤ Real.exp s := by
+    have := Real.exp_le_exp.mpr h1
+    rwa [Real.exp_log hN0] at this
+  have hpsi : 0 ≤ ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) :=
+    Finset.sum_nonneg fun _ _ => ArithmeticFunction.vonMangoldt_nonneg
+  have hgap : s - Real.log (N : ℝ) ≤ Real.log ((N : ℝ) + 1) - Real.log (N : ℝ) := by linarith
+  have hmul : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+      * (s - Real.log (N : ℝ))
+      ≤ (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+        * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ)) :=
+    mul_le_mul_of_nonneg_left hgap hpsi
+  rw [criticalScalePrefix_on_cell hN h1 h2]
+  linarith
+
+/-- **Positivity propagates to the next integer scale.** -/
+theorem criticalScalePrefix_succ_pos {N : ℕ} (hN : 1 ≤ N)
+    (hstep : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+        * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ))
+      < 1 + criticalScalePrefix (Real.log (N : ℝ))) :
+    0 < criticalScalePrefix (Real.log ((N : ℝ) + 1)) := by
+  rw [criticalScalePrefix_succ hN]
+  linarith
+
+/-- The logarithmic gap is at most the reciprocal of the scale. -/
+theorem log_gap_le_inv {N : ℕ} (hN : 1 ≤ N) :
+    Real.log ((N : ℝ) + 1) - Real.log (N : ℝ) ≤ 1 / (N : ℝ) := by
+  have hN0 : (0:ℝ) < N := by exact_mod_cast hN
+  have hdiv : Real.log (((N : ℝ) + 1) / (N : ℝ))
+      = Real.log ((N : ℝ) + 1) - Real.log (N : ℝ) :=
+    Real.log_div (by linarith) (ne_of_gt hN0)
+  have hle := Real.log_le_sub_one_of_pos
+    (by positivity : (0:ℝ) < ((N : ℝ) + 1) / (N : ℝ))
+  rw [hdiv] at hle
+  have hval : ((N : ℝ) + 1) / (N : ℝ) - 1 = 1 / (N : ℝ) := by
+    field_simp
+    ring
+  linarith
+
+/-- **The propagation condition is the prime number theorem with a margin.** -/
+theorem criticalScalePrefix_succ_pos_of_psi {N : ℕ} (hN : 1 ≤ N)
+    (hstep : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) / (N : ℝ)
+      < 1 + criticalScalePrefix (Real.log (N : ℝ))) :
+    0 < criticalScalePrefix (Real.log ((N : ℝ) + 1)) := by
+  have hN0 : (0:ℝ) < N := by exact_mod_cast hN
+  have hpsi : 0 ≤ ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) :=
+    Finset.sum_nonneg fun _ _ => ArithmeticFunction.vonMangoldt_nonneg
+  refine criticalScalePrefix_succ_pos hN ?_
+  have hgap := log_gap_le_inv hN
+  have hmul : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+      * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ))
+      ≤ (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) * (1 / (N : ℝ)) :=
+    mul_le_mul_of_nonneg_left hgap hpsi
+  have hdiv : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) * (1 / (N : ℝ))
+      = (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) / (N : ℝ) := by
+    field_simp
+  linarith [hmul, hdiv ▸ hstep]
+
+
+/-! ### Unconditional envelopes for the receiver at the integer scales
+
+Each cell contributes at most one unit and at least `1 − ψ(N)/N`, so the receiver at the scale
+`log(M+1)` lies between `M − Σ_{k<M} ψ(k+1)/(k+1)` and `M`.  Both envelopes are unconditional;
+the whole question is how much of the upper envelope the prime counts eat. -/
+
+theorem criticalScalePrefix_succ_ge {N : ℕ} (hN : 1 ≤ N) :
+    criticalScalePrefix (Real.log (N : ℝ)) + 1
+        - (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) / (N : ℝ)
+      ≤ criticalScalePrefix (Real.log ((N : ℝ) + 1)) := by
+  have hpsi : 0 ≤ ∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ) :=
+    Finset.sum_nonneg fun _ _ => ArithmeticFunction.vonMangoldt_nonneg
+  have hgap := log_gap_le_inv hN
+  have hmul : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ))
+      * (Real.log ((N : ℝ) + 1) - Real.log (N : ℝ))
+      ≤ (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) * (1 / (N : ℝ)) :=
+    mul_le_mul_of_nonneg_left hgap hpsi
+  have hdiv : (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) * (1 / (N : ℝ))
+      = (∑ k ∈ Finset.Icc 0 N, (ArithmeticFunction.vonMangoldt k : ℝ)) / (N : ℝ) := by
+    field_simp
+  rw [criticalScalePrefix_succ hN]
+  linarith [hdiv ▸ hmul]
+
+/-- **The receiver never exceeds the scale count.** -/
+theorem criticalScalePrefix_le_nat (M : ℕ) :
+    criticalScalePrefix (Real.log ((M : ℝ) + 1)) ≤ (M : ℝ) := by
+  induction M with
+  | zero => simp [criticalScalePrefix]
+  | succ M ih =>
+      have hstep := criticalScalePrefix_succ (N := M + 1) (by omega)
+      have hcast : ((M + 1 : ℕ) : ℝ) = (M : ℝ) + 1 := by push_cast; ring
+      rw [hcast] at hstep
+      have hpsi : 0 ≤ ∑ k ∈ Finset.Icc 0 (M + 1), (ArithmeticFunction.vonMangoldt k : ℝ) :=
+        Finset.sum_nonneg fun _ _ => ArithmeticFunction.vonMangoldt_nonneg
+      have hgapnn : 0 ≤ Real.log ((M : ℝ) + 1 + 1) - Real.log ((M : ℝ) + 1) := by
+        have : (0:ℝ) < (M : ℝ) + 1 := by positivity
+        linarith [Real.log_le_log this (by linarith : (M : ℝ) + 1 ≤ (M : ℝ) + 1 + 1)]
+      have hmulnn : 0 ≤ (∑ k ∈ Finset.Icc 0 (M + 1), (ArithmeticFunction.vonMangoldt k : ℝ))
+          * (Real.log ((M : ℝ) + 1 + 1) - Real.log ((M : ℝ) + 1)) :=
+        mul_nonneg hpsi hgapnn
+      have hgoal : ((M + 1 : ℕ) : ℝ) + 1 = (M : ℝ) + 1 + 1 := by push_cast; ring
+      rw [hgoal]
+      push_cast
+      linarith [hstep, hmulnn, ih]
+
+/-- **The receiver's unconditional lower envelope.** -/
+theorem criticalScalePrefix_ge_sub (M : ℕ) :
+    (M : ℝ) - ∑ k ∈ Finset.range M,
+        (∑ j ∈ Finset.Icc 0 (k + 1), (ArithmeticFunction.vonMangoldt j : ℝ)) / ((k : ℝ) + 1)
+      ≤ criticalScalePrefix (Real.log ((M : ℝ) + 1)) := by
+  induction M with
+  | zero => simp [criticalScalePrefix]
+  | succ M ih =>
+      have hstep := criticalScalePrefix_succ_ge (N := M + 1) (by omega)
+      have hcast : ((M + 1 : ℕ) : ℝ) = (M : ℝ) + 1 := by push_cast; ring
+      rw [hcast] at hstep
+      rw [show ((M + 1 : ℕ) : ℝ) + 1 = (M : ℝ) + 1 + 1 by push_cast; ring,
+        Finset.sum_range_succ]
+      push_cast
+      linarith
+
+
+/-! ### Trivial envelopes, unconditionally
+
+Each von Mangoldt weight is at most the logarithm of its index, so the Chebyshev count below a
+scale is at most the count of integers times the scale; and since the count is nonnegative the
+receiver never exceeds the pure polar growth.  Integrating the two trivial bounds gives an
+explicit unconditional window for the receiver at every scale. -/
+
+/-- **The trivial Chebyshev bound, in the lag variable.** -/
+theorem lagChebyshev_le {s : ℝ} (hs : 0 ≤ s) :
+    lagChebyshev s ≤ (Real.exp s + 1) * s := by
+  have hNle : ((⌊Real.exp s⌋₊ : ℝ)) ≤ Real.exp s :=
+    Nat.floor_le (le_of_lt (Real.exp_pos s))
+  have hterm : ∀ k ∈ Finset.Icc 0 ⌊Real.exp s⌋₊,
+      (ArithmeticFunction.vonMangoldt k : ℝ) ≤ s := by
+    intro k hk
+    rw [Finset.mem_Icc] at hk
+    rcases Nat.eq_zero_or_pos k with hk0 | hk0
+    · subst hk0
+      simpa using hs
+    · have hk1 : (1:ℝ) ≤ k := by exact_mod_cast hk0
+      have hkle : (k : ℝ) ≤ Real.exp s := by
+        have : (k : ℝ) ≤ (⌊Real.exp s⌋₊ : ℝ) := by exact_mod_cast hk.2
+        linarith
+      have hlog : Real.log (k : ℝ) ≤ s := by
+        have := Real.log_le_log (by linarith : (0:ℝ) < k) hkle
+        rwa [Real.log_exp] at this
+      exact le_trans ArithmeticFunction.vonMangoldt_le_log hlog
+  have hcard : lagChebyshev s ≤ ((Finset.Icc 0 ⌊Real.exp s⌋₊).card : ℝ) * s := by
+    rw [lagChebyshev]
+    have h1 := Finset.sum_le_sum hterm
+    rwa [Finset.sum_const, nsmul_eq_mul] at h1
+  have hcardR : ((Finset.Icc 0 ⌊Real.exp s⌋₊).card : ℝ) ≤ Real.exp s + 1 := by
+    rw [Nat.card_Icc]
+    push_cast
+    linarith
+  calc lagChebyshev s ≤ ((Finset.Icc 0 ⌊Real.exp s⌋₊).card : ℝ) * s := hcard
+    _ ≤ (Real.exp s + 1) * s := mul_le_mul_of_nonneg_right hcardR hs
+
+/-- **The receiver never exceeds the pure polar growth.** -/
+theorem criticalScalePrefix_le_exp {s : ℝ} (hs : 0 ≤ s) :
+    criticalScalePrefix s ≤ Real.exp s - 1 := by
+  have hmono : (∫ u in (0:ℝ)..s, (Real.exp u - lagChebyshev u))
+      ≤ ∫ u in (0:ℝ)..s, Real.exp u := by
+    refine intervalIntegral.integral_mono_on hs
+      (intervalIntegrable_criticalScaleIntegrand 0 s)
+      (Real.continuous_exp.intervalIntegrable 0 s) fun u _ => ?_
+    have := lagChebyshev_nonneg u
+    linarith
+  have hexp : (∫ u in (0:ℝ)..s, Real.exp u) = Real.exp s - 1 := by
+    simp [integral_exp]
+  rw [criticalScalePrefix]
+  linarith [hmono, hexp]
+
+theorem integral_id_mul_exp (s : ℝ) :
+    (∫ u in (0:ℝ)..s, u * Real.exp u) = (s - 1) * Real.exp s + 1 := by
+  have hderiv : ∀ u ∈ Set.uIcc (0:ℝ) s,
+      HasDerivAt (fun y : ℝ => (y - 1) * Real.exp y) (u * Real.exp u) u := by
+    intro u _
+    have h1 : HasDerivAt (fun y : ℝ => y - 1) 1 u := (hasDerivAt_id u).sub_const 1
+    have h2 := h1.mul (Real.hasDerivAt_exp u)
+    exact h2.congr_deriv (by ring)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+    ((continuous_id.mul Real.continuous_exp).intervalIntegrable 0 s)]
+  simp
+
+/-- **An explicit unconditional lower envelope for the receiver.** -/
+theorem criticalScalePrefix_ge_explicit {s : ℝ} (hs : 0 ≤ s) :
+    (Real.exp s - 1) - ((s - 1) * Real.exp s + 1) - s ^ 2 / 2
+      ≤ criticalScalePrefix s := by
+  have hmaj : ∀ u ∈ Set.Icc (0:ℝ) s,
+      Real.exp u - (Real.exp u + 1) * u ≤ Real.exp u - lagChebyshev u := by
+    intro u hu
+    have := lagChebyshev_le hu.1
+    linarith
+  have hint : IntervalIntegrable (fun u : ℝ => Real.exp u - (Real.exp u + 1) * u) volume 0 s :=
+    (Real.continuous_exp.sub ((Real.continuous_exp.add continuous_const).mul
+      continuous_id)).intervalIntegrable 0 s
+  have hmono := intervalIntegral.integral_mono_on hs hint
+    (intervalIntegrable_criticalScaleIntegrand 0 s) hmaj
+  have hsplit : (∫ u in (0:ℝ)..s, (Real.exp u - (Real.exp u + 1) * u))
+      = (Real.exp s - 1) - ((s - 1) * Real.exp s + 1) - s ^ 2 / 2 := by
+    have hcong : ∀ u ∈ Set.uIcc (0:ℝ) s,
+        Real.exp u - (Real.exp u + 1) * u = Real.exp u - u * Real.exp u - u := by
+      intro u _
+      ring
+    rw [intervalIntegral.integral_congr hcong]
+    have hi1 : IntervalIntegrable (fun u : ℝ => Real.exp u - u * Real.exp u) volume 0 s :=
+      (Real.continuous_exp.sub (continuous_id.mul Real.continuous_exp)).intervalIntegrable 0 s
+    have hi2 : IntervalIntegrable (fun u : ℝ => u) volume 0 s :=
+      continuous_id.intervalIntegrable 0 s
+    have hi3 : IntervalIntegrable (fun u : ℝ => Real.exp u) volume 0 s :=
+      Real.continuous_exp.intervalIntegrable 0 s
+    have hi4 : IntervalIntegrable (fun u : ℝ => u * Real.exp u) volume 0 s :=
+      (continuous_id.mul Real.continuous_exp).intervalIntegrable 0 s
+    rw [intervalIntegral.integral_sub hi1 hi2, intervalIntegral.integral_sub hi3 hi4,
+      integral_id_mul_exp, integral_id]
+    have hexp : (∫ u in (0:ℝ)..s, Real.exp u) = Real.exp s - 1 := by
+      simp [integral_exp]
+    rw [hexp]
+    ring
+  rw [criticalScalePrefix]
+  linarith [hmono, hsplit]
+
+
+/-! ### Two more sources, and where their poles sit
+
+The squarefree indicator has density `6/π²`, so it is read against the two-pole weight scaled by
+that factor; it is dominated index by index by pure integer density.  The higher prime powers
+have prefix of order `√x`, so their pole sits at `1/2` and their ledger is the calibration there —
+by the normalisation law their critical line is `1/4`, a quarter of the way, exactly as the pole
+position dictates. -/
+
+/-- The squarefree indicator as a source. -/
+def squarefreeSource : ℕ → ℝ :=
+  fun n => if n ≤ 1 then 0 else ((ArithmeticFunction.moebius n : ℤ) : ℝ) ^ 2
+
+theorem squarefreeSource_zero : squarefreeSource 0 = 0 := by
+  rw [squarefreeSource, if_pos (by omega)]
+
+theorem squarefreeSource_one : squarefreeSource 1 = 0 := by
+  rw [squarefreeSource, if_pos (by omega)]
+
+theorem squarefreeSource_le_allOnes (n : ℕ) : squarefreeSource n ≤ allOnes n := by
+  rw [squarefreeSource, allOnes]
+  by_cases h : n ≤ 1
+  · rw [if_pos h, if_neg (by omega)]
+  · rw [if_neg h, if_pos (by omega)]
+    have := ArithmeticFunction.abs_moebius_le_one (n := n)
+    have hR : |((ArithmeticFunction.moebius n : ℤ) : ℝ)| ≤ 1 := by exact_mod_cast this
+    nlinarith [abs_nonneg ((ArithmeticFunction.moebius n : ℤ) : ℝ), sq_abs
+      ((ArithmeticFunction.moebius n : ℤ) : ℝ)]
+
+/-- **The squarefree ledger**, calibrated at the squarefree density. -/
+theorem sum_squarefree_sub_scaledPolar_eq_defect (c : ℝ) (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), squarefreeSource n * h (Real.log n))
+        - ∫ s in Ioi (0:ℝ), c * (Real.exp s + 1) * h s
+      = ∫ s in Ioi (0:ℝ),
+          (scaledTwoPoleWeight c s - lagPrefix squarefreeSource s) * deriv h s :=
+  sum_weight_sub_calibration_eq_defect squarefreeSource squarefreeSource_zero
+    squarefreeSource_one (scaledTwoPoleWeight_zero c)
+    (continuous_const.mul continuous_twoPoleWeight) (by fun_prop)
+    (hasDerivAt_scaledTwoPoleWeight c) hh hS hvan hN
+
+theorem lagPrefix_squarefree_le (s : ℝ) :
+    lagPrefix squarefreeSource s ≤ lagPrefix allOnes s :=
+  lagPrefix_mono_of_le squarefreeSource_le_allOnes s
+
+/-- The higher prime powers, as a source. -/
+def higherPowerSource : ℕ → ℝ :=
+  fun n => (ArithmeticFunction.vonMangoldt n : ℝ) - thetaSource n
+
+theorem higherPowerSource_nonneg (n : ℕ) : 0 ≤ higherPowerSource n := by
+  rw [higherPowerSource]
+  linarith [thetaSource_le_vonMangoldt n]
+
+theorem higherPowerSource_zero : higherPowerSource 0 = 0 := by
+  rw [higherPowerSource, thetaSource_zero]
+  simp
+
+theorem higherPowerSource_one : higherPowerSource 1 = 0 := by
+  rw [higherPowerSource, thetaSource_one]
+  simp
+
+theorem lagPrefix_higherPower (s : ℝ) :
+    lagPrefix higherPowerSource s = lagChebyshev s - lagPrefix thetaSource s := by
+  rw [lagPrefix, lagPrefix, lagChebyshev, ← Finset.sum_sub_distrib]
+  exact Finset.sum_congr rfl fun n _ => rfl
+
+/-- **The higher prime powers are read at the pole `1/2`.** -/
+theorem sum_higherPower_sub_halfPolar_eq_defect (hh : ContDiff ℝ 1 h) (hS : 0 < S)
+    (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ} (hN : Real.exp S ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), higherPowerSource n * h (Real.log n))
+        - ∫ s in Ioi (0:ℝ), (Real.exp (1 / 2 * s) + 1) * h s
+      = ∫ s in Ioi (0:ℝ),
+          (poleWeightAt (1 / 2) s - lagPrefix higherPowerSource s) * deriv h s :=
+  sum_weight_sub_polarAt_eq_defect (by norm_num) higherPowerSource higherPowerSource_zero
+    higherPowerSource_one hh hS hvan hN
+
+
+/-! ### The Weil form of an arbitrary source at an arbitrary pole
+
+Every integer source has a Weil-shaped balance at every pole, with normalisation `n^{−ρ/2}` and
+the pole plane `2(∫Fe^{−ρx/2})(∫Fe^{ρx/2})`.  For the higher prime powers the relevant pole is
+`1/2`, so their normalisation is `n^{−1/4}` and their symmetry point is a quarter. -/
+
+/-- **The Weil-shaped balance of an arbitrary source at the pole `ρ`.** -/
+theorem testBalanceAt_source (ρ : ℝ) (hρ : ρ ≠ 0) (a : ℕ → ℝ) (ha0 : a 0 = 0) (ha1 : a 1 = 0)
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), a n *
+          (2 * (n : ℝ) ^ (-ρ / 2) * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.exp (-(ρ / 2 * x))) * ∫ x, F x * Real.exp (ρ / 2 * x))
+      = ∫ s in Ioi (0:ℝ), lagSourceDefectAt ρ a s *
+          (2 * Real.exp (-(ρ * s) / 2)
+            * (crossCorrelation F s - ρ / 2 * autoCorrelation F s)) := by
+  have hS : (0:ℝ) < 2 * r := by linarith
+  have hvan : ∀ s, 2 * r ≤ s → lagTestWeightAt ρ F s = 0 := fun s hs => by
+    rw [lagTestWeightAt, autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  have hkey := sum_weight_sub_polarAt_eq_defect hρ a ha0 ha1
+    (contDiff_one_lagTestWeightAt ρ hF hFc) hS hvan hN
+  rw [setIntegral_congr_fun measurableSet_Ioi
+      (fun s _ => by rw [deriv_lagTestWeightAt ρ hF hFc s] :
+        ∀ s ∈ Ioi (0:ℝ), lagSourceDefectAt ρ a s * deriv (lagTestWeightAt ρ F) s
+          = lagSourceDefectAt ρ a s *
+              (2 * Real.exp (-(ρ * s) / 2)
+                * (crossCorrelation F s - ρ / 2 * autoCorrelation F s)))] at hkey
+  rw [← hkey]
+  congr 1
+  · refine Finset.sum_congr rfl fun n _ => ?_
+    by_cases h0 : n = 0
+    · subst h0; simp [ha0]
+    · have hn : (0:ℝ) < n := by
+        have : 0 < n := Nat.pos_of_ne_zero h0
+        exact_mod_cast this
+      rw [lagTestWeightAt]
+      congr 2
+      rw [show -(ρ * Real.log (n : ℝ)) / 2 = (-ρ / 2) * Real.log (n : ℝ) by ring,
+        exp_mul_log _ hn]
+  · have hpolar := integral_Ioi_cosh_mul_autoCorrelation hF hFc hr hsupp (ρ / 2)
+    have hrw : (∫ s in Ioi (0:ℝ), (Real.exp (ρ * s) + 1) * lagTestWeightAt ρ F s)
+        = ∫ s in Ioi (0:ℝ), 4 * (Real.cosh (ρ / 2 * s) * autoCorrelation F s) := by
+      refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+      rw [lagTestWeightAt, Real.cosh_eq]
+      have h1 : Real.exp (ρ / 2 * s) = Real.exp (ρ * s) * Real.exp (-(ρ * s) / 2) := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      have h2 : Real.exp (-(ρ / 2 * s)) = Real.exp (-(ρ * s) / 2) := by
+        congr 1
+        ring
+      rw [h1, h2]
+      ring
+    rw [hrw, MeasureTheory.integral_const_mul, hpolar]
+    ring
+
+/-- **The Weil form of the higher prime powers, at their own pole `1/2`.** -/
+theorem testBalanceAt_higherPower (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∑ n ∈ Finset.range (N + 1), higherPowerSource n *
+          (2 * (n : ℝ) ^ (-(1 / 2 : ℝ) / 2) * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.exp (-(1 / 2 / 2 * x)))
+            * ∫ x, F x * Real.exp (1 / 2 / 2 * x))
+      = ∫ s in Ioi (0:ℝ), lagSourceDefectAt (1 / 2) higherPowerSource s *
+          (2 * Real.exp (-(1 / 2 * s) / 2)
+            * (crossCorrelation F s - 1 / 2 / 2 * autoCorrelation F s)) :=
+  testBalanceAt_source (1 / 2) (by norm_num) higherPowerSource higherPowerSource_zero
+    higherPowerSource_one hF hFc hr hsupp hN
+
+/-- The pole at `1/2` is matchable by an integer source with defect `2 + log 2`. -/
+theorem abs_defect_halfPole_le {s : ℝ} (hs : 0 ≤ s) :
+    |lagSourceDefectAt (1 / 2) (idealSourceAt (1 / 2)) s| ≤ 2 + Real.log 2 := by
+  have h := abs_lagSourceDefectAt_idealSourceAt_le (ρ := 1 / 2) (by norm_num) (by norm_num) hs
+  norm_num at h
+  exact h
+
+
+/-! ### Calibrations compose with the source
+
+The prefix is additive in the source, so splitting a source splits its defect across any split of
+the calibration.  For `ζ` this means the Chebyshev defect is the prime-only defect plus the
+higher-power defect, against any decomposition of the two-pole weight — and the higher-power part
+contributes nothing below the first prime square. -/
+
+theorem lagPrefix_add (b c : ℕ → ℝ) (s : ℝ) :
+    lagPrefix (fun n => b n + c n) s = lagPrefix b s + lagPrefix c s := by
+  rw [lagPrefix, lagPrefix, lagPrefix, ← Finset.sum_add_distrib]
+
+/-- **A split of the calibration splits the defect along a split of the source.** -/
+theorem defect_split_calibration (b c : ℕ → ℝ) (Wb Wc : ℝ → ℝ) (s : ℝ) :
+    (Wb s + Wc s) - lagPrefix (fun n => b n + c n) s
+      = (Wb s - lagPrefix b s) + (Wc s - lagPrefix c s) := by
+  rw [lagPrefix_add]
+  ring
+
+theorem thetaSource_add_higherPower (n : ℕ) :
+    thetaSource n + higherPowerSource n = (ArithmeticFunction.vonMangoldt n : ℝ) := by
+  rw [higherPowerSource]
+  ring
+
+/-- **The Chebyshev defect splits into the prime-only and higher-power defects.** -/
+theorem chebyshevTwoPoleDefect_split {Wb Wc : ℝ → ℝ}
+    (hW : ∀ s, twoPoleWeight s = Wb s + Wc s) (s : ℝ) :
+    chebyshevTwoPoleDefect s
+      = (Wb s - lagPrefix thetaSource s) + (Wc s - lagPrefix higherPowerSource s) := by
+  have hadd : (fun n => thetaSource n + higherPowerSource n)
+      = fun n => (ArithmeticFunction.vonMangoldt n : ℝ) :=
+    funext thetaSource_add_higherPower
+  rw [chebyshevTwoPoleDefect, lagChebyshev_eq_lagPrefix, ← hadd, hW s,
+    defect_split_calibration]
+
+/-- Below the first prime square the higher powers contribute nothing. -/
+theorem lagPrefix_higherPower_eq_zero_of_lt_log_four {s : ℝ} (hs : s < Real.log 4) :
+    lagPrefix higherPowerSource s = 0 := by
+  have h := theta_defect_eq_chebyshev_of_lt_log_four hs
+  rw [lagSourceDefect, chebyshevTwoPoleDefect] at h
+  rw [lagPrefix_higherPower]
+  linarith
+
+
+/-! ### The higher powers are invisible below the first prime square
+
+The prime side is linear in the source, so `ζ`'s Weil form is the prime-only form plus the
+higher-power form.  The higher powers' first atom sits at `4`, so below the aperture `log 4 / 2`
+they contribute nothing at all and `ζ`'s Weil form coincides with `θ`'s. -/
+
+theorem primeSide_source_add (b c : ℕ → ℝ) (F : ℝ → ℝ) (N : ℕ) :
+    (∑ n ∈ Finset.range (N + 1),
+        (b n + c n) * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = (∑ n ∈ Finset.range (N + 1),
+            b n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        + ∑ n ∈ Finset.range (N + 1),
+            c n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)) := by
+  rw [← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun n _ => by ring
+
+theorem higherPowerSource_eq_zero_of_le_three {n : ℕ} (hn : n ≤ 3) :
+    higherPowerSource n = 0 := by
+  rw [higherPowerSource]
+  interval_cases n
+  · rw [thetaSource_zero]; simp
+  · rw [thetaSource_one]; simp
+  · rw [thetaSource, if_pos Nat.prime_two,
+      ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    ring
+  · rw [thetaSource, if_pos Nat.prime_three,
+      ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_three]
+    ring
+
+/-- **Below the aperture `log 4 / 2` the higher prime powers contribute nothing.** -/
+theorem primeSide_higherPower_eq_zero (hF : Continuous F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) (h2r : 2 * r < Real.log 4) (N : ℕ) :
+    (∑ n ∈ Finset.range (N + 1),
+        higherPowerSource n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n))) = 0 := by
+  refine Finset.sum_eq_zero fun n _ => ?_
+  by_cases h3 : n ≤ 3
+  · rw [higherPowerSource_eq_zero_of_le_three h3, zero_mul]
+  · have hn4 : (4:ℝ) ≤ n := by
+      have : 4 ≤ n := by omega
+      exact_mod_cast this
+    have hlog : 2 * r ≤ Real.log (n : ℝ) :=
+      le_trans (le_of_lt h2r) (Real.log_le_log (by norm_num) hn4)
+    rw [autoCorrelation_eq_zero hF hr hsupp hlog, mul_zero, mul_zero]
+
+/-- **Below that aperture `ζ`'s Weil form is the prime-only form.** -/
+theorem primeSide_vonMangoldt_eq_theta (hF : Continuous F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) (h2r : 2 * r < Real.log 4) (N : ℕ) :
+    (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+        (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = ∑ n ∈ Finset.range (N + 1),
+          thetaSource n * (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)) := by
+  have hadd := primeSide_source_add thetaSource higherPowerSource F N
+  have hzero := primeSide_higherPower_eq_zero hF hr hsupp h2r N
+  have hcong : (∑ n ∈ Finset.range (N + 1), (thetaSource n + higherPowerSource n) *
+        (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = ∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+        (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)) :=
+    Finset.sum_congr rfl fun n _ => by rw [thetaSource_add_higherPower]
+  rw [← hcong, hadd, hzero, add_zero]
+
+
+/-! ### The unconditional rate, made explicit
+
+Both trivial bounds together give an explicit envelope for the Chebyshev defect, and hence an
+explicit unconditional bound for `ζ`'s whole Weil form in terms of the test's lag weight alone.
+This is the rate `1` of the grading, written out: every positivity statement of the programme is
+measured against it.  The prime-only source obeys the same envelope. -/
+
+theorem abs_chebyshevTwoPoleDefect_le {s : ℝ} (hs : 0 ≤ s) :
+    |chebyshevTwoPoleDefect s| ≤ Real.exp s + s + (Real.exp s + 1) * s := by
+  have hup := lagChebyshev_le hs
+  have hlow := lagChebyshev_nonneg s
+  have hexp : (1:ℝ) ≤ Real.exp s := Real.one_le_exp hs
+  rw [chebyshevTwoPoleDefect, twoPoleWeight, abs_le]
+  constructor <;> linarith
+
+/-- **The unconditional rate for `ζ`'s Weil form.** -/
+theorem abs_weilForm_vonMangoldt_le (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ}
+    (hN : Real.exp (2 * r) ≤ N) :
+    |(∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+          (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.cosh (x / 2)) ^ 2 - (∫ x, F x * Real.sinh (x / 2)) ^ 2)|
+      ≤ ∫ s in Ioi (0:ℝ),
+          (Real.exp s + s + (Real.exp s + 1) * s) * |deriv (lagTestWeight F) s| := by
+  refine abs_testBalance_source_le (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+    (by simp) (by simp) (by fun_prop) (fun s hs => ?_) hF hFc hr hsupp hN
+  rw [← chebyshevTwoPoleDefect_eq_lagSourceDefect]
+  exact abs_chebyshevTwoPoleDefect_le (le_of_lt hs)
+
+theorem lagPrefix_thetaSource_nonneg (s : ℝ) : 0 ≤ lagPrefix thetaSource s := by
+  rw [lagPrefix]
+  refine Finset.sum_nonneg fun k _ => ?_
+  rw [thetaSource]
+  by_cases hk : k.Prime
+  · rw [if_pos hk]
+    have hk1 : (1:ℝ) ≤ k := by exact_mod_cast hk.one_lt.le
+    exact Real.log_nonneg hk1
+  · rw [if_neg hk]
+
+/-- The prime-only source obeys the same envelope. -/
+theorem abs_lagSourceDefect_theta_le {s : ℝ} (hs : 0 ≤ s) :
+    |lagSourceDefect thetaSource s| ≤ Real.exp s + s + (Real.exp s + 1) * s := by
+  have hlow := lagPrefix_thetaSource_nonneg s
+  have hup : lagPrefix thetaSource s ≤ (Real.exp s + 1) * s :=
+    le_trans (lagPrefix_mono_of_le thetaSource_le_vonMangoldt s) (lagChebyshev_le hs)
+  have hexp : (1:ℝ) ≤ Real.exp s := Real.one_le_exp hs
+  rw [lagSourceDefect, twoPoleWeight, abs_le]
+  constructor <;> linarith
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

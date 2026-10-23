@@ -66,16 +66,15 @@ theorem Admits.of_adaptedEnergy (hac : a ≤ c) (hE0 : ∀ ε ∈ Icc a c, ∀ T
     rw [uIcc_of_le hac] at hε
     exact (hderiv T ε hε).log (hpos ε hε).ne'
   have hint' : IntervalIntegrable (fun ε => H' T ε / H ε T) volume a c := by
-    have := (hint T).neg
-    simpa [neg_div, neg_neg] using this
+    exact (hint T).neg.congr fun ε _ => by simp [neg_div]
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hlog hint'
   have hneg : (∫ ε in a..c, -H' T ε / H ε T) = Real.log (H a T) - Real.log (H c T) := by
     simp only [neg_div, intervalIntegral.integral_neg, hFTC]
     ring
   have hLT := hL T
   rw [hneg] at hLT
-  have ha := left_mem_Icc.mpr hac
-  have hc' := right_mem_Icc.mpr hac
+  have ha := Set.left_mem_Icc.mpr hac
+  have hc' := Set.right_mem_Icc.mpr hac
   have hHa := hpos a ha
   have hHc := hpos c hc'
   have hratio : H a T ≤ Real.exp L * H c T := by

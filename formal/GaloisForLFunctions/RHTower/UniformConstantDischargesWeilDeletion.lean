@@ -11,12 +11,14 @@ eliminated.
 
 
 
+open Complex Filter GaloisForLFunctions.HTGeometry MeasureTheory Set Topology
+open scoped ENNReal InnerProduct
+
 noncomputable section
 
 namespace RHTower.WeilDeletion
 
-open Complex Filter GaloisForLFunctions.HTGeometry MeasureTheory Set Topology
-open scoped ENNReal InnerProduct
+
 
 /-- `bumpOverlap_ge` with its constants supplied by
 `RHTower.WeilDeletion.exists_lipschitz_phiTwo`. -/
@@ -26,6 +28,6 @@ theorem bumpOverlap_ge_uniform :
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.WeilDeletion.exists_lipschitz_phiTwo
   refine ⟨M, ?_⟩
   intro L hL h
-  apply bumpOverlap_ge <;> assumption
+  apply bumpOverlap_ge <;> first | assumption | linarith
 
 end RHTower.WeilDeletion

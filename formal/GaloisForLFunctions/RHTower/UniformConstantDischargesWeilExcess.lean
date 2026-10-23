@@ -11,12 +11,14 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Set Topology
+open scoped ComplexConjugate ENNReal Real
+
 noncomputable section
 
 namespace RHTower.WeilExcess
 
-open Complex Filter MeasureTheory Set Topology
-open scoped ComplexConjugate ENNReal Real
+
 
 /-- `cauchyProfile_le_kernelSmooth` with its constants supplied by
 `RHTower.WeilExcess.exists_riemannAutocorr_ge`. -/
@@ -26,6 +28,6 @@ theorem cauchyProfile_le_kernelSmooth_uniform :
   obtain ⟨κ, h_0_0, h_0_1⟩ := RHTower.WeilExcess.exists_riemannAutocorr_ge
   refine ⟨κ, ?_⟩
   intro δ hδ0 hδ1 s u
-  apply cauchyProfile_le_kernelSmooth <;> assumption
+  apply cauchyProfile_le_kernelSmooth <;> first | assumption | linarith
 
 end RHTower.WeilExcess

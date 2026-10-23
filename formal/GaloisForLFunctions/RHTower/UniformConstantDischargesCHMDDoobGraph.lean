@@ -11,11 +11,14 @@ eliminated.
 
 
 
+open Filter MeasureTheory Set Topology
+
 noncomputable section
 
 namespace RHTower.CHMDDoobGraph
 
-open CHMDClosedJump Filter GaloisForLFunctions.HTGeometry MeasureTheory Set Topology
+open CHMDClosedJump GaloisForLFunctions.HTGeometry
+
 
 /-- `bvLift_norm_sq_le_of_bound` with its constants supplied by
 `RHTower.CHMDPolar.exists_theta_bound`. -/

@@ -142,6 +142,22 @@ theorem not_riemannRoch_of_perturbation {E : Set C} (x : C)
   · exact (hout ε hε).1 h
   · exact (hout ε hε).2 h
 
+/-- **An effectivity cannot avoid the positive cone.** If `E` satisfies the Riemann–Roch axiom and
+its classes have nonnegative degree `x · (H + V) ≥ 0` (as effective divisors do against an ample
+class), then `E` contains every class of positive square and positive degree. So its ample axiom
+already contains the Hodge index theorem for classes it is forced to contain: an independent
+effectivity theory must prove ampleness by a mechanism of its own — in Weil's proof, an effective
+divisor is the zero set of a section and so has nonnegative degree. -/
+theorem openPositiveCone_subset_of_effectivity {E : Set C} (hRR : S.RiemannRochAxiom E)
+    (hdeg : ∀ x ∈ E, 0 ≤ S.pair x S.ample) :
+    {x | 0 < S.pair x x ∧ 0 < S.pair x S.ample} ⊆ E := by
+  rintro x ⟨hx, hxA⟩
+  rcases hRR x hx with h | h
+  · exact h
+  · have := hdeg (-x) h
+    simp only [map_neg, LinearMap.neg_apply] at this
+    linarith
+
 end PolarSurface
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

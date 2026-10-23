@@ -11,22 +11,24 @@ eliminated.
 
 
 
+open Complex Filter Finsupp MeasureTheory RHTower RHTower.WeilOneSided Set Topology
+open scoped Real
+
 noncomputable section
 
 namespace GaloisForLFunctions.BiScaleUncertainty
 
-open Complex Filter Finsupp MeasureTheory RHTower RHTower.WeilOneSided Set Topology
-open scoped Real
+
 
 /-- `abs_nodeArchEnergy_sub_weilEnergy_le_dlvp` with its constants supplied by
 `GaloisForLFunctions.BiScaleUncertainty.exists_psi_exp_le_dlvp`. -/
 theorem abs_nodeArchEnergy_sub_weilEnergy_le_dlvp_uniform :
     ∃ (K : ℝ) (κ : ℝ) (B : ℝ), ∀ (c : WeilTestFn →₀ ℝ), (∀ f, 0 ≤ c f) → ∀ (L : ℝ), 0 ≤ L → (∀ f ∈ c.support, ∃ a, ∀ u, f.1 u ≠ 0 → u ∈ Ioo a (a + L)) →
       |nodeArchEnergy c - weilEnergy c| ≤ (Real.exp (L / 2) * (1 + 2 * K * dlvpSchurGain κ L) + B + (1 + L) ^ 2) * massOf c := by
-  obtain ⟨κ, κ, B, h_0_0, h_0_1, h_0_2, h_0_3⟩ := GaloisForLFunctions.BiScaleUncertainty.exists_psi_exp_le_dlvp
+  obtain ⟨K, κ, B, h_0_0, h_0_1, h_0_2, h_0_3⟩ := GaloisForLFunctions.BiScaleUncertainty.exists_psi_exp_le_dlvp
   refine ⟨K, κ, B, ?_⟩
   intro c hc L hL hsupp
-  apply abs_nodeArchEnergy_sub_weilEnergy_le_dlvp <;> assumption
+  apply abs_nodeArchEnergy_sub_weilEnergy_le_dlvp <;> first | assumption | linarith
 
 /-- `abs_ccmLogChebyshevDeficitPrimitive_le_dlvp` with its constants supplied by
 `GaloisForLFunctions.BiScaleUncertainty.exists_abs_psi_exp_sub_le_dlvp`. -/

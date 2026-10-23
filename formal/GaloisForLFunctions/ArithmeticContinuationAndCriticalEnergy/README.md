@@ -16,220 +16,37 @@ the horizon quantifier where the mathematics puts it.
 
 ---
 
-## The shared target: the sign of the critical arithmetic form
+## Place in the research
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
+ACCE studies whether a bound survives a change of parameter. Its model is the exact damped Möbius
+divisor source in the pronic norm: the endpoint at half damping is admitted, while admission at
+positive dampings accumulating at zero is RH. The transport variable and the observation horizon
+must stay separate. Smooth dependence at every fixed horizon does not give a uniform budget.
 
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
+The main pillars are exact work identities, linear and Osgood transport, the equivalence between
+signed averaged budgets and admission, and the dilation calculus of integer prefixes. Two further
+reductions make the arithmetic demand concrete: the work is edge mass minus dilation jump energy
+plus its polar correction, and the full receiver norm is equivalent to one-step block energy.
+Neither reduction supplies the missing estimate on the actual source.
 
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+| Programme | Connection |
+|---|---|
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Fixes the source and complete energy before a transport is proposed. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies blind models and distinguishes recoverable observations from stable energy estimates. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Owns the finite-horizon receiver and its damping admission problem. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies the Markov derivative, divisor identities and pronic arithmetic geometry. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies the aperture ground-energy path and the vanishing upper bound any continuation must respect. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Identifies the damping threshold with zero width and converts partial transport into a strip bound. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies local window certificates and the signed prime–polar decomposition to be continued. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Tests whether a proposed observation preserves the sign and limiting parameter information. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Develops the coupled flux–forcing budget beyond separate estimates on derivative terms. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks arithmetic effectivity that could provide a source of the required energy estimate. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Studies the source's signed incidence kernel, a possible input to continuation. |
 
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
-
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
-
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-ACCE is the continuation layer. It owns the parameter derivative of the critical energies that the
-other programmes build, the theorems that transport a bound along a parameter interval, and the
-countermodels that fix which uniformity a transport theorem must have. Its results are not another
-equivalent form of the shared target; they change what has to be estimated. Where the receiver
-criteria of `RHTower` and `BezoutValuationIncidence` ask for a bound on a norm at every damping,
-ACCE reduces the same conclusion to a bound on the negative part of one signed pairing on each
-compact damping interval — a weaker demand, provably weaker, and with the endpoint supplied
-unconditionally by Littlewood's bound.
-
-In the shared units its contribution is measured by the damping it reaches: a continuation budget
-available only above `a₀` already gives the zero-free strip `Θ ≤ ½ + a₀`
-(`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`), so partial progress is an
-explicit exponent and not an identity. Identities, scale changes and ratio limits count as zero in
-those units; what counts is a horizon-free budget on an interval, and the interval it covers.
-
-The demand has since been placed exactly. Transport needs only the *parameter average* of the
-relative loss, and that averaged budget is equivalent to admission, hence cofinally equivalent to
-RH — while the pointwise budget is strictly stronger than RH, since a family can be admitted at
-every parameter and carry no pointwise budget on any interval. So the layer's obligation is an
-averaged one, and it has three interchangeable faces with no constant in them at all: nonnegativity
-of the damping autocorrelation of the tangent family, a non-obtuse angle between the tangents at two
-dampings, and convexity of the critical energy. Of the three parameters, the cutoff costs nothing
-beyond admission and the aperture has a derivative-free transport from a certified endpoint; the
-damping is the obligation.
-
-### How the programme connects to the other programmes
-
-- **Bézout–Valuation Incidence (`BezoutValuationIncidence`).** ACCE takes the damping tangent law
-  `hasDerivAt_pmPowerDampedCenteredDivisorPrefix` (`∂_ε A_ε(n) = E_ε(n)`, the centred damped
-  Chebyshev function), the pronic norm with its Cauchy–Schwarz and Minkowski inequalities, the
-  Markov form of the energy derivative (`hasDerivAt_pmPowerDampedDivisorDiscreteEnergy_markov`:
-  boundary flux minus jump energy minus density forcing), and the Littlewood endpoint
-  `mem_receiverDampings_of_half_zetaZeroAbscissa_lt`. It gives back the signed-work form of the
-  same derivative, the bridge identifying the two faces
-  (`two_mul_signedDampingWork_eq_markov`), and the theorem that the tangent-norm receiver
-  `riemannHypothesis_of_integrable_tangent_energy` is the special case of a continuation budget in
-  which the budget dominates a norm. Shared object: the centred prefix `A_ε` of the power-damped
-  Möbius row and its pronic energy.
-- **RHTower routes.** ACCE takes the admission dictionary: `receiverDampings`, the rate identity
-  `receiverDampingRate = Θ − ½`, the cofinal criterion `riemannHypothesis_iff_cofinal_budget`, the
-  unconditional endpoint at half damping, and the accumulation theorems
-  `re_le_of_Ioo_subset_receiverDampings`, `zetaZeroAbscissa_le_of_accPt_receiverDampings` that turn
-  an interval of admitted dampings into a zero-free strip. It gives back the continuation criteria
-  and the statement of what their failure costs. Shared object: the admissible damping set.
-- **Trans-Horizon Incidence Mechanics (`TransHorizonIncidenceMechanics`).** THIM owns the
-  observation side: which maps from source to data are injective, and the parity partners that make
-  magnitude, two-point and translated-moment data blind below half damping. ACCE supplies the
-  reason injectivity is not enough — an observation map must come with a stability estimate in the
-  receiver's norm before it can bound an energy — and takes from THIM the explicit
-  indistinguishability classes against which a continuation estimate must be selective. Shared
-  object: the receiver row and the data that determine it.
-- **Square-Root Threshold (`SquareRootThreshold`).** SRT owns the width dictionary and the ground
-  energy at an aperture, including the comparison of the zero width with the ground-energy rate
-  under non-clustering of off-line zeros. ACCE's parameter is the aperture there rather than the
-  damping, and the same transport theorems apply verbatim: an aperture-indexed family with a
-  coercive scale and a horizon-free budget cannot lose a finite ground energy over a bounded
-  aperture range. Shared object: the rate of a critical energy in its parameter.
-- **Arithmetic Criticality Theory (`ArithmeticCriticalityTheory`) and Arithmetic Positivity Theory
-  (`arithmetic-positivity-theory`).** These own the aperture face of the form and its gauges. ACCE
-  takes from them the exact complete quadratic form with its mixed terms, and gives the discipline
-  that a decomposition is useful only with its interaction terms attached, together with the
-  envelope tools for iterating a per-stage compensation (`affineEnvelope`,
-  `affineEnvelope_le_of_contraction`). Shared object: the complete signed quadratic form.
-- **Arithmetic Incidence Positivity (`ArithmeticIncidencePositivity`).** AIP works pair by pair at
-  one aperture; ACCE works interval by interval in the aperture. The two meet at the point where
-  AIP's window inequality must be extended past a prime: the extension is a continuation statement
-  in the aperture, and the affine envelope says what a per-prime gain must be to survive
-  iteration. Shared object: the aperture at which a positivity certificate still holds.
-- **Bi-Scale Uncertainty (`BiScaleUncertainty`).** BiScale owns the test models — shifted zeta
-  pairs, altered prime weights, Beurling systems — and the node criticality that excludes
-  sampling-density arguments. Every continuation estimate proposed here must fail for a named
-  member of those families, and BiScale's signed prime-polar work bounds are the second instance of
-  the signed-work mechanism. Shared object: the selectivity certificate.
-
-- **Scale-Signed Incidence Criticality (`ScaleSignedIncidenceCriticality`).** The admissibility
-  layer prices readings; this layer transports bounds. They agree on the two facts that shape every
-  criterion here: a bound below half damping must read signs, since amplitude-derived data of any
-  cardinality are blind, and a bounded parameter range is worth nothing in the width unit, since the
-  information sits at the accumulation. The majorant source of this layer is the damping-side
-  instance of the admissibility layer's rule, and the aperture transport is its answer to the
-  observation that no single bounded aperture resolves the width.
-
-ACCE imports `RHTower` and `BezoutValuationIncidence` and is imported by no other programme: it is
-a leaf that strengthens the criteria the others produce.
+Read §2 for the quantifiers and normalisation, then the exact derivative and averaged criterion
+in §3. The dilation, block-energy and zero-anchor descriptions are alternative ways to expose the
+same arithmetic obligation. They should be compared by what estimate they require, not by how many
+equivalent receivers they produce.
 
 ## 1. Why: motivation
 
@@ -291,7 +108,7 @@ exact pole subtraction `n·Re(1/ζ(1+ε))` and the pronic observation weight `1/
 and nothing is selected from the zeros. Two dictionary entries fix what continuation must deliver:
 `mem_receiverDampings_iff_admits` (admission is membership in the admissible damping set) and
 `riemannHypothesis_iff_cofinallyAdmits` (cofinal admission is RH). The energy is strictly positive
-at every positive damping and every horizon — the first cell is `1 − 1/ζ(1+ε) > 0` — so no
+at every positive damping and every positive horizon — the first cell is `1 − 1/ζ(1+ε) > 0` — so no
 criterion below is asking for the sign of something that vanishes.
 
 **The complete signed work** is
@@ -395,15 +212,14 @@ The damping derivative of the critical energy is twice the complete signed work
 owned by `BezoutValuationIncidence`: boundary flux minus nonnegative jump energy minus density
 forcing, and uniqueness of derivatives identifies the two
 (`two_mul_signedDampingWork_eq_markov`). One consequence is immediate: since the jump energy is
-nonnegative and enters `−2W` with a `+` sign, a continuation budget must dominate the dissipation of
-the arithmetic chain. Dissipation helps the forward direction and obstructs the backward one; in the
+nonnegative and enters `−2W` with a `+` sign, a continuation budget must control the net combination of dissipation,
+forcing and boundary flux; it need not bound dissipation separately. Dissipation helps the forward direction and obstructs the backward one; in the
 Markov reading the sign criterion says exactly that the flux dominates dissipation plus forcing.
 
 Integrated, the two faces give the two exact dictionaries. The relative loss integrates to the
 logarithm of the energy ratio; the work itself integrates to the energy difference,
 `∫_a^c 2W_T = E_T(c) − E_T(a)` (`TheWorkIntegralIsTheEnergyDrop`). Hence, with an admitted right
-end, admission at `a` is *equivalent* to a horizon-free bound on the integral of the negative part of
-the work — and failure is always visible as deep negative work at a specific damping and horizon,
+end, admission at `a` is *equivalent* to a horizon-free bound on the signed integral `∫_a^c −2W_T` — and failure is always visible as deep negative work at a specific damping and horizon,
 never as a diffuse effect.
 
 ### The averaged budget is exactly admission, and the pointwise one is strictly stronger
@@ -423,9 +239,20 @@ admitted at *every* parameter — the state RH asserts — and still carry no po
 any nondegenerate interval (`exists_admits_everywhere_not_linearContinuation`; the witness is a
 relative-loss spike of height `T + 1` and width `(T+1)^{−2}`, whose averaged budget is `π` on every
 interval). So a pointwise horizon-free bound on the negative part of the signed work is not known to
-follow from RH, while its parameter average is equivalent to RH. **The obligation is the averaged
+follow from RH, while the **signed relative-loss integral** is equivalent to admission
+with an admitted right endpoint. **The obligation is the averaged
 one**, and the same weakening applies to the tangent-norm receiver, where `∫_a^{1/2} ‖E_ε‖_T dε ≤ C`
 with `C` free of the horizon suffices (`riemannHypothesis_of_averaged_tangentNorm`).
+
+Compensation Theory sharpens this distinction. The smooth horizon-monotone family
+`E_T(ε)=Σ_{k=1}^T 2^{−k}(2+sin(16^k ε))` is bounded by `3` everywhere, yet its positive-part
+relative-loss integrals diverge on every nondegenerate interval
+(`exists_admitted_monotone_not_positivePartContinuation`). Signed recovery is essential even
+under horizon monotonicity. A comparable adapted energy `H_T=1+E_T+C_T`, with
+`m(1+E_T)≤H_T≤M(1+E_T)` and a uniform signed log-loss budget, transfers admission from right to
+left. Under the regularity assumptions, existence of such an adapted energy is equivalent to
+left-end admission (`adaptedEnergy_iff_admits`); progress requires constructing its arithmetic
+corrector and constants independently.
 
 ### Subsumption of the tangent-norm receiver
 
@@ -468,8 +295,10 @@ stay bounded. An estimate that only improves the endpoints cannot decide the que
 A bump needs the energy to rise and then fall, so the signed work must change sign from positive to
 negative inside. Forbidding that *order* of sign change is enough
 (`riemannHypothesis_of_signedWork_single_sign_change`): no constant, no norm and no uniformity in
-the horizon beyond the shape. Monotone work — equivalently convexity of the energy — and nonnegative
-work are the special cases.
+the horizon beyond the shape. Monotone work — equivalently convexity of the energy — is one
+such sufficient shape condition. Global nonnegative work is already false on the actual source:
+Compensation Theory proves `W_1(ε)→−½` as `ε↓0` (`tendsto_signedDampingWork_one`). A viable
+criterion must permit that adverse first-cell work.
 
 ### The sign is an angle: the damping autocorrelation
 
@@ -491,8 +320,8 @@ no more than its own size, RH follows (`riemannHypothesis_of_relative_tangent_st
 mean value theorem converts that into a comparison with the second tangent: a pointwise majorant `G`
 for the second tangent gives `‖E_η − E_ε‖_T ≤ (ε − η)‖G‖_T`, so the angle is non-obtuse as soon as
 the gap times `‖G‖_T` is at most `‖E_ε‖_T` (`SecondTangentControlGivesTheAngle`). What matters is
-the *ratio against the gap*, and short damping steps cost nothing, so the criterion may be applied
-on a fine partition.
+the *ratio against the gap*, but a local angle bound on adjacent steps does not by itself control correlations with all
+earlier dampings. A partition argument must also bound those accumulated cross terms.
 
 ### Convexity, and the second tangent as an iterated dilation
 
@@ -511,8 +340,9 @@ dilation of the literal source against itself.
 ### Prime-pair, polar and level coordinates of the obstruction
 
 Exchanging the order of summation puts the autocorrelation in the coordinates the incidence and Gram
-programmes use. With the increment `a_M(η) = Λ_η(M) − m(η)` of the centred damped Chebyshev
-function:
+programmes use. With the increment `a_M(η) = Λ^{resp}_η(M) − m(η)`, where
+`Λ^{resp}_η(M) = −Σ_{d∣M} μ(d) log(d)d^{−η}` is the divisor-response tangent, of the centred damped Chebyshev function (distinct from the dilation weights
+`Λ(M)M^{−η}`):
 
 - **Prime pairs.** `K_T(η, ε) = Σ_{j,k ≤ T} a_j(η) a_k(ε)/max(j,k) − E_η(T)E_ε(T)/(T+1)`, so the
   sign is the sign of one Vasyunin-type bilinear form in the damped von Mangoldt weights at two
@@ -547,11 +377,12 @@ pairing. Five facts fix what a proof of its sign can look like.
   (`TheQuotientIncidenceKernelIsIndefinite`). The sign must be proved for the actual source, never
   for an arbitrary row.
 - **The scales are exactly paid down to one half and no further.** Dilation contracts the pronic
-  norm sharply, `‖v(⌊·/j⌋)‖_T ≤ √(2/j)‖v‖_T`, because a dilation fibre carries exactly `1/j` of the
+  norm sharply, `‖v(⌊·/j⌋)‖_T ≤ j^{−1/2}‖v‖_T` for `v(0) = 0`, because a dilation fibre carries exactly `1/j` of the
   level's pronic mass (`TheDilationSelfSimilarityOfThePronicMeasure`); the off-diagonal cost of a
-  term-by-term bound is therefore `√2 Σ_{j ≥ 2} j^{−(ε+1/2)}·E_T`, and that series converges exactly
-  for `ε > ½` (`ThePronicDilationContractionAndItsThreshold`). Above half damping the route closes;
-  below it the majorant diverges, which is why the anti-correlation must be signed. Every finite head
+  term-by-term bound is therefore `Σ_{j ≥ 2} j^{−(ε+1/2)}·E_T`, and that series converges exactly
+  for `ε > ½` (`ThePronicDilationContractionAndItsThreshold`). The scale sum is finite above half damping; absorbing it in a self-improving inequality
+  additionally needs its coefficient below one or a separate estimate. Below half damping
+  the majorant diverges, which is why the anti-correlation must be signed. Every finite head
   of the dilation scales is paid.
 - **The source satisfies exact laws against every dilation kernel.** The prefix dilations represent
   the Dirichlet ring exactly, `Λ_ε * ζ_ε = (log)_ε` is the damped form of `Λ * 1 = log`, and
@@ -567,31 +398,34 @@ pairing. Five facts fix what a proof of its sign can look like.
   shape analytic methods handle: a smoothing of the source against itself.
 - **The form has a positive core.** At zero damping the source collapses to the constant one, and a
   constant row is positively correlated with its own prime dilations:
-  `Q_ε(1) = Σ_{n ≤ T} ψ_ε(n)/(n(n+1)) > 0` with `ψ_ε(n) = Σ_{j ≤ n} Λ(j)j^{−ε}`. Splitting at the
+  `Q_ε(1) = Σ_{n ≤ T} ψ_ε(n)/(n(n+1)) ≥ 0` (strict for `T≥2`), with `ψ_ε(n) = Σ_{j ≤ n} Λ(j)j^{−ε}`. Splitting at the
   constant keeps every cross term, so the sign of the work is the sign of a positive explicit core
   plus two explicit *linear* functionals of `A_ε − 1` plus the residual's own dilation form
   (`ThePositiveCoreOfTheDilationForm`); renormalisation neutrality makes the quadratic residual the
   only unpaid part, and it vanishes with the deviation from constancy.
-- **The core's size is the prime harmonic series, and that is the whole obstruction.** The core is
-  not merely positive; integrated over a damping interval it is a classical divergent sum, and this
-  identifies the layer's difficulty with a fact about primes that has been known since Euler. Sum
+- **The core has an explicit damping-endpoint law.** Sum
   the integrated core by *scales* rather than by horizons: the pronic weights telescope,
   `Σ_{n = j}^{T} 1/(n(n+1)) = 1/j − 1/(T+1)`, leaving one sum over scales
   `∫_η^ε core_x(T) dx = Σ_{j ≤ T} (Λ(j)/log j)(j^{−η} − j^{−ε})(1/j − 1/(T+1))`
   (`integral_workCore_eq_scaleSum`). The density `Λ(j)/log j` is `1` at a prime and `1/k` at a
   `k`-th prime power, so the scale sum *is* a prime harmonic series, its prime terms being
-  `(p^{−η} − p^{−ε})/p` times the telescoping factor. Hence the integrated core grows without bound
-  in the horizon, at the rate of `Σ_{p ≤ T} 1/p ≍ log log T`
+  `(p^{−η} − p^{−ε})(1/p − 1/(T+1))`. For the zero-anchored integral (`η = 0`) the core grows without bound
+  in the horizon, with prime-harmonic growth `Σ_{p ≤ T} 1/p`. For a fixed positive `η`, the
+  factors `p^{−η}` instead make the horizon sum convergent. More precisely, for `0<η≤ε`,
+  its limit is `log ζ(1+η)−log ζ(1+ε)` and the same quantity bounds every finite horizon
+  (`ArithmeticCompensationTheory.tendsto_integral_workCore_logZeta`,
+  `ArithmeticCompensationTheory.integral_workCore_le_logZeta`). The zero-anchor divergence is proved by
   (`exists_horizon_integral_workCore_ge`). The explicit positive core is therefore a **debt of size
   `log log T`**, and under any energy budget the integrated deviation must carry it: it tends to
   `−∞` along the horizons (`exists_horizon_integral_workDeviation_le`). This is the sharpest
-  statement of what admission demands. The only way the critical energy can stay bounded is that the
+  cancellation demanded by admission in this zero-anchored decomposition. The only way the critical energy can stay bounded is that the
   source's deviation from constancy cancels, to leading order, the prime harmonic growth of its own
-  tangent — a cancellation of exactly `log log T`, neither more nor less. Two consequences for
-  method choice: any argument that bounds the deviation terms in absolute value is dead on arrival,
-  because their integral is unbounded; and the required cancellation is *slow*, which is why the
-  function-field calibration, where the deviation is identically zero, says nothing about the size
-  of the number-field cancellation.
+  tangent — cancellation of the divergent zero-anchored core. The cited theorem proves unboundedness;
+  an exact asymptotic for the complete deviation is a separate statement. Two consequences for
+  method choice: a horizon-uniform absolute bound on the complete **zero-anchored** deviation is
+  impossible under admission. This does not obstruct bounds on a fixed positive interval, where
+  constants may depend on its endpoints. The function-field calibration has a different finite
+  source and does not supply the number-field cancellation estimate.
 
 ### The self-improving identity: admission at a single damping
 
@@ -610,6 +444,40 @@ the explicit term and the criterion becomes one-sided: a sublinear bound on the 
 the source against an explicit positive weight, plus a lower bound on the off-diagonal
 anti-correlation (`TheInversionDefectIsPositive`). A criterion that reads the signs of the source is
 what the regime below half damping demands.
+
+### Dilation graph and block energy
+
+For a row `v`, put `Q_ε(v) = Σ_{n≤T} Σ_{j≤n} Λ(j)j^{−ε}v(n)v(⌊n/j⌋)/(n(n+1))`.
+Polarising every edge gives `2Q_ε(v) = M_ε(v) − J_ε(v)`, where `M` sums the squares at both
+endpoints and `J` sums their squared differences (`two_mul_rowDilationForm_eq`). On the actual
+source the work includes the polar correction `P_ε`, so its nonnegativity is
+`J_ε(A) ≤ M_ε(A) + 2P_ε`. Omitting that correction changes the criterion. The inequality
+`Q_ε(v) ≤ Q_ε(|v|)` locates the sign issue in the source's oscillations; it does not make the
+signed form positive.
+
+The pronic contraction also gives a Hardy inequality for one fixed integer `q ≥ 2`:
+
+    ‖v‖²_T ≤ q/(√q − 1)² · Σ_{n≤T}(v(n) − v(⌊n/q⌋))²/(n(n+1)),    v(0) = 0.
+
+The reverse bound has constant `2(1 + 1/q)` (`pronicNorm_sq_le_dilationStepEnergy`,
+`dilationStepEnergy_le`). For `A_ε`, the difference is the centred divisor sum over
+`(⌊n/q⌋, n]`. Thus a uniform pronic mean square of these blocks is equivalent to admission;
+at `q = 2` the forward constant is `6 + 4√2`. This is a concrete target for short-sum methods,
+with no loss of the norm or of the horizon quantifier.
+
+### The zero anchor and signed excursions
+
+At each fixed horizon `A_ε → 1` as `ε ↓ 0`, so the energy tends to the pronic mass, at most one.
+Consequently admission at a positive `ε` is equivalent to a bound on
+`∫_η^ε 2W_T` uniform in `T` and `0 < η ≤ ε`
+(`admits_of_work_integral_bound`, `work_integral_le_of_bddAbove`). Cofinal such bounds give RH.
+This uses the signed work; it imposes no bound on its total variation.
+
+An interior excursion has a necessary geometric cost:
+`∫_a^c ‖∂_ε A_x‖_T dx ≥ 2√E_T(ε) − √E_T(a) − √E_T(c)` for `a ≤ ε ≤ c`.
+Also at most `1 + 1/δ` unit tangents can be pairwise correlated by at most `−δ`. These constrain
+excursions and pairwise anti-alignment, respectively. Neither bounds the measure of all negatively
+correlated damping pairs, nor the accumulated signed work, without a further arithmetic estimate.
 
 ### Selectivity: the majorant source is never admitted
 
@@ -633,19 +501,23 @@ grows. Read through `Ψ = log` on a positive floor the master inequality becomes
 
 a bound on the *relative* decay, not on the decay; under a budget with nonnegative derivative the
 same explicit positive bound holds uniformly on the interval, so a first crossing forces the relative
-decay to exceed every budget of finite total on the interval leading to it. This is the no-crossing
-law of the shared target's mechanism 3 stated as an estimate rather than as a sign.
+decay to exceed every budget of finite total on the interval leading to it. This is a quantitative no-crossing law.
 
-The ground energy of the restricted Weil form is an infimum over a form domain and is not known to
-be differentiable, so the aperture instance needs a derivative-free transport. Along any increasing
-sequence of apertures a per-step relative loss transports the floor multiplicatively,
-`μ_{j+1} ≥ (1 − c_j)μ_j`, hence `μ_J ≥ μ_0 ∏_{i<J}(1 − c_i) ≥ μ_0(1 − Σ_{i<J} c_i)`; with the
-certified endpoint `μ(3/10) ≥ 1/5000` of `ArithmeticCriticalityTheory`, a half-summable relative
-decay along an unbounded aperture sequence keeps `μ ≥ 1/10000` along it and forces the
-nonnegative-ground-energy apertures to be unbounded, which is RH
-(`TheApertureFloorTransportFromTheCertifiedEndpoint`). The summability is not a formality: the
-harmonic defect `c_j = 1/(j+2)` already drives the transported product to zero, exactly as unit
-multipliers defeat the affine envelope on the damping side.
+The ground energy is an infimum over a form domain and need not be differentiated. A discrete
+relative bound gives `μ_J ≥ μ_0 ∏_{i<J}(1 − c_i)`; an additive one gives
+`μ_J ≥ μ_0 − Σ_{i<J} r_i`. These are valid finite-interval transport tools. However, retaining a
+fixed positive margin along an unbounded aperture sequence is impossible: ACT proves an
+unconditional upper bound for `μ(A)` tending to zero doubly exponentially. In particular the
+half-summable relative-loss and fixed-margin additive criteria cannot be realised on such a
+sequence for this ground energy. Compensation Theory makes the constraint quantitative: a floor
+`μ(A)≥m₀e^{−B(A)}` forces `B(A)≥πe^{2(A−2)}−(11/2)A+log(m₀/K)`, and even harmonic-product
+transport is too slow along linearly growing apertures (`TheApertureFloorMustDecayDoublyExponentially`).
+
+The useful target is non-crossing with a lower bound allowed to tend to zero, or a graded negative
+floor. A product tending to zero is compatible with RH; this is not a failure of multiplicative
+transport. What must survive is positivity at each finite stage, with an estimate strong enough to
+exclude a finite contact aperture. Alternatively a floor `−Ce^{2σA}` on unbounded apertures gives
+a zero-width bound without insisting on a positive margin.
 
 ### The cutoff parameter is free
 
@@ -708,8 +580,7 @@ Over `F_q[T]` the reciprocal of the zeta function of the polynomial ring is a *p
 degree-wise Möbius sums are `1`, `−q`, and `0` beyond degree one. Building the damped source with
 the same divisor prefix, the same pole subtraction `1 − q^{−ε}` and the same observation weight makes
 the centred prefix **exactly constant**, `A^{F_q}_ε(n) = q^{−ε}` for every degree `n ≥ 1` and every
-damping, so the critical energy is bounded by one uniformly in the damping and the horizon and the
-continuation budget is zero (`TheFunctionFieldCalibration`). Adding any positive mass at degree two
+damping, so the critical energy is bounded by one uniformly in the damping and the horizon so admission follows directly from the explicit formula (`TheFunctionFieldCalibration`). Adding any positive mass at degree two
 while keeping the centring makes the prefix grow without bound. The calibration therefore places the
 whole number-field difficulty in the absence of that exact cancellation, not in the shape of the
 transport mechanism.
@@ -737,11 +608,11 @@ transport mechanism.
 - **Size-blind arguments are refuted, not merely unselective.** The majorant row `d^{−ε}` has the
   same sizes and is never admitted at or below half damping, so any argument surviving the removal of
   the Möbius signs proves a false statement.
-- **The deviation terms cannot be bounded in absolute value.** The integrated core is a prime
-  harmonic series of size `log log T`, so admission forces the integrated deviation to `−∞` along
+- **The deviation terms cannot be bounded in absolute value.** The zero-anchored integrated core contains a divergent prime
+  harmonic series, so admission forces the integrated deviation to `−∞` along
   the horizons. Any estimate that discards the deviation's sign — a majorant, a triangle
-  inequality, an `ℓ¹` bound — contradicts a proved divergence. What is required is a cancellation of
-  exactly `log log T`, so the mechanism has to be signed and slow.
+  inequality, an `ℓ¹` bound — contradicts a proved divergence. This divergence concerns the joint zero-damping and large-horizon limit, not a fixed interval
+  bounded away from zero.
 - **Ratio smallness is not a bound.** A complete energy can tend to infinity while its ratio to a
   sector energy tends to zero. A proved ratio limit is evidence of a mechanism, not an admission
   statement; what must improve is the rate in the complete norm, with the horizon and cutoff
@@ -751,9 +622,9 @@ transport mechanism.
   cost (`pronicNorm_add_sq`). A decomposition is useful only with its interaction terms attached.
 - **A scale without coercivity says nothing.** A bound on `Ψ ∘ E` for a bounded `Ψ` is vacuous; the
   Osgood hypothesis enters only as `Tendsto Ψ atTop atTop`.
-- **Relative decay must be summable, and harmonically so is not enough.** The multiplicative floor
-  transport needs `Σ c_j ≤ ½`; the harmonic defect `1/(j+2)` already sends the transported product to
-  zero, the aperture-side twin of unit multipliers in the affine envelope.
+- **A fixed positive aperture margin cannot persist.** The ground-energy upper bound tends to
+  zero unconditionally. Relative transport may have a product tending to zero; positivity at each
+  finite stage, or a graded negative floor, is the relevant demand.
 - **Recovery is not control.** An injective observation map, even a complete invariant, supplies no
   bound. All logarithmic pronic moments determine a damped source, and yet admission is incompatible
   with an unweighted uniform lower modulus
@@ -775,18 +646,16 @@ transport mechanism.
 
 ## 5. Open problems
 
-1. **The covariance half of the continuation estimate, in averaged form.** For every `0 < a < c`
-   with `c` admitted, bound `∫_a^c [−2W_T(ε)]⁺/(1 + E_T(ε)) dε` — equivalently the integral of the
-   negative part of the work — uniformly in the horizon, with arbitrarily bad growth as `a ↓ 0`
-   allowed. The scalar part is proved and renormalisation is neutral, so the demand is exactly the
-   covariance of the centred source with the centred tangent; the averaged form is equivalent to the
-   conclusion while the pointwise form is strictly stronger than RH, and no fixed-horizon limit can
-   supply either.
-2. **The sign of the damping autocorrelation.** Nonnegativity of `K_T(η, ε)` on `(0, ε]`, or a
-   bounded total anti-correlation, closes the problem without any norm estimate. Equivalent forms to
-   attack: the angle condition `‖E_η − E_ε‖_T ≤ ‖E_ε‖_T`; a second-tangent majorant beating the gap;
-   the convexity inequality `−‖E_ε‖_T² ≤ ⟪A_ε, F_ε⟫_T`; a single sign change of the work. None
-   involves a constant or a horizon-uniform bound.
+1. **Signed averaged continuation.** For each `0 < a < c` with admitted `c`, bound
+   `∫_a^c −2W_T/(1 + E_T)` uniformly in `T`; equivalently use the additive signed integral
+   `∫_a^c −2W_T`. Each is equivalent to admission at `a`. A bound on
+   `∫_a^c [−2W_T]⁺/(1 + E_T)` is sufficient but stronger: taking the positive part destroys the
+   cancellation that makes the equivalence exact. Dyadic horizons suffice by energy monotonicity.
+2. **Source-specific angle or shape control.** Nonnegative damping autocorrelation, suitable
+   bounds on its accumulated negative part, relative tangent stability, convexity of the energy,
+   and a restriction on the order of work sign changes are distinct sufficient routes. They are
+   not interchangeable equivalences. Prove one from the actual source, or identify a weaker
+   signed integrated estimate that survives its failure.
 3. **The prime-pair form to relative precision `1/T`.** Prove the level-sum or prime-pair form of the
    autocorrelation nonnegative up to the explicit boundary term, with the cancellation against the
    polar and row-weighted terms carried out at relative precision `1/T`.
@@ -797,11 +666,10 @@ transport mechanism.
 5. **Which terms obstruct.** Express the work through the owned divisor, Vaughan and logarithmic
    covariance identities and classify the terms whose negative part is not controlled uniformly in
    the horizon. The Markov face says one such term is the jump energy of the arithmetic chain; the
-   window-mean form says the object is a smoothing of the source against itself. The size is now
-   known: the integrated core is a prime harmonic series of size `log log T`, so the terms to be
-   classified are exactly those that supply a signed cancellation of that order. A classification
-   that produces only `O(1)` or `o(log log T)` cancellation is a proof that the chosen decomposition
-   is insufficient, not a partial result.
+   window-mean form says the object is a smoothing of the source against itself. At the zero
+   anchor, the positive core grows on the prime-harmonic scale and requires compensating deviation.
+   On a positive interval the core is already bounded by a zeta-log ratio, so the remaining target
+   is the deviation and its normalization. Keep these two parameter regimes distinct.
 6. **Propagating the complementary-sector cancellation.** Turn the proved leading-order
    anti-alignment between a large-prime denominator sector and its literal complement into a
    quantitative residual surviving a second compatible scale transition, in the shape
@@ -811,10 +679,10 @@ transport mechanism.
    `E_−(u) ≤ E_+(u) + C_σ e^{2σA}‖u‖₂²` for every `σ` above the width, without assuming bounded local
    off-line depth mass. This would close the reverse ground-rate inequality; it would not show the
    common rate vanishes.
-8. **The aperture sequence.** The derivative-free transport needs a half-summable per-step relative
-   loss along an unbounded aperture sequence. Produce the first such estimate past the certified
-   endpoint `3/10`, or show the relative loss is harmonic — in which case the multiplicative route
-   has no margin and the floor must be transported in another scale.
+8. **The aperture sequence with a vanishing floor.** Produce a relative or additive step estimate
+   compatible with the doubly exponential upper bound. It must exclude finite contact while
+   allowing the positive floor to vanish, or supply a subtrivial graded negative floor. A fixed
+   positive margin on an unbounded sequence is ruled out before any arithmetic estimate begins.
 9. **A stability theorem for a signed observation.** Find an observation map that is both
    origin-sensitive and sign-reading, and prove a quantitative stability estimate for it in the
    receiver's norm — the missing half of the recovery theorems.
@@ -825,7 +693,7 @@ transport mechanism.
   `Δ = Θ − ½`: on `[a, ½]`, `a > Δ` supplies continuation and continuation forces `a ≥ Δ`; the
   boundary `a = Δ` is undecided, and the target is every positive `a`.
 - The contraction factor of a sector-compensation scheme for the actual Möbius row, with every
-  transition cross term paid, as the input to mechanism 2 of the shared target.
+  transition cross term paid, as the input to iterated compensation.
 - Selectivity certificates for any proposed continuation estimate against the shifted pair
   `ζ(s−a)ζ(s+a)`, a Beurling system with an off-line zero, and the Liouville-twisted weight. The
   majorant source is the unconditional certificate against size-blind estimates; what is missing is
@@ -849,7 +717,7 @@ transport mechanism.
    horizon-dependent band or a complete-period limit is a different result.
 4. **State the demand at the bottom of its hierarchy.** Between a pointwise budget, an averaged
    budget and the conclusion, use the weakest form that still transports: the averaged one is
-   equivalent to admission, the pointwise one is strictly stronger than RH.
+   equivalent to admission, the pointwise one is stronger for general energy families and is not known to follow from RH for this source.
 5. **Distinguish recovery from control.** An injective observation, even a complete invariant,
    requires a stability estimate before it bounds an energy.
 6. **Preserve the required norm.** An `H¹` estimate does not pay an `L²`-normalised floor; pointwise

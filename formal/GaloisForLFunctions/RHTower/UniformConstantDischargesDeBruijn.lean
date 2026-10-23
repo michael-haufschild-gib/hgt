@@ -12,11 +12,13 @@ eliminated.
 
 
 
+open Complex Filter MeasureTheory Set Topology
+
 noncomputable section
 
 namespace RHTower.DeBruijn
 
-open Complex Filter MeasureTheory Set Topology
+
 
 /-- `eventually_volume_xiShadowScaled_inter_Icc_le_of_moment` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul`. -/
@@ -26,7 +28,7 @@ theorem eventually_volume_xiShadowScaled_inter_Icc_le_of_moment_uniform :
   obtain ⟨μ, h_0_0⟩ := RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul
   refine ⟨μ, ?_⟩
   intro κ hκ
-  apply eventually_volume_xiShadowScaled_inter_Icc_le_of_moment <;> assumption
+  apply eventually_volume_xiShadowScaled_inter_Icc_le_of_moment <;> first | assumption | linarith
 
 /-- `eventually_volume_xiShadow_inter_Icc_le_of_moment` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul`. -/
@@ -34,6 +36,6 @@ theorem eventually_volume_xiShadow_inter_Icc_le_of_moment_uniform :
     ∃ (μ : ℝ), ∀ᶠ V in atTop, volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (2 * μ * V + μ) := by
   obtain ⟨μ, h_0_0⟩ := RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul
   refine ⟨μ, ?_⟩
-  apply eventually_volume_xiShadow_inter_Icc_le_of_moment <;> assumption
+  apply eventually_volume_xiShadow_inter_Icc_le_of_moment <;> first | assumption | linarith
 
 end RHTower.DeBruijn

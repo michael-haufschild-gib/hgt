@@ -12,210 +12,42 @@ parentheses as entry points.
 
 ---
 
-## The shared target: the sign of the critical arithmetic form
+## Place in the research
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
+Arithmetic Criticality Theory asks what can certify the sign of the arithmetic jump form when
+its coefficients have no spare margin. Its basic tools are exact ground-state identities,
+folded generators, moment obstructions, and the ground energy of the Weil form on a bounded
+logarithmic window. They distinguish three different achievements: an identity for all tests,
+a positive certificate for a specified family, and a bound uniform as the aperture grows.
 
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
+Four pillars organise the theory:
 
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+- A positive half-line gauge would turn the folded ground-state identity into a positivity
+  certificate. The two-moment law excludes such gauges in the stated decaying profile class.
+- Subtracting the pole produces a gauge-independent zero form. The theta span is its radical;
+  the remaining form is a signed jump energy plus a precisely calibrated variance.
+- Null sequences forbid removing a Hardy weight, a prime rate, or any fraction of that variance.
+  This criticality still permits lower bounds with controlled losses.
+- Window gauges give explicit positive floors. A floor with subexponential negative loss along
+  unbounded apertures would decide RH; a single bounded window does not control zero width.
 
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
+| Programme | Connection |
+|---|---|
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the theta source, the Weil–Markov–pole splitting, and complete test families. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Relates positivity, observation scale, blind directions, and zero width. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Shares the odd theta gauges; separates their finite geometry from payment at all horizons. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Resolves the prime side into arithmetic incidences and centred divisor energies. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Converts a ground-energy floor into a lag bound and a zero strip. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Locates and pays reflected prime conductances; supplies the odd-sector window certificates. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Studies continuation of these certificates and the difference between boundary and interior control. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Retains signed cancellation across scales where separate bounds lose the critical constant. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Keeps energy, flux, and forcing together in an exact signed compensation law. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks which arithmetic effectivity statement could force the required intersection-form signature. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Carries the source's signs into the incidence kernel and its positive majorants. |
 
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
-
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-ACT is the gauge theory of the aperture face. It owns the jump-form identity `Z = J_M + V_μ`, the
-gauges, the ground-state representations, criticality and rate-criticality, and the pole-free sector
-in which the variation inequality is proved past the first prime. It supplies
-`ArithmeticIncidencePositivity` with the kernel and its normalization, `dm(|x − y|) + 2 sinh(x/2) sinh(y/2)`
-per unordered pair, and receives from it the pair classification of the negative conductances. Its
-part of mechanism 1 is the theory of sign-changing supersolutions and a Harnack-type propagation
-across the prime shifts; its part of mechanism 3 is the aperture through which `Ẑ ≥ 0` holds for
-all profiles.
-
-### How the programme connects to the other programmes
-
-ACT is the operator-theoretic centre of the three faces: it owns the coordinates (gauges, generators,
-sources, the zero forms, the ground-energy path) in which the aperture face is stated, and its
-theorems are consumed on both sides of it.
-
-- **Arithmetic Incidence Positivity is the pair-by-pair continuation of §3.8.** The gauge-free
-  kernel `dm(|x − y|) + 2 sinh(x/2) sinh(y/2)`, the general-gauge ground-state representation, the
-  kernel bounds of the shifted ground state, the archimedean Z-type law, the curved-gauge
-  archimedean bounds, the pole-conductance window and the short-profile variation inequality are
-  ACT theorems that AIP builds on; AIP's folded odd plateau, curved fold, prime-atom-versus-pole
-  classification and shifted-pair Hankel selectivity are AIP theorems that ACT's window
-  positivity of §3.13 consumes for the odd sector. The division of labour is by sector and
-  support: ACT pays the even sector and the all-profile window through `3/10`, AIP pays the odd
-  sector through `181/500`, past the first prime; the even sector between `3/10` and `½ log 2`,
-  where the folded conductances across `log 2` turn negative, is the open instance of mechanism 1
-  that both share.
-- **Square-Root Threshold reads the ground-energy path through the lag family.** ACT's `3/10`
-  window and its logarithmic ground-energy floor transfer to SRT's zero configuration as
-  positivity of `Re W_ζ` at every height and on height windows; SRT's small-aperture height-window
-  positivity and height-window average representation enter ACT's Markov-window transfer (§3.14).
-  The Rayleigh bridge `2‖κ_w‖² μ(v/2 + w) ≤ Re P_v` makes the no-crossing law of `μ` and the
-  absence of a first negative lag one statement, SRT's explicit visibility lags bound the contact
-  aperture from above, and the rate `μ(A) ≥ −Ce^{2σA}` is SRT's zero width `σ`.
-- **Arithmetic Positivity Theory is the same form on a concrete family.** The full zero form `Ẑ`
-  equals APT's complete physical energy on continuous compact sources (APT's dictionary of five
-  names), the Markov energy equals APT's Markov form beyond the support, and the capacity ratio of
-  §3.8 is APT's odd-sector capacity inequality; APT's block positivity at high scale and ACT's
-  window positivity at small aperture bound the aperture face from its two ends, and APT's
-  detection theorems use ACT's full-zero-form positivity through the five-way identity.
-- **Trans-Horizon Incidence Mechanics holds the chain-side reading of the odd sector.** THIM's
-  Markov operator, odd eigenvector criterion, prime chains and collar transport are the same odd
-  sector in `oddProfile` coordinates (`m_a = 2 sinh(a/2)·oddProfile a`, the source is THIM's
-  `oddSinhPotential` with coefficient one); THIM's collar duality and Lamzouri four-trace use ACT's
-  folded ground-state representation, two-sided representation and combination failure, and
-  THIM's absorption boundary is the chain form of the collar ratio `R(a) > 2` of §3.4.
-- **Bi-Scale Uncertainty and Bézout–Valuation Incidence supply the blind cone and the finite
-  arithmetic.** BiScale's power-node removal law enters the atom-versus-pole integral law; its
-  exact blind-polar slack and deletion prices `Λ(m)/√m` are the archimedean budget every gauge of
-  this theory must at least pay at the nodes it uses, and its `log 4`/`log 6` thresholds are the
-  node criticality of the shared target. BVI's receiver and its zero-free bands are the
-  finite-modulus form of the same no-crossing law.
-- **Arithmetic Continuation and Critical Energy transports the ground floor.** The no-crossing law
-  of `μ` is the aperture instance of the continuation layer's question: a certificate at one
-  parameter made into a certificate at another. The layer supplies the derivative-free
-  multiplicative transport (bounded relative decay of a positive floor forbids a crossing, with the
-  explicit floor `μ(a)exp(−(β c − β a))`), instantiated from this programme's certified endpoint
-  `μ ≥ 1/5000` at `3/10`; in return ACT supplies the object being transported and the only
-  unconditional initial values it has. The layer's own obstruction — the symbol and the spectral
-  weight sharing their poles — is the damping-side twin of the first negative lag.
-- **Scale-Signed Incidence Criticality prices the aperture face.** It proves that the certificate at
-  a bounded aperture is faithful for the *scale* of a configuration and blind to its *depth*, which
-  is why every interior aperture counts zero in the width unit; that an unbounded sequence of
-  apertures suffices and a margin adds nothing; that a loss constant or linear in the aperture is
-  harmless while one growing with the frequency of the test destroys the criterion; and that past
-  the Nyquist aperture the deficit's size, not its sign, is the informative datum, with the
-  square-root precision law `√(η/L³)` as the exchange rate. ACT supplies the forms and floors those
-  statements are about.
-- **RHTower supplies the analytic inputs**: the harmonic identity of `Θ` and the Weil–Markov–pole
-  split with its capacity, the phi-Doob jump energies and half-line folding, the reflected killing
-  potential, the CCM restricted and polar ground energies with Suzuki's small-aperture theorem,
-  ground-energy continuity and first-contact roughness, the Barta layer bounds and far tail of
-  Riemann's kernel, the CHMD odd harmonic identity and translated primitive source, the
-  pole-vanishing Weil positivity at the prime `2`, the full-cone Bochner measure, the half-line
-  trivial-zero criterion, the primitive hyperplane and the log-window prime number theorem.
+Read §2 for coordinates and forms, §§3.1–3.9 for identities and obstructions, and §§3.13–3.14
+for constructive window bounds and their relation to the global question. A gauge changes the
+representation; it does not create new zero information.
 
 ---
 
@@ -251,9 +83,10 @@ is nonnegative on odd tests. On even tests it is not: `Q(1) = −1/2`.
 Estimating the two sides of the inequality separately produces identities, finite classifications
 and positivity on restricted families, never a sign on the whole odd sector: any estimate loses a
 constant factor, and the inequality has none to spare. In the theory of Dirichlet forms the sign
-question has a different shape. A form `E − ρ` is nonnegative if and only if there is a **positive
-supersolution** `ω`, that is `Lω ≥ ρω` with `L` the generator of `E` (Allegretto–Piepenbrink), and the
-proof is an exact identity, the **ground-state representation**:
+question has a different shape. For a connected finite jump model with nonnegative conductances, nonnegativity of `E − ρ` is
+equivalent to a **positive supersolution** `ω`, meaning `Lω ≥ ρω`
+(Allegretto–Piepenbrink). The arithmetic odd sector fails the sign condition needed for this
+converse. The transferable part is the exact **ground-state representation**:
 
     E(ωu) − ∫ ρ (ωu)² = (a nonnegative remainder, quadratic in the differences of u) + ∫ u² ω (Lω − ρω).
 
@@ -262,10 +95,8 @@ develops this mechanism for the arithmetic jump operator. A bounding problem bec
 problem for a single positive function, and when no such function exists, the same identity shows
 exactly which quantity must carry the positivity instead.
 
-Criticality theory exists for local Schrödinger operators and for translation-invariant jump
-kernels. It did not exist for a kernel whose jump lengths are logarithms of prime powers, whose
-rates are `Λ(n) n^{−1/2}`, and whose potential is the pole of the zeta function. The language of
-Pinchover applies verbatim: a form is **supercritical** if it takes a negative value, **critical** if
+Here the jump lengths are logarithms of prime powers, the rates are `Λ(n) n^{−1/2}`, and the
+potential comes from the zeta pole. We use the following criticality terminology: a form is **supercritical** if it takes a negative value, **critical** if
 it is nonnegative but admits no nonzero Hardy weight `W ≥ 0` with `Q ≥ ∫ W v²`, and **subcritical** if
 such a weight exists. RH is the statement that the odd arithmetic form is not supercritical.
 
@@ -384,7 +215,7 @@ with **conductances** `M(x)M(x+t)`, negative exactly on the jumps that cross a n
 | Half-line measure | `μ_a = m_a(x) sinh(x/2) dx` on `(0, ∞)`, total mass `sinh(a/2)/2`; in general `μ = M sinh(x/2)` | — |
 | Profile mean and variance | `ū = 2∫ u dμ_a / sinh(a/2)`, `V_a(u) = 4 sinh(a/2) ∫ (u − ū)² dμ_a` | `profileMoment`, `profileVariance` |
 | Fold-excess weight | `W_a(x) = ∫_{t>2x} dm(t) (m_a(t−x) − m_a(x+t))⁺` | `foldExcessWeight` |
-| Autocorrelation | `G = Θ ∗ Θ`, even, `0 ≤ G(z) ≤ Θ(|z|/2)`, `∫ G cosh(s/2) = 1/4` | `riemannAutocorr` |
+| Autocorrelation | `G = Θ ∗ Θ`, even, `0 ≤ G(z) ≤ Θ(\|z\|/2)`, `∫ G cosh(s/2) = 1/4` | `riemannAutocorr` |
 | Averaged kernel | `K(x,y) = ∫_0^∞ m_a(x) m_a(y) da = G(x−y) − G(x+y)` | `averagedKernel` |
 | Smooth plateau | `u_L(x) = τ(L+1−x) τ(L+1+x)`, `τ` the smooth transition | `smoothPlateau` |
 | Capacity | `S(g) = ∫ 2 sinh(u/2) g`, Markov form `M_N(g)` of the Weil–Markov–pole split; **capacity ratio** `S(g)²/(2M_N(g))` | `capacityRatio` |
@@ -401,7 +232,7 @@ with **conductances** `M(x)M(x+t)`, negative exactly on the jumps that cross a n
 | Pure jump form | `J_M(u) + V_μ(u) = Z(Θ(ωu))` in any odd gauge with source `σ sinh(x/2) Θ` | RH ⟺ `≥ 0` on even profiles, in every smeared gauge |
 | Cone form | `Ẑ(Θv) = E_arch(v) + E_prime(v) + 2(∫ Θv e^{x/2})(∫ Θv e^{−x/2}) − ∫ Θ cosh(x/2) v²` | RH ⟺ the potential is paid on nonnegative profiles |
 | Primitive hyperplane | `H = {F : ∫ F cosh(x/2) = 0}`, the `Q`-orthogonal complement of `Θ` | RH ⟺ `Q ≥ 0` on `H` |
-| Restricted Weil ground energy | `μ(A)`, the infimum of `Re W_ζ(u, u)/∫|u|²` over smooth sources supported in `(−A, A)`; `μ₀(A)` the same on pole-vanishing sources | RH ⟺ `μ(A) ≥ 0` for every `A` ⟺ `μ(A) → 0` |
+| Restricted Weil ground energy | `μ(A)`, the infimum of `Re W_ζ(u, u)/∫\|u\|²` over smooth sources supported in `(−A, A)`; `μ₀(A)` the same on pole-vanishing sources | RH ⟺ `μ(A) ≥ 0` for every `A` ⟺ `μ(A) → 0` |
 
 A **Hardy weight** for a nonnegative form `Q` on a class of tests is a locally integrable `W ≥ 0`,
 positive on a set of positive measure, with `Q(F) ≥ ∫ W F²`; the form is **subcritical** if one
@@ -525,10 +356,10 @@ collar reads a profile through `e^{r/2}`: its sinh moment is twice the source, a
 moment at the other pole `s = 0`. The folded defect of `ω_a` is asymptotic to `1 − R(a) < −1` times
 the source.
 
-### 3.5 No folded supersolution exists: the two-moment law
+### 3.5 The two-moment obstruction to positive folded supersolutions
 
-The hypothesis of the sufficiency theorem is never met, and the obstruction is two linear
-functionals of the profile. For every `M ∈ C¹` with `M(0) = 0` and `|M|, |M'| = O(e^{−8|y|})`, with no
+In the following decaying profile class the positive-gauge hypothesis of the sufficiency theorem
+is never met. Two linear functionals explain the obstruction. For every `M ∈ C¹` with `M(0) = 0` and `|M|, |M'| = O(e^{−8|y|})`, with no
 sign condition, the folded source of the gauge `M/Θ` is governed at the two ends of the half line by
 
     (𝓛_N ω − ρω)(x) / Θ(x)         →  −2 ∫ M dm                      (x → 0⁺),
@@ -544,7 +375,7 @@ and the two-sided generator reads the reflected points with the sign of `M` on t
 line while the folded one reads them with a plus sign, so the moments combine into `sinh` and
 `cosh`. Consequently a folded supersolution near the origin has `∫ M dm ≤ 0`, one near infinity has
 `∫_0^∞ M cosh(r/2) ≤ 0`, and for a nonnegative profile, nonzero on `(0, ∞)`, both moments are positive:
-**every positive profile of exponential decay is a strict folded subsolution near the origin and on a
+**every nonzero nonnegative profile with the stated regularity and decay is a strict folded subsolution near the origin and on a
 half line**, with no domination by a translate of `Θ` and no condition at `log 2`
 (`exists_origin_and_infinity_windows_foldedGenerator_lt_potential`). The failure at infinity is
 PNT-free prime by prime: a single reflected prime atom `Λ(p) p^{−1/2} M(y₀)`, of size `e^{−x/2}` at
@@ -560,19 +391,21 @@ a half line.
 The sign-changing side is the mirror image: a profile with negative half-line cosh moment is a strict
 folded **super**solution on a half line (`exists_infinity_window_potential_lt_foldedGenerator_of_coshMoment_neg`).
 The obstruction to folded supersolutions is therefore positivity together with the cosh moment, not
-decay or regularity, and no positive gauge can satisfy the sufficiency theorem.
+a failure of the representation. Within the stated class no positive gauge satisfies the
+sufficiency theorem.
 
 **Dropping the sign decouples the ends from the moments.** The folded representation holds for every
 odd `C²` gauge with no sign condition, `Q(Θ(ωu)) = R_N(ω,u) + 2∫_{x>0} u² q_ω` with the quadratic
 folded potential density `q_ω`. For `ω = M/Θ`, `q_ω(x)/x → −2M'(0) ∫ M dm` at the origin, so a
-profile whose slope at `0` and jump-measure moment have opposite signs is a strict supersolution on
-an origin window; at infinity the same holds when the eventual sign of `M` and its half-line cosh
+profile whose slope at `0` and jump-measure moment have opposite signs has positive quadratic
+folded potential on an origin window; at infinity the same holds when the eventual sign of `M` and its half-line cosh
 moment are opposite (`exists_both_ends_quadraticFoldedPotential_pos_of_opposite_moments`). The origin
 moment of a shift difference is its collar mass at the origin, `∫ m_a dm = C_a(0)`, so the two-shift
 profile `C_b(0) m_a − C_a(0) m_b` has vanishing jump-measure moment
-(`jumpMeasureMoment_originBalancedProfile_eq_zero`). A folded supersolution, if one exists, is a
-sign-changing profile whose local signs at both ends oppose its two global moments; the theorems
-produce each end separately, never both on one profile with positivity on the half line.
+(`jumpMeasureMoment_originBalancedProfile_eq_zero`). The joint theorem gives positivity of the quadratic potential at both ends whenever one profile
+satisfies both opposite-sign conditions. It neither constructs a globally positive folded
+potential nor makes the remainder nonnegative: for a sign-changing gauge the conductances of
+that remainder are signed. These are separate obligations.
 
 **Extra jumps are seen only at infinity.** Add to the jump measure of `ω_a` one extra jump of length
 `ℓ` at any rate `δ > 0`. Against the scale `Θ(x)e^{x/2}` of the folded source the extra term grows
@@ -794,8 +627,11 @@ tolerates a generous one. On odd compact tests the sign may be replaced by a flo
 `Ẑ(F) ≥ −C_σ e^{2σ r}∫F²` at aperture `r`, which yields the zero-free strip `Θ ≤ ½ + σ`, and a
 loss bounded uniformly in the aperture already yields RH; polynomial and logarithmic losses are
 free. The no-slack theorems therefore forbid a cheaper hypothesis, not a lossy estimate. What they
-do fix is the price: the exact rate of the true floor is `2 · width`, and the unconditionally
-available rate is `1`, the prime `ℓ¹` norm `≍ 2e^{r}`. The demanded object is an exponent.
+do fix is a one-sided price: an `L²` floor at rate `2σ` bounds the width by `σ`.
+Equality of the unrestricted `L²` ground rate with twice the width requires an additional uniform
+local off-line zero-count estimate in the reverse direction; the lag dictionary has its own exact
+rate theorem. The unconditional prime `ℓ¹` bound has rate `1`, with size `≍2e^r`. Keep the norm
+attached to any claimed exponent.
 
 ### 3.10 Averaging over the shift
 
@@ -845,9 +681,8 @@ moment through the same-side terms away from the origin that fold domination dro
 
 ### 3.12 The finite model
 
-For a finite symmetric nonnegative kernel `K` and any potential `ρ`, the form `E_K − Σ ρ v²` is
-nonnegative if and only if a nonnegative nonzero `ω` with `L_K ω ≥ ρ ω` exists; under connectivity
-`ω > 0` (`FiniteJumpFormAllegrettoPiepenbrink`). The hard direction minimises the Rayleigh quotient on
+For a connected finite symmetric nonnegative kernel `K` and any potential `ρ`, the form
+`E_K − Σ ρ v²` is nonnegative if and only if a strictly positive `ω` with `L_K ω ≥ ρ ω` exists (`FiniteJumpFormAllegrettoPiepenbrink`). The hard direction minimises the Rayleigh quotient on
 the unit sphere and uses that replacing `v` by `|v|` does not increase the form, which is the Z-type
 property. This is the template against which the arithmetic odd sector is measured, and the reason
 3.5 is the central no-go: the arithmetic odd-sector operator is not Z-type, and by 3.7 the failure is
@@ -943,10 +778,9 @@ this one real function of one variable never crosses zero.
   prime enters the form (`…_of_support_le_third`), and margin `1/20` on `[−7/20, 7/20]`, where the
   support has length `7/10 > log 2` and the prime `2` contributes
   (`…_of_support_le_seven_twentieths`). For all even profiles, mean-zero or not, the margin is `1/30`
-  on `[−21/200, 21/200]` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`). The mean-zero
-  sector therefore reaches `10/3` times further than the all-profile theorem, and `[−7/20, 7/20]` is
-  the first certified region of the frontier inequality in which a prime contributes at all: these
-  are the first regions that are not regions of pole domination.
+  on `[−21/200, 21/200]` (`reflectedDifferenceEnergy_add_le_poleFree_of_support_le`). The mean-zero certificate reaches past the first prime without using pole domination. It must be
+  compared with the stronger odd-sector certificate through `181/500`, not only with the earlier
+  all-profile bound at `21/200`.
 * **The lag face.** On the centred difference test of `SquareRootThreshold` at `A = v/2 + w`,
   `2‖κ_w‖²μ(v/2 + w) ≤ Re P_v`, and a bound `μ(A) ≥ −Ce^{2σA}` forces every zero into
   `|Re ρ − ½| ≤ σ`: the no-crossing of `μ` and the absence of a first negative lag are one law,
@@ -977,9 +811,9 @@ this one real function of one variable never crosses zero.
 * **What a bounded aperture is worth, and what it is not.** Monotonicity makes the certificate
   cofinal: positivity along any unbounded set of apertures already forces positivity at every
   aperture, so the path need only be certified along a sequence `a_n → ∞`, with nothing proved in
-  between; and a margin buys nothing, since a floor `μ(A) ≥ η` at every aperture is worth exactly
-  what `η = 0` is worth — both are RH — while a loss constant or linear in the aperture still
-  decides the question. In the other direction every bounded certificate is blind to the width: at
+  between; and a fixed positive margin at every aperture is impossible by the unconditional upper bound
+  tending to zero. By contrast, a constant or polynomial negative allowance still decides RH
+  through the zero-width criterion. In the other direction every bounded certificate is blind to the width: at
   a fixed aperture, at every coercivity level, and in every monotone reparametrisation of the
   depth, a configuration certified there shares its certificate with configurations of every width
   up to `½`. A certified interior aperture therefore counts zero in the width unit. Past the
@@ -1018,7 +852,7 @@ explicit `a`-integrals needs no majorant.
 | An even positive supersolution on all of `ℝ` | Impossible: it would give `Q ≥ 0` on even tests, but `Q(1) = −1/2`; positive even profiles are strict two-sided subsolutions on a half line. The identity is applied only to odd tests. |
 | Using `𝓛_D` as the supersolution operator | Its representation has an indefinite remainder. Only `𝓛_N` has a nonnegative remainder. |
 | Reading `ω_a > 0` with positive `𝓛_D`-source as a proof | It is a `𝓛_D`-supersolution, not a `𝓛_N`-supersolution; the collar `C_a` exceeds the source near `0` and for all large `x`, by the factor `R(a) > 2`. |
-| Looking for any folded supersolution | None exists among positive profiles: positivity forces positive jump-measure and cosh moments, which force failure at both ends. The live objects are the zero forms, not the sign of a generator defect. |
+| Looking for any folded supersolution | None exists in the positive decaying profile class of §3.5: positivity forces positive jump-measure and cosh moments, which force failure at both ends. The live objects are the zero forms, not the sign of a generator defect. |
 | Expecting a sign-changing gauge to help | Gauges with negative cosh moment are folded supersolutions at infinity, but the sufficiency theorem needs positivity on the half line; the two requirements exclude each other. |
 | Estimating a one-sided prime sum by a window prime number theorem first | Evaluate the signed sum through the harmonic identity of `Θ` and use positivity of the discarded part; the exact identity gives the uniform constant `2` where asymptotics give `R(a)`. Use the prime number theorem only for the exact ratio. |
 | Defining the generator through a total jump rate | It diverges (`1/t` singularity, `Σ Λ(n) n^{−1/2} = ∞`). Only differences converge; never split a generator into rate minus average. |
@@ -1027,7 +861,7 @@ explicit `a`-integrals needs no majorant.
 | Applying Perron–Frobenius to the odd sector | The reflected prime jumps give positive off-diagonal entries. The archimedean place alone is Z-type; the failure is the non-monotone prime jump measure. |
 | Treating the source as the pole term | The source is pole term plus variance. Only the pole term is free positivity; the variance is where profiles differ, and the zeros live on mean-zero profiles. |
 | Treating the shift as information | Every frontier inequality at one shift is RH; the shift is a gauge, and the zero form is the same for all shifts. |
-| Averaging over all shifts to gain a weaker target | The average over all shifts is `Ξ²`-weighted in frequency and blind to off-line zeros. Use single shifts or narrow shift windows. |
+| Averaging over all shifts to gain a weaker target | The proposed `Ξ²`-weighted interpretation and its blindness are heuristic (§3.10). Single-shift completeness is a theorem; no RH equivalence for the full average is supplied. |
 | Expecting a Hardy weight, a lower jump rate or a smaller variance to leave room | The odd form is critical in all three senses; every prime enters at exactly critical strength. |
 | Reading criticality as "no allowance at all" | Criticality forbids subtracting a positive weight while keeping the sign. Adding a loss subexponential in the aperture keeps the *conclusion*: `Ẑ(F) ≥ −C_σ e^{2σ r}∫F²` is the strip `½ + σ`, and a loss uniform in the aperture is RH. The demand is an exponent, not a sign. |
 | A coercive certificate at a bounded aperture is progress on the width | At every fixed aperture and every level `η`, the certified class contains configurations of every width up to `½`, in every monotone unit of the depth. Bounded certified apertures count zero in the width unit; only the unbounded direction moves it. |
@@ -1037,7 +871,7 @@ explicit `a`-integrals needs no majorant.
 | Confusing `Ẑ` with a new form | On compact tests `Ẑ` is the Weil form; what is native is its generator-calculus proof, the exact source of every gauge and the cone criterion. |
 | Expecting a uniform margin in the capacity inequality | The capacity ratio tends to one along plateau truncations of positive odd gauges at every large aperture. |
 | The weight criterion of fold domination | It fails for every large shift by the other-pole moment; monotone-cone positivity needs the dropped same-side terms. |
-| Expecting a margin of `μ(A)` at large aperture | `μ(A)` tends to `0` doubly exponentially, unconditionally; the only question is its sign, and the floors are window-bounded. |
+| Expecting a margin of `μ(A)` at large aperture | An unconditional upper bound tends to zero doubly exponentially. Nonnegativity, and hence convergence to zero, is equivalent to RH; off RH the floor tends to `−∞`. |
 | Reading the window floor `w(A)` as a positivity mechanism at every small aperture | It is Suzuki's main term minus `μ₁`: positive only on short windows, and the jump energy it discards is exactly `μ₁`. |
 | Adding jump rate to manufacture a supersolution | An extra jump of length `ℓ` helps only at infinity and only if `e^{−2a} + e^{−2ℓ} < 1`; the origin failure is rate-blind. |
 | Aperture conditions of THIM's gauge (`a < (log 2)/2`) | Supersolution statements here are pointwise in `x` and carry no aperture window; THIM's absorption ratio grows like `exp(πe^{2R})` and is a different object. The plateau-gauge window `R < e^{−2}/2` is a window on the test, not on the shift. |
@@ -1065,18 +899,20 @@ the prime number theorem enters only through proved corpus forms.
 2. **Criticality on the quotient.** The form is critical on the odd sector and on the primitive
    hyperplane, with sign-changing null families inside the theta span. Whether the zero form admits a
    Hardy weight on the quotient by the theta span, that is a positivity margin invisible to the
-   radical, is open; so is any quantitative form of the approach to zero along the null sequences.
+   radical, is open. Exponential plateau estimates and the doubly exponential theta upper bound
+   already quantify particular null sequences; the missing issue is a coercive norm on the quotient.
 3. **The monotone cone.** The weight criterion fails by the other-pole moment; a replacement that
    retains the same-side terms away from the origin, or a proof that no inequality in `Θ` alone
    decides the monotone cone, is open.
 4. **Beyond the first prime.** Window gauges with the even fold give `Ẑ ≥ (1/5000)∫F²` on
-   `[−3/10, 3/10]` with nonnegative conductances; past `log 2 / 2` the conductances across the
-   first prime turn negative. Extending a gauge argument through the first prime window, with the prime atom paid by
-   the potential, is the smallest instance of problem 1.
+   `[−3/10, 3/10]` with the negative fold cost paid; past `log 2 / 2` the conductances across the
+   first prime turn negative. The odd and pole-vanishing sectors already cross this window. Extending the certificate to
+   all even tests, including their pole direction, is the smallest remaining instance of problem 1.
 5. **Selectivity.** The identities of 3.1–3.3 and 3.6 hold for any even positive kernel; the
    arithmetic enters only through the equation of motion of `Θ` (3.4). Rate-criticality shows every
-   prime enters at exactly critical strength. What each statement says for `ζ(s−a)ζ(s+a)`, whose
-   potential changes, and for a Beurling system, measures which parts of the theory see the primes.
+   prime enters at exactly critical strength. For `ζ(s−a)ζ(s+a)` the even-window theorem already gives negative tests at every fixed
+   positive aperture for sufficiently large shifts. Extending this discrimination to other
+   deformations and Beurling systems tests which mechanisms see arithmetic beyond symmetry.
 6. **Exact constants.** The collar ratio `R(a)`, the cosh-moment law and the plateau-gauge potential
    are explicit; the dependence of the capacity ratio's approach to one on the aperture, and the
    sharp window radius of problem 4, are not.
@@ -1095,20 +931,18 @@ the prime number theorem enters only through proved corpus forms.
 
 ### Research topics toward the shared target
 
-1. **Sign-changing folded supersolutions.** Existence or impossibility of a folded supersolution
-   satisfying both moment conditions (mechanism 1); nonnegative ones are excluded, and each end can
-   be made a supersolution separately by opposing the local sign to the global moment (3.5). The
-   problem is one profile that does both at once, together with a ground-state representation in
-   which such a sign-changing gauge certifies positivity: the folded sufficiency theorem needs
-   positivity on the half line, which the two moment conditions exclude.
-2. **Through the first prime window.** Extend the gauge argument past `log 2 / 2` with the prime
-   atom paid by the potential, using the localization of the unpaid set proved in
-   `ArithmeticIncidencePositivity` (two axis intervals of length `≍ 2(1 + Λ(n))/n` for `n ≥ 23`,
-   the whole anti-diagonal for the nine moduli).
-3. **A Harnack inequality for the arithmetic jump kernel** across the prime shifts, the analytic
-   tool mechanism 1 lacks.
-4. **Selectivity audit.** Which theorems of §3 survive `ζ(s−a)ζ(s+a)` and a Beurling system; the
-   arithmetic enters only through the equation of motion of `Θ`, and the audit says where.
+1. **Signed gauge certificates.** Find a profile satisfying the two opposite-moment conditions,
+   control its quadratic potential between the two end regions, and estimate its signed remainder.
+   The joint two-end criterion is proved; none of these steps may substitute for the others.
+2. **The even sector through the first prime.** Extend the all-test window beyond `3/10` and then
+   across `log 2 / 2`. Use the odd-sector Harnack and Schur arguments as models, while retaining
+   the even pole direction and its different reflected sign.
+3. **Quantitative Harnack and compensation across growing prime shifts.** Local micro-fold bounds
+   already pay the first odd atom. The needed tool must scale with the aperture while preserving
+   every prime rate at critical strength.
+4. **Selectivity beyond the shifted pair.** Extend the established even-window discrimination to
+   other arithmetic deformations; separate universal gauge algebra from identities that depend
+   on the equation of motion of `Θ`.
 5. **Units.** The aperture `A` through which `Ẑ ≥ 0` holds for all profiles; every new positivity
    statement reports this aperture and the family it covers. Since a bounded aperture is blind to
    the width, a statement whose aperture does not grow also reports what it *does* measure — the

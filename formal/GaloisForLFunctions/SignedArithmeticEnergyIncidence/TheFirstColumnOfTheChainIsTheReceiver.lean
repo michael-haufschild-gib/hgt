@@ -64,7 +64,7 @@ theorem centeredPrefix_zero (η : ℝ) : RHTower.pmPowerDampedCenteredDivisorPre
   simp [RHTower.pmPowerDampedCenteredDivisorPrefix]
 
 theorem dyadicDifference_zero (η : ℝ) : dyadicDifference η 0 = 0 := by
-  simp [dyadicDifference, centeredPrefix_zero]
+  simp [dyadicDifference]
 
 /-- **The first column is the dyadic difference of the source**, up to a term of size `1/m`. -/
 theorem centeredOperator_firstState_apply_eq {η : ℝ} (hη : 0 < η) (n : ℕ) :
@@ -91,6 +91,7 @@ theorem centeredOperator_firstState_apply_eq {η : ℝ} (hη : 0 < η) (n : ℕ)
     unfold arithmeticDampingEntrance
     simp only [Nat.cast_one, Real.one_rpow, mul_one]
     norm_num
+    exact Or.inl rfl
   have hhalf : ((m / 2 : ℕ) : ℝ) = ((m : ℝ) - ((m % 2 : ℕ) : ℝ)) / 2 := by
     have := Nat.div_add_mod m 2
     have h : (2 : ℝ) * ((m / 2 : ℕ) : ℝ) + ((m % 2 : ℕ) : ℝ) = m := by exact_mod_cast this
@@ -256,8 +257,10 @@ theorem summable_dyadicDifference_iff {η : ℝ} (hη : 0 < η) :
         have e2 : ∀ j, (q ^ j * dyadicDifference η (m / 2 ^ j) / Real.sqrt (lam ^ j)) ^ 2 =
             (q ^ 2 / lam) ^ j * dyadicDifference η (m / 2 ^ j) ^ 2 := by
           intro j
-          rw [div_pow, hsq, mul_pow, div_pow, ← pow_mul, ← pow_mul, mul_comm 2 j, pow_mul, pow_mul]
-          field_simp
+          have hqj : (q ^ 2 / lam) ^ j = (q ^ j) ^ 2 / lam ^ j := by
+            rw [div_pow, ← pow_mul, ← pow_mul, mul_comm 2 j]
+          rw [div_pow, hsq, hqj, mul_pow]
+          ring
         rw [e1] at h1
         simp only [hsq, e2] at h1
         have hgeo : ∑ j ∈ range T, lam ^ j ≤ 1 / (1 - lam) := geom_partial_le hl0 hl1 T
@@ -314,10 +317,10 @@ theorem summable_dyadicDifference_iff {η : ℝ} (hη : 0 < η) :
       _ = _ := by ring
 
 /-- `P(m+1)/(m+1) ∈ ℓ²` is the same as `P(m)/m ∈ ℓ²`. -/
-private theorem summable_shift_iff (u : ℕ → ℝ) (hu : u 0 = 0) :
+private theorem summable_shift_iff (u : ℕ → ℝ) :
     (Summable fun n : ℕ => (u (n + 1) / ((n : ℝ) + 1)) ^ 2) ↔
       Summable fun m : ℕ => u m ^ 2 / (m : ℝ) ^ 2 := by
-  rw [← summable_nat_add_iff 1]
+  rw [← summable_nat_add_iff 1 (f := fun m : ℕ => u m ^ 2 / (m : ℝ) ^ 2)]
   constructor <;> intro h <;> refine h.congr fun n => ?_ <;> push_cast <;> rw [div_pow]
 
 /-- **The first column of the centred chain is in `ℓ²` iff the damping is admitted.** -/
@@ -338,12 +341,15 @@ theorem admits_iff_summable_firstColumn {η : ℝ} (hη : 0 < η) :
       exact_mod_cast Nat.le_of_lt_succ (Nat.mod_lt _ (by norm_num))
     have hmod0 : (0 : ℝ) ≤ (((n + 1) % 2 : ℕ) : ℝ) := Nat.cast_nonneg _
     have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-    simp only [he]
-    rw [div_pow, mul_pow, mul_pow, one_div_pow, ← div_eq_mul_one_div]
-    rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have h1 : (((n + 1) % 2 : ℕ) : ℝ) ^ 2 ≤ 1 := by nlinarith
-    have h2 : 0 ≤ (ρ * (2 : ℝ) ^ (-η)) ^ 2 := sq_nonneg _
-    nlinarith [sq_nonneg ((n : ℝ) + 1)]
+    have hr : (((n + 1) % 2 : ℕ) : ℝ) / (2 * ((n : ℝ) + 1)) ≤ 1 / ((n : ℝ) + 1) := by
+      rw [div_le_div_iff₀ (by positivity) hpos]
+      nlinarith
+    have hr0 : 0 ≤ (((n + 1) % 2 : ℕ) : ℝ) / (2 * ((n : ℝ) + 1)) := by positivity
+    have he' : e n = ρ * (2 : ℝ) ^ (-η) * ((((n + 1) % 2 : ℕ) : ℝ) / (2 * ((n : ℝ) + 1))) := by
+      simp only [he]
+      ring
+    rw [he', mul_pow]
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hr0 hr 2) (sq_nonneg _)
   have hcol : ∀ n, arithmeticDampingCenteredOperator hη firstState n =
       dyadicDifference η (n + 1) / ((n : ℝ) + 1) + e n := fun n => by
     rw [centeredOperator_firstState_apply_eq]
@@ -362,8 +368,7 @@ theorem admits_iff_summable_firstColumn {η : ℝ} (hη : 0 < η) :
       fun n : ℕ => (P (n + 1) / ((n : ℝ) + 1)) ^ 2 := by
     funext n
     rw [centeredOperator_reciprocal_apply]
-  rw [horbit, summable_shift_iff P (centeredPrefix_zero η),
-    summable_shift_iff (dyadicDifference η) (dyadicDifference_zero η)]
+  rw [horbit, summable_shift_iff P, summable_shift_iff (dyadicDifference η)]
   exact (summable_dyadicDifference_iff hη).symm
 
 /-- The Riemann hypothesis is the first column of the centred chain entering `ℓ²` at arbitrarily

@@ -55,21 +55,18 @@ theorem hasDerivAt_ofReal_cpow_neg {w : ℂ} {x : ℝ} (hx : 0 < x) :
     ← Complex.ofReal_log hx.le]
   push_cast
   field_simp
-  ring_nf
 
 /-- `|n^{-s} − (n+1)^{-s}| ≤ (|s|/σ)(n^{-σ} − (n+1)^{-σ})`, `σ = Re s > 0`, `n ≥ 1`. -/
 theorem norm_cmellinCell_le {s : ℂ} (hs : 0 < s.re) {n : ℕ} (hn : 1 ≤ n) :
     ‖cmellinCell s n‖ ≤ ‖s‖ / s.re * mellinCell s.re n := by
   have hA : (0 : ℝ) < n := by exact_mod_cast hn
-  set A : ℝ := n
-  set B : ℝ := (n : ℝ) + 1
-  have hAB : A ≤ B := by simp only [A, B]; linarith
-  have hpos : ∀ y ∈ uIcc A B, 0 < y := by
+  have hAB : (n : ℝ) ≤ (n : ℝ) + 1 := by linarith
+  have hpos : ∀ y ∈ uIcc (n : ℝ) ((n : ℝ) + 1), 0 < y := by
     intro y hy; rw [uIcc_of_le hAB] at hy; linarith [hy.1]
-  have hderiv : ∀ y ∈ uIcc A B,
+  have hderiv : ∀ y ∈ uIcc (n : ℝ) ((n : ℝ) + 1),
       HasDerivAt (fun y : ℝ => (y : ℂ) ^ (-s)) (-s * (y : ℂ) ^ (-s - 1)) y :=
     fun y hy => hasDerivAt_ofReal_cpow_neg (hpos y hy)
-  have hcont : ContinuousOn (fun y : ℝ => -s * (y : ℂ) ^ (-s - 1)) (uIcc A B) := by
+  have hcont : ContinuousOn (fun y : ℝ => -s * (y : ℂ) ^ (-s - 1)) (uIcc (n : ℝ) ((n : ℝ) + 1)) := by
     intro y hy
     have h := hasDerivAt_ofReal_cpow_neg (w := s + 1) (hpos y hy)
     have hfun : (fun y : ℝ => -s * (y : ℂ) ^ (-s - 1)) =
@@ -78,19 +75,19 @@ theorem norm_cmellinCell_le {s : ℂ} (hs : 0 < s.re) {n : ℕ} (hn : 1 ≤ n) :
     rw [hfun]
     exact (continuousAt_const.mul h.continuousAt).continuousWithinAt
   have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hcont.intervalIntegrable
-  have hcell : cmellinCell s n = -((B : ℂ) ^ (-s) - (A : ℂ) ^ (-s)) := by
-    simp only [cmellinCell, A, B]; ring
+  have hcell : cmellinCell s n = -(((((n : ℝ) + 1 : ℝ)) : ℂ) ^ (-s) - (((n : ℝ) : ℂ)) ^ (-s)) := by
+    simp only [cmellinCell]; ring
   rw [hcell, norm_neg, ← hFTC]
   refine (intervalIntegral.norm_integral_le_integral_norm hAB).trans ?_
   have hnorm : EqOn (fun y : ℝ => ‖-s * (y : ℂ) ^ (-s - 1)‖)
-      (fun y : ℝ => ‖s‖ * y ^ (-s.re - 1)) (uIcc A B) := by
+      (fun y : ℝ => ‖s‖ * y ^ (-s.re - 1)) (uIcc (n : ℝ) ((n : ℝ) + 1)) := by
     intro y hy
     simp only
     rw [norm_mul, norm_neg, Complex.norm_cpow_eq_rpow_re_of_pos (hpos y hy)]
     congr 2
     simp
   rw [intervalIntegral.integral_congr hnorm, intervalIntegral.integral_const_mul]
-  have h0 : (0 : ℝ) ∉ uIcc A B := by
+  have h0 : (0 : ℝ) ∉ uIcc (n : ℝ) ((n : ℝ) + 1) := by
     rw [uIcc_of_le hAB]; intro h; linarith [h.1]
   rw [integral_rpow (Or.inr ⟨by intro h; linarith, h0⟩)]
   have hexp : -s.re - 1 + 1 = -s.re := by ring
@@ -109,9 +106,15 @@ theorem sum_range_modulusDefect_mul_cmellinCell {d : ℕ} (hd : 0 < d) (s : ℂ)
   induction N with
   | zero => simp [modulusDefect_zero_right, cmellinCell]
   | succ N ih =>
-    rw [Finset.sum_range_succ, ih, Finset.sum_Icc_succ_top (by omega), modulusDefect_succ hd N,
-      cmellinCell]
-    push_cast
+    rw [Finset.sum_range_succ, ih, Finset.sum_Icc_succ_top (by omega), cmellinCell]
+    have hstep : ((modulusDefect d (N + 1) : ℝ) : ℂ) = (modulusDefect d N : ℂ) +
+        (((if d ∣ N + 1 then 1 else 0) - 1 / d : ℝ) : ℂ) := by
+      rw [modulusDefect_succ hd N, ← Complex.ofReal_add]
+      congr 1
+      ring
+    have hcast : ((((N + 1 : ℕ) : ℝ)) : ℂ) = (((N : ℝ) + 1 : ℝ) : ℂ) := by
+      rw [Nat.cast_succ]
+    rw [hstep, hcast]
     ring
 
 /-- The divisible terms of `Icc 1 (dM)`, complex form. -/

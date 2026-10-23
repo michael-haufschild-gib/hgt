@@ -10,248 +10,36 @@ This programme is the exact calculus of that question. Its primitive object is a
 `r : D → O` of a class `D` of data, its basic invariant is the **resolution limit**
 `sup {I(e) : r(e) = r(d)}` — the exact best bound on an invariant `I` that any method reading `r` can
 prove — and its basic theorem is the **collapse–resolution dichotomy**: a reading either moves every
-collapse that changes the verdict, or it proves nothing. Every statement here is unconditional and
+collapse that changes the verdict, or it cannot resolve that verdict. Every statement here is unconditional and
 names its reading, its collapse and its witness pair.
 
-The field is the one specified in `docs/reports/review-2110/argon.md`, Part II: *Scale-Signed
-Arithmetic Incidence & Criticality Theory*. What is formalised here is its admissibility core — the
-part that converts the corpus's individual no-gos into one calculus with a numerical unit, together
-with the positive half that calculus forces: if a sign at one aperture determines nothing, name the
-magnitudes that determine everything.
+## Place in the research
 
----
+This is an information theory for proposed arithmetic arguments. It asks which data an argument
+actually uses, what other sources share those data, and which target values remain possible in
+that class. Its positive tools are refinement, exact inversion from magnitudes, and cofinal rate
+readings. Its negative tools are explicit indistinguishable pairs and sharp bounds on their shadows.
+Passing a blindness test is necessary for a proposed method; it is not an estimate or a proof of RH.
 
-## The shared target: the sign of the critical arithmetic form
+| Programme | Connection |
+|---|---|
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies complete source families; the reading must preserve the information their receiver needs. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies node-critical blind cones, packet rates and countermodels. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Supplies parity collisions and the distinction between a finite observer and uniform receiver payment. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Its Gram and dispersion estimates are candidates for precise reading-and-shadow analysis. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies bounded-aperture certificates and the ground-energy path whose sign and magnitude read different information. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Supplies the lattice models, Nyquist laws, visibility witnesses and zero-width dictionary. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies allocation and cross-prime aggregate readings; their signs and sizes must be distinguished. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Distinguishes pointwise, averaged and horizon-uniform budgets; a transport must supply its arithmetic estimate. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Tests whether changing an energy or splitting work preserves the signed information needed for admission. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Separates formal signature criteria from the arithmetic effectivity data that would force them. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Exhibits the information lost when a signed incidence kernel is replaced by an absolute majorant. |
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
-
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
-
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
-
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
-
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
-
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-This programme owns the **admissibility layer** of the shared target: not a new estimate of the
-critical form, but the exact theory of which data can settle it, and what each class of data is
-worth.
-
-It is the only programme whose data are *methods* rather than arithmetic objects. Where the others
-produce windows, exponents, apertures, lags and dampings, this one produces:
-
-* **floors** — numbers no method of a given class can beat (`resolutionLimit`), and the dual
-  **ceilings** below which no such method forces anything (`resolutionFloor`); together they give the
-  **resolution interval**, the exact set of values the method leaves open;
-* **gates** — necessary separations any mechanism must perform, each a checkable inequality of
-  readings on an explicit pair (`theDilationRequirement` on the aperture face,
-  `theNodeFaceIsAPrincipalUpSet` on the incidence face);
-* **ladders** — resources whose floors decrease to the criterion, so that a route can report
-  progress, with the classification of which ladders do this (`apertureResolutionJump`) and which
-  are flat (`gainLadderIsTrivial`);
-* **recipes** — for each face, the finitely many magnitudes that determine the invariant, in closed
-  form and with their conditioning (`depthFromBands_eq`, `difference_ratio_eq`,
-  `depth_from_doubling`);
-* **transfer** — refinement, joining and factorisation laws, by which a floor proved once applies to
-  every mechanism whose reading factors through the same reduction.
-
-In the shared units its own contribution counts as zero: it proves no window, no exponent, no
-aperture and no damping. Its unit is the pair `(class of readings, exact limit)`. The recurring
-value in that unit is `½`, and it has two independent arithmetic sources — `2` is the first prime
-power, and `½` is the deepest an off-line zero can sit — together with one mechanism that explains
-why both appear in the same place: at aperture `a` the `ℓ¹` prime cost is `≍ 2e^{a}` while a
-depth-`δ` off-line configuration amplifies by `e^{2δa}`, and the two exponents coincide exactly at
-`δ = ½`, the depth of the polar pair. A method that cannot separate the prime side from its own
-`ℓ¹` worst case is, in this calculus, looking at a depth-`½` configuration.
-
-### How the programme connects to the other programmes
-
-* **Square-Root Threshold** supplies the whole zero side: the configuration data, `configWidth`, the
-  off-line lattices and their on-line shadows, the Nyquist law shared by position and depth, the
-  isolated-pair and finite-set visibility laws, the lattice ground energy with its exponential
-  bounds, and the certificate-radius law of the prime side. This programme converts those
-  invisibility theorems into exact limits, adds the units in which the *same* readings are sharp
-  (scale, visibility frequency, horizon frequency), and returns the design specification a
-  counterexample would have to meet. SRT's graded dictionary — a floor at rate `2σ` is the strip
-  `½ + σ` — is the reason a rate reading, and not a sign reading, is the faithful one. SRT also
-  proves the fact that makes this programme's pricing binding rather than advisory: at every
-  aperture the positivity routes (the CCM ground energy, the ACT variation inequality, the OWU
-  capacity inequality, the EWU blind minimum, the AIP and APT windows, the SRT window and lag
-  functional) are *one* statement, window positivity of the full zero form, and every route's graded
-  receiver reads the one number `zetaZeroWidth`. So the blindness theorems here are not about one
-  route's weakness: the aperture certificate whose resolution limit is `½` is the certificate of all
-  of them simultaneously, and a price computed once applies to every language it is stated in.
-* **Arithmetic Criticality Theory** owns the ground-energy path this programme prices: bounded
-  apertures read the scale and never the depth, a margin at a fixed aperture is worthless, a uniform
-  gain at all apertures is already RH, and past the Nyquist aperture only the *size* of the deficit
-  carries the depth. In the other direction ACT's certified endpoint `μ(3/10) ≥ 1/5000` is the
-  initial value of every transport statement, and its criticality theorems say the allowance must be
-  added rather than subtracted.
-* **Bi-Scale Uncertainty** supplies node criticality and the test models. Here node criticality
-  becomes a statement about a whole class of methods — no reading unchanged by finitely many nodes
-  resolves node positivity — and acquires a number, `(smallest prime power)⁻¹`. BiScale's exponent
-  dictionary supplies the faithful rate readings on the analytic side.
-* **Trans-Horizon Incidence Mechanics** supplies the parity pairs, whose barrier is, verbatim,
-  failure of resolution for a magnitude reading of a damped weight. That face is owned there; this
-  programme contributes the shape of the statement — a reading, a collapse, a witness pair — and the
-  fact that no family of such readings, of any cardinality, does better than one of them.
-* **Arithmetic Continuation and Critical Energy** is the layer that answers two of the gates
-  constructively: the aperture gate, by transporting a certified floor along an unbounded aperture
-  sequence without differentiating it, and the sign gate, by replacing a pointwise budget with a
-  parameter average that is *equivalent* to the conclusion. Its majorant source is the damping-side
-  instance of "a bound below half damping must read signs".
-* **Bézout–Valuation Incidence** and **Arithmetic Incidence Positivity** are the consumers: a new
-  dispersion estimate, window or ledger bound is admissible only if the reading it uses separates the
-  gate pairs, and the gates are stated so that the check is a one-line instantiation. For the
-  incidence face the calculus also says how progress must be organised: the condition cannot be
-  sampled — every prime power is individually necessary — while node-by-node verification is an
-  exactly quantified ladder.
-* **RHTower** supplies the germ of the whole calculus: `DeciderBarrier`'s invariant-collision
-  lemmas are the two-point cases of the dichotomy and of the floor theorem, and
-  `Sieve.CoefficientFreeCap` is the magnitude instance. It also owns the countermodels this
-  programme prices but does not build — the shifted pair, the boosted cone, the non-tempered
-  weights.
-
----
-
-## The modules
-
-Ten modules, each the home of one result of the theory.
-
-| module | owns |
-| --- | --- |
-| `TheResolutionLimitOfAReading` | the calculus: shadows, `Resolves`, `Invisible`, `Refines`, `joinReading`, `resolutionLimit`/`resolutionFloor`, `Certifies`, the resolution interval, the floor theorem. No corpus dependency. |
-| `TheApertureCertificateIsBlindInEveryUnit` | the configuration vocabulary and the single blindness mechanism: limit `½` and floor `0` at every aperture, coercivity level, monotone unit and family; the interval is the whole range of the width. |
-| `RefutationIsFiniteConfirmationIsNot` | `Refutes`; the node face as a principal up-set; one membership bit refutes; prime-side completeness; asymptotic node readings resolve nothing. |
-| `TheSquareRootPrecisionLaw` | the trans-Nyquist deficit, the exact level limit, the square-root law `√(η/L³)`, the adaptive budget `β²L³`, the deficit-rate law and the scale-free faithful rate reading. |
-| `TheDepthIsTheCompleteDilationInvariant` | the dilation action, the depth as its complete invariant, and the collapse of a single-aperture certificate without a scale bound. |
-| `TheHidingLaws` | what hiding costs: the crystal requirement, exponential mass, the mass–aperture exchange and reach law, free aliasing below `ℓ/2` and its sharpness, the productive seam. |
-| `TwoAliasingBandsDetermineTheDepth` | the two-band inversion in closed form and its `√(2η)` conditioning. |
-| `ThreeBandsDefeatTheMass` | the three-band inversion with unknown on-line mass, and the aperture-doubling recipe for a single pair. |
-| `TheMagnitudePairIsFaithfulWhereTheSignIsBlind` | the two readings on one family: sign limit `½`, magnitude limit exactly the depth, floor `=` limit. |
-| `SparseAperturesSufficeAndTheIncidenceFaceDoesNot` | what must be verified: RH from positivity along any unbounded set of apertures or radii; no proper subset of the nodes suffices; the reduction dichotomy. |
-
-The dependency order is the reading order: the calculus, then the blind face, then the refutation
-calculus, then the quantitative law, then the dilation requirement it answers, then the hiding laws,
-then the three recipes, then the dichotomy and the verification plan.
+Start with `TheResolutionLimitOfAReading`, then the aperture and node examples. The precision and
+band-inversion laws explain how a failed sign reading can be strengthened. Finally,
+`TheRateIsACofinalInvariant` and `TheBoundedApertureRateCertifiesNothing` isolate the resource needed
+for a rate: cofinality, under an explicit convex-profile hypothesis. `RHTower.DeciderBarrier`
+contains related collision tools; the owning programmes supply the arithmetic countermodels.
 
 ---
 
@@ -279,19 +67,17 @@ Three consequences follow, and they are the reason for a separate programme.
    of data (`apertureResolutionJump`). So the width is not approximated by finite-aperture work: it
    appears only in the limit, or in a magnitude.
 
-### 1.2 Why existing fields do not supply this
+### 1.2 The scope of the calculus
 
-Model theory and descriptive set theory study definability, complexity theory studies
-resource-bounded decision, and both are about languages and machines, not about analytic invariants.
-Harmonic analysis has uncertainty principles, which bound localisation, not resolution of a global
-invariant from a restricted observable. What the critical form needs is neither: an *exact* theory of
-what a list of arithmetic observables determines, with a numerical unit, instantiated at the actual
-arithmetic data of `ζ` — and with the countermodels supplied, not assumed.
+The calculus is set-theoretic: equal observations define fibres, and an invariant is determined
+exactly when it is constant on those fibres. Its research content comes from the arithmetic
+instances: explicit countermodels, sharp resolution intervals, stable inversion formulas, and
+proofs that a proposed class of methods factors through a particular reading. An abstract fibre
+argument alone establishes no analytic impossibility outside the named data class.
 
 ### 1.3 Where it points
 
-The intended use is chronological: gates first, construction second. A mechanism is admissible
-exactly when its reading passes the gates, and the calculus is arranged so that the check is an
+The intended use is chronological: gates first, construction second. A mechanism can survive the known obstructions only when its reading passes the relevant gates, and the calculus is arranged so that the check is an
 instantiation rather than a new argument. The programme's positive output is of the same kind: when a
 floor is identified, the next question is which single ingredient removes it. On the aperture face
 the answer is a theorem rather than a conjecture — two aliasing bands, three in the presence of
@@ -334,12 +120,11 @@ For a real invariant `I : D → ℝ`:
 
 * `Certifies I r d β : ∀ e ∈ shadow r d, I e ≤ β` — what "the reading implies the bound" means;
 * `resolutionLimit I r d = sSup (I '' shadow r d)` — the **limit**, with
-  `certifies_iff_resolutionLimit_le`: the limit is not an estimate of the method's strength, it *is*
-  its strength;
+  `certifies_iff_resolutionLimit_le`, provided the invariant is bounded above on the shadow;
 * `resolutionFloor`, `CertifiesLower` — the dual theory, with
   `resolutionFloor_eq_neg_resolutionLimit`;
-* the **resolution interval** `[resolutionFloor, resolutionLimit]` — the exact set of values the
-  method leaves open. A reading is *informative* for `I` at `d` exactly when this interval is proper
+* the **resolution interval** `[resolutionFloor, resolutionLimit]` — the smallest closed interval containing the values left open, when those values are bounded.
+  It need not be the image itself: interior values and endpoints need not be attained. A reading is *informative* for `I` at `d` exactly when this interval is proper
   and *pins* `I` exactly when it degenerates.
 
 A reading is **faithful** for `I` when its limit is `I`, equivalently when `I` is maximal on each
@@ -372,8 +157,8 @@ depth is a **complete invariant** of the dilation action: `DilationEquiv p q ↔
 Hence a reading is faithful for the depth exactly when its fibres lie inside dilation orbits, and
 resolving the depth is a *separation of orbits*, not an estimate.
 
-Every natural reading of the field — apertures, heights, radii, ordinate sets, failure sets — is a
-coordinate *along* the orbits. That is the field's dichotomy, and it is about coordinates rather than
+The blind readings studied here — bounded certificates and purely vertical data such as the
+exact ordinate set — fail to separate these orbits. Magnitude and rate readings need not fail. That is the field's dichotomy, and it is about coordinates rather than
 boundedness: the exact ordinate set is unbounded data, determines the scale exactly, and still has
 the trivial limit `½` for the depth. The **vertical** coordinate is what every reading sees; the
 **horizontal** one carries RH.
@@ -385,12 +170,12 @@ the trivial limit `½` for the depth. The **vertical** coordinate is what every 
 | width | `sup \|Re ρ − ½\|` over the configuration (`width`) | all zeros on the line |
 | depth | `δ` on the lattice family; the dilation invariant (`sdDepth`) | the configuration is on-line |
 | deficit rate | `inf {β ≥ 0 : the deficit is O(e^{2βa})}` (`rateSet`, `sInf_rateSet`) | the configuration is on-line |
-| depth resolution | `arcosh(1 + η/(2L))/L` at level `η` and scale `L` (`depthResolution`) | never: it is the limit a level certificate reaches |
+| depth resolution | `arcosh(1 + η/(2L))/L` at level `η` and scale `L` (`depthResolution`) | at `η = 0`; otherwise it is a positive resolution allowance |
 | node scale | `sup {1/m : m a prime power, m ∉ 𝒩}` (`nodeScale`) | `𝒩` contains every prime power |
-| band ratio | `t₃/(2t₂)` on a lattice, `(t₄−t₃)/(t₃−t₂)` with mass (`ratio_eq_cosh`, `difference_ratio_eq`) | at the critical value `1`, resp. `2` |
+| band ratio | `t₃/(2t₂) − 1` on a lattice, `(t₄−t₃)/(t₃−t₂)` with mass (`ratio_eq_cosh`, `difference_ratio_eq`) | at the critical value `1`, resp. `2` |
 
 The width and the depth **vanish together** on the lattice family and are the two ends of the same
-scale; the deficit rate is the only one of them that is constant on dilation orbits. A result in one
+scale; depth, width on this family, and the deficit rate are all constant on dilation orbits. A result in one
 unit does not transfer to another, and a mechanism must be priced in the unit built from the data it
 actually reads: a sign in the width unit, where every bounded reading is vacuous; a magnitude in the
 band-ratio unit, where the depth is an explicit elementary function of what was measured.
@@ -432,17 +217,17 @@ the shadow fixes the limit, and the two inequalities that prove it are the same 
 ### 3.2 The aperture face: one witness, every unit
 
 The aperture face needs exactly one construction. For every aperture there is a configuration of
-maximal width `½` that satisfies the certificate for free — an off-line lattice whose spacing exceeds
-twice the aperture, so that no test of that aperture reaches a pair of its zeros
+maximal width `½` that satisfies the certificate for free — an off-line lattice with scale
+`L ≥ 2a`, whose first nonzero Poisson lag lies outside the test autocorrelation support
 (`exists_width_eq_half_aperturePositivity`). It lies in the shadow of every datum satisfying the
 certificate, so by the floor theorem
 
 `resolutionLimit width (aperturePositivity a) Z = ½`   (`resolutionLimit_width_aperturePositivity`),
 
-and the certificate certifies nothing beyond the a priori bound
+for a datum on which the certificate holds. That successful certificate certifies nothing beyond the a priori bound
 (`certifies_width_aperturePositivity_iff`). The same witness, with the gain built in, gives the same
 number for a coercive certificate at any level (`resolutionLimit_width_apertureGain`,
-`gainLadderIsTrivial`), for a family of apertures of any cardinality
+`gainLadderIsTrivial`), for a bounded family of apertures of any cardinality
 (`resolutionLimit_width_familyPositivity`), for a family of configurations
 (`resolutionLimit_familyWidth_familyAperture`), and — composed with any monotone reparametrisation
 `g` of the depth — for the unit `g ∘ width` (`resolutionLimit_comp_width_apertureGain`,
@@ -452,7 +237,8 @@ At the lower end the on-line lattice lies in every aperture shadow
 (`onLineLattice_mem_shadow_aperturePositivity`), so the dual limit is `0`
 (`resolutionFloor_width_aperturePositivity`) and the resolution interval is the entire range of the
 width (`resolutionInterval_width_aperturePositivity`, `range_width`): a bounded-aperture certificate
-can neither prove nor disprove the critical line. Only the unbounded certificate has limit `0`
+of successful positivity checks alone neither proves nor refutes the critical line. A negative
+test at a bounded aperture can refute it. Only the unbounded certificate has limit `0`
 (`resolutionLimit_width_fullPositivity`), and the bounded stages form a strictly increasing chain of
 data (`apertureResolutionJump`) — strictly more information at every step, the same trivial bound at
 every step.
@@ -472,8 +258,8 @@ trans-Nyquist theorems; without it there is nothing to prove (`theDilationRequir
 
 ### 3.4 Past the Nyquist aperture: the deficit, its precision, its rate
 
-Above the Nyquist aperture of a configuration the Weil form acquires a deficit, and its size is the
-field's quantitative content:
+In the first nontrivial aliasing band `L/2 < a ≤ L`, at known scale `L > 0`, the lattice
+Weil form acquires the deficit
 
 `weilFloorThreshold L δ = 2L(cosh(δL) − 1)`
 
@@ -499,13 +285,15 @@ Along the aperture axis the same quadratic law reads as a growth rate. The defic
 
 That infimum is the depth, hence constant on dilation orbits, and equal infima force equal depths
 (`sdDepth_eq_of_rateSet_eq`): the rate is the field's faithful, scale-free reading
-(`theRateReadingIsTheAnswer`). A uniform deficit bound, by contrast, is passed by every
-configuration at every aperture (`uniformDeficit_onLineLattice`, `theGateIsPassedByNonGrowth`):
-uniformity is not strength, only a rate is.
+(`theRateReadingIsTheAnswer`). A uniform mass-normalised deficit bound over every aperture excludes positive-depth lattices
+(`theGateIsPassedByNonGrowth`); the on-line lattice satisfies it
+(`uniformDeficit_onLineLattice`). A bound growing with test frequency is a different reading and
+may be vacuous. The normalisation and quantified parameter range are indispensable.
 
 ### 3.5 How a configuration hides: crystal, mass, dilution
 
-The witnesses above are infinite crystals, and that is forced.
+The sharp blindness witnesses above are infinite crystals. The following laws explain their
+cost; they do not classify every configuration capable of hiding at one aperture.
 
 * **A finite off-line set cannot hold the floor.** It is refuted at an explicit aperture computed
   from the set (`refutes_aperturePositivity_of_finiteOffLine`,
@@ -521,9 +309,9 @@ The witnesses above are infinite crystals, and that is forced.
   `a ≤ log((3L + ℓ)/ℓ)/(2δ) + ℓ/2` (`reach_upper`, `theReachLaw`) against a free part linear in `ℓ`
   (`reach_lower`).
 * **Aliasing is free below Nyquist, and exactly there.** A sub-lattice of spacing `ℓ` is invisible to
-  every aperture below `ℓ/2` at no cost whatever the background
-  (`dilutedLattice_hides_below_own_nyquist`), and the free regime ends exactly at `ℓ/2`: at and above
-  it the ground energy is negative (`latticeFloor_neg_of_two_le`, `theFreeRegimeIsSharp`).
+  every aperture at most `min(ℓ/2, L/2)` in the stated diluted-lattice model
+  (`dilutedLattice_hides_below_own_nyquist`), and the free regime ends exactly at `ℓ/2`: strictly above
+  it the pure off-line lattice ground energy is negative (`latticeFloor_neg_of_two_le`, `theFreeRegimeIsSharp`).
 
 The aperture–mass pair is the one **productive seam** of the field: the two readings together bound
 the depth where neither does alone (`certifies_depth_dilutedReading`, `theProductiveSeam`), and a
@@ -588,10 +376,12 @@ the same way, along radii (`weilPositiveFull_of_unbounded_radii`,
 `riemannHypothesis_of_unbounded_radii`).
 
 *Confirmation, incidence face: no sampling at all.* Omitting a single prime power destroys zero-pole
-positivity (`not_zeroPoleBlindPositiveOn_deleteNode`, `not_zeroPoleBlindPositiveOn_of_notMem`), the
-prime powers are the least positive node set (`isLeast_zeroPoleBlindPositiveOn`), and the face is a
-principal up-set (`theNodeFaceIsAPrincipalUpSet`). No cofinal subset, no density-one subset, no
-subset missing one element suffices (`theReductionDichotomy`). A reading unchanged by finitely many
+positivity (`not_zeroPoleBlindPositiveOn_deleteNode`, `not_zeroPoleBlindPositiveOn_of_notMem`).
+Under RH, the prime powers are the least positive node set (`isLeast_zeroPoleBlindPositiveOn`),
+and positive node sets form the principal up-set of sets containing them (`theNodeFaceIsAPrincipalUpSet`).
+Unconditionally, node positivity is equivalent to **RH and containment of every prime power**;
+if RH fails, there are no positive node sets. Cofinality or density one cannot compensate for a
+missing prime power (`theReductionDichotomy`); omission of a non-prime-power is invisible. A reading unchanged by finitely many
 nodes resolves nothing (`not_resolves_of_asymptoticReading`,
 `resolutionLimit_nodeScale_asymptoticReading`).
 
@@ -601,17 +391,37 @@ side the calculus is exactly complete: a certificate of radius beyond a failure 
 cone (`refutes_radiusReading`), and RH holds precisely when no bounded-radius certificate refutes
 membership of the von Mangoldt weight in the full Weil cone
 (`riemannHypothesis_iff_no_radiusReading_refutes`). On the node face a single membership bit refutes
-(`refutes_membershipReading_of_notMem`, `zeroPoleBlindPositiveOn_iff_no_membership_refutes`), and the
-asymmetry between the two directions is a theorem (`theNodeFaceAsymmetry`). A mechanism that fails is
-told so by a finite computation; a mechanism that succeeds must succeed everywhere at once.
+when it records a missing prime power (`refutes_membershipReading_of_notMem`). Under RH,
+absence of such refutations characterizes node positivity
+(`zeroPoleBlindPositiveOn_iff_no_membership_refutes`, `theNodeFaceAsymmetry`). Failure has a witness at a finite scale. This is not a general algorithm to compute a negative
+Weil value: an effective numerical refutation still needs error bounds. Confirmation requires
+the complete family or a proved reduction of it.
+
+### 3.9 Rates on cofinal and bounded aperture sets
+
+For a convex growth profile `g`, its secant rate `(g(a) − g(0))/a` is nondecreasing for `a > 0`.
+Consequently the set of upper bounds on those secants over any unbounded set of positive apertures
+is exactly the set of upper bounds over all positive apertures (`rateBoundsOn_eq_rateBounds`).
+The readings themselves agree, so their shadows, resolution limits, floors and resolved properties
+agree. No density assumption on the aperture set is needed.
+
+The bounded-range converse has explicit witnesses. The convex ramps
+`g_k(a) = k max(0, a − M)` all agree with the flat profile below `M`, while their rates are `k`.
+Thus the flat profile's shadow under a bounded reading has unbounded rates, and no finite upper
+bound is certified (`not_certifies_rateBoundsBelow`). In this unbounded class one must state
+failure of `Certifies` directly; Lean's real `sSup` is not an extended-real infinity.
+
+This settles the abstract convex-profile sampling question. Applying it to an arithmetic
+exponential rate still requires identifying a profile with the needed convexity or proving a
+suitable monotonicity replacement. It does not make arbitrary sparse lag samples complete.
 
 ---
 
 ## 4. Traps
 
 * **A reading is not a method's conclusion, it is its input.** Floors apply to what the method
-  *reads*, not to what it concludes; a method that reads the full datum has limit `I(d)` and proves
-  everything. Every floor statement must name the reading precisely, and the honest statement of a
+  *reads*, not to what it concludes; the identity reading has singleton shadows and limit `I(d)`, but computing or estimating
+  that value remains a separate task. Every floor statement must name the reading precisely, and the honest statement of a
   no-go is "no method reading *this* can do better than *that*".
 * **Name the unit, and price the mechanism in its own.** A certificate is priced in the width unit,
   where every bounded reading is vacuous; a deficit estimate in the depth unit; an asymptotic claim
@@ -620,16 +430,17 @@ told so by a finite computation; a mechanism that succeeds must succeed everywhe
 * **Boundedness is not the explanation.** The dichotomy is about coordinates: unbounded vertical data
   — the exact ordinate set — determines the scale exactly and still has the trivial limit for the
   depth. What is needed is a reading coupling the two coordinates, or one constant on dilation orbits.
-* **Strengthening a blind reading does not help.** More apertures, a larger coercivity gap, a
-  different depth unit, a weaker target, a family of any cardinality: all keep the trivial limit.
+* **Strengthening a blind reading does not help.** More apertures within a bounded range, a larger coercivity gap, or a monotone change of depth
+  unit keep the same aperture-certificate obstruction.
   Only three things move it — crossing the Nyquist aperture, reading a magnitude instead of a sign,
   and adding data of a third kind (mass, dilution).
 * **A faithful reading is not a proof.** Faithfulness of the unbounded certificate, of the rate
   reading or of the band pair says the data determine the invariant; it does not produce the
   measurement. A recipe says which numbers decide the question, not that they are within reach.
-* **The floors are statements about crystals.** Every witness carries infinitely many off-line zeros,
-  by necessity: a finite off-line set is refuted at an explicit aperture, and a single pair in an
-  on-line background is bounded in depth logarithmically in the local mass.
+* **Keep the configuration class.** The crystal witnesses carry infinitely many off-line zeros.
+  Finite configurations are eventually refuted; a single off-line pair with an on-line background
+  obeys a different depth–local-mass bound. These are distinct model classes, not a theorem that
+  every bounded-window hiding example needs infinitely many off-line zeros.
 * **RH on the positive side.** Two faces (node positivity, criticality of the pair) hold at the base
   datum only under RH, so their gates are stated as "resolving reading ⇒ ¬RH", or with RH as an
   explicit hypothesis. That is the honest form; "no method can decide" would be a stronger claim than
@@ -647,12 +458,9 @@ told so by a finite computation; a mechanism that succeeds must succeed everywhe
   linear in the aperture leaves the criterion intact (`theGateIsPassedByNonGrowth`); one growing with
   the frequency of the test is satisfied by a weight of maximal defect and removes the criterion
   rather than relaxing it.
-* **The faces do not all fit in one environment.** The corpus declares `RHTower.dilationAverage`
-  twice (in `RHTower.SoninDilationAverage` and in
-  `RHTower.FermiNymanHaarApproximationEquivalence`), so the import closures of
-  `SquareRootThreshold` and of `TransHorizonIncidenceMechanics` cannot be loaded together. Any
-  statement spanning the zero side and the parity side must therefore be split across modules; it is
-  an import-level fact about the corpus, not a mathematical obstruction.
+* **Cofinality requires the right structure.** The rate theorem concerns secant bounds for
+  convex profiles. An arbitrary oscillating function can spike between sampled apertures; a
+  sparse sample does not control its exponential rate without another theorem.
 
 ---
 
@@ -671,19 +479,20 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    line, and is a bound on it reachable from the corpus's unconditional inputs? This is the one
    question that would carry the positive half of the field from the model families to the object.
 3. **A fatality classification for the parity collapses.** The node collapses are classified exactly
-   — the prime powers (`fatal_deleteNode_iff_isPrimePow`) — which turns that face into a principal
-   up-set. The analogous question for the parity face owned by
+   — under RH, exactly the prime powers (`fatal_deleteNode_iff_isPrimePow`) — giving the
+   principal-up-set description in that case. The analogous question for the parity face owned by
    `TransHorizonIncidenceMechanics`, which involutions of a damped weight are fatal for the
    receiver, is open, and would turn its barrier into a sharp law.
 4. **The rate reading for `ζ`.** The faithful reading of the depth is the exponential rate of the
    deficit in the aperture. For the configuration of `ζ` that rate is the zero width, so an estimate
    of it is the target of the whole corpus; what belongs here is the admissibility question: which
-   classes of readings determine the *rate* rather than any single value, and what the floor of a
-   rate-reading class is when the rate is estimated only along a sparse set of apertures. One half of
+   classes of readings determine the *rate* rather than any single value, and which arithmetic rate profiles satisfy the structure needed for sparse sampling. The convex
+   secant-rate case is settled by §3.9: cofinal sampling preserves the full reading, while bounded
+   sampling leaves arbitrarily large rates possible. One half of
    this is now settled in `SquareRootThreshold` with a hypothesis that is itself a reading: the
    ground-energy rate equals the zero width whenever the off-line copies are bounded in number on
-   unit height windows, and the alternative is unbounded clustering. So the local count of off-line
-   copies per window is precisely the *third datum* that makes the rate reading faithful — the
+   unit height windows, and the alternative is unbounded clustering. Thus a uniform local count of off-line
+   copies is a sufficient additional datum for the exponent identity — the
    aperture-face analogue of the local on-line mass in the productive seam. Price that datum: what
    is the floor of the class of readings that see the certificate and the local count, against the
    class that sees the certificate alone?
@@ -701,14 +510,12 @@ Open, in this programme's own unit (a class of readings and its exact limit):
 7. **A numerical unit for the incidence ledger.** The node face is quantitative through the
    membership bits and the node scale. The ledger of `ArithmeticIncidencePositivity` is graded by the
    width on the analytic side; its admissibility unit — what class of readings of the ledger's terms
-   can certify a rate — is not computed. There is now a sharp instance to price. The comb-energy
-   reduction factors the ledger's whole exponential obstruction through a *single scalar*, the
-   weighted cross-prime aggregate, and is therefore a reading in this programme's sense, with an
-   unusually small codomain. Its good regime is a sign condition on that scalar, and the bi-lattice
-   train is a witness that the condition fails exactly on the multiplicatively aligned tests, the
-   ones carrying the large cost — so the reading is a candidate for a *collapse*: compute whether the
-   aligned family and a benign family share its value, and if so the reduction's sign condition is
-   unprovable rather than merely unproved, and only the aggregate's size can be read.
+   can certify a rate — is not computed. The raw comb second moment is a useful test case:
+   Compensation Theory proves its sharp exponential size, while its translation law makes the
+   first-power charge small on the same slowly varying family. Compute which signed pairing or
+   coherent residual must supplement this scalar reading to determine a useful bound. A proposed
+   information-loss theorem must exhibit two admissible sources with the same reading and
+   different target values; large energy alone is not that witness.
 
 ### Research topics toward the shared target
 
@@ -722,7 +529,8 @@ Open, in this programme's own unit (a class of readings and its exact limit):
   and the number of measured bands against the number of unknown parameters of the configuration —
   one index per unknown, by §3.6.
 * Classify the readings that determine a *rate*: the deficit growth rate on the aperture face, the
-  lag rate on the lag face, the damping threshold on the receiver face. All three are the zero width,
+  lag rate on the lag face, the damping threshold on the receiver face. The lag rate and damping threshold equal the width; equality for the `L²` ground-energy rate
+  has the additional local-count qualification described above,
   and all three are tail invariants, hence blind to every bounded parameter range — a floor theorem
   for rate readings would unify the three gates into one.
 

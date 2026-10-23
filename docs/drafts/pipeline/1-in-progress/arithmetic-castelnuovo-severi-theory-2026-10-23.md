@@ -61,4 +61,12 @@ survivor).
 - **New insight:** the adjunction formula is present (lag-zero Lefschetz / archimedean term); the
   missing ingredient is the Hodge index, i.e. an effectivity with the Riemann–Roch axiom
   (`riemannHypothesis_iff_exists_effectivity`).
-- **Status:** Lean, all modules compiled unconditionally.
+- **Status:** Lean, all modules compiled unconditionally; main theorems depend only on
+  `propext, Classical.choice, Quot.sound`.
+
+## Open core
+The scaling-surface Hodge index is RH-equivalent (`scalingSurface_hodgeIndex_iff`,
+`riemannHypothesis_iff_exists_effectivity`), but no independent arithmetic effectivity theory
+supplies it. Every Riemann–Roch effectivity with nonnegative degrees contains the open positive cone
+(`openPositiveCone_subset_of_effectivity`), whose ample axiom is RH; what is missing is an ampleness
+proof from a notion of section, not from the sign of the form.

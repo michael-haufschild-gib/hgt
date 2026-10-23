@@ -13,215 +13,43 @@ under the step $k\mapsto k+1$, the horizon step $N\mapsto N+1$, and the prime
 dilation $k\mapsto pk$; "trans-horizon" means that the omitted divisors, composite
 as well as prime, are the whole story.
 
-This document is the foundational introduction: why the theory exists, which
-objects it speaks about, which mechanisms carry its proofs, where its sharp
-boundaries lie, and how to work inside it. Mathematics only; no ledger.
-
 ---
 
-## The shared target: the sign of the critical arithmetic form
+## Place in the research
 
-Nine programmes of this corpus work on one object. The Riemann Hypothesis is the nonnegativity of
-one critical arithmetic form, and the form can be read in three equivalent faces:
+THIM is the **finite-observer theory of signed arithmetic receivers**. A divisor row can be
+recovered exactly from its observations while its energy remains uncontrolled. Conversely, a
+row can satisfy every complete-period variance estimate and still fail the pronic receiver.
+The programme separates identifiability, conditioning, dissipation and actual payment of that
+receiver; these are different mathematical demands.
 
-- the **incidence face** (Arithmetic Incidence Positivity, `ArithmeticIncidencePositivity`):
-  conductance by conductance, on pairs of points `(x, y)` of the logarithmic line, with the
-  arithmetic edges indexed by divisibility (`a ∣ b`) and by products (`ab` a prime power), and the
-  pole as the only positive source on crossing pairs;
-- the **lag face** (Square-Root Threshold, `SquareRootThreshold`): one window inequality `P_v ≥ 0`
-  per scale on the prime side, for the difference tests of one generic width, at height `T` and
-  bandwidth `λ = log X / log T`;
-- the **aperture face** (Arithmetic Criticality Theory, `ArithmeticCriticalityTheory`; Arithmetic
-  Positivity Theory, `ArithmeticPositivityTheory`; the odd Weil-weight route OWU in `RHTower`): the
-  ground-energy path `μ(A)` of the restricted Weil form at aperture `A`, which must never cross zero,
-  and the gauge and source theories that would prove it.
+Its organizing object is the centred prefix
+`A_c(n) = Σ_{j≤n}((c*1)(j) − Σ_d c(d)/d)` and its energy
+`Σ_{n≤T} A_c(n)²/(n(n+1))`. The pronic weight remembers small arguments even while the
+coefficient horizon grows. This is why full-period diagonalization cannot replace a bound
+uniform in `T`, and why the order of the horizon and damping limits matters.
 
-The finite arithmetic programmes (Bézout–Valuation Incidence, `BezoutValuationIncidence`;
-Trans-Horizon Incidence Mechanics, `TransHorizonIncidenceMechanics`; Bi-Scale Uncertainty,
-`BiScaleUncertainty`) supply the additive, single-modulus structure of the integers that the three
-faces cannot see on their own: Bézout relations, residue classes, pronic Gram matrices, horizon
-mechanics, and the two-scale constraint of the integer grid against the hyperbolic weight.
+| Neighbour | Interface |
+|---|---|
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Selberg coordinates, successor polarization, window Poincaré laws and single-modulus pronic Gram structure. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Full-period observation theory, signed packets, Chebyshev gauge and calibration countermodels. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Transports the receiver in damping or cutoff; THIM identifies the boundary and the observations that lose its signs. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Tests whether signed derivative work can be paid by the admitted energy without restating admission. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Abstracts parity pairs into exact limits on what a data reading can prove. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Keeps the arithmetic source and its cross terms when passing from receiver data to energy. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md), [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | The odd-sector and crossing-pair formulations of the same complete-form obstruction. |
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md), [Square-Root Threshold](../SquareRootThreshold/README.md) | Source approximation and zero-detection coordinates for estimates that reach a continuous receiver. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks source-derived arithmetic effectivity that generic observer and dissipation identities do not provide. |
 
-The continuation layer (Arithmetic Continuation and Critical Energy,
-`ArithmeticContinuationAndCriticalEnergy`) supplies what no face states on its own: the transport
-of a finite critical energy along a parameter — damping, coefficient cutoff or aperture — so that a
-certificate at one parameter becomes a certificate at another, with the observation horizon
-quantified uniformly throughout.
+The basic mechanisms are complementary-divisor normal forms, Dirichlet polarization with its
+boundary squares retained, Ramanujan diagonalization, exact Fermi trace inversion, and Mellin
+continuation. Their sharp boundaries are foundational: sign-blind payment stops above half
+damping; signed horizon-limit commutation starts at half damping; below it, cancellation can
+pay an infinite source while its truncated rows remain unbounded.
 
-The admissibility layer (Scale-Signed Incidence Criticality, `ScaleSignedIncidenceCriticality`)
-supplies the price list. A mechanism is not the arithmetic it studies but a *reading* of it — a map
-from its data to the observables it actually uses — and each reading has an exact resolution limit:
-the best bound on the target invariant that any method reading it can prove. The layer computes
-those limits, so a route can be priced before it is built, and states the separations a reading must
-perform to be admissible at all.
-
-**Why one theory.** Each existing layer stops where the corpus proves it stops. Sieve and bilinear
-methods see the additive structure of `ℕ` only after averaging over a family, and below half
-damping no sign-blind datum decides the receiver. Multiplicative, spectral and explicit-formula
-methods hold verbatim for Beurling systems with off-line zeros. Dirichlet-form and criticality
-identities hold for every even positive kernel, and positivity on restricted families is paid by an
-archimedean gain that is absent on the RH-complete cone. A closing theorem must at once see both
-operations of `ℕ` at a single modulus, carry a sign structure (one negative square, the pole plane,
-the signs of the Möbius row), and be resolved at the zero spacing, at square-root precision at every
-scale. No existing field has its basic objects built with all three; the nine programmes build
-them.
-
-**The mechanisms the shared target needs**, with the programme that owns each:
-
-1. A prime-side inequality with no slack: payment of each anti-diagonal atom `Λ(n) n^{−1/2}` by
-   same-side atoms and the variance, on all even profiles, in sign-changing gauges, with a
-   Harnack-type propagation across the prime shifts `log 2, log 3, …`
-   (`ArithmeticIncidencePositivity` with `ArithmeticCriticalityTheory`).
-2. Single-modulus bilinear dispersion on the pronic Gram, through the reciprocity
-   `{N/pq} ↔ p̄/q + q̄/p`, for the actual Möbius or prime row; it reduces exactly to the
-   single-modulus statistics `Σ_p |Λ_p(c')|/p` of that row (`BezoutValuationIncidence`).
-3. A no-crossing law for the ground-energy path, equivalently the absence of a first negative lag
-   for `ζ` (`ArithmeticCriticalityTheory`, `ArithmeticPositivityTheory` and OWU on the aperture side;
-   `SquareRootThreshold` on the lag side).
-4. A definite spectral realization with a prime modification as large as `S(T)`: a Hilbert space
-   and a self-adjoint operator whose spectral measure is the critical-zero measure, with
-   non-unit-modulus Euler factors (`ArithmeticPositivityTheory` for the source class and the
-   realization problem; the operators of the routes HF, CHMD and Connes–Consani–Moscovici in
-   `RHTower`). Every certificate of positivity is the critical-zero measure, so this is mechanism 3
-   seen from the other side.
-5. A sign-reading additive input at a single modulus: below half damping a bound on the receiver
-   must read the signs of the coefficients, through first-order data at prime moduli (`k ↦ pk`) or
-   odd-degree additive moments (`k ↦ k + v`) (`TransHorizonIncidenceMechanics` with
-   `BezoutValuationIncidence`; `BiScaleUncertainty` for the node criticality `log 4` against
-   `log 6`).
-6. A continuation theorem transporting a finite critical energy from the unconditionally admitted
-   end of a parameter range towards the critical end: a horizon-free bound on the negative part of
-   one complete signed pairing on each compact subinterval, which is weaker than a bound on the
-   corresponding norm and already yields an explicit zero-free strip when it covers only part of
-   the range (`ArithmeticContinuationAndCriticalEnergy`).
-7. An admissible reading: a mechanism presented as a reading of its own data whose fibres fail to
-   realise the maximum of the invariant it claims to bound. On the zero side this forces the
-   aperture past the Nyquist aperture of the configuration addressed and forces the *size* of the
-   Weil deficit to be estimated rather than its sign; on the prime side it forces `Λ` to be
-   separated from each of its single-index perturbations
-   (`ScaleSignedIncidenceCriticality`).
-
-**Criteria every contribution to the shared target must meet.**
-
-- *Selectivity.* State what the result gives for `ζ(s−a)ζ(s+a)`, for a Beurling system with an
-  off-line zero, and for the Liouville-twisted weight; a statement surviving all three is not
-  about RH (test models: `BiScaleUncertainty`).
-- *No family average.* One character, modulus one, shift zero. This is an exact floor and not a
-  preference: the worst width inside a joint certificate over a family of any cardinality is the
-  trivial one, because the extremal datum is already uniform across the family.
-- *Square-root precision beyond the diagonal.* Prime sums of length at least the height,
-  controlled beyond the mean-value regime: one inequality per window at every scale on the lag
-  family, `θ = 2` on the Gram. On the aperture face the same demand is a theorem: a method
-  controlling the Weil deficit of a configuration of scale `L` to precision `η` resolves depths
-  only down to `√(η/L³)`, so excluding depth `β` costs precision `β²L³`.
-- *Every scale, not almost every.* A statement about an exceptional set, a proportion or a typical
-  member is infrastructure (the every-height problem: `SquareRootThreshold`). The two monotone
-  faces may be verified along an unbounded sequence of apertures or radii, with nothing proved in
-  between; the incidence face admits no sampling at all, since every prime power is individually
-  necessary.
-- *Node criticality.* The mechanism distinguishes `log 4` from `log 6`; sampling-density and
-  generic uncertainty arguments are excluded in advance.
-- *Signs read.* Below half damping the mechanism uses first-order data at prime moduli or
-  odd-degree additive moments; magnitude, two-point and translated-moment data are blind, since the
-  parity pairs exist at every damping `ε ≤ 1/2`.
-- *Complete expression, no margin, no archimedean subsidy.* Mean, diagonal, mixed terms, Gamma and
-  polar charges, endpoints and history are retained; a gain of size `log(1/w)` or `log M` at the
-  archimedean place against a bounded prime cost is nonselective by construction. The dividing line
-  is growth, not size: a subsidy growing with the frequency of the test is satisfied by the
-  all-ones weight and removes the criterion outright, while a subsidy constant or linear in the
-  aperture leaves it intact.
-- *Units.* Positivity is measured by the aperture `A` or the support through which the inequality
-  holds for all profiles; cancellation by the exponent `θ` obtained or the lag `V` beyond which
-  `P_v ≥ 0` is proved; localization by the depth `δ(n, R)` excluded below height `T(n, R)` and by
-  the visibility lag `V₀(w, η, δ₀)`; damping by the smallest `ε` at which the receiver is bounded;
-  admissibility by the pair (class of readings, exact resolution limit). Identities, finite
-  classifications and nonselective positivity count as zero in these units.
-- *Grading.* A sign criterion with no partial value is incomplete. Every face of the target now has
-  a one-parameter family whose endpoint is RH and whose interior is an explicit zero-free strip:
-  the graded odd-sector floor and the graded incidence allocation at rate `2σ`, the graded pole
-  cross entry at rate `1 + 2α`, and the partial damping continuation above `a₀`. State which member
-  of the family a partial result reaches.
-- *Calibration.* Reproduce the corresponding theorem over `F_q[T]`, or say why it cannot be done
-  (`BiScaleUncertainty`).
-- *Pairs.* Every invisibility theorem comes with a visibility witness, every identity with the
-  estimate it enables or the sharp boundary it proves, every obstruction with its replacement
-  hypothesis proved sufficient.
-
-### This programme's role
-
-THIM is the mechanics face of the finite theories. It owns the trans-horizon response of divisor
-sieves, the conservation and dissipation laws under `k ↦ k+1`, `N ↦ N+1` and `k ↦ pk`, the transfer
-to the continuous energies (the signed energies of `BezoutValuationIncidence`, the Fermi–Nyman traces,
-the odd-sector prime-chain energies), and the exact collar cancellation of the odd sector. It owns
-mechanism 5: the parity pairs (two weights with identical divisor-sum, Ramanujan and pronic data and
-opposite trans-horizon growth, constructed at every damping `ε ≤ 1/2`), the parity barrier, the
-classification of the observables that read the parity (first-order data at prime powers, the
-logarithmic moments, the pole value of a kernel) and the receiver-preserving critical Wiener
-algebra. Its odd-sector low-prime diagonal potential is the sieve-side reading of the unpaid axis
-intervals of `ArithmeticIncidencePositivity`.
-
-### How the programme connects to the other programmes
-
-THIM is the dynamical layer over the static incidence algebra of Bézout–Valuation Incidence, and
-the two are one theory with two folders. Its outward connections run through the receiver
-`E_T(c)` and the parity involution.
-
-- **Bézout–Valuation Incidence is the algebra THIM moves.** The exact prefix-discrepancy duality
-  and return times, the renormalized defect and pronic ceiling, the cofinal Möbius gradient
-  coercivity, the phase-uniform window Poincaré law (the long-window regime of §3.4), the
-  prime-tail calibration, the Jordan and primitive energies, the quotient–octave reciprocity, the
-  Euler deletion remainder, the cyclotomic incidence recurrence, the dilation-pair densities behind
-  the energy profile and the Hardy–Littlewood singular series are BVI theorems consumed here; the
-  horizon filtration, the Buchstab and band calculus, the damped observer, the Fermi schedules,
-  the radical states and the parity pairs are THIM theorems consumed by BVI, where the pairs are
-  separated on the Vinogradov–Korobov band and the receiver of a multiplicative weight is decided
-  at the primes on that band. The Type-II window no-go of BVI (no `ℓ²` class reaches `θ > 1` at
-  one modulus) and the parity barrier of §3.16 are the two halves of mechanism 5: the Gram side
-  and the receiver side of the same sign-blindness.
-- **Bi-Scale Uncertainty supplies the continuous coordinates and the producer–consumer duality.**
-  The Nyman–Beurling bridge, the Lorentz boost and light cone, the stationary resolvent's Markov
-  positivity, the Euler–Poisson chiral drift, the `ker P` centred sieve and the universal Ramanujan
-  covariance are BiScale theorems used in §3.6, §3.13 and §3.17; BiScale's arithmetic observation
-  theory uses THIM's radical checkpoint rigidity and finite multiplicative observation state.
-  BiScale's sign-character classification (which moments recover a sieve signal, up to which
-  translation) and THIM's parity pairs (which observables decide the receiver) are the same
-  phenomenon read from the recovery side and from the receiver side; the half-damping threshold
-  of §3.8 and §3.16 is the square-root barrier of BiScale's band in the receiver's coordinates.
-- **Arithmetic Criticality Theory and Arithmetic Incidence Positivity meet THIM in the odd
-  sector.** The Markov operator, the theta ground state, the odd eigenvector criterion of §3.13
-  and the collar transport of §3.14 are the chain-side reading of ACT's odd-sector criticality;
-  the shifted ground state's folded representation and its combination failure are ACT theorems
-  used in the collar duality of §3.17. The low-prime diagonal potential left after exact collar
-  cancellation (§3.15) is the sieve-side counterpart of AIP's unpaid axis intervals and its nine
-  atom-dominated moduli: the same prime atoms `Λ(d)d^{−1/2}` that AIP pays pair by pair on the
-  jump form are the ones the chain variances must absorb.
-- **Square-Root Threshold and Arithmetic Positivity Theory see the same zeros from the other
-  side.** The poles of `1/ζ(s+ε)` right of `Re s = 1/2` that a bound on the Möbius receiver must
-  exclude (§3.16) are the off-line zeros SRT's lag family makes visible; THIM's "uniform in the
-  horizon at fixed damping" is the receiver form of SRT's every-height problem, and the damping
-  `ε` plays the role of SRT's bandwidth and APT's envelope exponent. The critical-scale receiver
-  `D(T) ≤ B(1+T)e^{T/2}` of APT is the Chebyshev-level statement whose finite-modulus form is the
-  interior pronic energy of §1.2.
-- **Arithmetic Continuation and Critical Energy owns the parameter direction of the receiver.**
-  THIM proves what a bound at one damping is worth and which observables could produce it; the
-  continuation layer proves how a bound travels from an admitted damping towards the critical end,
-  with the horizon quantified uniformly. The two meet in one identity: the derivative of the
-  critical energy in the damping is twice a complete signed pairing, which is the flux–jump–forcing
-  balance of the arithmetic chain, so THIM's dissipation laws are exactly what the continuation
-  must lose. The accumulation criterion of §3.16 is the endpoint statement of that transport.
-- **Scale-Signed Incidence Criticality turns the parity barrier into a floor on methods.** The
-  barrier is, verbatim, failure of resolution for the amplitude reading; the admissibility layer
-  adds the closure of the class (no amplitude-derived family of any cardinality resolves the
-  receiver) and the number `½` in the damping unit, and records that the same `½` is the trivial
-  width of the zero side. In the other direction THIM supplies the weights and the pairs that the
-  admissibility layer uses as witnesses — the floors there are not models but this programme's
-  arithmetic.
-- **RHTower supplies the analytic inputs**: the PM lane (power-damped Möbius Ramanujan weights,
-  second moment, small-damping variance, cofactor rows), the sieve library (Levinson's gcd form,
-  Möbius harmonic log rate, Gallagher's range, prime-window levels, Matomäki–Teräväinen
-  coefficients), the zero-density exponents, the CHMD prime-chain source factorization and
-  balanced nodal graph, the Liouville summatory criterion, the floor-transform harmonic inverse
-  and the zeta-residue calculus.
+Read the receivers in §1.2 before the many finite identities. Sections 2 and 3.1–3.8 explain
+what the observer measures; §§3.9–3.11 explain recovery and its price; §§3.16–3.17 explain
+why signs and the analytic continuation of the actual source decide the receiver.
 
 ---
 
@@ -1400,7 +1228,85 @@ of primes. For the Möbius weight the series is $1/\zeta(s+\varepsilon)$, whose 
 $\operatorname{Re}s=1/2$ are the zeros of $\zeta$ with $\operatorname{Re}\rho>1/2+\varepsilon$; these are
 what a bound on the Möbius receiver must exclude, and no sign-blind datum can see them.
 
-### 3.17 Bridges
+### 3.17 Mellin continuation and the horizon-limit boundary
+
+The receiver is also an analytic regularity condition. Write
+$C(s)=\sum_d c(d)d^{-s}$, $m=C(1)$ and
+$\Phi(s)=\sum_n A_c(n)(n^{-s}-(n+1)^{-s})$.
+A paid receiver makes $\Phi$ holomorphic on $\Re s>1/2$: Cauchy–Schwarz against
+$1/(n(n+1))$ controls the Mellin cells locally uniformly. Where the original series
+converges inside the strip, $\Phi(s)=\zeta(s)(C(s)-m)$.
+Thus the **product** continues holomorphically; division by $\zeta$ gives a meromorphic
+continuation of $C-m$, not an unconditional zero-free half-plane
+([APaidReceiverContinuesTheDirichletSeriesAcrossItsAbscissa](APaidReceiverContinuesTheDirichletSeriesAcrossItsAbscissa.lean)).
+
+At a real convergence boundary $a\in(1/2,1)$, $\zeta(a)\ne0$, so the continued
+$C$ is analytic there. Its approach to its limiting value is Lipschitz, and a
+nonzero two-sided power law $|C(a+u)-C(a)|\asymp u^\alpha$ has positive integer
+exponent. Under the explicit logarithmic prime-mean hypothesis
+`Σ_p f(p)p^(−w) = ν log(1/(w−1)) + O(1)`, a real completely multiplicative
+pattern with `|f(p)| ≤ 1` can be paid at `0 < ε < 1/2` only if `ν ∈ {0, −1}`.
+For a sign pattern with the corresponding logarithmic flipped-prime density this
+means density `1/2` or `1`. These are necessary conditions, not sufficient ones;
+a mere informal density heuristic is not the hypothesis of the theorem.
+
+At half damping the real boundary lies on the edge of the holomorphy domain,
+so the replacement is an energy identity. For `|c(d)| ≤ K d^(−1/2)` and
+$1/2<\sigma<1$, with $G(s)=\zeta(s)(C(s)-m)$,
+$$
+\sum_n A_c(n)^2\bigl(n^{-2\sigma}-(n+1)^{-2\sigma}\bigr)
+=\frac{\sigma}{\pi}\int_{\mathbb R}
+\left|\frac{G(\sigma+it)}{\sigma+it}\right|^2dt.
+$$
+Uniform line-energy bounds as $\sigma\downarrow1/2$ are equivalent to payment
+([TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries](TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries.lean)).
+Pointwise control at the real boundary is weaker than this whole-line condition.
+
+The pole law also has a constructive converse. For the smooth power
+$q(d)=d^{-\varepsilon}$, `0 < ε < 1/2`, and every critical Wiener kernel $k$,
+$$
+\operatorname{ReceiverBounded}(k*q)
+\iff \sum_j k(j)j^{-(1-\varepsilon)}=0.
+$$
+Each pole-free dilation has energy $O(1/j)$; Minkowski sums them with the
+critical norm $\sum_j|k(j)|j^{-1/2}$
+([CriticalWienerPerturbationsOfTheSmoothPowerAreDecidedAtThePole](CriticalWienerPerturbationsOfTheSmoothPowerAreDecidedAtThePole.lean)).
+This extends the finite-kernel hyperplane to the whole algebra in the strict
+sub-half range. General necessity already works for kernels absolutely
+summable at the abscissa, a weaker requirement than critical Wiener summability
+([APaidReceiverBoundsTheDirichletSeriesUpToItsAbscissa](APaidReceiverBoundsTheDirichletSeriesUpToItsAbscissa.lean)).
+
+**The half-damping logarithmic threshold.** At $\varepsilon=1/2$, vanishing
+$K(1/2)$ alone is insufficient on the full critical Wiener algebra. The exact sufficient
+logarithmic weight is
+$\sum_j|k(j)|j^{-1/2}\sqrt{1+\log j}<\infty$: on this class,
+$\operatorname{ReceiverBounded}(k*d^{-1/2})\iff K(1/2)=0$
+(`receiverBounded_dirichletConv_unit_half_iff`). The extra factor comes from the harmonic
+sum below each dilation scale, whose pole-free energy is $O((1+\log j)/j)$.
+A lacunary kernel supported at $J_r=2^{4^{r+1}}$, with coefficient
+$2^{-(r+1)}\sqrt{J_r}$ and a compensating coefficient $-1$ at $1$, lies in every class with
+$(1+\log j)^\alpha$, $0\le\alpha<1/2$, and has $K(1/2)=0$, but is not paid
+(`halfDamped_hyperplaneLaw_logarithmic_threshold`). This proves sharpness among these logarithmic
+power weights, not necessity of that absolute weight for each individual paid kernel.
+
+The obstruction is a stronger real-axis necessary law: under absolute Dirichlet convergence
+for every real exponent above $1/2$, a paid source satisfies
+$\sqrt u\,|C(1/2+u)-m|\to0$ as $u\downarrow0$
+(`tendsto_sqrt_mul_abs_dirichletSeries_sub_mean`). It follows by splitting the Mellin pairing
+into a finite head and a tail of arbitrarily small energy. It is necessary, not a replacement
+for the complete vertical-line boundary-energy criterion
+([TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold](TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold.lean)).
+
+Finally, centre every dyadic row at **its own** finite mean. Uniformly paid rows
+always pay their limit when the mean converges. The converse holds throughout
+$\mathcal C(K,\varepsilon)$ exactly from $\varepsilon=1/2$ onwards. Below half
+damping, lacunary zero-mean dipoles give a paid signed weight whose rows have
+unbounded energy: a horizon can cut a cancelling dipole in half and retain a
+large mean drift. This is the sharp classification, not an unresolved exchange
+of limits
+([TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping](TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping.lean)).
+
+### 3.18 Bridges
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit
 the Ingham–Huxley, Huxley $12/5$ and density-hypothesis exponents, are
@@ -1557,22 +1463,25 @@ classification yet.
 **The parity pair.** Below half damping the receiver of a weight is not a function of its
 sign-blind data, and every known pair is decided by a pole at $s=1-\varepsilon$. The equivalence
 half of the lane is settled: the damping threshold of the Möbius receiver is the zero width, so RH
-is admission along any sequence of dampings tending to $0$ and nothing weaker than an accumulation
-is worth anything. What remains is one unconditional bound at one fixed $\varepsilon<\tfrac12$, and
-by the closure of the blind class it must be read from signed data. Open: the pole law
-for kernels outside the critical Wiener algebra, where floor sums lose a logarithm; whether a
-completely multiplicative $\pm1$ sign whose $-1$-primes have relative density $\delta$ is paid at
-half damping exactly when $\delta>1/4$ (the heuristic $F\approx\zeta^{1-2\delta}$; only the sparse
-necessary condition is proved); whether signed rows can be uniformly bounded while their pointwise
-limit is unpaid, or conversely (positivity forces commutation); and a quantitative form of the
-logarithmic hierarchy, bounding the receiver by finitely many logarithmic moments with an explicit
-loss.
+is admission along a positive damping sequence tending to $0$. A single admitted damping is a
+weaker result; the zero-width dictionary uses a boundary at which admitted dampings accumulate. What remains is one unconditional bound at one fixed $\varepsilon<\tfrac12$, and
+by the closure of the blind class it must be read from signed data. The smooth-power classification holds for all critical Wiener kernels at strict
+sub-half damping, and necessity extends to kernels summable only at the abscissa (§3.17).
+At half damping the hyperplane law has the sharp `√log` absolute weight (§3.17); smaller
+logarithmic power weights admit a pole-free lacunary counterexample. Open directions include
+criteria for individual kernels beyond these absolute classes and quantitative estimates from
+signed logarithmic data that control the complete boundary energy.
+Prime-density heuristics must respect the analytic integer-order obstruction below half
+damping and the full vertical-line energy at half damping. The signed horizon-limit
+question is settled for the damped classes: bounded rows pay the limit, but a paid limit
+need not have uniformly paid rows below one half. The arithmetic task is to identify which
+additional structure of the Möbius row prevents that dipole obstruction.
 
 ### Research topics toward the shared target
 
 1. **From separation to a bound.** The parity pairs exist at every damping `ε ≤ 1/2` and the
    observables that separate them are classified: first-order data at prime powers, the logarithmic
-   moment hierarchy, the pole value `K(1 − ε)` and its Taylor coefficients (mechanism 5). Find an
+   moment hierarchy, the pole value `K(1 − ε)` and its Taylor coefficients of §3.16. Find an
    estimate that turns one of them into a bound on the actual Möbius receiver at one fixed
    `ε < 1/2`, with its exact loss; this is the Type-II input the shared target needs.
 2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,

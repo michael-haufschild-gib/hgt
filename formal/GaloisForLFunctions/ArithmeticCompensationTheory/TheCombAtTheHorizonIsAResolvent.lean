@@ -192,7 +192,7 @@ theorem abs_combDepthSum_sub_shells_le {g : ℝ → ℝ} {M h ω : ℝ} (hg : �
               combWeight p * (g (combDepth r p) - g (K * h)) by ring, abs_mul,
             abs_of_nonneg (combWeight_nonneg p), mul_comm ω]
           exact mul_le_mul_of_nonneg_left (hω _ _ hclose) (combWeight_nonneg p)
-        rw [sum_range_succ]
+        rw [Finset.sum_range_succ]
         push_cast
         calc |combDepthSum g r 0 - (∑ k ∈ range K, g (k * h) * combShellMass r h k +
               g (K * h) * combShellMass r h K) - combDepthSum g r ((K + 1) * h)|
@@ -269,7 +269,7 @@ theorem integrableOn_mul_horizonDensity {g : ℝ → ℝ} {M : ℝ} (hgc : Conti
     (Eventually.of_forall fun u => by rw [Real.norm_eq_abs]; exact hg u)
 
 /-- `|∫_{Ioi c} g ½e^{−u/2}| ≤ M e^{−c/2}` when `|g| ≤ M`. -/
-theorem abs_integral_Ioi_mul_horizonDensity_le {g : ℝ → ℝ} {M : ℝ} (hgc : Continuous g)
+theorem abs_integral_Ioi_mul_horizonDensity_le {g : ℝ → ℝ} {M : ℝ}
     (hg : ∀ t, |g t| ≤ M) (c : ℝ) :
     |∫ u in Ioi c, g u * horizonDensity u| ≤ M * Real.exp (-c / 2) := by
   have hint : IntegrableOn (fun u => M * horizonDensity u) (Ioi c) :=
@@ -282,9 +282,9 @@ theorem abs_integral_Ioi_mul_horizonDensity_le {g : ℝ → ℝ} {M : ℝ} (hgc 
   exact h
 
 /-- The horizon law has total mass one, so `|I(g)| ≤ M`. -/
-theorem abs_horizonIntegral_le {g : ℝ → ℝ} {M : ℝ} (hgc : Continuous g) (hg : ∀ t, |g t| ≤ M) :
+theorem abs_horizonIntegral_le {g : ℝ → ℝ} {M : ℝ} (hg : ∀ t, |g t| ≤ M) :
     |horizonIntegral g| ≤ M := by
-  have h := abs_integral_Ioi_mul_horizonDensity_le hgc hg 0
+  have h := abs_integral_Ioi_mul_horizonDensity_le hg 0
   simpa [horizonIntegral] using h
 
 theorem horizonIntegral_sub {g₁ g₂ : ℝ → ℝ} {M₁ M₂ : ℝ} (hc₁ : Continuous g₁) (hc₂ : Continuous g₂)
@@ -300,7 +300,7 @@ theorem sum_expShellMass (h : ℝ) (K : ℕ) :
   induction K with
   | zero => simp
   | succ K ih =>
-      rw [sum_range_succ, ih, expShellMass]
+      rw [Finset.sum_range_succ, ih, expShellMass]
       push_cast
       ring
 
@@ -352,7 +352,7 @@ theorem abs_horizonIntegral_sub_shells_le {g : ℝ → ℝ} {M h ω : ℝ} (hgc 
     push_cast at hu2
     rw [abs_le]; constructor <;> nlinarith
   have hsum_exp := sum_expShellMass h K
-  have htail := abs_integral_Ioi_mul_horizonDensity_le hgc hg (K * h)
+  have htail := abs_integral_Ioi_mul_horizonDensity_le hg (K * h)
   have hexp0 := Real.exp_pos (-(K * h) / 2)
   rw [hsplit, hshells]
   calc |(∑ k ∈ range K, ∫ u in (k * h : ℝ)..((k + 1 : ℕ) : ℝ) * h, f u) +
@@ -373,7 +373,6 @@ theorem abs_horizonIntegral_sub_shells_le {g : ℝ → ℝ} {M h ω : ℝ} (hgc 
 theorem combShellMass_div (r h : ℝ) (k : ℕ) :
     combShellMass r h k / combMass r = combTail r (k * h) - combTail r ((k + 1) * h) := by
   simp only [combShellMass, combTail, sub_div]
-  ring_nf
 
 /-- **Depth statistics converge to the horizon law.** For `φ` bounded and uniformly continuous,
 `S_r^{−1} Σ_p w_p φ(u_p − v) → ∫_{u>0} φ(u − v) ½e^{−u/2} du`, uniformly in the translate `v`. -/
@@ -413,9 +412,10 @@ theorem eventually_abs_combAverage_sub_horizonIntegral_le {φ : ℝ → ℝ} {M 
       ε / 8 * ((K / ((K : ℝ) + 1)) * (M / (M + 1))) by field_simp; ring]
     have h1 : (K : ℝ) / ((K : ℝ) + 1) ≤ 1 := by rw [div_le_one hK1]; linarith
     have h2 : M / (M + 1) ≤ 1 := by rw [div_le_one hM1]; linarith
-    have h3 : 0 ≤ (K : ℝ) / ((K : ℝ) + 1) := by positivity
     have h4 : 0 ≤ M / (M + 1) := by positivity
-    nlinarith
+    calc ε / 8 * ((K / ((K : ℝ) + 1)) * (M / (M + 1))) ≤ ε / 8 * 1 :=
+          mul_le_mul_of_nonneg_left (mul_le_one₀ h1 h4 h2) (by positivity)
+      _ = ε / 8 := mul_one _
   have hMη : M * η ≤ ε / 16 := by
     rw [hηdef]
     have hK1 : (1 : ℝ) ≤ 16 * ((K : ℝ) + 1) := by have := Nat.cast_nonneg (α := ℝ) K; linarith
@@ -429,7 +429,7 @@ theorem eventually_abs_combAverage_sub_horizonIntegral_le {φ : ℝ → ℝ} {M 
   filter_upwards [eventually_abs_combTail_sub_le hη, eventually_combMass_pos] with r hT hS
   intro v
   set g : ℝ → ℝ := fun u => φ (u - v)
-  have hgc : Continuous g := hφ.comp (continuous_id.sub continuous_const)
+  have hgc : Continuous g := hφ.comp' (continuous_sub_right _)
   have hgM : ∀ t, |g t| ≤ M := fun t => hφM _
   have hgω : ∀ x y, |x - y| ≤ h → |g x - g y| ≤ ε / 8 := hω v
   -- the two shell comparisons
@@ -484,7 +484,8 @@ theorem eventually_abs_combAverage_sub_horizonIntegral_le {φ : ℝ → ℝ} {M 
             ∑ k ∈ range K, g (k * h) * (combShellMass r h k / combMass r)) +
           (∑ k ∈ range K, g (k * h) * (combShellMass r h k / combMass r) -
             ∑ k ∈ range K, g (k * h) * expShellMass h k) +
-          (∑ k ∈ range K, g (k * h) * expShellMass h k - horizonIntegral g)| := by ring_nf
+          (∑ k ∈ range K, g (k * h) * expShellMass h k - horizonIntegral g)| := by
+        congr 1; ring
     _ ≤ (ε / 8 + M * combTail r (K * h)) + 2 * K * M * η +
           (ε / 8 + M * Real.exp (-(K * h) / 2)) := by
         refine (abs_add_le _ _).trans (add_le_add ((abs_add_le _ _).trans
@@ -518,8 +519,7 @@ def horizonAutoCorr (F : ℝ → ℝ) (v : ℝ) : ℝ := horizonIntegral (fun u 
 
 theorem abs_horizonAutoCorr_le (hF : Continuous F) (hFc : HasCompactSupport F) (v : ℝ) :
     |horizonAutoCorr F v| ≤ autoCorr F 0 :=
-  abs_horizonIntegral_le ((continuous_autoCorr hF hFc).comp (continuous_id.sub continuous_const))
-    fun t => abs_autoCorr_le_autoCorr_zero hF hFc _
+  abs_horizonIntegral_le fun _ => abs_autoCorr_le_autoCorr_zero hF hFc _
 
 theorem uniformContinuous_horizonAutoCorr (hF : Continuous F) (hFc : HasCompactSupport F) :
     UniformContinuous (horizonAutoCorr F) := by
@@ -532,15 +532,14 @@ theorem uniformContinuous_horizonAutoCorr (hF : Continuous F) (hFc : HasCompactS
   have hcA := continuous_autoCorr hF hFc
   have hbound := fun t => abs_autoCorr_le_autoCorr_zero hF hFc t
   rw [Real.dist_eq, horizonAutoCorr, horizonAutoCorr,
-    horizonIntegral_sub (hcA.comp (continuous_id.sub continuous_const))
-      (hcA.comp (continuous_id.sub continuous_const)) (fun t => hbound _) (fun t => hbound _)]
+    horizonIntegral_sub (hcA.comp' (continuous_sub_right _))
+      (hcA.comp' (continuous_sub_right _)) (fun t => hbound _) (fun t => hbound _)]
   have hpt : ∀ u, |autoCorr F (u - a) - autoCorr F (u - b)| ≤ ε / 2 := fun u => by
     have : dist (u - a) (u - b) < δ := by
       rw [Real.dist_eq, show u - a - (u - b) = b - a by ring, abs_sub_comm]
       rwa [Real.dist_eq] at hab
     exact (hδA this).le
-  exact (abs_horizonIntegral_le ((hcA.comp (continuous_id.sub continuous_const)).sub
-    (hcA.comp (continuous_id.sub continuous_const))) hpt).trans_lt (by linarith)
+  exact (abs_horizonIntegral_le hpt).trans_lt (by linarith)
 
 /-- The comb energy reads only depth differences. -/
 theorem combEnergy_eq_depthSum (r : ℝ) :
@@ -549,7 +548,7 @@ theorem combEnergy_eq_depthSum (r : ℝ) :
         combDepthSum (fun u => autoCorr F (u - combDepth r q)) r 0 := by
   rw [combEnergy, sum_comm]
   refine sum_congr rfl fun q _ => ?_
-  simp only [combDepthSum, sub_zero, div_two, show r - 0 / 2 = r by ring, mul_sum]
+  simp only [combDepthSum, show r - 0 / 2 = r by ring, mul_sum]
   refine sum_congr rfl fun p _ => ?_
   rw [combDepth_sub_combDepth]
   ring
@@ -578,17 +577,25 @@ theorem tendsto_combEnergy_div_combMass_sq_horizonEnergy (hF : Continuous F)
   have hJ : horizonEnergy F = horizonIntegral (horizonAutoCorr F) := rfl
   -- inner averages are uniformly close to `G`
   have hinner : |combEnergy F (combPrimes r) combWeight / combMass r ^ 2 -
-      combDepthSum (horizonAutoCorr F) r 0 / combMass r| ≤ ε / 2 := by
+      combDepthSum (horizonAutoCorr F) r 0 / combMass r| ≤ ε / 3 := by
+    have hD : combDepthSum (horizonAutoCorr F) r 0 =
+        ∑ q ∈ combPrimes r, combWeight q * horizonAutoCorr F (combDepth r q) := by
+      simp only [combDepthSum, show r - 0 / 2 = r by ring]
+    have e1 : ∑ q ∈ combPrimes r, combWeight q *
+        (combDepthSum (fun u => autoCorr F (u - combDepth r q)) r 0 / combMass r -
+          horizonAutoCorr F (combDepth r q)) =
+        (∑ q ∈ combPrimes r, combWeight q *
+          combDepthSum (fun u => autoCorr F (u - combDepth r q)) r 0) / combMass r -
+        ∑ q ∈ combPrimes r, combWeight q * horizonAutoCorr F (combDepth r q) := by
+      rw [sum_div, ← sum_sub_distrib]
+      exact sum_congr rfl fun q _ => by ring
     have heq : combEnergy F (combPrimes r) combWeight / combMass r ^ 2 -
         combDepthSum (horizonAutoCorr F) r 0 / combMass r =
         (∑ q ∈ combPrimes r, combWeight q *
           (combDepthSum (fun u => autoCorr F (u - combDepth r q)) r 0 / combMass r -
             horizonAutoCorr F (combDepth r q))) / combMass r := by
-      rw [combEnergy_eq_depthSum, combDepthSum]
-      simp only [show r - 0 / 2 = r by ring]
+      rw [e1, combEnergy_eq_depthSum, hD]
       field_simp
-      rw [← sum_sub_distrib]
-      exact sum_congr rfl fun q _ => by ring
     rw [heq, abs_div, abs_of_pos hS, div_le_iff₀ hS]
     refine (abs_sum_le_sum_abs _ _).trans ?_
     calc ∑ q ∈ combPrimes r, |combWeight q *
@@ -702,7 +709,8 @@ theorem horizonAutoCorr_eq (v : ℝ) :
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   simp only [horizonDensity]
   rw [show -(u - v) / 2 = -u / 2 + v / 2 by ring, Real.exp_add]
-  have h : Real.exp (-v / 2) * Real.exp (v / 2) = 1 := by rw [← Real.exp_add]; simp
+  have h : Real.exp (-v / 2) * Real.exp (v / 2) = 1 := by
+    rw [← Real.exp_add, show -v / 2 + v / 2 = 0 by ring, Real.exp_zero]
   calc autoCorr F (u - v) * (Real.exp (-u / 2) / 2)
       = autoCorr F (u - v) * (Real.exp (-u / 2) / 2) * (Real.exp (-v / 2) * Real.exp (v / 2)) := by
         rw [h, mul_one]
@@ -730,7 +738,7 @@ theorem horizonEnergy_pos (hF : Continuous F) (hFc : HasCompactSupport F) {x₀ 
     rw [← hJ, mul_zero] at h
     have h0 : horizonAutoCorr F (-w) = 0 := by nlinarith [sq_nonneg (horizonAutoCorr F (-w))]
     rw [horizonAutoCorr_eq, neg_neg] at h0
-    have hc : Real.exp (-(-w) / 2) / 2 ≠ 0 := by positivity
+    have hc : Real.exp (w / 2) / 2 ≠ 0 := by positivity
     exact (mul_eq_zero.mp h0).resolve_left hc
   -- every interval integral of `ψ` vanishes, so `ψ ≡ 0`
   have hint : ∀ b, ∫ s in (0 : ℝ)..b, ψ s = 0 := fun b => by

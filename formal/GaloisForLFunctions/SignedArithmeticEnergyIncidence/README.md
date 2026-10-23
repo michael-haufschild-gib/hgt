@@ -5,11 +5,11 @@ scale — and which of those constraints survive a change of coordinates, a regu
 completion?
 
 Signed arithmetic energy and incidence (SAEI) is the interface theory of the corpus's critical
-energy programmes. It owns no critical form of its own. It studies the four operations that every
-closing argument performs on one: **paying** a signed form out of local resources, **completing**
+energy programmes. It owns no critical form of its own. It studies four operations used in
+arguments about these forms: **paying** a signed form out of local resources, **completing**
 it in a new norm, **transporting** it along a parameter, and **decomposing** its adverse sequences.
-Each operation has a sharp law, proved here in a general finite or Hilbert-space setting, and each
-law is instantiated on a literal arithmetic object of the corpus: the prime lag charges of
+The programme proves sharp laws in finite or Hilbert-space settings and develops their arithmetic
+applications through: the prime lag charges of
 `ArithmeticIncidencePositivity`, the damped Möbius source and its damping chain of
 `BezoutValuationIncidence`, and the continuation criterion of
 `ArithmeticContinuationAndCriticalEnergy`. Every statement is unconditional and names its source,
@@ -17,91 +17,39 @@ its domain, its norm and its parameter range.
 
 ---
 
-## The place of the programme
+## Place in the research
 
-The closing problems of the corpus split into a list of open obstacles (the companion report
-`docs/reports/review-2210/hard-obstacles-summary.md`). Five of them — signed damping continuation
-(O2), arithmetic structure beyond generic dispersion (O3), global positivity with one shared budget
-(O4), width and visibility (O5) and faithful completion (O7) — meet at three interfaces, and SAEI is
-the theory of those interfaces:
+SAEI studies three transfers on the critical arithmetic form: signed incidence into a shared
+budget, a source expansion into its receiver norm, and a parameter path into a continuation bound.
+The finite and Hilbert-space theorems specify when those transfers preserve information. Applying
+them to the whole arithmetic source still requires estimates uniform in the growing cutoff.
 
-1. **Arithmetic cancellation → norm bound.** Which exact identity of the literal Möbius or prime row
-   excludes the generic bad coefficients, and in which norm does its gain survive? SAEI answers
-   the structural half: in the receiver norm the damped source is the Möbius-weighted series of
-   the residue modes, the modes have size `≍ d^{−1/2}`, and therefore *sign-blind summation stops
-   exactly at half damping*. Below it the signs of `μ` are the estimate.
-2. **Local payment → global conservation.** How do one-strip or one-block gains combine without
-   spending a resource twice? SAEI proves the exact dividing line: *local payment is lossless
-   exactly on balanced incidence*, and on complete overlap patterns balance is the vanishing of the
-   frustration of every triangle. A rank-one polar charge is frustrated on any three points and
-   can never be paid pair by pair.
-3. **Reconstruction → quantitative control.** Dense eigenmodes, exact recovery and faithful
-   divisors identify an object without bounding it. SAEI makes the bound a statement about the
-   right norm: the critical energy is the `ℓ²` energy of the damping chain's orbit of the
-   reciprocal `1/k`; an `ℓ²`-bounded chain would be a receiver; and *no backward stability
-   estimate exists*, so continuation to smaller damping must read the source vector itself.
+The central examples are concrete. A balanced finite sign pattern makes positivity equivalent to
+local allocation; a frustrated pattern may require a global square. The damped Möbius source is
+the orbit of `1/k` under the centred arithmetic chain, and admission means that this orbit lies in
+`ℓ²`. Its residue modes have norm `≍ d^{−1/2}`, so their absolute triangle-inequality sum converges
+exactly above half damping. Backward operator stability fails, leaving source-specific cancellation
+as the continuation problem.
 
-**The theorem passport.** Every SAEI statement carries seven data, and a statement missing one of
-them is not yet a theorem of the programme: the **source** (which arithmetic object), the
-**domain** (which class of profiles, rows or configurations), the **norm** (in which the bound is
-stated), the **observation** (what the argument reads of the source), the **signed ledger** (which
-positive and negative pieces are kept separately), the **parameter range** (damping, aperture,
-rank, height), and the **limit order** (which limits are taken, in which order, under which
-uniformity).
+| Programme | Connection |
+|---|---|
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies full-source positivity and finite Schur reductions; SAEI checks the norm and polar terms preserved by those reductions. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies tests and countermodels for claims that recovery or restricted positivity controls a complete source. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Preserves finite arithmetic incidence and boundary terms before the horizon limit. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies the compact `c₀` damping chain, entrance law and dense residue modes; SAEI identifies the source orbit and the receiver norm. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies continuum ground-state transforms. SAEI's finite signed transform separates a positive supersolution from a valid payment certificate. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Supplies width and floor dictionaries; SAEI's polynomial companion model explores how signed sampling might improve an unsigned depth estimate. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Supplies strips, prime charges and shared surplus; local allocations prevent double spending, while sine trains sharpen finite first-lag capacities. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Supplies admission and its exact signed averaged criterion; SAEI identifies the radial loss and the source orbit it measures. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Supplies the language of readings and their limits; each SAEI obstruction names the information a proposed estimate discarded. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Keeps mixed source terms and recovery in the continuation budget; its comb laws explain why large quadratic majorants need not imply large signed charge. |
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Supplies the hyperbolic pole plane and Cartesian prime incidence; SAEI computes payment costs and finite train capacities on related forms. |
 
-### This programme's role
-
-SAEI is the layer between the faces of the critical form and the closing estimate. It hands the
-other programmes three kinds of results:
-
-- **Sharp dividing lines** for methods: a local allocation succeeds exactly on balanced incidence; a
-  completion keeps the sign exactly when it keeps the polar functional; a sign-blind summation
-  succeeds exactly above half damping; a backward operator estimate never exists.
-- **Exact extremals**: the sine trains, not the resonant trains, carry the largest single-prime
-  charge at finite length; on two aligned towers the prime capacities add.
-- **Reformulations in the right norm**: admission as `ℓ²`-membership of a semigroup orbit; the
-  relative loss as a radial rate.
-
-In the shared units of the corpus most of these results count as **zero** — they are dividing
-lines, extremals and dictionaries, not new apertures, exponents or dampings. Their value is that a
-proposed estimate can be checked against them before it is attempted: an estimate that crosses a
-dividing line without the input that line names is refuted in advance.
-
-### How the programme connects to the other programmes
-
-- **Arithmetic Incidence Positivity** supplies the strips, atoms, trains and the global incidence
-  ledger. SAEI's local–global principle is the abstract form of AIP's allocation problem (research
-  topic 6 of AIP): an allocation of the shared surplus to overlapping strips is a local allocation
-  of a signed incidence form. The frustration theorems say why the global ledger cannot be reduced
-  to own-strip payments, and the train theorems sharpen AIP's resonant-train envelopes at finite
-  length (`SineTrainsAreExtremalForOnePrime`, `TowerGridCapacitiesAdd` against AIP's
-  `ResonantTrainWitness` and `BiLatticeTrainWitness`).
-- **Arithmetic Criticality Theory** supplies the gauges. A positive gauge with nonnegative action is
-  a positive supersolution, and the ground-state transform of `SignedIncidenceForms` is the finite
-  form of ACT's ground-state representation. The balanced theorem says exactly when a positive
-  gauge must exist; the frustration theorems say when no positive gauge can pay the form and a
-  sign-changing gauge (ACT research topic AC-2) is unavoidable.
-- **Bézout–Valuation Incidence** supplies the damping chain `C_η` on `c₀`, its compactness, its
-  semigroup law, the residue modes and their `c₀`-density, and the entrance law. SAEI moves these
-  to the receiver norm (`TheReceiverIsTheChainOrbitOfTheReciprocal`,
-  `ResidueModesAndBackwardContinuation`, `TheSourceIsTheDampedMoebiusResidueSeries`): it identifies
-  the receiver's coordinate as `ℓ²` on the chain coordinate, shows that the uncentred transition is
-  unbounded there at every damping, and answers BVI research topic 6 (carry the chain to the
-  receiver's norm) in the form that matters: the orbit of `1/k`, not the operator, must be bounded.
-- **Arithmetic Continuation and Critical Energy** supplies the exact continuation criterion (a
-  horizon-uniform bound on the integrated signed relative loss is admission). SAEI adds the radial
-  structure of that loss (`TheRadialLossLaw`) and the impossibility of a source-blind backward
-  estimate.
-- **Square-Root Threshold** supplies the width/rate dictionary and the local depth-mass hypothesis.
-  SAEI's polar defect and profile theorems are the abstract mechanisms behind its floors; the
-  signed sampling question (O5) is recorded below as an open topic of this programme.
-- **Scale-Signed Incidence Criticality** supplies the language of readings and resolution limits.
-  The sign-blind threshold is a resolution limit in that language: the reading that sees only
-  `|μ(d)|` has resolution exactly half damping.
-- **Trans-Horizon Incidence Mechanics, Bi-Scale Uncertainty, Arithmetic Positivity Theory** supply
-  the observation, recovery and restricted-family results whose quantitative transfer to the
-  receiver is SAEI's third interface; the sign-changing screw gauge (`SignChangingScrewGauge`)
-  supplies the one-signed and edge-profile charge laws that the balanced theorem explains.
+Start with signed incidence and comparison positivity, then chains and train capacities. For
+continuation, read the receiver-orbit identity before residue modes and their summation threshold.
+The profile and sampling theorems are abstract tools with separate arithmetic realization problems.
+Every proposed application must name its source, domain, norm, observation, retained signed terms,
+parameter range and order of limits.
 
 ---
 
@@ -119,16 +67,18 @@ of losing it.
 **Signed is substantive.** Replacing a signed ledger by magnitudes is the most common loss, and its
 price is now exact:
 
-- in the damping reading, the triangle inequality over the residue modes admits the source exactly
-  above half damping (`summable_signBlind_iff`, `admits_of_signBlind`), and the series with all
+- in the damping reading, the coefficient-envelope triangle inequality over the residue modes admits the source
+  above half damping and has no finite bound at or below it (`summable_signBlind_iff`, `admits_of_signBlind`), and the series with all
   Möbius signs replaced by `+1` has infinite receiver energy at every damping `0 < ε ≤ ½`
-  (`not_summable_positiveTwin`);
+  (`not_summable_positiveTwin`). This twin replaces the coefficients, including Möbius zeros;
+  it is a counterexample for the class `|a_d| ≤ 1`, not a proof about every conceivable reading
+  of `|μ|`. The actual Möbius source is admitted at `ε=½` by the corpus's separate endpoint argument;
 - in the incidence reading, replacing the sign pattern of the overlaps by its absolute values turns
   a frustrated pattern into a balanced one, and the theorems of §3 show that this is exactly where
   local payment stops being lossless.
 
-**Incidence is substantive.** Whether a positive form can be paid locally depends on which overlaps
-exist and on the signs they carry, not on their sizes: on a complete overlap pattern, local
+**Incidence is substantive.** Whether a positive form can be paid locally depends on budgets, magnitudes and signs. The **uniform guarantee over all magnitudes**
+has a sign-pattern classification: on a complete overlap pattern, local
 payment is lossless for *every* positive form realizing the pattern exactly when every triangle of
 the pattern is unfrustrated (`localPayment_lossless_iff`). The holonomy of a triangle is computed
 from the source before any profile or gauge is chosen. Density statistics of the overlaps do not
@@ -136,8 +86,8 @@ determine it.
 
 **Across scale is substantive.** The damping is the time of the chain: the damped Möbius source is
 the orbit `η ↦ C_η(1/k)` of the compact centered semigroup (`centeredOperator_orbit`). Continuation
-to smaller damping is backward evolution, and the semigroup has no bounded backward version in any
-of the norms in play (`not_backward_stable_l2`, `not_backward_stable_c0`). Every continuation
+to smaller damping is backward evolution, and the semigroup has no uniform backward stability estimate in either
+`c₀` or `ℓ²` (`not_backward_stable_l2`, `not_backward_stable_c0`). Every continuation
 estimate must therefore use the source vector and its arithmetic.
 
 ---
@@ -155,7 +105,7 @@ estimate must therefore use the source vector and its arithmetic.
 | Triangle holonomy | `c_ij c_jk c_ki`; switching invariant | `triangleHolonomy` |
 | Sign pattern, realization | symmetric `σ_ij = ±1`; `c` realizes `σ` if `c_ij σ_ij > 0` | `SignPattern`, `Realizes` |
 | Rank-one charge | `w_i w_j`, the square of `Σ w_i f_i` | `rankOneCoupling` |
-| Comparison form | same budgets, overlap charges `−|c_ij|` | `comparisonCoupling` |
+| Comparison form | same budgets, overlap charges `−\|c_ij\|` | `comparisonCoupling` |
 | Frustrated triangle | unit budgets, charge `κ` on three pairs | `triangleCoupling` |
 | Chain | budgets `d_k`, overlap charges `e_k` between `k`, `k+1` | `chainCoupling`, `chainEntry` |
 | Running sign | switching that aligns a chain | `chainSign` |
@@ -172,6 +122,7 @@ estimate must therefore use the source vector and its arithmetic.
 | Weak convergence | `⟪u_n, v⟫ → ⟪u, v⟫` for every `v` | `WeakConv` |
 | Compact negativity | `Q ≥ −(finite-rank charge) − ε‖·‖²` for every `ε > 0` | `CompactlyNegative`, `finiteRankCharge` |
 | Relative loss | `−2⟪u, u'⟫/(1 + ‖u‖²)` | `radialLoss` |
+| Local companion form, Lagrange price | `Σ_i p(γ_i)² − w p'(t)²`; `Σ_i ℓ_i'(t)²` | `companionForm`, `lagrangePrice` |
 
 **Words.**
 
@@ -182,14 +133,15 @@ estimate must therefore use the source vector and its arithmetic.
   frustrated when no switching aligns it. On complete patterns frustration is read off the
   triangles.
 - **Holonomy**: the product of the charges around a triangle. Negative holonomy is the aligned case.
-- **Supersolution**: a gauge `v > 0` with `Cv ≥ 0`. For aligned forms it is the same thing as a
-  local allocation; for frustrated forms it need not exist.
+- **Supersolution**: a gauge `v > 0` with `Cv ≥ 0`. For aligned forms it is a local allocation in
+  disguise (mechanism 2), and coercive aligned forms always have one (mechanism 3); a frustrated
+  positive form can have no local allocation at all (mechanism 6).
 - **Polar charge**: the square of one linear functional — the shape of the pole in every face of the
   critical form.
 - **Receiver norm of the chain**: `ℓ²` on the chain coordinate; it is the pronic energy of the
   prefix `P = n · C r`.
 - **Orbit**: `η ↦ C_η r`, the damped Möbius source as a function of the damping.
-- **Sign-blind**: an argument that reads only the absolute values of the Möbius coefficients.
+- **Sign-blind bound here**: the triangle-inequality majorant `Σ d^{−η}‖v_d‖`, using `|μ(d)| ≤ 1`.
 - **Adverse sequence**: unit-bounded profiles whose energy tends to a negative value.
 - **Escape**: an adverse sequence whose weak limit has nonnegative energy.
 
@@ -272,12 +224,21 @@ estimate must therefore use the source vector and its arithmetic.
 
 15. **Polar defect law.** `‖v‖² − Σ_j ⟪g_j, v⟫² ≥ 0` for all `v` iff the synthesis of the polar
     vectors is a contraction, `‖Σ c_j g_j‖² ≤ Σ c_j²` (`polarDefect_nonneg_iff`). In rank one the
-    ground ratio is exactly `1 − ‖g‖²`, attained on `g` (`polarDefect_ge`, `polarDefect_self`,
+    ground ratio for `g ≠ 0` is exactly `1 − ‖g‖²`, attained on `g` (`polarDefect_ge`, `polarDefect_self`,
     `polarDefect_nonneg_iff_norm_le_one`).
 16. **Completion keeps the sign exactly when it keeps the polar functional.** Positivity on a dense
     set transfers to the completion for a continuous polar functional
     (`polarDefect_nonneg_of_dense`); an unbounded polar functional leaves no floor at all
     (`exists_polarDefect_lt_of_unbounded`).
+
+**When sign changes can help.** For `Q(f)=E_c(f)−(Σg_i f_i)²`, nonpositive overlaps and
+nonnegative polar weights imply `Q(|f|)≤Q(f)` (`polarForm_abs_le`): testing nonnegative profiles
+already tests positivity. If `c` is coercive, solve `Cv=g`; inverse positivity gives `v≥0`, and
+`Q≥0` is equivalent to `Σg_i v_i≤1` (`polarForm_nonneg_iff_polarSolution`). This supplies a
+specific global polar-payment tool. A positive overlap can make an alternating two-point profile
+cheaper than its absolute value (`signChange_beats_abs`), but this is a statement about the
+incidence energy alone. One positive edge does not imply a frustrated cycle, and it need not
+outweigh the change in the polar charge. Switching the incidence also switches the polar weights.
 
 ### The damping chain in the receiver norm
 
@@ -301,18 +262,31 @@ estimate must therefore use the source vector and its arithmetic.
     (`summable_dyadicDifference_iff`) — so the first column lies in `ℓ²` iff `η` is admitted
     (`admits_iff_summable_firstColumn`, `riemannHypothesis_iff_firstColumn_summable`). The first
     test of `ℓ²`-boundedness of the chain is already the receiver.
-21. **Residue modes are the eigenmodes, and have receiver size `≍ 1/d`.** `C_η v_d = d^{−η} v_d`
+21. **Residue modes are eigenmodes, with squared receiver norm `≍ 1/d`.** `C_η v_d = d^{−η} v_d`
     (`centeredOperator_normalizedResidueMode`); `(d − 1)/d² ≤ ‖v_d‖²_{ℓ²} ≤ 2/d`
     (`tsum_sq_normalizedResidueProfile_ge`, `..._le`).
 22. **Backward continuation is ill-posed.** No `‖b‖ ≤ K ‖C_t b‖` holds in `ℓ²` or in `c₀`, for any
     `t > 0` (`not_backward_stable_l2`, `not_backward_stable_c0`); on `v_d` the ratio is `d^t`.
-23. **The source is the damped Möbius residue series.** `(C_η r)(n) = Σ_d μ(d) d^{−η} v_d(n)`
-    (`centeredOperator_reciprocal_eq_tsum`).
+23. **The source is the damped Möbius residue series.** For `η > 0`,
+    `(C_η r)(n) = Σ_{d≥1} μ(d) d^{−η} v_d(n)` (`centeredOperator_reciprocal_eq_tsum`), absolutely
+    at every fixed coordinate (`summable_residueTerm`). Indeed `v_d(n) ≤ 0` and
+    `|d^{−η}v_d(n)| ≤ d^{−1−η}`. Coordinatewise convergence is not convergence in `ℓ²`;
+    the latter is precisely the critical issue below the absolute-summation threshold.
 24. **The sign-blind threshold.** `Σ_d d^{−ε} ‖v_d‖_{ℓ²}` converges iff `ε > ½`
     (`summable_signBlind_iff`); the triangle inequality bounds every horizon by its square
     (`orbit_partial_energy_le`) and admits the source above half damping (`admits_of_signBlind`);
     the positive twin `Σ_d d^{−ε} v_d` has infinite receiver energy for `0 < ε ≤ ½`
-    (`not_summable_positiveTwin`, via `positiveTwin_le`).
+    (`not_summable_positiveTwin`, via `positiveTwin_le`). Thus a uniform bound for every coefficient
+    sequence `|a_d| ≤ 1` is impossible there. This obstruction does not contradict admission of
+    the actual signed source at `η=½`.
+
+**Extremality of the coefficient envelope.** For `ε>0` and `|a_d|≤d^{−ε}`, every residue mode
+is nonpositive, so `|Σ_d a_d v_d(n)|≤|Σ_d d^{−ε}v_d(n)|` at each coordinate
+(`abs_residueSeries_le_abs_positiveTwin`). Thus the positive twin is the extremal sign pattern
+of this envelope class. Every row in the class has finite receiver energy **iff `ε>½`**
+(`signBlind_admission_iff`); above the threshold one common triangle-inequality bound controls
+all finite horizons (`residueSeries_partial_energy_le`). The negative half quantifies over all
+rows of the envelope class, not over just the Möbius row or rows with its exact zero pattern.
 
 ### Adverse sequences
 
@@ -320,27 +294,42 @@ estimate must therefore use the source vector and its arithmetic.
     `Q(u_n) − Q(u) − Q(u_n − u) → 0` (`tendsto_energy_splitting`).
 26. **Adverse profiles cannot vanish under compact negativity.** If `Q` is compactly negative, it is
     weakly lower semicontinuous along bounded sequences (`energy_le_of_weakConv`); a unit-bounded
-    adverse sequence with `Q(u_n) → μ < 0` has a nonzero weak limit with `Q(u) ≤ μ ‖u‖²`
+    adverse sequence with `Q(u_n) → μ < 0` and `u_n ⇀ u` has `u ≠ 0` and `Q(u) ≤ μ ‖u‖²`
     (`adverse_weakLimit`). A form bounded below by one finite-rank charge is compactly negative
     (`compactlyNegative_of_finiteRank`).
 27. **Escape through a noncompact negative part.** For `Q = −‖·‖²` an orthonormal sequence is
     adverse with weak limit `0` (`adverse_escape_of_orthonormal`).
 
+### Signed sampling
+
+28. **On-line companions pay off-line depth (local model).** Near a height `t` take the source to be
+    a polynomial `p` of degree `< n` (its local degrees of freedom); on-line companions at heights
+    `γ_i` contribute `p(γ_i)²` and an off-line cluster of squared-depth mass `w` contributes
+    `−w p'(t)²` (`companionForm`). With at least `n` distinct companions the Lagrange identity
+    `p'(t) = Σ_i p(γ_i) ℓ_i'(t)` (`derivative_eval_eq_sum`) gives `Q ≥ 0` whenever
+    `w Σ_i ℓ_i'(t)² ≤ 1` (`companions_pay`, price `lagrangePrice`); with two degrees of freedom
+    more than companions and `t ≠ γ_i` for all `i`, `(X − t) Π_i (X − γ_i)` defeats every positive depth mass
+    (`few_companions_never_pay`). Count alone is not a payment criterion: the locations determine
+    the Lagrange price, which must satisfy `w Λ(t) ≤ 1`. This is a polynomial model, not an exact
+    truncation of a Paley–Wiener source or of the full off-line zero form.
+
 ### Continuation
 
-28. **The radial loss law.** The relative loss `−2⟪u, u'⟫/(1 + ‖u‖²)` is the derivative of
+29. **The radial loss law.** The relative loss `−2⟪u, u'⟫/(1 + ‖u‖²)` is the derivative of
     `−log(1 + ‖u‖²)` (`hasDerivAt_log_one_add_energy`); tangential motion is free
     (`radialLoss_add_tangential`, `radialLoss_of_inner_eq_zero`, `log_energy_eq_of_tangential`);
     `|L| ‖u‖ ≤ |⟪u, u'⟫|` and `|L| ≤ ‖u'‖` (`abs_radialLoss_mul_norm_le`, `abs_radialLoss_le`),
-    so the log-energy moves by at most the path length (`abs_log_energy_sub_le`).
+    so a uniform tangent bound `‖u'‖ ≤ B` gives log-energy change at most `B(c−a)`
+    (`abs_log_energy_sub_le`).
 
 ---
 
 ## 4. Foundational pillar theorems
 
-**Pillar I — the signed local–global principle.** For balanced signed incidence forms, positivity,
-local payability and (for aligned forms) existence of a positive supersolution coincide
-(`nonneg_iff_locallyPayable_of_isBalanced`, `locallyPayable_of_supersolution`). On complete overlap
+**Pillar I — the signed local–global principle.** For balanced signed incidence forms, positivity
+and local payability coincide (`nonneg_iff_locallyPayable_of_isBalanced`). For aligned forms, a
+positive supersolution produces a local allocation (`locallyPayable_of_supersolution`); for a
+balanced form this applies after switching to aligned coordinates. On complete overlap
 patterns, local payment is lossless for every positive form realizing a sign pattern iff every
 triangle of the pattern has negative holonomy (`localPayment_lossless_iff`). For every form, local
 payability is positivity of its comparison form, and the exact cost of local payment is the gap
@@ -359,18 +348,23 @@ is `ℓ²`-membership, already equivalent to `ℓ²`-membership of the chain's f
 `ℓ²`-boundedness of the chain is sufficient, backward stability is impossible, and sign-blind
 summation stops exactly at half damping (`admits_iff_summable_orbit`,
 `admits_iff_summable_firstColumn`, `admits_of_chain_l2_bounded`, `not_backward_stable_l2`,
-`summable_signBlind_iff`, `not_summable_positiveTwin`).
+`summable_signBlind_iff`, `signBlind_admission_iff`, `not_summable_positiveTwin`).
 
 **Pillar IV — train capacities.** A single prime's first-lag charge on a train of length `M + 1` is
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned two-tower grids the
 capacities add (`autoCorr_amplitudeTrain_first_le`, `autoCorr_sineTrain_first`,
 `grid_joint_capacity_attained`).
 
-**Pillar V — profile compactness.** Under compact negativity, adverse sequences converge weakly to
-genuine adverse profiles; without it they escape (`adverse_weakLimit`,
+**Pillar V — profile compactness.** Under compact negativity, a weak limit of a bounded adverse
+sequence remains nonzero and adverse; without it escape can occur (`adverse_weakLimit`,
 `adverse_escape_of_orthonormal`).
 
-**Pillar VI — the radial loss law.** Signed continuation charges only the radial rate of the
+**Pillar VI — signed sampling.** In the local model, off-line depth is paid by on-line companions
+at the Lagrange price when they are at least as many as the source's local degrees of freedom, and
+never when the source has two degrees of freedom more (`companions_pay`,
+`few_companions_never_pay`).
+
+**Pillar VII — the radial loss law.** Signed continuation charges only the radial rate of the
 source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tangential`,
 `abs_log_energy_sub_le`).
 
@@ -381,84 +375,47 @@ source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tang
 | Trap | What is true instead |
 |---|---|
 | "Each atom is paid by its own strip, so the form is paid." | Own-strip payments are a local allocation only if the shares are drawn once from each budget. Overlapping strips form a signed incidence pattern; a frustrated cycle in it can make a positive form unpayable (mechanism 8). |
-| "Positivity of a form implies a positive gauge." | Only for balanced forms. Frustrated forms can be positive with no positive supersolution and no local allocation (mechanisms 5–6). |
+| "Positivity of a form implies a positive gauge." | For balanced forms positivity implies local payment (mechanism 4). Frustrated forms can be positive with no local allocation, hence with no gauge satisfying weighted dominance (mechanisms 2, 5–6). |
 | Treating the pole as a local charge. | A rank-one charge on three or more points is never locally payable (mechanism 5). The pole must be paid by a global dual-norm bound (mechanism 15). |
 | Reading the frustrated triangle as an artefact of equal weights. | The converse construction of mechanism 8 realizes every frustrated pattern on every complete overlap graph. |
-| "The resonant (unit) train is the extremal adverse direction." | For several lags at once the unit train attains the Euler envelopes; for one lag at finite length the sine train is extremal and the unit train is strictly worse from `M = 2` on (mechanism 13). |
+| "The resonant (unit) train is the extremal adverse direction." | For several lags at once long unit trains approach the Euler envelopes; for one lag at finite length the sine train is extremal and the unit train is strictly worse from `M = 2` on (mechanism 13). |
 | Expecting cross-prime cancellation on aligned trains. | On two-tower grids the single-prime capacities add exactly (mechanism 14). |
 | Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 17). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 19). |
 | "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 22). |
 | "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 24). |
-| Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 28). |
-| "An adverse sequence has an adverse limit." | Only under compact negativity; with a noncompact negative part the weak limit can be zero (mechanisms 26–27). |
+| Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 29). |
+| "An adverse sequence has an adverse limit." | Compact negativity preserves adversity in an existing weak limit; a noncompact negative part can allow a zero limit (mechanisms 26–27). |
+| Treating a frustrated pattern as a failure for every realization. | Frustration permits an unpayable positive form; sufficiently large diagonal budgets can still pay a particular frustrated form. |
 | Treating a finite-dimensional duality as a cofinal certificate. | The finite theorems here have no uniformity in the number of points; transporting them to a growing arithmetic family is a separate estimate. |
 
 ---
 
-## 6. The questions and what is answered
+## 6. How the interfaces constrain a research argument
 
-The programme was proposed with eight questions. Each answer below says exactly what is proved, in
-which class, and what remains.
+**Payment must keep its quantifiers.** Balance guarantees that every nonnegative realization is
+payable. Frustration supplies counterexamples to that universal guarantee; it does not classify
+the actual continuum adverse profiles or force failure of every allocation. To apply the finite
+law to AIP, first derive the discretized coupling, its budgets and its limiting error from the
+same global form. The comparison ground energy then measures the cost of that specific allocation.
 
-1. **Which sign-changing odd profiles can create net unpaid prime demand after all favourable gains
-   are restored?** *Answered in the finite incidence model.* Unpaid demand with global positivity
-   exists exactly where the incidence of the charges is frustrated: balanced patterns never carry
-   it (Pillar I), and on complete overlap patterns a single triangle of holonomy `+1` suffices for
-   it (mechanism 8); for an arbitrary form the unpaid demand is measured exactly by its comparison
-   form (mechanism 9). A rank-one polar charge carries it on any three points. In the folded odd
-   reading of AIP the archimedean same-side and crossing conductances combine into aligned charges
-   (AIP mechanism 23), while crossing prime atoms off the lattice and the polar square are
-   anti-aligned; the adverse sign-changing profiles are those that load a frustrated cycle formed by
-   them. The continuum classification of such profiles for the actual kernel is AIP's AI-2 and
-   remains open.
-2. **Can those profiles be reduced to a controlled family without a norm loss that grows faster than
-   the available budget?** *Answered for one prime and for two aligned towers.* The extremal
-   adverse profiles are the sine trains and the product sine grids; the reduction to them loses
-   nothing, and their deficit from the full envelope is explicit, `1 − cos(π/(M+2))` per tower
-   (Pillar IV). Because the deficit tends to zero, no reduction to trains can create slack against
-   the full prime envelope: the budget must come from outside the aligned trains. Profiles not
-   aligned with the towers remain open.
-3. **What signed arithmetic estimate bounds the averaged damping loss uniformly in horizon?**
-   *Answered as an exact reformulation with its necessary structure.* The estimate is exactly
-   `ℓ²`-membership of the chain orbit `C_a(1/k)` (mechanism 17 with ACCE's averaged-budget
-   criterion), equivalently of the chain's first column (mechanism 20); an `ℓ²`-bounded chain
-   suffices (mechanism 18). Any such estimate must read the source
-   vector — no backward operator estimate exists (mechanism 22) — must read the signs of `μ` below
-   half damping (mechanism 24), and must control only the signed radial rate (mechanism 28). The
-   estimate itself at cofinally small damping is RH-strength and open.
-4. **Which residue observable gives actual-row cancellation uniformly over the growing moduli and
-   tails?** *Answered structurally.* The observable is the full damped Möbius residue series
-   `Σ_d μ(d) d^{−η} v_d`, read in `ℓ²` (mechanism 23). Its modes have receiver size `≍ d^{−1/2}`, so
-   the cancellation required below half damping is square-root cancellation of `μ` against the
-   residue-mode Gram uniformly in the modulus; any fixed set of moduli, and any sign-blind majorant,
-   is insufficient (mechanisms 21, 24). The quantitative cancellation is BVI's BV-2 and remains
-   open.
-5. **Does the signed Weil floor have the sharp width rate in unrestricted `L²` without uniform
-   unsigned depth mass?** *Open, and recorded as a research topic.* SAEI supplies the abstract
-   mechanisms the answer will need (polar defect law, compact negativity) but no theorem settling
-   the actual-ζ case; SRT's equivalence of unsigned sampling with local depth mass is the present
-   boundary. The specific signed mechanism left to study is the compensation of an off-line cluster
-   by the positive contributions of nearby on-line zeros, which a source of aperture `A` cannot
-   annihilate once their local number exceeds its `≍ A` degrees of freedom per unit height.
-6. **Which topology preserves both the full source normalization and the sign needed by a carrier
-   construction?** *Answered for the damping carrier and in general.* A completion keeps the sign
-   exactly when it keeps the polar functional continuous (Pillar II). For the damping chain the
-   right topology is `ℓ²` on the chain coordinate (the pronic energy of the prefix): the centring
-   functional is bounded there, the uncentred transition is not, and boundedness of the centred
-   chain would be a receiver (mechanisms 17–19); already its first column is in `ℓ²` exactly at
-   admitted dampings (mechanism 20). The pronic weight on the chain coordinate forgets the
-   normalization below half damping (BVI). Whether the centred chain is `ℓ²`-bounded is open.
-7. **Can a pre-divisor conservation or orientation law force the known seam/mate diagnostics to
-   vanish?** *Answered in the incidence model.* The triangle holonomy is a pre-profile,
-   gauge-invariant orientation diagnostic computed from the source alone; its alignment forces the
-   vanishing of the local–global defect and its failure forces a defect (mechanisms 7–8). The
-   arithmetic seam and mate diagnostics of the standalone candidates are not identified with it;
-   such an identification would be a contribution.
-8. **What mechanism supplies the all-rank/all-height uniformity absent from fixed-rank theorems?**
-   *Answered structurally.* Compact negativity: under it adverse sequences have genuine adverse
-   limits (Pillar V); escape is exactly the failure of compactness of the negative part. A
-   uniform-in-rank theorem must therefore prove a compact-negativity estimate that survives the
-   growing family. The arithmetic instance at growing aperture is open.
+**Completion must retain the source.** For `η>0`, the centred chain acts on `c₀`; admission asks
+whether its reciprocal orbit lies in `ℓ²`. This is equivalent to square summability of its first
+column. An operator bound would control all finite linear combinations of columns, including their
+mixed Gram terms; bounds on individual columns alone do not establish it. The residue identity
+provides exact coordinates but no unconditional subhalf `ℓ²` bound.
+
+**Continuation must allow recovery.** Once the right endpoint is admitted, ACCE's signed integrated
+relative loss is equivalent to admission at the left endpoint. The radial law identifies the work
+being measured. Tangent length and the positive part of the loss are stronger sufficient bounds;
+Compensation Theory supplies admitted families for which positive-part budgets fail. Neither a
+compact forward semigroup nor a dense eigenmode family supplies a uniform inverse estimate.
+
+**Sampling and profile extraction need quantitative arithmetic inputs.** The polynomial companion
+law requires both enough distinct nodes and a controlled Lagrange price. Actual on-line zeros need
+not furnish a uniformly distributed set of companions at every height; a total zero-count average
+is not that input. Compact negativity prevents a given adverse sequence from vanishing weakly,
+but does not prove that its nonzero adverse limit is impossible. A positivity proof still needs an
+arithmetic argument excluding that limit.
 
 ---
 
@@ -470,7 +427,7 @@ which class, and what remains.
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity for the actual form at a growing aperture. |
 | Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column | damping chain + norm → eigenmodes, sizes, unboundedness of the transition, sufficiency of `ℓ²`-boundedness, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
-| Signed sampling / observability | (open topic, §8) | depth data → energy bound | Unsigned local depth mass is the present boundary (SRT). |
+| Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |
 
@@ -484,7 +441,10 @@ which class, and what remains.
 2. **Allocation at growing size.** Prove a local allocation (or a frustration bound) for a family of
    strips whose number grows with the aperture, with losses uniform in that number. This is the
    cofinal form of Pillar I and the content of AIP's AI-1.
-3. **Sign-changing gauges.** The cost of *local* payment is now exact: the ground-energy gap
+3. **Sign-changing gauges.** On an aligned form with nonnegative polar weights, the new polar
+   comparison reduces positivity to one-signed profiles; in the coercive case its exact test is
+   `Σg_i(C⁻¹g)_i≤1`. Determine where the actual discretized form leaves this class and estimate
+   the resulting global polar charge. The cost of *local* payment is exact: the ground-energy gap
    between a form and its comparison form (mechanism 9). What remains is the cheapest *nonlocal*
    payment of the frustrated part — a gauge with sign changes, or a global square absorbing the
    rank-one charges — and its cost for the actual critical form; ACT's AC-2 is the continuum
@@ -494,14 +454,16 @@ which class, and what remains.
    Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a
-   uniform version over the dilations `k` of admission, with the operator norm measuring how the
-   column energies sum.
+   uniform version over the dilations `k` of admission, with the operator norm controlling all linear combinations and their mixed Gram terms,
+   not merely the sum or supremum of individual column energies.
 5. **Square-root cancellation against the residue Gram.** Bound `‖Σ_d μ(d) d^{−η} v_d‖_{ℓ²}` below
    half damping on a horizon-dependent range of moduli with explicit tails; this is BVI's BV-2 in
    residue coordinates.
-6. **Signed sampling.** Prove or refute the plain-`L²` signed floor at the width rate in a class of
-   configurations where off-line clusters are accompanied by on-line zeros of a stated local
-   density.
+6. **Signed sampling beyond the local model.** Prove the companion law of mechanism 28 for
+   Paley–Wiener sources of aperture `A`, with a Lagrange price uniform in the height, and combine it
+   with sufficiently strong information about the **on-line** zeros of `ζ` to obtain the
+   plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well
+   as the interpolation price; the polynomial model alone supplies none of these transfers.
 7. **Compact negativity of the critical form.** Prove that at fixed aperture the prime and polar
    charges of the Weil form are compactly negative against its archimedean energy, and determine how
    the compactness constants degrade with the aperture; this is the input Pillar V needs for O6.
@@ -512,12 +474,12 @@ which class, and what remains.
 
 ## 9. Success criteria and contributions
 
-**The programme succeeds** when one of its interface theorems is upgraded from a dividing line to a
-closing estimate: a local allocation of the global incidence ledger at every aperture with a
-uniform loss; a horizon-uniform `ℓ²` bound on the chain orbit of `1/k` at cofinally small damping;
-an `ℓ²` bound on the centred chain; a compact-negativity estimate for the critical form uniform in
-the aperture. Each would discharge an existing receiver (AIP's global allocation, ACCE's averaged
-budget, BVI's interior contraction, RW's ground energy).
+**Success means a quantitative transfer on the actual source.** Examples include a shared
+allocation that proves the full incidence inequality, or a horizon-uniform `ℓ²` bound for the
+reciprocal orbit at specified dampings. An operator bound is a stronger sufficient route; cofinal
+admission is RH. A compact-negativity estimate or a finite allocation theorem is useful structural
+progress, but still needs exclusion of adverse profiles or control of its losses before it yields
+positivity. State the resulting aperture, damping or width explicitly.
 
 **A contribution to the programme must**
 
@@ -537,13 +499,14 @@ budget, BVI's interior contraction, RW's ground energy).
 
 ## 10. Principles
 
-1. **Search the corpus first** (`../scripts/formal_tools.py research "<query>"`): the strips and
+1. **Search the corpus first** (`scripts/formal_tools.py research "<query>"` from the repository root): the strips and
    trains are AIP's, the chain and modes are BVI's, the continuation criterion is ACCE's.
-2. **Name the pattern.** Every local–global statement says which overlaps exist and what signs they
-   carry; sizes without signs decide nothing.
+2. **Name the pattern and budgets.** Signs decide the universal lossless-payment theorem;
+   magnitudes and diagonal budgets decide payment of a particular form.
 3. **Name the norm.** Every statement about the damping chain says whether it is in `c₀`, in the
    pronic weight on the chain coordinate, or in the receiver norm `ℓ²`.
-4. **Keep the pole global.** Never allocate a rank-one charge to pairs.
+4. **Keep the pole global.** A pure rank-one form with three nonzero coordinates cannot be
+   allocated to pairs from its own diagonal budgets; additional resources must be identified.
 5. **Read the source, not the operator.** Continuation statements must use the vector `1/k` and the
    coefficients `μ(d)`; operator statements alone cannot go backwards.
 6. **Finite before cofinal.** A finite theorem is infrastructure until its losses are shown uniform

@@ -317,6 +317,35 @@ unconditional estimate for this arithmetic remainder.
 
 ## Batch audit
 
+### Local Plancherel map: additional source text recovered
+
+Search-indexed primary text exposed the core of Lemma 13.11, including
+equation (204). Its asserted chart factorization is
+`T_ω = P_ω M₂,ω F_q P_≠0,ω M₁,ω E_ω`, with normalized finite Fourier
+transform, affine embedding `y(ℓ)=aℓ+b mod q`, `q≈K X^o(1)`, and
+`X^o(1)` charts and diagonal weights. The proof asserts bounded multiplicity
+when `P_ω` relabels the Fourier coordinates into the `(h,m)` windows. The
+retrieved text does not supply the coordinate map or verify its fibre bound.
+
+The exact obligation is weighted: a pullback along `π: I→Z/qZ` with
+weights `w_i` has squared operator norm `max_a Σ_(π(i)=a)|w_i|²`.
+Unitary Fourier transform alone does not establish that bound. A dense
+rectangle with more than `q X^o(1)` coordinates would require attenuation,
+sparse support, or an explicit multiplicity cost. This is an audit condition,
+not a demonstrated counterexample to the source: its precise surviving
+support and Bessel normalizations have not yet been recovered.
+
+Lemma 13.23's indexed text gives `N_dual≪H M# X^o(1)` and an upper scale
+`X^(2(1−2ℓ)+o(1))`, with `L=X^ℓ`; these upper bounds alone do not establish
+a cardinality contradiction. Read the actual map and support before drawing
+that conclusion. Full-page retrieval still fails (oversized tool response;
+direct download returned HTTP 403), and native Chrome control reports that
+computer-use permissions are not granted. No upstream code was executed.
+
+The source remains
+[Borrallo's ResearchGate manuscript](https://www.researchgate.net/publication/403749879_A_Formalization-Oriented_Finite-Ledger_Framework_for_Spectral_Dispersion_in_Chen-Type_Additive_Prime_Problems).
+
+
 - No proof of Goldbach or new scientific theorem has been obtained.
 - The source review found unsupported cutoff, cofactor-size, and
   second-Type-I transfer steps. The last has an exact Lean certificate
