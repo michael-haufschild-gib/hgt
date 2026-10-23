@@ -1500,9 +1500,17 @@ $-2\langle S^{\mathrm{long}}_{\varepsilon,t},T_{\varepsilon,t}\rangle_T\le\theta
 with $\theta<1$ is necessary and sufficient for non-admission and for RH
 (`not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap`,
 `riemannHypothesis_iff_forall_ne_zero_exists_longSawtooth_tail_antiAlignment_gap`,
-`routeMC_longSawtooth_tail_antiAlignment_master`); whereas separate tail growth does not supply that
-gap because at any paid probe $\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T/\lVert T_{\varepsilon,t}\rVert_T\to1$
-and both anti-alignment ratios converge to $1$
+`routeMC_longSawtooth_tail_antiAlignment_master`), with explicit coefficient
+$\theta_{\mathrm{long}}(\varepsilon,t)\le1$ satisfying the eventual quadratic bound for every
+$0<\varepsilon<1/2$, $t\ne0$ and $\theta_{\mathrm{long}}(\varepsilon,t)<1$ on the Vinogradov–Korobov and
+bounded-height collars and iff either the long-sawtooth/tail amplitude mismatch or phase decorrelation
+is positive (`eventually_longSawtooth_tail_quadratic_gap`, `longSawtoothTailGapTheta_lt_one_vk_and_box`,
+`not_receiverBounded_of_longSawtooth_tail_amp_mismatch_or_decorrelation`,
+`norm_sq_longSawtoothAmp_add_tailDriftAmp_eq`,
+`riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`); whereas separate tail growth
+does not supply that gap because at any paid probe
+$\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T/\lVert T_{\varepsilon,t}\rVert_T\to1$ and both
+anti-alignment ratios converge to $1$
 (`tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded`). Uniform prefix bounds
 $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
 $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap

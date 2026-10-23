@@ -61,8 +61,8 @@ valid.
 - [x] `HTGeometry/PSDKernelDensity.lean` (depth 5, 1)
 - [x] `HTGeometry/PolynomialODE/SeamJetOrderValues.lean` (depth 5, 1)
 - [ ] `HTGeometry/SchwartzSpectralMeasureForm.lean` (depth 5, 1)
-- [ ] `RHTower/CCM/CCMRectangularDirichletLandau.lean` (depth 5, 2)
-- [ ] `RHTower/ComplexLaplaceHolomorphy.lean` (depth 5, 1)
+- [x] `RHTower/CCM/CCMRectangularDirichletLandau.lean` (depth 5, 2)
+- [x] `RHTower/ComplexLaplaceHolomorphy.lean` (depth 5, 1)
 - [x] `RHTower/CriticalDiscAnalyticCompleteness.lean` (depth 5, 1)
 - [x] `RHTower/EulerMascheroniCorrectedUpper.lean` (depth 5, 1)
 - [ ] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` (depth 5, 1)
@@ -473,3 +473,81 @@ valid.
 
 ## Log
 - 2026-10-23 — created; three direct dependencies cleared.
+- 2026-10-23 — bounded completion audit started for the already edited list below. The list
+  contains 68 entries (the request says 65); clarification requested. No other queue entries
+  are included. Initial audit found five listed files still carrying raised heartbeat limits
+  and all 68 existing oleans older than their sources. Source hashes, per-file compiler logs,
+  and artifact hashes are recorded in `formal/.lake/heartbeat-budget-removal-2026-10-23/`.
+
+## Edited, not yet verified at default budget
+Proof rewrites are present; remaining limits must be removed and each file must pass
+`lake --old env lean` at default budgets, have matching olean/ilean artifacts, and pass a
+transitive axiom audit. The following list is the fixed completion batch, not a new queue.
+- `HTGeometry/BriotBouquetTwoRootNoGo.lean`
+- `HTGeometry/FinitePrimeRationalCoefficientField.lean`
+- `HTGeometry/GammaDigammaShiftAnchor.lean`
+- `HTGeometry/MultiGeometricSeries.lean`
+- `HTGeometry/OccupationVacuumAnomalyReciprocity.lean`
+- `HTGeometry/OmittedValueLogarithmicGrowth.lean`
+- `HTGeometry/SchwartzSpectralMeasureForm.lean`
+- `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean`
+- `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean`
+- `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean`
+- `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean`
+- `RHTower/GammaSewnMobiusXiWardHardyTransport.lean`
+- `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean`
+- `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean`
+- `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean`
+- `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean`
+- `RHTower/RegularizedDivisorHarmonicLimit.lean`
+- `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean`
+- `RHTower/Sieve/DirichletWideRectangle.lean`
+- `RHTower/Sieve/MaynardLabelAbsorption.lean`
+- `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean`
+- `RHTower/Sieve/MaynardReceiverMargin.lean`
+- `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean`
+- `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean`
+- `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean`
+- `RHTower/Sieve/MultiplicativeEulerBound.lean`
+- `RHTower/Sieve/RouteTZetaBandGrowth.lean`
+- `RHTower/Sieve/RouteTZetaInverseBound.lean`
+- `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean`
+- `RHTower/Sieve/ZetaWideBand.lean`
+- `RHTower/Sieve/ZetaWideRectangle.lean`
+- `RHTower/SoninApertureFourierParityNoGo.lean`
+- `RHTower/SoninCouplingBranchEstimate.lean`
+- `RHTower/SoninDilationSumFourierInjective.lean`
+- `RHTower/SoninEulerCornerConcrete.lean`
+- `RHTower/SoninMixedPhysicalBlockNonvanishing.lean`
+- `RHTower/SoninPrincipalRelativeIdeal.lean`
+- `RHTower/SoninShellProductIdeal.lean`
+- `RHTower/SoninTimeBandHilbertSchmidt.lean`
+- `RHTower/SqrtCarrierCertificate.lean`
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleElevenThirdsAffineJoint.lean`
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleFiftyNineSixteenthsAffineJoint.lean`
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleOneHundredSeventyFiveFortyEighthsAffineJoint.lean`
+- `RHTower/ThetaCusp/ThetaCuspFullReflectionSixthTuran.lean`
+- `RHTower/ThetaCusp/ThetaCuspHawkingBMPositiveHeightOperator.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodEighthBellHigherEvenAbsorption.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodHighSourceJets.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalBellCoolingOneHundredSeventyFiveFortyEighths.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodScaleLocalTailCoolingElevenThirds.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthSourceOrientation.lean`
+- `RHTower/ThetaCusp/ThetaCuspLikelihoodSixthSourceUpperOrientation.lean`
+- `RHTower/ThetaCusp/ThetaCuspModularEnergyTube.lean`
+- `RHTower/ThetaCusp/ThetaCuspModularGlobalDriftBarrier.lean`
+- `RHTower/ThetaCusp/ThetaCuspScaleSevenEntryErrors.lean`
+- `RHTower/ThetaCusp/ThetaCuspTwoAtomReflectedApproximation.lean`
+- `RHTower/XiCenteredOrderTwentyOneSourceBudgetClosure.lean`
+- `RHTower/XiEndpointReflectionNeumannCarrier.lean`
+- `RHTower/XiHadamardFinitePart.lean`
+- `RHTower/XiPrimeSeamPairAsymptotics.lean`
+- `RHTower/XiShiftedHankelBoundaryPadeContactParity.lean`
+- `RHTower/XiThermalEndpointResolventGap.lean`
+- `RHTower/XiThermalProjectiveMomentSpectrum.lean`
+- `RHTower/XiWardInteriorReflectionAbsorption.lean`
+- `RHTower/ZetaDerivGrowth.lean`
+- `RHTower/ZetaLowerBound.lean`
+- `RHTower/ZetaSawtoothHolomorphy.lean`
+- `RHTower/ZetaStripLowerBound.lean`
+- `RHTower/ZetaVerticalGrowth.lean`

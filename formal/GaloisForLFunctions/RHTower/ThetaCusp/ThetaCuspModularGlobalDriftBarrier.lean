@@ -11,7 +11,6 @@ positive ray, so the wall is never reached.
 
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 800000
 
 /-- Nonnegative mass drift on the positive modular half-orbit. -/
 def thetaCuspModularMassDrift (x : ℝ) : ℝ := -(thetaCuspModularDrift x).re
@@ -55,7 +54,7 @@ private theorem dampedGap_contraction {x : ℝ} (hx : 0 < x) :
     (sq_nonneg (1-thetaCuspModularMassDrift x/3))
   have ha := mul_pos he (thetaCuspModularGapAmplitude_pos x)
   unfold dampedGap
-  nlinarith only [hb, ha]
+  linarith only [hb, ha]
 
 /-- The full literal orbit remains strictly below the Riccati escape wall. -/
 theorem thetaCuspModularMassDrift_lt_three {x : ℝ} (hx : 0 ≤ x) :

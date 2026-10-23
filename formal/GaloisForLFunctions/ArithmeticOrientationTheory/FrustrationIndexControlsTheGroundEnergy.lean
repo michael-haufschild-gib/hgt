@@ -380,9 +380,9 @@ theorem isBalanced_of_signedDirichletForm_eq_zero {c : ι → ι → ℝ} {x : �
     have hsign : orientSign (x j) = -orientSign (x i) := by
       rw [hxj]
       rcases lt_trichotomy 0 (x i) with h | h | h
-      · rw [orientSign_of_pos h, orientSign_of_neg (by linarith)]; norm_num
+      · rw [orientSign_of_pos h, orientSign_of_neg (by linarith)]
       · exact absurd h.symm (hx i)
-      · rw [orientSign_of_neg h, orientSign_of_pos (by linarith)]; norm_num
+      · rw [orientSign_of_neg h, orientSign_of_pos (by linarith)] <;> norm_num
     have hprod : orientSign (x i) * -orientSign (x i) * c i j = -(c i j) := by
       linear_combination (-(c i j)) * orientSign_sq (x i)
     rw [hsign, hprod]

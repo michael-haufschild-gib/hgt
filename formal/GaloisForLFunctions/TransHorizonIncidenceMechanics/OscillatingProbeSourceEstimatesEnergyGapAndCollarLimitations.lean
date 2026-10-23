@@ -2255,11 +2255,11 @@ theorem not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap {ε :
     have hc₀_pos : 0 < c₀ := probeEnergyLowerRate_pos hε hε2 ht hz
     have hc_tail_pos : 0 < c_tail := tailEnergyLowerRate_pos hε hε2 ht
     have hC₀_nonneg : 0 ≤ C₀ := by
-      unfold probeEnergyUpperRate
+      rw [hC₀, probeEnergyUpperRate]
       have : 0 < 1 - 2 * ε := by linarith
       positivity
     have hC_tail_nonneg : 0 ≤ C_tail := by
-      unfold tailEnergyUpperRate
+      rw [hC_tail, tailEnergyUpperRate]
       have : 0 < 1 - 2 * ε := by linarith
       positivity
     set M := 4 * C₀ + c₀ + 3 * C_tail with hM
@@ -2335,7 +2335,7 @@ theorem not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap {ε :
       have h1 : c₀ / (4 * M) * (x ^ 2 + y ^ 2) ≤ c₀ / (4 * M) * (M * (T : ℝ) ^ (1 - 2 * ε)) :=
         mul_le_mul_of_nonneg_left hxy_hi (by positivity)
       have h2 : c₀ / (4 * M) * (M * (T : ℝ) ^ (1 - 2 * ε)) = c₀ / 4 * (T : ℝ) ^ (1 - 2 * ε) := by
-        field_simp [hM_pos.ne']; ring
+        field_simp [hM_pos.ne']
       linarith
     have hpol : z ^ 2 = x ^ 2 + 2 * pronicInner (oscillatingLongSawtooth ε t)
         (oscillatingTailDrift ε t) T + y ^ 2 := pronicNorm_add_sq_eq _ _ T
@@ -2344,7 +2344,7 @@ theorem not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap {ε :
     have hlim := (tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded hε hε2 ht hB).2.2.1
     have htail_top := tendsto_pronicNorm_oscillatingTailDrift_atTop hε hε2 ht
     have hev_lim := (Metric.tendsto_nhds.mp hlim) ((1 - θ) / 2) (by linarith)
-    obtain ⟨T, hin, hclose, hT1⟩ :=
+    obtain ⟨T, ⟨hin, hclose⟩, hT1⟩ :=
       ((hev.and hev_lim).and (tendsto_atTop.mp htail_top 1)).exists
     rw [Real.dist_eq, abs_lt] at hclose
     set D := pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
@@ -2479,6 +2479,394 @@ theorem routeMC_longSawtooth_tail_antiAlignment_master :
       fun hB => ⟨(tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded hε hε2 ht hB).2.1,
         (tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded hε hε2 ht hB).2.2.2⟩⟩,
     fun ε₁ hε₁ hε₁2 t₁ T => plantedEulerKernel_collar_and_finiteness_obstruction hε₁ hε₁2 t₁ T⟩
+
+/-! ### §7. Source-derived amplitude mismatch vs. phase decorrelation, explicit quadratic gap coefficient `θ(ε, t)`, and collar vs. interior status -/
+
+/-- **Exact decomposition of `‖u + v‖_T²` into nonnegative amplitude-mismatch and
+phase-decorrelation defects.** For every `u, v : ℕ → ℝ` and `T ∈ ℕ`:
+`‖u + v‖_T² = (‖u‖_T − ‖v‖_T)² + 2 (‖u‖_T ‖v‖_T + ⟨u, v⟩_T)`, where both summands are `≥ 0`. -/
+theorem pronicNorm_add_sq_eq_amp_mismatch_add_decorrelation (u v : ℕ → ℝ) (T : ℕ) :
+    pronicNorm (fun n => u n + v n) T ^ 2 =
+      (pronicNorm u T - pronicNorm v T) ^ 2 +
+        2 * (pronicNorm u T * pronicNorm v T + pronicInner u v T) ∧
+    0 ≤ (pronicNorm u T - pronicNorm v T) ^ 2 ∧
+    0 ≤ 2 * (pronicNorm u T * pronicNorm v T + pronicInner u v T) := by
+  have hpol := pronicNorm_add_sq_eq u v T
+  have hcs := (abs_le.mp (abs_pronicInner_le_mul_pronicNorm u v T)).1
+  refine ⟨by linarith, sq_nonneg _, by linarith⟩
+
+/-- **Source-derived pronic amplitude mismatch implies a strict quadratic anti-alignment gap
+`θ = 1 − δ²/6 < 1` independently of phase correlation.** If `0 < δ ≤ 1` and
+`δ ‖v‖_T ≤ |‖u‖_T − ‖v‖_T|`, then
+`(δ² / 6) (‖u‖_T² + ‖v‖_T²) ≤ (‖u‖_T − ‖v‖_T)² ≤ ‖u + v‖_T²` and
+`−2 ⟨u, v⟩_T ≤ (1 − δ² / 6) (‖u‖_T² + ‖v‖_T²)`. -/
+theorem two_mul_neg_pronicInner_le_of_abs_pronicNorm_sub_ge (u v : ℕ → ℝ) (T : ℕ) {δ : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (hmis : δ * pronicNorm v T ≤ |pronicNorm u T - pronicNorm v T|) :
+    δ ^ 2 / 6 * (pronicNorm u T ^ 2 + pronicNorm v T ^ 2) ≤
+      (pronicNorm u T - pronicNorm v T) ^ 2 ∧
+    (pronicNorm u T - pronicNorm v T) ^ 2 ≤ pronicNorm (fun n => u n + v n) T ^ 2 ∧
+    -2 * pronicInner u v T ≤
+      (1 - δ ^ 2 / 6) * (pronicNorm u T ^ 2 + pronicNorm v T ^ 2) ∧
+    1 - δ ^ 2 / 6 < 1 := by
+  set x := pronicNorm u T
+  set y := pronicNorm v T
+  have hy0 : 0 ≤ y := pronicNorm_nonneg v T
+  have hsq_mis : (δ * y) ^ 2 ≤ (x - y) ^ 2 := by
+    rw [← sq_abs (x - y)]
+    exact pow_le_pow_left₀ (mul_nonneg hδ0.le hy0) hmis 2
+  have hδ2_le : δ ^ 2 ≤ 1 := by nlinarith
+  have hδ2_pos : 0 < δ ^ 2 := sq_pos_of_pos hδ0
+  have h1 : δ ^ 2 / 6 * (x ^ 2 + y ^ 2) ≤ (x - y) ^ 2 := by
+    have hid : 6 * (x - y) ^ 2 - δ ^ 2 * (x ^ 2 + y ^ 2) =
+        2 * (1 - δ ^ 2) * (x - y) ^ 2 + 4 * ((x - y) ^ 2 - (δ * y) ^ 2) +
+          δ ^ 2 * ((x - 2 * y) ^ 2 + y ^ 2) := by ring
+    have hnonneg : 0 ≤ 6 * (x - y) ^ 2 - δ ^ 2 * (x ^ 2 + y ^ 2) := by
+      rw [hid]
+      have t1 : 0 ≤ 2 * (1 - δ ^ 2) * (x - y) ^ 2 :=
+        mul_nonneg (by linarith) (sq_nonneg (x - y))
+      have t2 : 0 ≤ 4 * ((x - y) ^ 2 - (δ * y) ^ 2) := by linarith
+      have t3 : 0 ≤ δ ^ 2 * ((x - 2 * y) ^ 2 + y ^ 2) :=
+        mul_nonneg hδ2_pos.le (add_nonneg (sq_nonneg (x - 2 * y)) (sq_nonneg y))
+      linarith
+    linarith
+  have hdecomp := pronicNorm_add_sq_eq_amp_mismatch_add_decorrelation u v T
+  have hpol := pronicNorm_add_sq_eq u v T
+  refine ⟨h1, by linarith [hdecomp.1, hdecomp.2.2], ?_, by linarith⟩
+  linarith [hdecomp.1, hdecomp.2.2]
+
+/-- **Source-derived pronic phase decorrelation implies a strict quadratic anti-alignment gap
+`θ = 1 − δ < 1` independently of amplitude balance.** If `0 < δ ≤ 1` and
+`−⟨u, v⟩_T ≤ (1 − δ) ‖u‖_T ‖v‖_T`, then
+`δ (‖u‖_T² + ‖v‖_T²) ≤ ‖u + v‖_T²` and
+`−2 ⟨u, v⟩_T ≤ (1 − δ) (‖u‖_T² + ‖v‖_T²)`. -/
+theorem two_mul_neg_pronicInner_le_of_phase_decorrelation (u v : ℕ → ℝ) (T : ℕ) {δ : ℝ}
+    (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (hdec : -pronicInner u v T ≤ (1 - δ) * pronicNorm u T * pronicNorm v T) :
+    δ * (pronicNorm u T ^ 2 + pronicNorm v T ^ 2) ≤
+      pronicNorm (fun n => u n + v n) T ^ 2 ∧
+    -2 * pronicInner u v T ≤
+      (1 - δ) * (pronicNorm u T ^ 2 + pronicNorm v T ^ 2) ∧
+    1 - δ < 1 := by
+  set x := pronicNorm u T
+  set y := pronicNorm v T
+  have hpol := pronicNorm_add_sq_eq u v T
+  have h1 : δ * (x ^ 2 + y ^ 2) ≤ pronicNorm (fun n => u n + v n) T ^ 2 := by
+    rw [hpol]
+    have hsq : 0 ≤ (1 - δ) * (x - y) ^ 2 := mul_nonneg (by linarith) (sq_nonneg (x - y))
+    nlinarith
+  refine ⟨h1, by linarith, by linarith⟩
+
+/-- **Either source-derived amplitude mismatch or source-derived phase decorrelation on long moduli
+yields the explicit quadratic gap `θ = 1 − δ²/6 < 1` and excludes cancellation.** For
+`0 < ε < 1/2`, `t ≠ 0`, and `0 < δ ≤ 1`, if eventually at cutoff `T` either
+`δ ‖T_{ε,t}‖_T ≤ |‖S^{\mathrm{long}}_{ε,t}‖_T − ‖T_{ε,t}‖_T|` or
+`−⟨S^{\mathrm{long}}_{ε,t}, T_{ε,t}⟩_T ≤ (1 − δ) ‖S^{\mathrm{long}}_{ε,t}‖_T ‖T_{ε,t}‖_T`, then
+eventually `−2⟨S^{\mathrm{long}}_{ε,t}, T_{ε,t}⟩_T ≤ (1 − δ²/6) (‖S^{\mathrm{long}}_{ε,t}‖_T² + ‖T_{ε,t}‖_T²)`
+and `oscillatingSmoothPower ε t` is unpaid. -/
+theorem not_receiverBounded_of_longSawtooth_tail_amp_mismatch_or_decorrelation {ε : ℝ}
+    (hε : 0 < ε) (hε2 : ε < 1 / 2) {t : ℝ} (ht : t ≠ 0) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ ≤ 1)
+    (hsrc : ∀ᶠ T : ℕ in atTop,
+      δ * pronicNorm (oscillatingTailDrift ε t) T ≤
+        |pronicNorm (oscillatingLongSawtooth ε t) T -
+          pronicNorm (oscillatingTailDrift ε t) T| ∨
+      -pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T ≤
+        (1 - δ) * pronicNorm (oscillatingLongSawtooth ε t) T *
+          pronicNorm (oscillatingTailDrift ε t) T) :
+    (∀ᶠ T : ℕ in atTop,
+      -2 * pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T ≤
+        (1 - δ ^ 2 / 6) * (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+          pronicNorm (oscillatingTailDrift ε t) T ^ 2)) ∧
+    ¬ ReceiverBounded (oscillatingSmoothPower ε t) := by
+  have hδ2_le : δ ^ 2 / 6 ≤ δ := by nlinarith
+  have hev : ∀ᶠ T : ℕ in atTop,
+      -2 * pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T ≤
+        (1 - δ ^ 2 / 6) * (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+          pronicNorm (oscillatingTailDrift ε t) T ^ 2) := by
+    filter_upwards [hsrc] with T hT
+    rcases hT with hmis | hdec
+    · exact (two_mul_neg_pronicInner_le_of_abs_pronicNorm_sub_ge
+        (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T hδ0 hδ1 hmis).2.2.1
+    · have h := (two_mul_neg_pronicInner_le_of_phase_decorrelation
+        (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T hδ0 hδ1 hdec).2.1
+      have hsum0 : 0 ≤ pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+          pronicNorm (oscillatingTailDrift ε t) T ^ 2 := by positivity
+      calc -2 * pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T
+          ≤ (1 - δ) * (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+              pronicNorm (oscillatingTailDrift ε t) T ^ 2) := h
+        _ ≤ (1 - δ ^ 2 / 6) * (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+              pronicNorm (oscillatingTailDrift ε t) T ^ 2) :=
+            mul_le_mul_of_nonneg_right (by linarith) hsum0
+  refine ⟨hev, ?_⟩
+  rw [not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap hε hε2 ht]
+  exact ⟨1 - δ ^ 2 / 6, by nlinarith [sq_pos_of_pos hδ0], hev⟩
+
+/-- The complex harmonic amplitude of `oscillatingLongSawtooth ε t`:
+`a_{\mathrm{long}}(ε, t) = ζ(ρ)/ρ − 1/(ρ − 1)`. -/
+def longSawtoothAmp (ε t : ℝ) : ℂ :=
+  riemannZeta (oscillationExponent ε t) / oscillationExponent ε t -
+    1 / (oscillationExponent ε t - 1)
+
+/-- **Harmonic decomposition of `‖ζ(ρ)/ρ‖²` into long-sawtooth/tail amplitude mismatch and phase
+decorrelation.** For every `ε, t ∈ ℝ`:
+`‖ζ(ρ)/ρ‖² = (‖a_{\mathrm{long}}‖ − ‖a_{\mathrm{tail}}‖)² + 2(‖a_{\mathrm{long}}‖ ‖a_{\mathrm{tail}}‖ + Re(a_{\mathrm{long}} \overline{a_{\mathrm{tail}}}))`,
+with both summands nonnegative. -/
+theorem norm_sq_longSawtoothAmp_add_tailDriftAmp_eq (ε t : ℝ) :
+    longSawtoothAmp ε t + tailDriftAmp ε t =
+      riemannZeta (oscillationExponent ε t) / oscillationExponent ε t ∧
+    ‖riemannZeta (oscillationExponent ε t) / oscillationExponent ε t‖ ^ 2 =
+      (‖longSawtoothAmp ε t‖ - ‖tailDriftAmp ε t‖) ^ 2 +
+        2 * (‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖ +
+          (longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re) ∧
+    0 ≤ (‖longSawtoothAmp ε t‖ - ‖tailDriftAmp ε t‖) ^ 2 ∧
+    0 ≤ ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖ +
+      (longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re := by
+  set z := longSawtoothAmp ε t
+  set w := tailDriftAmp ε t
+  have hsum : z + w = riemannZeta (oscillationExponent ε t) / oscillationExponent ε t := by
+    simp only [z, w, longSawtoothAmp, tailDriftAmp]; ring
+  have hpol : ‖z + w‖ ^ 2 = ‖z‖ ^ 2 + ‖w‖ ^ 2 + 2 * (z * starRingEnd ℂ w).re := by
+    rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+    simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re,
+      Complex.conj_re, Complex.conj_im]
+    ring
+  have hcs : |(z * starRingEnd ℂ w).re| ≤ ‖z‖ * ‖w‖ := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_mul, RCLike.norm_conj]
+  refine ⟨hsum, ?_, sq_nonneg _, by linarith [(abs_le.mp hcs).1]⟩
+  rw [← hsum, hpol]
+  ring
+
+/-- The explicit long-sawtooth/tail quadratic gap coefficient `θ(ε, t)` for `0 < ε < 1/2`:
+`θ_{\mathrm{long}}(ε, t) = 1 − probeEnergyLowerRate ε t / (4 (4 probeEnergyUpperRate ε t + probeEnergyLowerRate ε t + 3 tailEnergyUpperRate ε t))`. -/
+def longSawtoothTailGapTheta (ε t : ℝ) : ℝ :=
+  1 - probeEnergyLowerRate ε t /
+    (4 * (4 * probeEnergyUpperRate ε t + probeEnergyLowerRate ε t +
+      3 * tailEnergyUpperRate ε t))
+
+/-- **Unconditional eventual long-sawtooth/tail quadratic bound with explicit coefficient
+`longSawtoothTailGapTheta ε t`, and exact characterization of `longSawtoothTailGapTheta ε t < 1`
+via harmonic amplitude mismatch or phase decorrelation.** For every `0 < ε < 1/2` and `t ≠ 0`:
+1. `longSawtoothTailGapTheta ε t ≤ 1`, and eventually
+   `−2 ⟨S^{\mathrm{long}}_{ε,t}, T_{ε,t}⟩_T ≤ longSawtoothTailGapTheta ε t · (‖S^{\mathrm{long}}_{ε,t}‖_T² + ‖T_{ε,t}‖_T²)`;
+2. `longSawtoothTailGapTheta ε t < 1` iff `¬ ReceiverBounded (oscillatingSmoothPower ε t)` iff
+   either `‖longSawtoothAmp ε t‖ ≠ ‖tailDriftAmp ε t‖` (harmonic amplitude mismatch) or
+   `−Re(longSawtoothAmp ε t · \overline{tailDriftAmp ε t}) < ‖longSawtoothAmp ε t‖ ‖tailDriftAmp ε t‖`
+   (harmonic phase decorrelation). -/
+theorem eventually_longSawtooth_tail_quadratic_gap {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2)
+    {t : ℝ} (ht : t ≠ 0) :
+    longSawtoothTailGapTheta ε t ≤ 1 ∧
+    (∀ᶠ T : ℕ in atTop,
+      -2 * pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T ≤
+        longSawtoothTailGapTheta ε t *
+          (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+            pronicNorm (oscillatingTailDrift ε t) T ^ 2)) ∧
+    (longSawtoothTailGapTheta ε t < 1 ↔ ¬ ReceiverBounded (oscillatingSmoothPower ε t)) ∧
+    (longSawtoothTailGapTheta ε t < 1 ↔
+      (‖longSawtoothAmp ε t‖ ≠ ‖tailDriftAmp ε t‖ ∨
+        -(longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re <
+          ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖)) := by
+  set c₀ := probeEnergyLowerRate ε t with hc₀
+  set C₀ := probeEnergyUpperRate ε t with hC₀
+  set C_tail := tailEnergyUpperRate ε t with hC_tail
+  set M := 4 * C₀ + c₀ + 3 * C_tail with hM
+  have hC₀_nonneg : 0 ≤ C₀ := by
+    rw [hC₀, probeEnergyUpperRate]
+    have : 0 < 1 - 2 * ε := by linarith
+    positivity
+  have hc₀_nonneg : 0 ≤ c₀ := by
+    rcases eq_or_ne (riemannZeta (oscillationExponent ε t)) 0 with hz | hz
+    · rw [hc₀, probeEnergyLowerRate, hz]; simp
+    · exact (probeEnergyLowerRate_pos hε hε2 ht hz).le
+  have hC_tail_pos : 0 < C_tail := by
+    rw [hC_tail, tailEnergyUpperRate]
+    have hγ : 0 < 1 - 2 * ε := by linarith
+    have hρ1 : oscillationExponent ε t - 1 ≠ 0 := by
+      intro h0
+      have := congrArg Complex.re h0
+      rw [sub_re, oscillationExponent_re, one_re, zero_re] at this
+      linarith
+    have ha0 : 0 < ‖tailDriftAmp ε t‖ := norm_pos_iff.mpr (one_div_ne_zero hρ1)
+    positivity
+  have hM_pos : 0 < M := by linarith
+  have hθ_le : longSawtoothTailGapTheta ε t ≤ 1 := by
+    rw [longSawtoothTailGapTheta, ← hc₀, ← hC₀, ← hC_tail, ← hM]
+    have : 0 ≤ c₀ / (4 * M) := div_nonneg hc₀_nonneg (by linarith)
+    linarith
+  have hev : ∀ᶠ T : ℕ in atTop,
+      -2 * pronicInner (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T ≤
+        longSawtoothTailGapTheta ε t *
+          (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
+            pronicNorm (oscillatingTailDrift ε t) T ^ 2) := by
+    rcases eq_or_ne (riemannZeta (oscillationExponent ε t)) 0 with hz | hz
+    · have hc₀_zero : c₀ = 0 := by rw [hc₀, probeEnergyLowerRate, hz]; simp
+      have hθ_one : longSawtoothTailGapTheta ε t = 1 := by
+        rw [longSawtoothTailGapTheta, ← hc₀, hc₀_zero, zero_div, sub_zero]
+      rw [hθ_one]
+      refine Eventually.of_forall fun T => ?_
+      have hpol := pronicNorm_add_sq_eq (oscillatingLongSawtooth ε t) (oscillatingTailDrift ε t) T
+      have hsq : 0 ≤ pronicNorm (fun n =>
+          oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n) T ^ 2 := sq_nonneg _
+      linarith
+    · have hc₀_pos : 0 < c₀ := probeEnergyLowerRate_pos hε hε2 ht hz
+      set C_short := (1 + 1 / (1 - ε)) * Real.sqrt (1 + 1 / ε) with hC_short
+      have hrpow : Tendsto (fun T : ℕ => (T : ℝ) ^ (1 - 2 * ε)) atTop atTop :=
+        (tendsto_rpow_atTop (by linarith : 0 < 1 - 2 * ε)).comp tendsto_natCast_atTop_atTop
+      filter_upwards [eventually_probeEnergy_le_and_ge hε hε2 ht hz,
+        eventually_oscillatingTailDrift_energy_le_and_ge hε hε2 ht,
+        tendsto_atTop.mp hrpow (4 * C_short ^ 2 / c₀)] with T hprobe htail hT_big
+      rw [div_le_iff₀ hc₀_pos] at hT_big
+      set x := pronicNorm (oscillatingLongSawtooth ε t) T
+      set y := pronicNorm (oscillatingTailDrift ε t) T
+      set z := pronicNorm (fun n => oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n) T
+      set w := pronicNorm (weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d)) T
+      set s := pronicNorm (oscillatingShortSawtooth ε t) T
+      have hw_sq : weightPronicEnergy (oscillatingSmoothPower ε t)
+          (∑' d : ℕ, oscillatingSmoothPower ε t d / d) T = w ^ 2 :=
+        weightPronicEnergy_eq_sq_pronicNorm _ _ T
+      have hs_le : s ≤ C_short := pronicNorm_oscillatingShortSawtooth_le hε (by linarith) t T
+      have hs_sq : s ^ 2 ≤ C_short ^ 2 :=
+        pow_le_pow_left₀ (pronicNorm_nonneg _ _) hs_le 2
+      have hw_le_sz : w ≤ s + z := by
+        have hcongr : w = pronicNorm (fun n => oscillatingShortSawtooth ε t n +
+            (oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n)) T :=
+          pronicNorm_congr fun n _ => by
+            rw [weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail,
+              oscillatingSawtoothPrefix_eq_short_add_long]; ring
+        rw [hcongr]
+        exact pronicNorm_add_le _ _ T
+      have hz_le_ws : z ≤ w + s := by
+        have ht1 := pronicNorm_add_le
+          (weightCenteredPrefix (oscillatingSmoothPower ε t)
+            (∑' d : ℕ, oscillatingSmoothPower ε t d / d))
+          (fun n => (-1) * oscillatingShortSawtooth ε t n) T
+        rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at ht1
+        have hcongr : z = pronicNorm (fun n =>
+            weightCenteredPrefix (oscillatingSmoothPower ε t)
+              (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n +
+            (-1) * oscillatingShortSawtooth ε t n) T :=
+          pronicNorm_congr fun n _ => by
+            rw [weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail,
+              oscillatingSawtoothPrefix_eq_short_add_long]; ring
+        rwa [hcongr]
+      have hx_le_zy : x ≤ z + y := by
+        have ht1 := pronicNorm_add_le
+          (fun n => oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n)
+          (fun n => (-1) * oscillatingTailDrift ε t n) T
+        rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at ht1
+        have hcongr : x = pronicNorm (fun n =>
+            (oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n) +
+            (-1) * oscillatingTailDrift ε t n) T :=
+          pronicNorm_congr fun n _ => by ring
+        rwa [hcongr]
+      have hw2_le : w ^ 2 ≤ 2 * s ^ 2 + 2 * z ^ 2 := by
+        have h1 : w ^ 2 ≤ (s + z) ^ 2 := pow_le_pow_left₀ (pronicNorm_nonneg _ _) hw_le_sz 2
+        nlinarith [sq_nonneg (s - z)]
+      have hz2_le : z ^ 2 ≤ 2 * w ^ 2 + 2 * s ^ 2 := by
+        have h1 : z ^ 2 ≤ (w + s) ^ 2 := pow_le_pow_left₀ (pronicNorm_nonneg _ _) hz_le_ws 2
+        nlinarith [sq_nonneg (w - s)]
+      have hx2_le : x ^ 2 ≤ 2 * z ^ 2 + 2 * y ^ 2 := by
+        have h1 : x ^ 2 ≤ (z + y) ^ 2 := pow_le_pow_left₀ (pronicNorm_nonneg _ _) hx_le_zy 2
+        nlinarith [sq_nonneg (z - y)]
+      have hw_lo : c₀ * (T : ℝ) ^ (1 - 2 * ε) ≤ w ^ 2 := by
+        rw [← hw_sq]; exact hprobe.1
+      have hw_hi : w ^ 2 ≤ C₀ * (T : ℝ) ^ (1 - 2 * ε) := by
+        rw [← hw_sq]; exact hprobe.2
+      have hz_lo : c₀ / 4 * (T : ℝ) ^ (1 - 2 * ε) ≤ z ^ 2 := by linarith
+      have hxy_hi : x ^ 2 + y ^ 2 ≤ M * (T : ℝ) ^ (1 - 2 * ε) := by
+        rw [hM]; linarith [htail.2]
+      have hratio : c₀ / (4 * M) * (x ^ 2 + y ^ 2) ≤ z ^ 2 := by
+        have h1 : c₀ / (4 * M) * (x ^ 2 + y ^ 2) ≤ c₀ / (4 * M) * (M * (T : ℝ) ^ (1 - 2 * ε)) :=
+          mul_le_mul_of_nonneg_left hxy_hi (by positivity)
+        have h2 : c₀ / (4 * M) * (M * (T : ℝ) ^ (1 - 2 * ε)) = c₀ / 4 * (T : ℝ) ^ (1 - 2 * ε) := by
+          field_simp [hM_pos.ne']
+        linarith
+      have hpol : z ^ 2 = x ^ 2 + 2 * pronicInner (oscillatingLongSawtooth ε t)
+          (oscillatingTailDrift ε t) T + y ^ 2 := pronicNorm_add_sq_eq _ _ T
+      rw [longSawtoothTailGapTheta, ← hc₀, ← hC₀, ← hC_tail, ← hM]
+      linarith
+  have hlt_iff : longSawtoothTailGapTheta ε t < 1 ↔ ¬ ReceiverBounded (oscillatingSmoothPower ε t) := by
+    rw [longSawtoothTailGapTheta, ← hc₀, ← hC₀, ← hC_tail, ← hM]
+    have h4M : 0 < 4 * M := by linarith
+    have hdiv_pos : 1 - c₀ / (4 * M) < 1 ↔ 0 < c₀ := by
+      constructor
+      · intro h
+        have : 0 < c₀ / (4 * M) := by linarith
+        exact (div_pos_iff_of_pos_right h4M).mp this
+      · intro h
+        linarith [div_pos h h4M]
+    rw [hdiv_pos, hc₀, probeEnergyLowerRate_pos_iff hε hε2 ht,
+      receiverBounded_oscillatingSmoothPower_iff hε hε2.le t]
+  have hharm_iff : longSawtoothTailGapTheta ε t < 1 ↔
+      (‖longSawtoothAmp ε t‖ ≠ ‖tailDriftAmp ε t‖ ∨
+        -(longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re <
+          ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖) := by
+    rw [hlt_iff, receiverBounded_oscillatingSmoothPower_iff hε hε2.le t]
+    have hρ0 : oscillationExponent ε t ≠ 0 := oscillationExponent_ne_zero (by linarith) t
+    have hdecomp := norm_sq_longSawtoothAmp_add_tailDriftAmp_eq ε t
+    constructor
+    · intro hz
+      have hquot : riemannZeta (oscillationExponent ε t) / oscillationExponent ε t ≠ 0 :=
+        div_ne_zero hz hρ0
+      have hsq_pos : 0 < ‖riemannZeta (oscillationExponent ε t) / oscillationExponent ε t‖ ^ 2 :=
+        sq_pos_of_pos (norm_pos_iff.mpr hquot)
+      by_contra hnot
+      push_neg at hnot
+      have h1 : (‖longSawtoothAmp ε t‖ - ‖tailDriftAmp ε t‖) ^ 2 = 0 := by
+        rw [hnot.1, sub_self, sq, mul_zero]
+      have h2 : ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖ +
+          (longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re ≤ 0 := by
+        linarith [hnot.2]
+      linarith [hdecomp.2.1]
+    · intro hsrc hz
+      have hquot : riemannZeta (oscillationExponent ε t) / oscillationExponent ε t = 0 := by
+        rw [hz, zero_div]
+      have hsq_zero : ‖riemannZeta (oscillationExponent ε t) / oscillationExponent ε t‖ ^ 2 = 0 := by
+        rw [hquot, norm_zero, sq, mul_zero]
+      rcases hsrc with hmis | hdec
+      · have hpos : 0 < (‖longSawtoothAmp ε t‖ - ‖tailDriftAmp ε t‖) ^ 2 :=
+          sq_pos_of_ne_zero (sub_ne_zero.mpr hmis)
+        linarith [hdecomp.2.1, hdecomp.2.2.2]
+      · linarith [hdecomp.2.1, hdecomp.2.2.1]
+  exact ⟨hθ_le, hev, hlt_iff, hharm_iff⟩
+
+/-- **On the high-height Vinogradov–Korobov collar and on every bounded-height zero-free collar,
+the explicit quadratic gap `longSawtoothTailGapTheta ε t < 1` holds unconditionally.** -/
+theorem longSawtoothTailGapTheta_lt_one_vk_and_box :
+    (∃ T₀ : ℝ, Real.exp (Real.exp 1) ≤ T₀ ∧ ∀ ε t : ℝ, T₀ ≤ |t| → 0 < ε →
+      ε < min (1 / 2) (RHTower.vkHadamardWidth |t|) →
+      longSawtoothTailGapTheta ε t < 1) ∧
+    (∀ T : ℝ, ∃ δ > 0, ∀ ε t : ℝ, 0 < ε → ε < min δ (1 / 2) → t ≠ 0 → |t| ≤ T →
+      longSawtoothTailGapTheta ε t < 1) := by
+  refine ⟨?_, ?_⟩
+  · obtain ⟨T₀, hT₀, hvk⟩ := exists_not_receiverBounded_oscillatingSmoothPower_vk
+    refine ⟨T₀, hT₀, fun ε t ht hε hεw => ?_⟩
+    have hε2 : ε < 1 / 2 := hεw.trans_le (min_le_left _ _)
+    have ht0 : t ≠ 0 := by
+      intro h0; rw [h0, abs_zero] at ht; linarith [Real.exp_pos (Real.exp 1)]
+    exact (eventually_longSawtooth_tail_quadratic_gap hε hε2 ht0).2.2.1.mpr (hvk ε t ht hε hεw)
+  · intro T
+    obtain ⟨δ, hδ, hbox⟩ := exists_delta_not_receiverBounded_oscillatingSmoothPower_box T
+    refine ⟨δ, hδ, fun ε t hε hεm ht0 ht => ?_⟩
+    have hε2 : ε < 1 / 2 := hεm.trans_le (min_le_right _ _)
+    exact (eventually_longSawtooth_tail_quadratic_gap hε hε2 ht0).2.2.1.mpr
+      (hbox ε t hε hεm.le ht)
+
+/-- **Across the full sub-half strip `0 < ε < 1/2, t ≠ 0`, `longSawtoothTailGapTheta ε t < 1` is
+equivalent to the Riemann hypothesis.** -/
+theorem riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one :
+    RiemannHypothesis ↔
+      ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∀ t : ℝ, t ≠ 0 →
+        longSawtoothTailGapTheta ε t < 1 := by
+  rw [riemannHypothesis_iff_forall_not_receiverBounded_oscillatingSmoothPower]
+  constructor
+  · intro hRH ε hε hε2 t ht
+    exact (eventually_longSawtooth_tail_quadratic_gap hε hε2 ht).2.2.1.mpr (hRH ε hε hε2 t)
+  · intro h ε hε hε2 t
+    rcases eq_or_ne t 0 with rfl | ht
+    · exact not_receiverBounded_oscillatingSmoothPower_zero_from_source hε hε2.le
+    · exact (eventually_longSawtooth_tail_quadratic_gap hε hε2 ht).2.2.1.mp (h ε hε hε2 t ht)
 
 end
 

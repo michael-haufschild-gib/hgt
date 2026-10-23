@@ -1,5 +1,13 @@
 import GaloisForLFunctions.RHTower.CCM.CCMSoninFiniteWordNormalForm
 
+/-!
+# Faithfulness of finite Sonin window words
+
+Initial and final Calkin projections recover a live window's endpoints and scale.
+This makes the zero/live normal form faithful and transfers the operator adjoint,
+associativity, and partial-isometry identities to the canonical states.
+-/
+
 noncomputable section
 
 namespace RHTower
@@ -7,8 +15,6 @@ namespace RHTower
 open MeasureTheory Set Filter Topology
 open FourierTransform
 open scoped ENNReal InnerProduct InnerProductSpace
-
-set_option maxHeartbeats 1000000
 
 /-- Physical shells with the first ceiling below the second floor are disjoint. -/
 theorem evenIndicatorShell_mul_eq_zero_of_left_ceiling_le_right_floor
@@ -304,8 +310,6 @@ open MeasureTheory Set Filter Topology
 open FourierTransform
 open scoped ENNReal InnerProduct InnerProductSpace
 
-set_option maxHeartbeats 1000000
-
 /-- The final Calkin projection of a canonical live window is its unscaled shell. -/
 theorem evenSoninWindowTranslation_mul_adjoint_compactEq_shell_of_canonical
     (a C F x : ℝ) (ha : 0 < a) (haF : a ≤ F) (hFC : F < C)
@@ -554,8 +558,8 @@ def SoninLiveWindow.inverse {a : ℝ} (d : SoninLiveWindow a) : SoninLiveWindow 
   base_le_floor := d.domain_le
   floor_lt_ceiling := mul_lt_mul_of_pos_left d.floor_lt_ceiling d.scale_pos
   domain_le := by
-    have hscale : d.scale⁻¹ * (d.scale * d.floor) = d.floor := by
-      field_simp [d.scale_pos.ne']
+    have hscale : d.scale⁻¹ * (d.scale * d.floor) = d.floor :=
+      inv_mul_cancel_left₀ d.scale_pos.ne' d.floor
     rw [hscale]
     exact d.base_le_floor
 
@@ -571,9 +575,9 @@ theorem SoninLiveWindow.inverse_operator {a : ℝ} (d : SoninLiveWindow a) :
     d.inverse.inverse = d := by
   apply SoninLiveWindow.ext_coordinates
   · dsimp only [SoninLiveWindow.inverse]
-    field_simp [d.scale_pos.ne']
+    exact inv_mul_cancel_left₀ d.scale_pos.ne' d.ceiling
   · dsimp only [SoninLiveWindow.inverse]
-    field_simp [d.scale_pos.ne']
+    exact inv_mul_cancel_left₀ d.scale_pos.ne' d.floor
   · dsimp only [SoninLiveWindow.inverse]
     exact inv_inv d.scale
 
@@ -679,8 +683,6 @@ namespace RHTower
 open MeasureTheory Set Filter Topology
 open FourierTransform
 open scoped ENNReal InnerProduct InnerProductSpace
-
-set_option maxHeartbeats 1000000
 
 /-- Any two nondegenerate two-polarization shells commute in the Calkin algebra. -/
 theorem evenTwoPolarizationShell_comm_compactEq

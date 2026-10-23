@@ -11,7 +11,6 @@ in the compensation source derivative.
 namespace RHTower
 noncomputable section
 open Set
-set_option maxHeartbeats 800000
 
 private abbrev u := thetaCuspModularMassDrift
 private abbrev a := thetaCuspModularGapAmplitude
@@ -62,7 +61,7 @@ theorem thetaCuspModularGapAmplitude_energy_lower {x : ℝ}
     have hw := thetaCuspModularTransverseShear_le_energyTangent ht'
     have hw0 := w_nonneg ht'.1
     have he := thetaCuspModularStrongEnergy_lt ht'.1
-    have ha : a t ≤ 96/5 := by nlinarith [sq_nonneg (u t)]
+    have ha : a t ≤ 96/5 := by linarith [sq_nonneg (u t)]
     have hp := (mul_le_mul_of_nonneg_right ha hw0).trans
       (mul_le_mul_of_nonneg_left hw (by norm_num : (0 : ℝ) ≤ 96/5))
     linarith
@@ -81,8 +80,8 @@ theorem thetaCuspModularState_energy_box {x : ℝ}
   have ha := thetaCuspModularGapAmplitude_energy_lower hx
   have hinit := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
   have he := thetaCuspModularStrongEnergy_lt hx.1
-  have hx2 : x^(2 : ℕ) ≤ (8/95 : ℝ)^(2 : ℕ) := by nlinarith [hx.1, hx.2]
-  refine ⟨hu0, ?_, ?_, ?_, hw0, ?_⟩ <;> nlinarith [hx.2, sq_nonneg (u x)]
+  have hx2 : x^(2 : ℕ) ≤ (8/95 : ℝ)^(2 : ℕ) := by nlinarith only [hx.1, hx.2]
+  refine ⟨hu0, ?_, ?_, ?_, hw0, ?_⟩ <;> linarith [hx.2, sq_nonneg (u x)]
 
 /-- The same compact tube retains a positive lower linear drift. -/
 theorem thetaCuspModularMassDrift_energy_lower {x : ℝ}
@@ -98,7 +97,7 @@ theorem thetaCuspModularMassDrift_energy_lower {x : ℝ}
     intro t ht
     have ht' : t ∈ Ioo (0 : ℝ) (8/95) := by simpa only [interior_Icc] using ht
     have hb := thetaCuspModularState_energy_box ⟨ht'.1.le, ht'.2.le⟩
-    nlinarith [hb.2.2.1, sq_nonneg (u t)]
+    linarith only [hb.2.2.1, sq_nonneg (u t)]
   have h := hmono (by norm_num : (0 : ℝ) ∈ Icc 0 (8/95)) hx hx.1
   simp only [thetaCuspModularMassDrift_zero] at h
   linarith

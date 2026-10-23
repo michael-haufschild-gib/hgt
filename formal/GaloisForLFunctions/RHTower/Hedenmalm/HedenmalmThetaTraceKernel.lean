@@ -52,7 +52,6 @@ theorem toDual_symm_transposeKernelField (S : PositiveDensitySource)
       = -(transposeVec S hfin t) :=
   toDual_symm_innerSL _
 
-set_option maxHeartbeats 1000000 in
 /-- **The pointwise kernel pairing.**  At an interior parameter the pairing of the two Riesz
 vectors is the inner slice integral. -/
 theorem inner_riesz_eq (S : PositiveDensitySource) (hfin : HasFiniteKernelEnergy S)
@@ -82,7 +81,6 @@ theorem inner_riesz_eq (S : PositiveDensitySource) (hfin : HasFiniteKernelEnergy
   rw [Complex.I_sq]
   ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The trace invariant as a double kernel integral.**  This is the quantile form of
 `tr(B²) = 2 ∫_{x<y} p(x)(1-p(y)) dx dy`. -/
 theorem thetaTraceSq_eq_double_integral :
@@ -147,9 +145,8 @@ theorem integrable_quantileSpeed_mul_poly (S : PositiveDensitySource)
     have hw : 0 ≤ u * (1 - u) := by nlinarith [hu.1, hu.2]
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     simp only [Pi.add_apply]
-    nlinarith [sq_nonneg (quantileSpeed S u - 1), hw]
+    linarith only [mul_nonneg (sq_nonneg (quantileSpeed S u - 1)) hw]
 
-set_option maxHeartbeats 2000000 in
 theorem integrable_uncurry_abs_slice (S : PositiveDensitySource)
     (hfin : HasFiniteKernelEnergy S) :
     Integrable (fun p : ℝ × ℝ => quantileSpeed S p.1 * |pinnedKernelSlice p.1 p.2|)
@@ -181,7 +178,6 @@ theorem integrable_uncurry_abs_slice (S : PositiveDensitySource)
 
 
 
-set_option maxHeartbeats 2000000 in
 /-- **The first interchange.**  Pairing the covariance kernel against the quantile speed produces
 the slice moment. -/
 theorem integral_quantileSpeed_min_sub (S : PositiveDensitySource)
@@ -260,7 +256,6 @@ theorem integrable_sq_quantileFun_thetaSource :
   rw [unitIntervalMeasure_eq]
   exact integrableOn_sq_quantileFun_thetaSource
 
-set_option maxHeartbeats 2000000 in
 theorem integrable_uncurry_slice_quantile :
     Integrable (Function.uncurry (fun s t : ℝ =>
       quantileSpeed thetaSource t * pinnedKernelSlice t s
@@ -304,11 +299,11 @@ theorem integrable_uncurry_slice_quantile :
       rw [hB]
       exact abs_sub _ _
     rw [Real.norm_eq_abs, abs_of_nonneg (integral_nonneg fun t => norm_nonneg _), hval]
-    nlinarith [sq_abs (thetaSource.quantileFun s)]
+    linarith only [mul_le_mul_of_nonneg_left hle hQ,
+      mul_le_mul_of_nonneg_left htri hQ, sq_abs (thetaSource.quantileFun s)]
 
 
 
-set_option maxHeartbeats 2000000 in
 /-- **The double kernel integral is the source variance.** -/
 theorem integral_double_min_sub_eq :
     (∫ t, ∫ u, quantileSpeed thetaSource t * quantileSpeed thetaSource u * (min t u - t * u)
@@ -353,7 +348,6 @@ theorem integral_double_min_sub_eq :
   rw [h5, sliceMoment_eq_neg_quantileFun hs]
   ring
 
-set_option maxHeartbeats 2000000 in
 /-- **The trace calibration.**  The first nontrivial trace invariant of the compressed source
 inverse is the source variance:  `tr(B²) = M⁻¹ ∫ x² k(x) dx`. -/
 theorem thetaTraceSq_eq_source_variance :

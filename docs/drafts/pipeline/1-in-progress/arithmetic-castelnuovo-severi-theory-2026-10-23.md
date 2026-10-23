@@ -176,6 +176,10 @@ survivor).
   `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths` (unconditional
   `RiemannRochAxiom`, `AmpleAxiom`, and `BezoutAxiom` past the first prime `r ≤ 181/500`).
 
+- `TheHodgeDefectIsCyclic`: `cyclic_pontryagin_law` (one Hecke orbit of a spectrally generic test
+  carries the whole Hodge defect), `riemannHypothesis_iff_ratHecke_negIndex_eq_zero`,
+  `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`.
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

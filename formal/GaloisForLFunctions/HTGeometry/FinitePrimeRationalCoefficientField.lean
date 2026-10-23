@@ -78,7 +78,7 @@ theorem algebraicIndependent_ratFuncConstants_over_coordinateAdjoin
     exact hopt.comp eqv eqv.injective
   simpa only [xR, A] using (AlgebraicIndependent.sumElim_iff.mp hjoint).2
 
-/-- The card's formal coefficient field: finite-prime arithmetic fractions with one independent
+/-- Finite-prime arithmetic fractions with one independent
 rational coordinate adjoined. -/
 abbrev finitePrimeRationalCoefficientField :=
   RatFunc finitePrimeCoefficientField

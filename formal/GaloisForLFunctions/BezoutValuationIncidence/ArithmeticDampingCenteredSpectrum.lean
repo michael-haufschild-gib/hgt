@@ -176,7 +176,7 @@ theorem zero_mem_spectrum_arithmeticDampingCenteredOperator {η : ℝ} (hη : 0 
   obtain ⟨b, hb⟩ := not_backward_stable_c0 hη ‖(↑u⁻¹ : C₀(ℕ, ℝ) →L[ℝ] C₀(ℕ, ℝ))‖
   refine hb.not_ge ?_
   calc ‖b‖ = ‖(↑u⁻¹ : C₀(ℕ, ℝ) →L[ℝ] C₀(ℕ, ℝ)) (arithmeticDampingCenteredOperator hη b)‖ := by
-        rw [← hu, ← ContinuousLinearMap.mul_apply, Units.inv_mul, ContinuousLinearMap.one_apply]
+        rw [← hu, ← mul_apply_eq_comp, Units.inv_mul, one_apply_eq_self]
     _ ≤ _ := ContinuousLinearMap.le_opNorm _ _
 
 /-- **The complete real spectrum** `σ(C_η) = {0} ∪ {d^{−η} : d ≥ 2}` at every positive damping. -/

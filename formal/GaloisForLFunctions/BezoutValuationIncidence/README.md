@@ -1287,7 +1287,11 @@ positive damping. Centering is compatible with composition: the finite transitio
 hypothesis on the input, the centering discrepancy is a coordinate-constant, and both outputs vanish
 at infinity, so the constant is zero and the centered operators form the exact positive-time
 semigroup $\mathring P_s\mathring P_t=\mathring P_{s+t}$. The argument never interchanges two
-infinite sums, which is why the positive-state convention is kept explicit.
+infinite sums, which is why the positive-state convention is kept explicit. The spectrum is exact:
+$\sigma(\mathring P_\eta)=\{0\}\cup\{d^{-\eta}:d\ge2\}$, each eigenspace is the line of the residue
+mode $v_d$, and $\mathring P_\eta$ is injective (`mem_spectrum_arithmeticDampingCenteredOperator_iff`,
+`arithmeticDampingCenteredOperator_eigen_iff`). An eigen-equation read at the first state fixes the
+entrance value, leaving a lower-triangular raw equation with diagonal $(n+1)^{-\eta}$.
 
 **The entrance tail is the absolute barrier, and only the absolute one.** Size bias converts the
 exact reciprocal tail into a lower bound for the probability tail,
@@ -1395,7 +1399,9 @@ finite inequality.
    separated (`parityPair_separated_on_vinogradovKorobovBand`): the first receiver statement of the
    programme selective against Beurling systems.
 10. **The damping chain.** Centred transitions are compact on $c_0$ and form a semigroup
-    (`isCompactOperator_arithmeticDampingCenteredOperator`, `arithmeticDampingCenteredOperator_semigroup`);
+    (`isCompactOperator_arithmeticDampingCenteredOperator`, `arithmeticDampingCenteredOperator_semigroup`)
+    with spectrum $\{0\}\cup\{d^{-\eta}\}$ and one-dimensional eigenspaces
+    (`mem_spectrum_arithmeticDampingCenteredOperator_iff`);
     the residue modes span a dense subspace (`normalizedResidueMode_dense_span`); the entrance tail is
     the absolute barrier at $\eta\le\tfrac12$ and the entrance functional has finite pronic dual norm
     exactly for $\eta>\tfrac12$ (`exists_pronicWitness_not_summable_pairing`).

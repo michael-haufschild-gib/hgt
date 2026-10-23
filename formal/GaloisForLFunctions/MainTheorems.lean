@@ -22,6 +22,7 @@ import GaloisForLFunctions.ScaleSignedIncidenceCriticality
 import GaloisForLFunctions.ArithmeticCompensationTheory
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+import GaloisForLFunctions.TransThresholdPairCorrelation
 import GaloisForLFunctions.QuantumAlg
 import GaloisForLFunctions.PNTPlus
 import GaloisForLFunctions.QECLean
