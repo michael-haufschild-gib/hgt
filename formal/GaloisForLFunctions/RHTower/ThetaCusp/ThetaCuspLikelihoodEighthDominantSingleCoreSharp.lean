@@ -15,7 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxRecDepth 20000 in
 /-- Exact algebraic floor for the dominant one-particle core on the physical chamber. -/
 theorem nineThousandFiveHundredFortyNine_mul_pow_eight_lt_thetaCuspLikelihoodEighthDominantSingleCore
     {A : ℝ} (hA : (157 / 50 : ℝ) ≤ A) :

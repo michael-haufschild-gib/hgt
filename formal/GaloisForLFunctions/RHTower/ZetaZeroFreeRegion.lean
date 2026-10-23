@@ -81,7 +81,6 @@ theorem norm_riemannZeta_le_of_zero {β σ' t : ℝ} (ht : 9 ≤ |t|)
   rw [hzero, sub_zero] at hkey
   exact hkey
 
-set_option maxHeartbeats 3200000 in
 /-- **The de la Vallée Poussin zero-free region**:
 `ζ(β+it) ≠ 0` for `|t| ≥ 9` and `β > 1 − c/log⁹|t|`. -/
 theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
@@ -136,8 +135,8 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
         pow_le_pow_left₀ (by norm_num) hlogt2.le 8
       have h4 : zetaZeroFreeC * (4 * Real.log |t|)
           ≤ 4 * Real.log |t| := by
-        nlinarith [zetaZeroFreeC_le_half, zetaZeroFreeC_pos, hL0]
-      nlinarith [hL0]
+        exact mul_le_of_le_one_left (by linarith) (by linarith [zetaZeroFreeC_le_half])
+      linarith [mul_le_mul_of_nonneg_right h3 hL0.le]
     linarith
   -- the mean value at `σ' := 1 + x`
   have hmid : ‖riemannZeta (((1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ)
@@ -151,7 +150,7 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
     have h2 : 1 + zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) - β
         ≤ 2 * (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
       linarith
-    nlinarith [sq_nonneg (Real.log |t|), hx0]
+    linarith [mul_le_mul_of_nonneg_left h2 (sq_nonneg (Real.log |t|))]
   -- the pole bound
   have hpole : ‖riemannZeta (1 + ((zetaZeroFreeC / Real.log |t| ^ (9 : ℕ) : ℝ) : ℂ))‖
       ≤ 3 / (zetaZeroFreeC / Real.log |t| ^ (9 : ℕ)) := by
@@ -189,7 +188,7 @@ theorem riemannZeta_ne_zero_of_re_gt_one_sub {β t : ℝ} (ht : 9 ≤ |t|)
       have h6 : |2 * t| ≤ |t| ^ (2 : ℕ) := by
         rw [abs_mul]
         simp only [abs_two]
-        nlinarith
+        linarith [mul_le_mul_of_nonneg_right (by linarith : (2 : ℝ) ≤ |t|) (abs_nonneg t)]
       have h7 := Real.log_le_log h2t0 h6
       rwa [Real.log_pow, Nat.cast_ofNat] at h7
     linarith

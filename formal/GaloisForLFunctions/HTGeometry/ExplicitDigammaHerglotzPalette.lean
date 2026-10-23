@@ -239,7 +239,6 @@ theorem explicitDigammaFiniteOrientation_eq_regular_sub_atom
     ring
   linear_combination hatomRel
 
-set_option maxHeartbeats 1000000 in
 /-- **Exact explicit digamma chamber law.**  The finite orientation chamber is Herglotz exactly
 when no residue is reversed. -/
 theorem explicitDigammaFiniteOrientation_nonneg_iff_empty (J : Finset ℕ) :

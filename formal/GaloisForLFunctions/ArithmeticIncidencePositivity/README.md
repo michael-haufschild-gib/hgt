@@ -981,19 +981,27 @@ side and the pole plane; the archimedean density is not part of this ledger.
     `≤ 3ε²r`, and every sub-light-cone shift has `F(x)F(x+L) = 0`
     (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`). What holds at every aperture is exact:
     the favourable strip gains are a polar integral plus a Chebyshev pairing
-    (`sum_evenStripGain_eq_polar_add_chebyshev`); the joint reflected-prime/polar cost is the prime
-    autocorrelation charge minus its polar comparison, equal to the finite-horizon two-pole
-    Chebyshev pairing and, for `C²` tests, to the critical-scale receiver against the test's
-    curvature (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
-    `reflectedPrimePolarCost_eq_criticalScalePrefix`); and the ledger reads
+    (`sum_evenStripGain_eq_polar_add_chebyshev`) and universally pay at least half of the odd strip
+    cost (`oddStripCost_le_two_mul_evenStripGain`, `sum_oddStripCost_le_two_mul_sum_evenStripGain`,
+    and `oddStripCost_le_evenStripGain_of_nonneg_on_Ici` on trans-half-width shifts); the pole charge
+    obeys the plateau-independent bound `poleCharge F ≤ 8 sinh r ∫ F² ≤ 4 e^r ∫ F²`
+    (`poleCharge_le_eight_mul_sinh_mul_sq`, `fullZeroForm_ge_sinh_ledgerFloor`), while the gauge
+    remainder is bounded below uniformly by `−(27/5) ∫ F²` (`gaugeRemainder_ge_neg_const_mul_sq`);
+    the joint reflected-prime/polar cost is the prime autocorrelation charge minus its polar
+    comparison, equal to the finite-horizon two-pole Chebyshev pairing and, for `C²` tests, to the
+    critical-scale receiver against the test's curvature
+    (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
+    `reflectedPrimePolarCost_eq_criticalScalePrefix`), bounded unconditionally across all apertures by
+    `72 e^r ∫ F²` (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
+    `chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq`) and by `((8 + ε) e^r + C) ∫ F²`
+    (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`); and the ledger reads
     `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r` at
-    every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`,
-    `riemannHypothesis_iff_reflectedPrimePolarAllocation`). Its graded forms connect the
-    Chebyshev-defect allocation directly to the zero width
-    (`zetaZeroWidth_le_of_chebyshevDefectAllocation_graded`). The ledger's open end is thus one
-    signed pairing of the actual Chebyshev defect with the test's autocorrelation derivatives,
-    uniformly in the aperture and in the mass normalisation; a bound on `E` imported from a zero
-    strip cannot establish that strip independently.
+    every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`). Unconditionally,
+    `GlobalIncidenceAllocation r R F` holds with `(1/1000) ∫ F²` coercivity margin on `(0, 181/500]`
+    (`globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths`,
+    `chebyshevTwoPoleDefect_integral_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths`), and
+    `GradedIncidenceAllocation (1/2) 78` holds across all apertures `0 < r < R`
+    (`gradedIncidenceAllocation_half`, `gradedIncidenceAllocation_of_half_le`).
 
 ---
 

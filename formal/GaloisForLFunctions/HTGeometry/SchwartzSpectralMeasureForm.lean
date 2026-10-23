@@ -70,19 +70,11 @@ def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
     have hfourier : Continuous
         (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
           ((fourierTransformCLM ℂ) p.1, (fourierTransformCLM ℂ) p.2)) :=
-      ((fourierTransformCLM ℂ).continuous.comp continuous_fst).prodMk
-        ((fourierTransformCLM ℂ).continuous.comp continuous_snd)
-    have hproduct : Continuous
-        (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) => pointwiseMulConj p.1 p.2) :=
-      continuous_pointwiseMulConj
-    have hcombined : Continuous
-        (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
-          pointwiseMulConj ((fourierTransformCLM ℂ) p.1)
-            ((fourierTransformCLM ℂ) p.2)) := hproduct.comp hfourier
-    change Continuous (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
-      (integralCLM ℂ μ) (pointwiseMulConj ((fourierTransformCLM ℂ) p.1)
-        ((fourierTransformCLM ℂ) p.2)))
-    exact (integralCLM ℂ μ).continuous.comp hcombined
+      ((fourierTransformCLM ℂ).continuous.comp' continuous_fst).prodMk
+        ((fourierTransformCLM ℂ).continuous.comp' continuous_snd)
+    -- `comp'` keeps the composite as a lambda, so the goal is matched by projection reduction
+    -- rather than by unfolding `pointwiseMulConj` against `Function.comp`.
+    exact (integralCLM ℂ μ).continuous.comp' (continuous_pointwiseMulConj.comp' hfourier)
 
 theorem spectralMeasureForm_apply (μ : Measure ℝ) [μ.HasTemperateGrowth]
     (u v : 𝓢(ℝ, ℂ)) :

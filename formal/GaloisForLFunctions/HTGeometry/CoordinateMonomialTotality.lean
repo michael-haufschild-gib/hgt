@@ -178,7 +178,6 @@ theorem toComplexCM_re_add_im (f : C(Ω, ℂ)) :
 
 variable [T2Space Ω] [μ.WeaklyRegular]
 
-set_option maxHeartbeats 1000000 in
 /-- **Monomials in an injective continuous coordinate are total in `L²`.**  Only the zero vector is
 orthogonal to every one of them. -/
 theorem eq_zero_of_inner_coordMonomial_eq_zero {X : C(Ω, ℝ)} (hX : Function.Injective X)
@@ -211,7 +210,6 @@ theorem eq_zero_of_inner_coordMonomial_eq_zero {X : C(Ω, ℝ)} (hX : Function.I
   have := hall g
   exact inner_self_eq_zero.mp this
 
-set_option maxHeartbeats 1000000 in
 /-- **The monomials in an injective continuous coordinate span a dense subspace of `L²`.** -/
 theorem dense_span_coordMonomial {X : C(Ω, ℝ)} (hX : Function.Injective X) :
     Dense ((Submodule.span ℂ (Set.range

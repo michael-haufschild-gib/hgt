@@ -29,7 +29,6 @@ theorem continuous_kernelEnergy (hK : Continuous fun p : X × X => K p.1 p.2) (n
       ((continuous_apply j).comp continuous_snd).prodMk ((continuous_apply k).comp continuous_snd)
     exact hK.comp hpair
 
-set_option maxHeartbeats 1000000 in
 /-- **Dense testing.**  A continuous Hermitian kernel is positive semidefinite as soon as every
 finite system with coefficients in a dense set and nodes in a dense set has nonnegative energy. -/
 theorem isPSDKernel_of_dense_energy (hherm : ∀ x y, conj (K x y) = K y x)

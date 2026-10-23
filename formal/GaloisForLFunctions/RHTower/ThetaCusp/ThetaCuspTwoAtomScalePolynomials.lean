@@ -11,7 +11,6 @@ open Polynomial
 open scoped ContDiff
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 1500000
 
 /-- Every atom's physical scale has the same logarithmic derivative law. -/
 theorem hasDerivAt_thetaCuspSingleAtomReflectionScale (n : ℕ) (x : ℝ) :

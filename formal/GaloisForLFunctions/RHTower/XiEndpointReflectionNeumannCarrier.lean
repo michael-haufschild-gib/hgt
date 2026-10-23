@@ -203,8 +203,7 @@ theorem hasSum_xiEndpointCrossTrace_allOrder :
       HasSum (fun q : XiZeroCopy => f (n, q))
         (-xiRawReciprocalPowerTrace (n + 2)) := by
     intro n
-    have h := (summable_xiRawReciprocalCoordinate_pow_add_two n).neg.hasSum
-    simpa [f, xiRawReciprocalPowerTrace, tsum_neg] using h
+    exact (summable_xiRawReciprocalCoordinate_pow_add_two n).hasSum.neg
   have hseq := hf.hasSum.prod_fiberwise hfiberN
   have htarget : (∑' p : ℕ × XiZeroCopy, f p) =
       ∑' q : XiZeroCopy,
@@ -213,13 +212,7 @@ theorem hasSum_xiEndpointCrossTrace_allOrder :
             (xiRawReciprocalCoordinate (xiZeroCopyLineConjEquiv q)) := by
     calc
       (∑' p : ℕ × XiZeroCopy, f p) =
-          ∑' n : ℕ, ∑' q : XiZeroCopy, f (n, q) := by
-        symm
-        have hfiber : ∀ n : ℕ, Summable (fun q : XiZeroCopy => f (n, q)) := by
-          intro n
-          simpa only [Function.comp_apply] using!
-            hf.comp_injective (fun q₁ q₂ h => Prod.mk.inj h |>.2)
-        exact (hf.hasSum.prod_fiberwise (fun n => (hfiber n).hasSum)).tsum_eq
+          ∑' n : ℕ, ∑' q : XiZeroCopy, f (n, q) := hf.tsum_prod
       _ = ∑' q : XiZeroCopy, ∑' n : ℕ, f (n, q) :=
         (Summable.tsum_comm hf).symm
       _ = _ := by

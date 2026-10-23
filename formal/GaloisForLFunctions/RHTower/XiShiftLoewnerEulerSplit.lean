@@ -109,7 +109,6 @@ theorem lSeries_term_pair (ω : ℝ) (W : ℂ) (n : ℕ) :
     have h2 := hbne ((ω : ℂ))
     field_simp
 
-set_option maxHeartbeats 1000000 in
 /-- **The exact Euler--Gamma split.**  On the Euler region the shifted generator is the archimedean
 term minus the complete von Mangoldt phase series. -/
 theorem xiShiftGen_eq_arch_sub_primeSeries {ω : ℝ} {W : ℂ} (hW : 1 / 2 + |ω| < W.re) :
@@ -137,7 +136,6 @@ theorem xiShiftGen_eq_arch_sub_primeSeries {ω : ℝ} {W : ℂ} (hW : 1 / 2 + |�
   rw [xiShiftGen, logDeriv_xiCent, logDeriv_xiCent, hsum, xiShiftArch]
   linear_combination e1 + e2
 
-set_option maxHeartbeats 1000000 in
 /-- **Absolute convergence in the Euler region.** -/
 theorem summable_xiShiftPrimeTerm {ω : ℝ} {W : ℂ} (hW : 1 / 2 + |ω| < W.re) :
     Summable (fun n : ℕ => xiShiftPrimeTerm ω W n) := by
@@ -169,7 +167,6 @@ def xiShiftArchKernel (ω : ℝ) (W V : ℂ) : ℂ :=
 def xiShiftPrimeKernel (ω : ℝ) (W V : ℂ) : ℂ :=
   ((∑' n : ℕ, xiShiftPrimeTerm ω W n) + conj (∑' n : ℕ, xiShiftPrimeTerm ω V n)) / (W + conj V)
 
-set_option maxHeartbeats 1000000 in
 /-- **The Schur-complement splitting.**  On the Euler region the generator kernel is the
 archimedean kernel minus the complete prime kernel. -/
 theorem xiShiftGenKernel_eq_arch_sub_prime {ω : ℝ} {W V : ℂ}

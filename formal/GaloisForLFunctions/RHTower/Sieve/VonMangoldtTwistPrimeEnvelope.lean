@@ -127,7 +127,6 @@ theorem norm_partialSum_vonMangoldtPrimeTwist_le_crude (τ : ℝ) (K : ℕ) :
   rw [hch]
   exact chebyshevPsi_le_seven K
 
-set_option maxHeartbeats 1000000 in
 /-- **Lemma 2.3, prime form.**  The Route-T twisted prime-indicator sum obeys the monotone
 envelope of the twisted Chebyshev sum, up to the total variation of `1/log`. -/
 theorem exists_norm_sum_primeTwist_routeT_le :
@@ -182,7 +181,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       have hstep : (0 : ℝ)
           ≤ (3 * (K : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2) / 3))
             * (routeTTwistHeightFactor A τ + Real.log (2 * (K : ℝ))) := by positivity
-      nlinarith [hstep, hK0]
+      linarith [mul_nonneg hK0.le hstep]
     have hcomp2 : (K : ℝ)
           * ((1 + (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
               * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ)) / (1 + |τ|))
@@ -196,7 +195,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       have hKP : (K : ℝ)
           ≤ 3 * (K : ℝ)
             * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3) := by
-        nlinarith [hP1, hK0]
+        linarith [mul_le_mul_of_nonneg_left hP1 (by linarith : (0 : ℝ) ≤ 3 * (K : ℝ))]
       have hKPX : (0 : ℝ)
           ≤ (K : ℝ) * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
             * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) := by positivity
@@ -206,7 +205,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
           ≤ 3 * (K : ℝ)
             * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
             * (1 + (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) := by
-        nlinarith [hKP, hKPX]
+        linarith [hKP, hKPX]
       calc (K : ℝ)
             * ((1 + (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
                 * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ)) / (1 + |τ|))

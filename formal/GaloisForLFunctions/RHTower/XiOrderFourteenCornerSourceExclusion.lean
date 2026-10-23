@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.PrimeArchThetaWardLaplaceHalfDensity
 import GaloisForLFunctions.RHTower.XiThermalEndpointResolventGap
 import GaloisForLFunctions.RHTower.PrimeArchEndpointCalibratedHausdorffRH
 import GaloisForLFunctions.RHTower.XiOrderFourteenEdgeCorner
+import GaloisForLFunctions.RHTower.EulerMascheroniCorrectedUpper
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 /-!
@@ -64,20 +65,12 @@ lemma twoThousandFiveHundredThirtyOne_over_thousand_lt_log_four_mul_pi :
     norm_num
   exact hrat.trans ((add_lt_add hlogv hlogc).trans hlogvc)
 
-set_option maxRecDepth 1000000 in
-/-- A certified upper bound for Euler's constant from the decreasing Euler--Mascheroni sequence
-at the factorable index `6250 = 2 * 5^(5 : ℕ)`. -/
+/-- A certified upper bound for Euler's constant, from the six-decimal bound
+`γ < 577216 / 10^6` of the second-order Euler--Maclaurin approximant. -/
 lemma eulerMascheroniConstant_lt_fiveThousandSevenHundredSeventyThree_over_tenThousand :
-    Real.eulerMascheroniConstant < 5773 / 10000 := by
-  refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 6250).trans ?_
-  rw [Real.eulerMascheroniSeq']
-  norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (6250 : ℝ) = 2 * 5 ^ (5 : ℕ) by norm_num,
-    Real.log_mul (by norm_num) (by positivity), Real.log_pow]
-  have htwo := Real.log_two_gt_d9
-  have hfive := Real.log_five_gt_d9
-  norm_num [harmonic] at *
-  linarith
+    Real.eulerMascheroniConstant < 5773 / 10000 :=
+  eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion.trans
+    (by norm_num)
 
 /-- The sharper elementary logarithm and Euler-constant bounds improve the completed endpoint
 curvature budget. -/

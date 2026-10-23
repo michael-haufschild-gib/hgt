@@ -19,7 +19,6 @@ noncomputable section
 
 namespace GaloisForLFunctions.RHTower
 
-set_option maxHeartbeats 1000000 in
 /-- **The abscissa is a genuine singularity.** -/
 theorem false_of_analyticAt_abscissa {ν : Measure ℝ} {c : ℝ} (hc : IsAbscissa ν c)
     {Φ : ℂ → ℂ} {δ : ℝ} (hδ : 0 < δ)

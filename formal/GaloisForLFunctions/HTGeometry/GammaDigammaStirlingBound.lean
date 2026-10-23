@@ -120,7 +120,6 @@ theorem log_sub_log_of_re_pos {w v : ℂ} (hw : 0 < w.re) (hv : 0 < v.re) :
 
 /-! ## The shifted Stirling defect vanishes -/
 
-set_option maxHeartbeats 1000000 in
 theorem tendsto_digammaStirlingDefect_shift_zero {z : ℂ} (hz : 0 ≤ z.re) :
     Tendsto (fun N : ℕ => digammaStirlingDefect (z + (N : ℂ))) atTop (nhds 0) := by
   have hzre : ∀ N : ℕ, 1 ≤ N → 0 < (z + (N : ℂ)).re := by
@@ -170,7 +169,7 @@ theorem tendsto_digammaStirlingDefect_shift_zero {z : ℂ} (hz : 0 ≤ z.re) :
     have hNpos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
     rw [norm_norm, hid, norm_div]
     rw [div_le_div_iff₀ (by linarith) hNpos]
-    nlinarith [norm_nonneg (z - 1), hlow, hNpos]
+    exact mul_le_mul_of_nonneg_left hlow (norm_nonneg _)
   have hC : Tendsto (fun N : ℕ =>
       Complex.log (z + (N : ℂ)) - Complex.log ((N : ℂ) + 1)) atTop (nhds 0) := by
     have hcont : ContinuousAt Complex.log 1 := by
@@ -189,8 +188,8 @@ theorem tendsto_digammaStirlingDefect_shift_zero {z : ℂ} (hz : 0 ≤ z.re) :
     rw [norm_div, norm_one, norm_mul]
     have h2 : ‖(2 : ℂ)‖ = 2 := by norm_num
     rw [h2]
-    rw [div_le_div_iff₀ (by nlinarith) hNpos]
-    nlinarith [hlow, hNpos]
+    rw [div_le_div_iff₀ (by linarith) hNpos]
+    linarith [hlow]
   have hsum := ((hA.add hB).sub hC).add hD
   simp only [add_zero, sub_zero] at hsum
   refine hsum.congr' ?_
@@ -221,7 +220,6 @@ theorem sum_inv_sq_shift_head_le {a : ℝ} (ha : 0 < a) (N : ℕ) :
     rw [hzero]
     linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **The Stirling bound for the digamma function.**  `ψ(z) = log z − 1/(2z) + O(|z|⁻²)` on the
 right half-plane, with an explicit constant. -/
 theorem norm_digammaStirlingDefect_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z‖) :
@@ -259,7 +257,7 @@ theorem norm_digammaStirlingDefect_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z
       have := hnorm2 k
       positivity
     rw [div_le_div_iff₀ hcpos hden]
-    nlinarith [hcube, hden, hcpos]
+    linarith [hcube]
   have hpartial : ∀ N : ℕ,
       ‖digammaStirlingDefect (z + (N : ℂ)) - digammaStirlingDefect z‖ ≤ 6 / ‖z‖ ^ (2 : ℕ) := by
     intro N
@@ -279,7 +277,7 @@ theorem norm_digammaStirlingDefect_le {z : ℂ} (hz : 0 < z.re) (h2 : 2 ≤ ‖z
     rw [hid]
     have hstep1 : (4 : ℝ) / ‖z‖ ^ (3 : ℕ) ≤ 2 / ‖z‖ ^ (2 : ℕ) := by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith [h2, hzpos]
+      linarith [mul_le_mul_of_nonneg_right h2 (sq_nonneg ‖z‖)]
     have hstep2 : (2 : ℝ) / ‖z‖ ^ (2 : ℕ) + 4 / ‖z‖ ^ (2 : ℕ) = 6 / ‖z‖ ^ (2 : ℕ) := by ring
     linarith
   -- pass to the limit

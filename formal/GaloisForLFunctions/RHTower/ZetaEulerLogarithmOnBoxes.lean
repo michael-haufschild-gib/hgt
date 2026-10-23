@@ -21,7 +21,8 @@ namespace RHTower
 /-- The Euler logarithm of `ζ`: the Euler logarithm of the character mod `1`. -/
 def zetaEulerLog (w : ℂ) : ℂ := eulerLog (1 : DirichletCharacter ℂ 1) w
 
-theorem exp_zetaEulerLog {w : ℂ} (hw : 1 < w.re) : Complex.exp (zetaEulerLog w) = riemannZeta w := by
+theorem exp_zetaEulerLog {w : ℂ} (hw : 1 < w.re) :
+    Complex.exp (zetaEulerLog w) = riemannZeta w := by
   rw [zetaEulerLog, exp_eulerLog _ hw, DirichletCharacter.LFunction_modOne_eq]
 
 theorem re_zetaEulerLog {w : ℂ} (hw : 1 < w.re) :
@@ -55,6 +56,39 @@ theorem im_zetaEulerLog_ofReal {x : ℝ} (hx : 1 < x) : (zetaEulerLog x).im = 0 
   rw [zetaEulerLog, eulerLog, Complex.im_tsum hsum]
   simp only [hterm, tsum_zero]
 
+/-- `G = (w − 1)ζ(w)` does not vanish on `Re w ≥ 1`. -/
+theorem zetaResidueUnit_ne_zero_of_one_le_re {z : ℂ} (hz : 1 ≤ z.re) : zetaResidueUnit z ≠ 0 := by
+  by_cases hz1 : z = 1
+  · rw [hz1, zetaResidueUnit_one]; exact one_ne_zero
+  · rw [(zetaResidueUnit_eventuallyEq hz1).eq_of_nhds]
+    exact mul_ne_zero (sub_ne_zero.mpr hz1) (riemannZeta_ne_zero_of_one_le_re hz)
+
+/-- **The pole on boxes.** For every `H` there are `m > 0` and `K` with
+`m ≤ |ζ(v)| |v − 1| ≤ K` on `1 < Re v ≤ 2`, `|Im v| ≤ H`. -/
+theorem exists_norm_zeta_mul_sub_one_bounds (H : ℝ) :
+    ∃ m K : ℝ, 0 < m ∧ ∀ v : ℂ, 1 < v.re → v.re ≤ 2 → |v.im| ≤ H →
+      m ≤ ‖riemannZeta v‖ * ‖v - 1‖ ∧ ‖riemannZeta v‖ * ‖v - 1‖ ≤ K := by
+  set K : Set ℂ := (Icc (1 : ℝ) 2) ×ℂ (Icc (-H) H)
+  have hK : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
+  have hGne : ∀ z ∈ K, zetaResidueUnit z ≠ 0 := fun z hz =>
+    zetaResidueUnit_ne_zero_of_one_le_re (Complex.mem_reProdIm.mp hz).1.1
+  obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn
+    (fun z _ => (analyticAt_zetaResidueUnit z).continuousAt.continuousWithinAt)
+  obtain ⟨M', hM'⟩ := hK.exists_bound_of_continuousOn (fun z hz =>
+    ((analyticAt_zetaResidueUnit z).continuousAt.inv₀ (hGne z hz)).continuousWithinAt)
+  refine ⟨1 / (|M'| + 1), M, by positivity, fun v hv hv2 hvH => ?_⟩
+  have hmem : v ∈ K := Complex.mem_reProdIm.mpr ⟨⟨hv.le, hv2⟩, abs_le.mp hvH⟩
+  have hne1 : v ≠ 1 := by intro h; rw [h] at hv; norm_num at hv
+  have hG : ‖zetaResidueUnit v‖ = ‖riemannZeta v‖ * ‖v - 1‖ := by
+    rw [(zetaResidueUnit_eventuallyEq hne1).eq_of_nhds, norm_mul, mul_comm]
+  rw [← hG]
+  refine ⟨?_, hM v hmem⟩
+  have hpos := norm_pos_iff.mpr (hGne v hmem)
+  have hinv := (hM' v hmem).trans (le_abs_self M')
+  rw [Pi.inv_apply, norm_inv, inv_le_iff_one_le_mul₀ hpos] at hinv
+  rw [div_le_iff₀ (by positivity)]
+  nlinarith [abs_nonneg M']
+
 /-- **The argument of `ζ` on boxes right of the pole.** For every `H ≥ 0` there is `C` with
 `|Im ℓ(1 + u + iτ)| ≤ C` for `0 < u ≤ 1`, `|τ| ≤ H`. -/
 theorem exists_abs_im_zetaEulerLog_le (H : ℝ) :
@@ -62,14 +96,8 @@ theorem exists_abs_im_zetaEulerLog_le (H : ℝ) :
       |(zetaEulerLog (((1 + u : ℝ) : ℂ) + τ * I)).im| ≤ C := by
   set K : Set ℂ := (Icc (1 : ℝ) 2) ×ℂ (Icc (-H) H)
   have hK : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
-  have hGne : ∀ z ∈ K, zetaResidueUnit z ≠ 0 := by
-    intro z hz
-    by_cases hz1 : z = 1
-    · rw [hz1, zetaResidueUnit_one]; exact one_ne_zero
-    · have heq := (zetaResidueUnit_eventuallyEq hz1).eq_of_nhds
-      rw [heq]
-      exact mul_ne_zero (sub_ne_zero.mpr hz1)
-        (riemannZeta_ne_zero_of_one_le_re (Complex.mem_reProdIm.mp hz).1.1)
+  have hGne : ∀ z ∈ K, zetaResidueUnit z ≠ 0 := fun z hz =>
+    zetaResidueUnit_ne_zero_of_one_le_re (Complex.mem_reProdIm.mp hz).1.1
   have hcont : ContinuousOn (fun z => deriv zetaResidueUnit z / zetaResidueUnit z) K := fun z hz =>
     ((analyticAt_zetaResidueUnit z).deriv.continuousAt.div
       (analyticAt_zetaResidueUnit z).continuousAt (hGne z hz)).continuousWithinAt
@@ -83,10 +111,12 @@ theorem exists_abs_im_zetaEulerLog_le (H : ℝ) :
     Complex.mem_slitPlane_iff.mpr (Or.inl (by simpa using hu))
   -- `h(s) = ℓ(w s) + log(u + is)` has derivative `i G'/G (w s)`
   set h : ℝ → ℂ := fun s => zetaEulerLog (w s) + Complex.log ((u : ℂ) + s * I)
-  have hderiv : ∀ s : ℝ, HasDerivAt h (I * (deriv zetaResidueUnit (w s) / zetaResidueUnit (w s))) s := by
+  have hderiv : ∀ s : ℝ,
+      HasDerivAt h (I * (deriv zetaResidueUnit (w s) / zetaResidueUnit (w s))) s := by
     intro s
     have hw1 : 1 < (w s).re := by rw [hwre]; linarith
-    have hne1 : w s ≠ 1 := by intro h1; have := congrArg Complex.re h1; rw [hwre] at this; simp at this; linarith
+    have hne1 : w s ≠ 1 := by
+      intro h1; have := congrArg Complex.re h1; rw [hwre] at this; simp at this; linarith
     have hpath : HasDerivAt w I s := by
       have := ((hasDerivAt_id (s : ℂ)).mul_const I).const_add (((1 + u : ℝ) : ℂ))
       simpa [w] using this.comp_ofReal
@@ -95,27 +125,21 @@ theorem exists_abs_im_zetaEulerLog_le (H : ℝ) :
       have := ((hasDerivAt_id (s : ℂ)).mul_const I).const_add (u : ℂ)
       simpa using this.comp_ofReal
     have h2 := (Complex.hasDerivAt_log (hslit s)).comp s hpath2
-    have hGz : zetaResidueUnit (w s) ≠ 0 := by
-      have heq := (zetaResidueUnit_eventuallyEq hne1).eq_of_nhds
-      rw [heq]
-      exact mul_ne_zero (sub_ne_zero.mpr hne1) (riemannZeta_ne_zero_of_one_le_re hw1.le)
+    have hGz := zetaResidueUnit_ne_zero_of_one_le_re hw1.le
     have hlog := logDeriv_zeta_eq hne1 hGz
     rw [logDeriv_apply, logDeriv_apply, hwsub] at hlog
     refine (h1.add h2).congr_deriv ?_
     rw [hlog]
     ring
   -- integrate along `[0, τ]`
-  have hcontd : Continuous (fun s : ℝ => I * (deriv zetaResidueUnit (w s) / zetaResidueUnit (w s))) := by
+  have hcontd : Continuous
+      (fun s : ℝ => I * (deriv zetaResidueUnit (w s) / zetaResidueUnit (w s))) := by
     refine continuous_const.mul (continuous_iff_continuousAt.mpr fun s => ?_)
     have hpath : Continuous w := by
       simp only [w]; exact continuous_const.add (Complex.continuous_ofReal.mul continuous_const)
-    have hne1 : w s ≠ 1 := by intro h1; have := congrArg Complex.re h1; rw [hwre] at this; simp at this; linarith
-    have hGz : zetaResidueUnit (w s) ≠ 0 := by
-      have heq := (zetaResidueUnit_eventuallyEq hne1).eq_of_nhds
-      rw [heq]
-      exact mul_ne_zero (sub_ne_zero.mpr hne1)
-        (riemannZeta_ne_zero_of_one_le_re (by rw [hwre]; linarith))
-    exact ((analyticAt_zetaResidueUnit (w s)).deriv.continuousAt.comp_of_eq hpath.continuousAt rfl).div
+    have hGz := zetaResidueUnit_ne_zero_of_one_le_re (show 1 ≤ (w s).re by rw [hwre]; linarith)
+    exact ((analyticAt_zetaResidueUnit (w s)).deriv.continuousAt.comp_of_eq
+      hpath.continuousAt rfl).div
       ((analyticAt_zetaResidueUnit (w s)).continuousAt.comp_of_eq hpath.continuousAt rfl) hGz
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hderiv s)
     (hcontd.intervalIntegrable 0 τ)
@@ -139,7 +163,8 @@ theorem exists_abs_im_zetaEulerLog_le (H : ℝ) :
   -- `Im h 0 = 0` and `|arg(u + iτ)| ≤ π/2`
   have hh0 : (h 0).im = 0 := by
     simp only [h, w, Complex.ofReal_zero, zero_mul, add_zero, Complex.add_im]
-    rw [im_zetaEulerLog_ofReal (by linarith), ← Complex.ofReal_log hu.le, Complex.ofReal_im, add_zero]
+    rw [im_zetaEulerLog_ofReal (by linarith), ← Complex.ofReal_log hu.le, Complex.ofReal_im,
+      add_zero]
   have harg : |(Complex.log ((u : ℂ) + τ * I)).im| ≤ Real.pi / 2 := by
     have hre : 0 ≤ ((u : ℂ) + τ * I).re := by simpa using hu.le
     rw [Complex.log_im]

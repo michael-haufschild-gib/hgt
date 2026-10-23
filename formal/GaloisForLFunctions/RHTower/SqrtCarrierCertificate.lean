@@ -74,7 +74,6 @@ theorem tsum_add_rpow_neg_le {c : ℝ} (hc : 1 < c) {M : ℕ} (hM : 1 ≤ M) :
 
 /-! ## The effective truncation certificate for mollifier-grade coefficients -/
 
-set_option maxHeartbeats 1600000 in
 /-- **Effective truncation certificate.**  For any coefficient sequence bounded by `1`
 (mollifier grade), the off-line carrier polynomial approximates the L-series value with
 the explicit integral-test error: on `re w > 1`,
@@ -94,7 +93,8 @@ theorem norm_LSeries_sub_dpoly2_le {a : ℕ → ℝ} (ha : ∀ n, |a n| ≤ 1) {
     linear_combination -hsplit
   rw [htail]
   have hnormsum : Summable (fun i => ‖term (fun n => (a n : ℂ)) w (i + (M + 1))‖) :=
-    (summable_nat_add_iff (M + 1)).mpr (summable_norm_iff.mpr hsum)
+    (summable_nat_add_iff (f := fun n => ‖term (fun n => (a n : ℂ)) w n‖) (M + 1)).mpr
+      (summable_norm_iff.mpr hsum)
   refine le_trans (norm_tsum_le_tsum_norm hnormsum) ?_
   refine Real.tsum_le_of_sum_range_le (fun _ => norm_nonneg _) fun n => ?_
   calc ∑ i ∈ Finset.range n, ‖term (fun k => (a k : ℂ)) w (i + (M + 1))‖

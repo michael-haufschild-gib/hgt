@@ -22,8 +22,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
-
 /-! ## The inverse-tilted source and its quadrature remainder -/
 
 /-- Mellin multiplier of the inverse-tilted dyadic window `u^(-1) 1_[1,2](u)`.
@@ -548,7 +546,7 @@ theorem LSeries_inverseTiltedDyadicWeightedPrimeWindow_eq_kernelSeries
   have hsigma : Summable
       (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       inverseTiltedDyadicDoubleTerm s (e p)) := by
-    exact e.summable_iff.mpr hdouble
+    exact (e.summable_iff (f := inverseTiltedDyadicDoubleTerm s)).mpr hdouble
   rw [LSeries]
   calc
     (∑' n : ℕ, LSeries.term
@@ -564,7 +562,7 @@ theorem LSeries_inverseTiltedDyadicWeightedPrimeWindow_eq_kernelSeries
         inverseTiltedDyadicDoubleTerm s (e ⟨n, p⟩)) = _
       rw [← hsigma.tsum_sigma]
     _ = ∑' kj : ℕ × ℕ, inverseTiltedDyadicDoubleTerm s kj :=
-      e.tsum_eq (inverseTiltedDyadicDoubleTerm s)
+      e.tsum_eq (f := inverseTiltedDyadicDoubleTerm s)
     _ = ∑' k : ℕ, ∑' j : ℕ,
           inverseTiltedDyadicDoubleTerm s (k, j) := hdouble.tsum_prod
     _ = ∑' k : ℕ,
@@ -583,7 +581,7 @@ theorem inverseTiltedDyadicWeightedPrimeWindow_LSeriesSummable
   have hsigma : Summable
       (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       inverseTiltedDyadicDoubleTerm s (e p)) := by
-    exact e.summable_iff.mpr hdouble
+    exact (e.summable_iff (f := inverseTiltedDyadicDoubleTerm s)).mpr hdouble
   exact hsigma.sigma.congr fun n => by
     change
       (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),

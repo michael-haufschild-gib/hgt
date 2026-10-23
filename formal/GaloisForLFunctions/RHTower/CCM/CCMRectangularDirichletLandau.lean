@@ -463,7 +463,6 @@ def xiRectangularShiftedZetaSeries (L : ℝ) (s : ℂ) : ℂ :=
     xiRectangularRightCoefficient L q *
       riemannZeta (s - xiRightCenteredZero q)
 
-set_option maxHeartbeats 800000 in
 /-- On the half-plane to the right of the transverse supremum, the ordinary
 Dirichlet series of the real logarithmic samples is exactly twice the
 right-half shifted-zeta carrier. -/
@@ -511,7 +510,8 @@ theorem LSeries_xiRectangularRightDirichletComplex_eq_shiftedZeta
     _ = ∑' q : XiRightZeroCopy, ∑' n,
         LSeries.term
           (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n :=
-      hdouble.tsum_comm
+      hdouble.tsum_comm (f := fun q n =>
+        LSeries.term (fun n => 2 * xiRectangularRightDirichletTerm L n q) s n)
     _ = ∑' q : XiRightZeroCopy,
         (2 * xiRectangularRightCoefficient L q *
           riemannZeta (s - xiRightCenteredZero q)) := by
@@ -631,7 +631,6 @@ def xiRectangularLandauContinuation
   2 * xiRectangularShiftedZetaSeries L s + C * riemannZeta s -
     xiRectangularLandauPrefixSeries L C N s
 
-set_option maxHeartbeats 800000 in
 theorem LSeries_xiRectangularLandauCoefficient_eq_continuation
     (L C : ℝ) (N : ℕ) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hupper : ∀ q : XiRightZeroCopy, (xiRightCenteredZero q).re ≤ δ)

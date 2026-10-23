@@ -84,7 +84,6 @@ theorem integrableOn_secondDifference_mul_kernel {F F' : ℝ → ℝ} {M : ℝ}
         mul_le_mul_of_nonneg_right hsd hkpos.le
     _ = 2 * M * (s * gammaTransportKernel s) := by ring
 
-set_option maxHeartbeats 1000000 in
 /-- **The Gamma transport commutes with differentiation.**  Its kernel does not see the evaluation
 point, and a Lipschitz derivative makes the differentiated second difference `O(s)` uniformly. -/
 theorem hasDerivAt_gammaTransport {F F' F'' : ℝ → ℝ} {M K : ℝ}

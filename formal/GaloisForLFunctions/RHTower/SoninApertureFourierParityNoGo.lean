@@ -19,7 +19,6 @@ global reflection averaging, as the co-Poisson Berezin diagonal does.
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 namespace RHTower
 
@@ -327,7 +326,7 @@ theorem evenSoninBilateralApertureHolonomy_ne_zero
       rfl
     rw [hUU, hQadj] at h
     exact h.symm
-  have hr2 : 1 < r * r := by nlinarith
+  have hr2 : 1 < r * r := one_lt_mul_of_lt_of_le hr hr.le
   let U2 := evenDilationCLM (r * r) (zero_lt_one.trans hr2)
   let V2 := evenDilationCLM (r * r)⁻¹
     (inv_pos.mpr (zero_lt_one.trans hr2))

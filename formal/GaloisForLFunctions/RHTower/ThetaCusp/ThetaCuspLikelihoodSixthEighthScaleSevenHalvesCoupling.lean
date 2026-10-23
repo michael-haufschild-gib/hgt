@@ -14,7 +14,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxRecDepth 20000 in
 /-- At scale `7/2`, the Taylor certificate absorbs five halves of dominant pair core. -/
 theorem fiveHalves_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_singleCore_of_sevenHalves_le
     {A : ℝ} (hA : (7 / 2 : ℝ) ≤ A) :

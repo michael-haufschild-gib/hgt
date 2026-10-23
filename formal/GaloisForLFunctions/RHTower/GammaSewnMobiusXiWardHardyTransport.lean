@@ -476,12 +476,11 @@ theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
   have hinl :
       Summable (fun q : XiRightUpperZeroCopy =>
         f (xiRightSchwarzPairEquiv (Sum.inl q))) := by
-    simpa only [xiRightSchwarzPairEquiv_inl] using!
-      hfull.comp_injective Subtype.val_injective
+    simp only [xiRightSchwarzPairEquiv_inl]
+    exact hfull.comp_injective Subtype.val_injective
   have hinr :
       Summable (fun q : XiRightUpperZeroCopy =>
         f (xiRightSchwarzPairEquiv (Sum.inr q))) := by
-    -- rewrite the pair equivalence first, so no defeq check unfolds it
     simp only [xiRightSchwarzPairEquiv_inr]
     exact hfull.comp_injective (xiRightZeroCopyConjEquiv.injective.comp Subtype.val_injective)
   rw [continuedXiCenteredAntiCausalWardResponse_eq_tsum_modes hw,
@@ -493,7 +492,8 @@ theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
           f (xiRightSchwarzPairEquiv (Sum.inl q))) +
         ∑' q : XiRightUpperZeroCopy,
           f (xiRightSchwarzPairEquiv (Sum.inr q)) :=
-      (hinl.hasSum.sum hinr.hasSum).tsum_eq
+      -- the summand is named: inferring it from `· ∘ Sum.inl` would unfold the pair equivalence
+      (HasSum.sum (f := fun x => f (xiRightSchwarzPairEquiv x)) hinl.hasSum hinr.hasSum).tsum_eq
     _ = ∑' q : XiRightUpperZeroCopy,
           (f (xiRightSchwarzPairEquiv (Sum.inl q)) +
             f (xiRightSchwarzPairEquiv (Sum.inr q))) :=

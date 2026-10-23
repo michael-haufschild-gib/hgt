@@ -974,7 +974,7 @@ theorem oddStripCost_le_two_mul_evenStripGain {F : ℝ → ℝ} {r : ℝ} {n : �
   have h2 : 2 * (vonMangoldtAtom n * autoCorr F (Real.log n)) ≤ evenStripGain F r n := by
     have hm := mul_le_mul_of_nonneg_left h1 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2)
       (vonMangoldtAtom_nonneg n))
-    unfold autoCorr evenStripGain at hm ⊢
+    unfold autoCorr evenStripGain
     linarith
   linarith
 
@@ -1017,11 +1017,39 @@ theorem oddStripCost_le_evenStripGain_of_nonneg_on_Ici {F : ℝ → ℝ} {r : �
   have hA : autoCorr F (Real.log n) ≤ 0 := by
     unfold autoCorr
     rw [← neg_nonneg, ← integral_neg]
-    exact integral_nonneg fun x => by linarith [hpt x]
+    refine integral_nonneg fun x => ?_
+    show 0 ≤ -(F x * F (x + Real.log n))
+    linarith [hpt x]
   have hm : 2 * (vonMangoldtAtom n * autoCorr F (Real.log n)) ≤ 0 :=
     mul_nonpos_of_nonneg_of_nonpos (by norm_num)
       (mul_nonpos_of_nonneg_of_nonpos (vonMangoldtAtom_nonneg n) hA)
   linarith
+
+theorem autoCorr_zero_eq_integral_sq (F : ℝ → ℝ) :
+    autoCorr F 0 = ∫ x, F x ^ 2 := by
+  unfold autoCorr
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  show F x * F (x + 0) = F x ^ 2
+  rw [add_zero, sq]
+
+theorem abs_autoCorr_le_integral_sq {F : ℝ → ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) (t : ℝ) :
+    |autoCorr F t| ≤ ∫ x, F x ^ 2 := by
+  rw [← autoCorr_zero_eq_integral_sq]
+  exact abs_autoCorr_le_autoCorr_zero hF hFc t
+
+theorem continuous_autoCorrelation {F : ℝ → ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) :
+    Continuous (autoCorrelation F) := by
+  obtain ⟨M, hM⟩ := hFc.exists_bound_of_continuous hF
+  refine continuous_of_dominated (bound := fun x => ‖F x‖ * M)
+    (fun u => (hF.mul (hF.comp (continuous_id.add continuous_const))).aestronglyMeasurable)
+    (fun u => Filter.Eventually.of_forall fun x => ?_)
+    ((hF.norm.mul continuous_const).integrable_of_hasCompactSupport hFc.norm.mul_right)
+    (Filter.Eventually.of_forall fun x =>
+      continuous_const.mul (hF.comp (continuous_const.add continuous_id)))
+  rw [Real.norm_eq_abs, abs_mul, ← Real.norm_eq_abs, ← Real.norm_eq_abs]
+  exact mul_le_mul_of_nonneg_left (hM (x + u)) (norm_nonneg _)
 
 /-- **Sharp all-aperture `8 sinh r` bound on `poleCharge` (eliminating `R³ cosh²(R/2)`).**
 For every real odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]` (`r > 0`),
@@ -1030,9 +1058,17 @@ theorem poleCharge_le_eight_mul_sinh_mul_sq {F : ℝ → ℝ} {r : ℝ}
     (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
     (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
     poleCharge F ≤ 8 * Real.sinh r * ∫ x, F x ^ 2 := by
-  rw [poleCharge_eq_neg_integral_cosh_autoCorrelation hF hFc hodd hr hsupp,
+  have hAc : Continuous (autoCorrelation F) := continuous_autoCorrelation hF hFc
+  have hIoi : (∫ s in Ioi (0 : ℝ), 4 * Real.cosh (s / 2) * autoCorrelation F s) =
+      ∫ s in (0 : ℝ)..(2 * r), 4 * Real.cosh (s / 2) * autoCorrelation F s :=
+    integral_Ioi_eq_intervalIntegral
+      (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).mul hAc)
+      (by linarith : (0 : ℝ) < 2 * r) fun s hs => by
+        rw [← autoCorr_eq_autoCorrelation,
+          autoCorr_eq_zero_of_support_le hsupp (by rw [abs_of_pos (by linarith)]; linarith),
+          mul_zero]
+  rw [poleCharge_eq_neg_integral_cosh_autoCorrelation hF hFc hodd hr hsupp, hIoi,
     ← intervalIntegral.integral_neg]
-  have hAc : Continuous (autoCorrelation F) := continuous_autoCorr hF hFc
   have hint1 : IntervalIntegrable (fun s => -(4 * Real.cosh (s / 2) * autoCorrelation F s))
       volume 0 (2 * r) :=
     (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).mul hAc).neg.intervalIntegrable
@@ -1047,13 +1083,16 @@ theorem poleCharge_le_eight_mul_sinh_mul_sq {F : ℝ → ℝ} {r : ℝ}
     have hA := (neg_le_abs (autoCorr F s)).trans (abs_autoCorr_le_integral_sq hF hFc s)
     have hc : 0 ≤ 4 * Real.cosh (s / 2) := by positivity
     calc -(4 * Real.cosh (s / 2) * autoCorrelation F s)
-        = 4 * Real.cosh (s / 2) * (-autoCorr F s) := by rfl
+        = 4 * Real.cosh (s / 2) * (-autoCorr F s) := by rw [autoCorr_eq_autoCorrelation]; ring
       _ ≤ 4 * Real.cosh (s / 2) * ∫ x, F x ^ 2 := mul_le_mul_of_nonneg_left hA hc
   have hderiv : ∀ s ∈ uIcc (0 : ℝ) (2 * r),
       HasDerivAt (fun t => 8 * Real.sinh (t / 2)) (4 * Real.cosh (s / 2)) s := fun s _ => by
-    have hd := ((Real.hasDerivAt_sinh (s / 2)).comp s ((hasDerivAt_id s).div_const 2)).const_mul 8
-    convert hd using 1
-    ring
+    have hlin : HasDerivAt (fun u : ℝ => u / 2) (1 / 2 : ℝ) s :=
+      (hasDerivAt_id s).div_const (2 : ℝ)
+    have h := (Real.hasDerivAt_sinh (s / 2)).comp s hlin
+    have h2 : HasDerivAt (fun t : ℝ => 8 * Real.sinh (t / 2))
+        (8 * (Real.cosh (s / 2) * (1 / 2))) s := h.const_mul (8 : ℝ)
+    exact h2.congr_deriv (by ring)
   have hint_cosh : (∫ s in (0 : ℝ)..(2 * r), 4 * Real.cosh (s / 2)) = 8 * Real.sinh r := by
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
       (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).intervalIntegrable
@@ -1161,16 +1200,16 @@ theorem reflectedPrimePolarCost_le_primeSum_add_sinh_mul_sq {F : ℝ → ℝ} {r
     (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
     reflectedPrimePolarCost F r ≤
       (2 * (∑ n ∈ relevantShifts r, vonMangoldtAtom n) + 8 * Real.sinh r) * ∫ x, F x ^ 2 := by
-  have hprime : (∑ n ∈ relevantShifts r, oddStripCost F r n) -
-      (∑ n ∈ relevantShifts r, evenStripGain F r n) ≤
+  have hprime : (∑ n ∈ relevantShifts r, 2 * vonMangoldtAtom n * autoCorrelation F (Real.log n)) ≤
       2 * (∑ n ∈ relevantShifts r, vonMangoldtAtom n) * ∫ x, F x ^ 2 := by
-    rw [sum_oddStripCost_sub_evenStripGain hF hodd hr.le hsupp, Finset.mul_sum, Finset.sum_mul]
+    rw [Finset.mul_sum, Finset.sum_mul]
     refine Finset.sum_le_sum fun n _ => ?_
     have hA := (le_abs_self (autoCorr F (Real.log n))).trans
       (abs_autoCorr_le_integral_sq hF hFc (Real.log n))
+    rw [← autoCorr_eq_autoCorrelation]
     exact mul_le_mul_of_nonneg_left hA (mul_nonneg (by norm_num) (vonMangoldtAtom_nonneg n))
   have hpole := poleCharge_le_eight_mul_sinh_mul_sq hF hFc hodd hr hsupp
-  unfold reflectedPrimePolarCost
+  rw [reflectedPrimePolarCost_eq_sum_autoCorrelation_add_poleCharge hF hodd hr.le hsupp]
   linarith
 
 /-- **Unconditional `72 e^r` bound on `reflectedPrimePolarCost` across all apertures.** For every

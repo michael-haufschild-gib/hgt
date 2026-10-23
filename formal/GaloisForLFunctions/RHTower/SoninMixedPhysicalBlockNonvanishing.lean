@@ -17,7 +17,6 @@ So the physically polarized half of the aperture coupling is nonzero.
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 namespace RHTower
 
@@ -86,8 +85,10 @@ theorem evenFourierCutoff_mul_evenDilationSum_mul_evenFourierCutoff
       show (r⁻¹)⁻¹ * (r * c) = r * (r * c) by rw [inv_inv]]
   have hnest1 : evenFourierCutoff c * evenFourierCutoff c = evenFourierCutoff c :=
     evenFourierCutoff_mul_of_le c c le_rfl
-  have hrr : (1 : ℝ) ≤ r * r := by nlinarith
-  have hcc : c ≤ r * (r * c) := by nlinarith [mul_nonneg hc (sub_nonneg.mpr hrr)]
+  have hrr : (1 : ℝ) ≤ r * r := one_le_mul_of_one_le_of_one_le hr.le hr.le
+  have hcc : c ≤ r * (r * c) := by
+    rw [← mul_assoc]
+    exact le_mul_of_one_le_left hc hrr
   have hnest2 : evenFourierCutoff (r * (r * c)) * evenFourierCutoff c = evenFourierCutoff c :=
     evenFourierCutoff_mul_of_le_rev c (r * (r * c)) hcc
   calc evenFourierCutoff (r * c) * (evenDilationSum r hr * evenFourierCutoff c)

@@ -615,10 +615,13 @@ theorem intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass
   rw [thetaCuspFirstAtomFourthIntervalMass]
   ring
 
-set_option maxRecDepth 10000 in
-set_option maxHeartbeats 600000 in
-theorem one_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero :
-    (1 / 1000000 : ℝ) < ∫ x in ((0 : ℕ) : ℝ) / 8..(((0 + 1 : ℕ) : ℝ) / 8),
+/-! Each interval certificate is an exact rational number, evaluated once below; the weaker
+per-interval bounds and the seven-interval sum follow from these evaluations. -/
+
+/-- Rational lower bound for the interval certificate on `[0/8, 1/8]`, from the
+exact evaluation of its rational mass. -/
+theorem nineteen_div_twoMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero :
+    (19 / 2000000 : ℝ) < ∫ x in ((0 : ℕ) : ℝ) / 8..(((0 + 1 : ℕ) : ℝ) / 8),
       thetaCuspFirstAtomFourthIntervalCertificate 0 x := by
   rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
@@ -629,10 +632,10 @@ theorem one_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalC
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-set_option maxRecDepth 10000 in
-set_option maxHeartbeats 600000 in
-theorem nineteen_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one :
-    (19 / 100000 : ℝ) < ∫ x in ((1 : ℕ) : ℝ) / 8..(((1 + 1 : ℕ) : ℝ) / 8),
+/-- Rational lower bound for the interval certificate on `[1/8, 2/8]`, from the
+exact evaluation of its rational mass. -/
+theorem twentyOne_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one :
+    (21 / 100000 : ℝ) < ∫ x in ((1 : ℕ) : ℝ) / 8..(((1 + 1 : ℕ) : ℝ) / 8),
       thetaCuspFirstAtomFourthIntervalCertificate 1 x := by
   rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
@@ -643,10 +646,10 @@ theorem nineteen_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFo
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-set_option maxRecDepth 10000 in
-set_option maxHeartbeats 600000 in
-theorem seventeen_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two :
-    (17 / 25000 : ℝ) < ∫ x in ((2 : ℕ) : ℝ) / 8..(((2 + 1 : ℕ) : ℝ) / 8),
+/-- Rational lower bound for the interval certificate on `[2/8, 3/8]`, from the
+exact evaluation of its rational mass. -/
+theorem three_div_fourThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two :
+    (3 / 4000 : ℝ) < ∫ x in ((2 : ℕ) : ℝ) / 8..(((2 + 1 : ℕ) : ℝ) / 8),
       thetaCuspFirstAtomFourthIntervalCertificate 2 x := by
   rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
@@ -657,10 +660,10 @@ theorem seventeen_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomF
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-set_option maxRecDepth 10000 in
-set_option maxHeartbeats 600000 in
-theorem twentyOne_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three :
-    (21 / 25000 : ℝ) < ∫ x in ((3 : ℕ) : ℝ) / 8..(((3 + 1 : ℕ) : ℝ) / 8),
+/-- Rational lower bound for the interval certificate on `[3/8, 4/8]`, from the
+exact evaluation of its rational mass. -/
+theorem ninetyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three :
+    (99 / 100000 : ℝ) < ∫ x in ((3 : ℕ) : ℝ) / 8..(((3 + 1 : ℕ) : ℝ) / 8),
       thetaCuspFirstAtomFourthIntervalCertificate 3 x := by
   rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
@@ -671,10 +674,10 @@ theorem twentyOne_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomF
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-set_option maxRecDepth 10000 in
-set_option maxHeartbeats 600000 in
-theorem eleven_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four :
-    (11 / 25000 : ℝ) < ∫ x in ((4 : ℕ) : ℝ) / 8..(((4 + 1 : ℕ) : ℝ) / 8),
+/-- Rational lower bound for the interval certificate on `[4/8, 5/8]`, from the
+exact evaluation of its rational mass. -/
+theorem fiftyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four :
+    (59 / 100000 : ℝ) < ∫ x in ((4 : ℕ) : ℝ) / 8..(((4 + 1 : ℕ) : ℝ) / 8),
       thetaCuspFirstAtomFourthIntervalCertificate 4 x := by
   rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
@@ -685,15 +688,12 @@ theorem eleven_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFour
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
 
-set_option maxRecDepth 30000 in
-set_option maxHeartbeats 1000000 in
-/-- The seven exact rational interval certificates clear the stronger `269/100000` threshold. -/
-theorem twoHundredSixtyNine_div_oneHundredThousand_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate :
-    (269 / 100000 : ℝ) <
-      ∑ j ∈ Finset.range 7,
-        ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
-          thetaCuspFirstAtomFourthIntervalCertificate j x := by
-  simp_rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
+/-- Rational lower bound for the interval certificate on `[5/8, 6/8]`, from the
+exact evaluation of its rational mass. -/
+theorem four_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_five :
+    (4 / 25000 : ℝ) < ∫ x in ((5 : ℕ) : ℝ) / 8..(((5 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 5 x := by
+  rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
   norm_num [thetaCuspFirstAtomFourthIntervalMass,
     thetaCuspFirstAtomFourthTaylorMass, thetaCuspIntervalPowSubMass,
     thetaCuspFirstLiouvilleRateSlope,
@@ -701,6 +701,67 @@ theorem twoHundredSixtyNine_div_oneHundredThousand_lt_sum_thetaCuspFirstAtomFour
     thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
     thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
     Finset.sum_range_succ]
+
+/-- Rational lower bound for the interval certificate on `[6/8, 7/8]`, from the
+exact evaluation of its rational mass. -/
+theorem seventeen_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_six :
+    (17 / 1000000 : ℝ) < ∫ x in ((6 : ℕ) : ℝ) / 8..(((6 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 6 x := by
+  rw [intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_eq_mass]
+  norm_num [thetaCuspFirstAtomFourthIntervalMass,
+    thetaCuspFirstAtomFourthTaylorMass, thetaCuspIntervalPowSubMass,
+    thetaCuspFirstLiouvilleRateSlope,
+    thetaCuspFirstLiouvilleEndpointCertificate,
+    thetaCuspFirstLiouvilleRateMajorant, thetaCuspQuarterExpChord,
+    thetaCuspQuarterExpMajorant, eval_expNegTruncPoly, Nat.choose,
+    Finset.sum_range_succ]
+
+theorem one_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero :
+    (1 / 1000000 : ℝ) < ∫ x in ((0 : ℕ) : ℝ) / 8..(((0 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 0 x :=
+  (by norm_num : (1 / 1000000 : ℝ) < 19 / 2000000).trans
+    nineteen_div_twoMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero
+
+theorem nineteen_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one :
+    (19 / 100000 : ℝ) < ∫ x in ((1 : ℕ) : ℝ) / 8..(((1 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 1 x :=
+  (by norm_num : (19 / 100000 : ℝ) < 21 / 100000).trans
+    twentyOne_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one
+
+theorem seventeen_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two :
+    (17 / 25000 : ℝ) < ∫ x in ((2 : ℕ) : ℝ) / 8..(((2 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 2 x :=
+  (by norm_num : (17 / 25000 : ℝ) < 3 / 4000).trans
+    three_div_fourThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two
+
+theorem twentyOne_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three :
+    (21 / 25000 : ℝ) < ∫ x in ((3 : ℕ) : ℝ) / 8..(((3 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 3 x :=
+  (by norm_num : (21 / 25000 : ℝ) < 99 / 100000).trans
+    ninetyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three
+
+theorem eleven_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four :
+    (11 / 25000 : ℝ) < ∫ x in ((4 : ℕ) : ℝ) / 8..(((4 + 1 : ℕ) : ℝ) / 8),
+      thetaCuspFirstAtomFourthIntervalCertificate 4 x :=
+  (by norm_num : (11 / 25000 : ℝ) < 59 / 100000).trans
+    fiftyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four
+
+/-- The seven exact rational interval certificates clear the stronger `269/100000` threshold. -/
+theorem twoHundredSixtyNine_div_oneHundredThousand_lt_sum_thetaCuspFirstAtomFourthIntervalCertificate :
+    (269 / 100000 : ℝ) <
+      ∑ j ∈ Finset.range 7,
+        ∫ x in (j : ℝ) / 8..(((j + 1 : ℕ) : ℝ) / 8),
+          thetaCuspFirstAtomFourthIntervalCertificate j x := by
+  have h0 := nineteen_div_twoMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_zero
+  have h1 := twentyOne_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_one
+  have h2 := three_div_fourThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_two
+  have h3 := ninetyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_three
+  have h4 := fiftyNine_div_oneHundredThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_four
+  have h5 := four_div_twentyFiveThousand_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_five
+  have h6 := seventeen_div_oneMillion_lt_intervalIntegral_thetaCuspFirstAtomFourthIntervalCertificate_six
+  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero]
+  linarith
 
 /-- **Unconditional dominant-atom fourth-moment floor.** -/
 theorem twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one :

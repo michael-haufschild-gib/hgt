@@ -120,7 +120,6 @@ private theorem routeT_inverse_ball_coordinates {A γ : ℝ} {w : ℂ}
   rw [hleft]
   exact ⟨by linarith, by linarith, by linarith, by linarith⟩
 
-set_option maxHeartbeats 800000 in
 /-- **Uniform zero-free Harnack disc.**  Width monotonicity absorbs every shell jump inside the
 unit ordinate band. -/
 theorem routeT_zero_free_inverse_ball
@@ -269,7 +268,6 @@ theorem routeT_inverse_anchor_lower
   rw [Real.exp_log hnormpos] at hexp
   simpa only [H, Q, δ, routeTInverseAnchor] using hexp
 
-set_option maxHeartbeats 800000 in
 /-- **Quantitative minimum modulus on the Route-T inner segment.** -/
 theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
     {A γ σ : ℝ}
@@ -349,7 +347,7 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
     rw [Real.log_div (ne_of_gt hMpos) (ne_of_gt hm0), hlogm]
     linarith
   have hQ := routeTZeroFreeBudget_ge A H
-  have hQsq : (1 : ℝ) ≤ Q ^ (2 : ℕ) := by nlinarith
+  have hQsq : (1 : ℝ) ≤ Q ^ (2 : ℕ) := one_le_pow₀ (by linarith)
   have hratio : r / (R - r) = 42 := by
     dsimp only [r, R, routeTInverseInnerRadius, routeTInverseOuterRadius, δ]
     have hδne : routeTInverseDelta A γ ≠ 0 := ne_of_gt (routeTInverseDelta_pos A γ)
@@ -359,14 +357,14 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
       2 * (Real.log (M / m) + 1) * r / (R - r) ≤ 336 * Q ^ (2 : ℕ) := by
     rw [show 2 * (Real.log (M / m) + 1) * r / (R - r) =
         2 * (Real.log (M / m) + 1) * (r / (R - r)) by ring, hratio]
-    nlinarith
+    linarith
   have hfloor :
       Real.exp (-(400 * Q ^ (2 : ℕ))) ≤
         m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r))) := by
     dsimp only [m]
     rw [← Real.exp_add]
     apply Real.exp_le_exp.mpr
-    nlinarith
+    linarith
   exact hfloor.trans (by simpa only [z] using hBC)
 
 /-- **Route-T reciprocal-zeta bound on the inner segment.** -/
