@@ -40,7 +40,6 @@ def thetaCuspFirstAtomSixthProfile (q : ℝ) : ℝ :=
 def thetaCuspReflectedSixthBellRemainder (A B : ℝ) : ℝ :=
   -B ^ (2 : ℕ) - 18 * A ^ (2 : ℕ) * B + 24 * A ^ (4 : ℕ)
 
-set_option maxHeartbeats 2000000 in
 /-- The exact worst likelihood-loss profile remains strictly positive from the support edge. -/
 theorem thetaCuspFirstAtomWorstLikelihoodLossProfile_pos
     {q : ℝ} (hq : (41 / 25 : ℝ) ≤ q) :
@@ -73,7 +72,8 @@ theorem thetaCuspFirstAtomWorstLikelihoodLossProfile_pos
     field_simp [hqpos.ne']
     rw [show q = 41 / 25 + y by dsimp [y]; ring]
     ring_nf
-    nlinarith
+    -- every monomial `y^k` is nonnegative: a linear certificate
+    linarith
   dsimp only [E] at hmul
   dsimp only
   by_contra hE
@@ -86,7 +86,6 @@ theorem thetaCuspFirstAtomWorstLikelihoodLossProfile_pos
     mul_nonpos_of_nonneg_of_nonpos (by positivity) (le_of_not_gt hE)
   exact (not_le_of_gt hmul) hnonpos
 
-set_option maxHeartbeats 2000000 in
 /-- Positive-coordinate logarithmic reflected sixth curvature of the complete source. -/
 theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
     {x : ℝ} (hx : 0 < x) :
@@ -106,7 +105,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
     have hpi := Real.pi_gt_d2
     norm_num at hpi
     have he : 1 ≤ Real.exp x := Real.one_le_exp hx.le
-    have he2 : 1 ≤ Real.exp x ^ (2 : ℕ) := by nlinarith [Real.exp_pos x]
+    have he2 : 1 ≤ Real.exp x ^ (2 : ℕ) := one_le_pow₀ he
     have hscale : Real.pi ≤ thetaCuspMorseScale 1 x := by
       rw [thetaCuspMorseScale]
       norm_num
@@ -169,22 +168,23 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
     have hAsq : (177 / 10 : ℝ) ^ (2 : ℕ) ≤ A ^ (2 : ℕ) :=
       pow_le_pow_left₀ (by norm_num) hAmin 2
     dsimp only [B]
-    nlinarith
+    linarith
   have hBB0 : B < B0 := by dsimp only [B]; linarith
   have hQmono :
       thetaCuspReflectedSixthBellRemainder A B0 ≤
         thetaCuspReflectedSixthBellRemainder A B := by
     have hfactor1 : 0 < B0 - B := by linarith
     have hfactor2 : 0 < B + B0 + 18 * A ^ (2 : ℕ) := by
-      nlinarith [hB0]
+      linarith [sq_nonneg A]
     dsimp only [thetaCuspReflectedSixthBellRemainder]
-    nlinarith [mul_pos hfactor1 hfactor2]
+    -- `Q(A,B) - Q(A,B₀) = (B₀ - B)(B + B₀ + 18 A²)`
+    linarith [mul_pos hfactor1 hfactor2]
   have hC : C0 - 63232 < C := by dsimp only [C]; linarith
   have hAC : A * (C0 - 63232) < A * C :=
     mul_lt_mul_of_pos_left hC hApos
   have hAwRatio : (177 / 190 : ℝ) * A0 ≤ Aw := by
     dsimp only [Aw]
-    nlinarith
+    linarith
   have hAwCube : (177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ) ≤ Aw ^ (3 : ℕ) := by
     have hpow := pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (177 / 190) * A0)
       hAwRatio 3
@@ -203,13 +203,13 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
   have hsumCubes : 4 * Aw ^ (3 : ℕ) ≤
       A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ) := by
     have hAwA2 := mul_le_mul_of_nonneg_left hAwA hAwpos.le
-    have hAw2A2 : Aw ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := by nlinarith
+    have hAw2A2 : Aw ^ (2 : ℕ) ≤ A ^ (2 : ℕ) := pow_le_pow_left₀ hAwpos.le hAwA 2
     have hAw3A3 : Aw ^ (3 : ℕ) ≤ A ^ (3 : ℕ) := by
       exact pow_le_pow_left₀ hAwpos.le hAwA 3
     have hAw3A2Aw : Aw ^ (3 : ℕ) ≤ A ^ (2 : ℕ) * Aw := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr hAw2A2) hAwpos.le]
+      linarith [mul_nonneg (sub_nonneg.mpr hAw2A2) hAwpos.le]
     have hAw3AAw2 : Aw ^ (3 : ℕ) ≤ A * Aw ^ (2 : ℕ) := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr hAwA) (sq_nonneg Aw)]
+      linarith [mul_nonneg (sub_nonneg.mpr hAwA) (sq_nonneg Aw)]
     linarith
   have hDpos :
       0 < (C0 - 63232) - 18 * B0 * (A + Aw) +
@@ -220,7 +220,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
       calc
         96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ)) ≤ 96 * Aw ^ (3 : ℕ) := by gcongr
         _ ≤ 24 * (A ^ (3 : ℕ) + A ^ (2 : ℕ) * Aw + A * Aw ^ (2 : ℕ) + Aw ^ (3 : ℕ)) := by
-          nlinarith
+          linarith
     have hnumeric :
         (63232 : ℝ) + (216 / 5 : ℝ) * A0 ^ (3 : ℕ) <
           96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * A0 ^ (3 : ℕ)) := by
@@ -228,7 +228,7 @@ theorem thetaCuspFullReflectionSixthCurvature_pos_of_pos
           96 * ((177 / 190 : ℝ) ^ (3 : ℕ) * 19 ^ (3 : ℕ)) := by norm_num
       have hcoefpos : 0 <
           96 * (177 / 190 : ℝ) ^ (3 : ℕ) - 216 / 5 := by norm_num
-      nlinarith
+      linarith [mul_le_mul_of_nonneg_left hA0Cube hcoefpos.le]
     linarith
   have hHmono :
       Aw * (C0 - 63232) + thetaCuspReflectedSixthBellRemainder Aw B0 ≤

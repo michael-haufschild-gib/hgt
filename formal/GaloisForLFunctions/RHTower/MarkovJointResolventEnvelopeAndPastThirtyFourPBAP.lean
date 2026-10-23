@@ -592,12 +592,13 @@ theorem ninety_one_one_eightieths_l2_sub_seventy_one_second_add_geom_le_bochnerR
       have h2 := weilSymmetricLogNumerator_one_eq_two_mul_integral_norm_sq f
       linarith
     have hS_nn : 0 ≤ spectralSecondMoment f.1 := spectralSecondMoment_nonneg f.1
+    have hsqrt_nn : 0 ≤ Real.sqrt
+        (spectralSecondMoment f.1 *
+          (spectralSecondMoment f.1 + 2 * ∫ u : ℝ, ‖f.1 u‖ ^ 2)) := Real.sqrt_nonneg _
     have hres_nn : 0 ≤ bochnerResolventEnergy (EF.weilTest f.1 f.1) :=
       bochnerResolventEnergy_weilTest_nonneg f
     unfold secantNumeratorCellDefect
-    rw [Finset.Icc_eq_empty (by omega : ¬ 2 ≤ 1), Finset.sum_empty, hL0]
-    have hsqrt_nn : 0 ≤ Real.sqrt
-        (spectralSecondMoment f.1 * (spectralSecondMoment f.1 + 2 * 0)) := Real.sqrt_nonneg _
+    rw [Finset.Icc_eq_empty (by omega : ¬ 2 ≤ 1), Finset.sum_empty]
     linarith
 
 /-! ## Section 2: Coercivity, Unconditional `0 ≤ markovEnergy`, and Cutoff-Free `EWU` Spectral Gaps up to `33` and `69 / 2 = 34.5` -/

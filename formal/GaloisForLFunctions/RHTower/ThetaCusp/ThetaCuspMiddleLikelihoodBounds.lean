@@ -5,7 +5,6 @@ import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspScaleSevenCompensationSour
 open MeasureTheory Filter Topology
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 1500000
 
 private theorem secondGaussian_le {q : ℝ} (hq : 37/10 ≤ q) :
     Real.exp (-3*q) ≤ 1/50000 := by
@@ -39,7 +38,8 @@ theorem thetaCuspSecondAtomMoment_one_le_middle {x : ℝ}
   have hs : secondAtomProfile 1 B ≤ 80 := by
     change (18+54*B+48*B^(2 : ℕ))/B^(2 : ℕ) ≤ 80
     apply (div_le_iff₀ (sq_pos_of_pos hBp)).mpr
-    nlinarith [mul_nonneg (show 0 ≤ B-2 by linarith) (show 0 ≤ 32*B+10 by linarith)]
+    -- `32B² - 54B - 18 = (B - 2)(32B + 10) + 2`
+    linarith [mul_nonneg (show 0 ≤ B-2 by linarith) (show 0 ≤ 32*B+10 by linarith)]
   have he := secondGaussian_le hq
   have hid : thetaCuspSecondAtomMoment B 1 = Real.exp (-3*q)*secondAtomProfile 1 B := by
     rw [thetaCuspSecondAtomMoment_eq_profile 1 (by norm_num) B hBp]
@@ -75,7 +75,7 @@ theorem thetaCuspHigherLikelihoodSpectralMoment_zero_le_one {B : ℝ} (hB : 0 < 
     (integrable_pow_mul_exp_neg_thetaCuspHigherLikelihoodSpectralMeasure 1 hB)
   filter_upwards [ae_three_le_thetaCuspHigherLikelihoodSpectralMeasure] with t ht
   simp only [pow_zero, one_mul, pow_one]
-  nlinarith [Real.exp_pos (-B*t)]
+  exact le_mul_of_one_le_left (Real.exp_pos _).le (by linarith)
 
 /-- Full source mass lies within one percent of its first atom across the middle regime. -/
 theorem thetaCuspFullSource_mass_bounds_middle {x : ℝ}
@@ -91,8 +91,8 @@ theorem thetaCuspFullSource_mass_bounds_middle {x : ℝ}
   rw [thetaCuspFullSource_eq_first_mul_likelihoodPartition hB,
     thetaCuspLikelihoodPartition_eq_one_add_moment_zero hB]
   constructor
-  · nlinarith only [mul_nonneg hf.le hm0]
-  · nlinarith only [mul_le_mul_of_nonneg_left hm hf.le, hf.le]
+  · linarith only [mul_nonneg hf.le hm0]
+  · linarith only [mul_le_mul_of_nonneg_left hm hf.le, hf.le]
 
 /-- Exact full-source slope decomposition through the complete first likelihood moment. -/
 theorem deriv_thetaCuspFullSource_eq_likelihood_moment {x : ℝ} (hx : 0 < x) :
@@ -111,7 +111,7 @@ theorem deriv_thetaCuspFullSource_eq_likelihood_moment {x : ℝ} (hx : 0 < x) :
     Nat.cast_zero, mul_zero, zero_mul, zero_sub, zero_add, pow_one] at hdR
   simp only [thetaCuspCoolingMoment, pow_zero, one_mul] at hR
   rw [hR, hdR] at hd
-  nlinarith only [hd]
+  linarith only [hd]
 
 end
 end RHTower

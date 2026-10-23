@@ -12,8 +12,8 @@ is invoked:
 
 1. **Pole-plane projection and orthogonal splitting:** Every cycle class `x` splits orthogonally
    into its pole-plane component `P(x) = (x · V) H + (x · H) V ∈ ℝH ⊕ ℝV` and its primitive
-   component `x_prim = x - P(x) ∈ {H, V}^⊥`, with `P(x) · P(y) = polar(x, y)` and
-   `x_prim · y_prim = -defect(x, y)`.
+   component `x° = x - P(x) ∈ {H, V}^⊥`, with `P(x) · P(y) = polar(x, y)` and
+   `x° · y° = -defect(x, y)`.
 2. **Adams action on the pole plane:** The `m`-th Frobenius correspondence fixes the horizontal
    fiber `V` (`ψ^m V = V`) and scales the vertical fiber `H` by the degree `q^m` (`ψ^m H = q^m H`);
    under the degree-normalized Adams operator `q^{-m/2} ψ^m`, the hyperbolic form on `ℝH ⊕ ℝV` is
@@ -23,24 +23,24 @@ is invoked:
    number `N_m = Γ_m · Δ` splits additively into the pole trace `1 + q^m` and the primitive defect
    trace `-q^{m/2} defect(q^{-m/2} Γ_m, Δ)`.
 4. **Universal `λ`-ring exponential:** Passing from Adams traces `j ↦ ψ_j` to symmetric powers via
-   `σ_T(g) = exp(∑_{j ≥ 1} g(j) T^j / j)` turns the additive splitting of Lefschetz numbers into
-   the multiplicative factorization `Z(C, T) = ((1 - T)(1 - qT))⁻¹ P_1(T)` in `ℂ⟦X⟧`.
+   `σ_X(g) = exp(∑_{j ≥ 1} g(j) X^j / j)` turns the additive splitting of Lefschetz numbers into
+   the multiplicative factorization `Z(C, X) = ((1 - X)(1 - qX))⁻¹ P_1(X)` in `ℂ⟦X⟧`.
 
 This module constructs and formalizes unconditionally the corresponding `λ`-ring structure over `ℚ`
 on the scaling surface (`scalingSurface`):
 
 * **Orthogonal pole-plane projection (`PolarSurface.polarPart`):** On any `PolarSurface`, `polarPart`
-  and `prim` form orthogonal idempotents decomposing `(V_space, pair)` into the hyperbolic pole
-  plane `(ℝH ⊕ ℝV, polar)` and the primitive complement `(prim V_space, -defect)`.
+  and `prim` form orthogonal idempotents decomposing `(E, pair)` into the hyperbolic pole plane
+  `(ℝH ⊕ ℝV, polar)` and the primitive complement `(prim E, -defect)`.
 * **Universal `λ`-ring exponential (`sigmaSeries`, `lambdaSeries`):** For any ghost-coordinate
   sequence `g : ℕ → ℂ`, the Newton–Witt recurrence defines `sigmaSeries g ∈ ℂ⟦X⟧` satisfying
   `HasGhost (sigmaSeries g) (ghostSeriesOf g)`. It is an exponential homomorphism
   `sigmaSeries (g₁ + g₂) = sigmaSeries g₁ * sigmaSeries g₂`, splits the pole trace `1 + q^j` off as
-  `geom 1 * geom q`, and recovers `D.zetaSeries = D.poleZeta * D.invPoly` for every `CurveDatum`.
+  `geom 1 * geom q`, and recovers `D.zetaSeries = D.poleZeta * D.hOnePoly` for every `CurveDatum`.
 * **Calibration over `𝔽_q` (`CurveDatum.spanAdams`):** On the Frobenius span surface `D.windowSurface`,
-  the normalized Frobenius shift `D.spanAdams m` acts on the pole plane by `(D.sqrtq ^ m, D.sqrtq⁻¹ ^ m)`,
-  maps `Γ_k` to `q^{-m/2} Γ_{k+m}`, preserves `pair`, `polar`, and `defect` isometrically, and
-  commutes with `polarPart` and `prim`.
+  the normalized Frobenius shift `D.spanAdams m` acts on the pole plane by `(D.sqrtq⁻¹ ^ m, D.sqrtq ^ m)`,
+  shifts Frobenius graph coordinates by `m` with weight `q^{-m/2}`, preserves `pair`, `polar`, and
+  `defect` isometrically, and commutes with `polarPart` and `prim`.
 * **Adams operations and Hecke correspondences over `ℚ` (`adamsOp`, `heckeCorrespondence`):**
   Logarithmic translation `scaleShift t f (u) = f(u - t)` preserves `realTests`, scales the pole
   pairings `(poleB, poleA)` by `(e^{-t/2}, e^{t/2})`, and translates the Weil cross-correlation
@@ -57,24 +57,26 @@ on the scaling surface (`scalingSurface`):
   splits orthogonally into `(a + 1) (x · H)(x · V)` on the pole plane and
   `-√a defect(adamsOp a x, x)` on the primitive complement, and `sigmaSeries` factors out the pole
   plane `geom 1 * geom q` along every geometric tower `q^j`.
-* **Narrow-bump prime incidence (`weilTest_scaleShift_prime_sum`):** For integer Hecke scales
-  `a, b ≥ 1` and a test bump `φ` supported in `[-δ, δ]` with `2δ < log(1 + 1/max(a, b))`, the
-  prime-comb pairing of `scaleShift (log a) φ` and `scaleShift (log b) φ` evaluates to
-  `heckeIncidence a b * ∫ φ^2`, which by `HeckeIncidenceCartesianLaw` equals the single-prime
-  Frobenius weight `towerWeight p |v_p(a) - v_p(b)| * ∫ φ^2` on matching prime axes and vanishes
-  whenever `a` and `b` differ in two or more prime coordinates.
+* **Narrow-bump prime incidence (`primeSumUpTo_scaleShift_eq_heckeIncidence`):** For integer Hecke
+  scales `a, b ≥ 1` and a test bump `φ` supported in `[-δ, δ]` with
+  `2δ < log(1 + 1/(max(a, b) P^M))`, the prime-comb pairing of `scaleShift (log a) φ` and
+  `scaleShift (log b) φ` evaluates to `heckeIncidence P M a b * ∫ φ^2`, which by
+  `HeckeIncidenceCartesianLaw` equals the single-prime Frobenius weight
+  `towerWeight p |v_p(a) - v_p(b)| * ∫ φ^2` on matching prime axes and vanishes whenever `a` and `b`
+  differ in two or more prime coordinates.
 * **Zero-side eigenlaw, fake curves, non-`Λ` weights, and positive tests:** At every spectral mode
-  `gammaOf ρ`, `scaleShift (log q)` multiplies `paperFT` by `q^{ρ - 1/2}` (reducing to `β_i^m` at
-  curve zeros `q^{ρ - 1/2} = β_i`). The `λ`-ring splitting holds unconditionally for fake curves
-  such as `goldenDatum` and is invariant under replacing `Λ` by any prime weight `lam : ℕ → ℝ`,
-  while `adamsOp q` and `heckeCorrespondence q` preserve `posTestCone` with non-negative local
-  intersections (`0 ≤ localPair`).
+  `gammaOf ρ`, `scaleShift (log q)` multiplies `paperFT` by `q^{-(ρ - 1/2)}` (or `q^{ρ - 1/2}` under
+  inverse shift, reducing to `β_i^m` at curve zeros). The `λ`-ring splitting holds unconditionally
+  for fake curves such as `goldenDatum` and is invariant under replacing `Λ` by any prime weight
+  `lam : ℕ → ℕ → ℝ`, while `adamsOp q` and `heckeCorrespondence q` preserve `posTestCone` with
+  non-negative fiber intersections and non-negative prime-comb incidence.
 -/
 
 noncomputable section
 
-open Complex Real MeasureTheory Filter Topology BigOperators Finset PowerSeries
-open scoped Pointwise
+open Complex Real MeasureTheory Filter Topology BigOperators Finset PowerSeries Zeta23 RHTower
+open RHTower.WeilSpectral
+open scoped Pointwise ComplexConjugate
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
@@ -82,116 +84,120 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 namespace PolarSurface
 
-variable (S : PolarSurface)
+variable {E : Type*} [AddCommGroup E] [Module ℝ E] (S : PolarSurface E)
 
 /-- The pole-plane projection `P(x) = (x · V) H + (x · H) V` on a polar surface `S`, mapping any
 cycle class into the hyperbolic plane `ℝH ⊕ ℝV`. -/
-def polarPart (x : S.V_space) : S.V_space :=
-  (S.pair x S.V) • S.H + (S.pair x S.H) • S.V
+def polarPart (x : E) : E :=
+  S.pair x S.V • S.H + S.pair x S.H • S.V
 
 /-- Every cycle class decomposes into its pole-plane projection and its primitive part. -/
-theorem polarPart_add_prim (x : S.V_space) : S.polarPart x + S.prim x = x := by
+theorem polarPart_add_prim (x : E) : S.polarPart x + S.prim x = x := by
   simp only [polarPart, prim]
   abel
 
 /-- The primitive projection is the complement `id - polarPart`. -/
-theorem prim_eq_sub_polarPart (x : S.V_space) : S.prim x = x - S.polarPart x := by
+theorem prim_eq_sub_polarPart (x : E) : S.prim x = x - S.polarPart x := by
   simp only [polarPart, prim, sub_sub]
 
 @[simp]
 theorem polarPart_zero : S.polarPart 0 = 0 := by
   simp [polarPart]
 
-theorem polarPart_add (x y : S.V_space) :
+theorem polarPart_add (x y : E) :
     S.polarPart (x + y) = S.polarPart x + S.polarPart y := by
   simp only [polarPart, map_add, LinearMap.add_apply, add_smul]
   abel
 
-theorem polarPart_smul (c : ℝ) (x : S.V_space) :
+theorem polarPart_smul (c : ℝ) (x : E) :
     S.polarPart (c • x) = c • S.polarPart x := by
   simp only [polarPart, map_smul, LinearMap.smul_apply, smul_eq_mul, mul_smul, smul_add]
 
 @[simp]
 theorem polarPart_H : S.polarPart S.H = S.H := by
-  simp [polarPart, S.H_V, S.H_sq]
+  simp [polarPart, S.pair_H_V, S.pair_H_H]
 
 @[simp]
 theorem polarPart_V : S.polarPart S.V = S.V := by
-  simp [polarPart, S.V_sq, S.V_H]
+  simp [polarPart, S.pair_V_V, S.pair_V_H]
 
 @[simp]
-theorem pair_polarPart_H (x : S.V_space) : S.pair (S.polarPart x) S.H = S.pair x S.H := by
-  simp [polarPart, S.H_sq, S.V_H]
+theorem prim_H : S.prim S.H = 0 := by
+  rw [prim_eq_sub_polarPart, polarPart_H, sub_self]
 
 @[simp]
-theorem pair_polarPart_V (x : S.V_space) : S.pair (S.polarPart x) S.V = S.pair x S.V := by
-  simp [polarPart, S.H_V, S.V_sq]
+theorem prim_V : S.prim S.V = 0 := by
+  rw [prim_eq_sub_polarPart, polarPart_V, sub_self]
 
 @[simp]
-theorem polarPart_idem (x : S.V_space) : S.polarPart (S.polarPart x) = S.polarPart x := by
+theorem pair_polarPart_H (x : E) : S.pair (S.polarPart x) S.H = S.pair x S.H := by
+  simp [polarPart, S.pair_H_H, S.pair_V_H]
+
+@[simp]
+theorem pair_polarPart_V (x : E) : S.pair (S.polarPart x) S.V = S.pair x S.V := by
+  simp [polarPart, S.pair_H_V, S.pair_V_V]
+
+@[simp]
+theorem polarPart_idem (x : E) : S.polarPart (S.polarPart x) = S.polarPart x := by
   simp [polarPart, pair_polarPart_H, pair_polarPart_V]
 
 @[simp]
-theorem polarPart_prim (x : S.V_space) : S.polarPart (S.prim x) = 0 := by
+theorem polarPart_prim (x : E) : S.polarPart (S.prim x) = 0 := by
   simp [polarPart, S.pair_prim_H, S.pair_prim_V]
 
 @[simp]
-theorem prim_polarPart (x : S.V_space) : S.prim (S.polarPart x) = 0 := by
+theorem prim_polarPart (x : E) : S.prim (S.polarPart x) = 0 := by
   rw [prim_eq_sub_polarPart, polarPart_idem, sub_self]
 
 @[simp]
-theorem prim_idem (x : S.V_space) : S.prim (S.prim x) = S.prim x := by
+theorem prim_idem (x : E) : S.prim (S.prim x) = S.prim x := by
   rw [prim_eq_sub_polarPart, polarPart_prim, sub_zero]
 
 /-- The pole-plane projection is orthogonal to the primitive complement. -/
 @[simp]
-theorem pair_polarPart_prim (x y : S.V_space) : S.pair (S.polarPart x) (S.prim y) = 0 := by
-  have hH : S.pair S.H (S.prim y) = 0 := by rw [S.pair_symm, S.pair_prim_H]
-  have hV : S.pair S.V (S.prim y) = 0 := by rw [S.pair_symm, S.pair_prim_V]
+theorem pair_polarPart_prim (x y : E) : S.pair (S.polarPart x) (S.prim y) = 0 := by
+  have hH : S.pair S.H (S.prim y) = 0 := by rw [S.pair_comm, S.pair_prim_H]
+  have hV : S.pair S.V (S.prim y) = 0 := by rw [S.pair_comm, S.pair_prim_V]
   simp [polarPart, hH, hV]
 
 @[simp]
-theorem pair_prim_polarPart (x y : S.V_space) : S.pair (S.prim x) (S.polarPart y) = 0 := by
-  rw [S.pair_symm, pair_polarPart_prim]
+theorem pair_prim_polarPart (x y : E) : S.pair (S.prim x) (S.polarPart y) = 0 := by
+  rw [S.pair_comm, pair_polarPart_prim]
 
 /-- On the pole plane, the intersection pairing equals the hyperbolic form `polar`. -/
-theorem pair_polarPart (x y : S.V_space) :
+theorem pair_polarPart (x y : E) :
     S.pair (S.polarPart x) (S.polarPart y) = S.polar x y := by
   simp only [polarPart, polar, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply,
-    smul_eq_mul, S.H_sq, S.V_sq, S.H_V, S.V_H]
+    smul_eq_mul, S.pair_H_H, S.pair_V_V, S.pair_H_V, S.pair_V_H]
   ring
 
 /-- Orthogonal decomposition of the intersection pairing into the pole-plane pairing and the
 primitive intersection pairing. -/
-theorem pair_orthog_split (x y : S.V_space) :
+theorem pair_orthog_split (x y : E) :
     S.pair x y = S.pair (S.polarPart x) (S.polarPart y) + S.pair (S.prim x) (S.prim y) := by
-  rw [pair_polarPart, S.pair_prim, defect]
+  rw [pair_polarPart, S.pair_prim_prim, defect]
   ring
 
 @[simp]
-theorem defect_polarPart_left (x y : S.V_space) : S.defect (S.polarPart x) y = 0 := by
-  rw [← neg_eq_zero, ← S.pair_prim, prim_polarPart, map_zero, LinearMap.zero_apply]
+theorem defect_polarPart_left (x y : E) : S.defect (S.polarPart x) y = 0 := by
+  rw [← neg_eq_zero, ← S.pair_prim_prim, prim_polarPart, map_zero, LinearMap.zero_apply]
 
 @[simp]
-theorem defect_polarPart_right (x y : S.V_space) : S.defect x (S.polarPart y) = 0 := by
-  rw [← neg_eq_zero, ← S.pair_prim, prim_polarPart, map_zero]
-
-@[simp]
-theorem defect_prim (x y : S.V_space) : S.defect (S.prim x) (S.prim y) = S.defect x y := by
-  rw [← neg_inj, ← S.pair_prim, ← S.pair_prim, prim_idem, prim_idem]
+theorem defect_polarPart_right (x y : E) : S.defect x (S.polarPart y) = 0 := by
+  rw [← neg_eq_zero, ← S.pair_prim_prim, prim_polarPart, map_zero]
 
 end PolarSurface
 
 /-! ### 2. Universal `λ`-Ring Exponential and Ghost-Coordinate Splitting in `ℂ⟦X⟧` -/
 
-/-- The ghost power series `∑_{j ≥ 1} g(j) T^j ∈ ℂ⟦X⟧` attached to an Adams-trace sequence
+/-- The ghost power series `∑_{j ≥ 1} g(j) X^j ∈ ℂ⟦X⟧` attached to an Adams-trace sequence
 `g : ℕ → ℂ`. -/
 def ghostSeriesOf (g : ℕ → ℂ) : ℂ⟦X⟧ :=
   PowerSeries.mk fun j => if j = 0 then 0 else g j
 
 @[simp]
 theorem constantCoeff_ghostSeriesOf (g : ℕ → ℂ) :
-    constantCoeff ℂ (ghostSeriesOf g) = 0 := by
+    constantCoeff (ghostSeriesOf g) = 0 := by
   simp [ghostSeriesOf]
 
 @[simp]
@@ -212,7 +218,7 @@ theorem ghostSeriesOf_neg (g : ℕ → ℂ) :
   split_ifs <;> ring
 
 /-- Recursive Newton–Witt coefficients `σ_n(g)` of the universal `λ`-ring exponential
-`exp(∑_{j ≥ 1} g(j) T^j / j)`: `σ_0(g) = 1` and
+`exp(∑_{j ≥ 1} g(j) X^j / j)`: `σ_0(g) = 1` and
 `(m + 1) σ_{m+1}(g) = ∑_{k=0}^m σ_k(g) g(m + 1 - k)`. -/
 def sigmaCoeff (g : ℕ → ℂ) : ℕ → ℂ
   | 0 => 1
@@ -223,7 +229,8 @@ def sigmaCoeff (g : ℕ → ℂ) : ℕ → ℂ
         sigmaCoeff g k.1 * g (m + 1 - k.1)
 
 @[simp]
-theorem sigmaCoeff_zero (g : ℕ → ℂ) : sigmaCoeff g 0 = 1 := rfl
+theorem sigmaCoeff_zero (g : ℕ → ℂ) : sigmaCoeff g 0 = 1 := by
+  rfl
 
 theorem sigmaCoeff_succ (g : ℕ → ℂ) (m : ℕ) :
     sigmaCoeff g (m + 1) =
@@ -232,50 +239,88 @@ theorem sigmaCoeff_succ (g : ℕ → ℂ) (m : ℕ) :
   congr 1
   exact Fin.sum_univ_eq_sum_range (fun k => sigmaCoeff g k * g (m + 1 - k)) (m + 1)
 
-/-- The universal symmetric-power generating series `σ_T(g) = exp(∑_{j ≥ 1} g(j) T^j / j) ∈ ℂ⟦X⟧`
+/-- The universal symmetric-power generating series `σ_X(g) = exp(∑_{j ≥ 1} g(j) X^j / j) ∈ ℂ⟦X⟧`
 reconstructing a `λ`-ring series from its Adams ghost coordinates `j ↦ g(j)`. -/
 def sigmaSeries (g : ℕ → ℂ) : ℂ⟦X⟧ :=
   PowerSeries.mk (sigmaCoeff g)
 
-/-- The universal exterior-power generating series `λ_T(g) = σ_{-T}(-g) ∈ ℂ⟦X⟧` reconstructing the
+/-- The universal exterior-power generating series `λ_X(g) = σ_{-X}(-g) ∈ ℂ⟦X⟧` reconstructing the
 `λ`-operations from the Adams ghost coordinates `j ↦ g(j)`. -/
 def lambdaSeries (g : ℕ → ℂ) : ℂ⟦X⟧ :=
   PowerSeries.mk fun n => (-1 : ℂ) ^ n * sigmaCoeff (-g) n
 
 @[simp]
 theorem coeff_sigmaSeries (g : ℕ → ℂ) (n : ℕ) :
-    coeff ℂ n (sigmaSeries g) = sigmaCoeff g n :=
+    coeff n (sigmaSeries g) = sigmaCoeff g n :=
   coeff_mk n (sigmaCoeff g)
 
 @[simp]
 theorem constantCoeff_sigmaSeries (g : ℕ → ℂ) :
-    constantCoeff ℂ (sigmaSeries g) = 1 := by
+    constantCoeff (sigmaSeries g) = 1 := by
   rw [← coeff_zero_eq_constantCoeff, coeff_sigmaSeries, sigmaCoeff_zero]
 
+private theorem sum_antidiagonal_eq_range {M : Type*} [AddCommMonoid M]
+    (f : ℕ → ℕ → M) (n : ℕ) :
+    ∑ p ∈ Finset.antidiagonal n, f p.1 p.2 = ∑ i ∈ Finset.range (n + 1), f i (n - i) := by
+  refine Finset.sum_bij (fun p _ => p.1) ?_ ?_ ?_ ?_
+  · intro p hp
+    rw [Finset.mem_range]
+    rw [Finset.mem_antidiagonal] at hp
+    omega
+  · intro p hp q hq hpq
+    rw [Finset.mem_antidiagonal] at hp hq
+    apply Prod.ext hpq
+    omega
+  · intro i hi
+    refine ⟨(i, n - i), ?_, rfl⟩
+    rw [Finset.mem_antidiagonal]
+    rw [Finset.mem_range] at hi
+    omega
+  · intro p hp
+    rw [Finset.mem_antidiagonal] at hp
+    congr 2
+    omega
+
 /-- **Universal Newton–Witt identity:** for every sequence `g : ℕ → ℂ`, `sigmaSeries g` has ghost
-series `ghostSeriesOf g`. -/
+series `ghostSeriesOf g` (`X (sigmaSeries g)' = sigmaSeries g * ghostSeriesOf g`). -/
 theorem hasGhost_sigmaSeries (g : ℕ → ℂ) :
     HasGhost (sigmaSeries g) (ghostSeriesOf g) := by
-  refine ⟨constantCoeff_sigmaSeries g, constantCoeff_ghostSeriesOf g, fun m => ?_⟩
-  have hm : (m : ℂ) + 1 ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
-  rw [coeff_sigmaSeries, sigmaCoeff_succ, mul_inv_cancel_left₀ hm]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  have hsub : m + 1 - k ≠ 0 := Nat.sub_ne_zero_of_lt (Finset.mem_range.mp hk)
-  simp [coeff_sigmaSeries, ghostSeriesOf, hsub]
+  unfold HasGhost
+  ext n
+  rcases n with _ | m
+  · rw [coeff_zero_X_mul, coeff_zero_eq_constantCoeff, map_mul,
+      constantCoeff_ghostSeriesOf, mul_zero]
+  · rw [coeff_succ_X_mul, coeff_derivative, coeff_sigmaSeries, sigmaCoeff_succ]
+    have hm : (m : ℂ) + 1 ≠ 0 := by exact_mod_cast Nat.succ_ne_zero m
+    rw [mul_comm (((m : ℂ) + 1)⁻¹), mul_assoc, inv_mul_cancel₀ hm, mul_one,
+      coeff_mul, sum_antidiagonal_eq_range, Finset.sum_range_succ]
+    have hlast : coeff (m + 1) (sigmaSeries g) * coeff (m + 1 - (m + 1)) (ghostSeriesOf g) = 0 := by
+      simp [ghostSeriesOf]
+    rw [hlast, add_zero]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    have hsub : m + 1 - k ≠ 0 := Nat.sub_ne_zero_of_lt (Finset.mem_range.mp hk)
+    simp [coeff_sigmaSeries, ghostSeriesOf, hsub]
+
+/-- Uniqueness of `sigmaSeries g` as the power series with constant term `1` and ghost series
+`ghostSeriesOf g`. -/
+theorem sigmaSeries_eq_of_hasGhost {F : ℂ⟦X⟧} {g : ℕ → ℂ}
+    (hF : HasGhost F (ghostSeriesOf g)) (h0 : constantCoeff F = 1) :
+    sigmaSeries g = F :=
+  eq_of_hasGhost (hasGhost_sigmaSeries g) hF
+    ((constantCoeff_sigmaSeries g).trans h0.symm) (constantCoeff_ghostSeriesOf g)
 
 @[simp]
-theorem sigmaSeries_zero : sigmaSeries 0 = 1 := by
-  apply eq_of_hasGhost (hasGhost_sigmaSeries 0)
-  rw [ghostSeriesOf_zero]
-  exact hasGhost_one
+theorem sigmaSeries_zero : sigmaSeries 0 = 1 :=
+  sigmaSeries_eq_of_hasGhost (by rw [ghostSeriesOf_zero]; exact hasGhost_one) (map_one constantCoeff)
 
 /-- **Exponential homomorphism law of the universal `λ`-ring series:** addition of Adams ghost
 coordinates corresponds to multiplication of symmetric-power series. -/
 theorem sigmaSeries_add (g₁ g₂ : ℕ → ℂ) :
     sigmaSeries (g₁ + g₂) = sigmaSeries g₁ * sigmaSeries g₂ := by
-  apply eq_of_hasGhost (hasGhost_sigmaSeries (g₁ + g₂))
-  rw [ghostSeriesOf_add]
-  exact hasGhost_mul (hasGhost_sigmaSeries g₁) (hasGhost_sigmaSeries g₂)
+  refine sigmaSeries_eq_of_hasGhost ?_ ?_
+  · rw [ghostSeriesOf_add]
+    exact hasGhost_mul (hasGhost_sigmaSeries g₁) (hasGhost_sigmaSeries g₂)
+  · simp [map_mul]
 
 /-- Inverting the sign of the Adams ghost coordinates inverts the symmetric-power series. -/
 theorem sigmaSeries_mul_neg (g : ℕ → ℂ) :
@@ -283,13 +328,13 @@ theorem sigmaSeries_mul_neg (g : ℕ → ℂ) :
   rw [← sigmaSeries_add, add_neg_cancel, sigmaSeries_zero]
 
 /-- A pure power ghost `j ↦ a^j` (rank-one Adams eigenline) exponentiates to the geometric series
-`(1 - aT)⁻¹`. -/
+`(1 - aX)⁻¹`. -/
 theorem sigmaSeries_pow (a : ℂ) :
     sigmaSeries (fun j => a ^ j) = geom a :=
-  eq_of_hasGhost (hasGhost_sigmaSeries (fun j => a ^ j)) (hasGhost_geom a)
+  sigmaSeries_eq_of_hasGhost (hasGhost_geom a) (by simp [geom])
 
 /-- **Pole-plane splitting in `ℂ⟦X⟧`:** any Adams trace sequence of the form `(1 + q^j) + g_prim(j)`
-splits off the universal pole factor `((1 - T)(1 - qT))⁻¹ = geom 1 * geom q`. -/
+splits off the universal pole factor `((1 - X)(1 - qX))⁻¹ = geom 1 * geom q`. -/
 theorem sigmaSeries_pole_split (q : ℂ) (g_prim : ℕ → ℂ) :
     sigmaSeries ((fun j => (1 : ℂ) + q ^ j) + g_prim) =
       (geom 1 * geom q) * sigmaSeries g_prim := by
@@ -300,31 +345,36 @@ theorem sigmaSeries_pole_split (q : ℂ) (g_prim : ℕ → ℂ) :
 
 namespace CurveDatum
 
+variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
+
 /-- For any curve datum `D`, the universal `λ`-ring exponential of the Frobenius point counts
 `j ↦ N_j(D)` is the zeta series `D.zetaSeries`. -/
-theorem sigmaSeries_pointCount (D : CurveDatum) :
+theorem sigmaSeries_pointCount :
     sigmaSeries (fun j => (D.pointCount j : ℂ)) = D.zetaSeries :=
-  eq_of_hasGhost (hasGhost_sigmaSeries _) D.hasGhost_zetaSeries
+  sigmaSeries_eq_of_hasGhost D.zetaSeries_hasGhost D.constantCoeff_zetaSeries
 
-/-- For any curve datum `D`, the universal `λ`-ring exponential of the primitive Frobenius traces
-`j ↦ -∑_i β_i^j` is the reciprocal spectral polynomial `D.invPoly = ∏_i (1 - β_i T)`. -/
-theorem sigmaSeries_primTrace (D : CurveDatum) :
-    sigmaSeries (fun j => -∑ i : Fin (2 * D.g), D.β i ^ j) = D.invPoly := by
-  apply eq_of_hasGhost (hasGhost_sigmaSeries _)
-  convert D.hasGhost_invPoly using 1
-  ext j
-  simp only [ghostSeriesOf, coeff_mk, Finset.sum_apply]
-  split_ifs with hj
-  · simp
-  · rw [← Finset.sum_neg_distrib]
+/-- For any curve datum `D`, the universal `λ`-ring exponential of the primitive `H¹` Frobenius
+traces `j ↦ -∑_i α_i^j` is the spectral polynomial `D.hOnePoly = ∏_i (1 - α_i X)`. -/
+theorem sigmaSeries_primTrace :
+    sigmaSeries (fun j => -∑ i : ι, D.alpha i ^ j) = D.hOnePoly := by
+  refine sigmaSeries_eq_of_hasGhost ?_ ?_
+  · have hprod := hasGhost_prod Finset.univ (fun i : ι => 1 - C (D.alpha i) * X)
+      (fun i : ι => -geomTail (D.alpha i)) (fun i _ => hasGhost_one_sub (D.alpha i))
+    convert hprod using 2
+    ext j
+    simp only [ghostSeriesOf, geomTail, coeff_mk, map_sum, map_neg]
+    rcases j with _ | j
+    · simp
+    · simp [Finset.sum_neg_distrib]
+  · simp [hOnePoly, map_prod]
 
 /-- **Pole-plane factorization of the curve zeta series via `sigmaSeries`:** the `λ`-ring
-exponential of `N_j(D) = (1 + q^j) - ∑_i β_i^j` factors into `D.poleZeta` times the `λ`-ring
+exponential of `N_j(D) = (1 + q^j) - ∑_i α_i^j` factors into `D.poleZeta` times the `λ`-ring
 exponential of the primitive traces. -/
-theorem sigmaSeries_pointCount_split (D : CurveDatum) :
+theorem sigmaSeries_pointCount_split :
     sigmaSeries (fun j => (D.pointCount j : ℂ)) =
-      D.poleZeta * sigmaSeries (fun j => -∑ i : Fin (2 * D.g), D.β i ^ j) := by
-  rw [D.sigmaSeries_pointCount, D.sigmaSeries_primTrace, D.zetaSeries_eq]
+      D.poleZeta * sigmaSeries (fun j => -∑ i : ι, D.alpha i ^ j) := by
+  rw [D.sigmaSeries_pointCount, D.sigmaSeries_primTrace, zetaSeries]
 
 end CurveDatum
 
@@ -356,115 +406,81 @@ theorem windowB_spanShift (m : ℕ) (S : Finset ℕ) (d : ℕ → ℝ) :
 
 namespace CurveDatum
 
-variable (D : CurveDatum)
+variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
 
 theorem windowA_spanShift (m : ℕ) (S : Finset ℕ) (d : ℕ → ℝ) :
-    D.windowA (windowShift m S) (spanShift m d) = (D.q ^ m) * D.windowA S d := by
+    D.windowA (windowShift m S) (spanShift m d) = D.q ^ m * D.windowA S d := by
   simp only [windowA, windowShift, Finset.sum_map, Function.Embedding.coeFn_mk, spanShift,
     le_add_iff_nonneg_left, zero_le, ↓reduceIte, Nat.add_sub_cancel, pow_add, Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   ring
 
-theorem spanDefect_spanShift (m : ℕ) (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
-    D.spanDefect (windowShift m S) (spanShift m d₁) (spanShift m d₂) =
-      (D.q ^ m) * D.spanDefect S d₁ d₂ := by
-  simp only [spanDefect, windowShift, Finset.sum_map, Function.Embedding.coeFn_mk, spanShift,
+theorem windowGraph_spanShift (m : ℕ) (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
+    D.windowGraph (windowShift m S) (spanShift m d₁) (spanShift m d₂) =
+      D.q ^ m * D.windowGraph S d₁ d₂ := by
+  simp only [windowGraph, windowShift, Finset.sum_map, Function.Embedding.coeFn_mk, spanShift,
     le_add_iff_nonneg_left, zero_le, ↓reduceIte, Nat.add_sub_cancel, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
+  refine Finset.sum_congr rfl fun j _ => ?_
   rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  have hmin : min (k + m) (l + m) = min k l + m := min_add_add_right k l m
-  have hdist : Nat.dist (k + m) (l + m) = Nat.dist k l := Nat.dist_add_add_right k m l
-  rw [hmin, hdist, pow_add]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  simp only [graphPair, min_add_add_right, Nat.dist_add_add_right, pow_add]
   ring
 
 /-- The degree-normalized `m`-th Adams operator on the Frobenius span cycle space over `𝔽_q`:
-scales `V` by `q^{-m/2}`, scales `H` by `q^{m/2}`, and shifts each Frobenius graph `Γ_k` to
-`q^{-m/2} Γ_{k+m}`. -/
+scales `H` by `q^{-m/2}`, scales `V` by `q^{m/2}`, and shifts each Frobenius graph coordinate by
+`m` with normalization `q^{-m/2}`. -/
 def spanAdams (m : ℕ) (x : SpanCycle) : SpanCycle :=
-  (D.sqrtq⁻¹ ^ m * x.1, D.sqrtq ^ m * x.2.1, fun k => D.sqrtq⁻¹ ^ m * spanShift m x.2.2 k)
+  (D.sqrtq⁻¹ ^ m * x.1, D.sqrtq ^ m * x.2.1, (D.sqrtq⁻¹ ^ m) • spanShift m x.2.2)
 
 @[simp]
 theorem spanAdams_H (m : ℕ) (S : Finset ℕ) :
-    D.spanAdams m (D.windowSurface S).H = (D.sqrtq ^ m) • (D.windowSurface (windowShift m S)).H := by
-  ext <;> simp [spanAdams, windowSurface]
+    D.spanAdams m (D.windowSurface S).H =
+      (D.sqrtq⁻¹ ^ m) • (D.windowSurface (windowShift m S)).H := by
+  ext <;> simp [spanAdams, windowSurface, spanShift]
 
 @[simp]
 theorem spanAdams_V (m : ℕ) (S : Finset ℕ) :
-    D.spanAdams m (D.windowSurface S).V = (D.sqrtq⁻¹ ^ m) • (D.windowSurface (windowShift m S)).V := by
-  ext <;> simp [spanAdams, windowSurface]
-
-/-- On the Frobenius graph basis, `D.spanAdams m` sends `Γ_k` to `q^{-m/2} Γ_{k+m}`. -/
-theorem spanAdams_windowGraph (m k : ℕ) :
-    D.spanAdams m (D.windowGraph k) = (D.sqrtq⁻¹ ^ m) • D.windowGraph (k + m) := by
-  ext
-  · simp [spanAdams, windowGraph]
-  · simp [spanAdams, windowGraph]
-  · rename_i j
-    simp only [spanAdams, windowGraph, spanShift, Prod.smul_mk, Pi.smul_apply, smul_eq_mul]
-    congr 1
-    by_cases hmj : m ≤ j
-    · rw [if_pos hmj]
-      by_cases hjk : j - m = k
-      · have hj : j = k + m := by omega
-        simp [hjk, hj]
-      · have hj : j ≠ k + m := by omega
-        simp [hjk, hj]
-    · rw [if_neg hmj]
-      have hj : j ≠ k + m := by omega
-      simp [hj]
-
-private theorem windowB_smul (S : Finset ℕ) (c : ℝ) (d : ℕ → ℝ) :
-    windowB S (fun k => c * d k) = c * windowB S d := by
-  simp [windowB, Finset.mul_sum]
-
-private theorem windowA_smul (S : Finset ℕ) (c : ℝ) (d : ℕ → ℝ) :
-    D.windowA S (fun k => c * d k) = c * D.windowA S d := by
-  simp only [windowA, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  ring
-
-private theorem spanDefect_smul (S : Finset ℕ) (c₁ c₂ : ℝ) (d₁ d₂ : ℕ → ℝ) :
-    D.spanDefect S (fun k => c₁ * d₁ k) (fun k => c₂ * d₂ k) =
-      (c₁ * c₂) * D.spanDefect S d₁ d₂ := by
-  simp only [spanDefect, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun l _ => ?_
-  ring
+    D.spanAdams m (D.windowSurface S).V =
+      (D.sqrtq ^ m) • (D.windowSurface (windowShift m S)).V := by
+  ext <;> simp [spanAdams, windowSurface, spanShift]
 
 private theorem inv_sqrtq_pow_mul_sqrtq_pow (m : ℕ) :
     D.sqrtq⁻¹ ^ m * D.sqrtq ^ m = 1 := by
-  rw [← mul_pow, inv_mul_cancel₀ (ne_of_gt D.sqrtq_pos), one_pow]
+  have hpos : D.sqrtq ≠ 0 := ne_of_gt D.sqrtq_pos
+  rw [← mul_pow, inv_mul_cancel₀ hpos, one_pow]
+
+private theorem q_pow_eq_sqrtq_pow_sq (m : ℕ) :
+    D.q ^ m = D.sqrtq ^ m * D.sqrtq ^ m := by
+  rw [← mul_pow, ← sq, D.sqrtq_sq]
+
+private theorem inv_sqrtq_pow_mul_q_pow (m : ℕ) :
+    D.sqrtq⁻¹ ^ m * D.q ^ m = D.sqrtq ^ m := by
+  rw [D.q_pow_eq_sqrtq_pow_sq, ← mul_assoc, D.inv_sqrtq_pow_mul_sqrtq_pow, one_mul]
 
 private theorem inv_sqrtq_pow_sq_mul_q_pow (m : ℕ) :
-    (D.sqrtq⁻¹ ^ m * D.sqrtq⁻¹ ^ m) * D.q ^ m = 1 := by
-  have hsq : D.sqrtq⁻¹ ^ m * D.sqrtq⁻¹ ^ m = (D.sqrtq ^ 2)⁻¹ ^ m := by ring
-  rw [hsq, D.sqrtq_sq, ← mul_pow, inv_mul_cancel₀ (ne_of_gt D.q_pos), one_pow]
+    D.sqrtq⁻¹ ^ m * (D.sqrtq⁻¹ ^ m * D.q ^ m) = 1 := by
+  rw [D.inv_sqrtq_pow_mul_q_pow, D.inv_sqrtq_pow_mul_sqrtq_pow]
 
-/-- Intersection with `H` scales by `q^{-m/2}` under `D.spanAdams m`. -/
+/-- Intersection with `H` scales by `q^{m/2}` under `D.spanAdams m`. -/
 theorem pair_spanAdams_H (m : ℕ) (S : Finset ℕ) (x : SpanCycle) :
-    (D.windowSurface (windowShift m S)).pair (D.spanAdams m x) (D.windowSurface (windowShift m S)).H =
-      D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair x (D.windowSurface S).H := by
-  simp only [windowSurface, spanAdams, windowPair_apply, windowB_zero, windowA_zero,
-    spanDefect_zero_right, add_zero, sub_zero, mul_zero, zero_mul, mul_one, zero_add,
-    D.windowB_smul, windowB_spanShift]
-  ring
-
-/-- Intersection with `V` scales by `q^{m/2}` under `D.spanAdams m`. -/
-theorem pair_spanAdams_V (m : ℕ) (S : Finset ℕ) (x : SpanCycle) :
-    (D.windowSurface (windowShift m S)).pair (D.spanAdams m x) (D.windowSurface (windowShift m S)).V =
-      D.sqrtq ^ m * (D.windowSurface S).pair x (D.windowSurface S).V := by
-  have hq : D.sqrtq⁻¹ ^ m * D.q ^ m = D.sqrtq ^ m := by
-    have h1 : D.q ^ m = D.sqrtq ^ m * D.sqrtq ^ m := by
-      rw [← mul_pow, ← sq, D.sqrtq_sq]
-    rw [h1, ← mul_assoc, D.inv_sqrtq_pow_mul_sqrtq_pow, one_mul]
-  simp only [windowSurface, spanAdams, windowPair_apply, windowB_zero, windowA_zero,
-    spanDefect_zero_right, add_zero, sub_zero, mul_zero, zero_mul, mul_one,
-    D.windowA_smul, D.windowA_spanShift]
+    (D.windowSurface (windowShift m S)).pair (D.spanAdams m x)
+        (D.windowSurface (windowShift m S)).H =
+      D.sqrtq ^ m * (D.windowSurface S).pair x (D.windowSurface S).H := by
+  rw [D.windowSurface_pair_H, D.windowSurface_pair_H]
+  simp only [spanAdams, D.windowA_smul, D.windowA_spanShift]
   calc D.sqrtq ^ m * x.2.1 + D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowA S x.2.2)
       = D.sqrtq ^ m * x.2.1 + (D.sqrtq⁻¹ ^ m * D.q ^ m) * D.windowA S x.2.2 := by ring
-    _ = D.sqrtq ^ m * (x.2.1 + D.windowA S x.2.2) := by rw [hq]; ring
+    _ = D.sqrtq ^ m * (x.2.1 + D.windowA S x.2.2) := by
+          rw [D.inv_sqrtq_pow_mul_q_pow]; ring
+
+/-- Intersection with `V` scales by `q^{-m/2}` under `D.spanAdams m`. -/
+theorem pair_spanAdams_V (m : ℕ) (S : Finset ℕ) (x : SpanCycle) :
+    (D.windowSurface (windowShift m S)).pair (D.spanAdams m x)
+        (D.windowSurface (windowShift m S)).V =
+      D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair x (D.windowSurface S).V := by
+  rw [D.windowSurface_pair_V, D.windowSurface_pair_V]
+  simp only [spanAdams, windowB_smul, windowB_spanShift]
+  ring
 
 /-- Over `𝔽_q`, the normalized Adams operator `D.spanAdams m` preserves the pole-plane form `polar`. -/
 theorem polar_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
@@ -472,10 +488,10 @@ theorem polar_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
       (D.windowSurface S).polar x y := by
   simp only [PolarSurface.polar, D.pair_spanAdams_H, D.pair_spanAdams_V]
   have h1 := D.inv_sqrtq_pow_mul_sqrtq_pow m
-  calc D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair x (D.windowSurface S).H *
-        (D.sqrtq ^ m * (D.windowSurface S).pair y (D.windowSurface S).V) +
-      D.sqrtq ^ m * (D.windowSurface S).pair x (D.windowSurface S).V *
-        (D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair y (D.windowSurface S).H)
+  calc D.sqrtq ^ m * (D.windowSurface S).pair x (D.windowSurface S).H *
+        (D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair y (D.windowSurface S).V) +
+      D.sqrtq⁻¹ ^ m * (D.windowSurface S).pair x (D.windowSurface S).V *
+        (D.sqrtq ^ m * (D.windowSurface S).pair y (D.windowSurface S).H)
       = (D.sqrtq⁻¹ ^ m * D.sqrtq ^ m) *
           ((D.windowSurface S).pair x (D.windowSurface S).H *
             (D.windowSurface S).pair y (D.windowSurface S).V +
@@ -487,31 +503,34 @@ theorem polar_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
 theorem pair_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
     (D.windowSurface (windowShift m S)).pair (D.spanAdams m x) (D.spanAdams m y) =
       (D.windowSurface S).pair x y := by
-  have hpolar := D.polar_spanAdams m S x y
-  simp only [PolarSurface.polar, D.pair_spanAdams_H, D.pair_spanAdams_V] at hpolar
-  simp only [windowSurface, spanAdams, windowPair_apply, D.windowB_smul, windowB_spanShift,
-    D.windowA_smul, D.windowA_spanShift, D.spanDefect_smul, D.spanDefect_spanShift]
+  have hsymm : ∀ d₁ d₂, D.windowGraph (windowShift m S) d₁ (D.sqrtq⁻¹ ^ m • d₂) =
+      D.sqrtq⁻¹ ^ m * D.windowGraph (windowShift m S) d₁ d₂ := by
+    intro d₁ d₂
+    rw [D.windowGraph_symm, D.windowGraph_smul_left, D.windowGraph_symm]
+  simp only [windowSurface, spanAdams, windowPair_apply, windowPairFun,
+    D.windowA_smul, D.windowA_spanShift, windowB_smul, windowB_spanShift,
+    D.windowGraph_smul_left, hsymm, D.windowGraph_spanShift]
   have h1 := D.inv_sqrtq_pow_mul_sqrtq_pow m
-  have h2 := D.inv_sqrtq_pow_sq_mul_q_pow m
-  have hq : D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowA S x.2.2) = D.sqrtq ^ m * D.windowA S x.2.2 := by
-    have hpow : D.q ^ m = D.sqrtq ^ m * D.sqrtq ^ m := by rw [← mul_pow, ← sq, D.sqrtq_sq]
-    rw [hpow, ← mul_assoc, ← mul_assoc, h1, one_mul]
-  have hqy : D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowA S y.2.2) = D.sqrtq ^ m * D.windowA S y.2.2 := by
-    have hpow : D.q ^ m = D.sqrtq ^ m * D.sqrtq ^ m := by rw [← mul_pow, ← sq, D.sqrtq_sq]
-    rw [hpow, ← mul_assoc, ← mul_assoc, h1, one_mul]
-  rw [hq, hqy]
-  calc (D.sqrtq⁻¹ ^ m * x.1 + D.sqrtq⁻¹ ^ m * windowB S x.2.2) *
-        (D.sqrtq ^ m * y.2.1 + D.sqrtq ^ m * D.windowA S y.2.2) +
-      (D.sqrtq ^ m * x.2.1 + D.sqrtq ^ m * D.windowA S x.2.2) *
-        (D.sqrtq⁻¹ ^ m * y.1 + D.sqrtq⁻¹ ^ m * windowB S y.2.2) -
-      D.sqrtq⁻¹ ^ m * D.sqrtq⁻¹ ^ m * (D.q ^ m * D.spanDefect S x.2.2 y.2.2)
+  have h2 := D.inv_sqrtq_pow_mul_q_pow m
+  have h3 := D.inv_sqrtq_pow_sq_mul_q_pow m
+  calc D.sqrtq⁻¹ ^ m * x.1 * (D.sqrtq ^ m * y.2.1) +
+        D.sqrtq ^ m * x.2.1 * (D.sqrtq⁻¹ ^ m * y.1) +
+        D.sqrtq⁻¹ ^ m * x.1 * (D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowA S y.2.2)) +
+        D.sqrtq⁻¹ ^ m * y.1 * (D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowA S x.2.2)) +
+        D.sqrtq ^ m * x.2.1 * (D.sqrtq⁻¹ ^ m * windowB S y.2.2) +
+        D.sqrtq ^ m * y.2.1 * (D.sqrtq⁻¹ ^ m * windowB S x.2.2) +
+        D.sqrtq⁻¹ ^ m * (D.sqrtq⁻¹ ^ m * (D.q ^ m * D.windowGraph S x.2.2 y.2.2))
       = (D.sqrtq⁻¹ ^ m * D.sqrtq ^ m) *
-          ((x.1 + windowB S x.2.2) * (y.2.1 + D.windowA S y.2.2) +
-           (x.2.1 + D.windowA S x.2.2) * (y.1 + windowB S y.2.2)) -
-        ((D.sqrtq⁻¹ ^ m * D.sqrtq⁻¹ ^ m) * D.q ^ m) * D.spanDefect S x.2.2 y.2.2 := by ring
-    _ = (x.1 + windowB S x.2.2) * (y.2.1 + D.windowA S y.2.2) +
-        (x.2.1 + D.windowA S x.2.2) * (y.1 + windowB S y.2.2) -
-        D.spanDefect S x.2.2 y.2.2 := by rw [h1, h2, one_mul, one_mul]
+          (x.1 * y.2.1 + x.2.1 * y.1 + x.2.1 * windowB S y.2.2 + y.2.1 * windowB S x.2.2) +
+        (D.sqrtq⁻¹ ^ m * (D.sqrtq⁻¹ ^ m * D.q ^ m)) *
+          (x.1 * D.windowA S y.2.2 + y.1 * D.windowA S x.2.2 + D.windowGraph S x.2.2 y.2.2) := by
+          ring
+    _ = x.1 * y.2.1 + x.2.1 * y.1 +
+        x.1 * D.windowA S y.2.2 + y.1 * D.windowA S x.2.2 +
+        x.2.1 * windowB S y.2.2 + y.2.1 * windowB S x.2.2 +
+        D.windowGraph S x.2.2 y.2.2 := by
+          rw [h1, h3]
+          ring
 
 /-- Over `𝔽_q`, `D.spanAdams m` preserves the Hodge defect. -/
 theorem defect_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
@@ -523,7 +542,6 @@ theorem defect_spanAdams (m : ℕ) (S : Finset ℕ) (x y : SpanCycle) :
 theorem polarPart_spanAdams (m : ℕ) (S : Finset ℕ) (x : SpanCycle) :
     (D.windowSurface (windowShift m S)).polarPart (D.spanAdams m x) =
       D.spanAdams m ((D.windowSurface S).polarPart x) := by
-  have h1 := D.inv_sqrtq_pow_mul_sqrtq_pow m
   ext
   · simp [PolarSurface.polarPart, D.pair_spanAdams_H, D.pair_spanAdams_V, windowSurface, spanAdams]
   · simp [PolarSurface.polarPart, D.pair_spanAdams_H, D.pair_spanAdams_V, windowSurface, spanAdams]
@@ -577,52 +595,52 @@ theorem cx_scaleShift (t : ℝ) (f : ℝ → ℝ) :
 
 /-- Logarithmic scale translation preserves the smooth compactly supported test space `realTests`. -/
 theorem scaleShift_mem (t : ℝ) {f : ℝ → ℝ} (hf : f ∈ realTests) :
-    scaleShift t f ∈ realTests := by
-  have hcomp : cx (scaleShift t f) = cx f ∘ fun u => u - t := rfl
-  refine ⟨?_, ?_⟩
-  · rw [hcomp]
-    exact hf.1.comp (contDiff_id.sub contDiff_const)
-  · have hhomeo := Homeomorph.subRight t
-    have hsupp : Function.support (cx (scaleShift t f)) = hhomeo ⁻¹' Function.support (cx f) := by
-      ext u
-      simp [Function.mem_support, cx, scaleShift, Homeomorph.subRight]
-    rw [HasCompactSupport, closure_preimage_homeomorph, ← hhomeo.isCompact_preimage]
-    exact hf.2
+    scaleShift t f ∈ realTests :=
+  ⟨hf.1.comp (contDiff_id.sub contDiff_const), hf.2.comp_homeomorph (Homeomorph.subRight t)⟩
 
-/-- Under `scaleShift t`, the horizontal pole functional `poleB f = ∫ f(u) e^{u/2} du` scales by
+/-- Under `scaleShift t`, the horizontal pole functional `poleB f = ∫ f(u) e^{-u/2} du` scales by
 `e^{-t/2}`. -/
 theorem poleB_scaleShift (t : ℝ) (f : ℝ → ℝ) :
     poleB (scaleShift t f) = Real.exp (-t / 2) * poleB f := by
   simp only [poleB, scaleShift]
-  rw [← MeasureTheory.integral_sub_right_eq_self (fun u => f u * Real.exp ((u + t) / 2)) t]
-  rw [← MeasureTheory.integral_const_mul]
-  congr 1
-  ext u
-  have hexp : (u + t) / 2 = -t / 2 + (u - t) / 2 + t := by ring
-  have hexp2 : (u - t + t) / 2 = -t / 2 + (u - t) / 2 := by ring
-  rw [sub_add_cancel, show u / 2 = -t / 2 + (u - t) / 2 by ring, Real.exp_add]
-  ring
-
-/-- Under `scaleShift t`, the vertical pole functional `poleA f = ∫ f(u) e^{-u/2} du` scales by
-`e^{t/2}`. -/
-theorem poleA_scaleShift (t : ℝ) (f : ℝ → ℝ) :
-    poleA (scaleShift t f) = Real.exp (t / 2) * poleA f := by
-  simp only [poleA, scaleShift]
   rw [← MeasureTheory.integral_sub_right_eq_self (fun u => f u * Real.exp (-(u + t) / 2)) t]
   rw [← MeasureTheory.integral_const_mul]
   congr 1
   ext u
-  rw [sub_add_cancel, show -u / 2 = t / 2 + -(u - t) / 2 by ring, Real.exp_add]
+  rw [sub_add_cancel, show -u / 2 = -t / 2 + -(u - t) / 2 by ring, Real.exp_add]
+  ring
+
+/-- Under `scaleShift t`, the vertical pole functional `poleA f = ∫ f(u) e^{u/2} du` scales by
+`e^{t/2}`. -/
+theorem poleA_scaleShift (t : ℝ) (f : ℝ → ℝ) :
+    poleA (scaleShift t f) = Real.exp (t / 2) * poleA f := by
+  simp only [poleA, scaleShift]
+  rw [← MeasureTheory.integral_sub_right_eq_self (fun u => f u * Real.exp ((u + t) / 2)) t]
+  rw [← MeasureTheory.integral_const_mul]
+  congr 1
+  ext u
+  rw [sub_add_cancel, show u / 2 = t / 2 + (u - t) / 2 by ring, Real.exp_add]
+  ring
+
+/-- The Weil cross-correlation of two real functions as a real integral:
+`EF.weilTest (cx f) (cx g) x = ∫ u, f(u) g(u - x) du`. -/
+theorem weilTest_ofReal (f g : ℝ → ℝ) (x : ℝ) :
+    EF.weilTest (cx f) (cx g) x = ((∫ u, f u * g (u - x) : ℝ) : ℂ) := by
+  rw [EF.weilTest, MeasureTheory.convolution_def, ← integral_complex_ofReal]
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  simp only [ContinuousLinearMap.mul_apply', EF.tilde, cx, Complex.conj_ofReal, neg_sub]
+  push_cast
   ring
 
 /-- **Weil cross-correlation translation identity:** shifting `f` by `s` and `g` by `t` shifts the
-Weil cross-correlation `EF.weilTest (cx f) (cx g)` by `t - s`. -/
+Weil cross-correlation `EF.weilTest (cx f) (cx g)` by `-s + t`. -/
 theorem weilTest_scaleShift (s t : ℝ) (f g : ℝ → ℝ) (x : ℝ) :
     EF.weilTest (cx (scaleShift s f)) (cx (scaleShift t g)) x =
-      EF.weilTest (cx f) (cx g) (x + t - s) := by
-  simp only [EF.weilTest, cx_scaleShift]
-  rw [← MeasureTheory.integral_sub_right_eq_self
-    (fun u => cx f u * starRingEnd ℂ (cx g (u + s + x - t))) s]
+      EF.weilTest (cx f) (cx g) (x - s + t) := by
+  rw [weilTest_ofReal, weilTest_ofReal]
+  congr 1
+  simp only [scaleShift]
+  rw [← MeasureTheory.integral_sub_right_eq_self (fun u => f u * g (u + s - x - t)) s]
   congr 1
   ext u
   congr 2
@@ -648,8 +666,7 @@ theorem weilTest_scaleShift_same (t : ℝ) (f g : ℝ → ℝ) :
 theorem weilPair_scaleShift (s t : ℝ) (f g : ℝ → ℝ) :
     weilPair (scaleShift s f) (scaleShift t g) =
       weilPair (scaleShift (s - t) f) g := by
-  simp only [weilPair, EF.archimedeanTerm, EF.primePowerSum, EF.primeSumUpTo,
-    weilTest_scaleShift_sub s t f g]
+  simp only [weilPair, weilTest_scaleShift_sub s t f g]
 
 /-- Simultaneous scale translation is an exact isometry of `weilPair`. -/
 @[simp]
@@ -792,22 +809,32 @@ theorem heckeCorrespondence_V {a : ℝ} (ha : 0 < a) :
   rw [heckeCorrespondence, LinearMap.smul_apply, adamsOp_V ha, smul_smul,
     mul_inv_cancel₀ hsqrt, one_smul]
 
+theorem scalingSurface_pair_H (x : ScalingCycle) :
+    scalingSurface.pair x scalingSurface.H = x.2.1 + poleB x.2.2 := by
+  simp only [scalingSurface, scalingPair_apply, scalingPairFun, Submodule.coe_zero,
+    poleB_zero, poleA_zero, localPair_zero_right]
+  ring
+
+theorem scalingSurface_pair_V (x : ScalingCycle) :
+    scalingSurface.pair x scalingSurface.V = x.1 + poleA x.2.2 := by
+  simp only [scalingSurface, scalingPair_apply, scalingPairFun, Submodule.coe_zero,
+    poleB_zero, poleA_zero, localPair_zero_right]
+  ring
+
 /-- Intersection with `H` scales by `e^{-t/2}` under `scalingAction t`. -/
 theorem pair_scalingAction_H (t : ℝ) (x : ScalingCycle) :
     scalingSurface.pair (scalingAction t x) scalingSurface.H =
       Real.exp (-t / 2) * scalingSurface.pair x scalingSurface.H := by
-  simp only [scalingSurface, scalingPair_apply, scalingAction, LinearMap.coe_mk, AddHom.coe_mk,
-    poleB_zero, poleA_zero, weilPair_zero_right, add_zero, sub_zero, mul_zero, zero_mul, mul_one,
-    zero_add, poleB_scaleShift]
+  rw [scalingSurface_pair_H, scalingSurface_pair_H]
+  simp only [scalingAction, LinearMap.coe_mk, AddHom.coe_mk, poleB_scaleShift]
   ring
 
 /-- Intersection with `V` scales by `e^{t/2}` under `scalingAction t`. -/
 theorem pair_scalingAction_V (t : ℝ) (x : ScalingCycle) :
     scalingSurface.pair (scalingAction t x) scalingSurface.V =
       Real.exp (t / 2) * scalingSurface.pair x scalingSurface.V := by
-  simp only [scalingSurface, scalingPair_apply, scalingAction, LinearMap.coe_mk, AddHom.coe_mk,
-    poleB_zero, poleA_zero, weilPair_zero_right, add_zero, sub_zero, mul_zero, zero_mul, mul_one,
-    poleA_scaleShift]
+  rw [scalingSurface_pair_V, scalingSurface_pair_V]
+  simp only [scalingAction, LinearMap.coe_mk, AddHom.coe_mk, poleA_scaleShift]
   ring
 
 theorem pair_adamsOp_H {q : ℝ} (hq : 0 < q) (x : ScalingCycle) :
@@ -825,14 +852,14 @@ theorem pair_heckeCorrespondence_H {a : ℝ} (ha : 0 < a) (x : ScalingCycle) :
     scalingSurface.pair (heckeCorrespondence a x) scalingSurface.H =
       scalingSurface.pair x scalingSurface.H := by
   have hsqrt : Real.sqrt a ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr ha)
-  simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul, LinearMap.smul_apply,
+  simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul,
     smul_eq_mul, pair_adamsOp_H ha, ← mul_assoc, mul_inv_cancel₀ hsqrt, one_mul]
 
 /-- Under the Hecke correspondence `T_a`, the vertical degree `x · V` scales by `a`. -/
 theorem pair_heckeCorrespondence_V {a : ℝ} (ha : 0 < a) (x : ScalingCycle) :
     scalingSurface.pair (heckeCorrespondence a x) scalingSurface.V =
       a * scalingSurface.pair x scalingSurface.V := by
-  simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul, LinearMap.smul_apply,
+  simp only [heckeCorrespondence, LinearMap.smul_apply, map_smul,
     smul_eq_mul, pair_adamsOp_V ha, ← mul_assoc, Real.mul_self_sqrt (le_of_lt ha)]
 
 /-- `scalingAction t` preserves the pole-plane hyperbolic form `polar` on `scalingSurface`. -/
@@ -858,22 +885,24 @@ theorem polar_scalingAction (t : ℝ) (x y : ScalingCycle) :
 theorem pair_scalingAction (t : ℝ) (x y : ScalingCycle) :
     scalingSurface.pair (scalingAction t x) (scalingAction t y) =
       scalingSurface.pair x y := by
-  simp only [scalingSurface, scalingPair_apply, scalingAction, LinearMap.coe_mk, AddHom.coe_mk,
-    poleB_scaleShift, poleA_scaleShift, weilPair_scaleShift_same]
+  simp only [scalingSurface, scalingPair_apply, scalingPairFun, scalingAction,
+    LinearMap.coe_mk, AddHom.coe_mk, poleB_scaleShift, poleA_scaleShift, localPair_scaleShift_same]
   have hexp : Real.exp (t / 2) * Real.exp (-t / 2) = 1 := by
     rw [← Real.exp_add, neg_div, add_neg_cancel, Real.exp_zero]
-  calc (Real.exp (t / 2) * x.1 + Real.exp (t / 2) * poleA x.2.2.1) *
-        (Real.exp (-t / 2) * y.2.1 + Real.exp (-t / 2) * poleB y.2.2.1) +
-      (Real.exp (-t / 2) * x.2.1 + Real.exp (-t / 2) * poleB x.2.2.1) *
-        (Real.exp (t / 2) * y.1 + Real.exp (t / 2) * poleA y.2.2.1) -
-      weilPair x.2.2.1 y.2.2.1
+  calc Real.exp (t / 2) * x.1 * (Real.exp (-t / 2) * y.2.1) +
+        Real.exp (-t / 2) * x.2.1 * (Real.exp (t / 2) * y.1) +
+        Real.exp (t / 2) * x.1 * (Real.exp (-t / 2) * poleB y.2.2) +
+        Real.exp (-t / 2) * x.2.1 * (Real.exp (t / 2) * poleA y.2.2) +
+        Real.exp (t / 2) * y.1 * (Real.exp (-t / 2) * poleB x.2.2) +
+        Real.exp (-t / 2) * y.2.1 * (Real.exp (t / 2) * poleA x.2.2) +
+        localPair x.2.2 y.2.2
       = (Real.exp (t / 2) * Real.exp (-t / 2)) *
-          ((x.1 + poleA x.2.2.1) * (y.2.1 + poleB y.2.2.1) +
-           (x.2.1 + poleB x.2.2.1) * (y.1 + poleA y.2.2.1)) -
-        weilPair x.2.2.1 y.2.2.1 := by ring
-    _ = (x.1 + poleA x.2.2.1) * (y.2.1 + poleB y.2.2.1) +
-        (x.2.1 + poleB x.2.2.1) * (y.1 + poleA y.2.2.1) -
-        weilPair x.2.2.1 y.2.2.1 := by rw [hexp, one_mul]
+          (x.1 * y.2.1 + x.2.1 * y.1 + x.1 * poleB y.2.2 + x.2.1 * poleA y.2.2 +
+           y.1 * poleB x.2.2 + y.2.1 * poleA x.2.2) +
+        localPair x.2.2 y.2.2 := by ring
+    _ = x.1 * y.2.1 + x.2.1 * y.1 + x.1 * poleB y.2.2 + x.2.1 * poleA y.2.2 +
+        y.1 * poleB x.2.2 + y.2.1 * poleA x.2.2 + localPair x.2.2 y.2.2 := by
+        rw [hexp, one_mul]
 
 /-- `scalingAction t` preserves the Hodge defect on `scalingSurface`. -/
 @[simp]
@@ -984,8 +1013,8 @@ theorem pair_heckeCorrespondence {a : ℝ} (ha : 0 ≤ a) (x y : ScalingCycle) :
 theorem defect_heckeCorrespondence {a : ℝ} (ha : 0 ≤ a) (x y : ScalingCycle) :
     scalingSurface.defect (heckeCorrespondence a x) (heckeCorrespondence a y) =
       a * scalingSurface.defect x y := by
-  rw [← neg_inj, ← scalingSurface.pair_prim, prim_heckeCorrespondence, prim_heckeCorrespondence,
-    pair_heckeCorrespondence ha, scalingSurface.pair_prim, mul_neg]
+  rw [← neg_inj, ← scalingSurface.pair_prim_prim, prim_heckeCorrespondence,
+    prim_heckeCorrespondence, pair_heckeCorrespondence ha, scalingSurface.pair_prim_prim, mul_neg]
 
 /-! ### 5. Hecke Cycles as Frobenius Graphs, Arithmetic Lefschetz Numbers, and Pole Splitting -/
 
@@ -1009,7 +1038,7 @@ theorem arithLefschetz_prim (x : ScalingCycle) (a : ℝ) :
     arithLefschetz (scalingSurface.prim x) a =
       -Real.sqrt a * scalingSurface.defect (adamsOp a x) x := by
   rw [arithLefschetz, heckeCorrespondence, LinearMap.smul_apply, map_smul, LinearMap.smul_apply,
-    smul_eq_mul, ← prim_adamsOp, scalingSurface.pair_prim]
+    smul_eq_mul, ← prim_adamsOp, scalingSurface.pair_prim_prim]
   ring
 
 /-- **Orthogonal pole-plane splitting of the arithmetic Lefschetz number:** `L(x, a)` is the sum of
@@ -1065,20 +1094,26 @@ theorem heckeCycle_one (g : realTests) : heckeCycle 1 g = diagCycle g := by
 
 theorem heckeCycle_H {a : ℝ} (ha : 0 < a) (g : realTests) :
     scalingSurface.pair (heckeCycle a g) scalingSurface.H = poleB g.1 := by
-  rw [heckeCycle, pair_heckeCorrespondence_H ha]
-  simp [diagCycle, scalingSurface, scalingPair_apply]
+  rw [heckeCycle, pair_heckeCorrespondence_H ha, scalingSurface_pair_H]
+  simp [diagCycle]
 
 theorem heckeCycle_V {a : ℝ} (ha : 0 < a) (g : realTests) :
     scalingSurface.pair (heckeCycle a g) scalingSurface.V = a * poleA g.1 := by
-  rw [heckeCycle, pair_heckeCorrespondence_V ha]
-  simp [diagCycle, scalingSurface, scalingPair_apply]
+  rw [heckeCycle, pair_heckeCorrespondence_V ha, scalingSurface_pair_V]
+  simp [diagCycle]
 
-/-- For the diagonal cycle `Δ_g`, the defect `defect(adamsOp a Δ_g, Δ_g)` is the shifted Weil
-pairing `weilPair (scaleShift (log a) g) g`. -/
-theorem defect_adamsOp_diagCycle (g : realTests) (a : ℝ) :
-    scalingSurface.defect (adamsOp a (diagCycle g)) (diagCycle g) =
-      weilPair (scaleShift (Real.log a) g.1) g.1 := by
-  simp [adamsOp, scalingAction, diagCycle, defect_of_test]
+/-- For two diagonal cycles `Δ_f, Δ_g` shifted by `adamsOp a` and `adamsOp b`, the Hodge defect is
+the shifted Weil pairing `weilPair (scaleShift (log a) f) (scaleShift (log b) g)`. -/
+theorem defect_adamsOp_diagCycle (a b : ℝ) (f g : realTests) :
+    scalingSurface.defect (adamsOp a (diagCycle f)) (adamsOp b (diagCycle g)) =
+      weilPair (scaleShift (Real.log a) f.1) (scaleShift (Real.log b) g.1) := by
+  have heq1 : adamsOp a (diagCycle f) =
+      (0, 0, ⟨scaleShift (Real.log a) f.1, scaleShift_mem (Real.log a) f.2⟩) := by
+    ext <;> simp [adamsOp, scalingAction, diagCycle]
+  have heq2 : adamsOp b (diagCycle g) =
+      (0, 0, ⟨scaleShift (Real.log b) g.1, scaleShift_mem (Real.log b) g.2⟩) := by
+    ext <;> simp [adamsOp, scalingAction, diagCycle]
+  rw [heq1, heq2, scalingSurface_defect_tests]
 
 /-- Explicit arithmetic Lefschetz number of the diagonal cycle `Δ_g`:
 `L(Δ_g, a) = (a + 1) poleB(g) poleA(g) - √a weilPair(scaleShift (log a) g, g)`. -/
@@ -1086,12 +1121,14 @@ theorem arithLefschetz_diagCycle (g : realTests) {a : ℝ} (ha : 0 < a) :
     arithLefschetz (diagCycle g) a =
       (a + 1) * (poleB g.1 * poleA g.1) -
         Real.sqrt a * weilPair (scaleShift (Real.log a) g.1) g.1 := by
-  rw [arithLefschetz_eq (diagCycle g) ha, defect_adamsOp_diagCycle]
-  have hH : scalingSurface.pair (diagCycle g) scalingSurface.H = poleB g.1 := by
-    simp [diagCycle, scalingSurface, scalingPair_apply]
-  have hV : scalingSurface.pair (diagCycle g) scalingSurface.V = poleA g.1 := by
-    simp [diagCycle, scalingSurface, scalingPair_apply]
-  rw [hH, hV]
+  have h1 : diagCycle g = adamsOp 1 (diagCycle g) := by simp
+  have hd : scalingSurface.defect (adamsOp a (diagCycle g)) (diagCycle g) =
+      weilPair (scaleShift (Real.log a) g.1) g.1 := by
+    conv_lhs => rw [h1]
+    rw [defect_adamsOp_diagCycle]
+    simp
+  rw [arithLefschetz_eq (diagCycle g) ha, hd, scalingSurface_pair_H, scalingSurface_pair_V]
+  simp [diagCycle]
 
 /-- **Rational-scale pullback / Lefschetz identity for Hecke cycles:** two Hecke cycles at positive
 scales `a, b > 0` intersect as `Γ_a(g) · Γ_b(g) = b * L(Δ_g, a / b)`. -/
@@ -1107,21 +1144,22 @@ theorem pair_heckeCycle (g : realTests) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
       = (Real.sqrt b * Real.sqrt b) * ((Real.sqrt a / Real.sqrt b) *
           scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
           field_simp [hsqrt]
-    _ = b * (Real.sqrt (a / b) * scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
-          rw [hsq, Real.sqrt_div (le_of_lt ha)]
+    _ = b * (Real.sqrt a / Real.sqrt b *
+          scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
+          rw [hsq]
 
 /-- **Prime-tower Frobenius graph intersection law:** along any prime or real tower `p^k, p^l`
 (`p > 0`), Hecke cycles intersect by `Γ_{p^k}(g) · Γ_{p^l}(g) = p^{min(k, l)} L(Δ_g, p^{|k - l|})`,
 matching Weil's `CurveDatum.graphPair` (`Γ_k · Γ_l = q^{min(k, l)} N_{|k - l|}`) verbatim. -/
 theorem pair_heckeCycle_pow (g : realTests) {p : ℝ} (hp : 0 < p) (k l : ℕ) :
     scalingSurface.pair (heckeCycle (p ^ k) g) (heckeCycle (p ^ l) g) =
-      p ^ (min k l) * arithLefschetz (diagCycle g) (p ^ (Nat.dist k l)) := by
+      p ^ min k l * arithLefschetz (diagCycle g) (p ^ Nat.dist k l) := by
   rcases le_total k l with hkl | hlk
-  · rw [scalingSurface.pair_symm, pair_heckeCycle g (pow_pos hp l) (pow_pos hp k),
-      Nat.min_eq_left hkl, Nat.dist_eq_sub_of_le hkl,
+  · rw [scalingSurface.pair_comm, pair_heckeCycle g (pow_pos hp l) (pow_pos hp k),
+      min_eq_left hkl, Nat.dist_eq_sub_of_le hkl,
       ← pow_sub₀ p (ne_of_gt hp) hkl]
   · rw [pair_heckeCycle g (pow_pos hp k) (pow_pos hp l),
-      Nat.min_eq_right hlk, Nat.dist_eq_sub_of_le_right hlk,
+      min_eq_right hlk, Nat.dist_comm, Nat.dist_eq_sub_of_le hlk,
       ← pow_sub₀ p (ne_of_gt hp) hlk]
 
 /-- A finite linear combination `c_H H + c_V V + ∑_{a ∈ S} d(a) Γ_a(g)` of the pole plane and
@@ -1149,22 +1187,21 @@ theorem prim_heckeSpanCycle (cH cV : ℝ) (S : Finset ℝ) (d : ℝ → ℝ) (g 
     smul_zero, add_zero, zero_add]
   induction S using Finset.induction_on with
   | empty => simp [PolarSurface.prim_eq_sub_polarPart]
-  | @insert a s ha ih =>
+  | insert a s ha ih =>
     rw [Finset.sum_insert ha, Finset.sum_insert ha, hlin, hsmul, ih]
 
 /-- **Hecke span Hodge defect identity:** the Hodge defect of `c_H H + c_V V + ∑_{a ∈ S} d(a) Γ_a(g)`
-is independent of the pole-plane coefficients `(c_H, c_V)` and equals the Toeplitz-type quadratic
-form in the shifted test functions `scaleShift (log a) g`. -/
+is independent of the pole-plane coefficients `(c_H, c_V)` and equals the quadratic form in the
+shifted test functions `scaleShift (log a) g`. -/
 theorem defect_heckeSpanCycle (cH cV : ℝ) (S : Finset ℝ) (d : ℝ → ℝ) (g : realTests) :
     scalingSurface.defect (heckeSpanCycle cH cV S d g) (heckeSpanCycle cH cV S d g) =
       ∑ a ∈ S, ∑ b ∈ S,
         (d a * Real.sqrt a) * (d b * Real.sqrt b) *
           weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1) := by
-  rw [← neg_inj, ← scalingSurface.pair_prim, prim_heckeSpanCycle, map_sum, Finset.sum_Neg]
-  simp only [LinearMap.sum_apply, map_sum]
-  rw [← Finset.sum_neg_distrib]
+  rw [← neg_inj, ← scalingSurface.pair_prim_prim, prim_heckeSpanCycle, map_sum,
+    LinearMap.sum_apply, ← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [← Finset.sum_neg_distrib]
+  rw [map_sum, ← Finset.sum_neg_distrib]
   refine Finset.sum_congr rfl fun b _ => ?_
   have hsmul : ∀ (c : ℝ) (x : ScalingCycle), scalingSurface.prim (c • x) =
       c • scalingSurface.prim x := by
@@ -1172,11 +1209,7 @@ theorem defect_heckeSpanCycle (cH cV : ℝ) (S : Finset ℝ) (d : ℝ → ℝ) (
     rw [PolarSurface.prim_eq_sub_polarPart, PolarSurface.prim_eq_sub_polarPart,
       PolarSurface.polarPart_smul, smul_sub]
   simp only [heckeCycle, heckeCorrespondence, LinearMap.smul_apply, hsmul, map_smul,
-    smul_eq_mul, scalingSurface.pair_prim]
-  have hd : scalingSurface.defect (adamsOp a (diagCycle g)) (adamsOp b (diagCycle g)) =
-      weilPair (scaleShift (Real.log a) g.1) (scaleShift (Real.log b) g.1) := by
-    simp [adamsOp, scalingAction, diagCycle, defect_of_test]
-  rw [hd]
+    smul_eq_mul, scalingSurface.pair_prim_prim, defect_adamsOp_diagCycle]
   ring
 
 /-! ### 6. Narrow-Bump Prime-Incidence Identity (`heckeIncidence` and Cartesian Factorization) -/
@@ -1185,23 +1218,26 @@ theorem defect_heckeSpanCycle (cH cV : ℝ) (S : Finset ℝ) (d : ℝ → ℝ) (
 theorem weilTest_eq_zero_of_support_radius {φ : ℝ → ℝ} {δ x : ℝ}
     (hφ : ∀ u, δ < |u| → φ u = 0) (hx : 2 * δ < |x|) :
     EF.weilTest (cx φ) (cx φ) x = 0 := by
-  simp only [EF.weilTest]
+  rw [weilTest_ofReal, ← Complex.ofReal_zero]
+  congr 1
   refine MeasureTheory.integral_eq_zero_of_ae (Filter.Eventually.of_forall fun u => ?_)
   by_cases hu : δ < |u|
-  · simp [cx, hφ u hu]
+  · simp [hφ u hu]
   · push_neg at hu
-    have hux : δ < |u + x| := by
-      have htri : |x| - |u| ≤ |u + x| := by
-        have := abs_sub_abs_le_abs_sub (u + x) u
-        simpa [add_sub_cancel_left] using this
+    have hux : δ < |u - x| := by
+      have htri : |x| - |u| ≤ |u - x| := by
+        rw [abs_sub_comm u x]
+        exact abs_sub_abs_le_abs_sub x u
       linarith
-    simp [cx, hφ (u + x) hux]
+    simp [hφ (u - x) hux]
 
 /-- At zero lag `x = 0`, `EF.weilTest (cx φ) (cx φ) 0` is the `L^2` norm squared `∫ φ(u)^2 du`. -/
 theorem weilTest_self_zero (φ : ℝ → ℝ) :
     EF.weilTest (cx φ) (cx φ) 0 = ((∫ u, φ u ^ 2 : ℝ) : ℂ) := by
-  simp only [EF.weilTest, cx, add_zero, Complex.conj_ofReal, ← Complex.ofReal_mul, ← sq]
-  exact integral_ofReal
+  rw [weilTest_ofReal]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  ring
 
 /-- For positive integers `m < n`, `log(1 + 1 / n) ≤ log n - log m`. -/
 theorem log_one_add_inv_le_log_sub {m n : ℕ} (hm : 1 ≤ m) (hmn : m < n) :
@@ -1259,35 +1295,30 @@ theorem weilTest_scaleShift_primePower_eval {a b p m : ℕ} (ha : 1 ≤ a) (hb :
     push_cast
     rw [Real.log_mul (ne_of_gt hb_pos) (ne_of_gt (pow_pos hp_pos m)), Real.log_pow]
   rw [weilTest_scaleShift, weilTest_scaleShift]
-  have harg₁ : (m : ℝ) * Real.log p + Real.log b - Real.log a =
-      Real.log (b : ℝ) - Real.log ((a * p ^ m : ℕ) : ℝ) := by linarith
-  have harg₂ : -((m : ℝ) * Real.log p) + Real.log b - Real.log a =
+  have harg₁ : (m : ℝ) * Real.log p - Real.log a + Real.log b =
       Real.log ((b * p ^ m : ℕ) : ℝ) - Real.log (a : ℝ) := by linarith
+  have harg₂ : -((m : ℝ) * Real.log p) - Real.log a + Real.log b =
+      Real.log (b : ℝ) - Real.log ((a * p ^ m : ℕ) : ℝ) := by linarith
   have ht₁ :
-      EF.weilTest (cx φ) (cx φ) ((m : ℝ) * Real.log p + Real.log b - Real.log a) =
-        (((if b = a * p ^ m then (1 : ℝ) else 0) * ∫ u, φ u ^ 2 : ℝ) : ℂ) := by
-    by_cases h1 : b = a * p ^ m
-    · subst h1
-      have hzero : (m : ℝ) * Real.log p + Real.log ((a * p ^ m : ℕ) : ℝ) - Real.log a = 0 := by
-        linarith
-      -- Wait: harg₁ when b = a * p^m gives 0!
-      rw [harg₁, sub_self, weilTest_self_zero, if_pos rfl, one_mul]
+      EF.weilTest (cx φ) (cx φ) ((m : ℝ) * Real.log p - Real.log a + Real.log b) =
+        (((if a = b * p ^ m then (1 : ℝ) else 0) * ∫ u, φ u ^ 2 : ℝ) : ℂ) := by
+    by_cases h1 : a = b * p ^ m
+    · rw [harg₁, ← h1, sub_self, weilTest_self_zero, if_pos h1, one_mul]
     · rw [if_neg h1, zero_mul, Complex.ofReal_zero]
       refine weilTest_eq_zero_of_support_radius hφ ?_
-      rw [harg₁, abs_sub_comm]
-      exact lt_of_lt_of_le hδ₁
-        (log_one_add_inv_max_le_abs_log_sub (Nat.mul_le_mul ha hpm_pos) hb (Ne.symm h1))
+      rw [harg₁]
+      exact lt_of_lt_of_le hδ₂
+        (log_one_add_inv_max_le_abs_log_sub (Nat.mul_le_mul hb hpm_pos) ha (Ne.symm h1))
   have ht₂ :
-      EF.weilTest (cx φ) (cx φ) (-((m : ℝ) * Real.log p) + Real.log b - Real.log a) =
-        (((if a = b * p ^ m then (1 : ℝ) else 0) * ∫ u, φ u ^ 2 : ℝ) : ℂ) := by
-    by_cases h2 : a = b * p ^ m
-    · subst h2
-      rw [harg₂, sub_self, weilTest_self_zero, if_pos rfl, one_mul]
+      EF.weilTest (cx φ) (cx φ) (-((m : ℝ) * Real.log p) - Real.log a + Real.log b) =
+        (((if b = a * p ^ m then (1 : ℝ) else 0) * ∫ u, φ u ^ 2 : ℝ) : ℂ) := by
+    by_cases h2 : b = a * p ^ m
+    · rw [harg₂, ← h2, sub_self, weilTest_self_zero, if_pos h2, one_mul]
     · rw [if_neg h2, zero_mul, Complex.ofReal_zero]
       refine weilTest_eq_zero_of_support_radius hφ ?_
-      rw [harg₂]
-      exact lt_of_lt_of_le hδ₂
-        (log_one_add_inv_max_le_abs_log_sub (Nat.mul_le_mul hb hpm_pos) ha (Ne.symm h2))
+      rw [harg₂, abs_sub_comm]
+      exact lt_of_lt_of_le hδ₁
+        (log_one_add_inv_max_le_abs_log_sub (Nat.mul_le_mul ha hpm_pos) hb (Ne.symm h2))
   rw [ht₁, ht₂]
   push_cast
   ring
@@ -1295,7 +1326,7 @@ theorem weilTest_scaleShift_primePower_eval {a b p m : ℕ} (ha : 1 ≤ a) (hb :
 /-- **Narrow-bump Hecke prime-incidence theorem:** for positive integers `a, b ≥ 1`, truncation cutoffs
 `P, M`, and a narrow test bump `φ` supported in `[-δ, δ]` with
 `2δ < log(1 + 1 / (max a b * P^M))`, the truncated prime-comb pairing of the Hecke shifts
-`scaleShift (log a) φ` and `scaleShift (log b) φ` evaluates exactly to `heckeIncidence P M a b`
+`scaleShift (log a) φ` and `scaleShift (log b) φ` evaluates<a></a> exactly to `heckeIncidence P M a b`
 times `∫ φ(u)^2 du`. Combined with `heckeIncidence_eq_towerWeight` and `heckeIncidence_eq_zero`
 (`HeckeIncidenceCartesianLaw`), this shows that narrow Hecke cycles reproduce the single-prime
 Frobenius weight `towerWeight p |v_p(a) - v_p(b)|` on matching prime axes and have zero prime
@@ -1318,15 +1349,15 @@ theorem primeSumUpTo_scaleShift_eq_heckeIncidence {a b P M : ℕ} (ha : 1 ≤ a)
   have hm_le : m ≤ M := (Finset.mem_Icc.mp hm).2
   have h_bound₁ : max (a * p ^ m) b ≤ max a b * P ^ M := by
     have h1 : a * p ^ m ≤ max a b * P ^ M :=
-      Nat.mul_le_mul (le_max_left a b) ( le_trans (Nat.pow_le_pow_left hp_le m)
-        (Nat.pow_le_pow_right hP hm_le) )
+      Nat.mul_le_mul (le_max_left a b) (le_trans (Nat.pow_le_pow_left hp_le m)
+        (Nat.pow_le_pow_right hP hm_le))
     have h2 : b ≤ max a b * P ^ M :=
       le_trans (le_max_right a b) (Nat.le_mul_of_pos_right _ (pow_pos hP M))
     exact max_le h1 h2
   have h_bound₂ : max (b * p ^ m) a ≤ max a b * P ^ M := by
     have h1 : b * p ^ m ≤ max a b * P ^ M :=
-      Nat.mul_le_mul (le_max_right a b) ( le_trans (Nat.pow_le_pow_left hp_le m)
-        (Nat.pow_le_pow_right hP hm_le) )
+      Nat.mul_le_mul (le_max_right a b) (le_trans (Nat.pow_le_pow_left hp_le m)
+        (Nat.pow_le_pow_right hP hm_le))
     have h2 : a ≤ max a b * P ^ M :=
       le_trans (le_max_left a b) (Nat.le_mul_of_pos_right _ (pow_pos hP M))
     exact max_le h1 h2
@@ -1334,7 +1365,6 @@ theorem primeSumUpTo_scaleShift_eq_heckeIncidence {a b P M : ℕ} (ha : 1 ≤ a)
       Real.log (1 + 1 / (v : ℝ)) ≤ Real.log (1 + 1 / (u : ℝ)) := by
     intro u v hu huv
     have hu_pos : (0 : ℝ) < u := by exact_mod_cast hu
-    have hv_pos : (0 : ℝ) < v := by exact_mod_cast (le_trans hu huv)
     refine Real.log_le_log (by positivity) ?_
     linarith [one_div_le_one_div_of_le hu_pos (by exact_mod_cast huv : (u : ℝ) ≤ v)]
   have hδ₁ : 2 * δ < Real.log (1 + 1 / (max (a * p ^ m) b : ℝ)) :=
@@ -1353,22 +1383,21 @@ translation `scaleShift (log q)` (`q > 0`), the Mellin–Fourier transform at a 
 theorem paperFT_scaleShift_gammaOf {q : ℝ} (hq : 0 < q) (f : ℝ → ℝ) (ρ : ℂ) :
     paperFT (cx (scaleShift (Real.log q) f)) (gammaOf ρ) =
       (q : ℂ) ^ (ρ - 1 / 2) * paperFT (cx f) (gammaOf ρ) := by
-  simp only [paperFT, cx_scaleShift]
+  unfold paperFT gammaOf
+  simp only [cx_scaleShift]
   rw [← MeasureTheory.integral_sub_right_eq_self
-    (fun x => cx f x * Complex.exp (Complex.I * gammaOf ρ * ((x + Real.log q : ℝ) : ℂ)))
+    (fun x => cx f x * Complex.exp (Complex.I * ((ρ - 1 / 2) / Complex.I) *
+      ((x + Real.log q : ℝ) : ℂ)))
     (Real.log q)]
   rw [← MeasureTheory.integral_const_mul]
   congr 1
   ext x
   rw [sub_add_cancel]
-  have hI : Complex.I * gammaOf ρ * ((x + Real.log q : ℝ) : ℂ) =
-      (ρ - 1 / 2) * Real.log q + Complex.I * gammaOf ρ * (x : ℂ) := by
-    simp only [gammaOf, Complex.ofReal_add]
-    have hI2 : Complex.I * -Complex.I = 1 := by simp
-    calc Complex.I * (-Complex.I * (ρ - 1 / 2)) * ((x : ℂ) + (Real.log q : ℂ))
-        = (Complex.I * -Complex.I) * (ρ - 1 / 2) * ((x : ℂ) + (Real.log q : ℂ)) := by ring
-      _ = (ρ - 1 / 2) * (Real.log q : ℂ) +
-            Complex.I * (-Complex.I * (ρ - 1 / 2)) * (x : ℂ) := by rw [hI2]; ring
+  have hI : Complex.I * ((ρ - 1 / 2) / Complex.I) * ((x + Real.log q : ℝ) : ℂ) =
+      (ρ - 1 / 2) * (Real.log q : ℂ) +
+        Complex.I * ((ρ - 1 / 2) / Complex.I) * (x : ℂ) := by
+    rw [mul_div_cancel₀ _ Complex.I_ne_zero, Complex.ofReal_add]
+    ring
   have hcpow : (q : ℂ) ^ (ρ - 1 / 2) = Complex.exp ((ρ - 1 / 2) * Real.log q) := by
     rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hq)),
       Complex.ofReal_log (le_of_lt hq), mul_comm]
@@ -1384,37 +1413,36 @@ theorem paperFT_scaleShift_pow_of_curveZero {q : ℝ} (hq : 0 < q) {ρ β : ℂ}
       β ^ m * paperFT (cx f) (gammaOf ρ) := by
   rw [paperFT_scaleShift_gammaOf (pow_pos hq m), ← hβ]
   congr 1
-  have hlog : ((q ^ m : ℝ) : ℂ) ^ (ρ - 1 / 2) = ((q : ℂ) ^ (ρ - 1 / 2)) ^ m := by
-    rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt (pow_pos hq m))),
-      Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hq)),
-      ← Complex.exp_nat_mul, Complex.ofReal_log (le_of_lt (pow_pos hq m)),
-      Complex.ofReal_log (le_of_lt hq), Real.log_pow]
-    push_cast
-    ring_nf
-  exact hlog
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt (pow_pos hq m))),
+    Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ne_of_gt hq)),
+    ← Complex.exp_nat_mul, Complex.ofReal_log (le_of_lt (pow_pos hq m)),
+    Complex.ofReal_log (le_of_lt hq), Real.log_pow]
+  push_cast
+  ring_nf
 
 /-- **What the `λ`-ring construction gives for fake curve data (`goldenDatum`):**
 1. The universal `λ`-ring series of `goldenDatum` splits off the pole factor `goldenDatum.poleZeta`
    in `ℂ⟦X⟧`;
 2. Every Frobenius Adams operator `goldenDatum.spanAdams m` is an exact intersection and defect
    isometry of `goldenDatum.windowSurface` commuting with `polarPart` and `prim`;
-3. Yet `goldenDatum` violates the Riemann Hypothesis (`¬ goldenDatum.RH`).
+3. Yet `goldenDatum` violates unitarity / RH (`¬ ∀ i, ‖goldenDatum.β i‖ = 1`) and violates the
+   Hodge index on its Frobenius span (`goldenDatum.spanDefect {0, 1} ... < 0`).
 Thus the `λ`-ring exponential, Adams isometry, and pole-plane splitting are purely algebraic
 structures that hold unconditionally on fake curve data without forcing positivity. -/
-theorem goldenDatum_lambdaRing_and_not_RH :
+theorem goldenDatum_lambdaRing_and_not_unitary :
     (sigmaSeries (fun j => (goldenDatum.pointCount j : ℂ)) =
       goldenDatum.poleZeta *
-        sigmaSeries (fun j => -∑ i : Fin (2 * goldenDatum.g), goldenDatum.β i ^ j)) ∧
+        sigmaSeries (fun j => -∑ i : Fin 2, goldenDatum.alpha i ^ j)) ∧
     (∀ (m : ℕ) (S : Finset ℕ) (x y : SpanCycle),
       (goldenDatum.windowSurface (windowShift m S)).pair
         (goldenDatum.spanAdams m x) (goldenDatum.spanAdams m y) =
         (goldenDatum.windowSurface S).pair x y ∧
       (goldenDatum.windowSurface (windowShift m S)).polarPart (goldenDatum.spanAdams m x) =
         goldenDatum.spanAdams m ((goldenDatum.windowSurface S).polarPart x)) ∧
-    ¬ goldenDatum.RH :=
+    ¬ ∀ i, ‖goldenDatum.β i‖ = 1 :=
   ⟨goldenDatum.sigmaSeries_pointCount_split,
    fun m S x y => ⟨goldenDatum.pair_spanAdams m S x y, goldenDatum.polarPart_spanAdams m S x⟩,
-   goldenDatum_not_RH⟩
+   goldenDatum_not_unitary⟩
 
 /-- A prime-power bilinear form on test functions weighted by an arbitrary prime-power weight
 `lam : ℕ → ℕ → ℝ` (in place of the von Mangoldt weight `(p, m) ↦ log p / p^{m/2}`). -/
@@ -1451,9 +1479,13 @@ theorem scaleShift_nonneg (t : ℝ) {f : ℝ → ℝ} (hf : ∀ u, 0 ≤ f u) (u
 1. Every Adams operation `adamsOp q` (`q > 0`) maps `posTestCone` into `posTestCone`;
 2. Every Hecke correspondence `heckeCorrespondence q` (`q > 0`) maps `posTestCone` into
    `posTestCone`;
-3. For any two pointwise non-negative tests `f, g ∈ realTests` and any scales `a, b : ℝ`, the
-   local intersection pairing of their Adams translates is non-negative
-   (`0 ≤ localPair (scaleShift a f) (scaleShift b g)`). -/
+3. For any two pointwise non-negative tests `f, g` and any scales `a, b : ℝ`, the Weil
+   cross-correlation of their Adams translates is pointwise non-negative at every lag `x : ℝ`
+   (`0 ≤ (EF.weilTest (cx (scaleShift a f)) (cx (scaleShift b g)) x).re`), so every non-negatively
+   weighted prime-comb pairing `weightedPrimeComb lam P M (scaleShift a f) (scaleShift b g)` is
+   non-negative;
+4. Yet `posTestCone` is an Adams-stable cone that fails `RiemannRochAxiom`
+   (`posTestCone_not_riemannRoch`). -/
 theorem adamsOp_mem_posTestCone {q : ℝ} (hq : 0 < q) {x : ScalingCycle} (hx : x ∈ posTestCone) :
     adamsOp q x ∈ posTestCone := by
   rcases hx with ⟨hx1, hx2, hx3⟩
@@ -1467,11 +1499,20 @@ theorem heckeCorrespondence_mem_posTestCone {a : ℝ} (ha : 0 < a) {x : ScalingC
   have hsqrt : 0 ≤ Real.sqrt a := Real.sqrt_nonneg a
   exact ⟨mul_nonneg hsqrt hx1, mul_nonneg hsqrt hx2, fun u => mul_nonneg hsqrt (hx3 u)⟩
 
-theorem localPair_scaleShift_nonneg (a b : ℝ) {f g : ℝ → ℝ}
-    (hf_mem : f ∈ realTests) (hg_mem : g ∈ realTests)
+theorem re_weilTest_scaleShift_nonneg (a b : ℝ) {f g : ℝ → ℝ}
+    (hf : ∀ u, 0 ≤ f u) (hg : ∀ u, 0 ≤ g u) (x : ℝ) :
+    0 ≤ (EF.weilTest (cx (scaleShift a f)) (cx (scaleShift b g)) x).re := by
+  rw [weilTest_ofReal, Complex.ofReal_re]
+  exact integral_nonneg fun u => mul_nonneg (scaleShift_nonneg a hf u) (scaleShift_nonneg b hg _)
+
+theorem weightedPrimeComb_scaleShift_nonneg {lam : ℕ → ℕ → ℝ}
+    (hlam : ∀ p m, 0 ≤ lam p m) (P M : ℕ) (a b : ℝ) {f g : ℝ → ℝ}
     (hf : ∀ u, 0 ≤ f u) (hg : ∀ u, 0 ≤ g u) :
-    0 ≤ localPair (scaleShift a f) (scaleShift b g) :=
-  TheScalingSurface.localPair_nonneg (scaleShift_mem a hf_mem) (scaleShift_mem b hg_mem)
-    (scaleShift_nonneg a hf) (scaleShift_nonneg b hg)
+    0 ≤ weightedPrimeComb lam P M (scaleShift a f) (scaleShift b g) := by
+  refine Finset.sum_nonneg fun p _ => Finset.sum_nonneg fun m _ => ?_
+  rw [Complex.add_re]
+  exact mul_nonneg (hlam p m)
+    (add_nonneg (re_weilTest_scaleShift_nonneg a b hf hg _)
+      (re_weilTest_scaleShift_nonneg a b hf hg _))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -604,20 +604,14 @@ theorem xiThermalSecondMoment_le_source_iff_rh :
   · intro hRH
     exact (xiThermalSecondMoment_eq_source_iff_rh.mpr hRH).le
 
-set_option maxHeartbeats 500000 in
 /-- The enumerated finite thermal systems converge in every coordinate to the unconditional
 positive thermodynamic moment tower. -/
 theorem hasSum_xiThermalEnumeration_positiveMoment (n : ℕ) :
     HasSum (fun j : ℕ => xiThermalNode (xiThermalEnumeration j) ^ (n + 1))
-      (xiThermalPositiveMoment n) := by
-  let e : XiZeroCopy ≃ ℕ := Denumerable.eqv XiZeroCopy
-  have hsum : HasSum (fun q : XiZeroCopy => xiThermalNode q ^ (n + 1))
-      (xiThermalPositiveMoment n) := by
-    simpa [xiThermalPositiveMoment] using (summable_xiThermalNode_pow n).hasSum
-  have hsumNat : HasSum
-      (fun j : ℕ => xiThermalNode (e.symm j) ^ (n + 1))
-      (xiThermalPositiveMoment n) := e.symm.hasSum_iff.mpr hsum
-  simpa [xiThermalEnumeration, e] using! hsumNat
+      (xiThermalPositiveMoment n) :=
+  -- reindex along `ofNat = (Denumerable.eqv _).symm`, with the summand named
+  (Equiv.hasSum_iff (f := fun q : XiZeroCopy => xiThermalNode q ^ (n + 1))
+    (Denumerable.eqv XiZeroCopy).symm).mpr (summable_xiThermalNode_pow n).hasSum
 
 /-- The complete finite KMS tower converges unconditionally to its positive thermodynamic moment
 tower; no RH input is needed for existence of the thermodynamic limit. -/
@@ -643,7 +637,6 @@ theorem tendsto_xiThermalTruncation_one :
   have ht := hasSum_xiThermalEnumeration_sq.tendsto_sum_nat
   simpa only [xiThermalTruncation, pow_one, pow_two] using ht
 
-set_option maxHeartbeats 500000 in
 /-- Under RH, the enumerated positive reciprocal-square powers sum to the source-defined
 normalized prime--archimedean moments. -/
 theorem hasSum_xiThermalEnumeration_pow_of_rh
@@ -659,7 +652,8 @@ theorem hasSum_xiThermalEnumeration_pow_of_rh
   have hsumNat : HasSum
       (fun j : ℕ => xiZeroCopyReciprocalSquare (e.symm j) ^ (n + 1))
       (xiCentralReciprocalMoment n) := by
-    exact e.symm.hasSum_iff.mpr hsumXi
+    exact (Equiv.hasSum_iff
+      (f := fun q : XiZeroCopy => xiZeroCopyReciprocalSquare q ^ (n + 1)) e.symm).mpr hsumXi
   have hsumRe : HasSum
       (fun j : ℕ => (xiZeroCopyReciprocalSquare (e.symm j) ^ (n + 1)).re)
       (xiCentralReciprocalMoment n).re := by

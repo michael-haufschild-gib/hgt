@@ -106,11 +106,11 @@ theorem frobSq_spanGram_eq_diag_add_offDiag (n : ℕ) :
     RHLinalg.frobSq (D.spanGram n) =
       (n : ℝ) * (Fintype.card ι : ℝ) ^ (2 : ℕ) +
         ∑ k : Fin n, ∑ l ∈ Finset.univ.erase k, D.trace (Nat.dist k l) ^ (2 : ℕ) := by
-  unfold RHLinalg.frobSq
-  rw [(D.spanGram_isHermitian n).eq]
-  unfold Matrix.trace
-  simp only [diag_apply, mul_apply, spanGram, map_sum, ← Complex.ofReal_mul, RCLike.re_to_complex,
-    Complex.ofReal_re, ← sq]
+  rw [Zeta23.Assembly.frobSq_eq_sum_norm_sq]
+  have hnorm : ∀ k l : Fin n, ‖D.spanGram n k l‖ ^ (2 : ℕ) = D.trace (Nat.dist k l) ^ (2 : ℕ) := by
+    intro k l
+    simp [spanGram, Complex.norm_real, Real.norm_eq_abs, sq_abs]
+  simp_rw [hnorm]
   have hsplit : ∀ k : Fin n,
       ∑ l : Fin n, D.trace (Nat.dist k l) ^ (2 : ℕ) =
         (Fintype.card ι : ℝ) ^ (2 : ℕ) +
@@ -123,6 +123,22 @@ theorem frobSq_spanGram_eq_diag_add_offDiag (n : ℕ) :
 end CurveDatum
 
 /-! ## 2. Algebraic selection of `c = 2` in multiplicity-aware rank–trace inertia -/
+
+/-- **Secant decomposition of the rank–trace parabola.** On the quadratic branch `2cm − m²` of `k_c(m)`,
+the Newton interpolant through the integer multiplicities `m = 1` and `m = 2` splits `2cm − m²` into
+`2` (twice the distinct-zero indicator), `(2c − 3)m` (a multiple of the multiplicity `m`), and the
+nonpositive remainder `−(m − 1)(m − 2)`, which vanishes identically at `m = 1` and `m = 2`. -/
+theorem parabola_secant_identity (c m : ℝ) :
+    2 * c * m - m ^ (2 : ℕ) = 2 + (2 * c - 3) * m - (m - 1) * (m - 2) := by
+  ring
+
+/-- **Coalescence weight-matching identity (`c² − k_c(2) = (c − 2)²`).** For `c ≥ 2`, the rank–trace
+weight `c²` of an off-line pair (two zero copies) exceeds the weight `k_c(2) = 4c − 4` of a double
+critical-line zero (also two zero copies) by `(c − 2)²`, which vanishes if and only if `c = 2`. -/
+theorem offLine_sub_doubleZero_weight {c : ℝ} (hc : 2 ≤ c) :
+    c ^ (2 : ℕ) - kc c 2 = (c - 2) ^ (2 : ℕ) := by
+  rw [kc_of_le hc]
+  ring
 
 /-- **Weight cancellation identity at `c = 2`.** In the multiplicity-aware rank–trace bound
 `2c tr Â − ‖Â‖_F² ≤ Σ_{on} k_c(m_j) + c² p`, setting `c = 2` gives `k₂(1) = 3` and `k₂(m) = 4 = 2²`
@@ -534,8 +550,9 @@ theorem universal_matrix_functional_barrier_at_two_thirds (k : ℕ)
       Φ D.blockA D.Ncount ≤ (D.Non : ℝ)) :
     Φ ((doubleZeroBlockData (4 * k) k).blockA) (6 * k) ≤ (2 / 3 : ℝ) * (6 * k : ℝ) := by
   have h := universal_matrix_functional_barrier (4 * k) k Φ hΦ
-  rw [← blockA_doubleZeroBlockData, show 4 * k + 2 * k = 6 * k by omega,
-    blockA_doubleZeroBlockData, rankTrace_extremalDiag_exact] at h
+  rw [show 4 * k + 2 * k = 6 * k by omega, rankTrace_extremalDiag_exact] at h
+  rw [blockA_doubleZeroBlockData]
+  push_cast at h
   linarith
 
 /-! ## 4. Where `κ = 4/3` comes from: the sub-threshold pair-correlation identity and escape beyond `2/3` -/

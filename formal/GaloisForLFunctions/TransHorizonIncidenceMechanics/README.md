@@ -1354,6 +1354,25 @@ zero-free band bounds for both Möbius and Liouville above any positive floor $\
 subpower partial-sum transfer for $\varepsilon>\beta/2$, and unconditional admission and Liouville
 parity pairs for all $\varepsilon>\Theta-1/2$
 ([SmallDampingMoebiusAndLiouvilleCancellationLaws](SmallDampingMoebiusAndLiouvilleCancellationLaws.lean)).
+On the short-horizon Möbius bilinear side, grouping the triple sum by the cofactor $m=bk$ cancels
+half of the principal counterterm $2\sum_{n\le N}\mu(n)w(n)$ against the sub-horizon $m=1$ slice
+and reduces $\sum_{N<n\le N^2}\mu(n)w(n)$ to $-\sum_{a\le N}\mu(a)\sum_{N<m\le\lfloor N^2/a\rfloor}s_{N,\mu}(m)w(am)$;
+at any trans-horizon semiprime $pq>N$ ($p\ne q\le N$ prime), the low-product bilinear sum $-(-3)=+3$
+overcounts $\mu(pq)=1$ by $+2$ and requires the high-product remainder $+2$ to cancel; stepping
+$N\mapsto N+1$ couples $c(N+1)$ linearly to the inherited history $s_{N,c}$ with zero quadratic
+diagonal by pronic coprimality $\gcd(k,k+1)=1$; eventual all-prefix nonpositivity of
+$\widetilde{\mathcal D}_N(M;\mu)$ coexists with linear reserve growth $M\mathcal R_N(\mu)\ge M/576$
+and diagonal growth $\mathcal D_N(N;\mu)\ge N/576-1$; and first-octave defect nonpositivity holds
+for every $\{-1,0,1\}$-valued sequence ($f^2=\lvert f\rvert$), including $\mu^2$ and $1$
+([BilinearCountertermRemainderAndDefectDriftObstructions](BilinearCountertermRemainderAndDefectDriftObstructions.lean)).
+On the oscillating-probe source side, uniform prefix bounds $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$
+and sub-power energy bounds $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are equivalent to $O(1)$
+admission across the polynomial gap $T^{1-2\varepsilon}$, explicit power lower bounds
+$E_{\varepsilon,t}(T)\ge\lambda_{\varepsilon,t}T^{1-2\varepsilon}$ hold on all zero-free boxes and
+the Vinogradov–Korobov collar, and the 3-term planted Euler kernel $k_{\varepsilon_1,t_1}$ shows
+that near-$\varepsilon=0$ collars and finite admitted-parameter sets do not exclude all
+$0<\varepsilon<1/2$
+([OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations](OscillatingProbeSourceEstimatesEnergyGapAndCollarLimitations.lean)).
 
 ### 3.18 Bridges
 

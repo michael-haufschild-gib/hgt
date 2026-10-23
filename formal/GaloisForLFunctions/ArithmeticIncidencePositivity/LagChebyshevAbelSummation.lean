@@ -13357,4 +13357,124 @@ theorem setIntegral_spectralDensity_payingBand_le (hF : Continuous F)
     ring
   linarith [h, hval]
 
+/-! ### The Chebyshev defect and the spectral density are two readings of one functional
+
+The prime side of the Weil form is its own symbol against the spectral density, and so is the
+polar side; the lag Abel identity equates their difference with the signed pairing of the
+Chebyshev defect against the derivative of the lag weight.  Hence that pairing — the object the
+programme has to estimate — is exactly a frequency integral of the explicit signed symbol
+`primeSymbol − 2K` against the nonnegative density `|F̂|²`. -/
+
+theorem integrable_cos_mul_spectralDensity (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (t : ℝ) : Integrable (fun ξ : ℝ => Real.cos (2 * Real.pi * t * ξ) * spectralDensity F ξ) := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hgc : Continuous (spectralDensity F) := continuous_spectralDensity hF.continuous hFc
+  refine Integrable.mono' hgi.norm
+    (((Real.continuous_cos.comp (by fun_prop)).mul hgc).aestronglyMeasurable)
+    (Filter.Eventually.of_forall fun ξ => ?_)
+  rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs]
+  exact mul_le_of_le_one_left (abs_nonneg _) (Real.abs_cos_le_one _)
+
+/-- The symbol of the prime side up to a horizon. -/
+noncomputable def primeSymbol (N : ℕ) (ξ : ℝ) : ℝ :=
+  ∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹
+    * Real.cos (2 * Real.pi * Real.log n * ξ)
+
+/-- **The prime side is its symbol against the spectral density.** -/
+theorem sum_prime_eq_integral_primeSymbol (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (N : ℕ) :
+    (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+        ((Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = ∫ ξ : ℝ, primeSymbol N ξ * spectralDensity F ξ := by
+  have hterm : ∀ n ∈ Finset.range (N + 1),
+      Integrable (fun ξ : ℝ => (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹
+        * Real.cos (2 * Real.pi * Real.log n * ξ) * spectralDensity F ξ) := by
+    intro n _
+    have := (integrable_cos_mul_spectralDensity hF hFc (Real.log n)).const_mul
+      ((ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹)
+    refine this.congr (Filter.Eventually.of_forall fun ξ => by ring)
+  have hswap : (∫ ξ : ℝ, primeSymbol N ξ * spectralDensity F ξ)
+      = ∑ n ∈ Finset.range (N + 1), ∫ ξ : ℝ, (ArithmeticFunction.vonMangoldt n : ℝ)
+          * (Real.sqrt n)⁻¹ * Real.cos (2 * Real.pi * Real.log n * ξ) * spectralDensity F ξ := by
+    rw [← MeasureTheory.integral_finsetSum _ hterm]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    simp only [primeSymbol, Finset.sum_mul]
+  rw [hswap]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  have hpull : (∫ ξ : ℝ, (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹
+        * Real.cos (2 * Real.pi * Real.log n * ξ) * spectralDensity F ξ)
+      = ((ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹)
+        * ∫ ξ : ℝ, Real.cos (2 * Real.pi * Real.log n * ξ) * spectralDensity F ξ := by
+    rw [← MeasureTheory.integral_const_mul]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
+  rw [hpull, ← autoCorrelation_eq_integral_spectral hF hFc (Real.log n)]
+  ring
+
+theorem integrable_primeSymbol_mul (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (N : ℕ) :
+    Integrable (fun ξ : ℝ => primeSymbol N ξ * spectralDensity F ξ) := by
+  have hterm : ∀ n ∈ Finset.range (N + 1),
+      Integrable (fun ξ : ℝ => (ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹
+        * Real.cos (2 * Real.pi * Real.log n * ξ) * spectralDensity F ξ) := by
+    intro n _
+    exact ((integrable_cos_mul_spectralDensity hF hFc (Real.log n)).const_mul
+      ((ArithmeticFunction.vonMangoldt n : ℝ) * (Real.sqrt n)⁻¹)).congr
+      (Filter.Eventually.of_forall fun ξ => by ring)
+  refine (MeasureTheory.integrable_finsetSum _ hterm).congr
+    (Filter.Eventually.of_forall fun ξ => ?_)
+  simp only [primeSymbol, Finset.sum_mul]
+
+/-- The polar side of the whole half-line, in spectral coordinates. -/
+theorem integral_Ioi_cosh_mul_autoCorrelation_spectral (hF : ContDiff ℝ 1 F)
+    (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) :
+    (∫ s in Set.Ioi (0:ℝ), Real.cosh (s / 2) * autoCorrelation F s)
+      = ∫ ξ : ℝ, coshCosKernel (2 * r) (2 * Real.pi * ξ) * spectralDensity F ξ := by
+  have hAc : Continuous (autoCorrelation F) := (contDiff_one_autoCorrelation hF hFc).continuous
+  have hvan : ∀ s, 2 * r ≤ s → Real.cosh (s / 2) * autoCorrelation F s = 0 := fun s hs => by
+    rw [autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  have hint : IntegrableOn (fun s => Real.cosh (s / 2) * autoCorrelation F s) (Set.Ioi 0) :=
+    integrableOn_Ioi_of_vanishing
+      ((Real.continuous_cosh.comp (continuous_id.div_const 2)).mul hAc) (by linarith) hvan
+  have hunion : Set.Ioc (0:ℝ) (2 * r) ∪ Set.Ioi (2 * r) = Set.Ioi (0:ℝ) :=
+    Set.Ioc_union_Ioi_eq_Ioi (by linarith)
+  have hsplit : (∫ s in Set.Ioi (0:ℝ), Real.cosh (s / 2) * autoCorrelation F s)
+      = ∫ s in Set.Ioc (0:ℝ) (2 * r), Real.cosh (s / 2) * autoCorrelation F s := by
+    rw [← hunion, MeasureTheory.setIntegral_union (Set.Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
+      (hint.mono_set (by rw [← hunion]; exact Set.subset_union_left))
+      (hint.mono_set (by rw [← hunion]; exact Set.subset_union_right))]
+    have hzero : (∫ s in Set.Ioi (2 * r), Real.cosh (s / 2) * autoCorrelation F s) = 0 := by
+      refine MeasureTheory.setIntegral_eq_zero_of_forall_eq_zero fun s hs => ?_
+      exact hvan s (le_of_lt hs)
+    rw [hzero, add_zero]
+  rw [hsplit, ← intervalIntegral.integral_of_le (by linarith : (0:ℝ) ≤ 2 * r),
+    integral_cosh_mul_autoCorrelation_spectral hF hFc (by linarith : (0:ℝ) ≤ 2 * r)]
+
+/-- **The two readings of the signed functional coincide.** -/
+theorem chebyshev_pairing_eq_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    (∫ s in Set.Ioi (0:ℝ), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)))
+      = 2 * ∫ ξ : ℝ, (primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ))
+          * spectralDensity F ξ := by
+  have hbal := testBalance hF hFc hr hsupp hN
+  have h1 : (∑ n ∈ Finset.range (N + 1), (ArithmeticFunction.vonMangoldt n : ℝ) *
+        (2 * (Real.sqrt n)⁻¹ * autoCorrelation F (Real.log n)))
+      = 2 * ∫ ξ : ℝ, primeSymbol N ξ * spectralDensity F ξ := by
+    rw [← sum_prime_eq_integral_primeSymbol hF hFc N, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  have h2 : (∫ s in Set.Ioi (0:ℝ), 4 * Real.cosh (s / 2) * autoCorrelation F s)
+      = 4 * ∫ ξ : ℝ, coshCosKernel (2 * r) (2 * Real.pi * ξ) * spectralDensity F ξ := by
+    rw [← integral_Ioi_cosh_mul_autoCorrelation_spectral hF hFc hr hsupp,
+      ← MeasureTheory.integral_const_mul]
+    exact MeasureTheory.setIntegral_congr_fun measurableSet_Ioi fun s _ => by ring
+  have h3 : (∫ ξ : ℝ, (primeSymbol N ξ - 2 * coshCosKernel (2 * r) (2 * Real.pi * ξ))
+        * spectralDensity F ξ)
+      = (∫ ξ : ℝ, primeSymbol N ξ * spectralDensity F ξ)
+        - 2 * ∫ ξ : ℝ, coshCosKernel (2 * r) (2 * Real.pi * ξ) * spectralDensity F ξ := by
+    rw [← MeasureTheory.integral_const_mul,
+      ← MeasureTheory.integral_sub (integrable_primeSymbol_mul hF hFc N)
+        ((integrable_coshCosKernel_mul hF hFc (by linarith : (0:ℝ) ≤ 2 * r)).const_mul 2)]
+    exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
+  rw [← hbal, h1, h2, h3]
+  ring
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity

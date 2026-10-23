@@ -220,6 +220,26 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`successor_localPair_bounds`, `archLevyDensity_log_succ`). Over `𝔽_q[T]` the cell is
     degenerate (`successorCell_functionField`).
 
+### 3.8 Rank–trace inertia and the constant `2/3` (`TheTwoThirdsConstantIsPairCorrelation`)
+
+25. **Capacity `2 − κ` of the form, coalescence indistinguishability, and the pair-correlation
+    origin of `2/3`.** When Riemann–Roch effectivity is absent, rank–trace inertia on the real
+    evaluation Gram `Â = P + Q` replaces `p = 0` by `n₊(Q) ≤ p`. At `c = 2` (uniquely selected by
+    `c² − k_c(2) = (c − 2)² = 0`, `offLine_sub_doubleZero_weight`, `paramDeficit_nonneg_and_eq_zero_iff`),
+    both a double critical zero (`m = 2`) and a coalescing off-line pair (`y_ρ = 0`) produce the
+    **identical** rank-one matrix `2vvᵀ` (`blockA_coalescedPair_eq_doubleZero`). With `tr Â = N` and
+    `‖Â‖_F² = κN`, the form certifies `(2 − κ)N` simple critical zeros (`unitary_calibration_full_simple`
+    at `κ = 1` over `𝔽_q`; `κ ≥ 2` on fake curves with `s₁ = 0`, `fake_curve_frobSq_lower_bound`,
+    `goldenDatum_rankTrace_barrier`), and **no** matrix functional `Φ(blockA, N)` can certify more
+    than `(2 − κ)N` critical zeros (`universal_matrix_functional_barrier`). Below the square-root
+    threshold `0 < λ ≤ 1`, the archimedean diagonal `1/λ` and unconditional prime diagonal `λ/3`
+    give `κ(λ) = 1/λ + λ/3` with `2/3 − (2 − κ(λ)) = (1 − λ)(3 − λ)/(3λ) ≥ 0`
+    (`subthreshold_two_thirds_deficit`, `subthreshold_cert_le_two_thirds`), attaining `2/3` uniquely
+    at `λ = 1` (`κ = 4/3`, where `rankTrace_tight_at_two_thirds` and
+    `universal_matrix_functional_barrier_at_two_thirds` are exact on `6k`-zero configurations).
+    Every finite pair-correlation bound `F ≤ B` beyond `λ = 1` gives `2/3 + 1/(3(3B − 2)) > 2/3`
+    (`two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`).
+
 ---
 
 ## 4. Mechanisms
@@ -251,6 +271,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
 | A finite degree certifies positivity | No degree works for all configurations over `ℚ`; over `𝔽_q` the window `2g` does. |
 | The comb aggregate is an intersection number | On resonators the prime intersection has no cross-prime terms; the aggregate is a mean-field shadow. |
 | The pronic weight is the successor intersection | It is the pole mass of the cell; the intersection is the collar `ω(log(1 + 1/k)) ≍ k/2`. |
+| The rank–trace form is capped at `2/3` | The form has capacity `2 − κ` (reaching `1` at `κ = 1`); `2/3` is `2 − κ(1)` from stopping pair correlation at `λ = 1` (`κ(1) = 4/3`), where double zeros and coalesced pairs share `blockA`. |
 
 ---
 

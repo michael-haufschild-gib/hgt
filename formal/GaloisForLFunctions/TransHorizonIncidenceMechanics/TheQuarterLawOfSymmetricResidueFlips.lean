@@ -432,5 +432,3 @@ theorem receiverBounded_residueFlip_half_iff {q : ℕ} [NeZero q] {S : Finset (Z
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_residueFlip_half_iff

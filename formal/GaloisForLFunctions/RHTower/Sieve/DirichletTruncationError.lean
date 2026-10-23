@@ -45,7 +45,6 @@ section
 
 variable {f : ℕ → ℂ} {s : ℂ}
 
-set_option maxHeartbeats 1000000 in
 /-- **The truncation error of the twisted series.** -/
 theorem norm_tsum_sub_sum_range_le (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re) (L : ℕ) :
     ‖(∑' n : ℕ, twistedSummand f s n) -
@@ -59,11 +58,13 @@ theorem norm_tsum_sub_sum_range_le (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.r
       = ∑' j : ℕ, twistedSummand f s (j + (L + 1)) := by
     rw [← hsplit, add_sub_cancel_left]
   rw [heq]
+  -- shifted summability with the shifted functions named, so no summand is unfolded
   have hshiftnorm : Summable (fun j : ℕ => ‖twistedSummand f s (j + (L + 1))‖) :=
-    (summable_nat_add_iff (L + 1)).2 hnormsum
+    (summable_nat_add_iff (f := fun n : ℕ => ‖twistedSummand f s n‖) (L + 1)).2 hnormsum
   refine le_trans (norm_tsum_le_tsum_norm hshiftnorm) ?_
   refine Summable.tsum_le_tsum (fun j => ?_) hshiftnorm
-    ((summable_nat_add_iff (L + 1)).2 (summable_nat_rpow_neg hs))
+    ((summable_nat_add_iff (f := fun n : ℕ => ((n : ℝ)) ^ (-s.re)) (L + 1)).2
+      (summable_nat_rpow_neg hs))
   exact norm_twistedSummand_le hbdd (by omega : 0 < j + (L + 1))
 
 /-- The truncation error in closed form. -/

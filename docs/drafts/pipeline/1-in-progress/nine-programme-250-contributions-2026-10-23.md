@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 6 / 250.**
+**Accepted: 7 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -73,12 +73,20 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    `exists_ray_bounds_of_order`). For `0 < ε < 1/2`, `t₀ ≠ 0`: `f_{a,t₀}(d)d^{-ε}` is paid iff `a = 0`
    (`receiverBounded_oscPattern_damped_iff`), although its real-axis prime mean is `0` for every `a`.
    `TransHorizonIncidenceMechanics/ThePrimeMeanIsQuantizedHeightByHeight.lean`.
+7. THIM §5 "the `1/4` law", sufficiency for every inversion-symmetric residue pattern: for
+   `S ⊆ ZMod q` closed under inversion on the units, `f_{q,S}(d)d^{-1/2}` is paid iff
+   `φ(q) < 4#(S ∩ units)` (`receiverBounded_residueFlip_half_iff`). The nonprincipal characters enter
+   with exponents of both signs; the new tool is the reciprocal bound `1/|L(σ+it, χ)| ≤ C log⁷|t|`
+   on `1 ≤ σ ≤ 2` (3-4-1 beyond the corpus strip, `RHTower.exists_norm_inv_LFunction_le_log_pow`).
+   `TransHorizonIncidenceMechanics/TheEulerExponentsOfSymmetricResidueFlips.lean`,
+   `…/TheQuarterLawOfSymmetricResidueFlips.lean`, `RHTower/DirichletLReciprocalRightOfTheOneLine.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — symmetric residue flips: three leaves compiled, axioms clean, wired; contribution 7.
 - 2026-10-23 — `ThePrimeMeanIsQuantizedHeightByHeight` compiled, axioms clean, wired; contribution 6.
 - 2026-10-23 — oscillating prime patterns: two THIM leaves compiled, axioms clean, wired; contribution 5.
 - 2026-10-23 — `SubgroupFlipsArePaidAtHalfDamping` compiled, axioms clean, wired; contribution 4.

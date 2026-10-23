@@ -216,7 +216,95 @@ theorem two_rpow_le_four {p : ℝ} (hp : p ≤ 2) : (2 : ℝ) ^ p ≤ 4 := by
   calc (2 : ℝ) ^ p ≤ 2 ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hp
     _ = 4 := by norm_num [Real.rpow_two]
 
-/-- Region `K² ≤ N`: the sharpened source jump, squared. -/
+/-- `c² (q P) ≤ 4 c² P` for `q ≤ 4`, `P ≥ 0`. -/
+theorem sq_mul_le_four {c q P : ℝ} (hq : q ≤ 4) (hP : 0 ≤ P) : c ^ 2 * (q * P) ≤ 4 * c ^ 2 * P := by
+  nlinarith [mul_le_mul_of_nonneg_right hq (mul_nonneg (sq_nonneg c) hP)]
+
+/-- `(K^{1−η}/N)² = K^{2−2η} N^{−2}`. -/
+theorem sq_kernelFactor_eq {N K η : ℝ} (hN : 0 < N) (hK : 0 < K) :
+    (K ^ (1 - η) / N) ^ 2 = K ^ (2 - 2 * η) * N ^ (-2 : ℝ) := by
+  rw [div_eq_mul_one_div]; simp only [mul_pow]
+  rw [sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+
+theorem mul_add_le_three {u Δ m A B E : ℝ} (hu : 0 ≤ u) (hΔ : Δ ≤ A + B) (hm : m ≤ E) :
+    u * (Δ + m) ≤ u * A + u * B + u * E := by
+  calc u * (Δ + m) ≤ u * (A + B + E) := mul_le_mul_of_nonneg_left (by linarith) hu
+    _ = _ := by ring
+
+/-- **The jump splits** into a power of the length and an interpolation: if `Δ ≤ J` and
+`Δ ≤ C(J^{1−η} + y)` with `C ≥ 1`, then `Δ ≤ C J^{1−η} + C J^λ y^{1−λ}`. -/
+theorem jump_split_le {Δ J y C η l : ℝ} (hJ0 : 0 ≤ J) (hy0 : 0 ≤ y) (hC : 1 ≤ C) (hl0 : 0 ≤ l)
+    (hl1 : l ≤ 1) (hΔJ : Δ ≤ J) (hΔC : Δ ≤ C * (J ^ (1 - η) + y)) :
+    Δ ≤ C * J ^ (1 - η) + C * (J ^ l * y ^ (1 - l)) := by
+  have hJp : 0 ≤ J ^ (1 - η) := Real.rpow_nonneg hJ0 _
+  have hJl : 0 ≤ J ^ l * y ^ (1 - l) :=
+    mul_nonneg (Real.rpow_nonneg hJ0 _) (Real.rpow_nonneg hy0 _)
+  have hC0 : (0 : ℝ) ≤ C := by linarith
+  have hm := min_le_rpow_mul_rpow hJ0 hy0 hl0 hl1
+  rcases le_total J y with h | h
+  · rw [min_eq_left h] at hm
+    linarith [mul_nonneg (sub_nonneg.2 hC) hJl, mul_nonneg hC0 hJp]
+  · rw [min_eq_right h] at hm
+    linarith [mul_le_mul_of_nonneg_left hm hC0]
+
+/-- The length term of the jump against the kernel: with `J ≤ 2N/K²`,
+`((K^{1−η}/N) C J^{1−η})² ≤ 4C² N^{−2η} K^{2η−2}`. -/
+theorem lengthTerm_sq_le {N K J C η : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J)
+    (hJA : J ≤ 2 * (N / K ^ 2)) (h0 : 0 < η) (h1 : η < 1) :
+    (K ^ (1 - η) / N * (C * J ^ (1 - η))) ^ 2 ≤
+      4 * C ^ 2 * (N ^ (-2 * η) * K ^ (2 * η - 2)) := by
+  have e : (K ^ (1 - η) / N * (C * J ^ (1 - η))) ^ 2 =
+      C ^ 2 * ((K ^ (1 - η) / N) ^ 2 * J ^ (2 * (1 - η))) := by
+    rw [← sq_rpow_eq_of_nonneg hJ0]; ring
+  have hJ2 : J ^ (2 * (1 - η)) ≤ (2 * (N / K ^ 2)) ^ (2 * (1 - η)) :=
+    Real.rpow_le_rpow hJ0 hJA (by linarith)
+  have e2 : (K ^ (1 - η) / N) ^ 2 * (2 * (N / K ^ 2)) ^ (2 * (1 - η)) =
+      2 ^ (2 * (1 - η)) * (N ^ (-2 * η) * K ^ (2 * η - 2)) := by
+    rw [Real.mul_rpow (by norm_num) (by positivity), sq_kernelFactor_eq hN hK,
+      ← lengthTerm_rpow_eq hN hK]
+    ring
+  rw [e]
+  calc C ^ 2 * ((K ^ (1 - η) / N) ^ 2 * J ^ (2 * (1 - η)))
+      ≤ C ^ 2 * ((K ^ (1 - η) / N) ^ 2 * (2 * (N / K ^ 2)) ^ (2 * (1 - η))) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hJ2 (sq_nonneg _)) (sq_nonneg C)
+    _ = C ^ 2 * (2 ^ (2 * (1 - η)) * (N ^ (-2 * η) * K ^ (2 * η - 2))) := by rw [e2]
+    _ ≤ _ := sq_mul_le_four (two_rpow_le_four (by linarith)) (by positivity)
+
+/-- The interpolated term of the jump against the kernel: with `J ≤ 2N/K²` and `a ≤ N/K`,
+`((K^{1−η}/N) C J^λ (a^{(1−η)/2})^{1−λ})² ≤ 4C² N^α K^β`. -/
+theorem interpTerm_sq_le {N K J a C η l : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J)
+    (hJA : J ≤ 2 * (N / K ^ 2)) (ha0 : 0 ≤ a) (haN : a ≤ N / K) (hl0 : 0 ≤ l) (hl1 : l ≤ 1)
+    (h1 : η < 1) :
+    (K ^ (1 - η) / N * (C * (J ^ l * (a ^ ((1 - η) / 2)) ^ (1 - l)))) ^ 2 ≤
+      4 * C ^ 2 * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
+        K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l))) := by
+  have hy2 : ((a ^ ((1 - η) / 2)) ^ (1 - l)) ^ 2 = a ^ ((1 - η) * (1 - l)) := by
+    rw [sq_rpow_eq_of_nonneg (Real.rpow_nonneg ha0 _), ← Real.rpow_mul ha0]; congr 1; ring
+  have e : (K ^ (1 - η) / N * (C * (J ^ l * (a ^ ((1 - η) / 2)) ^ (1 - l)))) ^ 2 =
+      C ^ 2 * ((K ^ (1 - η) / N) ^ 2 * (J ^ (2 * l) * a ^ ((1 - η) * (1 - l)))) := by
+    rw [← hy2, ← sq_rpow_eq_of_nonneg hJ0]; ring
+  have hJ2l : J ^ (2 * l) ≤ (2 * (N / K ^ 2)) ^ (2 * l) := Real.rpow_le_rpow hJ0 hJA (by linarith)
+  have ha2 : a ^ ((1 - η) * (1 - l)) ≤ (N / K) ^ ((1 - η) * (1 - l)) :=
+    Real.rpow_le_rpow ha0 haN (mul_nonneg (by linarith) (by linarith))
+  have hprod : J ^ (2 * l) * a ^ ((1 - η) * (1 - l)) ≤
+      (2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l)) :=
+    mul_le_mul hJ2l ha2 (Real.rpow_nonneg ha0 _) (Real.rpow_nonneg (by positivity) _)
+  have e2 : (K ^ (1 - η) / N) ^ 2 * ((2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l))) =
+      2 ^ (2 * l) * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
+        K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l))) := by
+    rw [Real.mul_rpow (by norm_num) (by positivity), sq_kernelFactor_eq hN hK,
+      ← interpTerm_rpow_eq hN hK]
+    ring
+  rw [e]
+  calc C ^ 2 * ((K ^ (1 - η) / N) ^ 2 * (J ^ (2 * l) * a ^ ((1 - η) * (1 - l))))
+      ≤ C ^ 2 * ((K ^ (1 - η) / N) ^ 2 *
+          ((2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l)))) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hprod (sq_nonneg _)) (sq_nonneg C)
+    _ = C ^ 2 * (2 ^ (2 * l) * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
+          K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l)))) := by rw [e2]
+    _ ≤ _ := sq_mul_le_four (two_rpow_le_four (by linarith)) (by positivity)
+
+/-- Region `K² ≤ N`: the sharpened source jump, squared against the kernel. -/
 theorem regionA_golden_sq_le {N K J a Δ C ρ η l : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J)
     (hJA : J ≤ 2 * (N / K ^ 2)) (ha0 : 0 ≤ a) (haN : a ≤ N / K) (hC : 1 ≤ C) (hρ0 : 0 < ρ)
     (hl0 : 0 ≤ l) (hl1 : l ≤ 1) (h0 : 0 < η) (h1 : η < 1) (hΔ0 : 0 ≤ Δ) (hΔJ : Δ ≤ J)
@@ -226,86 +314,21 @@ theorem regionA_golden_sq_le {N K J a Δ C ρ η l : ℝ} (hN : 0 < N) (hK : 0 <
         4 * C ^ 2 * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
           K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l))) +
         4 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ))) := by
-  set y := a ^ ((1 - η) / 2) with hy
-  have hy0 : 0 ≤ y := Real.rpow_nonneg ha0 _
-  have hJp : 0 ≤ J ^ (1 - η) := Real.rpow_nonneg hJ0 _
-  have hJl : 0 ≤ J ^ l := Real.rpow_nonneg hJ0 _
-  have hyl : 0 ≤ y ^ (1 - l) := Real.rpow_nonneg hy0 _
-  have hC0 : 0 ≤ C := by linarith
-  -- the jump is a power of the length plus an interpolation
-  have hΔ : Δ ≤ C * J ^ (1 - η) + C * (J ^ l * y ^ (1 - l)) := by
-    have hm := min_le_rpow_mul_rpow hJ0 hy0 hl0 hl1
-    rcases le_total J y with h | h
-    · rw [min_eq_left h] at hm
-      nlinarith [mul_nonneg (sub_nonneg.2 hC) (mul_nonneg hJl hyl), mul_nonneg hC0 hJp]
-    · rw [min_eq_right h] at hm
-      nlinarith [mul_le_mul_of_nonneg_left hm hC0]
-  set u := K ^ (1 - η) / N with hu
-  have hu0 : 0 ≤ u := by positivity
+  have hΔ := jump_split_le hJ0 (Real.rpow_nonneg ha0 _) hC hl0 hl1 hΔJ hΔC
+  have hu0 : 0 ≤ K ^ (1 - η) / N := by positivity
   have hmin : ρ * min 2 (J + N / K ^ 2) ≤ ρ * 2 :=
     mul_le_mul_of_nonneg_left (min_le_left _ _) hρ0.le
   have hmin0 : 0 ≤ ρ * min 2 (J + N / K ^ 2) :=
     mul_nonneg hρ0.le (le_min (by norm_num) (by positivity))
-  have hb : u * (Δ + ρ * min 2 (J + N / K ^ 2)) ≤
-      u * (C * J ^ (1 - η)) + u * (C * (J ^ l * y ^ (1 - l))) + u * (ρ * 2) := by
-    rw [← mul_add, ← mul_add]
-    exact mul_le_mul_of_nonneg_left (by linarith) hu0
-  have hb0 : 0 ≤ u * (Δ + ρ * min 2 (J + N / K ^ 2)) := mul_nonneg hu0 (by linarith)
+  have hb := mul_add_le_three hu0 hΔ hmin
+  have hb0 : 0 ≤ K ^ (1 - η) / N * (Δ + ρ * min 2 (J + N / K ^ 2)) :=
+    mul_nonneg hu0 (add_nonneg hΔ0 hmin0)
   have hsq := (pow_le_pow_left₀ hb0 hb 2).trans (add3_sq_le_three _ _ _)
-  have huu : u ^ 2 = K ^ (2 - 2 * η) * N ^ (-2 : ℝ) := by
-    rw [hu, div_eq_mul_one_div]; simp only [mul_pow]
-    rw [sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
-  -- the length term
-  have hA2 : (u * (C * J ^ (1 - η))) ^ 2 ≤ 4 * C ^ 2 * (N ^ (-2 * η) * K ^ (2 * η - 2)) := by
-    have e : (u * (C * J ^ (1 - η))) ^ 2 = C ^ 2 * (u ^ 2 * J ^ (2 * (1 - η))) := by
-      rw [← sq_rpow_eq_of_nonneg hJ0]; ring
-    have hJ2 : J ^ (2 * (1 - η)) ≤ (2 * (N / K ^ 2)) ^ (2 * (1 - η)) :=
-      Real.rpow_le_rpow hJ0 hJA (by linarith)
-    have e2 : u ^ 2 * (2 * (N / K ^ 2)) ^ (2 * (1 - η)) =
-        2 ^ (2 * (1 - η)) * (N ^ (-2 * η) * K ^ (2 * η - 2)) := by
-      rw [Real.mul_rpow (by norm_num) (by positivity), huu, ← lengthTerm_rpow_eq hN hK]; ring
-    have hP : 0 ≤ N ^ (-2 * η) * K ^ (2 * η - 2) := by positivity
-    have h4 := two_rpow_le_four (p := 2 * (1 - η)) (by linarith)
-    rw [e]
-    calc C ^ 2 * (u ^ 2 * J ^ (2 * (1 - η)))
-        ≤ C ^ 2 * (u ^ 2 * (2 * (N / K ^ 2)) ^ (2 * (1 - η))) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hJ2 (sq_nonneg u)) (sq_nonneg C)
-      _ = C ^ 2 * (2 ^ (2 * (1 - η)) * (N ^ (-2 * η) * K ^ (2 * η - 2))) := by rw [e2]
-      _ ≤ _ := by nlinarith [mul_le_mul_of_nonneg_right h4 (mul_nonneg (sq_nonneg C) hP)]
-  -- the interpolated term
-  have hB2 : (u * (C * (J ^ l * y ^ (1 - l)))) ^ 2 ≤
-      4 * C ^ 2 * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
-        K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l))) := by
-    have hy2 : (y ^ (1 - l)) ^ 2 = a ^ ((1 - η) * (1 - l)) := by
-      rw [sq_rpow_eq_of_nonneg hy0, hy, ← Real.rpow_mul ha0]; congr 1; ring
-    have e : (u * (C * (J ^ l * y ^ (1 - l)))) ^ 2 =
-        C ^ 2 * (u ^ 2 * (J ^ (2 * l) * a ^ ((1 - η) * (1 - l)))) := by
-      rw [← hy2, ← sq_rpow_eq_of_nonneg hJ0]; ring
-    have hJ2l : J ^ (2 * l) ≤ (2 * (N / K ^ 2)) ^ (2 * l) :=
-      Real.rpow_le_rpow hJ0 hJA (by linarith)
-    have ha2 : a ^ ((1 - η) * (1 - l)) ≤ (N / K) ^ ((1 - η) * (1 - l)) :=
-      Real.rpow_le_rpow ha0 haN (mul_nonneg (by linarith) (by linarith))
-    have hprod : J ^ (2 * l) * a ^ ((1 - η) * (1 - l)) ≤
-        (2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l)) :=
-      mul_le_mul hJ2l ha2 (Real.rpow_nonneg ha0 _) (Real.rpow_nonneg (by positivity) _)
-    have e2 : u ^ 2 * ((2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l))) =
-        2 ^ (2 * l) * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
-          K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l))) := by
-      rw [Real.mul_rpow (by norm_num) (by positivity), huu, ← interpTerm_rpow_eq hN hK]; ring
-    have hP : 0 ≤ N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
-        K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l)) := by positivity
-    have h4 := two_rpow_le_four (p := 2 * l) (by linarith)
-    rw [e]
-    calc C ^ 2 * (u ^ 2 * (J ^ (2 * l) * a ^ ((1 - η) * (1 - l))))
-        ≤ C ^ 2 * (u ^ 2 * ((2 * (N / K ^ 2)) ^ (2 * l) * (N / K) ^ ((1 - η) * (1 - l)))) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hprod (sq_nonneg u)) (sq_nonneg C)
-      _ = C ^ 2 * (2 ^ (2 * l) * (N ^ (-2 + 2 * l + (1 - η) * (1 - l)) *
-          K ^ (2 - 2 * η - 4 * l - (1 - η) * (1 - l)))) := by rw [e2]
-      _ ≤ _ := by nlinarith [mul_le_mul_of_nonneg_right h4 (mul_nonneg (sq_nonneg C) hP)]
-  -- the density term
-  have hE2 : (u * (ρ * 2)) ^ 2 = 4 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ)) := by
-    rw [← huu]; ring
-  linarith
+  have hE2 : (K ^ (1 - η) / N * (ρ * 2)) ^ 2 = 4 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ)) := by
+    rw [mul_pow, sq_kernelFactor_eq hN hK]; ring
+  exact hsq.trans (mul_le_mul_of_nonneg_left (add_le_add (add_le_add
+    (lengthTerm_sq_le hN hK hJ0 hJA h0 h1) (interpTerm_sq_le hN hK hJ0 hJA ha0 haN hl0 hl1 h1))
+    hE2.le) (by norm_num))
 
 /-! ### The golden interpolation exponent -/
 
@@ -566,5 +589,3 @@ theorem centeredOperator_l2_le_of_goldenThreshold {η : ℝ} (h0 : 0 < η) (h1 :
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
-
-#print axioms GaloisForLFunctions.SignedArithmeticEnergyIncidence.centeredOperator_l2_le_of_goldenThreshold
