@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilDeviationTranslationBound
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.WeilExcess`
 
@@ -28,6 +30,6 @@ theorem cauchyProfile_le_kernelSmooth_uniform :
   obtain ⟨κ, h_0_0, h_0_1⟩ := RHTower.WeilExcess.exists_riemannAutocorr_ge
   refine ⟨κ, ?_⟩
   intro δ hδ0 hδ1 s u
-  apply cauchyProfile_le_kernelSmooth <;> first | assumption | linarith
+  apply cauchyProfile_le_kernelSmooth <;> assumption
 
 end RHTower.WeilExcess

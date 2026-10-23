@@ -59,7 +59,8 @@ both the calibration and the source of explicit counterexamples to insufficient 
 
 Read polar decomposition and adjunction first, then the Frobenius-span, fake-curve and contact
 laws. The scaling surface and signature law transfer this language to `ζ`; effectivity specifies
-the missing geometric input. The finite Pontryagin law and Cartesian prime-incidence law are
+the missing geometric input. The finite and tempered Pontryagin laws and the Cartesian
+prime-incidence law are
 concrete tools that can be used without assuming RH. `RHTower` supplies the explicit formula,
 Weil criterion, zero-count input and matrix inertia calculus.
 
@@ -216,7 +217,7 @@ possible section theory must use near-radicals.
     minors at lags `0, j` bound `|Σ β_i^j| ≤ 2g` (`norm_powerSum_le`), power-sum elimination forces
     `|β_i| ≤ 1`, and the functional equation forces equality.
 
-### 3.4 Fake curves and the window law (`FakeCurvesAndTheWindowLaw`)
+### 3.4 Fake curves and the window law (`FakeCurvesAndTheWindowLaw`, `WittIntegralityIsNotPurity`)
 
 13. **A fake elliptic curve over `𝔽₅`.** `β = (φ, φ⁻¹)`: point counts `N_j = 5^j + 1 − L_j` are
     integers with `N_j ≥ 1` (`goldenDatum_pointCount_eq`, `one_le_goldenDatum_pointCount`), the
@@ -228,6 +229,18 @@ possible section theory must use near-radicals.
     (`two_mul_genus_ge_of_window`).
 15. **Hiding.** For every `n` a datum with `|β| = 2` is Hodge on every span class of degree `< n`
     (`exists_hidden_on_window`, with `hidingDatum`): the finite-window wall over `𝔽_q`.
+15′. **Witt integrality is not purity** (`WittIntegralityIsNotPurity`). The zeta series
+    `Z = P/((1 − X)(1 − qX))`, `P = Π(1 − α_i X)`, `α_i = √q β_i`, has the Lefschetz numbers as
+    ghost components: `X Z' = Z · Σ_{j≥1} N_j X^j` (`zetaSeries_hasGhost`), and a series with
+    constant term `1` is determined by its ghost components (`eq_of_hasGhost`), so
+    `Z = exp(Σ N_j X^j/j)` and data with the same point counts have the same zeta series
+    (`zetaSeries_eq_of_pointCount`). The ghost map is additive on products (`hasGhost_mul`): the
+    pole plane splits off as `Z_{ℙ¹}` with ghost components `1 + q^j`, and `P` is the `H¹` class
+    with ghost components `−Σ α_i^j`. The golden datum has `P = 1 − 5X + 5X²` and an integral
+    zeta series in `1 + Xℤ⟦X⟧`, integral point counts and the functional equation, and is not
+    pure (`witt_integral_not_pure`); the pure datum `q = 2, β = (1, 1)` has `N₁ = 3 − 2√2 ∉ ℤ`
+    (`pureDatum_pointCount_one_not_int`). Integrality and purity are independent: the λ-ring
+    structure does not carry the positivity, which enters only through the Hodge index (item 12).
 
 ### 3.5 The contact law (`SpanContactLaw`)
 
@@ -236,13 +249,14 @@ possible section theory must use near-radicals.
     contains the reduced characteristic polynomial, which is real (`exists_radical_of_lt`,
     `map_conj_reducedCharPoly`). The sections of the span are its multiples.
 
-### 3.6 The scaling surface, the signature law and the Pontryagin bound
-(`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`)
+### 3.6 The scaling surface, the signature law and the Pontryagin law
+(`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
+`TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`)
 
 17. **The scaling surface is a polar surface whose defect is Weil's form**
     (`scalingSurface`, `scalingSurface_defect_self`), so **its Hodge index theorem is RH**
-    (`scalingSurface_hodgeIndex_iff`), and under RH Weil's pairing obeys Cauchy–Schwarz
-    (`weilPair_sq_le_of_riemannHypothesis`).
+    (`scalingSurface_hodgeIndex_iff`). On two tests the defect pairing is Weil's pairing
+    (`scalingSurface_defect_tests`), so Weil's discriminant step is item 3 on the scaling surface.
 18. **The local intersection is prime comb minus archimedean collar** (`localGram_apply`).
 19. **Signature law.** `#positive squares(H, V, f₁…f_n) = 1 + #negative squares(W(f_i, f_j))`
     and dually (`posIndex_intersectionGram`, `negIndex_intersectionGram`), by Haynsworth inertia.
@@ -261,8 +275,36 @@ possible section theory must use near-radicals.
     many distinct points using translates of a short bump and a Vandermonde matrix. Set the values
     to `1` at a chosen right zero, `−1` at its reflection and `0` at all other zeros: the resulting
     Gram matrix is diagonal with entries `−2m_ρ` (`exists_zeroGram_negIndex_eq`). The theorem has
-    no prescribed aperture or uniform conditioning estimate, and it does not remove the infinite
-    on-line tail of the actual zeta configuration.
+    no prescribed aperture or uniform conditioning estimate; the infinite on-line tail is handled
+    by item 20″.
+20″. **Exact tempered law** (`TemperedConfigurationPontryaginLaw`). On a tempered configuration
+    (`Σ m_ρ/(1 + |γ_ρ|²) < ∞`; the zeros of `ζ` are one) the Weil form converges absolutely on
+    compact `C²` tests (`summable_Wsummand`), has at most `#{Re ρ > ½}` negative squares in `ℕ∞`
+    (`negIndex_zeroGram_le_of_tempered`), and has exactly that many when they are finitely many
+    (`pontryagin_law_of_tempered`). Mechanism: **dual tests** `b_ρ` with
+    `h_{b_ρ}(γ_σ) = h_{b_ρ}(γ̄_σ) = δ_{ρσ}` (`exists_dual_tests`) and **translated pairs**
+    `b_ρ, ω_ρ b_ρ(· − L)` with phase `ω_ρ = −e^{−i Im ρ · L}`. The pair of `ρ` contributes
+    `2m_ρ|y_ρ|²(1 − e^{δ_ρ L})(1 − e^{−δ_ρ L})`, `δ_ρ = Re ρ − ½`; on the line the phases have
+    modulus one, so the on-line zeros contribute at most `4|y|²A` with `A` independent of `L`
+    (`re_Wsummand_pairComb_le_of_onLine`); `δ_ρ L ≥ 4A + 2` makes the form `≤ −|y|²`
+    (`re_W_pairComb_le`). For `ζ` the zero-side Gram is the Weil Gram of the explicit formula
+    (`weilGram_eq_zeroGram`). This construction is explicit (two tests per zero, an explicit
+    aperture) but needs the right zeros to be finitely many; item 20‴ removes that restriction.
+20‴. **The exact law, unconditionally** (`TheHodgeDefectCountsTheRightZeros`). For every tempered
+    configuration, Weil's form has `n` negative squares on some family of `n` tests iff there are
+    at least `n` zeros right of the line (`pontryagin_law`): the largest negative index is
+    `#{Re ρ > ½}` in `ℕ∞`. Mechanism: the **zero-side coordinates** `X_τ(f) = √m_τ h_f(γ_τ)` map
+    tests into `ℓ²(Z)` (`zeroMap`), and `W(f, g) = ⟨R X(g), X(f)⟩` with `R` the reflection
+    `τ ↦ 1 − τ̄` (`W_eq_inner`), a Krein form with one hyperbolic plane per pair. The range is
+    **dense** (`orthogonal_range_zeroMap`): a vector orthogonal to every probe `φ(u − v)e^{isu}`
+    produces an exponential sum `Σ q_τ e^{(τ̄ − ½)v} ≡ 0`, whose coefficients vanish
+    (`eq_zero_of_tsum_exp_eq_zero`: the rightmost exponent at each height would be a pole of the
+    Laplace transform of `0`). Approximating `e_ρ − e_{1−ρ̄}` gives a Gram matrix within `5ε` of
+    `−2·I` (`exists_zeroGram_negIndex_ge`). **For `ζ`:** the intersection form of the scaling
+    surface has `1 + n` positive squares on the pole plane and some `n` tests iff `ζ` has at least
+    `n` zeros with `Re ρ > ½` (`zeta_hodgeDefect_iff`); `ζ` has infinitely many zeros off the line
+    iff the Hodge defect is unbounded (`zeta_rightZeros_infinite_iff`). The Hodge defect of the
+    scaling surface *is* the number of zeros right of the line.
 
 ### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
 
@@ -362,7 +404,7 @@ possible section theory must use near-radicals.
 | Taking positive tests as effective cycles | The pole quadrant with nonnegative tests fails the Riemann–Roch axiom (item 22); it is not the quadratic positive cone. |
 | Reading `riemannHypothesis_iff_exists_effectivity` as progress on RH | It is a reformulation: the positive cone satisfies the Riemann–Roch axiom by definition and its ample axiom is RH; every Riemann–Roch effectivity with nonnegative ample degrees contains its open positive-degree part (item 22′). Progress means an ampleness proof that does not use the sign of the form. |
 | Expecting a radical (sections) over `ℚ` | Infinite genus: no nonzero test is Ξ-divisible on the critical line, and under RH the form is positive definite (item 23). |
-| Counting multiplicities in the Pontryagin bound | Negative squares are bounded by the number of *distinct* zeros right of the line; a multiple zero contributes one rank-two block. |
+| Counting multiplicities in the Pontryagin law | Negative squares are counted by the *distinct* zeros right of the line; a multiple zero contributes one hyperbolic plane, hence one negative square. |
 | Expecting finitely many window conditions to see a deep pair | Over `𝔽_q` the hiding genus grows like `r^n` (items 14–15); over `ℚ` the genus is infinite. |
 | Signs of the hyperbolic plane | `H·V = 1`, `H² = V² = 0`; the ample class `H + V` has square `2`, the class `H − V` square `−2`; the pole plane alone has one positive and one negative square (`posIndex_polePlane`, `negIndex_polePlane`). |
 
@@ -389,10 +431,13 @@ possible section theory must use near-radicals.
    the two-sided law, unconditionally in its upper half, and the exact rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` under the zeros-on-the-line hypothesis on an abstract
    configuration.
-3. **Quantitative and infinite Pontryagin laws.** Finite configurations already satisfy the exact
-   index formula (item 20′). Control the aperture, norms and conditioning of the interpolating
-   tests, then account for the remaining infinite zero sum. The target is a theorem relating
-   negative index at aperture `A` to visible off-line zeros, with the tail estimate explicit.
+3. **The aperture of the Pontryagin law.** The exact count holds unconditionally (item 20‴), but
+   the density argument gives no aperture: it does not say how long the support of the tests must
+   be to see `n` negative squares. The translated pairs of item 20″ give an explicit aperture when
+   the right zeros are finitely many, in terms of the on-line mass `A` of the dual tests. Wanted: a
+   theorem relating the negative index at aperture `a` to the right zeros visible at aperture
+   `a` (depth, height and isolation), with explicit constants, and its comparison with the
+   one-zero visibility apertures of `SquareRootThreshold`.
 4. **The Kronecker law beyond the prime part.** On resonators the archimedean collar couples the
    towers through `ω(|i log p + j log q|)`; compute the full local intersection of narrow Hecke
    cycles and decide positivity of the finite-Euler-product form `ζ_p ζ_q · Γ` on lattice tests.
@@ -408,9 +453,13 @@ possible section theory must use near-radicals.
    sit at lag `0`. State the pronic weight `1/(k(k+1))` as an intersection number of the
    archimedean collar at the lag `log(1 + 1/k)` and prove that `𝔽_q[T]` is the case where successor
    and incidence structures coincide.
-8. **Witt and λ-ring structure.** Over `𝔽_q`, `Z_C = Z_{ℙ¹} · P_C` splits off the pole plane in the
-   ring of Witt vectors and RH is purity of the `H¹` class; formalize the decomposition and the
-   statement that integrality of `P_C` holds for fake data.
+8. **Witt and λ-ring structure over `ℚ`.** Over `𝔽_q` the question is settled (item 15′): the
+   pole plane splits off in the Witt ring, RH is purity of the `H¹` class, and integrality holds
+   for fake data. Over `ℚ` the ghost components of `log ζ` are `Λ(n)`; the analogue of item 15′ is
+   that integrality of the Euler product does not force the Hodge index, while the Hodge index
+   selects `Λ` among all prime weights (`one_positive_square_iff_vonMangoldt`). Open: a λ-ring
+   (Adams-operation) structure on the scaling surface whose Frobenius graphs are the Hecke cycles
+   of item 24, with the pole plane splitting off as over `𝔽_q`.
 9. **Spectral structure behind partial results.** Why inertia gives proportions (`2/3`) and not totality
    (items 19–20 give the exact accounting), why finite-prime extremizers are real-rooted, and the
    Landau–Widom rate (topic 2).
@@ -452,8 +501,8 @@ specification of what is missing and the calibration of every step over `𝔽_q`
    the one-positive-square property still requires proof.
 4. **Calibrate over `𝔽_q`.** Every construction is run on curve data first.
 5. **One Lorentz plane.** Count squares: the pole plane has one positive and one negative square;
-   excess positive directions are bounded by the distinct right-hand zeros; finite configurations
-   attain this count on suitable test families.
+   the excess positive directions of the scaling surface are counted exactly by the distinct
+   zeros right of the line (item 20‴).
 6. **Search the corpus before proving:** `scripts/formal_tools.py research "<query>"` (from the repository root).
 
 ---
@@ -467,12 +516,15 @@ specification of what is missing and the calibration of every step over `𝔽_q`
 | `FrobeniusSpanCalibration` | curve data, Lefschetz/adjunction, span defect = Toeplitz form |
 | `FrobeniusSpanHodgeIndexIsRH` | Hodge index on the span ⟺ unitarity |
 | `FakeCurvesAndTheWindowLaw` | golden datum, window visibility and hiding |
+| `WittIntegralityIsNotPurity` | zeta series and ghost components, Witt splitting of the pole plane, integrality vs purity |
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
 | `ArithmeticHodgeIndexSignatureLaw` | Gram signature law, one positive square ⟺ RH, selection of `Λ`, Pontryagin bound |
 | `InfiniteGenusLaw` | no nonzero compact transform annihilating almost all simple critical zeros; RH ⟺ positive definite |
 | `FiniteConfigurationPontryaginLaw` | transform interpolation and exact negative index for finite configurations |
+| `TemperedConfigurationPontryaginLaw` | absolute convergence on tempered configurations, dual tests, translated pairs, exact negative index with finitely many right zeros |
+| `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
 | `TheAdjunctionConjectureMeanField` | mean-field law, refutation of the polynomial adjunction bound |

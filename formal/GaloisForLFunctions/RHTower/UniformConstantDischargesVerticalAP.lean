@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.VerticalProgressionClassLimits
 import GaloisForLFunctions.RHTower.VerticalProgressionResonantBounds
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.VerticalAP`
 
@@ -30,7 +32,7 @@ theorem norm_ratioForm_le_crude_uniform :
   obtain ⟨C₀, h_0_0, h_0_1⟩ := RHTower.VerticalAP.exists_norm_diagHarm_le
   refine ⟨C₀, ?_⟩
   intro N a b ha hb t ht
-  apply norm_ratioForm_le_crude <;> first | assumption | linarith
+  apply norm_ratioForm_le_crude <;> assumption
 
 /-- `norm_fiberTerm_crude_le` with its constants supplied by
 `RHTower.VerticalAP.exists_norm_diagHarm_le`. -/
@@ -40,6 +42,6 @@ theorem norm_fiberTerm_crude_le_uniform :
   obtain ⟨C₀, h_0_0, h_0_1⟩ := RHTower.VerticalAP.exists_norm_diagHarm_le
   refine ⟨C₀, ?_⟩
   intro ψ hsupp Ψ₀ hΨ α β hα ε hε N hN1 T hT0 hβ a b hab ha hb
-  apply norm_fiberTerm_crude_le <;> first | assumption | linarith
+  apply norm_fiberTerm_crude_le <;> assumption
 
 end RHTower.VerticalAP

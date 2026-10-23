@@ -134,12 +134,12 @@ theorem centeredOperator_reciprocal_eq_tsum {η : ℝ} (hη : 0 < η) (n : ℕ) 
 
 /-! ### Sign-blind admission -/
 
-/-- **Sign-blind bound at every horizon**: `Σ_{m<T} (C_η r)(m)² ≤ (Σ_d d^{−η} ‖v_d‖_{ℓ²})²`. -/
-theorem orbit_partial_energy_le {η : ℝ} (hη : 0 < η)
-    (hs : Summable fun d : ℕ => (d : ℝ) ^ (-η) *
-      Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) (T : ℕ) :
+/-- **Sign-blind bound at every horizon** above half damping:
+`Σ_{m<T} (C_η r)(m)² ≤ (Σ_d d^{−η} ‖v_d‖_{ℓ²})²`. -/
+theorem orbit_partial_energy_le {η : ℝ} (hη : 0 < η) (hη2 : 1 / 2 < η) (T : ℕ) :
     ∑ m ∈ range T, arithmeticDampingCenteredOperator hη reciprocalObservable m ^ 2 ≤
       (∑' d : ℕ, (d : ℝ) ^ (-η) * Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) ^ 2 := by
+  have hs := (summable_signBlind_iff η).mpr hη2
   set u := fun m => arithmeticDampingCenteredOperator hη reciprocalObservable m with hu
   set S := ∑ m ∈ range T, u m ^ 2 with hS
   set B := ∑' d : ℕ, (d : ℝ) ^ (-η) * Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)
@@ -206,9 +206,8 @@ theorem orbit_partial_energy_le {η : ℝ} (hη : 0 < η)
 theorem admits_of_signBlind {η : ℝ} (hη : 1 / 2 < η) :
     Admits dampedMobiusEnergy η := by
   have hη0 : 0 < η := by linarith
-  have hs := (summable_signBlind_iff η).mpr hη
   exact (admits_iff_summable_orbit hη0).mpr
-    (summable_of_sum_range_le (fun m => sq_nonneg _) (orbit_partial_energy_le hη0 hs))
+    (summable_of_sum_range_le (fun m => sq_nonneg _) (orbit_partial_energy_le hη0 hη))
 
 /-! ### The positive twin -/
 

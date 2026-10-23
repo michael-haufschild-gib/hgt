@@ -51,11 +51,101 @@ dyadic determinant sum of size
 
 `sqrt(QN) sqrt(MH) (log X)^(1-A) << X (log X)^(1-A)`.
 
-This checks the normalization. It does not yet prove the endpoint on
-the source card: individual endpoints `t_q`, factor blocks outside the
-stated four-long-variable range, and removal of the marking weights
-must all be addressed. No maximal estimate follows merely by putting
-a supremum outside the norm. Endpoint separation is a separate step.
+This checks the normalization. Individual endpoints are handled by
+the separation proof below. Factor blocks outside the stated
+four-long-variable range and removal of marking weights remain
+separate obligations. No maximal estimate follows merely by putting
+a supremum outside the norm.
+
+## Individual endpoints: complete separation argument
+
+The operator conjecture, if proved for every fixed frequency exponent,
+does imply the corresponding maximal scalar bound on these blocks.
+This deduction does not assume or prove the conjecture.
+
+Dualize the row absolute values by `|epsilon_q|<=1` and choose
+individual endpoints `t_q`. Products are integers, so replace each
+endpoint by `floor(t_q)+1/2`. On the product block use the periodic
+coordinate `z=log(mn/(MN))/(4 log 2)`, which lies in `[0,1/2]`.
+Represent the endpoint indicator by the interval with fixed left
+endpoint `-1/4` and right endpoint
+`log((floor(t_q)+1/2)/(MN))/(4 log 2)`, using constant indicators
+when the cutoff lies outside the product block.
+
+Its Fejer polynomial of degree `T=ceil(X^6)` has coefficients
+`a_k(q)` bounded by `C/(1+|k|)`, uniformly in `q,t_q`. Every product
+integer is at distance at least `c/X` from the moving jump; the
+fixed jump stays away from the product block. The elementary
+Fejer-kernel tail estimate therefore bounds the pointwise error
+by `CX/T`. For completeness, the kernel satisfies
+`F_T(z)<=min(T+1,C/((T+1)dist(z,Z)^2))`; integrating outside the
+distance to either jump gives this error. The Fourier coefficients
+of an interval give the stated coefficient bound.
+
+Each retained Fourier term factors as a row weight `a_k(q)`, an
+`m` phase, an `n` phase, and a constant phase. Absorb the row weight
+into `epsilon_q mu(q)W_X(q)` and the `n` phase into the column vector.
+The matrix frequency becomes `v+2 pi k/(4 log 2)`, bounded by
+`X^(max(C,7))` for sufficiently large `X`. The conjecture is uniform
+in this fixed polynomial range. The row norm is at most
+`C_K sqrt(Q)/(1+|k|)` and the column norm at most `sqrt(N)log(2X)`.
+Summing the harmonic coefficient majorant costs `O(log X)`.
+
+The error is harmless without a delicate divisor estimate. For each
+integer product `s<=2X`, at most `tau(s)tau(s+2)` determinant tuples
+occur. The crude inequalities `tau(s)<=s`, `tau(s+2)<=s+2` bound
+their total by `O(X^3)`. All coefficients except `c_V(n)` are bounded
+by a fixed-band constant, and `c_V(n)<=log(2X)`. Thus the error is
+`O_K(X^4 log X/T)=O_K(X^(-2)log X)`.
+
+The resulting maximal block bound is `O(X(log X)^(2-A))` when the
+operator estimate has exponent `A`. Requesting two extra logarithms
+gives every prescribed saving. This closes the endpoint interface;
+the operator contraction itself is still unproved.
+
+## Exact sign reduction and fourth-moment target
+
+Direct multiplicativity gives, on `mn+2=qh`,
+
+`mu(m)mu(h)=lambda(q)lambda(n)
+  lambda(mn)lambda(mn+2) mu(m)^2 mu(h)^2`.
+
+The [parity bridge](../3-formalized/twin-prime-determinant-parity-bridge.md) proves
+that the two matrices have exactly the same finite Euclidean
+unit-ball pairing values, for arbitrary complex weights. Its Lean
+certificate also proves equality of every conjugated four-cycle.
+This is an isometric coordinate change,
+not an estimate. At `v=0`, every remaining arithmetic weight is
+nonnegative and the interior sign is the shifted parity sequence.
+
+Consider the balanced diagnostic `M=N=Q=H=T`, `X=T^2`, with `T`
+an integer. Each entry contains at most one solution, by the
+uniqueness argument below, so its absolute value is at most one.
+There are at most `T` rows and `T` columns. In the expansion
+
+`tr((K K*)^2)=sum_(q1,q2,n1,n2)
+ K(q1,n1) conj(K(q2,n1)) K(q2,n2) conj(K(q1,n2))`,
+
+the terms with `q1=q2` total at most `T^3`, and those with `n1=n2`
+total at most `T^3`. Their union therefore costs at most `2T^3`.
+For example the first sum is
+`sum_q (sum_n |K(q,n)|^2)^2 <= T*T^2`; the second is identical
+with the coordinates exchanged. The two contributions are
+nonnegative, so double-counting their intersection is safe.
+
+All row and column Liouville signs cancel around each four-cycle.
+For the remaining cycles the interior sign is a product of four
+values `lambda(s_ij)lambda(s_ij+2)`, with the products constrained
+by the shared divisor incidences. A bound of size
+`O_A(T^4/(log T)^(4A))` for the real off-diagonal cycle sum would
+give `||K||<<_A T/(log T)^A`: use
+`||K||^4<=tr((K K*)^2)` and absorb `2T^3`. This is a sufficient
+balanced test, not a proved estimate or an equivalence for all
+unbalanced blocks.
+
+**[OPEN CORE]** Cancellation of these actual nondegenerate cycle
+weights. An unweighted two-point sum controls neither this
+four-cycle average nor arbitrary divisor-incidence tests.
 
 ## Competing mechanisms and preliminary attacks
 

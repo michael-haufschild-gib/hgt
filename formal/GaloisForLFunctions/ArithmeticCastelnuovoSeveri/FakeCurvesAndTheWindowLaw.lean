@@ -266,10 +266,10 @@ def hidingDatum (N : ℕ) [NeZero N] : CurveDatum (Bool ⊕ (Fin N × Bool)) whe
     · norm_num
     · norm_num
     · simp only [Equiv.sumCongr_apply, Sum.map_inr, Equiv.prodCongr_apply, Prod.map_apply,
-        Equiv.refl_apply, Equiv.swap_apply_left]
+        Equiv.refl_apply]
       rw [mul_comm]; exact hz _ (hn _)
     · simp only [Equiv.sumCongr_apply, Sum.map_inr, Equiv.prodCongr_apply, Prod.map_apply,
-        Equiv.refl_apply, Equiv.swap_apply_right]
+        Equiv.refl_apply]
       exact hz _ (hn _)
 
 theorem hidingDatum_trace {N : ℕ} [NeZero N] {j : ℕ} (hj0 : j ≠ 0) (hjN : j < N) :

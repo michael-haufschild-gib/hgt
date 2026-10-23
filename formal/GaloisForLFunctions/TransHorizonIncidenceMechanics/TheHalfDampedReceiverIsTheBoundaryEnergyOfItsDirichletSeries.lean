@@ -25,8 +25,8 @@ As `σ ↓ 1/2` the cells `n^{-2σ} − (n+1)^{-2σ}` tend to the pronic weights
 through `|ζ(s)|²` and the weight through its Dirichlet series near `Re s = 1`.
 -/
 
-open Finset Filter Topology MeasureTheory Complex Set
-open scoped BigOperators FourierTransform
+open Filter Topology MeasureTheory Complex Set
+open scoped BigOperators FourierTransform Interval
 
 namespace GaloisForLFunctions.TransHorizonIncidenceMechanics
 
@@ -85,7 +85,6 @@ theorem norm_cmellinCell_le {s : ℂ} (hs : 0 < s.re) {n : ℕ} (hn : 1 ≤ n) :
     simp only
     rw [norm_mul, norm_neg, Complex.norm_cpow_eq_rpow_re_of_pos (hpos y hy)]
     congr 2
-    simp
   rw [intervalIntegral.integral_congr hnorm, intervalIntegral.integral_const_mul]
   have h0 : (0 : ℝ) ∉ uIcc (n : ℝ) ((n : ℝ) + 1) := by
     rw [uIcc_of_le hAB]; intro h; linarith [h.1]
@@ -100,8 +99,8 @@ theorem norm_cmellinCell_le {s : ℂ} (hs : 0 < s.re) {n : ℕ} (hn : 1 ≤ n) :
 
 /-- Summation by parts for complex cells. -/
 theorem sum_range_modulusDefect_mul_cmellinCell {d : ℕ} (hd : 0 < d) (s : ℂ) (N : ℕ) :
-    ∑ n ∈ range (N + 1), (modulusDefect d n : ℂ) * cmellinCell s n =
-      ∑ n ∈ Icc 1 N, (((if d ∣ n then 1 else 0) - 1 / d : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ (-s)
+    ∑ n ∈ Finset.range (N + 1), (modulusDefect d n : ℂ) * cmellinCell s n =
+      ∑ n ∈ Finset.Icc 1 N, (((if d ∣ n then 1 else 0) - 1 / d : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ (-s)
         - (modulusDefect d N : ℂ) * (((N : ℝ) + 1 : ℝ) : ℂ) ^ (-s) := by
   induction N with
   | zero => simp [modulusDefect_zero_right, cmellinCell]
@@ -119,10 +118,10 @@ theorem sum_range_modulusDefect_mul_cmellinCell {d : ℕ} (hd : 0 < d) (s : ℂ)
 
 /-- The divisible terms of `Icc 1 (dM)`, complex form. -/
 theorem sum_Icc_dvd_cpow {d : ℕ} (hd : 0 < d) (s : ℂ) (M : ℕ) :
-    ∑ n ∈ Icc 1 (d * M), (((if d ∣ n then 1 else 0 : ℝ)) : ℂ) * ((n : ℝ) : ℂ) ^ (-s) =
-      ((d : ℝ) : ℂ) ^ (-s) * ∑ k ∈ Icc 1 M, ((k : ℝ) : ℂ) ^ (-s) := by
-  have hfilt : (Icc 1 (d * M)).filter (fun n => d ∣ n) =
-      (Icc 1 M).map ⟨(d * ·), mul_right_injective₀ hd.ne'⟩ := by
+    ∑ n ∈ Finset.Icc 1 (d * M), (((if d ∣ n then 1 else 0 : ℝ)) : ℂ) * ((n : ℝ) : ℂ) ^ (-s) =
+      ((d : ℝ) : ℂ) ^ (-s) * ∑ k ∈ Finset.Icc 1 M, ((k : ℝ) : ℂ) ^ (-s) := by
+  have hfilt : (Finset.Icc 1 (d * M)).filter (fun n => d ∣ n) =
+      (Finset.Icc 1 M).map ⟨(d * ·), mul_right_injective₀ hd.ne'⟩ := by
     ext n
     simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_map, Function.Embedding.coeFn_mk]
     constructor
@@ -138,15 +137,15 @@ theorem sum_Icc_dvd_cpow {d : ℕ} (hd : 0 < d) (s : ℂ) (M : ℕ) :
   have hcast : ∀ n : ℕ, (((if d ∣ n then 1 else 0 : ℝ)) : ℂ) * ((n : ℝ) : ℂ) ^ (-s) =
       if d ∣ n then ((n : ℝ) : ℂ) ^ (-s) else 0 := fun n => by split_ifs <;> simp
   simp_rw [hcast]
-  rw [← sum_filter, hfilt, sum_map, mul_sum]
-  refine sum_congr rfl fun k _ => ?_
+  rw [← Finset.sum_filter, hfilt, Finset.sum_map, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
   simp only [Function.Embedding.coeFn_mk]
-  push_cast
-  rw [Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg d) (Nat.cast_nonneg k)]
+  rw [Nat.cast_mul, Complex.ofReal_mul,
+    Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg d) (Nat.cast_nonneg k)]
 
 /-- The complex strip remainder `Σ_{k≤N} k^{-s} − N^{1-s}/(1-s) → ζ(s)`. -/
 def czetaStripRemainder (s : ℂ) (N : ℕ) : ℂ :=
-  ∑ k ∈ Icc 1 N, ((k : ℝ) : ℂ) ^ (-s) - ((N : ℝ) : ℂ) ^ (1 - s) / (1 - s)
+  ∑ k ∈ Finset.Icc 1 N, ((k : ℝ) : ℂ) ^ (-s) - ((N : ℝ) : ℂ) ^ (1 - s) / (1 - s)
 
 /-- **One modulus pairs to `ζ(s)(d^{-s} − 1/d)`, complex form.** -/
 theorem hasSum_modulusDefect_mul_cmellinCell {s : ℂ} (hs0 : 0 < s.re) (hs1 : s ≠ 1) {d : ℕ}
@@ -170,23 +169,24 @@ theorem hasSum_modulusDefect_mul_cmellinCell {s : ℂ} (hs0 : 0 < s.re) (hs1 : s
   have hd0 : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
   have hdR0 : ((d : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
   have h1s : (1 : ℂ) - s ≠ 0 := sub_ne_zero.mpr (Ne.symm hs1)
-  have hpart : ∀ M : ℕ, ∑ n ∈ range (d * M + 1), (modulusDefect d n : ℂ) * cmellinCell s n =
+  have hpart : ∀ M : ℕ, ∑ n ∈ Finset.range (d * M + 1), (modulusDefect d n : ℂ) * cmellinCell s n =
       ((d : ℝ) : ℂ) ^ (-s) * czetaStripRemainder s M - czetaStripRemainder s (d * M) / d := by
     intro M
     rw [sum_range_modulusDefect_mul_cmellinCell hd s, modulusDefect_mul hd, Complex.ofReal_zero,
       zero_mul, sub_zero]
-    have hsplit : ∀ n ∈ Icc 1 (d * M),
+    have hsplit : ∀ n ∈ Finset.Icc 1 (d * M),
         (((if d ∣ n then 1 else 0) - 1 / d : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ (-s) =
           (((if d ∣ n then 1 else 0 : ℝ)) : ℂ) * ((n : ℝ) : ℂ) ^ (-s)
             - ((n : ℝ) : ℂ) ^ (-s) / d := fun n _ => by push_cast; ring
-    rw [sum_congr rfl hsplit, sum_sub_distrib, sum_Icc_dvd_cpow hd s M, ← sum_div]
+    rw [Finset.sum_congr rfl hsplit, Finset.sum_sub_distrib, sum_Icc_dvd_cpow hd s M, ← Finset.sum_div]
     simp only [czetaStripRemainder]
     have hcancel : ((d : ℝ) : ℂ) ^ (-s) * (((M : ℝ) : ℂ) ^ (1 - s) / (1 - s)) =
         (((d * M : ℕ) : ℝ) : ℂ) ^ (1 - s) / (1 - s) / d := by
-      push_cast
-      rw [Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg d) (Nat.cast_nonneg M),
-        show (1 : ℂ) - s = -s + 1 by ring, Complex.cpow_add _ _ hdR0, Complex.cpow_one]
-      push_cast
+      have h1s' : -s + 1 ≠ 0 := by rwa [show -s + 1 = 1 - s by ring]
+      rw [Nat.cast_mul, Complex.ofReal_mul,
+        Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg d) (Nat.cast_nonneg M),
+        show (1 : ℂ) - s = -s + 1 by ring, Complex.cpow_add _ _ hdR0, Complex.cpow_one,
+        Complex.ofReal_natCast d]
       field_simp
     rw [mul_sub, hcancel]
     push_cast
@@ -195,7 +195,7 @@ theorem hasSum_modulusDefect_mul_cmellinCell {s : ℂ} (hs0 : 0 < s.re) (hs1 : s
     RHTower.tendsto_sum_cpow_sub_pow hs0 hs1
   have hdM : Tendsto (fun M : ℕ => d * M) atTop atTop :=
     tendsto_atTop_mono (fun M => Nat.le_mul_of_pos_left M hd) tendsto_id
-  have hlimit : Tendsto (fun M : ℕ => ∑ n ∈ range (d * M + 1),
+  have hlimit : Tendsto (fun M : ℕ => ∑ n ∈ Finset.range (d * M + 1),
       (modulusDefect d n : ℂ) * cmellinCell s n) atTop
       (𝓝 (riemannZeta s * (((d : ℝ) : ℂ) ^ (-s) - 1 / d))) := by
     have h := (hzeta.const_mul (((d : ℝ) : ℂ) ^ (-s))).sub ((hzeta.comp hdM).div_const (d : ℂ))
@@ -221,9 +221,9 @@ theorem cmellinPairing_eq_zeta_mul {K : ℝ} {c : ℕ → ℝ} (hc : DampedClass
     (hs : 1 / 2 < s.re) (hs1 : s.re < 1) :
     ∑' n, (weightCenteredPrefix c (∑' d : ℕ, c d / d) n : ℂ) * cmellinCell s n =
       riemannZeta s * (weightDirichletSeries c s - ((∑' d : ℕ, c d / d : ℝ) : ℂ)) := by
+  have hsne : s ≠ 1 := by intro h; rw [h] at hs1; simp at hs1
   set σ := s.re
   have hσ0 : 0 < σ := by linarith
-  have hsne : s ≠ 1 := by intro h; rw [h] at hs1; simp at hs1
   have hK := nonneg_of_dampedClass hc
   have hsum := summable_div_of_dampedClass (by norm_num) hc
   set θ : ℝ := (σ + 1 / 2) / 2 with hθ
@@ -287,7 +287,8 @@ theorem cmellinPairing_eq_zeta_mul {K : ℝ} {c : ℕ → ℝ} (hc : DampedClass
     simp_rw [hcd]
     rw [tsum_mul_left, (hasSum_modulusDefect_mul_cmellinCell hσ0 hsne hd).tsum_eq]
   have hS1 : Summable (fun d : ℕ => (c d : ℂ) * ((d : ℝ) : ℂ) ^ (-s)) := by
-    refine (summable_mul_rpow_of_dampedClass (by norm_num) hc (by linarith)).abs.of_norm_bounded fun d => ?_
+    refine (summable_mul_rpow_of_dampedClass (σ := σ) (by norm_num) hc
+      (by linarith)).abs.of_norm_bounded fun d => ?_
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul]
     rcases Nat.eq_zero_or_pos d with rfl | hd
     · simp [zero_of_dampedClass (by norm_num) hc]
@@ -348,7 +349,7 @@ theorem integral_Ioi_one_stepSource_mul (A : ℕ → ℝ) {k : ℝ → ℂ} (hk 
     filter_upwards [stepSource_ae_piece A n] with y hy
     simp only [F, hy]
   have hFI : ∀ n : ℕ, IntervalIntegrable F volume ((n : ℝ) + 1) ((n : ℝ) + 2) := fun n =>
-    ((hkI n).const_mul _).congr (hFae n).symm
+    ((hkI n).const_mul _).congr_ae (hFae n).symm
   have hpiece : ∀ n : ℕ, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), F y =
       ((A (n + 1) : ℝ) : ℂ) * ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), k y := fun n => by
     rw [← intervalIntegral.integral_const_mul]
@@ -363,22 +364,22 @@ theorem integral_Ioi_one_stepSource_mul (A : ℕ → ℝ) {k : ℝ → ℂ} (hk 
   have hb : Tendsto b atTop atTop :=
     tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop
   have hadj : ∀ N : ℕ, ∫ y in (1 : ℝ)..b N, F y =
-      ∑ n ∈ range N, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), F y := fun N => by
+      ∑ n ∈ Finset.range N, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), F y := fun N => by
     have h := intervalIntegral.sum_integral_adjacent_intervals (f := F) (μ := volume)
       (a := fun n : ℕ => (n : ℝ) + 1) (n := N) (fun n _ => by
         have := hFI n; push_cast; convert this using 1; ring)
     simp only [Nat.cast_zero, zero_add] at h
     rw [← h]
-    refine sum_congr rfl fun n _ => ?_
+    refine Finset.sum_congr rfl fun n _ => ?_
     push_cast; ring_nf
   have hadjN : ∀ N : ℕ, ∫ y in (1 : ℝ)..b N, ‖F y‖ =
-      ∑ n ∈ range N, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), ‖F y‖ := fun N => by
+      ∑ n ∈ Finset.range N, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), ‖F y‖ := fun N => by
     have h := intervalIntegral.sum_integral_adjacent_intervals (f := fun y => ‖F y‖) (μ := volume)
       (a := fun n : ℕ => (n : ℝ) + 1) (n := N) (fun n _ => by
         have := (hFI n).norm; push_cast; convert this using 1; ring)
     simp only [Nat.cast_zero, zero_add] at h
     rw [← h]
-    refine sum_congr rfl fun n _ => ?_
+    refine Finset.sum_congr rfl fun n _ => ?_
     push_cast; ring_nf
   have hint : IntegrableOn F (Ioi 1) := by
     refine integrableOn_Ioi_of_intervalIntegral_norm_bounded (l := atTop) (b := b)
@@ -409,7 +410,7 @@ theorem integral_Ioi_one_stepSource_mul (A : ℕ → ℝ) {k : ℝ → ℂ} (hk 
       (𝓝 (∑' n : ℕ, ((A (n + 1) : ℝ) : ℂ) * ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), k y)) := by
     refine hser.hasSum.tendsto_sum_nat.congr fun N => ?_
     rw [hadj N]
-    exact sum_congr rfl fun n _ => (hpiece n).symm
+    exact Finset.sum_congr rfl fun n _ => (hpiece n).symm
   exact tendsto_nhds_unique hlim1 hlim2
 
 /-- A step source bounded by `B √n` on its pieces. -/
@@ -425,7 +426,7 @@ theorem norm_stepSource_le {A : ℕ → ℝ} {B : ℝ} (hB : ∀ n, 1 ≤ n → 
       have hfl0 : (0 : ℝ) < ⌊y⌋₊ := by
         have : (1 : ℝ) ≤ ⌊y⌋₊ := by exact_mod_cast hfl
         linarith
-      exact nonneg_of_mul_nonneg_right this (Real.rpow_pos_of_pos hfl0 _)
+      exact nonneg_of_mul_nonneg_left this (Real.rpow_pos_of_pos hfl0 _)
   · simp
 
 theorem measurable_stepSource (A : ℕ → ℝ) : Measurable (stepSource A) := by
@@ -456,7 +457,8 @@ theorem mellin_stepSource_neg {A : ℕ → ℝ} (hA0 : A 0 = 0) {B : ℝ}
   have hknorm : ∀ n : ℕ, ∫ y in ((n : ℝ) + 1)..((n : ℝ) + 2), ‖k y‖ ≤ ((n : ℝ) + 1) ^ (-s.re - 1) := by
     intro n
     have hconst : ∫ _y in ((n : ℝ) + 1)..((n : ℝ) + 2), ((n : ℝ) + 1) ^ (-s.re - 1) =
-        ((n : ℝ) + 1) ^ (-s.re - 1) := by simp
+        ((n : ℝ) + 1) ^ (-s.re - 1) := by
+      rw [intervalIntegral.integral_const, smul_eq_mul]; ring
     rw [← hconst]
     refine intervalIntegral.integral_mono_on (by linarith) ?_ (by simp) fun y hy => ?_
     · exact (hk.mono (by
@@ -493,7 +495,7 @@ theorem mellin_stepSource_neg {A : ℕ → ℝ} (hA0 : A 0 = 0) {B : ℝ}
     rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
       (Ioi_subset_Ioi zero_le_one) fun y hy => ?_]
     · refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
-      simp only [k, smul_eq_mul]; rw [mul_comm]; congr 2; ring
+      simp only [k, smul_eq_mul]; rw [mul_comm]
     · have hy1 : ¬ 1 < y := hy.2
       simp [stepSource, hy1]
   rw [hmel, heq]
@@ -517,7 +519,6 @@ theorem mellin_stepSource_neg {A : ℕ → ℝ} (hA0 : A 0 = 0) {B : ℝ}
   simp only [Complex.ofReal_zero, zero_mul, zero_add]
   rw [← tsum_div_const]
   refine tsum_congr fun n => ?_
-  push_cast
   ring
 
 /-- The step source in the logarithmic variable, damped: `u ↦ e^{σu} A(⌊e^{-u}⌋)`. -/
@@ -527,14 +528,16 @@ def logStepSource (A : ℕ → ℝ) (σ u : ℝ) : ℂ :=
 /-- The Mellin transform of the step source on `Re = −σ` is a Fourier transform. -/
 theorem mellin_stepSource_neg_eq_fourier (A : ℕ → ℝ) (σ t : ℝ) :
     mellin (stepSource A) (-((σ : ℂ) + t * I)) = 𝓕 (logStepSource A σ) (t / (-(2 * Real.pi))) := by
-  rw [mellin_eq_fourier]
-  congr 1
-  · funext u
+  have hf : (fun u : ℝ => Real.exp (-(-((σ : ℂ) + t * I)).re * u) • stepSource A (Real.exp (-u))) =
+      logStepSource A σ := by
+    funext u
     simp only [logStepSource, neg_re, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
       mul_one, sub_self, add_zero, neg_neg, Complex.real_smul]
-  · simp only [neg_im, add_im, ofReal_im, mul_im, I_re, mul_zero, ofReal_re, I_im, mul_one,
-      zero_add]
-    field_simp
+  have hx : (-((σ : ℂ) + t * I)).im / (2 * Real.pi) = t / (-(2 * Real.pi)) := by
+    simp only [neg_im, add_im, ofReal_im, mul_im, I_re, mul_zero, ofReal_re, I_im, mul_one,
+      zero_add, add_zero]
+    rw [div_neg, neg_div]
+  rw [mellin_eq_fourier, hf, hx]
 
 /-- `|e^{σu} A(⌊e^{-u}⌋)| ≤ B e^{(σ − 1/2)u}` on `u ≤ 0`, and it vanishes on `u > 0`. -/
 theorem norm_logStepSource_le {A : ℕ → ℝ} {B : ℝ}
@@ -552,7 +555,9 @@ theorem norm_logStepSource_le {A : ℕ → ℝ} {B : ℝ}
           ≤ Real.exp (σ * u) * (B * Real.exp (-u) ^ (1 / 2 : ℝ)) :=
             mul_le_mul_of_nonneg_left hs (Real.exp_pos _).le
         _ = B * Real.exp ((σ - 1 / 2) * u) := by
-            rw [← Real.exp_mul, ← Real.exp_add]; ring_nf
+            rw [← Real.exp_mul, mul_left_comm, ← Real.exp_add]
+            congr 2
+            ring
     · rw [norm_le_zero_iff.mp hs, norm_zero, mul_zero]
       exact mul_nonneg hB0 (Real.exp_pos _).le
   · rw [indicator_of_notMem (by simpa using hu)]
@@ -568,7 +573,8 @@ theorem aestronglyMeasurable_logStepSource (A : ℕ → ℝ) (σ : ℝ) :
 theorem integrable_logStepSource {A : ℕ → ℝ} {B : ℝ}
     (hB : ∀ n, 1 ≤ n → |A n| ≤ B * (n : ℝ) ^ (1 / 2 : ℝ)) {σ : ℝ} (hσ : 1 / 2 < σ) :
     Integrable (logStepSource A σ) :=
-  (((integrableOn_exp_mul_Iic (show 0 < σ - 1 / 2 by linarith) 0).const_mul B).integrable_indicator
+  (IntegrableOn.integrable_indicator
+    ((integrableOn_exp_mul_Iic (show 0 < σ - 1 / 2 by linarith) 0).const_mul B)
     measurableSet_Iic).mono' (aestronglyMeasurable_logStepSource A σ)
     (Eventually.of_forall (norm_logStepSource_le hB σ))
 
@@ -579,8 +585,9 @@ theorem memLp_logStepSource {A : ℕ → ℝ} {B : ℝ}
   rw [memLp_two_iff_integrable_sq_norm hgmeas]
   set D2 : ℝ → ℝ := (Iic (0 : ℝ)).indicator fun u => B ^ 2 * Real.exp ((2 * σ - 1) * u)
   have hD2 : Integrable D2 :=
-    ((integrableOn_exp_mul_Iic (show 0 < 2 * σ - 1 by linarith) 0).const_mul
-      (B ^ 2)).integrable_indicator measurableSet_Iic
+    IntegrableOn.integrable_indicator
+      ((integrableOn_exp_mul_Iic (show 0 < 2 * σ - 1 by linarith) 0).const_mul (B ^ 2))
+      measurableSet_Iic
   refine hD2.mono' (hgmeas.norm.pow 2) (Eventually.of_forall fun u => ?_)
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   have h := norm_logStepSource_le hB σ u
@@ -599,7 +606,7 @@ theorem integrable_norm_sq_fourier {φ : ℝ → ℂ} (hφ : Integrable φ) (hφ
   set u : Lp ℂ 2 (volume : Measure ℝ) := hφ2.toLp φ
   have hcoe : (u : ℝ → ℂ) =ᵐ[volume] φ := hφ2.coeFn_toLp
   have hF : ((𝓕 u : Lp ℂ 2 (volume : Measure ℝ)) : ℝ → ℂ) =ᵐ[volume] 𝓕 φ := by
-    refine (coeFn_fourierTransform_eq_fourierIntegral u (hφ.congr hcoe.symm)).trans ?_
+    refine (HTGeometry.coeFn_fourierTransform_eq_fourierIntegral u (hφ.congr hcoe.symm)).trans ?_
     filter_upwards with ξ
     exact Real.fourier_congr_ae hcoe ξ
   have hmem : MemLp (𝓕 φ) 2 := (Lp.memLp (𝓕 u)).ae_eq hF
@@ -702,22 +709,22 @@ theorem lineEnergy_stepSource_eq {A : ℕ → ℝ} (hA0 : A 0 = 0) {B : ℝ}
   obtain ⟨-, hser⟩ := integral_Ioi_one_stepSource_mul (fun n => A n ^ 2) hk hsumA
   have hRint : ((∫ x in Ioi (1 : ℝ), R x : ℝ) : ℂ) =
       ∑' n : ℕ, ((A (n + 1) ^ 2 : ℝ) : ℂ) * ((mellinCell (2 * σ) (n + 1) / (2 * σ) : ℝ) : ℂ) := by
-    rw [← integral_ofReal]
+    rw [← integral_complex_ofReal]
     simp_rw [hRk]
     rw [hser]
     exact tsum_congr fun n => by rw [hpiece n]
   have hRval : ∫ x in Ioi (1 : ℝ), R x =
       ∑' n : ℕ, A (n + 1) ^ 2 * (mellinCell (2 * σ) (n + 1) / (2 * σ)) := by
     have h := hRint
+    simp_rw [← Complex.ofReal_mul] at h
     rw [← Complex.ofReal_tsum] at h
-    · exact_mod_cast (by simpa using h)
+    exact_mod_cast h
   have hdiv : ∑' n : ℕ, A (n + 1) ^ 2 * (mellinCell (2 * σ) (n + 1) / (2 * σ)) =
       (∑' n : ℕ, A (n + 1) ^ 2 * mellinCell (2 * σ) (n + 1)) / (2 * σ) := by
     rw [← tsum_div_const]; exact tsum_congr fun n => by ring
   rw [hRval, hdiv, hcellsum.tsum_eq_zero_add, hA0]
   simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_mul, zero_add]
   field_simp
-  ring
 
 /-! ### The receiver as a boundary line energy -/
 
@@ -736,7 +743,8 @@ theorem sum_sq_mul_mellinCell_eq_lineEnergy {K : ℝ} {c : ℕ → ℝ} (hc : Da
   have hB : ∀ n, 1 ≤ n → |A n| ≤ B * (n : ℝ) ^ (1 / 2 : ℝ) := fun n hn => by
     have h := abs_weightCenteredPrefix_le_of_dampedClass (K := K) (ε := 1 / 2)
       (by norm_num) (by norm_num) hc hn
-    rwa [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] at h
+    rw [show (n : ℝ) ^ (1 - 1 / 2 : ℝ) = (n : ℝ) ^ (1 / 2 : ℝ) by norm_num] at h
+    exact h
   have hline := lineEnergy_stepSource_eq hA0 hB hσ
   have hpt : ∀ t : ℝ, mellin (stepSource A) (-((σ : ℂ) + t * I)) =
       riemannZeta ((σ : ℂ) + t * I) *
@@ -762,7 +770,8 @@ theorem integrable_lineEnergy {K : ℝ} {c : ℕ → ℝ} (hc : DampedClass K (1
   have hB : ∀ n, 1 ≤ n → |A n| ≤ B * (n : ℝ) ^ (1 / 2 : ℝ) := fun n hn => by
     have h := abs_weightCenteredPrefix_le_of_dampedClass (K := K) (ε := 1 / 2)
       (by norm_num) (by norm_num) hc hn
-    rwa [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] at h
+    rw [show (n : ℝ) ^ (1 - 1 / 2 : ℝ) = (n : ℝ) ^ (1 / 2 : ℝ) by norm_num] at h
+    exact h
   refine (integrable_lineEnergy_stepSource hB hσ).congr (Eventually.of_forall fun t => ?_)
   have hre : ((σ : ℂ) + t * I).re = σ := by simp
   dsimp only
@@ -772,7 +781,7 @@ theorem integrable_lineEnergy {K : ℝ} {c : ℕ → ℝ} (hc : DampedClass K (1
 /-- **A paid receiver caps the cell energies**: `Σ_n A(n)² Δ_n(2σ) ≤ 4σE` for `σ ≥ 1/2`, since
 `Δ_n(2σ) ≤ 2σ n^{-2σ-1} ≤ 4σ/(n(n+1))`. -/
 theorem tsum_sq_mul_mellinCell_le_of_energy {A : ℕ → ℝ} (hA0 : A 0 = 0) {E σ : ℝ}
-    (hσ : 1 / 2 ≤ σ) (hE : ∀ T, ∑ n ∈ Icc 1 T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ E) :
+    (hσ : 1 / 2 ≤ σ) (hE : ∀ T, ∑ n ∈ Finset.Icc 1 T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ E) :
     ∑' n, A n ^ 2 * mellinCell (2 * σ) n ≤ 4 * σ * E := by
   have hσ0 : 0 < 2 * σ := by linarith
   have hE0 : 0 ≤ E := by simpa using hE 0
@@ -794,30 +803,30 @@ theorem tsum_sq_mul_mellinCell_le_of_energy {A : ℕ → ℝ} (hA0 : A 0 = 0) {E
   · rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [hA0]
     · exact mul_nonneg (sq_nonneg _) (mellinCell_nonneg hσ0 hn)
-  calc ∑ n ∈ range N, A n ^ 2 * mellinCell (2 * σ) n
-      ≤ ∑ n ∈ range N, 4 * σ * (A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := by
-        refine sum_le_sum fun n _ => ?_
+  calc ∑ n ∈ Finset.range N, A n ^ 2 * mellinCell (2 * σ) n
+      ≤ ∑ n ∈ Finset.range N, 4 * σ * (A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := by
+        refine Finset.sum_le_sum fun n _ => ?_
         rcases Nat.eq_zero_or_pos n with rfl | hn
         · simp [hA0]
         · calc A n ^ 2 * mellinCell (2 * σ) n
               ≤ A n ^ 2 * (4 * σ / ((n : ℝ) * ((n : ℝ) + 1))) :=
                 mul_le_mul_of_nonneg_left (hcell n hn) (sq_nonneg _)
             _ = _ := by ring
-    _ = 4 * σ * ∑ n ∈ Icc 1 (N - 1), A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by
-        rw [← mul_sum]
+    _ = 4 * σ * ∑ n ∈ Finset.Icc 1 (N - 1), A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by
+        rw [← Finset.mul_sum]
         congr 1
-        refine (sum_subset (fun n hn => ?_) fun n hn hn' => ?_).symm
-        · simp only [mem_Icc, mem_range] at hn ⊢; omega
-        · have : n = 0 := by simp only [mem_Icc, mem_range] at hn hn'; omega
+        refine (Finset.sum_subset (fun n hn => ?_) fun n hn hn' => ?_).symm
+        · simp only [Finset.mem_Icc, Finset.mem_range] at hn ⊢; omega
+        · have : n = 0 := by simp only [Finset.mem_Icc, Finset.mem_range] at hn hn'; omega
           subst this; simp [hA0]
     _ ≤ 4 * σ * E := mul_le_mul_of_nonneg_left (hE _) (by linarith)
 
 /-- For each horizon the pronic energy is the limit of the cell energies as `σ ↓ 1/2`. -/
 theorem tendsto_sum_sq_mul_mellinCell (A : ℕ → ℝ) (T : ℕ) :
-    Tendsto (fun σ : ℝ => ∑ n ∈ Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n) (𝓝[>] (1 / 2))
-      (𝓝 (∑ n ∈ Icc 1 T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)))) := by
+    Tendsto (fun σ : ℝ => ∑ n ∈ Finset.Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n) (𝓝[>] (1 / 2))
+      (𝓝 (∑ n ∈ Finset.Icc 1 T, A n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)))) := by
   refine tendsto_finsetSum _ fun n hn => ?_
-  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast (mem_Icc.mp hn).1
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
   have hn0 : (0 : ℝ) < n := by linarith
   have hcell : Tendsto (fun σ : ℝ => mellinCell (2 * σ) n) (𝓝[>] (1 / 2))
       (𝓝 (1 / ((n : ℝ) * ((n : ℝ) + 1)))) := by
@@ -833,7 +842,7 @@ theorem tendsto_sum_sq_mul_mellinCell (A : ℕ → ℝ) (T : ℕ) :
     rw [← hval]
     exact hc.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
   have := hcell.const_mul (A n ^ 2)
-  simpa [div_eq_mul_one_div] using this
+  rwa [mul_one_div] at this
 
 /-- **A bounded boundary line energy pays the receiver.** If the line energies of
 `ζ(s)(C(s) − m)/s` are at most `M` on `1/2 < σ < 3/4`, every pronic energy is at most
@@ -851,7 +860,8 @@ theorem weightPronicEnergy_le_of_lineEnergy_le {K M : ℝ} {c : ℕ → ℝ}
   have hB : ∀ n, 1 ≤ n → |A n| ≤ B * (n : ℝ) ^ (1 / 2 : ℝ) := fun n hn => by
     have h := abs_weightCenteredPrefix_le_of_dampedClass (K := K) (ε := 1 / 2)
       (by norm_num) (by norm_num) hc hn
-    rwa [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] at h
+    rw [show (n : ℝ) ^ (1 - 1 / 2 : ℝ) = (n : ℝ) ^ (1 / 2 : ℝ) by norm_num] at h
+    exact h
   have hlim := tendsto_sum_sq_mul_mellinCell A T
   refine le_of_tendsto hlim ?_
   filter_upwards [Ioo_mem_nhdsGT (show (1 / 2 : ℝ) < 3 / 4 by norm_num)] with σ hσ
@@ -865,7 +875,7 @@ theorem weightPronicEnergy_le_of_lineEnergy_le {K M : ℝ} {c : ℕ → ℝ}
             rw [mul_pow, ← Real.rpow_natCast ((n : ℝ) ^ (1 / 2 : ℝ)), ← Real.rpow_mul hn0]; norm_num
     exact summable_mul_mellinCell (a := 1) (C := B ^ 2) (by linarith) (by linarith [hσ.1])
       (f := fun n => A n ^ 2) (by simp [hA0]) hB2
-  have hpart : ∑ n ∈ Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n ≤
+  have hpart : ∑ n ∈ Finset.Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n ≤
       ∑' n, A n ^ 2 * mellinCell (2 * σ) n :=
     Summable.sum_le_tsum _ (fun n hn => by
       rcases Nat.eq_zero_or_pos n with rfl | hn'
@@ -873,7 +883,7 @@ theorem weightPronicEnergy_le_of_lineEnergy_le {K M : ℝ} {c : ℕ → ℝ}
       · exact mul_nonneg (sq_nonneg _) (mellinCell_nonneg (by linarith) hn')) hsum
   rw [sum_sq_mul_mellinCell_eq_lineEnergy hc hσ.1 (by linarith [hσ.2])] at hpart
   have hpi : 0 < Real.pi := Real.pi_pos
-  calc ∑ n ∈ Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n
+  calc ∑ n ∈ Finset.Icc 1 T, A n ^ 2 * mellinCell (2 * σ) n
       ≤ σ / Real.pi * M := hpart.trans (mul_le_mul_of_nonneg_left (hM σ hσ.1 hσ.2)
           (div_nonneg hσ0.le hpi.le))
     _ ≤ 3 / 4 / Real.pi * M := by

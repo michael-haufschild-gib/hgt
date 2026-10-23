@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeFarField
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspChargeLineIntegral
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower`
 
@@ -25,21 +27,21 @@ open Bottcher
 /-- `re_chLineInt_ge` with its constants supplied by
 `RHTower.exists_thetaGroupBasis_one_cusp`. -/
 theorem re_chLineInt_ge_uniform :
-    ∃ (M : ℝ), 0 < t → t ≤ 1 / 1000000000 →
+    ∃ (M : ℝ), ∀ (t : ℝ), 0 < t → t ≤ 1 / 1000000000 →
       chG0 t * t ^ 3 / 16 - 2 * chBfar t M ≤ (chLineInt t).re := by
   obtain ⟨M, h_0_0⟩ := RHTower.exists_thetaGroupBasis_one_cusp
   refine ⟨M, ?_⟩
-  intro ht ht0
+  intro t ht ht0
   apply re_chLineInt_ge <;> assumption
 
 /-- `norm_chLine_far` with its constants supplied by
 `RHTower.exists_thetaGroupBasis_one_cusp`. -/
 theorem norm_chLine_far_uniform :
-    ∃ (M : ℝ), 0 < t → t ^ 4 ≤ 1 / 6 → ∀ (s : ℝ), 2 * t ^ 2 ≤ |s| →
+    ∃ (M : ℝ), ∀ (t : ℝ), 0 < t → t ^ 4 ≤ 1 / 6 → ∀ (s : ℝ), 2 * t ^ 2 ≤ |s| →
       ‖chLine t s‖ ≤ chBfar t M * Real.exp (-|s|) := by
   obtain ⟨M, h_0_0⟩ := RHTower.exists_thetaGroupBasis_one_cusp
   refine ⟨M, ?_⟩
-  intro ht ht4 s hs
+  intro t ht ht4 s hs
   apply norm_chLine_far <;> assumption
 
 end RHTower

@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 16 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 25 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -37,9 +37,28 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `FrustrationIsTheLocalGlobalGap` — `not_locallyPayable_rankOneCoupling`, `triangle_nonneg_iff`,
   `triangle_locallyPayable_iff`, `triangle_isBalanced_iff`, `triangle_frustrated_gap`.
 - `TriangleHolonomyDecidesLocalPayment` — `isBalanced_iff_triangleHolonomy_neg`,
-  `exists_nonneg_not_locallyPayable_of_holonomy_pos`, `localPayment_lossless_iff`.
+  `exists_nonneg_not_locallyPayable_of_holonomy_pos`, `localPayment_lossless_iff`,
+  `switchingEquivalent_iff_triangleHolonomy_eq`.
+- `CycleHolonomyDecidesBalance` — `walkHolonomy_switch`, `isBalanced_iff_alignedCycles`,
+  `isBalanced_iff_walkHolonomy_eq`, `nonneg_iff_locallyPayable_of_alignedCycles`,
+  `walkHolonomy_triangle`.
+- `FrustratedCyclesSpoilLocalPayment` — `frustratedCycle_poincare`,
+  `frustratedCycle_energy_nonneg`, `exists_nodup_frustrated`, `cycleWitness_not_locallyPayable`,
+  `localPayment_lossless_iff_isBalanced`, `localPayment_lossless_iff_alignedCycles`.
+- `TheFrustratedCycleIsPaidAlongItsPath` — `antiperiodic_le_of_certificate`, `halfSine_telescope`,
+  `frustratedCycle_capacity`, `frustratedCycle_capacity_attained`, `frustratedCycle_nonneg_iff`,
+  `cycleWitness_locallyPayable_iff`, `cycleWitness_nonneg_iff`, `cycleWitness_window`.
+- `OddFoldingIsTheSourceOfFrustration` — `incidenceEnergy_mirror_odd`, `evenFold_lossless`,
+  `oddFold_pos_iff`, `oddFold_lossless_of_antitone`, `oddFold_primeTriangle_not_isBalanced`,
+  `exists_unpayable_odd_primeTriangle`, `evenFold_prime_lossless`.
+- `TheOddWeilLedgerIsFrustratedOnlyByPrimes` — `weilKernel_antitone`, `oddFold_pos_imp_primeSum`,
+  `frustrated_walk_has_primeSum`, `oddWeilLedger_lossless_of_no_primeSum`.
 - `LocalPaymentIsComparisonPositivity` — `locallyPayable_iff_comparison_nonneg`,
   `locallyPayable_regularized_iff`.
+- `SignChangesNeedAntiAlignedOverlaps` — `polarForm_abs_le`, `exists_nonneg_polarSolution`,
+  `polarForm_nonneg_iff_polarSolution`, `signChange_beats_abs`.
+- `CartesianProductsAddGroundEnergies` — `incidenceEnergy_cartesian`, `cartesian_lower_bound`,
+  `cartesian_attained`.
 - `ChainLendingAndTrainCapacity` — `chain_nonneg_iff_locallyPayable`, `uniformTrain_capacity`,
   `uniformTrain_capacity_attained`, `uniformTrain_capacity_sharp`.
 - `SineTrainsAreExtremalForOnePrime` — `autoCorr_amplitudeTrain_first_le`,
@@ -49,19 +68,29 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `polarDefect_nonneg_of_dense`, `exists_polarDefect_lt_of_unbounded`.
 - `TheReceiverIsTheChainOrbitOfTheReciprocal` — `centeredOperator_reciprocal_apply`,
   `admits_iff_summable_orbit`, `riemannHypothesis_iff_orbit_summable`,
-  `admits_of_chain_l2_bounded`, `not_summable_transition_first_column`.
+  `tendsto_truncation_partialEnergy`, `not_summable_transition_first_column`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `TheSourceIsTheDampedMoebiusResidueSeries` — `centeredOperator_reciprocal_eq_tsum`,
   `admits_of_signBlind`, `not_summable_positiveTwin`.
+- `ThePositiveTwinIsTheExtremalSignPattern` — `abs_residueSeries_le_abs_positiveTwin`,
+  `sq_orbit_le_sq_positiveTwin`, `signBlind_admission_iff`.
 - `TheFirstColumnOfTheChainIsTheReceiver` — `summable_dyadicDifference_iff`,
   `admits_iff_summable_firstColumn`, `riemannHypothesis_iff_firstColumn_summable`.
 - `AdverseProfilesCannotVanish` — `tendsto_energy_splitting`, `adverse_weakLimit`,
   `adverse_escape_of_orthonormal`.
+- `TheRestrictedWeilFormIsCompactlyNegative` — `tendsto_of_weakConvC`,
+  `compactPerturbation_adverse_weakLimit`, `ccmRestrictedWeilForm_adverse_weakLimit`.
 - `OnLineCompanionsPayOffLineDepth` — `companions_pay`, `few_companions_never_pay`.
 - `TheRadialLossLaw` — `radialLoss_add_tangential`, `abs_log_energy_sub_le`.
 
 ## Open
-Research topics 1–8 of the README §8 (arithmetic holonomy, allocation at growing size, nonlocal
+Research topics 1–8 of the README §9 (arithmetic holonomy, allocation at growing size, nonlocal
 payment of the frustrated part, the centred chain on `ℓ²`, residue-Gram cancellation, the companion
-law for Paley–Wiener sources, compact negativity of the critical form, trains beyond two towers).
+law for Paley–Wiener sources, compact negativity uniform in the aperture, trains not aligned with the
+towers).
+
+Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
+sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
+The bound is unproved below half damping (RH-strength at cofinally small `η`), so the implication is
+recorded here and not stated as a theorem.

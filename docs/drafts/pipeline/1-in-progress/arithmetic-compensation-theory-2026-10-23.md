@@ -18,31 +18,23 @@ zero-width scale, or a sharp obstruction with its positive survivor.
 
 ## Gates
 
-- [ ] Pillar 1: prime-comb translation law and sharp rate `4e^{2r}` (report (1)-(2)).
-- [ ] Pillar 2: quantifier corrections — signed vs positive-part budget, core limit (4),
+- [x] Pillar 1: prime-comb translation law and sharp rate `4e^{2r}` (report (1)-(2)).
+- [x] Pillar 2: quantifier corrections — signed vs positive-part budget, core limit (4),
       aperture-loss rate (6), adverse first-cell work.
-- [ ] Pillar 3: 17/30 short-window transfer into the BVI block theorem (range `30/17`).
-- [ ] Compensation coordinates (8) and the actual PM-Ramanujan instance.
-- [ ] Comb defect form / resolvent law (profile classification for the raw comb).
-- [ ] Corrector criterion (9)-(10).
-- [ ] README written; umbrella wired into MainTheorems.
+- [x] Pillar 3: 17/30 short-window transfer into the BVI block theorem (range `30/17`).
+- [x] Compensation coordinates (8), the actual PM-Ramanujan instance and its `log⁻⁶P` rate.
+- [x] Comb resolvent law, with `J(F) > 0` on every nonzero test.
+- [x] Corrector criterion (9)-(10) and its RH dictionary.
+- [x] Dyadic summability of the compensation defects; exact price `(k+1)(k+2)/2` of a change of origin.
+- [x] README written; umbrella `ArithmeticCompensationTheory.lean` wired into `MainTheorems`;
+      area registered in `scripts/formal_tools.py`.
 
-## Module plan (status: written / scratch-checked / audited)
+## Lean status
 
-| Module | Content | Status |
-|---|---|---|
-| ThePrimeCombIsATranslation | `S_r ~ 2e^r`, concentration, `E_r ~ 4e^{2r}`, `L²` translation, charge → 0, odd smooth family | scratch-checked |
-| TheCombAtTheHorizonIsAResolvent | depth law, horizon-law averages, `E_r(F)/S_r² → J(F)`, `J > 0` | written |
-| CompensationCoordinates | Pythagorean law; PM-Ramanujan instance | scratch-checked |
-| TheSignedBudgetIsStrictlyWeakerThanThePositivePart | lacunary countermodel | scratch-checked |
-| TheCoreDebtOnAPositiveIntervalIsAZetaLogRatio | limit (4), horizon-free bound | scratch-checked |
-| TheApertureFloorMustDecayDoublyExponentially | (6), no transported floor, harmonic failure | scratch-checked |
-| TheFirstCellCarriesAdverseWork | `W_1(ε) → −1/2` | scratch-checked |
-| TheSeventeenThirtiethsWindowWidensTheCentredPrimeRowRange | uniform window, BVI at 17/30, range 30/17 | scratch-checked (main theorem body is a copy of BVI's) |
-| TheAdaptedEnergyIsExactlyAdmission | corrector criterion and RH dictionary | written |
+All thirteen modules pass `lake --old env lean` (2026-10-23); no `sorry`/axiom.
 
-Scratch-checked = compiled against Mathlib with stubbed corpus inputs (corpus oleans were being
-rebuilt by other agents). Final audit = `lake --old env lean` on each file.
+Open (README §8): two-scale compensation rate, arithmetic corrector construction, receiver
+blow-up profiles, compensated full-ledger remainder, balanced regime, function-field calibration.
 
 ## No-go closure
 

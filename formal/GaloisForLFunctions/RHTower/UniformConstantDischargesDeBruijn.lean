@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.XiLaguerreShadowDensity
 import GaloisForLFunctions.RHTower.XiLaguerreShadowScaledDensity
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.DeBruijn`
 
@@ -28,7 +30,7 @@ theorem eventually_volume_xiShadowScaled_inter_Icc_le_of_moment_uniform :
   obtain ⟨μ, h_0_0⟩ := RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul
   refine ⟨μ, ?_⟩
   intro κ hκ
-  apply eventually_volume_xiShadowScaled_inter_Icc_le_of_moment <;> first | assumption | linarith
+  apply eventually_volume_xiShadowScaled_inter_Icc_le_of_moment <;> assumption
 
 /-- `eventually_volume_xiShadow_inter_Icc_le_of_moment` with its constants supplied by
 `RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul`. -/
@@ -36,6 +38,6 @@ theorem eventually_volume_xiShadow_inter_Icc_le_of_moment_uniform :
     ∃ (μ : ℝ), ∀ᶠ V in atTop, volume (xiShadow ∩ Icc 0 V) ≤ ENNReal.ofReal (2 * μ * V + μ) := by
   obtain ⟨μ, h_0_0⟩ := RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul
   refine ⟨μ, ?_⟩
-  apply eventually_volume_xiShadow_inter_Icc_le_of_moment <;> first | assumption | linarith
+  apply eventually_volume_xiShadow_inter_Icc_le_of_moment <;> assumption
 
 end RHTower.DeBruijn

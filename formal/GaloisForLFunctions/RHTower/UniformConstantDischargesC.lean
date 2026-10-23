@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.SmoothTransitionDerivBound
 import GaloisForLFunctions.RHTower.ThetaRateMobiusSourceTransfer
 import GaloisForLFunctions.RHTower.TruncatedRiemannKernelWeilEnergy
 import GaloisForLFunctions.RHTower.WeilFullConeConvolutionPositivity
@@ -6,6 +7,8 @@ import GaloisForLFunctions.RHTower.WeilFullConeLacunaryRigidity
 import GaloisForLFunctions.RHTower.WeilFullConeMinorantRigidity
 import GaloisForLFunctions.RHTower.WeilFullConeSummableDeficitRigidity
 import GaloisForLFunctions.RHTower.WeilNearRadicalDimension
+
+set_option autoImplicit false
 
 /-!
 # Uniform constants discharged in `RHTower` (C)
@@ -35,7 +38,7 @@ theorem thetaRateWeight_mul_le_right_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_thetaCuspFullSource_le_halfGaussian
   refine ⟨C₁, ?_⟩
   intro a x s hax hs
-  apply thetaRateWeight_mul_le_right <;> first | assumption | linarith
+  apply thetaRateWeight_mul_le_right <;> assumption
 
 /-- `thetaRateWeight_mul_le_left` with its constants supplied by
 `RHTower.exists_thetaCuspFullSource_le_halfGaussian`. -/
@@ -45,7 +48,7 @@ theorem thetaRateWeight_mul_le_left_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_thetaCuspFullSource_le_halfGaussian
   refine ⟨C₁, ?_⟩
   intro b x s hxb
-  apply thetaRateWeight_mul_le_left <;> first | assumption | linarith
+  apply thetaRateWeight_mul_le_left <;> assumption
 
 /-- `thetaRateWeight_mul_le_bound` with its constants supplied by
 `RHTower.exists_thetaCuspFullSource_le_halfGaussian`. -/
@@ -55,7 +58,7 @@ theorem thetaRateWeight_mul_le_bound_uniform :
   obtain ⟨C₁, h_0_0, h_0_1⟩ := RHTower.exists_thetaCuspFullSource_le_halfGaussian
   refine ⟨C₁, ?_⟩
   intro a b x s hax hxb
-  apply thetaRateWeight_mul_le_bound <;> first | assumption | linarith
+  apply thetaRateWeight_mul_le_bound <;> assumption
 
 /-- `abs_bulkCutoffDeriv_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -65,7 +68,8 @@ theorem abs_bulkCutoffDeriv_le_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro L u
-  apply abs_bulkCutoffDeriv_le <;> first | assumption | linarith
+  apply abs_bulkCutoffDeriv_le
+  assumption
 
 /-- `superExpDecay_nearRadicalTailDeriv` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -74,7 +78,7 @@ theorem superExpDecay_nearRadicalTailDeriv_uniform :
       SuperExpDecay (nearRadicalTailDeriv L a) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro K L a
-  apply superExpDecay_nearRadicalTailDeriv <;> first | assumption | linarith
+  apply superExpDecay_nearRadicalTailDeriv <;> assumption
 
 /-- `one_add_abs_re_mul_norm_paperFT_tail_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -83,7 +87,7 @@ theorem one_add_abs_re_mul_norm_paperFT_tail_le_uniform :
       (1 + |z.re|) * ‖paperFT (nearRadicalTail L a) z‖ ≤ (∫ u : ℝ, ‖nearRadicalTail L a u‖ * Real.exp (1 / 2 * |u|)) + ∫ u : ℝ, ‖nearRadicalTailDeriv L a u‖ * Real.exp (1 / 2 * |u|) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro K L a z hz
-  apply one_add_abs_re_mul_norm_paperFT_tail_le <;> first | assumption | linarith
+  apply one_add_abs_re_mul_norm_paperFT_tail_le <;> assumption
 
 /-- `norm_W_nearRadicalTest_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -92,7 +96,7 @@ theorem norm_W_nearRadicalTest_le_uniform :
       ‖zetaZeroConfig.W (nearRadicalTest L a) (nearRadicalTest L a)‖ ≤ (5 / 4) * (∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) * ((∫ u : ℝ, ‖nearRadicalTail L a u‖ * Real.exp (1 / 2 * |u|)) + ∫ u : ℝ, ‖nearRadicalTailDeriv L a u‖ * Real.exp (1 / 2 * |u|)) ^ 2 := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro K L a
-  apply norm_W_nearRadicalTest_le <;> first | assumption | linarith
+  apply norm_W_nearRadicalTest_le <;> assumption
 
 /-- `nearRadicalTail_pointwise_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -102,7 +106,7 @@ theorem nearRadicalTail_pointwise_le_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro K L a hY₀ hkY M₁ M₂ M₃ M₄ h₁ h₂ h₃ h₄ u
-  apply nearRadicalTail_pointwise_le <;> first | assumption | linarith
+  apply nearRadicalTail_pointwise_le <;> assumption
 
 /-- `norm_W_convRiemannTest_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -111,7 +115,7 @@ theorem norm_W_convRiemannTest_le_uniform :
       ‖zetaZeroConfig.W (convRiemannTest L g) (convRiemannTest L g)‖ ≤ (∫ u, ‖g u‖ * Real.exp (1 / 2 * |u|)) ^ 2 * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L g hg hgc
-  apply norm_W_convRiemannTest_le <;> first | assumption | linarith
+  apply norm_W_convRiemannTest_le <;> assumption
 
 /-- `riemannKernelReal_sub_truncated_le` with its constants supplied by
 `RHTower.exists_riemannKernelReal_le`. -/
@@ -121,7 +125,8 @@ theorem riemannKernelReal_sub_truncated_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_riemannKernelReal_le
   refine ⟨C, ?_⟩
   intro L t
-  apply riemannKernelReal_sub_truncated_le <;> first | assumption | linarith
+  apply riemannKernelReal_sub_truncated_le
+  assumption
 
 /-- `riemannKernelReal_shift_le` with its constants supplied by
 `RHTower.exists_riemannKernelReal_le`. -/
@@ -131,7 +136,7 @@ theorem riemannKernelReal_shift_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_riemannKernelReal_le
   refine ⟨C, ?_⟩
   intro R s hs n hn
-  apply riemannKernelReal_shift_le <;> first | assumption | linarith
+  apply riemannKernelReal_shift_le <;> assumption
 
 /-- `abs_weightTerm_le` with its constants supplied by
 `RHTower.exists_riemannKernelReal_le`. -/
@@ -141,7 +146,7 @@ theorem abs_weightTerm_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_riemannKernelReal_le
   refine ⟨C, ?_⟩
   intro w R s hs n
-  apply abs_weightTerm_le <;> first | assumption | linarith
+  apply abs_weightTerm_le <;> assumption
 
 /-- `norm_W_pairRiemannKernel_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -150,7 +155,7 @@ theorem norm_W_pairRiemannKernel_le_uniform :
       ‖zetaZeroConfig.W (pairRiemannKernel L c ε) (pairRiemannKernel L c ε)‖ ≤ (1 + |ε| * Real.exp (c / 2)) ^ 2 * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L c hc ε
-  apply norm_W_pairRiemannKernel_le <;> first | assumption | linarith
+  apply norm_W_pairRiemannKernel_le <;> assumption
 
 /-- `norm_W_logShiftRiemannDifference_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -159,7 +164,7 @@ theorem norm_W_logShiftRiemannDifference_le_uniform :
       ‖zetaZeroConfig.W (logShiftRiemannDifference L c) (logShiftRiemannDifference L c)‖ ≤ (1 + Real.exp (c / 2)) ^ 2 * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L c hc
-  apply norm_W_logShiftRiemannDifference_le <;> first | assumption | linarith
+  apply norm_W_logShiftRiemannDifference_le <;> assumption
 
 /-- `norm_W_combRiemannKernel_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -168,7 +173,7 @@ theorem norm_W_combRiemannKernel_le_uniform :
       ‖zetaZeroConfig.W (combRiemannKernel L M) (combRiemannKernel L M)‖ ≤ (M * Real.exp (M / 2)) ^ 2 * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L M
-  apply norm_W_combRiemannKernel_le <;> first | assumption | linarith
+  apply norm_W_combRiemannKernel_le <;> assumption
 
 /-- `norm_W_nearRadicalTest_le_ratio` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -178,6 +183,6 @@ theorem norm_W_nearRadicalTest_le_ratio_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro K L a hY₀ hkY
-  apply norm_W_nearRadicalTest_le_ratio <;> first | assumption | linarith
+  apply norm_W_nearRadicalTest_le_ratio <;> assumption
 
 end RHTower

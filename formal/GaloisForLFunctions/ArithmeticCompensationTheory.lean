@@ -1,11 +1,15 @@
 import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimeCombIsATranslation
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCombAtTheHorizonIsAResolvent
 import GaloisForLFunctions.ArithmeticCompensationTheory.CompensationCoordinates
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensationDefectDecaysLogarithmically
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverEnergyEscapesToTheHorizon
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheSignedBudgetIsStrictlyWeakerThanThePositivePart
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCoreDebtOnAPositiveIntervalIsAZetaLogRatio
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheFirstCellCarriesAdverseWork
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheApertureFloorMustDecayDoublyExponentially
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheAdaptedEnergyIsExactlyAdmission
+import GaloisForLFunctions.ArithmeticCompensationTheory.AChangeOfOriginCostsAQuadraticConstant
+import GaloisForLFunctions.ArithmeticCompensationTheory.ADriftingOriginIsPricedByTheTailBeyondIt
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWindowWidensTheCentredPrimeRowRange
 
 /-!
@@ -13,7 +17,7 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWi
 
 Arithmetic compatibility and compensated coercivity: the prime comb at the critical horizon
 (translation and resolvent laws, the sharp exponential rate), compensation coordinates of a
-divergent sector against its complement, the quantifier corrections of the continuation problem,
-the forced aperture loss rate, the adapted-energy criterion, and the `17/30` short-window transfer
+divergent sector against its complement and their logarithmic rate on the actual source, the quantifier corrections of the continuation problem,
+the forced aperture loss rate, the adapted-energy criterion, the exact price of a finite change of origin and the tail price of a drifting one, the escape of a receiver blow-up to the horizon, and the `17/30` short-window transfer
 into the centred prime row. See `ArithmeticCompensationTheory/README.md`.
 -/

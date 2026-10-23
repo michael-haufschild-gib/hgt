@@ -14,11 +14,14 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 3 / 250
+## Accepted contributions: 6 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
 2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
 3. THIM — a paid receiver continues the Dirichlet series across its abscissa; prime-mean quantization (candidate 2).
+4. THIM — the half-damped hyperplane law has an exact logarithmic threshold; little-o pole law (candidate 4).
+5. THIM — the half-damped receiver is the logarithmic energy of the partial pole sums (candidate 5).
+6. THIM — critical Wiener perturbations of the smooth power have uniformly paid rows (candidate 6).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -68,15 +71,49 @@ of the energy at fixed cutoff. No divisor-problem asymptotic is needed.
 (`receiverBounded_dirichletConv_unit_iff_critical`). Status: compiled, axioms `propext`,
 `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
-## Candidate 4 (THIM): the hyperplane law on the algebra stops exactly at half damping
+## Candidate 4 (THIM): the half-damped hyperplane law has an exact logarithmic threshold
 
-**Claim (paper proof sketched).** At `ε = 1/2`: (i) if `Σ_j |k(j)| j^{-1/2} (1 + log j)^{1/2} < ∞`,
-then `k ⋆ d^{-1/2}` is paid iff `K(1/2) = 0` (`E(b_j) = O((1 + log j)/j)`); (ii) the kernel
-`k = Σ_r c_r(δ_{j_r} − j_r^{-1/2}δ_1)`, `j_r = 4^{2^r}`, `c_r = j_r^{1/2}/r²`, lies in the critical
-Wiener algebra with `K(1/2) = 0`, yet `k ⋆ d^{-1/2}` is unpaid: on `[j_R, j_{R+1})` the prefix carries
-`−A_q(n) Σ_{r>R} r^{-2} ≥ c√n/R` (drift lower bound for `A_q`), of energy `≍ 2^R/R²`, while the
-dilations `r ≤ R` are paid uniformly and the mean term is `O(Σ_R R^{-2})`.
-So the hyperplane law on the full algebra holds for every `ε < 1/2` and fails at `ε = 1/2`.
+**Theorem (proved).**
+1. Little-o pole law: `Σ_d |c(d)| d^{-θ} < ∞` (`θ > 1/2`) and paid ⇒ `√u |C(1/2+u) − m| → 0`
+   (head of the Mellin pairing `O(1)`, tail `√(tail energy)·O(u^{-1/2})`, `|ζ(σ)| ≥ 1`).
+2. At `ε = 1/2`, `E(b_j) = O((1 + log j)/j)`; on `Σ_j |k(j)| j^{-1/2} √(1 + log j) < ∞`:
+   `k ⋆ d^{-1/2}` paid ⇔ `K(1/2) = 0`.
+3. `k = Σ_r 2^{-(r+1)} J_r^{1/2} δ_{J_r} − δ_1`, `J_r = 2^{4^{r+1}}`: in every `(1 + log j)^α`-weighted
+   algebra, `0 ≤ α < 1/2`, `K(1/2) = 0`, unpaid (probe `u_R = 4^{-(R+1)}`, `√u_R |C| ≥ 1/2`).
+4. Hyperplane law on the critical Wiener algebra ⇔ `ε < 1/2`.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold.lean`
+(`tendsto_sqrt_mul_abs_dirichletSeries_sub_mean`, `receiverBounded_dirichletConv_unit_half_iff`,
+`not_receiverBounded_dirichletConv_lacunaryKernel`, `criticalWiener_hyperplaneLaw_iff_lt_half`,
+`halfDamped_hyperplaneLaw_logarithmic_threshold`). Status: compiled, axioms `propext`,
+`Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
+
+## Candidate 5 (THIM): the half-damped receiver is the logarithmic energy of the partial pole sums
+
+**Theorem (proved).** For every `k` with `Σ_j |k(j)| j^{-1/2} < ∞` and `S_k(n) = Σ_{j≤n} k(j) j^{-1/2}`:
+`|√E_T(k ⋆ d^{-1/2}) − 2|Z| (Σ_{n≤T} S_k(n)²/(n+1))^{1/2}| ≤ B` for all `T`, with
+`Z = lim (Σ_{d≤N} d^{-1/2} − 2√N) ≤ −1`; hence paid ⇔ `Σ_n S_k(n)²/(n+1) < ∞`. Exact criterion for
+every critical Wiener kernel (answers THIM §5 "criteria for individual kernels beyond absolute classes").
+Inputs: hyperbola asymptotic `A_q(n) = 2Z√n + O(n^{1/4})`, convolution law, Minkowski over dilations.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheHalfDampedReceiverIsTheLogarithmicEnergyOfThePartialPoleSums.lean`
+(`abs_halfRemainder_le`, `abs_sqrt_weightPronicEnergy_dirichletConv_unit_half_sub_le`,
+`receiverBounded_dirichletConv_unit_half_iff_summable_partialPoleSum`). Status: compiled, axioms
+`propext`, `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
+
+## Candidate 6 (THIM): the convolution structure prevents the dipole obstruction
+
+**Theorem (proved).** For `0 < ε < 1/2` and `Σ_j |k(j)| j^{-1/2} < ∞`: the dyadic rows of `k ⋆ d^{-ε}`
+(own means) are uniformly paid ⇔ `k ⋆ d^{-ε}` paid ⇔ `K(1−ε) = 0`. Contrast: on `𝒞(1, ε)` the
+commutation fails below `1/2` (contribution 1). Answers, for this class, THIM §5 "which structure
+prevents the dipole obstruction". Mechanism: rows of pole-free dilations have energy `O(1/j)` uniformly
+in the horizon; finite decomposition `row(k⋆q) = Σ_{j≤N} k(j) row(b_j) + P_N row(q)` with
+`|P_N| ≤ N^{-(1/2−ε)} ‖k‖` paying `‖row(q)‖ = O(N^{1/2−ε})`.
+
+**Lean:** `TransHorizonIncidenceMechanics/CriticalWienerPerturbationsOfTheSmoothPowerHaveUniformlyPaidRows.lean`
+(`exists_weightPronicEnergy_dyadicRow_poleFreeDilation_le`, `rows_bounded_of_critical`,
+`rows_bounded_iff_receiverBounded_dirichletConv_unit`, `rows_bounded_iff_dirichletConv_unit_poleValue_eq_zero`).
+Status: compiled, axioms `propext`, `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
 ## Checked and not pursued
 

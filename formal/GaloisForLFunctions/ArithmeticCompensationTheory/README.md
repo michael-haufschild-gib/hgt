@@ -242,6 +242,48 @@ are three different statements and remain visibly different here.
     and the complete head energy is exactly `(1 − α_P)²‖L_P‖² + ‖R_P‖²`
     (`pmCompleteHeadEnergy_eq_compensation`, from the energy split
     `pmCompleteHeadEnergy_eq_sum` and the Cauchy–Schwarz bound `pmMixedEnergy_sq_le`).
+12′. **The compensation rate on the actual source.** The defect is the relative complete head
+    energy for all large `P` (`eventually_compensationDefect_eq_relative`); the sector energy is at least `cP^{1−2ε}/log²P`
+    (`sectorEnergy_eventually_lower`), the complete energy at most twice the divisor-remainder
+    energy plus the Ramanujan truncation cost `2T⁴P^{1−3ε}` (`prefixEnergy_le`), and the
+    remainder energy is `O(P^{(1−2ε)/2}) + O(1) + O(P^{1−2ε}/log⁸P)` (`remainderEnergy_le`).
+    Hence `(1 − α_P)² + ‖R_P‖²/‖L_P‖² ≤ K/log⁶P` for all large `P`
+    (`exists_compensationDefect_le_inv_log_pow_six`): an explicit logarithmic rate of compensation,
+    with an absolute complete energy `O(P^{1−2ε}/log⁸P)` that still grows with the cutoff.
+    The rate iterates over scales: the defects at `P = 2^k` are summable
+    (`summable_compensationDefect_dyadic`), while the absolute energies are not.
+
+### Where a blow-up of the receiver goes
+
+12‴. **A blow-up escapes to the horizon.** The damped divisor remainder read at the integers gives
+    the source bound `|A_ε(n)| ≤ Cn^{1−ε}` for `0 < ε < ½` (`exists_abs_centredPrefix_le`), so each
+    cell carries at most `C²n^{−2ε}` and the receiver grows at most at the trivial rate,
+    `E_N(ε) ≤ D(1 + N^{1−2ε})` (`exists_dampedMobiusEnergy_le`). Hence the blow-up dichotomy
+    (`admits_or_escapesToHorizon`): either the receiver is admitted at `ε`, or for every `θ < 1`
+    the energy below the scale `E_T^{θ/(1−2ε)}` is a vanishing fraction of `E_T`; and at every
+    damping, either admission holds or every fixed window and every cell carries a vanishing
+    fraction (`admits_or_fixedWindowEnergy_vanishes`). Profiles concentrating at
+    bounded scales, or at scales polynomially below `E_T^{1/(1−2ε)}`, are excluded.
+
+### The price of a change of origin
+
+12″. **A finite change of origin costs exactly `(k+1)(k+2)/2`.** Shifting a sequence by `k` cells
+    multiplies its pronic energy by at most `(k+1)(k+2)/2` (`pronicEnergy_shift_le`, from the weight
+    comparison `pronicWeight_shift_le`), the factor is attained by the indicator of the cell `k + 1`
+    (`pronicEnergy_shift_indicator`), and the shift loses only the first `k` cells in the other
+    direction (`pronicEnergy_le_head_add_shift`). Admission is therefore invariant under every
+    finite change of origin (`bddAbove_pronicEnergy_shift_iff`), in particular for the damped Möbius
+    receiver (`admits_dampedMobiusEnergy_iff_shift`). Finite origin information is recovered stably
+    in the critical norm.
+12⁗. **A drifting origin is priced by the tail beyond it.** The translate `a(· + k)` on `[1, T]`
+    carries between the tail `E(T+k) − E(k)` and `(k+1)(k+2)/2` times that tail
+    (`pronicTail_le_pronicEnergy_shift`, `pronicEnergy_shift_le_tail`). Every admitted sequence
+    stays admitted along a drift `k(T)` if and only if the drift is bounded
+    (`forall_admitted_drift_admitted_iff`), and the single admitted sequence `n^{1/4}` has drifted
+    energy tending to infinity along every drift tending to infinity
+    (`tendsto_pronicEnergy_quarterPower_drift`): control of a drifting origin is never a norm fact
+    and must use the tail decay of the source. For the receiver the source bound gives the trivial
+    drift budget `D(k+1)^{2−2ε}(1 + T^{1−2ε})` (`exists_dampedMobius_drift_le`).
 
 ### Quantifier corrections of the continuation problem
 
@@ -271,8 +313,9 @@ are three different statements and remain visibly different here.
     harmonic transport fails along linearly growing apertures
     (`exists_groundEnergy_lt_harmonic_transport`).
 17. **An adapted energy is exactly admission.** With the right end admitted, an adapted energy on
-    `[a, c]` exists iff the receiver is admitted at `a`, under the differentiability and
-    relative-loss integrability assumptions (`adaptedEnergy_iff_admits`); a pointwise
+    `[a, c]` exists iff the receiver is admitted at `a`, for every nonnegative differentiable family
+    with integrable relative loss (`adaptedEnergy_iff_admits`); for the damped Möbius receiver on
+    `[a, ½]` all of these inputs are proved (`adaptedEnergy_dampedMobiusEnergy_iff_admits`); a pointwise
     corrector budget produces one (`adaptedEnergy_of_pointwise`); and cofinal adapted energies on
     `[a, ½]` for the damped Möbius receiver are RH (`riemannHypothesis_iff_cofinal_adaptedEnergy`).
 
@@ -309,7 +352,23 @@ are three different statements and remain visibly different here.
 
 ---
 
-## 5. What compatibility must contribute
+## 5. The research questions and what is settled
+
+Each question is narrower than RH, though the strongest endpoint of several implies it.
+
+| Question | Answer proved here | What remains |
+|---|---|---|
+| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log⁻⁶P)` and summable over dyadic scales (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
+| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10). | The classification of the receiver's profiles at the horizon itself. |
+| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity. | A remainder exponent below the trivial one, which is a zero-free strip. |
+| Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 12″); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 12⁗); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
+| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 17); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
+| Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 16); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
+| What is the balanced-scale obstruction for actual rows? | The unbalanced range of the centred prime row reaches `30/17` (mechanism 19); the method stops at `Q ≍ P`, where `3P ≤ 2εQ` fails. | A saving at `Q ≍ P` keeping the omitted-residue-class main term. |
+
+---
+
+## 6. What compatibility must contribute
 
 One decomposition gives a Pythagorean identity, not an extra inequality. A useful second
 representation must constrain the same residual in a different way: shared divisor coefficients,
@@ -334,7 +393,7 @@ that every successful route must use the same mechanism.
 
 ---
 
-## 6. Tools
+## 7. Tools
 
 - **Horizon concentration** (`tendsto_combAverage`, `tendsto_combPairAverage`): any bounded
   statistic of the rescaled comb shifts continuous at the horizon, in one or two variables.
@@ -344,7 +403,8 @@ that every successful route must use the same mechanism.
   lemmas and can be reused with other weights.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
-- **Compensation coordinates** (abstract and scalar), with the actual PM-Ramanujan instance.
+- **Compensation coordinates** (abstract and scalar), with the actual PM-Ramanujan instance and its
+  explicit logarithmic rate.
 - **Budget hierarchy**: pointwise control implies a positive-part budget, which implies a signed
   budget; with an admitted right endpoint, the signed budget is equivalent to admission.
   The lacunary countermodel proves that the positive-part requirement is strictly stronger
@@ -353,12 +413,14 @@ that every successful route must use the same mechanism.
 - **Adapted-energy criterion** and its arithmetic dictionary.
 - **Aperture loss-rate calculus**: the ceiling exponent, its monotonicity, forced loss rates for
   floors and products.
+- **Origin calculus** for the pronic norm: the exact shift constant and the head loss
+  (`pronicEnergy_shift_le`, `pronicEnergy_le_head_add_shift`).
 - **Length-uniform short windows** from fixed-length ones (`tileSeq`), reusable for any exponent
   at which the corpus owns a fixed-length theorem.
 
 ---
 
-## 7. Open research topics
+## 8. Open research topics
 
 1. **A two-scale compensation rate.** Choose one actual-source pair of overlapping decompositions —
    the large-prime sector at cutoffs `P²` and `(2P)²`, or adjacent prime/cofactor splits of the same
@@ -393,25 +455,30 @@ that every successful route must use the same mechanism.
 
 ---
 
-## 8. Foundational pillar theorems
+## 9. Foundational pillar theorems
 
 1. `exists_odd_smooth_family_sharp_comb_rate` — the sharp exponential comb family, the translation
    survivor, and the vanishing charge, on the ledger's test class.
 2. `tendsto_combEnergy_div_combMass_sq_horizonEnergy` and `horizonEnergy_pos` — the comb resolvent
    law and strict positivity on nonzero continuous compact tests.
-3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation` — the Pythagorean
-   compensation law and its actual instance.
+3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation` and
+   `exists_compensationDefect_le_inv_log_pow_six` — the Pythagorean compensation law, its actual
+   instance, and its logarithmic rate.
 4. `exists_admitted_monotone_not_positivePartContinuation` — signed recovery is strictly weaker
    than paying every loss.
 5. `tendsto_integral_workCore_logZeta` — the core debt on positive intervals.
 6. `not_relative_step_transport` and `exists_le_floorLoss_of_floor` — the forced aperture loss.
-7. `adaptedEnergy_iff_admits` and `riemannHypothesis_iff_cofinal_adaptedEnergy` — the corrector
+7. `adaptedEnergy_dampedMobiusEnergy_iff_admits` and `riemannHypothesis_iff_cofinal_adaptedEnergy` — the corrector
    criterion and its arithmetic dictionary.
 8. `exists_abs_rowBilinear_centredPrimeRow_le_of_range` — the `30/17` range.
+9. `pronicEnergy_shift_le` with `admits_dampedMobiusEnergy_iff_shift` — the exact price of a change
+   of origin, and the invariance of admission under it; `forall_admitted_drift_admitted_iff` — a
+   drifting origin is tolerated uniformly exactly when it is bounded.
+10. `admits_or_escapesToHorizon` — a blow-up of the receiver escapes to the horizon.
 
 ---
 
-## 9. Success criteria and what a contribution must be
+## 10. Success criteria and what a contribution must be
 
 The programme succeeds in degrees, each measured in the corpus's units:
 
@@ -441,7 +508,7 @@ A contribution to ACCC must
 
 ---
 
-## 10. Principles
+## 11. Principles
 
 1. **Exact source before estimates.** Derive the finite identities from the actual arithmetic laws.
 2. **Compensate before taking absolute values.** The separate pieces may be unbounded.

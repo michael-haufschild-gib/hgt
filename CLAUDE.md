@@ -1,11 +1,7 @@
 ## IMMUTABLE RULE: Follow the whole prompt, every turn
 Read the user's prompt in full, line by line, and follow every rule in it exactly -- including the
 rules at the end that look like boilerplate (tool choice, build commands, proof discipline,
-read-only files). The rules hold for the whole session, not for the first few minutes. Re-read this
-file and the user's prompt at the start of every turn, and before each tool call name the rule that
-governs it and confirm the call matches. A rule is never superseded by convenience, by a plan formed
-earlier in the session, or by default habits. If a rule appears to block the task, say so in one
-sentence and ask -- never route around it silently.
+read-only files). 
 
 ## IMMUTABLE RULE: First search lean corpus, then check mathlib
 Always use the search tool for the lean corpus to find existing work, before checking mathlib.
@@ -21,10 +17,6 @@ Card template: docs/drafts/pipeline/_card-template.md
 4. Formalised in Lean 4 → docs/drafts/pipeline/3-formalized
 5. Publication-ready pre-prints → docs/drafts/pipeline/4-publication-ready
 6. Failed/retired → docs/drafts/pipeline/5-failed
-
-## Check prior research before any new topic or writing new lean code
-- Current ledger of the major RH proof routes and route candidates: docs/reports/rh-current-frontier-map.md (ignore if you are not working on RH)
-- High level facts about things the RH proof must or can not be like: docs/reports/STATUS.md (ignore if not working on RH)
 
 ## Use the search tool for our lean corpus
 Command: `scripts/formal_tools.py research "<query>"`. Run it directly; do not run `--help` or read
@@ -75,6 +67,9 @@ Query syntax and paging:
   Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
 
+## A proof must be unconditional
+Lean proofs must be unconditional, no hypotheses or premises. Anything that is based on something that is not proven is not a proof.
+
 ## Lean rules
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
 2. **NEVER run `lake build`.** Not for a module, not for an umbrella, not for "just one file",
@@ -112,4 +107,4 @@ Query syntax and paging:
 ## Session & compaction management
 - Long tasks survive compaction via files, not memory. Before a hard problem, write the card in the
   pipeline; check progress back to it.
-- Do not stop a task early over token budget.
+- Do not stop a task early over token budget. 

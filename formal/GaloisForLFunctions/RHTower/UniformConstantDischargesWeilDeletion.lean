@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.WeilInsertionAnyWeight
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.WeilDeletion`
 
@@ -28,6 +30,6 @@ theorem bumpOverlap_ge_uniform :
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.WeilDeletion.exists_lipschitz_phiTwo
   refine ⟨M, ?_⟩
   intro L hL h
-  apply bumpOverlap_ge <;> first | assumption | linarith
+  apply bumpOverlap_ge <;> assumption
 
 end RHTower.WeilDeletion

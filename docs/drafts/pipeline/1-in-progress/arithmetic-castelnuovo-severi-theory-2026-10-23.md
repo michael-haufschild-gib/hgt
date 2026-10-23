@@ -41,12 +41,24 @@ survivor).
   (`spanDefect_eq_toeplitz`); `hodgeIndexOnSpan_iff_unitary`.
 - `FakeCurvesAndTheWindowLaw`: golden fake curve over `𝔽₅` violates Hodge index with integral point
   counts; `two_mul_genus_ge_of_window`, `exists_hidden_on_window` (calibrated finite-window wall).
+- `WittIntegralityIsNotPurity`: `zetaSeries_hasGhost` (ghost components = Lefschetz numbers),
+  `eq_of_hasGhost`, `witt_integral_not_pure` (golden datum integral, impure),
+  `pureDatum_pointCount_one_not_int` (pure, non-integral).
 - `SpanContactLaw`: `toeplitz_pos_on_window_iff` (first degenerate window = number of eigenvalues).
 - `HodgeIndexFromEffectivity`: `exists_effectivity_iff_hodgeIndex` (RR + ample axioms ⟺ Hodge index).
 - `TheScalingSurface`: `scalingSurface_hodgeIndex_iff` (Hodge index of ℤ's scaling surface ⟺ RH),
   `posTestCone_not_riemannRoch`.
 - `ArithmeticHodgeIndexSignatureLaw`: `posIndex_intersectionGram`, `riemannHypothesis_iff_one_positive_square`,
   `one_positive_square_iff_vonMangoldt`, `negIndex_weilGram_le_offLineCount` (Pontryagin bound).
+- `FiniteConfigurationPontryaginLaw`: `exists_test_interpolating`; `pontryagin_law_finite` (finite
+  configurations: max negative index = #distinct zeros right of the line).
+- `TemperedConfigurationPontryaginLaw`: `summable_Wsummand`, `negIndex_zeroGram_le_of_tempered`,
+  `pontryagin_law_of_tempered` (tempered configurations with finitely many right zeros: exact law,
+  via dual tests and translated pairs); `weilGram_eq_zeroGram` for `ζ`.
+- `TheHodgeDefectCountsTheRightZeros`: `pontryagin_law` (every tempered configuration: max negative
+  index = #{Re ρ > ½} in ℕ∞, via density of zero-side coordinates in ℓ²);
+  `zeta_hodgeDefect_iff`, `zeta_rightZeros_infinite_iff` (Hodge defect of ℤ's scaling surface =
+  #zeros right of the line; unconditional).
 - `InfiniteGenusLaw`: `riemannHypothesis_iff_weil_positive_definite`.
 - `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`: Kronecker/Cartesian law (no cross-prime prime
   coupling), additive Euler envelopes, `heckeIncidence_succ`.
@@ -63,6 +75,11 @@ survivor).
   (`riemannHypothesis_iff_exists_effectivity`).
 - **Status:** Lean, all modules compiled unconditionally; main theorems depend only on
   `propext, Classical.choice, Quot.sound`.
+
+## Open: aperture of the Pontryagin law
+The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
+proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated
+pairs).
 
 ## Open core
 The scaling-surface Hodge index is RH-equivalent (`scalingSurface_hodgeIndex_iff`,

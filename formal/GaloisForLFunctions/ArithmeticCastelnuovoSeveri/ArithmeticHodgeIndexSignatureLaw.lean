@@ -125,6 +125,7 @@ theorem weilGram_isHermitian (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) : (wei
   simp only [weilGram, Matrix.conjTranspose_apply, star_def]
   rw [← RHTower.WeilSpectral.weilFullFunctional_tilde, RHTower.OddResolvent.tilde_weilTest_mixed]
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem localGram_isHermitian (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) : (localGram lam f).IsHermitian := by
   unfold localGram
   refine Matrix.IsHermitian.sub ?_ (weilGram_isHermitian lam f)
@@ -145,6 +146,7 @@ theorem polarGram_apply (f : ι → ℝ → ℂ) (hf : ∀ i, Continuous (f i))
   simp [Matrix.mul_apply, Fin.sum_univ_two, poleRow, polePlane, Matrix.conjTranspose_apply]
   ring
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- **The local intersection is the local side of the explicit formula**: prime comb minus
 archimedean collar, with the pole cancelled. -/
 theorem localGram_apply (lam : ℕ → ℝ) (f : ι → ℝ → ℂ) (hf : ∀ i, Continuous (f i))
@@ -227,6 +229,7 @@ theorem one_positive_square_iff_vonMangoldt (lam : ℕ → ℝ) :
 
 /-! ### The Pontryagin bound -/
 
+omit [DecidableEq ι] in
 /-- **The Pontryagin bound for `ζ`.** Weil's form has at most as many negative squares on any
 finite family of `C²` compactly supported tests as `ζ` has zeros right of the critical line. -/
 theorem negIndex_weilGram_le_offLineCount (f : ι → ℝ → ℂ) (hf : ∀ i, ContDiff ℝ 2 (f i))

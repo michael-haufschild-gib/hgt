@@ -121,38 +121,36 @@ theorem linePt_mem_carrier {t : ℝ} (hxi : RHTower.xi (RHTower.linePt t) = 0) :
   refine ⟨(RHTower.xi_eq_zero_iff (by rw [hre]; norm_num) hne).mp hxi, ?_, ?_⟩ <;> rw [hre] <;>
     norm_num
 
-/-- **Under RH Weil's form is positive definite.** -/
-theorem re_W_pos_of_riemannHypothesis (hRH : RiemannHypothesis) {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
-    (hfc : HasCompactSupport f) (hf0 : f ≠ 0) : 0 < (zetaZeroConfig.W f f).re := by
-  rw [RHTower.WeilConditional.re_W_eq_tsum_zeroTerm hRH hf hfc]
-  have hsum := RHTower.WeilConditional.summable_zeroTerm hRH hf hfc
-  refine lt_of_le_of_ne (tsum_nonneg fun ρ => RHTower.WeilConditional.zeroTerm_nonneg f ρ) ?_
-  intro h0
-  have hall : ∀ ρ, RHTower.WeilConditional.zeroTerm f ρ = 0 := fun ρ =>
-    le_antisymm (by
-      have := hsum.le_tsum ρ fun j _ => RHTower.WeilConditional.zeroTerm_nonneg f j
-      linarith) (RHTower.WeilConditional.zeroTerm_nonneg f ρ)
-  obtain ⟨R, hR⟩ := hfc.isCompact.isBounded.subset_closedBall 0
-  have hfs : tsupport f ⊆ Icc (-|R|) |R| := fun x hx => by
-    have := hR hx
-    rw [Metric.mem_closedBall, dist_zero_right, Real.norm_eq_abs] at this
-    exact ⟨by linarith [neg_abs_le x, le_abs_self R], (le_abs_self x).trans (this.trans (le_abs_self R))⟩
-  apply hf0
-  refine eq_zero_of_paperFT_vanish hf.continuous (abs_nonneg R) hfs ∅ fun t _ _ hxi _ => ?_
-  have hmem := linePt_mem_carrier hxi
-  have h1 := hall ⟨_, hmem⟩
-  have hm : 1 ≤ zetaZeroConfig.mult (RHTower.linePt t) := zetaZeroConfig.one_le_mult _ hmem
-  have him : (RHTower.linePt t).im = t := by simp [RHTower.linePt]
-  simp only [RHTower.WeilConditional.zeroTerm, him] at h1
-  have hm' : (0 : ℝ) < zetaZeroConfig.mult (RHTower.linePt t) := by exact_mod_cast hm
-  have := (mul_eq_zero.mp h1).resolve_left hm'.ne'
-  simpa using this
-
 /-- **RH is the positive definiteness of Weil's form.** -/
 theorem riemannHypothesis_iff_weil_positive_definite :
     RiemannHypothesis ↔ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → HasCompactSupport f → f ≠ 0 →
       0 < (zetaZeroConfig.W f f).re := by
-  refine ⟨fun hRH f hf hfc hf0 => re_W_pos_of_riemannHypothesis hRH hf hfc hf0, fun h => ?_⟩
+  refine ⟨fun hRH f hf hfc hf0 => ?_, fun h => ?_⟩
+  · -- under RH, `W(f, f) = Σ_ρ m_ρ |h_f(γ_ρ)|²`, and a vanishing sum kills `h_f` at every zero
+    rw [RHTower.WeilConditional.re_W_eq_tsum_zeroTerm hRH hf hfc]
+    have hsum := RHTower.WeilConditional.summable_zeroTerm hRH hf hfc
+    refine lt_of_le_of_ne (tsum_nonneg fun ρ => RHTower.WeilConditional.zeroTerm_nonneg f ρ) ?_
+    intro h0
+    have hall : ∀ ρ, RHTower.WeilConditional.zeroTerm f ρ = 0 := fun ρ =>
+      le_antisymm (by
+        have := hsum.le_tsum ρ fun j _ => RHTower.WeilConditional.zeroTerm_nonneg f j
+        linarith) (RHTower.WeilConditional.zeroTerm_nonneg f ρ)
+    obtain ⟨R, hR⟩ := hfc.isCompact.isBounded.subset_closedBall 0
+    have hfs : tsupport f ⊆ Icc (-|R|) |R| := fun x hx => by
+      have := hR hx
+      rw [Metric.mem_closedBall, dist_zero_right, Real.norm_eq_abs] at this
+      exact ⟨by linarith [neg_abs_le x, le_abs_self R],
+        (le_abs_self x).trans (this.trans (le_abs_self R))⟩
+    apply hf0
+    refine eq_zero_of_paperFT_vanish hf.continuous (abs_nonneg R) hfs ∅ fun t _ _ hxi _ => ?_
+    have hmem := linePt_mem_carrier hxi
+    have h1 := hall ⟨_, hmem⟩
+    have hm : 1 ≤ zetaZeroConfig.mult (RHTower.linePt t) := zetaZeroConfig.one_le_mult _ hmem
+    have him : (RHTower.linePt t).im = t := by simp [RHTower.linePt]
+    simp only [RHTower.WeilConditional.zeroTerm, him] at h1
+    have hm' : (0 : ℝ) < zetaZeroConfig.mult (RHTower.linePt t) := by exact_mod_cast hm
+    have := (mul_eq_zero.mp h1).resolve_left hm'.ne'
+    simpa using this
   refine RHTower.riemannHypothesis_iff_weilPositiveFull_vonMangoldt.mpr fun f hf hfc => ?_
   rw [← RHTower.zeta_W_eq_weilFullFunctional_mixed hf hfc hf hfc]
   by_cases hf0 : f = 0

@@ -1,0 +1,315 @@
+import GaloisForLFunctions.RHTower.ChiRamanujanDampedSquareRightLine
+import GaloisForLFunctions.RHTower.SpurRescale
+import Mathlib.Data.Nat.Factorization.PrimePow
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
+import Mathlib.NumberTheory.ArithmeticFunction.Moebius
+
+/-!
+# The physical damping diagonal of prime pairs
+
+The normalized divisor response approximates von Mangoldt uniformly on a
+finite interval. The resulting pair error keeps an explicit damping factor,
+so damping can decrease with the physical horizon.
+-/
+
+namespace TwinPrime
+
+open Finset ArithmeticFunction RHTower
+open Filter Topology
+
+noncomputable section
+
+/-- The divisor response at its first-order damping scale. -/
+def normalizedDampedResponse (ε : ℝ) (n : ℕ) : ℝ :=
+  pmPowerDampedDivisorCoeff ε n / ε
+
+theorem normalizedDampedResponse_nonneg {ε : ℝ} (hε : 0 < ε) (n : ℕ) :
+    0 ≤ normalizedDampedResponse ε n :=
+  div_nonneg (pmPowerDampedDivisorCoeff_nonneg hε.le n) hε.le
+
+theorem normalizedDampedResponse_le_log {ε : ℝ} (hε : 0 < ε)
+    {n : ℕ} (hn : 2 ≤ n) : normalizedDampedResponse ε n ≤ Real.log n := by
+  rw [normalizedDampedResponse, div_le_iff₀ hε]
+  simpa only [mul_comm] using
+    BAGTrace.pmPowerDampedDivisorCoeff_le_damping_log hε.le (by omega : 1 < n)
+
+private theorem prime_factor_nonneg {ε : ℝ} (hε : 0 ≤ ε) {p : ℕ} (hp : p.Prime) :
+    0 ≤ 1 - (p : ℝ) ^ (-ε) := by
+  exact sub_nonneg.mpr (Real.rpow_le_one_of_one_le_of_nonpos
+    (by exact_mod_cast hp.one_le) (neg_nonpos.mpr hε))
+
+private theorem prime_factor_le (ε : ℝ) {p : ℕ} (hp : p.Prime) :
+    1 - (p : ℝ) ^ (-ε) ≤ ε * Real.log p := by
+  rw [Real.rpow_def_of_pos (by exact_mod_cast hp.pos)]
+  linarith [Real.add_one_le_exp (Real.log p * (-ε))]
+
+/-- Two distinct prime factors supply a second damping factor. -/
+theorem dampedResponse_le_quadratic_of_not_primePow {ε : ℝ} (hε : 0 ≤ ε)
+    {n : ℕ} (hn : 2 ≤ n) (hnp : ¬ IsPrimePow n) :
+    pmPowerDampedDivisorCoeff ε n ≤ ε ^ 2 * (Real.log n) ^ 2 / 4 := by
+  obtain ⟨p, hpm, q, hqm, hpq⟩ := (Nat.not_isPrimePow_iff_nontrivial_of_two_le hn).mp hnp
+  have hp := Nat.prime_of_mem_primeFactors hpm
+  have hq := Nat.prime_of_mem_primeFactors hqm
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq.pos
+  have hpL : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_le)
+  have hqL : 0 ≤ Real.log q := Real.log_nonneg (by exact_mod_cast hq.one_le)
+  have hnL : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
+  have hpnd : p ∣ n := (Nat.mem_primeFactors.mp hpm).2.1
+  have hqnd : q ∣ n := (Nat.mem_primeFactors.mp hqm).2.1
+  have hprod : p * q ∣ n :=
+    ((Nat.coprime_primes hp hq).mpr hpq).mul_dvd_of_dvd_of_dvd hpnd hqnd
+  have hlog : Real.log p + Real.log q ≤ Real.log n := by
+    rw [← Real.log_mul hp0.ne' hq0.ne']
+    exact Real.log_le_log (mul_pos hp0 hq0)
+      (by exact_mod_cast Nat.le_of_dvd (by omega : 0 < n) hprod)
+  have hlogs : Real.log p * Real.log q ≤ (Real.log n) ^ 2 / 4 := by
+    have hsq : (Real.log p + Real.log q) ^ 2 ≤ (Real.log n) ^ 2 :=
+      pow_le_pow_left₀ (add_nonneg hpL hqL) hlog 2
+    nlinarith [sq_nonneg (Real.log p - Real.log q)]
+  have hsub : ({p, q} : Finset ℕ) ⊆ n.primeFactors := by
+    simp only [insert_subset_iff, singleton_subset_iff]
+    exact ⟨hpm, hqm⟩
+  have hkeep := Finset.prod_le_prod_of_subset_of_le_one
+    (f := fun p : ℕ => 1 - (p : ℝ) ^ (-ε)) hsub
+    (fun p hp => prime_factor_nonneg hε (Nat.prime_of_mem_primeFactors hp))
+    (fun p _ _ => by linarith [Real.rpow_nonneg (Nat.cast_nonneg p) (-ε)])
+  rw [Finset.prod_insert (by simpa using hpq), Finset.prod_singleton] at hkeep
+  rw [pmPowerDampedDivisorCoeff_eq_prod ε (by omega : n ≠ 0)]
+  calc
+    _ ≤ (1 - (p : ℝ) ^ (-ε)) * (1 - (q : ℝ) ^ (-ε)) := hkeep
+    _ ≤ (ε * Real.log p) * (ε * Real.log q) :=
+      mul_le_mul (prime_factor_le ε hp) (prime_factor_le ε hq)
+        (prime_factor_nonneg hε hq) (mul_nonneg hε hpL)
+    _ = ε ^ 2 * (Real.log p * Real.log q) := by ring
+    _ ≤ ε ^ 2 * ((Real.log n) ^ 2 / 4) :=
+      mul_le_mul_of_nonneg_left hlogs (sq_nonneg ε)
+    _ = _ := by ring
+
+/-- Uniform first-order approximation, including integers with several prime factors. -/
+theorem normalizedDampedResponse_error {ε : ℝ} (hε : 0 < ε)
+    {n : ℕ} (hn : 2 ≤ n) :
+    |normalizedDampedResponse ε n - vonMangoldt n| ≤ ε * (Real.log n) ^ 2 / 2 := by
+  by_cases hnp : IsPrimePow n
+  · obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff n).mp hnp
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+    have hpL : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_le)
+    have hpk : p ≤ p ^ k := Nat.le_of_dvd (pow_pos hp.pos k) (dvd_pow_self p hk.ne')
+    have hlog : Real.log p ≤ Real.log (p ^ k : ℕ) :=
+      Real.log_le_log hp0 (by exact_mod_cast hpk)
+    have hlogsq := pow_le_pow_left₀ hpL hlog 2
+    have htop : (1 - (p : ℝ) ^ (-ε)) / ε ≤ Real.log p := by
+      apply (div_le_iff₀ hε).mpr
+      simpa only [mul_comm] using prime_factor_le ε hp
+    have hquad := exp_neg_le_quadratic (mul_nonneg hε.le hpL)
+    have hbottom : Real.log p - ε * (Real.log p) ^ 2 / 2 ≤
+        (1 - (p : ℝ) ^ (-ε)) / ε := by
+      apply (le_div_iff₀ hε).mpr
+      rw [Real.rpow_def_of_pos hp0]
+      have he : Real.log p * (-ε) = -(ε * Real.log p) := by ring
+      rw [he]
+      nlinarith only [hquad]
+    rw [normalizedDampedResponse,
+      pmPowerDampedDivisorCoeff_eq_prod ε (pow_ne_zero k hp.ne_zero),
+      Nat.primeFactors_pow p hk.ne', hp.primeFactors, Finset.prod_singleton,
+      vonMangoldt_apply_pow hk.ne', vonMangoldt_apply_prime hp,
+      abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr htop)]
+    calc
+      _ ≤ ε * (Real.log p) ^ 2 / 2 := by linarith
+      _ ≤ _ := div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hlogsq hε.le) (by norm_num)
+  · rw [vonMangoldt_eq_zero_iff.mpr hnp, sub_zero,
+      abs_of_nonneg (normalizedDampedResponse_nonneg hε n), normalizedDampedResponse]
+    apply (div_le_iff₀ hε).mpr
+    have hbound := dampedResponse_le_quadratic_of_not_primePow hε.le hn hnp
+    nlinarith only [hbound, mul_nonneg (sq_nonneg ε) (sq_nonneg (Real.log n))]
+
+/-- A positive damping clock gives an approximation at every physical index. -/
+theorem normalizedDampedResponse_exp_error (t : ℝ) (n : ℕ) :
+    |normalizedDampedResponse (Real.exp (-t)) (n + 2) - vonMangoldt (n + 2)| ≤
+      Real.exp (-t) * (Real.log (n + 2 : ℕ)) ^ 2 / 2 :=
+  normalizedDampedResponse_error (Real.exp_pos _) (by omega)
+
+private theorem damped_pair_error {ε : ℝ} (hε : 0 < ε)
+    {n m K : ℕ} (hn : 2 ≤ n) (hm : 2 ≤ m) (hnK : n ≤ K) (hmK : m ≤ K) :
+    |normalizedDampedResponse ε n * normalizedDampedResponse ε m -
+        vonMangoldt n * vonMangoldt m| ≤ ε * (Real.log K) ^ 3 := by
+  let L := Real.log K
+  have hnL : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
+  have hmL : 0 ≤ Real.log m := Real.log_nonneg (by exact_mod_cast (show 1 ≤ m by omega))
+  have hnL' : Real.log n ≤ L :=
+    Real.log_le_log (by exact_mod_cast (show 0 < n by omega)) (by exact_mod_cast hnK)
+  have hmL' : Real.log m ≤ L :=
+    Real.log_le_log (by exact_mod_cast (show 0 < m by omega)) (by exact_mod_cast hmK)
+  have hL : 0 ≤ L := hnL.trans hnL'
+  have hen : |normalizedDampedResponse ε n - vonMangoldt n| ≤ ε * L ^ 2 / 2 :=
+    (normalizedDampedResponse_error hε hn).trans
+      (div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hnL hnL' 2) hε.le) (by norm_num))
+  have hem : |normalizedDampedResponse ε m - vonMangoldt m| ≤ ε * L ^ 2 / 2 :=
+    (normalizedDampedResponse_error hε hm).trans
+      (div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hmL hmL' 2) hε.le) (by norm_num))
+  have hrm : normalizedDampedResponse ε m ≤ L :=
+    (normalizedDampedResponse_le_log hε hm).trans hmL'
+  have hΛn : vonMangoldt n ≤ L := vonMangoldt_le_log.trans hnL'
+  have hE : 0 ≤ ε * L ^ 2 / 2 := by positivity
+  calc
+    _ = |(normalizedDampedResponse ε n - vonMangoldt n) * normalizedDampedResponse ε m +
+        vonMangoldt n * (normalizedDampedResponse ε m - vonMangoldt m)| := by
+      congr 1
+      ring
+    _ ≤ |(normalizedDampedResponse ε n - vonMangoldt n) * normalizedDampedResponse ε m| +
+        |vonMangoldt n * (normalizedDampedResponse ε m - vonMangoldt m)| := abs_add_le _ _
+    _ = |normalizedDampedResponse ε n - vonMangoldt n| * normalizedDampedResponse ε m +
+        vonMangoldt n * |normalizedDampedResponse ε m - vonMangoldt m| := by
+      rw [abs_mul, abs_mul, abs_of_nonneg (normalizedDampedResponse_nonneg hε m),
+        abs_of_nonneg vonMangoldt_nonneg]
+    _ ≤ (ε * L ^ 2 / 2) * L + L * (ε * L ^ 2 / 2) :=
+      add_le_add (mul_le_mul hen hrm (normalizedDampedResponse_nonneg hε m) hE)
+        (mul_le_mul hΛn hem (abs_nonneg _) hL)
+    _ = _ := by dsimp [L]; ring
+
+private theorem interval_average_abs_le (f : ℕ → ℝ) (X : ℕ) {C : ℝ} (hC : 0 ≤ C)
+    (hf : ∀ n ∈ Icc 2 X, |f n| ≤ C) : |(∑ n ∈ Icc 2 X, f n) / X| ≤ C := by
+  by_cases hX : X = 0
+  · simp only [hX, Nat.cast_zero, div_zero, abs_zero, hC]
+  have hXpos : (0 : ℝ) < X := by exact_mod_cast Nat.pos_of_ne_zero hX
+  rw [abs_div, abs_of_pos hXpos, div_le_iff₀ hXpos]
+  calc
+    _ ≤ ∑ n ∈ Icc 2 X, |f n| := abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _n ∈ Icc 2 X, C := sum_le_sum hf
+    _ = ((Icc 2 X).card : ℝ) * C := by rw [sum_const, nsmul_eq_mul]
+    _ ≤ (X : ℝ) * C := mul_le_mul_of_nonneg_right (by
+      exact_mod_cast (show (Icc 2 X).card ≤ X by rw [Nat.card_Icc]; omega)) hC
+    _ = _ := mul_comm _ _
+
+/-- The physical average of the two normalized divisor responses. -/
+def dampedPairAverage (ε : ℝ) (X h : ℕ) : ℝ :=
+  (∑ n ∈ Icc 2 X, normalizedDampedResponse ε n * normalizedDampedResponse ε (n + h)) / X
+
+/-- The matching von Mangoldt pair average. -/
+def mangoldtPairAverage (X h : ℕ) : ℝ :=
+  (∑ n ∈ Icc 2 X, vonMangoldt n * vonMangoldt (n + h)) / X
+
+/-- Squarefree projection of the physical divisor response. -/
+def projectedDampedPairAverage (ε : ℝ) (X h : ℕ) : ℝ :=
+  (∑ n ∈ Icc 2 X, (moebius n : ℝ) ^ 2 * (moebius (n + h) : ℝ) ^ 2 *
+    (normalizedDampedResponse ε n * normalizedDampedResponse ε (n + h))) / X
+
+/-- The actual logarithmically weighted prime pairs. -/
+def primePairLogAverage (X h : ℕ) : ℝ :=
+  (∑ n ∈ Icc 2 X, if n.Prime ∧ (n + h).Prime then
+    Real.log n * Real.log (n + h : ℕ) else 0) / X
+
+private theorem moebius_sq_mangoldt (n : ℕ) :
+    (moebius n : ℝ) ^ 2 * vonMangoldt n = if n.Prime then Real.log n else 0 := by
+  by_cases hp : n.Prime
+  · simp only [hp, if_true, moebius_apply_prime hp, Int.cast_neg, Int.cast_one,
+      neg_one_sq, one_mul, vonMangoldt_apply_prime hp]
+  · rw [if_neg hp]
+    by_cases hn : IsPrimePow n
+    · rw [moebius_apply_isPrimePow_not_prime hn hp]
+      simp only [Int.cast_zero, zero_pow two_ne_zero, zero_mul]
+    · rw [vonMangoldt_eq_zero_iff.mpr hn, mul_zero]
+
+private theorem projected_mangoldt_pair (n m : ℕ) :
+    (moebius n : ℝ) ^ 2 * (moebius m : ℝ) ^ 2 * (vonMangoldt n * vonMangoldt m) =
+      if n.Prime ∧ m.Prime then Real.log n * Real.log m else 0 := by
+  calc
+    _ = ((moebius n : ℝ) ^ 2 * vonMangoldt n) *
+        ((moebius m : ℝ) ^ 2 * vonMangoldt m) := by ring
+    _ = _ := by
+      rw [moebius_sq_mangoldt, moebius_sq_mangoldt]
+      by_cases hn : n.Prime <;> by_cases hm : m.Prime <;>
+        simp only [hn, hm, and_self, and_false, false_and, if_true, if_false,
+          mul_zero, zero_mul]
+
+private theorem abs_moebius_sq_le_one (n : ℕ) : |(moebius n : ℝ) ^ 2| ≤ 1 := by
+  rcases moebius_eq_or n with h | h | h <;> simp only [h] <;> norm_num
+
+private theorem dampedPairAverage_error {ε : ℝ} (hε : 0 < ε) (X h : ℕ) :
+    |dampedPairAverage ε X h - mangoldtPairAverage X h| ≤
+      ε * (Real.log (X + h + 2 : ℕ)) ^ 3 := by
+  rw [dampedPairAverage, mangoldtPairAverage, ← sub_div, ← sum_sub_distrib]
+  apply interval_average_abs_le
+  · have : 0 ≤ Real.log (X + h + 2 : ℕ) :=
+      Real.log_nonneg (by exact_mod_cast (show 1 ≤ X + h + 2 by omega))
+    positivity
+  · intro n hn
+    have hnI := mem_Icc.mp hn
+    exact damped_pair_error hε hnI.1 (by omega) (by omega) (by omega)
+
+private theorem projectedDampedPairAverage_error {ε : ℝ} (hε : 0 < ε) (X h : ℕ) :
+    |projectedDampedPairAverage ε X h - primePairLogAverage X h| ≤
+      ε * (Real.log (X + h + 2 : ℕ)) ^ 3 := by
+  rw [projectedDampedPairAverage, primePairLogAverage, ← sub_div, ← sum_sub_distrib]
+  apply interval_average_abs_le
+  · have : 0 ≤ Real.log (X + h + 2 : ℕ) :=
+      Real.log_nonneg (by exact_mod_cast (show 1 ≤ X + h + 2 by omega))
+    positivity
+  · intro n hn
+    have hnI := mem_Icc.mp hn
+    rw [← projected_mangoldt_pair, ← mul_sub, abs_mul, abs_mul]
+    have hw : |(moebius n : ℝ) ^ 2| * |(moebius (n + h) : ℝ) ^ 2| ≤ 1 := by
+      simpa only [one_mul] using mul_le_mul (abs_moebius_sq_le_one n)
+        (abs_moebius_sq_le_one (n + h)) (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1)
+    exact (mul_le_of_le_one_left (abs_nonneg _) hw).trans
+      (damped_pair_error hε hnI.1 (by omega) (by omega) (by omega))
+
+/-- Damping shrinks fast enough to resolve a pair at the physical horizon. -/
+def physicalPairDamping (X h : ℕ) : ℝ := (Real.log (X + h + 2 : ℕ))⁻¹ ^ 4
+
+theorem physicalPairDamping_pos (X h : ℕ) : 0 < physicalPairDamping X h := by
+  have : 0 < Real.log (X + h + 2 : ℕ) :=
+    Real.log_pos (by exact_mod_cast (show 1 < X + h + 2 by omega))
+  exact pow_pos (inv_pos.mpr this) 4
+
+private theorem physicalPairDamping_error_scale (X h : ℕ) :
+    physicalPairDamping X h * (Real.log (X + h + 2 : ℕ)) ^ 3 =
+      (Real.log (X + h + 2 : ℕ))⁻¹ := by
+  have hL : Real.log (X + h + 2 : ℕ) ≠ 0 := ne_of_gt
+    (Real.log_pos (by exact_mod_cast (show 1 < X + h + 2 by omega)))
+  unfold physicalPairDamping
+  field_simp
+
+/-- The shrinking-damping diagonal resolves the von Mangoldt pair average. -/
+theorem dampedPairDiagonal_error (X h : ℕ) :
+    |dampedPairAverage (physicalPairDamping X h) X h - mangoldtPairAverage X h| ≤
+      (Real.log (X + h + 2 : ℕ))⁻¹ := by
+  simpa only [physicalPairDamping_error_scale] using
+    dampedPairAverage_error (physicalPairDamping_pos X h) X h
+
+/-- With squarefree projection, the diagonal resolves actual prime pairs. -/
+theorem primePairDiagonal_error (X h : ℕ) :
+    |projectedDampedPairAverage (physicalPairDamping X h) X h - primePairLogAverage X h| ≤
+      (Real.log (X + h + 2 : ℕ))⁻¹ := by
+  simpa only [physicalPairDamping_error_scale] using
+    projectedDampedPairAverage_error (physicalPairDamping_pos X h) X h
+
+private theorem physicalPairError_tendsto_zero (h : ℕ) :
+    Tendsto (fun X : ℕ => (Real.log (X + h + 2 : ℕ))⁻¹) atTop (𝓝 0) := by
+  have hX : Tendsto (fun X : ℕ => X + h + 2) atTop atTop := by
+    simpa only [Nat.add_assoc] using tendsto_add_atTop_nat (h + 2)
+  exact tendsto_inv_atTop_zero.comp
+    (Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp hX))
+
+/-- Simultaneous horizon growth and damping decay preserve the Mangoldt pair reading. -/
+theorem dampedPairDiagonal_tendsto (h : ℕ) :
+    Tendsto (fun X : ℕ => dampedPairAverage (physicalPairDamping X h) X h -
+      mangoldtPairAverage X h) atTop (𝓝 0) := by
+  refine squeeze_zero_norm' (Filter.Eventually.of_forall fun X => ?_)
+    (physicalPairError_tendsto_zero h)
+  simpa only [Real.norm_eq_abs] using dampedPairDiagonal_error X h
+
+/-- The projected damping diagonal and the actual prime-pair average differ by `o(1)`. -/
+theorem primePairDiagonal_tendsto (h : ℕ) :
+    Tendsto (fun X : ℕ => projectedDampedPairAverage (physicalPairDamping X h) X h -
+      primePairLogAverage X h) atTop (𝓝 0) := by
+  refine squeeze_zero_norm' (Filter.Eventually.of_forall fun X => ?_)
+    (physicalPairError_tendsto_zero h)
+  simpa only [Real.norm_eq_abs] using primePairDiagonal_error X h
+
+end
+
+end TwinPrime

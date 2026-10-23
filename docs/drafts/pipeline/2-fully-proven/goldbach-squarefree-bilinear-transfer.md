@@ -1,7 +1,7 @@
 # Removing squarefreeness from the reflected bilinear problem
 
 - **ID:** goldbach-squarefree-bilinear-transfer
-- **Stage:** 2-fully-proven (paper deduction; Lean pending)
+- **Stage:** 2-fully-proven (paper deduction; second-moment lemma formalized)
 - **Type:** BRIDGE; no scientific novelty claimed
 - **Parent:** [Predecessor-mark correlation](../1-in-progress/goldbach-transverse-mark-correlation.md).
 
@@ -178,6 +178,14 @@ retained in any subsequent argument.
   actual signed estimate are separate unfinished work.
 
 ## Log
+
+- 2026-10-23 — Section 2 is now formalized as
+  `GaloisForLFunctions.Goldbach.sum_squareDivisorTail_sq_le` in
+  `goldbach/SquareDivisorTail.lean`. Plain leaf check and closure audit passed;
+  only `propext`, `Classical.choice`, and `Quot.sound` occur. The bilinear
+  comparison (2)–(3) remains a paper result; this does not prove the Liouville
+  estimate. Completion closes the earlier unfinished helper while the active
+  user request concerns RH-language reformulations.
 
 - 2026-10-23 — Derived (2)–(3), including the second-moment tail and
   the q-independent separation of nonunit congruence masks. The

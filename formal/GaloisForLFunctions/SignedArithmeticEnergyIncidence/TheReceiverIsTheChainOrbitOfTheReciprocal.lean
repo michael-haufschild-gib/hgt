@@ -20,8 +20,9 @@ The critical energy is the weighted `ℓ²` energy of the orbit (`dampedMobiusEn
 * admission at `η` is `ℓ²`-membership of the orbit (`admits_iff_summable_orbit`), and the Riemann
   hypothesis is the orbit entering `ℓ²` at arbitrarily small times
   (`riemannHypothesis_iff_orbit_summable`);
-* **an `ℓ²`-bounded chain is a receiver** (`admits_of_chain_l2_bounded`): if `C_η` is bounded in
-  `ℓ²` on finitely supported sequences, then `η` is admitted, because `r ∈ ℓ²`;
+* **truncations approximate the receiver** (`tendsto_truncation_partialEnergy`): the partial orbit
+  energies of the finite truncations of `r` converge to those of `r`, so admission is decided by
+  the chain on finitely supported sequences;
 * in these coordinates the **centring is indispensable** (`not_summable_transition_first_column`):
   the uncentred transition sends the first state to a column converging to the positive entrance
   mass `e_η(1)`, which is not square summable at any damping.
@@ -206,51 +207,20 @@ theorem tendsto_reciprocalTruncation :
     have : (N : ℝ) ≤ k := by exact_mod_cast not_lt.mp hk
     exact one_div_le_one_div_of_le (by positivity) (by linarith)
 
-/-- **An `ℓ²`-bounded chain is a receiver.**  If `C_η` is bounded in `ℓ²` on finitely supported
-sequences, then `η` is admitted. -/
-theorem admits_of_chain_l2_bounded {η : ℝ} (hη : 0 < η) {K : ℝ}
-    (hK : ∀ (b : C₀(ℕ, ℝ)) (N : ℕ), (∀ k, N ≤ k → b k = 0) → ∀ T : ℕ,
-      ∑ m ∈ range T, arithmeticDampingCenteredOperator hη b m ^ 2 ≤
-        K * ∑ k ∈ range N, b k ^ 2) :
-    Admits dampedMobiusEnergy η := by
-  set S := ∑' k : ℕ, (1 / ((k : ℝ) + 1)) ^ 2 with hS
-  have hsum : Summable fun k : ℕ => (1 / ((k : ℝ) + 1)) ^ 2 := by
-    have h := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
-    refine h.congr fun k => ?_
-    push_cast
-    rw [one_div_pow]
-  have hKS : ∀ T : ℕ, ∑ m ∈ range T,
-      arithmeticDampingCenteredOperator hη reciprocalObservable m ^ 2 ≤ max K 0 * S := by
-    intro T
-    have hlim : Tendsto (fun N => ∑ m ∈ range T,
+/-- **Truncations approximate the receiver at every horizon**: the partial orbit energies of the
+finitely supported truncations of `r` converge to those of `r`. -/
+theorem tendsto_truncation_partialEnergy {η : ℝ} (hη : 0 < η) (T : ℕ) :
+    Tendsto (fun N => ∑ m ∈ range T,
         arithmeticDampingCenteredOperator hη (reciprocalTruncation N) m ^ 2) atTop
-        (𝓝 (∑ m ∈ range T, arithmeticDampingCenteredOperator hη reciprocalObservable m ^ 2)) := by
-      have hC := ((arithmeticDampingCenteredOperator hη).continuous.tendsto _).comp
-        tendsto_reciprocalTruncation
-      refine tendsto_finsetSum _ fun m _ => ?_
-      refine Tendsto.pow ?_ 2
-      rw [tendsto_iff_norm_sub_tendsto_zero] at hC ⊢
-      refine squeeze_zero (fun N => norm_nonneg _) (fun N => ?_) hC
-      rw [Real.norm_eq_abs, ← ZeroAtInftyContinuousMap.sub_apply]
-      exact abs_c0_apply_le_norm _ m
-    refine le_of_tendsto' hlim fun N => ?_
-    have hb : ∀ k, N ≤ k → reciprocalTruncation N k = 0 := by
-      intro k hk
-      simp [reciprocalTruncation, not_lt.mpr hk]
-    have h1 := hK (reciprocalTruncation N) N hb T
-    have h2 : ∑ k ∈ range N, reciprocalTruncation N k ^ 2 ≤ S := by
-      have : ∀ k ∈ range N, reciprocalTruncation N k ^ 2 = (1 / ((k : ℝ) + 1)) ^ 2 := by
-        intro k hk
-        simp [reciprocalTruncation, mem_range.mp hk]
-      rw [sum_congr rfl this]
-      exact hsum.sum_le_tsum _ fun k _ => sq_nonneg _
-    have h3 : 0 ≤ ∑ k ∈ range N, reciprocalTruncation N k ^ 2 := sum_nonneg fun k _ => sq_nonneg _
-    calc _ ≤ K * ∑ k ∈ range N, reciprocalTruncation N k ^ 2 := h1
-      _ ≤ max K 0 * ∑ k ∈ range N, reciprocalTruncation N k ^ 2 :=
-          mul_le_mul_of_nonneg_right (le_max_left _ _) h3
-      _ ≤ max K 0 * S := mul_le_mul_of_nonneg_left h2 (le_max_right _ _)
-  exact (admits_iff_summable_orbit hη).mpr
-    (summable_of_sum_range_le (fun m => sq_nonneg _) hKS)
+      (𝓝 (∑ m ∈ range T, arithmeticDampingCenteredOperator hη reciprocalObservable m ^ 2)) := by
+  have hC := ((arithmeticDampingCenteredOperator hη).continuous.tendsto _).comp
+    tendsto_reciprocalTruncation
+  refine tendsto_finsetSum _ fun m _ => ?_
+  refine Tendsto.pow ?_ 2
+  rw [tendsto_iff_norm_sub_tendsto_zero] at hC ⊢
+  refine squeeze_zero (fun N => norm_nonneg _) (fun N => ?_) hC
+  rw [Real.norm_eq_abs, ← ZeroAtInftyContinuousMap.sub_apply]
+  exact abs_c0_apply_le_norm _ m
 
 /-- The entrance mass of the first state is positive. -/
 theorem arithmeticDampingEntrance_one_pos {η : ℝ} (hη : 0 < η) :

@@ -524,6 +524,37 @@ signs are recorded on the working card. Neither Goldbach nor RH has
 been proved. No additional external audit is being counted as progress
 on this missing estimate.
 
+### Cycle 12: the user's RH-language reformulation
+
+Read the twelve requested programme READMEs and their actual source
+declarations. The [formalized language bridge](../3-formalized/not_new_scientific_knowledge/goldbach-rh-language-reformulation.md)
+uses the existing RH divisor response, squarefree projection and unit
+removal. Its quadratic damping coefficient is the prime-pair weight.
+The same target is also the actual SAEI incidence energy, reflection-even
+minus reflection-odd energy, and mass minus reflection defect. These
+identities and equivalences are unconditional; no signed estimate is
+assumed. The square-divisor-tail second moment was also closed in Lean;
+the full signed bilinear comparison remains paper-level.
+
+The [damping-parity card](../3-formalized/not_new_scientific_knowledge/goldbach-damping-reflection-parity.md) now gives
+a further dependency-closed paper deduction. Symmetric gauge turns
+damping reversal into multiplication by μ(k). Its odd sector is a product
+of hyperbolic sine factors on squarefree negative-Möbius support. Doubling
+damping multiplies each endpoint by at least 2 to the number of its prime
+factors. Every supported pair containing a composite therefore amplifies
+by at least 16. A prime pair gives a quadratic coefficient and limiting
+amplification four. Thus, for each target N,
+
+    N has a prime pair ⇔ ∃ε>0, O_N(2ε)<16 O_N(ε).
+
+The exact finite two-scale equivalence is formalized, without a
+hypothesis asserting the inequality. Its leaf check passes without warnings;
+six audited closures contain only standard Lean foundations. The requested research-language
+translation is substantive work under the user's latest steering.
+The original goal still requires proving this strict inequality at every
+even target, or closing the earlier signed estimate. The new equivalence
+does not discharge that arithmetic obligation.
+
 ## Current verified state and continuation
 
 - Goldbach target is **not proved**; main goal remains active.
@@ -536,13 +567,22 @@ on this missing estimate.
 - The RH–Goldbach bridge module and all fourteen theorem closures passed
   direct compilation and axiom audit. RH is equivalent to a prime-only boxed
   average error law; Goldbach requires the separate pointwise correlation bound.
+- Cycle 12's same-source, incidence-energy and finite two-scale extensions
+  also pass direct compilation and closure audits. They add unconditional
+  reformulations, not the missing all-even positivity theorem. The quantitative
+  [two-scale minorant](../2-fully-proven/goldbach-odd-damping-extraction-minorant.md)
+  is proved on paper and remains unformalized.
 - Exact scientific advance claimed: **none**. The certified bridge prevents
   a false passage from rough negative parity to primality.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
-  **Current priority:** Cycle 11's predecessor-mark far-slope signed
-  covariance. Its Type I deduction is closed on paper. Pursue the
+  **Current user-directed bridge:** Cycle 12's source-language and
+  two-scale bridge is complete. Attack its strict arithmetic inequality.
+  The scale audit explains the joint range ε log N<log 4 in the un-gauged
+  comparison; fixed-damping mass estimates do not supply that uniform input.
+  Cycle 11's predecessor-mark far-slope signed covariance remains an
+  alternative analytic frontier. Its Type I deduction is closed on paper. Pursue the
   original analytic argument, rather than extending the source audits
   listed below or replacing its missing bound with a Lean premise.
   Audit the claimed dispersion theorem in Cycle 5 after repairing its
@@ -567,10 +607,12 @@ on this missing estimate.
   that missing arithmetic information, rather than another cutoff transfer.
 - C1–C4 are active targets, not retired routes. No actual
   counterexample to Goldbach has been produced.
-- Integration: `goldbach/Main.lean` imports all three audited leaves and is imported by
+- Integration: `goldbach/Main.lean` imports the completed leaves and is imported by
   `MainTheorems.lean`; umbrellas were not built. Index regeneration passed.
-  The latest Cycle 10 repository lint has thirty unrelated errors, documented
-  on the RH–Goldbach bridge card; it has no Goldbach or generated-freshness finding.
+  The most recent whole-repository lint is recorded on the Cycle 12 language
+  bridge card: unrelated reachability/root-leaf diagnostics and a generated
+  overview changing under concurrent edits; no Goldbach finding. No new
+  whole-repository lint run is claimed for the damping-parity extension.
   All owned commands terminated; no pending build or scratch job remains.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
@@ -603,3 +645,9 @@ on this missing estimate.
   balanced term directly. Recorded the CRT compatibility, affine determinant,
   paid diagonal/near-slope contribution and exact unresolved far-slope sum.
   No new Lean certificate or scientific novelty claimed in this cycle.
+- 2026-10-23 — Completed the requested twelve-programme dictionary and the
+  actual-source damping, reflection and incidence bridges. Then proved and
+  formalized damping reversal as Möbius parity and the exact finite two-scale
+  Goldbach criterion. Leaf check and six closure audits passed; no analytic
+  premise or placeholder. Recorded the stronger coefficient minorant separately
+  as paper-only. The original Goldbach goal remains active and unproved.

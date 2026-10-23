@@ -90,14 +90,13 @@ theorem sq_orbit_le_sq_positiveTwin {η : ℝ} (hη : 0 < η) (n : ℕ) :
   rw [← sq_abs, ← sq_abs (positiveTwin η n)]
   exact pow_le_pow_left₀ (abs_nonneg _) h 2
 
-/-- **Sign-blind bound at every horizon**: every row of the class has
+/-- **Sign-blind bound at every horizon** above half damping: every row of the class has
 `Σ_{m<T} (Σ_d a_d v_d(m))² ≤ (Σ_d d^{−ε} ‖v_d‖_{ℓ²})²`. -/
-theorem residueSeries_partial_energy_le {ε : ℝ} (hε : 0 < ε) {a : ℕ → ℝ}
-    (ha : DampedCoefficients ε a)
-    (hs : Summable fun d : ℕ => (d : ℝ) ^ (-ε) *
-      Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) (T : ℕ) :
+theorem residueSeries_partial_energy_le {ε : ℝ} (hε : 0 < ε) (hε2 : 1 / 2 < ε) {a : ℕ → ℝ}
+    (ha : DampedCoefficients ε a) (T : ℕ) :
     ∑ m ∈ range T, residueSeries a m ^ 2 ≤
       (∑' d : ℕ, (d : ℝ) ^ (-ε) * Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)) ^ 2 := by
+  have hs := (summable_signBlind_iff ε).mpr hε2
   set u := residueSeries a with hu
   set S := ∑ m ∈ range T, u m ^ 2 with hS
   set B := ∑' d : ℕ, (d : ℝ) ^ (-ε) * Real.sqrt (∑' n, normalizedResidueProfile d n ^ 2)
@@ -164,7 +163,7 @@ theorem signBlind_admission_iff {ε : ℝ} (hε : 0 < ε) :
     exact not_summable_positiveTwin hε hle (h _ htwin)
   · intro hε2 a ha
     exact summable_of_sum_range_le (fun m => sq_nonneg _)
-      (residueSeries_partial_energy_le hε ha ((summable_signBlind_iff ε).mpr hε2))
+      (residueSeries_partial_energy_le hε hε2 ha)
 
 end
 

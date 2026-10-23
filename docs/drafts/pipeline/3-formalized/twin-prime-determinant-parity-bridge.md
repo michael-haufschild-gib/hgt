@@ -1,9 +1,9 @@
 # Exact parity conjugation of the determinant sum
 
 - **ID:** twin-prime-determinant-parity-bridge
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) / BRIDGE
-- **Source:** [signed determinant operator](twin-prime-determinant-operator.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BRIDGE
+- **Source:** [signed determinant operator](../1-in-progress/twin-prime-determinant-operator.md)
 - **Statement:** A Liouville change of row and column coordinates moves both Möbius signs into the single shifted parity sequence `lambda(s)lambda(s+2)`.
 
 ## Dependency-closed proof
@@ -25,7 +25,7 @@ Both sides are zero off the determinant surface if multiplied
 by its indicator. This proves the identity for every positive
 quadruple, without a determinant premise in the theorem statement.
 
-For finite factor sets `M,H` and any nonnegative weight
+For finite factor sets `M,H` and any complex weight
 `w(m,n,q,h)`, define two matrices, with row `q` and column `n`:
 
 `K(q,n)=sum_(m in M,h in H,mn+2=qh) mu(m)mu(h) w(m,n,q,h)`,
@@ -42,11 +42,20 @@ unit balls are identical, and in particular the operator norms
 are identical. Finite cutoff, coprimality, squarefree-row, marking,
 and roughness restrictions can all be included in `w`.
 
-For the Mellin phase, `m^(iv)=(mn)^(iv)n^(-iv)` moves the extra
-column phase outside the matrix. The internal scalar sequence then
-becomes `lambda(s)lambda(s+2)s^(iv)`. This observation is a paper
-extension; the first Lean certificate will cover real coefficients
-at `v=0` and arbitrary finite nonnegative weights.
+This includes Mellin phases and signed or complex cutoffs inside `w`;
+the finite identity requires no positivity assumption on the weight.
+When separating a Mellin phase explicitly, the positive-real power law
+`m^(iv)=(mn)^(iv)n^(-iv)` moves the extra column phase outside the matrix.
+That particular power-law rewriting is not part of the Lean certificate.
+
+For any four indices, conjugation gives the exact identity
+
+`K(q1,n1) conj(K(q2,n1)) K(q2,n2) conj(K(q1,n2))
+ =G(q1,n1) conj(G(q2,n1)) G(q2,n2) conj(G(q1,n2))`.
+
+Each row and column sign occurs twice and is real of square one.
+Thus every fourth-moment cycle retains exactly the interior parity
+correlation; no boundary sign can provide cancellation in that cycle.
 
 ## What this changes in the attempted proof
 
@@ -83,10 +92,34 @@ conjecture and twin-prime infinitude remain open in this work.
 
 - [x] Exact positive-index definitions and complete paper proof.
 - [x] Source check for the multiplicative sign identity.
-- [ ] Lean certificate for entry conjugation and equality of unit-ball pairing values.
-- [ ] Leaf compile and foundational axiom audit.
+- [x] Lean certificate for entry conjugation, equality of unit-ball pairing values, and fourth-moment cycles.
+- [x] Leaf compile and foundational axiom audit.
+- [x] Imported by the twin-prime umbrella; umbrella not built.
+- [x] Corpus index regenerated after integration.
+
+## Lean declarations
+
+`formal/GaloisForLFunctions/twin-prime/DeterminantParityBridge.lean`:
+
+- `moebiusDeterminantTerm_eq_parity`: exact entry conjugation on positive indices.
+- `determinantPairing_moebius_eq_parity`: arbitrary complex boundary vectors and weights.
+- `determinantUnitPairingValues_moebius_eq_parity`: equality of the complete sets of unit-ball test values.
+- `determinantFourCycle_moebius_eq_parity`: equality of every conjugated fourth-moment cycle.
+
+All four capstones have no proposition-valued premise. Positivity of
+integer indices is carried by `ℕ+`; the determinant relation is inside
+the kernel definition. No cancellation estimate is encoded in a type.
+
+Foreground command passed:
+`lake --old env lean GaloisForLFunctions/twin-prime/DeterminantParityBridge.lean`.
+All four capstone axiom audits returned only
+`[propext, Classical.choice, Quot.sound]`. Temporary audit directives
+removed; definitions and proofs unchanged.
 
 ## Log
 
 - 2026-10-23 — Derived the exact conjugation while attacking the
   signed determinant norm. No cancellation estimate is claimed.
+- 2026-10-23 — Completed the complex-weight certificate, including exact
+  four-cycle invariance. Leaf and all four capstone axiom audits passed.
+  The analytic operator bound and twin-prime infinitude remain unproved.

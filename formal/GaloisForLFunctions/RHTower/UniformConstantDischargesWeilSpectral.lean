@@ -1,4 +1,7 @@
+import GaloisForLFunctions.HTGeometry.SmoothTransitionDerivBound
 import GaloisForLFunctions.RHTower.WeilConeXiDivisibleBlindTest
+
+set_option autoImplicit false
 
 /-!
 # Uniform constants discharged in `RHTower.WeilSpectral`
@@ -28,7 +31,7 @@ theorem abs_truncTestDeriv_le_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro F L u
-  apply abs_truncTestDeriv_le <;> first | assumption | linarith
+  apply abs_truncTestDeriv_le <;> assumption
 
 /-- `weighted_truncTest_sub_le_indicator` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -38,6 +41,6 @@ theorem weighted_truncTest_sub_le_indicator_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro F L M hLM u
-  apply weighted_truncTest_sub_le_indicator <;> first | assumption | linarith
+  apply weighted_truncTest_sub_le_indicator <;> assumption
 
 end RHTower.WeilSpectral

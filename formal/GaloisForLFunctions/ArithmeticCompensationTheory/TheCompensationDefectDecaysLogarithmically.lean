@@ -6,7 +6,7 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.CompensationCoordinates
 `CompensationCoordinates` writes the complete head energy of the damped Möbius–Ramanujan
 expansion at cutoff `P²` as `(1 − α_P)²‖L_P‖² + ‖R_P‖²`, so the **compensation defect**
 `(1 − α_P)² + ‖R_P‖²/‖L_P‖²` is the relative complete energy
-(`compensationDefect_eq_relative`), and `RHTower.PMRamanujanComplementaryCancellation` shows it
+(`eventually_compensationDefect_eq_relative`), and `RHTower.PMRamanujanComplementaryCancellation` shows it
 tends to `0`. This file gives the rate.
 
 * The large-prime sector energy is at least `c P^{1−2ε}/log² P`, through the mass of the prime
@@ -20,7 +20,8 @@ Hence (`exists_compensationDefect_le_inv_log_pow_six`)
 
 `(1 − α_P)² + ‖R_P‖²/‖L_P‖² ≤ K/log⁶ P`  for all large `P`,
 
-an explicit rate of compensation on the actual source, stronger than the relative cancellation.
+an explicit rate of compensation on the actual source, stronger than the relative cancellation,
+and summable over the dyadic scales `P = 2^k` (`summable_compensationDefect_dyadic`).
 It is a logarithmic saving against a sector of size `P^{1−2ε}/log² P`: the absolute complete
 energy it leaves, `O(P^{1−2ε}/log⁸ P)`, still grows with the cutoff. A power saving in the defect
 would be a power saving in the receiver, which is the zero-width problem.
@@ -35,7 +36,8 @@ namespace GaloisForLFunctions.ArithmeticCompensationTheory
 
 /-! ## The size of the receiver and of the sector -/
 
-private theorem rpow_sq_div_pronic_le {ε : ℝ} {N : ℕ} (hN : 1 ≤ N) :
+/-- `(N^{1−ε})²/(N(N+1)) ≤ N^{−2ε}`. -/
+theorem rpow_sq_div_pronic_le {ε : ℝ} {N : ℕ} (hN : 1 ≤ N) :
     ((N : ℝ)^(1-ε))^2/((N : ℝ)*((N : ℝ)+1)) ≤ (N : ℝ)^(-2*ε) := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have he : ((N : ℝ)^(1-ε))^2 = (N : ℝ)^(-2*ε)*(N : ℝ)^2 := by
@@ -69,7 +71,8 @@ private theorem weighted_sq_norm_le {z : ℂ} {ε A B : ℝ} {N : ℕ} (hN : 1 �
     _ ≤ _ := add_le_add (mul_le_mul_of_nonneg_left hone (by positivity))
       (mul_le_mul_of_nonneg_left hp (by positivity))
 
-private theorem divisorRemainder_le_global {ε : ℝ} (hε : 0 < ε) (hεhalf : ε < 1/2) :
+/-- The damped divisor remainder is `O(N^{1−ε})` at every integer `N ≥ 1`, for `0 < ε < ½`. -/
+theorem divisorRemainder_le_global {ε : ℝ} (hε : 0 < ε) (hεhalf : ε < 1/2) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ N : ℕ, 1 ≤ N →
       ‖pmPowerDampedDivisorRemainder ε N‖ ≤ A*(N : ℝ)^(1-ε) := by
   obtain ⟨C, hC, hc⟩ := pmPowerDampedDivisorRemainder_eventually_log_four hε hεhalf
@@ -318,14 +321,24 @@ theorem sectorEnergy_eventually_lower {ε : ℝ} (hε : 0 < ε) :
 
 /-! ## The rate -/
 
-/-- The compensation defect is the relative complete head energy. -/
-theorem compensationDefect_eq_relative {P : ℕ} (hP : 2 ≤ P) {ε : ℝ}
-    (hL : 0 < pmRamanujanLargePrimeSectorEnergy ε P) :
-    (1 - pmCompensationAmplitude ε P) ^ 2 +
-        pmTransverseEnergy ε P / pmRamanujanLargePrimeSectorEnergy ε P =
+/-- The compensation defect `(1 − α_P)² + ‖R_P‖²/‖L_P‖²` of the large-prime sector at cutoff `P²`. -/
+def compensationDefect (ε : ℝ) (P : ℕ) : ℝ :=
+  (1 - pmCompensationAmplitude ε P) ^ 2 +
+    pmTransverseEnergy ε P / pmRamanujanLargePrimeSectorEnergy ε P
+
+theorem compensationDefect_nonneg (ε : ℝ) {P : ℕ} (hP : 2 ≤ P) : 0 ≤ compensationDefect ε P :=
+  add_nonneg (sq_nonneg _) (div_nonneg (pmCompleteHeadEnergy_eq_compensation hP ε).2
+    (by unfold pmRamanujanLargePrimeSectorEnergy; positivity))
+
+/-- **The compensation defect is the relative complete head energy**, at every cutoff where the
+sector energy is positive, in particular at all large `P` when `0 < ε < ½`. -/
+theorem eventually_compensationDefect_eq_relative {ε : ℝ} (hε : 0 < ε) (hεhalf : ε < 1 / 2) :
+    ∀ᶠ P : ℕ in atTop, compensationDefect ε P =
       pmPowerDampedRamanujanPrefixEnergy ε (P ^ 2 - 1) (P - 1) /
         pmRamanujanLargePrimeSectorEnergy ε P := by
-  rw [(pmCompleteHeadEnergy_eq_compensation hP hL).1]
+  filter_upwards [(tendsto_pmRamanujanLargePrimeSectorEnergy_atTop hε hεhalf).eventually_gt_atTop 0,
+    eventually_ge_atTop 2] with P hL hP
+  rw [compensationDefect, (pmCompleteHeadEnergy_eq_compensation hP ε).1]
   field_simp
 
 theorem prefixEnergy_mono (ε : ℝ) (Q : ℕ) {T T' : ℕ} (h : T ≤ T') :
@@ -344,9 +357,7 @@ theorem tendsto_log_pow_eight_div_rpow {s : ℝ} (hs : 0 < s) :
 /-- **The compensation defect decays like `log⁻⁶ P`.** For `0 < ε < ½` there is `K` with
 `(1 − α_P)² + ‖R_P‖²/‖L_P‖² ≤ K/log⁶ P` for all large `P`. -/
 theorem exists_compensationDefect_le_inv_log_pow_six {ε : ℝ} (hε : 0 < ε) (hεhalf : ε < 1 / 2) :
-    ∃ K : ℝ, ∀ᶠ P : ℕ in atTop,
-      (1 - pmCompensationAmplitude ε P) ^ 2 +
-        pmTransverseEnergy ε P / pmRamanujanLargePrimeSectorEnergy ε P ≤ K / Real.log P ^ 6 := by
+    ∃ K : ℝ, ∀ᶠ P : ℕ in atTop, compensationDefect ε P ≤ K / Real.log P ^ 6 := by
   obtain ⟨A, C, hA, hC, hrem⟩ := remainderEnergy_le hε hεhalf
   obtain ⟨T, hT, hpre⟩ := prefixEnergy_le hε
   obtain ⟨c, hc, hsec⟩ := sectorEnergy_eventually_lower hε
@@ -362,7 +373,8 @@ theorem exists_compensationDefect_le_inv_log_pow_six {ε : ℝ} (hε : 0 < ε) (
     (eventually_le_nhds (show (4 * A ^ 2 / (c * d)) * 0 < 1 by rw [mul_zero]; norm_num))
   have l3 := ((tendsto_log_pow_eight_div_rpow hε).const_mul (2 * T ^ 4 / c)).eventually
     (eventually_le_nhds (show (2 * T ^ 4 / c) * 0 < 1 by rw [mul_zero]; norm_num))
-  filter_upwards [hrem, hsec, l1, l2, l3, eventually_ge_atTop 2] with P hR hS h1 h2 h3 hP
+  filter_upwards [hrem, hsec, l1, l2, l3, eventually_ge_atTop 2,
+    eventually_compensationDefect_eq_relative hε hεhalf] with P hR hS h1 h2 h3 hP hrel
   have hP1 : (1 : ℝ) < P := by exact_mod_cast hP
   have hP0 : (0 : ℝ) < P := by linarith
   have hlog : 0 < Real.log P := Real.log_pos hP1
@@ -421,7 +433,7 @@ theorem exists_compensationDefect_le_inv_log_pow_six {ε : ℝ} (hε : 0 < ε) (
     nlinarith
   have hsecpos : 0 < pmRamanujanLargePrimeSectorEnergy ε P :=
     lt_of_lt_of_le (by positivity) hS
-  rw [compensationDefect_eq_relative hP hsecpos, div_le_div_iff₀ hsecpos (by positivity)]
+  rw [hrel, div_le_div_iff₀ hsecpos (by positivity)]
   have hl6 : Real.log P ^ 6 * Real.log P ^ 2 = L := by rw [hLdef]; ring
   have hlow : c * (P : ℝ) ^ d ≤ pmRamanujanLargePrimeSectorEnergy ε P * Real.log P ^ 2 := by
     rw [div_le_iff₀ (by positivity)] at hS
@@ -436,5 +448,30 @@ theorem exists_compensationDefect_le_inv_log_pow_six {ε : ℝ} (hε : 0 < ε) (
         rw [mul_assoc]
         exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hlow hK) (by positivity)
     _ = (3 + K₀) * pmRamanujanLargePrimeSectorEnergy ε P := by field_simp
+
+/-- **The compensation defects are summable along dyadic scales.** The logarithmic rate is enough
+to iterate over the scales `P = 2^k`: `Σ_k (1 − α_{2^k})² + ‖R_{2^k}‖²/‖L_{2^k}‖² < ∞`, while the
+absolute complete energies `O(4^{k(1−2ε)}/k⁸)` are not summable. -/
+theorem summable_compensationDefect_dyadic {ε : ℝ} (hε : 0 < ε) (hεhalf : ε < 1 / 2) :
+    Summable fun k : ℕ => compensationDefect ε (2 ^ k) := by
+  obtain ⟨K, hK⟩ := exists_compensationDefect_le_inv_log_pow_six hε hεhalf
+  have h2 : Tendsto (fun k : ℕ => 2 ^ k) atTop atTop :=
+    tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1 : ℕ) < 2)
+  refine Summable.of_norm_bounded_eventually_nat
+    (g := fun k : ℕ => |K| / Real.log 2 ^ 6 * (1 / (k : ℝ) ^ 6))
+    ((Real.summable_one_div_nat_pow.mpr (by norm_num)).mul_left _) ?_
+  filter_upwards [h2.eventually hK, eventually_ge_atTop 1] with k hk hk1
+  have hk1' : (1 : ℝ) ≤ k := by exact_mod_cast hk1
+  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hk2 : 2 ≤ 2 ^ k := by
+    calc 2 = 2 ^ 1 := by norm_num
+      _ ≤ 2 ^ k := Nat.pow_le_pow_right (by norm_num) hk1
+  rw [Real.norm_eq_abs, abs_of_nonneg (compensationDefect_nonneg ε hk2)]
+  have hlog : Real.log ((2 ^ k : ℕ) : ℝ) = k * Real.log 2 := by simp [Real.log_pow]
+  calc compensationDefect ε (2 ^ k) ≤ K / Real.log ((2 ^ k : ℕ) : ℝ) ^ 6 := hk
+    _ = K / ((k : ℝ) * Real.log 2) ^ 6 := by rw [hlog]
+    _ ≤ |K| / ((k : ℝ) * Real.log 2) ^ 6 :=
+        div_le_div_of_nonneg_right (le_abs_self K) (by positivity)
+    _ = |K| / Real.log 2 ^ 6 * (1 / (k : ℝ) ^ 6) := by field_simp
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

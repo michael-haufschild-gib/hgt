@@ -47,8 +47,9 @@ def compensationAmplitude (L C : E) : ℝ := -inner ℝ L C / ‖L‖ ^ 2
 def transverseRemainder (L C : E) : E := C + compensationAmplitude L C • L
 
 /-- The transverse remainder is orthogonal to the coherent sector. -/
-theorem inner_transverseRemainder {L : E} (hL : L ≠ 0) (C : E) :
-    inner ℝ L (transverseRemainder L C) = 0 := by
+theorem inner_transverseRemainder (L C : E) : inner ℝ L (transverseRemainder L C) = 0 := by
+  rcases eq_or_ne L 0 with rfl | hL
+  · simp
   have hn : ‖L‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hL)
   rw [transverseRemainder, inner_add_right, inner_smul_right, real_inner_self_eq_norm_sq,
     compensationAmplitude]
@@ -56,13 +57,13 @@ theorem inner_transverseRemainder {L : E} (hL : L ≠ 0) (C : E) :
   ring
 
 /-- **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²`. -/
-theorem norm_add_sq_eq_compensation {L : E} (hL : L ≠ 0) (C : E) :
+theorem norm_add_sq_eq_compensation (L C : E) :
     ‖L + C‖ ^ 2 = (1 - compensationAmplitude L C) ^ 2 * ‖L‖ ^ 2 +
       ‖transverseRemainder L C‖ ^ 2 := by
   have hdecomp : L + C = (1 - compensationAmplitude L C) • L + transverseRemainder L C := by
     rw [transverseRemainder, sub_smul, one_smul]; abel
   have horth : inner ℝ ((1 - compensationAmplitude L C) • L) (transverseRemainder L C) = 0 := by
-    rw [inner_smul_left, inner_transverseRemainder hL, mul_zero]
+    rw [inner_smul_left, inner_transverseRemainder, mul_zero]
   rw [hdecomp, norm_add_sq_real, horth, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
   ring
 
@@ -72,7 +73,7 @@ theorem compensationDefect_eq_relativeEnergy {L : E} (hL : L ≠ 0) (C : E) :
     (1 - compensationAmplitude L C) ^ 2 + ‖transverseRemainder L C‖ ^ 2 / ‖L‖ ^ 2 =
       ‖L + C‖ ^ 2 / ‖L‖ ^ 2 := by
   have hn : ‖L‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hL)
-  rw [norm_add_sq_eq_compensation hL C]
+  rw [norm_add_sq_eq_compensation L C]
   field_simp
 
 end Abstract
@@ -157,17 +158,29 @@ theorem pmMixedEnergy_sq_le (ε : ℝ) (P : ℕ) :
   have hh := div_le_div_of_nonneg_right h (sq_nonneg ((N : ℝ) * ((N : ℝ) + 1)))
   simpa only [div_pow, div_mul_div_comm, ← pow_two] using hh
 
-/-- **The actual compensation law.** For `P ≥ 2` with a nonzero sector energy, the complete head
-energy is `(1 − α_P)²‖L_P‖² + ‖R_P‖²` with `‖R_P‖² ≥ 0`. -/
-theorem pmCompleteHeadEnergy_eq_compensation {P : ℕ} (hP : 2 ≤ P) {ε : ℝ}
-    (hL : 0 < pmRamanujanLargePrimeSectorEnergy ε P) :
+/-- **The actual compensation law.** For every `P ≥ 2` the complete head energy is
+`(1 − α_P)²‖L_P‖² + ‖R_P‖²` with `‖R_P‖² ≥ 0`. A vanishing sector energy forces a vanishing mixed
+energy by Cauchy–Schwarz, so no case is excluded. -/
+theorem pmCompleteHeadEnergy_eq_compensation {P : ℕ} (hP : 2 ≤ P) (ε : ℝ) :
     pmPowerDampedRamanujanPrefixEnergy ε (P ^ 2 - 1) (P - 1) =
         (1 - pmCompensationAmplitude ε P) ^ 2 * pmRamanujanLargePrimeSectorEnergy ε P +
           pmTransverseEnergy ε P ∧
       0 ≤ pmTransverseEnergy ε P := by
-  refine ⟨?_, gramTransverse_nonneg hL (pmMixedEnergy_sq_le ε P)⟩
-  rw [pmCompleteHeadEnergy_eq_sum hP, pmCompensationAmplitude, pmTransverseEnergy]
-  exact gram_add_eq_compensation hL.ne' _ _
+  have hcs := pmMixedEnergy_sq_le ε P
+  have ha0 : 0 ≤ pmRamanujanLargePrimeSectorEnergy ε P := by
+    unfold pmRamanujanLargePrimeSectorEnergy; positivity
+  have hb0 : 0 ≤ pmRamanujanLargePrimeComplementEnergy ε P := by
+    unfold pmRamanujanLargePrimeComplementEnergy; positivity
+  rcases ha0.eq_or_lt with ha | ha
+  · have hm : pmRamanujanLargePrimeComplementMixedEnergy ε P = 0 := by
+      rw [← ha, zero_mul] at hcs
+      exact pow_eq_zero_iff two_ne_zero |>.mp (le_antisymm hcs (sq_nonneg _))
+    rw [pmCompleteHeadEnergy_eq_sum hP, pmCompensationAmplitude, pmTransverseEnergy,
+      gramAmplitude, gramTransverse, ← ha, hm]
+    exact ⟨by simp, by simpa using hb0⟩
+  · refine ⟨?_, gramTransverse_nonneg ha hcs⟩
+    rw [pmCompleteHeadEnergy_eq_sum hP, pmCompensationAmplitude, pmTransverseEnergy]
+    exact gram_add_eq_compensation ha.ne' _ _
 
 /-- **The amplitude tends to one**: the complement carries, to leading order, exactly the negative
 of the coherent sector. -/

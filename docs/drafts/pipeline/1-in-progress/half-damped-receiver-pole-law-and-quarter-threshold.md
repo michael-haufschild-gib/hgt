@@ -99,7 +99,7 @@ Put `α_d(n) = ⌊n/d⌋ − n/d` (`|α_d(n)| ≤ min(1, n/d)`), cells `Δ_n(s) 
     `Σ_n A(n)²Δ_n(2σ) ≤ 4σE`, and step 8 gives `∫|ζ(C−m)/s|²dt ≤ 4πE` for every `σ ∈ (1/2, 1)`,
     contradicting step 16 as `u ↓ 0`. Hence `f_z(d)d^{−1/2}` is paid **iff** `0 ≤ z < 1/2`.
 
-## Phase 5 (planned): negative `z`, the full interval `[−1, 1]`
+## Phase 5: negative `z`, the full interval `[−1, 1]`
 
 18. For `−1 ≤ z < 0` the Euler-factor bracket bound holds verbatim with `|z| ≤ 1`, so
     `|F_z(w)| ≤ e^{2S}(1/|ζ(w)|)^{|z|}`. On `Re w > 1`: `1/|ζ| ≤ (20/A)log⁷|t|` on the de la Vallée
@@ -121,10 +121,17 @@ Put `α_d(n) = ⌊n/d⌋ − n/d` (`|α_d(n)| ≤ min(1, n/d)`), cells `Δ_n(s) 
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [x] 1 → 2  fully-proven on paper (steps 1–13)
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven on paper (steps 1–17)
+- [x] 2 → 3  formalized (steps 1–18)
 - [ ] 3 → 4  publication-ready
 
 ## Log
+- 2026-10-23 — formalized: `TheHalfDampedReceiverReadsTheDirichletSeriesAtTheCriticalPoint`,
+  `APaidReceiverBoundsTheDirichletSeriesUpToItsAbscissa`,
+  `TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries`,
+  `TheQuarterLawOfTheConstantSignPattern` (THIM), all wired, axioms clean. The δ < 1/4 statement
+  for general patterns is a criterion (density premise), not an unconditional instance.
+- 2026-10-23 — step 18 formalized: `TheQuarterLawOfTheConstantSignPatternOnTheFullRange`
+  (`receiverBounded_constantSign_iff_full`), wired, axioms clean.
 - 2026-10-23 — created; paper proof complete. Novelty: corpus search finds the pole law only for
   `k ⋆ q` (`not_receiverBounded_dirichletConv_of_drift_critical`) and the sparse-flip law.

@@ -14,6 +14,8 @@ import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianXiSubquadraticGrowth
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianXiLogLinearGrowth
 import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianXiGrowth
 
+set_option autoImplicit false
+
 /-!
 # Uniform growth constants of `ξ` in the RiemannGaussian estimates
 

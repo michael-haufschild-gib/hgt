@@ -37,6 +37,9 @@ theorem liouvilleSign_mul (m n : ℕ) :
 @[simp] theorem norm_liouvilleSign (n : ℕ+) : ‖liouvilleSign n‖ = 1 := by
   simp [liouvilleSign, liouville_apply n.ne_zero]
 
+@[simp] theorem star_liouvilleSign (n : ℕ) : star (liouvilleSign n) = liouvilleSign n := by
+  simp [liouvilleSign]
+
 /-- On squarefree support the Möbius sign is Liouville's sign. -/
 theorem moebiusValue_eq_liouvilleSign_mul_sq (n : ℕ) :
     moebiusValue n = liouvilleSign n * moebiusValue n ^ 2 := by
@@ -163,6 +166,27 @@ theorem determinantUnitPairingValues_moebius_eq_parity (M H Q N : Finset ℕ+)
     · rw [determinantPairing_moebius_eq_parity, liouvilleGauge_involutive,
         liouvilleGauge_involutive]
       exact hz
+
+/-- Row and column signs cancel around every fourth-moment cycle. -/
+theorem determinantFourCycle_moebius_eq_parity (M H : Finset ℕ+)
+    (w : ℕ+ → ℕ+ → ℕ+ → ℕ+ → ℂ) (q₁ q₂ n₁ n₂ : ℕ+) :
+    moebiusDeterminantMatrix M H w q₁ n₁ *
+        star (moebiusDeterminantMatrix M H w q₂ n₁) *
+        moebiusDeterminantMatrix M H w q₂ n₂ *
+        star (moebiusDeterminantMatrix M H w q₁ n₂) =
+      parityDeterminantMatrix M H w q₁ n₁ *
+        star (parityDeterminantMatrix M H w q₂ n₁) *
+        parityDeterminantMatrix M H w q₂ n₂ *
+        star (parityDeterminantMatrix M H w q₁ n₂) := by
+  simp only [moebiusDeterminantMatrix_eq_parity, star_mul, star_liouvilleSign]
+  calc
+    _ = liouvilleSign q₁ ^ 2 * liouvilleSign q₂ ^ 2 *
+        liouvilleSign n₁ ^ 2 * liouvilleSign n₂ ^ 2 *
+        (parityDeterminantMatrix M H w q₁ n₁ *
+          star (parityDeterminantMatrix M H w q₂ n₁) *
+          parityDeterminantMatrix M H w q₂ n₂ *
+          star (parityDeterminantMatrix M H w q₁ n₂)) := by ring
+    _ = _ := by simp only [liouvilleSign_sq, one_mul]
 
 end
 

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ShortBumpMellinSmoothedSums
 import GaloisForLFunctions.HTGeometry.SmoothTransitionDerivBound
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `GaloisForLFunctions.HTGeometry`
 

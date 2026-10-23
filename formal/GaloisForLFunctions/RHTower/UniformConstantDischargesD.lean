@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.SmoothTransitionDerivBound
+import GaloisForLFunctions.RHTower.WeilMarginSuperexponentialLaw
 import GaloisForLFunctions.RHTower.WeilPolarConeFirstVariation
 import GaloisForLFunctions.RHTower.WeilPositivityMajorantRigidity
 import GaloisForLFunctions.RHTower.WeilPositivityMertensConstantObstruction
@@ -8,6 +10,8 @@ import GaloisForLFunctions.RHTower.XiSquaredSeamCassiniResolventSourceLaw
 import GaloisForLFunctions.RHTower.ZetaVerticalMeanSquare
 import GaloisForLFunctions.RHTower.ZetaZeroDetectorNearLineDichotomy
 import GaloisForLFunctions.RHTower.ZetaZeroExponentialDetectorBounds
+
+set_option autoImplicit false
 
 /-!
 # Uniform constants discharged in `RHTower` (D)
@@ -36,7 +40,7 @@ theorem polarRiemannDifference_zero_bound_uniform :
       (1 + |(ρ : ℂ).im|) * ‖paperFT (polarRiemannDifference L c) (gammaOf ρ)‖ ≤ 3 * truncatedRiemannTailEnergy L ∧ (1 + |(ρ : ℂ).im|) * ‖paperFT (polarRiemannDifference L c) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ 3 * truncatedRiemannTailEnergy L := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L c hc ρ
-  apply polarRiemannDifference_zero_bound <;> first | assumption | linarith
+  apply polarRiemannDifference_zero_bound <;> assumption
 
 /-- `truncatedRiemannKernel_zero_bound` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -45,7 +49,7 @@ theorem truncatedRiemannKernel_zero_bound_uniform :
       (1 + |(ρ : ℂ).im|) * ‖paperFT (truncatedRiemannKernel L) (gammaOf ρ)‖ ≤ truncatedRiemannTailEnergy L ∧ (1 + |(ρ : ℂ).im|) * ‖paperFT (truncatedRiemannKernel L) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ truncatedRiemannTailEnergy L := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L ρ
-  apply truncatedRiemannKernel_zero_bound <;> first | assumption | linarith
+  apply truncatedRiemannKernel_zero_bound <;> assumption
 
 /-- `norm_W_polarRiemannDifference_le` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -54,7 +58,7 @@ theorem norm_W_polarRiemannDifference_le_uniform :
       ‖zetaZeroConfig.W (polarRiemannDifference L c) (polarRiemannDifference L c)‖ ≤ 9 * ((5 / 4) * zetaInvSqSum * truncatedRiemannTailEnergy L ^ 2) := by
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   intro L c hc
-  apply norm_W_polarRiemannDifference_le <;> first | assumption | linarith
+  apply norm_W_polarRiemannDifference_le <;> assumption
 
 /-- `nearRadicalEnergy_le_ratio` with its constants supplied by
 `GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition`. -/
@@ -64,7 +68,7 @@ theorem nearRadicalEnergy_le_ratio_uniform :
   obtain ⟨Λ, h_0_0, h_0_1⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
   refine ⟨Λ, ?_⟩
   intro L hY₀ hkY
-  apply nearRadicalEnergy_le_ratio <;> first | assumption | linarith
+  apply nearRadicalEnergy_le_ratio <;> assumption
 
 /-- `integral_norm_sq_mertensTest_ge` with its constants supplied by
 `RHTower.exists_lipschitz_mertensProbe`. -/
@@ -74,7 +78,7 @@ theorem integral_norm_sq_mertensTest_ge_uniform :
   obtain ⟨Lg, h_0_0, h_0_1⟩ := RHTower.exists_lipschitz_mertensProbe
   refine ⟨Lg, ?_⟩
   intro R S hR hS
-  apply integral_norm_sq_mertensTest_ge <;> first | assumption | linarith
+  apply integral_norm_sq_mertensTest_ge <;> assumption
 
 /-- `norm_W_mertensTest_le` with its constants supplied by
 `RHTower.exists_weilRadicalTest_norms_le`. -/
@@ -84,17 +88,17 @@ theorem norm_W_mertensTest_le_uniform :
   obtain ⟨K₀, h_0_0, h_0_1⟩ := RHTower.exists_weilRadicalTest_norms_le
   refine ⟨K₀, ?_⟩
   intro R S hR hS
-  apply norm_W_mertensTest_le <;> first | assumption | linarith
+  apply norm_W_mertensTest_le <;> assumption
 
 /-- `abs_deriv_weilTestEvenPart_mertensTest_le` with its constants supplied by
 `RHTower.exists_lipschitz_mertensProbe`. -/
 theorem abs_deriv_weilTestEvenPart_mertensTest_le_uniform :
     ∃ (Lg : ℝ), ∀ (R : ℝ) (S : ℝ), 0 ≤ R → R ≤ S → 0 < S → ∀ (u : ℝ),
-      |deriv (weilTestEvenPart (mertensTest R S)) u| ≤ 8 * ((∫ v : ℝ, ‖Φ v‖) * ∫ v : ℝ, ‖weilBumpPolarFree v‖) ^ 2 * Lg := by
+      |deriv (weilTestEvenPart (mertensTest R S)) u| ≤ 8 * ((∫ v : ℝ, ‖riemannPhiKernel v‖) * ∫ v : ℝ, ‖weilBumpPolarFree v‖) ^ 2 * Lg := by
   obtain ⟨Lg, h_0_0, h_0_1⟩ := RHTower.exists_lipschitz_mertensProbe
   refine ⟨Lg, ?_⟩
   intro R S hR hRS hS u
-  apply abs_deriv_weilTestEvenPart_mertensTest_le <;> first | assumption | linarith
+  apply abs_deriv_weilTestEvenPart_mertensTest_le <;> assumption
 
 /-- `norm_paperFT_weilRadicalTest_conj_le` with its constants supplied by
 `RHTower.exists_weilRadicalTest_norms_le`. -/
@@ -104,17 +108,17 @@ theorem norm_paperFT_weilRadicalTest_conj_le_uniform :
   obtain ⟨K₀, h_0_0, h_0_1⟩ := RHTower.exists_weilRadicalTest_norms_le
   refine ⟨K₀, ?_⟩
   intro R hR ρ hIm
-  apply norm_paperFT_weilRadicalTest_conj_le <;> first | assumption | linarith
+  apply norm_paperFT_weilRadicalTest_conj_le <;> assumption
 
 /-- `norm_paperFT_twistTest_real_le` with its constants supplied by
 `RHTower.exists_norm_paperFT_weilBumpC_le`. -/
 theorem norm_paperFT_twistTest_real_le_uniform :
     ∃ (Cκ : ℝ), ∀ (α : ℝ) (τ₀ : ℝ) (R : ℝ) (S : ℝ), 0 < S → ∀ (τ : ℝ),
-      ‖paperFT (twistTest α τ₀ R S) τ‖ ≤ ((∫ u : ℝ, ‖Φ u‖ * Real.exp (1 / 2 * |u|)) * (Real.exp (3 / 4) * ∫ u : ℝ, ‖weilBumpPolarFree u‖)) ^ 3 * (S * (Cκ / (1 + S * |τ - τ₀|) ^ 2) ^ 2) := by
+      ‖paperFT (twistTest α τ₀ R S) τ‖ ≤ ((∫ u : ℝ, ‖riemannPhiKernel u‖ * Real.exp (1 / 2 * |u|)) * (Real.exp (3 / 4) * ∫ u : ℝ, ‖weilBumpPolarFree u‖)) ^ 3 * (S * (Cκ / (1 + S * |τ - τ₀|) ^ 2) ^ 2) := by
   obtain ⟨Cκ, h_0_0, h_0_1⟩ := RHTower.exists_norm_paperFT_weilBumpC_le
   refine ⟨Cκ, ?_⟩
   intro α τ₀ R S hS τ
-  apply norm_paperFT_twistTest_real_le <;> first | assumption | linarith
+  apply norm_paperFT_twistTest_real_le <;> assumption
 
 /-- `abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket_le` with its constants supplied by
 `RHTower.exists_norm_xiUnitDoubleCompletedOffDiagonalResponseKernel_global_le`. -/
@@ -124,7 +128,7 @@ theorem abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_xiUnitDoubleCompletedOffDiagonalResponseKernel_global_le
   refine ⟨C, ?_⟩
   intro A m c hA hc hlow
-  apply abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket_le <;> first | assumption | linarith
+  apply abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket_le <;> assumption
 
 /-- `norm_primeArchShiftedReciprocalMoment_one_le` with its constants supplied by
 `RHTower.exists_xiSquaredSeamOneCoordinate_norm_bound`. -/
@@ -134,16 +138,9 @@ theorem norm_primeArchShiftedReciprocalMoment_one_le_uniform :
   obtain ⟨M, h_0_0, h_0_1⟩ := RHTower.exists_xiSquaredSeamOneCoordinate_norm_bound
   refine ⟨M, ?_⟩
   intro n
-  apply norm_primeArchShiftedReciprocalMoment_one_le <;> first | assumption | linarith
+  apply norm_primeArchShiftedReciprocalMoment_one_le
+  assumption
 
-/-- `integral_normSq_zeta_vertical_le_window` with its constants supplied by
-`RHTower.exists_norm_zetaPoleCleared_le`. -/
-theorem integral_normSq_zeta_vertical_le_window_uniform :
-    ∀ (D : ℝ), 0 ≤ D → (∀ {N : ℕ}, 4 ≤ N → ∫ t in (-(N : ℝ))..(N : ℝ), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 ≤ D * N * (1 + Real.log N) ^ 2) → ∀ (T : ℝ) (σ : ℝ), 2 ≤ T → 1 / 2 ≤ σ → σ ≤ 3 → ∀ (N : ℕ), 16 * T * (1 + Real.log T) ≤ N → 4 ≤ N →
-      ∫ t in T..(2 * T), ‖riemannZeta ((σ : ℂ) + (t : ℂ) * I)‖ ^ 2 ≤ 5 * ((Real.exp 1 * (D * N * (1 + Real.log N) ^ 2) + T * (Real.exp 1 * (64 * Real.exp (-(((N : ℝ) - 3 * T / 2) ^ 2 / (8 * T) ^ 2)) * (2 * (1 + 3 * T / 2) ^ 2 + 2 * (8 * T) ^ 2)))) + 4 * Real.exp 1 ^ 2 * Real.sqrt (Real.pi / (2 / (8 * T) ^ 2))) := by
-  obtain ⟨Cg, h_0_0, h_0_1⟩ := RHTower.exists_norm_zetaPoleCleared_le
-  intro D hD hcrit T σ hT hσ hσ3 N hN1 hN4
-  apply integral_normSq_zeta_vertical_le_window <;> first | assumption | linarith
 
 /-- `norm_Gamma_neg_line_le_of_gap` with its constants supplied by
 `RHTower.exists_norm_Gamma_le_exp_neg_abs`. -/
@@ -153,7 +150,7 @@ theorem norm_Gamma_neg_line_le_of_gap_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_Gamma_le_exp_neg_abs
   refine ⟨C, ?_⟩
   intro η hη c hc1 hc2 y
-  apply norm_Gamma_neg_line_le_of_gap <;> first | assumption | linarith
+  apply norm_Gamma_neg_line_le_of_gap <;> assumption
 
 /-- `norm_Gamma_neg_line_le` with its constants supplied by
 `RHTower.exists_norm_Gamma_le_exp_neg_abs`. -/
@@ -163,6 +160,6 @@ theorem norm_Gamma_neg_line_le_uniform :
   obtain ⟨C, h_0_0, h_0_1⟩ := RHTower.exists_norm_Gamma_le_exp_neg_abs
   refine ⟨C, ?_⟩
   intro c hc1 hc2 y
-  apply norm_Gamma_neg_line_le <;> first | assumption | linarith
+  apply norm_Gamma_neg_line_le <;> assumption
 
 end RHTower

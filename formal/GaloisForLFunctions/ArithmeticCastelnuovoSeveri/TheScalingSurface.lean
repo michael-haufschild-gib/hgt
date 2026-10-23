@@ -19,8 +19,8 @@ abstract polar surfaces therefore applies to `ζ` verbatim:
 
 * **the arithmetic Hodge index theorem is RH** (`scalingSurface_hodgeIndex_iff`), in all four forms
   of `hodgeIndex_tfae`;
-* **Weil's discriminant step**: under RH, `(Re W(f, g))² ≤ W(f, f) W(g, g)`
-  (`weilPair_sq_le_of_riemannHypothesis`);
+* **Weil's discriminant step** is the abstract `defect_sq_le_of_hodgeIndex`: on two tests the
+  defect pairing is Weil's pairing `Re W(f, g)` (`scalingSurface_defect_tests`);
 * **RH is the existence of an effectivity** with the Riemann–Roch and ample axioms
   (`riemannHypothesis_iff_exists_effectivity`);
 * **positivity is not effectivity**: the cone of the positive pole quadrant and nonnegative tests
@@ -222,24 +222,18 @@ theorem scalingSurface_hodgeIndex_iff : scalingSurface.HodgeIndex ↔ RiemannHyp
     rw [scalingSurface_defect_self]
     exact h _ x.2.2.2.1 x.2.2.2.2
 
-/-- **Weil's discriminant step over `ℚ`**: under RH Weil's pairing obeys Cauchy–Schwarz. -/
-theorem weilPair_sq_le_of_riemannHypothesis (hRH : RiemannHypothesis) {f g : ℝ → ℝ}
-    (hf : f ∈ realTests) (hg : g ∈ realTests) :
-    weilPair f g ^ 2 ≤ weilPair f f * weilPair g g := by
-  have h := scalingSurface.defect_sq_le_of_hodgeIndex (scalingSurface_hodgeIndex_iff.mpr hRH)
-    (0, 0, ⟨f, hf⟩) (0, 0, ⟨g, hg⟩)
-  rw [scalingSurface_defect_self, scalingSurface_defect_self] at h
-  have hd : scalingSurface.defect (0, 0, ⟨f, hf⟩) (0, 0, ⟨g, hg⟩) = weilPair f g := by
-    rw [PolarSurface.defect, PolarSurface.polar]
-    change scalingPairFun (0, 0, ⟨f, hf⟩) (1, 0, 0) * scalingPairFun (0, 0, ⟨g, hg⟩) (0, 1, 0)
-      + scalingPairFun (0, 0, ⟨f, hf⟩) (0, 1, 0) * scalingPairFun (0, 0, ⟨g, hg⟩) (1, 0, 0)
-      - scalingPairFun (0, 0, ⟨f, hf⟩) (0, 0, ⟨g, hg⟩) = _
-    simp only [scalingPairFun, localPair, Submodule.coe_zero, poleB_zero, poleA_zero]
-    have h0 : ∀ k : ℝ → ℝ, weilPair k 0 = 0 := fun k => by
-      rw [weilPair_comm]; have := weilPair_smul_left 0 0 k; simpa using this
-    simp only [h0]
-    ring
-  rwa [hd] at h
+/-- On two tests the defect pairing of the scaling surface is Weil's pairing. -/
+theorem scalingSurface_defect_tests {f g : ℝ → ℝ} (hf : f ∈ realTests) (hg : g ∈ realTests) :
+    scalingSurface.defect (0, 0, ⟨f, hf⟩) (0, 0, ⟨g, hg⟩) = weilPair f g := by
+  rw [PolarSurface.defect, PolarSurface.polar]
+  change scalingPairFun (0, 0, ⟨f, hf⟩) (1, 0, 0) * scalingPairFun (0, 0, ⟨g, hg⟩) (0, 1, 0)
+    + scalingPairFun (0, 0, ⟨f, hf⟩) (0, 1, 0) * scalingPairFun (0, 0, ⟨g, hg⟩) (1, 0, 0)
+    - scalingPairFun (0, 0, ⟨f, hf⟩) (0, 0, ⟨g, hg⟩) = _
+  simp only [scalingPairFun, localPair, Submodule.coe_zero, poleB_zero, poleA_zero]
+  have h0 : ∀ k : ℝ → ℝ, weilPair k 0 = 0 := fun k => by
+    rw [weilPair_comm]; have := weilPair_smul_left 0 0 k; simpa using this
+  simp only [h0]
+  ring
 
 /-- **RH is the existence of an effectivity** of the scaling surface with the Riemann–Roch and
 ample axioms. -/

@@ -2,6 +2,8 @@ import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStateEnergyC
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStatePlateauPositivity
 import GaloisForLFunctions.ArithmeticCriticalityTheory.ShiftedGroundStatePoleFreeVariationInequality
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `GaloisForLFunctions.ArithmeticCriticalityTheory`
 

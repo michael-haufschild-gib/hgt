@@ -58,6 +58,9 @@ Query syntax and paging:
 - Tool timeouts may background jobs. Cancel the guarded command by its owned PID/handle, never `pkill -f`.
   Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
+  
+## A proof must be unconditional
+Lean proofs must be unconditional, no hypotheses or premises. Anything that is based on something that is not proven is not a proof.
 
 ## Lean rules
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

@@ -21,6 +21,8 @@ consequence:
 * `adaptedEnergy_of_pointwise`: a pointwise corrector budget `−∂H_T ≤ b H_T`, `b ∈ L¹`, is one way
   to produce an adapted energy, and it is a strictly stronger demand
   (`ArithmeticContinuationAndCriticalEnergy.exists_admits_everywhere_not_linearContinuation`).
+* `adaptedEnergy_dampedMobiusEnergy_iff_admits`: the same equivalence for the damped Möbius
+  receiver on `[a, ½]`, with every regularity input and the admission at `½` proved.
 * `riemannHypothesis_iff_cofinal_adaptedEnergy`: for the damped Möbius receiver, adapted energies
   on `[a, ½]` for a cofinal set of `a ↓ 0` are equivalent to RH.
 
@@ -136,17 +138,24 @@ theorem adaptedEnergy_of_pointwise (hac : a ≤ c) (hE0 : ∀ ε ∈ Icc a c, �
   rw [div_le_iff₀ hpos]
   exact hpt T ε hε
 
+/-- **For the actual receiver an adapted energy is exactly admission.** At every damping
+`0 < a ≤ ½`, an adapted energy for the damped Möbius receiver on `[a, ½]` exists if and only if the
+receiver is admitted at `a`; regularity and admission at `½` are proved, not assumed. -/
+theorem adaptedEnergy_dampedMobiusEnergy_iff_admits {a : ℝ} (ha : 0 < a) (hac : a ≤ 1 / 2) :
+    AdaptedEnergy dampedMobiusEnergy a (1 / 2) ↔ Admits dampedMobiusEnergy a :=
+  adaptedEnergy_iff_admits hac (fun ε _ T => dampedMobiusEnergy_nonneg ε T)
+    (fun T _ hε => hasDerivAt_dampedMobiusEnergy_deriv (lt_of_lt_of_le ha hε.1) T)
+    (fun T => intervalIntegrable_relativeLoss_dampedMobiusEnergy ha hac T)
+    (admits_dampedMobiusEnergy_of_half_le le_rfl)
+
 /-- **The corrector target for the actual receiver is the Riemann hypothesis.** Adapted energies
 on `[a, ½]` for dampings `a` arbitrarily close to `0` exist if and only if RH holds. -/
 theorem riemannHypothesis_iff_cofinal_adaptedEnergy :
     RiemannHypothesis ↔ ∀ δ : ℝ, 0 < δ → ∃ a : ℝ, 0 < a ∧ a < δ ∧
       AdaptedEnergy dampedMobiusEnergy a (1 / 2) := by
   have hiff : ∀ a : ℝ, 0 < a → a ≤ 1 / 2 →
-      (AdaptedEnergy dampedMobiusEnergy a (1 / 2) ↔ Admits dampedMobiusEnergy a) := fun a ha hac =>
-    adaptedEnergy_iff_admits hac (fun ε _ T => dampedMobiusEnergy_nonneg ε T)
-      (fun T _ hε => hasDerivAt_dampedMobiusEnergy_deriv (lt_of_lt_of_le ha hε.1) T)
-      (fun T => intervalIntegrable_relativeLoss_dampedMobiusEnergy ha hac T)
-      (admits_dampedMobiusEnergy_of_half_le le_rfl)
+      (AdaptedEnergy dampedMobiusEnergy a (1 / 2) ↔ Admits dampedMobiusEnergy a) := fun _ ha hac =>
+    adaptedEnergy_dampedMobiusEnergy_iff_admits ha hac
   rw [riemannHypothesis_iff_cofinal_averagedDampingContinuation]
   constructor
   · intro h δ hδ

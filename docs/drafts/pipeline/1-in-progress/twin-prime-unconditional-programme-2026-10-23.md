@@ -86,6 +86,26 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Completed RH-language synthesis:
+  [twelve-programme reformulation](twin-prime-rh-language-reformulation.md).
+  All requested READMEs read and selected source statements checked.
+  The common source is the existing damped Möbius divisor response;
+  twin pairs select its gap-two mixed derivative after squarefree
+  projection. The source's prime-resolving diagonal is pre-crossover,
+  so fixed-damping dissipation cannot simply be transferred to it.
+- New certified quantitative bridge:
+  [physical damping diagonal](../3-formalized/twin-prime-damped-pair-diagonal.md).
+  At the explicit schedule `epsilon=log^(-4)(X+h+2)`, the projected
+  divisor pair average differs from the actual prime-pair log average
+  by at most `1/log(X+h+2)` and tends to zero. All five capstones
+  have no proposition-valued premises and passed standard-axiom
+  audits. This supplies no positive lower bound.
+- New certified sign diagnostic:
+  [complex determinant parity bridge](../3-formalized/twin-prime-determinant-parity-bridge.md).
+  Entry conjugation preserves all finite unit-ball tests and every
+  conjugated four-cycle, for arbitrary complex weights. All four
+  capstones passed standard-axiom audits. The actual shifted parity
+  correlations remain to be estimated.
 - User-requested supporting work:
   [RH--twin-prime pair-kernel bridge](../3-formalized/twin-prime-rh-pair-kernel-bridge.md).
   The existing RH square-window correlation criterion and exact
@@ -166,6 +186,14 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   bridge request, not the unconditional twin-prime goal. The
   shared aggregate growth class does not supply the missing
   fixed-gap positivity estimate.
+- Latest verification: both additional leaves, `DampedPairDiagonal`
+  and `DeterminantParityBridge`, passed foreground checks and all
+  nine capstone axiom audits. Both imports are wired; the umbrella
+  was not built. Corpus indexes regenerated. Owned source/card
+  whitespace, relative links, and forbidden-proof-directive checks
+  passed. Earlier unrelated global lint findings are not claimed
+  resolved. Temporary audit directives and owned research scratch
+  files removed.
 
 ## Log
 
@@ -246,3 +274,13 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   fixed-lag bound and deletion criterion precisely identify the
   aggregate criterion's limitation. All five capstone axiom audits
   and the leaf check passed. Neither conjecture is proved.
+- 2026-10-23 — Completed the quantitative damping diagonal and
+  complex parity certificates. Both leaf checks and all nine capstone
+  axiom audits passed, without any analytic premise. This batch is
+  **progress on the requested bridge**, not a proof of infinitude or
+  a claim of new number-theoretic knowledge. The exact next analytic
+  target is the source-specific signed finite-horizon/period defect
+  at shrinking damping. A balanced CRT Fourier attack now retains
+  the inverse-residue phases and physical endpoint factor explicitly;
+  no varying-modulus cancellation bound or tail compensation has
+  been proved. Main completion gates remain unchecked.

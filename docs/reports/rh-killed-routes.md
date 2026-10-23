@@ -2,18 +2,27 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [40 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [41 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** checkpoint and codes as in frontier map; [L] committed umbrella-imported Lean declarations, no fresh build; [S] uncommitted or non-umbrella source, no compiler audit; [P] paper only; REF = unlocated legacy evidence. Conditional, model-only and class restrictions retained.
 
 ## Dead mechanisms
 
+<a id="kr-whl"></a>
+### KR-WHL — Pole cancellation alone at half damping
+
+- **Path:** `Σ|k(j)|j^(−1/2)<∞` and `K(1/2)=0` → admission of `k⋆d^(−1/2)`.
+- **Obstruction [S]:** Explicit pole-zero lacunary kernel lies in every class `Σ|k(j)|j^(−1/2)(1+log j)^α<∞`, `0≤α<1/2`, yet its receiver is unbounded. Paid receivers in the stated Dirichlet convergence class obey `√u·|C(1/2+u)−m|→0`; this kernel violates it.
+- **Survivor [S]/[L]:** At half damping, `√(1+log j)` summability gives admission iff `K(1/2)=0`; exponent `1/2` is sharp [S]. Below half damping, unweighted critical-Wiener pole cancellation is sufficient for smooth powers [L].
+- **Needs:** Endpoint logarithmic control or actual signed Möbius estimates at arbitrarily small damping; MC/PM remain live.
+- **E:** T:TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold; T:CriticalWienerPerturbationsOfTheSmoothPowerAreDecidedAtThePole.
+
 <a id="kr-paf"></a>
 ### KR-PAF — Uniform positive aperture floor transport
 
 - **Path:** Positive initial CCM ground floor + summably small relative step losses → fixed positive floor at unbounded apertures → RH.
-- **Obstruction [S]:** Actual `μ(A)≤K exp((11/2)A−πe^{2(A−2)})→0`; no fixed positive floor survives along any unbounded aperture sequence, irrespective of RH. Half-summable relative-step producer is impossible for this source.
-- **Survivor [S]:** Every positive floor `m₀e^{−B(A)}` needs `B(A)≥πe^{2(A−2)}−(11/2)A+log(m₀/K)`; positivity at each finite aperture and graded negative floors remain viable.
+- **Obstruction [L]:** Actual `μ(A)≤K exp((11/2)A−πe^{2(A−2)})→0`; no fixed positive floor survives along any unbounded aperture sequence, irrespective of RH. Half-summable relative-step producer is impossible for this source.
+- **Survivor [L]:** Every positive floor `m₀e^{−B(A)}` needs `B(A)≥πe^{2(A−2)}−(11/2)A+log(m₀/K)`; positivity at each finite aperture and graded negative floors remain viable.
 - **Needs:** Source-derived nonnegative `μ(A)` at cofinal apertures or every-positive-rate negative floor, without a forbidden uniform positive margin; RW/ACT.
 - **E:** formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean.
 
@@ -22,9 +31,9 @@
 
 - **Path:** Replace raw prime-comb cross terms by polynomial-in-aperture diagonal/Euler-envelope cost → pay AIP prime charge.
 - **Obstruction [L]:** Smooth odd test families have cross-prime aggregate of mean-field order `e^{2r}`, exceeding every proposed polynomial budget; the aggregate is introduced by Cauchy–Schwarz, not an intersection number.
-- **Survivor [L]/[S]:** Genuine Hecke incidence on two-prime resonators is a Kronecker sum of single-prime tower forms [L]; normalized comb translates slowly varying tests and tends to an exponential resolvent on fixed tests [S]. Large raw energy need not mean large first-power adverse charge.
+- **Survivor [L]:** Genuine Hecke incidence couples only one differing prime-exponent coordinate, with its exact tower weight; finite-prime restrictions are Cartesian sums, not cross-prime aggregates. Normalized comb translates slowly varying tests and tends to an exponential resolvent on fixed tests. Large raw energy need not mean large first-power adverse charge.
 - **Needs:** Retain prime–pole compensation and signed first-power charge; AIP.
-- **E:** formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheAdjunctionConjectureMeanField.lean; formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ResonatorKroneckerLaw.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/ThePrimeCombIsATranslation.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCombAtTheHorizonIsAResolvent.lean.
+- **E:** formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheAdjunctionConjectureMeanField.lean; formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HeckeIncidenceCartesianLaw.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/ThePrimeCombIsATranslation.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCombAtTheHorizonIsAResolvent.lean.
 
 <a id="kr-hct"></a>
 ### KR-HCT — Generic below-half-damping horizon interchange

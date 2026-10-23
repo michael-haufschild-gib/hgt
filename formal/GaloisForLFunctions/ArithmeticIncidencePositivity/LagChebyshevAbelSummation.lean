@@ -11324,6 +11324,866 @@ theorem abs_lagSourceDefect_theta_le {s : ℝ} (hs : 0 ≤ s) :
   rw [lagSourceDefect, twoPoleWeight, abs_le]
   constructor <;> linarith
 
+
+/-! ### Reading at the wrong pole
+
+Against a calibration at `ρ > 1` the Chebyshev count cannot keep up: its defect is at least
+`(e^{ρs}−1)/ρ` minus an `O(s e^s)` term, so it grows like `e^{ρs}`.  The pole position is thus
+pinned by the arithmetic at full strength, and the Weil form at any pole can be scored by a
+majorant of the corresponding defect. -/
+
+theorem integrableOn_Ioi_lagSourceDefectAt_mul_deriv (ρ : ℝ) (a : ℕ → ℝ)
+    (hh : ContDiff ℝ 1 h) (hS : 0 < S) (hvan : ∀ s, S ≤ s → h s = 0) {N : ℕ}
+    (hN : Real.exp S ≤ N) :
+    IntegrableOn (fun s => lagSourceDefectAt ρ a s * deriv h s) (Ioi (0:ℝ)) := by
+  have hdc : Continuous (deriv h) := hh.continuous_deriv le_rfl
+  have h1 : IntegrableOn (fun s => poleWeightAt ρ s * deriv h s) (Ioi (0:ℝ)) :=
+    integrableOn_Ioi_of_vanishing ((continuous_poleWeightAt ρ).mul hdc) hS
+      (fun s hs => by rw [deriv_eq_zero_of_vanishing hvan hs, mul_zero])
+  refine (h1.sub (integrableOn_Ioi_lagPrefix_mul_deriv a hh hS hvan hN)).congr_fun
+    (fun s _ => ?_) measurableSet_Ioi
+  show poleWeightAt ρ s * deriv h s - lagPrefix a s * deriv h s
+    = lagSourceDefectAt ρ a s * deriv h s
+  rw [lagSourceDefectAt, sub_mul]
+
+/-- **Scoring the Weil form at a pole by a majorant of the defect.** -/
+theorem abs_testBalanceAt_source_le (ρ : ℝ) (hρ : ρ ≠ 0) (a : ℕ → ℝ) (ha0 : a 0 = 0)
+    (ha1 : a 1 = 0) {G : ℝ → ℝ} (hGc : Continuous G)
+    (hdef : ∀ s, 0 < s → |lagSourceDefectAt ρ a s| ≤ G s)
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r)
+    (hsupp : ∀ y, r < |y| → F y = 0) {N : ℕ} (hN : Real.exp (2 * r) ≤ N) :
+    |(∑ n ∈ Finset.range (N + 1), a n *
+          (2 * (n : ℝ) ^ (-ρ / 2) * autoCorrelation F (Real.log n)))
+        - 2 * ((∫ x, F x * Real.exp (-(ρ / 2 * x))) * ∫ x, F x * Real.exp (ρ / 2 * x))|
+      ≤ ∫ s in Ioi (0:ℝ), G s * |deriv (lagTestWeightAt ρ F) s| := by
+  have hS : (0:ℝ) < 2 * r := by linarith
+  have hvan : ∀ s, 2 * r ≤ s → lagTestWeightAt ρ F s = 0 := fun s hs => by
+    rw [lagTestWeightAt, autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  have hwc : Continuous (deriv (lagTestWeightAt ρ F)) :=
+    (contDiff_one_lagTestWeightAt ρ hF hFc).continuous_deriv le_rfl
+  have hintG : IntegrableOn (fun s => G s * |deriv (lagTestWeightAt ρ F) s|) (Ioi (0:ℝ)) :=
+    integrableOn_Ioi_of_vanishing (hGc.mul hwc.abs) hS
+      (fun s hs => by rw [deriv_eq_zero_of_vanishing hvan hs, abs_zero, mul_zero])
+  have hintD : IntegrableOn
+      (fun s => |lagSourceDefectAt ρ a s * deriv (lagTestWeightAt ρ F) s|) (Ioi (0:ℝ)) :=
+    (integrableOn_Ioi_lagSourceDefectAt_mul_deriv ρ a
+      (contDiff_one_lagTestWeightAt ρ hF hFc) hS hvan hN).abs
+  have hpt : ∀ s ∈ Ioi (0:ℝ),
+      |lagSourceDefectAt ρ a s * deriv (lagTestWeightAt ρ F) s|
+        ≤ G s * |deriv (lagTestWeightAt ρ F) s| := by
+    intro s hs
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_right (hdef s hs) (abs_nonneg _)
+  have hmono := MeasureTheory.setIntegral_mono_on hintD hintG measurableSet_Ioi hpt
+  rw [testBalanceAt_source ρ hρ a ha0 ha1 hF hFc hr hsupp hN,
+    setIntegral_congr_fun measurableSet_Ioi
+      (fun s _ => by rw [deriv_lagTestWeightAt ρ hF hFc s] :
+        ∀ s ∈ Ioi (0:ℝ), lagSourceDefectAt ρ a s *
+            (2 * Real.exp (-(ρ * s) / 2)
+              * (crossCorrelation F s - ρ / 2 * autoCorrelation F s))
+          = lagSourceDefectAt ρ a s * deriv (lagTestWeightAt ρ F) s)]
+  exact le_trans abs_integral_le_integral_abs hmono
+
+/-- **Reading `ζ` at a pole beyond `1` costs a defect of order `e^{ρs}`.** -/
+theorem lagSourceDefectAt_vonMangoldt_ge {ρ s : ℝ} (hs : 0 ≤ s) :
+    (Real.exp (ρ * s) - 1) / ρ + s - (Real.exp s + 1) * s
+      ≤ lagSourceDefectAt ρ (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) s := by
+  have hup := lagChebyshev_le hs
+  rw [lagSourceDefectAt, poleWeightAt, ← lagChebyshev_eq_lagPrefix]
+  linarith
+
+
+/-! ### Pole covariance, window mass, and the hyperbola law
+
+Three structural laws of the ledger.  First, the calibration weight is covariant under dilation of
+the lag variable, which moves the pole, and the difference of two calibrations is independent of
+the source: no ledger can be accurate at two distinct poles.  Second, the defect bound transfers
+verbatim to the mass carried by a window.  Third, the prefix of a Dirichlet convolution is the
+superposition of lag-translated prefixes of one factor weighted by the other -- the hyperbola
+identity in lag coordinates -- so a calibration of one factor propagates to the convolution with
+an `ℓ¹`-amplified error, and the Chebyshev ledger reads off the logarithm ledger. -/
+
+/-- Dilating the lag variable by `λ` rescales the calibration weight and moves its pole from `ρ`
+to `λρ`. -/
+theorem poleWeightAt_dilate (rho lam s : ℝ) :
+    poleWeightAt rho (lam * s) = lam * poleWeightAt (lam * rho) s := by
+  rcases eq_or_ne lam 0 with rfl | hlam
+  · simp [poleWeightAt]
+  rcases eq_or_ne rho 0 with rfl | hrho
+  · simp [poleWeightAt]
+  rw [poleWeightAt, poleWeightAt, show rho * (lam * s) = lam * rho * s by ring]
+  field_simp
+
+/-- **Pole-shift law**: moving the calibration pole changes every source's defect by the same
+source-independent amount. -/
+theorem lagSourceDefectAt_sub_lagSourceDefect (rho : ℝ) (a : ℕ → ℝ) (s : ℝ) :
+    lagSourceDefectAt rho a s - lagSourceDefect a s
+      = (Real.exp (rho * s) - 1) / rho - (Real.exp s - 1) := by
+  simp only [lagSourceDefectAt, lagSourceDefect, poleWeightAt, twoPoleWeight]
+  ring
+
+/-- **Two-pole rigidity**: a ledger accurate to `C` against two calibrations pins the gap between
+the two polar weights to `2C`.  Since the gap grows like `e^{ρ₁ s}` for `ρ₁ > ρ₂`, no source is
+accurate at two distinct poles. -/
+theorem abs_poleWeight_sub_le_of_two_poles (a : ℕ → ℝ) {rho1 rho2 s C : ℝ}
+    (h1 : |lagSourceDefectAt rho1 a s| ≤ C) (h2 : |lagSourceDefectAt rho2 a s| ≤ C) :
+    |(Real.exp (rho1 * s) - 1) / rho1 - (Real.exp (rho2 * s) - 1) / rho2| ≤ 2 * C := by
+  have hkey : (Real.exp (rho1 * s) - 1) / rho1 - (Real.exp (rho2 * s) - 1) / rho2
+      = lagSourceDefectAt rho1 a s - lagSourceDefectAt rho2 a s := by
+    simp only [lagSourceDefectAt, poleWeightAt]; ring
+  rw [hkey]
+  calc |lagSourceDefectAt rho1 a s - lagSourceDefectAt rho2 a s|
+      ≤ |lagSourceDefectAt rho1 a s| + |lagSourceDefectAt rho2 a s| := abs_sub _ _
+    _ ≤ 2 * C := by linarith
+
+/-- **Window mass law**: a defect bound at the two ends of a window controls the mass the ledger
+carries inside it, to within `2C` of the polar prediction `e^t − e^s + (t − s)`. -/
+theorem abs_window_mass_sub_le (a : ℕ → ℝ) {s t C : ℝ}
+    (hs : |lagSourceDefect a s| ≤ C) (ht : |lagSourceDefect a t| ≤ C) :
+    |(lagPrefix a t - lagPrefix a s) - (twoPoleWeight t - twoPoleWeight s)| ≤ 2 * C := by
+  have hkey : (lagPrefix a t - lagPrefix a s) - (twoPoleWeight t - twoPoleWeight s)
+      = lagSourceDefect a s - lagSourceDefect a t := by
+    simp only [lagSourceDefect]; ring
+  rw [hkey]
+  calc |lagSourceDefect a s - lagSourceDefect a t|
+      ≤ |lagSourceDefect a s| + |lagSourceDefect a t| := abs_sub _ _
+    _ ≤ 2 * C := by linarith
+
+/-- The window mass is the sum of the atoms the window actually contains. -/
+theorem lagPrefix_sub_lagPrefix_eq_sum (a : ℕ → ℝ) {s t : ℝ} (hst : s ≤ t) :
+    lagPrefix a t - lagPrefix a s = ∑ n ∈ Finset.Ioc ⌊Real.exp s⌋₊ ⌊Real.exp t⌋₊, a n := by
+  have hfl : ⌊Real.exp s⌋₊ ≤ ⌊Real.exp t⌋₊ := Nat.floor_le_floor (Real.exp_le_exp.mpr hst)
+  have hsub : Finset.Icc 0 ⌊Real.exp s⌋₊ ⊆ Finset.Icc 0 ⌊Real.exp t⌋₊ := by
+    intro k hk; rw [Finset.mem_Icc] at hk ⊢; omega
+  have hdiff : Finset.Icc 0 ⌊Real.exp t⌋₊ \ Finset.Icc 0 ⌊Real.exp s⌋₊
+      = Finset.Ioc ⌊Real.exp s⌋₊ ⌊Real.exp t⌋₊ := by
+    ext k; simp only [Finset.mem_sdiff, Finset.mem_Icc, Finset.mem_Ioc]; omega
+  rw [lagPrefix, lagPrefix, ← Finset.sum_sdiff hsub, hdiff]
+  ring
+
+/-- The atoms of a window carry the polar mass of the window up to twice the defect bound. -/
+theorem abs_sum_Ioc_sub_le (a : ℕ → ℝ) {s t C : ℝ} (hst : s ≤ t)
+    (hs : |lagSourceDefect a s| ≤ C) (ht : |lagSourceDefect a t| ≤ C) :
+    |(∑ n ∈ Finset.Ioc ⌊Real.exp s⌋₊ ⌊Real.exp t⌋₊, a n)
+        - (Real.exp t - Real.exp s + (t - s))| ≤ 2 * C := by
+  have hmass := abs_window_mass_sub_le a hs ht
+  rw [lagPrefix_sub_lagPrefix_eq_sum a hst] at hmass
+  have hw : twoPoleWeight t - twoPoleWeight s = Real.exp t - Real.exp s + (t - s) := by
+    simp only [twoPoleWeight]; ring
+  rwa [hw] at hmass
+
+/-- The prefix of a source whose zeroth coefficient vanishes starts at index one. -/
+theorem lagPrefix_eq_sum_Icc_one (b : ℕ → ℝ) (hb0 : b 0 = 0) (u : ℝ) :
+    lagPrefix b u = ∑ k ∈ Finset.Icc 1 ⌊Real.exp u⌋₊, b k := by
+  rw [lagPrefix, show Finset.Icc 0 ⌊Real.exp u⌋₊ = insert 0 (Finset.Icc 1 ⌊Real.exp u⌋₊) from by
+      ext k; simp only [Finset.mem_Icc, Finset.mem_insert]; omega,
+    Finset.sum_insert (by simp), hb0, zero_add]
+
+/-- Translating the lag variable by `log d` divides the horizon by `d`. -/
+theorem floor_exp_sub_log (s : ℝ) {d : ℕ} (hd : 1 ≤ d) :
+    ⌊Real.exp (s - Real.log d)⌋₊ = ⌊Real.exp s⌋₊ / d := by
+  have hd0 : (0:ℝ) < d := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hd
+  rw [Real.exp_sub, Real.exp_log hd0, Nat.floor_div_natCast]
+
+/-- Dirichlet convolution of two sources. -/
+def dconv (a b : ℕ → ℝ) (n : ℕ) : ℝ := ∑ x ∈ n.divisorsAntidiagonal, a x.1 * b x.2
+
+/-- The unit source of the Dirichlet algebra: the constant `1` off the origin. -/
+def unitSource : ℕ → ℝ := fun n => if n = 0 then 0 else 1
+
+theorem unitSource_zero : unitSource 0 = 0 := by simp [unitSource]
+
+/-- Hyperbola swap for a Dirichlet convolution: each factorization `n = d·m` is counted once. -/
+theorem sum_Icc_dconv (a b : ℕ → ℝ) (N : ℕ) :
+    ∑ n ∈ Finset.Icc 1 N, dconv a b n
+      = ∑ d ∈ Finset.Icc 1 N, a d * ∑ m ∈ Finset.Icc 1 (N / d), b m := by
+  have hexpand : ∑ n ∈ Finset.Icc 1 N, dconv a b n
+      = ∑ x ∈ (Finset.Icc 1 N).sigma (fun n => n.divisorsAntidiagonal), a x.2.1 * b x.2.2 := by
+    rw [Finset.sum_sigma]
+    exact Finset.sum_congr rfl fun n _ => rfl
+  have hcollapse : ∑ d ∈ Finset.Icc 1 N, a d * ∑ m ∈ Finset.Icc 1 (N / d), b m
+      = ∑ x ∈ (Finset.Icc 1 N).sigma (fun d => Finset.Icc 1 (N / d)), a x.1 * b x.2 := by
+    rw [Finset.sum_sigma]
+    exact Finset.sum_congr rfl fun d _ => Finset.mul_sum ..
+  rw [hexpand, hcollapse]
+  apply Finset.sum_nbij' (i := fun x => ⟨x.2.1, x.2.2⟩) (j := fun y => ⟨y.1 * y.2, (y.1, y.2)⟩)
+  · rintro ⟨n, d, m⟩ hx
+    rw [Finset.mem_sigma] at hx
+    obtain ⟨hn, hdm⟩ := hx
+    rw [Finset.mem_Icc] at hn
+    rw [Nat.mem_divisorsAntidiagonal] at hdm
+    obtain ⟨hprod, hn0⟩ := hdm
+    dsimp only at hprod hn0 hn ⊢
+    rw [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Icc]
+    dsimp only
+    have hd0 : d ≠ 0 := by rintro rfl; rw [zero_mul] at hprod; omega
+    have hm0 : m ≠ 0 := by rintro rfl; rw [mul_zero] at hprod; omega
+    refine ⟨⟨by omega, ?_⟩, by omega, ?_⟩
+    · calc d ≤ d * m := Nat.le_mul_of_pos_right d (by omega)
+        _ = n := hprod
+        _ ≤ N := hn.2
+    · rw [Nat.le_div_iff_mul_le (by omega : 0 < d)]
+      calc m * d = n := by rw [mul_comm]; exact hprod
+        _ ≤ N := hn.2
+  · rintro ⟨d, m⟩ hy
+    rw [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Icc] at hy
+    obtain ⟨hd, hm⟩ := hy
+    dsimp only at hd hm ⊢
+    rw [Finset.mem_sigma, Finset.mem_Icc, Nat.mem_divisorsAntidiagonal]
+    dsimp only
+    have hdm : d * m ≤ N :=
+      calc d * m ≤ d * (N / d) := Nat.mul_le_mul_left d hm.2
+        _ ≤ N := Nat.mul_div_le N d
+    have hne : d * m ≠ 0 := Nat.mul_ne_zero (by omega) (by omega)
+    exact ⟨⟨by omega, hdm⟩, rfl, hne⟩
+  · rintro ⟨n, d, m⟩ hx
+    rw [Finset.mem_sigma] at hx
+    obtain ⟨-, hdm⟩ := hx
+    rw [Nat.mem_divisorsAntidiagonal] at hdm
+    obtain ⟨hprod, -⟩ := hdm
+    dsimp only at hprod ⊢
+    subst hprod
+    rfl
+  · rintro ⟨d, m⟩ _
+    rfl
+  · rintro ⟨n, d, m⟩ _
+    rfl
+
+/-- **The hyperbola law in lag coordinates**: the ledger of a Dirichlet convolution is the
+superposition of the lag-translated ledgers of one factor, weighted by the other.  Multiplicative
+convolution becomes an additive translation average. -/
+theorem lagPrefix_dconv (a b : ℕ → ℝ) (hb0 : b 0 = 0) (s : ℝ) :
+    lagPrefix (dconv a b) s
+      = ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, a d * lagPrefix b (s - Real.log d) := by
+  have hzero : dconv a b 0 = 0 := by simp [dconv, Nat.divisorsAntidiagonal_zero]
+  rw [lagPrefix_eq_sum_Icc_one _ hzero s, sum_Icc_dconv]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_Icc] at hd
+  rw [lagPrefix_eq_sum_Icc_one b hb0 (s - Real.log d), floor_exp_sub_log s hd.1]
+
+/-- **Calibration propagates through convolution**: if one factor is calibrated by `w` to within
+`C`, the convolution is calibrated by the superposed weight to within `C` times the `ℓ¹` mass of
+the multiplier. -/
+theorem abs_lagPrefix_dconv_sub_le (a b : ℕ → ℝ) (hb0 : b 0 = 0) {w : ℝ → ℝ} {C : ℝ}
+    (hC : ∀ u, |lagPrefix b u - w u| ≤ C) (s : ℝ) :
+    |lagPrefix (dconv a b) s
+        - ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, a d * w (s - Real.log d)|
+      ≤ C * ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, |a d| := by
+  rw [lagPrefix_dconv a b hb0 s, ← Finset.sum_sub_distrib, Finset.mul_sum]
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) (Finset.sum_le_sum fun d _ => ?_)
+  calc |a d * lagPrefix b (s - Real.log d) - a d * w (s - Real.log d)|
+      = |a d| * |lagPrefix b (s - Real.log d) - w (s - Real.log d)| := by
+        rw [← mul_sub, abs_mul]
+    _ ≤ |a d| * C := mul_le_mul_of_nonneg_left (hC _) (abs_nonneg _)
+    _ = C * |a d| := mul_comm _ _
+
+theorem lagPrefix_unitSource (u : ℝ) : lagPrefix unitSource u = (⌊Real.exp u⌋₊ : ℝ) := by
+  have hone : ∀ k ∈ Finset.Icc 1 ⌊Real.exp u⌋₊, unitSource k = 1 := by
+    intro k hk
+    rw [Finset.mem_Icc] at hk
+    simp only [unitSource, if_neg (by omega : ¬ k = 0)]
+  rw [lagPrefix_eq_sum_Icc_one unitSource unitSource_zero u,
+    Finset.sum_congr rfl hone, Finset.sum_const, Nat.card_Icc, nsmul_eq_mul, mul_one]
+  simp
+
+/-- The von Mangoldt source convolved with the unit source is the logarithm source. -/
+theorem dconv_vonMangoldt_unitSource (n : ℕ) :
+    dconv (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) unitSource n = Real.log n := by
+  have hrw : dconv (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) unitSource n
+      = (ArithmeticFunction.vonMangoldt
+          * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)) n := by
+    rw [ArithmeticFunction.mul_apply]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    simp [unitSource, ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply]
+  rw [hrw, ArithmeticFunction.vonMangoldt_mul_zeta, ArithmeticFunction.log_apply]
+
+/-- **The Chebyshev ledger reads the logarithm ledger**: the prefix of `log` is the hyperbola
+pairing of the von Mangoldt atoms against the horizon counts `⌊e^s/d⌋`. -/
+theorem lagPrefix_log_eq_sum_vonMangoldt (s : ℝ) :
+    lagPrefix (fun n : ℕ => Real.log n) s
+      = ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊,
+          (ArithmeticFunction.vonMangoldt d : ℝ) * ((⌊Real.exp s⌋₊ / d : ℕ) : ℝ) := by
+  have hfun : (fun n : ℕ => Real.log n)
+      = dconv (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) unitSource :=
+    funext fun n => (dconv_vonMangoldt_unitSource n).symm
+  rw [hfun, lagPrefix_dconv _ _ unitSource_zero]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_Icc] at hd
+  rw [lagPrefix_unitSource, floor_exp_sub_log s hd.1]
+
+
+/-! ### Möbius inversion of the ledger
+
+The unit source is calibrated by `e^u` to within one atom, so the hyperbola law turns a Dirichlet
+convolution against it into the leading term `x·∑ a(d)/d`.  Inverting with the Möbius source
+recovers any ledger from its summatory convolution, which specialises to the exact identities
+`∑_{d ≤ x} μ(d)⌊x/d⌋ = 1`, `|∑_{d ≤ x} μ(d)/d| ≤ 1`, the divisor ledger `∑_{n ≤ x} τ(n) =
+∑_{d ≤ x} ⌊x/d⌋`, and the closed form `ψ(x) = ∑_{d ≤ x} μ(d) log(⌊x/d⌋!)`. -/
+
+/-- The unit source counts the horizon to within one atom. -/
+theorem abs_lagPrefix_unitSource_sub_exp_le (u : ℝ) :
+    |lagPrefix unitSource u - Real.exp u| ≤ 1 := by
+  rw [lagPrefix_unitSource]
+  have h1 : (⌊Real.exp u⌋₊ : ℝ) ≤ Real.exp u := Nat.floor_le (Real.exp_pos u).le
+  have h2 : Real.exp u - 1 < (⌊Real.exp u⌋₊ : ℝ) := Nat.sub_one_lt_floor _
+  rw [abs_le]
+  constructor <;> linarith
+
+/-- **Leading term of a summatory convolution**: convolving with the unit source produces the
+horizon times the Dirichlet tail, with error the `ℓ¹` mass of the multiplier. -/
+theorem abs_lagPrefix_dconv_unitSource_sub_le (a : ℕ → ℝ) (s : ℝ) :
+    |lagPrefix (dconv a unitSource) s
+        - Real.exp s * ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, a d / d|
+      ≤ ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, |a d| := by
+  have hmain := abs_lagPrefix_dconv_sub_le a unitSource unitSource_zero
+    (w := Real.exp) (C := 1) abs_lagPrefix_unitSource_sub_exp_le s
+  rw [one_mul] at hmain
+  have hsum : ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, a d * Real.exp (s - Real.log d)
+      = Real.exp s * ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, a d / d := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun d hd => ?_
+    rw [Finset.mem_Icc] at hd
+    have hd0 : (0:ℝ) < d := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hd.1
+    rw [Real.exp_sub, Real.exp_log hd0]
+    field_simp
+  rwa [hsum] at hmain
+
+theorem sum_Icc_log_eq_log_factorial (N : ℕ) :
+    ∑ k ∈ Finset.Icc 1 N, Real.log k = Real.log (Nat.factorial N) := by
+  have hfac : ∏ i ∈ Finset.Icc 1 N, i = Nat.factorial N := by
+    induction N with
+    | zero => simp
+    | succ n ih =>
+        rw [Finset.prod_Icc_succ_top (by omega), ih, Nat.factorial_succ]
+        ring
+  have hprod : ((Nat.factorial N : ℕ) : ℝ) = ∏ i ∈ Finset.Icc 1 N, (i : ℝ) := by
+    rw [← Nat.cast_prod, hfac]
+  rw [hprod, Real.log_prod (fun i hi => by
+    rw [Finset.mem_Icc] at hi
+    exact Nat.cast_ne_zero.mpr (by omega))]
+
+/-- The logarithm ledger is the logarithm of the factorial of the horizon. -/
+theorem lagPrefix_log_eq_log_factorial (s : ℝ) :
+    lagPrefix (fun n : ℕ => Real.log n) s = Real.log (Nat.factorial ⌊Real.exp s⌋₊) := by
+  rw [lagPrefix_eq_sum_Icc_one _ (by simp) s, sum_Icc_log_eq_log_factorial]
+
+/-- Hyperbola swap against a weight evaluated at the product. -/
+theorem sum_Icc_dconv_mul (a b f : ℕ → ℝ) (N : ℕ) :
+    ∑ n ∈ Finset.Icc 1 N, dconv a b n * f n
+      = ∑ d ∈ Finset.Icc 1 N, ∑ m ∈ Finset.Icc 1 (N / d), a d * b m * f (d * m) := by
+  have hexpand : ∑ n ∈ Finset.Icc 1 N, dconv a b n * f n
+      = ∑ x ∈ (Finset.Icc 1 N).sigma (fun n => n.divisorsAntidiagonal),
+          a x.2.1 * b x.2.2 * f x.1 := by
+    rw [Finset.sum_sigma]
+    exact Finset.sum_congr rfl fun n _ => by rw [dconv, Finset.sum_mul]
+  have hcollapse : ∑ d ∈ Finset.Icc 1 N, ∑ m ∈ Finset.Icc 1 (N / d), a d * b m * f (d * m)
+      = ∑ x ∈ (Finset.Icc 1 N).sigma (fun d => Finset.Icc 1 (N / d)),
+          a x.1 * b x.2 * f (x.1 * x.2) := by
+    rw [Finset.sum_sigma]
+  rw [hexpand, hcollapse]
+  apply Finset.sum_nbij' (i := fun x => ⟨x.2.1, x.2.2⟩) (j := fun y => ⟨y.1 * y.2, (y.1, y.2)⟩)
+  · rintro ⟨n, d, m⟩ hx
+    rw [Finset.mem_sigma] at hx
+    obtain ⟨hn, hdm⟩ := hx
+    rw [Finset.mem_Icc] at hn
+    rw [Nat.mem_divisorsAntidiagonal] at hdm
+    obtain ⟨hprod, hn0⟩ := hdm
+    dsimp only at hprod hn0 hn ⊢
+    rw [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Icc]
+    dsimp only
+    have hd0 : d ≠ 0 := by rintro rfl; rw [zero_mul] at hprod; omega
+    have hm0 : m ≠ 0 := by rintro rfl; rw [mul_zero] at hprod; omega
+    refine ⟨⟨by omega, ?_⟩, by omega, ?_⟩
+    · calc d ≤ d * m := Nat.le_mul_of_pos_right d (by omega)
+        _ = n := hprod
+        _ ≤ N := hn.2
+    · rw [Nat.le_div_iff_mul_le (by omega : 0 < d)]
+      calc m * d = n := by rw [mul_comm]; exact hprod
+        _ ≤ N := hn.2
+  · rintro ⟨d, m⟩ hy
+    rw [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Icc] at hy
+    obtain ⟨hd, hm⟩ := hy
+    dsimp only at hd hm ⊢
+    rw [Finset.mem_sigma, Finset.mem_Icc, Nat.mem_divisorsAntidiagonal]
+    dsimp only
+    have hdm : d * m ≤ N :=
+      calc d * m ≤ d * (N / d) := Nat.mul_le_mul_left d hm.2
+        _ ≤ N := Nat.mul_div_le N d
+    have hne : d * m ≠ 0 := Nat.mul_ne_zero (by omega) (by omega)
+    exact ⟨⟨by omega, hdm⟩, rfl, hne⟩
+  · rintro ⟨n, d, m⟩ hx
+    rw [Finset.mem_sigma] at hx
+    obtain ⟨-, hdm⟩ := hx
+    rw [Nat.mem_divisorsAntidiagonal] at hdm
+    obtain ⟨hprod, -⟩ := hdm
+    dsimp only at hprod ⊢
+    subst hprod
+    rfl
+  · rintro ⟨d, m⟩ _
+    rfl
+  · rintro ⟨n, d, m⟩ hx
+    rw [Finset.mem_sigma] at hx
+    obtain ⟨-, hdm⟩ := hx
+    rw [Nat.mem_divisorsAntidiagonal] at hdm
+    obtain ⟨hprod, -⟩ := hdm
+    dsimp only at hprod ⊢
+    subst hprod
+    rfl
+
+/-- **The pairing of a convolution lives on the product lattice**: testing a Dirichlet convolution
+against a lag weight is the double sum of the weight at the sums of the lags. -/
+theorem sum_lag_dconv (a b : ℕ → ℝ) (A : ℝ → ℝ) (N : ℕ) :
+    ∑ n ∈ Finset.Icc 1 N, dconv a b n * A (Real.log n)
+      = ∑ d ∈ Finset.Icc 1 N, ∑ m ∈ Finset.Icc 1 (N / d),
+          a d * b m * A (Real.log d + Real.log m) := by
+  rw [sum_Icc_dconv_mul a b (fun n => A (Real.log n)) N]
+  refine Finset.sum_congr rfl fun d hd => Finset.sum_congr rfl fun m hm => ?_
+  rw [Finset.mem_Icc] at hd hm
+  have hd0 : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hm0 : (m : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  rw [Nat.cast_mul, Real.log_mul hd0 hm0]
+
+theorem dconv_eq_mul_apply (F G : ArithmeticFunction ℝ) (n : ℕ) :
+    dconv (fun k => F k) (fun k => G k) n = (F * G) n := (ArithmeticFunction.mul_apply).symm
+
+theorem unitSource_eq_zeta :
+    unitSource = fun k => (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ) k := by
+  funext k
+  simp [unitSource, ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply]
+
+/-- The Möbius source including its unit atom: the Dirichlet inverse of the unit source. -/
+def fullMoebius : ℕ → ℝ := fun n => (ArithmeticFunction.moebius n : ℝ)
+
+theorem fullMoebius_zero : fullMoebius 0 = 0 := by simp [fullMoebius]
+
+theorem abs_fullMoebius_le_one (n : ℕ) : |fullMoebius n| ≤ 1 := by
+  rcases Int.abs_le_one_iff.mp (ArithmeticFunction.abs_moebius_le_one (n := n)) with h | h | h <;>
+    simp [fullMoebius, h]
+
+theorem fullMoebius_eq_moebius :
+    fullMoebius = fun k => (↑ArithmeticFunction.moebius : ArithmeticFunction ℝ) k := by
+  funext k
+  simp [fullMoebius, ArithmeticFunction.intCoe_apply]
+
+theorem one_le_floor_exp {s : ℝ} (hs : 0 ≤ s) : 1 ≤ ⌊Real.exp s⌋₊ :=
+  Nat.one_le_floor_iff _ |>.mpr (Real.one_le_exp hs)
+
+/-- **The Möbius ledger is exactly one**: the horizon counts weighted by `μ` collapse. -/
+theorem sum_fullMoebius_floor {s : ℝ} (hs : 0 ≤ s) :
+    ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊,
+        fullMoebius d * ((⌊Real.exp s⌋₊ / d : ℕ) : ℝ) = 1 := by
+  have hdc : dconv fullMoebius unitSource = fun n => if n = 1 then 1 else 0 := by
+    funext n
+    rw [fullMoebius_eq_moebius, unitSource_eq_zeta, dconv_eq_mul_apply,
+      ArithmeticFunction.coe_moebius_mul_coe_zeta, ArithmeticFunction.one_apply]
+  have hL : lagPrefix (dconv fullMoebius unitSource) s = 1 := by
+    rw [hdc, lagPrefix, Finset.sum_ite_eq' (Finset.Icc 0 ⌊Real.exp s⌋₊) 1 (fun _ => (1:ℝ)),
+      if_pos (by rw [Finset.mem_Icc]; exact ⟨Nat.zero_le _, one_le_floor_exp hs⟩)]
+  rw [lagPrefix_dconv fullMoebius unitSource unitSource_zero s] at hL
+  rw [← hL]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_Icc] at hd
+  rw [lagPrefix_unitSource, floor_exp_sub_log s hd.1]
+
+/-- **The Möbius Dirichlet tail is bounded by one**, uniformly in the horizon. -/
+theorem abs_sum_fullMoebius_div_le_one {s : ℝ} (hs : 0 ≤ s) :
+    |∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, fullMoebius d / d| ≤ 1 := by
+  set N := ⌊Real.exp s⌋₊ with hN
+  have hN1 : 1 ≤ N := one_le_floor_exp hs
+  have hid := sum_fullMoebius_floor hs
+  rw [← hN] at hid
+  set T : ℝ := ∑ d ∈ Finset.Icc 1 N, fullMoebius d * ((N : ℝ) / d - ((N / d : ℕ) : ℝ)) with hT
+  have hsplit : (N : ℝ) * (∑ d ∈ Finset.Icc 1 N, fullMoebius d / d) = 1 + T := by
+    rw [hT, Finset.mul_sum, ← hid, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun d hd => ?_
+    rw [Finset.mem_Icc] at hd
+    have hd0 : (0:ℝ) < d := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hd.1
+    field_simp
+    ring
+  have hins : Finset.Icc 1 N = insert 1 (Finset.Icc 2 N) := by
+    ext k; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+  have hterm : ∀ d ∈ Finset.Icc 2 N,
+      |fullMoebius d * ((N : ℝ) / d - ((N / d : ℕ) : ℝ))| ≤ 1 := by
+    intro d hd
+    rw [Finset.mem_Icc] at hd
+    have hd0 : (0:ℝ) < d := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_two hd.1
+    have hfl : ((N / d : ℕ) : ℝ) ≤ (N : ℝ) / d := by
+      rw [le_div_iff₀ hd0]
+      exact_mod_cast Nat.div_mul_le_self N d
+    have hfl2 : (N : ℝ) / d - 1 < ((N / d : ℕ) : ℝ) := by
+      have hsub := Nat.sub_one_lt_floor ((N : ℝ) / d)
+      rwa [Nat.floor_div_natCast, Nat.floor_natCast] at hsub
+    rw [abs_mul]
+    calc |fullMoebius d| * |(N : ℝ) / d - ((N / d : ℕ) : ℝ)|
+        ≤ 1 * 1 := by
+          refine mul_le_mul (abs_fullMoebius_le_one d) ?_ (abs_nonneg _) zero_le_one
+          rw [abs_le]; constructor <;> linarith
+      _ = 1 := one_mul 1
+  have hone : fullMoebius 1 * ((N : ℝ) / ((1 : ℕ) : ℝ) - ((N / 1 : ℕ) : ℝ)) = 0 := by
+    norm_num
+  have hTbound : |T| ≤ (N : ℝ) - 1 := by
+    rw [hT, hins, Finset.sum_insert (by simp), hone, zero_add]
+    calc |∑ d ∈ Finset.Icc 2 N, fullMoebius d * ((N : ℝ) / d - ((N / d : ℕ) : ℝ))|
+        ≤ ∑ d ∈ Finset.Icc 2 N, |fullMoebius d * ((N : ℝ) / d - ((N / d : ℕ) : ℝ))| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _d ∈ Finset.Icc 2 N, (1:ℝ) := Finset.sum_le_sum hterm
+      _ = (N : ℝ) - 1 := by
+          rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul, mul_one,
+            show N + 1 - 2 = N - 1 from by omega, Nat.cast_sub hN1, Nat.cast_one]
+  have hNpos : (0:ℝ) < N := by exact_mod_cast hN1
+  rw [abs_le]
+  constructor
+  · nlinarith [abs_le.mp hTbound |>.1, abs_le.mp hTbound |>.2]
+  · nlinarith [abs_le.mp hTbound |>.1, abs_le.mp hTbound |>.2]
+
+/-- **Closed form of the Chebyshev ledger**: `ψ(x) = ∑_{d ≤ x} μ(d) log(⌊x/d⌋!)`. -/
+theorem lagChebyshev_eq_sum_fullMoebius_log_factorial (s : ℝ) :
+    lagChebyshev s = ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊,
+        fullMoebius d * Real.log (Nat.factorial (⌊Real.exp s⌋₊ / d)) := by
+  have hlog : (fun n : ℕ => Real.log n)
+      = fun k => (ArithmeticFunction.log : ArithmeticFunction ℝ) k :=
+    funext fun k => (ArithmeticFunction.log_apply).symm
+  have hdc : dconv fullMoebius (fun n : ℕ => Real.log n)
+      = fun n => (ArithmeticFunction.vonMangoldt n : ℝ) := by
+    funext n
+    rw [fullMoebius_eq_moebius, hlog, dconv_eq_mul_apply,
+      show ((↑ArithmeticFunction.moebius : ArithmeticFunction ℝ) * ArithmeticFunction.log)
+          = ArithmeticFunction.log * (↑ArithmeticFunction.moebius : ArithmeticFunction ℝ) from
+        mul_comm _ _,
+      ArithmeticFunction.log_mul_moebius_eq_vonMangoldt]
+  have hmain := lagPrefix_dconv fullMoebius (fun n : ℕ => Real.log n) (by simp) s
+  rw [hdc] at hmain
+  rw [lagChebyshev_eq_lagPrefix, hmain]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_Icc] at hd
+  rw [lagPrefix_log_eq_log_factorial, floor_exp_sub_log s hd.1]
+
+/-- **Möbius inversion of the ledger**: every source is recovered from its summatory convolution
+by Möbius-weighted lag translations. -/
+theorem lagPrefix_eq_sum_fullMoebius_dconv (a : ℕ → ℝ) (ha0 : a 0 = 0) (s : ℝ) :
+    lagPrefix a s = ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊,
+        fullMoebius d * lagPrefix (dconv a unitSource) (s - Real.log d) := by
+  have hb0 : dconv a unitSource 0 = 0 := by simp [dconv]
+  obtain ⟨A, hA⟩ : ∃ A : ArithmeticFunction ℝ, a = fun k => A k := ⟨⟨a, ha0⟩, rfl⟩
+  have key : dconv fullMoebius (dconv a unitSource) = a := by
+    have h1 : dconv a unitSource
+        = fun k => (A * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)) k := by
+      funext k
+      rw [hA, unitSource_eq_zeta, dconv_eq_mul_apply]
+    funext n
+    rw [h1, fullMoebius_eq_moebius, dconv_eq_mul_apply,
+      show ((↑ArithmeticFunction.moebius : ArithmeticFunction ℝ)
+            * (A * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)))
+          = A * ((↑ArithmeticFunction.moebius : ArithmeticFunction ℝ)
+            * (↑ArithmeticFunction.zeta : ArithmeticFunction ℝ)) from by ring,
+      ArithmeticFunction.coe_moebius_mul_coe_zeta, mul_one, hA]
+  conv_lhs => rw [← key]
+  rw [lagPrefix_dconv fullMoebius (dconv a unitSource) hb0 s]
+
+/-- The Möbius source of the Mertens ledger is the full Möbius source with its unit atom removed. -/
+theorem fullMoebius_eq_moebiusSource_add (n : ℕ) :
+    fullMoebius n = moebiusSource n + (if n = 1 then 1 else 0) := by
+  match n with
+  | 0 => simp [fullMoebius, moebiusSource]
+  | 1 => simp [fullMoebius, moebiusSource]
+  | (k + 2) => simp [fullMoebius, moebiusSource]
+
+/-- Past the first atom the two Möbius ledgers differ by exactly the unit atom. -/
+theorem lagPrefix_fullMoebius {s : ℝ} (hs : 0 ≤ s) :
+    lagPrefix fullMoebius s = lagMertens s + 1 := by
+  rw [lagMertens, lagPrefix, lagPrefix,
+    Finset.sum_congr rfl (fun k _ => fullMoebius_eq_moebiusSource_add k),
+    Finset.sum_add_distrib, Finset.sum_ite_eq' (Finset.Icc 0 ⌊Real.exp s⌋₊) 1 (fun _ => (1:ℝ)),
+    if_pos (by rw [Finset.mem_Icc]; exact ⟨Nat.zero_le _, one_le_floor_exp hs⟩)]
+
+theorem card_divisorsAntidiagonal (n : ℕ) :
+    n.divisorsAntidiagonal.card = n.divisors.card := by
+  rw [← Nat.map_div_right_divisors, Finset.card_map]
+
+theorem dconv_unitSource_self (n : ℕ) :
+    dconv unitSource unitSource n = (n.divisors.card : ℝ) := by
+  have hone : ∀ x ∈ n.divisorsAntidiagonal, unitSource x.1 * unitSource x.2 = 1 := by
+    intro x hx
+    rw [Nat.mem_divisorsAntidiagonal] at hx
+    have h1 : x.1 ≠ 0 := by rintro h; rw [h, zero_mul] at hx; exact hx.2 hx.1.symm
+    have h2 : x.2 ≠ 0 := by rintro h; rw [h, mul_zero] at hx; exact hx.2 hx.1.symm
+    simp [unitSource, h1, h2]
+  rw [dconv, Finset.sum_congr rfl hone, Finset.sum_const, nsmul_eq_mul, mul_one,
+    card_divisorsAntidiagonal]
+
+/-- **The divisor ledger is the sum of the horizon counts**: `∑_{n ≤ x} τ(n) = ∑_{d ≤ x} ⌊x/d⌋`. -/
+theorem lagPrefix_divisorCount (s : ℝ) :
+    lagPrefix (fun n : ℕ => (n.divisors.card : ℝ)) s
+      = ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, ((⌊Real.exp s⌋₊ / d : ℕ) : ℝ) := by
+  have hdc : dconv unitSource unitSource = fun n : ℕ => (n.divisors.card : ℝ) :=
+    funext dconv_unitSource_self
+  have hmain := lagPrefix_dconv unitSource unitSource unitSource_zero s
+  rw [hdc] at hmain
+  rw [hmain]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [Finset.mem_Icc] at hd
+  rw [lagPrefix_unitSource, floor_exp_sub_log s hd.1,
+    show unitSource d = 1 from by simp only [unitSource, if_neg (by omega : ¬ d = 0)], one_mul]
+
+/-- The divisor ledger is the harmonic ledger times the horizon, to within the horizon. -/
+theorem abs_lagPrefix_divisorCount_sub_le (s : ℝ) :
+    |lagPrefix (fun n : ℕ => (n.divisors.card : ℝ)) s
+        - Real.exp s * ∑ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, (1:ℝ) / d|
+      ≤ (⌊Real.exp s⌋₊ : ℝ) := by
+  have hdc : dconv unitSource unitSource = fun n : ℕ => (n.divisors.card : ℝ) :=
+    funext dconv_unitSource_self
+  have hmain := abs_lagPrefix_dconv_unitSource_sub_le unitSource s
+  rw [hdc] at hmain
+  have hdiv : ∀ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, unitSource d / d = (1:ℝ) / d := by
+    intro d hd
+    rw [Finset.mem_Icc] at hd
+    rw [show unitSource d = 1 from by simp only [unitSource, if_neg (by omega : ¬ d = 0)]]
+  have habs : ∀ d ∈ Finset.Icc 1 ⌊Real.exp s⌋₊, |unitSource d| = 1 := by
+    intro d hd
+    rw [Finset.mem_Icc] at hd
+    rw [show unitSource d = 1 from by simp only [unitSource, if_neg (by omega : ¬ d = 0)],
+      abs_one]
+  rw [Finset.sum_congr rfl hdiv, Finset.sum_congr rfl habs, Finset.sum_const, Nat.card_Icc,
+    nsmul_eq_mul, mul_one] at hmain
+  simpa using hmain
+
+/-! ### The Euler comb ledger
+
+A squarefree comb `F − λF(· + a)` acts on the lag ledger as the second-order difference
+`A ↦ (1+λ²)A − λ(A(· − a) + A(· + a))`, and after normalisation by `1 + λ²` this is the Euler
+transform at weight `w = 2λ/(1+λ²)`.  The transform maps autocorrelations to autocorrelations, so
+iterating it over a finite family of lags and reading the result at the origin telescopes into a
+payment law: the first-power charge of each lag, measured in the ledger transformed by its
+predecessors, is paid in full by the mass.  The admissible weights are exactly `w ≤ 1`, and every
+prime-power Euler weight `Λ(n)/√n ≤ 2/e` is admissible, so the comb of a squarefree modulus can be
+tuned to the prime side.  For two lags the price of the payment is explicit: the charges at the
+ratio and product lags of the pair. -/
+
+theorem autoCorrelation_const_mul (c : ℝ) (H : ℝ → ℝ) (t : ℝ) :
+    autoCorrelation (fun x => c * H x) t = c ^ 2 * autoCorrelation H t := by
+  rw [autoCorrelation, autoCorrelation, ← MeasureTheory.integral_const_mul]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show c * H x * (c * H (x + t)) = c ^ 2 * (H x * H (x + t))
+  ring
+
+/-- **The Euler factor is a second-order difference on the ledger.**  The comb `F − λF(· + a)`
+has autocorrelation `(1+λ²)A − λ(A(· − a) + A(· + a))`. -/
+theorem autoCorrelation_eulerFactor (hF : Continuous F) (hFc : HasCompactSupport F)
+    (lam a t : ℝ) :
+    autoCorrelation (fun x => F x - lam * F (x + a)) t
+      = (1 + lam ^ 2) * autoCorrelation F t
+        - lam * (autoCorrelation F (t - a) + autoCorrelation F (t + a)) := by
+  have key : ∀ u v : ℝ, (∫ x, F (x + u) * F (x + v)) = autoCorrelation F (v - u) := by
+    intro u v
+    rw [autoCorrelation, ← MeasureTheory.integral_add_right_eq_self
+      (μ := (volume : Measure ℝ)) (fun x => F x * F (x + (v - u))) u]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+    show F (x + u) * F (x + v) = F (x + u) * F (x + u + (v - u))
+    rw [show x + u + (v - u) = x + v by ring]
+  have h1 := integrable_shift_mul hF hFc 0 t
+  have h2 := integrable_shift_mul hF hFc 0 (t + a)
+  have h3 := integrable_shift_mul hF hFc a t
+  have h4 := integrable_shift_mul hF hFc a (t + a)
+  rw [autoCorrelation]
+  have hexp : ∀ x, (F x - lam * F (x + a)) * (F (x + t) - lam * F (x + t + a))
+      = F (x + 0) * F (x + t) + lam ^ 2 * (F (x + a) * F (x + (t + a)))
+        - (lam * (F (x + 0) * F (x + (t + a))) + lam * (F (x + a) * F (x + t))) := by
+    intro x
+    rw [show x + t + a = x + (t + a) by ring, add_zero]
+    ring
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hexp)]
+  have e1 : (∫ x, (F (x + 0) * F (x + t) + lam ^ 2 * (F (x + a) * F (x + (t + a)))
+        - (lam * (F (x + 0) * F (x + (t + a))) + lam * (F (x + a) * F (x + t)))))
+      = (∫ x, (F (x + 0) * F (x + t) + lam ^ 2 * (F (x + a) * F (x + (t + a)))))
+        - ∫ x, (lam * (F (x + 0) * F (x + (t + a))) + lam * (F (x + a) * F (x + t))) :=
+    MeasureTheory.integral_sub (h1.add (h4.const_mul _)) ((h2.const_mul _).add (h3.const_mul _))
+  have e2 : (∫ x, (F (x + 0) * F (x + t) + lam ^ 2 * (F (x + a) * F (x + (t + a)))))
+      = (∫ x, F (x + 0) * F (x + t)) + ∫ x, lam ^ 2 * (F (x + a) * F (x + (t + a))) :=
+    MeasureTheory.integral_add h1 (h4.const_mul _)
+  have e3 : (∫ x, (lam * (F (x + 0) * F (x + (t + a))) + lam * (F (x + a) * F (x + t))))
+      = (∫ x, lam * (F (x + 0) * F (x + (t + a)))) + ∫ x, lam * (F (x + a) * F (x + t)) :=
+    MeasureTheory.integral_add (h2.const_mul _) (h3.const_mul _)
+  have e4 : (∫ x, lam ^ 2 * (F (x + a) * F (x + (t + a))))
+      = lam ^ 2 * ∫ x, F (x + a) * F (x + (t + a)) := MeasureTheory.integral_const_mul _ _
+  have e5 : (∫ x, lam * (F (x + 0) * F (x + (t + a))))
+      = lam * ∫ x, F (x + 0) * F (x + (t + a)) := MeasureTheory.integral_const_mul _ _
+  have e6 : (∫ x, lam * (F (x + a) * F (x + t)))
+      = lam * ∫ x, F (x + a) * F (x + t) := MeasureTheory.integral_const_mul _ _
+  rw [e1, e2, e3, e4, e5, e6, key 0 t, key a (t + a), key 0 (t + a), key a t,
+    show t - 0 = t by ring, show t + a - 0 = t + a by ring, show t + a - a = t by ring]
+  ring
+
+/-- The comb weight realizing the Euler weight `w ∈ (0,1]`. -/
+def eulerLam (w : ℝ) : ℝ := (1 - Real.sqrt (1 - w ^ 2)) / w
+
+theorem eulerLam_spec {w : ℝ} (hw0 : 0 < w) (hw1 : w ≤ 1) :
+    2 * eulerLam w / (1 + eulerLam w ^ 2) = w := by
+  have hsq : (0:ℝ) ≤ 1 - w ^ 2 := by nlinarith
+  set u := Real.sqrt (1 - w ^ 2) with hu
+  have hu0 : 0 ≤ u := Real.sqrt_nonneg _
+  have hu2 : u ^ 2 = 1 - w ^ 2 := Real.sq_sqrt hsq
+  have hult : u < 1 := by nlinarith
+  have hne : (1:ℝ) - u ≠ 0 := by linarith
+  have hlam : eulerLam w = (1 - u) / w := rfl
+  rw [hlam, div_pow]
+  have h1 : 1 + (1 - u) ^ 2 / w ^ 2 = 2 * (1 - u) / w ^ 2 := by
+    field_simp
+    nlinarith
+  rw [h1]
+  field_simp
+
+/-- **The comb cannot pay more than the mass**: every weight it realizes is at most one. -/
+theorem two_mul_div_one_add_sq_le_one (lam : ℝ) : 2 * lam / (1 + lam ^ 2) ≤ 1 := by
+  have hpos : (0:ℝ) < 1 + lam ^ 2 := by positivity
+  rw [div_le_one hpos]
+  nlinarith [sq_nonneg (lam - 1)]
+
+/-- The normalized Euler transform of a lag ledger at weight `w` and lag `a`. -/
+def eulerStep (w a : ℝ) (A : ℝ → ℝ) : ℝ → ℝ :=
+  fun t => A t - (w / 2) * (A (t - a) + A (t + a))
+
+theorem eulerStep_even {A : ℝ → ℝ} (hA : ∀ t, A (-t) = A t) (w a : ℝ) (t : ℝ) :
+    eulerStep w a A (-t) = eulerStep w a A t := by
+  rw [eulerStep, eulerStep, show -t - a = -(t + a) by ring, show -t + a = -(t - a) by ring,
+    hA, hA, hA]
+  ring
+
+/-- **The Euler transform preserves the autocorrelation cone.** -/
+theorem exists_autoCorrelation_eulerStep (hF : Continuous F) (hFc : HasCompactSupport F)
+    {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) (a : ℝ) :
+    ∃ G : ℝ → ℝ, Continuous G ∧ HasCompactSupport G ∧
+      autoCorrelation G = eulerStep w a (autoCorrelation F) := by
+  rcases eq_or_lt_of_le hw0 with rfl | hw
+  · exact ⟨F, hF, hFc, by funext t; simp [eulerStep]⟩
+  have hlam := eulerLam_spec hw hw1
+  set lam := eulerLam w with hlamdef
+  have hpos : (0:ℝ) < 1 + lam ^ 2 := by positivity
+  set c := (Real.sqrt (1 + lam ^ 2))⁻¹ with hc
+  have hc2 : c ^ 2 = (1 + lam ^ 2)⁻¹ := by
+    rw [hc, inv_pow, Real.sq_sqrt hpos.le]
+  refine ⟨fun x => c * (F x - lam * F (x + a)), continuous_const.mul
+      (hF.sub (continuous_const.mul (hF.comp (continuous_id.add continuous_const)))), ?_, ?_⟩
+  · exact (hFc.sub ((hFc.comp_homeomorph (Homeomorph.addRight a)).mul_left)).mul_left
+  funext t
+  have hhalf : lam / (1 + lam ^ 2) = w / 2 := by rw [← hlam]; ring
+  rw [autoCorrelation_const_mul, autoCorrelation_eulerFactor hF hFc, hc2, eulerStep]
+  have expand : (1 + lam ^ 2)⁻¹ * ((1 + lam ^ 2) * autoCorrelation F t
+      - lam * (autoCorrelation F (t - a) + autoCorrelation F (t + a)))
+      = autoCorrelation F t
+        - lam / (1 + lam ^ 2) * (autoCorrelation F (t - a) + autoCorrelation F (t + a)) := by
+    field_simp
+  rw [expand, hhalf]
+
+/-- The ledger after a finite list of Euler transforms. -/
+def eulerLedger : List (ℝ × ℝ) → (ℝ → ℝ) → (ℝ → ℝ)
+  | [], A => A
+  | (w, a) :: L, A => eulerLedger L (eulerStep w a A)
+
+/-- The total charge paid along the list: each lag in the ledger of its predecessors. -/
+def eulerPayment : List (ℝ × ℝ) → (ℝ → ℝ) → ℝ
+  | [], _ => 0
+  | (w, a) :: L, A => w * A a + eulerPayment L (eulerStep w a A)
+
+/-- The transformed ledger at the origin is the mass minus the payment. -/
+theorem eulerLedger_zero_eq : ∀ (L : List (ℝ × ℝ)) {A : ℝ → ℝ}, (∀ t, A (-t) = A t) →
+    eulerLedger L A 0 = A 0 - eulerPayment L A := by
+  intro L
+  induction L with
+  | nil => intro A _; simp [eulerLedger, eulerPayment]
+  | cons p L ih =>
+      intro A hA
+      obtain ⟨w, a⟩ := p
+      rw [eulerLedger, eulerPayment, ih (eulerStep_even hA w a)]
+      have h0 : eulerStep w a A 0 = A 0 - w * A a := by
+        rw [eulerStep, zero_sub, zero_add, hA]
+        ring
+      rw [h0]
+      ring
+
+theorem eulerLedger_autoCorrelation_nonneg : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, Continuous H →
+    HasCompactSupport H → (∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) →
+    0 ≤ eulerLedger L (autoCorrelation H) 0 := by
+  intro L
+  induction L with
+  | nil => intro H _ _ _; exact autoCorrelation_zero_nonneg H
+  | cons p L ih =>
+      intro H hH hHc hL
+      obtain ⟨w, a⟩ := p
+      obtain ⟨hw0, hw1⟩ := hL (w, a) (List.mem_cons_self ..)
+      obtain ⟨G, hG, hGc, hGeq⟩ := exists_autoCorrelation_eulerStep hH hHc hw0 hw1 a
+      rw [eulerLedger, ← hGeq]
+      exact ih hG hGc (fun q hq => hL q (List.mem_cons_of_mem _ hq))
+
+/-- **Sequential first-power payment.**  Along any finite list of lags with weights in `[0,1]`,
+the charges measured in the successively transformed ledger are paid in full by the mass. -/
+theorem eulerPayment_le_mass (hF : Continuous F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) :
+    eulerPayment L (autoCorrelation F) ≤ autoCorrelation F 0 := by
+  have h1 := eulerLedger_autoCorrelation_nonneg L hF hFc hL
+  have h2 := eulerLedger_zero_eq L (A := autoCorrelation F) (autoCorrelation_neg F)
+  linarith
+
+theorem eulerPayment_pair (A : ℝ → ℝ) (w1 a1 w2 a2 : ℝ) :
+    eulerPayment [(w1, a1), (w2, a2)] A
+      = w1 * A a1 + w2 * (A a2 - w1 / 2 * (A (a2 - a1) + A (a2 + a1))) := by
+  simp [eulerPayment, eulerStep]
+
+/-- **The ratio–product price of a two-lag payment.**  Paying two first-power charges costs the
+charges at the ratio lag `a₂ − a₁` and the product lag `a₂ + a₁` of the pair. -/
+theorem two_lag_payment_le (hF : Continuous F) (hFc : HasCompactSupport F)
+    {w1 w2 a1 a2 : ℝ} (h1 : 0 ≤ w1) (h1' : w1 ≤ 1) (h2 : 0 ≤ w2) (h2' : w2 ≤ 1) :
+    w1 * autoCorrelation F a1 + w2 * autoCorrelation F a2
+      ≤ autoCorrelation F 0
+        + w1 * w2 / 2 * (autoCorrelation F (a2 - a1) + autoCorrelation F (a2 + a1)) := by
+  have hmain := eulerPayment_le_mass hF hFc [(w1, a1), (w2, a2)] (by
+    intro p hp
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+    rcases hp with rfl | rfl
+    · exact ⟨h1, h1'⟩
+    · exact ⟨h2, h2'⟩)
+  rw [eulerPayment_pair] at hmain
+  nlinarith [hmain]
+
+theorem log_le_div_exp_one {x : ℝ} (hx : 0 < x) : Real.log x ≤ x / Real.exp 1 := by
+  have h := Real.log_le_sub_one_of_pos (x := x / Real.exp 1) (by positivity)
+  rw [Real.log_div (ne_of_gt hx) (Real.exp_ne_zero 1), Real.log_exp] at h
+  linarith
+
+/-- **Every prime-power Euler weight is admissible**: `Λ(n)/√n ≤ 2/e < 1`. -/
+theorem vonMangoldtAtom_le_one (n : ℕ) :
+    (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n ≤ 1 := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  have hn' : (1:ℝ) ≤ n := by exact_mod_cast hn
+  have hs : 0 < Real.sqrt n := Real.sqrt_pos.mpr (by linarith)
+  have he : (2:ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1:ℝ)]
+  have hlog : (ArithmeticFunction.vonMangoldt n : ℝ) ≤ Real.log n :=
+    ArithmeticFunction.vonMangoldt_le_log
+  have hsq : Real.log n = 2 * Real.log (Real.sqrt n) := by
+    rw [Real.log_sqrt (by linarith)]
+    ring
+  have hle := log_le_div_exp_one hs
+  rw [div_le_one hs]
+  have hstep : 2 * Real.log (Real.sqrt n) ≤ 2 * (Real.sqrt n / Real.exp 1) := by linarith
+  have hfin : 2 * (Real.sqrt n / Real.exp 1) ≤ Real.sqrt n := by
+    rw [mul_div_assoc'] at hstep ⊢
+    rw [div_le_iff₀ (by linarith : (0:ℝ) < Real.exp 1)]
+    nlinarith
+  linarith [hlog, hsq ▸ hlog]
+
+/-- **The prime side is payable by the comb**: the Euler weights of any finite list of
+prime powers form an admissible weight list. -/
+theorem eulerPayment_vonMangoldt_le_mass (hF : Continuous F) (hFc : HasCompactSupport F)
+    (ns : List ℕ) :
+    eulerPayment (ns.map fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n,
+        Real.log n)) (autoCorrelation F) ≤ autoCorrelation F 0 := by
+  refine eulerPayment_le_mass hF hFc _ ?_
+  intro p hp
+  rw [List.mem_map] at hp
+  obtain ⟨n, -, rfl⟩ := hp
+  exact ⟨div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _),
+    vonMangoldtAtom_le_one n⟩
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

@@ -841,8 +841,368 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         **`primeSide_vonMangoldt_eq_theta`** — calibrations compose with the source: `ζ`'s defect
         is the prime-only defect plus the higher-power defect, and below the aperture `log 4 / 2`
         the higher powers contribute nothing, so `ζ`'s Weil form is `θ`'s.
+      * **`integrableOn_Ioi_lagSourceDefectAt_mul_deriv`**, **`abs_testBalanceAt_source_le`**,
+        **`lagSourceDefectAt_vonMangoldt_ge`** — the Weil form at an arbitrary pole is scored by
+        any majorant of that pole's defect, and reading `ζ` at a pole `ρ > 1` costs a defect of
+        order `e^{ρs}`: the pole position is pinned by the arithmetic at full strength.
+      * **`poleWeightAt_dilate`**, **`lagSourceDefectAt_sub_lagSourceDefect`**,
+        **`abs_poleWeight_sub_le_of_two_poles`**, **`abs_window_mass_sub_le`**,
+        `lagPrefix_sub_lagPrefix_eq_sum`, **`abs_sum_Ioc_sub_le`** — dilating the lag variable
+        moves the pole; the defect's dependence on the pole is source-independent, so no ledger
+        is accurate at two poles; and a defect bound at the ends of a window controls the mass
+        the atoms carry inside it, not merely their number.
+      * **`dconv`**, **`sum_Icc_dconv`**, **`lagPrefix_dconv`**, **`sum_Icc_dconv_mul`**,
+        **`sum_lag_dconv`**, **`abs_lagPrefix_dconv_sub_le`** — the hyperbola law in lag
+        coordinates: the ledger of a Dirichlet convolution is the superposition of lag-translated
+        ledgers of one factor weighted by the other, the pairing of a convolution lives on the
+        product lattice, and a calibration of one factor propagates with an `ℓ¹`-amplified error.
+      * **`unitSource`**, **`fullMoebius`**, **`abs_lagPrefix_unitSource_sub_exp_le`**,
+        **`abs_lagPrefix_dconv_unitSource_sub_le`**, **`lagPrefix_log_eq_log_factorial`**,
+        **`sum_fullMoebius_floor`**, **`abs_sum_fullMoebius_div_le_one`**,
+        **`lagChebyshev_eq_sum_fullMoebius_log_factorial`**,
+        **`lagPrefix_eq_sum_fullMoebius_dconv`**, **`lagPrefix_fullMoebius`**,
+        **`lagPrefix_divisorCount`**, **`abs_lagPrefix_divisorCount_sub_le`** — Möbius inversion
+        of the ledger: every source is recovered from its summatory convolution by
+        Möbius-weighted lag translations, giving `∑_{d≤x} μ(d)⌊x/d⌋ = 1`, `|∑_{d≤x} μ(d)/d| ≤ 1`,
+        the divisor ledger `∑_{n≤x} τ(n) = ∑_{d≤x} ⌊x/d⌋` with its harmonic leading term, and the
+        closed form `ψ(x) = ∑_{d≤x} μ(d) log(⌊x/d⌋!)`.
+      * **`autoCorrelation_eulerFactor`**, **`eulerStep`**,
+        **`exists_autoCorrelation_eulerStep`**, **`eulerLam_spec`**,
+        **`two_mul_div_one_add_sq_le_one`**, **`eulerLedger`**, **`eulerPayment`**,
+        **`eulerLedger_zero_eq`**, **`eulerPayment_le_mass`**, **`two_lag_payment_le`**,
+        **`vonMangoldtAtom_le_one`**, **`eulerPayment_vonMangoldt_le_mass`** — the Euler comb
+        ledger, answering the free-weight question of AIP research topic 7. A squarefree comb
+        factor `F − λF(· + a)` acts on the lag ledger as the second-order difference
+        `(1+λ²)A − λ(A(·−a) + A(·+a))`; normalised it is the Euler transform at weight
+        `w = 2λ/(1+λ²)`, which preserves the cone of autocorrelations. Iterating over a finite
+        list of lags and reading the origin telescopes to the **sequential payment law**
+        `Σ_j w_j A_{j−1}(a_j) ≤ A(0)`: each first-power charge, measured in the ledger
+        transformed by its predecessors, is paid in full by the mass, with no double counting.
+        The admissible weights are exactly `w ≤ 1` and the ceiling is sharp, so the comb pays
+        every prime-power Euler weight `Λ(n)/√n ≤ 2/e`. For two lags the price is explicit: the
+        charges at the ratio lag `a₂ − a₁` and the product lag `a₂ + a₁` — the two incidence
+        relations of AIP §1 — with coefficient `w₁w₂/2`.
 - [ ] 3 → 4  publication-ready
 
+## Contribution index
+
+The 313 headline results of this card, in the order the card states them. Every name is a
+declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
+the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
+
+1. `testBalance`
+2. `testBalance_poleplane`
+3. `testBalance_odd`
+4. `sum_weight_sub_polar_eq_defect`
+5. `eq_of_lagPrefix_eq`
+6. `abs_lagTestWeight_deriv_le`
+7. `autoCorrelation_le_chainConstant`
+8. `shiftDefect_ge_quadratic`
+9. `sum_atom_mul_autoCorrelation_le_ladder`
+10. `integral_chebyshev_mul_deriv_add_const`
+11. `sum_weight_band_sub_polar_eq_increment`
+12. `integral_affine_mul_deriv_deriv_eq`
+13. `sum_vonMangoldt_band_eq_receiver_curvature`
+14. `chebyshevTwoPoleDefect_le_liouville`
+15. `abs_residue_le_centred`
+16. `abs_residue_band_le_affine`
+17. `testBalance_band_receiver_curvature`
+18. `autoCorrelation_rightPart_le_chainConstant`
+19. `sum_gram_le_ladder`
+20. `one_div_le_log_sub_log`
+21. `autoCorrelation_rightPart_le_half_of_annulus`
+22. `sub_div_le_log_sub_log`
+23. `abs_sub_le_of_abs_log_sub_le`
+24. `card_lagClose_le`
+25. `sum_mul_mul_le_rowSum`
+26. `two_mul_sum_lag_le_schur`
+27. `rowSum_le_bandwidth`
+28. `two_mul_sum_lag_le_of_schurConstant`
+29. `log_sub_log_eq_iff`
+30. `autoCorrelation_rightPart_ratio_eq`
+31. `ratio_param`
+32. `card_ratioFirsts_le`
+33. `sum_lag_le_sqrt`
+34. `autoCorrelation_dilate`
+35. `sum_gram_eq_integral_sq`
+36. `sum_gram_offDiag_ge`
+37. `two_mul_displacement_eq`
+38. `displacement_add_le`
+39. `displacement_two_pow_le`
+40. `autoCorrelation_le_of_two_pow`
+41. `crossAggregate_eq_meanSquare`
+42. `crossAggregate_ge`
+43. `crossAggregate_le`
+44. `sourceOfPrefix`
+45. `existsUnique_source_of_prefix`
+46. `ledger_difference_eq`
+47. `index_eq_prefix_sub`
+48. `integral_step_mul_deriv_eq`
+49. `ledger_separates_singleIndex`
+50. `sum_weight_dilate_sub_polar_eq_defect`
+51. `ledger_mono`
+52. `sum_lag_eq_integral_primeField`
+53. `two_mul_sum_lag_le_aggregate`
+54. `poleplane_eq_moment_mul`
+55. `poleplane_eq_zero_iff`
+56. `poleplane_odd`
+57. `testBalance_poleFree`
+58. `lagChebyshev_eq_log_two`
+59. `criticalScalePrefix_first_cell`
+60. `criticalScalePrefix_second_cell`
+61. `criticalScalePrefix_succ`
+62. `criticalScalePrefix_log_natCast_succ`
+63. `criticalScalePrefix_on_cell`
+64. `hasDerivAt_criticalScalePrefix_of_mem_cell`
+65. `poleWeightAt`
+66. `sum_weight_sub_polarAt_eq_defect`
+67. `autoCorrelation_sub`
+68. `abs_autoCorrelation_sub_le`
+69. `two_mul_displacement_le`
+70. `abs_autoCorrelation_sub_le_lipschitz`
+71. `sum_lag_eq_of_horizon`
+72. `sum_cross_gram_eq_integral`
+73. `abs_sum_cross_gram_le`
+74. `ledgerField`
+75. `testBalance_field`
+76. `displacement_ge_min`
+77. `fold_defect_ge`
+78. `autoCorrelation_le_min`
+79. `window_coupling_le`
+80. `window_degree_lt`
+81. `idealSource`
+82. `abs_lagSourceDefect_idealSource_le`
+83. `abs_ledger_idealSource_le`
+84. `ledger_vonMangoldt_sub_ideal`
+85. `sourceScalePrefix`
+86. `sum_weight_sub_polar_tailWeight`
+87. `integral_autoCorrelation`
+88. `integral_autoCorrelation_odd`
+89. `exists_autoCorrelation_neg`
+90. `autoCorrelation_ge_half_of_mem`
+91. `integral_compl_autoCorrelation_le`
+92. `poleWeightAt_half_cell_ge`
+93. `defect_half_cell_lower_bound`
+94. `abs_lagSourceDefectAt_idealSourceAt_le`
+95. `lagPrefix_jump`
+96. `defect_ge_of_atom`
+97. `exists_abs_chebyshevTwoPoleDefect_gt`
+98. `integral_calibration_mul_deriv`
+99. `sum_weight_sub_calibration_eq_defect`
+100. `oscWeight`
+101. `sum_weight_sub_oscPolar_eq_defect`
+102. `leftPart_eq_neg_rightPart_neg`
+103. `autoCorrelation_eq_neg_conv`
+104. `autoCorrelation_nonpos_of_odd_nonneg`
+105. `sum_lag_le_truncated`
+106. `allOnes`
+107. `lagSourceDefect_allOnes`
+108. `autoCorrelation_eq_conv`
+109. `autoCorrelation_eq_zero_abs`
+110. `aggregate_le_bandwidth`
+111. `aggregate_dyadic_le`
+112. `aggregate_dyadic_diagonal`
+113. `genPrefix`
+114. `sum_gen_mul_eq_neg_integral`
+115. `sum_gen_sub_calibration_eq_defect`
+116. `geoWeight`
+117. `geo_defect_half_cell`
+118. `geo_reading_gap`
+119. `fourier_ofReal_autoCorrelation_eq`
+120. `fourier_ofReal_autoCorrelation_sq`
+121. `integral_exp_mul_autoCorrelation`
+122. `integral_Ioi_cosh_mul_autoCorrelation`
+123. `expMoment_odd`
+124. `integral_Ioi_cosh_mul_autoCorrelation_odd`
+125. `lagTestWeightAt`
+126. `testBalanceAt`
+127. `testBalanceAt_odd`
+128. `coshMoment`
+129. `poleTerm_eq_moment_mul`
+130. `capacity_iff`
+131. `capacity_odd_iff`
+132. `moebiusSource`
+133. `lagMertens`
+134. `sum_moebius_sub_unit_eq_defect`
+135. `abs_lagMertens_le`
+136. `twistSource`
+137. `sum_twist_sub_unit_eq_defect`
+138. `thetaSource`
+139. `sum_theta_sub_polar_eq_defect`
+140. `genRampSum`
+141. `sum_weight_mul_eq_integral_rampSum`
+142. `sum_weight_sub_polar_eq_rampDefect`
+143. `sourceScalePrefix_eq`
+144. `sum_weight_sub_polar_eq_sourceScalePrefix`
+145. `integral_secondPrimitive_mul_deriv2`
+146. `sum_weight_sub_calibration_eq_rampDefect`
+147. `mertensScalePrefix`
+148. `mertensScalePrefix_eq`
+149. `sum_moebius_sub_unit_eq_mertensScalePrefix`
+150. `pairCorrelation`
+151. `autoCorrelation_add`
+152. `sum_pair_gram_eq_integral`
+153. `abs_sum_pair_gram_le`
+154. `logSource`
+155. `logWeight`
+156. `sum_log_sub_doublePolar_eq_defect`
+157. `progression_gram_nonneg`
+158. `progression_gram_le`
+159. `progression_offdiag_le`
+160. `antiDisplacement`
+161. `displacement_two_mul_le_antiDisplacement`
+162. `antiDisplacement_ge`
+163. `autoCorrelation_ratio_le`
+164. `autoCorrelation_ratio_le_of_ne`
+165. `crossAggregate_le_gap`
+166. `sum_lag_vonMangoldt_eq_zero`
+167. `testBalance_firstWindow`
+168. `sum_lag_vonMangoldt_firstAtom`
+169. `testBalance_firstAtom`
+170. `residue_firstAtom_le`
+171. `sum_lag_vonMangoldt_secondWindow`
+172. `sum_lag_vonMangoldt_thirdWindow`
+173. `scaledTwoPoleWeight`
+174. `apSource`
+175. `sum_ap_sub_scaledPolar_eq_defect`
+176. `sum_apSource_eq`
+177. `sum_lagPrefix_ap`
+178. `sum_defect_ap`
+179. `pairCalibration`
+180. `sum_shiftedPair_sub_pairPolar_eq_defect`
+181. `integral_halves_add`
+182. `integral_leftPart_sq_eq_half`
+183. `sum_lag_le_sqrt_odd`
+184. `tendsto_chebyshevTwoPoleDefect_div_exp_iff`
+185. `tendsto_mertensDefect_div_exp_iff`
+186. `abs_defect_sourceOfPrefix_le`
+187. `cell_increment_le_two_mul_defect`
+188. `poleWeightAt_cell_increment_le`
+189. `multiPoleWeight`
+190. `abs_defect_multiPole_le`
+191. `abs_defect_reflectedPole_le`
+192. `logWeight_half_cell_increment_ge`
+193. `defect_logWeight_ge`
+194. `gen_cell_increment_le_two_mul_defect`
+195. `defect_ge_of_gap`
+196. `geoLags_defect_ge`
+197. `exists_lag_of_defect_le`
+198. `card_ge_of_defect_le`
+199. `card_filter_mul_le_of_defect`
+200. `min_atom_le_of_defect`
+201. `card_ge_of_defect_le_gen`
+202. `card_ge_of_id_defect_le`
+203. `card_ge_of_poleAt_defect_le`
+204. `gen_cell_increment_le_two_mul_defect_supp`
+205. `card_support_ge_of_defect_le`
+206. `card_primePowers_ge_of_chebyshev_defect_le`
+207. `gram_split_row`
+208. `gram_row_le_half`
+209. `midpointSource`
+210. `abs_defect_midpointSource_le`
+211. `gapSource`
+212. `genPrefix_gapSource`
+213. `abs_defect_gapSource_le`
+214. `genTestBalance`
+215. `lagField`
+216. `sum_gen_lag_eq_integral_field`
+217. `genPrefix_jump`
+218. `two_mul_sum_gen_lag_le`
+219. `genTestBalanceAt`
+220. `testBalance_receiver`
+221. `testBalance_source`
+222. `mertensTestBalance`
+223. `testBalance_source_sub`
+224. `abs_testBalance_source_le`
+225. `lagSourceDefect_eq_twoPoleWeight_of_lt_log_two`
+226. `testBalance_source_truncates`
+227. `primeSide_add`
+228. `poleplane_add`
+229. `expMomentNeg_eq_zero_add`
+230. `autoCorrelation_smul`
+231. `poleplane_translate`
+232. `weil_dilation_covariance`
+233. `primeSide_translate`
+234. `autoCorrelation_reflect`
+235. `poleplane_reflect`
+236. `testBalance_source_congr`
+237. `evenPart`
+238. `sym_pairCorrelation_even_odd`
+239. `autoCorrelation_even_odd_split`
+240. `poleplane_even_odd`
+241. `weilForm_even_odd_split`
+242. `weilForm`
+243. `weilForm_split`
+244. `weilForm_nonneg_iff`
+245. `residue_even_odd_split`
+246. `testBalance_vonMangoldt_sub_liouville`
+247. `card_window_ge_of_defect_le`
+248. `lagPrefix_eq_of_atomfree`
+249. `defect_ge_of_atomfree`
+250. `chebyshev_defect_ge_of_primePower_free`
+251. `exists_primePower_of_chebyshev_defect_le`
+252. `defect_poleAt_ge_of_atomfree`
+253. `chebyshevTwoPoleDefect_log_two`
+254. `chebyshevTwoPoleDefect_log_three`
+255. `criticalScalePrefix_pos_first_cell`
+256. `criticalScalePrefix_pos_second_cell`
+257. `criticalScalePrefix_pos_on_cell`
+258. `criticalScalePrefix_succ_pos`
+259. `criticalScalePrefix_succ_pos_of_psi`
+260. `criticalScalePrefix_succ_ge`
+261. `criticalScalePrefix_le_nat`
+262. `criticalScalePrefix_ge_sub`
+263. `lagChebyshev_le`
+264. `criticalScalePrefix_le_exp`
+265. `criticalScalePrefix_ge_explicit`
+266. `squarefreeSource`
+267. `higherPowerSource`
+268. `sum_higherPower_sub_halfPolar_eq_defect`
+269. `testBalanceAt_source`
+270. `lagPrefix_add`
+271. `defect_split_calibration`
+272. `chebyshevTwoPoleDefect_split`
+273. `primeSide_source_add`
+274. `primeSide_higherPower_eq_zero`
+275. `primeSide_vonMangoldt_eq_theta`
+276. `integrableOn_Ioi_lagSourceDefectAt_mul_deriv`
+277. `abs_testBalanceAt_source_le`
+278. `lagSourceDefectAt_vonMangoldt_ge`
+279. `poleWeightAt_dilate`
+280. `lagSourceDefectAt_sub_lagSourceDefect`
+281. `abs_poleWeight_sub_le_of_two_poles`
+282. `abs_window_mass_sub_le`
+283. `abs_sum_Ioc_sub_le`
+284. `dconv`
+285. `sum_Icc_dconv`
+286. `lagPrefix_dconv`
+287. `sum_Icc_dconv_mul`
+288. `sum_lag_dconv`
+289. `abs_lagPrefix_dconv_sub_le`
+290. `unitSource`
+291. `fullMoebius`
+292. `abs_lagPrefix_unitSource_sub_exp_le`
+293. `abs_lagPrefix_dconv_unitSource_sub_le`
+294. `lagPrefix_log_eq_log_factorial`
+295. `sum_fullMoebius_floor`
+296. `abs_sum_fullMoebius_div_le_one`
+297. `lagChebyshev_eq_sum_fullMoebius_log_factorial`
+298. `lagPrefix_eq_sum_fullMoebius_dconv`
+299. `lagPrefix_fullMoebius`
+300. `lagPrefix_divisorCount`
+301. `abs_lagPrefix_divisorCount_sub_le`
+302. `autoCorrelation_eulerFactor`
+303. `eulerStep`
+304. `exists_autoCorrelation_eulerStep`
+305. `eulerLam_spec`
+306. `two_mul_div_one_add_sq_le_one`
+307. `eulerLedger`
+308. `eulerPayment`
+309. `eulerLedger_zero_eq`
+310. `eulerPayment_le_mass`
+311. `two_lag_payment_le`
+312. `vonMangoldtAtom_le_one`
+313. `eulerPayment_vonMangoldt_le_mass`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -853,3 +1213,4 @@ and the ledger objects, and are queued behind that cone.
 
 ## Log
 - 2026-10-22 — created; paper proof complete; steps 1–3 formalized and compiled.
+- 2026-10-23 — Euler comb ledger added (AIP topic 7); contribution index of 313 headline results verified against the module.

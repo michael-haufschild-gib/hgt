@@ -445,6 +445,58 @@ theorem localPayment_lossless_iff (σ : SignPattern ι) :
   · intro hσ c hc hr hnn
     exact (nonneg_iff_locallyPayable_of_holonomy hσ hc hr).mp hnn
 
+/-! ### Holonomy is the complete orientation datum -/
+
+omit [Fintype ι] in
+/-- **Holonomy classifies sign patterns up to switching.**  Two sign patterns on a complete
+overlap graph are switching equivalent iff every triangle has the same holonomy in both: the
+holonomies are the complete gauge-invariant orientation data of the source. -/
+theorem switchingEquivalent_iff_triangleHolonomy_eq (σ τ : SignPattern ι) :
+    (∃ s : ι → ℝ, (∀ i, s i ^ 2 = 1) ∧ ∀ i j, i ≠ j → s i * s j * σ.sign i j = τ.sign i j) ↔
+      ∀ i j k, i ≠ j → j ≠ k → k ≠ i →
+        triangleHolonomy σ.sign i j k = triangleHolonomy τ.sign i j k := by
+  constructor
+  · rintro ⟨s, hs, hst⟩ i j k hij hjk hki
+    rw [← triangleHolonomy_switch hs σ.sign i j k]
+    unfold triangleHolonomy switchCoupling
+    rw [hst i j hij, hst j k hjk, hst k i hki]
+  · intro h
+    by_cases hne : Nonempty ι
+    · obtain ⟨i₀⟩ := hne
+      set s : ι → ℝ := fun i => if i = i₀ then 1 else σ.sign i₀ i * τ.sign i₀ i with hsdef
+      have hs : ∀ i, s i ^ 2 = 1 := by
+        intro i
+        by_cases hi : i = i₀
+        · simp [hsdef, hi]
+        · simp only [hsdef, hi, if_false, mul_pow, σ.sign_sq _ _ (Ne.symm hi),
+            τ.sign_sq _ _ (Ne.symm hi), one_mul]
+      refine ⟨s, hs, fun i j hij => ?_⟩
+      by_cases hi : i = i₀
+      · subst hi
+        have hj : j ≠ i := Ne.symm hij
+        simp only [hsdef, if_true, hj, if_false, one_mul]
+        calc σ.sign i j * τ.sign i j * σ.sign i j = σ.sign i j ^ 2 * τ.sign i j := by ring
+          _ = τ.sign i j := by rw [σ.sign_sq _ _ hij, one_mul]
+      · by_cases hj : j = i₀
+        · subst hj
+          simp only [hsdef, if_true, hi, if_false, mul_one]
+          rw [σ.sign_symm j i, τ.sign_symm j i]
+          calc σ.sign i j * τ.sign i j * σ.sign i j = σ.sign i j ^ 2 * τ.sign i j := by ring
+            _ = τ.sign i j := by rw [σ.sign_sq _ _ hij, one_mul]
+        · have hh := h i₀ i j (Ne.symm hi) hij hj
+          unfold triangleHolonomy at hh
+          rw [σ.sign_symm j i₀, τ.sign_symm j i₀] at hh
+          simp only [hsdef, hi, hj, if_false]
+          calc σ.sign i₀ i * τ.sign i₀ i * (σ.sign i₀ j * τ.sign i₀ j) * σ.sign i j
+              = (σ.sign i₀ i * σ.sign i j * σ.sign i₀ j) * (τ.sign i₀ i * τ.sign i₀ j) := by ring
+            _ = (τ.sign i₀ i * τ.sign i j * τ.sign i₀ j) * (τ.sign i₀ i * τ.sign i₀ j) := by
+                rw [hh]
+            _ = τ.sign i₀ i ^ 2 * τ.sign i₀ j ^ 2 * τ.sign i j := by ring
+            _ = τ.sign i j := by
+                rw [τ.sign_sq _ _ (Ne.symm hi), τ.sign_sq _ _ (Ne.symm hj)]; ring
+    · refine ⟨fun _ => 1, fun _ => by norm_num, fun i _ _ => ?_⟩
+      exact absurd ⟨i⟩ hne
+
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

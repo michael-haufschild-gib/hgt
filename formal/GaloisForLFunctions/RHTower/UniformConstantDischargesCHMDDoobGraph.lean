@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RHTower.CHMDBVUniformGraph
+import GaloisForLFunctions.RHTower.CHMDPointwiseGenerator
+
+set_option autoImplicit false
 
 /-!
 # Uniform constants discharged in `RHTower.CHMDDoobGraph`

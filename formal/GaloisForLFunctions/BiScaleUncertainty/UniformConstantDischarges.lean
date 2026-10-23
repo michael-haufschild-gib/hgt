@@ -1,5 +1,7 @@
 import GaloisForLFunctions.BiScaleUncertainty.PrimeWindowCeilingDeLaValleePoussinRemainder
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `GaloisForLFunctions.BiScaleUncertainty`
 

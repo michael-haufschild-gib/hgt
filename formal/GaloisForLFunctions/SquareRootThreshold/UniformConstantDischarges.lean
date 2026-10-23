@@ -1,6 +1,8 @@
 import GaloisForLFunctions.SquareRootThreshold.KroneckerBohrPrimePhaseRealizationAndExponentialHeightEscape
 import GaloisForLFunctions.SquareRootThreshold.PrimeTailCouplingCriterion
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `GaloisForLFunctions.SquareRootThreshold`
 

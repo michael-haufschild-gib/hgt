@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.Deninger.DeningerMeyerGaussianResidueGrowth
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.DeningerMeyerGaussianGreen`
 

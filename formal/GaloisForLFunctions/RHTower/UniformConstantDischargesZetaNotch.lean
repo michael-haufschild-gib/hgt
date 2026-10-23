@@ -1,5 +1,7 @@
 import GaloisForLFunctions.RHTower.ZetaSquareDiagonalHarmonic
 
+set_option autoImplicit false
+
 /-!
 # Uniform constants discharged in `RHTower.ZetaNotch`
 
@@ -27,6 +29,6 @@ theorem norm_diagHarmIntegrand_le_uniform :
   obtain ⟨C, N, h_0_0, h_0_1⟩ := RHTower.ZetaNotch.exists_bound_norm_riemannZeta₁_strip
   refine ⟨C, N, ?_⟩
   intro x hx u v hu1 hu2 hw
-  apply norm_diagHarmIntegrand_le <;> first | assumption | linarith
+  apply norm_diagHarmIntegrand_le <;> assumption
 
 end RHTower.ZetaNotch
