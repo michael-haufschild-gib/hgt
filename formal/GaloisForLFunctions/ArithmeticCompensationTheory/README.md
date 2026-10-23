@@ -280,9 +280,14 @@ are three different statements and remain visibly different here.
     shifts by the dense set `{log p}`, its horizon law is the resolvent of the unbounded `1 + 2∂`,
     and a narrow bump defeats it. A curve comb shifts by the lattice `ℕ log q` and the geometric
     weights invert the bounded shift: `‖C_D F‖² ≥ (q^D/12)∫F²` for every test at all large `D`
-    (`curveCombEnergy_ge`, `exists_curveCombEnergy_ge`). Uniform coercivity must therefore come
-    from a restricted test class or from the arithmetic of the pairing, never from the integer
-    comb alone.
+    (`curveCombEnergy_ge`, `exists_curveCombEnergy_ge`). The curve comb has its own resolvent law:
+    the share of the comb at depth `k` tends to `w_k = (1 − q^{−1/2})q^{−k/2}`
+    (`tendsto_curveCombWeight_div_mass`), and for every test
+    `‖C_D F‖²/S_D² → J_q(F) = Σ_{k,k'} w_k w_{k'} A_F((k − k') log q)`, independently of the
+    eigenvalues (`tendsto_curveCombEnergy_div_sq`), with `J_q(F) ≥ ((1 − q^{−1/2})²/12)∫F²`
+    (`curveHorizonEnergy_ge`): the discrete horizon energy is uniformly coercive, the continuous
+    one is not. Uniform coercivity must therefore come from a restricted test class or from the
+    arithmetic of the pairing, never from the integer comb alone.
 
 10‴. **The horizon law of a curve is geometric.** For a curve model over `F_q` with Frobenius
     eigenvalues of modulus at most `λ√q`, the comb built from the point counts
@@ -497,6 +502,7 @@ that every successful route must use the same mechanism.
   exponentially weighted two-pole defect and the residual of every lag weight and every ledger
   translate, with universal constants.
 - **Curve-model combs and receivers** (`curvePointCount`, `curveCombMass`, `curveCombTail`,
+  `curveComb`, `curveCombEnergy`, `curveHorizonWeight`, `curveHorizonEnergy`,
   `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`): the comb and the
   receiver of a function-field model built from its eigenvalues, with mass, depth and admission
   laws for every eigenvalue configuration; `norm_coeff_prod_le` and
@@ -579,8 +585,7 @@ that every successful route must use the same mechanism.
    square-root error, and the receiver is admitted at every damping above the zero width
    (mechanism 10‴), and fails below it for a single eigenvalue. Open: the failure below the zero
    width for several eigenvalues, which needs non-cancellation of their oscillating terms. The
-   curve comb is uniformly coercive (mechanism 10⁗); its exact discrete resolvent limit on fixed
-   tests remains to be written down.
+   curve comb obeys the discrete resolvent law and is uniformly coercive (mechanism 10⁗).
 
 ---
 

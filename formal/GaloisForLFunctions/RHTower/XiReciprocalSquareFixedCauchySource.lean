@@ -238,60 +238,53 @@ def xiReciprocalSquareCauchyQuartetTerm
       (xiSpectralPoint
         (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q)))
 
-set_option maxHeartbeats 800000 in
-theorem summable_xiReciprocalSquareCauchyQuartetTerm
-    (z : XiContinuedCauchyPoint) :
-    Summable (xiReciprocalSquareCauchyQuartetTerm z) := by
-  let t : XiZeroCopy → ℝ := fun q =>
-    xiReciprocalSquareCauchySpectralTerm (z : ℂ) (xiSpectralPoint q)
-  have ht : Summable t := summable_xiReciprocalSquareCauchySpectralTerm z
+/-- The four symmetry pullbacks of a summable weight on the Xi divisor are jointly summable. -/
+private theorem summable_quartet_of_summable {t : XiZeroCopy → ℝ} (ht : Summable t) :
+    Summable (fun q => t q + t (xiZeroCopyLineConjEquiv q) + t (xiZeroCopyReflectEquiv q) +
+      t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) := by
   have hline : Summable (fun q => t (xiZeroCopyLineConjEquiv q)) :=
     (xiZeroCopyLineConjEquiv.summable_iff).mpr ht
   have hreflect : Summable (fun q => t (xiZeroCopyReflectEquiv q)) :=
     (xiZeroCopyReflectEquiv.summable_iff).mpr ht
-  have hboth : Summable (fun q =>
-      t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr
-      ((xiZeroCopyLineConjEquiv.summable_iff).mpr ht)
-  change Summable (fun q =>
-    ((t q + t (xiZeroCopyLineConjEquiv q)) +
-      t (xiZeroCopyReflectEquiv q)) +
-        t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q)))
+  have hboth : Summable (fun q => t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
+    (xiZeroCopyReflectEquiv.summable_iff).mpr hline
   exact ((ht.add hline).add hreflect).add hboth
 
-set_option maxHeartbeats 800000 in
-theorem tsum_xiReciprocalSquareCauchyQuartetTerm
-    (z : XiContinuedCauchyPoint) :
-    ∑' q : XiZeroCopy, xiReciprocalSquareCauchyQuartetTerm z q =
-      4 * xiReciprocalSquareContinuedCauchyOrientationDefect z := by
-  let t : XiZeroCopy → ℝ := fun q =>
-    xiReciprocalSquareCauchySpectralTerm (z : ℂ) (xiSpectralPoint q)
-  have ht : Summable t := summable_xiReciprocalSquareCauchySpectralTerm z
+/-- Each symmetry pullback has the same sum, so the quartet sums to four times the weight. -/
+private theorem tsum_quartet_of_summable {t : XiZeroCopy → ℝ} (ht : Summable t) :
+    ∑' q, (t q + t (xiZeroCopyLineConjEquiv q) + t (xiZeroCopyReflectEquiv q) +
+      t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) = 4 * ∑' q, t q := by
   have hline : Summable (fun q => t (xiZeroCopyLineConjEquiv q)) :=
     (xiZeroCopyLineConjEquiv.summable_iff).mpr ht
   have hreflect : Summable (fun q => t (xiZeroCopyReflectEquiv q)) :=
     (xiZeroCopyReflectEquiv.summable_iff).mpr ht
-  have hboth : Summable (fun q =>
-      t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
-    (xiZeroCopyReflectEquiv.summable_iff).mpr
-      ((xiZeroCopyLineConjEquiv.summable_iff).mpr ht)
+  have hboth : Summable (fun q => t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) :=
+    (xiZeroCopyReflectEquiv.summable_iff).mpr hline
   have hlineSum : (∑' q, t (xiZeroCopyLineConjEquiv q)) = ∑' q, t q :=
     xiZeroCopyLineConjEquiv.tsum_eq t
   have hreflectSum : (∑' q, t (xiZeroCopyReflectEquiv q)) = ∑' q, t q :=
     xiZeroCopyReflectEquiv.tsum_eq t
-  have hbothSum :
-      (∑' q, t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) =
-        ∑' q, t q :=
+  have hbothSum : (∑' q, t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q))) = ∑' q, t q :=
     (xiZeroCopyReflectEquiv.trans xiZeroCopyLineConjEquiv).tsum_eq t
-  change (∑' q : XiZeroCopy,
-    (t q + t (xiZeroCopyLineConjEquiv q) + t (xiZeroCopyReflectEquiv q) +
-      t (xiZeroCopyLineConjEquiv (xiZeroCopyReflectEquiv q)))) = _
-  rw [((ht.add hline).add hreflect).tsum_add hboth,
-    (ht.add hline).tsum_add hreflect,
-    ht.tsum_add hline,
-    hlineSum, hreflectSum, hbothSum,
-    ← xiReciprocalSquareContinuedCauchyOrientationDefect_eq_tsum]
+  rw [((ht.add hline).add hreflect).tsum_add hboth, (ht.add hline).tsum_add hreflect,
+    ht.tsum_add hline, hlineSum, hreflectSum, hbothSum]
   ring
+
+theorem summable_xiReciprocalSquareCauchyQuartetTerm
+    (z : XiContinuedCauchyPoint) :
+    Summable (xiReciprocalSquareCauchyQuartetTerm z) :=
+  summable_quartet_of_summable
+    (t := fun q => xiReciprocalSquareCauchySpectralTerm (z : ℂ) (xiSpectralPoint q))
+    (summable_xiReciprocalSquareCauchySpectralTerm z)
+
+theorem tsum_xiReciprocalSquareCauchyQuartetTerm
+    (z : XiContinuedCauchyPoint) :
+    ∑' q : XiZeroCopy, xiReciprocalSquareCauchyQuartetTerm z q =
+      4 * xiReciprocalSquareContinuedCauchyOrientationDefect z := by
+  rw [xiReciprocalSquareContinuedCauchyOrientationDefect_eq_tsum]
+  exact tsum_quartet_of_summable
+    (t := fun q => xiReciprocalSquareCauchySpectralTerm (z : ℂ) (xiSpectralPoint q))
+    (summable_xiReciprocalSquareCauchySpectralTerm z)
 
 /-- Nonnegative variance carried by one centered Xi quartet at one Cauchy pole. -/
 def xiReciprocalSquareCauchyQuartetVariance (z a : ℂ) : ℝ :=

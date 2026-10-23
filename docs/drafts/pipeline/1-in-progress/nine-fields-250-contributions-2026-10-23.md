@@ -14,7 +14,7 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 11 / 250
+## Accepted contributions: 12 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
 2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
@@ -27,6 +27,7 @@ Missing dependency oleans are built one at a time with `lake --old env lean -o` 
 9. THIM / RH route — the receiver reads the zero divisor of ζ on the oscillating spectrum (candidate 9).
 10. THIM / RH route — the probe receiver energy measures |ζ| on every vertical line (candidate 10).
 11. THIM / RH route — the half-damped receiver is diagonal on the probe spectrum with weight |ζ|² (candidate 11).
+12. ACCE / RH route — admission translates zeros with multiplicity up to the boundary line; the width threshold is not attained without critical shadows (candidate 12).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -207,6 +208,24 @@ contribution-10 module.
 (`halfProbeMain_eq`, `abs_sum_oscSum_sq_div_succ_sub_le`,
 `tendsto_halfProbeCombination_energy_div_log`). Status: compiled, axioms `propext`,
 `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
+
+## Candidate 12 (ACCE, RH route): admission translates zeros with multiplicity, up to the boundary
+
+**Theorem (proved).** For an admissible damping `ε ≤ ½` of the damped Möbius receiver and every zero
+`ρ` with `½ + ε ≤ Re ρ < 1`: `ord_ρ ζ ≤ ord_{ρ−ε} ζ`. Previously only `ζ(ρ − ε) = 0` for `Re ρ > ½ + ε`.
+On the boundary `Re ρ = ½ + ε` the translate is a critical zero. At the width: if `Θ > ½` is attained
+at `ρ₀` and `Θ − ½` is admissible, `½ + i Im ρ₀` is a zero of multiplicity `≥ ord_{ρ₀} ζ`; if not,
+`receiverDampings ∩ [Θ − ½, ∞) = (Θ − ½, ∞)` (partial answer to ACCE's undecided boundary `a = Δ`).
+Mechanism: cleared identity `s Z(s+ε) M(s) = (s+ε−1)(1−2^{1−s})ζ(s)` on `½ < Re s < 1`;
+`|M(s)| ≤ C(2(Re s − ½))^{−1/2}` (Laplace transform of an `L²` datum, source supported on `(0,1]`);
+approaching `ρ − ε` from the right, `|Z(ρ+u)| = O(uⁿ)` against `|ζ(ρ−ε+u)| ≍ u^k` forces `k ≥ n`.
+
+**Lean:** `ArithmeticContinuationAndCriticalEnergy/AdmissionTranslatesZerosWithMultiplicityUpToTheBoundary.lean`
+(`exists_norm_mellin_pmPowerDampedFermiSource_le`, `natCast_le_analyticOrderAt_sub_of_memLp`,
+`analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings`,
+`riemannZeta_criticalLine_eq_zero_of_mem_receiverDampings`,
+`analyticOrderAt_le_of_zetaZeroAbscissa_mem_receiverDampings`, `receiverDampings_inter_Ici_eq_Ioi`).
+Status: compiled, axioms `propext`, `Classical.choice`, `Quot.sound`; wired into the ACCE umbrella.
 
 ## Checked and not pursued
 

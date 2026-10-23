@@ -25,7 +25,7 @@ are unchanged, so dependents' oleans stay valid.
 - [x] `HTGeometry/PolynomialODE/JetRankThreeCompactReserve.lean` (depth 2, 1)
 - [x] `RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean` (depth 2, 1)
 - [x] `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEighteenFifthsDirectAffineJoint.lean` (depth 2, 5)
-- [ ] `RHTower/ThetaCusp/ThetaCuspMiddleCompensationBounds.lean` (depth 2, 1)
+- [x] `RHTower/ThetaCusp/ThetaCuspMiddleCompensationBounds.lean` (depth 2, 1)
 - [ ] `RHTower/XiReciprocalSquareFixedCauchySource.lean` (depth 2, 2)
 - [ ] `HTGeometry/PolynomialODE/JetRankThreeCompactExpansion.lean` (depth 3, 1)
 - [ ] `RHTower/PrimeArchThermalKrylovEquivalence.lean` (depth 3, 2)

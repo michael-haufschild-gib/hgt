@@ -28,6 +28,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIncidencePositivity
 
+open FourierTransform Complex in
 /-- Chebyshev's function read in the lag variable: `ψ(e^s) = Σ_{n ≤ e^s} Λ(n)`. -/
 def lagChebyshev (s : ℝ) : ℝ :=
   ∑ k ∈ Finset.Icc 0 ⌊Real.exp s⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ)
@@ -13276,10 +13277,8 @@ theorem coshCosKernel_neg {T : ℝ} (hT : 0 < T) :
   · nlinarith [hbpos, hcosh]
   · exact hden
 
-variable {F : ℝ → ℝ}
-
-/-- An odd test has no spectral mass at the origin. -/
 open FourierTransform Complex in
+/-- An odd test has no spectral mass at the origin. -/
 theorem fourier_ofReal_zero_of_odd (hodd : ∀ x, F (-x) = -F x) :
     𝓕 (fun x => ((F x : ℝ) : ℂ)) 0 = 0 := by
   rw [Real.fourier_real_eq_integral_exp_smul]
@@ -13292,8 +13291,9 @@ theorem fourier_ofReal_zero_of_odd (hodd : ∀ x, F (-x) = -F x) :
   rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt), hre,
     integral_eq_zero_of_odd hodd, Complex.ofReal_zero]
 
-/-- An odd test's spectral density vanishes quadratically at the origin. -/
 open FourierTransform Complex in
+open FourierTransform Complex in
+/-- An odd test's spectral density vanishes quadratically at the origin. -/
 theorem spectralDensity_le_sq_of_odd (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
     (hsupp : ∀ y, r < |y| → F y = 0) (hodd : ∀ x, F (-x) = -F x) (ξ : ℝ) :
     spectralDensity F ξ ≤ 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 := by
@@ -13356,5 +13356,9 @@ theorem setIntegral_spectralDensity_payingBand_le (hF : Continuous F)
     field_simp
     ring
   linarith [h, hval]
+
+#print axioms coshCosKernel_neg
+#print axioms setIntegral_spectralDensity_payingBand_le
+#print axioms spectralDensity_le_sq_of_odd
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity

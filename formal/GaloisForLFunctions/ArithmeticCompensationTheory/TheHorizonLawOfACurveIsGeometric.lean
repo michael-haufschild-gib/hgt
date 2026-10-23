@@ -697,7 +697,7 @@ theorem curveHorizonEnergy_ge {q : ℕ} (hq : 2 ≤ q) {F : ℝ → ℝ} (hF : C
     (div_pos hs0 (by linarith : (0 : ℝ) < s - 1)))] with D hD hSD
   have hsD : 0 < s ^ D := pow_pos hs0 D
   have hSpos : 0 < curveCombMass q α D := by
-    exact (div_pos_iff_of_pos_right hsD).mp (lt_trans (div_pos hs0 (by linarith)) hSD)
+    exact (div_pos_iff_of_pos_right hsD).mp hSD
   have hE := hD₀ D hD F hF hFc
   have hqD : (q : ℝ) ^ D = (s ^ D) ^ 2 := by
     rw [← pow_mul, mul_comm, pow_mul, sq, Real.mul_self_sqrt (Nat.cast_nonneg q)]

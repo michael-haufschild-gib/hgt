@@ -235,15 +235,15 @@ private theorem filter_highProduct_dvd_semiprime_eq_pair {N p q : ℕ}
     have hb_dvd : b ∣ p * q := dvd_trans (dvd_mul_left b a) hdvd
     have ha_cases := dvd_semiprime_of_le_horizon hp hq haN hgt ha_dvd
     have hb_cases := dvd_semiprime_of_le_horizon hp hq hbN hgt hb_dvd
-    rcases ha_cases with rfl | rfl | rfl
+    rcases ha_cases with ha_eq | ha_eq | ha_eq <;> subst a
     · omega
-    · rcases hb_cases with rfl | rfl | rfl
+    · rcases hb_cases with hb_eq | hb_eq | hb_eq <;> subst b
       · omega
       · exfalso
         have hp_dvd_q : p ∣ q := Nat.dvd_of_mul_dvd_mul_left hp.pos hdvd
         exact hpq ((Nat.prime_dvd_prime_iff_eq hp hq).mp hp_dvd_q)
       · exact Or.inl ⟨rfl, rfl⟩
-    · rcases hb_cases with rfl | rfl | rfl
+    · rcases hb_cases with hb_eq | hb_eq | hb_eq <;> subst b
       · omega
       · exact Or.inr ⟨rfl, rfl⟩
       · exfalso
@@ -369,9 +369,9 @@ theorem sieveSeq_succ_horizon_mul_succ_sub_eq {N : ℕ} (hN : 1 ≤ N) (c : ℕ 
   have hnot := not_dvd_self_and_succ_of_two_le (by omega : 2 ≤ N + 1) k
   by_cases h1 : N + 1 ∣ k
   · have h2 : ¬ (N + 1 ∣ (k + 1)) := fun h => hnot ⟨h1, h⟩
-    rw [if_pos h1, if_neg h2]
+    simp only [h1, h2, ↓reduceIte]
     ring
-  · rw [if_neg h1]
+  · simp only [h1, ↓reduceIte]
     split_ifs <;> ring
 
 /-- **Single-Step Cutoff Drift of Successor Correlation Sums
@@ -577,7 +577,7 @@ theorem firstOctaveDefectFunctional_signBlind_comparison {N M : ℕ} (hNM : N �
       firstOctaveDefectFunctional N M (fun _ => (1 : ℝ)) = -1 ∧
       |∑ k ∈ Icc (N + 1) M, moebiusReal k| ≤
         ∑ k ∈ Icc (N + 1) M, moebiusReal k ^ (2 : ℕ) ∧
-      (∑ k ∈ Icc (N + 1) M, (1 : ℝ)) = ((M - N : ℕ) : ℝ) := by
+      (∑ _k ∈ Icc (N + 1) M, (1 : ℝ)) = ((M - N : ℕ) : ℝ) := by
   have hμ_sq_abs : ∀ k : ℕ, moebiusReal k ^ (2 : ℕ) = |moebiusReal k| := by
     intro k
     unfold moebiusReal

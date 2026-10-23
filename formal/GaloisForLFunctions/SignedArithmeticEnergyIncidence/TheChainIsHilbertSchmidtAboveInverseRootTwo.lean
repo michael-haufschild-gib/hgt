@@ -234,6 +234,7 @@ theorem abs_centeredRow_le_jump {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k : �
   have ha : (a : ℝ) ≤ N / K := natDiv_le_div _ _
   have hs : |(a : ℝ) - N / K| ≤ 1 := abs_natDiv_sub_div_le _ _ (by omega)
   have hs' : |(a' : ℝ) - N / K'| ≤ 1 := abs_natDiv_sub_div_le _ _ (by omega)
+  have hNK' : N / K' ≤ N / K := div_le_div_of_nonneg_left hN.le hK hKK'
   -- the source at the two quotients
   have hpow : ∀ x : ℕ, (x : ℝ) ≤ N / K → (x : ℝ) ^ (1 - η) ≤ (N / K) ^ (1 - η) := fun x hx =>
     Real.rpow_le_rpow (Nat.cast_nonneg _) hx (by linarith)

@@ -189,6 +189,245 @@ theorem exists_prod_LSeries_rpow_le {q : ℕ} [NeZero q] (e : DirichletCharacter
             Finset.prod_mul_distrib, Finset.prod_const, ← pow_mul, ← pow_mul]
           ring_nf
 
+
+/-! ### Size on the strip and the receiver -/
+
+/-- **The size of a symmetric residue flip on the strip.** With `a₀ = max(1 − 2s_1/φ, 0)`, on
+`1 < Re w ≤ 2`: `|F(w)| ≤ A(|Im w|^{-a₀} + 1)` for `0 < |Im w| ≤ 9`, and `|F(w)| ≤ B₁|Im w|^{1/4}` for
+`|Im w| ≥ 9`. -/
+theorem exists_norm_residueFlip_bounds {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    (hS : UnitSymmetric S) :
+    ∃ A B₁ : ℝ, 0 ≤ A ∧ ∀ w : ℂ, 1 < w.re → w.re ≤ 2 →
+      (0 < |w.im| → |w.im| ≤ 9 →
+        ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          A * (|w.im| ^ (-max (1 - 2 * (setCoeff S 1).re / q.totient) 0) + 1)) ∧
+      (9 ≤ |w.im| → ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖ ≤
+          B₁ * |w.im| ^ (1 / 4 : ℝ)) := by
+  have hφ : 0 < (q.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr (NeZero.pos q)
+  have hs₁0 : 0 ≤ (setCoeff S 1).re := by
+    rw [setCoeff_one, Complex.natCast_re]; exact Nat.cast_nonneg _
+  have hs₁ : (setCoeff S 1).re ≤ q.totient := (le_abs_self _).trans (abs_re_setCoeff_le S 1)
+  set e₀ := 1 - 2 * (setCoeff S 1).re / q.totient
+  have he₀1 : e₀ ≤ 1 := by
+    have : 0 ≤ 2 * (setCoeff S 1).re / q.totient := by positivity
+    simp only [e₀]; linarith
+  have he₀m : -1 ≤ e₀ := by
+    have : 2 * (setCoeff S 1).re / q.totient ≤ 2 := by
+      rw [div_le_iff₀ hφ]; linarith
+    simp only [e₀]; linarith
+  set e : DirichletCharacter ℂ q → ℝ := fun χ => -(2 / q.totient * (setCoeff S χ).re)
+  have he : ∀ χ, |e χ| ≤ 2 := fun χ => by
+    simp only [e]
+    rw [abs_neg, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / q.totient), div_mul_eq_mul_div,
+      div_le_iff₀ hφ]
+    have := abs_re_setCoeff_le S χ
+    linarith
+  obtain ⟨B, hB⟩ := exists_norm_residueFlip_le_prod hS
+  obtain ⟨Ml, Cl, hMl, hCl, hLprod⟩ := exists_prod_LSeries_rpow_le e he
+  obtain ⟨K₀, hK₀, hpole⟩ := exists_norm_zeta_mul_sub_one_le
+  obtain ⟨K₂, hK₂, hbox⟩ := exists_inv_norm_zeta_le_box
+  obtain ⟨K₁, hK₁, hlarge⟩ := exists_inv_norm_zeta_le_log_pow_large
+  set k := (Finset.univ.erase (1 : DirichletCharacter ℂ q)).card
+  set Aζ : ℝ := max (max (K₀ ^ e₀) 14) (1 + K₂)
+  have hAζ : 0 ≤ Aζ := le_max_of_le_right (by linarith)
+  refine ⟨Real.exp B * Aζ * Ml,
+    Real.exp B * (K₁ + 7) * Cl * (4 * ((10 + 14 * k : ℕ) + 1)) ^ (10 + 14 * k),
+    by positivity, fun w hw hw2 => ⟨fun ht0 ht => ?_, fun ht => ?_⟩⟩
+  · -- small heights
+    have hF := hB w hw
+    have hΠ := (hLprod w hw hw2).1 ht
+    have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
+    have hζf : ‖riemannZeta w‖ ^ e₀ ≤ Aζ * (|w.im| ^ (-max e₀ 0) + 1) := by
+      have hpow0 : 0 ≤ |w.im| ^ (-max e₀ 0) := Real.rpow_nonneg (abs_nonneg _) _
+      rcases le_total 0 e₀ with he0 | he0
+      · rw [max_eq_left he0]
+        rcases le_total |w.im| 2 with h2 | h2
+        · have hp := hpole w hw hw2 h2
+          have him : |w.im| ≤ ‖w - 1‖ := by
+            have := Complex.abs_im_le_norm (w - 1)
+            rwa [Complex.sub_im, Complex.one_im, sub_zero] at this
+          have hz : ‖riemannZeta w‖ ≤ K₀ / |w.im| := by
+            rw [le_div_iff₀ ht0]
+            exact (mul_le_mul_of_nonneg_left him (norm_nonneg _)).trans hp
+          calc ‖riemannZeta w‖ ^ e₀ ≤ (K₀ / |w.im|) ^ e₀ := Real.rpow_le_rpow hζpos.le hz he0
+            _ = K₀ ^ e₀ * |w.im| ^ (-e₀) := by
+                rw [Real.div_rpow hK₀.le (abs_nonneg _), Real.rpow_neg (abs_nonneg _),
+                  div_eq_mul_inv]
+            _ ≤ Aζ * (|w.im| ^ (-e₀) + 1) := by
+                have h1 : K₀ ^ e₀ ≤ Aζ := le_max_of_le_left (le_max_left _ _)
+                have h2 : 0 ≤ K₀ ^ e₀ := Real.rpow_nonneg hK₀.le _
+                nlinarith [Real.rpow_nonneg (abs_nonneg w.im) (-e₀)]
+        · have hz := RHTower.norm_riemannZeta_le_log_add (s := w) hw.le hw2 h2
+          have hl9 : Real.log |w.im| ≤ 8 := by
+            have := Real.log_le_sub_one_of_pos (show 0 < |w.im| by linarith); linarith
+          have h1 := rpow_le_one_add_self (norm_nonneg (riemannZeta w)) he0 he₀1
+          have h14 : (14 : ℝ) ≤ Aζ := le_max_of_le_left (le_max_right _ _)
+          nlinarith
+      · rw [max_eq_right he0, neg_zero, Real.rpow_zero]
+        have hinv : ‖riemannZeta w‖ ^ e₀ = (‖riemannZeta w‖⁻¹) ^ (-e₀) := by
+          rw [Real.inv_rpow hζpos.le, Real.rpow_neg hζpos.le, inv_inv]
+        have h1 := rpow_le_one_add_self (inv_nonneg.mpr hζpos.le) (by linarith : 0 ≤ -e₀)
+          (by linarith)
+        have h2 := hbox w hw hw2 ht
+        have h3 : 1 + K₂ ≤ Aζ := le_max_right _ _
+        rw [hinv]
+        nlinarith
+    calc ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
+        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
+            ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
+      _ ≤ Real.exp B * (Aζ * (|w.im| ^ (-max e₀ 0) + 1)) * Ml :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hΠ
+            (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
+      _ = Real.exp B * Aζ * Ml * (|w.im| ^ (-max e₀ 0) + 1) := by ring
+  · -- large heights
+    have hF := hB w hw
+    have hΠ := (hLprod w hw hw2).2 ht
+    have hζpos := norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re hw.le)
+    set L := Real.log |w.im|
+    have hL2 : 2 < L := by
+      have h := Real.log_lt_log (Real.exp_pos 2)
+        (lt_of_lt_of_le RHTower.exp_two_lt_eight (by linarith : (8 : ℝ) ≤ |w.im|))
+      rwa [Real.log_exp] at h
+    have hL10 : 1 ≤ L ^ 10 := one_le_pow₀ (by linarith)
+    have hLL : L ≤ L ^ 10 := by
+      calc L = L ^ 1 := (pow_one L).symm
+        _ ≤ L ^ 10 := pow_le_pow_right₀ (by linarith) (by norm_num)
+    have hζf : ‖riemannZeta w‖ ^ e₀ ≤ (K₁ + 7) * L ^ 10 := by
+      rcases le_total 0 e₀ with he0 | he0
+      · have hz := RHTower.norm_riemannZeta_le_log_add (s := w) hw.le hw2 (by linarith)
+        have h1 := rpow_le_one_add_self (norm_nonneg (riemannZeta w)) he0 he₀1
+        nlinarith
+      · have hinv : ‖riemannZeta w‖ ^ e₀ = (‖riemannZeta w‖⁻¹) ^ (-e₀) := by
+          rw [Real.inv_rpow hζpos.le, Real.rpow_neg hζpos.le, inv_inv]
+        have h1 := rpow_le_one_add_self (inv_nonneg.mpr hζpos.le) (by linarith : 0 ≤ -e₀)
+          (by linarith)
+        have h2 := hlarge w hw hw2 ht
+        rw [hinv]
+        nlinarith
+    have hlog := log_pow_le_rpow_quarter (show (1 : ℝ) ≤ |w.im| by linarith) (10 + 14 * k)
+    have hsplit : L ^ 10 * L ^ (14 * k) = L ^ (10 + 14 * k) := by rw [← pow_add]
+    calc ‖∑' n : ℕ, (residueFlip q S n : ℂ) * ((n : ℝ) : ℂ) ^ (-w)‖
+        ≤ Real.exp B * ‖riemannZeta w‖ ^ e₀ * ∏ χ ∈ Finset.univ.erase (1 : DirichletCharacter ℂ q),
+            ‖LSeries (fun n => χ n) w‖ ^ e χ := hF
+      _ ≤ Real.exp B * ((K₁ + 7) * L ^ 10) * (Cl * L ^ (14 * k)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hζf (Real.exp_pos _).le) hΠ
+            (Finset.prod_nonneg fun χ _ => Real.rpow_nonneg (norm_nonneg _) _) (by positivity)
+      _ = Real.exp B * (K₁ + 7) * Cl * L ^ (10 + 14 * k) := by rw [← hsplit]; ring
+      _ ≤ Real.exp B * (K₁ + 7) * Cl *
+            ((4 * ((10 + 14 * k : ℕ) + 1)) ^ (10 + 14 * k) * |w.im| ^ (1 / 4 : ℝ)) :=
+          mul_le_mul_of_nonneg_left hlog (by positivity)
+      _ = _ := by ring
+
+/-- **Symmetric residue flips above the quarter are paid.** If `S` is closed under inversion on the
+units and more than a quarter of the unit classes are flipped, `f_{q,S}(d) d^{-1/2}` is paid. -/
+theorem receiverBounded_residueFlip_half {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    (hS : UnitSymmetric S) (h4 : q.totient < 4 * (S.filter IsUnit).card) :
+    ReceiverBounded (fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))) := by
+  have hφ : 0 < (q.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr (NeZero.pos q)
+  obtain ⟨A, B₁, hA, hbd⟩ := exists_norm_residueFlip_bounds hS
+  set a₀ := max (1 - 2 * (setCoeff S 1).re / q.totient) 0
+  have ha₀0 : 0 ≤ a₀ := le_max_right _ _
+  have ha₀ : 2 * a₀ < 1 := by
+    have h4' : (q.totient : ℝ) < 4 * (S.filter IsUnit).card := by exact_mod_cast h4
+    have hlt : 1 - 2 * (setCoeff S 1).re / q.totient < 1 / 2 := by
+      rw [setCoeff_one, Complex.natCast_re]
+      have : 1 / 2 < 2 * ((S.filter IsUnit).card : ℝ) / q.totient := by
+        rw [lt_div_iff₀ hφ]; linarith
+      linarith
+    have : a₀ < 1 / 2 := max_lt hlt (by norm_num)
+    linarith
+  set c : ℕ → ℝ := fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))
+  have hc : DampedClass 1 (1 / 2) c := fun d => by
+    simp only [c]
+    rw [one_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
+    exact mul_le_of_le_one_left (Real.rpow_nonneg (Nat.cast_nonneg d) _)
+      (abs_residueFlip_le_one q S d)
+  set P : ℝ := ∑' d : ℕ, c d / d
+  obtain ⟨Z₀, hZ₀, hZ⟩ := exists_norm_zeta_le_on_tall_box 9
+  have hAint : 0 ≤ 4 * Z₀ ^ 2 * (4 * A ^ 2 + 2 * P ^ 2) := by positivity
+  set Aint := 4 * Z₀ ^ 2 * (4 * A ^ 2 + 2 * P ^ 2)
+  have hwre : ∀ σ t : ℝ, ((σ : ℂ) + t * I + 1 / 2).re = σ + 1 / 2 := fun σ t => by simp
+  have hwim : ∀ σ t : ℝ, ((σ : ℂ) + t * I + 1 / 2).im = t := fun σ t => by simp
+  have hg : IntegrableOn (fun t : ℝ => Aint * (|t - 0| ^ (-(2 * a₀)) + 1)) (Ioc 0 9) :=
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)).mp
+      (((intervalIntegrable_abs_sub_rpow (by linarith) 0 0 9).add
+        intervalIntegrable_const).const_mul Aint)
+  have hsmall : ∀ σ t : ℝ, 1 / 2 < σ → σ < 3 / 4 → 0 < t → t ≤ 9 → t ≠ 0 →
+      lineIntegrand c P σ t ≤ Aint * (|t - 0| ^ (-(2 * a₀)) + 1) := by
+    intro σ t hσ hσ' ht htT _
+    rw [sub_zero, abs_of_pos ht]
+    have hF := (hbd ((σ : ℂ) + t * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)).1
+      (by rw [hwim, abs_of_pos ht]; exact ht) (by rw [hwim, abs_of_pos ht]; exact htT)
+    rw [hwim, abs_of_pos ht] at hF
+    have hC : ‖weightDirichletSeries c ((σ : ℂ) + t * I) - (P : ℂ)‖ ≤
+        A * (t ^ (-a₀) + 1) + |P| := by
+      rw [weightDirichletSeries_pattern]
+      refine (norm_sub_le _ _).trans (add_le_add hF (by rw [Complex.norm_real, Real.norm_eq_abs]))
+    have hpw : (t ^ (-a₀)) ^ 2 = t ^ (-(2 * a₀)) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul ht.le]; congr 1; push_cast; ring
+    have hX0 : 0 ≤ t ^ (-(2 * a₀)) := Real.rpow_nonneg ht.le _
+    have hsq : ‖weightDirichletSeries c ((σ : ℂ) + t * I) - (P : ℂ)‖ ^ 2 ≤
+        (4 * A ^ 2 + 2 * P ^ 2) * (t ^ (-(2 * a₀)) + 1) := by
+      have h := pow_le_pow_left₀ (norm_nonneg _) hC 2
+      have hab : ∀ x y : ℝ, (x + y) ^ 2 ≤ 2 * x ^ 2 + 2 * y ^ 2 := fun x y => by
+        nlinarith [sq_nonneg (x - y)]
+      have h1 : (A * (t ^ (-a₀) + 1)) ^ 2 ≤ 2 * A ^ 2 * (t ^ (-(2 * a₀)) + 1) := by
+        rw [mul_pow]
+        have := hab (t ^ (-a₀)) 1
+        rw [hpw] at this
+        nlinarith [sq_nonneg A]
+      refine h.trans ((hab _ _).trans ?_)
+      rw [sq_abs]
+      nlinarith [sq_nonneg P]
+    have hζs := hZ σ t hσ.le hσ'.le (by rw [abs_of_pos ht]; exact htT)
+    have hsn : σ ≤ ‖(σ : ℂ) + t * I‖ := by
+      have := Complex.abs_re_le_norm ((σ : ℂ) + t * I)
+      simp only [add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one, sub_self,
+        add_zero] at this
+      linarith [le_abs_self σ]
+    have hs2 : (1 / 2 : ℝ) ^ 2 ≤ ‖(σ : ℂ) + t * I‖ ^ 2 :=
+      pow_le_pow_left₀ (by norm_num) (by linarith) 2
+    have hden : 0 < ‖(σ : ℂ) + t * I‖ ^ 2 := lt_of_lt_of_le (by norm_num) hs2
+    have hzsq : ‖riemannZeta ((σ : ℂ) + t * I)‖ ^ 2 ≤ Z₀ ^ 2 :=
+      pow_le_pow_left₀ (norm_nonneg _) hζs 2
+    simp only [lineIntegrand, norm_div, norm_mul, div_pow, mul_pow]
+    rw [div_le_iff₀ hden]
+    calc ‖riemannZeta ((σ : ℂ) + t * I)‖ ^ 2 *
+          ‖weightDirichletSeries c ((σ : ℂ) + t * I) - (P : ℂ)‖ ^ 2
+        ≤ Z₀ ^ 2 * ((4 * A ^ 2 + 2 * P ^ 2) * (t ^ (-(2 * a₀)) + 1)) :=
+          mul_le_mul hzsq hsq (sq_nonneg _) (sq_nonneg _)
+      _ = Aint * (t ^ (-(2 * a₀)) + 1) * (1 / 2) ^ 2 := by simp only [Aint]; ring
+      _ ≤ Aint * (t ^ (-(2 * a₀)) + 1) * ‖(σ : ℂ) + t * I‖ ^ 2 :=
+          mul_le_mul_of_nonneg_left hs2 (mul_nonneg hAint (by positivity))
+  have hlarge : ∀ σ t : ℝ, 1 / 2 < σ → σ < 3 / 4 → 9 < t →
+      ‖weightDirichletSeries c ((σ : ℂ) + t * I) - (P : ℂ)‖ ≤ (|B₁| + |P|) * t ^ (1 / 4 : ℝ) := by
+    intro σ t hσ hσ' ht
+    have hF := (hbd ((σ : ℂ) + t * I + 1 / 2) (by rw [hwre]; linarith) (by rw [hwre]; linarith)).2
+      (by rw [hwim, abs_of_pos (by linarith)]; linarith)
+    rw [hwim, abs_of_pos (by linarith)] at hF
+    rw [weightDirichletSeries_pattern]
+    refine (norm_sub_le _ _).trans ?_
+    have h1 : 1 ≤ t ^ (1 / 4 : ℝ) := Real.one_le_rpow (by linarith) (by norm_num)
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    nlinarith [le_abs_self B₁, abs_nonneg P, abs_nonneg B₁,
+      mul_le_mul_of_nonneg_right (le_abs_self B₁) (by positivity : (0 : ℝ) ≤ t ^ (1 / 4 : ℝ))]
+  obtain ⟨M, hM⟩ := exists_lineEnergy_le_of_majorant (c := c) (t₁ := 0) (by norm_num) hg hsmall
+    hlarge
+  exact ⟨3 * M / (4 * Real.pi), weightPronicEnergy_le_of_lineEnergy_le hc hM⟩
+
+/-- **The quarter law of symmetric residue flips.** For `S ⊆ ZMod q` closed under inversion on the
+units, the half-damped weight `f_{q,S}(d) d^{-1/2}` is paid iff more than a quarter of the unit
+classes are flipped: `φ(q) < 4 #(S ∩ (ZMod q)ˣ)`. -/
+theorem receiverBounded_residueFlip_half_iff {q : ℕ} [NeZero q] {S : Finset (ZMod q)}
+    (hS : UnitSymmetric S) :
+    ReceiverBounded (fun d => residueFlip q S d * (d : ℝ) ^ (-(1 / 2 : ℝ))) ↔
+      q.totient < 4 * (S.filter IsUnit).card := by
+  constructor
+  · intro h
+    by_contra h4
+    exact not_receiverBounded_residueFlip_half_of_le S (not_lt.mp h4) h
+  · exact receiverBounded_residueFlip_half hS
+
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
