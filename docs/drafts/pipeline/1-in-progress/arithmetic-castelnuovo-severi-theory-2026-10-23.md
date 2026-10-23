@@ -199,6 +199,9 @@ survivor).
   carries the whole Hodge defect), `riemannHypothesis_iff_ratHecke_negIndex_eq_zero`,
   `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`.
 
+- `TheHeckeTowerOfAPrimeIsThePeriodQuotient`: `tower_pontryagin_law` (a single prime tower counts the
+  outer Frobenius eigenvalues `p^{ρ−½}` of nonzero weight), `negIndex_towerGram_le`.
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

@@ -56,6 +56,10 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheOddWeilLedgerIsFrustratedOnlyByPrimes` — `weilKernel_antitone`, `oddFold_pos_imp_primeSum`,
   `frustrated_walk_has_primeSum`, `oddWeilLedger_lossless_of_no_primeSum`,
   `exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`.
+- `PositivityIsDecidedOnTheFrustrationTerminals` — `HarmonicFrame`, `incidenceEnergy_eq_reduced_add`,
+  `nonneg_iff_interior_payable_and_reduced`, `nonneg_iff_two_terminal`, `exists_harmonicFrame`.
+- `OnTheSimplexTwoTowersDoNotAdd` — `simplex_joint_capacity`, `simplex_joint_capacity_attained`,
+  `simplex_capacities_do_not_add`.
 - `LocalPaymentIsComparisonPositivity` — `locallyPayable_iff_comparison_nonneg`,
   `locallyPayable_regularized_iff`, `not_locallyPayable_iff_exists_overload`.
 - `SignChangesNeedAntiAlignedOverlaps` — `polarForm_abs_le`, `exists_nonneg_polarSolution`,
@@ -84,6 +88,11 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheChainIsHilbertSchmidtAboveTheGoldenThreshold` — `abs_jump_le_belowSqrt`,
   `regionA_golden_sq_le`, `goldenExp_bounds`, `sum_belowSqrt_rpow_le`,
   `sq_centeredRow_le_goldenMajorant`, `centeredOperator_l2_le_of_goldenThreshold`.
+- `TheColumnsOfTheChainInMellinCoordinates` — `centeredRow_eq_columnProfile`,
+  `sum_sq_centeredRow_le_integral`, `sourceProfile_eq_tsum`, `mellin_fractSeries`,
+  `integral_sq_div_sq_eq_mellin`, `mellin_columnProfile_eq`.
+- `TheChainIsHilbertSchmidtAboveHalfDamping` — `sum_sum_sq_centeredRow_le_halfDamping`,
+  `centeredOperator_l2_le_of_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
@@ -115,7 +124,6 @@ towers).
 
 Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
 sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
-The bound is proved above damping `(√5−1)/2` (`centeredOperator_l2_le_of_goldenThreshold`, and
-`centeredOperator_l2_le` above one); for `½ < η ≤ (√5−1)/2` it is open (card
-`saei-chain-l2-above-golden-threshold`), and below half damping it is
-unproved (RH-strength at cofinally small `η`).
+The chain is Hilbert–Schmidt exactly for `½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`,
+`not_bounded_sum_sum_sq_centeredRow_of_le_half`); at or below half damping boundedness is unproved
+(RH-strength at cofinally small `η`).

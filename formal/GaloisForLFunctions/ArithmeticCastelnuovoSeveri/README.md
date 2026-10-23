@@ -38,6 +38,8 @@ it lives on the Frobenius orbit of the diagonal.
 | [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Exact finite identities versus critical-norm estimates; successor boundaries. |
 | [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Quantitative transport of positivity; a geometric form still needs a producer. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Keeps the Möbius source when passing from incidence to quadratic forms. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Takes this surface as its geometric core. Its width dictionary places Hodge index, effectivity and one positive square beside the other units, and its Nyquist rank bound on section spaces is the finite-dimensional shadow of the missing Riemann–Roch. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The analytic engine of the second route to `3/4` in §3.8: it decomposes `RHTower.PrimeSurplusFourThirds` into a Dirichlet mean value and a close-pair kernel. |
 
 `RHTower` supplies the explicit formula, the Weil criterion, the Lévy–Khintchine form of the
 archimedean symbol and the matrix inertia calculus.
@@ -213,7 +215,18 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     already the two-prime orbit `ℤ log p + ℤ log q`, suffice; RH iff the Weil Gram matrices of these
     translates of one test are positive semidefinite (`zeta_cyclic_hodgeDefect_iff`,
     `riemannHypothesis_iff_ratHecke_negIndex_eq_zero`,
-    `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`).
+    `riemannHypothesis_iff_twoPrime_negIndex_eq_zero`). A single prime tower `g(· − k log p)` is
+    the period quotient (`TheHeckeTowerOfAPrimeIsThePeriodQuotient`): its Gram matrix is Toeplitz,
+    `T_{p^k}` multiplies the coordinate at `ρ` by the Frobenius eigenvalue `p^{ρ − ½}`, and when the
+    outer eigenvalues are finitely many the tower defect is exactly the number of them with nonzero
+    Frobenius weight `W_b = Σ_{p^{ρ−½} = b} X_ρ(g) conj X_{1−ρ̄}(g)` (`tower_pontryagin_law`);
+    in general it is at most the number of distinct outer eigenvalues (`negIndex_towerGram_le`).
+    Zeros differing by `2πi/log p` share an eigenvalue and their weights can cancel, as over `𝔽_q`
+    each outer eigenvalue is counted once. Over `ℚ` this is rare: two distinct zeros collide at no
+    more than one prime, since two would make `log q / log p` rational
+    (`subsingleton_resonantPrimes`). With finitely many right zeros, all but finitely many primes
+    separate them, and at each such prime one tower of one generic test carries the whole defect
+    (`almost_every_prime_tower_sees_every_right_zero`).
 
 ### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `BezoutEffectivityAndTheBeurlingObstruction`)
 
@@ -460,7 +473,20 @@ To be built:
    effective classes have nonnegative ample degree by definition and which supplies effective
    cycles in every class of positive square. Bézout is available (21); the supply is RH-equivalent
    (18) and cannot come from positive tests (19), from cones read off the form (20), or from exact
-   annihilators among compact tests (22).
+   annihilators among compact tests (22). Of the routes to Wall 14 this is the only one whose
+   removal criterion is a construction, not an estimate. The constraints on a construction are
+   known: the cone must contain the open positive cone, be Bézout-closed and Hecke-stable, and use
+   a constraint the golden datum violates, which means the additive structure of `ℤ`. One
+   candidate is a count. Take for `h⁰` the dimension of aperture-`A`, height-`T` tests vanishing
+   on the prime-power nodes of the box, and seek `h⁰ ≥ (degrees of freedom) − (node count)` with
+   the error identified as the Chebyshev defect `E(s)`. The corpus already proves Landau-density
+   statements of this kind: prime-blind tests, whose autocorrelation vanishes at every `log n`,
+   with vanishing even pole moment have spectral second moment above `99/4` times their mass
+   (`ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero`). The
+   classical shadow of such a count is the `T + N`
+   term of the mean value theorem, with diagonal at the square-root threshold. A section count
+   that is no stronger than the large sieve at the diagonal would only relabel Dirichlet
+   polynomials; a useful one must be selective against the golden datum and the shifted pair.
 2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
@@ -480,9 +506,11 @@ To be built:
 6. **Beyond `2/3`.** The constant is explained: capacity `2 − κ` at `λ = 1` (§3.8). Open: either input
    that gives `3/4` — a zero-side spectral slack `S(T) ≥ N(T, 2T)/12`, or the prime surplus
    `RHTower.PrimeSurplusFourThirds` at bandwidth `4/3` — or pair correlation beyond `λ = 1`.
-7. **One prime against two.** Two primes carry the whole defect (item 17). A single prime tower
-   `g(· − k log p)` is the period quotient of the curve case, where zeros differing by
-   `2πi/log p` share the eigenvalue `p^{ρ − ½}`: determine its defect.
+7. **One prime against two.** Two primes carry the whole defect; one prime carries the visible
+   outer eigenvalues `p^{ρ − ½}` when these are finitely many, and with finitely many right zeros
+   every non-resonant prime carries all of it (item 17). Open: the tower defect when infinitely many
+   outer eigenvalues accumulate in the annulus `1 < |β| < √p`, where the moment separation of
+   classes fails.
 
 ---
 
@@ -549,6 +577,8 @@ Weil's argument.
 | `TheKroneckerRankDichotomy` | recurrent configurations have defect `0` or `∞` |
 | `TheZerosOfAnExponentialPolynomialRecur` | recurrence of zeros of exponential polynomials |
 | `TheHodgeDefectIsCyclic` | Hecke translates, spectrally generic tests, cyclic density, cyclic Pontryagin law, RH on the rational and two-prime Hecke orbits of one test |
+| `TheHeckeTowerOfAPrimeIsThePeriodQuotient` | Frobenius eigenvalues `p^{ρ − ½}`, Toeplitz tower Gram, class separation by annihilating polynomials and Cesàro means, Frobenius weights, the tower Pontryagin law |
+| `AlmostEveryPrimeSeesEveryRightZero` | coincidence of Frobenius eigenvalues, at most one resonant prime per pair of zeros, finitely many resonant primes, one prime tower carries the whole defect |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
 | `TheResonatorRemainderIsNegative` | cross-prime remainder on resonators is negative definite |

@@ -65,7 +65,7 @@ valid.
 - [x] `RHTower/ComplexLaplaceHolomorphy.lean` (depth 5, 1)
 - [x] `RHTower/CriticalDiscAnalyticCompleteness.lean` (depth 5, 1)
 - [x] `RHTower/EulerMascheroniCorrectedUpper.lean` (depth 5, 1)
-- [ ] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` (depth 5, 1)
+- [x] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` (depth 5, 1)
 - [x] `RHTower/Hedenmalm/HedenmalmThetaAllShiftedTails.lean` (depth 5, 1)
 - [x] `RHTower/LandauSingularAtAbscissa.lean` (depth 5, 1)
 - [ ] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` (depth 5, 1)
@@ -126,8 +126,8 @@ valid.
 - [x] `HTGeometry/OccupationVacuumAnomalyReciprocity.lean` (depth 7, 1)
 - [ ] `HTGeometry/UniversalConstraintOrientation.lean` (depth 7, 1)
 - [ ] `HTGeometry/UniversalPrimeKreinHamming.lean` (depth 7, 1)
-- [ ] `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean` (depth 7, 3)
-- [ ] `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean` (depth 7, 1)
+- [x] `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean` (depth 7, 3)
+- [x] `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean` (depth 7, 1)
 - [ ] `RHTower/GaussSquareDiagonalLogResidue.lean` (depth 7, 1)
 - [ ] `RHTower/PerronLaplaceKernel.lean` (depth 7, 1)
 - [ ] `RHTower/PerronTentTransform.lean` (depth 7, 1)
@@ -163,7 +163,7 @@ valid.
 - [ ] `HTGeometry/HardyDatum.lean` (depth 8, 1)
 - [ ] `HTGeometry/JumpProfileLevels.lean` (depth 8, 1)
 - [ ] `HTGeometry/PrimeValuationLeadingEchelon.lean` (depth 8, 2)
-- [ ] `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean` (depth 8, 1)
+- [x] `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean` (depth 8, 1)
 - [ ] `RHTower/GammaSewnMobiusXiWardHardyContraction.lean` (depth 8, 2)
 - [ ] `RHTower/GaussDiagonalLogResidue.lean` (depth 8, 1)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixteenthFloor.lean` (depth 8, 2)
@@ -202,7 +202,7 @@ valid.
 - [ ] `HTGeometry/WedgeTwoThick.lean` (depth 9, 2)
 - [ ] `RHTower/FiniteTimeBandFourierSchatten.lean` (depth 9, 2)
 - [ ] `RHTower/GaussDoubleDefect.lean` (depth 9, 1)
-- [ ] `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean` (depth 9, 7)
+- [x] `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean` (depth 9, 7)
 - [ ] `RHTower/LevinsonOddFiberDensity.lean` (depth 9, 1)
 - [ ] `RHTower/MobiusThetaInternalJetPrimeNormalComplexGraph.lean` (depth 9, 1)
 - [ ] `RHTower/Sieve/MaynardReceiverMargin.lean` (depth 9, 1)
@@ -492,11 +492,11 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `HTGeometry/SchwartzSpectralMeasureForm.lean` — typed continuity compositions; check and build passed; olean/ilean written.
 - [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean` — explicit accuracy products and arithmetic–geometric mean bound; check and build passed; olean/ilean written.
 - [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean` — direct arithmetic–geometric mean bound; check and build passed; olean/ilean written.
-- `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean`
-- `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean`
-- `RHTower/GammaSewnMobiusXiWardHardyTransport.lean`
-- `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean`
-- `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean`
+- [x] `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean` — targeted adjoint simplification; check and build passed.
+- [x] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean` — check and build passed; olean/ilean written.
 - `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean`
 - `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean`
 - `RHTower/RegularizedDivisorHarmonicLimit.lean`

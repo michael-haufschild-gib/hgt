@@ -71,16 +71,16 @@ laws governed by local off-line density:
    `2 zetaZeroWidth` from an explicit threshold aperture `A`.
 -/
 
-open Complex MeasureTheory Real Set Filter Topology
-open scoped ComplexConjugate
+open Complex MeasureTheory Real Set Filter Topology Finset Matrix
+open scoped Real ComplexConjugate
+open Zeta23 RHTower GaloisForLFunctions.HTGeometry GaloisForLFunctions.SquareRootThreshold
+  GaloisForLFunctions.ArithmeticCriticalityTheory GaloisForLFunctions.ArithmeticPositivityTheory
+  GaloisForLFunctions.ArithmeticIncidencePositivity
+  _root_.RHTower.CCMParityQuartet _root_.RHTower.CCMParityTopLayer
 
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-open Zeta23 RHTower GaloisForLFunctions.SquareRootThreshold
-  GaloisForLFunctions.ArithmeticCriticalityTheory
-  _root_.RHTower.CCMParityQuartet _root_.RHTower.CCMParityTopLayer
 
 /-! ### 1. Height-uniform visibility degree of `n` separated right zeros under bounded local count -/
 
@@ -566,7 +566,7 @@ theorem card_offLine_window_le_of_offLineCopiesLocallyBounded {M : ℕ}
     · simpa using him
   calc T.card
       = (T.image (fun z : ℂ => 1 / 2 + z)).card := (Finset.card_image_of_injective T hinj).symm
-    _ = ∑ _ρ ∈ T.image (fun z : ℂ => 1 / 2 + z), 1 := (Finset.card_eq_sum_ones _).symm
+    _ = ∑ _ρ ∈ T.image (fun z : ℂ => 1 / 2 + z), 1 := Finset.card_eq_sum_ones _
     _ ≤ ∑ ρ ∈ T.image (fun z : ℂ => 1 / 2 + z), zetaZeroConfig.mult ρ :=
         Finset.sum_le_sum fun ρ hρ => zetaZeroConfig.one_le_mult ρ (hS ρ hρ).1
     _ ≤ M := sum_mult_offLine_window_le_of_offLineCopiesLocallyBounded hM T₀ _ hS
@@ -584,8 +584,7 @@ theorem offLineDensityBound_zeta_of_offLineCopiesLocallyBounded {M : ℕ}
       ∑ ρ ∈ s', (zetaZeroConfig.mult ρ : ℝ) := by
     rw [hs', Finset.sum_filter]
     refine Finset.sum_congr rfl fun ρ _ => ?_
-    unfold RHTower.offLineMult
-    split_ifs with h <;> simp [h]
+    by_cases h : (ρ : ℂ).re = 1 / 2 <;> simp [RHTower.offLineMult, h]
   rw [hsum_eq]
   have hinj : Function.Injective (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ)) := Subtype.val_injective
   have hS : ∀ ρ ∈ s'.image (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ)),
@@ -1143,38 +1142,36 @@ theorem zeta_near_top_visible_of_offLineCopiesLocallyBounded {M : ℕ}
 /-- **Castelnuovo–Severi defect floor under `OffLineDensityBound`.** On `scalingSurface`, every
 on-line zero of `ζ` contributes a nonnegative square `m_ρ ‖h_f(γ_ρ)‖² ≥ 0` to the Weil form, so
 only off-line zeros can make the Castelnuovo–Severi defect negative. Under
-`OffLineDensityBound zetaZeroConfig D`, for every degree `r ≥ 0`, every subspace `V ≤ testsAt r`
+`OffLineDensityBound zetaZeroConfig D`, for every degree `r ≥ 0`, every subspace `V ≤ realTestsAt r`
 (both even and odd cycles), and every cycle `x : ℝ × ℝ × V`,
 `−3500 (2r + 3) D e^{2·zetaZeroWidth·(r + 2)} ∫ f² ≤ (scalingSubsurface V).defect x x`. -/
 theorem scalingSubsurface_defect_ge_of_offLineDensityBound {D r : ℝ}
     (hD : RHTower.OffLineDensityBound zetaZeroConfig D) (hr : 0 ≤ r)
-    (V : Submodule ℝ C2c) (hV : V ≤ testsAt r) (x : ℝ × ℝ × V) :
+    (V : Submodule ℝ realTests) (hV : V ≤ realTestsAt r) (x : ℝ × ℝ × V) :
     -(3500 * (2 * r + 3) * D * Real.exp (2 * zetaZeroWidth * (r + 2)) *
         ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
       (scalingSubsurface V).defect x x := by
-  rw [scalingSubsurface_defect_self, weilPair_self_eq_zeta_W_re]
-  have hη : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ zetaZeroWidth := fun ρ hρ => by
-    rw [abs_sub_comm]; exact criticalDepth_le_zetaZeroWidth hρ
-  have hf : Continuous (fun u : ℝ => ((x.2.2.1 : ℝ → ℝ) u : ℂ)) :=
-    Complex.continuous_ofReal.comp x.2.2.1.2.1.continuous
-  have hsupp : ∀ u : ℝ, ((x.2.2.1 : ℝ → ℝ) u : ℂ) ≠ 0 → |u| ≤ r := by
+  rw [scalingSubsurface_defect_self, weilPair_self_eq_zeta_W_re x.2.2.1.2.1 x.2.2.1.2.2,
+    ← integral_norm_cx_sq]
+  have hη : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.re - 1 / 2| ≤ zetaZeroWidth := fun _ hρ =>
+    abs_re_sub_half_le_zetaZeroWidth hρ
+  have hf : Continuous (cx (x.2.2.1 : ℝ → ℝ)) := (cx_contDiff x.2.2.1.2.1).continuous
+  have hsupp : ∀ u : ℝ, cx (x.2.2.1 : ℝ → ℝ) u ≠ 0 → |u| ≤ r := by
     intro u hu
-    have hu' : (x.2.2.1 : ℝ → ℝ) u ≠ 0 := by exact_mod_cast hu
+    have hu' : (x.2.2.1 : ℝ → ℝ) u ≠ 0 := by
+      simp only [cx, ne_eq, Complex.ofReal_eq_zero] at hu
+      exact hu
     exact abs_le.mpr (hV x.2.2.2 (subset_tsupport _ hu'))
-  have hW := RHTower.re_W_ge_of_depth_offLineDensity zetaZeroConfig zetaZeroWidth_nonneg hη hD hr
+  exact RHTower.re_W_ge_of_depth_offLineDensity zetaZeroConfig zetaZeroWidth_nonneg hη hD hr
     hf hsupp
-  have hnorm : (∫ u : ℝ, ‖((x.2.2.1 : ℝ → ℝ) u : ℂ)‖ ^ 2) = ∫ u : ℝ, (x.2.2.1 : ℝ → ℝ) u ^ 2 := by
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
-  rwa [hnorm] at hW
 
 /-- **Castelnuovo–Severi defect floor under `OffLineCopiesLocallyBounded`.** Under
-`OffLineCopiesLocallyBounded M`, for every degree `r ≥ 0`, every subspace `V ≤ testsAt r`, and
+`OffLineCopiesLocallyBounded M`, for every degree `r ≥ 0`, every subspace `V ≤ realTestsAt r`, and
 every cycle `x : ℝ × ℝ × V`,
 `−3500 (2r + 3) M e^{2·zetaZeroWidth·(r + 2)} ∫ f² ≤ (scalingSubsurface V).defect x x`. -/
 theorem scalingSubsurface_defect_ge_of_offLineCopiesLocallyBounded {M : ℕ} {r : ℝ}
     (hM : OffLineCopiesLocallyBounded M) (hr : 0 ≤ r)
-    (V : Submodule ℝ C2c) (hV : V ≤ testsAt r) (x : ℝ × ℝ × V) :
+    (V : Submodule ℝ realTests) (hV : V ≤ realTestsAt r) (x : ℝ × ℝ × V) :
     -(3500 * (2 * r + 3) * M * Real.exp (2 * zetaZeroWidth * (r + 2)) *
         ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
       (scalingSubsurface V).defect x x :=
@@ -1185,7 +1182,7 @@ theorem scalingSubsurface_defect_ge_of_offLineCopiesLocallyBounded {M : ℕ} {r 
 `OffLineDensityBound`.** -/
 theorem exists_scalingSubsurface_defect_floor_of_offLineDensityBound {D : ℝ}
     (hD : RHTower.OffLineDensityBound zetaZeroConfig D) {θ : ℝ} (hθ : zetaZeroWidth < θ) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ V : Submodule ℝ C2c, V ≤ testsAt r →
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ V : Submodule ℝ realTests, V ≤ realTestsAt r →
       ∀ x : ℝ × ℝ × V,
         -(C * Real.exp (2 * θ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
           (scalingSubsurface V).defect x x := by
@@ -1234,7 +1231,7 @@ theorem zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineDensit
   · intro hle θ hθ
     obtain ⟨C, -, hC⟩ :=
       exists_scalingSubsurface_defect_floor_of_offLineDensityBound hD (lt_of_le_of_lt hle hθ)
-    exact ⟨C, fun r hr x => hC r hr (oddRealTestsAt r) (oddRealTestsAt_le_testsAt r) x⟩
+    exact ⟨C, fun r hr x => hC r hr (oddRealTestsAt r) (fun _ hf => hf.1) x⟩
   · intro hfloor
     refine le_of_forall_pos_le_add fun ε hε => ?_
     obtain ⟨C, hC⟩ := hfloor (σ + ε) (by linarith)
@@ -1257,40 +1254,45 @@ theorem zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineCopies
 `ℤ`, either:
 1. the Castelnuovo–Severi degree-defect exponent on `scalingSubsurface (oddRealTestsAt r)` and the
    polar ground-energy exponent `polarGroundEnergyRate` both equal `zetaZeroWidth`, or
-2. the off-line zeros of `ζ` cluster without bound in unit height windows
-   (`∀ D, ¬ OffLineDensityBound zetaZeroConfig D` and `∀ M, ¬ OffLineCopiesLocallyBounded M` and
-   `∀ W, ¬ OffLineDepthLocallyBounded W`), which forces infinitely many off-line divisor copies of
+2. the off-line divisor copies of `ξ` cluster without bound in unit height windows
+   (`∀ M, ¬ OffLineCopiesLocallyBounded M`), which forces infinitely many off-line divisor copies of
    `ξ`. -/
 theorem scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster :
     ((polarGroundEnergyRate = zetaZeroWidth ∧
       ∀ θ : ℝ, zetaZeroWidth < θ → ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
         -(C * Real.exp (2 * θ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
           (scalingSubsurface (oddRealTestsAt r)).defect x x) ∨
-    ((∀ D : ℝ, ¬ RHTower.OffLineDensityBound zetaZeroConfig D) ∧
-      (∀ M : ℕ, ¬ OffLineCopiesLocallyBounded M) ∧
+    ((∀ M : ℕ, ¬ OffLineCopiesLocallyBounded M) ∧
       {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.Infinite)) := by
-  by_cases hD : ∃ D : ℝ, RHTower.OffLineDensityBound zetaZeroConfig D
-  · obtain ⟨D, hD⟩ := hD
+  by_cases hM : ∃ M : ℕ, OffLineCopiesLocallyBounded M
+  · obtain ⟨M, hM⟩ := hM
     left
-    have hfl : ∀ θ : ℝ, zetaZeroWidth < θ → ∃ C : ℝ, ∀ r : ℝ, 0 < r →
-        ∀ x : ℝ × ℝ × oddRealTestsAt r,
-          -(C * Real.exp (2 * θ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
-            (scalingSubsurface (oddRealTestsAt r)).defect x x :=
-      (zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineDensityBound hD
-        zetaZeroWidth_nonneg).mp le_rfl
-    refine ⟨?_, hfl⟩
-    by_cases hM : ∃ M : ℕ, OffLineCopiesLocallyBounded M
-    · obtain ⟨M, hM⟩ := hM
-      exact polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded hM
-    · refine le_antisymm ?_ zetaZeroWidth_le_polarGroundEnergyRate
-      refine le_of_forall_pos_le_add fun ε hε => ?_
-      have hθ : zetaZeroWidth < zetaZeroWidth + ε := by linarith
-      obtain ⟨C, -, hC⟩ := exists_scalingSubsurface_defect_floor_of_offLineDensityBound hD hθ
-      -- Alternatively, OffLineDensityBound zetaZeroConfig D directly implies OffLineCopiesLocallyBounded ⌊3*D⌋₊!
-      exfalso
-      apply hM
-      refine ⟨⌊3 * D⌋₊, fun T => ?_⟩
-      sorry
-  · sorry
+    exact ⟨polarGroundEnergyRate_eq_zetaZeroWidth_of_offLineCopiesLocallyBounded hM,
+      (zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineCopiesLocallyBounded hM
+        zetaZeroWidth_nonneg).mp le_rfl⟩
+  · right
+    push Not at hM
+    exact ⟨hM, fun hfin => hM _ (offLineCopiesLocallyBounded_of_finite hfin)⟩
+
+/-- **Finite off-line regime on the scaling surface.** When the off-line divisor copies of `ξ` are
+finite and nonempty, `polarGroundEnergyRate = zetaZeroWidth`, the Castelnuovo–Severi degree-defect
+floor holds at every rate `θ > zetaZeroWidth`, and there is a threshold aperture `A` beyond which
+the restricted Weil ground energy obeys two-sided exponential bounds
+`c e^{2·zetaZeroWidth·a} ≤ −μ(a) ≤ C e^{2·zetaZeroWidth·a}` (`c > 0`). -/
+theorem exists_scalingSubsurface_defect_floor_and_groundEnergy_bounds_of_finite_offLine
+    (h : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.Finite)
+    (hne : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.Nonempty) :
+    polarGroundEnergyRate = zetaZeroWidth ∧
+      (∀ θ : ℝ, zetaZeroWidth < θ → ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+        -(C * Real.exp (2 * θ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+          (scalingSubsurface (oddRealTestsAt r)).defect x x) ∧
+      ∃ c C A : ℝ, 0 < c ∧ ∀ a : SuzukiPositiveAperture, A ≤ a.1 →
+        c * Real.exp (2 * zetaZeroWidth * a.1) ≤ -ccmRestrictedWeilGroundEnergy a ∧
+          -ccmRestrictedWeilGroundEnergy a ≤ C * Real.exp (2 * zetaZeroWidth * a.1) := by
+  have hM := offLineCopiesLocallyBounded_of_finite h
+  exact ⟨polarGroundEnergyRate_eq_zetaZeroWidth_of_finite_offLine h,
+    (zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineCopiesLocallyBounded hM
+      zetaZeroWidth_nonneg).mp le_rfl,
+    exists_groundEnergy_exponential_bounds_of_finite_offLine h hne⟩
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

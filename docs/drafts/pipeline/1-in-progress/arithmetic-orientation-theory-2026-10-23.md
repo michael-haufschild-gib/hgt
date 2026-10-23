@@ -47,6 +47,10 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
 - `FrustrationIndexControlsTheGroundEnergy`: `signedDirichletForm_eq`, `signedDirichletForm_switch`,
   `frustrationIndex_switch`, `isBalanced_iff_frustrationIndex_eq_zero`, `signedDirichletForm_signVector`,
   `groundEnergy_le_frustrationMass`, `groundEnergy_eq_zero_iff_isBalanced`, `frustrationIndex_oddWeilLedger_le`.
+- `TheFrustrationIndexOfThePrimeTriangle`: `misalignedCount_eq_two_mul`,
+  `two_le_frustrationIndex_of_not_isBalanced`, `frustrationIndex_le_two_fin3`, `frustrationIndex_primeTriangle` (= 2).
+- `PrimePowerSumsRegroupByTowers`: `sum_primePow_eq_sum_towers`, `sum_vonMangoldt_mul_eq_sum_towers`,
+  `sum_vonMangoldt_productCorr_eq_sum_towers` (global product part = Σ_p log p (S_p² − q(1)²) for M ≥ X²).
 - `TheFrustrationOfATowerIsRankOne`: `productCorr_prime_pow`, `sq_sum_eq_sum_cauchy`,
   `sum_vonMangoldt_productCorr_prime_pow` (tower product part `= log p (S_p² − q(1)²)`),
   `towerProductPart_nonneg`, `latticeOddPrimeSide_le_of_eq_zero`, `sum_towerProductPart`.
@@ -67,4 +71,4 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
   transport in aperture; the Nyquist bound at the diagonal).
 
 ## Log
-- 2026-10-23 — created in 1-in-progress from review-2310/fable.md; eight modules compiled, README written
+- 2026-10-23 — created in 1-in-progress from review-2310/fable.md; ten modules compiled, README written

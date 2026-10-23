@@ -133,7 +133,7 @@ theorem two_mul_le_ratio {a b x y : ℝ} (h : (0 < a ∧ 0 < b) ∨ (y = 0 ∧ (
   · have ha' := ha.ne'
     have hb' := hb.ne'
     have e : b / a * x ^ 2 + a / b * y ^ 2 - 2 * x * y = (b * x - a * y) ^ 2 / (a * b) := by
-      first | (field_simp; ring) | field_simp
+      field_simp; ring
     have : 0 ≤ (b * x - a * y) ^ 2 / (a * b) := div_nonneg (sq_nonneg _) (mul_pos ha hb).le
     linarith
   · subst hy hb; simp
@@ -146,7 +146,7 @@ theorem two_mul_eq_ratio {a b x y : ℝ}
   rcases h with ⟨ha, hb, rfl, rfl⟩ | ⟨hy, hb | hx⟩
   · have ha' := ha.ne'
     have hb' := hb.ne'
-    first | (field_simp; ring) | field_simp
+    field_simp; ring
   · subst hy hb; simp
   · subst hy hx; simp
 
@@ -440,7 +440,7 @@ theorem simplex_capacities_do_not_add {n : ℕ} (hn : 1 ≤ n) :
     have h3pos : (0 : ℝ) < (n : ℝ) + 3 := by positivity
     have e : π / ((n : ℝ) + 2) + 2 * (π / ((n : ℝ) + 3)) =
         π * ((3 * (n : ℝ) + 7) / (((n : ℝ) + 2) * ((n : ℝ) + 3))) := by
-      first | (field_simp; ring) | field_simp
+      field_simp; ring
     rw [e]
     have : (3 * (n : ℝ) + 7) / (((n : ℝ) + 2) * ((n : ℝ) + 3)) ≤ 1 := by
       rw [div_le_one (by positivity)]; nlinarith
@@ -469,3 +469,4 @@ theorem simplex_capacities_do_not_add {n : ℕ} (hn : 1 ≤ n) :
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
+

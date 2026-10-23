@@ -44,6 +44,7 @@ Four pillars organise the theory:
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Keeps energy, flux, and forcing together in an exact signed compensation law. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks which arithmetic effectivity statement could force the required intersection-form signature. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Carries the source's signs into the incidence kernel and its positive majorants. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Reads the non-Z-type obstruction of §§3.5–3.7 as frustration. A signed incidence form has zero ground energy iff it is balanced, its ground energy is bounded by the frustration mass, and the odd Weil ledger is frustrated only on prime-sum edges, which are the prime anti-diagonals of §3.7. |
 
 **The shared target.** The programmes in the table work on one object: RH as the sign of the
 complete critical arithmetic form, read through pairwise incidence (Arithmetic Incidence
@@ -697,6 +698,15 @@ property. This is the template against which the arithmetic odd sector is measur
 3.5 is the central no-go: the arithmetic odd-sector operator is not Z-type, and by 3.7 the failure is
 located entirely in the prime anti-diagonals.
 
+In orientation language the Z-type property is **balance**. A finite connected signed incidence
+form has zero ground energy exactly when some switching $x_i\mapsto s_ix_i$ aligns all its
+couplings, and its ground energy on the unit sphere is at most $4/n$ times its frustration mass,
+the least total weight of couplings that no switching can align (`groundEnergy_eq_zero_iff_isBalanced`,
+`groundEnergy_le_frustrationMass`, Arithmetic Orientation Theory). The odd Weil ledger has its
+positive couplings only on prime-sum edges (`frustrationIndex_oddWeilLedger_le`). These are the
+prime anti-diagonals of 3.7, so the arithmetic odd sector is a frustrated form, and RH asks that
+its frustration be paid globally by the same-side atoms and the variance.
+
 ### 3.13 Positivity below the first prime from a plateau gauge
 
 Below the first prime the obstruction of 3.7 is absent. Take a gauge `M` with `0 ≤ M ≤ 1`, `M = 1` on
@@ -816,7 +826,13 @@ this one real function of one variable never crosses zero.
   if the *relative* loss of the floor over `[a, c]` is bounded by a primitive `β`, then
   `μ(c) ≥ μ(a)·exp(−(β c − β a))`, so a certified endpoint propagates. Instantiated at the
   certified `μ ≥ 1/5000` on `[0, 3/10]`, the aperture face becomes a question about the *rate* at
-  which the floor may decay, not about its sign at any one aperture.
+  which the floor may decay, not about its sign at any one aperture. The ceiling fixes that rate
+  for positive floors: a floor `μ(A) ≥ m₀e^{−B(A)}` forces `B(A) ≥ πe^{2(A−2)} − (11/2)A + log(m₀/K)`,
+  no positive floor holds along any unbounded sequence of apertures, and half-summable relative
+  losses, even the harmonic product `1/(J+1)`, are far too slow
+  (`exists_le_floorLoss_of_floor`, `not_relative_step_transport`, Arithmetic Compensation Theory).
+  A positive transport must lose at a doubly exponential rate; the graded *negative* floor is the
+  target the zero-width dictionary needs.
 * **What a bounded aperture is worth, and what it is not.** Monotonicity makes the certificate
   cofinal: positivity along any unbounded set of apertures already forces positivity at every
   aperture, so the path need only be certified along a sequence `a_n → ∞`, with nothing proved in
@@ -1038,7 +1054,20 @@ To be built:
    normalisation, along any unbounded set of apertures. The archimedean-normalised arrow is a
    theorem, the relative-decay transport carries a certified endpoint forward, and a uniform-in-`A`
    loss is RH; what is missing is the passage from the `H¹` datum of the off-line zero sum
-   to the `L²` normalisation of the path.
+   to the `L²` normalisation of the path. In the Sobolev normalisation (mass plus derivative
+   energy) the reflected prime–polar cost of an odd test already carries the de la Vallée Poussin
+   saving `O(e^{r−c√r})` (Arithmetic Incidence Positivity). The saving is relative, not a smaller
+   exponent, and the derivative cost stays unpaid because `D/M` is unbounded.
+7. **Transport in aperture.** No monotone or Lyapunov quantity in `A` is known. The damping face
+   has an exact derivative identity, boundary flux minus jump energy minus density forcing
+   (Arithmetic Continuation and Critical Energy); the aperture face has none. Derive the aperture
+   derivative of `μ(A)` as a boundary-flux identity, identify a sign-definite jump term, and check
+   it against the ceiling, which forces any Lyapunov functional to decay like `exp(−πe^{2(A−2)})`.
+8. **The frustration index at aperture `A`.** Define the least global payment of the frustrated
+   prime-sum edges of the odd ledger at aperture `A` as the ground energy of a ℤ/2 gauge system on
+   the logarithmic grid, compute it on the train and tower families, and prove or refute that it
+   equals `μ(A)` (Arithmetic Orientation Theory). A positive answer would replace the analytic floor
+   by a combinatorial count.
 
 ---
 

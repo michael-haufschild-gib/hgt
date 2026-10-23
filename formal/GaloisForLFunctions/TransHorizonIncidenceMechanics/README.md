@@ -40,6 +40,8 @@ uniform in `T`, and why the order of the horizon and damping limits matters.
 | [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md), [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | The odd-sector and crossing-pair formulations of the same complete-form obstruction. |
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md), [Square-Root Threshold](../SquareRootThreshold/README.md) | Source approximation and zero-detection coordinates for estimates that reach a continuous receiver. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks source-derived arithmetic effectivity that generic observer and dissipation identities do not provide. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Treats the even flip as an orientation and reads it exactly at the prime $2$ through the first pronic moment. Restates the parity barrier for readings, and proves that the critical Wiener kernels form a monoid whose orbits the paid class is a union of. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Meets the sieve parity barrier at close prime pairs beyond the Montgomery–Vaughan threshold, where upper-bound sieves lose the signed correlation by a factor two. |
 
 The basic mechanisms are complementary-divisor normal forms, Dirichlet polarization with its
 boundary squares retained, Ramanujan diagonalization, exact Fermi trace inversion, and Mellin
@@ -1223,7 +1225,7 @@ For the literal damped Möbius receiver the threshold is the zero width itself. 
 admissible dampings has infimum of its derived set exactly $\Theta-\tfrac12$
 (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`), so RH is the accumulation of admissible
 dampings at $0$, equivalently the cofinal budget criterion
-(`riemannHypothesis_iff_cofinal_budget`); and conversely a bound at any single damping is worth
+(`riemannHypothesis_iff_cofinal_budget`, the damping entry of `widthDictionary_tfae`); and conversely a bound at any single damping is worth
 nothing in the width unit, because one admissible damping only translates zeros along the chains
 $\rho,\rho-\varepsilon,\rho-2\varepsilon,\dots$. The receiver's damping is therefore a genuine
 width coordinate, with the same endpoint behaviour as the aperture: all the content sits at the
@@ -1467,60 +1469,46 @@ nonpositivity holds for every $\{-1,0,1\}$-valued sequence, $\mu^2$ and $1$ incl
 (`firstOctaveDefectFunctional_nonpos_of_sq_eq_abs`), a sign-blind fact that cannot bound a signed
 receiver.
 
-**Oscillating-probe source estimates.** Every oscillating prefix decomposes into the fractional-part
-sawtooth sum $S_{\varepsilon,t}(n)=\sum_{d\le n}c_{\varepsilon,t}(d)(\lfloor n/d\rfloor-n/d)$ and the
-universal tail drift $T_{\varepsilon,t}(n)=-n\sum_{d>n}c_{\varepsilon,t}(d)/d$
-(`weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail`). Splitting $S_{\varepsilon,t}$ at
-$\lfloor\sqrt n\rfloor$ (`oscillatingSawtoothPrefix_eq_short_add_long`), the short-modulus sawtooth sum
-$1\le d\le\lfloor\sqrt n\rfloor$ satisfies
-$\lvert S^{\mathrm{short}}_{\varepsilon,t}(n)\rvert\le(1+1/(1-\varepsilon))(\sqrt n)^{1-\varepsilon}$ and has
-uniformly bounded pronic norm for every $0<\varepsilon<1$ and $t\in\mathbb R$
-(`pronicNorm_oscillatingShortSawtooth_le`), so sawtooth/tail cancellation reduces to the long-modulus
-sawtooth sum $\lfloor\sqrt n\rfloor<d\le n$ against the tail $d>n$
-(`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_longSawtooth_add_tail`). At $t=0$ both
-pieces are nonpositively signed, so $\langle S^{\mathrm{long}}_{\varepsilon,0},T_{\varepsilon,0}\rangle_T\ge0$
-(`pronicInner_longSawtooth_tail_zero_nonneg`, anti-alignment gap $\theta=0$) and the dyadic tail block
-$d\in(n,2n]$ gives $A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$ and a pure
-source-estimate harmonic proof of $\neg\operatorname{ReceiverBounded}(c_{\varepsilon,0})$ for
-$0<\varepsilon\le1/2$ without invoking $\zeta(1-\varepsilon)\ne0$
-(`not_receiverBounded_oscillatingSmoothPower_zero_from_source`,
-`pronicNorm_longSawtooth_add_tail_zero_sq_ge_harmonic`). For general $t\in\mathbb R$,
-$T_{\varepsilon,t}(n)=\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$ has unconditionally unbounded pronic
-norm for all $0<\varepsilon\le1/2$ and $t\in\mathbb R$ regardless of $\zeta(\rho)$
-(`not_bdd_pronicNorm_oscillatingTailDrift`) and two-sided $\Theta(T^{1-2\varepsilon})$ energy growth for
-$0<\varepsilon<1/2$, $t\ne0$ (`eventually_oscillatingTailDrift_energy_le_and_ge`), while
-$S^{\mathrm{long}}_{\varepsilon,t}(n)=\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$
-(`abs_oscillatingLongSawtooth_sub_le`). For $0<\varepsilon<1/2$ and $t\ne0$, a strict Cauchy–Schwarz
-anti-alignment bound $-\langle S^{\mathrm{long}}_{\varepsilon,t},T_{\varepsilon,t}\rangle_T\le\theta\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T\lVert T_{\varepsilon,t}\rVert_T$
-with $\lvert\theta\rvert<1$, holding even frequently, excludes cancellation of
-$S^{\mathrm{long}}_{\varepsilon,t}$ with $T_{\varepsilon,t}$
-(`not_bdd_longSawtooth_add_tail_of_frequently_pronicInner_le`,
-`not_receiverBounded_of_longSawtooth_tail_inner_le`); quadratic anti-alignment
-$-2\langle S^{\mathrm{long}}_{\varepsilon,t},T_{\varepsilon,t}\rangle_T\le\theta(\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T^2+\lVert T_{\varepsilon,t}\rVert_T^2)$
-with $\theta<1$ is necessary and sufficient for non-admission and for RH
-(`not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap`,
-`riemannHypothesis_iff_forall_ne_zero_exists_longSawtooth_tail_antiAlignment_gap`,
-`routeMC_longSawtooth_tail_antiAlignment_master`), with explicit coefficient
-$\theta_{\mathrm{long}}(\varepsilon,t)\le1$ satisfying the eventual quadratic bound for every
-$0<\varepsilon<1/2$, $t\ne0$ and $\theta_{\mathrm{long}}(\varepsilon,t)<1$ on the Vinogradov–Korobov and
-bounded-height collars and iff either the long-sawtooth/tail amplitude mismatch or phase decorrelation
-is positive (`eventually_longSawtooth_tail_quadratic_gap`, `longSawtoothTailGapTheta_lt_one_vk_and_box`,
-`not_receiverBounded_of_longSawtooth_tail_amp_mismatch_or_decorrelation`,
-`norm_sq_longSawtoothAmp_add_tailDriftAmp_eq`,
-`riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`,
-`oscillatingLongSawtooth_add_tail_eq_quotientSum_add_sqrtTail`,
-`abs_longSawtooth_add_tail_sub_czetaStripRemainder_le`,
-`pronicNorm_longSawtooth_add_tail_sub_czetaStripRemainder_le`); whereas separate tail growth
-does not supply that gap because at any paid probe
-$\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T/\lVert T_{\varepsilon,t}\rVert_T\to1$ and both
-anti-alignment ratios converge to $1$
-(`tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded`). Uniform prefix bounds
-$\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
-$E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap
-$T^{1-2\varepsilon}$; explicit lower bounds $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and
-on the Vinogradov–Korobov collar; and a three-term planted Euler kernel shows that collars near
-$\varepsilon=0$ and finite admitted-parameter sets do not exclude every $0<\varepsilon<1/2$
-(`plantedEulerKernel_collar_and_finiteness_obstruction`).
+**Oscillating-probe source estimates.** The probe laws of §3.19 can be read from the source side,
+without evaluating $\zeta$. Every oscillating prefix splits into the sawtooth sum
+$S_{\varepsilon,t}(n)=\sum_{d\le n}c_{\varepsilon,t}(d)(\lfloor n/d\rfloor-n/d)$ and the tail drift
+$T_{\varepsilon,t}(n)=-n\sum_{d>n}c_{\varepsilon,t}(d)/d$, and the sawtooth splits again at $\sqrt n$. The
+short moduli $d\le\sqrt n$ cost at most $(1+1/(1-\varepsilon))(\sqrt n)^{1-\varepsilon}$ and have bounded
+pronic norm for every $0<\varepsilon<1$ and every height. Admission is therefore boundedness of the
+long sawtooth plus the tail
+(`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_longSawtooth_add_tail`).
+
+At $t=0$ both pieces are nonpositive and cannot cancel. The dyadic tail block alone gives
+$A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$, a source-side proof of non-admission
+for $0<\varepsilon\le\tfrac12$ that does not use $\zeta(1-\varepsilon)\ne0$
+(`not_receiverBounded_oscillatingSmoothPower_zero_from_source`). At $t\ne0$ the tail is
+$\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$, with energy of exact order $T^{1-2\varepsilon}$ whatever
+$\zeta(\rho)$ is, and the long sawtooth is
+$\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$. Admission is therefore a
+cancellation of the long sawtooth against the tail, and it happens exactly when $\zeta(\rho)=0$.
+
+In the pronic inner product this becomes an **anti-alignment gap**. A strict Cauchy–Schwarz
+anti-alignment, even along a subsequence, excludes the cancellation
+(`not_bdd_longSawtooth_add_tail_of_frequently_pronicInner_le`). The quadratic gap
+$-2\langle S^{\mathrm{long}},T\rangle_T\le\theta(\lVert S^{\mathrm{long}}\rVert_T^2+\lVert T\rVert_T^2)$,
+$\theta<1$, is equivalent to non-admission, and RH is the existence of such a gap for every
+$0<\varepsilon<\tfrac12$ and $t\ne0$
+(`riemannHypothesis_iff_forall_ne_zero_exists_longSawtooth_tail_antiAlignment_gap`). The explicit
+coefficient $\theta_{\mathrm{long}}(\varepsilon,t)\le1$ is strictly below one exactly when the two
+pieces differ in amplitude or decorrelate in phase, and this is proved on the Vinogradov–Korobov
+collar and on bounded-height boxes (`longSawtoothTailGapTheta_lt_one_vk_and_box`). Tail growth
+alone cannot supply the gap: at a paid probe the norm ratio and both anti-alignment ratios tend to
+one (`tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded`).
+
+Across the polynomial gap $T^{1-2\varepsilon}$ there is no intermediate regime. A uniform prefix
+bound $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
+$o(T^{1-2\varepsilon})$ are each equivalent to admission. Explicit lower bounds
+$E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and on the Vinogradov–Korobov collar. A
+three-term planted Euler kernel shows that such collars near $\varepsilon=0$, and finite sets of
+admitted parameters, do not exclude every $0<\varepsilon<\tfrac12$
+(`plantedEulerKernel_collar_and_finiteness_obstruction`). The gap at a probe is $\zeta(\rho)\ne0$
+written in source coordinates. What the reformulation contributes is the location of the
+cancellation that a Möbius bound has to control: long moduli against the trans-horizon tail.
 
 ### 3.21 Bridges
 
@@ -1839,6 +1827,13 @@ obstruction.
    sieve side and from the pair side.
 4. **Selectivity of the transfer laws.** Which conservation and dissipation laws hold for a
    Beurling system or the shifted pair, and which are specific to $\mathbb N$.
+5. **"Paid" as an index class.** The paid class is a union of orbits of the critical Wiener
+   monoid, is invariant under local factors with $\lvert a\rvert<\sqrt p$ and sparse flips, and
+   reads the order of a pole through the pole value, the pole slope and the logarithmic
+   hierarchy. This is the formal shape of a Fredholm index: stability under a semigroup of
+   compact-type perturbations, with integer values carried by orders. Missing is the index
+   theorem, a formula computing the class from arithmetic counts. For the Möbius weight it would
+   be equivalent to RH; its value would be to replace the estimate by a count.
 
 ---
 

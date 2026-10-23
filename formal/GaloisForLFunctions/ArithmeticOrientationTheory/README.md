@@ -45,6 +45,11 @@ AOT is the programme that makes orientation the primitive object. It supplies
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Supplies the scaling surface, the Hodge index and the effectivity axioms; AOT's width dictionary places them beside the other units, and its section counts are the finite-dimensional shadow of the missing Riemann–Roch. |
 | [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies the linear-band form of RH and the node criticality laws; AOT's Nyquist bound is the sampling-theoretic reading of the same square-root threshold. |
 | [Square-Root Threshold](../SquareRootThreshold/README.md) | The sampling threshold `N ≍ T` of the Nyquist bound is the test-length threshold of that programme. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Supplies the ground-energy path `μ(A)` and the non-Z-type obstruction on the prime anti-diagonals; AOT reads that obstruction as frustration and asks whether the frustration index at aperture `A` is `μ(A)`. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Supplies the exact damping derivative (boundary flux, jump energy, forcing) and admission as the damping unit; the aperture analogue of that identity is the oriented-transport problem of §7. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Supplies the doubly exponential decay that every positive aperture floor must respect, one of the battery tests of §8. |
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the temperedness gate, the one proved instance of the shifted-pair test of §8, and the factorial calibration families. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Works beyond the diagonal `N ≍ T` of the Nyquist bound, where section counts would have to beat the large-values estimate. |
 
 **The shared target.** The programmes work on RH as the sign of one critical arithmetic form and
 on the critical cancellation of the actual Möbius and prime source. AOT contributes the
@@ -191,6 +196,21 @@ All unconditional.
 5. **The odd Weil ledger.** Its frustration index is at most the number of ordered prime-sum
    pairs (`frustrationIndex_oddWeilLedger_le`): frustration lives on prime sums only.
 
+### 3.1′ The frustration index of the prime triangle (`TheFrustrationIndexOfThePrimeTriangle`)
+
+1. **Mirror pairs.** For a symmetric coupling on a linearly ordered set the misaligned count of
+   every sign vector is twice the number of misaligned pairs `i < j`
+   (`misalignedCount_eq_two_mul`); an unbalanced symmetric form has frustration index at least
+   `2` (`two_le_frustrationIndex_of_not_isBalanced`).
+2. **Three points.** Any symmetric form on three points has index at most `2`
+   (`frustrationIndex_le_two_fin3`): switch the two neighbours of a vertex into alignment.
+3. **The prime triangle.** At the positions with pairwise sums `log 2, log 3, log 5` and every
+   sufficiently small archimedean–polar weight, the odd Weil ledger has frustration index exactly
+   `2` (`frustrationIndex_primeTriangle`): the first arithmetic obstruction carries one misaligned
+   overlap, in either order, after every switching, and its index is computed without evaluating
+   a coupling. The frustration mass of the general odd ledger is bounded by the positive coupling
+   on prime-sum pairs (`frustrationMass_oddWeilLedger_le`).
+
 ### 3.2 The frustration of a tower is rank one (`TheFrustrationOfATowerIsRankOne`)
 
 1. **Tower locality.** `P_q(p^k) = Σ_{i≤k} q(p^i) q(p^{k−i})` (`productCorr_prime_pow`).
@@ -209,6 +229,17 @@ All unconditional.
 The sign of the odd form is the competition between the difference correlations, which couple
 every tower to every other, and a sum of independent rank-one squares, one per prime.
 
+### 3.2′ Prime-power sums regroup by towers (`PrimePowerSumsRegroupByTowers`)
+
+1. **Regrouping.** `Σ_{m ≤ M prime power} F(m) = Σ_{p ≤ M} Σ_{1 ≤ k ≤ log_p M} F(p^k)`
+   (`sum_primePow_eq_sum_towers`): the fibre of the least prime factor is the tower; the same for
+   von Mangoldt-weighted sums (`sum_vonMangoldt_mul_eq_sum_towers`).
+2. **The global product part is the sum of the tower squares.** For a profile supported on
+   `[1, X]` and a horizon `M ≥ X²`,
+   `Σ_{m ≤ M} Λ(m) m^{−1/2} P_q(m) = Σ_{p ≤ M} log p · (S_p(q)² − q(1)²)`
+   (`sum_vonMangoldt_productCorr_eq_sum_towers`): beyond the square of the support the
+   frustrating part of the odd prime side is exactly the sum of the rank-one tower squares.
+
 ### 3.3 The Nyquist rank bound (`TheNyquistRankBound`)
 
 1. **Rank–nullity Riemann–Roch.** `h0 A + rank A = dim` (`h0_add_rank`), and sections exist
@@ -217,7 +248,8 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    (`frobeniusMass_le_rank_mul`): the Gram `AᴴA` is Hermitian positive semidefinite, its trace is
    the Frobenius mass (`re_trace_conjTranspose_mul_self`), each eigenvalue is a Rayleigh quotient
    of the frame (`eigenvalues_le_of_hasFrameBound`), the rank counts the nonzero eigenvalues.
-3. **Nyquist bound.** `h0 A ≤ dim − (Frobenius mass)/K` (`h0_le_nyquist`).
+3. **Nyquist bound.** `h0 A ≤ dim − (Frobenius mass)/K` (`h0_le_nyquist`); at full degrees of
+   freedom, `K · dim ≤ Frobenius mass`, there are no sections (`h0_eq_zero_of_frobeniusMass_ge`).
 4. **Dirichlet polynomials at separated heights.** The sampling matrix has unit-modulus entries
    (`frobeniusMass_dirichletSampling`: mass `(R+1) N`), the large-values estimate is a frame bound
    (`hasFrameBound_dirichletSampling`: `K = (T + 4N(1 + log N))(δ⁻¹ + 2 log N)`), and so the
@@ -238,8 +270,9 @@ This is the square-root threshold of the aperture as a sampling threshold.
    (`weightRamanujanCoeff_eq_zero_of_four_dvd`).
 3. **Faithfulness and blindness.** The first pronic moment separates `c` from `c♭` iff
    `W_c(2) ≠ 0` (`firstPronicMoment_separates_evenFlip_iff`,
-   `orientationFaithful_firstPronicMoment`); the amplitude reading is blind to the flip
-   (`invisible_amplitude_evenFlip`).
+   `orientationFaithful_firstPronicMoment`); the sign of `W_c(2)` is a ℤ/2 invariant of the class
+   that the flip reverses (`sign_weightRamanujanCoeff_evenFlip_two`); the amplitude reading is
+   blind to the flip (`invisible_amplitude_evenFlip`).
 4. **The parity floor for readings.** At every `0 < ε ≤ ½` the amplitude reading does not resolve
    payment on the four-free damped weights (`not_resolves_amplitude_receiverBounded`): the Fermi
    weight and its flip have the same amplitudes, one paid and one not.
@@ -360,9 +393,9 @@ Built and reusable:
 - the *absolute-kernel L-series* bridge for Dirichlet convolutions;
 - the *orientation calculus* on readings (flip, faithfulness, closure of blindness).
 
-To be built (§7): the frustration index of the actual odd Weil ledger at growing aperture; the
-regrouping of prime-power sums by towers at a common horizon; a section functor beyond the
-finite-dimensional skeleton; an orientation-faithful norm on damped weights.
+To be built (§7): the frustration index of the actual odd Weil ledger at growing aperture; a
+section functor beyond the finite-dimensional skeleton; an orientation-faithful norm on damped
+weights.
 
 ---
 
@@ -391,6 +424,19 @@ finite-dimensional skeleton; an orientation-faithful norm on damped weights.
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
    logarithm at `1`-separated heights, and read the resulting injectivity threshold against the
    square-root threshold of the aperture.
+8. **The effectivity cone from sections.** With `h⁰` from problem 3, define `E = {x : h⁰(x) ≥ 1}`
+   and prove or refute the Bézout axiom for it. It must give the curve Hodge index over `𝔽_q`
+   and fail on the golden datum; locate the property of the ring `ℤ` that it uses.
+9. **The index theorem of the receiver.** The pole law of the receiver reads the order of a pole,
+   and the Hodge defect is the number of right zeros. Prove that the order read by the receiver is
+   a count of sections, and compute the Euler characteristic of the node divisor from the ledger.
+10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
+    form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
+    dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence
+    Criticality trichotomy stated as a theorem about readings.
+11. **The width functor.** Construct a functor from receivers to the width line through which every
+    oriented invariant factors. The dictionary would become a theorem about a category of
+    receivers, and the battery of §8 a list of its non-objects.
 
 ---
 
@@ -407,14 +453,36 @@ does one of the following:
 - places a receiver in the width dictionary by an exact equivalence, or proves that two units
   agree.
 
-A contribution must pass the certification battery of the review: it must fail on the golden
-Beurling datum and the shifted pair where positivity is claimed; it must not be a function of
-amplitudes below half damping; it must be cofinal where it claims a width; it must respect the
-doubly exponential ceiling on positive floors; it must name its unit.
+**The selectivity battery.** A theorem that claims to move the width must pass every applicable
+test. Each test is a proved corpus fact about a model that violates RH, or a proved limit of a
+class of methods.
+
+| test | content | corpus source |
+|---|---|---|
+| golden datum | fail for the Beurling system `P = 1 − 5X + 5X²`: integral Witt vector, functional equation, positive prime counts, impure | `witt_integral_not_pure`, `goldenDatum_beurling_not_pure` |
+| shifted pair | fail for `ζ(s − a)ζ(s + a)`; the temperedness gate `ε(L) = 1/(2 + log L)` is the one proved instance | `not_summable_shiftedPairVonMangoldt_windowDilationExponent` |
+| parity twins | separate `μ` from its positive twin, each real character from its twin, Liouville from `κd^{−½}`, the Fermi row from its even flip | `char_parityPair`, `fermi_evenFlip_parityPair` |
+| deformation | not survive one Euler-factor deformation, the theta-power family or the `k + t k^{(4m)}` perturbations | killed-routes ledger |
+| nodes | fatal at `log 4`, free at `log 6`; every prime power needed | `zeroPoleBlindPositiveOn_iff` |
+| unit | a cofinal bound in a width unit; one interior point only translates zeros | `receiverDampingRate_eq_zetaZeroAbscissa_sub_half` |
+| ceiling | every positive aperture floor decays at least like `exp(−πe^{2(A−2)})` | `exists_le_floorLoss_of_floor` |
+| Ω-laws | never assert `ψ(x) − x = O(√x)` or `M(x) = O(√x)` | Littlewood |
+| finite data | rest on no finite computation; every bounded reading admits off-line extensions | `resolutionLimit_width_aperturePositivity` |
+| rate | use the prime rate in full; no Hardy weight exists | `riemannHypothesis_iff_isLeast_primeRate` |
+| function field | reproduce the exact cancellation over `𝔽_q[T]` and the curve Hodge index | `curve_hodgeIndex_tfae` |
+| integrality | land on exactly one positive square | `riemannHypothesis_iff_one_positive_square` |
+| no premise | no RH-equivalent as a hypothesis, no `Prop` stand-in, axioms audited | proof-integrity rules |
+| precision | excluding depth `β` at scale `L` costs precision `β²L³`; a cheaper certificate is wrong | `theDeficitBudgetLaw` |
 
 The programme succeeds when one of its invariants yields a bound in a width unit that is not a
 reformulation: a frustration-index bound on the odd ledger at unbounded aperture, a section count
 beyond the diagonal that is selective, or a faithful reading that is also an estimate.
+
+**What would retire it.** The field is retired if the section count of problem 3 cannot produce,
+at the diagonal, a statement strictly stronger than the mean value theorem that passes the golden
+and shifted-pair tests: if the only sections it finds are those the large sieve already counts.
+The risk is that "section" turns out to relabel "Dirichlet polynomial on a window". Then the
+contribution of the field is its dictionary and its battery, not a mechanism.
 
 ---
 
@@ -435,8 +503,10 @@ beyond the diagonal that is selective, or a faithful reading that is also an est
 - `OrientedReadings` — flips, faithfulness, the closure law of blindness.
 - `FrustrationIndexControlsTheGroundEnergy` — switching classes, frustration index and mass,
   signed Dirichlet form, ground energy, the odd Weil ledger.
+- `TheFrustrationIndexOfThePrimeTriangle` — mirror pairs, three-point bound, the prime triangle.
 - `TheFrustrationOfATowerIsRankOne` — lattice correlations, tower locality, the rank-one law,
   the odd prime side.
+- `PrimePowerSumsRegroupByTowers` — regrouping by least prime factor; the global product part.
 - `TheNyquistRankBound` — sections, rank–trace law, Nyquist bound, Dirichlet sampling.
 - `TheEvenFlipIsReadAtThePrimeTwo` — the even flip as an orientation, the reading at `2`, the
   parity floor for readings.

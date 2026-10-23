@@ -41,6 +41,8 @@ the poles. Lag Abel summation expresses that balance through one two-pole Chebys
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Proves the raw comb energy has sharp exponential growth and identifies its translation and resolvent; directs estimates back to the signed prime–polar pairing. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks an effectivity or intersection argument that forces the required sign. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Retains the source signs when passing to ratio kernels and absolute majorants. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Reads the product (sum) pairs as the only frustrating edges of the odd ledger and proves that their contribution is one square per prime tower. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Its close prime pairs `|log(n/m)| < 4b` are a height-averaged form of the prime-ratio correlations whose bounded Schur constant is the replacement hypothesis of mechanism 56. |
 
 **The shared target.** The programmes in the table work on one object: RH as the sign of the
 complete critical arithmetic form, read through pairwise incidence, lag (Square-Root Threshold) and
@@ -869,6 +871,18 @@ endpoints without exceeding either diagonal budget. Balance makes positivity equ
 payment; frustration permits positive forms that require a global treatment. A continuum
 application still needs a justified coupling and uniform limiting estimates.
 
+**The product part is rank one per tower.** In the lattice model a half-line profile `q` on the
+integers has ratio correlation `R_q(m) = Σ_a q(a)q(am)` and product correlation
+`P_q(m) = Σ_{ab=m} q(a)q(b)`, and the odd prime side is `Σ_m Λ(m)m^{−1/2}(2R_q(m) − P_q(m))`. The
+product pairs at `p^k` lie in one tower, and the whole product contribution of the tower of `p` is
+one square, `log p·(S_p(q)² − q(1)²)` with `S_p(q) = Σ_i q(p^i)p^{−i/2}` the local Mellin value of
+the profile at `s = ½` (`sum_vonMangoldt_productCorr_prime_pow`, Arithmetic Orientation Theory).
+The sign of the odd form is therefore a competition between the ratio correlations, which couple
+every tower to every other, and a sum of independent rank-one squares, one per prime. Summed over
+a tower, the product part is at least `−log p·q(1)²` and is a sum of squares once the profile
+vanishes at `1`, so the odd prime side is then at most twice its ratio part
+(`latticeOddPrimeSide_le_of_eq_zero`): the summed counterpart of the dominance law of mechanism 8.
+
 ### The Chebyshev ledger: the prime–polar balance as one signed functional
 
 The large-aperture comparison has an exact arithmetic coordinate, developed in
@@ -974,49 +988,44 @@ side and the pole plane; the archimedean density is not part of this ledger.
     (`chebyshev_pairing_ge_of_symbol_ge`). At the origin the symbol is the Chebyshev–Mertens
     comparison `Σ_{n≤N}Λ(n)/√n − 4 sinh r` (`symbol_zero_eq`); a statement quantified over all tests
     becomes a statement about one explicit function of frequency.
-59. **The reflected-prime/polar allocation at every aperture (`ReflectedPrimePolarAllocation`).**
-    The restricted-horizon certificates (`GlobalSharedSurplusAllocation`) decouple the reflected-prime strips from
-    the pole charge for `R ≤ 3/5`, and that decoupling fails across arbitrary tests on the odd edge
-    tent for two independent reasons: its pole charge grows like `ε⁴e^r` against strip box energy
-    `≤ 3ε²r`, and every sub-light-cone shift has `F(x)F(x+L) = 0`
-    (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`). What holds at every aperture is exact:
-    the favourable strip gains are a polar integral plus a Chebyshev pairing
-    (`sum_evenStripGain_eq_polar_add_chebyshev`) and universally pay at least half of the odd strip
-    cost (`oddStripCost_le_two_mul_evenStripGain`, `sum_oddStripCost_le_two_mul_sum_evenStripGain`,
-    and `oddStripCost_le_evenStripGain_of_nonneg_on_Ici` on trans-half-width shifts); the pole charge
-    obeys the plateau-independent bound `poleCharge F ≤ 8 sinh r ∫ F² ≤ 4 e^r ∫ F²`
-    (`poleCharge_le_eight_mul_sinh_mul_sq`, `fullZeroForm_ge_sinh_ledgerFloor`), while the gauge
-    remainder is bounded below uniformly by `−(27/5) ∫ F²` (`gaugeRemainder_ge_neg_const_mul_sq`);
-    the joint reflected-prime/polar cost is the prime autocorrelation charge minus its polar
-    comparison, equal to the finite-horizon two-pole Chebyshev pairing and, for `C²` tests, to the
-    critical-scale receiver against the test's curvature
+59. **The reflected-prime/polar ledger at every aperture.** The window certificates decouple the
+    reflected-prime strips from the pole charge only on restricted horizons, `R ≤ 3/5`. Across
+    arbitrary tests the decoupling fails on the odd edge tent, for two independent reasons: its
+    pole charge grows like `ε⁴e^r` against a strip box energy `≤ 3ε²r`, and every sub-light-cone
+    shift has `F(x)F(x + L) = 0` (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`). What
+    survives at every aperture is a regrouping of the ledger around one signed quantity, the
+    **reflected-prime/polar cost** `costs − gains + poleCharge`:
+
+        Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost(F, r)
+
+    at every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`). The other pieces are
+    controlled separately. The gains are a polar integral plus a Chebyshev pairing and always pay
+    at least half the odd costs (`sum_evenStripGain_eq_polar_add_chebyshev`,
+    `sum_oddStripCost_le_two_mul_sum_evenStripGain`). The pole charge is at most
+    `8 sinh r ∫F² ≤ 4e^r∫F²` for every plateau (`poleCharge_le_eight_mul_sinh_mul_sq`). The gauge
+    remainder is at least `−(27/5)∫F²` (`gaugeRemainder_ge_neg_const_mul_sq`).
+
+    The cost itself is the finite-horizon pairing of the two-pole Chebyshev defect with the lag
+    weight of the test, and for `C²` tests the critical-scale receiver against its curvature
     (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
-    `reflectedPrimePolarCost_eq_criticalScalePrefix`,
-    `reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc`), bounded unconditionally across all
-    apertures by `72 e^r ∫ F²` (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
-    `chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq`), by `((8 + ε) e^r + C) ∫ F²`
-    (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`), and in `H¹` through the cancelled
-    first-order and second-order defects with the pole-tilted self-convolution factorization of
-    `(lagTestWeight F)''` and the de la Vallée Poussin saving `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`
-    strictly beyond the `e^r` envelope
-    (`reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev`,
-    `autoCorrelation_deriv_add_crossCorrelation_sub_quarter_eq`,
-    `reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev`,
-    `exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`,
-    `exists_chebyshevTwoPoleDefect_integral_le_exp_sub_sqrt_mul_sobolev`); and the ledger reads
-    `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r` at
-    every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`). Unconditionally,
-    `GlobalIncidenceAllocation r R F` holds with `(1/1000) ∫ F²` coercivity margin on `(0, 181/500]`
-    (`globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths`,
-    `chebyshevTwoPoleDefect_integral_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths`),
-    the overlapping two-prime window `r = 23/40` (`relevantShifts (23/40) = {2, 3}`) satisfies
-    `reflectedPrimePolarCost F (23/40) + (1/62) ∫_{S₂} F² ≤ 2 stripSurplus_{S₂} + poleCharge F`
-    (`sum_oddStripCost_le_stripSurplus_add_evenStripGain_twentyThreeFortieths`,
-    `reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`),
-    `GradedIncidenceAllocation (1/2) 78` holds across all apertures `0 < r < R`
-    (`gradedIncidenceAllocation_half`, `gradedIncidenceAllocation_of_half_le`), and the all-aperture
-    Sobolev-graded incidence allocation holds with deficit `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`
-    (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`).
+    `reflectedPrimePolarCost_eq_criticalScalePrefix`). Its unconditional size is the prime number
+    theorem: at most `72e^r∫F²`, and `((8 + ε)e^r + C_ε)∫F²`
+    (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
+    `exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`). In the Sobolev normalisation the
+    pole-tilted factorisation of `(lagTestWeight F)''` reaches the de la Vallée Poussin region,
+    `K e^r e^{−c√r}(∫F² + ½∫F'²)` (`exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`).
+    That is a relative saving, paid for by the derivative.
+
+    Three allocations follow unconditionally. The global allocation holds with margin
+    `(1/1000)∫F²` on `(0, 181/500]` (`globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths`).
+    At the overlapping two-prime window `r = 23/40`, whose relevant shifts are `{2, 3}`, the cost
+    plus `(1/62)∫_{S₂}F²` is at most `2 stripSurplus_{S₂} + poleCharge`
+    (`reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`). And the graded
+    allocation `GradedIncidenceAllocation (1/2) 78` holds at every aperture
+    (`gradedIncidenceAllocation_half`), also with a de la Vallée Poussin Sobolev deficit
+    (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`). Rate `½` in the graded
+    form is the ambient strip `Θ ≤ 1`. The content is that the ledger reaches the PNT rate with
+    explicit constants; every improvement must lower the exponent.
 
 ---
 
@@ -1151,7 +1160,7 @@ To be built:
    are unconditional. The first prime window is paid through `181/500` for odd tests; the next
    question is a complete certificate at larger apertures, not another single-atom comparison. Mechanism 21 localizes it: for `n ≥ 23` the
    unpaid points lie within `L_n ≍ 2(1 + Λ(n))/n` of the axes.
-1′. **The atom against the pole, integrated.** For an odd gauge `M`, compare the atom mass
+2. **The atom against the pole, integrated.** For an odd gauge `M`, compare the atom mass
    `Λ(n) n^{−1/2} ∫₀^{log n} |M(−a) M(log n − a)| da` with the polar mass
    `∫₀^{log n} |M(−a) M(log n − a)| P(a) da` along the anti-diagonal. Determine the gauges for which
    the pole pays every atom outside the five moduli, and the amount the same-side atoms must pay for
@@ -1160,7 +1169,7 @@ To be built:
    integration against the collar kernel `m_a(x)m_a(log n − x)`, for every shift `a`
    (`collarPolarMass_lt_collarAtomMass_of_mem_atomDominatedModuli`); which prime powers outside the
    five the pole pays in the integrated sense is open.
-2. **The archimedean part of the bump bridge.** For an odd gauge with `|M(x)| ≤ Ce^{−|x|}` and the even
+3. **The archimedean part of the bump bridge.** For an odd gauge with `|M(x)| ≤ Ce^{−|x|}` and the even
    lattice profile `u_w = Σ_{a ∈ S} c_a(β((x − log a)/w) + β((x + log a)/w))`, `S ⊆ {a ≥ 2}`, the prime
    part of `J_M(u_w)` normalized by `w` tends to
    `∫β² (2 Σ_a c_a² M(log a) 𝒢(M)(log a) − 4 Σ_{a<b} c_a c_b M(log a)M(log b) netAtom(a,b)

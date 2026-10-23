@@ -1,227 +1,338 @@
-# Trans-Threshold Pair Correlation Theory
+# Trans-Threshold Pair Correlation (`GaloisForLFunctions.TransThresholdPairCorrelation`)
 
-**Trans-Threshold Pair Correlation Theory** is the analytic and operator-theoretic discipline that studies the interaction of primes, Dirichlet polynomials, and spectral Gram matrices **beyond the Montgomery–Vaughan square-root threshold** $\lambda > 1$ ($X = (T/2\pi)^\lambda > T$).
+**One question.** The explicit-formula Gram matrix of a band-limited test at height `T` certifies
+a proportion of the zeros of `ζ` on the critical line, and the proportion is set by the prime
+pairs the prime cutoff `X` lets in. Below `X = T` the Montgomery–Vaughan inequality removes every
+off-diagonal prime pair and the method stops at `2/3`. What signed information about prime pairs
+beyond `X = T` lowers the Frobenius norm of that Gram matrix, and how much of it is needed for
+`3/4`?
 
-Below the threshold $\lambda \le 1$, logarithmic prime frequencies $y_n = \log n$ ($n \le X \le T$) have minimum spacing
-$$
-\delta_n = \log\!\left(1 + \frac{1}{n}\right) \asymp \frac{1}{n} \ge \frac{1}{X} \ge \frac{1}{T},
-$$
-which exceeds the inverse length $1/T$ of the vertical observation window $I = [T, 2T]$. The Montgomery–Vaughan weighted Hilbert inequality therefore decouples off-diagonal prime pairs $(n \neq m)$ automatically, reducing the prime-side Frobenius norm $\operatorname{tr}(\widetilde{G}^2)$ of the Weil–explicit-formula Gram matrix to its archimedean and prime-diagonal main terms with normalized second-moment constant $\kappa(1) = \frac{4}{3}$ and critical-line proportion $2 - \kappa(1) = \frac{2}{3}$ ($66.67\%$).
-
-Once the prime cutoff crosses $\lambda > 1$ — and in particular at the canonical target bandwidth $\lambda = \frac{4}{3}$ ($X = (T/2\pi)^{4/3}$), where the unconditional diagonal + archimedean + pole constant drops from $\frac{4}{3}$ to $\frac{43}{36} = \frac{5}{4} - \frac{1}{18}$ — adjacent logarithmic frequencies $\log n, \log m \in (\log T, \frac{4}{3}\log T]$ can sit as close as $X^{-1} \asymp T^{-4/3} \ll T^{-1}$. Inside the coalescent band $|\log(n/m)| \lesssim T^{-1}$, the Hilbert denominator $(\log n - \log m)^{-1}$ ceases to oscillate over $[T, 2T]$: absolute-value Hilbert bounds lose a factor of $X/T = T^{\lambda - 1}$ and blow up. Advancing unconditional critical-line zero proportions past $\frac{2}{3}$ toward $\frac{3}{4}$ ($75\%$) and $1$ ($100\%$) therefore requires a dedicated mathematical theory of **signed trans-threshold prime-pair correlation** and **close-pair kernel cancellation**.
-
----
-
-## 1. Why This Field Exists: The $\lambda = 1$ Barrier and the $\lambda = 4/3$ Frontier
-
-### 1.1 The Sub-Threshold Regime ($\lambda \le 1$) and Why It Stops at $2/3$
-
-In the explicit-formula rank–trace method, a band-limited test profile $\varphi$ supported on $[-L, L]$ with $L = \lambda l$, $l = \log(T/2\pi)$, generates a $d \times d$ Gram matrix $\widetilde{G} = L^{-1} G$ on the vertical grid $\tau_k = T + k h$ ($h = 2\pi / L$, $d = \lfloor LT/2\pi\rfloor$) from the prime-side density
-$$
-\nu_X(\tau) = \mu(\tau) + \Pi_X(\tau) + P_X(\tau), \qquad P_X(\tau) = -\frac{1}{\pi} \sum_{n \le X} \frac{\Lambda(n)}{\sqrt{n}} \cos(\tau \log n).
-$$
-By the Poisson summation formula on the grid (`LocalHypsCoreW.poisson`), the Frobenius norm $\operatorname{tr}(\widetilde{G}^2)$ equals the continuous bilinear form
-$$
-\mathcal{M}[\nu_X, \nu_X] = \iint_{[T,2T]^2} \Phi(\tau - \tau')^2 \nu_X(\tau) \nu_X(\tau')\,d\tau\,d\tau'
-$$
-up to the grid end-effect form $E(\nu_X, \nu_X) = \operatorname{endForm}(p, F, \nu_X, \nu_X)$. Expanding $\nu_X = \mu + \Pi_X + P_X$ splits $\operatorname{tr}(\widetilde{G}^2)$ into:
-1. **The Diagonal + Archimedean + Pole Core:**
-   $$
-   \mathcal{M}[\mu,\mu] + \frac{1}{2\pi^2} \mathcal{D} + 2\mathcal{M}[\mu, P_X] + 2\mathcal{M}[\mu, \Pi_X] + \mathcal{M}[\Pi_X, \Pi_X], \qquad \mathcal{D} = \sum_{n \le X} a_n^2 A^-(\log n, \log n),
-   $$
-   which evaluates **unconditionally at every bandwidth $\lambda > 0$** to
-   $$
-   \frac{T L}{2\pi}\left(\ell_1^2 + \frac{L^2}{3}\right) + O\!\left(T l^2 + T^{\lambda/2}\log^2 T\right) = \left(\frac{1}{\lambda} + \frac{\lambda}{3} + o(1)\right) (aL)^2 \frac{T\ell_1}{2\pi}.
-   $$
-2. **The Frobenius Surplus ($\mathcal{S} = \text{frobSurplus}$):**
-   $$
-   \mathcal{S} = \frac{1}{2\pi^2}\bigl(\mathcal{O}_1 + \mathcal{O}_2\bigr) + 2\mathcal{M}[P_X, \Pi_X] + E(\nu_X, \nu_X),
-   $$
-   where $\mathcal{O}_1 = \text{ppOffDiag}(\Phi, T, X) = \sum_{n \neq m \le X} a_n a_m A^-(\log n, \log m)$ is the **prime-pair off-diagonal difference-frequency sum** and $\mathcal{O}_2 = \text{ppSumFreq}(\Phi, T, X)$ is the sum-frequency term.
-
-When $\lambda \le 1$, the Montgomery–Vaughan inequality bounds $|\mathcal{O}_1| \ll L^2 X = O(T \log^2 T) = o(T l^3)$, so $\mathcal{S}$ is negligible and the normalized Frobenius norm is $\kappa(\lambda) = \frac{1}{\lambda} + \frac{\lambda}{3}$, minimized on $(0, 1]$ at $\lambda = 1$ with $\kappa(1) = \frac{4}{3}$ and certified critical-line proportion $2 - \frac{4}{3} = \frac{2}{3}$.
-
-### 1.2 What Happens at Bandwidth $\lambda = 4/3$ ($X = (T/2\pi)^{4/3}$)
-
-When $\lambda$ increases from $1$ to $\frac{4}{3}$:
-- The unconditional diagonal + archimedean + pole core (`RHTower.diagonal_main_le`) drops to
-  $$
-  \frac{1}{4/3} + \frac{4/3}{3} = \frac{3}{4} + \frac{4}{9} = \frac{43}{36} = \frac{5}{4} - \frac{1}{18}.
-  $$
-- The prime–pole cross term $2|\mathcal{M}[P_X, \Pi_X]|$ remains unconditionally $O(T^{5/6}\log^2 T) = o(T/\log T)$ (`RHTower.abs_Mform_PX_PiX_params43_le`), and the sum-frequency term $\mathcal{O}_2 = O(X L) = O(T^{4/3}\log T)$ remains negligible only if its phase oscillation in $[T, 2T]$ or grid weighting is exploited.
-- The **entire analytic barrier to $75\%$ of the zeros of $\zeta(s)$ on the critical line** reduces to proving that the normalized prime-side surplus (`RHTower.PrimeSurplusFourThirds`) does not exceed the remaining $\frac{1}{18}$ budget:
-  $$
-  \text{primeSurplus}(p_{4/3}, F_{4/3}) \le \left(\frac{1}{18} + o(1)\right) (aL)^2 \frac{T\ell_1}{2\pi}.
-  $$
-  On the spectral side, this $\frac{1}{18}$ prime-surplus budget is **identically equivalent** (`frobeniusFormFactor_four_thirds_le_five_fourths_iff`, `primeSurplusRatio_bridge`) to the trans-threshold form-factor integral bound
-  $$
-  \int_1^{4/3} \left(\frac{4}{3} - \alpha\right) F(\alpha)\,d\alpha \le \frac{1}{9},
-  $$
-  which is **twice** the GUE / Montgomery pair-correlation prediction $\int_1^{4/3} (\frac{4}{3} - \alpha)\cdot 1\,d\alpha = \frac{1}{18}$ (where the prime surplus itself equals $-\frac{1}{144}$, leaving an unconditional slack margin of $\frac{1}{18} - (-\frac{1}{144}) = \frac{1}{16}$).
+Trans-Threshold Pair Correlation (TTPC) is the analysis of the prime side of the rank–trace method
+beyond the square-root threshold. Its parameter is the **bandwidth** `λ`, with
+`X = (T/2π)^λ`; its objects are the off-diagonal prime-pair kernels of the Frobenius norm, the
+mixed mean values of prime Dirichlet polynomials they reduce to, and the pair-correlation form
+factor `F(α)` on `α > 1`. Its target is the certified proportion `2 − κ(λ)`, where `κ` is the
+normalized Frobenius norm. It is a zero-proportion programme, not an RH route. Every theorem is
+unconditional; `RHTower.PrimeSurplusFourThirds` and `PairCorrelationFourThirds` appear only as
+the premises of stated implications.
 
 ---
 
-## 2. Core Objects and Canonical Language
+## Place in the research
 
-| Symbol / Lean Declaration | Mathematical Definition | Structural Role |
-| :--- | :--- | :--- |
-| `Aminus Φ T y y'` | $\iint_{[T,2T]^2} \Phi(\tau - \tau')^2 \cos(\tau(y - y') + \dots)\,d\tau\,d\tau'$ | Difference-frequency prime-pair kernel $A^-(y, y')$ |
-| `AminusCos Φ T y y'` | $\bigl(C^+(y) + C^+(y')\bigr)\frac{\sin(2T(y - y')) - \sin(T(y - y'))}{y - y'}$ | Symmetric cosine-moment part of $A^-(y, y')$ for even $\Phi$ |
-| `AminusSin Φ T y y'` | $\bigl(S^+(y') - S^+(y)\bigr)\frac{\cos(2T(y - y')) + \cos(T(y - y'))}{y - y'}$ | Antisymmetric sine-moment part of $A^-(y, y')$; **nonsingular** as $y \to y'$ |
-| `ppOffDiag Φ T X` | $\sum_{n \neq m \le X} a_n a_m A^-(\log n, \log m)$ | Full prime-pair off-diagonal difference-frequency sum $\mathcal{O}_1$ |
-| `ppOffDiagCos Φ T X` | $\sum_{n \neq m \le X} a_n a_m A^-_{\cos}(\log n, \log m)$ | Cosine-moment off-diagonal sum |
-| `ppOffDiagSin Φ T X` | $\sum_{n \neq m \le X} a_n a_m A^-_{\sin}(\log n, \log m)$ | Sine-moment off-diagonal sum (no close-pair pole) |
-| `ppOffDiagFourier g T X` | $\sum_{n \neq m \le X} a_n a_m \pi\bigl(g(\log n) + g(\log m)\bigr)\frac{\sin(2T\theta) - \sin(T\theta)}{\theta}$ | Exact Fourier-weighted off-diagonal cosine sum ($C^+(y) \mapsto \pi g(y)$) |
-| `primeDirichletCos w X τ` | $\sum_{n \le X} a_n w(\log n) \cos(\tau \log n)$ | Real cosine prime Dirichlet polynomial $C_w(\tau)$ |
-| `primeDirichletSin w X τ` | $\sum_{n \le X} a_n w(\log n) \sin(\tau \log n)$ | Real sine prime Dirichlet polynomial $S_w(\tau)$ |
-| `endForm p F u v` | $L^{-2} \sum_{k,l < d} G_{kl}(u) G_{kl}(v) - \mathcal{M}[u, v]$ | Symmetric bilinear grid end-effect form $E(u, v)$ |
-| `jacksonPairKernel b s₀ s₁ L r θ` | $\frac{L}{2\pi} \int_{\mathbb{R}} W(s + rh) W(s) e^{i\theta s}\,ds$ | Continuous close-pair kernel for Jackson-weighted Gram matrices; compactly supported in $|\theta| < 4b$ |
-| `jacksonCloseApprox` | $\frac{1}{2}\operatorname{Re} \sum_{|r| < d} A_n(r)\overline{A_m(r)} K_r(y_n - y_m)$ | Continuous kernel approximation to the $(n, m)$ weighted Frobenius entry |
-| `frobeniusFormFactor F lam` | $\frac{1}{\lambda} + \frac{2}{\lambda^2}\int_0^\lambda (\lambda - \alpha) F(\alpha)\,d\alpha$ | Spectral normalized Frobenius norm as a functional of the pair-correlation form factor $F(\alpha)$ |
-| `transThresholdIntegral F lam` | $\int_1^\lambda (\lambda - \alpha) F(\alpha)\,d\alpha$ | Trans-threshold pair-correlation integral governing $\kappa(\lambda)$ for $\lambda > 1$ |
-| `primeSurplusRatioOfIntegral I` | $\frac{9}{8} I - \frac{5}{72} = \frac{9}{8}\bigl(I - \frac{1}{18}\bigr) - \frac{1}{144}$ | Normalized prime-pair surplus at $\lambda = 4/3$ as a function of $I = \int_1^{4/3} (4/3 - \alpha)F(\alpha)\,d\alpha$ |
+The square-root threshold `X ≍ T` is where every positivity and cancellation route of the corpus
+stops (Square-Root Threshold, open problem 1). TTPC works at that threshold on the most concrete
+quantity available: a finite sum over prime pairs, with an explicit normalization and an explicit
+budget. The question it isolates is the signed correlation of close prime pairs
+`|log(n/m)| ≲ 1/T`, which no upper-bound sieve and no size-only Hilbert inequality controls.
 
----
+| Programme | Interface |
+|---|---|
+| [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Proves that rank–trace inertia certifies `(2 − κ)N` zeros and no functional of the evaluation Gram alone certifies more, with the coalescence blind spot at `λ = 1`. It has two routes to `3/4`: a zero-side spectral slack, or the prime surplus at `λ = 4/3`. TTPC is the analytic engine of the second. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Explains why `L²` Hilbert-inequality methods have a phase transition at `X = T`. TTPC is its open problem 1 made into a finite estimate. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Its band `|ξ| ≤ √N` for a prime polynomial of length `N` is the regime `λ = 2`, beyond the range treated here; below the band Montgomery–Vaughan bounds everything, as below `λ = 1` here. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Its replacement hypothesis is a bounded Schur constant for prime-ratio correlations at one height. The close-pair kernel here is the height-averaged form of the same correlations. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Proves the sieve parity barrier as a sharp theorem in receiver coordinates. Close prime pairs meet the same barrier: an upper-bound sieve bounds them only by size, a factor two off. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies the log-free large sieve with the Montgomery–Vaughan constant. Its balanced-scale single-modulus statistics are the other place where signed prime-row information beyond the large sieve is needed. |
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Needs a single-height prime saving on its aperture face. TTPC needs the averaged-over-height version at much longer prime length. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Its Nyquist rank bound reads the same threshold `N ≍ T` as a dimension count of sections at separated heights. |
 
-## 3. Core Mechanisms of the Programme
+`RHTower` owns the explicit-formula Gram infrastructure on which every statement here is built:
+the wide-bandwidth trace, the split of the Frobenius surplus, the diagonal constant
+(`RHTower.diagonal_main_le`), the prime–pole cross bound (`RHTower.abs_Mform_PX_PiX_params43_le`),
+the conditional three-quarters theorem (`RHTower.zeta_three_quarters_of_prime_surplus`), the
+Jackson-weighted close and far Frobenius entries, and the exchange rate just above `λ = 1`
+(`RHTower.opt_sub_two_thirds`).
 
-### Mechanism 1: Parity Splitting of $A^-(y, y')$ and Pole Cancellation in $A^-_{\sin}$
-In the classical treatment (`Zeta23.PrimeSide.O1_bound`), $(y - y') A^-(y, y')$ is expanded into eight half-line moment terms involving $C^\pm(y)$ and $S^\pm(y)$, and each is bounded separately by the Montgomery–Vaughan inequality. Beyond $\lambda = 1$, this loses sight of parity.
-Because $\Phi$ is even, $C^-(y) = C^+(y)$ and $S^-(y) = -S^+(y)$ (`Cm_eq_Cp_of_even`, `Sm_eq_neg_Sp_of_even`), collapsing the eight terms into two structural pieces (`sub_mul_Aminus_eq_of_even`, `Aminus_eq_AminusCos_add_AminusSin`):
-$$
-A^-(y, y') = \underbrace{\bigl(C^+(y) + C^+(y')\bigr) \frac{\sin(2T\theta) - \sin(T\theta)}{\theta}}_{A^-_{\cos}(y, y')} + \underbrace{\bigl(S^+(y') - S^+(y)\bigr) \frac{\cos(2T\theta) + \cos(T\theta)}{\theta}}_{A^-_{\sin}(y, y')}, \qquad \theta = y - y'.
-$$
-Because $S^+(y) = \int_0^T \Phi(x)^2 \sin(xy)\,dx$ is Lipschitz in $y$ with constant $\int_0^T \Phi(x)^2 |x|\,dx \le \int_{\mathbb{R}} \Phi(x)^2 |x|\,dx$ (`abs_Sp_sub_Sp_le`), the difference $S^+(y') - S^+(y)$ cancels the denominator $\theta = y - y'$! Thus $A^-_{\sin}$ has **no close-pair singularity whatsoever**:
-$$
-|A^-_{\sin}(\Phi, T, y, y')| \le 2 \int_{\mathbb{R}} \Phi(x)^2 |x|\,dx \qquad \forall\, y, y' \in \mathbb{R} \quad (\text{\texttt{abs\_AminusSin\_le}}).
-$$
+**The shared target.** The other programmes work on RH as the sign of one critical arithmetic
+form. TTPC works one level below, on a proportion of zeros, but at the same wall: what blocks
+`3/4` is the signed correlation of prime pairs beyond `X = T`, the square-root threshold in its
+plainest form. Its unit is the pair `(λ, 2 − κ(λ))`. A partial result reports the bandwidth it
+reaches and the proportion it certifies, or the budget it pays out of `1/18`.
 
-### Mechanism 2: Second-Moment Tail Reduction of $C^+(y)$ and Exact Dirichlet Mean-Value Identity
-For the remaining cosine kernel $A^-_{\cos}$, evenness of $\Phi$ gives $2 C^+(y) = \int_{-T}^T \Phi(x)^2 \cos(xy)\,dx$, while the full Fourier transform is $\int_{\mathbb{R}} \Phi(x)^2 \cos(xy)\,dx = 2\pi g(y)$. Chebyshev's inequality on $|x| > T$ bounds the tail by the second moment (`abs_Cp_sub_pi_mul_g_le`):
-$$
-|C^+(y) - \pi g(y)| \le \frac{1}{2T^2} \int_{\mathbb{R}} \Phi(x)^2 x^2\,dx.
-$$
-Applying the Montgomery–Vaughan Hilbert inequality to this $O(T^{-2})$ tail across all off-diagonal prime pairs up to $X = (T/2\pi)^{4/3}$ replaces $C^+(\log n)$ by $\pi g(\log n)$ with total error
-$$
-\bigl|\text{ppOffDiagCos}(\Phi, T, X) - \text{ppOffDiagFourier}(g, T, X)\bigr| \le \frac{4C}{T^2}\left(\int_{\mathbb{R}} \Phi(x)^2 x^2\,dx\right) \sum_{n \le X} \Lambda(n)^2 = O\!\left(\frac{\log T}{T^{2/3}}\right) \to 0
-$$
-unconditionally (`abs_ppOffDiagCos_sub_fourier_le`, `exists_abs_ppOffDiagCos_sub_fourier_params43_le`)!
-Once $C^+(\log n)$ is replaced by $\pi g(\log n)$, the off-diagonal sinc kernel $(\sin(2T\theta) - \sin(T\theta))/\theta$ integrates back to $\int_T^{2T} \cos(\tau \theta)\,d\tau$, yielding the **exact Dirichlet-polynomial mean-value identity** (`ppOffDiagFourier_eq_primeDirichlet_integral`):
-$$
-\text{ppOffDiagFourier}(g, T, X) = 2\pi \int_T^{2T} \bigl(C_g(\tau) C_1(\tau) + S_g(\tau) S_1(\tau)\bigr)\,d\tau - 2\pi T \sum_{n \le X} a_n^2 g(\log n).
-$$
-Furthermore, adding the prime diagonal $\text{ppDiag}(\Phi, T, X)$ cancels the diagonal term $2\pi T \sum_{n \le X} a_n^2 g(\log n)$ identically (`abs_ppDiag_add_ppOffDiagFourier_sub_integral_le`)!
-
-### Mechanism 3: Bilinear Splitting of the End-Effect Form $E(\nu_X, \nu_X)$
-Instead of bounding $E(\nu_X, \nu_X)$ monolithically via the combined sup-norm $B = l + 4\sqrt{X}$ (which produces $O(L l \log l \cdot X) = O(T^{4/3}\log^2 T \log\log T)$ at $\lambda = 4/3$), `endForm_nuX_split` expands $E(\mu + \Pi_X + P_X, \mu + \Pi_X + P_X)$ into its six bilinear components. Using the $X$-independent global growth bound $|\mu(\tau)| \le C_0 l + \log^+(|\tau|/4T)$ (`mu_nuBound`), `exists_abs_endForm_mu_mu_le` proves unconditionally at every bandwidth $\lambda \le 2$ that
-$$
-|E(\mu, \mu)| \le C \cdot L \cdot l^3 \log l = O(\log^4 T \log\log T),
-$$
-eliminating the archimedean end-effect from the trans-threshold barrier.
-
-### Mechanism 4: Jackson-Weighted Grid Filtering and Strict Band-Limiting of Close Pairs
-For the sharp indicator $\mathbf{1}_{[T, 2T]}$, the grid sum $\sum_{k,l < d} G_{kl}(P_X)^2$ suffers $O(1/|\theta|)$ boundary leakage from the endpoints $T$ and $2T$. Weighting the grid by a smooth Jackson window $W_k = W(\tau_k)$ whose Fourier transform is supported in $(-2b, 2b)$ makes the product window $W(s + rh)W(s)$ strictly band-limited to $(-4b, 4b)$ (`integral_jacksonProduct_mul_cexp_eq_zero`). Consequently:
-- The continuous close-pair kernel $K_r(\theta) = \text{jacksonPairKernel}(b, s_0, s_1, L, r, \theta)$ **vanishes identically for $|\theta| \ge 4b$** (`jacksonPairKernel_eq_zero_of_le_abs`).
-- Every far pair $|\log(n/m)| \ge 4b$ and every sum-frequency term $\log(nm)$ is annihilated up to the outer Jackson tail mass $E_0 = O(M^{-3} + L M^{-2})$, leaving **only** the close prime pairs $|\log(n/m)| < 4b$ (`abs_weighted_frobenius_pp_sub_closeKernel_le`).
+Read §1 for the barrier and the target constant, §2 for the objects, §3 for the four reductions
+and the form-factor bridge; §4 lists the pillar theorems, §5 the traps, §§6–7 the questions and
+open problems.
 
 ---
 
-## 4. Known Traps and Structural Obstructions
+## 1. Why
 
-> [!WARNING]
-> Every route in Trans-Threshold Pair Correlation Theory must respect four formally diagnosed traps:
+### 1.1 The rank–trace method and the two-thirds barrier
 
-1. **The Monolithic Absolute-Value Hilbert Trap:**
-   Bounding $\sum_{n \neq m \le X} a_n a_m A^-(\log n, \log m)$ by triangle inequality on the eight half-line moments (`O1_bound`) gives $O(L^2 X)$. For $\lambda > 1$, $L^2 X = (\lambda l)^2 (T/2\pi)^\lambda \gg T l^3$: discarding the sign of $\sin(2T\theta) - \sin(T\theta)$ and the Lipschitz cancellation in $S^+(y') - S^+(y)$ forfeits all trans-threshold cancellation.
-2. **The Sharp-Cutoff Endpoint Leakage Trap:**
-   In the unweighted $[T, 2T]$ integral $\int_T^{2T} \cos(\tau \theta)\,d\tau = (\sin 2T\theta - \sin T\theta)/\theta$, pairs with $|\theta| \gg T^{-1}$ still contribute $O(1/|\theta|)$ because of the sharp boundary at $\tau = T, 2T$. Smooth vertical weighting (or Jackson grid weighting `JacksonWeightedPrimeFrobeniusDecomposition`) is required to localize the off-diagonal kernel strictly to $|\theta| < 4b \asymp T^{-1}$.
-3. **The Nonnegative Shift-Inequality Ceiling ($8/3$ Gap):**
-   Montgomery's shift method bounds $\int_1^{4/3} (\frac{4}{3} - \alpha) F(\alpha)\,d\alpha$ using only $F(\alpha) \ge 0$ and the sub-threshold identity $F(\alpha) = |\alpha|$ on $[-1, 1]$ by majorizing $(\frac{4}{3} - \alpha)$ with the shifted Fejér kernel $W(\alpha) = (1 - |\alpha|)_+ + \frac{1}{2}(1 - |\alpha - \frac{1}{3}|)_+ + \frac{1}{2}(1 - |\alpha + \frac{1}{3}|)_+$. Because $W(\alpha)$ also covers $[-2/3, 1]$ and $[4/3, 5/3]$, dropping those intervals by $F \ge 0$ yields the upper bound $\frac{8}{27}$, which is an exact factor of $\frac{8}{3}$ above the $\frac{1}{9}$ threshold needed for $75\%$ (`fejer_shifted_bound_gap`). Purely positive spectral majorants supported in $[-1, 1]$ cannot cross $\frac{1}{9}$ without arithmetic input on $[1, 4/3]$.
-4. **The Higher-Moment Rudnick–Sarnak Bandwidth Cap:**
-   Attempting to bypass the $k = 2$ pair-correlation barrier at $\lambda = 4/3$ by using $k$-th order ($k \ge 3$) trace / Lasserre certificates $\operatorname{tr}(\widetilde{G}^k)$ in their unconditional sub-threshold regime forces $k\lambda \le 1$, which restricts $\lambda \le 1/k \le 1/3 < 2/3$ (`higherMoment_rudnick_sarnak_cap`). Higher moments shrink the unconditional bandwidth rather than expanding it.
+A band-limited test profile supported on `[−L, L]`, `L = λl`, `l = log(T/2π)`, gives a `d × d` Gram
+matrix `G̃ = L⁻¹G` on the vertical grid `τ_k = T + kh`, `h = 2π/L`, `d = ⌊LT/2π⌋`, built from the
+explicit-formula density
 
----
+    ν_X(τ) = μ(τ) + Π_X(τ) + P_X(τ),     P_X(τ) = −(1/π) Σ_{n≤X} Λ(n) n^{−1/2} cos(τ log n),
 
-## 5. Fundamental Questions and Open Research Topics
+with `μ` archimedean and `Π_X` the pole part. Poisson summation on the grid identifies the
+Frobenius norm `tr(G̃²)` with the continuous form `𝓜[ν_X, ν_X] = ∬_{[T,2T]²} Φ(τ − τ′)² ν_X(τ)
+ν_X(τ′)`, up to a grid end-effect form `E(ν_X, ν_X)`. Expanding `ν_X` splits the norm into
 
-1. **The Bandwidth-$4/3$ Prime-Surplus Bound (`RHTower.PrimeSurplusFourThirds`):**
-   Prove unconditionally (or under the weakest possible arithmetic mean-value input) that
-   $$
-   \text{primeSurplus}(p_{4/3}, F_{4/3}) \le \left(\frac{1}{18} + o(1)\right) (aL)^2 \frac{T\ell_1}{2\pi},
-   $$
-   or equivalently via `ppOffDiagFourier_eq_primeDirichlet_integral` that the mixed prime Dirichlet mean value $\frac{1}{\pi}\int_T^{2T} (C_g(\tau)C_1(\tau) + S_g(\tau)S_1(\tau))\,d\tau$ is bounded by $(\frac{4}{9} + \frac{1}{18} + o(1))(aL)^2 \frac{T\ell_1}{2\pi} = (\frac{1}{2} + o(1))(aL)^2 \frac{T\ell_1}{2\pi}$.
-2. **Prime-Component End-Effect Elimination via Jackson-Weighted Gram Traces:**
-   Replace the unweighted Frobenius norm $\operatorname{tr}(\widetilde{G}^2)$ in the bandwidth-$4/3$ trace assembly by the Jackson-weighted Frobenius norm (`abs_weighted_frobenius_pp_sub_closeKernel_le`), where both the sum-frequency term $\mathcal{O}_2$ and the far prime pairs $|\log(n/m)| \ge 4b$ are bounded by the outer Jackson mass $O(M^{-3} + L M^{-2})$ rather than $O(X L)$.
-3. **Close-Pair Sieve and Bilinear Dispersion in Short Multiplicative Intervals:**
-   For prime pairs $T < m < n \le T^{4/3}$ with $0 < n - m = h \ll m / T$, control the signed correlation $\sum_{m, h} \frac{\Lambda(m)\Lambda(m+h)}{m} K(T \log(1 + h/m))$ beyond the factor-of-$2$ parity barrier of upper-bound Brun–Titchmarsh sieves.
-4. **Continuous Exchange Rate $\lambda \mapsto H^*(\lambda, B)$ Just Above $\lambda = 1$:**
-   By `RHTower.opt_sub_two_thirds`, *any* finite upper bound $F(\alpha) \le B$ on $(1, 1 + \delta)$ strictly beats $\frac{2}{3}$ by $\frac{1}{3(3B - 2)}$ at $\lambda^* = \frac{3B - 2}{3(B - 1)}$. Establish unconditional upper bounds on the close-pair energy in narrow trans-threshold strips $\lambda = 1 + \delta$.
+* the **core**: `𝓜[μ, μ] + (1/2π²)𝒟 + 2𝓜[μ, P_X] + 2𝓜[μ, Π_X] + 𝓜[Π_X, Π_X]`, with the prime
+  diagonal `𝒟 = Σ_{n≤X} a_n² A⁻(log n, log n)`. It evaluates unconditionally at every bandwidth to
+  `(1/λ + λ/3 + o(1))(aL)² Tℓ₁/2π`;
+* the **Frobenius surplus**: `(1/2π²)(𝒪₁ + 𝒪₂) + 2𝓜[P_X, Π_X] + E(ν_X, ν_X)`, where
+  `𝒪₁ = Σ_{n≠m≤X} a_n a_m A⁻(log n, log m)` is the off-diagonal difference-frequency prime-pair sum
+  and `𝒪₂` the sum-frequency term. Without the prime–pole cross term it is the **prime surplus**
+  `RHTower.primeSurplus`.
 
----
+Rank–trace inertia turns a bound `κ` on the normalized Frobenius norm into `(2 − κ)N` simple zeros
+on the line, and no functional of the evaluation Gram alone does better
+(`ArithmeticCastelnuovoSeveri.universal_matrix_functional_barrier`). For `λ ≤ 1` the logarithmic
+frequencies `log n`, `n ≤ X ≤ T`, are spaced by at least `1/T`, the inverse length of the window
+`[T, 2T]`. Montgomery–Vaughan then gives `|𝒪₁| ≪ L²X = o(Tl³)`, so `κ(λ) = 1/λ + λ/3`, minimized on
+`(0, 1]` at `λ = 1`: `κ(1) = 4/3`, proportion `2/3`
+(`ArithmeticCastelnuovoSeveri.subthreshold_cert_le_two_thirds`).
 
-## 6. Foundational Pillar Theorems
+### 1.2 The bandwidth four thirds
 
-### Pillar 1: Parity Decomposition of `ppOffDiag`, Nonsingularity of `AminusSin`, Second-Moment Tail Reduction, and Exact Dirichlet Mean-Value Identity
-- **Module:** [`PrimeSurplusAnatomyAndDirichletMeanValue.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean)
-- **Key Theorems:**
-  - [`sub_mul_Aminus_eq_of_even`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L73-L82) & [`ppOffDiag_eq_cos_add_sin`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L110-L129): Exact decomposition of `Aminus` and `ppOffDiag` into `ppOffDiagCos` and `ppOffDiagSin`.
-  - [`abs_Sp_sub_Sp_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L141-L166) & [`abs_AminusSin_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L170-L186): Uniform Lipschitz cancellation of the $1/(y - y')$ pole in `AminusSin`, giving $|A^-_{\sin}(\Phi, T, y, y')| \le 2\int_{\mathbb{R}} \Phi(x)^2 |x|\,dx$ for all $y, y' \in \mathbb{R}$.
-  - [`abs_ppOffDiagCos_sub_fourier_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L281-L333) & [`exists_abs_ppOffDiagCos_sub_fourier_params43_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L540-L606): Unconditional $O(T^{-2/3}\log T)$ reduction of `ppOffDiagCos` to `ppOffDiagFourier` at bandwidth $\lambda = 4/3$.
-  - [`ppOffDiagFourier_eq_primeDirichlet_integral`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L465-L473) & [`abs_ppDiag_add_ppOffDiagFourier_sub_integral_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/PrimeSurplusAnatomyAndDirichletMeanValue.lean#L480-L506): Exact representation of `ppOffDiagFourier` in terms of the $[T, 2T]$ mean value of the prime Dirichlet polynomials and exact cancellation of the diagonal main term $2\pi T \sum_{n \le X} a_n^2 g(\log n)$ against `ppDiag`.
+At `λ = 4/3` the core drops to `3/4 + 4/9 = 43/36 = 5/4 − 1/18` (`RHTower.diagonal_main_le`), the
+prime–pole cross term stays `O(T^{5/6} log² T)` (`RHTower.abs_Mform_PX_PiX_params43_le`), and the
+sum-frequency term is `O(XL) = O(T^{4/3} log T)`, negligible only if its oscillation over
+`[T, 2T]` or the grid weighting is used. What remains is one inequality,
 
-### Pillar 2: Bilinear Splitting of the End-Effect Form and Unconditional $X$-Independent Archimedean End-Effect Bound
-- **Module:** [`ArchimedeanEndEffectAndSurplusSplitting.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/ArchimedeanEndEffectAndSurplusSplitting.lean)
-- **Key Theorems:**
-  - [`endForm_trinomial`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/ArchimedeanEndEffectAndSurplusSplitting.lean#L78-L108) & [`endForm_nuX_split`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/ArchimedeanEndEffectAndSurplusSplitting.lean#L112-L132): Exact six-term bilinear decomposition of `endForm p F (nuX X) (nuX X)` along $\nu_X = \mu + \Pi_X + P_X$.
-  - [`exists_abs_endForm_mu_mu_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/ArchimedeanEndEffectAndSurplusSplitting.lean#L138-L161) & [`exists_abs_endForm_mu_mu_params43_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/ArchimedeanEndEffectAndSurplusSplitting.lean#L165-L181): Unconditional $X$-independent bound $|E(\mu, \mu)| \le C \cdot L \cdot l^3 \log l$ at every bandwidth $\lambda \le 2$, and $O(l^4 \log l)$ at $\lambda = 4/3$.
+    primeSurplus(p_{4/3}, F_{4/3}) ≤ (1/18 + o(1)) (aL)² Tℓ₁/2π     (RHTower.PrimeSurplusFourThirds),
 
-### Pillar 3: Global Jackson-Weighted Prime–Prime Frobenius Decomposition and Close-Pair Reduction
-- **Module:** [`JacksonWeightedPrimeFrobeniusDecomposition.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean)
-- **Key Theorems:**
-  - [`jacksonPairKernel_eq_zero_of_le_abs`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean#L39-L51) & [`sum_jacksonCloseApprox_eq_close`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean#L74-L85): Exact vanishing of `jacksonPairKernel` for $|\theta| \ge 4b$ and exact reduction of the all-pairs continuous kernel sum to close pairs $|y_n - y_m| < 4b$.
-  - [`alias_sep_diff_of_mem_Icc`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean#L91-L104) & [`alias_sep_sum_of_mem_Icc`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean#L108-L124): Automatic alias separation on the frequency band $[2b, L/2 - 2b]$.
-  - [`abs_weighted_frobenius_pp_sub_closeKernel_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/JacksonWeightedPrimeFrobeniusDecomposition.lean#L156-L184): Global Jackson-weighted prime–prime Frobenius approximation by the close-pair continuous kernel with factored outer-mass error $2E_0 \sum_{|r| < d} (\sum_{n \in s} |c_n| \|A_n(r)\|)^2$.
+which gives `κ(4/3) ≤ 5/4` and `3/4` of the zeros simple and on the line
+(`RHTower.zeta_three_quarters_of_prime_surplus`,
+`ArithmeticCastelnuovoSeveri.zeta_three_quarters_from_prime_surplus`). On the spectral side the
+same budget is the form-factor bound `∫_1^{4/3}(4/3 − α)F(α)dα ≤ 1/9`, twice the GUE value `1/18`
+(§3.5).
 
-### Pillar 4: Trans-Threshold Form-Factor Laws, Prime-Surplus Bridge, and the Fejér Shift Barrier
-- **Module:** [`FormFactorThresholdAndShiftInequality.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean)
-- **Key Theorems:**
-  - [`frobeniusFormFactor_eq_split`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L55-L76) & [`frobeniusFormFactor_four_thirds_le_five_fourths_iff`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L86-L90): Exact split of the normalized Frobenius norm and equivalence of $\kappa(4/3) \le 5/4$ with $\int_1^{4/3} (4/3 - \alpha) F(\alpha)\,d\alpha \le 1/9$ (twice the GUE value $1/18$).
-  - [`primeSurplusRatio_bridge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L114-L123): Exact algebraic bridge reconciling the spectral split $9/8 + (9/8)I$ with the prime-side split $43/36 + S$, proving $S = \frac{9}{8}(I - \frac{1}{18}) - \frac{1}{144}$ and $S \le \frac{1}{18} \iff I \le \frac{1}{9}$.
-  - [`four_thirds_sub_le_two_mul_shiftedFejer`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L143-L157) & [`fejer_shifted_bound_gap`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L164-L167): Formalization of the $\alpha_0 = 1/3$ shifted Fejér majorant and its exact $8/3$ ratio gap above $1/9$.
-  - [`excess_formFactor_of_coalescence`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L174-L191) & [`higherMoment_rudnick_sarnak_cap`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/TransThresholdPairCorrelation/FormFactorThresholdAndShiftInequality.lean#L196-L206): Coalescence excess-mass conservation and the $\lambda \le 1/k \le 1/3$ Rudnick–Sarnak cap for $k \ge 3$ trace certificates.
+### 1.3 Why close pairs, and why signed
+
+Beyond `λ = 1` adjacent frequencies `log n, log m ∈ (log T, (4/3) log T]` can sit as close as
+`X⁻¹ ≍ T^{−4/3} ≪ T⁻¹`. Inside the **coalescent band** `|log(n/m)| ≲ T⁻¹` the Hilbert denominator
+`(log n − log m)⁻¹` no longer oscillates over `[T, 2T]`, and absolute-value Hilbert bounds lose the
+factor `X/T = T^{λ−1}`. The trivial size of `𝒪₁` at `λ = 4/3` is `l²T^{4/3}`, the budget is of order
+`Tl³`: the estimate must save `T^{1/3}` over the trivial bound and then land at an explicit
+constant. A sieve bounds the close pairs only against nonnegative weights, while the height phase
+`(m/n)^{iT}` changes sign. The input must be the sign of a prime-pair correlation.
 
 ---
 
-## 7. Position in the Research Corpus and Relation to Neighboring Programmes
+## 2. What: objects and language
 
-```mermaid
-flowchart TD
-    SRT["SquareRootThreshold<br/>(Universal λ = 1 / N = T Barrier)"]
-    ACS["ArithmeticCastelnuovoSeveri<br/>(Spectral Rank–Trace & Coalescence Blind Spot)"]
-    RHT["RHTower<br/>(Explicit-Formula Gram Matrices & Wide-Bandwidth Traces)"]
-    TTPC["TransThresholdPairCorrelation<br/>(Prime-Pair Surplus, Jackson Close-Pair Kernel & F(α) for α > 1)"]
+| Object | Definition | Lean |
+|---|---|---|
+| Difference-frequency kernel | `A⁻(y, y′) = ∬_{[T,2T]²} Φ(τ − τ′)² cos(τy − τ′y′)` | `Aminus` |
+| Half-line moments of `Φ²` | `C^±(y)`, `S^±(y)`; for even `Φ`, `C⁻ = C⁺`, `S⁻ = −S⁺` | `Cp`, `Sp`, `Cm_eq_Cp_of_even`, `Sm_eq_neg_Sp_of_even` |
+| Cosine part | `(C⁺(y) + C⁺(y′))(sin 2Tθ − sin Tθ)/θ`, `θ = y − y′` | `AminusCos` |
+| Sine part | `(S⁺(y′) − S⁺(y))(cos 2Tθ + cos Tθ)/θ`, no close-pair pole | `AminusSin` |
+| Off-diagonal sums | `Σ_{n≠m≤X} a_n a_m A⁻(log n, log m)` and its cosine, sine and Fourier-weighted forms | `ppOffDiag`, `ppOffDiagCos`, `ppOffDiagSin`, `ppOffDiagFourier` |
+| Prime Dirichlet polynomials | `C_w(τ) = Σ_{n≤X} a_n w(log n) cos(τ log n)`, `S_w(τ)` likewise | `primeDirichletCos`, `primeDirichletSin` |
+| End-effect form | `E(u, v) = L⁻² Σ_{k,l<d} G_{kl}(u)G_{kl}(v) − 𝓜[u, v]` | `endForm` |
+| Jackson close-pair kernel | `(L/2π)∫ W(s + rh)W(s)e^{iθs}ds`, supported in `|θ| < 4b` | `jacksonPairKernel`, `jacksonCloseApprox` |
+| Normalized Frobenius norm | `κ(λ) = 1/λ + (2/λ²)∫_0^λ(λ − α)F(α)dα` | `frobeniusFormFactor` |
+| Trans-threshold integral | `I(λ) = ∫_1^λ(λ − α)F(α)dα` | `transThresholdIntegral` |
+| Normalized prime surplus | `(9/8)I − 5/72 = (9/8)(I − 1/18) − 1/144` at `λ = 4/3` | `primeSurplusRatioOfIntegral` |
 
-    SRT -->|"Diagnoses why unweighted L² decouples only for λ ≤ 1"| TTPC
-    RHT -->|"Supplies wide-bandwidth trace, 43/36 diagonal & Jackson window"| TTPC
-    ACS -->|"Reduces 75% critical-line zeros to κ(4/3) ≤ 5/4 (Route II)"| TTPC
-    TTPC -->|"Decomposes primeSurplus into Dirichlet mean value + close-pair kernel"| ACS
-```
+**Words.**
 
-- **Relation to [`ArithmeticCastelnuovoSeveri`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md):**
-  `ArithmeticCastelnuovoSeveri` proves that every positive-semidefinite Gram certificate at $\lambda = 1$ ($\kappa = 4/3$) faces the **Coalescence Blind Spot** between a double critical zero and a symmetric off-line pair, and establishes two routes to $75\%$: Route I (breaking the blind spot at $\lambda = 1$ via $c = 3$ or `zeroSideSlack`) and Route II (lowering $\kappa$ from $4/3$ to $5/4$ at $\lambda = 4/3$). `TransThresholdPairCorrelation` is the dedicated analytic engine for Route II.
-- **Relation to [`SquareRootThreshold`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SquareRootThreshold/README.md):**
-  `SquareRootThreshold` proves why generic $L^2$ Hilbert-inequality methods hit a phase transition at $\lambda = 1$ ($N \asymp T$) and proves the double-window minimum-aperture law $\min(r, \rho) \le \log 2$. `TransThresholdPairCorrelation` takes over above $\lambda = 1$, replacing generic $L^2$ bounds with parity cancellation (`AminusSin`), second-moment Fourier reduction (`ppOffDiagFourier`), and band-limited close-pair kernels (`jacksonPairKernel`).
-- **Relation to `RHTower`:**
-  `RHTower` develops the explicit-formula Gram matrix infrastructure (`ZetaTraceWide`, `ZetaFrobeniusSurplusSplit`, `ZetaThreeQuartersOfPrimeSurplus`, `ZetaWeightedFrobeniusClose`). `TransThresholdPairCorrelation` builds directly on these modules to isolate, decompose, and bound the trans-threshold prime surplus.
+* **Bandwidth** `λ = log X/log(T/2π)`; **sub-threshold** `λ ≤ 1`, **trans-threshold** `λ > 1`.
+* **Coalescent band**: prime pairs with `|log(n/m)| ≲ T⁻¹`, where the window `[T, 2T]` cannot
+  resolve the two frequencies.
+* **Close pair** for a Jackson window of width `b`: `|log(n/m)| < 4b`. **Far pair**: the rest.
+* **Core, surplus**: the part of the Frobenius norm evaluated unconditionally, and the remainder
+  carrying the prime pairs.
+* **Budget**: `1/18` of the normalization `(aL)²Tℓ₁/2π` at `λ = 4/3`, the room between the core
+  `43/36` and the target `5/4`.
 
 ---
 
-## 8. Criteria for Contributions and Programme Success
+## 3. How: mechanisms
 
-1. **Unconditional Proof Integrity:**
-   Every theorem in `formal/GaloisForLFunctions/TransThresholdPairCorrelation/` must be $100\%$ unconditional: no `sorry`, no added axioms, and no unproved analytic premises hidden in theorem binders or structures.Where an open frontier (such as `PrimeSurplusFourThirds`) is analyzed, contributions must prove unconditional decompositions, unconditional bounds on sub-components (such as `ppOffDiagSin`, `ppOffDiagCos - ppOffDiagFourier`, `endForm μ μ`), or exact equivalences.
-2. **Genuine Trans-Threshold Content ($\lambda > 1$):**
-   A contribution to this programme must address phenomena specific to $\lambda > 1$ ($X > T$): close prime pairs $|\log(n/m)| \lesssim T^{-1}$, mixed Dirichlet polynomial mean values $\int_T^{2T} P_g(\tau)\overline{P_1(\tau)}\,d\tau$, wide-bandwidth end effects, or the pair-correlation form factor $F(\alpha)$ on $\alpha > 1$.
-3. **Success Criteria of the Programme:**
-   - **Stage 1 (Completed in Pillars 1–4):** Eliminate all non-essential error terms from `primeSurplus` at $\lambda = 4/3$ (the sine-moment pole via `abs_AminusSin_le`, the cosine-moment finite-$T$ tail via `exists_abs_ppOffDiagCos_sub_fourier_params43_le`, the archimedean end-effect via `exists_abs_endForm_mu_mu_params43_le`, and the far-pair/sum-frequency leakage via `abs_weighted_frobenius_pp_sub_closeKernel_le`), reducing the entire $75\%$ problem to the exact Fourier/Dirichlet mean-value core `ppOffDiagFourier` and the close-pair kernel `jacksonCloseApprox`.
-   - **Stage 2 (Active Frontier):** Bound the weighted prime-pair close-pair sum / mixed Dirichlet mean value at $\lambda = 1 + \delta$ and $\lambda = 4/3$ within the $\frac{1}{18}$ normalization budget, discharging `PrimeSurplusFourThirds` and yielding $75\%$ of the zeros of $\zeta(s)$ on the critical line.
+### 3.1 Parity splitting and the nonsingular sine part
+
+The classical treatment expands `(y − y′)A⁻(y, y′)` into eight half-line moment terms and bounds
+each by Montgomery–Vaughan; beyond `λ = 1` this loses the parity. For even `Φ` the parity relations
+collapse the eight terms to two (`sub_mul_Aminus_eq_of_even`, `Aminus_eq_AminusCos_add_AminusSin`,
+`ppOffDiag_eq_cos_add_sin`). Since `S⁺` is Lipschitz with constant `∫Φ(x)²|x|dx`
+(`abs_Sp_sub_Sp_le`), the difference `S⁺(y′) − S⁺(y)` cancels the denominator, and
+`|A⁻_sin(y, y′)| ≤ 2∫Φ(x)²|x|dx` for all `y, y′` (`abs_AminusSin_le`): the sine part has no close-pair
+singularity.
+
+### 3.2 Second-moment reduction and the exact mean-value identity
+
+For the cosine part, `2C⁺(y) = ∫_{−T}^T Φ(x)² cos(xy)dx` while `∫_ℝ Φ(x)² cos(xy)dx = 2πg(y)`, and
+Chebyshev's inequality on `|x| > T` gives `|C⁺(y) − πg(y)| ≤ (2T²)⁻¹∫Φ(x)²x²dx`
+(`abs_Cp_sub_pi_mul_g_le`). Montgomery–Vaughan applied to this `O(T⁻²)` tail replaces `C⁺(log n)` by
+`πg(log n)` across all off-diagonal pairs up to `X = (T/2π)^{4/3}`, with total error
+`O(T^{−2/3} log T)` (`abs_ppOffDiagCos_sub_fourier_le`,
+`exists_abs_ppOffDiagCos_sub_fourier_params43_le`). The remaining sinc kernel integrates back to
+`∫_T^{2T} cos(τθ)dτ`, which gives the exact identity
+
+    ppOffDiagFourier(g, T, X) = 2π ∫_T^{2T}(C_g(τ)C_1(τ) + S_g(τ)S_1(τ))dτ − 2πT Σ_{n≤X} a_n² g(log n)
+
+(`ppOffDiagFourier_eq_primeDirichlet_integral`), and adding the prime diagonal cancels the last
+term (`abs_ppDiag_add_ppOffDiagFourier_sub_integral_le`). The off-diagonal problem is a mixed mean
+value of two prime Dirichlet polynomials of length `X > T` on `[T, 2T]`.
+
+### 3.3 Bilinear splitting of the end effect
+
+Bounding `E(ν_X, ν_X)` monolithically through the combined sup-norm `l + 4√X` costs
+`O(Ll log l · X)`, which at `λ = 4/3` is `T^{4/3}` and swamps the budget. Splitting `E` along
+`ν_X = μ + Π_X + P_X` into six bilinear terms (`endForm_trinomial`, `endForm_nuX_split`) and using
+the `X`-free growth bound `|μ(τ)| ≤ C₀l + log⁺(|τ|/4T)` (`mu_nuBound`) gives
+`|E(μ, μ)| ≤ C L l³ log l` at every `λ ≤ 2` (`exists_abs_endForm_mu_mu_le`), `O(l⁴ log l)` at `4/3`
+(`exists_abs_endForm_mu_mu_params43_le`). The archimedean end effect leaves the barrier; the prime
+components remain.
+
+### 3.4 Jackson weights localize the close pairs
+
+With the sharp window `1_{[T,2T]}` the kernel `(sin 2Tθ − sin Tθ)/θ` leaks `O(1/|θ|)` from the
+endpoints, so far pairs still count. Weighting the grid by a Jackson window `W` with Fourier
+transform supported in `(−2b, 2b)` makes `W(s + rh)W(s)` band-limited to `(−4b, 4b)`
+(`RHTower.integral_jacksonProduct_mul_cexp_eq_zero`). The close-pair kernel then vanishes identically for
+`|θ| ≥ 4b` (`jacksonPairKernel_eq_zero_of_le_abs`), and the continuous kernel sum over all pairs is
+the sum over close pairs (`sum_jacksonCloseApprox_eq_close`). On the band `[2b, L/2 − 2b]` the
+difference and sum frequencies stay `4b` away from every grid alias (`alias_sep_diff_of_mem_Icc`,
+`alias_sep_sum_of_mem_Icc`). The whole Jackson-weighted prime–prime Frobenius sum differs from the
+close-pair kernel sum by the outer Jackson mass times `Σ_{|r|<d}(Σ_n|c_n|‖A_n(r)‖)²`
+(`abs_weighted_frobenius_pp_sub_closeKernel_le`): far pairs and sum frequencies are paid by the
+window, and only close pairs remain.
+
+### 3.5 The form-factor bridge
+
+For any form factor with `F(α) = α` on `[0, 1]`, the normalized Frobenius norm is the sub-threshold
+baseline `2/λ − 2/(3λ²)` plus `(2/λ²)I(λ)` (`frobeniusFormFactor_eq_split`). At `λ = 4/3` the
+baseline is `9/8`, and `κ(4/3) ≤ 5/4` iff `I ≤ 1/9` (`frobeniusFormFactor_four_thirds_le_five_fourths_iff`).
+The prime diagonal up to `(T/2π)^{4/3}` already carries `(λ − 1)/λ² = 3/16` of the trans-threshold
+mass (`43/36 = 9/8 + 5/72`), so the normalized prime surplus is `(9/8)(I − 1/18) − 1/144`, and the
+prime-side budget `1/18` is exactly `I ≤ 1/9` (`primeSurplusRatio_bridge`). The GUE prediction
+`I = 1/18` gives surplus `−1/144`: the budget has slack `1/16` against the conjectured truth.
+
+---
+
+## 4. Foundational pillar theorems
+
+All unconditional.
+
+1. **The sine part has no close-pair pole.** `|A⁻_sin(Φ, T, y, y′)| ≤ 2∫Φ(x)²|x|dx` for all
+   `y, y′` (`abs_AminusSin_le`), after the exact parity split (`ppOffDiag_eq_cos_add_sin`).
+2. **The cosine part is a mixed Dirichlet mean value.** Up to `O(T^{−2/3} log T)` at `λ = 4/3`
+   (`exists_abs_ppOffDiagCos_sub_fourier_params43_le`) it is the `[T, 2T]` mean value of
+   `C_gC_1 + S_gS_1`, with the diagonal cancelled exactly
+   (`ppOffDiagFourier_eq_primeDirichlet_integral`, `abs_ppDiag_add_ppOffDiagFourier_sub_integral_le`).
+3. **The archimedean end effect is `X`-free.** `|E(μ, μ)| ≤ C L l³ log l` at every `λ ≤ 2`
+   (`exists_abs_endForm_mu_mu_le`).
+4. **Jackson weights reduce the prime–prime Frobenius sum to close pairs**, with a factored
+   outer-mass error (`abs_weighted_frobenius_pp_sub_closeKernel_le`).
+5. **The prime budget is the form-factor bound.** `κ(4/3) ≤ 5/4 ⟺ I ≤ 1/9`, and the prime surplus
+   is `(9/8)(I − 1/18) − 1/144` (`frobeniusFormFactor_four_thirds_le_five_fourths_iff`,
+   `primeSurplusRatio_bridge`).
+6. **Two barriers.** The shifted Fejér majorant misses `1/9` by the factor `8/3`
+   (`fejer_shifted_bound_gap`), and trace certificates of order `k ≥ 3` are confined to `kλ ≤ 1`
+   (`higherMoment_rudnick_sarnak_cap`).
+
+---
+
+## 5. Traps and sharp boundaries
+
+| Trap | What is true instead |
+|---|---|
+| Bounding `𝒪₁` by the triangle inequality on the eight half-line moments | Gives `O(L²X)`; for `λ > 1`, `L²X ≫ Tl³`. Discarding the sign of `sin 2Tθ − sin Tθ` and the Lipschitz cancellation in `S⁺(y′) − S⁺(y)` forfeits all trans-threshold cancellation. |
+| Working with the sharp window `1_{[T,2T]}` | Pairs with `|θ| ≫ T⁻¹` still contribute `O(1/|θ|)` through the endpoints. A smooth weight, or Jackson grid weights, is needed to localize to `|θ| < 4b`. |
+| Positive spectral majorants | Montgomery's shift method uses only `F ≥ 0` and `F(α) = |α|` on `[−1, 1]`; the shifted Fejér kernel then gives `8/27`, a factor `8/3` above `1/9` (`fejer_shifted_bound_gap`). Arithmetic input on `[1, 4/3]` is required. |
+| Higher moments to bypass pair correlation | `tr(G̃^k)` in its unconditional range forces `kλ ≤ 1`, so `λ ≤ 1/3` for `k ≥ 3` (`higherMoment_rudnick_sarnak_cap`): higher moments shrink the bandwidth. |
+| Reading `PrimeSurplusFourThirds` as established | It is the premise of `RHTower.zeta_three_quarters_of_prime_surplus`. The unconditional content is the reduction of §3, not the bound. |
+| Treating the budget as a power saving | A saving of `T^{1/3}` over the trivial bound only reaches the right order. The bound must land below `1/18` of an explicit normalization, against a conjectured value `−1/144`. |
+| Expecting a sieve to bound close pairs | Upper-bound sieves need weights `w ≥ 0`; the height phase changes sign, so the sieve reverts to the size bound, a factor two off at best (the parity barrier). |
+| Treating pair correlation beyond `α = 1` as a separate input | Under RH it is equivalent to prime-pair correlations with a power-saving error; unconditionally it needs additive-divisor inputs for `Λ` of twin-prime strength. |
+| Breaking the coalescence blind spot by zero-side slack below `3/4` | Unconditionally `zeroSideSlack(λ, T) ≤ (λ − H(λ) + ε)N(T, 2T)`, which refutes the slack needed for `3/4` at every `λ ∈ (0, 3/4)` (`ArithmeticCastelnuovoSeveri.not_three_quarters_zeroSideSlack_of_lt_three_quarters`). |
+| Mollifiers as an alternative to `λ > 1` | For mollified discrete moments of CGG type the optimum is `1 − (1 + θ)^{−3}`, so `3/4` needs `θ ≥ 4^{1/3} − 1` (`RHTower.CGGMollifier.three_quarters_le_iff`); at `θ = 4/7` it is `988/1331 < 3/4` (`RHTower.CGGMollifier.ratio_bound_four_sevenths`). |
+
+---
+
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **Why does the rank–trace method stop at `2/3`?** Because Montgomery–Vaughan decouples prime
+   pairs exactly up to `X = T`, and `κ(λ) = 1/λ + λ/3` is smallest at `λ = 1` on that range.
+2. **What exactly separates `2/3` from `3/4`?** One prime-surplus inequality with budget `1/18` at
+   `λ = 4/3`, equivalently `I ≤ 1/9`.
+3. **Which parts of the surplus are harmless?** The sine part, the cosine tail beyond `T`, the
+   archimedean end effect, the far pairs and the sum frequencies. What remains is the mixed
+   Dirichlet mean value, or the close-pair kernel.
+4. **What does a positive majorant achieve?** `8/27`, a fixed factor `8/3` short.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Parity splitting* of the difference-frequency kernel and the Lipschitz cancellation of its sine
+  part.
+- *Second-moment tail reduction* of the cosine part and the exact Dirichlet mean-value identity.
+- *Bilinear end-effect splitting* along `μ + Π_X + P_X`.
+- *Jackson grid weights*: band-limited products, exact close-pair support and alias separation.
+- *Form-factor calculus*: the split of `κ`, the bridge to the prime surplus, the Fejér and
+  Rudnick–Sarnak barriers.
+
+To be built:
+
+- a signed bound on the mixed mean value `∫_T^{2T}(C_gC_1 + S_gS_1)` at `X = T^{4/3}`;
+- the Jackson-weighted bandwidth-`4/3` trace assembly, with the sum frequencies and far pairs paid
+  by the outer Jackson mass;
+- a close-pair estimate in the narrow strips `λ = 1 + δ`.
+
+---
+
+## 7. Open problems
+
+1. **The bandwidth-`4/3` prime surplus** (`RHTower.PrimeSurplusFourThirds`). Prove
+   `primeSurplus ≤ (1/18 + o(1))(aL)²Tℓ₁/2π`, or equivalently through §3.2 that
+   `(1/π)∫_T^{2T}(C_g(τ)C_1(τ) + S_g(τ)S_1(τ))dτ ≤ (4/9 + 1/18 + o(1))(aL)²Tℓ₁/2π`, unconditionally or
+   under the weakest arithmetic mean-value input that suffices.
+2. **The Jackson-weighted trace.** Replace the unweighted Frobenius norm by the Jackson-weighted
+   one in the bandwidth-`4/3` assembly, so that the sum frequencies and far pairs are bounded by the
+   outer Jackson mass `O(M^{−3} + LM^{−2})` instead of `O(XL)`, with the same `1/18` budget.
+3. **Close pairs in short multiplicative intervals.** For `T < m < n ≤ T^{4/3}`,
+   `0 < n − m = h ≪ m/T`, control the signed correlation
+   `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T log(1 + h/m))` beyond the factor two lost by upper-bound sieves.
+4. **The exchange rate just above `λ = 1`.** Any finite bound `F(α) ≤ B` on `(1, λ*)`,
+   `λ* = (3B − 2)/(3(B − 1))`, beats `2/3` by `1/(3(3B − 2))` (`RHTower.opt_sub_two_thirds`,
+   `ArithmeticCastelnuovoSeveri.two_thirds_and_pair_correlation_escape`). Prove an unconditional
+   bound on the close-pair energy in a narrow strip `λ = 1 + δ`. Any finite constant improves the
+   proportion.
+
+### Research topics
+
+1. **Signed mixed mean values.** The identity of §3.2 is exact. Find which arithmetic structure of
+   `C_g` and `C_1` (both prime Dirichlet polynomials of length `T^{4/3}`, one Fourier-weighted)
+   makes their correlation over `[T, 2T]` smaller than the product of their sizes.
+2. **The coalescent band as a sieve problem.** Close pairs `|log(n/m)| ≲ T⁻¹` are prime pairs
+   `(m, m + h)` with `h ≪ m/T`. Determine what part of the Hardy–Littlewood main term enters the
+   surplus, and whether its sign is favourable before any error term is estimated.
+3. **Calibration.** Compute the surplus for model sequences with known pair statistics (random
+   models, Beurling primes, the function-field case) to see which features of the primes the
+   budget actually uses.
+
+---
+
+## 8. Working in the theory
+
+- State the bandwidth, the window (sharp, smooth or Jackson) and the normalization of every
+  estimate; a bound on `𝒪₁` without its normalization says nothing about the proportion.
+- Keep the sign of the oscillating kernels until a cancellation has been used. The parity split
+  and the Lipschitz cancellation are lost by the first triangle inequality.
+- Separate the reduction from the estimate. Every module here reduces the surplus; none bounds the
+  close-pair kernel, and none should be described as doing so.
+- Report the unit: the bandwidth reached and the proportion certified, or the share of the `1/18`
+  budget paid.
+- Search the corpus first (`scripts/formal_tools.py research "<query>"`): the Gram, trace and
+  Jackson infrastructure lives in `RHTower` (`ZetaTraceWide`, `ZetaFrobeniusSurplusSplit`,
+  `ZetaThreeQuartersOfPrimeSurplus`, `ZetaWeightedFrobeniusClose`, `ZetaWeightedFrobeniusFar`).
+
+---
+
+## Source entry points
+
+| Module | Content |
+|---|---|
+| `PrimeSurplusAnatomyAndDirichletMeanValue` | parity split of `A⁻`, nonsingular sine part, second-moment reduction, exact mean-value identity and diagonal cancellation |
+| `ArchimedeanEndEffectAndSurplusSplitting` | trinomial splitting of the end-effect form; `X`-free archimedean end-effect bound |
+| `JacksonWeightedPrimeFrobeniusDecomposition` | compact support of the Jackson pair kernel, alias separation, global close-pair reduction |
+| `FormFactorThresholdAndShiftInequality` | form-factor split of `κ`, the `1/9` equivalence, the prime-surplus bridge, the Fejér gap, the Rudnick–Sarnak cap |

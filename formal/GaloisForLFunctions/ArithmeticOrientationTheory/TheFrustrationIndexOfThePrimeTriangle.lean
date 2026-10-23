@@ -97,30 +97,39 @@ theorem two_le_frustrationIndex_of_not_isBalanced [LinearOrder ι] {c : ι → �
 /-- **Three points have frustration index at most two.** -/
 theorem frustrationIndex_le_two_fin3 {c : Fin 3 → Fin 3 → ℝ} (hc : IsSymmetricCoupling c) :
     frustrationIndex c ≤ 2 := by
-  set s : Fin 3 → ℝ := ![1, -orientSign (c 0 1), -orientSign (c 0 2)] with hs_def
+  set s : Fin 3 → ℝ := fun i => if i = 0 then 1 else if i = 1 then -orientSign (c 0 1)
+    else -orientSign (c 0 2) with hs_def
+  have hs0 : s 0 = 1 := by simp [hs_def]
+  have hs1 : s 1 = -orientSign (c 0 1) := by simp [hs_def]
+  have hs2 : s 2 = -orientSign (c 0 2) := by simp [hs_def]
   have hs : IsSignVector s := by
     intro i
-    fin_cases i <;> simp [hs_def, orientSign_sq]
+    by_cases h0 : i = 0
+    · rw [h0, hs0]; norm_num
+    by_cases h1 : i = 1
+    · rw [h1, hs1, neg_sq, orientSign_sq]
+    have h2 : i = 2 := by omega
+    rw [h2, hs2, neg_sq, orientSign_sq]
   refine le_trans (frustrationIndex_le hs c) ?_
   unfold misalignedCount
+  have h01 := orientSign_mul_nonneg (c 0 1)
+  have h02 := orientSign_mul_nonneg (c 0 2)
+  have h10 : c 1 0 = c 0 1 := hc 1 0
+  have h20 : c 2 0 = c 0 2 := hc 2 0
   calc (univ.filter fun p : Fin 3 × Fin 3 => p.1 ≠ p.2 ∧ 0 < s p.1 * s p.2 * c p.1 p.2).card
       ≤ ({(1, 2), (2, 1)} : Finset (Fin 3 × Fin 3)).card := by
         apply card_le_card
         intro p hp
         simp only [mem_filter, mem_univ, true_and] at hp
         obtain ⟨hne, hpos⟩ := hp
-        have h01 := orientSign_mul_nonneg (c 0 1)
-        have h02 := orientSign_mul_nonneg (c 0 2)
-        have h10 : c 1 0 = c 0 1 := hc 1 0
-        have h20 : c 2 0 = c 0 2 := hc 2 0
         obtain ⟨i, j⟩ := p
         fin_cases i <;> fin_cases j <;>
-          simp only [hs_def, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-            Matrix.cons_val_two, Matrix.tail_cons, Fin.isValue, ne_eq, not_true_eq_false,
-            mem_insert, mem_singleton, Prod.mk.injEq] at hne hpos ⊢ <;>
           first
-          | exact absurd rfl hne
-          | (exfalso; nlinarith [h01, h02, h10, h20])
+          | exact (hne rfl).elim
+          | (simp only [Fin.isValue, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, hs0, hs1, hs2,
+                h10, h20] at hpos
+             exfalso
+             nlinarith [h01, h02])
           | simp
     _ = 2 := card_pair (by decide)
 

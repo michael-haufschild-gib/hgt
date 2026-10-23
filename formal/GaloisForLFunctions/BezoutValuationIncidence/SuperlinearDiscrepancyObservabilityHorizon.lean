@@ -150,16 +150,19 @@ private theorem finiteHarmonicSum_lincomb (N : ℕ) (a : Fin 3 → ℝ) (r : Fin
   rw [sum_comm]
   exact sum_congr rfl fun i _ => sum_congr rfl fun d _ => by ring
 
+private theorem finiteFloorSum_lincomb (N : ℕ) (x : ℝ) (a : Fin 3 → ℝ) (r : Fin 3 → ℕ → ℝ) :
+    finiteFloorSum N (fun d => ∑ i, a i * r i d) x = ∑ i, a i * finiteFloorSum N (r i) x := by
+  unfold finiteFloorSum
+  simp only [sum_mul, mul_sum]
+  rw [sum_comm]
+  exact sum_congr rfl fun i _ => sum_congr rfl fun d _ => by ring
+
 private theorem sievePrefixDiscrepancy_lincomb (N M : ℕ) (a : Fin 3 → ℝ) (r : Fin 3 → ℕ → ℝ) :
     sievePrefixDiscrepancy N M (fun d => ∑ i, a i * r i d) =
       ∑ i, a i * sievePrefixDiscrepancy N M (r i) := by
-  unfold sievePrefixDiscrepancy finiteFloorSum
-  rw [finiteHarmonicSum_lincomb]
-  simp only [sum_mul, mul_sum, mul_sub, ← sum_sub_distrib]
-  rw [sum_comm]
-  exact sum_congr rfl fun i _ => by
-    rw [mul_sum, sum_congr rfl fun d _ => by ring]
-    ring
+  unfold sievePrefixDiscrepancy
+  rw [finiteFloorSum_lincomb, finiteHarmonicSum_lincomb, mul_sum, ← sum_sub_distrib]
+  exact sum_congr rfl fun i _ => by ring
 
 /-- **Superlinear discrepancy horizon.** For every `m` and every
 `N ≥ (m + 4)(2^{m+3})!(1 + 3·2^{m+1})` some row of positive variance has vanishing prefix
@@ -196,10 +199,13 @@ theorem exists_discrepancy_zero_window (m N : ℕ)
         have hjD : j * K ≤ D := by
           have : j * K ≤ 3 * K := Nat.mul_le_mul_right _ hj.le
           nlinarith
+        have hjK : j * K = M * (j * 2 ^ (m + 1)) := by rw [hK]; ring
+        have hrepr : D = D - j * K + M * (j * 2 ^ (m + 1)) := by rw [← hjK]; omega
         have := hcop
-        rw [show D = D - j * K + M * (j * 2 ^ (m + 1)) by rw [hK]; ring_nf; omega] at this
+        rw [hrepr] at this
         exact (Nat.coprime_add_mul_left_left _ _ _).mp this
       large := by
+        rw [← hK]
         have : j * K ≤ 2 * K := Nat.mul_le_mul_right _ (by omega)
         have : (m + 1 + 1) * K + j * K < D := by nlinarith
         omega }
@@ -224,7 +230,8 @@ theorem exists_discrepancy_zero_window (m N : ℕ)
     rw [hc, sievePrefixDiscrepancy_lincomb]; exact hL
   have hwin : m * N < W := by
     rw [hW]
-    obtain ⟨E, hE⟩ : ∃ E, D = E + 3 * K := ⟨D - 3 * K, by nlinarith⟩
+    have h3K : 3 * K ≤ D := by nlinarith
+    obtain ⟨E, hE⟩ : ∃ E, D = E + 3 * K := ⟨D - 3 * K, (Nat.sub_add_cancel h3K).symm⟩
     rw [hE, Nat.add_sub_cancel]
     have h1 : N + 1 ≤ E + M + 3 * K := by omega
     have h2 := Nat.mul_le_mul_left (m + 1) h1
@@ -247,29 +254,37 @@ theorem exists_discrepancy_zero_window (m N : ℕ)
       fin_cases i <;> simp
     intro hvar
     have hD2 : 2 ≤ D - (i : ℕ) * K := by
-      have : (i : ℕ) * K ≤ 2 * K := Nat.mul_le_mul_right _ (by omega)
-      have : (m + 1 + 1) * K + 2 * K < D := by nlinarith
-      omega
+      have h1 : (i : ℕ) * K ≤ 2 * K := Nat.mul_le_mul_right _ (by omega)
+      have h2 : (m + 1 + 1) * K + 2 * K < D := by nlinarith
+      have hK1 : 1 ≤ K := by rw [hK]; exact Nat.one_le_iff_ne_zero.mpr (by positivity)
+      exact Nat.le_sub_of_add_le (by nlinarith)
     have := (sieveVariance_eq_zero_iff_tail_zero N c).mp hvar (D - (i : ℕ) * K)
       (mem_Icc.mpr ⟨hD2, (Nat.sub_le _ _).trans hDN⟩)
     rw [hci] at this
     exact hi this
   · -- the discrepancy vanishes along the window
+    have hW' : ∀ t, t ≤ m * N → t < W := fun t ht => lt_of_le_of_lt ht hwin
+    have key : ∀ j, j ≤ m * N → sievePrefixDiscrepancy N (A + j) c = 0 := by
+      intro j
+      induction j with
+      | zero => intro _; simpa using hLc
+      | succ j ih =>
+        intro hj
+        have hprev := ih (by omega)
+        have hstep := sievePrefixDiscrepancy_succ_sub N (A + j) c
+        have hj1 := hW' (j + 1) hj
+        have hmem : A + j + 1 ∈ Ico A (A + W) :=
+          mem_Ico.mpr ⟨by omega, by rw [add_assoc]; exact Nat.add_lt_add_left hj1 A⟩
+        have hs : sieveSeq N c (A + j + 1) = 0 := by
+          rw [hc, sieveSeq_lincomb]
+          exact sum_eq_zero fun i _ => by rw [hzero i (A + j + 1) hmem, mul_zero]
+        rw [← sieveSeq_eq_sievedDivisorSum N c (by omega), hs, hHc, hprev] at hstep
+        rw [← add_assoc]
+        linarith
     intro M' hM'
     obtain ⟨h1, h2⟩ := mem_Icc.mp hM'
     obtain ⟨j, rfl⟩ : ∃ j, M' = A + j := ⟨M' - A, by omega⟩
-    induction j with
-    | zero => simpa using hLc
-    | succ j ih =>
-      have hprev := ih (by omega)
-      have hstep := sievePrefixDiscrepancy_succ_sub N (A + j) c
-      have hs : sieveSeq N c (A + j + 1) = 0 := by
-        rw [hc, sieveSeq_lincomb]
-        exact sum_eq_zero fun i _ => by
-          rw [hzero i (A + j + 1) (mem_Ico.mpr ⟨by omega, by omega⟩), mul_zero]
-      rw [← sieveSeq_eq_sievedDivisorSum N c (by omega), hs, hHc, hprev] at hstep
-      rw [← add_assoc]
-      linarith
+    exact key j (by omega)
 
 /-- **No linear discrepancy observability law at arbitrary phase.** -/
 theorem not_exists_linear_discrepancy_observability_horizon :

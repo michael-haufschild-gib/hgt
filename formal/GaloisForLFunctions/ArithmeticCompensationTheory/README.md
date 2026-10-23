@@ -90,6 +90,10 @@ aperture decay, a resolution threshold. Identities and equivalent criteria count
   source-compatible effectivity can force the sign that compensation alone does not determine.
 - **[Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md).** Keeps
   Möbius coefficients, residue incidence and signed Gram interactions attached to the source.
+- **[Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md).** Its selectivity
+  battery requires every positive floor to respect the doubly exponential decay of mechanism 25,
+  and its unit hygiene applies to the corrector criterion of mechanism 26: until the corrector is
+  built from source terms, an adapted energy is one more reading of the damping unit.
 
 Read the comb mechanisms first as a worked example of a failed majorant with a useful survivor;
 then the compensation coordinates, signed budgets and correctors. The short-window transfer shows
@@ -567,7 +571,7 @@ that every successful route must use the same mechanism.
    space. The comb resolvent law is the model case.
 4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved; on Lipschitz tests the
    comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
-   10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
+   12); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
    deficit is exactly `4‖f′‖²/r²` to first order, and `J(F) ≥ A_F(0) − Λ²(8R + 48)` uniformly over
    Lipschitz tests in `[−R, R]` (mechanism 13); over all tests no coercive constant exists, while
    the curve comb is uniformly coercive (mechanism 14). Open: the second correction, and the
@@ -581,7 +585,11 @@ that every successful route must use the same mechanism.
    `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates
    give qualitative control of the Möbius block at all scales above its logarithmic small-prime
    threshold, and of the centred prime block on the stated unbalanced range; distinguish those
-   results from a uniform bound for the complete coupled receiver.
+   results from a uniform bound for the complete coupled receiver. The one selective external input
+   in reach at `Q ≍ P` is ℓ-adic: the Bernoulli kernel is a cosecant–Bernoulli sum in Kloosterman
+   fractions, and trace-function bounds for primes, built on Deligne's theorem, save a power at
+   balanced length (BVI research topic 1). A power saving there would be a zero-free strip, so the
+   expected gain is qualitative.
 7. **Function-field calibration.** In the curve model the horizon law is geometric with
    square-root error, and the receiver is admitted at every damping above the zero width
    (mechanism 15), and fails below it for a single eigenvalue. Open: the failure below the zero

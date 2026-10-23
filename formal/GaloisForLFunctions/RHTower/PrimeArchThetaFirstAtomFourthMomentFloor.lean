@@ -174,7 +174,7 @@ theorem thetaCuspFirstLiouvilleRate_le_majorant
   have hone : 1 ≤ Real.exp (2 * x) := Real.one_le_exp (by positivity)
   have hchord0 : 0 ≤ thetaCuspQuarterExpChord j x - 1 := by linarith
   have hpi : Real.pi < (3927 / 1250 : ℝ) := by
-    nlinarith [Real.pi_lt_d4]
+    linarith only [Real.pi_lt_d4]
   rw [thetaCuspFirstLiouvilleRate, thetaCuspFirstLiouvilleRateMajorant]
   calc
     Real.pi * (Real.exp (2 * x) - 1) - 5 * x / 2 ≤
@@ -236,7 +236,7 @@ theorem three_div_seventy_lt_exp_neg_pi :
   have hepi : Real.exp Real.pi < 70 / 3 := by
     calc
       Real.exp Real.pi < Real.exp (22 / 7 : ℝ) :=
-        Real.exp_lt_exp.mpr (by nlinarith [Real.pi_lt_d4])
+        Real.exp_lt_exp.mpr (by linarith only [Real.pi_lt_d4])
       _ = Real.exp 3 * Real.exp (1 / 7 : ℝ) := by
         rw [show (22 / 7 : ℝ) = 3 + 1 / 7 by norm_num, Real.exp_add]
       _ < (2.7182818286 : ℝ) ^ (3 : ℕ) * Real.exp (1 / 7 : ℝ) :=
@@ -254,7 +254,7 @@ theorem three_div_seventy_lt_exp_neg_pi :
 /-- Compatibility form of the earlier boundary floor. -/
 theorem one_div_twentyFour_lt_exp_neg_pi :
     (1 / 24 : ℝ) < Real.exp (-Real.pi) := by
-  nlinarith [three_div_seventy_lt_exp_neg_pi]
+  linarith only [three_div_seventy_lt_exp_neg_pi]
 
 theorem thetaCuspFirstLiouvilleRateSlope_pos
     {j : ℕ} (hj : j < 7) :
@@ -392,7 +392,7 @@ theorem thetaCuspFirstAtomFourthIntervalCertificate_le_density
       (6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3 ≤
         2 * Real.pi * Real.exp (2 * x) - 3 := by
     have hpi : (6283 / 1000 : ℝ) < 2 * Real.pi := by
-      nlinarith [Real.pi_gt_d4]
+      linarith only [Real.pi_gt_d4]
     calc
       (6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3 ≤
           (6283 / 1000 : ℝ) * Real.exp (2 * x) - 3 := by
@@ -402,10 +402,10 @@ theorem thetaCuspFirstAtomFourthIntervalCertificate_le_density
   have hinner0 :
       0 ≤ (6283 / 1000 : ℝ) * thetaCuspExpTaylorFive (2 * x) - 3 := by
     rw [thetaCuspExpTaylorFive]
-    nlinarith [sq_nonneg x, pow_nonneg hx0 3, pow_nonneg hx0 4,
+    nlinarith only [hx0, sq_nonneg x, pow_nonneg hx0 3, pow_nonneg hx0 4,
       pow_nonneg hx0 5]
   have houter : (6283 / 500 : ℝ) ≤ 4 * Real.pi := by
-    nlinarith [Real.pi_gt_d4]
+    linarith only [Real.pi_gt_d4]
   have hb := thetaCuspFirstLiouvilleIntervalCertificate_le_gibbs hj hx
   have hb0 : 0 ≤
       (3 / 70 : ℝ) * thetaCuspFirstLiouvilleEndpointCertificate j *
@@ -877,17 +877,17 @@ theorem twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment
 /-- Compatibility form of the earlier seven-interval floor. -/
 theorem twoHundredSixtyThree_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one :
     (263 / 100000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
-  nlinarith [twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
+  linarith only [twoHundredSixtyNine_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
 
 /-- Compatibility form of the earlier six-interval floor. -/
 theorem three_div_oneThousandTwoHundredFifty_lt_thetaCuspAtomRawEvenMoment_two_one :
     (3 / 1250 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
-  nlinarith [twoHundredSixtyThree_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
+  linarith only [twoHundredSixtyThree_div_oneHundredThousand_lt_thetaCuspAtomRawEvenMoment_two_one]
 
 /-- Compatibility form of the earlier five-interval floor. -/
 theorem twoThousandOneHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMoment_two_one :
     (2151 / 1000000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
-  nlinarith [three_div_oneThousandTwoHundredFifty_lt_thetaCuspAtomRawEvenMoment_two_one]
+  linarith only [three_div_oneThousandTwoHundredFifty_lt_thetaCuspAtomRawEvenMoment_two_one]
 
 end
 

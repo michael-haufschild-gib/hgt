@@ -37,6 +37,8 @@ actual prime source.
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Couples flux and forcing to the receiver budget that the width dictionary reads. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks an arithmetic source of the Hodge-type sign, beyond knowing its equivalent receivers. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Resolves source signs and cancellation before applying the growth receivers. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The programme dedicated to open problem 1: prime pairs beyond $X=T$, organised around the Frobenius surplus of the explicit-formula Gram and the form factor on $(1,\lambda)$. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Collects the endpoint equivalences of the units in one theorem, `widthDictionary_tfae`. Its Nyquist rank bound reads the threshold $N\asymp T$ as a dimension count of sections at separated heights. |
 
 `RHTower` and `Zeta23` supply the explicit formula, lattice configurations, zero counts and analytic
 continuation tools.
@@ -692,7 +694,10 @@ Two theorems do that, and they are the reason a partial result anywhere in the f
     Every one of these is a composition of the width dictionary with a receiver the corpus proves
     for the half-plane bound, and **none of them supplies a bound on the width.** That is the point
     of the dictionary: it converts route-local progress into one comparable exponent, and it makes
-    visible that no route has yet produced an exponent below `½` at all.
+    visible that no route has yet produced an exponent below `½` at all. The endpoint equivalences
+    of the programmes' own units (Hodge index, effectivity, positive inertia, damping, pronic
+    energy, mean-square band, finite-radius refutation) are collected in Arithmetic Orientation
+    Theory as one theorem, `widthDictionary_tfae`.
 
 ### Arithmetic inside one lag window
 
@@ -854,7 +859,15 @@ To be built:
    * **Zero side.** An off-line zero of depth `δ` has weight `T^{2λδ}`, so the needed estimate is
      `N(½ + δ, T) ≪ T^{1 − 2λδ + ε}`. The density hypothesis gives `λ ≤ 1` exactly.
 
-   The pair-correlation conjecture is open on `(1, λ)` even under RH.
+   The pair-correlation conjecture is open on `(1, λ)` even under RH. Trans-Threshold Pair
+   Correlation works on this problem at `λ = 4/3`. There the diagonal, archimedean and pole core of
+   the Gram trace drops to `43/36`, and three-quarters of the zeros on the line reduces to a
+   prime-surplus bound with budget `1/18`, equivalently `∫_1^{4/3}(4/3 − α)F(α)dα ≤ 1/9`. The
+   sine half of the off-diagonal kernel has no close-pair pole, the cosine half reduces to a mixed
+   mean value of prime Dirichlet polynomials, and Jackson grid weights confine what is left to the
+   close pairs `|log(n/m)| < 4b`. Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and
+   the sub-threshold identity, misses the budget by the factor `8/3` (`fejer_shifted_bound_gap`):
+   the missing input is arithmetic information on `[1, 4/3]`.
 2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
    about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
    gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,

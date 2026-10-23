@@ -34,6 +34,7 @@ Passing a blindness test is necessary for a proposed method; it is not an estima
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Tests whether changing an energy or splitting work preserves the signed information needed for admission. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Separates formal signature criteria from the arithmetic effectivity data that would force them. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Exhibits the information lost when a signed incidence kernel is replaced by an absolute majorant. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Builds on these readings. A flip is an involution of the data, and a reading is orientation-faithful when it separates every datum from its flip. Invisibility is closed under post-processing, pairing, families and coarsening, and resolving a flipping predicate forces faithfulness. The refutation theorem of §3.8 is the reading entry of its width dictionary. |
 
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form. SSIC is its admissibility layer: it prices a reading before a route is built, and
@@ -564,7 +565,11 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    — under RH, exactly the prime powers (`fatal_deleteNode_iff_isPrimePow`) — giving the
    principal-up-set description in that case. The analogous question for the parity face owned by
    `TransHorizonIncidenceMechanics`, which involutions of a damped weight are fatal for the
-   receiver, is open, and would turn its barrier into a sharp law.
+   receiver, is open, and would turn its barrier into a sharp law. One instance is known. On
+   four-free convolution weights `k ⋆ q` the even flip shifts the pole value by the even part of
+   the kernel, `K♭(1 − ε) = K(1 − ε) + (1 − 2^ε)K_e(1 − ε)`, so it is fatal for at least one member
+   of the pair whenever `K_e(1 − ε) ≠ 0` (`evenFlip_exactLoss`). The first pronic moment reads the
+   same flip exactly through `W_c(2)` (Arithmetic Orientation Theory).
 4. **The rate reading for `ζ`.** The faithful reading of the depth is the exponential rate of the
    deficit in the aperture. For the configuration of `ζ` that rate is the zero width, so an estimate
    of it is the target of the whole corpus; what belongs here is the admissibility question: which
@@ -615,6 +620,11 @@ Open, in this programme's own unit (a class of readings and its exact limit):
   has the additional local-count qualification described above,
   and all three are tail invariants, hence blind to every bounded parameter range — a floor theorem
   for rate readings would unify the three gates into one.
+* Prove the trichotomy of §5 as a theorem about readings. A blind reading is improved only by
+  crossing the Nyquist aperture, reading a magnitude, or adding data of a third kind. Stated for
+  orientation-faithful readings (Arithmetic Orientation Theory), it would say that every reading
+  separating the critical form from its companion does one of the three. The precision cost of
+  each branch should come with it, as the square-root law does for the magnitude branch.
 
 ---
 

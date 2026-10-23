@@ -190,7 +190,7 @@ theorem sign_weightRamanujanCoeff_evenFlip_two {K ε : ℝ} (hε : 0 < ε) {c : 
     Real.sign (weightRamanujanCoeff (evenFlip c) 2) = -Real.sign (weightRamanujanCoeff c 2) := by
   rw [weightRamanujanCoeff_evenFlip' hε hc h4 2]
   simp only [evenSign, show (2 : ℕ) ∣ 2 from dvd_refl 2, if_true, neg_one_mul]
-  exact Real.sign_neg _
+  exact Real.sign_neg
 
 /-! ### The orientation of four-free damped weights -/
 

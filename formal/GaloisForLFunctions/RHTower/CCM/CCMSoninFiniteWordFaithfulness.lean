@@ -326,11 +326,10 @@ theorem evenSoninWindowTranslation_mul_adjoint_compactEq_shell_of_canonical
   have hI := evenSoninWindowTranslation_adjoint_mul_compactEq_shell
     a (x * C) (x * F) x⁻¹ hxC0 hxF0
       (mul_le_mul_of_nonneg_left hFC.le hx.le) (inv_pos.mpr hx)
-  rw [← hAdj] at hI
   have hinvF : x⁻¹ * (x * F) = F := inv_mul_cancel_left₀ hx.ne' F
   have hinvC : x⁻¹ * (x * C) = C := inv_mul_cancel_left₀ hx.ne' C
-  rw [hinvF, hinvC, max_eq_left haF, max_eq_left (haF.trans hFC.le)] at hI
-  simpa using hI
+  simpa only [← hAdj, ContinuousLinearMap.adjoint_adjoint, hinvF, hinvC,
+    max_eq_left haF, max_eq_left (haF.trans hFC.le)] using hI
 
 end RHTower
 
@@ -717,7 +716,8 @@ theorem evenTwoPolarizationShell_comm_compactEq
       (hu.trans_le huv) hu)
   have hleft : (As + Rs) * (Au + Ru) =ₖ As * Au + Rs * Ru := by
     have hexpand : (As + Rs) * (Au + Ru) =
-        (As * Au + As * Ru) + (Rs * Au + Rs * Ru) := by noncomm_ring
+        (As * Au + As * Ru) + (Rs * Au + Rs * Ru) := by
+      rw [add_mul, mul_add, mul_add]
     rw [hexpand]
     have hsum := CompactOperatorEq.add
       (CompactOperatorEq.add (CompactOperatorEq.refl (As * Au)) hAsRu)
@@ -725,7 +725,8 @@ theorem evenTwoPolarizationShell_comm_compactEq
     simpa only [add_zero, zero_add] using hsum
   have hright : (Au + Ru) * (As + Rs) =ₖ As * Au + Rs * Ru := by
     have hexpand : (Au + Ru) * (As + Rs) =
-        (Au * As + Au * Rs) + (Ru * As + Ru * Rs) := by noncomm_ring
+        (Au * As + Au * Rs) + (Ru * As + Ru * Rs) := by
+      rw [add_mul, mul_add, mul_add]
     rw [hexpand]
     have hsum := CompactOperatorEq.add
       (CompactOperatorEq.add (CompactOperatorEq.of_eq hAA.symm) hAuRs)

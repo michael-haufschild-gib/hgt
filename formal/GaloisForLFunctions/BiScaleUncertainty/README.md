@@ -49,6 +49,8 @@ play different roles for arithmetic reasons, even when their sampling densities 
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Measures the information lost by blind, averaged or sign-insensitive observations. |
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md), [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Retain signed derivative work and complete energy cross terms of the actual source. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks an arithmetic effectivity input beyond the general correlation geometry. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Studies the same prime Dirichlet polynomial beyond the Montgomery–Vaughan threshold $X>T$. The band of §3.10, at heights up to $\sqrt N$ for length $N$, is exactly this regime; below it Montgomery–Vaughan bounds everything. Signed close-pair cancellation is that programme's tool and the critical-line zero proportion its target. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Collects the band law as the growth-unit entry of the width dictionary. Node criticality is the node test of its selectivity battery: fatal at $\log4$, free at $\log6$, every prime power needed. Its Nyquist rank bound reads the same square-root threshold through dimensions of section spaces. |
 
 `RHTower` supplies explicit-formula, continuation, prime-counting and zero-divisor inputs.
 Beurling systems, shifted zeta pairs, unimodular twists and function-field examples are
@@ -62,7 +64,10 @@ that the sign needs. This theory supplies four of the criteria by which a propos
 that target is judged before it is built: it must fail for a Beurling system with an off-line
 zero; it must work at the degenerate point of one character and modulus one, with no family
 average; it must carry information beyond polynomial length equal to the height at square-root
-precision; and it must separate $\log4$ from $\log6$ (node criticality, §3.16).
+precision; and it must separate $\log4$ from $\log6$ (node criticality, §3.16). Every receiver of
+the corpus reads one number, the zero width $\Delta=\sup_\rho\lvert\Re\rho-\tfrac12\rvert$, in its own
+unit. In this theory the unit is the growth exponent of the band: RH is its linear growth, an entry
+of `widthDictionary_tfae`. A reformulation in another unit is therefore not progress on the band.
 
 Read §2 for the normalization dictionary, §§3.1–3.6 for correlation geometry,
 §§3.10–3.11 for the analytic receiver, and §§3.14–3.16 for arithmetic identifiability; §4 lists
@@ -1011,8 +1016,6 @@ engine, the exponential-type non-annihilation theorem and the superlinear count 
 zeros, which the packet laws of §3.11 consume; the blind symbol slacks of §3.6 refine the
 prime-blind archimedean positivity constants of the RH tower, whose full-grid zero-pole version
 is RH itself.
-
----
 
 ### 3.16 Node criticality: deletion prices, window spectra and composite nodes
 

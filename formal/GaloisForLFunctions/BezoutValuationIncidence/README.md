@@ -49,6 +49,8 @@ assembly into the complete receiver, not the existence of any arithmetic improve
 | [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md), [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md), [Square-Root Threshold](../SquareRootThreshold/README.md) | Aperture, source and lag coordinates of the complete-form destination. |
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Prices the loss from period averages, magnitudes and other coarsened readings. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks whether the finite arithmetic can produce genuine effectivity and a definite intersection form. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Places the pronic Báez–Duarte criterion in the width dictionary as its Báez–Duarte unit. Shows that the damping flow transports the sign pattern of residue-mode combinations exactly, so the open question of the chain concerns magnitudes in the pronic norm, not orientation. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | The other place where signed prime-row statistics beyond the large sieve are required: close prime pairs beyond the Montgomery–Vaughan threshold, against BVI's balanced-scale single-modulus statistics. |
 
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form and on the critical cancellation of the actual Möbius and prime source it needs. BVI
@@ -625,6 +627,19 @@ to the totient mass of its Selberg support, and a class of rows with Selberg sup
 determined at every phase by $\sum_{q\in S}\varphi(q)$ consecutive values. The universal
 horizon $\Phi(N)\le N(N+1)/2$ is quadratic with no logarithm; the common-return horizon $2N-3$
 shows it is not sharp for the discrepancy at special phases.
+
+**No linear horizon at arbitrary phase.** The special phases are special. For every $m$ and
+every $N\ge(m+2)(2^{m+1})!(1+2^{m+1})$ some nonzero row has zero response on $mN$ consecutive
+integers (`exists_zero_response_window`, `not_exists_linear_observability_horizon`). The witness
+is an **alternating grid**: with weights $b_j=M2^j$, $j<m$, and $M$ a factorial, each subset
+$S\subseteq[0,m)$ gets the modulus $d_S=D-\sum_{j\in S}b_j$ just below a cutoff $D$, the offset
+$\sum_{j\in S}jb_j$ and the sign $(-1)^{\lvert S\rvert}$. Inside the window every modulus hits
+exactly one position in each block $J<m$. In block $J$ the weight $b_J$ enters with coefficient
+$J-J=0$, so toggling $J\in S$ keeps the position and flips the sign, and every block cancels: this
+is the identity $\prod_{j<m}(1-X^{(j-J)b_j})=0$. One phase serves all the moduli because they are
+pairwise coprime: their differences are $M$ times numbers below $2^{m+1}$, all dividing $M$, and
+$D$ is coprime to $M$. Arbitrary-phase observability is therefore not an incidence-linear law,
+and the true horizon lies strictly between linear and $\Phi(N)\asymp N^2$.
 
 **The window sandwich at quadratic order.** The response frequencies are $1/N^2$-separated, since
 a nontrivial $m$-th root of unity is at distance at least $1/m$ from $1$. Smoothing a window by a
@@ -1374,7 +1389,8 @@ finite inequality.
    (`PronicBezoutSplitAndPrimePowerIndecomposability`).
 2. **Observability at every phase.** The cyclotomic incidence recurrence makes $\Phi(N)$
    consecutive responses determine a row at any phase
-   (`CyclotomicIncidenceRecurrenceAndArbitraryPhaseObservability`);
+   (`CyclotomicIncidenceRecurrenceAndArbitraryPhaseObservability`), and no linear number does
+   (`not_exists_linear_observability_horizon`);
    the window sandwich constant has exact order $N^2$ (`windowSandwichConstant_exact_quadratic_order`)
    and degree-$m$ moment transfer has exact horizon $N^{m\pm o(1)}$
    (`translatedMomentTransferConstant_exact_order`); the relation spectrum in degrees five and six
@@ -1425,7 +1441,7 @@ finite inequality.
 | Pronic reach is cancellation. | $d\mid n(n+1)$ for some $d\in(M,M(M+1)]$ says nothing about $L_N(M,c)$: a single modulus $d>M$ contributes only the drift $-Mc(d)/d$. |
 | A symmetric return window determines the row. | The window $[R-(N-2),R+(N-3)]$ of length $2N-4$ has a one-dimensional kernel; the asymmetric window of length $2N-3$ is needed. |
 | Observability needs a period or a common return. | At every phase, $\Phi(N)\le N(N+1)/2$ consecutive responses determine the row and $\Phi(N)$ discrepancies decide the variance; a support class needs only its totient mass. |
-| A sharper window sandwich reaches the linear horizon. | The optimal sandwich constant has exact order $N^2$ (flat Selberg row at a common return); linear observability, if true, is an incidence-algebraic statement no mean-square comparison sees. |
+| A sharper window sandwich reaches the linear horizon. | The optimal sandwich constant has exact order $N^2$ (flat Selberg row at a common return). Linear observability is false at arbitrary phase: alternating grids of moduli just below the cutoff vanish on $mN$ consecutive integers for every $m$. |
 | Degree-$m$ statistics transfer at the quadratic horizon. | The degree-$m$ transfer horizon is $N^{m\pm o(1)}$; sixth-moment protocols need windows of length $N^{6-o(1)}$. |
 | Window constants carry a logarithm. | The sandwich constant $2N^2-1$, the inverse $\ell^1$ constant $e^{19/2}N^2$ and the window covariance bound at every lag are log-free. |
 | Compressed lags form a semigroup. | $\lambda_q(h_1+h_2)\ne\lambda_q(h_1)\lambda_q(h_2)$; at $p^{a+1}$ all lags below $p^a$ are erased and two of them revive the mode with defect $-1/(p-1)$; even on squarefree support $\lambda_q(2)-\lambda_q(1)^2=-3/4$ at $q=3,6$. |
@@ -1602,11 +1618,21 @@ with an absolutely summable harmonic trace
 Neither supplies an infinite-horizon derivative bound at positive damping; that is the interface with
 continuation and compensation theory.
 
+The missing statement is a Poincaré-type inequality for a Markov semigroup whose entrance law is
+not in the dual of the critical norm. Markov theory meets such failures with an $h$-transform, and
+the obstruction is located in the centring, not in the transition: the reciprocal observable,
+with the size bias divided out, already has a finite pronic dual norm at every damping. The
+$h$-transform under which the centred chain is a contraction in pronic $\ell^2$ at a fixed
+$\eta<\tfrac12$ has not been identified. Such a bound is an upper bound, not a positivity
+statement, and is equivalent to admission at that damping.
+
 ### 7.7 Observation constants
 
-The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the shortest universal recurrence
-and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the gap between a quadratic universal
-horizon and a linear special one is open, and any linear law must be incidence-algebraic. The exact
+The sharp observability horizon at arbitrary phase. $\Phi(N)$ is the shortest universal recurrence
+and an upper bound; $2N-3$ holds at common returns and for $N=3,4$ everywhere; and no linear
+horizon holds at arbitrary phase (§3.4). The alternating-grid witness needs $N$ factorial in
+$2^{m+1}$ to defeat $mN$, so it says nothing against horizons such as $N\log N$: the exact growth
+between superlinear and quadratic is open. The exact
 window sandwich constant in $[\Phi(N)-2,N(N-1)]$. Explicit stability constants for relation-spectrum
 recovery on windows at unknown phase, and the law for rows only approximately equal in degrees five
 and six. Rates in the cofinal Möbius laws uniform in the band ratio $B$; concavity of the cofinal
@@ -1624,7 +1650,14 @@ packet in the energy-centred Gram.
    cross-scale exponent $\theta=2\log P/\log Q$: Type II stands at $6/5$, sharp cutoffs at $4/3$, rows
    smooth to order $K-1$ at $2K/(K+1)$, the receiver at $\theta=2$. On the damping side the unit is
    the band: the receiver is bounded through $\varepsilon=\tfrac12-\kappa\sigma(T)/(480\log T)$, and every
-   wider band is a zero-free region.
+   wider band is a zero-free region. One selective input class is in reach at balanced scales.
+   The Bernoulli kernel is a cosecant–Bernoulli sum in the Kloosterman fraction $k\bar n/p$
+   (`bernoulliKernel_eq_reciprocity`). Expanding it in Kloosterman sums over primes would bring
+   trace-function bounds for $\sum_{q\le x}\Lambda(q)K(q)$, which save a power for
+   $x\ge p^{3/4+\varepsilon}$ (Fouvry–Kowalski–Michel), to the balanced range $Q\asymp P$. Their input
+   is Deligne's theorem, unavailable to Beurling systems. The expected outcome is a qualitative
+   balanced-scale gain. A power saving in the window form would be a zero-free strip
+   (`moebiusPowerWindowSaving_iff`), so this attacks the quasi-Riemann hypothesis, not RH.
 2. **The signed sum over moduli** of the interior martingale, equivalently the coercive contraction.
 3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window
    $(X/2,2X)$: which consecutive integers, residue classes and jump spacings of $\{N/p\}$ couple the
@@ -1634,7 +1667,8 @@ packet in the energy-centred Gram.
 5. **Selectivity.** Identify the additive input in each estimate. Multiplicative identities alone
    survive generalized number systems; ask which additional structure distinguishes $\zeta$ from
    $\zeta(s-a)\zeta(s+a)$.
-6. **The chain in receiver coordinates** (§7.6).
+6. **The chain in receiver coordinates** (§7.6), through the $h$-transform that makes the centred
+   semigroup a pronic-$\ell^2$ contraction at fixed sub-half damping.
 
 ---
 

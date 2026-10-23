@@ -42,6 +42,7 @@ Neither reduction supplies the missing estimate on the actual source.
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Develops the coupled flux–forcing budget beyond separate estimates on derivative terms. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks arithmetic effectivity that could provide a source of the required energy estimate. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Studies the source's signed incidence kernel, a possible input to continuation. |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Lists cofinal admission as the damping unit of the width dictionary. Shows that on residue-mode combinations the damping flow keeps the sign pattern of the coefficients exactly: what transport must control is magnitude in the pronic norm, not orientation. |
 
 **The shared target.** The programmes in the table work on RH as the sign of one critical
 arithmetic form and on the critical cancellation of the actual Möbius source. ACCE supplies what no
@@ -818,6 +819,11 @@ To be built:
 - The aperture continuation of the window certificates of `ArithmeticIncidencePositivity` past a
   prime, with the per-prime gain required by the affine envelope, and the aperture analogue of the
   averaged budget.
+- The aperture analogue of the exact derivative. In damping the derivative is an exact identity,
+  boundary flux minus jump energy minus density forcing. No aperture-derivative identity for the
+  ground energy `μ(A)` with that structure is known, and no monotone or Lyapunov quantity in `A`.
+  Find one with a sign-definite jump term. The ceiling fixes its shape: any such functional must
+  decay like `exp(−πe^{2(A−2)})`.
 - The arithmetic content the function-field model lacks: the number-field source has no exact
   vanishing of degree-wise Möbius sums beyond degree one, and the whole obligation is that defect.
   Quantify it — a bound on the deviation of the centred prefix from a constant at a fixed damping is
