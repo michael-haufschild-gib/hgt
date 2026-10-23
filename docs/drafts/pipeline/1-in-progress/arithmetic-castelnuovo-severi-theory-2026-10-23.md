@@ -144,6 +144,27 @@ survivor).
   bandwidth-`4/3` diagonal constant `43/36 = 5/4 − 1/18` and prime–pole cross bound `O(T^{5/6} log² T)`,
   and double-window minimum-aperture prime-pair bound `norm_doubleWindow_primeFreq_offDiag_le`).
 
+- `RiemannRochForZAndTheReflectedPrimePolarLedger`: `PolarSurface.positiveCone_riemannRoch`,
+  `PolarSurface.openPositiveCone_ample`, `PolarSurface.openPositiveCone_riemannRoch_iff_hodgeIndex`
+  (duality of `positiveCone` and `openPositiveCone`: `openPositiveCone` satisfies `AmpleAxiom`
+  unconditionally without assuming the sign of `W`, reducing `HodgeIndex` to `RiemannRochAxiom`),
+  `strictCoupledArithmeticCone`, `strictCoupledArithmeticCone_ample`,
+  `strictCoupledArithmeticCone_riemannRoch_iff_hodgeIndex`, `mem_strictCoupledArithmeticCone_odd_iff`,
+  `weilPair_self_eq_fullZeroForm`, `two_mul_poleB_mul_poleA_eq_lorentz_moments`,
+  `poleCharge_eq_two_mul_poleA_sq_of_odd`, `localPair_self_eq_neg_poleCharge_sub_fullZeroForm_of_odd`
+  (`poleCharge F = 2 A(F)²` is the negative self-intersection of the polar projection `A(F)(H − V)` on
+  `scalingSurface`), `scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger`,
+  `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`,
+  `scalingSubsurface_odd_primitive_self_eq_reflectedPrimePolarLedger`,
+  `scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`,
+  `scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp` (unconditional all-aperture rate-`1/2`
+  bound `δ(x, x) ≥ −78 e^r ∫ f²`), `riemannHypothesis_iff_rightZeros_zeta_eq_empty`,
+  `rightZeros_zeta_eq_empty_iff_forall_odd_strictCoupled_riemannRoch`,
+  `rightZeros_zeta_eq_empty_iff_forall_odd_reflectedPrimePolarAllocation`,
+  `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`,
+  `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths` (unconditional
+  `RiemannRochAxiom`, `AmpleAxiom`, and `BezoutAxiom` past the first prime `r ≤ 181/500`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated
@@ -151,7 +172,13 @@ pairs).
 
 ## Open core
 The scaling-surface Hodge index is RH-equivalent (`scalingSurface_hodgeIndex_iff`,
-`riemannHypothesis_iff_exists_effectivity`), but no independent arithmetic effectivity theory
-supplies it. Every Riemann–Roch effectivity with nonnegative degrees contains the open positive cone
-(`openPositiveCone_subset_of_effectivity`), whose ample axiom is RH; what is missing is an ampleness
-proof from a notion of section, not from the sign of the form.
+`riemannHypothesis_iff_exists_effectivity`). On `scalingSubsurface (oddRealTestsAt r)`,
+`strictCoupledArithmeticCone` satisfies `AmpleAxiom` unconditionally at every degree `r > 0` without
+assuming the sign of `W` (`strictCoupledArithmeticCone_ample`), and its `RiemannRochAxiom` is
+unconditionally equivalent to the two-pole Chebyshev-defect allocation
+`∫_{(0, 2r]} E(s) · 2 e^{-s/2} (A_f'(s) - ½ A_f(s)) ds ≤ surplusPool + crossingPotentialTerm + gaugeRemainder`
+(`rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`), proved unconditionally through
+`r ≤ 181/500` past the first prime (`strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths`)
+and bounded unconditionally across all `r > 0` at rate `σ = 1/2` (`δ(x, x) ≥ −78 e^r ∫ f²`,
+`scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`). Closing the gap from `−78 e^r ∫ f²`
+to `0` across unbounded apertures `r → ∞` is the exact open core of the Riemann Hypothesis.

@@ -16,8 +16,6 @@ that crossing to the literal raised Montgomery mean square; no complementary fac
 moment is assumed.
 -/
 
-set_option maxRecDepth 10000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -233,7 +231,6 @@ theorem exists_maynardWindowRelevantSelectedCell_fibre_tuned_montgomery
   · simpa [beta] using hover
   · simpa [IsMaynardSelectedMontgomeryBound, Y] using hMont
 
-set_option maxHeartbeats 1000000 in
 /-- Exact two-term count extracted from the literal selected-cell Montgomery inequality.  Unlike
 the older height-dominated corollary, this statement does not assume the raised length exceeds
 the observation height. -/
@@ -331,7 +328,6 @@ theorem card_le_of_selected_montgomery_two_term_fixed_polylog_raw
     (montgomery_amplitude_two_term_cancellation hYpos hG0 (by positivity)
       hW0 hD0 hB0 hPL0 hC hG hraw)
 
-set_option maxHeartbeats 1000000 in
 /-- **Literal lower-strip selected-cell count.**  First crossing of `T^(4/5)`, exact two-term
 Montgomery cancellation, and one fixed-polylog absorption put every selected-cell fibre with
 `3/4 ≤ alpha ≤ 19/25` directly inside Route T's second alternative.  The theorem already
@@ -435,14 +431,14 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     simpa only [Nat.cast_zero, zero_add, div_one] using hone
   have honeDivHF : 1 / delta ≤ HF := by
     have hpi : (1 : ℝ) ≤ 12 * Real.pi := by
-      nlinarith [Real.pi_gt_three]
+      linarith [Real.pi_gt_three]
     have hnum : (1 : ℝ) ≤ 12 * Real.pi *
         ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr hpi) (sub_nonneg.mpr hsum1)]
+      linarith [mul_nonneg (sub_nonneg.mpr hpi) (sub_nonneg.mpr hsum1)]
     have hdiv : 1 / delta ≤ (12 * Real.pi / delta) *
         ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by
       rw [div_eq_mul_inv, div_eq_mul_inv]
-      nlinarith [mul_nonneg (inv_nonneg.mpr hdelta.le) (sub_nonneg.mpr hnum)]
+      linarith [mul_nonneg (inv_nonneg.mpr hdelta.le) (sub_nonneg.mpr hnum)]
     dsimp only [HF, maynardHarmonicFactor]
     linarith
   have hdeltaLog : 1 / delta + 2 * Real.log (W * Y) ≤ 3 * HF * B0 := by

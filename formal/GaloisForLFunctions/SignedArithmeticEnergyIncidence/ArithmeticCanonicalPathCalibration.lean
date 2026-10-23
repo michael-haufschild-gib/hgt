@@ -778,8 +778,7 @@ theorem supersolution_primeTriangleCanonical :
     ∀ i, 0 ≤ couplingAction
       (oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget)
       primeTriangleGauge i :=
-  supersolution_primeTriangleGauge_of_le (by norm_num [primeTriangleCanonicalBudget])
-    (by norm_num [primeTriangleCanonicalBudget]) (by norm_num [primeTriangleCanonicalBudget])
+  supersolution_primeTriangleGauge_of_le le_rfl le_rfl le_rfl
 
 /-- **Unconditional `PathCertificate` for the source-faithful prime triangle.** -/
 def primeTriangleCanonicalPathCertificate :
@@ -1281,9 +1280,7 @@ theorem supersolution_packedPrimeCanonical :
     ∀ i, 0 ≤ couplingAction
       (oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget)
       packedPrimeGauge i :=
-  supersolution_packedPrimeGauge_of_le (by norm_num [packedPrimeCanonicalBudget])
-    (by norm_num [packedPrimeCanonicalBudget]) (by norm_num [packedPrimeCanonicalBudget])
-    (by norm_num [packedPrimeCanonicalBudget])
+  supersolution_packedPrimeGauge_of_le le_rfl le_rfl le_rfl le_rfl
 
 /-- **Unconditional packed `PathCertificate` for the 4-point arithmetic configuration under
 `weilLedgerKernel 1 1`.** -/
@@ -1409,6 +1406,24 @@ theorem packed_shared_step_gauge_lower_bound {ι : Type*} [Fintype ι] [Decidabl
       ≤ (∑ b ∈ S, P.share a b a u) * (|c a u| * P.gauge u) := hsum_le
     _ ≤ 1 * (|c a u| * P.gauge u) := mul_le_mul_of_nonneg_right hpack_S hgu_nn
     _ = |c a u| * P.gauge u := one_mul _
+
+/-- Unconditional shared-step gauge bound for `packedPrimeCanonicalPathCertificate` on `{2, 3}`:
+the sum of the gauge-weighted anti-aligned demands `(1, 2)` and `(1, 3)` is bounded by the shared
+hub step capacity `|c 1 0| * packedPrimeGauge 0`. -/
+theorem packedPrimeCanonical_shared_step_gauge_bound :
+    ∑ b ∈ ({2, 3} : Finset (Fin 4)),
+      oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget 1 b *
+        packedPrimeGauge b ≤
+      |oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget 1 0| *
+        packedPrimeGauge 0 := by
+  refine packed_shared_step_gauge_lower_bound packedPrimeCanonicalPathCertificate 1 0 {2, 3} ?_
+  intro b hb
+  rcases mem_insert.mp hb with rfl | hb
+  · refine ⟨by decide, ?_, by decide, rfl⟩
+    linarith [(oddFold_packedPrime_one_two packedPrimeCanonicalBudget).1]
+  · rw [mem_singleton.mp hb]
+    refine ⟨by decide, ?_, by decide, rfl⟩
+    linarith [(oddFold_packedPrime_one_three packedPrimeCanonicalBudget).1]
 
 end
 

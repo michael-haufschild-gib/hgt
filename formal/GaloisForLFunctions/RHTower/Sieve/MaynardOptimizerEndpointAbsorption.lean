@@ -9,7 +9,6 @@ Route-T endpoint shift still dominates every fixed polylogarithm at this larger 
 hundredth of the global endpoint deficit pays the complete Huxley energy constant.
 -/
 
-set_option maxRecDepth 10000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -55,7 +54,7 @@ theorem log_maynardFixedPolylogBase_le_edge_of_scale
       linarith
     have hsecond : maynardRaisedWidthConstant + E - 1 ≤
         maynardRaisedWidthConstant * E := by
-      nlinarith [mul_nonneg (sub_nonneg.mpr hwidth1) (sub_nonneg.mpr hE1)]
+      linarith [mul_nonneg (sub_nonneg.mpr hwidth1) (sub_nonneg.mpr hE1)]
     exact hfirst.trans hsecond
   have hlogE : Real.log E ≤ routeTContourEdgeLogEnvelope A (3 * T) := by
     dsimp only [E]

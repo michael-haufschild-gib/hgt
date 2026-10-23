@@ -37,53 +37,8 @@ theorem thetaCuspFirstAtomEighthScale175Over48AffineJointReserve_pos_at_baseline
     field_simp [hqpos.ne']
     rw [show q = 103 / 48 + y by dsimp only [y]; ring]
     ring_nf
-    -- each monomial lies in `[0, (1 / 48)^k]`; the constant term dominates linearly
-    have hl2 : 0 ≤ y ^ (2 : ℕ) := by positivity
-    have hl3 : 0 ≤ y ^ (3 : ℕ) := by positivity
-    have hl4 : 0 ≤ y ^ (4 : ℕ) := by positivity
-    have hl5 : 0 ≤ y ^ (5 : ℕ) := by positivity
-    have hl6 : 0 ≤ y ^ (6 : ℕ) := by positivity
-    have hl7 : 0 ≤ y ^ (7 : ℕ) := by positivity
-    have hl8 : 0 ≤ y ^ (8 : ℕ) := by positivity
-    have hl9 : 0 ≤ y ^ (9 : ℕ) := by positivity
-    have hl10 : 0 ≤ y ^ (10 : ℕ) := by positivity
-    have hl11 : 0 ≤ y ^ (11 : ℕ) := by positivity
-    have hl12 : 0 ≤ y ^ (12 : ℕ) := by positivity
-    have hl13 : 0 ≤ y ^ (13 : ℕ) := by positivity
-    have hl14 : 0 ≤ y ^ (14 : ℕ) := by positivity
-    have hl15 : 0 ≤ y ^ (15 : ℕ) := by positivity
-    have hl16 : 0 ≤ y ^ (16 : ℕ) := by positivity
-    have hl17 : 0 ≤ y ^ (17 : ℕ) := by positivity
-    have hl18 : 0 ≤ y ^ (18 : ℕ) := by positivity
-    have hl19 : 0 ≤ y ^ (19 : ℕ) := by positivity
-    have hl20 : 0 ≤ y ^ (20 : ℕ) := by positivity
-    have hl21 : 0 ≤ y ^ (21 : ℕ) := by positivity
-    have hl22 : 0 ≤ y ^ (22 : ℕ) := by positivity
-    have hu2 : y ^ (2 : ℕ) ≤ (1 / 48 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hy hyhi 2
-    have hu3 : y ^ (3 : ℕ) ≤ (1 / 48 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hy hyhi 3
-    have hu4 : y ^ (4 : ℕ) ≤ (1 / 48 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hy hyhi 4
-    have hu5 : y ^ (5 : ℕ) ≤ (1 / 48 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
-    have hu6 : y ^ (6 : ℕ) ≤ (1 / 48 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
-    have hu7 : y ^ (7 : ℕ) ≤ (1 / 48 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
-    have hu8 : y ^ (8 : ℕ) ≤ (1 / 48 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hy hyhi 8
-    have hu9 : y ^ (9 : ℕ) ≤ (1 / 48 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hy hyhi 9
-    have hu10 : y ^ (10 : ℕ) ≤ (1 / 48 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hy hyhi 10
-    have hu11 : y ^ (11 : ℕ) ≤ (1 / 48 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hy hyhi 11
-    have hu12 : y ^ (12 : ℕ) ≤ (1 / 48 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hy hyhi 12
-    have hu13 : y ^ (13 : ℕ) ≤ (1 / 48 : ℝ) ^ (13 : ℕ) := pow_le_pow_left₀ hy hyhi 13
-    have hu14 : y ^ (14 : ℕ) ≤ (1 / 48 : ℝ) ^ (14 : ℕ) := pow_le_pow_left₀ hy hyhi 14
-    have hu15 : y ^ (15 : ℕ) ≤ (1 / 48 : ℝ) ^ (15 : ℕ) := pow_le_pow_left₀ hy hyhi 15
-    have hu16 : y ^ (16 : ℕ) ≤ (1 / 48 : ℝ) ^ (16 : ℕ) := pow_le_pow_left₀ hy hyhi 16
-    have hu17 : y ^ (17 : ℕ) ≤ (1 / 48 : ℝ) ^ (17 : ℕ) := pow_le_pow_left₀ hy hyhi 17
-    have hu18 : y ^ (18 : ℕ) ≤ (1 / 48 : ℝ) ^ (18 : ℕ) := pow_le_pow_left₀ hy hyhi 18
-    have hu19 : y ^ (19 : ℕ) ≤ (1 / 48 : ℝ) ^ (19 : ℕ) := pow_le_pow_left₀ hy hyhi 19
-    have hu20 : y ^ (20 : ℕ) ≤ (1 / 48 : ℝ) ^ (20 : ℕ) := pow_le_pow_left₀ hy hyhi 20
-    have hu21 : y ^ (21 : ℕ) ≤ (1 / 48 : ℝ) ^ (21 : ℕ) := pow_le_pow_left₀ hy hyhi 21
-    have hu22 : y ^ (22 : ℕ) ≤ (1 / 48 : ℝ) ^ (22 : ℕ) := pow_le_pow_left₀ hy hyhi 22
-    norm_num at hu2 hu3 hu4 hu5 hu6 hu7 hu8 hu9 hu10
-    norm_num at hu11 hu12 hu13 hu14 hu15 hu16 hu17 hu18 hu19
-    norm_num at hu20 hu21 hu22 ⊢
-    linarith
+    -- every coefficient of the expanded polynomial in `y ≥ 0` is positive
+    positivity
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 16)
 
 /-- The quadratic coefficient in the fourth direction is positive on the chamber. -/
@@ -104,17 +59,8 @@ theorem thetaCuspFirstAtomEighthScale175Over48Affine_fourthQuadraticCoefficient_
     field_simp [hqpos.ne']
     rw [show q = 103 / 48 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
-    have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
-    have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
-    have hy5 : y ^ (5 : ℕ) ≤ (1 / 48 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ (6 : ℕ) ≤ (1 / 48 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ (7 : ℕ) ≤ (1 / 48 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
-    have hy9 : 0 ≤ y ^ (9 : ℕ) := by positivity
-    have hy10 : 0 ≤ y ^ (10 : ℕ) := by positivity
-    norm_num at hy5 hy6 hy7 ⊢
-    linarith
+    -- every coefficient of the expanded polynomial in `y ≥ 0` is positive
+    positivity
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
 
 /-- The constant coefficient in the fourth direction is positive on the chamber. -/
@@ -215,11 +161,11 @@ theorem thetaCuspFirstAtomEighthScale175Over48Affine_sixthLossCoefficient_pos
     have hy12 : 0 ≤ y ^ (12 : ℕ) := by positivity
     have hy13 : 0 ≤ y ^ (13 : ℕ) := by positivity
     have hy14 : 0 ≤ y ^ (14 : ℕ) := by positivity
-    have hpair : 0 ≤ y ^ (15 : ℕ) * (5630176000 : ℝ) - y ^ (16 : ℕ) * 640000 := by
-      have hc : 0 ≤ (5630176000 : ℝ) - 640000 * y := by linarith
-      rw [show y ^ (15 : ℕ) * (5630176000 : ℝ) - y ^ (16 : ℕ) * 640000 =
-          y ^ (15 : ℕ) * (5630176000 - 640000 * y) by ring]
-      positivity
+    have hy15 : 0 ≤ y ^ (15 : ℕ) := by positivity
+    -- the only negative coefficient sits on `y^16 = y^15 * y ≤ y^15 / 48`
+    have hy16 : y ^ (16 : ℕ) ≤ y ^ (15 : ℕ) * (1 / 48) := by
+      rw [pow_succ]
+      exact mul_le_mul_of_nonneg_left hyhi hy15
     linarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 12)
 

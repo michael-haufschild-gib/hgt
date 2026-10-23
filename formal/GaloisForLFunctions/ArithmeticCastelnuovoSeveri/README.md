@@ -395,10 +395,31 @@ To be built:
 
 ## 7. Open problems
 
-1. **Riemann–Roch for `ℤ` — the open core.** A notion of section on the scaling surface whose
-   effective classes have nonnegative ample degree by definition and which supplies effective
-   cycles in every class of positive square. Bézout is available (19); the supply is RH-equivalent
-   (17) and cannot come from positive tests (18) or from exact annihilators (20).
+1. **Riemann–Roch for `ℤ` — the open core (`RiemannRochForZAndTheReflectedPrimePolarLedger`).**
+   Dually to the closed positive cone `S.positiveCone` (where `RiemannRochAxiom` holds
+   unconditionally and `AmpleAxiom` is equivalent to `HodgeIndex`), the open positive cone
+   `S.openPositiveCone` (`strictCoupledArithmeticCone V` on `scalingSubsurface V`) satisfies
+   `AmpleAxiom` **unconditionally without assuming the sign of `W`**
+   (`PolarSurface.openPositiveCone_ample`, `strictCoupledArithmeticCone_ample`), so the entire
+   Hodge index theorem on `scalingSubsurface V` reduces to the single property
+   `RiemannRochAxiom (strictCoupledArithmeticCone V)`
+   (`strictCoupledArithmeticCone_riemannRoch_iff_hodgeIndex`). On `scalingSurface`, the pole-plane
+   hyperbolic form `2 B(F) A(F)` is the Lorentz moment form `2 evenPoleMoment(F)² − poleCharge F`
+   (`two_mul_poleB_mul_poleA_eq_lorentz_moments`), so on `oddRealTestsAt r` (`evenPoleMoment F = 0`)
+   the incidence-ledger `poleCharge F = 2 A(F)²` is the negative self-intersection of the polar
+   projection `A(F)(H − V)`. At every degree `r > 0` and plateau radius `R > r`, the
+   Castelnuovo–Severi defect `δ(x, x)` equals the archimedean gauge budget minus
+   `reflectedPrimePolarCost f r` — or equivalently minus the horizon-localized two-pole Chebyshev
+   defect integral on `(0, 2r]` (`scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger`,
+   `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`) — with the unconditional rate-`1/2`
+   bound `δ(x, x) ≥ −78 e^r ∫ f²` (`scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`).
+   Exact `100%` critical-line zeros (`rightZeros zetaZeroConfig = ∅`) is unconditionally equivalent
+   to `RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r))` and to reflected-prime /
+   two-pole Chebyshev-defect allocation across all degrees `r > 0`
+   (`rightZeros_zeta_eq_empty_iff_forall_odd_strictCoupled_riemannRoch`,
+   `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`), and holds unconditionally
+   past the first prime (`r ≤ 181/500`,
+   `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths`).
 2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
@@ -490,4 +511,5 @@ Weil's argument.
 | `TheSuccessorCollar` | collar bounds; consecutive Hecke cycles meet through the collar alone |
 | `TheTwoThirdsConstantIsPairCorrelation` | `2 − κ` capacity of rank–trace inertia, coalescence indistinguishability, `2/3` from `λ = 1` pair correlation |
 | `BreakingTheCoalescenceBlindSpotAndThreeQuarters` | unsplit `(P, Q)` spectral slack, `jointRankTrace23` (`(7 − 3κ)/4 = 3/4` at `κ = 4/3`), `κ = 5/4` prime-surplus & double-window routes to `75%` |
+| `RiemannRochForZAndTheReflectedPrimePolarLedger` | `strictCoupledArithmeticCone` unconditional ampleness, Lorentz–polar identity, all-aperture reflected-prime / Chebyshev-defect Castelnuovo–Severi ledger, equivalence with exact `100%` critical-line zeros |
 | `TheLambdaRingOfTheScalingSurface` | universal `λ`-ring series, Adams operations `adamsOp q` and Hecke cycles `heckeCycle a g` on `scalingSurface`, pole-plane splitting, narrow-bump `heckeIncidence`, zero-side eigenlaw |

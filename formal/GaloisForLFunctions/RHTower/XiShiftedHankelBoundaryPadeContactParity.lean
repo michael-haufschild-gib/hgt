@@ -497,7 +497,6 @@ theorem hasFPowerSeriesAt_re_xiShiftedReciprocalMoment_add
       FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul, zero_add,
       mul_assoc, mul_left_comm, mul_comm] using hsum
 
-set_option maxHeartbeats 5000000 in
 /-- The universal mass-shift series of one shifted-Xi moment converges absolutely throughout the
 unit interval.  This is stronger than conditional Taylor convergence and permits exact polynomial
 evaluation of finite Hankel determinants. -/
@@ -512,19 +511,11 @@ theorem massShiftMomentPowerSeries_xiShifted_realAbsoluteSummableAt
       hy (by linarith : 0 ≤ y + 1) (by norm_num : |(1 : ℝ)| < 41 / 2) m).summable
     simpa only [one_pow, mul_one] using h
   rw [PowerSeries.RealAbsoluteSummableAt]
-  apply (Summable.of_norm_bounded hsumOne.norm ?_).norm
-  intro r
-  rw [GaloisForLFunctions.HTGeometry.coeff_massShiftMomentPowerSeries]
-  rw [norm_mul, norm_pow, Real.norm_eq_abs]
-  calc
-    ‖(-1 : ℝ) ^ r * ((m + r).choose m : ℝ) *
-        (xiShiftedReciprocalMoment y (m + r)).re‖ * |u| ^ r ≤
-        ‖(-1 : ℝ) ^ r * ((m + r).choose m : ℝ) *
-          (xiShiftedReciprocalMoment y (m + r)).re‖ * 1 :=
-      mul_le_mul_of_nonneg_left (pow_le_one₀ (abs_nonneg u) hu.le) (norm_nonneg _)
-    _ = ‖(-1 : ℝ) ^ r * ((r + m).choose m : ℝ) *
-          (xiShiftedReciprocalMoment y (r + m)).re‖ := by
-      rw [mul_one, Nat.add_comm m r]
+  refine hsumOne.norm.of_nonneg_of_le (fun _ => norm_nonneg _) fun r => ?_
+  rw [GaloisForLFunctions.HTGeometry.coeff_massShiftMomentPowerSeries, norm_mul, norm_pow,
+    Nat.add_comm m r]
+  exact mul_le_of_le_one_right (norm_nonneg _)
+    (pow_le_one₀ (norm_nonneg u) (by rw [Real.norm_eq_abs]; exact hu.le))
 
 /-- Absolute evaluation of the formal mass-shift series is the actual shifted-Xi moment. -/
 theorem realAbsoluteEval_massShiftMomentPowerSeries_xiShifted
@@ -576,7 +567,6 @@ def xiShiftedHankelDetFPowerSeries (y : ℝ) (N : ℕ) :
       (GaloisForLFunctions.HTGeometry.massShiftHankelPowerSeries
         (fun k => (xiShiftedReciprocalMoment y k).re) N).det
 
-set_option maxHeartbeats 2000000 in
 /-- The finite shifted-Xi Hankel determinant has exactly the universal mass-shift determinant as
 its Taylor series at every positive base point. -/
 theorem hasFPowerSeriesAt_det_xiShiftedMomentHankelMatrix_add
@@ -963,7 +953,6 @@ theorem summable_xiShiftedReciprocal_padeKernel_double_of_abs_lt
     _ ≤ ((r + N).choose N : ℝ) * (|u| * R) ^ r *
           ‖xiShiftedReciprocalSquare y q‖ ^ (m + 1) := by gcongr
 
-set_option maxHeartbeats 1200000 in
 /-- The Padé normal energy is exactly the convergent contact series throughout the local disk. -/
 theorem hasSum_xiShiftedPadeNormalEnergy_of_abs_lt
     {y u : ℝ} (hy : 0 ≤ y) (huabs : |u| < 41 / 2)
@@ -996,8 +985,9 @@ theorem hasSum_xiShiftedPadeNormalEnergy_of_abs_lt
     rw [Complex.ofRealHom_eq_coe]
     rw [show r + i + 1 = (r + 1) + i by omega, pow_add]
     ring
-  have hfre : Summable (fun p : ℕ × XiZeroCopy =>
-      (Function.uncurry f p).re) := Complex.reCLM.summable hf
+  -- stated through the projections, so `tsum_prod` reduces `(r, q).1` without unfolding `f`
+  have hfre : Summable (fun p : ℕ × XiZeroCopy => (f p.1 p.2).re) :=
+    Complex.reCLM.summable hf
   have hpoint (q : XiZeroCopy) :
       HasSum (fun r : ℕ => (f r q).re)
         (xiShiftedReciprocalSquare y q *
@@ -1020,10 +1010,10 @@ theorem hasSum_xiShiftedPadeNormalEnergy_of_abs_lt
     simp only [Complex.reCLM_apply, zero_add, pow_one]
     congr 1
     ring
-  have htotal : (∑' p : ℕ × XiZeroCopy, (Function.uncurry f p).re) =
+  have htotal : (∑' p : ℕ × XiZeroCopy, (f p.1 p.2).re) =
       xiShiftedPadeNormalEnergy y P n u := by
     calc
-      (∑' p : ℕ × XiZeroCopy, (Function.uncurry f p).re) =
+      (∑' p : ℕ × XiZeroCopy, (f p.1 p.2).re) =
           ∑' r : ℕ, ∑' q : XiZeroCopy, (f r q).re := hfre.tsum_prod
       _ = ∑' q : XiZeroCopy, ∑' r : ℕ, (f r q).re := hfre.tsum_comm.symm
       _ = xiShiftedPadeNormalEnergy y P n u := by
@@ -1032,7 +1022,7 @@ theorem hasSum_xiShiftedPadeNormalEnergy_of_abs_lt
         intro q
         exact (hpoint q).tsum_eq
   have houter : HasSum (fun r : ℕ => ∑' q : XiZeroCopy, (f r q).re)
-      (∑' p : ℕ × XiZeroCopy, (Function.uncurry f p).re) :=
+      (∑' p : ℕ × XiZeroCopy, (f p.1 p.2).re) :=
     hfre.hasSum.prod_fiberwise fun r => (hfre.prod_factor r).hasSum
   rw [htotal] at houter
   apply HasSum.congr_fun houter

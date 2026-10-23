@@ -9,8 +9,6 @@ forces `alpha <= 983/1000`; the resulting receiver margin accommodates the liter
 packing cap.
 -/
 
-set_option maxRecDepth 10000
-set_option maxHeartbeats 1500000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -196,7 +194,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
         _ ≤ T ^ beta := Real.rpow_le_rpow_of_exponent_le hT.le hbetaLo
         _ = Y := hYeq.symm
     have hYsq : Y ≤ Y ^ 2 := by nlinarith
-    have hpi : (1 : ℝ) ≤ 8 * Real.pi := by nlinarith [Real.pi_gt_three]
+    have hpi : (1 : ℝ) ≤ 8 * Real.pi := by linarith [Real.pi_gt_three]
     exact hTY.trans (hYsq.trans (by nlinarith [sq_nonneg Y]))
   have hHuxley : IsMaynardSelectedHuxleyBound K c alpha delta label S 1 := by
     unfold IsMaynardSelectedHuxleyBound

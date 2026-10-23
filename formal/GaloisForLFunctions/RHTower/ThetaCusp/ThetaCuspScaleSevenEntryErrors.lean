@@ -76,7 +76,7 @@ theorem thetaCuspNativeScaledEvenJet_1_error_le_of_seven_le {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ f^(2 : ℕ)*q^(1 : ℕ))
   change |thetaCuspNativeReflectionJet 2 x-thetaCuspFirstAtomReflectionJet 2 x| ≤
     (1/75000 : ℝ)*(f^(2 : ℕ)*q^(1 : ℕ))
-  nlinarith only [hb, hm]
+  linarith only [hb, hm]
 
 /-- Explicit normalized order-4 error on the complete physical scale-seven ray. -/
 theorem thetaCuspNativeScaledEvenJet_2_error_le_of_seven_le {x : ℝ}
@@ -122,7 +122,7 @@ theorem thetaCuspNativeScaledEvenJet_2_error_le_of_seven_le {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ f^(2 : ℕ)*q^(2 : ℕ))
   change |thetaCuspNativeReflectionJet 4 x-thetaCuspFirstAtomReflectionJet 4 x| ≤
     (1/250 : ℝ)*(f^(2 : ℕ)*q^(2 : ℕ))
-  nlinarith only [hb, hm]
+  linarith only [hb, hm]
 
 /-- Explicit normalized order-6 error on the complete physical scale-seven ray. -/
 theorem thetaCuspNativeScaledEvenJet_3_error_le_of_seven_le {x : ℝ}
@@ -174,7 +174,7 @@ theorem thetaCuspNativeScaledEvenJet_3_error_le_of_seven_le {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ f^(2 : ℕ)*q^(3 : ℕ))
   change |thetaCuspNativeReflectionJet 6 x-thetaCuspFirstAtomReflectionJet 6 x| ≤
     (5/4 : ℝ)*(f^(2 : ℕ)*q^(3 : ℕ))
-  nlinarith only [hb, hm]
+  linarith only [hb, hm]
 
 /-- Explicit normalized order-8 error on the complete physical scale-seven ray. -/
 theorem thetaCuspNativeScaledEvenJet_4_error_le_of_seven_le {x : ℝ}
@@ -232,7 +232,7 @@ theorem thetaCuspNativeScaledEvenJet_4_error_le_of_seven_le {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ f^(2 : ℕ)*q^(4 : ℕ))
   change |thetaCuspNativeReflectionJet 8 x-thetaCuspFirstAtomReflectionJet 8 x| ≤
     (450 : ℝ)*(f^(2 : ℕ)*q^(4 : ℕ))
-  nlinarith only [hb, hm]
+  linarith only [hb, hm]
 
 /-- Explicit normalized order-10 error on the complete physical scale-seven ray. -/
 theorem thetaCuspNativeScaledEvenJet_5_error_le_of_seven_le {x : ℝ}
@@ -296,7 +296,7 @@ theorem thetaCuspNativeScaledEvenJet_5_error_le_of_seven_le {x : ℝ}
   have hm := mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ f^(2 : ℕ)*q^(5 : ℕ))
   change |thetaCuspNativeReflectionJet 10 x-thetaCuspFirstAtomReflectionJet 10 x| ≤
     (175000 : ℝ)*(f^(2 : ℕ)*q^(5 : ℕ))
-  nlinarith only [hb, hm]
+  linarith only [hb, hm]
 
 end
 end RHTower

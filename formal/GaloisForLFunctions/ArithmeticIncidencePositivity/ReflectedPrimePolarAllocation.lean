@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeTowerLedgerReducti
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.EdgeTentLogarithmicCapacity
 import GaloisForLFunctions.ArithmeticIncidencePositivity.SchurLendingOddWindowThreeHundredSixtyTwoThousandths
+import GaloisForLFunctions.ArithmeticIncidencePositivity.OverlappingPrimeStripsTwentyThreeFortieths
 import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 import GaloisForLFunctions.SquareRootThreshold.TheIncidenceLedgerGradedByTheZeroWidth
 import GaloisForLFunctions.SquareRootThreshold.PolarGroundEnergyAndPoleFreeLagAbscissaBridge
@@ -879,35 +880,6 @@ theorem fullZeroForm_eq_chebyshevDefectLedger {F : ℝ → ℝ} {r R : ℝ}
   rw [fullZeroForm_eq_reflectedPrimePolarLedger hF hFc hodd hr hsupp hrR,
     reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect (hF.of_le (by norm_num)) hFc hodd hr hsupp]
 
-/-- `GlobalIncidenceAllocation r R F` holds if and only if the joint reflected-prime/polar cost is
-paid by the surplus pool, the crossing potential, and the gauge remainder. -/
-theorem globalIncidenceAllocation_iff_reflectedPrimePolarCost_le (r R : ℝ) (F : ℝ → ℝ) :
-    GlobalIncidenceAllocation r R F ↔
-      reflectedPrimePolarCost F r ≤
-        surplusPool (aperturePlateau r R) F +
-          crossingPotentialTerm (aperturePlateau r R) F +
-          gaugeRemainder (aperturePlateau r R) F := by
-  unfold GlobalIncidenceAllocation reflectedPrimePolarCost
-  constructor <;> intro h <;> linarith
-
-/-- **All-aperture positivity from reflected-prime/polar Chebyshev allocation.** Unlike
-`fullZeroForm_nonneg_of_stripAllocation` (which requires `R ≤ 3/5` and decouples the prime strips
-from the pole moment), paying the single Chebyshev-defect lag integral from
-`surplusPool + crossingPotentialTerm + gaugeRemainder` implies `0 ≤ fullZeroForm F` at any aperture
-`0 < r < R`. -/
-theorem fullZeroForm_nonneg_of_reflectedPrimePolarAllocation {F : ℝ → ℝ} {r R : ℝ}
-    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
-    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R)
-    (halloc :
-      (∫ s in Ioi (0 : ℝ), chebyshevTwoPoleDefect s *
-          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-        surplusPool (aperturePlateau r R) F +
-          crossingPotentialTerm (aperturePlateau r R) F +
-          gaugeRemainder (aperturePlateau r R) F) :
-    0 ≤ fullZeroForm F := by
-  rw [fullZeroForm_eq_chebyshevDefectLedger hF hFc hodd hr hsupp hrR]
-  linarith
-
 /-- **Unconditional `GlobalIncidenceAllocation` across the Schur-lending window `(0, 181/500]`.**
 For every aperture `0 < r ≤ 181/500` (strictly past the first prime threshold `½ log 2 ≈ 0.34657`),
 every plateau radius `R > r`, and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`,
@@ -1295,6 +1267,414 @@ theorem gradedIncidenceAllocation_of_half_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) :
   have hm := mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left hexp (by norm_num : (0 : ℝ) ≤ 78)) hI0
   linarith
+
+/-! ### Signed prime–pole cancellation Sobolev bounds across all tests and apertures -/
+
+/-- **Pointwise uniform Sobolev bound on `crossCorrelation F s`.** For every `F ∈ C¹_c(ℝ)` and
+every lag `s ∈ ℝ`, `|crossCorrelation F s| ≤ (1/2) ∫ F² + (1/2) ∫ (deriv F)²`. -/
+theorem abs_crossCorrelation_le_half_add_half_deriv_sq {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    |crossCorrelation F s| ≤ (1 / 2) * (∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2 := by
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  have hdcs : HasCompactSupport (deriv F) := hFc.deriv
+  have hd_shift_cont : Continuous fun x => deriv F (x + s) :=
+    hdcont.comp (continuous_id.add continuous_const)
+  have hd_shift_cs : HasCompactSupport fun x => deriv F (x + s) :=
+    hdcs.comp_homeomorph (Homeomorph.addRight s)
+  have hI1 : Integrable fun x => |F x * deriv F (x + s)| := by
+    simpa only [Real.norm_eq_abs] using
+      (hFcont.mul hd_shift_cont).norm.integrable_of_hasCompactSupport hFc.mul_right.norm
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hFcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  have hd2s : Integrable fun x => deriv F (x + s) ^ 2 :=
+    (hd_shift_cont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hd_shift_cs)
+  have hmono : (∫ x, |F x * deriv F (x + s)|) ≤
+      ∫ x, (1 / 2) * F x ^ 2 + (1 / 2) * deriv F (x + s) ^ 2 := by
+    refine integral_mono hI1 ((hF2.const_mul (1 / 2)).add (hd2s.const_mul (1 / 2))) fun x => ?_
+    have hsq : 0 ≤ (|F x| - |deriv F (x + s)|) ^ 2 := sq_nonneg _
+    have ha : |F x| ^ 2 = F x ^ 2 := sq_abs (F x)
+    have hb : |deriv F (x + s)| ^ 2 = deriv F (x + s) ^ 2 := sq_abs (deriv F (x + s))
+    have hm : |F x * deriv F (x + s)| = |F x| * |deriv F (x + s)| := abs_mul _ _
+    linarith
+  rw [integral_add (hF2.const_mul (1 / 2)) (hd2s.const_mul (1 / 2)),
+    integral_const_mul, integral_const_mul,
+    integral_add_right_eq_self (μ := volume) (fun x => deriv F x ^ 2) s] at hmono
+  unfold crossCorrelation
+  exact abs_integral_le_integral_abs.trans hmono
+
+/-- Uniform Sobolev bound on the first-order lag factor `crossCorrelation F s − autoCorrelation F s / 2`. -/
+theorem abs_crossCorrelation_sub_half_autoCorrelation_le {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    |crossCorrelation F s - autoCorrelation F s / 2| ≤
+      (∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2 := by
+  have h1 := abs_crossCorrelation_le_half_add_half_deriv_sq hF hFc s
+  have h2 : |autoCorrelation F s| ≤ ∫ x, F x ^ 2 := by
+    rw [← autoCorr_eq_autoCorrelation]
+    exact abs_autoCorr_le_integral_sq hF.continuous hFc s
+  have htri := abs_sub (crossCorrelation F s) (autoCorrelation F s / 2)
+  rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at htri
+  linarith
+
+/-- On any finite horizon `(0, S]`, `2 e^{−s/2} |chebyshevTwoPoleDefect s|` is integrable. -/
+theorem integrableOn_Ioc_exp_mul_abs_chebyshevTwoPoleDefect {S : ℝ} (hS : 0 < S) :
+    IntegrableOn (fun s => 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) (Ioc 0 S) := by
+  refine Measure.integrableOn_of_bounded (M := 2 * (Real.exp S + S + 1 + lagChebyshev S))
+    measure_Ioc_lt_top.ne ?_ ?_
+  · exact ((Continuous.measurable (by fun_prop)).mul
+      measurable_chebyshevTwoPoleDefect.abs).aestronglyMeasurable
+  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with s hs
+    have hexp1 : Real.exp (-s / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hs.1])
+    have hexpS : Real.exp s ≤ Real.exp S := Real.exp_le_exp.mpr hs.2
+    have hψ0 : 0 ≤ lagChebyshev s := lagChebyshev_nonneg s
+    have hψS : lagChebyshev s ≤ lagChebyshev S := lagChebyshev_mono hs.2
+    have htp0 : 0 ≤ Real.exp s := (Real.exp_pos s).le
+    have habs : |chebyshevTwoPoleDefect s| ≤ Real.exp S + S + 1 + lagChebyshev S := by
+      rw [chebyshevTwoPoleDefect, twoPoleWeight, abs_le]
+      constructor <;> linarith [hs.1, hs.2]
+    have hpos : 0 ≤ 2 * Real.exp (-s / 2) := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hpos (abs_nonneg _))]
+    calc 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|
+        ≤ 2 * 1 * (Real.exp S + S + 1 + lagChebyshev S) :=
+          mul_le_mul (by linarith) habs (abs_nonneg _) (by norm_num)
+      _ = 2 * (Real.exp S + S + 1 + lagChebyshev S) := by ring
+
+/-- **First-order signed prime–pole cancellation bound across all odd `C¹_c` tests.** Unlike the
+uncancelled triangle-inequality envelope `reflectedPrimePolarCost_le_primeSum_add_sinh_mul_sq`, this
+bound factors through the cancelled two-pole Chebyshev defect `E(s) = e^s + s − 1 − ψ(e^s) = o(e^s)`
+uniformly across all odd `F ∈ C¹_c(ℝ)` supported in `[−r, r]` (`r > 0`). -/
+theorem abs_reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    |reflectedPrimePolarCost F r| ≤
+      (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  set N := ⌈Real.exp (2 * r)⌉₊
+  have hN : Real.exp (2 * r) ≤ N := Nat.le_ceil _
+  have hS : (0 : ℝ) < 2 * r := by linarith
+  have hvan : ∀ s, 2 * r ≤ s → lagTestWeight F s = 0 := fun s hs => by
+    rw [lagTestWeight, autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  have hint_deriv : IntegrableOn (fun s => chebyshevTwoPoleDefect s * deriv (lagTestWeight F) s)
+      (Ioc 0 (2 * r)) :=
+    (integrableOn_Ioi_chebyshevTwoPoleDefect_mul_deriv
+      (contDiff_one_lagTestWeight hF hFc) hS hvan hN).mono_set (fun _ hx => hx.1)
+  have hint_g : IntegrableOn (fun s =>
+      |chebyshevTwoPoleDefect s| *
+        |2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)|)
+      (Ioc 0 (2 * r)) := by
+    refine hint_deriv.norm.congr_fun (fun s _ => ?_) measurableSet_Ioc
+    rw [Real.norm_eq_abs, deriv_lagTestWeight hF hFc s, abs_mul]
+  have hint_bound : IntegrableOn (fun s =>
+      (2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
+    (integrableOn_Ioc_exp_mul_abs_chebyshevTwoPoleDefect hS).mul_const _
+  have hmono : (∫ s in Ioc (0 : ℝ) (2 * r),
+      |chebyshevTwoPoleDefect s| *
+        |2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)|) ≤
+      ∫ s in Ioc (0 : ℝ) (2 * r),
+        (2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+          ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+    refine setIntegral_mono_on hint_g hint_bound measurableSet_Ioc fun s _ => ?_
+    have hpos : 0 < 2 * Real.exp (-s / 2) := by positivity
+    rw [abs_mul, abs_of_pos hpos,
+      show |chebyshevTwoPoleDefect s| *
+          (2 * Real.exp (-s / 2) * |crossCorrelation F s - autoCorrelation F s / 2|) =
+        (2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+          |crossCorrelation F s - autoCorrelation F s / 2| by ring]
+    exact mul_le_mul_of_nonneg_left
+      (abs_crossCorrelation_sub_half_autoCorrelation_le hF hFc s) (by positivity)
+  rw [MeasureTheory.integral_mul_const] at hmono
+  exact (abs_reflectedPrimePolarCost_le_integral_abs_chebyshevTwoPoleDefect
+    hF hFc hodd hr hsupp).trans hmono
+
+theorem reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r ≤
+      (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) :=
+  (le_abs_self _).trans
+    (abs_reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev hF hFc hodd hr hsupp)
+
+theorem chebyshevTwoPoleDefect_integral_le_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+      (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc hF hFc hodd hr hsupp]
+  exact reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev hF hFc hodd hr hsupp
+
+/-- **Horizon-localized second-order critical-scale allocation.** Because `(lagTestWeight F)''`
+vanishes on `(2r, ∞)`, the second-order critical-scale receiver representation of
+`reflectedPrimePolarCost F r` is supported on the finite horizon `(0, 2r]`. -/
+theorem reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r =
+      ∫ s in Ioc (0 : ℝ) (2 * r),
+        (criticalScalePrefix s + s ^ 2 / 2 - s) *
+          (2 * Real.exp (-s / 2) *
+            (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4)) := by
+  set N := ⌈Real.exp (2 * r)⌉₊
+  have hN : Real.exp (2 * r) ≤ N := Nat.le_ceil _
+  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
+  have hF' : ContDiff ℝ 1 (deriv F) :=
+    (contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) F from hF)).2.2
+  have hS : (0 : ℝ) < 2 * r := by linarith
+  have hvan : ∀ s, 2 * r ≤ s → lagTestWeight F s = 0 := fun s hs => by
+    rw [lagTestWeight, autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
+  have hh := contDiff_one_lagTestWeight hF1 hFc
+  have hh' := contDiff_one_deriv_lagTestWeight_of_contDiff hF1 hF' hFc
+  have hd2 : Continuous (deriv (deriv (lagTestWeight F))) := hh'.continuous_deriv le_rfl
+  have hvan2 : ∀ s, 2 * r < s → deriv (deriv (lagTestWeight F)) s = 0 :=
+    fun s hs => deriv_deriv_eq_zero_of_vanishing hvan hs
+  have hcr : Continuous (rampSum N) := by
+    unfold rampSum
+    exact continuous_finsetSum _ fun n _ =>
+      continuous_const.mul ((continuous_id.sub continuous_const).max continuous_const)
+  have hcont_ramp : Continuous fun s =>
+      -(polarRamp s - rampSum N s) * deriv (deriv (lagTestWeight F)) s :=
+    (continuous_polarRamp.sub hcr).neg.mul hd2
+  have hdisj : Disjoint (Ioc (0 : ℝ) (2 * r)) (Ioi (2 * r)) := by
+    rw [Set.disjoint_left]; rintro x ⟨-, hx2⟩ hx3; exact absurd hx3 (not_lt.mpr hx2)
+  have h1 : IntegrableOn (fun s =>
+      -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s)
+      (Ioc (0 : ℝ) (2 * r)) := by
+    refine ((hcont_ramp.integrableOn_Icc (a := 0) (b := 2 * r)).mono_set
+      Ioc_subset_Icc_self).congr_fun (fun s hs => ?_) measurableSet_Ioc
+    rw [polarRamp_sub_rampSum hs.1.le ((Real.exp_le_exp.mpr hs.2).trans hN)]
+  have hzero : ∀ s ∈ Ioi (2 * r),
+      -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s = 0 :=
+    fun s hs => by rw [hvan2 s hs, mul_zero]
+  have h2 : IntegrableOn (fun s =>
+      -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s)
+      (Ioi (2 * r)) :=
+    (integrableOn_zero (μ := volume) (s := Ioi (2 * r))).congr_fun
+      (fun s hs => (hzero s hs).symm) measurableSet_Ioi
+  have hval2 : (∫ s in Ioi (2 * r),
+      -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s) = 0 := by
+    rw [setIntegral_congr_fun measurableSet_Ioi hzero]; simp
+  rw [reflectedPrimePolarCost_eq_criticalScalePrefix hF hFc hodd hr hsupp,
+    ← MeasureTheory.integral_neg]
+  have hneg_eq : (∫ s in Ioi (0 : ℝ),
+      -((criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s)) =
+      ∫ s in Ioi (0 : ℝ),
+        -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s :=
+    setIntegral_congr_fun measurableSet_Ioi fun _ _ => by ring
+  rw [hneg_eq, ← Set.Ioc_union_Ioi_eq_Ioi hS.le,
+    setIntegral_union hdisj measurableSet_Ioi h1 h2, hval2, add_zero]
+  refine setIntegral_congr_fun measurableSet_Ioc fun s _ => ?_
+  rw [deriv_deriv_lagTestWeight hF hFc s]
+  ring
+
+/-- Uniform Sobolev bound on the second-order lag factor
+`autoCorrelation (deriv F) s + crossCorrelation F s − autoCorrelation F s / 4`. -/
+theorem abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4| ≤
+      (3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2 := by
+  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
+  have hd : |autoCorrelation (deriv F) s| ≤ ∫ x, deriv F x ^ 2 := by
+    rw [← autoCorr_eq_autoCorrelation]
+    exact abs_autoCorr_le_integral_sq (hF1.continuous_deriv le_rfl) hFc.deriv s
+  have hcc := abs_crossCorrelation_le_half_add_half_deriv_sq hF1 hFc s
+  have hac : |autoCorrelation F s| ≤ ∫ x, F x ^ 2 := by
+    rw [← autoCorr_eq_autoCorrelation]
+    exact abs_autoCorr_le_integral_sq hF.continuous hFc s
+  have htri1 := abs_sub (autoCorrelation (deriv F) s + crossCorrelation F s)
+    (autoCorrelation F s / 4)
+  have htri2 := abs_add_le (autoCorrelation (deriv F) s) (crossCorrelation F s)
+  rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 4)] at htri1
+  linarith
+
+/-- On any finite horizon `(0, S]`, `2 e^{−s/2} |criticalScalePrefix s + s²/2 − s|` is integrable. -/
+theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix {S : ℝ} (hS : 0 < S) :
+    IntegrableOn (fun s => 2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|)
+      (Ioc 0 S) := by
+  set N := ⌈Real.exp S⌉₊
+  have hN : Real.exp S ≤ N := Nat.le_ceil _
+  have hcr : Continuous (rampSum N) := by
+    unfold rampSum
+    exact continuous_finsetSum _ fun n _ =>
+      continuous_const.mul ((continuous_id.sub continuous_const).max continuous_const)
+  have hcont : Continuous fun s => 2 * Real.exp (-s / 2) * |polarRamp s - rampSum N s| :=
+    ((continuous_const.mul (Real.continuous_exp.comp (continuous_id.neg.div_const 2))).mul
+      (continuous_polarRamp.sub hcr).abs)
+  refine ((hcont.integrableOn_Icc (a := 0) (b := S)).mono_set
+    Ioc_subset_Icc_self).congr_fun (fun s hs => ?_) measurableSet_Ioc
+  rw [polarRamp_sub_rampSum hs.1.le ((Real.exp_le_exp.mpr hs.2).trans hN)]
+
+/-- **Second-order signed prime–pole cancellation bound across all odd `C²_c` tests.** For every odd
+`F ∈ C²_c(ℝ)` supported in `[−r, r]` (`r > 0`), `|reflectedPrimePolarCost F r|` is bounded by the
+`L¹` norm of the critical-scale prefix functional `2 e^{−s/2} |D(s) + s²/2 − s|` on `(0, 2r]` times
+the `H¹` norm `(3/4) ∫ F² + (3/2) ∫ (deriv F)²`. -/
+theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    |reflectedPrimePolarCost F r| ≤
+      (∫ s in Ioc (0 : ℝ) (2 * r),
+        2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
+        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) := by
+  set N := ⌈Real.exp (2 * r)⌉₊
+  have hN : Real.exp (2 * r) ≤ N := Nat.le_ceil _
+  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
+  have hF' : ContDiff ℝ 1 (deriv F) :=
+    (contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) F from hF)).2.2
+  have hS : (0 : ℝ) < 2 * r := by linarith
+  have hh' := contDiff_one_deriv_lagTestWeight_of_contDiff hF1 hF' hFc
+  have hd2 : Continuous (deriv (deriv (lagTestWeight F))) := hh'.continuous_deriv le_rfl
+  have hcr : Continuous (rampSum N) := by
+    unfold rampSum
+    exact continuous_finsetSum _ fun n _ =>
+      continuous_const.mul ((continuous_id.sub continuous_const).max continuous_const)
+  have hcont_abs : Continuous fun s =>
+      |-(polarRamp s - rampSum N s) * deriv (deriv (lagTestWeight F)) s| :=
+    ((continuous_polarRamp.sub hcr).neg.mul hd2).abs
+  have hint_g : IntegrableOn (fun s =>
+      |(criticalScalePrefix s + s ^ 2 / 2 - s) *
+        (2 * Real.exp (-s / 2) *
+          (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4))|)
+      (Ioc 0 (2 * r)) := by
+    refine ((hcont_abs.integrableOn_Icc (a := 0) (b := 2 * r)).mono_set
+      Ioc_subset_Icc_self).congr_fun (fun s hs => ?_) measurableSet_Ioc
+    simp only
+    rw [polarRamp_sub_rampSum hs.1.le ((Real.exp_le_exp.mpr hs.2).trans hN),
+      deriv_deriv_lagTestWeight hF hFc s]
+    congr 1
+    ring
+  have hint_bound : IntegrableOn (fun s =>
+      (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
+        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
+    (integrableOn_Ioc_exp_mul_abs_criticalScalePrefix hS).mul_const _
+  rw [reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc hF hFc hodd hr hsupp]
+  refine le_trans abs_integral_le_integral_abs ?_
+  have hmono : (∫ s in Ioc (0 : ℝ) (2 * r),
+      |(criticalScalePrefix s + s ^ 2 / 2 - s) *
+        (2 * Real.exp (-s / 2) *
+          (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4))|) ≤
+      ∫ s in Ioc (0 : ℝ) (2 * r),
+        (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
+          ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) := by
+    refine setIntegral_mono_on hint_g hint_bound measurableSet_Ioc fun s _ => ?_
+    have hpos : 0 < 2 * Real.exp (-s / 2) := by positivity
+    rw [abs_mul, abs_mul, abs_of_pos hpos,
+      show |criticalScalePrefix s + s ^ 2 / 2 - s| *
+          (2 * Real.exp (-s / 2) *
+            |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4|) =
+        (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
+          |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4| by ring]
+    exact mul_le_mul_of_nonneg_left
+      (abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le hF hFc s) (by positivity)
+  rw [MeasureTheory.integral_mul_const] at hmono
+  exact hmono
+
+theorem reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r ≤
+      (∫ s in Ioc (0 : ℝ) (2 * r),
+        2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
+        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) :=
+  (le_abs_self _).trans
+    (abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev hF hFc hodd hr hsupp)
+
+/-! ### Overlapping prime-strip allocation in the incidence ledger at `r = 23/40` -/
+
+/-- At `r = 23/40 = 0.575`, the relevant shifts `n ≥ 2` with `log n < 2r = 23/20` are `{2, 3}`. -/
+theorem relevantShifts_twentyThreeFortieths :
+    relevantShifts (23 / 40) = {2, 3} := by
+  ext n
+  rw [mem_relevantShifts, Finset.mem_insert, Finset.mem_singleton]
+  have h1 := Real.log_two_gt_d9
+  have h2 := Real.log_two_lt_d9
+  obtain ⟨h3, h4⟩ := log_three_bounds
+  constructor
+  · rintro ⟨hn2, hlog⟩
+    by_contra hne
+    push_neg at hne
+    have hn4 : 4 ≤ n := by omega
+    have hlog4 : Real.log 4 ≤ Real.log n :=
+      Real.log_le_log (by norm_num) (by exact_mod_cast hn4)
+    have h4eq : Real.log (4 : ℝ) = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 * 2 by norm_num, Real.log_mul (by norm_num) (by norm_num)]
+      ring
+    linarith
+  · rintro (rfl | rfl)
+    · exact ⟨by omega, by push_cast; linarith⟩
+    · exact ⟨by omega, by push_cast; linarith⟩
+
+/-- At `r = 23/40`, the net reflected-prime charge `Σ_n oddStripCost_n − Σ_n evenStripGain_n` is
+the sum of the shift correlations at `log 2` and `log 3`. -/
+theorem sum_oddStripCost_sub_sum_evenStripGain_twentyThreeFortieths {F : ℝ → ℝ}
+    (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, 23 / 40 < |x| → F x = 0) :
+    (∑ n ∈ relevantShifts (23 / 40), oddStripCost F (23 / 40) n) -
+        ∑ n ∈ relevantShifts (23 / 40), evenStripGain F (23 / 40) n =
+      2 * (vonMangoldtAtom 2 * ∫ x, F x * F (x + Real.log 2)) +
+        2 * (vonMangoldtAtom 3 * ∫ x, F x * F (x + Real.log 3)) := by
+  have h2 := Real.log_two_lt_d9
+  obtain ⟨-, h4⟩ := log_three_bounds
+  have he2 := evenStripGain_sub_oddStripCost_eq hF hodd (r := 23 / 40) (by norm_num) hsupp
+    (n := 2) (by push_cast; linarith)
+  have he3 := evenStripGain_sub_oddStripCost_eq hF hodd (r := 23 / 40) (by norm_num) hsupp
+    (n := 3) (by push_cast; linarith)
+  rw [relevantShifts_twentyThreeFortieths,
+    Finset.sum_pair (by decide : (2 : ℕ) ≠ 3),
+    Finset.sum_pair (by decide : (2 : ℕ) ≠ 3)]
+  unfold autoCorr at he2 he3
+  push_cast at he2 he3
+  linarith
+
+/-- **Overlapping prime-strip allocation in the incidence ledger at `r = 23/40`.** For every real
+odd `F ∈ C¹_c(ℝ)` supported in `[−23/40, 23/40]`, the total odd strip cost across all relevant
+shifts `{2, 3}` is paid by the archimedean strip surplus `2 stripSurplus F (log 2 − 23/40) (23/40)`
+and the favorable even strip gains `Σ_n evenStripGain_n`, with `(1/62) ∫_{S₂} F²` to spare. -/
+theorem sum_oddStripCost_le_stripSurplus_add_evenStripGain_twentyThreeFortieths {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, 23 / 40 < |x| → F x = 0) :
+    (∑ n ∈ relevantShifts (23 / 40), oddStripCost F (23 / 40) n) +
+        1 / 62 * (∫ x in (Real.log 2 - 23 / 40)..(23 / 40), F x ^ 2) ≤
+      2 * stripSurplus F (Real.log 2 - 23 / 40) (23 / 40) +
+        ∑ n ∈ relevantShifts (23 / 40), evenStripGain F (23 / 40) n := by
+  obtain ⟨K, -, hK⟩ := exists_lipschitz_bound_of_compactSupport hF hFc
+  have h1 := two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths
+    hF.continuous hFc hodd (fun a b => hK b a) hsupp
+  have h2 := sum_oddStripCost_sub_sum_evenStripGain_twentyThreeFortieths hF.continuous hodd hsupp
+  linarith
+
+/-- **Reflected-prime/polar cost allocation at `r = 23/40`.** For every real odd `F ∈ C¹_c(ℝ)`
+supported in `[−23/40, 23/40]`, the joint reflected-prime/polar cost plus `(1/62) ∫_{S₂} F²` is at
+most `2 stripSurplus F (log 2 − 23/40) (23/40) + poleCharge F`. -/
+theorem reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, 23 / 40 < |x| → F x = 0) :
+    reflectedPrimePolarCost F (23 / 40) +
+        1 / 62 * (∫ x in (Real.log 2 - 23 / 40)..(23 / 40), F x ^ 2) ≤
+      2 * stripSurplus F (Real.log 2 - 23 / 40) (23 / 40) + poleCharge F := by
+  have h := sum_oddStripCost_le_stripSurplus_add_evenStripGain_twentyThreeFortieths
+    hF hFc hodd hsupp
+  unfold reflectedPrimePolarCost
+  linarith
+
+/-- **Chebyshev-defect integral allocation at `r = 23/40`.** For every real odd `F ∈ C¹_c(ℝ)`
+supported in `[−23/40, 23/40]`, the horizon-localized Chebyshev-defect integral `C_F` on
+`(0, 23/20]` plus `(1/62) ∫_{S₂} F²` is at most
+`2 stripSurplus F (log 2 − 23/40) (23/40) + poleCharge F`. -/
+theorem chebyshevTwoPoleDefect_integral_le_stripSurplus_add_poleCharge_twentyThreeFortieths
+    {F : ℝ → ℝ} (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, 23 / 40 < |x| → F x = 0) :
+    (∫ s in Ioc (0 : ℝ) (23 / 20), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) +
+        1 / 62 * (∫ x in (Real.log 2 - 23 / 40)..(23 / 40), F x ^ 2) ≤
+      2 * stripSurplus F (Real.log 2 - 23 / 40) (23 / 40) + poleCharge F := by
+  have heq := reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+    hF hFc hodd (by norm_num : (0 : ℝ) < 23 / 40) hsupp
+  rw [show 2 * (23 / 40 : ℝ) = 23 / 20 by ring] at heq
+  rw [← heq]
+  exact reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths
+    hF hFc hodd hsupp
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

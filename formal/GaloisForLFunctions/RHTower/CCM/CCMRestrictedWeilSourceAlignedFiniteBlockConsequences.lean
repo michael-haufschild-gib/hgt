@@ -16,7 +16,6 @@ noncomputable section
 
 namespace RHTower
 
-set_option maxHeartbeats 1000000 in
 /-- **Source-relative finite-block lower bound.**  The full literal restricted-Weil form is bounded
 below by its value on the finite Gamma--Slepian source head, with a universal quarter-norm loss.
 All exterior and head--tail prime--polar couplings are included in the estimate. -/
@@ -86,7 +85,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
     have h := norm_ccmArchimedeanFormToAperture_le a
       (f : CCMArchimedeanFormDomain a)
     change ‖A (f : CCMArchimedeanFormDomain a)‖ ≤ ‖f‖ at h
-    nlinarith only [h, norm_nonneg (A (f : CCMArchimedeanFormDomain a)), norm_nonneg f]
+    exact pow_le_pow_left₀ (norm_nonneg _) h 2
   have hE0 : 0 ≤ E := ccmRestrictedWeilRemainderEnvelope_nonneg a
   have heps0 : 0 ≤ eps := (ccmRestrictedWeilSourceHeadThreshold_pos a).le
   have htailLower := ccmRestrictedWeilForm_sourceRelative_lowerBound a

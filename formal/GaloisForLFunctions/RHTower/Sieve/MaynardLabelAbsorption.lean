@@ -1,6 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardFibreCount
 
-set_option maxRecDepth 10000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -22,7 +21,7 @@ theorem natLogTwo_add_one_cast_le
   have hq0 : 0 ≤ ((Nat.log 2 N : ℕ) : ℝ) := Nat.cast_nonneg _
   have hhalf : ((Nat.log 2 N : ℕ) : ℝ) / 2 ≤
       (Nat.log 2 N : ℝ) * Real.log 2 := by
-    nlinarith [mul_le_mul_of_nonneg_left hlog2half hq0]
+    linarith [mul_le_mul_of_nonneg_left hlog2half hq0]
   norm_num at hlog
   have hqhalf : ((Nat.log 2 N : ℕ) : ℝ) / 2 ≤ Real.log N :=
     hhalf.trans hlog
@@ -149,7 +148,7 @@ theorem eventually_maynardCounting_polylog_absorbed :
   rw [← mul_assoc, hcancel] at hscaled
   have hhalfT : (1 / 2 : ℝ) * T ^ (1 / 100 : ℝ) ≤
       T ^ (1 / 100 : ℝ) := by
-    nlinarith [hTpow]
+    linarith [hTpow]
   refine ⟨hlogT, ?_⟩
   change C * Real.log T ^ 120 ≤ T ^ (1 / 100 : ℝ)
   exact hscaled.trans hhalfT

@@ -1470,18 +1470,31 @@ receiver.
 **Oscillating-probe source estimates.** Every oscillating prefix decomposes into the fractional-part
 sawtooth sum $S_{\varepsilon,t}(n)=\sum_{d\le n}c_{\varepsilon,t}(d)(\lfloor n/d\rfloor-n/d)$ and the
 universal tail drift $T_{\varepsilon,t}(n)=-n\sum_{d>n}c_{\varepsilon,t}(d)/d$
-(`weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail`). At $t=0$ both pieces are
-nonpositively signed, so the dyadic tail block $d\in(n,2n]$ gives
+(`weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail`). Splitting $S_{\varepsilon,t}$ at
+$\lfloor\sqrt n\rfloor$ (`oscillatingSawtoothPrefix_eq_short_add_long`), the short-modulus sawtooth sum
+$1\le d\le\lfloor\sqrt n\rfloor$ satisfies
+$\lvert S^{\mathrm{short}}_{\varepsilon,t}(n)\rvert\le(1+1/(1-\varepsilon))(\sqrt n)^{1-\varepsilon}$ and has
+uniformly bounded pronic norm for every $0<\varepsilon<1$ and $t\in\mathbb R$
+(`pronicNorm_oscillatingShortSawtooth_le`), so sawtooth/tail cancellation reduces to the long-modulus
+sawtooth sum $\lfloor\sqrt n\rfloor<d\le n$ against the tail $d>n$
+(`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_longSawtooth_add_tail`). At $t=0$ both
+pieces are nonpositively signed, so the dyadic tail block $d\in(n,2n]$ gives
 $A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$ and a pure source-estimate harmonic proof of
 $\neg\operatorname{ReceiverBounded}(c_{\varepsilon,0})$ for $0<\varepsilon\le1/2$ without invoking
 $\zeta(1-\varepsilon)\ne0$ (`not_receiverBounded_oscillatingSmoothPower_zero_from_source`). For general
 $t\in\mathbb R$, $T_{\varepsilon,t}(n)=\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$ has unconditionally
 unbounded pronic norm for all $0<\varepsilon\le1/2$ and $t\in\mathbb R$ regardless of $\zeta(\rho)$
-(`not_bdd_pronicNorm_oscillatingTailDrift`), while
+(`not_bdd_pronicNorm_oscillatingTailDrift`) and two-sided $\Theta(T^{1-2\varepsilon})$ energy growth for
+$0<\varepsilon<1/2$, $t\ne0$ (`eventually_oscillatingTailDrift_energy_le_and_ge`), while
 $S_{\varepsilon,t}(n)=\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$
 (`abs_oscillatingSawtoothPrefix_sub_le`), so $c_{\varepsilon,t}$ is paid iff $S_{\varepsilon,t}$ cancels
 $T_{\varepsilon,t}$ in exact anti-phase (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail`,
-`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`). Uniform prefix bounds
+`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`,
+`not_receiverBounded_of_sawtooth_tail_inner_le`), and the alternate Route MC receiver for RH reduces
+to excluding sawtooth/tail (or long-sawtooth/tail) cancellation for $t\ne0$, $0<\varepsilon<1/2$
+(`riemannHypothesis_iff_forall_ne_zero_not_bdd_sawtooth_add_tail`,
+`riemannHypothesis_iff_forall_ne_zero_not_bdd_longSawtooth_add_tail`,
+`routeMC_alternate_receiver_sawtooth_tail_master`). Uniform prefix bounds
 $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
 $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap
 $T^{1-2\varepsilon}$; explicit lower bounds $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and

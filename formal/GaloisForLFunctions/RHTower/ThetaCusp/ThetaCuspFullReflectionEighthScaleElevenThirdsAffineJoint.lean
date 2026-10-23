@@ -15,7 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxHeartbeats 6000000 in
 /-- Exact moving fourth/sixth baseline leaves strict reserve throughout the chamber. -/
 theorem thetaCuspFirstAtomEighthScale11Over3AffineJointReserve_pos_at_baseline
     {q : ℝ} (hqlo : (13 / 6 : ℝ) ≤ q) (hqhi : q ≤ 35 / 16) :
@@ -39,33 +38,10 @@ theorem thetaCuspFirstAtomEighthScale11Over3AffineJointReserve_pos_at_baseline
     field_simp [hqpos.ne']
     rw [show q = 13 / 6 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : y ^ (2 : ℕ) ≤ (1 / 48 : ℝ) ^ (2 : ℕ) := pow_le_pow_left₀ hy hyhi 2
-    have hy3 : y ^ (3 : ℕ) ≤ (1 / 48 : ℝ) ^ (3 : ℕ) := pow_le_pow_left₀ hy hyhi 3
-    have hy4 : y ^ (4 : ℕ) ≤ (1 / 48 : ℝ) ^ (4 : ℕ) := pow_le_pow_left₀ hy hyhi 4
-    have hy5 : y ^ (5 : ℕ) ≤ (1 / 48 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ (6 : ℕ) ≤ (1 / 48 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ (7 : ℕ) ≤ (1 / 48 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : y ^ (8 : ℕ) ≤ (1 / 48 : ℝ) ^ (8 : ℕ) := pow_le_pow_left₀ hy hyhi 8
-    have hy9 : y ^ (9 : ℕ) ≤ (1 / 48 : ℝ) ^ (9 : ℕ) := pow_le_pow_left₀ hy hyhi 9
-    have hy10 : y ^ (10 : ℕ) ≤ (1 / 48 : ℝ) ^ (10 : ℕ) := pow_le_pow_left₀ hy hyhi 10
-    have hy11 : y ^ (11 : ℕ) ≤ (1 / 48 : ℝ) ^ (11 : ℕ) := pow_le_pow_left₀ hy hyhi 11
-    have hy12 : y ^ (12 : ℕ) ≤ (1 / 48 : ℝ) ^ (12 : ℕ) := pow_le_pow_left₀ hy hyhi 12
-    have hy13 : y ^ (13 : ℕ) ≤ (1 / 48 : ℝ) ^ (13 : ℕ) := pow_le_pow_left₀ hy hyhi 13
-    have hy14 : y ^ (14 : ℕ) ≤ (1 / 48 : ℝ) ^ (14 : ℕ) := pow_le_pow_left₀ hy hyhi 14
-    have hy15 : y ^ (15 : ℕ) ≤ (1 / 48 : ℝ) ^ (15 : ℕ) := pow_le_pow_left₀ hy hyhi 15
-    have hy16 : y ^ (16 : ℕ) ≤ (1 / 48 : ℝ) ^ (16 : ℕ) := pow_le_pow_left₀ hy hyhi 16
-    have hy17 : y ^ (17 : ℕ) ≤ (1 / 48 : ℝ) ^ (17 : ℕ) := pow_le_pow_left₀ hy hyhi 17
-    have hy18 : y ^ (18 : ℕ) ≤ (1 / 48 : ℝ) ^ (18 : ℕ) := pow_le_pow_left₀ hy hyhi 18
-    have hy19 : y ^ (19 : ℕ) ≤ (1 / 48 : ℝ) ^ (19 : ℕ) := pow_le_pow_left₀ hy hyhi 19
-    have hy20 : y ^ (20 : ℕ) ≤ (1 / 48 : ℝ) ^ (20 : ℕ) := pow_le_pow_left₀ hy hyhi 20
-    have hy21 : 0 ≤ y ^ (21 : ℕ) := by positivity
-    have hy22 : 0 ≤ y ^ (22 : ℕ) := by positivity
-    norm_num at hyhi hy2 hy3 hy4 hy5 hy6 hy7 hy8 hy9 hy10 hy11 hy12 hy13 hy14
-    norm_num at hy15 hy16 hy17 hy18 hy19 hy20 ⊢
-    nlinarith
+    -- every coefficient of the expanded polynomial in `y ≥ 0` is positive
+    positivity
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 16)
 
-set_option maxHeartbeats 6000000 in
 /-- The quadratic coefficient in the fourth direction is positive on the chamber. -/
 theorem thetaCuspFirstAtomEighthScale11Over3Affine_fourthQuadraticCoefficient_pos
     {q : ℝ} (hqlo : (13 / 6 : ℝ) ≤ q) (hqhi : q ≤ 35 / 16) :
@@ -84,20 +60,10 @@ theorem thetaCuspFirstAtomEighthScale11Over3Affine_fourthQuadraticCoefficient_po
     field_simp [hqpos.ne']
     rw [show q = 13 / 6 + y by dsimp only [y]; ring]
     ring_nf
-    have hy2 : 0 ≤ y ^ (2 : ℕ) := by positivity
-    have hy3 : 0 ≤ y ^ (3 : ℕ) := by positivity
-    have hy4 : 0 ≤ y ^ (4 : ℕ) := by positivity
-    have hy5 : y ^ (5 : ℕ) ≤ (1 / 48 : ℝ) ^ (5 : ℕ) := pow_le_pow_left₀ hy hyhi 5
-    have hy6 : y ^ (6 : ℕ) ≤ (1 / 48 : ℝ) ^ (6 : ℕ) := pow_le_pow_left₀ hy hyhi 6
-    have hy7 : y ^ (7 : ℕ) ≤ (1 / 48 : ℝ) ^ (7 : ℕ) := pow_le_pow_left₀ hy hyhi 7
-    have hy8 : 0 ≤ y ^ (8 : ℕ) := by positivity
-    have hy9 : 0 ≤ y ^ (9 : ℕ) := by positivity
-    have hy10 : 0 ≤ y ^ (10 : ℕ) := by positivity
-    norm_num at hy5 hy6 hy7 ⊢
-    nlinarith
+    -- every coefficient of the expanded polynomial in `y ≥ 0` is positive
+    positivity
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
 
-set_option maxHeartbeats 6000000 in
 /-- The constant coefficient in the fourth direction is positive on the chamber. -/
 theorem thetaCuspFirstAtomEighthScale11Over3Affine_fourthConstantCoefficient_pos
     {q : ℝ} (hqlo : (13 / 6 : ℝ) ≤ q) (_hqhi : q ≤ 35 / 16) :
@@ -160,7 +126,6 @@ theorem thetaCuspFirstAtomEighthScale11Over3AffineJointReserve_mono_fourth
   rw [hid]
   positivity
 
-set_option maxHeartbeats 6000000 in
 /-- Factored sixth-loss coefficient remains positive along the moving baseline. -/
 theorem thetaCuspFirstAtomEighthScale11Over3Affine_sixthLossCoefficient_pos
     {q : ℝ} (hqlo : (13 / 6 : ℝ) ≤ q) (hqhi : q ≤ 35 / 16) :
@@ -197,12 +162,12 @@ theorem thetaCuspFirstAtomEighthScale11Over3Affine_sixthLossCoefficient_pos
     have hy12 : 0 ≤ y ^ (12 : ℕ) := by positivity
     have hy13 : 0 ≤ y ^ (13 : ℕ) := by positivity
     have hy14 : 0 ≤ y ^ (14 : ℕ) := by positivity
-    have hpair : 0 ≤ y ^ (15 : ℕ) * (5630176000 : ℝ) - y ^ (16 : ℕ) * 640000 := by
-      have hc : 0 ≤ (5630176000 : ℝ) - 640000 * y := by linarith
-      rw [show y ^ (15 : ℕ) * (5630176000 : ℝ) - y ^ (16 : ℕ) * 640000 =
-          y ^ (15 : ℕ) * (5630176000 - 640000 * y) by ring]
-      positivity
-    nlinarith
+    have hy15 : 0 ≤ y ^ (15 : ℕ) := by positivity
+    -- the only negative coefficient sits on `y^16 = y^15 * y ≤ y^15 / 48`
+    have hy16 : y ^ (16 : ℕ) ≤ y ^ (15 : ℕ) * (1 / 48) := by
+      rw [pow_succ]
+      exact mul_le_mul_of_nonneg_left hyhi hy15
+    linarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 12)
 
 /-- Reserve decreases toward the moving sixth-jet ceiling. -/
