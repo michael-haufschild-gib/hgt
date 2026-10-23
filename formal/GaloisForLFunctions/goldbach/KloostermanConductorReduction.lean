@@ -7,6 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.KloostermanCrossPhaseGeometric
 import GaloisForLFunctions.RHTower.Sieve.KuzminLandau
 import GaloisForLFunctions.RHTower.SquareResidueQuadraticInterval
 import GaloisForLFunctions.RHTower.Sieve.KloostermanRamanujanDivisorSum
+import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 import Mathlib.Data.ZMod.Units
 import Mathlib.Data.Nat.Factorization.Induction
 import Mathlib.NumberTheory.ArithmeticFunction.Misc
@@ -905,8 +906,7 @@ theorem intervalDivisorFourierMass_eq (M : ℕ+)
       apply sum_congr rfl
       intro a _
       by_cases ha : a = 0
-      · have hz := (hzero a).mpr ha
-        simp only [if_pos hz, ha, ne_eq, not_true_eq_false, if_false]
+      · simp [ha, he0]
       · have hz : (e a).val ≠ 0 := fun h => ha ((hzero a).mp h)
         simp only [if_neg hz, if_pos ha]
         rw [show e a = divisorFrequencyEquiv M d a by rfl,
@@ -995,7 +995,10 @@ theorem norm_kloostermanSum_axis_le_gcd (M : ℕ+) (a : ZMod (M : ℕ)) :
       rw [← Nat.cast_mul, ha]
     rw [hcoef] at h
     exact h.trans ((mul_le_mul_of_nonneg_left hs (by positivity)).trans_eq (mul_one _))
-  simpa only [ZMod.natCast_zmod_val] using htransport (M : ℕ) hM
+  have hgcast : (g : ℝ) = (Nat.gcd (M : ℕ) a.val : ℝ) := rfl
+  have ht := htransport (M : ℕ) hM
+  rw [hgcast] at ht
+  simpa only [ZMod.natCast_zmod_val] using ht
 
 
 /-! ## Exact divisibility of the frequency gcd -/
@@ -1049,7 +1052,7 @@ theorem residueFrequencyGcd_le (M : ℕ+) (a b c : ZMod (M : ℕ)) :
 
 /-- Number of entries of the actual integer interval in one residue class. -/
 def intervalResidueMultiplicity (M : ℕ+) (A : ℤ) (L : ℕ) (x : ZMod (M : ℕ)) : ℕ :=
-  ((range L).filter (fun j => (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = x)).card
+  ((range L).filter (fun j : ℕ => (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = x)).card
 
 /-- Finite Fourier inversion retains the exact residue multiplicity. -/
 theorem intervalResidueMultiplicity_fourier
@@ -1075,7 +1078,7 @@ theorem intervalResidueMultiplicity_fourier
       apply sum_congr rfl
       intro j _
       rw [_root_.RHTower.Sieve.sum_stdAddChar_mul]
-      simp only [sub_eq_zero, eq_comm]
+      simp [sub_eq_zero, eq_comm]
     _ = _ := by
       rw [← sum_filter]
       simp only [sum_const, nsmul_eq_mul, intervalResidueMultiplicity, mul_comm]
@@ -1111,7 +1114,8 @@ theorem modularInverseRectangleCount_fourier
           ZMod.stdAddChar (b * (c * (↑u⁻¹ : ZMod (M : ℕ))))) := by
       simp_rw [intervalResidueMultiplicity_fourier]
     _ = _ := by
-      simp only [sum_mul, mul_sum]
+      simp only [sum_mul]
+      simp only [mul_sum]
       rw [sum_comm]
       apply sum_congr rfl
       intro a _
@@ -1126,6 +1130,264 @@ theorem modularInverseRectangleCount_fourier
           a * (u : ZMod (M : ℕ)) + b * (c * (↑u⁻¹ : ZMod (M : ℕ))) by ring,
         AddChar.map_add_eq_mul]
       ring
+
+
+/-! ## Divisor-weighted Fourier budgets -/
+
+theorem intervalDivisorFourierMass_nonneg (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) (A : ℤ) (L : ℕ) :
+    0 ≤ intervalDivisorFourierMass M d A L :=
+  sum_nonneg (fun _ _ => norm_nonneg _)
+
+/-- The actual gcd is one of the nonnegative common-divisor terms. -/
+theorem residueGcd_le_divisor_sum (M : ℕ+) (a : ZMod (M : ℕ)) :
+    (Nat.gcd (M : ℕ) a.val : ℝ) ≤
+      ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors}, if d.val ∣ a.val then (d.val : ℝ) else 0 := by
+  classical
+  let g := Nat.gcd (M : ℕ) a.val
+  have hg : g ∈ (M : ℕ).divisors :=
+    Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_left _ _, M.pos.ne'⟩
+  have h := single_le_sum
+    (s := univ)
+    (f := fun d : {d : ℕ // d ∈ (M : ℕ).divisors} =>
+      if d.val ∣ a.val then (d.val : ℝ) else 0)
+    (fun _ _ => by split_ifs <;> positivity)
+    (mem_univ (⟨g, hg⟩ : {d : ℕ // d ∈ (M : ℕ).divisors}))
+  dsimp [g] at h
+  rw [if_pos (Nat.gcd_dvd_right (M : ℕ) a.val)] at h
+  exact h
+
+/-- Fourier mass with its exact gcd weight. -/
+def intervalGcdFourierMass (M : ℕ+) (A : ℤ) (L : ℕ) : ℝ :=
+  ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+    ‖intervalAdditiveFourier M A L a‖ * (Nat.gcd (M : ℕ) a.val : ℝ)
+
+/-- Summing along divisor progressions costs one divisor count, including every nonprimitive frequency. -/
+theorem intervalGcdFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) :
+    intervalGcdFourierMass M A L ≤
+      ((M : ℕ).divisors.card : ℝ) * (M : ℝ) * (1 + Real.log (M : ℝ)) := by
+  classical
+  calc
+    _ ≤ ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+        ‖intervalAdditiveFourier M A L a‖ *
+          ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+            if d.val ∣ a.val then (d.val : ℝ) else 0 := by
+      apply sum_le_sum
+      intro a _
+      exact mul_le_mul_of_nonneg_left (residueGcd_le_divisor_sum M a) (norm_nonneg _)
+    _ = ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+        (d.val : ℝ) * intervalDivisorFourierMass M d A L := by
+      simp only [mul_sum]
+      rw [sum_comm]
+      apply sum_congr rfl
+      intro d _
+      rw [intervalDivisorFourierMass, mul_sum]
+      simp only [sum_filter]
+      apply sum_congr rfl
+      intro a _
+      by_cases ha : a = 0 <;> by_cases hd : d.val ∣ a.val <;> simp [ha, hd, mul_comm]
+    _ ≤ ∑ _d : {d : ℕ // d ∈ (M : ℕ).divisors},
+        (M : ℝ) * (1 + Real.log (M : ℝ)) := by
+      apply sum_le_sum
+      intro d _
+      have hprod : (d.val : ℝ) * (modulusDivisorQuotient M d : ℝ) = (M : ℝ) := by
+        exact_mod_cast Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors d.property)
+      calc
+        _ ≤ (d.val : ℝ) *
+            ((modulusDivisorQuotient M d : ℝ) * (1 + Real.log (M : ℝ))) :=
+          mul_le_mul_of_nonneg_left (intervalDivisorFourierMass_le M d A L)
+            (Nat.cast_nonneg _)
+        _ = _ := by rw [← mul_assoc, hprod]
+    _ = _ := by simp only [sum_const, nsmul_eq_mul, card_univ, Fintype.card_coe, mul_assoc]
+
+/-- The summable divisor weight is bounded independently of the modulus. -/
+theorem sum_divisors_rpow_neg_five_thirds_le (M : ℕ+) :
+    (∑ d ∈ (M : ℕ).divisors, (d : ℝ) ^ (-(5 / 3 : ℝ))) ≤ 3 := by
+  have htail :
+      (∑ j ∈ range ((M : ℕ) - 1), ((j + 2 : ℕ) : ℝ) ^ (-(5 / 3 : ℝ))) ≤ 3 / 2 := by
+    have h := _root_.RHTower.sum_range_add_rpow_neg_le
+      (c := (5 / 3 : ℝ)) (by norm_num) (M := 1) (by norm_num) ((M : ℕ) - 1)
+    norm_num at h
+    simpa only [Nat.cast_add, Nat.cast_ofNat] using h
+  calc
+    _ ≤ ∑ d ∈ range ((M : ℕ) + 1), (d : ℝ) ^ (-(5 / 3 : ℝ)) := by
+      apply sum_le_sum_of_subset_of_nonneg
+        (fun d hd => mem_range.mpr (Nat.lt_succ_of_le (Nat.divisor_le hd)))
+        (fun _ _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _)
+    _ ≤ 3 := by
+      have hM : (M : ℕ) + 1 = ((M : ℕ) - 1) + 1 + 1 := by have := M.pos; omega
+      rw [hM, sum_range_succ', sum_range_succ']
+      norm_num only [Nat.cast_zero, Nat.zero_add, Nat.cast_one,
+        Real.zero_rpow (by norm_num : -(5 / 3 : ℝ) ≠ 0), Real.one_rpow, add_zero]
+      simpa only [Nat.add_assoc] using (show
+        (∑ j ∈ range ((M : ℕ) - 1), ((j + 2 : ℕ) : ℝ) ^ (-(5 / 3 : ℝ))) + 1 ≤ 3 by linarith)
+
+
+/-! ## The cubic estimate in completion scale -/
+
+/-- Frequency-independent factor left after extracting the pair gcd. -/
+def kloostermanCompletionScale (M : ℕ+) (c : ZMod (M : ℕ)) : ℝ :=
+  8 * ((M : ℕ).divisors.card : ℝ) * (M : ℝ) ^ (2 / 3 : ℝ) *
+    (Nat.gcd (M : ℕ) c.val : ℝ) ^ (1 / 3 : ℝ)
+
+theorem kloostermanCompletionScale_nonneg (M : ℕ+) (c : ZMod (M : ℕ)) :
+    0 ≤ kloostermanCompletionScale M c := by
+  unfold kloostermanCompletionScale
+  positivity
+
+/-- Cube monotonicity converts the certified composite estimate into its exact completion scale. -/
+theorem norm_kloostermanSum_le_completionScale
+    (M : ℕ+) (a b c : ZMod (M : ℕ)) :
+    ‖kloostermanSum (M : ℕ) a (b * c)‖ ≤
+      kloostermanCompletionScale M c *
+        (Nat.gcd (M : ℕ) (Nat.gcd a.val b.val) : ℝ) ^ (1 / 3 : ℝ) := by
+  let g := Nat.gcd (M : ℕ) c.val
+  let h := Nat.gcd (M : ℕ) (Nat.gcd a.val b.val)
+  have hMpow : ((M : ℝ) ^ (2 / 3 : ℝ)) ^ 3 = (M : ℝ) ^ 2 := by
+    rw [← Real.rpow_mul_natCast (by positivity : (0 : ℝ) ≤ (M : ℝ))]
+    norm_num
+  have hgpow : ((g : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = (g : ℝ) := by
+    simpa only [one_div] using
+      Real.rpow_inv_natCast_pow (n := 3) (Nat.cast_nonneg (α := ℝ) g) (by norm_num)
+  have hhpow : ((h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = (h : ℝ) := by
+    simpa only [one_div] using
+      Real.rpow_inv_natCast_pow (n := 3) (Nat.cast_nonneg (α := ℝ) h) (by norm_num)
+  have hcube : (kloostermanCompletionScale M c * (h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 =
+      512 * ((M : ℕ).divisors.card : ℝ) ^ 3 * (M : ℝ) ^ 2 * ((g : ℝ) * (h : ℝ)) := by
+    change (8 * ((M : ℕ).divisors.card : ℝ) * (M : ℝ) ^ (2 / 3 : ℝ) *
+      (g : ℝ) ^ (1 / 3 : ℝ) * (h : ℝ) ^ (1 / 3 : ℝ)) ^ 3 = _
+    simp only [mul_pow, hMpow, hgpow, hhpow]
+    norm_num <;> ring
+  have hfreq : (Nat.gcd (M : ℕ) (Nat.gcd a.val (b * c).val) : ℝ) ≤
+      (g : ℝ) * (h : ℝ) := by
+    exact_mod_cast residueFrequencyGcd_le M a b c
+  have hbound := (norm_kloostermanSum_cube_le M a (b * c)).trans
+    (mul_le_mul_of_nonneg_left hfreq (by positivity))
+  rw [← hcube] at hbound
+  exact (pow_le_pow_iff_left₀ (norm_nonneg _)
+    (mul_nonneg (kloostermanCompletionScale_nonneg M c)
+      (Real.rpow_nonneg (Nat.cast_nonneg h) _)) (by norm_num : 3 ≠ 0)).mp hbound
+
+/-- The pair gcd is an actual member of the common-divisor sum. -/
+theorem residuePairGcd_rpow_le_divisor_sum (M : ℕ+) (a b : ZMod (M : ℕ)) :
+    (Nat.gcd (M : ℕ) (Nat.gcd a.val b.val) : ℝ) ^ (1 / 3 : ℝ) ≤
+      ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+        if d.val ∣ a.val ∧ d.val ∣ b.val then (d.val : ℝ) ^ (1 / 3 : ℝ) else 0 := by
+  classical
+  let g := Nat.gcd (M : ℕ) (Nat.gcd a.val b.val)
+  have hg : g ∈ (M : ℕ).divisors :=
+    Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_left _ _, M.pos.ne'⟩
+  have hga : g ∣ a.val := (Nat.gcd_dvd_right _ _).trans (Nat.gcd_dvd_left _ _)
+  have hgb : g ∣ b.val := (Nat.gcd_dvd_right _ _).trans (Nat.gcd_dvd_right _ _)
+  have h := single_le_sum
+    (s := univ)
+    (f := fun d : {d : ℕ // d ∈ (M : ℕ).divisors} =>
+      if d.val ∣ a.val ∧ d.val ∣ b.val then (d.val : ℝ) ^ (1 / 3 : ℝ) else 0)
+    (fun _ _ => by split_ifs <;> positivity)
+    (mem_univ (⟨g, hg⟩ : {d : ℕ // d ∈ (M : ℕ).divisors}))
+  change (if g ∣ a.val ∧ g ∣ b.val then (g : ℝ) ^ (1 / 3 : ℝ) else 0) ≤ _ at h
+  rw [if_pos (And.intro hga hgb)] at h
+  exact h
+
+/-- Two restricted Fourier masses leave the summable divisor exponent `−5/3`. -/
+theorem divisorFrequencyScale_eq (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) :
+    (d.val : ℝ) ^ (1 / 3 : ℝ) * (modulusDivisorQuotient M d : ℝ) ^ 2 =
+      (M : ℝ) ^ 2 * (d.val : ℝ) ^ (-(5 / 3 : ℝ)) := by
+  have hd : (0 : ℝ) < (d.val : ℝ) := by
+    exact_mod_cast Nat.pos_of_mem_divisors d.property
+  have hq : (modulusDivisorQuotient M d : ℝ) = (M : ℝ) / (d.val : ℝ) := by
+    apply (eq_div_iff hd.ne').mpr
+    exact_mod_cast Nat.div_mul_cancel (Nat.dvd_of_mem_divisors d.property)
+  rw [hq, div_pow,
+    show -(5 / 3 : ℝ) = (1 / 3 : ℝ) - (2 : ℕ) by norm_num,
+    Real.rpow_sub_natCast hd.ne']
+  ring
+
+
+/-- Two interval transforms weighted by their actual common frequency gcd. -/
+def intervalPairGcdFourierMass (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) : ℝ :=
+  ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+    ∑ b ∈ univ.filter (fun b : ZMod (M : ℕ) => b ≠ 0),
+      ‖intervalAdditiveFourier M A L a‖ * ‖intervalAdditiveFourier M B H b‖ *
+        (Nat.gcd (M : ℕ) (Nat.gcd a.val b.val) : ℝ) ^ (1 / 3 : ℝ)
+
+/-- The pair-gcd budget follows from two exact divisor-frequency restrictions. -/
+theorem intervalPairGcdFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) :
+    intervalPairGcdFourierMass M A L B H ≤
+      3 * (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 2 := by
+  classical
+  have hλ : 0 ≤ 1 + Real.log (M : ℝ) := by
+    have hM : (1 : ℝ) ≤ (M : ℝ) := by exact_mod_cast M.pos
+    have := Real.log_nonneg hM
+    linarith
+  have hdivsum :
+      (∑ d : {d : ℕ // d ∈ (M : ℕ).divisors}, (d.val : ℝ) ^ (-(5 / 3 : ℝ))) ≤ 3 := by
+    rw [← sum_subtype (M : ℕ).divisors (by simp)
+      (fun d : ℕ => (d : ℝ) ^ (-(5 / 3 : ℝ)))]
+    exact sum_divisors_rpow_neg_five_thirds_le M
+  calc
+    _ ≤ ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+        ∑ b ∈ univ.filter (fun b : ZMod (M : ℕ) => b ≠ 0),
+          ‖intervalAdditiveFourier M A L a‖ * ‖intervalAdditiveFourier M B H b‖ *
+            ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+              if d.val ∣ a.val ∧ d.val ∣ b.val then (d.val : ℝ) ^ (1 / 3 : ℝ) else 0 := by
+      apply sum_le_sum
+      intro a _
+      apply sum_le_sum
+      intro b _
+      exact mul_le_mul_of_nonneg_left (residuePairGcd_rpow_le_divisor_sum M a b)
+        (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    _ = ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+        (d.val : ℝ) ^ (1 / 3 : ℝ) *
+          intervalDivisorFourierMass M d A L * intervalDivisorFourierMass M d B H := by
+      simp only [mul_sum]
+      simp_rw [sum_comm
+        (s := univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0))
+        (t := (univ : Finset {d : ℕ // d ∈ (M : ℕ).divisors}))]
+      apply sum_congr rfl
+      intro d _
+      rw [mul_assoc, intervalDivisorFourierMass, intervalDivisorFourierMass,
+        sum_mul_sum]
+      simp only [mul_sum, sum_filter]
+      apply sum_congr rfl
+      intro a _
+      by_cases ha : a = 0
+      · simp [ha]
+      by_cases hda : d.val ∣ a.val
+      · simp only [ha, not_false_eq_true, hda, true_and, and_true, if_true]
+        apply sum_congr rfl
+        intro b _
+        by_cases hb : b = 0 <;> by_cases hdb : d.val ∣ b.val <;>
+          simp [hb, hdb, mul_assoc, mul_comm, mul_left_comm]
+      · simp [ha, hda]
+    _ ≤ ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors},
+        (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 2 *
+          (d.val : ℝ) ^ (-(5 / 3 : ℝ)) := by
+      apply sum_le_sum
+      intro d _
+      have hm := mul_le_mul
+        (intervalDivisorFourierMass_le M d A L)
+        (intervalDivisorFourierMass_le M d B H)
+        (intervalDivisorFourierMass_nonneg M d B H)
+        (mul_nonneg (by positivity : (0 : ℝ) ≤ (modulusDivisorQuotient M d : ℝ)) hλ)
+      calc
+        _ = (d.val : ℝ) ^ (1 / 3 : ℝ) *
+            (intervalDivisorFourierMass M d A L * intervalDivisorFourierMass M d B H) := by ring
+        _ ≤ (d.val : ℝ) ^ (1 / 3 : ℝ) *
+            (((modulusDivisorQuotient M d : ℝ) * (1 + Real.log (M : ℝ))) *
+              ((modulusDivisorQuotient M d : ℝ) * (1 + Real.log (M : ℝ)))) :=
+          mul_le_mul_of_nonneg_left hm (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+        _ = ((d.val : ℝ) ^ (1 / 3 : ℝ) * (modulusDivisorQuotient M d : ℝ) ^ 2) *
+            (1 + Real.log (M : ℝ)) ^ 2 := by ring
+        _ = _ := by rw [divisorFrequencyScale_eq]; ring
+    _ = (M : ℝ) ^ 2 * (1 + Real.log (M : ℝ)) ^ 2 *
+        ∑ d : {d : ℕ // d ∈ (M : ℕ).divisors}, (d.val : ℝ) ^ (-(5 / 3 : ℝ)) := by
+      rw [mul_sum]
+    _ ≤ _ := by
+      have h := mul_le_mul_of_nonneg_left hdivsum
+        (mul_nonneg (sq_nonneg (M : ℝ)) (sq_nonneg (1 + Real.log (M : ℝ))))
+      exact h.trans_eq (by ring)
 
 end
 end GaloisForLFunctions.Goldbach

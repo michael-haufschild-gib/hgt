@@ -86,6 +86,17 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- User requirement: complete paper results must proceed to full
+  Lean formalization, including all analytic inputs. The preceding
+  goal turn made progress by completing the modulus audit and
+  cofactor deduction, but did not discharge those Lean obligations.
+  Active implementation starts with the exact
+  [affine squarefree-projection estimate](../2-fully-proven/twin-prime-affine-squarefree-transfer.md),
+  then continues through the short Fourier estimate, finite-law
+  comparison and nonbacktracking graph argument. The coupled
+  centering and balanced CRT paper results also remain unfinished
+  until their own analytic inputs and deductions are certified.
+  No paper stage or supporting leaf satisfies the twin-prime goal.
 - Current paper deduction:
   [slowly growing affine cancellation](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md).
   A full modulus-dependence audit of the ordinary two-point
@@ -113,6 +124,21 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   The construction retains the canonical determinant-four frame.
   The actual two-row affine target remains open; any successful
   relative proof must retain both arithmetic rows.
+  Verification: the corpus returns the saturation and sharp-bound
+  capstones. All eight owned source/card files passed whitespace
+  and relative-link checks; the changed Lean leaf has no forbidden
+  proof directives or leftover axiom-print commands. Its existing
+  umbrella import is intact. All fifteen owned scratch search/PDF
+  files were removed. No unchanged proof or umbrella was rebuilt.
+
+  Scientific audit of this batch: the finite matching boundary and
+  the source's small-modulus extension are bridges, not new
+  number-theoretic knowledge. The precise usable range has changed;
+  positive fixed-gap prime mass has not been established. The main
+  difficulty remains the actual two-row estimate at larger cofactor
+  scales and its mixed terms. Further work must attack that estimate
+  or discharge the listed analytic Lean inputs, not manufacture a
+  conditional wrapper or repeat elementary coordinate changes.
 - Current certified transfer:
   [integer-start Möbius windows](../3-formalized/twin-prime-integer-start-moebius-window.md).
   The later all-length spectral-head source controls the plain

@@ -299,6 +299,7 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_hidden_at_degree",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.expPoly_pontryagin_dichotomy",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.localPair_nonneg",
+            "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.successor_localPair_bounds",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.sector_pontryagin_law",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.riemannHypothesis_iff_weil_positive_definite",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.heckeIncidence_eq_towerWeight",

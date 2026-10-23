@@ -751,10 +751,11 @@ theorem secondCrossCorr_eq_neg_autoCorrelation_deriv {F : ℝ → ℝ}
   have hg : ∀ x, HasDerivAt g (g' x) x := fun x => by
     have h1 : HasDerivAt F (deriv F x) x := (hF1.differentiable one_ne_zero x).hasDerivAt
     have h2 : HasDerivAt (fun y => deriv F (y + s)) (deriv (deriv F) (x + s)) x := by
-      have hc : HasDerivAt (fun y => deriv F (y + s)) (deriv (deriv F) (x + s) * 1) x :=
-        HasDerivAt.comp x ((hF'.differentiable one_ne_zero (x + s)).hasDerivAt)
-          ((hasDerivAt_id' x).add_const s)
-      rwa [mul_one] at hc
+      have hc : HasDerivAt (fun y => deriv F (s + y)) (deriv (deriv F) (s + x)) x :=
+        HasDerivAt.comp_const_add s x ((hF'.differentiable one_ne_zero (s + x)).hasDerivAt)
+      have heq : (fun y => deriv F (s + y)) = fun y => deriv F (y + s) :=
+        funext fun y => by rw [add_comm]
+      rwa [heq, add_comm s x] at hc
     exact h1.mul h2
   have hg'c : Continuous g' :=
     (hdcont.mul (hdcont.comp (continuous_id.add continuous_const))).add

@@ -390,5 +390,3 @@ theorem exists_log_norm_residueFlip_le {q : ℕ} [NeZero q] {S : Finset (ZMod q)
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_log_norm_residueFlip_le

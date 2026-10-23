@@ -13226,6 +13226,135 @@ theorem prime_polar_balance_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactSu
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
   rw [hsplit, ← h1, ← h2]
 
+/-! ### Where the pole pays, and whether a test can go there
+
+On a finite lag window the polar symbol is not of one sign: it is nonnegative up to the first
+quarter period and strictly negative at three quarters, so the pole pays only in the frequency
+band `|ξ| ≤ 1/(8r)` of the window `T = 2r` and works against the test on an explicit band beyond
+it.  An odd test cannot exploit the paying band: its spectral density vanishes quadratically at
+the origin, so the mass it can place there is cubically small in the band width. -/
+
+/-- Below the first quarter period the polar symbol is nonnegative. -/
+theorem coshCosKernel_nonneg {T b : ℝ} (hT : 0 ≤ T) (hb : 0 ≤ b) (hbT : b * T ≤ Real.pi / 2) :
+    0 ≤ coshCosKernel T b := by
+  have hsinh : 0 ≤ Real.sinh (T / 2) := Real.sinh_nonneg_iff.mpr (by linarith)
+  have hcosh : 0 < Real.cosh (T / 2) := Real.cosh_pos _
+  have hbT0 : 0 ≤ b * T := mul_nonneg hb hT
+  have hcos : 0 ≤ Real.cos (b * T) :=
+    Real.cos_nonneg_of_mem_Icc ⟨by linarith [Real.pi_pos], hbT⟩
+  have hsin : 0 ≤ Real.sin (b * T) :=
+    Real.sin_nonneg_of_nonneg_of_le_pi hbT0 (by linarith [Real.pi_pos])
+  have hden : (0:ℝ) < 1 / 4 + b ^ 2 := by positivity
+  rw [coshCosKernel]
+  positivity
+
+/-- At three quarters of a period the polar symbol is strictly negative: on that band the pole
+adds to the cost instead of paying it. -/
+theorem coshCosKernel_neg {T : ℝ} (hT : 0 < T) :
+    coshCosKernel T (3 * Real.pi / (2 * T)) < 0 := by
+  set b := 3 * Real.pi / (2 * T) with hb
+  have hbpos : 0 < b := by
+    rw [hb]
+    positivity
+  have hbT : b * T = 3 * Real.pi / 2 := by
+    rw [hb]
+    field_simp
+  have hcos : Real.cos (b * T) = 0 := by
+    rw [hbT]
+    have : (3 : ℝ) * Real.pi / 2 = Real.pi + Real.pi / 2 := by ring
+    rw [this, Real.cos_add_pi_div_two, Real.sin_pi]
+    ring
+  have hsin : Real.sin (b * T) = -1 := by
+    rw [hbT]
+    have : (3 : ℝ) * Real.pi / 2 = Real.pi + Real.pi / 2 := by ring
+    rw [this, Real.sin_add_pi_div_two, Real.cos_pi]
+  have hcosh : 0 < Real.cosh (T / 2) := Real.cosh_pos _
+  have hden : (0:ℝ) < 1 / 4 + b ^ 2 := by positivity
+  rw [coshCosKernel, hcos, hsin, div_neg_iff]
+  right
+  constructor
+  · nlinarith [hbpos, hcosh]
+  · exact hden
+
+variable {F : ℝ → ℝ}
+
+/-- An odd test has no spectral mass at the origin. -/
+open FourierTransform Complex in
+theorem fourier_ofReal_zero_of_odd (hodd : ∀ x, F (-x) = -F x) :
+    𝓕 (fun x => ((F x : ℝ) : ℂ)) 0 = 0 := by
+  rw [Real.fourier_real_eq_integral_exp_smul]
+  have hpt : ∀ v : ℝ, Complex.exp (((-2 * Real.pi * v * 0 : ℝ)) * I) • ((F v : ℝ) : ℂ)
+      = ((F v : ℝ) : ℂ) := by
+    intro v
+    rw [show (-2 * Real.pi * v * 0 : ℝ) = 0 by ring]
+    simp
+  have hre : (∫ a : ℝ, ((F a : ℝ) : ℂ)) = ((∫ a : ℝ, F a : ℝ) : ℂ) := integral_ofReal
+  rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt), hre,
+    integral_eq_zero_of_odd hodd, Complex.ofReal_zero]
+
+/-- An odd test's spectral density vanishes quadratically at the origin. -/
+open FourierTransform Complex in
+theorem spectralDensity_le_sq_of_odd (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → F y = 0) (hodd : ∀ x, F (-x) = -F x) (ξ : ℝ) :
+    spectralDensity F ξ ≤ 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 := by
+  have hlip := norm_fourier_sub_le hF hFc hsupp ξ 0
+  rw [fourier_ofReal_zero_of_odd hodd, sub_zero, sub_zero] at hlip
+  have h0 : 0 ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ := norm_nonneg _
+  have hexp : ((2 * Real.pi * r * (∫ x : ℝ, |F x|)) * |ξ|) * ((2 * Real.pi * r * (∫ x : ℝ, |F x|)) * |ξ|)
+      = 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 := by
+    rw [← sq_abs ξ]
+    ring
+  rw [spectralDensity, sq]
+  calc ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ * ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖
+      ≤ ((2 * Real.pi * r * (∫ x : ℝ, |F x|)) * |ξ|) * ((2 * Real.pi * r * (∫ x : ℝ, |F x|)) * |ξ|) :=
+        mul_self_le_mul_self h0 hlip
+    _ = 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 := hexp
+
+/-- The spectral mass an odd test can place in a window about the origin is cubically small. -/
+theorem setIntegral_spectralDensity_le_of_odd (hF : Continuous F) (hFc : HasCompactSupport F)
+    {r : ℝ} (hsupp : ∀ y, r < |y| → F y = 0) (hodd : ∀ x, F (-x) = -F x) {δ : ℝ} (hδ : 0 ≤ δ) :
+    (∫ ξ in Set.Icc (-δ) δ, spectralDensity F ξ)
+      ≤ (8 / 3) * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * δ ^ 3 := by
+  have hgc : Continuous (spectralDensity F) := continuous_spectralDensity hF hFc
+  have hCcont : Continuous fun ξ : ℝ => 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 := by
+    fun_prop
+  have hmono : (∫ ξ in Set.Icc (-δ) δ, spectralDensity F ξ)
+      ≤ ∫ ξ in Set.Icc (-δ) δ, 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2 :=
+    MeasureTheory.setIntegral_mono_on (hgc.integrableOn_Icc) (hCcont.integrableOn_Icc)
+      measurableSet_Icc (fun ξ _ => spectralDensity_le_sq_of_odd hF hFc hsupp hodd ξ)
+  have hval : (∫ ξ in Set.Icc (-δ) δ, 4 * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * ξ ^ 2)
+      = (8 / 3) * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * δ ^ 3 := by
+    rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le (by linarith : -δ ≤ δ),
+      intervalIntegral.integral_const_mul, integral_pow]
+    ring
+  linarith [hmono, hval]
+
+/-- For the window `T = 2r` the polar symbol is nonnegative on `|ξ| ≤ 1/(8r)`. -/
+theorem coshCosKernel_nonneg_band {r ξ : ℝ} (hr : 0 < r) (hξ0 : 0 ≤ ξ)
+    (hξ : ξ ≤ 1 / (8 * r)) : 0 ≤ coshCosKernel (2 * r) (2 * Real.pi * ξ) := by
+  refine coshCosKernel_nonneg (by linarith) (by positivity) ?_
+  have hbT : 2 * Real.pi * ξ * (2 * r) = 4 * Real.pi * r * ξ := by ring
+  rw [hbT]
+  have hle : 4 * Real.pi * r * ξ ≤ 4 * Real.pi * r * (1 / (8 * r)) :=
+    mul_le_mul_of_nonneg_left hξ (by positivity)
+  have hval : 4 * Real.pi * r * (1 / (8 * r)) = Real.pi / 2 := by
+    field_simp
+    ring
+  linarith
+
+/-- **The pole's paying band is cubically small for an odd test.** -/
+theorem setIntegral_spectralDensity_payingBand_le (hF : Continuous F)
+    (hFc : HasCompactSupport F) {r : ℝ} (hr : 0 < r) (hsupp : ∀ y, r < |y| → F y = 0)
+    (hodd : ∀ x, F (-x) = -F x) :
+    (∫ ξ in Set.Icc (-(1 / (8 * r))) (1 / (8 * r)), spectralDensity F ξ)
+      ≤ Real.pi ^ 2 * (∫ x : ℝ, |F x|) ^ 2 / (192 * r) := by
+  have h := setIntegral_spectralDensity_le_of_odd hF hFc hsupp hodd
+    (δ := 1 / (8 * r)) (by positivity)
+  have hval : (8 / 3) * Real.pi ^ 2 * r ^ 2 * (∫ x : ℝ, |F x|) ^ 2 * (1 / (8 * r)) ^ 3
+      = Real.pi ^ 2 * (∫ x : ℝ, |F x|) ^ 2 / (192 * r) := by
+    field_simp
+    ring
+  linarith [h, hval]
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
-
-

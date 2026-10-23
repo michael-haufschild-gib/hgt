@@ -286,6 +286,10 @@ The surfaced averaged-Chowla interface takes the cancellation
 statement as a premise; it cannot supply it. The certified plain
 Möbius window estimate has neither the additive-frequency bound
 nor the prescribed quantitative rate required in this proof.
+Its follow-up source check confirms the explicit `hAC` binder in
+`uniformCorrelationSmall_of_averagedChowla`. The subsequent scoped
+Möbius search returned Mellin twists and unmodulated window transfers;
+these do not supply the missing additive-frequency assertion.
 
 **Lean gap:** formalize the actual short exponential-sum theorem,
 the finite-law comparison including bounded independence, and the

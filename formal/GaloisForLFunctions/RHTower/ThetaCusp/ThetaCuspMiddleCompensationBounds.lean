@@ -9,7 +9,6 @@ at most one 2500th in the native determinant normalization.
 -/
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 1500000
 
 private theorem first_slope_eq (x : ℝ) :
     deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =

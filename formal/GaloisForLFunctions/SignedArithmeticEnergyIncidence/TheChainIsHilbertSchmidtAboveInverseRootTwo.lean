@@ -200,16 +200,16 @@ theorem kernel_rpow_eq {N K η : ℝ} (hN : 0 < N) (hK : 0 < K) :
         field_simp
     _ = N ^ (-η) / K := by rw [h1, h2, h3]; ring
 
-/-- **Kernel majorant below damping one.**  With `a = ⌊N/K⌋`, `J = a − ⌊N/(K+1)⌋`:
-`|C(n,k)| ≤ η C N^{−η}/K + η ρ K^{−η}/N + (K/N) K^{−η} (min(J, 2C(N/K)^{1−η}) + ρ min(2, J + N/K²))`. -/
-theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k : ℕ) :
+/-- **Kernel majorant below damping one, with the source jump.**  With `a = ⌊N/K⌋`,
+`a' = ⌊N/(K+1)⌋`, `J = a − a'`:
+`|C(n,k)| ≤ η C N^{−η}/K + η ρ K^{−η}/N + (K/N) K^{−η} (|P(a) − P(a')| + ρ min(2, J + N/K²))`. -/
+theorem abs_centeredRow_le_jump {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k : ℕ) :
     |arithmeticDampingCenteredRow η n k| ≤
       η * (1 + 1 / (1 - η) + 1 / η) * ((n + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ) +
       η * (pmPowerDampedDivisorDensity η).re * ((k + 1 : ℕ) : ℝ) ^ (-η) / ((n + 1 : ℕ) : ℝ) +
       ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ) ^ (-η) *
-        (min (((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)
-            (2 * (1 + 1 / (1 - η) + 1 / η) *
-              (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) ^ (1 - η)) +
+        (|pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1)) -
+            pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1 + 1))| +
           (pmPowerDampedDivisorDensity η).re *
             min 2 ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ) +
               ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2)) := by
@@ -232,8 +232,6 @@ theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k 
   have hJ0 : 0 ≤ J := Nat.cast_nonneg _
   -- quotients and their fractional offsets
   have ha : (a : ℝ) ≤ N / K := natDiv_le_div _ _
-  have ha' : (a' : ℝ) ≤ N / K' := natDiv_le_div _ _
-  have hNK' : N / K' ≤ N / K := div_le_div_of_nonneg_left hN.le hK hKK'
   have hs : |(a : ℝ) - N / K| ≤ 1 := abs_natDiv_sub_div_le _ _ (by omega)
   have hs' : |(a' : ℝ) - N / K'| ≤ 1 := abs_natDiv_sub_div_le _ _ (by omega)
   -- the source at the two quotients
@@ -242,15 +240,6 @@ theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k 
   have hPa : |pmPowerDampedCenteredDivisorPrefix η a| ≤ C₁ * (N / K) ^ (1 - η) :=
     (abs_centeredPrefix_le_rpow h0 h1 a).trans
       (mul_le_mul_of_nonneg_left (hpow a ha) hC₁.le)
-  have hPa' : |pmPowerDampedCenteredDivisorPrefix η a'| ≤ C₁ * (N / K) ^ (1 - η) :=
-    (abs_centeredPrefix_le_rpow h0 h1 a').trans
-      (mul_le_mul_of_nonneg_left (hpow a' (ha'.trans hNK')) hC₁.le)
-  have hΔP : |pmPowerDampedCenteredDivisorPrefix η a - pmPowerDampedCenteredDivisorPrefix η a'| ≤
-      min J (2 * C₁ * (N / K) ^ (1 - η)) := by
-    refine le_min (abs_centeredPrefix_sub_le h0 haa') ?_
-    calc _ ≤ |pmPowerDampedCenteredDivisorPrefix η a| + |pmPowerDampedCenteredDivisorPrefix η a'| :=
-          abs_sub _ _
-      _ ≤ _ := by linarith
   have hΔs : |((a : ℝ) - N / K) - ((a' : ℝ) - N / K')| ≤ min 2 (J + N / K ^ 2) := by
     refine le_min ((abs_sub _ _).trans (by linarith)) ?_
     have hJeq : J = (a : ℝ) - a' := by simp only [hJdef]; push_cast [haa']; ring
@@ -279,7 +268,8 @@ theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k 
   have hX : |X| ≤ ρ + C₁ * (N / K) ^ (1 - η) := by
     refine (abs_add_le _ _).trans (add_le_add ?_ hPa)
     rw [abs_mul, abs_of_pos hρ0]; exact mul_le_of_le_one_right hρ0.le hs
-  have hXX : |X - X'| ≤ min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2) := by
+  have hXX : |X - X'| ≤ |pmPowerDampedCenteredDivisorPrefix η a -
+      pmPowerDampedCenteredDivisorPrefix η a'| + ρ * min 2 (J + N / K ^ 2) := by
     have e : X - X' = ρ * (((a : ℝ) - N / K) - ((a' : ℝ) - N / K')) +
         (pmPowerDampedCenteredDivisorPrefix η a - pmPowerDampedCenteredDivisorPrefix η a') := by
       simp only [X, X']; ring
@@ -290,7 +280,8 @@ theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k 
   rw [hsplit, abs_mul, abs_of_pos (div_pos hK hN)]
   have hmain : |(K ^ (-η) - K' ^ (-η)) * X + K' ^ (-η) * (X - X')| ≤
       η * K ^ (-(η + 1)) * (ρ + C₁ * (N / K) ^ (1 - η)) +
-        K ^ (-η) * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2)) := by
+        K ^ (-η) * (|pmPowerDampedCenteredDivisorPrefix η a -
+          pmPowerDampedCenteredDivisorPrefix η a'| + ρ * min 2 (J + N / K ^ 2)) := by
     refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
     · rw [abs_mul, abs_of_nonneg hdiffpow]
       exact mul_le_mul hdiffpow' hX (abs_nonneg _) (by positivity)
@@ -301,13 +292,51 @@ theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k 
     rw [div_mul_eq_mul_div, mul_comm K, ← Real.rpow_add_one hK.ne']; ring_nf
   calc K / N * |(K ^ (-η) - K' ^ (-η)) * X + K' ^ (-η) * (X - X')|
       ≤ K / N * (η * K ^ (-(η + 1)) * (ρ + C₁ * (N / K) ^ (1 - η)) +
-          K ^ (-η) * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2))) :=
+          K ^ (-η) * (|pmPowerDampedCenteredDivisorPrefix η a -
+            pmPowerDampedCenteredDivisorPrefix η a'| + ρ * min 2 (J + N / K ^ 2))) :=
         mul_le_mul_of_nonneg_left hmain (div_pos hK hN).le
     _ = η * C₁ * (K / N * K ^ (-(η + 1)) * (N / K) ^ (1 - η)) +
           η * ρ * (K / N * K ^ (-(η + 1))) +
-          K / N * K ^ (-η) * (min J (2 * C₁ * (N / K) ^ (1 - η)) +
-            ρ * min 2 (J + N / K ^ 2)) := by ring
+          K / N * K ^ (-η) * (|pmPowerDampedCenteredDivisorPrefix η a -
+            pmPowerDampedCenteredDivisorPrefix η a'| + ρ * min 2 (J + N / K ^ 2)) := by ring
     _ = _ := by rw [hT1, hT2]; ring
+
+/-- **Kernel majorant below damping one.**  With `a = ⌊N/K⌋`, `J = a − ⌊N/(K+1)⌋`:
+`|C(n,k)| ≤ η C N^{−η}/K + η ρ K^{−η}/N + (K/N) K^{−η} (min(J, 2C(N/K)^{1−η}) + ρ min(2, J + N/K²))`. -/
+theorem abs_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (n k : ℕ) :
+    |arithmeticDampingCenteredRow η n k| ≤
+      η * (1 + 1 / (1 - η) + 1 / η) * ((n + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ) +
+      η * (pmPowerDampedDivisorDensity η).re * ((k + 1 : ℕ) : ℝ) ^ (-η) / ((n + 1 : ℕ) : ℝ) +
+      ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) * ((k + 1 : ℕ) : ℝ) ^ (-η) *
+        (min (((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)
+            (2 * (1 + 1 / (1 - η) + 1 / η) *
+              (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) ^ (1 - η)) +
+          (pmPowerDampedDivisorDensity η).re *
+            min 2 ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ) +
+              ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2)) := by
+  refine (abs_centeredRow_le_jump h0 h1 n k).trans ?_
+  have hC₁ : 0 < 1 + 1 / (1 - η) + 1 / η := by
+    have : 0 < 1 - η := by linarith
+    positivity
+  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hKK : ((n + 1 : ℕ) : ℝ) / ((k + 1 + 1 : ℕ) : ℝ) ≤ ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) :=
+    div_le_div_of_nonneg_left hN.le (by positivity) (by push_cast; linarith)
+  have hpow : ∀ x : ℕ, (x : ℝ) ≤ ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) →
+      (x : ℝ) ^ (1 - η) ≤ (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) ^ (1 - η) := fun x hx =>
+    Real.rpow_le_rpow (Nat.cast_nonneg _) hx (by linarith)
+  have hPa := (abs_centeredPrefix_le_rpow h0 h1 ((n + 1) / (k + 1))).trans
+    (mul_le_mul_of_nonneg_left (hpow _ (natDiv_le_div _ _)) hC₁.le)
+  have hPa' := (abs_centeredPrefix_le_rpow h0 h1 ((n + 1) / (k + 1 + 1))).trans
+    (mul_le_mul_of_nonneg_left (hpow _ ((natDiv_le_div _ _).trans hKK)) hC₁.le)
+  have hΔP : |pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1)) -
+      pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1 + 1))| ≤
+      min (((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)
+        (2 * (1 + 1 / (1 - η) + 1 / η) * (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) ^ (1 - η)) := by
+    refine le_min (abs_centeredPrefix_sub_le h0 (Nat.div_le_div_left (by omega) (by omega))) ?_
+    calc _ ≤ |pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1))| +
+          |pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1 + 1))| := abs_sub _ _
+      _ ≤ _ := by linarith
+  gcongr
 
 /-! ### The interpolation exponent -/
 
@@ -723,6 +752,47 @@ theorem rpow_neg_two_mul_rpow {N η : ℝ} (hN : 0 < N) :
     N ^ (-2 : ℝ) * N ^ ((3 - 2 * η) / 2) = N ^ (-((1 + 2 * η) / 2)) := by
   rw [← Real.rpow_add hN]; ring_nf
 
+/-- The region-`A` density term: `Σ_n Σ_k N^{−2} [K² ≤ N] K^{2−2η} ≤ ζ((1+2η)/2)`. -/
+theorem sum_sum_belowSqrt_le {η : ℝ} (h1 : η < 1) (hh : 1 / 2 < η) (T M : ℕ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+      (if (k + 1) * (k + 1) ≤ n + 1 then ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0) ≤
+      realZetaSeries ((1 + 2 * η) / 2) := by
+  have hs : 1 < (1 + 2 * η) / 2 := by linarith
+  refine le_trans (sum_le_sum fun n _ => ?_) (sum_range_rpow_le_zeta hs T)
+  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  rw [← mul_sum, ← rpow_neg_two_mul_rpow hN]
+  exact mul_le_mul_of_nonneg_left (sum_below_sqrt_le h1 n M) (Real.rpow_nonneg hN.le _)
+
+/-- The region-`B` jump term:
+`Σ_n Σ_k N^{−2} [K² > N] K^{2−2η} J ≤ (1 + 1/(2η−1)) ζ((1+2η)/2)`. -/
+theorem sum_sum_aboveSqrt_le {η : ℝ} (h1 : η < 1) (hh : 1 / 2 < η) (T M : ℕ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+      (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+      (1 + 1 / (2 * η - 1)) * realZetaSeries ((1 + 2 * η) / 2) := by
+  have hs : 1 < (1 + 2 * η) / 2 := by linarith
+  have hc0 : 0 ≤ 1 + 1 / (2 * η - 1) := by
+    have : 0 < 2 * η - 1 := by linarith
+    positivity
+  have hrow : ∀ n, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+      (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+      (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
+    intro n
+    have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+    rw [← mul_sum]
+    calc _ ≤ ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+          ((1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) :=
+          mul_le_mul_of_nonneg_left (sum_above_sqrt_le h1 hh n M) (Real.rpow_nonneg hN.le _)
+      _ = (1 + 1 / (2 * η - 1)) * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+          ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) := by ring
+      _ = _ := by rw [rpow_neg_two_mul_rpow hN]
+  calc _ ≤ ∑ n ∈ range T, (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) :=
+        sum_le_sum fun n _ => hrow n
+    _ = (1 + 1 / (2 * η - 1)) * ∑ n ∈ range T, ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
+        rw [mul_sum]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (sum_range_rpow_le_zeta hs T) hc0
+
 theorem sum_sum_linear (T M : ℕ) (a b c d e f : ℝ) (F1 F2 F3 F4 F5 F6 : ℕ → ℕ → ℝ) :
     ∑ n ∈ range T, ∑ k ∈ range M, (3 * (a * F1 n k + b * F2 n k) +
       3 * (c * F3 n k + d * F4 n k + e * F5 n k + f * F6 n k)) =
@@ -740,7 +810,6 @@ theorem sum_chainMajorant_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 1 / 2 
   have hh : 1 / 2 < η := by nlinarith
   obtain ⟨-, -, hl2, hl3⟩ := interpExp_bounds h0 h2
   have hρ0 : 0 < ρ := RHTower.pmPowerDampedDivisorDensity_re_pos h0
-  have hs : 1 < (1 + 2 * η) / 2 := by linarith
   have hite : ∀ n k, chainMajorant η n k ≤
       3 * ((η * C₁) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 * η)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 : ℝ))) +
           (η * ρ) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 * η)))) +
@@ -784,38 +853,8 @@ theorem sum_chainMajorant_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 1 / 2 
   have hA2 := sum_sum_rpow_le (s := 2) (t := 2 * η) one_lt_two (by linarith) T M
   have hA3 := sum_sum_rpow_le (s := 2 * (η * (1 - l))) (t := 2 * (l * (1 + η)))
     (by linarith) (by linarith) T M
-  have hB : ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
-      (if (k + 1) * (k + 1) ≤ n + 1 then ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0) ≤
-      realZetaSeries ((1 + 2 * η) / 2) := by
-    refine le_trans (sum_le_sum fun n _ => ?_) (sum_range_rpow_le_zeta hs T)
-    have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
-    rw [← mul_sum, ← rpow_neg_two_mul_rpow hN]
-    exact mul_le_mul_of_nonneg_left (sum_below_sqrt_le h1 n M) (Real.rpow_nonneg hN.le _)
-  have hC : ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
-      (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
-        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
-      (1 + 1 / (2 * η - 1)) * realZetaSeries ((1 + 2 * η) / 2) := by
-    have hc0 : 0 ≤ 1 + 1 / (2 * η - 1) := by
-      have : 0 < 2 * η - 1 := by linarith
-      positivity
-    have hrow : ∀ n, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
-        (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
-          ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
-        (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
-      intro n
-      have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
-      rw [← mul_sum]
-      calc _ ≤ ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
-            ((1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) :=
-            mul_le_mul_of_nonneg_left (sum_above_sqrt_le h1 hh n M) (Real.rpow_nonneg hN.le _)
-        _ = (1 + 1 / (2 * η - 1)) * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
-            ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) := by ring
-        _ = _ := by rw [rpow_neg_two_mul_rpow hN]
-    calc _ ≤ ∑ n ∈ range T, (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) :=
-          sum_le_sum fun n _ => hrow n
-      _ = (1 + 1 / (2 * η - 1)) * ∑ n ∈ range T, ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
-          rw [mul_sum]
-      _ ≤ _ := mul_le_mul_of_nonneg_left (sum_range_rpow_le_zeta hs T) hc0
+  have hB := sum_sum_belowSqrt_le h1 hh T M
+  have hC := sum_sum_aboveSqrt_le h1 hh T M
   have hD := sum_above_sqrt_tail_le hh T M
   unfold chainHSConstant
   exact add_le_add

@@ -4,6 +4,7 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.MeasureTheory.Group.Integral
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
+import GaloisForLFunctions.ArithmeticIncidencePositivity.TranslatePairingCalculus
 
 /-!
 # The horizon law of a curve is geometric
@@ -32,6 +33,11 @@ proves the comb laws, for every eigenvalue configuration of modulus at most `λ�
   `q^{D/2} F(· + D log q) = G(·) − q^{−1/2} G(· − log q) + F` for the geometric comb `G`; over the
   integers the comb shifts continuously and its resolvent `(1 + 2∂)^{−1}` has no such bound.
 
+* `tendsto_curveCombEnergy_div_sq`: the **discrete resolvent law**: for every continuous compactly
+  supported test, `‖C_D F‖²/S_D² → J_q(F) = Σ_{k,k'} w_k w_{k'} A_F((k − k') log q)` with the
+  geometric depth law `w_k = (1 − q^{−1/2}) q^{−k/2}`, independently of the eigenvalues; and
+  `J_q(F) ≥ ((1 − q^{−1/2})²/12) ∫F²` (`curveHorizonEnergy_ge`).
+
 So what replaces the exponential horizon law `e^{−u/2}` is its exact discretization at
 `u = k log q`, and the error of the law is square-root small, `O(g D q^{−D/2})`, because the
 eigenvalues lie on the circle `|α| = √q`; with eigenvalues of modulus `λ√q` the error grows like
@@ -41,6 +47,7 @@ about point counts of actual curves.
 -/
 
 open Finset Filter Topology MeasureTheory
+open GaloisForLFunctions.ArithmeticCriticalityTheory GaloisForLFunctions.ArithmeticIncidencePositivity
 
 noncomputable section
 
@@ -436,5 +443,267 @@ theorem exists_curveCombEnergy_ge {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
   have hfrac : ((q : ℝ) ^ D - 3) / 9 ≤ ((q : ℝ) ^ D - 3) / (6 * (1 + 1 / (q : ℝ))) :=
     div_le_div_of_nonneg_left (by linarith) hc (by linarith)
   linarith
+
+/-! ## The discrete resolvent law -/
+
+/-- The geometric depth law `w_k = (1 − q^{−1/2}) q^{−k/2}`: the comb mass at depth `k` below the
+horizon, in the limit. -/
+def curveHorizonWeight (q : ℕ) (k : ℕ) : ℝ := (1 - (Real.sqrt q)⁻¹) * (Real.sqrt q)⁻¹ ^ k
+
+/-- The discrete horizon energy `J_q(F) = Σ_{k,k'} w_k w_{k'} A_F((k − k') log q)`, the analogue of
+`J(F) = ∫∫ A_F(u − v) dμ(u) dμ(v)` for the depth law of a curve. -/
+def curveHorizonEnergy (q : ℕ) (F : ℝ → ℝ) : ℝ :=
+  ∑' p : ℕ × ℕ, curveHorizonWeight q p.1 * curveHorizonWeight q p.2 *
+    autoCorr F (((p.1 : ℝ) - p.2) * Real.log q)
+
+/-- The comb energy is a double sum of autocorrelations. -/
+theorem curveCombEnergy_eq_sum (q : ℕ) (α : Fin m → ℂ) {F : ℝ → ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) (D : ℕ) :
+    curveCombEnergy q α F D = ∑ n ∈ Icc 1 D, ∑ n' ∈ Icc 1 D,
+      curveCombWeight q α n * curveCombWeight q α n' *
+        autoCorr F (((n' : ℝ) - n) * Real.log q) := by
+  set L := Real.log q
+  have hint : ∀ a b : ℝ, Integrable fun x => F (x + a) * F (x + b) := fun a b =>
+    ((hF.comp (continuous_id.add continuous_const)).mul
+      (hF.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      (hFc.comp_homeomorph (Homeomorph.addRight a)).mul_right
+  have hsq : ∀ x, curveComb q α F D x ^ 2 = ∑ n ∈ Icc 1 D, ∑ n' ∈ Icc 1 D,
+      curveCombWeight q α n * curveCombWeight q α n' * (F (x + n * L) * F (x + n' * L)) := by
+    intro x
+    rw [curveComb, sq, sum_mul_sum]
+    exact sum_congr rfl fun n _ => sum_congr rfl fun n' _ => by ring
+  rw [curveCombEnergy, integral_congr_ae (Eventually.of_forall hsq),
+    integral_finsetSum _ fun n _ => integrable_finsetSum _ fun n' _ =>
+      (hint _ _).const_mul _]
+  refine sum_congr rfl fun n _ => ?_
+  rw [integral_finsetSum _ fun n' _ => (hint _ _).const_mul _]
+  refine sum_congr rfl fun n' _ => ?_
+  rw [integral_const_mul]
+  congr 1
+  have h := testPairing_translate_pair F (n * L) (n' * L)
+  rw [testPairing] at h
+  rw [h]
+  congr 1
+  ring
+
+/-- The degrees `1, …, D` read from the horizon: `n = D − k`, `k < D`. -/
+theorem sum_Icc_eq_sum_range_sub {M : Type*} [AddCommMonoid M] (f : ℕ → M) (D : ℕ) :
+    ∑ n ∈ Icc 1 D, f n = ∑ k ∈ range D, f (D - k) := by
+  refine sum_nbij' (fun n => D - n) (fun k => D - k) ?_ ?_ ?_ ?_ ?_
+  · intro n hn; simp only [mem_Icc, mem_range] at hn ⊢; omega
+  · intro k hk; simp only [mem_Icc, mem_range] at hk ⊢; omega
+  · intro n hn; simp only [mem_Icc] at hn; omega
+  · intro k hk; simp only [mem_range] at hk; omega
+  · intro n hn; simp only [mem_Icc] at hn; congr 1; omega
+
+/-- The comb mass at the horizon is `q^{D/2}` times `√q/(√q − 1)`, in the limit. -/
+theorem tendsto_curveCombMass_div_pow {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    (hα : ∀ i, ‖α i‖ ≤ Real.sqrt q) :
+    Tendsto (fun D => curveCombMass q α D / Real.sqrt q ^ D) atTop
+      (𝓝 (Real.sqrt q / (Real.sqrt q - 1))) := by
+  set s := Real.sqrt q
+  have hs1 : 1 < s := Real.lt_sqrt_of_sq_lt (by norm_num; exact_mod_cast (show 1 < q by omega))
+  have hs0 : 0 < s := by linarith
+  have hr : s⁻¹ < 1 := inv_lt_one_of_one_lt₀ hs1
+  have hr0 : 0 ≤ s⁻¹ := (inv_pos.mpr hs0).le
+  -- the geometric part `G(D)/s^D = s(1 − s^{−D})/(s − 1)`
+  have hG : ∀ D, geometricMass q D / s ^ D = s * (1 - s⁻¹ ^ D) / (s - 1) := by
+    intro D
+    have h : geometricMass q D * (s - 1) = s * (s ^ D - 1) := geometricMass_mul D
+    have hsD : s ^ D ≠ 0 := pow_ne_zero _ hs0.ne'
+    rw [div_eq_div_iff hsD (by linarith : s - 1 ≠ 0), h, inv_pow]
+    field_simp
+  have hGlim : Tendsto (fun D => geometricMass q D / s ^ D) atTop (𝓝 (s / (s - 1))) := by
+    have h := ((tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr).const_sub 1).const_mul s
+    have h2 := h.div_const (s - 1)
+    rw [sub_zero, mul_one] at h2
+    exact h2.congr fun D => (hG D).symm
+  -- the error `(m + 1) D / s^D → 0`
+  have hE : Tendsto (fun D : ℕ => ((m : ℝ) + 1) * ((D : ℝ) * s⁻¹ ^ D)) atTop (𝓝 0) := by
+    have h := (tendsto_self_mul_const_pow_of_lt_one hr0 hr).const_mul ((m : ℝ) + 1)
+    rwa [mul_zero] at h
+  have hdiff : Tendsto (fun D => (curveCombMass q α D - geometricMass q D) / s ^ D) atTop
+      (𝓝 0) := by
+    refine squeeze_zero_norm (fun D => ?_) hE
+    rw [Real.norm_eq_abs, abs_div, abs_of_pos (pow_pos hs0 D), div_le_iff₀ (pow_pos hs0 D)]
+    have h := abs_curveCombMass_sub_geometricMass_le_of_weil (by omega) hα D
+    calc |curveCombMass q α D - geometricMass q D| ≤ ((m : ℝ) + 1) * D := h
+      _ = ((m : ℝ) + 1) * ((D : ℝ) * s⁻¹ ^ D) * s ^ D := by
+          rw [inv_pow, mul_assoc, mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ hs0.ne'), mul_one]
+  have hsum := hGlim.add hdiff
+  rw [add_zero] at hsum
+  refine hsum.congr fun D => ?_
+  rw [← add_div]; ring_nf
+
+/-- **The depth law of the comb weights.** For every depth `k`, the share
+`N(D − k) q^{−(D−k)/2}/S_D` of the comb at depth `k` below the horizon `D` tends to `w_k`. -/
+theorem tendsto_curveCombWeight_div_mass {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    (hα : ∀ i, ‖α i‖ ≤ Real.sqrt q) (k : ℕ) :
+    Tendsto (fun D => curveCombWeight q α (D - k) / curveCombMass q α D) atTop
+      (𝓝 (curveHorizonWeight q k)) := by
+  set s := Real.sqrt q
+  have hs1 : 1 < s := Real.lt_sqrt_of_sq_lt (by norm_num; exact_mod_cast (show 1 < q by omega))
+  have hs0 : 0 < s := by linarith
+  have hr : s⁻¹ < 1 := inv_lt_one_of_one_lt₀ hs1
+  have hr0 : 0 ≤ s⁻¹ := (inv_pos.mpr hs0).le
+  -- the weight at depth `k`, over `s^D`, tends to `s^{−k}`
+  have hc : Tendsto (fun D => curveCombWeight q α (D - k) / s ^ D) atTop (𝓝 (s⁻¹ ^ k)) := by
+    have he : Tendsto (fun D : ℕ => (curveCombWeight q α (D - k) - s ^ (D - k)) / s ^ D) atTop
+        (𝓝 0) := by
+      have hb := (tendsto_pow_atTop_nhds_zero_of_lt_one hr0 hr).const_mul ((m : ℝ) + 1)
+      rw [mul_zero] at hb
+      refine squeeze_zero_norm (fun D => ?_) hb
+      rw [Real.norm_eq_abs, abs_div, abs_of_pos (pow_pos hs0 D), inv_pow,
+        ← div_eq_mul_inv]
+      exact div_le_div_of_nonneg_right (abs_curveCombWeight_sub_le (by omega) hα _)
+        (pow_pos hs0 D).le
+    have h := (tendsto_const_nhds (x := s⁻¹ ^ k)).add he
+    rw [add_zero] at h
+    refine h.congr' ?_
+    filter_upwards [eventually_ge_atTop k] with D hD
+    have hsD : s ^ D = s ^ (D - k) * s ^ k := by rw [← pow_add, Nat.sub_add_cancel hD]
+    rw [hsD, inv_pow]
+    field_simp
+    ring
+  have hS := tendsto_curveCombMass_div_pow hq hα
+  have hne : s / (s - 1) ≠ 0 := div_ne_zero hs0.ne' (by linarith)
+  have h := hc.div hS hne
+  have hw : s⁻¹ ^ k / (s / (s - 1)) = curveHorizonWeight q k := by
+    show s⁻¹ ^ k / (s / (s - 1)) = (1 - s⁻¹) * s⁻¹ ^ k
+    have : s - 1 ≠ 0 := by linarith
+    field_simp
+  rw [hw] at h
+  refine h.congr fun D => ?_
+  show curveCombWeight q α (D - k) / s ^ D / (curveCombMass q α D / s ^ D) = _
+  rw [div_div_div_cancel_right₀ (pow_ne_zero _ hs0.ne')]
+
+/-- **The discrete resolvent law of a curve.** On the Weil circle, for every continuous compactly
+supported test, `‖C_D F‖²/S_D² → J_q(F) = Σ_{k,k'} w_k w_{k'} A_F((k − k') log q)`. The limit does
+not depend on the eigenvalues. -/
+theorem tendsto_curveCombEnergy_div_sq {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ}
+    (hα : ∀ i, ‖α i‖ ≤ Real.sqrt q) {F : ℝ → ℝ} (hF : Continuous F) (hFc : HasCompactSupport F) :
+    Tendsto (fun D => curveCombEnergy q α F D / curveCombMass q α D ^ 2) atTop
+      (𝓝 (curveHorizonEnergy q F)) := by
+  set s := Real.sqrt q
+  set L := Real.log q
+  have hs1 : 1 < s := Real.lt_sqrt_of_sq_lt (by norm_num; exact_mod_cast (show 1 < q by omega))
+  have hs0 : 0 < s := by linarith
+  have hr : s⁻¹ < 1 := inv_lt_one_of_one_lt₀ hs1
+  have hr0 : 0 ≤ s⁻¹ := (inv_pos.mpr hs0).le
+  have hA : ∀ t, |autoCorr F t| ≤ autoCorr F 0 := abs_autoCorr_le_autoCorr_zero hF hFc
+  set a : ℕ → ℕ → ℝ := fun D k => curveCombWeight q α (D - k) / curveCombMass q α D
+  set g : ℕ → ℕ × ℕ → ℝ := fun D p =>
+    if p.1 < D ∧ p.2 < D then a D p.1 * a D p.2 * autoCorr F (((p.1 : ℝ) - p.2) * L) else 0
+  -- the normalized energy is a series over the depths
+  have hseries : ∀ D, curveCombEnergy q α F D / curveCombMass q α D ^ 2 = ∑' p, g D p := by
+    intro D
+    rw [tsum_eq_sum (s := range D ×ˢ range D) fun p hp => by
+      simp only [mem_product, mem_range, not_and_or] at hp
+      simp only [g]; rw [if_neg]; tauto, sum_product, curveCombEnergy_eq_sum q α hF hFc,
+      sum_div, sum_Icc_eq_sum_range_sub]
+    refine sum_congr rfl fun k hk => ?_
+    rw [sum_div, sum_Icc_eq_sum_range_sub]
+    refine sum_congr rfl fun k' hk' => ?_
+    have hkD := mem_range.mp hk
+    have hk'D := mem_range.mp hk'
+    simp only [g, a, if_pos (And.intro hkD hk'D)]
+    rw [show (((D - k' : ℕ) : ℝ) - ((D - k : ℕ) : ℝ)) = (k : ℝ) - k' by
+      rw [Nat.cast_sub hk'D.le, Nat.cast_sub hkD.le]; ring]
+    rw [sq, div_mul_div_comm]; ring
+  -- domination: eventually `S_D ≥ s^D`, so `|a_D(k)| ≤ (m + 2) s^{−k}`
+  have hSev : ∀ᶠ D in atTop, s ^ D ≤ curveCombMass q α D := by
+    have hlim := tendsto_curveCombMass_div_pow hq hα
+    have h1 : 1 < s / (s - 1) := by rw [one_lt_div (by linarith)]; linarith
+    filter_upwards [hlim.eventually (eventually_ge_nhds h1)] with D hD
+    rwa [le_div_iff₀ (pow_pos hs0 D), one_mul] at hD
+  set bound : ℕ × ℕ → ℝ := fun p => ((m : ℝ) + 2) ^ 2 * autoCorr F 0 * (s⁻¹ ^ p.1 * s⁻¹ ^ p.2)
+  have hbound : Summable bound :=
+    ((summable_geometric_of_lt_one hr0 hr).mul_of_nonneg (summable_geometric_of_lt_one hr0 hr)
+      (fun k => pow_nonneg hr0 k) (fun k => pow_nonneg hr0 k)).mul_left _
+  have ha : ∀ D k, k < D → s ^ D ≤ curveCombMass q α D → |a D k| ≤ ((m : ℝ) + 2) * s⁻¹ ^ k := by
+    intro D k hk hS
+    have hsD : 0 < s ^ D := pow_pos hs0 D
+    have hc : |curveCombWeight q α (D - k)| ≤ ((m : ℝ) + 2) * s ^ (D - k) := by
+      have h := abs_curveCombWeight_sub_le (by omega) hα (D - k)
+      have h1 : 1 ≤ s ^ (D - k) := one_le_pow₀ hs1.le
+      have h2 := abs_sub_abs_le_abs_sub (curveCombWeight q α (D - k)) (s ^ (D - k))
+      rw [abs_of_pos (pow_pos hs0 _)] at h2
+      nlinarith
+    simp only [a]
+    rw [abs_div, abs_of_pos (hsD.trans_le hS), div_le_iff₀ (hsD.trans_le hS)]
+    calc |curveCombWeight q α (D - k)| ≤ ((m : ℝ) + 2) * s ^ (D - k) := hc
+      _ = ((m : ℝ) + 2) * s⁻¹ ^ k * s ^ D := by
+          rw [show s ^ D = s ^ (D - k) * s ^ k by rw [← pow_add, Nat.sub_add_cancel hk.le],
+            inv_pow]
+          field_simp
+      _ ≤ ((m : ℝ) + 2) * s⁻¹ ^ k * curveCombMass q α D :=
+          mul_le_mul_of_nonneg_left hS (by positivity)
+  have hdom : ∀ᶠ D in atTop, ∀ p, ‖g D p‖ ≤ bound p := by
+    filter_upwards [hSev] with D hS p
+    simp only [g, bound]
+    split_ifs with hp
+    · rw [Real.norm_eq_abs, abs_mul, abs_mul]
+      have h1 := ha D p.1 hp.1 hS
+      have h2 := ha D p.2 hp.2 hS
+      have h3 := hA (((p.1 : ℝ) - p.2) * L)
+      calc |a D p.1| * |a D p.2| * |autoCorr F (((p.1 : ℝ) - p.2) * L)|
+          ≤ (((m : ℝ) + 2) * s⁻¹ ^ p.1) * (((m : ℝ) + 2) * s⁻¹ ^ p.2) * autoCorr F 0 :=
+            mul_le_mul (mul_le_mul h1 h2 (abs_nonneg _) (by positivity)) h3 (abs_nonneg _)
+              (by positivity)
+        _ = ((m : ℝ) + 2) ^ 2 * autoCorr F 0 * (s⁻¹ ^ p.1 * s⁻¹ ^ p.2) := by ring
+    · rw [norm_zero]
+      have := (abs_nonneg _).trans (hA 0)
+      positivity
+  -- pointwise, each depth pair converges
+  have hpt : ∀ p : ℕ × ℕ, Tendsto (fun D => g D p) atTop
+      (𝓝 (curveHorizonWeight q p.1 * curveHorizonWeight q p.2 *
+        autoCorr F (((p.1 : ℝ) - p.2) * L))) := by
+    intro p
+    have h := ((tendsto_curveCombWeight_div_mass hq hα p.1).mul
+      (tendsto_curveCombWeight_div_mass hq hα p.2)).mul_const
+      (autoCorr F (((p.1 : ℝ) - p.2) * L))
+    refine h.congr' ?_
+    filter_upwards [eventually_gt_atTop (max p.1 p.2)] with D hD
+    simp only [g, a]
+    rw [if_pos ⟨lt_of_le_of_lt (le_max_left _ _) hD, lt_of_le_of_lt (le_max_right _ _) hD⟩]
+  have hlim := tendsto_tsum_of_dominated_convergence hbound hpt hdom
+  exact hlim.congr fun D => (hseries D).symm
+
+/-- **The discrete horizon energy is uniformly coercive.** On every test,
+`J_q(F) ≥ ((1 − q^{−1/2})²/12) ∫F²`. -/
+theorem curveHorizonEnergy_ge {q : ℕ} (hq : 2 ≤ q) {F : ℝ → ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) :
+    (1 - (Real.sqrt q)⁻¹) ^ 2 / 12 * ∫ x, F x ^ 2 ≤ curveHorizonEnergy q F := by
+  -- the genus-zero model computes the same limit
+  set α : Fin 0 → ℂ := fun i => i.elim0
+  have hα : ∀ i, ‖α i‖ ≤ Real.sqrt q := fun i => i.elim0
+  set s := Real.sqrt q
+  have hs1 : 1 < s := Real.lt_sqrt_of_sq_lt (by norm_num; exact_mod_cast (show 1 < q by omega))
+  have hs0 : 0 < s := by linarith
+  have hlim := tendsto_curveCombEnergy_div_sq hq hα hF hFc
+  have hS := tendsto_curveCombMass_div_pow hq hα
+  have hne : s / (s - 1) ≠ 0 := div_ne_zero hs0.ne' (by linarith)
+  -- the lower bound `(q^D/12) ∫F² / S_D²` tends to `((s − 1)/s)² ∫F²/12`
+  have hlow : Tendsto (fun D => (1 / 12 * ∫ x, F x ^ 2) / (curveCombMass q α D / s ^ D) ^ 2)
+      atTop (𝓝 ((1 / 12 * ∫ x, F x ^ 2) / (s / (s - 1)) ^ 2)) :=
+    tendsto_const_nhds.div (hS.pow 2) (pow_ne_zero 2 hne)
+  have hval : (1 / 12 * ∫ x, F x ^ 2) / (s / (s - 1)) ^ 2 =
+      (1 - s⁻¹) ^ 2 / 12 * ∫ x, F x ^ 2 := by
+    field_simp
+  rw [hval] at hlow
+  refine le_of_tendsto_of_tendsto hlow hlim ?_
+  obtain ⟨D₀, hD₀⟩ := exists_curveCombEnergy_ge hq hα
+  filter_upwards [eventually_ge_atTop D₀, hS.eventually (eventually_gt_nhds
+    (div_pos hs0 (by linarith : (0 : ℝ) < s - 1)))] with D hD hSD
+  have hsD : 0 < s ^ D := pow_pos hs0 D
+  have hSpos : 0 < curveCombMass q α D := by
+    exact (div_pos_iff_of_pos_right hsD).mp (lt_trans (div_pos hs0 (by linarith)) hSD)
+  have hE := hD₀ D hD F hF hFc
+  have hqD : (q : ℝ) ^ D = (s ^ D) ^ 2 := by
+    rw [← pow_mul, mul_comm, pow_mul, sq, Real.mul_self_sqrt (Nat.cast_nonneg q)]
+  have hS2 : 0 < curveCombMass q α D ^ 2 := pow_pos hSpos 2
+  rw [div_pow, div_div_eq_mul_div, div_le_div_iff_of_pos_right hS2]
+  rw [hqD] at hE
+  linarith [hE]
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

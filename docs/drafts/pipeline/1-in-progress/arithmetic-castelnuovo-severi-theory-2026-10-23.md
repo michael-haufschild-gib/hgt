@@ -113,6 +113,9 @@ survivor).
   jump form), `localPair_eq_of_disjoint`, `localPair_nonneg` (Bézout positivity: distinct
   effective cycles meet nonnegatively; Riemann–Roch is the only missing input).
 
+- `TheSuccessorCollar`: `collar_bounds`, `successor_localPair_bounds` (consecutive Hecke cycles
+  meet through the collar alone, `ω(log(1 + 1/k)) = (k+1)√(k(k+1))/(2k+1)` per unit mass).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

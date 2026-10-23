@@ -24,7 +24,7 @@ are unchanged, so dependents' oleans stay valid.
 ## Queue (446 modules; depth = import distance from the discharge modules, count = options)
 - [x] `HTGeometry/PolynomialODE/JetRankThreeCompactReserve.lean` (depth 2, 1)
 - [x] `RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean` (depth 2, 1)
-- [ ] `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEighteenFifthsDirectAffineJoint.lean` (depth 2, 5)
+- [x] `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEighteenFifthsDirectAffineJoint.lean` (depth 2, 5)
 - [ ] `RHTower/ThetaCusp/ThetaCuspMiddleCompensationBounds.lean` (depth 2, 1)
 - [ ] `RHTower/XiReciprocalSquareFixedCauchySource.lean` (depth 2, 2)
 - [ ] `HTGeometry/PolynomialODE/JetRankThreeCompactExpansion.lean` (depth 3, 1)

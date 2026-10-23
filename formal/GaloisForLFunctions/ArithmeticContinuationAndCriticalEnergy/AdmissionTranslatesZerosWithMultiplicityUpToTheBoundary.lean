@@ -1,7 +1,7 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusCriterion
 import GaloisForLFunctions.RHTower.ReceiverDampingsAccumulateAboveTheZeros
 import GaloisForLFunctions.HTGeometry.HalfLineLaplaceL2
-import GaloisForLFunctions.SquareRootThreshold.TheReceiverDampingReadsTheZeroWidth
+import GaloisForLFunctions.RHTower.AdmissionBelowHalfDampingAboveTheZeroWidth
 
 /-!
 # Admission translates zeros with multiplicity, up to the boundary line
@@ -131,13 +131,16 @@ theorem natCast_le_analyticOrderAt_sub_of_memLp {ε : ℝ} (hε0 : 0 < ε) (hε1
     have hz2 : riemannZeta (ρ + u) = (u : ℂ) ^ n * g (ρ + u) := by
       rw [hζ2]; simp [smul_eq_mul]
     have hZu : zetaResidueUnit (ρ + u) = (ρ + u - 1) * ((u : ℂ) ^ n * g (ρ + u)) := by
-      rw [hZ, hz2]
+      rw [hZ]
+      beta_reduce
+      rw [hz2]
     -- `R(s) h(s) = s Z(ρ + u) M(s) / u^k`
     have hu0C : (u : ℂ) ≠ 0 := by exact_mod_cast hu0.ne'
     have hkey : R s * h s = s * zetaResidueUnit (ρ + u) *
         mellin (pmPowerDampedFermiSource ε) s / (u : ℂ) ^ k := by
       rw [hid, hz1, eq_div_iff (pow_ne_zero k hu0C)]
       simp only [hR]
+      rw [hsε]
       ring
     rw [hkey, hZu, norm_div, norm_mul, norm_mul, norm_mul, norm_mul, norm_pow, norm_pow,
       Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu0]
@@ -161,21 +164,29 @@ theorem natCast_le_analyticOrderAt_sub_of_memLp {ε : ℝ} (hε0 : 0 < ε) (hε1
       rw [div_le_iff₀ (pow_pos hu0 k), ← pow_succ']
       exact pow_le_pow_of_le_one hu0.le (by linarith) (by omega)
     have hsqrt : u / Real.sqrt (2 * u) ≤ Real.sqrt u := by
-      have hsu : 0 < Real.sqrt u := Real.sqrt_pos.mpr hu0
-      rw [div_le_iff₀ (Real.sqrt_pos.mpr (by linarith)), Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)]
-      have h2 : 1 ≤ Real.sqrt 2 := by
-        rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_le_sqrt (by norm_num)
-      have hsq : Real.sqrt u * Real.sqrt u = u := Real.mul_self_sqrt hu0.le
-      nlinarith
+      rw [div_le_iff₀ (Real.sqrt_pos.mpr (by linarith))]
+      calc u = Real.sqrt u * Real.sqrt u := (Real.mul_self_sqrt hu0.le).symm
+        _ ≤ Real.sqrt u * Real.sqrt (2 * u) :=
+          mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (by linarith)) (Real.sqrt_nonneg _)
     have hfac : 0 ≤ ‖g (ρ + u)‖ := norm_nonneg _
     calc ‖s‖ * (‖ρ + (u : ℂ) - 1‖ * (u ^ n * ‖g (ρ + u)‖)) *
           ‖mellin (pmPowerDampedFermiSource ε) s‖ / u ^ k
         ≤ (‖s₁‖ + 1) * ((‖ρ - 1‖ + 1) * (u ^ n * (‖g ρ‖ + 1))) * (C / Real.sqrt (2 * u)) /
             u ^ k := by
-          gcongr
+          have hun : 0 ≤ u ^ n := pow_nonneg hu0.le n
+          have hb3 : u ^ n * ‖g (ρ + u)‖ ≤ u ^ n * (‖g ρ‖ + 1) :=
+            mul_le_mul_of_nonneg_left hgu hun
+          have hb2 : ‖ρ + (u : ℂ) - 1‖ * (u ^ n * ‖g (ρ + u)‖) ≤
+              (‖ρ - 1‖ + 1) * (u ^ n * (‖g ρ‖ + 1)) :=
+            mul_le_mul hs2 hb3 (mul_nonneg hun hfac) (by positivity)
+          have hb1 : ‖s‖ * (‖ρ + (u : ℂ) - 1‖ * (u ^ n * ‖g (ρ + u)‖)) ≤
+              (‖s₁‖ + 1) * ((‖ρ - 1‖ + 1) * (u ^ n * (‖g ρ‖ + 1))) :=
+            mul_le_mul hs1 hb2 (by positivity) (by positivity)
+          exact div_le_div_of_nonneg_right (mul_le_mul hb1 hM (norm_nonneg _) (by positivity))
+            (pow_nonneg hu0.le k)
       _ = A * ((u ^ n / u ^ k) / Real.sqrt (2 * u)) := by rw [hA]; ring
-      _ ≤ A * (u / Real.sqrt (2 * u)) := by
-          gcongr
+      _ ≤ A * (u / Real.sqrt (2 * u)) :=
+          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hpow (Real.sqrt_nonneg _)) hA0
       _ ≤ A * Real.sqrt u := mul_le_mul_of_nonneg_left hsqrt hA0
   have hlim0 : Tendsto (fun u : ℝ => R (s₁ + u) * h (s₁ + u)) (𝓝[>] 0) (𝓝 0) := by
     have hsq : Tendsto (fun u : ℝ => A * Real.sqrt u) (𝓝[>] 0) (𝓝 0) := by
@@ -256,8 +267,6 @@ theorem receiverDampings_inter_Ici_eq_Ioi {ρ₀ : ℂ} (hz : riemannZeta ρ₀ 
     (hshadow : analyticOrderAt riemannZeta (1 / 2 + (ρ₀.im : ℂ) * I) <
       analyticOrderAt riemannZeta ρ₀) :
     receiverDampings ∩ Ici (zetaZeroAbscissa - 1 / 2) = Ioi (zetaZeroAbscissa - 1 / 2) := by
-  have hwidth : SquareRootThreshold.zetaZeroWidth = zetaZeroAbscissa - 1 / 2 :=
-    SquareRootThreshold.zetaZeroWidth_eq_zetaZeroAbscissa_sub_half
   ext x
   constructor
   · rintro ⟨hx, hxi⟩
@@ -267,8 +276,12 @@ theorem receiverDampings_inter_Ici_eq_Ioi {ρ₀ : ℂ} (hz : riemannZeta ρ₀ 
       exact absurd (analyticOrderAt_le_of_zetaZeroAbscissa_mem_receiverDampings hz hmax hgt hx)
         (not_le.mpr hshadow)
   · intro hx
-    refine ⟨SquareRootThreshold.Ioi_zetaZeroWidth_subset_receiverDampings ?_, mem_Ici.mpr hx.le⟩
-    rw [hwidth]
-    exact hx
+    exact ⟨Ioi_zetaZeroAbscissa_sub_half_subset_receiverDampings hx, mem_Ici.mpr hx.le⟩
 
 end GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.riemannZeta_criticalLine_eq_zero_of_mem_receiverDampings
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.analyticOrderAt_le_of_zetaZeroAbscissa_mem_receiverDampings
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.receiverDampings_inter_Ici_eq_Ioi
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.exists_norm_mellin_pmPowerDampedFermiSource_le
+#print axioms GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.natCast_le_analyticOrderAt_sub_of_memLp
