@@ -2676,7 +2676,7 @@ theorem eventually_longSawtooth_tail_quadratic_gap {ε : ℝ} (hε : 0 < ε) (h�
     positivity
   have hc₀_nonneg : 0 ≤ c₀ := by
     rcases eq_or_ne (riemannZeta (oscillationExponent ε t)) 0 with hz | hz
-    · rw [hc₀, probeEnergyLowerRate, hz]; simp
+    · rw [hc₀, probeEnergyLowerRate, probeAmp, hz]; simp
     · exact (probeEnergyLowerRate_pos hε hε2 ht hz).le
   have hC_tail_pos : 0 < C_tail := by
     rw [hC_tail, tailEnergyUpperRate]
@@ -2699,7 +2699,7 @@ theorem eventually_longSawtooth_tail_quadratic_gap {ε : ℝ} (hε : 0 < ε) (h�
           (pronicNorm (oscillatingLongSawtooth ε t) T ^ 2 +
             pronicNorm (oscillatingTailDrift ε t) T ^ 2) := by
     rcases eq_or_ne (riemannZeta (oscillationExponent ε t)) 0 with hz | hz
-    · have hc₀_zero : c₀ = 0 := by rw [hc₀, probeEnergyLowerRate, hz]; simp
+    · have hc₀_zero : c₀ = 0 := by rw [hc₀, probeEnergyLowerRate, probeAmp, hz]; simp
       have hθ_one : longSawtoothTailGapTheta ε t = 1 := by
         rw [longSawtoothTailGapTheta, ← hc₀, hc₀_zero, zero_div, sub_zero]
       rw [hθ_one]
@@ -2797,12 +2797,12 @@ theorem eventually_longSawtooth_tail_quadratic_gap {ε : ℝ} (hε : 0 < ε) (h�
       · intro h
         linarith [div_pos h h4M]
     rw [hdiv_pos, hc₀, probeEnergyLowerRate_pos_iff hε hε2 ht,
-      receiverBounded_oscillatingSmoothPower_iff hε hε2.le t]
+      receiverBounded_oscillatingSmoothPower_iff hε hε2.le t, oscillationExponent]
   have hharm_iff : longSawtoothTailGapTheta ε t < 1 ↔
       (‖longSawtoothAmp ε t‖ ≠ ‖tailDriftAmp ε t‖ ∨
         -(longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re <
           ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖) := by
-    rw [hlt_iff, receiverBounded_oscillatingSmoothPower_iff hε hε2.le t]
+    rw [hlt_iff, receiverBounded_oscillatingSmoothPower_iff hε hε2.le t, ← oscillationExponent]
     have hρ0 : oscillationExponent ε t ≠ 0 := oscillationExponent_ne_zero (by linarith) t
     have hdecomp := norm_sq_longSawtoothAmp_add_tailDriftAmp_eq ε t
     constructor
@@ -2812,12 +2812,14 @@ theorem eventually_longSawtooth_tail_quadratic_gap {ε : ℝ} (hε : 0 < ε) (h�
       have hsq_pos : 0 < ‖riemannZeta (oscillationExponent ε t) / oscillationExponent ε t‖ ^ 2 :=
         sq_pos_of_pos (norm_pos_iff.mpr hquot)
       by_contra hnot
-      push_neg at hnot
+      rcases not_or.mp hnot with ⟨hnot1, hnot2⟩
+      rw [not_ne_iff] at hnot1
+      rw [not_lt] at hnot2
       have h1 : (‖longSawtoothAmp ε t‖ - ‖tailDriftAmp ε t‖) ^ 2 = 0 := by
-        rw [hnot.1, sub_self, sq, mul_zero]
+        rw [hnot1, sub_self, sq, mul_zero]
       have h2 : ‖longSawtoothAmp ε t‖ * ‖tailDriftAmp ε t‖ +
           (longSawtoothAmp ε t * starRingEnd ℂ (tailDriftAmp ε t)).re ≤ 0 := by
-        linarith [hnot.2]
+        linarith
       linarith [hdecomp.2.1]
     · intro hsrc hz
       have hquot : riemannZeta (oscillationExponent ε t) / oscillationExponent ε t = 0 := by

@@ -38,7 +38,8 @@ theorem hasSum_degree_regroup {n : ℕ} {g : (Fin n → ℕ) → α} {S : α} (h
     rwa [← Finset.sum_subtype (Finset.Nat.antidiagonalTuple n k)
       (fun _ => Finset.Nat.mem_antidiagonalTuple) g] at hsum
   have hbase : HasSum (fun x : Σ k : ℕ, {m : Fin n → ℕ // ∑ i, m i = k} => g x.2.1) S := by
-    refine (Equiv.hasSum_iff (Equiv.sigmaFiberEquiv fun m : Fin n → ℕ => ∑ i, m i)).2 h
+    exact (Equiv.hasSum_iff (f := g)
+      (Equiv.sigmaFiberEquiv fun m : Fin n → ℕ => ∑ i, m i)).2 h
   exact hbase.sigma hfib
 
 end Regroup
@@ -72,7 +73,9 @@ theorem summable_multiGeometric_nonneg : ∀ (n : ℕ) (t : Fin n → ℝ), (∀
         show (t 0) ^ p.1 * (∏ i, (t (Fin.succ i)) ^ (p.2 i)) =
           ∏ i, (t i) ^ ((Fin.consEquiv fun _ : Fin (n + 1) => ℕ) p i)
         simp only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ]
-      exact (Equiv.summable_iff _).1 hcomp
+      exact (Equiv.summable_iff
+        (f := fun m : Fin (n + 1) → ℕ => ∏ i, (t i) ^ (m i))
+        (Fin.consEquiv fun _ : Fin (n + 1) => ℕ)).1 hcomp
 
 /-- **The geometric series in several variables.**  The product of the geometric series of the
 coordinates is the sum of all monomials in the coordinates. -/
@@ -132,7 +135,9 @@ theorem hasSum_multiGeometric : ∀ (n : ℕ) (u : Fin n → ℂ), (∀ i, ‖u 
           ((1 - u 0)⁻¹ * ∏ i, (1 - u (Fin.succ i))⁻¹) := by
         rw [hfun]
         exact hprod
-      exact (Equiv.hasSum_iff _).1 hcomp
+      exact (Equiv.hasSum_iff
+        (f := fun m : Fin (n + 1) → ℕ => ∏ i, (u i) ^ (m i))
+        (Fin.consEquiv fun _ : Fin (n + 1) => ℕ)).1 hcomp
 
 end MultiGeometric
 

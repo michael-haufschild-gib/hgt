@@ -185,7 +185,7 @@ valid.
 - [ ] `HTGeometry/FinitePiProductSummability.lean` (depth 9, 2)
 - [ ] `HTGeometry/FirstAtomEvenTailReserve.lean` (depth 9, 1)
 - [ ] `HTGeometry/HankelFourDeterminant.lean` (depth 9, 1)
-- [ ] `HTGeometry/OmittedValueLogarithmicGrowth.lean` (depth 9, 1)
+- [x] `HTGeometry/OmittedValueLogarithmicGrowth.lean` (depth 9, 1)
 - [ ] `HTGeometry/PolynomialODE/EvenCompactMomentFive.lean` (depth 9, 1)
 - [ ] `HTGeometry/PolynomialODE/EvenCompactMomentFour.lean` (depth 9, 1)
 - [ ] `HTGeometry/PolynomialODE/EvenCompactMomentOne.lean` (depth 9, 1)
@@ -480,15 +480,15 @@ valid.
   and artifact hashes are recorded in `formal/.lake/heartbeat-budget-removal-2026-10-23/`.
 
 ## Edited, not yet verified at default budget
-Proof rewrites are present; remaining limits must be removed and each file must pass
-`lake --old env lean` at default budgets, have matching olean/ilean artifacts, and pass a
-transitive axiom audit. The following list is the fixed completion batch, not a new queue.
+Proof rewrites are present. Check and fix each listed file at default budgets, then produce
+its olean/ilean using direct `lake --old env lean` commands, one file at a time.
+Axiom audits are excluded. The following list is the fixed completion batch, not a new queue.
 - `HTGeometry/BriotBouquetTwoRootNoGo.lean`
 - `HTGeometry/FinitePrimeRationalCoefficientField.lean`
 - `HTGeometry/GammaDigammaShiftAnchor.lean`
 - `HTGeometry/MultiGeometricSeries.lean`
 - `HTGeometry/OccupationVacuumAnomalyReciprocity.lean`
-- `HTGeometry/OmittedValueLogarithmicGrowth.lean`
+- [x] `HTGeometry/OmittedValueLogarithmicGrowth.lean` — build and final check passed; olean/ilean written.
 - `HTGeometry/SchwartzSpectralMeasureForm.lean`
 - `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean`
 - `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean`

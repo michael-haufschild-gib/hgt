@@ -1921,7 +1921,7 @@ theorem exists_chebyshevTwoPoleDefect_integral_le_exp_sub_sqrt_mul_sobolev :
 the `e^r` envelope.** With universal constants `c > 0` and `K > 0`, for every aperture `0 < r < R`
 and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, the total odd strip cost and pole charge are
 paid by `surplusPool + crossingPotentialTerm + evenStripGain + gaugeRemainder` up to a deficit of at
-most `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`. -/
+most `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)` (strictly `o(e^r)` as `r → ∞`). -/
 theorem exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit :
     ∃ c > 0, ∃ K > 0, ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R →
       ContDiff ℝ 2 F → HasCompactSupport F →
@@ -1933,7 +1933,9 @@ theorem exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit :
           gaugeRemainder (aperturePlateau r R) F +
           K * Real.exp r * Real.exp (-c * Real.sqrt r) *
             ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
-  obtain ⟨c, hc, K, hK, hcost⟩ := exists_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev
+  obtain ⟨c, hc, K₀, hK₀, hcost⟩ := exists_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev
+  set K := K₀ + 27 / 5 * Real.exp (c ^ 2 / 4)
+  have hK : 0 < K := by positivity
   refine ⟨c, hc, K, hK, fun r R F hr hrR hF hFc hodd hsupp => ?_⟩
   have hc1 := hcost r F hr (hF.of_le (by norm_num)) hFc hodd hsupp
   unfold reflectedPrimePolarCost at hc1
@@ -1941,11 +1943,36 @@ theorem exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit :
     fun y => plateauGauge_nonneg R (R - r) y
   have hpool := surplusPool_nonneg (F := F) hP0
   have hcross := crossingPotentialTerm_nonneg (F := F) hP0
-  -- Wait: `surplusPool + crossingPotentialTerm + gaugeRemainder` could be negative on its own, wait!
-  -- Look at `gradedIncidenceAllocation_half`: it bounds `oddStripCost + poleCharge` by
-  -- `surplusPool + crossingPotentialTerm + evenStripGain + gaugeRemainder + deficit` using
-  -- `gaugeRemainder_ge_neg_const_mul_sq`!
-  sorry
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq hF hFc hsupp hrR
+  have hsq_r : Real.sqrt r ^ 2 = r := Real.sq_sqrt hr.le
+  have hcomplete : 0 ≤ c ^ 2 / 4 + r - c * Real.sqrt r := by
+    have := sq_nonneg (Real.sqrt r - c / 2)
+    linarith
+  have hexp_floor : 1 ≤ Real.exp (c ^ 2 / 4) * (Real.exp r * Real.exp (-c * Real.sqrt r)) := by
+    rw [← Real.exp_add, ← Real.exp_add,
+      show c ^ 2 / 4 + (r + -c * Real.sqrt r) = c ^ 2 / 4 + r - c * Real.sqrt r by ring]
+    exact Real.one_le_exp hcomplete
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hd0 : 0 ≤ ∫ x, deriv F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hrem' : 27 / 5 * ∫ x, F x ^ 2 ≤
+      (27 / 5 * Real.exp (c ^ 2 / 4)) * Real.exp r * Real.exp (-c * Real.sqrt r) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+    calc 27 / 5 * ∫ x, F x ^ 2
+        = 27 / 5 * 1 * ∫ x, F x ^ 2 := by ring
+      _ ≤ 27 / 5 * (Real.exp (c ^ 2 / 4) * (Real.exp r * Real.exp (-c * Real.sqrt r))) *
+            ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+          refine mul_le_mul (mul_le_mul_of_nonneg_left hexp_floor (by norm_num))
+            (by linarith) hI0 (by positivity)
+      _ = (27 / 5 * Real.exp (c ^ 2 / 4)) * Real.exp r * Real.exp (-c * Real.sqrt r) *
+            ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by ring
+  have hsum_K : K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) =
+      K₀ * Real.exp r * Real.exp (-c * Real.sqrt r) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) +
+      (27 / 5 * Real.exp (c ^ 2 / 4)) * Real.exp r * Real.exp (-c * Real.sqrt r) *
+        ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+    simp only [K]; ring
+  linarith
 
 /-! ### Overlapping prime-strip allocation in the incidence ledger at `r = 23/40` -/
 
