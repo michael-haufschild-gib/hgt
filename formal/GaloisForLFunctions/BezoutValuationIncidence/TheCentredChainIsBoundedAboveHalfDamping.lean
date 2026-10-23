@@ -246,6 +246,189 @@ theorem sum_range_largeDivisorSum_le {η : ℝ} (hη : 1 / 2 < η) (n : ℕ) :
         mul_le_mul_of_nonneg_left hz (by positivity)
     _ = _ := by ring
 
+/-- In a column, a large divisor of a jump index is large against `K`: if `j ∈ (N/(K+1), N/K]`
+and `d > ⌊N/K⌋ − ⌊N/(K+1)⌋` then `j < d(K+1)`. -/
+private theorem lt_of_large_divisor_col {N K j d : ℕ} (hK : 1 ≤ K)
+    (hj : j ∈ Ioc (N / (K + 1)) (N / K)) (hd : N / K - N / (K + 1) < d) : j < d * (K + 1) := by
+  obtain ⟨hj1, hj2⟩ := mem_Ioc.mp hj
+  set q := N / K
+  set r := N / (K + 1)
+  have hrq : r ≤ q := Nat.div_le_div_left (by omega) hK
+  have h1 : N < (q + 1) * K := by
+    have := Nat.lt_div_mul_add (a := N) hK; rw [add_mul, one_mul]; exact this
+  have h2 : r * (K + 1) ≤ N := Nat.div_mul_le_self N (K + 1)
+  have hjK : j * K ≤ N := (Nat.le_div_iff_mul_le hK).mp hj2
+  have hd' : q - r + 1 ≤ d := by omega
+  have : N * (K + 1) < (q + 1) * K * (K + 1) := by nlinarith
+  have : r * (K + 1) * K ≤ N * K := Nat.mul_le_mul_right K h2
+  have e : (q - r + 1) * (K * (K + 1)) + r * (K + 1) * K = (q + 1) * K * (K + 1) := by
+    have : q - r + r = q := Nat.sub_add_cancel hrq
+    nlinarith
+  have hlt : N < (q - r + 1) * (K * (K + 1)) := by nlinarith
+  have : j * K < (q - r + 1) * (K + 1) * K := by nlinarith
+  have h3 : j < (q - r + 1) * (K + 1) := Nat.lt_of_mul_lt_mul_right this
+  exact lt_of_lt_of_le h3 (Nat.mul_le_mul_right _ hd')
+
+/-- `#{n < T : jK ≤ n + 1 < j(K+1)} ≤ j`. -/
+private theorem card_filter_window_le (T j K : ℕ) :
+    #{n ∈ range T | j * K ≤ n + 1 ∧ n + 1 < j * (K + 1)} ≤ j := by
+  have hsub : {n ∈ range T | j * K ≤ n + 1 ∧ n + 1 < j * (K + 1)} ⊆ Ico (j * K - 1) (j * K - 1 + j) := by
+    intro n hn
+    simp only [mem_filter, mem_range, mem_Ico] at hn ⊢
+    constructor <;> nlinarith [hn.2.1, hn.2.2]
+  calc _ ≤ #(Ico (j * K - 1) (j * K - 1 + j)) := card_le_card hsub
+    _ = j := by rw [Nat.card_Ico]; omega
+
+/-- **Column large-divisor sums.** For fixed `K = k + 1`:
+`Σ_{n < T} K^{1−η} N^{−3/2} J(⌊N/(K+1)⌋, ⌊N/K⌋) ≤ 2 ζ(½+η) K^{−η}`. -/
+theorem sum_range_col_largeDivisorSum_le {η : ℝ} (hη : 1 / 2 < η) (k T : ℕ) :
+    ∑ n ∈ range T, ((k + 1 : ℕ) : ℝ) ^ (1 - η) * ((n + 1 : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) *
+        largeDivisorSum η ((n + 1) / (k + 1 + 1)) ((n + 1) / (k + 1)) ≤
+      2 * realZetaSeries (1 / 2 + η) * ((k + 1 : ℕ) : ℝ) ^ (-η) := by
+  set K := k + 1 with hKdef
+  have hK1 : 1 ≤ K := by omega
+  have hK0 : (0 : ℝ) < K := by exact_mod_cast hK1
+  set G : ℕ → ℝ := fun j => ∑ d ∈ j.divisors with j < d * (K + 1), (d : ℝ) ^ (-η)
+  have hG0 : ∀ j, 0 ≤ G j := fun j => sum_nonneg fun _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _
+  set H : ℕ → ℝ := fun j => (K : ℝ) ^ (1 - η) * ((j * K : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) * G j
+  have hH0 : ∀ j, 0 ≤ H j := fun j => mul_nonneg (mul_nonneg (Real.rpow_nonneg hK0.le _)
+    (Real.rpow_nonneg (Nat.cast_nonneg _) _)) (hG0 j)
+  -- pointwise: each column entry is dominated by the `j`-indexed weights
+  have hpt : ∀ n ∈ range T, (K : ℝ) ^ (1 - η) * ((n + 1 : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) *
+      largeDivisorSum η ((n + 1) / (K + 1)) ((n + 1) / K) ≤
+      ∑ j ∈ Ioc ((n + 1) / (K + 1)) ((n + 1) / K), H j := by
+    intro n _
+    unfold largeDivisorSum
+    rw [mul_sum]
+    refine sum_le_sum fun j hj => ?_
+    have hjK : j * K ≤ n + 1 := (Nat.le_div_iff_mul_le hK1).mp (mem_Ioc.mp hj).2
+    have hj0 : 0 < j := lt_of_le_of_lt (Nat.zero_le _) (mem_Ioc.mp hj).1
+    have hpow : ((n + 1 : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) ≤ ((j * K : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) :=
+      Real.rpow_le_rpow_of_nonpos (by positivity) (by exact_mod_cast hjK) (by norm_num)
+    have hsub : ∑ d ∈ j.divisors with (n + 1) / K - (n + 1) / (K + 1) < d, (d : ℝ) ^ (-η) ≤ G j :=
+      sum_le_sum_of_subset_of_nonneg (fun d hd => by
+        simp only [mem_filter] at hd ⊢
+        exact ⟨hd.1, lt_of_large_divisor_col hK1 hj hd.2⟩)
+        fun _ _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _
+    have hS0 : 0 ≤ ∑ d ∈ j.divisors with (n + 1) / K - (n + 1) / (K + 1) < d, (d : ℝ) ^ (-η) :=
+      sum_nonneg fun _ _ => Real.rpow_nonneg (Nat.cast_nonneg _) _
+    calc (K : ℝ) ^ (1 - η) * ((n + 1 : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) *
+          ∑ d ∈ j.divisors with (n + 1) / K - (n + 1) / (K + 1) < d, (d : ℝ) ^ (-η)
+        ≤ (K : ℝ) ^ (1 - η) * ((j * K : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) * G j :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hpow (Real.rpow_nonneg hK0.le _)) hsub hS0
+            (mul_nonneg (Real.rpow_nonneg hK0.le _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+      _ = H j := rfl
+  -- swap the window index `n` and the jump index `j`
+  have hswap : ∑ n ∈ range T, ∑ j ∈ Ioc ((n + 1) / (K + 1)) ((n + 1) / K), H j =
+      ∑ j ∈ Icc 1 T, ∑ _n ∈ range T with j * K ≤ n + 1 ∧ n + 1 < j * (K + 1), H j := by
+    refine sum_comm' fun n j => ?_
+    simp only [mem_range, mem_Ioc, mem_filter, mem_Icc]
+    rw [Nat.div_lt_iff_lt_mul (by omega), Nat.le_div_iff_mul_le hK1]
+    constructor
+    · rintro ⟨hn, h1, h2⟩
+      refine ⟨⟨hn, h2, h1⟩, ?_, ?_⟩
+      · by_contra h0; push Not at h0; interval_cases j; simp at h1
+      · have : j ≤ j * K := Nat.le_mul_of_pos_right j hK1
+        omega
+    · rintro ⟨⟨hn, h2, h1⟩, -, -⟩
+      exact ⟨hn, h1, h2⟩
+  have hcount : ∑ j ∈ Icc 1 T, ∑ _n ∈ range T with j * K ≤ n + 1 ∧ n + 1 < j * (K + 1), H j ≤
+      ∑ j ∈ Icc 1 T, (j : ℝ) * H j := by
+    refine sum_le_sum fun j _ => ?_
+    rw [sum_const, nsmul_eq_mul]
+    exact mul_le_mul_of_nonneg_right (by exact_mod_cast card_filter_window_le T j K) (hH0 j)
+  -- evaluate the `j`-weights
+  have hjH : ∀ j ∈ Icc 1 T, (j : ℝ) * H j =
+      (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * ((j : ℝ) ^ (-(1 / 2 : ℝ)) * G j) := by
+    intro j hj
+    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hj).1
+    simp only [H]
+    rw [Nat.cast_mul, Real.mul_rpow hj0.le hK0.le]
+    have e1 : (j : ℝ) * (j : ℝ) ^ (-(3 / 2 : ℝ)) = (j : ℝ) ^ (-(1 / 2 : ℝ)) := by
+      rw [show -(1 / 2 : ℝ) = 1 + -(3 / 2) by norm_num, Real.rpow_add hj0, Real.rpow_one]
+    have e2 : (K : ℝ) ^ (1 - η) * (K : ℝ) ^ (-(3 / 2 : ℝ)) = (K : ℝ) ^ (-(1 / 2 : ℝ) - η) := by
+      rw [← Real.rpow_add hK0]; ring_nf
+    calc (j : ℝ) * ((K : ℝ) ^ (1 - η) * ((j : ℝ) ^ (-(3 / 2 : ℝ)) * (K : ℝ) ^ (-(3 / 2 : ℝ))) * G j)
+        = ((K : ℝ) ^ (1 - η) * (K : ℝ) ^ (-(3 / 2 : ℝ))) *
+            (((j : ℝ) * (j : ℝ) ^ (-(3 / 2 : ℝ))) * G j) := by ring
+      _ = _ := by rw [e1, e2]
+  -- swap `j` and the divisor `d`
+  have hdiv : ∑ j ∈ Icc 1 T, (j : ℝ) ^ (-(1 / 2 : ℝ)) * G j =
+      ∑ d ∈ Icc 1 T, ∑ j ∈ Icc 1 T with d ∣ j ∧ j < d * (K + 1),
+        (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ)) := by
+    simp only [G, mul_sum]
+    refine sum_comm' fun j d => ?_
+    simp only [mem_Icc, mem_filter, Nat.mem_divisors]
+    constructor
+    · rintro ⟨⟨hj1, hjT⟩, ⟨hdj, -⟩, hlt⟩
+      exact ⟨⟨⟨hj1, hjT⟩, hdj, hlt⟩, Nat.pos_of_dvd_of_pos hdj hj1,
+        (Nat.le_of_dvd hj1 hdj).trans hjT⟩
+    · rintro ⟨⟨⟨hj1, hjT⟩, hdj, hlt⟩, -, -⟩
+      exact ⟨⟨hj1, hjT⟩, ⟨hdj, by omega⟩, hlt⟩
+    · exact fun _ _ => by ring
+  have hinner : ∀ d ∈ Icc 1 T, ∑ j ∈ Icc 1 T with d ∣ j ∧ j < d * (K + 1),
+      (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ)) ≤
+      (d : ℝ) ^ (-(1 / 2 + η)) * (2 * (K : ℝ) ^ (1 / 2 : ℝ)) := by
+    intro d hd
+    have hd1 := (mem_Icc.mp hd).1
+    have hd0 : (0 : ℝ) < d := by exact_mod_cast hd1
+    have hsub : {j ∈ Icc 1 T | d ∣ j ∧ j < d * (K + 1)} ⊆ (Icc 1 K).image (d * ·) := by
+      intro j hj
+      simp only [mem_filter, mem_Icc] at hj
+      obtain ⟨⟨hj1, -⟩, ⟨t, rfl⟩, hlt⟩ := hj
+      refine mem_image.mpr ⟨t, mem_Icc.mpr ⟨?_, ?_⟩, rfl⟩
+      · rcases Nat.eq_zero_or_pos t with rfl | ht
+        · simp at hj1
+        · exact ht
+      · have := Nat.lt_of_mul_lt_mul_left hlt; omega
+    have hinj : Set.InjOn (d * ·) (Icc 1 K : Finset ℕ) := fun a _ b _ h =>
+      Nat.eq_of_mul_eq_mul_left (by omega) h
+    calc ∑ j ∈ Icc 1 T with d ∣ j ∧ j < d * (K + 1), (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ))
+        ≤ ∑ j ∈ (Icc 1 K).image (d * ·), (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ)) :=
+          sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ =>
+            mul_nonneg (Real.rpow_nonneg hd0.le _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+      _ = ∑ t ∈ Icc 1 K, (d : ℝ) ^ (-η) * ((d * t : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) := sum_image hinj
+      _ = (d : ℝ) ^ (-(1 / 2 + η)) * ∑ t ∈ Icc 1 K, (t : ℝ) ^ (-(1 / 2 : ℝ)) := by
+          rw [mul_sum]
+          refine sum_congr rfl fun t _ => ?_
+          rw [Nat.cast_mul, Real.mul_rpow hd0.le (Nat.cast_nonneg _), ← mul_assoc,
+            ← Real.rpow_add hd0]
+          ring_nf
+      _ ≤ (d : ℝ) ^ (-(1 / 2 + η)) * (2 * (K : ℝ) ^ (1 / 2 : ℝ)) := by
+          refine mul_le_mul_of_nonneg_left ?_ (Real.rpow_nonneg hd0.le _)
+          have := sum_Icc_rpow_neg_le_div (s := 1 / 2) (by norm_num) (by norm_num) K
+          rw [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] at this
+          linarith
+  have hz := sum_Icc_rpow_le_zeta_half hη T
+  have hfinal : ∑ d ∈ Icc 1 T, ∑ j ∈ Icc 1 T with d ∣ j ∧ j < d * (K + 1),
+      (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ)) ≤
+      2 * (K : ℝ) ^ (1 / 2 : ℝ) * realZetaSeries (1 / 2 + η) := by
+    calc _ ≤ ∑ d ∈ Icc 1 T, (d : ℝ) ^ (-(1 / 2 + η)) * (2 * (K : ℝ) ^ (1 / 2 : ℝ)) :=
+          sum_le_sum hinner
+      _ = 2 * (K : ℝ) ^ (1 / 2 : ℝ) * ∑ d ∈ Icc 1 T, (d : ℝ) ^ (-(1 / 2 + η)) := by
+          rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hz (by positivity)
+  have hKpow : (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * (2 * (K : ℝ) ^ (1 / 2 : ℝ) *
+      realZetaSeries (1 / 2 + η)) = 2 * realZetaSeries (1 / 2 + η) * (K : ℝ) ^ (-η) := by
+    have : (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * (K : ℝ) ^ (1 / 2 : ℝ) = (K : ℝ) ^ (-η) := by
+      rw [← Real.rpow_add hK0]; ring_nf
+    calc _ = 2 * realZetaSeries (1 / 2 + η) *
+          ((K : ℝ) ^ (-(1 / 2 : ℝ) - η) * (K : ℝ) ^ (1 / 2 : ℝ)) := by ring
+      _ = _ := by rw [this]
+  have hKpos : 0 ≤ (K : ℝ) ^ (-(1 / 2 : ℝ) - η) := Real.rpow_nonneg hK0.le _
+  calc ∑ n ∈ range T, ((k + 1 : ℕ) : ℝ) ^ (1 - η) * ((n + 1 : ℕ) : ℝ) ^ (-(3 / 2 : ℝ)) *
+        largeDivisorSum η ((n + 1) / (k + 1 + 1)) ((n + 1) / (k + 1))
+      ≤ ∑ n ∈ range T, ∑ j ∈ Ioc ((n + 1) / (K + 1)) ((n + 1) / K), H j := sum_le_sum hpt
+    _ = _ := hswap
+    _ ≤ ∑ j ∈ Icc 1 T, (j : ℝ) * H j := hcount
+    _ = (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * ∑ j ∈ Icc 1 T, (j : ℝ) ^ (-(1 / 2 : ℝ)) * G j := by
+        rw [mul_sum]; exact sum_congr rfl hjH
+    _ = (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * ∑ d ∈ Icc 1 T, ∑ j ∈ Icc 1 T with d ∣ j ∧ j < d * (K + 1),
+          (d : ℝ) ^ (-η) * (j : ℝ) ^ (-(1 / 2 : ℝ)) := by rw [hdiv]
+    _ ≤ (K : ℝ) ^ (-(1 / 2 : ℝ) - η) * (2 * (K : ℝ) ^ (1 / 2 : ℝ) * realZetaSeries (1 / 2 + η)) :=
+        mul_le_mul_of_nonneg_left hfinal hKpos
+    _ = _ := hKpow
+
 end
 
 end GaloisForLFunctions.BezoutValuationIncidence

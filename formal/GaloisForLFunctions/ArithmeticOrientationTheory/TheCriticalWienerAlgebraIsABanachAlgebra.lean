@@ -220,6 +220,251 @@ def groupNorm (σ : ℝ) : AddGroupNorm (WienerAlgebraAt σ) where
       · rw [Complex.cpow_eq_zero_iff] at h1
         exact absurd (by exact_mod_cast h1.1) hn
 
+instance : NormedAddCommGroup (WienerAlgebraAt σ) := (groupNorm σ).toNormedAddCommGroup
+
+theorem norm_def (f : WienerAlgebraAt σ) : ‖f‖ = wienerNorm σ f.toFn := rfl
+
+instance : NormedCommRing (WienerAlgebraAt σ) :=
+  { (inferInstance : CommRing (WienerAlgebraAt σ)),
+    (inferInstance : NormedAddCommGroup (WienerAlgebraAt σ)) with
+    norm_mul_le := fun f g => by
+      rw [norm_def, norm_def, norm_def, toFn_mul]
+      exact wienerNorm_mul_le f.summable g.summable }
+
+instance : NormedAlgebra ℂ (WienerAlgebraAt σ) :=
+  { (inferInstance : Algebra ℂ (WienerAlgebraAt σ)) with
+    norm_smul_le := fun c f => by
+      rw [norm_def, norm_def, toFn_smul, wienerNorm, wienerNorm, ← tsum_mul_left]
+      refine le_of_eq (tsum_congr fun n => ?_)
+      have hc : (⇑(c • f.toFn) : ℕ → ℂ) = c • ⇑f.toFn := rfl
+      rw [hc, term_smul_apply, norm_mul] }
+
+/-- The term of the unit `δ₁` is `δ₁`. -/
+theorem term_one (n : ℕ) : term (⇑(1 : ArithmeticFunction ℂ)) σ n = if n = 1 then 1 else 0 := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · rw [term_of_ne_zero hn, one_apply]
+    split_ifs with h
+    · subst h; simp
+    · exact zero_div _
+
+instance : NormOneClass (WienerAlgebraAt σ) where
+  norm_one := by
+    rw [norm_def, toFn_one, wienerNorm, tsum_eq_single 1]
+    · rw [term_one, if_pos rfl, norm_one]
+    · intro n hn
+      rw [term_one, if_neg hn, norm_zero]
+
+/-! ### Completeness through the weight isometry -/
+
+/-- The weighted coordinates `k ↦ f(k+1) (k+1)^{−σ}` as an element of `ℓ¹`. -/
+def toLp (f : WienerAlgebraAt σ) : lp (fun _ : ℕ => ℂ) 1 :=
+  ⟨fun k => term (⇑f.toFn) σ (k + 1), by
+    refine memℓp_gen ?_
+    simp only [ENNReal.toReal_one, Real.rpow_one]
+    exact (summable_nat_add_iff 1).2 (summable_norm f)⟩
+
+theorem toLp_apply (f : WienerAlgebraAt σ) (k : ℕ) :
+    (toLp f : ℕ → ℂ) k = term (⇑f.toFn) σ (k + 1) := rfl
+
+theorem norm_lp_one (x : lp (fun _ : ℕ => ℂ) 1) : ‖x‖ = ∑' k, ‖(x : ℕ → ℂ) k‖ := by
+  rw [lp.norm_eq_tsum_rpow (by norm_num)]
+  simp
+
+theorem norm_toLp (f : WienerAlgebraAt σ) : ‖toLp f‖ = ‖f‖ := by
+  rw [norm_lp_one, norm_def, wienerNorm, (summable_norm f).tsum_eq_zero_add]
+  simp [toLp_apply]
+
+theorem toLp_sub (f g : WienerAlgebraAt σ) : toLp (f - g) = toLp f - toLp g := by
+  refine lp.ext (funext fun k => ?_)
+  rw [lp.coeFn_sub, Pi.sub_apply, toLp_apply, toLp_apply, toLp_apply, toFn_sub]
+  have hc : (⇑(f.toFn - g.toFn) : ℕ → ℂ) = ⇑f.toFn - ⇑g.toFn := rfl
+  rw [hc, term_sub_apply]
+
+/-- The arithmetic function `n ↦ x(n−1) n^σ` of an `ℓ¹` sequence. -/
+def ofLpFn (x : lp (fun _ : ℕ => ℂ) 1) : ArithmeticFunction ℂ :=
+  ⟨fun n => if n = 0 then 0 else (x : ℕ → ℂ) (n - 1) * (n : ℂ) ^ (σ : ℂ), by simp⟩
+
+theorem term_ofLpFn (x : lp (fun _ : ℕ => ℂ) 1) (k : ℕ) :
+    term (⇑(ofLpFn (σ := σ) x)) σ (k + 1) = (x : ℕ → ℂ) k := by
+  rw [term_of_ne_zero k.succ_ne_zero]
+  show (if k + 1 = 0 then 0 else (x : ℕ → ℂ) (k + 1 - 1) * ((k + 1 : ℕ) : ℂ) ^ (σ : ℂ)) /
+    ((k + 1 : ℕ) : ℂ) ^ (σ : ℂ) = _
+  rw [if_neg k.succ_ne_zero, Nat.add_sub_cancel, mul_div_cancel_right₀]
+  rw [Ne, Complex.cpow_eq_zero_iff]
+  exact fun h => k.succ_ne_zero (by exact_mod_cast h.1)
+
+theorem summable_ofLpFn (x : lp (fun _ : ℕ => ℂ) 1) :
+    LSeriesSummable (⇑(ofLpFn (σ := σ) x)) σ := by
+  rw [← summable_norm_term_iff, ← summable_nat_add_iff 1]
+  simp_rw [term_ofLpFn]
+  have hmem := (memℓp_gen_iff (p := (1 : ENNReal)) (by norm_num)).1 (lp.memℓp x)
+  simpa [ENNReal.toReal_one, Real.rpow_one] using hmem
+
+/-- The inverse of the weight isometry. -/
+def ofLp (x : lp (fun _ : ℕ => ℂ) 1) : WienerAlgebraAt σ := mk (ofLpFn x) (summable_ofLpFn x)
+
+theorem toLp_ofLp (x : lp (fun _ : ℕ => ℂ) 1) : toLp (ofLp (σ := σ) x) = x :=
+  lp.ext (funext fun k => term_ofLpFn x k)
+
+theorem ofLp_toLp (f : WienerAlgebraAt σ) : ofLp (toLp f) = f := by
+  ext n
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
+    show (if k + 1 = 0 then 0 else (toLp f : ℕ → ℂ) (k + 1 - 1) * ((k + 1 : ℕ) : ℂ) ^ (σ : ℂ)) = _
+    rw [if_neg k.succ_ne_zero, Nat.add_sub_cancel, toLp_apply, mul_comm]
+    exact_mod_cast pow_mul_term_eq (⇑f.toFn) σ k
+
+/-- **The weight isometry**: `𝒲_σ` and `ℓ¹(ℕ)` are isometric. -/
+def isometryLp (σ : ℝ) : WienerAlgebraAt σ ≃ᵢ lp (fun _ : ℕ => ℂ) 1 where
+  toFun := toLp
+  invFun := ofLp
+  left_inv := ofLp_toLp
+  right_inv := toLp_ofLp
+  isometry_toFun := by
+    refine Isometry.of_dist_eq fun f g => ?_
+    rw [dist_eq_norm, dist_eq_norm, ← toLp_sub, norm_toLp]
+
+/-- **`𝒲_σ` is a Banach algebra.** -/
+instance : CompleteSpace (WienerAlgebraAt σ) := by
+  haveI : Fact ((1 : ENNReal) ≤ 1) := ⟨le_refl _⟩
+  exact (isometryLp σ).completeSpace_iff.mpr inferInstance
+
+/-! ### Point masses -/
+
+/-- The point mass `δ_n` (zero for `n = 0`). -/
+def pointMassFn (n : ℕ) : ArithmeticFunction ℂ :=
+  ⟨fun m => if m ≠ 0 ∧ m = n then 1 else 0, by simp⟩
+
+theorem pointMassFn_apply (n m : ℕ) : pointMassFn n m = if m ≠ 0 ∧ m = n then 1 else 0 := rfl
+
+theorem term_pointMassFn {n : ℕ} (hn : n ≠ 0) (m : ℕ) :
+    term (⇑(pointMassFn n)) σ m = if m = n then 1 / (n : ℂ) ^ (σ : ℂ) else 0 := by
+  rcases eq_or_ne m 0 with rfl | hm
+  · simp [hn.symm]
+  · rw [term_of_ne_zero hm, pointMassFn_apply]
+    by_cases h : m = n
+    · subst h; simp [hm]
+    · simp [h]
+
+theorem summable_pointMassFn (n : ℕ) : LSeriesSummable (⇑(pointMassFn n)) σ := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · refine summable_of_ne_finset_zero (s := ∅) fun m _ => ?_
+    rcases eq_or_ne m 0 with rfl | hm
+    · simp
+    · rw [term_of_ne_zero hm, pointMassFn_apply, if_neg (fun h => hm h.2), zero_div]
+  · refine summable_of_ne_finset_zero (s := {n}) fun m hm => ?_
+    rw [Finset.mem_singleton] at hm
+    rw [term_pointMassFn hn, if_neg hm]
+
+/-- The point mass `δ_n` in `𝒲_σ`. -/
+def pointMass (n : ℕ) : WienerAlgebraAt σ := mk (pointMassFn n) (summable_pointMassFn n)
+
+theorem toFn_pointMass (n : ℕ) : (pointMass (σ := σ) n).toFn = pointMassFn n := rfl
+
+/-- `‖δ_n‖ = n^{−σ}`. -/
+theorem norm_pointMass {n : ℕ} (hn : n ≠ 0) : ‖(pointMass n : WienerAlgebraAt σ)‖ = (n : ℝ) ^ (-σ) := by
+  rw [norm_def, toFn_pointMass, wienerNorm, tsum_eq_single n]
+  · rw [term_pointMassFn hn, if_pos rfl, norm_div, norm_one, Complex.norm_natCast_cpow_of_pos
+      (Nat.pos_of_ne_zero hn), Complex.ofReal_re, Real.rpow_neg (Nat.cast_nonneg n), one_div]
+  · intro m hm
+    rw [term_pointMassFn hn, if_neg hm, norm_zero]
+
+theorem pointMass_one : (pointMass 1 : WienerAlgebraAt σ) = 1 := by
+  ext m
+  rw [toFn_pointMass, pointMassFn_apply, toFn_one, one_apply]
+  by_cases h : m = 1
+  · simp [h]
+  · simp [h]
+
+/-- **Point masses multiply**: `δ_m δ_n = δ_{mn}`. -/
+theorem pointMassFn_mul (m n : ℕ) : pointMassFn m * pointMassFn n = pointMassFn (m * n) := by
+  ext k
+  rw [mul_apply, pointMassFn_apply]
+  by_cases hk : k ≠ 0 ∧ k = m * n
+  · rw [if_pos hk, Finset.sum_eq_single (m, n)]
+    · obtain ⟨hk0, rfl⟩ := hk
+      have hm : m ≠ 0 := left_ne_zero_of_mul hk0
+      have hn : n ≠ 0 := right_ne_zero_of_mul hk0
+      simp [pointMassFn_apply, hm, hn]
+    · rintro ⟨a, b⟩ _ hab
+      simp only [pointMassFn_apply]
+      split_ifs with h1 h2 <;> simp_all
+    · intro h
+      exact absurd (Nat.mem_divisorsAntidiagonal.2 ⟨hk.2.symm, hk.1⟩) h
+  · rw [if_neg hk]
+    refine Finset.sum_eq_zero fun x hx => ?_
+    rw [Nat.mem_divisorsAntidiagonal] at hx
+    simp only [pointMassFn_apply]
+    split_ifs with h1 h2
+    · exact absurd ⟨hx.2, by rw [← hx.1, h1.2, h2.2]⟩ hk
+    all_goals simp
+
+theorem pointMass_mul (m n : ℕ) :
+    (pointMass m * pointMass n : WienerAlgebraAt σ) = pointMass (m * n) :=
+  toFn_injective (pointMassFn_mul m n)
+
+/-- The weight isometry sends a point mass of `ℓ¹` to a scaled point mass. -/
+theorem ofLp_single (k : ℕ) (c : ℂ) :
+    ofLp (σ := σ) (lp.single 1 k c) = (c * ((k + 1 : ℕ) : ℂ) ^ (σ : ℂ)) • pointMass (k + 1) := by
+  ext n
+  rw [toFn_smul, smul_map, toFn_pointMass, pointMassFn_apply, smul_eq_mul]
+  show (if n = 0 then 0 else ((lp.single 1 k c : lp (fun _ : ℕ => ℂ) 1) : ℕ → ℂ) (n - 1) *
+    (n : ℂ) ^ (σ : ℂ)) = _
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp
+  · rw [if_neg hn, lp.single_apply]
+    by_cases h : n - 1 = k
+    · have : n = k + 1 := by omega
+      subst this
+      simp
+    · have : ¬ (n ≠ 0 ∧ n = k + 1) := fun h' => h (by omega)
+      rw [Pi.single_apply, if_neg h, if_neg this]
+      simp
+
+/-- The inverse weight isometry as an additive map. -/
+def ofLpHom : lp (fun _ : ℕ => ℂ) 1 →+ WienerAlgebraAt σ where
+  toFun := ofLp
+  map_zero' := by
+    rw [← (isometryLp σ).symm_apply_apply 0]
+    show ofLp 0 = ofLp (toLp 0)
+    congr 1
+    refine lp.ext (funext fun k => ?_)
+    simp [toLp_apply, toFn_zero]
+  map_add' x y := by
+    apply (isometryLp σ).injective
+    show toLp (ofLp (x + y)) = toLp (ofLp x + ofLp y)
+    rw [toLp_ofLp]
+    refine lp.ext (funext fun k => ?_)
+    rw [lp.coeFn_add, Pi.add_apply, toLp_apply, toFn_add]
+    have hc : (⇑((ofLp (σ := σ) x).toFn + (ofLp (σ := σ) y).toFn) : ℕ → ℂ) =
+        ⇑(ofLp (σ := σ) x).toFn + ⇑(ofLp (σ := σ) y).toFn := rfl
+    rw [hc, term_add_apply, ← toLp_apply, ← toLp_apply, toLp_ofLp, toLp_ofLp]
+
+theorem continuous_ofLpHom : Continuous (ofLpHom (σ := σ)) := (isometryLp σ).symm.continuous
+
+/-- **Every element is the norm-convergent series of its point masses**:
+`f = Σ_n f(n) δ_n` in `𝒲_σ`. -/
+theorem hasSum_pointMass (f : WienerAlgebraAt σ) :
+    HasSum (fun n => f.toFn n • (pointMass n : WienerAlgebraAt σ)) f := by
+  haveI : Fact ((1 : ENNReal) ≤ 1) := ⟨le_refl _⟩
+  have h := (lp.hasSum_single (E := fun _ : ℕ => ℂ) ENNReal.one_ne_top (toLp f)).map
+    (ofLpHom (σ := σ)) continuous_ofLpHom
+  have h1 : (⇑(ofLpHom (σ := σ)) ∘ fun k => lp.single 1 k ((toLp f : ℕ → ℂ) k)) =
+      fun k => f.toFn (k + 1) • (pointMass (k + 1) : WienerAlgebraAt σ) := by
+    funext k
+    show ofLp _ = _
+    rw [ofLp_single, toLp_apply, mul_comm]
+    congr 1
+    exact_mod_cast pow_mul_term_eq (⇑f.toFn) σ k
+  rw [h1] at h
+  have h2 : ofLpHom (σ := σ) (toLp f) = f := ofLp_toLp f
+  rw [h2] at h
+  have h0 : f.toFn 0 • (pointMass 0 : WienerAlgebraAt σ) = 0 := by simp
+  rw [← hasSum_nat_add_iff' 1]
+  simpa [h0] using h
+
 end WienerAlgebraAt
 
 end

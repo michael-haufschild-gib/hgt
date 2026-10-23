@@ -1202,7 +1202,7 @@ theorem strictCoupledArithmeticCone_primitiveSmooth_riemannRoch_primeTwo {r : �
   rw [strictCoupledArithmeticCone_eq_openPositiveCone]
   exact (scalingSubsurface (primitiveSmoothRealTestsAt r)).openPositiveCone_bezout hH
 
-/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, Bézout, and
+/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, and
 Canonical Surface Riemann–Roch Past the First Prime for `l2SourceCone c (primitiveSmoothRealTestsAt r)`
 (`0 < c ≤ 1/1000`, `r ≤ ½(log 2 + 1/50)`):** -/
 theorem l2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
@@ -1211,8 +1211,6 @@ theorem l2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
     (scalingSubsurface (primitiveSmoothRealTestsAt r)).RiemannRochAxiom
         (l2SourceCone c (primitiveSmoothRealTestsAt r)) ∧
       (scalingSubsurface (primitiveSmoothRealTestsAt r)).AmpleAxiom
-        (l2SourceCone c (primitiveSmoothRealTestsAt r)) ∧
-      (scalingSubsurface (primitiveSmoothRealTestsAt r)).BezoutAxiom
         (l2SourceCone c (primitiveSmoothRealTestsAt r)) ∧
       (scalingSubsurface (primitiveSmoothRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
         (l2SourceCone c (primitiveSmoothRealTestsAt r)) := by
@@ -1228,11 +1226,10 @@ theorem l2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
   exact ⟨S.sourceCone_riemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle,
     l2SourceCone_ample hc0 V,
-    S.sourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc0.le V) hle,
     S.sourceCone_surfaceRiemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle⟩
 
-/-- **Unconditional Strict Source-Defined Arithmetic Riemann–Roch, Ampleness, and Bézout Past the
+/-- **Unconditional Strict Source-Defined Arithmetic Riemann–Roch and Ampleness Past the
 First Prime for `strictL2SourceCone c (primitiveSmoothRealTestsAt r)`
 (`0 < c ≤ 1/1000`, `r ≤ ½(log 2 + 1/50)`):** -/
 theorem strictL2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
@@ -1241,8 +1238,6 @@ theorem strictL2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
     (scalingSubsurface (primitiveSmoothRealTestsAt r)).RiemannRochAxiom
         (strictL2SourceCone c (primitiveSmoothRealTestsAt r)) ∧
       (scalingSubsurface (primitiveSmoothRealTestsAt r)).AmpleAxiom
-        (strictL2SourceCone c (primitiveSmoothRealTestsAt r)) ∧
-      (scalingSubsurface (primitiveSmoothRealTestsAt r)).BezoutAxiom
         (strictL2SourceCone c (primitiveSmoothRealTestsAt r)) := by
   let V := primitiveSmoothRealTestsAt r
   let S := scalingSubsurface V
@@ -1255,10 +1250,9 @@ theorem strictL2SourceCone_primitiveSmooth_riemannRoch_primeTwo {r c : ℝ}
     exact h2.trans h1
   exact ⟨S.strictSourceCone_riemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle,
-    strictL2SourceCone_ample c V,
-    S.strictSourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc0.le V) hle⟩
+    strictL2SourceCone_ample c V⟩
 
-/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, Bézout, and
+/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, and
 Canonical Surface Riemann–Roch Past the First Prime on `polarFreeSmoothRealTestsAt r`
 (`0 < c ≤ 1/20`, `r ≤ ½(log 2 + 1/50)`):** -/
 theorem l2SourceCone_polarFreeSmooth_riemannRoch_primeTwo {r c : ℝ}
@@ -1267,8 +1261,6 @@ theorem l2SourceCone_polarFreeSmooth_riemannRoch_primeTwo {r c : ℝ}
     (scalingSubsurface (polarFreeSmoothRealTestsAt r)).RiemannRochAxiom
         (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
       (scalingSubsurface (polarFreeSmoothRealTestsAt r)).AmpleAxiom
-        (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
-      (scalingSubsurface (polarFreeSmoothRealTestsAt r)).BezoutAxiom
         (l2SourceCone c (polarFreeSmoothRealTestsAt r)) ∧
       (scalingSubsurface (polarFreeSmoothRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
         (l2SourceCone c (polarFreeSmoothRealTestsAt r)) := by
@@ -1284,19 +1276,16 @@ theorem l2SourceCone_polarFreeSmooth_riemannRoch_primeTwo {r c : ℝ}
   exact ⟨S.sourceCone_riemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle,
     l2SourceCone_ample hc0 V,
-    S.sourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc0.le V) hle,
     S.sourceCone_surfaceRiemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle⟩
 
-/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, Bézout, and
+/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, and
 Canonical Surface Riemann–Roch on `oddRealTestsAt r` Past the First Prime (`r ≤ 181/500`):** -/
 theorem l2SourceCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths {r c : ℝ}
     (hr : r ≤ 181 / 500) (hc0 : 0 < c) (hc : c ≤ 1 / 1000) :
     (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom
         (l2SourceCone c (oddRealTestsAt r)) ∧
       (scalingSubsurface (oddRealTestsAt r)).AmpleAxiom
-        (l2SourceCone c (oddRealTestsAt r)) ∧
-      (scalingSubsurface (oddRealTestsAt r)).BezoutAxiom
         (l2SourceCone c (oddRealTestsAt r)) ∧
       (scalingSubsurface (oddRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
         (l2SourceCone c (oddRealTestsAt r)) := by
@@ -1312,17 +1301,15 @@ theorem l2SourceCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths {r c 
   exact ⟨S.sourceCone_riemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle,
     l2SourceCone_ample hc0 V,
-    S.sourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc0.le V) hle,
     S.sourceCone_surfaceRiemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle⟩
 
-/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, Bézout, and
+/-- **Unconditional Source-Defined Arithmetic Riemann–Roch, Non-Vacuous Ampleness, and
 Canonical Surface Riemann–Roch on `realTestsAt a` (`a ≤ 3/10`, `0 < c ≤ 1/5000`):** -/
 theorem l2SourceCone_realTestsAt_riemannRoch_of_le_three_tenths {a c : ℝ}
     (ha : a ≤ 3 / 10) (hc0 : 0 < c) (hc : c ≤ 1 / 5000) :
     (scalingSubsurface (realTestsAt a)).RiemannRochAxiom (l2SourceCone c (realTestsAt a)) ∧
       (scalingSubsurface (realTestsAt a)).AmpleAxiom (l2SourceCone c (realTestsAt a)) ∧
-      (scalingSubsurface (realTestsAt a)).BezoutAxiom (l2SourceCone c (realTestsAt a)) ∧
       (scalingSubsurface (realTestsAt a)).SurfaceRiemannRochAxiom 0 0
         (l2SourceCone c (realTestsAt a)) := by
   let V := realTestsAt a
@@ -1337,7 +1324,6 @@ theorem l2SourceCone_realTestsAt_riemannRoch_of_le_three_tenths {a c : ℝ}
   exact ⟨S.sourceCone_riemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle,
     l2SourceCone_ample hc0 V,
-    S.sourceCone_bezout_of_le_defect (l2SourceEnergy_nonneg hc0.le V) hle,
     S.sourceCone_surfaceRiemannRoch_of_le_defect (l2SourceEnergy_neg c V)
       (l2SourceEnergy_nonneg hc0.le V) hle⟩
 

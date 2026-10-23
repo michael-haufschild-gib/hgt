@@ -814,15 +814,14 @@ theorem ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector
 private theorem eq_zero_of_integral_sq_eq_zero {f : ℝ → ℝ}
     (hf : Continuous f) (hfc : HasCompactSupport f) (hint0 : (∫ x, f x ^ 2) = 0) (x : ℝ) :
     f x = 0 := by
-  have hcont : Continuous (fun u : ℝ => f u ^ 2) := hf.pow 2
-  have hsupp : HasCompactSupport (fun u : ℝ => f u ^ 2) := by
-    simpa only [sq] using (hfc.mul_right (f' := f))
-  have hint : Integrable (fun u : ℝ => f u ^ 2) volume :=
-    hcont.integrable_of_hasCompactSupport hsupp
+  have hint_mul : Integrable fun u : ℝ => f u * f u :=
+    (hf.mul hf).integrable_of_hasCompactSupport hfc.mul_right
+  have hint : Integrable fun u : ℝ => f u ^ 2 := by
+    simpa only [sq] using hint_mul
   have hae : (fun u : ℝ => f u ^ 2) =ᵐ[volume] 0 :=
     (integral_eq_zero_iff_of_nonneg (fun u => sq_nonneg (f u)) hint).mp hint0
   have hfun : (fun u : ℝ => f u ^ 2) = 0 :=
-    (Continuous.ae_eq_iff_eq volume hcont continuous_zero).mp hae
+    (Continuous.ae_eq_iff_eq volume (hf.pow 2) continuous_zero).mp hae
   exact sq_eq_zero_iff.mp (congrFun hfun x)
 
 /-- **The `99/4` Prime-Blind Section Vanishing Theorem:**
