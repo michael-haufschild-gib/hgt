@@ -366,6 +366,17 @@ Each tower alone keeps the box capacity `cos(π/(n+2))` on `S_n` (`simplex_row_c
 and for `n ≥ 1` the joint capacity is strictly below their sum (`simplex_capacities_do_not_add`):
 the hyperbola forces a cross-prime saving, deficit `≈ 5π²/(2n²)` against `π²/n²` on the box.
 
+**Two towers add exactly on boxes.** For a support `S ⊆ [0, M] × [0, N]` and positive weights, a
+constant below `w_p cos(π/(M+2)) + w_q cos(π/(N+2))` bounds the joint charge of every amplitude
+carried by `S` iff `S` misses a point of the box (`joint_capacity_lt_iff_not_box`). At equality
+every row and column is an extremal train, a multiple of the zero-free sine
+(`uniformTrain_eq_zero_of_capacity_eq`), so a zero at a missing point empties the box
+(`grid_eq_zero_of_capacity_eq`); compactness makes the gap uniform. Each tower alone still attains
+its box capacity on its axis (`axisRowSine_capacity`, `axisColSine_capacity`). The smooth-number
+support `j log p + k log q ≤ X` misses the corner of its box once both towers have length `≥ 2`
+(`slanted_corner_not_mem`), so with the weights `Λ(p)p^{−½}, Λ(q)q^{−½}` the towers never add there
+(`slanted_capacities_do_not_add`).
+
 ### Poles and completion
 
 22. **Polar defect law.** `‖v‖² − Σ_j ⟪g_j, v⟫² ≥ 0` for all `v` iff the synthesis of the polar
@@ -617,7 +628,8 @@ and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`).
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned trains the
 capacities of the towers add (`autoCorr_amplitudeTrain_first_le`, `autoCorr_sineTrain_first`,
 `grid_joint_capacity_attained`, `cartesian_lower_bound`, `cartesian_attained`); on the
-smooth-number simplex they do not add (`simplex_capacities_do_not_add`).
+smooth-number simplex they do not add (`simplex_capacities_do_not_add`), and in general they add
+exactly on boxes (`joint_capacity_lt_iff_not_box`, `slanted_capacities_do_not_add`).
 
 **Pillar V — profile compactness.** Under compact negativity, a weak limit of a bounded adverse
 sequence remains nonzero and adverse; without it escape can occur (`adverse_weakLimit`,
@@ -644,7 +656,7 @@ source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tang
 | Treating the pole as a local charge. | A rank-one charge on three or more points is never locally payable (mechanism 5). The pole must be paid by a global dual-norm bound (mechanism 22). |
 | Reading the frustrated triangle as an artefact of equal weights. | The converse construction of mechanism 8 realizes every frustrated pattern on every complete overlap graph, and the cycle witness of mechanism 11 on every sparse pattern; the window of a frustrated `k`-cycle is exactly `½ < t ≤ 1/(2 cos(π/k))` (mechanism 12). |
 | "The resonant (unit) train is the extremal adverse direction." | For several lags at once long unit trains approach the Euler envelopes; for one lag at finite length the sine train is extremal and the unit train is strictly worse from `M = 2` on (mechanism 20). |
-| Expecting cross-prime cancellation on aligned trains. | On box supports the single-prime capacities add exactly, for any finite family of towers (mechanism 21); a saving comes only from the support, e.g. the smooth-number simplex. |
+| Expecting cross-prime cancellation on aligned trains. | On box supports the single-prime capacities add exactly, for any finite family of towers (mechanism 21); a saving comes only from the support, and every non-box support produces one (`joint_capacity_lt_iff_not_box`). |
 | Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 24). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 29). |
 | "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 32). |
 | "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35). |
@@ -703,7 +715,9 @@ Each question is stated with what is established and where the open part sits.
    trains that are products along the towers, the extremal profiles are the sine products, with
    explicit finite-length deficits (mechanisms 18–21). On the smooth-number simplex the joint
    capacity is exact and strictly below the sum of the single capacities (equal weights, paragraph
-   after mechanism 21). Other supports and the actual unequal weights are open.
+   after mechanism 21), and on every support that is not a box the joint capacity is strictly below
+   that sum for all positive weights (paragraph after it). The exact joint capacity on other
+   supports with the actual unequal weights is open.
 3. **What signed arithmetic estimate bounds the averaged damping loss uniformly in horizon?** An
    `ℓ²` bound on the reciprocal orbit, equivalently on the first column of the chain (mechanisms
    24, 30); it must read the source rather than the operator (mechanism 32) and the signs of `μ`
@@ -815,8 +829,10 @@ Each question is stated with what is established and where the open part sits.
    (`grid_joint_capacity`, `cartesian_lower_bound`), so a saving can only come from the geometry of
    the support: trains whose positions do not fill a box of the multiplicative lattice. On the
    simplex `j + k ≤ n` with equal weights the joint charge is exactly `cos θ + cos 2θ`,
-   `θ = π/(n+3)`, strictly below the box sum. Open: the slanted supports `a log p + b log q ≤ X` with
-   the weights `Λ(p)p^{−½}`, `Λ(q)q^{−½}`.
+   `θ = π/(n+3)`, strictly below the box sum. On every support that is not a box the towers do not
+   add, for all positive weights, in particular on `j log p + k log q ≤ X` with the weights
+   `Λ(p)p^{−½}`, `Λ(q)q^{−½}`. Open: the size of that saving, its order `X^{−2}` constant and its
+   dependence on `log q/log p`.
 
 ---
 

@@ -98,6 +98,8 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheChainIsBoundedAtHalfDamping` — `centeredOperator_apply_eq_combinedProfile`,
   `mellin_combinedProfile_eq`, `integral_norm_sq_dilationSymbol_shell_le`,
   `exists_centeredOperator_l2_le_uniform`, `exists_centeredOperator_l2_le_half`.
+- `TwoTowersAddExactlyOnBoxes` — `uniformTrain_eq_zero_of_capacity_eq`, `grid_eq_zero_of_capacity_eq`,
+  `joint_capacity_lt_iff_not_box`, `slanted_capacities_do_not_add`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,

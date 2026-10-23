@@ -625,13 +625,11 @@ theorem norm_eigInd_mul_le (ℓ : ℝ) (b τ w : ℂ) : ‖eigInd ℓ b τ * w�
   rw [norm_mul]
   exact mul_le_of_le_one_left (norm_nonneg _) (norm_eigInd_le ℓ b τ)
 
-/-- **The hyperbolic pair of a visible eigenvalue** has Krein square `−2`. -/
-theorem inner_reflect_eigTarget_self (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
-    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
-    (hO : (outerEig Z ℓ).Finite) {b : ℂ} (hb : b ∈ visibleEig Z g ℓ hO) :
+/-- **The hyperbolic pair of an outer eigenvalue of nonzero weight** has Krein square `−2`. -/
+theorem inner_reflect_eigTarget_self_of_mem (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ) {b : ℂ}
+    (hbO : b ∈ outerEig Z ℓ) (hW0 : frobWeight Z g ℓ b ≠ 0) :
     inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b)) (eigTarget Z hZ hg hgc ℓ b) = -2 := by
-  have hbO : b ∈ outerEig Z ℓ := hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1
-  have hW0 : frobWeight Z g ℓ b ≠ 0 := (Finset.mem_filter.mp hb).2
   have hn := one_lt_norm_of_mem_outerEig hℓ hbO
   have hsum := summable_zeroCoord_mul_reflect Z hZ hg hgc
   rw [lp.inner_eq_tsum]
@@ -672,6 +670,14 @@ theorem inner_reflect_eigTarget_self (Z : ZeroConfig) (hZ : TemperedConfig Z) {g
   have hn0 : ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr hW0
   field_simp
 
+/-- **The hyperbolic pair of a visible eigenvalue** has Krein square `−2`. -/
+theorem inner_reflect_eigTarget_self (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) {b : ℂ} (hb : b ∈ visibleEig Z g ℓ hO) :
+    inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b)) (eigTarget Z hZ hg hgc ℓ b) = -2 :=
+  inner_reflect_eigTarget_self_of_mem Z hZ hg hgc hℓ
+    (hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1) (Finset.mem_filter.mp hb).2
+
 /-- **Distinct outer eigenvalues give Krein-orthogonal pairs.** -/
 theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
@@ -698,6 +704,17 @@ theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g :
       (e1 - eigPhase Z g ℓ b * e2 - conj (eigPhase Z g ℓ b') * e3 +
         conj (eigPhase Z g ℓ b') * eigPhase Z g ℓ b * e4)
 
+/-- The Krein Gram of the negative vectors of outer eigenvalues: `−2` on a class of nonzero weight,
+`0` between distinct classes. -/
+theorem inner_reflect_eigTarget_of_mem (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ) {b b' : ℂ}
+    (hbO : b ∈ outerEig Z ℓ) (hW : frobWeight Z g ℓ b ≠ 0) (hbO' : b' ∈ outerEig Z ℓ) :
+    inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b')) (eigTarget Z hZ hg hgc ℓ b) =
+      if b = b' then -2 else 0 := by
+  split_ifs with hbb
+  · subst hbb; exact inner_reflect_eigTarget_self_of_mem Z hZ hg hgc hℓ hbO hW
+  · exact inner_reflect_eigTarget_ne Z hZ hg hgc hℓ hbO hbO' hbb
+
 /-- The Krein Gram of the negative vectors of the visible eigenvalues is `−2·I`. -/
 theorem inner_reflect_eigTarget (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
@@ -723,17 +740,21 @@ theorem summable_conj_zeroCoord_mul (Z : ZeroConfig) (hZ : TemperedConfig Z) {g 
   rw [norm_mul, Complex.norm_conj]
   nlinarith [sq_nonneg (‖zeroCoord Z g τ‖ - ‖a τ‖)]
 
-/-- **The negative vectors lie in the closed span of the tower.** -/
-theorem eigTarget_mem_closure (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
-    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
-    (hO : (outerEig Z ℓ).Finite) (b : ℂ) :
+/-- **Closure from class separation.** If every vector orthogonal to the tower has zero class sums
+at `b` and at `1/b̄`, the negative vector of `b` lies in the closed span of the tower. -/
+theorem eigTarget_mem_closure_of_classSum (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (b : ℂ)
+    (hcs : ∀ a : ℓ²(Z.carrier, ℂ), (∀ k : ℤ, inner ℂ (towerVec Z hZ hg hgc ℓ k) a = 0) →
+      (∑' τ : Z.carrier, (if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0)) = 0 ∧
+        ∑' τ : Z.carrier,
+          (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0) = 0) :
     eigTarget Z hZ hg hgc ℓ b ∈
       (Submodule.span ℂ (Set.range (towerVec Z hZ hg hgc ℓ))).topologicalClosure := by
   rw [← Submodule.orthogonal_orthogonal_eq_closure, Submodule.mem_orthogonal]
   intro a ha
   have hk : ∀ k : ℤ, inner ℂ (towerVec Z hZ hg hgc ℓ k) a = 0 := fun k =>
     (Submodule.mem_orthogonal _ a).mp ha _ (Submodule.subset_span ⟨k, rfl⟩)
-  have hc := classSum_eq_zero_of_orthogonal_tower Z hZ hg hgc hℓ hO a hk
+  have hc := hcs a hk
   have hq := summable_conj_zeroCoord_mul Z hZ hg hgc a
   rw [← inner_conj_symm, lp.inner_eq_tsum]
   simp only [RCLike.inner_apply']
@@ -755,14 +776,24 @@ theorem eigTarget_mem_closure (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ 
   have h1 := h10.mul_left (conj (eigScale Z g ℓ b))
   have h2 := h20.mul_left (conj (eigScale Z g ℓ b) * conj (eigPhase Z g ℓ b))
   rw [tsum_congr e, h1.tsum_sub h2, tsum_mul_left,
-    tsum_mul_left, hc b, hc (reflEig b)]
+    tsum_mul_left, hc.1, hc.2]
   simp
+
+/-- **The negative vectors lie in the closed span of the tower.** -/
+theorem eigTarget_mem_closure (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) (b : ℂ) :
+    eigTarget Z hZ hg hgc ℓ b ∈
+      (Submodule.span ℂ (Set.range (towerVec Z hZ hg hgc ℓ))).topologicalClosure :=
+  eigTarget_mem_closure_of_classSum Z hZ hg hgc b fun a hk =>
+    ⟨classSum_eq_zero_of_orthogonal_tower Z hZ hg hgc hℓ hO a hk b,
+      classSum_eq_zero_of_orthogonal_tower Z hZ hg hgc hℓ hO a hk (reflEig b)⟩
 
 /-- **The Krein form of a class-killing vector is nonnegative.** If `Y_τ = X_τ(g) E(β(τ))` and every
 outer eigenvalue `b` has `E(b) = 0` or `W_b = 0`, then `Re⟨R Y, Y⟩ ≥ 0`: the right zeros contribute
 `conj E(1/b̄) E(b) W_b = 0` class by class, the left zeros the conjugate, the on-line zeros `|Y_τ|²`. -/
-theorem re_inner_reflect_nonneg_of_classes (Z : ZeroConfig) {g : ℝ → ℂ} {ℓ : ℝ} (hℓ : 0 < ℓ)
-    (hO : (outerEig Z ℓ).Finite) (Y : ℓ²(Z.carrier, ℂ)) (E : ℂ → ℂ)
+theorem re_inner_reflect_nonneg_of_weights (Z : ZeroConfig) {g : ℝ → ℂ} {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (Y : ℓ²(Z.carrier, ℂ)) (E : ℂ → ℂ)
     (hY : ∀ τ, Y τ = zeroCoord Z g τ * E (frobEig ℓ τ))
     (hE : ∀ b ∈ outerEig Z ℓ, E b = 0 ∨ frobWeight Z g ℓ b = 0) :
     0 ≤ (inner ℂ (reflectVec Z Y) Y).re := by
@@ -796,38 +827,52 @@ theorem re_inner_reflect_nonneg_of_classes (Z : ZeroConfig) {g : ℝ → ℂ} {�
     by_cases hgt : 1 / 2 < (τ : ℂ).re
     · rw [if_pos (by linarith), if_pos hgt, map_mul, Complex.conj_conj, mul_comm]
     · rw [if_neg (by linarith), if_neg hgt, map_zero]
-  -- the right part vanishes class by class
+  -- the right part vanishes class by class (summed fiberwise over the eigenvalues)
   have hright : ∑' τ, rt τ = 0 := by
-    have hpart : ∀ τ, rt τ = ∑ b ∈ hO.toFinset, (if frobEig ℓ τ = b then h τ else 0) := by
-      intro τ
-      rw [Finset.sum_ite_eq]
-      simp only [hrt_def]
-      by_cases hgt : 1 / 2 < (τ : ℂ).re
-      · rw [if_pos hgt, if_pos (hO.mem_toFinset.mpr ⟨τ, ⟨τ.2, hgt⟩, rfl⟩)]
-      · rw [if_neg hgt, if_neg]
-        intro hmem
-        exact hgt ((one_lt_norm_frobEig_iff hℓ _).mp
-          (one_lt_norm_of_mem_outerEig hℓ (hO.mem_toFinset.mp hmem)))
-    have hsumb : ∀ b ∈ hO.toFinset, Summable fun τ : Z.carrier =>
-        (if frobEig ℓ τ = b then h τ else 0) :=
-      fun b _ => Summable.of_norm_bounded hhs.norm fun τ => by split_ifs <;> simp
-    rw [tsum_congr hpart, Summable.tsum_finsetSum hsumb]
-    refine Finset.sum_eq_zero fun b hb => ?_
-    have hcl : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then h τ else 0) =
-        conj (E (reflEig b)) * E b * (eigInd ℓ b τ *
-          (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) := fun τ => by
-      rw [eigInd_mul_eq_ite]
-      split_ifs with hβ
-      · simp only [hh, hY]
-        rw [show ((reflectCarrier Z τ : Z.carrier) : ℂ) = reflect (τ : ℂ) from rfl,
-          frobEig_reflect, hβ]
-        simp only [reflEig, map_mul]
-        ring
-      · simp
-    rw [tsum_congr hcl, tsum_mul_left, ← frobWeight_eq_tsum_eigInd]
-    rcases hE b (hO.mem_toFinset.mp hb) with h0 | h0
-    · rw [h0]; simp
-    · rw [h0, mul_zero]
+    have hz : ∀ b : ℂ, ∑' τ : (fun τ : Z.carrier => frobEig ℓ τ) ⁻¹' {b}, rt τ = 0 := by
+      intro b
+      rw [tsum_subtype ((fun τ : Z.carrier => frobEig ℓ τ) ⁻¹' {b}) rt]
+      have hind : ∀ τ : Z.carrier, ((fun τ : Z.carrier => frobEig ℓ τ) ⁻¹' {b}).indicator rt τ =
+          if frobEig ℓ τ = b then rt τ else 0 := fun τ => by
+        simp only [Set.indicator_apply, Set.mem_preimage, Set.mem_singleton_iff]
+      rw [tsum_congr hind]
+      by_cases hbO : b ∈ outerEig Z ℓ
+      swap
+      · refine (tsum_congr fun τ => ?_).trans tsum_zero
+        split_ifs with hβ
+        · simp only [hrt_def]
+          rw [if_neg]
+          intro hgt
+          exact hbO ⟨τ, ⟨τ.2, hgt⟩, hβ⟩
+        · rfl
+      have hn := one_lt_norm_of_mem_outerEig hℓ hbO
+      have hrt' : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then rt τ else 0) =
+          if frobEig ℓ τ = b then h τ else 0 := fun τ => by
+        split_ifs with hβ
+        · simp only [hrt_def]
+          rw [if_pos ((one_lt_norm_frobEig_iff hℓ _).mp (by rw [hβ]; exact hn))]
+        · rfl
+      rw [tsum_congr hrt']
+      have hcl : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then h τ else 0) =
+          conj (E (reflEig b)) * E b * (eigInd ℓ b τ *
+            (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) := fun τ => by
+        rw [eigInd_mul_eq_ite]
+        split_ifs with hβ
+        · simp only [hh, hY]
+          rw [show ((reflectCarrier Z τ : Z.carrier) : ℂ) = reflect (τ : ℂ) from rfl,
+            frobEig_reflect, hβ]
+          simp only [reflEig, map_mul]
+          ring
+        · simp
+      rw [tsum_congr hcl, tsum_mul_left, ← frobWeight_eq_tsum_eigInd]
+      rcases hE b hbO with h0 | h0
+      · rw [h0]; simp
+      · rw [h0, mul_zero]
+    have hfib : HasSum (fun _ : ℂ => (0 : ℂ)) (∑' τ, rt τ) := by
+      convert hrt.hasSum.tsum_fiberwise (fun τ : Z.carrier => frobEig ℓ τ) using 1
+      funext b
+      exact (hz b).symm
+    exact hfib.unique hasSum_zero
   have hfull : ∑' τ, h τ = ∑' τ, on τ + ∑' τ, rt τ + ∑' τ, lf τ := by
     rw [tsum_congr hsplit, (hon.add hrt).tsum_add hlf, hon.tsum_add hrt]
   rw [hfull, hleft, hright, map_zero, add_zero, add_zero, Complex.re_tsum hon]
@@ -839,13 +884,20 @@ theorem re_inner_reflect_nonneg_of_classes (Z : ZeroConfig) {g : ℝ → ℂ} {�
     positivity
   · simp
 
-/-- **Refined bound.** With finitely many outer eigenvalues, a window of the tower has at most as
-many negative squares as there are visible eigenvalues: invisible classes contribute nothing. -/
-theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
-    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
-    (hO : (outerEig Z ℓ).Finite) (K : Finset ℤ) :
-    hermNegIndex (towerGram Z g ℓ K) ≤ (visibleEig Z g ℓ hO).card := by
-  let Ψ : (K → ℂ) →ₗ[ℂ] (visibleEig Z g ℓ hO → ℂ) :=
+theorem re_inner_reflect_nonneg_of_classes (Z : ZeroConfig) {g : ℝ → ℂ} {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (_hO : (outerEig Z ℓ).Finite) (Y : ℓ²(Z.carrier, ℂ)) (E : ℂ → ℂ)
+    (hY : ∀ τ, Y τ = zeroCoord Z g τ * E (frobEig ℓ τ))
+    (hE : ∀ b ∈ outerEig Z ℓ, E b = 0 ∨ frobWeight Z g ℓ b = 0) :
+    0 ≤ (inner ℂ (reflectVec Z Y) Y).re :=
+  re_inner_reflect_nonneg_of_weights Z hℓ Y E hY hE
+
+/-- **Refined bound.** If a finite set `V` contains every outer eigenvalue of nonzero weight, a
+window of the tower has at most `|V|` negative squares: invisible classes contribute nothing. -/
+theorem negIndex_towerGram_le_of_visible_subset (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (V : Finset ℂ) (hV : ∀ b ∈ outerEig Z ℓ, frobWeight Z g ℓ b ≠ 0 → b ∈ V) (K : Finset ℤ) :
+    hermNegIndex (towerGram Z g ℓ K) ≤ V.card := by
+  let Ψ : (K → ℂ) →ₗ[ℂ] (V → ℂ) :=
     { toFun := fun x b => ∑ k : K, x k * conj (b : ℂ) ^ (k : ℤ)
       map_add' := fun x y => by
         funext b; simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
@@ -857,10 +909,10 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
     have hrw : towerGram Z g ℓ K =
         zeroGram Z fun k : K => (translateTest hg hgc (((k : ℤ) : ℝ) * ℓ) : ℝ → ℂ) := rfl
     rw [hrw, hermQuad_zeroGram_eq Z hZ]
-    refine re_inner_reflect_nonneg_of_classes Z hℓ hO _
+    refine re_inner_reflect_nonneg_of_weights Z hℓ _
       (fun w => ∑ k : K, conj (x k) * w ^ (k : ℤ))
       (fun τ => towerComb_apply Z hZ hg hgc ℓ K x τ) fun b hb => ?_
-    by_cases hvis : b ∈ visibleEig Z g ℓ hO
+    by_cases hvis : b ∈ V
     · left
       have h0 := congrFun hx ⟨b, hvis⟩
       simp only [Ψ, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at h0
@@ -870,7 +922,7 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
       rw [e, h0, map_zero]
     · right
       by_contra hne
-      exact hvis (Finset.mem_filter.mpr ⟨hO.mem_toFinset.mpr hb, hne⟩)
+      exact hvis (hV b hb hne)
   obtain ⟨V, hrank, hV⟩ := exists_isPosDefOn_finrank_eq_posIndex (-(towerGram Z g ℓ K))
   have hinj : LinearMap.ker (Ψ.domRestrict V) = ⊥ := by
     rw [LinearMap.ker_eq_bot']
@@ -885,17 +937,28 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
   rw [← hrank]
   exact h
 
-/-- **Attainment on the tower.** Some window of the tower has as many negative squares as there are
-visible eigenvalues. -/
-theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+/-- **Refined bound.** With finitely many outer eigenvalues, a window of the tower has at most as
+many negative squares as there are visible eigenvalues. -/
+theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
-    (hO : (outerEig Z ℓ).Finite) :
-    ∃ K : Finset ℤ, (visibleEig Z g ℓ hO).card ≤ hermNegIndex (towerGram Z g ℓ K) := by
-  set O := visibleEig Z g ℓ hO
+    (hO : (outerEig Z ℓ).Finite) (K : Finset ℤ) :
+    hermNegIndex (towerGram Z g ℓ K) ≤ (visibleEig Z g ℓ hO).card :=
+  negIndex_towerGram_le_of_visible_subset Z hZ hg hgc hℓ _
+    (fun b hb hne => Finset.mem_filter.mpr ⟨hO.mem_toFinset.mpr hb, hne⟩) K
+
+/-- **Attainment from the closure.** If finitely many outer eigenvalues of nonzero weight have their
+negative vectors in the closed span of the tower, some window of the tower has at least that many
+negative squares. -/
+theorem exists_towerGram_negIndex_ge_of_closure (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (O : Finset ℂ) (hOv : ∀ b ∈ O, b ∈ outerEig Z ℓ ∧ frobWeight Z g ℓ b ≠ 0)
+    (hcl : ∀ b ∈ O, eigTarget Z hZ hg hgc ℓ b ∈
+      (Submodule.span ℂ (Set.range (towerVec Z hZ hg hgc ℓ))).topologicalClosure) :
+    ∃ K : Finset ℤ, O.card ≤ hermNegIndex (towerGram Z g ℓ K) := by
   set t : O → ℓ²(Z.carrier, ℂ) := fun b => eigTarget Z hZ hg hgc ℓ b with ht
   have hRt : ∀ i j : O, inner ℂ (reflectVec Z (t j)) (t i) = if i = j then -2 else 0 := by
     intro i j
-    rw [inner_reflect_eigTarget Z hZ hg hgc hℓ hO i.2 j.2]
+    rw [inner_reflect_eigTarget_of_mem Z hZ hg hgc hℓ (hOv _ i.2).1 (hOv _ i.2).2 (hOv _ j.2).1]
     simp only [Subtype.ext_iff]
   set M : ℝ := ∑ b : O, ‖t b‖ + 1 with hM
   have hM1 : 1 ≤ M := by
@@ -916,7 +979,7 @@ theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g
   have happrox : ∀ b : O, ∃ c : ℤ →₀ ℂ,
       ‖(c.sum fun k a => a • towerVec Z hZ hg hgc ℓ k) - t b‖ < ε := by
     intro b
-    have hmem := eigTarget_mem_closure Z hZ hg hgc hℓ hO b
+    have hmem := hcl b b.2
     rw [← SetLike.mem_coe, Submodule.topologicalClosure_coe, Metric.mem_closure_iff] at hmem
     obtain ⟨y, hy, hdist⟩ := hmem ε hε0
     obtain ⟨c, rfl⟩ := Finsupp.mem_span_range_iff_exists_finsupp.mp hy
@@ -981,10 +1044,20 @@ theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g
   rw [finrank_top, Module.finrank_fintype_fun_eq_card] at h1
   have hcomb : zeroGram Z (fun i => (f i : ℝ → ℂ)) = C * towerGram Z g ℓ K * Cᴴ :=
     zeroGram_comb Z hZ tt C
-  calc (visibleEig Z g ℓ hO).card = Fintype.card O := (Fintype.card_coe _).symm
+  calc O.card = Fintype.card O := (Fintype.card_coe _).symm
     _ ≤ hermNegIndex (zeroGram Z fun i => (f i : ℝ → ℂ)) := h1
     _ = hermNegIndex (C * towerGram Z g ℓ K * Cᴴ) := by rw [hcomb]
     _ ≤ hermNegIndex (towerGram Z g ℓ K) := hermNegIndex_mul_mul_conjTranspose_le C _
+
+/-- **Attainment on the tower.** Some window of the tower has as many negative squares as there are
+visible eigenvalues. -/
+theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) :
+    ∃ K : Finset ℤ, (visibleEig Z g ℓ hO).card ≤ hermNegIndex (towerGram Z g ℓ K) :=
+  exists_towerGram_negIndex_ge_of_closure Z hZ hg hgc hℓ _
+    (fun b hb => ⟨hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1, (Finset.mem_filter.mp hb).2⟩)
+    fun b _ => eigTarget_mem_closure Z hZ hg hgc hℓ hO b
 
 /-- **The tower Pontryagin law.** If a tempered configuration has finitely many outer eigenvalues at
 scale `ℓ = log p > 0`, the Weil form has `n` negative squares on some window of the Hecke tower
