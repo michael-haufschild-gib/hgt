@@ -65,9 +65,10 @@ theorem centeredOperator_residueCombination_twice {η η' : ℝ} (hη : 0 < η) 
   rw [centeredOperator_residueCombination hη' hS, centeredOperator_residueCombination hη hS]
   unfold residueCombination
   refine sum_congr rfl fun d hd => ?_
-  congr 1
   have hd0 : (0 : ℝ) < d := by exact_mod_cast hS d hd
-  rw [mul_assoc, ← Real.rpow_add hd0, neg_add, add_comm]
+  show (a d * (d : ℝ) ^ (-η') * (d : ℝ) ^ (-η)) • normalizedResidueMode d =
+    (a d * (d : ℝ) ^ (-(η + η'))) • normalizedResidueMode d
+  rw [mul_assoc, ← Real.rpow_add hd0, ← neg_add, add_comm]
 
 end
 

@@ -386,11 +386,11 @@ theorem centeredOperator_l2_le_of_halfDamping {η : ℝ} (h0 : 1 / 2 < η) (h1 :
 /-! ### The threshold is sharp -/
 
 /-- `ρ_η < 1`: the density `1/ζ(1+η)` lies strictly below one. -/
-theorem density_re_lt_one {η : ℝ} (hη : 0 < η) : (pmPowerDampedDivisorDensity η).re < 1 := by
+theorem density_re_lt_one {η : ℝ} (hη : 0 < η) : (RHTower.pmPowerDampedDivisorDensity η).re < 1 := by
   rw [pmPowerDampedDivisorDensity_re_eq hη]
   have hs := RHTower.summable_realZetaTerm (s := 1 + η) (by linarith)
   have h2 : (1 : ℝ) + (2 : ℝ) ^ (-(1 + η)) ≤ RHTower.realZetaSeries (1 + η) := by
-    have := sum_le_tsum (Finset.range 2) (fun j _ => Real.rpow_nonneg (by positivity) _) hs
+    have := hs.sum_le_tsum (Finset.range 2) (fun j _ => Real.rpow_nonneg (by positivity) _)
     simpa [Finset.sum_range_succ, RHTower.realZetaSeries, one_add_one_eq_two] using this
   have hpos : (0 : ℝ) < (2 : ℝ) ^ (-(1 + η)) := Real.rpow_pos_of_pos (by norm_num) _
   rw [div_lt_one (by linarith)]
@@ -399,10 +399,10 @@ theorem density_re_lt_one {η : ℝ} (hη : 0 < η) : (pmPowerDampedDivisorDensi
 /-- **The diagonal of the chain**: `C_η(k, k) ≥ (1 − ρ_η) (k+1)^{−η}`.  The transition is lower
 triangular with diagonal `(k+1)^{−η}`, and the entrance mass is at most `ρ_η (k+1)^{−η}`. -/
 theorem centeredRow_diag_ge {η : ℝ} (hη : 0 < η) (k : ℕ) :
-    (1 - (pmPowerDampedDivisorDensity η).re) * ((k + 1 : ℕ) : ℝ) ^ (-η) ≤
+    (1 - (RHTower.pmPowerDampedDivisorDensity η).re) * ((k + 1 : ℕ) : ℝ) ^ (-η) ≤
       arithmeticDampingCenteredRow η k k := by
   unfold arithmeticDampingCenteredRow
-  rw [arithmeticDampingTransition_diagonal η (Nat.succ_pos k)]
+  rw [arithmeticDampingTransition_diagonal η (n := k + 1) (by omega)]
   have := entrance_le hη k
   linarith
 
@@ -414,7 +414,7 @@ theorem not_bounded_sum_sum_sq_centeredRow_of_le_half {η : ℝ} (h0 : 0 < η) (
     ¬ ∃ M : ℝ, ∀ K T : ℕ,
       ∑ k ∈ Finset.range K, ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2 ≤ M := by
   rintro ⟨M, hM⟩
-  set ρ := (pmPowerDampedDivisorDensity η).re with hρ
+  set ρ := (RHTower.pmPowerDampedDivisorDensity η).re with hρ
   have hρ1 : ρ < 1 := density_re_lt_one h0
   have hc : 0 < (1 - ρ) ^ 2 := pow_pos (by linarith) 2
   have hdiag : ∀ k : ℕ, (1 - ρ) ^ 2 * ((k + 1 : ℕ) : ℝ) ^ (-2 * η) ≤

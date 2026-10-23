@@ -18,9 +18,9 @@ realization) an exact integer- or sign-valued invariant with a theorem, and deci
 topic of the review by a theorem or by a recorded open problem with its sharp boundary.
 
 ## Gates
-- [ ] 0 → 1 folder, umbrella, registration, first modules compiled with `lake --old env lean`
-- [ ] README written (`formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md`)
-- [ ] research topics T1–T10 of the review each addressed by a Lean theorem or an open problem
+- [x] 0 → 1 folder, umbrella, registration (`MainTheorems.lean`), modules compiled with `lake --old env lean`
+- [x] README written (`formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md`)
+- [x] research topics T1–T10 of the review each addressed by a Lean theorem or recorded in README §7
 
 ## Plan (modules)
 1. `FrustrationIndexControlsTheGroundEnergy`: switching classes, frustration index, signed
@@ -41,7 +41,30 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
 9. README.
 
 ## Outcomes
-(filled as modules compile)
+- `OrientedReadings`: `OrientationFaithful`, closure law of blindness (`Invisible.comp/join/pi/of_refines`),
+  `forall_iff_of_resolves_of_invisible`, `orientationFaithful_of_resolves_of_flips`,
+  `not_resolves_of_invisible_of_flips`, orientation classes.
+- `FrustrationIndexControlsTheGroundEnergy`: `signedDirichletForm_eq`, `signedDirichletForm_switch`,
+  `frustrationIndex_switch`, `isBalanced_iff_frustrationIndex_eq_zero`, `signedDirichletForm_signVector`,
+  `groundEnergy_le_frustrationMass`, `groundEnergy_eq_zero_iff_isBalanced`, `frustrationIndex_oddWeilLedger_le`.
+- `TheFrustrationOfATowerIsRankOne`: `productCorr_prime_pow`, `sq_sum_eq_sum_cauchy`,
+  `sum_vonMangoldt_productCorr_prime_pow` (tower product part `= log p (S_p² − q(1)²)`),
+  `towerProductPart_nonneg`, `latticeOddPrimeSide_le_of_eq_zero`, `sum_towerProductPart`.
+- `TheNyquistRankBound`: `h0_add_rank`, `card_sub_card_le_h0`, `frobeniusMass_le_rank_mul`,
+  `h0_le_nyquist`, `h0_dirichletSampling_le` (Dirichlet polynomials at separated heights).
+- `TheEvenFlipIsReadAtThePrimeTwo`: `evenFlip_apply`, `evenFlip_evenFlip`, `dampedClass_evenFlip`,
+  `firstPronicMoment_evenFlip_sub` (`M(c♭) − M(c) = 2 log 2 W_c(2)`),
+  `firstPronicMoment_separates_evenFlip_iff`, `invisible_amplitude_evenFlip`,
+  `not_resolves_amplitude_receiverBounded` (parity floor for readings), `orientationFaithful_firstPronicMoment`.
+- `TheCriticalWienerMonoid`: `criticalWiener_dirichletConv`, `tsum_abs_dirichletConv_le`,
+  `dirichletConv_unitKernel`, `dirichletConv_assoc`, `receiverBounded_orbit`.
+- `TheDampingFlowPreservesOrientation`: `centeredOperator_residueCombination`, `sign_coeff_centeredOperator`,
+  `centeredOperator_residueCombination_twice`.
+- `TheWidthDictionary`: `widthDictionary_tfae` (eight units), `one_positive_square_iff_cofinal_budget`,
+  `exists_effectivity_iff_meanSquare_band`.
+- Open: README §7 (frustration index of the actual odd ledger at growing aperture; beyond the rank-one law;
+  Nyquist–Riemann–Roch beyond rank–nullity; orientation-faithful norm; inverses in the Wiener monoid;
+  transport in aperture; the Nyquist bound at the diagonal).
 
 ## Log
-- 2026-10-23 — created in 1-in-progress from review-2310/fable.md
+- 2026-10-23 — created in 1-in-progress from review-2310/fable.md; eight modules compiled, README written

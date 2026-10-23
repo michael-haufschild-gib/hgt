@@ -144,6 +144,25 @@ survivor).
   bandwidth-`4/3` diagonal constant `43/36 = 5/4 − 1/18` and prime–pole cross bound `O(T^{5/6} log² T)`,
   and double-window minimum-aperture prime-pair bound `norm_doubleWindow_primeFreq_offDiag_le`).
 
+- `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`: `totalSlack`, `couplingDefect`,
+  `couplingDefect_nonneg`, `rank_trace_add_totalSlack_eq`, `zeroside_rank_core_slack_exact`,
+  `zeroside_rank_core_slack_le_rank` (exact spectral-slack conservation law: adding `totalSlack(P, Q, 2)`
+  cancels the prime-side quadratic functional `4 tr Â − ‖Â‖_F²` identically, leaving
+  `rank P − 2(N − tr P − 2 n₊(Q)) − Δ₂(P, Q) ≤ rank P`), `rank_hatP_le_d`, `seamA_spectralSlack_le_d`,
+  `thmA_abstract_err_spectralSlack_le_d`, `zeroSideSlack_eventually_le_lam_sub_Hfun`,
+  `not_three_quarters_zeroSideSlack_of_lt_three_quarters` (unconditional grid-dimension ceiling
+  `rank P̂(T) ≤ d(T) ≤ λ N(T, 2T) + o(N)`, forcing `zeroSideSlack(λ, T) ≤ (λ − H(λ) + ε)N(T, 2T)` and
+  refuting `zeroSideSlack ≥ (3/4 − H(λ))N` for every `λ ∈ (0, 3/4)`), `posSlack_mul_ge_sq_of_rtrace`,
+  `offLine_slack_ge_of_rtrace_hermNegPart` (universal Cauchy–Schwarz bound `posSlack(Q, 2) ≥ 4η²b` and
+  total off-line slack `2 tr(Q₋) + posSlack(Q, 2) ≥ 4bη(1 + η)`), `displacedPairBlockData`,
+  `blockA_displacedPairBlockData`, `blockQ_one_displacedPairBlockData`,
+  `negPart_credit_pos_displacedPairQDiag`, `displacedPairBlockData_below_three_quarters`,
+  `macroscopic_displacedPair_counterexample_at_four_thirds`,
+  `hyperbolic_displacedPair_three_thresholds_at_four_thirds` (hyperbolic displaced-pair block calculus
+  with `α² − β² = 1`: strictly positive negative-part credit `2 tr(Q₋) = 4pη > 0` does not suffice for
+  `75%` at `κ = 4/3`, refuted unconditionally by `(s₁ = 179, p = 32, α = √(17/16), β = 1/4, N = 243)`,
+  along with the three exact thresholds `(1 + 2η)² ≥ 4/3`, `η ≥ 1/6`, and `(1 + 2η)² ≥ 2`).
+
 - `RiemannRochForZAndTheReflectedPrimePolarLedger`: `PolarSurface.positiveCone_riemannRoch`,
   `PolarSurface.openPositiveCone_ample`, `PolarSurface.openPositiveCone_riemannRoch_iff_hodgeIndex`
   (duality of `positiveCone` and `openPositiveCone`: `openPositiveCone` satisfies `AmpleAxiom`

@@ -5,9 +5,9 @@ import Mathlib.Analysis.Distribution.TemperedDistribution
 /-!
 # Spectral measures give continuous Schwartz forms
 
-This is the converse, constructive half of the Bochner--Schwartz bridge needed by the Hedenmalm
-metric card.  Every positive measure of temperate growth gives a jointly continuous sesquilinear
-form by integrating the product of Fourier transforms.
+Every positive measure of temperate growth gives a jointly continuous sesquilinear form
+by integrating the product of Fourier transforms. This is the constructive direction of
+the Bochner--Schwartz representation.
 -/
 
 open Complex Filter Function MeasureTheory
@@ -59,10 +59,21 @@ theorem spectralIntegral_smul_right (c : ℂ) (u v : 𝓢(ℝ, ℂ)) :
 /-- Joint continuity: Fourier transform in each slot, the conjugated product, then integration. -/
 theorem continuous_spectralIntegral :
     Continuous (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) => (integralCLM ℂ μ)
-      (pointwiseMulConj ((fourierTransformCLM ℂ) p.1) ((fourierTransformCLM ℂ) p.2))) :=
-  (integralCLM ℂ μ).continuous.comp' (continuous_pointwiseMulConj.comp'
-    (((fourierTransformCLM ℂ).continuous.comp' continuous_fst).prodMk
-      ((fourierTransformCLM ℂ).continuous.comp' continuous_snd)))
+      (pointwiseMulConj ((fourierTransformCLM ℂ) p.1) ((fourierTransformCLM ℂ) p.2))) := by
+  have hFourier : Continuous (fourierTransformCLM ℂ : 𝓢(ℝ, ℂ) → 𝓢(ℝ, ℂ)) :=
+    (fourierTransformCLM ℂ).continuous
+  have hPair : Continuous (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
+      ((fourierTransformCLM ℂ) p.1, (fourierTransformCLM ℂ) p.2)) :=
+    (hFourier.comp' (f := fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) => p.1) continuous_fst).prodMk
+      (hFourier.comp' (f := fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) => p.2) continuous_snd)
+  have hProduct : Continuous (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
+      pointwiseMulConj ((fourierTransformCLM ℂ) p.1) ((fourierTransformCLM ℂ) p.2)) :=
+    continuous_pointwiseMulConj.comp'
+      (f := fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
+        ((fourierTransformCLM ℂ) p.1, (fourierTransformCLM ℂ) p.2)) hPair
+  exact (integralCLM ℂ μ).continuous.comp'
+    (f := fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
+      pointwiseMulConj ((fourierTransformCLM ℂ) p.1) ((fourierTransformCLM ℂ) p.2)) hProduct
 
 end SpectralFormAxioms
 
@@ -105,7 +116,7 @@ theorem spectralMeasureForm_isNonnegative (μ : Measure ℝ) [μ.HasTemperateGro
     intro t
     change 0 ≤ (h t).re
     simp [h, Complex.mul_conj, Complex.normSq]
-    nlinarith [sq_nonneg ((𝓕 u t).re), sq_nonneg ((𝓕 u t).im)]
+    linarith only [sq_nonneg ((𝓕 u t).re), sq_nonneg ((𝓕 u t).im)]
   · rw [heq]
     change RCLike.im (∫ t, h t ∂μ) = 0
     rw [← integral_im hint]

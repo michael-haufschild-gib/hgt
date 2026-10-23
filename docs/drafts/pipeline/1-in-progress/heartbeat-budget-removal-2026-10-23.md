@@ -60,7 +60,7 @@ valid.
 - [x] `HTGeometry/LogNormalDifferentiatedEquation.lean` (depth 5, 1)
 - [x] `HTGeometry/PSDKernelDensity.lean` (depth 5, 1)
 - [x] `HTGeometry/PolynomialODE/SeamJetOrderValues.lean` (depth 5, 1)
-- [ ] `HTGeometry/SchwartzSpectralMeasureForm.lean` (depth 5, 1)
+- [x] `HTGeometry/SchwartzSpectralMeasureForm.lean` (depth 5, 1)
 - [x] `RHTower/CCM/CCMRectangularDirichletLandau.lean` (depth 5, 2)
 - [x] `RHTower/ComplexLaplaceHolomorphy.lean` (depth 5, 1)
 - [x] `RHTower/CriticalDiscAnalyticCompleteness.lean` (depth 5, 1)
@@ -122,8 +122,8 @@ valid.
 - [ ] `HTGeometry/EulerQGammaContinuation.lean` (depth 7, 1)
 - [x] `HTGeometry/GammaDigammaShiftAnchor.lean` (depth 7, 1)
 - [ ] `HTGeometry/LogarithmicLaplaceScoreBounds.lean` (depth 7, 1)
-- [ ] `HTGeometry/MultiGeometricSeries.lean` (depth 7, 2)
-- [ ] `HTGeometry/OccupationVacuumAnomalyReciprocity.lean` (depth 7, 1)
+- [x] `HTGeometry/MultiGeometricSeries.lean` (depth 7, 2)
+- [x] `HTGeometry/OccupationVacuumAnomalyReciprocity.lean` (depth 7, 1)
 - [ ] `HTGeometry/UniversalConstraintOrientation.lean` (depth 7, 1)
 - [ ] `HTGeometry/UniversalPrimeKreinHamming.lean` (depth 7, 1)
 - [ ] `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean` (depth 7, 3)
@@ -277,7 +277,7 @@ valid.
 - [ ] `HTGeometry/TailDenseObservableFieldClassification.lean` (depth 11, 2)
 - [ ] `Hurwitz/ContinuedJointLadderResidueIndependence.lean` (depth 11, 1)
 - [ ] `RHTower/CCM/CCMRationalPeriodicWeightedPoisson.lean` (depth 11, 4)
-- [ ] `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean` (depth 11, 2)
+- [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean` (depth 11, 2)
 - [ ] `RHTower/CCM/CCMWeightedXiLandau.lean` (depth 11, 2)
 - [ ] `RHTower/PrimeBoundaryMonodromyEscape.lean` (depth 11, 1)
 - [ ] `RHTower/RealBoundaryDivisorLimit.lean` (depth 11, 1)
@@ -311,7 +311,7 @@ valid.
 - [ ] `HTGeometry/ScaleSevenHankelPerturbation.lean` (depth 12, 1)
 - [ ] `HTGeometry/SpectralDeterminantSufficiency.lean` (depth 12, 1)
 - [ ] `RHTower/CCM/CCMActualHeadQuantileGammaChiSquareProducer.lean` (depth 12, 1)
-- [ ] `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean` (depth 12, 1)
+- [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean` (depth 12, 1)
 - [ ] `RHTower/LegStripEdge.lean` (depth 12, 1)
 - [ ] `RHTower/ShrinkingWindowPrimeSupply.lean` (depth 12, 1)
 - [ ] `RHTower/Sieve/MaynardFibreCount.lean` (depth 12, 1)
@@ -486,12 +486,12 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `HTGeometry/BriotBouquetTwoRootNoGo.lean` — build and final check passed; olean/ilean written.
 - [x] `HTGeometry/FinitePrimeRationalCoefficientField.lean` — build and final check passed; olean/ilean written.
 - [x] `HTGeometry/GammaDigammaShiftAnchor.lean` — check and build passed; olean/ilean written.
-- `HTGeometry/MultiGeometricSeries.lean`
-- `HTGeometry/OccupationVacuumAnomalyReciprocity.lean`
+- [x] `HTGeometry/MultiGeometricSeries.lean` — explicit product/reindexing arguments; check and build passed; olean/ilean written.
+- [x] `HTGeometry/OccupationVacuumAnomalyReciprocity.lean` — explicit product/reindexing arguments; check and build passed; olean/ilean written.
 - [x] `HTGeometry/OmittedValueLogarithmicGrowth.lean` — build and final check passed; olean/ilean written.
-- `HTGeometry/SchwartzSpectralMeasureForm.lean`
-- `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean`
-- `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean`
+- [x] `HTGeometry/SchwartzSpectralMeasureForm.lean` — typed continuity compositions; check and build passed; olean/ilean written.
+- [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedArbitraryAccuracy.lean` — explicit accuracy products and arithmetic–geometric mean bound; check and build passed; olean/ilean written.
+- [x] `RHTower/CCM/CCMRestrictedWeilSourceAlignedFiniteBlockConsequences.lean` — direct arithmetic–geometric mean bound; check and build passed; olean/ilean written.
 - `RHTower/CCM/CCMSharpPrimeWindowDirichlet.lean`
 - `RHTower/CCM/CCMSoninFiniteWordFaithfulness.lean`
 - `RHTower/GammaSewnMobiusXiWardHardyTransport.lean`

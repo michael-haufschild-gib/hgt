@@ -2937,7 +2937,7 @@ theorem abs_longSawtooth_add_tail_sub_czetaStripRemainder_le {ε : ℝ} (hε : 0
     calc r ^ (1 - ε) ≤ (2 * (s : ℝ)) ^ (1 - ε) :=
           Real.rpow_le_rpow hr0.le hr2s (by linarith)
       _ = (2 : ℝ) ^ (1 - ε) * (s : ℝ) ^ (1 - ε) :=
-          Real.mul_rpow (by norm_num) hs0.le _
+          Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) hs0.le
       _ ≤ (2 : ℝ) ^ (1 : ℝ) * (s : ℝ) ^ (1 - ε) :=
           mul_le_mul_of_nonneg_right
             (Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)) (by positivity)
@@ -2990,7 +2990,7 @@ theorem abs_longSawtooth_add_tail_sub_czetaStripRemainder_le {ε : ℝ} (hε : 0
           (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re| +
         |oscillatingShortSawtooth ε t n| +
         |((czetaStripRemainder ρ s - riemannZeta ρ) * ((n : ℝ) : ℂ) ^ ρ / ρ).re| :=
-        add_le_add_right (abs_sub _ _) _
+        add_le_add_left (abs_sub _ _) _
     _ ≤ floorSumRate ρ * r ^ (1 - ε) + (1 + 1 / (1 - ε)) * r ^ (1 - ε) +
         2 * (1 + 1 / (1 - ε)) * r ^ (1 - ε) :=
         add_le_add (add_le_add hpre hshort) hrem_cz

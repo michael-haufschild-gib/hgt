@@ -61,7 +61,7 @@ theorem simplexAngle_pos (n : ℕ) : 0 < simplexAngle n := by
   unfold simplexAngle; positivity
 
 theorem simplexAngle_mul (n : ℕ) : ((n : ℝ) + 3) * simplexAngle n = π := by
-  unfold simplexAngle; field_simp
+  unfold simplexAngle; exact mul_div_cancel₀ π (by positivity)
 
 /-- `Ψ(x, y) > 0` for `x, y > 0`, `x + y < π`. -/
 theorem simplexPsi_pos {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : x + y < π) :
@@ -73,7 +73,7 @@ theorem simplexPsi_pos {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : x + y < π) 
     Real.cos_lt_cos_of_nonneg_of_le_pi hy.le (by linarith) (by linarith)
   rw [Real.cos_pi_sub] at hc
   have : 0 < Real.cos x + Real.cos y := by linarith
-  positivity
+  exact mul_pos (mul_pos hsx hsy) this
 
 /-- `Ψ(x, π − x) = 0`. -/
 theorem simplexPsi_cut (x : ℝ) : simplexPsi x (π - x) = 0 := by
@@ -87,10 +87,10 @@ theorem simplexGauge_pos {n j k : ℕ} (h : j + k ≤ n) : 0 < simplexGauge n j 
     have : ((j + k : ℕ) : ℝ) ≤ n := by exact_mod_cast h
     push_cast at this; linarith
   unfold simplexGauge
-  refine simplexPsi_pos (by positivity) (by positivity) ?_
+  refine simplexPsi_pos (mul_pos (by positivity) hθ) (mul_pos (by positivity) hθ) ?_
   have : (((j : ℝ) + 1) + ((k : ℝ) + 1)) * simplexAngle n < ((n : ℝ) + 3) * simplexAngle n :=
     mul_lt_mul_of_pos_right (by linarith) hθ
-  nlinarith
+  linarith
 
 /-- **The gauge vanishes on the cut** `j + k = n + 1`. -/
 theorem simplexGauge_cut {n j k : ℕ} (h : j + k = n + 1) : simplexGauge n j k = 0 := by
@@ -110,13 +110,15 @@ theorem simplexGauge_vertex (n j k : ℕ) :
         (simplexGauge n j (k + 1) +
           simplexPsi (((j : ℝ) + 1) * simplexAngle n) ((k : ℝ) * simplexAngle n)) =
       2 * (Real.cos (simplexAngle n) + Real.cos (2 * simplexAngle n)) * simplexGauge n j k := by
-  set θ := simplexAngle n
-  have h := simplexPsi_neighbours (((j : ℝ) + 1) * θ) (((k : ℝ) + 1) * θ) θ
+  have h := simplexPsi_neighbours (((j : ℝ) + 1) * simplexAngle n)
+    (((k : ℝ) + 1) * simplexAngle n) (simplexAngle n)
   unfold simplexGauge
-  have e1 : ((j : ℝ) + 1) * θ - θ = (j : ℝ) * θ := by ring
-  have e2 : ((k : ℝ) + 1) * θ - θ = (k : ℝ) * θ := by ring
-  have e3 : (((j + 1 : ℕ) : ℝ) + 1) * θ = ((j : ℝ) + 1) * θ + θ := by push_cast; ring
-  have e4 : (((k + 1 : ℕ) : ℝ) + 1) * θ = ((k : ℝ) + 1) * θ + θ := by push_cast; ring
+  have e1 : ((j : ℝ) + 1) * simplexAngle n - simplexAngle n = (j : ℝ) * simplexAngle n := by ring
+  have e2 : ((k : ℝ) + 1) * simplexAngle n - simplexAngle n = (k : ℝ) * simplexAngle n := by ring
+  have e3 : (((j + 1 : ℕ) : ℝ) + 1) * simplexAngle n =
+      ((j : ℝ) + 1) * simplexAngle n + simplexAngle n := by push_cast; ring
+  have e4 : (((k + 1 : ℕ) : ℝ) + 1) * simplexAngle n =
+      ((k : ℝ) + 1) * simplexAngle n + simplexAngle n := by push_cast; ring
   rw [e1, e2] at h
   rw [e3, e4]
   linarith
@@ -128,8 +130,10 @@ theorem simplexGauge_vertex (n j k : ℕ) :
 theorem two_mul_le_ratio {a b x y : ℝ} (h : (0 < a ∧ 0 < b) ∨ (y = 0 ∧ (b = 0 ∨ x = 0))) :
     2 * x * y ≤ b / a * x ^ 2 + a / b * y ^ 2 := by
   rcases h with ⟨ha, hb⟩ | ⟨hy, hb | hx⟩
-  · have e : b / a * x ^ 2 + a / b * y ^ 2 - 2 * x * y = (b * x - a * y) ^ 2 / (a * b) := by
-      field_simp; ring
+  · have ha' := ha.ne'
+    have hb' := hb.ne'
+    have e : b / a * x ^ 2 + a / b * y ^ 2 - 2 * x * y = (b * x - a * y) ^ 2 / (a * b) := by
+      first | (field_simp; ring) | field_simp
     have : 0 ≤ (b * x - a * y) ^ 2 / (a * b) := div_nonneg (sq_nonneg _) (mul_pos ha hb).le
     linarith
   · subst hy hb; simp
@@ -140,7 +144,9 @@ theorem two_mul_eq_ratio {a b x y : ℝ}
     (h : (0 < a ∧ 0 < b ∧ x = a ∧ y = b) ∨ (y = 0 ∧ (b = 0 ∨ x = 0))) :
     2 * x * y = b / a * x ^ 2 + a / b * y ^ 2 := by
   rcases h with ⟨ha, hb, rfl, rfl⟩ | ⟨hy, hb | hx⟩
-  · field_simp; ring
+  · have ha' := ha.ne'
+    have hb' := hb.ne'
+    first | (field_simp; ring) | field_simp
   · subst hy hb; simp
   · subst hy hx; simp
 
@@ -178,37 +184,42 @@ def simplexEdgeTerms (n : ℕ) (f : ℕ → ℕ → ℝ) : ℝ :=
 `λ_n` times the mass. -/
 theorem simplexEdgeTerms_eq (n : ℕ) (f : ℕ → ℕ → ℝ) (hf : ∀ j k, n < j + k → f j k = 0) :
     simplexEdgeTerms n f = simplexEigenvalue n * gridMass n n f := by
-  set θ := simplexAngle n
   have hrow : ∀ k ∈ range (n + 1), ∑ j ∈ range n,
       (simplexGauge n (j + 1) k / simplexGauge n j k * f j k ^ 2 +
         simplexGauge n j k / simplexGauge n (j + 1) k * f (j + 1) k ^ 2) =
       ∑ j ∈ range (n + 1), f j k ^ 2 * ((simplexGauge n (j + 1) k +
-        simplexPsi ((j : ℝ) * θ) (((k : ℝ) + 1) * θ)) / simplexGauge n j k) := by
+        simplexPsi ((j : ℝ) * simplexAngle n) (((k : ℝ) + 1) * simplexAngle n)) /
+          simplexGauge n j k) := by
     intro k _
-    refine chain_regroup n (fun j => f j k) (fun j => simplexGauge n j k)
-      (fun j => simplexPsi ((j : ℝ) * θ) (((k : ℝ) + 1) * θ)) (fun j => ?_) ?_ ?_
-    · simp only [simplexGauge]; push_cast; rfl
-    · simp only [Nat.cast_zero, zero_mul, simplexPsi_zero_left]
-    · rcases Nat.eq_zero_or_pos k with rfl | hk
-      · simp only
-        rw [simplexGauge_cut (by omega), zero_div, zero_mul]
-      · simp only
-        rw [hf n k (by omega)]; ring
+    have hL : ∀ j, simplexPsi (((j + 1 : ℕ) : ℝ) * simplexAngle n)
+        (((k : ℝ) + 1) * simplexAngle n) = simplexGauge n j k := by
+      intro j; simp only [simplexGauge, Nat.cast_succ]
+    have hL0 : simplexPsi (((0 : ℕ) : ℝ) * simplexAngle n) (((k : ℝ) + 1) * simplexAngle n) = 0 := by
+      simp only [Nat.cast_zero, zero_mul, simplexPsi_zero_left]
+    have hend : simplexGauge n (n + 1) k / simplexGauge n n k * f n k ^ 2 = 0 := by
+      rcases Nat.eq_zero_or_pos k with rfl | hk
+      · rw [simplexGauge_cut (by omega), zero_div, zero_mul]
+      · rw [hf n k (by omega)]; ring
+    exact chain_regroup n (fun j => f j k) (fun j => simplexGauge n j k)
+      (fun j => simplexPsi ((j : ℝ) * simplexAngle n) (((k : ℝ) + 1) * simplexAngle n)) hL hL0 hend
   have hcol : ∀ j ∈ range (n + 1), ∑ k ∈ range n,
       (simplexGauge n j (k + 1) / simplexGauge n j k * f j k ^ 2 +
         simplexGauge n j k / simplexGauge n j (k + 1) * f j (k + 1) ^ 2) =
       ∑ k ∈ range (n + 1), f j k ^ 2 * ((simplexGauge n j (k + 1) +
-        simplexPsi (((j : ℝ) + 1) * θ) ((k : ℝ) * θ)) / simplexGauge n j k) := by
+        simplexPsi (((j : ℝ) + 1) * simplexAngle n) ((k : ℝ) * simplexAngle n)) /
+          simplexGauge n j k) := by
     intro j _
-    refine chain_regroup n (fun k => f j k) (fun k => simplexGauge n j k)
-      (fun k => simplexPsi (((j : ℝ) + 1) * θ) ((k : ℝ) * θ)) (fun k => ?_) ?_ ?_
-    · simp only [simplexGauge]; push_cast; rfl
-    · simp only [Nat.cast_zero, zero_mul, simplexPsi_zero_right]
-    · rcases Nat.eq_zero_or_pos j with rfl | hj
-      · simp only
-        rw [simplexGauge_cut (by omega), zero_div, zero_mul]
-      · simp only
-        rw [hf j n (by omega)]; ring
+    have hL : ∀ k, simplexPsi (((j : ℝ) + 1) * simplexAngle n)
+        (((k + 1 : ℕ) : ℝ) * simplexAngle n) = simplexGauge n j k := by
+      intro k; simp only [simplexGauge, Nat.cast_succ]
+    have hL0 : simplexPsi (((j : ℝ) + 1) * simplexAngle n) (((0 : ℕ) : ℝ) * simplexAngle n) = 0 := by
+      simp only [Nat.cast_zero, zero_mul, simplexPsi_zero_right]
+    have hend : simplexGauge n j (n + 1) / simplexGauge n j n * f j n ^ 2 = 0 := by
+      rcases Nat.eq_zero_or_pos j with rfl | hj
+      · rw [simplexGauge_cut (by omega), zero_div, zero_mul]
+      · rw [hf j n (by omega)]; ring
+    exact chain_regroup n (fun k => f j k) (fun k => simplexGauge n j k)
+      (fun k => simplexPsi (((j : ℝ) + 1) * simplexAngle n) ((k : ℝ) * simplexAngle n)) hL hL0 hend
   unfold simplexEdgeTerms gridMass
   rw [sum_congr rfl hrow, sum_congr rfl hcol, sum_comm, ← sum_add_distrib, mul_sum]
   refine sum_congr rfl fun j _ => ?_
@@ -217,11 +228,13 @@ theorem simplexEdgeTerms_eq (n : ℕ) (f : ℕ → ℕ → ℝ) (hf : ∀ j k, n
   by_cases hjk : j + k ≤ n
   · have hpos := simplexGauge_pos hjk
     have hv := simplexGauge_vertex n j k
-    rw [← add_mul, ← mul_add, ← add_div]
-    rw [show simplexGauge n (j + 1) k + simplexPsi ((j : ℝ) * θ) (((k : ℝ) + 1) * θ) +
-        (simplexGauge n j (k + 1) + simplexPsi (((j : ℝ) + 1) * θ) ((k : ℝ) * θ)) =
+    rw [← mul_add, ← add_div]
+    rw [show simplexGauge n (j + 1) k +
+          simplexPsi ((j : ℝ) * simplexAngle n) (((k : ℝ) + 1) * simplexAngle n) +
+        (simplexGauge n j (k + 1) +
+          simplexPsi (((j : ℝ) + 1) * simplexAngle n) ((k : ℝ) * simplexAngle n)) =
         simplexEigenvalue n * simplexGauge n j k by rw [hv]; rfl]
-    field_simp
+    rw [mul_div_assoc, div_self hpos.ne', mul_one, mul_comm]
   · rw [hf j k (by omega)]; ring
 
 /-! ### The joint capacity on the simplex -/
@@ -330,8 +343,8 @@ theorem gridMass_simplexAmplitude_pos (n : ℕ) : 0 < gridMass n n (simplexAmpli
   unfold gridMass
   have h00 : 0 < simplexAmplitude n 0 0 ^ 2 := by
     have := simplexGauge_pos (n := n) (j := 0) (k := 0) (by omega)
-    simp only [simplexAmplitude, show 0 + 0 ≤ n by omega, if_true]
-    positivity
+    rw [simplexAmplitude, if_pos (by omega)]
+    exact pow_pos this 2
   refine lt_of_lt_of_le h00 ?_
   have h1 : simplexAmplitude n 0 0 ^ 2 ≤ ∑ k ∈ range (n + 1), simplexAmplitude n 0 k ^ 2 :=
     single_le_sum (f := fun k => simplexAmplitude n 0 k ^ 2) (fun _ _ => sq_nonneg _)
@@ -400,8 +413,7 @@ theorem simplex_row_capacity_attained (n : ℕ) :
   · rw [hrow, hmass]; linarith
   · rw [hmass]
     refine sum_pos (fun j hj => ?_) ⟨0, by simp⟩
-    have := trainSine_pos n (mem_range.mp hj)
-    positivity
+    exact pow_pos (trainSine_pos n (mem_range.mp hj)) 2
 
 /-! ### The capacities do not add -/
 
@@ -421,16 +433,18 @@ theorem simplex_capacities_do_not_add {n : ℕ} (hn : 1 ≤ n) :
   have h2 : 2 * α < 3 * β := by
     rw [hα, hβ, simplexAngle, mul_div_assoc', mul_div_assoc',
       div_lt_div_iff₀ (by positivity) (by positivity)]
-    nlinarith
+    nlinarith [mul_pos hpi (by linarith : (0 : ℝ) < n)]
   have hsum : α + 2 * β ≤ π := by
     rw [hα, hβ, simplexAngle]
+    have h2pos : (0 : ℝ) < (n : ℝ) + 2 := by positivity
+    have h3pos : (0 : ℝ) < (n : ℝ) + 3 := by positivity
     have e : π / ((n : ℝ) + 2) + 2 * (π / ((n : ℝ) + 3)) =
         π * ((3 * (n : ℝ) + 7) / (((n : ℝ) + 2) * ((n : ℝ) + 3))) := by
-      field_simp; ring
+      first | (field_simp; ring) | field_simp
     rw [e]
     have : (3 * (n : ℝ) + 7) / (((n : ℝ) + 2) * ((n : ℝ) + 3)) ≤ 1 := by
       rw [div_le_one (by positivity)]; nlinarith
-    nlinarith
+    exact (mul_le_mul_of_nonneg_left this hpi.le).trans (le_of_eq (mul_one π))
   -- `2cos α − cos β − cos 2β = 2 sin((α+2β)/2) sin((2β−α)/2) − 2 sin((α+β)/2) sin((α−β)/2)`
   have hA : Real.sin ((α + β) / 2) < Real.sin ((α + 2 * β) / 2) :=
     Real.sin_lt_sin_of_lt_of_le_pi_div_two (by linarith) (by linarith) (by linarith)
@@ -450,7 +464,7 @@ theorem simplex_capacities_do_not_add {n : ℕ} (hn : 1 ≤ n) :
   rw [e4, Real.sin_neg] at e1
   rw [e3, Real.sin_neg] at e2
   rw [show (β + α) / 2 = (α + β) / 2 by ring] at e1
-  nlinarith
+  linarith
 
 end
 

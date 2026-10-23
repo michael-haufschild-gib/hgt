@@ -382,7 +382,7 @@ theorem isBalanced_of_signedDirichletForm_eq_zero {c : ι → ι → ℝ} {x : �
       rcases lt_trichotomy 0 (x i) with h | h | h
       · rw [orientSign_of_pos h, orientSign_of_neg (by linarith)]
       · exact absurd h.symm (hx i)
-      · rw [orientSign_of_neg h, orientSign_of_pos (by linarith)] <;> norm_num
+      · rw [orientSign_of_neg h, orientSign_of_pos (by linarith)]; norm_num
     have hprod : orientSign (x i) * -orientSign (x i) * c i j = -(c i j) := by
       linear_combination (-(c i j)) * orientSign_sq (x i)
     rw [hsign, hprod]
@@ -495,6 +495,30 @@ theorem frustrationIndex_oddWeilLedger_le {p : ι → ℝ} (hp : ∀ x, 0 < p x)
   intro q hq
   simp only [mem_filter, mem_univ, true_and, one_mul] at hq ⊢
   exact ⟨hq.1, oddFold_pos_imp_primeSum hp hinj hα hβ hq.1 hq.2⟩
+
+/-- **The frustration mass of the odd Weil ledger is carried by prime sums**: it is at most the
+total positive coupling on the prime-sum pairs. -/
+theorem frustrationMass_oddWeilLedger_le {p : ι → ℝ} (hp : ∀ x, 0 < p x)
+    (hinj : Function.Injective p) {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 ≤ β) (b : ι → ℝ) :
+    frustrationMass (oddFold p (weilLedgerKernel α β) b) ≤
+      ∑ q ∈ primeSumPairs p, |oddFold p (weilLedgerKernel α β) b q.1 q.2| := by
+  set c := oddFold p (weilLedgerKernel α β) b with hc
+  refine le_trans (frustrationMass_le isSignVector_one c) ?_
+  calc misalignedMass (fun _ => (1 : ℝ)) c
+      ≤ ∑ i, ∑ j, (if (i, j) ∈ primeSumPairs p then |c i j| else 0) := by
+        unfold misalignedMass
+        refine sum_le_sum fun i _ => sum_le_sum fun j _ => ?_
+        split_ifs with hP hmem hmem
+        · exact le_rfl
+        · exfalso
+          apply hmem
+          unfold primeSumPairs
+          simp only [mem_filter, mem_univ, true_and]
+          exact ⟨hP.1, oddFold_pos_imp_primeSum hp hinj hα hβ hP.1 (by simpa using hP.2)⟩
+        · exact abs_nonneg _
+        · exact le_rfl
+    _ = ∑ q ∈ primeSumPairs p, |c q.1 q.2| := by
+        rw [← Fintype.sum_prod_type', sum_ite_mem, univ_inter]
 
 end
 

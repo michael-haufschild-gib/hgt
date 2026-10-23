@@ -2,6 +2,12 @@ import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowContinuation
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.NumberTheory.LSeries.Dirichlet
 
+/-!
+# Dirichlet series of sharp dyadic prime windows
+
+Reindex the moving von Mangoldt window by its output index. Its Dirichlet series is
+a shifted zeta logarithmic derivative times a Mellin factor, plus a quadrature remainder.
+-/
 
 open Complex Finset Set
 
@@ -160,8 +166,6 @@ private theorem antidiagonal_doubleTerm_eq_LSeriesTerm_window
   · simp [dyadicSharpPrimeWindowDoubleTerm, dyadicWeightedPrimeWindow]
   · rw [LSeries.term_of_ne_zero hn.ne']
     rw [dyadicWeightedPrimeWindow, ofReal_sum]
-    rw [Finset.sum_div]
-    rw [← Finset.sum_div]
     rw [Finset.sum_div]
     have hset : (range n.succ).filter (fun k => n - k < k) =
         Finset.Ioc (n / 2) n := by

@@ -66,7 +66,10 @@ theorem summable_multiGeometric_nonneg : ∀ (n : ℕ) (t : Fin n → ℝ), (∀
         fun m => Finset.prod_nonneg fun i _ => pow_nonneg (h0 (Fin.succ i)) _
       have hprod : Summable fun p : ℕ × (Fin n → ℕ) =>
           (t 0) ^ p.1 * ∏ i, (t (Fin.succ i)) ^ (p.2 i) :=
-        hhead.mul_of_nonneg htail hnn1 hnn2
+        Summable.mul_of_nonneg
+          (f := fun j : ℕ => (t 0) ^ j)
+          (g := fun m : Fin n → ℕ => ∏ i, (t (Fin.succ i)) ^ (m i))
+          hhead htail hnn1 hnn2
       have hcomp : Summable ((fun m : Fin (n + 1) → ℕ => ∏ i, (t i) ^ (m i)) ∘
           (Fin.consEquiv fun _ : Fin (n + 1) => ℕ)) := by
         refine hprod.congr fun p => ?_

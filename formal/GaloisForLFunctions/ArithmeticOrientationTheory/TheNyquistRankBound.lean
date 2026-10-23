@@ -56,6 +56,17 @@ theorem h0_add_rank (A : Matrix m n ℂ) : h0 A + A.rank = Fintype.card n := by
   unfold h0 Matrix.rank
   linarith
 
+omit [DecidableEq n] in
+/-- **Sections exist beyond the nodes**: `h⁰(A) ≥ dim − #nodes`, the rank–nullity half of
+Riemann–Roch. -/
+theorem card_sub_card_le_h0 (A : Matrix m n ℂ) :
+    (Fintype.card n : ℝ) - Fintype.card m ≤ h0 A := by
+  have h1 := h0_add_rank A
+  have h2 : A.rank ≤ Fintype.card m := rank_le_card_height A
+  have h3 : (h0 A : ℝ) + A.rank = Fintype.card n := by exact_mod_cast h1
+  have h4 : (A.rank : ℝ) ≤ Fintype.card m := by exact_mod_cast h2
+  linarith
+
 /-- The real part of `star u ⬝ u` is `Σ ‖u_i‖²`. -/
 theorem re_star_dotProduct_self (u : m → ℂ) : (star u ⬝ᵥ u).re = ∑ i, ‖u i‖ ^ 2 := by
   unfold dotProduct
@@ -130,6 +141,16 @@ theorem h0_le_nyquist {A : Matrix m n ℂ} {K : ℝ} (hK0 : 0 < K) (hK : HasFram
     rw [div_le_iff₀ hK0]; linarith
   have h4 : (h0 A : ℝ) + A.rank = Fintype.card n := by exact_mod_cast h1
   linarith
+
+/-- **No sections at full degrees of freedom**: if the Frobenius mass reaches `K · dim`, the
+reading is injective. -/
+theorem h0_eq_zero_of_frobeniusMass_ge {A : Matrix m n ℂ} {K : ℝ} (hK0 : 0 < K)
+    (hK : HasFrameBound A K) (hmass : K * Fintype.card n ≤ frobeniusMass A) : h0 A = 0 := by
+  have h := h0_le_nyquist hK0 hK
+  have h2 : (Fintype.card n : ℝ) ≤ frobeniusMass A / K := by
+    rw [le_div_iff₀ hK0]; linarith
+  have h3 : (h0 A : ℝ) ≤ 0 := by linarith
+  exact_mod_cast le_antisymm h3 (Nat.cast_nonneg _)
 
 /-! ### Dirichlet polynomials read at separated heights -/
 

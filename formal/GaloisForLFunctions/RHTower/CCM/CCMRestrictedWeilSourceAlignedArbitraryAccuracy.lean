@@ -46,7 +46,8 @@ theorem remainderEnvelope_mul_sourceAccuracyThreshold_lt_eighth
   rw [show E * (delta / (8 * (E + 1) ^ 2 * (delta + 1))) =
       E * delta / (8 * (E + 1) ^ 2 * (delta + 1)) by ring,
     div_lt_iff₀ hden]
-  nlinarith [mul_nonneg (sq_nonneg E) hdelta.le]
+  linarith only [hE, hdelta, sq_nonneg E, mul_nonneg hE hdelta.le,
+    mul_nonneg (sq_nonneg E) hdelta.le]
 
 theorem two_mul_remainderEnvelope_sq_mul_sourceAccuracyThreshold_lt
     (a : SuzukiPositiveAperture) {delta : ℝ} (hdelta : 0 < delta) :
@@ -61,8 +62,16 @@ theorem two_mul_remainderEnvelope_sq_mul_sourceAccuracyThreshold_lt
         field_simp
         ring,
     div_lt_iff₀ hden]
-  nlinarith [mul_nonneg (sq_nonneg E) hdelta.le,
-    mul_pos (sq_pos_of_pos (by linarith : 0 < E + 1)) hdelta]
+  have hbase : E ^ 2 < (E + 1) ^ 2 := by linarith only [hE]
+  have hfactor : (E + 1) ^ 2 ≤ 4 * (E + 1) ^ 2 * (delta + 1) := by
+    have h := mul_le_mul_of_nonneg_left
+      (show (1 : ℝ) ≤ 4 * (delta + 1) by linarith only [hdelta])
+      (sq_nonneg (E + 1))
+    linarith only [h]
+  calc
+    E ^ 2 * delta < (4 * (E + 1) ^ 2 * (delta + 1)) * delta :=
+      mul_lt_mul_of_pos_right (hbase.trans_le hfactor) hdelta
+    _ = delta * (4 * (E + 1) ^ 2 * (delta + 1)) := mul_comm _ _
 
 /-- Finite Gamma--Slepian head selected at a requested form-approximation accuracy. -/
 structure CCMRestrictedWeilSourceApproximationCertificate
@@ -147,7 +156,7 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.exterior_coercive
       _ < (1 / 8 : ℝ) * ‖u‖ ^ 2 := mul_lt_mul_of_pos_right hcoef hnormsq
   have hlower := ccmRestrictedWeilForm_sourceRelative_lowerBound a u
   dsimp only [E] at hcost
-  linarith
+  linarith only [hlower, hcost]
 
 theorem CCMRestrictedWeilSourceApproximationCertificate.nonzero_nonpositive_not_mem_exterior
     {a : SuzukiPositiveAperture} {delta : ℝ}
@@ -158,7 +167,7 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.nonzero_nonpositive_not_
   intro hu
   have hnormsq : 0 < ‖u‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hune)
   have hpos := C.exterior_coercive hdelta u hu hune
-  nlinarith
+  linarith only [hnormsq, hpos, hQ]
 
 /-- **Arbitrarily accurate source-relative finite-block lower bound.**  Full restricted-Weil form
 is bounded below by its finite Gamma--Slepian head compression with any prescribed positive
@@ -253,7 +262,7 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
       (ccmRestrictedWeilForm a
         (m : CCMArchimedeanFormDomain a)
         (m : CCMArchimedeanFormDomain a)).re at htailLower
-    linarith
+    linarith only [htailLower, htailCost]
   have hBnorm : ‖B‖ ≤ E := norm_ccmRestrictedWeilBoundedRemainder_le_envelope a
   have hcrossLower (x y : suzukiApertureHilbert a) :
       -(E * ‖x‖ * ‖y‖) ≤ (inner ℂ (B x) y).re := by
@@ -269,11 +278,11 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
       calc
         _ ≤ (‖B‖ * ‖x‖) * ‖y‖ :=
           mul_le_mul_of_nonneg_right hBapply (norm_nonneg y)
-        _ ≤ (E * ‖x‖) * ‖y‖ := by gcongr
-    linarith
+        _ ≤ (E * ‖x‖) * ‖y‖ := mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hBnorm (norm_nonneg x)) (norm_nonneg y)
+    linarith only [hnegCauchy, hupper]
   let X : ℝ := E * ‖A (m : CCMArchimedeanFormDomain a)‖ *
     ‖A (f : CCMArchimedeanFormDomain a)‖
-  have hX0 : 0 ≤ X := by positivity
   have hmassProduct :
       ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 *
           ‖A (f : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
@@ -294,11 +303,11 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
   have hYoung : 2 * X ≤
       (1 / 2 : ℝ) * ‖m‖ ^ 2 +
         2 * (E ^ 2 * eps * ‖f‖ ^ 2) := by
-    have hright0 : 0 ≤ (1 / 2 : ℝ) * ‖m‖ ^ 2 +
-        2 * (E ^ 2 * eps * ‖f‖ ^ 2) := by positivity
-    have hsquare := sq_nonneg
-      ((1 / 2 : ℝ) * ‖m‖ ^ 2 - 2 * (E ^ 2 * eps * ‖f‖ ^ 2))
-    nlinarith
+    apply two_mul_le_add_of_sq_le_mul (by positivity) (by positivity)
+    calc
+      X ^ 2 ≤ (E ^ 2 * eps * ‖f‖ ^ 2) * ‖m‖ ^ 2 := hXsq
+      _ = ((1 / 2 : ℝ) * ‖m‖ ^ 2) *
+          (2 * (E ^ 2 * eps * ‖f‖ ^ 2)) := by ring
   have hcrossSum :
       -(2 * X) ≤
         (inner ℂ (B (A (m : CCMArchimedeanFormDomain a)))
@@ -310,16 +319,21 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
     have h2 := hcrossLower (A (f : CCMArchimedeanFormDomain a))
       (A (m : CCMArchimedeanFormDomain a))
     dsimp only [X]
-    linarith
+    linarith only [h1, h2]
   have haccuracy : 2 * E ^ 2 * eps < delta :=
     two_mul_remainderEnvelope_sq_mul_sourceAccuracyThreshold_lt a hdelta
+  have haccuracyCost : 2 * (E ^ 2 * eps * ‖f‖ ^ 2) ≤ delta * ‖f‖ ^ 2 := by
+    calc
+      2 * (E ^ 2 * eps * ‖f‖ ^ 2) = (2 * E ^ 2 * eps) * ‖f‖ ^ 2 := by ring
+      _ ≤ delta * ‖f‖ ^ 2 :=
+        mul_le_mul_of_nonneg_right haccuracy.le (sq_nonneg ‖f‖)
   rw [hsourceHeadProjection]
   change (ccmRestrictedWeilForm a
       (f : CCMArchimedeanFormDomain a)
       (f : CCMArchimedeanFormDomain a)).re -
       delta * ‖f‖ ^ 2 ≤ (ccmRestrictedWeilForm a u u).re
   rw [hsplit]
-  nlinarith [sq_nonneg ‖m‖, sq_nonneg ‖f‖]
+  linarith only [htailForm, hYoung, hcrossSum, haccuracyCost, sq_nonneg ‖m‖]
 
 /-- A nonzero nonpositive direction has a nonzero projection into every positive-accuracy source
 head. -/
@@ -383,12 +397,12 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.sourceHead_prime_overcom
     have hnorm : ‖h‖ = ‖C.sourceHeadProjection u‖ := rfl
     dsimp only [h]
     rw [hnorm]
-    linarith
+    linarith only [hheadLower, hQ]
   have hform := ccmRestrictedWeilForm_self_re_eq_norm_add_formRemainder a h
   rw [ccmRestrictedWeilFormRemainder_eq_scalarGamma_add_polar_sub_prime] at hform
   simp only [add_apply, sub_apply, inner_add_left, inner_sub_left,
     Complex.add_re, Complex.sub_re] at hform
   refine ⟨hhne, ?_⟩
-  linarith
+  linarith only [hform, hheadQ]
 
 end RHTower

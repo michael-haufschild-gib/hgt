@@ -61,10 +61,10 @@ This module proves four unconditional structural theorems governing the spectral
    * Full spectral slack `totalSlack ≥ (1/12) N` iff `η ≥ 1/6 ≈ 0.16667`;
    * Off-line spectral slack `2 tr(Q₋) + posSlack ≥ (1/12) N` iff `(1 + 2η)² ≥ 2`
      (`η ≥ (√2 − 1)/2 ≈ 0.20711`).
-   Instantiating `displacedPairBlockData` at the Pythagorean rational point `α = 41/40, β = 9/40`
-   (`η = 81/1600 > 0`, `s₁ = 3376966, p = 640000, N = 4656966`) gives an explicit `ZeroBlockData`
-   configuration with `tr Â = N`, `‖Â‖_F² = (4/3) N`, and **strictly positive** negative-part
-   credit `2 tr(Q₋) > 0` (`¬ Q.PosSemidef`, non-coalesced!), yet `s₁ < (3/4) N` and
+   Instantiating `displacedPairBlockData` at `s₁ = 179, p = 32, α = √(17/16), β = 1/4`
+   (`η = 1/16 > 0`, `N = 243`) gives an explicit `ZeroBlockData` configuration with `tr Â = N`,
+   `‖Â‖_F² = (4/3) N`, and **strictly positive** negative-part credit `2 tr(Q₋) > 0`
+   (`¬ Q.PosSemidef`, non-coalesced!), yet `s₁ = (179/243) N < (3/4) N` and
    `totalSlack < (1/12) N`.
 -/
 
@@ -881,12 +881,9 @@ theorem negPart_credit_pos_displacedPairQDiag (s₁ : ℕ) {p : ℕ} (hp : 0 < p
   have hnot : ¬ (displacedPairQDiag s₁ p α β).PosSemidef := by
     intro hpsd
     let idx : Fin s₁ ⊕ (Fin p ⊕ Fin p) := Sum.inr (Sum.inr ⟨0, hp⟩)
-    have hdiag := RCLike.nonneg_iff.mp (hpsd.diag_nonneg (i := idx))
-    have hentry : displacedPairQDiag s₁ p α β idx idx = ((-2 * β ^ 2 : ℝ) : ℂ) := rfl
-    rw [hentry] at hdiag
-    simp only [ofReal_re] at hdiag
+    have hdiag : 0 ≤ -2 * β ^ 2 := (RCLike.nonneg_iff.mp (hpsd.diag_nonneg (i := idx))).1
     have hβ2 : 0 < β ^ 2 := sq_pos_of_ne_zero hβ
-    linarith [hdiag.1]
+    linarith
   refine ⟨hnot, fun hQh => ?_⟩
   by_contra hle
   have hnn : 0 ≤ RHLinalg.rtrace (RHLinalg.hermNegPart hQh) := RHTower.rtrace_hermNegPart_nonneg hQh
@@ -994,24 +991,28 @@ theorem displacedPairBlockData_below_three_quarters (s₁ : ℕ) {p : ℕ} (hp :
   exact ⟨htr, hfrob, hnot_psd, hcred_pos, hs1, hslack_lt⟩
 
 /-- **Macroscopic Displaced-Pair Counterexample at `κ = 4/3`.**
-At the Pythagorean rational displacement `α = 41/40, β = 9/40` (`α² − β² = 1`,
-`η = β² = 81/1600 > 0`) with `s₁ = 3376966` simple critical zeros and `p = 640000` off-line pairs
-(`N = s₁ + 2p = 4656966`), the concrete `ZeroBlockData` configuration
-`D = displacedPairBlockData 3376966 640000 (41/40) (9/40)` has `tr(D.blockA) = N`,
-`‖D.blockA‖_F² = (4/3) N`, and strictly positive off-line negative-part credit `0 < 2 tr(Q₋)`
-(`¬ (D.blockQ 1).PosSemidef`), yet `D.s₁ < (3/4) N` and `totalSlack P Q 2 < (1/12) N`. -/
+At the macroscopic displacement `α = √(17/16), β = 1/4` (`α² − β² = 1`, `η = β² = 1/16 > 0`) with
+`s₁ = 179` simple critical zeros and `p = 32` off-line pairs (`N = s₁ + 2p = 243`), the concrete
+`ZeroBlockData` configuration `D = displacedPairBlockData 179 32 (Real.sqrt (17 / 16)) (1 / 4)` has
+`tr(D.blockA) = N`, `‖D.blockA‖_F² = (4/3) N`, and strictly positive off-line negative-part credit
+`0 < 2 tr(Q₋)` (`¬ (D.blockQ 1).PosSemidef`), yet `D.s₁ = (179/243) N < (3/4) N` and
+`totalSlack P Q 2 < (1/12) N`. -/
 theorem macroscopic_displacedPair_counterexample_at_four_thirds :
-    let D := displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
+    let D := displacedPairBlockData 179 32 (Real.sqrt (17 / 16)) (1 / 4)
     let hP := D.blockP_posSemidef (by norm_num : (0 : ℝ) < 1)
-    let hQ := isHermitian_blockQ_one_displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
+    let hQ := isHermitian_blockQ_one_displacedPairBlockData 179 32 (Real.sqrt (17 / 16)) (1 / 4)
     RHLinalg.rtrace D.blockA = (D.Ncount : ℝ) ∧
       RHLinalg.frobSq D.blockA = (4 / 3 : ℝ) * (D.Ncount : ℝ) ∧
       ¬ (D.blockQ 1).PosSemidef ∧
       0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQ) ∧
       (D.s₁ : ℝ) < (3 / 4 : ℝ) * (D.Ncount : ℝ) ∧
-      totalSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) :=
-  displacedPairBlockData_below_three_quarters 3376966 (by norm_num) (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num)
+      totalSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) := by
+  have hsq : Real.sqrt (17 / 16 : ℝ) ^ 2 = 17 / 16 := Real.sq_sqrt (by norm_num)
+  have hpow4 : Real.sqrt (17 / 16 : ℝ) ^ 4 = (17 / 16 : ℝ) ^ 2 := by
+    calc Real.sqrt (17 / 16 : ℝ) ^ 4 = (Real.sqrt (17 / 16 : ℝ) ^ 2) ^ 2 := by ring
+      _ = (17 / 16 : ℝ) ^ 2 := by rw [hsq]
+  exact displacedPairBlockData_below_three_quarters 179 (by norm_num) (by norm_num)
+    (by linarith) (by linarith) (by norm_num)
 
 /-- **The Three Exact Macroscopic Displacement Thresholds at `κ = 4/3`.**
 For a configuration of `s₁ = N − 2p` simple critical zeros and `p` hyperbolic displaced off-line

@@ -49,20 +49,25 @@ private theorem complex_tsum_pi_geometric_fin :
         exact h
       have habNorm :
           Summable (fun x : ℕ × (Fin n → ℕ) => a x.1 * b x.2) :=
-        summable_mul_of_summable_norm haNorm hbNorm'
+        summable_mul_of_summable_norm (f := a) (g := b) haNorm hbNorm'
       have habNormReal :
           Summable (fun x : ℕ × (Fin n → ℕ) => ‖a x.1‖ * ‖b x.2‖) := by
-        exact Summable.mul_of_nonneg haNorm hbNorm'
+        exact Summable.mul_of_nonneg
+          (f := fun k : ℕ => ‖a k‖) (g := fun ν : Fin n → ℕ => ‖b ν‖)
+          haNorm hbNorm'
           (fun _ => norm_nonneg _) (fun _ => norm_nonneg _)
       have habSum :
           HasSum (fun x : ℕ × (Fin n → ℕ) => a x.1 * b x.2)
             ((1 - q 0)⁻¹ * ∏ i, (1 - r i)⁻¹) :=
-        (hasSum_geometric_of_norm_lt_one (hq 0)).mul hbSum habNorm
+        HasSum.mul (f := a) (g := b)
+          (hasSum_geometric_of_norm_lt_one (hq 0)) hbSum habNorm
       constructor
-      · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).summable_iff]
+      · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).summable_iff
+          (f := fun ν : Fin (n + 1) → ℕ => ‖∏ i, q i ^ ν i‖)]
         simpa only [Function.comp_def, Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero,
           Fin.cons_succ, norm_mul, a, b, r] using habNormReal
-      · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).tsum_eq]
+      · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).tsum_eq
+          (fun ν : Fin (n + 1) → ℕ => ∏ i, q i ^ ν i)]
         simpa only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ,
           a, b, r] using habSum.tsum_eq
 
@@ -77,7 +82,8 @@ theorem complex_tsum_pi_geometric {ι : Type*} [Fintype ι]
     (∑' ν : ι → ℕ, ∏ i, q i ^ ν i) =
         ∑' ν : Fin (Fintype.card ι) → ℕ,
           ∏ j, q (e.symm j) ^ ν j := by
-            rw [← pe.tsum_eq]
+            rw [← pe.tsum_eq
+              (fun ν : Fin (Fintype.card ι) → ℕ => ∏ j, q (e.symm j) ^ ν j)]
             congr 1
             funext ν
             exact Fintype.prod_equiv e

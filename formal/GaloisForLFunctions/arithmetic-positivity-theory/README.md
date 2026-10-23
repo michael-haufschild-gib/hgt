@@ -38,6 +38,8 @@ subfamilies exhaust the receiver.
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Signed compensation against the whole energy; explains why an adapted norm or a positive-part bound may merely restate the destination. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Searches for arithmetic effectivity producing the definite form that APT's source estimates alone do not construct. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Converts a signed arithmetic source into energy and cross terms; asks which source estimates survive a growing aperture. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Signed close-pair cancellation of prime Dirichlet polynomials beyond the Montgomery–Vaughan threshold, averaged over height: the mean-square counterpart of the single-height prime saving that the aperture face needs (§7.8, topic 2). |
+| [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | The width dictionary and the selectivity battery. The temperedness gate of §3.13 is the battery's one proved shifted-pair test, and the factorial family is one of its calibration libraries. |
 
 `RHTower` supplies the explicit formula, zero divisor, zero-counting inputs and operator
 realisations. APT's spectral-realisation question is which source space carries a positive
@@ -57,7 +59,14 @@ criteria recur throughout this document.
   criterion, while a loss constant or linear in the aperture is harmless.
 - *Grading.* The destination has partial values. A floor losing $C_\sigma e^{2\sigma r}$ at
   aperture $r$ gives the zero-free strip $\Re s\le\tfrac12+\sigma$; a loss bounded uniformly in
-  the aperture gives RH. A partial result states which member of this family it reaches.
+  the aperture gives RH. A partial result states which member of this family it reaches. The
+  grading is two-sided: for every $\beta$ above the zero width $\Delta=\sup_\rho\lvert\Re\rho-\tfrac12\rvert$
+  the complete form obeys $\hat Z(F)\ge-C_\beta(1+A)e^{2\beta A}(\int F^2+D)$ on $C^2_c$ tests
+  supported in $[-A,A]$, where $D$ bounds the gauge derivative of the autocorrelation
+  (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, Square-Root Threshold). In this energy
+  normalisation the floor exponent and the width are one number. Every receiver of the corpus
+  reads that number in its own unit (`widthDictionary_tfae`), so a result that changes only the
+  unit is not progress.
 
 A useful contribution must state its quantifiers: which sources, how many scales, which
 support lengths, and which constants are uniform. Restricted positivity paid for by
@@ -121,6 +130,26 @@ $C(g)=\int 2\cosh(u/2)g$, $S(g)=\int 2\sinh(u/2)g$. The capacity inequality
 $S(g)^2\le 2\mathcal M_N(g)+C(g)^2$ for every admitted test and every aperture
 is equivalent to RH. Proving it on a preferred finite-dimensional family is not
 the same statement.
+
+**The two receivers are one functional.** Abel summation against Chebyshev's
+function, compared with the density $e^s+1$ of the two poles of the completed zeta
+function, gives for every $C^1$ lag weight $h$ vanishing beyond its horizon
+$$
+\sum_n\Lambda(n)h(\log n)-\int_0^\infty(e^s+1)h(s)\,ds
+=-\int_0^\infty\Bigl(D(s)+\frac{s^2}2-s\Bigr)h''(s)\,ds .
+$$
+On a compact test $F$ of aperture $r$ the prime channel minus the pole plane
+$\tfrac12C(F)^2-\tfrac12S(F)^2$ is exactly $\int_0^{2r}E(s)\,w_F(s)\,ds$, with the
+**two-pole Chebyshev defect** $E(s)=e^s+s-1-\psi(e^s)$ and the lag weight
+$w_F(s)=2e^{-s/2}\bigl(\int F(x)F'(x+s)\,dx-\tfrac12a_F(s)\bigr)$
+(`sum_vonMangoldt_sub_polar_eq_criticalScalePrefix`, `testBalance_poleplane`, Arithmetic
+Incidence Positivity). With the Gamma–Lévy form of §2.2 the complete form is the archimedean
+energy minus this pairing. The prime channel and the pole plane cancel identically to PNT
+accuracy. The capacity inequality is a family of one-sided weighted bounds on $E$, indexed by
+the lag weights realisable at aperture $r$, and the critical-scale receiver reads the same
+datum through $h''$. The reflected pole at $s=0$ makes the Weil-natural defect
+$\psi(x)-x-\log x+1$ rather than $\psi(x)-x$, and it is the source of the factor $(1+T)$ in
+receiver 1.
 
 Neither receiver manufactures the arithmetic input it needs. The theory exists
 to build that input from the bottom, keeping every result at its exact scope.
@@ -1365,7 +1394,26 @@ admission and cross-window estimates.
 Fixed-support eventual negativity of the actual prime matrix is proved; its scale threshold
 depends on the support. Open: an explicit growing-support range in which the actual prime channel
 itself stays negative. Full-form positivity carried by a growing archimedean energy is a
-different statement and does not answer this.
+different statement and does not answer this. A slowly growing diagonal sequence of supports
+follows formally from fixed-support convergence and is not the target either.
+
+The natural target is the **linear window**: constants $\delta>0$, $N_0$ such that every
+support with $N\le m+1\le(1+\delta)N$, $N\ge N_0$, and every real vector have actual critical
+prime energy at most $-(2/(7000\pi^4))\sum b_m^2$, with dimension growing linearly in $N$. The
+proposed mechanism compares the actual form with its limit $P_\infty$ uniformly, using $S$ itself
+as the offset pattern. Prime tails beyond $R$ cost $\sum_{r>R}\Lambda(r)r^{-3/2}$ through the
+window correlation bound $\lvert C_S(r)\rvert\le Dr^{-1/2}E$, for the actual form and its limit
+alike. Harmonic tails beyond $K$ cost the tail of $\sum\lvert w_kw_l\rvert$, uniformly in the
+support, through the collar/endpoint bounds of §3.12. In the finite harmonic head, the actual
+clock $\lambda_m$ is replaced by the affine clock $m+\tfrac1{12}$. The error is controlled in
+operator norm by the disjoint-interval energy $\pi^2k\sum e_{m+1}b_m^2$ of §3.10 and the identity
+$H_l(rv)=H_{lr}(v)$, with no cardinality loss. The affine head is then resonance-exact: for
+$k\ne rl$ every difference frequency is at least $N/2$ once $\delta\le1/(4K(R+1))$; for $k=rl$
+the slow part is exactly $J_k(S,b)$. Only the $O(1/N)$ entries remain, and they cost
+$(\sum\lvert b_m\rvert)^2/N\le(\delta+1/N)E$ because $\lvert S\rvert\le\delta N+1$. Choosing
+$R$, then $K$, then $\delta$, then $N_0$ gives the comparison $\lvert P-P_\infty\rvert\le\eta E$
+for every $\eta>0$. The comparison exists on paper; its Lean assembly and the novelty audit
+are open.
 
 ### 7.3 Explicit thresholds and the shape of $R$
 
@@ -1402,10 +1450,14 @@ decided, those without the archimedean gain $\log M$: every positivity theorem o
 family is paid by that gain, and on the RH-complete cone it is absent. The passage is a
 quantitative target rather than a sign: a floor on all odd compact tests whose loss grows
 subexponentially in the aperture suffices, and the obstruction is the rate. Beyond lag $O(1)$ the
-floor is exactly the prime–polar difference $\psi(e^t)-e^t$ — the prime measure has density
-$\asymp e^{t/2}dt$ at lag $t$, the polar measure $2\cosh(t/2)$ has the same density, and the
-archimedean density $\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$ — so the archimedean surplus
-contributes nothing at the lags that carry the mass, and no amount of it buys the exponent.
+floor is exactly the prime–polar difference. The ledger identity of §1.2 makes this a theorem:
+the complete form is the archimedean energy minus $\int_0^{2r}E\,w_F$. The prime measure has
+density $\asymp e^{t/2}dt$ at lag $t$, the polar measure $2\cosh(t/2)$ has the same density, and
+the archimedean density $\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$. The archimedean surplus
+therefore contributes nothing at the lags that carry the mass, and no amount of it buys the
+exponent. Unconditionally only $E(s)=o(e^s)$ is known, so
+$\lvert\int E\,w_F\rvert\le\sup_s\lvert E(s)e^{-s}\rvert\int e^s\lvert w_F\rvert$ loses
+$\asymp e^{r}$: rate one is the unconditional floor, and RH is $E(s)=O(se^{s/2})$.
 Oddness, edge decay of the autocorrelation and the strip structure give no power saving either:
 an odd test concentrated in an $O(1)$ window at the edge of its support has pole charge
 $\asymp e^{r}$ and prime correlation $\asymp-e^{r}$, of the same size and opposite sign, so the

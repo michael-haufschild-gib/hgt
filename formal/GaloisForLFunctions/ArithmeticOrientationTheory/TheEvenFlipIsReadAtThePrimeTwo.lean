@@ -183,6 +183,15 @@ theorem firstPronicMoment_separates_evenFlip_iff {K ε : ℝ} (hε : 0 < ε) {c 
   · intro h h0
     exact h ((mul_eq_zero.1 h0).resolve_left (mul_pos two_pos hlog).ne')
 
+/-- **The orientation sign at `2` flips under the even flip**: `sign W_{c♭}(2) = − sign W_c(2)`,
+a ℤ/2-valued invariant of the companion class. -/
+theorem sign_weightRamanujanCoeff_evenFlip_two {K ε : ℝ} (hε : 0 < ε) {c : ℕ → ℝ}
+    (hc : DampedClass K ε c) (h4 : ∀ m, 4 ∣ m → c m = 0) :
+    Real.sign (weightRamanujanCoeff (evenFlip c) 2) = -Real.sign (weightRamanujanCoeff c 2) := by
+  rw [weightRamanujanCoeff_evenFlip' hε hc h4 2]
+  simp only [evenSign, show (2 : ℕ) ∣ 2 from dvd_refl 2, if_true, neg_one_mul]
+  exact Real.sign_neg _
+
 /-! ### The orientation of four-free damped weights -/
 
 /-- The four-free weights of the damped class at damping `ε`. -/
@@ -224,6 +233,19 @@ def evenFlipOrientation' {ε : ℝ} (hε : 0 < ε) : Orientation (OrientedFourFr
     simp only [evenSign, show (2 : ℕ) ∣ 2 from dvd_refl 2, if_true, neg_one_mul, ne_eq, neg_eq_zero]
     exact c.2⟩
   flip_flip c := Subtype.ext ((evenFlipOrientation hε).flip_flip c.1)
+
+/-- **The parity floor as a reading statement**: at every damping `ε ≤ ½` the amplitude reading
+does not resolve payment on the four-free damped weights.  The Fermi weight and its even flip
+have the same amplitudes; the first is paid and the second is not. -/
+theorem not_resolves_amplitude_receiverBounded {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
+    ¬ Resolves (amplitudeReading (ε := ε)) (fun c : FourFreeDamped ε => ReceiverBounded c.1) := by
+  obtain ⟨hD, -, hflip, -, hpaid, hunpaid⟩ := fermi_evenFlip_parityPair hε hε2
+  let d : FourFreeDamped ε := ⟨fermiWeight ε, ⟨3, hD⟩, fun m hm => fermiWeight_of_four_dvd ε hm⟩
+  refine not_resolves_of_invisible_of_flips (invisible_amplitude_evenFlip hε) (d := d) ?_
+  have hκ : ((evenFlipOrientation hε).flip d).1 = fermiFlipWeight ε := by
+    rw [hflip]; rfl
+  simp only [hκ]
+  exact fun h => hunpaid (h.2 hpaid)
 
 /-- **The first pronic moment is orientation-faithful** on the weights with `W_c(2) ≠ 0`. -/
 theorem orientationFaithful_firstPronicMoment {ε : ℝ} (hε : 0 < ε) :

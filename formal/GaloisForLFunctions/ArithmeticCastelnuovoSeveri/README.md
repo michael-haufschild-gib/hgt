@@ -262,7 +262,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`successor_localPair_bounds`, `archLevyDensity_log_succ`). Over `𝔽_q[T]` the cell is
     degenerate (`successorCell_functionField`).
 
-### 3.8 Rank–trace inertia: what a Gram functional can certify (`TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`)
+### 3.8 Rank–trace inertia: what a Gram functional can certify (`TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`)
 
 Without Riemann–Roch effectivity the intersection form still certifies a *proportion* of zeros,
 through rank–trace inertia on the real evaluation Gram `Â = P + Q` of hat-unit tests — `P` from the
@@ -281,18 +281,36 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     (`RHTower.thmA_lam_spectralSlack`): `2/3` is set by stopping pair correlation at `λ = 1`, and a
     finite pair-correlation bound `F ≤ B` beyond `λ = 1` gives `2/3 + 1/(3(3B − 2))`
     (`two_thirds_and_pair_correlation_escape`).
-28. **Two routes past the blind spot, each with one unproved input.** The pair `(P, Q)` remembers
-    what `Â` forgets: for `Q = 0` the on-line Parseval slack restores the rank at `c = 2`
-    (`onSlack_of_posSemidef_eq`, `rank_trace_add_onSlack_of_posSemidef_eq_rank`), and a non-coalesced off-line pair
-    carries negative-part credit (`negPart_credit_pos_iff_not_posSemidef`). The joint `(c = 2, c = 3)`
+28. **Two routes past the blind spot, each with one unproved input, and the exact spectral-slack
+    conservation laws.** The pair `(P, Q)` remembers what `Â` forgets: for `Q = 0` the on-line
+    Parseval slack restores the rank at `c = 2` (`onSlack_of_posSemidef_eq`,
+    `rank_trace_add_onSlack_of_posSemidef_eq_rank`), and a non-coalesced off-line pair carries
+    negative-part credit (`negPart_credit_pos_iff_not_posSemidef`). More generally, adding the full
+    spectral slack `totalSlack(P, Q, c) := c tr(Q₋) + posSlack(Q, c) + onSlack(P, Q, c)` to
+    `c tr P + 2c tr Q − c² n₊(Q) − ‖P + Q‖_F²` cancels the prime-side quadratic functional
+    identically and equals `(c²/4) rank P − couplingDefect(P, Q, c) ≤ (c²/4) rank P`
+    (`rank_trace_add_totalSlack_eq`, `zeroside_rank_core_slack_exact`,
+    `zeroside_rank_core_slack_le_rank`). Because `P̂(T)` has grid dimension `d(T) = (λ + o(1))N(T, 2T)`,
+    `zeroSideSlack(λ, T) ≤ (λ − H(λ) + ε)N(T, 2T)` unconditionally (`seamA_spectralSlack_le_d`,
+    `zeroSideSlack_eventually_le_lam_sub_Hfun`), refuting `zeroSideSlack(λ, T) ≥ (3/4 − H(λ))N(T, 2T)`
+    for every `λ ∈ (0, 3/4)` (`not_three_quarters_zeroSideSlack_of_lt_three_quarters`). On the
+    off-line block, Cauchy–Schwarz amplifies `tr(Q₋) ≥ 2ηb` into `posSlack(Q, 2) ≥ 4η²b` and
+    `2 tr(Q₋) + posSlack(Q, 2) ≥ 4bη(1 + η)` (`posSlack_mul_ge_sq_of_rtrace`,
+    `offLine_slack_ge_of_rtrace_hermNegPart`). In the hyperbolic displaced-pair block model at
+    `κ = 4/3` (`displacedPairBlockData`), non-coalescence (`η > 0`, `2 tr(Q₋) > 0`) is necessary
+    but not sufficient for `3/4`: at `s₁ = 179, p = 32, α = √(17/16), β = 1/4` (`N = 243`),
+    `2 tr(Q₋) > 0` while `s₁ = (179/243)N < (3/4)N` and `totalSlack < (1/12)N`
+    (`displacedPairBlockData_below_three_quarters`,
+    `macroscopic_displacedPair_counterexample_at_four_thirds`), and the three exact macroscopic
+    thresholds at `κ = 4/3` are `(1 + 2η)² ≥ 4/3` for `s₁ ≥ (3/4)N`, `η ≥ 1/6` for
+    `totalSlack ≥ (1/12)N`, and `(1 + 2η)² ≥ 2` for off-line slack `≥ (1/12)N`
+    (`hyperbolic_displacedPair_three_thresholds_at_four_thirds`). The joint `(c = 2, c = 3)`
     functional is `((7 − 3κ)/4)N`, i.e. `(3/4)N` at `κ = 4/3`
-    (`three_quarters_of_broken_blind_spot_at_four_thirds`). For `ζ` this gives two implications,
-    not a theorem: a zero-side slack `S(T) ≥ N(T, 2T)/12` would give `3/4`
-    (`zeta_three_quarters_of_spectralSlack`); `3/4` is equivalent to `κ ≤ 5/4`, the
-    unconditional bandwidth-`4/3` constant is `43/36 = 5/4 − 1/18`, and the proposition
-    `RHTower.PrimeSurplusFourThirds` filling the margin `1/18` would give `3/4`
-    (`kappa_five_fourths_iff_three_quarters`, `zeta_three_quarters_from_prime_surplus`,
-    `double_window_primeFreq_offDiag_and_exchange_rate`).
+    (`three_quarters_of_broken_blind_spot_at_four_thirds`). For `ζ` this gives two conditional
+    bridges: `zeroSideSlack(λ, T) ≥ (3/4 − H(λ))N(T, 2T)` for `λ ∈ [3/4, 1)`
+    (`zeta_three_quarters_of_spectralSlack`), or `RHTower.PrimeSurplusFourThirds` filling the `1/18`
+    margin above `43/36 = 5/4 − 1/18` at `λ = 4/3` (`kappa_five_fourths_iff_three_quarters`,
+    `zeta_three_quarters_from_prime_surplus`, `double_window_primeFreq_offDiag_and_exchange_rate`).
 
 ### 3.9 The λ-ring of the scaling surface (`TheLambdaRingOfTheScalingSurface`)
 
@@ -539,5 +557,6 @@ Weil's argument.
 | `TheSuccessorCollar` | collar bounds; consecutive Hecke cycles meet through the collar alone |
 | `TheTwoThirdsConstantIsPairCorrelation` | `2 − κ` capacity of rank–trace inertia, coalescence indistinguishability, `2/3` from `λ = 1` pair correlation |
 | `BreakingTheCoalescenceBlindSpotAndThreeQuarters` | unsplit `(P, Q)` spectral slack, `(7 − 3κ)/4 = 3/4` at `κ = 4/3`, prime-surplus and double-window routes to `75%` |
+| `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold` | exact spectral-slack conservation and prime-side cancellation, unconditional grid-dimension ceiling `zeroSideSlack ≤ (λ − H(λ) + ε)N` and refutation on `(0, 3/4)`, Cauchy–Schwarz off-line slack amplification, hyperbolic displaced-pair counterexample and the three exact macroscopic thresholds at `κ = 4/3` |
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring series, Adams operations `adamsOp q`, Hecke cycles `heckeCycle a g`, pole-plane splitting, Lefschetz splitting, zero-side eigenlaw |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector reflected-prime/polar and Chebyshev ledgers, `(8 + ε) e^r` floor, degree floor ⟺ zero width |

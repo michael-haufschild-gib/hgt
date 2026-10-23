@@ -110,7 +110,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
         (m : CCMArchimedeanFormDomain a)).re at htailLower
     change E * ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
       (1 / 8 : ℝ) * ‖m‖ ^ 2 at htailCost
-    linarith
+    linarith only [htailLower, htailCost]
   have hBnorm : ‖B‖ ≤ E := norm_ccmRestrictedWeilBoundedRemainder_le_envelope a
   have hcrossLower (x y : suzukiApertureHilbert a) :
       -(E * ‖x‖ * ‖y‖) ≤ (inner ℂ (B x) y).re := by
@@ -126,11 +126,11 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
       calc
         _ ≤ (‖B‖ * ‖x‖) * ‖y‖ :=
           mul_le_mul_of_nonneg_right hBapply (norm_nonneg y)
-        _ ≤ (E * ‖x‖) * ‖y‖ := by gcongr
-    linarith
+        _ ≤ (E * ‖x‖) * ‖y‖ := mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right hBnorm (norm_nonneg x)) (norm_nonneg y)
+    linarith only [hnegCauchy, hupper]
   let X : ℝ := E * ‖A (m : CCMArchimedeanFormDomain a)‖ *
     ‖A (f : CCMArchimedeanFormDomain a)‖
-  have hX0 : 0 ≤ X := by positivity
   have hmassProduct :
       ‖A (m : CCMArchimedeanFormDomain a)‖ ^ 2 *
           ‖A (f : CCMArchimedeanFormDomain a)‖ ^ 2 ≤
@@ -151,11 +151,11 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.form_ge_sourceHead_sub_qu
   have hYoung : 2 * X ≤
       (1 / 2 : ℝ) * ‖m‖ ^ 2 +
         2 * (E ^ 2 * eps * ‖f‖ ^ 2) := by
-    have hright0 : 0 ≤ (1 / 2 : ℝ) * ‖m‖ ^ 2 +
-        2 * (E ^ 2 * eps * ‖f‖ ^ 2) := by positivity
-    have hsquare := sq_nonneg
-      ((1 / 2 : ℝ) * ‖m‖ ^ 2 - 2 * (E ^ 2 * eps * ‖f‖ ^ 2))
-    nlinarith only [hX0, hXsq, hright0, hsquare]
+    apply two_mul_le_add_of_sq_le_mul (by positivity) (by positivity)
+    calc
+      X ^ 2 ≤ (E ^ 2 * eps * ‖f‖ ^ 2) * ‖m‖ ^ 2 := hXsq
+      _ = ((1 / 2 : ℝ) * ‖m‖ ^ 2) *
+          (2 * (E ^ 2 * eps * ‖f‖ ^ 2)) := by ring
   have hcrossSum :
       -(2 * X) ≤
         (inner ℂ (B (A (m : CCMArchimedeanFormDomain a)))
@@ -223,7 +223,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.sourceHead_prime_overcomp
     have hnorm : ‖h‖ = ‖C.sourceHeadProjection u‖ := rfl
     dsimp only [h]
     rw [hnorm]
-    linarith
+    linarith only [hheadLower, hQ]
   have hhne : h ≠ 0 := by
     intro hh
     have hprojection := C.sourceHeadProjection_lower_of_nonpositive u hune hQ
@@ -234,7 +234,7 @@ theorem CCMRestrictedWeilSourceAlignedBlockCertificate.sourceHead_prime_overcomp
     have hunorm : 0 < ‖u‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hune)
     have hfalse : (1 / 2 : ℝ) * ‖u‖ ^ 2 < 0 := by
       simpa using hprojection
-    nlinarith
+    linarith only [hunorm, hfalse]
   have hform := ccmRestrictedWeilForm_self_re_eq_norm_add_formRemainder a h
   rw [ccmRestrictedWeilFormRemainder_eq_scalarGamma_add_polar_sub_prime] at hform
   simp only [add_apply, sub_apply, inner_add_left, inner_sub_left,
@@ -335,7 +335,7 @@ theorem sourceHeadThreshold_lt_linearSourceHeadThreshold
   change 1 / (8 * (E + 1) ^ 2) < 1 / (2 * (E + 1))
   have hE1 : 0 < E + 1 := by positivity
   rw [one_div_lt_one_div (by positivity) (by positivity)]
-  nlinarith [sq_pos_of_pos hE1]
+  linarith only [hE, sq_nonneg E]
 
 /-- Raising the spectral cutoff can only shrink the Gamma--Slepian peripheral space. -/
 theorem linearSourceHead_le_sourceHead (a : SuzukiPositiveAperture) :
@@ -468,13 +468,13 @@ theorem exists_ccmRestrictedWeil_linearSourceHead_rankBound
       exact mul_lt_mul_of_pos_right hcoef hnormsq
     have hlower := ccmRestrictedWeilForm_sourceRelative_lowerBound a u
     dsimp only [E] at hcostle hcostlt
-    linarith
+    linarith only [hcostle, hcostlt, hlower]
   letI : FiniteDimensional ℂ M.orthogonal := hMfinite
   refine ⟨M, hMclosed, hMfinite, hMperipheral, hcoercive, ?_⟩
   intro N
   exact nonpositiveBlock_finrank_le_orthogonal_of_exterior_pos
     a M hMclosed hMfinite (fun u hu hune => by
       have hnormsq : 0 ≤ ‖u‖ ^ 2 := sq_nonneg ‖u‖
-      linarith [hcoercive u hu hune]) N
+      linarith only [hnormsq, hcoercive u hu hune]) N
 
 end RHTower

@@ -21,7 +21,7 @@ real argument (`centeredRow_eq_columnProfile`).
   `|M P(−½ + it)| ≤ ζ(η + ½) |ζ(½ − it)| / |½ − it|` (`norm_mellin_sourceProfile_le`), and the column
   multiplies it by the dilation symbol `K^{s−η} − (K+1)^{s−η}` (`mellin_columnProfile_eq`).
 * **Plancherel** (`integral_sq_div_sq_eq_mellin`): a measurable profile with
-  `|f(x)| ≤ B min(x^a, x^{1−a})`, `½ < a < 1`, has
+  `|f(x)| ≤ B min(x^a, x^{1−a})`, `a > ½`, has
   `∫_0^∞ f(x)² x^{−2} dx = (1/2π) ∫ |M f(−½ + it)|² dt`.
 
 The only arithmetic input is `|μ| ≤ 1`: the Möbius signs are not used.
@@ -278,8 +278,9 @@ theorem sourceProfile_eq_tsum {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤ x)
   have hρs : Summable fun d : ℕ =>
       (ArithmeticFunction.moebius (d + 1) : ℝ) * ((d : ℝ) + 1) ^ (-(1 + η)) := by
     refine Summable.of_norm_bounded hzs fun d => ?_
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by positivity)]
-    exact mul_le_of_le_one_left (by positivity) (abs_moebius_real_le_one _)
+    have hpos : (0 : ℝ) ≤ ((d : ℝ) + 1) ^ (-(1 + η)) := Real.rpow_nonneg (by positivity) _
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hpos]
+    exact mul_le_of_le_one_left hpos (abs_moebius_real_le_one _)
   have hρshift : (RHTower.pmPowerDampedDivisorDensity η).re =
       ∑' d : ℕ, (ArithmeticFunction.moebius (d + 1) : ℝ) * ((d : ℝ) + 1) ^ (-(1 + η)) := by
     rw [hρ]
@@ -317,7 +318,7 @@ theorem sourceProfile_eq_tsum {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤ x)
     have hd : (0 : ℝ) < ((d + 1 : ℕ) : ℝ) := by positivity
     have hq : 0 ≤ x / ((d + 1 : ℕ) : ℝ) := div_nonneg hx hd.le
     have hfl : ((⌊x / ((d + 1 : ℕ) : ℝ)⌋ : ℤ) : ℝ) = ((m / (d + 1) : ℕ) : ℝ) := by
-      rw [← Nat.cast_floor_eq_int_floor hq, Nat.floor_div_natCast]
+      rw [← natCast_floor_eq_intCast_floor hq, Nat.floor_div_natCast]
     rw [Int.fract, hfl]
     simp only [sourceCoeff, hF, hL]
     rw [← rpow_neg_div_self η d]
@@ -346,7 +347,7 @@ theorem abs_sourceProfile_le_mul {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤
     intro d
     have hd : (0 : ℝ) < ((d + 1 : ℕ) : ℝ) := by positivity
     have hq : 0 ≤ x / ((d + 1 : ℕ) : ℝ) := div_nonneg hx hd.le
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (Int.fract_nonneg _)]
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (Int.fract_nonneg (x / ((d + 1 : ℕ) : ℝ)))]
     calc |sourceCoeff η d| * Int.fract (x / ((d + 1 : ℕ) : ℝ))
         ≤ ((d + 1 : ℕ) : ℝ) ^ (-η) * (x / ((d + 1 : ℕ) : ℝ)) :=
           mul_le_mul (abs_sourceCoeff_le η d) (fract_le_self_of_nonneg hq)
@@ -355,8 +356,8 @@ theorem abs_sourceProfile_le_mul {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤
           rw [← rpow_neg_div_self η d]; ring
   have hs : Summable fun d : ℕ => ((d : ℝ) + 1) ^ (-(1 + η)) * x := hzs.mul_right x
   rw [sourceProfile_eq_tsum hη hx, ← Real.norm_eq_abs]
-  calc ‖∑' d, sourceCoeff η d * Int.fract (x / ((d + 1 : ℕ) : ℝ))‖
-      ≤ ∑' d, ((d : ℝ) + 1) ^ (-(1 + η)) * x :=
+  calc ‖∑' d : ℕ, sourceCoeff η d * Int.fract (x / ((d + 1 : ℕ) : ℝ))‖
+      ≤ ∑' d : ℕ, ((d : ℝ) + 1) ^ (-(1 + η)) * x :=
         tsum_of_norm_bounded hs.hasSum hb
     _ = RHTower.realZetaSeries (1 + η) * x := by rw [tsum_mul_right]; rfl
 
@@ -484,10 +485,10 @@ theorem abs_columnProfile_le_bound {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) {K
 
 /-! ### Mellin transforms on the line `Re s = −½` -/
 
-/-- A profile with `|f(x)| ≤ B min(x^a, x^{1−a})`, `½ < a < 1`, is Mellin convergent on
+/-- A profile with `|f(x)| ≤ B min(x^a, x^{1−a})`, `a > ½`, is Mellin convergent on
 `Re s = −½`. -/
 theorem mellinConvergent_of_two_sided {f : ℝ → ℝ} (hf : Measurable f) {a B : ℝ}
-    (ha0 : 1 / 2 < a) (ha1 : a < 1)
+    (ha0 : 1 / 2 < a)
     (h1 : ∀ x, 0 < x → |f x| ≤ B * x ^ a) (h2 : ∀ x, 0 < x → |f x| ≤ B * x ^ (1 - a)) (t : ℝ) :
     MellinConvergent (fun x => (f x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I) := by
   set s : ℂ := ((-1 / 2 : ℝ) : ℂ) + t * I with hs
@@ -527,10 +528,10 @@ theorem mellinConvergent_of_two_sided {f : ℝ → ℝ} (hf : Measurable f) {a B
   rwa [Ioc_union_Ioi_eq_Ioi zero_le_one] at this
 
 /-- **Mellin–Plancherel at abscissa `−½`.**  A measurable profile with
-`|f(x)| ≤ B min(x^a, x^{1−a})`, `½ < a < 1`, has `f(x)²/x²` integrable and
+`|f(x)| ≤ B min(x^a, x^{1−a})`, `a > ½`, has `f(x)²/x²` integrable and
 `∫_0^∞ f(x)² x^{−2} dx = (1/2π) ∫ |M f(−½ + it)|² dt`. -/
 theorem integral_sq_div_sq_eq_mellin {f : ℝ → ℝ} (hf : Measurable f) {a B : ℝ}
-    (ha0 : 1 / 2 < a) (ha1 : a < 1)
+    (ha0 : 1 / 2 < a)
     (h1 : ∀ x, 0 < x → |f x| ≤ B * x ^ a) (h2 : ∀ x, 0 < x → |f x| ≤ B * x ^ (1 - a)) :
     IntegrableOn (fun x => f x ^ 2 / x ^ 2) (Ioi 0) ∧
       ∫ x in Ioi (0 : ℝ), f x ^ 2 / x ^ 2 =
@@ -631,7 +632,7 @@ theorem integral_sq_div_sq_eq_mellin {f : ℝ → ℝ} (hf : Measurable f) {a B 
     have him : (((-1 / 2 : ℝ) : ℂ) + t * I).im = t := by simp
     rw [mellin_eq_fourier]
     simp only [hre, him]
-    refine congrArg (fun φ => 𝓕 φ (t / (2 * Real.pi))) ?_
+    refine congrArg (fun φ : ℝ → ℂ => 𝓕 φ (t / (2 * Real.pi))) ?_
     funext u
     simp only [hg]
     rw [show -(-1 / 2 : ℝ) * u = u / 2 by ring]
@@ -699,17 +700,20 @@ theorem mellin_fractSeries {s : ℂ} (hs0 : -1 < s.re) (hs1 : s.re < 0) {a : ℕ
     intro d; funext x; rw [div_eq_inv_mul]
   have hdilConv : ∀ d, MellinConvergent (fun x : ℝ => ((Int.fract (x / c d) : ℝ) : ℂ)) s := by
     intro d
-    rw [hdil d, MellinConvergent.comp_mul_left (inv_pos.2 (hc d))]
-    exact hZc
+    rw [hdil d]
+    exact (MellinConvergent.comp_mul_left (f := fun y : ℝ => ((Int.fract y : ℝ) : ℂ))
+      (inv_pos.2 (hc d))).mpr hZc
   have hdilMellin : ∀ d, mellin (fun x : ℝ => ((Int.fract (x / c d) : ℝ) : ℂ)) s =
       ((c d : ℝ) : ℂ) ^ s * (riemannZeta (-s) / s) := by
     intro d
-    rw [hdil d, mellin_comp_mul_left _ _ (inv_pos.2 (hc d)), hZ, smul_eq_mul,
-      ofReal_inv_cpow_neg (hc d)]
-  set T : ℕ → ℝ → ℂ := fun d x => (x : ℂ) ^ (s - 1) • ((a d * Int.fract (x / c d) : ℝ) : ℂ)
-    with hT
+    have h := mellin_comp_mul_left (fun y : ℝ => ((Int.fract y : ℝ) : ℂ)) s (inv_pos.2 (hc d))
+    rw [hZ, smul_eq_mul, ofReal_inv_cpow_neg (hc d)] at h
+    rw [hdil d]
+    exact h
+  set T : ℕ → ℝ → ℂ := fun (d : ℕ) (x : ℝ) =>
+    (x : ℂ) ^ (s - 1) • ((a d * Int.fract (x / c d) : ℝ) : ℂ) with hT
   have hTeq : ∀ d, T d =
-      fun x => (x : ℂ) ^ (s - 1) • ((a d : ℂ) • ((Int.fract (x / c d) : ℝ) : ℂ)) := by
+      fun x : ℝ => (x : ℂ) ^ (s - 1) • ((a d : ℂ) • ((Int.fract (x / c d) : ℝ) : ℂ)) := by
     intro d; funext x; simp only [hT, smul_eq_mul, Complex.ofReal_mul]; try ring
   have hTint : ∀ d, Integrable (T d) (volume.restrict (Ioi 0)) := by
     intro d; rw [hTeq d]; exact (hdilConv d).const_smul (a d : ℂ)
@@ -731,7 +735,7 @@ theorem mellin_fractSeries {s : ℂ} (hs0 : -1 < s.re) (hs1 : s.re < 0) {a : ℕ
       simp only [hT]
       rw [norm_smul, Complex.norm_cpow_eq_rpow_re_of_pos (show (0 : ℝ) < x from hx), hre,
         Complex.norm_real,
-        Real.norm_eq_abs, abs_mul, abs_of_nonneg (Int.fract_nonneg _)]
+        Real.norm_eq_abs, abs_mul, abs_of_nonneg (Int.fract_nonneg (x / c d))]
       ring
     rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul]
     congr 1
@@ -798,7 +802,7 @@ theorem norm_mellin_sourceProfile_le {η : ℝ} (hη : 1 / 2 < η) (t : ℝ) :
   have hM := mellin_fractSeries (s := s) (by rw [hre]; norm_num) (by rw [hre]; norm_num) hsum
     (F := sourceProfile η) (fun x hx => sourceProfile_eq_tsum hη0 hx.le)
   have hneg : -s = ((1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I := by
-    rw [hs]; apply Complex.ext <;> simp <;> ring
+    rw [hs]; push_cast; ring
   rw [hM, norm_mul, hneg, norm_div]
   have hnb : ∀ d, ‖(sourceCoeff η d : ℂ) * ((((d + 1 : ℕ) : ℝ) : ℂ)) ^ s‖ ≤
       ((d : ℝ) + 1) ^ (-(η + 1 / 2)) := by
@@ -820,7 +824,7 @@ theorem mellin_columnProfile_eq {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) {K : 
         mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I) := by
   set s : ℂ := ((-1 / 2 : ℝ) : ℂ) + t * I with hs
   have hconv : MellinConvergent (fun x => (sourceProfile η x : ℂ)) s :=
-    mellinConvergent_of_two_sided (measurable_sourceProfile η) h0 h1
+    mellinConvergent_of_two_sided (measurable_sourceProfile η) h0
       (fun x hx => (abs_sourceProfile_le_bound h0 h1 hx).1)
       (fun x hx => (abs_sourceProfile_le_bound h0 h1 hx).2) t
   have hdil : ∀ c : ℝ, (fun x : ℝ => ((sourceProfile η (x / c) : ℝ) : ℂ)) =
@@ -828,11 +832,17 @@ theorem mellin_columnProfile_eq {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) {K : 
     intro c; funext x; rw [div_eq_inv_mul]
   have hcv : ∀ c : ℝ, 0 < c →
       MellinConvergent (fun x : ℝ => ((sourceProfile η (x / c) : ℝ) : ℂ)) s := by
-    intro c hc; rw [hdil c, MellinConvergent.comp_mul_left (inv_pos.2 hc)]; exact hconv
+    intro c hc
+    rw [hdil c]
+    exact (MellinConvergent.comp_mul_left (f := fun y : ℝ => ((sourceProfile η y : ℝ) : ℂ))
+      (inv_pos.2 hc)).mpr hconv
   have hmv : ∀ c : ℝ, 0 < c → mellin (fun x : ℝ => ((sourceProfile η (x / c) : ℝ) : ℂ)) s =
       (c : ℂ) ^ s * mellin (fun x => (sourceProfile η x : ℂ)) s := by
     intro c hc
-    rw [hdil c, mellin_comp_mul_left _ _ (inv_pos.2 hc), smul_eq_mul, ofReal_inv_cpow_neg hc]
+    have h := mellin_comp_mul_left (fun y : ℝ => ((sourceProfile η y : ℝ) : ℂ)) s (inv_pos.2 hc)
+    rw [smul_eq_mul, ofReal_inv_cpow_neg hc] at h
+    rw [hdil c]
+    exact h
   have hK0 : (0 : ℝ) < K := by linarith
   have hK10 : (0 : ℝ) < K + 1 := by linarith
   have e1 := integral_const_mul (μ := volume.restrict (Ioi (0 : ℝ))) ((K ^ (-η) : ℝ) : ℂ)
@@ -867,9 +877,9 @@ theorem integral_columnProfile_sq_eq {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) 
       ∫ x in Ioi (0 : ℝ), columnProfile η K x ^ 2 / x ^ 2 =
         1 / (2 * Real.pi) *
           ∫ t : ℝ, ‖mellin (fun x => (columnProfile η K x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2 :=
-  integral_sq_div_sq_eq_mellin (measurable_columnProfile η K) h0 h1
-    (fun x hx => (abs_columnProfile_le_bound h0 h1 hK hx).1)
-    (fun x hx => (abs_columnProfile_le_bound h0 h1 hK hx).2)
+  integral_sq_div_sq_eq_mellin (measurable_columnProfile η K) h0
+    (fun _ hx => (abs_columnProfile_le_bound h0 h1 hK hx).1)
+    (fun _ hx => (abs_columnProfile_le_bound h0 h1 hK hx).2)
 
 end
 
