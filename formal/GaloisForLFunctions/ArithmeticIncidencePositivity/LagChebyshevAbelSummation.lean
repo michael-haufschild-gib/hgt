@@ -12730,6 +12730,192 @@ theorem eulerRaw_le_symbol_bound (hF : ContDiff ℝ 1 F) (hFc : HasCompactSuppor
   have hg : 0 ≤ spectralDensity F ξ := by rw [spectralDensity]; positivity
   exact mul_le_mul_of_nonneg_right (hC ξ) hg
 
+/-! ### The comb acts diagonally in frequency
+
+A comb factor multiplies the Fourier transform by `c(1 − λe^{2πiaξ})`, so it multiplies the
+spectral density by `1 − w cos(2πaξ)` with `w = 2λ/(1+λ²)`.  The Euler ledger is therefore
+diagonalised by the Fourier transform: an iterated comb multiplies the density by the product of
+its factors, the payment is the deficit of that product against the density, and the admissibility
+`w ≤ 1` is exactly the nonnegativity of the multiplier.  This is the conceptual content of the
+payment law: it holds because a nonnegative multiplier cannot remove more than the whole mass. -/
+
+open FourierTransform Complex in
+theorem fourier_shift (f : ℝ → ℂ) (a ξ : ℝ) :
+    𝓕 (fun x => f (x + a)) ξ = Complex.exp (((2 * Real.pi * a * ξ : ℝ)) * I) * 𝓕 f ξ := by
+  have hmain : (∫ v : ℝ, Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • f v)
+      = ∫ v : ℝ, Complex.exp (((-2 * Real.pi * (v + a) * ξ : ℝ)) * I) • f (v + a) :=
+    (MeasureTheory.integral_add_right_eq_self
+      (μ := (volume : Measure ℝ)) (fun v => Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • f v) a).symm
+  rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul, hmain,
+    ← MeasureTheory.integral_const_mul]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
+  show Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • f (v + a)
+    = Complex.exp (((2 * Real.pi * a * ξ : ℝ)) * I)
+      * (Complex.exp (((-2 * Real.pi * (v + a) * ξ : ℝ)) * I) • f (v + a))
+  rw [smul_eq_mul, smul_eq_mul, ← mul_assoc, ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+open Complex in
+theorem norm_one_sub_mul_exp_sq (lam θ : ℝ) :
+    ‖(1 : ℂ) - (lam : ℂ) * Complex.exp ((θ : ℝ) * I)‖ ^ 2 = 1 + lam ^ 2 - 2 * lam * Real.cos θ := by
+  rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+    Complex.mul_re, Complex.mul_im, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im]
+  simp only [Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im]
+  nlinarith [Real.sin_sq_add_cos_sq θ]
+
+variable {F : ℝ → ℝ}
+
+open FourierTransform Complex in
+theorem integrable_exp_smul {g : ℝ → ℂ} (hg : Integrable g) (ξ : ℝ) :
+    Integrable (fun v : ℝ => Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • g v) := by
+  refine Integrable.mono' hg.norm ?_ (Filter.Eventually.of_forall fun v => ?_)
+  · exact ((Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp
+      (by fun_prop : Continuous fun v : ℝ => -2 * Real.pi * v * ξ)).mul
+      continuous_const)).aestronglyMeasurable).smul hg.aestronglyMeasurable
+  · rw [norm_smul, Complex.norm_exp_ofReal_mul_I, one_mul]
+
+open FourierTransform Complex in
+theorem fourier_ofReal_eulerFactorFun (hF : Continuous F) (hFc : HasCompactSupport F)
+    (w a ξ : ℝ) :
+    𝓕 (fun x => ((eulerFactorFun w a F x : ℝ) : ℂ)) ξ
+      = (((Real.sqrt (1 + eulerLam w ^ 2))⁻¹ : ℝ) : ℂ)
+        * (((1 : ℂ) - (eulerLam w : ℂ) * Complex.exp (((2 * Real.pi * a * ξ : ℝ)) * I))
+          * 𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ) := by
+  have hGi : Integrable (fun x => ((F x : ℝ) : ℂ)) :=
+    (Complex.continuous_ofReal.comp hF).integrable_of_hasCompactSupport
+      (hFc.comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp))
+  have hGai : Integrable (fun x => ((F (x + a) : ℝ) : ℂ)) := by
+    have := hGi.comp_add_right a
+    exact this
+  have h1 := integrable_exp_smul hGi ξ
+  have h2 := integrable_exp_smul hGai ξ
+  have hpt : ∀ v : ℝ,
+      Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • ((eulerFactorFun w a F v : ℝ) : ℂ)
+        = (((Real.sqrt (1 + eulerLam w ^ 2))⁻¹ : ℝ) : ℂ)
+            * (Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • ((F v : ℝ) : ℂ))
+          - (((Real.sqrt (1 + eulerLam w ^ 2))⁻¹ * eulerLam w : ℝ) : ℂ)
+            * (Complex.exp (((-2 * Real.pi * v * ξ : ℝ)) * I) • ((F (v + a) : ℝ) : ℂ)) := by
+    intro v
+    rw [eulerFactorFun]
+    push_cast
+    ring
+  rw [Real.fourier_real_eq_integral_exp_smul,
+    MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpt),
+    MeasureTheory.integral_sub (h1.const_mul _) (h2.const_mul _),
+    MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
+    ← Real.fourier_real_eq_integral_exp_smul, ← Real.fourier_real_eq_integral_exp_smul,
+    fourier_shift (fun x => ((F x : ℝ) : ℂ)) a ξ]
+  push_cast
+  ring
+
+open FourierTransform Complex in
+theorem spectralDensity_eulerFactorFun (hF : Continuous F) (hFc : HasCompactSupport F)
+    {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) (a ξ : ℝ) :
+    spectralDensity (eulerFactorFun w a F) ξ
+      = (1 - w * Real.cos (2 * Real.pi * a * ξ)) * spectralDensity F ξ := by
+  have hspec : 2 * eulerLam w / (1 + eulerLam w ^ 2) = w := by
+    rcases eq_or_lt_of_le hw0 with rfl | hw
+    · rw [eulerLam_zero]; norm_num
+    · exact eulerLam_spec hw hw1
+  have hpos : (0:ℝ) < 1 + eulerLam w ^ 2 := by positivity
+  rw [spectralDensity, spectralDensity, fourier_ofReal_eulerFactorFun hF hFc w a ξ,
+    norm_mul, norm_mul, mul_pow, mul_pow, norm_one_sub_mul_exp_sq,
+    Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (by positivity : (0:ℝ) ≤ (Real.sqrt (1 + eulerLam w ^ 2))⁻¹)]
+  have hc2 : ((Real.sqrt (1 + eulerLam w ^ 2))⁻¹) ^ 2 = (1 + eulerLam w ^ 2)⁻¹ := by
+    rw [inv_pow, Real.sq_sqrt hpos.le]
+  rw [hc2]
+  have hkey : w * (1 + eulerLam w ^ 2) = 2 * eulerLam w := by
+    rw [div_eq_iff (ne_of_gt hpos)] at hspec
+    linarith [hspec]
+  have hX : (0:ℝ) ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ ^ 2 := by positivity
+  field_simp
+  linear_combination (Real.cos (2 * Real.pi * a * ξ) * ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ ^ 2) * hkey
+
+/-- The Euler multiplier of a weighted lag family. -/
+noncomputable def eulerMultiplier (L : List (ℝ × ℝ)) (ξ : ℝ) : ℝ :=
+  (L.map fun p => 1 - p.1 * Real.cos (2 * Real.pi * p.2 * ξ)).prod
+
+theorem eulerMultiplier_nonneg (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) (ξ : ℝ) :
+    0 ≤ eulerMultiplier L ξ := by
+  induction L with
+  | nil => simp [eulerMultiplier]
+  | cons p L ih =>
+      have hfac : 0 ≤ 1 - p.1 * Real.cos (2 * Real.pi * p.2 * ξ) := by
+        obtain ⟨h0, h1⟩ := hL p (List.mem_cons_self ..)
+        nlinarith [Real.cos_le_one (2 * Real.pi * p.2 * ξ), Real.neg_one_le_cos (2 * Real.pi * p.2 * ξ)]
+      rw [eulerMultiplier, List.map_cons, List.prod_cons, ← eulerMultiplier]
+      exact mul_nonneg hfac (ih fun q hq => hL q (List.mem_cons_of_mem _ hq))
+
+theorem contDiff_one_eulerFactorFun (hF : ContDiff ℝ 1 F) (w a : ℝ) :
+    ContDiff ℝ 1 (eulerFactorFun w a F) :=
+  contDiff_const.mul (hF.sub (contDiff_const.mul
+    (hF.comp (contDiff_id.add contDiff_const))))
+
+theorem contDiff_one_eulerComb : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, ContDiff ℝ 1 H →
+    ContDiff ℝ 1 (eulerComb L H) := by
+  intro L
+  induction L with
+  | nil => intro H hH; exact hH
+  | cons p L ih =>
+      intro H hH
+      obtain ⟨w, a⟩ := p
+      exact ih (contDiff_one_eulerFactorFun hH w a)
+
+/-- **The Euler comb acts diagonally in frequency.** -/
+
+theorem spectralDensity_eulerComb : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, Continuous H →
+    HasCompactSupport H → (∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) → ∀ ξ : ℝ,
+    spectralDensity (eulerComb L H) ξ = eulerMultiplier L ξ * spectralDensity H ξ := by
+  intro L
+  induction L with
+  | nil => intro H _ _ _ ξ; simp [eulerComb, eulerMultiplier]
+  | cons p L ih =>
+      intro H hH hHc hL ξ
+      obtain ⟨w, a⟩ := p
+      obtain ⟨hw0, hw1⟩ := hL (w, a) (List.mem_cons_self ..)
+      rw [eulerComb, ih (continuous_eulerFactorFun hH w a)
+          (hasCompactSupport_eulerFactorFun hHc w a)
+          (fun q hq => hL q (List.mem_cons_of_mem _ hq)) ξ,
+        spectralDensity_eulerFactorFun hH hHc hw0 hw1 a ξ]
+      simp only [eulerMultiplier, List.map_cons, List.prod_cons]
+      ring
+
+theorem eulerPayment_eq_integral_multiplier (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) :
+    eulerPayment L (autoCorrelation F)
+      = ∫ ξ : ℝ, (1 - eulerMultiplier L ξ) * spectralDensity F ξ := by
+  have hres := eulerPayment_residual hF.continuous hFc L hL
+  have hcombC1 : ContDiff ℝ 1 (eulerComb L F) := contDiff_one_eulerComb L hF
+  have hcombCS : HasCompactSupport (eulerComb L F) := hasCompactSupport_eulerComb L hFc
+  have hcos : ∀ (G : ℝ → ℝ), ContDiff ℝ 1 G → HasCompactSupport G →
+      autoCorrelation G 0 = ∫ ξ : ℝ, spectralDensity G ξ := by
+    intro G hG hGc
+    rw [autoCorrelation_eq_integral_spectral hG hGc 0]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    show Real.cos (2 * Real.pi * 0 * ξ) * spectralDensity G ξ = spectralDensity G ξ
+    rw [show 2 * Real.pi * 0 * ξ = 0 by ring, Real.cos_zero, one_mul]
+  have h1 : (∫ x, eulerComb L F x ^ 2) = ∫ ξ : ℝ, spectralDensity (eulerComb L F) ξ := by
+    rw [← autoCorrelation_zero_eq, hcos _ hcombC1 hcombCS]
+  have hpt : ∀ ξ : ℝ,
+      spectralDensity (eulerComb L F) ξ = eulerMultiplier L ξ * spectralDensity F ξ :=
+    spectralDensity_eulerComb L hF.continuous hFc hL
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hmi : Integrable (fun ξ : ℝ => eulerMultiplier L ξ * spectralDensity F ξ) :=
+    (integrable_spectralDensity hcombC1 hcombCS).congr
+      (Filter.Eventually.of_forall hpt)
+  have h2 : (∫ ξ : ℝ, spectralDensity (eulerComb L F) ξ)
+      = ∫ ξ : ℝ, eulerMultiplier L ξ * spectralDensity F ξ :=
+    integral_congr_ae (Filter.Eventually.of_forall hpt)
+  have hsplit : (∫ ξ : ℝ, (1 - eulerMultiplier L ξ) * spectralDensity F ξ)
+      = (∫ ξ : ℝ, spectralDensity F ξ) - ∫ ξ : ℝ, eulerMultiplier L ξ * spectralDensity F ξ := by
+    rw [← MeasureTheory.integral_sub hgi hmi]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
+  rw [hsplit, ← hcos F hF hFc, ← h2, ← h1]
+  linarith [hres]
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

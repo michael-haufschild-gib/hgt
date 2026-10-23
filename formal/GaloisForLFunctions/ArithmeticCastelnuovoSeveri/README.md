@@ -255,12 +255,29 @@ possible section theory must use near-radicals.
     (`goldenDatum_beurling_not_pure`): the selectivity against Beurling systems must come from the
     Bézout structure of the surface, as the review's typing requires.
 
-### 3.5 The contact law (`SpanContactLaw`)
+### 3.5 The contact law and the Pontryagin law over `𝔽_q` (`SpanContactLaw`,
+`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`)
 
 16. For unitary data the defect on the window of `n` Frobenius graphs is positive definite iff
     `n ≤ s`, the number of distinct eigenvalues (`toeplitz_pos_on_window_iff`); above it the radical
     contains the reduced characteristic polynomial, which is real (`exists_radical_of_lt`,
     `map_conj_reducedCharPoly`). The sections of the span are its multiples.
+16′. **The Pontryagin law over `𝔽_q`** (`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`). For
+    every curve datum, unitary or not, the complexified defect Gram of the window
+    `Γ₀, …, Γ_{n−1}` (`spanGram`; on real classes the Castelnuovo–Severi defect,
+    `hermQuad_spanGram_ofReal`) is the reflected evaluation form
+    `x*Gy = Σ_i conj(E_x(β_i)) E_y(1/β̄_i)`, `E_x = Σ_{k<n} x_k X^k` (`spanGram_sesq`): the
+    zero-configuration form of item 20‴ with `ρ ↦ 1 − ρ̄` replaced by `β ↦ 1/β̄`. Its negative
+    index is at most `#{distinct β : |β| > 1}` on every window, nondecreasing in the window, and
+    equal to it once `n ≥ #{β}`, in particular at `n = 2g` (`pontryagin_law_curve`,
+    `negIndex_spanGram_mono`); attainment interpolates `1` at `z`, `−1` at `1/z̄` and `0` on the
+    rest of the spectrum. Hence Hodge index on the window `2g` is RH for the datum
+    (`unitary_iff_negIndex_spanGram_eq_zero`), and the golden fake curve has Hodge defect exactly
+    `1` from window `2` on (`goldenDatum_negIndex_spanGram`). As over `ℚ` the defect is blind to
+    depth and multiplicity; unlike over `ℚ` its aperture is explicit: every off-circle eigenvalue,
+    clustered or not, is visible on the window `#{β} ≤ 2g`, and the hiding datum (item 15) shows
+    that shorter windows can miss it. Over `ℚ` the genus is infinite and no window holds the
+    spectrum; the degree filtration (item 20⁗) replaces the window.
 
 ### 3.6 The scaling surface, the signature law and the Pontryagin law
 (`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
@@ -495,7 +512,8 @@ possible section theory must use near-radicals.
    its degree filtration exhausts the right zeros (item 20⁗); `RHTower.zeta_weil_inertia_law`
    gives the upper horizon and a lower count for isolated visible pairs. Open: a lower count
    without isolation, i.e. the degree at which `n` arbitrary right zeros (clustered, shallow, or
-   accumulating in depth) become visible, with explicit constants.
+   accumulating in depth) become visible, with explicit constants. Over `𝔽_q` this is settled: the
+   window `#{β} ≤ 2g` sees every outer eigenvalue (item 16′).
 4. **The Kronecker law beyond the prime part.** On resonators the archimedean collar couples the
    towers through `ω(|i log p + j log q|)`; compute the full local intersection of narrow Hecke
    cycles and decide positivity of the finite-Euler-product form `ζ_p ζ_q · Γ` on lattice tests.
@@ -590,6 +608,7 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 | `TheGoldenCurveIsABeurlingSystem` | orbit counting for subshifts; the golden fake curve as a rank-one Beurling system |
 | `WittIntegralityIsNotPurity` | zeta series and ghost components, Witt splitting of the pole plane, integrality vs purity |
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
+| `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q`: span defect = #distinct eigenvalues off the circle, visible at window `2g` |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
 | `ArithmeticHodgeIndexSignatureLaw` | Gram signature law, one positive square ⟺ RH, selection of `Λ`, Pontryagin bound |

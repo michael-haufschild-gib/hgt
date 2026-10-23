@@ -1,0 +1,4 @@
+import GaloisForLFunctions.RHTower.KloostermanComposite
+
+#print axioms GaloisForLFunctions.RHTower.KloostermanComposite.kloostermanSum_mul
+#print axioms GaloisForLFunctions.RHTower.KloostermanComposite.norm_kloostermanSum_prime_pow_le

@@ -1,9 +1,9 @@
 # Does removing the periodic bias repair product smoothing?
 
 - **ID:** goldbach-compensated-product-collision-cost
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE under attack; no analytic input assumed in Lean
-- **Parent:** [product smoothing audit](../5-failed/goldbach-balanced-product-smoothing.md)
+- **Stage:** 5-failed
+- **Type:** FALSE compensated smoothing candidate; exact collision classification formalized
+- **Parent:** [product smoothing audit](goldbach-balanced-product-smoothing.md)
 - **Source:** BVI short-window transfer, followed by exact residue compensation
 
 ## Exact candidate
@@ -60,13 +60,13 @@ Combining (2) and (3),
       ≥ (1/64) Σ_(11≤p≤X/8, p prime)1/p − 32 − E_q/(4q³).  (4)
 
 For every fixed q, divergence of the prime reciprocal sum makes (4)
-diverge. This would falsify the repaired candidate more strongly than
+diverge. This falsifies the repaired candidate more strongly than
 the previous periodic obstruction.
 
 ## Proof status and remaining work
 
-The finite counting argument is recorded before formalization. Audit
-its exact cardinality/injection lemmas before assigning formalized status.
+The exact gcd-label injection, divisor-restricted nonzero count and
+zero-difference fibre classification below are now formalized.
 The source `RHTower.tendsto_primeMass_atTop` in
 `RHTower/CreaseBudgetPrimeMass.lean` was inspected: it has no premise and
 deduces divergence from mathlib's `not_summable_one_div_on_primes`.
@@ -75,11 +75,13 @@ That theorem's elementary smooth/rough counting proof in
 No prime-counting asymptotic is needed for (4). A new closure audit of this
 dependency is not claimed. The formula
 for E_q and the exact finite projection mechanism are covered by the
-preceding cycle. No Lean version of (1)–(4) is claimed yet.
+preceding cycle. The improved (1′) and exact classification (5) are Lean
+theorems. The prime-harmonic lower bound (2) and smoothing inequalities
+(3)–(4) remain dependency-closed paper corollaries, not Lean declarations.
 
-Positive survivor to extract if the attack closes: a finite arithmetic
-collision law that separates equal products from every nonzero determinant,
-with the explicit prime-harmonic diagonal lower bound. This is not a signed
+The positive survivor is a finite arithmetic collision law that separates
+equal products from every nonzero determinant. It gives the exact diagonal
+count from which the explicit prime-harmonic lower bound follows. This is not a signed
 Möbius estimate. A failure of absolute smoothing transfer calls for direct
 control of the compensated signed covariance, not another norm bound.
 
@@ -135,5 +137,29 @@ and its inverse t=n₁/b is explicit. This is a dependency-closed finite
 paper proof, with verdict BRIDGE and no scientific novelty claim.
 
 Formula (5), together with the gcd-restricted nonzero count (1′), is the
-positive classification selected for formalization. Summing its prime-row
-subfamilies recovers (2); that summation is still to be certified explicitly.
+positive classification now formalized. Summing its prime-row subfamilies
+recovers (2) on paper; that specific lower-bound summation has not been
+formalized as a separate Lean declaration.
+
+## No-go closure
+
+- **Killing mechanism:** the diagonal equal-product mass carries a
+  divergent prime reciprocal sum, while all averaged nonzero differences
+  have bounded reciprocal-divisor cost. A fixed periodic projection can
+  remove only a fixed multiple of X².
+- **Strongest positive survivor:** exact common-scale classification of
+  every diagonal fibre, together with the gcd-label injection and the
+  uniform bound `C_X(h)≤4X²Σ_(g|h)1/g` for positive h.
+- **New insight:** even after the full fixed-modulus correction, the
+  remaining squared norm divided by X² diverges. The proof works for
+  every H≥4 with q|X,H; it needs no upper bound on H. The remaining
+  useful object is a signed covariance, not a small unsigned norm.
+- **Status:** [finite survivor formalized](../3-formalized/not_new_scientific_knowledge/goldbach-balanced-product-collisions.md).
+  Leaf compilation and six closure audits passed without warnings or
+  analytic premises. The displayed asymptotic failure is a paper
+  corollary of these finite counts and the inspected prime-harmonic
+  divergence theorem.
+
+The next actual signed attack is
+[prime-dilation dispersion](../1-in-progress/goldbach-prime-dilation-dispersion.md).
+No Goldbach claim or scientific novelty claim is attached to this closure.

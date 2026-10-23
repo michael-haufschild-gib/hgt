@@ -281,6 +281,8 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.goldenDatum_beurling_not_pure",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.zetaSeries_hasGhost",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.toeplitz_pos_on_window_iff",
+            "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.pontryagin_law_curve",
+            "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.unitary_iff_negIndex_spanGram_eq_zero",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.PolarSurface.exists_effectivity_iff_hodgeIndex",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.scalingSurface_hodgeIndex_iff",
             "GaloisForLFunctions.ArithmeticCastelnuovoSeveri.riemannHypothesis_iff_one_positive_square",

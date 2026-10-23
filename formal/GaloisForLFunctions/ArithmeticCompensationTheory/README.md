@@ -260,7 +260,9 @@ are three different statements and remain visibly different here.
     `Φ(w) = ∫_{s>w} A_F(s)e^{−s/2} ds`, along the half-line with `A_F` even. A `Λ`-Lipschitz test
     supported in `[−R, R]` has `A(0) − A(s) = ½∫(F(x) − F(x+s))² ≤ Λ²s²(R + |s|)`
     (`autoCorr_zero_sub_le`), and the horizon moments are `∫u^k dμ = 2^k k!`
-    (`integral_pow_mul_horizonDensity`). On the slowly varying family this gives
+    (`integral_pow_mul_horizonDensity`). Hence `J(F) ≥ A_F(0) − Λ²(8R + 48)` for every such test
+    (`horizonEnergy_ge_of_lipschitz`): uniform coercivity on the class of unit tests with
+    `Λ²(8R + 48) < 1`. On the slowly varying family this gives
     `A_f(0) − Λ²(8/r² + 48/r³) ≤ J(F_r) ≤ A_f(0)` (`horizonEnergy_rescaledTest_ge`), and since the
     rate of mechanism 10′ has test-independent constants, the comb itself satisfies
     `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²` (`exists_combEnergy_rescaledTest_deficit_le`). For a `C¹`
@@ -521,9 +523,9 @@ that every successful route must use the same mechanism.
 4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved; on Lipschitz tests the
    comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
    10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
-   deficit is exactly `4‖f′‖²/r²` to first order (mechanism 10″). Open: the second correction and
-   its prime-error competition, and lower bounds on `J` over profile classes uniform in the
-   profile.
+   deficit is exactly `4‖f′‖²/r²` to first order, and `J(F) ≥ A_F(0) − Λ²(8R + 48)` uniformly over
+   Lipschitz tests in `[−R, R]` (mechanism 10″). Open: the second correction, and a lower bound on
+   `J` over the ledger's odd test class at fixed aperture, where the Lipschitz bound is too weak.
 5. **The compensated remainder of the full ledger.** The prime–polar residual of every ledger
    translate is bounded at the trivial exponent with the prime number theorem's saving
    `exp(−c√S)` (mechanism 6′). Open: an exponent below `½` for the complete ledger, with its even

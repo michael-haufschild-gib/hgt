@@ -43,7 +43,7 @@ divisor g is unrestricted. Thus the diagonal may exceed every averaged
 nonzero-shift contribution by a logarithmic factor.
 
 The nonzero-determinant count is pursued in the separate
-[compensated collision audit](../1-in-progress/goldbach-compensated-product-collision-cost.md).
+[compensated collision audit](goldbach-compensated-product-collision-cost.md).
 The positive survivor formalized in this cycle is the complete residue
 profile and exact smoothing-energy accounting below. No short-interval
 estimate is supplied as a premise.

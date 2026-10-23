@@ -915,11 +915,22 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         `sup_ξ S(ξ)`. This is the exact form of the resonance phenomenon of the tower laws — a
         resonant train concentrates its density where the symbol peaks, and no test does better —
         and it puts the Dirichlet-polynomial symbol of the prime band on an unconditional footing.
+      * **`fourier_shift`**, **`fourier_ofReal_eulerFactorFun`**,
+        **`spectralDensity_eulerFactorFun`**, **`eulerMultiplier`**,
+        **`eulerMultiplier_nonneg`**, **`spectralDensity_eulerComb`**,
+        **`eulerPayment_eq_integral_multiplier`** — the comb acts diagonally in frequency. A comb
+        factor multiplies `F̂` by `c(1 − λe^{2πiaξ})`, hence the spectral density by
+        `1 − w cos(2πaξ)`; an iterated comb multiplies it by the product of those factors, and the
+        payment is the deficit of that product: `Σ_j w_j A_{j−1}(a_j) = ∫(1 − ∏_j(1 − w_j
+        cos(2πa_jξ)))|F̂(ξ)|²dξ`. The admissibility ceiling `w ≤ 1` is exactly nonnegativity of
+        the multiplier, so the payment law holds for the structural reason that a nonnegative
+        multiplier cannot remove more than the whole mass — and the residual is the mass the
+        multiplier keeps.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 334 headline results of this card, in the order the card states them. Every name is a
+The 341 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -929,7 +940,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 264.**  Excluded: 41 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 270.**  Excluded: 42 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1265,6 +1276,13 @@ contributions of the field, and are excluded.
 332. `lagSymbol` *(definition)*
 333. `eulerRaw_eq_integral_symbol`
 334. `eulerRaw_le_symbol_bound`
+335. `fourier_shift`
+336. `fourier_ofReal_eulerFactorFun`
+337. `spectralDensity_eulerFactorFun`
+338. `eulerMultiplier` *(definition)*
+339. `eulerMultiplier_nonneg`
+340. `spectralDensity_eulerComb`
+341. `eulerPayment_eq_integral_multiplier`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1279,3 +1297,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — residual and strictness of the Euler comb payment; index re-audited and classical support marked.
 - 2026-10-23 — coherent decomposition of the first-power charge (ratio–product cross-charge); index tagged by the mechanical criteria rule.
 - 2026-10-23 — spectral form of the lag ledger: density integrability, cosine-transform identity, symbol capacity bound.
+- 2026-10-23 — the comb diagonalised in frequency: spectral multiplier, payment as multiplier deficit.

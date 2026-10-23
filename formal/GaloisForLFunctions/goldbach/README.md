@@ -347,3 +347,19 @@ The leaf and eleven proof closures pass without warnings or analytic
 premises. All dependencies use standard Lean foundations. The umbrella
 imports the leaf and was not built. Exact statements, paper proof and
 audit are on the [product residue card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-product-residue-profile.md).
+
+[`BalancedProductCollisions.lean`](BalancedProductCollisions.lean) retains
+the exact collision multiplicities behind that obstruction. A fixed pair
+of rows m₁,m₂ in `(X,2X]` has at most gcd(m₁,m₂) column pairs with
+product difference h, and none unless that gcd divides h. For h>0,
+
+    C_X(h) ≤ 4X² Σ_(g|h)1/g.
+
+At zero difference, with a,b the rows divided by their gcd, the column
+pairs are exactly `(bt,at)` for `X/min(a,b)<t≤2X/max(a,b)`. The module
+proves their exact count and the sum over all row pairs. Its leaf and
+six proof closures pass without warnings or analytic premises. The
+[collision card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-balanced-product-collisions.md)
+separates these Lean theorems from their paper asymptotic corollaries.
+No signed Möbius cancellation or Goldbach proof follows from the unsigned
+collision counts alone.

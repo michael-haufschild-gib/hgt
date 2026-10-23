@@ -194,6 +194,26 @@ claimed new mechanism beyond the literature.
 
 ## Remaining formal and arithmetic work
 
+The formalization uses the following stronger finite statement. There
+exist absolute `K>0` and `T0>1` such that, for `X>0`, `H>=T0`,
+`0<a<=1/2`, `u in [0,1]`, `|tau|<=H`, and a finite prime set
+satisfying `a log p<=1` for every designated prime,
+
+`|sum_(n<=X) mu(n)u^(omega_P(n))n^(-i tau)|`
+` <= X(1+1/a)^36 [K exp(-(log H)^(1/20))+(X/H)^(-a)]`.
+
+The split is at `d=X/H`. The signed prefix theorem is used only
+on `X/d>=H`; on the remaining divisors the fractional moment
+pays the tail. No assumption `H<=X` is necessary. When `H>X`,
+the head is empty and the tail factor is at least one. Taking
+`H=X^kappa` and `a=1/log y` recovers (1), with exponent `36`
+in place of the looser `45`.
+
+The imported signed-prefix capstone's transitive axiom audit
+returned only `propext`, `Classical.choice`, and `Quot.sound`.
+The new leaf is `twin-prime/RamareSmoothCofactorTransfer.lean`;
+the fractional-moment and convolution implementation is in progress.
+
 The paper proof has no open analytic dependency. Its unconditional
 Lean formalization remains outstanding. The existing corpus
 provides finite-prime summability, the reciprocal-Ramaré integral,

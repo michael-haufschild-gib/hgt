@@ -582,7 +582,7 @@ theorem exists_lt_sum_sq_div_of_window_pow {v w : ℕ → ℝ} {β κ κ' : ℝ}
     have hl : 0 < Real.log ((3 : ℕ) : ℝ) ^ (K - 1) :=
       pow_pos (Real.log_pos (by norm_num)) _
     by_contra hneg
-    push_neg at hneg
+    push Not at hneg
     have := mul_neg_of_neg_of_pos hneg hl
     linarith
   set γ := β ^ 2 * ((2 : ℝ) ^ (K - 1)) ^ 2 with hγ
@@ -683,7 +683,7 @@ theorem top_coeff_eq_zero {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (
       (∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n) ^ 2 / n ≤ C) :
     ∀ t ∈ J, q t K = 0 := by
   by_contra hne
-  push_neg at hne
+  push Not at hne
   obtain ⟨t₀, ht₀, hq₀⟩ := hne
   have hκ0 : 0 < (∑ t ∈ J, ‖q t K‖ ^ 2) / 2 := by
     have : 0 < ∑ t ∈ J, ‖q t K‖ ^ 2 :=
@@ -715,7 +715,7 @@ theorem top_coeff_eq_zero {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (
     simp only [zero_add, range_one, sum_singleton, pow_zero, one_mul] at h3
     linarith [le_abs_self C, le_abs_self (windowDefect J (q · 0))]
   · -- positive degree: the top power amplifies the window energy
-    have hw : ∀ n, 3 ≤ n → |∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n| ≤
+    have hw : ∀ n : ℕ, 3 ≤ n → |∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n| ≤
         (∑ m ∈ range K, ∑ t ∈ J, ‖q t m‖) * Real.log n ^ (K - 1) := by
       intro n hn
       have hn1 : 1 ≤ n := by omega
@@ -736,7 +736,7 @@ theorem top_coeff_eq_zero {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K : ℕ) (
     have heq : ∀ n : ℕ, ∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n =
         Real.log n ^ K * oscSum J (q · K) n +
           ∑ m ∈ range K, Real.log n ^ m * oscSum J (q · m) n :=
-      fun n => by rw [sum_range_succ, add_comm]
+      fun n => by rw [Finset.sum_range_succ, add_comm]
     simp only [heq] at h
     linarith
 
@@ -761,7 +761,7 @@ theorem coeff_eq_zero_of_bounded {J : Finset ℝ} (hJ : ∀ t ∈ J, 0 < t) (K :
         (∑ m ∈ range (K + 1), Real.log n ^ m * oscSum J (q · m) n) ^ 2 / n ≤ C := by
       intro T
       have h := hC T
-      simp only [sum_range_succ _ (K + 1), hv0, mul_zero, add_zero] at h
+      simp only [Finset.sum_range_succ _ (K + 1), hv0, mul_zero, add_zero] at h
       exact h
     intro t ht m hm
     rcases Nat.lt_or_ge m (K + 1) with hlt | hge

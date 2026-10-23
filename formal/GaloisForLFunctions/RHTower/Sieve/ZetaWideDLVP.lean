@@ -36,7 +36,6 @@ theorem neg_log_norm_riemannZeta_le_of {σ t Φ : ℝ} (hσ1 : 1 < σ)
   rw [Real.log_exp] at h
   linarith
 
-set_option maxHeartbeats 800000 in
 /-- **The de la Vallée Poussin inequality against a radius and a growth bound.** -/
 theorem dlvp_inequality_of_bound {β γ δ A R R₀ Φ : ℝ}
     (hA : ∀ σ : ℝ, 1 < σ → σ ≤ 2 →

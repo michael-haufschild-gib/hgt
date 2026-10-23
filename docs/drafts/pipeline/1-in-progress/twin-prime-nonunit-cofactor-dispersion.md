@@ -144,6 +144,16 @@ affine forms with determinant four, but growing slopes still produce
 a growing progression modulus. A fixed determinant alone does not
 remove that source of nonuniformity.
 
+The corpus's `UniformCofinalMobiusPrefixDiscrepancy.lean` was
+also checked at its exported statement and proof. Its unconditional
+`cofinal_moebius_source_prefix_sublinear` controls the signed first
+moment of `s_N(k)=sum_(d<=N,d|k) mu(d)`, with `N` and the prefix
+horizon growing independently. Its quotient-window argument uses
+unweighted Möbius prefixes. In the present covariance, the second
+shifted row remains inside those windows; the theorem supplies no
+bound for that weighted expression. No first-moment estimate is
+being promoted to a two-row correlation estimate.
+
 ## First proof obligation
 
 **[OPEN CORE]** Find a signed estimate for the complete truncated

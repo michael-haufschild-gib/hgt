@@ -649,13 +649,56 @@ only standard Lean foundations occur. See the
 [formalized survivor](../3-formalized/not_new_scientific_knowledge/goldbach-product-residue-profile.md).
 No scientific novelty or signed cancellation claim.
 
-The follow-up [compensated collision audit](goldbach-compensated-product-collision-cost.md)
+The follow-up [compensated collision audit](../5-failed/goldbach-compensated-product-collision-cost.md)
 records a stronger paper attack on removing a fixed residue profile:
 nonzero product differences have a divisor bound, while equal-product
-collisions carry a divergent prime reciprocal mass. Its finite counting
-proofs remain to be formalized. Source inspection found the unconditional
+collisions carry a divergent prime reciprocal mass. Its finite collision
+classification is formalized in Cycle 16. Source inspection found the unconditional
 prime-reciprocal divergence dependency. This does not discharge the signed
 Möbius covariance in Cycle 11 or the strict finite damping inequality.
+
+## Cycle 16: exact collision fibres and a signed dilation candidate
+
+Previous goal turn: **progress**. Cycle 15's actual product-residue laws
+and smoothing obstruction changed the verified state and exposed the
+need to retain the signed residual.
+
+The [fixed-profile smoothing repair](../5-failed/goldbach-compensated-product-collision-cost.md)
+also fails on paper. Its positive survivor is now formalized in
+[`BalancedProductCollisions.lean`](../../../../formal/GaloisForLFunctions/goldbach/BalancedProductCollisions.lean).
+For actual rows m₁,m₂ in `(X,2X]`, let g=gcd(m₁,m₂). The fibre
+`m₁n₁+h=m₂n₂` has at most g columns and is empty unless g|h.
+Consequently, for positive h,
+
+    C_X(h) ≤ Σ_(g|h) g·#{m∈(X,2X]:g|m}²
+           ≤ 4X²Σ_(g|h)1/g.
+
+At h=0, putting a=m₁/g,b=m₂/g, the complete fibre is `(bt,at)` with
+`X/min(a,b)<t≤2X/max(a,b)`. Its cardinality is exactly the corresponding
+difference of integer quotients, and the sum over all row pairs is the
+checked exact diagonal count. The nonzero constant improves the earlier
+paper bound from 8 to 4. All six closures passed direct leaf compilation
+and axiom audit without warnings or analytic premises.
+
+The prime-harmonic diagonal lower bound and divergence of the squared
+fixed-profile residual are dependency-closed paper corollaries of this
+classification, not additional Lean declarations. The
+[formalized survivor card](../3-formalized/not_new_scientific_knowledge/goldbach-balanced-product-collisions.md)
+records that distinction. No scientific novelty or signed saving claimed.
+
+The next [signed prime-dilation candidate](goldbach-prime-dilation-dispersion.md)
+uses the actual identity `μ(pr)=−μ(r)1_(p∤r)`. The inspected RH source
+`MobiusFirstPrimeDilationCancellation.lean` proves negative prime-ratio
+channels but does not control their complement. For the Goldbach product
+row, two prime dilations create `qmn−pm'n'=T(q−p)`.
+
+Candidate D specifies a finite Ramanujan correction, the archimedean
+product density and an exact weighted sum of centered dilation covariances.
+Its local tail, diagonal and weighted prime-divisor variance have explicit
+paper attacks. The unresolved core is a uniform centered nonzero-determinant
+estimate, followed by the actual Möbius progression proof closure.
+The flat balanced source is only the first signed test: restoring Cycle
+11's coefficients and predecessor marks is a separate obligation.
 
 ## Current verified state and continuation
 
@@ -681,6 +724,9 @@ Möbius covariance in Cycle 11 or the strict finite damping inequality.
   decomposition, signed pairing and square-root-window obstruction pass
   direct compilation and eleven closure audits. Ordinary absolute-norm
   smoothing transfer is retired with its positive survivor formalized.
+- Cycle 16's gcd-restricted nonzero collision bound and exact diagonal
+  fibre classification pass compilation and six closure audits. The fixed
+  periodic repair is retired with its positive classification formalized.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
@@ -694,8 +740,10 @@ Möbius covariance in Cycle 11 or the strict finite damping inequality.
   Cycle 15 keeps the complete periodic product profile. Its residual signed
   covariance remains unestimated; do not treat ordinary short-window
   Möbius mean bounds as a bound for that covariance. The compensated
-  collision card records the next exact counting audit, not a replacement
-  for the signed arithmetic input.
+  collision classification is complete. Continue with the exact centered
+  prime-dilation covariance in Cycle 16, retaining local terms, masks and
+  finite endpoints. The flat case does not supply the marked Type II
+  estimate automatically.
   Cycle 11's predecessor-mark far-slope signed covariance remains an
   alternative analytic frontier. Its Type I deduction is closed on paper. Pursue the
   original analytic argument, rather than extending the source audits
@@ -781,3 +829,9 @@ Möbius covariance in Cycle 11 or the strict finite damping inequality.
   closure audits passed without warnings or analytic premises. Recorded
   the stronger compensated collision attack on paper. Goldbach remains
   unproved; the original goal remains active.
+- 2026-10-23 — Formalized the gcd-label injection, divisor-restricted
+  nonzero product count with constant 4, and exact zero-difference fibres.
+  Leaf check and six closure audits passed without warnings or analytic
+  premises. Closed the fixed-profile norm repair with its positive survivor
+  and recorded the actual signed prime-dilation candidate. Goldbach remains
+  unproved; no scientific novelty claimed.

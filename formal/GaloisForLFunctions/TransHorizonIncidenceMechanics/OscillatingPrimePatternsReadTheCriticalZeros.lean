@@ -326,7 +326,7 @@ theorem exists_lineEnergy_le_of_majorant {c : ℕ → ℝ} {P T B₁ t₁ : ℝ}
   obtain ⟨M₂, hM₂⟩ := exists_integral_zeta_sq_rpow_le
   set Λ : ℝ := B₁ ^ 2
   have hΛ : 0 ≤ Λ := sq_nonneg _
-  refine ⟨2 * (∫ t in Ioc 0 T, g t + Λ * M₂), fun σ hσ hσ' => ?_⟩
+  refine ⟨2 * ((∫ t in Ioc 0 T, g t) + Λ * M₂), fun σ hσ hσ' => ?_⟩
   set Φ : ℝ → ℝ := lineIntegrand c P σ with hΦ
   change ∫ t : ℝ, Φ t ≤ _
   obtain ⟨hint2, hbound2⟩ := hM₂ σ hσ.le (by linarith)
@@ -392,7 +392,7 @@ theorem exists_lineEnergy_le_of_majorant {c : ℕ → ℝ} {P T B₁ t₁ : ℝ}
         measurableSet_Ioi (fun u hu => by
           have : ¬ u ≤ T := not_le.mpr hu
           simp only [G, if_neg this]), integral_const_mul]
-  have hGval : ∫ u in Ioi (0 : ℝ), G u = ∫ u in Ioc 0 T, g u +
+  have hGval : ∫ u in Ioi (0 : ℝ), G u = (∫ u in Ioc 0 T, g u) +
       Λ * ∫ u in Ioi T, ‖riemannZeta ((σ : ℂ) + u * I)‖ ^ 2 * u ^ (-(3 / 2 : ℝ)) := by
     rw [hsplit, setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
       (hGint.mono_set (by rw [hsplit]; exact subset_union_left))

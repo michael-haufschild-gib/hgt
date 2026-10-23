@@ -113,7 +113,7 @@ theorem card_balancedProductCollisionFiber_le_gcd_gate {X : ℕ}
         (Nat.gcd_dvd_right (balancedIntervalValue m₁) (balancedIntervalValue m₂))
         (balancedIntervalValue p.2)
       rw [← he] at hright
-      exact hd ((Nat.dvd_add_iff_left hleft).mp hright)
+      exact hd ((Nat.dvd_add_right hleft).mp hright)
     rw [hempty, card_empty]
 
 /-- Number of ordered balanced product pairs separated by `h`. -/
@@ -330,6 +330,18 @@ theorem card_balancedProductCollisionFiber_zero {X : ℕ} (m₁ m₂ : Fin X) :
         rw [hi, Nat.mul_div_cancel_left _ hb]
   rw [hcard]
   exact Nat.card_Ioc _ _
+
+/-- The complete equal-product mass, retaining every reduced row ratio. -/
+theorem balancedProductCollisionCount_zero (X : ℕ) :
+    balancedProductCollisionCount X 0 =
+      ∑ m₁ : Fin X, ∑ m₂ : Fin X,
+        let g := Nat.gcd (balancedIntervalValue m₂) (balancedIntervalValue m₁)
+        let a := balancedIntervalValue m₁ / g
+        let b := balancedIntervalValue m₂ / g
+        2 * X / max a b - X / min a b := by
+  unfold balancedProductCollisionCount
+  exact sum_congr rfl fun m₁ _ => sum_congr rfl fun m₂ _ =>
+    card_balancedProductCollisionFiber_zero m₁ m₂
 
 end
 

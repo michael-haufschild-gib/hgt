@@ -1,4 +1,5 @@
 import GaloisForLFunctions.goldbach.AffineProgressionConductor
+import GaloisForLFunctions.goldbach.BalancedProductCollisions
 import GaloisForLFunctions.goldbach.ParityBoundary
 import GaloisForLFunctions.goldbach.ProjectiveIntegralReturns
 import GaloisForLFunctions.goldbach.ProductResidueProfile

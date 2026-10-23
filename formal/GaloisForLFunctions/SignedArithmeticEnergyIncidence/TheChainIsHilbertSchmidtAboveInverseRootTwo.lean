@@ -327,8 +327,8 @@ theorem interpExp_bounds {η : ℝ} (h0 : 0 < η) (h2 : 1 / 2 < η ^ 2) :
   have ha : 0 < a := by positivity
   have hb : b < 1 := by have : 0 < 1 / (2 * η) := by positivity
                         linarith
-  have hλ : interpExp η = (a + b) / 2 := rfl
-  rw [hλ]
+  have hlam : interpExp η = (a + b) / 2 := rfl
+  rw [hlam]
   refine ⟨by linarith, by linarith, ?_, ?_⟩
   · have e : a * (2 * (1 + η)) = 1 := by simp only [hadef]; field_simp
     nlinarith [mul_lt_mul_of_pos_right (show a < (a + b) / 2 by linarith)
@@ -379,6 +379,185 @@ theorem interp_rpow_eq {N K η l : ℝ} (hN : 0 < N) (hK : 0 < K) :
   congr 1
   push_cast
   ring
+
+/-! ### The squared majorant -/
+
+theorem sq_rpow_eq {x a : ℝ} (hx : 0 < x) : (x ^ a) ^ 2 = x ^ (2 * a) := by
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hx.le]; push_cast; ring_nf
+
+theorem sq_inv_eq_rpow {x : ℝ} (hx : 0 < x) : (1 / x) ^ 2 = x ^ (-2 : ℝ) := by
+  rw [Real.rpow_neg hx.le, one_div, inv_pow, Real.rpow_two]
+
+theorem mul_rpow_neg_eq {x a : ℝ} (hx : 0 < x) : x * x ^ (-a) = x ^ (1 - a) := by
+  rw [mul_comm, ← Real.rpow_add_one hx.ne']; ring_nf
+
+/-- The region-wise squared majorant of the kernel (`A`: `K² ≤ N`, `B`: `K² > N`). -/
+def chainMajorant (η : ℝ) (n k : ℕ) : ℝ :=
+  3 * ((η * (1 + 1 / (1 - η) + 1 / η)) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-2 * η) *
+        ((k + 1 : ℕ) : ℝ) ^ (-2 : ℝ)) +
+      (η * (pmPowerDampedDivisorDensity η).re) ^ 2 * (((k + 1 : ℕ) : ℝ) ^ (-2 * η) *
+        ((n + 1 : ℕ) : ℝ) ^ (-2 : ℝ))) +
+  3 * (if (k + 1) * (k + 1) ≤ n + 1 then
+      8 * (1 + 1 / (1 - η) + 1 / η) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 * (η * (1 - interpExp η)))) *
+          ((k + 1 : ℕ) : ℝ) ^ (-(2 * (interpExp η * (1 + η))))) +
+        8 * (pmPowerDampedDivisorDensity η).re ^ 2 *
+          (((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) * ((n + 1 : ℕ) : ℝ) ^ (-2 : ℝ))
+    else
+      2 * (1 + (pmPowerDampedDivisorDensity η).re) ^ 2 *
+          (((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) * ((n + 1 : ℕ) : ℝ) ^ (-2 : ℝ) *
+            ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) +
+        2 * (pmPowerDampedDivisorDensity η).re ^ 2 * ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η))
+
+theorem add_sq_le_two (a b : ℝ) : (a + b) ^ 2 ≤ 2 * (a ^ 2 + b ^ 2) := by
+  nlinarith [sq_nonneg (a - b)]
+
+theorem add3_sq_le_three (a b c : ℝ) : (a + b + c) ^ 2 ≤ 3 * (a ^ 2 + b ^ 2 + c ^ 2) := by
+  nlinarith [sq_nonneg (a - b), sq_nonneg (b - c), sq_nonneg (a - c)]
+
+/-- Below the square root the floor jump is at most `2N/K²`. -/
+theorem floorJump_le_of_sq_le {n k : ℕ} (hA : (k + 1) * (k + 1) ≤ n + 1) :
+    ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) ≤
+      2 * (((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ) ^ 2) := by
+  set K : ℝ := ((k + 1 : ℕ) : ℝ) with hKdef
+  set N : ℝ := ((n + 1 : ℕ) : ℝ) with hNdef
+  have hK : 0 < K := by positivity
+  have hN : 0 < N := by positivity
+  have hK' : (0 : ℝ) < ((k + 1 + 1 : ℕ) : ℝ) := by positivity
+  have hle : (n + 1) / (k + 1 + 1) ≤ (n + 1) / (k + 1) := Nat.div_le_div_left (by omega) (by omega)
+  have ha := natDiv_le_div (n + 1) (k + 1)
+  have ha' := abs_natDiv_sub_div_le (n + 1) (k + 1 + 1) (by omega)
+  rw [abs_le] at ha'
+  have hdiff : N / K - N / ((k + 1 + 1 : ℕ) : ℝ) ≤ N / K ^ 2 := by
+    rw [div_sub_div _ _ hK.ne' hK'.ne', div_le_div_iff₀ (by positivity) (by positivity)]
+    have hK'e : ((k + 1 + 1 : ℕ) : ℝ) = K + 1 := by simp only [hKdef]; push_cast; ring
+    rw [hK'e]; nlinarith [mul_pos hN hK]
+  have h1' : 1 ≤ N / K ^ 2 := by
+    rw [le_div_iff₀ (by positivity), one_mul]
+    simp only [hKdef, hNdef]; exact_mod_cast (by nlinarith : (k + 1) ^ 2 ≤ n + 1)
+  push_cast [hle]
+  linarith [ha'.1]
+
+/-- Region `K² ≤ N`: interpolate the short-interval bound. -/
+theorem regionA_sq_le {N K J C₁ ρ η l : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J)
+    (hJA : J ≤ 2 * (N / K ^ 2)) (hC₁ : 1 ≤ C₁) (hρ0 : 0 < ρ) (hl0 : 0 ≤ l) (hl1 : l ≤ 1) :
+    (K ^ (1 - η) / N * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2))) ^ 2 ≤
+      8 * C₁ ^ 2 * (N ^ (-(2 * (η * (1 - l)))) * K ^ (-(2 * (l * (1 + η))))) +
+        8 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ)) := by
+  have hm := min_le_rpow_mul_rpow (x := N / K ^ 2) (y := (N / K) ^ (1 - η))
+    (by positivity) (by positivity) hl0 hl1
+  have hD3 : min J (2 * C₁ * (N / K) ^ (1 - η)) ≤
+      2 * C₁ * ((N / K ^ 2) ^ l * ((N / K) ^ (1 - η)) ^ (1 - l)) := by
+    have h2 : J ≤ 2 * C₁ * (N / K ^ 2) := by
+      have : 0 ≤ N / K ^ 2 := by positivity
+      nlinarith
+    calc min J (2 * C₁ * (N / K) ^ (1 - η))
+        ≤ min (2 * C₁ * (N / K ^ 2)) (2 * C₁ * (N / K) ^ (1 - η)) := min_le_min_right _ h2
+      _ = 2 * C₁ * min (N / K ^ 2) ((N / K) ^ (1 - η)) := by
+          rw [mul_min_of_nonneg _ _ (by positivity)]
+      _ ≤ _ := mul_le_mul_of_nonneg_left hm (by positivity)
+  have hp : 0 ≤ K ^ (1 - η) / N := by positivity
+  have hx : K ^ (1 - η) / N * min J (2 * C₁ * (N / K) ^ (1 - η)) ≤
+      2 * C₁ * (N ^ (-(η * (1 - l))) * K ^ (-(l * (1 + η)))) := by
+    calc _ ≤ K ^ (1 - η) / N * (2 * C₁ * ((N / K ^ 2) ^ l * ((N / K) ^ (1 - η)) ^ (1 - l))) :=
+          mul_le_mul_of_nonneg_left hD3 hp
+      _ = 2 * C₁ * (K ^ (1 - η) / N * ((N / K ^ 2) ^ l * ((N / K) ^ (1 - η)) ^ (1 - l))) := by ring
+      _ = _ := by rw [interp_rpow_eq hN hK]
+  have hy : K ^ (1 - η) / N * (ρ * min 2 (J + N / K ^ 2)) ≤ 2 * ρ * (K ^ (1 - η) / N) := by
+    have h := mul_le_mul_of_nonneg_left (min_le_left (2 : ℝ) (J + N / K ^ 2)) hρ0.le
+    calc _ ≤ K ^ (1 - η) / N * (ρ * 2) := mul_le_mul_of_nonneg_left h hp
+      _ = _ := by ring
+  have hx0 : 0 ≤ K ^ (1 - η) / N * min J (2 * C₁ * (N / K) ^ (1 - η)) :=
+    mul_nonneg hp (le_min hJ0 (by positivity))
+  have hy0 : 0 ≤ K ^ (1 - η) / N * (ρ * min 2 (J + N / K ^ 2)) :=
+    mul_nonneg hp (mul_nonneg hρ0.le (le_min (by norm_num) (by positivity)))
+  have ex : (2 * C₁ * (N ^ (-(η * (1 - l))) * K ^ (-(l * (1 + η))))) ^ 2 =
+      4 * C₁ ^ 2 * (N ^ (-(2 * (η * (1 - l)))) * K ^ (-(2 * (l * (1 + η))))) := by
+    rw [mul_pow, mul_pow, sq_rpow_eq hN, sq_rpow_eq hK]; ring_nf
+  have ey : (2 * ρ * (K ^ (1 - η) / N)) ^ 2 = 4 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ)) := by
+    rw [mul_pow, div_eq_mul_one_div, mul_pow, sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+  have hsum := add_sq_le_two (K ^ (1 - η) / N * min J (2 * C₁ * (N / K) ^ (1 - η)))
+    (K ^ (1 - η) / N * (ρ * min 2 (J + N / K ^ 2)))
+  have hxx := pow_le_pow_left₀ hx0 hx 2
+  have hyy := pow_le_pow_left₀ hy0 hy 2
+  rw [ex] at hxx
+  rw [ey] at hyy
+  rw [mul_add]
+  linarith
+
+/-- Region `K² > N`: at most one jump. -/
+theorem regionB_sq_le {N K J C₁ ρ η : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J) (hJB : J ≤ 1)
+    (hρ0 : 0 < ρ) :
+    (K ^ (1 - η) / N * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2))) ^ 2 ≤
+      2 * (1 + ρ) ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ) * J) +
+        2 * ρ ^ 2 * K ^ (-2 - 2 * η) := by
+  have hp : 0 ≤ K ^ (1 - η) / N := by positivity
+  have hD3 : min J (2 * C₁ * (N / K) ^ (1 - η)) ≤ J := min_le_left _ _
+  have hD4 : min 2 (J + N / K ^ 2) ≤ J + N / K ^ 2 := min_le_right _ _
+  have hKK : K ^ (1 - η) / N * (N / K ^ 2) = K ^ (-1 - η) := by
+    have : K ^ (1 - η) / K ^ 2 = K ^ (-1 - η) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_sub hK]; push_cast; ring_nf
+    rw [← this]; field_simp
+  have hb : K ^ (1 - η) / N * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2)) ≤
+      (1 + ρ) * (K ^ (1 - η) / N * J) + ρ * K ^ (-1 - η) := by
+    have h1 := mul_le_mul_of_nonneg_left hD3 hp
+    have h2 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hD4 hρ0.le) hp
+    have e : K ^ (1 - η) / N * (ρ * (J + N / K ^ 2)) =
+        ρ * (K ^ (1 - η) / N * J) + ρ * (K ^ (1 - η) / N * (N / K ^ 2)) := by ring
+    rw [hKK] at e
+    nlinarith
+  have hb0 : 0 ≤ K ^ (1 - η) / N *
+      (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2)) := by
+    refine mul_nonneg hp (add_nonneg ?_ (mul_nonneg hρ0.le ?_))
+    · exact le_min hJ0 (by positivity)
+    · exact le_min (by norm_num) (by positivity)
+  have hJsq : (K ^ (1 - η) / N * J) ^ 2 ≤ K ^ (2 - 2 * η) * N ^ (-2 : ℝ) * J := by
+    have hJJ : J ^ 2 ≤ J := by nlinarith
+    have ex : (K ^ (1 - η) / N) ^ 2 = K ^ (2 - 2 * η) * N ^ (-2 : ℝ) := by
+      rw [div_eq_mul_one_div, mul_pow, sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+    rw [mul_pow, ex]
+    exact mul_le_mul_of_nonneg_left hJJ (by positivity)
+  have ey : (K ^ (-1 - η)) ^ 2 = K ^ (-2 - 2 * η) := by rw [sq_rpow_eq hK]; ring_nf
+  have hsq := pow_le_pow_left₀ hb0 hb 2
+  have h2 := add_sq_le_two ((1 + ρ) * (K ^ (1 - η) / N * J)) (ρ * K ^ (-1 - η))
+  rw [mul_pow, mul_pow, ey] at h2
+  nlinarith [mul_le_mul_of_nonneg_left hJsq (sq_nonneg (1 + ρ))]
+
+/-- **The kernel is dominated by its majorant** for `½ < η²` and `η < 1`. -/
+theorem sq_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 1 / 2 < η ^ 2)
+    (n k : ℕ) : arithmeticDampingCenteredRow η n k ^ 2 ≤ chainMajorant η n k := by
+  have hK : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
+  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hρ0 := RHTower.pmPowerDampedDivisorDensity_re_pos h0
+  have hC₁ : 1 ≤ 1 + 1 / (1 - η) + 1 / η := by
+    have : 0 < 1 - η := by linarith
+    have : 0 ≤ 1 / (1 - η) + 1 / η := by positivity
+    linarith
+  obtain ⟨hl0, hl1, -, -⟩ := interpExp_bounds h0 h2
+  have hJ0 : (0 : ℝ) ≤ ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) := Nat.cast_nonneg _
+  have hmaj := abs_centeredRow_le_majorant h0 h1 n k
+  rw [div_mul_eq_mul_div, mul_rpow_neg_eq hK] at hmaj
+  have hsq := (pow_le_pow_left₀ (abs_nonneg _) hmaj 2).trans (add3_sq_le_three _ _ _)
+  rw [sq_abs] at hsq
+  have e1 : (η * (1 + 1 / (1 - η) + 1 / η) * ((n + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ)) ^ 2 =
+      (η * (1 + 1 / (1 - η) + 1 / η)) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-2 * η) *
+        ((k + 1 : ℕ) : ℝ) ^ (-2 : ℝ)) := by
+    rw [div_eq_mul_one_div, mul_pow, mul_pow, sq_rpow_eq hN, sq_inv_eq_rpow hK]; ring_nf
+  have e2 : (η * (pmPowerDampedDivisorDensity η).re * ((k + 1 : ℕ) : ℝ) ^ (-η) /
+      ((n + 1 : ℕ) : ℝ)) ^ 2 = (η * (pmPowerDampedDivisorDensity η).re) ^ 2 *
+        (((k + 1 : ℕ) : ℝ) ^ (-2 * η) * ((n + 1 : ℕ) : ℝ) ^ (-2 : ℝ)) := by
+    rw [div_eq_mul_one_div, mul_pow, mul_pow, sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+  rw [e1, e2] at hsq
+  unfold chainMajorant
+  split_ifs with hA
+  · have hR := regionA_sq_le (η := η) (C₁ := 1 + 1 / (1 - η) + 1 / η)
+      (ρ := (pmPowerDampedDivisorDensity η).re) (l := interpExp η) hN hK hJ0
+      (floorJump_le_of_sq_le hA) hC₁ hρ0 hl0.le hl1.le
+    linarith
+  · have hJB : ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) ≤ 1 := by
+      have := div_sub_div_succ_le_one (N := n + 1) (K := k + 1) (by push Not at hA; omega)
+      exact_mod_cast this
+    have hR := regionB_sq_le (η := η) (C₁ := 1 + 1 / (1 - η) + 1 / η) hN hK hJ0 hJB hρ0
+    linarith
 
 end
 

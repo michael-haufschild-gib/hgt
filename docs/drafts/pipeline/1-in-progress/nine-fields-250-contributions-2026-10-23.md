@@ -14,7 +14,7 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 8 / 250
+## Accepted contributions: 9 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
 2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
@@ -24,6 +24,7 @@ Missing dependency oleans are built one at a time with `lake --old env lean -o` 
 6. THIM — critical Wiener perturbations of the smooth power have uniformly paid rows (candidate 6).
 7. THIM / RH route — the oscillating smooth power is paid exactly at the zeros of ζ (candidate 7).
 8. THIM / RH route — the log-twisted oscillating power is paid exactly at the double zeros of ζ (candidate 8).
+9. THIM / RH route — the receiver reads the zero divisor of ζ on the oscillating spectrum (candidate 9).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -149,6 +150,27 @@ if `a = 0 ≠ b` the harmonic energy of `Re(b n^{it})` diverges.
 `receiverBounded_logOscillatingSmoothPower_iff`, `receiverBounded_logOscillatingSmoothPower_half_iff`,
 `forall_simple_zero_iff_forall_not_receiverBounded`). Status: compiled, axioms `propext`,
 `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
+
+## Candidate 9 (THIM, RH route): the receiver reads the zero divisor of ζ on the oscillating spectrum
+
+**Theorem (proved).** Fix `0 < ε ≤ 1/2`, a finite set `J` of positive frequencies and `p(t,k) ∈ ℂ`,
+`k ≤ K`. The receiver of `Σ_{t∈J} Σ_{k≤K} Re(p(t,k) d^{ρ_t−1}(log d)^k)`, `ρ_t = 1 − ε + it`, is bounded
+⇔ for every `t ∈ J` and `k` with `p(t,k) ≠ 0`, `ζ^{(i)}(ρ_t) = 0` for all `i ≤ k`. Frequencies do not
+interact; at each frequency the paid log-polynomials are those of degree below the multiplicity of
+`ρ_t`; `d^{-ε}cos(t log d)(log d)^k` is paid ⇔ `ord_{ρ_t} ζ > k`. Contains contributions 7 and 8 as the
+cases `k = 0, 1`. Mechanism: Taylor expansion of the floor sum in the exponent (Leibniz on
+`(ζ/id)·n^ρ`, Cauchy's estimate `k! K (2/ε)^k (√n)^{1−ε/2}` for `∂^k R_n`), a triangular coefficient
+matrix `q(t,m) = Σ_{k≥m} p(t,k)C(k,m)(ζ/id)^{(k−m)}(ρ_t)`, multi-frequency window orthogonality
+(cross frequencies `t ± s ≠ 0` have bounded harmonic sums) and descent in the log-degree on the
+windows `N < n ≤ N²`.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheReceiverReadsTheZeroDivisorOfZetaOnTheOscillatingSpectrum.lean`
+(`sum_logPower_floor_sub_eq`, `abs_weightCenteredPrefix_oscillatingLogPolynomial_sub_le`,
+`forall_coeff_eq_zero_iff`, `sum_Ioc_oscSum_sq_div_ge`, `exists_lt_sum_sq_div_of_window_pow`,
+`coeff_eq_zero_of_bounded`, `receiverBounded_oscillatingLogPolynomial_iff`,
+`receiverBounded_logPowerCosine_iff`); `norm_iteratedDeriv_floorRemainder_le` added to the
+contribution-8 module. Status: compiled, axioms `propext`, `Classical.choice`, `Quot.sound`; wired
+into the THIM umbrella.
 
 ## Checked and not pursued
 

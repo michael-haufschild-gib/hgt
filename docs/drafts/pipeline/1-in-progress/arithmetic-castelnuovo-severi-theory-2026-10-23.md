@@ -93,6 +93,10 @@ survivor).
 - `TheGoldenCurveIsABeurlingSystem`: `goldenDatum_beurling_not_pure` (rank-one Beurling system with
   positive integral prime counts, integral zeta, FE, violating purity).
 
+- `TheFrobeniusSpanDefectCountsTheOuterEigenvalues`: `pontryagin_law_curve` (Pontryagin law over
+  `𝔽_q`: span defect = #distinct `|β| > 1`, exact at window `≥ #{β}`),
+  `unitary_iff_negIndex_spanGram_eq_zero`, `goldenDatum_negIndex_spanGram`.
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

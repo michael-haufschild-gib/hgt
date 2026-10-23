@@ -380,7 +380,8 @@ theorem horizonEnergy_ge_of_lipschitz {F : ℝ → ℝ} {Λ R : ℝ} (hR : 0 ≤
     rw [integral_const_mul, integral_add ((integrableOn_pow_mul_horizonDensity 2).const_mul R)
       (integrableOn_pow_mul_horizonDensity 3), integral_const_mul,
       integral_pow_mul_horizonDensity 2, integral_pow_mul_horizonDensity 3]
-    norm_num [Nat.factorial]
+    simp only [Nat.factorial]
+    push_cast
     ring
   have hJ : horizonEnergy F = autoCorr F 0 -
       ∫ u in Ioi (0 : ℝ), (autoCorr F 0 - autoCorr F u) * horizonDensity u := by

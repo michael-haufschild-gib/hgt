@@ -39,7 +39,6 @@ theorem two_mul_lt_tsum_of_conj_invariant
   rw [hfinite] at hle
   nlinarith [hpos r]
 
-set_option maxHeartbeats 800000 in
 /-- Strict Holder ceiling for any positive Xi-divisor spectral coordinates satisfying the
 atomwise sector law. -/
 theorem strict_sixth_spectral_ceiling_of_schwarz_atoms
@@ -161,8 +160,10 @@ theorem strict_sixth_spectral_ceiling_of_schwarz_atoms
       _ < ∑' q, (∑' r, a r) * a q := by
         apply hsa2scale.tsum_lt_tsum (i := q0)
         · intro q
-          convert mul_le_mul_of_nonneg_right (hpair q).le (ha q).le using 1 <;> ring
-        · convert mul_lt_mul_of_pos_right (hpair q0) (ha q0) using 1 <;> ring
+          convert mul_le_mul_of_nonneg_right (hpair q).le (ha q).le using 1
+          ring
+        · convert mul_lt_mul_of_pos_right (hpair q0) (ha q0) using 1
+          ring
         · exact hsascale
       _ = (∑' q, a q) ^ 2 := by
         rw [hsa.tsum_mul_left]
