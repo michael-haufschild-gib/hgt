@@ -92,7 +92,7 @@ valid.
 - [x] `RHTower/GammaPrimeHybridEulerWeierstrassFredholmUniversalityLaw.lean` (depth 6, 1)
 - [x] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` (depth 6, 12)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor.lean` (depth 6, 2)
-- [ ] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)
+- [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)
 - [ ] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` (depth 6, 1)
 - [ ] `RHTower/Sieve/ZetaWideBand.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureAreaRigidity.lean` (depth 6, 1)
@@ -510,7 +510,7 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean` — direct monotonicity and narrowed arithmetic; check and build passed.
 - [x] `RHTower/Sieve/MultiplicativeEulerBound.lean` — direct norm comparison and narrowed arithmetic; check and build passed.
 - [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` — narrowed tail-bound arithmetic; check and build passed.
-- `RHTower/Sieve/RouteTZetaInverseBound.lean`
+- [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` — narrowed logarithmic bounds; check and build passed.
 - `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean`
 - `RHTower/Sieve/ZetaWideBand.lean`
 - `RHTower/Sieve/ZetaWideRectangle.lean`

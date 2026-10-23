@@ -258,7 +258,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
             + (3 * (K : ℝ)) ^ (1 + 2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
                 * (1 + (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) / (1 + |τ|)) :=
       mul_le_mul_of_nonneg_left (add_le_add hcomp1 hcomp2) hC.le
-    exact add_le_add_right hmul _
+    exact add_le_add hmul le_rfl
   refine norm_sum_primeTwist_le_of_monotone_bound τ N
     (fun m => routeTTwistEnvelope A delta C τ (max (m : ℝ) 1) + 7 * Real.exp 9) ?_ ?_
   · intro m _
@@ -281,6 +281,6 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       exact max_le_max hcast le_rfl
     have hmono := routeTTwistEnvelope_mono (A := A) (delta := delta) (C := C) (τ := τ)
       hdelta hC.le hmax1 hmm
-    exact add_le_add_right hmono _
+    exact add_le_add hmono le_rfl
 
 end RHTower.Sieve

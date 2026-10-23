@@ -811,6 +811,20 @@ theorem ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector
   exact ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero
     hf hfc hcosh hint2 (by omega) hN0 hN hblind hpos_l2
 
+private theorem eq_zero_of_integral_sq_eq_zero {f : ℝ → ℝ}
+    (hf : Continuous f) (hfc : HasCompactSupport f) (hint0 : (∫ x, f x ^ 2) = 0) (x : ℝ) :
+    f x = 0 := by
+  have hcont : Continuous (fun u : ℝ => f u ^ 2) := hf.pow 2
+  have hsupp : HasCompactSupport (fun u : ℝ => f u ^ 2) := by
+    simpa only [sq] using (hfc.mul_right (f' := f))
+  have hint : Integrable (fun u : ℝ => f u ^ 2) volume :=
+    hcont.integrable_of_hasCompactSupport hsupp
+  have hae : (fun u : ℝ => f u ^ 2) =ᵐ[volume] 0 :=
+    (integral_eq_zero_iff_of_nonneg (fun u => sq_nonneg (f u)) hint).mp hint0
+  have hfun : (fun u : ℝ => f u ^ 2) = 0 :=
+    (Continuous.ae_eq_iff_eq volume hcont continuous_zero).mp hae
+  exact sq_eq_zero_iff.mp (congrFun hfun x)
+
 /-- **The `99/4` Prime-Blind Section Vanishing Theorem:**
 If `f ∈ C²_c(ℝ)` is prime-blind (`logVector (realWeilTestFn f hf hfc) = 0`), has vanishing even
 pole moment (`coshHalfMoment f = 0`), and has spectral second moment at most `(99/4) ∫ f²`
@@ -833,16 +847,8 @@ theorem primeBlind_eq_zero_of_spectralSecondMoment_le_ninety_nine_fourths
       ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero_unconditional
         hf hfc hcosh hint2 hlog hpos'
     rw [integral_norm_realWeilTestFn_sq hf hfc] at hlt
-    linarith
-  refine ⟨hl2_zero, fun x => ?_⟩
-  have hint : Integrable (fun u : ℝ => f u ^ 2) volume :=
-    (hf.continuous.pow 2).integrable_of_hasCompactSupport
-      (HasCompactSupport.comp_left (g := fun x : ℝ => x ^ 2) hfc (sq_eq_zero_iff.mpr rfl))
-  have hae : (fun u : ℝ => f u ^ 2) =ᵐ[volume] 0 :=
-    (integral_eq_zero_iff_of_nonneg (fun u => sq_nonneg (f u)) hint).mp hl2_zero
-  have hfun : (fun u : ℝ => f u ^ 2) = 0 :=
-    Continuous.ae_eq_iff_eq volume (hf.continuous.pow 2) continuous_zero |>.mp hae
-  exact sq_eq_zero_iff.mp (congrFun hfun x)
+    exact lt_irrefl _ (lt_of_lt_of_le hlt hspec)
+  exact ⟨hl2_zero, eq_zero_of_integral_sq_eq_zero hf.continuous hfc hl2_zero⟩
 
 /-- **The `69/2` Prime-Blind Section Vanishing Theorem:**
 If `f ∈ C²_c(ℝ)` is prime-blind (`logVector (realWeilTestFn f hf hfc) = 0`), has vanishing even
@@ -866,16 +872,8 @@ theorem primeBlind_eq_zero_of_spectralSecondMoment_le_sixty_nine_halves
       sixty_nine_halves_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero_unconditional
         hf hfc hcosh hint2 hlog hpos'
     rw [integral_norm_realWeilTestFn_sq hf hfc] at hlt
-    linarith
-  refine ⟨hl2_zero, fun x => ?_⟩
-  have hint : Integrable (fun u : ℝ => f u ^ 2) volume :=
-    (hf.continuous.pow 2).integrable_of_hasCompactSupport
-      (HasCompactSupport.comp_left (g := fun x : ℝ => x ^ 2) hfc (sq_eq_zero_iff.mpr rfl))
-  have hae : (fun u : ℝ => f u ^ 2) =ᵐ[volume] 0 :=
-    (integral_eq_zero_iff_of_nonneg (fun u => sq_nonneg (f u)) hint).mp hl2_zero
-  have hfun : (fun u : ℝ => f u ^ 2) = 0 :=
-    Continuous.ae_eq_iff_eq volume (hf.continuous.pow 2) continuous_zero |>.mp hae
-  exact sq_eq_zero_iff.mp (congrFun hfun x)
+    exact lt_irrefl _ (lt_of_lt_of_le hlt hspec)
+  exact ⟨hl2_zero, eq_zero_of_integral_sq_eq_zero hf.continuous hfc hl2_zero⟩
 
 /-- **Prime-Blind Subspace Dimension Vanishing (`finrank_primeBlind_subspace_eq_zero`):**
 Any `ℝ`-subspace `W ⊆ (ℝ → ℝ)` whose elements are `C²_c(ℝ)` prime-blind tests with vanishing even

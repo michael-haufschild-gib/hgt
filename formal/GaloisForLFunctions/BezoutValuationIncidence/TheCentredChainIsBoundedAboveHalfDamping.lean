@@ -161,7 +161,8 @@ private theorem sq_lt_of_large_divisor_row {N K j d : ℕ} (hK : 1 ≤ K)
   set q := N / K
   set r := N / (K + 1)
   have hrq : r ≤ q := Nat.div_le_div_left (by omega) hK
-  have h1 : N < (q + 1) * K := by have := Nat.lt_div_mul_add (a := N) hK; nlinarith
+  have h1 : N < (q + 1) * K := by
+    have := Nat.lt_div_mul_add (a := N) hK; rw [add_mul, one_mul]; exact this
   have h2 : r * (K + 1) ≤ N := Nat.div_mul_le_self N (K + 1)
   have hjK : j * K ≤ N := (Nat.le_div_iff_mul_le hK).mp hj2
   have hNd : N < d * (K * (K + 1)) := by
@@ -175,8 +176,14 @@ private theorem sq_lt_of_large_divisor_row {N K j d : ℕ} (hK : 1 ≤ K)
       nlinarith
     calc N < (q - r + 1) * (K * (K + 1)) := hlt
       _ ≤ d * (K * (K + 1)) := Nat.mul_le_mul_right _ hd'
-  have hK2 : K * (K + 1) ≤ 2 * (K * K) := by nlinarith
-  have hN2 : N < 2 * d * (K * K) := by nlinarith
+  have hK2 : K * (K + 1) ≤ 2 * (K * K) := by
+    have : K ≤ K * K := Nat.le_mul_self K
+    calc K * (K + 1) = K * K + K := by ring
+      _ ≤ K * K + K * K := Nat.add_le_add_left this _
+      _ = 2 * (K * K) := by ring
+  have hN2 : N < 2 * d * (K * K) := lt_of_lt_of_le hNd (by
+    calc d * (K * (K + 1)) ≤ d * (2 * (K * K)) := Nat.mul_le_mul_left d hK2
+      _ = 2 * d * (K * K) := by ring)
   have hNpos : 0 < N := by omega
   have : j ^ 2 * N < 2 * d * N * N := by
     calc j ^ 2 * N < j ^ 2 * (2 * d * (K * K)) := by
@@ -211,7 +218,7 @@ theorem sum_range_largeDivisorSum_le {η : ℝ} (hη : 1 / 2 < η) (n : ℕ) :
     sum_le_sum_of_subset_of_nonneg (Ioc_subset_Ioc_left (Nat.zero_le _)) fun j _ _ => hG0 j
   -- swap to divisors
   have hswap : ∑ j ∈ Ioc 0 N, G j =
-      ∑ d ∈ Icc 1 N, ∑ _j ∈ Ioc 0 N with d ∣ j ∧ j ^ 2 < 2 * d * N, (d : ℝ) ^ (-η) := by
+      ∑ d ∈ Icc 1 N, ∑ j ∈ Ioc 0 N with d ∣ j ∧ j ^ 2 < 2 * d * N, (d : ℝ) ^ (-η) := by
     refine sum_comm' fun j d => ?_
     simp only [mem_Ioc, mem_filter, Nat.mem_divisors, mem_Icc]
     constructor
@@ -220,7 +227,7 @@ theorem sum_range_largeDivisorSum_le {η : ℝ} (hη : 1 / 2 < η) (n : ℕ) :
         (Nat.le_of_dvd hj0 hdj).trans hjN⟩
     · rintro ⟨⟨⟨hj0, hjN⟩, hdj, hsq⟩, -, -⟩
       exact ⟨⟨hj0, hjN⟩, ⟨hdj, by omega⟩, hsq⟩
-  have hcount : ∑ d ∈ Icc 1 N, ∑ _j ∈ Ioc 0 N with d ∣ j ∧ j ^ 2 < 2 * d * N, (d : ℝ) ^ (-η) ≤
+  have hcount : ∑ d ∈ Icc 1 N, ∑ j ∈ Ioc 0 N with d ∣ j ∧ j ^ 2 < 2 * d * N, (d : ℝ) ^ (-η) ≤
       Real.sqrt 2 * Real.sqrt N * ∑ d ∈ Icc 1 N, (d : ℝ) ^ (-(1 / 2 + η)) := by
     rw [mul_sum]
     refine sum_le_sum fun d hd => ?_

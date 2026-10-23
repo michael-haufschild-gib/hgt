@@ -447,12 +447,12 @@ def strictL2SourceCone (c : ℝ) (V : Submodule ℝ realTests) : Set (ℝ × ℝ
   (scalingSubsurface V).strictSourceCone (l2SourceEnergy c V)
 
 theorem scalingSubsurface_pair_H (V : Submodule ℝ realTests) (x : ℝ × ℝ × V) :
-    (scalingSubsurface V).pair x (scalingSubsurface V).H = x.2.1 + poleB x.2.2.1.1 := by
-  simpa [scalingSubsurface] using scalingSurface_pair_H (x.1, x.2.1, x.2.2.1)
+    (scalingSubsurface V).pair x (scalingSubsurface V).H = x.2.1 + poleB x.2.2.1.1 :=
+  scalingSurface_pair_H (x.1, x.2.1, x.2.2.1)
 
 theorem scalingSubsurface_pair_V (V : Submodule ℝ realTests) (x : ℝ × ℝ × V) :
-    (scalingSubsurface V).pair x (scalingSubsurface V).V = x.1 + poleA x.2.2.1.1 := by
-  simpa [scalingSubsurface] using scalingSurface_pair_V (x.1, x.2.1, x.2.2.1)
+    (scalingSubsurface V).pair x (scalingSubsurface V).V = x.1 + poleA x.2.2.1.1 :=
+  scalingSurface_pair_V (x.1, x.2.1, x.2.2.1)
 
 /-- **Explicit Source Characterization of `l2SourceCone c V`:**
 Membership in `l2SourceCone c V` is determined purely by the source data
@@ -557,16 +557,17 @@ theorem integral_mul_sq_le_of_mem_realTests {f g : ℝ → ℝ}
     intro t
     have hnonneg : 0 ≤ ∫ u : ℝ, (f u + t * g u) ^ 2 :=
       integral_nonneg fun u => sq_nonneg (f u + t * g u)
-    have hexp : (fun u : ℝ => (f u + t * g u) ^ 2) =
-        fun u => f u ^ 2 + (2 * t) * (f u * g u) + (t * t) * g u ^ 2 := by
-      ext u; ring
+    have hexp : ∀ u : ℝ, (f u + t * g u) ^ 2 =
+        (f u ^ 2 + (2 * t) * (f u * g u)) + (t * t) * g u ^ 2 := fun u => by ring
     have hint1 : Integrable (fun u : ℝ => f u ^ 2) := integrable_sq_of_mem_realTests hf
     have hint2 : Integrable (fun u : ℝ => (2 * t) * (f u * g u)) :=
       (integrable_mul_of_mem_realTests hf hg).const_mul (2 * t)
     have hint3 : Integrable (fun u : ℝ => (t * t) * g u ^ 2) :=
       (integrable_sq_of_mem_realTests hg).const_mul (t * t)
-    rw [hexp, integral_add (hint1.add hint2) hint3, integral_add hint1 hint2,
-      integral_const_mul, integral_const_mul] at hnonneg
+    rw [integral_congr_ae (Eventually.of_forall hexp),
+      integral_add (f := fun u => f u ^ 2 + (2 * t) * (f u * g u))
+        (g := fun u => (t * t) * g u ^ 2) (hint1.add hint2) hint3,
+      integral_add hint1 hint2, integral_const_mul, integral_const_mul] at hnonneg
     linarith
   have hd := discrim_le_zero hquad
   rw [discrim] at hd
@@ -581,7 +582,7 @@ theorem l2SourceCone_add {c : ℝ} (hc : 0 ≤ c) (V : Submodule ℝ realTests)
   rw [l2SourceCone, S.mem_sourceCone_iff, S.polar_self] at hx hy ⊢
   rcases hx with ⟨hxH, hxV, hxE⟩
   rcases hy with ⟨hyH, hyV, hyE⟩
-  simp only [map_add]
+  rw [S.pair_add_left, S.pair_add_left]
   refine ⟨by linarith, by linarith, ?_⟩
   let f : ℝ → ℝ := x.2.2.1.1
   let g : ℝ → ℝ := y.2.2.1.1
@@ -589,18 +590,20 @@ theorem l2SourceCone_add {c : ℝ} (hc : 0 ≤ c) (V : Submodule ℝ realTests)
   have hg : g ∈ realTests := y.2.2.1.2
   have hfg_int : ∫ u : ℝ, ((x + y).2.2.1.1 u) ^ 2 =
       (∫ u : ℝ, f u ^ 2) + 2 * (∫ u : ℝ, f u * g u) + (∫ u : ℝ, g u ^ 2) := by
-    have hexp : (fun u : ℝ => ((x + y).2.2.1.1 u) ^ 2) =
-        fun u => f u ^ 2 + 2 * (f u * g u) + g u ^ 2 := by
-      ext u
-      change (f u + g u) ^ 2 = f u ^ 2 + 2 * (f u * g u) + g u ^ 2
+    have hexp : ∀ u : ℝ, ((x + y).2.2.1.1 u) ^ 2 =
+        (f u ^ 2 + 2 * (f u * g u)) + g u ^ 2 := fun u => by
+      change (f u + g u) ^ 2 = (f u ^ 2 + 2 * (f u * g u)) + g u ^ 2
       ring
     have hint1 : Integrable (fun u : ℝ => f u ^ 2) := integrable_sq_of_mem_realTests hf
     have hint2 : Integrable (fun u : ℝ => 2 * (f u * g u)) :=
       (integrable_mul_of_mem_realTests hf hg).const_mul 2
     have hint3 : Integrable (fun u : ℝ => g u ^ 2) := integrable_sq_of_mem_realTests hg
-    rw [hexp, integral_add (hint1.add hint2) hint3, integral_add hint1 hint2, integral_const_mul]
+    rw [integral_congr_ae (Eventually.of_forall hexp),
+      integral_add (f := fun u => f u ^ 2 + 2 * (f u * g u))
+        (g := fun u => g u ^ 2) (hint1.add hint2) hint3,
+      integral_add hint1 hint2, integral_const_mul]
   change c * ∫ u : ℝ, ((x + y).2.2.1.1 u) ^ 2 ≤ _
-  rw [hfg_int, mul_add, mul_add]
+  rw [hfg_int, mul_add, mul_add, ← mul_assoc, mul_comm c 2, mul_assoc]
   have hcs := integral_mul_sq_le_of_mem_realTests hf hg
   have hcs_c : (c * ∫ u : ℝ, f u * g u) ^ 2 ≤
       (c * ∫ u : ℝ, f u ^ 2) * (c * ∫ u : ℝ, g u ^ 2) := by
@@ -613,9 +616,11 @@ theorem l2SourceCone_add {c : ℝ} (hc : 0 ≤ c) (V : Submodule ℝ realTests)
     mul_nonneg hc (integral_nonneg fun _ => sq_nonneg _)
   have hEy0 : 0 ≤ c * ∫ u : ℝ, g u ^ 2 :=
     mul_nonneg hc (integral_nonneg fun _ => sq_nonneg _)
+  have hxE' : c * ∫ u : ℝ, f u ^ 2 ≤ 2 * S.pair x S.H * S.pair x S.V := hxE
+  have hyE' : c * ∫ u : ℝ, g u ^ 2 ≤ 2 * S.pair y S.H * S.pair y S.V := hyE
   have hprod : (c * ∫ u : ℝ, f u * g u) ^ 2 ≤
       (2 * S.pair x S.H * S.pair x S.V) * (2 * S.pair y S.H * S.pair y S.V) :=
-    hcs_c.trans (mul_le_mul hxE hyE hEy0 (by positivity))
+    hcs_c.trans (mul_le_mul hxE' hyE' hEy0 (by positivity))
   have hhyp : (2 * S.pair x S.H * S.pair x S.V) * (2 * S.pair y S.H * S.pair y S.V) ≤
       (S.pair x S.H * S.pair y S.V + S.pair y S.H * S.pair x S.V) ^ 2 := by
     have hsq : 0 ≤ (S.pair x S.H * S.pair y S.V - S.pair y S.H * S.pair x S.V) ^ 2 := sq_nonneg _
@@ -630,7 +635,7 @@ theorem l2SourceCone_add {c : ℝ} (hc : 0 ≤ c) (V : Submodule ℝ realTests)
     by_contra hlt
     push Not at hlt
     nlinarith [lt_of_le_of_lt hcross_nonneg hlt]
-  linarith [hxE, hyE, hcross,
+  linarith [hxE', hyE', hcross,
     show 2 * (S.pair x S.H + S.pair y S.H) * (S.pair x S.V + S.pair y S.V) =
       2 * S.pair x S.H * S.pair x S.V +
       2 * (S.pair x S.H * S.pair y S.V + S.pair y S.H * S.pair x S.V) +
@@ -644,7 +649,7 @@ theorem l2SourceCone_smul {c t : ℝ} (ht : 0 ≤ t) (V : Submodule ℝ realTest
   let S := scalingSubsurface V
   rw [l2SourceCone, S.mem_sourceCone_iff, S.polar_self] at hx ⊢
   rcases hx with ⟨hxH, hxV, hxE⟩
-  simp only [map_smul, smul_eq_mul]
+  rw [S.pair_smul_left, S.pair_smul_left]
   refine ⟨mul_nonneg ht hxH, mul_nonneg ht hxV, ?_⟩
   have hint : l2SourceEnergy c V (t • x) = t ^ 2 * l2SourceEnergy c V x := by
     simp only [l2SourceEnergy]
@@ -668,7 +673,7 @@ theorem strictL2SourceCone_smul {c t : ℝ} (ht : 0 < t) (V : Submodule ℝ real
   let S := scalingSubsurface V
   rw [strictL2SourceCone, S.mem_strictSourceCone_iff, S.polar_self] at hx ⊢
   rcases hx with ⟨hxH, hxV, hxE⟩
-  simp only [map_smul, smul_eq_mul]
+  rw [S.pair_smul_left, S.pair_smul_left]
   refine ⟨mul_pos ht hxH, mul_pos ht hxV, ?_⟩
   have hint : l2SourceEnergy c V (t • x) = t ^ 2 * l2SourceEnergy c V x := by
     simp only [l2SourceEnergy]
@@ -717,6 +722,7 @@ theorem adamsOp_mem_l2SourceCone {c q : ℝ} (hq : 0 < q) {x : ℝ × ℝ × (�
       l2SourceEnergy c ⊤ x := by
     simp only [l2SourceEnergy, adamsOp, scalingAction, LinearMap.coe_mk, AddHom.coe_mk,
       integral_scaleShift_sq]
+    rfl
   rw [hH, hV, hpol, hE]
   exact ⟨mul_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg q)) hxH,
     mul_nonneg (Real.sqrt_nonneg q) hxV, hxE⟩
@@ -734,12 +740,9 @@ theorem heckeCorrespondence_mem_l2SourceCone {c q : ℝ} (hq : 0 < q)
 /-- If a real test `f ∈ realTests` has `∫ u, f(u)² = 0`, then `f = 0` everywhere. -/
 theorem eq_zero_of_integral_sq_eq_zero_of_mem_realTests {f : ℝ → ℝ} (hf : f ∈ realTests)
     (hint : (∫ u : ℝ, f u ^ 2) = 0) : f = 0 := by
+  ext u₀
   by_contra hne
-  have hsq_ne : (fun u : ℝ => f u ^ 2) ≠ 0 := by
-    intro h0
-    apply hne
-    ext u
-    exact sq_eq_zero_iff.mp (congr_fun h0 u)
+  have hsq_ne : f u₀ ^ 2 ≠ 0 := pow_ne_zero 2 hne
   have hcont : Continuous (fun u : ℝ => f u ^ 2) := hf.1.continuous.pow 2
   have hsupp : HasCompactSupport (fun u : ℝ => f u ^ 2) := by
     refine hf.2.mono ?_
@@ -763,7 +766,7 @@ theorem eq_zero_of_mem_l2SourceCone_of_pair_ample_eq_zero {c : ℝ} (hc : 0 < c)
   rw [l2SourceCone, S.mem_sourceCone_iff, S.polar_self] at hx
   rcases hx with ⟨hH, hV, hE⟩
   have hsum : S.pair x S.H + S.pair x S.V = 0 := by
-    simpa [PolarSurface.ample, map_add] using hxA
+    rwa [← S.pair_ample]
   have hH0 : S.pair x S.H = 0 := by linarith
   have hV0 : S.pair x S.V = 0 := by linarith
   have hEle : l2SourceEnergy c V x ≤ 0 := by
@@ -805,37 +808,41 @@ theorem l2SourceCone_riemannRoch_iff_weilPair_ge {c : ℝ} (hc : 0 < c)
   · intro hRR f
     by_contra hlt
     push Not at hlt
-    set δ : ℝ := (c * ∫ u : ℝ, (f.1.1 u) ^ 2 - weilPair f.1.1 f.1.1) / 4
-    have hδ : 0 < δ := by positivity
-    set a₀ : ℝ := 1 - poleA f.1.1
-    set b₀ : ℝ := δ - poleB f.1.1
+    let E : ℝ := c * ∫ u : ℝ, (f.1.1 u) ^ 2
+    let W : ℝ := weilPair f.1.1 f.1.1
+    have hE0 : 0 ≤ E := mul_nonneg hc.le (integral_nonneg fun _ => sq_nonneg _)
+    have hmax_lt : max W 0 < E := max_lt hlt (lt_of_le_of_lt (le_max_right W 0) (max_lt hlt
+      (by linarith [le_max_left W 0])))
+    set M : ℝ := (E + max W 0) / 2
+    have hW_lt_M : W < M := by
+      have : W ≤ max W 0 := le_max_left W 0
+      dsimp [M]; linarith
+    have hM_lt_E : M < E := by dsimp [M]; linarith
+    have hM_pos : 0 < M := by
+      have : 0 ≤ max W 0 := le_max_right W 0
+      dsimp [M]; linarith
+    set a₀ : ℝ := 1 / 2 - poleA f.1.1
+    set b₀ : ℝ := M - poleB f.1.1
     let x : ℝ × ℝ × V := (a₀, b₀, f)
-    have hxH : S.pair x S.H = δ := by
+    have hxH : S.pair x S.H = M := by
       rw [scalingSubsurface_pair_H]
       simp [x, b₀]
-    have hxV : S.pair x S.V = 1 := by
+    have hxV : S.pair x S.V = 1 / 2 := by
       rw [scalingSubsurface_pair_V]
       simp [x, a₀]
-    have hpol : S.polar x x = 2 * δ := by
+    have hpol : S.polar x x = M := by
       rw [S.polar_self, hxH, hxV]
       ring
-    have hdef : S.defect x x = weilPair f.1.1 f.1.1 := scalingSubsurface_defect_self V x
-    have hpair : S.pair x x = 2 * δ - weilPair f.1.1 f.1.1 := by
+    have hdef : S.defect x x = W := scalingSubsurface_defect_self V x
+    have hpair : S.pair x x = M - W := by
       have hd : S.defect x x = S.polar x x - S.pair x x := rfl
       linarith
-    have hpos : 0 < S.pair x x := by
-      rw [hpair]
-      dsimp [δ]
-      linarith
-    have hnot : c * ∫ u : ℝ, (f.1.1 u) ^ 2 > 2 * δ := by
-      dsimp [δ]
-      linarith
+    have hpos : 0 < S.pair x x := by linarith
     rcases hRR x hpos with hxE | hnxE
     · rw [l2SourceCone, S.mem_sourceCone_iff, hpol] at hxE
-      change c * ∫ u : ℝ, (f.1.1 u) ^ 2 ≤ 2 * δ at hxE.2.2
+      have hleE : E ≤ M := hxE.2.2
       linarith
-    · rw [l2SourceCone, S.mem_sourceCone_iff] at hnxE
-      have hnegH : S.pair (-x) S.H = -δ := by simp [hxH]
+    · rw [l2SourceCone, S.mem_sourceCone_iff, S.pair_neg_left, hxH] at hnxE
       linarith [hnxE.1]
   · intro hle
     exact S.sourceCone_riemannRoch_of_le_defect
@@ -912,7 +919,8 @@ theorem mem_sourceIncidenceCone_iff_pair_pos {r R : ℝ} (hr : 0 < r) (hR : r < 
   let S := scalingSubsurface (oddRealTestsAt r)
   rw [sourceIncidenceCone, S.mem_strictSourceCone_iff, sourceIncidenceFunctional_eq_defect hr hR]
   have hd : S.defect x x = S.polar x x - S.pair x x := rfl
-  exact and_congr_right fun _ => and_congr_right fun _ => by linarith
+  exact and_congr_right fun _ => and_congr_right fun _ =>
+    ⟨fun h => by linarith, fun h => by linarith⟩
 
 theorem sourceIncidenceCone_subset_strictCoupledArithmeticCone {r R : ℝ} (hr : 0 < r) (hR : r < R) :
     sourceIncidenceCone r R ⊆ strictCoupledArithmeticCone (oddRealTestsAt r) := by
@@ -945,8 +953,8 @@ theorem sourceIncidenceCone_riemannRoch_iff_strictCoupled {r R : ℝ} (hr : 0 < 
     have hdef : ∀ y, 0 ≤ S.defect y y := S.hodgeIndex_iff_defect_nonneg.mp hH
     refine S.strictSourceCone_riemannRoch_of_le_defect ?_ ?_ ?_
     · intro x
-      rw [sourceIncidenceFunctional_eq_defect hr hR, sourceIncidenceFunctional_eq_defect hr hR]
-      simp [PolarSurface.defect, PolarSurface.polar]
+      rw [sourceIncidenceFunctional_eq_defect hr hR, sourceIncidenceFunctional_eq_defect hr hR,
+        S.defect_neg_self]
     · intro x
       rw [sourceIncidenceFunctional_eq_defect hr hR]
       exact hdef x
@@ -979,64 +987,65 @@ theorem pureTestCycle_pair_ample_eq_zero_iff (f : realTests) :
   constructor <;> intro h <;> linarith
 
 /-- **The Polar-Free Smooth Test Subspace `polarFreeSmoothRealTestsAt r`:**
-Smooth compactly supported real tests supported in `[-r, r]` with `evenPoleMoment f = 0` and
+Smooth (`C^∞`) compactly supported real tests supported in `[-r, r]` with `evenPoleMoment f = 0` and
 `oddPoleMoment f = 0` (the pure-test intersection with `{H, V}⊥`). -/
 def polarFreeSmoothRealTestsAt (r : ℝ) : Submodule ℝ realTests where
-  carrier := {f : realTests | tsupport f.1 ⊆ Icc (-r) r ∧
+  carrier := {f : realTests | ContDiff ℝ (⊤ : ℕ∞) f.1 ∧ tsupport f.1 ⊆ Icc (-r) r ∧
     evenPoleMoment f.1 = 0 ∧ oddPoleMoment f.1 = 0}
   add_mem' {f g} hf hg := by
-    refine ⟨(tsupport_add f.1 g.1).trans (union_subset hf.1 hg.1), ?_, ?_⟩
-    · change evenPoleMoment (f.1 + g.1) = 0
-      rw [evenPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2.1, hg.2.1,
+    refine ⟨hf.1.add hg.1, (tsupport_add f.1 g.1).trans (union_subset hf.2.1 hg.2.1), ?_, ?_⟩
+    · change evenPoleMoment (fun x => f.1 x + g.1 x) = 0
+      rw [evenPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2.2.1, hg.2.2.1,
         add_zero]
-    · change oddPoleMoment (f.1 + g.1) = 0
-      rw [oddPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2.2, hg.2.2,
+    · change oddPoleMoment (fun x => f.1 x + g.1 x) = 0
+      rw [oddPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2.2.2, hg.2.2.2,
         add_zero]
   zero_mem' := by
-    refine ⟨by simp [tsupport], ?_, ?_⟩
+    refine ⟨contDiff_const, by simp [tsupport], ?_, ?_⟩
     · simp [evenPoleMoment]
     · simp [oddPoleMoment]
   smul_mem' c {f} hf := by
-    refine ⟨(tsupport_smul_subset_right (fun _ : ℝ => c) f.1).trans hf.1, ?_, ?_⟩
+    refine ⟨hf.1.const_smul c, (tsupport_smul_subset_right (fun _ : ℝ => c) f.1).trans hf.2.1, ?_, ?_⟩
     · change evenPoleMoment (c • f.1) = 0
       have h : evenPoleMoment (c • f.1) = c * evenPoleMoment f.1 := by
         simp only [evenPoleMoment, Pi.smul_apply, smul_eq_mul, mul_assoc, integral_const_mul]
-      rw [h, hf.2.1, mul_zero]
+      rw [h, hf.2.2.1, mul_zero]
     · change oddPoleMoment (c • f.1) = 0
       have h : oddPoleMoment (c • f.1) = c * oddPoleMoment f.1 := by
         simp only [oddPoleMoment, Pi.smul_apply, smul_eq_mul, mul_assoc, integral_const_mul]
-      rw [h, hf.2.2, mul_zero]
+      rw [h, hf.2.2.2, mul_zero]
 
 /-- **The Full Ample-Orthogonal Primitive Hyperplane `primitiveSmoothRealTestsAt r`:**
-Smooth compactly supported real tests supported in `[-r, r]` with `evenPoleMoment f = 0` and
-**arbitrary** `oddPoleMoment f` (containing both `polarFreeSmoothRealTestsAt r` and all of
-`oddRealTestsAt r`). -/
+Smooth (`C^∞`) compactly supported real tests supported in `[-r, r]` with `evenPoleMoment f = 0` and
+**arbitrary** `oddPoleMoment f` (containing both `polarFreeSmoothRealTestsAt r` and all smooth tests
+in `oddRealTestsAt r`). -/
 def primitiveSmoothRealTestsAt (r : ℝ) : Submodule ℝ realTests where
-  carrier := {f : realTests | tsupport f.1 ⊆ Icc (-r) r ∧ evenPoleMoment f.1 = 0}
+  carrier := {f : realTests | ContDiff ℝ (⊤ : ℕ∞) f.1 ∧ tsupport f.1 ⊆ Icc (-r) r ∧
+    evenPoleMoment f.1 = 0}
   add_mem' {f g} hf hg := by
-    refine ⟨(tsupport_add f.1 g.1).trans (union_subset hf.1 hg.1), ?_⟩
-    change evenPoleMoment (f.1 + g.1) = 0
-    rw [evenPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2, hg.2, add_zero]
-  zero_mem' := ⟨by simp [tsupport], by simp [evenPoleMoment]⟩
+    refine ⟨hf.1.add hg.1, (tsupport_add f.1 g.1).trans (union_subset hf.2.1 hg.2.1), ?_⟩
+    change evenPoleMoment (fun x => f.1 x + g.1 x) = 0
+    rw [evenPoleMoment_add f.2.1.continuous f.2.2 g.2.1.continuous g.2.2, hf.2.2, hg.2.2, add_zero]
+  zero_mem' := ⟨contDiff_const, by simp [tsupport], by simp [evenPoleMoment]⟩
   smul_mem' c {f} hf := by
-    refine ⟨(tsupport_smul_subset_right (fun _ : ℝ => c) f.1).trans hf.1, ?_⟩
+    refine ⟨hf.1.const_smul c, (tsupport_smul_subset_right (fun _ : ℝ => c) f.1).trans hf.2.1, ?_⟩
     change evenPoleMoment (c • f.1) = 0
     have h : evenPoleMoment (c • f.1) = c * evenPoleMoment f.1 := by
       simp only [evenPoleMoment, Pi.smul_apply, smul_eq_mul, mul_assoc, integral_const_mul]
-    rw [h, hf.2, mul_zero]
+    rw [h, hf.2.2, mul_zero]
 
-/-- Every odd test in `oddRealTestsAt r` belongs to `primitiveSmoothRealTestsAt r`. -/
-theorem oddRealTestsAt_le_primitiveSmoothRealTestsAt (r : ℝ) :
-    oddRealTestsAt r ≤ primitiveSmoothRealTestsAt r := by
-  intro f hf
-  exact ⟨hf.1, evenPoleMoment_eq_zero_of_odd hf.2⟩
+/-- Every smooth odd test in `oddRealTestsAt r` belongs to `primitiveSmoothRealTestsAt r`. -/
+theorem mem_primitiveSmoothRealTestsAt_of_mem_oddRealTestsAt {r : ℝ} {f : realTests}
+    (hF_top : ContDiff ℝ (⊤ : ℕ∞) f.1) (hf : f ∈ oddRealTestsAt r) :
+    f ∈ primitiveSmoothRealTestsAt r :=
+  ⟨hF_top, hf.1, evenPoleMoment_eq_zero_of_odd hf.2⟩
 
 /-- Every polar-free test in `polarFreeSmoothRealTestsAt r` belongs to
 `primitiveSmoothRealTestsAt r`. -/
 theorem polarFreeSmoothRealTestsAt_le_primitiveSmoothRealTestsAt (r : ℝ) :
     polarFreeSmoothRealTestsAt r ≤ primitiveSmoothRealTestsAt r := by
   intro f hf
-  exact ⟨hf.1, hf.2.1⟩
+  exact ⟨hf.1, hf.2.1, hf.2.2.1⟩
 
 /-- If `f` vanishes outside `[-r, r]`, then `tsupport f ⊆ [-r, r]`. -/
 theorem tsupport_subset_Icc_of_vanish_outside {f : ℝ → ℝ} {r : ℝ}
@@ -1061,15 +1070,14 @@ For every smooth polar-free test `f ∈ polarFreeSmoothRealTestsAt r` with
 theorem weilPair_self_ge_of_mem_polarFreeSmoothRealTestsAt_primeTwo {r : ℝ}
     (hr : r ≤ (Real.log 2 + 1 / 50) / 2) (f : polarFreeSmoothRealTestsAt r) :
     (1 / 20 : ℝ) * ∫ u : ℝ, (f.1.1 u) ^ 2 ≤ weilPair f.1.1 f.1.1 := by
-  have hF2 : ContDiff ℝ 2 f.1.1 := f.1.2.1.of_le (WithTop.coe_le_coe.mpr le_top)
-  rw [weilPair_self_eq_fullZeroForm hF2 f.1.2.2]
+  rw [weilPair_self_eq_fullZeroForm f.1.2.1 f.1.2.2]
   have htsupp : tsupport f.1.1 ⊆ Icc (-primeTwoAperture.1) primeTwoAperture.1 := by
-    refine f.2.1.trans (Icc_subset_Icc ?_ ?_)
+    refine f.2.2.1.trans (Icc_subset_Icc ?_ ?_)
     · change -((Real.log 2 + 1 / 50) / 2) ≤ -r
       linarith
     · exact hr
   have hground := polarGroundEnergy_mul_le_fullZeroForm_Icc primeTwoAperture
-    f.1.2.1 htsupp f.2.2.1 f.2.2.2
+    f.2.1 htsupp f.2.2.2.1 f.2.2.2.2
   have h120 := one_twentieth_le_ccmRestrictedWeilPolarGroundEnergy_primeTwo
   exact (mul_le_mul_of_nonneg_right h120 (integral_nonneg fun _ => sq_nonneg _)).trans hground
 
@@ -1083,20 +1091,21 @@ theorem weilPair_self_ge_of_mem_primitiveSmoothRealTestsAt_primeTwo {r : ℝ}
     (hr : r ≤ (Real.log 2 + 1 / 50) / 2) (f : primitiveSmoothRealTestsAt r) :
     (1 / 1000 : ℝ) * ∫ u : ℝ, (f.1.1 u) ^ 2 ≤ weilPair f.1.1 f.1.1 := by
   let F : ℝ → ℝ := f.1.1
-  have hF_top : ContDiff ℝ (⊤ : ℕ∞) F := f.1.2.1
-  have hF2 : ContDiff ℝ 2 F := hF_top.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hF2 : ContDiff ℝ 2 F := f.1.2.1
+  have hF_top : ContDiff ℝ (⊤ : ℕ∞) F := f.2.1
   have hFc : HasCompactSupport F := f.1.2.2
   have hsupp : ∀ u : ℝ, r < |u| → F u = 0 :=
     fun u hu => image_eq_zero_of_notMem_tsupport fun hmem =>
-      not_le_of_gt hu (abs_le.mpr (f.2.1 hmem))
-  have heven_mom : evenPoleMoment F = 0 := f.2.2
+      not_le_of_gt hu (abs_le.mpr (f.2.2.1 hmem))
+  have heven_mom : evenPoleMoment F = 0 := f.2.2.2
   rw [weilPair_self_eq_fullZeroForm hF2 hFc,
     fullZeroForm_eq_even_add_odd hF2 hFc,
-    integral_sq_eq_even_add_odd hF_top.continuous hFc, mul_add]
-  have hFe_top : ContDiff ℝ (⊤ : ℕ∞) (evenPartReal F) := contDiff_evenPartReal hF_top
+    integral_sq_eq_even_add_odd hF2.continuous hFc, mul_add]
+  have hFe2 : ContDiff ℝ 2 (evenPartReal F) := contDiff_evenPartReal hF2
+  have hFe_top : ContDiff ℝ (⊤ : ℕ∞) (evenPartReal F) :=
+    (hF_top.add (hF_top.comp contDiff_neg)).div_const 2
   have hFe_c : HasCompactSupport (evenPartReal F) := hasCompactSupport_evenPartReal hFc
-  have hFo_top : ContDiff ℝ (⊤ : ℕ∞) (oddPartReal F) := contDiff_oddPartReal hF_top
-  have hFo_2 : ContDiff ℝ 2 (oddPartReal F) := hFo_top.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hFo2 : ContDiff ℝ 2 (oddPartReal F) := contDiff_oddPartReal hF2
   have hFo_c : HasCompactSupport (oddPartReal F) := hasCompactSupport_oddPartReal hFc
   have hFe_tsupp : tsupport (evenPartReal F) ⊆ Icc (-r) r := by
     refine tsupport_subset_Icc_of_vanish_outside fun u hu => ?_
@@ -1108,19 +1117,18 @@ theorem weilPair_self_ge_of_mem_primitiveSmoothRealTestsAt_primeTwo {r : ℝ}
       funext fun x => (evenPartReal_add_oddPartReal F x).symm
     have hC : evenPoleMoment F = evenPoleMoment (evenPartReal F) := by
       conv_lhs => rw [hsum]
-      rw [evenPoleMoment_add hFe_top.continuous hFe_c hFo_top.continuous hFo_c,
+      rw [evenPoleMoment_add hFe2.continuous hFe_c hFo2.continuous hFo_c,
         evenPoleMoment_eq_zero_of_odd (oddPartReal_neg F), add_zero]
     linarith
   have hFe_odd_mom : oddPoleMoment (evenPartReal F) = 0 :=
     oddPoleMoment_eq_zero_of_even (evenPartReal_neg F)
-  have hFe_mem : (⟨evenPartReal F, hFe_top, hFe_c⟩ : realTests) ∈ polarFreeSmoothRealTestsAt r :=
-    ⟨hFe_tsupp, hFe_even_mom, hFe_odd_mom⟩
+  have hFe_mem : (⟨evenPartReal F, hFe2, hFe_c⟩ : realTests) ∈ polarFreeSmoothRealTestsAt r :=
+    ⟨hFe_top, hFe_tsupp, hFe_even_mom, hFe_odd_mom⟩
   have hFe_bound : (1 / 20 : ℝ) * ∫ u : ℝ, (evenPartReal F u) ^ 2 ≤
       fullZeroForm (evenPartReal F) := by
-    have hFe2 : ContDiff ℝ 2 (evenPartReal F) := hFe_top.of_le (WithTop.coe_le_coe.mpr le_top)
     rw [← weilPair_self_eq_fullZeroForm hFe2 hFe_c]
     exact weilPair_self_ge_of_mem_polarFreeSmoothRealTestsAt_primeTwo hr
-      ⟨⟨evenPartReal F, hFe_top, hFe_c⟩, hFe_mem⟩
+      ⟨⟨evenPartReal F, hFe2, hFe_c⟩, hFe_mem⟩
   have hFe_1000 : (1 / 1000 : ℝ) * ∫ u : ℝ, (evenPartReal F u) ^ 2 ≤
       fullZeroForm (evenPartReal F) := by
     have hnonneg : 0 ≤ ∫ u : ℝ, (evenPartReal F u) ^ 2 := integral_nonneg fun _ => sq_nonneg _
@@ -1137,7 +1145,7 @@ theorem weilPair_self_ge_of_mem_primitiveSmoothRealTestsAt_primeTwo {r : ℝ}
   have hFo_1000 : (1 / 1000 : ℝ) * ∫ u : ℝ, (oddPartReal F u) ^ 2 ≤
       fullZeroForm (oddPartReal F) :=
     fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths
-      hFo_2 hFo_c (oddPartReal_neg F) hFo_supp
+      hFo2 hFo_c (oddPartReal_neg F) hFo_supp
   linarith
 
 /-- **The First Prime `2` Actively Enters the Window `r = ½(log 2 + 1/50)`:**
@@ -1337,10 +1345,9 @@ theorem polarFreeSmooth_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp 
     (hr : 0 < r) (x : ℝ × ℝ × polarFreeSmoothRealTestsAt r) :
     -(10 + 68 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 ≤
       (scalingSubsurface (polarFreeSmoothRealTestsAt r)).defect x x := by
-  have hF2 : ContDiff ℝ 2 x.2.2.1.1 := x.2.2.1.2.1.of_le (WithTop.coe_le_coe.mpr le_top)
-  rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 x.2.2.1.2.2]
+  rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm x.2.2.1.2.1 x.2.2.1.2.2]
   exact neg_horizonExponent_mul_le_fullZeroForm_Icc ⟨r, hr⟩
-    x.2.2.1.2.1 x.2.2.2.1 x.2.2.2.2.1 x.2.2.2.2.2
+    x.2.2.2.1 x.2.2.2.2.1 x.2.2.2.2.2.1 x.2.2.2.2.2.2
 
 /-- **All-Aperture Mixed-Parity Chebyshev Defect Floor on the Full Ample-Orthogonal Hyperplane
 `primitiveSmoothRealTestsAt r` (`r > 0`):**
@@ -1352,19 +1359,21 @@ theorem primitiveSmooth_scalingSubsurface_defect_ge_neg_ten_add_seventy_eight_ex
     -(10 + 78 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 ≤
       (scalingSubsurface (primitiveSmoothRealTestsAt r)).defect x x := by
   let F : ℝ → ℝ := x.2.2.1.1
-  have hF_top : ContDiff ℝ (⊤ : ℕ∞) F := x.2.2.1.2.1
-  have hF2 : ContDiff ℝ 2 F := hF_top.of_le (WithTop.coe_le_coe.mpr le_top)
+  have hF2 : ContDiff ℝ 2 F := x.2.2.1.2.1
+  have hF_top : ContDiff ℝ (⊤ : ℕ∞) F := x.2.2.2.1
   have hFc : HasCompactSupport F := x.2.2.1.2.2
   have hsupp : ∀ u : ℝ, r < |u| → F u = 0 :=
     fun u hu => image_eq_zero_of_notMem_tsupport fun hmem =>
-      not_le_of_gt hu (abs_le.mpr (x.2.2.2.1 hmem))
-  have heven_mom : evenPoleMoment F = 0 := x.2.2.2.2
+      not_le_of_gt hu (abs_le.mpr (x.2.2.2.2.1 hmem))
+  have heven_mom : evenPoleMoment F = 0 := x.2.2.2.2.2
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc,
     fullZeroForm_eq_even_add_odd hF2 hFc,
-    integral_sq_eq_even_add_odd hF_top.continuous hFc, mul_add]
-  have hFe_top : ContDiff ℝ (⊤ : ℕ∞) (evenPartReal F) := contDiff_evenPartReal hF_top
+    integral_sq_eq_even_add_odd hF2.continuous hFc, mul_add]
+  have hFe2 : ContDiff ℝ 2 (evenPartReal F) := contDiff_evenPartReal hF2
+  have hFe_top : ContDiff ℝ (⊤ : ℕ∞) (evenPartReal F) :=
+    (hF_top.add (hF_top.comp contDiff_neg)).div_const 2
   have hFe_c : HasCompactSupport (evenPartReal F) := hasCompactSupport_evenPartReal hFc
-  have hFo_top : ContDiff ℝ (⊤ : ℕ∞) (oddPartReal F) := contDiff_oddPartReal hF_top
+  have hFo2 : ContDiff ℝ 2 (oddPartReal F) := contDiff_oddPartReal hF2
   have hFo_c : HasCompactSupport (oddPartReal F) := hasCompactSupport_oddPartReal hFc
   have hFe_tsupp : tsupport (evenPartReal F) ⊆ Icc (-r) r := by
     refine tsupport_subset_Icc_of_vanish_outside fun u hu => ?_
@@ -1381,7 +1390,7 @@ theorem primitiveSmooth_scalingSubsurface_defect_ge_neg_ten_add_seventy_eight_ex
       funext fun u => (evenPartReal_add_oddPartReal F u).symm
     have hC : evenPoleMoment F = evenPoleMoment (evenPartReal F) := by
       conv_lhs => rw [hsum]
-      rw [evenPoleMoment_add hFe_top.continuous hFe_c hFo_top.continuous hFo_c,
+      rw [evenPoleMoment_add hFe2.continuous hFe_c hFo2.continuous hFo_c,
         evenPoleMoment_eq_zero_of_odd (oddPartReal_neg F), add_zero]
     linarith
   have hFe_odd_mom : oddPoleMoment (evenPartReal F) = 0 :=
@@ -1389,15 +1398,14 @@ theorem primitiveSmooth_scalingSubsurface_defect_ge_neg_ten_add_seventy_eight_ex
   have hFe_floor : -(10 + 68 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 ≤
       fullZeroForm (evenPartReal F) :=
     neg_horizonExponent_mul_le_fullZeroForm_Icc ⟨r, hr⟩ hFe_top hFe_tsupp hFe_even_mom hFe_odd_mom
-  have hFo_mem : (⟨oddPartReal F, hFo_top, hFo_c⟩ : realTests) ∈ oddRealTestsAt r :=
+  have hFo_mem : (⟨oddPartReal F, hFo2, hFo_c⟩ : realTests) ∈ oddRealTestsAt r :=
     ⟨hFo_tsupp, oddPartReal_neg F⟩
   have hFo_floor : -(78 * Real.exp r * ∫ u : ℝ, (oddPartReal F u) ^ 2) ≤
       fullZeroForm (oddPartReal F) := by
-    have hFo2 : ContDiff ℝ 2 (oddPartReal F) := hFo_top.of_le (WithTop.coe_le_coe.mpr le_top)
     rw [← weilPair_self_eq_fullZeroForm hFo2 hFo_c, ← scalingSubsurface_defect_self (oddRealTestsAt r)
-      (0, 0, ⟨⟨oddPartReal F, hFo_top, hFo_c⟩, hFo_mem⟩)]
+      (0, 0, ⟨⟨oddPartReal F, hFo2, hFo_c⟩, hFo_mem⟩)]
     exact scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp hr
-      (0, 0, ⟨⟨oddPartReal F, hFo_top, hFo_c⟩, hFo_mem⟩)
+      (0, 0, ⟨⟨oddPartReal F, hFo2, hFo_c⟩, hFo_mem⟩)
   have hIe : 0 ≤ ∫ u : ℝ, (evenPartReal F u) ^ 2 := integral_nonneg fun _ => sq_nonneg _
   have hIo : 0 ≤ ∫ u : ℝ, (oddPartReal F u) ^ 2 := integral_nonneg fun _ => sq_nonneg _
   have hexp : 0 < Real.exp r := Real.exp_pos r
@@ -1420,10 +1428,12 @@ theorem l2SourceCone_eq_gradedL2SourceCone {c : ℝ} (hc : 0 ≤ c) (V : Submodu
   rw [l2SourceCone, S.mem_sourceCone_iff, gradedL2SourceCone, Set.mem_setOf_eq]
   constructor
   · rintro ⟨hH, hV, hE⟩
-    exact ⟨by simp only [PolarSurface.ample, map_add]; linarith, hE⟩
+    refine ⟨?_, hE⟩
+    rw [S.pair_ample]
+    linarith
   · rintro ⟨hA, hE⟩
     have hsum : 0 ≤ S.pair x S.H + S.pair x S.V := by
-      simpa [PolarSurface.ample, map_add] using hA
+      rwa [S.pair_ample] at hA
     have hprod : 0 ≤ 2 * S.pair x S.H * S.pair x S.V := by
       rw [← S.polar_self]
       exact (l2SourceEnergy_nonneg hc V x).trans hE
@@ -1454,9 +1464,11 @@ theorem gradedL2SourceCone_riemannRoch_of_le_defect (c : ℝ) (V : Submodule ℝ
     rcases le_total 0 (S.pair x S.ample) with hA | hA
     · exact Or.inl ⟨hA, hpol⟩
     · right
-      refine ⟨by simpa using hA, ?_⟩
-      rw [l2SourceEnergy_neg]
-      simpa [PolarSurface.polar] using hpol
+      refine ⟨?_, ?_⟩
+      · rw [S.pair_neg_left]
+        linarith
+      · rw [l2SourceEnergy_neg, S.polar_neg_self]
+        exact hpol
   refine ⟨hRR, fun x hx => ?_⟩
   have hxx : 0 < S.pair x x := by
     simp only [map_zero, sub_zero, zero_add] at hx
@@ -1464,7 +1476,7 @@ theorem gradedL2SourceCone_riemannRoch_of_le_defect (c : ℝ) (V : Submodule ℝ
   rcases hRR x hxx with h | h
   · exact Or.inl h
   · right
-    simpa [zero_sub] using h
+    rwa [zero_sub]
 
 /-- **All-Aperture Graded Source Riemann–Roch on `primitiveSmoothRealTestsAt r`,
 `polarFreeSmoothRealTestsAt r`, and `oddRealTestsAt r` (`r > 0`):** -/

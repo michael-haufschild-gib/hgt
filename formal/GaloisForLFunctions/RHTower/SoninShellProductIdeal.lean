@@ -268,7 +268,9 @@ theorem evenTwoPolarizationShell_mul_evenDilationSum_mul_shell_mem_ideal
         (evenFourierCutoff b - evenFourierCutoff a) *
           evenDilationCLM r⁻¹ hrinv *
           (evenIndicatorCutoff c - evenIndicatorCutoff b)) := by
-    noncomm_ring
+    -- Keep each shell intact while distributing the two dilation branches.
+    simp only [mul_add, add_mul]
+    abel
   rw [hexpand, v1, v2, v3, v4]
   abel
 

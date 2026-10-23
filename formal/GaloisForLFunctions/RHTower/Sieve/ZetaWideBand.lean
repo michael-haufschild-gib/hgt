@@ -86,7 +86,7 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
   have hP : (0 : ℝ) < (2 : ℝ) ^ wideOrder γ := by positivity
   have hP1 : (1 : ℝ) ≤ (2 : ℝ) ^ wideOrder γ := one_le_pow₀ (by norm_num)
   have hℓsq : (961 : ℝ) ≤ Real.log (wideScale γ) ^ (2 : ℕ) := by
-    linarith [pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 31) hx 2]
+    linarith only [pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 31) hx 2]
   -- the scale at the height of `w`
   have hlow : wideScale γ - 1 ≤ wideScale w.im := by
     have h1 := wideScale_sub_one_ge hγ2
@@ -105,8 +105,8 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
   have hKhi : 100 * (2 : ℝ) ^ wideOrder γ ≤ wideScale w.im := by
     have hspec := wideOrder_spec hL12
     have hgap : (0 : ℝ) ≤ (2 : ℝ) ^ wideOrder γ * (Real.log (wideScale γ) ^ (2 : ℕ) - 961) :=
-      mul_nonneg hP.le (by linarith)
-    linarith [hspec, hgap, hlow, hP1]
+      mul_nonneg hP.le (by linarith only [hℓsq])
+    linarith only [hspec, hgap, hlow, hP1]
   have hKlo : wideScale w.im < 120 * (2 : ℝ) ^ wideOrder γ * Real.log (wideScale w.im) ^ (2 : ℕ) := by
     have hgt := lt_two_pow_wideOrder_succ hL12
     have hpow : (2 : ℝ) ^ (wideOrder γ + 1) = 2 * (2 : ℝ) ^ wideOrder γ := by ring
@@ -126,21 +126,22 @@ theorem norm_riemannZeta_wide_band {γ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
           Real.log_le_log (div_pos hL0 (by linarith)) hq
         have hlog2 : Real.log 2 ≤ 1 := by
           have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num); linarith
-        linarith [hd.le, hd.ge]
-      linarith
+        linarith only [hd, hle, hlog2]
+      linarith only [h1, h2]
     have hsqstep : (Real.log (wideScale γ)) ^ (2 : ℕ) * (900 / 961)
         ≤ Real.log (wideScale w.im) ^ (2 : ℕ) := by
-      have hnn : (0 : ℝ) ≤ Real.log (wideScale γ) - 1 := by linarith
+      have hnn : (0 : ℝ) ≤ Real.log (wideScale γ) - 1 := by linarith only [hx]
       have hbig : (Real.log (wideScale γ) - 1) ^ (2 : ℕ)
           ≤ Real.log (wideScale w.im) ^ (2 : ℕ) := pow_le_pow_left₀ hnn hlogstep 2
       -- `(ℓ - 1)^2 - (900/961) ℓ^2 = (ℓ - 31)(61ℓ - 31)/961` for `ℓ = log (wideScale γ)`
-      linarith [mul_nonneg (sub_nonneg.mpr hx)
-        (by linarith : (0 : ℝ) ≤ 61 * Real.log (wideScale γ) - 31)]
-    linarith [mul_le_mul_of_nonneg_left hsqstep hP.le, mul_le_mul_of_nonneg_left hℓsq hP.le]
+      linarith only [hbig, mul_nonneg (sub_nonneg.mpr hx)
+        (by linarith only [hx] : (0 : ℝ) ≤ 61 * Real.log (wideScale γ) - 31)]
+    linarith only [hgt, hhigh, hP1, mul_le_mul_of_nonneg_left hsqstep hP.le,
+      mul_le_mul_of_nonneg_left hℓsq hP.le]
   have hmain := norm_riemannZeta_wide_le (w := w) (K := wideOrder γ) hre hre2 him16 hMlow
     hK10 hKlo hKhi
   have hmono : wideScale w.im ^ (34 : ℕ) ≤ (wideScale γ + 3) ^ (34 : ℕ) :=
     pow_le_pow_left₀ (by linarith) hhigh 34
-  linarith
+  linarith only [hmain, hmono]
 
 end RHTower.Sieve
