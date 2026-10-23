@@ -705,7 +705,16 @@ the least total weight of couplings that no switching can align (`groundEnergy_e
 `groundEnergy_le_frustrationMass`, Arithmetic Orientation Theory). The odd Weil ledger has its
 positive couplings only on prime-sum edges (`frustrationIndex_oddWeilLedger_le`). These are the
 prime anti-diagonals of 3.7, so the arithmetic odd sector is a frustrated form, and RH asks that
-its frustration be paid globally by the same-side atoms and the variance.
+its frustration be paid globally by the same-side atoms and the variance. The frustration is a
+count, and it is not small. Switching across a cut trades anti-aligned for aligned overlaps, so
+when the prime-sum pairs of a sample are sparse (degree at most a quarter of the sample) no
+switching helps and the frustration index is exactly the number of anti-aligned prime-sum overlaps
+(`frustrationIndex_oddWeilLedger_of_sparse`). On the matched samples
+$\tfrac12\log(3q/2),\tfrac12\log(2q/3)$, $q$ prime, $q\ge5$, the index is exactly $2\lvert Q\rvert$ for
+small archimedean–polar weight, and these samples lie in $(0,\tfrac12\log(\tfrac32\max Q)]$, so
+samples in the aperture $(0,A]$ reach frustration index twice the number of primes in
+$[5,\tfrac23e^{2A}]$ (`exists_frustrationIndex_ge`): the frustration that the same-side atoms and
+the variance must pay can grow like the prime count at scale $e^{2A}$.
 
 ### 3.13 Positivity below the first prime from a plateau gauge
 
@@ -1063,11 +1072,14 @@ To be built:
    (Arithmetic Continuation and Critical Energy); the aperture face has none. Derive the aperture
    derivative of `μ(A)` as a boundary-flux identity, identify a sign-definite jump term, and check
    it against the ceiling, which forces any Lyapunov functional to decay like `exp(−πe^{2(A−2)})`.
-8. **The frustration index at aperture `A`.** Define the least global payment of the frustrated
-   prime-sum edges of the odd ledger at aperture `A` as the ground energy of a ℤ/2 gauge system on
-   the logarithmic grid, compute it on the train and tower families, and prove or refute that it
-   equals `μ(A)` (Arithmetic Orientation Theory). A positive answer would replace the analytic floor
-   by a combinatorial count.
+8. **From the frustration count to the ground energy at aperture `A`.** The frustration index of
+   the odd ledger is the prime-sum count on sparse samples, and samples at aperture `A` reach twice
+   the number of primes up to $\tfrac23e^{2A}$ (§3.12, Arithmetic Orientation Theory). The count alone is not a
+   floor: the ground energy is bounded *above* by the frustration mass, and what RH needs is that
+   the frustrated mass is *paid*. Open: the least global payment of the frustrated prime-sum edges
+   at aperture `A` as the ground energy of a ℤ/2 gauge system on the logarithmic grid, at full
+   archimedean weight and on dense samples, and whether it equals `μ(A)`. A positive answer would
+   replace the analytic floor by a combinatorial count.
 
 ---
 

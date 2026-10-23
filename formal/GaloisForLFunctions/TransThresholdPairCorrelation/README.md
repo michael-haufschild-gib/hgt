@@ -36,6 +36,8 @@ budget. The question it isolates is the signed correlation of close prime pairs
 | [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Supplies the log-free large sieve with the Montgomery–Vaughan constant. Its balanced-scale single-modulus statistics are the other place where signed prime-row information beyond the large sieve is needed. |
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Needs a single-height prime saving on its aperture face. TTPC needs the averaged-over-height version at much longer prime length. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Its Nyquist rank bound reads the same threshold `N ≍ T` as a dimension count of sections at separated heights. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Reads the two-thirds barrier as a resolution limit: the evaluation Gram is a reading whose shadow contains both a double critical zero and a coalescing pair, so no functional of it certifies more than `(2 − κ)N`. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Its half-damping operator bound for the damping chain cuts a Dirichlet polynomial at the same diagonal `X ≍ T` of the mean value theorem; it shares the tool, not the obstruction. |
 
 `RHTower` owns the explicit-formula Gram infrastructure on which every statement here is built:
 the wide-bandwidth trace, the split of the Frobenius surplus, the diagonal constant
@@ -50,9 +52,10 @@ form. TTPC works one level below, on a proportion of zeros, but at the same wall
 plainest form. Its unit is the pair `(λ, 2 − κ(λ))`. A partial result reports the bandwidth it
 reaches and the proportion it certifies, or the budget it pays out of `1/18`.
 
-Read §1 for the barrier and the target constant, §2 for the objects, §3 for the four reductions
-and the form-factor bridge; §4 lists the pillar theorems, §5 the traps, §§6–7 the questions and
-open problems.
+Read §1 for the barrier and the target constant, §2 for the objects, §§3.1–3.5 for the four
+reductions and the form-factor bridge, and §§3.6–3.8 for the three localization tools (height
+averaging, Lorentz mean values, smooth grid weights) and what each can and cannot reach; §4 lists
+the pillar theorems, §5 the traps, §§6–7 the questions and open problems.
 
 ---
 
@@ -204,6 +207,45 @@ mass (`43/36 = 9/8 + 5/72`), so the normalized prime surplus is `(9/8)(I − 1/1
 prime-side budget `1/18` is exactly `I ≤ 1/9` (`primeSurplusRatio_bridge`). The GUE prediction
 `I = 1/18` gives surplus `−1/144`: the budget has slack `1/16` against the conjectured truth.
 
+### 3.6 Height averaging localizes to the coalescent band
+
+The rank–trace seam is linear in `tr G̃²` once the inertia parameter is fixed, and it holds for
+every grid weighting `|w_k| ≤ 1` (`RHTower.seamA_weighted`), so it may be averaged over the window
+height `T` against a weight `ω` before the prime side is evaluated. At fixed `L` — fixed profile
+and fixed prime cutoff — the averaged pair kernels decay in the frequency `θ = log n ∓ log m`: `k`
+integrations by parts give `|∫ω(T) sin(κT + c)dT| ≤ ‖ω^{(k)}‖₁/|κ|^k`, and the averaged kernel is at
+most `2‖ω^{(k)}‖₁(∫Φ²)/|θ|^{k+1}` plus an offset tail (`abs_avg_Agen_le`). For `ω` of width `εT` the
+far pairs `|log(n/m)| > T^{−1+η}` and all sum frequencies then cost `o((aL)²Tℓ₁)` once
+`η(k + 1) > λ` and `λ < 2` (`abs_avg_ppOffDiag_sub_close_le`, `abs_avg_ppSumFreq_le`), where the
+sharp window charges each of them `O(X log X)`. After height averaging only the coalescent band
+carries trans-threshold mass. The restriction is real: at fixed bandwidth the cutoff
+`X = (T/2π)^λ` moves with `T`, and averaging across a moving cutoff costs `≍ √ε X log²X`.
+
+### 3.7 Fejér and Lorentz mean squares of the prime polynomial
+
+Against a Fejér profile the mean square of the prime polynomial is an exact positive pair sum,
+because the profile's Fourier transform is a triangle:
+`∫F_b(τ − c)P_X(τ)²dτ = π⁻¹Σ_{n,m}a_na_m(Λ_b(y_n − y_m)cos((y_n − y_m)c) + Λ_b(y_n + y_m)cos((y_n + y_m)c))`
+(`integral_fejer_mul_PX_sq`). For `b ≤ 1` the sum frequencies drop out and only pairs
+`|log(n/m)| < b` remain, which a Chebyshev count bounds (`integral_fejer_mul_PX_sq_le`). Two Fejér
+profiles half a period apart dominate a Lorentzian of width `R = 1/b`
+(`lorentz_le_fejer_add_fejer`), hence the Lorentz-weighted mean value
+`∫P_X(τ)²/(1 + ((τ − c)/R)²)dτ ≤ π√e log X(3ψ(X) + RΣ_{n≤X}Λ(n)/n)`
+(`integral_lorentz_mul_PX_sq_le`): the `(R + X)` shape of the Montgomery–Vaughan theorem on a window
+of length `R`, with no Hilbert inequality. It is a size bound, adequate for error terms of length
+`R`, not for the close pairs.
+
+### 3.8 Smooth grid weights
+
+Sampling a weight `0 ≤ W ≤ 1` on the grid `τ_k` changes the grid kernel by
+`K_W − W(τ)K = Σ_k(W(τ_k) − W(τ))φ̂(τ − τ_k)φ̂(τ′ − τ_k)` exactly (`KfunW_sub_mul_Kfun_eq`). For a
+Lipschitz weight every coefficient is at most `min(ℓ|τ_k − τ|, 1)`, and grid sums of Lorentz
+profiles are controlled by one averaging lemma, `Σ_k(1 + c²(x − τ_k)²)⁻¹ ≤ 4π/(ch)`
+(`sum_lor_grid_le`): the weighted kernel is the weight times the unweighted one, up to an error of
+the size of the Lipschitz constant against a Lorentzian of width `T`. A smooth compactly supported
+weight vanishes off the grid range, so there is no aliasing and no end form at fixed bandwidth. This
+is the route that avoids both the Jackson tails (trap below) and the moving cutoff of §3.6.
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -226,6 +268,12 @@ All unconditional.
 6. **Two barriers.** The shifted Fejér majorant misses `1/9` by the factor `8/3`
    (`fejer_shifted_bound_gap`), and trace certificates of order `k ≥ 3` are confined to `kλ ≤ 1`
    (`higherMoment_rudnick_sarnak_cap`).
+7. **Height averaging leaves only the coalescent band.** At fixed `L`, averaging over `T` with a
+   weight of width `εT` makes the far pairs `|log(n/m)| > T^{−1+η}` and the sum frequencies
+   negligible against the budget (`abs_avg_ppOffDiag_sub_close_le`, `abs_avg_ppSumFreq_le`).
+8. **Lorentz mean value without Hilbert.** The prime polynomial obeys the `(R + X)` mean value on
+   Lorentz windows of width `R`, from an exact positive Fejér pair sum
+   (`integral_lorentz_mul_PX_sq_le`).
 
 ---
 
@@ -235,6 +283,9 @@ All unconditional.
 |---|---|
 | Bounding `𝒪₁` by the triangle inequality on the eight half-line moments | Gives `O(L²X)`; for `λ > 1`, `L²X ≫ Tl³`. Discarding the sign of `sin 2Tθ − sin Tθ` and the Lipschitz cancellation in `S⁺(y′) − S⁺(y)` forfeits all trans-threshold cancellation. |
 | Working with the sharp window `1_{[T,2T]}` | Pairs with `|θ| ≫ T⁻¹` still contribute `O(1/|θ|)` through the endpoints. A smooth weight, or Jackson grid weights, is needed to localize to `|θ| < 4b`. |
+| Expecting Jackson windows to reach the coalescent band | `F_b²` has cubic tails, so the outer Jackson mass is `≍ L/(b³M²)` and the far-pair error `≍ XL³/(b³M²)`; against the budget this forces `b ≫ X^{1/3}/T` (`b ≫ T^{−5/9}` at `λ = 4/3`). The "close pairs" `|log(n/m)| < 4b` then still include `T⁻¹ ≪ |θ| ≪ T^{−5/9}`, where the pair kernel is `≍ L/|θ|`. Jackson localization stops short of `h ≪ m/T`. |
+| Averaging over the height at fixed bandwidth | The cutoff `X(T)` moves with `T`, and the moving cutoff costs `≍ √ε X log²X`. Height averaging localizes at fixed `L` (§3.6), so it needs core estimates uniform in `λ`. |
+| Using the Lorentz mean value on the close pairs | It is a size bound of Montgomery–Vaughan shape; on a window of length `R ≍ T` it sees `|log(n/m)| ≲ 1/R` only through their number. The close-pair problem is a signed one. |
 | Positive spectral majorants | Montgomery's shift method uses only `F ≥ 0` and `F(α) = |α|` on `[−1, 1]`; the shifted Fejér kernel then gives `8/27`, a factor `8/3` above `1/9` (`fejer_shifted_bound_gap`). Arithmetic input on `[1, 4/3]` is required. |
 | Higher moments to bypass pair correlation | `tr(G̃^k)` in its unconditional range forces `kλ ≤ 1`, so `λ ≤ 1/3` for `k ≥ 3` (`higherMoment_rudnick_sarnak_cap`): higher moments shrink the bandwidth. |
 | Reading `PrimeSurplusFourThirds` as established | It is the premise of `RHTower.zeta_three_quarters_of_prime_surplus`. The unconditional content is the reduction of §3, not the bound. |
@@ -268,14 +319,18 @@ Built and reusable:
 - *Second-moment tail reduction* of the cosine part and the exact Dirichlet mean-value identity.
 - *Bilinear end-effect splitting* along `μ + Π_X + P_X`.
 - *Jackson grid weights*: band-limited products, exact close-pair support and alias separation.
+- *Height averaging*: oscillatory decay of averaged pair kernels at fixed `L`.
+- *Fejér and Lorentz mean squares*: exact positive pair sums, the `(R + X)` mean value on Lorentz
+  windows.
+- *Smooth grid weights*: the exact weighted-kernel difference and the Lorentz grid-sum lemma.
 - *Form-factor calculus*: the split of `κ`, the bridge to the prime surplus, the Fejér and
   Rudnick–Sarnak barriers.
 
 To be built:
 
 - a signed bound on the mixed mean value `∫_T^{2T}(C_gC_1 + S_gS_1)` at `X = T^{4/3}`;
-- the Jackson-weighted bandwidth-`4/3` trace assembly, with the sum frequencies and far pairs paid
-  by the outer Jackson mass;
+- the smooth-weighted bandwidth-`4/3` trace assembly, with the far pairs and sum frequencies paid
+  by the weight and the coalescent band isolated;
 - a close-pair estimate in the narrow strips `λ = 1 + δ`.
 
 ---
@@ -286,9 +341,17 @@ To be built:
    `primeSurplus ≤ (1/18 + o(1))(aL)²Tℓ₁/2π`, or equivalently through §3.2 that
    `(1/π)∫_T^{2T}(C_g(τ)C_1(τ) + S_g(τ)S_1(τ))dτ ≤ (4/9 + 1/18 + o(1))(aL)²Tℓ₁/2π`, unconditionally or
    under the weakest arithmetic mean-value input that suffices.
-2. **The Jackson-weighted trace.** Replace the unweighted Frobenius norm by the Jackson-weighted
-   one in the bandwidth-`4/3` assembly, so that the sum frequencies and far pairs are bounded by the
-   outer Jackson mass `O(M^{−3} + LM^{−2})` instead of `O(XL)`, with the same `1/18` budget.
+2. **A weighted trace that reaches the coalescent band.** Replace the unweighted Frobenius norm in
+   the bandwidth-`4/3` assembly by a weighted one, with the same `1/18` budget, so that far pairs
+   and sum frequencies are paid by the weight and the remainder is the coalescent band
+   `|log(n/m)| ≤ T^{−1+η}`. Jackson weights pay them by the outer mass but cannot reach the band;
+   height averaging reaches it only at fixed `L` (§3.6). The open route is a smooth compactly
+   supported grid weight at fixed `λ` (§3.8): compare the weighted grid kernel with the smooth
+   continuous form `∬W(τ)²Φ²νν′` up to `O(Lip W)`, evaluate that form channel by channel (archimedean,
+   prime diagonal, far pairs, sum frequencies, cross terms), whose pair kernels decay like
+   `‖(W²)^{(k)}‖₁/|θ|^k`, and assemble through the weighted seam. The target statement is
+   `N₀*(T, 2T) ≥ (29/36 − ε − c_coal(T))N(T, 2T)`, with `c_coal` the normalized coalescent prime-pair
+   sum: the whole question of open problem 1 placed on the band of open problem 3.
 3. **Close pairs in short multiplicative intervals.** For `T < m < n ≤ T^{4/3}`,
    `0 < n − m = h ≪ m/T`, control the signed correlation
    `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T log(1 + h/m))` beyond the factor two lost by upper-bound sieves.
@@ -336,3 +399,6 @@ To be built:
 | `ArchimedeanEndEffectAndSurplusSplitting` | trinomial splitting of the end-effect form; `X`-free archimedean end-effect bound |
 | `JacksonWeightedPrimeFrobeniusDecomposition` | compact support of the Jackson pair kernel, alias separation, global close-pair reduction |
 | `FormFactorThresholdAndShiftInequality` | form-factor split of `κ`, the `1/9` equivalence, the prime-surplus bridge, the Fejér gap, the Rudnick–Sarnak cap |
+| `HeightAveragedCoalescentLocalization` | oscillatory decay of height-averaged pair kernels; far pairs and sum frequencies negligible at fixed `L` |
+| `FejerWeightedPrimeMeanSquare` | Fejér mean square as an exact pair sum; Lorentz-weighted `(R + X)` mean value |
+| `SmoothGridWeightKernel` | grid kernel of a smooth height weight; Lipschitz comparison; Lorentz grid sums |

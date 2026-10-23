@@ -34,6 +34,15 @@ AOT is the programme that makes orientation the primitive object. It supplies
   and the parity floor as a statement about readings;
 - the **critical Wiener monoid**, the stability group of the class "paid", and **Wiener's lemma**
   for it: the Banach algebra `𝒲_{1/2}`, whose spectrum is the Bohr polydisk;
+- the **section effectivity cone** `E = {x : h⁰(x) ≥ 1}` (`TheEffectivityConeFromSections`), whose
+  Bézout axiom is equivalent to the Hodge index on every polar surface, giving the curve Hodge
+  index over `𝔽_q`, failing on the golden datum, and isolating the four properties of the ring `ℤ`
+  that it uses;
+- the **index theorem of the receiver** (`TheIndexTheoremOfTheReceiver`), proving that the pole-order
+  and zero-multiplicity laws of the receiver are exact counts of sections (`J − h⁰ = r`, `h¹ = 0` on
+  `poleJetMatrix`, and `h⁰ = r` on `principalPartReading` / `zetaJetDiagReading`) and computing the
+  continuous Euler characteristic of the prime-power node divisor `nodeDivisorEulerChar s =
+  e^s + s − 1 − ψ(e^s)` from the reflected prime-polar ledger;
 - the **width dictionary** as one theorem.
 
 | Neighbour | Interface |
@@ -159,6 +168,20 @@ annihilates), and their number obeys a rank–nullity Riemann–Roch and a Nyqui
   `absConv`, and the complex absolute kernel `absWeight`.
 - **Residue combinations.** `residueCombination S a = Σ_{d ∈ S} a_d v_d` in `c₀`, with `v_d` the
   normalized residue modes of the damping chain.
+- **Cycle section readings and the section effectivity cone.** On any polar surface `S : PolarSurface C`,
+  `cycleObstructionReading S x : Matrix (Fin 1) (Fin 1) ℂ` is `0` when `x` lies in the nef quadrant
+  `nefQuadrant S = {x | 0 ≤ x · H ∧ 0 ≤ x · V}` and its polar budget `S.polar x x` covers its
+  defect `S.defect x x` (`0 ≤ x²`), and `1` otherwise. Its section count from `TheNyquistRankBound`
+  is `cycleH0 S x = h0 (cycleObstructionReading S x)`, and the section effectivity cone is
+  `sectionEffectivityCone S = {x | 1 ≤ cycleH0 S x} = S.positiveCone ∩ nefQuadrant S`.
+- **Pole-jet and zeta-jet readings of the receiver.** `poleJetMatrix J ε r : Matrix (Fin r) (Fin J) ℂ`
+  evaluates the logarithmic pole moments `∑_{d ≤ J} k(d) d^{−(1−ε)} (log d)^m` (`m < r`) on
+  `kernelVec k J`; `principalPartReadingOne k J ε` and `principalPartReadingTwo k J ε` read the
+  pole jet `(poleValue, poleSlope)` on the `r`-dimensional principal-part space; `zetaJetDiagReading ε t m`
+  is the `m × m` diagonal jet evaluation `diag(ζ(ρ), ζ'(ρ), …, ζ^{(m−1)}(ρ))` at `ρ = 1 − ε + it`.
+- **Node-divisor Euler characteristic.** For a discrete reading `A`, `discreteEulerChar A = h⁰(A) − h¹(A) = dim − #nodes`.
+  On the logarithmic horizon box `[0, s]`, `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s = e^s + s − 1 − ψ(e^s)`
+  (and `generalizedNodeDivisorEulerChar w s = polarBoxDoF s − weightedNodeCount w s`).
 
 ### 2.3 Words
 
@@ -407,6 +430,27 @@ Frobenius reflection defect reading resolves it on every `CurveDatum ι`
 
 The complete-period lag-covariance reading `completePeriodLagReading N c = (finiteHarmonicSum N c, fun h => TwoLagSieve.periodCovariance N c h)` refines all 12 complete-period quadratic forms of the sieve theory (`sieveVariance`, `bezoutCoprimeQuadraticForm`, `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `sievePoincareExcess`, `successorPhaseLoss`, `sievePrimitiveEnergy`, `sieveVarianceAboveParity`, `selbergTotientDiagonalForm`, `franelGcdQuadraticForm`, `tupleVariance N · H`, and `SieveMoments.translatedMoment N · (v : Fin 2 → ℕ)`) (`refines_completePeriodLagReading_*`). Its shadow at `c₁` (`N ≥ 1`) is the exact `(ℤ/2ℤ)^{N-1}` sign-character orbit of `c₁` on `Icc 1 N` (`mem_shadow_completePeriodLagReading_iff_signOrbit`). Consequently, every mean-preserving sign character `ε` (`ε 1 = 1`, `ε(q)² = 1`) — including `evenFlipRow N` and `singleModeSignFlip q₀` (`q₀ ≥ 2`) — is invisible to `completePeriodLagReading N` and to every complete-period quadratic form (`invisible_completePeriodLagReading_scaledSelbergRow`, `invisible_completePeriodLagReading_evenFlipRow`), and for `N ≥ 3` the reading fails to resolve `sieveSeq N c k` at every `k ∈ ℕ`, the sign `0 ≤ vonMangoldtReadout N c`, and the first-cell defect sign `sieveRenormalizedPrefixDefect N 1 c < 0`, witnessed by `primePairPlusWeight N` and `primePairMinusWeight N` (`not_resolves_completePeriodLagReading_sieveSeq`, `not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg`, `not_resolves_completePeriodLagReading_renormalizedPrefixDefect_neg`).
 
+### 3.10 The effectivity cone from sections (`TheEffectivityConeFromSections`)
+
+1. **Definition from `h⁰`.** On any polar surface `S : PolarSurface C`, `cycleH0 S x = h0 (cycleObstructionReading S x)` equals `1` when `x` lies in `nefQuadrant S = {x | 0 ≤ x · H ∧ 0 ≤ x · V}` and its polar budget `S.polar x x = 2(x · H)(x · V)` covers its Castelnuovo–Severi defect `S.defect x x` (`0 ≤ x²`), and `0` otherwise (`cycleH0_eq_ite`, `mem_sectionEffectivityCone_iff_defect_le_polar`). Thus `sectionEffectivityCone S = {x | 1 ≤ cycleH0 S x} = S.positiveCone ∩ nefQuadrant S` (`sectionEffectivityCone_eq_positiveCone_inter_nefQuadrant`).
+2. **Exact Bézout, Riemann–Roch, and Hodge-index equivalence.** On *every* polar surface `S`, the Hodge index theorem, the Bézout axiom `S.BezoutAxiom (sectionEffectivityCone S)`, the Riemann–Roch axiom `S.RiemannRochAxiom (sectionEffectivityCone S)`, the ample axiom `S.AmpleAxiom (sectionEffectivityCone S)`, and the full Castelnuovo–Severi package are equivalent (`sectionEffectivityCone_bezout_iff_hodgeIndex`, `sectionEffectivityCone_riemannRoch_iff_hodgeIndex`, `sectionEffectivityCone_ample_iff_hodgeIndex`, `sectionEffectivityCone_tfae`). If a primitive cycle `x` had `X = x² > 0`, the two cycles `z₁ = (X + 1)x + X(H + V)` and `z₂ = −(X + 1)x + X(H + V)` would both have `zᵢ · H = X > 0`, `zᵢ · V = X > 0`, and `zᵢ² = (X + 1)² X + 2X² > 0` (`cycleH0 S zᵢ = 1`), yet collide with `z₁ · z₂ = −(X³ + X) < 0`.
+3. **Curve calibration over `𝔽_q` vs. refutation on `goldenDatum`.** For any curve datum `D : CurveDatum ι`, the Bézout axiom for `sectionEffectivityCone (D.windowSurface W)` across all windows `W` is equivalent to the curve Hodge index, to `∀ i, ‖D.β i‖ = 1`, and to the Hasse–Weil bound (`curve_sectionEffectivityCone_bezout_tfae`, `curve_unitary_sectionEffectivityCone_castelnuovoSeveri`). On `goldenDatum.windowSurface {0, 1}`, both `goldenForwardPlus` and `goldenForwardMinus` belong to `sectionEffectivityCone` (`cycleH0 = 1`, `· H = 1`, `· V = 1`, `e_±² = 10`), yet `goldenForwardPlus · goldenForwardMinus = −6 < 0`, refuting both `BezoutAxiom` and `RiemannRochAxiom` (`goldenDatum_not_bezout_sectionEffectivityCone`).
+4. **The four properties of the ring `ℤ` used by Bézout and section effectivity.**
+   - *Pillar I (Unique factorization + archimedean order):* `Λ(ab) ≠ 0` on distinct integers `a ≠ b ≥ 2` forces `a = p^i, b = p^j` into one prime tower with `p^{|i−j|} < p^{i+j}` (`primeKernel_log_add_le`), making the integer log-lattice odd Weil ledger balanced at every aperture (`ringZ_pillar_one_primeTower_and_lattice_balance`).
+   - *Pillar II (Archimedean collar nonnegativity vs. uncalibrated positivity cones):* on the reflected prime-polar ledger of `ℤ`, `surplusPool` and `crossingPotentialTerm` are nonnegative (`ringZ_pillar_two_archimedean_collar_and_posTestCone`), whereas disjoint nonnegative cycles on `scalingSurface` meet nonnegatively (`DistinctEffectiveCyclesMeetNonnegatively.localPair_nonneg`) and `posTestCone` fails `RiemannRochAxiom` (`posTestCone_not_riemannRoch`).
+   - *Pillar III (Additive two-pole cancellation and prime-2 selectivity vs. linear kernels):* `polarBoxDoF s − primeNodeCount s = chebyshevTwoPoleDefect s = e^s + s − 1 − ψ(e^s)`, which strictly dominates `shiftedPairVonMangoldt a` (`a ≠ 0`) for `s ≥ log 2` (`ringZ_pillar_three_twoPole_selectivity`), whereas right-multiplying a linear reading by diagonal weights of equal support leaves `h0` invariant (`h0_mul_diagonal_eq_of_iff_eq_zero`).
+   - *Pillar IV (Unconditional Castelnuovo–Severi past the first prime `2` of `ℤ` and global width dictionary):* `sectionEffectivityCone` satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` unconditionally on `scalingSubsurface (oddRealTestsAt r)` for `0 < r ≤ 181/500` and on `scalingSubsurface (primitiveSmoothRealTestsAt r)` for `0 < r ≤ (log 2 + 1/50)/2` (`scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le`, `scalingSubsurface_primitiveSmooth_sectionEffectivityCone_castelnuovoSeveri_of_le`), and globally on `scalingSurface` is a unit of the width dictionary (`sectionEffectivityCone_widthDictionary_tfae`).
+
+### 3.11 The index theorem of the receiver (`TheIndexTheoremOfTheReceiver`)
+
+1. **General vanishing law and discrete Euler characteristic.** For any `A : Matrix m n ℂ`, `h0 A = Fintype.card n ↔ A = 0` (`h0_eq_card_iff_eq_zero`), and `discreteEulerChar A = h⁰(A) − h¹(A) = dim − #nodes` (`discreteEulerChar_eq_card_sub`).
+2. **The pole law of the receiver is a count of sections.** For `0 < ε ≤ ½` and a kernel `k` supported on `[1, J]`:
+   - *Order-1 pole (`d^{−ε}`):* `ReceiverBounded (k ⋆ d^{−ε})` holds iff `kernelVec k J ∈ ker (poleJetMatrix J ε 1).mulVecLin`, and iff `h0 (principalPartReadingOne k J ε) = 1` (`receiverBounded_orderOnePole_iff_sections`). For `1 ≤ J`, `poleJetMatrix J ε 1` is surjective with `rank = 1`, `h¹ = 0`, `h⁰ = J − 1`, and section codimension `J − h⁰ = 1` (`poleJetMatrix_one_rank_h1_h0`).
+   - *Order-2 pole (`log d · d^{−ε}`):* `ReceiverBounded (k ⋆ (log d · d^{−ε}))` holds iff `kernelVec k J ∈ ker (poleJetMatrix J ε 2).mulVecLin`, and iff `h0 (principalPartReadingTwo k J ε) = 2` (`receiverBounded_orderTwoPole_iff_sections`). For `2 ≤ J`, `poleJetMatrix J ε 2` is surjective with `rank = 2`, `h¹ = 0`, `h⁰ = J − 2`, section codimension `J − h⁰ = 2` (`poleJetMatrix_two_rank_h1_h0`), and exact section drop `h0 (poleJetMatrix J ε 1) − h0 (poleJetMatrix J ε 2) = 1` (`h0_poleJetMatrix_one_sub_two`), witnessed by `fermiKernel ε` at `J = 2` and `doubleFermiKernel ε` at `J = 3` (`fermi_and_doubleFermi_poleJetSections`).
+3. **The zero-order receiver law is a count of sections.** For `0 < ε ≤ ½`, `t > 0`, and `k ∈ ℕ`, `ReceiverBounded (logPowerCosine ε t k)` holds iff the `(k + 1) × (k + 1)` diagonal jet reading `zetaJetDiagReading ε t (k + 1)` at `ρ = 1 − ε + it` has `h⁰ = k + 1` (`receiverBounded_logPowerCosine_iff_h0_eq`, `receiverBounded_oscillatingSmoothPower_iff_h0_eq`).
+4. **Euler characteristic of the node divisor from the ledger.** On `[0, s]`, `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s = chebyshevTwoPoleDefect s = e^s + s − 1 − ψ(e^s)` (`nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect`, `nodeDivisorEulerChar_below_first_prime`, `nodeDivisorEulerChar_first_prime_window`, `generalizedNodeDivisorEulerChar_shiftedPair_lt`). On `scalingSubsurface (oddRealTestsAt r)`, the reflected prime-polar ledger computes the lag-weighted integral of `nodeDivisorEulerChar` on `(0, 2r]` directly as `surplusPool + crossingPotentialTerm + gaugeRemainder − δ(x, x)` (`nodeDivisorEulerChar_integral_from_ledger`).
+5. **The Master Receiver Index Theorem and Extended Dictionary.** `receiver_index_theorem` and `receiverIndexAndSectionConeDictionary_tfae` unite the pole-order section law, the zero-multiplicity section law, the right-zero Hodge defect (`zeta_hodgeDefect_iff`), the node-divisor Euler characteristic ledger law, and the section effectivity cone `sectionEffectivityCone scalingSurface`.
+
 ---
 
 ## 4. Mechanisms
@@ -477,7 +521,19 @@ first pronic moment identity, the parity pair of the Fermi weight) are proved co
    mass by the prime-sum charge.
 8. **How is the ratio part oriented?** Coset by coset: it is a sum of one-sided Toeplitz forms
    over the `p`-free cosets, against one Hankel square on the unit coset.
-6. **Is RH the same statement in every unit?** Yes: `widthDictionary_tfae`.
+9. **Does the section effectivity cone `E = {x : h⁰(x) ≥ 1}` satisfy the Bézout axiom?** Yes if
+   and only if the polar surface satisfies the Hodge index (`sectionEffectivityCone_bezout_iff_hodgeIndex`):
+   it gives the curve Hodge index over `𝔽_q`, fails on `goldenDatum` (`e_+ · e_− = −6 < 0`), and
+   holds unconditionally past the first prime `2` of `ℤ` by unique factorization / prime-tower
+   balance, Lévy–Khintchine collar positivity, and two-pole Chebyshev cancellation.
+10. **How does the receiver read pole orders, zero multiplicities, and the node-divisor Euler
+    characteristic?** As exact section counts (`J − h⁰(poleJetMatrix J ε r) = r` with `h¹ = 0`,
+    `h⁰(principalPartReading) = r`, and `h⁰(zetaJetDiagReading ε t (k+1)) = k + 1`), while the
+    continuous Euler characteristic `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s =
+    e^s + s − 1 − ψ(e^s)` is computed directly from the reflected prime-polar ledger
+    (`nodeDivisorEulerChar_integral_from_ledger`, `receiver_index_theorem`).
+6. **Is RH the same statement in every unit?** Yes: `widthDictionary_tfae`,
+   `sectionEffectivityCone_widthDictionary_tfae`, and `receiverIndexAndSectionConeDictionary_tfae`.
 
 ### 6.2 Tools
 
@@ -496,10 +552,14 @@ Built and reusable:
 - the *coset decomposition* of dilation correlations through the `p`-free part;
 - the *inverse tower* and the *uniqueness of inverses* in the Wiener monoid;
 - the *Euler characteristic* `h⁰ − h¹` of a reading at nodes;
-- the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk.
+- the *Banach algebra* `𝒲_σ`, its *Bohr characters* and *Wiener's lemma* on the polydisk;
+- the *section effectivity cone* `sectionEffectivityCone S = {x : 1 ≤ cycleH0 S x}` and its
+  Bézout–Riemann–Roch–Hodge-index classification;
+- the *pole-jet* and *zeta-jet* section readings (`poleJetMatrix`, `principalPartReadingOne`,
+  `principalPartReadingTwo`, `zetaJetDiagReading`) and the *node-divisor Euler characteristic*
+  `nodeDivisorEulerChar` with its reflected prime-polar ledger identity.
 
-To be built (§7): a section functor beyond the finite-dimensional skeleton; an orientation-faithful
-norm on damped weights; the aperture-derivative identity.
+To be built (§7): an orientation-faithful norm on damped weights; the aperture-derivative identity.
 
 ---
 
@@ -529,12 +589,24 @@ norm on damped weights; the aperture-derivative identity.
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
    logarithm at `1`-separated heights, and read the resulting injectivity threshold against the
    square-root threshold of the aperture.
-8. **The effectivity cone from sections.** With `h⁰` from problem 3, define `E = {x : h⁰(x) ≥ 1}`
-   and prove or refute the Bézout axiom for it. It must give the curve Hodge index over `𝔽_q`
-   and fail on the golden datum; locate the property of the ring `ℤ` that it uses.
-9. **The index theorem of the receiver.** The pole law of the receiver reads the order of a pole,
-   and the Hodge defect is the number of right zeros. Prove that the order read by the receiver is
-   a count of sections, and compute the Euler characteristic of the node divisor from the ledger.
+8. **The effectivity cone from sections.** Answered by §3.10 (`TheEffectivityConeFromSections`):
+   with `cycleH0 S x = h0 (cycleObstructionReading S x)`, `sectionEffectivityCone S = {x | 1 ≤ cycleH0 S x} =
+   S.positiveCone ∩ nefQuadrant S` satisfies `S.BezoutAxiom (sectionEffectivityCone S) ↔ S.HodgeIndex`
+   and `S.RiemannRochAxiom (sectionEffectivityCone S) ↔ S.HodgeIndex` on every polar surface `S`;
+   it gives the curve Hodge index over `𝔽_q` (`curve_sectionEffectivityCone_bezout_tfae`), fails on
+   `goldenDatum` (`goldenDatum_not_bezout_sectionEffectivityCone`), and uses the four properties of
+   `ℤ` formalized in `ringZ_pillar_one_primeTower_and_lattice_balance`,
+   `ringZ_pillar_two_archimedean_collar_and_posTestCone`, `ringZ_pillar_three_twoPole_selectivity`, and
+   `scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le`.
+9. **The index theorem of the receiver.** Answered by §3.11 (`TheIndexTheoremOfTheReceiver`):
+   the pole order `r ∈ {1, 2}` read by the receiver is the section codimension
+   `J − h0 (poleJetMatrix J ε r) = r` (with `h¹ = 0`) and equals `h0` on the principal-part reading
+   (`receiverBounded_orderOnePole_iff_sections`, `receiverBounded_orderTwoPole_iff_sections`), the
+   zero multiplicity `k + 1` at `1 − ε + it` is `h0 (zetaJetDiagReading ε t (k + 1)) = k + 1`
+   (`receiverBounded_logPowerCosine_iff_h0_eq`), and the continuous Euler characteristic of the
+   prime-power node divisor `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s =
+   e^s + s − 1 − ψ(e^s)` is computed directly from the reflected prime-polar ledger
+   (`nodeDivisorEulerChar_integral_from_ledger`, `receiver_index_theorem`).
 10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
     form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
     dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence

@@ -543,9 +543,16 @@ that every successful route must use the same mechanism.
   form `E_ε(n) = Σ_{j≤n} Λ(j)j^{−ε}A_ε(⌊n/j⌋) + m₀(ε)Ψ_ε(n) − n m(ε)`
   (`ArithmeticContinuationAndCriticalEnergy.dampedChebyshevError_eq_dilation`), the inversion law
   `Σ_{j≤n} j^{−ε}A_ε(⌊n/j⌋) = n − m₀(ε)Σ_{j≤n} j^{−ε}⌊n/j⌋`
-  (`ArithmeticContinuationAndCriticalEnergy.sum_rpow_mul_centeredPrefix_eq`) and the exact
+  (`ArithmeticContinuationAndCriticalEnergy.sum_rpow_mul_centeredPrefix_eq`), the exact
   composition `D^f D^g = D^{f*g}` of prefix dilations
-  (`ArithmeticContinuationAndCriticalEnergy.prefixDilation_comp`).
+  (`ArithmeticContinuationAndCriticalEnergy.prefixDilation_comp`), and its consequence
+  `Λ_ε = μ_ε * (log)_ε`: the tangent is the Möbius dilation of one explicit Möbius-free row
+  (`ArithmeticContinuationAndCriticalEnergy.dampedChebyshevError_eq_moebiusDilation`). The prime
+  dilation form and the Möbius dilation form are two decompositions of the same tangent, and
+  their compatibility is the kind of second constraint §6 asks for. In the accounting of the
+  work the only unpaid term is quadratic in the deviation `A_ε − 1`, bounded by
+  `Σ_{j≤T}Λ(j)j^{−(ε+1/2)}` times the Báez–Duarte residual
+  (`ArithmeticContinuationAndCriticalEnergy.abs_workQuadratic_le_energy`).
 - **Length-uniform short windows** from fixed-length ones (`tileSeq`), reusable for any exponent
   at which the corpus owns a fixed-length theorem.
 

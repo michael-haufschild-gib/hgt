@@ -1384,7 +1384,14 @@ $\lvert C\rvert^2\gtrsim1/\lvert s-1/2\rvert$. Below half damping only $\rho\in\
 (`not_receiverBounded_residueFlip`). For $S$ closed under inversion on the units, orthogonality
 gives the Euler bound $\lvert F\rvert\le e^B\lvert\zeta\rvert^{1-2\rho}\prod_{\chi\ne1}\lvert L(\cdot,\chi)\rvert^{e_\chi}$
 with real exponents, and the quarter law is exact: paid at half damping iff $\rho>1/4$
-(`receiverBounded_residueFlip_half_iff`). For a subgroup $H$ of index $k\ge2$, flipping the primes
+(`receiverBounded_residueFlip_half_iff`). Symmetry is not needed. For an arbitrary $S$ the character
+coefficients $s_\chi=\sum_{u\in S}\chi(u^{-1})$ are complex, and the prime sum of $\chi$ is replaced by
+the Euler logarithm $\ell_\chi$ of $L(\cdot,\chi)$, which is bounded on boxes for $\chi\ne1$ and grows
+like $9\log\log\lvert\Im w\rvert$ right of the one-line (`RHTower.exists_norm_eulerLog_le_large`).
+Complex exponents therefore cost only a power of $\log\lvert\Im w\rvert$, the same line-energy argument
+applies, and for every $q\ge1$ and every $S\subseteq\mathbb Z/q$ the flip is paid at half damping iff
+$\varphi(q)<4\#(S\cap(\mathbb Z/q)^\times)$ (`receiverBounded_residueFlip_half_iff_general`): the
+proportion $1/4$ is the exact threshold on the whole residue family. For a subgroup $H$ of index $k\ge2$, flipping the primes
 outside $H$ gives $\rho=1-1/k$ and $\zeta$-exponent $2/k-1\in[-1,0]$, so only $1/\lvert\zeta\rvert$ and
 $\lvert L\rvert$ from above are needed — no zero-free region for $L$; for $k\ge3$ the receiver of
 $f_H(d)d^{-\varepsilon}$ is paid exactly for $\varepsilon\ge1/2$ (`receiverBounded_subgroupFlip_iff`).
@@ -1398,6 +1405,19 @@ For $t_0\ne0$ the real-axis prime sums are bounded, so the prime mean is $0$ for
 and the prime signs do not depend on $a>0$. Choosing $\zeta(\tfrac12+it_0)\ne0$, the amplitudes
 $1/2$ and $1$ give a paid and an unpaid weight with the same prime signs and the same prime mean
 (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
+
+**The phase law.** Shifting the phase, $f(p)=a\cos(t_0\log p+\varphi)$ with $\lvert a\rvert\le1$ and
+$t_0\ne0$, the half-damped weight is paid iff $a\cos\varphi<1$ or $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_phaseWeight_iff`). Writing $f(p)p^{-w}=bp^{-(w-it_0)}+\bar bp^{-(w+it_0)}$ with
+$b=\tfrac a2e^{i\varphi}$, $\log\lvert F\rvert$ is $\Re(b\,\ell(w-it_0)+\bar b\,\ell(w+it_0))$ up to a
+bounded term, $\ell$ the Euler logarithm of $\zeta$. Its real part $\log\lvert\zeta\rvert$ carries
+$a\cos\varphi$; its imaginary part $\arg\zeta$ carries $a\sin\varphi$, and the argument is bounded at
+the pole (`RHTower.exists_abs_im_zetaEulerLog_le`) and $O(\log\log t)$ at height $t$. So the line
+integrand has the singularity $\lvert t-t_0\rvert^{-(a\cos\varphi)^+}$, integrable iff $a\cos\varphi<1$:
+the receiver reads only the real part $\Re(ae^{i\varphi})$ of the complex amplitude, and the
+imaginary part couples to $\arg\zeta$, which creates no singularity. A general payment criterion for
+patterns from strip bounds on their Dirichlet series (`receiverBounded_pattern_half_of_bounds`)
+underlies all the sufficiency directions of this section.
 
 **Reading.** Neither the density of flipped primes nor the real-axis prime mean decides the
 receiver of a multiplicative weight; the size of its Dirichlet series beside the line
@@ -1582,23 +1602,27 @@ inside an equivalence.
    `abs_dirichletSeries_sub_mean_le_of_energy`).
 9. **Horizon-limit commutation starts at half damping.** Uniformly paid rows pay the limit, and the
    converse holds on the damped class exactly from $\varepsilon=1/2$ (`horizonLimit_commutes_with_receiver_iff`).
-10. **Multiplicative phase diagrams.** The constant-sign plane, the quarter law of symmetric residue
-    flips, subgroup flips and oscillating prime patterns are decided exactly
-    (`receiverBounded_constantSign_damped_iff`, `receiverBounded_residueFlip_half_iff`,
-    `receiverBounded_subgroupFlip_iff`, `receiverBounded_oscWeight_phase_diagram_iff`); prime signs and
-    prime means do not decide the receiver (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
+10. **Multiplicative phase diagrams.** The constant-sign plane, the quarter law on every residue
+    flip, subgroup flips, oscillating prime patterns and their phase shifts are decided exactly
+    (`receiverBounded_constantSign_damped_iff`, `receiverBounded_residueFlip_half_iff_general`,
+    `receiverBounded_subgroupFlip_iff`, `receiverBounded_oscWeight_phase_diagram_iff`,
+    `receiverBounded_phaseWeight_iff`); prime signs and prime means do not decide the receiver
+    (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
 11. **The receiver reads the zero divisor.** Oscillating log-power probes are paid exactly at zeros
     of $\zeta$ of the matching order, and the half-damped probe energy measures $\lvert\zeta\rvert^2$ on
     the critical line (`receiverBounded_logPowerCosine_iff_all`, `tendsto_probeEnergy_half_div_log`).
 12. **Fermi observability.** Dyadic schedules are injective exactly when at most one slot is
     missing, and the optimal physical inverse constant grows like $(4/\pi^2)(\log_2N)^2$
     (`not_fermiScheduleInjective_of_two_missing_levels`, `fermiPhysicalInverseConstant_logb_limit`).
-13. **Complete-period quadratic agreement across parity row pairs.** The torus Poincaré excess
-    `sievePoincareExcess` and all 12 complete-period quadratic forms coincide on `evenFlipRow N c`
-    and `c`, on `chiFourTwinRow ε N` and `chiFourRow ε N`, on `charTwinRow χ ε N` and
-    `charRow χ ε N`, and on `evenFlipRow N (fermiRow ε N)` and `fermiRow ε N` at every horizon
-    `N ≥ 1`, while for `0 < ε ≤ 1/2` their trans-horizon pronic receivers `horizonPronicEnergy`
-    split into bounded vs. unbounded (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`).
+13. **Complete-period data cannot see a parity pair.** For every horizon $N\ge1$ the torus
+    Poincaré excess and every complete-period quadratic form of the sieve (mean, Selberg and Bézout
+    forms, variance, successor covariance and reserve, primitive energy, Franel gcd form, lag
+    covariances, tuple variances) take the same value
+    on the two rows of each parity pair — a row and its even flip, the $\chi_4$ row and its twin, a
+    real character row and its twin, the Fermi row and its even flip — while for
+    $0<\varepsilon\le1/2$ their trans-horizon pronic receivers split into bounded and unbounded
+    (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`). The parity barrier is a theorem about
+    finite rows, not only about limits.
 
 ---
 
@@ -1656,7 +1680,8 @@ inside an equivalence.
 | Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
 | A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
 | Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
-| The density of flipped primes decides the receiver of a sign pattern | Only on symmetric residue patterns (quarter law). Oscillating prime patterns with the same prime signs and the same prime mean can be paid and unpaid; the receiver reads the size of the Dirichlet series beside the line at every height. |
+| The density of flipped primes decides the receiver of a sign pattern | Only on residue patterns (quarter law). Oscillating prime patterns with the same prime signs and the same prime mean can be paid and unpaid; the receiver reads the size of the Dirichlet series beside the line at every height. |
+| The receiver sees the complex amplitude of a prime oscillation | It sees only $\Re(ae^{i\varphi})$: the imaginary part couples to $\arg\zeta$, which is bounded at the pole. Two phase shifts with the same $a\cos\varphi$ have the same receiver. |
 | Below half damping a flipped density near $1/2$ is enough | A paid weight needs logarithmic prime mean in $\{0,-1\}$ exactly, at every height (integer-order obstruction); subgroup flips of index $k\ge3$ are unpaid at every $\varepsilon<1/2$. |
 | Payment of a probe is an estimate for Möbius | Probe theorems evaluate weights whose series are known in terms of $\zeta$; the Möbius series $1/\zeta(s+\varepsilon)$ is the unknown. |
 | Real-axis abscissa blowup or Lipschitz tests detect unpaid oscillating probes $d^{-\varepsilon}\cos(t\log d)$ ($t\ne0$) | For $t\ne0$, $\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$ converges to $\operatorname{Re}\zeta(1-it)$ and is Lipschitz at $\sigma=1-\varepsilon$ whether $c_{\varepsilon,t}$ is paid or unpaid; the pole sits at $1-\varepsilon\pm it$. |
@@ -1802,15 +1827,17 @@ that control the complete boundary energy.
 
 ### 7.7 Beyond the solved phase diagrams
 
-The constant-sign plane, symmetric residue flips, subgroup flips and single-frequency oscillating
-patterns are decided. For non-symmetric residue flips with $\rho>1/4$ the nonprincipal coefficients
-are complex; the route is the bound $-\Re(s_\chi\sum_p\chi(p)p^{-w})\le\lvert s_\chi\rvert(\lvert\ell_\chi(w)\rvert+S)$
-by the Euler logarithm $\ell_\chi$ of $L(\cdot,\chi)$, which grows like $\log\log\lvert\Im w\rvert$
-beside the line and leaves the line-energy argument intact. Open beyond residue patterns: patterns
-mixing several frequencies or amplitudes varying with the prime, and a classification of general
-multiplicative spectra. The phase diagrams fix what such a classification
-must read: the Dirichlet series beside the line at every height, never only the flipped density or
-the real-axis prime mean.
+The constant-sign plane, every residue flip, subgroup flips and single-frequency oscillating
+patterns with arbitrary phase are decided at half damping. The tools are uniform: an Euler-product
+bound $\lvert F\rvert\le e^B\lvert\zeta\rvert^{\alpha}\prod_\chi\exp(\cdots\lvert\ell_\chi\rvert)$ beside
+the line, with the Euler logarithms $\ell_\chi$ costing only powers of $\log\lvert\Im w\rvert$, and the
+line-energy criterion. Open: patterns mixing several frequencies, amplitudes varying with the prime,
+and a classification of general multiplicative spectra. Below half damping the integer-order
+obstruction is a necessary condition only; sufficient conditions there need the size of the
+series inside the strip, which for Liouville is the Möbius problem itself. The phase diagrams fix
+what such a classification must read: the real part of the Euler
+logarithm of the pattern's Dirichlet series beside the line at every height, never only the
+flipped density or the real-axis prime mean.
 
 ### 7.8 The dipole obstruction for the Möbius row
 

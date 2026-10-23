@@ -216,8 +216,9 @@ theorem cutDominated_of_sparse {c : ι → ι → ℝ} {E : ι → ι → Prop} 
     refine sum_le_sum fun i hi => ?_
     rw [← sum_sub_distrib]
     refine sum_le_sum fun j hj => ?_
-    by_cases hE : E i j <;> by_cases hc : c i j < 0 <;> simp [hE, hc] <;>
-      exact absurd (hneg i j (hne i hi j hj) hE) hc
+    by_cases hE : E i j
+    · simp only [hE, if_true]; split_ifs <;> norm_num
+    · simp [hE, hneg i j (hne i hi j hj) hE]
   -- the degree bounds on both sides of the cut
   have hrow : e ≤ S.card * D := by
     rw [he, card_eq_sum_ones, sum_mul]
@@ -277,9 +278,9 @@ theorem primeKernel_eq_zero_of_not_primeSum {u : ℝ} (hu : 0 ≤ u)
   · rw [hns n h, zero_div]
   · rfl
 
+omit [Fintype ι] in
 /-- **Off the prime sums the odd Weil ledger is strictly aligned** when the archimedean–polar
 weight is positive. -/
-omit [Fintype ι] in
 theorem oddFold_neg_of_not_primeSum {p : ι → ℝ} (hp : ∀ x, 0 < p x)
     (hinj : Function.Injective p) {α β : ℝ} (hα : 0 < α) (hβ : 0 ≤ β) (b : ι → ℝ) {x y : ι}
     (hxy : x ≠ y) (hns : ∀ n : ℕ, Real.exp (p x + p y) = n → Λ n = 0) :
@@ -322,6 +323,289 @@ theorem frustrationIndex_oddWeilLedger_of_sparse {p : ι → ℝ} (hp : ∀ x, 0
     exact hE ⟨hij, n, hn, lt_of_le_of_ne vonMangoldt_nonneg (Ne.symm hΛ)⟩
 
 end Ledger
+
+/-! ### The matched prime-sum family -/
+
+section Matched
+
+/-- `A n² ≠ B q` for a prime `q` dividing neither `A` nor `B`: `q` would divide `n`, hence `q²`
+would divide `B q`. -/
+theorem mul_sq_ne_mul_prime {q A B n : ℕ} (hq : q.Prime) (hA : ¬ q ∣ A) (hB : ¬ q ∣ B) :
+    A * n ^ 2 ≠ B * q := by
+  intro h
+  have h1 : q ∣ A * n ^ 2 := h ▸ dvd_mul_left q B
+  obtain ⟨m, rfl⟩ := hq.dvd_of_dvd_pow ((hq.dvd_mul.1 h1).resolve_left hA)
+  have h3 : A * q * m ^ 2 = B := by
+    have : A * (q * m) ^ 2 = (A * q * m ^ 2) * q := by ring
+    rw [this] at h
+    exact Nat.eq_of_mul_eq_mul_right hq.pos h
+  exact hB ⟨A * m ^ 2, by rw [← h3]; ring⟩
+
+variable {Q : Finset ℕ}
+
+/-- The ratio of a matched sample point: `3q/2` on the upper and `2q/3` on the lower point. -/
+def matchedRatio (x : ↥Q × Bool) : ℝ := if x.2 then 3 * ((x.1 : ℕ) : ℝ) / 2 else 2 * ((x.1 : ℕ) : ℝ) / 3
+
+/-- **The matched sample** of a set of primes: the positions `½ log(3q/2)` and `½ log(2q/3)`,
+whose sum is `log q`. -/
+def matchedPos (Q : Finset ℕ) (x : ↥Q × Bool) : ℝ := Real.log (matchedRatio x) / 2
+
+/-- The matched partner of a sample point. -/
+def matchedPartner (x : ↥Q × Bool) : ↥Q × Bool := (x.1, !x.2)
+
+theorem matchedPartner_ne (x : ↥Q × Bool) : x ≠ matchedPartner x := by
+  intro h
+  have h2 : x.2 = !x.2 := congrArg Prod.snd h
+  cases hb : x.2 <;> rw [hb] at h2 <;> exact absurd h2 (by decide)
+
+section Primes
+
+variable (hQ : ∀ q ∈ Q, q.Prime ∧ 5 ≤ q)
+include hQ
+
+theorem five_le_matched (x : ↥Q × Bool) : (5 : ℝ) ≤ ((x.1 : ℕ) : ℝ) := by
+  exact_mod_cast (hQ x.1 x.1.2).2
+
+theorem one_lt_matchedRatio (x : ↥Q × Bool) : 1 < matchedRatio x := by
+  have h5 := five_le_matched hQ x
+  unfold matchedRatio
+  split_ifs <;> linarith
+
+theorem matchedPos_pos (x : ↥Q × Bool) : 0 < matchedPos Q x :=
+  div_pos (Real.log_pos (one_lt_matchedRatio hQ x)) two_pos
+
+/-- `exp(2(p_x + p_y)) = r_x r_y`. -/
+theorem exp_matchedPos_add_sq (x y : ↥Q × Bool) :
+    Real.exp (matchedPos Q x + matchedPos Q y) ^ 2 = matchedRatio x * matchedRatio y := by
+  have hx := (one_lt_matchedRatio hQ x).le
+  have hy := (one_lt_matchedRatio hQ y).le
+  rw [← Real.exp_nat_mul, show ((2 : ℕ) : ℝ) * (matchedPos Q x + matchedPos Q y) =
+    Real.log (matchedRatio x) + Real.log (matchedRatio y) by unfold matchedPos; push_cast; ring,
+    Real.exp_add, Real.exp_log (by linarith), Real.exp_log (by linarith)]
+
+/-- A prime `≥ 5` of the family divides no square `m²` with `m ≤ 3`. -/
+theorem not_dvd_sq_of_matched {q : ℕ} (hq : q ∈ Q) {m : ℕ} (hm1 : 1 ≤ m) (hm3 : m ≤ 3) :
+    ¬ q ∣ m ^ 2 := fun h => by
+  have := Nat.le_of_dvd (by omega) ((hQ q hq).1.dvd_of_dvd_pow h)
+  have := (hQ q hq).2
+  omega
+
+/-- A prime `≥ 5` of the family divides no `m² q'` with `m ≤ 3` and `q'` another prime of the
+family. -/
+theorem not_dvd_sq_mul_of_matched {q q' : ℕ} (hq : q ∈ Q) (hq' : q' ∈ Q) (hne : q ≠ q') {m : ℕ}
+    (hm1 : 1 ≤ m) (hm3 : m ≤ 3) : ¬ q ∣ m ^ 2 * q' := fun h => by
+  rcases (hQ q hq).1.dvd_mul.1 h with h1 | h1
+  · exact not_dvd_sq_of_matched hQ hq hm1 hm3 h1
+  · exact hne ((Nat.prime_dvd_prime_iff_eq (hQ q hq).1 (hQ q' hq').1).1 h1)
+
+/-- **Prime sums of the matched sample lie on the matched pairs.** -/
+theorem eq_matchedPartner_of_exp_eq {x y : ↥Q × Bool} (hxy : x ≠ y) {n : ℕ}
+    (hn : Real.exp (matchedPos Q x + matchedPos Q y) = n) : y = matchedPartner x := by
+  have hsq := exp_matchedPos_add_sq hQ x y
+  rw [hn] at hsq
+  obtain ⟨⟨q, hq⟩, a⟩ := x
+  obtain ⟨⟨q', hq'⟩, a'⟩ := y
+  have hq5 := (hQ q hq).2
+  simp only [matchedRatio] at hsq
+  by_cases hqq : q = q'
+  · subst hqq
+    cases a <;> cases a' <;> simp_all [matchedPartner]
+  · exfalso
+    have hprime := (hQ q hq).1
+    cases a <;> cases a' <;> simp only [Bool.false_eq_true, ↓reduceIte] at hsq
+    · have h : (3 ^ 2 * (n : ℝ) ^ 2) = 2 ^ 2 * q' * q := by rw [hsq]; ring
+      exact mul_sq_ne_mul_prime hprime (not_dvd_sq_of_matched hQ hq (m := 3) (by norm_num)
+        (by norm_num)) (not_dvd_sq_mul_of_matched hQ hq hq' hqq (m := 2) (by norm_num)
+        (by norm_num)) (by exact_mod_cast h)
+    · have h : (1 ^ 2 * (n : ℝ) ^ 2) = 1 ^ 2 * q' * q := by rw [hsq]; ring
+      exact mul_sq_ne_mul_prime hprime (not_dvd_sq_of_matched hQ hq (m := 1) le_rfl
+        (by norm_num)) (not_dvd_sq_mul_of_matched hQ hq hq' hqq (m := 1) le_rfl
+        (by norm_num)) (by exact_mod_cast h)
+    · have h : (1 ^ 2 * (n : ℝ) ^ 2) = 1 ^ 2 * q' * q := by rw [hsq]; ring
+      exact mul_sq_ne_mul_prime hprime (not_dvd_sq_of_matched hQ hq (m := 1) le_rfl
+        (by norm_num)) (not_dvd_sq_mul_of_matched hQ hq hq' hqq (m := 1) le_rfl
+        (by norm_num)) (by exact_mod_cast h)
+    · have h : (2 ^ 2 * (n : ℝ) ^ 2) = 3 ^ 2 * q' * q := by rw [hsq]; ring
+      exact mul_sq_ne_mul_prime hprime (not_dvd_sq_of_matched hQ hq (m := 2) (by norm_num)
+        (by norm_num)) (not_dvd_sq_mul_of_matched hQ hq hq' hqq (m := 3) (by norm_num)
+        (by norm_num)) (by exact_mod_cast h)
+
+theorem matchedPos_add_partner (x : ↥Q × Bool) :
+    matchedPos Q x + matchedPos Q (matchedPartner x) = Real.log ((x.1 : ℕ) : ℝ) := by
+  have h5 := five_le_matched hQ x
+  unfold matchedPos matchedRatio matchedPartner
+  cases x.2 <;> simp only [Bool.not_false, Bool.not_true, Bool.false_eq_true, ↓reduceIte] <;>
+    rw [Real.log_div (by positivity) (by norm_num), Real.log_div (by positivity) (by norm_num),
+      Real.log_mul (by norm_num) (by positivity), Real.log_mul (by norm_num) (by positivity)] <;>
+    ring
+
+theorem abs_matchedPos_sub_partner (x : ↥Q × Bool) :
+    |matchedPos Q x - matchedPos Q (matchedPartner x)| = Real.log (3 / 2) := by
+  have h5 := five_le_matched hQ x
+  have hl : 0 < Real.log (3 / 2) := Real.log_pos (by norm_num)
+  have h32 : Real.log (3 / 2) = Real.log 3 - Real.log 2 := Real.log_div (by norm_num) (by norm_num)
+  unfold matchedPos matchedRatio matchedPartner
+  cases x.2 <;> simp only [Bool.not_false, Bool.not_true, Bool.false_eq_true, ↓reduceIte] <;>
+    rw [Real.log_div (by positivity) (by norm_num), Real.log_div (by positivity) (by norm_num),
+      Real.log_mul (by norm_num) (by positivity), Real.log_mul (by norm_num) (by positivity)]
+  · rw [show (Real.log 2 + Real.log ((x.1 : ℕ) : ℝ) - Real.log 3) / 2 -
+      (Real.log 3 + Real.log ((x.1 : ℕ) : ℝ) - Real.log 2) / 2 = -(Real.log 3 - Real.log 2) by ring,
+      abs_neg, ← h32, abs_of_pos hl]
+  · rw [show (Real.log 3 + Real.log ((x.1 : ℕ) : ℝ) - Real.log 2) / 2 -
+      (Real.log 2 + Real.log ((x.1 : ℕ) : ℝ) - Real.log 3) / 2 = Real.log 3 - Real.log 2 by ring,
+      ← h32, abs_of_pos hl]
+
+theorem matchedPos_injective : Function.Injective (matchedPos Q) := by
+  intro x y h
+  have hx := one_lt_matchedRatio hQ x
+  have hy := one_lt_matchedRatio hQ y
+  have hr : matchedRatio x = matchedRatio y := by
+    unfold matchedPos at h
+    exact Real.log_injOn_pos (Set.mem_Ioi.2 (by linarith)) (Set.mem_Ioi.2 (by linarith))
+      (by linarith)
+  obtain ⟨⟨q, hq⟩, a⟩ := x
+  obtain ⟨⟨q', hq'⟩, a'⟩ := y
+  simp only [matchedRatio] at hr
+  have h5 := (hQ q hq).2
+  have h5' := (hQ q' hq').2
+  cases a <;> cases a' <;> simp only [Bool.false_eq_true, ↓reduceIte] at hr
+  · have : q = q' := by exact_mod_cast (by linarith : (q : ℝ) = q')
+    subst this; rfl
+  · -- `4 q = 9 q'` is impossible for primes `≥ 5`
+    have h' : 4 * q = 9 * q' := by exact_mod_cast (by linarith : (4 * q : ℝ) = 9 * q')
+    exfalso
+    have hd : q' ∣ 4 * q := ⟨9, by rw [h']; ring⟩
+    rcases (hQ q' hq').1.dvd_mul.1 hd with hd | hd
+    · have := Nat.le_of_dvd (by norm_num) hd; omega
+    · have := (Nat.prime_dvd_prime_iff_eq (hQ q' hq').1 (hQ q hq).1).1 hd; subst this; omega
+  · have h' : 9 * q = 4 * q' := by exact_mod_cast (by linarith : (9 * q : ℝ) = 4 * q')
+    exfalso
+    have hd : q ∣ 4 * q' := ⟨9, by rw [← h']; ring⟩
+    rcases (hQ q hq).1.dvd_mul.1 hd with hd | hd
+    · have := Nat.le_of_dvd (by norm_num) hd; omega
+    · have := (Nat.prime_dvd_prime_iff_eq (hQ q hq).1 (hQ q' hq').1).1 hd; subst this; omega
+  · have : q = q' := by exact_mod_cast (by linarith : (q : ℝ) = q')
+    subst this; rfl
+
+/-- The matched overlap: `α (K(log q) − K(log 3/2)) + β log q/√q`. -/
+theorem oddFold_matchedPartner {α β : ℝ} (b : ↥Q × Bool → ℝ) (x : ↥Q × Bool) :
+    oddFold (matchedPos Q) (weilLedgerKernel α β) b x (matchedPartner x) =
+      α * (RHTower.ArchimedeanKernel.weilKernel (Real.log ((x.1 : ℕ) : ℝ)) -
+        RHTower.ArchimedeanKernel.weilKernel (Real.log (3 / 2))) +
+      β * (Real.log ((x.1 : ℕ) : ℝ) / Real.sqrt ((x.1 : ℕ) : ℝ)) := by
+  have hne := matchedPartner_ne x
+  have h5 := five_le_matched hQ x
+  rw [oddFold_weilLedgerKernel hne, oddFold_offDiag hne, matchedPos_add_partner hQ,
+    abs_matchedPos_sub_partner hQ, abs_of_pos (Real.log_pos (by linarith)),
+    primeKernel_log_prime (hQ x.1 x.1.2).1]
+  have h0 : primeKernel (matchedPos Q x - matchedPos Q (matchedPartner x)) = 0 := by
+    apply primeKernel_eq_zero
+    intro n
+    rw [abs_matchedPos_sub_partner hQ, Real.exp_log (by norm_num)]
+    exact ne_natCast_of_between (m := 1) (by norm_num) (by norm_num) n
+  rw [h0]
+  ring
+
+/-- Small archimedean–polar weights keep every matched overlap anti-aligned. -/
+theorem exists_weight_matched_pos (hne : Q.Nonempty) {β : ℝ} (hβ : 0 < β) :
+    ∃ α₀ : ℝ, 0 < α₀ ∧ ∀ α : ℝ, 0 < α → α < α₀ → ∀ (b : ↥Q × Bool → ℝ) (x : ↥Q × Bool),
+      0 < oddFold (matchedPos Q) (weilLedgerKernel α β) b x (matchedPartner x) := by
+  set a : ℕ → ℝ := fun q => RHTower.ArchimedeanKernel.weilKernel (Real.log (3 / 2)) -
+    RHTower.ArchimedeanKernel.weilKernel (Real.log q)
+  set t : ℕ → ℝ := fun q => β * (Real.log q / Real.sqrt q) / (|a q| + 1)
+  have ht : ∀ q ∈ Q, 0 < t q := fun q hq => by
+    have h5 : (5 : ℝ) ≤ q := by exact_mod_cast (hQ q hq).2
+    have : 0 < Real.log q / Real.sqrt q :=
+      div_pos (Real.log_pos (by linarith)) (Real.sqrt_pos.2 (by linarith))
+    positivity
+  refine ⟨Q.inf' hne t, (lt_inf'_iff hne).2 ht, fun α hα hαt b x => ?_⟩
+  rw [oddFold_matchedPartner hQ]
+  have hq := x.1.2
+  have hle : α < t x.1 := lt_of_lt_of_le hαt (inf'_le t hq)
+  have h5 := five_le_matched hQ x
+  have hP : 0 < Real.log ((x.1 : ℕ) : ℝ) / Real.sqrt ((x.1 : ℕ) : ℝ) :=
+    div_pos (Real.log_pos (by linarith)) (Real.sqrt_pos.2 (by linarith))
+  have h1 : α * |a x.1| < β * (Real.log ((x.1 : ℕ) : ℝ) / Real.sqrt ((x.1 : ℕ) : ℝ)) := by
+    have h2 : α * (|a x.1| + 1) < β * (Real.log ((x.1 : ℕ) : ℝ) / Real.sqrt ((x.1 : ℕ) : ℝ)) := by
+      have := mul_lt_mul_of_pos_right hle (by positivity : (0 : ℝ) < |a x.1| + 1)
+      simp only [t] at this
+      rwa [div_mul_cancel₀ _ (by positivity)] at this
+    nlinarith
+  have h3 : -(α * |a x.1|) ≤ α * (RHTower.ArchimedeanKernel.weilKernel (Real.log ((x.1 : ℕ) : ℝ)) -
+      RHTower.ArchimedeanKernel.weilKernel (Real.log (3 / 2))) := by
+    have : -|a x.1| ≤ -(a x.1) := neg_le_neg (le_abs_self _)
+    simp only [a] at this
+    nlinarith
+  linarith
+
+/-- **The frustration index of the matched sample is `2|Q|`**: for a set `Q` of at least two primes
+`≥ 5` and every positive prime weight `β`, all small positive archimedean–polar weights give the odd
+Weil ledger on the matched sample frustration index exactly `2|Q|`. -/
+theorem frustrationIndex_matchedPos (hcard : 2 ≤ Q.card) {β : ℝ} (hβ : 0 < β) :
+    ∃ α₀ : ℝ, 0 < α₀ ∧ ∀ α : ℝ, 0 < α → α < α₀ → ∀ b : ↥Q × Bool → ℝ,
+      frustrationIndex (oddFold (matchedPos Q) (weilLedgerKernel α β) b) = 2 * Q.card := by
+  classical
+  have hne : Q.Nonempty := card_pos.1 (by omega)
+  obtain ⟨α₀, hα₀, hpos⟩ := exists_weight_matched_pos hQ hne hβ
+  refine ⟨α₀, hα₀, fun α hα hαt b => ?_⟩
+  have hcardι : Fintype.card (↥Q × Bool) = Q.card * 2 := by
+    rw [Fintype.card_prod, Fintype.card_coe, Fintype.card_bool]
+  rw [frustrationIndex_oddWeilLedger_of_sparse (matchedPos_pos hQ) (matchedPos_injective hQ) hα
+    hβ.le b (D := 1) (fun x => ?_) (by omega)]
+  · -- the anti-aligned overlaps are exactly the matched pairs
+    have hset : (univ.filter fun q : (↥Q × Bool) × (↥Q × Bool) =>
+        q.1 ≠ q.2 ∧ 0 < oddFold (matchedPos Q) (weilLedgerKernel α β) b q.1 q.2) =
+        univ.image fun x => (x, matchedPartner x) := by
+      ext ⟨x, y⟩
+      simp only [mem_filter, mem_univ, true_and, mem_image, Prod.mk.injEq]
+      constructor
+      · rintro ⟨hxy, hp⟩
+        obtain ⟨n, hn, -⟩ := oddFold_pos_imp_primeSum (matchedPos_pos hQ) (matchedPos_injective hQ)
+          hα.le hβ.le hxy hp
+        exact ⟨x, rfl, (eq_matchedPartner_of_exp_eq hQ hxy hn).symm⟩
+      · rintro ⟨z, rfl, rfl⟩
+        exact ⟨matchedPartner_ne z, hpos α hα hαt b z⟩
+    rw [hset, card_image_of_injective _ (fun x y h => (Prod.ext_iff.1 h).1), card_univ, hcardι]
+    ring
+  · -- each point has at most one prime-sum partner
+    calc (univ.filter (IsPrimeSum (matchedPos Q) x)).card ≤ ({matchedPartner x} : Finset _).card := by
+          refine card_le_card fun y hy => ?_
+          simp only [mem_filter, mem_univ, true_and] at hy
+          obtain ⟨hxy, n, hn, -⟩ := hy
+          rw [mem_singleton]
+          exact eq_matchedPartner_of_exp_eq hQ hxy hn
+      _ = 1 := card_singleton _
+
+/-- The matched sample lies in `(0, ½ log(3M/2)]` when every prime of `Q` is at most `M`. -/
+theorem matchedPos_le {M : ℝ} (hM : ∀ q ∈ Q, (q : ℝ) ≤ M) (x : ↥Q × Bool) :
+    matchedPos Q x ≤ Real.log (3 * M / 2) / 2 := by
+  have h5 := five_le_matched hQ x
+  have hqM := hM x.1 x.1.2
+  have h1 := one_lt_matchedRatio hQ x
+  unfold matchedPos
+  refine div_le_div_of_nonneg_right (Real.log_le_log (by linarith) ?_) (by norm_num)
+  unfold matchedRatio
+  split_ifs <;> linarith
+
+end Primes
+
+/-- **The frustration index is unbounded**: for every `N` there is a set of `N + 2` primes `≥ 5`
+whose matched sample has frustration index `2(N + 2)` for all small archimedean–polar weights. -/
+theorem exists_frustrationIndex_ge (N : ℕ) {β : ℝ} (hβ : 0 < β) :
+    ∃ Q : Finset ℕ, (∀ q ∈ Q, q.Prime ∧ 5 ≤ q) ∧ Q.card = N + 2 ∧
+      ∃ α₀ : ℝ, 0 < α₀ ∧ ∀ α : ℝ, 0 < α → α < α₀ → ∀ b : ↥Q × Bool → ℝ,
+        frustrationIndex (oddFold (matchedPos Q) (weilLedgerKernel α β) b) = 2 * (N + 2) := by
+  have hinf : {q : ℕ | q.Prime ∧ 5 ≤ q}.Infinite := by
+    have := Nat.infinite_setOf_prime.sdiff (Set.finite_lt_nat 5)
+    refine this.mono fun q hq => ⟨hq.1, ?_⟩
+    have h2 : ¬ q < 5 := hq.2
+    omega
+  obtain ⟨Q, hQs, hQc⟩ := hinf.exists_subset_card_eq (N + 2)
+  have hQ : ∀ q ∈ Q, q.Prime ∧ 5 ≤ q := fun q hq => hQs hq
+  obtain ⟨α₀, hα₀, h⟩ := frustrationIndex_matchedPos hQ (by omega) hβ
+  exact ⟨Q, hQ, hQc, α₀, hα₀, fun α hα hαt b => by rw [h α hα hαt b, hQc]⟩
+
+end Matched
 
 end
 

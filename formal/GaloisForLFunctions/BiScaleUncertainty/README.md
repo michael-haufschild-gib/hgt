@@ -1090,7 +1090,13 @@ $p^{i\xi}\approx-1$ for all $p<X$ turns the prime measure into its Liouville twi
 window extremes see the atoms only through their sizes; more generally the window ceiling and
 floor of every unimodular completely multiplicative twist of the atoms (Dirichlet characters,
 vertical shifts) equal those of $\zeta$ (`PrimeWindowTwistInvariance`), so window extremes cannot
-read GRH.
+read GRH. Phases are not unreadable in general, only invisible to extremes. The half-damped
+receiver of Trans-Horizon Incidence Mechanics, applied to the multiplicative weight with prime
+values $a\cos(t_0\log p+\varphi)$, is paid iff $a\cos\varphi<1$ or $\zeta(\tfrac12+it_0)=0$
+(`receiverBounded_phaseWeight_iff`): it reads the real part of the twist's phase and the value of
+$\zeta$ at the height $t_0$, while two weights with the same prime signs and the same prime mean
+can have opposite receivers. A mechanism that must see the phase of the prime atoms has to be
+built on such a summed, damped reading, not on a supremum over windows.
 
 ---
 
@@ -1194,6 +1200,7 @@ from one explicit energy bound.
 | A Mertens bound transfers to squarefree counting only at the square-root cutoff. | Finite Abel summation retaining both signed tails lets the cutoff be chosen freely; inverse-log cancellation then improves the square-root error with the same arithmetic source. |
 | Coherent price controls source energy. | A nonzero kernel family has zero coherent price and arbitrary energy. |
 | Prime clock kernels are lag-only. | They retain the centre and cutoff; no translation invariance or sign of edge minus mass is proved. |
+| Window extremes as the route to a phase-sensitive statement. | Every unimodular completely multiplicative twist has the same window ceiling and floor; extremes see only the sizes of the atoms. Phase information is read by summed damped receivers (§3.16), not by suprema. |
 | Rebuilding polynomial-horizon moment transfer here. | It is owned by the Bézout–Valuation Incidence programme; search the whole Lean tree, including other programmes' folders, before building arithmetic-observation tools. |
 
 **Lean conventions.** Even polar tests are nested subtypes, so plain `linarith` or `nlinarith`
@@ -1365,7 +1372,12 @@ lag-only convolution model is not justified.
    cone), so that every positivity or cancellation theorem of the sibling programmes can be tested
    against them. The Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and
    the function-field window and purity modules are the starting objects; the unit is the list of
-   statements each model refutes.
+   statements each model refutes. Arithmetic Orientation Theory collects the tests already proved
+   (golden datum, shifted pair, parity twins, node criticality, function field, …) into one
+   selectivity battery; what this theory adds is each model written in its own coordinates, so
+   that a test can be run on a band, a packet or a window spectrum directly. Two entries are
+   settled here: node criticality is the node test of the battery, and window spectra fail the
+   twist test by construction (they are twist invariant, §3.16).
 
 ---
 

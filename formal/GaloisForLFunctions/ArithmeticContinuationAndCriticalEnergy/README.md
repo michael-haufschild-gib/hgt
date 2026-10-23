@@ -321,6 +321,15 @@ suffices — no horizon's energy exceeding the larger of its two end values is R
 failure of RH forces interior bumps of unbounded height at a fixed interior damping while both ends
 stay bounded. An estimate that only improves the endpoints cannot decide the question.
 
+The bump also lives far out in the horizon. Against the undamped identity
+`Σ_{d≤n} μ(d)⌊n/d⌋ = 1`, `1 − d^{−ε} ≤ ε log d` gives the head bound
+`|A_ε(n) − 1| ≤ ε Σ_{d ≤ n}(log d)⌊n/d⌋ + n m₀(ε)`
+(`abs_pmPowerDampedCenteredDivisorPrefix_sub_one_le`), so for every horizon and tolerance some
+damping keeps the head of the energy within the tolerance of the pronic mass
+(`exists_damping_head_energy_le`). The obstruction is confined to the corner of small damping
+*and* large horizon where `ε Σ_{d≤n}(log d)⌊n/d⌋` is no longer small — the same corner,
+`n ≳ 2^{1/ε}`, where the positive core reaches size `1/ε`.
+
 A bump needs the energy to rise and then fall, so the signed work must change sign from positive to
 negative inside. Forbidding that *order* of sign change is enough
 (`riemannHypothesis_of_signedWork_single_sign_change`): no constant, no norm and no uniformity in
@@ -398,7 +407,14 @@ turns that into convolution by the damped prime row: the tangent is the source *
 powers**, `E_ε(n) = Σ_{j ≤ n} Λ(j)j^{−ε} A_ε(⌊n/j⌋) + (m₀(ε)Ψ_ε(n) − n m(ε))`
 (`TheTangentIsADilationAverageOfTheSource`). Pairing with the source makes the signed work the
 **numerical range of the prime dilation operator at the literal source**, plus an explicit polar
-pairing. Five facts fix what a proof of its sign can look like.
+pairing. Since `Λ = μ * log` and the damping twist is a ring homomorphism, the prime dilation
+factors as `D^{Λ_ε} = D^{μ_ε} ∘ D^{(log)_ε}`, and the logarithmic dilation of the source is a
+Möbius-free expression in the von Mangoldt weights and the two densities; so the tangent is the
+**Möbius dilation of one explicit row**, up to an explicit correction
+(`prefixDilation_dampedPrime_factor`, `dampedChebyshevError_eq_moebiusDilation`). The whole Möbius
+content of the work therefore sits in a single dilation, and the work is bilinear in the Möbius
+row — the shape the single-modulus bilinear mechanism of Bézout–Valuation Incidence is built for.
+Five facts fix what a proof of its sign can look like.
 
 - **No form positivity is available.** Grouped by level the form has kernel `κ_ε`, whose diagonal
   vanishes (`⌊n/j⌋ = n` forces `j = 1` and `Λ(1) = 0`) while `κ_ε(2,1) = (log 2)2^{−ε} > 0`: the
@@ -431,7 +447,14 @@ pairing. Five facts fix what a proof of its sign can look like.
   constant keeps every cross term, so the sign of the work is the sign of a positive explicit core
   plus two explicit *linear* functionals of `A_ε − 1` plus the residual's own dilation form
   (`ThePositiveCoreOfTheDilationForm`); renormalisation neutrality makes the quadratic residual the
-  only unpaid part, and it vanishes with the deviation from constancy.
+  only unpaid part, and it vanishes with the deviation from constancy. The deviation row is exactly
+  the source minus the constant one, so its pronic energy *is* the Báez–Duarte residual, and the
+  quadratic term is at most `Θ_ε(T)` times that residual, hence at most `3Θ_ε(T)(1 + E_T(ε))`, with
+  `Θ_ε(T) = Σ_{j ≤ T} Λ(j)j^{−(ε+1/2)}` (`pronicNorm_deviationRow_sq`, `abs_workQuadratic_le_energy`):
+  the accounting closes in the programme's own units, and its one unpaid coefficient converges
+  exactly above half damping. The core itself has explicit units: the powers of two alone give
+  `ψ_ε(n) ≥ (log 2)/(4ε)` once `n ≥ 2^{1/ε}` (`dampedPrimePrefix_ge_inv_damping`), so it is `O(1)`
+  before the horizon `2^{1/ε}` and of order `1/ε` beyond it.
 - **The core has an explicit damping-endpoint law.** Sum
   the integrated core by *scales* rather than by horizons: the pronic weights telescope,
   `Σ_{n = j}^{T} 1/(n(n+1)) = 1/j − 1/(T+1)`, leaving one sum over scales

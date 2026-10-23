@@ -795,6 +795,18 @@ inequality among the **lag charges** of one test, with no gauge, no fold and no 
     `z/(1−z) − z^{M+1}/(1−z) − z/((M+1)(1−z)²)` of the mass (`ResonantTrainWitness`). The envelope is
     therefore sharp, and its extremal tests are the trains carried by a **multiplicative
     progression** `{1, p, p², …}`. The content of the tower law is its discount, not its envelope.
+
+    **The parity twin of a tower.** The tower law holds for every ratio `|z| < 1`, signed ones
+    included. At `z = −p^{−1/2}` the weights become `λ(p^k)Λ(p^k)p^{−k/2}`, the Liouville twin of the
+    tower, and the law reads `(p − 1)C⁻_p(F) ≤ log p (A(0) − √p A(log p))`
+    (`sub_one_mul_twistedTowerCharge_le`) against `(p − 1)C_p(F) ≤ log p (A(0) + √p A(log p))`. The
+    two bounds differ by `2√p log p A(log p)`: where the first power is positively charged (the
+    resonant regime, expensive for the primes) the twin is strictly cheaper, and conversely. Its
+    envelope is attained by the **alternating train** `Σ_k (−1)^k g(· + kL)`, whose correlation
+    carries the parity of the lag index, so its twisted charge equals the untwisted charge of the
+    resonant train (`geoLagCharge_alternatingTrain_eq`). The single-tower sector is therefore closed in
+    both signs, and the tower law is not a formal consequence of geometric decay: it reads the sign
+    of `A(log p)`, and through it separates the primes from their parity twin at the first power.
 47. **The ledger with the prime powers eliminated.** By the exact even–odd identity of an atom the
     net charge of a shift is `evenStripGain_n − oddStripCost_n = −2Λ(n)n^{−1/2}A(log n)`, so the net
     prime charge of the ledger is `−2` times the prime side; the tower law then removes the proper
@@ -963,6 +975,19 @@ side and the pole plane; the archimedean density is not part of this ledger.
     `√p log p/(p − 1)` the question is open. An odd test has autocorrelation of zero total mass and
     must carry a definite negative correlation at its far lags; the even/odd decomposition splits
     the Weil-shaped form exactly (`residue_even_odd_split`).
+
+    **The defect coordinate.** Writing `δ(t) = A(0) − A(t)`, the prime charge is
+    `Σ_n (Λ(n)/√n)A(log n) = ℓ¹·A(0) − D(F)` with the atom-weighted defect
+    `D(F) = Σ_n (Λ(n)/√n)δ(log n)` (`sum_atom_mul_autoCorr_eq`). An upper bound on the charge is a
+    lower bound on `D`: the test must be *non-invariant* under the prime shifts, `D ≥ (ℓ¹ − C)A(0)`
+    with `ℓ¹ ≍ 2e^r`, i.e. decorrelate at essentially every prime-power lag in the atom-weighted
+    average. Part of this is free. The chord cascade `A(0)/m² ≤ δ(x₀/m)` whenever `A(x₀) ≤ 0`, and
+    every lag beyond the aperture has a vanishing double, so each shift longer than the aperture
+    has defect at least a quarter of the mass (`quarter_le_shiftDefect`); since the atoms above
+    `e^r` carry the bulk of the `ℓ¹` mass, the high range is discounted unconditionally,
+    `Σ_{log n > r}(Λ(n)/√n)A(log n) ≤ (3/4)(Σ_{log n > r}Λ(n)/√n)A(0)`
+    (`sum_atom_mul_autoCorr_le_three_quarters`). The remaining quarter is a statement about the
+    arithmetic of the shifts, not about the geometry of the test.
 57. **The Euler comb ledger.** A squarefree comb `F − λF(· + a)` acts as the Euler transform at
     weight `w = 2λ/(1+λ²)`; iterating over a family of lags telescopes into a payment law — the
     first-power charge of each lag, in the ledger transformed by its predecessors, is paid by the
@@ -1026,40 +1051,18 @@ side and the pole plane; the archimedean density is not part of this ledger.
     (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`). Rate `½` in the graded
     form is the ambient strip `Θ ≤ 1`. The content is that the ledger reaches the PNT rate with
     explicit constants; every improvement must lower the exponent.
-60. **Complete-period quadratic parity and trans-horizon separation.** Every complete-period
-    quadratic form of the finite divisor-sieve theory (`selbergTotientDiagonalForm`,
-    `sieveVariance`, `bezoutCoprimeQuadraticForm`, `sieveSuccessorCovariance`,
-    `sieveSuccessorReserve`, `sievePoincareExcess`, `successorPhaseLoss`, `sievePrimitiveEnergy`,
-    `sieveVarianceAboveParity`, `franelGcdQuadraticForm`, `TwoLagSieve.periodCovariance N c h` at
-    every lag `h` including `h = 1, 2`, `tupleVariance N c H` for every shift tuple `H`, and every
-    two-point translated moment `SieveMoments.translatedMoment N c (v : Fin 2 → ℕ)`) is diagonal in
-    the Selberg multiples coordinates `Y_{N,c}(q) = ∑_{d ≤ N, q ∣ d} c(d)/d` and hence an even
-    function of each coordinate individually, invariant under `scaledSelbergRow N c ε` for every
-    sign character `ε : ℕ → ℝ` (`ε(q)² = 1`). Conversely, by lag-spectrum Möbius inversion, two
-    rows with the same complete-period mean have the same complete-period quadratic forms (or the
-    same lag covariances on `1, …, N`) if and only if they lie in the same `(ℤ/2ℤ)^{N-1}`
-    sign-character orbit on `[1, N]` (`periodCovariance_eq_iff_exists_scaledSelbergRow`,
-    `mem_shadow_completePeriodLagReading_iff_signOrbit`). By contrast, the pointwise trans-horizon
-    response `sieveSeq N c k`, the prefix discrepancy `sievePrefixDiscrepancy N M c`, the von
-    Mangoldt pronic readout `vonMangoldtReadout N c`, the trans-horizon pronic receiver
-    `horizonPronicEnergy`, and the archimedean prime-comb energy `combEnergy F (Icc 2 N)` are not
-    sign-invariant (`sieveSeq_scaledSelbergRow_singleModeSignFlip_sub`,
-    `combEnergy_singleModeSignFlip_sub`). Evaluating `three_shift_gram` along the parity-twisted ray
-    `(θ, −θ)` yields `(A(a) − A(b))² ≤ 2A(0)(A(0) − A(b − a))` (`sq_two_atom_sub_le`), whose
-    `(ℤ/2ℤ)` average with `sq_two_atom_le` cancels the ratio lag `A(b − a)` to give
-    `A(a)² + A(b)² ≤ 2A(0)²` (`sq_two_atom_add_sq_sub_le`). The explicit two-prime pair
-    `primePairPlusWeight N` (`Y = δ₂ + δ₃`) and `primePairMinusWeight N` (`Y = δ₂ − δ₃`) (`N ≥ 3`)
-    has identical complete-period mean `0`, variance `3`, Bézout successor form `−2`, reserve `5`,
-    phase loss `3/2`, primitive energy `11/12`, all-lag covariances, and all-tuple variances
-    (`primePairWeights_completePeriod_coincide`), yet `sieveSeq N _ k` differs by `2c₃(k) ≠ 0` at
-    every `k ∈ ℕ` (in particular at `k = N + 1`), `sievePrefixDiscrepancy N (3N + 1)` differs by
-    `−2`, `vonMangoldtReadout N` is `log 2 + log 3` vs. `log 2 − log 3`, `sieveRenormalizedPrefixDefect N 1`
-    is `−4` vs. `0`, and `combEnergy F (Icc 2 N)` differs by `4A(log 3 − log 2)`
-    (`completePeriod_parity_and_transHorizon_separation`); cofinally across all horizons, the
-    parity pairs `(chiFourRow ε N, chiFourTwinRow ε N)`, `(charRow χ ε N, charTwinRow χ ε N)`, and
-    `(fermiRow ε N, evenFlipRow N (fermiRow ε N))` agree on all complete-period quadratic forms at
-    every `N` while splitting `horizonPronicEnergy` for `0 < ε ≤ 1/2`
-    (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`).
+60. **Which data see a sign flip.** Every complete-period quadratic form of a divisor row is an
+    even function of each Selberg coordinate, so it cannot distinguish rows that differ by a sign
+    character `Y(q) ↦ ±Y(q)`, and conversely equal lag covariances force such a character
+    (Bézout–Valuation Incidence, pillar 12; the parity pairs of Trans-Horizon Incidence Mechanics
+    agree on all of them at every horizon). The prime-comb energy is not of this kind: flipping one
+    Selberg mode changes it by an explicit atom, and for the rows `Y = δ₂ ± δ₃` the two comb
+    energies differ by `4A(log 3 − log 2)` (`combEnergy_singleModeSignFlip_sub`,
+    `completePeriod_parity_and_transHorizon_separation`). On the translate side the same parity
+    appears as a two-atom law: the three-shift Gram along the parity-twisted ray gives
+    `(A(a) − A(b))² ≤ 2A(0)(A(0) − A(b − a))` (`sq_two_atom_sub_le`), and its average with the
+    untwisted law cancels the ratio lag, `A(a)² + A(b)² ≤ 2A(0)²` (`sq_two_atom_add_sq_sub_le`).
+    The incidence face reads signs through the ratio lag `log(b/a)`; period statistics never do.
 
 ---
 
@@ -1102,13 +1105,12 @@ Unconditional; RH appears only inside equivalences.
    plus remainder minus the reflected-prime/polar cost, at every aperture, and that cost is the
    Chebyshev pairing (`fullZeroForm_eq_reflectedPrimePolarLedger`,
    `reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`).
-10. **Complete-period quadratic parity and trans-horizon separation.** Two rows at cutoff `N` with
-    equal mean agree on all complete-period quadratic forms (variance, Bézout successor form,
-    reserve, Poincaré excess, phase loss, primitive energy, all-lag covariances, tuple variances,
-    two-point moments) iff they lie in the same `(ℤ/2ℤ)^{N-1}` Selberg-coordinate sign orbit, while
-    `primePairPlusWeight N` and `primePairMinusWeight N` (`N ≥ 3`) are separated at every `k ∈ ℕ` by
-    `sieveSeq N _ k`, by `sievePrefixDiscrepancy`, by `vonMangoldtReadout`, and by `4A(log 3 − log 2)`
-    in `combEnergy` (`completePeriod_parity_and_transHorizon_separation`).
+10. **The tower law reads the sign of the first power.** The Euler envelope of a prime tower and
+    of its Liouville twin are both attained (resonant and alternating trains), and the two bounds
+    differ by `2√p log p A(log p)` (`sub_one_mul_twistedTowerCharge_le`,
+    `geoLagCharge_alternatingTrain_eq`): the translate calculus separates the primes from their
+    parity twin, while every complete-period quadratic statistic of a divisor row is blind to sign
+    flips (`completePeriod_parity_and_transHorizon_separation`).
 
 ---
 
@@ -1267,6 +1269,12 @@ To be built:
    shifts without spending the same surplus twice.
 5. **Selectivity audit.** For each theorem of §3, what it says for `ζ(s−a)ζ(s+a)` (shifted atoms
    and polar weight), for a Beurling system with an off-line zero, and for the Liouville twist.
+   Done for two items: the odd windows below `log 2` separate `ζ` from the shifted pair through the
+   pair's own screw kernel (`odd_window_selective`), and the tower law separates each prime tower
+   from its Liouville twin at the first power (mechanism 46). Open for the strip-surplus and Schur
+   certificates, which are nonselective in the window range (they hold for every weight with the
+   same atom at `2`), and for the Chebyshev ledger, whose defect separates every source but whose
+   estimates are so far size estimates.
 6. **Paying the ledger past the windows.** The global condition of mechanism 43 is the target in
    its exact shape. Past `221/400` the costs of several relevant shifts must be paid at once from
    the pool, the gains and the remainder. The light cone (mechanism 38) pays the costs of the band

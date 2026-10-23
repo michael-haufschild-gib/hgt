@@ -44,6 +44,7 @@ as the continuation problem.
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Supplies the language of readings and their limits; each SAEI obstruction names the information a proposed estimate discarded. |
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Keeps mixed source terms and recovery in the continuation budget; its comb laws explain why large quadratic majorants need not imply large signed charge. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Supplies the hyperbolic pole plane and Cartesian prime incidence; SAEI computes payment costs and finite train capacities on related forms. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Shares the Dirichlet-polynomial mean value theorem at its diagonal `X ≍ T`: the half-damping bound for the chain cuts the dilation symbol there, and TTPC's Frobenius analysis starts there. Below half damping SAEI's obstruction is `1/ζ` inside the strip, not a prime-pair sum. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Attaches an integer frustration index and a frustration mass to the switching class of a signed form. The ground energy is bounded by the mass and vanishes on connected patterns exactly at balance. The prime triangle of mechanism 14 has index exactly `2`, and its frustration mass is bounded by the positive prime-sum couplings. |
 
 **The shared target.** The programmes in the table work on RH as the sign of one critical
@@ -773,7 +774,12 @@ Each question is stated with what is established and where the open part sits.
    frustrated (mechanism 14). With the archimedean kernel and the pole charge added, every
    frustrated cycle still passes through a prime sum, and sampling sets free of prime sums are
    lossless (mechanism 15); at fine resolution (small relative weight of `K`) the prime triangle
-   frustrates the full odd ledger. Open: the holonomies at a fixed mesh, where `K` and the prime
+   frustrates the full odd ledger. The amount of frustration is a count: switching across a cut
+   trades anti-aligned for aligned overlaps, so when the prime-sum pairs of a sample have degree at
+   most a quarter of the sample no switching helps, and the frustration index is the number of
+   anti-aligned prime-sum overlaps; on matched samples it is `2|Q|`, so samples at aperture `A` reach
+   twice a prime count at scale `e^{2A}` (`frustrationIndex_oddWeilLedger_of_sparse`, `exists_frustrationIndex_ge`,
+   Arithmetic Orientation Theory). Open: the holonomies at a fixed mesh, where `K` and the prime
    atoms are comparable, and the budgets they supply. The aligned
    part is payable by mechanism 4; the frustrated part is where the even–odd balance of AIP lives.
 2. **Allocation at growing size.** Prove a local allocation (or a frustration bound) for a family of

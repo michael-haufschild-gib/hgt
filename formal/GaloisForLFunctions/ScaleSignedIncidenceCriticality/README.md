@@ -34,6 +34,7 @@ Passing a blindness test is necessary for a proposed method; it is not an estima
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Tests whether changing an energy or splitting work preserves the signed information needed for admission. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Separates formal signature criteria from the arithmetic effectivity data that would force them. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Exhibits the information lost when a signed incidence kernel is replaced by an absolute majorant. |
+| [Trans-Threshold Pair Correlation](../TransThresholdPairCorrelation/README.md) | Its two-thirds barrier is a resolution limit: the reading `(Â, N)` of the evaluation Gram cannot tell a double critical zero from a coalescing off-line pair, so its exact limit is `(2 − κ)N` simple zeros, and only data beyond the reading (zero-side slack, prime pairs beyond `X = T`) can move it. |
 | [Arithmetic Orientation Theory](../ArithmeticOrientationTheory/README.md) | Builds on these readings. A flip is an involution of the data, and a reading is orientation-faithful when it separates every datum from its flip. Invisibility is closed under post-processing, pairing, families and coarsening, and resolving a flipping predicate forces faithfulness. The refutation theorem of §3.8 is the reading entry of its width dictionary. |
 
 **The shared target.** The programmes in the table work on RH as the sign of one critical
@@ -199,6 +200,21 @@ band-ratio unit, where the depth is an explicit elementary function of what was 
 
 The faces owned elsewhere — temperedness (the shifted pair), parity (damped weights) — are priced by
 the same calculus, with their countermodels in `RHTower` and `TransHorizonIncidenceMechanics`.
+Three shadows on those faces are now computed exactly, and each is the template for its face:
+
+* **Complete-period quadratic data.** The shadow of a divisor row under the reading "all
+  complete-period lag covariances, with the mean" is exactly its orbit under the sign characters
+  `Y(q) ↦ ±Y(q)` of the Selberg coordinates (`mem_shadow_completePeriodLagReading_iff_signOrbit`,
+  Arithmetic Orientation Theory): the reading sees magnitudes of modes and nothing else, and every
+  verdict that changes under a sign flip is unresolved by it.
+* **Prime signs and prime mean.** For the half-damped receiver of a multiplicative weight the reading
+  (signs of `f(p)`, real-axis prime mean) does not resolve payment: two oscillating patterns share it
+  and have opposite receivers (`exists_paid_unpaid_with_same_prime_signs_and_mean`). The receiver
+  itself reads `a cos φ` and the value of `ζ` at the oscillation height, and the flipped density
+  resolves payment only on residue patterns (Trans-Horizon Incidence Mechanics, §3.18).
+* **Window extremes.** The ceiling and floor of the prime-window spectrum are constant on the orbit
+  of unimodular completely multiplicative twists (`twistedWindowCeiling_eq`, Bi-Scale Uncertainty):
+  a reading through extremes is blind to every character, hence cannot resolve GRH.
 
 ---
 
@@ -569,7 +585,13 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    four-free convolution weights `k ⋆ q` the even flip shifts the pole value by the even part of
    the kernel, `K♭(1 − ε) = K(1 − ε) + (1 − 2^ε)K_e(1 − ε)`, so it is fatal for at least one member
    of the pair whenever `K_e(1 − ε) ≠ 0` (`evenFlip_exactLoss`). The first pronic moment reads the
-   same flip exactly through `W_c(2)` (Arithmetic Orientation Theory).
+   same flip exactly through `W_c(2)` (Arithmetic Orientation Theory). The complete-period quadratic
+   reading has the sign-character orbit as its exact shadow (§2.7), so the question is precisely
+   which sign characters of the Selberg coordinates are fatal for the receiver. For a different
+   family of involutions, flips of the prime values of a completely multiplicative weight along
+   residue classes, the answer at half damping is complete: the flipped weight is paid iff more
+   than a quarter of the unit classes are flipped (`receiverBounded_residueFlip_half_iff_general`,
+   Trans-Horizon Incidence Mechanics).
 4. **The rate reading for `ζ`.** The faithful reading of the depth is the exponential rate of the
    deficit in the aperture. For the configuration of `ζ` that rate is the zero width, so an estimate
    of it is the target of the whole corpus; what belongs here is the admissibility question: which

@@ -1254,6 +1254,17 @@ $\tfrac12-c(\log T)^{-2/5}(\log\log T)^{-5/3}$ at horizon $T$. The band is exact
 region, in both directions: a band of fixed width would be a zero-free strip, and the accumulation-point converse turns admission on an interval of dampings into a
 zero-free half-plane. A single isolated damping has only the zero-translation conclusion. No bound reaches a fixed $\varepsilon<\tfrac12$.
 
+**Pointwise transfer loses half the width.** Fed with Littlewood's bound $\lvert M(x)\rvert\le Cx^{\Theta+\delta}$,
+$\Theta$ the zero abscissa, the same rate transfer balances at $\lvert A_\varepsilon(n)\rvert\le Kn^{(1-\varepsilon)/(2-\beta)}$,
+$\beta=\Theta+\delta$, and admits every damping $\Theta/2<\varepsilon\le\tfrac12$
+(`mem_receiverDampings_of_half_zetaZeroAbscissa_lt`): the receiver damping rate lies in
+$[\Theta-\tfrac12,\Theta/2]$, and the family crosses below half damping iff $\Theta<1$
+(`receiverDampingRate_sandwich`, `receiverDampingRate_lt_half_iff`). The sharp value
+$\Theta-\tfrac12$ is a mean-square statement, proved by Mellin–Plancherel on the Fermi source
+(`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`, RH tower). The pointwise route stops at
+$\tfrac14$ under RH because it bounds the sawtooth head $\sum_{d\le n}\mu(d)d^{-\varepsilon}\{n/d\}$
+term by term; the receiver is an $\ell^2$ object and must be estimated as one.
+
 **The band reads the signs.** The damped Möbius row and its parity twin $c'_\varepsilon$ (nonnegative,
 squarefree-supported, with Ramanujan coefficients of equal absolute value) have identical
 sign-blind data at every damping; on the band the twin's receiver is at least
@@ -1344,9 +1355,19 @@ $C_\eta v_d=d^{-\eta}v_d$ and $(d-1)/d^2\le\|v_d\|_2^2\le2/d$.
 The source is the coordinatewise absolutely convergent series
 $C_\eta r=\sum_d\mu(d)d^{-\eta}v_d$ for $\eta>0$; its absolute norm sum converges exactly
 for $\eta>1/2$ (`summable_signBlind_iff`). No uniform backward bound exists in either $c_0$
-or $\ell^2$ (`not_backward_stable_c0`, `not_backward_stable_l2`). The remaining operator question
-is forward $\ell^2$ boundedness of the centred chain, a stronger demand than controlling this
-particular orbit. The uncentred transition is $\ell^2$-unbounded at every positive damping.
+or $\ell^2$ (`not_backward_stable_c0`, `not_backward_stable_l2`). The uncentred transition is
+$\ell^2$-unbounded at every positive damping. The centred chain is $\ell^2$-bounded down to half
+damping and no further by any sign-blind argument (Signed Arithmetic Energy Incidence): for
+$\tfrac12<\eta<1$ it is Hilbert–Schmidt, using only $\lvert\mu\rvert\le1$ and the critical-line mean
+square of $\zeta$ (`sum_sum_sq_centeredRow_le_halfDamping`); at $\eta=\tfrac12$ it is not
+Hilbert–Schmidt but still bounded, uniformly as $\eta\downarrow\tfrac12$
+(`exists_centeredOperator_l2_le_half`). The half-damping bound reads each column in Mellin
+coordinates, where the source is $-\zeta(-s)/(s\,\zeta(\eta-s))$ on $\Re s=-\tfrac12$, controls the
+dilation symbol by the Dirichlet-polynomial mean value theorem, and pays with
+$1/\zeta(1+it)\ll\log^2t$: the signs of $\mu$ enter at prime-number-theorem strength, and the
+positive twin, not admitted at half damping, shows they must. The operator question that remains is
+forward $\ell^2$ boundedness at one fixed $\eta<\tfrac12$, a stronger demand than controlling the
+reciprocal orbit.
 
 **Density of the residue modes, and where the pronic obstruction sits.** Truncated Möbius
 inversion has a uniform linear majorant, so it inverts against every absolutely summable row with
@@ -1434,16 +1455,16 @@ finite inequality.
     exactly for $\eta>\tfrac12$ (`exists_pronicWitness_not_summable_pairing`).
 11. **The residual has a linear cusp.** A critical zero gives the Báez–Duarte residual of the damped
     source a positive floor linear in the damping (`exists_criticalZero_linear_dualResidual_floor`).
-12. **Complete-period quadratic parity and trans-horizon separation.** Every complete-period
-    quadratic form (`selbergTotientDiagonalForm`, `sieveVariance`, `bezoutCoprimeQuadraticForm`,
-    `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `successorPhaseLoss`,
-    `sievePrimitiveEnergy`, `franelGcdQuadraticForm`, `sieveVarianceAboveParity`,
-    `TwoLagSieve.periodCovariance N c h`, `tupleVariance N c H`) is an even function of the Selberg
-    coordinates and invariant under `scaledSelbergRow N c ε` (`ε(q)² = 1`), with bidirectional
-    orbit characterization `periodCovariance_eq_iff_exists_scaledSelbergRow`, while
-    `primePairPlusWeight N` and `primePairMinusWeight N` (`N ≥ 3`) have identical complete-period
-    quadratic forms yet are separated by `sieveSeq N _ k` at every `k ∈ ℕ` (including `k = N + 1`),
-    `sievePrefixDiscrepancy N (3N + 1)`, `vonMangoldtReadout N`, and `sieveRenormalizedPrefixDefect N 1`
+12. **Complete-period quadratic data are sign-blind, exactly.** Every complete-period quadratic
+    form of the sieve (variance, successor covariance and reserve, phase loss, primitive energy,
+    lag covariances, tuple variances, and the uncentred Selberg, Bézout and Franel forms) is an
+    even function of each Selberg coordinate, hence invariant under every sign character
+    $Y(q)\mapsto\pm Y(q)$; conversely two rows with the same mean and the same lag covariances on
+    $1,\dots,N$ differ by such a character (`periodCovariance_eq_iff_exists_scaledSelbergRow`). The
+    response, the prefix discrepancy and the von Mangoldt readout are linear in the signed
+    coordinates and do see the flip: the rows with $Y=\delta_2\pm\delta_3$ have identical
+    complete-period forms but responses differing by $2c_3(k)\ne0$ at every $k$, including the
+    trans-horizon point $N+1$
     (`CompletePeriodQuadraticFormsSignInvarianceAndTransHorizonSeparation`).
 
 ---
@@ -1486,6 +1507,7 @@ finite inequality.
 | $\Lambda_d(c')$ is the von Mangoldt function. | In the cross-scale theory it is the kernel statistic of the large-scale row at the modulus $d$. |
 | The window exponent and the cross-scale exponent are one unit. | On a pronic window $\theta=2\log P/\log X$ and no $\ell^2$ Type-II input passes $1$; across two scales $\theta=2\log P/\log Q$ and Type II reaches $6/5$. Name the coordinates. |
 | A Mertens rate bounds the receiver at a fixed $\varepsilon<\tfrac12$. | It moves the damping unit only to $\tfrac12-(\text{rate})/\log T$ at horizon $T$; a band of fixed width is a zero-free strip, and a single damping gives zero translation; a width conclusion needs an accumulation of admitted dampings. |
+| A pointwise prefix bound is the natural receiver estimate. | Even with Littlewood's exponent it admits only $\varepsilon>\Theta/2$ ($\tfrac14$ under RH), while the receiver's true damping rate is $\Theta-\tfrac12$. The loss is the sawtooth head bounded term by term; the receiver must be estimated in mean square. |
 | The single-modulus statistics of the prime row are small. | At fixed $p$ they are $\asymp p/Q$, the sieve term of the omitted residue class $0$; only rows equidistributed in every class modulo $p$ have $o(1/Q)$. |
 | Dilation $k\mapsto pk$ alone reads enough of the signs. | A Kátai-type single-modulus law saves only $(\log\log)^{-1/2}$ and is dominated by the $\ell^2$ large-sieve dispersion except at $P\asymp Q$. |
 | Frobenius on Witt ghosts is a free operation at a fixed horizon. | $g_{F_2w}(q)=g_w(2q)$, so a ghost statement at horizon $N$ is a Selberg statement at horizon $2N$; the cutoff is consumed, not preserved. |
@@ -1618,10 +1640,15 @@ $\zeta\cdot\zeta^{-1}=1$ cancellation, head/mean/tail split) produce.
 The chain is a Markov semigroup in the damping whose positive-time centred operators are compact on
 $c_0$, with an exactly computed entrance law, dense residue modes, and an entrance tail that is not
 square-summable below half damping while the reciprocal observable is. Admission is the ordinary
-$\ell^2$ orbit of the reciprocal, equivalently square summability of the first column. Open: a
-signed estimate for that orbit at fixed sub-half damping, with mixed residue-mode terms and tails
-retained, or a forward $\ell^2$ operator bound strong enough to supply it; compactness and density in
-$c_0$ supply neither, and a source-blind backward estimate is ruled out by the residue modes. The
+$\ell^2$ orbit of the reciprocal, equivalently square summability of the first column. The centred
+operator is $\ell^2$-bounded for every $\eta\ge\tfrac12$, Hilbert–Schmidt strictly above, with the
+Möbius signs entering at half damping only through $1/\zeta$ on the one-line (§3.16). Open: a signed
+estimate for the reciprocal orbit at fixed sub-half damping, with mixed residue-mode terms and tails
+retained, or a forward $\ell^2$ operator bound there strong enough to supply it. Below half damping
+the eigenvalues $d^{-\eta}$ of the residue modes are not square summable, so the Hilbert–Schmidt
+route is closed, and the half-damping argument would need $1/\zeta$ inside the strip; compactness and
+density in $c_0$ supply nothing, and a source-blind backward estimate is ruled out by the residue
+modes. The
 damping derivative is an exact finite Markov boundary-flux identity,
 `E′ = boundaryFlux − jumpEnergy − density forcing`
 ([DampingWorkAsArithmeticMarkovBoundaryFlux](DampingWorkAsArithmeticMarkovBoundaryFlux.lean)), whose

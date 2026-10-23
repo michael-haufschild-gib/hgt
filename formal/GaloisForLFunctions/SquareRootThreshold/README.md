@@ -383,7 +383,14 @@ Finite lag ranges, records and the height window:
     `e^{Dkℓ}`, a one-sided grid bound gives `limsup ≤ 0`, so the Cesàro mean of `|b_k|` is minus
     the mean of `b_k`. That mean collects only the real top exponents, whose coefficients are
     positive, and so every frequency `e^{iγℓ}` of an attained top gets weight `0`. This works for
-    every grid step outside the countably many resonances `(γ − γ')ℓ ∈ 2πℤ`. Chains are the exact
+    every grid step outside the countably many resonances `(γ − γ')ℓ ∈ 2πℤ`. When the step is a
+    prime logarithm the resonances are sparse in the primes: two distinct zeros collide at
+    `ℓ = log p` only if they have the same real part and ordinates differing by a multiple of
+    `2π/log p`, and by independence of prime logarithms this happens for at most one prime. So for a
+    configuration with finitely many right zeros all but finitely many primes separate them, and
+    at each such prime the Gram form of the tower `g(· − k log p)` of one spectrally generic test
+    has exactly as many negative squares as there are right zeros
+    (`almost_every_prime_tower_sees_every_right_zero`, Arithmetic Castelnuovo–Severi). Chains are the exact
     limit. On a grid a height counts only modulo `2π/ℓ`, so a chain with heights approaching
     `(2π/ℓ)ℤ` looks like exponents accumulating at a real point. With negative coefficients its
     grid values stay `≤ 0`, while on the continuum Landau's theorem still sees it. On the
@@ -593,7 +600,11 @@ argument becomes quantitative.
     windows — in particular a strict inequality between exponent and width forces infinitely many
     off-line zeros. Thus a uniform local bound is a sufficient arithmetic input. It is not proved necessary for
     the exponent identity: the dichotomy says that failure of the identity forces unbounded
-    clustering, not that clustering forces failure.
+    clustering, not that clustering forces failure. The same local bound makes every constant of the
+    near-top visibility law of mechanism 23 uniform in the height, and the dichotomy holds verbatim
+    for the degree-defect rate of the scaling surface
+    (`scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`, Arithmetic Castelnuovo–Severi):
+    one hypothesis, one alternative, in every chart.
 37. **The coupling of finitely many primes to the prime tail.** At aperture `a` the localized Weil
     form splits as `W_ζ(S_ξf, S_ξf) = A_f(ξ) − Π_f(ξ)`, with `Π_f` a polynomial over the *finitely
     many* prime powers `n ≤ e^{2a}` and `A_f` the pole term plus the archimedean term. The pole of
@@ -786,7 +797,7 @@ Unconditional; RH appears only inside equivalences or as a conclusion.
 | Expecting the visibility aperture to depend on the arrangement of the on-line zeros | It depends on the on-line background only through the logarithm of the local on-line mass at the bump; the arrangement is irrelevant. |
 | Expecting the ground energy to vary continuously with the aperture | On lag lattices it is a step function with jumps at every `nL/2`; continuity is a property of the restricted operator of `ζ`, not of configurations. |
 | Expecting the minimal receiver to be aperture-optimal | It is exact on crystals, but its teeth read only the real part of each rotated mode: a quarter-turn pattern visible at aperture `3ℓ/4` is first seen by the family at lag `4ℓ`. |
-| Expecting a lag grid to decide the line | A grid `v = kℓ` sees every attained top for non-resonant `ℓ`, but a chain whose heights approach `(2π/ℓ)ℤ` can keep a one-sided grid bound. Only the continuum of lags excludes chains. |
+| Expecting a lag grid to decide the line | A grid `v = kℓ` sees every attained top for non-resonant `ℓ`, but a chain whose heights approach `(2π/ℓ)ℤ` can keep a one-sided grid bound. Only the continuum of lags excludes chains. With finitely many right zeros, every prime-logarithm grid except finitely many is non-resonant; with infinitely many, the eigenvalues may accumulate and no single prime is guaranteed. |
 | Expecting all couplings `τ` to be needed in the two-bump criteria | Unimodular `τ`, and for `ζ` the single sign `τ = −1`, suffice; the lag `v` and the height `γ` are the only parameters. |
 | Reading Landau's theorem as a visibility lag | It is not effective. Lags come from the record-potential law on a finite range, and they need the loudness of the record at that lag. |
 | Expecting an unattained top to escape every explicit lag | A `1/V`-near-top zero exists at every lag and is seen at `V₀(w, η, δ₀)`; what escapes is a configuration with zeros beyond the horizon. |
@@ -865,9 +876,12 @@ To be built:
    prime-surplus bound with budget `1/18`, equivalently `∫_1^{4/3}(4/3 − α)F(α)dα ≤ 1/9`. The
    sine half of the off-diagonal kernel has no close-pair pole, the cosine half reduces to a mixed
    mean value of prime Dirichlet polynomials, and Jackson grid weights confine what is left to the
-   close pairs `|log(n/m)| < 4b`. Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and
-   the sub-threshold identity, misses the budget by the factor `8/3` (`fejer_shifted_bound_gap`):
-   the missing input is arithmetic information on `[1, 4/3]`.
+   close pairs `|log(n/m)| < 4b` — but not to the coalescent band `|log(n/m)| ≲ 1/T` itself, since
+   their cubic tails force `b ≫ T^{−5/9}`; averaging over the height does reach the band, at fixed
+   prime cutoff. Montgomery's shifted Fejér majorant, which uses only `F ≥ 0` and the sub-threshold
+   identity, misses the budget by the factor `8/3` (`fejer_shifted_bound_gap`): the missing input is
+   arithmetic information on `[1, 4/3]`, the signed correlation of prime pairs `(m, m + h)`,
+   `h ≪ m/T`.
 2. **Clusters without a depth gap.** For periodic configurations visibility is a Toeplitz question
    about cosh-weighted modes; for finite off-line sets the aperture is `(1/2g) log M` with `g` the
    gap below the deepest level (mechanism 9). Every off-line zero is visible at some aperture,

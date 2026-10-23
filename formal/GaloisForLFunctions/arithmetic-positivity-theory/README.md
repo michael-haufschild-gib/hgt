@@ -149,7 +149,11 @@ accuracy. The capacity inequality is a family of one-sided weighted bounds on $E
 the lag weights realisable at aperture $r$, and the critical-scale receiver reads the same
 datum through $h''$. The reflected pole at $s=0$ makes the Weil-natural defect
 $\psi(x)-x-\log x+1$ rather than $\psi(x)-x$, and it is the source of the factor $(1+T)$ in
-receiver 1.
+receiver 1. Read as a count, $E(s)$ is the number of degrees of freedom of the two-pole plane on
+the logarithmic box $[0,s]$, $\int_0^s(e^u+1)\,du$, minus the weighted prime-power node count
+$\psi(e^s)$ (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`, Arithmetic
+Castelnuovo–Severi): the sign question is whether the primes ever outnumber the poles by more
+than the critical amount.
 
 Neither receiver manufactures the arithmetic input it needs. The theory exists
 to build that input from the bottom, keeping every result at its exact scope.
@@ -1058,24 +1062,23 @@ construction; on the RH-complete cone the gain is absent and the limiting critic
 prime channel is negative definite. The passage from the family to the receiver
 needs a statement that survives the loss of the gain.
 
-**Low modes are controlled, but not proved positive.** The all-scale bounds in
-[MultiScaleLowModeAndGridTentSchurBridge](MultiScaleLowModeAndGridTentSchurBridge.lean)
-include mode `n = 0`. In particular,
-`(Σ |b_n|/(n+1))² ≤ (π²/6) Σ b_n²` bounds the Gamma–polar cost without a
-lower-scale cutoff. For a disjoint low/high split, high-band exclusion gives
-`Lévy(g) ≥ s_T(log M − c_T)(E_high − K_low E_low)` when `log M ≥ c_T` and the
-truncation is sufficiently large. Scaled polarization bounds the prime cost of a high
-window `[M, LM]` and arbitrary lower modes by
-`2 C_TW(3 + log(LM))² E_low + C_TW(4 + log L) E_high`.
-
-When the high blocks are lacunary and `L_low⁸ ≤ M₀`, dyadic slicing improves the
-low-window prime cost to `O(1 + log L_low) E_low`, uniformly in the number of high
-blocks and the compact truncation. This is a complete lower bound with an explicit
-low-mode penalty, not positivity for arbitrary low coefficients: the archimedean
-penalty also contains `log M₀ · E_low`. The same module proves spatial-translation
-invariance and carries positive polynomial-window and lacunary sources directly into
-grid tents and their smooth detectors. It supplies a controlled low/high coupling;
-the remaining question is how to pay its low-mode term without assuming the receiver.
+**Low modes are controlled, but not proved positive.** The Gamma–polar cost needs no lower
+scale cutoff: $(\sum_n\lvert b_n\rvert/(n+1))^2\le(\pi^2/6)\sum_nb_n^2$ includes the mode
+$n=0$. For a disjoint split into low modes (energy $E_{\mathrm{low}}$) and a high window
+(energy $E_{\mathrm{high}}$), high-band exclusion gives
+$\mathrm{L\acute evy}(g)\ge s_T(\log M-c_T)(E_{\mathrm{high}}-K_{\mathrm{low}}E_{\mathrm{low}})$
+once $\log M\ge c_T$ and the truncation is large, and scaled polarisation bounds the prime cost
+of a window $[M,LM]$ against arbitrary low modes by
+$2C_{TW}(3+\log LM)^2E_{\mathrm{low}}+C_{TW}(4+\log L)E_{\mathrm{high}}$. When the high blocks
+are lacunary and $L_{\mathrm{low}}^8\le M_0$, dyadic slicing improves the low-window prime cost
+to $O(1+\log L_{\mathrm{low}})E_{\mathrm{low}}$, uniformly in the number of high blocks and the
+truncation (`compactFullWeilEnergy_criticalTruncatedTest_ge_of_lowWindow_lacunary`). This is a
+complete lower bound with an explicit low-mode penalty, not positivity for arbitrary low
+coefficients: the archimedean penalty itself contains $\log M_0\cdot E_{\mathrm{low}}$, so raising
+the high scale makes the penalty worse. The same mechanisms are translation invariant and carry
+positive polynomial-window and lacunary sources directly into grid tents and their smooth
+detectors ([MultiScaleLowModeAndGridTentSchurBridge](MultiScaleLowModeAndGridTentSchurBridge.lean)).
+What remains is to pay the low-mode term without assuming the receiver.
 
 ### 3.14 Full-form stability and the tent family as a receiver
 
@@ -1412,8 +1415,8 @@ $k\ne rl$ every difference frequency is at least $N/2$ once $\delta\le1/(4K(R+1)
 the slow part is exactly $J_k(S,b)$. Only the $O(1/N)$ entries remain, and they cost
 $(\sum\lvert b_m\rvert)^2/N\le(\delta+1/N)E$ because $\lvert S\rvert\le\delta N+1$. Choosing
 $R$, then $K$, then $\delta$, then $N_0$ gives the comparison $\lvert P-P_\infty\rvert\le\eta E$
-for every $\eta>0$. The comparison exists on paper; its Lean assembly and the novelty audit
-are open.
+for every $\eta>0$, and with it the linear window. The order of the choices is the whole
+difficulty: every tail must be uniform in the support before $\delta$ is fixed.
 
 ### 7.3 Explicit thresholds and the shape of $R$
 
@@ -1457,7 +1460,12 @@ the archimedean density $\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$. The ar
 therefore contributes nothing at the lags that carry the mass, and no amount of it buys the
 exponent. Unconditionally only $E(s)=o(e^s)$ is known, so
 $\lvert\int E\,w_F\rvert\le\sup_s\lvert E(s)e^{-s}\rvert\int e^s\lvert w_F\rvert$ loses
-$\asymp e^{r}$: rate one is the unconditional floor, and RH is $E(s)=O(se^{s/2})$.
+$\asymp e^{r}$: rate one is the unconditional floor, proved on all odd compact tests with
+constant $8+\varepsilon$ (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`, Arithmetic
+Incidence Positivity), and RH is $E(s)=O(se^{s/2})$. Between the two the grading is
+self-improving: any subexponential floor already forces width zero and hence exact positivity
+(`rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`, Arithmetic
+Castelnuovo–Severi), so the target is to beat the exponent, not to reach zero.
 Oddness, edge decay of the autocorrelation and the strip structure give no power saving either:
 an odd test concentrated in an $O(1)$ window at the edge of its support has pole charge
 $\asymp e^{r}$ and prime correlation $\asymp-e^{r}$, of the same size and opposite sign, so the
@@ -1517,7 +1525,12 @@ terms and state where it lands in a receiver.
    $\zeta(s-a)\zeta(s+a)$ at every $\varepsilon\le\lvert a\rvert$, so no wide window admits the proof
    for the shifted pair. The audit is unfinished in both directions. Upwards: is the *statement*
    selective — does some non-tempered twin satisfy wide-window positivity by another route, or
-   does the conclusion itself fail there? Downwards: which of block positivity, the
+   does the conclusion itself fail there? Below $\log2$ the statement is selective, but not by
+   arithmetic: on odd windows $t_*/2<r\le7/25$ ($t_*=\log$ of the plastic number) the shifted
+   pair's zero form is $2\hat Z(F)+4\int(\cosh at-1)(2\cosh\tfrac t2-\omega(t))A_F(t)\,dt$, no
+   prime enters, and its own polar–archimedean screw kernel makes it negative while $\zeta$ is
+   coercive (`odd_window_selective`, Arithmetic Incidence Positivity). A wide-window separation
+   carried by the primes is what remains. Downwards: which of block positivity, the
    admissible-source law, the collared dilation inequality and the Montgomery–Vaughan endpoint
    bound survive verbatim for a Beurling system with an off-line zero, and are therefore not about
    RH. A statement that survives all three test models is infrastructure and is labelled as such
