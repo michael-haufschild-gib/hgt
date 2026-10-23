@@ -929,12 +929,22 @@ independently. The normalisation matters as much as the exponential rate.
       two-pole Chebyshev pairing
       `∫_{0 < s ≤ 2r} E(s) · 2e^{−s/2}(crossCorrelation F s − ½ A(s)) ds` for every odd `F ∈ C¹_c`
       (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`), and equals
-      `−∫_{s>0} (D(s) + s²/2 − s)(lagTestWeight F)''(s) ds` for every odd `F ∈ C²_c`
-      (`reflectedPrimePolarCost_eq_criticalScalePrefix`);
+      `−∫_{s>0} (D(s) + s²/2 − s)(lagTestWeight F)''(s) ds = ∫_{s>0} (D(s) + s²/2 − s) · 2e^{−s/2}(autoCorrelation (deriv F) s + crossCorrelation F s − ¼ A(s)) ds`
+      for every odd `F ∈ C²_c`
+      (`reflectedPrimePolarCost_eq_criticalScalePrefix`,
+      `secondCrossCorr_eq_neg_autoCorrelation_deriv`, `deriv_deriv_lagTestWeight`,
+      `reflectedPrimePolarCost_eq_criticalScalePrefix_autoCorrelation_deriv`);
     * the incidence ledger rewrites at every aperture `0 < r < R` as
       `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r`
       (`fullZeroForm_eq_reflectedPrimePolarLedger`, `fullZeroForm_eq_chebyshevDefectLedger`,
-      `riemannHypothesis_iff_reflectedPrimePolarAllocation`), with no `R ≤ 3/5` restriction.
+      `riemannHypothesis_iff_reflectedPrimePolarAllocation`), with no `R ≤ 3/5` restriction, and its
+      graded forms (`gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le`,
+      `gradedIncidenceAllocation_iff_chebyshevTwoPoleDefect_le`,
+      `zetaZeroWidth_le_of_chebyshevDefectAllocation_graded`,
+      `riemannHypothesis_of_chebyshevDefectAllocation_const_deficit`,
+      `riemannHypothesis_of_chebyshevDefectAllocation_every_pos_rate`) connect the Chebyshev-defect
+      allocation directly to the zero width `zetaZeroWidth ≤ σ`, uniform constant mass deficit
+      (`σ = 0`), and every-positive-rate graded deficit (`∀ σ > 0`).
 
 ---
 

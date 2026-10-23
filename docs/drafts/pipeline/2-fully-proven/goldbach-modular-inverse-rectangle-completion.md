@@ -157,6 +157,10 @@ and marked Type II sum remain separate proof obligations.
 
 ## Log
 
+- 2026-10-23 — Formalization in progress in the existing Goldbach arithmetic
+  leaf: actual finite interval transforms, character chords, and the
+  progression-sensitive Fourier mass. The composite certificate remains
+  complete; no certificate for (R) is claimed yet.
 - 2026-10-23 — Extracted an explicit constant and a complete finite
   completion proof from the flat-dispersion argument. Existing column
   completion inspected and distinguished from the required graph count.

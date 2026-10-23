@@ -86,15 +86,31 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Current paper deduction:
+  [slowly growing affine cancellation](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md).
+  A full modulus-dependence audit of the ordinary two-point
+  argument, §§2--9, retains explicit `l` and `l^4` losses.
+  Small logarithmic powers absorb them. Asymmetric square-divisor
+  truncations then give actual Möbius cancellation at every
+  cutoff, uniformly for slopes at a small power of `log T`.
+  The paid finite aggregation controls the actual odd `U_Z U_Z`
+  sum for a small power-of-logarithm cofactor cutoff. This is
+  a source-argument bridge, not new scientific knowledge or
+  a Lean-certified theorem. Its analytic and circuit inputs
+  remain to be proved in Lean; no premise replaces them.
+  Polynomial slopes, the full cofactor range, mixed/long terms
+  and positive prime-pair mass remain open.
 - Current source-specific obstruction and positive survivor:
-  [relative residue matching](../2-fully-proven/twin-prime-residue-matching-boundary.md).
+  [relative residue matching](../3-formalized/twin-prime-residue-matching-boundary.md).
   An explicit bounded second row exactly saturates the actual
   Liouville correlation on separated prime-shift residue classes.
   Its relative mass is eventually at least `1/(20 log(2D))`,
   uniformly in arbitrarily large complete-block horizons. Thus
   the arbitrary-row centering theorem cannot be strengthened
   to the required relative normalization. The sharp finite norm
-  has a complete paper proof and is under Lean verification.
+  now has a complete paper proof and an unconditional Lean
+  certificate. All six capstone audits use standard foundations.
+  The construction retains the canonical determinant-four frame.
   The actual two-row affine target remains open; any successful
   relative proof must retain both arithmetic rows.
 - Current certified transfer:

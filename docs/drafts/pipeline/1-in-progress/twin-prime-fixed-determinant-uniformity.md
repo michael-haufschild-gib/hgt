@@ -165,19 +165,35 @@ in those estimates. The actual uniform affine conjecture remains
 open; no claim that every possible native-frame argument fails
 has been established.
 
-A specific stronger transfer is now refuted on paper:
-[relative centering against arbitrary bounded second rows](../2-fully-proven/twin-prime-residue-matching-boundary.md).
-With modulus `4D+1`, prime shifts `D<p<=6D/5` occupy disjoint
-input and output classes. The explicit row
-`g(w)=lambda(w-floor((w mod (4D+1))/2))` aligns every selected
+A specific stronger transfer is now refuted and Lean-certified:
+[relative centering against arbitrary bounded second rows](../3-formalized/twin-prime-residue-matching-boundary.md).
+With `a=4D+6`, `c=4D+2`, modulus `ac` and residue `cz`,
+prime shifts `D<p<=6D/5` occupy disjoint input and output
+classes. This is the canonical determinant-four frame with
+both intercepts one. The explicit row
+`g(w)=lambda(w-4 floor((w mod ac)/a))` aligns every selected
 Liouville sign. Its relative correlation is exactly the reciprocal
 prime mass for every complete-block horizon, and eventually at
 least `1/(20 log(2D))`. This defeats the proposed `L^(-21/20)`
 relative strengthening on admissible rough-shift scales.
-The exact matching norm is the positive survivor; its Lean check
-is in progress. The two-actual-row affine conjecture above is
+The exact matching norm is the positive survivor; its leaf and
+six transitive axiom audits passed with standard foundations only.
+The two-actual-row affine conjecture above is
 not refuted. A successful relative argument must use the second
 arithmetic row instead of retaining arbitrary-row uniformity.
+
+A smaller range now has a complete
+[paper deduction](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md):
+there are absolute `kappa,c>0` giving the displayed Möbius bound
+for `a,c1<=(log T)^kappa`, at every sufficiently large cutoff.
+The audit tracks the source proof through §§2--9, makes its
+`l` and `l^4` losses explicit, and pays asymmetric square-divisor
+truncations. It also pays the actual `U_Z U_Z` sum for a small
+power-of-logarithm cutoff. This is a bridge from the source
+argument, not a new cancellation mechanism. Its short Fourier,
+bounded-independence and graph inputs are not Lean-certified
+here and have not been inserted as assumptions. Polynomial
+slope uniformity and the full nonunit cofactor target remain open.
 
 The accompanying corpus audit found a stronger plain-polynomial
 spectral head than the older reciprocal-fibre card records. Its

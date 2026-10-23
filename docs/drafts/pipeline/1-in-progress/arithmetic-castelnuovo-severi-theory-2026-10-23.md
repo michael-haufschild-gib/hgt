@@ -109,6 +109,10 @@ survivor).
 - `TheZerosOfAnExponentialPolynomialRecur`: `expPoly_zero_recurs`, `expPoly_pontryagin_dichotomy`
   (configurations cut out by exponential polynomials of any finite rank have defect `0` or `∞`).
 
+- `DistinctEffectiveCyclesMeetNonnegatively`: `re_archCross_eq` (collar of two cycles in Lévy
+  jump form), `localPair_eq_of_disjoint`, `localPair_nonneg` (Bézout positivity: distinct
+  effective cycles meet nonnegatively; Riemann–Roch is the only missing input).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

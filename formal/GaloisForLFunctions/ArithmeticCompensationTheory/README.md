@@ -272,6 +272,17 @@ are three different statements and remain visibly different here.
     `tendsto_sq_mul_combEnergy_rescaledTest_deficit`): the comb's deficit on the slowly varying
     family is the first correction `−2∂/r` of the resolvent, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`, and
     the prime error does not reach it.
+10⁗. **No uniform coercivity over the integers; uniform coercivity on a curve.** The concentrated
+    tests `F_λ(x) = √λ φ(λx)` keep their mass and have `A_{F_λ}(u) = A_φ(λu)`, so
+    `J(F_λ) ≤ (2λ)^{−1}∫_{v>0}|A_φ|` (`horizonEnergy_concentratedTest_le`): no `c > 0` has
+    `J(F) ≥ c∫F²` for all tests (`not_exists_horizonEnergy_ge`), and for every `c` some unit test
+    has `E_r(F) ≤ cS_r²` at all large apertures (`exists_combEnergy_le_mul`). The integer comb
+    shifts by the dense set `{log p}`, its horizon law is the resolvent of the unbounded `1 + 2∂`,
+    and a narrow bump defeats it. A curve comb shifts by the lattice `ℕ log q` and the geometric
+    weights invert the bounded shift: `‖C_D F‖² ≥ (q^D/12)∫F²` for every test at all large `D`
+    (`curveCombEnergy_ge`, `exists_curveCombEnergy_ge`). Uniform coercivity must therefore come
+    from a restricted test class or from the arithmetic of the pairing, never from the integer
+    comb alone.
 
 10‴. **The horizon law of a curve is geometric.** For a curve model over `F_q` with Frobenius
     eigenvalues of modulus at most `λ√q`, the comb built from the point counts
@@ -552,8 +563,9 @@ that every successful route must use the same mechanism.
    comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
    10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
    deficit is exactly `4‖f′‖²/r²` to first order, and `J(F) ≥ A_F(0) − Λ²(8R + 48)` uniformly over
-   Lipschitz tests in `[−R, R]` (mechanism 10″). Open: the second correction, and a lower bound on
-   `J` over the ledger's odd test class at fixed aperture, where the Lipschitz bound is too weak.
+   Lipschitz tests in `[−R, R]` (mechanism 10″); over all tests no coercive constant exists, while
+   the curve comb is uniformly coercive (mechanism 10⁗). Open: the second correction, and the
+   optimal coercive constant of `J` on the ledger's odd test class at a fixed aperture.
 5. **The compensated remainder of the full ledger.** The prime–polar residual of every ledger
    translate is bounded at the trivial exponent with the prime number theorem's saving
    `exp(−c√S)` (mechanism 6′). Open: an exponent below `½` for the complete ledger, with its even
@@ -566,8 +578,9 @@ that every successful route must use the same mechanism.
 7. **Function-field calibration.** In the curve model the horizon law is geometric with
    square-root error, and the receiver is admitted at every damping above the zero width
    (mechanism 10‴), and fails below it for a single eigenvalue. Open: the failure below the zero
-   width for several eigenvalues, which needs non-cancellation of their oscillating terms, and the
-   discrete resolvent law of the curve comb on fixed tests.
+   width for several eigenvalues, which needs non-cancellation of their oscillating terms. The
+   curve comb is uniformly coercive (mechanism 10⁗); its exact discrete resolvent limit on fixed
+   tests remains to be written down.
 
 ---
 

@@ -22,8 +22,8 @@ are unchanged, so dependents' oleans stay valid.
 - [x] `RHTower/XiStrictSchwarzSixthSpectralCeiling.lean`
 
 ## Queue (446 modules; depth = import distance from the discharge modules, count = options)
-- [ ] `HTGeometry/PolynomialODE/JetRankThreeCompactReserve.lean` (depth 2, 1)
-- [ ] `RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean` (depth 2, 1)
+- [x] `HTGeometry/PolynomialODE/JetRankThreeCompactReserve.lean` (depth 2, 1)
+- [x] `RHTower/PrimeIndexedRVMSignedReflectionCandidate.lean` (depth 2, 1)
 - [ ] `RHTower/ThetaCusp/ThetaCuspFullReflectionEighthScaleEighteenFifthsDirectAffineJoint.lean` (depth 2, 5)
 - [ ] `RHTower/ThetaCusp/ThetaCuspMiddleCompensationBounds.lean` (depth 2, 1)
 - [ ] `RHTower/XiReciprocalSquareFixedCauchySource.lean` (depth 2, 2)

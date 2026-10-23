@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeTowerLedgerReduction
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.EdgeTentLogarithmicCapacity
+import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
+import GaloisForLFunctions.SquareRootThreshold.TheIncidenceLedgerGradedByTheZeroWidth
 
 /-!
 # Full reflected-prime/polar allocation across arbitrary tests
@@ -733,6 +735,97 @@ theorem reflectedPrimePolarCost_eq_criticalScalePrefix {F : ℝ → ℝ} {r : �
   · refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
     rw [lagTestWeight, ← mul_assoc, polarDensity_mul_half_weight, mul_assoc]
 
+/-- **Integration by parts for the second cross-correlation.** For every `F ∈ C²_c(ℝ)`,
+`secondCrossCorr F s = ∫ F(x) F''(x + s) dx = −∫ F'(x) F'(x + s) dx = −autoCorrelation (deriv F) s`. -/
+theorem secondCrossCorr_eq_neg_autoCorrelation_deriv {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    secondCrossCorr F s = -autoCorrelation (deriv F) s := by
+  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
+  have hF' : ContDiff ℝ 1 (deriv F) :=
+    (contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) F from hF)).2.2
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF1.continuous_deriv le_rfl
+  have hd2cont : Continuous (deriv (deriv F)) := hF'.continuous_deriv le_rfl
+  set g : ℝ → ℝ := fun x => F x * deriv F (x + s)
+  set g' : ℝ → ℝ := fun x => deriv F x * deriv F (x + s) + F x * deriv (deriv F) (x + s)
+  have hg : ∀ x, HasDerivAt g (g' x) x := fun x => by
+    have h1 : HasDerivAt F (deriv F x) x := (hF1.differentiable one_ne_zero x).hasDerivAt
+    have h2 : HasDerivAt (fun y => deriv F (y + s)) (deriv (deriv F) (x + s)) x := by
+      have hc : HasDerivAt (fun y => deriv F (y + s)) (deriv (deriv F) (x + s) * 1) x :=
+        HasDerivAt.comp x ((hF'.differentiable one_ne_zero (x + s)).hasDerivAt)
+          ((hasDerivAt_id' x).add_const s)
+      rwa [mul_one] at hc
+    exact h1.mul h2
+  have hg'c : Continuous g' :=
+    (hdcont.mul (hdcont.comp (continuous_id.add continuous_const))).add
+      (hFcont.mul (hd2cont.comp (continuous_id.add continuous_const)))
+  have hgc : HasCompactSupport g := hFc.mul_right
+  have hzero := GaloisForLFunctions.HTGeometry.integral_deriv_eq_zero_of_hasCompactSupport
+    hg hg'c hgc
+  have hint1 : Integrable fun x => deriv F x * deriv F (x + s) :=
+    (hdcont.mul (hdcont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.deriv.mul_right
+  have hint2 : Integrable fun x => F x * deriv (deriv F) (x + s) :=
+    (hFcont.mul (hd2cont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hsplit : (∫ x, g' x) = autoCorrelation (deriv F) s + secondCrossCorr F s := by
+    change (∫ x, deriv F x * deriv F (x + s) + F x * deriv (deriv F) (x + s)) = _
+    rw [integral_add hint1 hint2]
+    rfl
+  linarith
+
+/-- Explicit formula for the second lag derivative `(lagTestWeight F)''(s)` of a `C²_c` test in
+terms of the derivative autocorrelation `autoCorrelation (deriv F) s`, the cross-correlation
+`crossCorrelation F s`, and the autocorrelation `autoCorrelation F s`. -/
+theorem deriv_deriv_lagTestWeight {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    deriv (deriv (lagTestWeight F)) s =
+      -2 * Real.exp (-s / 2) *
+        (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4) := by
+  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
+  have hF' : ContDiff ℝ 1 (deriv F) :=
+    (contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) F from hF)).2.2
+  have hd1 : deriv (lagTestWeight F) =
+      fun u => 2 * Real.exp (-u / 2) * (crossCorrelation F u - autoCorrelation F u / 2) :=
+    funext fun u => deriv_lagTestWeight hF1 hFc u
+  rw [hd1]
+  have hexp : HasDerivAt (fun u : ℝ => 2 * Real.exp (-u / 2)) (-Real.exp (-s / 2)) s := by
+    have hlin : HasDerivAt (fun u : ℝ => -u / 2) (-1 / 2 : ℝ) s := by
+      simpa [neg_div] using (hasDerivAt_id s).neg.div_const (2 : ℝ)
+    have h := (Real.hasDerivAt_exp (-s / 2)).comp s hlin
+    have h2 : HasDerivAt (fun u : ℝ => 2 * Real.exp (-u / 2))
+        (2 * (Real.exp (-s / 2) * (-1 / 2))) s := h.const_mul (2 : ℝ)
+    exact h2.congr_deriv (by ring)
+  have hcc : HasDerivAt (crossCorrelation F) (-autoCorrelation (deriv F) s) s := by
+    rw [← secondCrossCorr_eq_neg_autoCorrelation_deriv hF hFc s]
+    exact hasDerivAt_crossCorrelation_of_contDiff hF1 hF' hFc s
+  have hac : HasDerivAt (fun u => autoCorrelation F u / 2) (crossCorrelation F s / 2) s :=
+    (hasDerivAt_autoCorrelation hF1 hFc s).div_const 2
+  have hprod : HasDerivAt
+      (fun u => 2 * Real.exp (-u / 2) * (crossCorrelation F u - autoCorrelation F u / 2))
+      (-Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2) +
+        2 * Real.exp (-s / 2) * (-autoCorrelation (deriv F) s - crossCorrelation F s / 2)) s :=
+    hexp.mul (hcc.sub hac)
+  rw [hprod.deriv]
+  ring
+
+/-- **Second-order critical-scale receiver allocation in terms of `autoCorrelation (deriv F)`.**
+For every odd `F ∈ C²_c(ℝ)` supported in `[−r, r]` (`r > 0`), the reflected-prime/polar cost pairs
+the critical-scale prefix functional `D(s) + s²/2 − s` directly against the derivative
+autocorrelation `autoCorrelation (deriv F) s + crossCorrelation F s − autoCorrelation F s / 4`. -/
+theorem reflectedPrimePolarCost_eq_criticalScalePrefix_autoCorrelation_deriv {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r =
+      ∫ s in Ioi (0 : ℝ),
+        (criticalScalePrefix s + s ^ 2 / 2 - s) *
+          (2 * Real.exp (-s / 2) *
+            (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4)) := by
+  rw [reflectedPrimePolarCost_eq_criticalScalePrefix hF hFc hodd hr hsupp, ← integral_neg]
+  refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+  rw [deriv_deriv_lagTestWeight hF hFc s]
+  ring
+
 /-- **Full allocation of the total cost side `(Σ_n oddStripCost_n) + poleCharge` across arbitrary
 odd `C¹_c` tests.** Combining the polar-Chebyshev allocation of `evenStripGain` with the joint
 prime-polar Chebyshev balance decomposes `(Σ_n oddStripCost_n) + poleCharge F` into the hyperbolic
@@ -842,6 +935,115 @@ theorem riemannHypothesis_iff_reflectedPrimePolarAllocation :
       reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
         (hF.of_le (by norm_num)) hFc hodd hr hsupp]
     exact halloc
+
+/-! ### Graded Chebyshev-defect allocation: constant mass deficit and every-positive-rate deficit -/
+
+/-- `GradedIncidenceAllocation σ C` is equivalent to bounding the joint reflected-prime/polar cost
+`reflectedPrimePolarCost F r` by the archimedean ledger budget plus the graded mass deficit
+`C * e^{2σ r} * ∫ F²`. -/
+theorem gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le (σ C : ℝ) :
+    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation σ C ↔
+      ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R → ContDiff ℝ 2 F → HasCompactSupport F →
+        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+        reflectedPrimePolarCost F r ≤
+          surplusPool (aperturePlateau r R) F +
+            crossingPotentialTerm (aperturePlateau r R) F +
+            gaugeRemainder (aperturePlateau r R) F +
+            C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2 := by
+  unfold GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation reflectedPrimePolarCost
+  constructor <;> intro h r R F hr hrR hF hFc hodd hsupp <;>
+     specialize h r R F hr hrR hF hFc hodd hsupp <;> linarith
+
+/-- `GradedIncidenceAllocation σ C` is equivalent to bounding the horizon-localized Chebyshev-defect
+integral on `(0, 2r]` by the archimedean ledger budget plus the graded mass deficit
+`C * e^{2σ r} * ∫ F²`. -/
+theorem gradedIncidenceAllocation_iff_chebyshevTwoPoleDefect_le (σ C : ℝ) :
+    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation σ C ↔
+      ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R → ContDiff ℝ 2 F → HasCompactSupport F →
+        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+        (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+            (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+          surplusPool (aperturePlateau r R) F +
+            crossingPotentialTerm (aperturePlateau r R) F +
+            gaugeRemainder (aperturePlateau r R) F +
+            C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2 := by
+  rw [gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le]
+  constructor <;> intro h r R F hr hrR hF hFc hodd hsupp
+  · rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+    exact h r R F hr hrR hF hFc hodd hsupp
+  · rw [reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+    exact h r R F hr hrR hF hFc hodd hsupp
+
+/-- **Zero-width bound from graded Chebyshev-defect allocation.** If at rate `2σ` (`σ ≥ 0`) every
+odd `F ∈ C²_c(ℝ)` supported in `[−r, r]` (`r > 0`) admits a plateau radius `R > r` at which the
+Chebyshev-defect integral `C_F` on `(0, 2r]` is paid by the archimedean ledger budget up to
+`C * e^{2σ r} * ∫ F²`, then `zetaZeroWidth ≤ σ`. -/
+theorem zetaZeroWidth_le_of_chebyshevDefectAllocation_graded {σ C : ℝ} (hσ : 0 ≤ σ)
+    (halloc : ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+        ∃ R, r < R ∧
+          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+            surplusPool (aperturePlateau r R) F +
+              crossingPotentialTerm (aperturePlateau r R) F +
+              gaugeRemainder (aperturePlateau r R) F +
+              C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2) :
+    GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth ≤ σ := by
+  refine GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_le_of_graded_odd_fullZeroForm_floor
+    (C := C) hσ ?_
+  intro r hr F hF hFc hodd hsupp
+  obtain ⟨R, hrR, hCF⟩ := halloc r F hr hF hFc hodd hsupp
+  rw [fullZeroForm_eq_reflectedPrimePolarLedger hF hFc hodd hr hsupp hrR,
+    reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+  linarith
+
+/-- **Riemann Hypothesis from Chebyshev-defect allocation with a uniform constant mass deficit.**
+If there is a uniform constant `C` such that for every aperture `r > 0` and every odd `F ∈ C²_c(ℝ)`
+supported in `[−r, r]` there exists `R > r` with the Chebyshev-defect integral `C_F` bounded by
+`surplusPool + crossingPotentialTerm + gaugeRemainder + C * ∫ F²`, then `RiemannHypothesis` holds. -/
+theorem riemannHypothesis_of_chebyshevDefectAllocation_const_deficit {C : ℝ}
+    (halloc : ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+        ∃ R, r < R ∧
+          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+            surplusPool (aperturePlateau r R) F +
+              crossingPotentialTerm (aperturePlateau r R) F +
+              gaugeRemainder (aperturePlateau r R) F +
+              C * ∫ x, F x ^ 2) :
+    RiemannHypothesis := by
+  rw [GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero]
+  refine le_antisymm ?_ GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_nonneg
+  refine zetaZeroWidth_le_of_chebyshevDefectAllocation_graded (C := C) le_rfl ?_
+  intro r F hr hF hFc hodd hsupp
+  obtain ⟨R, hrR, hR⟩ := halloc r F hr hF hFc hodd hsupp
+  refine ⟨R, hrR, ?_⟩
+  simpa using hR
+
+/-- **Riemann Hypothesis from Chebyshev-defect allocation with every-positive-rate graded deficit.**
+If for every rate `σ > 0` there is a constant `C` such that for every aperture `r > 0` and every
+odd `F ∈ C²_c(ℝ)` supported in `[−r, r]` there exists `R > r` with the Chebyshev-defect integral
+`C_F` bounded by `surplusPool + crossingPotentialTerm + gaugeRemainder + C * e^{2σ r} * ∫ F²`, then
+`RiemannHypothesis` holds. -/
+theorem riemannHypothesis_of_chebyshevDefectAllocation_every_pos_rate
+    (halloc : ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F →
+      HasCompactSupport F → (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+        ∃ R, r < R ∧
+          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+            surplusPool (aperturePlateau r R) F +
+              crossingPotentialTerm (aperturePlateau r R) F +
+              gaugeRemainder (aperturePlateau r R) F +
+              C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2) :
+    RiemannHypothesis := by
+  rw [GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero]
+  refine le_antisymm ?_ GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_nonneg
+  refine le_of_forall_pos_le_add fun σ hσ => ?_
+  obtain ⟨C, hC⟩ := halloc σ hσ
+  simpa using zetaZeroWidth_le_of_chebyshevDefectAllocation_graded (C := C) hσ.le hC
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

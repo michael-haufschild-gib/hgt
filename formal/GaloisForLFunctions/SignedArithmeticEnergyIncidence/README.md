@@ -282,6 +282,33 @@ estimate must therefore use the source vector and its arithmetic.
    `α` (`oddFold_weilLedgerKernel`), so the prime triangle stays frustrated in the full odd Weil
    ledger for every relative archimedean–polar weight `|α| < α₀`, whatever the budgets
    (`exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`).
+9g. **Source-faithful canonical-path calibration and overlapping-budget retention.** On actual
+   arithmetic samplings, pairwise overlap completeness fails (`not_isCompleteOverlap_oddFold_arithLogGrid`:
+   at `p_0 = (log 2)/2, p_1 = (log 3)/2`, `primeKernel` vanishes at both `log 6` and `log(3/2)`), and
+   any coupling with `c_xy ≥ 0` for all `x ≠ y` and at least one positive off-diagonal entry admits
+   no `PathCertificate` (`isEmpty_pathCertificate_of_nonneg_offDiag`,
+   `isEmpty_pathCertificate_primeTriangle_primeKernel`). At the source-faithful full-form calibration
+   `weilLedgerKernel 1 1` (`α = 1, β = 1`), the archimedean–polar kernel `K(u)` is positive below
+   `u₀ ≈ 0.3046` and negative above it: on `primeTrianglePos`, `(0, 1)` (`−2/5 < c_01 < −1/7`) and
+   `(2, 0)` (`−15/4 < c_20 < −1`) flip to aligned (`< 0`), while `(1, 2)` (`3/20 < c_12 < 2/5`) stays
+   anti-aligned (`> 0`) because `K(log 3) − K(log(3/2))` is less negative than `(log 3)/√3`
+   (`oddFold_primeTriangle_weilLedgerKernel_one_zero_one`,
+   `oddFold_primeTriangle_weilLedgerKernel_one_two_zero`,
+   `oddFold_primeTriangle_weilLedgerKernel_one_one_two`). The source-faithful prime triangle is
+   therefore unconditionally frustrated (`triangleHolonomy_primeTriangle_weilLedgerKernel_one_pos`,
+   `oddFold_primeTriangle_weilLedgerKernel_one_not_isBalanced`), and its two negative edges pay the
+   remaining positive edge `(1, 2)` along `1 → 0 → 2` in gauge `primeTriangleGauge = ![4, 1, 1]`
+   (`primeTrianglePathCertificate`, `incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg`,
+   `supersolution_primeTriangleGauge_of_le`). Extending to `packedPrimePos` on `Fin 4` with
+   `p_3 = (3 log 5 − log 2 − log 3)/2` adds a second anti-aligned prime-sum overlap `(1, 3)`
+   (`1/4 < c_13 < 13/30`); routing both `(1, 2)` and `(1, 3)` through the shared aligned hub edge
+   `(1, 0)` with packed shares `1/2 + 1/2 = 1` gives an explicit packed `PathCertificate` in gauge
+   `packedPrimeGauge = ![8, 1, 1, 1]` (`packedPrimePathCertificate`,
+   `incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg`,
+   `supersolution_packedPrimeGauge_of_le`). In general, routing a set `S` of anti-aligned targets
+   from `a` through a shared first step `a → u` forces `Σ_{b ∈ S} c_ab v_b ≤ |c_au| v_u`
+   (`packed_shared_step_gauge_lower_bound`), inflating the hub gauge `v_u` and retaining overlapping
+   diagonal budget demands at `u` and its neighbors.
 
 ### Chains and trains
 

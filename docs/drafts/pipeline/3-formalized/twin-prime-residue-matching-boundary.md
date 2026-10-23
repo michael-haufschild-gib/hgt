@@ -1,10 +1,11 @@
 # Relative centering becomes an exact residue matching
 
 - **ID:** twin-prime-residue-matching-boundary
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / NO-GO with positive survivor; classical finite geometry
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / NO-GO with positive survivor; classical finite geometry
+- **Lean:** `formal/GaloisForLFunctions/twin-prime/SemiprimeEnergy.lean`
 - **Source:** [fixed-determinant normalization](../1-in-progress/twin-prime-fixed-determinant-uniformity.md)
-  and [coupled centering](twin-prime-coupled-residue-centering.md).
+  and [coupled centering](../2-fully-proven/twin-prime-coupled-residue-centering.md).
 - **Statement:** A growing congruence modulus can turn the rough-shift operator into a matching. An explicit bounded second row then attains its full positive mass, even with the actual Liouville first row.
 
 ## Exact strengthening under attack
@@ -16,23 +17,30 @@ uniformly in the modulus `l`, after normalization by `Y/l`?
 Specifically, replace `1/Y` by `l/Y` in the coupled-centering statement,
 retaining its `O(L^(-21/20))` bound and its freedom to choose any second
 row `g` with `|g|<=1`. The first row is the actual Liouville function,
-the shift multiplier is `h=1`, the residue is `r(z)=z mod l`, and all
+the shift multiplier is `h=4`, the residue is `r(z)=c z mod l`, and all
 shift coefficients equal one. These are already enough to refute the
 strengthening. This is not the fixed-determinant two-Möbius conjecture.
 
 ## Complete positive survivor
 
-For natural `D,K`, put `l=4D+1`, `Y=l(K+1)`, and
+For natural `D,K`, put `a=4D+6`, `c=4D+2`, `l=ac`,
+`Y=l(K+1)`, and
 
 `P_D={p prime : D<p<=floor(6D/5)}`,
-`g_D(w)=lambda(w-floor((w mod l)/2))`.
+`g_D(w)=lambda(w-4 floor((w mod l)/a))`.
+
+The primitive reduced frame `(a,1;c,1)` has determinant exactly
+four. It is the actual canonical odd-cofactor frame for
+`m=2D+1`, `k=2D+3`; these cofactors are coprime and exceed one
+when `D>=1`. Thus the example retains the target's determinant
+and intercept geometry.
 
 Use the arithmetic convention `lambda(0)=0`. Thus `|g_D(w)|<=1`
 for every natural `w`; no cancellation property of this row is assumed.
 Define the finite coupled correlation
 
 `S(D,K,g)=sum_(p in P_D) (1/p)
-   sum_(1<=v<=Y) 1_(v mod l=p) lambda(v)g(v+p)`.
+   sum_(1<=v<=Y) 1_(v mod l=c p) lambda(v)g(v+4p)`.
 
 The exact identity is
 
@@ -47,17 +55,17 @@ The same row works for every horizon multiple `K+1`.
 
 ### Finite proof
 
-Every `p in P_D` satisfies `0<p<=2D`, hence `2p<l`. If
-`v mod l=p`, then `(v+p) mod l=2p`, so
+Every `p in P_D` satisfies `0<p<=2D<c<a`. If
+`v mod l=cp`, then `(v+4p) mod l=(c+4)p=ap<ac=l`, so
 
-`g_D(v+p)=lambda(v+p-p)=lambda(v)`.
+`g_D(v+4p)=lambda(v+4p-4p)=lambda(v)`.
 
 Since `v>=1`, the summand's two Liouville factors multiply to one.
 The selected integers in `[1,l(K+1)]` are exactly
 
-`v=l k+p`, `0<=k<K+1`.
+`v=l k+cp`, `0<=k<K+1`.
 
-This follows from Euclidean division, using `0<p<l`; it includes
+This follows from Euclidean division, using `0<cp<l`; it includes
 both endpoints without an error term. There are exactly `K+1`
 selected terms for each prime. Summation proves (1).
 For (2), each selected product has modulus at most one and the
@@ -65,7 +73,7 @@ reciprocal weights are nonnegative. Triangle inequality gives the
 same count. This proves sharpness.
 
 The incidence interpretation is literal: different `p` have disjoint
-input classes `p mod l` and disjoint output classes `2p mod l`.
+input classes `cp mod l` and disjoint output classes `ap mod l`.
 Thus these edges form a partial matching, and the second row can
 align every edge independently. No analytic oscillation survives
 in this arbitrary-row norm.
@@ -103,6 +111,11 @@ large as needed so `Y=l(K+1)>=exp(L^A/2)` for any prescribed
 times `1/L`. That cannot be `O(L^(-21/20))` uniformly in the
 second row and modulus. The lower bound has no horizon error.
 
+For every fixed positive slope exponent `eta`, `K` can also be
+chosen so `a,c <= (Y/l)^eta`. Thus restricting the slopes to a
+polynomially small range relative to the sample length does not
+repair this arbitrary-row strengthening.
+
 **Verdict: FALSE** for the universal relative-centering strengthening.
 The strongest positive survivor is the exact matching norm (1)--(2),
 together with its unconditional prime-mass lower bound (4).
@@ -132,11 +145,43 @@ to Möbius or Liouville, and does not prove any positive twin-prime mass.
 
 - [x] Exact conjecture, explicit attack and failure on its own scales.
 - [x] Positive survivor with dependency-closed paper proof.
-- [ ] Unconditional Lean certificate and transitive axiom audit.
-- [ ] Close only the universal transfer route; retain the actual-row target.
+- [x] Unconditional Lean certificate and transitive axiom audit.
+- [x] Close only the universal transfer route; retain the actual-row target.
+
+## Certificate
+
+The foreground leaf command passed:
+
+`lake --old env lean GaloisForLFunctions/twin-prime/SemiprimeEnergy.lean`
+
+All six capstones passed transitive axiom audits with exactly
+`[propext, Classical.choice, Quot.sound]`:
+
+- `TwinPrime.abs_residueMatchingRow_le_one`;
+- `TwinPrime.residueMatchingCorrelation_saturated`;
+- `TwinPrime.abs_residueMatchingCorrelation_le`;
+- `TwinPrime.eventually_residueMatchingPrimeMass_ge`;
+- `TwinPrime.residueMatchingRelative_eq_primeMass`;
+- `TwinPrime.residueMatchingRelative_not_isLittleO`.
+
+The sharp bound takes second rows valued in the real unit interval,
+the natural domain of this finite operator. Its saturating row is
+explicit and its bound is proved. No analytic cancellation premise
+is assumed. The reciprocal-mass lower bound uses the existing proved
+PNT consequence in the same leaf. The last theorem rules out
+`o(1/log(2D))` along every choice of complete-block horizons `K(D)`.
+The leaf's umbrella import already exists; no umbrella was compiled.
+Audit directives were removed without changing proofs.
+
+The [failed universal transfer](../5-failed/twin-prime-universal-relative-centering.md)
+is closed with this positive survivor. The actual two-row target remains open.
 
 ## Log
 
 - 2026-10-23 — Constructed the residue-decoding second row and proved
   exact saturation. The fixed-determinant cancellation target and
   twin-prime infinitude remain open.
+- 2026-10-23 — Strengthened the construction to the canonical
+  determinant-four frame before the final certificate. Full leaf
+  and six transitive axiom audits passed. No new scientific
+  cancellation theorem or twin-prime infinitude proof is claimed.

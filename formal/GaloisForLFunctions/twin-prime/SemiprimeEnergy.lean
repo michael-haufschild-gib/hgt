@@ -554,10 +554,3 @@ theorem residueMatchingRelative_not_isLittleO (K : ℕ → ℕ) :
 end
 
 end TwinPrime
-
-#print axioms TwinPrime.abs_residueMatchingRow_le_one
-#print axioms TwinPrime.residueMatchingCorrelation_saturated
-#print axioms TwinPrime.abs_residueMatchingCorrelation_le
-#print axioms TwinPrime.eventually_residueMatchingPrimeMass_ge
-#print axioms TwinPrime.residueMatchingRelative_eq_primeMass
-#print axioms TwinPrime.residueMatchingRelative_not_isLittleO

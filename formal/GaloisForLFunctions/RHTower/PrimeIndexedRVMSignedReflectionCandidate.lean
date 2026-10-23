@@ -556,7 +556,8 @@ theorem xiZeroCopyReciprocalSquare_cube_re_sq_le_sq_re_cube
   have hv : 0 ≤ v := by dsimp [v]; positivity
   have huv : v ≤ u / 84 := by
     dsimp only [u, v]
-    convert hs using 1 <;> ring
+    convert hs using 1
+    ring
   have hvu : v ≤ u := by nlinarith
   have hseven : 7 * v ≤ u := by nlinarith
   have huv_sq : v ^ 2 ≤ u * v := by
@@ -597,51 +598,13 @@ theorem xiZeroCopyReciprocalSquare_sq_re_pos_of_thermal_sector (q : XiZeroCopy) 
   rw [htwo]
   nlinarith [sq_pos_of_pos hx]
 
-set_option maxHeartbeats 800000 in
-/-- The actual Xi reciprocal-square divisor moments satisfy the sixth spectral ceiling
-without RH: a free Schwarz pair supplies the factor two, and Hölder sums the atomwise sector law. -/
-theorem normalizedPrimeArchMoment_sixth_spectral_ceiling :
-    2 * normalizedPrimeArchMoment 2 ^ 2 ≤ normalizedPrimeArchMoment 1 ^ 3 := by
-  let a : XiZeroCopy → ℝ := fun q => (xiZeroCopyReciprocalSquare q ^ 2).re
-  let b : XiZeroCopy → ℝ := fun q => (xiZeroCopyReciprocalSquare q ^ 3).re
-  have ha : ∀ q, 0 < a q := fun q => by
-    exact xiZeroCopyReciprocalSquare_sq_re_pos_of_thermal_sector q
-  have hb : ∀ q, 0 < b q := fun q => by
-    exact xiZeroCopyReciprocalSquare_cube_re_pos q
-  have hab : ∀ q, b q ^ 2 ≤ a q ^ 3 := fun q => by
-    exact xiZeroCopyReciprocalSquare_cube_re_sq_le_sq_re_cube q
-  have hsa : Summable a := by
-    change Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q ^ 2).re)
-    exact Complex.reCLM.summable (summable_xiZeroCopyReciprocalSquare_pow 1)
-  have hsb : Summable b := by
-    change Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q ^ 3).re)
-    exact Complex.reCLM.summable (summable_xiZeroCopyReciprocalSquare_pow 2)
-  have hsa2 : Summable (fun q => a q ^ 2) := by
-    apply Summable.of_norm_bounded
-      (summable_xiZeroCopyReciprocalSquare_pow 3).norm
-    intro q
-    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-    calc
-      a q ^ 2 ≤ ‖xiZeroCopyReciprocalSquare q ^ 2‖ ^ 2 := by
-        exact (sq_le_sq₀ (ha q).le (norm_nonneg _)).mpr
-          (Complex.re_le_norm _)
-      _ = ‖xiZeroCopyReciprocalSquare q ^ 4‖ := by
-        rw [norm_pow, norm_pow]
-        ring
-  have hainv : ∀ q, a (xiZeroCopyConjEquiv q) = a q := by
-    intro q
-    change (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ 2).re =
-      (xiZeroCopyReciprocalSquare q ^ 2).re
-    rw [xiZeroCopyReciprocalSquare_conjEquiv]
-    have hpow :
-        (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q ^ 2) =
-          ((starRingEnd ℂ) (xiZeroCopyReciprocalSquare q)) ^ 2 :=
-      map_pow (starRingEnd ℂ) (xiZeroCopyReciprocalSquare q) 2
-    rw [← hpow, Complex.conj_re]
-  have hpair : ∀ q, 2 * a q ≤ ∑' r, a r := by
-    intro q
-    exact two_mul_le_tsum_of_conj_invariant
-      (fun r => (ha r).le) hsa hainv q
+/-- Hölder with the Schwarz pair bound: positive atoms with `b² ≤ a³`, summable `a` and `a²`,
+and `2 a_q ≤ Σ a` for every `q` give `2 (Σ b)² ≤ (Σ a)³`. -/
+private theorem two_mul_tsum_sq_le_tsum_cube_of_atoms {a b : XiZeroCopy → ℝ}
+    (ha : ∀ q, 0 < a q) (hb : ∀ q, 0 < b q) (hab : ∀ q, b q ^ 2 ≤ a q ^ 3)
+    (hsa : Summable a) (hsa2 : Summable (fun q => a q ^ 2))
+    (hpair : ∀ q, 2 * a q ≤ ∑' r, a r) :
+    2 * (∑' q, b q) ^ 2 ≤ (∑' q, a q) ^ 3 := by
   let c : XiZeroCopy → ℝ := fun q => b q ^ 2 / a q
   have hc : ∀ q, 0 ≤ c q := fun q =>
     div_nonneg (sq_nonneg _) (ha q).le
@@ -748,7 +711,8 @@ theorem normalizedPrimeArchMoment_sixth_spectral_ceiling :
       _ ≤ ∑' q, (∑' r, a r) * a q := by
         exact hsa2scale.tsum_le_tsum
           (fun q => by
-            convert mul_le_mul_of_nonneg_right (hpair q) (ha q).le using 1 <;> ring)
+            convert mul_le_mul_of_nonneg_right (hpair q) (ha q).le using 1
+            ring)
           hsascale
       _ = (∑' q, a q) ^ 2 := by
         rw [hsa.tsum_mul_left]
@@ -764,20 +728,45 @@ theorem normalizedPrimeArchMoment_sixth_spectral_ceiling :
           (mul_le_mul_of_nonneg_left hCsq hA) (by norm_num)
       _ ≤ (∑' q, a q) ^ 3 := by
         nlinarith [mul_le_mul_of_nonneg_left hA2 hA]
-  have hMone : normalizedPrimeArchMoment 1 = ∑' q, a q := by
-    change normalizedPrimeArchMoment 1 =
-      ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 2).re
+  exact hmain
+
+/-- The actual Xi reciprocal-square divisor moments satisfy the sixth spectral ceiling
+without RH: a free Schwarz pair supplies the factor two, and Hölder sums the atomwise sector law. -/
+theorem normalizedPrimeArchMoment_sixth_spectral_ceiling :
+    2 * normalizedPrimeArchMoment 2 ^ 2 ≤ normalizedPrimeArchMoment 1 ^ 3 := by
+  have ha : ∀ q : XiZeroCopy, 0 < (xiZeroCopyReciprocalSquare q ^ 2).re :=
+    xiZeroCopyReciprocalSquare_sq_re_pos_of_thermal_sector
+  have hsa : Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q ^ 2).re) :=
+    Complex.reCLM.summable (summable_xiZeroCopyReciprocalSquare_pow 1)
+  -- `(Re w²)² ≤ ‖w‖⁴`, summable by the fourth reciprocal-square moment
+  have hsa2 : Summable (fun q : XiZeroCopy => (xiZeroCopyReciprocalSquare q ^ 2).re ^ 2) := by
+    refine Summable.of_norm_bounded (summable_xiZeroCopyReciprocalSquare_pow 3).norm
+      fun q => ?_
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    calc
+      (xiZeroCopyReciprocalSquare q ^ 2).re ^ 2 ≤ ‖xiZeroCopyReciprocalSquare q ^ 2‖ ^ 2 :=
+        (sq_le_sq₀ (ha q).le (norm_nonneg _)).mpr (Complex.re_le_norm _)
+      _ = ‖xiZeroCopyReciprocalSquare q ^ (3 + 1)‖ := by
+        rw [norm_pow, norm_pow]
+        ring
+  have hainv : ∀ q, (xiZeroCopyReciprocalSquare (xiZeroCopyConjEquiv q) ^ 2).re =
+      (xiZeroCopyReciprocalSquare q ^ 2).re := by
+    intro q
+    rw [xiZeroCopyReciprocalSquare_conjEquiv, ← map_pow, Complex.conj_re]
+  have hMone : normalizedPrimeArchMoment 1 =
+      ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 2).re := by
     rw [normalizedPrimeArchMoment_eq_re_xiCentralReciprocalMoment,
       ← tsum_xiZeroCopyReciprocalSquare_pow 1,
       Complex.re_tsum (summable_xiZeroCopyReciprocalSquare_pow 1)]
-  have hMtwo : normalizedPrimeArchMoment 2 = ∑' q, b q := by
-    change normalizedPrimeArchMoment 2 =
-      ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 3).re
+  have hMtwo : normalizedPrimeArchMoment 2 =
+      ∑' q : XiZeroCopy, (xiZeroCopyReciprocalSquare q ^ 3).re := by
     rw [normalizedPrimeArchMoment_eq_re_xiCentralReciprocalMoment,
       ← tsum_xiZeroCopyReciprocalSquare_pow 2,
       Complex.re_tsum (summable_xiZeroCopyReciprocalSquare_pow 2)]
   rw [hMone, hMtwo]
-  exact hmain
+  exact two_mul_tsum_sq_le_tsum_cube_of_atoms ha xiZeroCopyReciprocalSquare_cube_re_pos
+    xiZeroCopyReciprocalSquare_cube_re_sq_le_sq_re_cube hsa hsa2
+    (two_mul_le_tsum_of_conj_invariant (fun r => (ha r).le) hsa hainv)
 
 
 /-- The raw theta source itself satisfies the sixth spectral law unconditionally.  The mass
@@ -975,7 +964,8 @@ private theorem normalized_XiC_eighth_jet_eq_source_moments :
   have h0 : XiC 0 = (thetaCuspRawEvenMoment 0 : ℂ) := by
     simpa using iteratedDeriv_XiC_zero_eq_rawEvenMoment 0
   have h8 : iteratedDeriv 8 XiC 0 = (thetaCuspRawEvenMoment 4 : ℂ) := by
-    convert iteratedDeriv_XiC_zero_eq_rawEvenMoment 4 using 1 <;> norm_num
+    convert iteratedDeriv_XiC_zero_eq_rawEvenMoment 4 using 1
+    norm_num
   rw [h0, h8]
   have hreal :
       thetaCuspRawEvenMoment 4 / thetaCuspRawEvenMoment 0 / 40320 =

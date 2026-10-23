@@ -11,7 +11,6 @@ of width three. All identities are proved in the real polynomial ring.
 
 namespace HTGeometry
 noncomputable section
-set_option maxRecDepth 100000
 
 private theorem unit_monomial_slack_nonneg {u w : ℝ}
     (hu0 : 0 ≤ u) (hu1 : u ≤ 1) (hw0 : 0 ≤ w) (hw1 : w ≤ 1)

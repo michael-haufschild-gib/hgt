@@ -103,6 +103,17 @@ The estimate remains unproved. The deformation bound resolves
 parameter uniformity, not the signed arithmetic correlation or
 its mixed/long-cofactor companions.
 
+There is now a smaller-range
+[paper deduction](../2-fully-proven/twin-prime-polylogarithmic-affine-cancellation.md).
+For some absolute `kappa1,c1>0`, the actual odd-source covariance
+is `O(X/(log X)^c1)`, uniformly for `2<=Z<=(log X)^kappa1`.
+The proof tracks growing-modulus constants in the ordinary
+two-point source, pays the Möbius squarefree projection, and
+sums the logarithmic cofactor weights with every endpoint cost.
+This is not yet Lean-certified; no analytic input is assumed
+in Lean. The polynomial cutoff target above, mixed terms,
+long-cofactor pair and positive twin-prime mass remain open.
+
 ## Dependency and novelty audit
 
 Corpus search `Möbius correlation affine linear forms nonunit

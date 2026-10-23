@@ -1,99 +1,59 @@
 # Arithmetic Castelnuovo–Severi Theory (`GaloisForLFunctions.ArithmeticCastelnuovoSeveri`)
 
-**One question.** Weil proved the Riemann hypothesis for curves over finite fields by reading the
-zeta function as an intersection theory on the surface `C × C` and the positivity of its
-explicit formula as the Hodge index theorem of that surface. Which ingredients of that proof exist
-for `ℤ`, which are provably absent, and what exactly would a proof of the missing ones have to
-produce?
+**One question.** Weil proved the Riemann hypothesis for curves over `𝔽_q` by reading the zeta
+function as an intersection theory on `C × C` and the positivity of its explicit formula as the
+Hodge index theorem of that surface. Which ingredients of that proof exist for `ℤ`, which are
+provably absent, and what would a proof of the missing ones have to produce?
 
-Arithmetic Castelnuovo–Severi theory (ACS) is the intersection theory of the **scaling surface**
-of `ℤ`. Its cycles are the pole plane `⟨H, V⟩` (the directions `e^{∓u/2}`, met by a test in its
-transform at `± i/2`) together with the Weil tests; its pairing is the local side of the explicit
-formula; its Castelnuovo–Severi defect is Weil's form; its Hodge index theorem is the Riemann
-hypothesis. These identities and equivalences are theorems (`scalingSurface`,
-`scalingSurface_hodgeIndex_iff`); the scaling surface is a vector space with a pairing, not a
-constructed arithmetic scheme with divisors and sections. The programme's object is the gap between this surface and the
-surface `C × C` of a curve, measured ingredient by ingredient, calibrated over `𝔽_q`, with every
-statement unconditional.
+Arithmetic Castelnuovo–Severi theory (ACS) is the intersection theory of the **scaling surface** of
+`ℤ`: cycles are the pole plane `⟨H, V⟩` (the directions `e^{∓u/2}`) together with Weil tests, the
+pairing is the local side of the explicit formula, the Castelnuovo–Severi defect is Weil's form,
+and the Hodge index theorem is RH (`scalingSurface_hodgeIndex_iff`). The surface is a vector space
+with a pairing, not a constructed scheme. The programme measures its gap to `C × C` ingredient by
+ingredient, calibrated over `𝔽_q`, every statement unconditional.
 
-The local pairing and its archimedean diagonal term are explicit. The missing input is an
-independent reason for their Hodge index property. Fake curve data show that the specified
-Frobenius-span identities, integral point counts and functional equation do not force that sign.
-Weil's geometric proof supplies additional information through effective divisors on the ambient
-surface. ACS asks what arithmetic structure could play that role; the counterexamples do not rule
-out every analytic proof or prove that all possible constructions must enlarge the cycle space.
-
-**The open core, stated plainly.** The Hodge index theorem of the scaling surface is
-RH-equivalent (`scalingSurface_hodgeIndex_iff`, `riemannHypothesis_iff_one_positive_square`,
-`riemannHypothesis_iff_exists_effectivity`), and **no independent arithmetic effectivity theory
-supplies it**. These equivalences are reformulations, not proofs: the positive cone, which is
-defined from local data alone (prime comb, archimedean collar, pole), satisfies the Riemann–Roch
-axiom by construction, and its ample axiom *is* RH. Any effectivity with the Riemann–Roch axiom and
-nonnegative degrees contains the open positive cone (`openPositiveCone_subset_of_effectivity`), so
-a proposed effectivity cannot avoid those positive-square classes merely by choosing a smaller set. What Weil has and `ℤ` lacks is the mechanism that
-proves ampleness independently: an effective divisor is the zero set of a section, so its degree is
-nonnegative, and vanishing ample degree forces numerical triviality. The programme's results locate this gap exactly; they do not close it.
+**The open core.** Of the two inputs of Castelnuovo–Severi, the scaling surface has **Bézout
+positivity** — distinct effective cycles meet nonnegatively (`localPair_nonneg`) — but not the
+**Riemann–Roch** supply of effective cycles in every class of positive square. Such a supply with
+ample degrees is equivalent to RH (`riemannHypothesis_iff_exists_effectivity`); no independent
+arithmetic source of it is known. The failure of the Hodge index is measured exactly: its defect
+is the number of zeros right of the critical line (`zeta_hodgeDefect_iff`).
 
 ---
 
 ## Place in the research
 
-ACS gives the critical Weil form an intersection-theoretic language: cycles, a hyperbolic pole
-plane, primitive classes, defects and inertia. The purpose is to distinguish the numerical data of
-an intersection pairing from a mechanism that forces its signature. Finite-field curve data are
-both the calibration and the source of explicit counterexamples to insufficient axioms.
-
 | Programme | Connection |
 |---|---|
-| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the full Weil–Markov–pole form whose positivity becomes the Hodge index property. |
-| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Supplies adversarial models; ACS's fake curves separate finite span data from unitarity. |
-| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Distinguishes exact finite identities from critical-norm estimates and preserves successor boundaries. |
-| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Carries the additive and valuation structure beyond the prime incidence graph: consecutive integers have no prime Hecke intersection for `k ≥ 2`. |
-| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | Reads the same sign through ground energies; ACS counts negative directions through the intersection signature. |
-| [Square-Root Threshold](../SquareRootThreshold/README.md) | Relates aperture and zero width. Its visibility questions are distinct from ACS's unrestricted finite-configuration index formula. |
-| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Ratio atoms give the Hecke incidence matrix; crossing product atoms belong to its reflected geometry. The Kronecker law computes the prime matrix on resonators. |
-| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Seeks quantitative transport of positivity; a geometric reformulation still needs a mechanism that supplies the bound. |
-| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Studies which cycles a bounded reading can detect; the finite-field window law supplies a calibrated hiding example. |
-| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Identifies the comb's mean-field translation and resolvent, explaining why a squared comb majorant is larger than the signed pairing. |
-| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Retains the Möbius source and its residue kernel when passing from arithmetic incidence to quadratic forms. |
+| [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | Supplies the Weil–Markov–pole form whose positivity is the Hodge index property. |
+| [Arithmetic Incidence Positivity](../ArithmeticIncidencePositivity/README.md) | Ratio atoms give the Hecke incidence; its crossing kernels are the collar on the lattice. |
+| [Square-Root Threshold](../SquareRootThreshold/README.md) | Visibility laws for the Weil form; here they become the degree filtration of the Hodge defect. |
+| [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | What a bounded reading can see; ACS supplies the calibrated hiding examples over `𝔽_q` and `ℚ`. |
+| [Bézout–Valuation Incidence](../BezoutValuationIncidence/README.md) | Additive and valuation structure; consecutive integers have no prime Hecke intersection. |
+| [Bi-Scale Uncertainty](../BiScaleUncertainty/README.md) | Adversarial models; fake curves separate span data from unitarity. |
+| [Arithmetic Criticality Theory](../ArithmeticCriticalityTheory/README.md) | The same sign through ground energies; ACS counts it through the signature. |
+| [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | The comb's mean field; why squared majorants exceed the signed pairing. |
+| [Trans-Horizon Incidence Mechanics](../TransHorizonIncidenceMechanics/README.md) | Exact finite identities versus critical-norm estimates; successor boundaries. |
+| [Arithmetic Continuation and Critical Energy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Quantitative transport of positivity; a geometric form still needs a producer. |
+| [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Keeps the Möbius source when passing from incidence to quadratic forms. |
 
-Read polar decomposition and adjunction first, then the Frobenius-span, fake-curve and contact
-laws. The scaling surface and signature law transfer this language to `ζ`; effectivity specifies
-the missing geometric input. The finite and tempered Pontryagin laws and the Cartesian
-prime-incidence law are
-concrete tools that can be used without assuming RH. `RHTower` supplies the explicit formula,
-Weil criterion, zero-count input and matrix inertia calculus.
+`RHTower` supplies the explicit formula, the Weil criterion, the Lévy–Khintchine form of the
+archimedean symbol and the matrix inertia calculus.
 
 ---
 
-## 1. Why: motivation
+## 1. Why
 
-**Weil's proof has five ingredients.** On `C × C` over `𝔽_q`: (i) an intersection pairing; (ii) the
-fibre classes `H, V` with `H² = V² = 0`, `H·V = 1`, spanning a hyperbolic plane of signature `(1,1)`; (iii) the
-Frobenius graph `Γ` with `Γ·Δ = #C(𝔽_q)` (Lefschetz); (iv) its exact self-intersection
-`Γ² = q(2 − 2g)` (adjunction); (v) a dimension count — Riemann–Roch for divisors of the surface —
-which forces the Hodge index theorem: the pairing is negative semidefinite on primitive classes
-(negative definite after the appropriate numerical quotient). The Hodge index
-theorem gives the Castelnuovo–Severi inequality `D² ≤ 2(D·H)(D·V)`, and on `D = mΓ + nΔ` that is the
-bound `|N − q − 1| ≤ 2g√q`.
+Weil's proof on `C × C` has five ingredients: (i) an intersection pairing; (ii) fibres `H, V` with
+`H² = V² = 0`, `H·V = 1`; (iii) Frobenius graphs with `Γ·Δ = #C(𝔽_q)` (Lefschetz); (iv)
+`Γ² = q(2 − 2g)` (adjunction); (v) Riemann–Roch on the surface, which forces the Hodge index
+theorem. Hodge index gives `D² ≤ 2(D·H)(D·V)`, and on `D = mΓ + nΔ` the bound `|N − q − 1| ≤ 2g√q`.
 
-**The arithmetic counterpart is an exact pairing.** The pole evaluations form a hyperbolic
-plane; subtracting the local prime–archimedean pairing produces Weil's form. This identifies the
-sign problem precisely but does not solve it. Countermodels exclude particular proposed inputs,
-such as finite windows or the stated span identities; they do not exclude all estimates.
-
-**The geometric opening is effectivity.** A section theory could force the sign through a
-Riemann–Roch argument and positivity of ample degree. The abstract effectivity theorem specifies
-these obligations. Its converse constructs a cone from the desired sign, so existence of that
-cone is an equivalent criterion, not an independent producer.
-
-**Calibration separates the ingredients.** Pairing, fibres, Lefschetz and adjunction are available
-on the formal Frobenius span. Hodge index on that span is equivalent to unitarity for every curve
-datum, including fake data. The missing dimension-count mechanism is therefore not a consequence
-of those identities. Over `ℚ`, no nonzero compact test can have its transform vanish at almost all
-simple critical zeros; this rules out copying the finite-field span radical as a section model.
-It motivates approximate sections or a different arithmetic object, without proving that every
-possible section theory must use near-radicals.
+Over `ℤ` (i)–(iv) are exact: the pole plane is the hyperbolic plane, the prime comb is Lefschetz,
+the archimedean term is adjunction. Over `𝔽_q` the same span identities hold for **fake** data that
+violate RH, so they cannot force the sign. Weil's sign comes from the ambient surface: effective
+divisors are zero sets of sections, they meet nonnegatively, and Riemann–Roch supplies enough of
+them. ACS isolates which of these mechanisms the scaling surface has.
 
 ---
 
@@ -103,416 +63,178 @@ possible section theory must use near-radicals.
 
 | Weil's proof over `𝔽_q` | The scaling surface of `ℤ` | Lean |
 |---|---|---|
-| surface `C × C`, pairing | cycles `aH + bV + f`, pairing from the explicit formula | `scalingSurface`, `scalingPair` |
-| fibres `H, V`: `H² = V² = 0`, `H·V = 1` | pole plane `e^{∓u/2}`; `f·H = ∫ f e^{−u/2}`, `f·V = ∫ f e^{u/2}` | `PolarSurface`, `poleB`, `poleA` |
+| surface `C × C`, pairing | cycles `aH + bV + f`, pairing from the explicit formula | `scalingSurface` |
+| fibres `H, V` | pole plane; `f·H = ∫ f e^{−u/2}`, `f·V = ∫ f e^{u/2}` | `PolarSurface`, `poleRow` |
 | defect `2(D·H)(D·V) − D²` | Weil's form `W(f, f)` | `scalingSurface_defect_self` |
-| Hodge index on `⟨H, V⟩^⊥` | Weil positivity = RH | `scalingSurface_hodgeIndex_iff` |
-| Frobenius graphs `Γ_k` | scaling (Hecke) cycles: lattice tests `Σ c_a g(· − log a)` | `heckeIncidence` |
-| Lefschetz `Γ_k·Γ_l = q^{min} N_{\|k−l\|}` | prime side `Λ(n) n^{−1/2}` at `log n` | `graphPair`, `localGram_apply` |
-| adjunction `Γ_k² = q^k(2 − 2g)` | archimedean lag-zero term (Gamma factor) | `graphPair_self`, `localGram_apply` |
-| genus `2g = Σ_i β_i^0` | zero count (infinite) | `trace_zero`, `eq_zero_of_paperFT_vanish` |
+| Hodge index | Weil positivity = RH | `scalingSurface_hodgeIndex_iff` |
+| Frobenius graphs `Γ_k` | Hecke cycles `g(· − log a)` | `heckeIncidence` |
+| Lefschetz numbers | prime comb `Λ(n) n^{−1/2}` at `log n` | `graphPair`, `localGram_apply` |
+| adjunction `Γ_k² = q^k(2 − 2g)` | archimedean term (Gamma factor) | `graphPair_self`, `localGram_apply` |
+| genus `2g` | zero count (infinite) | `eq_zero_of_paperFT_vanish` |
+| Bézout: distinct curves meet `≥ 0` | disjoint nonnegative tests meet `≥ 0` | `localPair_nonneg` |
 | Riemann–Roch ⇒ Hodge index | effectivity with RR and ample axioms | `exists_effectivity_iff_hodgeIndex` |
-| positive index `1` | one positive square on every family | `riemannHypothesis_iff_one_positive_square` |
+| number of eigenvalues `|α| > √q` | number of zeros with `Re ρ > ½` | `pontryagin_law_curve`, `pontryagin_law` |
 
 ### 2.2 Objects
 
 | Object | Meaning | Lean |
 |---|---|---|
-| Polar surface | real cycles with symmetric pairing, isotropic `H, V`, `H·V = 1` | `PolarSurface` |
-| Defect | `δ(x, y) = (x·H)(y·V) + (x·V)(y·H) − x·y` | `PolarSurface.defect` |
-| Primitive part | `x° = x − (x·V)H − (x·H)V` | `PolarSurface.prim` |
-| Ample class | `H + V`, `(H + V)² = 2` | `PolarSurface.ample` |
-| Hodge index (four forms) | primitive, Castelnuovo–Severi, defect, ample | `HodgeIndex`, `CastelnuovoSeveri`, `AmpleHodgeIndex` |
-| Weil configuration | `(q, g, N, s)`: numbers of `Γ, Δ` on a Hodge surface | `WeilRealizable` |
-| Curve datum | `q > 1`, normalized eigenvalues `β`, closed under conjugation and `β ↦ β⁻¹` | `CurveDatum` |
-| Lefschetz number | `N_j = q^j + 1 − q^{j/2} Σ β_i^j`, `N_0 = 2 − 2g` | `CurveDatum.pointCount` |
-| Span defect, Toeplitz form | defect of `Σ d_k Γ_k`; `Σ e_k e_l Re Σ_i β_i^{\|k−l\|}` | `spanDefect`, `toeplitz` |
-| Golden datum | fake elliptic curve over `𝔽₅`, `β = φ, φ⁻¹` | `goldenDatum` |
-| Hiding datum | the pair `2, 1/2` with `2N` roots of unity | `hidingDatum` |
-| Spectrum, reduced char. polynomial | distinct `β`; `Π (X − β)` | `spectrum`, `reducedCharPoly` |
-| Effectivity, axioms | a set of cycles; Riemann–Roch and ample axioms | `RiemannRochAxiom`, `AmpleAxiom` |
-| Real tests, scaling cycles | `C²` compactly supported real tests; `ℝ × ℝ × tests` | `realTests`, `ScalingCycle` |
-| Weil and local pairing | `Re W(f, g)`; `B(f)A(g) + A(f)B(g) − Re W(f, g)` | `weilPair`, `localPair` |
-| Intersection Gram | Gram of `H, V, f₁…f_n`: `[[J, B], [Bᴴ, BᴴJB − W]]` | `intersectionGram`, `polePlane`, `poleRow` |
-| Hecke incidence, tower form | `ratioIncidence a b + ratioIncidence b a` (AIP's ratio atoms); `Σ x_i x_{i'} τ_p(\|i − i'\|)` | `heckeIncidence`, `ratioIncidence`, `primeAtom`, `towerForm`, `towerWeight` |
-| Cross-prime aggregate | `Σ_{p ≠ q ≤ N} w_p w_q A(log(q/p))`, `w_p = log p/√p` | `crossAggregate`, `combWeight`, `autoCorrelation` |
-| Wide odd test | odd smooth plateau test of aperture `3W + 2` | `wideOddTest` |
+| Polar surface | cycles with symmetric pairing, isotropic `H, V`, `H·V = 1` | `PolarSurface` |
+| Defect, primitive part | `δ(x, y) = (x·H)(y·V) + (x·V)(y·H) − x·y`; projection off `⟨H, V⟩` | `defect`, `prim` |
+| Curve datum | `q > 1`, normalized eigenvalues `β` closed under `β ↦ β̄` and `β ↦ β⁻¹` | `CurveDatum` |
+| Span defect | defect of `Σ d_k Γ_k`, a Toeplitz form in `Re Σ_i β_i^{|k−l|}` | `spanDefect`, `toeplitz`, `spanGram` |
+| Fake curves | golden datum (`β = φ, φ⁻¹`, `q = 5`); hiding datum | `goldenDatum`, `hidingDatum` |
+| Zero configuration | reflection-symmetric multiset of points in the strip; tempered if `Σ m/(1 + |γ|²) < ∞` | `ZeroConfig`, `TemperedConfig` |
+| Intersection Gram | Gram of `H, V, f₁ … f_n` | `intersectionGram`, `localGram`, `zeroGram` |
+| Hodge defect | negative squares of `W`; at degree `a`: on tests supported in `[−a, a]` | `hermNegIndex`, `hodgeDefectAt` |
+| Effectivity | a set of cycles with the Riemann–Roch and ample axioms | `RiemannRochAxiom`, `AmpleAxiom` |
+| Effective cycle | nonnegative real test; without common component: disjoint supports | `localPair` |
+| Hecke incidence, tower form | prime part of the pairing of Hecke cycles | `heckeIncidence`, `towerForm` |
 
 ### 2.3 Words
 
-* **Cycle, degree, aperture.** A cycle is a pole-plane class plus a test. Its **ample degree** is
-  its pairing with `H + V`; the two fibre degrees are its pairings with `H` and `V`.
-  **Aperture** is a support bound for the test, analogous to the length of a Frobenius window.
-  Aperture is not ample degree; effectivity axioms concern the latter.
-* **Primitive, defect.** The primitive part is the projection off the pole plane; the defect of a
-  cycle is minus the square of its primitive part. Positivity of the defect is Hodge index.
-* **Span.** The span of the Frobenius graphs (over `ℚ`: of the Hecke cycles); its intersection
-  numbers are Lefschetz numbers and the adjunction term.
+* **Degree and aperture.** Ample degree is the pairing with `H + V`; aperture is the support bound
+  of a test, the analogue of a Frobenius window. Effectivity axioms concern the first, visibility
+  the second.
+* **Hodge defect.** The number of negative squares of Weil's form, equivalently the excess
+  positive squares of the intersection form beyond the pole plane.
 * **Unitary, fake.** A curve datum is unitary when `|β_i| = 1` (RH for the datum); a fake datum has
-  the span data of a curve (point counts, functional equation) but is not unitary.
-* **Genus, contact window.** The lag-zero trace is `2g`, and the lag-zero Lefschetz number is
-  `2−2g`. The first degenerate window has length `s+1`, where `s` counts distinct normalized
-  eigenvalues; this need not equal `2g+1` when eigenvalues repeat.
-* **Effectivity.** A set of cycles playing the role of effective divisors; it must satisfy the
-  Riemann–Roch axiom (positive square ⇒ effective up to sign) and the ample axiom (effective and
-  orthogonal to `H + V` ⇒ numerically trivial).
-* **Resonator.** A `{p, q}`-smooth box `{p^i q^j}`, the support of the bi-lattice train.
-* **Mean field.** The part of a prime-sum quantity carried by the mean `Σ_p w_p ≍ √N` of the comb —
-  the pole read at PNT level.
-
-### 2.4 Source and selectivity
-
-* **The source is fixed.** The scaling surface uses `Λ` and a pole of weight one. For a general
-  weight `λ`, having exactly one positive square on every finite test family is equivalent to
-  `RH ∧ (∀ n ≥ 2, λ(n)=Λ(n))` (`one_positive_square_iff_vonMangoldt`). Choosing the actual
-  source does not assume or prove its Hodge index property.
-* **Span identities are insufficient.** Fake data satisfy the specified algebraic symmetries and
-  point-count properties but fail Hodge index. A new argument must use an additional constraint
-  that those data violate; it need not be described as a change of type or an enlarged space.
-* **Signed tests and effective cycles are different.** The pole quadrant with nonnegative tests
-  fails the Riemann–Roch axiom (`posTestCone_not_riemannRoch`). The quadratic positive cone used
-  in the converse effectivity theorem is a different set.
+  the span data of a curve but is not unitary.
+* **Kronecker rank.** The rank of the frequencies of the zeta function: one for curves (periodic
+  zeros), finite for exponential polynomials, infinite for `ζ`.
+* **Collar.** The archimedean part of the pairing of two cycles; in jump form an integral against
+  the Lévy density `ω(x) = e^{−x/2}/(1 − e^{−2x})`.
 
 ---
 
-## 3. How: the foundational theorems
+## 3. How: the pillar theorems
 
-### 3.1 The polar surface (`PolarSurfaceHodgeIndex`)
+### 3.1 The polar surface and Weil's step (`PolarSurfaceHodgeIndex`, `AdjunctionThresholdLaw`)
 
-1. **Orthogonal decomposition.** `x·y = (x·H)(y·V) + (x·V)(y·H) + x°·y°`
-   (`pair_eq_polar_add_prim`); the defect only sees the primitive part (`defect_prim`,
-   `pair_prim_prim`: `x°·y° = −δ(x, y)`).
-2. **Four forms of Hodge index.** Negative semidefinite on primitives ⟺ `x² ≤ 2(x·H)(x·V)` ⟺
-   `δ(x, x) ≥ 0` ⟺ negative semidefinite on `(H + V)^⊥` (`hodgeIndex_tfae`).
-3. **Weil's step.** Under Hodge index the defect obeys Cauchy–Schwarz, `δ(x, y)² ≤ δ(x, x)δ(y, y)`
-   (`defect_sq_le_of_hodgeIndex`) — the only inequality of Weil's proof.
-4. **One positive square.** Hodge index ⟺ no plane of cycles is positive definite
-   (`hodgeIndex_iff_no_positive_plane`).
+1. `x·y = (x·H)(y·V) + (x·V)(y·H) + x°·y°`; four equivalent forms of Hodge index; under it the
+   defect obeys Cauchy–Schwarz, the only inequality of Weil's proof (`pair_eq_polar_add_prim`,
+   `hodgeIndex_tfae`, `defect_sq_le_of_hodgeIndex`, `hodgeIndex_iff_no_positive_plane`).
+2. **Adjunction carries the bound.** A configuration of `Γ, Δ` is realizable on a Hodge surface iff
+   its defect Gram is positive semidefinite; with `Γ² = q(2 − 2g)` this is Hasse–Weil, with `Γ²` free
+   it bounds nothing, and only `Γ² ≥ q(2 − 2g)` is used (`realizable_iff`,
+   `realizable_adjunction_iff`, `realizable_of_free_selfIntersection`,
+   `sq_le_of_realizable_of_selfIntersection_ge`).
 
-### 3.2 The adjunction threshold law (`AdjunctionThresholdLaw`)
+### 3.2 Calibration over `𝔽_q`
 
-5. **Classification.** A configuration `Γ·H = 1`, `Γ·V = q`, `Δ·H = Δ·V = 1`, `Δ² = 2 − 2g`,
-   `Γ² = s`, `Γ·Δ = N` is realizable on a Hodge polar surface iff its defect Gram
-   `[[2q − s, q + 1 − N], [q + 1 − N, 2g]]` is positive semidefinite (`realizable_iff`; the model is
-   `ℝ⁴` with the hyperbolic plane and minus the defect Gram, `modelSurface`).
-6. **Hasse–Weil from adjunction.** With `s = q(2 − 2g)`: realizable iff `g ≥ 0` and
-   `(q + 1 − N)² ≤ 4g²q` (`realizable_adjunction_iff`); in abstract form `abs_le_of_hodgeIndex`.
-7. **Adjunction carries the whole bound.** For `g > 0` every `N` is realizable for some `s`
-   (`realizable_of_free_selfIntersection`): the Hodge index theorem bounds nothing without `Γ²`.
-8. **Only the lower adjunction bound is used.** `Γ² ≥ q(2 − 2g) − ε` gives
-   `(q + 1 − N)² ≤ 2g(2gq + ε)` (`sq_le_of_realizable_of_selfIntersection_ge`): Weil needs an upper
-   bound on the self-defect `δ(Γ) = 2q − Γ²`, not its exact value.
-9. **Genus zero is rigid.** `g = 0` forces `N = q + 1` (`realizable_genusZero_iff`).
+3. **The span defect is Weil's form**, a Toeplitz form in the power sums
+   (`spanDefect_eq_toeplitz`); genus zero makes it vanish (`spanDefect_eq_zero_of_genusZero`).
+4. **Hodge index on the span is RH for the datum** (`hodgeIndexOnSpan_iff_unitary`).
+5. **Pontryagin law over `𝔽_q`.** The span defect is the number of distinct eigenvalues outside
+   the unit circle, reached once the window holds the spectrum (`≤ 2g`); Hodge index on the window
+   `2g` is RH (`pontryagin_law_curve`, `negIndex_spanGram_mono`,
+   `unitary_iff_negIndex_spanGram_eq_zero`). The span Gram is the reflected evaluation form
+   `Σ_i conj E_x(β_i) E_y(1/β̄_i)` (`spanGram_sesq`).
+6. **Three Hodge index theorems coincide.** For a curve datum in the strip the zeros
+   `q^{ρ−½} = β_i` form a periodic tempered configuration, and RH for the datum, span Hodge index at
+   window `2g`, and Hodge index of its scaling surface are equivalent (`curve_hodgeIndex_tfae`). The
+   defects differ: the span counts each outer eigenvalue once, the scaling surface once per period
+   (`curveConfig_rightZeros_infinite_iff`). The span is the quotient of the scaling surface by the
+   period.
+7. **Contact law.** For unitary data the window of `n` graphs is positive definite iff `n ≤ #{β}`;
+   beyond, the radical is the multiples of the reduced characteristic polynomial
+   (`toeplitz_pos_on_window_iff`, `exists_radical_of_lt`).
+8. **Fake curves.** The golden datum has integral point counts, a rational zeta function with
+   functional equation, and Hodge defect exactly `1` (`goldenDatum_spanDefect_neg`,
+   `goldenDatum_negIndex_spanGram`). Its zeta series is integral (Witt integrality is not purity,
+   `witt_integral_not_pure`), and its point counts come from nonnegative integral prime counts of a
+   subshift (`goldenDatum_beurling_not_pure`): a rank-one Beurling system can satisfy every listed
+   arithmetic constraint and fail the Hodge index.
+9. **Window law.** Finitely many windows cannot see a deep eigenvalue unless the genus is
+   exponential in the window (`two_mul_genus_ge_of_window`, `exists_hidden_on_window`).
 
-### 3.3 The Frobenius span (`FrobeniusSpanCalibration`, `FrobeniusSpanHodgeIndexIsRH`)
+### 3.3 The scaling surface (`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`)
 
-10. **Lefschetz and adjunction are one formula.** `Γ_k·Γ_l = q^{min(k,l)} N_{|k−l|}` with
-    `N_j = q^j + 1 − q^{j/2} Σ_i β_i^j`; at lag `0` the Lefschetz number is the Euler characteristic
-    `2 − 2g`, which is adjunction (`graphPair_self`, `graphPair_zero`, `pointCount_zero`).
-11. **The defect of the span is Weil's form.** `2(D·H)(D·V) − D² = Σ_{k,l} e_k e_l Re Σ_i β_i^{|k−l|}`,
-    `e_k = q^{k/2} d_k` (`spanDefect_eq_toeplitz`); for unitary data it is `Σ_i |Σ_k e_k β_i^k|²`
-    (`toeplitz_eq_sum_normSq`). Genus zero makes it vanish identically
-    (`spanDefect_eq_zero_of_genusZero`): the `𝔽_q[T]` calibration.
-12. **Hodge index on the span is RH for the datum** (`hodgeIndexOnSpan_iff_unitary`): the `2 × 2`
-    minors at lags `0, j` bound `|Σ β_i^j| ≤ 2g` (`norm_powerSum_le`), power-sum elimination forces
-    `|β_i| ≤ 1`, and the functional equation forces equality.
+10. The scaling surface is a polar surface with defect Weil's form; its Hodge index is RH
+    (`scalingSurface`, `scalingSurface_hodgeIndex_iff`).
+11. **Signature law.** `#positive squares(H, V, f₁ … f_n) = 1 + #negative squares(W(f_i, f_j))`
+    (`posIndex_intersectionGram`); RH iff one positive square on every family
+    (`riemannHypothesis_iff_one_positive_square`). For a general prime weight the signature is
+    correct iff RH holds and the weight is `Λ` (`one_positive_square_iff_vonMangoldt`).
 
-### 3.4 Fake curves and the window law (`FakeCurvesAndTheWindowLaw`, `WittIntegralityIsNotPurity`)
+### 3.4 The Pontryagin law: the Hodge defect counts the right zeros
 
-13. **A fake elliptic curve over `𝔽₅`.** `β = (φ, φ⁻¹)`: point counts `N_j = 5^j + 1 − L_j` are
-    integers with `N_j ≥ 1` (`goldenDatum_pointCount_eq`, `one_le_goldenDatum_pointCount`), the
-    zeta function `(1 − 5u + 5u²)/((1 − u)(1 − 5u))` is rational with functional equation, and the
-    class `Δ − Γ₁/√5` has defect `4 − 2√5 < 0` (`goldenDatum_spanDefect_neg`). This is the
-    Beurling wall over `𝔽_q`.
-14. **Visibility needs genus `≳ r^n`.** With a real off-circle pair `r, r⁻¹` and all other
-    eigenvalues unitary, Hodge index in degrees `< n` forces `r^{n−1} + r^{1−n} + 2 ≤ 4g`
-    (`two_mul_genus_ge_of_window`).
-15. **Hiding.** For every `n` a datum with `|β| = 2` is Hodge on every span class of degree `< n`
-    (`exists_hidden_on_window`, with `hidingDatum`): the finite-window wall over `𝔽_q`.
-15′. **Witt integrality is not purity** (`WittIntegralityIsNotPurity`). The zeta series
-    `Z = P/((1 − X)(1 − qX))`, `P = Π(1 − α_i X)`, `α_i = √q β_i`, has the Lefschetz numbers as
-    ghost components: `X Z' = Z · Σ_{j≥1} N_j X^j` (`zetaSeries_hasGhost`), and a series with
-    constant term `1` is determined by its ghost components (`eq_of_hasGhost`), so
-    `Z = exp(Σ N_j X^j/j)` and data with the same point counts have the same zeta series
-    (`zetaSeries_eq_of_pointCount`). The ghost map is additive on products (`hasGhost_mul`): the
-    pole plane splits off as `Z_{ℙ¹}` with ghost components `1 + q^j`, and `P` is the `H¹` class
-    with ghost components `−Σ α_i^j`. The golden datum has `P = 1 − 5X + 5X²` and an integral
-    zeta series in `1 + Xℤ⟦X⟧`, integral point counts and the functional equation, and is not
-    pure (`witt_integral_not_pure`); the pure datum `q = 2, β = (1, 1)` has `N₁ = 3 − 2√2 ∉ ℤ`
-    (`pureDatum_pointCount_one_not_int`). Integrality and purity are independent: the λ-ring
-    structure does not carry the positivity, which enters only through the Hodge index (item 12).
-15″. **The golden fake curve is a rank-one Beurling system** (`TheGoldenCurveIsABeurlingSystem`).
-    Its point counts are the ghost components of nonnegative integral prime counts,
-    `N_k = Σ_{d∣k} d π_d`, `π_d ∈ ℕ` (`goldenDatum_beurling`): `N_k = 1 + 5^k − tr(B^k)` with
-    `B = [[3, 1], [1, 2]]`, the edge shift of `B` is a subshift of the full shift on five letters,
-    and `π_d` counts (besides one extra fixed point) the primitive orbits of length `d` of the full
-    shift outside the subshift. The tools are general: periodic points split by minimal period
-    (`card_perSeqs_eq_sum`), primitive orbits are free (`dvd_card_of_shift_invariant`), any
-    inclusion of subshifts gives nonnegative integral prime counts (`exists_primeCounts`), and the
-    transfer matrix counts cyclic words (`card_perSeqs_eq_trace`). So a Beurling system of Kronecker
-    rank one can have positive integral prime counts, an integral rational zeta function with the
-    pole plane split off and the functional equation, and violate purity and the Hodge index
-    (`goldenDatum_beurling_not_pure`): the selectivity against Beurling systems must come from the
-    Bézout structure of the surface, as the review's typing requires.
+12. **Exact law.** For every tempered configuration the largest number of negative squares of
+    Weil's form on a finite family of tests is `#{distinct ρ : Re ρ > ½}` in `ℕ∞`
+    (`pontryagin_law`; finite and finitely-many-right-zeros cases `pontryagin_law_finite`,
+    `pontryagin_law_of_tempered`). For `ζ`: the Hodge defect of the scaling surface is the number of
+    zeros right of the line (`zeta_hodgeDefect_iff`, `zeta_rightZeros_infinite_iff`).
+13. **Reflection sectors.** On `ρ ↦ 1 − ρ` symmetric configurations the even and odd sectors carry
+    `#{Re ρ > ½, Im ρ > 0}` and `#{Re ρ > ½, Im ρ ≥ 0}`; for `ζ` each carries half
+    (`sector_pontryagin_law`, `zeta_sector_hodgeDefect_iff`).
+14. **Degree filtration.** The defect at degree `a` is monotone and exhausts the right zeros
+    (`iSup_hodgeDefectAt`); it vanishes iff Weil's form is nonnegative at aperture `a`
+    (`hodgeDefectAt_eq_zero_iff`). For `ζ` it is `0` through degree `3/10`
+    (`zeta_hodgeDefectAt_eq_zero`), in the odd sector through `181/500`
+    (`SchurLendingOddHodgeIndexPastFirstPrime`).
+15. **Visibility and hiding.** An isolated pair `½ ± δ + iγ₀` in an on-line lattice of density `L`
+    is seen exactly from the degree where `sinh(2δa)/δ = 2L + 2a` (`hodgeDefectAt_isolatedPair`);
+    for every degree some configuration with a right zero has defect `0` there
+    (`exists_hidden_at_degree`). Over `𝔽_q` the window `2g` sees everything; over `ℚ` no degree does.
+16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
+    (`recurrent_pontryagin_dichotomy`); periodic ones and those cut out by exponential polynomials
+    of any finite rank recur (`verticallyRecurrent_of_periodic`, `expPoly_zero_recurs`,
+    `expPoly_pontryagin_dichotomy`). A finite nonzero number of off-line zeros needs infinite rank.
 
-### 3.5 The contact law and the Pontryagin law over `𝔽_q` (`SpanContactLaw`,
-`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`, `TheScalingSurfaceOfACurve`)
+### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `BezoutEffectivityAndTheBeurlingObstruction`)
 
-16. For unitary data the defect on the window of `n` Frobenius graphs is positive definite iff
-    `n ≤ s`, the number of distinct eigenvalues (`toeplitz_pos_on_window_iff`); above it the radical
-    contains the reduced characteristic polynomial, which is real (`exists_radical_of_lt`,
-    `map_conj_reducedCharPoly`). The sections of the span are its multiples.
-16′. **The Pontryagin law over `𝔽_q`** (`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`). For
-    every curve datum, unitary or not, the complexified defect Gram of the window
-    `Γ₀, …, Γ_{n−1}` (`spanGram`; on real classes the Castelnuovo–Severi defect,
-    `hermQuad_spanGram_ofReal`) is the reflected evaluation form
-    `x*Gy = Σ_i conj(E_x(β_i)) E_y(1/β̄_i)`, `E_x = Σ_{k<n} x_k X^k` (`spanGram_sesq`): the
-    zero-configuration form of item 20‴ with `ρ ↦ 1 − ρ̄` replaced by `β ↦ 1/β̄`. Its negative
-    index is at most `#{distinct β : |β| > 1}` on every window, nondecreasing in the window, and
-    equal to it once `n ≥ #{β}`, in particular at `n = 2g` (`pontryagin_law_curve`,
-    `negIndex_spanGram_mono`); attainment interpolates `1` at `z`, `−1` at `1/z̄` and `0` on the
-    rest of the spectrum. Hence Hodge index on the window `2g` is RH for the datum
-    (`unitary_iff_negIndex_spanGram_eq_zero`), and the golden fake curve has Hodge defect exactly
-    `1` from window `2` on (`goldenDatum_negIndex_spanGram`). As over `ℚ` the defect is blind to
-    depth and multiplicity; unlike over `ℚ` its aperture is explicit: every off-circle eigenvalue,
-    clustered or not, is visible on the window `#{β} ≤ 2g`, and the hiding datum (item 15) shows
-    that shorter windows can miss it. Over `ℚ` the genus is infinite and no window holds the
-    spectrum; the degree filtration (item 20⁗) replaces the window.
-16″. **The scaling surface of a curve** (`TheScalingSurfaceOfACurve`). The zeros of a curve
-    datum, `q^{ρ − ½} = β_i` (`mem_curveConfig_iff`), are the points
-    `ρ_{i,k} = ½ + log|β_i|/log q + i(arg β_i + 2πk)/log q` (`zetaZero`, `cpow_zetaZero`), periodic
-    with period `2π/log q`; the circle reflection `β ↦ 1/β̄` is the reflection `ρ ↦ 1 − ρ̄`
-    (`reflect_zetaZero`). When they lie in the strip (`|β_i| ≤ √q`, the typing condition of a zero
-    configuration) they form a tempered zero configuration (`curveConfig`,
-    `temperedConfig_curveConfig`), and three Hodge index theorems coincide
-    (`curve_hodgeIndex_tfae`): RH for the datum, Hodge index on the Frobenius window `2g`, and
-    Hodge index of the scaling surface (no negative square of Weil's form on any finite family of
-    tests). The defects differ: the span counts each outer eigenvalue once (item 16′), the scaling
-    surface counts it once per period, so its defect is `0` or `∞`
-    (`curveConfig_rightZeros_infinite_iff`; for the golden curve `1` against `∞`,
-    `goldenDatum_scaling_defect`). The Frobenius graphs identify the vertical translates that
-    continuous tests separate: the span is the quotient of the scaling surface by the period, and
-    this quotient is what Kronecker rank one means (item 20‴). `ζ` has no period, so over `ℚ`
-    the Hecke cycles cannot be a quotient of this kind.
+17. **Hodge index ⟺ an effectivity with the Riemann–Roch and ample axioms**
+    (`exists_effectivity_iff_hodgeIndex`); for `ℤ` this is RH
+    (`riemannHypothesis_iff_exists_effectivity`). Under the Hodge index the effectivities are
+    classified (`effectivity_iff`), and every Riemann–Roch effectivity with nonnegative degrees
+    contains the open positive cone (`openPositiveCone_subset_of_effectivity`).
+18. **Positivity is not effectivity.** The pole quadrant times any scaling-closed proper set of
+    tests fails Riemann–Roch (`productCone_not_riemannRoch`, `posTestCone_not_riemannRoch`).
+19. **Bézout positivity holds.** The collar of two cycles has the jump form
+    `A(0)∫fg + ∫_0^∞ ω(x)∫(f(u) − f(u+x))(g(u) − g(u+x))` (`re_archCross_eq`); for effective cycles
+    without common component the intersection is prime incidence plus collar, both positive
+    (`localPair_eq_of_disjoint`), hence `≥ 0` (`localPair_nonneg`). Self-intersections carry the
+    negative genus term `A(0)‖f‖²`. Bézout together with Riemann–Roch gives the Hodge index on any
+    polar surface (`exists_bezout_effectivity_iff_hodgeIndex`).
 
-### 3.6 The scaling surface, the signature law and the Pontryagin law
-(`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
-`TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`,
-`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`,
-`TheVisibilityDegreeOfAnIsolatedPair`)
+### 3.6 Infinite genus (`InfiniteGenusLaw`)
 
-17. **The scaling surface is a polar surface whose defect is Weil's form**
-    (`scalingSurface`, `scalingSurface_defect_self`), so **its Hodge index theorem is RH**
-    (`scalingSurface_hodgeIndex_iff`). On two tests the defect pairing is Weil's pairing
-    (`scalingSurface_defect_tests`), so Weil's discriminant step is item 3 on the scaling surface.
-18. **The local intersection is prime comb minus archimedean collar** (`localGram_apply`).
-19. **Signature law.** `#positive squares(H, V, f₁…f_n) = 1 + #negative squares(W(f_i, f_j))`
-    and dually (`posIndex_intersectionGram`, `negIndex_intersectionGram`), by Haynsworth inertia.
-    **RH ⟺ one positive square on every finite family** (`riemannHypothesis_iff_one_positive_square`);
-    **one positive square for a general weight is equivalent to RH together with
-    `λ(n)=Λ(n)` for `n ≥ 2`** (`one_positive_square_iff_vonMangoldt`).
-20. **Pontryagin bound.** `#negative squares of W ≤ #{ρ : Re ρ > ½}` on every finite family, in
-    `ℕ∞`, unconditionally (`negIndex_weilGram_le_offLineCount`); hence the intersection form has at
-    most `1 + #{Re ρ > ½}` positive squares (`posIndex_intersectionGram_le`). The abstract lemma:
-    a form nonnegative on the kernel of `P` functionals has at most `P` negative squares
-    (`negIndex_le_card_of_nonneg_on_ker`).
-20′. **Exact finite-configuration law** (`FiniteConfigurationPontryaginLaw`). For a finite
-    reflection-symmetric configuration `Z`, the largest negative index over finite compact-test
-    families is exactly the number of **distinct** zeros right of the line
-    (`pontryagin_law_finite`). `exists_test_interpolating` prescribes transform values at finitely
-    many distinct points using translates of a short bump and a Vandermonde matrix. Set the values
-    to `1` at a chosen right zero, `−1` at its reflection and `0` at all other zeros: the resulting
-    Gram matrix is diagonal with entries `−2m_ρ` (`exists_zeroGram_negIndex_eq`). The theorem has
-    no prescribed aperture or uniform conditioning estimate; the infinite on-line tail is handled
-    by item 20″.
-20″. **Exact tempered law** (`TemperedConfigurationPontryaginLaw`). On a tempered configuration
-    (`Σ m_ρ/(1 + |γ_ρ|²) < ∞`; the zeros of `ζ` are one) the Weil form converges absolutely on
-    compact `C²` tests (`summable_Wsummand`), has at most `#{Re ρ > ½}` negative squares in `ℕ∞`
-    (`negIndex_zeroGram_le_of_tempered`), and has exactly that many when they are finitely many
-    (`pontryagin_law_of_tempered`). Mechanism: **dual tests** `b_ρ` with
-    `h_{b_ρ}(γ_σ) = h_{b_ρ}(γ̄_σ) = δ_{ρσ}` (`exists_dual_tests`) and **translated pairs**
-    `b_ρ, ω_ρ b_ρ(· − L)` with phase `ω_ρ = −e^{−i Im ρ · L}`. The pair of `ρ` contributes
-    `2m_ρ|y_ρ|²(1 − e^{δ_ρ L})(1 − e^{−δ_ρ L})`, `δ_ρ = Re ρ − ½`; on the line the phases have
-    modulus one, so the on-line zeros contribute at most `4|y|²A` with `A` independent of `L`
-    (`re_Wsummand_pairComb_le_of_onLine`); `δ_ρ L ≥ 4A + 2` makes the form `≤ −|y|²`
-    (`re_W_pairComb_le`). For `ζ` the zero-side Gram is the Weil Gram of the explicit formula
-    (`weilGram_eq_zeroGram`). This construction is explicit (two tests per zero, an explicit
-    aperture) but needs the right zeros to be finitely many; item 20‴ removes that restriction.
-20‴. **The exact law, unconditionally** (`TheHodgeDefectCountsTheRightZeros`). For every tempered
-    configuration, Weil's form has `n` negative squares on some family of `n` tests iff there are
-    at least `n` zeros right of the line (`pontryagin_law`): the largest negative index is
-    `#{Re ρ > ½}` in `ℕ∞`. Mechanism: the **zero-side coordinates** `X_τ(f) = √m_τ h_f(γ_τ)` map
-    tests into `ℓ²(Z)` (`zeroMap`), and `W(f, g) = ⟨R X(g), X(f)⟩` with `R` the reflection
-    `τ ↦ 1 − τ̄` (`W_eq_inner`), a Krein form with one hyperbolic plane per pair. The range is
-    **dense** (`orthogonal_range_zeroMap`): a vector orthogonal to every probe `φ(u − v)e^{isu}`
-    produces an exponential sum `Σ q_τ e^{(τ̄ − ½)v} ≡ 0`, whose coefficients vanish
-    (`eq_zero_of_tsum_exp_eq_zero`: the rightmost exponent at each height would be a pole of the
-    Laplace transform of `0`). Approximating `e_ρ − e_{1−ρ̄}` gives a Gram matrix within `5ε` of
-    `−2·I` (`exists_zeroGram_negIndex_ge`). **For `ζ`:** the intersection form of the scaling
-    surface has `1 + n` positive squares on the pole plane and some `n` tests iff `ζ` has at least
-    `n` zeros with `Re ρ > ½` (`zeta_hodgeDefect_iff`); `ζ` has infinitely many zeros off the line
-    iff the Hodge defect is unbounded (`zeta_rightZeros_infinite_iff`). The Hodge defect of the
-    scaling surface *is* the number of zeros right of the line. **Kronecker rank one:** a
-    configuration invariant under `ρ ↦ ρ + iP` (a lattice system) has Hodge defect `0` or `∞`
-    (`periodic_pontryagin_dichotomy`); finitely many off-line zeros, possible a priori for `ζ`, are
-    impossible in rank one. More generally every **vertically recurrent** configuration (each zero
-    recurs, up to `ε` in its real part, at unbounded heights) has Hodge defect `0` or `∞`
-    (`recurrent_pontryagin_dichotomy`, `TheKroneckerRankDichotomy`). **Finite rank**
-    (`TheZerosOfAnExponentialPolynomialRecur`): the zeros of a nonzero exponential polynomial
-    `Σ_j c_j e^{λ_j s}` (finite Dirichlet polynomials of any Kronecker rank, and the numerators of
-    rational finite-rank zeta functions) recur (`expPoly_zero_recurs`): simultaneous almost
-    periods exist by compactness of the torus (`exists_large_almost_period`), translation by one
-    is uniformly small on a disk, and zeros persist under perturbation by the maximum modulus
-    principle for `1/g` (`exists_zero_of_near`). So every tempered configuration cut out by an
-    exponential polynomial has Hodge defect `0` or `∞` (`expPoly_pontryagin_dichotomy`): a finite
-    nonzero number of off-line zeros needs infinitely many frequencies.
-20⁗. **The degree filtration** (`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`). The Hodge defect at degree
-    `a`, `hodgeDefectAt Z a` (negative squares on tests supported in `[−a, a]`), is nondecreasing
-    (`hodgeDefectAt_mono`), bounded by `#{Re ρ > ½}` (`hodgeDefectAt_le`) and exhausts it:
-    `⨆_a hodgeDefectAt Z a = #{Re ρ > ½}` (`iSup_hodgeDefectAt`). For `ζ` it vanishes through
-    degree `3/10` (`zeta_hodgeDefectAt_eq_zero`). The quantitative horizon of the `ε`-negative
-    index at level `a` (off-line pairs below height `H` with `log H = O(e^a + log(1/ε))`, and a
-    matching count for isolated visible pairs) is `RHTower.zeta_weil_inertia_law`.
-20⁵. **The reflection sectors** (`TheReflectionSectorsOfTheHodgeDefect`). On a configuration
-    symmetric under `ρ ↦ 1 − ρ` the reflection `u ↦ −u` of tests splits the Weil form into an even
-    and an odd sector, and the Pontryagin law splits with it (`sector_pontryagin_law`): the even
-    defect is `#{Re ρ > ½, Im ρ > 0}`, the odd defect `#{Re ρ > ½, Im ρ ≥ 0}`. A real zero right
-    of the line has pair term `+m|h(γ)|²` on even tests and is invisible to them
-    (`re_Wsummand_nonneg_of_sector`); the involution `τ ↦ 1 − τ` of the coordinates sends the
-    negative vector of `ρ` to minus that of `ρ̄` (`fesVec_negVec`). For `ζ`, which has no real
-    zeros, each sector carries exactly half the Hodge defect (`zeta_sector_hodgeDefect_iff`): every
-    conjugate pair of zeros right of the line gives one even and one odd negative square. The odd
-    sector alone detects every off-line zero (the review's selectivity test for the
-    reflection-odd sector); the even sector carries in addition the ample pole direction `H + V`.
-20⁶. **The visibility degree of an isolated pair** (`TheVisibilityDegreeOfAnIsolatedPair`).
-    Degree-`a` Hodge index is Weil positivity at aperture `a` on every tempered configuration
-    (`hodgeDefectAt_eq_zero_iff`), so visibility laws for the Weil form are statements about the
-    degree filtration. For one pair `½ ± δ + iγ₀` in the doubled on-line lattice of spacing
-    `2π/L` (`SquareRootThreshold.isolatedPairConfig`) the Hodge defect at degree `a ≤ L/2` is `0`
-    if `sinh(2δa)/δ ≤ 2L + 2a` and `1` otherwise (`hodgeDefectAt_isolatedPair`), with total defect
-    `1` (`iSup_hodgeDefectAt_isolatedPair`): the off-line cycle is seen exactly from the degree at
-    which its pair energy `sinh(2δa)/(2δ) − a` exceeds the background density `L`. **Hiding over
-    `ℚ`** (`exists_hidden_at_degree`): for every degree and depth some tempered configuration has a
-    zero right of the line and Hodge defect `0` at that degree, the analogue of the finite-field
-    window law (item 15); over `𝔽_q` the window `2g` sees everything (item 16′), over `ℚ` no finite
-    degree does.
+20. No nonzero compact test has a transform vanishing at all but finitely many simple critical
+    zeros (`eq_zero_of_paperFT_vanish`); RH iff Weil's form is positive definite
+    (`riemannHypothesis_iff_weil_positive_definite`). The finite-field radical has no exact
+    counterpart; near-radicals remain.
 
-### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`,
-`DistinctEffectiveCyclesMeetNonnegatively`)
+### 3.7 Hecke incidence and the successor cell
 
-21. **Hodge index ⟺ an effectivity with the Riemann–Roch and ample axioms**
-    (`exists_effectivity_iff_hodgeIndex`); the positive cone is the canonical witness
-    (`positiveCone_axioms`). For `ℤ`: **RH ⟺ such an effectivity exists on the scaling surface**
-    (`riemannHypothesis_iff_exists_effectivity`).
-22. **Positivity is not effectivity.** The pole quadrant with nonnegative tests fails the
-    Riemann–Roch axiom unconditionally (`posTestCone_not_riemannRoch`, via
-    `not_riemannRoch_of_perturbation`). More generally the product of the pole quadrant with any
-    scaling-closed set `P` of tests that misses a single test fails it
-    (`productCone_not_riemannRoch`): no positivity notion on tests (pointwise, of the transform,
-    of positive type) defines an effectivity. This is the no-go half of the success criterion
-    (§7) for the class of product cones.
-22′. **No cone avoids the positive cone.** An effectivity with the Riemann–Roch axiom and
-    nonnegative degrees contains every class of positive square and positive degree
-    (`openPositiveCone_subset_of_effectivity`); its ample axiom therefore contains the Hodge index
-    constraint on the resulting cycle theory.
-22″. **Classification of effectivities** (`effectivity_iff`). Under the Hodge index a set `E` of
-    nonnegative degree satisfies both axioms iff
-    `{x² > 0, x·(H+V) > 0} ⊆ E ⊆ {x·(H+V) > 0} ∪ {numerically trivial}`. A section theory is free
-    only in which classes of nonpositive square and positive degree it declares effective (as for
-    curves of negative self-intersection on a surface); everything else is forced. Items 21–22″
-    specify the missing section count completely; none of them supplies it.
-22‴. **Bézout positivity holds** (`DistinctEffectiveCyclesMeetNonnegatively`). Call a nonnegative
-    real test an effective cycle, and two of them without common component when their supports are
-    disjoint. Polarizing the Lévy–Khintchine form of the archimedean symbol gives the collar of two
-    cycles in jump form (`re_archCross_eq`), `A(0)∫fg + ∫_0^∞ ω(x)∫(f(u) − f(u+x))(g(u) − g(u+x))`,
-    and without common component the local intersection is the sum of two positive kernels
-    (`localPair_eq_of_disjoint`): the prime incidence `Σ Λ(n) n^{−1/2}(k(log n) + k(−log n))`,
-    `k = f ⋆ g̃ ≥ 0`, and the archimedean collar `∫_0^∞ ω(x)∫(f(u)g(u+x) + f(u+x)g(u))`. Hence
-    distinct effective cycles meet nonnegatively (`localPair_nonneg`), unconditionally, as do
-    effective cycles and the fibres (`f·H, f·V ≥ 0`). The self-intersection of an effective cycle
-    carries the negative genus term `A(0)‖f‖²` and is not controlled, as for curves of negative
-    square. So of the two inputs of Castelnuovo–Severi (Bézout and Riemann–Roch) the scaling
-    surface has the first; the open core (§6, problem 1) is the second.
-
-### 3.8 The infinite genus law (`InfiniteGenusLaw`)
-
-23. **No exact transform-annihilating test at any aperture.** A test whose transform vanishes at all but finitely many simple
-    critical zeros is zero (`eq_zero_of_paperFT_vanish`), and **RH ⟺ Weil's form is positive
-    definite** on nonzero tests (`riemannHypothesis_iff_weil_positive_definite`). The contact window
-    of the unitary finite-field span has no exact counterpart in this test class. This is strict
-    positivity of each nonzero test under RH, not a uniform positive lower bound for every
-    normalized test. Near-radical families remain possible.
-
-### 3.9 The adjunction formula on resonators (`ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`,
-`TheResonatorRemainderIsNegative`)
-
-24. **Kronecker law.** On a `{p, q}`-box the Hecke incidence is
-    `[j = j'] τ_p(|i − i'|) + [i = i'] τ_q(|j − j'|)` (`heckeIncidence_box`), so the prime
-    self-intersection of a resonator is the Kronecker sum of two tower forms
-    (`heckeForm_box_eq`): **no cross-prime prime coupling**. In general (**Cartesian law**) two
-    Hecke cycles meet through the primes only when their exponent vectors differ in exactly one
-    coordinate `p`, with weight `τ_p(|v_p(a) − v_p(b)|)` (`heckeIncidence_eq_towerWeight`,
-    `heckeIncidence_eq_zero`): the prime part of the surface is the Cartesian product over all
-    primes of weighted tower graphs — the Euler product on the surface. Consecutive Hecke cycles
-    `Γ_k, Γ_{k+1}` (`k ≥ 2`) have no prime intersection (`heckeIncidence_succ`).
-25. **The envelopes add.** `|towerForm| ≤ (2 log p/(√p − 1)) Σ x²` (`abs_towerForm_le`), hence
-    `|heckeForm| ≤ (E_p + E_q) Σ c²` (`abs_heckeForm_box_le`); the resonant train attains it
-    (`towerForm_one`, `heckeForm_box_one`).
-25′. **The adjunction remainder is negative definite on resonators**
-    (`TheResonatorRemainderIsNegative`). On a `{p, q}`-resonator with narrow bumps the cross-prime
-    aggregate is `2 w_p w_q X(c)`, `X(c) = Σ c(i+1, j) c(i, j+1)` the anti-diagonal lag count, and
-    the review's remainder `R(c) = 2 w_p w_q X(c) − (E_p + E_q) Σ c²` satisfies
-    `R(c) ≤ −(E_p + E_q − w_p² − w_q²) Σ c²` (`resonatorRemainder_le`) with `w_r² < E_r`
-    (`resonatorWeight_sq_lt_eulerEnvelope`): `R` is negative definite (`resonatorRemainder_neg`).
-    This decides the review's first research topic: the cross term never pays for the envelopes on
-    resonators, so Weil positivity there comes from the archimedean collar and the pole.
-
-### 3.10 The mean-field law and the adjunction conjecture (`TheAdjunctionConjectureMeanField`)
-
-26. **The cross-prime aggregate is a mean field.** Near pairs carry `(S² − Q)/4` and far pairs
-    `|log(q/p)| > T` cost at most `2e^{−T/2}(1 + log N)² θ(N)` (`crossAggregate_ge`,
-    `farPairs_le`); with Chebyshev in explicit form (`theta_ge_half_log_two`) the aggregate of a wide
-    odd test is `≥ (log² 2/16) N A_F(0)` up to lower order.
-27. **The quantitative clause of the review's adjunction conjecture is false**
-    (`not_exists_polynomial_adjunction_bound`): no `C(1 + r)^k A_F(0) Σ w_p²` plus the full Euler
-    envelope budget bounds the aggregate of all odd `C²` tests of aperture `r`. The exponential
-    part is `S² ≍ N`, the pole read through the comb; Cauchy–Schwarz loses the linear prime–pole
-    cancellation that the ledger keeps. The survivor is item 24.
+21. **Cartesian law.** Two Hecke cycles meet through the primes only when their exponent vectors
+    differ in one coordinate `p`, with weight `τ_p(|v_p(a) − v_p(b)|)`: the prime part is a product
+    of one tower per prime (`heckeIncidence_eq_towerWeight`, `heckeForm_box_eq`).
+22. **Resonators.** On `{p, q}`-boxes the cross-prime remainder against the Euler envelopes is
+    negative definite (`resonatorRemainder_neg`); positivity there comes from the collar and the
+    pole.
+23. **Mean field.** The cross-prime aggregate of wide odd tests is a mean field of size `≍ N`, and
+    no polynomial adjunction bound holds (`not_exists_polynomial_adjunction_bound`).
+24. **The successor cell `[log k, log(k+1)]`.** Its pole mass is the pronic weight `1/(k(k+1))`
+    (`integral_successorCell`); its two Hecke cycles have no prime incidence and meet through the
+    collar alone, `≈ ω(log(1 + 1/k)) = (k+1)√(k(k+1))/(2k+1)` per unit mass
+    (`successor_localPair_bounds`, `archLevyDensity_log_succ`). Over `𝔽_q[T]` the cell is
+    degenerate (`successorCell_functionField`).
 
 ---
 
-## 4. How to use the geometric dictionary
+## 4. Mechanisms
 
-1. **Adjunction.** The exact, zero-free formula exists and is classical: the lag-zero Lefschetz
-   number of the span is the Euler characteristic (item 10); over `ℚ` it is the archimedean term of
-   the explicit formula, part of the local intersection (item 18). Genus ↔ zero density; `q` ↔ the
-   scaling `e^{log n}`; degree ↔ aperture. The comb self-pairing of the review is not this number:
-   on resonators the prime self-intersection has no cross-prime terms (item 24), and the review's
-   bound on the aggregate fails (item 27).
-2. **Section count.** Its exact job is to supply an effectivity with the Riemann–Roch and ample
-   axioms (item 21); that is equivalent to RH, and positivity of tests does not supply it (item 22).
-   Over `𝔽_q` the span radical consists of multiples of the reduced characteristic polynomial
-   (item 16); this exact annihilation model fails for compact tests over `ℚ` (item 23).
-   A near-radical count is one candidate replacement, not a classification of all section theories.
-3. **Integral Frobenius.** Integrality of span data is not positivity: the golden datum has integral
-   point counts and a rational zeta function and violates the index theorem (item 13).
-4. **Tail and primitive part.** On the scaling surface a cycle becomes primitive by
-   projection off the pole plane. The local pairing retains the full prime distribution, although
-   compact support makes each test see finitely many prime atoms. An individual prime tail is not
-   automatically a primitive cycle; its two pole pairings must be checked.
-5. **Why the pole pays at PNT level.** The exponential part of every Cauchy–Schwarz shadow of the
-   raw comb majorant contains the mean field `S² ≍ N` on the stated wide test families (item 26).
-   The pole and prime main term must be paired before squaring. Their identification does not
-   bound the residual signed pairing for every test.
-6. **Resonators.** The self-pairing on a resonator is exactly the Kronecker sum of the two Euler
-   towers (items 24–25), and the review's prime-side remainder is negative definite there (item
-   25′); the archimedean and polar terms carry the positivity and still require a sign argument.
-7. **Kronecker rank.** Rank-one (lattice) systems are curve data; their span is Hodge iff unitary
-   (item 12), fake data exist (item 13), hiding needs genus exponential in the degree (items
-   14–15), and their Hodge defect over the scaling surface is `0` or `∞` (item 20‴); the same
-   holds for every recurrent configuration, so a finite nonzero defect needs infinite rank. For tests of any Kronecker rank the prime part decouples into one tower per prime
-   (item 24, Cartesian law); direct prime edges change only one exponent; archimedean and polar terms supply
-   additional coupling. Coefficients and the support box still affect the tower forms.
+* **Compute the pairing, then read the sign.** Every positivity statement is a term of an exact
+  identity: polar decomposition, Toeplitz law, signature law, Lévy jump form.
+* **Count squares.** The pole plane has one positive and one negative square; every other
+  positive square of the intersection form is a zero right of the line.
+* **Interpolate at the zeros.** Negative squares are built by tests whose transforms are `1` at a
+  right zero, `−1` at its reflection and small elsewhere (Lagrange over `𝔽_q`, density in `ℓ²` over
+  `ℚ`).
+* **Polarize the archimedean form.** Cross terms of the collar come from the Lévy–Khintchine
+  splitting applied to `f ± g`.
+* **Quotient by the period.** Over `𝔽_q` the Frobenius span is the scaling surface modulo the
+  vertical period; finite rank gives recurrence, recurrence gives defect `0` or `∞`.
 
 ---
 
@@ -520,132 +242,67 @@ possible section theory must use near-radicals.
 
 | Trap | What is true instead |
 |---|---|
-| Treating the adjunction formula as the missing ingredient | It is the lag-zero Lefschetz number (Euler characteristic) over `𝔽_q` and the archimedean term over `ℚ`; it is present and exact. The missing ingredient is the Hodge index theorem. |
-| Expecting Weil's proof to need `Γ²` exactly | Only `Γ² ≥ q(2 − 2g)` is used (item 8): an upper bound on the self-defect. Without any value of `Γ²` the Hodge index bounds nothing (item 7). |
-| Proving Hodge index from span data | On the span Hodge index *is* RH for every datum, and fake data satisfy the listed algebraic and point-count constraints (items 12–13). Weil's index theorem comes from Riemann–Roch on the whole surface. |
-| Reading the comb-energy aggregate as an intersection number | On resonators the prime intersection has no cross-prime terms (item 24); the aggregate is a Cauchy–Schwarz shadow of mean-field size `≍ N` (items 26–27). |
-| Bounding the aggregate polynomially | False on wide odd tests (item 27); the exponential part is the pole's mean field, the correct target retains the linear prime–pole pairing and estimates its remainder. |
-| Taking positive tests as effective cycles | The pole quadrant with nonnegative tests fails the Riemann–Roch axiom (item 22); it is not the quadratic positive cone. |
-| Reading `riemannHypothesis_iff_exists_effectivity` as progress on RH | It is a reformulation: the positive cone satisfies the Riemann–Roch axiom by definition and its ample axiom is RH; every Riemann–Roch effectivity with nonnegative ample degrees contains its open positive-degree part (item 22′). Progress means an ampleness proof that does not use the sign of the form. |
-| Expecting a radical (sections) over `ℚ` | Infinite genus: no nonzero test is Ξ-divisible on the critical line, and under RH the form is positive definite (item 23). |
-| Counting multiplicities in the Pontryagin law | Negative squares are counted by the *distinct* zeros right of the line; a multiple zero contributes one hyperbolic plane, hence one negative square. |
-| Expecting finitely many window conditions to see a deep pair | Over `𝔽_q` the hiding genus grows like `r^n` (items 14–15); over `ℚ` the genus is infinite. |
-| Signs of the hyperbolic plane | `H·V = 1`, `H² = V² = 0`; the ample class `H + V` has square `2`, the class `H − V` square `−2`; the pole plane alone has one positive and one negative square (`posIndex_polePlane`, `negIndex_polePlane`). |
+| Adjunction is the missing ingredient | It is present and exact (the archimedean term); the missing one is Riemann–Roch. |
+| Weil needs `Γ²` exactly | Only `Γ² ≥ q(2 − 2g)` is used; without any value of `Γ²` the Hodge index bounds nothing. |
+| Hodge index follows from span data | Fake data satisfy all span identities, integrality and the Beurling structure, and fail it. |
+| Positive tests are effective cycles | They meet each other nonnegatively (Bézout) but fail Riemann–Roch. |
+| `riemannHypothesis_iff_exists_effectivity` is progress | It is a reformulation; progress is an ampleness proof that does not use the sign of the form. |
+| Multiplicities count | The defect counts distinct right zeros; depth and multiplicity are invisible. |
+| A finite degree certifies positivity | No degree works for all configurations over `ℚ`; over `𝔽_q` the window `2g` does. |
+| The comb aggregate is an intersection number | On resonators the prime intersection has no cross-prime terms; the aggregate is a mean-field shadow. |
+| The pronic weight is the successor intersection | It is the pole mass of the cell; the intersection is the collar `ω(log(1 + 1/k)) ≍ k/2`. |
 
 ---
 
-## 6. Open problems and the tools the programme develops
+## 6. Open problems
 
-1. **An independent effectivity for `ℤ` — the open core.** The scaling-surface Hodge index is
-   RH-equivalent, but no independent arithmetic effectivity theory supplies it. If one exists, it
-   lies in the sandwich of item 22″, and its defect from the Hodge index is counted exactly by the
-   zeros right of the line (item 20‴). Wanted: a notion of
-   *section* of an arithmetic line bundle on the scaling surface, a cone `E` of classes with a
-   nonzero section, a proof that `E` has nonnegative degree against `H + V` **from the definition
-   of a section** (not from the sign of the form), and a dimension count giving the Riemann–Roch
-   axiom. By items 21–22′ this is RH; by item 22 it cannot be the cone of positive tests; by item
-   23 they cannot be identified with nonzero compact tests annihilating every zero. The Bézout
-   half is already there (item 22‴): distinct effective cycles meet nonnegatively, so what is
-   missing is exactly a supply of effective cycles in every class of positive square. Approximate
-   sections and a near-radical count (topic 2) are one possible architecture; any alternative must
-   explain how its sections imply both axioms.
-2. **The near-radical count (Landau–Widom).** Replace `h⁰` by `h⁰_ε(L)`, the largest dimension of
-   a space of aperture-`L` tests on which `|W| ≤ ε‖f‖²`. The corpus has the lower bound
-   `≥ e^{2L−2}/20` at `ε = exp(−e^{2L−2})` (`zeta_weil_near_radical_dimension_smooth`). A second
-   unconditional construction gives dimension at least `(2−η)e^{2L}` at tolerance
-   `exp(−η²e^{2L}/(300L))`, for `0<η≤1` and all sufficiently large `L`
-   (`RHTower.zeta_weil_near_radical_sharp_count`). These are different dimension–tolerance
-   tradeoffs, not a two-sided eigenvalue law. Wanted:
-   the two-sided law, unconditionally in its upper half, and the exact rate
-   `−log μ(L) ≍ 2π² N(T*)/log N(T*)` under the zeros-on-the-line hypothesis on an abstract
-   configuration.
-3. **The aperture of the Pontryagin law.** The exact count holds unconditionally (item 20‴) and
-   its degree filtration exhausts the right zeros (item 20⁗); `RHTower.zeta_weil_inertia_law`
-   gives the upper horizon and a lower count for isolated visible pairs. Open: a lower count
-   without isolation, i.e. the degree at which `n` arbitrary right zeros (clustered, shallow, or
-   accumulating in depth) become visible, with explicit constants. Over `𝔽_q` this is settled: the
-   window `#{β} ≤ 2g` sees every outer eigenvalue (item 16′). For one isolated pair in a lattice
-   background the visibility degree is exact (item 20⁶), and no degree works for all
-   configurations (`exists_hidden_at_degree`), so any answer must depend on the local density.
-4. **The Kronecker law beyond the prime part.** On resonators the archimedean collar couples the
-   towers through `ω(|i log p + j log q|)`; compute the full local intersection of narrow Hecke
-   cycles and decide positivity of the finite-Euler-product form `ζ_p ζ_q · Γ` on lattice tests.
-5. **The collar between towers.** By the Cartesian law (item 24) the prime part of every lattice
-   test is a sum of tower forms; the interaction of different towers is the archimedean density
-   `ω(|Σ_p (v_p(a) − v_p(b)) log p|)` and the pole. Bound this collar coupling on rank-`P` boxes
-   and compare it with the sum `Σ_p E_p` of the envelopes, which is `≍ e^{r}` at aperture `r`.
-6. **The pole-compensated aggregate (answered).** The survivor of item 27: subtracting the pole's
-   mean field from the prime comb leaves the Chebyshev deficit, and its exponential rate is the zero
-   width: `SquareRootThreshold.zetaZeroWidth_eq_sInf_deficitAbsRates` (the width is the infimum of
-   the admissible rates of `|D(T)| ≤ B(1 + T)e^{(½+β)T}`). What remains open is the operator
-   arrow `polarGroundEnergyRate ≤ zetaZeroWidth` recorded there.
-7. **Successor structure (answered as a dictionary).** The pronic weight `1/(k(k+1))` is the pole
-   mass `∫ e^{−u} du` of the successor cell `[log k, log(k+1)]` (`integral_successorCell`); the
-   cells telescope to the pole mass (`sum_pronic_eq_integral`, `integral_pole_mass`). Over `ℤ`
-   the successor is transverse to the norm grading (positive cell mass, coprimality, no prime
-   incidence: `successorCell_integers`); over `𝔽_q[T]` it lies inside it (`f + 1` monic of the
-   same degree, degenerate cell, coprime: `successorCell_functionField`). Open: the archimedean
-   collar entry of two consecutive Hecke cycles, which on narrow bumps is a kernel of the form
-   `e^{x/2}/sinh x` at `x = log(1 + 1/k)` rather than the pronic weight itself.
-8. **Witt and λ-ring structure over `ℚ`.** Over `𝔽_q` the question is settled (item 15′): the
-   pole plane splits off in the Witt ring, RH is purity of the `H¹` class, and integrality holds
-   for fake data. Over `ℚ` the ghost components of `log ζ` are `Λ(n)`; the analogue of item 15′ is
-   that integrality of the Euler product does not force the Hodge index, while the Hodge index
-   selects `Λ` among all prime weights (`one_positive_square_iff_vonMangoldt`). Open: a λ-ring
-   (Adams-operation) structure on the scaling surface whose Frobenius graphs are the Hecke cycles
-   of item 24, with the pole plane splitting off as over `𝔽_q`.
-9. **Spectral structure behind partial results.** *Real-rootedness* of ground states is explained
-   by a positivity-preserving splitting of a non-real zero, `(w − w̄₀)(w − w₀) = (w − Re w₀)² +
-   (Im w₀)²`, which divides a test into two real-rooted ones without raising its energy
-   (`RHTower.CCMFullRealRootedGround.exists_realRooted_fullGround`). *Inertia gives proportions,
-   not totality*: inertia counts each distinct off-line zero as one negative square, independently
-   of its depth and multiplicity (items 20‴, 20⁵), and a finite compression at level `a` sees only
-   the pairs below the horizon of `RHTower.zeta_weil_inertia_law`; totality needs every level
-   (item 20⁗). Open: the specific constant `2/3`, which comes from the pair-correlation input of the
-   rank–trace argument rather than from the form, and the Landau–Widom rate (topic 2).
+1. **Riemann–Roch for `ℤ` — the open core.** A notion of section on the scaling surface whose
+   effective classes have nonnegative ample degree by definition and which supplies effective
+   cycles in every class of positive square. Bézout is available (19); the supply is RH-equivalent
+   (17) and cannot come from positive tests (18) or from exact annihilators (20).
+2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
+   aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
+   `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
+   (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`).
+3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible, with explicit
+   constants depending on the local density (exact for an isolated pair, impossible uniformly).
+4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
+   pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
+   finite-Euler-product form on lattice tests.
+5. **λ-ring over `ℚ`.** Adams operations on the scaling surface whose Frobenius graphs are the
+   Hecke cycles, with the pole plane splitting off as over `𝔽_q`.
+6. **The constant `2/3`.** Why rank–trace inertia gives `2/3` of the zeros simple and on the line,
+   and no more; it comes from the pair-correlation input, not from the form.
 
 ---
 
-## 7. Success criteria and criteria for contributions
+## 7. Success criteria and contributions
 
-**The programme succeeds when** the scaling surface carries an effectivity whose ampleness is
-proved independently of the sign of the form and which satisfies the Riemann–Roch axiom (topic 1),
-or when it is proved that no cone definable from a stated class of arithmetic data can have both —
-in either case with the `𝔽_q` reduction to Weil's proof verbatim. The no-go half is proved for the
-class of product cones of the pole quadrant with a set of tests (item 22); every effectivity is
-classified once the Hodge index holds (item 22″); and the failure of the Hodge index is measured
-exactly, by degree and by reflection sector, by the zeros right of the line (items 20‴–20⁵). The
-effectivity half is RH-equivalent (item 21) and unsupplied.
+**The programme succeeds** when the scaling surface carries an effectivity whose ampleness is proved
+without the sign of the form and which satisfies Riemann–Roch, or when it is proved that no cone
+definable from a stated class of arithmetic data has both — in either case reducing over `𝔽_q` to
+Weil's argument.
 
-**A contribution must:**
+**A contribution must**
 
 * be an unconditional Lean theorem in this folder, wired into the umbrella;
-* state its object in the language of the polar surface (cycles, pairing, defect, primitive part,
-  effectivity) and say which ingredient of Weil's proof it concerns;
-* pass the selectivity tests *by typing*: say what it gives for fake curve data, for a non-unitary
-  weight (`one_positive_square_iff_vonMangoldt`) and for an effectivity built from positive tests;
-* run first over `𝔽_q` on the Frobenius span and reduce there to Weil's argument (items 5–16);
-* separate metrology from geometry: a statement about what a degree can see belongs to the window
-  law and to SSIC, a statement about what a cycle is belongs here;
-* give an identity, not an estimate, wherever the corresponding step of Weil's proof is an identity;
-  where a no-go is proved, record its positive survivor (items 7, 22, 27 are examples).
+* name the ingredient of Weil's proof it concerns, in the language of cycles, pairing, defect and
+  effectivity;
+* state what it gives for fake curve data, for a non-`Λ` weight and for positive tests;
+* run first over `𝔽_q` and reduce there to Weil's argument;
+* give an identity wherever Weil's step is an identity, and record the positive survivor of every
+  no-go.
 
 ---
 
 ## 8. Principles
 
-1. **Compute, then bound.** Every inequality of the theory is the positivity of a term in an
-   identity whose other terms are exact (the decomposition of item 1, the Toeplitz law, the
-   signature law).
-2. **Audit the hypotheses.** The listed span identities admit fake data; identify the extra
-   arithmetic or geometric constraint in every positivity argument.
-3. **Fix the source without assuming the sign.** The weight is `Λ` and the pole has weight one;
-   the one-positive-square property still requires proof.
-4. **Calibrate over `𝔽_q`.** Every construction is run on curve data first.
-5. **One Lorentz plane.** Count squares: the pole plane has one positive and one negative square;
-   the excess positive directions of the scaling surface are counted exactly by the distinct
-   zeros right of the line (item 20‴).
-6. **Search the corpus before proving:** `scripts/formal_tools.py research "<query>"` (from the repository root).
+1. **Compute, then bound.**
+2. **Audit the hypotheses**: every positivity argument must use a constraint that fake data violate.
+3. **Fix the source, not the sign**: the weight is `Λ`, the pole has weight one.
+4. **Calibrate over `𝔽_q`.**
+5. **Separate metrology from geometry**: what a degree can see versus what a cycle is.
+6. **Search the corpus first**: `scripts/formal_tools.py research "<query>"`.
 
 ---
 
@@ -653,33 +310,34 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 
 | Module | Content |
 |---|---|
-| `PolarSurfaceHodgeIndex` | polar surfaces, defect, four forms of Hodge index, Cauchy–Schwarz, one positive square |
-| `AdjunctionThresholdLaw` | realizability classification, Hasse–Weil, free self-intersection, genus zero |
-| `FrobeniusSpanCalibration` | curve data, Lefschetz/adjunction, span defect = Toeplitz form |
+| `PolarSurfaceHodgeIndex` | polar surfaces, defect, four forms of Hodge index, Cauchy–Schwarz |
+| `AdjunctionThresholdLaw` | realizability, Hasse–Weil from adjunction, free self-intersection |
+| `FrobeniusSpanCalibration` | curve data, Lefschetz and adjunction, span defect = Toeplitz form |
 | `FrobeniusSpanHodgeIndexIsRH` | Hodge index on the span ⟺ unitarity |
 | `FakeCurvesAndTheWindowLaw` | golden datum, window visibility and hiding |
-| `TheGoldenCurveIsABeurlingSystem` | orbit counting for subshifts; the golden fake curve as a rank-one Beurling system |
-| `WittIntegralityIsNotPurity` | zeta series and ghost components, Witt splitting of the pole plane, integrality vs purity |
+| `WittIntegralityIsNotPurity` | zeta series and ghost components; integrality versus purity |
+| `TheGoldenCurveIsABeurlingSystem` | orbit counting for subshifts; the golden curve as a Beurling system |
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
-| `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q`: span defect = #distinct eigenvalues off the circle, visible at window `2g` |
-| `TheScalingSurfaceOfACurve` | zeros of a curve datum as a periodic tempered configuration; three equivalent Hodge index theorems over `𝔽_q` |
-| `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
-| `DistinctEffectiveCyclesMeetNonnegatively` | collar of two cycles in Lévy jump form; Bézout positivity of distinct effective cycles |
-| `BezoutEffectivityAndTheBeurlingObstruction` | Bézout positivity + Riemann–Roch / canonical surface Riemann–Roch ⟺ Hodge index; Frobenius span polar surface, positive graph cone (Bézout + ample, not RR), cohomological sign and subshift obstruction |
+| `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q` |
+| `TheScalingSurfaceOfACurve` | zeros of a curve datum; three equivalent Hodge index theorems |
+| `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index; classification |
+| `BezoutEffectivityAndTheBeurlingObstruction` | Bézout + Riemann–Roch ⟺ Hodge index; graph cone; subshift obstruction |
+| `DistinctEffectiveCyclesMeetNonnegatively` | collar in Lévy jump form; Bézout positivity of effective cycles |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
-| `ArithmeticHodgeIndexSignatureLaw` | Gram signature law, one positive square ⟺ RH, selection of `Λ`, Pontryagin bound |
-| `InfiniteGenusLaw` | no nonzero compact transform annihilating almost all simple critical zeros; RH ⟺ positive definite |
-| `FiniteConfigurationPontryaginLaw` | transform interpolation and exact negative index for finite configurations |
-| `TemperedConfigurationPontryaginLaw` | absolute convergence on tempered configurations, dual tests, translated pairs, exact negative index with finitely many right zeros |
-| `TheKroneckerRankDichotomy` | recurrent (finite-rank) configurations have Hodge defect `0` or `∞` |
-| `TheZerosOfAnExponentialPolynomialRecur` | almost periods, persistence of zeros, recurrence of zeros of exponential polynomials; finite-rank dichotomy |
-| `TheReflectionSectorsOfTheHodgeDefect` | even/odd sectors: exact sector Pontryagin law; each sector of `ζ` carries half the defect |
-| `SchurLendingOddHodgeIndexPastFirstPrime` | degree-filtered sector Hodge defect; unconditional odd-sector Hodge index zero of `ζ` past the first prime (`a ≤ 181/500 > (log 2)/2`); primitive embedding of odd tests into `(H + V)⊥` and coupled pole–test effectivity on `scalingSubsurface` |
-| `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree: monotone, exhaustive, zero below `3/10` for `ζ` |
-| `TheVisibilityDegreeOfAnIsolatedPair` | degree-`a` Hodge index = Weil positivity at aperture `a`; exact degree law of an isolated pair; hiding over `ℚ` |
-| `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
-| `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
+| `ArithmeticHodgeIndexSignatureLaw` | signature law, selection of `Λ`, Pontryagin bound |
+| `InfiniteGenusLaw` | no exact transform annihilators; RH ⟺ positive definite |
+| `FiniteConfigurationPontryaginLaw` | transform interpolation; exact law for finite configurations |
+| `TemperedConfigurationPontryaginLaw` | tempered configurations; dual tests and translated pairs |
+| `TheHodgeDefectCountsTheRightZeros` | the exact Pontryagin law; Hodge defect of `ζ` |
+| `TheReflectionSectorsOfTheHodgeDefect` | even and odd sector laws |
+| `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree; `ζ` below `3/10` |
+| `SchurLendingOddHodgeIndexPastFirstPrime` | odd-sector Hodge index of `ζ` through `181/500` |
+| `TheVisibilityDegreeOfAnIsolatedPair` | degree Hodge index = aperture positivity; isolated pair; hiding over `ℚ` |
+| `TheKroneckerRankDichotomy` | recurrent configurations have defect `0` or `∞` |
+| `TheZerosOfAnExponentialPolynomialRecur` | recurrence of zeros of exponential polynomials |
+| `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
-| `ThePronicWeightIsThePoleMassOfTheSuccessorCell` | pronic weight = pole mass of the successor cell; `ℤ` vs `𝔽_q[T]` successor structure |
-| `TheResonatorRemainderIsNegative` | the review's adjunction remainder is negative definite on resonators |
-| `TheAdjunctionConjectureMeanField` | mean-field law, refutation of the polynomial adjunction bound |
+| `TheResonatorRemainderIsNegative` | cross-prime remainder on resonators is negative definite |
+| `TheAdjunctionConjectureMeanField` | mean-field law; no polynomial adjunction bound |
+| `ThePronicWeightIsThePoleMassOfTheSuccessorCell` | pronic weight = pole mass of the successor cell |
+| `TheSuccessorCollar` | collar bounds; consecutive Hecke cycles meet through the collar alone |

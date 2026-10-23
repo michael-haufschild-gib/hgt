@@ -167,7 +167,7 @@ theorem sum_large_divisors_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : ℕ
     intro d hd
     simp only [mem_filter, mem_Icc] at hd
     obtain ⟨⟨hd1, -⟩, hDd, hlt⟩ := hd
-    refine mem_Icc.2 ⟨by omega, Nat.le_floor ?_⟩
+    refine mem_Icc.2 ⟨Nat.succ_le_of_lt (lt_of_le_of_lt (Nat.zero_le _) hlt), Nat.le_floor ?_⟩
     calc ((a / d : ℕ) : ℝ) ≤ (a : ℝ) / d := natDiv_le_div a d
       _ ≤ (a : ℝ) / D := div_le_div_of_nonneg_left ha.le hD0 hDd.le
   rw [← sum_fiberwise_of_maps_to hmaps]
@@ -204,12 +204,12 @@ theorem sum_large_divisors_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : ℕ
   have hsplit : ∑ e ∈ Icc 1 E, (((a : ℝ) - a') / e + 1) * ((2 / a) ^ η * (e : ℝ) ^ η) =
       (2 / a) ^ η * (((a : ℝ) - a') * ∑ e ∈ Icc 1 E, (e : ℝ) ^ (-(1 - η)) +
         ∑ e ∈ Icc 1 E, (e : ℝ) ^ η) := by
-    rw [mul_sum, mul_sum, ← sum_add_distrib, mul_sum]
+    rw [mul_sum, ← sum_add_distrib, mul_sum]
     refine sum_congr rfl fun e he => ?_
     have he0' : (0 : ℝ) < e := by have := (mem_Icc.1 he).1; exact_mod_cast this
     have : (e : ℝ) ^ η / e = (e : ℝ) ^ (-(1 - η)) := by
-      rw [← Real.rpow_sub_one he0'.ne']; ring_nf
-    rw [← this]; field_simp; ring
+      rw [← Real.rpow_sub_one he0'.ne']; congr 1; ring
+    rw [← this]; ring
   rw [hsplit]
   have hhead := RHTower.sum_rpow_neg_head_le (c := 1 - η) (by linarith) (by linarith) E
   rw [show 1 - (1 - η) = η by ring] at hhead
@@ -244,7 +244,7 @@ theorem sum_large_divisors_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : ℕ
         mul_le_mul_of_nonneg_left (add_le_add (mul_le_mul_of_nonneg_left hhead' hJ0)
           (hpow.trans hEa1)) hc
     _ = 2 ^ η * ((1 + 1 / η) * ((a : ℝ) - a') * D ^ (-η)) + 2 ^ η * (a * D ^ (-(1 + η))) := by
-        rw [mul_add, ← e2, ← e1]; ring
+        linear_combination ((1 + 1 / η) * ((a : ℝ) - a')) * e1 + e2
     _ ≤ 2 * ((1 + 1 / η) * ((a : ℝ) - a') * D ^ (-η)) + 2 * (a * D ^ (-(1 + η))) := by
         have h3 : 0 ≤ (1 + 1 / η) * ((a : ℝ) - a') * D ^ (-η) := by positivity
         have h4 : 0 ≤ (a : ℝ) * D ^ (-(1 + η)) := by positivity
@@ -300,8 +300,8 @@ theorem floor_rpow_neg_le {D η : ℝ} (hD1 : 1 ≤ D) (h0 : 0 ≤ η) (h1 : η 
   calc (⌊D⌋₊ : ℝ) ^ (-η) ≤ (D / 2) ^ (-η) :=
         Real.rpow_le_rpow_of_nonpos (by linarith) (by linarith) (by linarith)
     _ = 2 ^ η * D ^ (-η) := by
-        rw [Real.div_rpow (by linarith) (by norm_num), Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2)]
-        ring
+        rw [Real.div_rpow (by linarith) (by norm_num), Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2),
+          div_inv_eq_mul, mul_comm]
     _ ≤ 2 * D ^ (-η) := mul_le_mul_of_nonneg_right h2η (by positivity)
 
 /-! ### The floor terms -/
@@ -466,7 +466,8 @@ theorem abs_centeredPrefix_sub_le_short {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {
     _ ≤ (∑ d ∈ (Icc 1 a).filter (fun d : ℕ => (d : ℝ) ≤ D), |floorTerm η a a' d| +
           ∑ d ∈ (Icc 1 a).filter (fun d : ℕ => ¬ (d : ℝ) ≤ D), |floorTerm η a a' d|) +
           |((a : ℝ) - a') * moebiusTail η a| := by
-        rw [hsplit]; exact add_le_add_right (abs_sum_le_sum_abs _ _) _
+        rw [hsplit]
+        exact add_le_add (abs_sum_le_sum_abs (fun d => floorTerm η a a' d) (Icc 1 a)) le_rfl
     _ ≤ _ := (add_le_add (add_le_add hS hL) hT).trans hfin
 
 end

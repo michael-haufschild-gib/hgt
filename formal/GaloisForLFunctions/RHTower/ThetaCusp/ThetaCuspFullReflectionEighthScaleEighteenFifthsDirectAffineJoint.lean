@@ -31,7 +31,6 @@ def thetaCuspFirstAtomEighthScale18Over5DirectJointReserve
     (thetaCuspFullReflectionEighthCompactEighthCoefficient q + e4) * e8 -
     e6 * (thetaCuspFullReflectionEighthCompactSixthCoefficient q + e6)
 
-set_option maxHeartbeats 6000000 in
 /-- Exact moving fourth/sixth/eighth baseline has strict reserve throughout the chamber. -/
 theorem thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_pos_at_baseline
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (hqhi : q ≤ 815 / 384) :
@@ -83,13 +82,37 @@ theorem thetaCuspFirstAtomEighthScale18Over5DirectJointReserve_pos_at_baseline
     have hy22 : y ^ (22 : ℕ) ≤ (43 / 1920 : ℝ) ^ (22 : ℕ) := pow_le_pow_left₀ hy hyhi 22
     have hy23 : y ^ (23 : ℕ) ≤ (43 / 1920 : ℝ) ^ (23 : ℕ) := pow_le_pow_left₀ hy hyhi 23
     have hy24 : y ^ (24 : ℕ) ≤ (43 / 1920 : ℝ) ^ (24 : ℕ) := pow_le_pow_left₀ hy hyhi 24
-    have hy25 : 0 ≤ y ^ (25 : ℕ) := by positivity
+    -- each monomial lies in `[0, (43/1920)^k]`: a linear certificate in the monomials
+    have hl1 : 0 ≤ y ^ (1 : ℕ) := by positivity
+    have hl2 : 0 ≤ y ^ (2 : ℕ) := by positivity
+    have hl3 : 0 ≤ y ^ (3 : ℕ) := by positivity
+    have hl4 : 0 ≤ y ^ (4 : ℕ) := by positivity
+    have hl5 : 0 ≤ y ^ (5 : ℕ) := by positivity
+    have hl6 : 0 ≤ y ^ (6 : ℕ) := by positivity
+    have hl7 : 0 ≤ y ^ (7 : ℕ) := by positivity
+    have hl8 : 0 ≤ y ^ (8 : ℕ) := by positivity
+    have hl9 : 0 ≤ y ^ (9 : ℕ) := by positivity
+    have hl10 : 0 ≤ y ^ (10 : ℕ) := by positivity
+    have hl11 : 0 ≤ y ^ (11 : ℕ) := by positivity
+    have hl12 : 0 ≤ y ^ (12 : ℕ) := by positivity
+    have hl13 : 0 ≤ y ^ (13 : ℕ) := by positivity
+    have hl14 : 0 ≤ y ^ (14 : ℕ) := by positivity
+    have hl15 : 0 ≤ y ^ (15 : ℕ) := by positivity
+    have hl16 : 0 ≤ y ^ (16 : ℕ) := by positivity
+    have hl17 : 0 ≤ y ^ (17 : ℕ) := by positivity
+    have hl18 : 0 ≤ y ^ (18 : ℕ) := by positivity
+    have hl19 : 0 ≤ y ^ (19 : ℕ) := by positivity
+    have hl20 : 0 ≤ y ^ (20 : ℕ) := by positivity
+    have hl21 : 0 ≤ y ^ (21 : ℕ) := by positivity
+    have hl22 : 0 ≤ y ^ (22 : ℕ) := by positivity
+    have hl23 : 0 ≤ y ^ (23 : ℕ) := by positivity
+    have hl24 : 0 ≤ y ^ (24 : ℕ) := by positivity
+    have hl25 : 0 ≤ y ^ (25 : ℕ) := by positivity
     norm_num at hyhi hy2 hy3 hy4 hy5 hy6 hy7 hy8 hy9 hy10 hy11 hy12 hy13 hy14
     norm_num at hy15 hy16 hy17 hy18 hy19 hy20 hy21 hy22 hy23 hy24 ⊢
-    nlinarith
+    linarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 16)
 
-set_option maxHeartbeats 6000000 in
 /-- Fourth-direction quadratic coefficient is positive throughout the chamber. -/
 theorem thetaCuspFirstAtomEighthScale18Over5_fourthQuadraticCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (hqhi : q ≤ 815 / 384) :
@@ -121,7 +144,6 @@ theorem thetaCuspFirstAtomEighthScale18Over5_fourthQuadraticCoefficient_pos
     nlinarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
 
-set_option maxHeartbeats 6000000 in
 /-- Fourth-direction constant coefficient is positive throughout the chamber. -/
 theorem thetaCuspFirstAtomEighthScale18Over5_fourthConstantCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (_hqhi : q ≤ 815 / 384) :
@@ -148,7 +170,6 @@ theorem thetaCuspFirstAtomEighthScale18Over5_fourthConstantCoefficient_pos
     positivity
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 16)
 
-set_option maxHeartbeats 6000000 in
 /-- Eighth gain coefficient is positive at the moving fourth floor. -/
 theorem thetaCuspFirstAtomEighthScale18Over5_eighthGainCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (hqhi : q ≤ 815 / 384) :
@@ -178,7 +199,6 @@ theorem thetaCuspFirstAtomEighthScale18Over5_eighthGainCoefficient_pos
     nlinarith
   exact pos_of_mul_pos_right hmul (pow_nonneg hqpos.le 8)
 
-set_option maxHeartbeats 6000000 in
 /-- Sixth loss coefficient is positive throughout the chamber. -/
 theorem thetaCuspFirstAtomEighthScale18Over5_sixthLossCoefficient_pos
     {q : ℝ} (hqlo : (21 / 10 : ℝ) ≤ q) (_hqhi : q ≤ 815 / 384) :

@@ -661,7 +661,9 @@ def primeTrianglePathCertificate (b : Fin 3 → ℝ)
          (if (0 : Fin 3) = x ∧ (2 : Fin 3) = y then (1 : ℝ) else 0))) +
       (0 + (((if (2 : Fin 3) = x ∧ (0 : Fin 3) = y then (1 : ℝ) else 0) +
              (if (0 : Fin 3) = x ∧ (1 : Fin 3) = y then (1 : ℝ) else 0))) + 0) ≤ 1
-    fin_cases x <;> fin_cases y <;> norm_num
+    fin_cases x <;> fin_cases y <;>
+      norm_num [Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.ext_iff,
+        Fin.val_zero, Fin.val_one, Fin.val_two]
 
 /-- **Canonical-path positivity of the source-faithful prime triangle.** Whenever the diagonal
 budgets satisfy the supersolution condition `(Cv)_i ≥ 0` in gauge `v = ![4, 1, 1]`, the frustrated
@@ -1147,7 +1149,10 @@ def packedPrimePathCertificate (b : Fin 4 → ℝ)
       (0 +
         ((if (3 : Fin 4) = x ∧ (0 : Fin 4) = y then packedPrimeShare 3 1 x y else 0) +
          (if (0 : Fin 4) = x ∧ (1 : Fin 4) = y then packedPrimeShare 3 1 x y else 0)) + 0 + 0) ≤ 1
-    fin_cases x <;> fin_cases y <;> norm_num [packedPrimeShare]
+    have hval3 : ((3 : Fin 4) : ℕ) = 3 := rfl
+    fin_cases x <;> fin_cases y <;>
+      norm_num [packedPrimeShare, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk, Fin.ext_iff,
+        Fin.val_zero, Fin.val_one, Fin.val_two, hval3]
 
 /-- **Positivity of the packed 4-point arithmetic configuration under `weilLedgerKernel 1 1`.** -/
 theorem incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg (b : Fin 4 → ℝ)
@@ -1175,9 +1180,9 @@ theorem weilLedgerKernel_one_two_mul_packedPrimePos_three_gt :
     weilKernel_log_eq (by norm_num : (1 : ℝ) < 125 / 6)]
   have heq : 1 * (-2 * ((125 / 6 : ℝ) ^ 3 - 125 / 6 - 1) /
       (((125 / 6 : ℝ) ^ 2 - 1) * Real.sqrt (125 / 6))) + 1 * 0 =
-      -((3900988 / 93579 : ℝ) / Real.sqrt (125 / 6)) := by ring
+      -((1948409 / 46767 : ℝ) / Real.sqrt (125 / 6)) := by ring
   rw [heq]
-  have hlt : (3900988 / 93579 : ℝ) / Real.sqrt (125 / 6) < 10 :=
+  have hlt : (1948409 / 46767 : ℝ) / Real.sqrt (125 / 6) < 10 :=
     div_sqrt_lt_of_sq_lt (by norm_num) (by norm_num) (by norm_num)
   linarith
 

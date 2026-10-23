@@ -3,6 +3,10 @@ import GaloisForLFunctions.RHTower.QuadraticGaussSumFourthPower
 import GaloisForLFunctions.RHTower.WeilKloostermanArtinSchreier
 import GaloisForLFunctions.RHTower.HalfWeightSquareRoots
 import GaloisForLFunctions.RHTower.KloostermanZeta
+import GaloisForLFunctions.RHTower.Sieve.KloostermanCrossPhaseGeometric
+import GaloisForLFunctions.RHTower.Sieve.KuzminLandau
+import GaloisForLFunctions.RHTower.SquareResidueQuadraticInterval
+import GaloisForLFunctions.RHTower.Sieve.KloostermanRamanujanDivisorSum
 import Mathlib.Data.ZMod.Units
 import Mathlib.Data.Nat.Factorization.Induction
 import Mathlib.NumberTheory.ArithmeticFunction.Misc
@@ -633,6 +637,495 @@ theorem norm_kloostermanSum_cube_le (M : ℕ+)
   refine (hcube.trans hbound).trans ?_
   gcongr
 
+
+
+/-! ## The actual finite interval transform -/
+
+/-- Fourier coefficient of the integer interval starting at `A` with length `L`. -/
+def intervalAdditiveFourier (M : ℕ+) (A : ℤ) (L : ℕ) (a : ZMod (M : ℕ)) : ℂ :=
+  ∑ j ∈ range L, ZMod.stdAddChar (-a * ((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ))))
+
+/-- Distance of a frequency to either endpoint of its canonical residue interval. -/
+def residueEdge (M : ℕ+) (a : ZMod (M : ℕ)) : ℕ :=
+  min a.val ((M : ℕ) - a.val)
+
+theorem residueEdge_pos_iff (M : ℕ+) (a : ZMod (M : ℕ)) :
+    0 < residueEdge M a ↔ a ≠ 0 := by
+  constructor
+  · intro h ha
+    subst a
+    simp [residueEdge] at h
+  · intro ha
+    have ha0 : 0 < a.val := Nat.pos_of_ne_zero
+      (fun h => ha ((ZMod.val_eq_zero a).mp h))
+    exact lt_min ha0 (Nat.sub_pos_of_lt (ZMod.val_lt a))
+
+theorem intervalAdditiveFourier_zero (M : ℕ+) (A : ℤ) (L : ℕ) :
+    intervalAdditiveFourier M A L 0 = L := by
+  simp [intervalAdditiveFourier]
+
+/-- The starting point contributes one unit phase; every endpoint stays in the geometric sum. -/
+theorem intervalAdditiveFourier_eq_phase_mul_geometric
+    (M : ℕ+) (A : ℤ) (L : ℕ) (a : ZMod (M : ℕ)) :
+    intervalAdditiveFourier M A L a =
+      ZMod.stdAddChar (-a * (A : ZMod (M : ℕ))) *
+        ∑ j ∈ range L, (ZMod.stdAddChar (-a)) ^ j := by
+  rw [intervalAdditiveFourier, mul_sum]
+  apply sum_congr rfl
+  intro j _
+  rw [show -a * ((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ))) =
+      -a * (A : ZMod (M : ℕ)) + j • (-a) by simp only [nsmul_eq_mul]; ring,
+    AddChar.map_add_eq_mul, stdAddChar_nsmul_eq_pow]
+
+/-- Exact sine chord of a finite additive frequency, including frequency zero. -/
+theorem norm_stdAddChar_chord_eq (M : ℕ+) (a : ZMod (M : ℕ)) :
+    ‖1 - ZMod.stdAddChar a‖ =
+      2 * Real.sin (Real.pi * (a.val : ℝ) / (M : ℝ)) := by
+  have hM : (0 : ℝ) < (M : ℝ) := by exact_mod_cast M.pos
+  have hval : (a.val : ℝ) ≤ (M : ℝ) := by exact_mod_cast (ZMod.val_lt a).le
+  have hβ0 : 0 ≤ (a.val : ℝ) / (M : ℝ) := by positivity
+  have hβ1 : (a.val : ℝ) / (M : ℝ) ≤ 1 :=
+    (div_le_iff₀ hM).mpr (by simpa only [one_mul] using hval)
+  have hsin : 0 ≤ Real.sin (Real.pi * (a.val : ℝ) / (M : ℝ)) := by
+    rw [mul_div_assoc]
+    apply Real.sin_nonneg_of_nonneg_of_le_pi
+    · exact mul_nonneg Real.pi_pos.le hβ0
+    · nlinarith [Real.pi_pos]
+  have hchar : ZMod.stdAddChar a =
+      Complex.exp (((2 * Real.pi * (a.val : ℝ) / (M : ℝ) : ℝ) : ℂ) * Complex.I) := by
+    rw [ZMod.stdAddChar_apply, ZMod.toCircle_apply]
+    congr 1
+    push_cast
+    ring
+  rw [hchar, RHTower.one_sub_exp_mul_I_eq, norm_mul,
+    Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  rw [show (2 * Real.pi * (a.val : ℝ) / (M : ℝ)) / 2 =
+    Real.pi * (a.val : ℝ) / (M : ℝ) by ring]
+  exact abs_of_nonneg (mul_nonneg (by norm_num) hsin)
+
+/-- The character chord pays for distance from the zero frequency. -/
+theorem residueEdge_le_stdAddChar_chord (M : ℕ+) (a : ZMod (M : ℕ)) :
+    4 * (residueEdge M a : ℝ) / (M : ℝ) ≤ ‖1 - ZMod.stdAddChar a‖ := by
+  by_cases ha : a = 0
+  · subst a
+    simp [residueEdge]
+  have hM : (0 : ℝ) < (M : ℝ) := by exact_mod_cast M.pos
+  have he : (0 : ℝ) < (residueEdge M a : ℝ) := by
+    exact_mod_cast (residueEdge_pos_iff M a).mpr ha
+  have hleft : (residueEdge M a : ℝ) ≤ (a.val : ℝ) := by
+    exact_mod_cast min_le_left a.val ((M : ℕ) - a.val)
+  have hright : (residueEdge M a : ℝ) + (a.val : ℝ) ≤ (M : ℝ) := by
+    have h := Nat.cast_le (α := ℝ) |>.mpr (min_le_right a.val ((M : ℕ) - a.val))
+    rw [Nat.cast_sub (ZMod.val_lt a).le] at h
+    change (residueEdge M a : ℝ) ≤ (M : ℝ) - (a.val : ℝ) at h
+    linarith
+  have hβ : (a.val : ℝ) / (M : ℝ) ≤ 1 - (residueEdge M a : ℝ) / (M : ℝ) := by
+    have h := (div_le_iff₀ hM).mpr
+      (show (residueEdge M a : ℝ) + (a.val : ℝ) ≤ 1 * (M : ℝ) by simpa using hright)
+    rw [add_div] at h
+    linarith
+  have hsin := _root_.RHTower.Sieve.two_mul_le_sin_pi_mul
+    (div_pos he hM) (div_le_div_of_nonneg_right hleft hM.le) hβ
+  rw [norm_stdAddChar_chord_eq]
+  simp only [mul_div_assoc] at hsin ⊢
+  linarith
+
+/-- Opposite frequencies have the same character chord. -/
+theorem norm_stdAddChar_neg_chord_eq (M : ℕ+) (a : ZMod (M : ℕ)) :
+    ‖1 - ZMod.stdAddChar (-a)‖ = ‖1 - ZMod.stdAddChar a‖ := by
+  rw [AddChar.map_neg_eq_conj]
+  have he : (1 : ℂ) - (starRingEnd ℂ) (ZMod.stdAddChar a) =
+      (starRingEnd ℂ) (1 - ZMod.stdAddChar a) := by rw [map_sub, map_one]
+  rw [he, Complex.norm_conj]
+
+/-- A finite interval has geometric cancellation at every nonzero frequency. -/
+theorem norm_intervalAdditiveFourier_le
+    (M : ℕ+) (A : ℤ) (L : ℕ) (a : ZMod (M : ℕ)) :
+    ‖intervalAdditiveFourier M A L a‖ ≤
+      if a = 0 then (L : ℝ) else (M : ℝ) / (2 * (residueEdge M a : ℝ)) := by
+  classical
+  by_cases ha : a = 0
+  · subst a
+    rw [if_pos rfl, intervalAdditiveFourier_zero, Complex.norm_natCast]
+  rw [if_neg ha]
+  have hne : ZMod.stdAddChar (-a) ≠ (1 : ℂ) := by
+    intro h
+    exact ha (neg_eq_zero.mp ((stdAddChar_eq_one_iff (M : ℕ) (-a)).mp h))
+  have hgeom := _root_.RHTower.norm_geom_sum_le
+    (show ‖ZMod.stdAddChar (-a)‖ = 1 by simp) hne L
+  rw [intervalAdditiveFourier_eq_phase_mul_geometric, norm_mul]
+  rw [show ‖ZMod.stdAddChar (-a * (A : ZMod (M : ℕ)))‖ = 1 by simp, one_mul]
+  rw [norm_stdAddChar_neg_chord_eq] at hgeom
+  have hM : (0 : ℝ) < (M : ℝ) := by exact_mod_cast M.pos
+  have he : (0 : ℝ) < (residueEdge M a : ℝ) := by
+    exact_mod_cast (residueEdge_pos_iff M a).mpr ha
+  refine hgeom.trans ?_
+  calc
+    _ ≤ 2 / (4 * (residueEdge M a : ℝ) / (M : ℝ)) :=
+      div_le_div_of_nonneg_left (by norm_num) (by positivity)
+        (residueEdge_le_stdAddChar_chord M a)
+    _ = (M : ℝ) / (2 * (residueEdge M a : ℝ)) := by field_simp; ring
+
+/-- Translation preserves the norm of the actual finite prefix. -/
+theorem norm_intervalAdditiveFourier_eq_prefix
+    (M : ℕ+) (A : ℤ) (L : ℕ) (a : ZMod (M : ℕ)) :
+    ‖intervalAdditiveFourier M A L a‖ =
+      ‖_root_.RHTower.squareResidueLinearPrefix a L‖ := by
+  have hfactor : intervalAdditiveFourier M A L a =
+      ZMod.stdAddChar (-a * (A : ZMod (M : ℕ))) *
+        _root_.RHTower.squareResidueLinearPrefix a L := by
+    rw [intervalAdditiveFourier, _root_.RHTower.squareResidueLinearPrefix, mul_sum]
+    apply sum_congr rfl
+    intro j _
+    rw [← AddChar.map_add_eq_mul]
+    congr 1
+    ring
+  rw [hfactor, norm_mul,
+    show ‖ZMod.stdAddChar (-a * (A : ZMod (M : ℕ)))‖ = 1 by simp, one_mul]
+
+/-- Total Fourier mass after deleting the zero frequency. -/
+def intervalNonzeroFourierMass (M : ℕ+) (A : ℤ) (L : ℕ) : ℝ :=
+  ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+    ‖intervalAdditiveFourier M A L a‖
+
+/-- The logarithmic budget is uniform in both interval length and starting point. -/
+theorem intervalNonzeroFourierMass_le (M : ℕ+) (A : ℤ) (L : ℕ) :
+    intervalNonzeroFourierMass M A L ≤ (M : ℝ) * (1 + Real.log (M : ℝ)) := by
+  classical
+  calc
+    _ ≤ ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0),
+        2 / ‖1 - ZMod.stdAddChar a‖ := by
+      apply sum_le_sum
+      intro a ha
+      have ha0 := (mem_filter.mp ha).2
+      rw [norm_intervalAdditiveFourier_eq_prefix]
+      have h := _root_.RHTower.norm_squareResidueLinearPrefix_le_cap a L
+      rw [if_neg ha0] at h
+      rw [norm_stdAddChar_neg_chord_eq] at h
+      exact h.trans (min_le_right _ _)
+    _ ≤ ∑ a : ZMod (M : ℕ), 2 / ‖1 - ZMod.stdAddChar a‖ :=
+      sum_le_sum_of_subset_of_nonneg (filter_subset _ _) (fun _ _ _ => by positivity)
+    _ ≤ _ := _root_.RHTower.squareResidue_sum_reciprocalChord_le
+
+/-- Positive quotient attached to an actual divisor of the modulus. -/
+def modulusDivisorQuotient (M : ℕ+) (d : {d : ℕ // d ∈ (M : ℕ).divisors}) : ℕ+ :=
+  ⟨(M : ℕ) / d.val,
+    Nat.div_pos (Nat.le_of_dvd M.pos (Nat.dvd_of_mem_divisors d.property))
+      (Nat.pos_of_mem_divisors d.property)⟩
+
+/-- Canonical representatives agree with the inverse of the finite cyclic equivalence. -/
+theorem finEquiv_symm_val (M : ℕ+) (a : ZMod (M : ℕ)) :
+    ((ZMod.finEquiv (M : ℕ)).symm a).val = a.val := by
+  rcases M with ⟨n, hn⟩
+  cases n with
+  | zero => omega
+  | succ n => rfl
+
+/-- All frequencies divisible by `d` are exactly the frequencies at modulus `M/d`. -/
+def divisorFrequencyEquiv (M : ℕ+) (d : {d : ℕ // d ∈ (M : ℕ).divisors}) :
+    ZMod (modulusDivisorQuotient M d : ℕ) ≃
+      {a : ZMod (M : ℕ) // d.val ∣ a.val} :=
+  (ZMod.finEquiv (modulusDivisorQuotient M d : ℕ)).toEquiv.symm.trans
+    (ramanujanMultiplesFinEquiv M.pos d.property)
+
+theorem divisorFrequencyEquiv_apply (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors})
+    (a : ZMod (modulusDivisorQuotient M d : ℕ)) :
+    (divisorFrequencyEquiv M d a).val = ((d.val * a.val : ℕ) : ZMod (M : ℕ)) := by
+  change ((d.val * ((ZMod.finEquiv (modulusDivisorQuotient M d : ℕ)).symm a).val : ℕ) :
+    ZMod (M : ℕ)) = _
+  rw [finEquiv_symm_val]
+
+/-- A restricted interval character descends exactly, including negative starting points. -/
+theorem intervalAdditiveFourier_divisorFrequency (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) (A : ℤ) (L : ℕ)
+    (a : ZMod (modulusDivisorQuotient M d : ℕ)) :
+    intervalAdditiveFourier M A L (divisorFrequencyEquiv M d a).val =
+      intervalAdditiveFourier (modulusDivisorQuotient M d) A L a := by
+  let q := modulusDivisorQuotient M d
+  letI : NeZero ((M : ℕ) / d.val) := ⟨q.pos.ne'⟩
+  have hqd : (q : ℕ) ∣ (M : ℕ) :=
+    ⟨d.val, (Nat.div_mul_cancel (Nat.dvd_of_mem_divisors d.property)).symm⟩
+  have hreduce (z : ZMod (M : ℕ)) :
+      (z.val : ZMod (q : ℕ)) = ZMod.castHom hqd (ZMod (q : ℕ)) z := by
+    conv_rhs => rw [← ZMod.natCast_zmod_val z]
+    rw [map_natCast]
+  rw [divisorFrequencyEquiv_apply, intervalAdditiveFourier, intervalAdditiveFourier]
+  apply sum_congr rfl
+  intro j _
+  have h := stdAddChar_divisorMultiple M.pos d.property
+    (-((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ))))
+    (⟨a.val, ZMod.val_lt a⟩ : Fin (q : ℕ))
+  change ZMod.stdAddChar (((d.val * a.val : ℕ) : ZMod (M : ℕ)) *
+      -((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)))) =
+    ZMod.stdAddChar ((a.val : ZMod (q : ℕ)) *
+      ((-((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)))).val : ZMod (q : ℕ))) at h
+  rw [hreduce, map_neg, map_add, map_intCast, map_natCast,
+    ZMod.natCast_zmod_val] at h
+  simpa only [neg_mul, mul_neg] using h
+
+/-- Nonzero interval Fourier mass on the literal divisibility progression. -/
+def intervalDivisorFourierMass (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) (A : ℤ) (L : ℕ) : ℝ :=
+  ∑ a ∈ univ.filter (fun a : ZMod (M : ℕ) => a ≠ 0 ∧ d.val ∣ a.val),
+    ‖intervalAdditiveFourier M A L a‖
+
+/-- Restricting frequencies divides the modulus without any loss in the finite transform. -/
+theorem intervalDivisorFourierMass_eq (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) (A : ℤ) (L : ℕ) :
+    intervalDivisorFourierMass M d A L =
+      intervalNonzeroFourierMass (modulusDivisorQuotient M d) A L := by
+  classical
+  let e := divisorFrequencyEquiv M d
+  have he0 : (e 0).val = 0 := by simp [e, divisorFrequencyEquiv_apply]
+  have hzero (a : ZMod (modulusDivisorQuotient M d : ℕ)) :
+      (e a).val = 0 ↔ a = 0 := by
+    constructor
+    · intro ha
+      apply e.injective
+      exact Subtype.ext (ha.trans he0.symm)
+    · rintro rfl
+      exact he0
+  calc
+    _ = ∑ x : {a : ZMod (M : ℕ) // d.val ∣ a.val},
+        if x.val = 0 then 0 else ‖intervalAdditiveFourier M A L x.val‖ := by
+      rw [intervalDivisorFourierMass,
+        ← sum_subtype (univ.filter (fun a : ZMod (M : ℕ) => d.val ∣ a.val))
+          (by simp) (fun a => if a = 0 then 0 else ‖intervalAdditiveFourier M A L a‖)]
+      simp only [sum_filter]
+      apply sum_congr rfl
+      intro a _
+      by_cases ha : a = 0 <;> by_cases hd : d.val ∣ a.val <;> simp [ha, hd]
+    _ = ∑ a : ZMod (modulusDivisorQuotient M d : ℕ),
+        if (e a).val = 0 then 0 else ‖intervalAdditiveFourier M A L (e a).val‖ :=
+      (e.sum_comp (fun x => if x.val = 0 then 0 else
+        ‖intervalAdditiveFourier M A L x.val‖)).symm
+    _ = _ := by
+      rw [intervalNonzeroFourierMass, sum_filter]
+      apply sum_congr rfl
+      intro a _
+      by_cases ha : a = 0
+      · have hz := (hzero a).mpr ha
+        simp only [if_pos hz, ha, ne_eq, not_true_eq_false, if_false]
+      · have hz : (e a).val ≠ 0 := fun h => ha ((hzero a).mp h)
+        simp only [if_neg hz, if_pos ha]
+        rw [show e a = divisorFrequencyEquiv M d a by rfl,
+          intervalAdditiveFourier_divisorFrequency]
+
+/-- The progression-sensitive logarithmic budget pays `M/d`, not `M`. -/
+theorem intervalDivisorFourierMass_le (M : ℕ+)
+    (d : {d : ℕ // d ∈ (M : ℕ).divisors}) (A : ℤ) (L : ℕ) :
+    intervalDivisorFourierMass M d A L ≤
+      (modulusDivisorQuotient M d : ℝ) * (1 + Real.log (M : ℝ)) := by
+  rw [intervalDivisorFourierMass_eq]
+  refine (intervalNonzeroFourierMass_le _ A L).trans ?_
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  have hlog : Real.log (modulusDivisorQuotient M d : ℝ) ≤ Real.log (M : ℝ) := by
+    apply Real.log_le_log (by exact_mod_cast (modulusDivisorQuotient M d).pos)
+    exact_mod_cast Nat.div_le_self (M : ℕ) d.val
+  linarith
+
+/-! ## The two frequency axes -/
+
+/-- The zero second frequency is the actual Ramanujan sum. -/
+theorem kloostermanSum_axis_eq_ramanujan (M : ℕ+) (a : ZMod (M : ℕ)) :
+    kloostermanSum (M : ℕ) a 0 =
+      _root_.RHTower.cglRamanujanAdditiveSum ⟨(M : ℕ), M.pos⟩ a := by
+  classical
+  unfold kloostermanSum kloostermanPhase _root_.RHTower.cglRamanujanAdditiveSum
+  simp only [zero_mul, add_zero]
+  refine sum_bij' (fun u _ => (u : ZMod (M : ℕ)))
+    (fun b hb => (mem_filter.mp hb).2.unit)
+    (fun u _ => mem_filter.mpr ⟨mem_univ _, u.isUnit⟩)
+    (fun _ _ => mem_univ _)
+    (fun u _ => by ext; simp) (fun b hb => by simp) ?_
+  intro u _
+  rw [mul_comm]
+
+/-- A unit frequency has the primitive Ramanujan value, at every positive modulus. -/
+theorem kloostermanSum_unit_zero_eq_moebius (M : ℕ+) (u : (ZMod (M : ℕ))ˣ) :
+    kloostermanSum (M : ℕ) (u : ZMod (M : ℕ)) 0 =
+      ((ArithmeticFunction.moebius (M : ℕ) : ℤ) : ℂ) := by
+  have hcop : Nat.Coprime (u : ZMod (M : ℕ)).val (M : ℕ) :=
+    (ZMod.isUnit_iff_coprime _ _).mp (by
+      simpa only [ZMod.natCast_zmod_val] using u.isUnit)
+  rw [kloostermanSum_axis_eq_ramanujan,
+    cglRamanujanAdditiveSum_eq_gcd_mobiusDivisorSum_sieve]
+  change (∑ d ∈ (Nat.gcd (u : ZMod (M : ℕ)).val (M : ℕ)).divisors,
+    (d : ℂ) * ((ArithmeticFunction.moebius ((M : ℕ) / d) : ℤ) : ℂ)) = _
+  rw [hcop.gcd_eq_one]
+  simp
+
+theorem norm_kloostermanSum_unit_zero_le (M : ℕ+) (u : (ZMod (M : ℕ))ˣ) :
+    ‖kloostermanSum (M : ℕ) (u : ZMod (M : ℕ)) 0‖ ≤ 1 := by
+  rw [kloostermanSum_unit_zero_eq_moebius, Complex.norm_intCast]
+  exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := (M : ℕ))
+
+/-- Conductor fibres give the sharp gcd bound on each Ramanujan axis. -/
+theorem norm_kloostermanSum_axis_le_gcd (M : ℕ+) (a : ZMod (M : ℕ)) :
+    ‖kloostermanSum (M : ℕ) a 0‖ ≤ (Nat.gcd (M : ℕ) a.val : ℝ) := by
+  let g : ℕ+ := ⟨Nat.gcd (M : ℕ) a.val, Nat.gcd_pos_of_pos_left a.val M.pos⟩
+  have hgM : (g : ℕ) ∣ (M : ℕ) := Nat.gcd_dvd_left _ _
+  have hga : (g : ℕ) ∣ a.val := Nat.gcd_dvd_right _ _
+  let q : ℕ+ := ⟨(M : ℕ) / (g : ℕ),
+    Nat.div_pos (Nat.le_of_dvd M.pos hgM) g.pos⟩
+  have hM : (M : ℕ) = (q : ℕ) * (g : ℕ) := (Nat.div_mul_cancel hgM).symm
+  have ha : (g : ℕ) * (a.val / (g : ℕ)) = a.val := Nat.mul_div_cancel' hga
+  have hc : Nat.Coprime (a.val / (g : ℕ)) (q : ℕ) := by
+    apply Nat.coprime_iff_gcd_eq_one.mpr
+    apply Nat.mul_left_cancel g.pos
+    rw [← Nat.gcd_mul_left, ha]
+    have hq : (g : ℕ) * (q : ℕ) = (M : ℕ) := by simpa [Nat.mul_comm] using hM.symm
+    rw [hq, Nat.mul_one]
+    exact Nat.gcd_comm _ _
+  have hu : IsUnit ((a.val / (g : ℕ) : ℕ) : ZMod (q : ℕ)) :=
+    (ZMod.isUnit_iff_coprime _ _).mpr hc
+  have hs : ‖kloostermanSum (q : ℕ)
+      ((a.val / (g : ℕ) : ℕ) : ZMod (q : ℕ)) 0‖ ≤ 1 := by
+    simpa only [hu.unit_spec] using norm_kloostermanSum_unit_zero_le q hu.unit
+  have htransport (N : ℕ) (hN : N = (q : ℕ) * (g : ℕ)) :
+      letI : NeZero N := ⟨by rw [hN]; exact Nat.mul_ne_zero q.pos.ne' g.pos.ne'⟩
+      ‖kloostermanSum N (a.val : ZMod N) 0‖ ≤ (g : ℝ) := by
+    subst N
+    have h := norm_kloostermanSum_factor_lift_le q g ((a.val / (g : ℕ) : ℕ) : ℤ) 0
+    simp only [Int.cast_natCast, Int.cast_zero, mul_zero] at h
+    have hcoef : ((g : ℕ) : ZMod ((q : ℕ) * (g : ℕ))) *
+        ((a.val / (g : ℕ) : ℕ) : ZMod ((q : ℕ) * (g : ℕ))) =
+          (a.val : ZMod ((q : ℕ) * (g : ℕ))) := by
+      rw [← Nat.cast_mul, ha]
+    rw [hcoef] at h
+    exact h.trans ((mul_le_mul_of_nonneg_left hs (by positivity)).trans_eq (mul_one _))
+  simpa only [ZMod.natCast_zmod_val] using htransport (M : ℕ) hM
+
+
+/-! ## Exact divisibility of the frequency gcd -/
+
+/-- Two gcd extractions retain the product factor without a valuation argument. -/
+theorem gcd_product_dvd_gcd_product (M b c : ℕ) :
+    Nat.gcd M (b * c) ∣ Nat.gcd M b * Nat.gcd M c := by
+  let D := Nat.gcd M (b * c)
+  have hDM : D ∣ M := Nat.gcd_dvd_left _ _
+  have hDbc : D ∣ b * c := Nat.gcd_dvd_right _ _
+  have hDgb : D ∣ Nat.gcd M c * b := by
+    rw [← Nat.gcd_mul_right]
+    exact Nat.dvd_gcd (dvd_mul_of_dvd_left hDM b)
+      (by simpa only [Nat.mul_comm] using hDbc)
+  have hDgM : D ∣ Nat.gcd M c * M := dvd_mul_of_dvd_right hDM _
+  have h := Nat.dvd_gcd hDgM hDgb
+  rw [Nat.gcd_mul_left, Nat.mul_comm] at h
+  exact h
+
+/-- The three-frequency gcd divides the product of the target gcd and the pair gcd. -/
+theorem frequencyGcd_dvd (M a b c : ℕ) :
+    Nat.gcd M (Nat.gcd a ((b * c) % M)) ∣
+      Nat.gcd M c * Nat.gcd M (Nat.gcd a b) := by
+  let D := Nat.gcd M (Nat.gcd a ((b * c) % M))
+  have hDM : D ∣ M := Nat.gcd_dvd_left _ _
+  have hDa : D ∣ a := (Nat.gcd_dvd_right _ _).trans (Nat.gcd_dvd_left _ _)
+  have hDmod : D ∣ (b * c) % M :=
+    (Nat.gcd_dvd_right _ _).trans (Nat.gcd_dvd_right _ _)
+  have hDbc : D ∣ b * c := by
+    rw [← Nat.mod_add_div (b * c) M]
+    exact dvd_add hDmod (dvd_mul_of_dvd_left hDM _)
+  have hD : D ∣ Nat.gcd (Nat.gcd M a) (b * c) :=
+    Nat.dvd_gcd (Nat.dvd_gcd hDM hDa) hDbc
+  have hc : Nat.gcd (Nat.gcd M a) c ∣ Nat.gcd M c :=
+    Nat.dvd_gcd ((Nat.gcd_dvd_left _ _).trans (Nat.gcd_dvd_left _ _))
+      (Nat.gcd_dvd_right _ _)
+  have h := hD.trans (gcd_product_dvd_gcd_product (Nat.gcd M a) b c)
+  have h' := h.trans (Nat.mul_dvd_mul (dvd_refl (Nat.gcd (Nat.gcd M a) b)) hc)
+  simpa only [Nat.gcd_assoc, Nat.mul_comm] using h'
+
+/-- The gcd loss in a Kloosterman frequency is bounded by the actual target gcd. -/
+theorem residueFrequencyGcd_le (M : ℕ+) (a b c : ZMod (M : ℕ)) :
+    Nat.gcd (M : ℕ) (Nat.gcd a.val (b * c).val) ≤
+      Nat.gcd (M : ℕ) c.val * Nat.gcd (M : ℕ) (Nat.gcd a.val b.val) := by
+  apply Nat.le_of_dvd
+    (Nat.mul_pos (Nat.gcd_pos_of_pos_left _ M.pos) (Nat.gcd_pos_of_pos_left _ M.pos))
+  simpa only [ZMod.val_mul] using frequencyGcd_dvd (M : ℕ) a.val b.val c.val
+
+
+/-! ## Exact finite completion of the inverse graph -/
+
+/-- Number of entries of the actual integer interval in one residue class. -/
+def intervalResidueMultiplicity (M : ℕ+) (A : ℤ) (L : ℕ) (x : ZMod (M : ℕ)) : ℕ :=
+  ((range L).filter (fun j => (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = x)).card
+
+/-- Finite Fourier inversion retains the exact residue multiplicity. -/
+theorem intervalResidueMultiplicity_fourier
+    (M : ℕ+) (A : ℤ) (L : ℕ) (x : ZMod (M : ℕ)) :
+    (M : ℂ) * (intervalResidueMultiplicity M A L x : ℂ) =
+      ∑ a : ZMod (M : ℕ), intervalAdditiveFourier M A L a * ZMod.stdAddChar (a * x) := by
+  classical
+  symm
+  calc
+    _ = ∑ j ∈ range L, ∑ a : ZMod (M : ℕ),
+        ZMod.stdAddChar (a * (x - ((A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ))))) := by
+      simp only [intervalAdditiveFourier, sum_mul]
+      rw [sum_comm]
+      apply sum_congr rfl
+      intro j _
+      apply sum_congr rfl
+      intro a _
+      rw [← AddChar.map_add_eq_mul]
+      congr 1
+      ring
+    _ = ∑ j ∈ range L,
+        if (A : ZMod (M : ℕ)) + (j : ZMod (M : ℕ)) = x then (M : ℂ) else 0 := by
+      apply sum_congr rfl
+      intro j _
+      rw [_root_.RHTower.Sieve.sum_stdAddChar_mul]
+      simp only [sub_eq_zero, eq_comm]
+    _ = _ := by
+      rw [← sum_filter]
+      simp only [sum_const, nsmul_eq_mul, intervalResidueMultiplicity, mul_comm]
+
+/-- Integer interval pairs lying on the unit part of the modular-inverse graph. -/
+def modularInverseRectangleCount
+    (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) (c : ZMod (M : ℕ)) : ℕ :=
+  ∑ u : (ZMod (M : ℕ))ˣ,
+    intervalResidueMultiplicity M A L (u : ZMod (M : ℕ)) *
+      intervalResidueMultiplicity M B H (c * (↑u⁻¹ : ZMod (M : ℕ)))
+
+/-- Exact double Fourier completion, with no discarded endpoint or frequency term. -/
+theorem modularInverseRectangleCount_fourier
+    (M : ℕ+) (A : ℤ) (L : ℕ) (B : ℤ) (H : ℕ) (c : ZMod (M : ℕ)) :
+    (M : ℂ) ^ 2 * (modularInverseRectangleCount M A L B H c : ℂ) =
+      ∑ a : ZMod (M : ℕ), ∑ b : ZMod (M : ℕ),
+        intervalAdditiveFourier M A L a * intervalAdditiveFourier M B H b *
+          kloostermanSum (M : ℕ) a (b * c) := by
+  rw [modularInverseRectangleCount, Nat.cast_sum, mul_sum]
+  calc
+    _ = ∑ u : (ZMod (M : ℕ))ˣ,
+        ((M : ℂ) * (intervalResidueMultiplicity M A L (u : ZMod (M : ℕ)) : ℂ)) *
+          ((M : ℂ) * (intervalResidueMultiplicity M B H
+            (c * (↑u⁻¹ : ZMod (M : ℕ))) : ℂ)) := by
+      apply sum_congr rfl
+      intro u _
+      push_cast
+      ring
+    _ = ∑ u : (ZMod (M : ℕ))ˣ,
+        (∑ a : ZMod (M : ℕ), intervalAdditiveFourier M A L a *
+          ZMod.stdAddChar (a * (u : ZMod (M : ℕ)))) *
+        (∑ b : ZMod (M : ℕ), intervalAdditiveFourier M B H b *
+          ZMod.stdAddChar (b * (c * (↑u⁻¹ : ZMod (M : ℕ))))) := by
+      simp_rw [intervalResidueMultiplicity_fourier]
+    _ = _ := by
+      simp only [sum_mul, mul_sum]
+      rw [sum_comm]
+      apply sum_congr rfl
+      intro a _
+      rw [sum_comm]
+      apply sum_congr rfl
+      intro b _
+      rw [kloostermanSum, mul_sum]
+      apply sum_congr rfl
+      intro u _
+      rw [kloostermanPhase,
+        show a * (u : ZMod (M : ℕ)) + (b * c) * (↑u⁻¹ : ZMod (M : ℕ)) =
+          a * (u : ZMod (M : ℕ)) + b * (c * (↑u⁻¹ : ZMod (M : ℕ))) by ring,
+        AddChar.map_add_eq_mul]
+      ring
 
 end
 end GaloisForLFunctions.Goldbach

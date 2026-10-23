@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimeCombIsATranslati
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCombAtTheHorizonIsAResolvent
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonLawHoldsAtTheDeLaValleePoussinRate
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheTranslationLawHasAnInverseSquareDeficit
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonEnergyIsNotUniformlyCoercive
 import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimePolarResidualHasTheDeLaValleePoussinSaving
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonLawOfACurveIsGeometric
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverOfACurveIsAdmittedAboveTheZeroWidth
@@ -23,7 +24,7 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWi
 # Arithmetic Compensation Theory
 
 Arithmetic compatibility and compensated coercivity: the prime comb at the critical horizon
-(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law, the de la Vallée Poussin saving of the prime–polar residual, the geometric horizon law of a curve model and the admission of its receiver above the zero width), compensation coordinates of a
+(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law, the failure of uniform coercivity, the de la Vallée Poussin saving of the prime–polar residual, the geometric horizon law of a curve model and the admission of its receiver above the zero width), compensation coordinates of a
 divergent sector against its complement and their rate on the actual source, faster than every power of the logarithm, and summable motion across scales, the quantifier corrections of the continuation problem,
 the forced aperture loss rate, the adapted-energy criterion, the exact price of a finite change of origin and the tail price of a drifting one, the escape of a receiver blow-up to the horizon, and the `17/30` short-window transfer
 into the centred prime row. See `ArithmeticCompensationTheory/README.md`.
