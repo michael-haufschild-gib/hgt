@@ -5,8 +5,8 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeDefectCountsTheRi
 
 A configuration is **vertically recurrent** (`VerticallyRecurrent`) when every zero recurs, up to
 any `ε` in its real part, at arbitrarily large heights. Lattice systems (Kronecker rank one) are
-periodic in height (`verticallyRecurrent_of_periodic`); the zero sets of almost periodic
-Dirichlet series of finite Kronecker rank recur in the same way by Bohr's almost periodicity.
+periodic in height (`verticallyRecurrent_of_periodic`); the zero sets of exponential polynomials
+`Σ_j c_j e^{λ_j s}`, of any finite rank, recur as well (`verticallyRecurrent_of_expPoly`).
 
 **Theorem** (`recurrent_pontryagin_dichotomy`). A tempered, vertically recurrent configuration has
 either no negative square on any finite family of tests, or arbitrarily many: one zero right of the

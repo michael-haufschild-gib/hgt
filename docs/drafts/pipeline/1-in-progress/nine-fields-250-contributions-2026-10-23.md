@@ -14,7 +14,7 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 9 / 250
+## Accepted contributions: 11 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
 2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
@@ -25,6 +25,8 @@ Missing dependency oleans are built one at a time with `lake --old env lean -o` 
 7. THIM / RH route — the oscillating smooth power is paid exactly at the zeros of ζ (candidate 7).
 8. THIM / RH route — the log-twisted oscillating power is paid exactly at the double zeros of ζ (candidate 8).
 9. THIM / RH route — the receiver reads the zero divisor of ζ on the oscillating spectrum (candidate 9).
+10. THIM / RH route — the probe receiver energy measures |ζ| on every vertical line (candidate 10).
+11. THIM / RH route — the half-damped receiver is diagonal on the probe spectrum with weight |ζ|² (candidate 11).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -171,6 +173,40 @@ windows `N < n ≤ N²`.
 `receiverBounded_logPowerCosine_iff`); `norm_iteratedDeriv_floorRemainder_le` added to the
 contribution-8 module. Status: compiled, axioms `propext`, `Classical.choice`, `Quot.sound`; wired
 into the THIM umbrella.
+
+## Candidate 10 (THIM, RH route): the probe receiver energy measures the modulus of ζ
+
+**Theorem (proved).** Probe `c(d) = d^{-ε}cos(t log d)`, `ρ = 1−ε+it`, `a = ζ(ρ)/ρ`, energy `E_T`.
+(i) `0 < ε < 1/2`, every `t`: `E_T/T^{1−2ε} − Φ(T) → 0`, `Φ(T) = |a|²/(2(1−2ε)) + ½Re(a²T^{2it}/(1−2ε+2it))`;
+for `t ≠ 0`, `ζ(ρ) ≠ 0`: eventually `(|a|²/4)(1/(1−2ε) − 1/|1−2ε+2it|)T^{1−2ε} ≤ E_T ≤ (2|a|²/(1−2ε))T^{1−2ε}`.
+(ii) `ε = 1/2`, `t ≠ 0`: `E_T/log T → |ζ(½+it)|²/(2|½+it|²)`; so `2|½+it|² E_T/log T → |ζ(½+it)|²`.
+The receiver is a calibrated instrument for `|ζ|`, not only a zero detector. Mechanism:
+`|√E_T − ‖M‖_T| ≤ K√(1+1/ε)` for the main term `M(n) = Re(a n^ρ)`;
+`‖M‖_T² = |a|²/2 Σ n^{1−2ε}/(n+1) + ½Re(a² Σ n^{1−2ε+2it}/(n+1))`; `Σ_{n≤T} n^β/(n+1) = T^β/β + O(1)`
+for `0 < Re β < 1` (from the rate-controlled partial sums of contribution 7), `= log T + O(1)` at
+`β = 0`, bounded at `β = 2it ≠ 0`.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheProbeReceiverEnergyMeasuresTheModulusOfZeta.lean`
+(`abs_sqrt_probeEnergy_sub_le`, `probeMain_sq_div`, `norm_sum_cpow_div_succ_sub_le`,
+`tendsto_probeEnergy_div_sub_profile`, `eventually_probeEnergy_le_and_ge`,
+`tendsto_probeEnergy_half_div_log`, `norm_sq_riemannZeta_half_eq_limit`). Status: compiled, axioms
+`propext`, `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
+
+## Candidate 11 (THIM, RH route): the half-damped receiver is diagonal on the probe spectrum
+
+**Theorem (proved).** For finite `J ⊂ (0,∞)` and real `α_t`,
+`E_T(Σ_t α_t d^{-1/2}cos(t log d))/log T → Σ_t α_t² |ζ(½+it)|²/(2|½+it|²)`. The receiver's limiting
+quadratic form on the half-damped probe span is diagonal in frequency with spectral weight
+`|ζ(½+it)|²/(2|½+it|²)`; distinct frequencies are receiver-orthogonal. Mechanism: prefix
+`= √n Re(Σ_t α_t a_t n^{it}) + O(n^{1/4})`; `Σ_{n≤T} Re(Σ_t c_t n^{it})²/(n+1) = (Σ|c_t|²/2) log T + O(1)`
+since `Σ n^{iτ}/(n+1)` is bounded for `τ = t ± s ≠ 0`. The squeeze `|√E_T − x_T| ≤ B`,
+`|x_T² − κ log T| ≤ C ⇒ E_T/log T → κ` is now the lemma `tendsto_div_log_of_sqrt_approx` in the
+contribution-10 module.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheHalfDampedReceiverIsDiagonalOnTheProbeSpectrum.lean`
+(`halfProbeMain_eq`, `abs_sum_oscSum_sq_div_succ_sub_le`,
+`tendsto_halfProbeCombination_energy_div_log`). Status: compiled, axioms `propext`,
+`Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
 ## Checked and not pursued
 

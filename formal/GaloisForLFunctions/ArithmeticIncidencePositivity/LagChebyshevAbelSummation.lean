@@ -13075,6 +13075,161 @@ theorem mass_outside_window_ge (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport 
     (measurableSet_Icc (a := ξ₀ - δ) (b := ξ₀ + δ)) hgi
   linarith [setIntegral_spectralDensity_le hF hFc hr hsupp ξ₀ hδ, hsplit, hmass]
 
+/-! ### The polar side in spectral coordinates
+
+The polar comparison `∫_0^T cosh(s/2)A(s)ds` of the prime side is, like the prime side itself, a
+pairing against the spectral density: its symbol is the finite cosine moment of the polar density,
+`K_T(b) = ∫_0^T cosh(s/2)cos(bs)ds`, which has the closed form below and is bounded by
+`2 sinh(T/2) + cosh(T/2)` uniformly in `b`.  The whole prime–polar balance of the ledger is then a
+single integral of the signed symbol `S(ξ) − 2K_T(2πξ)` against a nonnegative density. -/
+
+/-- The finite cosine moment of the polar density. -/
+noncomputable def coshCosKernel (T b : ℝ) : ℝ :=
+  ((1 / 2) * Real.sinh (T / 2) * Real.cos (b * T)
+    + b * Real.cosh (T / 2) * Real.sin (b * T)) / (1 / 4 + b ^ 2)
+
+theorem integral_cosh_mul_cos (T b : ℝ) :
+    (∫ s in (0:ℝ)..T, Real.cosh (s / 2) * Real.cos (b * s)) = coshCosKernel T b := by
+  have hb : (0:ℝ) < 1 / 4 + b ^ 2 := by positivity
+  have hderiv : ∀ s : ℝ, HasDerivAt (fun u : ℝ =>
+      ((1 / 2) * Real.sinh (u / 2) * Real.cos (b * u)
+        + b * Real.cosh (u / 2) * Real.sin (b * u)) / (1 / 4 + b ^ 2))
+      (Real.cosh (s / 2) * Real.cos (b * s)) s := by
+    intro s
+    have h1 : HasDerivAt (fun u : ℝ => u / 2) (1 / 2) s := (hasDerivAt_id s).div_const 2
+    have h2 : HasDerivAt (fun u : ℝ => b * u) b s := by
+      simpa using (hasDerivAt_id s).const_mul b
+    have hsinh := h1.sinh
+    have hcosh := h1.cosh
+    have hcos := h2.cos
+    have hsin := h2.sin
+    have hnum := ((((hsinh.const_mul (1/2 : ℝ)).mul hcos).add
+      ((hcosh.const_mul b).mul hsin))).div_const (1 / 4 + b ^ 2)
+    have hval : (1 / 2 * (Real.cosh (s / 2) * (1 / 2)) * Real.cos (b * s)
+        + 1 / 2 * Real.sinh (s / 2) * (-Real.sin (b * s) * b)
+        + (b * (Real.sinh (s / 2) * (1 / 2)) * Real.sin (b * s)
+          + b * Real.cosh (s / 2) * (Real.cos (b * s) * b))) / (1 / 4 + b ^ 2)
+        = Real.cosh (s / 2) * Real.cos (b * s) := by
+      rw [div_eq_iff (ne_of_gt hb)]
+      ring
+    rw [hval] at hnum
+    exact hnum
+  have hcont : IntervalIntegrable (fun s : ℝ => Real.cosh (s / 2) * Real.cos (b * s))
+      MeasureTheory.volume 0 T :=
+    (Real.continuous_cosh.comp (continuous_id.div_const 2)).mul
+      (Real.continuous_cos.comp (continuous_const.mul continuous_id)) |>.intervalIntegrable 0 T
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hderiv s) hcont, coshCosKernel]
+  simp
+
+theorem abs_coshCosKernel_le (T b : ℝ) (hT : 0 ≤ T) :
+    |coshCosKernel T b| ≤ 2 * Real.sinh (T / 2) + Real.cosh (T / 2) := by
+  have hden : (0:ℝ) < 1 / 4 + b ^ 2 := by positivity
+  have hb : |b| ≤ 1 / 4 + b ^ 2 := by nlinarith [sq_nonneg (|b| - 1 / 2), sq_abs b]
+  have hsinh : 0 ≤ Real.sinh (T / 2) := Real.sinh_nonneg_iff.mpr (by linarith)
+  have hcosh : 0 < Real.cosh (T / 2) := Real.cosh_pos _
+  rw [coshCosKernel, abs_div, abs_of_pos hden, div_le_iff₀ hden]
+  have h1 : |1 / 2 * Real.sinh (T / 2) * Real.cos (b * T)
+      + b * Real.cosh (T / 2) * Real.sin (b * T)|
+      ≤ 1 / 2 * Real.sinh (T / 2) + |b| * Real.cosh (T / 2) := by
+    refine le_trans (abs_add_le _ _) ?_
+    have ha : |1 / 2 * Real.sinh (T / 2) * Real.cos (b * T)| ≤ 1 / 2 * Real.sinh (T / 2) := by
+      rw [abs_mul, abs_of_nonneg (by positivity : (0:ℝ) ≤ 1 / 2 * Real.sinh (T / 2))]
+      nlinarith [Real.abs_cos_le_one (b * T), abs_nonneg (Real.cos (b * T))]
+    have hbb : |b * Real.cosh (T / 2) * Real.sin (b * T)| ≤ |b| * Real.cosh (T / 2) := by
+      rw [abs_mul, abs_mul, abs_of_pos hcosh]
+      exact mul_le_of_le_one_right (by positivity) (Real.abs_sin_le_one _)
+    linarith
+  nlinarith [h1, hb, hcosh, hsinh, sq_nonneg b]
+
+theorem integrable_coshCosKernel_mul (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    {T : ℝ} (hT : 0 ≤ T) :
+    Integrable (fun ξ : ℝ => coshCosKernel T (2 * Real.pi * ξ) * spectralDensity F ξ) := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hgc : Continuous (spectralDensity F) := continuous_spectralDensity hF.continuous hFc
+  have hKc : Continuous fun ξ : ℝ => coshCosKernel T (2 * Real.pi * ξ) := by
+    have hden : Continuous fun ξ : ℝ => 1 / 4 + (2 * Real.pi * ξ) ^ 2 := by fun_prop
+    have hne : ∀ ξ : ℝ, 1 / 4 + (2 * Real.pi * ξ) ^ 2 ≠ 0 := fun ξ => by positivity
+    have hnum : Continuous fun ξ : ℝ =>
+        1 / 2 * Real.sinh (T / 2) * Real.cos (2 * Real.pi * ξ * T)
+          + 2 * Real.pi * ξ * Real.cosh (T / 2) * Real.sin (2 * Real.pi * ξ * T) := by fun_prop
+    unfold coshCosKernel
+    exact hnum.div hden hne
+  refine Integrable.mono' (hgi.norm.const_mul (2 * Real.sinh (T / 2) + Real.cosh (T / 2)))
+    (hKc.mul hgc).aestronglyMeasurable (Filter.Eventually.of_forall fun ξ => ?_)
+  rw [Real.norm_eq_abs, abs_mul]
+  exact mul_le_mul_of_nonneg_right (abs_coshCosKernel_le T (2 * Real.pi * ξ) hT) (abs_nonneg _)
+
+/-- **The prime–polar balance in spectral coordinates.** -/
+
+theorem integral_cosh_mul_autoCorrelation_spectral (hF : ContDiff ℝ 1 F)
+    (hFc : HasCompactSupport F) {T : ℝ} (hT : 0 ≤ T) :
+    (∫ s in (0:ℝ)..T, Real.cosh (s / 2) * autoCorrelation F s)
+      = ∫ ξ : ℝ, coshCosKernel T (2 * Real.pi * ξ) * spectralDensity F ξ := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hgc : Continuous (spectralDensity F) := continuous_spectralDensity hF.continuous hFc
+  have hgnn : ∀ ξ, 0 ≤ spectralDensity F ξ := fun ξ => by rw [spectralDensity]; positivity
+  have hcont : Continuous fun p : ℝ × ℝ =>
+      Real.cosh (p.1 / 2) * Real.cos (2 * Real.pi * p.1 * p.2) * spectralDensity F p.2 :=
+    ((Real.continuous_cosh.comp (continuous_fst.div_const 2)).mul
+      (Real.continuous_cos.comp (by fun_prop))).mul (hgc.comp continuous_snd)
+  have hcoshint : Integrable (fun s : ℝ => Real.cosh (s / 2)) (volume.restrict (Set.Ioc 0 T)) :=
+    ((Real.continuous_cosh.comp (continuous_id.div_const 2)).integrableOn_Icc
+      (a := 0) (b := T)).mono_set Set.Ioc_subset_Icc_self
+  have hprodint : Integrable (fun p : ℝ × ℝ =>
+      Real.cosh (p.1 / 2) * Real.cos (2 * Real.pi * p.1 * p.2) * spectralDensity F p.2)
+      ((volume.restrict (Set.Ioc 0 T)).prod volume) := by
+    refine Integrable.mono' (MeasureTheory.Integrable.mul_prod hcoshint hgi)
+      hcont.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun p => ?_)
+    rw [Real.norm_eq_abs, abs_mul, abs_mul]
+    have h1 : |Real.cosh (p.1 / 2)| = Real.cosh (p.1 / 2) :=
+      abs_of_nonneg ((Real.cosh_pos _).le)
+    have h2 : |spectralDensity F p.2| = spectralDensity F p.2 := abs_of_nonneg (hgnn _)
+    rw [h1, h2]
+    have h3 : |Real.cos (2 * Real.pi * p.1 * p.2)| ≤ 1 := Real.abs_cos_le_one _
+    have hc0 : 0 ≤ Real.cosh (p.1 / 2) := (Real.cosh_pos _).le
+    have hg0 : 0 ≤ spectralDensity F p.2 := hgnn _
+    calc Real.cosh (p.1 / 2) * |Real.cos (2 * Real.pi * p.1 * p.2)| * spectralDensity F p.2
+        ≤ Real.cosh (p.1 / 2) * 1 * spectralDensity F p.2 :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h3 hc0) hg0
+      _ = Real.cosh (p.1 / 2) * spectralDensity F p.2 := by ring
+  rw [intervalIntegral.integral_of_le hT]
+  have hinner : ∀ s : ℝ, Real.cosh (s / 2) * autoCorrelation F s
+      = ∫ ξ : ℝ, Real.cosh (s / 2) * Real.cos (2 * Real.pi * s * ξ) * spectralDensity F ξ := by
+    intro s
+    rw [autoCorrelation_eq_integral_spectral hF hFc s, ← MeasureTheory.integral_const_mul]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
+  rw [MeasureTheory.setIntegral_congr_fun measurableSet_Ioc (fun s _ => hinner s),
+    MeasureTheory.integral_integral_swap hprodint]
+  refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+  show (∫ s in Set.Ioc 0 T, Real.cosh (s / 2) * Real.cos (2 * Real.pi * s * ξ) * spectralDensity F ξ)
+    = coshCosKernel T (2 * Real.pi * ξ) * spectralDensity F ξ
+  rw [MeasureTheory.integral_mul_const]
+  congr 1
+  rw [← intervalIntegral.integral_of_le hT, ← integral_cosh_mul_cos T (2 * Real.pi * ξ)]
+  refine intervalIntegral.integral_congr fun s _ => ?_
+  rw [show 2 * Real.pi * ξ * s = 2 * Real.pi * s * ξ by ring]
+
+theorem prime_polar_balance_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) {T : ℝ} (hT : 0 ≤ T) :
+    eulerRaw L (autoCorrelation F)
+        - 2 * ∫ s in (0:ℝ)..T, Real.cosh (s / 2) * autoCorrelation F s
+      = ∫ ξ : ℝ, (lagSymbol L ξ - 2 * coshCosKernel T (2 * Real.pi * ξ)) * spectralDensity F ξ := by
+  have h1 := eulerRaw_eq_integral_symbol hF hFc L
+  have h2 := integral_cosh_mul_autoCorrelation_spectral hF hFc hT
+  have hint1 := integrable_lagSymbol_mul hF hFc L
+  have hint2 := integrable_coshCosKernel_mul hF hFc hT
+  have hsplit : (∫ ξ : ℝ, (lagSymbol L ξ - 2 * coshCosKernel T (2 * Real.pi * ξ)) * spectralDensity F ξ)
+      = (∫ ξ : ℝ, lagSymbol L ξ * spectralDensity F ξ)
+        - 2 * ∫ ξ : ℝ, coshCosKernel T (2 * Real.pi * ξ) * spectralDensity F ξ := by
+    rw [← MeasureTheory.integral_const_mul, ← MeasureTheory.integral_sub hint1 (hint2.const_mul 2)]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
+  rw [hsplit, ← h1, ← h2]
+
+#print axioms prime_polar_balance_spectral
+#print axioms integral_cosh_mul_autoCorrelation_spectral
+#print axioms integral_cosh_mul_cos
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

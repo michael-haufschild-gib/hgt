@@ -686,6 +686,174 @@ theorem sum_above_sqrt_le {η : ℝ} (h1 : η < 1) (hh : 1 / 2 < η) (n M : ℕ)
         ring
     _ = _ := by rw [hexp]
 
+/-- Above the square root, each column meets fewer than `K²` rows: `Σ ≤ ζ(2η)`. -/
+theorem sum_above_sqrt_tail_le {η : ℝ} (hh : 1 / 2 < η) (T M : ℕ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, (if (k + 1) * (k + 1) ≤ n + 1 then 0 else
+      ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η)) ≤ realZetaSeries (2 * η) := by
+  rw [sum_comm]
+  refine le_trans (sum_le_sum fun k _ => ?_) (sum_range_rpow_le_zeta (s := 2 * η) (by linarith) M)
+  have hK : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
+  rw [sum_ite, sum_const_zero, zero_add, sum_const, nsmul_eq_mul]
+  have hcard : (((range T).filter fun n => ¬ (k + 1) * (k + 1) ≤ n + 1).card : ℝ) ≤
+      ((k + 1 : ℕ) : ℝ) ^ (2 : ℝ) := by
+    have : ((range T).filter fun n => ¬ (k + 1) * (k + 1) ≤ n + 1).card ≤ (k + 1) * (k + 1) := by
+      refine (card_le_card fun n hn => ?_).trans (card_range _).le
+      simp only [mem_filter, mem_range] at hn ⊢; omega
+    rw [Real.rpow_two]; exact_mod_cast (by nlinarith : _ ≤ (k + 1) ^ 2)
+  calc (((range T).filter fun n => ¬ (k + 1) * (k + 1) ≤ n + 1).card : ℝ) *
+        ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η)
+      ≤ ((k + 1 : ℕ) : ℝ) ^ (2 : ℝ) * ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η) :=
+        mul_le_mul_of_nonneg_right hcard (Real.rpow_nonneg hK.le _)
+    _ = ((k + 1 : ℕ) : ℝ) ^ (-(2 * η)) := by rw [← Real.rpow_add hK]; ring_nf
+
+/-- The Hilbert–Schmidt constant of the chain below damping one. -/
+def chainHSConstant (η : ℝ) : ℝ :=
+  3 * ((η * (1 + 1 / (1 - η) + 1 / η)) ^ 2 * (realZetaSeries (2 * η) * realZetaSeries 2) +
+      (η * (pmPowerDampedDivisorDensity η).re) ^ 2 * (realZetaSeries 2 * realZetaSeries (2 * η))) +
+  3 * (8 * (1 + 1 / (1 - η) + 1 / η) ^ 2 *
+        (realZetaSeries (2 * (η * (1 - interpExp η))) *
+          realZetaSeries (2 * (interpExp η * (1 + η)))) +
+      8 * (pmPowerDampedDivisorDensity η).re ^ 2 * realZetaSeries ((1 + 2 * η) / 2) +
+      2 * (1 + (pmPowerDampedDivisorDensity η).re) ^ 2 * ((1 + 1 / (2 * η - 1)) *
+        realZetaSeries ((1 + 2 * η) / 2)) +
+      2 * (pmPowerDampedDivisorDensity η).re ^ 2 * realZetaSeries (2 * η))
+
+/-- `N^{−2} N^{(3−2η)/2} = N^{−(1+2η)/2}`. -/
+theorem rpow_neg_two_mul_rpow {N η : ℝ} (hN : 0 < N) :
+    N ^ (-2 : ℝ) * N ^ ((3 - 2 * η) / 2) = N ^ (-((1 + 2 * η) / 2)) := by
+  rw [← Real.rpow_add hN]; ring_nf
+
+theorem sum_sum_linear (T M : ℕ) (a b c d e f : ℝ) (F1 F2 F3 F4 F5 F6 : ℕ → ℕ → ℝ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, (3 * (a * F1 n k + b * F2 n k) +
+      3 * (c * F3 n k + d * F4 n k + e * F5 n k + f * F6 n k)) =
+    3 * (a * ∑ n ∈ range T, ∑ k ∈ range M, F1 n k + b * ∑ n ∈ range T, ∑ k ∈ range M, F2 n k) +
+    3 * (c * ∑ n ∈ range T, ∑ k ∈ range M, F3 n k + d * ∑ n ∈ range T, ∑ k ∈ range M, F4 n k +
+      e * ∑ n ∈ range T, ∑ k ∈ range M, F5 n k + f * ∑ n ∈ range T, ∑ k ∈ range M, F6 n k) := by
+  simp only [sum_add_distrib, mul_sum, mul_add]
+
+/-- **The majorant is summable**: every partial double sum is at most `chainHSConstant η`. -/
+theorem sum_chainMajorant_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 1 / 2 < η ^ 2) (T M : ℕ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, chainMajorant η n k ≤ chainHSConstant η := by
+  set ρ := (pmPowerDampedDivisorDensity η).re
+  set C₁ := 1 + 1 / (1 - η) + 1 / η
+  set l := interpExp η
+  have hh : 1 / 2 < η := by nlinarith
+  obtain ⟨-, -, hl2, hl3⟩ := interpExp_bounds h0 h2
+  have hρ0 : 0 < ρ := RHTower.pmPowerDampedDivisorDensity_re_pos h0
+  have hs : 1 < (1 + 2 * η) / 2 := by linarith
+  have hite : ∀ n k, chainMajorant η n k ≤
+      3 * ((η * C₁) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 * η)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 : ℝ))) +
+          (η * ρ) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 * η)))) +
+      3 * (8 * C₁ ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 * (η * (1 - l)))) *
+            ((k + 1 : ℕ) : ℝ) ^ (-(2 * (l * (1 + η))))) +
+          8 * ρ ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * (if (k + 1) * (k + 1) ≤ n + 1 then
+            ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0)) +
+          2 * (1 + ρ) ^ 2 * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * (if (k + 1) * (k + 1) ≤ n + 1 then 0
+            else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+              ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)))) +
+          2 * ρ ^ 2 * (if (k + 1) * (k + 1) ≤ n + 1 then 0 else
+            ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η))) := by
+    intro n k
+    have hNK1 : 0 ≤ ((n + 1 : ℕ) : ℝ) ^ (-(2 * (η * (1 - l)))) *
+        ((k + 1 : ℕ) : ℝ) ^ (-(2 * (l * (1 + η)))) := by positivity
+    unfold chainMajorant
+    rw [show (-2 : ℝ) * η = -(2 * η) by ring]
+    split_ifs with hA
+    · simp only [mul_zero, add_zero]
+      nlinarith [mul_comm (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ))) (((k + 1 : ℕ) : ℝ) ^ (-(2 * η)))]
+    · have hJ0 : (0 : ℝ) ≤ ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) :=
+        Nat.cast_nonneg _
+      simp only [mul_zero]
+      nlinarith [mul_comm (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ))) (((k + 1 : ℕ) : ℝ) ^ (-(2 * η)))]
+  refine (sum_le_sum fun n _ => sum_le_sum fun k _ => hite n k).trans ?_
+  refine (le_of_eq (sum_sum_linear T M ((η * C₁) ^ 2) ((η * ρ) ^ 2) (8 * C₁ ^ 2) (8 * ρ ^ 2)
+    (2 * (1 + ρ) ^ 2) (2 * ρ ^ 2)
+    (fun n k => ((n + 1 : ℕ) : ℝ) ^ (-(2 * η)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)))
+    (fun n k => ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * ((k + 1 : ℕ) : ℝ) ^ (-(2 * η)))
+    (fun n k => ((n + 1 : ℕ) : ℝ) ^ (-(2 * (η * (1 - l)))) *
+      ((k + 1 : ℕ) : ℝ) ^ (-(2 * (l * (1 + η)))))
+    (fun n k => ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * (if (k + 1) * (k + 1) ≤ n + 1 then
+      ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0))
+    (fun n k => ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) * (if (k + 1) * (k + 1) ≤ n + 1 then 0
+      else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))))
+    (fun n k => if (k + 1) * (k + 1) ≤ n + 1 then 0 else
+      ((k + 1 : ℕ) : ℝ) ^ (-2 - 2 * η)))).trans ?_
+  -- the six families
+  have hA1 := sum_sum_rpow_le (s := 2 * η) (t := 2) (by linarith) one_lt_two T M
+  have hA2 := sum_sum_rpow_le (s := 2) (t := 2 * η) one_lt_two (by linarith) T M
+  have hA3 := sum_sum_rpow_le (s := 2 * (η * (1 - l))) (t := 2 * (l * (1 + η)))
+    (by linarith) (by linarith) T M
+  have hB : ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+      (if (k + 1) * (k + 1) ≤ n + 1 then ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0) ≤
+      realZetaSeries ((1 + 2 * η) / 2) := by
+    refine le_trans (sum_le_sum fun n _ => ?_) (sum_range_rpow_le_zeta hs T)
+    have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+    rw [← mul_sum, ← rpow_neg_two_mul_rpow hN]
+    exact mul_le_mul_of_nonneg_left (sum_below_sqrt_le h1 n M) (Real.rpow_nonneg hN.le _)
+  have hC : ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+      (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+        ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+      (1 + 1 / (2 * η - 1)) * realZetaSeries ((1 + 2 * η) / 2) := by
+    have hc0 : 0 ≤ 1 + 1 / (2 * η - 1) := by
+      have : 0 < 2 * η - 1 := by linarith
+      positivity
+    have hrow : ∀ n, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+        (if (k + 1) * (k + 1) ≤ n + 1 then 0 else ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) *
+          ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+        (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
+      intro n
+      have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+      rw [← mul_sum]
+      calc _ ≤ ((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+            ((1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) :=
+            mul_le_mul_of_nonneg_left (sum_above_sqrt_le h1 hh n M) (Real.rpow_nonneg hN.le _)
+        _ = (1 + 1 / (2 * η - 1)) * (((n + 1 : ℕ) : ℝ) ^ (-(2 : ℝ)) *
+            ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2)) := by ring
+        _ = _ := by rw [rpow_neg_two_mul_rpow hN]
+    calc _ ≤ ∑ n ∈ range T, (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) :=
+          sum_le_sum fun n _ => hrow n
+      _ = (1 + 1 / (2 * η - 1)) * ∑ n ∈ range T, ((n + 1 : ℕ) : ℝ) ^ (-((1 + 2 * η) / 2)) := by
+          rw [mul_sum]
+      _ ≤ _ := mul_le_mul_of_nonneg_left (sum_range_rpow_le_zeta hs T) hc0
+  have hD := sum_above_sqrt_tail_le hh T M
+  unfold chainHSConstant
+  exact add_le_add
+    (mul_le_mul_of_nonneg_left (add_le_add
+      (mul_le_mul_of_nonneg_left hA1 (sq_nonneg _))
+      (mul_le_mul_of_nonneg_left hA2 (sq_nonneg _))) (by norm_num))
+    (mul_le_mul_of_nonneg_left (add_le_add (add_le_add (add_le_add
+      (mul_le_mul_of_nonneg_left hA3 (by positivity))
+      (mul_le_mul_of_nonneg_left hB (by positivity)))
+      (mul_le_mul_of_nonneg_left hC (by positivity)))
+      (mul_le_mul_of_nonneg_left hD (by positivity))) (by norm_num))
+
+/-- **The chain is bounded in `ℓ²` above damping `1/√2`**: for `η² > ½`, `η < 1`, finitely
+supported `b` and every horizon, `Σ_{n<T} (C_η b)(n)² ≤ M_η Σ_k b_k²`. -/
+theorem centeredOperator_l2_le_of_inverseRootTwo {η : ℝ} (h0 : 0 < η) (h1 : η < 1)
+    (h2 : 1 / 2 < η ^ 2) (b : C₀(ℕ, ℝ)) {N : ℕ} (hb : ∀ k, N ≤ k → b k = 0) (T : ℕ) :
+    ∑ n ∈ range T, arithmeticDampingCenteredOperator h0 b n ^ 2 ≤
+      chainHSConstant η * ∑ k ∈ range N, b k ^ 2 := by
+  have happ : ∀ n, arithmeticDampingCenteredOperator h0 b n =
+      ∑ k ∈ range N, arithmeticDampingCenteredRow η n k * b k := by
+    intro n
+    rw [arithmeticDampingCenteredOperator_apply]
+    exact tsum_eq_sum fun k hk => by rw [hb k (by simpa using hk), mul_zero]
+  have hrow : ∀ n, arithmeticDampingCenteredOperator h0 b n ^ 2 ≤
+      (∑ k ∈ range N, arithmeticDampingCenteredRow η n k ^ 2) * ∑ k ∈ range N, b k ^ 2 := by
+    intro n; rw [happ]; exact sum_mul_sq_le_sq_mul_sq _ _ _
+  have hb0 : 0 ≤ ∑ k ∈ range N, b k ^ 2 := sum_nonneg fun k _ => sq_nonneg _
+  have hHS : ∑ n ∈ range T, ∑ k ∈ range N, arithmeticDampingCenteredRow η n k ^ 2 ≤
+      chainHSConstant η :=
+    (sum_le_sum fun n _ => sum_le_sum fun k _ => sq_centeredRow_le_majorant h0 h1 h2 n k).trans
+      (sum_chainMajorant_le h0 h1 h2 T N)
+  calc ∑ n ∈ range T, arithmeticDampingCenteredOperator h0 b n ^ 2
+      ≤ ∑ n ∈ range T, (∑ k ∈ range N, arithmeticDampingCenteredRow η n k ^ 2) *
+          ∑ k ∈ range N, b k ^ 2 := sum_le_sum fun n _ => hrow n
+    _ = (∑ n ∈ range T, ∑ k ∈ range N, arithmeticDampingCenteredRow η n k ^ 2) *
+          ∑ k ∈ range N, b k ^ 2 := by rw [← sum_mul]
+    _ ≤ chainHSConstant η * ∑ k ∈ range N, b k ^ 2 := mul_le_mul_of_nonneg_right hHS hb0
+
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

@@ -21,7 +21,10 @@ the `≍ qⁿ` divisors of that degree (`curveReceiverEnergy`).
 * `exists_curveReceiverEnergy_le`: if every eigenvalue has modulus at most `λ√q` and
   `λ < q^ε`, the receiver energy is bounded uniformly in the horizon: **the curve receiver is
   admitted at every damping above the zero width `log_q λ`**;
-* `exists_curveReceiverEnergy_le_of_weil`: on the Weil circle, `λ = 1`, at every `ε > 0`.
+* `exists_curveReceiverEnergy_le_of_weil`: on the Weil circle, `λ = 1`, at every `ε > 0`;
+* `not_exists_curveReceiverEnergy_le_single`: conversely, for one eigenvalue `a = λ√q` with
+  `q^ε < λ < q^{1/2+ε}`, `a ≠ q`, the receiver energy is unbounded — the source grows like
+  `(a q^{−ε})ⁿ`, faster than the norm weight allows. Admission at `ε` is decided by the zero width.
 
 The mechanism is the one the number-field programme names. The centring removes the pole of `Z` at
 `u = 1/q` exactly: `(1 − qu)^{−1}(R − δ)` has coefficients `−qⁿ Σ_{j>n} b_j q^{−j}`
@@ -243,6 +246,80 @@ theorem coeff_geomSeries_mul_eq_neg_tail {q : ℕ} (hq : 1 ≤ q) {B : PowerSeri
     field_simp
   rw [hhead, eq_neg_iff_add_eq_zero, ← mul_add, hsplit, mul_zero]
 
+/-- The centred source is the double prefix of `P(u)(1 − qu)^{−1}(R(u) − δ)`. -/
+theorem curveCentredPrefix_eq (q : ℕ) (α : Fin m → ℂ) (ε : ℝ) (n : ℕ) :
+    curveCentredPrefix q α ε n = coeff n (geomSeries 1 * (geomSeries 1 * (curveP α *
+      (geomSeries q * (curveDampedZinv q α ε - C (curveDensity q α ε)))))) := by
+  rw [curveCentredPrefix, ← coeff_C_mul, ← map_sub]
+  congr 1
+  simp only [curveZ]
+  ring
+
+/-- A prefix is a product with `1/(1 − u)`. -/
+theorem coeff_geomSeries_one_mul (F : PowerSeries ℂ) (n : ℕ) :
+    coeff n (geomSeries 1 * F) = ∑ j ∈ range (n + 1), coeff j F := by
+  rw [coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
+  simp only [geomSeries, coeff_mk, one_pow, one_mul]
+  exact sum_range_reflect (fun j => coeff j F) (n + 1)
+
+/-- The damped Möbius coefficients are at most `2(1 + q)(k + 1)^m (t q^{−ε})^k`. -/
+theorem norm_coeff_curveDampedZinv_le (q : ℕ) {α : Fin m → ℂ} {t : ℝ} (ht : 1 ≤ t)
+    (hα : ∀ i, ‖α i‖ ≤ t) (ε : ℝ) (k : ℕ) :
+    ‖coeff k (curveDampedZinv q α ε)‖ ≤
+      2 * (1 + (q : ℝ)) * ((k : ℝ) + 1) ^ m * (t * (q : ℝ) ^ (-ε)) ^ k := by
+  have hPinv : ∀ k, ‖coeff k (curvePinv α)‖ ≤ 1 * ((k : ℝ) + 1) ^ m * t ^ k := fun k => by
+    rw [one_mul]; exact norm_coeff_curvePinv_le α (by linarith) hα k
+  have h1 : ∀ k, ‖coeff k ((1 - C ((1 : ℝ) : ℂ) * X) * curvePinv α)‖ ≤
+      (1 + 1) * 1 * ((k : ℝ) + 1) ^ m * t ^ k :=
+    norm_coeff_one_sub_mul_le zero_le_one ht zero_le_one hPinv
+  have h2 := norm_coeff_one_sub_mul_le (by positivity) ht (Nat.cast_nonneg q) h1 k
+  have he : curveZinv q α = (1 - C (((q : ℕ) : ℝ) : ℂ) * X) *
+      ((1 - C ((1 : ℝ) : ℂ) * X) * curvePinv α) := by
+    rw [curveZinv]; push_cast; ring
+  have hρ₀ : 0 ≤ (q : ℝ) ^ (-ε) := Real.rpow_nonneg (Nat.cast_nonneg q) _
+  rw [curveDampedZinv, coeff_rescale, norm_mul, norm_pow, Complex.norm_real,
+    Real.norm_of_nonneg hρ₀, he]
+  calc ((q : ℝ) ^ (-ε)) ^ k * ‖coeff k ((1 - C (((q : ℕ) : ℝ) : ℂ) * X) *
+        ((1 - C ((1 : ℝ) : ℂ) * X) * curvePinv α))‖
+      ≤ ((q : ℝ) ^ (-ε)) ^ k * ((1 + (q : ℝ)) * ((1 + 1) * 1) * ((k : ℝ) + 1) ^ m * t ^ k) :=
+        mul_le_mul_of_nonneg_left h2 (by positivity)
+    _ = 2 * (1 + (q : ℝ)) * ((k : ℝ) + 1) ^ m * (t * (q : ℝ) ^ (-ε)) ^ k := by
+        rw [mul_pow]; ring
+
+/-- **The density series converges and the centred series vanishes at `u = 1/q`**, as soon as the
+damped zero growth `t q^{−ε}` is below `q`. -/
+theorem summable_and_tsum_curveCentredSeries {q : ℕ} (hq : 2 ≤ q) {α : Fin m → ℂ} {t : ℝ}
+    (ht : 1 ≤ t) (hα : ∀ i, ‖α i‖ ≤ t) {ε : ℝ} (hx : t * (q : ℝ) ^ (-ε) < q) :
+    Summable (fun j => coeff j (curveDampedZinv q α ε - C (curveDensity q α ε)) / (q : ℂ) ^ j) ∧
+      ∑' j, coeff j (curveDampedZinv q α ε - C (curveDensity q α ε)) / (q : ℂ) ^ j = 0 := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  set x := t * (q : ℝ) ^ (-ε) / q
+  have hx0 : 0 < x := by
+    have := Real.rpow_pos_of_pos hq0 (-ε); positivity
+  have hx1 : x < 1 := by rw [div_lt_one hq0]; exact hx
+  have hqk : ∀ k : ℕ, ‖(q : ℂ) ^ k‖ = (q : ℝ) ^ k := fun k => by
+    rw [norm_pow, Complex.norm_natCast]
+  have hRsum : Summable fun k => coeff k (curveDampedZinv q α ε) / (q : ℂ) ^ k := by
+    refine Summable.of_norm_bounded
+      ((summable_add_pow_mul_geometric m 1 hx0 hx1).mul_left (2 * (1 + (q : ℝ)))) fun k => ?_
+    rw [norm_div, hqk, div_le_iff₀ (by positivity)]
+    refine (norm_coeff_curveDampedZinv_le q ht hα ε k).trans (le_of_eq ?_)
+    simp only [x]; rw [div_pow]; field_simp; push_cast; ring
+  have hfin : Summable fun j : ℕ => (if j = 0 then curveDensity q α ε else 0) :=
+    summable_of_ne_finset_zero (s := {0}) fun j hj => by
+      simp only [mem_singleton] at hj; simp [hj]
+  have he : (fun j => coeff j (curveDampedZinv q α ε - C (curveDensity q α ε)) / (q : ℂ) ^ j) =
+      fun j => coeff j (curveDampedZinv q α ε) / (q : ℂ) ^ j -
+        (if j = 0 then curveDensity q α ε else 0) := by
+    funext j
+    simp only [map_sub, coeff_C]
+    split_ifs with h
+    · subst h; simp
+    · simp
+  refine ⟨he ▸ hRsum.sub hfin, ?_⟩
+  rw [he, Summable.tsum_sub hRsum hfin, tsum_ite_eq]
+  simp [curveDensity]
+
 /-! ## Admission above the zero width -/
 
 /-- **The curve receiver is admitted above the zero width.** If every Frobenius eigenvalue has
@@ -293,67 +370,22 @@ theorem exists_curveReceiverEnergy_le {q : ℕ} (hq : 2 ≤ q) {α : Fin m → �
             refine mul_lt_mul_of_pos_right ?_ (by positivity)
             nlinarith [mul_pos (by linarith : (0 : ℝ) < lam) hρ₀]
         _ = q := by rw [one_mul, hss]
-  -- coefficient bounds for `1/P`, `1/Z` and its damping
+  -- coefficient bounds and the polar cancellation
   have hα' : ∀ i, ‖α i‖ ≤ t := hα
-  have hPinv : ∀ k, ‖coeff k (curvePinv α)‖ ≤ 1 * ((k : ℝ) + 1) ^ m * t ^ k := fun k => by
-    rw [one_mul]; exact norm_coeff_curvePinv_le α (by linarith) hα' k
-  set KR : ℝ := (1 + (q : ℝ)) * ((1 + 1) * 1)
+  set KR : ℝ := 2 * (1 + (q : ℝ))
   have hKR : 0 ≤ KR := by positivity
-  have hZinv : ∀ k, ‖coeff k (curveZinv q α)‖ ≤ KR * ((k : ℝ) + 1) ^ m * t ^ k := by
-    intro k
-    have h1 : ∀ k, ‖coeff k ((1 - C ((1 : ℝ) : ℂ) * X) * curvePinv α)‖ ≤
-        (1 + 1) * 1 * ((k : ℝ) + 1) ^ m * t ^ k :=
-      norm_coeff_one_sub_mul_le zero_le_one ht1 zero_le_one hPinv
-    have h2 := norm_coeff_one_sub_mul_le (by positivity) ht1 (Nat.cast_nonneg q) h1 k
-    have he : curveZinv q α = (1 - C (((q : ℕ) : ℝ) : ℂ) * X) *
-        ((1 - C ((1 : ℝ) : ℂ) * X) * curvePinv α) := by
-      rw [curveZinv]; push_cast; ring
-    rw [he]
-    simpa [KR, mul_assoc] using h2
-  have hR : ∀ k, ‖coeff k (curveDampedZinv q α ε)‖ ≤ KR * ((k : ℝ) + 1) ^ m * ρ ^ k := by
-    intro k
-    rw [curveDampedZinv, coeff_rescale, norm_mul, norm_pow, Complex.norm_real,
-      Real.norm_of_nonneg hρ₀.le]
-    calc ρ₀ ^ k * ‖coeff k (curveZinv q α)‖ ≤ ρ₀ ^ k * (KR * ((k : ℝ) + 1) ^ m * t ^ k) :=
-          mul_le_mul_of_nonneg_left (hZinv k) (by positivity)
-      _ = KR * ((k : ℝ) + 1) ^ m * ρ ^ k := by simp only [ρ]; rw [mul_pow]; ring
-  -- the density series and the polar cancellation
+  have hR : ∀ k, ‖coeff k (curveDampedZinv q α ε)‖ ≤ KR * ((k : ℝ) + 1) ^ m * ρ ^ k :=
+    norm_coeff_curveDampedZinv_le q ht1 hα' ε
   set R := curveDampedZinv q α ε
   set δ := curveDensity q α ε
   have hqk : ∀ k : ℕ, ‖(q : ℂ) ^ k‖ = (q : ℝ) ^ k := fun k => by
     rw [norm_pow, Complex.norm_natCast]
-  have hRsum : Summable fun k => coeff k R / (q : ℂ) ^ k := by
-    refine Summable.of_norm_bounded ((summable_add_pow_mul_geometric m 1 hx0 hx1).mul_left KR)
-      fun k => ?_
-    rw [norm_div, hqk, div_le_iff₀ (by positivity)]
-    calc ‖coeff k R‖ ≤ KR * ((k : ℝ) + 1) ^ m * ρ ^ k := hR k
-      _ = KR * (((k : ℝ) + ((1 : ℕ) : ℝ)) ^ m * x ^ k) * (q : ℝ) ^ k := by
-          simp only [x]; rw [div_pow]; field_simp; push_cast; ring
   set Bs := R - C δ
   have hBcoeff : ∀ j, 1 ≤ j → coeff j Bs = coeff j R := fun j hj => by
     simp only [Bs, map_sub, coeff_C, if_neg (show j ≠ 0 by omega), sub_zero]
-  have hBsum : Summable fun j => coeff j Bs / (q : ℂ) ^ j := by
-    have he : (fun j => coeff j Bs / (q : ℂ) ^ j) =
-        fun j => coeff j R / (q : ℂ) ^ j - (if j = 0 then δ else 0) := by
-      funext j
-      simp only [Bs, map_sub, coeff_C]
-      split_ifs with h
-      · subst h; simp
-      · simp
-    rw [he]
-    exact hRsum.sub (summable_of_ne_finset_zero (s := {0}) fun j hj => by
-      simp only [mem_singleton] at hj; simp [hj])
-  have hB0 : ∑' j, coeff j Bs / (q : ℂ) ^ j = 0 := by
-    have he : (fun j => coeff j Bs / (q : ℂ) ^ j) =
-        fun j => coeff j R / (q : ℂ) ^ j - (if j = 0 then δ else 0) := by
-      funext j
-      simp only [Bs, map_sub, coeff_C]
-      split_ifs with h
-      · subst h; simp
-      · simp
-    rw [he, Summable.tsum_sub hRsum (summable_of_ne_finset_zero (s := {0}) fun j hj => by
-      simp only [mem_singleton] at hj; simp [hj]), tsum_ite_eq]
-    simp [δ, curveDensity, R]
+  have hρq : t * (q : ℝ) ^ (-ε) < q := by
+    have := (div_lt_one hq0).mp hx1; exact this
+  obtain ⟨hBsum, hB0⟩ := summable_and_tsum_curveCentredSeries hq ht1 hα' hρq
   set Sx := ∑' i : ℕ, ((i : ℝ) + ((1 : ℕ) : ℝ)) ^ m * x ^ i
   have hSx : 0 ≤ Sx := tsum_nonneg fun i => by positivity
   set K1 := KR * Sx * x
@@ -480,12 +512,8 @@ theorem exists_curveReceiverEnergy_le {q : ℕ} (hq : 2 ≤ q) {α : Fin m → �
   have hA1 := hpartial _ K2 m hK2 hPC
   have hA2 := hpartial _ K2 (m + 1) hK2 hA1
   have hAeq : ∀ n, curveCentredPrefix q α ε n =
-      coeff n (geomSeries 1 * (geomSeries 1 * (curveP α * (geomSeries q * Bs)))) := by
-    intro n
-    rw [curveCentredPrefix, ← coeff_C_mul, ← map_sub]
-    congr 1
-    simp only [Bs, curveZ, R, δ]
-    ring
+      coeff n (geomSeries 1 * (geomSeries 1 * (curveP α * (geomSeries q * Bs)))) :=
+    curveCentredPrefix_eq q α ε
   -- the energy
   set G : ℕ → ℝ := fun n => K2 ^ 2 * (((n : ℝ) + 2) ^ (2 * (m + 2)) * r ^ n)
   have hG : Summable G := (summable_add_pow_mul_geometric (2 * (m + 2)) 2 hr0 hr1).mul_left _
@@ -509,5 +537,235 @@ theorem exists_curveReceiverEnergy_le_of_weil {q : ℕ} (hq : 2 ≤ q) {α : Fin
     ∃ B : ℝ, ∀ D, curveReceiverEnergy q α ε D ≤ B :=
   exists_curveReceiverEnergy_le hq le_rfl (fun i => by rw [one_mul]; exact hα i)
     (Real.one_lt_rpow (by exact_mod_cast (show 1 < q by omega)) hε)
+
+/-! ## Below the zero width admission fails -/
+
+/-- For one eigenvalue `a`, the Möbius coefficients beyond degree one are `aʲ(a − 1)(a − q)`. -/
+theorem coeff_curveZinv_single (q : ℕ) (a : ℂ) (j : ℕ) :
+    coeff (j + 2) (curveZinv q (fun _ : Fin 1 => a)) = a ^ j * (a - 1) * (a - q) := by
+  have hP : curvePinv (fun _ : Fin 1 => a) = geomSeries a := by
+    simp [curvePinv]
+  have he : curveZinv q (fun _ : Fin 1 => a) = geomSeries a - X * geomSeries a -
+      C (q : ℂ) * (X * geomSeries a) + C (q : ℂ) * (X * (X * geomSeries a)) := by
+    rw [curveZinv, hP, map_one]; ring
+  rw [he, map_add, map_sub, map_sub, coeff_C_mul, coeff_C_mul, coeff_succ_X_mul,
+    coeff_succ_X_mul, coeff_succ_X_mul]
+  simp only [geomSeries, coeff_mk]
+  ring
+
+/-- **Below the zero width the curve receiver is not admitted.** For a single eigenvalue
+`a = λ√q` with `q^ε < λ < q^{1/2+ε}` and `a ≠ q`, the receiver energy is unbounded: the
+coefficients of the source grow like `(a q^{−ε})ⁿ`, faster than the norm weight `q^{n/2}`.
+Together with `exists_curveReceiverEnergy_le`, admission at `ε` is decided by the zero width. -/
+theorem not_exists_curveReceiverEnergy_le_single {q : ℕ} (hq : 2 ≤ q) {a ε : ℝ} (hε : 0 < ε)
+    (ha : Real.sqrt q * (q : ℝ) ^ ε < a) (haq : a < (q : ℝ) ^ (1 + ε)) (haq' : a ≠ q) :
+    ¬ ∃ B : ℝ, ∀ D, curveReceiverEnergy q (fun _ : Fin 1 => (a : ℂ)) ε D ≤ B := by
+  rintro ⟨B, hB⟩
+  set α : Fin 1 → ℂ := fun _ => (a : ℂ)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (show 0 < q by omega)
+  have hq1 : (1 : ℝ) < q := by exact_mod_cast (show 1 < q by omega)
+  set s := Real.sqrt q
+  have hs1 : 1 < s := Real.lt_sqrt_of_sq_lt (by norm_num; linarith)
+  have hss : s * s = q := Real.mul_self_sqrt hq0.le
+  set ρ₀ := (q : ℝ) ^ (-ε)
+  have hρ₀ : 0 < ρ₀ := Real.rpow_pos_of_pos hq0 _
+  have hρ₀1 : ρ₀ < 1 := Real.rpow_lt_one_of_one_lt_of_neg hq1 (by linarith)
+  have hqε : (q : ℝ) ^ ε * ρ₀ = 1 := by
+    rw [← Real.rpow_add hq0, add_neg_cancel, Real.rpow_zero]
+  have hqε0 : 0 < (q : ℝ) ^ ε := Real.rpow_pos_of_pos hq0 _
+  have ha1 : 1 < a := by nlinarith [Real.one_le_rpow hq1.le hε.le]
+  set ρ := a * ρ₀
+  have hρs : s < ρ := by
+    have := mul_lt_mul_of_pos_right ha hρ₀
+    rw [mul_assoc, hqε, mul_one] at this; exact this
+  have hρ0 : 0 < ρ := by linarith
+  have hρq : ρ < q := by
+    have h := mul_lt_mul_of_pos_right haq hρ₀
+    rw [Real.rpow_add hq0, Real.rpow_one, mul_assoc, hqε, mul_one] at h; exact h
+  set y := ρ / q
+  have hy0 : 0 < y := by positivity
+  have hy1 : y < 1 := by rw [div_lt_one hq0]; exact hρq
+  -- the coefficients of `(1 − qu)^{−1}(R − δ)` are `K ρⁿ` from degree one on
+  set κ : ℝ := (a - 1) * (a - q) / a ^ 2
+  set K : ℝ := -(κ * y / (1 - y))
+  have hκ : κ ≠ 0 := by
+    have : a - (q : ℝ) ≠ 0 := sub_ne_zero.mpr haq'
+    have : a - 1 ≠ 0 := by linarith
+    positivity
+  have hK : K ≠ 0 := by
+    have : 1 - y ≠ 0 := by linarith
+    simp only [K, neg_ne_zero]; positivity
+  have hα : ∀ i, ‖α i‖ ≤ a := fun i => by
+    simp only [α, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith : (0 : ℝ) < a),
+      le_refl]
+  obtain ⟨hBsum, hB0⟩ := summable_and_tsum_curveCentredSeries hq ha1.le hα hρq
+  set Bs := curveDampedZinv q α ε - C (curveDensity q α ε)
+  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast (by linarith : a ≠ 0)
+  have hBj : ∀ j, coeff (j + 2) Bs = ((κ * ρ ^ (j + 2) : ℝ) : ℂ) := by
+    intro j
+    have hz := coeff_curveZinv_single q (a : ℂ) j
+    have hcoef : coeff (j + 2) Bs = ((ρ₀ ^ (j + 2) : ℝ) : ℂ) * coeff (j + 2) (curveZinv q α) := by
+      simp only [Bs, map_sub, coeff_C, if_neg (show j + 2 ≠ 0 by omega), sub_zero,
+        curveDampedZinv, coeff_rescale]
+      push_cast; rfl
+    rw [hcoef, hz]
+    simp only [κ, ρ]
+    push_cast
+    field_simp
+    ring
+  have hreal : ∀ n : ℕ, -((q : ℝ) ^ n * (κ * y ^ (n + 1) * (1 - y)⁻¹)) = K * ρ ^ n := by
+    intro n
+    simp only [K, y]
+    rw [div_pow, pow_succ]
+    have h1 : (1 : ℝ) - ρ / q ≠ 0 := by linarith
+    field_simp
+    ring
+  have hc : ∀ n, 1 ≤ n → coeff n (geomSeries q * Bs) = ((K * ρ ^ n : ℝ) : ℂ) := by
+    intro n hn
+    rw [coeff_geomSeries_mul_eq_neg_tail (by omega) hBsum hB0 n]
+    have hterm : ∀ i, coeff (i + (n + 1)) Bs / (q : ℂ) ^ (i + (n + 1)) =
+        ((κ * y ^ (n + 1) : ℝ) : ℂ) * (y : ℂ) ^ i := by
+      intro i
+      obtain ⟨k, hk⟩ : ∃ k, i + (n + 1) = k + 2 := ⟨i + n - 1, by omega⟩
+      rw [hk, hBj, ← hk]
+      have hr : κ * ρ ^ (i + (n + 1)) / (q : ℝ) ^ (i + (n + 1)) = κ * y ^ (n + 1) * y ^ i := by
+        simp only [y]
+        rw [div_pow, div_pow, pow_add ρ i, pow_add (q : ℝ) i]
+        field_simp
+      have hq0' : (q : ℂ) ^ (i + (n + 1)) = (((q : ℝ) ^ (i + (n + 1)) : ℝ) : ℂ) := by push_cast; rfl
+      rw [hq0', ← Complex.ofReal_div, hr]
+      push_cast; ring
+    have hy : ‖(y : ℂ)‖ < 1 := by rw [Complex.norm_real, Real.norm_of_nonneg hy0.le]; exact hy1
+    rw [tsum_congr hterm, tsum_mul_left, tsum_geometric_of_norm_lt_one hy, ← hreal n]
+    push_cast
+    ring
+  -- after `P(u) = 1 − au` the coefficients are `L ρ^{n−1}` from degree two on
+  set L : ℝ := K * (ρ - a)
+  have hL : L ≠ 0 := by
+    have : ρ - a ≠ 0 := by
+      have : ρ - a = a * (ρ₀ - 1) := by simp only [ρ]; ring
+      rw [this]; exact mul_ne_zero (by linarith) (by linarith)
+    exact mul_ne_zero hK this
+  set Dser := curveP α * (geomSeries q * Bs)
+  have hPα : curveP α = 1 - C (a : ℂ) * X := by simp [curveP, α]
+  have hd : ∀ j, coeff (j + 2) Dser = ((L * ρ ^ (j + 1) : ℝ) : ℂ) := by
+    intro j
+    have he : Dser = geomSeries q * Bs - C (a : ℂ) * (X * (geomSeries q * Bs)) := by
+      simp only [Dser, hPα]; ring
+    rw [he, map_sub, coeff_C_mul, coeff_succ_X_mul, hc (j + 2) (by omega), hc (j + 1) (by omega)]
+    simp only [L]
+    push_cast
+    ring
+  -- the double prefix grows like `|L| ρ^{n−1}`
+  set C₀ := ‖coeff 0 Dser‖ + ‖coeff 1 Dser‖
+  have hA : ∀ n : ℕ, 2 ≤ n →
+      |L| * ρ ^ (n - 1) - ((n : ℝ) + 1) * C₀ ≤ ‖curveCentredPrefix q α ε n‖ := by
+    intro n hn
+    rw [curveCentredPrefix_eq, coeff_geomSeries_one_mul]
+    simp only [coeff_geomSeries_one_mul]
+    -- split each coefficient into its geometric part and its first two terms
+    set g : ℕ → ℝ := fun j => if 2 ≤ j then L * ρ ^ (j - 1) else 0
+    set h : ℕ → ℂ := fun j => if 2 ≤ j then 0 else coeff j Dser
+    have hsplit : ∀ j, coeff j Dser = (g j : ℂ) + h j := by
+      intro j
+      simp only [g, h]
+      split_ifs with hj
+      · obtain ⟨k, rfl⟩ : ∃ k, j = k + 2 := ⟨j - 2, by omega⟩
+        rw [hd k, show k + 2 - 1 = k + 1 by omega]; simp
+      · simp
+    have hsum : (∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), coeff j Dser) =
+        ((∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), g j : ℝ) : ℂ) +
+          ∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), h j := by
+      simp only [hsplit, sum_add_distrib]; push_cast; ring
+    have hh : ‖∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), h j‖ ≤ ((n : ℝ) + 1) * C₀ := by
+      have hk : ∀ k, ‖∑ j ∈ range (k + 1), h j‖ ≤ C₀ := by
+        intro k
+        refine (norm_sum_le _ _).trans ?_
+        have hle : ∀ j ∈ range (k + 1), ‖h j‖ ≤ if j < 2 then ‖coeff j Dser‖ else 0 := by
+          intro j _
+          simp only [h]
+          split_ifs <;> first | omega | simp
+        refine (sum_le_sum hle).trans ?_
+        rw [← sum_filter]
+        calc ∑ j ∈ (range (k + 1)).filter (· < 2), ‖coeff j Dser‖
+            ≤ ∑ j ∈ range 2, ‖coeff j Dser‖ :=
+              sum_le_sum_of_subset_of_nonneg (fun j hj => by
+                simp only [mem_filter, mem_range] at hj ⊢; omega) (fun _ _ _ => norm_nonneg _)
+          _ = C₀ := by simp [C₀, sum_range_succ]
+      refine (norm_sum_le _ _).trans ?_
+      calc ∑ k ∈ range (n + 1), ‖∑ j ∈ range (k + 1), h j‖ ≤ ∑ _k ∈ range (n + 1), C₀ :=
+            sum_le_sum fun k _ => hk k
+        _ = ((n : ℝ) + 1) * C₀ := by rw [sum_const, card_range, nsmul_eq_mul]; push_cast; ring
+    have hg0 : ∀ j, 0 ≤ g j * L := by
+      intro j; simp only [g]; split_ifs
+      · nlinarith [mul_self_nonneg L, pow_pos hρ0 (j - 1)]
+      · simp
+    set W := ∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), g j
+    have hWL : L ^ 2 * ρ ^ (n - 1) ≤ W * L := by
+      have hnn : ∀ k ∈ range (n + 1), 0 ≤ (∑ j ∈ range (k + 1), g j) * L := fun k _ => by
+        rw [sum_mul]; exact sum_nonneg fun j _ => hg0 j
+      calc L ^ 2 * ρ ^ (n - 1) = g n * L := by simp only [g, if_pos hn]; ring
+        _ ≤ (∑ j ∈ range (n + 1), g j) * L := by
+            rw [sum_mul]
+            exact single_le_sum (fun j _ => hg0 j) (mem_range.mpr (by omega))
+        _ ≤ ∑ k ∈ range (n + 1), (∑ j ∈ range (k + 1), g j) * L :=
+            single_le_sum hnn (mem_range.mpr (by omega))
+        _ = W * L := by rw [sum_mul]
+    have hLW : |L| * ρ ^ (n - 1) ≤ |W| := by
+      have hL0 : 0 < |L| := abs_pos.mpr hL
+      have h1 : W * L ≤ |W| * |L| := by rw [← abs_mul]; exact le_abs_self _
+      have h2 : |L| * (|L| * ρ ^ (n - 1)) ≤ |L| * |W| :=
+        calc |L| * (|L| * ρ ^ (n - 1)) = L ^ 2 * ρ ^ (n - 1) := by rw [← sq_abs L]; ring
+          _ ≤ W * L := hWL
+          _ ≤ |W| * |L| := h1
+          _ = |L| * |W| := mul_comm _ _
+      exact le_of_mul_le_mul_left h2 hL0
+    rw [hsum]
+    have h3 := norm_sub_le ((W : ℂ) + ∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), h j)
+      (∑ k ∈ range (n + 1), ∑ j ∈ range (k + 1), h j)
+    rw [add_sub_cancel_right, Complex.norm_real, Real.norm_eq_abs] at h3
+    linarith
+  -- the bounded energy caps every term: `‖A(n)‖ ≤ √B qⁿᐟ²`
+  have hB0' : 0 ≤ B := (sum_nonneg fun n _ => by positivity).trans (hB 0)
+  have hcap : ∀ n, ‖curveCentredPrefix q α ε n‖ ≤ Real.sqrt B * s ^ n := by
+    intro n
+    have hterm : ‖curveCentredPrefix q α ε n‖ ^ 2 / (q : ℝ) ^ n ≤ B :=
+      (single_le_sum (f := fun k => ‖curveCentredPrefix q α ε k‖ ^ 2 / (q : ℝ) ^ k)
+        (fun k _ => by positivity) (mem_range.mpr (Nat.lt_succ_self n))).trans (hB n)
+    rw [div_le_iff₀ (by positivity)] at hterm
+    have hsn : s ^ n * s ^ n = (q : ℝ) ^ n := by rw [← mul_pow, hss]
+    have hsq : ‖curveCentredPrefix q α ε n‖ ^ 2 ≤ (Real.sqrt B * s ^ n) ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt hB0', sq (s ^ n), hsn]; exact hterm
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp hsq
+  -- but `ρ > √q`: the ratio `(ρ/s)ⁿ` diverges while `(n + 1)/sⁿ → 0`
+  have hdiv : Tendsto (fun n : ℕ => |L| / ρ * (ρ / s) ^ n - C₀ * (((n : ℝ) + 1) * (1 / s) ^ n))
+      atTop atTop := by
+    have h1 : Tendsto (fun n : ℕ => (ρ / s) ^ n) atTop atTop :=
+      tendsto_pow_atTop_atTop_of_one_lt ((one_lt_div (by linarith)).mpr hρs)
+    have h2 : Tendsto (fun n : ℕ => ((n : ℝ) + 1) * (1 / s) ^ n) atTop (𝓝 0) := by
+      have hr : |1 / s| < 1 := by
+        rw [abs_of_pos (by positivity), div_lt_one (by linarith)]; exact hs1
+      have h3 := tendsto_pow_const_mul_const_pow_of_abs_lt_one 1 hr
+      have h4 := tendsto_pow_atTop_nhds_zero_of_lt_one (by positivity : (0 : ℝ) ≤ 1 / s)
+        ((div_lt_one (by linarith)).mpr hs1)
+      have h5 := h3.add h4
+      rw [add_zero] at h5
+      exact h5.congr fun n => by simp only [pow_one]; ring
+    have h6 := (h1.const_mul_atTop (by positivity : 0 < |L| / ρ)).atTop_add (h2.const_mul (-C₀))
+    exact h6.congr fun n => by ring
+  obtain ⟨n, hn⟩ := ((hdiv.eventually (eventually_gt_atTop (Real.sqrt B))).and
+    (eventually_ge_atTop 2)).exists
+  have hlow := hA n hn.2
+  have hup := hcap n
+  have hsn : 0 < s ^ n := pow_pos (by linarith) n
+  have key : |L| / ρ * (ρ / s) ^ n - C₀ * (((n : ℝ) + 1) * (1 / s) ^ n) ≤ Real.sqrt B := by
+    have e : |L| / ρ * (ρ / s) ^ n - C₀ * (((n : ℝ) + 1) * (1 / s) ^ n) =
+        (|L| * ρ ^ (n - 1) - ((n : ℝ) + 1) * C₀) / s ^ n := by
+      rw [div_pow, div_pow, one_pow, show ρ ^ n = ρ ^ (n - 1) * ρ by
+        rw [← pow_succ, Nat.sub_add_cancel (by omega : 1 ≤ n)]]
+      field_simp
+    rw [e, div_le_iff₀ hsn]
+    linarith
+  linarith [hn.1]
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

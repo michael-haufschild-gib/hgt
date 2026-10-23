@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.OnLineCompanionsPayOffLineDepth
 import GaloisForLFunctions.RHTower.MobiusCubicGammaAtomJets
 import Mathlib.Tactic.LinearCombination
+import GaloisForLFunctions.HTGeometry.PolynomialExtrapolationRemez
 
 /-!
 # Smooth sources pay at the Taylor price
@@ -25,6 +26,12 @@ polynomial at the off-line height `t`:
   `Σ_k (a_k cos(λ_k x) + b_k sin(λ_k x))` with `|λ_k| ≤ A` (a Dirichlet polynomial of length
   `e^A` in the height variable), `|f^{(d)}| ≤ A^d m` with `m = Σ_k (|a_k| + |b_k|)`
   (`abs_trigSourceDeriv_le`), so the loss is `2 #s ((Aδ)^d m/d!)²` at every height `t`.
+
+* **The price of the geometry** (`lagrangePrice_le_of_separated`,
+  `companions_pay_aperture_explicit`): companions `γ_0, …, γ_k` spaced by `δ` within `r` of `t`
+  have Lagrange price `Λ(t) ≤ (k + 1)(k r^{k−1}/δ^k)²` (from
+  `HTGeometry.abs_eval_derivative_lagrangeBasis_le`), so the law is explicit in the companion
+  geometry alone.
 
 The signed floor of a smooth source is therefore paid by its companions up to the `d`-th Taylor
 remainder: the loss decays like `δ^{2d}` as the companions close in on the off-line height, and for
@@ -214,6 +221,77 @@ theorem companions_pay_aperture {ι κ : Type*} [DecidableEq ι] {s : Finset ι}
       (A * δ) ^ d * (∑ k ∈ K, (|a k| + |b k|)) / (d.factorial : ℝ) := by
     rw [mul_pow]; ring
   rwa [e] at h
+
+/-! ### The price of the companion geometry -/
+
+/-- **The Lagrange price of separated companions**: for companions `γ_0, …, γ_k` with
+`|γ_i − γ_j| ≥ |i − j| δ`, all within `r` of `t`, `Λ(t) ≤ (k + 1)(k r^{k−1}/δ^k)²`. -/
+theorem lagrangePrice_le_of_separated {k : ℕ} (v : Fin (k + 1) → ℝ) {δ r t : ℝ} (hδ : 0 < δ)
+    (hr : 0 ≤ r) (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |v i - v j|)
+    (ht : ∀ i, |t - v i| ≤ r) :
+    lagrangePrice univ v t ≤ (k + 1) * (k * r ^ (k - 1) / δ ^ k) ^ 2 := by
+  have hterm : ∀ i : Fin (k + 1), ((derivative (Lagrange.basis univ v i)).eval t) ^ 2 ≤
+      (k * r ^ (k - 1) / δ ^ k) ^ 2 := by
+    intro i
+    have h := HTGeometry.abs_eval_derivative_lagrangeBasis_le v hδ hr hsep ht i
+    -- the integer gaps multiply to at least one
+    have hP : 1 ≤ ∏ j ∈ univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| := by
+      calc (1 : ℝ) = ∏ _j ∈ univ.erase i, (1 : ℝ) := by rw [prod_const_one]
+        _ ≤ _ := prod_le_prod (fun _ _ => zero_le_one) fun j hj => by
+          have hij : (i : ℕ) ≠ (j : ℕ) := fun h => (mem_erase.1 hj).1 (Fin.ext h).symm
+          rcases lt_or_gt_of_ne hij with hlt | hlt
+          · rw [abs_sub_comm, abs_of_pos (sub_pos.2 (by exact_mod_cast hlt))]
+            have : ((i : ℕ) : ℝ) + 1 ≤ (j : ℕ) := by exact_mod_cast hlt
+            linarith
+          · rw [abs_of_pos (sub_pos.2 (by exact_mod_cast hlt))]
+            have : ((j : ℕ) : ℝ) + 1 ≤ (i : ℕ) := by exact_mod_cast hlt
+            linarith
+    have hc : 0 ≤ (k : ℝ) * r ^ (k - 1) / δ ^ k := by positivity
+    have hinv : (∏ j ∈ univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)|)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hP
+    have h' : |(derivative (Lagrange.basis univ v i)).eval t| ≤ k * r ^ (k - 1) / δ ^ k :=
+      h.trans (by simpa using mul_le_mul_of_nonneg_left hinv hc)
+    rw [← sq_abs]
+    exact pow_le_pow_left₀ (abs_nonneg _) h' 2
+  unfold lagrangePrice
+  calc ∑ i, ((derivative (Lagrange.basis univ v i)).eval t) ^ 2
+      ≤ ∑ _i : Fin (k + 1), (k * r ^ (k - 1) / δ ^ k) ^ 2 := sum_le_sum fun i _ => hterm i
+    _ = _ := by rw [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]; push_cast; ring
+
+/-- **The explicit signed sampling law for sources of aperture `A`.**  Companions
+`γ_0, …, γ_k` spaced by `δ` and within `r` of the height `t`, a trigonometric source with
+frequencies `|λ_j| ≤ A` and mass `m`, `2 ≤ d ≤ k + 1`, and an off-line depth mass `w` with
+`2 w (k + 1)(k r^{k−1}/δ^k)² ≤ 1`:
+`Σ_i f(γ_i)² − w f'(t)² ≥ −2 (k + 1) ((A r)^d m/d!)²`, at every height `t`. -/
+theorem companions_pay_aperture_explicit {κ : Type*} {k : ℕ} (v : Fin (k + 1) → ℝ) {δ r t w : ℝ}
+    (hδ : 0 < δ) (hr : 0 ≤ r)
+    (hsep : ∀ i j : Fin (k + 1), |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| * δ ≤ |v i - v j|)
+    (ht : ∀ i, |t - v i| ≤ r) (K : Finset κ) {lam α β : κ → ℝ} {A : ℝ}
+    (hA : ∀ j ∈ K, |lam j| ≤ A) {d : ℕ} (hd : 2 ≤ d) (hdk : d ≤ k + 1) (hw : 0 ≤ w)
+    (hprice : 2 * w * ((k + 1) * (k * r ^ (k - 1) / δ ^ k) ^ 2) ≤ 1) :
+    -(2 * (k + 1 : ℕ) * ((A * r) ^ d * (∑ j ∈ K, (|α j| + |β j|)) / (d.factorial : ℝ)) ^ 2) ≤
+      sampleForm univ v w (trigSourceDeriv K lam α β 0) (trigSourceDeriv K lam α β 1 t) := by
+  have hinj : Set.InjOn v (univ : Finset (Fin (k + 1))) := by
+    intro i _ j _ hij
+    by_contra hne
+    have hne' : (i : ℕ) ≠ (j : ℕ) := fun h => hne (Fin.ext h)
+    have h1 : (1 : ℝ) ≤ |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| := by
+      rcases lt_or_gt_of_ne hne' with hlt | hlt
+      · rw [abs_sub_comm, abs_of_pos (sub_pos.2 (by exact_mod_cast hlt))]
+        have : ((i : ℕ) : ℝ) + 1 ≤ (j : ℕ) := by exact_mod_cast hlt
+        linarith
+      · rw [abs_of_pos (sub_pos.2 (by exact_mod_cast hlt))]
+        have : ((j : ℕ) : ℝ) + 1 ≤ (i : ℕ) := by exact_mod_cast hlt
+        linarith
+    have := hsep i j
+    rw [hij, sub_self, abs_zero] at this
+    nlinarith
+  have hΛ : 2 * w * lagrangePrice univ v t ≤ 1 :=
+    le_trans (mul_le_mul_of_nonneg_left (lagrangePrice_le_of_separated v hδ hr hsep ht)
+      (by positivity)) hprice
+  have hcard : d ≤ #(univ : Finset (Fin (k + 1))) := by rw [card_univ, Fintype.card_fin]; exact hdk
+  have h := companions_pay_aperture hinj K (a := α) (b := β) hA hd hcard (t := t) (δ := r)
+    (fun i _ => by rw [abs_sub_comm]; exact ht i) hw hΛ
+  rwa [card_univ, Fintype.card_fin] at h
 
 end
 

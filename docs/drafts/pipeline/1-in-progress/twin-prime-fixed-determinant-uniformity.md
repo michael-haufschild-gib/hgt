@@ -155,6 +155,24 @@ entropy estimate has been proved or assumed. The displayed
 algebra is a representation-level **BRIDGE**; no novelty claim
 or separate Lean proof of cancellation is attached to it.
 
+The follow-up source audit rechecked the centering, padding,
+finite-residue comparison and final affine conversion against
+the same PDF hash. No relative progression estimate was obtained.
+In particular the graph proof drops the progression indicator
+when estimating deletion costs and traces; preserving the finite
+prime-stripping normalization does not supply the missing factor
+in those estimates. The actual uniform affine conjecture remains
+open; no claim that every possible native-frame argument fails
+has been established.
+
+The accompanying corpus audit found a stronger plain-polynomial
+spectral head than the older reciprocal-fibre card records. Its
+[integer-start transfer](../3-formalized/twin-prime-integer-start-moebius-window.md)
+now has a complete paper proof and an unconditional Lean certificate.
+Its four capstone audits use only standard foundations. That result
+averages unmodulated windows over their integer starts; it does
+not provide the conditional two-row mean required here.
+
 ## Source-level audit
 
 Inspected the primary

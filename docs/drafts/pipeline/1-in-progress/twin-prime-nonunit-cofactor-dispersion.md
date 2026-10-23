@@ -138,6 +138,15 @@ None has been constructed for this source at the required scale.
 Passing a `PathCertificate` as an unproved input would merely hide
 the missing estimate and is not an allowed proof of the candidate.
 
+The later SAEI source `TheOddWeilLedgerIsFrustratedOnlyByPrimes.lean`
+was checked at `oddFold_pos_imp_primeSum` and
+`frustrated_walk_has_primeSum`. It locates a necessary prime-power
+atom on every frustrated odd-ledger cycle. It does not force two
+such atoms to have additive difference two, or estimate the above
+Möbius dilation on that correspondence. The sign geometry alone
+therefore supplies no missing fixed-shift lower bound here. No
+new obstruction theorem or failed route is claimed by this audit.
+
 The [fixed-determinant audit](twin-prime-fixed-determinant-uniformity.md)
 isolates a further possible route. Parity restriction gives primitive
 affine forms with determinant four, but growing slopes still produce

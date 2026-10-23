@@ -1,10 +1,11 @@
 # Composite Kloosterman budget for the finite product incidence
 
 - **ID:** goldbach-composite-kloosterman-budget
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** Classical bridge; deliberately weaker than the Weil bound, no novelty claim
-- **Parent:** [prime-dilation dispersion](../1-in-progress/goldbach-prime-dilation-dispersion.md)
-- **Lean status:** Common-factor reduction formalized; full cubed bound not yet formalized
+- **Parent:** [prime-dilation dispersion](../../1-in-progress/goldbach-prime-dilation-dispersion.md)
+- **Lean status:** Full cubed bound formalized; all 18 theorem closures audited
+- **Lean:** [KloostermanConductorReduction.lean](../../../../../formal/GaloisForLFunctions/goldbach/KloostermanConductorReduction.lean)
 
 ## Exact statement
 
@@ -62,9 +63,9 @@ Hence `|S|≤8·2^j`, giving
     |S|³≤512(k+1)³2^(2k).
 
 At p=2,k=1 the unit group has one element, so this bound also holds.
-The existing `HalfWeight.pm_classes` at n=1 supplies the same eight-root
-estimate; its source has been inspected, but no new closure audit of it
-is claimed here.
+The existing `HalfWeight.rootCard_le` at n=1 supplies the eight-root
+estimate. Its full dependency closure is included in the new dyadic
+and composite theorem audits.
 
 **CRT.** Twisted multiplicativity splits S over the prime-power factors
 of L. The coefficient twists are units and preserve primitive pairs.
@@ -89,14 +90,58 @@ closure contains only the standard foundational axioms.
   Frobenius reduction source, and the square-root congruence classification
   in `RHTower/HalfWeightSquareRoots.lean`.
 
-## Formalization obligations
+## Lean certificate
 
-Formalize (1) itself, with arbitrary actual residues and positive modulus.
-The [common-factor phase identity and exact fibre multiplicity](../3-formalized/not_new_scientific_knowledge/goldbach-kloosterman-conductor-reduction.md)
-now pass a direct leaf check and six closure audits. Keep those results,
-the two-adic root count and CRT induction inside the full proof closure. Do not
-replace any of these by a supplied bound or a `Prop` interface.
+Namespace `GaloisForLFunctions.Goldbach`. The final theorem is
+`norm_kloostermanSum_cube_le`; its only arguments are a positive modulus
+`M : ℕ+` and actual residues `a b : ZMod (M : ℕ)`.
+The integer-frequency envelope theorem `kloostermanMaximum_cube_le`
+also handles modulus zero through the existing total envelope definition.
+Neither statement has an analytic hypothesis or a supplied bound.
 
-After (1), the finite modular-hyperbola completion and its zero-frequency
-terms still require their own proof. Neither (1) nor the complete-residue
-kernel is the centered Goldbach dispersion estimate.
+The twelve new roots are:
+
+- `kloostermanResidueReduction_eq_zero_iff`
+- `mem_kloostermanStationaryUnits_iff`
+- `kloostermanUnitSquareRootCount_le_rootCard`
+- `card_kloostermanStationaryUnits_le_liftMultiplicity`
+- `card_kloostermanStationaryUnits_le_rootCard`
+- `norm_kloostermanSum_two_pow_unit_le`
+- `norm_kloostermanSum_prime_pow_unit_cube_le`
+- `kloostermanMaximum_attained`
+- `kloostermanMaximum_factor_lift_le`
+- `kloostermanMaximum_prime_pow_cube_le`
+- `kloostermanMaximum_cube_le`
+- `norm_kloostermanSum_cube_le`
+
+The [six earlier conductor roots](goldbach-kloosterman-conductor-reduction.md)
+were audited again in the same leaf. Direct check from `formal/`:
+
+    lake --old env lean GaloisForLFunctions/goldbach/KloostermanConductorReduction.lean
+
+Exit 0, no warnings. All 18 closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`; no added axiom or proof hole.
+Audit log: `/tmp/hgt-goldbach-composite-budget-audit.log`.
+Temporary audit directives were removed without changing proof bodies.
+The existing `goldbach/Main.lean` import already includes the leaf;
+no umbrella was built.
+
+The finite stationary set is normalized by one actual solution and
+injected into the preimage of square roots of one. The exact unit-lift
+multiplicity pays the whole fibre. Exponent induction then splits on
+actual divisibility of the two integer coefficients. When both share p,
+common-factor reduction costs p³ in the cubed norm, and the modulus square
+and frequency gcd gain exactly that same factor p³. Otherwise an actual
+unit coefficient is derived, after swapping coordinates when needed.
+Coprime CRT multiplies the existing finite envelopes, divisor counts and
+gcds. Tracking divisibility by 2 pays 512 once only.
+
+## Remaining frontier
+
+The [modular-inverse rectangle estimate](../../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
+now has a complete paper proof with explicit constant 24, including both
+frequency axes and all finite endpoints. It is not yet formalized.
+The flat dispersion theorem, actual Möbius progression estimate, signed
+amplifier and marked Type II sum remain separate obligations. Goldbach
+remains unproved. This is a classical arithmetic bridge; no scientific
+novelty is claimed.

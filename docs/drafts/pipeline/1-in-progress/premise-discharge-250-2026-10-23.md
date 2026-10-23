@@ -14,7 +14,7 @@ Not counted: trivial premises (`(0:ℝ) < 1/2`), theorems that keep any non-typi
 restatements of an already-welded conclusion. Each module is compiled with
 `lake --old env lean <file>` and wired into its umbrella.
 
-**Discharges: 251 compiled / 250** (axiom audit: standard axioms only for every module audited so far).
+**Discharges: 264 compiled / 250.** Every module is compiled with `lake --old env lean` and checked with `#print axioms` (only `propext`, `Classical.choice`, `Quot.sound`).
 
 ## Candidate finder (scratch, not in repo)
 
@@ -47,6 +47,16 @@ further discharges need statement bridging (unfolding, `↔`, weakening) found b
 | 141–245 | `*/UniformConstantDischarges*` (23 modules) | proved `∃`-bounds (ζ/χ strip bounds, Stirling μ, Γ decay, kernel bounds, smooth-transition derivative bounds, …) | 105 |
 | 246–247 | `RHTower/CCM/UniformConstantDischarges` (Barta far defect) | smooth-transition first and second derivative bounds | 2 |
 | 248–251 | `RHTower/InstantiationPremiseDischarges` | AFE inner cutoff radius, `xiMassVerticalBound_nonneg`, `xiSpectralPoint_re_ne_zero` | 4 |
+| 252–253 | `RHTower/Deninger/CharZeroUnitRankDischarges` | `C^× ≠ μ(C)` in characteristic zero (`deningerExists_notMem_torsion_charZero`) | 2 (incl. `dim_ℚ = #C`) |
+| 254–256 | `RHTower/ThetaCusp/WitnessPremiseDischarges` | first-fiber rise, positive compensation zero | 3 |
+| 257–259 | `RHTower/ZetaStripBoundPremiseDischarges` | `ζ` strip polynomial bound, `χ` decay, critical-line second moment, pole-cleared growth | 3 |
+| 260–261 | `RHTower/AbelLineConstantDischarges` | `Γ`, `Γζ` decay and `1/ζ` on `Re s ≥ 3/2` | 2 |
+| 262–264 | `RHTower/UniformConstantDischargesE` | explicit pole bound `A = 1`, smooth-transition derivative bound | 3 |
+
+Heartbeat budgets: the three direct dependencies that raised `maxHeartbeats`
+(`Sieve/ZetaWideDLVP`, `ThetaGibbsSteinSourceMinor`, `XiStrictSchwarzSixthSpectralCeiling`) compile
+at the default budget with the option removed. 446 further modules deeper in the import closure
+still set a raised budget.
 
 Uniform-constant discharges: a consumer `(C : ℝ) (hC : P C) … ⊢ Q C` with `∃ C, P C` proved becomes
 `∃ C, ∀ …, Q C`, or the constant is eliminated when `Q` does not mention it. Drafted by a generator

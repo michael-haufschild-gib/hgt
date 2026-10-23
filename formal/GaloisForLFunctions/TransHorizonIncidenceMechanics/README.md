@@ -1329,6 +1329,32 @@ $$
 $$
 ([TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa](TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa.lean)).
 
+**All-frequency log-power multiplicity laws, the oscillating prime endpoint $a=1$, and small-damping Möbius/Liouville cancellation.**
+Differentiating the floor-sum remainder $k$ times in the exponent gives the complete spectral law
+for oscillating log-polynomials on any finite frequency set without opposite pairs, and for every
+real frequency $t\in\mathbb R$ and $k\in\mathbb N$,
+$\operatorname{ReceiverBounded}(d^{-\varepsilon}\cos(t\log d)(\log d)^k)\iff\forall i\le k,\ \zeta^{(i)}(1-\varepsilon+it)=0$,
+monotonicity in the log-degree $j\le k$, and global order-$\le k$ criteria across $1/2\le\operatorname{Re}s<1$ and on $\operatorname{Re}s=1/2$
+([TheReceiverReadsTheZeroDivisorOfZetaOnTheOscillatingSpectrum](TheReceiverReadsTheZeroDivisorOfZetaOnTheOscillatingSpectrum.lean),
+[AllFrequencyLogPowerReceiverAndMultiplicityLaws](AllFrequencyLogPowerReceiverAndMultiplicityLaws.lean)).
+For the multiplicative oscillating prime pattern $f_{a,t_0}(p)=a\cos(t_0\log p)$ ($a\in[-1,1]$, $t_0\in\mathbb R$),
+the half-damped weight $f_{a,t_0}(d)d^{-1/2}$ is paid iff $(t_0=0\land a<1/2)$ or
+$(t_0\ne0\land(a<1\lor\zeta(1/2+it_0)=0))$: at $a=1$, $t_0\ne0$, a non-zero of $\zeta(1/2+it_0)$
+creates an unpaid $\lvert s-(1/2+it_0)\rvert^{-1}$ singularity in $\lvert C(s)\rvert^2$, whereas a
+critical zero cancels the singularity on the boundary line
+([OscillatingPrimePatternsReadTheCriticalZeros](OscillatingPrimePatternsReadTheCriticalZeros.lean),
+[OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros](OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros.lean),
+[TheEndpointAndPhaseDiagramOfOscillatingPrimePatterns](TheEndpointAndPhaseDiagramOfOscillatingPrimePatterns.lean)).
+For the damped Möbius and Liouville weights across all $0<\varepsilon\le1/2$, removing the
+$\varepsilon\ge1/4$ barrier from the hyperbola split gives
+$\lvert A_\varepsilon(n)\rvert\le3D^{1-\varepsilon}+(13/\varepsilon)LnD^{-\varepsilon}$ and the
+all-damping Vinogradov–Korobov prefix bound
+$\lvert A_\varepsilon(n)\rvert\le(K/\varepsilon)n^{1-\varepsilon}e^{-\sqrt{\log n}/40}$, uniform
+zero-free band bounds for both Möbius and Liouville above any positive floor $\varepsilon_0>0$,
+subpower partial-sum transfer for $\varepsilon>\beta/2$, and unconditional admission and Liouville
+parity pairs for all $\varepsilon>\Theta-1/2$
+([SmallDampingMoebiusAndLiouvilleCancellationLaws](SmallDampingMoebiusAndLiouvilleCancellationLaws.lean)).
+
 ### 3.18 Bridges
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit

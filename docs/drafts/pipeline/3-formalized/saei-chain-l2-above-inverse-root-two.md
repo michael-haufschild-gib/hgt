@@ -1,8 +1,8 @@
 # The centred damping chain is Hilbert–Schmidt above damping 1/√2
 
 - **ID:** saei-chain-l2-root-two
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** SAEI README §9 topic 4 (the centred chain on `ℓ²`)
 - **Statement:** For `η > 1/√2` the centred damping chain `C_η` (state `n+1` at index `n`) has
   `Σ_{n,k} C(n,k)² < ∞`; hence `Σ_{n<T} (C_η b)(n)² ≤ M_η Σ b_k²` on finitely supported `b`.
@@ -16,8 +16,10 @@ short-interval discrepancy of `c_η(m) = Σ_{d|m} μ(d) d^{−η}` on intervals 
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
-- [ ] 1 → 2  fully-proven: complete paper proof below, `[PROVED HERE]`
-- [ ] 2 → 3  formalized: Lean theorem in `SignedArithmeticEnergyIncidence`
+- [x] 1 → 2  fully-proven: complete paper proof below, `[PROVED HERE]`
+- [x] 2 → 3  formalized: `centeredOperator_l2_le_of_inverseRootTwo` in
+  `SignedArithmeticEnergyIncidence/TheChainIsHilbertSchmidtAboveInverseRootTwo.lean` (with
+  `FloorJumpsAboveTheSquareRootAreSparse`), checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
 ## Approach — paper proof [PROVED HERE]
@@ -48,3 +50,4 @@ The only place where `η > 1/√2` enters is `T3` on `K² ≤ N`: the short-inte
 
 ## Log
 - 2026-10-23 — created in 1-in-progress with the paper proof.
+- 2026-10-23 — formalized; moved to 3-formalized.

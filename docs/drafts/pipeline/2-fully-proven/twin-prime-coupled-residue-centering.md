@@ -215,6 +215,14 @@ not supply the integer-start, fixed additive-frequency input (3).
 majorant, but its underlying `moebiusTwist` is `n^(-i tau)`, and
 its displayed bound has not been shown to give (3) at these scales.
 
+A later all-length spectral-head theorem yields a paper proof of
+the [unmodulated integer-start transfer](../3-formalized/twin-prime-integer-start-moebius-window.md),
+now Lean-certified with standard foundational axioms. It still does not supply
+(3): additive frequencies are absent, its proved vanishing rate has
+not been bounded by the required power of `L`, and its range
+`D>=log Y` excludes admissible parameters with much larger `Y`.
+The three missing uniformities must all be paid in a full certificate.
+
 The [uniform Ramaré-cofactor theorem](../3-formalized/twin-prime-ramare-weighted-cofactor-cancellation.md)
 now has an unconditional Lean certificate from the proved corpus
 prefix theorem. It controls the actual reciprocal factor-count

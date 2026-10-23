@@ -71,6 +71,3 @@ theorem integral_normSq_zeta_vertical_le_window_uniform :
     integral_normSq_zeta_vertical_le_window hD hCg hcrit hgrowth hT hσ hσ3 hN1 hN4⟩
 
 end RHTower
-#print axioms RHTower.ZetaGateProductAFE.norm_dualDiagonalIntegrand_horizontal_rect_le_uniform -- AXIOM-AUDIT-TEMP
-#print axioms RHTower.ZetaGateProductAFE.norm_intervalIntegral_dualDiagonalIntegrand_horizontal_rect_le_uniform -- AXIOM-AUDIT-TEMP
-#print axioms RHTower.integral_normSq_zeta_vertical_le_window_uniform -- AXIOM-AUDIT-TEMP

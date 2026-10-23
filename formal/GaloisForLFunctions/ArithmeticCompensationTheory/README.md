@@ -283,6 +283,18 @@ are three different statements and remain visibly different here.
     its exact discretization at `u = k log q`, and the error of the law is the width of the zero
     set: square-root small on the circle, growing like `λ^D` off it. Weil's bound is the defining
     property of the model class, not a claim about actual curves.
+    The receiver of the curve model is the prefix of `Z(u)(1/Z)(q^{−ε}u)` centred by the density
+    `δ_ε = Σ_k μ_ε(k)q^{−k}`, with `Z = P/((1−u)(1−qu))` and `Z·(1/Z) = 1` (`curveZ_mul_curveZinv`),
+    and its energy weights degree `n` by the norm weight `q^{−n}`. The centring removes the pole at
+    `u = 1/q` exactly — the coefficients of `(1−qu)^{−1}(R − δ)` are `−qⁿΣ_{j>n}b_jq^{−j}`
+    (`coeff_geomSeries_mul_eq_neg_tail`) — so only the zeros remain, and **the receiver is admitted
+    at every damping above the zero width**: eigenvalues of modulus at most `λ√q` and `λ < q^ε`
+    give a horizon-free energy bound (`exists_curveReceiverEnergy_le`), on the Weil circle at every
+    `ε > 0` (`exists_curveReceiverEnergy_le_of_weil`); conversely, one eigenvalue `a = λ√q` with
+    `q^ε < λ < q^{1/2+ε}`, `a ≠ q`, makes the energy unbounded
+    (`not_exists_curveReceiverEnergy_le_single`). Unlike `F_q[T]`, the centred source moves: the
+    budget is not zero, and admission at `ε` is decided by the zero width — the function-field
+    form of `riemannHypothesis_iff_cofinal_adaptedEnergy`.
 
 ### Compensation coordinates
 
@@ -473,9 +485,11 @@ that every successful route must use the same mechanism.
   `exists_abs_sum_vonMangoldt_sub_polar_le`, `exists_abs_primeShift_sub_polar_le`): the
   exponentially weighted two-pole defect and the residual of every lag weight and every ledger
   translate, with universal constants.
-- **Curve-model combs** (`curvePointCount`, `curveCombMass`, `geometricMass`, `curveCombTail`):
-  the comb of a function-field model built from point counts alone, with mass and depth laws for
-  every eigenvalue configuration.
+- **Curve-model combs and receivers** (`curvePointCount`, `curveCombMass`, `curveCombTail`,
+  `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`): the comb and the
+  receiver of a function-field model built from its eigenvalues, with mass, depth and admission
+  laws for every eigenvalue configuration; `norm_coeff_prod_le` and
+  `coeff_geomSeries_mul_eq_neg_tail` are the coefficient calculus behind them.
 - **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
   `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
   under the horizon law, with explicit moments and a quadratic deficit at the origin.
@@ -549,10 +563,11 @@ that every successful route must use the same mechanism.
    `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates already
    give balanced-scale control for the stated centred rows; distinguish that result from a
    uniform bound for the complete coupled receiver.
-7. **Function-field calibration.** In the curve model the horizon law is geometric, with
-   square-root error controlled by the genus (mechanism 10‴). Open: the discrete resolvent law of
-   the curve comb on fixed tests, and the receiver of a curve, where — unlike `F_q[T]` — the
-   damped centred prefix is not constant.
+7. **Function-field calibration.** In the curve model the horizon law is geometric with
+   square-root error, and the receiver is admitted at every damping above the zero width
+   (mechanism 10‴), and fails below it for a single eigenvalue. Open: the failure below the zero
+   width for several eigenvalues, which needs non-cancellation of their oscillating terms, and the
+   discrete resolvent law of the curve comb on fixed tests.
 
 ---
 

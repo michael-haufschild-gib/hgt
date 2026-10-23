@@ -698,7 +698,7 @@ Its local tail, diagonal and weighted prime-divisor variance have explicit
 paper attacks. The masked complete-residue kernel has now been identified,
 including its cross-denominator support and the surviving double tail.
 The CRT and prime/prime-power Kloosterman sources pass closure audits.
-A [composite bound](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
+A [composite bound](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
 is proved on paper; its exact conductor reduction now passes direct
 compilation and six closure audits without analytic premises.
 The [flat dispersion paper](../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
@@ -795,6 +795,16 @@ The flat balanced source is only the first signed test: restoring Cycle
   recompiled, and no new repository-wide verification is claimed.
 
 ## Log
+
+- 2026-10-23 — Composite-budget continuation: derived the stationary-fibre
+  injection into lifted roots of one, the dyadic bound, and an exponent
+  induction retaining the actual common frequency gcd. The full all-moduli
+  cubic estimate is written in `goldbach/KloostermanConductorReduction.lean`
+  and is undergoing direct leaf checking; its new declarations are not yet
+  certified. The six earlier conductor roots retain their recorded audit.
+  Shared-prime induction and coprime CRT use actual arithmetic branches,
+  with no assumed analytic input. Goldbach, signed amplification and marked
+  Type II cancellation remain open; the original goal remains active.
 
 - 2026-10-23 — Read original task and repository rules; recorded exact acceptance
   criterion before proof work. Existing unrelated worktree changes left intact.

@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 29 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 31 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -72,8 +72,13 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheReceiverIsTheChainOrbitOfTheReciprocal` — `centeredOperator_reciprocal_apply`,
   `admits_iff_summable_orbit`, `riemannHypothesis_iff_orbit_summable`,
   `tendsto_truncation_partialEnergy`, `not_summable_transition_first_column`.
-- `TheChainIsHilbertSchmidtAboveDampingOne` — `abs_centeredPrefix_le`, `abs_centeredRow_le`,
-  `entrance_le`, `sum_sq_centeredRow_le`, `centeredOperator_l2_le`.
+- `TheChainIsHilbertSchmidtAboveDampingOne` — `abs_centeredPrefix_le`, `centeredRow_eq`,
+  `abs_centeredRow_le`, `entrance_le`, `sum_sq_centeredRow_le`, `centeredOperator_l2_le`.
+- `FloorJumpsAboveTheSquareRootAreSparse` — `div_sub_div_succ_le_one`, `floorJump_injOn`,
+  `sum_floorJump_le`.
+- `TheChainIsHilbertSchmidtAboveInverseRootTwo` — `abs_centeredPrefix_le_rpow`,
+  `abs_centeredPrefix_sub_le`, `abs_centeredRow_le_majorant`, `sq_centeredRow_le_majorant`,
+  `sum_chainMajorant_le`, `centeredOperator_l2_le_of_inverseRootTwo`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
@@ -93,7 +98,8 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `OnLineCompanionsPayOffLineDepth` — `companions_pay`, `few_companions_never_pay`,
   `companions_pay_up_to_error`.
 - `SmoothSourcesPayAtTheTaylorPrice` — `taylorPoly_derivative_eval`, `abs_sub_taylorSum_le`,
-  `companions_pay_up_to_taylor`, `abs_trigSourceDeriv_le`, `companions_pay_aperture`.
+  `companions_pay_up_to_taylor`, `abs_trigSourceDeriv_le`, `companions_pay_aperture`,
+  `lagrangePrice_le_of_separated`, `companions_pay_aperture_explicit`.
 - `TheRadialLossLaw` — `radialLoss_add_tangential`, `abs_log_energy_sub_le`.
 
 ## Open
@@ -104,5 +110,6 @@ towers).
 
 Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
 sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
-The bound is proved above damping one (`centeredOperator_l2_le`); for `½ < η ≤ 1` it is open, and
-below half damping it is unproved (RH-strength at cofinally small `η`).
+The bound is proved above damping `1/√2` (`centeredOperator_l2_le_of_inverseRootTwo`, and
+`centeredOperator_l2_le` above one); for `½ < η ≤ 1/√2` it is open, and below half damping it is
+unproved (RH-strength at cofinally small `η`).

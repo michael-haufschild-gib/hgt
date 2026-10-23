@@ -350,8 +350,17 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     `k ≤ n` and minus the entrance mass `≤ ρ(k+1)^{−η}` beyond (`abs_centeredRow_le`,
     `entrance_le`). Every column has `Σ_n C(n,k)² ≲ (k+1)^{1−2η}` (`sum_sq_centeredRow_le`), so on
     finitely supported sequences `Σ_{n<T}(C_η b)(n)² ≤ M_η Σ b_k²` with an explicit constant
-    (`centeredOperator_l2_le`). The column bound is summable exactly when `η > 1`; between half
-    damping and one the size of the source does not decide `ℓ²`-boundedness.
+    (`centeredOperator_l2_le`). Below damping one the kernel is read finely: with
+    `a = ⌊N/K⌋`, `J = a − ⌊N/(K+1)⌋`, it splits into a mean-value part, a fractional part and a
+    short-interval part `P(a) − P(⌊N/(K+1)⌋)`. The source is sign-blindly bounded,
+    `|P_η(q)| ≤ C q^{1−η}` (`abs_centeredPrefix_le_rpow`); its jumps cost at most `J`
+    (`abs_centeredPrefix_sub_le`); above the square root `J ≤ 1` and the jumps are sparse, one per
+    quotient (`sum_floorJump_le`); below it `min(J, 2C(N/K)^{1−η}) ≤ J^λ(2C(N/K)^{1−η})^{1−λ}`
+    (`min_le_rpow_mul_rpow`). The resulting majorant (`sq_centeredRow_le_majorant`) is square
+    summable for a suitable `λ` exactly when `η² > ½` (`interpExp_bounds`,
+    `sum_chainMajorant_le`), so `C_η` is Hilbert–Schmidt for `1/√2 < η < 1` as well
+    (`centeredOperator_l2_le_of_inverseRootTwo`). Below `1/√2` the obstruction is the
+    short-interval discrepancy of `c_η − ρ` on intervals of length `N/K²` at height `N/K`.
 19. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -447,7 +456,11 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     aperture `A` — a trigonometric sum `Σ_k (a_k cos(λ_k x) + b_k sin(λ_k x))` with `|λ_k| ≤ A`, the
     shape of a Dirichlet polynomial of length `e^A` in the height — every derivative obeys
     `|f^{(d)}| ≤ A^d m`, `m = Σ_k (|a_k| + |b_k|)` (`abs_trigSourceDeriv_le`), and the loss is
-    `2 #s ((Aδ)^d m/d!)²` at every height (`companions_pay_aperture`).
+    `2 #s ((Aδ)^d m/d!)²` at every height (`companions_pay_aperture`). The price is explicit in
+    the companion geometry: companions `γ_0, …, γ_k` spaced by `δ` within `r` of `t` have
+    `Λ(t) ≤ (k + 1)(k r^{k−1}/δ^k)²` (`lagrangePrice_le_of_separated`), so
+    `2 w (k+1)(k r^{k−1}/δ^k)² ≤ 1` gives `Σ f(γ_i)² − w f'(t)² ≥ −2(k+1)((Ar)^d m/d!)²`
+    (`companions_pay_aperture_explicit`).
 
 ### Continuation
 
@@ -650,9 +663,9 @@ Each question is stated with what is established and where the open part sits.
    nonlocal payment with the competition made explicit as a packing constraint. Open: whether
    optimal canonical-path certificates are exact (sharp) beyond a single cycle, and their cost on
    the actual ledger.
-4. **The centred chain on `ℓ²`.** Above damping one `C_η` is Hilbert–Schmidt (mechanism 18a).
-   Decide whether it is `ℓ²`-bounded on finitely supported sequences for `½ < η ≤ 1`, where size
-   alone no longer decides, and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
+4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt above damping `1/√2` (mechanism
+   18a). Decide whether it is `ℓ²`-bounded for `½ < η ≤ 1/√2` — where the short-interval
+   discrepancy of `c_η − ρ` is the only missing input — and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
    Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a
@@ -664,9 +677,10 @@ Each question is stated with what is established and where the open part sits.
 6. **Signed sampling beyond the local model.** The transfer to general sources is reduced to the
    local approximation error (mechanism 28, `companions_pay_up_to_error`), and for smooth sources
    to the Taylor remainder (`companions_pay_up_to_taylor`); for trigonometric sources of aperture `A`
-   the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`). What remains
-   is the companion geometry of the actual on-line zeros: enough of them within `δ ≪ 1/A` of every
-   height, with a controlled Lagrange price. Prove the companion law of mechanism 28 for
+   the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`), and the price
+   is explicit in the spacing and spread (`companions_pay_aperture_explicit`). What remains is the
+   companion geometry of the actual on-line zeros: `k + 1` of them spaced by `δ` within `r ≪ 1/A`
+   of every height, which is information about the zeros on the line. Prove the companion law of mechanism 28 for
    Paley–Wiener sources of aperture `A`, with a Lagrange price uniform in the height, and combine it
    with sufficiently strong information about the **on-line** zeros of `ζ` to obtain the
    plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well

@@ -59,7 +59,8 @@ theorem norm_integral_edgeDeriv_cexp_le_uniform :
   obtain ⟨M₀, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_bound
   refine ⟨M₀, ?_⟩
   intro c
-  apply norm_integral_edgeDeriv_cexp_le <;> assumption
+  apply norm_integral_edgeDeriv_cexp_le
+  assumption
 
 /-- `norm_integral_edgeDerivDeriv_cexp_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_deriv_bound`. -/
@@ -69,7 +70,8 @@ theorem norm_integral_edgeDerivDeriv_cexp_le_uniform :
   obtain ⟨M₀, h_0_0, h_0_1⟩ := RHTower.exists_plateauEdge_deriv_deriv_bound
   refine ⟨M₀, ?_⟩
   intro c
-  apply norm_integral_edgeDerivDeriv_cexp_le <;> assumption
+  apply norm_integral_edgeDerivDeriv_cexp_le
+  assumption
 
 /-- `abs_deriv_plateauBump_le` with its constants supplied by
 `RHTower.exists_plateauEdge_deriv_global_bound`. -/

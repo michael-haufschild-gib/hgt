@@ -3,7 +3,7 @@
 - **ID:** goldbach-kloosterman-conductor-reduction
 - **Stage:** 3-formalized
 - **Type:** Classical finite arithmetic bridge; no novelty claim
-- **Parent:** [composite budget](../../2-fully-proven/goldbach-composite-kloosterman-budget.md)
+- **Parent:** [composite budget](goldbach-composite-kloosterman-budget.md)
 - **Lean:** [KloostermanConductorReduction.lean](../../../../../formal/GaloisForLFunctions/goldbach/KloostermanConductorReduction.lean)
 
 ## Exact statements
@@ -57,6 +57,9 @@ contain only `propext`, `Classical.choice`, and `Quot.sound`. Audit log:
 `/tmp/hgt-goldbach-conductor-reduction-audit.log`.
 Temporary audit directives were removed without changing proof bodies.
 The leaf is imported by `goldbach/Main.lean`; the umbrella was not built.
+Index regeneration passed. Targeted whitespace, local-link and forbidden-marker
+checks are clean. All owned build/search commands terminated; temporary source
+audit files and completed-search scratch files were removed, with audit logs retained.
 
 The full composite bound, modular-inverse discrepancy and centered flat
 dispersion are separate paper results awaiting formalization. The marked

@@ -926,11 +926,21 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         the multiplier, so the payment law holds for the structural reason that a nonnegative
         multiplier cannot remove more than the whole mass — and the residual is the mass the
         multiplier keeps.
+      * **`norm_exp_mul_I_sub_le`**, **`norm_fourier_sub_le`**,
+        **`abs_spectralDensity_sub_le`**, **`setIntegral_spectralDensity_le`**,
+        **`mass_outside_window_ge`** — how sharply a test can concentrate in frequency. The
+        transform of a test supported in `[−r, r]` is Lipschitz with constant `2πr‖F‖₁`, hence its
+        spectral density is Lipschitz with constant `4πr‖F‖₁²`. A window of half-width `δ`
+        therefore holds at most `2δ(g(ξ₀) + 4πr‖F‖₁²δ)` of the mass and the rest stays outside:
+        an aperture-`r` test cannot concentrate its density on a scale finer than `≍ 1/r`. This
+        is the quantitative limit of resonance — a test tracks a peak of the symbol only if the
+        peak is wider than the reciprocal aperture — and it is the missing ingredient for scoring
+        the charge of a prime band against its symbol.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 341 headline results of this card, in the order the card states them. Every name is a
+The 346 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -940,7 +950,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 270.**  Excluded: 42 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 275.**  Excluded: 42 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1283,6 +1293,11 @@ contributions of the field, and are excluded.
 339. `eulerMultiplier_nonneg`
 340. `spectralDensity_eulerComb`
 341. `eulerPayment_eq_integral_multiplier`
+342. `norm_exp_mul_I_sub_le`
+343. `norm_fourier_sub_le`
+344. `abs_spectralDensity_sub_le`
+345. `setIntegral_spectralDensity_le`
+346. `mass_outside_window_ge`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1298,3 +1313,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — coherent decomposition of the first-power charge (ratio–product cross-charge); index tagged by the mechanical criteria rule.
 - 2026-10-23 — spectral form of the lag ledger: density integrability, cosine-transform identity, symbol capacity bound.
 - 2026-10-23 — the comb diagonalised in frequency: spectral multiplier, payment as multiplier deficit.
+- 2026-10-23 — frequency anti-concentration: Lipschitz spectral density, window-mass bound, resonance limit at scale 1/r.

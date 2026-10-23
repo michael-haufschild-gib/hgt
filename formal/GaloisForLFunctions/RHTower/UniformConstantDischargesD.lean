@@ -163,3 +163,16 @@ theorem norm_Gamma_neg_line_le_uniform :
   apply norm_Gamma_neg_line_le <;> assumption
 
 end RHTower
+#print axioms RHTower.polarRiemannDifference_zero_bound_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.truncatedRiemannKernel_zero_bound_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_W_polarRiemannDifference_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.nearRadicalEnergy_le_ratio_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.integral_norm_sq_mertensTest_ge_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_W_mertensTest_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.abs_deriv_weilTestEvenPart_mertensTest_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_paperFT_weilRadicalTest_conj_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_paperFT_twistTest_real_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.abs_xiUnitDoubleCompletedRefinementApertureDirichletEnergy_supportPacket_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_primeArchShiftedReciprocalMoment_one_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_Gamma_neg_line_le_of_gap_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_Gamma_neg_line_le_uniform -- AXIOM-AUDIT-TEMP

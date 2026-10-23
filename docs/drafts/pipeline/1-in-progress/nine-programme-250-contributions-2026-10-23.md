@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 5 / 250.**
+**Accepted: 6 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -64,12 +64,22 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    detects exactly the critical zeros (`receiverBounded_oscWeight_one_iff`).
    `TransHorizonIncidenceMechanics/OscillatingPrimePatternsReadTheCriticalZeros.lean`,
    `…/OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros.lean`.
+   Same prime signs and same (zero) prime mean, opposite receivers
+   (`exists_paid_unpaid_with_same_prime_signs_and_mean`,
+   `PrimeSignsAndPrimeMeansDoNotDecideTheHalfDampedReceiver.lean`).
+6. THIM §3.17 quantization of the prime mean, made height-local: below half damping a paid receiver
+   forces an integral order of `C` at every point `1 − ε + it₀` of the abscissa line (complex pairing
+   identity off the real axis, `complexMellinPairing_eq_zeta_mul_of_summable`; ray orders,
+   `exists_ray_bounds_of_order`). For `0 < ε < 1/2`, `t₀ ≠ 0`: `f_{a,t₀}(d)d^{-ε}` is paid iff `a = 0`
+   (`receiverBounded_oscPattern_damped_iff`), although its real-axis prime mean is `0` for every `a`.
+   `TransHorizonIncidenceMechanics/ThePrimeMeanIsQuantizedHeightByHeight.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — `ThePrimeMeanIsQuantizedHeightByHeight` compiled, axioms clean, wired; contribution 6.
 - 2026-10-23 — oscillating prime patterns: two THIM leaves compiled, axioms clean, wired; contribution 5.
 - 2026-10-23 — `SubgroupFlipsArePaidAtHalfDamping` compiled, axioms clean, wired; contribution 4.
 - 2026-10-23 — `TheQuarterBoundaryOfResidueClassFlips` compiled, clean, wired (extends 3).

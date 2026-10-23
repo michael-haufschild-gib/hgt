@@ -303,7 +303,7 @@ gcd. Its sufficient intermediate bound is
 
     |S(a,b;M)|³ ≤ 512 τ(M)³ M² gcd(a,b,M).
 
-Its [paper proof](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
+Its [paper proof](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
 now uses the audited prime Weil bound, odd-prime-power stationary phase,
 a sufficient two-adic eight-root bound, common-factor reduction and CRT.
 The full bound has not yet been formalized. Its

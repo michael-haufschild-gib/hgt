@@ -1,7 +1,7 @@
 # Oscillating prime patterns read the critical zeros
 
 - **ID:** oscillating-prime-patterns-critical-zeros
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Programme:** Trans-Horizon Incidence Mechanics (§3.16–3.17, §5 "the parity pair": prime-density
   heuristics at half damping)
@@ -43,6 +43,21 @@ Notation: `S = Σ_p p^{-2}`, `F(w) = Σ f(n)n^{-w}`, `C(s) = F(s + 1/2)`, `s = 1
    `0 < t ≤ T`, and step 3 handles `t ≥ T`.
 6. **`t₀ = 0`.** `f_{a,0} = a^{Ω}`, the constant-sign model: paid iff `a < 1/2`
    (`receiverBounded_constantSign_iff_full`); `ζ(1/2) ≠ 0`.
+7. **Same prime signs, same prime mean, opposite receivers.** For `t₀ ≠ 0`,
+   `Σ_p f(p)p^{-w} = (a/2)(Re P(w − it₀) + Re P(w + it₀))` with `Re P(v) = log|ζ(v)| + O(S)` and
+   `log|ζ|` bounded on the segments `[1, 3/2] ± it₀`: the prime mean is `0`. With `t₀` small
+   (`ζ(1/2) ≠ 0`, continuity), amplitudes `1/2` (paid) and `1` (unpaid) share signs and prime mean.
+
+## Lean
+
+- `OscillatingPrimePatternsReadTheCriticalZeros.lean`: `oscPattern`, `oscWeight`,
+  `abs_log_norm_oscSeries_sub_le`, `norm_oscSeries_le_ge`, `exists_lineEnergy_le_of_majorant`,
+  `receiverBounded_oscWeight_nonpos`, `receiverBounded_oscWeight_of_lt_one`.
+- `OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros.lean`:
+  `receiverBounded_oscWeight_one_of_zero`, `not_receiverBounded_oscWeight_one`,
+  `receiverBounded_oscWeight_one_iff`, `receiverBounded_oscWeight_iff`.
+- `PrimeSignsAndPrimeMeansDoNotDecideTheHalfDampedReceiver.lean`:
+  `exists_abs_tsum_oscPattern_le`, `exists_paid_unpaid_with_same_prime_signs_and_mean`.
 
 ## Gates
 - [x] 0 → 1  in-progress (corpus search: no oscillating multiplicative pattern; the critical-zero
@@ -52,6 +67,8 @@ Notation: `S = Σ_p p^{-2}`, `F(w) = Σ f(n)n^{-w}`, `C(s) = F(s + 1/2)`, `s = 1
   `Quot.sound`)
 
 ## Log
+- 2026-10-23 — step 7 formalized (`PrimeSignsAndPrimeMeansDoNotDecideTheHalfDampedReceiver`);
+  moved to 3-formalized.
 - 2026-10-23 — formalized: `OscillatingPrimePatternsReadTheCriticalZeros` (steps 1–3),
   `OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros` (steps 4–6), wired into the THIM umbrella.
 - 2026-10-23 — created.

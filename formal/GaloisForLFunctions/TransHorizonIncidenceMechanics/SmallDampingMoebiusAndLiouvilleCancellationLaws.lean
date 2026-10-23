@@ -509,7 +509,7 @@ theorem abs_dampedDensity_le_of_le {ε₀ ε : ℝ} (hε₀ : 0 < ε₀) (hε_ge
   refine habs.trans (Summable.tsum_le_tsum (fun d => ?_) (summable_abs_pmPowerDamped_div hε) hs0)
   rcases Nat.eq_zero_or_pos d with rfl | hd
   · rw [Nat.cast_zero, div_zero, abs_zero]
-    exact Real.rpow_nonneg (Nat.cast_nonneg 0) _
+    exact Real.rpow_nonneg le_rfl _
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have h := dampedSignWeight_div (s := moebiusReal) hε d
   simp only [dampedSignWeight] at h
@@ -808,16 +808,4 @@ theorem riemannHypothesis_iff_forall_pos_receiverBounded_liouville :
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.abs_weightCenteredPrefix_dampedSign_le_of_linear_pos
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_abs_weightCenteredPrefix_pmPowerDamped_le_all_pos
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_receiver_le_on_zeroFreeBand_of_pos
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_liouville_receiver_le_on_zeroFreeBand_of_pos
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_liouville_receiver_le_on_zeroFreeBand
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_dampedSign_of_partialSum_rpow
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_moebius_of_zetaZeroAbscissa_sub_half_lt
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_liouville_of_zetaZeroAbscissa_sub_half_lt
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.liouville_parityPair_of_zetaZeroAbscissa_sub_half_lt
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.riemannHypothesis_iff_forall_pos_receiverBounded_moebius
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.riemannHypothesis_iff_forall_pos_receiverBounded_liouville
 

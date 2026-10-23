@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** Classical analytic bridge; paper proof, no external novelty claim
 - **Parent:** [prime-dilation candidate](../1-in-progress/goldbach-prime-dilation-dispersion.md)
-- **Dependency:** [composite Kloosterman budget](goldbach-composite-kloosterman-budget.md), proved on paper from checked prime Weil and finite arithmetic
+- **Dependency:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), proved on paper from checked prime Weil and finite arithmetic
 - **Lean status:** Not formalized. No dispersion premise, placeholder or conditional Lean capstone added.
 
 ## Statement

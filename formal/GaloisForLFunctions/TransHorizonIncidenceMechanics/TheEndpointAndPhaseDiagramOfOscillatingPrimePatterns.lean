@@ -25,7 +25,7 @@ non-zero frequency `t₀ ≠ 0` and assemble the complete phase diagram on `[−
   bound `|C(s) − P| ≤ B |s − (1/2 + it₀)|^{-1/2} + |P|` cancels the singularity at `s = 1/2 + it₀`,
   making the boundary line integrand uniformly bounded on `(0, 2t₀ + 2]`; combined with the
   large-height bound on `t > 2t₀ + 2`, the line-energy criterion pays the receiver.
-* **The complete phase diagram (`receiverBounded_oscWeight_iff`).**
+* **The complete phase diagram (`receiverBounded_oscWeight_phase_diagram_iff`).**
   For every `a ∈ [−1, 1]` and `t₀ ∈ ℝ`,
   `ReceiverBounded (oscWeight a t₀) ↔ (t₀ = 0 ∧ a < 1/2) ∨ (t₀ ≠ 0 ∧ (a < 1 ∨ ζ(1/2 + it₀) = 0))`.
 -/
@@ -49,7 +49,7 @@ theorem exists_norm_zeta_ge_near_of_ne_zero {s₀ : ℂ} (hs₀1 : s₀ ≠ 1)
   obtain ⟨r₁, hr₁, hball⟩ := Metric.continuousAt_iff.mp hcont (‖riemannZeta s₀‖ / 2) hpos
   refine ⟨r₁, hr₁, fun s hs => ?_⟩
   have hd : ‖riemannZeta s - riemannZeta s₀‖ < ‖riemannZeta s₀‖ / 2 := by
-    simpa [dist_eq_norm] using hball hs
+    simpa [dist_eq_norm] using hball (by rwa [dist_eq_norm])
   have htri : ‖riemannZeta s₀‖ - ‖riemannZeta s‖ ≤ ‖riemannZeta s - riemannZeta s₀‖ := by
     rw [norm_sub_rev]
     exact norm_sub_norm_le _ _
@@ -103,6 +103,9 @@ theorem not_receiverBounded_of_sq_norm_dirichletSeries_ge_at_height {K κ ρ₀ 
     have hnorm_ut : ‖(u : ℂ) + ((t - t₀ : ℝ) : ℂ) * I‖ ≤ u + (t - t₀) := by
       have := Complex.norm_le_abs_re_add_abs_im ((u : ℂ) + ((t - t₀ : ℝ) : ℂ) * I)
       simpa [abs_of_pos hu, abs_of_nonneg hτ0] using this
+    have hnorm_ut0 : u ≤ ‖(u : ℂ) + ((t - t₀ : ℝ) : ℂ) * I‖ := by
+      have := Complex.abs_re_le_norm ((u : ℂ) + ((t - t₀ : ℝ) : ℂ) * I)
+      simpa [abs_of_pos hu] using this
     have hζs : δ₀ ≤ ‖riemannZeta s‖ := hζh s (by rw [hs2]; linarith)
     have hsre : s.re = 1 / 2 + u := by simp [s]
     have hsS₀ : ‖s‖ ≤ S₀ := by
@@ -136,7 +139,8 @@ theorem not_receiverBounded_of_sq_norm_dirichletSeries_ge_at_height {K κ ρ₀ 
     rw [hint]
     have hquot : δ₀ / S₀ * Y ≤ ‖riemannZeta s‖ * Y / ‖s‖ := by
       rw [div_mul_eq_mul_div]
-      exact div_le_div (mul_nonneg hδ₀.le hY0) (mul_le_mul_of_nonneg_right hζs hY0) hs0 hsS₀
+      exact div_le_div₀ (mul_nonneg (norm_nonneg _) hY0)
+        (mul_le_mul_of_nonneg_right hζs hY0) hs0 hsS₀
     have hsq : α * Y ^ 2 ≤ (‖riemannZeta s‖ * Y / ‖s‖) ^ 2 := by
       have h := pow_le_pow_left₀ (by positivity) hquot 2
       simpa only [α, mul_pow] using h
@@ -282,8 +286,7 @@ theorem not_receiverBounded_oscWeight_one_of_zeta_ne_zero {t₀ : ℝ} (ht₀ : 
     refine not_receiverBounded_oscWeight_one_pos_of_zeta_ne_zero (by linarith) ?_
     have hconj : (1 / 2 : ℂ) + ((-t₀ : ℝ) : ℂ) * I =
         starRingEnd ℂ ((1 / 2 : ℂ) + (t₀ : ℂ) * I) := by
-      simp [Complex.conj_ofReal]
-      ring
+      apply Complex.ext <;> simp
     rw [hconj, riemannZeta_conj]
     exact map_ne_zero_iff (starRingEnd ℂ) (RingHom.injective _) |>.mpr hζ0
   · exact not_receiverBounded_oscWeight_one_pos_of_zeta_ne_zero hpos hζ0
@@ -300,7 +303,12 @@ theorem exists_norm_zeta_le_mul_norm_sub_of_eq_zero {t₀ : ℝ} (ht₀ : 0 < t�
   set T : ℝ := 2 * t₀ + 2
   set K : Set ℂ := (Icc (1 / 2 : ℝ) (3 / 4)) ×ℂ (Icc (0 : ℝ) T)
   have hKcomp : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
-  have hKconv : Convex ℝ K := (convex_Icc (1 / 2 : ℝ) (3 / 4)).reProdIm (convex_Icc 0 T)
+  have hKconv : Convex ℝ K := by
+    intro x hx y hy a b ha hb hab
+    rw [Complex.mem_reProdIm] at hx hy ⊢
+    simp only [add_re, smul_re, add_im, smul_im]
+    exact ⟨convex_Icc (1 / 2 : ℝ) (3 / 4) hx.1 hy.1 ha hb hab,
+      convex_Icc (0 : ℝ) T hx.2 hy.2 ha hb hab⟩
   have hne1 : ∀ z ∈ K, z ≠ 1 := fun z hz h => by
     have hre := ((Complex.mem_reProdIm.mp hz).1).2
     rw [h, one_re] at hre
@@ -371,8 +379,8 @@ theorem receiverBounded_oscWeight_one_pos_of_zeta_eq_zero {t₀ : ℝ} (ht₀ : 
         _ ≤ 1 + T := by
             have hre : (s - s₀).re = σ - 1 / 2 := by simp [s, s₀]
             have him : (s - s₀).im = t - t₀ := by simp [s, s₀]
-            rw [hre, him, abs_of_pos (by linarith), abs_le]
-            refine add_le_add (by linarith) ⟨by linarith, by linarith⟩
+            rw [hre, him, abs_of_pos (by linarith)]
+            exact add_le_add (by linarith) (abs_le.mpr ⟨by linarith, by linarith⟩)
         _ = T + 1 := by ring
     have hC : ‖weightDirichletSeries (oscWeight 1 t₀) s - (P : ℂ)‖ ≤
         B * d ^ (-(1 / 2 : ℝ)) + |P| := by
@@ -380,9 +388,9 @@ theorem receiverBounded_oscWeight_one_pos_of_zeta_eq_zero {t₀ : ℝ} (ht₀ : 
       refine (norm_sub_le _ _).trans (add_le_add hF (by rw [Complex.norm_real, Real.norm_eq_abs]))
     have hζs : ‖riemannZeta s‖ ≤ L * d := hLip σ t hσ.le hσ'.le ht.le htT
     have hd_mul : d * d ^ (-(1 / 2 : ℝ)) = d ^ (1 / 2 : ℝ) := by
-      conv_lhs => rw [← Real.rpow_one d]
-      rw [← Real.rpow_add hd0]
-      norm_num
+      have h := (Real.rpow_add hd0 1 (-(1 / 2 : ℝ))).symm
+      rw [Real.rpow_one] at h
+      exact h.trans (by norm_num)
     have hd_half : d ^ (1 / 2 : ℝ) ≤ (T + 1) ^ (1 / 2 : ℝ) :=
       Real.rpow_le_rpow hd0.le hdT (by norm_num)
     have hprod : ‖riemannZeta s‖ * ‖weightDirichletSeries (oscWeight 1 t₀) s - (P : ℂ)‖ ≤ M₀ := by
@@ -435,8 +443,7 @@ theorem receiverBounded_oscWeight_one_of_zeta_eq_zero {t₀ : ℝ} (ht₀ : t₀
     refine receiverBounded_oscWeight_one_pos_of_zeta_eq_zero (by linarith) ?_
     have hconj : (1 / 2 : ℂ) + ((-t₀ : ℝ) : ℂ) * I =
         starRingEnd ℂ ((1 / 2 : ℂ) + (t₀ : ℂ) * I) := by
-      simp [Complex.conj_ofReal]
-      ring
+      apply Complex.ext <;> simp
     rw [hconj, riemannZeta_conj, hζ0, map_zero]
   · exact receiverBounded_oscWeight_one_pos_of_zeta_eq_zero hpos hζ0
 
@@ -444,7 +451,7 @@ theorem receiverBounded_oscWeight_one_of_zeta_eq_zero {t₀ : ℝ} (ht₀ : t₀
 
 /-- **The endpoint `a = 1` reads the critical zeros**: for `t₀ ≠ 0`, the half-damped oscillating
 weight `oscWeight 1 t₀` has bounded receiver iff `ζ(1/2 + it₀) = 0`. -/
-theorem receiverBounded_oscWeight_one_iff {t₀ : ℝ} (ht₀ : t₀ ≠ 0) :
+theorem receiverBounded_oscWeight_one_iff_zeta_eq_zero {t₀ : ℝ} (ht₀ : t₀ ≠ 0) :
     ReceiverBounded (oscWeight 1 t₀) ↔ riemannZeta (1 / 2 + (t₀ : ℂ) * I) = 0 :=
   ⟨fun h => by_contra fun hne => not_receiverBounded_oscWeight_one_of_zeta_ne_zero ht₀ hne h,
    receiverBounded_oscWeight_one_of_zeta_eq_zero ht₀⟩
@@ -463,14 +470,14 @@ theorem receiverBounded_oscWeight_of_ne_zero_iff {a t₀ : ℝ} (ha : -1 ≤ a) 
     ReceiverBounded (oscWeight a t₀) ↔ a < 1 ∨ riemannZeta (1 / 2 + (t₀ : ℂ) * I) = 0 := by
   rcases lt_or_eq_of_le ha1 with hlt | rfl
   · exact ⟨fun _ => Or.inl hlt, fun _ => receiverBounded_oscWeight_of_lt_one ha hlt ht₀⟩
-  · rw [receiverBounded_oscWeight_one_iff ht₀]
+  · rw [receiverBounded_oscWeight_one_iff_zeta_eq_zero ht₀]
     exact ⟨Or.inr, fun h => h.resolve_left (lt_irrefl 1)⟩
 
 /-- **The complete phase diagram of half-damped oscillating prime patterns on `[−1, 1] × ℝ`.**
 For `a ∈ [−1, 1]` and `t₀ ∈ ℝ`, the weight `f_{a,t₀}(d) d^{-1/2}` with `f_{a,t₀}(p) = a cos(t₀ log p)`
 has bounded receiver if and only if either `t₀ = 0` and `a < 1/2`, or `t₀ ≠ 0` and
 (`a < 1` or `ζ(1/2 + it₀) = 0`). -/
-theorem receiverBounded_oscWeight_iff {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a ≤ 1) :
+theorem receiverBounded_oscWeight_phase_diagram_iff {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a ≤ 1) :
     ReceiverBounded (oscWeight a t₀) ↔
       (t₀ = 0 ∧ a < 1 / 2) ∨ (t₀ ≠ 0 ∧ (a < 1 ∨ riemannZeta (1 / 2 + (t₀ : ℂ) * I) = 0)) := by
   rcases eq_or_ne t₀ 0 with rfl | ht₀
@@ -480,9 +487,3 @@ theorem receiverBounded_oscWeight_iff {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a �
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.not_receiverBounded_of_sq_norm_dirichletSeries_ge_at_height
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.not_receiverBounded_oscWeight_one_of_zeta_ne_zero
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_one_of_zeta_eq_zero
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_one_iff
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_of_ne_zero_iff
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_iff

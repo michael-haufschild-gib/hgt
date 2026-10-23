@@ -86,6 +86,23 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Current certified transfer:
+  [integer-start Möbius windows](../3-formalized/twin-prime-integer-start-moebius-window.md).
+  The later all-length spectral-head source controls the plain
+  Möbius polynomial. A complete paper argument transfers it to
+  `o(N l^2)` uniformly over integer lengths `log N<=l<=N`, using
+  a shrinking geometric partition and paid endpoint errors.
+  This is a classical deduction, not a new scientific claim.
+  The additive-frequency supremum, centering's quantitative rate
+  and full length range, relative affine correlation, and positive
+  prime-pair mass remain unproved. The complete leaf passed;
+  all four capstone audits contain only standard foundational
+  axioms. The own umbrella is wired; it was not compiled.
+  Verification: lexical corpus search returns the principal
+  capstone. All seven owned source/card files passed whitespace,
+  relative-link, and applicable forbidden-directive checks.
+  Temporary axiom-print commands and all sixteen owned scratch
+  files were removed. No unchanged earlier leaf was rebuilt.
 - Current certified removal of damping:
   [cofactor rectangles](../3-formalized/twin-prime-cofactor-damping-removal.md).
   On every selected subset of `[2,X]`, `ZW<=X` and the explicit

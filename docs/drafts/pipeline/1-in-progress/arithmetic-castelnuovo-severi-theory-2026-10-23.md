@@ -97,6 +97,18 @@ survivor).
   `𝔽_q`: span defect = #distinct `|β| > 1`, exact at window `≥ #{β}`),
   `unitary_iff_negIndex_spanGram_eq_zero`, `goldenDatum_negIndex_spanGram`.
 
+- `TheScalingSurfaceOfACurve`: `curve_hodgeIndex_tfae` (RH ⟺ span Hodge index at window `2g` ⟺
+  scaling-surface Hodge index for the zero configuration of a curve datum),
+  `curveConfig_rightZeros_infinite_iff` (scaling defect `0` or `∞`).
+
+- `TheVisibilityDegreeOfAnIsolatedPair`: `hodgeDefectAt_eq_zero_iff` (degree-`a` Hodge index =
+  Weil positivity at aperture `a`), `hodgeDefectAt_isolatedPair` (exact degree law `0 → 1` at
+  `sinh(2δa)/δ = 2L + 2a`), `exists_hidden_at_degree` (no finite degree certifies all
+  configurations).
+
+- `TheZerosOfAnExponentialPolynomialRecur`: `expPoly_zero_recurs`, `expPoly_pontryagin_dichotomy`
+  (configurations cut out by exponential polynomials of any finite rank have defect `0` or `∞`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

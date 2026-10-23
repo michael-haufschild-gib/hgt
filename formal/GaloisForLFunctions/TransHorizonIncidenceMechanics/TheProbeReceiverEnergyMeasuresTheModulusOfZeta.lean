@@ -17,7 +17,7 @@ line of `1/2 ≤ Re s < 1`, it vanishes exactly at the zeros, and on the critica
 `|ζ(½ + it)|² = 2|½ + it|² lim E_T/log T` evaluates `ζ` from finite divisor-sum energies
 (`norm_sq_riemannZeta_half_eq_limit`). Below half damping `Φ` stays between
 `|a|²/2 (1/(1−2ε) ∓ 1/|1−2ε+2it|)`, so `E_T ≍ |ζ(ρ)|² T^{1−2ε}` for `t ≠ 0`
-(`probeEnergy_le_and_ge`).
+(`eventually_probeEnergy_le_and_ge`).
 
 * **Main term.** `|A(n) − Re(a n^ρ)| ≤ K (√n)^{1−ε}` gives `|√E_T − ‖M‖_T| ≤ K√(1 + 1/ε)` for
   `M(n) = Re(a n^ρ)` (`abs_sqrt_probeEnergy_sub_le`).
@@ -542,14 +542,14 @@ theorem eventually_probeEnergy_le_and_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
       ring
     have h4 : 0 < (2 * t) ^ 2 := by positivity
     nlinarith [norm_nonneg (probeCrossExponent ε t)]
-  set λ₀ := ‖a‖ ^ 2 / 2 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) with hλ
-  have hλ0 : 0 < λ₀ := by
+  set lam := ‖a‖ ^ 2 / 2 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) with hlam
+  have hlam0 : 0 < lam := by
     have : 1 / ‖probeCrossExponent ε t‖ < 1 / γ := one_div_lt_one_div_of_lt hγ0 hnβ
     have : 0 < ‖a‖ ^ 2 / 2 := by positivity
-    rw [hλ]; nlinarith
+    rw [hlam]; nlinarith
   have hlim := tendsto_probeEnergy_div_sub_profile hε hε2 t
   rw [← hγ] at hlim
-  have hev := (Metric.tendsto_nhds.mp hlim) (λ₀ / 2) (by linarith)
+  have hev := (Metric.tendsto_nhds.mp hlim) (lam / 2) (by linarith)
   filter_upwards [hev, eventually_ge_atTop 1] with T hT hT1
   rw [Real.dist_eq, sub_zero] at hT
   have hT0 : (0 : ℝ) < T := by exact_mod_cast hT1
@@ -557,9 +557,9 @@ theorem eventually_probeEnergy_le_and_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
   have hlo := probeEnergyProfile_ge hε2 t hT1
   have hhi := (abs_le.mp (abs_probeEnergyProfile_le hε2 t hT1)).2
   rw [← ha, ← hγ] at hlo hhi
-  rw [← hλ] at hlo
-  have hλm : λ₀ ≤ ‖a‖ ^ 2 / γ := by
-    rw [hλ]
+  rw [← hlam] at hlo
+  have hlamm : lam ≤ ‖a‖ ^ 2 / γ := by
+    rw [hlam]
     have : 0 ≤ 1 / ‖probeCrossExponent ε t‖ := by positivity
     have : ‖a‖ ^ 2 / 2 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) ≤ ‖a‖ ^ 2 / 2 * (1 / γ) :=
       mul_le_mul_of_nonneg_left (by linarith) (by positivity)
@@ -570,7 +570,7 @@ theorem eventually_probeEnergy_le_and_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
   set E := weightPronicEnergy (oscillatingSmoothPower ε t)
     (∑' d : ℕ, oscillatingSmoothPower ε t d / d) T with hE
   have hq := abs_lt.mp hT
-  have hlow : λ₀ / 2 ≤ E / (T : ℝ) ^ γ := by linarith [hq.1]
+  have hlow : lam / 2 ≤ E / (T : ℝ) ^ γ := by linarith [hq.1]
   have hupp : E / (T : ℝ) ^ γ ≤ 2 * ‖a‖ ^ 2 / γ := by
     have : 2 * ‖a‖ ^ 2 / γ = ‖a‖ ^ 2 / γ + ‖a‖ ^ 2 / γ := by ring
     linarith [hq.2]
@@ -578,7 +578,7 @@ theorem eventually_probeEnergy_le_and_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 
   rw [div_le_iff₀ hTγ] at hupp
   constructor
   · calc ‖a‖ ^ 2 / 4 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) * (T : ℝ) ^ γ =
-          λ₀ / 2 * (T : ℝ) ^ γ := by rw [hλ]; ring
+          lam / 2 * (T : ℝ) ^ γ := by rw [hlam]; ring
       _ ≤ E := hlow
   · exact hupp
 
@@ -620,30 +620,19 @@ theorem abs_sq_pronicNorm_probeMain_half_sub_le {t : ℝ} (ht : t ≠ 0) {T : �
         rw [halfProbeRate, ← ha]
         nlinarith [mul_le_mul_of_nonneg_left h0 ha2]
 
-/-- **The half-damped probe energy law.** For `t ≠ 0`, the receiver energy of
-`d^{-1/2} cos(t log d)` satisfies `E_T / log T → |ζ(½ + it)|²/(2|½ + it|²)`. -/
-theorem tendsto_probeEnergy_half_div_log {t : ℝ} (ht : t ≠ 0) :
-    Tendsto (fun T : ℕ => weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
-        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T) atTop
-      (𝓝 (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
-        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2))) := by
-  set a := probeAmp (1 / 2) t with ha
-  set α := ‖a‖ ^ 2 / 2 with hα
-  have hlimit : ‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
-      (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2) = α := by
-    rw [hα, ha, probeAmp, norm_div, div_pow]; ring
-  rw [hlimit]
-  set B := |floorSumRate (oscillationExponent (1 / 2) t)| * Real.sqrt (1 + 1 / (1 / 2 : ℝ))
-    with hB
-  set C := halfProbeRate t with hC
-  have hB0 : 0 ≤ B := by positivity
-  have hC0 : 0 ≤ C := (abs_nonneg _).trans (abs_sq_pronicNorm_probeMain_half_sub_le ht le_rfl)
-  have hα0 : 0 ≤ α := by positivity
+/-- **Logarithmic growth from a main term.** If `|√E_T − x_T| ≤ B` and `|x_T² − κ log T| ≤ C` for
+`T ≥ 1`, with `κ ≥ 0` and `E_T, x_T ≥ 0`, then `E_T/log T → κ`. -/
+theorem tendsto_div_log_of_sqrt_approx {E x : ℕ → ℝ} {κ B C : ℝ} (hκ : 0 ≤ κ)
+    (hE : ∀ T, 0 ≤ E T) (hx : ∀ T, 0 ≤ x T)
+    (h1 : ∀ T : ℕ, 1 ≤ T → |Real.sqrt (E T) - x T| ≤ B)
+    (h2 : ∀ T : ℕ, 1 ≤ T → |x T ^ 2 - κ * Real.log T| ≤ C) :
+    Tendsto (fun T : ℕ => E T / Real.log T) atTop (𝓝 κ) := by
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (h1 1 le_rfl)
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (h2 1 le_rfl)
   have hbound : ∀ T : ℕ, 3 ≤ T →
-      |weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
-          (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T - α| ≤
+      |E T / Real.log T - κ| ≤
         (C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
-          2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹ := by
+          2 * B * Real.sqrt κ * (Real.sqrt (Real.log T))⁻¹ := by
     intro T hT
     have hT1 : 1 ≤ T := by omega
     have hL1 : 1 ≤ Real.log T := by
@@ -651,58 +640,61 @@ theorem tendsto_probeEnergy_half_div_log {t : ℝ} (ht : t ≠ 0) :
       have : (3 : ℝ) ≤ T := by exact_mod_cast hT
       linarith [Real.exp_one_lt_d9]
     have hL0 : 0 < Real.log T := by linarith
-    have h1 := abs_sqrt_probeEnergy_sub_le (ε := 1 / 2) (by norm_num) (by norm_num) t T
-    have h2 := abs_sq_pronicNorm_probeMain_half_sub_le ht hT1
-    rw [← hB] at h1
-    rw [← ha, ← hα, ← hC] at h2
-    set x := pronicNorm (probeMain (1 / 2) t) T with hx
-    have hx0 : 0 ≤ x := pronicNorm_nonneg _ _
-    have h3 := abs_sq_sub_le_of_abs_sub_le hx0 h1 h2
-    have hE0 : 0 ≤ weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
-        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T :=
-      sum_nonneg fun n _ => by positivity
-    rw [Real.sq_sqrt hE0] at h3
+    have h3 := abs_sq_sub_le_of_abs_sub_le (hx T) (h1 T hT1) (h2 T hT1)
+    rw [Real.sq_sqrt (hE T)] at h3
     have hsL : Real.sqrt (Real.log T) ^ 2 = Real.log T := Real.sq_sqrt hL0.le
-    have hsL0 : 0 < Real.sqrt (Real.log T) := Real.sqrt_pos.mpr hL0
-    have hxle : x ≤ Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C := by
-      have hp : (Real.sqrt α * Real.sqrt (Real.log T)) ^ 2 = α * Real.log T := by
-        rw [mul_pow, Real.sq_sqrt hα0, hsL]
+    have hxle : x T ≤ Real.sqrt κ * Real.sqrt (Real.log T) + Real.sqrt C := by
+      have hp : (Real.sqrt κ * Real.sqrt (Real.log T)) ^ 2 = κ * Real.log T := by
+        rw [mul_pow, Real.sq_sqrt hκ, hsL]
       have hq : Real.sqrt C ^ 2 = C := Real.sq_sqrt hC0
-      have hpq : 0 ≤ Real.sqrt α * Real.sqrt (Real.log T) := by positivity
-      have hx2 : x ^ 2 ≤ (Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2 := by
-        have h2' := (abs_le.mp h2).2
+      have hpq : 0 ≤ Real.sqrt κ * Real.sqrt (Real.log T) := by positivity
+      have hx2 : x T ^ 2 ≤ (Real.sqrt κ * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2 := by
+        have h2' := (abs_le.mp (h2 T hT1)).2
         nlinarith [mul_nonneg hpq (Real.sqrt_nonneg C)]
-      calc x = Real.sqrt (x ^ 2) := (Real.sqrt_sq hx0).symm
-        _ ≤ Real.sqrt ((Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2) :=
+      calc x T = Real.sqrt (x T ^ 2) := (Real.sqrt_sq (hx T)).symm
+        _ ≤ Real.sqrt ((Real.sqrt κ * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2) :=
           Real.sqrt_le_sqrt hx2
         _ = _ := Real.sqrt_sq (by positivity)
-    rw [show weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
-        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T - α =
-        (weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
-          (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T - α * Real.log T) / Real.log T by
-        field_simp,
+    rw [show E T / Real.log T - κ = (E T - κ * Real.log T) / Real.log T by field_simp,
       abs_div, abs_of_pos hL0, div_le_iff₀ hL0]
-    have hrhs : ((C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
-        2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹) * Real.log T =
-        C + B * (2 * Real.sqrt C + B) + 2 * B * Real.sqrt α * Real.sqrt (Real.log T) := by
-      rw [← hsL]
+    have e1 : (C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ * Real.log T =
+        C + B * (2 * Real.sqrt C + B) := by
       field_simp
-    rw [hrhs]
-    calc _ ≤ C + B * (2 * x + B) := h3
-      _ ≤ C + B * (2 * (Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) + B) := by gcongr
-      _ = C + B * (2 * Real.sqrt C + B) + 2 * B * Real.sqrt α * Real.sqrt (Real.log T) := by ring
+    have e2 : 2 * B * Real.sqrt κ * (Real.sqrt (Real.log T))⁻¹ * Real.log T =
+        2 * B * Real.sqrt κ * Real.sqrt (Real.log T) := by
+      rw [mul_assoc, inv_mul_eq_div, Real.div_sqrt]
+    rw [add_mul, e1, e2]
+    calc _ ≤ C + B * (2 * x T + B) := h3
+      _ ≤ C + B * (2 * (Real.sqrt κ * Real.sqrt (Real.log T) + Real.sqrt C) + B) := by gcongr
+      _ = C + B * (2 * Real.sqrt C + B) + 2 * B * Real.sqrt κ * Real.sqrt (Real.log T) := by ring
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hlim : Tendsto (fun T : ℕ => (C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
-      2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹) atTop (𝓝 0) := by
+      2 * B * Real.sqrt κ * (Real.sqrt (Real.log T))⁻¹) atTop (𝓝 0) := by
     have t1 : Tendsto (fun T : ℕ => (Real.log T)⁻¹) atTop (𝓝 0) := hlog.inv_tendsto_atTop
     have t2 : Tendsto (fun T : ℕ => (Real.sqrt (Real.log T))⁻¹) atTop (𝓝 0) :=
       (Real.tendsto_sqrt_atTop.comp hlog).inv_tendsto_atTop
     simpa using (t1.const_mul (C + B * (2 * Real.sqrt C + B))).add
-      (t2.const_mul (2 * B * Real.sqrt α))
+      (t2.const_mul (2 * B * Real.sqrt κ))
   refine tendsto_sub_nhds_zero_iff.mp (squeeze_zero_norm' ?_ hlim)
   filter_upwards [eventually_ge_atTop 3] with T hT
   rw [Real.norm_eq_abs]
   exact hbound T hT
+
+/-- **The half-damped probe energy law.** For `t ≠ 0`, the receiver energy of
+`d^{-1/2} cos(t log d)` satisfies `E_T / log T → |ζ(½ + it)|²/(2|½ + it|²)`. -/
+theorem tendsto_probeEnergy_half_div_log {t : ℝ} (ht : t ≠ 0) :
+    Tendsto (fun T : ℕ => weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T) atTop
+      (𝓝 (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2))) := by
+  have hlimit : ‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+      (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2) = ‖probeAmp (1 / 2) t‖ ^ 2 / 2 := by
+    rw [probeAmp, norm_div, div_pow]; ring
+  rw [hlimit]
+  exact tendsto_div_log_of_sqrt_approx (by positivity) (fun T => sum_nonneg fun n _ => by positivity)
+    (fun T => pronicNorm_nonneg _ _)
+    (fun T _ => abs_sqrt_probeEnergy_sub_le (ε := 1 / 2) (by norm_num) (by norm_num) t T)
+    (fun T hT => abs_sq_pronicNorm_probeMain_half_sub_le ht hT)
 
 /-- **ζ on the critical line from the receiver.** For `t ≠ 0`,
 `2|½ + it|² E_T / log T → |ζ(½ + it)|²`: the receiver energies of `d^{-1/2} cos(t log d)` evaluate

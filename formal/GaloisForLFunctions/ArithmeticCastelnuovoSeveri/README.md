@@ -256,7 +256,7 @@ possible section theory must use near-radicals.
     Bézout structure of the surface, as the review's typing requires.
 
 ### 3.5 The contact law and the Pontryagin law over `𝔽_q` (`SpanContactLaw`,
-`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`)
+`TheFrobeniusSpanDefectCountsTheOuterEigenvalues`, `TheScalingSurfaceOfACurve`)
 
 16. For unitary data the defect on the window of `n` Frobenius graphs is positive definite iff
     `n ≤ s`, the number of distinct eigenvalues (`toeplitz_pos_on_window_iff`); above it the radical
@@ -278,11 +278,28 @@ possible section theory must use near-radicals.
     clustered or not, is visible on the window `#{β} ≤ 2g`, and the hiding datum (item 15) shows
     that shorter windows can miss it. Over `ℚ` the genus is infinite and no window holds the
     spectrum; the degree filtration (item 20⁗) replaces the window.
+16″. **The scaling surface of a curve** (`TheScalingSurfaceOfACurve`). The zeros of a curve
+    datum, `q^{ρ − ½} = β_i` (`mem_curveConfig_iff`), are the points
+    `ρ_{i,k} = ½ + log|β_i|/log q + i(arg β_i + 2πk)/log q` (`zetaZero`, `cpow_zetaZero`), periodic
+    with period `2π/log q`; the circle reflection `β ↦ 1/β̄` is the reflection `ρ ↦ 1 − ρ̄`
+    (`reflect_zetaZero`). When they lie in the strip (`|β_i| ≤ √q`, the typing condition of a zero
+    configuration) they form a tempered zero configuration (`curveConfig`,
+    `temperedConfig_curveConfig`), and three Hodge index theorems coincide
+    (`curve_hodgeIndex_tfae`): RH for the datum, Hodge index on the Frobenius window `2g`, and
+    Hodge index of the scaling surface (no negative square of Weil's form on any finite family of
+    tests). The defects differ: the span counts each outer eigenvalue once (item 16′), the scaling
+    surface counts it once per period, so its defect is `0` or `∞`
+    (`curveConfig_rightZeros_infinite_iff`; for the golden curve `1` against `∞`,
+    `goldenDatum_scaling_defect`). The Frobenius graphs identify the vertical translates that
+    continuous tests separate: the span is the quotient of the scaling surface by the period, and
+    this quotient is what Kronecker rank one means (item 20‴). `ζ` has no period, so over `ℚ`
+    the Hecke cycles cannot be a quotient of this kind.
 
 ### 3.6 The scaling surface, the signature law and the Pontryagin law
 (`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
 `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`,
-`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`)
+`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`,
+`TheVisibilityDegreeOfAnIsolatedPair`)
 
 17. **The scaling surface is a polar surface whose defect is Weil's form**
     (`scalingSurface`, `scalingSurface_defect_self`), so **its Hodge index theorem is RH**
@@ -339,9 +356,16 @@ possible section theory must use near-radicals.
     configuration invariant under `ρ ↦ ρ + iP` (a lattice system) has Hodge defect `0` or `∞`
     (`periodic_pontryagin_dichotomy`); finitely many off-line zeros, possible a priori for `ζ`, are
     impossible in rank one. More generally every **vertically recurrent** configuration (each zero
-    recurs, up to `ε` in its real part, at unbounded heights; this is how the zero sets of almost
-    periodic Dirichlet series of finite Kronecker rank behave) has Hodge defect `0` or `∞`
-    (`recurrent_pontryagin_dichotomy`, `TheKroneckerRankDichotomy`).
+    recurs, up to `ε` in its real part, at unbounded heights) has Hodge defect `0` or `∞`
+    (`recurrent_pontryagin_dichotomy`, `TheKroneckerRankDichotomy`). **Finite rank**
+    (`TheZerosOfAnExponentialPolynomialRecur`): the zeros of a nonzero exponential polynomial
+    `Σ_j c_j e^{λ_j s}` (finite Dirichlet polynomials of any Kronecker rank, and the numerators of
+    rational finite-rank zeta functions) recur (`expPoly_zero_recurs`): simultaneous almost
+    periods exist by compactness of the torus (`exists_large_almost_period`), translation by one
+    is uniformly small on a disk, and zeros persist under perturbation by the maximum modulus
+    principle for `1/g` (`exists_zero_of_near`). So every tempered configuration cut out by an
+    exponential polynomial has Hodge defect `0` or `∞` (`expPoly_pontryagin_dichotomy`): a finite
+    nonzero number of off-line zeros needs infinitely many frequencies.
 20⁗. **The degree filtration** (`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`). The Hodge defect at degree
     `a`, `hodgeDefectAt Z a` (negative squares on tests supported in `[−a, a]`), is nondecreasing
     (`hodgeDefectAt_mono`), bounded by `#{Re ρ > ½}` (`hodgeDefectAt_le`) and exhausts it:
@@ -360,6 +384,18 @@ possible section theory must use near-radicals.
     conjugate pair of zeros right of the line gives one even and one odd negative square. The odd
     sector alone detects every off-line zero (the review's selectivity test for the
     reflection-odd sector); the even sector carries in addition the ample pole direction `H + V`.
+20⁶. **The visibility degree of an isolated pair** (`TheVisibilityDegreeOfAnIsolatedPair`).
+    Degree-`a` Hodge index is Weil positivity at aperture `a` on every tempered configuration
+    (`hodgeDefectAt_eq_zero_iff`), so visibility laws for the Weil form are statements about the
+    degree filtration. For one pair `½ ± δ + iγ₀` in the doubled on-line lattice of spacing
+    `2π/L` (`SquareRootThreshold.isolatedPairConfig`) the Hodge defect at degree `a ≤ L/2` is `0`
+    if `sinh(2δa)/δ ≤ 2L + 2a` and `1` otherwise (`hodgeDefectAt_isolatedPair`), with total defect
+    `1` (`iSup_hodgeDefectAt_isolatedPair`): the off-line cycle is seen exactly from the degree at
+    which its pair energy `sinh(2δa)/(2δ) − a` exceeds the background density `L`. **Hiding over
+    `ℚ`** (`exists_hidden_at_degree`): for every degree and depth some tempered configuration has a
+    zero right of the line and Hodge defect `0` at that degree, the analogue of the finite-field
+    window law (item 15); over `𝔽_q` the window `2g` sees everything (item 16′), over `ℚ` no finite
+    degree does.
 
 ### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
 
@@ -513,7 +549,9 @@ possible section theory must use near-radicals.
    gives the upper horizon and a lower count for isolated visible pairs. Open: a lower count
    without isolation, i.e. the degree at which `n` arbitrary right zeros (clustered, shallow, or
    accumulating in depth) become visible, with explicit constants. Over `𝔽_q` this is settled: the
-   window `#{β} ≤ 2g` sees every outer eigenvalue (item 16′).
+   window `#{β} ≤ 2g` sees every outer eigenvalue (item 16′). For one isolated pair in a lattice
+   background the visibility degree is exact (item 20⁶), and no degree works for all
+   configurations (`exists_hidden_at_degree`), so any answer must depend on the local density.
 4. **The Kronecker law beyond the prime part.** On resonators the archimedean collar couples the
    towers through `ω(|i log p + j log q|)`; compute the full local intersection of narrow Hecke
    cycles and decide positivity of the finite-Euler-product form `ζ_p ζ_q · Γ` on lattice tests.
@@ -609,6 +647,7 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 | `WittIntegralityIsNotPurity` | zeta series and ghost components, Witt splitting of the pole plane, integrality vs purity |
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
 | `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q`: span defect = #distinct eigenvalues off the circle, visible at window `2g` |
+| `TheScalingSurfaceOfACurve` | zeros of a curve datum as a periodic tempered configuration; three equivalent Hodge index theorems over `𝔽_q` |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
 | `BezoutEffectivityAndTheBeurlingObstruction` | Bézout positivity + Riemann–Roch / canonical surface Riemann–Roch ⟺ Hodge index; Frobenius span polar surface, positive graph cone (Bézout + ample, not RR), cohomological sign and subshift obstruction |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
@@ -617,8 +656,11 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 | `FiniteConfigurationPontryaginLaw` | transform interpolation and exact negative index for finite configurations |
 | `TemperedConfigurationPontryaginLaw` | absolute convergence on tempered configurations, dual tests, translated pairs, exact negative index with finitely many right zeros |
 | `TheKroneckerRankDichotomy` | recurrent (finite-rank) configurations have Hodge defect `0` or `∞` |
+| `TheZerosOfAnExponentialPolynomialRecur` | almost periods, persistence of zeros, recurrence of zeros of exponential polynomials; finite-rank dichotomy |
 | `TheReflectionSectorsOfTheHodgeDefect` | even/odd sectors: exact sector Pontryagin law; each sector of `ζ` carries half the defect |
+| `SchurLendingOddHodgeIndexPastFirstPrime` | degree-filtered sector Hodge defect; unconditional odd-sector Hodge index zero of `ζ` past the first prime (`a ≤ 181/500 > (log 2)/2`); primitive embedding of odd tests into `(H + V)⊥` and coupled pole–test effectivity on `scalingSubsurface` |
 | `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree: monotone, exhaustive, zero below `3/10` for `ζ` |
+| `TheVisibilityDegreeOfAnIsolatedPair` | degree-`a` Hodge index = Weil positivity at aperture `a`; exact degree law of an isolated pair; hiding over `ℚ` |
 | `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
