@@ -130,7 +130,10 @@ constant. A sieve bounds the close pairs only against nonnegative weights, while
 | Jackson close-pair kernel | `(L/2π)∫ W(s + rh)W(s)e^{iθs}ds`, supported in `|θ| < 4b` | `jacksonPairKernel`, `jacksonCloseApprox` |
 | Normalized Frobenius norm | `κ(λ) = 1/λ + (2/λ²)∫_0^λ(λ − α)F(α)dα` | `frobeniusFormFactor` |
 | Trans-threshold integral | `I(λ) = ∫_1^λ(λ − α)F(α)dα` | `transThresholdIntegral` |
-| Normalized prime surplus | `(9/8)I − 5/72 = (9/8)(I − 1/18) − 1/144` at `λ = 4/3` | `primeSurplusRatioOfIntegral` |
+| Normalized prime surplus | `(9/8)I − 5/72 = (9/8)(I − 1/18) − 1/144` at `λ = 4/3`; `(2/λ²)I(λ) − (λ−1)²/λ² − (λ−1)³/(3λ²)` in general | `primeSurplusRatioOfIntegral`, `generalPrimeSurplusRatio` |
+| Dyadic cosine kernel | `f_dyadic(u) = ∫_1^2 cos(tu)dt = (sin 2u − sin u)/u` | `dyadicCosineKernel` |
+| Affine trans-threshold model | `F_{β,γ}(α) = α` on `[0, 1]`, `β + γ(α − 1)` on `(1, ∞)` | `affineTransModel` |
+| Narrow-strip Cesàro energy | `E(δ) = (2/δ²)∫_1^{1+δ}(1 + δ − α)F(α)dα` | `narrowStripCesaroEnergy` |
 
 **Words.**
 
@@ -246,6 +249,51 @@ the size of the Lipschitz constant against a Lorentzian of width `T`. A smooth c
 weight vanishes off the grid range, so there is no aliasing and no end form at fixed bandwidth. This
 is the route that avoids both the Jackson tails (trap below) and the moving cutoff of §3.6.
 
+### 3.9 Coalescent sieve anatomy and model calibration
+
+In the coalescent band `0 < n − m = h ≤ c m / T`, the multiplicative phase `T log(1 + h/m)` and
+symmetric weight `(m(m + h))^{−1/2}` linearize to `T h / m` and `m⁻¹` with explicit error
+`((L_K c² + M_K c / 2)/T) Σ Λ(m)Λ(m + h)/m` (`coalescent_sum_linearization_bound`). Under the
+Hardy–Littlewood prime-pair heuristic `C_HL(H) = H − ½ log H + O(1)`, the continuum Poisson linear
+term `H` integrates to zero against the signed dyadic kernel `f_dyadic(u) = (sin 2u − sin u)/u` by
+the Frullani identity `∫_ε^R (sin 2u − sin u)/u du = ∫_R^{2R} (sin u)/u du − ∫_ε^{2ε} (sin u)/u du`
+(`integral_sin_div_two_mul`, `abs_integral_dyadic_frullani_le`). What enters the prime surplus is
+solely the arithmetic repulsion: the singular-series logarithmic deficit `−½(y − l)` integrates
+against `g(y) = L − y` on `[l, L]` to `−(L − l)³/12 < 0` (`hl_coalescent_deficit_integral`), so the
+Hardy–Littlewood main term has strictly favourable negative sign before any error term is estimated.
+
+Across the two-parameter affine family `F_{β,γ}(α) = β + γ(α − 1)` on `α > 1` (`affineTransModel`),
+the general prime-surplus ratio is `((λ − 1)²/λ²)(β − 1) + ((λ − 1)³/(3λ²))(γ − 1)`
+(`generalPrimeSurplusRatio_affineTransModel`). At `λ = 4/3`, calibrating five benchmark models
+(`calibration_five_models_four_thirds`) shows:
+1. **Hardy–Littlewood / Function-Field / GUE** (`β = 1, γ = 0`): surplus `−1/144 < 0`;
+2. **Uncorrelated baseline** (`β = 1, γ = 1`): surplus `0`;
+3. **Naive Poisson off-diagonal without repulsion** (`β = 2, γ = 1`): surplus `+1/16 > 1/18`,
+   failing the `1/18` budget by `1/144`;
+4. **Spectral sieve upper bound** (`β = Υ, γ = 0`): surplus `(9Υ − 10)/144`, meeting `1/18` iff
+   `Υ ≤ 2` (the exact factor-two parity limit);
+5. **Unsigned additive sieve** (`β = 1 + Υ, γ = 1`): surplus `Υ/16`, requiring `Υ ≤ 8/9 < 1`.
+
+### 3.10 Narrow-strip close-pair energy and the `2`-adic parity collar
+
+In a narrow trans-threshold strip `λ = 1 + δ` (`δ > 0`), the proportion gain over `2/3` is
+`(2 − κ(1 + δ)) − 2/3 = δ(2 − (3 E(δ) − 4)δ)/(3(1 + δ)²)` (`narrowStrip_proportion_gain_eq`), where
+`E(δ) = (2/δ²)∫_1^{1+δ}(1 + δ − α)F(α)dα` (`narrowStripCesaroEnergy`). Because the diagonal gain is
+first-order (`2δ/3`) while the close-pair penalty is second-order (`E(δ)δ²`), `2 − κ(1 + δ) > 2/3`
+holds iff `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), and any uniform bound
+`E(δ) ≤ B` on `(0, 1/(3(B − 1))]` achieves `1/(3(3B − 2))` at `δ* = 1/(3(B − 1))`
+(`constrainedStrip_optimal_exchange_rate`).
+
+On the discrete prime side, `log n − log m ≥ (n − m)/n` (`log_sub_log_ge_sub_div`) forces all
+off-diagonal Fejér close-pair terms to vanish identically for `X ≤ 1/b`
+(`fejer_double_sum_eq_diag_of_le_inv_b`). Because all odd primes `p ≥ 3` lie in `2ℕ + 1`, any two
+distinct odd integers `m < n` satisfy `n − m ≥ 2`; thus `log n − log m ≥ 2/n`, and all odd-odd
+off-diagonal Fejér close-pair terms vanish identically across the doubled range `X ≤ 2/b`
+(`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`), and `X ≤ 1/(2b)` for Jackson weights
+(`jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b`). Above `2/b`, any Selberg/Bombieri–Davenport
+small-shift sieve bound controls the close-pair sum on `[1/b, (1 + δ)/b]` with a quadratic `O(δ²)`
+bound (`sieved_closePrimePair_strip_bound`).
+
 ---
 
 ## 4. Foundational pillar theorems
@@ -274,6 +322,14 @@ All unconditional.
 8. **Lorentz mean value without Hilbert.** The prime polynomial obeys the `(R + X)` mean value on
    Lorentz windows of width `R`, from an exact positive Fejér pair sum
    (`integral_lorentz_mul_PX_sq_le`).
+9. **Coalescent Frullani cancellation and five-model calibration.** The continuum Poisson linear
+   density cancels against the dyadic cosine kernel (`abs_integral_dyadic_frullani_le`), leaving the
+   strictly negative Hardy–Littlewood logarithmic deficit `−(L − l)³/12 < 0`
+   (`hl_coalescent_deficit_integral`); calibrating five models at `λ = 4/3` proves the budget requires
+   arithmetic repulsion (`calibration_five_models_four_thirds`).
+10. **Narrow-strip exchange rate and `2`-adic parity collar doubling.** `2 − κ(1 + δ) > 2/3` iff
+    `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), and `2`-adic parity forces all
+    odd-odd close-pair terms to vanish up to `X = 2/b` (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`).
 
 ---
 
@@ -291,6 +347,8 @@ All unconditional.
 | Reading `PrimeSurplusFourThirds` as established | It is the premise of `RHTower.zeta_three_quarters_of_prime_surplus`. The unconditional content is the reduction of §3, not the bound. |
 | Treating the budget as a power saving | A saving of `T^{1/3}` over the trivial bound only reaches the right order. The bound must land below `1/18` of an explicit normalization, against a conjectured value `−1/144`. |
 | Expecting a sieve to bound close pairs | Upper-bound sieves need weights `w ≥ 0`; the height phase changes sign, so the sieve reverts to the size bound, a factor two off at best (the parity barrier). |
+| Confusing the Poisson continuum with the HL main term | A naive Poisson off-diagonal model without arithmetic repulsion (`β = 2, γ = 1`) has surplus `+1/16 > 1/18` (`calibration_five_models_four_thirds`). The Frullani identity kills the continuum linear term against the signed dyadic kernel, and the budget uses the `−½ log H` singular-series deficit. |
+| Treating the close-pair threshold `X = 1/b` as prime-blind | While `1/n ≥ b` stops at `X = 1/b` on all integers, odd integers have `n − m ≥ 2`, so all odd-odd close-pair terms vanish up to `X = 2/b` (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`). |
 | Treating pair correlation beyond `α = 1` as a separate input | Under RH it is equivalent to prime-pair correlations with a power-saving error; unconditionally it needs additive-divisor inputs for `Λ` of twin-prime strength. |
 | Breaking the coalescence blind spot by zero-side slack below `3/4` | Unconditionally `zeroSideSlack(λ, T) ≤ (λ − H(λ) + ε)N(T, 2T)`, which refutes the slack needed for `3/4` at every `λ ∈ (0, 3/4)` (`ArithmeticCastelnuovoSeveri.not_three_quarters_zeroSideSlack_of_lt_three_quarters`). |
 | Mollifiers as an alternative to `λ > 1` | For mollified discrete moments of CGG type the optimum is `1 − (1 + θ)^{−3}`, so `3/4` needs `θ ≥ 4^{1/3} − 1` (`RHTower.CGGMollifier.three_quarters_le_iff`); at `θ = 4/7` it is `988/1331 < 3/4` (`RHTower.CGGMollifier.ratio_bound_four_sevenths`). |
@@ -309,6 +367,19 @@ All unconditional.
    archimedean end effect, the far pairs and the sum frequencies. What remains is the mixed
    Dirichlet mean value, or the close-pair kernel.
 4. **What does a positive majorant achieve?** `8/27`, a fixed factor `8/3` short.
+5. **What part of the Hardy–Littlewood main term enters the surplus, and what is its sign?** The
+   continuum Poisson linear term cancels identically against the signed dyadic kernel by Frullani's
+   identity (`abs_integral_dyadic_frullani_le`); only the singular-series logarithmic deficit
+   `−½ log H` survives, contributing `−(λ − 1)³/(3λ²) = −1/144 < 0` at `λ = 4/3` with strictly
+   favourable negative sign before any error term is estimated (`hl_coalescent_deficit_integral`).
+6. **Which features of the primes does the `1/18` budget actually use?** Calibration across five
+   models (`calibration_five_models_four_thirds`) shows that a naive Poisson off-diagonal model
+   without repulsion gives `+1/16 > 1/18` (failing by `1/144`), an unsigned additive sieve bound
+   `F(α) − α ≤ Υ` requires `Υ ≤ 8/9 < 1`, and a spectral bound `F(α) ≤ Υ` meets `1/18` iff `Υ ≤ 2`.
+7. **How does the exchange rate behave in a narrow strip `λ = 1 + δ`?** The proportion gain is
+   `δ(2 − (3 E(δ) − 4)δ)/(3(1 + δ)²)`, which beats `2/3` iff `E(δ) < 2/(3δ) + 4/3`
+   (`narrowStrip_beats_two_thirds_iff`), while `2`-adic parity doubles the close-pair vanishing
+   threshold on odd integers from `1/b` to `2/b` (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`).
 
 ### 6.2 Tools
 
@@ -325,13 +396,20 @@ Built and reusable:
 - *Smooth grid weights*: the exact weighted-kernel difference and the Lorentz grid-sum lemma.
 - *Form-factor calculus*: the split of `κ`, the bridge to the prime surplus, the Fejér and
   Rudnick–Sarnak barriers.
+- *Coalescent linearization and Frullani calculus*: multiplicative-to-additive linearization in
+  `0 < h ≤ cm/T`, exact Frullani cancellation of the dyadic cosine kernel, and the five-model
+  calibration bridge.
+- *Narrow-strip Cesàro energy and `2`-adic parity collar*: exact first-order vs. second-order
+  narrow-strip criterion, `2`-adic parity collar doubling up to `2/b`, and small-shift sieve strip
+  bounds.
 
 To be built:
 
 - a signed bound on the mixed mean value `∫_T^{2T}(C_gC_1 + S_gS_1)` at `X = T^{4/3}`;
 - the smooth-weighted bandwidth-`4/3` trace assembly, with the far pairs and sum frequencies paid
   by the weight and the coalescent band isolated;
-- a close-pair estimate in the narrow strips `λ = 1 + δ`.
+- an unconditional asymptotic transfer from the finite height-averaged prime-pair sum at `[T, 2T]` to
+  the spectral form factor `F(α)` in `λ = 1 + δ`.
 
 ---
 
@@ -352,26 +430,39 @@ To be built:
    `‖(W²)^{(k)}‖₁/|θ|^k`, and assemble through the weighted seam. The target statement is
    `N₀*(T, 2T) ≥ (29/36 − ε − c_coal(T))N(T, 2T)`, with `c_coal` the normalized coalescent prime-pair
    sum: the whole question of open problem 1 placed on the band of open problem 3.
-3. **Close pairs in short multiplicative intervals.** For `T < m < n ≤ T^{4/3}`,
-   `0 < n − m = h ≪ m/T`, control the signed correlation
-   `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T log(1 + h/m))` beyond the factor two lost by upper-bound sieves.
-4. **The exchange rate just above `λ = 1`.** Any finite bound `F(α) ≤ B` on `(1, λ*)`,
-   `λ* = (3B − 2)/(3(B − 1))`, beats `2/3` by `1/(3(3B − 2))` (`RHTower.opt_sub_two_thirds`,
-   `ArithmeticCastelnuovoSeveri.two_thirds_and_pair_correlation_escape`). Prove an unconditional
-   bound on the close-pair energy in a narrow strip `λ = 1 + δ`. Any finite constant improves the
-   proportion.
+3. **Close pairs in short multiplicative intervals.** The multiplicative-to-additive linearization
+   (`coalescent_sum_linearization_bound`), Frullani cancellation of the Poisson continuum
+   (`abs_integral_dyadic_frullani_le`), and the five-model sieve threshold (`Υ ≤ 8/9 < 1` unsigned
+   additive vs. `Υ ≤ 2` spectral in `calibration_five_models_four_thirds`) are proved in
+   `CoalescentSieveAnatomyAndModelCalibration`. The remaining open step is an unconditional
+   sign-sensitive estimate for `Σ_{m,h} Λ(m)Λ(m + h) m⁻¹ K(T h/m)` on `T < m ≤ T^{4/3}`, `0 < h ≪ m/T`
+   that breaks the unsigned parity barrier `Υ < 8/9` at `λ = 4/3`.
+4. **The exchange rate just above `λ = 1`.** The exact narrow-strip Cesàro energy identity, the
+   criterion `E(δ) < 2/(3δ) + 4/3` (`narrowStrip_beats_two_thirds_iff`), the `2`-adic parity collar
+   doubling the odd-odd close-pair vanishing threshold from `1/b` to `2/b`
+   (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`), and the quadratic `O(δ²)` sieve bound on
+   `[1/b, (1 + δ)/b]` (`sieved_closePrimePair_strip_bound`) are proved in
+   `NarrowStripClosePairEnergyAndExchangeRate`. The remaining open step is to transfer the finite-`T`
+   narrow-strip close-pair bound through the smooth-weighted grid assembly without losing the `O(δ)`
+   diagonal gain to the finite-height window tails.
 
 ### Research topics
 
 1. **Signed mixed mean values.** The identity of §3.2 is exact. Find which arithmetic structure of
    `C_g` and `C_1` (both prime Dirichlet polynomials of length `T^{4/3}`, one Fourier-weighted)
    makes their correlation over `[T, 2T]` smaller than the product of their sizes.
-2. **The coalescent band as a sieve problem.** Close pairs `|log(n/m)| ≲ T⁻¹` are prime pairs
-   `(m, m + h)` with `h ≪ m/T`. Determine what part of the Hardy–Littlewood main term enters the
-   surplus, and whether its sign is favourable before any error term is estimated.
-3. **Calibration.** Compute the surplus for model sequences with known pair statistics (random
-   models, Beurling primes, the function-field case) to see which features of the primes the
-   budget actually uses.
+2. **The coalescent band as a sieve problem (resolved in `CoalescentSieveAnatomyAndModelCalibration`).**
+   The continuum Poisson linear term cancels identically against the dyadic cosine kernel by the
+   Frullani identity (`integral_sin_div_two_mul`, `abs_integral_dyadic_frullani_le`), while the
+   Hardy–Littlewood singular-series logarithmic deficit `−½(y − l)` has strictly favourable negative
+   sign `−(L − l)³/12 < 0` before any error term is estimated (`hl_coalescent_deficit_integral`).
+3. **Calibration (resolved in `CoalescentSieveAnatomyAndModelCalibration`).** The general-`λ`
+   prime-surplus bridge (`frobeniusFormFactor_eq_diag_add_generalPrimeSurplusRatio`) and master
+   affine calibration formula (`generalPrimeSurplusRatio_affineTransModel`,
+   `calibration_five_models_four_thirds`) evaluate the surplus across five benchmark models:
+   Hardy–Littlewood / Function-Field / GUE (`−1/144 < 0`), Uncorrelated (`0`), Naive Poisson without
+   repulsion (`+1/16 > 1/18`, failing the budget by `1/144`), Spectral Sieve (`(9Υ − 10)/144 ≤ 1/18 ⟺ Υ ≤ 2`),
+   and Unsigned Additive Sieve (`Υ/16 ≤ 1/18 ⟺ Υ ≤ 8/9 < 1`).
 
 ---
 
@@ -402,3 +493,5 @@ To be built:
 | `HeightAveragedCoalescentLocalization` | oscillatory decay of height-averaged pair kernels; far pairs and sum frequencies negligible at fixed `L` |
 | `FejerWeightedPrimeMeanSquare` | Fejér mean square as an exact pair sum; Lorentz-weighted `(R + X)` mean value |
 | `SmoothGridWeightKernel` | grid kernel of a smooth height weight; Lipschitz comparison; Lorentz grid sums |
+| `CoalescentSieveAnatomyAndModelCalibration` | coalescent multiplicative-to-additive linearization; Frullani cancellation of the dyadic cosine kernel; HL logarithmic deficit negativity; general-`λ` prime-surplus bridge and five-model calibration |
+| `NarrowStripClosePairEnergyAndExchangeRate` | narrow-strip Cesàro energy and `2/3` escape criterion; exact sub-threshold close-pair vanishing; `2`-adic parity collar doubling (`X ≤ 2/b`); quadratic `O(δ²)` small-shift sieve strip bound |

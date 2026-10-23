@@ -108,13 +108,14 @@ theorem narrowStrip_beats_two_thirds_iff {F : ℝ → ℝ} {δ : ℝ} (hδ : 0 <
   have h1δ : 0 < 1 + δ := by linarith
   have hgain := narrowStrip_proportion_gain_eq hδ.ne' h1δ.ne' hF_cont hF_sub
   have hden : 0 < 3 * (1 + δ) ^ 2 := by positivity
+  have h3δ : 0 < 3 * δ := by positivity
+  have hid : 3 * δ * (2 / (3 * δ) + 4 / 3) = 2 + 4 * δ := by
+    have hcancel : 3 * δ * (2 / (3 * δ)) = 2 := mul_div_cancel₀ 2 h3δ.ne'
+    linarith
   have hiff1 : 2 / 3 < 2 - frobeniusFormFactor F (1 + δ) ↔
       narrowStripCesaroEnergy F δ < 2 / (3 * δ) + 4 / 3 := by
     have hsub : 2 - frobeniusFormFactor F (1 + δ) - 2 / 3
         = δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) := hgain
-    have h3δ : 0 < 3 * δ := by positivity
-    have heq : 2 / (3 * δ) + 4 / 3 = (2 + 4 * δ) / (3 * δ) := by field_simp; ring
-    rw [heq, lt_div_iff₀ h3δ]
     constructor
     · intro h
       have hpos : 0 < δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) := by
@@ -123,26 +124,34 @@ theorem narrowStrip_beats_two_thirds_iff {F : ℝ → ℝ} {δ : ℝ} (hδ : 0 <
         (div_pos_iff_of_pos_right hden).mp hpos
       have hpar : 0 < 2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ :=
         (mul_pos_iff_of_pos_left hδ).mp hnum
-      linarith
+      have hlt : 3 * δ * narrowStripCesaroEnergy F δ < 3 * δ * (2 / (3 * δ) + 4 / 3) := by linarith
+      exact lt_of_mul_lt_mul_left hlt h3δ.le
     · intro h
+      have hlt : 3 * δ * narrowStripCesaroEnergy F δ < 3 * δ * (2 / (3 * δ) + 4 / 3) :=
+        mul_lt_mul_of_pos_left h h3δ
       have hpar : 0 < 2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ := by linarith
       have hpos : 0 < δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) :=
         div_pos (mul_pos hδ hpar) hden
       linarith
   refine ⟨hiff1, hiff1.trans ?_⟩
   unfold narrowStripCesaroEnergy
-  have h2δ : 0 < 2 / δ ^ 2 := by positivity
+  have hδ2 : 0 < δ ^ 2 := sq_pos_of_pos hδ
+  have hid1 : δ ^ 2 * (2 / δ ^ 2 * transThresholdIntegral F (1 + δ))
+      = 2 * transThresholdIntegral F (1 + δ) := by
+    rw [← mul_assoc, mul_div_cancel₀ 2 hδ2.ne']
+  have hid2 : 3 * (δ ^ 2 * (2 / (3 * δ) + 4 / 3)) = 6 * (δ / 3 + 2 * δ ^ 2 / 3) := by
+    calc 3 * (δ ^ 2 * (2 / (3 * δ) + 4 / 3))
+        = δ * (3 * δ * (2 / (3 * δ) + 4 / 3)) := by ring
+      _ = δ * (2 + 4 * δ) := by rw [hid]
+      _ = 6 * (δ / 3 + 2 * δ ^ 2 / 3) := by ring
   constructor
   · intro h
-    have hm := mul_lt_mul_of_pos_left h (show 0 < δ ^ 2 / 2 by positivity)
-    have he1 : δ ^ 2 / 2 * (2 / δ ^ 2 * transThresholdIntegral F (1 + δ))
-        = transThresholdIntegral F (1 + δ) := by field_simp
-    have he2 : δ ^ 2 / 2 * (2 / (3 * δ) + 4 / 3) = δ / 3 + 2 * δ ^ 2 / 3 := by field_simp; ring
+    have hm := mul_lt_mul_of_pos_left h hδ2
     linarith
   · intro h
-    have hm := mul_lt_mul_of_pos_left h h2δ
-    have he2 : 2 / δ ^ 2 * (δ / 3 + 2 * δ ^ 2 / 3) = 2 / (3 * δ) + 4 / 3 := by field_simp; ring
-    linarith
+    have hm : δ ^ 2 * (2 / δ ^ 2 * transThresholdIntegral F (1 + δ))
+        < δ ^ 2 * (2 / (3 * δ) + 4 / 3) := by linarith
+    exact lt_of_mul_lt_mul_left hm hδ2.le
 
 /-- **Narrow-strip proportion gain in terms of the prime-side surplus ratio:**
 for `1 + δ ≠ 0`,

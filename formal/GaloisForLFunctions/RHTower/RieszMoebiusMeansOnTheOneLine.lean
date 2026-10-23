@@ -170,8 +170,9 @@ theorem exists_norm_deriv_invZetaCont_le :
     calc ‖deriv invZetaCont u‖ = ‖logDeriv riemannZeta u‖ * ‖invZetaCont u‖ := hnorm
       _ ≤ (C₀ * Real.log |t| ^ 2) * (K * Real.log (|t| + Real.exp 1) ^ 11) :=
           mul_le_mul hl hi (norm_nonneg _) (by positivity)
-      _ ≤ (C₀ * Real.log (|t| + Real.exp 1) ^ 2) * (K * Real.log (|t| + Real.exp 1) ^ 11) := by
-          gcongr
+      _ ≤ (C₀ * Real.log (|t| + Real.exp 1) ^ 2) * (K * Real.log (|t| + Real.exp 1) ^ 11) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsq hC₀.le)
+            (mul_nonneg hK.le (pow_nonneg (by linarith [one_le_log_add_exp_one t]) 11))
       _ = C₀ * K * Real.log (|t| + Real.exp 1) ^ 13 := by ring
       _ ≤ (max B 0 + C₀ * K + 1) * Real.log (|t| + Real.exp 1) ^ 13 := by
           gcongr
@@ -187,7 +188,7 @@ theorem exists_norm_invZetaCont_sub_le :
   refine ⟨C, hC, fun τ w hw0 hw1 hwi => ?_⟩
   set S := Icc (1 : ℝ) (9 / 8) ×ℂ Icc (τ - 1) (τ + 1) with hS
   have hmem0 : 1 + (τ : ℂ) * I ∈ S := by
-    rw [hS, Complex.mem_reProdIm]; simp
+    rw [hS, Complex.mem_reProdIm]; norm_num
   have hmem1 : 1 + (τ : ℂ) * I + w ∈ S := by
     rw [hS, Complex.mem_reProdIm]
     simp only [Complex.add_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re,

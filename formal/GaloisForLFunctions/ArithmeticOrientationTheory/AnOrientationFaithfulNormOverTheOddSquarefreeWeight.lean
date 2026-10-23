@@ -471,7 +471,7 @@ theorem abs_flipKernelOf_le (k : ℕ → ℝ) (j : ℕ) (x : ℝ) (hx : 0 ≤ x)
   rw [← add_mul, ← add_mul]
   refine mul_le_mul_of_nonneg_right ?_ hx
   unfold flipKernelOf
-  exact (abs_sub _ _).trans (add_le_add_right (abs_add_le _ _) _)
+  exact (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
 
 /-- The flip keeps admissibility. -/
 theorem OrientAdmissible.flip {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
