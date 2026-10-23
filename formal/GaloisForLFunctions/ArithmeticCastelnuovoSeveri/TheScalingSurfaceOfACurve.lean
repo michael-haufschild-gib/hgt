@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheFrobeniusSpanDefectCountsTheOuterEigenvalues
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeDefectCountsTheRightZeros
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheKroneckerRankDichotomy
 import GaloisForLFunctions.RHTower.ZeroLatticeDepthNyquistLaw
 import GaloisForLFunctions.RHTower.IsolatedDeepZeroWeilDetection
 
@@ -210,17 +210,16 @@ def curveConfig (hD : ∀ i, ‖D.β i‖ ≤ D.sqrtq) : ZeroConfig where
   mult_reflect := by
     rintro _ ⟨⟨i, k⟩, rfl⟩
     rw [D.reflect_zetaZero, D.cpow_zetaZero, D.cpow_zetaZero]
-    refine Finset.card_bij (fun j _ => D.reflPerm.symm j) (fun j hj => ?_) (fun _ _ _ _ h =>
-      D.reflPerm.symm.injective h) (fun j hj => ⟨D.reflPerm j, ?_, by simp⟩)
+    refine Finset.card_bij (fun j _ => D.reflPerm j) (fun j hj => ?_)
+      (fun _ _ _ _ h => D.reflPerm.injective h) (fun j hj => ⟨D.reflPerm.symm j, ?_, by simp⟩)
     · have hj' := (Finset.mem_filter.mp hj).2
       refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
-      have := congrArg circleReflect hj'
-      rw [D.β_reflPerm, circleReflect_circleReflect, ← D.β_reflPerm,
-        Equiv.apply_symm_apply] at this
-      rw [this, D.β_reflPerm, circleReflect_circleReflect]
+      rw [D.β_reflPerm j, ← hj', D.β_reflPerm, circleReflect_circleReflect]
     · have hj' := (Finset.mem_filter.mp hj).2
       refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
-      rw [D.β_reflPerm, ← hj']
+      have h1 : D.β j = circleReflect (D.β (D.reflPerm.symm j)) := by
+        rw [← D.β_reflPerm, Equiv.apply_symm_apply]
+      rw [D.β_reflPerm, hj', h1, circleReflect_circleReflect]
   finite_window := by
     intro T₁ T₂
     refine (Set.finite_iUnion fun i : ι => (RHTower.finite_latticeWindow D.period_pos
@@ -242,56 +241,63 @@ theorem mem_curveConfig_iff {ρ : ℂ} :
     obtain ⟨k, hk⟩ := D.exists_zetaZero_eq h
     exact ⟨⟨i, k⟩, hk⟩
 
+theorem curveConfig_mult_le (ρ : ℂ) : (D.curveConfig hD).mult ρ ≤ Fintype.card ι :=
+  (Finset.card_filter_le _ _).trans_eq Finset.card_univ
+
+/-- The weight of `ρ_{i,k}` in the temperedness sum is at most `C/(1 + |k|)²`. -/
+theorem curveWeight_le (i : ι) (k : ℤ) :
+    ((D.curveConfig hD).mult (D.zetaZero i k) : ℝ) /
+        (1 + Complex.normSq (gammaOf (D.zetaZero i k))) ≤
+      Fintype.card ι * (2 / min 1 ((D.period / 2) ^ 2)) * (1 / (1 + |(k : ℝ)|) ^ 2) := by
+  set c := D.period / 2 with hc
+  have hc0 : 0 < c := by have := D.period_pos; positivity
+  set m := min 1 (c ^ 2) with hm
+  have hm0 : 0 < m := lt_min one_pos (by positivity)
+  have hm1 : m ≤ 1 := min_le_left _ _
+  have hm2 : m ≤ c ^ 2 := min_le_right _ _
+  have hmult : ((D.curveConfig hD).mult (D.zetaZero i k) : ℝ) ≤ Fintype.card ι := by
+    exact_mod_cast D.curveConfig_mult_le hD _
+  -- `|γ|² ≥ (Im ρ)²` and `(Im ρ_{i,k})² ≥ (k c)²`
+  have hγ : (D.zetaZero i k).im ^ 2 ≤ Complex.normSq (gammaOf (D.zetaZero i k)) := by
+    rw [gammaOf, Complex.normSq_div, Complex.normSq_I, div_one, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.sub_im]
+    norm_num
+    nlinarith [sq_nonneg ((D.zetaZero i k).re - 1 / 2)]
+  have hk : ((k : ℝ) * c) ^ 2 ≤ (D.zetaZero i k).im ^ 2 := D.sq_le_sq_im_zetaZero i k
+  set x : ℝ := (k : ℝ)
+  set N := Complex.normSq (gammaOf (D.zetaZero i k))
+  have hN : 0 ≤ N := Complex.normSq_nonneg _
+  have hsq : (1 + |x|) ^ 2 ≤ 2 * (1 + x ^ 2) := by nlinarith [sq_abs x, sq_nonneg (|x| - 1)]
+  have hcx : m * x ^ 2 ≤ (x * c) ^ 2 := by rw [mul_pow]; nlinarith [sq_nonneg x]
+  have h2 := mul_le_mul_of_nonneg_left hsq (show 0 ≤ m / 2 by linarith)
+  have hlow : m / 2 * (1 + |x|) ^ 2 ≤ 1 + N := by nlinarith
+  have hden : 0 < 1 + N := by linarith
+  have hpos : 0 < (1 + |x|) ^ 2 := by positivity
+  rw [div_le_iff₀ hden]
+  calc ((D.curveConfig hD).mult (D.zetaZero i k) : ℝ) ≤ Fintype.card ι := hmult
+    _ = Fintype.card ι * (2 / m) * (1 / (1 + |x|) ^ 2) * (m / 2 * (1 + |x|) ^ 2) := by
+        field_simp
+    _ ≤ Fintype.card ι * (2 / m) * (1 / (1 + |x|) ^ 2) * (1 + N) := by gcongr
+
 /-- **The zero configuration of a curve is tempered.** -/
 theorem temperedConfig_curveConfig : TemperedConfig (D.curveConfig hD) := by
-  classical
-  set Z := D.curveConfig hD
-  have hP := D.period_pos
-  set c : ℝ := D.period / 2 with hc
-  have hc0 : 0 < c := by positivity
-  set m : ℝ := min 1 (c ^ 2) with hm
-  have hm0 : 0 < m := lt_min one_pos (by positivity)
-  -- each zero has an index `(i, k)`
-  have hex : ∀ ρ : Z.carrier, ∃ p : ι × ℤ, D.zetaZero p.1 p.2 = ρ := fun ρ => ρ.2
+  have hex : ∀ ρ : (D.curveConfig hD).carrier, ∃ p : ι × ℤ, D.zetaZero p.1 p.2 = ρ :=
+    fun ρ => ρ.2
   choose e he using hex
   have hinj : Function.Injective e := fun ρ σ h => Subtype.ext (by rw [← he ρ, ← he σ, h])
-  set F : ι × ℤ → ℝ := fun p =>
-    (Z.mult (D.zetaZero p.1 p.2) : ℝ) / (1 + Complex.normSq (gammaOf (D.zetaZero p.1 p.2)))
-  have hbound : ∀ p : ι × ℤ, F p ≤ (Fintype.card ι * (2 / m)) * (1 * (1 / (1 + |(p.2 : ℝ)|) ^ 2)) := by
-    rintro ⟨i, k⟩
-    have hmult : (Z.mult (D.zetaZero i k) : ℝ) ≤ Fintype.card ι := by
-      exact_mod_cast (Finset.card_filter_le _ _).trans (by simp)
-    have hγ : (D.zetaZero i k).im ^ 2 ≤ Complex.normSq (gammaOf (D.zetaZero i k)) := by
-      rw [gammaOf, Complex.normSq_div, Complex.normSq_I, div_one, Complex.normSq_apply]
-      simp only [Complex.sub_re, Complex.sub_im]
-      norm_num
-      nlinarith [sq_nonneg ((D.zetaZero i k).re - 1 / 2)]
-    have hk := D.sq_le_sq_im_zetaZero i k
-    set x : ℝ := (k : ℝ)
-    have hlow : m / 2 * (1 + |x|) ^ 2 ≤ 1 + Complex.normSq (gammaOf (D.zetaZero i k)) := by
-      have hsq : (1 + |x|) ^ 2 ≤ 2 * (1 + x ^ 2) := by
-        nlinarith [sq_abs x, sq_nonneg (|x| - 1)]
-      have hcx : m * x ^ 2 ≤ (x * c) ^ 2 := by
-        rw [mul_pow]
-        nlinarith [sq_nonneg x, min_le_right 1 (c ^ 2)]
-      nlinarith [min_le_left 1 (c ^ 2)]
-    have hden : 0 < 1 + Complex.normSq (gammaOf (D.zetaZero i k)) := by
-      have := Complex.normSq_nonneg (gammaOf (D.zetaZero i k)); linarith
-    have hpos : 0 < (1 + |x|) ^ 2 := by positivity
-    simp only [F]
-    rw [div_le_iff₀ hden]
-    calc (Z.mult (D.zetaZero i k) : ℝ) ≤ Fintype.card ι := hmult
-      _ = (Fintype.card ι * (2 / m)) * (1 * (1 / (1 + |x|) ^ 2)) * (m / 2 * (1 + |x|) ^ 2) := by
-          field_simp
-      _ ≤ _ := by gcongr
-  have hsum : Summable F := by
-    refine Summable.of_nonneg_of_le (fun p => by positivity) hbound ?_
-    refine Summable.mul_left _ (Summable.mul_of_nonneg (f := fun _ : ι => (1 : ℝ))
-      (hasSum_fintype _).summable RHTower.hasSum_inv_one_add_abs_sq.summable
-      (fun _ => zero_le_one) (fun k => by positivity))
-  have := hsum.comp_injective hinj
-  refine this.congr fun ρ => ?_
-  simp only [Function.comp_apply, F, he ρ]
+  set C : ℝ := Fintype.card ι * (2 / min 1 ((D.period / 2) ^ 2))
+  have h1 : Summable fun _ : ι => (1 : ℝ) := (hasSum_fintype fun _ : ι => (1 : ℝ)).summable
+  have hg : Summable fun p : ι × ℤ => C * (1 * (1 / (1 + |(p.2 : ℝ)|) ^ 2)) :=
+    (h1.mul_of_nonneg RHTower.hasSum_inv_one_add_abs_sq.summable (fun _ => zero_le_one)
+      (fun _ => by positivity)).mul_left C
+  have hF : Summable fun p : ι × ℤ => ((D.curveConfig hD).mult (D.zetaZero p.1 p.2) : ℝ) /
+      (1 + Complex.normSq (gammaOf (D.zetaZero p.1 p.2))) := by
+    refine Summable.of_nonneg_of_le (fun p => div_nonneg (Nat.cast_nonneg _)
+      (add_nonneg zero_le_one (Complex.normSq_nonneg _))) (fun p => ?_) hg
+    rw [one_mul]
+    exact D.curveWeight_le hD p.1 p.2
+  refine (hF.comp_injective hinj).congr fun ρ => ?_
+  simp only [Function.comp_apply, he ρ]
 
 theorem rightZeros_curveConfig_nonempty_iff :
     (rightZeros (D.curveConfig hD)).Nonempty ↔ D.outerSpectrum.Nonempty := by

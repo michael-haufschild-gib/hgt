@@ -49,7 +49,7 @@ range `0 < ε ≤ 1/2`:
    for both weights.
 -/
 
-open Finset Filter Topology Set
+open Finset Filter Topology
 open GaloisForLFunctions.BezoutValuationIncidence
 open _root_.RHTower
 open scoped BigOperators
@@ -477,13 +477,13 @@ theorem tsum_criticalWiener_dampedSquare_le {ε₀ ε : ℝ} (hε₀ : 0 < ε₀
   have hε : 0 < ε := hε₀.trans_le hε_ge
   refine Summable.tsum_le_tsum (fun q => ?_) (criticalWiener_dampedSquare hε)
     (criticalWiener_dampedSquare hε₀)
-  refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg q) _)
-  simp only [dampedSignWeight]
-  rw [abs_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg q) _),
-    abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg q) _)]
   rcases Nat.eq_zero_or_pos q with rfl | hq
-  · simp [RHTower.squareIndicatorR]
-  · have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
+  · simp [dampedSignWeight, RHTower.squareIndicatorR]
+  · refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg (Nat.cast_nonneg q) _)
+    simp only [dampedSignWeight]
+    rw [abs_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg q) _),
+      abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg q) _)]
+    have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hq
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hq1 (by linarith))
       (abs_nonneg _)
 
@@ -494,8 +494,11 @@ theorem abs_dampedDensity_le_of_le {ε₀ ε : ℝ} (hε₀ : 0 < ε₀) (hε_ge
   rw [dampedDensity_eq_tsum hε, ← pmPowerDampedRealWeight_eq_dampedSignWeight]
   have hs0 : Summable (fun d : ℕ => (d : ℝ) ^ (-(1 + ε₀))) :=
     Real.summable_nat_rpow.mpr (by linarith)
-  refine (abs_tsum_le_tsum_abs' (summable_abs_pmPowerDamped_div hε)).trans
-    (Summable.tsum_le_tsum (fun d => ?_) (summable_abs_pmPowerDamped_div hε) hs0)
+  have habs : |∑' d : ℕ, pmPowerDampedRealWeight ε d / d| ≤
+      ∑' d : ℕ, |pmPowerDampedRealWeight ε d / d| := by
+    simpa only [Real.norm_eq_abs] using
+      norm_tsum_le_tsum_norm (by simpa only [Real.norm_eq_abs] using summable_abs_pmPowerDamped_div hε)
+  refine habs.trans (Summable.tsum_le_tsum (fun d => ?_) (summable_abs_pmPowerDamped_div hε) hs0)
   rcases Nat.eq_zero_or_pos d with rfl | hd
   · simp [pmPowerDampedRealWeight, Real.zero_rpow (show -(1 + ε₀) ≠ 0 by linarith)]
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
@@ -534,7 +537,7 @@ theorem exists_liouville_receiver_le_on_zeroFreeBand_of_pos {ε₀ : ℝ} (hε�
       (hasSum_pmPowerDampedRealWeight_div hε) hgW.summable_abs_div
       (summable_abs_pmPowerDamped_div hε)).tsum_eq]
   rw [hmean, hconv, weightPronicEnergy_eq_sq_pronicNorm]
-  have hnorm := pronicNorm_dirichletConv_le hgW (dampedDensity ε) T
+  have hnorm := pronicNorm_dirichletConv_le (c := c) hgW (dampedDensity ε) T
   have hAc : pronicNorm (weightCenteredPrefix c (dampedDensity ε)) T ≤ Real.sqrt (max Eμ 0) := by
     rw [← Real.sqrt_sq (pronicNorm_nonneg _ T), ← weightPronicEnergy_eq_sq_pronicNorm,
       weightPronicEnergy_pmPowerDamped]
@@ -572,7 +575,7 @@ theorem receiverBounded_dampedSign_of_partialSum_rpow {s : ℕ → ℝ} {β C ε
     (hε : β / 2 < ε) :
     ReceiverBounded (dampedSignWeight s ε) := by
   have hε0 : 0 < ε := by linarith
-  rcases gt_or_ge ε (1 / 2) with hgt | hε2
+  rcases lt_or_ge (1 / 2) ε with hgt | hε2
   · obtain ⟨E, hE⟩ := (uniformReceiverBound_iff_half_lt (K := 1) one_pos hε0).mpr hgt
     refine ⟨E, hE _ fun d => ?_⟩
     rw [dampedSignWeight, one_mul, abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
@@ -758,9 +761,9 @@ theorem setOf_pos_and_receiverBounded_liouville_eq_receiverDampings :
     {ε : ℝ | 0 < ε ∧ ReceiverBounded (dampedSignWeight RHTower.liouvilleR ε)} =
       receiverDampings := by
   ext ε
-  simp only [mem_setOf_eq]
+  simp only [Set.mem_setOf_eq]
   refine and_congr_right fun hε => ?_
-  rw [← receiverBounded_moebius_iff_liouville hε, mem_receiverDampings_iff_receiverBounded hε]
+  rw [← receiverBounded_moebius_iff_liouville hε, ← mem_receiverDampings_iff_receiverBounded hε]
 
 /-- **The Liouville receiver damping rate equals the zero width `Θ - 1/2`.** -/
 theorem sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half :
@@ -791,3 +794,16 @@ theorem riemannHypothesis_iff_forall_pos_receiverBounded_liouville :
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.abs_weightCenteredPrefix_dampedSign_le_of_linear_pos
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_abs_weightCenteredPrefix_pmPowerDamped_le_all_pos
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_receiver_le_on_zeroFreeBand_of_pos
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_liouville_receiver_le_on_zeroFreeBand_of_pos
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.exists_liouville_receiver_le_on_zeroFreeBand
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_dampedSign_of_partialSum_rpow
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_moebius_of_zetaZeroAbscissa_sub_half_lt
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_liouville_of_zetaZeroAbscissa_sub_half_lt
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.liouville_parityPair_of_zetaZeroAbscissa_sub_half_lt
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.riemannHypothesis_iff_forall_pos_receiverBounded_moebius
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.riemannHypothesis_iff_forall_pos_receiverBounded_liouville
+

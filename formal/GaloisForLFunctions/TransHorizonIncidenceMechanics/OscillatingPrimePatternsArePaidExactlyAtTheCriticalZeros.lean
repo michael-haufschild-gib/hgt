@@ -186,6 +186,114 @@ theorem receiverBounded_oscWeight_one_of_zero {t₀ : ℝ} (ht₀ : 0 < t₀)
 
 /-! ### A nonzero critical value leaves the boundary unpaid -/
 
+/-- The closing algebra of the lower bound: `|ζ(s)| ≥ c₀`, `0 < |s| ≤ S₁`, `P²/2 − m² ≤ Y²` and
+`K ≤ P²` give `(c₀/S₁)²(K/2 − m²) ≤ (|ζ(s)| Y/|s|)²`. -/
+theorem sq_div_ge_of_bounds {Z Y s c₀ S₁ Pn m K : ℝ} (hc₀ : 0 < c₀) (hZ : c₀ ≤ Z) (hs0 : 0 < s)
+    (hs1 : s ≤ S₁) (hY : 0 ≤ Y) (hYP : Pn ^ 2 / 2 - m ^ 2 ≤ Y ^ 2) (hP : K ≤ Pn ^ 2) :
+    (c₀ / S₁) ^ 2 * (K / 2 - m ^ 2) ≤ (Z * Y / s) ^ 2 := by
+  have hS₁ : 0 < S₁ := lt_of_lt_of_le hs0 hs1
+  have hlow : c₀ * Y / S₁ ≤ Z * Y / s := by
+    rw [div_le_div_iff₀ hS₁ hs0]
+    have h := mul_le_mul hZ hs1 hs0.le (hc₀.le.trans hZ)
+    nlinarith [mul_le_mul_of_nonneg_right h hY]
+  have hsq := pow_le_pow_left₀ (by positivity) hlow 2
+  have e1 : (c₀ * Y / S₁) ^ 2 = (c₀ / S₁) ^ 2 * Y ^ 2 := by ring
+  have h3 : K / 2 - m ^ 2 ≤ Y ^ 2 := by linarith
+  have h4 := mul_le_mul_of_nonneg_left h3 (sq_nonneg (c₀ / S₁))
+  rw [e1] at hsq
+  linarith
+
+/-- **The pointwise lower bound at `s = 1/2 + u + i(t₀ + τ)`**, given the local bounds on `ζ` near the
+pole, near `s₀ = 1/2 + it₀` and near `1 + 2it₀`: with `c₀ = |ζ(s₀)|/2`, `c_q = |ζ(1 + 2it₀)|/2`,
+`S₁ = |s₀| + 1`, the line integrand is `≥ (c₀/S₁)² (e^{-4S} c_q/(4(u + τ)) − m²)`. -/
+theorem lineIntegrand_oscWeight_one_ge_of {t₀ ρ r₀ rq u τ : ℝ}
+    (hζ1 : ∀ w : ℂ, w ≠ 1 → ‖w - 1‖ < ρ → 1 / (2 * ‖w - 1‖) ≤ ‖riemannZeta w‖)
+    (hζ0 : ∀ s : ℂ, ‖s - (1 / 2 + t₀ * I)‖ < r₀ →
+      ‖riemannZeta (1 / 2 + t₀ * I)‖ / 2 < ‖riemannZeta s‖)
+    (hζp : ∀ s : ℂ, ‖s - (1 + 2 * t₀ * I)‖ < rq →
+      ‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 < ‖riemannZeta s‖)
+    (hc₀ : 0 < ‖riemannZeta (1 / 2 + t₀ * I)‖) (hcq : 0 < ‖riemannZeta (1 + 2 * t₀ * I)‖)
+    (hu : 0 < u) (hτ : 0 ≤ τ) (hρ : u + τ < ρ) (h0 : u + τ < r₀) (hq : u + τ < rq)
+    (h1 : u + τ ≤ 1) :
+    ((‖riemannZeta (1 / 2 + t₀ * I)‖ / 2) / (‖(1 / 2 + t₀ * I : ℂ)‖ + 1)) ^ 2 *
+        (Real.exp (-(4 * primeSquareMass)) *
+            (‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 / (2 * (u + τ))) / 2 -
+          (∑' d : ℕ, oscWeight 1 t₀ d / d) ^ 2) ≤
+      lineIntegrand (oscWeight 1 t₀) (∑' d : ℕ, oscWeight 1 t₀ d / d) (1 / 2 + u) (t₀ + τ) := by
+  set m : ℝ := ∑' d : ℕ, oscWeight 1 t₀ d / d
+  set S := primeSquareMass
+  set s : ℂ := (((1 / 2 + u : ℝ)) : ℂ) + ((t₀ + τ : ℝ) : ℂ) * I
+  have hss₀ : s - (1 / 2 + t₀ * I) = (u : ℂ) + τ * I := by simp only [s]; push_cast; ring
+  have hnorm_ut : ‖(u : ℂ) + τ * I‖ ≤ u + τ := by
+    have := Complex.norm_le_abs_re_add_abs_im ((u : ℂ) + τ * I)
+    simpa [abs_of_pos hu, abs_of_nonneg hτ] using this
+  have hnorm_ut0 : u ≤ ‖(u : ℂ) + τ * I‖ := by
+    have := Complex.abs_re_le_norm ((u : ℂ) + τ * I)
+    simpa [abs_of_pos hu] using this
+  have hut : 0 < u + τ := by linarith
+  -- `|ζ(s)| > c₀` and `0 < |s| ≤ S₁`
+  have hζs := hζ0 s (by rw [hss₀]; linarith)
+  have hs1 : ‖s‖ ≤ ‖(1 / 2 + t₀ * I : ℂ)‖ + 1 := by
+    have h : ‖s‖ ≤ ‖(1 / 2 + t₀ * I : ℂ)‖ + ‖s - (1 / 2 + t₀ * I)‖ := by
+      calc ‖s‖ = ‖(1 / 2 + t₀ * I : ℂ) + (s - (1 / 2 + t₀ * I))‖ := by congr 1; ring
+        _ ≤ _ := norm_add_le _ _
+    rw [hss₀] at h
+    linarith
+  have hsre : s.re = 1 / 2 + u := by simp [s]
+  have hs0 : 0 < ‖s‖ := by
+    have := Complex.abs_re_le_norm s
+    rw [hsre, abs_of_pos (by linarith)] at this
+    linarith
+  -- the two `ζ` factors of the series at `w = s + 1/2`
+  have hwre : 1 < (s + 1 / 2).re := by rw [Complex.add_re, hsre]; norm_num; linarith
+  have hwm : s + 1 / 2 - t₀ * I - 1 = (u : ℂ) + τ * I := by rw [← hss₀]; ring
+  have hwp : s + 1 / 2 + t₀ * I - (1 + 2 * t₀ * I) = (u : ℂ) + τ * I := by rw [← hss₀]; ring
+  have hwm1 : s + 1 / 2 - t₀ * I ≠ 1 := by
+    intro h
+    have h0 : s + 1 / 2 - t₀ * I - 1 = 0 := by rw [h, sub_self]
+    rw [hwm] at h0
+    rw [h0, norm_zero] at hnorm_ut0
+    linarith
+  have hZm : 1 / (2 * (u + τ)) ≤ ‖riemannZeta (s + 1 / 2 - t₀ * I)‖ := by
+    have h := hζ1 (s + 1 / 2 - t₀ * I) hwm1 (by rw [hwm]; linarith)
+    rw [hwm] at h
+    exact le_trans (one_div_le_one_div_of_le (by linarith) (by linarith)) h
+  have hZp := hζp (s + 1 / 2 + t₀ * I) (by rw [hwp]; linarith)
+  have hprod : ‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 / (2 * (u + τ)) ≤
+      ‖riemannZeta (s + 1 / 2 - t₀ * I)‖ * ‖riemannZeta (s + 1 / 2 + t₀ * I)‖ := by
+    calc ‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 / (2 * (u + τ))
+        = 1 / (2 * (u + τ)) * (‖riemannZeta (1 + 2 * t₀ * I)‖ / 2) := by ring
+      _ ≤ _ := mul_le_mul hZm hZp.le (by positivity) (norm_nonneg _)
+  -- `|C(s)|² ≥ e^{-4S} |ζ(w − it₀)| |ζ(w + it₀)|`
+  have hP := (norm_oscSeries_le_ge (a := 1) (by norm_num) t₀ hwre).2
+  set Pn := ‖∑' n : ℕ, (oscPattern 1 t₀ n : ℂ) * ((n : ℝ) : ℂ) ^ (-(s + 1 / 2))‖
+  have hP2 : Real.exp (-(4 * S)) * (‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 / (2 * (u + τ))) ≤
+      Pn ^ 2 := by
+    have h0 : 0 ≤ Real.exp (-(2 * S)) * (‖riemannZeta (s + 1 / 2 - t₀ * I)‖ *
+        ‖riemannZeta (s + 1 / 2 + t₀ * I)‖) ^ (1 / 2 : ℝ) := by positivity
+    have h := pow_le_pow_left₀ h0 hP 2
+    rw [mul_pow, rpow_half_sq (by positivity), ← Real.exp_nat_mul,
+      show ((2 : ℕ) : ℝ) * -(2 * S) = -(4 * S) by push_cast; ring] at h
+    exact le_trans (mul_le_mul_of_nonneg_left hprod (Real.exp_pos _).le) h
+  -- `|C(s) − m|² ≥ |C(s)|²/2 − m²`
+  set Y := ‖weightDirichletSeries (oscWeight 1 t₀) s - (m : ℂ)‖
+  have hPY : Pn ≤ Y + |m| := by
+    have h := norm_sub_norm_le (weightDirichletSeries (oscWeight 1 t₀) s) (m : ℂ)
+    have hW : ‖weightDirichletSeries (oscWeight 1 t₀) s‖ = Pn := by
+      rw [weightDirichletSeries_oscWeight]
+    rw [hW, Complex.norm_real, Real.norm_eq_abs] at h
+    linarith
+  have hY0 : 0 ≤ Y := norm_nonneg _
+  have hYP : Pn ^ 2 / 2 - m ^ 2 ≤ Y ^ 2 := by
+    have h := pow_le_pow_left₀ (norm_nonneg _) hPY 2
+    nlinarith [sq_nonneg (Y - |m|), sq_abs m]
+  have hint : lineIntegrand (oscWeight 1 t₀) m (1 / 2 + u) (t₀ + τ) =
+      (‖riemannZeta s‖ * Y / ‖s‖) ^ 2 := by
+    simp only [lineIntegrand, norm_div, norm_mul]
+    rfl
+  rw [hint]
+  exact sq_div_ge_of_bounds (by positivity) hζs.le hs0 hs1 hY0 hYP hP2
+
 /-- **Off-axis lower bound at a nonzero critical value.** If `t₀ > 0` and `ζ(1/2 + it₀) ≠ 0`, there
 are `r, κ > 0` and `C'` with `κ/(u + τ) − C' ≤` the line integrand of `cos(t₀ log p)` at
 `s = 1/2 + u + i(t₀ + τ)`, for `0 < u ≤ r`, `0 ≤ τ ≤ r`. -/
@@ -203,15 +311,8 @@ theorem exists_lineIntegrand_oscWeight_one_ge {t₀ : ℝ} (ht₀ : 0 < t₀)
   obtain ⟨ρ, hρ, hζ1⟩ := exists_norm_zeta_ge_near_one
   obtain ⟨r₀, hr₀, hζ0⟩ := exists_norm_zeta_gt_near hs₀1 hz
   obtain ⟨rq, hrq, hζp⟩ := exists_norm_zeta_gt_near hq1 hqz
-  set m : ℝ := ∑' d : ℕ, oscWeight 1 t₀ d / d
-  have hc₀ : 0 < ‖riemannZeta (1 / 2 + t₀ * I)‖ / 2 := by have := norm_pos_iff.mpr hz; positivity
-  have hcq : 0 < ‖riemannZeta (1 + 2 * t₀ * I)‖ / 2 := by
-    have := norm_pos_iff.mpr hqz; positivity
-  set c₀ : ℝ := ‖riemannZeta (1 / 2 + t₀ * I)‖ / 2
-  set cq : ℝ := ‖riemannZeta (1 + 2 * t₀ * I)‖ / 2
-  have hS₁ : 0 < ‖(1 / 2 + t₀ * I : ℂ)‖ + 1 := by positivity
-  set S₁ : ℝ := ‖(1 / 2 + t₀ * I : ℂ)‖ + 1
-  set S := primeSquareMass
+  have hc₀ := norm_pos_iff.mpr hz
+  have hcq := norm_pos_iff.mpr hqz
   have hmin : 0 < min (min ρ r₀) rq := lt_min (lt_min hρ hr₀) hrq
   set r : ℝ := min (min (min ρ r₀) rq / 4) (1 / 4)
   have hr : 0 < r := lt_min (by positivity) (by norm_num)
@@ -222,91 +323,15 @@ theorem exists_lineIntegrand_oscWeight_one_ge {t₀ : ℝ} (ht₀ : 0 < t₀)
   have hrρ : 2 * r < ρ := lt_of_lt_of_le hr' ((min_le_left _ _).trans (min_le_left _ _))
   have hr0 : 2 * r < r₀ := lt_of_lt_of_le hr' ((min_le_left _ _).trans (min_le_right _ _))
   have hrp : 2 * r < rq := lt_of_lt_of_le hr' (min_le_right _ _)
-  refine ⟨r, (c₀ / S₁) ^ 2 * Real.exp (-(4 * S)) * cq / 4, (c₀ / S₁) ^ 2 * m ^ 2, hr, hr4,
-    by positivity, fun u τ hu hur hτ hτr => ?_⟩
-  set s : ℂ := (((1 / 2 + u : ℝ)) : ℂ) + ((t₀ + τ : ℝ) : ℂ) * I
-  have hss₀ : s - (1 / 2 + t₀ * I) = (u : ℂ) + τ * I := by simp only [s]; push_cast; ring
-  have hnorm_ut : ‖(u : ℂ) + τ * I‖ ≤ u + τ := by
-    have := Complex.norm_le_abs_re_add_abs_im ((u : ℂ) + τ * I)
-    simpa [abs_of_pos hu, abs_of_nonneg hτ] using this
-  have hnorm_ut0 : u ≤ ‖(u : ℂ) + τ * I‖ := by
-    have := Complex.abs_re_le_norm ((u : ℂ) + τ * I)
-    simpa [abs_of_pos hu] using this
-  have hut : 0 < u + τ := by linarith
-  -- `|ζ(s)| > c₀`, `0 < |s| ≤ S₁`
-  have hζs : c₀ < ‖riemannZeta s‖ := hζ0 s (by rw [hss₀]; linarith)
-  have hs1 : ‖s‖ ≤ S₁ := by
-    have h : ‖s‖ ≤ ‖(1 / 2 + t₀ * I : ℂ)‖ + ‖s - (1 / 2 + t₀ * I)‖ := by
-      calc ‖s‖ = ‖(1 / 2 + t₀ * I : ℂ) + (s - (1 / 2 + t₀ * I))‖ := by ring_nf
-        _ ≤ _ := norm_add_le _ _
-    rw [hss₀] at h
-    simp only [S₁]; linarith
-  have hsre : s.re = 1 / 2 + u := by simp [s]
-  have hs0 : 0 < ‖s‖ := by
-    have := Complex.abs_re_le_norm s
-    rw [hsre, abs_of_pos (by linarith)] at this
-    linarith
-  -- the series at `w = s + 1/2`
-  have hwre : 1 < (s + 1 / 2).re := by rw [Complex.add_re, hsre]; norm_num; linarith
-  have hwm : s + 1 / 2 - t₀ * I - 1 = (u : ℂ) + τ * I := by rw [← hss₀]; ring
-  have hwp : s + 1 / 2 + t₀ * I - (1 + 2 * t₀ * I) = (u : ℂ) + τ * I := by rw [← hss₀]; ring
-  have hwm1 : s + 1 / 2 - t₀ * I ≠ 1 := by
-    intro h
-    have h0 : s + 1 / 2 - t₀ * I - 1 = 0 := by rw [h, sub_self]
-    rw [hwm] at h0
-    rw [h0, norm_zero] at hnorm_ut0
-    linarith
-  have hZm : 1 / (2 * (u + τ)) ≤ ‖riemannZeta (s + 1 / 2 - t₀ * I)‖ := by
-    have h := hζ1 (s + 1 / 2 - t₀ * I) hwm1 (by rw [hwm]; linarith)
-    rw [hwm] at h
-    exact le_trans (one_div_le_one_div_of_le (by positivity) (by linarith)) h
-  have hZp : cq < ‖riemannZeta (s + 1 / 2 + t₀ * I)‖ := hζp _ (by rw [hwp]; linarith)
-  have hprod : cq / (2 * (u + τ)) ≤
-      ‖riemannZeta (s + 1 / 2 - t₀ * I)‖ * ‖riemannZeta (s + 1 / 2 + t₀ * I)‖ := by
-    calc cq / (2 * (u + τ)) = 1 / (2 * (u + τ)) * cq := by ring
-      _ ≤ _ := mul_le_mul hZm hZp.le hcq.le (norm_nonneg _)
-  have hP := (norm_oscSeries_le_ge (a := 1) (by norm_num) t₀ hwre).2
-  set Pn := ‖∑' n : ℕ, (oscPattern 1 t₀ n : ℂ) * ((n : ℝ) : ℂ) ^ (-(s + 1 / 2))‖
-  have hP2 : Real.exp (-(4 * S)) * (cq / (2 * (u + τ))) ≤ Pn ^ 2 := by
-    have h0 : 0 ≤ Real.exp (-(2 * S)) * (‖riemannZeta (s + 1 / 2 - t₀ * I)‖ *
-        ‖riemannZeta (s + 1 / 2 + t₀ * I)‖) ^ (1 / 2 : ℝ) := by positivity
-    have h := pow_le_pow_left₀ h0 hP 2
-    rw [mul_pow, rpow_half_sq (by positivity), ← Real.exp_nat_mul,
-      show ((2 : ℕ) : ℝ) * -(2 * S) = -(4 * S) by push_cast; ring] at h
-    exact le_trans (mul_le_mul_of_nonneg_left hprod (Real.exp_pos _).le) h
-  -- assemble the integrand
-  set Y := ‖weightDirichletSeries (oscWeight 1 t₀) s - (m : ℂ)‖
-  have hPY : Pn ≤ Y + |m| := by
-    have h := norm_sub_norm_le (weightDirichletSeries (oscWeight 1 t₀) s) (m : ℂ)
-    have hW : ‖weightDirichletSeries (oscWeight 1 t₀) s‖ = Pn := by
-      rw [weightDirichletSeries_oscWeight]
-    rw [hW, Complex.norm_real, Real.norm_eq_abs] at h
-    linarith
-  have hY0 : 0 ≤ Y := norm_nonneg _
-  have hP0 : 0 ≤ Pn := norm_nonneg _
-  have hYP : Pn ^ 2 / 2 - m ^ 2 ≤ Y ^ 2 := by
-    have h := pow_le_pow_left₀ hP0 hPY 2
-    nlinarith [sq_nonneg (Y - |m|), sq_abs m]
-  have hint : lineIntegrand (oscWeight 1 t₀) m (1 / 2 + u) (t₀ + τ) =
-      (‖riemannZeta s‖ * Y / ‖s‖) ^ 2 := by
-    simp only [lineIntegrand, norm_div, norm_mul]
-    rfl
-  rw [hint]
-  have hlow : c₀ * Y / S₁ ≤ ‖riemannZeta s‖ * Y / ‖s‖ := by
-    rw [div_le_div_iff₀ hS₁ hs0]
-    have h := mul_le_mul hζs.le hs1 hs0.le (norm_nonneg _)
-    nlinarith [mul_le_mul_of_nonneg_right h hY0]
-  have hsq := pow_le_pow_left₀ (by positivity) hlow 2
-  have hk0 : 0 ≤ (c₀ / S₁) ^ 2 := sq_nonneg _
-  have e1 : (c₀ * Y / S₁) ^ 2 = (c₀ / S₁) ^ 2 * Y ^ 2 := by ring
-  have e2 : (c₀ / S₁) ^ 2 * Real.exp (-(4 * S)) * cq / 4 / (u + τ) =
-      (c₀ / S₁) ^ 2 * (Real.exp (-(4 * S)) * (cq / (2 * (u + τ))) / 2) := by
-    field_simp
-  have h3 : Real.exp (-(4 * S)) * (cq / (2 * (u + τ))) / 2 - m ^ 2 ≤ Y ^ 2 := by linarith
-  have h4 := mul_le_mul_of_nonneg_left h3 hk0
-  rw [e1] at hsq
-  rw [e2]
-  nlinarith
+  set A : ℝ := ((‖riemannZeta (1 / 2 + t₀ * I)‖ / 2) / (‖(1 / 2 + t₀ * I : ℂ)‖ + 1)) ^ 2
+  have hA : 0 < A := by positivity
+  refine ⟨r, A * Real.exp (-(4 * primeSquareMass)) * (‖riemannZeta (1 + 2 * t₀ * I)‖ / 2) / 4,
+    A * (∑' d : ℕ, oscWeight 1 t₀ d / d) ^ 2, hr, hr4, by positivity,
+    fun u τ hu hur hτ hτr => ?_⟩
+  have h := lineIntegrand_oscWeight_one_ge_of hζ1 hζ0 hζp hc₀ hcq hu hτ (by linarith)
+    (by linarith) (by linarith) (by linarith)
+  refine le_trans (le_of_eq ?_) h
+  ring
 
 /-- **A nonzero critical value leaves the boundary pattern unpaid.** If `t₀ > 0` and
 `ζ(1/2 + it₀) ≠ 0`, the half-damped weight of `f(p) = cos(t₀ log p)` has unbounded receiver: its
@@ -445,3 +470,6 @@ theorem receiverBounded_oscWeight_iff {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a �
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
+
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_iff
+#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_one_iff

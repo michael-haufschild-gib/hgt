@@ -189,8 +189,9 @@ proof; no analytic estimate is left as a premise of either root.
 
 `KloostermanComposite.lean` also supplies twisted CRT multiplicativity
 and the elementary stationary-phase bound `2p^ceil(k/2)` at odd prime
-powers with unit inverse coefficient. Its source has been read; its
-closure has not yet been audited for this route. These results do not
+powers with unit inverse coefficient. Both roots passed the same direct
+leaf audit with only the three standard foundational axioms; log:
+`/tmp/hgt-goldbach-composite-source-audit.log`. These results do not
 themselves prove the needed sum over composite row moduli, particularly
 at primes dividing the determinant or a Fourier frequency.
 
@@ -301,12 +302,13 @@ The next unresolved producer is a quantitative modular-hyperbola
 discrepancy, retaining every nonunit gcd. A sufficient intermediate
 bound is
 
-    |S(a,b;M)|³ ≤ τ(M)³ M² gcd(a,b,M).
+    |S(a,b;M)|³ ≤ 512 τ(M)³ M² gcd(a,b,M).
 
-It should follow from the audited prime Weil bound, odd-prime-power
-stationary phase, the two-adic four-root bound, common-factor reduction
-and CRT. The two-adic and common-factor steps have not yet been
-formalized or closure-audited here. Completing interval indicators would
+Its [paper proof](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
+now uses the audited prime Weil bound, odd-prime-power stationary phase,
+a sufficient two-adic eight-root bound, common-factor reduction and CRT.
+The full bound has not yet been formalized. Conductor reduction is the
+first active Lean step. Completing interval indicators would
 then give the nonzero-frequency budget
 
     O(τ(M) M^(2/3) gcd(c,M)^(1/3) (1+log M)²),

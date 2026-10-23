@@ -472,9 +472,9 @@ theorem regionA_sq_le {N K J C₁ ρ η l : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 
     mul_nonneg hp (mul_nonneg hρ0.le (le_min (by norm_num) (by positivity)))
   have ex : (2 * C₁ * (N ^ (-(η * (1 - l))) * K ^ (-(l * (1 + η))))) ^ 2 =
       4 * C₁ ^ 2 * (N ^ (-(2 * (η * (1 - l)))) * K ^ (-(2 * (l * (1 + η))))) := by
-    rw [mul_pow, mul_pow, sq_rpow_eq hN, sq_rpow_eq hK]; ring_nf
+    simp only [mul_pow]; rw [sq_rpow_eq hN, sq_rpow_eq hK]; ring_nf
   have ey : (2 * ρ * (K ^ (1 - η) / N)) ^ 2 = 4 * ρ ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ)) := by
-    rw [mul_pow, div_eq_mul_one_div, mul_pow, sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+    rw [div_eq_mul_one_div]; simp only [mul_pow]; rw [sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
   have hsum := add_sq_le_two (K ^ (1 - η) / N * min J (2 * C₁ * (N / K) ^ (1 - η)))
     (K ^ (1 - η) / N * (ρ * min 2 (J + N / K ^ 2)))
   have hxx := pow_le_pow_left₀ hx0 hx 2
@@ -486,7 +486,7 @@ theorem regionA_sq_le {N K J C₁ ρ η l : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 
 
 /-- Region `K² > N`: at most one jump. -/
 theorem regionB_sq_le {N K J C₁ ρ η : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 0 ≤ J) (hJB : J ≤ 1)
-    (hρ0 : 0 < ρ) :
+    (hC₁ : 0 ≤ C₁) (hρ0 : 0 < ρ) :
     (K ^ (1 - η) / N * (min J (2 * C₁ * (N / K) ^ (1 - η)) + ρ * min 2 (J + N / K ^ 2))) ^ 2 ≤
       2 * (1 + ρ) ^ 2 * (K ^ (2 - 2 * η) * N ^ (-2 : ℝ) * J) +
         2 * ρ ^ 2 * K ^ (-2 - 2 * η) := by
@@ -510,17 +510,19 @@ theorem regionB_sq_le {N K J C₁ ρ η : ℝ} (hN : 0 < N) (hK : 0 < K) (hJ0 : 
     refine mul_nonneg hp (add_nonneg ?_ (mul_nonneg hρ0.le ?_))
     · exact le_min hJ0 (by positivity)
     · exact le_min (by norm_num) (by positivity)
-  have hJsq : (K ^ (1 - η) / N * J) ^ 2 ≤ K ^ (2 - 2 * η) * N ^ (-2 : ℝ) * J := by
+  have hJsq : (K ^ (1 - η) / N) ^ 2 * J ^ 2 ≤ K ^ (2 - 2 * η) * N ^ (-2 : ℝ) * J := by
     have hJJ : J ^ 2 ≤ J := by nlinarith
     have ex : (K ^ (1 - η) / N) ^ 2 = K ^ (2 - 2 * η) * N ^ (-2 : ℝ) := by
-      rw [div_eq_mul_one_div, mul_pow, sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
-    rw [mul_pow, ex]
+      rw [div_eq_mul_one_div]; simp only [mul_pow]; rw [sq_rpow_eq hK, sq_inv_eq_rpow hN]; ring_nf
+    rw [ex]
     exact mul_le_mul_of_nonneg_left hJJ (by positivity)
   have ey : (K ^ (-1 - η)) ^ 2 = K ^ (-2 - 2 * η) := by rw [sq_rpow_eq hK]; ring_nf
   have hsq := pow_le_pow_left₀ hb0 hb 2
   have h2 := add_sq_le_two ((1 + ρ) * (K ^ (1 - η) / N * J)) (ρ * K ^ (-1 - η))
-  rw [mul_pow, mul_pow, ey] at h2
-  nlinarith [mul_le_mul_of_nonneg_left hJsq (sq_nonneg (1 + ρ))]
+  simp only [mul_pow] at h2
+  rw [ey] at h2
+  have h3 := mul_le_mul_of_nonneg_left hJsq (sq_nonneg (1 + ρ))
+  linarith
 
 /-- **The kernel is dominated by its majorant** for `½ < η²` and `η < 1`. -/
 theorem sq_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 1 / 2 < η ^ 2)
@@ -556,7 +558,8 @@ theorem sq_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 
   · have hJB : ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) ≤ 1 := by
       have := div_sub_div_succ_le_one (N := n + 1) (K := k + 1) (by push Not at hA; omega)
       exact_mod_cast this
-    have hR := regionB_sq_le (η := η) (C₁ := 1 + 1 / (1 - η) + 1 / η) hN hK hJ0 hJB hρ0
+    have hR := regionB_sq_le (η := η) (C₁ := 1 + 1 / (1 - η) + 1 / η) hN hK hJ0 hJB
+      (by linarith) hρ0
     linarith
 
 end

@@ -313,6 +313,8 @@ THEOREM_AREAS = {
             "GaloisForLFunctions.ArithmeticCompensationTheory.exists_combEnergy_rescaledTest_deficit_le",
             "GaloisForLFunctions.ArithmeticCompensationTheory.tendsto_sq_mul_combEnergy_rescaledTest_deficit",
             "GaloisForLFunctions.ArithmeticCompensationTheory.exists_abs_primeShift_sub_polar_le",
+            "GaloisForLFunctions.ArithmeticCompensationTheory.abs_curveCombTail_sub_le_of_weil",
+            "GaloisForLFunctions.ArithmeticCompensationTheory.horizonEnergy_ge_of_lipschitz",
             "GaloisForLFunctions.ArithmeticCompensationTheory.summable_abs_pmCompensationAmplitude_dyadic_sub",
             "GaloisForLFunctions.ArithmeticCompensationTheory.norm_add_sq_eq_compensation",
             "GaloisForLFunctions.ArithmeticCompensationTheory.pmCompleteHeadEnergy_eq_compensation",

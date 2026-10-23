@@ -153,6 +153,7 @@ The objects come from `RHTower` and `ArithmeticCriticalityTheory`. Do not redefi
 | Gauge remainder, pole charge | `∫ F² P (−𝒲P + prime part)`, `2 (∫ F sinh(x/2))²` | `gaugeRemainder`, `poleCharge` |
 | Plateau of an aperture | `1` on `[−r, r]`, `0` outside `(−R, R)` | `aperturePlateau` |
 | Global incidence allocation | costs + pole ≤ pool + crossing potential + gains + remainder | `GlobalIncidenceAllocation` |
+| Reflected-prime/polar cost | `Σ_n oddStripCost_n − Σ_n evenStripGain_n + poleCharge` | `reflectedPrimePolarCost` |
 | Pairing, autocorrelation | `⟪A, B⟫ = ∫AB`; `A(t) = ⟪F, F(· + t)⟫` | `testPairing`, `autoCorr` |
 | Translate combination | `Σ_k α_k F(· + c_k)`, over a range or a finite index set | `translateComb`, `finsetComb` |
 | Geometric train | `S_N = Σ_{k ≤ N} z^k F(· + kL)`, `S_N − zS_N(· + L) = F − z^{N+1}F(· + (N+1)L)` | `geoTrain`, `geoTrain_resolvent` |
@@ -902,6 +903,38 @@ specifies the remaining estimate: bound the signed pairing of the actual Chebysh
 these autocorrelation derivatives, uniformly in the test aperture and in the required mass or
 archimedean norm. A bound on `E` imported from a zero strip cannot establish that same strip
 independently. The normalisation matters as much as the exponential rate.
+
+52. **Full reflected-prime/polar allocation across arbitrary tests (`ReflectedPrimePolarAllocation`).**
+    Restricted-horizon certificates (`GlobalSharedSurplusAllocation`, `fullZeroForm_nonneg_of_stripAllocation`)
+    decouple the reflected-prime strips from `poleCharge` (`R ≤ 3/5`), which fails across arbitrary
+    tests for two independent reasons on the odd edge tent `F = edgeTentOdd r ε` (`0 < ε ≤ log 2`,
+    `ε < r`):
+    * `F(x) sinh(x/2) ≥ 0` on all of `ℝ`, giving `poleCharge F ≥ (ε⁴/32) sinh²((r − ε)/2) ≍ ε⁴ e^r`
+      (`poleCharge_edgeTentOdd_ge`), whereas `stripBoxEnergy F 0 r ≤ 3ε²r`, so `poleCharge F`
+      eventually outgrows `stripBoxEnergy F 0 r + C r` for every linear potential budget `C`
+      (`eventually_stripBoxEnergy_add_linear_lt_poleCharge_edgeTentOdd`);
+    * `F(x) F(x + L) = 0` for **every** `L ∈ [ε, 2(r − ε)]` (all sub-light-cone shifts `n ≥ 2` with
+      `log n ≤ 2(r − ε)`, including `log n < r`) and `F(x) F(x + L) ≤ 0` for all `L ≥ ε`, so
+      `evenStripGain F r n = oddStripCost F r n` below the light cone and
+      `oddStripCost F r n ≤ evenStripGain F r n` across all `n ∈ relevantShifts r`
+      (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`).
+    Unconditionally across all tests supported in `[−r, r]`:
+    * the favorable strip gains satisfy the exact polar-Chebyshev allocation
+      `Σ_{n ∈ relevantShifts r} evenStripGain F r n = ∫_{s>0} 4 cosh(s/2) stripMass F r s ds + ∫_{s>0} E(s) · 2e^{−s/2}(−F(s−r)² − ½ stripMass F r s) ds`
+      (`sum_evenStripGain_eq_polar_add_chebyshev`);
+    * the joint **reflected-prime/polar cost**
+      `reflectedPrimePolarCost F r = Σ_n oddStripCost_n − Σ_n evenStripGain_n + poleCharge F`
+      equals `Σ_{n ∈ relevantShifts r} 2Λ(n)/√n A(log n) − ∫_{s>0} 4 cosh(s/2) A(s) ds`
+      (`reflectedPrimePolarCost_eq_prime_sub_polar_autoCorrelation`), equals the finite-horizon
+      two-pole Chebyshev pairing
+      `∫_{0 < s ≤ 2r} E(s) · 2e^{−s/2}(crossCorrelation F s − ½ A(s)) ds` for every odd `F ∈ C¹_c`
+      (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`), and equals
+      `−∫_{s>0} (D(s) + s²/2 − s)(lagTestWeight F)''(s) ds` for every odd `F ∈ C²_c`
+      (`reflectedPrimePolarCost_eq_criticalScalePrefix`);
+    * the incidence ledger rewrites at every aperture `0 < r < R` as
+      `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r`
+      (`fullZeroForm_eq_reflectedPrimePolarLedger`, `fullZeroForm_eq_chebyshevDefectLedger`,
+      `riemannHypothesis_iff_reflectedPrimePolarAllocation`), with no `R ≤ 3/5` restriction.
 
 ---
 

@@ -39,7 +39,7 @@ the Hodge index on the Frobenius span surface and isolating the exact arithmetic
   `AmpleAxiom` and, whenever `D.pointCount j ≥ 0` (in particular for the golden fake curve
   `goldenDatum`), also satisfies `BezoutAxiom`; yet it unconditionally fails `RiemannRochAxiom` once
   `S` is nonempty, and `goldenDatum` admits the explicit integer primitive class
-  `3H − V + 2Γ₀ − Γ₁` with `x · H = x · V = 0` and `x² = 2 > 0`.
+  `−H + 3V + 2Γ₀ − Γ₁` with `x · H = x · V = 0` and `x² = 2 > 0`.
 * **The cohomological sign and subshift obstruction** (`toeplitz_range_one`,
   `toeplitz_range_one_le_of_unitary`, `exists_trace_neg_of_unitary`,
   `not_hodgeIndex_of_subshift_bound`): the constant-weight Toeplitz form on `{0, …, n − 1}`
@@ -110,7 +110,7 @@ theorem pair_pos_of_openPositiveCone (hH : S.HodgeIndex) {x y : C}
     ring
   have huv : S.pair u v = 4 * S.pair x y - 2 * S.pair x S.ample * S.pair y S.ample := by
     simp only [u, v, map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
-      S.pair_ample_ample, S.pair_comm S.ample x, S.pair_comm S.ample y]
+      S.pair_ample_ample, S.pair_comm S.ample y]
     ring
   have h1 : 0 < 2 * S.pair x S.ample ^ 2 + S.pair u u := by linarith
   have h2 : 0 < 2 * S.pair y S.ample ^ 2 + S.pair v v := by linarith
@@ -152,7 +152,7 @@ theorem positiveCone_bezout (hH : S.HodgeIndex) : S.BezoutAxiom S.positiveCone :
     ring
   have huv : S.pair u v = 4 * S.pair x y - 2 * S.pair x S.ample * S.pair y S.ample := by
     simp only [u, v, map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
-      S.pair_ample_ample, S.pair_comm S.ample x, S.pair_comm S.ample y]
+      S.pair_ample_ample, S.pair_comm S.ample y]
     ring
   have h1 : 0 ≤ 2 * S.pair x S.ample ^ 2 + S.pair u u := by linarith
   have h2 : 0 ≤ 2 * S.pair y S.ample ^ 2 + S.pair v v := by linarith
@@ -163,7 +163,7 @@ theorem positiveCone_bezout (hH : S.HodgeIndex) : S.BezoutAxiom S.positiveCone :
     le_trans hcs hprod
   have hM : 0 ≤ 2 * S.pair x S.ample * S.pair y S.ample := by positivity
   by_contra hxy
-  push_neg at hxy
+  push Not at hxy
   have huv_lt : S.pair u v < -(2 * S.pair x S.ample * S.pair y S.ample) := by linarith
   nlinarith [mul_pos (neg_pos.mpr (lt_of_lt_of_le huv_lt (by linarith)))
     (sub_pos.mpr huv_lt)]
@@ -193,16 +193,16 @@ theorem false_of_orth_pos_of_riemannRoch_of_bezout {E : Set C} (hRR : S.RiemannR
       huw, hwu]
     ring
   have hz₂ : S.pair z₂ z₂ = (U + W) ^ 2 * W + W ^ 2 * U := by
-    simp only [z₂, U, W, map_sub, map_neg, map_smul, LinearMap.sub_apply, LinearMap.neg_apply,
-      LinearMap.smul_apply, smul_eq_mul, huw, hwu]
+    simp only [z₂, U, W, map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
+      huw, hwu]
     ring
   have hz₁u : S.pair z₁ u = -(W * U) := by
     simp only [z₁, U, W, map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
       hwu]
     ring
   have hz₂u : S.pair z₂ u = -(W * U) := by
-    simp only [z₂, U, W, map_sub, map_neg, map_smul, LinearMap.sub_apply, LinearMap.neg_apply,
-      LinearMap.smul_apply, smul_eq_mul, hwu]
+    simp only [z₂, U, W, map_sub, map_smul, LinearMap.sub_apply, LinearMap.smul_apply, smul_eq_mul,
+      hwu]
     ring
   have hpos : 0 < (U + W) ^ 2 * W + W ^ 2 * U := by positivity
   have hneg : -(W * U) < 0 := neg_lt_zero.mpr (mul_pos hW hU)
@@ -276,7 +276,7 @@ theorem hodgeIndex_of_surfaceRiemannRoch {K : C} {χ₀ : ℝ} {E : Set C}
   rw [S.hodgeIndex_iff_ampleHodgeIndex]
   intro x hxA
   by_contra hX_neg
-  push_neg at hX_neg
+  push Not at hX_neg
   let X : ℝ := S.pair x x
   have hX : 0 < X := hX_neg
   have hAx : S.pair S.ample x = 0 := by rw [S.pair_comm, hxA]
@@ -289,20 +289,20 @@ theorem hodgeIndex_of_surfaceRiemannRoch {K : C} {χ₀ : ℝ} {E : Set C}
       hxA, S.pair_ample_ample]
     ring
   have hz₂A : S.pair z₂ S.ample = 2 * X := by
-    simp only [z₂, map_add, map_neg, map_smul, LinearMap.add_apply, LinearMap.neg_apply,
-      LinearMap.smul_apply, smul_eq_mul, hxA, S.pair_ample_ample]
+    simp only [z₂, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+      hxA, S.pair_ample_ample]
     ring
   have hz₁z₁ : S.pair z₁ z₁ = Z := by
     simp only [z₁, Z, X, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
       hxA, hAx, S.pair_ample_ample]
     ring
   have hz₂z₂ : S.pair z₂ z₂ = Z := by
-    simp only [z₂, Z, X, map_add, map_neg, map_smul, LinearMap.add_apply, LinearMap.neg_apply,
-      LinearMap.smul_apply, smul_eq_mul, hxA, hAx, S.pair_ample_ample]
+    simp only [z₂, Z, X, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+      hxA, hAx, S.pair_ample_ample]
     ring
   have hz₁z₂ : S.pair z₁ z₂ = -(X ^ 3 + X) := by
-    simp only [z₁, z₂, X, map_add, map_neg, map_smul, LinearMap.add_apply, LinearMap.neg_apply,
-      LinearMap.smul_apply, smul_eq_mul, hxA, hAx, S.pair_ample_ample]
+    simp only [z₁, z₂, X, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul,
+      hxA, hAx, S.pair_ample_ample]
     ring
   let m : ℝ := 1 + |S.pair K S.ample| / X +
     (|S.pair z₁ K| + |S.pair z₂ K| + 2 * |χ₀| + 1) / Z
@@ -378,16 +378,17 @@ theorem exists_surfaceRiemannRoch_iff_hodgeIndex :
     have hA : S.AmpleHodgeIndex := S.hodgeIndex_iff_ampleHodgeIndex.mp hH
     refine ⟨0, 0, S.openPositiveCone, ?_, ?_, ?_⟩
     · intro x hx
-      simp only [map_zero, sub_zero, zero_add, half_pos_iff] at hx
+      simp only [map_zero, sub_zero, zero_add] at hx
+      have hxx : 0 < S.pair x x := by linarith
       have hne : S.pair x S.ample ≠ 0 := fun h0 => by linarith [hA x h0]
       rcases lt_trichotomy (S.pair x S.ample) 0 with hlt | heq | hgt
       · right
         simp only [zero_sub, openPositiveCone, Set.mem_setOf_eq, map_neg, LinearMap.neg_apply,
           neg_neg]
-        exact ⟨hx, by linarith⟩
+        exact ⟨hxx, by linarith⟩
       · exact False.elim (hne heq)
       · left
-        exact ⟨hx, hgt⟩
+        exact ⟨hxx, hgt⟩
     · intro e he
       exact le_of_lt he.2
     · intro e₁ he₁ e₂ he₂ _ _
@@ -400,13 +401,28 @@ end PolarSurface
 /-- A cycle in the Frobenius span `aH + bV + ∑_{k ∈ S} d(k) Γ_k`. -/
 abbrev SpanCycle := ℝ × ℝ × (ℕ → ℝ)
 
-namespace CurveDatum
-
-variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
-
 /-- The horizontal degree `d · H = ∑_{k ∈ S} d(k)` of a graph combination on `S`. -/
 def windowB (S : Finset ℕ) (d : ℕ → ℝ) : ℝ :=
   ∑ k ∈ S, d k
+
+/-- The positive Euler / Frobenius graph cone `{aH + bV + ∑_{k ∈ S} c_k Γ_k | a, b, c_k ≥ 0}`. -/
+def graphCone (S : Finset ℕ) : Set SpanCycle :=
+  {x | 0 ≤ x.1 ∧ 0 ≤ x.2.1 ∧ ∀ k ∈ S, 0 ≤ x.2.2 k}
+
+theorem windowB_add (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
+    windowB S (d₁ + d₂) = windowB S d₁ + windowB S d₂ :=
+  Finset.sum_add_distrib
+
+theorem windowB_smul (S : Finset ℕ) (c : ℝ) (d : ℕ → ℝ) :
+    windowB S (c • d) = c * windowB S d := by
+  simp only [windowB, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum]
+
+theorem windowB_zero (S : Finset ℕ) : windowB S 0 = 0 := by
+  simp [windowB]
+
+namespace CurveDatum
+
+variable {ι : Type*} [Fintype ι] (D : CurveDatum ι)
 
 /-- The vertical degree `d · V = ∑_{k ∈ S} d(k) q^k` of a graph combination on `S`. -/
 def windowA (S : Finset ℕ) (d : ℕ → ℝ) : ℝ :=
@@ -420,19 +436,8 @@ def windowGraph (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) : ℝ :=
 def windowPairFun (S : Finset ℕ) (x y : SpanCycle) : ℝ :=
   x.1 * y.2.1 + x.2.1 * y.1 +
     x.1 * D.windowA S y.2.2 + y.1 * D.windowA S x.2.2 +
-    x.2.1 * D.windowB S y.2.2 + y.2.1 * D.windowB S x.2.2 +
+    x.2.1 * windowB S y.2.2 + y.2.1 * windowB S x.2.2 +
     D.windowGraph S x.2.2 y.2.2
-
-theorem windowB_add (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
-    D.windowB S (d₁ + d₂) = D.windowB S d₁ + D.windowB S d₂ :=
-  Finset.sum_add_distrib
-
-theorem windowB_smul (S : Finset ℕ) (c : ℝ) (d : ℕ → ℝ) :
-    D.windowB S (c • d) = c * D.windowB S d := by
-  simp only [windowB, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum]
-
-theorem windowB_zero (S : Finset ℕ) : D.windowB S 0 = 0 := by
-  simp [windowB]
 
 theorem windowA_add (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
     D.windowA S (d₁ + d₂) = D.windowA S d₁ + D.windowA S d₂ := by
@@ -458,7 +463,7 @@ theorem windowGraph_symm (S : Finset ℕ) (d₁ d₂ : ℕ → ℝ) :
   simp only [windowGraph]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => ?_
-  rw [D.graphPair_eq_pointCount j k, D.graphPair_eq_pointCount k j, add_comm j k]
+  rw [D.graphPair_comm j k]
   ring
 
 theorem windowGraph_zero_left (S : Finset ℕ) (d : ℕ → ℝ) :
@@ -473,21 +478,21 @@ theorem windowGraph_zero_right (S : Finset ℕ) (d : ℕ → ℝ) :
 def windowPair (S : Finset ℕ) : SpanCycle →ₗ[ℝ] SpanCycle →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ (D.windowPairFun S)
     (fun x x' y => by
-      simp only [windowPairFun, Prod.fst_add, Prod.snd_add, D.windowA_add, D.windowB_add,
+      simp only [windowPairFun, Prod.fst_add, Prod.snd_add, D.windowA_add, windowB_add,
         D.windowGraph_add_left]
       ring)
     (fun c x y => by
       simp only [windowPairFun, Prod.smul_fst, Prod.smul_snd, smul_eq_mul,
-        D.windowA_smul, D.windowB_smul, D.windowGraph_smul_left]
+        D.windowA_smul, windowB_smul, D.windowGraph_smul_left]
       ring)
     (fun x y y' => by
-      simp only [windowPairFun, Prod.fst_add, Prod.snd_add, D.windowA_add, D.windowB_add]
+      simp only [windowPairFun, Prod.fst_add, Prod.snd_add, D.windowA_add, windowB_add]
       rw [D.windowGraph_symm S x.2.2, D.windowGraph_add_left,
         D.windowGraph_symm S y.2.2, D.windowGraph_symm S y'.2.2]
       ring)
     (fun c x y => by
       simp only [windowPairFun, Prod.smul_fst, Prod.smul_snd, smul_eq_mul,
-        D.windowA_smul, D.windowB_smul]
+        D.windowA_smul, windowB_smul]
       rw [D.windowGraph_symm S x.2.2, D.windowGraph_smul_left, D.windowGraph_symm]
       ring)
 
@@ -504,45 +509,39 @@ def windowSurface (S : Finset ℕ) : PolarSurface SpanCycle where
   H := (1, 0, 0)
   V := (0, 1, 0)
   pair_H_H := by
-    simp [windowPair_apply, windowPairFun, D.windowA_zero, D.windowB_zero, D.windowGraph_zero_left]
+    simp [windowPair_apply, windowPairFun, D.windowA_zero, windowB_zero, D.windowGraph_zero_left]
   pair_V_V := by
-    simp [windowPair_apply, windowPairFun, D.windowA_zero, D.windowB_zero, D.windowGraph_zero_left]
+    simp [windowPair_apply, windowPairFun, D.windowA_zero, windowB_zero, D.windowGraph_zero_left]
   pair_H_V := by
-    simp [windowPair_apply, windowPairFun, D.windowA_zero, D.windowB_zero, D.windowGraph_zero_left]
-
-/-- The self-pairing on `D.windowSurface S` agrees with `D.spanSelf S`. -/
-theorem windowSurface_pair_self (S : Finset ℕ) (x : SpanCycle) :
-    (D.windowSurface S).pair x x = D.spanSelf S x.1 x.2.1 x.2.2 := by
-  simp only [windowSurface, windowPair_apply, windowPairFun, spanSelf, windowA, windowB, windowGraph]
-  ring
+    simp [windowPair_apply, windowPairFun, D.windowA_zero, windowB_zero, D.windowGraph_zero_left]
 
 /-- Pairing with `H = (1, 0, 0)` extracts `b + A(d)`. -/
 theorem windowSurface_pair_H (S : Finset ℕ) (x : SpanCycle) :
     (D.windowSurface S).pair x (D.windowSurface S).H = x.2.1 + D.windowA S x.2.2 := by
   simp only [windowSurface, windowPair_apply, windowPairFun,
-    D.windowA_zero, D.windowB_zero, D.windowGraph_zero_right]
+    D.windowA_zero, windowB_zero, D.windowGraph_zero_right]
   ring
 
 /-- Pairing with `V = (0, 1, 0)` extracts `a + B(d)`. -/
 theorem windowSurface_pair_V (S : Finset ℕ) (x : SpanCycle) :
-    (D.windowSurface S).pair x (D.windowSurface S).V = x.1 + D.windowB S x.2.2 := by
+    (D.windowSurface S).pair x (D.windowSurface S).V = x.1 + windowB S x.2.2 := by
   simp only [windowSurface, windowPair_apply, windowPairFun,
-    D.windowA_zero, D.windowB_zero, D.windowGraph_zero_right]
+    D.windowA_zero, windowB_zero, D.windowGraph_zero_right]
   ring
 
 /-- The Castelnuovo–Severi defect of `D.windowSurface S` is `D.spanDefect S`. -/
 theorem windowSurface_defect_self (S : Finset ℕ) (x : SpanCycle) :
     (D.windowSurface S).defect x x = D.spanDefect S x.2.2 := by
-  rw [(D.windowSurface S).defect_self, D.windowSurface_pair_self,
-    D.windowSurface_pair_H, D.windowSurface_pair_V,
-    D.spanSelf_calibrated S x.1 x.2.1 x.2.2, windowA, windowB]
+  rw [(D.windowSurface S).defect_self, D.windowSurface_pair_H, D.windowSurface_pair_V]
+  simp only [windowSurface, windowPair_apply, windowPairFun, spanDefect,
+    windowA, windowB, windowGraph]
   ring
 
 /-- The Hodge index holds on `D.windowSurface S` for every finite window `S` if and only if all
 Frobenius eigenvalues of `D` lie on the unit circle. -/
 theorem windowSurface_hodgeIndex_iff_unitary :
     (∀ S : Finset ℕ, (D.windowSurface S).HodgeIndex) ↔ ∀ i : ι, ‖D.β i‖ = 1 := by
-  rw [← D.hodgeIndex_iff_unitary]
+  rw [← D.hodgeIndexOnSpan_iff_unitary]
   constructor
   · intro h S d
     have hS := (D.windowSurface S).hodgeIndex_iff_defect_nonneg.mp (h S) (0, 0, d)
@@ -553,27 +552,24 @@ theorem windowSurface_hodgeIndex_iff_unitary :
     rw [D.windowSurface_defect_self]
     exact h S x.2.2
 
-/-- The positive Euler / Frobenius graph cone `{aH + bV + ∑_{k ∈ S} c_k Γ_k | a, b, c_k ≥ 0}`. -/
-def graphCone (S : Finset ℕ) : Set SpanCycle :=
-  {x | 0 ≤ x.1 ∧ 0 ≤ x.2.1 ∧ ∀ k ∈ S, 0 ≤ x.2.2 k}
-
-/-- For `q > 0`, the positive Frobenius graph cone always satisfies `AmpleAxiom`. -/
-theorem graphCone_ample (S : Finset ℕ) (hq : 0 < D.q) :
-    (D.windowSurface S).AmpleAxiom (D.graphCone S) := by
+/-- The positive Frobenius graph cone always satisfies `AmpleAxiom`. -/
+theorem graphCone_ample (S : Finset ℕ) :
+    (D.windowSurface S).AmpleAxiom (graphCone S) := by
+  have hq : 0 < D.q := by linarith [D.one_lt_q]
   have hample_eq : ∀ x : SpanCycle,
       (D.windowSurface S).pair x (D.windowSurface S).ample =
-        x.1 + x.2.1 + D.windowB S x.2.2 + D.windowA S x.2.2 := by
+        x.1 + x.2.1 + windowB S x.2.2 + D.windowA S x.2.2 := by
     intro x
     rw [(D.windowSurface S).pair_ample, D.windowSurface_pair_H, D.windowSurface_pair_V]
     ring
   intro x ⟨hx1, hx2, hxd⟩ h0 y
   rw [hample_eq] at h0
-  have hB : 0 ≤ D.windowB S x.2.2 := Finset.sum_nonneg hxd
+  have hB : 0 ≤ windowB S x.2.2 := Finset.sum_nonneg hxd
   have hA : 0 ≤ D.windowA S x.2.2 :=
     Finset.sum_nonneg fun k hk => mul_nonneg (hxd k hk) (le_of_lt (pow_pos hq k))
   have hx1_eq : x.1 = 0 := by linarith
   have hx2_eq : x.2.1 = 0 := by linarith
-  have hB_eq : D.windowB S x.2.2 = 0 := by linarith
+  have hB_eq : windowB S x.2.2 = 0 := by linarith
   have hA_eq : D.windowA S x.2.2 = 0 := by linarith
   have hd_zero : ∀ k ∈ S, x.2.2 k = 0 :=
     (Finset.sum_eq_zero_iff_of_nonneg hxd).mp hB_eq
@@ -583,28 +579,30 @@ theorem graphCone_ample (S : Finset ℕ) (hq : 0 < D.q) :
   simp only [windowSurface, windowPair_apply, windowPairFun, hx1_eq, hx2_eq, hB_eq, hA_eq, hG_eq]
   ring
 
-/-- Whenever `D.q ≥ 0` and all point counts `D.pointCount j` are nonnegative, the positive
-Frobenius graph cone satisfies `BezoutAxiom`. -/
-theorem graphCone_bezout (S : Finset ℕ) (hq : 0 ≤ D.q) (hN : ∀ j : ℕ, 0 ≤ D.pointCount j) :
-    (D.windowSurface S).BezoutAxiom (D.graphCone S) := by
+/-- Whenever all point counts `D.pointCount j` are nonnegative, the positive Frobenius graph cone
+satisfies `BezoutAxiom`. -/
+theorem graphCone_bezout (S : Finset ℕ) (hN : ∀ j : ℕ, 0 ≤ D.pointCount j) :
+    (D.windowSurface S).BezoutAxiom (graphCone S) := by
+  have hq : 0 ≤ D.q := by linarith [D.one_lt_q]
   rintro x ⟨hx1, hx2, hxd⟩ y ⟨hy1, hy2, hyd⟩
   simp only [windowSurface, windowPair_apply, windowPairFun]
-  have hBx : 0 ≤ D.windowB S x.2.2 := Finset.sum_nonneg hxd
-  have hBy : 0 ≤ D.windowB S y.2.2 := Finset.sum_nonneg hyd
+  have hBx : 0 ≤ windowB S x.2.2 := Finset.sum_nonneg hxd
+  have hBy : 0 ≤ windowB S y.2.2 := Finset.sum_nonneg hyd
   have hAx : 0 ≤ D.windowA S x.2.2 :=
     Finset.sum_nonneg fun k hk => mul_nonneg (hxd k hk) (pow_nonneg hq k)
   have hAy : 0 ≤ D.windowA S y.2.2 :=
     Finset.sum_nonneg fun k hk => mul_nonneg (hyd k hk) (pow_nonneg hq k)
   have hG : 0 ≤ D.windowGraph S x.2.2 y.2.2 := by
     refine Finset.sum_nonneg fun j hj => Finset.sum_nonneg fun k hk => ?_
-    rw [D.graphPair_eq_pointCount j k]
-    exact mul_nonneg (mul_nonneg (hxd j hj) (hyd k hk)) (hN (j + k))
+    rw [graphPair]
+    exact mul_nonneg (mul_nonneg (hxd j hj) (hyd k hk))
+      (mul_nonneg (pow_nonneg hq (min j k)) (hN (Nat.dist j k)))
   positivity
 
 /-- The positive Frobenius graph cone unconditionally fails `RiemannRochAxiom` on every nonempty
 window `S`. -/
 theorem graphCone_not_riemannRoch {S : Finset ℕ} {k : ℕ} (hk : k ∈ S) :
-    ¬ (D.windowSurface S).RiemannRochAxiom (D.graphCone S) := by
+    ¬ (D.windowSurface S).RiemannRochAxiom (graphCone S) := by
   classical
   refine (D.windowSurface S).not_riemannRoch_of_perturbation (x := (0, 0, -Pi.single k 1)) ?_
   intro ε hε
@@ -625,35 +623,24 @@ end CurveDatum
 
 /-! ### 4. The golden fake curve: Bézout + Ample + Euler positivity without Hodge index -/
 
-/-- Every Lucas number `L_n` is bounded by `2^n + 1`. -/
-theorem lucas_le_two_pow_add_one : ∀ n : ℕ, lucas n ≤ 2 ^ n + 1
-  | 0 => by decide
-  | 1 => by decide
-  | n + 2 => by
-    have h1 := lucas_le_two_pow_add_one n
-    have h2 := lucas_le_two_pow_add_one (n + 1)
-    have hpow : (1 : ℤ) ≤ 2 ^ n := one_le_pow₀ (by decide : (1 : ℤ) ≤ 2)
-    simp only [lucas, pow_succ] at h1 h2 ⊢
-    omega
-
-/-- All point counts `N_n = 2^n + 1 − L_n` of the golden fake curve `goldenDatum` are
-nonnegative integers. -/
-theorem goldenDatum_pointCount_nonneg (n : ℕ) : 0 ≤ goldenDatum.pointCount n := by
-  rw [golden_pointCount_integrality]
-  exact Int.cast_nonneg.mpr (by linarith [lucas_le_two_pow_add_one n])
+/-- All point counts `N_n = 5^n + 1 − L_n` of the golden fake curve `goldenDatum` are
+nonnegative. -/
+theorem goldenDatum_pointCount_nonneg : ∀ n : ℕ, 0 ≤ goldenDatum.pointCount n
+  | 0 => by rw [CurveDatum.pointCount_zero]; norm_num
+  | n + 1 => by linarith [one_le_goldenDatum_pointCount (Nat.succ_le_succ (Nat.zero_le n))]
 
 /-- On the golden fake curve `goldenDatum`, the positive Frobenius graph cone satisfies both
 `AmpleAxiom` and `BezoutAxiom` on every finite window `S`, yet fails `RiemannRochAxiom` on every
 nonempty window `S`. -/
 theorem goldenDatum_graphCone_ample_and_bezout (S : Finset ℕ) :
-    (goldenDatum.windowSurface S).AmpleAxiom (goldenDatum.graphCone S) ∧
-    (goldenDatum.windowSurface S).BezoutAxiom (goldenDatum.graphCone S) :=
-  ⟨goldenDatum.graphCone_ample S (by norm_num [goldenDatum]),
-    goldenDatum.graphCone_bezout S (by norm_num [goldenDatum]) goldenDatum_pointCount_nonneg⟩
+    (goldenDatum.windowSurface S).AmpleAxiom (graphCone S) ∧
+    (goldenDatum.windowSurface S).BezoutAxiom (graphCone S) :=
+  ⟨goldenDatum.graphCone_ample S,
+    goldenDatum.graphCone_bezout S goldenDatum_pointCount_nonneg⟩
 
-/-- The explicit integer primitive cycle `3H − V + 2Γ₀ − Γ₁` on `goldenDatum`. -/
+/-- The explicit integer primitive cycle `−H + 3V + 2Γ₀ − Γ₁` on `goldenDatum`. -/
 def goldenCounterexample : SpanCycle :=
-  (3, -1, fun k => if k = 0 then 2 else if k = 1 then -1 else 0)
+  (-1, 3, fun k => if k = 0 then 2 else if k = 1 then -1 else 0)
 
 /-- `goldenCounterexample` is primitive (`x · H = 0` and `x · V = 0`) and has strictly positive
 self-intersection `x² = 2 > 0` on the `{0, 1}` window of `goldenDatum`. -/
@@ -664,21 +651,26 @@ theorem goldenCounterexample_violates_hodgeIndex :
       (goldenDatum.windowSurface {0, 1}).V = 0 ∧
     (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample goldenCounterexample = 2 := by
   have hN0 : goldenDatum.pointCount 0 = 0 := by
-    rw [golden_pointCount_integrality]; norm_num [lucas]
-  have hN1 : goldenDatum.pointCount 1 = 2 := by
-    rw [golden_pointCount_integrality]; norm_num [lucas]
-  have hN2 : goldenDatum.pointCount 2 = 2 := by
-    rw [golden_pointCount_integrality]; norm_num [lucas]
-  refine ⟨?_, ?_, ?_⟩
-  · rw [goldenDatum.windowSurface_pair_H]
+    rw [goldenDatum_pointCount_eq]; norm_num [goldenLucas]
+  have hN1 : goldenDatum.pointCount 1 = 1 := by
+    rw [goldenDatum_pointCount_eq]; norm_num [goldenLucas]
+  have hH : (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample
+      (goldenDatum.windowSurface {0, 1}).H = 0 := by
+    rw [goldenDatum.windowSurface_pair_H]
     simp [goldenCounterexample, CurveDatum.windowA, goldenDatum]
-  · rw [goldenDatum.windowSurface_pair_V]
-    simp [goldenCounterexample, CurveDatum.windowB]
-  · rw [goldenDatum.windowSurface_pair_self]
-    simp only [goldenCounterexample, CurveDatum.spanSelf, CurveDatum.graphPair_eq_pointCount]
-    rw [Finset.sum_pair zero_ne_one]
-    simp only [Finset.sum_pair zero_ne_one]
-    norm_num [goldenDatum, hN0, hN1, hN2]
+  have hV : (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample
+      (goldenDatum.windowSurface {0, 1}).V = 0 := by
+    rw [goldenDatum.windowSurface_pair_V]
+    simp [goldenCounterexample, windowB]
+  refine ⟨hH, hV, ?_⟩
+  have hdef := goldenDatum.windowSurface_defect_self {0, 1} goldenCounterexample
+  rw [(goldenDatum.windowSurface {0, 1}).defect_self, hH, hV] at hdef
+  have hspan : goldenDatum.spanDefect {0, 1} goldenCounterexample.2.2 = -2 := by
+    simp only [goldenCounterexample, CurveDatum.spanDefect, CurveDatum.graphPair]
+    rw [Finset.sum_pair zero_ne_one, Finset.sum_pair zero_ne_one, Finset.sum_pair zero_ne_one]
+    simp only [Finset.sum_pair zero_ne_one, Nat.dist_self, Nat.dist_zero_left, Nat.dist_zero_right]
+    norm_num [goldenDatum, hN0, hN1]
+  linarith
 
 /-! ### 5. The cohomological sign and subshift obstruction -/
 
@@ -704,25 +696,23 @@ theorem toeplitz_range_one (n : ℕ) :
       simp only [toeplitz, one_mul, Finset.sum_range_succ]
       have hleft :
           ∑ x ∈ Finset.range n,
-              ((∑ y ∈ Finset.range n, D.trace (Int.natAbs ((x : ℤ) - (y : ℤ)))) +
-                D.trace (Int.natAbs ((x : ℤ) - (n : ℤ)))) =
+              ((∑ y ∈ Finset.range n, D.trace (Nat.dist x y)) +
+                D.trace (Nat.dist x n)) =
             (∑ x ∈ Finset.range n, ∑ y ∈ Finset.range n,
-              D.trace (Int.natAbs ((x : ℤ) - (y : ℤ)))) +
+              D.trace (Nat.dist x y)) +
               ∑ x ∈ Finset.range n, D.trace (n - x) := by
         rw [Finset.sum_add_distrib]
         congr 1
         refine Finset.sum_congr rfl fun x hx => ?_
         have hxn : x < n := Finset.mem_range.mp hx
-        congr 1
-        omega
+        rw [Nat.dist_eq_sub_of_le (le_of_lt hxn)]
       have hright :
-          ∑ y ∈ Finset.range n, D.trace (Int.natAbs ((n : ℤ) - (y : ℤ))) =
+          ∑ y ∈ Finset.range n, D.trace (Nat.dist n y) =
             ∑ y ∈ Finset.range n, D.trace (n - y) := by
         refine Finset.sum_congr rfl fun y hy => ?_
         have hyn : y < n := Finset.mem_range.mp hy
-        congr 1
-        omega
-      rw [hleft, hright, Int.sub_self, Int.natAbs_zero, D.trace_zero]
+        rw [Nat.dist_comm, Nat.dist_eq_sub_of_le (le_of_lt hyn)]
+      rw [hleft, hright, Nat.dist_self, D.trace_zero]
       ring
     rw [hstep, ih, Finset.sum_range_succ, Nat.cast_add, Nat.cast_one]
     ring
@@ -745,11 +735,10 @@ constant-weight Toeplitz form on `{0, …, n − 1}` is bounded uniformly in `n`
 theorem toeplitz_range_one_le_of_unitary (hU : ∀ i : ι, ‖D.β i‖ = 1)
     (h1 : ∀ i : ι, D.β i ≠ 1) (n : ℕ) :
     D.toeplitz (Finset.range n) (fun _ => 1) ≤ ∑ i : ι, 4 / ‖D.β i - 1‖ ^ 2 := by
-  rw [D.toeplitz_eq_sum_normSq (Finset.range n) (fun _ => 1)]
+  rw [D.toeplitz_eq_sum_normSq hU (Finset.range n) (fun _ => 1)]
   refine Finset.sum_le_sum fun i _ => ?_
   simp only [Complex.ofReal_one, one_mul]
-  rw [geom_sum_eq (h1 i) n, Complex.normSq_div, Complex.normSq_eq_norm_mul_self,
-    Complex.normSq_eq_norm_mul_self, ← sq, ← sq]
+  rw [geom_sum_eq (h1 i) n, norm_div, div_pow]
   have hden_ne : D.β i - 1 ≠ 0 := sub_ne_zero.mpr (h1 i)
   have hden_pos : 0 < ‖D.β i - 1‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hden_ne)
   have hnum : ‖D.β i ^ n - 1‖ ≤ 2 := by
@@ -765,7 +754,7 @@ have a strictly negative trace `D.trace k < 0` at some positive iterate `k ≥ 1
 theorem exists_trace_neg_of_unitary [Nonempty ι] (hU : ∀ i : ι, ‖D.β i‖ = 1)
     (h1 : ∀ i : ι, D.β i ≠ 1) : ∃ k : ℕ, 1 ≤ k ∧ D.trace k < 0 := by
   by_contra h_all
-  push_neg at h_all
+  push Not at h_all
   let M : ℝ := ∑ i : ι, 4 / ‖D.β i - 1‖ ^ 2
   let n : ℕ := Nat.floor M + 1
   have hcard : (1 : ℝ) ≤ (Fintype.card ι : ℝ) :=
@@ -789,6 +778,8 @@ theorem exists_pointCount_gt_of_hodgeIndex [Nonempty ι]
   obtain ⟨k, hk, htr⟩ := D.exists_trace_neg_of_unitary hU h1
   refine ⟨k, hk, ?_⟩
   simp only [pointCount]
+  have hneg : D.sqrtq ^ k * D.trace k < 0 :=
+    mul_neg_of_pos_of_neg (pow_pos D.sqrtq_pos k) htr
   linarith
 
 /-- **Subshift / nonnegative-trace no-go for the Hodge index**: no nonempty `CurveDatum` with

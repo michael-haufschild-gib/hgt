@@ -695,8 +695,13 @@ row, two prime dilations create `qmn−pm'n'=T(q−p)`.
 Candidate D specifies a finite Ramanujan correction, the archimedean
 product density and an exact weighted sum of centered dilation covariances.
 Its local tail, diagonal and weighted prime-divisor variance have explicit
-paper attacks. The unresolved core is a uniform centered nonzero-determinant
-estimate, followed by the actual Möbius progression proof closure.
+paper attacks. The masked complete-residue kernel has now been identified,
+including its cross-denominator support and the surviving double tail.
+The CRT and prime/prime-power Kloosterman sources pass closure audits.
+A [composite bound](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
+is proved on paper; its conductor reduction is being formalized.
+The unresolved core is the finite-interval transfer and a uniform centered
+nonzero-determinant estimate, followed by the actual Möbius progression proof closure.
 The flat balanced source is only the first signed test: restoring Cycle
 11's coefficients and predecessor marks is a separate obligation.
 
@@ -776,7 +781,9 @@ The flat balanced source is only the first signed test: restoring Cycle
   bridge card: unrelated reachability/root-leaf diagnostics and a generated
   overview changing under concurrent edits; no Goldbach finding. No new
   whole-repository lint run is claimed for the damping-parity extension.
-  All owned commands terminated; no pending build or scratch job remains.
+  Earlier cycle checks terminated and their scratch files were removed.
+  The prime-dilation card records the current source audits and active
+  conductor-reduction formalization; no finished composite estimate is claimed.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
 

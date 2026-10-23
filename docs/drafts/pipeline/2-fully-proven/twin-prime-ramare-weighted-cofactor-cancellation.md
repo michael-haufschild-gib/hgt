@@ -209,10 +209,42 @@ the head is empty and the tail factor is at least one. Taking
 `H=X^kappa` and `a=1/log y` recovers (1), with exponent `36`
 in place of the looser `45`.
 
+### Frequency close to the cofactor length
+
+The finite statement also removes the need to keep `kappa` fixed
+away from one. Write `S=log y>=2` and `H=X exp(-Delta)`,
+with `H>=T0`. Substitution gives exactly
+
+`X(1+S)^36 [K exp(-(log X-Delta)^(1/20))+exp(-Delta/S)]`.
+
+The identities are `a=1/S`, `log H=log X-Delta`, and
+`(X/H)^(-a)=exp(-Delta/S)`. Thus `Delta/S` exceeding a
+sufficiently large multiple of `log S` pays any specified
+polynomial loss in `S`, provided the signed-prefix exponential
+also pays that loss. This is a direct specialization of the
+proved paper estimate, not a new cancellation conjecture.
+
+For the rough-shift scales `S=R^(99/100)` and
+`Delta=R^(199/200)-R^(99/100)`, the tail factor is exactly
+`exp(1-R^(1/200))`. Its saving beats every fixed power of `R`.
+This matches the scale separation between the selected-prime
+and short-window parameters in the coupled-centering route.
+The required signed-prefix horizon condition must still be
+checked at each actual cofactor block. The subsequent frequency
+integral, large-value estimates and integer-start window transfer
+are not consequences of this pointwise bound alone.
+
+Verdict for this specialization: **BRIDGE**. It exposes the
+useful two-scale range of the same convolution proof; no new
+number-theoretic mechanism or fixed-shift result is claimed.
+
 The imported signed-prefix capstone's transitive axiom audit
 returned only `propext`, `Classical.choice`, and `Quot.sound`.
 The new leaf is `twin-prime/RamareSmoothCofactorTransfer.lean`;
-the fractional-moment and convolution implementation is in progress.
+its fractional moment, exact twisted convolution and both finite
+prefix estimates have passed their standard-foundation axiom
+audits. The two asymptotic rate capstones are implemented and
+under the final leaf check; their certificate is not yet claimed.
 
 The paper proof has no open analytic dependency. Its unconditional
 Lean formalization remains outstanding. The existing corpus

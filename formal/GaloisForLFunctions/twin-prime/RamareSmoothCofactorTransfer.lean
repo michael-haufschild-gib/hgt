@@ -485,7 +485,7 @@ theorem exists_ramare_cofactor_logPoly_rate {β κ : ℝ}
   have ha1 : a ≤ 1 / 2 := by
     change (L ^ β)⁻¹ ≤ 1 / 2
     rw [inv_eq_one_div, div_le_div_iff₀ hLβ (by norm_num)]
-    simpa only [one_mul] using hprimeScale
+    simpa only [one_mul, Function.comp_def, L] using hprimeScale
   have hcut : ∀ p ∈ P, Real.log p * a ≤ 1 := by
     intro p hp
     have hp0 : (0 : ℝ) < p := by exact_mod_cast (hP p hp).pos
@@ -579,9 +579,4 @@ end
 
 end TwinPrime
 
-#print axioms TwinPrime.ramareSmoothKernel_moment_le
-#print axioms TwinPrime.ramareSmoothKernel_twisted_prefix
-#print axioms TwinPrime.exists_ramare_damped_prefix_bound
-#print axioms TwinPrime.exists_ramare_cofactor_prefix_bound
-#print axioms TwinPrime.exists_ramare_cofactor_logPoly_rate
 #print axioms TwinPrime.exists_ramare_cofactor_twisted_prefix_rate

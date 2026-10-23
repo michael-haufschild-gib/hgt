@@ -80,6 +80,8 @@ Temporary audit directives were removed without changing proof bodies.
 The module is wired into `goldbach/Main.lean`; the umbrella was not built.
 
 Audit log: `/tmp/hgt-goldbach-balanced-collisions-audit.log`.
+Index regeneration passed. The targeted diff check is clean, and the
+source contains no forbidden proof marker or raised proof budget.
 
 The prime-harmonic diagonal lower bound and divergence of the compensated
 smoothing norm are paper corollaries recorded on the failed-route card.

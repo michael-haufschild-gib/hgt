@@ -273,6 +273,17 @@ are three different statements and remain visibly different here.
     family is the first correction `−2∂/r` of the resolvent, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`, and
     the prime error does not reach it.
 
+10‴. **The horizon law of a curve is geometric.** For a curve model over `F_q` with Frobenius
+    eigenvalues of modulus at most `λ√q`, the comb built from the point counts
+    `N(n) = qⁿ + 1 − Re Σαᵢⁿ`, with weight `N(n)q^{−n/2}` at degree `n`, has mass
+    `Σ_{n≤D} q^{n/2}` up to `D + 2gΣ_{n≤D}λⁿ` (`abs_curveCombMass_sub_geometricMass_le`), hence up to
+    `(2g + 1)D` on the Weil circle (`abs_curveCombMass_sub_geometricMass_le_of_weil`); and the
+    fraction of the mass at depth `k` below the horizon is `q^{−k/2}` up to
+    `16(2g + 1)(D + 1)/q^{D/2}` (`abs_curveCombTail_sub_le_of_weil`). What replaces `e^{−u/2}` is
+    its exact discretization at `u = k log q`, and the error of the law is the width of the zero
+    set: square-root small on the circle, growing like `λ^D` off it. Weil's bound is the defining
+    property of the model class, not a claim about actual curves.
+
 ### Compensation coordinates
 
 11. **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²` for `L ≠ 0`, with `⟪L, R⟫ = 0`
@@ -462,6 +473,9 @@ that every successful route must use the same mechanism.
   `exists_abs_sum_vonMangoldt_sub_polar_le`, `exists_abs_primeShift_sub_polar_le`): the
   exponentially weighted two-pole defect and the residual of every lag weight and every ledger
   translate, with universal constants.
+- **Curve-model combs** (`curvePointCount`, `curveCombMass`, `geometricMass`, `curveCombTail`):
+  the comb of a function-field model built from point counts alone, with mass and depth laws for
+  every eigenvalue configuration.
 - **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
   `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
   under the horizon law, with explicit moments and a quadratic deficit at the origin.
@@ -535,9 +549,10 @@ that every successful route must use the same mechanism.
    `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates already
    give balanced-scale control for the stated centred rows; distinguish that result from a
    uniform bound for the complete coupled receiver.
-7. **Function-field calibration.** Reproduce the comb laws over a nontrivial curve, where the
-   rational zeta function does not make the cancellation degenerate, and identify what replaces
-   the horizon law.
+7. **Function-field calibration.** In the curve model the horizon law is geometric, with
+   square-root error controlled by the genus (mechanism 10‴). Open: the discrete resolvent law of
+   the curve comb on fixed tests, and the receiver of a curve, where — unlike `F_q[T]` — the
+   damped centred prefix is not constant.
 
 ---
 

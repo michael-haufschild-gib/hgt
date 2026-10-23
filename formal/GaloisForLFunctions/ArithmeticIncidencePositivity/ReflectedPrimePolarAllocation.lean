@@ -102,7 +102,7 @@ theorem edgeTentOdd_mul_shift_eq_zero_of_le {r ε L : ℝ} (hε0 : 0 < ε) (hεL
 `L ≥ ε` (including the light cone `2(r − ε) < L < 2r`), `edgeTentOdd r ε x * edgeTentOdd r ε (x + L) ≤ 0`
 at every point `x ∈ ℝ`, because the left factor is nonpositive on `(−r, −(r − ε))` while the right
 factor is nonnegative on `(r − ε, r)`. -/
-theorem edgeTentOdd_mul_shift_nonpos {r ε L : ℝ} (hε0 : 0 < ε) (hεr : ε < r) (hεL : ε ≤ L)
+theorem edgeTentOdd_mul_shift_nonpos {r ε L : ℝ} (hεr : ε < r) (hεL : ε ≤ L)
     (x : ℝ) :
     edgeTentOdd r ε x * edgeTentOdd r ε (x + L) ≤ 0 := by
   by_cases h : edgeTentOdd r ε x * edgeTentOdd r ε (x + L) = 0
@@ -160,7 +160,7 @@ theorem oddStripCost_edgeTentOdd_le_evenStripGain {r ε : ℝ} {n : ℕ}
   have hA : autoCorr (edgeTentOdd r ε) (Real.log n) ≤ 0 := by
     unfold autoCorr
     have hmono := integral_mono hint (integrable_zero ℝ ℝ volume)
-      (edgeTentOdd_mul_shift_nonpos hε0 hεr hεL)
+      (edgeTentOdd_mul_shift_nonpos hεr hεL)
     simpa using hmono
   refine ⟨hA, ?_⟩
   have hdiff := evenStripGain_sub_oddStripCost_eq hF (edgeTentOdd_odd r ε) (by linarith : 0 ≤ r)
@@ -294,6 +294,37 @@ theorem eventually_stripBoxEnergy_add_linear_lt_poleCharge_edgeTentOdd
       _ ≤ |C| * (2 * (r - ε)) := mul_le_mul_of_nonneg_left hr_le (abs_nonneg C)
   have hbox' : 3 * ε ^ 2 * r ≤ 3 * ε ^ 2 * (2 * (r - ε)) := by nlinarith
   nlinarith
+
+/-- **Simultaneous decoupling failure on edge tests.** For every fixed tent width
+`0 < ε ≤ log 2` and every linear budget constant `C`, there exists `r₀` such that for all `r ≥ r₀`
+the odd edge tent `F = edgeTentOdd r ε` satisfies:
+* `evenStripGain F r n = oddStripCost F r n` for all sub-light-cone shifts `2 ≤ n` with
+  `log n ≤ 2(r − ε)`;
+* `oddStripCost F r n ≤ evenStripGain F r n` for every `n ∈ relevantShifts r` (so the net prime
+  charge `Σ oddStripCost − Σ evenStripGain ≤ 0` is a net gain);
+* `stripBoxEnergy F 0 r + C * r < poleCharge F` (the pole charge outgrows the archimedean surplus
+  pool plus any linear potential budget). -/
+theorem exists_edgeTent_reflectedPrimePolar_decoupling_fails
+    {ε : ℝ} (hε0 : 0 < ε) (hε2 : ε ≤ Real.log 2) (C : ℝ) :
+    ∃ r₀ : ℝ, ∀ r ≥ r₀,
+      (∀ n : ℕ, 2 ≤ n → Real.log n ≤ 2 * (r - ε) →
+        evenStripGain (edgeTentOdd r ε) r n = oddStripCost (edgeTentOdd r ε) r n) ∧
+      (∀ n ∈ relevantShifts r,
+        oddStripCost (edgeTentOdd r ε) r n ≤ evenStripGain (edgeTentOdd r ε) r n) ∧
+      (∑ n ∈ relevantShifts r, oddStripCost (edgeTentOdd r ε) r n) ≤
+        (∑ n ∈ relevantShifts r, evenStripGain (edgeTentOdd r ε) r n) ∧
+      stripBoxEnergy (edgeTentOdd r ε) 0 r + C * r < poleCharge (edgeTentOdd r ε) := by
+  have hε1 : ε ≤ 1 := hε2.trans (by linarith [Real.log_two_lt_d9])
+  obtain ⟨r₀, hr₀⟩ := Filter.eventually_atTop.mp
+    ((eventually_stripBoxEnergy_add_linear_lt_poleCharge_edgeTentOdd hε0 hε1 C).and
+      (eventually_ge_atTop (ε + 1)))
+  refine ⟨r₀, fun r hr => ?_⟩
+  obtain ⟨hpole, hrε⟩ := hr₀ r hr
+  have hεr : ε < r := by linarith
+  exact ⟨fun n hn2 hn => (evenStripGain_edgeTentOdd_eq_oddStripCost_of_le hε0 hε2 hεr hn2 hn).2,
+    fun n hn => (oddStripCost_edgeTentOdd_le_evenStripGain hε0 hε2 hεr hn).2,
+    sum_oddStripCost_edgeTentOdd_le_sum_evenStripGain hε0 hε2 hεr,
+    hpole⟩
 
 
 /-! ## Part II: Unconditional full reflected-prime/polar allocation across arbitrary tests -/
@@ -475,25 +506,6 @@ theorem integral_cosh_mul_autoCorrelation_eq {F : ℝ → ℝ} {r : ℝ}
     MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
   ring
 
-/-- An even integrable function integrates on `ℝ` to twice its integral over `(0, ∞)`. -/
-theorem integral_eq_two_mul_Ioi_of_even {g : ℝ → ℝ} (hg : Integrable g) (he : ∀ x, g (-x) = g x) :
-    (∫ x, g x) = 2 * ∫ x in Ioi (0 : ℝ), g x := by
-  have hneg : MeasurePreserving (fun x : ℝ => -x) volume volume :=
-    Measure.measurePreserving_neg _
-  have hemb : MeasurableEmbedding (fun x : ℝ => -x) := (Homeomorph.neg ℝ).measurableEmbedding
-  have hpre : (fun x : ℝ => -x) ⁻¹' Ioi (0 : ℝ) = Iio 0 := by ext x; simp
-  have h1 : (∫ x in Iio (0 : ℝ), g x) = ∫ y in Ioi (0 : ℝ), g y := by
-    have hpe := hneg.setIntegral_preimage_emb hemb g (Ioi (0 : ℝ))
-    rw [hpre] at hpe
-    rw [← hpe]
-    exact setIntegral_congr_fun measurableSet_Iio fun x _ => (he x).symm
-  have h2 : (∫ x, g x) = (∫ x in Iio (0 : ℝ), g x) + ∫ x in Ici (0 : ℝ), g x := by
-    have h := MeasureTheory.integral_add_compl (measurableSet_Iio (a := (0 : ℝ))) hg
-    rw [show (Iio (0 : ℝ))ᶜ = Ici (0 : ℝ) by ext x; simp] at h
-    exact h.symm
-  rw [h2, h1, MeasureTheory.integral_Ici_eq_integral_Ioi]
-  ring
-
 /-- **The pole charge of an odd compactly supported test in autocorrelation form.** For every odd
 continuous test `F` supported in `[−r, r]` (`r > 0`),
 `poleCharge F = −∫_{s>0} 4 cosh(s/2) autoCorrelation F s ds`. -/
@@ -526,9 +538,9 @@ theorem poleCharge_eq_neg_integral_cosh_autoCorrelation {F : ℝ → ℝ} {r : �
       4 * ∫ s in Ioi (0 : ℝ), Real.cosh (s / 2) * autoCorrelation F s := by
     rw [← MeasureTheory.integral_const_mul]
     exact setIntegral_congr_fun measurableSet_Ioi fun s _ => by ring
-  rw [hre, ← hpolar, hhalf, hcosh]
+  rw [hcosh] at hpolar
   unfold poleCharge oddPoleMoment
-  ring
+  linarith [hpolar, hhalf, hre]
 
 /-! ### The joint reflected-prime/polar cost and its exact Chebyshev-defect allocations -/
 
@@ -617,6 +629,20 @@ theorem reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc {F : ℝ → ℝ} 
         (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)) :=
     setIntegral_congr_fun measurableSet_Ioc fun s _ => by rw [deriv_lagTestWeight hF hFc s]
   rw [hcongr1, hloc, hcongr2]
+
+/-- **Unconditional Chebyshev-defect bound on the reflected-prime/polar cost.** For every odd
+`F ∈ C¹_c(ℝ)` supported in `[−r, r]` (`r > 0`), `|reflectedPrimePolarCost F r|` is bounded by the
+`L¹` pairing of `|chebyshevTwoPoleDefect s|` against `|(lagTestWeight F)'(s)|` on `(0, 2r]`. -/
+theorem abs_reflectedPrimePolarCost_le_integral_abs_chebyshevTwoPoleDefect {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    |reflectedPrimePolarCost F r| ≤
+      ∫ s in Ioc (0 : ℝ) (2 * r),
+        |chebyshevTwoPoleDefect s| *
+          |2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)| := by
+  rw [reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc hF hFc hodd hr hsupp]
+  refine le_trans abs_integral_le_integral_abs (le_of_eq ?_)
+  exact setIntegral_congr_fun measurableSet_Ioc fun s _ => abs_mul _ _
 
 /-- The second cross-correlation `∫ F(x) F''(x + t) dx` of a `C²_c` test. -/
 def secondCrossCorr (F : ℝ → ℝ) (t : ℝ) : ℝ := ∫ x, F x * deriv (deriv F) (x + t)
@@ -785,6 +811,37 @@ theorem fullZeroForm_nonneg_of_reflectedPrimePolarAllocation {F : ℝ → ℝ} {
     0 ≤ fullZeroForm F := by
   rw [fullZeroForm_eq_chebyshevDefectLedger hF hFc hodd hr hsupp hrR]
   linarith
+
+/-- **Equivalence with the Riemann Hypothesis.** The Riemann Hypothesis holds if and only if for
+every aperture `r > 0` and every odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, there is a plateau
+radius `R > r` at which the finite-horizon Chebyshev-defect integral of `F` on `(0, 2r]` is paid by
+`surplusPool + crossingPotentialTerm + gaugeRemainder`. -/
+theorem riemannHypothesis_iff_reflectedPrimePolarAllocation :
+    RiemannHypothesis ↔
+      ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
+        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+          ∃ R, r < R ∧
+            (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+                (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+              surplusPool (aperturePlateau r R) F +
+                crossingPotentialTerm (aperturePlateau r R) F +
+                gaugeRemainder (aperturePlateau r R) F := by
+  rw [riemannHypothesis_iff_exists_plateau_globalIncidenceAllocation]
+  constructor
+  · intro h r F hr hF hFc hodd hsupp
+    obtain ⟨R, hrR, hGIA⟩ := h r F hr hF hFc hodd hsupp
+    refine ⟨R, hrR, ?_⟩
+    rw [globalIncidenceAllocation_iff_reflectedPrimePolarCost_le,
+      reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+        (hF.of_le (by norm_num)) hFc hodd hr hsupp] at hGIA
+    exact hGIA
+  · intro h r F hr hF hFc hodd hsupp
+    obtain ⟨R, hrR, halloc⟩ := h r F hr hF hFc hodd hsupp
+    refine ⟨R, hrR, ?_⟩
+    rw [globalIncidenceAllocation_iff_reflectedPrimePolarCost_le,
+      reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+        (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+    exact halloc
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

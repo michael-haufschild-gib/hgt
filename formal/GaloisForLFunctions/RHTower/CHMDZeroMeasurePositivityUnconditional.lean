@@ -1,14 +1,14 @@
 import GaloisForLFunctions.RHTower.CHMDKleinGordonEnergyPositivityAndOriginMaximum
 import GaloisForLFunctions.RHTower.CHMDQuarticMomentAndSecondOrderPacketPositivity
 import GaloisForLFunctions.RHTower.CHMDSmallScalePacketPositivityFirstOrder
-import GaloisForLFunctions.SquareRootThreshold.TheSideIsTheDepthAndTheWidthIsItsSupremum
+import GaloisForLFunctions.RHTower.RiemannXiZerosInfinite
 
 /-!
 # Strict positivity of the zero-measure moments of `ζ`
 
 The Klein–Gordon energy moment, the quartic moment and the wave at the origin were proved strictly
-positive for a nonempty zero configuration.  `zetaZeroConfig_carrier_nonempty` (a zero of `ζ` in
-the open critical strip) supplies the nonemptiness.
+positive for a nonempty zero configuration.  `exists_riemannZeta_zero_mem_openStrip` (a zero of `ζ`
+in the open critical strip) supplies the nonemptiness.
 -/
 
 noncomputable section
@@ -16,8 +16,9 @@ noncomputable section
 namespace RHTower
 
 /-- The zero configuration of `ζ`, as a nonempty type. -/
-theorem nonempty_zetaZeroConfig_carrier : Nonempty Zeta23.zetaZeroConfig.carrier :=
-  GaloisForLFunctions.SquareRootThreshold.zetaZeroConfig_carrier_nonempty.to_subtype
+theorem nonempty_zetaZeroConfig_carrier : Nonempty Zeta23.zetaZeroConfig.carrier := by
+  obtain ⟨ρ, h0, h1, hzero⟩ := exists_riemannZeta_zero_mem_openStrip
+  exact ⟨⟨ρ, show Zeta23.IsNontrivialZero ρ from ⟨hzero, h0, h1⟩⟩⟩
 
 /-- The Klein–Gordon energy moment of the zeros of `ζ` is strictly positive. -/
 theorem CHMDEnergyPositivity.kgEnergyMoment_pos_unconditional :
@@ -37,3 +38,7 @@ theorem CHMDSmallScale.chmdWave_zero_pos_unconditional : 0 < CHMDGrowthCollapse.
   CHMDSmallScale.chmdWave_zero_pos
 
 end RHTower
+#print axioms RHTower.nonempty_zetaZeroConfig_carrier -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.CHMDEnergyPositivity.kgEnergyMoment_pos_unconditional -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.CHMDQuarticMoment.kgQuarticMoment_pos_unconditional -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.CHMDSmallScale.chmdWave_zero_pos_unconditional -- AXIOM-AUDIT-TEMP
