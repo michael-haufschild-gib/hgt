@@ -244,7 +244,11 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     more than one prime, since two would make `log q / log p` rational
     (`subsingleton_resonantPrimes`). With finitely many right zeros, all but finitely many primes
     separate them, and at each such prime one tower of one generic test carries the whole defect
-    (`almost_every_prime_tower_sees_every_right_zero`).
+    (`almost_every_prime_tower_sees_every_right_zero`). Weights never need to be assumed: one
+    modulated bump has nonzero Frobenius weights at every class of every prime, since each weight
+    is the transform of a nonzero compactly supported kernel (Fourier injectivity), so its tower at
+    every prime has defect exactly `#{p^{ρ − ½} : Re ρ > ½}`
+    (`exists_test_tower_defect_eq_card_frobEig`).
 
 ### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `BezoutEffectivityAndTheBeurlingObstruction`)
 
@@ -625,6 +629,7 @@ Weil's argument.
 | `TheHeckeTowerOfAPrimeIsThePeriodQuotient` | Frobenius eigenvalues `p^{ρ − ½}`, Toeplitz tower Gram, class separation by annihilating polynomials and Cesàro means, Frobenius weights, the tower Pontryagin law |
 | `AlmostEveryPrimeSeesEveryRightZero` | coincidence of Frobenius eigenvalues, at most one resonant prime per pair of zeros, finitely many resonant primes, one prime tower carries the whole defect |
 | `TheFrobeniusSpanIsTheTowerOfTheScalingSurface` | explicit formula of a curve on its scaling surface (Poisson along tilted lattices), `q`-tower Gram = `log q·‖g‖²·spanGram`, tower Pontryagin law over `𝔽_q` |
+| `TheTowerDefectCountsTheFrobeniusEigenvalues` | Fourier injectivity, class kernels, one test whose tower at every prime has defect = number of distinct outer Frobenius eigenvalues |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
 | `TheResonatorRemainderIsNegative` | cross-prime remainder on resonators is negative definite |

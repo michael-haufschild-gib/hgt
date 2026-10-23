@@ -225,7 +225,8 @@ theorem not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg {N : ℕ
   have hlog23 : Real.log 2 < Real.log 3 := Real.log_lt_log (by norm_num) (by norm_num)
   have hplus : 0 ≤ vonMangoldtReadout N (primePairPlusWeight N) := by
     rw [hsep.2.2.2.2.1]; linarith
-  have hminus := (hres (primePairPlusWeight N) (primePairMinusWeight N) hmem).mpr hplus
+  have hminus : 0 ≤ vonMangoldtReadout N (primePairMinusWeight N) :=
+    (hres (primePairPlusWeight N) (primePairMinusWeight N) hmem).mpr hplus
   rw [hsep.2.2.2.2.2.1] at hminus
   linarith
 
@@ -242,7 +243,8 @@ theorem not_resolves_completePeriodLagReading_renormalizedPrefixDefect_neg {N : 
   have hsep := primePairWeights_transHorizon_separated hN
   have hplus : sieveRenormalizedPrefixDefect N 1 (primePairPlusWeight N) < 0 := by
     rw [hsep.2.2.2.2.2.2.2.2.2.1]; norm_num
-  have hminus := (hres (primePairPlusWeight N) (primePairMinusWeight N) hmem).mpr hplus
+  have hminus : sieveRenormalizedPrefixDefect N 1 (primePairMinusWeight N) < 0 :=
+    (hres (primePairPlusWeight N) (primePairMinusWeight N) hmem).mpr hplus
   rw [hsep.2.2.2.2.2.2.2.2.2.2] at hminus
   linarith
 

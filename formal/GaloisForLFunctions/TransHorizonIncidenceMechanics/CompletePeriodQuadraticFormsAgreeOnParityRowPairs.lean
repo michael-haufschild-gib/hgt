@@ -245,6 +245,7 @@ theorem chiFour_parityRows_completePeriod_and_receiver_split {ε : ℝ} (hε : 0
 
 variable {q : ℕ} [NeZero q]
 
+omit [NeZero q] in
 theorem completedValue_one (χ : MulChar (ZMod q) ℤ) : completedValue χ 1 = 1 := by
   simp [completedValue, charSign_one]
 
@@ -301,7 +302,7 @@ theorem fermi_parityRows_completePeriod_and_receiver_split {ε : ℝ} (hε : 0 <
     (∃ E : ℝ, ∀ T : ℕ, ∀ᶠ N in atTop, horizonPronicEnergy N (fermiRow ε N) T ≤ E) ∧
     (∀ C : ℝ, ∀ᶠ N in atTop, ∃ T : ℕ,
       C < horizonPronicEnergy N (evenFlipRow N (fermiRow ε N)) T) :=
-  ⟨fun _ hN => evenFlipRow_completePeriod_eq hN (fermiRow ε N),
+  ⟨fun N hN => evenFlipRow_completePeriod_eq hN (fermiRow ε N),
     (fermi_parityRows hε hε2).1,
     (fermi_parityRows hε hε2).2.1,
     (fermi_parityRows hε hε2).2.2⟩

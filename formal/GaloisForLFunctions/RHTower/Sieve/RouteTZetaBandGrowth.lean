@@ -110,7 +110,7 @@ theorem routeT_band_truncation_tails_le_nine
     dsimp only [N]
     exact_mod_cast Nat.one_le_two_pow
   have hN0 : 0 < N := lt_of_lt_of_le zero_lt_one hN1
-  have ht8 : 8 * Real.pi ≤ t - 1 := by linarith [Real.pi_lt_d2]
+  have ht8 : 8 * Real.pi ≤ t - 1 := by linarith only [ht, Real.pi_lt_d2]
   have hNroot : N ^ ((1 : ℝ) / 3) =
       (2 : ℝ) ^ (((topExponent (t - 1) : ℕ) : ℝ) / 3) := by
     dsimp only [N]
@@ -124,7 +124,7 @@ theorem routeT_band_truncation_tails_le_nine
   have hratiole : (t - 1) / (8 * Real.pi) ≤ t - 1 := by
     have hden : (1 : ℝ) ≤ 8 * Real.pi := by linarith [Real.pi_gt_three]
     exact (div_le_iff₀ (by positivity)).2
-      (by linarith [mul_le_mul_of_nonneg_left hden ht0.le])
+      (by linarith only [mul_le_mul_of_nonneg_left hden ht0.le])
   have hnum1 : N ^ (1 - σ) ≤ y := by
     calc
       N ^ (1 - σ) ≤ N ^ ((1 : ℝ) / 3) :=
@@ -150,9 +150,9 @@ theorem routeT_band_truncation_tails_le_nine
       ring]
     exact hcube
   have hpi2 : Real.pi ^ 2 < 10 := by
-    linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
+    linarith only [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
   have hpi3 : Real.pi ^ 3 < 32 := by
-    linarith [mul_lt_mul'' hpi2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
+    linarith only [mul_lt_mul'' hpi2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
   have hform : ((t - 1) / (8 * Real.pi)) ^ (3 : ℕ) =
       (t - 1) ^ 3 / (512 * Real.pi ^ 3) := by
     field_simp
@@ -160,21 +160,21 @@ theorem routeT_band_truncation_tails_le_nine
   have hcubelower : (t - 1) ^ 3 / 16384 ≤
       ((t - 1) / (8 * Real.pi)) ^ (3 : ℕ) := by
     rw [hform, div_le_div_iff₀ (by norm_num) (by positivity)]
-    linarith [mul_le_mul_of_nonneg_left hpi3.le (pow_pos ht0 3).le]
+    linarith only [mul_le_mul_of_nonneg_left hpi3.le (pow_pos ht0 3).le]
   have hNlower : (t - 1) ^ 3 ≤ 32768 * N := by
-    linarith [hcubelower, hcubeN]
+    linarith only [hcubelower, hcubeN]
   have hsquare : (y + 2) ^ 2 ≤ 2 * (t - 1) ^ 2 := by
     have hy4 : y + 2 ≤ (t - 1) + 4 := by linarith
     have hnonneg : 0 ≤ y + 2 := by linarith
     have hs1 : (y + 2) ^ 2 ≤ ((t - 1) + 4) ^ 2 := pow_le_pow_left₀ hnonneg hy4 2
-    linarith [mul_le_mul_of_nonneg_right (by linarith : (10 : ℝ) ≤ t - 1) ht0.le]
+    linarith only [hs1, ht,
+      mul_le_mul_of_nonneg_right (by linarith only [ht] : (10 : ℝ) ≤ t - 1) ht0.le]
   have hmul : 4096 * (t - 1) ^ 2 ≤ (t - 1) ^ 3 := by
     have h4096 : (4096 : ℝ) ≤ t - 1 := by linarith
     have hh := mul_le_mul_of_nonneg_right h4096 (sq_nonneg (t - 1))
-    linarith
+    linarith only [hh]
   have hNbig : (y + 2) ^ 2 ≤ 16 * N := by
-    linarith [hsquare, hmul, hNlower]
-  have hsqrtmul : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN0.le
+    linarith only [hsquare, hmul, hNlower]
   have hsqrtnn : 0 ≤ Real.sqrt N := Real.sqrt_nonneg N
   have hsqrtpos : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
   have hsqrt : y + 2 ≤ 4 * Real.sqrt N := by
@@ -182,8 +182,8 @@ theorem routeT_band_truncation_tails_le_nine
       (Real.le_sqrt (by positivity) hN0.le).mpr (by
         rw [div_pow]
         norm_num
-        linarith [hNbig])
-    linarith
+        linarith only [hNbig])
+    linarith only [hquarter]
   have hmono : N ^ (-σ) ≤ N ^ (-(1 : ℝ) / 2) :=
     Real.rpow_le_rpow_of_exponent_le hN1 (by linarith)
   have hsqrtN : N ^ (-(1 : ℝ) / 2) = 1 / Real.sqrt N := by
@@ -196,14 +196,14 @@ theorem routeT_band_truncation_tails_le_nine
     rwa [one_div, inv_mul_cancel₀ hsqrtpos.ne'] at hh
   have hdiv : N ^ (-σ) / σ ≤ 2 / Real.sqrt N := by
     rw [div_le_div_iff₀ hσ0 hsqrtpos]
-    exact hmulnum.trans (by linarith [hσhalf])
+    exact hmulnum.trans (by linarith only [hσhalf])
   have hwnorm : ‖w‖ ≤ y + 2 := by
     have hwre : w.re = σ := by simp [w]
     have hwim : w.im = y := by simp [w]
     calc
       ‖w‖ ≤ |w.re| + |w.im| := Complex.norm_le_abs_re_add_abs_im w
       _ = σ + y := by rw [hwre, hwim, abs_of_pos hσ0, abs_of_pos hy0]
-      _ ≤ y + 2 := by linarith
+      _ ≤ y + 2 := by linarith only [hσone]
   have htail2 : ‖w‖ * (N ^ (-σ) / σ) ≤ 8 := by
     calc
       ‖w‖ * (N ^ (-σ) / σ) ≤ (y + 2) * (2 / Real.sqrt N) := by
@@ -214,9 +214,9 @@ theorem routeT_band_truncation_tails_le_nine
             mul_le_mul_of_nonneg_left hdiv (by positivity)
       _ ≤ 8 := by
         rw [mul_comm, div_mul_eq_mul_div, div_le_iff₀ hsqrtpos]
-        linarith
+        linarith only [hsqrt]
   dsimp only [N, w] at htail1 htail2 ⊢
-  linarith
+  linarith only [htail1, htail2]
 
 /-- **Uniform unit-band growth.**  The centre-selected parameters control all ordinates in the
 unit band and all real parts from their common Route-T edge to one. -/

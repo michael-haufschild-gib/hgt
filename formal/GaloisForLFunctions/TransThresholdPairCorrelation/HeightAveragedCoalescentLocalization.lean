@@ -133,6 +133,12 @@ theorem continuous_Jgen_uncurry (θ y : ℝ) : Continuous fun p : ℝ × ℝ => 
   · simp only [hθ, if_true]; fun_prop
   · simp only [hθ, if_false]; fun_prop
 
+theorem continuous_Jgen_swap (θ y : ℝ) : Continuous fun p : ℝ × ℝ => Jgen p.2 θ y p.1 := by
+  unfold Jgen Jker
+  by_cases hθ : θ = 0
+  · simp only [hθ, if_true]; fun_prop
+  · simp only [hθ, if_false]; fun_prop
+
 /-- `|J(T; θ, y, x)| ≤ T` on `|x| ≤ T`: the inner window has length `T − |x|`. -/
 theorem abs_Jgen_le {T : ℝ} (hT : 0 ≤ T) {x : ℝ} (hx : |x| ≤ T) (θ y : ℝ) :
     |Jgen T θ y x| ≤ T := by
@@ -252,10 +258,10 @@ theorem intAgen_sub_coreAgen (hΦ : Continuous Φ) (a T θ y : ℝ) :
       = (∫ x in (-T)..(-a), Φ x ^ 2 * Jgen T θ y x) + ∫ x in a..T, Φ x ^ 2 * Jgen T θ y x := by
   have hfT : Continuous fun x => Φ x ^ 2 * Jgen T θ y x :=
     (continuous_Phi_Jgen_uncurry hΦ θ y).comp (Continuous.prodMk_right T)
-  have h1 := intervalIntegral.integral_add_adjacent_intervals (a := -T) (b := -a) (c := T)
-    (hfT.intervalIntegrable (-T) (-a)) (hfT.intervalIntegrable (-a) T)
-  have h2 := intervalIntegral.integral_add_adjacent_intervals (a := -a) (b := a) (c := T)
-    (hfT.intervalIntegrable (-a) a) (hfT.intervalIntegrable a T)
+  have h1 := intervalIntegral.integral_add_adjacent_intervals (μ := volume) (a := -T) (b := -a)
+    (c := T) (hfT.intervalIntegrable (-T) (-a)) (hfT.intervalIntegrable (-a) T)
+  have h2 := intervalIntegral.integral_add_adjacent_intervals (μ := volume) (a := -a) (b := a)
+    (c := T) (hfT.intervalIntegrable (-a) a) (hfT.intervalIntegrable a T)
   unfold intAgen coreAgen
   linarith
 
@@ -330,13 +336,13 @@ theorem abs_intAgen_sub_coreAgen_le (hΦ : Continuous Φ)
   have hunion : (∫ x in Iic (-a), Φ x ^ 2 * x ^ 2) + ∫ x in Ioi a, Φ x ^ 2 * x ^ 2
       ≤ ∫ x, Φ x ^ 2 * x ^ 2 := by
     have hdisj : Disjoint (Iic (-a)) (Ioi a) := Set.disjoint_left.mpr fun x h1 h2 => by
-      simp only [mem_Iic] at h1; simp only [mem_Ioi] at h2; linarith
+      simp only [Set.mem_Iic] at h1; simp only [Set.mem_Ioi] at h2; linarith
     rw [← setIntegral_union hdisj measurableSet_Ioi hΦsq.integrableOn hΦsq.integrableOn]
     exact setIntegral_le_integral hΦsq (Eventually.of_forall fun x => by
       simp only [Pi.zero_apply]; positivity)
   rw [intAgen_sub_coreAgen hΦ]
   calc |(∫ x in (-T)..(-a), Φ x ^ 2 * Jgen T θ y x) + ∫ x in a..T, Φ x ^ 2 * Jgen T θ y x|
-      ≤ b / a ^ 2 * ∫ x in Iic (-a), Φ x ^ 2 * x ^ 2
+      ≤ b / a ^ 2 * (∫ x in Iic (-a), Φ x ^ 2 * x ^ 2)
           + b / a ^ 2 * ∫ x in Ioi a, Φ x ^ 2 * x ^ 2 :=
         (abs_add_le _ _).trans (add_le_add (abs_integral_Phi_Jgen_left_le hΦ hΦsq ha hT θ y)
           (abs_integral_Phi_Jgen_right_le hΦ hΦsq ha hT θ y))
@@ -397,11 +403,11 @@ theorem abs_avg_Agen_le (hΦ : Continuous Φ) (hΦ2 : Integrable fun x => Φ x ^
   have hcore : |∫ T in (a - 1)..(b + 1), ω T * coreAgen Φ a T θ y| ≤ K * ∫ x, Φ x ^ 2 := by
     rw [avg_coreAgen_eq hΦ hc]
     have hinner : Continuous fun x => Φ x ^ 2 * ∫ T in (a - 1)..(b + 1), ω T * Jgen T θ y x := by
-      have hF' : Continuous (Function.uncurry fun x T => ω T * Jgen T θ y x) :=
-        (hc.comp continuous_snd).mul
-          ((continuous_Jgen_uncurry θ y).comp (continuous_snd.prodMk continuous_fst))
+      have hF' : Continuous fun p : ℝ × ℝ => ω p.2 * Jgen p.2 θ y p.1 :=
+        (hc.comp continuous_snd).mul (continuous_Jgen_swap θ y)
       exact (hΦ.pow 2).mul
-        (intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' hF' _ _)
+        (intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (μ := volume)
+          (f := fun x T => ω T * Jgen T θ y x) hF' (a - 1) (b + 1))
     have haa : -a ≤ a := by linarith
     calc |∫ x in (-a)..a, Φ x ^ 2 * ∫ T in (a - 1)..(b + 1), ω T * Jgen T θ y x|
         ≤ ∫ x in (-a)..a, Φ x ^ 2 * K := by
@@ -559,11 +565,11 @@ theorem abs_avg_ppSumFreq_le (hΦ : Continuous Φ) (hΦ2 : Integrable fun x => �
   have hB0 : 0 ≤ acoef n * acoef m := mul_nonneg (acoef_nonneg n) (acoef_nonneg m)
   rw [abs_mul, abs_of_nonneg hB0]
   rcases acoef_eq_zero_or_two_le hn with hn0 | hn2
-  · rw [hn0, zero_mul, zero_mul, zero_mul]
+  · simp [hn0]
   rcases acoef_eq_zero_or_two_le hm with hm0 | hm2
-  · rw [hm0, mul_zero, zero_mul, zero_mul]
+  · simp [hm0]
   refine mul_le_mul_of_nonneg_left ?_ hB0
-  rw [Aplus_eq_Agen]
+  simp only [Aplus_eq_Agen]
   refine abs_avg_Agen_le_bound hΦ hΦ2 hΦsq hω hz ha hab one_pos ?_ _
   have hl2 : (1 : ℝ) / 2 ≤ Real.log 2 := by have := Real.log_two_gt_d9; linarith
   have hn' : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) (by exact_mod_cast hn2)
@@ -592,14 +598,14 @@ theorem abs_avg_ppOffDiag_sub_close_le (hΦ : Continuous Φ) (hΦ2 : Integrable 
   have hB0 : 0 ≤ acoef n * acoef m := mul_nonneg (acoef_nonneg n) (acoef_nonneg m)
   have hK0 : 0 ≤ avgKernelBound Φ ω a b k θ₀ := avgKernelBound_nonneg ha hab hθ₀
   by_cases hnm : n = m
-  · simp only [hnm, if_true, true_or, sub_zero, abs_zero]; positivity
+  · subst hnm; simp only [if_true, true_or, sub_zero, abs_zero]; exact mul_nonneg hB0 hK0
   by_cases hfar : θ₀ < |Real.log n - Real.log m|
   · simp only [hnm, if_false, hfar, or_true, if_true, sub_zero]
     rw [abs_mul, abs_of_nonneg hB0]
     refine mul_le_mul_of_nonneg_left ?_ hB0
-    rw [Aminus_eq_Agen]
+    simp only [Aminus_eq_Agen]
     exact abs_avg_Agen_le_bound hΦ hΦ2 hΦsq hω hz ha hab hθ₀ hfar.le _
-  · simp only [hnm, hfar, if_false, or_self, sub_self, abs_zero]; positivity
+  · simp only [hnm, hfar, if_false, or_self, sub_self, abs_zero]; exact mul_nonneg hB0 hK0
 
 end Pairs
 

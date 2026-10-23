@@ -148,8 +148,9 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
     have hpow : wideScale w.im ^ (2 : ℕ) ≤ wideScale w.im ^ (34 : ℕ) :=
       pow_le_pow_right₀ hone (by norm_num)
     have hsq : (3 : ℝ) * wideScale w.im ≤ wideScale w.im ^ (2 : ℕ) := by
-      linarith [mul_le_mul_of_nonneg_right (by linarith : (3 : ℝ) ≤ wideScale w.im) hL0.le]
-    linarith
+      linarith only [mul_le_mul_of_nonneg_right
+        (by linarith only [hL] : (3 : ℝ) ≤ wideScale w.im) hL0.le]
+    linarith only [hpow, hsq]
   have himabs : (1 : ℝ) ≤ |w.im| := by
     rw [abs_of_pos ht0]; linarith
   rcases lt_or_ge w.re 1 with hlt | hge
@@ -176,7 +177,8 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
       have hq : Real.exp (wideScale w.im) = w.im / (2 * Real.pi) :=
         Real.exp_log (by positivity)
       rw [hq, div_le_iff₀ (by positivity)]
-      linarith [mul_le_mul_of_nonneg_left (by linarith : (1 : ℝ) ≤ 2 * Real.pi) ht0.le]
+      linarith only [mul_le_mul_of_nonneg_left
+        (by linarith only [hπd] : (1 : ℝ) ≤ 2 * Real.pi) ht0.le]
     have htiny : ((lineTruncation w.im : ℕ) : ℝ) ^ (1 - w.re) ≤ w.im := by
       have hlogNnn : (0 : ℝ) ≤ Real.log ((lineTruncation w.im : ℕ) : ℝ) :=
         Real.log_nonneg hNR
@@ -192,7 +194,7 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
         have hKlow : 1 / (6 * (2 : ℝ) ^ K) ≤ 20 * Real.log (wideScale w.im) ^ 2
             / wideScale w.im := by
           rw [div_le_div_iff₀ (by positivity) hL0]
-          linarith [hKlo]
+          linarith only [hKlo]
         have hstep : (1 - w.re) * Real.log ((lineTruncation w.im : ℕ) : ℝ)
             ≤ (20 * Real.log (wideScale w.im) ^ 2 / wideScale w.im)
               * (3 * wideScale w.im + 1) := by
@@ -204,8 +206,8 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
         have hcancel : (20 * Real.log (wideScale w.im) ^ 2 / wideScale w.im)
             * (3 * wideScale w.im + 1) ≤ 80 * Real.log (wideScale w.im) ^ 2 := by
           rw [div_mul_eq_mul_div, div_le_iff₀ hL0]
-          linarith [mul_le_mul_of_nonneg_left hone (sq_nonneg (Real.log (wideScale w.im)))]
-        linarith [mul_le_mul_of_nonneg_left hs1 hsnn]
+          linarith only [mul_le_mul_of_nonneg_left hone (sq_nonneg (Real.log (wideScale w.im)))]
+        linarith only [hstep, hcancel, hsq, hs, mul_le_mul_of_nonneg_left hs1 hsnn]
       have hrw : ((lineTruncation w.im : ℕ) : ℝ) ^ (1 - w.re)
           = Real.exp (Real.log ((lineTruncation w.im : ℕ) : ℝ) * (1 - w.re)) :=
         Real.rpow_def_of_pos (by linarith) _
@@ -213,7 +215,7 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
       calc Real.exp (Real.log ((lineTruncation w.im : ℕ) : ℝ) * (1 - w.re))
           ≤ Real.exp (wideScale w.im) := by
             refine Real.exp_le_exp.mpr ?_
-            linarith [hprod]
+            linarith only [hprod]
         _ ≤ w.im := hexpL
     have hnormsub : w.im ≤ ‖w - 1‖ := by
       have h := Complex.abs_im_le_norm (w - 1)
@@ -236,9 +238,9 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
         have hcube := cube_sub_one_le_lineTruncation (t := w.im) (by linarith)
         have hπlt : Real.pi < 3.15 := Real.pi_lt_d2
         have hπ2 : Real.pi ^ 2 < 10 := by
-          linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
+          linarith only [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
         have hπ3 : Real.pi ^ 3 < 32 := by
-          linarith [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
+          linarith only [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
         have hform : (w.im / (8 * Real.pi)) ^ (3 : ℕ) = w.im ^ 3 / (512 * Real.pi ^ 3) := by
           field_simp; ring
         have himbig : (10 : ℝ) ^ 5 ≤ w.im := by
@@ -246,19 +248,21 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
           linarith only [h, hexpL, hL]
         have hden : w.im ^ 3 / 16384 ≤ (w.im / (8 * Real.pi)) ^ (3 : ℕ) := by
           rw [hform, div_le_div_iff₀ (by norm_num) (by positivity)]
-          linarith [mul_le_mul_of_nonneg_left hπ3.le (pow_pos ht0 3).le]
+          linarith only [mul_le_mul_of_nonneg_left hπ3.le (pow_pos ht0 3).le]
         have hcu2 : (10 : ℝ) ^ 5 * w.im ^ 2 ≤ w.im ^ 3 := by
-          linarith [mul_le_mul_of_nonneg_right himbig (sq_nonneg w.im)]
-        linarith [mul_le_mul_of_nonneg_right himbig ht0.le]
+          linarith only [mul_le_mul_of_nonneg_right himbig (sq_nonneg w.im)]
+        linarith only [hcube, hden, hcu2, himbig, mul_le_mul_of_nonneg_right himbig ht0.le]
       have hsq : Real.sqrt ((lineTruncation w.im : ℕ) : ℝ)
           * Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) = ((lineTruncation w.im : ℕ) : ℝ) :=
         Real.mul_self_sqrt (by linarith)
       have hsnn : (0 : ℝ) ≤ Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) := Real.sqrt_nonneg _
       have hs2 : w.im + 2 ≤ 2 * Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) := by
         have hhalf : (w.im + 2) / 2 ≤ Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) :=
-          (Real.le_sqrt (by positivity) (by linarith)).mpr (by linarith [hNbig])
-        linarith
-      have hspos : (0 : ℝ) < Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) := by linarith
+          (Real.le_sqrt (by positivity) (by linarith only [hNR])).mpr
+            (by linarith only [hNbig])
+        linarith only [hhalf]
+      have hspos : (0 : ℝ) < Real.sqrt ((lineTruncation w.im : ℕ) : ℝ) := by
+        linarith only [hs2, ht0]
       have hwnorm : ‖w‖ ≤ 2 + w.im := by
         refine le_trans (Complex.norm_le_abs_re_add_abs_im w) ?_
         rw [abs_of_pos ht0, abs_of_pos hσ0]
@@ -284,7 +288,7 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
         _ ≤ 4 := by
             rw [mul_comm, div_mul_eq_mul_div, div_le_iff₀ hspos]
             linarith only [hs2]
-    linarith [hbase, hhead, htail1, htail2]
+    linarith only [hbase, hhead, htail1, htail2]
   · -- right of the abscissa
     have h := norm_riemannZeta_ge_one_le hge himabs hN1
     have hwnorm : ‖w‖ ≤ 2 + w.im := by
@@ -296,27 +300,28 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
       refine le_trans hwnorm ?_
       have hcube := cube_sub_one_le_lineTruncation (t := w.im) (by linarith)
       have hπ2 : Real.pi ^ 2 < 10 := by
-        linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
+        linarith only [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
       have hπ3 : Real.pi ^ 3 < 32 := by
-        linarith [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
+        linarith only [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
       have hform : (w.im / (8 * Real.pi)) ^ (3 : ℕ) = w.im ^ 3 / (512 * Real.pi ^ 3) := by
         field_simp; ring
       have hexpL : Real.exp (wideScale w.im) ≤ w.im := by
         have hq : Real.exp (wideScale w.im) = w.im / (2 * Real.pi) :=
           Real.exp_log (by positivity)
         rw [hq, div_le_iff₀ (by positivity)]
-        linarith [mul_le_mul_of_nonneg_left (by linarith : (1 : ℝ) ≤ 2 * Real.pi) ht0.le]
+        linarith only [mul_le_mul_of_nonneg_left
+          (by linarith only [hπd] : (1 : ℝ) ≤ 2 * Real.pi) ht0.le]
       have himbig : (10 : ℝ) ^ 5 ≤ w.im := by
         have hh := Real.add_one_le_exp (wideScale w.im)
         linarith only [hh, hexpL, hL]
       have hden : w.im ^ 3 / 16384 ≤ (w.im / (8 * Real.pi)) ^ (3 : ℕ) := by
         rw [hform, div_le_div_iff₀ (by norm_num) (by positivity)]
-        linarith [mul_le_mul_of_nonneg_left hπ3.le (pow_pos ht0 3).le]
+        linarith only [mul_le_mul_of_nonneg_left hπ3.le (pow_pos ht0 3).le]
       have hsq2 : (10 : ℝ) ^ 10 ≤ w.im ^ 2 := by
-        linarith [pow_le_pow_left₀ (by norm_num) himbig 2]
+        linarith only [pow_le_pow_left₀ (by norm_num) himbig 2]
       have hcu : (10 : ℝ) ^ 10 * w.im ≤ w.im ^ 3 := by
-        linarith [mul_le_mul_of_nonneg_right hsq2 ht0.le]
+        linarith only [mul_le_mul_of_nonneg_right hsq2 ht0.le]
       linarith only [hcube, hden, hcu, himbig]
-    linarith [h, hlogN, h34, hdiv]
+    linarith only [h, hlogN, h34, hdiv]
 
 end RHTower.Sieve

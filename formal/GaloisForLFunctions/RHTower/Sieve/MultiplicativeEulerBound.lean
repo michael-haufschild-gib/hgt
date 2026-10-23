@@ -159,7 +159,7 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       linarith
     rw [hval] at hle
     have hstep2 := mul_le_mul_of_nonneg_left hinv (sq_nonneg q)
-    linarith
+    linarith only [hle, hstep2]
   -- the main step
   have hnormp : ‖twistedSummand f s p‖ ≤ q := by
     have := hnormpow 1
@@ -168,14 +168,14 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
     have h1 : |(twistedSummand f s p).re| ≤ ‖twistedSummand f s p‖ :=
       Complex.abs_re_le_norm _
     have h2 := abs_le.mp h1
-    linarith [h2.1]
+    linarith only [h2.1, hnormp]
   have hb0 : (0 : ℝ) ≤ ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ := norm_nonneg _
   have hstep : ‖∑' e : ℕ, twistedSummand f s (p ^ e)‖ ≤
       Real.exp ((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)
         + ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ := by
     rw [hsplit, ← add_assoc]
     refine le_trans (norm_add_le _ _) ?_
-    linarith [norm_one_add_le_exp (twistedSummand f s p)]
+    exact add_le_add (norm_one_add_le_exp (twistedSummand f s p)) le_rfl
   have hfold : ∀ A B : ℝ, 0 ≤ B → Real.exp A + B ≤ Real.exp (A + B * Real.exp (-A)) := by
     intro A B hB
     have hcancel : Real.exp A * (B * Real.exp (-A)) = B := by
@@ -183,7 +183,7 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       simp
     have h1 : 1 + B * Real.exp (-A) ≤ Real.exp (B * Real.exp (-A)) := by
       have := Real.add_one_le_exp (B * Real.exp (-A))
-      linarith
+      linarith only [this]
     calc Real.exp A + B = Real.exp A * (1 + B * Real.exp (-A)) := by
           rw [mul_add, mul_one, hcancel]
       _ ≤ Real.exp A * Real.exp (B * Real.exp (-A)) :=
@@ -193,7 +193,7 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       Real.exp (-((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)) ≤ 2 := by
     have hna : -((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2) ≤ 1 / 2 := by
       have h1 : (0 : ℝ) ≤ ‖twistedSummand f s p‖ ^ 2 := sq_nonneg _
-      linarith
+      linarith only [hrep, hqhalf, h1]
     exact le_trans (Real.exp_le_exp.mpr hna) exp_half_le_two
   have hfinal : ((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2)
       + ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ *
@@ -208,7 +208,7 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
         ≤ (2 * q ^ 2) * 2 :=
       mul_le_mul htail hexpa (Real.exp_pos _).le hq2nn
     rw [← hq2]
-    linarith
+    linarith only [h1, h2]
   exact le_trans hstep (le_trans (hfold _ _ hb0) (Real.exp_le_exp.mpr hfinal))
 
 /-! ## The prime-power excess is an absolute constant -/
@@ -317,7 +317,7 @@ theorem norm_tsum_twistedSummand_le_exp
         have h5 : ‖5 * ((n : ℝ)) ^ (-(2 * s.re))‖ = 5 * ((n : ℝ)) ^ (-(2 * s.re)) := by
           rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
         rw [h5, Real.norm_eq_abs]
-      linarith
+      linarith only [this, hre]
     · rw [hc]
       simp only [if_neg hp, norm_zero]
       have h0 : (0 : ℝ) ≤ ‖twistedSummand f s n‖ := norm_nonneg _
@@ -373,10 +373,10 @@ theorem norm_tsum_twistedSummand_le_exp
   have htailbound : ∑' p : Nat.Primes, 5 * ((((p : ℕ)) : ℝ)) ^ (-(2 * s.re)) ≤ 5 / 2 := by
     rw [tsum_mul_left]
     have := tsum_primes_rpow_two_le (le_of_lt hs)
-    linarith
+    linarith only [this]
   refine le_trans hmain (Real.exp_le_exp.mpr ?_)
   rw [hcoe, hsplit]
-  linarith
+  linarith only [htailbound]
 
 /-! ## The bound in distance form -/
 

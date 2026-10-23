@@ -132,12 +132,12 @@ theorem routeT_zero_free_inverse_ball
       riemannZeta w ≠ 0 := by
   intro w hw
   obtain ⟨hylo, hyhi, hrelo, _hrehi⟩ := routeT_inverse_ball_coordinates hw
-  have hy100 : 100000 ≤ w.im := by linarith
+  have hy100 : 100000 ≤ w.im := by linarith only [hγ, hylo]
   have hybase : 8 * Real.pi + 1 ≤ w.im := by
     have hpi := Real.pi_lt_d2
-    linarith
+    linarith only [hy100, hpi]
   have hlargeY : routeTBandDepthRootThreshold ^ (10 : ℕ) ≤ routeTBinaryHeight w.im :=
-    hlarge.trans (routeTBinaryHeight_mono (by linarith : γ - 1 ≤ w.im))
+    hlarge.trans (routeTBinaryHeight_mono (by linarith only [hylo] : γ - 1 ≤ w.im))
   have hwidth : routeTZeroFreeWidth A (γ + 1) ≤ routeTZeroFreeWidth A w.im := by
     exact routeTZeroFreeWidth_antitone hybase hyhi.le
   have hdeltaWidth :
@@ -147,9 +147,9 @@ theorem routeT_zero_free_inverse_ball
   · exact riemannZeta_ne_zero_of_one_le_re hright
   · have hnearUpper : 1 - routeTZeroFreeWidth A (γ + 1) < w.re := by
       rw [hdeltaWidth]
-      linarith
+      linarith only [hrelo, routeTInverseDelta_pos A γ]
     have hnear : 1 - routeTZeroFreeWidth A w.im < w.re := by
-      linarith
+      linarith only [hnearUpper, hwidth]
     have hz := riemannZeta_ne_zero_routeT_region hA hy100 hlargeY (le_of_not_ge hright) hnear
     have hwdecomp : ((w.re : ℝ) : ℂ) + (w.im : ℂ) * Complex.I = w :=
       Complex.re_add_im w
@@ -301,7 +301,7 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
       intro heq
       subst heq
       simp at hylo
-      linarith
+      linarith only [hylo, hγ]
     exact (differentiableAt_riemannZeta hwone).differentiableWithinAt
   have hM : ∀ w ∈ ball c R, ‖riemannZeta w‖ ≤ M := by
     intro w hw
@@ -318,23 +318,23 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
     rw [hdiffz, Complex.norm_real, Real.norm_eq_abs]
     have hleft : -(21 / 20 * δ) ≤ σ - (1 + δ) := by
       change 1 - δ / 20 ≤ σ at hσlo
-      linarith
+      linarith only [hσlo]
     have hright : σ - (1 + δ) ≤ 21 / 20 * δ := by
       change σ ≤ 1 + δ at hσhi
-      linarith
+      linarith only [hσhi, hδ0]
     rw [abs_le]
     simpa only [r, routeTInverseInnerRadius] using And.intro hleft hright
   have hBC := norm_lower_bound_of_ball hr0 hrR hdiff hfree hM hm0 hm hzdist
   have hbase : 8 * Real.pi + 1 ≤ γ := by
     have hpi := Real.pi_lt_d2
-    linarith
+    linarith only [hγ, hpi]
   have hPhiMono : routeTLandauPhi γ ≤ routeTLandauPhi H := by
     exact routeTLandauPhi_mono hbase (by simp [H, routeTInverseHeight])
   have hMPhi : M ≤ routeTLandauPhi H := by
     exact (routeTBandGrowthBound_lt_landauPhi_first γ).le.trans hPhiMono
   have hMone : 1 ≤ M := by
     simpa only [M] using routeTBandGrowthBound_one_le γ
-  have hMpos : 0 < M := by linarith
+  have hMpos : 0 < M := zero_lt_one.trans_le hMone
   have hlogM : Real.log M ≤ Q ^ (2 : ℕ) := by
     have hlog := Real.log_le_log hMpos hMPhi
     have hbudget : Real.log (routeTLandauPhi H) ≤ Q ^ (2 : ℕ) := by
@@ -345,9 +345,9 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
     rw [Real.log_exp]
   have hlogRatio : Real.log (M / m) ≤ 3 * Q ^ (2 : ℕ) := by
     rw [Real.log_div (ne_of_gt hMpos) (ne_of_gt hm0), hlogm]
-    linarith
+    linarith only [hlogM]
   have hQ := routeTZeroFreeBudget_ge A H
-  have hQsq : (1 : ℝ) ≤ Q ^ (2 : ℕ) := one_le_pow₀ (by linarith)
+  have hQsq : (1 : ℝ) ≤ Q ^ (2 : ℕ) := one_le_pow₀ (by linarith only [hQ])
   have hratio : r / (R - r) = 42 := by
     dsimp only [r, R, routeTInverseInnerRadius, routeTInverseOuterRadius, δ]
     have hδne : routeTInverseDelta A γ ≠ 0 := ne_of_gt (routeTInverseDelta_pos A γ)
@@ -357,14 +357,14 @@ theorem exp_neg_routeT_budget_sq_le_norm_riemannZeta
       2 * (Real.log (M / m) + 1) * r / (R - r) ≤ 336 * Q ^ (2 : ℕ) := by
     rw [show 2 * (Real.log (M / m) + 1) * r / (R - r) =
         2 * (Real.log (M / m) + 1) * (r / (R - r)) by ring, hratio]
-    linarith
+    linarith only [hlogRatio, hQsq]
   have hfloor :
       Real.exp (-(400 * Q ^ (2 : ℕ))) ≤
         m * Real.exp (-(2 * (Real.log (M / m) + 1) * r / (R - r))) := by
     dsimp only [m]
     rw [← Real.exp_add]
     apply Real.exp_le_exp.mpr
-    linarith
+    linarith only [htransport, sq_nonneg Q]
   exact hfloor.trans (by simpa only [z] using hBC)
 
 /-- **Route-T reciprocal-zeta bound on the inner segment.** -/

@@ -70,7 +70,7 @@ valid.
 - [x] `RHTower/LandauSingularAtAbscissa.lean` (depth 5, 1)
 - [x] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` (depth 5, 1)
 - [x] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` (depth 5, 1)
-- [ ] `RHTower/Sieve/MultiplicativeEulerBound.lean` (depth 5, 2)
+- [x] `RHTower/Sieve/MultiplicativeEulerBound.lean` (depth 5, 2)
 - [x] `RHTower/Sieve/RouteTMoebiusContour.lean` (depth 5, 3)
 - [x] `RHTower/Sieve/RouteTZetaDLVP.lean` (depth 5, 1)
 - [x] `RHTower/Sieve/ZetaLittlewoodRegion.lean` (depth 5, 1)
@@ -171,7 +171,7 @@ valid.
 - [x] `RHTower/Sieve/DirichletWideRectangle.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/InghamUniformDetectorMellinFullXiPacket.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellAllAmplitudeReceiver.lean` (depth 8, 1)
-- [ ] `RHTower/Sieve/RouteTZetaBandGrowth.lean` (depth 8, 1)
+- [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/VonMangoldtTwistScaledEnvelope.lean` (depth 8, 1)
 - [ ] `RHTower/SoninEulerCornerConcrete.lean` (depth 8, 1)
 - [ ] `RHTower/SoninScaledAnnulusProfile.lean` (depth 8, 1)
@@ -316,7 +316,7 @@ valid.
 - [ ] `RHTower/ShrinkingWindowPrimeSupply.lean` (depth 12, 1)
 - [ ] `RHTower/Sieve/MaynardFibreCount.lean` (depth 12, 1)
 - [x] `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean` (depth 12, 1)
-- [ ] `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean` (depth 12, 2)
+- [x] `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean` (depth 12, 2)
 - [ ] `RHTower/SigmaBlockContraction.lean` (depth 12, 1)
 - [ ] `RHTower/SoninForwardBranchVanishing.lean` (depth 12, 1)
 - [ ] `RHTower/SoninLayerWindowNormalForm.lean` (depth 12, 1)
@@ -507,9 +507,9 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/MaynardReceiverMargin.lean` — check and build passed; olean/ilean written.
 - [x] `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean` — narrowed arithmetic and direct product bounds; check and build passed.
 - [x] `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean` — check and build passed; olean/ilean written.
-- `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean`
-- `RHTower/Sieve/MultiplicativeEulerBound.lean`
-- `RHTower/Sieve/RouteTZetaBandGrowth.lean`
+- [x] `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean` — direct monotonicity and narrowed arithmetic; check and build passed.
+- [x] `RHTower/Sieve/MultiplicativeEulerBound.lean` — direct norm comparison and narrowed arithmetic; check and build passed.
+- [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` — narrowed tail-bound arithmetic; check and build passed.
 - `RHTower/Sieve/RouteTZetaInverseBound.lean`
 - `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean`
 - `RHTower/Sieve/ZetaWideBand.lean`

@@ -181,21 +181,23 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       have hstep : (0 : ℝ)
           ≤ (3 * (K : ℝ)) ^ (-(routeTUniformRegWidth A delta (3 * |τ| / 2) / 3))
             * (routeTTwistHeightFactor A τ + Real.log (2 * (K : ℝ))) := by positivity
-      linarith [mul_nonneg hK0.le hstep]
+      linarith only [mul_nonneg hK0.le hstep]
     have hcomp2 : (K : ℝ)
           * ((1 + (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
               * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ)) / (1 + |τ|))
         ≤ (3 * (K : ℝ)) ^ (1 + 2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
             * (1 + (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) / (1 + |τ|) := by
       rw [hidβ]
-      have hX : (0 : ℝ) ≤ (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ := by linarith
+      have hX : (0 : ℝ) ≤ (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ :=
+        add_nonneg hsq hE0
       have hP0 : (0 : ℝ)
           ≤ (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3) := by
-        linarith
+        linarith only [hP1]
       have hKP : (K : ℝ)
           ≤ 3 * (K : ℝ)
             * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3) := by
-        linarith [mul_le_mul_of_nonneg_left hP1 (by linarith : (0 : ℝ) ≤ 3 * (K : ℝ))]
+        linarith only [hK0, mul_le_mul_of_nonneg_left hP1
+          (by positivity : (0 : ℝ) ≤ 3 * (K : ℝ))]
       have hKPX : (0 : ℝ)
           ≤ (K : ℝ) * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
             * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) := by positivity
@@ -205,7 +207,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
           ≤ 3 * (K : ℝ)
             * (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
             * (1 + (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) := by
-        linarith [hKP, hKPX]
+        linarith only [hKP, hKPX]
       calc (K : ℝ)
             * ((1 + (3 * (K : ℝ)) ^ (2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
                 * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ)) / (1 + |τ|))
@@ -227,7 +229,7 @@ theorem exists_norm_sum_primeTwist_routeT_le :
                       * ((Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ))
                     / (1 + |τ|))
           + 2 * Real.sqrt (K : ℝ) * Real.log (K : ℝ) := by
-      linarith [hstep, hpp]
+      linarith only [hstep, hpp]
     refine hfin.trans ?_
     rw [routeTTwistEnvelope]
     have hexpand : C * (K : ℝ)
@@ -255,8 +257,8 @@ theorem exists_norm_sum_primeTwist_routeT_le :
               * (routeTTwistHeightFactor A τ + Real.log (2 * (K : ℝ)))
             + (3 * (K : ℝ)) ^ (1 + 2 * routeTUniformRegWidth A delta (3 * |τ| / 2) / 3)
                 * (1 + (Real.log (K : ℝ)) ^ 2 + routeTTwistHeightFactor A τ) / (1 + |τ|)) :=
-      mul_le_mul_of_nonneg_left (by linarith [hcomp1, hcomp2]) hC.le
-    linarith [hmul]
+      mul_le_mul_of_nonneg_left (add_le_add hcomp1 hcomp2) hC.le
+    exact add_le_add_right hmul _
   refine norm_sum_primeTwist_le_of_monotone_bound τ N
     (fun m => routeTTwistEnvelope A delta C τ (max (m : ℝ) 1) + 7 * Real.exp 9) ?_ ?_
   · intro m _
@@ -268,10 +270,10 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       rw [hmax]
       have hd := hdom m hcase
       have hpos : (0 : ℝ) ≤ 7 * Real.exp 9 := by positivity
-      linarith
+      linarith only [hd, hpos]
     · have hcr := norm_partialSum_vonMangoldtPrimeTwist_le_crude τ m
-      have h7 : (7 : ℝ) * (m : ℝ) ≤ 7 * Real.exp 9 := by linarith
-      linarith
+      have h7 : (7 : ℝ) * (m : ℝ) ≤ 7 * Real.exp 9 := by linarith only [hcase]
+      linarith only [hcr, h7, hnn]
   · intro m hm
     have hmax1 : (1 : ℝ) ≤ max (m : ℝ) 1 := le_max_right _ _
     have hmm : max (m : ℝ) 1 ≤ max (N : ℝ) 1 := by
@@ -279,6 +281,6 @@ theorem exists_norm_sum_primeTwist_routeT_le :
       exact max_le_max hcast le_rfl
     have hmono := routeTTwistEnvelope_mono (A := A) (delta := delta) (C := C) (τ := τ)
       hdelta hC.le hmax1 hmm
-    linarith
+    exact add_le_add_right hmono _
 
 end RHTower.Sieve
