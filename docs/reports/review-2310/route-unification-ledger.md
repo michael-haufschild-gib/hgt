@@ -190,7 +190,7 @@ Sources: [LiEvenCrossActualClockGrowthLaw](../../../formal/GaloisForLFunctions/R
 | AIP ↔ arithmetic cancellation | Exact prime-minus-two-pole Abel/Chebyshev identity. | Its local `weilForm` omits Gamma; it is not by itself full Weil energy or a signed critical estimate. |
 | AIP ↔ SAEI | Exact signed finite payment framework and prime-induced holonomy. | Actual supersolution/path construction plus full-form discretization and limit. |
 | APT → RW/ACT/AIP | Positive high-scale/polynomial/lacunary families and compact source realizations. | Complete-family approximation with controlled norm and cross-scale costs. |
-| ACS ↔ RW/HF | Scaling-surface Hodge defect equals actual Weil form; RR-compatible effectivity existence has the same endpoint. | Independent construction of effectivity. Cone classification under Hodge index does not supply it. |
+| ACS ↔ RW/HF | Scaling-surface pairing is the pole-plane form minus the Weil form; Hodge index is equivalent to Weil positivity. RR-compatible effectivity existence has the same endpoint. | Independent construction of effectivity. Cone classification under Hodge index does not supply it. |
 | ACS ↔ AIP | Both retain actual prime/pole incidence and seek positivity. | No general theorem converts packed path payment into RR/Bézout effectivity. Shared language is presently an analogy. |
 | SAEI companions → SRT floor | Exact polynomial derivative-payment and Taylor-remainder bounds. | Actual ζ sampling geometry and summed errors; no unconditional mass-floor converse yet. |
 | HJ ↔ HCF | Complete residual-vanishing and all-rank two-grid signs have the same RH endpoint. | Independent arithmetic sign; no equivalence of arbitrary finite subfamilies. |

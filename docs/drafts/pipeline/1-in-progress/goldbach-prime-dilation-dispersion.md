@@ -68,7 +68,7 @@ The [dependency-closed paper proof](../2-fully-proven/goldbach-flat-prime-dilati
 now proves the stronger bound X⁴exp(−sqrt(log X)/10), even without the
 lower prime cutoff. It includes the local Ramanujan tail, both masks,
 the nonzero determinant count and all finite endpoints. It uses the
-separate paper composite Kloosterman bound; the ordinary unsigned
+now formalized composite Kloosterman bound; the ordinary unsigned
 divisor bound alone would not suffice. No Lean certificate for (C),
 signed Möbius saving, or external novelty claim is made.
 
@@ -138,8 +138,8 @@ assumed here.
    follows merely by inserting arbitrary coefficients.
 2. Formalize the complete-residue kernel and actual finite product
    incidence, including their separate endpoint estimates.
-3. Formalize the composite Kloosterman budget and the modular-inverse
-   completion. A Kloosterman norm alone is not the completed interval estimate.
+3. Formalize the modular-inverse completion using the certified composite
+   Kloosterman budget. A norm bound alone is not the completed interval estimate.
 4. Close the moving-prime-pool variance and progression dependencies.
 5. Only after the flat-source signed estimate is proved, restore the
    actual Type II coefficients and predecessor marks. That extension is
@@ -303,13 +303,13 @@ gcd. Its sufficient intermediate bound is
 
     |S(a,b;M)|³ ≤ 512 τ(M)³ M² gcd(a,b,M).
 
-Its [paper proof](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
-now uses the audited prime Weil bound, odd-prime-power stationary phase,
-a sufficient two-adic eight-root bound, common-factor reduction and CRT.
-The full bound has not yet been formalized. Its
-[exact conductor reduction](../3-formalized/not_new_scientific_knowledge/goldbach-kloosterman-conductor-reduction.md)
-passes a leaf check and six closure audits. Completing interval indicators gives
-then give the nonzero-frequency budget
+Its [Lean certificate](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
+now includes prime Weil, odd and dyadic stationary phase, actual unit fibres,
+shared-prime induction and CRT. The direct leaf check and all 18 closure
+audits pass without warnings or analytic premises. The
+[finite rectangle paper proof](../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
+completes interval indicators with explicit constant 24, giving the
+nonzero-frequency budget
 
     O(τ(M) M^(2/3) gcd(c,M)^(1/3) (1+log M)²),
 

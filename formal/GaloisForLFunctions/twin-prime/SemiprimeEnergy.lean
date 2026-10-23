@@ -1,5 +1,6 @@
 import Mathlib.Data.Finset.NatDivisors
 import Mathlib.NumberTheory.ArithmeticFunction.Moebius
+import Mathlib.NumberTheory.ArithmeticFunction.Liouville
 import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -12,6 +13,10 @@ On a product of two distinct primes in the same block, the two
 admissible factorizations have the same Möbius sign. Their coefficient
 is the negative logarithm of the product. The prime number theorem
 then forces an energy of order the product scale, uniformly in the cutoffs.
+
+A coupled congruence can also turn rough shifts into a partial matching.
+An explicit bounded second row then aligns every Liouville sign and
+attains the full prime reciprocal mass on every complete residue block.
 -/
 
 namespace TwinPrime
@@ -329,6 +334,204 @@ theorem emptyLabelEnergy_not_isLittleO (z V : (T : ℕ) → Fin (T + 1)) :
   have hs := (div_lt_iff₀ (sq_pos_of_pos hTpos)).mp hsmall
   have hl := hlower (z T) (V T)
   nlinarith [sq_pos_of_pos hTpos]
+
+/-! ## Exact saturation when residues separate the shifts -/
+
+/-- The selected input class for a prime shift on complete residue blocks. -/
+def residueMatchingIndices (D K p : ℕ) : Finset ℕ :=
+  (Icc 1 ((4 * D + 1) * (K + 1))).filter (fun v => v % (4 * D + 1) = p)
+
+/-- The output residue decodes the unique shift and recovers its input sign. -/
+def residueMatchingRow (D w : ℕ) : ℝ :=
+  ((liouville (w - w % (4 * D + 1) / 2) : ℤ) : ℝ)
+
+/-- The actual Liouville first row, coupled to the shift-dependent residue. -/
+def residueMatchingCorrelation (D K : ℕ) (g : ℕ → ℝ) : ℝ :=
+  ∑ p ∈ lowerFactorPrimes D, 1 / (p : ℝ) *
+    ∑ v ∈ residueMatchingIndices D K p, ((liouville v : ℤ) : ℝ) * g (v + p)
+
+/-- Positive reciprocal mass of the prime shifts. -/
+def residueMatchingPrimeMass (D : ℕ) : ℝ :=
+  ∑ p ∈ lowerFactorPrimes D, 1 / (p : ℝ)
+
+private theorem matching_liouville_abs_le_one (v : ℕ) :
+    |((liouville v : ℤ) : ℝ)| ≤ 1 := by
+  by_cases hv : v = 0
+  · subst v
+    simp
+  · simp only [liouville_apply hv, Int.cast_pow, Int.cast_neg, Int.cast_one,
+      abs_pow, abs_neg, abs_one, one_pow, le_refl]
+
+private theorem matching_liouville_sq {v : ℕ} (hv : 0 < v) :
+    ((liouville v : ℤ) : ℝ) ^ 2 = 1 := by
+  simp only [liouville_apply hv.ne', Int.cast_pow, Int.cast_neg, Int.cast_one]
+  rw [← pow_mul, Nat.mul_comm, pow_mul, neg_one_sq, one_pow]
+
+theorem abs_residueMatchingRow_le_one (D w : ℕ) : |residueMatchingRow D w| ≤ 1 :=
+  matching_liouville_abs_le_one _
+
+private theorem matching_prime_bounds (D : ℕ) (p : ↥(lowerFactorPrimes D)) :
+    0 < (p : ℕ) ∧ (p : ℕ) ≤ 2 * D := by
+  have hp := mem_filter.mp p.property
+  have hpI := mem_Ioc.mp hp.1
+  have hfloor : ⌊(6 / 5 : ℝ) * D⌋₊ ≤ 2 * D := by
+    have h := Nat.floor_mono (show (6 / 5 : ℝ) * D ≤ ((2 * D : ℕ) : ℝ) by
+      push_cast
+      nlinarith [Nat.cast_nonneg (α := ℝ) D])
+    simpa only [Nat.floor_natCast] using h
+  exact ⟨hp.2.pos, hpI.2.trans hfloor⟩
+
+private theorem matching_residue_card {l p K : ℕ} (hp : 0 < p) (hpl : p < l) :
+    ((Icc 1 (l * K)).filter (fun v => v % l = p)).card = K := by
+  have hl : 0 < l := lt_trans hp hpl
+  have hset : (Icc 1 (l * K)).filter (fun v => v % l = p) =
+      (range K).image (fun k => l * k + p) := by
+    ext v
+    constructor
+    · intro hv
+      have hv' := mem_filter.mp hv
+      have hI := mem_Icc.mp hv'.1
+      have hdiv := Nat.mod_add_div v l
+      rw [hv'.2] at hdiv
+      have hk : v / l < K := by
+        by_contra hk
+        have hmul := Nat.mul_le_mul_left l (Nat.le_of_not_gt hk)
+        omega
+      exact mem_image.mpr ⟨v / l, mem_range.mpr hk, by omega⟩
+    · intro hv
+      obtain ⟨k, hk, rfl⟩ := mem_image.mp hv
+      have hk' := Nat.succ_le_of_lt (mem_range.mp hk)
+      have hmul := Nat.mul_le_mul_left l hk'
+      rw [Nat.mul_succ] at hmul
+      refine mem_filter.mpr ⟨mem_Icc.mpr ⟨by omega, by omega⟩, ?_⟩
+      simp only [Nat.add_mod, Nat.mul_mod_right, zero_add, Nat.mod_eq_of_lt hpl]
+  have hinj : Function.Injective (fun k : ℕ => l * k + p) := by
+    intro i j hij
+    exact mul_left_cancel₀ hl.ne' (Nat.add_right_cancel hij)
+  rw [hset, card_image_of_injective _ hinj, card_range]
+
+private theorem residueMatchingIndices_card (D K : ℕ) (p : ↥(lowerFactorPrimes D)) :
+    (residueMatchingIndices D K p).card = K + 1 := by
+  obtain ⟨hp, hpD⟩ := matching_prime_bounds D p
+  exact matching_residue_card hp (by omega)
+
+private theorem matching_row_product (D K : ℕ) (p : ↥(lowerFactorPrimes D))
+    (v : ↥(residueMatchingIndices D K p)) :
+    ((liouville (v : ℕ) : ℤ) : ℝ) * residueMatchingRow D ((v : ℕ) + p) = 1 := by
+  obtain ⟨hp, hpD⟩ := matching_prime_bounds D p
+  have hv := mem_filter.mp v.property
+  have hvI := mem_Icc.mp hv.1
+  have hpl : (p : ℕ) < 4 * D + 1 := by omega
+  have htwop : (p : ℕ) + p < 4 * D + 1 := by omega
+  have hres : (((v : ℕ) + p) % (4 * D + 1)) / 2 = (p : ℕ) := by
+    rw [Nat.add_mod, hv.2, Nat.mod_eq_of_lt hpl, Nat.mod_eq_of_lt htwop]
+    omega
+  rw [residueMatchingRow, hres, Nat.add_sub_cancel_right, ← sq]
+  exact matching_liouville_sq (by omega)
+
+/-- One bounded row attains the whole positive mass for every complete-block horizon. -/
+theorem residueMatchingCorrelation_saturated (D K : ℕ) :
+    residueMatchingCorrelation D K (residueMatchingRow D) =
+      ((K : ℝ) + 1) * residueMatchingPrimeMass D := by
+  unfold residueMatchingCorrelation residueMatchingPrimeMass
+  rw [mul_sum]
+  refine sum_congr rfl fun p hp => ?_
+  have hinner : (∑ v ∈ residueMatchingIndices D K p,
+      ((liouville v : ℤ) : ℝ) * residueMatchingRow D (v + p)) = (K : ℝ) + 1 := by
+    calc _ = ∑ _v ∈ residueMatchingIndices D K p, (1 : ℝ) := by
+          exact sum_congr rfl fun v hv => matching_row_product D K ⟨p, hp⟩ ⟨v, hv⟩
+      _ = (K : ℝ) + 1 := by
+          rw [sum_const, nsmul_eq_mul, mul_one, residueMatchingIndices_card D K ⟨p, hp⟩]
+          push_cast
+          rfl
+  rw [hinner, mul_comm]
+
+/-- The saturated value is the sharp bound for every second row in the real unit interval. -/
+theorem abs_residueMatchingCorrelation_le (D K : ℕ) (g : ℕ → Set.Icc (-1 : ℝ) 1) :
+    |residueMatchingCorrelation D K (fun n => (g n : ℝ))| ≤
+      ((K : ℝ) + 1) * residueMatchingPrimeMass D := by
+  unfold residueMatchingCorrelation residueMatchingPrimeMass
+  refine (abs_sum_le_sum_abs _ _).trans ?_
+  rw [mul_sum]
+  refine sum_le_sum fun p hp => ?_
+  have hinner : |∑ v ∈ residueMatchingIndices D K p,
+      ((liouville v : ℤ) : ℝ) * (g (v + p) : ℝ)| ≤ (K : ℝ) + 1 := by
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    calc _ ≤ ∑ _v ∈ residueMatchingIndices D K p, (1 : ℝ) := by
+          refine sum_le_sum fun v _ => ?_
+          rw [abs_mul]
+          have hg : |(g (v + p) : ℝ)| ≤ 1 := abs_le.mpr (g (v + p)).property
+          simpa only [one_mul] using mul_le_mul (matching_liouville_abs_le_one v) hg
+            (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1)
+      _ = (K : ℝ) + 1 := by
+          rw [sum_const, nsmul_eq_mul, mul_one, residueMatchingIndices_card D K ⟨p, hp⟩]
+          push_cast
+          rfl
+  rw [abs_mul, abs_of_nonneg (by positivity : 0 ≤ 1 / (p : ℝ)), mul_comm ((K : ℝ) + 1)]
+  exact mul_le_mul_of_nonneg_left hinner (by positivity)
+
+/-- The positive matching mass is at least a constant times the reciprocal logarithm. -/
+theorem eventually_residueMatchingPrimeMass_ge :
+    ∀ᶠ D : ℕ in atTop, 1 / (20 * Real.log (2 * (D : ℝ))) ≤ residueMatchingPrimeMass D := by
+  have hmass : ∀ᶠ D : ℕ in atTop,
+      (1 / 10 : ℝ) < (∑ p ∈ lowerFactorPrimes D, Real.log p) / (D : ℝ) :=
+    lowerFactorPrimes_log_mass_tendsto.eventually (Ioi_mem_nhds (by norm_num))
+  filter_upwards [hmass, eventually_ge_atTop (1 : ℕ)] with D hmass hD
+  have hD0 : (0 : ℝ) < D := by exact_mod_cast (show 0 < D by omega)
+  have hlog : 0 < Real.log (2 * (D : ℝ)) := Real.log_pos (by exact_mod_cast (by omega : 1 < 2 * D))
+  have hmass' : (D : ℝ) / 10 ≤ ∑ p ∈ lowerFactorPrimes D, Real.log p := by
+    have h := (lt_div_iff₀ hD0).mp hmass
+    linarith
+  have hupper : (∑ p ∈ lowerFactorPrimes D, Real.log p) ≤
+      (2 * (D : ℝ) * Real.log (2 * (D : ℝ))) * residueMatchingPrimeMass D := by
+    unfold residueMatchingPrimeMass
+    rw [mul_sum]
+    refine sum_le_sum fun p hp => ?_
+    obtain ⟨hp0, hpD⟩ := matching_prime_bounds D ⟨p, hp⟩
+    have hpr : (0 : ℝ) < p := by exact_mod_cast hp0
+    have hprD : (p : ℝ) ≤ 2 * (D : ℝ) := by exact_mod_cast hpD
+    have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast (Nat.succ_le_of_lt hp0))
+    have hlogs := Real.log_le_log hpr hprD
+    have hprod := mul_le_mul hprD hlogs hlogp (by positivity : 0 ≤ 2 * (D : ℝ))
+    rw [← div_eq_mul_one_div, le_div_iff₀ hpr]
+    nlinarith only [hprod]
+  have hcancel : (D : ℝ) * (1 / 10) ≤
+      (D : ℝ) * (2 * Real.log (2 * (D : ℝ)) * residueMatchingPrimeMass D) := by
+    nlinarith only [hmass', hupper]
+  have h := (mul_le_mul_left hD0).mp hcancel
+  rw [div_le_iff₀ (by positivity)]
+  nlinarith only [h]
+
+/-- Normalize by the actual progression sample count, `Y/l = K+1`. -/
+def residueMatchingRelative (D K : ℕ) : ℝ :=
+  residueMatchingCorrelation D K (residueMatchingRow D) / ((K : ℝ) + 1)
+
+theorem residueMatchingRelative_eq_primeMass (D K : ℕ) :
+    residueMatchingRelative D K = residueMatchingPrimeMass D := by
+  rw [residueMatchingRelative, residueMatchingCorrelation_saturated]
+  field_simp
+
+/-- Increasing the horizon does not remove the reciprocal-logarithmic matching mass. -/
+theorem residueMatchingRelative_not_isLittleO (K : ℕ → ℕ) :
+    ¬ (fun D : ℕ => residueMatchingRelative D (K D)) =o[atTop]
+      (fun D : ℕ => 1 / Real.log (2 * (D : ℝ))) := by
+  intro h
+  have hsmall : ∀ᶠ D : ℕ in atTop,
+      residueMatchingRelative D (K D) / (1 / Real.log (2 * (D : ℝ))) < (1 / 40 : ℝ) :=
+    h.tendsto_div_nhds_zero.eventually (Iio_mem_nhds (by norm_num))
+  obtain ⟨D, hsmall, hlower, hD⟩ :=
+    (hsmall.and (eventually_residueMatchingPrimeMass_ge.and
+      (eventually_ge_atTop (1 : ℕ)))).exists
+  have hlog : 0 < Real.log (2 * (D : ℝ)) :=
+    Real.log_pos (by exact_mod_cast (by omega : 1 < 2 * D))
+  rw [residueMatchingRelative_eq_primeMass] at hsmall
+  have hupper := (div_lt_iff₀ (show 0 < 1 / Real.log (2 * (D : ℝ)) by positivity)).mp hsmall
+  have hlower' := (div_le_iff₀ (show 0 < 20 * Real.log (2 * (D : ℝ)) by positivity)).mp hlower
+  have hupper' := mul_lt_mul_of_pos_right hupper hlog
+  have hcancel : (1 / 40 : ℝ) * (1 / Real.log (2 * (D : ℝ))) * Real.log (2 * (D : ℝ)) = 1 / 40 := by
+    field_simp
+  rw [hcancel] at hupper'
+  nlinarith only [hlower', hupper']
 
 end
 

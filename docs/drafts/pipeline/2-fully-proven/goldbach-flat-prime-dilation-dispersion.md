@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** Classical analytic bridge; paper proof, no external novelty claim
 - **Parent:** [prime-dilation candidate](../1-in-progress/goldbach-prime-dilation-dispersion.md)
-- **Dependency:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), proved on paper from checked prime Weil and finite arithmetic
+- **Dependency:** [composite Kloosterman budget](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md), formalized from prime Weil and finite arithmetic
 - **Lean status:** Not formalized. No dispersion premise, placeholder or conditional Lean capstone added.
 
 ## Statement
@@ -377,10 +377,10 @@ the absolute threshold and constant. This proves (1) on paper.
 
 ## Lean continuation
 
-Formalize the dependency-closed composite estimate, then (2), then the
-actual interval count and both mixed estimates. Conductor reduction
-passes direct leaf verification and six closure audits in
-`goldbach/KloostermanConductorReduction.lean`.
+The full composite estimate now passes direct leaf verification and
+all 18 closure audits in `goldbach/KloostermanConductorReduction.lean`.
+Next formalize the [explicit finite rectangle estimate](goldbach-modular-inverse-rectangle-completion.md),
+then the actual row count and both mixed estimates. Its constant 24 and
+two frequency axes give the quantitative form of (2).
 The complete theorem (1) has no Lean certificate yet. Keep that status
-distinct from the already compiled collision classification and source
-closure audits.
+distinct from the compiled composite bound and collision classification.

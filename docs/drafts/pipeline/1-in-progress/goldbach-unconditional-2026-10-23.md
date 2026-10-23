@@ -699,8 +699,10 @@ paper attacks. The masked complete-residue kernel has now been identified,
 including its cross-denominator support and the surviving double tail.
 The CRT and prime/prime-power Kloosterman sources pass closure audits.
 A [composite bound](../3-formalized/not_new_scientific_knowledge/goldbach-composite-kloosterman-budget.md)
-is proved on paper; its exact conductor reduction now passes direct
-compilation and six closure audits without analytic premises.
+now passes direct compilation and all 18 closure audits without analytic
+premises, including the dyadic case and actual common frequency gcd.
+The [finite modular-inverse rectangle estimate](../2-fully-proven/goldbach-modular-inverse-rectangle-completion.md)
+has a complete paper proof with explicit constant 24; its Lean proof remains open.
 The [flat dispersion paper](../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
 now closes the finite-interval transfer and both mixed terms, with an
 exponential saving in sqrt(log X). Its Lean formalization remains open,
@@ -735,9 +737,10 @@ The flat balanced source is only the first signed test: restoring Cycle
 - Cycle 16's gcd-restricted nonzero collision bound and exact diagonal
   fibre classification pass compilation and six closure audits. The fixed
   periodic repair is retired with its positive classification formalized.
-- The exact Kloosterman conductor reduction also passes compilation and
-  six closure audits. The composite estimate and flat dispersion have
-  complete paper arguments; their full Lean certificates remain open.
+- The full composite Kloosterman bound passes compilation and all 18
+  closure audits, including exact conductor descent, stationary fibres,
+  the dyadic bound and coprime CRT. The finite rectangle estimate and
+  flat dispersion have complete paper proofs; their Lean proofs remain open.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
@@ -789,22 +792,12 @@ The flat balanced source is only the first signed test: restoring Cycle
   overview changing under concurrent edits; no Goldbach finding. No new
   whole-repository lint run is claimed for the damping-parity extension.
   Earlier cycle checks terminated and their scratch files were removed.
-  The prime-dilation card records the current source audits and completed
-  conductor reduction; no Lean certificate for the composite estimate is claimed.
+  The prime-dilation card records the certified composite estimate and
+  its 18-root audit. Rectangle completion and flat dispersion remain paper-only.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
 
 ## Log
-
-- 2026-10-23 — Composite-budget continuation: derived the stationary-fibre
-  injection into lifted roots of one, the dyadic bound, and an exponent
-  induction retaining the actual common frequency gcd. The full all-moduli
-  cubic estimate is written in `goldbach/KloostermanConductorReduction.lean`
-  and is undergoing direct leaf checking; its new declarations are not yet
-  certified. The six earlier conductor roots retain their recorded audit.
-  Shared-prime induction and coprime CRT use actual arithmetic branches,
-  with no assumed analytic input. Goldbach, signed amplification and marked
-  Type II cancellation remain open; the original goal remains active.
 
 - 2026-10-23 — Read original task and repository rules; recorded exact acceptance
   criterion before proof work. Existing unrelated worktree changes left intact.
@@ -865,3 +858,12 @@ The flat balanced source is only the first signed test: restoring Cycle
   of Kloosterman sums; leaf check and six closure audits passed without
   warnings or analytic premises. Full composite and dispersion Lean proofs,
   signed amplification and marked Type II cancellation remain outstanding.
+- 2026-10-23 — Formalized the full composite Kloosterman cubic bound,
+  retaining every frequency gcd and paying the dyadic constant once.
+  Direct leaf check and all 18 closure audits passed without warnings,
+  added axioms or analytic premises. Twelve new roots extend the six
+  conductor roots. Extracted the complete finite rectangle paper bound
+  with explicit constant 24 and both zero-frequency axes. The rectangle
+  and dispersion Lean proofs, signed amplifier and marked Type II remain
+  open. Goldbach remains unproved and the original goal remains active;
+  no scientific novelty is claimed.

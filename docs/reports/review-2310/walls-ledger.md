@@ -93,7 +93,7 @@ This comparison records current dispositions, not a research diary.
 | CHMD/Weil graph comparison left open | Fixed-aperture graph/form norm equivalence proved. | Quotient lower bound and global uniformity, 3.3. |
 | Pairwise payment hoped universally complete | Exact balance/holonomy criterion; nonlocal sharp survivors. | Actual packed-path construction, 3.4. |
 | Raw cross-prime aggregate expected polynomial | Exponential mean field; normalized comb/resolvent and inverse-square deficit proved. | Signed compensated charge, 1.1/3.4. |
-| Geometric obstruction described only as missing positivity | ACS gives exact RR/effectivity and negative-index receivers; integral positive Beurling countermodel. | Arithmetic effectivity, 14.4. |
+| Geometric obstruction described only as missing positivity | ACS gives exact RR/effectivity and Weil negative-index receivers; integral positive Beurling countermodel. | Arithmetic effectivity, 14.4. |
 | Li described as having no graded law | Reciprocal-depth growth law with slack proved. | Rate zero, not raw-width identification. |
 | Heat positivity described only as fixed-rank | All-rank small-time orthant positivity proved. | Arbitrary signed vectors, 1.6. |
 | Packet/Weil energy difference informal | Exact multiplicity ceiling; compact-packet mean-square limit under RH. | Simplicity/other field asymptotics, 3.8. |

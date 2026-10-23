@@ -61,6 +61,8 @@ Index regeneration passed. Targeted whitespace, local-link and forbidden-marker
 checks are clean. All owned build/search commands terminated; temporary source
 audit files and completed-search scratch files were removed, with audit logs retained.
 
-The full composite bound, modular-inverse discrepancy and centered flat
-dispersion are separate paper results awaiting formalization. The marked
-Type II sum and Goldbach remain unproved.
+The full composite bound is now formalized in the same leaf. Its
+[certificate](goldbach-composite-kloosterman-budget.md) records the new
+18-root audit, including all six conductor roots above. Modular-inverse
+rectangle discrepancy and centered flat dispersion remain paper-only.
+The marked Type II sum and Goldbach remain unproved.

@@ -121,25 +121,30 @@ theorem re_archCross_eq (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (hg 
     intro x
     have hc : ∀ φ : ℝ → ℝ, Continuous φ → Continuous fun u => φ u - φ (u + x) := fun φ hφ =>
       hφ.sub (hφ.comp (continuous_id.add continuous_const))
-    have hiP := integrable_of_cs ((hc gP hgP.continuous).pow 2)
-      (hasCompactSupport_sq (hasCompactSupport_shiftDiff hgPc x))
-    have hiM := integrable_of_cs ((hc gM hgM.continuous).pow 2)
-      (hasCompactSupport_sq (hasCompactSupport_shiftDiff hgMc x))
+    have hiP : Integrable fun u : ℝ => (gP u - gP (u + x)) ^ 2 :=
+      integrable_of_cs ((hc gP hgP.continuous).pow 2)
+        (hasCompactSupport_sq (hasCompactSupport_shiftDiff hgPc x))
+    have hiM : Integrable fun u : ℝ => (gM u - gM (u + x)) ^ 2 :=
+      integrable_of_cs ((hc gM hgM.continuous).pow 2)
+        (hasCompactSupport_sq (hasCompactSupport_shiftDiff hgMc x))
     rw [← integral_sub hiP hiM, ← integral_const_mul]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     simp only [gP, gM]
     ring
   have hint_cross : IntegrableOn (fun x : ℝ => archLevyDensity x *
       ∫ u : ℝ, (f u - f (u + x)) * (g u - g (u + x))) (Ioi 0) := by
-    refine ((hOnP.sub hOnM).const_mul (1 / 4 : ℝ)).congr_fun (fun x _ => ?_) measurableSet_Ioi
+    refine IntegrableOn.congr_fun ((hOnP.sub hOnM).const_mul (1 / 4 : ℝ)) (fun x _ => ?_)
+      measurableSet_Ioi
     simp only [Pi.sub_apply]
     rw [hshift x]
     ring
   refine ⟨hint_cross, ?_⟩
   have hsq : (∫ u, gP u ^ 2) - ∫ u, gM u ^ 2 = 4 * ∫ u, f u * g u := by
-    rw [← integral_sub (integrable_of_cs (hgP.continuous.pow 2) (hasCompactSupport_sq hgPc))
-      (integrable_of_cs (hgM.continuous.pow 2) (hasCompactSupport_sq hgMc)),
-      ← integral_const_mul]
+    have hiP : Integrable fun u : ℝ => gP u ^ 2 :=
+      integrable_of_cs (hgP.continuous.pow 2) (hasCompactSupport_sq hgPc)
+    have hiM : Integrable fun u : ℝ => gM u ^ 2 :=
+      integrable_of_cs (hgM.continuous.pow 2) (hasCompactSupport_sq hgMc)
+    rw [← integral_sub hiP hiM, ← integral_const_mul]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     simp only [gP, gM]
     ring
@@ -149,7 +154,6 @@ theorem re_archCross_eq (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (hg 
         ∫ u : ℝ, (f u - f (u + x)) * (g u - g (u + x)) := by
     rw [← integral_sub hOnP hOnM, ← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    simp only
     rw [hshift x]
     ring
   have hspec : (1 / (2 * Real.pi)) * ∫ r : ℝ, (paperFT F r * conj (paperFT G r)).re *
@@ -177,7 +181,6 @@ theorem archCross_eq_neg_of_disjoint (hf : ContDiff ℝ 2 f) (hfc : HasCompactSu
   rw [(re_archCross_eq hf hfc hg hgc).2, show (∫ u, f u * g u) = 0 by simp [hfg],
     mul_zero, zero_add, ← integral_neg]
   refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-  simp only
   rw [← mul_neg, ← integral_neg]
   congr 1
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
@@ -223,12 +226,14 @@ theorem localPair_eq_of_disjoint (hf : ContDiff ℝ 2 f) (hfc : HasCompactSuppor
   have hfamc : ∀ i, HasCompactSupport (![F, G] i) := fun i => by fin_cases i <;> assumption
   have hloc := localGram_apply (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) ![F, G] hfam
     hfamc 0 1
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at hloc
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one] at hloc
   -- the archimedean integral is real on the real line
   have hint := LebesgueAtomWeil.integrable_paperFT_weilTest_mul_gammaBracket hF2 hFs hG2 hGs
   have hre : (∫ r : ℝ, paperFT (EF.weilTest F G) r * (EF.gammaBracket r : ℂ)).re =
       ∫ r : ℝ, (paperFT F r * conj (paperFT G r)).re * EF.gammaBracket r := by
-    rw [← integral_re hint]
+    rw [show (∫ r : ℝ, paperFT (EF.weilTest F G) r * (EF.gammaBracket r : ℂ)).re =
+        ∫ r : ℝ, (paperFT (EF.weilTest F G) r * (EF.gammaBracket r : ℂ)).re from
+      (integral_re hint).symm]
     refine integral_congr_ae (Eventually.of_forall fun r => ?_)
     simp only
     rw [EF.paperFT_weilTest hFc hGc hFs hGs, Complex.conj_ofReal, Complex.re_mul_ofReal]
