@@ -1,33 +1,44 @@
-# TTPC: height-averaged rank–trace certificate
+# TTPC: coalescent localization of the bandwidth-4/3 certificate
 
 - **ID:** ttpc-hac
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (Lean, partial) + CONJECTURE (assembly)
 - **Source:** formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md §7 open problems 1–3
-- **Statement:** Averaging the (linear-in-`frobSq`) rank–trace seam over the window height `T` with a
-  smooth weight of width `εT`, at fixed `L`, localizes the whole trans-threshold Frobenius surplus to the
-  coalescent band `|log(n/m)| ≤ T^{-1+η}`; sum frequencies, far pairs and the grid end effect cost
-  `o(T l³)` unconditionally, and the certified count for `[T, 2T]` loses only `O(ε)N`.
+- **Statement:** Unconditionally, for every `ε > 0`, `η > 0` and large `T`,
+  `N₀*(T,2T) ≥ (29/36 − ε − c_coal(T)) N(T,2T)`, where `c_coal` is the normalized smooth-window
+  prime-pair sum over the coalescent band `|log(n/m)| ≤ T^{-1+η}` (diagonal excluded).
 
 ## Goal
-Open problem 2's purpose (sum frequencies and far pairs paid without `O(XL)` loss, same `1/18` budget)
-by a mechanism that needs no weighted Gram matrix: the seam is linear in `frobSq` (the `√frobSq` tail
-term is concave, so Jensen keeps it), and the zero-side block structure is used at each fixed `T`.
-Completes the reduction open problem 1 ⟸ open problem 3 with a smooth kernel `K̄_ω(θ) = ∫ω(T)∫_T^{2T}cos(τθ)`.
+Open problem 2 done so that it actually reaches open problem 3's band. The seam is linear in
+`frobSq` and holds for every grid weighting `|w_k| ≤ 1` (`RHTower.seamA_weighted`), so the whole
+surplus can be read through a smooth window.
+
+## Findings
+- **Standard Jackson windows cannot reach the coalescent band.** `F_b²` has cubic tails, so the
+  outer mass is `≍ L/(b³M²)` and the far-pair error `≍ XL³/(b³M²)`; against `L²Tl` this forces
+  `b ≫ X^{1/3}/T` (`b ≫ T^{-5/9}` at `λ = 4/3`). The "close pairs" `|log(n/m)| < 4b` then include
+  the band `T^{-1} ≪ |θ| ≪ T^{-5/9}` where the Jackson pair kernel is still `≍ L/|θ|` (sharp-window
+  leakage, total `≍ X log X`). Pillar 4 does not localize to `h ≪ m/T`.
+- **Height averaging at fixed λ fails**: the moving cutoff `X(T)` costs `≍ √ε X log²X`.
+  At fixed `L` it works (module `HeightAveragedCoalescentLocalization`, done) but needs uniform-λ
+  core estimates and an averaged end form.
+- **Smooth compactly supported grid weights at fixed λ** avoid both: `W(τ_k) = 0` off the grid, so
+  `K_W − W(τ)·LΦ = Σ_{k∈ℤ}(W(τ_k) − W(τ)) φ̂φ̂` exactly (no aliasing, no end form), with error
+  `O(Lip W)` against a Lorentzian of width `T`; the smooth continuous form `∬W(τ)²Φ²νν'` has exact
+  pair kernels `∫Φ(x)² Re[e^{ixy'} (W²)^(y − y')] dx`, decaying like `‖(W²)^{(k)}‖₁/|θ|^k`.
 
 ## Gates
-- [x] 0 → 1  in-progress: well-posed, attack idea
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 0 → 1
+- [ ] 1 → 2
+- [ ] 2 → 3
 
-## Approach
-1. k-fold integration by parts: `|∫ω(T) sin(κT + c)| ≤ ‖ω^{(k)}‖₁/|κ|^k`.
-2. `JmK, JpK` are sums of two such phases in `T` (for every offset `x`); split `A^±` at `|x| ≤ a`,
-   Fubini on the inner box, the tail `|x| > a` costs `b‖ω‖₁∫Φ²x²/a²`.
-3. Far pairs and sum frequencies: `(Σ a_n)² ≤ 9X` times the averaged kernel bound.
-4. Fixed `L` across the average is required: with `L = λl(T)` the moving prime cutoff costs `X log²X`
-   (pairs at the cutoff with `|θ| ≈ 1/T` see a sharp-in-`T` kernel).
-5. Averaged end form; averaged seam; window-shift counting.
+## Approach (modules)
+1. `HeightAveragedCoalescentLocalization` — oscillatory decay, averaged kernels (done, audited).
+2. Grid-kernel comparison `Σ W_kW_l G_kl² = L²∬W(τ)²Φ²νν' + O(L⁵ log³ (1 + X/T))` via Lipschitz
+   error, Tonelli, Lorentzian domination by two Fejér kernels, Fejér-weighted mean value of `ν²`.
+3. Smooth continuous form: `μμ`, prime diagonal, far pairs, sum frequencies, cross terms.
+4. Weighted trace: prime part by Abel summation (`|e^{iyh} − 1| ≥ 4 min(y, L−y)/L`).
+5. Assembly through `seamA_weighted` at `params43`; scaled smooth profile `u₀((τ−T)/T)`.
 
 ## Log
-- 2026-10-23 — created; step 4 obstruction found (moving cutoff), fixed-`L` route chosen.
+- 2026-10-23 — created; moving-cutoff obstruction; Jackson-tail obstruction; smooth-weight route.

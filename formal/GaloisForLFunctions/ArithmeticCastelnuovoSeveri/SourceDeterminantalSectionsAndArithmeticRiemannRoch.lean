@@ -828,7 +828,7 @@ theorem l2SourceCone_riemannRoch_iff_weilPair_ge {c : ℝ} (hc : 0 < c)
     · rw [l2SourceCone, S.mem_sourceCone_iff, hpol] at hxE
       have hleE : E ≤ M := hxE.2.2
       linarith
-    · rw [l2SourceCone, S.mem_sourceCone_iff, S.pair_neg_left, hxV] at hnxE
+    · rw [l2SourceCone, S.mem_sourceCone_iff, S.pair_neg_left x S.V, hxV] at hnxE
       linarith [hnxE.2.1]
   · intro hle
     exact S.sourceCone_riemannRoch_of_le_defect
@@ -958,8 +958,7 @@ theorem sourceIncidenceCone_riemannRoch_of_le_threeHundredSixtyTwoThousandths {r
       (scalingSubsurface (oddRealTestsAt r)).AmpleAxiom (sourceIncidenceCone r R) ∧
       (scalingSubsurface (oddRealTestsAt r)).BezoutAxiom (sourceIncidenceCone r R) := by
   let S := scalingSubsurface (oddRealTestsAt r)
-  have hH : S.HodgeIndex :=
-    scalingSubsurface_odd_hodgeIndex_of_le_threeHundredSixtyTwoThousandths hr
+  have hH : S.HodgeIndex := scalingSubsurface_odd_hodgeIndex hr
   have hRR : S.RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r)) :=
     (strictCoupledArithmeticCone_riemannRoch_iff_hodgeIndex _).mpr hH
   refine ⟨(sourceIncidenceCone_riemannRoch_iff_strictCoupled hr0 hR).mpr hRR,
@@ -1468,7 +1467,9 @@ theorem gradedL2SourceCone_riemannRoch_of_le_defect (c : ℝ) (V : Submodule ℝ
   rcases hRR x hxx with h | h
   · exact Or.inl h
   · right
-    rwa [zero_sub]
+    change (0 : ℝ × ℝ × V) - x ∈ gradedL2SourceCone c V
+    rw [zero_sub]
+    exact h
 
 /-- **All-Aperture Graded Source Riemann–Roch on `primitiveSmoothRealTestsAt r`,
 `polarFreeSmoothRealTestsAt r`, and `oddRealTestsAt r` (`r > 0`):** -/

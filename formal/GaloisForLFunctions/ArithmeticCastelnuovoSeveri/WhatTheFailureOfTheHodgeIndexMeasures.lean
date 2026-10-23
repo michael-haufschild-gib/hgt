@@ -170,42 +170,42 @@ theorem add_le_negIndex_fromBlocks_zero {α β : Type*} [Fintype α] [Fintype β
     hermNegIndex A + hermNegIndex B ≤ hermNegIndex (fromBlocks A 0 0 B) := by
   obtain ⟨WA, hrankA, hWA⟩ := exists_isPosDefOn_finrank_eq_posIndex (-A)
   obtain ⟨WB, hrankB, hWB⟩ := exists_isPosDefOn_finrank_eq_posIndex (-B)
-  let e : ((α → ℂ) × (β → ℂ)) ≃ₗ[ℂ] (α ⊕ β → ℂ) :=
-    { toFun := fun p => Sum.elim p.1 p.2
-      invFun := fun f => (f ∘ Sum.inl, f ∘ Sum.inr)
+  let f : (WA × WB) →ₗ[ℂ] (α ⊕ β → ℂ) :=
+    { toFun := fun p => Sum.elim p.1.1 p.2.1
       map_add' := fun p q => by ext (i | j) <;> rfl
-      map_smul' := fun c p => by ext (i | j) <;> rfl
-      left_inv := fun p => by ext <;> rfl
-      right_inv := fun f => by ext (i | j) <;> rfl }
-  set W : Submodule ℂ (α ⊕ β → ℂ) := (WA.prod WB).map e.toLinearMap
+      map_smul' := fun c p => by ext (i | j) <;> rfl }
+  have hfinj : Function.Injective f := by
+    rintro ⟨x, y⟩ ⟨x', y'⟩ h
+    ext1 <;> apply Subtype.ext <;> funext i
+    · exact congrFun h (Sum.inl i)
+    · exact congrFun h (Sum.inr i)
+  set W : Submodule ℂ (α ⊕ β → ℂ) := LinearMap.range f
   have hpd : IsPosDefOn (-(fromBlocks A 0 0 B)) W := by
-    rintro z ⟨⟨x, y⟩, ⟨hx, hy⟩, rfl⟩ hz0
-    have hxy0 : x ≠ 0 ∨ y ≠ 0 := by
+    rintro z ⟨⟨x, y⟩, rfl⟩ hz0
+    have hxy0 : (x : α → ℂ) ≠ 0 ∨ (y : β → ℂ) ≠ 0 := by
       by_contra h
       push Not at h
       apply hz0
-      ext (i | j) <;> simp [e, h.1, h.2]
-    have hform : hermQuad (-(fromBlocks A 0 0 B)) (e.toLinearMap (x, y)) =
-        hermQuad (-A) x + hermQuad (-B) y := by
+      ext (i | j) <;> simp [f, h.1, h.2]
+    have hform : hermQuad (-(fromBlocks A 0 0 B)) (f (x, y)) =
+        hermQuad (-A) x.1 + hermQuad (-B) y.1 := by
       rw [hermQuad_neg, hermQuad_neg, hermQuad_neg]
-      exact (congrArg Neg.neg (hermQuad_fromBlocks_zero A B x y)).trans (neg_add _ _)
+      exact (congrArg Neg.neg (hermQuad_fromBlocks_zero A B x.1 y.1)).trans (neg_add _ _)
     rw [hform]
-    have hAx : 0 ≤ hermQuad (-A) x := by
-      by_cases hx0 : x = 0
-      · subst hx0; simp [hermQuad]
-      · exact (hWA x hx hx0).le
-    have hBy : 0 ≤ hermQuad (-B) y := by
-      by_cases hy0 : y = 0
-      · subst hy0; simp [hermQuad]
-      · exact (hWB y hy hy0).le
+    have hAx : 0 ≤ hermQuad (-A) x.1 := by
+      by_cases hx0 : (x : α → ℂ) = 0
+      · simp [hermQuad, hx0]
+      · exact (hWA x.1 x.2 hx0).le
+    have hBy : 0 ≤ hermQuad (-B) y.1 := by
+      by_cases hy0 : (y : β → ℂ) = 0
+      · simp [hermQuad, hy0]
+      · exact (hWB y.1 y.2 hy0).le
     rcases hxy0 with hx0 | hy0
-    · linarith [hWA x hx hx0]
-    · linarith [hWB y hy hy0]
+    · linarith [hWA x.1 x.2 hx0]
+    · linarith [hWB y.1 y.2 hy0]
   have hle := finrank_le_posIndex hpd
   have hrankW : Module.finrank ℂ W = hermNegIndex A + hermNegIndex B := by
-    have heq := (Submodule.equivMapOfInjective e.toLinearMap e.injective (WA.prod WB)).symm.finrank_eq
-    change Module.finrank ℂ W = Module.finrank ℂ (WA.prod WB) at heq
-    rw [heq, (WA.prodEquiv WB).finrank_eq, Module.finrank_prod, hrankA, hrankB,
+    rw [LinearMap.finrank_range_of_inj hfinj, Module.finrank_prod, hrankA, hrankB,
       hermNegIndex, hermNegIndex]
   rwa [hrankW] at hle
 
@@ -1016,8 +1016,9 @@ theorem integral_deriv_twoBump_re_sq_le {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g
     ∫ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u ^ 2 ≤ 4 * ∫ u, deriv g u ^ 2 := by
   have hgd_cont : Continuous (deriv g) := hg.continuous_deriv le_rfl
   have hgd_cs : HasCompactSupport (deriv g) := hgc.deriv
-  have hgd_sq_int : Integrable (fun u => deriv g u ^ 2) volume := by
-    simpa only [sq] using (hgd_cont.mul hgd_cont).integrable_of_hasCompactSupport hgd_cs.mul_left
+  have hgd_sq_int : Integrable (fun u => deriv g u ^ 2) volume :=
+    ((hgd_cont.mul hgd_cont).integrable_of_hasCompactSupport hgd_cs.mul_left).congr
+      (Filter.Eventually.of_forall fun u => (sq (deriv g u)).symm)
   have hderiv : ∀ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u =
       deriv g (u + v / 2) - deriv g (u - v / 2) := fun u => by
     have hd1 : HasDerivAt (fun x => g (x + v / 2)) (deriv g (u + v / 2)) u :=
@@ -1037,7 +1038,8 @@ theorem integral_deriv_twoBump_re_sq_le {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g
       hgd_cs.comp_homeomorph (Homeomorph.addRight (v / 2))
     have hcs2 : HasCompactSupport fun u => deriv g (u - v / 2) :=
       hgd_cs.comp_homeomorph (Homeomorph.subRight (v / 2))
-    simpa only [sq] using (hcont.mul hcont).integrable_of_hasCompactSupport (hcs1.sub hcs2).mul_left
+    exact ((hcont.mul hcont).integrable_of_hasCompactSupport (hcs1.sub hcs2).mul_left).congr
+      (Filter.Eventually.of_forall fun u => (sq _).symm)
   have hcongr : (∫ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u ^ 2) =
       ∫ u, (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2 := by
     congr 1; funext u; rw [hderiv u]

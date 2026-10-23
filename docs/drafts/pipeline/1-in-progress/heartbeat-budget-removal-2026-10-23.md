@@ -94,10 +94,10 @@ valid.
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor.lean` (depth 6, 2)
 - [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)
 - [x] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` (depth 6, 1)
-- [ ] `RHTower/Sieve/ZetaWideBand.lean` (depth 6, 1)
+- [x] `RHTower/Sieve/ZetaWideBand.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureAreaRigidity.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureCurvatureTrace.lean` (depth 6, 1)
-- [ ] `RHTower/SoninApertureFourierParityNoGo.lean` (depth 6, 1)
+- [x] `RHTower/SoninApertureFourierParityNoGo.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureRestrictionDefect.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureWardCurvature.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureWardPotential.lean` (depth 6, 1)
@@ -135,7 +135,7 @@ valid.
 - [ ] `RHTower/PrimeArchThetaFirstAtomWardObstructionScaleQuadrature.lean` (depth 7, 2)
 - [ ] `RHTower/Sieve/KthDerivativeTest.lean` (depth 7, 1)
 - [ ] `RHTower/Sieve/VonMangoldtTwistUniformHeight.lean` (depth 7, 1)
-- [ ] `RHTower/Sieve/ZetaWideRectangle.lean` (depth 7, 1)
+- [x] `RHTower/Sieve/ZetaWideRectangle.lean` (depth 7, 1)
 - [ ] `RHTower/SoninAllPrimeResidualKernel.lean` (depth 7, 1)
 - [ ] `RHTower/SoninDilationSumFourierInjective.lean` (depth 7, 1)
 - [ ] `RHTower/SoninMixedBlockPolarizationSplit.lean` (depth 7, 1)
@@ -510,9 +510,9 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` — narrowed tail-bound arithmetic; check and build passed.
 - [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` — narrowed logarithmic bounds; check and build passed.
 - [x] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` — narrowed envelope arithmetic; check and build passed.
-- `RHTower/Sieve/ZetaWideBand.lean`
-- `RHTower/Sieve/ZetaWideRectangle.lean`
-- `RHTower/SoninApertureFourierParityNoGo.lean`
+- [x] `RHTower/Sieve/ZetaWideBand.lean` — narrowed order-transfer arithmetic; check and build passed.
+- [x] `RHTower/Sieve/ZetaWideRectangle.lean` — narrowed truncation-bound arithmetic; check and build passed.
+- [x] `RHTower/SoninApertureFourierParityNoGo.lean` — check and build passed; olean/ilean written.
 - `RHTower/SoninCouplingBranchEstimate.lean`
 - `RHTower/SoninDilationSumFourierInjective.lean`
 - `RHTower/SoninEulerCornerConcrete.lean`

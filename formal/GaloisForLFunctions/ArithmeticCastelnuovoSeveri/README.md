@@ -185,14 +185,27 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`pontryagin_law`; finite and finitely-many-right-zeros cases `pontryagin_law_finite`,
     `pontryagin_law_of_tempered`). For `ζ`: the Hodge defect of the scaling surface is the number of
     zeros right of the line (`zeta_hodgeDefect_iff`, `zeta_rightZeros_infinite_iff`).
-13. **Reflection sectors.** On `ρ ↦ 1 − ρ` symmetric configurations the even and odd sectors carry
-    `#{Re ρ > ½, Im ρ > 0}` and `#{Re ρ > ½, Im ρ ≥ 0}`; for `ζ` each carries half
-    (`sector_pontryagin_law`, `zeta_sector_hodgeDefect_iff`).
-14. **Degree filtration.** The defect at degree `a` is monotone and exhausts the right zeros
-    (`iSup_hodgeDefectAt`); it vanishes iff Weil's form is nonnegative at aperture `a`
-    (`hodgeDefectAt_eq_zero_iff`). For `ζ` it is `0` through degree `3/10`
-    (`zeta_hodgeDefectAt_eq_zero`), in the odd sector through `181/500`
-    (`SchurLendingOddHodgeIndexPastFirstPrime`).
+13. **Reflection sectors.** On `ρ ↦ 1 − ρ` symmetric configurations the even and odd sectors are
+    `W_Z`-orthogonal (`W_eq_zero_of_even_odd`, `W_eq_zero_of_odd_even`), carry
+    `#{Re ρ > ½, Im ρ > 0}` and `#{Re ρ > ½, Im ρ ≥ 0}` with global cardinal additivity
+    `(rightZeros Z).encard = (sectorZeros Z 1).encard + (sectorZeros Z (-1)).encard`
+    (`rightZeros_encard_eq_sectorZeros_add`, `sectorZeros_neg_one_encard_eq_add_realRightZeros`),
+    and for `ζ` each carries half (`sector_pontryagin_law`, `zeta_sector_hodgeDefect_iff`,
+    `zeta_rightZeros_encard_eq_two_mul_sectorZeros`).
+14. **Degree filtration and degree-by-degree sector additivity.** The defect at degree `a` is
+    monotone and exhausts the right zeros (`iSup_hodgeDefectAt`); it vanishes iff Weil's form is
+    nonnegative at aperture `a` (`hodgeDefectAt_eq_zero_iff`). At every degree `a`, the full Hodge
+    defect is the exact sum of the even-sector and odd-sector defects:
+    `hodgeDefectAt Z a = sectorHodgeDefectAt Z 1 a + sectorHodgeDefectAt Z (-1) a`
+    (`hodgeDefectAt_eq_sectorHodgeDefectAt_add`, via Hermitian inertia subadditivity `negIndex_add_le`
+    and block-diagonal superadditivity `add_le_negIndex_fromBlocks_zero`). For `ζ` it is `0` through
+    degree `3/10` (`zeta_hodgeDefectAt_eq_zero`), in the odd sector through `181/500`
+    (`SchurLendingOddHodgeIndexPastFirstPrime`), so any Hodge defect of `ζ` at `a ≤ 181/500` is
+    purely even (`zeta_hodgeDefectAt_eq_even_sectorHodgeDefectAt_of_le`). Both the global and
+    sector defects are invariant under arbitrary multiplicity changes (`iSup_hodgeDefectAt_eq_of_rightZeros_encard_eq`,
+    `iSup_sectorHodgeDefectAt_eq_of_sectorZeros_encard_eq`) and under horizontal depth deformations
+    in `(1/2, 1)` (`multiPairConfig_depth_invariance`), whereas the raw `L²` floor scales linearly
+    with multiplicity (`offLineClusterConfig_hodgeDefect_vs_l2_floor`).
 15. **Visibility and hiding.** Over `𝔽_q` the window `n_0 + 2 n_+ ≤ 2g` sees all `n_+` outer
     eigenvalues (`card_spectrum_eq_onCircle_add_two_mul_outer`, `negIndex_spanGram_eq_of_onCircle`).
     Over `ℚ`, an isolated pair `½ ± δ + iγ₀` in an on-line lattice of density `L` is seen exactly
@@ -388,7 +401,16 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     `|Re ρ − ½| ≤ σ` for every zero (`zetaZeroWidth_le_of_scalingSubsurface_odd_defect_floor`), so
     RH is equivalent to a subexponential floor and to a bounded floor
     (`rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`,
-    `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`). This is the classical
+    `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`). When normalized by the
+    `H¹` Sobolev energy `∫ f² + ∫ (f')²` (which bounds the gauge-derivative autocorrelation via
+    `abs_gaugeDerivative_autocorr_le_sobolev` and absorbs the Riemann–von Mangoldt `log T` factor),
+    the converse holds **unconditionally** at every width `σ ≥ 0` with no off-line clustering
+    hypothesis: `zetaZeroWidth ≤ σ` iff at every rate `β > σ` the defect on
+    `scalingSubsurface (oddRealTestsAt r)` (or `realTestsAt r`) is bounded below by
+    `−C e^{2β r} (∫ f² + ∫ (f')²)` (`zetaZeroWidth_le_iff_scalingSubsurface_odd_sobolev_defect_floor`,
+    `zetaZeroWidth_le_iff_scalingSubsurface_sobolev_defect_floor`), so the infimum of admissible
+    defect-floor growth rates equals `zetaZeroWidth` (`oddDefectFloorRate_eq_zetaZeroWidth`,
+    `fullDefectFloorRate_eq_zetaZeroWidth`). This is the classical
     dictionary between error exponents and zero-free strips, read as the growth rate of the defect
     floor in the degree: the unconditional floor has rate `σ = ½`, any power saving would be a
     zero-free strip. Through degree `181/500` the odd floor is `0`
