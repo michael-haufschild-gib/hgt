@@ -237,7 +237,16 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     finitely many primes separate them, and at each such prime one tower of one generic test
     carries the whole defect (`almost_every_prime_tower_sees_every_right_zero`); weights need not be
     assumed, since one modulated bump has nonzero Frobenius weight at every class of every prime
-    (`exists_test_tower_defect_eq_card_frobEig`).
+    (`exists_test_tower_defect_eq_card_frobEig`). Finiteness is not needed: orthogonality to the
+    tower is the vanishing of all Laurent moments, and the classes can be extracted from the top
+    down by Cesàro means as long as the moduli above them contain no increasing sequence. So if the
+    real parts of the right zeros contain no strictly increasing sequence, at every prime the tower
+    defect is the number of visible outer eigenvalues, finite or infinite, however they accumulate
+    in the annulus (`tower_pontryagin_law_of_wellFounded`, `tower_defect_eq_encard_of_injOn`). An
+    attained top is always seen: its visible classes are seen by every prime tower, and a finite
+    top level by one generic tower at all but finitely many primes
+    (`card_le_towerDefect_of_top`, `almost_every_prime_sees_the_top`); for `ζ` this is the
+    `AttainedTop` case of the single-base lag analysis (`RHTower.WeilLagSingleBaseLowerSide`).
 
 ### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `SourceDeterminantalSectionsAndArithmeticRiemannRoch`)
 
@@ -551,11 +560,14 @@ To be built:
    hyperbolic pair displacement), or trans-threshold pair correlation beyond `λ = 1`
    (`RHTower.PrimeSurplusFourThirds` at bandwidth `4/3`, or `F ≤ B` with `B ≤ 117/41` through the
    two-window mixture).
-7. **One prime against two.** Two primes carry the whole defect; one prime carries the visible outer
-   eigenvalues `p^{ρ − ½}` when these are finitely many, and with finitely many right zeros every
-   non-resonant prime carries all of it (item 17). Open: the tower defect when infinitely many outer
-   eigenvalues accumulate in the annulus `1 < |β| < √p`, where the separation of classes by
-   annihilating polynomials is not available.
+7. **One prime against two.** Two primes carry the whole defect; one prime carries every visible
+   outer eigenvalue `p^{ρ − ½}` whenever the real parts of the right zeros contain no strictly
+   increasing sequence, however the eigenvalues accumulate, and every visible class on an attained
+   top (item 17). Open: real parts increasing to their supremum. There the top-down extraction of
+   classes fails, and the circle quadratures of `HTGeometry.CircleQuadratureAnnihilating` (atoms on
+   circles of increasing radius killing all holomorphic moments, an isolated atom below them) show
+   how a class can escape the one-sided moments; the tower has two-sided moments, and whether a
+   two-sided annihilator can hide a visible class from the tower is the question.
 
 ---
 
@@ -607,7 +619,7 @@ Weil's argument.
 | `TheReflectionSectorsOfTheHodgeDefect`, `TheDegreeFiltrationOfTheHodgeDefect`, `SchurLendingOddHodgeIndexPastFirstPrime`, `WhatTheFailureOfTheHodgeIndexMeasures` | sectors and degrees; `ζ` below `3/10` and the odd sector through `181/500`; multiplicity and depth invariance; Sobolev floor rate = width |
 | `TheVisibilityDegreeOfAnIsolatedPair`, `TheVisibilityDegreeOfRightZeros`, `HeightUniformVisibilityAndOffLineDensity` | visibility degrees from on-line mass and densities; height-uniform visibility; the clustering alternative |
 | `TheKroneckerRankDichotomy`, `TheZerosOfAnExponentialPolynomialRecur` | recurrent configurations have defect `0` or `∞` |
-| `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes |
+| `TheHodgeDefectIsCyclic`, `TheHeckeTowerOfAPrimeIsThePeriodQuotient`, `AlmostEveryPrimeSeesEveryRightZero`, `TheTowerDefectCountsTheFrobeniusEigenvalues`, `OnePrimeSeesEveryWellFoundedLevel` | cyclic Pontryagin law; prime towers, Frobenius eigenvalues and weights; resonant primes; top-down class extraction, the tower law without finiteness, attained tops |
 | `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`, `TheResonatorRemainderIsNegative`, `TheAdjunctionConjectureMeanField` | Hecke incidence: Cartesian law, resonators, mean field |
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell`, `TheSuccessorCollar` | the successor cell |
 | `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades |

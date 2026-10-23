@@ -472,6 +472,18 @@ on `ℓ²` (`exists_centeredOperator_l2_le_half`) although it is not Hilbert–S
 of `μ` enter, as the zero-free `1`-line through `1/ζ(η − s)`; below `½` the same route needs `1/ζ`
 on `Re = η + ½`, inside the critical strip.
 
+**The receiver is continuous at half damping.** With `u_η = C_η r`, `u_η(n) = P_η(n+1)/(n+1)`
+(`centeredOperator_reciprocal_eq_orbitCoord`), `u_η → u_{½}` in `ℓ²` as `η ↓ ½`
+(`orbit_l2_tendsto_half`, `centeredOperator_reciprocal_l2_tendsto_half`). The orbit difference is at
+most `8 ∫ (P_η − P_{η'})² x^{−2} + 4(ρ_η − ρ_{η'})²` (`sum_sq_orbitCoord_sub_le`); Plancherel makes
+the integral the mean square of `F_η − F_{η'}`, `F_η(t) = −ζ(½ + η − it)^{−1} ζ(½ − it)/(−½ + it)`
+(`integral_sq_sourceProfile_sub`); and since `ζ(1 − it) ≠ 0`, dominated convergence under
+`|F_η|² ≪ (1 + t²)^{−9/16}` (`exists_norm_sq_criticalSymbol_le`) gives `∫ |F_η − F_{½}|² → 0`
+(`tendsto_integral_sq_criticalSymbol_sub`). The positive twin does the opposite: its horizon
+energies exceed every bound as `ε ↓ ½` (`positiveTwin_energy_unbounded`). Damping-summation of the
+residue expansion converges in the receiver norm at the threshold where its size-only reading
+diverges.
+
 29. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -623,7 +635,9 @@ short-interval sums of the damped divisor coefficients — above the golden thre
 sharply for that method (`centeredOperator_l2_le`, `centeredOperator_l2_le_of_inverseRootTwo`,
 `centeredOperator_l2_le_of_goldenThreshold`); in Mellin coordinates it is Hilbert–Schmidt exactly for
 `½ < η < 1` (`sum_sum_sq_centeredRow_le_halfDamping`, `not_bounded_sum_sum_sq_centeredRow_of_le_half`)
-and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`).
+and bounded at `η = ½` itself (`exists_centeredOperator_l2_le_half`); the orbit is `ℓ²`-continuous
+at `η = ½` while the positive twin's energy diverges there (`orbit_l2_tendsto_half`,
+`positiveTwin_energy_unbounded`).
 
 **Pillar IV — train capacities.** A single prime's first-lag charge on a train of length `M + 1` is
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned trains the
@@ -660,7 +674,7 @@ source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tang
 | Expecting cross-prime cancellation on aligned trains. | On box supports the single-prime capacities add exactly, for any finite family of towers (mechanism 21); a saving comes only from the support, and every non-box support produces one (`joint_capacity_lt_iff_not_box`). |
 | Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 24). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 29). |
 | "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 32). |
-| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35). |
+| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35); at half damping the damping-summed signed series is still `ℓ²`-continuous and its twin is not. |
 | Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 41). |
 | "An adverse sequence has an adverse limit." | Compact negativity preserves adversity in an existing weak limit; a noncompact negative part can allow a zero limit (mechanisms 37–38). |
 | Treating a frustrated pattern as a failure for every realization. | Frustration permits an unpayable positive form; sufficiently large diagonal budgets can still pay a particular frustrated form. |
@@ -726,7 +740,9 @@ Each question is stated with what is established and where the open part sits.
    is RH.
 4. **Which residue observable gives uniform actual-row cancellation?** The full residue series in
    `ℓ²` (mechanism 34). The size-only reading is extremized by the positive twin and has resolution
-   exactly half damping (mechanism 35 and the envelope paragraph after it). The sub-half
+   exactly half damping (mechanism 35 and the envelope paragraph after it); at that resolution the
+   signed orbit is `ℓ²`-continuous while the twin's energy diverges (paragraphs after mechanism 28).
+   The sub-half
    cancellation is the receiver problem of Bézout–Valuation Incidence (its §7.1) in residue
    coordinates, and is open.
 5. **Does the signed floor have the width rate in unrestricted `L²` without uniform unsigned depth

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.TheEvenFlipShiftsThePoleValueByTheEvenPartOfTheKernel
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.CriticalWienerKernelsRepairAPositiveDriftOnlyAtItsPole
+import GaloisForLFunctions.ArithmeticOrientationTheory.TheEvenFlipIsReadAtThePrimeTwo
 
 /-!
 # An orientation-faithful norm over the odd squarefree weight
@@ -143,6 +144,250 @@ theorem weightPronicEnergy_dirichletConv_oddSqf_le_finite {ε : ℝ} (hε : 0 < 
   calc _ ≤ (L * (G * (6 * Real.sqrt S + (Real.sqrt 2 + 1) * ∑' d : ℕ, (d : ℝ) ^ (-(1 + ε))))) ^ 2 :=
         pow_le_pow_left₀ (pronicNorm_nonneg _ _) h3 2
     _ = oddSqfReceiverConst ε * L ^ 2 := by unfold oddSqfReceiverConst; ring
+
+/-! ### Admissible kernels -/
+
+/-- The orientation-faithful norm `N(k) = Σ_j |k(j)| j^ε`. -/
+def orientNorm (ε : ℝ) (k : ℕ → ℝ) : ℝ := ∑' j : ℕ, |k j| * (j : ℝ) ^ ε
+
+/-- Admissible kernels: `N(k) < ∞`. -/
+def OrientAdmissible (ε : ℝ) (k : ℕ → ℝ) : Prop := Summable fun j : ℕ => |k j| * (j : ℝ) ^ ε
+
+/-- The pole pairing `P(k) = Σ_j k(j) j^{−(1−ε)}`: the value of the Dirichlet series at `1 − ε`. -/
+def polePairing (ε : ℝ) (k : ℕ → ℝ) : ℝ := ∑' j : ℕ, k j * (j : ℝ) ^ (-(1 - ε))
+
+theorem orientNorm_nonneg (ε : ℝ) (k : ℕ → ℝ) : 0 ≤ orientNorm ε k :=
+  tsum_nonneg fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+
+/-- `j^e ≤ j^ε` for every natural `j` and nonzero exponent `e ≤ ε`, `ε > 0`. -/
+theorem natCast_rpow_le_rpow {ε e : ℝ} (hε : 0 < ε) (he : e ≤ ε) (he0 : e ≠ 0) (j : ℕ) :
+    (j : ℝ) ^ e ≤ (j : ℝ) ^ ε := by
+  rcases Nat.eq_zero_or_pos j with rfl | hj
+  · simp [Real.zero_rpow he0, Real.zero_rpow hε.ne']
+  · exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hj) he
+
+theorem OrientAdmissible.summable_rpow {ε e : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
+    (hε : 0 < ε) (he : e ≤ ε) (he0 : e ≠ 0) : Summable fun j : ℕ => |k j| * (j : ℝ) ^ e :=
+  hk.of_nonneg_of_le (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _))
+    fun j => mul_le_mul_of_nonneg_left (natCast_rpow_le_rpow hε he he0 j) (abs_nonneg _)
+
+theorem OrientAdmissible.criticalWiener {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
+    (hε : 0 < ε) : CriticalWiener k :=
+  hk.summable_rpow hε (by linarith) (by norm_num)
+
+theorem OrientAdmissible.summable_abs_div {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
+    (hε : 0 < ε) : Summable fun j : ℕ => |k j / j| :=
+  (hk.summable_rpow hε (by linarith : (-1 : ℝ) ≤ ε) (by norm_num)).congr fun j => by
+    rw [abs_div, Nat.abs_cast, Real.rpow_neg_one, div_eq_mul_inv]
+
+theorem OrientAdmissible.summable_pole {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
+    (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) : Summable fun j : ℕ => k j * (j : ℝ) ^ (-(1 - ε)) :=
+  Summable.of_abs ((hk.summable_rpow hε (by linarith) (by linarith)).congr fun j => by
+    rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)])
+
+theorem abs_oddSqfWeight_div_le {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
+    |oddSqfWeight ε d / d| ≤ (d : ℝ) ^ (-(1 + ε)) := by
+  rw [oddSqfWeight, dampedSignWeight_div hε, abs_mul,
+    abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _)]
+  exact mul_le_of_le_one_right (Real.rpow_nonneg (Nat.cast_nonneg d) _) (by
+    rw [oddSqfAF_apply]; split_ifs <;> norm_num)
+
+theorem summable_abs_oddSqfWeight_div {ε : ℝ} (hε : 0 < ε) :
+    Summable fun d : ℕ => |oddSqfWeight ε d / d| :=
+  (Real.summable_nat_rpow.mpr (by linarith : -(1 + ε) < -1)).of_nonneg_of_le
+    (fun _ => abs_nonneg _) (abs_oddSqfWeight_div_le hε)
+
+/-- The mean of `h ⋆ o` is the product of the means. -/
+theorem tsum_dirichletConv_oddSqf_div {ε : ℝ} (hε : 0 < ε) {h : ℕ → ℝ}
+    (hh : Summable fun j : ℕ => |h j / j|) :
+    ∑' d : ℕ, RHTower.dirichletConv h (oddSqfWeight ε) d / d =
+      (∑' j : ℕ, h j / j) * ∑' d : ℕ, oddSqfWeight ε d / d :=
+  (hasSum_dirichletConv_div hh.of_abs.hasSum (summable_abs_oddSqfWeight_div hε).of_abs.hasSum hh
+    (summable_abs_oddSqfWeight_div hε)).tsum_eq
+
+theorem sum_Icc_eq_sum_range {g : ℕ → ℝ} (h0 : g 0 = 0) (n : ℕ) :
+    ∑ j ∈ Icc 1 n, g j = ∑ j ∈ range (n + 1), g j := by
+  rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (by omega : 0 < n + 1), h0, zero_add,
+    Nat.Ico_succ_right]
+
+/-- Partial sums over `[1, J]` of a summable series vanishing at `0` converge to its sum. -/
+theorem tendsto_sum_Icc {g : ℕ → ℝ} (hg : Summable g) (h0 : g 0 = 0) :
+    Tendsto (fun J => ∑ j ∈ Icc 1 J, g j) atTop (𝓝 (∑' j, g j)) := by
+  simp_rw [sum_Icc_eq_sum_range h0]
+  exact (hg.hasSum.tendsto_sum_nat).comp (tendsto_add_atTop_nat 1)
+
+/-! ### Truncations on the paid hyperplane -/
+
+/-- The truncation `k|_{[1,J]} − P_J δ₁`, which keeps the pole value zero. -/
+def oddSqfTrunc (ε : ℝ) (k : ℕ → ℝ) (J j : ℕ) : ℝ :=
+  (if j ∈ Icc 1 J then k j else 0) - (if j = 1 then poleValue k J ε else 0)
+
+theorem oddSqfTrunc_support {ε : ℝ} {k : ℕ → ℝ} {J : ℕ} (hJ : 1 ≤ J) :
+    ∀ j, J < j → oddSqfTrunc ε k J j = 0 := fun j hj => by
+  unfold oddSqfTrunc
+  rw [if_neg (by simp only [mem_Icc]; omega), if_neg (by omega), sub_zero]
+
+theorem poleValue_oddSqfTrunc (ε : ℝ) (k : ℕ → ℝ) {J : ℕ} (hJ : 1 ≤ J) :
+    poleValue (oddSqfTrunc ε k J) J ε = 0 := by
+  unfold poleValue oddSqfTrunc
+  have h : ∀ j ∈ Icc 1 J, ((if j ∈ Icc 1 J then k j else 0) - (if j = 1 then poleValue k J ε else 0)) *
+      (j : ℝ) ^ (-(1 - ε)) = k j * (j : ℝ) ^ (-(1 - ε)) -
+        (if j = 1 then poleValue k J ε * (j : ℝ) ^ (-(1 - ε)) else 0) := fun j hj => by
+    rw [if_pos hj, sub_mul]; split_ifs <;> simp
+  rw [sum_congr rfl h, sum_sub_distrib, sum_ite_eq' (Icc 1 J) 1, if_pos (by simp [hJ])]
+  simp [poleValue]
+
+theorem sum_abs_oddSqfTrunc_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk : OrientAdmissible ε k) {J : ℕ} (hJ : 1 ≤ J) :
+    ∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε ≤ 2 * orientNorm ε k := by
+  have hN : ∑ j ∈ Icc 1 J, |k j| * (j : ℝ) ^ ε ≤ orientNorm ε k :=
+    hk.sum_le_tsum _ fun j _ => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+  have hP : |poleValue k J ε| ≤ orientNorm ε k := by
+    refine (abs_sum_le_sum_abs _ _).trans (le_trans (sum_le_sum fun j _ => ?_) hN)
+    rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)]
+    exact mul_le_mul_of_nonneg_left (natCast_rpow_le_rpow hε (by linarith) (by linarith) j)
+      (abs_nonneg _)
+  calc ∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε
+      ≤ ∑ j ∈ Icc 1 J, (|k j| * (j : ℝ) ^ ε + if j = 1 then |poleValue k J ε| else 0) := by
+        refine sum_le_sum fun j hj => ?_
+        unfold oddSqfTrunc
+        rw [if_pos hj]
+        by_cases h1 : j = 1
+        · subst h1
+          simp only [if_true, Nat.cast_one, Real.one_rpow, mul_one]
+          exact abs_sub _ _
+        · simp [h1]
+    _ = ∑ j ∈ Icc 1 J, |k j| * (j : ℝ) ^ ε + |poleValue k J ε| := by
+        rw [sum_add_distrib, sum_ite_eq' (Icc 1 J) 1, if_pos (by simp [hJ])]
+    _ ≤ 2 * orientNorm ε k := by linarith
+
+theorem dirichletConv_oddSqfTrunc (ε : ℝ) (k : ℕ → ℝ) {J d : ℕ} (hd : 1 ≤ d) (hdJ : d ≤ J) :
+    RHTower.dirichletConv (oddSqfTrunc ε k J) (oddSqfWeight ε) d =
+      RHTower.dirichletConv k (oddSqfWeight ε) d - poleValue k J ε * oddSqfWeight ε d := by
+  unfold RHTower.dirichletConv oddSqfTrunc
+  have h : ∀ e ∈ d.divisors, ((if e ∈ Icc 1 J then k e else 0) -
+      (if e = 1 then poleValue k J ε else 0)) * oddSqfWeight ε (d / e) =
+      k e * oddSqfWeight ε (d / e) - if e = 1 then poleValue k J ε * oddSqfWeight ε (d / e) else 0 :=
+    fun e he => by
+      have h1 := Nat.pos_of_mem_divisors he
+      have h2 := Nat.divisor_le he
+      rw [if_pos (mem_Icc.2 ⟨h1, h2.trans hdJ⟩), sub_mul]
+      split_ifs <;> simp
+  rw [sum_congr rfl h, sum_sub_distrib, sum_ite_eq' d.divisors 1,
+    if_pos (Nat.one_mem_divisors.2 (by omega)), Nat.div_one]
+
+theorem tsum_oddSqfTrunc_div (ε : ℝ) (k : ℕ → ℝ) (J : ℕ) :
+    ∑' j : ℕ, oddSqfTrunc ε k J j / j = ∑ j ∈ Icc 1 J, k j / j - poleValue k J ε := by
+  rw [tsum_eq_sum (s := Icc 1 J) fun j hj => by
+    unfold oddSqfTrunc
+    rw [if_neg hj]
+    by_cases h1 : j = 1
+    · exact absurd (by simp [h1]) hj
+    · rw [if_neg h1]; simp]
+  unfold oddSqfTrunc
+  have h : ∀ j ∈ Icc 1 J, ((if j ∈ Icc 1 J then k j else 0) - (if j = 1 then poleValue k J ε else 0)) /
+      (j : ℝ) = k j / j - if j = 1 then poleValue k J ε else 0 := fun j hj => by
+    rw [if_pos hj]; split_ifs with h1 <;> simp [h1, sub_div]
+  rw [sum_congr rfl h, sum_sub_distrib, sum_ite_eq' (Icc 1 J) 1]
+  split_ifs with h1
+  · rfl
+  · rw [mem_Icc] at h1
+    have hJ : J = 0 := by omega
+    subst hJ
+    simp [poleValue]
+
+/-- The receiver energy at cutoff `T` of `c − a o` with centring `b`. -/
+def truncEnergy (c o : ℕ → ℝ) (T : ℕ) (a b : ℝ) : ℝ :=
+  ∑ n ∈ Icc 1 T, ((∑ j ∈ Icc 1 n, ∑ d ∈ j.divisors, (c d - a * o d)) - b * n) ^ 2 /
+    ((n : ℝ) * ((n : ℝ) + 1))
+
+theorem continuous_truncEnergy (c o : ℕ → ℝ) (T : ℕ) :
+    Continuous fun p : ℝ × ℝ => truncEnergy c o T p.1 p.2 := by
+  unfold truncEnergy
+  fun_prop
+
+theorem weightPronicEnergy_eq_truncEnergy {c o h : ℕ → ℝ} {T : ℕ} {a : ℝ}
+    (hh : ∀ d, 1 ≤ d → d ≤ T → h d = c d - a * o d) (b : ℝ) :
+    weightPronicEnergy h b T = truncEnergy c o T a b := by
+  unfold weightPronicEnergy weightCenteredPrefix truncEnergy
+  refine sum_congr rfl fun n hn => ?_
+  congr 3
+  refine sum_congr rfl fun j hj => sum_congr rfl fun d hd => ?_
+  have hn' := (mem_Icc.1 hn).2
+  have hj' := (mem_Icc.1 hj).2
+  exact hh d (Nat.pos_of_mem_divisors hd) ((Nat.divisor_le hd).trans (hj'.trans hn'))
+
+/-- **The receiver is bounded on the paid hyperplane**: for an admissible kernel with vanishing
+pole pairing, every receiver energy of `k ⋆ o` is at most `4 C_ε N(k)²`. -/
+theorem weightPronicEnergy_dirichletConv_oddSqf_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
+    {k : ℕ → ℝ} (hk : OrientAdmissible ε k) (hP : polePairing ε k = 0) (T : ℕ) :
+    weightPronicEnergy (RHTower.dirichletConv k (oddSqfWeight ε))
+        (∑' d : ℕ, RHTower.dirichletConv k (oddSqfWeight ε) d / d) T ≤
+      4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by
+  set c := RHTower.dirichletConv k (oddSqfWeight ε)
+  set o := oddSqfWeight ε
+  set O := ∑' d : ℕ, o d / d
+  have hmean : ∑' d : ℕ, c d / d = (∑' j : ℕ, k j / j) * O :=
+    tsum_dirichletConv_oddSqf_div hε (hk.summable_abs_div hε)
+  -- the pole values and the means of the truncations converge
+  have hPJ : Tendsto (fun J => poleValue k J ε) atTop (𝓝 0) := by
+    rw [← hP]
+    exact tendsto_sum_Icc (hk.summable_pole hε hε2) (by
+      simp [Real.zero_rpow (by linarith : -(1 - ε) ≠ 0)])
+  have hmJ : Tendsto (fun J => (∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O) atTop
+      (𝓝 (∑' d : ℕ, c d / d)) := by
+    rw [hmean]
+    refine Tendsto.mul_const O ?_
+    have := (tendsto_sum_Icc (hk.summable_abs_div hε).of_abs (by simp)).sub hPJ
+    rwa [sub_zero] at this
+  have hlim : Tendsto (fun J => truncEnergy c o T (poleValue k J ε)
+      ((∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O)) atTop
+      (𝓝 (truncEnergy c o T 0 (∑' d : ℕ, c d / d))) :=
+    ((continuous_truncEnergy c o T).tendsto _).comp (hPJ.prodMk_nhds hmJ)
+  have hT : weightPronicEnergy c (∑' d : ℕ, c d / d) T =
+      truncEnergy c o T 0 (∑' d : ℕ, c d / d) :=
+    weightPronicEnergy_eq_truncEnergy (fun d _ _ => by ring) _
+  rw [hT]
+  refine le_of_tendsto hlim (eventually_atTop.2 ⟨max T 1, fun J hJ => ?_⟩)
+  have hJ1 : 1 ≤ J := (le_max_right _ _).trans hJ
+  have hJT : T ≤ J := (le_max_left _ _).trans hJ
+  have hfin := weightPronicEnergy_dirichletConv_oddSqf_le_finite hε (oddSqfTrunc_support hJ1)
+    (poleValue_oddSqfTrunc ε k hJ1) T
+  have hmeanJ : ∑' d : ℕ, RHTower.dirichletConv (oddSqfTrunc ε k J) o d / d =
+      (∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O := by
+    rw [tsum_dirichletConv_oddSqf_div hε, tsum_oddSqfTrunc_div]
+    refine summable_of_ne_finset_zero (s := Icc 1 J) fun j hj => ?_
+    unfold oddSqfTrunc
+    rw [if_neg hj]
+    by_cases h1 : j = 1
+    · exact absurd (by simp [h1, hJ1]) hj
+    · rw [if_neg h1]; simp
+  rw [hmeanJ, weightPronicEnergy_eq_truncEnergy (c := c) (o := o)
+    (fun d hd hdT => dirichletConv_oddSqfTrunc ε k hd (hdT.trans hJT))] at hfin
+  refine hfin.trans ?_
+  have h2 := sum_abs_oddSqfTrunc_le hε hε2 hk hJ1
+  have h0 : 0 ≤ ∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε :=
+    sum_nonneg fun j _ => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+  have hC := oddSqfReceiverConst_nonneg ε
+  calc oddSqfReceiverConst ε * (∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε) ^ 2
+      ≤ oddSqfReceiverConst ε * (2 * orientNorm ε k) ^ 2 :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 h2 2) hC
+    _ = 4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by ring
+
+/-- **Payment over `o` is the closed hyperplane `P = 0`**, for every admissible kernel. -/
+theorem receiverBounded_dirichletConv_oddSqf_iff_admissible {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
+    {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    ReceiverBounded (RHTower.dirichletConv k (oddSqfWeight ε)) ↔ polePairing ε k = 0 := by
+  constructor
+  · intro hB
+    by_contra hK
+    have hD : 0 < RHTower.Sieve.squarefreeDensity := by
+      rw [RHTower.Sieve.squarefreeDensity_eq]; positivity
+    exact not_receiverBounded_dirichletConv_of_drift_critical hε hε2 (oddSqfWeight_nonneg ε)
+      (oddSqfWeight_mem_dampedClass ε) (by positivity) (eventually_oddSqfWeight_drift hε)
+      (hk.criticalWiener hε) hK hB
+  · intro hP
+    exact ⟨_, weightPronicEnergy_dirichletConv_oddSqf_le hε hε2 hk hP⟩
 
 end
 

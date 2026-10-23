@@ -653,4 +653,145 @@ theorem abs_integral_window_Kfun_sq_sub_le (hF : LocalHypsCoreW cϱ p F) {ℓ : 
     rw [← mul_assoc (p.L * A)]
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hW2le (by positivity)) hk1
 
+/-! ## 6. Grid sums against the window Lorentz weight -/
+
+theorem tau_eq_natCast (k : Fin p.d) : p.tau k = p.T + (k : ℕ) * p.h := by
+  unfold Setting.tau; push_cast; ring
+
+theorem h_pos (hF : LocalHypsCoreW cϱ p F) : 0 < p.h := by
+  unfold Setting.h; exact div_pos (by positivity) hF.L_pos
+
+theorem h_le_one (hF : LocalHypsCoreW cϱ p F) : p.h ≤ 1 := by
+  unfold Setting.h
+  rw [div_le_one hF.L_pos]
+  have h8 : 8 ≤ p.L := by have := hF.one_le_w; have := hF.w_le; linarith
+  linarith [Real.pi_lt_four]
+
+/-- The grid points lie in `[T, 2T]`. -/
+theorem tau_mem_Icc (hF : LocalHypsCoreW cϱ p F) (hT : 0 ≤ p.T) (k : Fin p.d) :
+    p.tau k ∈ Icc p.T (2 * p.T) := by
+  rw [tau_eq_natCast]
+  have hh := h_pos hF
+  have hk : ((k : ℕ) : ℝ) + 1 ≤ p.d := by exact_mod_cast k.isLt
+  have hd : (p.d : ℝ) * p.h ≤ p.T := by
+    unfold Setting.d Setting.h
+    have hL := hF.L_pos
+    have := Nat.floor_le (show 0 ≤ p.L * p.T / (2 * π) by positivity)
+    calc (⌊p.L * p.T / (2 * π)⌋₊ : ℝ) * (2 * π / p.L) ≤ p.L * p.T / (2 * π) * (2 * π / p.L) :=
+          mul_le_mul_of_nonneg_right this (by positivity)
+      _ = p.T := by field_simp
+  constructor
+  · have : 0 ≤ ((k : ℕ) : ℝ) * p.h := by positivity
+    linarith
+  · nlinarith
+
+theorem sum_lor1_tau_le (hF : LocalHypsCoreW cϱ p F) (x : ℝ) :
+    ∑ k : Fin p.d, lor1 (x - p.tau k) ≤ 4 * π / p.h := by
+  have h := sum_lor_grid_le one_pos le_rfl (h_pos hF) (h_le_one hF) p.T x p.d
+  simp only [one_mul] at h
+  rw [Fin.sum_univ_eq_sum_range (fun i => lor1 (x - p.tau i))]
+  refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ => ?_) h
+  unfold Setting.tau; push_cast; ring_nf
+
+theorem sum_cellW_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} (hℓ : 0 < ℓ) (hℓ1 : ℓ ≤ 1) (x : ℝ) :
+    ∑ k : Fin p.d, cellW p ℓ k x ≤ 8 * π * Real.sqrt ℓ / p.h := by
+  have hs : 0 < Real.sqrt ℓ := Real.sqrt_pos.mpr hℓ
+  have hs1 : Real.sqrt ℓ ≤ 1 := Real.sqrt_le_one.mpr hℓ1
+  have h := sum_lor_grid_le hs hs1 (h_pos hF) (h_le_one hF) p.T x p.d
+  calc ∑ k : Fin p.d, cellW p ℓ k x ≤ ∑ k : Fin p.d, 2 * ℓ * lor1 (Real.sqrt ℓ * (x - p.tau k)) :=
+        Finset.sum_le_sum fun k _ => min_mul_lor1_le hℓ (x - p.tau k)
+    _ = 2 * ℓ * ∑ k ∈ Finset.range p.d, lor1 (Real.sqrt ℓ * (x - (p.T + k * p.h))) := by
+        rw [← Finset.mul_sum, Fin.sum_univ_eq_sum_range
+          (fun i => lor1 (Real.sqrt ℓ * (x - p.tau i)))]
+        congr 1
+        exact Finset.sum_congr rfl fun k _ => by unfold Setting.tau; push_cast; ring_nf
+    _ ≤ 2 * ℓ * (4 * π / (Real.sqrt ℓ * p.h)) := mul_le_mul_of_nonneg_left h (by positivity)
+    _ = 8 * π * Real.sqrt ℓ / p.h := by
+        have hs2 : Real.sqrt ℓ * Real.sqrt ℓ = ℓ := Real.mul_self_sqrt hℓ.le
+        have hh := h_pos hF
+        field_simp
+        nlinarith [hs2]
+
+/-- Far from the window: `|x − 3T/2| ≥ 2T` puts every grid point at distance `≥ ¾|x − 3T/2|`, and
+`d lor1(¾|x − c|) ≤ (32d/9T²) · lorentzW T c x`. -/
+theorem far_bound_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {x : ℝ}
+    (hx : 2 * p.T < |x - 3 * p.T / 2|) {f : Fin p.d → ℝ → ℝ}
+    (hf : ∀ k y, f k y ≤ lor1 (y - p.tau k)) :
+    ∑ k : Fin p.d, f k x ≤ 32 * p.d / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by
+  set u := x - 3 * p.T / 2 with hu
+  have hu0 : 0 < |u| := by linarith
+  have hdist : ∀ k : Fin p.d, 3 / 4 * |u| ≤ |x - p.tau k| := by
+    intro k
+    have hk := tau_mem_Icc hF hT.le k
+    have h1 : |p.tau k - 3 * p.T / 2| ≤ p.T / 2 := by
+      rw [abs_le]; constructor <;> linarith [hk.1, hk.2]
+    have h2 : |u| ≤ |x - p.tau k| + |p.tau k - 3 * p.T / 2| := by
+      rw [hu]; calc |x - 3 * p.T / 2| = |(x - p.tau k) + (p.tau k - 3 * p.T / 2)| := by ring_nf
+        _ ≤ _ := abs_add_le _ _
+    linarith
+  have hterm : ∀ k : Fin p.d, f k x ≤ 16 / (9 * u ^ 2) := by
+    intro k
+    refine (hf k x).trans ?_
+    have hd := hdist k
+    unfold lor1
+    rw [← one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    have : (3 / 4 * |u|) ^ 2 ≤ (x - p.tau k) ^ 2 := by
+      rw [← sq_abs (x - p.tau k)]; exact pow_le_pow_left₀ (by positivity) hd 2
+    nlinarith [sq_abs u]
+  have hlor : 1 / (2 * u ^ 2) * p.T ^ 2 ≤ lorentzW p.T (3 * p.T / 2) x := by
+    unfold lorentzW
+    rw [← hu, div_pow]
+    have hT2 : p.T ^ 2 ≤ u ^ 2 := by
+      rw [← sq_abs u]; exact pow_le_pow_left₀ hT.le (by linarith) 2
+    rw [show 1 + u ^ 2 / p.T ^ 2 = (p.T ^ 2 + u ^ 2) / p.T ^ 2 by field_simp, inv_div]
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith
+  calc ∑ k : Fin p.d, f k x ≤ ∑ _k : Fin p.d, 16 / (9 * u ^ 2) := Finset.sum_le_sum fun k _ => hterm k
+    _ = 32 * p.d / (9 * p.T ^ 2) * (1 / (2 * u ^ 2) * p.T ^ 2) := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; field_simp; ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hlor (by positivity)
+
+/-- Near the window `lorentzW ≥ 1/5`. -/
+theorem lorentzW_ge_fifth {T x c : ℝ} (hT : 0 < T) (hx : |x - c| ≤ 2 * T) :
+    1 / 5 ≤ lorentzW T c x := by
+  unfold lorentzW
+  rw [← one_div, div_le_div_iff₀ (by norm_num) (by positivity), one_mul, one_mul, div_pow]
+  have : (x - c) ^ 2 ≤ (2 * T) ^ 2 := by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hx 2
+  rw [div_le_iff₀ (by positivity)] at *
+  have : (x - c) ^ 2 / T ^ 2 ≤ 4 := by rw [div_le_iff₀ (by positivity)]; nlinarith
+  linarith
+
+/-- **Lorentz domination of the lattice sum.** `Σ_k lor1(x − τ_k) ≤ C_σ lorentzW_T(x − 3T/2)`. -/
+theorem sum_lor1_tau_le_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) (x : ℝ) :
+    ∑ k : Fin p.d, lor1 (x - p.tau k)
+      ≤ (20 * π / p.h + 32 * p.d / (9 * p.T ^ 2)) * lorentzW p.T (3 * p.T / 2) x := by
+  have hh := h_pos hF
+  have hW0 := lorentzW_nonneg p.T (3 * p.T / 2) x
+  rcases le_or_gt |x - 3 * p.T / 2| (2 * p.T) with hx | hx
+  · have h5 := lorentzW_ge_fifth hT hx
+    have := sum_lor1_tau_le hF x
+    have h0 : 0 ≤ 32 * (p.d : ℝ) / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by positivity
+    nlinarith
+  · have := far_bound_lorentz hF hT hx (f := fun k y => lor1 (y - p.tau k)) fun k y => le_rfl
+    have h0 : 0 ≤ 20 * π / p.h * lorentzW p.T (3 * p.T / 2) x := by positivity
+    linarith
+
+/-- **Lorentz domination of the cell weights.** `Σ_k m_k(x) ≤ C_Ω lorentzW_T(x − 3T/2)`. -/
+theorem sum_cellW_le_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hℓ1 : ℓ ≤ 1) (x : ℝ) :
+    ∑ k : Fin p.d, cellW p ℓ k x
+      ≤ (40 * π * Real.sqrt ℓ / p.h + 32 * p.d / (9 * p.T ^ 2)) * lorentzW p.T (3 * p.T / 2) x := by
+  have hh := h_pos hF
+  have hW0 := lorentzW_nonneg p.T (3 * p.T / 2) x
+  rcases le_or_gt |x - 3 * p.T / 2| (2 * p.T) with hx | hx
+  · have h5 := lorentzW_ge_fifth hT hx
+    have := sum_cellW_le hF hℓ hℓ1 x
+    have h0 : 0 ≤ 32 * (p.d : ℝ) / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by positivity
+    have hs : 0 ≤ 8 * π * Real.sqrt ℓ / p.h := by positivity
+    nlinarith
+  · have := far_bound_lorentz hF hT hx (f := fun k y => cellW p ℓ k y) fun k y => cellW_le_lor1 ℓ k y
+    have h0 : 0 ≤ 40 * π * Real.sqrt ℓ / p.h * lorentzW p.T (3 * p.T / 2) x := by positivity
+    linarith
+
 end GaloisForLFunctions.TransThresholdPairCorrelation

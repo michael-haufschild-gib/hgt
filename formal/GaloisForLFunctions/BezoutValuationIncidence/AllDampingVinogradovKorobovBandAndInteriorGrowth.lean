@@ -190,8 +190,9 @@ theorem abs_weightCenteredPrefix_dampedSign_le_of_linear_all_pos
         ∑' i : ℕ, ((i + (D + 1) : ℕ) : ℝ) ^ (-(1 + ε)) * s (i + (D + 1)) :=
       tsum_congr fun i => dampedSignWeight_div hε _
     have h3 : 2 + 1 / ε ≤ 3 / ε := by
-      rw [div_add', le_div_iff₀ hε, div_mul_cancel₀ _ hε.ne']
-      linarith
+      rw [le_div_iff₀ hε]
+      have : 1 / ε * ε = 1 := div_mul_cancel₀ 1 hε.ne'
+      nlinarith
     have hDp : 0 ≤ L * (D : ℝ) ^ (-ε) := mul_nonneg hL (Real.rpow_nonneg hD0.le _)
     rw [heq, abs_mul, Nat.abs_cast]
     calc (n : ℝ) * |∑' i : ℕ, ((i + (D + 1) : ℕ) : ℝ) ^ (-(1 + ε)) * s (i + (D + 1))|
@@ -446,13 +447,13 @@ theorem exists_receiver_le_on_vinogradovKorobovBand_of_pos {ε₀ : ℝ} (hε₀
         have hnn : (n : ℝ) * (n : ℝ) ≤ (n : ℝ) * ((n : ℝ) + 1) := by nlinarith
         have hnexp' : (n : ℝ) = Real.exp ℓ := (Real.exp_log hn0).symm
         calc Real.exp (2 * ((1 - ε) * ℓ) + -(2 * s)) * n
-            = Real.exp (-s) * ((n : ℝ) * (n : ℝ)) * Real.exp ((1 - 2 * ε) * ℓ - s) := by
+            = Real.exp (-(1 / 120 * Real.sqrt ℓ)) * ((n : ℝ) * (n : ℝ)) *
+                Real.exp ((1 - 2 * ε) * ℓ - s + (1 / 120 * Real.sqrt ℓ - s)) := by
               rw [hnexp', ← Real.exp_add, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
               congr 1; ring
           _ ≤ Real.exp (-(1 / 120 * Real.sqrt ℓ)) * ((n : ℝ) * (n : ℝ)) * 1 := by
               gcongr
-              · linarith
-              · exact Real.exp_le_one_iff.mpr (by linarith)
+              exact Real.exp_le_one_iff.mpr (by linarith)
           _ ≤ Real.exp (-(1 / 120 * Real.sqrt ℓ)) * ((n : ℝ) * ((n : ℝ) + 1)) := by
               rw [mul_one]; exact mul_le_mul_of_nonneg_left hnn (Real.exp_pos _).le
       calc f n ≤ (K / ε₀ * (n : ℝ) ^ (1 - ε) * Real.exp (-s)) ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) :=
@@ -776,11 +777,11 @@ theorem eventually_interiorPronic_le_growth_of_pos {ε : ℝ} (hε : 0 < ε) (h�
   calc pmBezoutInteriorPronicEnergy ε T
       ≤ 2 * (C * G) + 1 / 2 := by
         have hET' : pmPowerDampedDivisorDiscreteEnergy ε T ≤ C * G := by
-          rw [hGdef, ← hadef, ← hsdef]; exact le_trans hET (le_of_eq (by ring))
+          rw [hGdef]; exact le_trans hET (le_of_eq (by ring))
         linarith
     _ ≤ 2 * (C * G) + (1 / 2) * G := by linarith
     _ = (2 * C + 1 / 2) * (T : ℝ) ^ (1 - 2 * ε) * Real.exp (-(vkKappa * vkScale T / 270)) := by
-        rw [hGdef, ← hadef, ← hsdef]; ring
+        rw [hGdef, hadef, hsdef]; ring
 
 /-- **All-Damping Receiver Ratio Against the Period Energy (`0 < ε < 1/2`):**
 For **every** `0 < ε < 1/2`, there exists `C ≥ 0` such that for all large `N`,

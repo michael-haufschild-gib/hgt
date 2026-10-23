@@ -212,6 +212,10 @@ survivor).
 - `TheDegreeFiltrationOfACurveIsItsWindowFiltration`: `hodgeDefectAt_curveConfig` (degree-`a` defect
   of a curve is `0` or `∞` by the window `⌈2a/log q⌉`).
 
+- `OnePrimeSeesEveryWellFoundedLevel`: `tower_pontryagin_law_of_wellFounded` (one prime tower counts
+  all visible eigenvalues when real parts have no increasing sequence), `almost_every_prime_sees_the_top`.
+  Open: real parts increasing to their sup (two-sided Wolff annihilators?).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

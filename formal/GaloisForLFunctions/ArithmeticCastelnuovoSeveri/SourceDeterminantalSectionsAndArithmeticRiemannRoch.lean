@@ -1518,16 +1518,8 @@ theorem markovEnergy_eq_integral_mu_add_PX {a : ℝ} {f : ℝ → ℂ} (hf : Con
   rw [weilFullFunctional_vonMangoldt]
   have hsub : EF.literatureRHS k - weilPoleTerm k =
       ∫ τ : ℝ, paperFT k τ * ((mu τ + PX (Real.exp (2 * a)) τ : ℝ) : ℂ) := by
+    have hcancel (P S G : ℂ) : P - S + G - P = -S + G := by ring
     unfold EF.literatureRHS weilPoleTerm
-    have hcancel :
-        paperFT k (I / 2) + paperFT k (-I / 2) -
-            ∑' n : ℕ, ↑(ArithmeticFunction.vonMangoldt n / √↑n) *
-              (k (Real.log ↑n) + k (-Real.log ↑n)) +
-            1 / (2 * ↑π) * ∫ r : ℝ, paperFT k ↑r * ↑(EF.gammaBracket r) -
-          (paperFT k (I / 2) + paperFT k (-I / 2)) =
-        (-∑' n : ℕ, ↑(ArithmeticFunction.vonMangoldt n / √↑n) *
-            (k (Real.log ↑n) + k (-Real.log ↑n))) +
-          1 / (2 * ↑π) * ∫ r : ℝ, paperFT k ↑r * ↑(EF.gammaBracket r) := by ring
     rw [hcancel, EF.prime_term hkd.continuous hks hFk, EF.gamma_term, neg_neg,
       ← integral_add hPX hμ]
     congr 1
@@ -1584,7 +1576,7 @@ theorem neg_horizonExponent_mul_le_markovEnergy_Icc {r : ℝ} {F : ℝ → ℝ}
     simpa [horizonExponent, hsq] using neg_horizonExponent_le_mu_add_PX (Real.exp_pos (2 * r)).le τ
   have hnorm : (∫ u : ℝ, ‖(F u : ℂ)‖ ^ 2) = ∫ u : ℝ, F u ^ 2 := by
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    simp only [Complex.norm_real, sq_abs]
+    simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   rw [hnorm] at hbound
   linarith
 
@@ -1612,13 +1604,11 @@ theorem even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp (r : ℝ)
   have hFc : HasCompactSupport F := x.2.2.1.2.2
   have hFs : tsupport F ⊆ Icc (-r) r := x.2.2.2.1
   have hodd : oddPoleMoment F = 0 := oddPoleMoment_eq_zero_of_even x.2.2.2.2
-  change -(10 + 68 * Real.exp r) * ∫ u : ℝ, F u ^ 2 + 2 * evenPoleMoment F ^ 2 ≤
-    (scalingSubsurface (evenRealTestsAt r)).defect x x
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc]
   have hM := neg_horizonExponent_mul_le_markovEnergy_Icc hF2 hFs
   unfold fullZeroForm
-  rw [hodd]
-  linarith
+  rw [hodd, sq_zero, mul_zero, sub_zero]
+  exact add_le_add_right hM _
 
 /-- **Unconditional All-Aperture Chebyshev Defect Floor on the Entire Unrestricted `realTestsAt r` (`r > 0`):**
 For every aperture `r > 0` and every cycle `x : ℝ × ℝ × realTestsAt r` (requiring only `C²`
@@ -1635,8 +1625,6 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hsupp : ∀ u : ℝ, r < |u| → F u = 0 :=
     fun u hu => image_eq_zero_of_notMem_tsupport fun hmem =>
       not_le_of_gt hu (abs_le.mpr (x.2.2.2 hmem))
-  change -(10 + 72 * Real.exp r) * ∫ u : ℝ, F u ^ 2 + 2 * evenPoleMoment F ^ 2 ≤
-    (scalingSubsurface (realTestsAt r)).defect x x
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc,
     fullZeroForm_eq_even_add_odd hF2 hFc,
     integral_sq_eq_even_add_odd hF2.continuous hFc, mul_add]
@@ -1669,8 +1657,8 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hFe_floor : -(10 + 68 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 +
       2 * evenPoleMoment F ^ 2 ≤ fullZeroForm (evenPartReal F) := by
     unfold fullZeroForm
-    rw [hFe_odd_mom, ← hFe_even_mom]
-    linarith
+    rw [hFe_odd_mom, ← hFe_even_mom, sq_zero, mul_zero, sub_zero]
+    exact add_le_add_right hFe_M _
   have hFo_even_mom : evenPoleMoment (oddPartReal F) = 0 :=
     evenPoleMoment_eq_zero_of_odd (oddPartReal_neg F)
   have hFo_M := neg_horizonExponent_mul_le_markovEnergy_Icc hFo2 hFo_tsupp
@@ -1680,11 +1668,13 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hFo_floor : -(10 + 72 * Real.exp r) * ∫ u : ℝ, (oddPartReal F u) ^ 2 ≤
       fullZeroForm (oddPartReal F) := by
     unfold fullZeroForm
-    rw [hFo_even_mom]
+    rw [hFo_even_mom, sq_zero, mul_zero, add_zero]
     linarith
   have hIe : 0 ≤ ∫ u : ℝ, (evenPartReal F u) ^ 2 := integral_nonneg fun _ => sq_nonneg _
   have hexp : 0 < Real.exp r := Real.exp_pos r
-  nlinarith
+  have h1 : -(10 + 72 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 ≤
+      -(10 + 68 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 := by nlinarith
+  linarith
 
 /-- **Unconditional All-Aperture Graded Source Riemann–Roch on the Entire Unrestricted
 `realTestsAt r` (`r > 0`) and `evenRealTestsAt r` (`r ∈ ℝ`):** -/
@@ -1697,16 +1687,12 @@ theorem gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch {r : ℝ} (hr :
         (gradedL2SourceCone (-(10 + 68 * Real.exp r)) (evenRealTestsAt r)) ∧
       (scalingSubsurface (evenRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
         (gradedL2SourceCone (-(10 + 68 * Real.exp r)) (evenRealTestsAt r))) :=
-  ⟨gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x => by
-      have h := realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x
-      have hsq : 0 ≤ 2 * evenPoleMoment x.2.2.1.1 ^ 2 := by positivity
-      unfold l2SourceEnergy
-      linarith,
-    gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x => by
-      have h := even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x
-      have hsq : 0 ≤ 2 * evenPoleMoment x.2.2.1.1 ^ 2 := by positivity
-      unfold l2SourceEnergy
-      linarith⟩
+  ⟨gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x =>
+      (le_add_of_nonneg_right (by positivity)).trans
+        (realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x),
+    gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x =>
+      (le_add_of_nonneg_right (by positivity)).trans
+        (even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x)⟩
 
 /-- **Overlapping Two-Prime (`r = 23/40`, `relevantShifts (23/40) = {2, 3}`) Strip-Surplus
 Defect Allocation on `scalingSubsurface (oddRealTestsAt (23/40))`:**

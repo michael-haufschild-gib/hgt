@@ -138,8 +138,19 @@ theorem integral_two_mul_sinh_half_sq (r : ℝ) :
       HasDerivAt (fun u => Real.sinh u - u) (2 * Real.sinh (x / 2) ^ 2) x := fun x _ => by
     have h1 := (Real.hasDerivAt_sinh x).sub (hasDerivAt_id x)
     have h2 : Real.cosh x - 1 = 2 * Real.sinh (x / 2) ^ 2 := by
-      have h := cosh_half_sub_one (2 * x)
-      rwa [show 2 * x / 2 = x by ring, show 2 * x / 4 = x / 2 by ring] at h
+      have hpos : Real.exp (x / 2) * Real.exp (-(x / 2)) = 1 := by
+        rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+      have hexp1 : Real.exp x = Real.exp (x / 2) * Real.exp (x / 2) := by
+        rw [← Real.exp_add, add_halves]
+      have hexp2 : Real.exp (-x) = Real.exp (-(x / 2)) * Real.exp (-(x / 2)) := by
+        rw [← Real.exp_add, show -(x / 2) + -(x / 2) = -x by ring]
+      calc Real.cosh x - 1
+          = (Real.exp x + Real.exp (-x)) / 2 - 1 := by rw [Real.cosh_eq]
+        _ = (Real.exp (x / 2) * Real.exp (x / 2) +
+              Real.exp (-(x / 2)) * Real.exp (-(x / 2))) / 2 -
+              Real.exp (x / 2) * Real.exp (-(x / 2)) := by rw [hexp1, hexp2, hpos]
+        _ = 2 * ((Real.exp (x / 2) - Real.exp (-(x / 2))) / 2) ^ 2 := by ring
+        _ = 2 * Real.sinh (x / 2) ^ 2 := by rw [Real.sinh_eq]
     exact h1.congr_deriv h2
   have hint : IntervalIntegrable (fun x => 2 * Real.sinh (x / 2) ^ 2) volume (-r) r :=
     (continuous_const.mul ((Real.continuous_sinh.comp (continuous_id.div_const 2)).pow 2)).intervalIntegrable
@@ -169,20 +180,22 @@ theorem poleCharge_le_two_sinh_sub_two_r_mul_sq {F : ℝ → ℝ} {r : ℝ}
   have hsinh_cont : Continuous fun x => Real.sinh (x / 2) :=
     Real.continuous_sinh.comp (continuous_id.div_const 2)
   have hI_eq : (∫ x, F x * Real.sinh (x / 2)) = ∫ x in (-r)..r, F x * Real.sinh (x / 2) := by
-    rw [intervalIntegral.integral_of_le (by linarith)]
+    rw [intervalIntegral.integral_of_le (by linarith), ← MeasureTheory.integral_Icc_eq_integral_Ioc]
     symm
     refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
     have hxr : r < |x| := by
-      by_contra hle
-      exact hx ⟨by linarith [(abs_le.mp (not_lt.mp hle)).1], (abs_le.mp (not_lt.mp hle)).2⟩
+      rw [lt_abs]
+      by_contra! hle
+      exact hx ⟨by linarith [hle.2], hle.1⟩
     rw [hsupp x hxr, zero_mul]
   have hF2_eq : (∫ x, F x ^ 2) = ∫ x in (-r)..r, F x ^ 2 := by
-    rw [intervalIntegral.integral_of_le (by linarith)]
+    rw [intervalIntegral.integral_of_le (by linarith), ← MeasureTheory.integral_Icc_eq_integral_Ioc]
     symm
     refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
     have hxr : r < |x| := by
-      by_contra hle
-      exact hx ⟨by linarith [(abs_le.mp (not_lt.mp hle)).1], (abs_le.mp (not_lt.mp hle)).2⟩
+      rw [lt_abs]
+      by_contra! hle
+      exact hx ⟨by linarith [hle.2], hle.1⟩
     simp [hsupp x hxr]
   set I := ∫ x in (-r)..r, F x * Real.sinh (x / 2)
   set G := ∫ x in (-r)..r, Real.sinh (x / 2) ^ 2
@@ -385,9 +398,10 @@ theorem abs_reflectedPrimePolarCost_le_bipartite_add_sinh {F : ℝ → ℝ} {r :
   have hpole0 : 0 ≤ poleCharge F := poleCharge_nonneg F
   have hpole := poleCharge_le_two_sinh_sub_two_r_mul_sq hF hFc hr hsupp
   rw [heq]
-  have habs := (abs_add_le
+  have habs := abs_add_le
     (∑ n ∈ relevantShifts r, 2 * vonMangoldtAtom n * autoCorrelation F (Real.log n))
-    (poleCharge F)).trans (by rw [abs_of_nonneg hpole0]; linarith)
+    (poleCharge F)
+  rw [abs_of_nonneg hpole0] at habs
   linarith
 
 /-- **Explicit `(35 e^r + 34 e^{r/2} − 2r) ∫ F²` Bound on `|reflectedPrimePolarCost F r|`.**
@@ -500,14 +514,26 @@ theorem criticalScalePrefix_add_quad_eq_integral_chebyshevTwoPoleDefect {s : ℝ
   rw [chebyshevTwoPoleDefect, twoPoleWeight]
   ring
 
+theorem integrableOn_Ioc_chebyshevTwoPoleDefect {s : ℝ} (hs : 0 ≤ s) :
+    IntegrableOn chebyshevTwoPoleDefect (Ioc 0 s) := by
+  have hint1 : IntervalIntegrable (fun u => Real.exp u - lagChebyshev u) volume 0 s :=
+    (Real.continuous_exp.intervalIntegrable 0 s).sub lagChebyshev_mono.intervalIntegrable
+  have hint2 : IntervalIntegrable (fun u => u - 1) volume 0 s :=
+    (continuous_id.sub continuous_const).intervalIntegrable 0 s
+  have hint := (intervalIntegrable_iff_integrableOn_Ioc_of_le hs).mp (hint1.add hint2)
+  refine hint.congr_fun (fun u _ => ?_) measurableSet_Ioc
+  simp only [chebyshevTwoPoleDefect, twoPoleWeight]
+  ring
+
 /-- Pointwise domination of the damped critical-scale prefix `2e^{−s/2}|D(s) + s²/2 − s|` on
 `(0, 2r]` by the `L¹(0, 2r]` norm of `2e^{−u/2}|E(u)|`. -/
 theorem two_mul_exp_neg_half_mul_abs_criticalScalePrefix_le {r s : ℝ}
-    (hs0 : 0 ≤ s) (hsr : s ≤ 2 * r) :
+    (hs0 : 0 < s) (hsr : s ≤ 2 * r) :
     2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s| ≤
       ∫ u in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-u / 2) * |chebyshevTwoPoleDefect u| := by
-  rw [criticalScalePrefix_add_quad_eq_integral_chebyshevTwoPoleDefect hs0]
-  have hint_2r := integrableOn_Ioc_exp_mul_abs_chebyshevTwoPoleDefect (by linarith : 0 ≤ 2 * r)
+  rw [criticalScalePrefix_add_quad_eq_integral_chebyshevTwoPoleDefect hs0.le]
+  have h2r : 0 < 2 * r := lt_of_lt_of_le hs0 hsr
+  have hint_2r := integrableOn_Ioc_exp_mul_abs_chebyshevTwoPoleDefect h2r
   have hint_s : IntegrableOn (fun u => 2 * Real.exp (-u / 2) * |chebyshevTwoPoleDefect u|)
       (Ioc (0 : ℝ) s) :=
     hint_2r.mono_set (Ioc_subset_Ioc_right hsr)
@@ -515,13 +541,13 @@ theorem two_mul_exp_neg_half_mul_abs_criticalScalePrefix_le {r s : ℝ}
       ≤ 2 * Real.exp (-s / 2) * ∫ u in Ioc (0 : ℝ) s, |chebyshevTwoPoleDefect u| := by
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
         simpa [Real.norm_eq_abs] using
-          norm_integral_le_integral_norm (f := chebyshevTwoPoleDefect)
+          MeasureTheory.norm_integral_le_integral_norm (f := chebyshevTwoPoleDefect)
             (μ := volume.restrict (Ioc 0 s))
     _ = ∫ u in Ioc (0 : ℝ) s, 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect u| := by
         rw [MeasureTheory.integral_const_mul]
     _ ≤ ∫ u in Ioc (0 : ℝ) s, 2 * Real.exp (-u / 2) * |chebyshevTwoPoleDefect u| := by
         refine setIntegral_mono_on
-          (((integrableOn_Ioc_chebyshevTwoPoleDefect hs0).norm).const_mul (2 * Real.exp (-s / 2)))
+          (((integrableOn_Ioc_chebyshevTwoPoleDefect hs0.le).norm).const_mul (2 * Real.exp (-s / 2)))
           hint_s measurableSet_Ioc fun u hu => ?_
         have hexp : Real.exp (-s / 2) ≤ Real.exp (-u / 2) :=
           Real.exp_le_exp.mpr (by linarith [hu.2])
@@ -547,7 +573,7 @@ theorem integral_Ioc_exp_mul_abs_criticalScalePrefix_le_two_mul_r {r : ℝ} (hr 
         2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) ≤
       ∫ _ in Ioc (0 : ℝ) (2 * r), M := by
     refine setIntegral_mono_on hint hint_const measurableSet_Ioc fun s hs => ?_
-    exact two_mul_exp_neg_half_mul_abs_criticalScalePrefix_le hs.1.le hs.2
+    exact two_mul_exp_neg_half_mul_abs_criticalScalePrefix_le hs.1 hs.2
   have hconst : (∫ _ in Ioc (0 : ℝ) (2 * r), M) = 2 * r * M := by
     rw [setIntegral_const, Measure.real, Real.volume_Ioc, sub_zero,
       ENNReal.toReal_ofReal (by linarith), smul_eq_mul]
@@ -789,7 +815,7 @@ theorem deriv_compressTest {a : ℝ} {F : ℝ → ℝ} (hF : Differentiable ℝ 
   have h1 : HasDerivAt (fun y => a * y) a x := by
     simpa using (hasDerivAt_id x).const_mul a
   have h2 : HasDerivAt F (deriv F (a * x)) (a * x) := (hF (a * x)).hasDerivAt
-  have h3 := h2.comp x h1
+  have h3 : HasDerivAt (fun y => F (a * y)) (deriv F (a * x) * a) x := h2.comp x h1
   rw [h3.deriv, mul_comm]
 
 /-- **Exact Mass and Derivative-Energy Scaling of Compressed Tests.**
@@ -803,7 +829,7 @@ theorem integral_sq_and_deriv_sq_compressTest {a : ℝ} {F : ℝ → ℝ} (ha : 
   constructor
   · unfold compressTest
     simpa [abs_of_pos ha, smul_eq_mul] using
-      MeasureTheory.integral_comp_mul_left (fun u => F u ^ 2) a
+      MeasureTheory.Measure.integral_comp_mul_left (fun u => F u ^ 2) a
   · have hpt : (fun x => deriv (compressTest a F) x ^ 2) =
         fun x => a ^ 2 * deriv F (a * x) ^ 2 := by
       funext x
@@ -812,7 +838,7 @@ theorem integral_sq_and_deriv_sq_compressTest {a : ℝ} {F : ℝ → ℝ} (ha : 
     rw [hpt, MeasureTheory.integral_const_mul]
     have hcomp : (∫ x, deriv F (a * x) ^ 2) = a⁻¹ * ∫ u, deriv F u ^ 2 := by
       simpa [abs_of_pos ha, smul_eq_mul] using
-        MeasureTheory.integral_comp_mul_left (fun u => deriv F u ^ 2) a
+        MeasureTheory.Measure.integral_comp_mul_left (fun u => deriv F u ^ 2) a
     rw [hcomp]
     field_simp
 
@@ -908,19 +934,25 @@ continuum incidence ledger:
    first-order (`∫ F² + ½ ∫ (F')²`) and second-order pole-tilted (`¼ ∫ F² + ∫ (F')²`)
    de la Vallée Poussin savings beyond the `e^r` envelope. -/
 theorem sourceFaithful_canonicalPath_and_globalAllocation_synthesis :
-    (¬ IsCompleteOverlap (oddFold primeTriangleGrid (weilLedgerKernel 1 1))) ∧
-    IsEmpty (PathCertificate (oddFold primeTriangleGrid (fun x y => -primeKernelReal x y))) ∧
-    (∀ f : Fin 3 → ℝ, 0 ≤ incidenceEnergy (oddFold primeTriangleGrid (weilLedgerKernel 1 1)) f) ∧
-    (∀ f : Fin 4 → ℝ, 0 ≤ incidenceEnergy (oddFold packedPrimeGrid (weilLedgerKernel 1 1)) f) ∧
+    (∀ b : Fin 3 → ℝ, ¬ IsCompleteOverlap (oddFold arithLogGrid primeKernel b)) ∧
+    (∀ b : Fin 3 → ℝ, IsEmpty (PathCertificate (oddFold primeTrianglePos primeKernel b))) ∧
+    (∀ b : Fin 3 → ℝ, ¬ IsBalanced (oddFold primeTrianglePos (weilLedgerKernel 1 1) b)) ∧
+    (∀ f : Fin 3 → ℝ,
+      0 ≤ incidenceEnergy
+        (oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget) f) ∧
+    (∀ f : Fin 4 → ℝ,
+      0 ≤ incidenceEnergy
+        (oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget) f) ∧
     GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation (1 / 2) 75 ∧
     (∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r ≤ 181 / 500 → r < R →
       ContDiff ℝ 2 F → HasCompactSupport F →
       (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
       GlobalIncidenceAllocation r R F) :=
-  ⟨not_isCompleteOverlap_oddFold_arithLogGrid (weilLedgerKernel 1 1),
+  ⟨not_isCompleteOverlap_oddFold_arithLogGrid,
     isEmpty_pathCertificate_primeTriangle_primeKernel,
-    incidenceEnergy_primeTriangle_weilLedgerKernel_nonneg,
-    incidenceEnergy_packedPrime_weilLedgerKernel_nonneg,
+    oddFold_primeTriangle_weilLedgerKernel_one_not_isBalanced,
+    incidenceEnergy_oddFold_primeTriangleCanonical_nonneg,
+    incidenceEnergy_oddFold_packedPrimeCanonical_nonneg,
     gradedIncidenceAllocation_half_seventyFive,
     fun _ _ _ hr hr0 hrR hF hFc hodd hsupp =>
       globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths

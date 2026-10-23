@@ -100,6 +100,9 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `exists_centeredOperator_l2_le_uniform`, `exists_centeredOperator_l2_le_half`.
 - `TwoTowersAddExactlyOnBoxes` — `uniformTrain_eq_zero_of_capacity_eq`, `grid_eq_zero_of_capacity_eq`,
   `joint_capacity_lt_iff_not_box`, `slanted_capacities_do_not_add`.
+- `TheReceiverIsContinuousAtHalfDamping` — `orbit_l2_tendsto_half`,
+  `centeredOperator_reciprocal_l2_tendsto_half`, `tendsto_integral_sq_criticalSymbol_sub`,
+  `positiveTwin_energy_unbounded`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,

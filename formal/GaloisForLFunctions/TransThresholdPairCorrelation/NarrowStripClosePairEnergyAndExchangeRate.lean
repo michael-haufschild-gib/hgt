@@ -33,7 +33,7 @@ estimates across the corpus (`FejerWeightedPrimeMeanSquare`,
 2. **Exact sub-threshold vanishing and `2`-adic parity doubling of the close-pair threshold
    (`log_sub_log_ge_sub_div`, `offDiag_fejerLorentz_eq_zero_of_le_inv_b`,
    `fejer_double_sum_eq_diag_of_le_inv_b`, `odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b`,
-   `jacksonClosePairSum_eq_zero_of_le_inv_four_b`,
+   `jacksonCloseApprox_offDiag_eq_zero_of_le_inv_four_b`,
    `jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b`):**
    - For all `1 ≤ m < n`, `log n − log m ≥ (n − m) / n ≥ 1 / n`. Hence for `X ≤ 1/b`, every
      off-diagonal Fejér weight `Λ_b(log n − log m)` (`m ≠ n ≤ X`) vanishes identically, reducing the
@@ -44,19 +44,21 @@ estimates across the corpus (`FejerWeightedPrimeMeanSquare`,
      every odd-odd off-diagonal Fejér weight `Λ_b(log n − log m)` vanishes identically, and any
      surviving off-diagonal close pair in `primeRange X` has `|n − m| = 1` with one member an even
      prime power `2^k > 1/b`.
-   - For the Jackson pair kernel `W_b` (supported on `(−4b, 4b)`), `jacksonClosePairSum b c X = 0`
-     for all `X ≤ 1/(4b)`, and all odd-odd off-diagonal terms vanish for `X ≤ 1/(2b)`.
+   - For the Jackson pair kernel `W_b` (supported on `(−4b, 4b)`), every off-diagonal
+     `jacksonCloseApprox` vanishes for `X ≤ 1/(4b)`, and all odd-odd off-diagonal terms vanish for
+     `X ≤ 1/(2b)`.
 
 3. **Trans-threshold strip confinement and 2D Selberg sieve bound on close prime pairs
    (`offDiag_fejerLorentz_support_strip`, `sieved_closePrimePair_strip_bound`):**
    For general `X > 1/b`, every nonzero off-diagonal Fejér close pair `m < n ≤ X` is confined to
-    the trans-threshold strip `1/b < n ≤ X` with shift `1 ≤ n − m < b n ≤ b X`, and the weighted
+   the trans-threshold strip `1/b < n ≤ X` with shift `1 ≤ n − m < b n ≤ b X`, and the weighted
    shifted prime-pair sum over `1 ≤ d ≤ K` is bounded unconditionally via
    `RHTower.Sieve.sum_card_primePair_le_sharp`, saving the two-dimensional Mertens factor
    `exp(mertensS h − mertensS P₁)²`.
 -/
 
 open MeasureTheory Real Set intervalIntegral Finset Zeta23.PrimeSide RHTower RHTower.Sieve
+  TransThresholdPairCorrelation
 open scoped BigOperators ArithmeticFunction
 
 noncomputable section
@@ -110,9 +112,9 @@ theorem narrowStrip_beats_two_thirds_iff {F : ℝ → ℝ} {δ : ℝ} (hδ : 0 <
       narrowStripCesaroEnergy F δ < 2 / (3 * δ) + 4 / 3 := by
     rw [← sub_pos, hgain, div_pos_iff_of_pos_right hden, mul_pos_iff_of_pos_left hδ]
     have h3δ : 0 < 3 * δ := by positivity
-    rw [show 2 / (3 * δ) + 4 / 3 = (2 + 4 * δ) / (3 * δ) by field_simp; ring,
-      lt_div_iff₀ h3δ]
-    constructor <;> intro h <;> nlinarith
+    have heq : 2 / (3 * δ) + 4 / 3 = (2 + 4 * δ) / (3 * δ) := by field_simp; ring
+    rw [heq, lt_div_iff₀ h3δ]
+    constructor <;> intro h <;> linarith
   refine ⟨hiff1, hiff1.trans ?_⟩
   unfold narrowStripCesaroEnergy
   have h2δ : 0 < 2 / δ ^ 2 := by positivity
@@ -157,15 +159,20 @@ theorem constrainedStrip_optimal_exchange_rate {F : ℝ → ℝ} {δ B : ℝ}
   have h1δ : 0 < 1 + δ := by linarith
   have hgain := narrowStrip_proportion_gain_eq hδ.ne' h1δ.ne' hF_cont hF_sub
   have hden : 0 < 3 * (1 + δ) ^ 2 := by positivity
+  have hEδ : narrowStripCesaroEnergy F δ * δ ^ 2 ≤ B * δ ^ 2 :=
+    mul_le_mul_of_nonneg_right hE (sq_nonneg δ)
   have h1 : δ * (2 - (3 * B - 4) * δ) / (3 * (1 + δ) ^ 2)
       ≤ (2 - frobeniusFormFactor F (1 + δ)) - 2 / 3 := by
     rw [hgain]
-    exact div_le_div_of_nonneg_right (by nlinarith) hden.le
+    exact div_le_div_of_nonneg_right (by linarith) hden.le
   have hB1 : 0 < 3 * (B - 1) := by linarith
   have hδ_prod : δ * (3 * (B - 1)) ≤ 1 := (le_div_iff₀ hB1).mp hδB
+  have hδ2_prod : δ ^ 2 * (3 * (B - 1)) ≤ δ := by
+    have := mul_le_mul_of_nonneg_left hδ_prod hδ.le
+    linarith
   have h2 : δ / (3 * (1 + δ) ^ 2) ≤ δ * (2 - (3 * B - 4) * δ) / (3 * (1 + δ) ^ 2) := by
     apply div_le_div_of_nonneg_right _ hden.le
-    nlinarith
+    linarith
   refine ⟨h1, h2, by positivity, fun hδeq => ?_⟩
   rw [hδeq]
   have h3B2 : 3 * B - 2 ≠ 0 := by linarith
@@ -216,15 +223,15 @@ theorem offDiag_fejerLorentz_eq_zero_of_le_inv_b {b X : ℝ} (hb : 0 < b) (hX : 
   have hmX : (m : ℝ) ≤ X := cast_le_of_mem_primeRange hX hm
   rcases lt_or_gt_of_ne hnm with hlt | hgt
   · have hdiff : (1 : ℝ) ≤ (m : ℝ) - (n : ℝ) := by
-      have : n + 1 ≤ m := hlt
-      exact_mod_cast Nat.le_sub_of_add_le' this
+      have : (n : ℝ) + 1 ≤ (m : ℝ) := by exact_mod_cast hlt
+      linarith
     have hbm : b * (m : ℝ) ≤ (m : ℝ) - (n : ℝ) :=
       (mul_le_mul_of_nonneg_left hmX hb.le).trans (hbX.trans hdiff)
     exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
       (by exact_mod_cast hlt.le) hbm).2
   · have hdiff : (1 : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
-      have : m + 1 ≤ n := hgt
-      exact_mod_cast Nat.le_sub_of_add_le' this
+      have : (m : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast hgt
+      linarith
     have hbn : b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) :=
       (mul_le_mul_of_nonneg_left hnX hb.le).trans (hbX.trans hdiff)
     exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
@@ -263,14 +270,16 @@ theorem odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b
   rcases lt_or_gt_of_ne hnm with hlt | hgt
   · have h2 : (2 * k + 1) + 2 ≤ 2 * j + 1 := by omega
     have hdiff : (2 : ℝ) ≤ ((2 * j + 1 : ℕ) : ℝ) - ((2 * k + 1 : ℕ) : ℝ) := by
-      exact_mod_cast Nat.le_sub_of_add_le' h2
+      have : ((2 * k + 1 : ℕ) : ℝ) + 2 ≤ ((2 * j + 1 : ℕ) : ℝ) := by exact_mod_cast h2
+      linarith
     have hbm : b * ((2 * j + 1 : ℕ) : ℝ) ≤ ((2 * j + 1 : ℕ) : ℝ) - ((2 * k + 1 : ℕ) : ℝ) :=
       (mul_le_mul_of_nonneg_left hmX hb.le).trans (hbX.trans hdiff)
     exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
       (by exact_mod_cast hlt.le) hbm).2
   · have h2 : (2 * j + 1) + 2 ≤ 2 * k + 1 := by omega
     have hdiff : (2 : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) := by
-      exact_mod_cast Nat.le_sub_of_add_le' h2
+      have : ((2 * j + 1 : ℕ) : ℝ) + 2 ≤ ((2 * k + 1 : ℕ) : ℝ) := by exact_mod_cast h2
+      linarith
     have hbn : b * ((2 * k + 1 : ℕ) : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) :=
       (mul_le_mul_of_nonneg_left hnX hb.le).trans (hbX.trans hdiff)
     exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
@@ -292,65 +301,64 @@ theorem odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b) (
     rw [odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b hb hX hbX hnP hmP hnO hmO hnm, mul_zero]
 
 /-- **Downstream application to `JacksonWeightedPrimeFrobeniusDecomposition` (`4 * b * X ≤ 1`):**
-whenever `4 * b * X ≤ 1` (`X ≤ 1/(4b)`), `jacksonClosePairSum b c X = 0`. -/
-theorem jacksonClosePairSum_eq_zero_of_le_inv_four_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
-    (hbX : 4 * b * X ≤ 1) (c : ℝ) :
-    jacksonClosePairSum b c X = 0 := by
-  unfold jacksonClosePairSum
-  refine Finset.sum_eq_zero fun n hn => Finset.sum_eq_zero fun m hm => ?_
-  split_ifs with hnm
-  · rfl
-  · have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
-    have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
-    have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
-    have hmX : (m : ℝ) ≤ X := cast_le_of_mem_primeRange hX hm
-    have hker : jacksonPairKernel b (Real.log n - Real.log m) = 0 := by
-      apply jacksonPairKernel_eq_zero_of_le hb
-      rcases lt_or_gt_of_ne hnm with hlt | hgt
-      · have hdiff : (1 : ℝ) ≤ (m : ℝ) - (n : ℝ) := by
-          have : n + 1 ≤ m := hlt
-          exact_mod_cast Nat.le_sub_of_add_le' this
-        have hbm : 4 * b * (m : ℝ) ≤ (m : ℝ) - (n : ℝ) :=
-          (mul_le_mul_of_nonneg_left hmX (by positivity)).trans (hbX.trans hdiff)
-        have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
-        have hle := ((le_div_iff₀ hm0).mpr hbm).trans
-          (log_sub_log_ge_sub_div (by exact_mod_cast hn1) (by exact_mod_cast hlt.le))
-        rw [abs_sub_comm, abs_of_nonneg (by linarith)]
-        exact hle
-      · have hdiff : (1 : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
-          have : m + 1 ≤ n := hgt
-          exact_mod_cast Nat.le_sub_of_add_le' this
-        have hbn : 4 * b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) :=
-          (mul_le_mul_of_nonneg_left hnX (by positivity)).trans (hbX.trans hdiff)
-        have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn1
-        have hle := ((le_div_iff₀ hn0).mpr hbn).trans
-          (log_sub_log_ge_sub_div (by exact_mod_cast hm1) (by exact_mod_cast hgt.le))
-        rw [abs_of_nonneg (by linarith)]
-        exact hle
-    rw [hker, mul_zero, zero_mul]
+whenever `4 * b * X ≤ 1` (`X ≤ 1/(4b)`), every off-diagonal pair `n ≠ m` in `primeRange X`
+satisfies `jacksonCloseApprox b s₀ s₁ L d (log n) A (log m) A' = 0`. -/
+theorem jacksonCloseApprox_offDiag_eq_zero_of_le_inv_four_b {b s₀ s₁ L X : ℝ} (hb : 0 < b)
+    (h01 : s₀ ≤ s₁) (hX : 0 ≤ X) (hbX : 4 * b * X ≤ 1) (d : ℕ)
+    {n m : ℕ} (hn : n ∈ primeRange X) (hm : m ∈ primeRange X) (hnm : n ≠ m)
+    (A A' : ℤ → ℂ) :
+    jacksonCloseApprox b s₀ s₁ L d (Real.log n) A (Real.log m) A' = 0 := by
+  have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
+  have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
+  have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
+  have hmX : (m : ℝ) ≤ X := cast_le_of_mem_primeRange hX hm
+  apply jacksonCloseApprox_eq_zero_of_le_abs hb h01 L d
+  rcases lt_or_gt_of_ne hnm with hlt | hgt
+  · have hdiff : (1 : ℝ) ≤ (m : ℝ) - (n : ℝ) := by
+      have : (n : ℝ) + 1 ≤ (m : ℝ) := by exact_mod_cast hlt
+      linarith
+    have hbm : 4 * b * (m : ℝ) ≤ (m : ℝ) - (n : ℝ) :=
+      (mul_le_mul_of_nonneg_left hmX (by positivity)).trans (hbX.trans hdiff)
+    have hm0 : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm1
+    have hle := ((le_div_iff₀ hm0).mpr hbm).trans
+      (log_sub_log_ge_sub_div (by exact_mod_cast hn1) (by exact_mod_cast hlt.le))
+    rw [abs_sub_comm, abs_of_nonneg (by linarith)]
+    exact hle
+  · have hdiff : (1 : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
+      have : (m : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast hgt
+      linarith
+    have hbn : 4 * b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) :=
+      (mul_le_mul_of_nonneg_left hnX (by positivity)).trans (hbX.trans hdiff)
+    have hn0 : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn1
+    have hle := ((le_div_iff₀ hn0).mpr hbn).trans
+      (log_sub_log_ge_sub_div (by exact_mod_cast hm1) (by exact_mod_cast hgt.le))
+    rw [abs_of_nonneg (by linarith)]
+    exact hle
 
 /-- **Downstream `2`-adic parity doubling for `jacksonPairKernel` (`2 * b * X ≤ 1`):**
 for `0 < b` and `2 * b * X ≤ 1` (`X ≤ 1/(2b)`), every pair of distinct odd integers
-`n, m ∈ primeRange X` satisfies `jacksonPairKernel b (log n − log m) = 0`. -/
-theorem jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
-    (hbX : 2 * b * X ≤ 1) {n m : ℕ} (hn : n ∈ primeRange X) (hm : m ∈ primeRange X)
+`n, m ∈ primeRange X` satisfies `jacksonPairKernel b s₀ s₁ L r (log n − log m) = 0`. -/
+theorem jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b {b s₀ s₁ L X : ℝ} (hb : 0 < b)
+    (h01 : s₀ ≤ s₁) (hX : 0 ≤ X) (hbX : 2 * b * X ≤ 1) (r : ℤ)
+    {n m : ℕ} (hn : n ∈ primeRange X) (hm : m ∈ primeRange X)
     (hn_odd : Odd n) (hm_odd : Odd m) (hnm : n ≠ m) :
-    jacksonPairKernel b (Real.log n - Real.log m) = 0 := by
+    jacksonPairKernel b s₀ s₁ L r (Real.log n - Real.log m) = 0 := by
   have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
   have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
   have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
   have hmX : (m : ℝ) ≤ X := cast_le_of_mem_primeRange hX hm
   obtain ⟨k, rfl⟩ := hn_odd
   obtain ⟨j, rfl⟩ := hm_odd
-  apply jacksonPairKernel_eq_zero_of_le hb
+  apply jacksonPairKernel_eq_zero_of_le_abs hb h01 L r
   rcases lt_or_gt_of_ne hnm with hlt | hgt
   · have h2 : (2 * k + 1) + 2 ≤ 2 * j + 1 := by omega
     have hdiff : (2 : ℝ) ≤ ((2 * j + 1 : ℕ) : ℝ) - ((2 * k + 1 : ℕ) : ℝ) := by
-      exact_mod_cast Nat.le_sub_of_add_le' h2
+      have : ((2 * k + 1 : ℕ) : ℝ) + 2 ≤ ((2 * j + 1 : ℕ) : ℝ) := by exact_mod_cast h2
+      linarith
     have hbm : 4 * b * ((2 * j + 1 : ℕ) : ℝ) ≤ ((2 * j + 1 : ℕ) : ℝ) - ((2 * k + 1 : ℕ) : ℝ) := by
       have : 4 * b * ((2 * j + 1 : ℕ) : ℝ) ≤ 2 * (2 * b * X) := by
-        calc 4 * b * ((2 * j + 1 : ℕ) : ℝ) = 4 * b * (m : ℝ) := rfl
-          _ ≤ 4 * b * X := mul_le_mul_of_nonneg_left hmX (by positivity)
+        calc 4 * b * ((2 * j + 1 : ℕ) : ℝ) ≤ 4 * b * X :=
+              mul_le_mul_of_nonneg_left hmX (by positivity)
           _ = 2 * (2 * b * X) := by ring
       linarith
     have hm0 : (0 : ℝ) < ((2 * j + 1 : ℕ) : ℝ) := by exact_mod_cast hm1
@@ -360,11 +368,12 @@ theorem jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b {b X : ℝ} (hb : 
     exact hle
   · have h2 : (2 * j + 1) + 2 ≤ 2 * k + 1 := by omega
     have hdiff : (2 : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) := by
-      exact_mod_cast Nat.le_sub_of_add_le' h2
+      have : ((2 * j + 1 : ℕ) : ℝ) + 2 ≤ ((2 * k + 1 : ℕ) : ℝ) := by exact_mod_cast h2
+      linarith
     have hbn : 4 * b * ((2 * k + 1 : ℕ) : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) := by
       have : 4 * b * ((2 * k + 1 : ℕ) : ℝ) ≤ 2 * (2 * b * X) := by
-        calc 4 * b * ((2 * k + 1 : ℕ) : ℝ) = 4 * b * (n : ℝ) := rfl
-          _ ≤ 4 * b * X := mul_le_mul_of_nonneg_left hnX (by positivity)
+        calc 4 * b * ((2 * k + 1 : ℕ) : ℝ) ≤ 4 * b * X :=
+              mul_le_mul_of_nonneg_left hnX (by positivity)
           _ = 2 * (2 * b * X) := by ring
       linarith
     have hn0 : (0 : ℝ) < ((2 * k + 1 : ℕ) : ℝ) := by exact_mod_cast hn1
@@ -383,14 +392,14 @@ theorem offDiag_fejerLorentz_support_strip {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ 
     (hker : fejerLorentz b (Real.log n - Real.log m) ≠ 0) :
     1 / b < (n : ℝ) ∧ 1 ≤ n - m ∧ ((n - m : ℕ) : ℝ) < b * (n : ℝ) ∧ b * (n : ℝ) ≤ b * X := by
   have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
-  have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
   have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
   have hlt : ((n - m : ℕ) : ℝ) < b * (n : ℝ) := by
     by_contra hge
-    push_neg at hge
-    rw [Nat.cast_sub hmn.le] at hge
+    have hge' : b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
+      have : b * (n : ℝ) ≤ ((n - m : ℕ) : ℝ) := not_lt.mp hge
+      rwa [Nat.cast_sub hmn.le] at this
     exact hker (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
-      (by exact_mod_cast hmn.le) hge).1
+      (by exact_mod_cast hmn.le) hge').1
   have h1le : 1 ≤ n - m := Nat.le_sub_of_add_le' hmn
   have h1cast : (1 : ℝ) ≤ ((n - m : ℕ) : ℝ) := by exact_mod_cast h1le
   have hinv : 1 / b < (n : ℝ) := by
@@ -399,17 +408,21 @@ theorem offDiag_fejerLorentz_support_strip {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ 
   exact ⟨hinv, h1le, hlt, mul_le_mul_of_nonneg_left hnX hb.le⟩
 
 /-- **Unconditional 2D Selberg sieve bound on weighted close prime pairs in a narrow strip:**
-for any nonnegative per-pair weight upper bound `W ≥ 0` (such as
-`W = (2π / b) * (log(Y + K))² / h` on `p > h`), the weighted sum of shifted prime pairs `(p, p + d)`
-over shifts `1 ≤ d ≤ K` and primes `p ≤ Y` with `p > h` (`P₁ ≤ h`) is bounded unconditionally by
-`W * (2 e K Y / exp(mertensS h − mertensS P₁)² + K * remainder(h))`. -/
-theorem sieved_closePrimePair_strip_bound (Y h K : ℕ) (hh : P₁ ≤ h) {W : ℝ} (hW : 0 ≤ W) :
-    (∑ d ∈ Finset.Icc 1 K, W * (((primePair Y d).filter (· > h)).card : ℝ))
-      ≤ W * (2 * Real.exp 1 * K * Y / Real.exp (mertensS h - mertensS P₁) ^ 2 +
-          K * ((2 * h + 2 : ℝ) * (3 : ℝ) ^ (primesIn P₁ h).card *
-            (Real.exp (mertensS h - mertensS P₁) + 2 * h + 1) ^ 2 /
-            Real.exp (mertensS h - mertensS P₁) ^ 2)) := by
+for any nonnegative per-pair weight upper bound `W ≥ 0`, the weighted sum of shifted prime pairs
+`(m, m + d)` over shifts `1 ≤ d ≤ K` and primes `m ≤ Y` with `m > h` (`2 ≤ P₁ ≤ h`) is bounded
+unconditionally by `W * (2 e K Y / exp(mertensS h − mertensS P₁)² + K * remainder(h, z))`. -/
+theorem sieved_closePrimePair_strip_bound (Y : ℝ) {P₁ : ℕ} (hP₁ : 2 ≤ P₁) {h : ℕ} (K : ℕ)
+    {z W : ℝ} (hz : 1 ≤ z) (hY : 0 ≤ Y) (hh2 : 2 ≤ h) (hP₁h : P₁ ≤ h)
+    (hlev : ((h : ℝ)) ^ (18 : ℝ) ≤ Real.sqrt z)
+    (hlog : 20 * mertensFirstConst ≤ Real.log h) (hW : 0 ≤ W) :
+    (∑ d ∈ Finset.Icc 1 K,
+        W * ((((Finset.Icc 1 ⌊Y⌋₊).filter
+          (fun m => m.Prime ∧ (m + d).Prime ∧ h < m)).card : ℕ) : ℝ))
+      ≤ W * (2 * Real.exp 1 * (K : ℝ) * Y / (Real.exp (mertensS h - mertensS P₁)) ^ (2 : ℕ)
+          + (K : ℝ) * ∑ e ∈ (rangePrimorial P₁ h).divisors,
+              (if ((e : ℕ) : ℝ) ≤ z then 2 * 6 ^ e.primeFactors.card else 0)) := by
   rw [← Finset.mul_sum]
-  exact mul_le_mul_of_nonneg_left (sum_card_primePair_le_sharp Y h K hh) hW
+  exact mul_le_mul_of_nonneg_left
+    (sum_card_primePair_le_sharp Y hP₁ K hz hY hh2 hP₁h hlev hlog) hW
 
 end GaloisForLFunctions.TransThresholdPairCorrelation
