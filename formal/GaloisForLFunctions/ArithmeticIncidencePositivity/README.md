@@ -991,15 +991,23 @@ side and the pole plane; the archimedean density is not part of this ledger.
     comparison, equal to the finite-horizon two-pole Chebyshev pairing and, for `C²` tests, to the
     critical-scale receiver against the test's curvature
     (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
-    `reflectedPrimePolarCost_eq_criticalScalePrefix`), bounded unconditionally across all apertures by
-    `72 e^r ∫ F²` (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
-    `chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq`) and by `((8 + ε) e^r + C) ∫ F²`
-    (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`); and the ledger reads
+    `reflectedPrimePolarCost_eq_criticalScalePrefix`,
+    `reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc`), bounded unconditionally across all
+    apertures by `72 e^r ∫ F²` (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
+    `chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq`), by `((8 + ε) e^r + C) ∫ F²`
+    (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`), and in `H¹` through the cancelled
+    first-order and second-order defects
+    (`reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev`,
+    `reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev`); and the ledger reads
     `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r` at
     every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`). Unconditionally,
     `GlobalIncidenceAllocation r R F` holds with `(1/1000) ∫ F²` coercivity margin on `(0, 181/500]`
     (`globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths`,
-    `chebyshevTwoPoleDefect_integral_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths`), and
+    `chebyshevTwoPoleDefect_integral_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths`),
+    the overlapping two-prime window `r = 23/40` (`relevantShifts (23/40) = {2, 3}`) satisfies
+    `reflectedPrimePolarCost F (23/40) + (1/62) ∫_{S₂} F² ≤ 2 stripSurplus_{S₂} + poleCharge F`
+    (`sum_oddStripCost_le_stripSurplus_add_evenStripGain_twentyThreeFortieths`,
+    `reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`), and
     `GradedIncidenceAllocation (1/2) 78` holds across all apertures `0 < r < R`
     (`gradedIncidenceAllocation_half`, `gradedIncidenceAllocation_of_half_le`).
 

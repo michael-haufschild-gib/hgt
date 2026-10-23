@@ -410,15 +410,31 @@ To be built:
    projection `A(F)(H − V)`. At every degree `r > 0` and plateau radius `R > r`, the
    Castelnuovo–Severi defect `δ(x, x)` equals the archimedean gauge budget minus
    `reflectedPrimePolarCost f r` — or equivalently minus the horizon-localized two-pole Chebyshev
-   defect integral on `(0, 2r]` (`scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger`,
-   `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`) — with the unconditional rate-`1/2`
-   bound `δ(x, x) ≥ −78 e^r ∫ f²` (`scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`).
+   defect integral on `(0, 2r]` or the second-order critical-scale receiver integral
+   (`scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger`,
+   `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`,
+   `scalingSubsurface_odd_defect_eq_criticalScalePrefixLedger`) — with the unconditional rate-`1/2`
+   bound `δ(x, x) ≥ −78 e^r ∫ f²` (`scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`) and
+   the sharp PNT bound `δ(x, x) ≥ −((8 + ε) e^r + C) ∫ f²`
+   (`exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp`). By the graded
+   Castelnuovo–Severi defect law (`zetaZeroWidth_le_of_scalingSubsurface_odd_defect_floor`) and the
+   self-improving bootstrap theorem
+   (`rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`,
+   `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`,
+   `rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost`,
+   `rightZeros_zeta_eq_empty_of_subexponential_chebyshevTwoPoleDefect_integral`), closing the gap
+   from rate `σ = 1/2` to exact positivity `δ(x, x) ≥ 0` does *not* require proving `δ(x, x) ≥ 0`
+   directly at every `r`: any subexponential floor (`∀ σ > 0, ∃ C_σ, δ(x, x) ≥ −C_σ e^{2σ r} ∫ f²`)
+   forces `zetaZeroWidth = 0` (`rightZeros zetaZeroConfig = ∅`) and automatically self-improves to
+   exact positivity `δ(x, x) ≥ 0` (`C = 0, σ = 0`) across all degrees `r > 0`.
    Exact `100%` critical-line zeros (`rightZeros zetaZeroConfig = ∅`) is unconditionally equivalent
-   to `RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r))` and to reflected-prime /
-   two-pole Chebyshev-defect allocation across all degrees `r > 0`
+   to `RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r))`, to subexponential
+   Castelnuovo–Severi defect bounds, and to reflected-prime / two-pole Chebyshev-defect /
+   critical-scale receiver allocation across all degrees `r > 0`
    (`rightZeros_zeta_eq_empty_iff_forall_odd_strictCoupled_riemannRoch`,
-   `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`), and holds unconditionally
-   past the first prime (`r ≤ 181/500`,
+   `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`,
+   `rightZeros_zeta_eq_empty_iff_forall_odd_criticalScalePrefixAllocation`), and holds
+   unconditionally past the first prime (`r ≤ 181/500`,
    `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths`).
 2. **Near-radical count (Landau–Widom).** The two-sided law for `h⁰_ε(L)`, the dimension of
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate

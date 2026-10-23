@@ -17,64 +17,65 @@ namespace SchwartzMap
 
 noncomputable section
 
+/-! Each axiom of the spectral form is a separate lemma, so the structure below only assembles
+them. -/
+
+section SpectralFormAxioms
+
+variable (μ : Measure ℝ) [μ.HasTemperateGrowth]
+
+theorem spectralIntegral_add_left (u v w : 𝓢(ℝ, ℂ)) :
+    (integralCLM ℂ μ) (pointwiseMulConj
+        ((fourierTransformCLM ℂ) (u + v)) ((fourierTransformCLM ℂ) w)) =
+      (integralCLM ℂ μ)
+          (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w)) +
+        (integralCLM ℂ μ)
+          (pointwiseMulConj ((fourierTransformCLM ℂ) v) ((fourierTransformCLM ℂ) w)) := by
+  rw [map_add, pointwiseMulConj_add_left, map_add]
+
+theorem spectralIntegral_smul_left (c : ℂ) (u v : 𝓢(ℝ, ℂ)) :
+    (integralCLM ℂ μ) (pointwiseMulConj
+        ((fourierTransformCLM ℂ) (c • u)) ((fourierTransformCLM ℂ) v)) =
+      c * (integralCLM ℂ μ)
+        (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
+  rw [map_smul, pointwiseMulConj_smul_left, map_smul, smul_eq_mul]
+
+theorem spectralIntegral_add_right (u v w : 𝓢(ℝ, ℂ)) :
+    (integralCLM ℂ μ) (pointwiseMulConj
+        ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) (v + w))) =
+      (integralCLM ℂ μ)
+          (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) +
+        (integralCLM ℂ μ)
+          (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w)) := by
+  rw [map_add, pointwiseMulConj_add_right, map_add]
+
+theorem spectralIntegral_smul_right (c : ℂ) (u v : 𝓢(ℝ, ℂ)) :
+    (integralCLM ℂ μ) (pointwiseMulConj
+        ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) (c • v))) =
+      (starRingEnd ℂ) c * (integralCLM ℂ μ)
+        (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
+  rw [map_smul, pointwiseMulConj_smul_right, map_smul, smul_eq_mul]
+
+/-- Joint continuity: Fourier transform in each slot, the conjugated product, then integration. -/
+theorem continuous_spectralIntegral :
+    Continuous (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) => (integralCLM ℂ μ)
+      (pointwiseMulConj ((fourierTransformCLM ℂ) p.1) ((fourierTransformCLM ℂ) p.2))) :=
+  (integralCLM ℂ μ).continuous.comp' (continuous_pointwiseMulConj.comp'
+    (((fourierTransformCLM ℂ).continuous.comp' continuous_fst).prodMk
+      ((fourierTransformCLM ℂ).continuous.comp' continuous_snd)))
+
+end SpectralFormAxioms
+
 /-- The spectral form represented by a positive measure of temperate growth. -/
 def spectralMeasureForm (μ : Measure ℝ) [μ.HasTemperateGrowth] :
     ContinuousSchwartzSesquilinearForm where
   toFun u v := (integralCLM ℂ μ)
     (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v))
-  map_add_left u v w := by
-    calc
-      (integralCLM ℂ μ) (pointwiseMulConj
-          ((fourierTransformCLM ℂ) (u + v)) ((fourierTransformCLM ℂ) w)) =
-          (integralCLM ℂ μ)
-            (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w) +
-              pointwiseMulConj ((fourierTransformCLM ℂ) v) ((fourierTransformCLM ℂ) w)) := by
-        congr 1
-        rw [map_add, pointwiseMulConj_add_left]
-      _ = _ := map_add (integralCLM ℂ μ) _ _
-  map_smul_left c u v := by
-    calc
-      (integralCLM ℂ μ) (pointwiseMulConj
-          ((fourierTransformCLM ℂ) (c • u)) ((fourierTransformCLM ℂ) v)) =
-          (integralCLM ℂ μ) (c • pointwiseMulConj
-            ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        congr 1
-        rw [map_smul, pointwiseMulConj_smul_left]
-      _ = c * (integralCLM ℂ μ) (pointwiseMulConj
-          ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        rw [map_smul, smul_eq_mul]
-  map_add_right u v w := by
-    calc
-      (integralCLM ℂ μ) (pointwiseMulConj
-          ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) (v + w))) =
-          (integralCLM ℂ μ)
-            (pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v) +
-              pointwiseMulConj ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) w)) := by
-        congr 1
-        rw [map_add, pointwiseMulConj_add_right]
-      _ = _ := map_add (integralCLM ℂ μ) _ _
-  map_smul_right c u v := by
-    calc
-      (integralCLM ℂ μ) (pointwiseMulConj
-          ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) (c • v))) =
-          (integralCLM ℂ μ)
-            ((starRingEnd ℂ) c • pointwiseMulConj
-              ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        congr 1
-        rw [map_smul, pointwiseMulConj_smul_right]
-      _ = (starRingEnd ℂ) c *
-          (integralCLM ℂ μ) (pointwiseMulConj
-            ((fourierTransformCLM ℂ) u) ((fourierTransformCLM ℂ) v)) := by
-        rw [map_smul, smul_eq_mul]
-  continuous := by
-    have hfourier : Continuous
-        (fun p : 𝓢(ℝ, ℂ) × 𝓢(ℝ, ℂ) =>
-          ((fourierTransformCLM ℂ) p.1, (fourierTransformCLM ℂ) p.2)) :=
-      ((fourierTransformCLM ℂ).continuous.comp' continuous_fst).prodMk
-        ((fourierTransformCLM ℂ).continuous.comp' continuous_snd)
-    -- `comp'` keeps the composite as a lambda, so the goal is matched by projection reduction
-    -- rather than by unfolding `pointwiseMulConj` against `Function.comp`.
-    exact (integralCLM ℂ μ).continuous.comp' (continuous_pointwiseMulConj.comp' hfourier)
+  map_add_left := spectralIntegral_add_left μ
+  map_smul_left := spectralIntegral_smul_left μ
+  map_add_right := spectralIntegral_add_right μ
+  map_smul_right := spectralIntegral_smul_right μ
+  continuous := continuous_spectralIntegral μ
 
 theorem spectralMeasureForm_apply (μ : Measure ℝ) [μ.HasTemperateGrowth]
     (u v : 𝓢(ℝ, ℂ)) :

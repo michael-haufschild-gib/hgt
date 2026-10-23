@@ -301,12 +301,15 @@ estimate must therefore use the source vector and its arithmetic.
    `(1, 2)` stays anti-aligned, so the triangle is unconditionally frustrated
    (`oddFold_primeTriangle_weilLedgerKernel_one_not_isBalanced`), and its two aligned edges pay the
    third along `1 → 0 → 2` in the gauge `(4, 1, 1)` (`primeTrianglePathCertificate`,
-   `incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg`). Adding a fourth position
+   `primeTriangleCanonicalPathCertificate`, `supersolution_primeTriangleCanonical`,
+   `incidenceEnergy_oddFold_primeTriangleCanonical_nonneg`). Adding a fourth position
    with a second anti-aligned prime-sum overlap, both anti-aligned overlaps route through one shared
    aligned hub edge with packed shares `½ + ½` (`packedPrimePathCertificate`,
-   `incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg`). In general, routing a set `S`
+   `packedPrimeCanonicalPathCertificate`, `supersolution_packedPrimeCanonical`,
+   `incidenceEnergy_oddFold_packedPrimeCanonical_nonneg`). In general, routing a set `S`
    of anti-aligned targets from `a` through a shared first step `a → u` forces
-   `Σ_{b∈S} c_ab v_b ≤ |c_au| v_u` (`packed_shared_step_gauge_lower_bound`): a shared hub inflates its
+   `Σ_{b∈S} c_ab v_b ≤ |c_au| v_u` (`packed_shared_step_gauge_lower_bound`,
+   `packedPrimeCanonical_shared_step_gauge_bound`): a shared hub inflates its
    gauge, and that is how overlapping payments compete for diagonal budget.
 
 ### Chains and trains

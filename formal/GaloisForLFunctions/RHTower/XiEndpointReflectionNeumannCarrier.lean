@@ -214,7 +214,7 @@ theorem hasSum_xiEndpointCrossTrace_allOrder :
       (∑' p : ℕ × XiZeroCopy, f p) =
           ∑' n : ℕ, ∑' q : XiZeroCopy, f (n, q) := hf.tsum_prod
       _ = ∑' q : XiZeroCopy, ∑' n : ℕ, f (n, q) :=
-        (Summable.tsum_comm hf).symm
+        (Summable.tsum_comm (f := fun n q => f (n, q)) hf).symm
       _ = _ := by
         apply tsum_congr
         intro q

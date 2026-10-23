@@ -48,7 +48,10 @@ This file establishes three unconditional results:
    `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`,
    `scalingSubsurface_odd_primitive_self_eq_reflectedPrimePolarLedger`,
    `scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`,
-   `scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp`):
+   `scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp`,
+   `exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp`,
+   `exists_scalingSubsurface_odd_primitive_self_le_eight_add_eps_mul_exp`,
+   `scalingSubsurface_odd_defect_eq_criticalScalePrefixLedger`):
    * For every real `C²_c` test `F`, the pole-plane hyperbolic form `2 B(F) A(F)` on
      `scalingSurface` is the Lorentz moment form `2 evenPoleMoment(F)² − 2 oddPoleMoment(F)²`, and
      the Castelnuovo–Severi defect `weilPair F F` equals `fullZeroForm F`.
@@ -58,26 +61,43 @@ This file establishes three unconditional results:
    * At **every** degree `r > 0` and plateau radius `R > r`, the Castelnuovo–Severi defect of any
      cycle `x = (a, b, f)` on `scalingSubsurface (oddRealTestsAt r)` decomposes into the archimedean
      gauge budget minus `reflectedPrimePolarCost f r` (or equivalently minus the horizon-localized
-     two-pole Chebyshev-defect integral on `(0, 2r]`), and satisfies the unconditional all-aperture
-     rate-`1/2` bound `δ(x, x) ≥ −78 e^r ∫ f²`.
+     two-pole Chebyshev-defect integral on `(0, 2r]` or the second-order critical-scale receiver
+     integral), and satisfies both the coarse rate-`1/2` bound `δ(x, x) ≥ −78 e^r ∫ f²` and the
+     sharp PNT bound `δ(x, x) ≥ −((8 + ε) e^r + C) ∫ f²`.
 
-3. **Master Unconditional Equivalence for Exact `100%` Critical-Line Zeros**
-   (`riemannHypothesis_iff_rightZeros_zeta_eq_empty`,
+3. **Graded Zero-Width Law, Self-Improving Bootstrap, and Master Unconditional Equivalence for Exact
+   `100%` Critical-Line Zeros**
+   (`zetaZeroWidth_le_of_scalingSubsurface_odd_defect_floor`,
+   `rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`,
+   `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`,
+   `rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost`,
+   `rightZeros_zeta_eq_empty_of_subexponential_chebyshevTwoPoleDefect_integral`,
+   `riemannHypothesis_iff_rightZeros_zeta_eq_empty`,
    `rightZeros_zeta_eq_empty_iff_forall_odd_strictCoupled_riemannRoch`,
    `rightZeros_zeta_eq_empty_iff_forall_odd_reflectedPrimePolarAllocation`,
    `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`,
+   `rightZeros_zeta_eq_empty_iff_forall_odd_criticalScalePrefixAllocation`,
    `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths`):
-   Establishes the complete chain of unconditional equivalences between:
-   * `rightZeros zetaZeroConfig = ∅` (exact `100%` of the nontrivial zeros of `ζ` on `Re s = 1/2`,
-     with zero exceptions),
-   * `RiemannHypothesis`,
-   * `scalingSurface.HodgeIndex`,
-   * `scalingSurface.RiemannRochAxiom scalingSurface.openPositiveCone`,
-   * `∀ r > 0, (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r))`,
-   * all-aperture reflected-prime/polar allocation on `oddRealTestsAt r`, and
-   * all-aperture two-pole Chebyshev-defect allocation on `oddRealTestsAt r`,
-   together with the unconditional proof of `RiemannRochAxiom`, `AmpleAxiom`, and `BezoutAxiom` for
-   `strictCoupledArithmeticCone (oddRealTestsAt r)` past the first prime (`r ≤ 181/500`).
+   * Establishes the **graded Castelnuovo–Severi defect law**: any all-aperture floor
+     `δ(x, x) ≥ −C e^{2σ r} ∫ f²` on `scalingSubsurface (oddRealTestsAt r)` forces the zero-free
+     strip `zetaZeroWidth ≤ σ` (`|Re ρ − 1/2| ≤ σ`).
+   * Establishes the **self-improving bootstrap law**: closing the gap from rate `σ = 1/2` to exact
+     positivity `δ(x, x) ≥ 0` does *not* require proving `δ(x, x) ≥ 0` directly at every `r`. Any
+     subexponential defect floor (`∀ σ > 0, ∃ C_σ, δ(x, x) ≥ −C_σ e^{2σ r} ∫ f²`) or uniform
+     constant floor (`δ(x, x) ≥ −C ∫ f²`) forces `zetaZeroWidth = 0` and automatically self-improves
+     to exact positivity `δ(x, x) ≥ 0` (`C = 0, σ = 0`) across all degrees `r > 0`.
+   * Establishes the complete chain of unconditional equivalences between:
+     * `rightZeros zetaZeroConfig = ∅` (exact `100%` of the nontrivial zeros of `ζ` on `Re s = 1/2`,
+       with zero exceptions),
+     * `RiemannHypothesis`,
+     * `scalingSurface.HodgeIndex`,
+     * `scalingSurface.RiemannRochAxiom scalingSurface.openPositiveCone`,
+     * `∀ r > 0, (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r))`,
+     * subexponential or constant-floor Castelnuovo–Severi defect bounds across all degrees `r > 0`,
+     * all-aperture reflected-prime/polar allocation on `oddRealTestsAt r`, and
+     * all-aperture two-pole Chebyshev-defect allocation on `oddRealTestsAt r`,
+     together with the unconditional proof of `RiemannRochAxiom`, `AmpleAxiom`, and `BezoutAxiom` for
+     `strictCoupledArithmeticCone (oddRealTestsAt r)` past the first prime (`r ≤ 181/500`).
 -/
 
 open Complex MeasureTheory Set Zeta23
@@ -386,7 +406,68 @@ theorem scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp {r : ℝ} 
   change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
   linarith
 
-/-! ### 3. Master Unconditional Equivalence for Exact `100%` Critical-Line Zeros -/
+/-- **Sharp PNT `(8 + ε) e^r + C` Lower Bound on the Castelnuovo–Severi Defect.** Replacing the
+coarse Chebyshev prime-sum constant by the asymptotic Prime Number Theorem lowers the exponential
+prefactor on `scalingSubsurface (oddRealTestsAt r)` from `78` to `8 + ε` across all degrees `r > 0`. -/
+theorem exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      -(((8 + ε) * Real.exp r + C) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+        (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  obtain ⟨C₀, hC₀0, hC₀⟩ := exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp hε
+  refine ⟨C₀ + 27 / 5, by linarith, fun r hr x => ?_⟩
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have hP0 : ∀ y, 0 ≤ aperturePlateau r (r + 1) y :=
+    fun y => plateauGauge_nonneg (r + 1) (r + 1 - r) y
+  have hpool := surplusPool_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hcross := crossingPotentialTerm_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq x.2.2.1.2.1 x.2.2.1.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu) (by linarith : r < r + 1)
+  have hcost := hC₀ r (x.2.2.1 : ℝ → ℝ) hr x.2.2.1.2.1.continuous x.2.2.1.2.2 x.2.2.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu)
+  linarith
+
+/-- **Sharp PNT `(8 + ε) e^r + C` Upper Bound on Primitive Self-Intersections.** For every `ε > 0`,
+there exists `C ≥ 0` such that for every degree `r > 0` and every primitive cycle `x = (a, -a, f)` on
+`scalingSubsurface (oddRealTestsAt r)` orthogonal to `H + V`,
+`x · x ≤ -2(a + A(f))² + ((8 + ε) e^r + C) ∫ f²`. -/
+theorem exists_scalingSubsurface_odd_primitive_self_le_eight_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      (scalingSubsurface (oddRealTestsAt r)).pair x
+        (scalingSubsurface (oddRealTestsAt r)).ample = 0 →
+      (scalingSubsurface (oddRealTestsAt r)).pair x x ≤
+        -2 * (x.1 + poleA (x.2.2.1 : ℝ → ℝ)) ^ 2 +
+          ((8 + ε) * Real.exp r + C) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 := by
+  obtain ⟨C, hC0, hC⟩ := exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp hε
+  refine ⟨C, hC0, fun r hr x horth => ?_⟩
+  have horth' : scalingSurface.pair (x.1, x.2.1, x.2.2.1) scalingSurface.ample = 0 := horth
+  have hself := scalingPair_odd_self_of_orthogonal_ample (x.1, x.2.1, x.2.2.1) x.2.2.2.2 horth'
+  have hdef := hC r hr x
+  rw [scalingSubsurface_defect_self] at hdef
+  change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
+  linarith
+
+/-- **Second-Order Critical-Scale Receiver Castelnuovo–Severi Ledger.** Integrating by parts a
+second time replaces `chebyshevTwoPoleDefect` by the critical-scale prefix functional
+`criticalScalePrefix s + s²/2 - s` paired against the derivative autocorrelation
+`autoCorrelation (deriv f) s + crossCorrelation f s - autoCorrelation f s / 4` on `(0, ∞)`. -/
+theorem scalingSubsurface_odd_defect_eq_criticalScalePrefixLedger {r R : ℝ}
+    (hr : 0 < r) (hrR : r < R) (x : ℝ × ℝ × oddRealTestsAt r) :
+    (scalingSubsurface (oddRealTestsAt r)).defect x x =
+      surplusPool (aperturePlateau r R) (x.2.2.1 : ℝ → ℝ) +
+        crossingPotentialTerm (aperturePlateau r R) (x.2.2.1 : ℝ → ℝ) +
+        gaugeRemainder (aperturePlateau r R) (x.2.2.1 : ℝ → ℝ) -
+        ∫ s in Ioi (0 : ℝ),
+          (criticalScalePrefix s + s ^ 2 / 2 - s) *
+            (2 * Real.exp (-s / 2) *
+              (autoCorrelation (deriv (x.2.2.1 : ℝ → ℝ)) s +
+                crossCorrelation (x.2.2.1 : ℝ → ℝ) s -
+                autoCorrelation (x.2.2.1 : ℝ → ℝ) s / 4)) := by
+  rw [scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr hrR x,
+    reflectedPrimePolarCost_eq_criticalScalePrefix_autoCorrelation_deriv
+      x.2.2.1.2.1 x.2.2.1.2.2 x.2.2.2.2 hr
+      (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu)]
+
+/-! ### 3. Graded Zero-Width Law, Self-Improving Bootstrap, and Master Unconditional Equivalence -/
 
 /-- **Exact `100%` critical-line zeros (`rightZeros zetaZeroConfig = ∅`) is unconditionally
 equivalent to `RiemannHypothesis`.** -/
@@ -411,6 +492,134 @@ def mkOddRealTestsAt {r : ℝ} (F : ℝ → ℝ) (hF : ContDiff ℝ 2 F) (hFc : 
   ⟨⟨F, hF, hFc⟩,
     closure_minimal (fun u hu => abs_le.mp (not_lt.mp fun hlt => hu (hsupp u hlt))) isClosed_Icc,
     hodd⟩
+
+/-- **Graded Castelnuovo–Severi Defect Law.** Any all-aperture floor
+`δ(x, x) ≥ -C e^{2σ r} ∫ f²` on `scalingSubsurface (oddRealTestsAt r)` (`σ ≥ 0`) forces the
+zero-free strip `zetaZeroWidth ≤ σ` (every nontrivial zero `ρ` of `ζ` satisfies
+`|Re ρ - 1/2| ≤ σ`). -/
+theorem zetaZeroWidth_le_of_scalingSubsurface_odd_defect_floor {σ C : ℝ} (hσ : 0 ≤ σ)
+    (hfloor : ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      -(C * Real.exp (2 * σ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+        (scalingSubsurface (oddRealTestsAt r)).defect x x) :
+    GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth ≤ σ := by
+  refine GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_le_of_graded_odd_fullZeroForm_floor
+    (C := C) hσ ?_
+  intro r hr F hF hFc hodd hsupp
+  let f := mkOddRealTestsAt F hF hFc hodd hsupp
+  have hf := hfloor r hr (0, 0, f)
+  rwa [scalingSubsurface_defect_self,
+    show (f.1 : ℝ → ℝ) = F from rfl,
+    weilPair_self_eq_fullZeroForm hF hFc] at hf
+
+/-- **Self-Improving Bootstrap Theorem for Closing the Rate-`1/2` Gap to Exact `δ(x, x) ≥ 0`.**
+Closing the gap between the unconditional rate-`σ = 1/2` floor `δ(x, x) ≥ -78 e^r ∫ f²` and exact
+positivity `δ(x, x) ≥ 0` does *not* require proving `δ(x, x) ≥ 0` directly at every degree `r`.
+Any subexponential floor (`∀ σ > 0, ∃ C_σ, δ(x, x) ≥ -C_σ e^{2σ r} ∫ f²`) forces `zetaZeroWidth = 0`
+(`rightZeros zetaZeroConfig = ∅`) and automatically self-improves to exact positivity
+`δ(x, x) ≥ 0` (`C = 0, σ = 0`) at every degree `r > 0`. -/
+theorem rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor :
+    rightZeros zetaZeroConfig = ∅ ↔
+      ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+        -(C * Real.exp (2 * σ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+          (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  rw [← riemannHypothesis_iff_rightZeros_zeta_eq_empty]
+  constructor
+  · intro hRH σ _
+    refine ⟨0, fun r _ x => ?_⟩
+    rw [zero_mul, zero_mul, neg_zero, scalingSubsurface_defect_self,
+      weilPair_self_eq_fullZeroForm x.2.2.1.2.1 x.2.2.1.2.2]
+    exact riemannHypothesis_iff_forall_odd_fullZeroForm_nonneg.mp hRH
+      (x.2.2.1 : ℝ → ℝ) x.2.2.1.2.1 x.2.2.1.2.2 x.2.2.2.2
+  · intro hsub
+    refine GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_of_subexponential_odd_floor ?_
+    intro σ hσ
+    obtain ⟨C, hC⟩ := hsub σ hσ
+    refine ⟨C, fun r hr F hF hFc hodd hsupp => ?_⟩
+    let f := mkOddRealTestsAt F hF hFc hodd hsupp
+    have hf := hC r hr (0, 0, f)
+    rwa [scalingSubsurface_defect_self,
+      show (f.1 : ℝ → ℝ) = F from rfl,
+      weilPair_self_eq_fullZeroForm hF hFc] at hf
+
+/-- **Constant-Floor Self-Improvement (`σ = 0`).** A uniform constant additive lower bound
+`δ(x, x) ≥ -C ∫ f²` across all degrees `r > 0` is unconditionally equivalent to exact positivity
+`δ(x, x) ≥ 0` (`C = 0`) and `rightZeros zetaZeroConfig = ∅`. -/
+theorem rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect :
+    rightZeros zetaZeroConfig = ∅ ↔
+      ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+        -(C * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+          (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  rw [← riemannHypothesis_iff_rightZeros_zeta_eq_empty]
+  constructor
+  · intro hRH
+    refine ⟨0, fun r _ x => ?_⟩
+    rw [zero_mul, neg_zero, scalingSubsurface_defect_self,
+      weilPair_self_eq_fullZeroForm x.2.2.1.2.1 x.2.2.1.2.2]
+    exact riemannHypothesis_iff_forall_odd_fullZeroForm_nonneg.mp hRH
+      (x.2.2.1 : ℝ → ℝ) x.2.2.1.2.1 x.2.2.1.2.2 x.2.2.2.2
+  · rintro ⟨C, hC⟩
+    refine GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_of_odd_fullZeroForm_bddBelow
+      (C := C) fun F hF hFc hodd => ?_
+    obtain ⟨r, hr1, hsupp⟩ :=
+      GaloisForLFunctions.ArithmeticCriticalityTheory.exists_support_radius hFc
+    have hr0 : 0 < r := by linarith
+    let f := mkOddRealTestsAt F hF hFc hodd hsupp
+    have hf := hC r hr0 (0, 0, f)
+    rwa [scalingSubsurface_defect_self,
+      show (f.1 : ℝ → ℝ) = F from rfl,
+      weilPair_self_eq_fullZeroForm hF hFc] at hf
+
+/-- **Subexponential Reflected-Prime/Polar Cost Allocation Closes the Gap to `100%` Critical-Line
+Zeros.** Because `gaugeRemainder` is bounded below at rate `0` (`-27/5 ∫ f²`) across all apertures,
+any subexponential bound on `reflectedPrimePolarCost f r` modulo `surplusPool + crossingPotentialTerm`
+forces `rightZeros zetaZeroConfig = ∅` and exact positivity `δ(x, x) ≥ 0` at every degree `r > 0`. -/
+theorem rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost
+    (hcost : ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ f : oddRealTestsAt r,
+      reflectedPrimePolarCost (f.1 : ℝ → ℝ) r ≤
+        surplusPool (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          crossingPotentialTerm (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          C * Real.exp (2 * σ * r) * ∫ u, (f.1 : ℝ → ℝ) u ^ 2) :
+    rightZeros zetaZeroConfig = ∅ := by
+  rw [rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor]
+  intro σ hσ
+  obtain ⟨C, hC⟩ := hcost σ hσ
+  refine ⟨|C| + 27 / 5, fun r hr x => ?_⟩
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq x.2.2.1.2.1 x.2.2.1.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu) (by linarith : r < r + 1)
+  have hc := hC r hr x.2.2
+  have hexp1 : 1 ≤ Real.exp (2 * σ * r) := Real.one_le_exp (by positivity)
+  have hI0 : 0 ≤ ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hCle : C * Real.exp (2 * σ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 ≤
+      |C| * Real.exp (2 * σ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 :=
+    mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.exp_nonneg _)) hI0
+  have hrem' : 27 / 5 * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 ≤
+      27 / 5 * Real.exp (2 * σ * r) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 :=
+    mul_le_mul_of_nonneg_right (by linarith) hI0
+  linarith
+
+/-- **Subexponential Two-Pole Chebyshev-Defect Allocation Closes the Gap to `100%` Critical-Line
+Zeros.** Any subexponential bound on the horizon-localized two-pole Chebyshev-defect integral on
+`(0, 2r]` modulo `surplusPool + crossingPotentialTerm` forces `rightZeros zetaZeroConfig = ∅` and
+exact positivity `δ(x, x) ≥ 0` across all degrees `r > 0`. -/
+theorem rightZeros_zeta_eq_empty_of_subexponential_chebyshevTwoPoleDefect_integral
+    (hcheb : ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, ∀ r : ℝ, 0 < r → ∀ f : oddRealTestsAt r,
+      (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+          (2 * Real.exp (-s / 2) *
+            (crossCorrelation (f.1 : ℝ → ℝ) s -
+              autoCorrelation (f.1 : ℝ → ℝ) s / 2))) ≤
+        surplusPool (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          crossingPotentialTerm (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          C * Real.exp (2 * σ * r) * ∫ u, (f.1 : ℝ → ℝ) u ^ 2) :
+    rightZeros zetaZeroConfig = ∅ := by
+  refine rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost fun σ hσ => ?_
+  obtain ⟨C, hC⟩ := hcheb σ hσ
+  refine ⟨C, fun r hr f => ?_⟩
+  rw [reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+    (f.1.2.1.of_le (by norm_num)) f.1.2.2 f.2.2 hr
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt f hu)]
+  exact hC r hr f
 
 /-- **Exact `100%` critical-line zeros is equivalent to the Hodge index on
 `scalingSubsurface (oddRealTestsAt r)` at every degree `r > 0`.** -/
@@ -488,6 +697,26 @@ theorem rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation :
   refine forall₄_congr fun r R hr _ => forall_congr' fun f => ?_
   rw [reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
     (f.1.2.1.of_le (by norm_num)) f.1.2.2 f.2.2 hr
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt f hu)]
+
+/-- **Exact `100%` critical-line zeros is equivalent to all-aperture second-order critical-scale
+receiver allocation on `oddRealTestsAt r`.** -/
+theorem rightZeros_zeta_eq_empty_iff_forall_odd_criticalScalePrefixAllocation :
+    rightZeros zetaZeroConfig = ∅ ↔
+      ∀ (r R : ℝ), 0 < r → r < R → ∀ f : oddRealTestsAt r,
+        (∫ s in Ioi (0 : ℝ),
+            (criticalScalePrefix s + s ^ 2 / 2 - s) *
+              (2 * Real.exp (-s / 2) *
+                (autoCorrelation (deriv (f.1 : ℝ → ℝ)) s +
+                  crossCorrelation (f.1 : ℝ → ℝ) s -
+                  autoCorrelation (f.1 : ℝ → ℝ) s / 4))) ≤
+          surplusPool (aperturePlateau r R) (f.1 : ℝ → ℝ) +
+            crossingPotentialTerm (aperturePlateau r R) (f.1 : ℝ → ℝ) +
+            gaugeRemainder (aperturePlateau r R) (f.1 : ℝ → ℝ) := by
+  rw [rightZeros_zeta_eq_empty_iff_forall_odd_reflectedPrimePolarAllocation]
+  refine forall₄_congr fun r R hr _ => forall_congr' fun f => ?_
+  rw [reflectedPrimePolarCost_eq_criticalScalePrefix_autoCorrelation_deriv
+    f.1.2.1 f.1.2.2 f.2.2 hr
     (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt f hu)]
 
 /-- **Unconditional Riemann–Roch, Ampleness, and Bézout Positivity for `strictCoupledArithmeticCone`

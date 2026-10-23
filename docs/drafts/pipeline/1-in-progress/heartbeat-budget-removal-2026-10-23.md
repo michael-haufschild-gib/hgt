@@ -89,7 +89,7 @@ valid.
 - [x] `RHTower/ZetaZeroFreeRegion.lean` (depth 5, 1)
 - [x] `HTGeometry/GammaDigammaStirlingBound.lean` (depth 6, 2)
 - [x] `RHTower/CCM/CCMInverseTiltedDyadicPrimeTomography.lean` (depth 6, 1)
-- [ ] `RHTower/GammaPrimeHybridEulerWeierstrassFredholmUniversalityLaw.lean` (depth 6, 1)
+- [x] `RHTower/GammaPrimeHybridEulerWeierstrassFredholmUniversalityLaw.lean` (depth 6, 1)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` (depth 6, 12)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor.lean` (depth 6, 2)
 - [ ] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)

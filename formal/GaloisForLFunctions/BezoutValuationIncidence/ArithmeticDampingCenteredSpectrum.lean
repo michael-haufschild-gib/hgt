@@ -1,6 +1,5 @@
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.ResidueModesAndBackwardContinuation
 import Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!
 # The complete spectrum of the centered arithmetic damping operator
@@ -20,7 +19,8 @@ Mechanism: an eigen-equation `C_η b = λ b` read at the first state fixes the e
 `e_η(b) = (1 − λ) b(0)`, so `g = b − b(0)` solves the *raw* lower-triangular equation
 `P_η g = λ g` with diagonal `(n+1)^{−η}`. The first state where `g` is nonzero therefore
 forces `λ = d^{−η}`; distinct diagonal entries propagate one free coordinate. Compactness and the
-Fredholm alternative turn eigenvalues into the nonzero spectrum, and `d^{−η} → 0` adds zero.
+Fredholm alternative turn eigenvalues into the nonzero spectrum; zero is spectral because the
+contractions `d^{−η} → 0` rule out a bounded inverse.
 
 The statements concern `c₀`. They give the damping chain a diagonal spectral calculus on the
 residue modes, not bounded spectral projections and not an estimate in the pronic receiver norm.
@@ -141,7 +141,8 @@ theorem arithmeticDampingCenteredOperator_eigen_iff {η : ℝ} (hη : 0 < η) {d
       rw [normalizedResidueMode_apply, normalizedResidueProfile_of_lt (by omega)]
     have he : arithmeticDampingCenteredOperator hη (b - a • normalizedResidueMode d) =
         (d : ℝ) ^ (-η) • (b - a • normalizedResidueMode d) := by
-      rw [map_sub, hb, hv, smul_sub]
+      rw [map_sub, hb, hv]
+      exact (smul_sub ((d : ℝ) ^ (-η)) b (a • normalizedResidueMode d)).symm
     have hanchor : (b - a • normalizedResidueMode d) (d - 1) =
         (b - a • normalizedResidueMode d) 0 := by
       simp only [ZeroAtInftyContinuousMap.sub_apply, ZeroAtInftyContinuousMap.smul_apply,
@@ -166,14 +167,17 @@ private theorem ads_power_mem_spectrum {η : ℝ} (hη : 0 < η) {d : ℕ} (hd :
   rw [ContinuousLinearMap.spectrum_eq]
   exact ((arithmeticDampingCenteredOperator_hasEigenvalue_iff hη _).2 ⟨d, hd, rfl⟩).mem_spectrum
 
-/-- Zero is spectral, as the accumulation point of the eigenvalues, though not an eigenvalue. -/
+/-- Zero is spectral although it is not an eigenvalue: the modes `v_d` are contracted by
+`d^{−η} → 0`, so `C_η` has no bounded inverse (`not_backward_stable_c0`). -/
 theorem zero_mem_spectrum_arithmeticDampingCenteredOperator {η : ℝ} (hη : 0 < η) :
     (0 : ℝ) ∈ spectrum ℝ (arithmeticDampingCenteredOperator hη) := by
-  have ht : Tendsto (fun n : ℕ => ((n + 2 : ℕ) : ℝ) ^ (-η)) atTop (𝓝 0) :=
-    (tendsto_rpow_neg_atTop hη).comp
-      (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 2))
-  exact (spectrum.isClosed (arithmeticDampingCenteredOperator hη)).mem_of_tendsto ht
-    (Eventually.of_forall fun n => ads_power_mem_spectrum hη (by omega))
+  rw [spectrum.zero_mem_iff]
+  rintro ⟨u, hu⟩
+  obtain ⟨b, hb⟩ := not_backward_stable_c0 hη ‖(↑u⁻¹ : C₀(ℕ, ℝ) →L[ℝ] C₀(ℕ, ℝ))‖
+  refine hb.not_ge ?_
+  calc ‖b‖ = ‖(↑u⁻¹ : C₀(ℕ, ℝ) →L[ℝ] C₀(ℕ, ℝ)) (arithmeticDampingCenteredOperator hη b)‖ := by
+        rw [← hu, ← ContinuousLinearMap.mul_apply, Units.inv_mul, ContinuousLinearMap.one_apply]
+    _ ≤ _ := ContinuousLinearMap.le_opNorm _ _
 
 /-- **The complete real spectrum** `σ(C_η) = {0} ∪ {d^{−η} : d ≥ 2}` at every positive damping. -/
 theorem mem_spectrum_arithmeticDampingCenteredOperator_iff {η : ℝ} (hη : 0 < η) (r : ℝ) :

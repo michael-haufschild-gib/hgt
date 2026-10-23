@@ -157,11 +157,22 @@ survivor).
   `scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`,
   `scalingSubsurface_odd_primitive_self_eq_reflectedPrimePolarLedger`,
   `scalingSubsurface_odd_defect_ge_neg_seventy_eight_mul_exp`,
-  `scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp` (unconditional all-aperture rate-`1/2`
-  bound `δ(x, x) ≥ −78 e^r ∫ f²`), `riemannHypothesis_iff_rightZeros_zeta_eq_empty`,
+  `scalingSubsurface_odd_primitive_self_le_seventy_eight_mul_exp`,
+  `exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp`,
+  `exists_scalingSubsurface_odd_primitive_self_le_eight_add_eps_mul_exp` (unconditional all-aperture
+  rate-`1/2` bound `δ(x, x) ≥ −78 e^r ∫ f²` and sharp PNT bound `δ(x, x) ≥ −((8 + ε) e^r + C) ∫ f²`),
+  `scalingSubsurface_odd_defect_eq_criticalScalePrefixLedger` (second-order critical-scale receiver
+  ledger), `zetaZeroWidth_le_of_scalingSubsurface_odd_defect_floor`,
+  `rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`,
+  `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`,
+  `rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost`,
+  `rightZeros_zeta_eq_empty_of_subexponential_chebyshevTwoPoleDefect_integral` (graded zero-width
+  law and self-improving bootstrap from subexponential/constant defect floors to exact `δ(x, x) ≥ 0`),
+  `riemannHypothesis_iff_rightZeros_zeta_eq_empty`,
   `rightZeros_zeta_eq_empty_iff_forall_odd_strictCoupled_riemannRoch`,
   `rightZeros_zeta_eq_empty_iff_forall_odd_reflectedPrimePolarAllocation`,
   `rightZeros_zeta_eq_empty_iff_forall_odd_chebyshevDefectAllocation`,
+  `rightZeros_zeta_eq_empty_iff_forall_odd_criticalScalePrefixAllocation`,
   `strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths` (unconditional
   `RiemannRochAxiom`, `AmpleAxiom`, and `BezoutAxiom` past the first prime `r ≤ 181/500`).
 

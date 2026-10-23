@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SignedArithmeticEnergyIncidence.OddFoldingIsTheSourceOfFrustration
+import GaloisForLFunctions.SignedArithmeticEnergyIncidence.TheOddWeilLedgerIsFrustratedOnlyByPrimes
 
 /-!
 # The frustration index controls the ground energy
@@ -72,16 +72,16 @@ theorem edge_signVector {a b t : ℝ} (ha : a ^ 2 = 1) (hb : b ^ 2 = 1) :
   · rw [orientSign_of_pos ht, abs_of_pos ht, one_mul]
     rcases sq_eq_one_iff.1 ha with rfl | rfl <;> rcases sq_eq_one_iff.1 hb with rfl | rfl
     · rw [if_pos (by linarith)]; ring
-    · rw [if_neg (by norm_num <;> linarith)]; ring
-    · rw [if_neg (by norm_num <;> linarith)]; ring
-    · rw [if_pos (by norm_num <;> linarith)]; ring
+    · rw [if_neg (by norm_num; linarith)]; ring
+    · rw [if_neg (by norm_num; linarith)]; ring
+    · rw [if_pos (by norm_num; linarith)]; ring
   · simp
   · rw [orientSign_of_neg ht, abs_of_neg ht]
     rcases sq_eq_one_iff.1 ha with rfl | rfl <;> rcases sq_eq_one_iff.1 hb with rfl | rfl
-    · rw [if_neg (by norm_num <;> linarith)]; ring
-    · rw [if_pos (by norm_num <;> linarith)]; ring
-    · rw [if_pos (by norm_num <;> linarith)]; ring
-    · rw [if_neg (by norm_num <;> linarith)]; ring
+    · rw [if_neg (by norm_num; linarith)]; ring
+    · rw [if_pos (by norm_num; linarith)]; ring
+    · rw [if_pos (by norm_num; linarith)]; ring
+    · rw [if_neg (by norm_num; linarith)]; ring
 
 /-- The signed Dirichlet form `D_c(x) = Σ_{i ≠ j} |c_ij| (x_i + sgn(c_ij) x_j)²`. -/
 def signedDirichletForm (c : ι → ι → ℝ) (x : ι → ℝ) : ℝ :=
@@ -90,6 +90,7 @@ def signedDirichletForm (c : ι → ι → ℝ) (x : ι → ℝ) : ℝ :=
 /-- The degree of a point: the total absolute coupling it meets. -/
 def pointDegree (c : ι → ι → ℝ) (i : ι) : ℝ := ∑ j, if i = j then 0 else |c i j|
 
+omit [Fintype ι] in
 theorem edgeTerm_nonneg (c : ι → ι → ℝ) (x : ι → ℝ) (i j : ι) :
     0 ≤ (if i = j then (0 : ℝ) else |c i j| * (x i + orientSign (c i j) * x j) ^ 2) := by
   split_ifs
@@ -382,8 +383,9 @@ theorem isBalanced_of_signedDirichletForm_eq_zero {c : ι → ι → ℝ} {x : �
       · rw [orientSign_of_pos h, orientSign_of_neg (by linarith)]; norm_num
       · exact absurd h.symm (hx i)
       · rw [orientSign_of_neg h, orientSign_of_pos (by linarith)]; norm_num
-    rw [hsign, show orientSign (x i) * -orientSign (x i) * c i j
-      = -(orientSign (x i) ^ 2 * c i j) by ring, orientSign_sq, one_mul]
+    have hprod : orientSign (x i) * -orientSign (x i) * c i j = -(c i j) := by
+      linear_combination (-(c i j)) * orientSign_sq (x i)
+    rw [hsign, hprod]
     linarith
   · rw [← hc]; simp
   · -- negative coupling: `x_i = x_j`, so the signs agree
@@ -394,8 +396,9 @@ theorem isBalanced_of_signedDirichletForm_eq_zero {c : ι → ι → ℝ} {x : �
       · exact absurd h (by linarith)
       · have := (pow_eq_zero_iff two_ne_zero).1 h; linarith
     have hxj : x j = x i := by linarith
-    rw [hxj, show orientSign (x i) * orientSign (x i) * c i j
-      = orientSign (x i) ^ 2 * c i j by ring, orientSign_sq, one_mul]
+    have hprod : orientSign (x i) * orientSign (x i) * c i j = c i j := by
+      linear_combination (c i j) * orientSign_sq (x i)
+    rw [hxj, hprod]
     exact hc.le
 
 /-- A balanced form has a sign vector of zero Dirichlet energy. -/
@@ -448,8 +451,7 @@ theorem ne_zero_of_signedDirichletForm_eq_zero {c : ι → ι → ℝ}
     (h : signedDirichletForm c x = 0) (i : ι) : x i ≠ 0 := by
   obtain ⟨u, hu⟩ : ∃ u, x u ≠ 0 := by
     by_contra hall
-    push_neg at hall
-    exact hx (funext hall)
+    exact hx (funext fun i => not_not.1 fun h => hall ⟨i, h⟩)
   obtain ⟨l, hl, hend⟩ := hconn u i
   have := abs_eq_walkEnd_of_signedDirichletForm_eq_zero h u l hl
   rw [hend] at this
@@ -475,6 +477,7 @@ theorem groundEnergy_eq_zero_iff_isBalanced {c : ι → ι → ℝ} [Nonempty ι
 
 /-! ### The odd Weil ledger -/
 
+open scoped Classical in
 /-- The prime-sum pairs of a sampled position set: ordered pairs `x ≠ y` whose positions sum to
 the logarithm of a prime power. -/
 def primeSumPairs (p : ι → ℝ) : Finset (ι × ι) :=

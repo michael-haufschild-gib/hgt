@@ -1282,9 +1282,9 @@ theorem abs_crossCorrelation_le_half_add_half_deriv_sq {F : ℝ → ℝ}
     hdcont.comp (continuous_id.add continuous_const)
   have hd_shift_cs : HasCompactSupport fun x => deriv F (x + s) :=
     hdcs.comp_homeomorph (Homeomorph.addRight s)
-  have hI1 : Integrable fun x => |F x * deriv F (x + s)| := by
-    simpa only [Real.norm_eq_abs] using
-      ((hFcont.mul hd_shift_cont).integrable_of_hasCompactSupport hFc.mul_right).norm
+  have hI0 : Integrable fun x => F x * deriv F (x + s) :=
+    (hFcont.mul hd_shift_cont).integrable_of_hasCompactSupport hFc.mul_right
+  have hI1 : Integrable fun x => |F x * deriv F (x + s)| := hI0.norm
   have hF2 : Integrable fun x => F x ^ 2 :=
     (hFcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
   have hd2s : Integrable fun x => deriv F (x + s) ^ 2 :=
@@ -1491,7 +1491,7 @@ theorem abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le {F : ℝ �
   linarith
 
 /-- On any finite horizon `(0, S]`, `2 e^{−s/2} |criticalScalePrefix s + s²/2 − s|` is integrable. -/
-theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix {S : ℝ} (hS : 0 < S) :
+theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix (S : ℝ) :
     IntegrableOn (fun s => 2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|)
       (Ioc 0 S) := by
   set N := ⌈Real.exp S⌉₊
@@ -1524,7 +1524,6 @@ theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : �
   have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
   have hF' : ContDiff ℝ 1 (deriv F) :=
     (contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) F from hF)).2.2
-  have hS : (0 : ℝ) < 2 * r := by linarith
   have hh' := contDiff_one_deriv_lagTestWeight_of_contDiff hF1 hF' hFc
   have hd2 : Continuous (deriv (deriv (lagTestWeight F))) := hh'.continuous_deriv le_rfl
   have hcr : Continuous (rampSum N) := by
@@ -1549,7 +1548,7 @@ theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : �
   have hint_bound : IntegrableOn (fun s =>
       (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
         ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
-    (integrableOn_Ioc_exp_mul_abs_criticalScalePrefix hS).mul_const _
+    (integrableOn_Ioc_exp_mul_abs_criticalScalePrefix (2 * r)).mul_const _
   rw [reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc hF hFc hodd hr hsupp]
   refine le_trans abs_integral_le_integral_abs ?_
   have hmono : (∫ s in Ioc (0 : ℝ) (2 * r),

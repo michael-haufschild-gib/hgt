@@ -2666,3 +2666,13 @@ leading order).** Validated against Σζ'(ρ) ~ TL²/4π, Σ|ζ'(ρ)|² ~ TL⁴/
 - Next: conjecture that orthogonality holds for every Feng order (multiplier ∂_u^k log Y), i.e. the CGG law is the
   exact optimum over all Feng-type mollifiers; if so, the mollifier route is closed below θ = 4^{1/3} − 1.
 - The ζ goal (75%) is still not met.
+
+## Cycle 148 (2026-10-23) — anatomy of the bandwidth-4/3 prime-pair surplus (Lean)
+
+**Lean (RHTower/ZetaPrimeSurplusAnatomy.lean):**
+- Parity of half-line moments of `Φ²` for even `Φ`: `Cm_eq_Cp_of_even` (`C⁻(y) = C⁺(y)`), `Sm_eq_neg_Sp_of_even` (`S⁻(y) = −S⁺(y)`), `sub_mul_Aminus_eq_of_even`, `Aminus_eq_AminusCos_add_AminusSin`, `ppOffDiag_eq_cos_add_sin` (`ppOffDiag = ppOffDiagCos + ppOffDiagSin`).
+- Nonsingularity of the sine-moment kernel: `abs_sin_sub_sin_le`, `abs_Sp_sub_Sp_le` (`|S⁺(y') − S⁺(y)| ≤ |y − y'| ∫_ℝ Φ(x)² |x| dx`), `abs_AminusSin_le` (`|AminusSin Φ T y y'| ≤ 2 ∫_ℝ Φ(x)² |x| dx` uniformly for all `y, y' ∈ ℝ`, cancelling the `1/(y − y')` pole), `abs_ppOffDiagSin_close_le` (unconditional bound on the close-pair part `|log n − log m| ≤ Δ` of `ppOffDiagSin`).
+- Second-moment tail of `C⁺` and MV reduction of `ppOffDiagCos` to `ppOffDiagFourier`: `two_mul_Cp_eq_setIntegral_Icc`, `abs_two_mul_Cp_sub_integral_le_sq`, `abs_Cp_sub_pi_mul_g_le` (`|C⁺(y) − π g(y)| ≤ (2 T²)⁻¹ ∫_ℝ Φ(x)² x² dx`), `abs_ppOffDiagCos_sub_fourier_le`, `exists_abs_ppOffDiagCos_sub_fourier_le` (unconditional MV bound `|ppOffDiagCos − ppOffDiagFourier| ≤ (4 C / T²) (∫ Φ(x)² x²) Σ_{n≤X} Λ(n)²`), `exists_abs_ppOffDiagCos_sub_fourier_params43_le` (at bandwidth `4/3`, `|ppOffDiagCos − ppOffDiagFourier| ≤ K (log T / T^{2/3}) → 0` unconditionally).
+- Exact Dirichlet-polynomial mean-value representation: `intervalIntegral_cos_mul_of_ne`, `ppOffDiagFourier_eq_integral`, `sum_sum_cos_log_sub_eq`, `ppOffDiagFourier_eq_primeDirichlet_integral` (`ppOffDiagFourier g T X = 2π ∫_T^{2T} (C_g(τ) C_1(τ) + S_g(τ) S_1(τ)) dτ − 2π T Σ_{n≤X} a_n² g(log n)`), `primeSurplus_eq_fourier_add_rem`.
+- Checked with `lake --old env lean GaloisForLFunctions/RHTower/ZetaPrimeSurplusAnatomy.lean`, zero warnings, wired into `RHTower.lean`.
+- The ζ goal (75%) remains open (`PrimeSurplusFourThirds`: power-saving cancellation `T^{−1/3}` in `ppOffDiagFourier` beyond the Montgomery–Vaughan range `X ≤ T`).
