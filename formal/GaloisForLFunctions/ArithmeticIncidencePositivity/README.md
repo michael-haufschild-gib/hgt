@@ -1047,7 +1047,7 @@ side and the pole plane; the archimedean density is not part of this ledger.
     `combEnergy_singleModeSignFlip_sub`). Evaluating `three_shift_gram` along the parity-twisted ray
     `(θ, −θ)` yields `(A(a) − A(b))² ≤ 2A(0)(A(0) − A(b − a))` (`sq_two_atom_sub_le`), whose
     `(ℤ/2ℤ)` average with `sq_two_atom_le` cancels the ratio lag `A(b − a)` to give
-    `A(a)² + A(b)² ≤ A(0)²` (`sq_two_atom_add_sq_sub_le`). The explicit two-prime pair
+    `A(a)² + A(b)² ≤ 2A(0)²` (`sq_two_atom_add_sq_sub_le`). The explicit two-prime pair
     `primePairPlusWeight N` (`Y = δ₂ + δ₃`) and `primePairMinusWeight N` (`Y = δ₂ − δ₃`) (`N ≥ 3`)
     has identical complete-period mean `0`, variance `3`, Bézout successor form `−2`, reserve `5`,
     phase loss `3/2`, primitive energy `11/12`, all-lag covariances, and all-tuple variances

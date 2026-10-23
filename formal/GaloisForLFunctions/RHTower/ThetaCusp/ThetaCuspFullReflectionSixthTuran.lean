@@ -45,25 +45,25 @@ theorem thetaCuspAtomLikelihoodRatioJetSix_abs_le
   have hz1 : 1 ≤ z := by linarith
   have hp2 : p ^ (2 : ℕ) ≤ 9 * z ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 2
-    linarith
+    linarith only [h]
   have hp3 : p ^ (3 : ℕ) ≤ 27 * z ^ (3 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 3
-    linarith
+    linarith only [h]
   have hp4 : p ^ (4 : ℕ) ≤ 81 * z ^ (4 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 4
-    linarith
+    linarith only [h]
   have hp6 : p ^ (6 : ℕ) ≤ 729 * z ^ (6 : ℕ) := by
     have h := pow_le_pow_left₀ hp0 hp 6
-    linarith
+    linarith only [h]
   have ha2 : alpha ^ (2 : ℕ) ≤ 16 * z ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ ha0 ha 2
-    linarith
+    linarith only [h]
   have ha3 : alpha ^ (3 : ℕ) ≤ 64 * z ^ (3 : ℕ) := by
     have h := pow_le_pow_left₀ ha0 ha 3
-    linarith
+    linarith only [h]
   have hb2 : beta ^ (2 : ℕ) ≤ 196 * z ^ (2 : ℕ) := by
     have h := pow_le_pow_left₀ hb0 hb 2
-    linarith
+    linarith only [h]
   have hz2one : 1 ≤ z ^ (2 : ℕ) := one_le_pow₀ hz1
   have hz3one : 1 ≤ z ^ (3 : ℕ) := one_le_pow₀ hz1
   have hz4one : 1 ≤ z ^ (4 : ℕ) := one_le_pow₀ hz1

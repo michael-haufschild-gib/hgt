@@ -2,13 +2,19 @@ import GaloisForLFunctions.RHTower.SoninAlternatingBlockStrict
 import GaloisForLFunctions.RHTower.SoninEulerCornerNoncompact
 import GaloisForLFunctions.RHTower.SoninL2ShellNull
 
+/-!
+# Noncompact Euler corners on the central Sonin space
+
+Corrected symmetric shell vectors retain a nonzero dilation crossing through the physical
+cutoff. This proves noncompactness of both the dilation corner and its positive Euler weight.
+-/
+
 noncomputable section
 
 open MeasureTheory Set
 open Filter Topology
 
 namespace RHTower
-
 
 /-! ### Concrete fixed-cutoff Sonin carrier -/
 def centralPhysicalForbidden (a : ℝ) : Submodule ℂ SoninL2 :=

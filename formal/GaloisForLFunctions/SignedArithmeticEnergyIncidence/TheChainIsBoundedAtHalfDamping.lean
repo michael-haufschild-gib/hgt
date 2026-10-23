@@ -762,6 +762,502 @@ theorem integral_norm_sq_dilationSymbol_shell_le {η : ℝ} (h0 : 1 / 2 < η) (h
         nlinarith [mul_le_mul_of_nonneg_right hXl hnb0, mul_nonneg (mul_nonneg hT0 hnb0) hlog0,
           mul_nonneg hT0 hnb0, mul_le_mul_of_nonneg_right hπ.le (mul_nonneg hT0 hnb0)]
 
+/-! ### Assembly in Mellin coordinates -/
+
+/-- The Mellin transform of a real profile is conjugation symmetric. -/
+theorem mellin_ofReal_conj (f : ℝ → ℝ) (s : ℂ) :
+    mellin (fun x => (f x : ℂ)) ((starRingEnd ℂ) s) =
+      (starRingEnd ℂ) (mellin (fun x => (f x : ℂ)) s) := by
+  unfold mellin
+  rw [← integral_conj]
+  refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
+  have hx0 : (0 : ℝ) < x := hx
+  simp only [smul_eq_mul, map_mul, Complex.conj_ofReal]
+  rw [show (starRingEnd ℂ) s - 1 = (starRingEnd ℂ) (s - 1) by simp, ofReal_cpow_conj hx0]
+
+theorem norm_mellin_neg (f : ℝ → ℝ) (t : ℝ) :
+    ‖mellin (fun x => (f x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖ =
+      ‖mellin (fun x => (f x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ := by
+  have hc : ((-1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I =
+      (starRingEnd ℂ) (((-1 / 2 : ℝ) : ℂ) + t * I) := by
+    simp only [map_add, map_mul, Complex.conj_ofReal, Complex.conj_I]
+    push_cast
+    ring
+  rw [hc, mellin_ofReal_conj, Complex.norm_conj]
+
+/-- **The weighted symbol energy is bounded uniformly in `½ < η < 1`**:
+`∫ |B(t)|² |M P(−½ + it)|² dt ≤ M Σ b_k²`. -/
+theorem exists_integral_weighted_symbol_le :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ η : ℝ, 1 / 2 < η → η < 1 → ∀ (N : ℕ) (b : ℕ → ℝ),
+      (∀ k, N ≤ k → b k = 0) →
+      ∫ t : ℝ, ‖dilationSymbol η N b t‖ ^ 2 *
+          ‖mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2 ≤
+        M * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  obtain ⟨T₀, C₁, C₂, hT₀, hC₁, hC₂, hw⟩ := exists_norm_mellin_sourceProfile_sq_le
+  have hT₀0 : 0 < T₀ := by linarith
+  set r : ℝ := (2 : ℝ) ^ (-(1 / 4 : ℝ)) with hr
+  have hr0 : 0 ≤ r := by positivity
+  have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
+  set L : ℝ := 1 + Real.log 2 + Real.log T₀ with hL
+  have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  have hlogT : 0 ≤ Real.log T₀ := Real.log_nonneg (by linarith)
+  have hL1 : 1 ≤ L := by rw [hL]; linarith
+  have hsum5 : Summable fun j : ℕ => ((j : ℝ) + 1) ^ 5 * r ^ j := by
+    have h := summable_pow_mul_geometric_of_norm_lt_one (R := ℝ) 5
+      (by rw [Real.norm_eq_abs, abs_of_nonneg hr0]; exact hr1)
+    have h' := (summable_nat_add_iff 1).mpr h
+    refine (h'.mul_left r⁻¹).congr fun j => ?_
+    have hr' : r ≠ 0 := by positivity
+    push_cast
+    rw [pow_succ]
+    field_simp
+  set S5 : ℝ := ∑' j : ℕ, ((j : ℝ) + 1) ^ 5 * r ^ j with hS5
+  have hS50 : 0 ≤ S5 := tsum_nonneg fun j => by positivity
+  set A : ℝ := 400 * C₂ * T₀ ^ (-(1 / 4 : ℝ)) * L ^ 5 with hA
+  have hA0 : 0 ≤ A := by positivity
+  set Mlow : ℝ := T₀ * (2 * (9 / 4 + T₀ ^ 2) * C₁) with hMlow
+  refine ⟨2 * (Mlow + A * S5), by positivity, fun η h0 h1 N b hb => ?_⟩
+  set nb := ∑ k ∈ Finset.range N, b k ^ 2 with hnb
+  have hnb0 : 0 ≤ nb := Finset.sum_nonneg fun k _ => sq_nonneg _
+  set W : ℝ → ℝ := fun t =>
+    ‖mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2 with hW
+  set F : ℝ → ℝ := fun t => ‖dilationSymbol η N b t‖ ^ 2 * W t with hF
+  have hF0 : ∀ t, 0 ≤ F t := fun t => by simp only [hF, hW]; positivity
+  have heven : ∀ t, F (-t) = F t := by
+    intro t
+    simp only [hF, hW]
+    rw [norm_dilationSymbol_neg, Complex.ofReal_neg, ← Complex.ofReal_neg, norm_mellin_neg]
+  by_cases hFi : Integrable F
+  swap
+  · rw [integral_undef hFi]
+    positivity
+  have hBc : Continuous fun t => ‖dilationSymbol η N b t‖ ^ 2 :=
+    ((continuous_finsetSum _ fun k _ => continuous_dilationTerm η b k).norm.pow 2)
+  -- the low heights
+  have hlow : ∫ t in (0 : ℝ)..T₀, F t ≤ Mlow * nb := by
+    have hpt : ∀ t ∈ Set.Icc (0 : ℝ) T₀, F t ≤ 2 * (9 / 4 + T₀ ^ 2) * C₁ * nb := by
+      intro t ht
+      have htT : |t| ≤ T₀ := by rw [abs_of_nonneg ht.1]; exact ht.2
+      have hB := norm_sq_dilationSymbol_le h0 N b t
+      have hz := norm_sq_critical_sub_le h0 h1 t
+      have hWt := (hw η h0 h1 t).1 htT
+      have ht2 : t ^ 2 ≤ T₀ ^ 2 := by nlinarith [ht.1, ht.2]
+      simp only [hF, hW]
+      calc ‖dilationSymbol η N b t‖ ^ 2 *
+            ‖mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2
+          ≤ (2 * (9 / 4 + T₀ ^ 2) * nb) * C₁ := by
+            refine mul_le_mul (hB.trans ?_) hWt (by positivity) (by positivity)
+            nlinarith
+        _ = 2 * (9 / 4 + T₀ ^ 2) * C₁ * nb := by ring
+    calc ∫ t in (0 : ℝ)..T₀, F t ≤ ∫ t in (0 : ℝ)..T₀, 2 * (9 / 4 + T₀ ^ 2) * C₁ * nb :=
+          intervalIntegral.integral_mono_on hT₀0.le hFi.intervalIntegrable
+            intervalIntegrable_const hpt
+      _ = Mlow * nb := by rw [intervalIntegral.integral_const, smul_eq_mul, hMlow]; ring
+  -- the dyadic heights
+  have hshell : ∀ j : ℕ, ∫ t in ((2 : ℝ) ^ j * T₀)..((2 : ℝ) ^ (j + 1) * T₀), F t ≤
+      A * (((j : ℝ) + 1) ^ 5 * r ^ j) * nb := by
+    intro j
+    set T : ℝ := (2 : ℝ) ^ j * T₀ with hTdef
+    have h2j : (1 : ℝ) ≤ (2 : ℝ) ^ j := one_le_pow₀ (by norm_num)
+    have hT8 : 8 ≤ T := by rw [hTdef]; nlinarith
+    have hTT₀ : T₀ ≤ T := by rw [hTdef]; nlinarith
+    have hT0 : 0 < T := by linarith
+    have hupper : (2 : ℝ) ^ (j + 1) * T₀ = 2 * T := by rw [hTdef, pow_succ]; ring
+    rw [hupper]
+    have hlogT2 : 0 ≤ Real.log (2 * T) := Real.log_nonneg (by linarith)
+    set WT : ℝ := C₂ * ((2 * T) ^ (3 / 4 : ℝ) * Real.log (2 * T) ^ 4 / T ^ 2) with hWT
+    have hWpt : ∀ t ∈ Set.Icc T (2 * T), W t ≤ WT := by
+      intro t ht
+      have ht0 : 0 < t := by linarith [ht.1]
+      have habs : |t| = t := abs_of_pos ht0
+      have hWt := (hw η h0 h1 t).2 (by rw [habs]; linarith [ht.1])
+      simp only [hW]
+      refine hWt.trans ?_
+      rw [habs, hWT]
+      refine mul_le_mul_of_nonneg_left ?_ hC₂
+      have h1' : t ^ (3 / 4 : ℝ) ≤ (2 * T) ^ (3 / 4 : ℝ) :=
+        Real.rpow_le_rpow ht0.le ht.2 (by norm_num)
+      have h2' : Real.log t ^ 4 ≤ Real.log (2 * T) ^ 4 :=
+        pow_le_pow_left₀ (Real.log_nonneg (by linarith [ht.1])) (Real.log_le_log ht0 ht.2) 4
+      have h3' : T ^ 2 ≤ t ^ 2 := pow_le_pow_left₀ hT0.le ht.1 2
+      calc t ^ (3 / 4 : ℝ) * Real.log t ^ 4 / t ^ 2
+          ≤ (2 * T) ^ (3 / 4 : ℝ) * Real.log (2 * T) ^ 4 / t ^ 2 := by
+            gcongr
+        _ ≤ (2 * T) ^ (3 / 4 : ℝ) * Real.log (2 * T) ^ 4 / T ^ 2 := by
+            gcongr
+    have hint1 : ∫ t in T..(2 * T), F t ≤ WT * ∫ t in T..(2 * T), ‖dilationSymbol η N b t‖ ^ 2 := by
+      rw [← intervalIntegral.integral_const_mul]
+      refine intervalIntegral.integral_mono_on (by linarith) hFi.intervalIntegrable
+        ((continuous_const.mul hBc).intervalIntegrable _ _) fun t ht => ?_
+      simp only [hF]
+      rw [mul_comm WT]
+      exact mul_le_mul_of_nonneg_left (hWpt t ht) (by positivity)
+    have hsym := integral_norm_sq_dilationSymbol_shell_le h0 h1 hb hT8
+    have hWT0 : 0 ≤ WT := by rw [hWT]; positivity
+    -- `WT · 200 T (1 + log 2T) ≤ 400 C₂ T^{−1/4} (1 + log 2T)^5`
+    have hkey : WT * (200 * T * (1 + Real.log (2 * T))) ≤
+        400 * C₂ * T ^ (-(1 / 4 : ℝ)) * (1 + Real.log (2 * T)) ^ 5 := by
+      have h34 : (2 * T) ^ (3 / 4 : ℝ) ≤ 2 * T ^ (3 / 4 : ℝ) := by
+        rw [Real.mul_rpow (by norm_num) hT0.le]
+        have : (2 : ℝ) ^ (3 / 4 : ℝ) ≤ 2 := by
+          calc (2 : ℝ) ^ (3 / 4 : ℝ) ≤ 2 ^ (1 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
+            _ = 2 := Real.rpow_one 2
+        exact mul_le_mul_of_nonneg_right this (by positivity)
+      have hTq : T ^ (3 / 4 : ℝ) * T / T ^ 2 = T ^ (-(1 / 4 : ℝ)) := by
+        rw [show (3 / 4 : ℝ) = -(1 / 4) + 1 by norm_num, Real.rpow_add hT0, Real.rpow_one]
+        field_simp
+      have hl4 : Real.log (2 * T) ^ 4 ≤ (1 + Real.log (2 * T)) ^ 4 :=
+        pow_le_pow_left₀ hlogT2 (by linarith) 4
+      rw [hWT]
+      calc C₂ * ((2 * T) ^ (3 / 4 : ℝ) * Real.log (2 * T) ^ 4 / T ^ 2) *
+            (200 * T * (1 + Real.log (2 * T)))
+          ≤ C₂ * ((2 * T ^ (3 / 4 : ℝ)) * (1 + Real.log (2 * T)) ^ 4 / T ^ 2) *
+            (200 * T * (1 + Real.log (2 * T))) := by gcongr
+        _ = 400 * C₂ * (T ^ (3 / 4 : ℝ) * T / T ^ 2) * (1 + Real.log (2 * T)) ^ 5 := by ring
+        _ = 400 * C₂ * T ^ (-(1 / 4 : ℝ)) * (1 + Real.log (2 * T)) ^ 5 := by rw [hTq]
+    -- `T^{−1/4} = T₀^{−1/4} r^j` and `1 + log 2T ≤ (j+1) L`
+    have hTr : T ^ (-(1 / 4 : ℝ)) = T₀ ^ (-(1 / 4 : ℝ)) * r ^ j := by
+      rw [hTdef, Real.mul_rpow (by positivity) hT₀0.le, hr, ← Real.rpow_natCast,
+        ← Real.rpow_mul (by norm_num), ← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
+        mul_comm ((j : ℝ)) (-(1 / 4 : ℝ))]
+      ring
+    have hlogj : 1 + Real.log (2 * T) ≤ ((j : ℝ) + 1) * L := by
+      have e : Real.log (2 * T) = ((j : ℝ) + 1) * Real.log 2 + Real.log T₀ := by
+        rw [← hupper, Real.log_mul (by positivity) hT₀0.ne', Real.log_pow]
+        push_cast; ring
+      rw [e, hL]
+      have hj0 : (0 : ℝ) ≤ j := Nat.cast_nonneg j
+      nlinarith
+    have hpow5 : (1 + Real.log (2 * T)) ^ 5 ≤ (((j : ℝ) + 1) * L) ^ 5 :=
+      pow_le_pow_left₀ (by linarith) hlogj 5
+    calc ∫ t in T..(2 * T), F t
+        ≤ WT * (200 * T * (1 + Real.log (2 * T)) * nb) :=
+          hint1.trans (mul_le_mul_of_nonneg_left hsym hWT0)
+      _ = (WT * (200 * T * (1 + Real.log (2 * T)))) * nb := by ring
+      _ ≤ (400 * C₂ * T ^ (-(1 / 4 : ℝ)) * (1 + Real.log (2 * T)) ^ 5) * nb :=
+          mul_le_mul_of_nonneg_right hkey hnb0
+      _ ≤ (400 * C₂ * T ^ (-(1 / 4 : ℝ)) * (((j : ℝ) + 1) * L) ^ 5) * nb := by
+          gcongr
+      _ = A * (((j : ℝ) + 1) ^ 5 * r ^ j) * nb := by rw [hTr, hA]; ring
+  -- partial integrals
+  have hpartial : ∀ J : ℕ, ∫ t in (-((2 : ℝ) ^ J * T₀))..((2 : ℝ) ^ J * T₀), F t ≤
+      2 * (Mlow + A * S5) * nb := by
+    intro J
+    set R : ℝ := (2 : ℝ) ^ J * T₀ with hR
+    have hR0 : 0 ≤ R := by positivity
+    have hsym : ∫ t in (-R)..R, F t = 2 * ∫ t in (0 : ℝ)..R, F t := by
+      rw [← intervalIntegral.integral_add_adjacent_intervals (b := 0)
+        hFi.intervalIntegrable hFi.intervalIntegrable]
+      have hneg : ∫ t in (-R)..0, F t = ∫ t in (0 : ℝ)..R, F t := by
+        rw [← neg_zero, ← intervalIntegral.integral_comp_neg]
+        simp only [neg_zero]
+        exact intervalIntegral.integral_congr fun t _ => heven t
+      rw [hneg]; ring
+    have hsplit : ∫ t in (0 : ℝ)..R, F t =
+        ∫ t in (0 : ℝ)..T₀, F t + ∑ j ∈ Finset.range J,
+          ∫ t in ((2 : ℝ) ^ j * T₀)..((2 : ℝ) ^ (j + 1) * T₀), F t := by
+      rw [intervalIntegral.sum_integral_adjacent_intervals (a := fun j => (2 : ℝ) ^ j * T₀)
+        (n := J) fun j _ => hFi.intervalIntegrable]
+      simp only [pow_zero, one_mul]
+      rw [intervalIntegral.integral_add_adjacent_intervals hFi.intervalIntegrable
+        hFi.intervalIntegrable]
+    have hshells : ∑ j ∈ Finset.range J,
+        ∫ t in ((2 : ℝ) ^ j * T₀)..((2 : ℝ) ^ (j + 1) * T₀), F t ≤ A * S5 * nb := by
+      calc ∑ j ∈ Finset.range J, ∫ t in ((2 : ℝ) ^ j * T₀)..((2 : ℝ) ^ (j + 1) * T₀), F t
+          ≤ ∑ j ∈ Finset.range J, A * (((j : ℝ) + 1) ^ 5 * r ^ j) * nb :=
+            Finset.sum_le_sum fun j _ => hshell j
+        _ = A * (∑ j ∈ Finset.range J, ((j : ℝ) + 1) ^ 5 * r ^ j) * nb := by
+            rw [Finset.mul_sum, Finset.sum_mul]
+        _ ≤ A * S5 * nb := by
+            refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hA0) hnb0
+            exact hsum5.sum_le_tsum _ fun j _ => by positivity
+    rw [hsym, hsplit]
+    nlinarith [hlow, hshells]
+  -- the limit
+  have hRt : Tendsto (fun J : ℕ => (2 : ℝ) ^ J * T₀) atTop atTop :=
+    (tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1 : ℝ) < 2)).atTop_mul_const hT₀0
+  have htend := intervalIntegral_tendsto_integral hFi (tendsto_neg_atTop_atBot.comp hRt) hRt
+  exact le_of_tendsto' htend hpartial
+
+/-! ### Back to the chain -/
+
+/-- `K |ε_K| ≤ 2/K` for the floor slope `ε_K = K^{−η}/K − (K+1)^{−η}/(K+1)`. -/
+theorem mul_abs_floorSlope_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (k : ℕ) :
+    ((k + 1 : ℕ) : ℝ) * |((k + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ) -
+      (((k + 1 : ℕ) : ℝ) + 1) ^ (-η) / (((k + 1 : ℕ) : ℝ) + 1)| ≤ 2 / ((k + 1 : ℕ) : ℝ) := by
+  set K : ℝ := ((k + 1 : ℕ) : ℝ) with hKdef
+  have hK : 1 ≤ K := one_le_succ_cast k
+  have hK0 : 0 < K := by linarith
+  have hK10 : 0 < K + 1 := by linarith
+  have e1 : K ^ (-η) / K = K ^ (-1 - η) := by
+    rw [show -1 - η = -η - 1 by ring, Real.rpow_sub_one hK0.ne']
+  have e2 : (K + 1) ^ (-η) / (K + 1) = (K + 1) ^ (-1 - η) := by
+    rw [show -1 - η = -η - 1 by ring, Real.rpow_sub_one hK10.ne']
+  have hD := norm_cpow_sub_cpow_le hK (z := ((-1 - η : ℝ) : ℂ))
+    (by rw [Complex.ofReal_re]; linarith) zero_le_one le_rfl
+  rw [Real.rpow_one, Complex.ofReal_re, ← Complex.ofReal_cpow hK0.le,
+    ← Complex.ofReal_cpow hK10.le, ← Complex.ofReal_sub, Complex.norm_real, Complex.norm_real,
+    Real.norm_eq_abs, Real.norm_eq_abs, abs_of_neg (by linarith : -1 - η < 0)] at hD
+  rw [e1, e2]
+  have hp : K ^ (-1 - η) ≤ K ^ (-1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hK (by linarith)
+  have hp' : K ^ (-1 : ℝ) = 1 / K := by rw [Real.rpow_neg_one, one_div]
+  calc K * |K ^ (-1 - η) - (K + 1) ^ (-1 - η)|
+      ≤ K * (2 * K ^ (-1 - η) * (-(-1 - η) / (2 * K))) := mul_le_mul_of_nonneg_left hD hK0.le
+    _ = (1 + η) * K ^ (-1 - η) := by field_simp; ring
+    _ ≤ 2 * (1 / K) := by
+        rw [← hp']
+        exact mul_le_mul (by linarith) hp (Real.rpow_nonneg hK0.le _) (by norm_num)
+    _ = 2 / K := by ring
+
+/-- **The chain against the combined profile**:
+`Σ_{n<T} (C_η b)(n)² ≤ 8 ∫_0^∞ G² x^{−2} + 32 Σ b_k²`. -/
+theorem sum_sq_centeredOperator_le_integral {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1)
+    (b : C₀(ℕ, ℝ)) {N : ℕ} (hb : ∀ k, N ≤ k → b k = 0) (T : ℕ)
+    (hint : IntegrableOn (fun x => combinedProfile η N b x ^ 2 / x ^ 2) (Ioi 0)) :
+    ∑ n ∈ Finset.range T, arithmeticDampingCenteredOperator (by linarith : (0 : ℝ) < η) b n ^ 2 ≤
+      8 * (∫ x in Ioi (0 : ℝ), combinedProfile η N b x ^ 2 / x ^ 2) +
+        32 * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  have hη0 : (0 : ℝ) < η := by linarith
+  set G := combinedProfile η N b with hGdef
+  set ρ := (RHTower.pmPowerDampedDivisorDensity η).re with hρ
+  have hρ0 : 0 < ρ := RHTower.pmPowerDampedDivisorDensity_re_pos hη0
+  have hρ1 : ρ ≤ 1 := density_re_le_one hη0
+  set ε : ℕ → ℝ := fun k => ((k + 1 : ℕ) : ℝ) ^ (-η) / ((k + 1 : ℕ) : ℝ) -
+    (((k + 1 : ℕ) : ℝ) + 1) ^ (-η) / (((k + 1 : ℕ) : ℝ) + 1) with hε
+  set E : ℝ := ∑ k ∈ Finset.range N, ((k + 1 : ℕ) : ℝ) * b k * ε k with hE
+  set nb := ∑ k ∈ Finset.range N, b k ^ 2 with hnb
+  have hnb0 : 0 ≤ nb := Finset.sum_nonneg fun k _ => sq_nonneg _
+  -- the floor correction is small
+  have hE2 : E ^ 2 ≤ 8 * nb := by
+    have h1' : |E| ≤ 2 * ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ)) := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      rw [Finset.mul_sum]
+      refine Finset.sum_le_sum fun k _ => ?_
+      have := mul_abs_floorSlope_le hη0 h1 k
+      rw [abs_mul, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < ((k + 1 : ℕ) : ℝ))]
+      calc ((k + 1 : ℕ) : ℝ) * |b k| * |ε k| = |b k| * (((k + 1 : ℕ) : ℝ) * |ε k|) := by ring
+        _ ≤ |b k| * (2 / ((k + 1 : ℕ) : ℝ)) := mul_le_mul_of_nonneg_left this (abs_nonneg _)
+        _ = 2 * (|b k| * (1 / ((k + 1 : ℕ) : ℝ))) := by ring
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range N) (fun k => |b k|)
+      (fun k => 1 / ((k + 1 : ℕ) : ℝ))
+    have hinv : ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 ≤ 2 := by
+      refine le_trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
+        (sum_range_inv_succ_sq_le_two N)
+      rw [div_pow, one_pow]
+    have hS0 : 0 ≤ ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ)) :=
+      Finset.sum_nonneg fun k _ => by positivity
+    have hsq : (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 ≤ 2 * nb := by
+      calc _ ≤ (∑ k ∈ Finset.range N, |b k| ^ 2) *
+            ∑ k ∈ Finset.range N, (1 / ((k + 1 : ℕ) : ℝ)) ^ 2 := hcs
+        _ ≤ nb * 2 := by
+            rw [Finset.sum_congr rfl fun k _ => sq_abs (b k)]
+            exact mul_le_mul_of_nonneg_left hinv hnb0
+        _ = 2 * nb := by ring
+    calc E ^ 2 = |E| ^ 2 := (sq_abs E).symm
+      _ ≤ (2 * ∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 :=
+          pow_le_pow_left₀ (abs_nonneg _) h1' 2
+      _ = 4 * (∑ k ∈ Finset.range N, |b k| * (1 / ((k + 1 : ℕ) : ℝ))) ^ 2 := by ring
+      _ ≤ 4 * (2 * nb) := mul_le_mul_of_nonneg_left hsq (by norm_num)
+      _ = 8 * nb := by ring
+  -- on `[N, N+1)` the combined profile is linear with slope `−ρ E`
+  have hshift : ∀ n : ℕ, ∀ x : ℝ, ((n + 1 : ℕ) : ℝ) ≤ x → x < ((n + 1 : ℕ) : ℝ) + 1 →
+      G x = G ((n + 1 : ℕ) : ℝ) - ρ * (x - ((n + 1 : ℕ) : ℝ)) * E := by
+    intro n x hx hx'
+    simp only [hGdef, combinedProfile, hE, Finset.mul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [columnProfile_eq_of_mem η (N := n + 1) (K := k + 1) hx hx']
+    simp only [hε, hρ]
+    ring
+  have hpt : ∀ n : ℕ, ∀ x : ℝ, ((n + 1 : ℕ) : ℝ) ≤ x → x < ((n + 1 : ℕ) : ℝ) + 1 →
+      arithmeticDampingCenteredOperator hη0 b n ^ 2 ≤
+        8 * (G x ^ 2 / x ^ 2) + 2 * E ^ 2 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+    intro n x hx hx'
+    rw [centeredOperator_apply_eq_combinedProfile hη0 b hb n]
+    set Nn : ℝ := ((n + 1 : ℕ) : ℝ) with hNn
+    have hN1 : 1 ≤ Nn := by rw [hNn]; exact one_le_succ_cast n
+    have hx0 : 0 < x := by linarith
+    have hGs := hshift n x hx hx'
+    have hsmall : |ρ * (x - Nn) * E| ≤ |E| := by
+      rw [abs_mul, abs_mul, abs_of_pos hρ0, abs_of_nonneg (by linarith : 0 ≤ x - Nn)]
+      have : ρ * (x - Nn) ≤ 1 := by nlinarith
+      calc ρ * (x - Nn) * |E| ≤ 1 * |E| :=
+            mul_le_mul_of_nonneg_right this (abs_nonneg _)
+        _ = |E| := one_mul _
+    have hG2 : G Nn ^ 2 ≤ 2 * G x ^ 2 + 2 * E ^ 2 := by
+      have hGN : G Nn = G x + ρ * (x - Nn) * E := by linarith
+      have h := add_sq_le_two (G x) (ρ * (x - Nn) * E)
+      have hsq : (ρ * (x - Nn) * E) ^ 2 ≤ E ^ 2 := by
+        rw [← sq_abs (ρ * (x - Nn) * E), ← sq_abs E]
+        exact pow_le_pow_left₀ (abs_nonneg _) hsmall 2
+      rw [hGN]; linarith
+    have hinv : 1 / Nn ^ 2 ≤ 4 / x ^ 2 := by
+      rw [div_le_div_iff₀ (pow_pos (by linarith) 2) (pow_pos hx0 2)]
+      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * Nn - x) (by linarith : (0 : ℝ) ≤ 2 * Nn + x)]
+    calc (G Nn / Nn) ^ 2 = G Nn ^ 2 * (1 / Nn ^ 2) := by ring
+      _ ≤ (2 * G x ^ 2 + 2 * E ^ 2) * (1 / Nn ^ 2) :=
+          mul_le_mul_of_nonneg_right hG2 (by positivity)
+      _ = 2 * G x ^ 2 * (1 / Nn ^ 2) + 2 * E ^ 2 / Nn ^ 2 := by ring
+      _ ≤ 2 * G x ^ 2 * (4 / x ^ 2) + 2 * E ^ 2 / Nn ^ 2 := by gcongr
+      _ = 8 * (G x ^ 2 / x ^ 2) + 2 * E ^ 2 / Nn ^ 2 := by ring
+  -- integrate over `[N, N+1)` and sum
+  set f : ℝ → ℝ := fun x => G x ^ 2 / x ^ 2 with hf
+  have hf0 : ∀ x, 0 ≤ f x := fun x => by simp only [hf]; positivity
+  set a : ℕ → ℝ := fun i => (i : ℝ) + 1 with ha
+  have hsub : ∀ i : ℕ, Icc (a i) (a (i + 1)) ⊆ Ioi 0 := fun i x hx =>
+    lt_of_lt_of_le (by simp only [ha]; positivity) hx.1
+  have hii : ∀ i : ℕ, IntervalIntegrable f volume (a i) (a (i + 1)) := by
+    intro i
+    have hle : a i ≤ a (i + 1) := by simp only [ha]; push_cast; linarith
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hle]
+    exact hint.mono_set (hsub i)
+  have hpt' : ∀ n : ℕ, arithmeticDampingCenteredOperator hη0 b n ^ 2 ≤
+      8 * (∫ x in a n..a (n + 1), f x) + 2 * E ^ 2 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+    intro n
+    have hle : a n ≤ a (n + 1) := by simp only [ha]; push_cast; linarith
+    have hlen : a (n + 1) - a n = 1 := by simp only [ha]; push_cast; ring
+    have hmono : ∫ x in a n..a (n + 1),
+        (arithmeticDampingCenteredOperator hη0 b n ^ 2 - 2 * E ^ 2 / ((n + 1 : ℕ) : ℝ) ^ 2) ≤
+        ∫ x in a n..a (n + 1), 8 * f x := by
+      refine intervalIntegral.integral_mono_on_of_le_Ioo hle intervalIntegrable_const
+        ((hii n).const_mul 8) fun x hx => ?_
+      have hx1 : ((n + 1 : ℕ) : ℝ) ≤ x := by
+        have := hx.1.le; simp only [ha] at this; push_cast; linarith
+      have hx2 : x < ((n + 1 : ℕ) : ℝ) + 1 := by
+        have := hx.2; simp only [ha] at this; push_cast at this ⊢; linarith
+      have := hpt n x hx1 hx2
+      simp only [hf]
+      linarith
+    rw [intervalIntegral.integral_const, hlen, one_smul, intervalIntegral.integral_const_mul]
+      at hmono
+    exact sub_le_iff_le_add.mp hmono
+  have hsum := intervalIntegral.sum_integral_adjacent_intervals (f := f) (μ := volume)
+    (a := a) (n := T) fun i _ => hii i
+  have h0T : a 0 ≤ a T := by simp only [ha]; push_cast; linarith [(Nat.cast_nonneg T : (0:ℝ) ≤ T)]
+  have htail : ∫ x in a 0..a T, f x ≤ ∫ x in Ioi (0 : ℝ), f x := by
+    rw [intervalIntegral.integral_of_le h0T]
+    refine setIntegral_mono_set hint (ae_of_all _ fun x => hf0 x) ?_
+    exact LE.le.eventuallyLE (show Ioc (a 0) (a T) ≤ Ioi (0 : ℝ) from fun x hx =>
+      lt_trans (by simp only [ha]; norm_num) hx.1)
+  have hinv := sum_range_inv_succ_sq_le_two T
+  have hE0 : 0 ≤ E ^ 2 := sq_nonneg _
+  calc ∑ n ∈ Finset.range T, arithmeticDampingCenteredOperator hη0 b n ^ 2
+      ≤ ∑ n ∈ Finset.range T, (8 * (∫ x in a n..a (n + 1), f x) +
+          2 * E ^ 2 / ((n + 1 : ℕ) : ℝ) ^ 2) := Finset.sum_le_sum fun n _ => hpt' n
+    _ = 8 * (∫ x in a 0..a T, f x) +
+          2 * E ^ 2 * ∑ n ∈ Finset.range T, 1 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+        rw [Finset.sum_add_distrib, ← Finset.mul_sum, hsum, Finset.mul_sum]
+        congr 1
+        exact Finset.sum_congr rfl fun n _ => by ring
+    _ ≤ 8 * (∫ x in Ioi (0 : ℝ), f x) + 2 * E ^ 2 * 2 :=
+        add_le_add (mul_le_mul_of_nonneg_left htail (by norm_num))
+          (mul_le_mul_of_nonneg_left hinv (by positivity))
+    _ ≤ 8 * (∫ x in Ioi (0 : ℝ), f x) + 32 * nb := by nlinarith
+
+/-- **The chain is bounded uniformly for `½ < η < 1`.** -/
+theorem exists_centeredOperator_l2_le_uniform :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ (η : ℝ) (h0 : 1 / 2 < η), η < 1 → ∀ (b : C₀(ℕ, ℝ)) {N : ℕ},
+      (∀ k, N ≤ k → b k = 0) → ∀ T : ℕ,
+        ∑ n ∈ Finset.range T,
+            arithmeticDampingCenteredOperator (by linarith : (0 : ℝ) < η) b n ^ 2 ≤
+          M * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  obtain ⟨MF, hMF, hF⟩ := exists_integral_weighted_symbol_le
+  refine ⟨8 * (MF / (2 * Real.pi)) + 32, by positivity, fun η h0 h1 b N hb T => ?_⟩
+  set nb := ∑ k ∈ Finset.range N, b k ^ 2 with hnb
+  have hnb0 : 0 ≤ nb := Finset.sum_nonneg fun k _ => sq_nonneg _
+  have hB := abs_combinedProfile_le_bound h0 h1 N b
+  obtain ⟨hint, heq⟩ := integral_sq_div_sq_eq_mellin (measurable_combinedProfile η N b) h0
+    (fun x hx => (hB hx).1) (fun x hx => (hB hx).2)
+  have hFb := hF η h0 h1 N b hb
+  have hnorm : ∀ t : ℝ, ‖mellin (fun x => (combinedProfile η N b x : ℂ))
+      (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2 =
+      ‖dilationSymbol η N b t‖ ^ 2 *
+        ‖mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2 := by
+    intro t
+    rw [mellin_combinedProfile_eq h0 h1 N b t, norm_mul, mul_pow]
+  have hG : ∫ x in Ioi (0 : ℝ), combinedProfile η N b x ^ 2 / x ^ 2 ≤ MF / (2 * Real.pi) * nb := by
+    rw [heq, funext hnorm]
+    calc 1 / (2 * Real.pi) * ∫ t : ℝ, ‖dilationSymbol η N b t‖ ^ 2 *
+          ‖mellin (fun x => (sourceProfile η x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2
+        ≤ 1 / (2 * Real.pi) * (MF * nb) := mul_le_mul_of_nonneg_left hFb (by positivity)
+      _ = MF / (2 * Real.pi) * nb := by ring
+  have h := sum_sq_centeredOperator_le_integral h0 h1 b hb T hint
+  calc _ ≤ 8 * (∫ x in Ioi (0 : ℝ), combinedProfile η N b x ^ 2 / x ^ 2) + 32 * nb := h
+    _ ≤ 8 * (MF / (2 * Real.pi) * nb) + 32 * nb := by gcongr
+    _ = (8 * (MF / (2 * Real.pi)) + 32) * nb := by ring
+
+/-! ### Half damping -/
+
+/-- The entries of the centred chain depend continuously on the damping. -/
+theorem continuousAt_centeredRow (n k : ℕ) {η₀ : ℝ} (hη₀ : 0 < η₀) :
+    ContinuousAt (fun η => arithmeticDampingCenteredRow η n k) η₀ := by
+  have hpow : ∀ (m : ℕ), 0 < m → ∀ c : ℝ, Continuous fun η : ℝ => (m : ℝ) ^ (c - η) :=
+    fun m hm c => continuous_const.rpow (continuous_const.sub continuous_id)
+      fun _ => Or.inl (Nat.cast_pos.mpr hm).ne'
+  have hcoeff : ∀ j : ℕ, Continuous fun η : ℝ => pmPowerDampedDivisorCoeff η j := by
+    intro j
+    unfold pmPowerDampedDivisorCoeff
+    refine continuous_finsetSum _ fun d hd => continuous_const.mul ?_
+    have h := hpow d (Nat.pos_of_mem_divisors hd) 0
+    simpa using h
+  have hprefix : ∀ q : ℕ, Continuous fun η : ℝ => arithmeticDampingPrefix η q := by
+    intro q
+    unfold arithmeticDampingPrefix
+    exact continuous_finsetSum _ fun j _ => hcoeff j
+  have hneg : ∀ (m : ℕ), 0 < m → Continuous fun η : ℝ => (m : ℝ) ^ (-η) := by
+    intro m hm
+    have h := hpow m hm 0
+    simpa using h
+  have hdens : ContinuousAt (fun η => (RHTower.pmPowerDampedDivisorDensity η).re) η₀ := by
+    have hz : ContinuousAt (fun η : ℝ => RHTower.realZetaSeries (1 + η)) η₀ :=
+      ((RHTower.contDiffAt_realZetaSeries (by linarith) 0).continuousAt).comp
+        (f := fun η : ℝ => 1 + η) (by fun_prop)
+    have hz0 : RHTower.realZetaSeries (1 + η₀) ≠ 0 :=
+      (RHTower.realZetaSeries_pos (by linarith)).ne'
+    refine (continuousAt_const.div hz hz0).congr ?_
+    filter_upwards [Ioi_mem_nhds hη₀] with η hη
+    exact (pmPowerDampedDivisorDensity_re_eq hη).symm
+  unfold arithmeticDampingCenteredRow arithmeticDampingTransition arithmeticDampingEntrance
+  refine ContinuousAt.sub ?_ ?_
+  · refine (continuous_const.mul (((hneg (k + 1) (Nat.succ_pos k)).mul (hprefix _)).sub
+      ((hneg (k + 1 + 1) (Nat.succ_pos _)).mul (hprefix _)))).continuousAt
+  · refine (hdens.mul continuousAt_const).mul ?_
+    have h1 := hpow (k + 1) (Nat.succ_pos k) (-1)
+    have h2 := hpow (k + 1 + 1) (Nat.succ_pos _) (-1)
+    exact (h1.sub h2).continuousAt
+
+/-- **The chain is bounded at half damping**: there is `M` with
+`Σ_{n<T} (C_{½} b)(n)² ≤ M Σ_k b_k²` for every finitely supported `b` and every horizon. -/
+theorem exists_centeredOperator_l2_le_half :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ (b : C₀(ℕ, ℝ)) {N : ℕ}, (∀ k, N ≤ k → b k = 0) → ∀ T : ℕ,
+      ∑ n ∈ Finset.range T,
+          arithmeticDampingCenteredOperator (by norm_num : (0 : ℝ) < 1 / 2) b n ^ 2 ≤
+        M * ∑ k ∈ Finset.range N, b k ^ 2 := by
+  obtain ⟨M, hM, hunif⟩ := exists_centeredOperator_l2_le_uniform
+  refine ⟨M, hM, fun b N hb T => ?_⟩
+  set φ : ℝ → ℝ := fun η => ∑ n ∈ Finset.range T,
+    (∑ k ∈ Finset.range N, arithmeticDampingCenteredRow η n k * b k) ^ 2 with hφ
+  have happ : ∀ (η : ℝ) (hη : 0 < η) (n : ℕ), arithmeticDampingCenteredOperator hη b n =
+      ∑ k ∈ Finset.range N, arithmeticDampingCenteredRow η n k * b k := by
+    intro η hη n
+    rw [arithmeticDampingCenteredOperator_apply]
+    exact tsum_eq_sum fun k hk => by rw [hb k (by simpa using hk), mul_zero]
+  have hcont : ContinuousAt φ (1 / 2) := by
+    simp only [hφ]
+    refine continuousAt_finset_sum fun n _ => ?_
+    refine ContinuousAt.pow (continuousAt_finset_sum fun k _ => ?_) 2
+    exact (continuousAt_centeredRow n k (by norm_num)).mul continuousAt_const
+  have hev : ∀ᶠ η in 𝓝[>] (1 / 2 : ℝ), φ η ≤ M * ∑ k ∈ Finset.range N, b k ^ 2 := by
+    filter_upwards [Ioo_mem_nhdsGT (by norm_num : (1 / 2 : ℝ) < 1)] with η hη
+    have h := hunif η hη.1 hη.2 b hb T
+    simp only [hφ]
+    simp only [happ η (by linarith [hη.1])] at h
+    exact h
+  have hlim := le_of_tendsto (hcont.tendsto.mono_left nhdsWithin_le_nhds) hev
+  simp only [hφ] at hlim
+  simp only [happ (1 / 2) (by norm_num)]
+  exact hlim
+
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

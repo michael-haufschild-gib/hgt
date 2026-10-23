@@ -15,8 +15,8 @@ the complete-period `(ℤ/2ℤ)^N` sign-invariance classification to the prime-c
    $$\bigl(A_F(a) - A_F(b)\bigr)^2 \le 2 A_F(0)\bigl(A_F(0) - A_F(b - a)\bigr).$$
    Combining `sq_two_atom_le` (the `(+1, +1)` ray `primePairPlusProfile`) with `sq_two_atom_sub_le`
    (the `(+1, -1)` ray `primePairMinusProfile`) eliminates the ratio-lag coupling `A_F(b - a)` by
-   `(ℤ/2ℤ)` sign averaging and yields the unconditional Bessel bound
-   $$A_F(a)^2 + A_F(b)^2 \le A_F(0)^2.$$
+   `(ℤ/2ℤ)` sign averaging and yields the unconditional polarization bound
+   $$A_F(a)^2 + A_F(b)^2 \le 2 A_F(0)^2.$$
 
 2. **Single-Mode Sign Flip of the Prime-Comb Energy (`combEnergy_singleModeSignFlip_sub`)**:
    Whereas every complete-period quadratic form of the sieve theory is diagonal in the Selberg
@@ -88,15 +88,19 @@ theorem sq_two_atom_sub_le (hF : Continuous F) (hFc : HasCompactSupport F) (a b 
   rw [discrim] at hdisc
   nlinarith [hdisc]
 
-/-- **Sign-averaged two-atom Bessel inequality (`sq_two_atom_add_sq_sub_le`):**
-Averaging the symmetric two-atom law `sq_two_atom_le` (`(+1, +1)`Selberg signs) and the
+/-- **Sign-averaged two-atom polarization inequality (`sq_two_atom_add_sq_sub_le`):**
+Averaging the symmetric two-atom law `sq_two_atom_le` (`(+1, +1)` Selberg signs) and the
 parity-twisted two-atom law `sq_two_atom_sub_le` (`(+1, -1)` Selberg signs) cancels the ratio-lag
-term `autoCorr F (b - a)` and gives `(autoCorr F a)^2 + (autoCorr F b)^2 ≤ (autoCorr F 0)^2`. -/
+term `autoCorr F (b - a)` and gives `(autoCorr F a)^2 + (autoCorr F b)^2 ≤ 2 * (autoCorr F 0)^2`. -/
 theorem sq_two_atom_add_sq_sub_le (hF : Continuous F) (hFc : HasCompactSupport F) (a b : ℝ) :
-    autoCorr F a ^ 2 + autoCorr F b ^ 2 ≤ autoCorr F 0 ^ 2 := by
+    autoCorr F a ^ 2 + autoCorr F b ^ 2 ≤ 2 * autoCorr F 0 ^ 2 := by
   have hplus := sq_two_atom_le hF hFc a b
   have hminus := sq_two_atom_sub_le hF hFc a b
-  nlinarith [hplus, hminus]
+  have hsum : 2 * (autoCorr F a ^ 2 + autoCorr F b ^ 2) =
+      (autoCorr F a + autoCorr F b) ^ 2 + (autoCorr F a - autoCorr F b) ^ 2 := by ring
+  have hrhs : 2 * autoCorr F 0 * (autoCorr F 0 + autoCorr F (b - a)) +
+      2 * autoCorr F 0 * (autoCorr F 0 - autoCorr F (b - a)) = 4 * autoCorr F 0 ^ 2 := by ring
+  linarith [hplus, hminus, hsum, hrhs]
 
 /-! ## §2. Single-Mode Sign Flip of the Prime-Comb Energy -/
 
@@ -117,7 +121,7 @@ theorem combEnergy_singleModeSignFlip_sub {s : Finset ℕ} {p₀ : ℕ} (hp₀ :
       -2 * w p₀ * ∑ q ∈ s.erase p₀, w q * autoCorr F (Real.log q - Real.log p₀) := by
     rw [← add_sum_erase _ _ hp₀, ← add_sum_erase _ (fun q => w p₀ * w q * _) hp₀]
     have hp₀_flip : singleModeSignFlip p₀ p₀ = -1 := by simp [singleModeSignFlip]
-    rw [hp₀_flip, mul_sum, ← sum_sub_distrib]
+    rw [hp₀_flip, mul_sum]
     have hdiag : ((-1 * w p₀) * (-1 * w p₀) * autoCorr F (Real.log p₀ - Real.log p₀) +
         ∑ x ∈ s.erase p₀,
           (-1 * w p₀) * (singleModeSignFlip p₀ x * w x) * autoCorr F (Real.log x - Real.log p₀)) -
@@ -126,8 +130,8 @@ theorem combEnergy_singleModeSignFlip_sub {s : Finset ℕ} {p₀ : ℕ} (hp₀ :
         ∑ x ∈ s.erase p₀,
           ((-1 * w p₀) * (singleModeSignFlip p₀ x * w x) * autoCorr F (Real.log x - Real.log p₀) -
             w p₀ * w x * autoCorr F (Real.log x - Real.log p₀)) := by
-      rw [← sum_sub_distrib]; ring
-    rw [hdiag, ← sum_sub_distrib]
+      rw [sum_sub_distrib]; ring
+    rw [hdiag]
     have hzero : ∀ x ∈ s.erase p₀,
         ((-1 * w p₀) * (singleModeSignFlip p₀ x * w x) * autoCorr F (Real.log x - Real.log p₀) -
           w p₀ * w x * autoCorr F (Real.log x - Real.log p₀)) -
@@ -227,8 +231,9 @@ theorem combEnergy_primePairWeights_eq {N : ℕ} (hN : 3 ≤ N) :
               autoCorr F (Real.log q - Real.log p) :=
       fun p _ => (sum_subset hsub fun q hq hnot => by rw [hplus_supp q hq hnot]; ring).symm
     rw [sum_congr rfl hinner, sum_pair (by decide), sum_pair (by decide), sum_pair (by decide),
-      hY2_plus, hY3_plus, sub_self, sub_self,
-      show Real.log 2 - Real.log 3 = -(Real.log 3 - Real.log 2) by ring, autoCorr_neg]
+      hY2_plus, hY3_plus, sub_self, sub_self]
+    push_cast
+    rw [show Real.log 2 - Real.log 3 = -(Real.log 3 - Real.log 2) by ring, autoCorr_neg]
     ring
   have hminus_eq : combEnergy F (Icc 2 N) (selbergMultiplesCoord N (primePairMinusWeight N)) =
       2 * autoCorr F 0 - 2 * autoCorr F (Real.log 3 - Real.log 2) := by
@@ -246,8 +251,9 @@ theorem combEnergy_primePairWeights_eq {N : ℕ} (hN : 3 ≤ N) :
               autoCorr F (Real.log q - Real.log p) :=
       fun p _ => (sum_subset hsub fun q hq hnot => by rw [hminus_supp q hq hnot]; ring).symm
     rw [sum_congr rfl hinner, sum_pair (by decide), sum_pair (by decide), sum_pair (by decide),
-      hY2_minus, hY3_minus, sub_self, sub_self,
-      show Real.log 2 - Real.log 3 = -(Real.log 3 - Real.log 2) by ring, autoCorr_neg]
+      hY2_minus, hY3_minus, sub_self, sub_self]
+    push_cast
+    rw [show Real.log 2 - Real.log 3 = -(Real.log 3 - Real.log 2) by ring, autoCorr_neg]
     ring
   exact ⟨hplus_eq, hminus_eq, by linarith⟩
 

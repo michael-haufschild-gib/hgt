@@ -184,10 +184,10 @@ private theorem sq_lt_of_large_divisor_row {N K j d : ℕ} (hK : 1 ≤ K)
   have hN2 : N < 2 * d * (K * K) := lt_of_lt_of_le hNd (by
     calc d * (K * (K + 1)) ≤ d * (2 * (K * K)) := Nat.mul_le_mul_left d hK2
       _ = 2 * d * (K * K) := by ring)
-  have hNpos : 0 < N := by omega
+  have hj0 : 0 < j := lt_of_le_of_lt (Nat.zero_le _) hj1
+  have hNpos : 0 < N := lt_of_lt_of_le (Nat.mul_pos hj0 hK) hjK
   have : j ^ 2 * N < 2 * d * N * N := by
     calc j ^ 2 * N < j ^ 2 * (2 * d * (K * K)) := by
-          have : 0 < j := by omega
           exact Nat.mul_lt_mul_of_pos_left hN2 (by positivity)
       _ = 2 * d * ((j * K) * (j * K)) := by ring
       _ ≤ 2 * d * (N * N) := Nat.mul_le_mul_left _ (Nat.mul_le_mul hjK hjK)

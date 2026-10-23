@@ -203,8 +203,10 @@ theorem add_le_negIndex_fromBlocks_zero {α β : Type*} [Fintype α] [Fintype β
     · linarith [hWB y hy hy0]
   have hle := finrank_le_posIndex hpd
   have hrankW : Module.finrank ℂ W = hermNegIndex A + hermNegIndex B := by
-    rw [← ((Submodule.equivMapOfInjective e.toLinearMap e.injective (WA.prod WB)).symm).finrank_eq,
-      Module.finrank_prod, hrankA, hrankB, hermNegIndex, hermNegIndex]
+    have heq := (Submodule.equivMapOfInjective e.toLinearMap e.injective (WA.prod WB)).symm.finrank_eq
+    change Module.finrank ℂ W = Module.finrank ℂ (WA.prod WB) at heq
+    rw [heq, (WA.prodEquiv WB).finrank_eq, Module.finrank_prod, hrankA, hrankB,
+      hermNegIndex, hermNegIndex]
   rwa [hrankW] at hle
 
 /-! ### 2. Exact reflection-sector orthogonality, global partition, and degree-by-degree additivity -/
@@ -516,7 +518,7 @@ theorem hodgeDefectAt_eq_sectorHodgeDefectAt_add (Z : ZeroConfig) (hZ : Tempered
       have hle_gh : hermNegIndex (fromBlocks (zeroGram Z g) 0 0 (zeroGram Z h)) ≤
           hermNegIndex (zeroGram Z gh) := by
         have hfin := finrank_le_posIndex hpd_L
-        rwa [← ((Submodule.equivMapOfInjective L.toLinearMap L.injective W₁).symm).finrank_eq,
+        rwa [(Submodule.equivMapOfInjective L.toLinearMap L.injective W₁).symm.finrank_eq,
           hrank₁] at hfin
       have htot : (hermNegIndex (zeroGram Z g) : ℕ∞) + (hermNegIndex (zeroGram Z h) : ℕ∞) ≤
           (hermNegIndex (zeroGram Z gh) : ℕ∞) := by
@@ -611,20 +613,20 @@ def symmTranslateTest (s : ℂ) {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc :
     (d : ℝ) : testSpace :=
   ⟨symmTranslate s d g, symmTranslate_contDiff hg, symmTranslate_hasCompactSupport hgc⟩
 
+theorem symmTranslateTest_eq (s : ℂ) {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (d : ℝ) :
+    symmTranslateTest s hg hgc d =
+      (1 / 2 : ℂ) • (translateTest hg hgc d +
+        s • ⟨testNeg (translateTest hg hgc d),
+          testNeg_contDiff (translateTest hg hgc d).2.1,
+          testNeg_hasCompactSupport (translateTest hg hgc d).2.2⟩) :=
+  rfl
+
 theorem zeroMap_symmTranslateTest (Z : ZeroConfig) (hZ : TemperedConfig Z) (hFE : FESymmetric Z)
     (s : ℂ) {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (d : ℝ) :
     zeroMap Z hZ (symmTranslateTest s hg hgc d) =
       (1 / 2 : ℂ) • (heckeVec Z hZ hg hgc d + s • fesVec hFE (heckeVec Z hZ hg hgc d)) := by
-  ext τ
-  simp only [symmTranslateTest, symmTranslate, heckeVec, translateTest, zeroMap_apply,
-    fesVec_apply, lp.coeFn_smul, lp.coeFn_add, Pi.smul_apply, Pi.add_apply, smul_eq_mul,
-    zeroCoord, fesCarrier, (hFE τ τ.2).2, gammaOf_one_sub_eq, ← paperFT_testNeg]
-  have h1 := translate_contDiff hg d
-  have h2 := translate_hasCompactSupport hgc d
-  rw [paperFT_smul, paperFT_add h1.continuous h2
-    ((testNeg_contDiff h1).const_smul s).continuous ((testNeg_hasCompactSupport h2).smul_left),
-    paperFT_smul]
-  ring
+  rw [symmTranslateTest_eq, map_smul, map_add, map_smul, zeroMap_testNeg hFE hZ, heckeVec]
 
 /-- **Attainment of the sector Hodge defect on a single symmetrized Hecke orbit.** For finitely many
 distinct zeros in `sectorZeros Z s` there is a finite shift set `S ⊆ D` such that the Weil Gram
@@ -1013,33 +1015,32 @@ theorem integral_deriv_twoBump_re_sq_le {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g
     (hgc : HasCompactSupport g) (v : ℝ) :
     ∫ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u ^ 2 ≤ 4 * ∫ u, deriv g u ^ 2 := by
   have hgd_cont : Continuous (deriv g) := hg.continuous_deriv le_rfl
-  have hgd_sq_int : Integrable (fun u => deriv g u ^ 2) volume :=
-    (hgd_cont.pow 2).integrable_of_hasCompactSupport
-      (hgc.deriv.comp_left (g := fun y : ℝ => y ^ 2) (by norm_num))
+  have hgd_cs : HasCompactSupport (deriv g) := hgc.deriv
+  have hgd_sq_int : Integrable (fun u => deriv g u ^ 2) volume := by
+    simpa only [sq] using (hgd_cont.mul hgd_cont).integrable_of_hasCompactSupport hgd_cs.mul_left
   have hderiv : ∀ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u =
       deriv g (u + v / 2) - deriv g (u - v / 2) := fun u => by
     have hd1 : HasDerivAt (fun x => g (x + v / 2)) (deriv g (u + v / 2)) u :=
-      HasDerivAt.comp_add_const u (v / 2) ((hg.differentiable le_rfl (u + v / 2)).hasDerivAt)
+      HasDerivAt.comp_add_const u (v / 2) ((hg.differentiable one_ne_zero (u + v / 2)).hasDerivAt)
     have hd2 : HasDerivAt (fun x => g (x - v / 2)) (deriv g (u - v / 2)) u :=
-      HasDerivAt.comp_sub_const u (v / 2) ((hg.differentiable le_rfl (u - v / 2)).hasDerivAt)
+      HasDerivAt.comp_sub_const u (v / 2) ((hg.differentiable one_ne_zero (u - v / 2)).hasDerivAt)
     exact (hd1.sub hd2).deriv
   have hgd1_int : Integrable (fun u => deriv g (u + v / 2) ^ 2) volume :=
     hgd_sq_int.comp_add_right (v / 2)
   have hgd2_int : Integrable (fun u => deriv g (u - v / 2) ^ 2) volume :=
     hgd_sq_int.comp_sub_right (v / 2)
   have hdiff_int : Integrable (fun u => (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2) volume := by
-    have hcont : Continuous fun u => (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2 :=
-      ((hgd_cont.comp (continuous_id.add continuous_const)).sub
-        (hgd_cont.comp (continuous_id.sub continuous_const))).pow 2
+    have hcont : Continuous fun u => deriv g (u + v / 2) - deriv g (u - v / 2) :=
+      (hgd_cont.comp (continuous_id.add continuous_const)).sub
+        (hgd_cont.comp (continuous_id.sub continuous_const))
     have hcs1 : HasCompactSupport fun u => deriv g (u + v / 2) :=
-      hgc.deriv.comp_homeomorph (Homeomorph.addRight (v / 2))
+      hgd_cs.comp_homeomorph (Homeomorph.addRight (v / 2))
     have hcs2 : HasCompactSupport fun u => deriv g (u - v / 2) :=
-      hgc.deriv.comp_homeomorph (Homeomorph.subRight (v / 2))
-    exact hcont.integrable_of_hasCompactSupport
-      ((hcs1.sub hcs2).comp_left (g := fun y : ℝ => y ^ 2) (by norm_num))
+      hgd_cs.comp_homeomorph (Homeomorph.subRight (v / 2))
+    simpa only [sq] using (hcont.mul hcont).integrable_of_hasCompactSupport (hcs1.sub hcs2).mul_left
   have hcongr : (∫ u, deriv (fun x => g (x + v / 2) - g (x - v / 2)) u ^ 2) =
-      ∫ u, (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2 :=
-    integral_congr_ae (Filter.Eventually.of_forall fun u => by rw [hderiv u])
+      ∫ u, (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2 := by
+    congr 1; funext u; rw [hderiv u]
   rw [hcongr]
   have hmono : (∫ u, (deriv g (u + v / 2) - deriv g (u - v / 2)) ^ 2) ≤
       ∫ u, (2 * deriv g (u + v / 2) ^ 2 + 2 * deriv g (u - v / 2) ^ 2) := by
@@ -1104,13 +1105,14 @@ theorem zetaZeroWidth_le_of_scalingSubsurface_odd_sobolev_defect_floor {σ C : �
     rw [him0]
     simpa using hfl0
   have hF_mass : (∫ u, (f u).re ^ 2) = ∫ u, ‖f u‖ ^ 2 := by
-    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    congr 1; funext u
     have hu : (f u).im = 0 := congrFun him0 u
-    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hu, mul_zero, add_zero, sq]
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, hu]
+    ring
   have hRe_eq : (fun u => (f u).re) =
       fun u => (modScaledBump w 0 (u + v / 2)).re - (modScaledBump w 0 (u - v / 2)).re := by
     funext u
-    simp [hf_def, twoBump_apply]
+    rw [hf_def, twoBump_apply, neg_one_mul, ← sub_eq_add_neg, Complex.sub_re]
   have hF_deriv_sq : (∫ u, deriv (fun x => (f x).re) u ^ 2) ≤
       4 * ∫ u, deriv (fun x => (modScaledBump w 0 x).re) u ^ 2 := by
     rw [hRe_eq]

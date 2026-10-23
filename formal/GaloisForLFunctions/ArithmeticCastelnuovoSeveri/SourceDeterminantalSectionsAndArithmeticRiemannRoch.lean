@@ -161,10 +161,6 @@ theorem pair_ample_H : S.pair S.ample S.H = 1 := by
 theorem pair_ample_V : S.pair S.ample S.V = 1 := by
   simp only [ample, map_add, LinearMap.add_apply, S.pair_H_V, S.pair_V_V, add_zero]
 
-/-- Helper: intersection with `ample = H + V` is `x · H + x · V`. -/
-theorem pair_ample (x : C) : S.pair x S.ample = S.pair x S.H + S.pair x S.V := by
-  rw [ample, map_add]
-
 /-- Helper: left additivity of `S.pair`. -/
 theorem pair_add_left (x y z : C) : S.pair (x + y) z = S.pair x z + S.pair y z := by
   simp
@@ -329,25 +325,25 @@ theorem sourceCone_ample_of_faithful {Φ : C → ℝ}
   have hΦ0 : Φ x = 0 := le_antisymm hΦle (hnonneg x hH0 hV0)
   exact hfaith x hH0 hV0 hΦ0
 
-/-- If `Φ` is bounded above by the Castelnuovo–Severi defect `S.defect x x`, then every cycle in
-`S.sourceCone Φ` belongs to `S.positiveCone`. -/
-theorem sourceCone_subset_positiveCone_of_le_defect {Φ : C → ℝ}
-    (hle : ∀ x, Φ x ≤ S.defect x x) : S.sourceCone Φ ⊆ S.positiveCone := by
+/-- If `Φ` dominates the Castelnuovo–Severi defect `S.defect x x` (`S.defect x x ≤ Φ x`), then every
+cycle in `S.sourceCone Φ` belongs to `S.positiveCone`. -/
+theorem sourceCone_subset_positiveCone_of_defect_le {Φ : C → ℝ}
+    (hge : ∀ x, S.defect x x ≤ Φ x) : S.sourceCone Φ ⊆ S.positiveCone := by
   intro x hx
   have hdeg : 0 ≤ S.pair x S.ample := S.pair_ample_nonneg_of_mem_sourceCone hx
   rw [S.mem_sourceCone_iff] at hx
-  have hd : Φ x ≤ S.polar x x - S.pair x x := hle x
+  have hd : S.polar x x - S.pair x x ≤ Φ x := hge x
   refine ⟨?_, hdeg⟩
   linarith [hx.2.2, hd]
 
-/-- If `Φ` is bounded above by `S.defect x x`, then every cycle in `S.strictSourceCone Φ` belongs
-to `S.openPositiveCone`. -/
-theorem strictSourceCone_subset_openPositiveCone_of_le_defect {Φ : C → ℝ}
-    (hle : ∀ x, Φ x ≤ S.defect x x) : S.strictSourceCone Φ ⊆ S.openPositiveCone := by
+/-- If `Φ` dominates `S.defect x x` (`S.defect x x ≤ Φ x`), then every cycle in
+`S.strictSourceCone Φ` belongs to `S.openPositiveCone`. -/
+theorem strictSourceCone_subset_openPositiveCone_of_defect_le {Φ : C → ℝ}
+    (hge : ∀ x, S.defect x x ≤ Φ x) : S.strictSourceCone Φ ⊆ S.openPositiveCone := by
   intro x hx
   have hdeg : 0 < S.pair x S.ample := S.pair_ample_pos_of_mem_strictSourceCone hx
   rw [S.mem_strictSourceCone_iff] at hx
-  have hd : Φ x ≤ S.polar x x - S.pair x x := hle x
+  have hd : S.polar x x - S.pair x x ≤ Φ x := hge x
   refine ⟨?_, hdeg⟩
   linarith [hx.2.2, hd]
 
@@ -401,23 +397,21 @@ theorem sourceCone_surfaceRiemannRoch_of_le_defect {Φ : C → ℝ}
   · right
     simpa [zero_sub] using h
 
-/-- **Bézout Positivity for `sourceCone` and `strictSourceCone` from defect domination:**
-If `Φ` is even, nonnegative, and bounded above by `S.defect x x`, then `S.HodgeIndex` holds and both
-`S.sourceCone Φ` and `S.strictSourceCone Φ` satisfy `S.BezoutAxiom`. -/
-theorem sourceCone_bezout_of_le_defect {Φ : C → ℝ}
-    (hnonneg : ∀ x, 0 ≤ Φ x) (hle : ∀ x, Φ x ≤ S.defect x x) :
+/-- **Bézout Positivity for `sourceCone` and `strictSourceCone` from defect upper bound:**
+If `S.HodgeIndex` holds and `S.defect x x ≤ Φ x` for all `x`, then both `S.sourceCone Φ` and
+`S.strictSourceCone Φ` satisfy `S.BezoutAxiom`. -/
+theorem sourceCone_bezout_of_defect_le {Φ : C → ℝ}
+    (hH : S.HodgeIndex) (hge : ∀ x, S.defect x x ≤ Φ x) :
     S.BezoutAxiom (S.sourceCone Φ) := by
-  have hH : S.HodgeIndex :=
-    S.hodgeIndex_iff_defect_nonneg.mpr fun x => (hnonneg x).trans (hle x)
   intro x hx y hy
-  exact S.positiveCone_bezout hH x (S.sourceCone_subset_positiveCone_of_le_defect hle hx)
-    y (S.sourceCone_subset_positiveCone_of_le_defect hle hy)
+  exact S.positiveCone_bezout hH x (S.sourceCone_subset_positiveCone_of_defect_le hge hx)
+    y (S.sourceCone_subset_positiveCone_of_defect_le hge hy)
 
-theorem strictSourceCone_bezout_of_le_defect {Φ : C → ℝ}
-    (hnonneg : ∀ x, 0 ≤ Φ x) (hle : ∀ x, Φ x ≤ S.defect x x) :
+theorem strictSourceCone_bezout_of_defect_le {Φ : C → ℝ}
+    (hH : S.HodgeIndex) (hge : ∀ x, S.defect x x ≤ Φ x) :
     S.BezoutAxiom (S.strictSourceCone Φ) := by
   intro x hx y hy
-  exact S.sourceCone_bezout_of_le_defect hnonneg hle
+  exact S.sourceCone_bezout_of_defect_le hH hge
     x (S.strictSourceCone_subset_sourceCone Φ hx)
     y (S.strictSourceCone_subset_sourceCone Φ hy)
 
@@ -810,17 +804,9 @@ theorem l2SourceCone_riemannRoch_iff_weilPair_ge {c : ℝ} (hc : 0 < c)
     push Not at hlt
     let E : ℝ := c * ∫ u : ℝ, (f.1.1 u) ^ 2
     let W : ℝ := weilPair f.1.1 f.1.1
-    have hE0 : 0 ≤ E := mul_nonneg hc.le (integral_nonneg fun _ => sq_nonneg _)
-    have hmax_lt : max W 0 < E := max_lt hlt (lt_of_le_of_lt (le_max_right W 0) (max_lt hlt
-      (by linarith [le_max_left W 0])))
-    set M : ℝ := (E + max W 0) / 2
-    have hW_lt_M : W < M := by
-      have : W ≤ max W 0 := le_max_left W 0
-      dsimp [M]; linarith
+    set M : ℝ := (E + W) / 2
+    have hW_lt_M : W < M := by dsimp [M]; linarith
     have hM_lt_E : M < E := by dsimp [M]; linarith
-    have hM_pos : 0 < M := by
-      have : 0 ≤ max W 0 := le_max_right W 0
-      dsimp [M]; linarith
     set a₀ : ℝ := 1 / 2 - poleA f.1.1
     set b₀ : ℝ := M - poleB f.1.1
     let x : ℝ × ℝ × V := (a₀, b₀, f)
@@ -842,8 +828,8 @@ theorem l2SourceCone_riemannRoch_iff_weilPair_ge {c : ℝ} (hc : 0 < c)
     · rw [l2SourceCone, S.mem_sourceCone_iff, hpol] at hxE
       have hleE : E ≤ M := hxE.2.2
       linarith
-    · rw [l2SourceCone, S.mem_sourceCone_iff, S.pair_neg_left, hxH] at hnxE
-      linarith [hnxE.1]
+    · rw [l2SourceCone, S.mem_sourceCone_iff, S.pair_neg_left, hxV] at hnxE
+      linarith [hnxE.2.1]
   · intro hle
     exact S.sourceCone_riemannRoch_of_le_defect
       (l2SourceEnergy_neg c V)
@@ -960,6 +946,26 @@ theorem sourceIncidenceCone_riemannRoch_iff_strictCoupled {r R : ℝ} (hr : 0 < 
       exact hdef x
     · intro x
       rw [sourceIncidenceFunctional_eq_defect hr hR]
+
+/-- **Unconditional Source Incidence Riemann–Roch, Ampleness, and Bézout Past the First Prime
+(`0 < r ≤ 181/500 < R`):**
+Because `sourceIncidenceFunctional r R` equals the exact Castelnuovo–Severi defect by the
+explicit-formula ledger, `sourceIncidenceCone r R` satisfies `RiemannRochAxiom`, `AmpleAxiom`, and
+`BezoutAxiom` simultaneously for all `0 < r ≤ 181/500` and `r < R`. -/
+theorem sourceIncidenceCone_riemannRoch_of_le_threeHundredSixtyTwoThousandths {r R : ℝ}
+    (hr0 : 0 < r) (hr : r ≤ 181 / 500) (hR : r < R) :
+    (scalingSubsurface (oddRealTestsAt r)).RiemannRochAxiom (sourceIncidenceCone r R) ∧
+      (scalingSubsurface (oddRealTestsAt r)).AmpleAxiom (sourceIncidenceCone r R) ∧
+      (scalingSubsurface (oddRealTestsAt r)).BezoutAxiom (sourceIncidenceCone r R) := by
+  let S := scalingSubsurface (oddRealTestsAt r)
+  have hH : S.HodgeIndex :=
+    scalingSubsurface_odd_hodgeIndex_of_le_threeHundredSixtyTwoThousandths hr
+  have hRR : S.RiemannRochAxiom (strictCoupledArithmeticCone (oddRealTestsAt r)) :=
+    (strictCoupledArithmeticCone_riemannRoch_iff_hodgeIndex _).mpr hH
+  refine ⟨(sourceIncidenceCone_riemannRoch_iff_strictCoupled hr0 hR).mpr hRR,
+    sourceIncidenceCone_ample r R,
+    S.strictSourceCone_bezout_of_defect_le hH fun x => ?_⟩
+  rw [sourceIncidenceFunctional_eq_defect hr0 hR]
 
 /-! ### 4. Unconditional Arithmetic Riemann–Roch Past the First Prime on the Full Ample-Orthogonal
 Primitive Hyperplane `primitiveSmoothRealTestsAt r` (`r ≤ ½(log 2 + 1/50)`) -/

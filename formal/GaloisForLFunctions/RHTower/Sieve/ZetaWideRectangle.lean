@@ -207,7 +207,8 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
             * (3 * wideScale w.im + 1) ≤ 80 * Real.log (wideScale w.im) ^ 2 := by
           rw [div_mul_eq_mul_div, div_le_iff₀ hL0]
           linarith only [mul_le_mul_of_nonneg_left hone (sq_nonneg (Real.log (wideScale w.im)))]
-        linarith only [hstep, hcancel, hsq, hs, mul_le_mul_of_nonneg_left hs1 hsnn]
+        linarith only [hstep, hcancel, hsq, hs, hsnn,
+          mul_le_mul_of_nonneg_left hs1 hsnn]
       have hrw : ((lineTruncation w.im : ℕ) : ℝ) ^ (1 - w.re)
           = Real.exp (Real.log ((lineTruncation w.im : ℕ) : ℝ) * (1 - w.re)) :=
         Real.rpow_def_of_pos (by linarith) _

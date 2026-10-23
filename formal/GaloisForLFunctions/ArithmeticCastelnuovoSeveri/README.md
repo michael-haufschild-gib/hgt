@@ -393,6 +393,14 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     floor in the degree: the unconditional floor has rate `σ = ½`, any power saving would be a
     zero-free strip. Through degree `181/500` the odd floor is `0`
     (`strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoThousandths`).
+33. **Hecke-stable effectivity, prime-blind section counts, and diagonal relabeling (`SectionCountRiemannRochAndPrimeBlindSelectivity`).**
+    Because `heckeCorrespondence a` acts on the pole plane with weights `(a, 1)` (`heckeCorrespondence_pair_H`, `heckeCorrespondence_pair_V`),
+    a cycle `x` stays in the ample half-space `x · (H + V) ≥ 0` under all Hecke correspondences `T_a` (`a > 0`) — or all Adams operations `adamsOp q` (`q > 0`) — if and only if it lies in the double-null nef quadrant `nefQuadrant = {x | x · H ≥ 0 ∧ x · V ≥ 0}` (`forall_heckeCorrespondence_mem_ampleHalfSpace_iff_mem_nefQuadrant`, `forall_adamsOp_mem_ampleHalfSpace_iff_mem_nefQuadrant`).
+    On every polar surface `S`, `S.HodgeIndex ⟺ S.openPositiveCone ⊆ S.nefQuadrant` (`hodgeIndex_iff_openPositiveCone_subset_nefQuadrant`; violated by `goldenDatum` on `{0, 1}`, `goldenDatum_openPositiveCone_not_subset_nefQuadrant`).
+    Over `ℚ`, `adamsOp q` is an intersection isometry (`pair_adamsOp`), so `heckeCorrespondence a` (`a > 0`) preserves `openPositiveCone` iff it preserves `ampleHalfSpace` on `openPositiveCone`, and a *single* scale `a > 1` (in particular `a = 2` at the first prime) already decides the Hodge index: `RiemannHypothesis ⟺ scalingSurface.HodgeIndex ⟺ heckeCorrespondence 2 '' openPositiveCone ⊆ ampleHalfSpace` (`scalingSurface_hodgeIndex_iff_heckeCorrespondence_openPositiveCone_ample`, `scalingSurface_hodgeIndex_iff_heckeStable_effectivity`).
+    On the section-count side, the two-pole degrees of freedom `polarBoxDoF s = ∫_0^s (e^u + 1) du = e^s + s − 1` minus the prime-power node count `primeNodeCount s = ψ(e^s)` equals the Chebyshev two-pole defect `E(s) = chebyshevTwoPoleDefect s` (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`), whereas for the shifted pair `Λ_a(n) = ½(n^a + n^{−a})Λ(n)` (`a ≠ 0`) the weighted node count is strictly inflated by `(2^a + 2^{−a})/2 > 1` (`generalizedTwoPoleDefect_shiftedPair_lt`, `generalizedTwoPoleDefect_shiftedPair_log_two_neg`).
+    If a test `F` is horizon-prime-blind (`autoCorrelation F (log n) = 0` on `relevantShifts r`), its reflected-prime/polar cost collapses to `poleCharge F = 2 A(F)² ≥ 0` (`reflectedPrimePolarCost_eq_poleCharge_of_isHorizonPrimeBlind`), and by the unconditional Nyquist–Landau bounds (`ninety_nine_fourths_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero_unconditional`, `sixty_nine_halves_l2_lt_spectralSecondMoment_of_cosh_zero_of_logVector_eq_zero_unconditional`), any `C²_c(ℝ)` prime-blind subspace with vanishing even pole moment and spectral second moment `≤ (69/2) ∫ f²` is the zero subspace (`primeBlind_eq_zero_of_spectralSecondMoment_le_sixty_nine_halves`, `finrank_primeBlind_subspace_eq_zero`).
+    By contrast, the classical Dirichlet sampling operator `dirichletSampling` has `h⁰ = finrank(ker) ≥ d − m` (`h0_dirichletSampling_at_sqrt_threshold`), and multiplying by any nowhere-vanishing diagonal weight `D` (such as `(n^a + n^{−a})/2` comparing `shiftedPairVonMangoldt a` to `Λ`) leaves `ker` and `h⁰` unchanged (`h0_mul_diagonal_eq_of_iff_eq_zero`, `h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`), proving that uncalibrated rank-based section counts only relabel Dirichlet polynomials unless coupled to the Frobenius norm `Σ_n w(n)²` or the two-pole defect `E(s)` (`sectionCount_riemannRoch_and_selectivity_master`).
 
 ---
 
@@ -461,15 +469,13 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
    `½ Σ_i (‖β_i‖ − ‖β_i‖⁻¹)²` (`frobReflectionDefect_singleton_one`, equal to `1` on `goldenDatum`
    and `9/4` on `hidingDatum N`) and lag-2 identity
    `trace 2 = 2g + ½ Σ_i (‖β_i‖ − ‖β_i‖⁻¹)² − 2 Σ_i (Im β_i)²`
-   (`trace_two_eq_card_add_frobReflectionDefect_sub_im_sq`). The data that force the sign (`forcing_arithmetic_data_tfae`,
-   `scalingSurface_forcing_tfae`) are: (i) pointwise Rosati fixed-point invariance `β_{reflPerm i} = β_i`
-   (or `N_2 ≥ q² + 1 − 2gq` for real-spectrum data, `unitary_iff_pointCount_two_ge_of_im_eq_zero`);
+   (`trace_two_eq_card_add_frobReflectionDefect_sub_im_sq`).
+   **The data that force the sign (`forcing_arithmetic_data_tfae`,`scalingSurface_forcing_tfae`) are**: 
+   (i) pointwise Rosati fixed-point invariance `β_{reflPerm i} = β_i` (or `N_2 ≥ q² + 1 − 2gq` for real-spectrum data `unitary_iff_pointCount_two_ge_of_im_eq_zero`);
    (ii) pole-subtracted Hasse–Weil bounds `|N_k − (q^k + 1)| ≤ 2g q^{k/2}` or `O(q^{k/2})` (`unitary_of_trace_bdd`);
-   (iii) forward light-cone Bézout positivity `BezoutAxiom positiveCone`, ample order-unit dominance
-   of the dual nef cone (`dualCone_ample_of_orderUnit`), or ambient Bézout+Riemann–Roch realizability
+   (iii) forward light-cone Bézout positivity `BezoutAxiom positiveCone`, ample order-unit dominance of the dual nef cone (`dualCone_ample_of_orderUnit`), or ambient Bézout+Riemann–Roch realizability
    (`hodgeIndex_of_ambient_bezout_riemannRoch`, `goldenDatum_no_ambient_bezout_riemannRoch`); and over `ℤ`,
-   (iv) coupled odd-cone Bézout (`coupledArithmeticCone_bezout_iff_hodgeIndex`) and all-aperture payment
-   of the pole-cancelled two-pole Chebyshev remainder `E(s) = e^s + s − 1 − ψ(e^s)` on `(0, 2r]`.
+   (iv) coupled odd-cone Bézout (`coupledArithmeticCone_bezout_iff_hodgeIndex`) and all-aperture payment of the pole-cancelled two-pole Chebyshev remainder `E(s) = e^s + s − 1 − ψ(e^s)` on `(0, 2r]`.
 4. **What can a Gram functional certify without effectivity?** A proportion `2 − κ`, capped at `2/3`
    below pair correlation at `λ = 1`, with two named inputs that would reach `3/4`.
 5. **What would an effectivity for `ℤ` have to be?** A cone defined without the sign of the form,
@@ -642,3 +648,4 @@ Weil's argument.
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring series, Adams operations `adamsOp q`, Hecke cycles `heckeCycle a g`, pole-plane splitting, Lefschetz splitting, zero-side eigenlaw |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector reflected-prime/polar and Chebyshev ledgers, `(8 + ε) e^r` floor, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | universal Toeplitz–Rosati reflection identity, lag-2 trace–reflection–oscillation law, pole-masking equivalence `N_k ≥ 0 ⟺ trace k ≤ q^{k/2} + q^{−k/2}`, 9-way forcing TFAE over `𝔽_q` (`forcing_arithmetic_data_tfae`), forward light-cone Bézout (`hodgeIndex_bezout_tfae`, `goldenForwardPair_violates_openPositiveCone_bezout`), dual nef cone order-unit ampleness and ambient realizability obstruction, 9-way forcing TFAE on `scalingSurface` (`scalingSurface_forcing_tfae`) |
+| `SectionCountRiemannRochAndPrimeBlindSelectivity` | double-null nef quadrant (`hodgeIndex_iff_openPositiveCone_subset_nefQuadrant`), Hecke/Adams stability of ample degrees (`forall_heckeCorrespondence_mem_ampleHalfSpace_iff_mem_nefQuadrant`), single-scale `heckeCorrespondence 2` ampleness equivalence (`scalingSurface_hodgeIndex_iff_heckeCorrespondence_openPositiveCone_ample`, `scalingSurface_hodgeIndex_iff_heckeStable_effectivity`), `(DoF) − (node count) = E(s)` (`polarBoxDoF_sub_primeNodeCount_eq_chebyshevTwoPoleDefect`), shifted-pair node inflation (`generalizedTwoPoleDefect_shiftedPair_lt`), `99/4` & `69/2` prime-blind section vanishing (`primeBlind_eq_zero_of_spectralSecondMoment_le_sixty_nine_halves`, `finrank_primeBlind_subspace_eq_zero`), and diagonal relabeling invariance (`h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`, `sectionCount_riemannRoch_and_selectivity_master`) |

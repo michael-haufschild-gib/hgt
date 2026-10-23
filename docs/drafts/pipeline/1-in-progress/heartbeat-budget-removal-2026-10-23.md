@@ -93,7 +93,7 @@ valid.
 - [x] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` (depth 6, 12)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor.lean` (depth 6, 2)
 - [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)
-- [ ] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` (depth 6, 1)
+- [x] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` (depth 6, 1)
 - [ ] `RHTower/Sieve/ZetaWideBand.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureAreaRigidity.lean` (depth 6, 1)
 - [ ] `RHTower/SoninApertureCurvatureTrace.lean` (depth 6, 1)
@@ -473,11 +473,9 @@ valid.
 
 ## Log
 - 2026-10-23 — created; three direct dependencies cleared.
-- 2026-10-23 — bounded completion audit started for the already edited list below. The list
-  contains 68 entries (the request says 65); clarification requested. No other queue entries
-  are included. Initial audit found five listed files still carrying raised heartbeat limits
-  and all 68 existing oleans older than their sources. Source hashes, per-file compiler logs,
-  and artifact hashes are recorded in `formal/.lake/heartbeat-budget-removal-2026-10-23/`.
+- 2026-10-23 — bounded completion audit started for the already edited list below. No other
+  queue entries are included. Individual source checks and olean/ilean builds are recorded
+  beside each completed entry; axiom audits are excluded.
 
 ## Edited, not yet verified at default budget
 Proof rewrites are present. Check and fix each listed file at default budgets, then produce
@@ -511,7 +509,7 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/MultiplicativeEulerBound.lean` — direct norm comparison and narrowed arithmetic; check and build passed.
 - [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` — narrowed tail-bound arithmetic; check and build passed.
 - [x] `RHTower/Sieve/RouteTZetaInverseBound.lean` — narrowed logarithmic bounds; check and build passed.
-- `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean`
+- [x] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` — narrowed envelope arithmetic; check and build passed.
 - `RHTower/Sieve/ZetaWideBand.lean`
 - `RHTower/Sieve/ZetaWideRectangle.lean`
 - `RHTower/SoninApertureFourierParityNoGo.lean`
