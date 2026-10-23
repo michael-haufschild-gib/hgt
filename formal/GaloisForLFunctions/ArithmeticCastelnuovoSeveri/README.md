@@ -362,3 +362,4 @@ Weil's argument.
 | `TheAdjunctionConjectureMeanField` | mean-field law; no polynomial adjunction bound |
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell` | pronic weight = pole mass of the successor cell |
 | `TheSuccessorCollar` | collar bounds; consecutive Hecke cycles meet through the collar alone |
+| `TheTwoThirdsConstantIsPairCorrelation` | `2 − κ` capacity of rank–trace inertia, coalescence indistinguishability, `2/3` from `λ = 1` pair correlation |

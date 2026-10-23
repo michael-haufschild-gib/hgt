@@ -56,9 +56,18 @@ calibration models: state precisely which feature of a proposed mechanism distin
 A countermodel to an observation scheme does not refute a theorem about the literal arithmetic
 source; it identifies information that theorem must use.
 
+**The shared target.** The programmes in the table work on one object, RH as the sign of the
+complete critical arithmetic form, and on the critical cancellation of the actual prime source
+that the sign needs. This theory supplies four of the criteria by which a proposed mechanism for
+that target is judged before it is built: it must fail for a Beurling system with an off-line
+zero; it must work at the degenerate point of one character and modulus one, with no family
+average; it must carry information beyond polynomial length equal to the height at square-root
+precision; and it must separate $\log4$ from $\log6$ (node criticality, §3.16).
+
 Read §2 for the normalization dictionary, §§3.1–3.6 for correlation geometry,
-§§3.10–3.11 for the analytic receiver, and §§3.14–3.16 for arithmetic identifiability.
-The open task is to produce the signed estimate, not to rediscover its equivalent receivers.
+§§3.10–3.11 for the analytic receiver, and §§3.14–3.16 for arithmetic identifiability; §4 lists
+the pillar theorems, §§6–7 the questions and open problems. The open task is to produce the
+signed estimate, not to rediscover its equivalent receivers.
 
 ---
 
@@ -952,6 +961,15 @@ visibility from a squarefree support is closed under squarefreeness, so with $N\
 above $1/3$ holds for any such row, while any retained even anchor still gives cube-root recovery
 of the odd modes.
 
+Off the strata the exponent drops to its global value and stays there. With no amplitude, support
+or top-coordinate assumption, fifth and sixth arrays within $\varepsilon\in[0,1]$ give recovery up
+to one physical translation with error $3(\sum_{q\le N}\varphi(q))\,\varepsilon^{1/6}$
+(`exists_physical_translate_holder`): rounding the Selberg coordinates at the threshold
+$\varepsilon^{1/6}$ produces two profiles with *equal* fifth and sixth arrays, to which exact
+recovery applies. No exponent above $1/6$ holds uniformly, already in every neighbourhood of the
+zero signal (`no_improved_physical_exponent_near_zero`). Global sixth-root stability is therefore
+sharp; its constant grows with the cutoff, and every observation here is a full-period moment.
+
 Coercivity of the joint additive–multiplicative energy on integer windows has sharp doubling
 scale: every window $N\ge1024$ carries a doubling-resonant cosine with energy at most $384$ and
 variance at least $N/16$, so a valid constant is at least $N/6144$ while $6N$ always works, and no
@@ -1071,7 +1089,71 @@ floor of every unimodular completely multiplicative twist of the atoms (Dirichle
 vertical shifts) equal those of $\zeta$ (`PrimeWindowTwistInvariance`), so window extremes cannot
 read GRH.
 
-## 4. Traps and sharp boundaries
+---
+
+## 4. Foundational pillar theorems
+
+All unconditional; RH appears only inside an equivalence or as the conclusion of an implication
+from one explicit energy bound.
+
+1. **Krein increment geometry.** $(h(x)-h(y))^2\le2h(0)(h(0)-h(x-y))$ and its linear smoothing
+   bound every correlation by the Lévy energy $\mathcal J$, with no spectral second moment
+   (`autocorr_krein_increment_sq_le`, `autocorr_zero_sub_progressionSmoothed_le`); on an
+   integer-log blind source the correlation tail is controlled at logarithmic modulus
+   (`integral_Ioi_autocorr_sq_le_of_integerLog_blind`).
+2. **Gaps against density.** On every gapped node set the pole is carried at vanishing
+   archimedean cost, so zero-pole positivity fails there; on the full grid it is RH
+   (`not_zeroPoleBlindPositiveOn_of_gapped`, `not_zeroPoleBlindPositiveOn_powers`). The boundary
+   is the logarithmic density of the nodes, not their finiteness.
+3. **The power-grid moment theorem.** Every blind or zero-pole symbol slack on the powers of one
+   integer is the value of a circle moment problem for the folded symbol, with closed forms for
+   the full set, one deleted node and the off-multiples
+   (`zeroPoleBlindSymbolSlackOn_exponentNodes_iff`, `powerMomentValue_univ`,
+   `powerMomentValue_punctured`, `powerMomentValue_offMultiples`); one more node strictly
+   improves the slack exactly when it is multiplicatively independent of that integer
+   (`exists_lt_blindSymbolSlackOn_insert_of_not_mem`, `blindSymbolSlackOn_insert_iff_of_mem`), and
+   two towers are enclosed by line certificates and product designs
+   (`blindSymbolSlack_two_towers_enclosure`).
+4. **The band law.** $\int_0^L\tilde E^2=O(L)$ iff RH, equivalently linear Laplace energy of
+   $\nu_N$ or linear band energy; no growth strictly between linear and exponential is possible;
+   the exponential rate is twice the zero width (`riemannHypothesis_iff_meanSquare_band`,
+   `riemannHypothesis_iff_forall_meanSquareBandRate`, `riemannHypothesis_iff_forall_laplaceEnergyRate`).
+5. **Packets are filters with a growth exponent.** A compact packet grows exactly at the largest
+   depth among the zeros its source sees, one side suffices, and every nonzero packet oscillates
+   (`packet_lower_iff`, `riemannHypothesis_iff_forall_packet_bddAbove`, `packet_oscillates`); the
+   band of one packet reads the same width (`packet_band_iff`).
+6. **The packet–Weil law and multiplicity.** Under a one-sided packet bound the mean square of the
+   packet is $E(f)=\sum m_\rho^2\lvert\hat f\rvert^2$ and the Weil energy is
+   $W(f)=\sum m_\rho\lvert\hat f\rvert^2$, so $W\le E$ with equality iff the zeros seen are simple
+   (`packet_weil_law`, `forall_mult_eq_one_iff_forall_packet_energy_eq_weil`); $\sup E/W$ is the
+   maximal critical multiplicity (`multiplicity_ceiling_law`).
+7. **One explicit universal probe.** The cubic spline boost sees every zero; RH is one
+   spline-weighted prime sum against its polar prediction, and RH with simplicity is one packet
+   identity (`riemannHypothesis_iff_spline_prime_sum_le`, `riemannHypothesis_iff_splineProbe_band`,
+   `riemannHypothesis_and_simple_iff_splineProbe`).
+8. **Node criticality.** For every node set, zero-pole positivity holds iff RH holds and the set
+   contains every prime power (`zeroPoleBlindPositiveOn_iff`): deleting $4$ is fatal, deleting $6$
+   is irrelevant, the primes alone never suffice, and each prime-power deletion has an exact Euler
+   price (`not_zeroPoleBlindPositiveOn_diff_four`, `zeroPoleBlindPositiveOn_diff_six_iff`,
+   `not_zeroPoleBlindPositiveOn_primes`, `riemannHypothesis_iff_forall_zeroPoleBlindSymbolSlackOn_deleted`).
+   The mechanism is Farkas duality plus pole-weight rigidity and Weil-cone uniqueness: a node is
+   indispensable exactly when the certificate must charge it, $\Lambda(4)=\log2$, $\Lambda(6)=0$.
+9. **Window spectra read sizes, not phases.** A ceiling $e^{L/2}+O(L)$ forces RH, the excess
+   exponent is pinched by the width, the floor mirrors the ceiling to $O(L)$, and every unimodular
+   completely multiplicative twist has the same extremes
+   (`riemannHypothesis_of_windowCeiling_le`, `abs_windowCeiling_add_windowFloor_le`,
+   `twistedWindowCeiling_eq`).
+10. **The pole compression is graded and reads a size.** $\lvert\mathrm{cross}(a)\rvert\le Ce^{(1+2\alpha)a}$
+    gives $\Re\rho\le\tfrac12+\alpha$, and the bound $Ce^{a}$ alone gives RH with no sign
+    (`riemannHypothesis_of_abs_ccmWeilPoleCross_le`, `xiZeroHalfPlaneBound_iff_forall_exists_abs_ccmWeilPoleCross_le`).
+11. **Observation recovery is sharp.** Fifth and sixth translated moments determine a
+    divisor-sieve signal up to one canonical translation; globally with exponent $1/6$, which
+    cannot be improved (`exists_physical_translate_holder`, `no_improved_physical_exponent`), and
+    with exponent $1/3$ on the nonzero top-coordinate stratum.
+
+---
+
+## 5. Traps and sharp boundaries
 
 | trap | correct statement |
 |---|---|
@@ -1124,103 +1206,167 @@ single-integer power sets and gapped sets are instances of one definition.
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
 
-**The band.** In the field's coordinates the square-root barrier is $\int_0^L\tilde E^2=O(L)$,
-equivalently $O(L)$ Laplace energy of $\nu_N$, equivalently $O(L)$ energy in the band
-$|\xi|\le\sqrt{N+2}$; everything outside the band is bounded, the band's exponential rate is the
-zero width, its slope dominates the zero energy $\sum m_\rho^2/|\rho|^2$, it is never sublinear,
-it cannot grow strictly between linear and exponential, and the linear band is RH in both
-directions. What remains is the linear band itself. A mechanism that closes it must fail for
-Beurling systems, survive the degenerate point of one character and modulus one, carry
-information beyond polynomial length equal to height at square-root precision, and separate
-$\log4$ from $\log6$; additive tools do the first and third only after averaging over a family,
-multiplicative tools are Beurling-invariant. Sharper questions inside the band: whether the band
-constant under RH equals the zero energy (Cramér's limiting constant; the liminf of the band mean
-is at least the zero energy), the asymptotics of the
-finite-cutoff packet energy including the endpoint term $\tilde E(L)^2$, and effective finite-shift error bounds for the explicit spline probe
-$U(u)=e^u U_1^{\star4}(u)$. Its universality and RH/width criteria are already proved in
-[CubicSplineUniversalProbe](CubicSplineUniversalProbe.lean); the missing estimate is on its
-arithmetic packet, not on the choice of boost.
+### 6.1 Questions
 
-**The blind cone.** On the powers of one integer the slack is completely known, as a circle
-moment problem with closed forms for the full set, one deleted node and the off-multiples. On the
-powers of two integers the spectral law is a probability law on the line with uniform projections
-on both circles $r\mapsto r\ell_i\bmod 2\pi$; the joint phase winds densely around the torus and
-the symbol $\gamma(r)$ is a function on the line, not on the torus. Weak duality holds with *line
+1. **What do prescribed logarithmic-node correlations force on a source's archimedean energy?**
+   Answered exactly on power sets (the circle moment problem), by an enclosure on two towers, and
+   by incidence rather than density on arbitrary node sets (§3.16). Open on the full blind polar
+   class, where the answer is prime-blind archimedean positivity.
+2. **What does the signed prime–polar discrepancy reveal, and through which observable?** The
+   band, the packet, the window spectrum and the pole compression each read the zero width
+   exactly; the packet also reads multiplicities. The theory answers which reading is linear,
+   which is quadratic, which needs one side only, and which sees only sizes.
+3. **Which arithmetic feature of the node set $\{\log n\}$ does a closing mechanism have to
+   read?** Node criticality: the prime powers, individually, and nothing else. A mechanism that
+   cannot tell $\log4$ from $\log6$ cannot close the band.
+4. **What does a finite observation of an arithmetic signal determine, and how stably?**
+   Fifth and sixth translated moments determine a divisor-sieve signal up to one canonical
+   translation, with sharp exponents $1/6$ globally and $1/3$ on the top-coordinate stratum. The
+   question that remains is the cost of observing less: windows, fewer moments, cutoff-free
+   constants.
+5. **Can the compact factorial sources be completed at bounded cost?** The Müntz tail shows that
+   the direct completion cannot; whether some completion can is open.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Krein calculus on the positive-definite cone*: chord metric, Peter–Paul triangle law, linear
+  Krein smoothing, logarithmic modulus; no derivative of a correlation is ever needed.
+- *The folded symbol and its circle moment problem*, with designs as primal certificates and line
+  certificates as dual ones.
+- *Polar enforcement devices*: polar copies, symmetric copies and distant pairs, which move pole
+  mass at controlled archimedean cost.
+- *The hyperbolic gauge* $f\mapsto f'-f/2$, in which the arithmetic sits in $\tilde E$ alone and
+  every correlation tool acts on $h_{f'-f/2}$.
+- *The packet engine*: the linear explicit formula beyond the support, the one-sided Landau
+  engine, Parseval for the critical almost periodic part, tuned probes and the explicit cubic
+  spline universal probe.
+- *Producers*: Nyquist polar constants, Taylor producers, Chebyshev bi-null stencils, factorial
+  lifts, spectral designs — explicit tests with unconditional errors.
+- *The triangular Gram split* for synchronized packet blocks without orthogonality.
+- *Arithmetic observation theory*: Selberg coordinates, Ramanujan lag weights, valuation classes,
+  canonical translation, and the stratified and global stability theorems.
+
+To be built:
+
+- a source-derived bound on the band, or on the arithmetic packet of the explicit spline probe;
+- the exact two-tower slack and the slack of the prime-power-blind cone as a function of the
+  window;
+- a certified finite-prime test of $E(U)=W(U)$ with a justified tail;
+- a producer family with bounded completion cost;
+- windowed or reduced observation protocols with a quantified cutoff cost.
+
+---
+
+## 7. Open problems
+
+### 7.1 The band
+
+In the field's coordinates the square-root barrier is $\int_0^L\tilde E^2=O(L)$, equivalently
+$O(L)$ Laplace energy of $\nu_N$, equivalently $O(L)$ energy in the band $|\xi|\le\sqrt{N+2}$.
+Everything outside the band is bounded, the band's exponential rate is the zero width, its slope
+dominates the zero energy $\sum m_\rho^2/|\rho|^2$, it is never sublinear, it cannot grow strictly
+between linear and exponential, and the linear band is RH in both directions. Open: the linear
+band itself. A mechanism that closes it must fail for Beurling systems, survive the degenerate
+point of one character and modulus one, carry information beyond polynomial length equal to
+height at square-root precision, and separate $\log4$ from $\log6$; additive tools do the first
+and third only after averaging over a family, and multiplicative tools are Beurling-invariant.
+Sharper questions inside the band: whether the band constant of the raw normalized Chebyshev error
+under RH equals the zero energy (Cramér's limiting constant; the liminf of the band mean is at
+least the zero energy and a linear upper bound is proved), the asymptotics of the finite-cutoff
+packet energy including the endpoint term $\tilde E(L)^2$, and effective finite-shift error bounds
+for the explicit spline probe $U(u)=e^uU_1^{\star4}(u)$, whose universality and RH/width criteria
+are proved; the missing estimate is on its arithmetic packet, not on the choice of boost.
+
+### 7.2 The blind cone
+
+On the powers of one integer the slack is completely known. On the powers of two integers the
+spectral law is a probability law on the line with uniform projections on both circles
+$r\mapsto r\ell_i\bmod2\pi$; the joint phase winds densely around the torus and the symbol
+$\gamma(r)$ is a function on the line, not on the torus. Weak duality holds with *line
 certificates*, continuous circle observables with $P_1(r\ell_1)+P_2(r\ell_2)\le\gamma(r)$ for all
 real $r$, and product midpoint designs $\omega_a\pm\omega'_b$, whose cosine sums factor, attain the
 mean $T(q_1,q_2)$ of $\gamma$ under the convolution of the two uniform period laws. Hence the exact
-slack lies in $[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`TwoTowerBlindSlackEnclosure`). Open: its exact
-value (the box convolution is the admissible law of smallest support, not expected to be
+slack lies in $[-T(q_1,q_2),\,-m_{q_1}-\eta(q_1,q_2)]$ (`TwoTowerBlindSlackEnclosure`). Open: its
+exact value (the box convolution is the admissible law of smallest support, not expected to be
 optimal); the infimum of $\mathcal J/h(0)$ on the full blind polar class against $|\Omega(0)|$,
 which is prime-blind archimedean positivity; and, since zero-pole positivity on a node set is
-decided by incidence rather than density (§3.16: RH together with containment of every prime
-power, so the primes alone never suffice and non-prime-power nodes do not matter), the slack of the cone blind
-at exactly the prime powers as a function of the window length, between the Euler prices of
-§3.16 and the full-grid value.
+decided by incidence rather than density, the slack of the cone blind at exactly the prime powers
+as a function of the window length, between the Euler prices of §3.16 and the full-grid value.
 
-**The odd sector.** The coherent price $\log 2$ is sharp and the finite-filter gain is strict, but
-the full odd Weil sign is not proved; at pole weight one the odd bound retains a positive
-$\sinh$-moment cost.
+### 7.3 The odd sector
 
-**Packets.** The maximal critical multiplicity is $\sup_fE(f)/W(f)$, every zero a probe sees is
-felt with its amplitude in both directions, and the Weil energy is bounded by the recurrent
-maximum of the translated pairings of one packet. The unconditional upper bound
-$W(h_f)\le\limsup_{\tau\to\infty}-\langle h_f(\cdot-\tau),\nu\rangle$
-is proved in [TranslatedPairingEnvelopeLaw](TranslatedPairingEnvelopeLaw.lean).
-One-sided boundedness is required for the finite envelope equality, not for that upper bound.
-The remaining questions are effective finite-prime control of the envelope and of the identity
-$E(U)=W(U)$. An upper bound by a possibly infinite limsup supplies no positivity certificate;
-a source-derived finite bound must pay the cancellation itself.
+The coherent price $\log2$ is sharp and the finite-filter gain is strict, but the full odd Weil
+sign is not proved; at pole weight one the odd bound retains a positive $\sinh$-moment cost.
 
-**Arithmetic observation.** A common organizing theorem for the two halves exists only as a
-classification by sign characters of the subgroup generated by the support; the quantitative
-version through bounded-length relations, with energy and realization costs on both sides, is
-open. Stability off the strata (vanishing top coordinate, changing support) and a stable
-mixed-stratum formulation are open.
+### 7.4 Packets and multiplicity
 
-**Producers.** The Müntz correction tail shows that the compact factorial family cannot be
-completed inside the decay-class Weil domain at bounded normalized energy; a producer family with
-bounded completion cost, or a proof that none exists, is open. The obstruction is now localized:
-the construction's seed is an explicit zero-mean bounded-variation ramp combination, and the
-diagonal readout identities hold at every zero with $\Re\rho>0$ on both sides of the line, so
-neither the seed's regularity nor the diagonal's arithmetic is the missing ingredient — the
-unbounded cost sits entirely in the archimedean energy of the omitted negative-logarithmic tail,
-which grows like $\tfrac12\log(n+1)$ against an $O(1/(n+1))$ prime-and-pole cost. A completion at
-bounded cost therefore has to redistribute archimedean energy, not improve the seed. For the prime clocks the arithmetic
-estimates for the mass and edge kernels and the sign of their difference are open.
+The maximal critical multiplicity is $\sup_fE(f)/W(f)$, every zero a probe sees is felt with its
+amplitude in both directions, and the Weil energy is bounded by the recurrent maximum of the
+translated pairings of one packet, unconditionally
+(`TranslatedPairingEnvelopeLaw`). One-sided boundedness is required for the finite envelope
+equality, not for that upper bound. Open: effective finite-prime control of the envelope and of
+the identity $E(U)=W(U)$. An upper bound by a possibly infinite limsup supplies no positivity
+certificate; a source-derived finite bound must pay the cancellation itself. Equating packet and
+Weil energies imports simplicity of the critical zeros, which RH alone does not give.
 
-### Research topics toward the shared target
+### 7.5 Arithmetic observation
 
-1. **Node criticality.** What in the multiplicative incidence of the node set `{log n}` makes
-   `log 4` indispensable and `log 6` redundant beyond the deletion prices and window thresholds of
-   §3.16 (the price of `4` is a local Euler factor and appears at its own lag, `log 6` is the lag
-   of a node that is never charged), and how a positivity argument at arbitrary support reads it;
-   this is the criterion every mechanism of the shared target must pass.
-2. **Prime-blind archimedean positivity.** The infimum of `𝒥/h(0)` on the full blind polar class
-   against `|Ω(0)|`, with its exact slack, as an input to sign-changing ground-state gauges.
-3. **The linear band itself**, tested against the four requirements of §5: failure for Beurling
-   systems, survival at one character and modulus one, information beyond polynomial length at
-   square-root precision, separation of `log 4` from `log 6`. Equivalent coordinates for the same
-   demand, to be used interchangeably: a square-root-scale bound on the integrated Chebyshev
-   deficit `D(T) = ∫_0^T(e^t − ψ(e^t))dt`, equivalently on the cross entry of the two-exponential
-   pole compression; the unconditional rate there is `2` (Vinogradov–Korobov) against the needed
-   `1 + 2α`, and any improvement of the rate is an explicit strip.
-4. **Packets and multiplicity.** Whether the packet identity `E(U) = W(U)` can be tested with a certified finite-prime error, and whether the explicit spline packet admits a
-   source-derived finite envelope bound. The unconditional limsup upper bound already exists;
-   the target is quantitative control of its right-hand side.
-5. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted pair
-   `ζ(s−a)ζ(s+a)`, the Liouville twist and the function-field case `F_q[T]`, each written in the
-   coordinates of the shared target (node values, window spectra, packets, the blind cone), so that
-   every positivity or cancellation theorem of the sibling programmes can be tested against them. The
-   Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and the function-field
-   window and purity modules are the starting objects; the unit is the list of shared-target
+Global sixth-root and stratified cube-root recovery are proved and sharp. Open: sharper constants
+than $3\sum_{q\le N}\varphi(q)$ on stated strata, or a constant independent of the cutoff;
+recovery from fewer or windowed observations with a quantified cutoff cost; and a common
+organizing theorem for the two halves of observation theory beyond the classification by sign
+characters of the subgroup generated by the support — the quantitative version through
+bounded-length relations, with energy and realization costs on both sides. Exact algebraic
+recovery bounds no receiver energy; the passage from period moments to finite horizons belongs to
+Bézout–Valuation Incidence.
+
+### 7.6 Producers and completion
+
+The Müntz correction tail shows that the compact factorial family cannot be completed inside the
+decay-class Weil domain at bounded normalized energy. The obstruction is localized: the
+construction's seed is an explicit zero-mean bounded-variation ramp combination, and the diagonal
+readout identities hold at every zero with $\Re\rho>0$ on both sides of the line, so neither the
+seed's regularity nor the diagonal's arithmetic is the missing ingredient — the unbounded cost
+sits entirely in the archimedean energy of the omitted negative-logarithmic tail, which grows like
+$\tfrac12\log(n+1)$ against an $O(1/(n+1))$ prime-and-pole cost. A completion at bounded cost has
+to redistribute archimedean energy; a producer family with bounded completion cost, or a proof
+that none exists, is open. For the prime clocks the arithmetic estimates for the mass and edge
+kernels and the sign of their difference are open; the kernels retain centre and cutoff, so a
+lag-only convolution model is not justified.
+
+### 7.7 Research topics
+
+1. **Node criticality.** What in the multiplicative incidence of the node set $\{\log n\}$ makes
+   $\log4$ indispensable and $\log6$ redundant beyond the deletion prices and window thresholds of
+   §3.16 (the price of $4$ is a local Euler factor and appears at its own lag; $\log6$ is the lag
+   of a node that is never charged), and how a positivity argument at arbitrary support reads it.
+   This is the criterion every closing mechanism of the shared target must pass.
+2. **Prime-blind archimedean positivity.** The infimum of $\mathcal J/h(0)$ on the full blind
+   polar class against $|\Omega(0)|$, with its exact slack, as an input to sign-changing
+   ground-state gauges.
+3. **The linear band itself**, tested against the four requirements of §7.1. Equivalent
+   coordinates for the same demand, to be used interchangeably: a square-root-scale bound on the
+   integrated Chebyshev deficit $D(T)=\int_0^T(e^t-\psi(e^t))\,dt$, equivalently on the cross
+   entry of the two-exponential pole compression; the unconditional rate there is $2$
+   (Vinogradov–Korobov) against the needed $1+2\alpha$, and any improvement of the rate is an
+   explicit strip.
+4. **Packets and multiplicity.** Whether $E(U)=W(U)$ can be tested with a certified finite-prime
+   error, and whether the explicit spline packet admits a source-derived finite envelope bound.
+5. **Selectivity and calibration models.** A Beurling system with an off-line zero, the shifted
+   pair $\zeta(s-a)\zeta(s+a)$, the Liouville twist and the function-field case $\mathbb F_q[T]$,
+   each written in this theory's coordinates (node values, window spectra, packets, the blind
+   cone), so that every positivity or cancellation theorem of the sibling programmes can be tested
+   against them. The Beurling deletion and perturbation systems of `RHTower` and `HTGeometry` and
+   the function-field window and purity modules are the starting objects; the unit is the list of
    statements each model refutes.
 
 ---
 
-## 6. Working in the theory
+## 8. Working in the theory
 
 - **Never differentiate the correlation.** Every bound goes through Krein's inequality or its
   linear smoothing and is paid by $\mathcal J$; the spectral second moment is never admissible.

@@ -114,7 +114,6 @@ private theorem exists_bound_riemannZeta_disc_high_abscissa {Θ δ : ℝ}
       mul_le_mul_of_nonneg_right hnormz (by positivity)
     _ = E * (2 + |t|) := by dsimp only [E]; ring
 
-set_option maxHeartbeats 1000000 in
 /-- **Three-circles lower bound right of a frontier that is zero-free above a height.**  The
 discs are centred at `4 + i t` with radius below `4`, so only zeros with `|Im z| ≥ |t| − 4` matter:
 zero-freeness right of `Θ` above height `T₀` gives the bound for `|t| ≥ T₀ + 4`. -/
@@ -138,7 +137,7 @@ theorem exists_three_circles_zeta_lower_bound_of_zeroFree_above {Θ T₀ : ℝ}
   have hr₁r₃ : (1 : ℝ) / 4 < r₃ := by linarith
   obtain ⟨E, hE3, hdisc0⟩ := exists_bound_riemannZeta_disc_high_abscissa hΘ hΘ1 hδ hδ1
   have hE0 : 0 < E := lt_of_lt_of_le (by norm_num) hE3
-  have h4E : (1 : ℝ) ≤ 4 * E := by nlinarith
+  have h4E : (1 : ℝ) ≤ 4 * E := by linarith
   set B : ℝ :=
     2 * (Real.log (3 / (1 / 4 : ℝ)) + 1) * (1 / 4) / (1 / 2 - 1 / 4) with hB
   have hlog12 : 0 ≤ Real.log (3 / (1 / 4 : ℝ)) := Real.log_nonneg (by norm_num)
@@ -154,9 +153,12 @@ theorem exists_three_circles_zeta_lower_bound_of_zeroFree_above {Θ T₀ : ℝ}
   have hlogE : 0 ≤ Real.log (4 * E) := Real.log_nonneg h4E
   have hfac : (8 : ℝ) ≤ 8 * r₃ / δ := by
     rw [le_div_iff₀ hδ]
-    nlinarith
+    linarith
   have hK0 : 0 < K := by rw [hK]; positivity
-  have hK1 : (1 : ℝ) ≤ K := by rw [hK]; nlinarith
+  have hK1 : (1 : ℝ) ≤ K := by
+    rw [hK]
+    linarith [mul_le_mul hfac (by linarith : (2 : ℝ) ≤ Real.log (4 * E) + 2) (by norm_num)
+        (by linarith : (0 : ℝ) ≤ 8 * r₃ / δ)]
   set θ : ℝ :=
     (Real.log (a - Θ - δ) - Real.log (1 / 4)) /
       (Real.log r₃ - Real.log (1 / 4)) with hθ

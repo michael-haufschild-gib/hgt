@@ -44,6 +44,21 @@ realisations. APT's spectral-realisation question is which source space carries 
 realisation of the complete arithmetic form. An existing self-adjoint or indefinite
 realisation is not already such a construction.
 
+**The shared target and its criteria.** The programmes listed above work on one object: RH as
+the nonnegativity of the complete critical arithmetic form, the same form in every face. Three
+criteria recur throughout this document.
+
+- *Selectivity.* A statement that holds verbatim for the shifted pair $\zeta(s-a)\zeta(s+a)$,
+  for a Beurling system with an off-line zero, or for the Liouville-twisted weight is
+  infrastructure, not information about RH.
+- *No archimedean subsidy.* A gain of size $\log M$ (or $\log(1/w)$) at the archimedean place
+  against a bounded prime cost is nonselective by construction. What matters is growth: a subsidy
+  growing with the frequency of the test is satisfied by the all-ones weight and removes the
+  criterion, while a loss constant or linear in the aperture is harmless.
+- *Grading.* The destination has partial values. A floor losing $C_\sigma e^{2\sigma r}$ at
+  aperture $r$ gives the zero-free strip $\Re s\le\tfrac12+\sigma$; a loss bounded uniformly in
+  the aperture gives RH. A partial result states which member of this family it reaches.
+
 A useful contribution must state its quantifiers: which sources, how many scales, which
 support lengths, and which constants are uniform. Restricted positivity paid for by
 archimedean growth is useful infrastructure. To reach the shared target, a bound must survive
@@ -54,8 +69,8 @@ progress towards RH.
 **Reading route.** Start with the two receivers in §1.2, the one-form dictionary in §2.2,
 and the source/clock definitions in §2.3. Then read logarithmic sampling and relative
 stability (§§3.4–3.6), the critical kernel (§3.11), and the uniform and compact transfer
-mechanisms (§§3.12–3.14). The distinction between a positive subspace and a complete test
-family governs the open questions in §5.
+mechanisms (§§3.12–3.14). §4 collects the pillar theorems. The distinction between a positive
+subspace and a complete test family governs the questions of §6 and the open problems of §7.
 
 ---
 
@@ -1140,7 +1155,72 @@ see.
 
 ---
 
-## 4. Traps and sharp boundaries
+## 4. Foundational pillar theorems
+
+Every result below is unconditional and holds at the stated scope; together they are the
+theory's load-bearing walls. Lean names are the capstones of the cited modules.
+
+1. **Universal reflection identity.** For every zero configuration and every square-summable
+   source, $\mathcal Z(f)-\Re\mathcal W(f,f)=\mathcal R(f)$; on the actual zeta divisor the gap
+   between trivial mass and Weil energy is exactly the mirror distance of the readouts
+   (`configurationSquareMass_sub_re_W_eq_reflectionDefect`, its tempered $C^2_c$ form
+   `…_of_tempered`). It is the dictionary through which every positivity statement is read on
+   the zero side.
+2. **Logarithmic sampling.** $\mathcal Z(T_n)+\mathcal Z(U_{n,k})\le C(1+\log N)/N$ uniformly in
+   $n,k$, sharp up to constants, and $\mathcal Z(H_{n,k})\le C_H/N$ for the corrected source
+   (`exists_factorialTail_raw_and_smoothed_zeroSquare_bound`, `factorialCorrected_zeroSquare_le`).
+   Physical mass underestimates spectral sampling by exactly one logarithm.
+3. **Sharp Krein stability radius.** Positivity transfers across $r=h-u$ through the independent
+   form $\mathcal Z$ iff $\varepsilon<(\sqrt{1+\delta}-1)^2$, attained by a two-mode involution
+   pair; the binary Schur law gives the exact criterion and the negative direction
+   (`relative_stability_factor_pos_iff`, `exists_two_mode_involution_extremizer`,
+   `schur_binary_quadratic_nonneg_iff`).
+4. **High-scale span coercivity.** $\Re\mathcal W(f_b,f_b)\ge(\tfrac A2\log M-C)\sum\lvert b_N\rvert^2$
+   on every finite span supported on $N\ge M$ (`factorialTailSpan_re_W_coercivity`): physical
+   Riesz bounds plus nonstationary Mellin exclusion become spectral coercivity.
+5. **The critical prime kernel is negative definite.** $R(t)\le-1/7000$ on the cell, hence
+   $P_\infty(b)\le-(4/7000\pi^4)\sum b_j^2$ for every finite real pattern; the exact Rayleigh
+   range is $(4/\pi^4)[\min R,\max R]$; and the actual prime matrix at scales $n+S$ is eventually
+   negative for each fixed support (`factorialCriticalTranslatedPrimeLimit_le_neg_energy`,
+   `isLUB_factorialCriticalPrimeRayleighSet`, `isGLB_factorialCriticalPrimeRayleighSet`,
+   `eventually_factorialCriticalTranslatedPrimeEnergy_le`).
+6. **Archimedean domination of the critical form.** The critical limit has rational spectrum, the
+   source decorrelates at almost every shift, and the complete critical energy of every nonzero
+   pattern tends to $+\infty$, uniformly in the coefficient vector on a fixed support
+   (`tendsto_criticalTranslatedCompleteEnergy_top`, `eventually_criticalTranslatedCompleteEnergy_coercive`).
+7. **$\ell^2$-uniform prime channel.** The dyadic dilation inequality for weights with $1/f^2$
+   cosine decay, together with Montgomery–Vaughan for the endpoint jump kernel, bounds the
+   critical prime channel by $C_P\sum b_j^2$ on every dyadic block, independently of the scale and
+   of the number and positions of offsets (`abs_integral_weight_realPhaseCombination_dilate_le`,
+   `abs_criticalPrimeEnergy_le_of_dyadic`).
+8. **Positivity on compact tests of every length.** The complete critical form is positive
+   definite on every high dyadic block, on polynomial windows $[M,M^{1+\delta}]$, on compact
+   doubly collared truncations uniformly in the truncation, jointly on windows and truncations,
+   and on lacunary unions; the margin reaches the actual zeta divisor as
+   $\mathcal R(F)+\tfrac{s_T}8\log M\sum b_j^2\le\mathcal Z(F)$
+   (`exists_criticalCompleteEnergy_pos`, `exists_polynomial_window_compact_weil_and_fullZeroForm_pos`,
+   `exists_smooth_actual_zeta_reflection_coercivity_of_compact_window`,
+   `exists_compactFullWeilEnergy_pos_of_lacunary`).
+9. **The tent family is a complete RH test family that sees every off-line zero.**
+   RH iff every finite tent pattern has nonnegative complete energy, iff grid patterns are
+   eventually nonnegative; every off-line zero, finite residual set, depth-gap zero and cluster is
+   detected with an explicit negative margin (`riemannHypothesis_iff_factorialTentPattern_nonneg`,
+   `riemannHypothesis_iff_eventually_gridTentPattern_nonneg`,
+   `actual_zeta_offLine_detected_by_gridTentPattern`).
+10. **Collar arithmetic.** Near-resonances of shifted harmonics are exactly the affine relations
+    $a(12N+1)=b(12M+1)$; the single-scale affine error has the sharp constant
+    $7\zeta(3)/(256\pi^2)$; Baker's theorem separates the collar spectrum from the prime
+    spectrum (`factorial_small_harmonic_gap_iff_affine`, `tendsto_factorialAffineCollarError_sharp`,
+    `primeLog_linearForm_ne_collar_linearForm`).
+11. **The temperedness gate.** The window exponent $\varepsilon(L)=1/(2+\log L)$ makes the
+    critical-line prime sum $\le6(3+\log L)$, and the same hypothesis diverges for the shifted
+    pair on every wide window (`summable_vonMangoldt_windowDilationExponent`,
+    `not_summable_shiftedPairVonMangoldt_windowDilationExponent`): the one proved separation of a
+    proof of this theory from a positive twin.
+
+---
+
+## 5. Traps and sharp boundaries
 
 | Trap | Why it fails |
 |---|---|
@@ -1206,131 +1286,200 @@ inside an equivalence.
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
 
-**Low scales.** The complete critical form, collared or not, is positive definite
-on every dyadic block beyond an absolute $M_0$, on polynomial windows, on compact
-truncations uniformly in the truncation, on polynomial windows *and* compact
-truncations jointly — hence on compact tests of arbitrary support length, in all five
-names of the form — and on lacunary unions of blocks. Low modes have all-scale Gamma–polar bounds and explicit low/high energy inequalities
-(§3.13), including logarithmic prime penalties against separated lacunary blocks.
-What remains open is positivity of the coupled form for unrestricted low-mode
-coefficients. Increasing the high scale cannot settle this through the existing
-lower bound: its low-mode archimedean penalty grows as well. The target is a
-stronger coupling or an independent low-mode certificate with a controlled Schur
-complement, not the already-proved admission and cross-window estimates.
+### 6.1 Questions
 
-**Explicit thresholds and the range of $R$.** Every block threshold is the
-closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its slope $s$,
-offset $c$ and channel constant $C$, and the window exponent is
-$\delta=s/(4(W+1))$ (`ExplicitBlockThresholdsOfTheCriticalFamily`). A numerical
-value of $M_0$ needs explicit bounds on the collar integrals
-$\int\lvert\psi'\rvert,\int\lvert\psi''\rvert$ of the smooth transition and on
-$\sum_r\Lambda(r)r^{-3/2}$, which enter $C$. The exact values
-of $\max R$ and $\min R$ on the cell, their locations, and the first couplings
-$\kappa(1),\kappa(2)$ decide the optimal negativity constant
-$-(4/\pi^4)\max R$ and how far it is from the singleton mean $-\log2/390$.
-Whether $R$ is monotone on $[0,1/2]$ is open.
+1. **Which independently checkable features of an exact source pay the sign of the complete
+   form?** On the factorial family: physical square mass, translation energy at the arithmetic
+   scale, low-band Mellin exclusion, the Poisson-closed critical cell kernel, and an
+   $\ell^2$-uniform prime channel on dyadic blocks. Beyond that family the question is open
+   (§7.7).
+2. **When is positivity of a large explicit family information about RH?** Only through a
+   transfer to the complete receiver whose norm cost survives the loss of the archimedean gain
+   $\log M$. The tent family shows that the laboratory contains a complete RH test family; the
+   critical family shows that it contains large positive subfamilies; no theorem connects the two
+   with a controlled norm.
+3. **At what rate may a floor lose in the aperture?** The receiver is graded: a subexponential
+   loss on all odd compact tests suffices, and a loss $C_\sigma e^{2\sigma r}$ gives the strip
+   $\tfrac12+\sigma$. The question for this theory is which source estimates beat the exponent,
+   not which ones prove a sign.
+4. **Is the statement selective, or only the proof?** The temperedness gate separates a proof
+   from the shifted pair; whether wide-window positivity itself fails for non-tempered twins is
+   open.
+5. **Which source space carries a positive realization of the complete arithmetic form?** A
+   positivity theorem on the complete critical family and a spectral realization of it would be
+   the same theorem.
+6. **What does a finite amount of nonnegativity exclude?** A law "nonnegativity of all grid
+   patterns at scale $n$ and radius $R$ excludes zeros of depth $>\delta(n,R)$ below height
+   $T(n,R)$" would make the tent family a computable receiver.
 
-**Dense windows.** Across blocks the prime coupling decays like $\tau(m,n)$ and
-lacunary families are covered; windows wider than $M^\delta$ that are not
-lacunary, where $\log L\asymp\log M$ and the constants $s$ and $C_W$ decide, are
-open. The exponent $\delta$ is now the single quantity separating the proved regime
-from the full scale range, at every support length: the window and truncation
-constants are independent of each other and of $V$, so $\delta=s/(4(W+1))$ is
-determined by the archimedean slope against the width cost alone. A window with
-$\log L\ge\delta^{-1}$ times the archimedean gain is beyond reach by this argument,
-and whether the width cost $3+\log L$ is sharp — the correlation of two dilation rings
-is $O(\min(1,\sqrt{L/r}))$, and only the $\varepsilon$-trick converts it — is open. The resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense
-windows uniform survives only for scale ratios up to about the square root of the
-scale.
+### 6.2 Tools
 
-**From the family to the receiver.** The tent family is Weil-complete and
-detects every actual off-line zero, and doubly collared truncations carry block *and
-polynomial-window* positivity to compact tests of every length, through to the actual
-zeta divisor as reflection dominance $\mathcal R(F)<\mathcal Z(F)$ with an explicit
-margin. What is missing is the passage to
-the compact tests of the receiver on which RH is decided, those without the
-archimedean gain $\log M$: every positivity theorem on the critical family is paid
-by that gain, and on the RH-complete cone it is absent. The passage is now a
-quantitative target rather than a sign: a floor on all odd compact tests whose
-loss grows subexponentially in the aperture suffices, and the obstruction is the
-rate. Beyond lag $O(1)$ the floor is exactly the prime–polar difference
-$\psi(e^t)-e^t$ — the prime measure has density $\asymp e^{t/2}dt$ at lag $t$, the
-polar measure $2\cosh(t/2)$ has the same density, and the archimedean density
-$\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$ — so the archimedean surplus
-contributes nothing at the lags that carry the mass, and no amount of it buys the
-exponent. Oddness, edge decay of the autocorrelation and the strip structure give
-no power saving either: an odd test concentrated in an $O(1)$ window at the edge
-of its support has pole charge $\asymp e^{r}$ and prime correlation $\asymp-e^{r}$,
-of the same size and opposite sign, so the floor is their PNT-level difference.
+Built and reusable:
 
-**Quantitative detection.** On the lag face the units exist: a near-top zero
-of depth $\delta_0$ with readout at least $\eta$ is visible at an explicit lag
-$V_0(w,\eta,\delta_0)$, an attained top at a logarithmic lag, and a near-top zero
-seen at lag $V$ makes $\mu(A)$ negative beyond $V/2+w$. On the tent family only
-the qualitative statement is proved: eventual grid-tent nonnegativity at scale
-$n$ forces the asymptotic abscissa law. The missing law is "nonnegativity of
-all grid patterns at scale $n$ and radius $R$ excludes zeros of depth
-$>\delta(n,R)$ below height $T(n,R)$", with $\delta(n,R)$ read from the explicit
-lags through the grid convergence of §3.14; it would turn the family into a
-computable receiver.
+- *Clock calculus.* Regularity read through the clock $v=e^{-x}$, translation energy split at the
+  arithmetic scale $h=1/N$, physical weights $v^{-(2\beta+1)}$ and the envelope table of §2.6.
+- *Zero-divisor sampling.* Half-plane local holomorphy, multiplicity-exact disk overlap and strip
+  energy give bounds on $\mathcal Z$ with no zero location.
+- *Independent comparison form.* Positivity transfers through $\mathcal Z$ with the sharp Krein
+  radius; Cauchy–Schwarz is never applied to $\mathcal W$ itself.
+- *Nonstationary Mellin exclusion* (with and without boundary term) and the *admissible-source
+  law*: a mass floor plus a low-band exclusion gives logarithmic Lévy growth in the band edge.
+- *Dilation calculus.* The dyadic dilation inequality (a Schur test on the cross-scale kernel),
+  the Montgomery–Vaughan bound for the endpoint jump kernel, the window exponent
+  $\varepsilon(L)$, and the cross-block decay $\tau(m,n)$.
+- *Critical kernel calculus.* The divisor charge $A(m)$, its cumulative charge, the band-limited
+  Poisson closure of the cell, and the Toeplitz symbol.
+- *Full-form stability.* Every channel is Lipschitz in $L^1$ distance with explicit value and
+  slope moments, so one accuracy index pays for tents of arbitrary support.
+- *The tent family* as a complete RH test family inside the laboratory.
 
-**Beyond the factorial family.** The admissible-source law needs only a mass
-floor and a low-band exclusion. Which other arithmetic sources, built from
-divisor stencils other than the dyadic one or from non-Bernoulli remainders,
-satisfy both at the critical envelope with an $\ell^2$-bounded prime channel,
-and whether their cell kernels are also sign-definite, is open.
+To be built:
 
-### Research topics toward the shared target
+- a norm-controlled transfer from positive subfamilies to the complete receiver;
+- a low-mode certificate with a controlled Schur complement against the high blocks;
+- a dense-window prime bound beating the width cost $3+\log L$, or a proof that it is sharp;
+- the quantitative detection law for grid tents;
+- admissible sources beyond the dyadic stencil, with sign-definite cell kernels.
+
+---
+
+## 7. Open problems
+
+### 7.1 Low scales and the coupled form
+
+The complete critical form, collared or not, is positive definite on every dyadic block beyond an
+absolute $M_0$, on polynomial windows, on compact truncations uniformly in the truncation, on
+windows and truncations jointly — hence on compact tests of arbitrary support length, in all five
+names of the form — and on lacunary unions of blocks. Low modes have all-scale Gamma–polar bounds
+and explicit low/high energy inequalities (§3.13), including logarithmic prime penalties against
+separated lacunary blocks. Open: positivity of the coupled form for unrestricted low-mode
+coefficients. Raising the high scale cannot settle this through the existing lower bound, since
+its low-mode archimedean penalty grows with it. The target is a stronger coupling or an
+independent low-mode certificate with a controlled Schur complement, not a repetition of the
+admission and cross-window estimates.
+
+### 7.2 The prime channel on growing supports
+
+Fixed-support eventual negativity of the actual prime matrix is proved; its scale threshold
+depends on the support. Open: an explicit growing-support range in which the actual prime channel
+itself stays negative. Full-form positivity carried by a growing archimedean energy is a
+different statement and does not answer this.
+
+### 7.3 Explicit thresholds and the shape of $R$
+
+Every block threshold is the closed form $M_0=\max\bigl(2,\lfloor e^{c+C/s}\rfloor+1\bigr)$ in its
+slope $s$, offset $c$ and channel constant $C$, and the window exponent is $\delta=s/(4(W+1))$
+(`ExplicitBlockThresholdsOfTheCriticalFamily`). A numerical value of $M_0$ needs explicit bounds
+on the collar integrals $\int\lvert\psi'\rvert,\int\lvert\psi''\rvert$ of the smooth transition
+and on $\sum_r\Lambda(r)r^{-3/2}$, which enter $C$. The exact values of $\max R$ and $\min R$ on
+the cell, their locations, and the first couplings $\kappa(1),\kappa(2)$ decide the optimal
+negativity constant $-(4/\pi^4)\max R$ and its distance from the singleton mean $-\log2/390$.
+Whether $R$ is monotone on $[0,1/2]$ is open. The proved bound $R\le-1/7000$ suffices for every
+positivity theorem of §3; these are shape questions.
+
+### 7.4 Dense windows
+
+Across blocks the prime coupling decays like $\tau(m,n)$ and lacunary families are covered;
+windows wider than $M^\delta$ that are not lacunary, where $\log L\asymp\log M$ and the constants
+$s$ and $C_W$ decide, are open. The exponent $\delta$ is the single quantity separating the proved
+regime from the full scale range at every support length: the window and truncation constants are
+independent of each other and of $V$, so $\delta=s/(4(W+1))$ is fixed by the archimedean slope
+against the width cost alone. A window with $\log L\ge\delta^{-1}$ times the archimedean gain is
+beyond this argument. Whether the width cost $3+\log L$ is sharp is open: the correlation of two
+dilation rings is $O(\min(1,\sqrt{L/r}))$, and only the $\varepsilon$-trick converts it. The
+resonance structure $k(n+1)\equiv j\pmod{lr}$ that would make dense windows uniform survives only
+for scale ratios up to about the square root of the scale.
+
+### 7.5 From the family to the receiver
+
+The tent family is Weil-complete and detects every actual off-line zero, and doubly collared
+truncations carry block and polynomial-window positivity to compact tests of every length,
+through to the actual zeta divisor as reflection dominance $\mathcal R(F)<\mathcal Z(F)$ with an
+explicit margin. Missing is the passage to the compact tests of the receiver on which RH is
+decided, those without the archimedean gain $\log M$: every positivity theorem on the critical
+family is paid by that gain, and on the RH-complete cone it is absent. The passage is a
+quantitative target rather than a sign: a floor on all odd compact tests whose loss grows
+subexponentially in the aperture suffices, and the obstruction is the rate. Beyond lag $O(1)$ the
+floor is exactly the prime–polar difference $\psi(e^t)-e^t$ — the prime measure has density
+$\asymp e^{t/2}dt$ at lag $t$, the polar measure $2\cosh(t/2)$ has the same density, and the
+archimedean density $\omega(t)\asymp e^{-t/2}$ is smaller by $e^{t}$ — so the archimedean surplus
+contributes nothing at the lags that carry the mass, and no amount of it buys the exponent.
+Oddness, edge decay of the autocorrelation and the strip structure give no power saving either:
+an odd test concentrated in an $O(1)$ window at the edge of its support has pole charge
+$\asymp e^{r}$ and prime correlation $\asymp-e^{r}$, of the same size and opposite sign, so the
+floor is their PNT-level difference. This is the face of the shared critical cancellation problem
+that Arithmetic Compensation Theory and Bi-Scale Uncertainty attack from the prime side.
+
+### 7.6 Quantitative detection
+
+On the lag face the units exist: a near-top zero of depth $\delta_0$ with readout at least $\eta$
+is visible at an explicit lag $V_0(w,\eta,\delta_0)$, an attained top at a logarithmic lag, and a
+near-top zero seen at lag $V$ makes $\mu(A)$ negative beyond $V/2+w$. On the tent family only the
+qualitative statement is proved: eventual grid-tent nonnegativity at scale $n$ forces the
+asymptotic abscissa law. The missing law is "nonnegativity of all grid patterns at scale $n$ and
+radius $R$ excludes zeros of depth $>\delta(n,R)$ below height $T(n,R)$", with $\delta(n,R)$ read
+from the explicit lags through the grid convergence of §3.14, retaining the prime cutoff beyond
+the observation horizon.
+
+### 7.7 Beyond the factorial family
+
+The admissible-source law needs only a mass floor and a low-band exclusion. Which other arithmetic
+sources, built from divisor stencils other than the dyadic one or from non-Bernoulli remainders,
+satisfy both at the critical envelope with an $\ell^2$-bounded prime channel, and whether their
+cell kernels are also sign-definite, is open. A new source must keep the actual prime and polar
+terms and state where it lands in a receiver.
+
+### 7.8 Research topics
 
 1. **From the critical family to the receiver without an archimedean subsidy.** Which compact
    approximants of critical sources inherit block positivity with a margin surviving truncation,
-   stated so that the gain `log M` of the critical Lévy energy plays no role (mechanism 3 and the
-   criterion of no subsidy). The target is graded: a floor whose loss at aperture `r` is
-   `C e^{2σ r}` reports the strip `½ + σ`, and a loss bounded uniformly in the aperture reports RH.
-   A margin that grows with the frequency of the test is not a weaker form of the same statement —
-   it is satisfied by the all-ones weight and reports nothing.
-2. **A power saving over the `ℓ¹` prime cost at a single height.** The certified aperture of
-   single-height positivity is `log log T − log 4`, where the `ℓ¹` cost `≍ 2e^{a}` meets the
-   archimedean `≍ log T`; a depth-`δ` zero at that height is visible from aperture
-   `(log log T)/(2δ)`. Improving the width through the aperture face means certifying aperture
-   `(1+ε) log log T`, that is a single-height prime bound `≪ (log T)^{1+ε}` for
-   `X = (log T)^{2+2ε}`. Uniform-in-height bounds cannot give it, and excluding near-alignment at a
-   given height is a simultaneous-approximation problem on prime logarithms whose effective bounds
-   are far too weak; the question is which arithmetic input replaces them.
-3. **Quantitative detection.** Nonnegativity of all grid patterns at scale `n` and radius `R`
-   excludes zeros of depth `> δ(n, R)` below height `T(n, R)`; the unit is `δ(n, R)`.
-4. **The spectral realization (mechanism 4).** In which Schatten or deficiency class, on which
-   Hilbert space, do the primes modify the archimedean operator so that the spectral measure is the
-   critical-zero measure, and under what condition do the finite-aperture ground transforms of the
-   Connes–Consani–Moscovici operators converge to `Ξ`. Known constraints: the prime part is not
-   trace class, finite rank or finite deficiency, and is as large as the unbounded `S(T)`; unitary
+   stated so that the gain $\log M$ of the critical Lévy energy plays no role. The target is
+   graded: a floor whose loss at aperture $r$ is $Ce^{2\sigma r}$ reports the strip $\tfrac12+\sigma$,
+   and a loss bounded uniformly in the aperture reports RH. A margin that grows with the frequency
+   of the test is not a weaker form of the same statement — it is satisfied by the all-ones weight
+   and reports nothing.
+2. **A power saving over the $\ell^1$ prime cost at a single height.** The certified aperture of
+   single-height positivity is $\log\log T-\log4$, where the $\ell^1$ cost $\asymp2e^{a}$ meets the
+   archimedean $\asymp\log T$; a depth-$\delta$ zero at that height is visible from aperture
+   $(\log\log T)/(2\delta)$. Improving the width through the aperture face means certifying
+   aperture $(1+\varepsilon)\log\log T$, that is a single-height prime bound $\ll(\log T)^{1+\varepsilon}$
+   for $X=(\log T)^{2+2\varepsilon}$. Uniform-in-height bounds cannot give it, and excluding
+   near-alignment at a given height is a simultaneous-approximation problem on prime logarithms
+   whose effective bounds are far too weak; the question is which arithmetic input, using the
+   actual height-dependent phases, replaces them.
+3. **Quantitative detection** (§7.6): the unit is $\delta(n,R)$.
+4. **The spectral realization.** In which Schatten or deficiency class, on which Hilbert space, do
+   the primes modify the archimedean operator so that the spectral measure is the critical-zero
+   measure, and under what condition do the finite-aperture ground transforms of the
+   Connes–Consani–Moscovici operators converge to $\Xi$. Known constraints: the prime part is not
+   trace class, finite rank or finite deficiency, and is as large as the unbounded $S(T)$; unitary
    producers have unit-modulus Euler factors; the finite-aperture logarithmic Dirac operator is
-   real-rooted in its η-branch and reaches `Ξ` only under an unproved premise; the archimedean
-   Sonin-trace domination has an exact decomposition `−W = Tr ϑS + Tr ϑG` with the sign of
-   `Re Tr ϑG` open. The candidate source class is the complete critical family on blocks, windows,
-   compact truncations and lacunary unions; a positivity theorem and a realization theorem would be
-   the same theorem.
-5. **Selectivity audit.** One separation is now proved: the window bound's own hypothesis, the
-   tempered critical-line sum `Σ Λ(r) r^{−1−ε}` at `ε(L) = 1/(2 + log L)`, diverges for
-   `ζ(s−a)ζ(s+a)` at every `ε ≤ |a|`, so no wide window admits the proof for the shifted pair. The
-   audit is unfinished in both directions. Upwards: is the *statement* selective — does some
-   non-tempered twin satisfy wide-window positivity by another route, or does the conclusion itself
-   fail there? Downwards: which of block positivity, the admissible-source law, the collared
-   dilation inequality and the Montgomery–Vaughan endpoint bound survive verbatim for a Beurling
-   system with an off-line zero, and are therefore not about RH. A statement that survives all
-   three test models is infrastructure, and should be labelled as such in place.
+   real-rooted in its η-branch and reaches $\Xi$ only under an unproved premise; the archimedean
+   Sonin-trace domination has an exact decomposition $-W=\operatorname{Tr}\vartheta S+\operatorname{Tr}\vartheta G$
+   with the sign of $\Re\operatorname{Tr}\vartheta G$ open. The candidate source class is the
+   complete critical family on blocks, windows, compact truncations and lacunary unions.
+5. **Selectivity audit.** The window bound's own hypothesis, the tempered critical-line sum
+   $\sum\Lambda(r)r^{-1-\varepsilon}$ at $\varepsilon(L)=1/(2+\log L)$, diverges for
+   $\zeta(s-a)\zeta(s+a)$ at every $\varepsilon\le\lvert a\rvert$, so no wide window admits the proof
+   for the shifted pair. The audit is unfinished in both directions. Upwards: is the *statement*
+   selective — does some non-tempered twin satisfy wide-window positivity by another route, or
+   does the conclusion itself fail there? Downwards: which of block positivity, the
+   admissible-source law, the collared dilation inequality and the Montgomery–Vaughan endpoint
+   bound survive verbatim for a Beurling system with an off-line zero, and are therefore not about
+   RH. A statement that survives all three test models is infrastructure and is labelled as such
+   in place.
 6. **Source selection in the full Weil cone.** The cone is empty if RH fails; under RH it consists
-   of the von Mangoldt weight on the visible indices `n≥2`. Full positivity is equivalent to RH
-   together with that source identification. Identifying the coefficients alone does not prove
+   of the von Mangoldt weight on the visible indices $n\ge2$. Full positivity is equivalent to RH
+   together with that source identification; identifying the coefficients alone does not prove
    membership. Determine which admissible sources expose enough data to distinguish every
    single-index perturbation, and which additional estimate proves the sign for the identified
    source.
 
 ---
 
-## 6. Working in the theory
+## 8. Working in the theory
 
 Start from the source dictionary of §2.3 and keep the clock substitution
 $v=e^{-x}$ explicit: every estimate is proved on $v\ge1$ with the physical

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.PrimeArchThetaBornWittenSourceMoment
 import GaloisForLFunctions.RHTower.PrimeArchThermalKrylovEquivalence
+import GaloisForLFunctions.RHTower.EulerMascheroniCorrectedUpper
 
 /-!
 # A strict relative bound for the Xi thermal orientation gap
@@ -294,17 +295,35 @@ theorem xiThermalRelativeOrientationFactor_lt_thirtyTwo_over_fortyNine :
   rw [div_lt_iff₀ (sq_pos_of_pos hden)]
   nlinarith
 
-set_option maxRecDepth 1000000 in
-/-- A certified decimal-free upper bound for Euler's constant, obtained from the decreasing
-Euler--Mascheroni sequence at the factorable index `3125 = 5^(5 : ℕ)`. -/
+/-- `H_{n+k}` splits after its first `n` terms. -/
+private lemma harmonic_add (n k : ℕ) :
+    harmonic (n + k) = harmonic n + ∑ i ∈ Finset.range k, ((n + i + 1 : ℕ) : ℚ)⁻¹ := by
+  show ∑ i ∈ Finset.range (n + k), ((i + 1 : ℕ) : ℚ)⁻¹ =
+    ∑ i ∈ Finset.range n, ((i + 1 : ℕ) : ℚ)⁻¹ + ∑ i ∈ Finset.range k, ((n + i + 1 : ℕ) : ℚ)⁻¹
+  exact Finset.sum_range_add _ n k
+
+/-- `H_64`, evaluated in eight blocks of eight terms so that no numeral evaluation is deep. -/
+private lemma harmonic_sixtyFour :
+    harmonic 64 = 623171679694215690971693339 / 131362987122535807501262400 := by
+  rw [show (64 : ℕ) = 56 + 8 from rfl, harmonic_add, show (56 : ℕ) = 48 + 8 from rfl,
+    harmonic_add, show (48 : ℕ) = 40 + 8 from rfl, harmonic_add,
+    show (40 : ℕ) = 32 + 8 from rfl, harmonic_add, show (32 : ℕ) = 24 + 8 from rfl,
+    harmonic_add, show (24 : ℕ) = 16 + 8 from rfl, harmonic_add,
+    show (16 : ℕ) = 8 + 8 from rfl, harmonic_add]
+  norm_num [harmonic, Finset.sum_range_succ]
+
+/-- A certified decimal-free upper bound for Euler's constant: the first-order-corrected upper
+sequence `H_n - log n - 1/(2(n+1))` at `n = 64 = 2^6`, with `log 2 > 0.6931471803`. -/
 lemma eulerMascheroniConstant_lt_twoThousandEightHundredEightySeven_over_fiveThousand :
     Real.eulerMascheroniConstant < 2887 / 5000 := by
-  refine (Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 3125).trans ?_
-  rw [Real.eulerMascheroniSeq']
-  norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (3125 : ℝ) = 5 ^ (5 : ℕ) by norm_num, Real.log_pow]
-  have h := Real.log_five_gt_d9
-  norm_num [harmonic] at *
+  refine (eulerMascheroniConstant_lt_correctedUpper 64).trans ?_
+  have hlog : Real.log ((64 : ℕ) : ℝ) = 6 * Real.log 2 := by
+    rw [show ((64 : ℕ) : ℝ) = 2 ^ (6 : ℕ) by norm_num, Real.log_pow]
+    norm_num
+  have h2 := Real.log_two_gt_d9
+  rw [eulerMascheroniCorrectedUpper, if_neg (by norm_num), Real.eulerMascheroniSeq',
+    if_neg (by norm_num), harmonic_sixtyFour, hlog]
+  norm_num
   linarith
 
 /-- A certified lower bound for the archimedean logarithm.  The smooth rational number

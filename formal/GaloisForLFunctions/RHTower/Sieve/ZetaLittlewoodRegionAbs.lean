@@ -31,7 +31,6 @@ theorem riemannZeta_ne_zero_neg_im {β γ : ℝ}
     apply Complex.ext <;> simp
   rw [hc, riemannZeta_conj, hcon, map_zero]
 
-set_option maxHeartbeats 800000 in
 /-- **Littlewood's zero-free region.**  The width is `c·log log|γ| / log|γ|`. -/
 theorem exists_littlewood_zero_free_region_abs :
     ∃ c T : ℝ, 0 < c ∧ 3 ≤ T ∧
@@ -98,7 +97,8 @@ theorem exists_littlewood_zero_free_region_abs :
         ≤ Real.log (wideScale g) / (32000 * wideScale g) := by
       rw [div_le_div_iff₀ hXpos (by positivity)]
       have hA : (0 : ℝ) ≤ Real.log X := by linarith
-      nlinarith [hlogW, hWhigh, hWpos, hXpos, hA]
+      -- `(log X / 2)·W ≤ (log X / 2)·X ≤ log W · X`
+      linarith [mul_le_mul_of_nonneg_left hWhigh hA, mul_le_mul_of_nonneg_left hlogW hXpos.le]
     refine hreg β g hgT₀ hβ1 ?_
     exact lt_of_le_of_lt (sub_le_sub_left hwidth 1) hb
   rcases le_or_gt 0 γ with hγ | hγ

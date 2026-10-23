@@ -443,7 +443,6 @@ theorem sign_mul_mirrorTiltIncrement_ge {q : ℕ} (hq : 2 ≤ q) {s : ℂ} {sgn 
     rw [neg_one_mul]
     exact neg_mirrorTiltIncrement_ge hq h0 h1 hsin
 
-set_option maxHeartbeats 3200000 in
 /-- **Full signed reachability of the defect walk** (heights below `π/(2 log 2)`, where the
 quarter-offset sine windows carry Chebyshev-divergent budgets).  For each steering sign and its
 matching quarter offset, every target `T ≥ 0` and tolerance `ε > 0` is met by a finite prime set
@@ -469,7 +468,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
   have hLwpos : 0 < Lw := by positivity
   have hLwgt : Real.log 2 < Lw := by
     rw [hLwdef, lt_div_iff₀ (by positivity)]
-    nlinarith
+    linarith
   set C : ℝ := Real.exp Lw with hCdef
   have hC2 : 2 < C := by
     calc (2 : ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
@@ -482,7 +481,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
     ring
   have hA₀pos : 0 < A₀ := by
     rw [hA₀def, hlog4]
-    nlinarith
+    linarith [mul_lt_mul_of_pos_right hC2 hlog2]
   -- exponents
   set σ₀ : ℝ := min s.re (1 - s.re) with hσ₀def
   have hσ₀pos : 0 < σ₀ := lt_min h0 (by linarith)
@@ -534,7 +533,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
     have hblog : Real.log Xm ≤ b := by
       rw [div_lt_iff₀ h2pi] at hk
       rw [hbdef, le_div_iff₀ hτ]
-      nlinarith
+      linarith
     calc Xm = Real.exp (Real.log Xm) := (Real.exp_log hXmpos).symm
       _ ≤ Real.exp b := Real.exp_le_exp.mpr hblog
   have hx2 : (2 : ℝ) ≤ x := le_trans (le_max_left _ _) hxXm
@@ -542,7 +541,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
   have hx0 : (0 : ℝ) < x := by linarith
   have hxy : x ≤ y := by
     rw [hydef]
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_right hC2.le hx0.le]
   have hy1 : (1 : ℝ) ≤ y := le_trans hx1 hxy
   have hy0 : (0 : ℝ) < y := by linarith
   have hyexp : y = Real.exp (b + Lw) := by
@@ -616,12 +615,13 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
       have hden1 : (0 : ℝ) < 1 - x ^ (-σ₀) := by linarith
       have hden2 : (0 : ℝ) < 1 - (p : ℝ) ^ (-σ₀) := by linarith
       rw [← mul_div_assoc, div_le_div_iff₀ hden2 hden1]
-      nlinarith
+      -- the cross terms `p^{-σ₀} x^{-σ₀}` cancel
+      linarith
     have hfinal : 2 * x ^ (-σ₀) / (1 - x ^ (-σ₀)) ≤ 4 * x ^ (-σ₀) := by
       have hden1 : (0 : ℝ) < 1 - x ^ (-σ₀) := by linarith
       rw [div_le_iff₀ hden1]
       have hux0 : (0 : ℝ) ≤ x ^ (-σ₀) := (Real.rpow_pos_of_pos hx0 _).le
-      nlinarith
+      linarith [mul_nonneg hux0 (by linarith : (0 : ℝ) ≤ 1 / 2 - x ^ (-σ₀))]
     have hsgnabs : sgn * mirrorTiltIncrement p s ≤ |mirrorTiltIncrement p s| := by
       rcases hsgn with rfl | rfl
       · rw [one_mul]
@@ -653,7 +653,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
         rw [show (2 : ℝ) = Real.sqrt 4 from by
           rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
         exact Real.sqrt_le_sqrt (by norm_num)
-      nlinarith [Real.sqrt_nonneg 2]
+      linarith [mul_le_mul hy1' hs2 (Real.sqrt_nonneg 2) zero_le_one]
     have hz0 : (0 : ℝ) ≤ y ^ (-s.re) * (Real.sqrt 2 / 2) / 2 := by positivity
     have hhalf' := arctan_ge_half_self hz0 hz1
     have harctan := Real.arctan_mono hz
@@ -667,7 +667,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
   have hcard := windowPrimes_card_ge hx1 hxy
   have hy4 : (4 : ℝ) < y := by
     rw [hydef]
-    nlinarith
+    linarith [mul_lt_mul_of_pos_right hC2 hx0]
   have hmass2 : A₀ / 2 * x
       ≤ (y - 1) * Real.log 2 - Real.log (y + 2) - 2 * Real.sqrt y * Real.log y
         - Real.log 4 * x := by
@@ -713,8 +713,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
       rw [hsqrtCx, hCx34, hKdef]
       have hsC : (0 : ℝ) ≤ Real.sqrt C := Real.sqrt_nonneg C
       have hC34 : (0 : ℝ) ≤ C ^ ((3 : ℝ) / 4) := (Real.rpow_pos_of_pos hC0 _).le
-      nlinarith [hx12, hone, (Real.rpow_pos_of_pos hx0 ((3 : ℝ) / 4)).le,
-        Real.sqrt_nonneg x]
+      linarith [mul_le_mul_of_nonneg_left hone hlog2.le, mul_le_mul_of_nonneg_left hx12 hsC]
     have hX₂x : X₂ ≤ x :=
       le_trans (le_trans (le_trans (le_max_left _ _) (le_max_right _ _))
         (le_max_right _ _)) hxXm
@@ -729,7 +728,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
     have hKx : K * x ^ ((3 : ℝ) / 4) ≤ A₀ / 2 * x := by
       have hb1 : K ≤ A₀ / 2 * x ^ ((1 : ℝ) / 4) := by
         rw [div_le_iff₀ hA₀pos] at hx14
-        nlinarith
+        linarith
       have hb2 : x ^ ((1 : ℝ) / 4) * x ^ ((3 : ℝ) / 4) = x := by
         rw [← Real.rpow_add hx0]
         norm_num
@@ -777,7 +776,7 @@ theorem anchorMirrorDefect_reachable_signed {s : ℂ} (h0 : 0 < s.re) (h1 : s.re
     have hkey : x ^ μ * Real.log y ≤ x * x ^ (-s.re) * D := by
       rw [hxx]
       have h := mul_le_mul_of_nonneg_left hlogy_le hxμpos.le
-      nlinarith
+      linarith
     have hfrac : x ^ μ / D ≤ x * x ^ (-s.re) / Real.log y := by
       rw [div_le_div_iff₀ hDpos hlogy_pos]
       linarith

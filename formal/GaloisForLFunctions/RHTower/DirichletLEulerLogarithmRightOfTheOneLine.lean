@@ -30,6 +30,7 @@ variable {Q : ℕ} [NeZero Q]
 def eulerLog (χ : DirichletCharacter ℂ Q) (w : ℂ) : ℂ :=
   ∑' p : Nat.Primes, -Complex.log (1 - χ p * ((p : ℕ) : ℂ) ^ (-w))
 
+omit [NeZero Q] in
 theorem norm_char_prime_cpow_le (χ : DirichletCharacter ℂ Q) {w : ℂ} (p : Nat.Primes) :
     ‖χ p * ((p : ℕ) : ℂ) ^ (-w)‖ ≤ ((p : ℕ) : ℝ) ^ (-w.re) := by
   rw [norm_mul, ← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos
@@ -51,6 +52,7 @@ theorem exp_eulerLog (χ : DirichletCharacter ℂ Q) {w : ℂ} (hw : 1 < w.re) :
   rw [DirichletCharacter.LFunction_eq_LSeries χ hw, eulerLog]
   exact DirichletCharacter.LSeries_eulerProduct_exp_log χ hw
 
+omit [NeZero Q] in
 /-- `|ℓ_χ(w)| ≤ (3/2) Σ_p p^{-Re w}` on `Re w > 1`. -/
 theorem norm_eulerLog_le (χ : DirichletCharacter ℂ Q) {w : ℂ} (hw : 1 < w.re) :
     ‖eulerLog χ w‖ ≤ 3 / 2 * ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-w.re) := by
@@ -70,6 +72,7 @@ theorem norm_eulerLog_le (χ : DirichletCharacter ℂ Q) {w : ℂ} (hw : 1 < w.r
     hterm)).trans (Summable.tsum_le_tsum hterm ((hsum.mul_left (3 / 2)).of_nonneg_of_le
       (fun _ => norm_nonneg _) hterm) (hsum.mul_left _))
 
+omit [NeZero Q] in
 /-- The Euler logarithm is holomorphic on `Re w > 1`. -/
 theorem differentiableAt_eulerLog (χ : DirichletCharacter ℂ Q) {w : ℂ} (hw : 1 < w.re) :
     DifferentiableAt ℂ (eulerLog χ) w := by
@@ -89,7 +92,7 @@ theorem differentiableAt_eulerLog (χ : DirichletCharacter ℂ Q) {w : ℂ} (hw 
       have hy : ‖χ p * ((p : ℕ) : ℂ) ^ (-z)‖ ≤ 1 / 2 :=
         (norm_char_prime_cpow_le χ p).trans (prime_rpow_neg_le_half (by linarith) p)
       have hslit : 1 - χ p * ((p : ℕ) : ℂ) ^ (-z) ∈ Complex.slitPlane := by
-        apply Complex.mem_slitPlane_of_pos_re
+        refine Complex.mem_slitPlane_iff.mpr (Or.inl ?_)
         have := Complex.abs_re_le_norm (χ p * ((p : ℕ) : ℂ) ^ (-z))
         rw [Complex.sub_re, Complex.one_re]
         linarith [le_abs_self (χ p * ((p : ℕ) : ℂ) ^ (-z)).re]
@@ -142,12 +145,13 @@ theorem norm_logDeriv_LFunction_le (χ : DirichletCharacter ℂ Q) {x : ℝ} (hx
   have hterm : ∀ n : ℕ, ‖LSeries.term (fun n : ℕ => χ n *
       ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) ((x : ℂ) + t * I) n‖ ≤
         ‖LSeries.term (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) x n‖ := fun n => by
-    refine (LSeries.norm_term_le _ (by
+    refine (LSeries.norm_term_le (f := fun n : ℕ => χ n * ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ))
+      (g := fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) ((x : ℂ) + t * I) (n := n) (by
       rw [norm_mul]
       exact mul_le_of_le_one_left (norm_nonneg _) (DirichletCharacter.norm_le_one χ _))).trans
       (le_of_eq ?_)
-    simp only [LSeries.norm_term_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
-      Complex.I_re, Complex.ofReal_im, Complex.I_im, mul_zero, mul_one, sub_self, add_zero]
+    rw [LSeries.norm_term_eq, LSeries.norm_term_eq]
+    simp
   have hnonneg : ∀ n : ℕ, ‖LSeries.term (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) x n‖ =
       (LSeries.term (fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) x n).re := fun n => by
     rcases eq_or_ne n 0 with rfl | hn
@@ -221,7 +225,8 @@ theorem continuousOn_logDeriv_LFunction_segment (χ : DirichletCharacter ℂ Q) 
     DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inr hz1) (by simp; linarith [hx.1])
   have hpath : ContinuousAt (fun y : ℝ => (y : ℂ) + t * I) x :=
     (Complex.continuous_ofReal.add continuous_const).continuousAt
-  exact ((han.deriv.continuousAt.comp hpath).div (han.continuousAt.comp hpath) hne).continuousWithinAt
+  exact ((han.deriv.continuousAt.comp_of_eq hpath rfl).div (han.continuousAt.comp_of_eq hpath rfl)
+    hne).continuousWithinAt
 
 /-- **The Euler logarithm as an integral of `L'/L`**: for `1 < σ ≤ 2`,
 `|ℓ_χ(σ + it)| ≤ (3/2) Σ_p p^{-2} + ∫_σ^2 |L'/L(x + it)| dx`. -/
@@ -287,12 +292,13 @@ theorem exists_norm_eulerLog_le_large (χ : DirichletCharacter ℂ Q) :
   have hg2 : ∀ x : ℝ, 1 < x → x ≤ 2 → ‖g x‖ ≤ 1 / (x - 1) + B := fun x hx hx2 =>
     (norm_logDeriv_LFunction_le χ hx t).trans (hB x hx hx2)
   -- the integral of `1/(x − 1) + B` over `[c, 2]`
-  have hk_int : ∀ c : ℝ, 1 < c → IntervalIntegrable (fun x : ℝ => 1 / (x - 1) + B) volume c 2 := by
-    intro c hc
+  have hk_int : ∀ c : ℝ, 1 < c → c ≤ 2 →
+      IntervalIntegrable (fun x : ℝ => 1 / (x - 1) + B) volume c 2 := by
+    intro c hc hc2
     refine ContinuousOn.intervalIntegrable ((continuousOn_const.div
       (continuousOn_id.sub continuousOn_const) fun x hx => ?_).add continuousOn_const)
-    rw [uIcc_of_le (by linarith : c ≤ 2)] at hx
-    have : 0 < x - 1 := by simp only [id]; linarith [hx.1]
+    rw [uIcc_of_le hc2] at hx
+    have : 0 < x - 1 := by linarith [hx.1]
     exact this.ne'
   have hk_val : ∀ c : ℝ, 1 < c → c ≤ 2 →
       ∫ x in c..2, (1 / (x - 1) + B) = Real.log (1 / (c - 1)) + B * (2 - c) := by
@@ -301,7 +307,7 @@ theorem exists_norm_eulerLog_le_large (χ : DirichletCharacter ℂ Q) :
       refine ContinuousOn.intervalIntegrable (continuousOn_const.div
         (continuousOn_id.sub continuousOn_const) fun x hx => ?_)
       rw [uIcc_of_le hc2] at hx
-      have : 0 < x - 1 := by simp only [id]; linarith [hx.1]
+      have : 0 < x - 1 := by linarith [hx.1]
       exact this.ne'
     rw [intervalIntegral.integral_add hinv intervalIntegrable_const, intervalIntegral.integral_const,
       smul_eq_mul]
@@ -323,7 +329,7 @@ theorem exists_norm_eulerLog_le_large (χ : DirichletCharacter ℂ Q) :
   have hbound : ∫ x in σ..2, ‖g x‖ ≤ 1 / 2 + Real.log (1 / η) + B := by
     rcases le_or_gt (1 + η) σ with hση | hση
     · calc ∫ x in σ..2, ‖g x‖ ≤ ∫ x in σ..2, (1 / (x - 1) + B) :=
-            intervalIntegral.integral_mono_on hσ2 hint (hk_int σ hσ)
+            intervalIntegral.integral_mono_on hσ2 hint (hk_int σ hσ hσ2)
               fun x hx => hg2 x (by linarith [hx.1]) hx.2
         _ = Real.log (1 / (σ - 1)) + B * (2 - σ) := hk_val σ hσ hσ2
         _ ≤ 1 / 2 + Real.log (1 / η) + B := by
@@ -349,7 +355,7 @@ theorem exists_norm_eulerLog_le_large (χ : DirichletCharacter ℂ Q) :
           _ = 1 / 2 := by simp only [η]; field_simp
       have hB' : ∫ x in (1 + η)..2, ‖g x‖ ≤ Real.log (1 / η) + B := by
         calc ∫ x in (1 + η)..2, ‖g x‖ ≤ ∫ x in (1 + η)..2, (1 / (x - 1) + B) :=
-              intervalIntegral.integral_mono_on hmid hint2 (hk_int (1 + η) (by linarith))
+              intervalIntegral.integral_mono_on hmid hint2 (hk_int (1 + η) (by linarith) hmid)
                 fun x hx => hg2 x (by linarith [hx.1]) hx.2
           _ = Real.log (1 / (1 + η - 1)) + B * (2 - (1 + η)) := hk_val _ (by linarith) hmid
           _ ≤ Real.log (1 / η) + B := by

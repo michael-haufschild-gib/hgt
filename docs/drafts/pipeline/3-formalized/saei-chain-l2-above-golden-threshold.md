@@ -1,7 +1,7 @@
 # The centred damping chain is Hilbert–Schmidt above damping (√5−1)/2
 
 - **ID:** saei-chain-l2-golden
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (paper + Lean)
 - **Source:** SAEI README §9 topic 4; improves `saei-chain-l2-root-two` (`η > 1/√2`)
 - **Statement:** For `η² + η > 1` (`η > (√5−1)/2 ≈ 0.618`) and `η < 1` the centred damping chain
@@ -15,7 +15,7 @@ divisor structure (not the signs of `μ`). Source-pure; no zeros.
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
 - [x] 1 → 2  fully-proven: paper proof below
-- [ ] 2 → 3  formalized: Lean modules written, final audit pending
+- [x] 2 → 3  formalized: final audit clean; axioms `propext`, `Classical.choice`, `Quot.sound`
 - [ ] 3 → 4  n/a
 
 ## Paper proof
@@ -75,10 +75,12 @@ Hilbert–Schmidt constant, and Cauchy–Schwarz row by row gives the `ℓ²` bo
   majorant with the exact source jump), `sum_sum_belowSqrt_le`, `sum_sum_aboveSqrt_le`.
 
 ## Remaining gap
-`½ < η ≤ (√5−1)/2`. At `κ = ½` the interpolated term needs `λ > (2−3η)/(1−η)`, at `κ = 0`
-`λ < η/(1+η)`; below the golden threshold a sharper short-interval bound near `K ≈ √N`
-(where `J ≈ 1` and `a ≈ √N`) or near `K ≈ 1` is required.
+`½ < η ≤ (√5−1)/2`. For fixed `K = N^κ` the summability exponent is linear in `λ`, so the best
+choice is an endpoint: the bound `J` is square summable for `κ > 1/(1+2η)`, the bound
+`a^{(1−η)/2}` for `κ < η/(2−η)`, and the two meet exactly at `η² + η = 1`. The method is sharp
+there; below it the window `η/(2−η) ≤ κ ≤ 1/(1+2η)` needs a short-interval bound for `c_η − ρ`
+better than `min(J, a^{(1−η)/2})`.
 
 ## Log
 - 2026-10-23 — created with the paper proof sketch.
-- 2026-10-23 — paper proof rewritten for the uniform choice `D = max(J, √a)`; Lean written.
+- 2026-10-23 — paper proof for the uniform choice `D = max(J, √a)`; formalized.

@@ -74,22 +74,23 @@ theorem circleReflect_mem_spectrum {z : ℂ} (hz : z ∈ D.spectrum) :
   rw [← D.β_reflPerm]
   exact Finset.mem_image_of_mem _ (Finset.mem_univ _)
 
-/-- Circle reflection bijects the outer spectrum onto the inner spectrum. -/
+/-- Circle reflection bijects the inner spectrum onto the outer spectrum. -/
 theorem card_innerSpectrum_eq_card_outerSpectrum :
     D.innerSpectrum.card = D.outerSpectrum.card := by
   refine Finset.card_bij (fun z _ => circleReflect z) (fun z hz => ?_) (fun z₁ _ z₂ _ h => ?_)
     (fun w hw => ?_)
   · obtain ⟨hzs, hz1⟩ := Finset.mem_filter.mp hz
-    exact Finset.mem_filter.mpr ⟨D.circleReflect_mem_spectrum hzs,
-      by rw [norm_circleReflect]; exact inv_lt_one_of_one_lt₀ hz1⟩
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hzs
+    refine Finset.mem_filter.mpr ⟨D.circleReflect_mem_spectrum hzs, ?_⟩
+    rw [norm_circleReflect]
+    exact one_lt_inv₀ (norm_pos_iff.mpr (D.β_ne_zero i)) |>.mpr hz1
   · have := congrArg circleReflect h
     simpa [circleReflect_circleReflect] using this
   · obtain ⟨hws, hw1⟩ := Finset.mem_filter.mp hw
-    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hws
-    refine ⟨circleReflect (D.β i), Finset.mem_filter.mpr ⟨D.circleReflect_mem_spectrum hws, ?_⟩,
+    refine ⟨circleReflect w, Finset.mem_filter.mpr ⟨D.circleReflect_mem_spectrum hws, ?_⟩,
       circleReflect_circleReflect _⟩
     rw [norm_circleReflect]
-    exact one_lt_inv₀ (norm_pos_iff.mpr (D.β_ne_zero i)) |>.mpr hw1
+    exact inv_lt_one_of_one_lt₀ hw1
 
 /-- The spectrum partitions into the on-circle eigenvalues and the reflected outer/inner pairs:
 `|spectrum| = |onCircleSpectrum| + 2 |outerSpectrum|`. -/
@@ -151,7 +152,7 @@ def multiPairConfig : ZeroConfig where
     · simp only [offLinePoint]; constructor <;> linarith [hδ k, hδ' k]
   reflect_mem := by
     rintro _ ((⟨k, rfl⟩ | ⟨k, rfl⟩) | ⟨k, rfl⟩)
-    · exact Or.inl (Or.inl ⟨-k, by
+    · exact Or.inl (Or.inl ⟨k, by
         rw [RHTower.reflect_verticalLatticePoint, neg_zero]⟩)
     · exact Or.inr ⟨k, (SquareRootThreshold.reflect_offLinePoint (δ k) (γ k)).symm⟩
     · exact Or.inl (Or.inr ⟨k, by
@@ -174,6 +175,7 @@ def multiPairConfig : ZeroConfig where
     · exact Or.inl (Or.inr ⟨k, rfl⟩)
     · exact Or.inr ⟨k, rfl⟩
 
+include hδ in
 theorem disjoint_onLine_offLine_pos (L : ℝ) :
     Disjoint (Set.range (RHTower.verticalLatticePoint L 0))
       (Set.range fun k : Fin n => offLinePoint (δ k) (γ k)) := by
@@ -183,6 +185,7 @@ theorem disjoint_onLine_offLine_pos (L : ℝ) :
   simp only [RHTower.verticalLatticePoint, offLinePoint] at this
   linarith [hδ k]
 
+include hδ in
 theorem disjoint_onLine_pos_offLine_neg (L : ℝ) :
     Disjoint (Set.range (RHTower.verticalLatticePoint L 0) ∪
         Set.range fun k : Fin n => offLinePoint (δ k) (γ k))
@@ -243,7 +246,7 @@ theorem rightZeros_multiPairConfig :
 theorem encard_rightZeros_multiPairConfig
     (hinj : Function.Injective fun k : Fin n => offLinePoint (δ k) (γ k)) :
     (rightZeros (multiPairConfig hL δ γ hδ hδ')).encard = n := by
-  rw [rightZeros_multiPairConfig, ← Set.image_univ, Set.encard_image_of_injective _ hinj,
+  rw [rightZeros_multiPairConfig, ← Set.image_univ, hinj.encard_image,
     Set.encard_univ, ENat.card_eq_coe_fintype_card, Fintype.card_fin]
 
 /-- The total Hodge defect of the `n`-pair configuration is `n`. -/
@@ -354,19 +357,21 @@ theorem re_W_multiPairConfig_ge_of_nodes
         (‖paperFT f ((γ k : ℂ) - I * δ k) + paperFT f ((γ k : ℂ) + I * δ k)‖ ^ 2 -
           ‖paperFT f ((γ k : ℂ) - I * δ k) - paperFT f ((γ k : ℂ) + I * δ k)‖ ^ 2) / 2 := by
     intro k
-    have hpos : 0 ≤ ‖paperFT f ((γ k : ℂ) - I * δ k) + paperFT f ((γ k : ℂ) + I * δ k)‖ ^ 2 :=
-      sq_nonneg _
     by_cases hk : k ∈ S
     · have hkc : k ∉ Sᶜ := by simp [hk]
       rw [if_neg hkc, hnode k hk, sub_self, norm_zero]
-      positivity
+      have : 0 ≤ ‖paperFT f ((γ k : ℂ) + I * δ k) + paperFT f ((γ k : ℂ) + I * δ k)‖ ^ 2 :=
+        sq_nonneg _
+      linarith
     · have hkc : k ∈ Sᶜ := Finset.mem_compl.mpr hk
       rw [if_pos hkc]
+      have : 0 ≤ ‖paperFT f ((γ k : ℂ) - I * δ k) + paperFT f ((γ k : ℂ) + I * δ k)‖ ^ 2 :=
+        sq_nonneg _
       have hsub := norm_sub_sq_le_pairEnergy (hδ k) ha (γ k) hf.continuous hfs
       linarith
   have hsum := Finset.sum_le_sum fun k (_ : k ∈ Finset.univ) => hterm k
-  rw [Finset.sum_ite_mem, Finset.univ_inter, ← Finset.sum_neg_distrib, ← Finset.mul_sum,
-    ← Finset.sum_mul] at hsum
+  rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_neg_distrib, ← Finset.sum_mul,
+    ← Finset.mul_sum] at hsum
   linarith
 
 /-- **Stepwise degree filtration bound.** If the pairs outside `S ⊆ Fin n` have collective pair
@@ -581,7 +586,7 @@ theorem re_W_pairComb_le_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z) 
     _ = -Y := by ring
 
 /-- Support of a phased translate `ω b(· − Δ)`. -/
-theorem tsupport_phasedTranslate_subset {b : ℝ → ℂ} {a₀ Δ : ℝ} (ha₀ : 0 ≤ a₀) (hΔ : 0 ≤ Δ)
+theorem tsupport_phasedTranslate_subset {b : ℝ → ℂ} {a₀ Δ : ℝ} (hΔ : 0 ≤ Δ)
     (hb : tsupport b ⊆ Icc (-a₀) a₀) (ω : ℂ) :
     tsupport (phasedTranslate b ω Δ) ⊆ Icc (-(Δ + a₀)) (Δ + a₀) := by
   refine closure_minimal (fun u hu => ?_) isClosed_Icc
@@ -592,13 +597,13 @@ theorem tsupport_phasedTranslate_subset {b : ℝ → ℂ} {a₀ Δ : ℝ} (ha₀
 
 /-- If every `b_ρ` is supported in `[−a₀, a₀]` and `Δ ≥ 0`, every test in `pairFamily b ω Δ` is
 supported in `[−(Δ + a₀), Δ + a₀]`. -/
-theorem tsupport_pairFamily_subset {R : Type*} {b : R → ℝ → ℂ} {a₀ Δ : ℝ} (ha₀ : 0 ≤ a₀)
+theorem tsupport_pairFamily_subset {R : Type*} {b : R → ℝ → ℂ} {a₀ Δ : ℝ}
     (hΔ : 0 ≤ Δ) (hb : ∀ ρ, tsupport (b ρ) ⊆ Icc (-a₀) a₀) (ω : R → ℂ) (p : R × Fin 2) :
     tsupport (pairFamily b ω Δ p) ⊆ Icc (-(Δ + a₀)) (Δ + a₀) := by
   unfold pairFamily
   split_ifs
   · exact (hb p.1).trans (Set.Icc_subset_Icc (by linarith) (by linarith))
-  · exact tsupport_phasedTranslate_subset ha₀ hΔ (hb p.1) (ω p.1)
+  · exact tsupport_phasedTranslate_subset hΔ (hb p.1) (ω p.1)
 
 /-- Support of `bumpTest δ hδ t` lies in `[t − δ, t + δ]`. -/
 theorem tsupport_bumpTest_subset_Icc {δ : ℝ} (hδ : 0 < δ) (t : ℝ) :
@@ -609,7 +614,8 @@ theorem tsupport_bumpTest_subset_Icc {δ : ℝ} (hδ : 0 < δ) (t : ℝ) :
   have hdist : δ ≤ dist (u - t) 0 := by
     rw [Real.dist_0_eq_abs]
     by_contra hlt
-    rw [abs_lt] at hlt
+    push Not at hlt
+    obtain ⟨h1, h2⟩ := abs_lt.mp hlt
     exact hout ⟨by linarith, by linarith⟩
   simp [bumpTest, (smallBump δ hδ).zero_of_le_dist hdist]
 
@@ -697,7 +703,7 @@ theorem exists_test_interpolating_Icc {m : ℕ} {a₀ : ℝ} (ha₀ : 0 < a₀) 
       calc ((j : ℕ) : ℝ) * τ ≤ m * (a₀ / (2 * ((m : ℝ) + 1))) :=
             mul_le_mul hj hτa hτ.le (Nat.cast_nonneg _)
         _ ≤ (m + 1) * (a₀ / (2 * ((m : ℝ) + 1))) := by gcongr; linarith
-        _ = a₀ / 2 := by field_simp; ring
+        _ = a₀ / 2 := by field_simp
     have hj0 : 0 ≤ ((j : ℕ) : ℝ) * τ := by positivity
     have hsub : Icc (((j : ℕ) : ℝ) * τ - δ) (((j : ℕ) : ℝ) * τ + δ) ⊆ Icc (-a₀) a₀ :=
       Set.Icc_subset_Icc (by linarith) (by linarith)
@@ -747,9 +753,9 @@ theorem exists_dual_tests_Icc {R : Finset ℂ} (hR : ∀ ρ ∈ R, 1 / 2 < ρ.re
     ((Sum.elim (fun σ => if σ = ρ then 1 else 0) (fun σ => if σ = ρ then 1 else 0)) ∘ e.symm)
   refine ⟨b, hb, hbs, fun ρ σ => ?_, fun ρ σ => ?_⟩
   · have := hbv ρ (e (Sum.inl σ))
-    simpa [Function.comp_apply] using this
+    simpa [Function.comp_apply, z] using this
   · have := hbv ρ (e (Sum.inr σ))
-    simpa [Function.comp_apply] using this
+    simpa [Function.comp_apply, z] using this
 
 /-- **Visibility degree from on-line mass.** If `b` is a dual family for the right-zero set `R` of
 a tempered configuration `Z`, supported in `[−a₀, a₀]`, and `Δ ≥ 0` satisfies
@@ -757,7 +763,7 @@ a tempered configuration `Z`, supported in `[−a₀, a₀]`, and `Δ ≥ 0` sat
 `a ≥ Δ + a₀` all `|R|` right zeros are visible: `hodgeDefectAt Z a = |R|`. -/
 theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
     (hR : (rightZeros Z).Finite) {b : hR.toFinset → ℝ → ℂ}
-    (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ} (ha₀ : 0 ≤ a₀)
+    (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ}
     (hbs : ∀ ρ, tsupport (b ρ) ⊆ Icc (-a₀) a₀)
     (hb1 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (gammaOf σ) = if σ = ρ then 1 else 0)
     (hb2 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (conj (gammaOf σ)) = if σ = ρ then 1 else 0)
@@ -766,16 +772,15 @@ theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
       2 * onLineMass Z b + 1 / 2 ≤ Real.cosh (((ρ : ℂ).re - 1 / 2) * Δ) - 1) :
     hodgeDefectAt Z a = hR.toFinset.card := by
   classical
-  set R := hR.toFinset
-  have hbc : ∀ ρ : R, HasCompactSupport (b ρ) := fun ρ =>
+  have hbc : ∀ ρ : hR.toFinset, HasCompactSupport (b ρ) := fun ρ =>
     isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (hbs ρ)
-  have hRm : ∀ ρ : R, (ρ : ℂ) ∈ Z.carrier ∧ 1 / 2 < (ρ : ℂ).re := fun ρ => by
+  have hRm : ∀ ρ : hR.toFinset, (ρ : ℂ) ∈ Z.carrier ∧ 1 / 2 < (ρ : ℂ).re := fun ρ => by
     have := (Set.Finite.mem_toFinset hR).mp ρ.2
     simpa [rightZeros] using this
-  have hRall : ∀ τ ∈ Z.carrier, 1 / 2 < τ.re → τ ∈ R := fun τ hτ hre =>
+  have hRall : ∀ τ ∈ Z.carrier, 1 / 2 < τ.re → τ ∈ hR.toFinset := fun τ hτ hre =>
     (Set.Finite.mem_toFinset hR).mpr ⟨hτ, hre⟩
   set F := pairFamily b (fun ρ => phase Δ ρ) Δ
-  set Φ : (R → ℂ) →ₗ[ℂ] (R × Fin 2 → ℂ) := LinearMap.funLeft ℂ ℂ Prod.fst
+  set Φ : (hR.toFinset → ℂ) →ₗ[ℂ] (hR.toFinset × Fin 2 → ℂ) := LinearMap.funLeft ℂ ℂ Prod.fst
   have hΦ : Function.Injective Φ :=
     LinearMap.funLeft_injective_of_surjective ℂ ℂ Prod.fst fun ρ => ⟨(ρ, 0), rfl⟩
   have hpd : IsPosDefOn (-(zeroGram Z F)) (LinearMap.range Φ) := by
@@ -790,22 +795,24 @@ theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
       (pairFamily_hasCompactSupport hbc _ Δ)]
     simp only [Φ, LinearMap.funLeft_apply]
     linarith [re_W_pairComb_le_of_onLineMass Z hZ hRm hRall hb hbc hb1 hb2 hΔ y]
-  have hneg : R.card ≤ hermNegIndex (zeroGram Z F) := by
+  have hneg : hR.toFinset.card ≤ hermNegIndex (zeroGram Z F) := by
     have h1 := finrank_le_posIndex hpd
     rw [LinearMap.finrank_range_of_inj hΦ, Module.finrank_fintype_fun_eq_card,
       Fintype.card_coe] at h1
     rw [hermNegIndex]
     exact h1
-  set e := Fintype.equivFin (R × Fin 2)
+  set e := Fintype.equivFin (hR.toFinset × Fin 2)
   have hF_re : hermNegIndex (zeroGram Z (F ∘ e.symm)) = hermNegIndex (zeroGram Z F) := by
-    have hG : zeroGram Z (F ∘ e.symm) = ( zeroGram Z F ).submatrix e.symm e.symm := rfl
-    rw [hG, hermNegIndex, hermNegIndex, Matrix.submatrix_neg, posIndex_reindex]
-  have hge : (R.card : ℕ∞) ≤ hodgeDefectAt Z a := by
+    have hG : zeroGram Z (F ∘ e.symm) = (zeroGram Z F).submatrix e.symm e.symm := rfl
+    rw [hG, hermNegIndex, hermNegIndex, ← Matrix.submatrix_neg, posIndex_reindex]
+  have hFc : ∀ j, ContDiff ℝ 2 (F j) := pairFamily_contDiff hb (fun ρ => phase Δ ρ) Δ
+  have hFs : ∀ j, tsupport (F j) ⊆ Icc (-Δ - a₀) (Δ + a₀) :=
+    tsupport_pairFamily_subset hΔ0 hbs (fun ρ => phase Δ ρ)
+  have hge : (hR.toFinset.card : ℕ∞) ≤ hodgeDefectAt Z a := by
     refine (ENat.coe_le_coe.mpr (hneg.trans_eq hF_re.symm)).trans
-      (le_hodgeDefectAt Z (F ∘ e.symm) fun i => ⟨pairFamily_contDiff hb _ Δ (e.symm i), ?_⟩)
-    exact (tsupport_pairFamily_subset ha₀ hΔ0 hbs _ (e.symm i)).trans
-      (Set.Icc_subset_Icc (by linarith) (by linarith))
-  have hle : hodgeDefectAt Z a ≤ R.card := by
+      (le_hodgeDefectAt Z (F ∘ e.symm) fun i => ⟨hFc (e.symm i), ?_⟩)
+    exact (hFs (e.symm i)).trans (Set.Icc_subset_Icc (by linarith) (by linarith))
+  have hle : hodgeDefectAt Z a ≤ hR.toFinset.card := by
     rw [← hR.encard_eq_coe_toFinset_card]
     exact hodgeDefectAt_le Z hZ a
   exact le_antisymm hle hge
@@ -815,7 +822,7 @@ zeros are visible at every degree `a ≥ a₀ + Δ` once
 `log(4 · onLineMass Z b + 3) ≤ (Re ρ − ½) Δ` for every `ρ ∈ R`. -/
 theorem hodgeDefectAt_eq_of_log_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
     (hR : (rightZeros Z).Finite) {b : hR.toFinset → ℝ → ℂ}
-    (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ} (ha₀ : 0 ≤ a₀)
+    (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ}
     (hbs : ∀ ρ, tsupport (b ρ) ⊆ Icc (-a₀) a₀)
     (hb1 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (gammaOf σ) = if σ = ρ then 1 else 0)
     (hb2 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (conj (gammaOf σ)) = if σ = ρ then 1 else 0)
@@ -823,7 +830,7 @@ theorem hodgeDefectAt_eq_of_log_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig
     (hlog : ∀ ρ : hR.toFinset,
       Real.log (4 * onLineMass Z b + 3) ≤ ((ρ : ℂ).re - 1 / 2) * Δ) :
     hodgeDefectAt Z a = hR.toFinset.card := by
-  refine hodgeDefectAt_eq_of_onLineMass Z hZ hR hb ha₀ hbs hb1 hb2 hΔ0 ha fun ρ => ?_
+  refine hodgeDefectAt_eq_of_onLineMass Z hZ hR hb hbs hb1 hb2 hΔ0 ha fun ρ => ?_
   have hA0 := onLineMass_nonneg Z b
   have hexp : 4 * onLineMass Z b + 3 ≤ Real.exp (((ρ : ℂ).re - 1 / 2) * Δ) := by
     rw [← Real.exp_log (by linarith : 0 < 4 * onLineMass Z b + 3)]
@@ -846,6 +853,8 @@ theorem onLineMass_multiPairConfig_eq {L : ℝ} (hL : 0 < L) {n : ℕ} (δ γ : 
   have hmultdef : ∀ ρ, Z.mult ρ = if ρ.re = 1 / 2 then 2 else 1 := fun _ => rfl
   have hmult : ∀ m : ℤ, Z.mult (RHTower.verticalLatticePoint L 0 m) = 2 := fun m => by
     rw [hmultdef, if_pos (by simp [RHTower.verticalLatticePoint])]
+  set G : ℂ → ℝ := fun τ =>
+    if τ.re = 1 / 2 then ∑ ρ : R, (Z.mult τ : ℝ) * ‖paperFT (b ρ) (gammaOf τ)‖ ^ 2 else 0
   have hon_each : ∀ ρ : R, HasSum (fun τ : Set.range (RHTower.verticalLatticePoint L 0) =>
       (Z.mult τ : ℝ) * ‖paperFT (b ρ) (gammaOf τ)‖ ^ 2) (2 * L * ∫ t, ‖b ρ t‖ ^ 2) := by
     intro ρ
@@ -864,53 +873,38 @@ theorem onLineMass_multiPairConfig_eq {L : ℝ} (hL : 0 < L) {n : ℕ} (δ γ : 
       rw [Complex.conj_eq_iff_im]; simp [gammaOf, hre]
     rw [ZeroConfig.Wsummand, hγ, mul_assoc, Complex.mul_conj, ← Complex.ofReal_natCast,
       ← Complex.ofReal_mul, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
-  have h₁ : HasSum (fun τ : Set.range (RHTower.verticalLatticePoint L 0) =>
-      onLineSummand Z b ⟨τ, Or.inl (Or.inl τ.2)⟩)
+  have h₁ : HasSum (fun τ : Set.range (RHTower.verticalLatticePoint L 0) => G τ)
       (2 * L * ∑ ρ : R, ∫ t, ‖b ρ t‖ ^ 2) := by
     rw [Finset.mul_sum]
     refine (hasSum_sum fun ρ _ => hon_each ρ).congr_fun fun τ => ?_
     obtain ⟨_, m, rfl⟩ := τ
     have hre : (RHTower.verticalLatticePoint L 0 m).re = 1 / 2 := by
       simp [RHTower.verticalLatticePoint]
-    simp [onLineSummand, hre]
-  have hp : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (δ k) (γ k)) =>
-      onLineSummand Z b ⟨τ, Or.inl (Or.inr τ.2)⟩) 0 := by
+    simp [G, hre]
+  have hp : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (δ k) (γ k)) => G τ) 0 := by
     rw [hinj.hasSum_range_iff]
-    have h0 : ∀ k : Fin n, onLineSummand Z b
-        ⟨offLinePoint (δ k) (γ k), Or.inl (Or.inr ⟨k, rfl⟩)⟩ = 0 := fun k =>
+    have h0 : ∀ k : Fin n, G (offLinePoint (δ k) (γ k)) = 0 := fun k =>
       if_neg (by simp only [offLinePoint]; linarith [hδ k])
-    simpa [Function.comp_def, h0] using hasSum_zero
+    simp [Function.comp_def, h0]
   have hinj' := injective_offLinePoint_neg_of_pos δ γ hinj
-  have hq : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (-δ k) (γ k)) =>
-      onLineSummand Z b ⟨τ, Or.inr τ.2⟩) 0 := by
+  have hq : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (-δ k) (γ k)) => G τ) 0 := by
     rw [hinj'.hasSum_range_iff]
-    have h0 : ∀ k : Fin n, onLineSummand Z b
-        ⟨offLinePoint (-δ k) (γ k), Or.inr ⟨k, rfl⟩⟩ = 0 := fun k =>
+    have h0 : ∀ k : Fin n, G (offLinePoint (-δ k) (γ k)) = 0 := fun k =>
       if_neg (by simp only [offLinePoint]; linarith [hδ k])
-    simpa [Function.comp_def, h0] using hasSum_zero
-  set G : ℂ → ℝ := fun τ =>
-    if h : τ ∈ Z.carrier then onLineSummand Z b ⟨τ, h⟩ else 0
-  have h₁' : HasSum (fun τ : Set.range (RHTower.verticalLatticePoint L 0) => G τ)
-      (2 * L * ∑ ρ : R, ∫ t, ‖b ρ t‖ ^ 2) :=
-    h₁.congr_fun fun τ => dif_pos (Or.inl (Or.inl τ.2))
-  have hp' : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (δ k) (γ k)) => G τ) 0 :=
-    hp.congr_fun fun τ => dif_pos (Or.inl (Or.inr τ.2))
-  have hq' : HasSum (fun τ : Set.range (fun k : Fin n => offLinePoint (-δ k) (γ k)) => G τ) 0 :=
-    hq.congr_fun fun τ => dif_pos (Or.inr τ.2)
+    simp [Function.comp_def, h0]
   have hall := HasSum.add_disjoint (f := G) (disjoint_onLine_pos_offLine_neg δ γ hδ L)
-    (HasSum.add_disjoint (f := G) (disjoint_onLine_offLine_pos δ γ hδ L) h₁' hp') hq'
-  have hall' : HasSum (onLineSummand Z b) (2 * L * ∑ ρ : R, ∫ t, ‖b ρ t‖ ^ 2 + 0 + 0) :=
-    hall.congr_fun fun τ => by simp [G, τ.2]
-  rw [onLineMass, hall'.tsum_eq, add_zero, add_zero]
+    (HasSum.add_disjoint (f := G) (disjoint_onLine_offLine_pos δ γ hδ L) h₁ hp) hq
+  rw [onLineMass]
+  exact hall.tsum_eq.trans (by ring)
 
 /-- **Explicit visibility degree of `n` pairs in `multiPairConfig`.** With dual tests `b` supported
-in `[−a₀, a₀]` (`0 ≤ a₀ ≤ L/2`), all `n` right zeros of `multiPairConfig` are visible at every
+in `[−a₀, a₀]` (`a₀ ≤ L/2`), all `n` right zeros of `multiPairConfig` are visible at every
 degree `a ≥ a₀ + Δ` once `4L Σ_ρ ∫ ‖b_ρ‖² + ½ ≤ cosh((Re ρ − ½)Δ) − 1`. -/
 theorem hodgeDefectAt_multiPairConfig_eq_card {L : ℝ} (hL : 0 < L) {n : ℕ} (δ γ : Fin n → ℝ)
     (hδ : ∀ k, 0 < δ k) (hδ' : ∀ k, δ k ≤ 1 / 2)
     (hinj : Function.Injective fun k : Fin n => offLinePoint (δ k) (γ k))
     (hR : (rightZeros (multiPairConfig hL δ γ hδ hδ')).Finite)
-    {b : hR.toFinset → ℝ → ℂ} (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ} (ha₀ : 0 ≤ a₀)
+    {b : hR.toFinset → ℝ → ℂ} (hb : ∀ ρ, ContDiff ℝ 2 (b ρ)) {a₀ : ℝ}
     (ha₀L : a₀ ≤ L / 2) (hbs : ∀ ρ, tsupport (b ρ) ⊆ Icc (-a₀) a₀)
     (hb1 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (gammaOf σ) = if σ = ρ then 1 else 0)
     (hb2 : ∀ ρ σ : hR.toFinset, paperFT (b ρ) (conj (gammaOf σ)) = if σ = ρ then 1 else 0)
@@ -923,7 +917,7 @@ theorem hodgeDefectAt_multiPairConfig_eq_card {L : ℝ} (hL : 0 < L) {n : ℕ} (
     rw [← hR.encard_eq_coe_toFinset_card, encard_rightZeros_multiPairConfig hL δ γ hδ hδ' hinj]
   rw [← hcard]
   refine hodgeDefectAt_eq_of_onLineMass _ (temperedConfig_multiPairConfig hL δ γ hδ hδ') hR
-    hb ha₀ hbs hb1 hb2 hΔ0 ha fun ρ => ?_
+    hb hbs hb1 hb2 hΔ0 ha fun ρ => ?_
   have hbs' : ∀ σ, tsupport (b σ) ⊆ Icc (-(L / 2)) (L / 2) := fun σ =>
     (hbs σ).trans (Set.Icc_subset_Icc (by linarith) ha₀L)
   rw [onLineMass_multiPairConfig_eq hL δ γ hδ hδ' hinj hb hbs']
@@ -954,7 +948,7 @@ theorem onLineMass_le_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
   have hMQ : ∀ T : ℝ, ({q : Q | |x q - T| ≤ 1} : Set Q).encard ≤ M := by
     intro T
     have hinj : Function.Injective (Subtype.val : Q → Z.carrier) := Subtype.val_injective
-    rw [← Set.encard_image_of_injective _ hinj]
+    rw [← hinj.encard_image]
     refine (Set.encard_le_encard ?_).trans (hM T)
     rintro τ ⟨q, hq, rfl⟩
     exact ⟨q.2, hq⟩
@@ -970,9 +964,9 @@ theorem onLineMass_le_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
     intro ρ
     obtain ⟨hs, hle⟩ := summable_tsum_norm_sq_testTransform_le_of_locallyBounded ha₀ (hsrc ρ) x y
       (le_refl 0) (fun _ => by simp [y]) hMQ
-    simp only [mul_zero, Real.exp_zero, mul_one] at hle
+    simp only [zero_mul, Real.exp_zero, mul_one] at hle
     have hfun : (fun q : Q => ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2) =
-        fun q : Q => ‖RHTower.CCMParityQuartet.testTransform (b ρ) ((x q : ℂ) + (y q : ℂ) * I)‖ ^ 2 := by
+        fun q : Q => ‖testTransform (b ρ) ((x q : ℂ) + (y q : ℂ) * I)‖ ^ 2 := by
       funext q
       rw [hγq q]
       rfl
@@ -1001,10 +995,10 @@ theorem onLineMass_le_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
     _ = ∑ ρ : R, (m₀ : ℝ) * ∑' q : Q, ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2 := by
         rw [Summable.tsum_finsetSum fun ρ _ => (hρ_bound ρ).1.mul_left _]
         exact Finset.sum_congr rfl fun ρ _ => tsum_mul_left
-    _ ≤ ∑ ρ : R, (m₀ : ℝ) * (M * ((2 * a₀ + 2 * π) * Real.exp (2 * π)) * ∫ u, ‖b ρ u‖ ^ 2) :=
+    _ ≤ ∑ ρ : R, (m₀ : ℝ) * ((M * ((2 * a₀ + 2 * π) * Real.exp (2 * π))) * ∫ u, ‖b ρ u‖ ^ 2) :=
         Finset.sum_le_sum fun ρ _ => mul_le_mul_of_nonneg_left (hρ_bound ρ).2 (Nat.cast_nonneg _)
     _ = m₀ * M * ((2 * a₀ + 2 * π) * Real.exp (2 * π)) * ∑ ρ : R, ∫ u, ‖b ρ u‖ ^ 2 := by
-        rw [← Finset.mul_sum]; ring
+        simp only [← Finset.mul_sum]; ring
 
 /-- **Explicit visibility degree of `n` right zeros under local density `M`.** For any tempered
 configuration `Z` with finite right-zero set `R`, at most `M` on-line zeros of multiplicity `≤ m₀`
@@ -1025,7 +1019,7 @@ theorem hodgeDefectAt_eq_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig
       Real.log (4 * (m₀ * M * ((2 * a₀ + 2 * π) * Real.exp (2 * π)) *
         ∑ σ : hR.toFinset, ∫ u, ‖b σ u‖ ^ 2) + 3) ≤ ((ρ : ℂ).re - 1 / 2) * Δ) :
     hodgeDefectAt Z a = hR.toFinset.card := by
-  refine hodgeDefectAt_eq_of_log_onLineMass Z hZ hR hb ha₀.le hbs hb1 hb2 hΔ0 ha fun ρ => ?_
+  refine hodgeDefectAt_eq_of_log_onLineMass Z hZ hR hb hbs hb1 hb2 hΔ0 ha fun ρ => ?_
   have hle := onLineMass_le_of_locallyBounded Z hZ hm₀ hM hb ha₀ hbs
   have hA0 := onLineMass_nonneg Z b
   refine (Real.log_le_log (by linarith) (by linarith)).trans (hlog ρ)
@@ -1050,10 +1044,9 @@ theorem card_le_hodgeDefectAt_of_visible_pairs (Z : ZeroConfig) (hZ : TemperedCo
       ∃ f : Fin T.card → ℝ → ℂ, (∀ i, ContDiff ℝ 2 (f i)) ∧
         (∀ i, tsupport (f i) ⊆ Icc (-a) a) ∧ T.card ≤ hermNegIndex (zeroGram Z f) := by
   classical
-  set e := Fintype.equivFin T
+  set e := T.equivFin
   set s := RHTower.sinhTest a δ
-  set f : Fin T.card → ℝ → ℂ := fun i =>
-    RHTower.modulatedTest ((e.symm (Fin.cast (Fintype.card_coe T).symm i) : T) : ℂ).im s
+  set f : Fin T.card → ℝ → ℂ := fun i => RHTower.modulatedTest (e.symm i : ℂ).im s
   have hs : ContDiff ℝ 2 s := RHTower.sinhTest_contDiff a δ
   have hsupp : ∀ u, s u ≠ 0 → |u| ≤ a := RHTower.sinhTest_supp ha
   have hfd : ∀ i, ContDiff ℝ 2 (f i) := fun i => RHTower.modulatedTest_contDiff _ hs
@@ -1069,20 +1062,22 @@ theorem card_le_hodgeDefectAt_of_visible_pairs (Z : ZeroConfig) (hZ : TemperedCo
   have hpd : IsPosDefOn (-(zeroGram Z f)) ⊤ := by
     intro x _ hx0
     rw [hermQuad_neg, hermQuad_zeroGram_of_tempered Z hZ f hfd hfc]
-    set c : T → ℂ := fun ρ => conj (x (Fin.cast (Fintype.card_coe T) (e ρ)))
+    set c : T → ℂ := fun ρ => conj (x (e ρ))
     have hc0 : c ≠ 0 := by
       obtain ⟨i, hi⟩ := Function.ne_iff.mp hx0
       intro h
       apply hi
-      have h1 := congrFun h (e.symm (Fin.cast (Fintype.card_coe T).symm i))
-      simpa [c] using (starRingEnd ℂ).injective h1
+      have h1 : c (e.symm i) = 0 := congrFun h (e.symm i)
+      simp only [c, Equiv.apply_symm_apply, map_eq_zero] at h1
+      exact h1
     have hfun : (∑ i, conj (x i) • f i) =
         fun u => ∑ ρ ∈ T, RHTower.extendCoeff T c ρ * RHTower.modulatedTest ρ.im s u := by
       rw [← RHTower.visibleCombination_eq]
       funext u
-      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, RHTower.visibleCombination, f, c]
-      exact (Equiv.sum_comp (e.trans (Fin.castOrderIso (Fintype.card_coe T)).toEquiv)
-        fun i => conj (x i) * f i u).symm
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, RHTower.visibleCombination]
+      rw [← Equiv.sum_comp e (fun i => conj (x i) * f i u)]
+      refine Finset.sum_congr rfl fun ρ _ => ?_
+      simp [f, c]
     rw [hfun]
     have hneg := RHTower.re_W_visible_combination_neg Z hA₀ hloc ha hδ hR T hT hsep hiso hvis'
       (RHTower.extendCoeff T c) (RHTower.exists_extendCoeff_ne hc0)

@@ -464,7 +464,6 @@ theorem norm_sq_sub_defect_chainVector (e : I ≃ I) (m : ℕ) (x y : I)
 
 /-! ## Essential norm two -/
 
-set_option maxHeartbeats 2000000 in
 /-- **Distance two from every compact operator.**  If the bijection admits, for every chain length
 and every finite count, that many pairwise disjoint chains, then the defect stays at distance two
 from the compact operators: its essential norm is exactly two. -/
@@ -488,7 +487,7 @@ theorem two_le_norm_lpReindexDefect_sub (e : I ≃ I)
     rw [div_le_iff₀ (by positivity)]
     have : 2 / d < (m : ℝ) := hm
     rw [div_lt_iff₀ hdpos] at this
-    nlinarith
+    linarith
   obtain ⟨C, hC, hpre⟩ := hK
   obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.1 hpre
   obtain ⟨t, htfin, htcov⟩ :=
@@ -552,7 +551,7 @@ theorem two_le_norm_lpReindexDefect_sub (e : I ≃ I)
   have hzn : ‖z‖ = 1 := by
     rw [hz, norm_smul, hsnorm]
     have h2 : ‖u k - u l‖ = Real.sqrt 2 := by
-      nlinarith [norm_nonneg (u k - u l), hsub2, Real.sqrt_nonneg (2:ℝ), hsq2]
+      rw [← hsub2, Real.sqrt_sq (norm_nonneg _)]
     rw [h2, inv_mul_cancel₀ (by positivity)]
   have hTz : ‖T z‖ ^ 2 = (4 * (m : ℝ) + 2) / ((m : ℝ) + 1) := by
     have hTsub' : ‖T (u k - u l)‖ ^ 2 = 2 * ((4 * (m : ℝ) + 2) / ((m : ℝ) + 1)) := by
@@ -568,8 +567,10 @@ theorem two_le_norm_lpReindexDefect_sub (e : I ≃ I)
       ring
     have hge : (2 - d / 2) ^ 2 ≤ ‖T z‖ ^ 2 := by
       rw [hTz, hval]
-      nlinarith [hm, hdpos, hd1]
-    nlinarith [norm_nonneg (T z), hge, hdpos, hd1]
+      -- `d² ≤ d` on `(0, 1]`, so `(2 - d/2)² ≤ 4 - 7d/4 ≤ 4 - 2/(m+1)`
+      linarith [mul_le_mul_of_nonneg_left hd1 hdpos.le]
+    have hroot := Real.sqrt_le_sqrt hge
+    rwa [Real.sqrt_sq (by linarith), Real.sqrt_sq (norm_nonneg _)] at hroot
   have hKz : ‖K z‖ ≤ d / 2 := by
     have hkey : K (c • u k) - K (c • u l) = c • K (u k - u l) := by
       rw [map_smul, map_smul, map_sub, smul_sub]
@@ -578,14 +579,16 @@ theorem two_le_norm_lpReindexDefect_sub (e : I ≃ I)
       exact hKclose
     have hX : ‖K (u k - u l)‖ < d / 2 := by
       rw [hcnorm] at hnorm
-      nlinarith [norm_nonneg (K (u k - u l)), hr, hdpos]
+      have hlt : r / 2 * ‖K (u k - u l)‖ < r / 2 * (d / 2) := by linarith
+      exact lt_of_mul_lt_mul_left hlt (by positivity)
     have hsqrt2 : (1 : ℝ) ≤ Real.sqrt 2 := by
-      nlinarith [hsq2, Real.sqrt_nonneg (2 : ℝ)]
+      rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+      exact Real.sqrt_le_sqrt (by norm_num)
     have hs1 : ‖s‖ ≤ 1 := by
       rw [hsnorm]
       exact inv_le_one_of_one_le₀ hsqrt2
     calc ‖K z‖ = ‖s‖ * ‖K (u k - u l)‖ := by rw [hz, map_smul, norm_smul]
-      _ ≤ 1 * ‖K (u k - u l)‖ := by nlinarith [norm_nonneg (K (u k - u l)), hs1]
+      _ ≤ 1 * ‖K (u k - u l)‖ := mul_le_mul_of_nonneg_right hs1 (norm_nonneg _)
       _ ≤ d / 2 := by linarith
   have hfinal : 2 - d ≤ ‖T - K‖ := by
     have h1 : ‖(T - K) z‖ ≤ ‖T - K‖ * ‖z‖ := ContinuousLinearMap.le_opNorm _ _

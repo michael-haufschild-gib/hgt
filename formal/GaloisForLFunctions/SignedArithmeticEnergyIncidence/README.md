@@ -386,8 +386,18 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     (`min_le_rpow_mul_rpow`). The resulting majorant (`sq_centeredRow_le_majorant`) is square
     summable for a suitable `λ` exactly when `η² > ½` (`interpExp_bounds`,
     `sum_chainMajorant_le`), so `C_η` is Hilbert–Schmidt for `1/√2 < η < 1` as well
-    (`centeredOperator_l2_le_of_inverseRootTwo`). Below `1/√2` the obstruction is the
-    short-interval discrepancy of `c_η − ρ` on intervals of length `N/K²` at height `N/K`.
+    (`centeredOperator_l2_le_of_inverseRootTwo`). The divisor structure of `c_η` sharpens the
+    jump: on `(a', a]` of length `J ≤ D ≤ a`, `2J ≤ a`,
+    `|P(a) − P(a')| ≤ C(D^{1−η} + J D^{−η} + a D^{−1−η})` (`abs_centeredPrefix_sub_le_short`;
+    divisors `d ≤ D` pay `D^{1−η}`, a divisor `d > D` has at most one multiple in the interval and
+    is located by its quotient `⌊a/d⌋`). With `D = max(J, √a)`, below the square root
+    `|P(a) − P(a')| ≤ C(J^{1−η} + a^{(1−η)/2})` (`abs_jump_le_belowSqrt`). The first term is
+    square summable for every `η > ½`; interpolating the second with `J` is square summable at
+    both ends of `K ≤ √N` exactly when `η² + η > 1` (`goldenExp_bounds`,
+    `sum_belowSqrt_rpow_le`), so `C_η` is Hilbert–Schmidt above the golden threshold
+    `(√5−1)/2` (`centeredOperator_l2_le_of_goldenThreshold`). The method is sharp there: for
+    `K = N^κ` the bound `J` covers `κ > 1/(1+2η)`, the bound `a^{(1−η)/2}` covers
+    `κ < η/(2−η)`, and the two meet exactly at `η² + η = 1`.
 19. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
@@ -690,9 +700,10 @@ Each question is stated with what is established and where the open part sits.
    nonlocal payment with the competition made explicit as a packing constraint. Open: whether
    optimal canonical-path certificates are exact (sharp) beyond a single cycle, and their cost on
    the actual ledger.
-4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt above damping `1/√2` (mechanism
-   18a). Decide whether it is `ℓ²`-bounded for `½ < η ≤ 1/√2` — where the short-interval
-   discrepancy of `c_η − ρ` is the only missing input — and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
+4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt above the golden threshold
+   `(√5−1)/2` (mechanism 18a). Decide whether it is `ℓ²`-bounded for `½ < η ≤ (√5−1)/2` — where a
+   short-interval bound for `c_η − ρ` at the scales `K = N^κ`, `η/(2−η) ≤ κ ≤ 1/(1+2η)`, beyond
+   `min(J, a^{(1−η)/2})`, is the only missing input — and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
    Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a

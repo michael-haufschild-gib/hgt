@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 31 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 33 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -78,7 +78,12 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `sum_floorJump_le`.
 - `TheChainIsHilbertSchmidtAboveInverseRootTwo` — `abs_centeredPrefix_le_rpow`,
   `abs_centeredPrefix_sub_le`, `abs_centeredRow_le_majorant`, `sq_centeredRow_le_majorant`,
-  `sum_chainMajorant_le`, `centeredOperator_l2_le_of_inverseRootTwo`.
+  `sum_chainMajorant_le`, `centeredOperator_l2_le_of_inverseRootTwo`, `abs_centeredRow_le_jump`.
+- `ShortIntervalSumsOfTheDampedDivisorCoefficients` — `centeredPrefix_sub_eq`, `fiber_card_le`,
+  `sum_large_divisors_le`, `abs_moebiusTail_le`, `abs_centeredPrefix_sub_le_short`.
+- `TheChainIsHilbertSchmidtAboveTheGoldenThreshold` — `abs_jump_le_belowSqrt`,
+  `regionA_golden_sq_le`, `goldenExp_bounds`, `sum_belowSqrt_rpow_le`,
+  `sq_centeredRow_le_goldenMajorant`, `centeredOperator_l2_le_of_goldenThreshold`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
 - `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
@@ -110,6 +115,7 @@ towers).
 
 Gap (not a Lean statement): a uniform `ℓ²` bound for the centred chain `C_η` on finitely supported
 sequences would admit `η`, via `tendsto_truncation_partialEnergy` and `admits_iff_summable_orbit`.
-The bound is proved above damping `1/√2` (`centeredOperator_l2_le_of_inverseRootTwo`, and
-`centeredOperator_l2_le` above one); for `½ < η ≤ 1/√2` it is open, and below half damping it is
+The bound is proved above damping `(√5−1)/2` (`centeredOperator_l2_le_of_goldenThreshold`, and
+`centeredOperator_l2_le` above one); for `½ < η ≤ (√5−1)/2` it is open (card
+`saei-chain-l2-above-golden-threshold`), and below half damping it is
 unproved (RH-strength at cofinally small `η`).

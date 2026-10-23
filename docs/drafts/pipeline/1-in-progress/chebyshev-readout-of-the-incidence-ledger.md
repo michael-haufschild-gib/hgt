@@ -957,11 +957,22 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         the pole adds to the cost. An odd test cannot exploit the paying band — its transform
         vanishes at the origin, so its density is `≤ 4π²r²‖F‖₁²ξ²` and the mass it can place in
         the band is at most `π²‖F‖₁²/(192r)`, cubically small in the band width.
+      * **`primeSymbol`**, **`sum_prime_eq_integral_primeSymbol`**,
+        **`integral_Ioi_cosh_mul_autoCorrelation_spectral`**,
+        **`chebyshev_pairing_eq_spectral`** — the Chebyshev defect and the spectral density are
+        two readings of one functional. The prime side is its own symbol against the density, the
+        polar side over the whole half-line is `K_{2r}` against the density, and the lag Abel
+        identity equates their difference with the signed pairing of the Chebyshev defect against
+        the derivative of the lag weight. Hence
+        `∫_{s>0} E(s)·(d/ds)(2e^{−s/2}A(s))ds = 2∫ (primeSymbol_N(ξ) − 2K_{2r}(2πξ))|F̂(ξ)|²dξ`:
+        the estimate the programme needs — a signed pairing with an unbounded defect — is exactly
+        a frequency integral of an explicit signed symbol against a nonnegative density, whose
+        concentration is limited by the aperture.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 358 headline results of this card, in the order the card states them. Every name is a
+The 362 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -971,7 +982,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 286.**  Excluded: 43 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 289.**  Excluded: 44 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1331,6 +1342,10 @@ contributions of the field, and are excluded.
 356. `setIntegral_spectralDensity_le_of_odd`
 357. `coshCosKernel_nonneg_band`
 358. `setIntegral_spectralDensity_payingBand_le`
+359. `primeSymbol` *(definition)*
+360. `sum_prime_eq_integral_primeSymbol`
+361. `integral_Ioi_cosh_mul_autoCorrelation_spectral`
+362. `chebyshev_pairing_eq_spectral`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1349,3 +1364,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — frequency anti-concentration: Lipschitz spectral density, window-mass bound, resonance limit at scale 1/r.
 - 2026-10-23 — polar side in spectral coordinates; prime–polar balance as one signed-symbol integral.
 - 2026-10-23 — sign law of the polar symbol and the inaccessibility of its paying band to odd tests.
+- 2026-10-23 — bridge: the Chebyshev-defect pairing equals the signed-symbol spectral integral.

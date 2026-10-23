@@ -13432,8 +13432,9 @@ theorem integral_Ioi_cosh_mul_autoCorrelation_spectral (hF : ContDiff ℝ 1 F)
   have hvan : ∀ s, 2 * r ≤ s → Real.cosh (s / 2) * autoCorrelation F s = 0 := fun s hs => by
     rw [autoCorrelation_eq_zero hF.continuous hr hsupp hs, mul_zero]
   have hint : IntegrableOn (fun s => Real.cosh (s / 2) * autoCorrelation F s) (Set.Ioi 0) :=
-    integrableOn_Ioi_of_vanishing
-      ((Real.continuous_cosh.comp (continuous_id.div_const 2)).mul hAc) (by linarith) hvan
+    integrableOn_Ioi_of_vanishing (S := 2 * r)
+      ((Real.continuous_cosh.comp (continuous_id.div_const 2)).mul hAc) (by linarith)
+      (fun s hs => hvan s (le_of_lt hs))
   have hunion : Set.Ioc (0:ℝ) (2 * r) ∪ Set.Ioi (2 * r) = Set.Ioi (0:ℝ) :=
     Set.Ioc_union_Ioi_eq_Ioi (by linarith)
   have hsplit : (∫ s in Set.Ioi (0:ℝ), Real.cosh (s / 2) * autoCorrelation F s)

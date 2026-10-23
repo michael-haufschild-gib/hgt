@@ -116,6 +116,21 @@ survivor).
 - `TheSuccessorCollar`: `collar_bounds`, `successor_localPair_bounds` (consecutive Hecke cycles
   meet through the collar alone, `ω(log(1 + 1/k)) = (k+1)√(k(k+1))/(2k+1)` per unit mass).
 
+- `TheTwoThirdsConstantIsPairCorrelation`: `rtrace_spanGram`, `frobSq_spanGram_eq_diag_add_offDiag`
+  (`𝔽_q` calibration of trace and Frobenius norm into adjunction diagonal + Lefschetz pair
+  correlation), `parabola_secant_identity`, `offLine_sub_doubleZero_weight`,
+  `paramDeficit_nonneg_and_eq_zero_iff` (`c = 2` is the unique rank–trace parameter matching
+  off-line pair weight `c²` and double-zero weight `k_c(2)`), `blockA_coalescedPair_eq_doubleZero`
+  (coalescence indistinguishability: a double critical zero and a coalescing off-line pair produce
+  the identical Gram matrix `blockA`), `unitary_calibration_full_simple` (`κ = 1 ⟹ 100%` simple
+  critical zeros), `fake_curve_frobSq_lower_bound`, `goldenDatum_rankTrace_barrier` (`s₁ = 0 ⟹ κ ≥ 2`),
+  `rankTrace_tight_at_two_thirds`, `universal_matrix_functional_barrier`,
+  `universal_matrix_functional_barrier_at_two_thirds` (no matrix functional `Φ(blockA, Ncount)`
+  can certify more than `(2 − κ)N`, or `(2/3)N` at `κ = 4/3`), `subthreshold_two_thirds_deficit`,
+  `subthreshold_cert_le_two_thirds`, `two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`
+  (`2/3` is the exact `λ = 1` pair-correlation threshold `2 − (1/λ + λ/3)`, and every finite
+  pair-correlation bound `F ≤ B` beyond `1` yields `2/3 + 1/(3(3B − 2)) > 2/3`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated
