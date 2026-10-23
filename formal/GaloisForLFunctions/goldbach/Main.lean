@@ -1,4 +1,5 @@
 import GaloisForLFunctions.goldbach.AffineProgressionConductor
 import GaloisForLFunctions.goldbach.ParityBoundary
+import GaloisForLFunctions.goldbach.ProjectiveIntegralReturns
 import GaloisForLFunctions.goldbach.RiemannHypothesisBridge
 import GaloisForLFunctions.goldbach.SquareDivisorTail

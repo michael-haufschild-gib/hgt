@@ -2,20 +2,47 @@
 
 **Scope:** dead = stated mechanism impossible, circular or nonselective. Survivor = retained theorem; **Needs** = changed problem outside obstruction. No-go for a shortcut does not retire its live route.
 
-**Lookup:** [41 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
+**Lookup:** [44 named mechanisms](#dead-mechanisms) · [19 retired labels](#retired-labels) · [route-class obstructions](#route-class-obstructions) · [ULF obstructions](#ulf-obstructions) · [endpoint no-gos](#endpoint-no-gos) · [scoped catalogue](#scoped-catalogue). Routes, candidates and supporting frameworks: [frontier map](rh-current-frontier-map.md#find-a-route).
 
 **Evidence:** checkpoint and codes as in frontier map; [L] committed umbrella-imported Lean declarations, no fresh build; [S] uncommitted or non-umbrella source, no compiler audit; [P] paper only; REF = unlocated legacy evidence. Conditional, model-only and class restrictions retained.
 
 ## Dead mechanisms
 
+<a id="kr-wip"></a>
+### KR-WIP — Witt integrality as a purity selector
+
+- **Path:** Integral point counts/Witt series + functional equation → spectral purity → Hodge index/RH.
+- **Obstruction [L]:** `q=5,P=1−5X+5X²` has integral series/counts and functional equation but impure roots. Conversely, pure `q=2,β=(1,1)` has nonintegral `N₁=3−2√2`.
+- **Survivor [L]:** Ghost counts uniquely reconstruct normalized series through `XZ′=ZΣN_jX^j`; integrality and purity are independent invariants.
+- **Needs:** Independent arithmetic effectivity/section theory forcing index; HF/ACS remain open.
+- **E:** formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/WittIntegralityIsNotPurity.lean.
+
+<a id="kr-odr"></a>
+### KR-ODR — Admission preserved by arbitrary origin drift
+
+- **Path:** Fixed-origin receiver admitted → choose unbounded moving origin without extra tail cost.
+- **Obstruction [L]:** Every unbounded integer drift makes some admitted sequence's shifted pronic energies unbounded; `n^(1/4)` supplies the witness.
+- **Survivor [L]:** Shift k costs sharp `(k+1)(k+2)/2`; shifted energy lies between tail `E(T+k)−E(k)` and that factor times tail. A drift preserves every admitted sequence iff bounded. Actual unbounded PM energy escapes every fixed window and each subcritical energy-dependent horizon.
+- **Needs:** Source-specific moving-tail control or horizon-profile exclusion; PM/MC remain live.
+- **E:** formal/GaloisForLFunctions/ArithmeticCompensationTheory/AChangeOfOriginCostsAQuadraticConstant.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/ADriftingOriginIsPricedByTheTailBeyondIt.lean; formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheReceiverEnergyEscapesToTheHorizon.lean.
+
+<a id="kr-lgp"></a>
+### KR-LGP — Universal lossless pairwise allocation
+
+- **Path:** Global positivity of any signed incidence form → lossless pairwise local payment.
+- **Obstruction [L]:** Every unbalanced sign pattern admits compatible PSD but locally unpayable forms. Frustrated k-cycle: global positivity iff `2t cos(π/k)≤1`, local payment iff `t≤1/2`, `k≥3,t≥0`.
+- **Survivor [L]:** Universal local completeness iff all closed-walk holonomies are positive; half-sine path pays the sharp frustrated-cycle window nonlocally. Sampled odd archimedean−polar kernel is aligned; frustration needs prime-sum edges. No actual negative full-Weil test.
+- **Needs:** Nonlocal cycle payment preserving shared budgets and full prime/polar remainder; AIP/OWU remain live.
+- **E:** formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/CycleHolonomyDecidesBalance.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/FrustratedCyclesSpoilLocalPayment.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheFrustratedCycleIsPaidAlongItsPath.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheOddWeilLedgerIsFrustratedOnlyByPrimes.lean.
+
 <a id="kr-whl"></a>
 ### KR-WHL — Pole cancellation alone at half damping
 
 - **Path:** `Σ|k(j)|j^(−1/2)<∞` and `K(1/2)=0` → admission of `k⋆d^(−1/2)`.
-- **Obstruction [S]:** Explicit pole-zero lacunary kernel lies in every class `Σ|k(j)|j^(−1/2)(1+log j)^α<∞`, `0≤α<1/2`, yet its receiver is unbounded. Paid receivers in the stated Dirichlet convergence class obey `√u·|C(1/2+u)−m|→0`; this kernel violates it.
-- **Survivor [S]/[L]:** At half damping, `√(1+log j)` summability gives admission iff `K(1/2)=0`; exponent `1/2` is sharp [S]. Below half damping, unweighted critical-Wiener pole cancellation is sufficient for smooth powers [L].
+- **Obstruction [L]:** Explicit pole-zero lacunary kernel lies in every class `Σ|k(j)|j^(−1/2)(1+log j)^α<∞`, `0≤α<1/2`, yet its receiver is unbounded. Paid receivers in the stated Dirichlet convergence class obey `√u·|C(1/2+u)−m|→0`; this kernel violates it.
+- **Survivor [L]:** For critical-Wiener k, half-damped admission iff `Σ_n(Σ_{j≤n}k_j/√j)²/(n+1)<∞`. Absolute `√(1+log j)` summability gives admission iff `K(1/2)=0`, with sharp exponent `1/2`. Below half, critical-Wiener pole cancellation pays smooth-power receivers and all centred dyadic rows.
 - **Needs:** Endpoint logarithmic control or actual signed Möbius estimates at arbitrarily small damping; MC/PM remain live.
-- **E:** T:TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold; T:CriticalWienerPerturbationsOfTheSmoothPowerAreDecidedAtThePole.
+- **E:** T:TheHalfDampedHyperplaneLawHasAnExactLogarithmicThreshold; T:TheHalfDampedReceiverIsTheLogarithmicEnergyOfThePartialPoleSums; T:CriticalWienerPerturbationsOfTheSmoothPowerHaveUniformlyPaidRows.
 
 <a id="kr-paf"></a>
 ### KR-PAF — Uniform positive aperture floor transport
@@ -40,9 +67,9 @@
 
 - **Path:** Pay infinite signed receiver → infer uniform payment of centred finite/dyadic cutoff rows → pass to critical source.
 - **Obstruction [L]:** For every damping below `1/2`, a signed weight with paid infinite receiver has unbounded dyadic-row energies. Residue modes make backward continuation unbounded in receiver `ℓ²` and `c₀`.
-- **Survivor [L]:** At/above half damping, paid receiver iff dyadic rows uniformly paid; below half damping, first chain column is the exact receiver and retains the source-specific question.
+- **Survivor [L]:** At/above half damping, paid receiver iff dyadic rows uniformly paid. Below half, critical-Wiener perturbations of smooth powers also have uniformly paid rows iff their pole cancels; generic failure is not universal. First chain column remains the exact receiver. [S] Forward damping is strongly continuous on c₀ but not operator-norm continuous at zero, with unbounded residue generator.
 - **Needs:** Actual Möbius signs and centering/cutoff covariance in a source-specific bound; MC/PM/CTF.
-- **E:** T:TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/ResidueModesAndBackwardContinuation.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheFirstColumnOfTheChainIsTheReceiver.lean.
+- **E:** T:TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/ResidueModesAndBackwardContinuation.lean; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/TheFirstColumnOfTheChainIsTheReceiver.lean; T:CriticalWienerPerturbationsOfTheSmoothPowerHaveUniformlyPaidRows; formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/DampingIsStronglyContinuousWithUnboundedGenerator.lean.
 
 <a id="kr-aut"></a>
 ### KR-AUT — GL(2) automorphic positivity

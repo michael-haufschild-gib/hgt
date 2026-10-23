@@ -228,6 +228,21 @@ are three different statements and remain visibly different here.
     comb energy (`exists_pos_tendsto_combEnergy_div_exp`). This is pointwise positivity in `F`,
     not a uniform coercive constant over all test profiles. On slowly varying tests `Ψ ≈ id`
     and mechanism 5 is recovered.
+10′. **The horizon law at the de la Vallée Poussin rate.** Abel summation of `p^{−1/2} log p`
+    against `θ` writes `S_r − 2e^r` exactly as a bounded correction, a constant, the boundary error
+    `e^r(θ(x)/x − 1)` and half the integrated error `∫_2^x (θ(t)/t − 1)t^{−1/2} dt`, `x = e^{2r}`
+    (`combMass_sub_eq`); cutting the integral at `√x` gives `|S_r − 2e^r| ≤ Ke^r exp(−c√r)`
+    (`exists_abs_combMass_sub_le`). The depth law follows at the same rate,
+    `sup_{u≥0}|S_{r−u/2}/S_r − e^{−u/2}| ≤ K exp(−c√r)` (`exists_abs_combTail_sub_le`), and with
+    shells of width `e^{−s}` down to depth `2s`, `s ≍ √r`, every `L`-Lipschitz test bounded by `M`
+    has depth statistics within `K(L + M) exp(−c√r)` of the horizon law, uniformly in the
+    translate (`exists_abs_combAverage_sub_horizonIntegral_le`). Since the autocorrelation of a
+    `Λ`-Lipschitz test is `Λ‖F‖₁`-Lipschitz (`abs_autoCorr_sub_le`), the resolvent law holds at
+    the same rate, `|E_r(F)/S_r² − J(F)| ≤ K(Λ‖F‖₁ + A_F(0)) exp(−c√r)`, and
+    `E_r(F) = 4J(F)e^{2r} + O(e^{2r} exp(−c√r))` (`exists_abs_combEnergy_div_sub_horizonEnergy_le`,
+    `exists_abs_combEnergy_sub_le`); `c` and `K` are universal, independent of the test. The rate
+    is the prime number theorem's: an error `O(e^{θr})`, `θ < 1`, in `S_r − 2e^r` would be a
+    statement about the zeros of `ζ`.
 
 ### Compensation coordinates
 
@@ -359,7 +374,7 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 | Question | Answer proved here | What remains |
 |---|---|---|
 | Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log⁻⁶P)` and summable over dyadic scales (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
-| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10). | The classification of the receiver's profiles at the horizon itself. |
+| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 10′). | The classification of the receiver's profiles at the horizon itself. |
 | Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity. | A remainder exponent below the trivial one, which is a zero-free strip. |
 | Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 12″); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 12⁗); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
 | Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 17); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
@@ -403,6 +418,11 @@ that every successful route must use the same mechanism.
   lemmas and can be reused with other weights.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
+- **Quantitative horizon law** (`exists_abs_combMass_sub_le`, `exists_abs_combTail_sub_le`,
+  `exists_abs_combAverage_sub_horizonIntegral_le`, `exists_abs_combEnergy_sub_le`): the same laws
+  with the explicit error `exp(−c√r)` and universal constants, for Lipschitz statistics and
+  Lipschitz tests; `abs_autoCorr_sub_le` transfers a test's Lipschitz constant to its
+  autocorrelation.
 - **Compensation coordinates** (abstract and scalar), with the actual PM-Ramanujan instance and its
   explicit logarithmic rate.
 - **Budget hierarchy**: pointwise control implies a positive-part budget, which implies a signed
@@ -414,7 +434,22 @@ that every successful route must use the same mechanism.
 - **Aperture loss-rate calculus**: the ceiling exponent, its monotonicity, forced loss rates for
   floors and products.
 - **Origin calculus** for the pronic norm: the exact shift constant and the head loss
-  (`pronicEnergy_shift_le`, `pronicEnergy_le_head_add_shift`).
+  (`pronicEnergy_shift_le`, `pronicEnergy_le_head_add_shift`), the exact split at the origin
+  (`pronicEnergy_add_eq`) and the two-sided tail price of a translate
+  (`pronicTail_le_pronicEnergy_shift`, `pronicEnergy_shift_le_tail`).
+- **Source growth bounds**: `|A_ε(n)| ≤ Cn^{1−ε}` (`exists_abs_centredPrefix_le`), the trivial
+  energy rate (`exists_dampedMobiusEnergy_le`) and its drifted form
+  (`exists_dampedMobius_drift_le`); the admitted-or-unbounded dichotomy
+  (`admits_or_tendsto_atTop`) turns any of them into an escape statement for a blow-up.
+- **The compatibility identities of the source**, owned by ACCE and BVI and used here as the
+  constraints a second decomposition must respect: the tangent law `∂_ε A_ε(n) = E_ε(n)`
+  (`BezoutValuationIncidence.hasDerivAt_pmPowerDampedCenteredDivisorPrefix`), its prime-dilation
+  form `E_ε(n) = Σ_{j≤n} Λ(j)j^{−ε}A_ε(⌊n/j⌋) + m₀(ε)Ψ_ε(n) − n m(ε)`
+  (`ArithmeticContinuationAndCriticalEnergy.dampedChebyshevError_eq_dilation`), the inversion law
+  `Σ_{j≤n} j^{−ε}A_ε(⌊n/j⌋) = n − m₀(ε)Σ_{j≤n} j^{−ε}⌊n/j⌋`
+  (`ArithmeticContinuationAndCriticalEnergy.sum_rpow_mul_centeredPrefix_eq`) and the exact
+  composition `D^f D^g = D^{f*g}` of prefix dilations
+  (`ArithmeticContinuationAndCriticalEnergy.prefixDilation_comp`).
 - **Length-uniform short windows** from fixed-length ones (`tileSeq`), reusable for any exponent
   at which the corpus owns a fixed-length theorem.
 
@@ -438,10 +473,11 @@ that every successful route must use the same mechanism.
    retain scale, cofactor, origin and frequency data, and derive the arithmetic identities that
    survive in the limit; the escape and aliasing examples of the corpus must appear in the defect
    space. The comb resolvent law is the model case.
-4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved. Seek lower bounds on
-   specified profile classes and rates for the comb's convergence to its resolvent. For sufficiently
-   smooth slowly varying profiles, test the predicted first correction `−2∂/r`, keeping both the
-   profile remainder and the prime-distribution error explicit.
+4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved, and on Lipschitz tests
+   the comb converges to its resolvent at the prime-number-theorem rate `exp(−c√r)` with universal
+   constants (mechanism 10′). Seek lower bounds on `J` over specified profile classes, and, for
+   sufficiently smooth slowly varying profiles, the predicted first correction `−2∂/r`, keeping
+   both the profile remainder and the prime-distribution error explicit.
 5. **The compensated remainder of the full ledger.** Pair the comb's coherent part with the pole
    charge before squaring, on an expanding test class, and bound the remainder with an explicit
    aperture exponent; any exponent below the trivial one is a strip.
@@ -475,6 +511,8 @@ that every successful route must use the same mechanism.
    of origin, and the invariance of admission under it; `forall_admitted_drift_admitted_iff` — a
    drifting origin is tolerated uniformly exactly when it is bounded.
 10. `admits_or_escapesToHorizon` — a blow-up of the receiver escapes to the horizon.
+11. `exists_abs_combEnergy_div_sub_horizonEnergy_le` with `exists_abs_combMass_sub_le` — the
+    horizon law and the resolvent law at the de la Vallée Poussin rate.
 
 ---
 

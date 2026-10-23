@@ -12048,31 +12048,57 @@ theorem eulerStep_even {A : ℝ → ℝ} (hA : ∀ t, A (-t) = A t) (w a : ℝ) 
     hA, hA, hA]
   ring
 
-/-- **The Euler transform preserves the autocorrelation cone.** -/
-theorem exists_autoCorrelation_eulerStep (hF : Continuous F) (hFc : HasCompactSupport F)
+/-- One normalized factor of the Euler comb. -/
+def eulerFactorFun (w a : ℝ) (F : ℝ → ℝ) : ℝ → ℝ :=
+  fun x => (Real.sqrt (1 + eulerLam w ^ 2))⁻¹ * (F x - eulerLam w * F (x + a))
+
+theorem eulerLam_zero : eulerLam 0 = 0 := by simp [eulerLam]
+
+theorem continuous_eulerFactorFun (hF : Continuous F) (w a : ℝ) :
+    Continuous (eulerFactorFun w a F) :=
+  continuous_const.mul (hF.sub (continuous_const.mul
+    (hF.comp (continuous_id.add continuous_const))))
+
+theorem hasCompactSupport_eulerFactorFun (hFc : HasCompactSupport F) (w a : ℝ) :
+    HasCompactSupport (eulerFactorFun w a F) :=
+  (hFc.sub ((hFc.comp_homeomorph (Homeomorph.addRight a)).mul_left)).mul_left
+
+/-- **The Euler transform is the correlation of one comb factor.** -/
+theorem autoCorrelation_eulerFactorFun (hF : Continuous F) (hFc : HasCompactSupport F)
     {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) (a : ℝ) :
-    ∃ G : ℝ → ℝ, Continuous G ∧ HasCompactSupport G ∧
-      autoCorrelation G = eulerStep w a (autoCorrelation F) := by
+    autoCorrelation (eulerFactorFun w a F) = eulerStep w a (autoCorrelation F) := by
   rcases eq_or_lt_of_le hw0 with rfl | hw
-  · exact ⟨F, hF, hFc, by funext t; simp [eulerStep]⟩
+  · have hid : eulerFactorFun 0 a F = F := by
+      funext x
+      rw [eulerFactorFun, eulerLam_zero]
+      simp
+    rw [hid]
+    funext t
+    simp [eulerStep]
   have hlam := eulerLam_spec hw hw1
   set lam := eulerLam w with hlamdef
   have hpos : (0:ℝ) < 1 + lam ^ 2 := by positivity
-  set c := (Real.sqrt (1 + lam ^ 2))⁻¹ with hc
-  have hc2 : c ^ 2 = (1 + lam ^ 2)⁻¹ := by
-    rw [hc, inv_pow, Real.sq_sqrt hpos.le]
-  refine ⟨fun x => c * (F x - lam * F (x + a)), continuous_const.mul
-      (hF.sub (continuous_const.mul (hF.comp (continuous_id.add continuous_const)))), ?_, ?_⟩
-  · exact (hFc.sub ((hFc.comp_homeomorph (Homeomorph.addRight a)).mul_left)).mul_left
+  have hc2 : ((Real.sqrt (1 + lam ^ 2))⁻¹) ^ 2 = (1 + lam ^ 2)⁻¹ := by
+    rw [inv_pow, Real.sq_sqrt hpos.le]
   funext t
   have hhalf : lam / (1 + lam ^ 2) = w / 2 := by rw [← hlam]; ring
-  rw [autoCorrelation_const_mul, autoCorrelation_eulerFactor hF hFc, hc2, eulerStep]
+  have hrw : eulerFactorFun w a F
+      = fun x => (Real.sqrt (1 + lam ^ 2))⁻¹ * (F x - lam * F (x + a)) := rfl
+  rw [hrw, autoCorrelation_const_mul, autoCorrelation_eulerFactor hF hFc, hc2, eulerStep]
   have expand : (1 + lam ^ 2)⁻¹ * ((1 + lam ^ 2) * autoCorrelation F t
       - lam * (autoCorrelation F (t - a) + autoCorrelation F (t + a)))
       = autoCorrelation F t
         - lam / (1 + lam ^ 2) * (autoCorrelation F (t - a) + autoCorrelation F (t + a)) := by
     field_simp
   rw [expand, hhalf]
+
+/-- **The Euler transform preserves the autocorrelation cone.** -/
+theorem exists_autoCorrelation_eulerStep (hF : Continuous F) (hFc : HasCompactSupport F)
+    {w : ℝ} (hw0 : 0 ≤ w) (hw1 : w ≤ 1) (a : ℝ) :
+    ∃ G : ℝ → ℝ, Continuous G ∧ HasCompactSupport G ∧
+      autoCorrelation G = eulerStep w a (autoCorrelation F) :=
+  ⟨eulerFactorFun w a F, continuous_eulerFactorFun hF w a,
+    hasCompactSupport_eulerFactorFun hFc w a, autoCorrelation_eulerFactorFun hF hFc hw0 hw1 a⟩
 
 /-- The ledger after a finite list of Euler transforms. -/
 def eulerLedger : List (ℝ × ℝ) → (ℝ → ℝ) → (ℝ → ℝ)
@@ -12183,6 +12209,171 @@ theorem eulerPayment_vonMangoldt_le_mass (hF : Continuous F) (hFc : HasCompactSu
   obtain ⟨n, -, rfl⟩ := hp
   exact ⟨div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _),
     vonMangoldtAtom_le_one n⟩
+
+/-! ### The residual of the payment
+
+The payment law is never tight.  Its deficit is the energy of the comb itself, and a comb factor
+at a nonzero lag annihilates no compactly supported test but zero, so a nonzero test always keeps
+a positive residual.  Unlike the Euler envelope of a prime tower, which a resonant train attains,
+the payment law therefore carries information on every test. -/
+
+/-- The Euler comb of a finite list of weighted lags. -/
+def eulerComb : List (ℝ × ℝ) → (ℝ → ℝ) → (ℝ → ℝ)
+  | [], F => F
+  | (w, a) :: L, F => eulerComb L (eulerFactorFun w a F)
+
+theorem continuous_eulerComb : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, Continuous H →
+    Continuous (eulerComb L H) := by
+  intro L
+  induction L with
+  | nil => intro H hH; exact hH
+  | cons p L ih =>
+      intro H hH
+      obtain ⟨w, a⟩ := p
+      exact ih (continuous_eulerFactorFun hH w a)
+
+theorem hasCompactSupport_eulerComb : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, HasCompactSupport H →
+    HasCompactSupport (eulerComb L H) := by
+  intro L
+  induction L with
+  | nil => intro H hH; exact hH
+  | cons p L ih =>
+      intro H hH
+      obtain ⟨w, a⟩ := p
+      exact ih (hasCompactSupport_eulerFactorFun hH w a)
+
+theorem autoCorrelation_eulerComb : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, Continuous H →
+    HasCompactSupport H → (∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) →
+    autoCorrelation (eulerComb L H) = eulerLedger L (autoCorrelation H) := by
+  intro L
+  induction L with
+  | nil => intro H _ _ _; rfl
+  | cons p L ih =>
+      intro H hH hHc hL
+      obtain ⟨w, a⟩ := p
+      obtain ⟨hw0, hw1⟩ := hL (w, a) (List.mem_cons_self ..)
+      rw [eulerComb, eulerLedger,
+        ih (continuous_eulerFactorFun hH w a) (hasCompactSupport_eulerFactorFun hHc w a)
+          (fun q hq => hL q (List.mem_cons_of_mem _ hq)),
+        autoCorrelation_eulerFactorFun hH hHc hw0 hw1 a]
+
+/-- **The residual of the payment is the energy of the comb.** -/
+theorem eulerPayment_residual (hF : Continuous F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) :
+    autoCorrelation F 0 - eulerPayment L (autoCorrelation F) = ∫ x, eulerComb L F x ^ 2 := by
+  have h1 := eulerLedger_zero_eq L (A := autoCorrelation F) (autoCorrelation_neg F)
+  have h2 := autoCorrelation_eulerComb L hF hFc hL
+  rw [← h1, ← h2, autoCorrelation_zero_eq]
+
+theorem exists_radius_of_hasCompactSupport (hFc : HasCompactSupport F) :
+    ∃ r : ℝ, ∀ y, r < |y| → F y = 0 := by
+  obtain ⟨r, hr⟩ := (hFc.isCompact.isBounded).subset_closedBall (0 : ℝ)
+  refine ⟨r, fun y hy => image_eq_zero_of_notMem_tsupport fun hmem => ?_⟩
+  have hmem' := hr hmem
+  rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hmem'
+  linarith
+
+/-- A compactly supported solution of `H = λ H(· + a)` at a nonzero lag vanishes. -/
+theorem eq_zero_of_eq_const_mul_shift {H : ℝ → ℝ} {lam a : ℝ} (ha : a ≠ 0) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → H y = 0) (heq : ∀ x, H x = lam * H (x + a)) : H = 0 := by
+  have hiter : ∀ (n : ℕ) (x : ℝ), H x = lam ^ n * H (x + n * a) := by
+    intro n
+    induction n with
+    | zero => intro x; simp
+    | succ k ih =>
+        intro x
+        rw [ih x, heq (x + k * a)]
+        push_cast
+        rw [show x + k * a + a = x + (k + 1) * a by ring]
+        ring
+  funext x
+  have ha0 : 0 < |a| := abs_pos.mpr ha
+  obtain ⟨n, hn⟩ := exists_nat_gt ((r + |x|) / |a|)
+  have hbig : r < |x + n * a| := by
+    have h1 : (r + |x|) < n * |a| := by
+      rw [div_lt_iff₀ ha0] at hn
+      linarith
+    have h2 : |(n : ℝ) * a| ≤ |x + (n:ℝ) * a| + |x| := by
+      calc |(n : ℝ) * a| = |(x + (n:ℝ) * a) - x| := by
+            rw [show (x + (n:ℝ) * a) - x = (n:ℝ) * a by ring]
+        _ ≤ |x + (n:ℝ) * a| + |x| := abs_sub _ _
+    rw [abs_mul, Nat.abs_cast] at h2
+    linarith
+  rw [hiter n x, hsupp _ hbig, mul_zero]
+  rfl
+
+theorem eulerFactorFun_ne_zero (hFc : HasCompactSupport F) (hF0 : F ≠ 0) (w : ℝ) {a : ℝ}
+    (ha : a ≠ 0) : eulerFactorFun w a F ≠ 0 := by
+  intro hzero
+  set lam := eulerLam w with hlamdef
+  have hpos : (0:ℝ) < 1 + lam ^ 2 := by positivity
+  have hc : (Real.sqrt (1 + lam ^ 2))⁻¹ ≠ 0 := by
+    simp only [ne_eq, inv_eq_zero]
+    exact ne_of_gt (Real.sqrt_pos.mpr hpos)
+  have heq : ∀ x, F x = lam * F (x + a) := by
+    intro x
+    have hx := congrFun hzero x
+    rw [show eulerFactorFun w a F
+        = fun x => (Real.sqrt (1 + lam ^ 2))⁻¹ * (F x - lam * F (x + a)) from rfl] at hx
+    have h0 : F x - lam * F (x + a) = 0 := by
+      rcases mul_eq_zero.mp hx with h | h
+      · exact absurd h hc
+      · exact h
+    linarith
+  obtain ⟨r, hr⟩ := exists_radius_of_hasCompactSupport hFc
+  exact hF0 (eq_zero_of_eq_const_mul_shift ha hr heq)
+
+theorem eulerComb_ne_zero : ∀ (L : List (ℝ × ℝ)) {H : ℝ → ℝ}, HasCompactSupport H → H ≠ 0 →
+    (∀ p ∈ L, p.2 ≠ 0) → eulerComb L H ≠ 0 := by
+  intro L
+  induction L with
+  | nil => intro H _ hH0 _; exact hH0
+  | cons p L ih =>
+      intro H hHc hH0 hL
+      obtain ⟨w, a⟩ := p
+      exact ih (hasCompactSupport_eulerFactorFun hHc w a)
+        (eulerFactorFun_ne_zero hHc hH0 w (hL (w, a) (List.mem_cons_self ..)))
+        (fun q hq => hL q (List.mem_cons_of_mem _ hq))
+
+theorem eq_zero_of_integral_sq_eq_zero {G : ℝ → ℝ} (hGc : Continuous G)
+    (hint : Integrable (fun x => G x ^ 2)) (hzero : (∫ x, G x ^ 2) = 0) : G = 0 := by
+  have hae : (fun x => G x ^ 2) =ᵐ[volume] 0 :=
+    (MeasureTheory.integral_eq_zero_iff_of_nonneg (fun x => sq_nonneg _) hint).mp hzero
+  have hae2 : G =ᵐ[volume] 0 := by
+    filter_upwards [hae] with x hx
+    exact pow_eq_zero_iff (n := 2) (by norm_num) |>.mp hx
+  exact (Continuous.ae_eq_iff_eq volume hGc continuous_const).mp hae2
+
+theorem integral_sq_pos_of_ne_zero {G : ℝ → ℝ} (hGc : Continuous G)
+    (hGcs : HasCompactSupport G) (hG0 : G ≠ 0) : 0 < ∫ x, G x ^ 2 := by
+  have hcs : HasCompactSupport (fun x => G x ^ 2) := by
+    refine HasCompactSupport.intro hGcs.isCompact fun x hx => ?_
+    rw [image_eq_zero_of_notMem_tsupport hx]
+    ring
+  have hint : Integrable (fun x => G x ^ 2) :=
+    (hGc.pow 2).integrable_of_hasCompactSupport hcs
+  have hnn : 0 ≤ ∫ x, G x ^ 2 := MeasureTheory.integral_nonneg fun x => sq_nonneg _
+  rcases eq_or_lt_of_le hnn with hzero | hpos
+  · exact absurd (eq_zero_of_integral_sq_eq_zero hGc hint hzero.symm) hG0
+  · exact hpos
+
+/-- **The payment is strict.**  A nonzero test keeps a positive residual at every family of
+nonzero lags: the first-power charges are never paid in full by the mass. -/
+theorem eulerPayment_lt_mass (hF : Continuous F) (hFc : HasCompactSupport F) (hF0 : F ≠ 0)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, (0 ≤ p.1 ∧ p.1 ≤ 1) ∧ p.2 ≠ 0) :
+    eulerPayment L (autoCorrelation F) < autoCorrelation F 0 := by
+  have hpos : 0 < ∫ x, eulerComb L F x ^ 2 :=
+    integral_sq_pos_of_ne_zero (G := eulerComb L F) (continuous_eulerComb L hF)
+      (hasCompactSupport_eulerComb L hFc)
+      (eulerComb_ne_zero L hFc hF0 (fun p hp => (hL p hp).2))
+  have hres : autoCorrelation F 0 - eulerPayment L (autoCorrelation F)
+      = ∫ x, eulerComb L F x ^ 2 :=
+    eulerPayment_residual hF hFc L (fun p hp => (hL p hp).1)
+  linarith
+
+#print axioms eulerPayment_lt_mass
+#print axioms eulerPayment_residual
+#print axioms eq_zero_of_eq_const_mul_shift
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

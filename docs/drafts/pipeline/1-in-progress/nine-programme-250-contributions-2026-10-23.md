@@ -31,7 +31,9 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    `TheQuarterLawOfTheConstantSignPattern.lean`, `…OnTheFullRange.lean`; the negative range uses
    `1/ζ ≪ |t|^{1/4}` right of `Re w = 1`), through the boundary-energy identity of
    `TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries.lean` (the identity itself is a
-   Nyman–Beurling-type Plancherel formula and is not counted).
+   Nyman–Beurling-type Plancherel formula and is not counted). Extended to the full `(z, ε)` phase
+   diagram (`receiverBounded_constantSign_damped_iff`, `ThePhaseDiagramOfTheConstantSignPattern.lean`):
+   paid ⟺ `ε > 1/2`, or `ε = 1/2 ∧ z < 1/2`, or `z = 0`, or `z = −1` and `μ(d)d^{-ε}` paid.
 3. THIM §5 (density premise of the prime-density laws discharged): for every `q ≥ 1`, `S ⊆ ZMod q`,
    the completely multiplicative `±1` pattern flipping the primes with residue in `S` has
    `|Σ_{p mod q ∈ S} p^{-w} − ρ log(1/(w−1))| ≤ B`, `ρ = #(S ∩ (ZMod q)ˣ)/φ(q)`
@@ -47,6 +49,7 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — `ThePhaseDiagramOfTheConstantSignPattern` compiled, clean, wired (extends 2).
 - 2026-10-23 — `ResidueClassFlipsAndThePrimeDensityLaws` compiled, axioms clean, wired; contribution 3.
 - 2026-10-23 — four THIM leaves compiled (axioms `propext`, `Classical.choice`, `Quot.sound`) and
   wired; contributions 1–2 accepted. Not counted: the general δ < 1/4 criterion (premise on the

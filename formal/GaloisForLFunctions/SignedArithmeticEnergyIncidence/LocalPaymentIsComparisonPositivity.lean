@@ -21,6 +21,9 @@ same sizes.
   form itself: the gap between the two ground energies is the exact price of frustration.  For the
   frustrated triangle (`comparison_triangleCoupling`) the comparison form is the aligned triangle
   `triangleCoupling (−|κ|)`, whose positivity window `|κ| ≤ ½` is the payment window.
+* **Allocation duality** (`not_locallyPayable_iff_exists_overload`): either a local allocation
+  exists, or a *nonnegative* profile overloads the budgets, `Σ c_ii f_i² < Σ_{i≠j} |c_ij| f_i f_j`.
+  The dual certificate of non-payment is sign-blind.
 -/
 
 open Finset
@@ -155,6 +158,38 @@ theorem comparison_triangleCoupling (κ : ℝ) :
   by_cases h : i = j
   · subst h; simp [comparisonCoupling, triangleCoupling]
   · simp [comparisonCoupling, triangleCoupling, h]
+
+/-! ### Allocation duality -/
+
+/-- The comparison energy is the budget energy minus the unsigned overlap energy. -/
+theorem incidenceEnergy_comparison_eq (c : ι → ι → ℝ) (f : ι → ℝ) :
+    incidenceEnergy (comparisonCoupling c) f =
+      ∑ i, c i i * f i ^ 2 - ∑ i, ∑ j ∈ univ.erase i, |c i j| * f i * f j := by
+  rw [incidenceEnergy_eq_diag_add_offDiag, sub_eq_add_neg, ← sum_neg_distrib]
+  congr 1
+  · exact sum_congr rfl fun i _ => by rw [comparisonCoupling_diag]
+  · refine sum_congr rfl fun i _ => ?_
+    rw [← sum_neg_distrib]
+    refine sum_congr rfl fun j hj => ?_
+    simp only [comparisonCoupling, (ne_of_mem_erase hj).symm, if_false]
+    ring
+
+/-- **Allocation duality.**  A symmetric form has no local allocation iff a nonnegative profile
+overloads its budgets: `Σ_i c_ii f_i² < Σ_{i≠j} |c_ij| f_i f_j`. -/
+theorem not_locallyPayable_iff_exists_overload {c : ι → ι → ℝ} (hc : IsSymmetricCoupling c) :
+    ¬ LocallyPayable c ↔ ∃ f : ι → ℝ, (∀ i, 0 ≤ f i) ∧
+      ∑ i, c i i * f i ^ 2 < ∑ i, ∑ j ∈ univ.erase i, |c i j| * f i * f j := by
+  rw [locallyPayable_iff_comparison_nonneg hc]
+  push Not
+  constructor
+  · rintro ⟨f, hf⟩
+    -- the comparison form is aligned, so `|f|` is at least as adverse as `f`
+    have h := lt_of_le_of_lt
+      (incidenceEnergy_abs_le (comparisonCoupling_hasNonpositiveOverlaps c) f) hf
+    rw [incidenceEnergy_comparison_eq, sub_neg] at h
+    exact ⟨fun i => |f i|, fun i => abs_nonneg _, h⟩
+  · rintro ⟨f, -, hf⟩
+    exact ⟨f, by rw [incidenceEnergy_comparison_eq]; linarith⟩
 
 end
 

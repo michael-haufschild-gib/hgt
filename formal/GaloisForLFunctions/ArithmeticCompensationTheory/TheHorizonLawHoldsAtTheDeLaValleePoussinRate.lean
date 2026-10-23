@@ -17,7 +17,8 @@ quantitative, with the error of the prime number theorem, `exp(−c√r)`.
   independent of `φ` and `v`: shells of width `e^{−s}` down to depth `2s`, `s ≍ √r`.
 * `exists_abs_combEnergy_div_sub_horizonEnergy_le`: for every Lipschitz compactly supported test,
   `|E_r(F)/S_r² − J(F)| ≤ K (Λ‖F‖₁ + A_F(0)) exp(−c√r)`, `Λ` the Lipschitz constant, again with
-  universal `c, K`.
+  universal `c, K`; hence `E_r(F) = 4 J(F) e^{2r} + O(e^{2r} exp(−c√r))`
+  (`exists_abs_combEnergy_sub_le`).
 
 The rate is exactly the prime-number-theorem rate: a remainder `S_r − 2e^r = O(e^{θr})` with `θ < 1`
 is a statement about the zeros of `ζ` beyond the reach of these tools.
@@ -531,5 +532,69 @@ theorem exists_abs_combEnergy_div_sub_horizonEnergy_le :
           horizonIntegral (horizonAutoCorr F)| := abs_sub_le _ _ _
     _ ≤ ε + ε := add_le_add hinner hout
     _ = 2 * K * (L + A0) * Real.exp (-c * Real.sqrt r) := by simp only [ε]; ring
+
+/-- **The raw comb energy at the de la Vallée Poussin rate.** For every `Λ`-Lipschitz compactly
+supported test, `|E_r(F) − 4 J(F) e^{2r}| ≤ K (Λ‖F‖₁ + A_F(0)) e^{2r} exp(−c√r)`. -/
+theorem exists_abs_combEnergy_sub_le :
+    ∃ c > 0, ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ r in atTop, ∀ (F : ℝ → ℝ) (Λ : ℝ), HasCompactSupport F →
+      (∀ a b, |F a - F b| ≤ Λ * |a - b|) →
+      |combEnergy F (combPrimes r) combWeight - 4 * horizonEnergy F * Real.exp (2 * r)| ≤
+        K * (Λ * (∫ x, |F x|) + autoCorr F 0) * Real.exp (2 * r) * Real.exp (-c * Real.sqrt r) := by
+  obtain ⟨c₁, hc₁, K₁, hK₁, h1⟩ := exists_abs_combEnergy_div_sub_horizonEnergy_le
+  obtain ⟨c₂, hc₂, K₂, hK₂, h2⟩ := exists_abs_combMass_sub_le
+  refine ⟨min c₁ c₂, lt_min hc₁ hc₂, 9 * K₁ + 5 * K₂, by positivity, ?_⟩
+  filter_upwards [h1, h2, eventually_combMass_le, eventually_combMass_pos] with r hE hS hS3 hS0
+    F Λ hFc hΛ
+  have hΛ0 : 0 ≤ Λ := by
+    have h := hΛ 1 0
+    norm_num at h
+    exact (abs_nonneg _).trans h
+  have hF : Continuous F := by
+    refine (LipschitzWith.of_dist_le_mul (K := Λ.toNNReal) fun x y => ?_).continuous
+    rw [Real.dist_eq, Real.dist_eq, Real.coe_toNNReal _ hΛ0]
+    exact hΛ x y
+  set L := Λ * ∫ x, |F x|
+  set A0 := autoCorr F 0
+  have hL0 : 0 ≤ L := mul_nonneg hΛ0 (integral_nonneg fun _ => abs_nonneg _)
+  have hA0 : 0 ≤ A0 := (abs_nonneg _).trans (abs_autoCorr_le_autoCorr_zero hF hFc 0)
+  have hJ0 := horizonEnergy_nonneg hF hFc
+  have hJA := horizonEnergy_le hF hFc
+  set ε := Real.exp (-(min c₁ c₂) * Real.sqrt r)
+  have hε0 : 0 < ε := Real.exp_pos _
+  have hsr := Real.sqrt_nonneg r
+  have hε₁ : Real.exp (-c₁ * Real.sqrt r) ≤ ε :=
+    Real.exp_le_exp.mpr (by nlinarith [min_le_left c₁ c₂])
+  have hε₂ : Real.exp (-c₂ * Real.sqrt r) ≤ ε :=
+    Real.exp_le_exp.mpr (by nlinarith [min_le_right c₁ c₂])
+  set S := combMass r
+  set E := combEnergy F (combPrimes r) combWeight
+  set J := horizonEnergy F
+  set y := Real.exp r
+  have hy0 : 0 < y := Real.exp_pos r
+  have hy2 : Real.exp (2 * r) = y ^ 2 := by rw [← Real.exp_nat_mul]; ring_nf
+  -- `E = (J + D) S²` with `|D| ≤ K₁ (L + A₀) ε`
+  set D := E / S ^ 2 - J
+  have hD : |D| ≤ K₁ * (L + A0) * ε :=
+    (hE F Λ hFc hΛ).trans (mul_le_mul_of_nonneg_left hε₁ (by positivity))
+  have hED : E = (J + D) * S ^ 2 := by simp only [D]; field_simp; ring
+  have hSd : |S - 2 * y| ≤ K₂ * y * ε :=
+    hS.trans (mul_le_mul_of_nonneg_left hε₂ (by positivity))
+  have hsplit : E - 4 * J * Real.exp (2 * r) = D * S ^ 2 + J * ((S - 2 * y) * (S + 2 * y)) := by
+    rw [hED, hy2]; ring
+  have hSS : S + 2 * y ≤ 5 * y := by linarith
+  have hS2 : S ^ 2 ≤ 9 * y ^ 2 := by nlinarith
+  have t1 : |D * S ^ 2| ≤ K₁ * (L + A0) * ε * (9 * y ^ 2) := by
+    rw [abs_mul, abs_of_nonneg (sq_nonneg S)]
+    exact mul_le_mul hD hS2 (sq_nonneg _) (by positivity)
+  have t2 : |J * ((S - 2 * y) * (S + 2 * y))| ≤ A0 * (K₂ * y * ε * (5 * y)) := by
+    rw [abs_mul, abs_mul, abs_of_nonneg hJ0, abs_of_pos (by linarith : 0 < S + 2 * y)]
+    exact mul_le_mul hJA (mul_le_mul hSd hSS (by linarith) (by positivity)) (by positivity) hA0
+  rw [hsplit, hy2]
+  calc |D * S ^ 2 + J * ((S - 2 * y) * (S + 2 * y))|
+      ≤ K₁ * (L + A0) * ε * (9 * y ^ 2) + A0 * (K₂ * y * ε * (5 * y)) :=
+        (abs_add_le _ _).trans (add_le_add t1 t2)
+    _ ≤ (9 * K₁ + 5 * K₂) * (L + A0) * y ^ 2 * ε := by
+        have : 0 ≤ K₂ * L * y ^ 2 * ε := by positivity
+        nlinarith
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

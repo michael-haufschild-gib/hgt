@@ -510,6 +510,387 @@ theorem norm_cpowFloorSum_sub_le {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1
   rw [← hfin]
   linarith [hb1, hb2, hE1b, hE3b, hb3, hb4]
 
+/-! ### The oscillating smooth power -/
+
+/-- The oscillating smooth power `c_{ε,t}(d) = d^{-ε} cos(t log d)`. -/
+def oscillatingSmoothPower (ε t : ℝ) (d : ℕ) : ℝ := (d : ℝ) ^ (-ε) * Real.cos (t * Real.log d)
+
+/-- The exponent `ρ = 1 − ε + it`. -/
+def oscillationExponent (ε t : ℝ) : ℂ := ((1 - ε : ℝ) : ℂ) + (t : ℂ) * I
+
+theorem oscillationExponent_re (ε t : ℝ) : (oscillationExponent ε t).re = 1 - ε := by
+  simp [oscillationExponent]
+
+theorem oscillationExponent_im (ε t : ℝ) : (oscillationExponent ε t).im = t := by
+  simp [oscillationExponent]
+
+/-- `c_{ε,t}(d) = Re d^{ρ−1}`. -/
+theorem oscillatingSmoothPower_eq_re {ε : ℝ} (hε : 0 < ε) (t : ℝ) (d : ℕ) :
+    oscillatingSmoothPower ε t d = (((d : ℝ) : ℂ) ^ (oscillationExponent ε t - 1)).re := by
+  have hne : oscillationExponent ε t - 1 ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    rw [sub_re, oscillationExponent_re, one_re, zero_re] at this
+    linarith
+  rcases Nat.eq_zero_or_pos d with rfl | hd
+  · simp [oscillatingSmoothPower, Real.zero_rpow (neg_ne_zero.mpr hε.ne'), Complex.zero_cpow hne]
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hd0.ne'), ← Complex.ofReal_log hd0.le,
+    Complex.exp_re, oscillatingSmoothPower, Real.rpow_def_of_pos hd0]
+  simp only [oscillationExponent, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im,
+    Complex.one_re, Complex.one_im, Complex.I_re, Complex.I_im]
+  congr 2 <;> ring
+
+/-- The mean of the oscillating smooth power is `Re ζ(2 − ρ)`. -/
+theorem hasSum_oscillatingSmoothPower_div {ε : ℝ} (hε : 0 < ε) (t : ℝ) :
+    HasSum (fun d : ℕ => oscillatingSmoothPower ε t d / d)
+      (riemannZeta (2 - oscillationExponent ε t)).re := by
+  set ρ := oscillationExponent ε t with hρ
+  have hre : 1 < (2 - ρ).re := by rw [sub_re, oscillationExponent_re]; norm_num; linarith
+  have hsum : Summable (fun d : ℕ => 1 / (d : ℂ) ^ (2 - ρ)) := by
+    have := Complex.summable_one_div_nat_cpow.mpr hre
+    exact this
+  have hz := (zeta_eq_tsum_one_div_nat_cpow hre) ▸ hsum.hasSum
+  have h2ρ : (2 : ℂ) - ρ ≠ 0 := fun h => by rw [h, zero_re] at hre; linarith
+  refine (Complex.hasSum_re hz).congr_fun fun d => ?_
+  rcases Nat.eq_zero_or_pos d with rfl | hd
+  · simp [oscillatingSmoothPower, Complex.zero_cpow h2ρ]
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hdC : ((d : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hd0.ne'
+  rw [oscillatingSmoothPower_eq_re hε, ← hρ]
+  have h1 : 1 / (d : ℂ) ^ (2 - ρ) = ((d : ℝ) : ℂ) ^ (ρ - 1) / ((d : ℝ) : ℂ) := by
+    rw [show (d : ℂ) = ((d : ℝ) : ℂ) by push_cast; rfl, one_div, ← Complex.cpow_neg,
+      show -(2 - ρ) = ρ - 1 - 1 by ring, Complex.cpow_sub _ _ hdC, Complex.cpow_one]
+  rw [h1, show ((d : ℝ) : ℂ) = ((d : ℝ) : ℂ) from rfl, Complex.div_ofReal_re]
+
+/-- The prefix of `c_{ε,t}` is the real part of the floor-sum remainder. -/
+theorem weightCenteredPrefix_oscillatingSmoothPower_eq {ε : ℝ} (hε : 0 < ε) (t : ℝ) (n : ℕ) :
+    weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n =
+      (cpowFloorSum (oscillationExponent ε t) n -
+        riemannZeta (2 - oscillationExponent ε t) * n).re := by
+  rw [weightCenteredPrefix, sum_Icc_sum_divisors_eq_floor,
+    (hasSum_oscillatingSmoothPower_div hε t).tsum_eq, cpowFloorSum, sub_re, Complex.re_sum]
+  congr 1
+  · refine sum_congr rfl fun d _ => ?_
+    rw [oscillatingSmoothPower_eq_re hε, show ((n / d : ℕ) : ℂ) = (((n / d : ℕ) : ℝ) : ℂ) by
+      push_cast; rfl, Complex.re_mul_ofReal]
+  · rw [show (n : ℂ) = ((n : ℝ) : ℂ) by push_cast; rfl, Complex.re_mul_ofReal]
+
+/-- **The prefix asymptotic of the oscillating smooth power.** For `0 < ε < 1` and `n ≥ 1`,
+`|A(n) − Re(ζ(ρ) n^ρ/ρ)| ≤ K_ρ (√n)^{1−ε}`, `ρ = 1 − ε + it`. -/
+theorem abs_weightCenteredPrefix_oscillatingSmoothPower_sub_le {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1)
+    (t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+    |weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+      (riemannZeta (oscillationExponent ε t) * ((n : ℝ) : ℂ) ^ oscillationExponent ε t /
+        oscillationExponent ε t).re| ≤
+      floorSumRate (oscillationExponent ε t) * Real.sqrt n ^ (1 - ε) := by
+  have h := norm_cpowFloorSum_sub_le (ρ := oscillationExponent ε t)
+    (by rw [oscillationExponent_re]; linarith) (by rw [oscillationExponent_re]; linarith) hn
+  rw [oscillationExponent_re] at h
+  rw [weightCenteredPrefix_oscillatingSmoothPower_eq hε, ← sub_re]
+  exact (Complex.abs_re_le_norm _).trans h
+
+/-! ### Sufficiency: a zero pays the receiver -/
+
+/-- `(√n^{1−ε})² ≤ n^{-(1+ε)} n(n+1)`. -/
+theorem sq_sqrt_rpow_le {ε : ℝ} {n : ℕ} (hn : 1 ≤ n) :
+    (Real.sqrt n ^ (1 - ε)) ^ 2 ≤ (n : ℝ) ^ (-(1 + ε)) * ((n : ℝ) * ((n : ℝ) + 1)) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have h1 : (Real.sqrt n ^ (1 - ε)) ^ 2 = (n : ℝ) ^ (1 - ε) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (Real.sqrt_nonneg _), Real.sqrt_eq_rpow,
+      ← Real.rpow_mul hn0.le]
+    congr 1; push_cast; ring
+  have h2 : (n : ℝ) ^ (1 - ε) = (n : ℝ) ^ (-(1 + ε)) * ((n : ℝ) * n) := by
+    rw [← mul_assoc, ← Real.rpow_add_one hn0.ne', ← Real.rpow_add_one hn0.ne']; congr 1; ring
+  rw [h1, h2]
+  exact mul_le_mul_of_nonneg_left (by nlinarith) (Real.rpow_nonneg hn0.le _)
+
+/-- A sequence of size `K (√n)^{1−ε}` has pronic energy at most `K²(1 + 1/ε)`. -/
+theorem sum_sq_le_of_abs_le_sqrt_rpow {ε K : ℝ} (hε : 0 < ε) {f : ℕ → ℝ}
+    (hf : ∀ n, 1 ≤ n → |f n| ≤ K * Real.sqrt n ^ (1 - ε)) (T : ℕ) :
+    ∑ n ∈ Icc 1 T, f n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ K ^ 2 * (1 + 1 / ε) := by
+  have hterm : ∀ n ∈ Icc 1 T, f n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤
+      K ^ 2 * (n : ℝ) ^ (-(1 + ε)) := by
+    intro n hn
+    have hn1 := (mem_Icc.mp hn).1
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
+    have hsq : f n ^ 2 ≤ K ^ 2 * (Real.sqrt n ^ (1 - ε)) ^ 2 := by
+      rw [← mul_pow, ← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hf n hn1) 2
+    rw [div_le_iff₀ hpr]
+    calc f n ^ 2 ≤ K ^ 2 * (Real.sqrt n ^ (1 - ε)) ^ 2 := hsq
+      _ ≤ K ^ 2 * ((n : ℝ) ^ (-(1 + ε)) * ((n : ℝ) * ((n : ℝ) + 1))) :=
+          mul_le_mul_of_nonneg_left (sq_sqrt_rpow_le hn1) (sq_nonneg K)
+      _ = _ := by ring
+  calc _ ≤ ∑ n ∈ Icc 1 T, K ^ 2 * (n : ℝ) ^ (-(1 + ε)) := sum_le_sum hterm
+    _ = K ^ 2 * ∑ n ∈ Icc 1 T, (n : ℝ) ^ (-(1 + ε)) := by rw [mul_sum]
+    _ ≤ K ^ 2 * ((1 + 1 / ε) * ((1 : ℕ) : ℝ) ^ (-ε)) :=
+        mul_le_mul_of_nonneg_left (sum_Icc_rpow_neg_one_sub_le hε le_rfl T) (sq_nonneg K)
+    _ = K ^ 2 * (1 + 1 / ε) := by rw [Nat.cast_one, Real.one_rpow, mul_one]
+
+/-- **A zero pays the oscillating smooth power.** For `0 < ε < 1`, if `ζ(1 − ε + it) = 0` then the
+main term of the prefix vanishes and the receiver of `d^{-ε} cos(t log d)` is bounded. -/
+theorem receiverBounded_oscillatingSmoothPower_of_zeta_eq_zero {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1)
+    (t : ℝ) (hz : riemannZeta (oscillationExponent ε t) = 0) :
+    ReceiverBounded (oscillatingSmoothPower ε t) := by
+  refine ⟨floorSumRate (oscillationExponent ε t) ^ 2 * (1 + 1 / ε), fun T => ?_⟩
+  rw [weightPronicEnergy]
+  refine sum_sq_le_of_abs_le_sqrt_rpow hε (fun n hn => ?_) T
+  have h := abs_weightCenteredPrefix_oscillatingSmoothPower_sub_le hε hε1 t hn
+  rwa [hz, zero_mul, zero_div, zero_re, sub_zero] at h
+
+/-! ### Necessity: a paid receiver forces a zero -/
+
+/-- `Σ_{n ≤ T} 1/n ≥ log(T + 1)`. -/
+theorem log_succ_le_sum_Icc_one_div (T : ℕ) :
+    Real.log ((T : ℝ) + 1) ≤ ∑ n ∈ Icc 1 T, 1 / (n : ℝ) := by
+  have h := log_add_one_le_harmonic T
+  simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at h
+  push_cast at h
+  simpa only [one_div] using h
+
+/-- The harmonic sums are unbounded. -/
+theorem not_bddAbove_sum_Icc_one_div (L : ℝ) : ∃ T : ℕ, 1 ≤ T ∧ L < ∑ n ∈ Icc 1 T, 1 / (n : ℝ) := by
+  obtain ⟨T, hT⟩ := exists_nat_gt (Real.exp L)
+  refine ⟨T + 1, by omega, ?_⟩
+  have h1 := log_succ_le_sum_Icc_one_div (T + 1)
+  have h2 : L < Real.log (((T + 1 : ℕ) : ℝ) + 1) := by
+    rw [Real.lt_log_iff_exp_lt (by positivity)]
+    push_cast; linarith
+  linarith
+
+/-- **A paid oscillating smooth power forces a zero.** For `0 < ε ≤ 1/2`, if the receiver of
+`d^{-ε} cos(t log d)` is bounded then `ζ(1 − ε + it) = 0`: otherwise the main term
+`n^{1−ε} Re(a n^{it})`, `a = ζ(ρ)/ρ ≠ 0`, carries the logarithmic energy `(|a|²/4) H_T + O(1)`. -/
+theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε : 0 < ε)
+    (hε2 : ε ≤ 1 / 2) (t : ℝ) (hB : ReceiverBounded (oscillatingSmoothPower ε t)) :
+    riemannZeta (oscillationExponent ε t) = 0 := by
+  obtain ⟨E, hE⟩ := hB
+  have hε1 : ε < 1 := by linarith
+  set ρ := oscillationExponent ε t with hρ
+  set a : ℂ := riemannZeta ρ / ρ with ha
+  set K := floorSumRate ρ with hK
+  set A := weightCenteredPrefix (oscillatingSmoothPower ε t)
+    (∑' d : ℕ, oscillatingSmoothPower ε t d / d) with hA
+  set M : ℕ → ℝ := fun n => (a * ((n : ℝ) : ℂ) ^ ρ).re with hM
+  -- the remainder has bounded energy
+  have hrem : ∀ n, 1 ≤ n → |A n - M n| ≤ K * Real.sqrt n ^ (1 - ε) := by
+    intro n hn
+    have h := abs_weightCenteredPrefix_oscillatingSmoothPower_sub_le hε hε1 t hn
+    have hMeq : (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re = M n := by
+      simp only [hM, ha]; congr 1; ring
+    rw [← hρ, hMeq] at h
+    exact h
+  have hE0 : 0 ≤ E := by simpa [weightPronicEnergy] using hE 0
+  set B := Real.sqrt E + |K| * Real.sqrt (1 + 1 / ε) with hBdef
+  have hMnorm : ∀ T, pronicNorm M T ≤ B := by
+    intro T
+    have h1 : pronicNorm A T ≤ Real.sqrt E := by
+      have h := hE T
+      rw [weightPronicEnergy_eq_sq_pronicNorm] at h
+      have h' := Real.sqrt_le_sqrt h
+      rwa [Real.sqrt_sq (pronicNorm_nonneg _ _)] at h'
+    have h2 : pronicNorm (fun n => A n - M n) T ≤ |K| * Real.sqrt (1 + 1 / ε) := by
+      have h := sum_sq_le_of_abs_le_sqrt_rpow hε (f := fun n => A n - M n) hrem T
+      rw [pronicNorm]
+      calc Real.sqrt _ ≤ Real.sqrt (K ^ 2 * (1 + 1 / ε)) := Real.sqrt_le_sqrt h
+        _ = |K| * Real.sqrt (1 + 1 / ε) := by
+            rw [Real.sqrt_mul (sq_nonneg K), Real.sqrt_sq_eq_abs]
+    have h3 := pronicNorm_add_le A (fun n => (-1) * (A n - M n)) T
+    rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at h3
+    have h4 : pronicNorm M T = pronicNorm (fun n => A n + (-1) * (A n - M n)) T :=
+      pronicNorm_congr fun n _ => by ring
+    rw [h4]
+    linarith
+  -- the main term carries the logarithmic energy of `u(n) = Re(a n^{it})`
+  set u : ℕ → ℝ := fun n => (a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re with hu
+  have hMu : ∀ n : ℕ, 1 ≤ n → M n = (n : ℝ) ^ (1 - ε) * u n := by
+    intro n hn
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    have hsplit : ((n : ℝ) : ℂ) ^ ρ =
+        (((n : ℝ) ^ (1 - ε) : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) := by
+      rw [hρ, oscillationExponent, Complex.cpow_add _ _ (by exact_mod_cast hn0.ne'),
+        Complex.ofReal_cpow hn0.le]
+    simp only [hM, hu]
+    rw [hsplit, mul_left_comm, Complex.re_ofReal_mul]
+  have hlow : ∀ T : ℕ, ∑ n ∈ Icc 1 T, u n ^ 2 / n ≤ 2 * B ^ 2 := by
+    intro T
+    have hMsq : ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ B ^ 2 := by
+      have h := hMnorm T
+      rw [pronicNorm] at h
+      have hB0 : 0 ≤ B := (Real.sqrt_nonneg _).trans h
+      have hs0 : 0 ≤ ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) :=
+        sum_nonneg fun n _ => by positivity
+      calc _ = Real.sqrt (∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) ^ 2 :=
+            (Real.sq_sqrt hs0).symm
+        _ ≤ B ^ 2 := pow_le_pow_left₀ (Real.sqrt_nonneg _) h 2
+    have hterm : ∀ n ∈ Icc 1 T, u n ^ 2 / n ≤ 2 * (M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := by
+      intro n hn
+      have hn1 := (mem_Icc.mp hn).1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+      have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+      have hpow : (n : ℝ) ≤ ((n : ℝ) ^ (1 - ε)) ^ 2 := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul hn0.le]
+        calc (n : ℝ) = (n : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+          _ ≤ (n : ℝ) ^ ((1 - ε) * ((2 : ℕ) : ℝ)) :=
+              Real.rpow_le_rpow_of_exponent_le hnR (by push_cast; linarith)
+      rw [hMu n hn1, mul_pow]
+      rw [div_le_iff₀ hn0, mul_comm 2, mul_assoc]
+      have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
+      rw [div_mul_eq_mul_div, le_div_iff₀ hpr]
+      have hu2 : 0 ≤ u n ^ 2 := sq_nonneg _
+      nlinarith [mul_le_mul_of_nonneg_right hpow hu2]
+    calc _ ≤ ∑ n ∈ Icc 1 T, 2 * (M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := sum_le_sum hterm
+      _ = 2 * ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by rw [mul_sum]
+      _ ≤ 2 * B ^ 2 := by linarith
+  -- `u² = (|a|² + Re(a² n^{2it}))/2`
+  have husq : ∀ n : ℕ, 1 ≤ n → u n ^ 2 =
+      (‖a‖ ^ 2 + (a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I)).re) / 2 := by
+    intro n hn
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    set z := a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) with hz
+    have hw : ‖((n : ℝ) : ℂ) ^ ((t : ℂ) * I)‖ = 1 := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hn0]; simp
+    have hz2 : z ^ 2 = a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) := by
+      rw [hz, mul_pow, sq (((n : ℝ) : ℂ) ^ ((t : ℂ) * I)),
+        ← Complex.cpow_add _ _ (by exact_mod_cast hn0.ne')]
+      push_cast; ring_nf
+    have hnorm : ‖z‖ ^ 2 = ‖a‖ ^ 2 := by rw [hz, norm_mul, hw, mul_one]
+    have hre : z.re ^ 2 = (‖z‖ ^ 2 + (z ^ 2).re) / 2 := by
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, sq z, Complex.mul_re]; ring
+    show z.re ^ 2 = _
+    rw [hre, hnorm, hz2]
+  have hsum : ∀ T : ℕ, ∑ n ∈ Icc 1 T, u n ^ 2 / n =
+      ‖a‖ ^ 2 / 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) +
+        (a ^ 2 * ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)).re / 2 := by
+    intro T
+    rw [mul_sum, mul_sum, Complex.re_sum, sum_div, ← sum_add_distrib]
+    refine sum_congr rfl fun n hn => ?_
+    have hn1 := (mem_Icc.mp hn).1
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    rw [husq n hn1, ← mul_div_assoc, Complex.div_ofReal_re]
+    field_simp
+  rcases eq_or_ne t 0 with ht0 | ht0
+  · -- `t = 0`: the main term is `Re(a) n^{1−ε}` with `Re a < 0`
+    exfalso
+    have hu0 : ∀ n : ℕ, u n = a.re := fun n => by simp [hu, ht0]
+    have hare : a.re < 0 := by
+      have hρr : ρ = ((1 - ε : ℝ) : ℂ) := by rw [hρ, oscillationExponent, ht0]; simp
+      have hz := riemannZeta_re_le_of_lt_one (σ := 1 - ε) (by linarith) (by linarith)
+      rw [ha, hρr, Complex.div_ofReal_re]
+      have : -(1 - ε) / (1 - (1 - ε)) < 0 := by
+        apply div_neg_of_neg_of_pos <;> linarith
+      exact div_neg_of_neg_of_pos (by linarith) (by linarith)
+    obtain ⟨T, -, hT⟩ := not_bddAbove_sum_Icc_one_div (2 * B ^ 2 / a.re ^ 2)
+    have h := hlow T
+    have heq : ∑ n ∈ Icc 1 T, u n ^ 2 / n = a.re ^ 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) := by
+      rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hu0]; ring
+    rw [heq] at h
+    have ha2 : 0 < a.re ^ 2 := by positivity
+    rw [div_lt_iff₀ ha2] at hT
+    linarith
+  · -- `t ≠ 0`: the oscillating part is bounded
+    by_contra hz0
+    have ha0 : a ≠ 0 := by
+      rw [ha]; exact div_ne_zero hz0 (fun h => by
+        have := congrArg Complex.re h
+        rw [oscillationExponent_re, zero_re] at this; linarith)
+    set w : ℂ := 1 - ((2 * t : ℝ) : ℂ) * I with hw
+    have hwre : 0 < w.re := by simp [hw]
+    have hwne : w ≠ 1 := by
+      intro h
+      have := congrArg Complex.im h
+      simp [hw] at this
+      exact ht0 this
+    set B₂ := 1 / ‖((2 * t : ℝ) : ℂ) * I‖ + ‖riemannZeta w‖ + partialSumRate w with hB₂
+    have hS : ∀ T : ℕ, 1 ≤ T →
+        ‖∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)‖ ≤ B₂ := by
+      intro T hT
+      have hT0 : (0 : ℝ) < T := by exact_mod_cast hT
+      have hcp : ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ) =
+          cpowPartialSum w T := by
+        rw [cpowPartialSum]
+        refine sum_congr rfl fun n hn => ?_
+        have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+        have hnC : ((n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
+        rw [hw, show -(1 - ((2 * t : ℝ) : ℂ) * I) = ((2 * t : ℝ) : ℂ) * I - 1 by ring,
+          Complex.cpow_sub _ _ hnC, Complex.cpow_one]
+      have h := norm_cpowPartialSum_sub_le hwre hwne hT le_rfl (by linarith)
+      rw [show (1 : ℂ) - w = ((2 * t : ℝ) : ℂ) * I by rw [hw]; ring] at h
+      have hT1 : ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I)‖ = 1 := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hT0]; simp
+      have hTpow : (T : ℝ) ^ (-w.re) ≤ 1 :=
+        Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hT) (by linarith)
+      have hrate0 := partialSumRate_nonneg hwre
+      rw [hcp]
+      calc ‖cpowPartialSum w T‖ ≤ ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+            (((2 * t : ℝ) : ℂ) * I)‖ + ‖riemannZeta w‖ +
+            ‖cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+              (((2 * t : ℝ) : ℂ) * I) - riemannZeta w‖ := by
+            have e : cpowPartialSum w T = ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+                (((2 * t : ℝ) : ℂ) * I) + riemannZeta w +
+                (cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+                  (((2 * t : ℝ) : ℂ) * I) - riemannZeta w) := by ring
+            rw [e]
+            exact (norm_add_le _ _).trans (add_le_add_left (norm_add_le _ _) _)
+        _ ≤ 1 / ‖((2 * t : ℝ) : ℂ) * I‖ + ‖riemannZeta w‖ + partialSumRate w * 1 := by
+            rw [norm_div, hT1]
+            gcongr
+            exact h.trans (mul_le_mul_of_nonneg_left hTpow hrate0)
+        _ = B₂ := by rw [mul_one]
+    have hna : 0 < ‖a‖ ^ 2 := by positivity
+    obtain ⟨T, hT1, hT⟩ := not_bddAbove_sum_Icc_one_div ((4 * B ^ 2 + ‖a‖ ^ 2 * B₂) / ‖a‖ ^ 2)
+    have h := hlow T
+    rw [hsum T] at h
+    have hre : |(a ^ 2 * ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)).re| ≤
+        ‖a‖ ^ 2 * B₂ := by
+      refine (Complex.abs_re_le_norm _).trans ?_
+      rw [norm_mul, norm_pow]
+      exact mul_le_mul_of_nonneg_left (hS T hT1) (by positivity)
+    rw [div_lt_iff₀ hna] at hT
+    have := (abs_le.mp hre).1
+    nlinarith
+
+/-! ### The detection law -/
+
+/-- **The oscillating smooth power is paid exactly at the zeros of ζ.** For `0 < ε ≤ 1/2` and
+`t ∈ ℝ`, the receiver of `d^{-ε} cos(t log d)` is bounded if and only if `ζ(1 − ε + it) = 0`. -/
+theorem receiverBounded_oscillatingSmoothPower_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (t : ℝ) :
+    ReceiverBounded (oscillatingSmoothPower ε t) ↔
+      riemannZeta (((1 - ε : ℝ) : ℂ) + (t : ℂ) * I) = 0 :=
+  ⟨zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower hε hε2 t,
+    receiverBounded_oscillatingSmoothPower_of_zeta_eq_zero hε (by linarith) t⟩
+
+/-- **At half damping the paid frequencies are the ordinates of the critical zeros**:
+`d^{-1/2} cos(t log d)` is paid iff `ζ(1/2 + it) = 0`. -/
+theorem receiverBounded_oscillatingSmoothPower_half_iff (t : ℝ) :
+    ReceiverBounded (oscillatingSmoothPower (1 / 2) t) ↔
+      riemannZeta ((1 / 2 : ℂ) + (t : ℂ) * I) = 0 := by
+  rw [receiverBounded_oscillatingSmoothPower_iff (by norm_num) le_rfl t]
+  norm_num
+
+/-- **The Riemann hypothesis in receiver form**: RH holds iff no oscillating smooth power
+`d^{-ε} cos(t log d)` below half damping, `0 < ε < 1/2`, has a bounded receiver. -/
+theorem riemannHypothesis_iff_forall_not_receiverBounded_oscillatingSmoothPower :
+    RiemannHypothesis ↔ ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → ∀ t : ℝ,
+      ¬ ReceiverBounded (oscillatingSmoothPower ε t) := by
+  rw [RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip]
+  constructor
+  · intro h ε hε hε2 t hB
+    have hz := (receiverBounded_oscillatingSmoothPower_iff hε hε2.le t).1 hB
+    exact h _ (by simp; linarith) (by simp; linarith) hz
+  · intro h s hs1 hs2 hz
+    have hε : 0 < 1 - s.re := by linarith
+    have hε2 : 1 - s.re < 1 / 2 := by linarith
+    apply h (1 - s.re) hε hε2 s.im
+    rw [receiverBounded_oscillatingSmoothPower_iff hε hε2.le]
+    have hs : ((1 - (1 - s.re) : ℝ) : ℂ) + (s.im : ℂ) * I = s := by
+      apply Complex.ext <;> simp
+    rw [hs]; exact hz
+
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics

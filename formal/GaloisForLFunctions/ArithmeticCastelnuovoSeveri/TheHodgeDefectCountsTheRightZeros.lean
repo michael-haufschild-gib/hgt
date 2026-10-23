@@ -510,6 +510,44 @@ theorem pontryagin_law (Z : ZeroConfig) (hZ : TemperedConfig Z) (n : ℕ) :
     obtain ⟨f, hf, hfc, hge⟩ := exists_zeroGram_negIndex_ge Z hZ ρ hρ hR
     exact ⟨f, hf, hfc, by simpa using hge⟩
 
+/-- **Kronecker rank one: the Hodge defect is `0` or `∞`.** A tempered configuration invariant
+under the vertical translation `ρ ↦ ρ + iP` (the zeros of a lattice system with `log q = 2π/P`)
+either has no negative square on any finite family of tests, or arbitrarily many: one zero right of
+the line brings all its translates. -/
+theorem periodic_pontryagin_dichotomy (Z : ZeroConfig) (hZ : TemperedConfig Z) {P : ℝ}
+    (hP : 0 < P) (hper : ∀ ρ ∈ Z.carrier, ρ + I * P ∈ Z.carrier) :
+    (∀ (n : ℕ) (f : Fin n → ℝ → ℂ), (∀ i, ContDiff ℝ 2 (f i)) → (∀ i, HasCompactSupport (f i)) →
+      hermNegIndex (zeroGram Z f) = 0) ∨
+    ∀ n : ℕ, ∃ f : Fin n → ℝ → ℂ, (∀ i, ContDiff ℝ 2 (f i)) ∧ (∀ i, HasCompactSupport (f i)) ∧
+      n ≤ hermNegIndex (zeroGram Z f) := by
+  rcases (rightZeros Z).eq_empty_or_nonempty with hR | ⟨ρ₀, hρ₀⟩
+  · refine Or.inl fun n f hf hfc => ?_
+    have h := negIndex_zeroGram_le_of_tempered Z hZ f hf hfc
+    rw [hR, Set.encard_empty] at h
+    have h0 : hermNegIndex (zeroGram Z f) ≤ 0 := by exact_mod_cast h
+    omega
+  · refine Or.inr fun n => (pontryagin_law Z hZ n).mpr ?_
+    -- all vertical translates of `ρ₀` are zeros right of the line
+    have hmem : ∀ k : ℕ, ρ₀ + I * ((k : ℝ) * P) ∈ rightZeros Z := by
+      intro k
+      induction k with
+      | zero => simpa using hρ₀
+      | succ k ih =>
+        have h := hper _ ih.1
+        refine ⟨?_, ?_⟩
+        · convert h using 1; push_cast; ring
+        · simpa using hρ₀.2
+    have hinj : Function.Injective fun k : ℕ => ρ₀ + I * ((k : ℝ) * P) := fun k l hkl => by
+      have h1 := congrArg Complex.im hkl
+      simp only [Complex.add_im, Complex.mul_im, Complex.mul_re, Complex.I_re, Complex.I_im,
+        Complex.ofReal_re, Complex.ofReal_im, zero_mul, one_mul, mul_zero, sub_zero, zero_add,
+        add_right_inj] at h1
+      have h2 : (k : ℝ) * P = (l : ℝ) * P := by linarith
+      exact_mod_cast mul_right_cancel₀ hP.ne' h2
+    have hinf : (rightZeros Z).Infinite := Set.infinite_of_injective_forall_mem hinj hmem
+    rw [Set.encard_eq_top_iff.mpr hinf]
+    exact le_top
+
 /-! ### The scaling surface of `ℤ` -/
 
 /-- **The Hodge defect of the scaling surface of `ℤ` counts the zeros right of the line.** The

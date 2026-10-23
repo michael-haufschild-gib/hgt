@@ -310,6 +310,79 @@ theorem primePairDiagonal_tendsto (h : ℕ) :
     (physicalPairError_tendsto_zero h)
   simpa only [Real.norm_eq_abs] using primePairDiagonal_error X h
 
+/-- Subtract the zero-damping coefficient before normalizing. -/
+def compensatedDampingCoeff (ε : ℝ) (d : ℕ) : ℝ :=
+  (moebius d : ℝ) * (1 - (d : ℝ) ^ (-ε)) / ε
+
+private theorem abs_compensatedDampingCoeff_le_log {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
+    |compensatedDampingCoeff ε d| ≤ Real.log d := by
+  by_cases hd : d = 0
+  · subst d
+    simp [compensatedDampingCoeff]
+  have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hd
+  have hd0 : (0 : ℝ) < d := lt_of_lt_of_le zero_lt_one hd1
+  have ha : 0 ≤ 1 - (d : ℝ) ^ (-ε) := sub_nonneg.mpr
+    (Real.rpow_le_one_of_one_le_of_nonpos hd1 (neg_nonpos.mpr hε.le))
+  have hb : 1 - (d : ℝ) ^ (-ε) ≤ ε * Real.log d := by
+    rw [Real.rpow_def_of_pos hd0]
+    linarith [Real.add_one_le_exp (Real.log d * (-ε))]
+  have hμ : |(moebius d : ℝ)| ≤ 1 := by
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := d)
+  rw [compensatedDampingCoeff, abs_div, abs_mul, abs_of_pos hε, abs_of_nonneg ha,
+    div_le_iff₀ hε]
+  exact (mul_le_of_le_one_left ha hμ).trans (by simpa only [mul_comm] using hb)
+
+/-- The coefficient bound is uniform over every value of the positive damping clock. -/
+theorem abs_compensatedDampingCoeff_exp_le_log (t : ℝ) (d : ℕ) :
+    |compensatedDampingCoeff (Real.exp (-t)) d| ≤ Real.log d :=
+  abs_compensatedDampingCoeff_le_log (Real.exp_pos _) d
+
+/-- The physical diagonal pays logarithms, with no inverse damping loss. -/
+theorem abs_compensatedDampingCoeff_physical_le_log (X h d : ℕ) :
+    |compensatedDampingCoeff (physicalPairDamping X h) d| ≤ Real.log d :=
+  abs_compensatedDampingCoeff_le_log (physicalPairDamping_pos X h) d
+
+private theorem sum_moebius_divisors_real (n : ℕ) :
+    (∑ d ∈ n.divisors, (moebius d : ℝ)) = if n = 1 then 1 else 0 := by
+  have h := congrArg (fun f : ArithmeticFunction ℝ => f n)
+    (ArithmeticFunction.coe_moebius_mul_coe_zeta (R := ℝ))
+  simpa only [ArithmeticFunction.coe_mul_zeta_apply, ArithmeticFunction.intCoe_apply,
+    ArithmeticFunction.one_apply] using h
+
+private theorem normalizedDampedResponse_eq_compensated_of_ne_one (ε : ℝ) (n : ℕ)
+    (hn : n ≠ 1) :
+    normalizedDampedResponse ε n = -∑ d ∈ n.divisors, compensatedDampingCoeff ε d := by
+  have hz : (∑ d ∈ n.divisors, (moebius d : ℝ)) = 0 := by
+    rw [sum_moebius_divisors_real, if_neg hn]
+  simp only [normalizedDampedResponse, pmPowerDampedDivisorCoeff, compensatedDampingCoeff,
+    mul_sub, mul_one, sub_div, Finset.sum_sub_distrib, ← Finset.sum_div]
+  rw [hz, zero_div, zero_sub, neg_neg]
+
+/-- Complete Möbius cancellation removes the zero-damping axis exactly. -/
+theorem normalizedDampedResponse_eq_compensated (ε : ℝ) (n : ℕ) :
+    normalizedDampedResponse ε (n + 2) =
+      -∑ d ∈ (n + 2).divisors, compensatedDampingCoeff ε d :=
+  normalizedDampedResponse_eq_compensated_of_ne_one ε (n + 2) (by omega)
+
+/-- Exact finite pair expansion after both zero-damping axes are cancelled. -/
+theorem dampedPairAverage_eq_compensated (ε : ℝ) (X h : ℕ) :
+    dampedPairAverage ε X h =
+      (∑ n ∈ Icc 2 X, ∑ d ∈ n.divisors, ∑ e ∈ (n + h).divisors,
+        compensatedDampingCoeff ε d * compensatedDampingCoeff ε e) / X := by
+  unfold dampedPairAverage
+  congr 1
+  apply sum_congr rfl
+  intro n hn
+  have hnI := mem_Icc.mp hn
+  rw [normalizedDampedResponse_eq_compensated_of_ne_one ε n (by omega),
+    normalizedDampedResponse_eq_compensated_of_ne_one ε (n + h) (by omega), neg_mul_neg]
+  rw [Finset.sum_mul_sum]
+
 end
 
 end TwinPrime
+
+#print axioms TwinPrime.abs_compensatedDampingCoeff_exp_le_log
+#print axioms TwinPrime.abs_compensatedDampingCoeff_physical_le_log
+#print axioms TwinPrime.normalizedDampedResponse_eq_compensated
+#print axioms TwinPrime.dampedPairAverage_eq_compensated

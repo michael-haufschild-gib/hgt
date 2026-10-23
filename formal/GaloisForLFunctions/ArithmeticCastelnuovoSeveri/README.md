@@ -304,7 +304,10 @@ possible section theory must use near-radicals.
     surface has `1 + n` positive squares on the pole plane and some `n` tests iff `ζ` has at least
     `n` zeros with `Re ρ > ½` (`zeta_hodgeDefect_iff`); `ζ` has infinitely many zeros off the line
     iff the Hodge defect is unbounded (`zeta_rightZeros_infinite_iff`). The Hodge defect of the
-    scaling surface *is* the number of zeros right of the line.
+    scaling surface *is* the number of zeros right of the line. **Kronecker rank one:** a
+    configuration invariant under `ρ ↦ ρ + iP` (a lattice system) has Hodge defect `0` or `∞`
+    (`periodic_pontryagin_dichotomy`); finitely many off-line zeros, possible a priori for `ζ`, are
+    impossible in rank one.
 
 ### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
 
@@ -318,8 +321,13 @@ possible section theory must use near-radicals.
 22′. **No cone avoids the positive cone.** An effectivity with the Riemann–Roch axiom and
     nonnegative degrees contains every class of positive square and positive degree
     (`openPositiveCone_subset_of_effectivity`); its ample axiom therefore contains the Hodge index
-    constraint on the resulting cycle theory. Items 21–22′ specify the missing
-    section count; none of them supplies it.
+    constraint on the resulting cycle theory.
+22″. **Classification of effectivities** (`effectivity_iff`). Under the Hodge index a set `E` of
+    nonnegative degree satisfies both axioms iff
+    `{x² > 0, x·(H+V) > 0} ⊆ E ⊆ {x·(H+V) > 0} ∪ {numerically trivial}`. A section theory is free
+    only in which classes of nonpositive square and positive degree it declares effective (as for
+    curves of negative self-intersection on a surface); everything else is forced. Items 21–22″
+    specify the missing section count completely; none of them supplies it.
 
 ### 3.8 The infinite genus law (`InfiniteGenusLaw`)
 
@@ -385,8 +393,8 @@ possible section theory must use near-radicals.
 6. **Resonators.** The self-pairing on a resonator is exactly the Kronecker sum of the two Euler
    towers (items 24–25); the remaining archimedean and polar terms still require a sign argument.
 7. **Kronecker rank.** Rank-one (lattice) systems are curve data; their span is Hodge iff unitary
-   (item 12), fake data exist (item 13), and hiding needs genus exponential in the degree (items
-   14–15). For tests of any Kronecker rank the prime part decouples into one tower per prime
+   (item 12), fake data exist (item 13), hiding needs genus exponential in the degree (items
+   14–15), and their Hodge defect over the scaling surface is `0` or `∞` (item 20‴). For tests of any Kronecker rank the prime part decouples into one tower per prime
    (item 24, Cartesian law); direct prime edges change only one exponent; archimedean and polar terms supply
    additional coupling. Coefficients and the support box still affect the tower forms.
 
@@ -413,7 +421,9 @@ possible section theory must use near-radicals.
 ## 6. Open problems and the tools the programme develops
 
 1. **An independent effectivity for `ℤ` — the open core.** The scaling-surface Hodge index is
-   RH-equivalent, but no independent arithmetic effectivity theory supplies it. Wanted: a notion of
+   RH-equivalent, but no independent arithmetic effectivity theory supplies it. If one exists, it
+   lies in the sandwich of item 22″, and its defect from the Hodge index is counted exactly by the
+   zeros right of the line (item 20‴). Wanted: a notion of
    *section* of an arithmetic line bundle on the scaling surface, a cone `E` of classes with a
    nonzero section, a proof that `E` has nonnegative degree against `H + V` **from the definition
    of a section** (not from the sign of the form), and a dimension count giving the Riemann–Roch

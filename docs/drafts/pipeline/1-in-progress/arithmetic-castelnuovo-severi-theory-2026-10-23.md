@@ -45,7 +45,9 @@ survivor).
   `eq_of_hasGhost`, `witt_integral_not_pure` (golden datum integral, impure),
   `pureDatum_pointCount_one_not_int` (pure, non-integral).
 - `SpanContactLaw`: `toeplitz_pos_on_window_iff` (first degenerate window = number of eigenvalues).
-- `HodgeIndexFromEffectivity`: `exists_effectivity_iff_hodgeIndex` (RR + ample axioms ⟺ Hodge index).
+- `HodgeIndexFromEffectivity`: `exists_effectivity_iff_hodgeIndex` (RR + ample axioms ⟺ Hodge index);
+  `effectivity_iff` (all effectivities of nonnegative degree: open positive cone ⊆ E ⊆ positive
+  half-space ∪ radical).
 - `TheScalingSurface`: `scalingSurface_hodgeIndex_iff` (Hodge index of ℤ's scaling surface ⟺ RH),
   `posTestCone_not_riemannRoch`.
 - `ArithmeticHodgeIndexSignatureLaw`: `posIndex_intersectionGram`, `riemannHypothesis_iff_one_positive_square`,
@@ -58,7 +60,7 @@ survivor).
 - `TheHodgeDefectCountsTheRightZeros`: `pontryagin_law` (every tempered configuration: max negative
   index = #{Re ρ > ½} in ℕ∞, via density of zero-side coordinates in ℓ²);
   `zeta_hodgeDefect_iff`, `zeta_rightZeros_infinite_iff` (Hodge defect of ℤ's scaling surface =
-  #zeros right of the line; unconditional).
+  #zeros right of the line; unconditional); `periodic_pontryagin_dichotomy` (rank one: defect 0 or ∞).
 - `InfiniteGenusLaw`: `riemannHypothesis_iff_weil_positive_definite`.
 - `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`: Kronecker/Cartesian law (no cross-prime prime
   coupling), additive Euler envelopes, `heckeIncidence_succ`.

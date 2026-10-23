@@ -158,6 +158,42 @@ theorem openPositiveCone_subset_of_effectivity {E : Set C} (hRR : S.RiemannRochA
     simp only [map_neg, LinearMap.neg_apply] at this
     linarith
 
+/-- **Classification of effectivities.** Under the Hodge index, a set `E` of cycles of nonnegative
+degree satisfies the Riemann–Roch and ample axioms iff it lies between the open positive cone and
+the open half-space of positive degree, up to numerically trivial classes:
+
+    {x² > 0, x·(H + V) > 0} ⊆ E ⊆ {x·(H + V) > 0} ∪ {numerically trivial}.
+
+Without the Hodge index no such `E` exists (`exists_effectivity_iff_hodgeIndex`). So a section
+theory is free exactly in which classes of nonpositive square and positive degree it calls
+effective; everything else is forced. -/
+theorem effectivity_iff (h : S.HodgeIndex) (E : Set C) :
+    (S.RiemannRochAxiom E ∧ S.AmpleAxiom E ∧ ∀ x ∈ E, 0 ≤ S.pair x S.ample) ↔
+      ({x | 0 < S.pair x x ∧ 0 < S.pair x S.ample} ⊆ E ∧
+        ∀ x ∈ E, 0 < S.pair x S.ample ∨ ∀ y, S.pair x y = 0) := by
+  have hamp := S.ampleHodgeIndex_iff_castelnuovoSeveri.mpr (S.hodgeIndex_iff_castelnuovoSeveri.mp h)
+  constructor
+  · rintro ⟨hRR, hA, hdeg⟩
+    refine ⟨S.openPositiveCone_subset_of_effectivity hRR hdeg, fun x hx => ?_⟩
+    rcases (hdeg x hx).lt_or_eq with hpos | hzero
+    · exact Or.inl hpos
+    · exact Or.inr (hA x hx hzero.symm)
+  · rintro ⟨hsub, hE⟩
+    refine ⟨fun x hx => ?_, fun x hx hxA => ?_, fun x hx => ?_⟩
+    · -- a class of positive square has nonzero degree, by the Hodge index
+      have hne : S.pair x S.ample ≠ 0 := fun h0 => by linarith [hamp x h0]
+      rcases lt_or_gt_of_ne hne with hneg | hpos
+      · refine Or.inr (hsub ⟨by simpa using hx, ?_⟩)
+        simp only [map_neg, LinearMap.neg_apply]
+        linarith
+      · exact Or.inl (hsub ⟨hx, hpos⟩)
+    · rcases hE x hx with hpos | htriv
+      · linarith
+      · exact htriv
+    · rcases hE x hx with hpos | htriv
+      · exact hpos.le
+      · rw [htriv]
+
 end PolarSurface
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -882,13 +882,26 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         every prime-power Euler weight `Λ(n)/√n ≤ 2/e`. For two lags the price is explicit: the
         charges at the ratio lag `a₂ − a₁` and the product lag `a₂ + a₁` — the two incidence
         relations of AIP §1 — with coefficient `w₁w₂/2`.
+      * **`eulerComb`**, **`autoCorrelation_eulerComb`**, **`eulerPayment_residual`**,
+        **`eq_zero_of_eq_const_mul_shift`**, **`eulerComb_ne_zero`**,
+        **`integral_sq_pos_of_ne_zero`**, **`eulerPayment_lt_mass`** — the residual of the
+        payment. The deficit of the sequential law is exactly the energy of the comb,
+        `A(0) − Σ_j w_j A_{j−1}(a_j) = ∫(comb F)²`, and a comb factor at a nonzero lag
+        annihilates no compactly supported test but zero (a solution of `H = λH(· + a)` with
+        bounded support vanishes). Hence the payment is **strict for every nonzero test**: the
+        first-power charges are never paid in full by the mass. This is the property the Euler
+        envelope of a prime tower lacks — that envelope is attained by a resonant train and so
+        carries no information, while the payment law has a positive residual on every test.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 313 headline results of this card, in the order the card states them. Every name is a
+The 320 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
+Entries marked *(classical)* restate facts of classical analytic number theory inside the ledger
+language; they are infrastructure, not contributions of the field, and are excluded from the
+count. Field results: **302**; classical support: 18.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1173,24 +1186,24 @@ the file compiles with `lake --old env lean` and its capstones print the three s
 281. `abs_poleWeight_sub_le_of_two_poles`
 282. `abs_window_mass_sub_le`
 283. `abs_sum_Ioc_sub_le`
-284. `dconv`
-285. `sum_Icc_dconv`
-286. `lagPrefix_dconv`
-287. `sum_Icc_dconv_mul`
-288. `sum_lag_dconv`
-289. `abs_lagPrefix_dconv_sub_le`
-290. `unitSource`
-291. `fullMoebius`
-292. `abs_lagPrefix_unitSource_sub_exp_le`
-293. `abs_lagPrefix_dconv_unitSource_sub_le`
-294. `lagPrefix_log_eq_log_factorial`
-295. `sum_fullMoebius_floor`
-296. `abs_sum_fullMoebius_div_le_one`
-297. `lagChebyshev_eq_sum_fullMoebius_log_factorial`
-298. `lagPrefix_eq_sum_fullMoebius_dconv`
-299. `lagPrefix_fullMoebius`
-300. `lagPrefix_divisorCount`
-301. `abs_lagPrefix_divisorCount_sub_le`
+284. `dconv` *(classical)*
+285. `sum_Icc_dconv` *(classical)*
+286. `lagPrefix_dconv` *(classical)*
+287. `sum_Icc_dconv_mul` *(classical)*
+288. `sum_lag_dconv` *(classical)*
+289. `abs_lagPrefix_dconv_sub_le` *(classical)*
+290. `unitSource` *(classical)*
+291. `fullMoebius` *(classical)*
+292. `abs_lagPrefix_unitSource_sub_exp_le` *(classical)*
+293. `abs_lagPrefix_dconv_unitSource_sub_le` *(classical)*
+294. `lagPrefix_log_eq_log_factorial` *(classical)*
+295. `sum_fullMoebius_floor` *(classical)*
+296. `abs_sum_fullMoebius_div_le_one` *(classical)*
+297. `lagChebyshev_eq_sum_fullMoebius_log_factorial` *(classical)*
+298. `lagPrefix_eq_sum_fullMoebius_dconv` *(classical)*
+299. `lagPrefix_fullMoebius` *(classical)*
+300. `lagPrefix_divisorCount` *(classical)*
+301. `abs_lagPrefix_divisorCount_sub_le` *(classical)*
 302. `autoCorrelation_eulerFactor`
 303. `eulerStep`
 304. `exists_autoCorrelation_eulerStep`
@@ -1203,6 +1216,13 @@ the file compiles with `lake --old env lean` and its capstones print the three s
 311. `two_lag_payment_le`
 312. `vonMangoldtAtom_le_one`
 313. `eulerPayment_vonMangoldt_le_mass`
+314. `eulerComb`
+315. `autoCorrelation_eulerComb`
+316. `eulerPayment_residual`
+317. `eq_zero_of_eq_const_mul_shift`
+318. `eulerComb_ne_zero`
+319. `integral_sq_pos_of_ne_zero`
+320. `eulerPayment_lt_mass`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1214,3 +1234,4 @@ and the ledger objects, and are queued behind that cone.
 ## Log
 - 2026-10-22 — created; paper proof complete; steps 1–3 formalized and compiled.
 - 2026-10-23 — Euler comb ledger added (AIP topic 7); contribution index of 313 headline results verified against the module.
+- 2026-10-23 — residual and strictness of the Euler comb payment; index re-audited and classical support marked.

@@ -129,7 +129,7 @@ theorem one_sub_rpow_le_norm_dampingFlow_sub_id {η : ℝ} (h : 0 < η) {d : ℕ
     Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast (by omega : 1 < d)) (by linarith)
   have hval : (dampingFlow η - ContinuousLinearMap.id ℝ (C₀(ℕ, ℝ))) (normalizedResidueMode d) =
       -((1 - (d : ℝ) ^ (-η)) • normalizedResidueMode d) := by
-    rw [ContinuousLinearMap.sub_apply, dampingFlow_residueMode h hd0, ContinuousLinearMap.id_apply]
+    rw [sub_apply, dampingFlow_residueMode h hd0, ContinuousLinearMap.id_apply]
     ext n
     simp only [ZeroAtInftyContinuousMap.sub_apply, ZeroAtInftyContinuousMap.neg_apply,
       ZeroAtInftyContinuousMap.smul_apply, smul_eq_mul]

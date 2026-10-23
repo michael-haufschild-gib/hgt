@@ -24,11 +24,14 @@ increasing polar part push the same way.  Odd folding of a nonincreasing kernel 
   sample positions sum to a prime-power logarithm, positivity of the odd Weil ledger is local
   payment of its fold.
 
-The prime triangle `log 2, log 3, log 5` of `OddFoldingIsTheSourceOfFrustration` shows that the
-primes do frustrate it.
+* **The frustration is real at fine resolution**
+  (`exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`): the folded overlaps are affine in
+  the archimedean–polar weight (`oddFold_weilLedgerKernel`), so the prime triangle
+  `log 2, log 3, log 5` of `OddFoldingIsTheSourceOfFrustration` stays frustrated for every weight
+  `|α| < α₀` and all budgets.
 -/
 
-open Finset ArithmeticFunction
+open Finset ArithmeticFunction Filter Topology
 
 namespace GaloisForLFunctions.SignedArithmeticEnergyIncidence
 
@@ -149,7 +152,65 @@ theorem oddWeilLedger_lossless_of_no_primeSum [Fintype ι] {p : ι → ℝ} (hp 
   simp only [incidenceEnergy_mirror_odd (weilLedgerKernel_neg α β)]
   exact forall_congr' fun f => by constructor <;> intro h <;> linarith
 
+/-- The odd fold of the Weil ledger is the archimedean–polar fold plus the prime fold. -/
+theorem oddFold_weilLedgerKernel {p : ι → ℝ} {α β : ℝ} {b : ι → ℝ} {x y : ι} (hxy : x ≠ y) :
+    oddFold p (weilLedgerKernel α β) b x y =
+      α * (RHTower.ArchimedeanKernel.weilKernel |p x + p y| -
+        RHTower.ArchimedeanKernel.weilKernel |p x - p y|) + β * oddFold p primeKernel b x y := by
+  rw [oddFold_offDiag hxy, oddFold_offDiag hxy]
+  unfold weilLedgerKernel
+  ring
+
 end Ledger
+
+/-- A triangle with three anti-aligned overlaps is unbalanced. -/
+theorem not_isBalanced_of_triangle_pos {c : Fin 3 → Fin 3 → ℝ} (h01 : 0 < c 0 1)
+    (h12 : 0 < c 1 2) (h20 : 0 < c 2 0) : ¬ IsBalanced c := by
+  intro hb
+  have hwalk : IsWalkFrom c 0 [1, 2, 0] :=
+    ⟨by decide, h01.ne', by decide, h12.ne', by decide, h20.ne', trivial⟩
+  have h1 := alignedCycles_of_isBalanced hb 0 [1, 2, 0] hwalk rfl
+  rw [walkHolonomy_triangle h01.ne' h12.ne' h20.ne',
+    abs_of_pos (mul_pos (mul_pos h01 h12) h20), div_self (mul_pos (mul_pos h01 h12) h20).ne'] at h1
+  norm_num at h1
+
+/-- **The prime triangle frustrates the full odd Weil ledger at fine resolution**: there is a
+relative weight `α₀ > 0` such that for every archimedean–polar weight `0 ≤ α < α₀` and all budgets
+the odd fold of `α K(|u|) + prime(u)` at the positions with pairwise sums `log 2, log 3, log 5` is
+unbalanced. -/
+theorem exists_weight_oddWeilLedger_primeTriangle_not_isBalanced :
+    ∃ α₀ : ℝ, 0 < α₀ ∧ ∀ α : ℝ, |α| < α₀ → ∀ b : Fin 3 → ℝ,
+      ¬ IsBalanced (oddFold primeTrianglePos (weilLedgerKernel α 1) b) := by
+  -- the three folded overlaps are affine in `α` and positive at `α = 0`
+  have hev : ∀ x y : Fin 3, x ≠ y → ∀ᶠ α in 𝓝 (0 : ℝ),
+      0 < α * (RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x + primeTrianglePos y| -
+        RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x - primeTrianglePos y|) +
+        1 * oddFold primeTrianglePos primeKernel 0 x y := by
+    intro x y hxy
+    have hpos := oddFold_primeTriangle_pos 0 x y hxy
+    have hc : Continuous fun α : ℝ =>
+        α * (RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x + primeTrianglePos y| -
+          RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x - primeTrianglePos y|) +
+          1 * oddFold primeTrianglePos primeKernel 0 x y := by fun_prop
+    exact continuousAt_const.eventually_lt hc.continuousAt (by simpa using hpos)
+  have hall : ∀ᶠ α in 𝓝 (0 : ℝ), ∀ x y : Fin 3, x ≠ y →
+      0 < α * (RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x + primeTrianglePos y| -
+        RHTower.ArchimedeanKernel.weilKernel |primeTrianglePos x - primeTrianglePos y|) +
+        1 * oddFold primeTrianglePos primeKernel 0 x y := by
+    simp only [Filter.eventually_all]
+    intro x y
+    exact hev x y
+  obtain ⟨α₀, hα₀, hball⟩ := Metric.eventually_nhds_iff.1 hall
+  refine ⟨α₀, hα₀, fun α hα b => ?_⟩
+  have hα' := hball (by rwa [Real.dist_eq, sub_zero])
+  -- the prime fold does not see the budgets off the diagonal
+  have hb : ∀ x y : Fin 3, x ≠ y → oddFold primeTrianglePos primeKernel b x y =
+      oddFold primeTrianglePos primeKernel 0 x y := fun x y hxy => by
+    rw [oddFold_offDiag hxy, oddFold_offDiag hxy]
+  have hpos : ∀ x y : Fin 3, x ≠ y → 0 < oddFold primeTrianglePos (weilLedgerKernel α 1) b x y :=
+    fun x y hxy => by rw [oddFold_weilLedgerKernel hxy, hb x y hxy]; exact hα' x y hxy
+  exact not_isBalanced_of_triangle_pos (hpos 0 1 (by decide)) (hpos 1 2 (by decide))
+    (hpos 2 0 (by decide))
 
 end
 

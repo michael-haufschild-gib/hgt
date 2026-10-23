@@ -108,3 +108,4 @@ Lean proofs must be unconditional, no hypotheses or premises. Anything that is b
 - Long tasks survive compaction via files, not memory. Before a hard problem, write the card in the
   pipeline; check progress back to it.
 - Do not stop a task early over token budget. 
+- Do not use effort estimations to decide on anything.

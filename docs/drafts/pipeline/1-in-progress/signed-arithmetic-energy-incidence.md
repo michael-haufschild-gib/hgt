@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 25 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 26 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -52,9 +52,10 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `oddFold_pos_iff`, `oddFold_lossless_of_antitone`, `oddFold_primeTriangle_not_isBalanced`,
   `exists_unpayable_odd_primeTriangle`, `evenFold_prime_lossless`.
 - `TheOddWeilLedgerIsFrustratedOnlyByPrimes` — `weilKernel_antitone`, `oddFold_pos_imp_primeSum`,
-  `frustrated_walk_has_primeSum`, `oddWeilLedger_lossless_of_no_primeSum`.
+  `frustrated_walk_has_primeSum`, `oddWeilLedger_lossless_of_no_primeSum`,
+  `exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`.
 - `LocalPaymentIsComparisonPositivity` — `locallyPayable_iff_comparison_nonneg`,
-  `locallyPayable_regularized_iff`.
+  `locallyPayable_regularized_iff`, `not_locallyPayable_iff_exists_overload`.
 - `SignChangesNeedAntiAlignedOverlaps` — `polarForm_abs_le`, `exists_nonneg_polarSolution`,
   `polarForm_nonneg_iff_polarSolution`, `signChange_beats_abs`.
 - `CartesianProductsAddGroundEnergies` — `incidenceEnergy_cartesian`, `cartesian_lower_bound`,
@@ -71,6 +72,9 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `tendsto_truncation_partialEnergy`, `not_summable_transition_first_column`.
 - `ResidueModesAndBackwardContinuation` — `centeredOperator_normalizedResidueMode`,
   `tsum_sq_normalizedResidueProfile_le/_ge`, `not_backward_stable_l2/_c0`, `summable_signBlind_iff`.
+- `DampingIsStronglyContinuousWithUnboundedGenerator` — `tendsto_dampingFlow`,
+  `tendsto_of_dense_of_bounded`, `one_le_norm_dampingFlow_sub_id`,
+  `tendsto_generator_residueMode`, `not_exists_bounded_generator`.
 - `TheSourceIsTheDampedMoebiusResidueSeries` — `centeredOperator_reciprocal_eq_tsum`,
   `admits_of_signBlind`, `not_summable_positiveTwin`.
 - `ThePositiveTwinIsTheExtremalSignPattern` — `abs_residueSeries_le_abs_positiveTwin`,
@@ -78,6 +82,7 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheFirstColumnOfTheChainIsTheReceiver` — `summable_dyadicDifference_iff`,
   `admits_iff_summable_firstColumn`, `riemannHypothesis_iff_firstColumn_summable`.
 - `AdverseProfilesCannotVanish` — `tendsto_energy_splitting`, `adverse_weakLimit`,
+  `eventually_energy_remainder_ge`, `eventually_energy_ge_weakLimit`,
   `adverse_escape_of_orthonormal`.
 - `TheRestrictedWeilFormIsCompactlyNegative` — `tendsto_of_weakConvC`,
   `compactPerturbation_adverse_weakLimit`, `ccmRestrictedWeilForm_adverse_weakLimit`.

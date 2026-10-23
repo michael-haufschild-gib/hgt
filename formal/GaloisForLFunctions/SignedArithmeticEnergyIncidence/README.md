@@ -206,7 +206,9 @@ estimate must therefore use the source vector and its arithmetic.
    given sizes (`incidenceEnergy_comparison_abs_le`), and for a balanced form it is a switching of
    the form (`switchCoupling_eq_comparison`). Raising every budget by `t` makes a form locally
    payable iff `E_comp(f) ≥ −t Σ f_i²` (`locallyPayable_regularized_iff`): the exact cost of local
-   payment is the gap between the ground energies of the form and of its comparison form.
+   payment is the gap between the ground energies of the form and of its comparison form. The
+   duality is explicit: a form has no allocation iff a nonnegative profile overloads its budgets,
+   `Σ c_ii f_i² < Σ_{i≠j} |c_ij| f_i f_j` (`not_locallyPayable_iff_exists_overload`).
 9a. **Cycle holonomy decides balance on every pattern.** A walk steps along nonzero overlaps
    between distinct points; its holonomy is the product of the edge signs `−c_xy/|c_xy|`
    (`IsWalkFrom`, `walkHolonomy`). Switching multiplies the holonomy of a walk from `u` to `v` by
@@ -266,7 +268,10 @@ estimate must therefore use the source vector and its arithmetic.
    (`oddFold_pos_imp_primeSum`). So every frustrated closed walk passes through two consecutive
    points whose positions sum to a prime-power logarithm (`frustrated_walk_has_primeSum`), and if
    no two sample positions do, positivity on odd profiles is local payment of the fold
-   (`oddWeilLedger_lossless_of_no_primeSum`).
+   (`oddWeilLedger_lossless_of_no_primeSum`). Conversely the frustration is real: the folded overlaps are affine in
+   `α` (`oddFold_weilLedgerKernel`), so the prime triangle stays frustrated in the full odd Weil
+   ledger for every relative archimedean–polar weight `|α| < α₀`, whatever the budgets
+   (`exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`).
 
 ### Chains and trains
 
@@ -345,6 +350,16 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     (`tsum_sq_normalizedResidueProfile_ge`, `..._le`).
 22. **Backward continuation is ill-posed.** No `‖b‖ ≤ K ‖C_t b‖` holds in `ℓ²` or in `c₀`, for any
     `t > 0` (`not_backward_stable_l2`, `not_backward_stable_c0`); on `v_d` the ratio is `d^t`.
+22a. **Damping is strongly continuous, with an unbounded generator.** Extended by the identity at
+    zero damping (`dampingFlow`), the chain is strongly continuous on `c₀`: `C_η b → b` as `η ↓ 0`
+    for every `b` (`tendsto_dampingFlow`), because it converges on the dense span of the residue
+    modes (BVI's `normalizedResidueMode_dense_span`) and `‖C_η‖ ≤ 2` (`tendsto_of_dense_of_bounded`).
+    It is not norm continuous: `‖C_η − I‖ ≥ 1` at every positive damping
+    (`one_le_norm_dampingFlow_sub_id`). Its generator acts on `v_d` by `−log d`
+    (`tendsto_generator_residueMode`), so no bounded operator is the derivative of the flow at
+    zero damping (`not_exists_bounded_generator`). Compact smoothing at positive time comes with an
+    unbounded logarithmic generator: continuation towards zero damping has no operator-norm
+    shortcut.
 23. **The source is the damped Möbius residue series.** For `η > 0`,
     `(C_η r)(n) = Σ_{d≥1} μ(d) d^{−η} v_d(n)` (`centeredOperator_reciprocal_eq_tsum`), absolutely
     at every fixed coordinate (`summable_residueTerm`). Indeed `v_d(n) ≤ 0` and
@@ -374,7 +389,10 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     weakly lower semicontinuous along bounded sequences (`energy_le_of_weakConv`); a unit-bounded
     adverse sequence with `Q(u_n) → μ < 0` and `u_n ⇀ u` has `u ≠ 0` and `Q(u) ≤ μ ‖u‖²`
     (`adverse_weakLimit`). A form bounded below by one finite-rank charge is compactly negative
-    (`compactlyNegative_of_finiteRank`).
+    (`compactlyNegative_of_finiteRank`). The escaping remainder `u_n − u` has eventually energy at
+    least `−ε` for every `ε > 0` (`eventually_energy_remainder_ge`), so eventually
+    `Q(u_n) ≥ Q(u) − ε` (`eventually_energy_ge_weakLimit`): all negative energy of an adverse
+    sequence is carried by its weak limit.
 27. **Escape through a noncompact negative part.** For `Q = −‖·‖²` an orthonormal sequence is
     adverse with weak limit `0` (`adverse_escape_of_orthonormal`).
 27a. **The critical form is compactly negative at every aperture.** At aperture `a` the corpus
@@ -436,7 +454,8 @@ continuous (`polarDefect_nonneg_iff`, `polarDefect_nonneg_of_dense`,
 **Pillar III — the receiver as a semigroup orbit.** The damped Möbius source is the `c₀` orbit of
 `1/k` under the compact centered damping chain; the critical energy is its `ℓ²` energy; admission
 is `ℓ²`-membership, already equivalent to `ℓ²`-membership of the chain's first column;
-truncations approximate the receiver at every horizon, backward stability is impossible, and
+truncations approximate the receiver at every horizon, the flow is strongly but not uniformly
+continuous at zero damping with an unbounded generator, backward stability is impossible, and
 sign-blind summation stops exactly at half damping (`admits_iff_summable_orbit`,
 `admits_iff_summable_firstColumn`, `tendsto_truncation_partialEnergy`, `not_backward_stable_l2`,
 `summable_signBlind_iff`, `signBlind_admission_iff`, `not_summable_positiveTwin`).
@@ -564,7 +583,7 @@ Each question is stated with what is established and where the open part sits.
 | Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
-| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column | damping chain + norm → eigenmodes, sizes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
+| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
 | Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |
@@ -580,9 +599,9 @@ Each question is stated with what is established and where the open part sits.
    at the sum exceeds the kernel at the difference, and the prime triangle `log 2, log 3, log 5` is
    frustrated (mechanism 9d). With the archimedean kernel and the pole charge added, every
    frustrated cycle still passes through a prime sum, and sampling sets free of prime sums are
-   lossless (mechanism 9e). Open: the holonomies of samplings that do contain prime sums, once the
-   relative sizes of `K` and the prime atoms (the mesh weights) are fixed, and the budgets they
-   supply. The aligned
+   lossless (mechanism 9e); at fine resolution (small relative weight of `K`) the prime triangle
+   frustrates the full odd ledger. Open: the holonomies at a fixed mesh, where `K` and the prime
+   atoms are comparable, and the budgets they supply. The aligned
    part is payable by mechanism 4; the frustrated part is where the even–odd balance of AIP lives.
 2. **Allocation at growing size.** Prove a local allocation (or a frustration bound) for a family of
    strips whose number grows with the aperture, with losses uniform in that number. This is the

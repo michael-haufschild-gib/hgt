@@ -223,6 +223,15 @@ matrix. Its target \(N\), boundary and squarefree restrictions remain visible.
 
 ## Dictionary for the twelve programmes
 
+The separate [projective return module](ProjectiveIntegralReturns.lean)
+checks an arithmetic constraint on transporting the signed bilinear source
+\(\mu(T-mn)\). A non-affine integer fractional linear map with nonzero
+determinant \(\Delta\) has at most \(2\tau(|\Delta|)\) integer returns;
+inversion attains the bound. The induced second coordinate has determinant
+\(T^2\Delta\). The checked joint and family bounds retain these costs,
+so rational projective symmetry is not silently treated as symmetry of
+the fixed integer rectangle. They supply no signed cancellation estimate.
+
 | Programme | Goldbach restatement in its objects | What the translation retains |
 |---|---|---|
 | [Arithmetic Positivity Theory](../arithmetic-positivity-theory/README.md) | \(G=M-D\), matching the algebra of its zero mass minus reflection defect. | Its zero reflection \(\rho\mapsto1-\bar\rho\) and the integer reflection \(k\mapsto N-k\) act on different spaces. The common identity does not identify their forms. |

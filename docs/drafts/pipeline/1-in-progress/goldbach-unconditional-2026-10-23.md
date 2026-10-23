@@ -555,6 +555,36 @@ The original goal still requires proving this strict inequality at every
 even target, or closing the earlier signed estimate. The new equivalence
 does not discharge that arithmetic obligation.
 
+### Cycle 13: test projective parity transport on the integer rectangle
+
+Previous goal turn was progress: the finite two-scale criterion and its
+source identities were checked and audited. The present turn attacked a
+specific cancellation mechanism for the retained matrix μ(T−mn).
+
+On rational coordinates m and T/n, a fractional linear map g has the
+exact difference-kernel transformation law, with its determinant and one
+denominator per coordinate. The proposed next step was to cover a positive
+fraction of a balanced integer rectangle by a small common family of such
+maps, then use their parity transformations. The integrality step fails:
+a return denominator divides det(g), and the induced column map has
+determinant T²det(g). A polylogarithmic family of nondiagonal maps of
+polynomial height therefore has only a vanishing fraction of integer
+returns. Diagonal maps preserve mn itself and give no new sign change.
+
+This fixed-family coverage premise is
+[retired with its exact scope](../5-failed/goldbach-projective-parity-returns.md).
+Its [positive survivor](../3-formalized/not_new_scientific_knowledge/goldbach-projective-integral-returns.md)
+is the sharp 2τ(|det|) return bound, exact inversion classification, and
+joint/family return budget. These are now unconditional Lean theorems;
+the leaf and six closures pass audit. No analytic cancellation estimate
+was proved and no scientific novelty is claimed for this elementary audit.
+
+The same check rules out two silent repairs: homogeneous transport moves
+the target, while removable row/column sign gauges leave all bilinear unit
+tests and cycle signs unchanged. A new correspondence argument must retain
+the fixed target, count its integral returns, and estimate the residual
+arithmetic signs with both squarefree masks. It cannot assume any of them.
+
 ## Current verified state and continuation
 
 - Goldbach target is **not proved**; main goal remains active.
@@ -581,6 +611,9 @@ does not discharge that arithmetic obligation.
   two-scale bridge is complete. Attack its strict arithmetic inequality.
   The scale audit explains the joint range ε log N<log 4 in the un-gauged
   comparison; fixed-damping mass estimates do not supply that uniform input.
+  Cycle 13 excludes a polylogarithmic family of fixed projective maps as
+  a dense integer pairing mechanism. Any adaptive correspondence must
+  pay its actual return multiplicities and keep the additive target.
   Cycle 11's predecessor-mark far-slope signed covariance remains an
   alternative analytic frontier. Its Type I deduction is closed on paper. Pursue the
   original analytic argument, rather than extending the source audits
@@ -651,3 +684,8 @@ does not discharge that arithmetic obligation.
   Goldbach criterion. Leaf check and six closure audits passed; no analytic
   premise or placeholder. Recorded the stronger coefficient minorant separately
   as paper-only. The original Goldbach goal remains active and unproved.
+- 2026-10-23 — Attacked a projective cancellation mechanism for the signed
+  matrix. Proved its dense integral-return premise false and formalized the
+  sharp positive return law, inversion classification and family budget.
+  Direct leaf check and six closure audits passed without analytic premises.
+  The missing strict inequality and signed covariance remain open.

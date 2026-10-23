@@ -14,7 +14,9 @@ question of profile decomposition is where the negativity goes.
   remainder.
 * **Compact negativity** (`CompactlyNegative`): for every `ε > 0` the form is bounded below by a
   finite-rank charge and `ε ‖·‖²`.  Then the energy is weakly lower semicontinuous along bounded
-  sequences (`energy_le_of_weakConv`), and **adverse sequences cannot vanish**
+  sequences (`energy_le_of_weakConv`), escaping remainders are asymptotically nonnegative
+  (`eventually_energy_remainder_ge`, `eventually_energy_ge_weakLimit`), and **adverse sequences
+  cannot vanish**
   (`adverse_weakLimit`): the weak limit `u` is nonzero, `‖u‖ ≤ 1`, and `Q(u) ≤ μ ‖u‖²` — it is at
   least as adverse as the sequence.  A ground state below zero is attained.
 * **Escape** (`adverse_escape_of_orthonormal`): when the negative part is not compact — `Q = −‖·‖²`
@@ -124,6 +126,36 @@ theorem energy_le_of_weakConv {T : H →L[ℝ] H} (hT : IsSymmetricOp T) (hK : C
   have hsmall : δ * B ^ 2 < ε := by
     rw [hδ, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
     nlinarith
+  linarith
+
+/-- **Escaping remainders are asymptotically nonnegative**: under compact negativity the
+remainder `u_n − u₀` of a bounded weakly convergent sequence has energy at least `−ε` eventually,
+for every `ε > 0`. -/
+theorem eventually_energy_remainder_ge {T : H →L[ℝ] H} (hK : CompactlyNegative T) {u : ℕ → H}
+    {u₀ : H} (h : WeakConv u u₀) {B : ℝ} (hB : ∀ n, ‖u n - u₀‖ ≤ B) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ n in atTop, -ε ≤ signedEnergy T (u n - u₀) := by
+  have hB0 : 0 ≤ B := le_trans (norm_nonneg _) (hB 0)
+  obtain ⟨m, φ, hφ⟩ := hK (ε / (2 * (B ^ 2 + 1))) (by positivity)
+  filter_upwards [(h.tendsto_finiteRankCharge φ).eventually
+    (gt_mem_nhds (by positivity : (0 : ℝ) < ε / 2))] with n hn
+  have h1 := hφ (u n - u₀)
+  have h2 : ‖u n - u₀‖ ^ 2 ≤ B ^ 2 + 1 := by
+    nlinarith [pow_le_pow_left₀ (norm_nonneg _) (hB n) 2]
+  have h3 : ε / (2 * (B ^ 2 + 1)) * ‖u n - u₀‖ ^ 2 ≤ ε / 2 :=
+    calc ε / (2 * (B ^ 2 + 1)) * ‖u n - u₀‖ ^ 2 ≤ ε / (2 * (B ^ 2 + 1)) * (B ^ 2 + 1) :=
+          mul_le_mul_of_nonneg_left h2 (by positivity)
+      _ = ε / 2 := by field_simp
+  linarith
+
+/-- **Profile decomposition of the energy**: eventually `Q(u_n) ≥ Q(u₀) + Q(u_n − u₀) − ε` with
+`Q(u_n − u₀) ≥ −ε`; all negative energy of an adverse sequence is carried by its weak limit. -/
+theorem eventually_energy_ge_weakLimit {T : H →L[ℝ] H} (hT : IsSymmetricOp T)
+    (hK : CompactlyNegative T) {u : ℕ → H} {u₀ : H} (h : WeakConv u u₀) {B : ℝ}
+    (hB : ∀ n, ‖u n - u₀‖ ≤ B) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ n in atTop, signedEnergy T u₀ - ε ≤ signedEnergy T (u n) := by
+  have hs := (tendsto_energy_splitting hT h).eventually
+    (lt_mem_nhds (by linarith : -(ε / 2) < (0 : ℝ)))
+  filter_upwards [hs, eventually_energy_remainder_ge hK h hB (half_pos hε)] with n h1 h2
   linarith
 
 /-- Weak limits of unit-bounded sequences are unit-bounded. -/
