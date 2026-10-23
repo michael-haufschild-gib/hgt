@@ -75,37 +75,26 @@ Query syntax and paging:
   Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
 
-## Lean discipline
-1. **ALL LEAN PROOFS MUST BE UNCONDITIONAL, WITHOUT ADDED HYPOTHESES OR PREMISES.** No extra
-   assumption binder, no `variable` constraint smuggled in, no `axiom`, `sorry`, `admit`,
-   `opaque`, `unsafe`, `native_decide`, and no `Prop`-valued interface standing in for an
-   analytic input the proof actually needs. Only the genuine typing side-conditions of the
-   objects involved may appear in a statement. If the proof needs an input that is not
-   available, the contribution is not ready: prove the input, or weaken the conclusion until
-   it is unconditional, or record the gap on the pipeline card -- never in the Lean statement.
-2. **Never run `lake build`.** The only compile/audit command is
-   `lake --old env lean GaloisForLFunctions/<Path>/<Module>.lean`, run from `formal/`.
-   `--old` is a *lake* flag and goes before `env`; `lean` itself rejects it. It avoids
-   rebuilding unchanged modules. If a file's imports are not yet compiled, this one command
-   compiles them -- never use `lake build` to "prepare" them.
-3. Always build in the foreground -- never backgrounded -- and exactly one build process per
-   agent/chat session at a time (other agents can also build in parallel to you).
-   **If a build reports a missing `.olean`, build exactly that one module** --
-   `lake --old env lean GaloisForLFunctions/A/B/C.lean` for the module it names, plain command,
-   **never with `-o`/`-i`** -- then retry the original file, repeating per missing olean. Never
-   widen this to `lake build`, an umbrella target, or a full build, and never stop to ask: the
-   error names the next target.
-4. No computations
-5. No full builds, no umbrella builds, no large aggregate targets. Wire finished modules into
-   their umbrella with an import line, but do not build the umbrella to check it.
-6. make sure you don't leave staleclean up after yourself.
-7. **Optimize lean code. NEVER use raising-maxHeartbeat hacks.** No
-   `set_option maxHeartbeats <bigger>` or `0`, no `maxRecDepth` bump, no
-   `synthInstance.maxHeartbeats`/`maxSize` bump, no other option raised to make an
-   elaboration finish. A proof that needs a raised budget is written wrong: feed `nlinarith`
-   exactly the products it needs, use `simp only [...]`, split monolithic proofs into cheap
-   named lemmas, prove a rewrite lemma once instead of unfolding repeatedly.
-8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+## Lean rules
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. **NEVER run `lake build`.** Not for a module, not for an umbrella, not for "just one file",
+   not for a dependency. It recompiles thousands of modules and blocks the whole machine.
+3. Every compile is `lake --old env lean ...`, run from `formal/`, in the foreground, one process
+   at a time (other agents build in parallel to you). `--old` goes before `env`; it makes lake
+   reuse every existing olean instead of rebuilding it.
+4. **Check a file** (writes no olean; this is also the final audit):
+   `lake --old env lean GaloisForLFunctions/<Path>/<Module>.lean`
+5. **Build the olean of your own file** — only when another file you are writing imports it:
+   `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.ilean GaloisForLFunctions/<Path>/<Module>.lean`
+6. **Missing dependency olean** (error `object file '.../GaloisForLFunctions/X/Y/Z.olean' ... does
+   not exist`): build exactly that one olean with the command of rule 5 for
+   `GaloisForLFunctions/X/Y/Z`, then retry your file. If the retry names another missing olean,
+   build that one, and so on — one by one. Build nothing else. Never rebuild an olean that exists.
+7. Do not run full or umbrella builds. Wire finished modules into their umbrella with an import
+   line, but do not compile the umbrella.
+8. Make sure you don't leave stale files; clean up after yourself.
+9. Optimize lean code. No raising heartbeat hacks.
+10. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.

@@ -57,24 +57,36 @@ confirm the call matches.  Convenience, an earlier plan, and default habits neve
 
 ## Build And Check
 
-Never run `lake build`.  The one compile/audit command, run from `formal/`:
+**NEVER run `lake build`** -- not for a module, an umbrella, a single file or a dependency.  It
+recompiles thousands of modules and blocks the whole machine.  Every compile is one of the two
+commands below, run from `formal/`.  `--old` is a *lake* flag and goes before `env` (`lean`
+rejects it); it makes lake reuse every existing olean instead of rebuilding it.
+
+Check a file (writes no olean; this is also the final audit):
 
 ```bash
-lake --old env lean GaloisForLFunctions/<path>.lean
+lake --old env lean GaloisForLFunctions/<Path>/<Module>.lean
 ```
 
-`--old` is a *lake* flag and must come before `env` (`lean` rejects it); it keeps unchanged
-modules from being rebuilt.  This single command also compiles whatever imports the file needs,
-so never reach for `lake build` to prepare them.
+Build the olean of one module (your own file when another file you write imports it, or a
+dependency whose olean is missing):
+
+```bash
+lake --old env lean \
+  -o .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.olean \
+  -i .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.ilean \
+  GaloisForLFunctions/<Path>/<Module>.lean
+```
 
 Rules that are not negotiable:
 
 - Foreground only -- never backgrounded.
 - One build process per agent/chat session at a time.
-- A missing `.olean` is an instruction, not a blocker: compile exactly the module the error names
-  (`GaloisForLFunctions.A.B.C` -> `GaloisForLFunctions/A/B/C.lean`) with the plain command, then
-  retry the original file, repeating per missing olean.  Never pass `-o`/`-i` to place an olean by
-  hand, and never widen it to `lake build` or an umbrella target.
+- Build only the olean of your own file, and only when another file needs it.
+- A missing `.olean` (`object file '.../GaloisForLFunctions/X/Y/Z.olean' ... does not exist`):
+  build exactly that one module's olean with the second command, then retry the original file.
+  If the retry names another missing olean, build that one, and so on -- one by one.  Build
+  nothing else, and never rebuild an olean that already exists.
 - No full builds, no umbrella builds, no large aggregate targets.  Wire a finished module into
   its area umbrella with an import line, but do not build the umbrella to check it.
 

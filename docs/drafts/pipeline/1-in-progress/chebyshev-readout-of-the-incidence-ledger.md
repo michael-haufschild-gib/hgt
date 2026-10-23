@@ -666,6 +666,122 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         multiplicative tower is a banded positive Toeplitz form** (AIP research topic 7): Schur
         constant `A(0)(2⌊2r/L⌋+1)`, exactly diagonal once the step exceeds `2r`, and every
         off-diagonal entry discounted by the quadratic gap at its exponent difference.
+      * **`antiDisplacement`**, **`displacement_two_mul_le_antiDisplacement`**,
+        **`antiDisplacement_ge`** — **the other side of the Gram.**  `A(0)+A(t)` is half
+        `‖F+F(·+t)‖²`; near-anti-periodicity at `t` would force near-periodicity at `2t`, which
+        the aperture laws forbid.  So the correlation stays a definite amount above `−A(0)` at
+        every nonzero lag: the Gram entries are pinned quantitatively on both sides.
+      * **`autoCorrelation_ratio_le`**, **`autoCorrelation_ratio_le_of_ne`**,
+        **`crossAggregate_le_gap`** — **no two integers align the test.**  Distinct integers have
+        logarithms separated by at least the reciprocal of the larger, so every ratio entry is
+        below the mass by `1/(8r²n²)` of it, and the aggregate below a horizon `Y` carries the
+        uniform discount `min(1/(8r²Y²), ½)`.
+      * **`sum_lag_vonMangoldt_eq_zero`**, **`testBalance_firstWindow`**,
+        **`sum_lag_vonMangoldt_firstAtom`**, **`testBalance_firstAtom`** — **the first prime
+        window, exactly.**  Below `log 2 / 2` the prime side vanishes identically and the ledger
+        is purely archimedean; between `log 2 / 2` and `log 3 / 2` it is the single identity
+        `√2·log 2·A(log 2) − 2(pole plane) = residue`.
+      * **`residue_firstAtom_le`**, **`sum_lag_vonMangoldt_secondWindow`**,
+        **`sum_lag_vonMangoldt_thirdWindow`** — the first three prime windows written out: one
+        atom, two atoms, and then the first prime power `4 = 2²` entering with weight `log 2` at
+        the lag `log 4`.  The first window's residue is bounded explicitly by the test's mass and
+        half-exponential moment alone.
+      * **`scaledTwoPoleWeight`**, **`apSource`**, **`sum_ap_sub_scaledPolar_eq_defect`**,
+        **`sum_apSource_eq`**, **`sum_lagPrefix_ap`**, **`sum_defect_ap`** — **the ledger of a
+        residue class**, calibrated by the two-pole weight scaled by the class's density; and the
+        class ledgers partition the `ζ` ledger exactly, with no cross terms, whenever the scale
+        factors sum to one.
+      * **`pairCalibration`**, **`sum_shiftedPair_sub_pairPolar_eq_defect`**,
+        `pairCalibration_sub_twoPoleWeight` — **the shifted pair read at its own poles** `1 ± α`:
+        against that calibration it has its own balance, and against `ζ`'s it is off by the whole
+        of `e^{(1+α)s}/(1+α)`, larger than the main term.  The separation is a difference of pole
+        position, not a prime-number-theorem effect.
+      * **`integral_halves_add`**, **`integral_leftPart_sq_eq_half`**, **`sum_lag_le_sqrt_odd`**
+        — each half of an odd test carries half the mass, so the optimised bipartite bound is an
+        estimate in the mass and the Schur constant alone.
+      * **`tendsto_chebyshevTwoPoleDefect_div_exp_iff`**,
+        **`tendsto_mertensDefect_div_exp_iff`** — **the leading rate of either ledger is the
+        prime number theorem:** `E(s) = o(e^s)` iff `ψ(x) ∼ x`, and the Mertens defect is
+        `o(e^s)` iff `M(x) = o(x)`.  Everything the receiver measures lies beyond that rate.
+      * **`abs_defect_sourceOfPrefix_le`**, **`cell_increment_le_two_mul_defect`** — **the
+        matchability criterion:** an integer source can track a calibration to `O(1)` exactly when
+        the calibration's integer-cell increments are bounded.  Differencing realises it with
+        defect the largest increment; conversely every source's defect must absorb that increment,
+        since the prefix is frozen across a cell.
+      * **`poleWeightAt_cell_increment_le`**, **`multiPoleWeight`**, **`abs_defect_multiPole_le`**,
+        **`abs_defect_reflectedPole_le`**, **`logWeight_half_cell_increment_ge`**,
+        **`defect_logWeight_ge`**, **`gen_cell_increment_le_two_mul_defect`** — the criterion in
+        action: a finite family of simple poles in `(0,1]` is matchable with defect
+        `Σ c_i(1/ρ_i + log 2)`, the reflected pole alone with defect `log 2`, and a *double* pole
+        at `1` not at all — its half-cell increment is `≥ (log N − 1)/2`, which is exactly the
+        Stirling loss of the logarithm source.  The criterion holds verbatim for an arbitrary lag
+        system.
+      * **`defect_ge_of_gap`**, **`geoLags_defect_ge`**, `integer_gap_increment`,
+        **`exists_lag_of_defect_le`**, **`card_ge_of_defect_le`** — **the pole at `1` forces the
+        density of the generalised primes.**  Across a lag-free interval the defect absorbs
+        `e^s(e^δ−1)`, so a bounded defect forces a lag in every such interval, and chaining gives
+        the counting bound `≥ (e^S−1)/3K`.  The integers meet the criterion exactly (increment
+        `1`); a geometric system fails by a factor of the main term, *whatever weights it uses*.
+      * **`card_filter_mul_le_of_defect`**, `gen_cell_increment_id`,
+        `exists_lag_of_id_defect_le`, **`min_atom_le_of_defect`** — the count is pinned above as
+        well, so the minimum atom of a calibrating system is trapped: it cannot be much larger
+        than `K`.  For `ζ` the atoms `log p` are unbounded, which is the defect's unboundedness
+        seen from the density side.
+      * **`card_ge_of_defect_le_gen`**, **`card_ge_of_id_defect_le`**,
+        **`card_ge_of_poleAt_defect_le`** — **each pole forces its own density.**  The chain
+        criterion needs only that the calibration climbs by more than `2K` between consecutive
+        scales, so the reflected pole alone forces linear density, a pole at `ρ` forces `x^ρ`,
+        and the pole at `1` forces `x`.  The exponent of the generalised-prime density *is* the
+        position of the pole.
+      * **`gen_cell_increment_le_two_mul_defect_supp`**, **`card_support_ge_of_defect_le`**,
+        **`card_primePowers_ge_of_chebyshev_defect_le`** — the criterion counts *atoms*, not
+        indices, so it applies to `ζ` directly: a Chebyshev defect bounded by `K` up to
+        `log(1+3KJ)` forces at least `J` prime powers below `1+3KJ`.
+      * **`gram_split_row`**, **`gram_row_le_half`**, `sum_gen_lag_eq_zero`,
+        `sum_gen_lag_eq_filter` — **parity.**  Flipping one coefficient's sign leaves the diagonal
+        fixed and reverses the two strips through that index; since both Gram forms are squares,
+        the total coupling of any one index is at most half the whole form.  No sign-invariant
+        functional sees more than the diagonal.
+      * **`midpointSource`**, **`abs_defect_midpointSource_le`**, `genPrefix_shift`,
+        `genPrefix_union`, `genPrefix_add`, `genPrefix_smul`, `genPrefix_eq_total` — sampling the
+        calibration at cell midpoints halves the defect; and the prefix is additive in the
+        weights and over disjoint index sets, translates with the lags, and freezes at the total
+        mass beyond the last lag.
+      * **`gapSource`**, **`genPrefix_gapSource`**, **`abs_defect_gapSource_le`**,
+        `twoPoleWeight_gap_increment` — **any lag family realises its calibration up to its
+        largest gap increment.**  With the gap criterion this settles the question: the best
+        defect a lag family can achieve is, to within a factor two, the largest increment of the
+        calibration across its gaps — for the pole at `1`, the gaps of the generalised integers
+        themselves.
+      * **`genTestBalance`**, **`lagField`**, **`sum_gen_lag_eq_integral_field`**,
+        `sum_gen_sub_calibration_tailWeight`, **`genPrefix_jump`**,
+        `sum_gen_weil_eq_integral_field`, `integral_lagField_sq_eq`, `gen_crossAggregate_ge`,
+        **`two_mul_sum_gen_lag_le`**, **`genTestBalanceAt`** — **the explicit-formula machinery
+        for an arbitrary lag system.**  Weil-shaped balance at any pole with normalisation
+        `e^{−ρλ/2}` and pole plane `2(∫Fe^{−ρx/2})(∫Fe^{ρx/2})`; the linear reading is the test
+        against the system's field; the Gram form is that field's energy; the cross-aggregate is
+        bounded below by minus the diagonal; and the atoms are recoverable as prefix jumps.
+      * **`testBalance_receiver`**, `testBalance_receiver_odd`, `genTestBalanceAt_odd`,
+        **`testBalance_source`**, `testBalance_theta`, **`mertensTestBalance`**,
+        **`testBalance_source_sub`**, **`abs_testBalance_source_le`**,
+        `abs_testBalance_idealSource_le` — **the Weil form of an arbitrary source**, in both
+        first-order and receiver shape, with the same rank-one pole plane; subtracting two
+        sources cancels the pole plane entirely, so sources are compared by their prefix
+        difference alone; and a source whose defect is majorised by `G` has its whole Weil form
+        within `∫G|w|` of the pole plane.
+      * **`lagSourceDefect_eq_twoPoleWeight_of_lt_log_two`**, `lagSourceDefect_second_cell`,
+        **`testBalance_source_truncates`** — the quiet zone is universal: below `log 2` every
+        source's defect is the calibration itself, on the next cell only `a(2)` is visible, and
+        at aperture `r` the Weil form involves only the weights below `e^{2r}`.
+      * **`primeSide_add`**, `expMomentNeg_add`, `expMomentPos_add`, **`poleplane_add`**,
+        **`expMomentNeg_eq_zero_add`**, `expMomentNeg_smul` — **polarisation**: the prime side
+        polarises through the pair correlation, the moments are linear, the pole plane polarises
+        as `M₋(F)M₊(G)+M₋(G)M₊(F)`, and the pole-free locus is a genuine linear subspace.
+      * **`autoCorrelation_smul`**, `expMomentNeg_translate`, `expMomentPos_translate`,
+        **`poleplane_translate`**, **`weil_dilation_covariance`** — **the symmetries of the Weil
+        form**: degree-two homogeneous, translation-invariant (the moments scale by reciprocal
+        factors), and dilation-covariant — dilating by `λ` is reading the `λ`-power Beurling
+        system at its own pole `1/λ`, with the normalisation `n^{−1/2}` restored exactly.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route
