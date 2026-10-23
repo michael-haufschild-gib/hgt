@@ -1478,23 +1478,32 @@ uniformly bounded pronic norm for every $0<\varepsilon<1$ and $t\in\mathbb R$
 (`pronicNorm_oscillatingShortSawtooth_le`), so sawtooth/tail cancellation reduces to the long-modulus
 sawtooth sum $\lfloor\sqrt n\rfloor<d\le n$ against the tail $d>n$
 (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_longSawtooth_add_tail`). At $t=0$ both
-pieces are nonpositively signed, so the dyadic tail block $d\in(n,2n]$ gives
-$A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$ and a pure source-estimate harmonic proof of
-$\neg\operatorname{ReceiverBounded}(c_{\varepsilon,0})$ for $0<\varepsilon\le1/2$ without invoking
-$\zeta(1-\varepsilon)\ne0$ (`not_receiverBounded_oscillatingSmoothPower_zero_from_source`). For general
-$t\in\mathbb R$, $T_{\varepsilon,t}(n)=\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$ has unconditionally
-unbounded pronic norm for all $0<\varepsilon\le1/2$ and $t\in\mathbb R$ regardless of $\zeta(\rho)$
+pieces are nonpositively signed, so $\langle S^{\mathrm{long}}_{\varepsilon,0},T_{\varepsilon,0}\rangle_T\ge0$
+(`pronicInner_longSawtooth_tail_zero_nonneg`, anti-alignment gap $\theta=0$) and the dyadic tail block
+$d\in(n,2n]$ gives $A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$ and a pure
+source-estimate harmonic proof of $\neg\operatorname{ReceiverBounded}(c_{\varepsilon,0})$ for
+$0<\varepsilon\le1/2$ without invoking $\zeta(1-\varepsilon)\ne0$
+(`not_receiverBounded_oscillatingSmoothPower_zero_from_source`,
+`pronicNorm_longSawtooth_add_tail_zero_sq_ge_harmonic`). For general $t\in\mathbb R$,
+$T_{\varepsilon,t}(n)=\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$ has unconditionally unbounded pronic
+norm for all $0<\varepsilon\le1/2$ and $t\in\mathbb R$ regardless of $\zeta(\rho)$
 (`not_bdd_pronicNorm_oscillatingTailDrift`) and two-sided $\Theta(T^{1-2\varepsilon})$ energy growth for
 $0<\varepsilon<1/2$, $t\ne0$ (`eventually_oscillatingTailDrift_energy_le_and_ge`), while
-$S_{\varepsilon,t}(n)=\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$
-(`abs_oscillatingSawtoothPrefix_sub_le`), so $c_{\varepsilon,t}$ is paid iff $S_{\varepsilon,t}$ cancels
-$T_{\varepsilon,t}$ in exact anti-phase (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail`,
-`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`,
-`not_receiverBounded_of_sawtooth_tail_inner_le`), and the alternate Route MC receiver for RH reduces
-to excluding sawtooth/tail (or long-sawtooth/tail) cancellation for $t\ne0$, $0<\varepsilon<1/2$
-(`riemannHypothesis_iff_forall_ne_zero_not_bdd_sawtooth_add_tail`,
-`riemannHypothesis_iff_forall_ne_zero_not_bdd_longSawtooth_add_tail`,
-`routeMC_alternate_receiver_sawtooth_tail_master`). Uniform prefix bounds
+$S^{\mathrm{long}}_{\varepsilon,t}(n)=\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$
+(`abs_oscillatingLongSawtooth_sub_le`). For $0<\varepsilon<1/2$ and $t\ne0$, a strict Cauchy–Schwarz
+anti-alignment bound $-\langle S^{\mathrm{long}}_{\varepsilon,t},T_{\varepsilon,t}\rangle_T\le\theta\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T\lVert T_{\varepsilon,t}\rVert_T$
+with $\lvert\theta\rvert<1$, holding even frequently, excludes cancellation of
+$S^{\mathrm{long}}_{\varepsilon,t}$ with $T_{\varepsilon,t}$
+(`not_bdd_longSawtooth_add_tail_of_frequently_pronicInner_le`,
+`not_receiverBounded_of_longSawtooth_tail_inner_le`); quadratic anti-alignment
+$-2\langle S^{\mathrm{long}}_{\varepsilon,t},T_{\varepsilon,t}\rangle_T\le\theta(\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T^2+\lVert T_{\varepsilon,t}\rVert_T^2)$
+with $\theta<1$ is necessary and sufficient for non-admission and for RH
+(`not_receiverBounded_iff_exists_longSawtooth_tail_antiAlignment_gap`,
+`riemannHypothesis_iff_forall_ne_zero_exists_longSawtooth_tail_antiAlignment_gap`,
+`routeMC_longSawtooth_tail_antiAlignment_master`); whereas separate tail growth does not supply that
+gap because at any paid probe $\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T/\lVert T_{\varepsilon,t}\rVert_T\to1$
+and both anti-alignment ratios converge to $1$
+(`tendsto_longSawtooth_tail_antiAlignment_one_of_receiverBounded`). Uniform prefix bounds
 $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
 $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap
 $T^{1-2\varepsilon}$; explicit lower bounds $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and
