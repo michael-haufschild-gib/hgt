@@ -495,6 +495,124 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         displacement energy from above.**  A derivative bound `M` and aperture `r` give
         `2D(t) ≤ M²t²(2r+2|t|)`, so the Gram entries are Lipschitz in the lag with explicit
         constant: the quantitative form of the banded near-diagonal block.
+      * **`sum_lag_eq_of_horizon`**, `abs_sum_lag_le_l1` — **the reading has a horizon.**  A test
+        of aperture `r` sees no lag beyond `2r`, so the prime side is a finite sum independent of
+        the horizon once it passes `e^{2r}`, and each surviving atom is read at most at the full
+        mass: the `ℓ¹` prime cost, the rate `1` of the grading, before any arithmetic.
+      * **`sum_cross_gram_eq_integral`**, `two_mul_integral_primeField_mul_le`,
+        **`abs_sum_cross_gram_le`** — **the bilinear Gram and Cauchy–Schwarz between fields.**
+        A cross Gram form is the inner product of two fields, so the cross-aggregate of two
+        weight families is at most the geometric mean of their own energies: a family whose field
+        has small energy cannot correlate strongly with any other, whatever its arithmetic.
+      * **`ledgerField`**, **`testBalance_field`** — **the whole balance is one inner product.**
+        The ledger of a test is the test paired with its arithmetic field minus the rank-one polar
+        field `2(∫Fe^{x/2})e^{−x/2}`; the tests of zero residue are exactly those orthogonal to
+        their own ledger field.
+      * **`displacement_ge_min`**, **`fold_defect_ge`**, `sum_weight_mul_autoCorrelation_le` —
+        **the tower discount from below** (AIP research topic 7).  The fold defect
+        `A(0) − A(log p)` is at least `A(0)·min(log²p/8r², ½)` at every prime, so the reduced cost
+        side is `≤ A(0)Σ_p w_p(1 − min(log²p/8r², ½))`: an explicit gain over the trivial `ℓ¹`
+        cost, determined by where the prime logarithms sit inside the aperture.
+      * **`autoCorrelation_le_min`**, **`window_coupling_le`**, `window_coupling_eq_zero`,
+        **`window_degree_lt`** — **the coupling graph between dyadic windows** (AIP open problem
+        6).  Windows `k` apart couple through the lag `k log 2` with edge weight at most
+        `A(0)(1 − min(k²log²2/8r², ½))`, and exactly zero once `k log 2 ≥ 2r`: the graph has
+        degree at most `2r/log 2` and quadratically decaying edges.
+      * **`idealSource`**, `idealSource_apply`, **`abs_lagSourceDefect_idealSource_le`** — **the
+        two-pole calibration is achievable.**  Differencing the calibration at the integer scales
+        gives an integer source whose defect is a sawtooth vanishing at every integer and never
+        exceeding `1 + log 2`; its weights are `1 + log(1+1/(n−1))`, every integer carrying weight
+        about one — the pole at `1` as an arithmetic.  An `O(1)` defect is thus neither automatic
+        nor impossible: the content of the Chebyshev ledger is entirely that the weight is `Λ`.
+      * **`abs_ledger_idealSource_le`**, **`ledger_vonMangoldt_sub_ideal`** — the ideal source's
+        ledger is uniformly `O(1)` against any test, and the difference between `ζ`'s ledger and
+        it is exactly the prime number theorem's error paired with `h′`.  The whole arithmetic
+        content of the balance is that one difference.
+      * **`sourceScalePrefix`**, `sourceScalePrefix_vonMangoldt`,
+        **`sum_weight_sub_polar_tailWeight`**, `ledger_eq_of_defect_integral_eq` — **every
+        source's defect is a ledger reading.**  On the tail of a bump the ledger returns
+        `−∫(defect)·φ` for an arbitrary source; with realisation and rigidity this closes the
+        question of what the ledger exposes.
+      * **`integral_autoCorrelation`**, **`integral_autoCorrelation_odd`**,
+        **`exists_autoCorrelation_neg`** — **an odd test's Gram kernel is not positive.**  The
+        autocorrelation integrates to `(∫F)²`, hence to zero on an odd test, so an odd test of
+        positive mass reads some lag negatively: no argument treating the prime side as a sum of
+        nonnegative contributions can work on the odd cone.
+      * **`autoCorrelation_ge_half_of_mem`**, **`integral_compl_autoCorrelation_le`** — **how
+        much negative mass is forced.**  The autocorrelation stays above half the mass on a window
+        whose width is set by the test's regularity, so outside that window it integrates to at
+        most `−δ·A(0)`: the negative correlation at far lags is forced, not chosen.
+      * **`poleWeightAt_half_cell_ge`**, **`defect_half_cell_lower_bound`**,
+        **`abs_lagSourceDefectAt_idealSourceAt_le`** — **which poles an integer system can
+        calibrate.**  Between consecutive integers the prefix is frozen while the calibration at
+        `ρ` keeps growing, so for `ρ > 1` every integer source has defect at least
+        `N^{ρ−1}/4ρ` — unbounded.  For every `0 < ρ ≤ 1` the calibration *is* realisable, with
+        defect at most `1/ρ + log 2`.  So `1` is exactly the largest pole an integer-indexed
+        system can calibrate: the arithmetic origin of the two-pole weight.
+      * **`lagPrefix_jump`**, **`defect_ge_of_atom`** — **the ledger cannot hide an atom.**
+        Across an integer the prefix jumps by the atom while the calibration moves by at most
+        `½ + log 2`, so the defect is at least half the atom minus that constant: source rigidity
+        made quantitative.
+      * **`exists_abs_chebyshevTwoPoleDefect_gt`** — the Chebyshev defect is unbounded: the
+        receiver's one-sided bound is a statement about the *rate* of growth, never about
+        boundedness.
+      * **`integral_calibration_mul_deriv`**, **`sum_weight_sub_calibration_eq_defect`** — **the
+        universal calibration dictionary.**  For any `C¹` calibration `W` vanishing at the origin,
+        the reading of a source and the integral of `W′` against the test differ by exactly
+        `W − prefix` tested on `h′`.  The two-pole weight and every pole calibration are
+        instances.
+      * **`oscWeight`**, `hasDerivAt_oscWeight`, **`sum_weight_sub_oscPolar_eq_defect`** — **the
+        calibration of a conjugate pair of poles** at `β ± iγ`, with density `e^{βs}cos(γs)`:
+        the comparison density for a Beurling system carrying an off-line zero, which is the test
+        model both selectivity audits ask for.
+      * **`leftPart_eq_neg_rightPart_neg`**, **`autoCorrelation_eq_neg_conv`**,
+        **`autoCorrelation_nonpos_of_odd_nonneg`** — **odd tests with a nonnegative half read the
+        far lags nonpositively.**  Past the aperture an odd test's correlation is minus the
+        *convolution* of its right half with itself, so a nonnegative half makes every far atom
+        read with the favourable sign: the sign of the far prime side is a property of the
+        half-test's sign pattern, not of the arithmetic.
+      * **`sum_lag_le_truncated`** — for an odd test with a nonnegative half the prime side is
+        bounded by its part below the aperture: the far arithmetic can only help.
+      * **`allOnes`**, **`lagSourceDefect_allOnes`** — **why the calibration carries the reflected
+        pole.**  Weight one on every integer gives defect `(e^s − ⌊e^s⌋) + s`: pure integer
+        density misses the calibration by exactly the reflected pole, and the `log n` correction
+        in the ideal source's weights is its price.  The `+ s` in `e^s + s − 1` is arithmetic,
+        not convention.
+      * **`autoCorrelation_eq_conv`**, `autoCorrelation_nonneg_of_halves` — past the aperture the
+        Gram is the convolution of the two halves of the test, so the far reading depends on the
+        halves only through that convolution.
+      * **`autoCorrelation_eq_zero_abs`**, **`aggregate_le_bandwidth`**,
+        **`aggregate_dyadic_le`**, **`aggregate_dyadic_diagonal`** — **the aggregate's Schur bound
+        with an explicit bandwidth** (AIP topic 8).  Only pairs whose ratio lies inside the
+        aperture contribute, so the aggregate is at most `A(0)·B·Σw²` with `B` the number of
+        partners within the aperture; on a dyadic window `B ≤ 2⌊4Xr⌋+1`, and for `2r < 1/2X` the
+        aggregate is exactly diagonal.
+      * **`genPrefix`**, **`sum_gen_mul_eq_neg_integral`**,
+        **`sum_gen_sub_calibration_eq_defect`** — **the ledger of an arbitrary lag system.**
+        Abel summation and the balance against any calibration hold for any finite family of
+        positive real lags: the ledger a Beurling system is read with in its own lags, with the
+        integer case as the instance `λ_n = log n`.
+      * **`geoWeight`**, `genPrefix_geo_cell`, **`geo_defect_half_cell`**,
+        **`geo_reading_gap`** — **a geometric Beurling system read by the same ledger.**  With
+        generalised integers `g^n` the prefix is frozen across each cell while the calibration
+        climbs, so on the whole upper half-cell the defect is at least `(1 − g^{−1/2})e^s`, and a
+        nonnegative bump there reads the ledger below the polar side by that much.  The ledger
+        separates `ζ` from a geometric system at the size of the main term, not at
+        prime-number-theorem level.
+      * **`fourier_ofReal_autoCorrelation_eq`**, `fourier_ofReal_neg`,
+        **`fourier_ofReal_autoCorrelation_sq`** — **the spectral density of the Gram kernel is
+        `|F̂|²`.**  The autocorrelation is the convolution of the test with its reflection, so its
+        Fourier transform is the squared modulus of the test's: the analytic source of every
+        positivity in the programme, and the statement that the arithmetic form is the prime
+        Dirichlet polynomial measured against a nonnegative spectral density.
+      * **`integral_exp_mul_autoCorrelation`**, **`integral_Ioi_cosh_mul_autoCorrelation`** —
+        **the Laplace transform of the Gram kernel factorises:** `∫e^{αt}A(t)dt` is the product
+        of the test's two exponential moments at `∓α`, and the half-line `cosh` pairing is half
+        that product.  The pole plane is the case `α = ½` and the total mass `α = 0`: every polar
+        side, at every pole, is a rank-one readout of the test.
+      * **`expMoment_odd`**, **`integral_Ioi_cosh_mul_autoCorrelation_odd`** — on an odd test the
+        pole pairing is `−½(∫Fe^{αx})²` at *every* `α`: whatever pole a calibration is built
+        around, its polar side never charges an odd test.
 - [ ] 3 → 4  publication-ready
 
 ## Note on the Lean route

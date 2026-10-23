@@ -487,7 +487,11 @@ do not run any builds.
 
 ## Init new field programme
 
-docs/reports/review-2210/hard-obstacles-summary.md describes in section "## 4. Does this require a new field of mathematics?" a new field of mathematics / research programme.
+Do not use the hgtl7 skill.
+
+Read fully docs/reports/review-2210/hard-obstacles-summary.md 
+
+It describes in section "## 4. Does this require a new field of mathematics?" a new field of mathematics / research programme.
 
 Your task: develop this new field / programme.
 
@@ -516,7 +520,42 @@ The goal is done when the field is fully developed, the questions are answered, 
 
 ## Init new field programme 2
 
-docs/reports/review-2210/fable.md describes in section "## 5. Q2 — the field" a new field of mathematics / research programme which arises from the idea expressed in "### 4.3 The opening".
+Do not use the hgtl7 skill.
+
+Read fully docs/reports/review-2210/fable.md 
+
+The document describes in section "## 5. Q2 — the field" a new field of mathematics / research programme which arises from the idea expressed in "### 4.3 The opening".
+
+Your task: develop this new field / programme.
+
+Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticIncidencePositivity and formal/GaloisForLFunctions/SquareRootThreshold.
+
+1. All lean code goes into its own subfolder and has its own umbrella.
+2. When enough information is established write a foundational README.md:
+   2.1 the README.md is not a ledger or diary or working log but a foundational document explaning the why, what, how
+   2.2 it explains: motivation, objects, language, mechanisms, traps, questions the programme aims to answer, tools it aims to develop, open research topics, foundational pillar theorems, where this field/programme sits in the context of our hole research and how it relates to other research programmes in our corpus, success criteria and criteria for what a contribution to the field/programme must be like.
+3. Research and develop the field and add "meat to the bone" with significant contributions to the core research topics, tools and questions of the new field.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+
+The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
+
+
+## Init new field programme 3
+
+Read fully docs/reports/review-2210/astra.md
+
+The document describes a new field of mathematics / research programme.
 
 Your task: develop this new field / programme.
 

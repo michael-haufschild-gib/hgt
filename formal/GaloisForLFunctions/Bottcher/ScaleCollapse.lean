@@ -322,7 +322,8 @@ namespace Bottcher
 /-- **The repelling inverse branch at the fixed point**, with the exact contraction algebra
 `g(z) − β = (z − β)/(g(z) + β)`: a continuous right inverse of the quadratic near `β`, fixing
 `β`, contracting distances by almost the multiplier. -/
-theorem exists_inverse_branch (c β : ℂ) (hβ : β ^ (2 : ℕ) + c = β) (hlam2 : 2 ≤ ‖2 * β‖) :
+theorem exists_local_inverse_branch_at_fixed_point (c β : ℂ) (hβ : β ^ (2 : ℕ) + c = β)
+    (hlam2 : 2 ≤ ‖2 * β‖) :
     ∃ (g : ℂ → ℂ) (rg : ℝ), 0 < rg ∧
       g β = β ∧
       ContinuousOn g (Metric.ball β rg) ∧

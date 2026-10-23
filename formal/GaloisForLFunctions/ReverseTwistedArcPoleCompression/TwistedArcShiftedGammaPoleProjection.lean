@@ -68,44 +68,94 @@ line to `f(y) = F(log y) y^{-1/2}` on `(0, ∞)`. -/
 def logToMultProfile (F : ℝ → ℝ) (y : ℝ) : ℝ :=
   F (Real.log y) * y ^ (-(1 / 2 : ℝ))
 
+/-- Change of variables `y = exp u` for real integrals on the positive half-line
+(one-dimensional Jacobian formula for the injective map `exp : ℝ → (0, ∞)`). -/
+private theorem integral_Ioi_eq_integral_exp_mul (g : ℝ → ℝ) :
+    ∫ y in Ioi (0 : ℝ), g y = ∫ u : ℝ, Real.exp u * g (Real.exp u) := by
+  rw [← Real.range_exp, ← Set.image_univ]
+  simpa only [Measure.restrict_univ, abs_of_pos (Real.exp_pos _), smul_eq_mul] using
+    (MeasureTheory.integral_image_eq_integral_abs_deriv_smul
+      (s := Set.univ) MeasurableSet.univ
+      (fun x _ => (Real.hasDerivAt_exp x).hasDerivWithinAt)
+      Real.exp_injective.injOn g)
+
+/-- **Mass of the dilation autocorrelation, integrable form**: for measurable `f` integrable on
+`(0, ∞)` against `dy` and `dy/y`, `∫_0^∞ A_f = (∫_0^∞ f)(∫_0^∞ f(y)/y dy)`.  Tonelli bounds the
+double integral of `|f(y) f(ry)|` by `‖f‖₁ ‖f/y‖₁`, which licenses the Fubini swap. -/
+theorem integral_Ioi_dilationAutocorr_of_integrable {f : ℝ → ℝ} (hfm : Measurable f)
+    (hf1 : IntegrableOn f (Ioi 0)) (hf2 : IntegrableOn (fun y => f y / y) (Ioi 0)) :
+    ∫ r in Ioi (0 : ℝ), dilationAutocorr f r =
+      (∫ y in Ioi (0 : ℝ), f y) * ∫ y in Ioi (0 : ℝ), f y / y := by
+  unfold dilationAutocorr
+  have hmeas : AEStronglyMeasurable (Function.uncurry fun r y => f y * f (r * y))
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) :=
+    Measurable.aestronglyMeasurable (by
+      exact (hfm.comp measurable_snd).mul (hfm.comp (measurable_fst.mul measurable_snd)))
+  have hint : Integrable (Function.uncurry fun r y => f y * f (r * y))
+      ((volume.restrict (Ioi (0 : ℝ))).prod (volume.restrict (Ioi (0 : ℝ)))) := by
+    refine (integrable_prod_iff' hmeas).2 ⟨?_, ?_⟩
+    · -- each `r`-section is a rescaled copy of `f`
+      refine (ae_restrict_iff' measurableSet_Ioi).2 (Filter.Eventually.of_forall fun y hy => ?_)
+      have hsec : IntegrableOn (fun r => f (r * y)) (Ioi 0) :=
+        (integrableOn_Ioi_comp_mul_right_iff f 0 hy).2 (by simpa using hf1)
+      exact Integrable.const_mul hsec (f y)
+    · -- the section norms are `‖f y / y‖ ‖f‖₁`, integrable in `y`
+      have hnorm : ∀ y ∈ Ioi (0 : ℝ), ∫ r in Ioi (0 : ℝ), ‖f y * f (r * y)‖ =
+          ‖f y / y‖ * ∫ w in Ioi (0 : ℝ), ‖f w‖ := by
+        intro y hy
+        have hy0 : (0 : ℝ) < y := hy
+        simp only [norm_mul]
+        rw [integral_const_mul, integral_comp_mul_right_Ioi (fun w => ‖f w‖) 0 hy0, zero_mul,
+          smul_eq_mul, norm_div, Real.norm_of_nonneg hy0.le]
+        ring
+      refine Integrable.congr
+        (Integrable.mul_const (Integrable.norm hf2) (∫ w in Ioi (0 : ℝ), ‖f w‖)) ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
+      exact (hnorm y hy).symm
+  rw [integral_integral_swap hint]
+  have hin : ∀ y ∈ Ioi (0 : ℝ), ∫ r in Ioi (0 : ℝ), f y * f (r * y) =
+      f y / y * ∫ w in Ioi (0 : ℝ), f w := by
+    intro y hy
+    have hy0 : (0 : ℝ) < y := hy
+    rw [integral_const_mul, integral_comp_mul_right_Ioi (fun w => f w) 0 hy0, zero_mul,
+      smul_eq_mul]
+    ring
+  rw [setIntegral_congr_fun measurableSet_Ioi hin, integral_mul_const]
+  ring
+
+/-- **Cusp value of the twisted kernel, integrable form**: `C A_f(0) = 2 (∫ f)(∫ f(y)/y dy)` for
+measurable `f` integrable on `(0, ∞)` against `dy` and `dy/y`. -/
+theorem halfLineCosTransform_dilationAutocorr_zero_of_integrable {f : ℝ → ℝ}
+    (hfm : Measurable f) (hf1 : IntegrableOn f (Ioi 0))
+    (hf2 : IntegrableOn (fun y => f y / y) (Ioi 0)) :
+    halfLineCosTransform (dilationAutocorr f) 0 =
+      2 * (∫ y in Ioi (0 : ℝ), f y) * ∫ y in Ioi (0 : ℝ), f y / y := by
+  unfold halfLineCosTransform
+  simp only [mul_zero, Real.cos_zero, mul_one]
+  rw [integral_Ioi_dilationAutocorr_of_integrable hfm hf1 hf2]
+  ring
+
 /-- Under `y = exp u`, the pole functional `∫_{y > 0} f(y) / y dy` for
 `f(y) = F(log y) y^{-1/2}` equals the lower-pole projection `∫_ℝ F(u) exp(-u/2) du`. -/
-theorem integral_Ioi_logToMultProfile_div_self {F : ℝ → ℝ} (hF : Measurable F) :
+theorem integral_Ioi_logToMultProfile_div_self (F : ℝ → ℝ) :
     ∫ y in Ioi (0 : ℝ), logToMultProfile F y / y =
       ∫ u : ℝ, F u * Real.exp (-(u / 2)) := by
-  have hmeas : AEStronglyMeasurable (fun y : ℝ => logToMultProfile F y / y)
-      (volume.restrict (Ioi (0 : ℝ))) :=
-    ((hF.comp Real.measurable_log).mul
-      (measurable_id.pow_const _)).div measurable_id
-      |>.aestronglyMeasurable
-  rw [← integral_exp_mul_Ioi (f := fun y : ℝ => logToMultProfile F y / y) hmeas]
+  rw [integral_Ioi_eq_integral_exp_mul]
   refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
-  dsimp [logToMultProfile]
-  have hexp : 0 < Real.exp u := Real.exp_pos u
-  rw [Real.log_exp, Real.rpow_def_of_pos hexp, Real.exp_neg, Real.exp_neg]
-  have hhalf : -(1 / 2 : ℝ) * u = -(u / 2) := by ring
-  rw [hhalf]
-  field_simp [hexp.ne', (Real.exp_pos (u / 2)).ne']
+  dsimp only [logToMultProfile]
+  rw [Real.log_exp, ← Real.exp_mul, mul_div_assoc', mul_div_cancel_left₀ _ (Real.exp_pos u).ne',
+    show u * -(1 / 2 : ℝ) = -(u / 2) by ring]
 
 /-- Under `y = exp u`, the pole functional `∫_{y > 0} f(y) dy` for
 `f(y) = F(log y) y^{-1/2}` equals the upper-pole projection `∫_ℝ F(u) exp(u/2) du`. -/
-theorem integral_Ioi_logToMultProfile {F : ℝ → ℝ} (hF : Measurable F) :
+theorem integral_Ioi_logToMultProfile (F : ℝ → ℝ) :
     ∫ y in Ioi (0 : ℝ), logToMultProfile F y =
       ∫ u : ℝ, F u * Real.exp (u / 2) := by
-  have hmeas : AEStronglyMeasurable (logToMultProfile F)
-      (volume.restrict (Ioi (0 : ℝ))) :=
-    ((hF.comp Real.measurable_log).mul
-      (measurable_id.pow_const _)).aestronglyMeasurable
-  rw [← integral_exp_mul_Ioi (f := logToMultProfile F) hmeas]
+  rw [integral_Ioi_eq_integral_exp_mul]
   refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
-  dsimp [logToMultProfile]
-  have hexp : 0 < Real.exp u := Real.exp_pos u
-  rw [Real.log_exp, Real.rpow_def_of_pos hexp]
-  have hsplit : Real.exp u = Real.exp (u / 2) * Real.exp (u / 2) := by
-    rw [← Real.exp_add]; ring_nf
-  have hhalf : -(1 / 2 : ℝ) * u = -(u / 2) := by ring
-  rw [hhalf, Real.exp_neg, hsplit]
-  field_simp [(Real.exp_pos (u / 2)).ne']
+  dsimp only [logToMultProfile]
+  rw [Real.log_exp, ← Real.exp_mul, mul_left_comm, ← Real.exp_add,
+    show u + u * -(1 / 2 : ℝ) = u / 2 by ring]
 
 /-- **Prime-Blind Cusp-to-Pole Identity in Logarithmic Coordinates**:
 For any measurable profile `F : ℝ → ℝ` whose multiplicative avatar `f = logToMultProfile F`
@@ -119,9 +169,10 @@ theorem prime_blind_cusp_pole_identity_log_profile {F : ℝ → ℝ} (hF : Measu
       2 * (∫ u : ℝ, F u * Real.exp (u / 2)) * (∫ u : ℝ, F u * Real.exp (-(u / 2))) ∧
     cosDilationKernel (logToMultProfile F) 0 =
       2 * (∫ u : ℝ, F u * Real.exp (u / 2)) * (∫ u : ℝ, F u * Real.exp (-(u / 2))) := by
-  rw [← integral_Ioi_logToMultProfile hF, ← integral_Ioi_logToMultProfile_div_self hF]
-  exact ⟨halfLineCosTransform_dilationAutocorr_zero hf1 hf2,
-         cosDilationKernel_zero_eq hf1 hf2⟩
+  rw [← integral_Ioi_logToMultProfile F, ← integral_Ioi_logToMultProfile_div_self F]
+  exact ⟨halfLineCosTransform_dilationAutocorr_zero_of_integrable
+           ((hF.comp Real.measurable_log).mul (measurable_id.pow_const _)) hf1 hf2,
+         cosDilationKernel_zero_eq _⟩
 
 /-- The twisted-arc cusp defect `(1 - exp(-ε)) * P` is bounded in absolute value by `ε * |P|` for
 every `ε ≥ 0` and tends to `0` as `ε → 0`. -/

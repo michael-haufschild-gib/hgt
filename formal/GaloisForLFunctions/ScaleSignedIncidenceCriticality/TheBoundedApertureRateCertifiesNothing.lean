@@ -116,8 +116,6 @@ theorem rateBounds_rampProfile {k M : ℝ} (hk : 0 ≤ k) (hM : 0 < M) :
     -- a large aperture forces `γ` above `k − kM/a`, which exceeds `γ` once `a` is big enough
     set a : ℝ := M + k * M / (k - γ) + 1 with hadef
     have hkγ : 0 < k - γ := by linarith
-    have hk0 : 0 < k := lt_of_le_of_lt (le_of_lt (lt_of_lt_of_le hlt (le_refl γ))) hlt |>.trans_le hk
-      |> fun _ => lt_of_le_of_ne hk (by intro h; rw [← h] at hlt; linarith)
     have hquot : 0 ≤ k * M / (k - γ) := by positivity
     have haM : M < a := by rw [hadef]; linarith
     have ha0 : 0 < a := lt_trans hM haM
