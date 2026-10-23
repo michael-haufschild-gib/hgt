@@ -868,10 +868,9 @@ theorem re_inner_reflect_nonneg_of_weights (Z : ZeroConfig) {g : ℝ → ℂ} {�
       rcases hE b hbO with h0 | h0
       · rw [h0]; simp
       · rw [h0, mul_zero]
-    have hfib : HasSum (fun _ : ℂ => (0 : ℂ)) (∑' τ, rt τ) := by
-      convert hrt.hasSum.tsum_fiberwise (fun τ : Z.carrier => frobEig ℓ τ) using 1
-      funext b
-      exact (hz b).symm
+    have hfib : HasSum (fun b : ℂ => ∑' τ : (fun τ : Z.carrier => frobEig ℓ τ) ⁻¹' {b}, rt τ)
+        (∑' τ, rt τ) := hrt.hasSum.tsum_fiberwise _
+    rw [funext hz] at hfib
     exact hfib.unique hasSum_zero
   have hfull : ∑' τ, h τ = ∑' τ, on τ + ∑' τ, rt τ + ∑' τ, lf τ := by
     rw [tsum_congr hsplit, (hon.add hrt).tsum_add hlf, hon.tsum_add hrt]
@@ -944,7 +943,7 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
     (hO : (outerEig Z ℓ).Finite) (K : Finset ℤ) :
     hermNegIndex (towerGram Z g ℓ K) ≤ (visibleEig Z g ℓ hO).card :=
   negIndex_towerGram_le_of_visible_subset Z hZ hg hgc hℓ _
-    (fun b hb hne => Finset.mem_filter.mpr ⟨hO.mem_toFinset.mpr hb, hne⟩) K
+    (fun _ hb hne => Finset.mem_filter.mpr ⟨hO.mem_toFinset.mpr hb, hne⟩) K
 
 /-- **Attainment from the closure.** If finitely many outer eigenvalues of nonzero weight have their
 negative vectors in the closed span of the tower, some window of the tower has at least that many
@@ -1056,7 +1055,7 @@ theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g
     (hO : (outerEig Z ℓ).Finite) :
     ∃ K : Finset ℤ, (visibleEig Z g ℓ hO).card ≤ hermNegIndex (towerGram Z g ℓ K) :=
   exists_towerGram_negIndex_ge_of_closure Z hZ hg hgc hℓ _
-    (fun b hb => ⟨hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1, (Finset.mem_filter.mp hb).2⟩)
+    (fun _ hb => ⟨hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1, (Finset.mem_filter.mp hb).2⟩)
     fun b _ => eigTarget_mem_closure Z hZ hg hgc hℓ hO b
 
 /-- **The tower Pontryagin law.** If a tempered configuration has finitely many outer eigenvalues at

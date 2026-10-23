@@ -205,7 +205,7 @@ theorem cutDominated_of_sparse {c : ι → ι → ℝ} {E : ι → ι → Prop} 
     unfold cutWeight
     push_cast [he]
     refine sum_le_sum fun i hi => sum_le_sum fun j hj => ?_
-    split_ifs with h1 h2 <;> first | norm_num | exact absurd (hpos i j (hne i hi j hj) h1) h2
+    split_ifs with h1 h2 <;> first | exact absurd (hpos i j (hne i hi j hj) h1) h2 | norm_num
   -- aligned overlaps across the cut contain the complement of `E`
   have hN : (S.card * Sᶜ.card : ℝ) - e ≤ cutWeight S (fun t => t < 0) (fun _ => 1) c := by
     unfold cutWeight
@@ -216,7 +216,8 @@ theorem cutDominated_of_sparse {c : ι → ι → ℝ} {E : ι → ι → Prop} 
     refine sum_le_sum fun i hi => ?_
     rw [← sum_sub_distrib]
     refine sum_le_sum fun j hj => ?_
-    split_ifs with h1 h2 <;> first | norm_num | exact absurd (hneg i j (hne i hi j hj) h1) h2
+    by_cases hE : E i j <;> by_cases hc : c i j < 0 <;> simp [hE, hc] <;>
+      exact absurd (hneg i j (hne i hi j hj) hE) hc
   -- the degree bounds on both sides of the cut
   have hrow : e ≤ S.card * D := by
     rw [he, card_eq_sum_ones, sum_mul]
@@ -278,6 +279,7 @@ theorem primeKernel_eq_zero_of_not_primeSum {u : ℝ} (hu : 0 ≤ u)
 
 /-- **Off the prime sums the odd Weil ledger is strictly aligned** when the archimedean–polar
 weight is positive. -/
+omit [Fintype ι] in
 theorem oddFold_neg_of_not_primeSum {p : ι → ℝ} (hp : ∀ x, 0 < p x)
     (hinj : Function.Injective p) {α β : ℝ} (hα : 0 < α) (hβ : 0 ≤ β) (b : ι → ℝ) {x y : ι}
     (hxy : x ≠ y) (hns : ∀ n : ℕ, Real.exp (p x + p y) = n → Λ n = 0) :
@@ -298,6 +300,7 @@ theorem oddFold_neg_of_not_primeSum {p : ι → ℝ} (hp : ∀ x, 0 < p x)
 /-- The prime-sum relation of a sample. -/
 def IsPrimeSum (p : ι → ℝ) (x y : ι) : Prop := x ≠ y ∧ ∃ n : ℕ, Real.exp (p x + p y) = n ∧ 0 < Λ n
 
+open scoped Classical in
 /-- **The frustration index of the odd Weil ledger counts its anti-aligned prime sums**: if every
 sample point lies in at most `D` prime-sum pairs and `4D ≤ n`, the frustration index is the number
 of ordered prime-sum pairs with anti-aligned overlap, for every positive archimedean–polar weight. -/
@@ -306,7 +309,6 @@ theorem frustrationIndex_oddWeilLedger_of_sparse {p : ι → ℝ} (hp : ∀ x, 0
     (hdeg : ∀ x, (univ.filter (IsPrimeSum p x)).card ≤ D) (hD : 4 * D ≤ Fintype.card ι) :
     frustrationIndex (oddFold p (weilLedgerKernel α β) b) =
       (univ.filter fun q : ι × ι => q.1 ≠ q.2 ∧ 0 < oddFold p (weilLedgerKernel α β) b q.1 q.2).card := by
-  classical
   have hsym := oddFold_isSymmetric (p := p) (b := b) (weilLedgerKernel_neg α β)
   rw [(frustrationIndex_eq_iff_cutDominated hsym).2]
   · unfold misalignedCount
