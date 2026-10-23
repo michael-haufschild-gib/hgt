@@ -323,44 +323,67 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`successor_localPair_bounds`, `archLevyDensity_log_succ`). Over `𝔽_q[T]` the cell is
     degenerate (`successorCell_functionField`).
 
-### 3.8 Rank–trace inertia: what a Gram functional can certify (`TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`)
+### 3.8 Rank–trace inertia: what a Gram functional can certify (`TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity`)
 
 Without Riemann–Roch effectivity the intersection form still certifies a *proportion* of zeros,
 through rank–trace inertia on the real evaluation Gram `Â = P + Q` of hat-unit tests — `P` from the
 critical-line zeros, `Q` from the off-line pairs — with `tr Â = N` and `‖Â‖_F² = κN`. Inertia
 replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
 
-27. **Capacity `2 − κ` and the coalescence blind spot.** At `c = 2` a double critical zero and a
-    coalescing off-line pair produce the identical rank-one matrix `2vvᵀ`
-    (`offLine_sub_doubleZero_weight`, `blockA_coalescedPair_eq_doubleZero`). The form certifies
-    `(2 − κ)N` simple critical zeros (`unitary_calibration_full_simple` at `κ = 1` over `𝔽_q`;
-    `κ ≥ 2` on fake curves with `s₁ = 0`, `goldenDatum_rankTrace_barrier`), and no functional of
-    `(Â, N)` alone certifies more (`universal_matrix_functional_barrier`). Below the square-root
-    threshold `κ(λ) = 1/λ + λ/3`, so the certificate is at most `2/3`, with equality only at `λ = 1`
-    (`subthreshold_cert_le_two_thirds`, `universal_matrix_functional_barrier_at_two_thirds`). This is
-    the intersection-theoretic reading of Alpöge–Furman's two-thirds theorem
-    (`RHTower.thmA_lam_spectralSlack`): `2/3` is set by stopping pair correlation at `λ = 1`, and a
-    finite pair-correlation bound `F ≤ B` beyond `λ = 1` gives `2/3 + 1/(3(3B − 2))`
-    (`two_thirds_and_pair_correlation_escape`).
-28. **Two routes past the blind spot, each with one unproved input, and the exact spectral-slack
-    conservation laws.** The pair `(P, Q)` remembers what `Â` forgets: for `Q = 0` the on-line
-    Parseval slack restores the rank at `c = 2` (`onSlack_of_posSemidef_eq`,
-    `rank_trace_add_onSlack_of_posSemidef_eq_rank`), and a non-coalesced off-line pair carries
-    negative-part credit (`negPart_credit_pos_iff_not_posSemidef`). More generally, adding the full
-    spectral slack `totalSlack(P, Q, c) := c tr(Q₋) + posSlack(Q, c) + onSlack(P, Q, c)` to
-    `c tr P + 2c tr Q − c² n₊(Q) − ‖P + Q‖_F²` cancels the prime-side quadratic functional
+27. **Capacity `2 − κ`, the coalescence blind spot, and universal sharpness across all observables.**
+    At `c = 2` a double critical zero and a coalescing off-line pair produce the identical rank-one
+    matrix `2vvᵀ` (`offLine_sub_doubleZero_weight`, `blockA_coalescedPair_eq_doubleZero`). For any
+    `ZeroBlockData` configuration `D` with pair representatives `Pr`, let `a₂` be the number of
+    double critical zeros (`m_z = 2`), `a₃` the number of critical zeros of multiplicity `≥ 3`, and
+    `multExcess := N − (s₁ + 2s₂ + 2p) ≥ a₃` (`Ncount_eq_s1_add_two_s2_add_two_p_add_multExcess`,
+    `card_ge_three_le_multExcess`). At `c = 2` and `c = 3` the rank–trace inequalities strengthen to
+    `4 tr Â − ‖Â‖_F² − 2N + 2 multExcess ≤ s₁` (`mult_two_with_excess`, `mult_two_with_triple_penalty`)
+    and `6 tr Â − ‖Â‖_F² − 3N + 2 a₃ + p ≤ 2 N_d` (`mult_three_with_excess`), giving the exact
+    exclusion law `2 a₂ + 5 a₃ + 2 p ≤ 2(s₂ + p) + 3 multExcess ≤ 3N − (4 tr Â − ‖Â‖_F²)`
+    (`multiplicity_and_offLine_exclusion_law`, `double_triple_offLine_exclusion_law`). For a
+    normalized Gram (`tr Â ≥ N`, `‖Â‖_F² ≤ κN`), this simultaneously certifies `s₁ ≥ (2 − κ)N + 2 multExcess`,
+    `N_d ≥ ((3 − κ)/2)N + a₃ + p/2`, `2 a₂ + 5 a₃ + 2 p ≤ (κ − 1)N`, `s₂ + p ≤ ((κ − 1)/2)N`, and
+    `a₃ ≤ ((κ − 1)/5)N` (`exclusion_of_normalized_gram`; `unitary_calibration_full_simple` at `κ = 1`
+    over `𝔽_q`; `κ ≥ 2` on fake curves with `s₁ = 0`, `goldenDatum_rankTrace_barrier`). On the shared
+    diagonal witness `extremalDiag s₁ d₂` (`doubleZeroBlockData` vs. `coalescedPairBlockData`), every
+    universal functional of `(Â, N)` has maximum lower bound `(2 − κ)N` on `s₁`, `s₁ + s₂`, and `N_on`
+    (`c = 2`), maximum lower bound `((3 − κ)/2)N` on `N_d` (`c = 3`), and minimum upper bound
+    `((κ − 1)/2)N` on `s₂` and on `p` (`c = 2`) (`universal_matrix_functional_barrier`,
+    `universal_gram_certification_classification`). Below the square-root threshold `λ ≤ 1`, a
+    **flat-top** prime window has `κ(λ) = 1/λ + λ/3`, capping its certificate at `2/3` with equality
+    only at `λ = 1` (`subthreshold_cert_le_two_thirds`, `universal_matrix_functional_barrier_at_two_thirds`,
+    `RHTower.thmA_lam_spectralSlack`). Optimizing the window profile `v*(s) = cos(√2 λ s)` at `λ = 1`
+    lowers `κ` from `4/3` to `1 / cStar 1 ≤ 3319/2500`, certifying `HD 1 ≥ 1681/2500 > 2/3` simple
+    critical zeros (`two_thirds_lt_HD_one`, `montgomeryTaylor_simpleCritical_dyadic`),
+    `GD 1 ≥ 4181/5000 > 5/6` distinct zeros (`five_sixths_lt_GD_one`, `five_sixths_distinct_dyadic_and_cumulative`,
+    `montgomeryTaylor_distinct_dyadic`), and `≤ (819/5000 + ε)N` right-half-plane zeros on `(T, 2T]`
+    and `(0, T]` (`offLine_right_multiplicity_dyadic_le`), while still obeying `HD 1 < 3/4`
+    (`HD_one_lt_three_quarters`): no window profile supported below `λ = 1` reaches `3/4` without
+    spectral slack or `λ > 1`. Beyond `λ = 1`, a single flat-top window under `F ≤ B` gives
+    `2/3 + 1/(3(3B − 2))` (`two_thirds_and_pair_correlation_escape`), while a two-window mixture
+    `RHTower.mixQ B ε` of bandwidths `1` and `4/3` reaches `1513/1944 > 3/4` at `B = 2, ε = 1/3`
+    (`mixQ_at_two_one_third`), reaches `3/4` iff `B ≤ 117/41` at `ε = 7/16` (in particular for
+    `B ≤ 14/5`, `mixQ_ge_three_quarters_iff_le_oneHundredSeventeen_div_fortyOne`), and beats `2/3`
+    for all `B < 181/18` (`mixQ_beats_two_thirds_of_lt`).
+28. **Two routes past the blind spot, each with one unproved input, the exact spectral-slack
+    conservation laws, and corpus-wide `RHTower` upgrades.** The pair `(P, Q)` remembers what `Â`
+    forgets: for `Q = 0` the on-line Parseval slack restores the rank at `c = 2`
+    (`onSlack_of_posSemidef_eq`, `rank_trace_add_onSlack_of_posSemidef_eq_rank`), and a non-coalesced
+    off-line pair carries negative-part credit (`negPart_credit_pos_iff_not_posSemidef`). More
+    generally, adding the full spectral slack `totalSlack(P, Q, c) := c tr(Q₋) + posSlack(Q, c) + onSlack(P, Q, c)`
+    to `c tr P + 2c tr Q − c² n₊(Q) − ‖P + Q‖_F²` cancels the prime-side quadratic functional
     identically and equals `(c²/4) rank P − couplingDefect(P, Q, c) ≤ (c²/4) rank P`
     (`rank_trace_add_totalSlack_eq`, `zeroside_rank_core_slack_exact`,
     `zeroside_rank_core_slack_le_rank`). Because `P̂(T)` has grid dimension `d(T) = (λ + o(1))N(T, 2T)`,
     `zeroSideSlack(λ, T) ≤ (λ − H(λ) + ε)N(T, 2T)` unconditionally (`seamA_spectralSlack_le_d`,
-    `zeroSideSlack_eventually_le_lam_sub_Hfun`), refuting `zeroSideSlack(λ, T) ≥ (3/4 − H(λ))N(T, 2T)`
-    for every `λ ∈ (0, 3/4)` (`not_three_quarters_zeroSideSlack_of_lt_three_quarters`). On the
-    off-line block, Cauchy–Schwarz amplifies `tr(Q₋) ≥ 2ηb` into `posSlack(Q, 2) ≥ 4η²b` and
-    `2 tr(Q₋) + posSlack(Q, 2) ≥ 4bη(1 + η)` (`posSlack_mul_ge_sq_of_rtrace`,
-    `offLine_slack_ge_of_rtrace_hermNegPart`). In the hyperbolic displaced-pair block model at
-    `κ = 4/3` (`displacedPairBlockData`), non-coalescence (`η > 0`, `2 tr(Q₋) > 0`) is necessary
-    but not sufficient for `3/4`: at `s₁ = 179, p = 32, α = √(17/16), β = 1/4` (`N = 243`),
-    `2 tr(Q₋) > 0` while `s₁ = (179/243)N < (3/4)N` and `totalSlack < (1/12)N`
+    `zeroSideSlack_eventually_le_lam_sub_Hfun`, `subthreshold_spectralSlack_dual_ceiling`), refuting
+    `zeroSideSlack(λ, T) ≥ (3/4 − H(λ))N(T, 2T)` for every `λ ∈ (0, 3/4)`
+    (`not_three_quarters_zeroSideSlack_of_lt_three_quarters`). On the off-line block, Cauchy–Schwarz
+    amplifies `tr(Q₋) ≥ 2ηb` into `posSlack(Q, 2) ≥ 4η²b` and `2 tr(Q₋) + posSlack(Q, 2) ≥ 4bη(1 + η)`
+    (`posSlack_mul_ge_sq_of_rtrace`, `offLine_slack_ge_of_rtrace_hermNegPart`). In the hyperbolic
+    displaced-pair block model at `κ = 4/3` (`displacedPairBlockData`), non-coalescence (`η > 0`,
+    `2 tr(Q₋) > 0`) is necessary but not sufficient for `3/4`: at `s₁ = 179, p = 32, α = √(17/16), β = 1/4`
+    (`N = 243`), `2 tr(Q₋) > 0` while `s₁ = (179/243)N < (3/4)N` and `totalSlack < (1/12)N`
     (`displacedPairBlockData_below_three_quarters`,
     `macroscopic_displacedPair_counterexample_at_four_thirds`), and the three exact macroscopic
     thresholds at `κ = 4/3` are `(1 + 2η)² ≥ 4/3` for `s₁ ≥ (3/4)N`, `η ≥ 1/6` for
@@ -372,6 +395,19 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     (`zeta_three_quarters_of_spectralSlack`), or `RHTower.PrimeSurplusFourThirds` filling the `1/18`
     margin above `43/36 = 5/4 − 1/18` at `λ = 4/3` (`kappa_five_fourths_iff_three_quarters`,
     `zeta_three_quarters_from_prime_surplus`, `double_window_primeFreq_offDiag_and_exchange_rate`).
+    Feeding the certified simple-critical density `p` into `RHTower` upgrades the dyadic window
+    horizontal off-line moment from `(67/1000)T` to `(66/1000)T` unconditionally via `HD 1 ≥ 1681/2500`
+    (`eventually_dyadicWindowTail_le_selberg_upper_of_proportion`,
+    `eventually_dyadicWindowTail_le_sixtySix_thousandths`) and to `(57/1000)T` / `(57/1000)V` under
+    `PrimeSurplusFourThirds` (`offLineMoment_fiftySeven_thousandths_of_primeSurplusFourThirds`), and
+    lowers the real-divisor-only double-exponential uniqueness threshold for even functions vanishing
+    at the simple critical zeros from `b > 3` down to `b > 2 / HD 1` and `b > 5000/1681 < 3`
+    unconditionally (resolving the boundary case `b ≥ 3`,
+    `ae_eq_zero_of_doubleExp_simpleCritical_of_proportion`,
+    `ae_eq_zero_of_doubleExp_simpleCritical_montgomeryTaylor`,
+    `ae_eq_zero_of_doubleExp_simpleCritical_ge_three`,
+    `eq_zero_of_doubleExp_simpleCritical_ge_three_of_continuous`) and to `b > 8/3` under
+    `PrimeSurplusFourThirds` (`ae_eq_zero_of_doubleExp_simpleCritical_of_primeSurplusFourThirds`).
 
 ### 3.9 The λ-ring of the scaling surface (`TheLambdaRingOfTheScalingSurface`)
 
