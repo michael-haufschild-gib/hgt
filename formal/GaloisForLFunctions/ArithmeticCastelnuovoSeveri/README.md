@@ -623,11 +623,11 @@ To be built:
 7. **One prime against two.** Two primes carry the whole defect; one prime carries every visible
    outer eigenvalue `p^{ρ − ½}` whenever the real parts of the right zeros contain no strictly
    increasing sequence, however the eigenvalues accumulate, and every visible class on an attained
-   top (item 17). Open: real parts increasing to their supremum. There the top-down extraction of
-   classes fails, and the circle quadratures of `HTGeometry.CircleQuadratureAnnihilating` (atoms on
-   circles of increasing radius killing all holomorphic moments, an isolated atom below them) show
-   how a class can escape the one-sided moments; the tower has two-sided moments, and whether a
-   two-sided annihilator can hide a visible class from the tower is the question.
+   top (item 17). Open: real parts increasing to their supremum. There the closure argument cannot
+   work: the difference of two positive Wolff measures of equal mass on disjoint annuli
+   (`HTGeometry.PositiveWolffMeasure.exists_positive_wolff_annulus`, atoms accumulating at the outer
+   radius) kills every Laurent moment, so negative vectors can leave the closed span of the tower.
+   Whether the tower's negative index nevertheless counts the visible classes is the question.
 
 ---
 

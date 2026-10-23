@@ -427,8 +427,8 @@ theorem summable_two_mul {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε 
 
 theorem tsum_two_mul_le {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
     ∑' m : ℕ, |k (2 * m)| * ((2 * m : ℕ) : ℝ) ^ ε ≤ orientNorm ε k :=
-  tsum_comp_le_tsum_of_injective injective_two_mul hk
-    fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+  tsum_comp_le_tsum_of_inj hk
+    (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)) injective_two_mul
 
 /-- The even part is dominated by the even values: `|k_e(m)| m^ε ≤ |k(2m)| (2m)^ε`. -/
 theorem evenPart_le {ε : ℝ} (hε : 0 ≤ ε) (k : ℕ → ℝ) (m : ℕ) :
@@ -447,7 +447,7 @@ theorem OrientAdmissible.evenPart {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} 
   (summable_two_mul hk).of_nonneg_of_le
     (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)) (evenPart_le hε k)
 
-theorem OrientAdmissible.shiftEven {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+theorem OrientAdmissible.shiftEven {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
     OrientAdmissible ε (shiftTwo (evenPartWeight k)) := by
   unfold OrientAdmissible
   rw [summable_iff_two_mul fun j hj => by rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]]
@@ -471,12 +471,12 @@ theorem abs_flipKernelOf_le (k : ℕ → ℝ) (j : ℕ) (x : ℝ) (hx : 0 ≤ x)
   rw [← add_mul, ← add_mul]
   refine mul_le_mul_of_nonneg_right ?_ hx
   unfold flipKernelOf
-  exact (abs_sub _ _).trans (add_le_add_right (abs_add _ _) _)
+  exact (abs_sub _ _).trans (add_le_add_right (abs_add_le _ _) _)
 
 /-- The flip keeps admissibility. -/
 theorem OrientAdmissible.flip {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
     OrientAdmissible ε (flipKernelOf k) :=
-  ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven hε)).of_nonneg_of_le
+  ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven)).of_nonneg_of_le
     (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _))
     fun j => abs_flipKernelOf_le k j _ (Real.rpow_nonneg (Nat.cast_nonneg j) _)
 
@@ -497,16 +497,20 @@ theorem orientNorm_flipKernelOf_le {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ}
       exact mul_le_mul_of_nonneg_right (abs_evenPartWeight_le k m)
         (Real.rpow_nonneg (Nat.cast_nonneg _) _)
     · exact (summable_iff_two_mul fun j hj => by
-        rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]).1 (hk.shiftEven hε)
+        rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]).1 (hk.shiftEven)
   calc orientNorm ε (flipKernelOf k)
       ≤ orientNorm ε (oddPartKernel k) + orientNorm ε (evenPartWeight k) +
           orientNorm ε (shiftTwo (evenPartWeight k)) := by
         unfold orientNorm
-        rw [← (hk.oddPart.add (hk.evenPart hε)).tsum_add (hk.shiftEven hε),
-          ← hk.oddPart.tsum_add (hk.evenPart hε)]
-        exact Summable.tsum_le_tsum (fun j => abs_flipKernelOf_le k j _
-          (Real.rpow_nonneg (Nat.cast_nonneg j) _)) (hk.flip hε)
-          ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven hε))
+        calc ∑' j : ℕ, |flipKernelOf k j| * (j : ℝ) ^ ε
+            ≤ ∑' j : ℕ, (|oddPartKernel k j| * (j : ℝ) ^ ε + |evenPartWeight k j| * (j : ℝ) ^ ε +
+                |shiftTwo (evenPartWeight k) j| * (j : ℝ) ^ ε) :=
+              Summable.tsum_le_tsum (fun j => abs_flipKernelOf_le k j _
+                (Real.rpow_nonneg (Nat.cast_nonneg j) _)) (hk.flip hε)
+                ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven))
+          _ = _ := by
+              rw [(hk.oddPart.add (hk.evenPart hε)).tsum_add (hk.shiftEven),
+                hk.oddPart.tsum_add (hk.evenPart hε)]
     _ ≤ 3 * orientNorm ε k := by linarith
 
 /-- For kernels vanishing on multiples of four the kernel flip is the even flip. -/
@@ -544,18 +548,24 @@ theorem evenFlip_dirichletConv_oddSqf {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m �
 theorem evenPartWeight_flipKernelOf (k : ℕ → ℝ) :
     evenPartWeight (flipKernelOf k) = fun j => -evenPartWeight k j := by
   funext j
-  unfold evenPartWeight flipKernelOf oddPartKernel
   by_cases h : j % 2 = 1
   · have h2 : (2 * j) % 2 ≠ 1 := by omega
-    rw [if_pos h, if_pos h, if_neg h2, if_neg h2, shiftTwo_two_mul]
-    unfold evenPartWeight
-    rw [if_pos h]
+    have e0 : oddPartKernel k (2 * j) = 0 := by unfold oddPartKernel; rw [if_neg h2]
+    have e1 : evenPartWeight k (2 * j) = 0 := by unfold evenPartWeight; rw [if_neg h2]
+    have e2 : evenPartWeight (flipKernelOf k) j = flipKernelOf k (2 * j) := by
+      unfold evenPartWeight; rw [if_pos h]
+    have e3 : evenPartWeight k j = k (2 * j) := by unfold evenPartWeight; rw [if_pos h]
+    rw [e2, e3]
+    unfold flipKernelOf
+    rw [e0, e1, shiftTwo_two_mul, e3]
     ring
-  · rw [if_neg h, if_neg h, neg_zero]
+  · have e2 : evenPartWeight (flipKernelOf k) j = 0 := by unfold evenPartWeight; rw [if_neg h]
+    have e3 : evenPartWeight k j = 0 := by unfold evenPartWeight; rw [if_neg h]
+    rw [e2, e3, neg_zero]
 
 theorem OrientAdmissible.summable_pole_abs {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
     (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) : Summable fun j : ℕ => |k j * (j : ℝ) ^ (-(1 - ε))| :=
-  (hk.summable_rpow hε (by linarith) (by linarith)).congr fun j => by
+  (hk.summable_rpow (e := -(1 - ε)) hε (by linarith) (by linarith)).congr fun j => by
     rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)]
 
 /-- **The flip moves the pole pairing by the even part**: `P(k^♭) = P(k) + (1 − 2^ε) P(k_e)`. -/
@@ -566,7 +576,7 @@ theorem polePairing_flipKernelOf {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
   set e := evenPartWeight k
   have so := (hk.oddPart.summable_pole hε hε2)
   have se := ((hk.evenPart hε.le).summable_pole hε hε2)
-  have ss := ((hk.shiftEven hε.le).summable_pole hε hε2)
+  have ss := ((hk.shiftEven).summable_pole hε hε2)
   -- the dilated part pairs to `2^{ε−1}` times the even part
   have hshift : polePairing ε (shiftTwo e) = (2 : ℝ) ^ (ε - 1) * polePairing ε e := by
     unfold polePairing
