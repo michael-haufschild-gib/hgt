@@ -86,7 +86,6 @@ theorem exp_half_le_two : Real.exp (1 / 2 : ℝ) ≤ 2 := by
     norm_num
   nlinarith [Real.exp_one_lt_d9, Real.exp_pos (1 / 2 : ℝ)]
 
-set_option maxHeartbeats 1000000 in
 /-- **The local factor obeys the damping bound with an explicit prime-power excess.** -/
 theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1) (hs : 1 < s.re)
     {p : ℕ} (hp : p.Prime) :
@@ -202,7 +201,7 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
       ≤ (twistedSummand f s p).re + 5 * x ^ (-(2 * σ)) := by
     have h1 : ‖twistedSummand f s p‖ ^ 2 ≤ q ^ 2 := by
       have h0 := norm_nonneg (twistedSummand f s p)
-      nlinarith [hnormp]
+      exact pow_le_pow_left₀ h0 hnormp 2
     have hq2nn : (0 : ℝ) ≤ 2 * q ^ 2 := by positivity
     have h2 : ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ *
         Real.exp (-((twistedSummand f s p).re + ‖twistedSummand f s p‖ ^ 2))
@@ -272,7 +271,6 @@ theorem tsum_primes_rpow_two_le {σ : ℝ} (hσ : 1 ≤ σ) :
 
 /-! ## The Euler bound for the whole series -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The Euler bound for a bounded multiplicative Dirichlet series.**  The whole series, prime
 powers included, is damped by the real part of its prime sum, at the cost of one absolute
 constant. -/

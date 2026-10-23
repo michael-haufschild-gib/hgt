@@ -203,7 +203,7 @@ are three different statements and remain visibly different here.
    `[−1, 1]`, since the translate `f(· + 2)` lives in `[−3, −1]`
    (`tendsto_combCharge_rescaledTest_div_combMass_zero`). Enormous energy is not an enormous signed
    charge, and certainly not a negative Weil form.
-6′. **The compensated prime–polar residual has the de la Vallée Poussin saving.** Before any
+7. **The compensated prime–polar residual has the de la Vallée Poussin saving.** Before any
    square, the prime atoms and the polar density cancel exactly up to the two-pole defect
    `E(s) = e^s + s − 1 − ψ(e^s)` tested against `h′` (AIP's
    `sum_vonMangoldt_sub_polar_eq_chebyshev`, `primeShift_sub_polarDensity_eq_chebyshev`). The
@@ -214,20 +214,20 @@ are three different statements and remain visibly different here.
    `Ke^{S/2}exp(−c√S)(2‖F′‖₁ + ‖F‖₁)`, `S = 2r + |x|` (`exists_abs_primeShift_sub_polar_le`), with
    universal constants. The trivial exponent of the ledger is `e^{S/2}`; the saving is exactly the
    prime number theorem's, and an exponent `e^{θS}`, `θ < ½`, is classically a zero-free strip.
-7. **The ledger's own test class.** The profile `oddBump(x) = x e^{−1/(1−x²)}` normalized to unit
+8. **The ledger's own test class.** The profile `oddBump(x) = x e^{−1/(1−x²)}` normalized to unit
    mass gives smooth odd tests supported in `[−r, r]` on which all of the above hold at once
    (`exists_odd_smooth_family_sharp_comb_rate`).
-8. **The depth law.** The comb tail tends to `e^{−u/2}` uniformly in `u ≥ 0`
+9. **The depth law.** The comb tail tends to `e^{−u/2}` uniformly in `u ≥ 0`
    (`eventually_abs_combTail_sub_le`): a near range where both `S_y/e^y` are within `δ` of `2`, and
    a far range controlled by monotonicity.
-9. **Depth statistics converge to the horizon law, uniformly over translates**
+10. **Depth statistics converge to the horizon law, uniformly over translates**
    (`eventually_abs_combAverage_sub_horizonIntegral_le`). Shells of depth `[kh, (k + 1)h)` carry the
    comb mass `S_{r−kh/2} − S_{r−(k+1)h/2}` (`combShellMass`); comparing the discrete shell sum
    (`abs_combDepthSum_sub_shells_le`) and the continuous one (`abs_horizonIntegral_sub_shells_le`)
    costs the modulus of continuity, the tail at the cutoff and `2KMη` from the uniform depth law.
-10. **The comb resolvent law.** Since `log q − log p = u_p − u_q` (`combDepth_sub_combDepth`), the
+11. **The comb resolvent law.** Since `log q − log p = u_p − u_q` (`combDepth_sub_combDepth`), the
     comb energy is a double depth statistic (`combEnergy_eq_depthSum`), and the uniform version of
-    mechanism 9 applied twice gives, for every continuous compactly supported test,
+    mechanism 10 applied twice gives, for every continuous compactly supported test,
     `E_r(F)/S_r² → J(F)` and `E_r(F) ∼ 4J(F)e^{2r}`
     (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`,
     `tendsto_combEnergy_div_exp_horizonEnergy`), with `0 ≤ J(F) ≤ A_F(0)`
@@ -239,7 +239,7 @@ are three different statements and remain visibly different here.
     comb energy (`exists_pos_tendsto_combEnergy_div_exp`). This is pointwise positivity in `F`,
     not a uniform coercive constant over all test profiles. On slowly varying tests `Ψ ≈ id`
     and mechanism 5 is recovered.
-10′. **The horizon law at the de la Vallée Poussin rate.** Abel summation of `p^{−1/2} log p`
+12. **The horizon law at the de la Vallée Poussin rate.** Abel summation of `p^{−1/2} log p`
     against `θ` writes `S_r − 2e^r` exactly as a bounded correction, a constant, the boundary error
     `e^r(θ(x)/x − 1)` and half the integrated error `∫_2^x (θ(t)/t − 1)t^{−1/2} dt`, `x = e^{2r}`
     (`combMass_sub_eq`); cutting the integral at `√x` gives `|S_r − 2e^r| ≤ Ke^r exp(−c√r)`
@@ -254,7 +254,7 @@ are three different statements and remain visibly different here.
     `exists_abs_combEnergy_sub_le`); `c` and `K` are universal, independent of the test. The rate
     is the prime number theorem's: an error `O(e^{θr})`, `θ < 1`, in `S_r − 2e^r` would be a
     statement about the zeros of `ζ`.
-10″. **The horizon energy is one horizon average, and the translation deficit is inverse-square.**
+13. **The horizon energy is one horizon average, and the translation deficit is inverse-square.**
     The double average collapses: `J(F) = ∫_{u>0} A_F(u) ½e^{−u/2} du`
     (`horizonEnergy_eq_horizonIntegral_autoCorr`), by integrating `−¼e^{−v}Φ(−v)`,
     `Φ(w) = ∫_{s>w} A_F(s)e^{−s/2} ds`, along the half-line with `A_F` even. A `Λ`-Lipschitz test
@@ -264,7 +264,7 @@ are three different statements and remain visibly different here.
     (`horizonEnergy_ge_of_lipschitz`): uniform coercivity on the class of unit tests with
     `Λ²(8R + 48) < 1`. On the slowly varying family this gives
     `A_f(0) − Λ²(8/r² + 48/r³) ≤ J(F_r) ≤ A_f(0)` (`horizonEnergy_rescaledTest_ge`), and since the
-    rate of mechanism 10′ has test-independent constants, the comb itself satisfies
+    rate of mechanism 12 has test-independent constants, the comb itself satisfies
     `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²` (`exists_combEnergy_rescaledTest_deficit_le`). For a `C¹`
     profile the first correction is exact: `(A_f(0) − A_f(s))/s² → ½‖f′‖²`
     (`tendsto_autoCorr_deficit_div_sq`), so `r²(A_f(0) − E_r(F_r)/S_r²) → 4‖f′‖²`
@@ -272,7 +272,7 @@ are three different statements and remain visibly different here.
     `tendsto_sq_mul_combEnergy_rescaledTest_deficit`): the comb's deficit on the slowly varying
     family is the first correction `−2∂/r` of the resolvent, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`, and
     the prime error does not reach it.
-10⁗. **No uniform coercivity over the integers; uniform coercivity on a curve.** The concentrated
+14. **No uniform coercivity over the integers; uniform coercivity on a curve.** The concentrated
     tests `F_λ(x) = √λ φ(λx)` keep their mass and have `A_{F_λ}(u) = A_φ(λu)`, so
     `J(F_λ) ≤ (2λ)^{−1}∫_{v>0}|A_φ|` (`horizonEnergy_concentratedTest_le`): no `c > 0` has
     `J(F) ≥ c∫F²` for all tests (`not_exists_horizonEnergy_ge`), and for every `c` some unit test
@@ -289,7 +289,7 @@ are three different statements and remain visibly different here.
     one is not. Uniform coercivity must therefore come from a restricted test class or from the
     arithmetic of the pairing, never from the integer comb alone.
 
-10‴. **The horizon law of a curve is geometric.** For a curve model over `F_q` with Frobenius
+15. **The horizon law of a curve is geometric.** For a curve model over `F_q` with Frobenius
     eigenvalues of modulus at most `λ√q`, the comb built from the point counts
     `N(n) = qⁿ + 1 − Re Σαᵢⁿ`, with weight `N(n)q^{−n/2}` at degree `n`, has mass
     `Σ_{n≤D} q^{n/2}` up to `D + 2gΣ_{n≤D}λⁿ` (`abs_curveCombMass_sub_geometricMass_le`), hence up to
@@ -314,18 +314,18 @@ are three different statements and remain visibly different here.
 
 ### Compensation coordinates
 
-11. **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²` for `L ≠ 0`, with `⟪L, R⟫ = 0`
+16. **The Pythagorean compensation law.** `‖L + C‖² = (1 − α)²‖L‖² + ‖R‖²` for `L ≠ 0`, with `⟪L, R⟫ = 0`
     (`norm_add_sq_eq_compensation`, `inner_transverseRemainder`), hence
     `(1 − α)² + ‖R‖²/‖L‖² = ‖L + C‖²/‖L‖²` (`compensationDefect_eq_relativeEnergy`). The same law
     holds for scalar Gram data, with `‖R‖² ≥ 0` from Cauchy–Schwarz (`gram_add_eq_compensation`,
     `gramTransverse_nonneg`, `gram_coordinates_le`).
-12. **The actual instance.** For `0 < ε < ½` the large-prime sector of the damped
+17. **The actual instance.** For `0 < ε < ½` the large-prime sector of the damped
     Möbius–Ramanujan expansion at cutoff `P²` has `α_P → 1` and `‖R_P‖²/‖L_P‖² → 0`
     (`tendsto_pmCompensationAmplitude_one`, `tendsto_pmTransverseEnergy_div_sectorEnergy_zero`),
     and the complete head energy is exactly `(1 − α_P)²‖L_P‖² + ‖R_P‖²`
     (`pmCompleteHeadEnergy_eq_compensation`, from the energy split
     `pmCompleteHeadEnergy_eq_sum` and the Cauchy–Schwarz bound `pmMixedEnergy_sq_le`).
-12′. **The compensation rate on the actual source.** The defect is the relative complete head
+18. **The compensation rate on the actual source.** The defect is the relative complete head
     energy for all large `P` (`eventually_compensationDefect_eq_relative`); the sector energy is at least `cP^{1−2ε}/log²P`
     (`sectorEnergy_eventually_lower`), the complete energy at most twice the divisor-remainder
     energy plus the Ramanujan truncation cost `2T⁴P^{1−3ε}` (`prefixEnergy_le`), and the
@@ -349,7 +349,7 @@ are three different statements and remain visibly different here.
 
 ### Where a blow-up of the receiver goes
 
-12‴. **A blow-up escapes to the horizon.** The damped divisor remainder read at the integers gives
+19. **A blow-up escapes to the horizon.** The damped divisor remainder read at the integers gives
     the source bound `|A_ε(n)| ≤ Cn^{1−ε}` for `0 < ε < ½` (`exists_abs_centredPrefix_le`), so each
     cell carries at most `C²n^{−2ε}` and the receiver grows at most at the trivial rate,
     `E_N(ε) ≤ D(1 + N^{1−2ε})` (`exists_dampedMobiusEnergy_le`). Hence the blow-up dichotomy
@@ -361,7 +361,7 @@ are three different statements and remain visibly different here.
 
 ### The price of a change of origin
 
-12″. **A finite change of origin costs exactly `(k+1)(k+2)/2`.** Shifting a sequence by `k` cells
+20. **A finite change of origin costs exactly `(k+1)(k+2)/2`.** Shifting a sequence by `k` cells
     multiplies its pronic energy by at most `(k+1)(k+2)/2` (`pronicEnergy_shift_le`, from the weight
     comparison `pronicWeight_shift_le`), the factor is attained by the indicator of the cell `k + 1`
     (`pronicEnergy_shift_indicator`), and the shift loses only the first `k` cells in the other
@@ -369,7 +369,7 @@ are three different statements and remain visibly different here.
     finite change of origin (`bddAbove_pronicEnergy_shift_iff`), in particular for the damped Möbius
     receiver (`admits_dampedMobiusEnergy_iff_shift`). Finite origin information is recovered stably
     in the critical norm.
-12⁗. **A drifting origin is priced by the tail beyond it.** The translate `a(· + k)` on `[1, T]`
+21. **A drifting origin is priced by the tail beyond it.** The translate `a(· + k)` on `[1, T]`
     carries between the tail `E(T+k) − E(k)` and `(k+1)(k+2)/2` times that tail
     (`pronicTail_le_pronicEnergy_shift`, `pronicEnergy_shift_le_tail`). Every admitted sequence
     stays admitted along a drift `k(T)` if and only if the drift is bounded
@@ -381,7 +381,7 @@ are three different statements and remain visibly different here.
 
 ### Quantifier corrections of the continuation problem
 
-13. **The signed budget is strictly weaker than its positive part.** The positive-part budget
+22. **The signed budget is strictly weaker than its positive part.** The positive-part budget
     implies the averaged one (`averagedContinuation_of_positivePart`), and the lacunary family
     `E_T(ε) = Σ_{1 ≤ k ≤ T} 2^{−k}(2 + sin(16^k ε))` — nonnegative, nondecreasing in the horizon,
     bounded by `3`, hence admitted everywhere with averaged budgets on every interval — has
@@ -389,16 +389,16 @@ are three different statements and remain visibly different here.
     (`exists_admitted_monotone_not_positivePartContinuation`). The mechanism is lacunary
     near-orthogonality: `∫_a^c E'_T cos(16^T ε) ≥ 8^T(c − a)/2 − 2`
     (`integral_lacunaryEnergyDeriv_mul_cos_ge`).
-14. **The core debt on a positive interval is a zeta-log ratio.**
+23. **The core debt on a positive interval is a zeta-log ratio.**
     `lim_T ∫_η^ε core_x(T) dx = log ζ(1+η) − log ζ(1+ε)` for `η, ε > 0`
     (`tendsto_integral_workCore_logZeta`), by dominated convergence against the Euler logarithm,
     with the horizon-free bound `∫_η^ε core ≤ log ζ(1+η) − log ζ(1+ε)` for `η ≤ ε`
     (`integral_workCore_le_logZeta`). The divergence of `exists_horizon_integral_workCore_ge` is an
     endpoint effect at zero damping.
-15. **The first cell carries adverse work.** `W_1(ε) = −(1 − 1/ζ(1+ε)) m(ε)/2 → −½`
+24. **The first cell carries adverse work.** `W_1(ε) = −(1 − 1/ζ(1+ε)) m(ε)/2 → −½`
     (`tendsto_signedDampingWork_one`), so global nonnegative work fails on the actual source
     (`not_forall_signedDampingWork_nonneg`).
-16. **The aperture floor must decay doubly exponentially.** From the Gaussian ceiling
+25. **The aperture floor must decay doubly exponentially.** From the Gaussian ceiling
     `μ(A) ≤ K e^{(11/2)A − πe^{2(A−2)}}`: no fixed positive floor along any unbounded aperture sequence
     (`not_exists_positive_floor_along`); the half-summable relative transport, whose conclusion is
     the floor `1/10000`, is impossible there (`not_relative_step_transport`); every floor
@@ -406,7 +406,7 @@ are three different statements and remain visibly different here.
     transported products lie below the ceiling (`prod_le_ceiling_of_relative_step`); and the
     harmonic transport fails along linearly growing apertures
     (`exists_groundEnergy_lt_harmonic_transport`).
-17. **An adapted energy is exactly admission.** With the right end admitted, an adapted energy on
+26. **An adapted energy is exactly admission.** With the right end admitted, an adapted energy on
     `[a, c]` exists iff the receiver is admitted at `a`, for every nonnegative differentiable family
     with integrable relative loss (`adaptedEnergy_iff_admits`); for the damped Möbius receiver on
     `[a, ½]` all of these inputs are proved (`adaptedEnergy_dampedMobiusEnergy_iff_admits`); a pointwise
@@ -415,12 +415,12 @@ are three different statements and remain visibly different here.
 
 ### An internal transfer
 
-18. **Huxley's uniform window at the Guth–Maynard exponent.** For every `α > 17/30`,
+27. **Huxley's uniform window at the Guth–Maynard exponent.** For every `α > 17/30`,
     `|ψ(x + h) − ψ(x) − h| ≤ εh` uniformly for `x^α ≤ h ≤ x/2`
     (`eventually_abs_psi_window_sub_le_seventeenThirtieths`): tile `[x, x + h]` by windows
     `[y, y + y^β]`, `17/30 < β < α` (`tileSeq`); the errors add, and the last partial window costs
     `(1 + ε/2)y^β = o(x^α)` by monotonicity of `ψ`.
-19. **The centred prime row on the wider range.** The BVI actual-row estimate holds at every block
+28. **The centred prime row on the wider range.** The BVI actual-row estimate holds at every block
     exponent `α > 17/30` (`exists_abs_rowBilinear_centredPrimeRow_le_seventeenThirtieths`), hence
     on `P^{1+δ} ≤ Q ≤ P^{30/17−δ}` for horizons `N ≤ Q^C` at `α = 17/30 + δ/4`
     (`exists_abs_rowBilinear_centredPrimeRow_le_of_range`).
@@ -452,13 +452,13 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 
 | Question | Answer proved here | What remains |
 |---|---|---|
-| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log^{−m}P)` for every `m` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
-| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 10′). | The classification of the receiver's profiles at the horizon itself. |
-| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity, and its residual has the de la Vallée Poussin saving `e^{S/2}exp(−c√S)` uniformly over the expanding test class (mechanism 6′). | A remainder exponent below the trivial one, which is a zero-free strip. |
-| Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 12″); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 12⁗); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
-| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 17); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
-| Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 16); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
-| What is the balanced-scale obstruction for actual rows? | The unbalanced range of the centred prime row reaches `30/17` (mechanism 19); the method stops at `Q ≍ P`, where `3P ≤ 2εQ` fails. | A saving at `Q ≍ P` keeping the omitted-residue-class main term. |
+| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 16); on the actual large-prime sector the defect is `O(log^{−m}P)` for every `m` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 18). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
+| Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 19). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 11), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 12). | The classification of the receiver's profiles at the horizon itself. |
+| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity, and its residual has the de la Vallée Poussin saving `e^{S/2}exp(−c√S)` uniformly over the expanding test class (mechanism 7). | A remainder exponent below the trivial one, which is a zero-free strip. |
+| Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 20); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 21); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
+| Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 26); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
+| Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 25); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
+| What is the balanced-scale obstruction for actual rows? | The unbalanced range of the centred prime row reaches `30/17` (mechanism 28); the method stops at `Q ≍ P`, where `3P ≤ 2εQ` fails. | A saving at `Q ≍ P` keeping the omitted-residue-class main term. |
 
 ---
 
@@ -569,23 +569,24 @@ that every successful route must use the same mechanism.
    comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
    10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
    deficit is exactly `4‖f′‖²/r²` to first order, and `J(F) ≥ A_F(0) − Λ²(8R + 48)` uniformly over
-   Lipschitz tests in `[−R, R]` (mechanism 10″); over all tests no coercive constant exists, while
-   the curve comb is uniformly coercive (mechanism 10⁗). Open: the second correction, and the
+   Lipschitz tests in `[−R, R]` (mechanism 13); over all tests no coercive constant exists, while
+   the curve comb is uniformly coercive (mechanism 14). Open: the second correction, and the
    optimal coercive constant of `J` on the ledger's odd test class at a fixed aperture.
 5. **The compensated remainder of the full ledger.** The prime–polar residual of every ledger
    translate is bounded at the trivial exponent with the prime number theorem's saving
-   `exp(−c√S)` (mechanism 6′). Open: an exponent below `½` for the complete ledger, with its even
+   `exp(−c√S)` (mechanism 7). Open: an exponent below `½` for the complete ledger, with its even
    parts and the gamma factor retained, on a test class that the arithmetic singles out — any
    such exponent is a strip.
 6. **The balanced regime.** Classify or save for the actual centred prime/Möbius incidence at
-   `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates already
-   give balanced-scale control for the stated centred rows; distinguish that result from a
-   uniform bound for the complete coupled receiver.
+   `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates
+   give qualitative control of the Möbius block at all scales above its logarithmic small-prime
+   threshold, and of the centred prime block on the stated unbalanced range; distinguish those
+   results from a uniform bound for the complete coupled receiver.
 7. **Function-field calibration.** In the curve model the horizon law is geometric with
    square-root error, and the receiver is admitted at every damping above the zero width
-   (mechanism 10‴), and fails below it for a single eigenvalue. Open: the failure below the zero
+   (mechanism 15), and fails below it for a single eigenvalue. Open: the failure below the zero
    width for several eigenvalues, which needs non-cancellation of their oscillating terms. The
-   curve comb obeys the discrete resolvent law and is uniformly coercive (mechanism 10⁗).
+   curve comb obeys the discrete resolvent law and is uniformly coercive (mechanism 14).
 
 ---
 

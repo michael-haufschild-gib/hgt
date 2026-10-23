@@ -50,8 +50,15 @@ assembly into the complete receiver, not the existence of any arithmetic improve
 | [Scale-Signed Incidence Criticality](../ScaleSignedIncidenceCriticality/README.md) | Prices the loss from period averages, magnitudes and other coarsened readings. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks whether the finite arithmetic can produce genuine effectivity and a definite intersection form. |
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical
+arithmetic form and on the critical cancellation of the actual Möbius and prime source it needs. BVI
+supplies the additive, single-modulus structure of the integers that the continuous faces cannot see
+on their own, and the exact place — one signed interior term, one dual norm of the actual row —
+where that cancellation has to be proved.
+
 Read the receiver in §1.3, the three Gram normalizations in §2.7, and the complete energy
-split in §3.8 before selecting an estimate. Sections 3.13 and 3.15 distinguish generic
+split in §3.8 before selecting an estimate; §4 lists the pillar theorems and §§6–7 the questions
+and open problems. Sections 3.13 and 3.15 distinguish generic
 barriers, source-specific qualitative gains, and a power improvement that would be a new
 zero-free result. Names such as “Type II” are meaningful only together with the coefficient
 class and scale range on which the bound is uniform.
@@ -900,9 +907,18 @@ like $\kappa(\varepsilon)\log T$ with $\kappa(\varepsilon)/\varepsilon\to 1-1/\z
 predecessor-peak martingale has a drift for every $\varepsilon>0$; the active-pair pronic energy
 is bounded by $1/4$ and the pronic series of $\tilde\tau_\varepsilon S_\varepsilon$ by $1/8$, with
 $S_\varepsilon=\frac12(\tau_{1+\varepsilon}-\tau_\varepsilon)$ the active component. After subtracting the
-canonical drifts the first two brackets are $o(\log T)$, so the compensated interior bracket
-tracks $\frac12E_T$ to within $o(\log T)$. The required interior cancellation rate has
-small-damping slope $(1-A)/2\ge 7/24$, where $A=\prod_p(1-\frac1{p(p-1)})\le 5/12$.
+canonical drifts the first two brackets are **bounded uniformly in $T$** for each fixed
+$\varepsilon>0$, not merely $o(\log T)$: the divisor-square moment estimates discharge the
+logarithmic coefficient conditions of the active-deleted diagonal
+(`exists_pmActiveDeletedCovarianceDiagonal_compensated_bound`), independent divisor cutoffs give
+the adjacent correlations a positive power rate (`exists_pm_adjacent_divisor_compensated_bound`),
+and the compensated pronic-shift identity transfers this to the predecessor peak at cost two
+(`exists_pmPredecessorPeak_compensated_bound`). Hence
+$\lvert2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T-E_T\rvert\le C_\varepsilon$
+(`exists_pmBezoutInterior_compensated_energy_bound`): the compensated interior bracket is the energy
+up to a bounded error, and the whole obligation is one signed term. The required interior
+cancellation rate has small-damping slope $(1-A)/2\ge 7/24$, where
+$A=\prod_p(1-\frac1{p(p-1)})\le 5/12$.
 
 **Non-circularity.** Summation by parts along $n$ in $M^{\mathrm{int}}$ returns $E_T$ with
 coefficient one and cannot produce a contraction; what it does produce, after cancelling
@@ -915,7 +931,8 @@ whose left side divided by $\log T$ tends to an explicit positive constant for e
 $\varepsilon>0$ with no admission hypothesis. The pure interior energy and the complete energy
 control each other: $E_T\le 2E^{\mathrm{int}}_T+\frac12$ and $E^{\mathrm{int}}_T\le 2E_T+\frac12$.
 A strict contraction $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C$
-is equivalent to $\sup_TE_T<\infty$ at that damping.
+is equivalent to $\sup_TE_T<\infty$ at that damping
+(`pmInterior_strict_contraction_iff_bounded_energy`).
 
 **Conditional centering.** Along the progression $n\equiv -1\ (d)$ the interior atom of
 modulus $e$ with both endpoint residues deleted has conditional mean $0$ if $\gcd(d,e)=1$ and
@@ -1301,6 +1318,23 @@ or $\ell^2$ (`not_backward_stable_c0`, `not_backward_stable_l2`). The remaining 
 is forward $\ell^2$ boundedness of the centred chain, a stronger demand than controlling this
 particular orbit. The uncentred transition is $\ell^2$-unbounded at every positive damping.
 
+**Density of the residue modes, and where the pronic obstruction sits.** Truncated Möbius
+inversion has a uniform linear majorant, so it inverts against every absolutely summable row with
+no cancellation hypothesis, and dual separation gives density of the span of the residue modes
+$v_d$ in $c_0$ (`normalizedResidueMode_dense_span`). Density holds in the uniform norm, not in the
+critical pronic norm. The pronic version of the centred chain fails for a precise reason: centring
+subtracts the entrance functional, and its pronic dual norm is $\sum_kk^{-2\eta}$ up to bounded
+factors, finite exactly for $\eta>1/2$, with an explicit divergent witness below
+(`exists_pronicPairing_bound`, `exists_pronicWitness_not_summable_pairing`). Dividing out the size
+bias restores a finite pronic dual norm at every damping
+(`summable_arithmeticDampingEntrance_reciprocal_pronicDual`). The obstruction is in the centring,
+not in the transition. The chain is strongly continuous at zero damping with
+$\lVert C_\eta-I\rVert\ge1$ for $\eta>0$, the residue modes are eigenvectors of its generator,
+$Av_d=-\log(d)\,v_d$, and no bounded generator exists
+(`DampingIsStronglyContinuousWithUnboundedGenerator`, in Signed Arithmetic Energy Incidence).
+None of these supplies a Schauder basis, bounded spectral projections, backward stability or a
+pronic estimate.
+
 **The residual has a linear cusp.** The Báez-Duarte residual of the damped source at finite horizon,
 $R(\varepsilon,T)=\sum_{n\le T}(\tilde{\mathcal A}_\varepsilon(n)-1)^2/(n(n+1))$, admits an
 unconditional positive floor linear in the damping: there are $\kappa>0$ and $\delta>0$ with
@@ -1318,7 +1352,59 @@ $R(\varepsilon,T)=o(\varepsilon)$ is refuted, and the zeros on the line are what
 
 ---
 
-## 4. Traps and sharp boundaries
+## 4. Foundational pillar theorems
+
+All unconditional; RH appears only inside equivalences or as the conclusion of one explicit
+finite inequality.
+
+1. **Bézout splitting and prime-power indecomposability.** Consecutive coprimality splits the
+   pronic energy of a row exactly, and prime powers are the indecomposable moduli
+   (`PronicBezoutSplitAndPrimePowerIndecomposability`).
+2. **Observability at every phase.** The cyclotomic incidence recurrence makes $\Phi(N)$
+   consecutive responses determine a row at any phase
+   (`CyclotomicIncidenceRecurrenceAndArbitraryPhaseObservability`);
+   the window sandwich constant has exact order $N^2$ (`windowSandwichConstant_exact_quadratic_order`)
+   and degree-$m$ moment transfer has exact horizon $N^{m\pm o(1)}$
+   (`translatedMomentTransferConstant_exact_order`); the relation spectrum in degrees five and six
+   determines a row up to the half-period companion (`sameRelationSpectrum_five_six_iff`).
+3. **The pronic Gram is explicit.** The mean-centred Ramanujan Gram is a cotangent–sawtooth sum
+   (`pmRamanujanMeanCenteredGram_eq_cotangent_sawtooth`), with Vasyunin reciprocity as a
+   residue-difference energy of exact order (`residueDifferenceEnergy_ge`, `residueDifferenceEnergy_le`).
+4. **The Báez–Duarte criterion in pronic coordinates.** RH iff rows exist with arbitrarily small
+   pronic prefix energy (`riemannHypothesis_iff_pronic_prefix_energy`), iff the readout-to-energy
+   ratio is unbounded (`riemannHypothesis_iff_readout_energy_ratio_unbounded`); the unconditional
+   floor is $\kappa/\log N$ (`exists_readout_energy_uncertainty`).
+5. **The energy is one signed term.** $E_T=D^{\mathrm{act}}_T+2P^{\mathrm{pred}}_T+2M^{\mathrm{int}}_T$
+   exactly; after canonical compensation the first two are bounded for each positive damping, and
+   strict interior contraction is equivalent to bounded energy
+   (`exists_pmBezoutInterior_compensated_energy_bound`, `pmInterior_strict_contraction_iff_bounded_energy`).
+6. **The cross-scale law.** The energy-centred Gram is rank two at diagonal quality for
+   $Q\ge P^{5/3}$ with arbitrary coefficients, sharply
+   (`abs_pmRamanujanEnergyCenteredGram_sub_farScale_le`, `exists_readout_free_barrier`); its exact
+   loss is the $\ell^1$ residue discrepancy (`abs_rowBilinear_add_mean_add_beta_sub_equidistributed_le`),
+   and the expansion holds to every order (`abs_rowBilinear_add_mean_add_beta_sub_potentialTerms_le`).
+7. **The actual rows beat the generic barrier.** Fixed-modulus Möbius statistics are $o(1/Q)$
+   (`singleModulus_pair_moebius_primes`); the Möbius block beats the Type-II barrier and the
+   centred prime block and the dual norms of both rows beat the large sieve on their stated ranges
+   (`eventually_abs_rowBilinear_moebiusWindowRow_le`, `eventually_abs_rowBilinear_centredPrimeBlock_le`,
+   `eventually_sum_abs_kernelStatistic_moebiusWindowRow_le`).
+8. **Short-window power savings are zero-free strips.** A power saving in the Möbius short-window
+   mean square at a fixed power length is equivalent to $\Theta<1$ (`moebiusPowerWindowSaving_iff`).
+9. **The receiver on the zero-free bands.** Bounded uniformly in $T$ and $\varepsilon$ on the
+   Vinogradov–Korobov band (`exists_receiver_le_on_vinogradovKorobovBand`), where the parity pair is
+   separated (`parityPair_separated_on_vinogradovKorobovBand`): the first receiver statement of the
+   programme selective against Beurling systems.
+10. **The damping chain.** Centred transitions are compact on $c_0$ and form a semigroup
+    (`isCompactOperator_arithmeticDampingCenteredOperator`, `arithmeticDampingCenteredOperator_semigroup`);
+    the residue modes span a dense subspace (`normalizedResidueMode_dense_span`); the entrance tail is
+    the absolute barrier at $\eta\le\tfrac12$ and the entrance functional has finite pronic dual norm
+    exactly for $\eta>\tfrac12$ (`exists_pronicWitness_not_summable_pairing`).
+11. **The residual has a linear cusp.** A critical zero gives the Báez–Duarte residual of the damped
+    source a positive floor linear in the damping (`exists_criticalZero_linear_dualResidual_floor`).
+
+---
+
+## 5. Traps and sharp boundaries
 
 | trap | correct statement |
 |---|---|
@@ -1373,123 +1459,172 @@ assumptions. Every module says in its header what its bounds do not prove.
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
 
-**The receiver.** For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with
-$\sup_TE_T(\varepsilon)<\infty$. Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$,
-or with the strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$ and on
-the zero-free bands $\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ below it (§3.15), open at
-every fixed $\varepsilon<\frac12$; a band of fixed positive width supplies an accumulation of admitted dampings and therefore a
-zero-free strip. An isolated damping must not be assigned that stronger conclusion without
-an additional argument. On the period torus the primitive energy of the damped row grows like
-$N^{1-2\varepsilon}$ for $\varepsilon<1/2$, and the receiver is smaller than it by exactly the
-Vinogradov–Korobov factor, so the bound, if it exists, is carried by the pronic weighting of
-small arguments below the first period, and its unconditional size is the zero-free region.
+### 6.1 Questions
 
-**The dual problem.** RH is also the statement that rows exist whose shifted prefix discrepancy
-has arbitrarily small pronic energy, equivalently with readout near one and vanishing centered
-energy, equivalently with unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$. The unconditional
-floor is $\kappa/\log N$. Whether rows attain $O(1/\log N)$, which would be a quantitative form
-of RH, and whether the power-damped cofactor rows have $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)\to0$
-along some path $\varepsilon\to0$, $Q\to\infty$, are the open questions on this side; both
-require signed input across moduli.
+1. **What do divisibility and succession force on a truncated divisor sum before a full period?**
+   Exact recovery at every phase from $\Phi(N)$ responses, sharp quadratic and degree-$m$ horizons
+   for mean-square and moment transfer, and the one-dimensional companion ambiguity.
+2. **What is the receiver energy made of?** One signed term, the Bézout interior martingale; the
+   active-deleted diagonal and predecessor peak are paid after canonical compensation.
+3. **Where can the actual Möbius and prime rows beat generic bilinear bounds?** In the single-modulus
+   statistics to which the cross-scale Gram reduces exactly. Fixed-modulus statistics, the Möbius
+   block above its logarithmic small-prime threshold and the centred prime row on the unbalanced
+   range are proved qualitatively; balanced scales $Q\approx P$ for the prime row, and quantitative
+   gains strong enough for the receiver, are open.
+4. **What does the receiver cost in the damping unit?** Bounded on the zero-free bands, so
+   unconditionally the band $\tfrac12-c\,\sigma(T)/\log T$; a band of fixed width would be a zero-free
+   strip.
+5. **Which operator structure does the damping carry, and in which norm?** Compactness and density in
+   $c_0$; the receiver lives in pronic $\ell^2$, where centring fails below half damping.
 
-**What the energy is made of.** After the canonical drifts are subtracted, the active-deleted
-diagonal and the predecessor-peak bracket are bounded for every positive damping; the whole
-obligation sits in the Bézout interior martingale $M^{\mathrm{int}}_T$, whose required
-cancellation rate per $\log T$ has small-damping slope $\ge 7/24$. The interior is a sum of
-signed atoms along progressions $n\equiv-1\ (d)$ with exactly known conditional means; what is
-missing is the signed sum over moduli.
+### 6.2 Tools
 
-**The four tools.** Each known obstruction names a tool.
+Built and reusable:
 
-1. *Cross-depth cancellation.* Built at the level of exact identities (hypercube factorization,
-   finite $\zeta\cdot\zeta^{-1}=1$ cancellation, natural-cutoff head/mean/tail split), and the
-   Gram is now explicit as a cotangent–sawtooth sum. Missing: a bound on the resulting Dirichlet
-   form of the profile that is uniform in the cutoff.
-2. *Bézout coupling at high scale.* The least seed $pa=qb+1$ is isolated inside the profile
-   with inverse-scale error, its complete fibre has mass $r\mu(r)$, and the profile is evaluated
-   exactly at every prime ratio. Missing: control of the signed complement of all other lags, or
-   of a signed prime packet, not only of a cofinal family of nearby prime pairs.
-3. *Internal bilinear dispersion.* The reciprocity $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$
-   converts correlations between moduli into exponential sums with modular inverses, the
-   Vasyunin reciprocity law holds with $O(p+q)$ error, and the cross-scale form is explicit to
-   every order (§3.13): rank two at diagonal quality for $Q\ge P^{5/3}$ with arbitrary
-   coefficients, sharply; exact loss the $\ell^1$ residue discrepancy; dual norm
-   $\sum_p\lvert\Lambda_p(c')\rvert/p$. At fixed moduli the statistics are known: $o(1/Q)$ for the
-   Möbius row, and for the prime row the omitted-class value $-\pi^2(p^2-1)^2/(144p^2(p-1)Q)$,
-   which is not small. The short-window method already improves the leading large-sieve term for the actual
-   Möbius and centred prime rows at growing moduli (§3.13). Missing: a quantitative gain
-   strong enough, with every displayed remainder summed, to control the complete receiver.
-   A power saving in the stated window mean square is a fixed zero-free strip. The
-   uncentred prime row still requires its omitted-class term.
-4. *A coercive contraction.* An inequality
-   $2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$
-   with $\delta>0$, equivalent to the receiver. Identities cannot produce it; a signed
-   arithmetic input across moduli must.
+- *Bézout splitting* and the prime-power exclusion; *simultaneous diagonalization* in Selberg and
+  Ramanujan coordinates with the finite covariance cones.
+- *Polarization and renormalization* of prefix defects with the successor correlation.
+- *The cyclotomic incidence recurrence* and the window Poincaré laws, log-free.
+- *The pronic Gram calculus*: cotangent–sawtooth form, Vasyunin reciprocity, the pronic Báez–Duarte
+  dictionary, the readout uncertainty principle.
+- *The sawtooth martingale calculus*: pronic Abel summation, the active-deleted identity, canonical
+  drifts and compensated remainders.
+- *The cross-scale calculus*: Bernoulli kernels of every order, the rank-two law, residue
+  discrepancy as exact loss, dual norms, large sieve with the Montgomery–Vaughan constant.
+- *Rate transfer* from Mertens-type rates to receiver bounds on zero-free bands.
+- *The damping chain*: entrance law, compact centred semigroup on $c_0$, residue modes.
 
-**The damping chain.** The chain is a Markov semigroup in the damping whose positive-time centered
-operators are compact on $c_0$, an exactly computed entrance law, and an entrance tail that is not
-square-summable below half damping while the reciprocal observable is. The residue eigenmodes and eigenvalues are explicit, and SAEI identifies admission with the
-ordinary $\ell^2$ orbit of the reciprocal (§3.16). What remains is a signed estimate for that orbit,
-or a stronger forward operator bound in $\ell^2$; compactness in $c_0$ supplies neither.
-A relation between the full spectral calculus, small-time behavior and the zeros needs an
-independent quantitative argument. The residual's linear cusp fixes the rate on the other
-side: the approach to the Báez-Duarte infimum is at best linear in the damping, with an explicit
-constant from one critical zero, so a quantitative form of RH in these coordinates must be a
-statement about the constant, not about the exponent.
+To be built:
 
-The damping derivative is also an exact finite Markov boundary-flux identity:
-`E′ = boundaryFlux − jumpEnergy − density forcing`
-([DampingWorkAsArithmeticMarkovBoundaryFlux](DampingWorkAsArithmeticMarkovBoundaryFlux.lean)).
-The jump term is nonnegative, but it and the signed flux can both grow with the cutoff;
-their difference must be estimated together. The zero-damping signed work has the ordered
-limit `lim_T lim_{ε↓0} work(ε,T) = −4γ`, with an absolutely summable harmonic trace
-([ZeroDampingSignedWorkHasFiniteHarmonicTrace](ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean)).
-Neither fact supplies an infinite-horizon derivative bound at positive damping. That is the
-interface with continuation and compensation theory.
-
-**Other open boundaries.** The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the
-shortest universal recurrence and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the
-gap between a quadratic universal horizon and a linear special one is open, and any linear law
-must be incidence-algebraic. The exact window sandwich constant in $[\Phi(N)-2,N(N-1)]$. The sign of a general signed prime packet in the energy-centered Gram.
-The relation-spectrum question is closed — the spectrum in all
-degrees, equivalently degrees five and six, determines a row up to the half-period companion — so
-what remains there is quantitative: an explicit stability constant for that recovery on windows at
-unknown phase, and the corresponding law for rows that are only approximately equal in degrees
-five and six. Rates in the cofinal Möbius
-laws that are uniform in the band ratio $B$; mixed-level covariances of centered pronic residue
-cells, which are positive when the cells share a factor and start together.
-
-### Research topics toward the shared target
-
-1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
-   `Σ_{p∼P} Σ_{q∼Q} a_p b_q 𝒢^{ec}(p, q)` (§3.13) is reduced exactly to the dual norm
-   `Σ_p |Λ_p(c')|/p` of the large-scale row; bound it for the Möbius and prime rows at moduli
-   growing with the window, through the reciprocity `{N/pq} ↔ p̄/q + q̄/p` and without an external
-   character or modulus average, after subtracting the omitted-class term of the prime row
-   (§3.13). The unit is the cross-scale exponent `θ = 2 log P/log Q`: Type II stands at `6/5`,
-   sharp cutoffs at `4/3`, rows smooth to order `K − 1` at `2K/(K + 1)`, the receiver at `θ = 2`.
-   On the damping side the unit is the band: the receiver is bounded through
-   `ε = 1/2 − κσ(T)/(480 log T)` (§3.15), and every wider band is a zero-free region.
-2. **The signed sum over moduli** of the interior martingale, equivalently the coercive
-   contraction; identities cannot produce it.
-3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window
-   `(X/2, 2X)`: which consecutive integers, residue classes and jump spacings of `{N/p}` couple the
-   divisor edges that `ArithmeticIncidencePositivity` classifies multiplicatively.
-4. **The parity pair** with `TransHorizonIncidenceMechanics`: what the pronic Gram and the
-   divisor-sum data cannot see (§3.5 and the THIM parity law).
-5. **Selectivity.** Identify the additive input in each estimate. Multiplicative identities alone survive
-   generalized number systems; ask which additional structure distinguishes `ζ` from `ζ(s−a)ζ(s+a)`.
-6. **The chain in receiver coordinates.** SAEI has identified the correct norm: ordinary `ℓ²`
-   on the normalized chain coordinate, equivalently pronic energy on the prefix. Estimate its
-   reciprocal orbit at fixed subhalf damping, with mixed residue-mode terms and tails retained.
-   Decide whether a forward `ℓ²` operator bound can supply this; the first-column test is already
-   equivalent to admission. A source-blind backward estimate is ruled out by the residue modes.
+- a signed bound on the interior martingale over moduli — the coercive contraction;
+- single-modulus statistics of the actual rows at balanced scales with a quantitative gain, every
+  remainder summed;
+- dual rows with both vanishing readout defect and vanishing centred energy;
+- a signed estimate for the reciprocal orbit of the chain in pronic $\ell^2$ at fixed sub-half damping.
 
 ---
 
-## 6. Working in the theory
+## 7. Open problems
+
+### 7.1 The receiver
+
+For every $\delta>0$ exhibit $\varepsilon\in(0,\delta)$ with $\sup_TE_T(\varepsilon)<\infty$.
+Equivalently, exhibit such $\varepsilon$ with $\sup_TE^{\mathrm{int}}_T(\varepsilon)<\infty$, or with the
+strict interior contraction of §3.8. Known for every $\varepsilon\ge\frac12$ and on the zero-free bands
+$\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ below it (§3.15), open at every fixed
+$\varepsilon<\frac12$; a band of fixed positive width supplies an accumulation of admitted dampings and
+therefore a zero-free strip. An isolated damping must not be assigned that stronger conclusion
+without an additional argument. On the period torus the primitive energy of the damped row grows like
+$N^{1-2\varepsilon}$ for $\varepsilon<1/2$, and the receiver is smaller than it by exactly the
+Vinogradov–Korobov factor, so the bound, if it exists, is carried by the pronic weighting of small
+arguments below the first period, and its unconditional size is the zero-free region.
+
+### 7.2 The interior martingale
+
+After the canonical drifts are subtracted, the active-deleted diagonal and the predecessor-peak
+bracket are bounded for every positive damping; the whole obligation sits in the Bézout interior
+martingale $M^{\mathrm{int}}_T$, whose required cancellation rate per $\log T$ has small-damping
+slope $\ge 7/24$. The interior is a sum of signed atoms along progressions $n\equiv-1\ (d)$ with
+exactly known conditional means; missing is the signed sum over moduli. An inequality
+$2M^{\mathrm{int}}_T+2\,\mathrm{Counterterm}\cdot H^{\mathrm{comp}}_T\le(1-\delta)E_T+C_\varepsilon$ with
+$\delta>0$ is equivalent to the receiver. Identities cannot produce it — summation by parts returns
+the energy with coefficient one — so a signed arithmetic input across moduli must.
+
+### 7.3 The dual problem
+
+RH is also the statement that rows exist whose shifted prefix discrepancy has arbitrarily small
+pronic energy, equivalently with readout near one and vanishing centered energy, equivalently with
+unbounded ratio $\mathcal R(c)^2/Q^{\mathrm{ec}}(c)$. The unconditional floor is $\kappa/\log N$.
+Whether rows attain $O(1/\log N)$, which would be a quantitative form of RH, and whether the
+power-damped cofactor rows have $(1-m(\varepsilon,Q))^2+V(\varepsilon,Q)\to0$ along some path
+$\varepsilon\to0$, $Q\to\infty$, are open; both require signed input across moduli. The residual's
+linear cusp fixes the rate on this side: the approach to the Báez–Duarte infimum is at best linear in
+the damping, with an explicit constant from one critical zero, so a quantitative form of RH in these
+coordinates is a statement about the constant, not about the exponent.
+
+### 7.4 Bilinear dispersion of the actual rows
+
+The reciprocity $\{N/pq\}\leftrightarrow\bar p/q+\bar q/p$ converts correlations between moduli into
+exponential sums with modular inverses, the Vasyunin reciprocity law holds with $O(p+q)$ error, and
+the cross-scale form is explicit to every order (§3.13): rank two at diagonal quality for
+$Q\ge P^{5/3}$ with arbitrary coefficients, sharply; exact loss the $\ell^1$ residue discrepancy;
+dual norm $\sum_p\lvert\Lambda_p(c')\rvert/p$. At fixed moduli the statistics are known: $o(1/Q)$ for the
+Möbius row, and for the prime row the omitted-class value $-\pi^2(p^2-1)^2/(144p^2(p-1)Q)$, which
+is not small and must be centred. The centred prime row is controlled on
+$P^{1+\delta}\le Q\le P^{30/17-\delta}$ through the $17/30$ short-interval input, and the Möbius block
+at every scale above its logarithmic small-prime threshold, both as $o$-statements. Open: balanced
+scales $Q\approx P$ for the prime row, growing moduli with block masses and the $n^{-3},n^{-4}$ tails
+summed, and a quantitative gain strong enough to control the complete receiver. A power saving in the stated window mean square is a fixed
+zero-free strip. Generic Type-II and pronic-window counterexamples use different coefficient classes
+and different exponent parameters; they do not refute additional cancellation of the literal rows.
+
+### 7.5 Bézout coupling and cross-depth cancellation
+
+The least seed $pa=qb+1$ is isolated inside the dilation profile with inverse-scale error, its
+complete fibre has mass $r\mu(r)$, and the profile is evaluated exactly at every prime ratio.
+Missing: control of the signed complement of all other lags, or of a signed prime packet, beyond a
+cofinal family of nearby prime pairs; and a bound, uniform in the cutoff, on the Dirichlet form of
+the profile that the cross-depth identities (hypercube factorization, finite
+$\zeta\cdot\zeta^{-1}=1$ cancellation, head/mean/tail split) produce.
+
+### 7.6 The damping chain in receiver coordinates
+
+The chain is a Markov semigroup in the damping whose positive-time centred operators are compact on
+$c_0$, with an exactly computed entrance law, dense residue modes, and an entrance tail that is not
+square-summable below half damping while the reciprocal observable is. Admission is the ordinary
+$\ell^2$ orbit of the reciprocal, equivalently square summability of the first column. Open: a
+signed estimate for that orbit at fixed sub-half damping, with mixed residue-mode terms and tails
+retained, or a forward $\ell^2$ operator bound strong enough to supply it; compactness and density in
+$c_0$ supply neither, and a source-blind backward estimate is ruled out by the residue modes. The
+damping derivative is an exact finite Markov boundary-flux identity,
+`E′ = boundaryFlux − jumpEnergy − density forcing`
+([DampingWorkAsArithmeticMarkovBoundaryFlux](DampingWorkAsArithmeticMarkovBoundaryFlux.lean)), whose
+jump term is nonnegative while both it and the flux can grow with the cutoff; and the zero-damping
+signed work has the ordered limit $\lim_T\lim_{\varepsilon\downarrow0}\mathrm{work}(\varepsilon,T)=-4\gamma$
+with an absolutely summable harmonic trace
+([ZeroDampingSignedWorkHasFiniteHarmonicTrace](ZeroDampingSignedWorkHasFiniteHarmonicTrace.lean)).
+Neither supplies an infinite-horizon derivative bound at positive damping; that is the interface with
+continuation and compensation theory.
+
+### 7.7 Observation constants
+
+The sharp observability horizon at arbitrary phase: $\Phi(N)$ is the shortest universal recurrence
+and $2N-3$ holds at common returns and for $N=3,4$ everywhere; the gap between a quadratic universal
+horizon and a linear special one is open, and any linear law must be incidence-algebraic. The exact
+window sandwich constant in $[\Phi(N)-2,N(N-1)]$. Explicit stability constants for relation-spectrum
+recovery on windows at unknown phase, and the law for rows only approximately equal in degrees five
+and six. Rates in the cofinal Möbius laws uniform in the band ratio $B$; concavity of the cofinal
+profile (its monotonicity is proved); mixed-level covariances of centred pronic residue cells, which
+are positive when the cells share a factor and start together; the sign of a general signed prime
+packet in the energy-centred Gram.
+
+### 7.8 Research topics
+
+1. **Single-modulus statistics of arithmetic rows.** The bilinear dispersion of
+   $\sum_{p\sim P}\sum_{q\sim Q}a_pb_q\mathcal G^{ec}(p,q)$ (§3.13) is reduced exactly to the dual norm
+   $\sum_p\lvert\Lambda_p(c')\rvert/p$ of the large-scale row; bound it for the Möbius and prime rows at
+   moduli growing with the window, through the reciprocity and without an external character or
+   modulus average, after subtracting the omitted-class term of the prime row. The unit is the
+   cross-scale exponent $\theta=2\log P/\log Q$: Type II stands at $6/5$, sharp cutoffs at $4/3$, rows
+   smooth to order $K-1$ at $2K/(K+1)$, the receiver at $\theta=2$. On the damping side the unit is
+   the band: the receiver is bounded through $\varepsilon=\tfrac12-\kappa\sigma(T)/(480\log T)$, and every
+   wider band is a zero-free region.
+2. **The signed sum over moduli** of the interior martingale, equivalently the coercive contraction.
+3. **Additive window structure for the incidence face.** Bézout incidence inside a dyadic window
+   $(X/2,2X)$: which consecutive integers, residue classes and jump spacings of $\{N/p\}$ couple the
+   divisor edges that Arithmetic Incidence Positivity classifies multiplicatively.
+4. **The parity pair** with Trans-Horizon Incidence Mechanics: what the pronic Gram and the
+   divisor-sum data cannot see (§3.5 and the THIM parity law).
+5. **Selectivity.** Identify the additive input in each estimate. Multiplicative identities alone
+   survive generalized number systems; ask which additional structure distinguishes $\zeta$ from
+   $\zeta(s-a)\zeta(s+a)$.
+6. **The chain in receiver coordinates** (§7.6).
+
+---
+
+## 8. Working in the theory
 
 - **Name the coordinates and the regime first.** Raw, response, Selberg, or spectral; period,
   prefix, octave, linear band, or window at arbitrary phase, and at which horizon

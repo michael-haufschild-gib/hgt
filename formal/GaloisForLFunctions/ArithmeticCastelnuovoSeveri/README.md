@@ -40,6 +40,14 @@ is the number of zeros right of the critical line (`zeta_hodgeDefect_iff`).
 `RHTower` supplies the explicit formula, the Weil criterion, the Lévy–Khintchine form of the
 archimedean symbol and the matrix inertia calculus.
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical arithmetic
+form. ACS reads that sign as the Hodge index of the scaling surface and asks for the geometric input
+that produced it over `𝔽_q`: an effectivity with Riemann–Roch supply. Every positivity route of the
+corpus — incidence, lag, aperture — meets the same form; ACS contributes the exact count of its
+failure (right zeros), the calibration over `𝔽_q`, and the fake data any forcing argument must
+exclude. Read §§1–2 for the dictionary, §3 for the pillar theorems, §5 for the traps and §§6–7 for
+the questions and open problems.
+
 ---
 
 ## 1. Why
@@ -235,25 +243,75 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`successor_localPair_bounds`, `archLevyDensity_log_succ`). Over `𝔽_q[T]` the cell is
     degenerate (`successorCell_functionField`).
 
-### 3.8 Rank–trace inertia and the constant `2/3` (`TheTwoThirdsConstantIsPairCorrelation`)
+### 3.8 Rank–trace inertia: what a Gram functional can certify (`TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`)
 
-25. **Capacity `2 − κ` of the form, coalescence indistinguishability, and the pair-correlation
-    origin of `2/3`.** When Riemann–Roch effectivity is absent, rank–trace inertia on the real
-    evaluation Gram `Â = P + Q` replaces `p = 0` by `n₊(Q) ≤ p`. At `c = 2` (uniquely selected by
-    `c² − k_c(2) = (c − 2)² = 0`, `offLine_sub_doubleZero_weight`, `paramDeficit_nonneg_and_eq_zero_iff`),
-    both a double critical zero (`m = 2`) and a coalescing off-line pair (`y_ρ = 0`) produce the
-    **identical** rank-one matrix `2vvᵀ` (`blockA_coalescedPair_eq_doubleZero`). With `tr Â = N` and
-    `‖Â‖_F² = κN`, the form certifies `(2 − κ)N` simple critical zeros (`unitary_calibration_full_simple`
-    at `κ = 1` over `𝔽_q`; `κ ≥ 2` on fake curves with `s₁ = 0`, `fake_curve_frobSq_lower_bound`,
-    `goldenDatum_rankTrace_barrier`), and **no** matrix functional `Φ(blockA, N)` can certify more
-    than `(2 − κ)N` critical zeros (`universal_matrix_functional_barrier`). Below the square-root
-    threshold `0 < λ ≤ 1`, the archimedean diagonal `1/λ` and unconditional prime diagonal `λ/3`
-    give `κ(λ) = 1/λ + λ/3` with `2/3 − (2 − κ(λ)) = (1 − λ)(3 − λ)/(3λ) ≥ 0`
-    (`subthreshold_two_thirds_deficit`, `subthreshold_cert_le_two_thirds`), attaining `2/3` uniquely
-    at `λ = 1` (`κ = 4/3`, where `rankTrace_tight_at_two_thirds` and
-    `universal_matrix_functional_barrier_at_two_thirds` are exact on `6k`-zero configurations).
-    Every finite pair-correlation bound `F ≤ B` beyond `λ = 1` gives `2/3 + 1/(3(3B − 2)) > 2/3`
-    (`two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`).
+Without Riemann–Roch effectivity the intersection form still certifies a *proportion* of zeros,
+through rank–trace inertia on the real evaluation Gram `Â = P + Q` of hat-unit tests — `P` from the
+critical-line zeros, `Q` from the off-line pairs — with `tr Â = N` and `‖Â‖_F² = κN`. Inertia
+replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
+
+25. **Capacity `2 − κ` and the coalescence blind spot.** At `c = 2`, the unique value with
+    `c² − k_c(2) = (c − 2)² = 0` (`offLine_sub_doubleZero_weight`,
+    `paramDeficit_nonneg_and_eq_zero_iff`), a double critical zero and a coalescing off-line pair
+    produce the identical rank-one matrix `2vvᵀ` (`blockA_coalescedPair_eq_doubleZero`). The form
+    certifies `(2 − κ)N` simple critical zeros (`unitary_calibration_full_simple` at `κ = 1` over
+    `𝔽_q`; `κ ≥ 2` on fake curves with `s₁ = 0`, `fake_curve_frobSq_lower_bound`,
+    `goldenDatum_rankTrace_barrier`), and no functional of `(Â, N)` alone certifies more
+    (`universal_matrix_functional_barrier`). Below the square-root threshold `0 < λ ≤ 1` the
+    archimedean diagonal `1/λ` and the unconditional prime diagonal `λ/3` give `κ(λ) = 1/λ + λ/3`, so
+    the certificate is `2 − κ(λ) ≤ 2/3`, with equality only at `λ = 1`
+    (`subthreshold_two_thirds_deficit`, `subthreshold_cert_le_two_thirds`), where the barrier is exact
+    on `6k`-zero configurations (`universal_matrix_functional_barrier_at_two_thirds`). This is the
+    intersection-theoretic reading of Alpöge–Furman's two-thirds theorem
+    (`RHTower.thmA_lam_spectralSlack`, from the vendored `Zeta23`): the constant `2/3` is set by
+    stopping pair correlation at `λ = 1`, and every finite pair-correlation bound `F ≤ B` beyond
+    `λ = 1` would give `2/3 + 1/(3(3B − 2))` (`two_thirds_and_pair_correlation_escape`,
+    `tendsto_certOpt_atTop`).
+26. **Two routes past the blind spot, each with one unproved input.** The summed matrix forgets
+    which part of `Â` is on the line; the pair `(P, Q)` does not. For `Q = 0` the on-line Parseval
+    slack is exactly `‖P‖_F² − c tr P + (c²/4) rank P` (`onSlack_zero_eq`), which restores the rank
+    at `c = 2` (`rank_trace_add_onSlack_zero_eq_rank`), while a non-coalesced off-line pair carries
+    negative-part credit `4m‖y‖² > 0` (`offLine_pair_negPart_credit_pos`). The average of the `c = 2`
+    and `c = 3` functionals is `((7 − 3κ)/4)N`, which is `(3/4)N` at `κ = 4/3`
+    (`jointRankTrace23_at_four_thirds`, `three_quarters_of_broken_blind_spot_at_four_thirds`). For `ζ`
+    this gives two implications, not a theorem:
+    * *the zero-side route:* the unconditional bound `(2/3 − ε)N + S(T) ≤ N₀*` keeps the zero-side
+      slack `S(T) ≥ 0`, so `S(T) ≥ N(T, 2T)/12` would give `(3/4 − ε)N(T, 2T) ≤ N₀*(T, 2T)`
+      (`zeta_three_quarters_of_spectralSlack_one_twelfth`);
+    * *the prime-side route:* `3/4` is equivalent to `κ ≤ 5/4` (`kappa_five_fourths_iff_three_quarters`);
+      at bandwidth `λ = 4/3` the diagonal, archimedean and pole constant is unconditionally
+      `43/36 = 5/4 − 1/18` and the prime–pole cross term is `O(T^{5/6}log²T)`, so the proposition
+      `RHTower.PrimeSurplusFourThirds` — a prime surplus filling the margin `1/18` — would give `3/4`
+      of the zeros simple and on the line; double windowing bounds the prime-frequency off-diagonal
+      at aperture `min(r, ρ)` unconditionally
+      (`zeta_three_quarters_from_prime_surplus_and_double_window`).
+
+    Neither premise is proved. The theorems fix exactly what has to be shown.
+
+### 3.9 The λ-ring of the scaling surface (`TheLambdaRingOfTheScalingSurface`)
+
+27. **Adams operations, Hecke cycles and the pole-plane splitting.** On any polar surface
+    `polarPart x = (x · V)H + (x · H)V` and `prim = 1 − polarPart` are orthogonal idempotents splitting
+    the surface into the pole plane and the primitive complement with pairing `−defect`
+    (`polarPart_add_prim`, `pair_orthog_split`, `pair_polarPart_prim`). The Newton–Witt exponential
+    `sigmaSeries g = exp(Σ_{j≥1} g(j)X^j/j)` is a `λ`-ring exponential (`hasGhost_sigmaSeries`,
+    `sigmaSeries_add`) that splits any trace `(1 + q^j) + g_prim(j)` into the pole factors times
+    `sigmaSeries g_prim` (`sigmaSeries_pole_split`); over `𝔽_q` this recovers
+    `zetaSeries = poleZeta · hOnePoly` (`CurveDatum.sigmaSeries_pointCount_split`), with the span Adams
+    operations exact isometries commuting with the splitting (`pair_spanAdams`, `polarPart_spanAdams`).
+    Over `ℚ` the logarithmic translation `scaleShift t` scales the pole coordinates by
+    `(e^{−t/2}, e^{t/2})` (`weilTest_scaleShift`), so the normalized Adams operators `adamsOp q` are
+    exact intersection, polar and defect isometries commuting with the splitting (`pair_adamsOp`,
+    `defect_adamsOp`, `polarPart_adamsOp`, `prim_adamsOp`). The Hecke correspondences
+    `T_a = √a · adamsOp a` satisfy `T_a H = aH`, `T_a V = V`, and the Hecke cycles `Γ_a(g) = T_a Δ_g` obey
+    the rational-scale pullback law `Γ_a(g) · Γ_b(g) = b · L(Δ_g, a/b)` (`pair_heckeCycle`), which on a
+    prime tower is `p^{min(k,l)} L(Δ_g, p^{|k−l|})` (`pair_heckeCycle_pow`). The arithmetic Lefschetz
+    number splits as `(a + 1)(x · H)(x · V) − √a · defect(adamsOp a x, x)` (`arithLefschetz_split`,
+    `sigmaSeries_arithLefschetz_split`); narrow bumps at integer scales read the prime comb as the Hecke
+    incidence (`weightedPrimeComb_scaleShift_eq_heckeIncidence`); and on the zero side `scaleShift (log q)`
+    multiplies the readout at `ρ` by `q^{ρ − 1/2}` (`paperFT_scaleShift_gammaOf`). The formal structure of
+    Weil's surface — Frobenius as an Adams operation, graphs as Hecke cycles, Lefschetz numbers as
+    intersections — therefore exists on the scaling surface. What it lacks is still Riemann–Roch.
 
 ---
 
@@ -286,11 +344,56 @@ them. ACS isolates which of these mechanisms the scaling surface has.
 | A finite degree certifies positivity | No degree works for all configurations over `ℚ`; over `𝔽_q` the window `2g` does. |
 | The comb aggregate is an intersection number | On resonators the prime intersection has no cross-prime terms; the aggregate is a mean-field shadow. |
 | The pronic weight is the successor intersection | It is the pole mass of the cell; the intersection is the collar `ω(log(1 + 1/k)) ≍ k/2`. |
+| The three-quarters modules prove that 75% of the zeros are on the line | They prove `(3/4)N` *conditionally*: on a zero-side slack `S(T) ≥ N/12`, or on the proposition `PrimeSurplusFourThirds`. The unconditional content is `(2/3 − ε)N + S(T) ≤ N₀*` with the slack retained, the `43/36` diagonal constant and the `O(T^{5/6}log²T)` cross term. |
+| Adams operations make the scaling surface a Weil surface | They make it a surface with Frobenius, graphs and Lefschetz numbers; Riemann–Roch is still the missing ingredient. |
 | The rank–trace form is capped at `2/3` | The form has capacity `2 − κ` (reaching `1` at `κ = 1`); `2/3` is `2 − κ(1)` from stopping pair correlation at `λ = 1` (`κ(1) = 4/3`), where double zeros and coalesced pairs share `blockA`. |
 
 ---
 
-## 6. Open problems
+## 6. Questions the programme answers and the tools it builds
+
+### 6.1 Questions
+
+1. **Which ingredients of Weil's proof exist for `ℤ`?** The pairing, the fibres, Lefschetz,
+   adjunction, Bézout positivity, Adams operations and Hecke graphs: all exact. Riemann–Roch: absent,
+   and its existence with ample degrees is RH.
+2. **What does the failure of the Hodge index measure?** The number of distinct zeros right of the
+   line, filtered by degree, split by reflection sector; never depth or multiplicity.
+3. **Which arithmetic data force the sign?** Not span data, integrality, functional equation or
+   positive Euler data — the golden datum has all of them and fails. A forcing input must be
+   violated by such fake data.
+4. **What can a Gram functional certify without effectivity?** A proportion `2 − κ`, capped at `2/3`
+   below pair correlation at `λ = 1`, with two named inputs that would reach `3/4`.
+5. **What would an effectivity for `ℤ` have to be?** A cone with Riemann–Roch supply and ample
+   degrees proved without the sign of the form, reducing over `𝔽_q` to Weil's.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Polar surfaces*: defect, primitive projection, four forms of the Hodge index, realizability.
+- *The `𝔽_q` calibration*: curve data, span Toeplitz forms, the Pontryagin law, fake curves, Witt and
+  Beurling structure.
+- *The scaling surface* with its signature law and the Pontryagin law over tempered configurations,
+  reflection sectors and the degree filtration.
+- *Visibility calculus* of right zeros from on-line mass, local and logarithmic density.
+- *The Kronecker-rank dichotomy* and exponential-polynomial recurrence.
+- *Bézout positivity* through the Lévy jump form of the collar.
+- *Hecke incidence*: the Cartesian law, resonators, the successor cell.
+- *Rank–trace inertia* with spectral slack.
+- *The `λ`-ring*: Adams operations, Hecke correspondences and cycles, arithmetic Lefschetz numbers.
+
+To be built:
+
+- a notion of section on the scaling surface with Riemann–Roch supply and an ampleness proof that does
+  not use the sign of the form;
+- an effectivity stable under the Hecke correspondences;
+- the near-radical count of Landau–Widom type;
+- a bound on the coupling of prime towers through the collar on rank-`P` boxes.
+
+---
+
+## 7. Open problems
 
 1. **Riemann–Roch for `ℤ` — the open core.** A notion of section on the scaling surface whose
    effective classes have nonnegative ample degree by definition and which supplies effective
@@ -300,22 +403,26 @@ them. ACS isolates which of these mechanisms the scaling surface has.
    aperture-`L` tests with `|W| ≤ ε‖f‖²`, unconditionally in its upper half, and the rate
    `−log μ(L) ≍ 2π² N(T*)/log N(T*)` for configurations on the line. Known: lower bounds
    (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`).
-3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible, with explicit
-   constants depending on the local density (exact for an isolated pair, impossible uniformly;
-   resolved in `TheVisibilityDegreeOfRightZeros`: stepwise filtration `Σ_{k∉S} pairEnergy ≤ L` and
-   explicit visibility `a ≥ a₀ + Δ` from `onLineMass`, local density `M`, and logarithmic density
-   `A₀ log(|t| + 3)`).
+3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible is explicit in terms
+   of on-line mass, local density and logarithmic density, with the stepwise filtration for multiple
+   pairs (item 15); no degree works uniformly over all configurations. Open for `ζ`: a visibility
+   degree uniform in height, which needs the local off-line density that Square-Root Threshold
+   identifies as the clustering alternative.
 4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
    pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
    finite-Euler-product form on lattice tests.
-5. **λ-ring over `ℚ`.** Adams operations on the scaling surface whose Frobenius graphs are the
-   Hecke cycles, with the pole plane splitting off as over `𝔽_q`.
-6. **The constant `2/3`.** Why rank–trace inertia gives `2/3` of the zeros simple and on the line,
-   and no more; it comes from the pair-correlation input, not from the form.
+5. **Effectivity from the `λ`-ring.** The Adams operations, Hecke correspondences and the pole-plane
+   splitting exist (§3.9). Open: a cone of cycles stable under the Hecke correspondences, with
+   nonnegative ample degree and Riemann–Roch supply, built from them; and whether the identity
+   `L(x, a) = (a + 1)(x · H)(x · V) − √a · defect(adamsOp a x, x)` constrains the defect on the
+   primitive part beyond what the signature law gives.
+6. **Beyond `2/3`.** The constant is explained: capacity `2 − κ` at `λ = 1` (§3.8). Open: either input
+   that gives `3/4` — a zero-side spectral slack `S(T) ≥ N(T, 2T)/12`, or the prime surplus
+   `RHTower.PrimeSurplusFourThirds` at bandwidth `4/3` — or pair correlation beyond `λ = 1`.
 
 ---
 
-## 7. Success criteria and contributions
+## 8. Success criteria and contributions
 
 **The programme succeeds** when the scaling surface carries an effectivity whose ampleness is proved
 without the sign of the form and which satisfies Riemann–Roch, or when it is proved that no cone
@@ -334,7 +441,7 @@ Weil's argument.
 
 ---
 
-## 8. Principles
+## 9. Principles
 
 1. **Compute, then bound.**
 2. **Audit the hypotheses**: every positivity argument must use a constraint that fake data violate.
@@ -382,3 +489,5 @@ Weil's argument.
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell` | pronic weight = pole mass of the successor cell |
 | `TheSuccessorCollar` | collar bounds; consecutive Hecke cycles meet through the collar alone |
 | `TheTwoThirdsConstantIsPairCorrelation` | `2 − κ` capacity of rank–trace inertia, coalescence indistinguishability, `2/3` from `λ = 1` pair correlation |
+| `BreakingTheCoalescenceBlindSpotAndThreeQuarters` | unsplit `(P, Q)` spectral slack, `jointRankTrace23` (`(7 − 3κ)/4 = 3/4` at `κ = 4/3`), `κ = 5/4` prime-surplus & double-window routes to `75%` |
+| `TheLambdaRingOfTheScalingSurface` | universal `λ`-ring series, Adams operations `adamsOp q` and Hecke cycles `heckeCycle a g` on `scalingSurface`, pole-plane splitting, narrow-bump `heckeIncidence`, zero-side eigenlaw |

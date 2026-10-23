@@ -38,7 +38,6 @@ theorem wide_disc_growth {γ δ : ℝ} (hγ : 16 * Real.pi + 1 ≤ γ)
     rw [← this]; linarith) hre2 him1 him2
   linarith
 
-set_option maxHeartbeats 1000000 in
 /-- **Littlewood's zero-free region, with the threshold existential.** -/
 theorem exists_littlewood_zero_free_region :
     ∃ T : ℝ, 3 ≤ T ∧
@@ -55,10 +54,10 @@ theorem exists_littlewood_zero_free_region :
   have hL₀big : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ L₀ := le_max_left _ _
   have hL₀sq : 4 * (A' + 1) ^ (2 : ℕ) ≤ L₀ := le_max_right _ _
   refine ⟨max (16 * Real.pi + 1) (2 * Real.pi * Real.exp L₀), ?_, ?_⟩
-  · exact le_trans (by nlinarith) (le_max_left _ _)
+  · exact le_trans (by linarith) (le_max_left _ _)
   intro β γ hγT hβ1 hβc hzero
   have hγ16 : 16 * Real.pi + 1 ≤ γ := le_trans (le_max_left _ _) hγT
-  have hγ3 : (3 : ℝ) ≤ γ := by nlinarith
+  have hγ3 : (3 : ℝ) ≤ γ := by linarith
   have hγ0 : (0 : ℝ) < γ := by linarith
   -- the scale is past the threshold
   set L : ℝ := wideScale γ with hLdef
@@ -71,8 +70,8 @@ theorem exists_littlewood_zero_free_region :
     rwa [Real.log_exp] at this
   have hL1 : (10 : ℝ) ^ (16 : ℕ) + 1 ≤ L := le_trans hL₀big hLL₀
   have hL16 : (10 : ℝ) ^ (16 : ℕ) ≤ L := by linarith
-  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ L := by nlinarith
-  have hLpos : (0 : ℝ) < L := by nlinarith
+  have hL12 : (10 : ℝ) ^ (12 : ℕ) ≤ L := by linarith
+  have hLpos : (0 : ℝ) < L := by linarith
   set x : ℝ := Real.log L with hxdef
   have hx31 : (31 : ℝ) ≤ x := thirtyone_le_log_wideScale hL16
   have hxpos : (0 : ℝ) < x := by linarith
@@ -82,14 +81,16 @@ theorem exists_littlewood_zero_free_region :
   -- `L ≥ (A' + 1) x`
   have hsqA : 2 * (A' + 1) ≤ Real.sqrt L := by
     have h4 : 4 * (A' + 1) ^ (2 : ℕ) ≤ L := le_trans hL₀sq hLL₀
-    nlinarith [hsq, hsnn, hA'0]
-  have hLAx : (A' + 1) * x ≤ L := by nlinarith [hxL, hsqA, hsq, hsnn, hA'0]
+    exact (Real.le_sqrt (by linarith) hLpos.le).2 (by linarith)
+  have hLAx : (A' + 1) * x ≤ L := by
+    linarith [mul_le_mul_of_nonneg_left hxL (by linarith : (0 : ℝ) ≤ A' + 1),
+      mul_le_mul_of_nonneg_left hsqA hsnn]
   -- the parameters
   set δ : ℝ := x / (4000 * L) with hδdef
   have hδ0 : 0 < δ := by rw [hδdef]; positivity
   have hδ16 : δ ≤ 1 / 16 := by
     rw [hδdef, div_le_div_iff₀ (by positivity) (by norm_num)]
-    nlinarith [hxL, hsq, hsnn]
+    linarith [le_mul_of_one_le_left hxpos.le (by linarith : (1 : ℝ) ≤ A' + 1)]
   set η : ℝ := wideEta γ with hηdef
   have hηge : 5 * x ^ (2 : ℕ) / L ≤ η := by
     rw [hηdef, hxdef, hLdef]; exact wideEta_ge hL12
@@ -159,7 +160,7 @@ theorem exists_littlewood_zero_free_region :
   have hclose : 1 + δ - β ≤ η / 4 := by
     have h1 : 9 * x / (32000 * L) ≤ 5 * x ^ (2 : ℕ) / L / 4 := by
       rw [div_div, div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith [mul_nonneg (mul_pos hxpos hLpos).le
+      linarith [mul_nonneg (mul_pos hxpos hLpos).le
         (by linarith : (0 : ℝ) ≤ 160000 * x - 36)]
     linarith [hgapsmall, hηge]
   -- the inequality
@@ -202,7 +203,7 @@ theorem exists_littlewood_zero_free_region :
     have hle : 1 + 1 / δ ≤ 8192 * L := by
       have hstep : 4000 * L / x ≤ 8191 * L := by
         rw [div_le_iff₀ hxpos]
-        nlinarith [hx31, hLpos]
+        linarith [mul_le_mul_of_nonneg_left hx31 hLpos.le]
       rw [hinv]
       linarith
     have h1 : Real.log (1 + 1 / δ) ≤ Real.log (8192 * L) :=
@@ -228,7 +229,7 @@ theorem exists_littlewood_zero_free_region :
     have h3 : 5 * x ^ (2 : ℕ) ≤ η * L := by
       rw [div_le_iff₀ hLpos] at h1
       linarith
-    nlinarith [h3, hLpos, hxpos]
+    linarith [h3]
   have hrem : 80 / (η / 2) * X ≤ 1472 * L / x := by
     have h1 : 80 / (η / 2) * X ≤ (32 * L / x ^ (2 : ℕ)) * (46 * x) := by
       have hRpos : (0 : ℝ) < 80 / (η / 2) := by positivity
@@ -255,6 +256,6 @@ theorem exists_littlewood_zero_free_region :
     field_simp
     ring
   rw [hexp1] at hcomb
-  nlinarith [hLAx, hA'0, hxpos]
+  linarith [hLAx, hxpos, hLpos]
 
 end RHTower.Sieve

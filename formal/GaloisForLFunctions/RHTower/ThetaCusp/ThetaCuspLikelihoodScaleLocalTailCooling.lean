@@ -113,7 +113,6 @@ theorem oneThousandNineHundredNinetyFive_mul_thetaCuspLikelihoodTailProbability_
   have hpSmall : 1995 * p < 1 := by nlinarith
   simpa only [p, B] using hpSmall
 
-set_option maxHeartbeats 3000000 in
 /-- Scale-local Bell losses consume less than one hundredth of the ordinary fourth score. -/
 theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
     {x : ℝ} (hx : 0 ≤ x)
@@ -156,7 +155,7 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
     have h22 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     have h22' : e2 ^ (2 : ℕ) ≤ p * e4 := by
       simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h22
-    nlinarith [sq_pos_of_pos he2]
+    exact pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22') he4.le
   have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
@@ -171,30 +170,30 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
   have hAe2 : e1 < A * e2 := by
     have hmul := mul_lt_mul_of_pos_right hA he2
-    nlinarith
+    linarith
   have hb2 : 0 < b2 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
-    nlinarith
+    linarith
   have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
     have hmul := mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hb3 : 0 < b3 := by
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
     have hcross : A * e1 ≤ 3 * A ^ (2 : ℕ) * e2 := by
       have hleft : A * e1 ≤ A * (e2 / 3) := by
         apply mul_le_mul_of_nonneg_left (by linarith) hA0.le
       have hright : A * (e2 / 3) ≤ 3 * A ^ (2 : ℕ) * e2 := by
-        nlinarith [mul_pos hA0 he2]
+        linarith [mul_pos hA0 he2, mul_lt_mul_of_pos_right hA (mul_pos hA0 he2)]
       exact hleft.trans hright
-    nlinarith
+    linarith
   have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
@@ -209,7 +208,7 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
   have hb1b3 : 4 * b1 * b3 ≤ 10 * p * b4 := by
     have hcore := hb1b3Core.trans hb1b3Moment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower (by positivity : 0 ≤ 10 * p)
-    nlinarith
+    linarith
   have hb2sqCore : b2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by
     have hupper0 : 0 ≤ 4 * A ^ (2 : ℕ) * e2 := by positivity
     have hpow := pow_le_pow_left₀ hb2.le hb2Upper 2
@@ -222,7 +221,7 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
     have hcore := hb2sqCore.trans hb2sqMoment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ (15 / 2 : ℝ) * p)
-    nlinarith
+    linarith
   have he1four : e1 ^ (4 : ℕ) ≤ p ^ (3 : ℕ) * e4 := by
     have h11sq := pow_le_pow_left₀ (sq_nonneg e1) h11 2
     have hp0 : 0 ≤ p := hp.le
@@ -239,10 +238,10 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
       dsimp only [b1]
       have hscaled := mul_le_mul_of_nonneg_left he1four
         (by positivity : 0 ≤ 96 * A ^ (4 : ℕ))
-      nlinarith
+      linarith
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ 15 * p ^ (3 : ℕ))
-    nlinarith
+    linarith
   have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 1 / 100 := by
     have hpUpper : p < (1 / 1995 : ℝ) := by linarith
     have hp3 : p ^ (3 : ℕ) < (1 / 1995 : ℝ) ^ (3 : ℕ) :=
@@ -282,7 +281,7 @@ theorem ninetyNineHundredths_mul_ordinaryJetFour_lt_logJetFour_of_59Over16_le
     ring
   rw [hdecomp]
   have hpositive : 0 < 12 * b1 ^ (2 : ℕ) * b2 := by positivity
-  nlinarith
+  linarith
 
 end
 end RHTower

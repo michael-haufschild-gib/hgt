@@ -968,11 +968,21 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         the estimate the programme needs — a signed pairing with an unbounded defect — is exactly
         a frequency integral of an explicit signed symbol against a nonnegative density, whose
         concentration is limited by the aperture.
+      * **`integral_spectralDensity_eq_mass`**, **`coshCosKernel_zero`**,
+        **`chebyshev_pairing_ge_of_symbol_ge`**,
+        **`chebyshev_pairing_nonneg_of_symbol_nonneg`**, **`symbol_zero_eq`** — the symbol
+        criterion. The spectral density is nonnegative with total mass the test's energy, so a
+        pointwise floor `c` on the signed symbol gives `pairing ≥ 2c·A(0)` for **every** test: the
+        sign of the prime–polar part of the ledger, a condition quantified over all tests,
+        reduces to the sign of one explicit elementary function of frequency. At the origin that
+        function is the Chebyshev–Mertens comparison `Σ_{n≤N} Λ(n)/√n − 4 sinh r`, so the
+        criterion's zero-frequency slice is exactly the PNT-level balance the programme already
+        identifies as the obstruction.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 362 headline results of this card, in the order the card states them. Every name is a
+The 367 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -982,7 +992,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 289.**  Excluded: 44 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 294.**  Excluded: 44 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1346,6 +1356,11 @@ contributions of the field, and are excluded.
 360. `sum_prime_eq_integral_primeSymbol`
 361. `integral_Ioi_cosh_mul_autoCorrelation_spectral`
 362. `chebyshev_pairing_eq_spectral`
+363. `integral_spectralDensity_eq_mass`
+364. `coshCosKernel_zero`
+365. `chebyshev_pairing_ge_of_symbol_ge`
+366. `chebyshev_pairing_nonneg_of_symbol_nonneg`
+367. `symbol_zero_eq`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1365,3 +1380,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — polar side in spectral coordinates; prime–polar balance as one signed-symbol integral.
 - 2026-10-23 — sign law of the polar symbol and the inaccessibility of its paying band to odd tests.
 - 2026-10-23 — bridge: the Chebyshev-defect pairing equals the signed-symbol spectral integral.
+- 2026-10-23 — symbol criterion: a pointwise symbol floor bounds the pairing on every test.

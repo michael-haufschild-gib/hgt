@@ -42,8 +42,15 @@ the poles. Lag Abel summation expresses that balance through one two-pole Chebys
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks an effectivity or intersection argument that forces the required sign. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Retains the source signs when passing to ratio kernels and absolute majorants. |
 
+**The shared target.** The programmes in the table work on one object: RH as the sign of the
+complete critical arithmetic form, read through pairwise incidence, lag (Square-Root Threshold) and
+aperture (Arithmetic Criticality Theory). AIP owns the incidence face — conductance by conductance,
+with the pole as the only positive source on crossing pairs — and reports progress in the width
+unit: a ledger deficit at rate `2σ` at every aperture is the strip `½ + σ`.
+
 Read §2 for pair and weight conventions, then the lattice classification, the odd fold, the shared
-surplus, and the tower calculus in §3. Keep three levels separate: a comparison of scalar weights,
+surplus, the tower calculus and the Chebyshev ledger in §3; §4 lists the pillar theorems and §§6–7
+the questions and open problems. Keep three levels separate: a comparison of scalar weights,
 an integrated energy inequality, and positivity for all compact tests. Only the last is the RH
 criterion. `RHTower` supplies the archimedean, explicit-formula and divisor-cut analysis.
 
@@ -862,93 +869,177 @@ endpoints without exceeding either diagonal budget. Balance makes positivity equ
 payment; frustration permits positive forms that require a global treatment. A continuum
 application still needs a justified coupling and uniform limiting estimates.
 
-### The prime–polar balance as a Chebyshev pairing
+### The Chebyshev ledger: the prime–polar balance as one signed functional
 
-The large-aperture comparison has an exact arithmetic coordinate. For a `C¹` lag weight `h`
-vanishing beyond a finite endpoint, put
+The large-aperture comparison has an exact arithmetic coordinate, developed in
+`LagChebyshevAbelSummation`. Its subject is the arithmetic channels of the form only — the prime
+side and the pole plane; the archimedean density is not part of this ledger.
 
-    E(s) = e^s + s − 1 − ψ(e^s).
+52. **The balance and the receiver.** For a `C¹` lag weight `h` vanishing beyond a finite endpoint,
+    with the **two-pole Chebyshev defect** `E(s) = e^s + s − 1 − ψ(e^s)`, lag Abel summation gives
 
-Lag Abel summation gives
+        Σ_n Λ(n) h(log n) − ∫_{s>0} (e^s + 1) h(s) ds = ∫_{s>0} E(s) h'(s) ds
 
-    Σ_n Λ(n) h(log n) − ∫_{s>0} (e^s + 1) h(s) ds = ∫_{s>0} E(s) h'(s) ds
-
-(`sum_vonMangoldt_sub_polar_eq_chebyshev` in `LagChebyshevAbelSummation`). The primitive
-`e^s + s − 1` vanishes at `0`; its derivative is the density of both poles. With
-`h(s) = e^{−s/2} A(s)`, the left side is the prime autocorrelation charge minus its polar
-comparison `2cosh(s/2)A(s)`, and the derivative on the right is
-`e^{−s/2}(A'(s) − A(s)/2)`.
-
-A second integration by parts gives the receiver itself. With
-`D(s) = ∫₀ˢ(e^u − ψ(e^u))du`, the same imbalance is
-
-    −∫_{s>0} (D(s) + s²/2 − s) h''(s) ds
-
-(`sum_vonMangoldt_sub_polar_eq_criticalScalePrefix`). Tail and double-tail weights recover
-mollified values of the defect and its primitive. Band-supported weights see the defect modulo
-constants, and the primitive modulo affine functions; the boundary terms cannot be discarded
-for a general weight. For the test weight `2e^{−s/2}A(s)`, the polar integral is exactly
-`2((∫F cosh(x/2))² − (∫F sinh(x/2))²)`, the pole plane. Thus the incidence decomposition and
-the critical-scale receiver are two readings of the same signed functional.
-
-The calculus also applies to an arbitrary integer source and to general lag systems, using their
-own prefixes and their own defects. This is a selectivity test: universal Gram positivity and
-Abel identities survive a change of source. The estimate on the actual von Mangoldt defect is
-where arithmetic must enter. Its pointwise defect is unbounded because prime atoms have
-unbounded jumps; a uniform pointwise bound is therefore the wrong replacement for a controlled
-integrated or weighted estimate.
-
-This identity retains the cancellation discarded by separate atom and pole bounds. It also
-specifies the remaining estimate: bound the signed pairing of the actual Chebyshev defect with
-these autocorrelation derivatives, uniformly in the test aperture and in the required mass or
-archimedean norm. A bound on `E` imported from a zero strip cannot establish that same strip
-independently. The normalisation matters as much as the exponential rate.
-
-52. **Full reflected-prime/polar allocation across arbitrary tests (`ReflectedPrimePolarAllocation`).**
-    Restricted-horizon certificates (`GlobalSharedSurplusAllocation`, `fullZeroForm_nonneg_of_stripAllocation`)
-    decouple the reflected-prime strips from `poleCharge` (`R ≤ 3/5`), which fails across arbitrary
-    tests for two independent reasons on the odd edge tent `F = edgeTentOdd r ε` (`0 < ε ≤ log 2`,
-    `ε < r`):
-    * `F(x) sinh(x/2) ≥ 0` on all of `ℝ`, giving `poleCharge F ≥ (ε⁴/32) sinh²((r − ε)/2) ≍ ε⁴ e^r`
-      (`poleCharge_edgeTentOdd_ge`), whereas `stripBoxEnergy F 0 r ≤ 3ε²r`, so `poleCharge F`
-      eventually outgrows `stripBoxEnergy F 0 r + C r` for every linear potential budget `C`
-      (`eventually_stripBoxEnergy_add_linear_lt_poleCharge_edgeTentOdd`);
-    * `F(x) F(x + L) = 0` for **every** `L ∈ [ε, 2(r − ε)]` (all sub-light-cone shifts `n ≥ 2` with
-      `log n ≤ 2(r − ε)`, including `log n < r`) and `F(x) F(x + L) ≤ 0` for all `L ≥ ε`, so
-      `evenStripGain F r n = oddStripCost F r n` below the light cone and
-      `oddStripCost F r n ≤ evenStripGain F r n` across all `n ∈ relevantShifts r`
-      (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`).
-    Unconditionally across all tests supported in `[−r, r]`:
-    * the favorable strip gains satisfy the exact polar-Chebyshev allocation
-      `Σ_{n ∈ relevantShifts r} evenStripGain F r n = ∫_{s>0} 4 cosh(s/2) stripMass F r s ds + ∫_{s>0} E(s) · 2e^{−s/2}(−F(s−r)² − ½ stripMass F r s) ds`
-      (`sum_evenStripGain_eq_polar_add_chebyshev`);
-    * the joint **reflected-prime/polar cost**
-      `reflectedPrimePolarCost F r = Σ_n oddStripCost_n − Σ_n evenStripGain_n + poleCharge F`
-      equals `Σ_{n ∈ relevantShifts r} 2Λ(n)/√n A(log n) − ∫_{s>0} 4 cosh(s/2) A(s) ds`
-      (`reflectedPrimePolarCost_eq_prime_sub_polar_autoCorrelation`), equals the finite-horizon
-      two-pole Chebyshev pairing
-      `∫_{0 < s ≤ 2r} E(s) · 2e^{−s/2}(crossCorrelation F s − ½ A(s)) ds` for every odd `F ∈ C¹_c`
-      (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`), and equals
-      `−∫_{s>0} (D(s) + s²/2 − s)(lagTestWeight F)''(s) ds = ∫_{s>0} (D(s) + s²/2 − s) · 2e^{−s/2}(autoCorrelation (deriv F) s + crossCorrelation F s − ¼ A(s)) ds`
-      for every odd `F ∈ C²_c`
-      (`reflectedPrimePolarCost_eq_criticalScalePrefix`,
-      `secondCrossCorr_eq_neg_autoCorrelation_deriv`, `deriv_deriv_lagTestWeight`,
-      `reflectedPrimePolarCost_eq_criticalScalePrefix_autoCorrelation_deriv`);
-    * the incidence ledger rewrites at every aperture `0 < r < R` as
-      `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r`
-      (`fullZeroForm_eq_reflectedPrimePolarLedger`, `fullZeroForm_eq_chebyshevDefectLedger`,
-      `riemannHypothesis_iff_reflectedPrimePolarAllocation`), with no `R ≤ 3/5` restriction, and its
-      graded forms (`gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le`,
-      `gradedIncidenceAllocation_iff_chebyshevTwoPoleDefect_le`,
-      `zetaZeroWidth_le_of_chebyshevDefectAllocation_graded`,
-      `riemannHypothesis_of_chebyshevDefectAllocation_const_deficit`,
-      `riemannHypothesis_of_chebyshevDefectAllocation_every_pos_rate`) connect the Chebyshev-defect
-      allocation directly to the zero width `zetaZeroWidth ≤ σ`, uniform constant mass deficit
-      (`σ = 0`), and every-positive-rate graded deficit (`∀ σ > 0`).
+    (`sum_vonMangoldt_sub_polar_eq_chebyshev`). The primitive `e^s + s − 1` vanishes at `0`; its
+    derivative is the density of both poles. A second summation by parts pairs the curvature of the
+    weight with the critical-scale functional `D(s) = ∫₀ˢ(e^u − ψ(e^u))du`: the same imbalance is
+    `−∫_{s>0}(D(s) + s²/2 − s)h''(s)ds` (`sum_vonMangoldt_sub_polar_eq_criticalScalePrefix`). For the
+    test weight `2e^{−s/2}A(s)` the polar integral is exactly the pole plane
+    `2(∫F e^{−x/2})(∫F e^{x/2})`, a rank-one readout that is minus a square on odd tests. So the
+    incidence decomposition and the critical-scale receiver are two readings of one signed functional.
+    Tail and double-tail weights realise every mollified value of `E` and of `D + s²/2 − s`: the
+    ledger does not merely imply the receiver, it measures it. Band weights see `E` modulo constants
+    and `D` modulo affine functions (`abs_residue_le_centred`, `abs_residue_band_le_affine`), so
+    every estimate the ledger supports is an *approximation error* of the receiver across a band,
+    never its size.
+53. **The ledger is an instrument on sources.** Nothing in the summation is special to `Λ`: every
+    source, every lag system and every calibration `W` with `W(0) = 0` has its own prefix, defect and
+    critical-scale receiver, and the balance holds verbatim. What separates sources is therefore the
+    defect alone, and the defect is a complete invariant: two sources with equal lag prefixes agree
+    index by index (`eq_of_lagPrefix_eq`), every prefix is realised by a source, and the ledger
+    reads a single-index perturbation at `log m` exactly. The test models are separated at the only
+    quantity the ledger sees: the shifted pair carries `Λ(n)(n^α + n^{−α}) ≥ 2Λ(n)` and is off by a
+    full Chebyshev count (`two_mul_vonMangoldt_le_shiftedPairWeight`), indeed by a different pole
+    position; the Liouville twist is off by twice the odd-`Ω` prime-power mass
+    (`chebyshevTwoPoleDefect_le_liouville`); a geometric Beurling system is off at the size of the
+    main term; dilating a test by `λ` is a passage to the Beurling system of `λ`-th powers, whose
+    critical line is `1/(2λ)` (`weil_dilation_covariance`). A criterion calibrated to `ζ` cannot be
+    dilation invariant. The Möbius source is read against the reflected pole alone, with defect
+    `s − M(e^s)` and the Mertens receiver `∫₀ˢ(u − M(e^u))du`; real character twists and residue
+    classes have their own ledgers, which partition `ζ`'s with no cross terms. The logarithm source
+    has a double pole and defect `O(s)` (Stirling) unconditionally: the difficulty is specific to `Λ`.
+54. **Calibration and density.** An integer-indexed source can calibrate exactly the poles
+    `0 < ρ ≤ 1` to `O(1)`: the defect must absorb the calibration's increment across every cell,
+    which is unbounded for `ρ > 1` and for a double pole at `1`. The **ideal source** with weights
+    `1 + log(1 + 1/(n−1))` matches the two-pole calibration to `1 + log 2`
+    (`abs_lagSourceDefect_idealSource_le`), so an `O(1)` defect is neither automatic nor impossible,
+    and `ζ`'s ledger differs from the ideal one by exactly the PNT error paired with `h'`
+    (`ledger_vonMangoldt_sub_ideal`). Conversely a bounded defect forces density: an atom-free
+    interval of length `L` forces defect `≥ L/2` (`defect_poleAt_ge_of_atomfree`), a defect `≤ K`
+    forces at least `J` prime powers below `1 + 3KJ` (`card_ge_of_poleAt_defect_le`), and the
+    exponent of the forced density is the position of the pole. Since the atoms `log p` are
+    unbounded, so is `E` (`exists_abs_chebyshevTwoPoleDefect_gt`): the receiver is a statement about
+    the rate of growth of `E`, whose leading rate is the prime number theorem
+    (`tendsto_chebyshevTwoPoleDefect_div_exp_iff`).
+55. **The receiver as a discrete object.** The Chebyshev count is frozen on integer cells, so
+    `D(log(N+1)) = D(log N) + 1 − ψ(N)log(1 + 1/N)` (`criticalScalePrefix_log_natCast_succ`), `D` is
+    strictly convex on each cell with kinks exactly at the atoms, it is positive on the first two
+    cells (`criticalScalePrefix_pos_first_cell`, `criticalScalePrefix_pos_second_cell`), positivity
+    propagates across a cell exactly when `ψ(N)/N` leaves a margin — the receiver's sign is a
+    statement at PNT precision — and it lies in explicit unconditional envelopes at every scale
+    (`criticalScalePrefix_le_exp`, `criticalScalePrefix_ge_explicit`). The first prime windows are
+    identities: no arithmetic below aperture `log 2/2`, the single atom at `2` below `log 3/2`
+    (`testBalance_firstWindow`), the atoms at `2, 3` below `log 4/2`, and the first prime power
+    `4` below `log 5/2`.
+56. **Test geometry.** Past the aperture the correlation is at most half the mass, sharply
+    (`autoCorrelation_le_half`), and the far prime side is one bilinear pairing of the two halves
+    of the test — the convolution of the halves — so on an odd test with a nonnegative half every far
+    atom is read with the favourable sign (`autoCorrelation_nonpos_of_odd_nonneg`). Along chains of
+    `k` points the extremal correlation is the path eigenvalue `cos(π/(k+1))` (the aperture–lag
+    ladder, sharp at every rung, `sum_atom_mul_autoCorrelation_le_ladder`), and the displacement
+    energy `D(t) = A(0) − A(t)` obeys `D(kt) ≤ k²D(t)`, which yields the universal quadratic gap
+    `A(u) ≤ (1 − u²/(8r²))A(0)` for `0 < u ≤ r` (`autoCorrelation_le_quadratic`). The Gram matrix of
+    atoms is a function of the ratio alone, banded by the integer spacing, and its Schur constant is
+    the mass times the number of partners within the aperture (`aggregate_le_bandwidth`,
+    `aggregate_dyadic_le`). The **replacement hypothesis** is exact: a power saving over the `ℓ¹`
+    prime cost is equivalent to a bounded Schur constant for the prime-ratio correlations, and
+    nothing weaker about the test supplies it. The cross-prime aggregate is the energy of the prime
+    field and the prime cost its first moment (`crossAggregate_eq_meanSquare`, `crossAggregate_ge`):
+    for first-power Euler weights it is polynomial, for the half-power family
+    `√p log p/(p − 1)` the question is open. An odd test has autocorrelation of zero total mass and
+    must carry a definite negative correlation at its far lags; the even/odd decomposition splits
+    the Weil-shaped form exactly (`residue_even_odd_split`).
+57. **The Euler comb ledger.** A squarefree comb `F − λF(· + a)` acts as the Euler transform at
+    weight `w = 2λ/(1+λ²)`; iterating over a family of lags telescopes into a payment law — the
+    first-power charge of each lag, in the ledger transformed by its predecessors, is paid by the
+    mass (`eulerPayment_le_mass`) — for every admissible weight `w ≤ 1`, which includes every
+    prime-power Euler weight `Λ(n)/√n ≤ 2/e` (`eulerPayment_vonMangoldt_le_mass`). The law is never
+    tight on a nonzero test (`eulerPayment_lt_mass`), and the raw first-power charge differs from the
+    sequential payment by explicit cross-charges at the ratio and product lags of each pair
+    (`eulerPayment_eq_raw_sub_cross`): the coherent subtraction the prime side needs, located at the
+    incidences of §3.
+58. **The spectral form.** The Gram kernel is the cosine transform of the nonnegative density
+    `|F̂|²` (`autoCorrelation_eq_integral_spectral`), so each weighted lag charge is the pairing of
+    its symbol `Σ_j w_j cos(2πa_jξ)` with that density; a comb multiplies the density by
+    `1 − w cos(2πaξ)`, and the payment law is the statement that a nonnegative multiplier removes at
+    most the whole mass (`eulerPayment_eq_integral_multiplier`). An aperture-`r` test has a
+    Lipschitz density, so it can track a peak of a symbol only if the peak is wider than `1/r`. The
+    polar side has the symbol `K_T(b) = ∫₀ᵀcosh(s/2)cos(bs)ds`, nonnegative only up to the first
+    quarter period: the pole pays only in the band `|ξ| ≤ 1/(8r)` (`coshCosKernel_nonneg_band`),
+    where an odd test, whose density vanishes quadratically at the origin, can place only a cubically
+    small mass (`setIntegral_spectralDensity_payingBand_le`). The whole Chebyshev pairing is one
+    frequency integral, `2∫(primeSymbol_N(ξ) − 2K_{2r}(2πξ))|F̂(ξ)|²dξ`
+    (`chebyshev_pairing_eq_spectral`), and the **symbol criterion** follows: a pointwise floor `c` on
+    the signed symbol gives the floor `2c·A(0)` on the pairing for every test supported in `[−r, r]`
+    (`chebyshev_pairing_ge_of_symbol_ge`). At the origin the symbol is the Chebyshev–Mertens
+    comparison `Σ_{n≤N}Λ(n)/√n − 4 sinh r` (`symbol_zero_eq`); a statement quantified over all tests
+    becomes a statement about one explicit function of frequency.
+59. **The reflected-prime/polar allocation at every aperture (`ReflectedPrimePolarAllocation`).**
+    The restricted-horizon certificates (`GlobalSharedSurplusAllocation`) decouple the reflected-prime strips from
+    the pole charge for `R ≤ 3/5`, and that decoupling fails across arbitrary tests on the odd edge
+    tent for two independent reasons: its pole charge grows like `ε⁴e^r` against strip box energy
+    `≤ 3ε²r`, and every sub-light-cone shift has `F(x)F(x+L) = 0`
+    (`exists_edgeTent_reflectedPrimePolar_decoupling_fails`). What holds at every aperture is exact:
+    the favourable strip gains are a polar integral plus a Chebyshev pairing
+    (`sum_evenStripGain_eq_polar_add_chebyshev`); the joint reflected-prime/polar cost is the prime
+    autocorrelation charge minus its polar comparison, equal to the finite-horizon two-pole
+    Chebyshev pairing and, for `C²` tests, to the critical-scale receiver against the test's
+    curvature (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
+    `reflectedPrimePolarCost_eq_criticalScalePrefix`); and the ledger reads
+    `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r` at
+    every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`,
+    `riemannHypothesis_iff_reflectedPrimePolarAllocation`). Its graded forms connect the
+    Chebyshev-defect allocation directly to the zero width
+    (`zetaZeroWidth_le_of_chebyshevDefectAllocation_graded`). The ledger's open end is thus one
+    signed pairing of the actual Chebyshev defect with the test's autocorrelation derivatives,
+    uniformly in the aperture and in the mass normalisation; a bound on `E` imported from a zero
+    strip cannot establish that strip independently.
 
 ---
 
-## 4. Traps
+## 4. Foundational pillar theorems
+
+Unconditional; RH appears only inside equivalences.
+
+1. **The lattice skeleton is positive.** On lattice pairs the product atom never dominates the
+   ratio atom (`productEnergy_le_ratioEnergy`, `skeletonEnergy_nonneg`); the crossing kernel is
+   classified exactly, the atoms flipping only `{2,4}` and `{3,3}` (`latticeCrossing_inequality_iff`,
+   `totalLatticeCrossingKernel_pos_iff`).
+2. **Atom against pole, and the unpaid axis.** At the midpoint the atom exceeds the pole exactly for
+   `n ∈ {2,3,4,5,7}`, and with the archimedean density exactly for the nine moduli
+   `{2,3,4,5,7,8,9,11,13}` (`totalAntiDiagonalKernel_midpoint_pos_iff_mem`); for `n ≥ 23` the unpaid
+   points lie within `≍ 2(1+Λ(n))/n` of the axes (`totalAntiDiagonalKernel_pos_imp_near_axis`).
+3. **Each atom pays its own strip.** The micro-fold Harnack inequality pays a prime-power atom from
+   the strip surplus of its own microstrip (`two_mul_primePowerShift_le_stripSurplus`); odd-part-only
+   payment is false already at the first prime (`not_forall_oddPart_le_stripSurplus_logTwo`).
+4. **Odd positivity past the first prime.** Every odd `C²_c` test supported in
+   `[−181/500, 181/500]` has `Ẑ(F) ≥ (1/1000)∫F²`
+   (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`); the joint prime-2/3 strip
+   costs are paid through `23/40` (`two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths`),
+   which is a strip-cost theorem, not full odd positivity.
+5. **The global allocation condition.** The exact ledger of the odd form, with all terms and the
+   plateau quantifier retained, is RH-equivalent (`riemannHypothesis_iff_globalIncidenceAllocation`),
+   and its graded deficit at rate `2σ` bounds the width by `σ`.
+6. **The translate calculus.** A prime-power tower reduces to a first-power term with its Euler
+   discount (`towerCharge_le_firstAtomStrip`, `fullZeroForm_ge_primeOnlyLedger`); the envelope is
+   attained by resonant trains (`exists_resonantTrain_coupling_fails`), and on two aligned towers the
+   two envelopes add.
+7. **The Chebyshev ledger.** The prime–polar part of the ledger is the signed pairing of the
+   two-pole Chebyshev defect with the test's lag weight, equivalently the critical-scale receiver
+   against its curvature (`sum_vonMangoldt_sub_polar_eq_chebyshev`,
+   `sum_vonMangoldt_sub_polar_eq_criticalScalePrefix`), and the defect is a complete invariant of the
+   source (`eq_of_lagPrefix_eq`).
+8. **The spectral symbol.** That pairing is the frequency integral of one explicit signed symbol
+   against the nonnegative density `|F̂|²`, so a pointwise floor on the symbol is a floor for every
+   test (`chebyshev_pairing_eq_spectral`, `chebyshev_pairing_ge_of_symbol_ge`).
+9. **The reflected-prime/polar ledger at every aperture.** `Ẑ(F)` equals pool plus crossing potential
+   plus remainder minus the reflected-prime/polar cost, at every aperture, and that cost is the
+   Chebyshev pairing (`fullZeroForm_eq_reflectedPrimePolarLedger`,
+   `reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`).
+
+---
+
+## 5. Traps
 
 | Trap | What is true instead |
 |---|---|
@@ -977,18 +1068,65 @@ independently. The normalisation matters as much as the exponential rate.
 | Expecting oddness, edge decay or the strip structure to give a power saving in the floor | The sharp half-mass bound caps correlations beyond the aperture at `a(0)/2`, still a constant; on the edge tent the pole charge and the prime correlation are both `≍ e^{r}` with opposite signs. The rate-`1` obstruction is the prime–polar balance, and a sub-trivial rate is a fixed zero-free strip. |
 | Treating the comb-energy reduction as a bound | Its nonpositive and polynomial premises fail on the stated test classes. Exponential comb energy can coexist with a small first-power charge; retain the overlap geometry and prime–polar compensation (mechanisms 50–51). |
 | Expecting the comb second moment to preserve signed payment | Its exponential size is known. The missing estimate concerns the signed first-power prime–polar pairing, or a coherently subtracted remainder, not the raw aggregate. |
+| Reading the Chebyshev ledger as the full Weil energy | It is the prime side against the pole plane; the archimedean density is not in it. A bound on the ledger is one input of the incidence ledger, not positivity of `Ẑ`. |
+| Expecting the symbol criterion to supply a sign | It reduces the sign over all tests to one explicit function of frequency; at `ξ = 0` that function is the Chebyshev–Mertens comparison, a PNT-level difference. The reduction is exact, the floor is the open problem. |
+| Bounding `E` by its size | `E` is unbounded because the atoms `log p` are; band tests read only its increments and curvature, so the usable estimates are approximation errors of the receiver across a band. |
 | Expecting the single-tower envelope to bound an aligned pair of towers | On the bi-lattice train both towers resonate to the full fraction `(M − k)/M → 1` and the two Euler envelopes **add**; the prime-side bound is sharp already on two aligned towers. |
 
 ---
 
-## 5. Open problems
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **On which pairs of points is the conductance negative?** On lattice pairs, exactly the classified
+   ones; on the continuum, near the axes of the anti-diagonals and, below the threshold
+   `s₀ ∈ (log 5, log 6)`, on every crossing pair.
+2. **What in the arithmetic pays the negative part?** Locally, the strip surplus of each atom, the
+   even part of the atom, Schur lending between origin, strip and middle; globally the question is
+   whether one copy of the surplus pays every strip, which it does not without the pole and the
+   prime–polar balance.
+3. **What remains after every local payment?** One signed functional: the two-pole Chebyshev defect
+   paired with the test's lag weight — equivalently one frequency integral of an explicit symbol.
+4. **What does the ledger see of a source?** Everything: its defect determines it index by index;
+   the test models differ from `ζ` by a prime count or a pole position.
+5. **At what rate can the deficit be bounded?** The question the theory exists for: `Ce^{2σr}∫F²` at
+   every aperture for one `σ < ½`, the strip `½ + σ`; the unconditional rate is `1`.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *The pair kernel* `k = ω − atoms − polar weight`, read per unordered pair, with the lattice and
+  anti-diagonal classifications.
+- *The odd fold*, micro-fold Harnack inequalities, Schur rectangles and lending, curved and quartic
+  surplus potentials.
+- *Shared-surplus allocation*: nested strips, shells, chains, the light cone.
+- *The exact ledger* of the odd form at every aperture, and its graded forms.
+- *The translate calculus*: tower and bi-tower laws, resonant and bi-lattice trains, divisor-lattice
+  Gram positivity.
+- *The Chebyshev ledger*: lag Abel summation of every order, calibrations at any pole, source
+  rigidity and realisation, the ideal source, the aperture–lag ladder and quadratic gap, the Euler
+  comb payment law, the spectral symbol.
+
+To be built:
+
+- one budget paying all strips, the pole and the signed remainder on every odd compact profile;
+- a lower bound on the signed spectral symbol in the frequency regions an aperture-`r` test can reach;
+- a bounded Schur constant for the prime-ratio correlations (the replacement hypothesis);
+- a signed estimate for the half-power cross-prime aggregate;
+- the archimedean self-energy asymptotic of lattice bump profiles, with the origin and axis packets.
+
+---
+
+## 7. Open problems
 
 1. **Pairs between lattice points.** Bound the anti-diagonal atom `Λ(n) n^{−1/2}` on a crossing pair
    `(x, y)` with `|x| + y = log n` that is not a lattice pair by the same-side atoms at the ratios
    `|x − y'| = log m` reachable from it and by the variance. This is the prime-side inequality of the
    open core; in a smeared gauge it is RH itself, so the problem is to find the sub-inequalities that
-   are unconditional. The first prime window is already paid through `181/500` for odd tests. The next question is
-   a complete certificate at larger apertures, not another single-atom comparison. Mechanism 21 localizes it: for `n ≥ 23` the
+   are unconditional. The first prime window is paid through `181/500` for odd tests; the next
+   question is a complete certificate at larger apertures, not another single-atom comparison. Mechanism 21 localizes it: for `n ≥ 23` the
    unpaid points lie within `L_n ≍ 2(1 + Λ(n))/n` of the axes.
 1′. **The atom against the pole, integrated.** For an odd gauge `M`, compare the atom mass
    `Λ(n) n^{−1/2} ∫₀^{log n} |M(−a) M(log n − a)| da` with the polar mass
@@ -1009,7 +1147,13 @@ independently. The normalisation matters as much as the exponential rate.
    dominates the limit, as an asymptotic.
 4. **Lattice conductance at fixed width.** Combine mechanism 22 with the archimedean self-energy
    `≍ w log(1/w)` of a bump of width `w` into one statement about the conductance matrix of a
-   lattice profile at fixed `w`, including the axis pairs `(0, log b)`.
+   lattice profile at fixed `w`, including the axis pairs `(0, log b)`. For the odd integer-log
+   lattice train with labels from `2`, the complete Weil energy is calibrated against the singleton
+   bump at an explicit polynomial resolution: with `j = 128(N+2)⁴(k+1)`,
+   `|(Q(T_N) − 2E(c)Q(β_j))/M_j + 2I_N(c)| ≤ E(c)/(k+1)`, where `I_N` is the ratio-plus-reverse-ratio
+   minus product incidence form (`fullEnergy_latticeTrain_uniform`, in
+   `RHTower/ArithmeticIncidenceNarrowBumpBridge`). Open: the origin and axis packets, which an odd
+   gauge reaches only through first jets, and the explicit self-energy asymptotic.
 5. **Parity.** Which complete-period quadratic forms of the sieve theory (variance, Bézout
    successor form, two-lag covariances) are even functions of the Selberg coordinates, hence
    invariant under every sign character on the coordinates, while the trans-horizon response is
@@ -1032,7 +1176,7 @@ independently. The normalisation matters as much as the exponential rate.
    `e^{(2β − 1)r}` for a zero `β + iγ` off it, so the signed allocation is not expected to be
    unconditional beyond the light cone.
 
-### Research topics toward the shared target
+### Research topics
 
 1. **Beyond the first prime window.** The variation inequality for all even profiles is proved past
    `log 2/2` (`181/500`, mechanisms 27–34). A larger window is not by itself progress toward the
@@ -1049,7 +1193,7 @@ independently. The normalisation matters as much as the exponential rate.
    same-side atoms must pay for `n ∈ {2, 3, 4, 5, 7}`.
 3. **The bump bridge.** `J_M + V_μ` on lattice bump profiles in terms of `netAtom` and the
    archimedean self-energy, so that the pair statements of §3 become statements about `Z`.
-4. **Signed-gauge estimates.** The ground-state representation already allows sign-changing
+4. **Signed-gauge estimates.** The ground-state representation allows sign-changing
    gauges. Control its signed remainder and propagate local Harnack bounds across growing prime
    shifts without spending the same surplus twice.
 5. **Selectivity audit.** For each theorem of §3, what it says for `ζ(s−a)ζ(s+a)` (shifted atoms
@@ -1086,11 +1230,15 @@ independently. The normalisation matters as much as the exponential rate.
 9. **Signed Chebyshev payment.** Use the exact lag Abel identity to bound the prime–polar
    difference together. Determine which autocorrelation constraints improve the pairing beyond
    a size estimate on `E`, and state whether the resulting bound is in the mass norm or requires
-   a derivative or logarithmic Fourier weight.
+   a derivative or logarithmic Fourier weight. In spectral coordinates the target is a lower bound
+   on `primeSymbol_N(ξ) − 2K_{2r}(2πξ)` where an aperture-`r` test can put its mass: the symbol is a
+   prime Dirichlet polynomial against a polar kernel that pays only for `|ξ| ≤ 1/(8r)`, where odd
+   tests carry cubically small mass, and at `ξ = 0` it is the Chebyshev–Mertens comparison
+   `Σ_{n≤N}Λ(n)/√n − 4 sinh r`.
 
 ---
 
-## 6. Principles
+## 8. Principles
 
 1. **Search the corpus before proving:** `scripts/formal_tools.py research "<query>"` from the repository root. The jump
    form, the gauge-free kernel, the half-line folding (`RHTower.CHMDReflectedPrimeSingularPart`,

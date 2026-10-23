@@ -15,7 +15,6 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxRecDepth 20000 in
 /-- Scale-local exact algebraic floor for the dominant one-particle core. -/
 theorem tenThousandFiveHundredSeventyFive_mul_pow_eight_lt_thetaCuspLikelihoodEighthDominantSingleCore_of_18Over5_le
     {A : ℝ} (hA : (18 / 5 : ℝ) ≤ A) :
@@ -67,7 +66,6 @@ theorem tenThousandFiveHundredSeventyFive_mul_pow_eight_exp_lt_thetaCuspLikeliho
   unfold thetaCuspLikelihoodEighthDominantSingleMass
   nlinarith
 
-set_option maxRecDepth 20000 in
 /-- At scale `18/5`, the Taylor certificate absorbs `59/20` dominant pairs. -/
 theorem fiftyNineTwentieths_mul_thetaCuspLikelihoodEighthDominantPairCore_lt_taylor_mul_singleCore_of_18Over5_le
     {A : ℝ} (hA : (18 / 5 : ℝ) ≤ A) :

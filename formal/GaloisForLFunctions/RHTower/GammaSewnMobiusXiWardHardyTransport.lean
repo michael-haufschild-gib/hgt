@@ -463,7 +463,6 @@ def xiAntiCausalWardSchwarzPairResponse
     (w + xiRightCenteredZero
       (xiRightZeroCopyConjEquiv q.1))⁻¹)
 
-set_option maxHeartbeats 800000 in
 /-- The strict-right centered trace splits canonically into complete Schwarz-pair responses. -/
 theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
     {w : ℂ} (hw : 0 < w.re) :
@@ -482,8 +481,9 @@ theorem continuedXiCenteredAntiCausalWardResponse_eq_tsum_schwarzPairs
   have hinr :
       Summable (fun q : XiRightUpperZeroCopy =>
         f (xiRightSchwarzPairEquiv (Sum.inr q))) := by
-    apply hfull.comp_injective
-    exact xiRightZeroCopyConjEquiv.injective.comp Subtype.val_injective
+    -- rewrite the pair equivalence first, so no defeq check unfolds it
+    simp only [xiRightSchwarzPairEquiv_inr]
+    exact hfull.comp_injective (xiRightZeroCopyConjEquiv.injective.comp Subtype.val_injective)
   rw [continuedXiCenteredAntiCausalWardResponse_eq_tsum_modes hw,
     ← xiRightSchwarzPairEquiv.tsum_eq f]
   calc

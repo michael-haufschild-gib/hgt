@@ -45,6 +45,13 @@ as the continuation problem.
 | [Arithmetic Compensation Theory](../ArithmeticCompensationTheory/README.md) | Keeps mixed source terms and recovery in the continuation budget; its comb laws explain why large quadratic majorants need not imply large signed charge. |
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Supplies the hyperbolic pole plane and Cartesian prime incidence; SAEI computes payment costs and finite train capacities on related forms. |
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical
+arithmetic form and on the critical cancellation of the actual source. SAEI is the interface layer
+between them: it decides which transfers — payment, completion, transport, decomposition — preserve
+the signed information an argument needs, and it supplies the nonlocal payment method (canonical
+paths) and the receiver-norm operator theory of the damping chain on which the incidence and
+continuation faces depend.
+
 Start with signed incidence and comparison positivity, then chains and train capacities. For
 continuation, read the receiver-orbit identity before residue modes and their summation threshold.
 The profile and sampling theorems are abstract tools with separate arithmetic realization problems.
@@ -141,7 +148,7 @@ estimate must therefore use the source vector and its arithmetic.
 - **Aligned, balanced, frustrated**: an overlap is aligned when its charge is `≤ 0` (it rewards
   equal values at its ends); a pattern is balanced when switching aligns all of it; a cycle is
   frustrated when no switching aligns it. On every pattern frustration is read off the closed
-  walks (mechanism 9a); on complete patterns the triangles suffice.
+  walks (mechanism 10); on complete patterns the triangles suffice.
 - **Holonomy**: the product of the charges around a triangle. Negative holonomy is the aligned case.
 - **Supersolution**: a gauge `v > 0` with `Cv ≥ 0`. For aligned forms it is a local allocation in
   disguise (mechanism 2), and coercive aligned forms always have one (mechanism 3); a frustrated
@@ -209,7 +216,7 @@ estimate must therefore use the source vector and its arithmetic.
    payment is the gap between the ground energies of the form and of its comparison form. The
    duality is explicit: a form has no allocation iff a nonnegative profile overloads its budgets,
    `Σ c_ii f_i² < Σ_{i≠j} |c_ij| f_i f_j` (`not_locallyPayable_iff_exists_overload`).
-9a. **Cycle holonomy decides balance on every pattern.** A walk steps along nonzero overlaps
+10. **Cycle holonomy decides balance on every pattern.** A walk steps along nonzero overlaps
    between distinct points; its holonomy is the product of the edge signs `−c_xy/|c_xy|`
    (`IsWalkFrom`, `walkHolonomy`). Switching multiplies the holonomy of a walk from `u` to `v` by
    `s_u s_v` (`walkHolonomy_switch`), so balanced forms have holonomy `+1` on every closed walk;
@@ -218,7 +225,7 @@ estimate must therefore use the source vector and its arithmetic.
    (`isBalanced_iff_alignedCycles`, Harary's criterion), iff walk holonomy depends only on the
    endpoints (`isBalanced_iff_walkHolonomy_eq`). The closed triangle walk has holonomy
    `−sign(c_ij c_jk c_ki)` (`walkHolonomy_triangle`), so mechanism 7 is the complete-pattern case.
-9b. **Frustrated cycles spoil local payment on every pattern.** On a cycle of length `k` with
+11. **Frustrated cycles spoil local payment on every pattern.** On a cycle of length `k` with
    holonomy `−1`, `4 Σ h_i² ≤ k² Σ (h_i − e_i h_{i+1})²` (`frustratedCycle_poincare`): after the
    gauge `Π_{j<i} e_j` the profile changes sign once around the cycle, so each value is half a
    signed sum of the increments. The frustrated cycle form is therefore strictly positive at the
@@ -230,7 +237,7 @@ estimate must therefore use the source vector and its arithmetic.
    form whose charges are nonnegative multiples of `σ` (`SignCompatible`) is locally payable iff
    `σ` is balanced (`localPayment_lossless_iff_isBalanced`), iff every closed walk of `σ` is
    aligned (`localPayment_lossless_iff_alignedCycles`).
-9c. **The frustrated cycle is paid along its path.** Positivity of a frustrated cycle has a
+12. **The frustrated cycle is paid along its path.** Positivity of a frustrated cycle has a
    *nonlocal* certificate. In the gauge `H = v g` each edge splits as
    `2 H_i H_{i+1} = (v_{i+1}/v_i) H_i² + (v_i/v_{i+1}) H_{i+1}² − v_i v_{i+1} (g_i − g_{i+1})²`; on an
    antiperiodic profile the frustrated edge contributes `−v_0 v_n (g_0 − g_n)²`, and Cauchy–Schwarz
@@ -245,7 +252,7 @@ estimate must therefore use the source vector and its arithmetic.
    (`cycleWitness_nonneg_iff`): frustration costs local payment exactly the factor `cos(π/k)`, and
    `½ < t ≤ 1/(2 cos(π/k))` is the local–global window of every frustrated cycle
    (`cycleWitness_window`). For `k = 3` this is the triangle window `½ < κ ≤ 1` of mechanism 6.
-9f. **Frustration is paid along canonical paths.** The single-cycle certificate is one instance of
+13. **Frustration is paid along canonical paths.** The single-cycle certificate is one instance of
    a signed canonical-path method for any symmetric form (`PathCertificate`): a positive signed
    supersolution `v`, for every anti-aligned overlap `a, b` a walk from `a` to `b` through aligned
    overlaps with shares `λ_ab(x, y) > 0` of the overlaps it uses, the path budget
@@ -255,7 +262,7 @@ estimate must therefore use the source vector and its arithmetic.
    is nonnegative (`incidenceEnergy_nonneg_of_pathCertificate`). Frustrated cycles sharing edges
    compete exactly through the packing: a shared aligned overlap splits its Dirichlet energy, which
    raises the path budget of every cycle through it.
-9d. **Odd folding is the source of frustration.** A translation ledger charges positions `u, u'`
+14. **Odd folding is the source of frustration.** A translation ledger charges positions `u, u'`
    by `−w(u − u')` with `w ≥ 0` even: it is aligned. Sampled at mirror points `±p_x`
    (`mirrorCoupling`), even profiles fold with charges `−w(p_x − p_y) − w(p_x + p_y)` and odd
    profiles with `w(p_x + p_y) − w(p_x − p_y)` (`incidenceEnergy_mirror_even`,
@@ -269,9 +276,9 @@ estimate must therefore use the source vector and its arithmetic.
    is unbalanced for every choice of budgets (`oddFold_primeTriangle_not_isBalanced`). It carries a
    positive compatible form that no allocation pays (`exists_unpayable_odd_primeTriangle`), while
    even profiles of the prime ledger pay locally at every sampling (`evenFold_prime_lossless`).
-9e. **The odd Weil ledger is frustrated only by primes.** The archimedean and polar parts of the
+15. **The odd Weil ledger is frustrated only by primes.** The archimedean and polar parts of the
    Weil functional combine into the weight `K(u) = 2e^{−u/2}/(1 − e^{−2u}) − 4 cosh(u/2)` of
-   `RHTower.ArchimedeanKernel`. `K` changes sign once, but it is nonincreasing on `(0, ∞)`
+   `RHTower.ArchimedeanWeilKernelSign` (`weilKernel`). `K` changes sign once, but it is nonincreasing on `(0, ∞)`
    (`weilKernel_antitone`): the decreasing archimedean part and the increasing polar part push the
    same way. For the sampled ledger with kernel `α K(|u|) + β · prime(u)` (`weilLedgerKernel`,
    `α, β ≥ 0`), an anti-aligned odd overlap of `x, y` forces `e^{p_x + p_y}` to be a prime power
@@ -282,54 +289,46 @@ estimate must therefore use the source vector and its arithmetic.
    `α` (`oddFold_weilLedgerKernel`), so the prime triangle stays frustrated in the full odd Weil
    ledger for every relative archimedean–polar weight `|α| < α₀`, whatever the budgets
    (`exists_weight_oddWeilLedger_primeTriangle_not_isBalanced`).
-9g. **Source-faithful canonical-path calibration and overlapping-budget retention.** On actual
-   arithmetic samplings, pairwise overlap completeness fails (`not_isCompleteOverlap_oddFold_arithLogGrid`:
-   at `p_0 = (log 2)/2, p_1 = (log 3)/2`, `primeKernel` vanishes at both `log 6` and `log(3/2)`), and
-   any coupling with `c_xy ≥ 0` for all `x ≠ y` and at least one positive off-diagonal entry admits
-   no `PathCertificate` (`isEmpty_pathCertificate_of_nonneg_offDiag`,
-   `isEmpty_pathCertificate_primeTriangle_primeKernel`). At the source-faithful full-form calibration
-   `weilLedgerKernel 1 1` (`α = 1, β = 1`), the archimedean–polar kernel `K(u)` is positive below
-   `u₀ ≈ 0.3046` and negative above it: on `primeTrianglePos`, `(0, 1)` (`−2/5 < c_01 < −1/7`) and
-   `(2, 0)` (`−15/4 < c_20 < −1`) flip to aligned (`< 0`), while `(1, 2)` (`3/20 < c_12 < 2/5`) stays
-   anti-aligned (`> 0`) because `K(log 3) − K(log(3/2))` is less negative than `(log 3)/√3`
-   (`oddFold_primeTriangle_weilLedgerKernel_one_zero_one`,
-   `oddFold_primeTriangle_weilLedgerKernel_one_two_zero`,
-   `oddFold_primeTriangle_weilLedgerKernel_one_one_two`). The source-faithful prime triangle is
-   therefore unconditionally frustrated (`triangleHolonomy_primeTriangle_weilLedgerKernel_one_pos`,
-   `oddFold_primeTriangle_weilLedgerKernel_one_not_isBalanced`), and its two negative edges pay the
-   remaining positive edge `(1, 2)` along `1 → 0 → 2` in gauge `primeTriangleGauge = ![4, 1, 1]`
-   (`primeTrianglePathCertificate`, `incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg`,
-   `supersolution_primeTriangleGauge_of_le`). Extending to `packedPrimePos` on `Fin 4` with
-   `p_3 = (3 log 5 − log 2 − log 3)/2` adds a second anti-aligned prime-sum overlap `(1, 3)`
-   (`1/4 < c_13 < 13/30`); routing both `(1, 2)` and `(1, 3)` through the shared aligned hub edge
-   `(1, 0)` with packed shares `1/2 + 1/2 = 1` gives an explicit packed `PathCertificate` in gauge
-   `packedPrimeGauge = ![8, 1, 1, 1]` (`packedPrimePathCertificate`,
-   `incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg`,
-   `supersolution_packedPrimeGauge_of_le`). In general, routing a set `S` of anti-aligned targets
-   from `a` through a shared first step `a → u` forces `Σ_{b ∈ S} c_ab v_b ≤ |c_au| v_u`
-   (`packed_shared_step_gauge_lower_bound`), inflating the hub gauge `v_u` and retaining overlapping
-   diagonal budget demands at `u` and its neighbors.
+16. **Source-faithful calibration of the prime triangle.** On actual arithmetic samplings pairwise
+   overlap completeness fails — at the positions `(log 2)/2, (log 3)/2` the prime kernel vanishes at
+   both `log 6` and `log(3/2)` (`not_isCompleteOverlap_oddFold_arithLogGrid`) — and a coupling whose
+   off-diagonal entries are all nonnegative, one of them positive, admits no path certificate
+   (`isEmpty_pathCertificate_of_nonneg_offDiag`, `isEmpty_pathCertificate_primeTriangle_primeKernel`):
+   the prime kernel alone frustrates with no aligned path to pay along. At the source-faithful
+   calibration `α = β = 1` the archimedean–polar kernel has the closed form
+   `K(log x) = −2(x³ − x − 1)/((x² − 1)√x)` (`weilKernel_log_eq`), positive below `u₀ ≈ 0.3046` and
+   negative above it. On the prime triangle the edges `(0, 1)` and `(2, 0)` turn aligned while
+   `(1, 2)` stays anti-aligned, so the triangle is unconditionally frustrated
+   (`oddFold_primeTriangle_weilLedgerKernel_one_not_isBalanced`), and its two aligned edges pay the
+   third along `1 → 0 → 2` in the gauge `(4, 1, 1)` (`primeTrianglePathCertificate`,
+   `incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg`). Adding a fourth position
+   with a second anti-aligned prime-sum overlap, both anti-aligned overlaps route through one shared
+   aligned hub edge with packed shares `½ + ½` (`packedPrimePathCertificate`,
+   `incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg`). In general, routing a set `S`
+   of anti-aligned targets from `a` through a shared first step `a → u` forces
+   `Σ_{b∈S} c_ab v_b ≤ |c_au| v_u` (`packed_shared_step_gauge_lower_bound`): a shared hub inflates its
+   gauge, and that is how overlapping payments compete for diagonal budget.
 
 ### Chains and trains
 
-10. **Chain lending duality.** Chains are balanced, whatever the signs of their overlaps
+17. **Chain lending duality.** Chains are balanced, whatever the signs of their overlaps
    (`chainCoupling_isBalanced`, by the running sign `chainSign`), so a chain is positive exactly
    when it has a lending ledger: each point splits its budget between its two overlaps
    (`chain_nonneg_iff_locallyPayable`).
-11. **Capacity of a uniform train.** The sine gauge solves the train equation
+18. **Capacity of a uniform train.** The sine gauge solves the train equation
     `2 cos θ · v_k = v_{k−1} + v_{k+1}` with zero boundary values
     (`couplingAction_uniformTrain_trainSine`); as a positive supersolution it certifies
     `2 Σ_{k<n} f_k f_{k+1} ≤ 2 cos(π/(n+2)) Σ_{k≤n} f_k²` (`uniformTrain_capacity`), attained at the
     sine (`uniformTrain_capacity_attained`) and sharp (`uniformTrain_capacity_sharp`).
-12. **The first-lag law of a train.** For `M + 1` disjoint copies of a bump at spacing `L`,
+19. **The first-lag law of a train.** For `M + 1` disjoint copies of a bump at spacing `L`,
     `A_S(L) = (Σ_{k<M} f_k f_{k+1}) A_g(0)` and `A_S(0) = (Σ f_k²) A_g(0)`
     (`autoCorr_amplitudeTrain_first`, `autoCorr_amplitudeTrain_zero`, from AIP's translate
     calculus). Hence `|A_S(L)| ≤ cos(π/(M+2)) A_S(0)` (`autoCorr_amplitudeTrain_first_le`,
     `..._ge`), attained by the sine train (`autoCorr_sineTrain_first`).
-13. **The resonant train is not extremal for one prime.** The unit train carries `M/(M+1)` of its
+20. **The resonant train is not extremal for one prime.** The unit train carries `M/(M+1)` of its
     mass at the first lag, strictly less than `cos(π/(M+2))` from `M = 2` on
     (`resonant_ratio_lt_cos`). The extremal deficit is `1 − cos(π/(M+2)) ≍ π²/(2M²)`.
-14. **Two aligned towers add.** On an `(M+1) × (N+1)` grid train, the joint first-power charge of
+21. **Two aligned towers add.** On an `(M+1) × (N+1)` grid train, the joint first-power charge of
     two primes is at most `(w_p cos(π/(M+2)) + w_q cos(π/(N+2)))` times the mass
     (`grid_joint_capacity`), attained by the product sine (`grid_joint_capacity_attained`) and sharp
     (`grid_joint_capacity_sharp`): no cross-prime cancellation on multiplicatively aligned trains.
@@ -340,11 +339,11 @@ estimate must therefore use the source vector and its arithmetic.
 
 ### Poles and completion
 
-15. **Polar defect law.** `‖v‖² − Σ_j ⟪g_j, v⟫² ≥ 0` for all `v` iff the synthesis of the polar
+22. **Polar defect law.** `‖v‖² − Σ_j ⟪g_j, v⟫² ≥ 0` for all `v` iff the synthesis of the polar
     vectors is a contraction, `‖Σ c_j g_j‖² ≤ Σ c_j²` (`polarDefect_nonneg_iff`). In rank one the
     ground ratio for `g ≠ 0` is exactly `1 − ‖g‖²`, attained on `g` (`polarDefect_ge`, `polarDefect_self`,
     `polarDefect_nonneg_iff_norm_le_one`).
-16. **Completion keeps the sign exactly when it keeps the polar functional.** Positivity on a dense
+23. **Completion keeps the sign exactly when it keeps the polar functional.** Positivity on a dense
     set transfers to the completion for a continuous polar functional
     (`polarDefect_nonneg_of_dense`); an unbounded polar functional leaves no floor at all
     (`exists_polarDefect_lt_of_unbounded`).
@@ -360,49 +359,51 @@ outweigh the change in the polar charge. Switching the incidence also switches t
 
 ### The damping chain in the receiver norm
 
-17. **The receiver is the chain orbit of the reciprocal.** `(C_η r)(n) = P_η(n+1)/(n+1)`
+24. **The receiver is the chain orbit of the reciprocal.** `(C_η r)(n) = P_η(n+1)/(n+1)`
     (`centeredOperator_reciprocal_apply`), `C_s C_t r = C_{s+t} r` (`centeredOperator_orbit`), and
     `E_η(T) = Σ_{m<T} (m+1)/(m+2) · (C_η r)(m)²` (`dampedMobiusEnergy_eq_orbitEnergy`). Admission is
     `ℓ²`-membership of the orbit (`admits_iff_summable_orbit`); the Riemann hypothesis is the orbit
     entering `ℓ²` at arbitrarily small times (`riemannHypothesis_iff_orbit_summable`).
-18. **Truncations approximate the receiver.** At every horizon the partial orbit energies of the
+25. **Truncations approximate the receiver.** At every horizon the partial orbit energies of the
     finite truncations of `r` converge to those of `r` (`tendsto_truncation_partialEnergy`):
     truncations converge in `c₀` and the chain is `c₀`-continuous. So admission is decided by the
     chain on finitely supported sequences; a uniform `ℓ²` bound there would admit `η`. No such
     bound is proved below half damping, and none is assumed in a statement.
-18a. **The chain is Hilbert–Schmidt above damping one.** For `η > 1` the source is bounded,
-    `|P_η(m)| ≤ ζ(η) + 1` (`abs_centeredPrefix_le`): in floor coordinates it is
+26. **The chain is Hilbert–Schmidt above damping one.** For `η > 1` the source is bounded,
+    `|P_η(m)| ≤ ζ(η) + 1` (`abs_centeredPrefix_le`); in floor coordinates it is
     `Σ_{d ≤ m} μ(d) d^{−η}(⌊m/d⌋ − m/d) − m Σ_{d > m} μ(d) d^{−1−η}`. Writing `A_η = ρx + P_η`, the
     centred entry from state `n + 1` to `k + 1` is at most `2(ρ + ζ(η) + 1)(k+1)^{1−η}/(n+1)` for
     `k ≤ n` and minus the entrance mass `≤ ρ(k+1)^{−η}` beyond (`abs_centeredRow_le`,
     `entrance_le`). Every column has `Σ_n C(n,k)² ≲ (k+1)^{1−2η}` (`sum_sq_centeredRow_le`), so on
     finitely supported sequences `Σ_{n<T}(C_η b)(n)² ≤ M_η Σ b_k²` with an explicit constant
-    (`centeredOperator_l2_le`). Below damping one the kernel is read finely: with
+    (`centeredOperator_l2_le`).
+27. **Floor jumps and the threshold `1/√2`.** Below damping one the kernel is read finely: with
     `a = ⌊N/K⌋`, `J = a − ⌊N/(K+1)⌋`, it splits into a mean-value part, a fractional part and a
     short-interval part `P(a) − P(⌊N/(K+1)⌋)`. The source is sign-blindly bounded,
-    `|P_η(q)| ≤ C q^{1−η}` (`abs_centeredPrefix_le_rpow`); its jumps cost at most `J`
-    (`abs_centeredPrefix_sub_le`); above the square root `J ≤ 1` and the jumps are sparse, one per
-    quotient (`sum_floorJump_le`); below it `min(J, 2C(N/K)^{1−η}) ≤ J^λ(2C(N/K)^{1−η})^{1−λ}`
+    `|P_η(q)| ≤ C q^{1−η}` (`abs_centeredPrefix_le_rpow`), and its jumps cost at most `J`
+    (`abs_centeredPrefix_sub_le`). Above the square root `J ≤ 1` and the jumps are sparse, one per
+    quotient (`sum_floorJump_le`); below it `min(J, 2C(N/K)^{1−η})` interpolates
     (`min_le_rpow_mul_rpow`). The resulting majorant (`sq_centeredRow_le_majorant`) is square
-    summable for a suitable `λ` exactly when `η² > ½` (`interpExp_bounds`,
+    summable for a suitable interpolation exponent exactly when `η² > ½` (`interpExp_bounds`,
     `sum_chainMajorant_le`), so `C_η` is Hilbert–Schmidt for `1/√2 < η < 1` as well
-    (`centeredOperator_l2_le_of_inverseRootTwo`). The divisor structure of `c_η` sharpens the
-    jump: on `(a', a]` of length `J ≤ D ≤ a`, `2J ≤ a`,
-    `|P(a) − P(a')| ≤ C(D^{1−η} + J D^{−η} + a D^{−1−η})` (`abs_centeredPrefix_sub_le_short`;
-    divisors `d ≤ D` pay `D^{1−η}`, a divisor `d > D` has at most one multiple in the interval and
-    is located by its quotient `⌊a/d⌋`). With `D = max(J, √a)`, below the square root
-    `|P(a) − P(a')| ≤ C(J^{1−η} + a^{(1−η)/2})` (`abs_jump_le_belowSqrt`). The first term is
-    square summable for every `η > ½`; interpolating the second with `J` is square summable at
-    both ends of `K ≤ √N` exactly when `η² + η > 1` (`goldenExp_bounds`,
-    `sum_belowSqrt_rpow_le`), so `C_η` is Hilbert–Schmidt above the golden threshold
-    `(√5−1)/2` (`centeredOperator_l2_le_of_goldenThreshold`). The method is sharp there: for
-    `K = N^κ` the bound `J` covers `κ > 1/(1+2η)`, the bound `a^{(1−η)/2}` covers
-    `κ < η/(2−η)`, and the two meet exactly at `η² + η = 1`.
-19. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
+    (`centeredOperator_l2_le_of_inverseRootTwo`).
+28. **Short-interval divisor sums and the golden threshold.** The divisor structure of `c_η`
+    sharpens the jump: on `(a', a]` of length `J ≤ D ≤ a`, `2J ≤ a`,
+    `|P(a) − P(a')| ≤ C(D^{1−η} + J D^{−η} + a D^{−1−η})` (`abs_centeredPrefix_sub_le_short`). Divisors
+    `d ≤ D` pay `D^{1−η}`; a divisor `d > D` has at most one multiple in the interval and is located by
+    its quotient `⌊a/d⌋`; the signs of `μ` are not used. With `D = max(J, √a)`, below the square root
+    `|P(a) − P(a')| ≤ C(J^{1−η} + a^{(1−η)/2})` (`abs_jump_le_belowSqrt`). The first term is square
+    summable for every `η > ½`; interpolating the second with `J` is square summable at both ends of
+    `K ≤ √N` exactly when `η² + η > 1` (`goldenExp_bounds`, `sum_belowSqrt_rpow_le`), so `C_η` is
+    Hilbert–Schmidt above the golden threshold `(√5 − 1)/2`
+    (`centeredOperator_l2_le_of_goldenThreshold`). The method is sharp there: for `K = N^κ` the bound
+    `J` covers `κ > 1/(1+2η)`, the bound `a^{(1−η)/2}` covers `κ < η/(2−η)`, and the two meet exactly at
+    `η² + η = 1`. Boundedness of the chain on `ℓ²` between `½` and `(√5 − 1)/2` is open.
+29. **The centring is indispensable in receiver coordinates.** The uncentred transition sends the
     first state to a column converging to the positive entrance mass
     (`arithmeticDampingEntrance_one_pos`), so it is `ℓ²`-unbounded at every damping
     (`not_summable_transition_first_column`).
-20. **The first column of the chain is the receiver.** On the first state the centred chain is the
+30. **The first column of the chain is the receiver.** On the first state the centred chain is the
     dyadic difference `D_η(m) = P_η(m) − 2^{−η} P_η(⌊m/2⌋)` of the source over `m`, up to a term of
     size `1/m` (`centeredOperator_firstState_apply_eq`). The dyadic difference loses nothing in the
     receiver norm — a two-to-one count one way, the geometric inversion
@@ -410,12 +411,12 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     (`summable_dyadicDifference_iff`) — so the first column lies in `ℓ²` iff `η` is admitted
     (`admits_iff_summable_firstColumn`, `riemannHypothesis_iff_firstColumn_summable`). The first
     test of `ℓ²`-boundedness of the chain is already the receiver.
-21. **Residue modes are eigenmodes, with squared receiver norm `≍ 1/d`.** `C_η v_d = d^{−η} v_d`
+31. **Residue modes are eigenmodes, with squared receiver norm `≍ 1/d`.** `C_η v_d = d^{−η} v_d`
     (`centeredOperator_normalizedResidueMode`); `(d − 1)/d² ≤ ‖v_d‖²_{ℓ²} ≤ 2/d`
     (`tsum_sq_normalizedResidueProfile_ge`, `..._le`).
-22. **Backward continuation is ill-posed.** No `‖b‖ ≤ K ‖C_t b‖` holds in `ℓ²` or in `c₀`, for any
+32. **Backward continuation is ill-posed.** No `‖b‖ ≤ K ‖C_t b‖` holds in `ℓ²` or in `c₀`, for any
     `t > 0` (`not_backward_stable_l2`, `not_backward_stable_c0`); on `v_d` the ratio is `d^t`.
-22a. **Damping is strongly continuous, with an unbounded generator.** Extended by the identity at
+33. **Damping is strongly continuous, with an unbounded generator.** Extended by the identity at
     zero damping (`dampingFlow`), the chain is strongly continuous on `c₀`: `C_η b → b` as `η ↓ 0`
     for every `b` (`tendsto_dampingFlow`), because it converges on the dense span of the residue
     modes (BVI's `normalizedResidueMode_dense_span`) and `‖C_η‖ ≤ 2` (`tendsto_of_dense_of_bounded`).
@@ -425,12 +426,12 @@ outweigh the change in the polar charge. Switching the incidence also switches t
     zero damping (`not_exists_bounded_generator`). Compact smoothing at positive time comes with an
     unbounded logarithmic generator: continuation towards zero damping has no operator-norm
     shortcut.
-23. **The source is the damped Möbius residue series.** For `η > 0`,
+34. **The source is the damped Möbius residue series.** For `η > 0`,
     `(C_η r)(n) = Σ_{d≥1} μ(d) d^{−η} v_d(n)` (`centeredOperator_reciprocal_eq_tsum`), absolutely
     at every fixed coordinate (`summable_residueTerm`). Indeed `v_d(n) ≤ 0` and
     `|d^{−η}v_d(n)| ≤ d^{−1−η}`. Coordinatewise convergence is not convergence in `ℓ²`;
     the latter is precisely the critical issue below the absolute-summation threshold.
-24. **The sign-blind threshold.** `Σ_d d^{−ε} ‖v_d‖_{ℓ²}` converges iff `ε > ½`
+35. **The sign-blind threshold.** `Σ_d d^{−ε} ‖v_d‖_{ℓ²}` converges iff `ε > ½`
     (`summable_signBlind_iff`); above half damping the triangle inequality bounds every horizon by
     its square (`orbit_partial_energy_le`) and admits the source above half damping (`admits_of_signBlind`);
     the positive twin `Σ_d d^{−ε} v_d` has infinite receiver energy for `0 < ε ≤ ½`
@@ -448,9 +449,9 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
 
 ### Adverse sequences
 
-25. **Energy splitting.** For a bounded symmetric form and `u_n ⇀ u`,
+36. **Energy splitting.** For a bounded symmetric form and `u_n ⇀ u`,
     `Q(u_n) − Q(u) − Q(u_n − u) → 0` (`tendsto_energy_splitting`).
-26. **Adverse profiles cannot vanish under compact negativity.** If `Q` is compactly negative, it is
+37. **Adverse profiles cannot vanish under compact negativity.** If `Q` is compactly negative, it is
     weakly lower semicontinuous along bounded sequences (`energy_le_of_weakConv`); a unit-bounded
     adverse sequence with `Q(u_n) → μ < 0` and `u_n ⇀ u` has `u ≠ 0` and `Q(u) ≤ μ ‖u‖²`
     (`adverse_weakLimit`). A form bounded below by one finite-rank charge is compactly negative
@@ -458,9 +459,9 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     least `−ε` for every `ε > 0` (`eventually_energy_remainder_ge`), so eventually
     `Q(u_n) ≥ Q(u) − ε` (`eventually_energy_ge_weakLimit`): all negative energy of an adverse
     sequence is carried by its weak limit.
-27. **Escape through a noncompact negative part.** For `Q = −‖·‖²` an orthonormal sequence is
+38. **Escape through a noncompact negative part.** For `Q = −‖·‖²` an orthonormal sequence is
     adverse with weak limit `0` (`adverse_escape_of_orthonormal`).
-27a. **The critical form is compactly negative at every aperture.** At aperture `a` the corpus
+39. **The critical form is compactly negative at every aperture.** At aperture `a` the corpus
     writes the restricted Weil form as `‖u‖² + ⟪R(Ju), Ju⟫` on the archimedean form domain, with `R`
     the polar and prime remainder and `J` the compact physical embedding
     (`re_ccmRestrictedWeilForm_eq`). A compact operator maps bounded weakly convergent sequences to
@@ -472,7 +473,7 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
 
 ### Signed sampling
 
-28. **On-line companions pay off-line depth (local model).** Near a height `t` take the source to be
+40. **On-line companions pay off-line depth (local model).** Near a height `t` take the source to be
     a polynomial `p` of degree `< n` (its local degrees of freedom); on-line companions at heights
     `γ_i` contribute `p(γ_i)²` and an off-line cluster of squared-depth mass `w` contributes
     `−w p'(t)²` (`companionForm`). With at least `n` distinct companions the Lagrange identity
@@ -501,7 +502,7 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
 
 ### Continuation
 
-29. **The radial loss law.** The relative loss `−2⟪u, u'⟫/(1 + ‖u‖²)` is the derivative of
+41. **The radial loss law.** The relative loss `−2⟪u, u'⟫/(1 + ‖u‖²)` is the derivative of
     `−log(1 + ‖u‖²)` (`hasDerivAt_log_one_add_energy`); tangential motion is free
     (`radialLoss_add_tangential`, `radialLoss_of_inner_eq_zero`, `log_energy_eq_of_tangential`);
     `|L| ‖u‖ ≤ |⟪u, u'⟫|` and `|L| ≤ ‖u'‖` (`abs_radialLoss_mul_norm_le`, `abs_radialLoss_le`),
@@ -525,7 +526,11 @@ cycle of length `k` is positive exactly up to charge `1/(2 cos(π/k))` while loc
 payability is positivity of its comparison form, and the exact cost of local payment is the gap
 between the two ground energies (`locallyPayable_iff_comparison_nonneg`,
 `locallyPayable_regularized_iff`). A rank-one charge on three points is never locally payable
-(`not_locallyPayable_rankOneCoupling`).
+(`not_locallyPayable_rankOneCoupling`). Beyond local payment, a frustrated form is paid along
+canonical paths: a positive signed supersolution, aligned walks closing every anti-aligned overlap,
+path budgets and a packing of shared edges certify nonnegativity
+(`incidenceEnergy_nonneg_of_pathCertificate`); at the source-faithful calibration the prime triangle
+is frustrated and paid this way (`incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg`).
 
 **Pillar II — the polar defect law.** The sign of `‖·‖² − Σ (polar charges)` is the contraction
 property of the polar synthesis map; a completion keeps the sign iff it keeps the polar functional
@@ -539,7 +544,11 @@ truncations approximate the receiver at every horizon, the flow is strongly but 
 continuous at zero damping with an unbounded generator, backward stability is impossible, and
 sign-blind summation stops exactly at half damping (`admits_iff_summable_orbit`,
 `admits_iff_summable_firstColumn`, `tendsto_truncation_partialEnergy`, `not_backward_stable_l2`,
-`summable_signBlind_iff`, `signBlind_admission_iff`, `not_summable_positiveTwin`).
+`summable_signBlind_iff`, `signBlind_admission_iff`, `not_summable_positiveTwin`). In the receiver
+norm the centred chain is Hilbert–Schmidt above damping one, above `1/√2`, and — through
+short-interval sums of the damped divisor coefficients — above the golden threshold `(√5 − 1)/2`,
+sharply for that method (`centeredOperator_l2_le`, `centeredOperator_l2_le_of_inverseRootTwo`,
+`centeredOperator_l2_le_of_goldenThreshold`).
 
 **Pillar IV — train capacities.** A single prime's first-lag charge on a train of length `M + 1` is
 at most `cos(π/(M+2))` of the mass, attained by sine amplitudes; on aligned trains the
@@ -568,15 +577,15 @@ source; the tangent norm is the orientation-blind majorant (`radialLoss_add_tang
 |---|---|
 | "Each atom is paid by its own strip, so the form is paid." | Own-strip payments are a local allocation only if the shares are drawn once from each budget. Overlapping strips form a signed incidence pattern; a frustrated cycle in it can make a positive form unpayable (mechanism 8). |
 | "Positivity of a form implies a positive gauge." | For balanced forms positivity implies local payment (mechanism 4). Frustrated forms can be positive with no local allocation, hence with no gauge satisfying weighted dominance (mechanisms 2, 5–6). |
-| Treating the pole as a local charge. | A rank-one charge on three or more points is never locally payable (mechanism 5). The pole must be paid by a global dual-norm bound (mechanism 15). |
-| Reading the frustrated triangle as an artefact of equal weights. | The converse construction of mechanism 8 realizes every frustrated pattern on every complete overlap graph, and the cycle witness of mechanism 9b on every sparse pattern; the window of a frustrated `k`-cycle is exactly `½ < t ≤ 1/(2 cos(π/k))` (mechanism 9c). |
-| "The resonant (unit) train is the extremal adverse direction." | For several lags at once long unit trains approach the Euler envelopes; for one lag at finite length the sine train is extremal and the unit train is strictly worse from `M = 2` on (mechanism 13). |
-| Expecting cross-prime cancellation on aligned trains. | On aligned trains the single-prime capacities add exactly, for any finite family of towers (mechanism 14). |
-| Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 17). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 19). |
-| "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 22). |
-| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 24). |
-| Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 29). |
-| "An adverse sequence has an adverse limit." | Compact negativity preserves adversity in an existing weak limit; a noncompact negative part can allow a zero limit (mechanisms 26–27). |
+| Treating the pole as a local charge. | A rank-one charge on three or more points is never locally payable (mechanism 5). The pole must be paid by a global dual-norm bound (mechanism 22). |
+| Reading the frustrated triangle as an artefact of equal weights. | The converse construction of mechanism 8 realizes every frustrated pattern on every complete overlap graph, and the cycle witness of mechanism 11 on every sparse pattern; the window of a frustrated `k`-cycle is exactly `½ < t ≤ 1/(2 cos(π/k))` (mechanism 12). |
+| "The resonant (unit) train is the extremal adverse direction." | For several lags at once long unit trains approach the Euler envelopes; for one lag at finite length the sine train is extremal and the unit train is strictly worse from `M = 2` on (mechanism 20). |
+| Expecting cross-prime cancellation on aligned trains. | On aligned trains the single-prime capacities add exactly, for any finite family of towers (mechanism 21). |
+| Taking the pronic weight on the chain coordinate as the receiver. | The receiver is `ℓ²` on the chain coordinate (mechanism 24). In the pronic weight on the chain coordinate the centring functional is unbounded below half damping (BVI); in the receiver norm the transition is unbounded and the centring is what makes the receiver possible (mechanism 29). |
+| "Compactness of the chain on `c₀` gives continuation." | Compactness makes the backward problem ill-posed: no backward stability estimate exists in `c₀` or `ℓ²` (mechanism 32). |
+| "Dense residue modes give a stable expansion of the source." | The modes diagonalize the chain and span `c₀` densely, but the source is a signed series in them whose sign-blind majorant converges only above half damping (mechanism 35). |
+| Bounding the relative loss by the tangent norm and calling it the criterion. | The tangent norm is the orientation-blind majorant; tangential motion is free and only the signed radial rate enters (mechanism 41). |
+| "An adverse sequence has an adverse limit." | Compact negativity preserves adversity in an existing weak limit; a noncompact negative part can allow a zero limit (mechanisms 37–38). |
 | Treating a frustrated pattern as a failure for every realization. | Frustration permits an unpayable positive form; sufficiently large diagonal budgets can still pay a particular frustrated form. |
 | Treating a finite-dimensional duality as a cofinal certificate. | The finite theorems here have no uniformity in the number of points; transporting them to a growing arithmetic family is a separate estimate. |
 
@@ -619,40 +628,40 @@ Each question is stated with what is established and where the open part sits.
    are restored?** In the finite incidence model: none on balanced patterns (mechanism 4); on
    complete patterns some positive realization is unpayable exactly when a triangle is frustrated
    (mechanism 8), and on every pattern some compatible positive form is unpayable exactly when a
-   cycle is frustrated (mechanism 9b). In the sampled prime ledger the frustration comes only
+   cycle is frustrated (mechanism 11). In the sampled prime ledger the frustration comes only
    from odd folding: even profiles pay locally, and three odd positions with pairwise sums
-   `log 2, log 3, log 5` already frustrate it (mechanism 9d). With the archimedean and polar
+   `log 2, log 3, log 5` already frustrate it (mechanism 14). With the archimedean and polar
    weights added, every frustrated cycle passes through a pair of positions summing to a
-   prime-power logarithm (mechanism 9e); on aligned forms with nonnegative polar weights one-signed profiles are the worst
+   prime-power logarithm (mechanism 15); on aligned forms with nonnegative polar weights one-signed profiles are the worst
    case. The continuum profiles of the actual kernel (AIP's AI-2) are open.
 2. **Can those profiles be reduced to a controlled family without excessive norm loss?** Among
    trains that are products along the towers, the extremal profiles are the sine products, with
-   explicit finite-length deficits (mechanisms 11–14). Profiles not aligned with the towers are open.
+   explicit finite-length deficits (mechanisms 18–21). Profiles not aligned with the towers are open.
 3. **What signed arithmetic estimate bounds the averaged damping loss uniformly in horizon?** An
    `ℓ²` bound on the reciprocal orbit, equivalently on the first column of the chain (mechanisms
-   17, 20); it must read the source rather than the operator (mechanism 22) and the signs of `μ`
-   below half damping (mechanism 24). The estimate itself is open; at cofinally small damping it
+   17, 20); it must read the source rather than the operator (mechanism 32) and the signs of `μ`
+   below half damping (mechanism 35). The estimate itself is open; at cofinally small damping it
    is RH.
 4. **Which residue observable gives uniform actual-row cancellation?** The full residue series in
-   `ℓ²` (mechanism 23). The size-only reading is extremized by the positive twin and has resolution
-   exactly half damping (mechanism 24 and the envelope paragraph after it). The sub-half
+   `ℓ²` (mechanism 34). The size-only reading is extremized by the positive twin and has resolution
+   exactly half damping (mechanism 35 and the envelope paragraph after it). The sub-half
    cancellation is BVI's BV-2 and is open.
 5. **Does the signed floor have the width rate in unrestricted `L²` without uniform unsigned depth
    mass?** In the polynomial companion model signed sampling can replace the unsigned hypothesis
-   by a companion condition with an explicit Lagrange price (mechanism 28). The Paley–Wiener and
+   by a companion condition with an explicit Lagrange price (mechanism 40). The Paley–Wiener and
    actual-ζ transfer is open (topic 6).
 6. **Which topology preserves the source normalization and the sign?** A completion keeps the sign
-   exactly when it keeps the polar functional (mechanisms 15–16); for the damping chain the
-   receiver topology is `ℓ²` on the chain coordinate (mechanisms 17–19). Boundedness of the centred
+   exactly when it keeps the polar functional (mechanisms 22–23); for the damping chain the
+   receiver topology is `ℓ²` on the chain coordinate (mechanisms 24–29). Boundedness of the centred
    chain there is open (topic 4).
 7. **Can a pre-profile orientation law force the local–global defect to vanish?** On complete
    incidence patterns the triangle holonomies are the complete gauge-invariant sign data, their
    alignment forces lossless payment and a single frustrated triangle forces a defect (mechanisms
-   7–8); on every pattern the closed-walk holonomies play this role (mechanisms 9a–9b). Identifying the standalone candidates' seam and mate diagnostics with such holonomies is
+   7–8); on every pattern the closed-walk holonomies play this role (mechanisms 10–11). Identifying the standalone candidates' seam and mate diagnostics with such holonomies is
    open.
 8. **What mechanism supplies all-rank uniformity?** Compact negativity, which keeps an adverse weak
-   limit nonzero and adverse, while its failure permits escape (mechanisms 26–27). The actual
-   restricted Weil form is compactly negative at every fixed aperture (mechanism 27a); the
+   limit nonzero and adverse, while its failure permits escape (mechanisms 37–38). The actual
+   restricted Weil form is compactly negative at every fixed aperture (mechanism 39); the
    aperture-uniform version is open (topic 7).
 
 ---
@@ -664,7 +673,7 @@ Each question is stated with what is established and where the open part sits.
 | Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
-| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
+| Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column; Hilbert–Schmidt thresholds from floor-jump sparsity and short-interval divisor sums | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
 | Signed sampling / observability | local companion law | companion heights + depth mass + local degrees of freedom → a floor at the Lagrange price, or a defeating profile | A local model is not the Paley–Wiener class. Success: the companion law for sources of aperture `A`, with the Lagrange price controlled uniformly in height. |
 | Source-faithful completion with defect accounting | polar defect law; centring in the receiver norm | completion + polar functional → sign kept or lost | Strong convergence can lose the polar functional. Success: a completion whose polar functional is proved continuous. |
 | Boundary-sensitive rigidity | triangle holonomy; converse construction | sign pattern of the source → lossless or not | A diagnostic indexed by the zeros restates RH. Success: an arithmetic diagnostic identified with a holonomy and computed from the source. |
@@ -674,13 +683,13 @@ Each question is stated with what is established and where the open part sits.
 ## 9. Open research topics
 
 1. **Arithmetic holonomy.** Compute the sign pattern of the overlaps of AIP's global incidence ledger
-   on a finite resolution of the logarithmic line and locate its frustrated cycles (mechanism 9b;
+   on a finite resolution of the logarithmic line and locate its frustrated cycles (mechanism 11;
    triangles on complete patterns). For the prime translations alone this is settled at the level
    of sign patterns: even folding is aligned, odd folding is anti-aligned exactly where the kernel
    at the sum exceeds the kernel at the difference, and the prime triangle `log 2, log 3, log 5` is
-   frustrated (mechanism 9d). With the archimedean kernel and the pole charge added, every
+   frustrated (mechanism 14). With the archimedean kernel and the pole charge added, every
    frustrated cycle still passes through a prime sum, and sampling sets free of prime sums are
-   lossless (mechanism 9e); at fine resolution (small relative weight of `K`) the prime triangle
+   lossless (mechanism 15); at fine resolution (small relative weight of `K`) the prime triangle
    frustrates the full odd ledger. Open: the holonomies at a fixed mesh, where `K` and the prime
    atoms are comparable, and the budgets they supply. The aligned
    part is payable by mechanism 4; the frustrated part is where the even–odd balance of AIP lives.
@@ -695,16 +704,16 @@ Each question is stated with what is established and where the open part sits.
    payment of the frustrated part — a gauge with sign changes, or a global square absorbing the
    rank-one charges — and its cost for the actual critical form; ACT's AC-2 is the continuum
    instance. On a single frustrated cycle the answer is complete: the path pays the frustrated
-   edge through the half-sine certificate, at the exact factor `cos(π/k)` (mechanism 9c). For
-   several frustrated cycles the canonical-path certificate (mechanism 9f) is a sufficient
+   edge through the half-sine certificate, at the exact factor `cos(π/k)` (mechanism 12). For
+   several frustrated cycles the canonical-path certificate (mechanism 13) is a sufficient
    nonlocal payment with the competition made explicit as a packing constraint. Open: whether
    optimal canonical-path certificates are exact (sharp) beyond a single cycle, and their cost on
    the actual ledger.
 4. **The centred chain on `ℓ²`.** `C_η` is Hilbert–Schmidt above the golden threshold
-   `(√5−1)/2` (mechanism 18a). Decide whether it is `ℓ²`-bounded for `½ < η ≤ (√5−1)/2` — where a
+   `(√5−1)/2` (mechanisms 26–28). Decide whether it is `ℓ²`-bounded for `½ < η ≤ (√5−1)/2` — where a
    short-interval bound for `c_η − ρ` at the scales `K = N^κ`, `η/(2−η) ≤ κ ≤ 1/(1+2η)`, beyond
-   `min(J, a^{(1−η)/2})`, is the only missing input — and for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
-   Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes
+   `min(J, a^{(1−η)/2})`, is the only missing input — and for some `η ≤ ½`; by mechanism 25 a positive answer at cofinally small `η` would be RH.
+   Its first column is exactly the receiver (mechanism 30); the computation of mechanism 30 writes
    the `k`-th column, up to `O(k/m)`, as `(k/m)(k^{−η} P(⌊m/k⌋) − (k+1)^{−η} P(⌊m/(k+1)⌋))`, a
    difference of dilated sources, so boundedness is a
    uniform version over the dilations `k` of admission, with the operator norm controlling all linear combinations and their mixed Gram terms,
@@ -713,22 +722,22 @@ Each question is stated with what is established and where the open part sits.
    half damping on a horizon-dependent range of moduli with explicit tails; this is BVI's BV-2 in
    residue coordinates.
 6. **Signed sampling beyond the local model.** The transfer to general sources is reduced to the
-   local approximation error (mechanism 28, `companions_pay_up_to_error`), and for smooth sources
+   local approximation error (mechanism 40, `companions_pay_up_to_error`), and for smooth sources
    to the Taylor remainder (`companions_pay_up_to_taylor`); for trigonometric sources of aperture `A`
    the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`), and the price
    is explicit in the spacing and spread (`companions_pay_aperture_explicit`). What remains is the
    companion geometry of the actual on-line zeros: `k + 1` of them spaced by `δ` within `r ≪ 1/A`
-   of every height, which is information about the zeros on the line. Prove the companion law of mechanism 28 for
+   of every height, which is information about the zeros on the line. Prove the companion law of mechanism 40 for
    Paley–Wiener sources of aperture `A`, with a Lagrange price uniform in the height, and combine it
    with sufficiently strong information about the **on-line** zeros of `ζ` to obtain the
    plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well
    as the interpolation price; the polynomial model alone supplies none of these transfers.
 7. **Compact negativity uniformly in the aperture.** At fixed aperture the restricted Weil form is
-   compactly negative (mechanism 27a). Determine how the compactness — the finite-rank
+   compactly negative (mechanism 39). Determine how the compactness — the finite-rank
    approximation of the embedding seen by the polar and prime remainder — degrades as the aperture
    grows; this uniformity is the input Pillar V needs for O6.
 8. **Trains not aligned with the towers.** For trains that are products along the towers the
-   capacities add (mechanism 14). Profiles that are not such products are where a cross-prime
+   capacities add (mechanism 21). Profiles that are not such products are where a cross-prime
    saving can live; determine their joint charge. On a box the additive bound holds for every amplitude, product or not
    (`grid_joint_capacity`, `cartesian_lower_bound`), so a saving can only come from the geometry of
    the support: trains whose positions do not fill a box of the multiplicative lattice.

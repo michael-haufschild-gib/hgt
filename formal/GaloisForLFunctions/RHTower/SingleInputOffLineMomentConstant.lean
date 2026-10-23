@@ -109,7 +109,6 @@ def ZetaMollifiedMeanSquareGate (R c : ℝ) : Prop :=
     (∫ t in T₁..T₂, ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
         edPoly b (Finset.Icc 1 N) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ (2 : ℕ)) ≤ (c + ε) * (T₂ - T₁)
 
-set_option maxHeartbeats 1000000 in
 /-- **The single-input explicit `(L)` constant.** From the two mollified mean-square gates on the
 same Levinson abscissa, `ζΨ` with constant `c₁` and `(ζ+λζ')Ψ` with constant `c₂`, and any target
 `κ₀ + 2δ < 1 − log c₂/R`:
@@ -173,7 +172,7 @@ theorem eventually_offLineMoment_le_of_gates {κ₀ R c₁ c₂ δ η : ℝ} (h�
         rw [div_le_one (by positivity)]
         linarith
       have h2 : 0 ≤ η / 4 * U := by positivity
-      nlinarith
+      exact mul_le_of_le_one_left h2 h1
     calc 12 * K * Real.log U ≤ 12 * K * (η / (4 * (12 * K + 1)) * U) :=
           mul_le_mul_of_nonneg_left hU (by positivity)
       _ ≤ η / 4 * U := h12

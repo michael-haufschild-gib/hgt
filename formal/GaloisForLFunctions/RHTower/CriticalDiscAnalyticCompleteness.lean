@@ -15,7 +15,6 @@ noncomputable section
 namespace RHTower
 
 open Complex Metric Set Filter Topology
-set_option maxHeartbeats 800000
 
 /-- Restriction of a function continuous on a larger critical disc to a
 smaller literal closed disc. -/
@@ -137,7 +136,7 @@ theorem criticalDisc_analytic_odd_mem_closedSpan_compl_finset
     have hhalf : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by norm_num
     rw [hhalf]
     have htri := norm_sub_le ((P N).eval z - f z) ((P N).eval z' - f z')
-    nlinarith
+    linarith
   exact (Submodule.isClosed_topologicalClosure _).mem_of_tendsto hqF
     (Filter.Eventually.of_forall hqmem)
 

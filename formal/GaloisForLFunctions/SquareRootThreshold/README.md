@@ -39,8 +39,16 @@ actual prime source.
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Resolves source signs and cancellation before applying the growth receivers. |
 
 `RHTower` and `Zeta23` supply the explicit formula, lattice configurations, zero counts and analytic
-continuation tools. Read §2 for conventions; the lattice and lag mechanisms in §3 are the basic
-pillars. The later width dictionary records both equivalences and one-way implications: fixed-aperture
+continuation tools.
+
+**The shared target.** The positivity programmes work on RH as the sign of one critical arithmetic
+form, read through pairwise incidence, lag and aperture. SRT owns the lag face — one window
+inequality $P_v\ge0$ per scale for the difference tests of one generic width — and the common units
+in which every face reports progress: the zero width, the aperture, the visibility lag and the
+excluded depth below a height.
+
+Read §2 for conventions; the lattice and lag mechanisms in §3 are the basic pillars, collected with
+their Lean names in §4; §§6–7 give the questions and open problems. The later width dictionary records both equivalences and one-way implications: fixed-aperture
 odd, even, polar and blind certificates must remain distinct.
 
 ---
@@ -566,7 +574,7 @@ argument becomes quantitative.
     the Weil form of `ζ` is *never* unbounded below in its own archimedean normalisation, so every
     difficulty of the aperture face is a difficulty of normalisation, not of boundedness.
 36. **The width is the ground-energy rate when the off-line zeros do not cluster.** The arrow from a
-    ground-energy rate to the width is unconditional (mechanism 27); the converse now holds under
+    ground-energy rate to the width is unconditional (mechanism 27); the converse holds under
     one explicit single-window hypothesis, `OffLineCopiesLocallyBounded M` — at most `M` off-line
     copies in any unit height window. Then
     `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` at every aperture, `σ = zetaZeroWidth`
@@ -705,7 +713,47 @@ independence order into control at the lag and height actually required by the r
 
 ---
 
-## 4. Traps
+## 4. Foundational pillar theorems
+
+Unconditional; RH appears only inside equivalences or as a conclusion.
+
+1. **The square-root threshold.** An off-line lattice at the density of the zeros of $\zeta$ is
+   indistinguishable from an on-line lattice at every aperture $a\le L/2$, whatever its depth, and
+   visible beyond (`RHTower.offLineLattice_weil_positive_iff`).
+2. **The Toeplitz law.** For periodic configurations hiding at aperture $a$ is positive
+   semidefiniteness of a Toeplitz section of the cosh-weighted modes
+   (`profileConfig_weil_nonneg_iff`); by Carathéodory–Fejér, hiding is mimicry of on-line translates.
+3. **Faithfulness.** The one-parameter lag family determines the zero configuration with
+   multiplicities (`lag_weil_eq_iff_symmMult_eq`, `eq_zetaZeroConfig_of_lag_weil_eq`).
+4. **One parameter decides the line, and measures the abscissa.** For one generic width, RH iff the
+   prime windows $P_v$ are nonnegative at every lag (`zeta_onLine_iff_lag_primeWindow_nonneg`), and
+   $\Re\rho\le\tfrac12+\sigma$ iff $P_v\ge-Ce^{\sigma v}$ (`zeta_re_le_iff_lag_primeWindow_ge_neg_exp`).
+5. **Finite-range visibility.** The record-potential law gives explicit lags: a near-top zero is seen
+   at a polylogarithmic lag (`zeta_near_top_visible_at_polylog_lag`), and nonnegativity on $[0,V]$
+   forces a depth gap (`one_param_horizon_law`, `zeta_depth_gap_of_lag_positivity`).
+6. **Lag floors are ground-energy floors.** $2\lVert\kappa_w\rVert^2\mu(v/2+w)\le\Re P_v$; a near-top zero
+   seen at lag $V$ makes $\mu(A)<0$ beyond $V/2+w$ (`ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero`,
+   `theContactApertureOfTheGroundEnergyPath`).
+7. **The width dictionaries.** The routes read one zero width and one aperture
+   (`theRoutesMeasureOneZeroWidth`, `theRoutesMeasureOneAperture`); the side of a zero is its depth
+   and the width is the supremum of the depth meters (`theSideIsTheDepth`,
+   `theWidthIsTheSupremumOfTheDepthMeters`); the lag rate bounds the de Bruijn–Newman heat time
+   (`riemannHeat_zeros_real_of_half_sq_zetaZeroWidth_le`).
+8. **The width bounds the floor.** Width $<\beta$ gives a Weil floor at rate $2\beta$ in the energy
+   normalisation (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`); the form is unconditionally
+   bounded below in the archimedean normalisation (`exists_re_W_ge_logWeighted_rate_sharp`); and the
+   ground-energy rate equals the width unless off-line depth mass clusters without bound on unit
+   windows (`polarGroundEnergyRate_eq_zetaZeroWidth_or_depthMass_clusters`).
+9. **The graded incidence ledger.** A graded allocation deficit $Ce^{2\sigma r}$ bounds the width by
+   $\sigma$, and a zero deficit is RH (`zetaZeroWidth_le_of_gradedIncidenceAllocation`,
+   `riemannHypothesis_of_gradedIncidenceAllocation_zero`).
+10. **Weil positivity through $3/10$.** $\Re W(f,f)\ge\lVert f\rVert^2/5000$ for every test of aperture
+    $\le3/10$ (`zetaZeroConfig_re_W_ge_of_aperture_le_threeTenths`) — a nonselective certificate: it
+    holds for every prime weight (`WindowCertificatesAndThePrimeWeight`).
+
+---
+
+## 5. Traps
 
 | Trap | What is true instead |
 |---|---|
@@ -751,7 +799,48 @@ independence order into control at the lag and height actually required by the r
 
 ---
 
-## 5. Open problems
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **What can a test of aperture $a$ see?** Lags up to $2a$, primes up to $e^{2a}$, ordinates to
+   scale $\pi/a$. Isolated and finite configurations are visible at small apertures; a crystal at the
+   full zero density hides up to $L/2$; visibility is a Toeplitz question on periodic configurations
+   and a record question on tempered ones.
+2. **Which configurations can hide, and from what?** Below the threshold, crystals and their
+   mimicry classes; for $\zeta$ itself, hiding from $[0,V]$ needs twins, twins need triples, and
+   clusters must collapse — or zeros must lie beyond the horizon.
+3. **What one quantity do all positivity and cancellation routes measure?** The zero width, through
+   exact dictionaries; and the aperture, through one-way and two-way arrows that must be kept
+   distinct.
+4. **In which normalisation is a floor the width?** In the energy and archimedean normalisations,
+   unconditionally; in $L^2$, unless off-line zeros cluster without bound on unit windows.
+5. **What unconditional information about primes reaches beyond $X=T$?** The question the theory
+   exists for; every known route stops at the square-root threshold for its own reason.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Lag representation* of the Weil form and *Poisson on lattices*.
+- *The Toeplitz law* with Carathéodory–Fejér mimicry, ground-state laws on lag lattices.
+- *Two-point minors* and *Ingham windows* for arbitrary tempered configurations.
+- *The one-parameter lag family* $P_v$: the two-bump difference tests at one generic width.
+- *The record-potential law*, explicit visibility lags and the horizon law.
+- *The Rayleigh bridge* from lag tests to the ground-energy path.
+- *Width dictionaries* across routes, with the graded ledger in the width unit.
+- *Sampling on locally bounded point sets* for unsigned depth detection.
+
+To be built:
+
+- a single-height prime estimate using the height phases beyond $X=T$;
+- control of zeros beyond every finite horizon;
+- the $L^2$-normalised width arrow without a local count, or the exclusion of the clustering branch;
+- a quantitative visibility tradeoff $\delta(n,R)$ below $T(n,R)$.
+
+---
+
+## 7. Open problems
 
 1. **Beyond the square-root threshold.** Bound the off-diagonal prime pairs at bandwidth
    `λ = log X/log T > 1`. A bound for the pair correlation of the zeros on `(1, λ)` turns into a
@@ -797,7 +886,7 @@ independence order into control at the lag and height actually required by the r
    odd window `[−181/500, 181/500]` for every weight with `w(2) = log 2`; the Liouville twist
    reverses the atom at `2` and adds `√2 log 2 (k(log 2) + k(−log 2))`.
 
-### Research topics toward the shared target
+### Research topics
 
 1. **`P_v ≥ 0` beyond an explicit lag `V` for one generic width**: the first selective, cofinal,
    weight-specific estimate; the unit is `V`.
@@ -818,7 +907,7 @@ independence order into control at the lag and height actually required by the r
 7. **Every height.** Conditioned-tail estimates for the orbit `τ ↦ ζ(· + iτ)` on a prescribed disc
    (the Bagchi lane of `RHTower`): recurrence holds on every zero-free disc, RH is local disc
    recurrence at every point of the strip, and the object to control is the tail conditioned on the
-   return set of the finite Euler head. The conditioning itself is now free: head-conditioned
+   return set of the finite Euler head. The conditioning itself costs nothing: head-conditioned
    decoupling (`RHTower/HeadConditionedRoughDecoupling`) proves a mean value theorem at arbitrary
    *distinct* integer frequencies and, from it, that weighting the heights by any probe built on
    the primes below `y` — in particular by one concentrated on the return set — leaves a `y`-rough
@@ -826,9 +915,9 @@ independence order into control at the lag and height actually required by the r
    of the frequencies (`|log(A/B)| ≥ 1/max(A, B)`) and therefore native to `ℕ`: a Beurling system
    keeps the exact diagonal and loses the effective form. The residual is that the rough mean
    square is *unchanged*, not small, while the lane needs the tail to return: the uncontrolled
-   object remains `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`. With it, the control of
+   object is `log ζ(s) − Σ_{p ≤ y} p^{−s}` at a single fixed `s`, and with it the control of
    near-top zeros beyond a finite horizon (mechanism 25).
-   The orbit lane now has Voronin universality and recurrence modulo the local zero divisor at
+   The orbit lane has Voronin universality and recurrence modulo the local zero divisor at
    every point (`RHTower/ZetaVoroninUniversalityOnSmallDiscs`,
    `RHTower/ZetaRecurrenceAtEveryPointModuloItsZeros`); the cofactor-return heights fix the phases
    of the primes `≤ y` only through the disc values `Σ Λ(n) ω(n) n^{−z} ≈ −g′/g`, weights `n^{−Re z}`
@@ -837,13 +926,12 @@ independence order into control at the lag and height actually required by the r
    them at `√X ≳ log T`. The two lanes meet only at the square-root threshold (open problem 1).
 8. **The `L²`-normalised width arrow, and the clustering alternative.** Mechanism 31 proves
    `width < β ⟹` floor at rate `2β` with an `H¹` datum in the normalisation. The `L²` form, which is
-   what the ground-energy path and the graded ledger consume, is now proved under one explicit
+   what the ground-energy path and the graded ledger consume, is proved under one explicit
    single-window hypothesis: at most `M` off-line copies per unit height window gives
    `μ(A) ≥ −M(2A + 2π)e^{2π}e^{2σA}` and the exponent identity, and the alternative is sharp — either
    the ground-energy exponent equals the width, or the off-line zeros cluster without bound on unit
-   windows (mechanism 36). So the open problem has changed shape. It is no longer "which
-   single-window input replaces averaged zero density": it is to rule out the clustering branch, or
-   to prove the exponent identity without a local count. Note what the clustering branch would cost:
+   windows (mechanism 36). The open problem is to rule out the clustering branch, or to prove the
+   exponent identity without a local count. Note what the clustering branch would cost:
    unboundedly many off-line copies per unit window, which is far stronger than anything a
    zero-density theorem permits on average — and yet no unconditional theorem excludes it, because
    the log-mean route cannot be pushed further (Littlewood's lemma on a unit window has horizontal
@@ -854,7 +942,7 @@ independence order into control at the lag and height actually required by the r
 
 ---
 
-## 6. Principles
+## 8. Principles
 
 1. **Search the corpus before proving:** `scripts/formal_tools.py research "<query>"` from the repository root. The
    lattice, tilt, `paperFT`, explicit-formula and Hodge-index tools already exist in Zeta23 and

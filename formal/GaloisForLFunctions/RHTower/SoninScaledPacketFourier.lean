@@ -14,7 +14,6 @@ one spectral statement covers every annulus, instead of one per annulus.
 
 noncomputable section
 
-set_option maxHeartbeats 400000
 
 namespace RHTower
 

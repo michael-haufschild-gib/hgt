@@ -43,10 +43,18 @@ Neither reduction supplies the missing estimate on the actual source.
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Seeks arithmetic effectivity that could provide a source of the required energy estimate. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Studies the source's signed incidence kernel, a possible input to continuation. |
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical
+arithmetic form and on the critical cancellation of the actual Möbius source. ACCE supplies what no
+fixed-parameter face states: the transport of a finite critical energy along damping, cutoff or
+aperture, with the observation horizon quantified uniformly, and a partial result in the shared width
+unit — a budget on `(a₀, c]` is the strip `Θ ≤ ½ + a₀`.
+
 Read §2 for the quantifiers and normalisation, then the exact derivative and averaged criterion
-in §3. The dilation, block-energy and zero-anchor descriptions are alternative ways to expose the
+in §3; §4 lists the pillar theorems and §§6–7 the questions and open problems. The dilation, block-energy and zero-anchor descriptions are alternative ways to expose the
 same arithmetic obligation. They should be compared by what estimate they require, not by how many
 equivalent receivers they produce.
+
+---
 
 ## 1. Why: motivation
 
@@ -82,6 +90,8 @@ of trying to enter the critical norm from the singular end. And it asks only for
 The same reframing applies to the other two parameters. Removing a coefficient cutoff and growing an
 aperture are continuations in exactly the same sense, and the transport theorems here are stated for
 an arbitrary parameter so that they can be instantiated in all three.
+
+---
 
 ## 2. What: objects and language
 
@@ -175,6 +185,8 @@ These are not new axioms. They specify what a theorem in this programme has to s
 algebraic identities — `μ * 1 = δ₁`, `Λ * 1 = log`, `Λ * μ = −μ log`, the exact tangent law, the
 explicit formula — are starting facts. Global positivity, small-damping admission, purity and the
 zero width remain conclusions.
+
+---
 
 ## 3. How: mechanisms
 
@@ -272,6 +284,22 @@ above `Θ/2`, so the interval to cross is `(0, Θ/2]` rather than `(0, ½]`. A b
 accumulate at `a₀` and `Θ ≤ ½ + a₀`
 (`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`): the programme's non-RH deliverable,
 a genuine zero-free strip in the shared units.
+
+### What one admitted damping says about the zeros
+
+A single admitted damping is a statement about the zero divisor, not only about energy. If
+`ε ∈ (0, ½]` is admitted, every zero `ρ` with `½ + ε ≤ Re ρ < 1` is translated to a zero `ρ − ε` of
+at least the same multiplicity, the boundary line included; on the boundary the translate is a
+critical zero (`analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings`,
+`riemannZeta_criticalLine_eq_zero_of_mem_receiverDampings`). The mechanism is the cleared Mellin
+identity `s Z(s + ε) M(s) = (s + ε − 1)(1 − 2^{1−s}) ζ(s)`, `Z(w) = (w − 1)ζ(w)`, on `½ < Re s < 1`,
+together with `|M(s)| ≤ C(2(Re s − ½))^{−1/2}` for the Mellin transform of the admitted `L²` source:
+approaching `ρ − ε` from the right, a loss of `u^{−1/2}` is less than one power of `u`, so orders of
+vanishing cannot drop. At the width itself, if `Θ > ½` is attained at `ρ₀`, admission at `Θ − ½`
+forces a critical zero at `½ + i Im ρ₀` of at least the multiplicity of `ρ₀`; when no such
+critical-line shadow exists the admitted dampings at or above the width are exactly `(Θ − ½, ∞)`
+(`receiverDampings_inter_Ici_eq_Ioi`). This is why one isolated admitted damping has only the
+zero-translation conclusion: the width is read by accumulation, not by a single point.
 
 ### A superlinear scale
 
@@ -417,7 +445,7 @@ pairing. Five facts fix what a proof of its sign can look like.
   `ArithmeticCompensationTheory.integral_workCore_le_logZeta`). The zero-anchor divergence is proved by
   (`exists_horizon_integral_workCore_ge`). The explicit positive core is therefore a **debt of size
   `log log T`**, and under any energy budget the integrated deviation must carry it: it tends to
-  `−∞` along the horizons (`exists_horizon_integral_workDeviation_le`). This is the sharpest
+  `−∞` along the horizons (`integral_workDeviation_le_primeHarmonic`). This is the sharpest
   cancellation demanded by admission in this zero-anchored decomposition. The only way the critical energy can stay bounded is that the
   source's deviation from constancy cancels, to leading order, the prime harmonic growth of its own
   tangent — cancellation of the divergent zero-anchored core. The cited theorem proves unboundedness;
@@ -585,7 +613,51 @@ while keeping the centring makes the prefix grow without bound. The calibration 
 whole number-field difficulty in the absence of that exact cancellation, not in the shape of the
 transport mechanism.
 
-## 4. Traps
+---
+
+## 4. Foundational pillar theorems
+
+All unconditional; RH appears only inside equivalences or as a conclusion.
+
+1. **The master inequality and transport.** A scale-read loss bounded by a budget makes
+   `Ψ ∘ E_T + β` monotone (`scaledEnergy_add_budget_le`); linear and coercive Osgood budgets transport
+   admission from an admitted right end (`Admits.of_linearContinuation`, `Admits.of_osgoodContinuation`).
+2. **The exact derivative.** `∂_ε E_T(ε) = 2W_T(ε)` (`hasDerivAt_dampedMobiusEnergy`), equal to the
+   Markov boundary-flux form (`two_mul_signedDampingWork_eq_markov`), and the work integral is the
+   energy drop (`TheWorkIntegralIsTheEnergyDrop`).
+3. **The averaged budget is admission.** With an admitted right end, an averaged budget holds iff
+   the left end is admitted (`averagedContinuation_iff_admits`), and cofinal averaged budgets are RH
+   (`riemannHypothesis_iff_cofinal_averagedDampingContinuation`); a pointwise budget is strictly
+   stronger (`exists_admits_everywhere_not_linearContinuation`).
+4. **The partial deliverable.** A budget on `(a₀, c]` gives `Θ ≤ ½ + a₀`
+   (`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`).
+5. **Both ends are paid.** The energy tends to the pronic mass as `ε ↓ 0`
+   (`tendsto_dampedMobiusEnergy_nhdsGT_zero`), so RH is the absence of an interior bump
+   (`riemannHypothesis_of_no_interior_bump`), and one forbidden order of sign change of the work
+   suffices (`riemannHypothesis_of_signedWork_single_sign_change`).
+6. **The sign is an angle.** The work is the autocorrelation of the tangent family; relative tangent
+   stability gives RH (`riemannHypothesis_of_relative_tangent_stability`), and convexity is a
+   pairing with the second tangent, itself an iterated prime dilation
+   (`riemannHypothesis_of_second_tangent_pairing_ge`).
+7. **The dilation calculus.** Prefix dilations represent the Dirichlet ring exactly
+   (`TheDilationCalculusOnIntegerPrefixes`); the pronic contraction `j^{−1/2}` makes the scale sum
+   finite exactly above half damping (`ThePronicDilationContractionAndItsThreshold`); the quotient
+   incidence kernel is indefinite (`TheQuotientIncidenceKernelIsIndefinite`).
+8. **The self-improving identity.** At one damping, the energy is a linear pairing with the
+   nonnegative inversion defect minus the source's anti-correlation with its proper dilations
+   (`TheSelfImprovingEnergyIdentity`, `TheInversionDefectIsPositive`).
+9. **Block energy is admission.** For fixed `q ≥ 2` the pronic norm is equivalent to the energy of
+   the one-step dilation blocks (`pronicNorm_sq_le_dilationStepEnergy`, `dilationStepEnergy_le`).
+10. **Selectivity.** The majorant row `d^{−ε}` is never admitted at or below half damping
+    (`TheMajorantSourceIsNeverAdmitted`), and over `F_q[T]` the centred prefix is exactly constant
+    (`TheFunctionFieldCalibration`).
+11. **Admission translates zeros with multiplicity, up to the boundary**
+    (`analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings`).
+12. **The cutoff parameter is free** given admission (`TheCutoffParameterCostsNothingBeyondAdmission`).
+
+---
+
+## 5. Traps
 
 - **Horizon-dependent budgets transport nothing.** `escapeEnergy ε T = exp(2(½−ε) log(T+1)) − 1`
   vanishes at the endpoint `ε = ½`, satisfies the *exact* linear continuation identity
@@ -644,7 +716,51 @@ transport mechanism.
   polar and row-weighted terms grow linearly in the horizon, so the prime-pair form must cancel them
   to relative precision `1/T`.
 
-## 5. Open problems
+---
+
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **What exactly must be estimated to transport a finite critical energy to smaller damping?** A
+   horizon-free bound on the signed relative-loss integral over each compact interval — equivalent
+   to admission at its left end, and strictly weaker than any pointwise or norm demand.
+2. **Where can the energy escape?** Only through an interior bump drifting to zero as the horizon
+   grows; both ends are paid.
+3. **What is the arithmetic shape of the obstruction?** Off-diagonal anti-correlation of the
+   damping tangents — equivalently the numerical range of the prime dilation operator at the literal
+   source, a correlation of the source with its own window means, with an explicit positive core
+   whose zero-anchored integral diverges like `log log T`.
+4. **Which demands are false or vacuous?** Global nonnegative work, positive-part budgets, horizon-
+   dependent budgets, size-blind estimates, a fixed positive aperture margin.
+5. **What does a single admitted damping say?** Zeros translate with multiplicity; the width is
+   read only by accumulation.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Energy families* with the admission hierarchy and horizon sampling laws.
+- *The master inequality* with linear, Osgood and superlinear scales; discrete relative and additive
+  transport; the affine envelope.
+- *Work identities*: the exact derivative, the Markov face, the work integral, the zero anchor.
+- *The tangent autocorrelation* with polarisation, relative stability and second-tangent control.
+- *The dilation calculus* on integer prefixes: composition, inversion law, pronic contraction,
+  window means, positive core, Hardy and block-energy inequalities.
+- *Coordinates*: prime-pair (Nyman–Beurling max-kernel), polar calibration, level collapse.
+- *Calibrations*: the majorant row, the function-field source, the escape family.
+
+To be built:
+
+- a source-derived signed estimate of the averaged relative loss on a compact interval below the
+  admission frontier;
+- a contraction factor for an iterated sector-compensation scheme on the actual Möbius row;
+- a uniform pronic mean square of the short blocks `(⌊n/q⌋, n]` of the centred divisor sum;
+- an aperture step estimate compatible with the doubly exponential ceiling.
+
+---
+
+## 7. Open problems
 
 1. **Signed averaged continuation.** For each `0 < a < c` with admitted `c`, bound
    `∫_a^c −2W_T/(1 + E_T)` uniformly in `T`; equivalently use the additive signed integral
@@ -662,13 +778,13 @@ transport mechanism.
 4. **The one-sided sublinear pairing at a single damping.** Bound the positive part of the centred
    source against the explicit positive inversion defect, and the anti-correlation with its own
    proper dilations, each by `κ√E_T + κ'` at one damping. This gives admission with no transport at
-   all; above half damping the dilation series already does it.
+   all; above half damping the dilation series does it.
 5. **Which terms obstruct.** Express the work through the owned divisor, Vaughan and logarithmic
    covariance identities and classify the terms whose negative part is not controlled uniformly in
    the horizon. The Markov face says one such term is the jump energy of the arithmetic chain; the
    window-mean form says the object is a smoothing of the source against itself. At the zero
    anchor, the positive core grows on the prime-harmonic scale and requires compensating deviation.
-   On a positive interval the core is already bounded by a zeta-log ratio, so the remaining target
+   On a positive interval the core is bounded by a zeta-log ratio, so the remaining target
    is the deviation and its normalization. Keep these two parameter regimes distinct.
 6. **Propagating the complementary-sector cancellation.** Turn the proved leading-order
    anti-alignment between a large-prime denominator sector and its literal complement into a
@@ -687,11 +803,12 @@ transport mechanism.
    origin-sensitive and sign-reading, and prove a quantitative stability estimate for it in the
    receiver's norm — the missing half of the recovery theorems.
 
-### Research topics toward the shared target
+### Research topics
 
 - Source-derived continuation below the existing admission frontier. The sharper threshold is
-  `Δ = Θ − ½`: on `[a, ½]`, `a > Δ` supplies continuation and continuation forces `a ≥ Δ`; the
-  boundary `a = Δ` is undecided, and the target is every positive `a`.
+  `Δ = Θ − ½`: on `[a, ½]`, `a > Δ` supplies continuation and continuation forces `a ≥ Δ`; at the
+  boundary `a = Δ` admission requires every attained extremal zero to cast a critical-line zero of at
+  least its multiplicity (§3), and the target is every positive `a`.
 - The contraction factor of a sector-compensation scheme for the actual Möbius row, with every
   transition cross term paid, as the input to iterated compensation.
 - Selectivity certificates for any proposed continuation estimate against the shifted pair
@@ -706,7 +823,9 @@ transport mechanism.
   Quantify it — a bound on the deviation of the centred prefix from a constant at a fixed damping is
   the model-faithful form of the covariance demand.
 
-## 6. Principles
+---
+
+## 8. Principles
 
 1. **Exact source before closure.** Every coefficient, prime power, Gamma term and pole term is
    fixed before an estimate is claimed. A source selected from the zeros is not an arithmetic

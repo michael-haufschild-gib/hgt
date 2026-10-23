@@ -125,8 +125,6 @@ noncomputable instance finitePrimeRationalCoefficientFieldAlgebra :
       arithmeticFunctionRationalCoordinateField :=
   finitePrimeRationalCoefficientFieldToFormalRatFunc.toAlgebra
 
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 100000
 /-- **Purely transcendental base extension.**  A constant family algebraically independent over
 the finite-prime coefficient field remains algebraically independent after adjoining the formal
 Dirichlet coordinate and passing to its rational function field. -/
@@ -183,8 +181,7 @@ theorem algebraicIndependent_constants_over_finitePrimeRationalCoefficientField
               (Polynomial.C c))
         have hleft : ((eCoord (Polynomial.C c) : R) : A) =
             algebraMap K A c := by
-          rw [Polynomial.algEquivOfTranscendental_apply]
-          simp
+          rw [Polynomial.algEquivOfTranscendental_apply, Polynomial.aeval_C]
           rfl
         rw [hleft]
         rw [show Polynomial.C c = algebraMap K (Polynomial K) c by rfl,
@@ -202,9 +199,11 @@ theorem algebraicIndependent_constants_over_finitePrimeRationalCoefficientField
             (algebraMap (Polynomial K) finitePrimeRationalCoefficientField Polynomial.X)
         rw [show algebraMap (Polynomial K) finitePrimeRationalCoefficientField Polynomial.X =
           algebraMap (Polynomial K) finitePrimeRationalCoefficientField Polynomial.X /
-            algebraMap (Polynomial K) finitePrimeRationalCoefficientField 1 by simp,
+            algebraMap (Polynomial K) finitePrimeRationalCoefficientField 1 by
+            rw [map_one, div_one],
           RatFunc.map_apply_div]
-        simp [finitePrimeCoefficientPolynomialMap]
+        simp only [finitePrimeCoefficientPolynomialMap, Polynomial.coe_mapAlgHom, Polynomial.map_X,
+          map_one, div_one, RatFunc.algebraMap_X]
     exact fun p => RingHom.congr_fun hmaps p
   haveI : IsScalarTower (Polynomial K) finitePrimeRationalCoefficientField A :=
     .of_algebraMap_eq hmapPoly
@@ -224,9 +223,6 @@ end GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.HTGeometry
 
 noncomputable section
-
-set_option maxHeartbeats 800000
-set_option synthInstance.maxHeartbeats 100000
 
 /-- The faithful rational-coordinate embedding preserves every constant from the finite-prime
 coefficient field. -/

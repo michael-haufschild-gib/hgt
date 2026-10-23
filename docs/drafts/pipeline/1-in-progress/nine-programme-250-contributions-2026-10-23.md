@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 7 / 250.**
+**Accepted: 8 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -80,12 +80,20 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    on `1 ≤ σ ≤ 2` (3-4-1 beyond the corpus strip, `RHTower.exists_norm_inv_LFunction_le_log_pow`).
    `TransHorizonIncidenceMechanics/TheEulerExponentsOfSymmetricResidueFlips.lean`,
    `…/TheQuarterLawOfSymmetricResidueFlips.lean`, `RHTower/DirichletLReciprocalRightOfTheOneLine.lean`.
+8. THIM §5 "the `1/4` law" on the whole residue family: for every `q ≥ 1` and `S ⊆ ZMod q`,
+   `f_{q,S}(d)d^{-1/2}` is paid iff `φ(q) < 4#(S ∩ units)` (`receiverBounded_residueFlip_half_iff_general`).
+   New tool: the Euler logarithm `ℓ_χ` of `L(·, χ)` with `ℓ_χ' = L'/L` and
+   `|ℓ_χ(σ + it)| ≤ 9 log log|t| + C` on `1 < σ ≤ 2` (`RHTower.exists_norm_eulerLog_le_large`), bounded
+   on boxes for `χ ≠ 1`; complex character exponents cost only a power of `log|t|`.
+   `TransHorizonIncidenceMechanics/TheQuarterLawOfResidueFlips.lean`,
+   `RHTower/DirichletLEulerLogarithmRightOfTheOneLine.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — general residue flips: two leaves compiled, axioms clean, wired; contribution 8.
 - 2026-10-23 — symmetric residue flips: three leaves compiled, axioms clean, wired; contribution 7.
 - 2026-10-23 — `ThePrimeMeanIsQuantizedHeightByHeight` compiled, axioms clean, wired; contribution 6.
 - 2026-10-23 — oscillating prime patterns: two THIM leaves compiled, axioms clean, wired; contribution 5.

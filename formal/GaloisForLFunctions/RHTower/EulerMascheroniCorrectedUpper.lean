@@ -99,19 +99,116 @@ theorem eulerMascheroniConstant_lt_correctedUpper (n : ℕ) :
   exact strictAnti_eulerMascheroniCorrectedUpper.antitone.le_of_tendsto
     tendsto_eulerMascheroniCorrectedUpper (n + 1)
 
-set_option maxRecDepth 1000000 in
-/-- Exact six-decimal upper bound obtained at `1250 = 2 * 5^(4 : ℕ)`. -/
+/-! ## A second-order corrected upper sequence -/
+
+/-- Second-order-corrected upper approximation `H_n - log n - 1/(2n) + 1/(12n²)` to Euler's
+constant; its error is `O(n⁻⁴)`. -/
+def eulerMascheroniSecondUpper (n : ℕ) : ℝ :=
+  if n = 0 then 2 else
+    Real.eulerMascheroniSeq' n - 1 / (2 * (n : ℝ)) + 1 / (12 * (n : ℝ) ^ 2)
+
+/-- `H_{n+k}` splits after its first `n` terms. -/
+theorem harmonic_add_eq_add_sum (n k : ℕ) :
+    harmonic (n + k) = harmonic n + ∑ i ∈ Finset.range k, ((n + i + 1 : ℕ) : ℚ)⁻¹ := by
+  show ∑ i ∈ Finset.range (n + k), ((i + 1 : ℕ) : ℚ)⁻¹ =
+    ∑ i ∈ Finset.range n, ((i + 1 : ℕ) : ℚ)⁻¹ + ∑ i ∈ Finset.range k, ((n + i + 1 : ℕ) : ℚ)⁻¹
+  exact Finset.sum_range_add _ n k
+
+/-- The first two terms of `log(1 + 1/m) = 2 Σ t^{2k+1}/(2k+1)`, `t = 1/(2m+1)`. -/
+private theorem two_div_add_le_log_one_add_inv {m : ℝ} (hm : 0 < m) :
+    2 / (2 * m + 1) + 2 / (3 * (2 * m + 1) ^ 3) ≤ Real.log (1 + m⁻¹) := by
+  have key : 2 / (2 * m + 1) + 2 / (3 * (2 * m + 1) ^ 3) =
+      ∑ k ∈ Finset.range 2, (2 : ℝ) * (1 / (2 * k + 1)) * (1 / (2 * m + 1)) ^ (2 * k + 1) := by
+    have h1 : 2 * m + 1 ≠ 0 := by positivity
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.cast_zero, Nat.cast_one]
+    rw [show (2 * 0 + 1 : ℕ) = 1 from rfl, show (2 * 1 + 1 : ℕ) = 3 from rfl]
+    field_simp
+    ring
+  rw [key]
+  exact sum_le_hasSum (Finset.range 2) (fun i _ => by positivity)
+    (Real.hasSum_log_one_add_inv hm)
+
+/-- The monotonicity gap of the second-order sequence: after clearing denominators the difference
+is `(6m² + 6m + 3) / (36 m² (m+1)² (2m+1)³) > 0`. -/
+private theorem second_upper_gap_lt {m : ℝ} (hm : 0 < m) :
+    1 / (2 * m) + 1 / (2 * (m + 1)) - 1 / (12 * m ^ 2) + 1 / (12 * (m + 1) ^ 2) <
+      2 / (2 * m + 1) + 2 / (3 * (2 * m + 1) ^ 3) := by
+  rw [← sub_pos]
+  have key : 2 / (2 * m + 1) + 2 / (3 * (2 * m + 1) ^ 3) -
+      (1 / (2 * m) + 1 / (2 * (m + 1)) - 1 / (12 * m ^ 2) + 1 / (12 * (m + 1) ^ 2)) =
+      (6 * m ^ 2 + 6 * m + 3) / (36 * m ^ 2 * (m + 1) ^ 2 * (2 * m + 1) ^ 3) := by
+    field_simp
+    ring
+  rw [key]
+  positivity
+
+/-- The second-order corrected approximants decrease from index `1` on. -/
+theorem eulerMascheroniSecondUpper_succ_lt {n : ℕ} (hn : 1 ≤ n) :
+    eulerMascheroniSecondUpper (n + 1) < eulerMascheroniSecondUpper n := by
+  have hn0 : n ≠ 0 := by omega
+  have hx0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hlog : Real.log ((n : ℝ) + 1) - Real.log n = Real.log (1 + (n : ℝ)⁻¹) := by
+    rw [← Real.log_div (by positivity) hx0.ne']
+    congr 1
+    field_simp
+  have hL := two_div_add_le_log_one_add_inv hx0
+  have hS := second_upper_gap_lt hx0
+  simp only [eulerMascheroniSecondUpper, Real.eulerMascheroniSeq', hn0, Nat.succ_ne_zero,
+    if_false, harmonic_succ]
+  push_cast
+  -- the difference is `log(1 + 1/n)` minus the gap bounded in `hS`
+  have hdiff : ((harmonic n : ℝ) - Real.log n - 1 / (2 * (n : ℝ)) + 1 / (12 * (n : ℝ) ^ 2)) -
+      ((harmonic n : ℝ) + ((n : ℝ) + 1)⁻¹ - Real.log ((n : ℝ) + 1) - 1 / (2 * ((n : ℝ) + 1)) +
+        1 / (12 * ((n : ℝ) + 1) ^ 2)) =
+      Real.log (1 + (n : ℝ)⁻¹) - (1 / (2 * (n : ℝ)) + 1 / (2 * ((n : ℝ) + 1)) -
+        1 / (12 * (n : ℝ) ^ 2) + 1 / (12 * ((n : ℝ) + 1) ^ 2)) := by
+    rw [← hlog]
+    field_simp
+    ring
+  linarith
+
+/-- The second-order sequence has Euler's constant as limit. -/
+theorem tendsto_eulerMascheroniSecondUpper :
+    Tendsto eulerMascheroniSecondUpper atTop (nhds Real.eulerMascheroniConstant) := by
+  have h2 : Tendsto (fun n : ℕ => 1 / (2 * (n : ℝ))) atTop (nhds 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_natCast_atTop_atTop.const_mul_atTop (by norm_num))
+  have h12 : Tendsto (fun n : ℕ => 1 / (12 * (n : ℝ) ^ 2)) atTop (nhds 0) :=
+    tendsto_const_nhds.div_atTop
+      ((tendsto_pow_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop |>.const_mul_atTop
+        (by norm_num))
+  have hmain := (Real.tendsto_eulerMascheroniSeq'.sub h2).add h12
+  rw [sub_zero, add_zero] at hmain
+  apply hmain.congr'
+  filter_upwards [eventually_ne_atTop 0] with n hn
+  simp [eulerMascheroniSecondUpper, hn]
+
+/-- Every second-order approximant from index `1` on is a strict upper bound for Euler's
+constant. -/
+theorem eulerMascheroniConstant_lt_secondUpper {n : ℕ} (hn : 1 ≤ n) :
+    Real.eulerMascheroniConstant < eulerMascheroniSecondUpper n := by
+  have hanti : StrictAnti fun k : ℕ => eulerMascheroniSecondUpper (k + 1) :=
+    strictAnti_nat_of_succ_lt fun k => eulerMascheroniSecondUpper_succ_lt (by omega)
+  have hlim : Tendsto (fun k : ℕ => eulerMascheroniSecondUpper (k + 1)) atTop
+      (nhds Real.eulerMascheroniConstant) :=
+    tendsto_eulerMascheroniSecondUpper.comp (tendsto_add_atTop_nat 1)
+  obtain ⟨k, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+  exact lt_of_le_of_lt (hanti.antitone.le_of_tendsto hlim (k + 1)) (hanti (Nat.lt_succ_self k))
+
+/-- Exact six-decimal upper bound from the second-order approximant at `16 = 2^4`, with
+`log 2 > 0.6931471803`; `H_16` is evaluated as two blocks of eight terms. -/
 theorem eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion :
     Real.eulerMascheroniConstant < 577216 / 1000000 := by
-  refine (eulerMascheroniConstant_lt_correctedUpper 1250).trans ?_
-  rw [eulerMascheroniCorrectedUpper, if_neg (by norm_num),
-    Real.eulerMascheroniSeq']
-  norm_num only [if_false, Nat.reduceEqDiff, Nat.cast_ofNat]
-  rw [show (1250 : ℝ) = 2 * 5 ^ (4 : ℕ) by norm_num,
-    Real.log_mul (by norm_num) (by positivity), Real.log_pow]
-  have htwo := Real.log_two_gt_d9
-  have hfive := Real.log_five_gt_d9
-  norm_num [harmonic] at *
+  refine (eulerMascheroniConstant_lt_secondUpper (n := 16) (by norm_num)).trans ?_
+  have hH : harmonic 16 = 2436559 / 720720 := by
+    rw [show (16 : ℕ) = 8 + 8 from rfl, harmonic_add_eq_add_sum]
+    norm_num [harmonic, Finset.sum_range_succ]
+  have hlog : Real.log ((16 : ℕ) : ℝ) = 4 * Real.log 2 := by
+    rw [show ((16 : ℕ) : ℝ) = 2 ^ (4 : ℕ) by norm_num, Real.log_pow]
+    norm_num
+  have h2 := Real.log_two_gt_d9
+  rw [eulerMascheroniSecondUpper, if_neg (by norm_num), Real.eulerMascheroniSeq',
+    if_neg (by norm_num), hH, hlog]
+  norm_num
   linarith
 
 end

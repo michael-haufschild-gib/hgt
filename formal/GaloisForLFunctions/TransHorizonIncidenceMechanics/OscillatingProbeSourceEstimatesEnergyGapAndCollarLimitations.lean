@@ -49,6 +49,32 @@ This module establishes three unconditional results for sub-half oscillating pro
    - yet at `(ε₁, t₁)` itself, `K(1 − ε₁ + it₁) = 0`, so `w_{ε₁,t₁}` is **unconditionally paid**
      (`receiverBounded_plantedEulerKernel_at_target` and
      `plantedEulerKernel_collar_and_finiteness_obstruction`).
+
+4. **Source decomposition into fractional-part sawtooth sum and universal tail drift: pure source
+   estimates at `t = 0` and anti-phase cancellation (`§4`).**
+   - Every oscillating prefix splits identically into two source components
+     (`weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail`):
+     `A_{ε,t}(n) = S_{ε,t}(n) + T_{ε,t}(n)`, where
+     `S_{ε,t}(n) = Σ_{d ≤ n} c_{ε,t}(d) (⌊n/d⌋ − n/d)` is the fractional-part sawtooth sum and
+     `T_{ε,t}(n) = n (Σ_{d ≤ n} c_{ε,t}(d)/d − Σ_{d ≥ 1} c_{ε,t}(d)/d)` is the universal tail drift.
+   - At `t = 0`, both components have nonpositive sign (`oscillatingSawtoothPrefix_zero_nonpos` and
+     `oscillatingTailDrift_zero_le`), giving the one-sided source bound
+     `A_{ε,0}(n) ≤ −2^{-(1+ε)} n^{1−ε}` (`weightCenteredPrefix_oscillatingSmoothPower_zero_le`),
+     the harmonic energy lower bound
+     `E_{ε,0}(T) ≥ (2^{-(1+ε)})² / 2 · H_T` (`probeEnergy_zero_ge_harmonic`), and a pure
+     source-estimate proof of `¬ ReceiverBounded (oscillatingSmoothPower ε 0)` for all
+     `0 < ε ≤ 1/2` (`not_receiverBounded_oscillatingSmoothPower_zero_from_source`) without invoking
+     `ζ(1 − ε) ≠ 0`.
+   - For general `t ∈ ℝ`, the universal tail drift tracks `Re(n^ρ / (ρ − 1))` to within
+     `O(n^{-ε})` (`abs_oscillatingTailDrift_sub_le`), while the sawtooth sum tracks
+     `Re((ζ(ρ)/ρ − 1/(ρ − 1)) n^ρ)` to within `O((√n)^{1−ε})` (`abs_oscillatingSawtoothPrefix_sub_le`).
+   - Consequently, for **every** `0 < ε ≤ 1/2` and **every** `t ∈ ℝ` (independently of `ζ(ρ)`),
+     the universal source tail `T_{ε,t}` has unbounded pronic norm
+     (`not_bdd_pronicNorm_oscillatingTailDrift`), and `c_{ε,t}` is paid if and only if the sawtooth
+     sum `S_{ε,t}` cancels `T_{ε,t}` in `L²(pronic)` (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail`),
+     in which case `S_{ε,t}` is also unconditionally unbounded in pronic norm
+     (`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`) and locked in anti-phase
+     `S_{ε,t}(n) = −Re(n^ρ/(ρ − 1)) + O((√n)^{1−ε})`.
 -/
 
 open Complex Finset Filter Topology
@@ -548,6 +574,559 @@ theorem plantedEulerKernel_collar_and_finiteness_obstruction {ε₁ : ℝ} (hε�
   have hε2 : ε < 1 / 2 := hlt2.trans_le (min_le_right _ _)
   have hB0 := (receiverBounded_plantedEulerKernel_iff_of_ne ε₁ t₁ hε hε2 hlt1.ne t).mp hB
   exact hbox ε t hε hlt2.le ht hB0
+
+/-! ### §4. Source decomposition into sawtooth sum and tail drift: pure source estimates at `t = 0` and anti-phase cancellation -/
+
+/-- The fractional-part (sawtooth) source sum of `oscillatingSmoothPower ε t`:
+`S_{ε,t}(n) = Σ_{d ≤ n} c_{ε,t}(d) (⌊n/d⌋ − n/d) = −Σ_{d ≤ n} c_{ε,t}(d) {n/d}`. -/
+def oscillatingSawtoothPrefix (ε t : ℝ) (n : ℕ) : ℝ :=
+  ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d * (((n / d : ℕ) : ℝ) - (n : ℝ) / d)
+
+/-- The universal source tail drift of `oscillatingSmoothPower ε t`:
+`T_{ε,t}(n) = n (Σ_{d ≤ n} c_{ε,t}(d)/d − Σ_{d ≥ 1} c_{ε,t}(d)/d) = −n Σ_{d > n} c_{ε,t}(d)/d`. -/
+def oscillatingTailDrift (ε t : ℝ) (n : ℕ) : ℝ :=
+  (n : ℝ) * (∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d / d -
+    ∑' d : ℕ, oscillatingSmoothPower ε t d / d)
+
+/-- **Exact source decomposition of the centred prefix.** For every `ε, t ∈ ℝ` and `n ∈ ℕ`,
+`A_{ε,t}(n) = S_{ε,t}(n) + T_{ε,t}(n)`. -/
+theorem weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail (ε t : ℝ) (n : ℕ) :
+    weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n =
+      oscillatingSawtoothPrefix ε t n + oscillatingTailDrift ε t n := by
+  rw [weightCenteredPrefix, sum_Icc_sum_divisors_eq_floor,
+    oscillatingSawtoothPrefix, oscillatingTailDrift]
+  have hsub :
+      ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d * (((n / d : ℕ) : ℝ) - (n : ℝ) / d) =
+        ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d * ((n / d : ℕ) : ℝ) -
+          ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d * ((n : ℝ) / d) := by
+    rw [← sum_sub_distrib]
+    exact sum_congr rfl fun d _ => by ring
+  have h1 : (n : ℝ) * ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d / d =
+      ∑ d ∈ Icc 1 n, oscillatingSmoothPower ε t d * ((n : ℝ) / d) := by
+    rw [mul_sum]
+    exact sum_congr rfl fun d _ => by ring
+  rw [hsub, ← h1]
+  ring
+
+/-- At `t = 0`, `oscillatingSmoothPower ε 0 d = d^{-ε}`. -/
+theorem oscillatingSmoothPower_zero_eq_rpow (ε : ℝ) (d : ℕ) :
+    oscillatingSmoothPower ε 0 d = (d : ℝ) ^ (-ε) := by
+  simp [oscillatingSmoothPower]
+
+/-- At `t = 0`, every summand of `oscillatingSawtoothPrefix ε 0 n` is nonpositive because
+`d^{-ε} ≥ 0` and `⌊n/d⌋ ≤ n/d`. -/
+theorem oscillatingSawtoothPrefix_zero_nonpos (ε : ℝ) (n : ℕ) :
+    oscillatingSawtoothPrefix ε 0 n ≤ 0 := by
+  unfold oscillatingSawtoothPrefix
+  refine sum_nonpos fun d _ => ?_
+  rw [oscillatingSmoothPower_zero_eq_rpow]
+  exact mul_nonpos_of_nonneg_of_nonpos (Real.rpow_nonneg (Nat.cast_nonneg d) _)
+    (sub_nonpos.mpr Nat.cast_div_le)
+
+/-- **One-sided dyadic source lower bound for the tail drift at `t = 0`.** For `ε > 0` and `n ≥ 1`,
+the single dyadic tail block `d ∈ [n + 1, 2n]` forces
+`T_{ε,0}(n) ≤ −2^{-(1+ε)} n^{1−ε}`, with no reference to `ζ(s)`. -/
+theorem oscillatingTailDrift_zero_le {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hn : 1 ≤ n) :
+    oscillatingTailDrift ε 0 n ≤ -(2 : ℝ) ^ (-(1 + ε)) * (n : ℝ) ^ (1 - ε) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  set g : ℕ → ℝ := fun d => oscillatingSmoothPower ε 0 d / d with hg
+  have hg_sum : Summable g := (hasSum_oscillatingSmoothPower_div hε 0).summable
+  have hg_nonneg : ∀ d : ℕ, 0 ≤ g d := fun d => by
+    simp only [hg, oscillatingSmoothPower_zero_eq_rpow]
+    exact div_nonneg (Real.rpow_nonneg (Nat.cast_nonneg d) _) (Nat.cast_nonneg d)
+  have htsum : ∑ d ∈ Icc 1 (2 * n), g d ≤ ∑' d : ℕ, g d :=
+    hg_sum.sum_le_tsum (Icc 1 (2 * n)) fun d _ => hg_nonneg d
+  have hsplit : Icc 1 (2 * n) = Icc 1 n ∪ Ioc n (2 * n) := by
+    ext d; simp only [mem_union, mem_Icc, mem_Ioc]; omega
+  have hdisj : Disjoint (Icc 1 n) (Ioc n (2 * n)) :=
+    disjoint_left.mpr fun d h1 h2 => by simp only [mem_Icc, mem_Ioc] at h1 h2; omega
+  rw [hsplit, sum_union hdisj] at htsum
+  have hblock : (n : ℝ) * (2 * (n : ℝ)) ^ (-(1 + ε)) ≤ ∑ d ∈ Ioc n (2 * n), g d := by
+    have hterm : ∀ d ∈ Ioc n (2 * n), (2 * (n : ℝ)) ^ (-(1 + ε)) ≤ g d := by
+      intro d hd
+      rw [mem_Ioc] at hd
+      have hd1 : 1 ≤ d := by omega
+      have hd0 : (0 : ℝ) < d := by exact_mod_cast hd1
+      have hd2n : (d : ℝ) ≤ 2 * (n : ℝ) := by exact_mod_cast hd.2
+      have hgd : g d = (d : ℝ) ^ (-(1 + ε)) := by
+        simp only [hg, oscillatingSmoothPower_zero_eq_rpow]
+        rw [div_eq_mul_inv, ← Real.rpow_neg_one (d : ℝ), ← Real.rpow_add hd0]
+        congr 1; ring
+      rw [hgd]
+      exact Real.rpow_le_rpow_of_nonpos hd0 hd2n (by linarith)
+    calc (n : ℝ) * (2 * (n : ℝ)) ^ (-(1 + ε))
+        = ∑ _d ∈ Ioc n (2 * n), (2 * (n : ℝ)) ^ (-(1 + ε)) := by
+          rw [sum_const, Nat.card_Ioc, show 2 * n - n = n by omega, nsmul_eq_mul]
+      _ ≤ ∑ d ∈ Ioc n (2 * n), g d := sum_le_sum hterm
+  have hdiff : ∑ d ∈ Icc 1 n, g d - ∑' d : ℕ, g d ≤ -(n : ℝ) * (2 * (n : ℝ)) ^ (-(1 + ε)) := by
+    linarith
+  have hpow : (n : ℝ) * (-(n : ℝ) * (2 * (n : ℝ)) ^ (-(1 + ε))) =
+      -(2 : ℝ) ^ (-(1 + ε)) * (n : ℝ) ^ (1 - ε) := by
+    rw [Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 2) hn0.le]
+    have hn_pow : (n : ℝ) ^ (1 - ε) = (n : ℝ) ^ (-(1 + ε)) * (n : ℝ) * (n : ℝ) := by
+      rw [show 1 - ε = -(1 + ε) + 1 + 1 by ring, Real.rpow_add_one hn0.ne',
+        Real.rpow_add_one hn0.ne']
+    rw [hn_pow]
+    ring
+  unfold oscillatingTailDrift
+  calc (n : ℝ) * (∑ d ∈ Icc 1 n, g d - ∑' d : ℕ, g d)
+      ≤ (n : ℝ) * (-(n : ℝ) * (2 * (n : ℝ)) ^ (-(1 + ε))) :=
+        mul_le_mul_of_nonneg_left hdiff hn0.le
+    _ = -(2 : ℝ) ^ (-(1 + ε)) * (n : ℝ) ^ (1 - ε) := hpow
+
+/-- **Pure one-sided source bound for the centred prefix at `t = 0`.** For `ε > 0` and `n ≥ 1`,
+`A_{ε,0}(n) ≤ −2^{-(1+ε)} n^{1−ε}` directly from `⌊n/d⌋ ≤ n/d` and the dyadic tail block. -/
+theorem weightCenteredPrefix_oscillatingSmoothPower_zero_le {ε : ℝ} (hε : 0 < ε) {n : ℕ}
+    (hn : 1 ≤ n) :
+    weightCenteredPrefix (oscillatingSmoothPower ε 0)
+        (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) n ≤
+      -(2 : ℝ) ^ (-(1 + ε)) * (n : ℝ) ^ (1 - ε) := by
+  rw [weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail]
+  linarith [oscillatingSawtoothPrefix_zero_nonpos ε n, oscillatingTailDrift_zero_le hε hn]
+
+/-- **Pure source-estimate harmonic lower bound for the receiver energy at `t = 0`.** For
+`0 < ε ≤ 1/2` and every cutoff `T`, `E_{ε,0}(T) ≥ ((2^{-(1+ε)})² / 2) Σ_{n ≤ T} 1/n`. -/
+theorem probeEnergy_zero_ge_harmonic {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (T : ℕ) :
+    ((2 : ℝ) ^ (-(1 + ε))) ^ 2 / 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) ≤
+      weightPronicEnergy (oscillatingSmoothPower ε 0)
+        (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) T := by
+  set c := (2 : ℝ) ^ (-(1 + ε)) with hc
+  have hc0 : 0 ≤ c := by positivity
+  rw [weightPronicEnergy, mul_sum]
+  refine sum_le_sum fun n hn => ?_
+  have hn1 : 1 ≤ n := (mem_Icc.mp hn).1
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+  have hpre := weightCenteredPrefix_oscillatingSmoothPower_zero_le hε hn1
+  have habs : c * (n : ℝ) ^ (1 - ε) ≤
+      |weightCenteredPrefix (oscillatingSmoothPower ε 0)
+        (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) n| := by
+    calc c * (n : ℝ) ^ (1 - ε)
+        ≤ -weightCenteredPrefix (oscillatingSmoothPower ε 0)
+            (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) n := by linarith
+      _ ≤ _ := neg_le_abs _
+  have hsq : (c * (n : ℝ) ^ (1 - ε)) ^ 2 ≤
+      weightCenteredPrefix (oscillatingSmoothPower ε 0)
+        (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) n ^ 2 := by
+    rw [← sq_abs (weightCenteredPrefix _ _ _)]
+    exact pow_le_pow_left₀ (by positivity) habs 2
+  have hpow : (n : ℝ) ≤ ((n : ℝ) ^ (1 - ε)) ^ 2 := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hn0.le]
+    calc (n : ℝ) = (n : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+      _ ≤ (n : ℝ) ^ ((1 - ε) * ((2 : ℕ) : ℝ)) :=
+          Real.rpow_le_rpow_of_exponent_le hnR (by push_cast; linarith)
+  have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
+  rw [le_div_iff₀ hpr]
+  calc c ^ 2 / 2 * (1 / (n : ℝ)) * ((n : ℝ) * ((n : ℝ) + 1))
+      = c ^ 2 * ((n : ℝ) + 1) / 2 := by field_simp
+    _ ≤ c ^ 2 * (n : ℝ) := by
+        have : (n : ℝ) + 1 ≤ 2 * (n : ℝ) := by linarith
+        nlinarith [sq_nonneg c]
+    _ ≤ c ^ 2 * ((n : ℝ) ^ (1 - ε)) ^ 2 := mul_le_mul_of_nonneg_left hpow (sq_nonneg c)
+    _ = (c * (n : ℝ) ^ (1 - ε)) ^ 2 := by ring
+    _ ≤ weightCenteredPrefix (oscillatingSmoothPower ε 0)
+          (∑' d : ℕ, oscillatingSmoothPower ε 0 d / d) n ^ 2 := hsq
+
+/-- **Pure source-estimate proof that `oscillatingSmoothPower ε 0` is unpaid on `0 < ε ≤ 1/2`.**
+Unlike `not_receiverBounded_oscillatingSmoothPower_zero`, this proof uses only the one-sided
+floor/dyadic-tail source bound `weightCenteredPrefix_oscillatingSmoothPower_zero_le` and harmonic
+divergence, without invoking `riemannZeta`. -/
+theorem not_receiverBounded_oscillatingSmoothPower_zero_from_source {ε : ℝ} (hε : 0 < ε)
+    (hε2 : ε ≤ 1 / 2) :
+    ¬ ReceiverBounded (oscillatingSmoothPower ε 0) := by
+  rintro ⟨E, hE⟩
+  set c := ((2 : ℝ) ^ (-(1 + ε))) ^ 2 / 2 with hc
+  have hc0 : 0 < c := by positivity
+  obtain ⟨T, -, hT⟩ := not_bddAbove_sum_Icc_one_div (E / c)
+  have hlo := probeEnergy_zero_ge_harmonic hε hε2 T
+  have hup := hE T
+  rw [div_lt_iff₀ hc0] at hT
+  rw [← hc] at hlo
+  nlinarith
+
+/-- The rate constant for the universal source tail drift:
+`K^{\mathrm{tail}}_ρ = ‖2 − ρ‖ (1 + 1 / Re(2 − ρ))`. -/
+def tailDriftRate (ρ : ℂ) : ℝ := ‖2 - ρ‖ * (1 + 1 / (2 - ρ).re)
+
+theorem tailDriftRate_nonneg {ρ : ℂ} (hre : 0 < (2 - ρ).re) : 0 ≤ tailDriftRate ρ := by
+  unfold tailDriftRate
+  have : 0 ≤ 1 + 1 / (2 - ρ).re := by have := one_div_pos.mpr hre; linarith
+  positivity
+
+/-- For `ε > 0`, the universal source tail drift is the real part of
+`n (P_{2−ρ}(n) − ζ(2 − ρ))`. -/
+theorem oscillatingTailDrift_eq_re {ε : ℝ} (hε : 0 < ε) (t : ℝ) (n : ℕ) :
+    oscillatingTailDrift ε t n =
+      (((n : ℝ) : ℂ) * (cpowPartialSum (2 - oscillationExponent ε t) n -
+        riemannZeta (2 - oscillationExponent ε t))).re := by
+  set ρ := oscillationExponent ε t with hρ
+  rw [oscillatingTailDrift, (hasSum_oscillatingSmoothPower_div hε t).tsum_eq,
+    Complex.re_ofReal_mul, Complex.sub_re, cpowPartialSum, Complex.re_sum]
+  congr 2
+  refine sum_congr rfl fun d hd => ?_
+  have hd1 : 1 ≤ d := (mem_Icc.mp hd).1
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd1
+  have hdC : ((d : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hd0.ne'
+  rw [oscillatingSmoothPower_eq_re hε, ← hρ, ← Complex.div_ofReal_re]
+  congr 1
+  rw [show -(2 - ρ) = (ρ - 1) - 1 by ring, Complex.cpow_sub (ρ - 1) 1 hdC,
+    Complex.cpow_one]
+
+/-- **Exact source asymptotic of the universal tail drift.** For `ε > 0`, `t ∈ ℝ`, and `n ≥ 1`,
+`|T_{ε,t}(n) − Re(n^ρ / (ρ − 1))| ≤ tailDriftRate ρ · n^{-ε}`. -/
+theorem abs_oscillatingTailDrift_sub_le {ε : ℝ} (hε : 0 < ε) (t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+    |oscillatingTailDrift ε t n -
+      (((n : ℝ) : ℂ) ^ oscillationExponent ε t / (oscillationExponent ε t - 1)).re| ≤
+      tailDriftRate (oscillationExponent ε t) * (n : ℝ) ^ (-ε) := by
+  set ρ := oscillationExponent ε t with hρ
+  set w := 2 - ρ with hw
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hnC : ((n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
+  have hwre : w.re = 1 + ε := by
+    rw [hw, sub_re, oscillationExponent_re]; norm_num; ring
+  have hw0 : 0 < w.re := by linarith
+  have hw1 : w ≠ 1 := by
+    intro h1
+    have := congrArg Complex.re h1
+    rw [hwre, one_re] at this
+    linarith
+  have hrate := norm_czetaStripRemainder_sub_le hw0 hw1 hn
+  have hcpow : ((n : ℝ) : ℂ) * (((n : ℝ) : ℂ) ^ (1 - w) / (1 - w)) =
+      ((n : ℝ) : ℂ) ^ ρ / (ρ - 1) := by
+    have h1w : 1 - w = ρ - 1 := by rw [hw]; ring
+    have hadd : ((n : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ (ρ - 1) = ((n : ℝ) : ℂ) ^ ρ := by
+      rw [Complex.cpow_sub ρ 1 hnC, Complex.cpow_one, mul_div_cancel₀ _ hnC]
+    rw [h1w, mul_div_assoc', hadd]
+  have hid : ((n : ℝ) : ℂ) * (cpowPartialSum w n - riemannZeta w) -
+      ((n : ℝ) : ℂ) ^ ρ / (ρ - 1) =
+      ((n : ℝ) : ℂ) * (czetaStripRemainder w n - riemannZeta w) := by
+    calc ((n : ℝ) : ℂ) * (cpowPartialSum w n - riemannZeta w) - ((n : ℝ) : ℂ) ^ ρ / (ρ - 1)
+        = ((n : ℝ) : ℂ) * (cpowPartialSum w n - riemannZeta w) -
+            ((n : ℝ) : ℂ) * (((n : ℝ) : ℂ) ^ (1 - w) / (1 - w)) := by rw [hcpow]
+      _ = ((n : ℝ) : ℂ) *
+            (cpowPartialSum w n - ((n : ℝ) : ℂ) ^ (1 - w) / (1 - w) - riemannZeta w) := by ring
+      _ = ((n : ℝ) : ℂ) * (czetaStripRemainder w n - riemannZeta w) := by
+            simp only [czetaStripRemainder, cpowPartialSum]
+  rw [oscillatingTailDrift_eq_re hε t n, ← hρ, ← hw, ← Complex.sub_re, hid]
+  refine (Complex.abs_re_le_norm _).trans ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hn0]
+  have hpow : (n : ℝ) * (n : ℝ) ^ (-w.re) = (n : ℝ) ^ (-ε) := by
+    rw [hwre, show (n : ℝ) * (n : ℝ) ^ (-(1 + ε)) = (n : ℝ) ^ (-(1 + ε)) * (n : ℝ) by ring,
+      ← Real.rpow_add_one hn0.ne']
+    congr 1; ring
+  calc (n : ℝ) * ‖czetaStripRemainder w n - riemannZeta w‖
+      ≤ (n : ℝ) * (‖w‖ * ((1 + 1 / w.re) * (n : ℝ) ^ (-w.re))) :=
+        mul_le_mul_of_nonneg_left hrate hn0.le
+    _ = tailDriftRate ρ * ((n : ℝ) * (n : ℝ) ^ (-w.re)) := by
+        rw [tailDriftRate, ← hw]; ring
+    _ = tailDriftRate ρ * (n : ℝ) ^ (-ε) := by rw [hpow]
+
+/-- For `0 < ε ≤ 1` and `n ≥ 1`, the tail drift remainder is also bounded by
+`tailDriftRate ρ · (√n)^{1−ε}`. -/
+theorem abs_oscillatingTailDrift_sub_le_sqrt_rpow {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (t : ℝ)
+    {n : ℕ} (hn : 1 ≤ n) :
+    |oscillatingTailDrift ε t n -
+      (((n : ℝ) : ℂ) ^ oscillationExponent ε t / (oscillationExponent ε t - 1)).re| ≤
+      tailDriftRate (oscillationExponent ε t) * Real.sqrt n ^ (1 - ε) := by
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hrpow : (n : ℝ) ^ (-ε) ≤ Real.sqrt n ^ (1 - ε) := by
+    calc (n : ℝ) ^ (-ε) ≤ (n : ℝ) ^ (0 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hn1 (by linarith)
+      _ = 1 := Real.rpow_zero _
+      _ ≤ Real.sqrt n ^ (1 - ε) :=
+          Real.one_le_rpow (Real.one_le_sqrt.mpr hn1) (by linarith)
+  have hre : 0 < (2 - oscillationExponent ε t).re := by
+    rw [sub_re, oscillationExponent_re]; norm_num; linarith
+  exact (abs_oscillatingTailDrift_sub_le hε t hn).trans
+    (mul_le_mul_of_nonneg_left hrpow (tailDriftRate_nonneg hre))
+
+/-- **Exact source asymptotic of the fractional-part sawtooth sum.** For `0 < ε < 1`, `t ∈ ℝ`, and
+`n ≥ 1`, `S_{ε,t}(n)` tracks `Re((ζ(ρ)/ρ − 1/(ρ − 1)) n^ρ)` to within
+`(floorSumRate ρ + tailDriftRate ρ) (√n)^{1−ε}`. -/
+theorem abs_oscillatingSawtoothPrefix_sub_le {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) (t : ℝ)
+    {n : ℕ} (hn : 1 ≤ n) :
+    |oscillatingSawtoothPrefix ε t n -
+      ((riemannZeta (oscillationExponent ε t) / oscillationExponent ε t -
+        1 / (oscillationExponent ε t - 1)) * ((n : ℝ) : ℂ) ^ oscillationExponent ε t).re| ≤
+      (floorSumRate (oscillationExponent ε t) + tailDriftRate (oscillationExponent ε t)) *
+        Real.sqrt n ^ (1 - ε) := by
+  set ρ := oscillationExponent ε t with hρ
+  have hpre := abs_weightCenteredPrefix_oscillatingSmoothPower_sub_le hε hε1 t hn
+  have htail := abs_oscillatingTailDrift_sub_le_sqrt_rpow hε hε1.le t hn
+  have hid : oscillatingSawtoothPrefix ε t n -
+      ((riemannZeta ρ / ρ - 1 / (ρ - 1)) * ((n : ℝ) : ℂ) ^ ρ).re =
+      (weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+        (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re) -
+      (oscillatingTailDrift ε t n - (((n : ℝ) : ℂ) ^ ρ / (ρ - 1)).re) := by
+    rw [weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail]
+    have hre : ((riemannZeta ρ / ρ - 1 / (ρ - 1)) * ((n : ℝ) : ℂ) ^ ρ).re =
+        (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re - (((n : ℝ) : ℂ) ^ ρ / (ρ - 1)).re := by
+      rw [← Complex.sub_re]
+      congr 1; ring
+    rw [hre]; ring
+  rw [hid]
+  calc _ ≤ |weightCenteredPrefix (oscillatingSmoothPower ε t)
+          (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+          (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re| +
+        |oscillatingTailDrift ε t n - (((n : ℝ) : ℂ) ^ ρ / (ρ - 1)).re| := abs_sub _ _
+    _ ≤ floorSumRate ρ * Real.sqrt n ^ (1 - ε) + tailDriftRate ρ * Real.sqrt n ^ (1 - ε) :=
+        add_le_add hpre htail
+    _ = (floorSumRate ρ + tailDriftRate ρ) * Real.sqrt n ^ (1 - ε) := by ring
+
+/-- **General necessity lemma for oscillating power modes in `L²(pronic)`.** For `0 < ε ≤ 1/2`,
+`t ∈ ℝ`, and `a ∈ ℂ`, if `f : ℕ → ℝ` satisfies `|f(n) − Re(a n^{1−ε+it})| ≤ K (√n)^{1−ε}` for all
+`n ≥ 1` and `pronicNorm f` is uniformly bounded, then `a = 0` (when `t = 0`, `a.re = 0`). -/
+theorem eq_zero_of_bdd_pronicNorm_of_abs_sub_re_cpow_le {ε K : ℝ} (hε : 0 < ε)
+    (hε2 : ε ≤ 1 / 2) (t : ℝ) {a : ℂ} {f : ℕ → ℝ} (ht0_re : t = 0 → a.re = 0 → a = 0)
+    (hrem : ∀ n : ℕ, 1 ≤ n →
+      |f n - (a * ((n : ℝ) : ℂ) ^ oscillationExponent ε t).re| ≤ K * Real.sqrt n ^ (1 - ε))
+    (hbdd : ∃ B₀ : ℝ, ∀ T : ℕ, pronicNorm f T ≤ B₀) :
+    a = 0 := by
+  obtain ⟨B₀, hB₀⟩ := hbdd
+  set ρ := oscillationExponent ε t with hρ
+  set M : ℕ → ℝ := fun n => (a * ((n : ℝ) : ℂ) ^ ρ).re with hM
+  set B := B₀ + |K| * Real.sqrt (1 + 1 / ε) with hBdef
+  have hMnorm : ∀ T, pronicNorm M T ≤ B := by
+    intro T
+    have h1 : pronicNorm f T ≤ B₀ := hB₀ T
+    have h2 : pronicNorm (fun n => f n - M n) T ≤ |K| * Real.sqrt (1 + 1 / ε) := by
+      have h := sum_sq_le_of_abs_le_sqrt_rpow hε (f := fun n => f n - M n) hrem T
+      rw [pronicNorm]
+      calc Real.sqrt _ ≤ Real.sqrt (K ^ 2 * (1 + 1 / ε)) := Real.sqrt_le_sqrt h
+        _ = |K| * Real.sqrt (1 + 1 / ε) := by
+            rw [Real.sqrt_mul (sq_nonneg K), Real.sqrt_sq_eq_abs]
+    have h3 := pronicNorm_add_le f (fun n => (-1) * (f n - M n)) T
+    rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at h3
+    have h4 : pronicNorm M T = pronicNorm (fun n => f n + (-1) * (f n - M n)) T :=
+      pronicNorm_congr fun n _ => by ring
+    rw [h4, hBdef]
+    linarith
+  set u : ℕ → ℝ := fun n => (a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re with hu
+  have hMu : ∀ n : ℕ, 1 ≤ n → M n = (n : ℝ) ^ (1 - ε) * u n := by
+    intro n hn
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    have hsplit : ((n : ℝ) : ℂ) ^ ρ =
+        (((n : ℝ) ^ (1 - ε) : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) := by
+      rw [hρ, oscillationExponent, Complex.cpow_add _ _ (by exact_mod_cast hn0.ne'),
+        Complex.ofReal_cpow hn0.le]
+    simp only [hM, hu]
+    rw [hsplit, mul_left_comm, Complex.re_ofReal_mul]
+  have hlow : ∀ T : ℕ, ∑ n ∈ Icc 1 T, u n ^ 2 / n ≤ 2 * B ^ 2 := by
+    intro T
+    have hMsq : ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) ≤ B ^ 2 := by
+      have h := hMnorm T
+      rw [pronicNorm] at h
+      have hs0 : 0 ≤ ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) :=
+        sum_nonneg fun n _ => by positivity
+      calc _ = Real.sqrt (∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) ^ 2 :=
+            (Real.sq_sqrt hs0).symm
+        _ ≤ B ^ 2 := pow_le_pow_left₀ (Real.sqrt_nonneg _) h 2
+    have hterm : ∀ n ∈ Icc 1 T, u n ^ 2 / n ≤ 2 * (M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := by
+      intro n hn
+      have hn1 := (mem_Icc.mp hn).1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+      have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+      have hpow : (n : ℝ) ≤ ((n : ℝ) ^ (1 - ε)) ^ 2 := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul hn0.le]
+        calc (n : ℝ) = (n : ℝ) ^ (1 : ℝ) := (Real.rpow_one _).symm
+          _ ≤ (n : ℝ) ^ ((1 - ε) * ((2 : ℕ) : ℝ)) :=
+              Real.rpow_le_rpow_of_exponent_le hnR (by push_cast; linarith)
+      rw [hMu n hn1, mul_pow, div_le_iff₀ hn0, mul_comm 2, mul_assoc]
+      have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
+      rw [div_mul_eq_mul_div, le_div_iff₀ hpr]
+      have hu2 : 0 ≤ u n ^ 2 := sq_nonneg _
+      calc u n ^ 2 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ u n ^ 2 * (2 * (n : ℝ) * n) :=
+            mul_le_mul_of_nonneg_left (by nlinarith) hu2
+        _ = ((n : ℝ) * u n ^ 2) * (2 * n) := by ring
+        _ ≤ (((n : ℝ) ^ (1 - ε)) ^ 2 * u n ^ 2) * (2 * n) :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hpow hu2) (by positivity)
+    calc _ ≤ ∑ n ∈ Icc 1 T, 2 * (M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := sum_le_sum hterm
+      _ = 2 * ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by rw [mul_sum]
+      _ ≤ 2 * B ^ 2 := by linarith
+  have husq : ∀ n : ℕ, 1 ≤ n → u n ^ 2 =
+      (‖a‖ ^ 2 + (a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I)).re) / 2 := by
+    intro n hn
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    set z := a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) with hz
+    have hw : ‖((n : ℝ) : ℂ) ^ ((t : ℂ) * I)‖ = 1 := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hn0]; simp
+    have hz2 : z ^ 2 = a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) := by
+      rw [hz, mul_pow, sq (((n : ℝ) : ℂ) ^ ((t : ℂ) * I)),
+        ← Complex.cpow_add _ _ (by exact_mod_cast hn0.ne')]
+      push_cast; ring_nf
+    have hnorm : ‖z‖ ^ 2 = ‖a‖ ^ 2 := by rw [hz, norm_mul, hw, mul_one]
+    have hre : ∀ x : ℂ, x.re ^ 2 = (‖x‖ ^ 2 + (x ^ 2).re) / 2 := fun x => by
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, sq x, Complex.mul_re]; ring
+    show z.re ^ 2 = _
+    rw [hre z, hnorm, hz2]
+  have hsum : ∀ T : ℕ, ∑ n ∈ Icc 1 T, u n ^ 2 / n =
+      ‖a‖ ^ 2 / 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) +
+        (a ^ 2 * ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)).re / 2 := by
+    intro T
+    rw [mul_sum, mul_sum, Complex.re_sum, sum_div, ← sum_add_distrib]
+    refine sum_congr rfl fun n hn => ?_
+    have hn1 := (mem_Icc.mp hn).1
+    have hdiv : (a ^ 2 * (((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ))).re =
+        (a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I)).re / n := by
+      rw [← mul_div_assoc, Complex.div_ofReal_re]
+    rw [husq n hn1, hdiv]
+    ring
+  rcases eq_or_ne t 0 with ht0 | ht0
+  · refine ht0_re ht0 ?_
+    by_contra hare
+    have hu0 : ∀ n : ℕ, u n = a.re := fun n => by simp [hu, ht0]
+    have ha2 : 0 < a.re ^ 2 := sq_pos_of_ne_zero hare
+    obtain ⟨T, -, hT⟩ := not_bddAbove_sum_Icc_one_div (2 * B ^ 2 / a.re ^ 2)
+    have h := hlow T
+    have heq : ∑ n ∈ Icc 1 T, u n ^ 2 / n = a.re ^ 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) := by
+      rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hu0]; ring
+    rw [heq] at h
+    rw [div_lt_iff₀ ha2] at hT
+    linarith
+  · by_contra ha0
+    set w : ℂ := 1 - ((2 * t : ℝ) : ℂ) * I with hw
+    have hwre : 0 < w.re := by simp [hw]
+    have hwne : w ≠ 1 := by
+      intro h
+      have := congrArg Complex.im h
+      simp [hw] at this
+      exact ht0 this
+    set B₂ := 1 / ‖((2 * t : ℝ) : ℂ) * I‖ + ‖riemannZeta w‖ + partialSumRate w with hB₂
+    have hS : ∀ T : ℕ, 1 ≤ T →
+        ‖∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)‖ ≤ B₂ := by
+      intro T hT
+      have hT0 : (0 : ℝ) < T := by exact_mod_cast hT
+      have hcp : ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ) =
+          cpowPartialSum w T := by
+        rw [cpowPartialSum]
+        refine sum_congr rfl fun n hn => ?_
+        have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+        have hnC : ((n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
+        rw [hw, show -(1 - ((2 * t : ℝ) : ℂ) * I) = ((2 * t : ℝ) : ℂ) * I - 1 by ring,
+          Complex.cpow_sub _ _ hnC, Complex.cpow_one]
+      have h := norm_cpowPartialSum_sub_le hwre hwne hT le_rfl (by linarith)
+      rw [show (1 : ℂ) - w = ((2 * t : ℝ) : ℂ) * I by rw [hw]; ring] at h
+      have hT1 : ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I)‖ = 1 := by
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos hT0]; simp
+      have hTpow : (T : ℝ) ^ (-w.re) ≤ 1 :=
+        Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hT) (by linarith)
+      have hrate0 := partialSumRate_nonneg hwre
+      rw [hcp]
+      calc ‖cpowPartialSum w T‖ ≤ ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+            (((2 * t : ℝ) : ℂ) * I)‖ + ‖riemannZeta w‖ +
+            ‖cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+              (((2 * t : ℝ) : ℂ) * I) - riemannZeta w‖ := by
+            have e : cpowPartialSum w T = ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+                (((2 * t : ℝ) : ℂ) * I) + riemannZeta w +
+                (cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+                  (((2 * t : ℝ) : ℂ) * I) - riemannZeta w) := by ring
+            exact (congrArg norm e).le.trans
+              ((norm_add_le _ _).trans (add_le_add_left (norm_add_le _ _) _))
+        _ ≤ 1 / ‖((2 * t : ℝ) : ℂ) * I‖ + ‖riemannZeta w‖ + partialSumRate w * 1 := by
+            rw [norm_div, hT1]
+            gcongr
+            exact h.trans (mul_le_mul_of_nonneg_left hTpow hrate0)
+        _ = B₂ := by rw [mul_one]
+    have hna : 0 < ‖a‖ ^ 2 := sq_pos_of_ne_zero (norm_ne_zero_iff.mpr ha0)
+    obtain ⟨T, hT1, hT⟩ := not_bddAbove_sum_Icc_one_div ((4 * B ^ 2 + ‖a‖ ^ 2 * B₂) / ‖a‖ ^ 2)
+    have h := hlow T
+    rw [hsum T] at h
+    have hre : |(a ^ 2 * ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)).re| ≤
+        ‖a‖ ^ 2 * B₂ := by
+      refine (Complex.abs_re_le_norm _).trans ?_
+      rw [norm_mul, norm_pow]
+      exact mul_le_mul_of_nonneg_left (hS T hT1) (by positivity)
+    rw [div_lt_iff₀ hna] at hT
+    have := (abs_le.mp hre).1
+    nlinarith
+
+/-- **The universal source tail drift `oscillatingTailDrift ε t` is unconditionally unbounded in
+`L²(pronic)` for every `0 < ε ≤ 1/2` and every `t ∈ ℝ`.** Its leading coefficient
+`1/(ρ − 1) = 1/(−ε + it)` is strictly nonzero regardless of whether `ζ(ρ) = 0`. -/
+theorem not_bdd_pronicNorm_oscillatingTailDrift {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
+    (t : ℝ) :
+    ¬ ∃ B : ℝ, ∀ T : ℕ, pronicNorm (oscillatingTailDrift ε t) T ≤ B := by
+  intro hbdd
+  set ρ := oscillationExponent ε t with hρ
+  have hρ1 : ρ - 1 ≠ 0 := by
+    intro h0
+    have := congrArg Complex.re h0
+    rw [sub_re, oscillationExponent_re, one_re, zero_re] at this
+    linarith
+  have ha0 : (1 : ℂ) / (ρ - 1) ≠ 0 := one_div_ne_zero hρ1
+  refine ha0 (eq_zero_of_bdd_pronicNorm_of_abs_sub_re_cpow_le hε hε2 t
+    (f := oscillatingTailDrift ε t) (K := tailDriftRate ρ) ?_ ?_ hbdd)
+  · intro ht0 hre
+    have hρ0 : ρ - 1 = ((-ε : ℝ) : ℂ) := by
+      rw [hρ, oscillationExponent, ht0]
+      push_cast; ring
+    rw [hρ0, ← Complex.ofReal_one, ← Complex.ofReal_div, Complex.ofReal_re] at hre
+    exfalso
+    exact (div_ne_zero one_ne_zero (neg_ne_zero.mpr hε.ne')) hre
+  · intro n hn
+    have h := abs_oscillatingTailDrift_sub_le_sqrt_rpow hε (by linarith) t hn
+    rwa [show ((n : ℝ) : ℂ) ^ ρ / (ρ - 1) = (1 / (ρ - 1)) * ((n : ℝ) : ℂ) ^ ρ by ring] at h
+
+/-- **Anti-phase cancellation characterization of receiver boundedness.** For every `ε, t ∈ ℝ`,
+`oscillatingSmoothPower ε t` has bounded receiver if and only if the fractional-part sawtooth sum
+`S_{ε,t}` cancels the universal tail drift `T_{ε,t}` in `L²(pronic)`. -/
+theorem receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail (ε t : ℝ) :
+    ReceiverBounded (oscillatingSmoothPower ε t) ↔
+      ∃ B : ℝ, ∀ T : ℕ,
+        pronicNorm (fun n => oscillatingSawtoothPrefix ε t n + oscillatingTailDrift ε t n) T ≤ B := by
+  have hcongr : ∀ T : ℕ,
+      pronicNorm (weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d)) T =
+      pronicNorm (fun n => oscillatingSawtoothPrefix ε t n + oscillatingTailDrift ε t n) T :=
+    fun T => pronicNorm_congr fun n _ =>
+      weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail ε t n
+  constructor
+  · rintro ⟨E, hE⟩
+    refine ⟨Real.sqrt E, fun T => ?_⟩
+    rw [← hcongr T]
+    have h := hE T
+    rw [weightPronicEnergy_eq_sq_pronicNorm] at h
+    have h' := Real.sqrt_le_sqrt h
+    rwa [Real.sqrt_sq (pronicNorm_nonneg _ _)] at h'
+  · rintro ⟨B, hB⟩
+    refine ⟨B ^ 2, fun T => ?_⟩
+    rw [weightPronicEnergy_eq_sq_pronicNorm, hcongr T]
+    exact pow_le_pow_left₀ (pronicNorm_nonneg _ _) (hB T) 2
+
+/-- **Any paid sub-half oscillating probe has an unconditionally unbounded sawtooth sum locked in
+anti-phase with the tail drift.** If `0 < ε ≤ 1/2` and `ReceiverBounded (oscillatingSmoothPower ε t)`,
+then `S_{ε,t}` satisfies `|S_{ε,t}(n) + Re(n^ρ/(ρ − 1))| ≤ (K_ρ + K^{\mathrm{tail}}_ρ) (√n)^{1−ε}`
+and has unbounded pronic norm. -/
+theorem not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded {ε : ℝ} (hε : 0 < ε)
+    (hε2 : ε ≤ 1 / 2) (t : ℝ) (hB : ReceiverBounded (oscillatingSmoothPower ε t)) :
+    (∀ n : ℕ, 1 ≤ n →
+      |oscillatingSawtoothPrefix ε t n +
+        (((n : ℝ) : ℂ) ^ oscillationExponent ε t / (oscillationExponent ε t - 1)).re| ≤
+        (floorSumRate (oscillationExponent ε t) + tailDriftRate (oscillationExponent ε t)) *
+          Real.sqrt n ^ (1 - ε)) ∧
+    ¬ ∃ B : ℝ, ∀ T : ℕ, pronicNorm (oscillatingSawtoothPrefix ε t) T ≤ B := by
+  have hz := zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower hε hε2 t hB
+  refine ⟨fun n hn => ?_, fun ⟨B₁, hB₁⟩ => ?_⟩
+  · have h := abs_oscillatingSawtoothPrefix_sub_le hε (by linarith) t hn
+    rw [hz, zero_div, zero_sub] at h
+    rwa [show - (1 / (oscillationExponent ε t - 1)) * ((n : ℝ) : ℂ) ^ oscillationExponent ε t =
+      -(((n : ℝ) : ℂ) ^ oscillationExponent ε t / (oscillationExponent ε t - 1)) by ring,
+      Complex.neg_re, sub_neg_eq_add] at h
+  · obtain ⟨B₂, hB₂⟩ :=
+      (receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail ε t).mp hB
+    refine not_bdd_pronicNorm_oscillatingTailDrift hε hε2 t ⟨B₂ + B₁, fun T => ?_⟩
+    have h1 := pronicNorm_add_le
+      (fun n => oscillatingSawtoothPrefix ε t n + oscillatingTailDrift ε t n)
+      (fun n => (-1) * oscillatingSawtoothPrefix ε t n) T
+    rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at h1
+    have h2 : pronicNorm (oscillatingTailDrift ε t) T =
+        pronicNorm (fun n => (oscillatingSawtoothPrefix ε t n + oscillatingTailDrift ε t n) +
+          (-1) * oscillatingSawtoothPrefix ε t n) T :=
+      pronicNorm_congr fun n _ => by ring
+    rw [h2]
+    linarith [hB₂ T, hB₁ T]
 
 end
 

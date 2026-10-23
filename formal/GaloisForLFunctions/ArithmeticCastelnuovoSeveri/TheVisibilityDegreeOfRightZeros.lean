@@ -780,10 +780,16 @@ theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
   have hRall : ∀ τ ∈ Z.carrier, 1 / 2 < τ.re → τ ∈ hR.toFinset := fun τ hτ hre =>
     (Set.Finite.mem_toFinset hR).mpr ⟨hτ, hre⟩
   set F := pairFamily b (fun ρ => phase Δ ρ) Δ
-  set Φ : (hR.toFinset → ℂ) →ₗ[ℂ] (hR.toFinset × Fin 2 → ℂ) := LinearMap.funLeft ℂ ℂ Prod.fst
-  have hΦ : Function.Injective Φ :=
-    LinearMap.funLeft_injective_of_surjective ℂ ℂ Prod.fst fun ρ => ⟨(ρ, 0), rfl⟩
-  have hpd : IsPosDefOn (-(zeroGram Z F)) (LinearMap.range Φ) := by
+  set e := Fintype.equivFin (hR.toFinset × Fin 2)
+  set Ψ : (hR.toFinset → ℂ) →ₗ[ℂ] (Fin (Fintype.card (hR.toFinset × Fin 2)) → ℂ) :=
+    LinearMap.funLeft ℂ ℂ (Prod.fst ∘ e.symm)
+  have hΨ : Function.Injective Ψ :=
+    LinearMap.funLeft_injective_of_surjective ℂ ℂ (Prod.fst ∘ e.symm) fun ρ =>
+      ⟨e (ρ, 0), by simp⟩
+  have hFc : ∀ j, ContDiff ℝ 2 (F j) := pairFamily_contDiff hb (fun ρ => phase Δ ρ) Δ
+  have hFcs : ∀ j, HasCompactSupport (F j) :=
+    pairFamily_hasCompactSupport hbc (fun ρ => phase Δ ρ) Δ
+  have hpd : IsPosDefOn (-(zeroGram Z (F ∘ e.symm))) (LinearMap.range Ψ) := by
     intro x hx hx0
     obtain ⟨y, rfl⟩ := LinearMap.mem_range.mp hx
     have hy : y ≠ 0 := fun h => hx0 (by rw [h, map_zero])
@@ -791,25 +797,24 @@ theorem hodgeDefectAt_eq_of_onLineMass (Z : ZeroConfig) (hZ : TemperedConfig Z)
     have hYpos : 0 < ∑ σ, ‖y σ‖ ^ 2 :=
       lt_of_lt_of_le (by positivity) (Finset.single_le_sum (f := fun σ => ‖y σ‖ ^ 2)
         (fun σ _ => by positivity) (Finset.mem_univ ρ))
-    rw [hermQuad_neg, hermQuad_zeroGram_of_tempered Z hZ _ (pairFamily_contDiff hb _ Δ)
-      (pairFamily_hasCompactSupport hbc _ Δ)]
-    simp only [Φ, LinearMap.funLeft_apply]
+    rw [hermQuad_neg, hermQuad_zeroGram_of_tempered Z hZ (F ∘ e.symm)
+      (fun i => hFc (e.symm i)) (fun i => hFcs (e.symm i))]
+    have hsum : (∑ i, conj (Ψ y i) • (F ∘ e.symm) i) =
+        ∑ p : hR.toFinset × Fin 2, conj (y p.1) • F p := by
+      simp only [Ψ, LinearMap.funLeft_apply, Function.comp_apply]
+      exact e.symm.sum_comp fun p => conj (y p.1) • F p
+    rw [hsum]
     linarith [re_W_pairComb_le_of_onLineMass Z hZ hRm hRall hb hbc hb1 hb2 hΔ y]
-  have hneg : hR.toFinset.card ≤ hermNegIndex (zeroGram Z F) := by
+  have hneg : hR.toFinset.card ≤ hermNegIndex (zeroGram Z (F ∘ e.symm)) := by
     have h1 := finrank_le_posIndex hpd
-    rw [LinearMap.finrank_range_of_inj hΦ, Module.finrank_fintype_fun_eq_card,
+    rw [LinearMap.finrank_range_of_inj hΨ, Module.finrank_fintype_fun_eq_card,
       Fintype.card_coe] at h1
     rw [hermNegIndex]
     exact h1
-  set e := Fintype.equivFin (hR.toFinset × Fin 2)
-  have hF_re : hermNegIndex (zeroGram Z (F ∘ e.symm)) = hermNegIndex (zeroGram Z F) := by
-    have hG : -(zeroGram Z (F ∘ e.symm)) = (-(zeroGram Z F)).submatrix e.symm e.symm := rfl
-    rw [hermNegIndex, hermNegIndex, hG, posIndex_reindex]
-  have hFc : ∀ j, ContDiff ℝ 2 (F j) := pairFamily_contDiff hb (fun ρ => phase Δ ρ) Δ
   have hFs : ∀ j, tsupport (F j) ⊆ Icc (-(Δ + a₀)) (Δ + a₀) :=
     tsupport_pairFamily_subset hΔ0 hbs (fun ρ => phase Δ ρ)
   have hge : (hR.toFinset.card : ℕ∞) ≤ hodgeDefectAt Z a := by
-    refine (ENat.coe_le_coe.mpr (hneg.trans_eq hF_re.symm)).trans
+    refine (ENat.coe_le_coe.mpr hneg).trans
       (le_hodgeDefectAt Z (F ∘ e.symm) fun i => ⟨hFc (e.symm i), ?_⟩)
     exact (hFs (e.symm i)).trans (Set.Icc_subset_Icc (by linarith) (by linarith))
   have hle : hodgeDefectAt Z a ≤ hR.toFinset.card := by
@@ -962,9 +967,9 @@ theorem onLineMass_le_of_locallyBounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
         (∑' q : Q, ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2) ≤
           M * ((2 * a₀ + 2 * π) * Real.exp (2 * π)) * ∫ u, ‖b ρ u‖ ^ 2 := by
     intro ρ
-    obtain ⟨hs, hle⟩ := summable_tsum_norm_sq_testTransform_le_of_locallyBounded (Y := 0) ha₀
+    obtain ⟨hs, hle⟩ := summable_tsum_norm_sq_testTransform_le_of_locallyBounded (σ := 0) ha₀
       (hsrc ρ) x y (le_refl (0 : ℝ)) (fun _ => by simp [y]) hMQ
-    rw [zero_mul, Real.exp_zero, mul_one] at hle
+    rw [mul_zero, zero_mul, Real.exp_zero, mul_one] at hle
     have hfun : (fun q : Q => ‖paperFT (b ρ) (gammaOf ((q : Z.carrier) : ℂ))‖ ^ 2) =
         fun q : Q => ‖testTransform (b ρ) ((x q : ℂ) + (y q : ℂ) * I)‖ ^ 2 := by
       funext q

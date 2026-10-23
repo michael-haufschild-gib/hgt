@@ -299,7 +299,8 @@ theorem hasGhost_sigmaSeries (g : ℕ → ℂ) :
       coeff_mul,
       sum_antidiagonal_eq_range
         (fun i j => coeff i (sigmaSeries g) * coeff j (ghostSeriesOf g)) (m + 1),
-      Finset.sum_range_succ]
+      Finset.sum_range_succ
+        (fun i => coeff i (sigmaSeries g) * coeff (m + 1 - i) (ghostSeriesOf g)) (m + 1)]
     have hlast : coeff (m + 1) (sigmaSeries g) * coeff (m + 1 - (m + 1)) (ghostSeriesOf g) = 0 := by
       simp [ghostSeriesOf]
     rw [hlast, add_zero]
@@ -364,13 +365,15 @@ traces `j ↦ -∑_i α_i^j` is the spectral polynomial `D.hOnePoly = ∏_i (1 -
 theorem sigmaSeries_primTrace :
     sigmaSeries (fun j => -∑ i : ι, D.alpha i ^ j) = D.hOnePoly := by
   refine sigmaSeries_eq_of_hasGhost ?_ ?_
-  · have hprod := hasGhost_prod Finset.univ (fun i : ι => 1 - C (D.alpha i) * X)
+  · have hG : ghostSeriesOf (fun j => -∑ i : ι, D.alpha i ^ j) =
+        ∑ i : ι, -geomTail (D.alpha i) := by
+      ext j
+      rcases j with _ | j
+      · simp [ghostSeriesOf, geomTail]
+      · simp [ghostSeriesOf, geomTail, Finset.sum_neg_distrib]
+    rw [hG]
+    exact hasGhost_prod Finset.univ (fun i : ι => 1 - C (D.alpha i) * X)
       (fun i : ι => -geomTail (D.alpha i)) (fun i _ => hasGhost_one_sub (D.alpha i))
-    convert hprod using 2
-    ext j
-    rcases j with _ | j
-    · simp [ghostSeriesOf, geomTail]
-    · simp [ghostSeriesOf, geomTail, Finset.sum_neg_distrib]
   · simp [hOnePoly, map_prod]
 
 /-- **Pole-plane factorization of the curve zeta series via `sigmaSeries`:** the `λ`-ring
@@ -1143,7 +1146,7 @@ theorem pair_heckeCycle (g : realTests) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
   rw [pair_adamsOp_div ha hb, Real.sqrt_div (le_of_lt ha)]
   have hsqrt : Real.sqrt b ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hb)
   have hsq : Real.sqrt b * Real.sqrt b = b := Real.mul_self_sqrt (le_of_lt hb)
-  calc Real.sqrt a * (Real.sqrt b *
+  calc Real.sqrt b * (Real.sqrt a *
           scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g))
       = (Real.sqrt b * Real.sqrt b) * (Real.sqrt a / Real.sqrt b *
           scalingSurface.pair (adamsOp (a / b) (diagCycle g)) (diagCycle g)) := by
@@ -1250,7 +1253,7 @@ theorem weilTest_self_zero (φ : ℝ → ℝ) :
   rw [weilTest_ofReal]
   congr 1
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-  ring
+  simp [sq]
 
 /-- For positive integers `m < n`, `log(1 + 1 / n) ≤ log n - log m`. -/
 theorem log_one_add_inv_le_log_sub {m n : ℕ} (hm : 1 ≤ m) (hmn : m < n) :
@@ -1442,6 +1445,28 @@ theorem weightedPrimeComb_scaleShift_eq_heckeIncidence {a b N : ℕ} (ha : 1 ≤
   have h1 : primeAtom 1 = 0 := by simp [primeAtom]
   rw [weightedPrimeComb_scaleShift_narrow_eval primeAtom h1 ha hb hN hφ hδ]
   rfl
+
+/-- **Single-prime tower incidence for narrow Hecke cycles:** if `a, b ≥ 1` agree at all primes
+`r ≠ p`, then their narrow-bump prime-comb pairing equals the single-prime Frobenius weight
+`towerWeight p |v_p(a) - v_p(b)| * ∫ φ^2`. -/
+theorem weightedPrimeComb_scaleShift_eq_towerWeight {a b p N : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b)
+    (hp : p.Prime) (h : ∀ r, r ≠ p → a.factorization r = b.factorization r)
+    (hN : max a b ≤ N) {φ : ℝ → ℝ} {δ : ℝ} (hφ : ∀ u, δ < |u| → φ u = 0)
+    (hδ : 2 * δ < Real.log (1 + 1 / ((max a b * N : ℕ) : ℝ))) :
+    weightedPrimeComb primeAtom N (scaleShift (Real.log a) φ) (scaleShift (Real.log b) φ) =
+      towerWeight p (Nat.dist (a.factorization p) (b.factorization p)) * ∫ u, φ u ^ 2 := by
+  rw [weightedPrimeComb_scaleShift_eq_heckeIncidence ha hb hN hφ hδ,
+    heckeIncidence_eq_towerWeight (by omega) (by omega) hp h]
+
+/-- **Multi-prime orthogonality of narrow Hecke cycles:** if `a, b ≥ 1` differ in two or more
+prime coordinates, then their narrow-bump prime-comb pairing vanishes. -/
+theorem weightedPrimeComb_scaleShift_eq_zero_of_two_primes {a b N : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b)
+    (h : ∀ p, p.Prime → ∃ r, r ≠ p ∧ a.factorization r ≠ b.factorization r)
+    (hN : max a b ≤ N) {φ : ℝ → ℝ} {δ : ℝ} (hφ : ∀ u, δ < |u| → φ u = 0)
+    (hδ : 2 * δ < Real.log (1 + 1 / ((max a b * N : ℕ) : ℝ))) :
+    weightedPrimeComb primeAtom N (scaleShift (Real.log a) φ) (scaleShift (Real.log b) φ) = 0 := by
+  rw [weightedPrimeComb_scaleShift_eq_heckeIncidence ha hb hN hφ hδ,
+    heckeIncidence_eq_zero (by omega) (by omega) h, zero_mul]
 
 /-! ### 7. Zero-Side Eigenlaw, Fake Curve Data, Non-`Λ` Weights, and Positive Tests -/
 

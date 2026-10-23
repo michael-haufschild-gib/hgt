@@ -45,9 +45,18 @@ Four pillars organise the theory:
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Asks which arithmetic effectivity statement could force the required intersection-form signature. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Carries the source's signs into the incidence kernel and its positive majorants. |
 
+**The shared target.** The programmes in the table work on one object: RH as the sign of the
+complete critical arithmetic form, read through pairwise incidence (Arithmetic Incidence
+Positivity), lag (Square-Root Threshold) and aperture. ACT owns the aperture face — the ground-energy
+path $\mu(A)$ of the restricted Weil form, which must never cross zero — and the gauge theory that
+would prove it. A contribution reports its unit: the aperture through which all profiles are
+positive, or the rate $\sigma$ of a floor $\mu(A)\ge-Ce^{2\sigma A}$, which is the strip
+$\tfrac12+\sigma$.
+
 Read §2 for coordinates and forms, §§3.1–3.9 for identities and obstructions, and §§3.13–3.14
-for constructive window bounds and their relation to the global question. A gauge changes the
-representation; it does not create new zero information.
+for constructive window bounds and their relation to the global question; §4 lists the pillar
+theorems and §§6–7 the questions and open problems. A gauge changes the representation; it does
+not create new zero information.
 
 ---
 
@@ -845,7 +854,44 @@ explicit `a`-integrals needs no majorant.
 
 ---
 
-## 4. Traps and sharp boundaries
+## 4. Foundational pillar theorems
+
+Every result is unconditional; RH appears as an equivalence or as the conclusion of a stated
+positivity.
+
+1. **The folded sufficiency theorem.** A positive folded supersolution on the half line makes the
+   odd Markov energy a nonnegative remainder plus a nonnegative potential, and hence gives RH
+   (`markovEnergy_phiDoob_eq_groundRemainder_add_potential`, `riemannHypothesis_of_foldedSupersolution`).
+   Only the folded generator has a nonnegative remainder.
+2. **The two-moment law.** In the decaying profile class a positive gauge has positive jump-measure
+   and cosh moments, which force failure of the folded supersolution inequality at the origin and at
+   infinity (`exists_origin_and_infinity_windows_foldedGenerator_lt_potential`): positive folded
+   supersolutions do not exist.
+3. **The gauge-independent zero form.** Subtracting the pole produces a zero form independent of the
+   gauge, and RH is its nonnegativity on odd tests (`riemannHypothesis_iff_forall_odd_zeroForm_nonneg`);
+   the harmonic theta span is its radical, with exact plateau and Lorentz laws for translated ground
+   states (`abs_markovEnergy_add_harmonicPlateau_sub_le`, `exists_abs_markovEnergy_translatePlateau_sub_le`).
+4. **Single-shift completeness.** For one fixed shift $a>0$ the variation inequality on all even
+   compact $C^2$ multipliers is equivalent to RH (`riemannHypothesis_iff_forall_variationInequality`,
+   `riemannHypothesis_iff_forall_poleFreeVariationInequality`).
+5. **Criticality.** The odd form admits no Hardy weight, no lower prime rate, and no fraction of the
+   variance can be removed (`riemannHypothesis_iff_nonneg_and_no_hardyWeight`,
+   `riemannHypothesis_iff_isLeast_primeRate`, `exists_zeroForm_lt_mul_varianceEnergy`); the same on the
+   primitive hyperplane (`riemannHypothesis_iff_primitive_nonneg_and_no_hardyWeight`); the capacity
+   ratio tends to one along plateaus (`tendsto_capacityRatio_spanPlateau`).
+6. **The ground-energy path.** RH iff $\mu(A)\to0$, iff $\mu(A)\ge0$ at every aperture
+   (`riemannHypothesis_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`), and unconditionally
+   $\mu(A)\le K\exp((11/2)A-\pi e^{2(A-2)})$ (`exists_ccmRestrictedWeilGroundEnergy_le_doubleExp`).
+7. **The small-aperture floors.** $\hat Z(F)\ge\tfrac1{5000}\int F^2$ for every real $C^2_c$ test in
+   $[-3/10,3/10]$, so $\mu(A)\ge1/5000$ there (`zetaZeroConfig_re_W_ge_of_support_le_threeTenths`,
+   `one_div_5000_le_ccmRestrictedWeilGroundEnergy_threeTenths`); the plateau window floor is Suzuki's
+   small-aperture main term with $\mu_1$ removed (`windowFloor_eq_suzukiMainTerm`).
+8. **Window positivity is selective.** For the shifted pair $\zeta(s-a)\zeta(s+a)$ every radius
+   carries an even test with negative zero form once $a$ is large (`exists_even_shiftedPairZeroForm_neg`).
+
+---
+
+## 5. Traps and sharp boundaries
 
 | Trap | Why it fails; the correct statement |
 |---|---|
@@ -887,7 +933,47 @@ the prime number theorem enters only through proved corpus forms.
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **Can a positive solution certify the sign of a form with no spare margin?** Not in the positive
+   decaying class: the two-moment law excludes it, and criticality excludes any Hardy weight, lower
+   rate or variance reduction. What survives are signed gauges and lower bounds with controlled loss.
+2. **Where in the form is the sign decided?** Not in the archimedean place, which is Z-type and pays
+   its own crossings; not in the theta span, which is the radical; on the prime anti-diagonals
+   $\lvert x\rvert+y=\log n$, against same-side atoms and the variance.
+3. **How much does one shift know?** Everything: one fixed shift with all even multipliers is RH.
+4. **What does a certified aperture measure?** A scale, not a width: a bounded aperture is blind to
+   the width, and only the rate of the floor along unbounded apertures moves it.
+5. **What is the rate at which the ground energy may decay?** The question the theory exists for: a
+   floor $\mu(A)\ge-Ce^{2\sigma A}$ in the $L^2$ normalisation for one $\sigma<\tfrac12$.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Ground-state algebra* in an arbitrary gauge, with the Doob transform $\omega=m/\Theta$ and the
+  folded, two-sided and general-gauge representations.
+- *The equation of motion of $\Theta$*: the exact source of every gauge and the collar ratio.
+- *Moment laws* at the origin and at infinity for folded and signed gauges.
+- *Zero forms*: the pole-free Weil operator, gauge invariance, the theta radical, the cone criterion.
+- *Criticality calculus*: plateau and Lorentz null sequences with exponential rates.
+- *Window gauges*: plateau, quadratic, quartic and curved gauges, the even fold below the plastic
+  threshold, fold-boundary costs and hub Poincaré inequalities.
+- *The ground-energy path* with its floors, ceiling, contact aperture and multiplicative transport.
+
+To be built:
+
+- a signed gauge with global control of its nodal remainder;
+- a Hardy or coercivity law on the quotient by the theta span, in an explicitly chosen norm;
+- an all-profile window beyond $3/10$ and across $\tfrac12\log2$, retaining the even pole direction;
+- an arithmetic Harnack inequality across growing prime shifts;
+- the passage from the $H^1$ datum of the off-line zero sum to the $L^2$ normalisation of the path.
+
+---
+
+## 7. Open problems
 
 1. **The pure jump form.** In every smeared gauge RH is `J_M(u) + V_μ(u) ≥ 0` for even profiles,
    with explicit conductances `M(x)M(y)(dm(|x − y|) + 2 sinh(x/2) sinh(y/2))` per unordered pair. The archimedean
@@ -900,18 +986,19 @@ the prime number theorem enters only through proved corpus forms.
    hyperplane, with sign-changing null families inside the theta span. Whether the zero form admits a
    Hardy weight on the quotient by the theta span, that is a positivity margin invisible to the
    radical, is open. Exponential plateau estimates and the doubly exponential theta upper bound
-   already quantify particular null sequences; the missing issue is a coercive norm on the quotient.
+   quantify particular null sequences; the missing ingredient is a coercive norm on the quotient.
 3. **The monotone cone.** The weight criterion fails by the other-pole moment; a replacement that
    retains the same-side terms away from the origin, or a proof that no inequality in `Θ` alone
    decides the monotone cone, is open.
 4. **Beyond the first prime.** Window gauges with the even fold give `Ẑ ≥ (1/5000)∫F²` on
    `[−3/10, 3/10]` with the negative fold cost paid; past `log 2 / 2` the conductances across the
-   first prime turn negative. The odd and pole-vanishing sectors already cross this window. Extending the certificate to
-   all even tests, including their pole direction, is the smallest remaining instance of problem 1.
+   first prime turn negative. The odd and pole-vanishing sectors cross this window. Extending the
+   certificate to all even tests, including their pole direction, is the smallest open instance of
+   problem 1.
 5. **Selectivity.** The identities of 3.1–3.3 and 3.6 hold for any even positive kernel; the
    arithmetic enters only through the equation of motion of `Θ` (3.4). Rate-criticality shows every
-   prime enters at exactly critical strength. For `ζ(s−a)ζ(s+a)` the even-window theorem already gives negative tests at every fixed
-   positive aperture for sufficiently large shifts. Extending this discrimination to other
+   prime enters at exactly critical strength. For `ζ(s−a)ζ(s+a)` the even-window theorem gives
+   negative tests at every fixed positive aperture for sufficiently large shifts. Extending this discrimination to other
    deformations and Beurling systems tests which mechanisms see arithmetic beyond symmetry.
 6. **Exact constants.** The collar ratio `R(a)`, the cosh-moment law and the plateau-gauge potential
    are explicit; the dependence of the capacity ratio's approach to one on the aperture, and the
@@ -929,16 +1016,16 @@ the prime number theorem enters only through proved corpus forms.
    archimedean normalisation, and only a sequence of apertures tending to infinity need be
    covered — so what is missing is one `L²`-normalised rate, not a sign at every aperture.
 
-### Research topics toward the shared target
+### Research topics
 
 1. **Signed gauge certificates.** Find a profile satisfying the two opposite-moment conditions,
    control its quadratic potential between the two end regions, and estimate its signed remainder.
-   The joint two-end criterion is proved; none of these steps may substitute for the others.
+   The joint two-end criterion is a theorem; none of these steps may substitute for the others.
 2. **The even sector through the first prime.** Extend the all-test window beyond `3/10` and then
    across `log 2 / 2`. Use the odd-sector Harnack and Schur arguments as models, while retaining
    the even pole direction and its different reflected sign.
 3. **Quantitative Harnack and compensation across growing prime shifts.** Local micro-fold bounds
-   already pay the first odd atom. The needed tool must scale with the aperture while preserving
+   pay the first odd atom. The needed tool must scale with the aperture while preserving
    every prime rate at critical strength.
 4. **Selectivity beyond the shifted pair.** Extend the established even-window discrimination to
    other arithmetic deformations; separate universal gauge algebra from identities that depend
@@ -950,12 +1037,12 @@ the prime number theorem enters only through proved corpus forms.
 6. **The graded no-crossing problem.** Prove `μ(A) ≥ −Ce^{2σA}` for one `σ < ½` in the `L²`
    normalisation, along any unbounded set of apertures. The archimedean-normalised arrow is a
    theorem, the relative-decay transport carries a certified endpoint forward, and a uniform-in-`A`
-   loss is already RH; what is missing is the passage from the `H¹` datum of the off-line zero sum
+   loss is RH; what is missing is the passage from the `H¹` datum of the off-line zero sum
    to the `L²` normalisation of the path.
 
 ---
 
-## 6. Working in the theory
+## 8. Working in the theory
 
 - State in which coordinates a claim lives before writing it; convert with `M = Θ ω`. State which
   gauge, and whether the statement is at a single shift, on the span, on the convolution class, or on

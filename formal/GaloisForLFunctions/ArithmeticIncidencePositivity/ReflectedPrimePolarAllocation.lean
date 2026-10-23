@@ -1,8 +1,10 @@
 import GaloisForLFunctions.ArithmeticIncidencePositivity.PrimeTowerLedgerReduction
 import GaloisForLFunctions.ArithmeticIncidencePositivity.LagChebyshevAbelSummation
 import GaloisForLFunctions.ArithmeticIncidencePositivity.EdgeTentLogarithmicCapacity
+import GaloisForLFunctions.ArithmeticIncidencePositivity.SchurLendingOddWindowThreeHundredSixtyTwoThousandths
 import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 import GaloisForLFunctions.SquareRootThreshold.TheIncidenceLedgerGradedByTheZeroWidth
+import GaloisForLFunctions.SquareRootThreshold.PolarGroundEnergyAndPoleFreeLagAbscissaBridge
 
 /-!
 # Full reflected-prime/polar allocation across arbitrary tests
@@ -906,145 +908,354 @@ theorem fullZeroForm_nonneg_of_reflectedPrimePolarAllocation {F : ℝ → ℝ} {
   rw [fullZeroForm_eq_chebyshevDefectLedger hF hFc hodd hr hsupp hrR]
   linarith
 
-/-- **Equivalence with the Riemann Hypothesis.** The Riemann Hypothesis holds if and only if for
-every aperture `r > 0` and every odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, there is a plateau
-radius `R > r` at which the finite-horizon Chebyshev-defect integral of `F` on `(0, 2r]` is paid by
-`surplusPool + crossingPotentialTerm + gaugeRemainder`. -/
-theorem riemannHypothesis_iff_reflectedPrimePolarAllocation :
-    RiemannHypothesis ↔
-      ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
-        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-          ∃ R, r < R ∧
-            (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
-                (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-              surplusPool (aperturePlateau r R) F +
-                crossingPotentialTerm (aperturePlateau r R) F +
-                gaugeRemainder (aperturePlateau r R) F := by
-  rw [riemannHypothesis_iff_exists_plateau_globalIncidenceAllocation]
-  constructor
-  · intro h r F hr hF hFc hodd hsupp
-    obtain ⟨R, hrR, hGIA⟩ := h r F hr hF hFc hodd hsupp
-    refine ⟨R, hrR, ?_⟩
-    rw [globalIncidenceAllocation_iff_reflectedPrimePolarCost_le,
-      reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
-        (hF.of_le (by norm_num)) hFc hodd hr hsupp] at hGIA
-    exact hGIA
-  · intro h r F hr hF hFc hodd hsupp
-    obtain ⟨R, hrR, halloc⟩ := h r F hr hF hFc hodd hsupp
-    refine ⟨R, hrR, ?_⟩
-    rw [globalIncidenceAllocation_iff_reflectedPrimePolarCost_le,
-      reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
-        (hF.of_le (by norm_num)) hFc hodd hr hsupp]
-    exact halloc
-
-/-! ### Graded Chebyshev-defect allocation: constant mass deficit and every-positive-rate deficit -/
-
-/-- `GradedIncidenceAllocation σ C` is equivalent to bounding the joint reflected-prime/polar cost
-`reflectedPrimePolarCost F r` by the archimedean ledger budget plus the graded mass deficit
-`C * e^{2σ r} * ∫ F²`. -/
-theorem gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le (σ C : ℝ) :
-    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation σ C ↔
-      ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R → ContDiff ℝ 2 F → HasCompactSupport F →
-        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-        reflectedPrimePolarCost F r ≤
-          surplusPool (aperturePlateau r R) F +
-            crossingPotentialTerm (aperturePlateau r R) F +
-            gaugeRemainder (aperturePlateau r R) F +
-            C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2 := by
-  unfold GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation reflectedPrimePolarCost
-  constructor <;> intro h r R F hr hrR hF hFc hodd hsupp <;>
-     specialize h r R F hr hrR hF hFc hodd hsupp <;> linarith
-
-/-- `GradedIncidenceAllocation σ C` is equivalent to bounding the horizon-localized Chebyshev-defect
-integral on `(0, 2r]` by the archimedean ledger budget plus the graded mass deficit
-`C * e^{2σ r} * ∫ F²`. -/
-theorem gradedIncidenceAllocation_iff_chebyshevTwoPoleDefect_le (σ C : ℝ) :
-    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation σ C ↔
-      ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R → ContDiff ℝ 2 F → HasCompactSupport F →
-        (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-        (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
-            (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-          surplusPool (aperturePlateau r R) F +
-            crossingPotentialTerm (aperturePlateau r R) F +
-            gaugeRemainder (aperturePlateau r R) F +
-            C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2 := by
-  rw [gradedIncidenceAllocation_iff_reflectedPrimePolarCost_le]
-  constructor <;> intro h r R F hr hrR hF hFc hodd hsupp
-  · rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
-      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
-    exact h r R F hr hrR hF hFc hodd hsupp
-  · rw [reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
-      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
-    exact h r R F hr hrR hF hFc hodd hsupp
-
-/-- **Zero-width bound from graded Chebyshev-defect allocation.** If at rate `2σ` (`σ ≥ 0`) every
-odd `F ∈ C²_c(ℝ)` supported in `[−r, r]` (`r > 0`) admits a plateau radius `R > r` at which the
-Chebyshev-defect integral `C_F` on `(0, 2r]` is paid by the archimedean ledger budget up to
-`C * e^{2σ r} * ∫ F²`, then `zetaZeroWidth ≤ σ`. -/
-theorem zetaZeroWidth_le_of_chebyshevDefectAllocation_graded {σ C : ℝ} (hσ : 0 ≤ σ)
-    (halloc : ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
-      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-        ∃ R, r < R ∧
-          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
-              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-            surplusPool (aperturePlateau r R) F +
-              crossingPotentialTerm (aperturePlateau r R) F +
-              gaugeRemainder (aperturePlateau r R) F +
-              C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2) :
-    GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth ≤ σ := by
-  refine GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_le_of_graded_odd_fullZeroForm_floor
-    (C := C) hσ ?_
-  intro r hr F hF hFc hodd hsupp
-  obtain ⟨R, hrR, hCF⟩ := halloc r F hr hF hFc hodd hsupp
-  rw [fullZeroForm_eq_reflectedPrimePolarLedger hF hFc hodd hr hsupp hrR,
-    reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
-      (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+/-- **Unconditional `GlobalIncidenceAllocation` across the Schur-lending window `(0, 181/500]`.**
+For every aperture `0 < r ≤ 181/500` (strictly past the first prime threshold `½ log 2 ≈ 0.34657`),
+every plateau radius `R > r`, and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`,
+`GlobalIncidenceAllocation r R F` holds unconditionally. -/
+theorem globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths
+    {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (hodd : ∀ x, F (-x) = -F x) (hr : 0 < r) (hr0 : r ≤ 181 / 500)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    GlobalIncidenceAllocation r R F := by
+  rw [globalIncidenceAllocation_iff_fullZeroForm_nonneg hF hFc hodd hr hsupp hrR]
+  have h1 := fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths hF hFc hodd
+    fun x hx => hsupp x (lt_of_le_of_lt hr0 hx)
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
   linarith
 
-/-- **Riemann Hypothesis from Chebyshev-defect allocation with a uniform constant mass deficit.**
-If there is a uniform constant `C` such that for every aperture `r > 0` and every odd `F ∈ C²_c(ℝ)`
-supported in `[−r, r]` there exists `R > r` with the Chebyshev-defect integral `C_F` bounded by
-`surplusPool + crossingPotentialTerm + gaugeRemainder + C * ∫ F²`, then `RiemannHypothesis` holds. -/
-theorem riemannHypothesis_of_chebyshevDefectAllocation_const_deficit {C : ℝ}
-    (halloc : ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F → HasCompactSupport F →
-      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-        ∃ R, r < R ∧
-          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
-              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-            surplusPool (aperturePlateau r R) F +
-              crossingPotentialTerm (aperturePlateau r R) F +
-              gaugeRemainder (aperturePlateau r R) F +
-              C * ∫ x, F x ^ 2) :
-    RiemannHypothesis := by
-  rw [GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero]
-  refine le_antisymm ?_ GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_nonneg
-  refine zetaZeroWidth_le_of_chebyshevDefectAllocation_graded (C := C) le_rfl ?_
-  intro r F hr hF hFc hodd hsupp
-  obtain ⟨R, hrR, hR⟩ := halloc r F hr hF hFc hodd hsupp
-  refine ⟨R, hrR, ?_⟩
-  simpa using hR
+/-- **Quantitative reflected-prime/polar allocation on `(0, 181/500]`.** For every `0 < r ≤ 181/500`,
+every `R > r`, and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, the joint reflected-prime
+and polar cost is paid by the archimedean ledger budget with a strict `(1/1000) ∫ F²` coercivity
+margin. -/
+theorem reflectedPrimePolarCost_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths
+    {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (hodd : ∀ x, F (-x) = -F x) (hr : 0 < r) (hr0 : r ≤ 181 / 500)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    reflectedPrimePolarCost F r + 1 / 1000 * ∫ x, F x ^ 2 ≤
+      surplusPool (aperturePlateau r R) F +
+        crossingPotentialTerm (aperturePlateau r R) F +
+        gaugeRemainder (aperturePlateau r R) F := by
+  have h1 := fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths hF hFc hodd
+    fun x hx => hsupp x (lt_of_le_of_lt hr0 hx)
+  rw [fullZeroForm_eq_reflectedPrimePolarLedger hF hFc hodd hr hsupp hrR] at h1
+  linarith
 
-/-- **Riemann Hypothesis from Chebyshev-defect allocation with every-positive-rate graded deficit.**
-If for every rate `σ > 0` there is a constant `C` such that for every aperture `r > 0` and every
-odd `F ∈ C²_c(ℝ)` supported in `[−r, r]` there exists `R > r` with the Chebyshev-defect integral
-`C_F` bounded by `surplusPool + crossingPotentialTerm + gaugeRemainder + C * e^{2σ r} * ∫ F²`, then
-`RiemannHypothesis` holds. -/
-theorem riemannHypothesis_of_chebyshevDefectAllocation_every_pos_rate
-    (halloc : ∀ σ : ℝ, 0 < σ → ∃ C : ℝ, ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 2 F →
-      HasCompactSupport F → (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
-        ∃ R, r < R ∧
-          (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
-              (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
-            surplusPool (aperturePlateau r R) F +
-              crossingPotentialTerm (aperturePlateau r R) F +
-              gaugeRemainder (aperturePlateau r R) F +
-              C * Real.exp (2 * σ * r) * ∫ x, F x ^ 2) :
-    RiemannHypothesis := by
-  rw [GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero]
-  refine le_antisymm ?_ GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_nonneg
-  refine le_of_forall_pos_le_add fun σ hσ => ?_
-  obtain ⟨C, hC⟩ := halloc σ hσ
-  simpa using zetaZeroWidth_le_of_chebyshevDefectAllocation_graded (C := C) hσ.le hC
+/-- **Quantitative Chebyshev-defect allocation on `(0, 181/500]`.** For every `0 < r ≤ 181/500`,
+every `R > r`, and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, the horizon-localized
+Chebyshev-defect integral `C_F` on `(0, 2r]` is paid by `surplusPool + crossingPotentialTerm +
+gaugeRemainder` with a strict `(1/1000) ∫ F²` coercivity margin. -/
+theorem chebyshevTwoPoleDefect_integral_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths
+    {F : ℝ → ℝ} {r R : ℝ} (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (hodd : ∀ x, F (-x) = -F x) (hr : 0 < r) (hr0 : r ≤ 181 / 500)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) +
+      1 / 1000 * ∫ x, F x ^ 2 ≤
+      surplusPool (aperturePlateau r R) F +
+        crossingPotentialTerm (aperturePlateau r R) F +
+        gaugeRemainder (aperturePlateau r R) F := by
+  rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc
+    (hF.of_le (by norm_num)) hFc hodd hr hsupp]
+  exact reflectedPrimePolarCost_add_margin_le_ledger_of_le_threeHundredSixtyTwoThousandths
+    hF hFc hodd hr hr0 hsupp hrR
+
+/-! ### Unconditional all-aperture bounds on the ledger and `GradedIncidenceAllocation` -/
+
+/-- **Universal strip dominance.** For every real odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]` (`r ≥ 0`)
+and every shift `n` with `log n ≤ 2r`, the favorable even strip gain pays at least half of the odd
+strip cost: `oddStripCost F r n ≤ 2 * evenStripGain F r n`. -/
+theorem oddStripCost_le_two_mul_evenStripGain {F : ℝ → ℝ} {r : ℝ} {n : ℕ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 ≤ r) (hsupp : ∀ x, r < |x| → F x = 0) (hn : Real.log n ≤ 2 * r) :
+    oddStripCost F r n ≤ 2 * evenStripGain F r n := by
+  have heq := evenStripGain_sub_oddStripCost_eq hF hodd hr hsupp hn
+  have h1 := integral_mul_shift_le_interp hF hFc hodd hr (L := Real.log n)
+    (by linarith) hsupp (t := -1) (by norm_num)
+  have h2 : 2 * (vonMangoldtAtom n * autoCorr F (Real.log n)) ≤ evenStripGain F r n := by
+    have hm := mul_le_mul_of_nonneg_left h1 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2)
+      (vonMangoldtAtom_nonneg n))
+    unfold autoCorr evenStripGain at hm ⊢
+    linarith
+  linarith
+
+/-- Summed over all relevant shifts, the favorable even strip gains pay at least half of the total
+odd strip cost for every odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]`. -/
+theorem sum_oddStripCost_le_two_mul_sum_evenStripGain {F : ℝ → ℝ} {r : ℝ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 ≤ r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    (∑ n ∈ relevantShifts r, oddStripCost F r n) ≤
+      2 * ∑ n ∈ relevantShifts r, evenStripGain F r n := by
+  rw [Finset.mul_sum]
+  exact Finset.sum_le_sum fun n hn =>
+    oddStripCost_le_two_mul_evenStripGain hF hFc hodd hr hsupp (mem_relevantShifts.mp hn).2.le
+
+/-- **Half-line single-sign trans-half-width gain.** If an odd test `F` supported in `[−r, r]` is
+nonnegative on `[0, ∞)`, then for every shift `L ≥ r` the product `F x * F (x + L)` is nonpositive
+at every point `x ∈ ℝ`, so `autoCorr F L ≤ 0` and `oddStripCost F r n ≤ evenStripGain F r n` for
+all `n` with `r ≤ log n ≤ 2r`. -/
+theorem oddStripCost_le_evenStripGain_of_nonneg_on_Ici {F : ℝ → ℝ} {r : ℝ} {n : ℕ}
+    (hF : Continuous F) (hodd : ∀ x, F (-x) = -F x) (hr : 0 ≤ r)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hpos : ∀ x, 0 ≤ x → 0 ≤ F x)
+    (hn1 : r ≤ Real.log n) (hn2 : Real.log n ≤ 2 * r) :
+    oddStripCost F r n ≤ evenStripGain F r n := by
+  have heq := evenStripGain_sub_oddStripCost_eq hF hodd hr hsupp hn2
+  have hpt : ∀ x, F x * F (x + Real.log n) ≤ 0 := fun x => by
+    by_cases hx0 : F x = 0
+    · rw [hx0, zero_mul]
+    by_cases hxL : F (x + Real.log n) = 0
+    · rw [hxL, mul_zero]
+    have hxr : |x| ≤ r := not_lt.mp fun h => hx0 (hsupp x h)
+    have hxLr : |x + Real.log n| ≤ r := not_lt.mp fun h => hxL (hsupp _ h)
+    rw [abs_le] at hxr hxLr
+    have h1 : 0 ≤ -x := by linarith
+    have h2 : 0 ≤ x + Real.log n := by linarith
+    have hFx : F x ≤ 0 := by
+      have := hodd (-x)
+      rw [neg_neg] at this
+      linarith [hpos (-x) h1]
+    exact mul_nonpos_of_nonpos_of_nonneg hFx (hpos _ h2)
+  have hA : autoCorr F (Real.log n) ≤ 0 := by
+    unfold autoCorr
+    rw [← neg_nonneg, ← integral_neg]
+    exact integral_nonneg fun x => by linarith [hpt x]
+  have hm : 2 * (vonMangoldtAtom n * autoCorr F (Real.log n)) ≤ 0 :=
+    mul_nonpos_of_nonneg_of_nonpos (by norm_num)
+      (mul_nonpos_of_nonneg_of_nonpos (vonMangoldtAtom_nonneg n) hA)
+  linarith
+
+/-- **Sharp all-aperture `8 sinh r` bound on `poleCharge` (eliminating `R³ cosh²(R/2)`).**
+For every real odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]` (`r > 0`),
+`poleCharge F ≤ 8 * sinh r * ∫ F² ≤ 4 * e^r * ∫ F²`. -/
+theorem poleCharge_le_eight_mul_sinh_mul_sq {F : ℝ → ℝ} {r : ℝ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    poleCharge F ≤ 8 * Real.sinh r * ∫ x, F x ^ 2 := by
+  rw [poleCharge_eq_neg_integral_cosh_autoCorrelation hF hFc hodd hr hsupp,
+    ← intervalIntegral.integral_neg]
+  have hAc : Continuous (autoCorrelation F) := continuous_autoCorr hF hFc
+  have hint1 : IntervalIntegrable (fun s => -(4 * Real.cosh (s / 2) * autoCorrelation F s))
+      volume 0 (2 * r) :=
+    (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).mul hAc).neg.intervalIntegrable
+      0 (2 * r)
+  have hint2 : IntervalIntegrable (fun s => 4 * Real.cosh (s / 2) * ∫ x, F x ^ 2)
+      volume 0 (2 * r) :=
+    (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).mul
+      continuous_const).intervalIntegrable 0 (2 * r)
+  have hmono : (∫ s in (0 : ℝ)..(2 * r), -(4 * Real.cosh (s / 2) * autoCorrelation F s)) ≤
+      ∫ s in (0 : ℝ)..(2 * r), 4 * Real.cosh (s / 2) * ∫ x, F x ^ 2 := by
+    refine intervalIntegral.integral_mono_on (by linarith) hint1 hint2 fun s _ => ?_
+    have hA := (neg_le_abs (autoCorr F s)).trans (abs_autoCorr_le_integral_sq hF hFc s)
+    have hc : 0 ≤ 4 * Real.cosh (s / 2) := by positivity
+    calc -(4 * Real.cosh (s / 2) * autoCorrelation F s)
+        = 4 * Real.cosh (s / 2) * (-autoCorr F s) := by rfl
+      _ ≤ 4 * Real.cosh (s / 2) * ∫ x, F x ^ 2 := mul_le_mul_of_nonneg_left hA hc
+  have hderiv : ∀ s ∈ uIcc (0 : ℝ) (2 * r),
+      HasDerivAt (fun t => 8 * Real.sinh (t / 2)) (4 * Real.cosh (s / 2)) s := fun s _ => by
+    have hd := ((Real.hasDerivAt_sinh (s / 2)).comp s ((hasDerivAt_id s).div_const 2)).const_mul 8
+    convert hd using 1
+    ring
+  have hint_cosh : (∫ s in (0 : ℝ)..(2 * r), 4 * Real.cosh (s / 2)) = 8 * Real.sinh r := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+      (((Real.continuous_cosh.comp (continuous_id.div_const 2)).const_mul 4).intervalIntegrable
+        0 (2 * r))]
+    simp [show 2 * r / 2 = r by ring]
+  rw [intervalIntegral.integral_mul_const, hint_cosh] at hmono
+  exact hmono
+
+theorem poleCharge_le_four_mul_exp_mul_sq {F : ℝ → ℝ} {r : ℝ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    poleCharge F ≤ 4 * Real.exp r * ∫ x, F x ^ 2 := by
+  have h1 := poleCharge_le_eight_mul_sinh_mul_sq hF hFc hodd hr hsupp
+  have hsh : 8 * Real.sinh r ≤ 4 * Real.exp r := by
+    rw [Real.sinh_eq]
+    have := Real.exp_pos (-r)
+    linarith
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  exact h1.trans (mul_le_mul_of_nonneg_right hsh hI0)
+
+/-- **The explicit ledger floor without `R³` pole growth.** For every odd `F ∈ C²_c(ℝ)` supported in
+`[−r, r]` and every `R > r`, replacing the Cauchy–Schwarz bound `(R³/3) cosh²(R/2) ∫ F²` of
+`fullZeroForm_ge_explicitLedgerFloor` by `poleCharge_le_eight_mul_sinh_mul_sq` eliminates the `R³`
+factor and all dependence of the pole bound on the plateau radius `R`. -/
+theorem fullZeroForm_ge_sinh_ledgerFloor {F : ℝ → ℝ} {r R : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    surplusPool (aperturePlateau r R) F + crossingPotentialTerm (aperturePlateau r R) F +
+        (∑ n ∈ relevantShifts r, evenStripGain F r n) -
+        (∑ n ∈ relevantShifts r, oddStripCost F r n) +
+        (∫ x, F x ^ 2 * plateauPotentialFloor R x) -
+        8 * Real.sinh r * ∫ x, F x ^ 2 ≤ fullZeroForm F := by
+  have hled := fullZeroForm_eq_incidenceLedger hF hFc hodd hr hsupp hrR
+  have hrem := gaugeRemainder_ge_plateauPotentialFloor hF hFc hsupp hrR
+  have hpole := poleCharge_le_eight_mul_sinh_mul_sq hF.continuous hFc hodd hr hsupp
+  linarith
+
+/-- The constant subtraction `2 E(0) + (γ + log π)` in `plateauPotentialFloor` is at most `27/5`. -/
+theorem two_mul_windowEdgeFunction_zero_add_archConstantReal_le :
+    2 * windowEdgeFunction 0 + 2 * archConstantReal ≤ 27 / 5 := by
+  rw [windowEdgeFunction_zero]
+  unfold archConstantReal
+  have hγ := RHTower.eulerMascheroniConstant_lt_fiveHundredSeventySevenThousandTwoHundredSixteen_over_oneMillion
+  have hπ := log_pi_le_11448
+  have hl2 := Real.log_two_lt_d9
+  have hpi := Real.pi_lt_d4
+  linarith
+
+/-- **Uniform all-aperture lower bound on `gaugeRemainder`.** Because `Ω(R − x) > 0` and
+`Ω(R + x) > 0` on `[−r, r]` whenever `r < R`, the gauge remainder of `aperturePlateau r R` is
+bounded below by `−(27/5) ∫ F²` uniformly across all apertures `0 < r < R`. -/
+theorem gaugeRemainder_ge_neg_const_mul_sq {F : ℝ → ℝ} {r R : ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (hsupp : ∀ x, r < |x| → F x = 0) (hrR : r < R) :
+    -(27 / 5 * ∫ x, F x ^ 2) ≤ gaugeRemainder (aperturePlateau r R) F := by
+  refine (le_trans ?_ (gaugeRemainder_ge_plateauPotentialFloor hF hFc hsupp hrR))
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hF.continuous.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  rw [show -(27 / 5 * ∫ x, F x ^ 2) = ∫ x, -(27 / 5) * F x ^ 2 by
+    rw [MeasureTheory.integral_const_mul]; ring]
+  refine MeasureTheory.integral_mono (hF2.const_mul _)
+    (integrable_sq_mul_plateauPotentialFloor hF.continuous hFc hrR hsupp) fun x => ?_
+  by_cases hx0 : F x = 0
+  · simp [hx0]
+  · have hxr : |x| ≤ r := not_lt.mp fun h => hx0 (hsupp x h)
+    have ha : 0 < archLevyAntideriv (R - x) :=
+      archLevyAntideriv_pos (by linarith [le_abs_self x])
+    have hb : 0 < archLevyAntideriv (R + x) :=
+      archLevyAntideriv_pos (by linarith [neg_abs_le x])
+    have hc := two_mul_windowEdgeFunction_zero_add_archConstantReal_le
+    have hfl : -(27 / 5 : ℝ) ≤ plateauPotentialFloor R x := by
+      unfold plateauPotentialFloor
+      linarith
+    calc -(27 / 5) * F x ^ 2 = F x ^ 2 * -(27 / 5) := by ring
+      _ ≤ F x ^ 2 * plateauPotentialFloor R x :=
+        mul_le_mul_of_nonneg_left hfl (sq_nonneg _)
+
+/-- Every relevant shift of aperture `r` lies in `Finset.Icc 0 ⌊e^{2r}⌋₊`, so the sum of
+`vonMangoldtAtom` over `relevantShifts r` is bounded by `aperturePrimeSum r ≤ 34 e^r`. -/
+theorem sum_relevantShifts_vonMangoldtAtom_le_aperturePrimeSum (r : ℝ) :
+    (∑ n ∈ relevantShifts r, vonMangoldtAtom n) ≤
+      GaloisForLFunctions.SquareRootThreshold.aperturePrimeSum r := by
+  unfold GaloisForLFunctions.SquareRootThreshold.aperturePrimeSum
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun k _ _ => vonMangoldtAtom_nonneg k)
+  intro n hn
+  rw [mem_relevantShifts] at hn
+  rw [Finset.mem_Icc]
+  refine ⟨Nat.zero_le n, ?_⟩
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+  have hle : (n : ℝ) ≤ Real.exp (2 * r) := by
+    rw [← Real.exp_log hn0]
+    exact Real.exp_le_exp.mpr hn.2.le
+  exact Nat.le_floor hle
+
+theorem sum_relevantShifts_vonMangoldtAtom_le_thirty_four_mul_exp (r : ℝ) :
+    (∑ n ∈ relevantShifts r, vonMangoldtAtom n) ≤ 34 * Real.exp r :=
+  (sum_relevantShifts_vonMangoldtAtom_le_aperturePrimeSum r).trans
+    (GaloisForLFunctions.SquareRootThreshold.aperturePrimeSum_le_thirty_four_mul_exp r)
+
+/-- **All-aperture mass bound on `reflectedPrimePolarCost`.** For every aperture `r > 0` and every
+real odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]`,
+`reflectedPrimePolarCost F r ≤ (2 Σ_{n ∈ relevantShifts r} Λ(n)/√n + 8 sinh r) ∫ F²`. -/
+theorem reflectedPrimePolarCost_le_primeSum_add_sinh_mul_sq {F : ℝ → ℝ} {r : ℝ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r ≤
+      (2 * (∑ n ∈ relevantShifts r, vonMangoldtAtom n) + 8 * Real.sinh r) * ∫ x, F x ^ 2 := by
+  have hprime : (∑ n ∈ relevantShifts r, oddStripCost F r n) -
+      (∑ n ∈ relevantShifts r, evenStripGain F r n) ≤
+      2 * (∑ n ∈ relevantShifts r, vonMangoldtAtom n) * ∫ x, F x ^ 2 := by
+    rw [sum_oddStripCost_sub_evenStripGain hF hodd hr.le hsupp, Finset.mul_sum, Finset.sum_mul]
+    refine Finset.sum_le_sum fun n _ => ?_
+    have hA := (le_abs_self (autoCorr F (Real.log n))).trans
+      (abs_autoCorr_le_integral_sq hF hFc (Real.log n))
+    exact mul_le_mul_of_nonneg_left hA (mul_nonneg (by norm_num) (vonMangoldtAtom_nonneg n))
+  have hpole := poleCharge_le_eight_mul_sinh_mul_sq hF hFc hodd hr hsupp
+  unfold reflectedPrimePolarCost
+  linarith
+
+/-- **Unconditional `72 e^r` bound on `reflectedPrimePolarCost` across all apertures.** For every
+`r > 0` and every real odd `F ∈ C⁰_c(ℝ)` supported in `[−r, r]`,
+`reflectedPrimePolarCost F r ≤ 72 * e^r * ∫ F²`. -/
+theorem reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq {F : ℝ → ℝ} {r : ℝ}
+    (hF : Continuous F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    reflectedPrimePolarCost F r ≤ 72 * Real.exp r * ∫ x, F x ^ 2 := by
+  have h1 := reflectedPrimePolarCost_le_primeSum_add_sinh_mul_sq hF hFc hodd hr hsupp
+  have h2 := sum_relevantShifts_vonMangoldtAtom_le_thirty_four_mul_exp r
+  have hsh : 8 * Real.sinh r ≤ 4 * Real.exp r := by
+    rw [Real.sinh_eq]
+    have := Real.exp_pos (-r)
+    linarith
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  exact h1.trans (mul_le_mul_of_nonneg_right (by linarith) hI0)
+
+/-- **Unconditional `72 e^r` bound on the Chebyshev-defect integral `C_F` across all apertures.**
+For every `r > 0` and every real odd `F ∈ C¹_c(ℝ)` supported in `[−r, r]`, the horizon-localized
+Chebyshev-defect integral on `(0, 2r]` is at most `72 * e^r * ∫ F²`. -/
+theorem chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq {F : ℝ → ℝ} {r : ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
+    (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+        (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+      72 * Real.exp r * ∫ x, F x ^ 2 := by
+  rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc hF hFc hodd hr hsupp]
+  exact reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq hF.continuous hFc hodd hr hsupp
+
+/-- **Sharp PNT `(8 + ε) e^r + C` bound on `reflectedPrimePolarCost` across all apertures.**
+For every `ε > 0` there exists `C ≥ 0` such that for every `r > 0` and every real odd `F ∈ C⁰_c(ℝ)`
+supported in `[−r, r]`, `reflectedPrimePolarCost F r ≤ ((8 + ε) * e^r + C) * ∫ F²`. -/
+theorem exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → Continuous F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+      reflectedPrimePolarCost F r ≤ ((8 + ε) * Real.exp r + C) * ∫ x, F x ^ 2 := by
+  obtain ⟨C₀, hC₀0, hC₀⟩ :=
+    GaloisForLFunctions.SquareRootThreshold.exists_aperturePrimeSum_le_two_add_eps_mul_exp
+      (half_pos hε)
+  refine ⟨2 * C₀, by positivity, fun r F hr hF hFc hodd hsupp => ?_⟩
+  have h1 := reflectedPrimePolarCost_le_primeSum_add_sinh_mul_sq hF hFc hodd hr hsupp
+  have h2 := (sum_relevantShifts_vonMangoldtAtom_le_aperturePrimeSum r).trans (hC₀ r)
+  have hsh : 8 * Real.sinh r ≤ 4 * Real.exp r := by
+    rw [Real.sinh_eq]
+    have := Real.exp_pos (-r)
+    linarith
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  exact h1.trans (mul_le_mul_of_nonneg_right (by linarith) hI0)
+
+/-- **Unconditional all-aperture `GradedIncidenceAllocation` at rate `σ = 1/2`.** For every
+`0 < r < R` and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, the reflected prime strip costs
+and the pole charge are paid by `surplusPool + crossingPotentialTerm + evenStripGain + gaugeRemainder`
+up to `78 * e^r * ∫ F²`. -/
+theorem gradedIncidenceAllocation_half :
+    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation (1 / 2) 78 := by
+  intro r R F hr hrR hF hFc hodd hsupp
+  have hP0 : ∀ y, 0 ≤ aperturePlateau r R y :=
+    fun y => plateauGauge_nonneg R (R - r) y
+  have hpool := surplusPool_nonneg (F := F) hP0
+  have hcross := crossingPotentialTerm_nonneg (F := F) hP0
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq hF hFc hsupp hrR
+  have hcost := reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq hF.continuous hFc hodd hr hsupp
+  have hexp1 : 1 ≤ Real.exp r := Real.one_le_exp hr.le
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hrem' : -(6 * Real.exp r * ∫ x, F x ^ 2) ≤ gaugeRemainder (aperturePlateau r R) F := by
+    have h6 : 27 / 5 * ∫ x, F x ^ 2 ≤ 6 * Real.exp r * ∫ x, F x ^ 2 :=
+      mul_le_mul_of_nonneg_right (by linarith) hI0
+    linarith
+  have hrate : 2 * (1 / 2 : ℝ) * r = r := by ring
+  rw [hrate]
+  unfold reflectedPrimePolarCost at hcost
+  linarith
+
+/-- **Unconditional `GradedIncidenceAllocation` for every rate `σ ≥ 1/2`.** -/
+theorem gradedIncidenceAllocation_of_half_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) :
+    GaloisForLFunctions.SquareRootThreshold.GradedIncidenceAllocation σ 78 := by
+  intro r R F hr hrR hF hFc hodd hsupp
+  have hhalf := gradedIncidenceAllocation_half r R F hr hrR hF hFc hodd hsupp
+  have hexp : Real.exp (2 * (1 / 2) * r) ≤ Real.exp (2 * σ * r) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have hI0 : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hm := mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left hexp (by norm_num : (0 : ℝ) ≤ 78)) hI0
+  linarith
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 

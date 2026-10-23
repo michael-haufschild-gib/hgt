@@ -100,7 +100,6 @@ theorem xiCanonicalProduct_fiber_tprod (ρ : XiDivisorSupport) (z : ℂ) :
     _ = _ := by
       rw [tprod_fintype, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
-set_option maxHeartbeats 800000 in
 theorem xiCanonicalProduct_factorization_at_support (ρ : XiDivisorSupport) (z : ℂ) :
     xiCanonicalProduct z =
       weierstrassE1 (z / xiSpectralPointSupport ρ) ^
@@ -126,30 +125,15 @@ theorem xiCanonicalProduct_factorization_at_support (ρ : XiDivisorSupport) (z :
     ext q
     simp only [g]
     ring
+  -- split the product along the fibre `{q | q.1 = ρ}` and its complement
   have hsplit :
       (∏' q : {q : XiZeroCopy // q.1 = ρ},
           weierstrassE1 (z / xiSpectralPoint q.1)) *
         (∏' q : XiZeroCopyAway ρ,
           weierstrassE1 (z / xiSpectralPoint q.1)) =
-        (∏' q : XiZeroCopy, weierstrassE1 (z / xiSpectralPoint q)) := by
-    classical
-    calc
-      _ = ∏' x : ({q : XiZeroCopy // q.1 = ρ} ⊕ XiZeroCopyAway ρ),
-          Sum.elim
-            (fun q => weierstrassE1 (z / xiSpectralPoint q.1))
-            (fun q => weierstrassE1 (z / xiSpectralPoint q.1)) x :=
-        (Multipliable.tprod_sum hs hsc).symm
-      _ = _ := by
-        let e := Equiv.sumCompl (fun q : XiZeroCopy => q.1 = ρ)
-        have heq :
-            (fun x => weierstrassE1 (z / xiSpectralPoint (e x))) =
-              Sum.elim
-                (fun q => weierstrassE1 (z / xiSpectralPoint q.1))
-                (fun q => weierstrassE1 (z / xiSpectralPoint q.1)) := by
-          funext x
-          rcases x with q | q <;> rfl
-        rw [← heq]
-        exact e.tprod_eq (fun q => weierstrassE1 (z / xiSpectralPoint q))
+        (∏' q : XiZeroCopy, weierstrassE1 (z / xiSpectralPoint q)) :=
+    Multipliable.tprod_mul_tprod_compl (s := {q : XiZeroCopy | q.1 = ρ})
+      (f := fun q : XiZeroCopy => weierstrassE1 (z / xiSpectralPoint q)) hs hsc
   rw [xiCanonicalProduct, xiCanonicalProductAway, canonicalProductE1Indexed]
   rw [← hsplit, xiCanonicalProduct_fiber_tprod]
   rfl

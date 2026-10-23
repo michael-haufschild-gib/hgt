@@ -131,6 +131,19 @@ survivor).
   (`2/3` is the exact `λ = 1` pair-correlation threshold `2 − (1/λ + λ/3)`, and every finite
   pair-correlation bound `F ≤ B` beyond `1` yields `2/3 + 1/(3(3B − 2)) > 2/3`).
 
+- `BreakingTheCoalescenceBlindSpotAndThreeQuarters`: `onSlack_of_posSemidef_eq`,
+  `rank_trace_add_onSlack_of_posSemidef_eq_rank`, `onSlack_doubleZeroBlockData_eq` (exact on-line
+  Parseval identity `onSlack(P, Q, c) = ‖P‖_F² − c tr P + (c²/4) rank P` for `Q ⪰ 0`, recovering
+  `rank P` identically at `c = 2` and raising `doubleZeroBlockData s₁ d₂` from `s₁` to `s₁ + d₂ = (5/6)N > (3/4)N`),
+  `negPart_credit_pos_iff_not_posSemidef` (`0 < 2 tr(Q₋) ↔ ¬ Q.PosSemidef`),
+  `jointRankTrace23_at_four_thirds`, `three_quarters_of_broken_blind_spot_at_four_thirds`,
+  `zeta_three_quarters_of_spectralSlack` (joint `(c = 2, c = 3)` functional `(14 tr Â − 3‖Â‖_F² − 7N)/4`
+  equals `(3/4)N` at `κ = 4/3`, certifying `≥ 75%` critical-line zeros whenever `p ≤ d₂` or
+  `zeroSideSlack ≥ (3/4 − H(λ))N(T, 2T)`), `kappa_five_fourths_iff_three_quarters`,
+  `zeta_three_quarters_from_prime_surplus_and_double_window` (`κ ≤ 5/4 ⟺ 2 − κ ≥ 3/4`, unconditional
+  bandwidth-`4/3` diagonal constant `43/36 = 5/4 − 1/18` and prime–pole cross bound `O(T^{5/6} log² T)`,
+  and double-window minimum-aperture prime-pair bound `norm_doubleWindow_primeFreq_offDiag_le`).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

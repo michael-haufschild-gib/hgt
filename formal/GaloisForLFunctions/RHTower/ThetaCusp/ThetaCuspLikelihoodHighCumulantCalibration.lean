@@ -473,7 +473,6 @@ theorem two_mul_thetaCuspLikelihoodFourthCumulant_lt_fifthCumulant_coordinate {x
   norm_num at hk5
   nlinarith
 
-set_option maxHeartbeats 800000 in
 theorem three_fourths_mul_thetaCuspLikelihoodNormalizedMoment_six_lt_sixthCumulant_coordinate {x : ℝ} (hx : 0 ≤ x) :
     (3 / 4 : ℝ) * thetaCuspLikelihoodNormalizedMoment
         (thetaCuspLikelihoodCoordinate x) 6 <
@@ -520,43 +519,43 @@ theorem three_fourths_mul_thetaCuspLikelihoodNormalizedMoment_six_lt_sixthCumula
   have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
-  have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
+  have hp : 0 < p := pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22) he4.le
   have hfirst : 6 * m * e5 < e6 / 30 := by
     have hprod : 0 < (1 - 60 * m) * e5 := by positivity
-    nlinarith
+    linarith
   have hsecond : 15 * e2 * e4 < e6 / 12 := by
     have hprod : 0 < (1 - 180 * p) * e6 := by positivity
-    nlinarith
+    linarith
   have hthird : 10 * e3 ^ (2 : ℕ) < e6 / 18 := by
     have hprod : 0 < (1 - 180 * p) * e6 := by positivity
-    nlinarith
-  have hmOne : m < 1 := by nlinarith
+    linarith
+  have hmOne : m < 1 := by linarith
   have hmSqSmall : 3600 * m ^ (2 : ℕ) < 1 := by
-    have hminus : 0 < 1 - 60 * m := by nlinarith
+    have hminus : 0 < 1 - 60 * m := by linarith
     have hplus : 0 < 1 + 60 * m := by positivity
     have hprod := mul_pos hminus hplus
-    nlinarith
+    linarith
   have hmCubeSq : m ^ (3 : ℕ) < m ^ (2 : ℕ) := by
     calc
       m ^ (3 : ℕ) = m ^ (2 : ℕ) * m := by ring
       _ < m ^ (2 : ℕ) * 1 := mul_lt_mul_of_pos_left hmOne (pow_pos hm 2)
       _ = m ^ (2 : ℕ) := by ring
-  have he36 : 27 * e3 ≤ e6 := by nlinarith
+  have he36 : 27 * e3 ≤ e6 := by linarith
   have hfourth : 120 * m ^ (3 : ℕ) * e3 < e6 / 810 := by
-    have hcoef : 120 * m ^ (3 : ℕ) < 1 / 30 := by nlinarith
+    have hcoef : 120 * m ^ (3 : ℕ) < 1 / 30 := by linarith
     have hmul := mul_lt_mul_of_pos_right hcoef he3
-    nlinarith
-  have hpOne : p < 1 := by nlinarith
+    linarith
+  have hpOne : p < 1 := by linarith
   have he2sq_lt_e4 : e2 ^ (2 : ℕ) < e4 := by
     have hmul := mul_lt_mul_of_pos_right hpOne he4
-    nlinarith
-  have he46 : 9 * e4 ≤ e6 := by nlinarith
+    linarith
+  have he46 : 9 * e4 ≤ e6 := by linarith
   have hfifth : 270 * m ^ (2 : ℕ) * e2 ^ (2 : ℕ) < e6 / 120 := by
-    have hcoef : 270 * m ^ (2 : ℕ) < 3 / 40 := by nlinarith
+    have hcoef : 270 * m ^ (2 : ℕ) < 3 / 40 := by linarith
     have hleft := mul_lt_mul_of_pos_left he2sq_lt_e4
       (show 0 < 270 * m ^ (2 : ℕ) by positivity)
     have hright := mul_lt_mul_of_pos_right hcoef he4
-    nlinarith
+    linarith
   have hmFourOne : m ^ (4 : ℕ) < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
   have hmFive : m ^ (5 : ℕ) < m := by
     calc
@@ -565,21 +564,21 @@ theorem three_fourths_mul_thetaCuspLikelihoodNormalizedMoment_six_lt_sixthCumula
       _ = m := by ring
   have hmSixSq : m ^ (6 : ℕ) < m ^ (2 : ℕ) := by
     have hmul := mul_lt_mul_of_pos_left hmFive hm
-    nlinarith
-  have he16 : 243 * m ≤ e6 := by nlinarith
+    linarith
+  have he16 : 243 * m ≤ e6 := by linarith
   have hsixth : 120 * m ^ (6 : ℕ) < (2 / 243 : ℝ) * e6 := by
     have hcoef : 120 * m ^ (6 : ℕ) < 2 * m := by
       have hsmallMul := mul_lt_mul_of_pos_left hmSmall
         (show 0 < 2 * m by positivity)
-      nlinarith
-    nlinarith
+      linarith
+    linarith
   have hpos1 : 0 ≤ 30 * m ^ (2 : ℕ) * e4 := by positivity
   have hpos2 : 0 ≤ 120 * m * e2 * e3 := by positivity
   have hpos3 : 0 ≤ 30 * e2 ^ (3 : ℕ) := by positivity
   have hpos4 : 0 ≤ 360 * m ^ (4 : ℕ) * e2 := by positivity
   dsimp only [B, p, m, e2, e3, e4, e5, e6] at *
   unfold thetaCuspLikelihoodSixthCumulant
-  nlinarith
+  linarith
 
 theorem two_mul_thetaCuspLikelihoodFifthCumulant_lt_sixthCumulant_coordinate {x : ℝ} (hx : 0 ≤ x) :
     2 * thetaCuspLikelihoodFifthCumulant (thetaCuspLikelihoodCoordinate x) <

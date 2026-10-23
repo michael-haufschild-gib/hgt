@@ -47,9 +47,18 @@ continuation. Their sharp boundaries are foundational: sign-blind payment stops 
 damping; signed horizon-limit commutation starts at half damping; below it, cancellation can
 pay an infinite source while its truncated rows remain unbounded.
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical
+arithmetic form and on the critical cancellation of the actual Möbius and prime source that the
+sign needs. THIM contributes the receiver-side half of that problem: an exact account of what a
+bound on the actual Möbius receiver below half damping must read, and of every cheaper reading that
+provably cannot supply it.
+
 Read the receivers in §1.2 before the many finite identities. Sections 2 and 3.1–3.8 explain
 what the observer measures; §§3.9–3.11 explain recovery and its price; §§3.16–3.17 explain
-why signs and the analytic continuation of the actual source decide the receiver.
+why signs and the analytic continuation of the actual source decide the receiver; §§3.18–3.19
+show what the receiver reads in multiplicative sign patterns and on probes of $\zeta$; §3.20 lists
+what is proved for the actual source. §4 collects the pillar theorems, §§6–7 the questions and open
+problems.
 
 ---
 
@@ -106,7 +115,7 @@ bulk.
 
 Each receiver demands a horizon-uniform estimate on a literal arithmetic
 source. The theory supplies the finite identities, the exact classifications,
-and the sharp obstructions on the way; it does not yet supply any of the three
+and the sharp obstructions on the way; it does not supply any of the three
 estimates.
 
 ### 1.3 Why finite observers
@@ -1458,7 +1467,21 @@ nonpositivity holds for every $\{-1,0,1\}$-valued sequence, $\mu^2$ and $1$ incl
 (`firstOctaveDefectFunctional_nonpos_of_sq_eq_abs`), a sign-blind fact that cannot bound a signed
 receiver.
 
-**Oscillating-probe source estimates.** Uniform prefix bounds
+**Oscillating-probe source estimates.** Every oscillating prefix decomposes into the fractional-part
+sawtooth sum $S_{\varepsilon,t}(n)=\sum_{d\le n}c_{\varepsilon,t}(d)(\lfloor n/d\rfloor-n/d)$ and the
+universal tail drift $T_{\varepsilon,t}(n)=-n\sum_{d>n}c_{\varepsilon,t}(d)/d$
+(`weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail`). At $t=0$ both pieces are
+nonpositively signed, so the dyadic tail block $d\in(n,2n]$ gives
+$A_{\varepsilon,0}(n)\le-2^{-(1+\varepsilon)}n^{1-\varepsilon}$ and a pure source-estimate harmonic proof of
+$\neg\operatorname{ReceiverBounded}(c_{\varepsilon,0})$ for $0<\varepsilon\le1/2$ without invoking
+$\zeta(1-\varepsilon)\ne0$ (`not_receiverBounded_oscillatingSmoothPower_zero_from_source`). For general
+$t\in\mathbb R$, $T_{\varepsilon,t}(n)=\Re(n^\rho/(\rho-1))+O(n^{-\varepsilon})$ has unconditionally
+unbounded pronic norm for all $0<\varepsilon\le1/2$ and $t\in\mathbb R$ regardless of $\zeta(\rho)$
+(`not_bdd_pronicNorm_oscillatingTailDrift`), while
+$S_{\varepsilon,t}(n)=\Re((\zeta(\rho)/\rho-1/(\rho-1))n^\rho)+O((\sqrt n)^{1-\varepsilon})$
+(`abs_oscillatingSawtoothPrefix_sub_le`), so $c_{\varepsilon,t}$ is paid iff $S_{\varepsilon,t}$ cancels
+$T_{\varepsilon,t}$ in exact anti-phase (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_sawtooth_add_tail`,
+`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`). Uniform prefix bounds
 $\lvert A_{\varepsilon,t}(n)\rvert\le K(\sqrt n)^{1-\varepsilon}$ and subpower energy
 $E_{\varepsilon,t}(T)=o(T^{1-2\varepsilon})$ are each equivalent to admission across the polynomial gap
 $T^{1-2\varepsilon}$; explicit lower bounds $E\ge\lambda T^{1-2\varepsilon}$ hold on every zero-free box and
@@ -1607,8 +1630,8 @@ inside an equivalence.
 | A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
 | Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
 | The density of flipped primes decides the receiver of a sign pattern | Only on symmetric residue patterns (quarter law). Oscillating prime patterns with the same prime signs and the same prime mean can be paid and unpaid; the receiver reads the size of the Dirichlet series beside the line at every height. |
-| Below half damping a flipped density near /2$ is enough | A paid weight needs logarithmic prime mean in $\{0,-1\}$ exactly, at every height (integer-order obstruction); subgroup flips of index \ge3$ are unpaid at every $arepsilon<1/2$. |
-| Payment of a probe is an estimate for Möbius | Probe theorems evaluate weights whose series are known in terms of $\zeta$; the Möbius series /\zeta(s+arepsilon)$ is the unknown. |
+| Below half damping a flipped density near $1/2$ is enough | A paid weight needs logarithmic prime mean in $\{0,-1\}$ exactly, at every height (integer-order obstruction); subgroup flips of index $k\ge3$ are unpaid at every $\varepsilon<1/2$. |
+| Payment of a probe is an estimate for Möbius | Probe theorems evaluate weights whose series are known in terms of $\zeta$; the Möbius series $1/\zeta(s+\varepsilon)$ is the unknown. |
 | Real-axis abscissa blowup or Lipschitz tests detect unpaid oscillating probes $d^{-\varepsilon}\cos(t\log d)$ ($t\ne0$) | For $t\ne0$, $\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$ converges to $\operatorname{Re}\zeta(1-it)$ and is Lipschitz at $\sigma=1-\varepsilon$ whether $c_{\varepsilon,t}$ is paid or unpaid; the pole sits at $1-\varepsilon\pm it$. |
 
 **Lean conventions.** Everything lives in
@@ -1631,93 +1654,162 @@ formulations `[New formulation]`; no heartbeat settings are raised.
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
 
-**The complete signed trans-horizon energy.** The PM receiver needs
-$\sup_T\sum_{n\le T}I_\varepsilon(n)^2/(n(n+1))<\infty$ at arbitrarily small fixed
-$\varepsilon$. The receiver row is now understood on the period torus: it observes
-the complete damped divisor function, its renormalized defect is eventually
-nonpositive at every prefix, its period variance is a partial Parseval sum
-bounded by $V(\varepsilon)$ uniformly in the horizon, and its primitive energy
-diverges for $\varepsilon\le1/2$, so complete-period averages cannot supply the
-bound. What is missing is the pronic-weighted interior energy below the first
-period: cancellation in the coefficient-weighted energy with means, endpoints,
-mixed covariance and growing cutoffs retained, at fixed $\varepsilon\in(0,1/2)$,
-where the small arguments carry the weight $1/(n(n+1))$ and the Ramanujan
-truncation error $Q^{-\varepsilon}\tau(n)$ is not small.
+### 6.1 Questions
 
-**Small horizons.** The long-window law is explicit and quadratic at every
-horizon $N\ge2$ (threshold $10N^2+8N$ for Möbius), but the polynomial-window
-sign is proved only eventually in the horizon, through prime counts in octaves.
-Whether the renormalized defect is nonpositive at every prefix for every
-horizon $N\ge2$, and the exact constant of the window observability law (its
-order $N^2$ is exact), are open.
+1. **What can a divisor sieve of horizon $N$ see far beyond its horizon, and where does it lose
+   control?** Exactly located: the unit envelope to ratio five, the global defect sign at large
+   horizons, deterministic successor dynamics to horizon two, schedule conditioning
+   $(4/\pi^2)(\log_2N)^2$.
+2. **Which observations retain the signs the receiver needs?** Above half damping none are needed;
+   at and below half damping no sign-blind datum suffices, cubic moments read odd-modulus signs
+   but not the even flip, first pronic moments read prime powers, the logarithmic hierarchy
+   separates every pair — and separation bounds nothing.
+3. **What does the receiver read in a weight?** The analytic continuation and the size of the
+   weight's own Dirichlet series beside the line $\Re s=1-\varepsilon$: poles on or right of
+   $\Re s=1/2$ are fatal, zeros never are; at half damping a boundary energy; on probes the zero
+   divisor of $\zeta$ with multiplicities.
+4. **Which arithmetic class pays the receiver below half damping?** Critical Wiener perturbations
+   at their pole hyperplane, $\chi$-pretentious and $\mu$-pretentious weights; nonnegative
+   $1$-pretentious weights never; multiplicative sign patterns only at the integer prime means
+   $0$ and $-1$.
+5. **The question it exists for:** one unconditional bound on the actual Möbius receiver at one fixed
+   $\varepsilon<1/2$, read from signed data, and cofinally as $\varepsilon\downarrow0$.
 
-**Buchstab calculus.** The band averages $A(1),\dots,A(4)$ are negative and the
-profile values $P(1),\dots,P(4)$ are known; the sign of $A(B)$ for every band,
-the monotonicity and concavity of the profile, and the classification of the
-squarefree cores with negative slope in each band are open. The damped
-crossover is located to second order with an additive window $\pm\varepsilon$;
-the sign of the slope for prime horizons inside that window,
-$\lvert\log p-\Lambda(\varepsilon)\rvert<\varepsilon$, is open, as is every term of
-$V(\varepsilon)$ and $R(\varepsilon)$ beyond the second order.
+### 6.2 Tools
 
-**The odd sector.** After exact collar cancellation the remaining obligation is
-an independently quantified bound on the low-prime diagonal potential, or an
-actual-source nodal estimate paying the primitive ground-projection defect. The
-cosh/sinh ratio cannot be made $\le1$ on compact profiles; the minimal local
-correction must be paid by jump energy, or the source class restricted so that
-the confinement law suffices. The coordinates are now canonical: the polar risk is
-rank one, read by the single shift-independent moment $\langle q,\tanh_L\rangle$ with
-$\mathrm{sourceEnergy}=\mathrm{weilForm}+2\langle q,\tanh_L\rangle^2$ exactly, so the question is
-nonnegativity of $\mathrm{sourceEnergy}$ on the kernel of one functional, and the shift can no
-longer be tuned. Two unconditional lobe inequalities are available — the cross-lobe Rayleigh
-excess at positive eigenvalue and the chiral drift bound on both lobes — and neither closes the
-four-term excess. What a new mechanism must add is a *cross-lobe* estimate: both tightenings are
-lobe-local, and the obstruction is the pairing between the lobes.
+Built and reusable:
 
-**Fermi–Nyman.** Origin and bulk tightness on one explicit approximation
-sequence; the observation theory of dyadic schedules is complete for one gap,
-and the conditioning of schedules with two or more gaps, which are not
-injective, is a least-squares question: which rows are recovered and at what
-price. Non-dyadic schedules (levels of an odd prime) and weighted traces have no
-classification yet.
+- *Complementary-divisor normal forms* and the four-channel tail formula above the horizon.
+- *Dirichlet polarization with boundary squares retained*, radical-state transport and integer
+  jump energy.
+- *Ramanujan diagonalization* of period laws, white-noise and singular-series correlations.
+- *Buchstab horizon calculus*: band steps, class averages and the energy profile.
+- *Fermi trace inversion* with exact schedule conditioning.
+- *The receiver calculus*: dyadic masses for positive weights, the critical Wiener algebra, the
+  pole law, the boundary-energy identity, the general pole law, the partial-pole-sum criterion.
+- *Parity pairs* as the sharp test of sign-blindness, and the logarithmic moment hierarchy as the
+  complete separating invariant.
+- *Euler-product phase diagrams* for multiplicative weights, through $\zeta$ and Dirichlet
+  $L$-functions beside the line, with no zero-free region for $L$ required.
+- *Probe spectroscopy*: oscillating log-power probes as a calibrated instrument for the zero
+  divisor.
 
-**The parity pair.** Below half damping the receiver of a weight is not a function of its
-sign-blind data, and every known pair is decided by a pole at $s=1-\varepsilon$. The equivalence
-half of the lane is settled: the damping threshold of the Möbius receiver is the zero width, so RH
-is admission along a positive damping sequence tending to $0$. A single admitted damping is a
-weaker result; the zero-width dictionary uses a boundary at which admitted dampings accumulate. What remains is one unconditional bound at one fixed $\varepsilon<\tfrac12$, and
-by the closure of the blind class it must be read from signed data. The smooth-power classification holds for all critical Wiener kernels at strict
-sub-half damping, and necessity extends to kernels summable only at the abscissa (§3.17).
-At half damping the hyperplane law has the sharp `√log` absolute weight (§3.17); smaller
-logarithmic power weights admit a pole-free lacunary counterexample. Open directions include
-criteria for individual kernels beyond these absolute classes and quantitative estimates from
-signed logarithmic data that control the complete boundary energy.
-Prime-density heuristics must respect the analytic integer-order obstruction below half
-damping and the full vertical-line energy at half damping. The signed horizon-limit
-question is settled for the damped classes: bounded rows pay the limit, but a paid limit
-need not have uniformly paid rows below one half. The arithmetic task is to identify which
-additional structure of the Möbius row prevents that dipole obstruction.
+To be built:
 
-### Research topics toward the shared target
-
-1. **From separation to a bound.** The parity pairs exist at every damping `ε ≤ 1/2` and the
-   observables that separate them are classified: first-order data at prime powers, the logarithmic
-   moment hierarchy, the pole value `K(1 − ε)` and its Taylor coefficients of §3.16. Find an
-   estimate that turns one of them into a bound on the actual Möbius receiver at one fixed
-   `ε < 1/2`, with its exact loss; this is the Type-II input the shared target needs.
-2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,
-   mixed covariance and growing cutoffs retained.
-3. **The odd-sector low-prime diagonal potential**, matched term by term with the unpaid axis
-   intervals and the nine moduli of `ArithmeticIncidencePositivity`: one obstruction read from the
-   sieve side and from the pair side.
-4. **Selectivity of the transfer laws.** Which conservation and dissipation laws hold for a
-   Beurling system or the shifted pair, and which are specific to `ℕ`.
+- a signed estimate on the actual Möbius receiver at one fixed $\varepsilon<1/2$, with its exact loss;
+- a cross-lobe estimate for the odd sector;
+- least-squares conditioning of multi-gap and non-dyadic Fermi schedules;
+- the structure of the Möbius row that excludes the dipole obstruction below half damping.
 
 ---
 
-## 6. Working in the theory
+## 7. Open problems
+
+### 7.1 The complete signed trans-horizon energy
+
+The PM receiver needs $\sup_T\sum_{n\le T}I_\varepsilon(n)^2/(n(n+1))<\infty$ at arbitrarily small
+fixed $\varepsilon$. The receiver row is understood on the period torus: it observes the complete
+damped divisor function, its renormalized defect is eventually nonpositive at every prefix, its
+period variance is a partial Parseval sum bounded by $V(\varepsilon)$ uniformly in the horizon, and its
+primitive energy diverges for $\varepsilon\le1/2$, so complete-period averages cannot supply the bound.
+Missing is the pronic-weighted interior energy below the first period: cancellation in the
+coefficient-weighted energy with means, endpoints, mixed covariance and growing cutoffs retained,
+at fixed $\varepsilon\in(0,1/2)$, where the small arguments carry the weight $1/(n(n+1))$ and the
+Ramanujan truncation error $Q^{-\varepsilon}\tau(n)$ is not small. The actual-source estimates of
+§3.20 admit only a horizon-dependent band shrinking to $\varepsilon=1/2$.
+
+### 7.2 Small horizons
+
+The long-window law is explicit and quadratic at every horizon $N\ge2$ (threshold $10N^2+8N$ for
+Möbius), but the polynomial-window sign is proved only eventually in the horizon, through prime
+counts in octaves. Whether the renormalized defect is nonpositive at every prefix for every
+horizon $N\ge2$, and the exact constant of the window observability law (its order $N^2$ is
+exact), are open.
+
+### 7.3 Buchstab calculus
+
+The band averages $A(1),\dots,A(4)$ are negative, the profile values $P(1),\dots,P(4)$ are known,
+and the cofinal profile $P(B)$ is monotone (`monotone_cofinalMobiusQuadraticProfile`, in
+Bézout–Valuation Incidence). Open: the sign of $A(B)$ for every band, concavity of the profile, and
+the classification of the squarefree cores with negative slope in each band. The damped crossover
+is located to second order with an additive window $\pm\varepsilon$; the sign of the slope for prime
+horizons inside that window, $\lvert\log p-\Lambda(\varepsilon)\rvert<\varepsilon$, is open, as is every
+term of $V(\varepsilon)$ and $R(\varepsilon)$ beyond the second order.
+
+### 7.4 The odd sector
+
+After exact collar cancellation the remaining obligation is an independently quantified bound on
+the low-prime diagonal potential, or an actual-source nodal estimate paying the primitive
+ground-projection defect. The cosh/sinh ratio cannot be made $\le1$ on compact profiles; the minimal
+local correction must be paid by jump energy, or the source class restricted so that the
+confinement law suffices. The coordinates are canonical: the polar risk is rank one, read by the
+single shift-independent moment $\langle q,\tanh_L\rangle$ with
+$\mathrm{sourceEnergy}=\mathrm{weilForm}+2\langle q,\tanh_L\rangle^2$ exactly, so the question is
+nonnegativity of $\mathrm{sourceEnergy}$ on the kernel of one functional, and the shift cannot be
+tuned. Two unconditional lobe inequalities are available — the cross-lobe Rayleigh excess at positive
+eigenvalue and the chiral drift bound on both lobes — and neither closes the four-term excess. A new
+mechanism must add a *cross-lobe* estimate: both tightenings are lobe-local, and the obstruction is
+the pairing between the lobes.
+
+### 7.5 Fermi–Nyman
+
+Origin and bulk tightness on one explicit approximation sequence. The observation theory of dyadic
+schedules is complete for one gap; the conditioning of schedules with two or more gaps, which are not
+injective, is a least-squares question — which rows are recovered and at what price. Non-dyadic
+schedules (levels of an odd prime) and weighted traces have no classification.
+
+### 7.6 Signs below half damping
+
+Below half damping the receiver of a weight is not a function of its sign-blind data, every known
+pair is decided by a pole at $s=1-\varepsilon$, and the damping threshold of the Möbius receiver is the
+zero width, so RH is admission along a positive damping sequence tending to $0$. A single admitted
+damping is weaker: the zero-width dictionary uses a boundary at which admitted dampings accumulate.
+What is missing is one unconditional bound at one fixed $\varepsilon<\tfrac12$, read from signed data by
+the closure of the blind class. The smooth-power classification holds for all critical Wiener
+kernels at strict sub-half damping, necessity extends to kernels summable only at the abscissa, and
+at half damping the partial-pole-sum energy is the exact criterion (§3.17). Open: criteria for
+individual kernels beyond these classes, and quantitative estimates from signed logarithmic data
+that control the complete boundary energy.
+
+### 7.7 Beyond the solved phase diagrams
+
+The constant-sign plane, symmetric residue flips, subgroup flips and single-frequency oscillating
+patterns are decided. For non-symmetric residue flips with $\rho>1/4$ the nonprincipal coefficients
+are complex; the route is the bound $-\Re(s_\chi\sum_p\chi(p)p^{-w})\le\lvert s_\chi\rvert(\lvert\ell_\chi(w)\rvert+S)$
+by the Euler logarithm $\ell_\chi$ of $L(\cdot,\chi)$, which grows like $\log\log\lvert\Im w\rvert$
+beside the line and leaves the line-energy argument intact. Open beyond residue patterns: patterns
+mixing several frequencies or amplitudes varying with the prime, and a classification of general
+multiplicative spectra. The phase diagrams fix what such a classification
+must read: the Dirichlet series beside the line at every height, never only the flipped density or
+the real-axis prime mean.
+
+### 7.8 The dipole obstruction for the Möbius row
+
+The signed horizon-limit question is settled for the damped classes: bounded rows pay the limit, a
+paid limit need not have uniformly paid rows below one half, and on the convolution class the
+obstruction never occurs. Open: which additional structure of the Möbius row excludes the dipole
+obstruction.
+
+### 7.9 Research topics
+
+1. **From separation to a bound.** The parity pairs exist at every damping $\varepsilon\le1/2$ and the
+   observables that separate them are classified: first-order data at prime powers, the logarithmic
+   moment hierarchy, the pole value $K(1-\varepsilon)$ and its Taylor coefficients (§3.16). Find an
+   estimate that turns one of them into a bound on the actual Möbius receiver at one fixed
+   $\varepsilon<1/2$, with its exact loss; this is the Type-II input the shared target needs.
+2. **The complete signed trans-horizon energy** at fixed small damping, with means, endpoints,
+   mixed covariance and growing cutoffs retained.
+3. **The odd-sector low-prime diagonal potential**, matched term by term with the unpaid axis
+   intervals and the nine moduli of Arithmetic Incidence Positivity: one obstruction read from the
+   sieve side and from the pair side.
+4. **Selectivity of the transfer laws.** Which conservation and dissipation laws hold for a
+   Beurling system or the shifted pair, and which are specific to $\mathbb N$.
+
+---
+
+## 8. Working in the theory
 
 Fix the weight class first: arbitrary real weights, squarefree-supported
 weights, nonnegative weights, the literal Möbius weight, the damped family, or

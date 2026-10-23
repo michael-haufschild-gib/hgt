@@ -50,7 +50,6 @@ theorem denseRange_ccmComplexSmoothInteriorSource_toCCMFormVector
   simpa only [suzukiZeroMeanPrimitiveCCMFormCLM_apply,
     CCMComplexSmoothInteriorSource.toCCMFormVector_eq_primitive] using hcomp
 
-set_option maxHeartbeats 200000 in
 /-- The exact spectral floor is attained inside Suzuki's complete restricted-Weil form domain. -/
 theorem exists_suzukiWeilGroundFormVector
     (a : SuzukiPositiveAperture) :

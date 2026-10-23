@@ -35,6 +35,12 @@ Passing a blindness test is necessary for a proposed method; it is not an estima
 | [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) | Separates formal signature criteria from the arithmetic effectivity data that would force them. |
 | [Signed Arithmetic Energy Incidence](../SignedArithmeticEnergyIncidence/README.md) | Exhibits the information lost when a signed incidence kernel is replaced by an absolute majorant. |
 
+**The shared target.** The programmes in the table work on RH as the sign of one critical
+arithmetic form. SSIC is its admissibility layer: it prices a reading before a route is built, and
+states the separations a reading must perform to be admissible — past the Nyquist aperture of the
+configuration addressed, by magnitude rather than sign, and on the prime side separating `Λ` from
+each of its single-index perturbations.
+
 Start with `TheResolutionLimitOfAReading`, then the aperture and node examples. The precision and
 band-inversion laws explain how a failed sign reading can be strengthened. Finally,
 `TheRateIsACofinalInvariant` and `TheBoundedApertureRateCertifiesNothing` isolate the resource needed
@@ -417,7 +423,48 @@ suitable monotonicity replacement. It does not make arbitrary sparse lag samples
 
 ---
 
-## 4. Traps
+## 4. Foundational pillar theorems
+
+All unconditional; where RH holds only at the base datum the gate is stated as "resolving reading
+⇒ ¬RH" or with RH as a hypothesis.
+
+1. **The collapse–resolution dichotomy.** A reading that misses a verdict-changing collapse does not
+   resolve the verdict (`not_resolves_of_separating_collapse`), and a resolving reading forces failure
+   on every orbit it misses (`forall_not_of_resolves_of_invisible`,
+   `not_riemannHypothesis_of_resolves_of_invisible`).
+2. **The floor theorem.** If the invariant attains its maximum inside a shadow, the resolution limit
+   is that maximum (`resolutionLimit_eq_of_mem_shadow_of_max`); this makes every number of the field
+   exact.
+3. **The aperture certificate is blind in every unit.** A bounded-aperture positivity certificate —
+   coercive at any level, over any bounded family, composed with any monotone unit of the depth —
+   has width limit `½` and floor `0` (`resolutionLimit_width_aperturePositivity`,
+   `theFloorIsUnitIndependent`, `resolutionLimit_familyWidth_eq_half_of_constant`); only the
+   unbounded certificate has limit `0`.
+4. **The depth is the complete dilation invariant.** On lattice families the depth separates exactly
+   the dilation orbits, and with both coordinates free a single-aperture reading has limit `½`
+   (`resolutionLimit_sdDepth_scaleDepthReading`, `theDilationRequirement`).
+5. **The square-root precision law.** Past the Nyquist aperture the deficit, not the sign, is
+   informative, and excluding depth `β` at scale `L` costs precision `β²L³`
+   (`theDeficitBudgetLaw`).
+6. **Magnitudes are faithful where signs are blind.** Two consecutive aliasing band energies
+   determine the depth in closed form (`theTwoBandCertification`), the band-pair reading has exact
+   limit equal to its floor (`resolutionFloor_eq_resolutionLimit_bandPairReading`), and three bands
+   defeat the local mass (`theApertureDoublingPrescription`); the sign of the same data is blind
+   (`theSignIsBlind`, `theDichotomyOfSignAndMagnitude`).
+7. **The hiding laws.** The reach of a hiding configuration is linear in the dilution and only
+   logarithmic in the mass (`theReachLaw`, `theFreeRegimeIsSharp`).
+8. **Refutation is finite, confirmation is not.** On the node face finite membership data refute,
+   while every bounded confirmation needs infinitely many off-line zeros in its witnesses
+   (`theNodeFaceAsymmetry`, `theFloorsNeedInfinitelyManyOffLineZeros`); sparse unbounded apertures
+   suffice for the aperture face and no sampling suffices for the incidence face
+   (`theReductionDichotomy`).
+9. **The rate is a cofinal invariant.** For convex growth profiles, secant rates on any unbounded
+   aperture set equal those on all apertures (`theRateIsACofinalInvariant`), and bounded readings
+   certify no finite rate (`theRateDichotomyIsSharp`).
+
+---
+
+## 5. Traps
 
 * **A reading is not a method's conclusion, it is its input.** Floors apply to what the method
   *reads*, not to what it concludes; the identity reading has singleton shadows and limit `I(d)`, but computing or estimating
@@ -464,7 +511,42 @@ suitable monotonicity replacement. It does not make arbitrary sparse lag samples
 
 ---
 
-## 5. The frontier
+## 6. Questions the theory answers and the tools it builds
+
+### 6.1 Questions
+
+1. **Which lists of observables can decide the sign of the critical arithmetic form?** Exactly the
+   readings that move every verdict-changing collapse: unbounded aperture certificates, individual
+   prime-power membership, magnitudes past the Nyquist aperture, cofinal rates.
+2. **For a reading that cannot decide, what is the best bound it certifies?** Its resolution limit,
+   computed exactly from one witness: `½` for every bounded aperture certificate in every unit.
+3. **What must be added to a blind reading?** Data of a third kind — local mass, dilution, a measured
+   magnitude, individual membership — never more of the same kind.
+4. **What does a proposed mechanism cost before it is built?** Its pair `(class of readings, exact
+   limit)`, its gate, and its unit.
+
+### 6.2 Tools
+
+Built and reusable:
+
+- *Readings, shadows, collapses* and the `Invisible` closure lemmas; refinement and factorisation
+  (`resolves_iff_exists_factorization`, `Resolves.of_refines`, `resolutionLimit_le_of_refines`).
+- *Resolution limits, floors and intervals*, with the floor theorem.
+- *Witness families*: off-line and on-line lattices, crystals, dilution, the node collapses, the
+  parity pairs imported from their owners.
+- *Band recipes*: two-band and three-band depth inversion, the precision budget, the reach law.
+- *Rate readings* on cofinal and bounded aperture sets.
+
+To be built:
+
+- the exact floor of the pronic Gram reading in the exponent unit;
+- a two-aperture ratio of the `ζ` Weil functional faithful to the line, with a reachable bound;
+- a fatality classification of the parity collapses;
+- the admissibility unit of the incidence ledger.
+
+---
+
+## 7. Open problems
 
 Open, in this programme's own unit (a class of readings and its exact limit):
 
@@ -489,7 +571,7 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    classes of readings determine the *rate* rather than any single value, and which arithmetic rate profiles satisfy the structure needed for sparse sampling. The convex
    secant-rate case is settled by §3.9: cofinal sampling preserves the full reading, while bounded
    sampling leaves arbitrarily large rates possible. One half of
-   this is now settled in `SquareRootThreshold` with a hypothesis that is itself a reading: the
+   this is settled in `SquareRootThreshold` with a hypothesis that is itself a reading: the
    ground-energy rate equals the zero width whenever the off-line copies are bounded in number on
    unit height windows, and the alternative is unbounded clustering. Thus a uniform local count of off-line
    copies is a sufficient additional datum for the exponent identity — the
@@ -517,7 +599,7 @@ Open, in this programme's own unit (a class of readings and its exact limit):
    information-loss theorem must exhibit two admissible sources with the same reading and
    different target values; large energy alone is not that witness.
 
-### Research topics toward the shared target
+### Research topics
 
 * Price every proposed mechanism before it is built: state its reading, instantiate the gates, and
   report the pair `(class of readings, exact limit)`. A route whose reading factors through a
@@ -536,7 +618,7 @@ Open, in this programme's own unit (a class of readings and its exact limit):
 
 ---
 
-## 6. Working in the theory
+## 8. Working in the theory
 
 * State the reading first, the collapse second, the witness pair third. A statement without all three
   is not in the theory.
