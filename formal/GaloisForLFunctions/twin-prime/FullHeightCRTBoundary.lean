@@ -50,16 +50,19 @@ private theorem physicalCrtCount_upper (X d e : ℕ)
       constructor
       · rintro ⟨⟨hn2, hnX⟩, hdn, _⟩
         exact large_divisor_eq (by omega) hdn (by omega)
-      · rintro rfl
+      · intro hnd
+        subst n
         exact ⟨⟨by omega, hdI.2⟩, dvd_refl d, by simpa only [heq] using dvd_refl (d + 2)⟩
     · rw [if_neg heq]
-      apply eq_empty_iff_forall_not_mem.mpr
-      intro n hn
-      obtain ⟨hnI, hdn, hen⟩ := mem_filter.mp hn
-      obtain ⟨hn2, hnX⟩ := mem_Icc.mp hnI
-      have hnd : n = d := large_divisor_eq (by omega) hdn (by omega)
-      have hne : n + 2 = e := large_divisor_eq (by omega) hen (by omega)
-      exact heq (by omega)
+      ext n
+      simp only [mem_filter]
+      constructor
+      · rintro ⟨hnI, hdn, hen⟩
+        obtain ⟨hn2, hnX⟩ := mem_Icc.mp hnI
+        have hnd : n = d := large_divisor_eq (by omega) hdn (by omega)
+        have hne : n + 2 = e := large_divisor_eq (by omega) hen (by omega)
+        exact False.elim (heq (by omega))
+      · simp
   rw [physicalCrtCount, hfilter]
   split_ifs <;> simp only [card_singleton, card_empty]
 
@@ -77,7 +80,7 @@ theorem upperHalfCrtKernel_eq_shift (X d e : ℕ) :
   · by_cases he : e ∈ upperHalfDivisorCarrier X
     · simp only [upperHalfCrtKernel, hd, he, and_self, if_true, true_and,
         physicalCrtCount_upper X d e hd he]
-    · simp only [upperHalfCrtKernel, hd, he, and_false, true_and, false_and, if_false]
+    · simp only [upperHalfCrtKernel, hd, he, and_false, false_and, if_false]
   · simp only [upperHalfCrtKernel, hd, false_and, if_false]
 
 /-- Every full-height bilinear test is its literal shifted scalar correlation. -/
@@ -107,11 +110,11 @@ theorem fullHeightOddDivisor_odd (T i : ℕ) : Odd (fullHeightOddDivisor T i) :=
 /-- The exact discrepancy from the compatible odd period mean. -/
 def fullHeightOddCrtDefect (T : ℕ) : ℝ :=
   ∑ i ∈ range (2 * T), ∑ j ∈ range (2 * T),
-    (physicalCrtCount (8 * T + 2) (fullHeightOddDivisor T i)
+    ((physicalCrtCount (8 * T + 2) (fullHeightOddDivisor T i)
         (fullHeightOddDivisor T j) : ℝ) -
       (8 * (T : ℝ) + 1) *
         (if (fullHeightOddDivisor T i).Coprime (fullHeightOddDivisor T j) then
-          1 / ((fullHeightOddDivisor T i : ℝ) * (fullHeightOddDivisor T j : ℝ)) else 0)
+          1 / ((fullHeightOddDivisor T i : ℝ) * (fullHeightOddDivisor T j : ℝ)) else 0))
 
 private theorem fullHeightOddDivisor_mem (T i : ℕ) (hi : i < 2 * T) :
     fullHeightOddDivisor T i ∈ upperHalfDivisorCarrier (8 * T + 2) := by
@@ -149,8 +152,8 @@ private theorem fullHeightOddIncidence_sum (T : ℕ) (hT : 0 < T) :
           apply sum_congr rfl
           intro j hj
           rw [fullHeightOddIncidence T i j (mem_range.mp hi) (mem_range.mp hj)]
-          split_ifs <;> rfl
-        _ = _ := by rw [sum_ite_eq', mem_range]
+          split_ifs <;> simp only [Nat.cast_one, Nat.cast_zero]
+        _ = _ := by simp only [sum_ite_eq', mem_range]
     _ = _ := by
       rw [show range (2 * T) = range ((2 * T - 1) + 1) by congr 1; omega,
         sum_range_succ, hsum, if_neg (by omega)]
@@ -224,10 +227,23 @@ theorem fullHeightOddCrtDefect_lower (N : ℕ) :
   have hN : (12 : ℝ) ≤ (N + 12 : ℕ) := by exact_mod_cast (show 12 ≤ N + 12 by omega)
   nlinarith only [hperiod, hN]
 
+/-- The period-transfer error stays positive after normalization by the physical horizon. -/
+theorem fullHeightOddCrtDefect_normalized_lower (N : ℕ) :
+    (1 : ℝ) / 20 ≤
+      fullHeightOddCrtDefect (N + 12) / ((8 * (N + 12) + 2 : ℕ) : ℝ) := by
+  apply (le_div_iff₀ (by positivity : (0 : ℝ) < (8 * (N + 12) + 2 : ℕ))).mpr
+  have hb := fullHeightOddCrtDefect_lower N
+  have hN : (1 : ℝ) ≤ (N + 12 : ℕ) := by exact_mod_cast (show 1 ≤ N + 12 by omega)
+  push_cast
+  push_cast at hb hN
+  nlinarith only [hb, hN]
+
 end
 
 end TwinPrime
 
 #print axioms TwinPrime.upperHalfCrtKernel_eq_shift
 #print axioms TwinPrime.upperHalfCrtForm_eq_shift
+#print axioms TwinPrime.fullHeightOddDivisor_odd
 #print axioms TwinPrime.fullHeightOddCrtDefect_lower
+#print axioms TwinPrime.fullHeightOddCrtDefect_normalized_lower

@@ -244,6 +244,46 @@ For odd `d,e`, compatibility is coprimality. The local factor at two must be ret
 
 **Candidate mechanism:** use overlapping prime/cofactor decompositions to cancel the signed CRT defect against the source's own tail before taking an absolute value. The first serious test is the balanced range `d,e≈√X`, with actual Möbius signs, actual CRT phases and all transfer terms attached. A saving there would be meaningful partial progress; identities alone score zero.
 
+**Update: the balanced head is paid on paper.** The
+[balanced CRT deduction](../2-fully-proven/twin-prime-balanced-crt-compensation.md)
+uses the checked classical inverse-phase theorem and pays every
+smoothing strip and discarded Fourier mode. It gives
+`O(Y^(2-1/400))` for `Y^2<=X<=4Y^2`, uniformly even for arbitrary
+bounded complex product weights. This is a classical deduction, not
+a newly discovered source-specific cancellation theorem. Its analytic
+input is not yet Lean-certified here.
+
+The [full-height boundary](../2-fully-proven/twin-prime-full-height-crt-boundary.md)
+is different: for `X/2+2<=d,e<=X`, the exact incidence kernel is
+`[e=d+2]`. An explicit odd block with positive constant weights has
+normalized discrepancy at least `1/20`. Thus a uniform estimate for
+all product weights cannot be extended to this endpoint. Actual
+Möbius compensation must be retained across the full decomposition.
+
+There is also an exact finite normalization improvement. Set
+`b_epsilon(d)=mu(d)(1-d^(-epsilon))/epsilon`. Cancelling the complete
+zero-damping divisor sums gives `tau_epsilon(n)/epsilon=-sum_(d|n)b_epsilon(d)`
+for `n>=2`, and `|b_epsilon(d)|<=log d`. The
+[axis-compensation card](../2-fully-proven/twin-prime-compensated-damping-coefficients.md)
+records the proof. In these coordinates the balanced paper estimate
+costs `log^2(2Y)` uniformly in damping. Its changed head, tails, and
+stationary terms must be kept together; no conditional infinite-series
+interchange is implied by the finite identity.
+
+A second compensation puts the logarithm on the complementary divisor:
+
+`tau_epsilon(n)/epsilon
+ = sum_(dm=n) mu(d)d^(-epsilon)(1-m^(-epsilon))/epsilon`, `n>=2`.
+
+The coefficient has absolute value at most `log m` for positive damping,
+and vanishes exactly at `m=1`. Thus the full-height unit-cofactor faces
+disappear in this representation. The former isolated boundary block
+does not have to be estimated separately: its compensation is part of
+the complete source. This is the finite-difference version of the
+existing Möbius--logarithm dilation in ACCE, not a new cancellation
+theorem. Growing **nonunit** cofactors remain the analytic obligation;
+fixed-form cancellation cannot supply uniformity in that range.
+
 **More precise first test.** For odd coprime `d,e`, choose `dbar` with
 `d*dbar=1 (mod e)` and let `r=d*(-2*dbar mod e)`. Then `r` is the
 compatible residue modulo `de`. With `e(z)=exp(2 pi i z)`, finite
@@ -268,9 +308,10 @@ complete the test. In the balanced range `de` comparable to `X`, their
 size is at most a constant times `min(1,1/min(k,de-k))`; summing this
 envelope only gives a logarithm per pair. Truncation therefore needs
 a proved endpoint-error estimate as well as control of the retained
-inverse-residue phases. These are the first unproved steps in this
-Fourier attack; cofactor-tail compensation remains necessary even if
-the balanced head estimate is obtained.
+inverse-residue phases. The balanced paper proof now pays these steps
+in the stated square-root range. Outside that range, the Fourier
+length and cofactor-tail compensation still require estimates at
+their actual scales.
 
 **Attack:** (5) is independent of `Q` by telescoping. Rewriting it at `Q` and `2Q` does not itself give a contraction. A contraction or an absolute remainder bound must come from a separately proved arithmetic estimate. The known relative large-prime/complement cancellation is not that estimate.
 

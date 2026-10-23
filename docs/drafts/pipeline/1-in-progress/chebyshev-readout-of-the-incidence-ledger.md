@@ -892,16 +892,33 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         first-power charges are never paid in full by the mass. This is the property the Euler
         envelope of a prime tower lacks — that envelope is attained by a resonant train and so
         carries no information, while the payment law has a positive residual on every test.
+      * **`eulerRaw`**, **`eulerCross`**, **`eulerRaw_sub_eulerRaw_eulerStep`**,
+        **`eulerPayment_eq_raw_sub_cross`**, **`eulerRaw_le`**, **`eulerRaw_eq`**,
+        **`primeEulerList`**, **`prime_eulerRaw_le`** — the coherent decomposition of the
+        first-power charge. The raw charge of a family of lags differs from its sequential
+        payment by an explicit **cross-charge**: each earlier lag read at the ratio lag
+        `a_k − a_j` and the product lag `a_k + a_j` of the pair, in the ledger transformed by its
+        predecessors. With the residual identity this is the exact decomposition
+        `Σ_k w_k A(a_k) = A(0) − ∫(comb F)² + cross`, hence
+        `Σ_k w_k A(a_k) ≤ A(0) + cross` for any admissible family, and at prime-power lags with
+        the Euler weights `Λ(n)/√n` the cross terms sit exactly at the ratio and product
+        incidences of the pairs — the coherent subtraction asked for by AIP topic 8, with the
+        reduced cost side of mechanism 47 as its left-hand side.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 320 headline results of this card, in the order the card states them. Every name is a
+The 328 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
-Entries marked *(classical)* restate facts of classical analytic number theory inside the ledger
-language; they are infrastructure, not contributions of the field, and are excluded from the
-count. Field results: **302**; classical support: 18.
+
+Entries are tagged by a mechanical rule, so the count can be reproduced from the card and the
+module alone: *(definition)* a `def`, *(algebra)* a theorem whose whole proof is at most three
+lines of rewriting or arithmetic closers, *(classical)* a classical fact of analytic number
+theory restated in the ledger language. These three classes are infrastructure, not
+contributions of the field, and are excluded.
+
+**Field contributions: 260.**  Excluded: 39 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -946,7 +963,7 @@ count. Field results: **302**; classical support: 18.
 41. `crossAggregate_eq_meanSquare`
 42. `crossAggregate_ge`
 43. `crossAggregate_le`
-44. `sourceOfPrefix`
+44. `sourceOfPrefix` *(definition)*
 45. `existsUnique_source_of_prefix`
 46. `ledger_difference_eq`
 47. `index_eq_prefix_sub`
@@ -957,7 +974,7 @@ count. Field results: **302**; classical support: 18.
 52. `sum_lag_eq_integral_primeField`
 53. `two_mul_sum_lag_le_aggregate`
 54. `poleplane_eq_moment_mul`
-55. `poleplane_eq_zero_iff`
+55. `poleplane_eq_zero_iff` *(algebra)*
 56. `poleplane_odd`
 57. `testBalance_poleFree`
 58. `lagChebyshev_eq_log_two`
@@ -967,7 +984,7 @@ count. Field results: **302**; classical support: 18.
 62. `criticalScalePrefix_log_natCast_succ`
 63. `criticalScalePrefix_on_cell`
 64. `hasDerivAt_criticalScalePrefix_of_mem_cell`
-65. `poleWeightAt`
+65. `poleWeightAt` *(definition)*
 66. `sum_weight_sub_polarAt_eq_defect`
 67. `autoCorrelation_sub`
 68. `abs_autoCorrelation_sub_le`
@@ -976,21 +993,21 @@ count. Field results: **302**; classical support: 18.
 71. `sum_lag_eq_of_horizon`
 72. `sum_cross_gram_eq_integral`
 73. `abs_sum_cross_gram_le`
-74. `ledgerField`
+74. `ledgerField` *(definition)*
 75. `testBalance_field`
 76. `displacement_ge_min`
 77. `fold_defect_ge`
 78. `autoCorrelation_le_min`
 79. `window_coupling_le`
 80. `window_degree_lt`
-81. `idealSource`
+81. `idealSource` *(definition)*
 82. `abs_lagSourceDefect_idealSource_le`
 83. `abs_ledger_idealSource_le`
 84. `ledger_vonMangoldt_sub_ideal`
-85. `sourceScalePrefix`
+85. `sourceScalePrefix` *(definition)*
 86. `sum_weight_sub_polar_tailWeight`
 87. `integral_autoCorrelation`
-88. `integral_autoCorrelation_odd`
+88. `integral_autoCorrelation_odd` *(algebra)*
 89. `exists_autoCorrelation_neg`
 90. `autoCorrelation_ge_half_of_mem`
 91. `integral_compl_autoCorrelation_le`
@@ -1002,23 +1019,23 @@ count. Field results: **302**; classical support: 18.
 97. `exists_abs_chebyshevTwoPoleDefect_gt`
 98. `integral_calibration_mul_deriv`
 99. `sum_weight_sub_calibration_eq_defect`
-100. `oscWeight`
+100. `oscWeight` *(definition)*
 101. `sum_weight_sub_oscPolar_eq_defect`
 102. `leftPart_eq_neg_rightPart_neg`
 103. `autoCorrelation_eq_neg_conv`
 104. `autoCorrelation_nonpos_of_odd_nonneg`
 105. `sum_lag_le_truncated`
-106. `allOnes`
-107. `lagSourceDefect_allOnes`
+106. `allOnes` *(definition)*
+107. `lagSourceDefect_allOnes` *(algebra)*
 108. `autoCorrelation_eq_conv`
 109. `autoCorrelation_eq_zero_abs`
 110. `aggregate_le_bandwidth`
 111. `aggregate_dyadic_le`
 112. `aggregate_dyadic_diagonal`
-113. `genPrefix`
+113. `genPrefix` *(definition)*
 114. `sum_gen_mul_eq_neg_integral`
 115. `sum_gen_sub_calibration_eq_defect`
-116. `geoWeight`
+116. `geoWeight` *(definition)*
 117. `geo_defect_half_cell`
 118. `geo_reading_gap`
 119. `fourier_ofReal_autoCorrelation_eq`
@@ -1027,42 +1044,42 @@ count. Field results: **302**; classical support: 18.
 122. `integral_Ioi_cosh_mul_autoCorrelation`
 123. `expMoment_odd`
 124. `integral_Ioi_cosh_mul_autoCorrelation_odd`
-125. `lagTestWeightAt`
+125. `lagTestWeightAt` *(definition)*
 126. `testBalanceAt`
 127. `testBalanceAt_odd`
-128. `coshMoment`
+128. `coshMoment` *(definition)*
 129. `poleTerm_eq_moment_mul`
 130. `capacity_iff`
 131. `capacity_odd_iff`
-132. `moebiusSource`
-133. `lagMertens`
+132. `moebiusSource` *(definition)*
+133. `lagMertens` *(definition)*
 134. `sum_moebius_sub_unit_eq_defect`
 135. `abs_lagMertens_le`
-136. `twistSource`
+136. `twistSource` *(definition)*
 137. `sum_twist_sub_unit_eq_defect`
-138. `thetaSource`
+138. `thetaSource` *(definition)*
 139. `sum_theta_sub_polar_eq_defect`
-140. `genRampSum`
+140. `genRampSum` *(definition)*
 141. `sum_weight_mul_eq_integral_rampSum`
 142. `sum_weight_sub_polar_eq_rampDefect`
 143. `sourceScalePrefix_eq`
 144. `sum_weight_sub_polar_eq_sourceScalePrefix`
 145. `integral_secondPrimitive_mul_deriv2`
 146. `sum_weight_sub_calibration_eq_rampDefect`
-147. `mertensScalePrefix`
+147. `mertensScalePrefix` *(definition)*
 148. `mertensScalePrefix_eq`
 149. `sum_moebius_sub_unit_eq_mertensScalePrefix`
-150. `pairCorrelation`
+150. `pairCorrelation` *(definition)*
 151. `autoCorrelation_add`
 152. `sum_pair_gram_eq_integral`
 153. `abs_sum_pair_gram_le`
-154. `logSource`
-155. `logWeight`
+154. `logSource` *(definition)*
+155. `logWeight` *(definition)*
 156. `sum_log_sub_doublePolar_eq_defect`
 157. `progression_gram_nonneg`
 158. `progression_gram_le`
 159. `progression_offdiag_le`
-160. `antiDisplacement`
+160. `antiDisplacement` *(definition)*
 161. `displacement_two_mul_le_antiDisplacement`
 162. `antiDisplacement_ge`
 163. `autoCorrelation_ratio_le`
@@ -1075,13 +1092,13 @@ count. Field results: **302**; classical support: 18.
 170. `residue_firstAtom_le`
 171. `sum_lag_vonMangoldt_secondWindow`
 172. `sum_lag_vonMangoldt_thirdWindow`
-173. `scaledTwoPoleWeight`
-174. `apSource`
+173. `scaledTwoPoleWeight` *(definition)*
+174. `apSource` *(definition)*
 175. `sum_ap_sub_scaledPolar_eq_defect`
 176. `sum_apSource_eq`
 177. `sum_lagPrefix_ap`
 178. `sum_defect_ap`
-179. `pairCalibration`
+179. `pairCalibration` *(definition)*
 180. `sum_shiftedPair_sub_pairPolar_eq_defect`
 181. `integral_halves_add`
 182. `integral_leftPart_sq_eq_half`
@@ -1091,7 +1108,7 @@ count. Field results: **302**; classical support: 18.
 186. `abs_defect_sourceOfPrefix_le`
 187. `cell_increment_le_two_mul_defect`
 188. `poleWeightAt_cell_increment_le`
-189. `multiPoleWeight`
+189. `multiPoleWeight` *(definition)*
 190. `abs_defect_multiPole_le`
 191. `abs_defect_reflectedPole_le`
 192. `logWeight_half_cell_increment_ge`
@@ -1111,13 +1128,13 @@ count. Field results: **302**; classical support: 18.
 206. `card_primePowers_ge_of_chebyshev_defect_le`
 207. `gram_split_row`
 208. `gram_row_le_half`
-209. `midpointSource`
+209. `midpointSource` *(definition)*
 210. `abs_defect_midpointSource_le`
-211. `gapSource`
+211. `gapSource` *(definition)*
 212. `genPrefix_gapSource`
 213. `abs_defect_gapSource_le`
 214. `genTestBalance`
-215. `lagField`
+215. `lagField` *(definition)*
 216. `sum_gen_lag_eq_integral_field`
 217. `genPrefix_jump`
 218. `two_mul_sum_gen_lag_le`
@@ -1130,21 +1147,21 @@ count. Field results: **302**; classical support: 18.
 225. `lagSourceDefect_eq_twoPoleWeight_of_lt_log_two`
 226. `testBalance_source_truncates`
 227. `primeSide_add`
-228. `poleplane_add`
-229. `expMomentNeg_eq_zero_add`
+228. `poleplane_add` *(algebra)*
+229. `expMomentNeg_eq_zero_add` *(algebra)*
 230. `autoCorrelation_smul`
-231. `poleplane_translate`
+231. `poleplane_translate` *(algebra)*
 232. `weil_dilation_covariance`
 233. `primeSide_translate`
 234. `autoCorrelation_reflect`
-235. `poleplane_reflect`
+235. `poleplane_reflect` *(algebra)*
 236. `testBalance_source_congr`
-237. `evenPart`
+237. `evenPart` *(definition)*
 238. `sym_pairCorrelation_even_odd`
 239. `autoCorrelation_even_odd_split`
 240. `poleplane_even_odd`
 241. `weilForm_even_odd_split`
-242. `weilForm`
+242. `weilForm` *(definition)*
 243. `weilForm_split`
 244. `weilForm_nonneg_iff`
 245. `residue_even_odd_split`
@@ -1160,7 +1177,7 @@ count. Field results: **302**; classical support: 18.
 255. `criticalScalePrefix_pos_first_cell`
 256. `criticalScalePrefix_pos_second_cell`
 257. `criticalScalePrefix_pos_on_cell`
-258. `criticalScalePrefix_succ_pos`
+258. `criticalScalePrefix_succ_pos` *(algebra)*
 259. `criticalScalePrefix_succ_pos_of_psi`
 260. `criticalScalePrefix_succ_ge`
 261. `criticalScalePrefix_le_nat`
@@ -1168,14 +1185,14 @@ count. Field results: **302**; classical support: 18.
 263. `lagChebyshev_le`
 264. `criticalScalePrefix_le_exp`
 265. `criticalScalePrefix_ge_explicit`
-266. `squarefreeSource`
-267. `higherPowerSource`
+266. `squarefreeSource` *(definition)*
+267. `higherPowerSource` *(definition)*
 268. `sum_higherPower_sub_halfPolar_eq_defect`
 269. `testBalanceAt_source`
-270. `lagPrefix_add`
-271. `defect_split_calibration`
+270. `lagPrefix_add` *(algebra)*
+271. `defect_split_calibration` *(algebra)*
 272. `chebyshevTwoPoleDefect_split`
-273. `primeSide_source_add`
+273. `primeSide_source_add` *(algebra)*
 274. `primeSide_higherPower_eq_zero`
 275. `primeSide_vonMangoldt_eq_theta`
 276. `integrableOn_Ioi_lagSourceDefectAt_mul_deriv`
@@ -1205,24 +1222,32 @@ count. Field results: **302**; classical support: 18.
 300. `lagPrefix_divisorCount` *(classical)*
 301. `abs_lagPrefix_divisorCount_sub_le` *(classical)*
 302. `autoCorrelation_eulerFactor`
-303. `eulerStep`
+303. `eulerStep` *(definition)*
 304. `exists_autoCorrelation_eulerStep`
 305. `eulerLam_spec`
 306. `two_mul_div_one_add_sq_le_one`
-307. `eulerLedger`
-308. `eulerPayment`
+307. `eulerLedger` *(definition)*
+308. `eulerPayment` *(definition)*
 309. `eulerLedger_zero_eq`
 310. `eulerPayment_le_mass`
 311. `two_lag_payment_le`
 312. `vonMangoldtAtom_le_one`
 313. `eulerPayment_vonMangoldt_le_mass`
-314. `eulerComb`
+314. `eulerComb` *(definition)*
 315. `autoCorrelation_eulerComb`
 316. `eulerPayment_residual`
 317. `eq_zero_of_eq_const_mul_shift`
 318. `eulerComb_ne_zero`
 319. `integral_sq_pos_of_ne_zero`
 320. `eulerPayment_lt_mass`
+321. `eulerRaw` *(definition)*
+322. `eulerCross` *(definition)*
+323. `eulerRaw_sub_eulerRaw_eulerStep`
+324. `eulerPayment_eq_raw_sub_cross`
+325. `eulerRaw_le`
+326. `eulerRaw_eq`
+327. `primeEulerList` *(definition)*
+328. `prime_eulerRaw_le`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1233,5 +1258,6 @@ and the ledger objects, and are queued behind that cone.
 
 ## Log
 - 2026-10-22 — created; paper proof complete; steps 1–3 formalized and compiled.
-- 2026-10-23 — Euler comb ledger added (AIP topic 7); contribution index of 313 headline results verified against the module.
+- 2026-10-23 — Euler comb ledger added (AIP topic 7); contribution index introduced and verified against the module.
 - 2026-10-23 — residual and strictness of the Euler comb payment; index re-audited and classical support marked.
+- 2026-10-23 — coherent decomposition of the first-power charge (ratio–product cross-charge); index tagged by the mechanical criteria rule.

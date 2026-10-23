@@ -50,6 +50,10 @@ period mean, so
 Every inequality is elementary and independent of the distribution
 of primes or Möbius signs.
 
+Moreover `T/2 >= (8T+2)/20` for `T>=1`. Thus the normalized discrepancy
+is at least `1/20` at every horizon in this family. This directly rules
+out an error tending to zero after normalization by the horizon.
+
 ## Research consequence and positive survivor
 
 This rules out extending a uniform product-weight power-saving CRT
@@ -62,6 +66,18 @@ classification retains their actual shifted scalar correlation.
 It does not prove or disprove cancellation in that correlation.
 The boundary shows why estimates which work for every bounded
 product weight must give way to source-specific arithmetic there.
+
+**Positive second pass:** the
+[cofactor-compensation identity](twin-prime-compensated-damping-coefficients.md)
+uses the exact Möbius zero sum to transfer the weight to the
+complementary divisor: `tau_epsilon(n)/epsilon` is the divisor
+convolution of `mu(d)d^(-epsilon)` with
+`(1-m^(-epsilon))/epsilon`. The latter vanishes at `m=1`.
+Consequently the unit-cofactor endpoint disappears in that full-source
+representation. This does not make the uncorrected block small; it
+shows why its compensation must be retained across the decomposition.
+The next arithmetic obligation concerns growing nonunit cofactors,
+not a forced estimate for the isolated unit block.
 
 This also marks the limit of the four-long-variable operator route:
 cofactors equal to one are outside its stated range. No extension

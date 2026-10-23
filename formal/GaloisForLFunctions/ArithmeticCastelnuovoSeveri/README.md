@@ -338,7 +338,8 @@ possible section theory must use near-radicals.
     positivity of each nonzero test under RH, not a uniform positive lower bound for every
     normalized test. Near-radical families remain possible.
 
-### 3.9 The adjunction formula on resonators (`ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`)
+### 3.9 The adjunction formula on resonators (`ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`,
+`TheResonatorRemainderIsNegative`)
 
 24. **Kronecker law.** On a `{p, q}`-box the Hecke incidence is
     `[j = j'] τ_p(|i − i'|) + [i = i'] τ_q(|j − j'|)` (`heckeIncidence_box`), so the prime
@@ -352,6 +353,14 @@ possible section theory must use near-radicals.
 25. **The envelopes add.** `|towerForm| ≤ (2 log p/(√p − 1)) Σ x²` (`abs_towerForm_le`), hence
     `|heckeForm| ≤ (E_p + E_q) Σ c²` (`abs_heckeForm_box_le`); the resonant train attains it
     (`towerForm_one`, `heckeForm_box_one`).
+25′. **The adjunction remainder is negative definite on resonators**
+    (`TheResonatorRemainderIsNegative`). On a `{p, q}`-resonator with narrow bumps the cross-prime
+    aggregate is `2 w_p w_q X(c)`, `X(c) = Σ c(i+1, j) c(i, j+1)` the anti-diagonal lag count, and
+    the review's remainder `R(c) = 2 w_p w_q X(c) − (E_p + E_q) Σ c²` satisfies
+    `R(c) ≤ −(E_p + E_q − w_p² − w_q²) Σ c²` (`resonatorRemainder_le`) with `w_r² < E_r`
+    (`resonatorWeight_sq_lt_eulerEnvelope`): `R` is negative definite (`resonatorRemainder_neg`).
+    This decides the review's first research topic: the cross term never pays for the envelopes on
+    resonators, so Weil positivity there comes from the archimedean collar and the pole.
 
 ### 3.10 The mean-field law and the adjunction conjecture (`TheAdjunctionConjectureMeanField`)
 
@@ -391,7 +400,8 @@ possible section theory must use near-radicals.
    The pole and prime main term must be paired before squaring. Their identification does not
    bound the residual signed pairing for every test.
 6. **Resonators.** The self-pairing on a resonator is exactly the Kronecker sum of the two Euler
-   towers (items 24–25); the remaining archimedean and polar terms still require a sign argument.
+   towers (items 24–25), and the review's prime-side remainder is negative definite there (item
+   25′); the archimedean and polar terms carry the positivity and still require a sign argument.
 7. **Kronecker rank.** Rank-one (lattice) systems are curve data; their span is Hodge iff unitary
    (item 12), fake data exist (item 13), hiding needs genus exponential in the degree (items
    14–15), and their Hodge defect over the scaling surface is `0` or `∞` (item 20‴). For tests of any Kronecker rank the prime part decouples into one tower per prime
@@ -537,4 +547,5 @@ specification of what is missing and the calibration of every step over `𝔽_q`
 | `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
+| `TheResonatorRemainderIsNegative` | the review's adjunction remainder is negative definite on resonators |
 | `TheAdjunctionConjectureMeanField` | mean-field law, refutation of the polynomial adjunction bound |

@@ -2,6 +2,7 @@ import GaloisForLFunctions.RHTower.VonKochChebyshevBound
 import GaloisForLFunctions.BezoutValuationIncidence.DampedChebyshevTangentFormOfTheReceiver
 import GaloisForLFunctions.SignedArithmeticEnergyIncidence.SignedIncidenceForms
 import GaloisForLFunctions.RHTower.Sieve.TruncatedMoebius
+import GaloisForLFunctions.HTGeometry.HyperbolicBounds
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
 import Mathlib.Analysis.Calculus.Deriv.Slope
 
@@ -647,6 +648,199 @@ theorem tendsto_oddDampedDyadicDefect_div_sq (N : ℕ) :
   have hc : 16 * primePairWeight N - 2 ^ 2 * primePairWeight N =
       12 * primePairWeight N := by ring
   simpa only [oddDampedDyadicDefect, sub_div, mul_div_assoc, hc] using h
+
+private theorem three_mul_sinh_le (x : NNReal) :
+    3 * Real.sinh x ≤ (x : ℝ) * (Real.cosh x + 2) := by
+  have hd (t : ℝ) : HasDerivAt
+      (fun u : ℝ => u * (Real.cosh u + 2) - 3 * Real.sinh u)
+      (t * Real.sinh t + 2 - 2 * Real.cosh t) t := by
+    have h := ((hasDerivAt_id t).fun_mul ((Real.hasDerivAt_cosh t).add_const 2)).fun_sub
+      ((Real.hasDerivAt_sinh t).const_mul 3)
+    exact h.congr_deriv (by simp only [id_eq]; ring)
+  have hm : MonotoneOn
+      (fun u : ℝ => u * (Real.cosh u + 2) - 3 * Real.sinh u) (Set.Ici 0) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (by fun_prop)
+      (fun t _ => (hd t).differentiableAt.differentiableWithinAt) ?_
+    intro t _
+    rw [(hd t).deriv]
+    linarith only [HTGeometry.two_cosh_sub_two_le_self_mul_sinh t]
+  have h := hm Set.self_mem_Ici x.coe_nonneg x.coe_nonneg
+  simpa only [Real.cosh_zero, Real.sinh_zero, zero_mul, mul_zero, sub_zero,
+    sub_nonneg] using h
+
+/-- The quartic term cancels, leaving a global quadratic upper bound. -/
+private theorem sinh_pair_dyadicDefect_le (x y : NNReal) :
+    Real.sinh x * Real.sinh y * (4 - Real.cosh x * Real.cosh y) ≤
+      3 * (x : ℝ) * (y : ℝ) := by
+  have hsx := Real.sinh_nonneg_iff.mpr x.coe_nonneg
+  have hsy := Real.sinh_nonneg_iff.mpr y.coe_nonneg
+  by_cases h : 0 ≤ 4 - Real.cosh x * Real.cosh y
+  · have hp := mul_le_mul (three_mul_sinh_le x) (three_mul_sinh_le y)
+      (by positivity) (by positivity)
+    have hp' := mul_le_mul_of_nonneg_right hp h
+    have hx : 0 ≤ Real.cosh x - 1 := sub_nonneg.mpr (Real.one_le_cosh x)
+    have hy : 0 ≤ Real.cosh y - 1 := sub_nonneg.mpr (Real.one_le_cosh y)
+    have hr : 0 ≤
+        3 * (Real.cosh x - 1) ^ 2 + 3 * (Real.cosh y - 1) ^ 2 +
+        12 * (Real.cosh x - 1) * (Real.cosh y - 1) +
+        4 * (Real.cosh x - 1) ^ 2 * (Real.cosh y - 1) +
+        4 * (Real.cosh x - 1) * (Real.cosh y - 1) ^ 2 +
+        (Real.cosh x - 1) ^ 2 * (Real.cosh y - 1) ^ 2 := by positivity
+    have hc : (Real.cosh x + 2) * (Real.cosh y + 2) *
+        (4 - Real.cosh x * Real.cosh y) ≤ 27 := by nlinarith only [hr]
+    have hc' := mul_le_mul_of_nonneg_left hc
+      (mul_nonneg x.coe_nonneg y.coe_nonneg)
+    nlinarith only [hp', hc']
+  · exact (mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hsx hsy)
+      (le_of_not_ge h)).trans (by positivity)
+
+/-- Every reflected pair obeys the prime-only two-scale minorant. -/
+theorem oddDampedPair_dyadicDefect_le (a b : ℕ) (ε : NNReal) :
+    16 * (oddDampedSource ε a * oddDampedSource ε b) -
+        oddDampedSource (2 * ε) a * oddDampedSource (2 * ε) b ≤
+      12 * (ε : ℝ) ^ 2 * (primeLogWeight a * primeLogWeight b) := by
+  by_cases hab : a.Prime ∧ b.Prime
+  · obtain ⟨ha, hb⟩ := hab
+    have hsource (p : ℕ) (hp : p.Prime) (t : ℝ) :
+        oddDampedSource t p = 2 * Real.sinh (t * Real.log p / 2) := by
+      rw [oddDampedSource_eq_negativeMoebius, if_pos (moebius_apply_prime hp),
+        symmetricDampedSource_eq_prod_sinh, if_pos ⟨hp.squarefree, hp.ne_one⟩,
+        hp.primeFactors, prod_singleton]
+    have hla : 0 ≤ Real.log (a : ℝ) := Real.log_nonneg (by exact_mod_cast ha.one_le)
+    have hlb : 0 ≤ Real.log (b : ℝ) := Real.log_nonneg (by exact_mod_cast hb.one_le)
+    have hxy := sinh_pair_dyadicDefect_le
+      ⟨(ε : ℝ) * Real.log a / 2, by positivity⟩
+      ⟨(ε : ℝ) * Real.log b / 2, by positivity⟩
+    change Real.sinh (ε * Real.log a / 2) * Real.sinh (ε * Real.log b / 2) *
+      (4 - Real.cosh (ε * Real.log a / 2) * Real.cosh (ε * Real.log b / 2)) ≤
+        3 * (ε * Real.log a / 2) * (ε * Real.log b / 2) at hxy
+    simp only [hsource a ha, hsource b hb, primeLogWeight, if_pos ha, if_pos hb]
+    rw [show 2 * (ε : ℝ) * Real.log a / 2 = 2 * (ε * Real.log a / 2) by ring,
+      show 2 * (ε : ℝ) * Real.log b / 2 = 2 * (ε * Real.log b / 2) by ring,
+      Real.sinh_two_mul, Real.sinh_two_mul]
+    nlinarith only [hxy]
+  · have hweight : primeLogWeight a * primeLogWeight b = 0 := by
+      by_cases ha : a.Prime
+      · simp only [primeLogWeight, if_neg (fun hb => hab ⟨ha, hb⟩), mul_zero]
+      · simp only [primeLogWeight, if_neg ha, zero_mul]
+    rw [hweight, mul_zero, sub_nonpos]
+    by_cases ha : moebius a = -1
+    · by_cases hb : moebius b = -1
+      · have hcount (k : ℕ) (hm : moebius k = -1) :
+            1 ≤ k.primeFactors.card ∧ (¬ k.Prime → 3 ≤ k.primeFactors.card) := by
+          have hsq : Squarefree k := by
+            by_contra hn
+            have hz := moebius_eq_zero_of_not_squarefree hn
+            rw [hm] at hz
+            norm_num at hz
+          have hs : (-1 : ℤ) ^ k.primeFactors.card = -1 := by
+            rw [← Sieve.moebius_eq_neg_one_pow_card_primeFactors hsq, hm]
+          have hz : k.primeFactors.card ≠ 0 := by
+            intro hc
+            norm_num [hc] at hs
+          have ht : k.primeFactors.card ≠ 2 := by
+            intro hc
+            norm_num [hc] at hs
+          have ho : k.primeFactors.card = 1 → k.Prime := fun hc =>
+            Nat.squarefree_and_prime_pow_iff_prime.mp
+              ⟨hsq, isPrimePow_iff_card_primeFactors_eq_one.mpr hc⟩
+          exact ⟨by omega, fun hn => by have := mt ho hn; omega⟩
+        have hca := hcount a ha
+        have hcb := hcount b hb
+        have hdegree : 4 ≤ a.primeFactors.card + b.primeFactors.card := by
+          by_cases hp : a.Prime
+          · have := hcb.2 (fun hq => hab ⟨hp, hq⟩)
+            omega
+          · have := hca.2 hp
+            omega
+        have hDa := primeFactorPower_le_dampingDoublingMultiplier ε a
+        have hDb := primeFactorPower_le_dampingDoublingMultiplier ε b
+        have hD : 16 ≤ dampingDoublingMultiplier ε a * dampingDoublingMultiplier ε b := by
+          calc
+            (16 : ℝ) = 2 ^ (4 : ℕ) := by norm_num
+            _ ≤ 2 ^ (a.primeFactors.card + b.primeFactors.card) :=
+              pow_le_pow_right₀ (by norm_num) hdegree
+            _ = (2 : ℝ) ^ a.primeFactors.card * 2 ^ b.primeFactors.card := pow_add _ _ _
+            _ ≤ _ := mul_le_mul hDa hDb (by positivity)
+              (le_trans (by positivity : 0 ≤ (2 : ℝ) ^ a.primeFactors.card) hDa)
+        have hw := mul_nonneg (oddDampedSource_nonneg ε a) (oddDampedSource_nonneg ε b)
+        rw [oddDampedSource_two_mul, oddDampedSource_two_mul]
+        calc
+          _ ≤ (dampingDoublingMultiplier ε a * dampingDoublingMultiplier ε b) *
+              (oddDampedSource ε a * oddDampedSource ε b) :=
+            mul_le_mul_of_nonneg_right hD hw
+          _ = _ := by ring
+      · simp only [oddDampedSource_eq_negativeMoebius, if_neg hb, mul_zero, le_refl]
+    · simp only [oddDampedSource_eq_negativeMoebius, if_neg ha, zero_mul, mul_zero, le_refl]
+
+/-- The finite two-scale defect never overestimates its prime tangent. -/
+theorem oddDampedDyadicDefect_le_primePairWeight (N : ℕ) (ε : ℝ) :
+    oddDampedDyadicDefect N ε ≤ 12 * ε ^ 2 * primePairWeight N := by
+  have hpos (t : NNReal) :
+      oddDampedDyadicDefect N t ≤ 12 * (t : ℝ) ^ 2 * primePairWeight N := by
+    simp only [oddDampedDyadicDefect, oddDampedReflectionOverlap, primePairWeight,
+      additivePairWeight, mul_sum, ← sum_sub_distrib]
+    exact sum_le_sum fun p _ => oddDampedPair_dyadicDefect_le p.1 p.2 t
+  by_cases hε : 0 ≤ ε
+  · exact hpos ⟨ε, hε⟩
+  · have h : oddDampedDyadicDefect N (-ε) ≤ 12 * (-ε) ^ 2 * primePairWeight N :=
+      hpos ⟨-ε, neg_nonneg.mpr (le_of_not_ge hε)⟩
+    simpa only [oddDampedDyadicDefect, mul_neg, oddDampedReflectionOverlap_neg,
+      neg_sq] using h
+
+/-- A globally valid lower approximation, including damping zero. -/
+def oddDampedExtractionMinorant (N : ℕ) (ε : ℝ) : ℝ :=
+  oddDampedDyadicDefect N ε / (12 * ε ^ 2)
+
+theorem oddDampedExtractionMinorant_le (N : ℕ) (ε : ℝ) :
+    oddDampedExtractionMinorant N ε ≤ primePairWeight N := by
+  by_cases hε : ε = 0
+  · simp only [oddDampedExtractionMinorant, hε, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow, mul_zero, div_zero]
+    exact primePairWeight_nonneg N
+  · exact (div_le_iff₀ (mul_pos (by norm_num) (sq_pos_of_ne_zero hε))).mpr
+      (by simpa only [mul_comm] using oddDampedDyadicDefect_le_primePairWeight N ε)
+
+theorem tendsto_oddDampedExtractionMinorant (N : ℕ) :
+    Tendsto (oddDampedExtractionMinorant N) (𝓝[≠] 0) (𝓝 (primePairWeight N)) := by
+  have h := (tendsto_oddDampedDyadicDefect_div_sq N).div_const 12
+  have he (ε : ℝ) : oddDampedDyadicDefect N ε / ε ^ 2 / 12 =
+      oddDampedExtractionMinorant N ε := by
+    rw [oddDampedExtractionMinorant, div_div, mul_comm (ε ^ 2) 12]
+  simpa only [he, mul_div_cancel_left₀ (primePairWeight N) (by norm_num : (12 : ℝ) ≠ 0)] using h
+
+/-- The actual odd source dominates its prime tangent at nonnegative damping. -/
+theorem primeLogWeight_mul_damping_le (k : ℕ) (ε : NNReal) :
+    (ε : ℝ) * primeLogWeight k ≤ oddDampedSource ε k := by
+  by_cases hk : k.Prime
+  · rw [primeLogWeight, if_pos hk, oddDampedSource_eq_negativeMoebius,
+      if_pos (moebius_apply_prime hk), symmetricDampedSource_eq_prod_sinh,
+      if_pos ⟨hk.squarefree, hk.ne_one⟩, hk.primeFactors, prod_singleton]
+    have hl : 0 ≤ Real.log (k : ℝ) := Real.log_nonneg (by exact_mod_cast hk.one_le)
+    have hs := HTGeometry.self_le_sinh_of_nonneg
+      (show 0 ≤ (ε : ℝ) * Real.log k / 2 by positivity)
+    linarith only [hs]
+  · rw [primeLogWeight, if_neg hk, mul_zero]
+    exact oddDampedSource_nonneg ε k
+
+/-- The one-scale reading is a majorant; together the two readings bracket the tangent. -/
+theorem primePairWeight_mul_sq_le_oddDampedReflectionOverlap (N : ℕ) (ε : ℝ) :
+    ε ^ 2 * primePairWeight N ≤ oddDampedReflectionOverlap N ε := by
+  have hpos (t : NNReal) :
+      (t : ℝ) ^ 2 * primePairWeight N ≤ oddDampedReflectionOverlap N t := by
+    simp only [primePairWeight, oddDampedReflectionOverlap, additivePairWeight, mul_sum]
+    apply sum_le_sum
+    intro p _
+    have h := mul_le_mul (primeLogWeight_mul_damping_le p.1 t)
+      (primeLogWeight_mul_damping_le p.2 t)
+      (mul_nonneg t.coe_nonneg (primeLogWeight_nonneg p.2))
+      (oddDampedSource_nonneg t p.1)
+    nlinarith only [h]
+  by_cases hε : 0 ≤ ε
+  · exact hpos ⟨ε, hε⟩
+  · have h : (-ε) ^ 2 * primePairWeight N ≤ oddDampedReflectionOverlap N (-ε) :=
+      hpos ⟨-ε, neg_nonneg.mpr (le_of_not_ge hε)⟩
+    simpa only [neg_sq, oddDampedReflectionOverlap_neg] using h
 
 /-- A prime pair exists exactly when odd-sector doubling is slower than factor sixteen. -/
 theorem primePair_iff_positive_oddDampedDyadicDefect (N : ℕ) :

@@ -74,22 +74,22 @@ theorem sum_sq_shift_snd_le (M N : ℕ) (c : ℕ × ℕ → ℝ) :
 theorem abs_crossLag_le (M N : ℕ) (c : ℕ × ℕ → ℝ) : |crossLag M N c| ≤ boxEnergy M N c := by
   have h1 := sum_sq_shift_fst_le M N c
   have h2 := sum_sq_shift_snd_le M N c
-  have hpt : ∀ i j, |c (i + 1, j) * c (i, j + 1)| ≤ (c (i + 1, j) ^ 2 + c (i, j + 1) ^ 2) / 2 :=
+  have hpt : ∀ i j, 2 * |c (i + 1, j) * c (i, j + 1)| ≤ c (i + 1, j) ^ 2 + c (i, j + 1) ^ 2 :=
     fun i j => by
       rw [abs_mul]
       nlinarith [sq_nonneg (|c (i + 1, j)| - |c (i, j + 1)|), sq_abs (c (i + 1, j)),
         sq_abs (c (i, j + 1))]
-  calc |crossLag M N c| ≤ ∑ i ∈ range M, ∑ j ∈ range N, |c (i + 1, j) * c (i, j + 1)| :=
-        (Finset.abs_sum_le_sum_abs _ _).trans
-          (Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _)
-    _ ≤ ∑ i ∈ range M, ∑ j ∈ range N, (c (i + 1, j) ^ 2 + c (i, j + 1) ^ 2) / 2 :=
-        Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => hpt i j
-    _ = ((∑ i ∈ range M, ∑ j ∈ range N, c (i + 1, j) ^ 2) +
-          ∑ i ∈ range M, ∑ j ∈ range N, c (i, j + 1) ^ 2) / 2 := by
-        rw [← Finset.sum_add_distrib, Finset.sum_div]
-        refine Finset.sum_congr rfl fun i _ => ?_
-        rw [← Finset.sum_add_distrib, Finset.sum_div]
-    _ ≤ boxEnergy M N c := by linarith
+  have habs : |crossLag M N c| ≤ ∑ i ∈ range M, ∑ j ∈ range N, |c (i + 1, j) * c (i, j + 1)| :=
+    (Finset.abs_sum_le_sum_abs _ _).trans
+      (Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _)
+  have hsum : 2 * ∑ i ∈ range M, ∑ j ∈ range N, |c (i + 1, j) * c (i, j + 1)| ≤
+      (∑ i ∈ range M, ∑ j ∈ range N, c (i + 1, j) ^ 2) +
+        ∑ i ∈ range M, ∑ j ∈ range N, c (i, j + 1) ^ 2 := by
+    rw [← Finset.sum_add_distrib, Finset.mul_sum]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [← Finset.sum_add_distrib, Finset.mul_sum]
+    exact Finset.sum_le_sum fun j _ => hpt i j
+  linarith
 
 /-- `log x ≤ 2(√x − 1)` for `x > 0`. -/
 theorem log_le_two_mul_sqrt_sub_one {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * (Real.sqrt x - 1) := by

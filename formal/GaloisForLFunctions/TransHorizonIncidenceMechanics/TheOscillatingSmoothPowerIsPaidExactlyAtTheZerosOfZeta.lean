@@ -703,7 +703,7 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
     rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at h3
     have h4 : pronicNorm M T = pronicNorm (fun n => A n + (-1) * (A n - M n)) T :=
       pronicNorm_congr fun n _ => by ring
-    rw [h4]
+    rw [h4, hBdef]
     linarith
   -- the main term carries the logarithmic energy of `u(n) = Re(a n^{it})`
   set u : ℕ → ℝ := fun n => (a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re with hu
@@ -742,7 +742,11 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
       have hpr : (0 : ℝ) < (n : ℝ) * ((n : ℝ) + 1) := by positivity
       rw [div_mul_eq_mul_div, le_div_iff₀ hpr]
       have hu2 : 0 ≤ u n ^ 2 := sq_nonneg _
-      nlinarith [mul_le_mul_of_nonneg_right hpow hu2]
+      calc u n ^ 2 * ((n : ℝ) * ((n : ℝ) + 1)) ≤ u n ^ 2 * (2 * (n : ℝ) * n) :=
+            mul_le_mul_of_nonneg_left (by nlinarith) hu2
+        _ = ((n : ℝ) * u n ^ 2) * (2 * n) := by ring
+        _ ≤ (((n : ℝ) ^ (1 - ε)) ^ 2 * u n ^ 2) * (2 * n) :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hpow hu2) (by positivity)
     calc _ ≤ ∑ n ∈ Icc 1 T, 2 * (M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := sum_le_sum hterm
       _ = 2 * ∑ n ∈ Icc 1 T, M n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1)) := by rw [mul_sum]
       _ ≤ 2 * B ^ 2 := by linarith
@@ -759,10 +763,10 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
         ← Complex.cpow_add _ _ (by exact_mod_cast hn0.ne')]
       push_cast; ring_nf
     have hnorm : ‖z‖ ^ 2 = ‖a‖ ^ 2 := by rw [hz, norm_mul, hw, mul_one]
-    have hre : z.re ^ 2 = (‖z‖ ^ 2 + (z ^ 2).re) / 2 := by
-      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, sq z, Complex.mul_re]; ring
+    have hre : ∀ x : ℂ, x.re ^ 2 = (‖x‖ ^ 2 + (x ^ 2).re) / 2 := fun x => by
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, sq x, Complex.mul_re]; ring
     show z.re ^ 2 = _
-    rw [hre, hnorm, hz2]
+    rw [hre z, hnorm, hz2]
   have hsum : ∀ T : ℕ, ∑ n ∈ Icc 1 T, u n ^ 2 / n =
       ‖a‖ ^ 2 / 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) +
         (a ^ 2 * ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ)).re / 2 := by
@@ -771,8 +775,11 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
     refine sum_congr rfl fun n hn => ?_
     have hn1 := (mem_Icc.mp hn).1
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    rw [husq n hn1, ← mul_div_assoc, Complex.div_ofReal_re]
-    field_simp
+    have hdiv : (a ^ 2 * (((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I) / ((n : ℝ) : ℂ))).re =
+        (a ^ 2 * ((n : ℝ) : ℂ) ^ ((2 * t : ℝ) * I)).re / n := by
+      rw [← mul_div_assoc, Complex.div_ofReal_re]
+    rw [husq n hn1, hdiv]
+    ring
   rcases eq_or_ne t 0 with ht0 | ht0
   · -- `t = 0`: the main term is `Re(a) n^{1−ε}` with `Re a < 0`
     exfalso
@@ -789,7 +796,7 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
     have heq : ∑ n ∈ Icc 1 T, u n ^ 2 / n = a.re ^ 2 * ∑ n ∈ Icc 1 T, 1 / (n : ℝ) := by
       rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hu0]; ring
     rw [heq] at h
-    have ha2 : 0 < a.re ^ 2 := by positivity
+    have ha2 : 0 < a.re ^ 2 := by rw [sq]; exact mul_pos_of_neg_of_neg hare hare
     rw [div_lt_iff₀ ha2] at hT
     linarith
   · -- `t ≠ 0`: the oscillating part is bounded
@@ -834,8 +841,8 @@ theorem zeta_eq_zero_of_receiverBounded_oscillatingSmoothPower {ε : ℝ} (hε :
                 (((2 * t : ℝ) : ℂ) * I) + riemannZeta w +
                 (cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
                   (((2 * t : ℝ) : ℂ) * I) - riemannZeta w) := by ring
-            rw [e]
-            exact (norm_add_le _ _).trans (add_le_add_left (norm_add_le _ _) _)
+            exact (congrArg norm e).le.trans
+              ((norm_add_le _ _).trans (add_le_add_left (norm_add_le _ _) _))
         _ ≤ 1 / ‖((2 * t : ℝ) : ℂ) * I‖ + ‖riemannZeta w‖ + partialSumRate w * 1 := by
             rw [norm_div, hT1]
             gcongr

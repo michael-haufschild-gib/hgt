@@ -33,6 +33,39 @@ This is a finite identity with no limiting or cancellation premise.
 For every parameter `t:Real`, the positive clock `epsilon=exp(-t)`
 makes all public statements independent of proposition-valued inputs.
 
+## Cofactor compensation removes the unit endpoint
+
+A second use of the same zero divisor sum transfers the logarithmic
+cost to the complementary divisor. Put
+
+`w_epsilon(m)=(1-m^(-epsilon))/epsilon`.
+
+For every divisor pair `dm=n`, complete multiplicativity of real
+powers gives `d^(-epsilon)m^(-epsilon)=n^(-epsilon)`. Therefore
+
+`tau_epsilon(n)/epsilon
+ = sum_(dm=n) mu(d)d^(-epsilon) w_epsilon(m)` for `n>=2`.
+
+Expand the right side: its first sum is `tau_epsilon(n)/epsilon`
+and its second is `n^(-epsilon)/epsilon * sum_(d|n)mu(d)=0`.
+This is a finite identity, including at `epsilon=0` with Lean's
+totalized division convention; the useful approximation uses
+positive damping.
+
+For `d,m>=1` and positive damping,
+
+`|mu(d)d^(-epsilon) w_epsilon(m)| <= log m`,
+
+and `w_epsilon(1)=0` identically. Thus the cofactor-one contribution
+vanishes exactly in these coordinates. At zero damping the continuous
+extension is the familiar convolution `Lambda=mu*log`; no new analytic
+cancellation theorem is being claimed.
+
+For bounded cofactors the weights cost `log m`, not `log X`. Growing
+cofactors still require estimates at their actual arithmetic ranges.
+Qualitative fixed-form cancellation is not silently promoted to a
+bound uniform in those growing coefficients.
+
 ## What it changes, and what it does not
 
 The full physical expansion has coefficient cost `log d log e`, not

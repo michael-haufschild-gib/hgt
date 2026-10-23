@@ -378,6 +378,127 @@ theorem dampedPairAverage_eq_compensated (ε : ℝ) (X h : ℕ) :
     normalizedDampedResponse_eq_compensated_of_ne_one ε (n + h) (by omega), neg_mul_neg]
   rw [Finset.sum_mul_sum]
 
+/-- Complementary-divisor weight after the complete Möbius zero sum is removed. -/
+def cofactorDampingWeight (ε : ℝ) (m : ℕ) : ℝ :=
+  (1 - (m : ℝ) ^ (-ε)) / ε
+
+/-- The compensated convolution keeps damping on the Möbius divisor. -/
+def dampedCofactorTerm (ε : ℝ) (d m : ℕ) : ℝ :=
+  (moebius d : ℝ) * (d : ℝ) ^ (-ε) * cofactorDampingWeight ε m
+
+theorem cofactorDampingWeight_one (ε : ℝ) : cofactorDampingWeight ε 1 = 0 := by
+  simp only [cofactorDampingWeight, Nat.cast_one, Real.one_rpow, sub_self, zero_div]
+
+/-- The full-height unit-cofactor endpoint vanishes identically. -/
+theorem dampedCofactorTerm_one (ε : ℝ) (d : ℕ) : dampedCofactorTerm ε d 1 = 0 := by
+  rw [dampedCofactorTerm, cofactorDampingWeight_one, mul_zero]
+
+private theorem cofactorDampingWeight_bounds {ε : ℝ} (hε : 0 < ε) (m : ℕ) :
+    0 ≤ cofactorDampingWeight ε (m + 1) ∧
+      cofactorDampingWeight ε (m + 1) ≤ Real.log (m + 1 : ℕ) := by
+  have hm1 : (1 : ℝ) ≤ (m + 1 : ℕ) := by exact_mod_cast (show 1 ≤ m + 1 by omega)
+  have hm0 : (0 : ℝ) < (m + 1 : ℕ) := lt_of_lt_of_le zero_lt_one hm1
+  have ha : 0 ≤ 1 - ((m + 1 : ℕ) : ℝ) ^ (-ε) := sub_nonneg.mpr
+    (Real.rpow_le_one_of_one_le_of_nonpos hm1 (neg_nonpos.mpr hε.le))
+  refine ⟨div_nonneg ha hε.le, ?_⟩
+  rw [cofactorDampingWeight, div_le_iff₀ hε, Real.rpow_def_of_pos hm0]
+  linarith [Real.add_one_le_exp (Real.log (m + 1 : ℕ) * (-ε))]
+
+private theorem abs_dampedCofactorTerm_le_log {ε : ℝ} (hε : 0 < ε) (d m : ℕ) :
+    |dampedCofactorTerm ε d (m + 1)| ≤ Real.log (m + 1 : ℕ) := by
+  by_cases hd : d = 0
+  · subst d
+    simp only [dampedCofactorTerm, map_zero, Int.cast_zero, zero_mul, abs_zero]
+    exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ m + 1 by omega))
+  have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hd
+  have hpow0 : 0 ≤ (d : ℝ) ^ (-ε) := Real.rpow_nonneg (Nat.cast_nonneg d) _
+  have hpow1 : (d : ℝ) ^ (-ε) ≤ 1 :=
+    Real.rpow_le_one_of_one_le_of_nonpos hd1 (neg_nonpos.mpr hε.le)
+  have hμ : |(moebius d : ℝ)| ≤ 1 := by
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := d)
+  have hw := cofactorDampingWeight_bounds hε m
+  rw [dampedCofactorTerm, abs_mul, abs_mul, abs_of_nonneg hpow0, abs_of_nonneg hw.1]
+  exact (mul_le_of_le_one_left hw.1
+    ((mul_le_of_le_one_left hpow0 hμ).trans hpow1)).trans hw.2
+
+/-- Logarithmic cost belongs to the cofactor, uniformly over the positive clock. -/
+theorem abs_dampedCofactorTerm_exp_le_log (t : ℝ) (d m : ℕ) :
+    |dampedCofactorTerm (Real.exp (-t)) d (m + 1)| ≤ Real.log (m + 1 : ℕ) :=
+  abs_dampedCofactorTerm_le_log (Real.exp_pos _) d m
+
+theorem abs_dampedCofactorTerm_physical_le_log (X h d m : ℕ) :
+    |dampedCofactorTerm (physicalPairDamping X h) d (m + 1)| ≤ Real.log (m + 1 : ℕ) :=
+  abs_dampedCofactorTerm_le_log (physicalPairDamping_pos X h) d m
+
+private theorem normalizedDampedResponse_eq_cofactors_of_ne_one (ε : ℝ) (n : ℕ)
+    (hn : n ≠ 1) :
+    normalizedDampedResponse ε n =
+      ∑ p ∈ n.divisorsAntidiagonal, dampedCofactorTerm ε p.1 p.2 := by
+  have hz : (∑ d ∈ n.divisors, (moebius d : ℝ)) = 0 := by
+    rw [sum_moebius_divisors_real, if_neg hn]
+  have hterm (p : ℕ × ℕ) (hp : p ∈ n.divisorsAntidiagonal) :
+      dampedCofactorTerm ε p.1 p.2 =
+        (moebius p.1 : ℝ) * (p.1 : ℝ) ^ (-ε) / ε -
+          (n : ℝ) ^ (-ε) / ε * (moebius p.1 : ℝ) := by
+    have hprod : (p.1 : ℝ) ^ (-ε) * (p.2 : ℝ) ^ (-ε) = (n : ℝ) ^ (-ε) := by
+      rw [← Real.mul_rpow (Nat.cast_nonneg p.1) (Nat.cast_nonneg p.2),
+        ← Nat.cast_mul, (Nat.mem_divisorsAntidiagonal.mp hp).1]
+    unfold dampedCofactorTerm cofactorDampingWeight
+    calc
+      _ = (moebius p.1 : ℝ) * (p.1 : ℝ) ^ (-ε) / ε -
+          ((p.1 : ℝ) ^ (-ε) * (p.2 : ℝ) ^ (-ε)) / ε * (moebius p.1 : ℝ) := by ring
+      _ = _ := by rw [hprod]
+  symm
+  calc
+    _ = ∑ p ∈ n.divisorsAntidiagonal,
+        ((moebius p.1 : ℝ) * (p.1 : ℝ) ^ (-ε) / ε -
+          (n : ℝ) ^ (-ε) / ε * (moebius p.1 : ℝ)) := sum_congr rfl hterm
+    _ = _ := by
+      rw [Nat.sum_divisorsAntidiagonal (fun d _ =>
+        (moebius d : ℝ) * (d : ℝ) ^ (-ε) / ε - (n : ℝ) ^ (-ε) / ε * (moebius d : ℝ)),
+        sum_sub_distrib, ← sum_div, ← mul_sum, hz, mul_zero, sub_zero]
+      rfl
+
+/-- Exact convolution after the zero Möbius sum is transferred to the cofactor. -/
+theorem normalizedDampedResponse_eq_cofactor_compensation (ε : ℝ) (n : ℕ) :
+    normalizedDampedResponse ε (n + 2) =
+      ∑ p ∈ (n + 2).divisorsAntidiagonal, dampedCofactorTerm ε p.1 p.2 :=
+  normalizedDampedResponse_eq_cofactors_of_ne_one ε (n + 2) (by omega)
+
+private theorem normalizedDampedResponse_eq_nonunit_of_ne_one (ε : ℝ) (n : ℕ)
+    (hn : n ≠ 1) :
+    normalizedDampedResponse ε n =
+      ∑ p ∈ n.divisorsAntidiagonal.filter (fun p => p.2 ≠ 1),
+        dampedCofactorTerm ε p.1 p.2 := by
+  rw [normalizedDampedResponse_eq_cofactors_of_ne_one ε n hn, sum_filter]
+  apply sum_congr rfl
+  intro p _
+  by_cases hp : p.2 = 1
+  · simp only [hp, ne_eq, not_true_eq_false, if_false, dampedCofactorTerm_one]
+  · rw [if_pos hp]
+
+/-- The complete response is carried by nonunit complementary divisors. -/
+theorem normalizedDampedResponse_eq_nonunit_cofactors (ε : ℝ) (n : ℕ) :
+    normalizedDampedResponse ε (n + 2) =
+      ∑ p ∈ (n + 2).divisorsAntidiagonal.filter (fun p => p.2 ≠ 1),
+        dampedCofactorTerm ε p.1 p.2 :=
+  normalizedDampedResponse_eq_nonunit_of_ne_one ε (n + 2) (by omega)
+
+/-- Both unit-cofactor faces vanish before any estimate of the physical pair sum. -/
+theorem dampedPairAverage_eq_nonunit_cofactors (ε : ℝ) (X h : ℕ) :
+    dampedPairAverage ε X h =
+      (∑ n ∈ Icc 2 X,
+        ∑ p ∈ n.divisorsAntidiagonal.filter (fun p => p.2 ≠ 1),
+        ∑ q ∈ (n + h).divisorsAntidiagonal.filter (fun q => q.2 ≠ 1),
+          dampedCofactorTerm ε p.1 p.2 * dampedCofactorTerm ε q.1 q.2) / X := by
+  unfold dampedPairAverage
+  congr 1
+  apply sum_congr rfl
+  intro n hn
+  have hnI := mem_Icc.mp hn
+  rw [normalizedDampedResponse_eq_nonunit_of_ne_one ε n (by omega),
+    normalizedDampedResponse_eq_nonunit_of_ne_one ε (n + h) (by omega), sum_mul_sum]
+
 end
 
 end TwinPrime
@@ -386,3 +507,9 @@ end TwinPrime
 #print axioms TwinPrime.abs_compensatedDampingCoeff_physical_le_log
 #print axioms TwinPrime.normalizedDampedResponse_eq_compensated
 #print axioms TwinPrime.dampedPairAverage_eq_compensated
+#print axioms TwinPrime.dampedCofactorTerm_one
+#print axioms TwinPrime.abs_dampedCofactorTerm_exp_le_log
+#print axioms TwinPrime.abs_dampedCofactorTerm_physical_le_log
+#print axioms TwinPrime.normalizedDampedResponse_eq_cofactor_compensation
+#print axioms TwinPrime.normalizedDampedResponse_eq_nonunit_cofactors
+#print axioms TwinPrime.dampedPairAverage_eq_nonunit_cofactors

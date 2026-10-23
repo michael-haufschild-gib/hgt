@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 26 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 27 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -48,6 +48,8 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
 - `TheFrustratedCycleIsPaidAlongItsPath` — `antiperiodic_le_of_certificate`, `halfSine_telescope`,
   `frustratedCycle_capacity`, `frustratedCycle_capacity_attained`, `frustratedCycle_nonneg_iff`,
   `cycleWitness_locallyPayable_iff`, `cycleWitness_nonneg_iff`, `cycleWitness_window`.
+- `FrustrationIsPaidAlongCanonicalPaths` — `PathCertificate`, `antiTerm_le_pathEnergy`,
+  `incidenceEnergy_nonneg_of_pathCertificate`.
 - `OddFoldingIsTheSourceOfFrustration` — `incidenceEnergy_mirror_odd`, `evenFold_lossless`,
   `oddFold_pos_iff`, `oddFold_lossless_of_antitone`, `oddFold_primeTriangle_not_isBalanced`,
   `exists_unpayable_odd_primeTriangle`, `evenFold_prime_lossless`.

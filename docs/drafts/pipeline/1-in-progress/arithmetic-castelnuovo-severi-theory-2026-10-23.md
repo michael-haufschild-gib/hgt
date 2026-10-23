@@ -64,6 +64,8 @@ survivor).
 - `InfiniteGenusLaw`: `riemannHypothesis_iff_weil_positive_definite`.
 - `ResonatorKroneckerLaw`, `HeckeIncidenceCartesianLaw`: Kronecker/Cartesian law (no cross-prime prime
   coupling), additive Euler envelopes, `heckeIncidence_succ`.
+- `TheResonatorRemainderIsNegative`: `resonatorRemainder_neg` (review topic 1 decided: the
+  prime-side remainder is negative definite on resonators).
 - `TheAdjunctionConjectureMeanField`: `not_exists_polynomial_adjunction_bound` — the review's §4.3
   adjunction conjecture is false in its quantitative form (mean field `S² ≍ N`); survivor: Cartesian law.
 

@@ -59,20 +59,47 @@ Query syntax and paging:
   Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
   
-## A proof must be unconditional
-Lean proofs must be unconditional, no hypotheses or premises. Anything that is based on something that is not proven is not a proof.
+## Proof integrity
 
-## Lean rules
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
-3. Never use lake build.
-4. Build the olean only for the module you created, edited, and for missing dependencies.
-5. Always use lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
-6. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
-7. make sure you don't leave stale clean up after yourself.
-8. Optimize lean code. No raising heartbeat hacks.
-9.  Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
-   
+- Every result must be unconditional: no added hypotheses, premises, or axioms.
+- No `sorry`, `admit`, `sorryAx`, `axiom`, `opaque`, `unsafe`, `native_decide`, or equivalent
+  placeholders, trusted-computation shortcuts, or kernel-bypass mechanisms.
+- Do not hide an unproved mathematical input in an assumption binder, typeclass instance,
+  structure field, `Prop` interface, helper theorem, or imported dependency. A wrapper does not
+  discharge its premises. Check transitive dependencies with `#print axioms`.
+- A missing analytic input is not a hypothesis to add: it means the theorem is not ready. Prove
+  it, weaken the conclusion until the statement is unconditional, or record the gap on the
+  pipeline card.
+
+## Lean proof style
+
+- Optimize proofs; never raise or disable limits to make them compile. No `maxHeartbeats`
+  increases or `0`, `maxRecDepth`, `synthInstance.maxHeartbeats`, `synthInstance.maxSize`, or
+  equivalent local/global budget hacks. Reduce tactic work: explicit `nlinarith` inputs,
+  targeted `simp only`, small named lemmas, and reusable rewrites instead of repeated unfolding.
+- Verify mathlib names in `/tmp` scratch files before using them; follow the compilation rules below.
+- Add helpful, crisp comments for module purpose, non-obvious declarations, and key proof steps.
+  Do not leave substantial mathematics unexplained; trivial rewrites need no narration.
+- Comments are mathematics, not diary. No references to research docs, task numbers, sessions,
+  dates, or process notes ("pre-certified", "banked", "round N") — in two days nobody can decode
+  them. A Lean project is self-contained: it stands for itself as a proof. A docstring states
+  what the declaration says mathematically and, briefly, the proof mechanism — nothing else.
+
+## Lean compilation
+
+1. **Never run `lake build`**, including for a single module or missing dependency.
+2. Every compile is `lake --old env lean ...`, run from `formal/`, in the foreground, one process
+   per agent at a time. Other agents may compile independently. `--old` goes before `env`.
+3. **Check a file** (writes no olean; also the final audit):
+   `lake --old env lean GaloisForLFunctions/<Path>/<Module>.lean`
+4. **Build your module's olean only when another file you are writing imports it:**
+   `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.ilean GaloisForLFunctions/<Path>/<Module>.lean`
+5. **Missing dependency olean:** use rule 4's command for exactly the missing module, then retry
+   your file. Resolve further missing oleans one by one. Never rebuild an olean that exists.
+6. No full or umbrella builds. Wire finished modules into their umbrella with an import, but
+   do not compile the umbrella.
+7. Clean up your own stale files; preserve other agents' work.
+
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.
 - Before retiring a route, extract and audit the strongest non-trivial positive statement exposed by

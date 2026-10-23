@@ -245,6 +245,16 @@ estimate must therefore use the source vector and its arithmetic.
    (`cycleWitness_nonneg_iff`): frustration costs local payment exactly the factor `cos(π/k)`, and
    `½ < t ≤ 1/(2 cos(π/k))` is the local–global window of every frustrated cycle
    (`cycleWitness_window`). For `k = 3` this is the triangle window `½ < κ ≤ 1` of mechanism 6.
+9f. **Frustration is paid along canonical paths.** The single-cycle certificate is one instance of
+   a signed canonical-path method for any symmetric form (`PathCertificate`): a positive signed
+   supersolution `v`, for every anti-aligned overlap `a, b` a walk from `a` to `b` through aligned
+   overlaps with shares `λ_ab(x, y) > 0` of the overlaps it uses, the path budget
+   `c_ab v_a v_b Σ_steps 1/(λ_ab |c_xy| v_x v_y) ≤ 1`, and the packing `Σ_{a,b} λ_ab(x, y) ≤ 1` of
+   every aligned overlap. Cauchy–Schwarz along the path bounds each anti-aligned Dirichlet term by
+   its shares (`antiTerm_le_pathEnergy`), and the packing spends no aligned term twice, so the form
+   is nonnegative (`incidenceEnergy_nonneg_of_pathCertificate`). Frustrated cycles sharing edges
+   compete exactly through the packing: a shared aligned overlap splits its Dirichlet energy, which
+   raises the path budget of every cycle through it.
 9d. **Odd folding is the source of frustration.** A translation ledger charges positions `u, u'`
    by `−w(u − u')` with `w ≥ 0` even: it is aligned. Sampled at mirror points `±p_x`
    (`mirrorCoupling`), even profiles fold with charges `−w(p_x − p_y) − w(p_x + p_y)` and odd
@@ -580,7 +590,7 @@ Each question is stated with what is established and where the open part sits.
 
 | Tool | What is developed | Input → output | Failure mode and success test |
 |---|---|---|---|
-| Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
+| Arithmetic allocation duality | Pillar I; chain lending; holonomy; comparison form; overload duality; canonical-path certificates | finite signed incidence ledger → local allocation, or a negative profile of the comparison form (a dual adverse profile), or a frustrated triangle; the exact budget increase that restores payment | Finite duality is not cofinal. Success: an allocation for a growing arithmetic family with losses uniform in its size. |
 | Covariance continuation estimate | radial loss law; orbit reformulation; backward ill-posedness | source path and its tangent → log-energy change bounded by the signed radial rate | Discarding the sign of the radial rate gives the tangent-norm majorant. Success: a horizon-uniform bound on `‖C_a r‖_{ℓ²}`. |
 | Arithmetic profile decomposition | energy splitting; compact negativity; escape; compact negativity of the restricted Weil form at every fixed aperture | adverse sequence → weak limit with energy at most the limit, or an escape channel | Compactness can fail at origin, height, aperture or modulus. Success: compact negativity of the actual form with constants uniform in a growing aperture. |
 | Graded functional calculus | chain in the receiver norm; residue modes; sign-blind threshold; first column | damping chain + norm → eigenmodes, sizes, strong continuity at zero damping with the unbounded generator `−log d` on residue modes, unboundedness of the transition, truncation approximation at every horizon, the first column as the receiver | Dense eigenmodes need not give a stable expansion. Success: `ℓ²` bounds for the centred chain or for the orbit of `1/k`. |
@@ -614,8 +624,11 @@ Each question is stated with what is established and where the open part sits.
    payment of the frustrated part — a gauge with sign changes, or a global square absorbing the
    rank-one charges — and its cost for the actual critical form; ACT's AC-2 is the continuum
    instance. On a single frustrated cycle the answer is complete: the path pays the frustrated
-   edge through the half-sine certificate, at the exact factor `cos(π/k)` (mechanism 9c). Open:
-   several frustrated cycles sharing edges, where the path budgets compete.
+   edge through the half-sine certificate, at the exact factor `cos(π/k)` (mechanism 9c). For
+   several frustrated cycles the canonical-path certificate (mechanism 9f) is a sufficient
+   nonlocal payment with the competition made explicit as a packing constraint. Open: whether
+   optimal canonical-path certificates are exact (sharp) beyond a single cycle, and their cost on
+   the actual ledger.
 4. **The centred chain on `ℓ²`.** Decide whether `C_η` is `ℓ²`-bounded on finitely supported
    sequences for some `η ≤ ½`; by mechanism 18 a positive answer at cofinally small `η` would be RH.
    Its first column is exactly the receiver (mechanism 20); the computation of mechanism 20 writes

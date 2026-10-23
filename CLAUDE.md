@@ -67,29 +67,46 @@ Query syntax and paging:
   Verify exit before starting a replacement. Exit 124 means the runner timed out and cleaned up its process group.
 - Keep jobs in the runner's process group; do not detach them. Search commands and managed services retain their documented launch commands.
 
-## A proof must be unconditional
-Lean proofs must be unconditional, no hypotheses or premises. Anything that is based on something that is not proven is not a proof.
+## Proof integrity
 
-## Lean rules
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
-2. **NEVER run `lake build`.** Not for a module, not for an umbrella, not for "just one file",
-   not for a dependency. It recompiles thousands of modules and blocks the whole machine.
-3. Every compile is `lake --old env lean ...`, run from `formal/`, in the foreground, one process
-   at a time (other agents build in parallel to you). `--old` goes before `env`; it makes lake
-   reuse every existing olean instead of rebuilding it.
-4. **Check a file** (writes no olean; this is also the final audit):
+- Every result must be unconditional: no added hypotheses, premises, or axioms.
+- No `sorry`, `admit`, `sorryAx`, `axiom`, `opaque`, `unsafe`, `native_decide`, or equivalent
+  placeholders, trusted-computation shortcuts, or kernel-bypass mechanisms.
+- Do not hide an unproved mathematical input in an assumption binder, typeclass instance,
+  structure field, `Prop` interface, helper theorem, or imported dependency. A wrapper does not
+  discharge its premises. Check transitive dependencies with `#print axioms`.
+- A missing analytic input is not a hypothesis to add: it means the theorem is not ready. Prove
+  it, weaken the conclusion until the statement is unconditional, or record the gap on the
+  pipeline card.
+
+## Lean proof style
+
+- Optimize proofs; never raise or disable limits to make them compile. No `maxHeartbeats`
+  increases or `0`, `maxRecDepth`, `synthInstance.maxHeartbeats`, `synthInstance.maxSize`, or
+  equivalent local/global budget hacks. Reduce tactic work: explicit `nlinarith` inputs,
+  targeted `simp only`, small named lemmas, and reusable rewrites instead of repeated unfolding.
+- Verify mathlib names in `/tmp` scratch files before using them; follow the compilation rules below.
+- Add helpful, crisp comments for module purpose, non-obvious declarations, and key proof steps.
+  Do not leave substantial mathematics unexplained; trivial rewrites need no narration.
+- Comments are mathematics, not diary. No references to research docs, task numbers, sessions,
+  dates, or process notes ("pre-certified", "banked", "round N") — in two days nobody can decode
+  them. A Lean project is self-contained: it stands for itself as a proof. A docstring states
+  what the declaration says mathematically and, briefly, the proof mechanism — nothing else.
+
+## Lean compilation
+
+1. **Never run `lake build`**, including for a single module or missing dependency.
+2. Every compile is `lake --old env lean ...`, run from `formal/`, in the foreground, one process
+   per agent at a time. Other agents may compile independently. `--old` goes before `env`.
+3. **Check a file** (writes no olean; also the final audit):
    `lake --old env lean GaloisForLFunctions/<Path>/<Module>.lean`
-5. **Build the olean of your own file** — only when another file you are writing imports it:
+4. **Build your module's olean only when another file you are writing imports it:**
    `lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.olean -i .lake/build/lib/lean/GaloisForLFunctions/<Path>/<Module>.ilean GaloisForLFunctions/<Path>/<Module>.lean`
-6. **Missing dependency olean** (error `object file '.../GaloisForLFunctions/X/Y/Z.olean' ... does
-   not exist`): build exactly that one olean with the command of rule 5 for
-   `GaloisForLFunctions/X/Y/Z`, then retry your file. If the retry names another missing olean,
-   build that one, and so on — one by one. Build nothing else. Never rebuild an olean that exists.
-7. Do not run full or umbrella builds. Wire finished modules into their umbrella with an import
-   line, but do not compile the umbrella.
-8. Make sure you don't leave stale files; clean up after yourself.
-9. Optimize lean code. No raising heartbeat hacks.
-10. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+5. **Missing dependency olean:** use rule 4's command for exactly the missing module, then retry
+   your file. Resolve further missing oleans one by one. Never rebuild an olean that exists.
+6. No full or umbrella builds. Wire finished modules into their umbrella with an import, but
+   do not compile the umbrella.
+7. Clean up your own stale files; preserve other agents' work.
 
 ## No-go closure discipline
 - A no-go is not finished when only its negative statement is proved.

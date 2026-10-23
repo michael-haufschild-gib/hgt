@@ -12371,9 +12371,92 @@ theorem eulerPayment_lt_mass (hF : Continuous F) (hFc : HasCompactSupport F) (hF
     eulerPayment_residual hF hFc L (fun p hp => (hL p hp).1)
   linarith
 
-#print axioms eulerPayment_lt_mass
-#print axioms eulerPayment_residual
-#print axioms eq_zero_of_eq_const_mul_shift
+/-! ### The coherent decomposition of the first-power charge
+
+The raw first-power charge of a family of lags differs from its sequential payment by an explicit
+cross-charge: for each lag, the earlier lags read at the ratio lag `a_k − a_j` and the product lag
+`a_k + a_j` of the pair, in the ledger transformed by their predecessors.  With the residual
+identity this decomposes the charge exactly into mass, comb energy and cross-charges, which is the
+coherent subtraction the prime side needs: at prime-power lags the cross terms sit precisely at
+the ratio and product incidences of the pairs. -/
+
+/-- The raw first-power charge of a weighted family of lags. -/
+def eulerRaw (L : List (ℝ × ℝ)) (A : ℝ → ℝ) : ℝ := (L.map fun p => p.1 * A p.2).sum
+
+/-- The ratio–product cross-charge of a weighted family of lags. -/
+def eulerCross : List (ℝ × ℝ) → (ℝ → ℝ) → ℝ
+  | [], _ => 0
+  | (w, a) :: L, A =>
+      (L.map fun q => q.1 * (w / 2) * (A (q.2 - a) + A (q.2 + a))).sum
+        + eulerCross L (eulerStep w a A)
+
+theorem eulerRaw_sub_eulerRaw_eulerStep (M : List (ℝ × ℝ)) (A : ℝ → ℝ) (w a : ℝ) :
+    eulerRaw M A - eulerRaw M (eulerStep w a A)
+      = (M.map fun q => q.1 * (w / 2) * (A (q.2 - a) + A (q.2 + a))).sum := by
+  induction M with
+  | nil => simp [eulerRaw]
+  | cons q M ih =>
+      simp only [eulerRaw, List.map_cons, List.sum_cons] at ih ⊢
+      have hq : eulerStep w a A q.2 = A q.2 - (w / 2) * (A (q.2 - a) + A (q.2 + a)) := rfl
+      rw [hq]
+      linarith
+
+/-- **The sequential payment is the raw charge minus the cross-charges.** -/
+theorem eulerPayment_eq_raw_sub_cross : ∀ (L : List (ℝ × ℝ)) (A : ℝ → ℝ),
+    eulerPayment L A = eulerRaw L A - eulerCross L A := by
+  intro L
+  induction L with
+  | nil => intro A; simp [eulerPayment, eulerRaw, eulerCross]
+  | cons p L ih =>
+      intro A
+      obtain ⟨w, a⟩ := p
+      have hstep := eulerRaw_sub_eulerRaw_eulerStep L A w a
+      rw [eulerPayment, eulerCross, ih (eulerStep w a A)]
+      simp only [eulerRaw, List.map_cons, List.sum_cons] at hstep ⊢
+      linarith
+
+/-- **The first-power charges are paid by the mass and the cross-charges.** -/
+theorem eulerRaw_le (hF : Continuous F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) :
+    eulerRaw L (autoCorrelation F)
+      ≤ autoCorrelation F 0 + eulerCross L (autoCorrelation F) := by
+  have h := eulerPayment_le_mass hF hFc L hL
+  rw [eulerPayment_eq_raw_sub_cross] at h
+  linarith
+
+/-- **Exact decomposition of the first-power charge** into mass, comb energy and cross-charges. -/
+theorem eulerRaw_eq (hF : Continuous F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) (hL : ∀ p ∈ L, 0 ≤ p.1 ∧ p.1 ≤ 1) :
+    eulerRaw L (autoCorrelation F)
+      = autoCorrelation F 0 - (∫ x, eulerComb L F x ^ 2) + eulerCross L (autoCorrelation F) := by
+  have h := eulerPayment_residual hF hFc L hL
+  rw [eulerPayment_eq_raw_sub_cross] at h
+  linarith
+
+/-- The Euler weights and lags of a list of prime powers. -/
+def primeEulerList (ns : List ℕ) : List (ℝ × ℝ) :=
+  ns.map fun n => ((ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n, Real.log n)
+
+theorem eulerRaw_primeEulerList (A : ℝ → ℝ) (ns : List ℕ) :
+    eulerRaw (primeEulerList ns) A
+      = (ns.map fun n =>
+          (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n * A (Real.log n)).sum := by
+  rw [eulerRaw, primeEulerList, List.map_map]
+  rfl
+
+/-- **The prime first-power charge against the mass and its ratio–product cross-charges.** -/
+theorem prime_eulerRaw_le (hF : Continuous F) (hFc : HasCompactSupport F) (ns : List ℕ) :
+    (ns.map fun n => (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n
+        * autoCorrelation F (Real.log n)).sum
+      ≤ autoCorrelation F 0 + eulerCross (primeEulerList ns) (autoCorrelation F) := by
+  have hadm : ∀ p ∈ primeEulerList ns, 0 ≤ p.1 ∧ p.1 ≤ 1 := by
+    intro p hp
+    rw [primeEulerList, List.mem_map] at hp
+    obtain ⟨n, -, rfl⟩ := hp
+    exact ⟨div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _),
+      vonMangoldtAtom_le_one n⟩
+  have h := eulerRaw_le hF hFc (primeEulerList ns) hadm
+  rwa [eulerRaw_primeEulerList] at h
 
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
