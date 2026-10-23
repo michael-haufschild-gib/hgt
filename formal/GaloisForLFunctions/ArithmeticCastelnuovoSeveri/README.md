@@ -397,7 +397,8 @@ possible section theory must use near-radicals.
     window law (item 15); over `𝔽_q` the window `2g` sees everything (item 16′), over `ℚ` no finite
     degree does.
 
-### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
+### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`,
+`DistinctEffectiveCyclesMeetNonnegatively`)
 
 21. **Hodge index ⟺ an effectivity with the Riemann–Roch and ample axioms**
     (`exists_effectivity_iff_hodgeIndex`); the positive cone is the canonical witness
@@ -420,6 +421,18 @@ possible section theory must use near-radicals.
     only in which classes of nonpositive square and positive degree it declares effective (as for
     curves of negative self-intersection on a surface); everything else is forced. Items 21–22″
     specify the missing section count completely; none of them supplies it.
+22‴. **Bézout positivity holds** (`DistinctEffectiveCyclesMeetNonnegatively`). Call a nonnegative
+    real test an effective cycle, and two of them without common component when their supports are
+    disjoint. Polarizing the Lévy–Khintchine form of the archimedean symbol gives the collar of two
+    cycles in jump form (`re_archCross_eq`), `A(0)∫fg + ∫_0^∞ ω(x)∫(f(u) − f(u+x))(g(u) − g(u+x))`,
+    and without common component the local intersection is the sum of two positive kernels
+    (`localPair_eq_of_disjoint`): the prime incidence `Σ Λ(n) n^{−1/2}(k(log n) + k(−log n))`,
+    `k = f ⋆ g̃ ≥ 0`, and the archimedean collar `∫_0^∞ ω(x)∫(f(u)g(u+x) + f(u+x)g(u))`. Hence
+    distinct effective cycles meet nonnegatively (`localPair_nonneg`), unconditionally, as do
+    effective cycles and the fibres (`f·H, f·V ≥ 0`). The self-intersection of an effective cycle
+    carries the negative genus term `A(0)‖f‖²` and is not controlled, as for curves of negative
+    square. So of the two inputs of Castelnuovo–Severi (Bézout and Riemann–Roch) the scaling
+    surface has the first; the open core (§6, problem 1) is the second.
 
 ### 3.8 The infinite genus law (`InfiniteGenusLaw`)
 
@@ -531,7 +544,9 @@ possible section theory must use near-radicals.
    nonzero section, a proof that `E` has nonnegative degree against `H + V` **from the definition
    of a section** (not from the sign of the form), and a dimension count giving the Riemann–Roch
    axiom. By items 21–22′ this is RH; by item 22 it cannot be the cone of positive tests; by item
-   23 they cannot be identified with nonzero compact tests annihilating every zero. Approximate
+   23 they cannot be identified with nonzero compact tests annihilating every zero. The Bézout
+   half is already there (item 22‴): distinct effective cycles meet nonnegatively, so what is
+   missing is exactly a supply of effective cycles in every class of positive square. Approximate
    sections and a near-radical count (topic 2) are one possible architecture; any alternative must
    explain how its sections imply both axioms.
 2. **The near-radical count (Landau–Widom).** Replace `h⁰` by `h⁰_ε(L)`, the largest dimension of
@@ -649,6 +664,7 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 | `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q`: span defect = #distinct eigenvalues off the circle, visible at window `2g` |
 | `TheScalingSurfaceOfACurve` | zeros of a curve datum as a periodic tempered configuration; three equivalent Hodge index theorems over `𝔽_q` |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
+| `DistinctEffectiveCyclesMeetNonnegatively` | collar of two cycles in Lévy jump form; Bézout positivity of distinct effective cycles |
 | `BezoutEffectivityAndTheBeurlingObstruction` | Bézout positivity + Riemann–Roch / canonical surface Riemann–Roch ⟺ Hodge index; Frobenius span polar surface, positive graph cone (Bézout + ample, not RR), cohomological sign and subshift obstruction |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
 | `ArithmeticHodgeIndexSignatureLaw` | Gram signature law, one positive square ⟺ RH, selection of `Λ`, Pontryagin bound |

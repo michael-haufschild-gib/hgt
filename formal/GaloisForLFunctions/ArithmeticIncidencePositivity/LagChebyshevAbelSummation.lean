@@ -13226,10 +13226,6 @@ theorem prime_polar_balance_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactSu
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => by ring)
   rw [hsplit, ← h1, ← h2]
 
-#print axioms prime_polar_balance_spectral
-#print axioms integral_cosh_mul_autoCorrelation_spectral
-#print axioms integral_cosh_mul_cos
-
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

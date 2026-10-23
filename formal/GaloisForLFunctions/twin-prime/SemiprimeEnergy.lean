@@ -339,16 +339,17 @@ theorem emptyLabelEnergy_not_isLittleO (z V : (T : ℕ) → Fin (T + 1)) :
 
 /-- The selected input class for a prime shift on complete residue blocks. -/
 def residueMatchingIndices (D K p : ℕ) : Finset ℕ :=
-  (Icc 1 ((4 * D + 1) * (K + 1))).filter (fun v => v % (4 * D + 1) = p)
+  (Icc 1 (((4 * D + 6) * (4 * D + 2)) * (K + 1))).filter
+    (fun v => v % ((4 * D + 6) * (4 * D + 2)) = (4 * D + 2) * p)
 
 /-- The output residue decodes the unique shift and recovers its input sign. -/
 def residueMatchingRow (D w : ℕ) : ℝ :=
-  ((liouville (w - w % (4 * D + 1) / 2) : ℤ) : ℝ)
+  ((liouville (w - 4 * (w % ((4 * D + 6) * (4 * D + 2)) / (4 * D + 6))) : ℤ) : ℝ)
 
 /-- The actual Liouville first row, coupled to the shift-dependent residue. -/
 def residueMatchingCorrelation (D K : ℕ) (g : ℕ → ℝ) : ℝ :=
   ∑ p ∈ lowerFactorPrimes D, 1 / (p : ℝ) *
-    ∑ v ∈ residueMatchingIndices D K p, ((liouville v : ℤ) : ℝ) * g (v + p)
+    ∑ v ∈ residueMatchingIndices D K p, ((liouville v : ℤ) : ℝ) * g (v + 4 * p)
 
 /-- Positive reciprocal mass of the prime shifts. -/
 def residueMatchingPrimeMass (D : ℕ) : ℝ :=
@@ -413,19 +414,33 @@ private theorem matching_residue_card {l p K : ℕ} (hp : 0 < p) (hpl : p < l) :
 private theorem residueMatchingIndices_card (D K : ℕ) (p : ↥(lowerFactorPrimes D)) :
     (residueMatchingIndices D K p).card = K + 1 := by
   obtain ⟨hp, hpD⟩ := matching_prime_bounds D p
-  exact matching_residue_card hp (by omega)
+  have hc : 0 < 4 * D + 2 := by omega
+  have hpa : (p : ℕ) < 4 * D + 6 := by omega
+  have hlt : (4 * D + 2) * (p : ℕ) < (4 * D + 6) * (4 * D + 2) := by
+    simpa only [Nat.mul_comm] using Nat.mul_lt_mul_of_pos_left hpa hc
+  exact matching_residue_card (Nat.mul_pos hc hp) hlt
 
 private theorem matching_row_product (D K : ℕ) (p : ↥(lowerFactorPrimes D))
     (v : ↥(residueMatchingIndices D K p)) :
-    ((liouville (v : ℕ) : ℤ) : ℝ) * residueMatchingRow D ((v : ℕ) + p) = 1 := by
+    ((liouville (v : ℕ) : ℤ) : ℝ) * residueMatchingRow D ((v : ℕ) + 4 * p) = 1 := by
   obtain ⟨hp, hpD⟩ := matching_prime_bounds D p
   have hv := mem_filter.mp v.property
   have hvI := mem_Icc.mp hv.1
-  have hpl : (p : ℕ) < 4 * D + 1 := by omega
-  have htwop : (p : ℕ) + p < 4 * D + 1 := by omega
-  have hres : (((v : ℕ) + p) % (4 * D + 1)) / 2 = (p : ℕ) := by
-    rw [Nat.add_mod, hv.2, Nat.mod_eq_of_lt hpl, Nat.mod_eq_of_lt htwop]
-    omega
+  set a : ℕ := 4 * D + 6
+  set c : ℕ := 4 * D + 2
+  have ha : 0 < a := by dsimp [a]; omega
+  have hp_c : (p : ℕ) < c := by dsimp [c]; omega
+  have hout : a * (p : ℕ) < a * c := Nat.mul_lt_mul_of_pos_left hp_c ha
+  have hfour : 4 * (p : ℕ) < a * c :=
+    lt_of_le_of_lt (Nat.mul_le_mul_right (p : ℕ) (show 4 ≤ a by dsimp [a]; omega)) hout
+  have hvres : (v : ℕ) % (a * c) = c * p := hv.2
+  have hrem : ((v : ℕ) + 4 * p) % (a * c) = a * p := by
+    rw [Nat.add_mod, hvres, Nat.mod_eq_of_lt hfour]
+    have heq : c * (p : ℕ) + 4 * p = a * p := by dsimp [a, c]; ring
+    rw [heq, Nat.mod_eq_of_lt hout]
+  have hres : (((v : ℕ) + 4 * p) % (a * c)) / a = (p : ℕ) := by
+    rw [hrem]
+    exact Nat.mul_div_right p ha
   rw [residueMatchingRow, hres, Nat.add_sub_cancel_right, ← sq]
   exact matching_liouville_sq (by omega)
 
@@ -437,7 +452,7 @@ theorem residueMatchingCorrelation_saturated (D K : ℕ) :
   rw [mul_sum]
   refine sum_congr rfl fun p hp => ?_
   have hinner : (∑ v ∈ residueMatchingIndices D K p,
-      ((liouville v : ℤ) : ℝ) * residueMatchingRow D (v + p)) = (K : ℝ) + 1 := by
+      ((liouville v : ℤ) : ℝ) * residueMatchingRow D (v + 4 * p)) = (K : ℝ) + 1 := by
     calc _ = ∑ _v ∈ residueMatchingIndices D K p, (1 : ℝ) := by
           exact sum_congr rfl fun v hv => matching_row_product D K ⟨p, hp⟩ ⟨v, hv⟩
       _ = (K : ℝ) + 1 := by
@@ -455,12 +470,12 @@ theorem abs_residueMatchingCorrelation_le (D K : ℕ) (g : ℕ → Set.Icc (-1 :
   rw [mul_sum]
   refine sum_le_sum fun p hp => ?_
   have hinner : |∑ v ∈ residueMatchingIndices D K p,
-      ((liouville v : ℤ) : ℝ) * (g (v + p) : ℝ)| ≤ (K : ℝ) + 1 := by
+      ((liouville v : ℤ) : ℝ) * (g (v + 4 * p) : ℝ)| ≤ (K : ℝ) + 1 := by
     refine (abs_sum_le_sum_abs _ _).trans ?_
     calc _ ≤ ∑ _v ∈ residueMatchingIndices D K p, (1 : ℝ) := by
           refine sum_le_sum fun v _ => ?_
           rw [abs_mul]
-          have hg : |(g (v + p) : ℝ)| ≤ 1 := abs_le.mpr (g (v + p)).property
+          have hg : |(g (v + 4 * p) : ℝ)| ≤ 1 := abs_le.mpr (g (v + 4 * p)).property
           simpa only [one_mul] using mul_le_mul (matching_liouville_abs_le_one v) hg
             (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1)
       _ = (K : ℝ) + 1 := by
@@ -498,7 +513,10 @@ theorem eventually_residueMatchingPrimeMass_ge :
   have hcancel : (D : ℝ) * (1 / 10) ≤
       (D : ℝ) * (2 * Real.log (2 * (D : ℝ)) * residueMatchingPrimeMass D) := by
     nlinarith only [hmass', hupper]
-  have h := (mul_le_mul_left hD0).mp hcancel
+  have h : (1 / 10 : ℝ) ≤ 2 * Real.log (2 * (D : ℝ)) * residueMatchingPrimeMass D := by
+    by_contra hno
+    have hlt := mul_lt_mul_of_pos_left (lt_of_not_ge hno) hD0
+    linarith only [hcancel, hlt]
   rw [div_le_iff₀ (by positivity)]
   nlinarith only [h]
 
@@ -536,3 +554,10 @@ theorem residueMatchingRelative_not_isLittleO (K : ℕ → ℕ) :
 end
 
 end TwinPrime
+
+#print axioms TwinPrime.abs_residueMatchingRow_le_one
+#print axioms TwinPrime.residueMatchingCorrelation_saturated
+#print axioms TwinPrime.abs_residueMatchingCorrelation_le
+#print axioms TwinPrime.eventually_residueMatchingPrimeMass_ge
+#print axioms TwinPrime.residueMatchingRelative_eq_primeMass
+#print axioms TwinPrime.residueMatchingRelative_not_isLittleO

@@ -635,15 +635,33 @@ def primeTrianglePathCertificate (b : Fin 3 → ℝ)
         · exact ⟨by decide, by linarith [(oddFold_primeTriangle_weilLedgerKernel_one_one_two b).1]⟩
         · rw [hsym 2 1]
           exact ⟨by decide, by linarith [(oddFold_primeTriangle_weilLedgerKernel_one_one_two b).1]⟩
-    have hite : ∀ (a d : Fin 3) (T : ℝ),
-        (if a ≠ d ∧ 0 < c a d then T else 0) =
-          (if (a = 1 ∧ d = 2) ∨ (a = 2 ∧ d = 1) then T else 0) :=
-      fun a d T => if_ctx_congr (hcond a d) (fun _ => rfl) (fun _ => rfl)
-    fin_cases x <;> fin_cases y <;>
-      simp only [Fin.sum_univ_three, hite, sum_range_succ, sum_range_zero, primeTrianglePath,
-        primeTriangleShare, walkVertex, walkVertex_zero, List.length_cons, List.length_nil,
-        Fin.ext_iff, Fin.val_zero, Fin.val_one, Fin.val_two] <;>
-      norm_num
+    have h00 : ¬((0 : Fin 3) ≠ 0 ∧ 0 < c 0 0) := by rw [hcond]; decide
+    have h01 : ¬((0 : Fin 3) ≠ 1 ∧ 0 < c 0 1) := by rw [hcond]; decide
+    have h02 : ¬((0 : Fin 3) ≠ 2 ∧ 0 < c 0 2) := by rw [hcond]; decide
+    have h10 : ¬((1 : Fin 3) ≠ 0 ∧ 0 < c 1 0) := by rw [hcond]; decide
+    have h11 : ¬((1 : Fin 3) ≠ 1 ∧ 0 < c 1 1) := by rw [hcond]; decide
+    have h12 : (1 : Fin 3) ≠ 2 ∧ 0 < c 1 2 := by rw [hcond]; decide
+    have h20 : ¬((2 : Fin 3) ≠ 0 ∧ 0 < c 2 0) := by rw [hcond]; decide
+    have h21 : (2 : Fin 3) ≠ 1 ∧ 0 < c 2 1 := by rw [hcond]; decide
+    have h22 : ¬((2 : Fin 3) ≠ 2 ∧ 0 < c 2 2) := by rw [hcond]; decide
+    rw [Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three,
+      if_neg h00, if_neg h01, if_neg h02,
+      if_neg h10, if_neg h11, if_pos h12,
+      if_neg h20, if_pos h21, if_neg h22]
+    change (0 + 0 + 0) + (0 + 0 +
+        ∑ s ∈ range 2,
+          (if walkVertex 1 [0, 2] s = x ∧ walkVertex 1 [0, 2] (s + 1) = y then
+            primeTriangleShare 1 2 x y else 0)) +
+      (0 + (∑ s ∈ range 2,
+          (if walkVertex 2 [0, 1] s = x ∧ walkVertex 2 [0, 1] (s + 1) = y then
+            primeTriangleShare 2 1 x y else 0)) + 0) ≤ 1
+    rw [sum_range_succ, sum_range_one, sum_range_succ, sum_range_one]
+    change (0 + 0 + 0) + (0 + 0 +
+        ((if (1 : Fin 3) = x ∧ (0 : Fin 3) = y then (1 : ℝ) else 0) +
+         (if (0 : Fin 3) = x ∧ (2 : Fin 3) = y then (1 : ℝ) else 0))) +
+      (0 + (((if (2 : Fin 3) = x ∧ (0 : Fin 3) = y then (1 : ℝ) else 0) +
+             (if (0 : Fin 3) = x ∧ (1 : Fin 3) = y then (1 : ℝ) else 0))) + 0) ≤ 1
+    fin_cases x <;> fin_cases y <;> norm_num
 
 /-- **Canonical-path positivity of the source-faithful prime triangle.** Whenever the diagonal
 budgets satisfy the supersolution condition `(Cv)_i ≥ 0` in gauge `v = ![4, 1, 1]`, the frustrated
@@ -1078,16 +1096,58 @@ def packedPrimePathCertificate (b : Fin 4 → ℝ)
         · rw [hsym 2 1]; exact ⟨by decide, by linarith [(oddFold_packedPrime_one_two b).1]⟩
         · exact ⟨by decide, by linarith [(oddFold_packedPrime_one_three b).1]⟩
         · rw [hsym 3 1]; exact ⟨by decide, by linarith [(oddFold_packedPrime_one_three b).1]⟩
-    have hite : ∀ (a d : Fin 4) (T : ℝ),
-        (if a ≠ d ∧ 0 < c a d then T else 0) =
-          (if (a = 1 ∧ d = 2) ∨ (a = 2 ∧ d = 1) ∨ (a = 1 ∧ d = 3) ∨ (a = 3 ∧ d = 1) then
-            T else 0) :=
-      fun a d T => if_ctx_congr (hcond a d) (fun _ => rfl) (fun _ => rfl)
-    fin_cases x <;> fin_cases y <;>
-      simp only [Fin.sum_univ_four, hite, sum_range_succ, sum_range_zero, packedPrimePath,
-        packedPrimeShare, walkVertex, walkVertex_zero, List.length_cons, List.length_nil,
-        Fin.ext_iff, Fin.val_zero, Fin.val_one, Fin.val_two] <;>
-      norm_num
+    have h00 : ¬((0 : Fin 4) ≠ 0 ∧ 0 < c 0 0) := by rw [hcond]; decide
+    have h01 : ¬((0 : Fin 4) ≠ 1 ∧ 0 < c 0 1) := by rw [hcond]; decide
+    have h02 : ¬((0 : Fin 4) ≠ 2 ∧ 0 < c 0 2) := by rw [hcond]; decide
+    have h03 : ¬((0 : Fin 4) ≠ 3 ∧ 0 < c 0 3) := by rw [hcond]; decide
+    have h10 : ¬((1 : Fin 4) ≠ 0 ∧ 0 < c 1 0) := by rw [hcond]; decide
+    have h11 : ¬((1 : Fin 4) ≠ 1 ∧ 0 < c 1 1) := by rw [hcond]; decide
+    have h12 : (1 : Fin 4) ≠ 2 ∧ 0 < c 1 2 := by rw [hcond]; decide
+    have h13 : (1 : Fin 4) ≠ 3 ∧ 0 < c 1 3 := by rw [hcond]; decide
+    have h20 : ¬((2 : Fin 4) ≠ 0 ∧ 0 < c 2 0) := by rw [hcond]; decide
+    have h21 : (2 : Fin 4) ≠ 1 ∧ 0 < c 2 1 := by rw [hcond]; decide
+    have h22 : ¬((2 : Fin 4) ≠ 2 ∧ 0 < c 2 2) := by rw [hcond]; decide
+    have h23 : ¬((2 : Fin 4) ≠ 3 ∧ 0 < c 2 3) := by rw [hcond]; decide
+    have h30 : ¬((3 : Fin 4) ≠ 0 ∧ 0 < c 3 0) := by rw [hcond]; decide
+    have h31 : (3 : Fin 4) ≠ 1 ∧ 0 < c 3 1 := by rw [hcond]; decide
+    have h32 : ¬((3 : Fin 4) ≠ 2 ∧ 0 < c 3 2) := by rw [hcond]; decide
+    have h33 : ¬((3 : Fin 4) ≠ 3 ∧ 0 < c 3 3) := by rw [hcond]; decide
+    rw [Fin.sum_univ_four, Fin.sum_univ_four, Fin.sum_univ_four, Fin.sum_univ_four, Fin.sum_univ_four,
+      if_neg h00, if_neg h01, if_neg h02, if_neg h03,
+      if_neg h10, if_neg h11, if_pos h12, if_pos h13,
+      if_neg h20, if_pos h21, if_neg h22, if_neg h23,
+      if_neg h30, if_pos h31, if_neg h32, if_neg h33]
+    change (0 + 0 + 0 + 0) +
+      (0 + 0 +
+        (∑ s ∈ range 2,
+          (if walkVertex 1 [0, 2] s = x ∧ walkVertex 1 [0, 2] (s + 1) = y then
+            packedPrimeShare 1 2 x y else 0)) +
+        (∑ s ∈ range 2,
+          (if walkVertex 1 [0, 3] s = x ∧ walkVertex 1 [0, 3] (s + 1) = y then
+            packedPrimeShare 1 3 x y else 0))) +
+      (0 +
+        (∑ s ∈ range 2,
+          (if walkVertex 2 [0, 1] s = x ∧ walkVertex 2 [0, 1] (s + 1) = y then
+            packedPrimeShare 2 1 x y else 0)) + 0 + 0) +
+      (0 +
+        (∑ s ∈ range 2,
+          (if walkVertex 3 [0, 1] s = x ∧ walkVertex 3 [0, 1] (s + 1) = y then
+            packedPrimeShare 3 1 x y else 0)) + 0 + 0) ≤ 1
+    rw [sum_range_succ, sum_range_one, sum_range_succ, sum_range_one,
+      sum_range_succ, sum_range_one, sum_range_succ, sum_range_one]
+    change (0 + 0 + 0 + 0) +
+      (0 + 0 +
+        ((if (1 : Fin 4) = x ∧ (0 : Fin 4) = y then packedPrimeShare 1 2 x y else 0) +
+         (if (0 : Fin 4) = x ∧ (2 : Fin 4) = y then packedPrimeShare 1 2 x y else 0)) +
+        ((if (1 : Fin 4) = x ∧ (0 : Fin 4) = y then packedPrimeShare 1 3 x y else 0) +
+         (if (0 : Fin 4) = x ∧ (3 : Fin 4) = y then packedPrimeShare 1 3 x y else 0))) +
+      (0 +
+        ((if (2 : Fin 4) = x ∧ (0 : Fin 4) = y then packedPrimeShare 2 1 x y else 0) +
+         (if (0 : Fin 4) = x ∧ (1 : Fin 4) = y then packedPrimeShare 2 1 x y else 0)) + 0 + 0) +
+      (0 +
+        ((if (3 : Fin 4) = x ∧ (0 : Fin 4) = y then packedPrimeShare 3 1 x y else 0) +
+         (if (0 : Fin 4) = x ∧ (1 : Fin 4) = y then packedPrimeShare 3 1 x y else 0)) + 0 + 0) ≤ 1
+    fin_cases x <;> fin_cases y <;> norm_num [packedPrimeShare]
 
 /-- **Positivity of the packed 4-point arithmetic configuration under `weilLedgerKernel 1 1`.** -/
 theorem incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg (b : Fin 4 → ℝ)
@@ -1099,30 +1159,35 @@ theorem incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg (b : Fin
 
 /-- Lower bound on the self-interaction `weilLedgerKernel 1 1 (2 * packedPrimePos 3)`. -/
 theorem weilLedgerKernel_one_two_mul_packedPrimePos_three_gt :
-    (-4 : ℝ) < weilLedgerKernel 1 1 (2 * packedPrimePos 3) := by
-  have hp3 : packedPrimePos 3 = (Real.log 7 + Real.log 2 - Real.log 5) / 2 := rfl
-  have h23 : 2 * packedPrimePos 3 = Real.log 14 - Real.log 5 := by
-    rw [hp3, show (14 : ℝ) = 7 * 2 by norm_num, Real.log_mul (by norm_num) (by norm_num)]; ring
+    (-10 : ℝ) < weilLedgerKernel 1 1 (2 * packedPrimePos 3) := by
+  have hp3 : packedPrimePos 3 = (3 * Real.log 5 - Real.log 2 - Real.log 3) / 2 := by
+    simp only [packedPrimePos, Matrix.cons_val_three, Matrix.head_cons, Matrix.tail_cons]
+  have h125 : 3 * Real.log 5 = Real.log 125 := by
+    rw [show (125 : ℝ) = (5 : ℝ) ^ 3 by norm_num, Real.log_pow]; ring
+  have h6 : Real.log 2 + Real.log 3 = Real.log 6 := by
+    rw [← Real.log_mul (by norm_num) (by norm_num)]; norm_num
+  have h23 : 2 * packedPrimePos 3 = Real.log 125 - Real.log 6 := by
+    rw [hp3]; linarith
   unfold weilLedgerKernel
   rw [h23, abs_log_sub_eq_log_div (by norm_num) (by norm_num),
-    primeKernel_log_sub (by norm_num) (by norm_num) (by norm_num) (m := 2)
+    primeKernel_log_sub (by norm_num) (by norm_num) (by norm_num) (m := 20)
       (by norm_num) (by norm_num),
-    weilKernel_log_eq (by norm_num : (1 : ℝ) < 14 / 5)]
-  have heq : 1 * (-2 * ((14 / 5 : ℝ) ^ 3 - 14 / 5 - 1) /
-      (((14 / 5 : ℝ) ^ 2 - 1) * Real.sqrt (14 / 5))) + 1 * 0 =
-      -((1474 / 285 : ℝ) / Real.sqrt (14 / 5)) := by ring
+    weilKernel_log_eq (by norm_num : (1 : ℝ) < 125 / 6)]
+  have heq : 1 * (-2 * ((125 / 6 : ℝ) ^ 3 - 125 / 6 - 1) /
+      (((125 / 6 : ℝ) ^ 2 - 1) * Real.sqrt (125 / 6))) + 1 * 0 =
+      -((3900988 / 93579 : ℝ) / Real.sqrt (125 / 6)) := by ring
   rw [heq]
-  have hlt : (1474 / 285 : ℝ) / Real.sqrt (14 / 5) < 4 :=
+  have hlt : (3900988 / 93579 : ℝ) / Real.sqrt (125 / 6) < 10 :=
     div_sqrt_lt_of_sq_lt (by norm_num) (by norm_num) (by norm_num)
   linarith
 
-/-- Explicit sufficient diagonal budgets `b 0 ≥ 5`, `b 1 ≥ 3`, `b 2 ≥ 43`, `b 3 ≥ 35` making
+/-- Explicit sufficient diagonal budgets `b 0 ≥ 5`, `b 1 ≥ 3`, `b 2 ≥ 43`, `b 3 ≥ 41` making
 `packedPrimeGauge = ![8, 1, 1, 1]` a positive supersolution of the packed 4-point arithmetic
 configuration. Packing two positive overlaps `(1, 2)` and `(1, 3)` through the shared hub step
 `1 → 0` doubles the hub gauge (`v 0 = 8` vs `4`) and inflates the diagonal budget needed at vertex
 `2` (`b 2 ≥ 43` vs `21`). -/
 theorem supersolution_packedPrimeGauge_of_le {b : Fin 4 → ℝ}
-    (hb0 : 5 ≤ b 0) (hb1 : 3 ≤ b 1) (hb2 : 43 ≤ b 2) (hb3 : 35 ≤ b 3) :
+    (hb0 : 5 ≤ b 0) (hb1 : 3 ≤ b 1) (hb2 : 43 ≤ b 2) (hb3 : 41 ≤ b 3) :
     ∀ i, 0 ≤ couplingAction (oddFold packedPrimePos (weilLedgerKernel 1 1) b)
       packedPrimeGauge i := by
   set c := oddFold packedPrimePos (weilLedgerKernel 1 1) b
@@ -1143,16 +1208,16 @@ theorem supersolution_packedPrimeGauge_of_le {b : Fin 4 → ℝ}
   have hd3 := weilLedgerKernel_one_two_mul_packedPrimePos_three_gt
   have hc00 : b 0 - 4 < c 0 0 := by
     change b 0 - 4 < oddFold packedPrimePos (weilLedgerKernel 1 1) b 0 0
-    rw [oddFold_diag]; exact sub_lt_iff_lt_add'.mpr (by linarith)
+    rw [oddFold_diag, packedPrimePos_zero]; linarith
   have hc11 : b 1 < c 1 1 := by
     change b 1 < oddFold packedPrimePos (weilLedgerKernel 1 1) b 1 1
-    rw [oddFold_diag]; exact lt_add_of_pos_right _ hd1
+    rw [oddFold_diag, packedPrimePos_one]; linarith
   have hc22 : b 2 - 6 < c 2 2 := by
     change b 2 - 6 < oddFold packedPrimePos (weilLedgerKernel 1 1) b 2 2
-    rw [oddFold_diag]; exact sub_lt_iff_lt_add'.mpr (by linarith)
-  have hc33 : b 3 - 4 < c 3 3 := by
-    change b 3 - 4 < oddFold packedPrimePos (weilLedgerKernel 1 1) b 3 3
-    rw [oddFold_diag]; exact sub_lt_iff_lt_add'.mpr (by linarith)
+    rw [oddFold_diag, packedPrimePos_two]; linarith
+  have hc33 : b 3 - 10 < c 3 3 := by
+    change b 3 - 10 < oddFold packedPrimePos (weilLedgerKernel 1 1) b 3 3
+    rw [oddFold_diag]; linarith
   intro i
   fin_cases i
   · change 0 ≤ ∑ j : Fin 4, c 0 j * packedPrimeGauge j

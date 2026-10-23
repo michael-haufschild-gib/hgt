@@ -94,7 +94,7 @@ theorem exists_norm_inv_LFunction_le_log_pow (χ : DirichletCharacter ℂ Q) :
     have hX4 : c / L ^ (28 : ℕ) ≤ X ^ 4 := by
       have hpow : (a / L ^ (9 : ℕ)) ^ 3 ≤ (σ - 1) ^ 3 := pow_le_pow_left₀ (by positivity) hη0.le 3
       have hcL : c / L ^ (28 : ℕ) = (a / L ^ (9 : ℕ)) ^ 3 / (2 * K ^ 4 * L) := by
-        simp only [c]; field_simp; ring
+        simp only [c]; field_simp
       rw [hcL, div_le_iff₀ (by positivity)]
       linarith
     -- hence `X ≥ min(c, 1)/L⁷`

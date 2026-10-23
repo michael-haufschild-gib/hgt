@@ -936,11 +936,22 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         is the quantitative limit of resonance — a test tracks a peak of the symbol only if the
         peak is wider than the reciprocal aperture — and it is the missing ingredient for scoring
         the charge of a prime band against its symbol.
+      * **`coshCosKernel`**, **`integral_cosh_mul_cos`**, **`abs_coshCosKernel_le`**,
+        **`integral_cosh_mul_autoCorrelation_spectral`**, **`prime_polar_balance_spectral`** —
+        the polar side in spectral coordinates. The polar comparison `∫_0^T cosh(s/2)A(s)ds` is
+        also a pairing against the spectral density, with symbol the finite cosine moment
+        `K_T(b) = ∫_0^T cosh(s/2)cos(bs)ds = (½sinh(T/2)cos(bT) + b cosh(T/2)sin(bT))/(¼+b²)`,
+        bounded by `2sinh(T/2) + cosh(T/2)` uniformly in `b` (Fubini against a finite-measure
+        window). Hence the whole prime–polar balance of the ledger is one integral of the signed
+        symbol against a nonnegative density:
+        `Σ_j w_j A(a_j) − 2∫_0^T cosh(s/2)A(s)ds = ∫ (S(ξ) − 2K_T(2πξ))|F̂(ξ)|²dξ`. The sign
+        question of the balance becomes the sign of an explicit function of frequency, weighted
+        by a density the test may choose but cannot concentrate below scale `1/r`.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 346 headline results of this card, in the order the card states them. Every name is a
+The 351 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -950,7 +961,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 275.**  Excluded: 42 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 279.**  Excluded: 43 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1298,6 +1309,11 @@ contributions of the field, and are excluded.
 344. `abs_spectralDensity_sub_le`
 345. `setIntegral_spectralDensity_le`
 346. `mass_outside_window_ge`
+347. `coshCosKernel` *(definition)*
+348. `integral_cosh_mul_cos`
+349. `abs_coshCosKernel_le`
+350. `integral_cosh_mul_autoCorrelation_spectral`
+351. `prime_polar_balance_spectral`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1314,3 +1330,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — spectral form of the lag ledger: density integrability, cosine-transform identity, symbol capacity bound.
 - 2026-10-23 — the comb diagonalised in frequency: spectral multiplier, payment as multiplier deficit.
 - 2026-10-23 — frequency anti-concentration: Lipschitz spectral density, window-mass bound, resonance limit at scale 1/r.
+- 2026-10-23 — polar side in spectral coordinates; prime–polar balance as one signed-symbol integral.

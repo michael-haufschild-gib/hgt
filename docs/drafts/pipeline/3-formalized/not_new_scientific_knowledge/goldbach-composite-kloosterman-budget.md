@@ -125,6 +125,11 @@ Audit log: `/tmp/hgt-goldbach-composite-budget-audit.log`.
 Temporary audit directives were removed without changing proof bodies.
 The existing `goldbach/Main.lean` import already includes the leaf;
 no umbrella was built.
+Index regeneration passed, and exact corpus lookup finds the final root
+at line 620. Targeted whitespace and forbidden-marker checks passed;
+all 71 local links in the seven updated documents resolve. Owned build
+and search commands terminated; completed-search scratch and temporary
+audit directives were removed. Proof-audit logs are retained.
 
 The finite stationary set is normalized by one actual solution and
 injected into the preimage of square roots of one. The exact unit-lift

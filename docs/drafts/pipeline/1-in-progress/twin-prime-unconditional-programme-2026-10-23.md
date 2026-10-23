@@ -86,6 +86,17 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Current source-specific obstruction and positive survivor:
+  [relative residue matching](../2-fully-proven/twin-prime-residue-matching-boundary.md).
+  An explicit bounded second row exactly saturates the actual
+  Liouville correlation on separated prime-shift residue classes.
+  Its relative mass is eventually at least `1/(20 log(2D))`,
+  uniformly in arbitrarily large complete-block horizons. Thus
+  the arbitrary-row centering theorem cannot be strengthened
+  to the required relative normalization. The sharp finite norm
+  has a complete paper proof and is under Lean verification.
+  The actual two-row affine target remains open; any successful
+  relative proof must retain both arithmetic rows.
 - Current certified transfer:
   [integer-start Möbius windows](../3-formalized/twin-prime-integer-start-moebius-window.md).
   The later all-length spectral-head source controls the plain

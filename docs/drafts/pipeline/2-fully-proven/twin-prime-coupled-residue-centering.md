@@ -202,6 +202,15 @@ error by a growing `l` loses the saving. Its Möbius version is
 proved above, but only for the rough-shift average. No quantitative
 fixed-affine Möbius estimate follows from that average.
 
+The corresponding arbitrary-row estimate normalized by `Y/l` is
+false. The [exact residue matching](twin-prime-residue-matching-boundary.md)
+constructs a single bounded second row that aligns every Liouville
+sign on a prime-shift block, for every complete-block horizon.
+The positive survivor is its sharp norm, with eventual reciprocal
+prime mass at least `1/(20 log(2D))`. Paper proof is complete;
+Lean certification is in progress. The present `1/Y` theorem is
+unaffected, and neither actual-row cancellation conjecture is refuted.
+
 No Lean theorem with either analytic estimate as an unproved
 premise is introduced. A certificate for this full statement
 requires unconditional formalization of its short exponential-sum

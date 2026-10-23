@@ -104,7 +104,8 @@ theorem floorCount_le_one {a a' d : ℕ} (h : a' ≤ a) (hd : a - a' < d) : a / 
       _ ≤ a := this
   have h3 : a' < (a' / d + 1) * d := by
     have := Nat.lt_div_mul_add (a := a') (b := d) hd0; nlinarith
-  nlinarith
+  have h4 : (a' / d + 2) * d = (a' / d + 1) * d + d := by ring
+  omega
 
 /-- **The fiber of a quotient**: the divisors `d` with `⌊a/d⌋ = e` and a multiple in `(a', a]`
 lie in `(⌊a'/e⌋, ⌊a/e⌋]`. -/
@@ -148,20 +149,21 @@ theorem half_quotient_rpow_eq {a e η : ℝ} (ha : 0 < a) (he : 0 < e) :
 /-- **Large divisors**: `Σ_{D < d ≤ a, d | (a', a]} d^{−η} ≤ 2((1 + 1/η) J D^{−η} + a D^{−(1+η)})`. -/
 theorem sum_large_divisors_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : ℕ} (h : a' ≤ a)
     (h2 : 2 * (a - a') ≤ a) {D : ℝ} (hD1 : 1 ≤ D) (hDa : D ≤ a) :
-    ∑ d ∈ (Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d), (d : ℝ) ^ (-η) ≤
+    ∑ d ∈ (Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d), (d : ℝ) ^ (-η) ≤
       2 * ((1 + 1 / η) * ((a : ℝ) - a') * D ^ (-η) + a * D ^ (-(1 + η))) := by
   have ha : (0 : ℝ) < a := by linarith
   have hD0 : 0 < D := by linarith
   set E := ⌊(a : ℝ) / D⌋₊ with hEdef
   have hE1 : 1 ≤ E := Nat.le_floor (by rw [Nat.cast_one, le_div_iff₀ hD0, one_mul]; exact hDa)
   have hEle : (E : ℝ) ≤ a / D := Nat.floor_le (by positivity)
-  have hJ0 : (0 : ℝ) ≤ (a : ℝ) - a' := by have : (a' : ℝ) ≤ a := by exact_mod_cast h
-                                         linarith
+  have hJ0 : (0 : ℝ) ≤ (a : ℝ) - a' := by
+    have : (a' : ℝ) ≤ a := by exact_mod_cast h
+    linarith
   have ha' : (a : ℝ) / 2 ≤ a' := by
     have : ((2 * (a - a') : ℕ) : ℝ) ≤ a := by exact_mod_cast h2
     push_cast [h] at this; linarith
   -- group by the quotient `e = ⌊a/d⌋`
-  have hmaps : ∀ d ∈ (Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d), a / d ∈ Icc 1 E := by
+  have hmaps : ∀ d ∈ (Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d), a / d ∈ Icc 1 E := by
     intro d hd
     simp only [mem_filter, mem_Icc] at hd
     obtain ⟨⟨hd1, -⟩, hDd, hlt⟩ := hd
@@ -169,13 +171,13 @@ theorem sum_large_divisors_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : ℕ
     calc ((a / d : ℕ) : ℝ) ≤ (a : ℝ) / d := natDiv_le_div a d
       _ ≤ (a : ℝ) / D := div_le_div_of_nonneg_left ha.le hD0 hDd.le
   rw [← sum_fiberwise_of_maps_to hmaps]
-  have hfib : ∀ e ∈ Icc 1 E, ∑ d ∈ ((Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d)).filter
+  have hfib : ∀ e ∈ Icc 1 E, ∑ d ∈ ((Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d)).filter
       (fun d => a / d = e), (d : ℝ) ^ (-η) ≤
       (((a : ℝ) - a') / e + 1) * ((2 / a) ^ η * (e : ℝ) ^ η) := by
     intro e he
     have he0 : 0 < e := (mem_Icc.1 he).1
     have he0' : (0 : ℝ) < e := by exact_mod_cast he0
-    set F := ((Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d)).filter (fun d => a / d = e)
+    set F := ((Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d)).filter (fun d => a / d = e)
     have hsub : F ⊆ (Icc 1 a).filter fun d => a' / d < a / d ∧ a / d = e := by
       intro d hd
       simp only [F, mem_filter] at hd ⊢
@@ -391,7 +393,7 @@ theorem sum_large_floorTerm_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : �
     have : ((a - a' : ℕ) : ℝ) < d := by push_cast [h]; linarith [hd.2]
     exact_mod_cast this
   have hfilt : S.filter (fun d => a' / d < a / d) =
-      (Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d) := by
+      (Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d) := by
     rw [hSdef, filter_filter]
     exact filter_congr fun d _ => by simp only [not_le]
   have hsubI : S ⊆ Ioc ⌊D⌋₊ a := by
@@ -411,7 +413,7 @@ theorem sum_large_floorTerm_le {η : ℝ} (h0 : 0 < η) (h1 : η < 1) {a a' : �
   calc ∑ d ∈ S, |floorTerm η a a' d|
       ≤ ∑ d ∈ S, ((if a' / d < a / d then (d : ℝ) ^ (-η) else 0) +
           ((a : ℝ) - a') * (d : ℝ) ^ (-(1 + η))) := sum_le_sum hterm
-    _ = ∑ d ∈ (Icc 1 a).filter (fun d => D < d ∧ a' / d < a / d), (d : ℝ) ^ (-η) +
+    _ = ∑ d ∈ (Icc 1 a).filter (fun d : ℕ => D < d ∧ a' / d < a / d), (d : ℝ) ^ (-η) +
           ((a : ℝ) - a') * ∑ d ∈ S, (d : ℝ) ^ (-(1 + η)) := by
         rw [sum_add_distrib, ← sum_filter, hfilt, mul_sum]
     _ ≤ _ := add_le_add (sum_large_divisors_le h0 h1 h h2 hD1 hDa)

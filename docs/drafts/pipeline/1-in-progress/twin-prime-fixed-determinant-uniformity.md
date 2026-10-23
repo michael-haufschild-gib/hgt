@@ -165,6 +165,20 @@ in those estimates. The actual uniform affine conjecture remains
 open; no claim that every possible native-frame argument fails
 has been established.
 
+A specific stronger transfer is now refuted on paper:
+[relative centering against arbitrary bounded second rows](../2-fully-proven/twin-prime-residue-matching-boundary.md).
+With modulus `4D+1`, prime shifts `D<p<=6D/5` occupy disjoint
+input and output classes. The explicit row
+`g(w)=lambda(w-floor((w mod (4D+1))/2))` aligns every selected
+Liouville sign. Its relative correlation is exactly the reciprocal
+prime mass for every complete-block horizon, and eventually at
+least `1/(20 log(2D))`. This defeats the proposed `L^(-21/20)`
+relative strengthening on admissible rough-shift scales.
+The exact matching norm is the positive survivor; its Lean check
+is in progress. The two-actual-row affine conjecture above is
+not refuted. A successful relative argument must use the second
+arithmetic row instead of retaining arbitrary-row uniformity.
+
 The accompanying corpus audit found a stronger plain-polynomial
 spectral head than the older reciprocal-fibre card records. Its
 [integer-start transfer](../3-formalized/twin-prime-integer-start-moebius-window.md)

@@ -140,6 +140,15 @@ applies the existing `RHTower.norm_geom_sum_le`. The inspected
 These are concrete sources for (2), not a certificate for the summed
 progression estimate (4).
 
+The inspected `RHTower/Sieve/KuzminLandau.lean` proves
+`two_mul_le_sin_pi_mul`, supplying the chord lower bound on the whole
+unit band. The RH programme's
+`BiScaleUncertainty/DivisorAverageChebyshevAndDyadicBlockVarianceProducer.lean`
+proves `realHarmonic_le_one_add_log` by its Chebyshev cell lengths.
+That logarithmic budget supplies the summation step in (3). The modulus-one
+case and each positive-index side condition are discharged from the
+actual interval data, rather than added to the final theorem.
+
 Formalize the finite interval transform, (2)–(4), exact graph expansion
 (5), and the two frequency axes before claiming (R). The eventual
 theorem takes actual modulus, residue, starts, and lengths only. The

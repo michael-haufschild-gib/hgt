@@ -46,8 +46,8 @@ theorem integral_concentratedTest_sq (φ : ℝ → ℝ) {lam : ℝ} (hlam : 0 < 
   have hpt : ∀ x, concentratedTest φ lam x ^ 2 = lam * (fun y => φ y ^ 2) (lam * x) := fun x => by
     simp only [concentratedTest, mul_pow, Real.sq_sqrt hlam.le]
   rw [integral_congr_ae (Eventually.of_forall hpt), integral_const_mul,
-    Measure.integral_comp_mul_left, abs_of_pos (inv_pos.mpr hlam), smul_eq_mul, ← mul_assoc,
-    mul_inv_cancel₀ hlam.ne', one_mul]
+    Measure.integral_comp_mul_left (fun y => φ y ^ 2) lam, abs_of_pos (inv_pos.mpr hlam),
+    smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hlam.ne', one_mul]
 
 /-- The concentrated test rescales the autocorrelation: `A_{F_λ}(u) = A_φ(λu)`. -/
 theorem autoCorr_concentratedTest (φ : ℝ → ℝ) {lam : ℝ} (hlam : 0 < lam) (u : ℝ) :
@@ -59,8 +59,9 @@ theorem autoCorr_concentratedTest (φ : ℝ → ℝ) {lam : ℝ} (hlam : 0 < lam
     have := Real.mul_self_sqrt hlam.le
     linear_combination (φ (lam * x) * φ (lam * x + lam * u)) * this
   rw [autoCorr, integral_congr_ae (Eventually.of_forall hpt), integral_const_mul,
-    Measure.integral_comp_mul_left, abs_of_pos (inv_pos.mpr hlam), smul_eq_mul, ← mul_assoc,
-    mul_inv_cancel₀ hlam.ne', one_mul, autoCorr]
+    Measure.integral_comp_mul_left (fun y => φ y * φ (y + lam * u)) lam,
+    abs_of_pos (inv_pos.mpr hlam), smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hlam.ne', one_mul,
+    autoCorr]
 
 /-- **Concentration kills the horizon energy.** `J(F_λ) ≤ (2λ)^{−1} ∫_{v>0} |A_φ(v)| dv`. -/
 theorem horizonEnergy_concentratedTest_le {φ : ℝ → ℝ} (hφ : Continuous φ)
