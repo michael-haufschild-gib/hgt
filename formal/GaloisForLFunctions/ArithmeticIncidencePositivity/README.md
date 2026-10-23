@@ -1033,24 +1033,53 @@ side and the pole plane; the archimedean density is not part of this ledger.
     The cost itself is the finite-horizon pairing of the two-pole Chebyshev defect with the lag
     weight of the test, and for `C²` tests the critical-scale receiver against its curvature
     (`reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`,
-    `reflectedPrimePolarCost_eq_criticalScalePrefix`). Its unconditional size is the prime number
-    theorem: at most `72e^r∫F²`, and `((8 + ε)e^r + C_ε)∫F²`
-    (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
-    `exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`). In the Sobolev normalisation the
-    pole-tilted factorisation of `(lagTestWeight F)''` reaches the de la Vallée Poussin region,
-    `K e^r e^{−c√r}(∫F² + ½∫F'²)` (`exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`).
-    That is a relative saving, paid for by the derivative.
+    `reflectedPrimePolarCost_eq_criticalScalePrefix`,
+    `reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc`). Its unconditional pure-mass size is the
+    prime number theorem, sharpened in `SharedDerivativeEnergyAndGlobalAllocationSynthesis` by two
+    exact mechanisms:
+    - **Sharp Cauchy–Schwarz pole-charge bound:** `poleCharge F ≤ (2 sinh r − 2r)∫F² ≤ (e^r − 2r)∫F²`
+      (`poleCharge_le_two_sinh_sub_two_r_mul_sq`, `poleCharge_le_exp_sub_two_r_mul_sq`), improving
+      `8 sinh r ≤ 4e^r` by a factor of `4`;
+    - **Bipartite high-lag halving law for odd tests:** for every odd test supported in `[−r, r]` and
+      every lag `t ≥ r`, `|A_F(t)| ≤ ½∫F²` (`abs_autoCorrelation_le_half_of_le`), upgrading the
+      high-range defect floor from `¼` to `½` (`half_le_shiftDefect_of_odd`,
+      `sum_atom_mul_autoCorr_le_half_of_odd`) and halving the prime sum on `r ≤ log n < 2r`
+      (`abs_sum_relevantShifts_autoCorrelation_le_bipartite`).
+    Together these lower the explicit Chebyshev pure-mass bound from `72e^r∫F²` to
+    `(35e^r + 34e^{r/2} − 2r)∫F² ≤ 69e^r∫F²`
+    (`abs_reflectedPrimePolarCost_le_thirtyFive_exp_add_thirtyFour_exp_half`,
+    `abs_reflectedPrimePolarCost_le_sixtyNine_mul_exp_mul_sq`) and lower the asymptotic PNT pure-mass
+    prefactor from `(8 + ε)e^r + C_ε` to `(3 + ε)e^r + C_ε`
+    (`exists_abs_reflectedPrimePolarCost_le_three_add_eps_mul_exp`).
 
-    Three allocations follow unconditionally. The global allocation holds with margin
+    In the Sobolev normalisation, both the first-order Chebyshev pairing (`∫F² + ½∫F'²`) and the
+    second-order pole-tilted critical-scale pairing (`¼∫F² + ∫F'²`) reach the de la Vallée Poussin
+    sub-envelope rate `K e^r e^{−c√r}` across all apertures
+    (`exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`,
+    `exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_poleTiltedSobolev`). Paying a single
+    shared derivative-energy reserve `α∫(F')²` (`α ≥ ½ K e^r e^{−c√r}`) reduces the all-test deficit
+    to the pure-mass sub-envelope rate `K e^r e^{−c√r}∫F²`
+    (`exists_shared_derivative_payment_sub_envelope`), and on the exponentially growing bandwidth
+    cone `∫(F')² ≤ 2e^{c√r}∫F²` half of the de la Vallée Poussin saving absorbs the derivative energy
+    automatically in pure mass (`exists_abs_reflectedPrimePolarCost_le_sub_envelope_of_dirichlet_le`).
+    Under test compression `F_a(x) = F(ax)` (`a ≥ 1`), support stays inside `[−r, r]` while `∫F_a²`
+    scales by `a⁻¹` and `∫(F_a')²` by `a` (`integral_sq_and_deriv_sq_compressTest`), explaining why
+    finite-horizon integrability of `E` alone cannot eliminate `∫(F')²` across all tests without
+    shared derivative-energy payment.
+
+    Four allocations follow unconditionally. The global allocation holds with margin
     `(1/1000)∫F²` on `(0, 181/500]` (`globalIncidenceAllocation_of_le_threeHundredSixtyTwoThousandths`).
     At the overlapping two-prime window `r = 23/40`, whose relevant shifts are `{2, 3}`, the cost
     plus `(1/62)∫_{S₂}F²` is at most `2 stripSurplus_{S₂} + poleCharge`
-    (`reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`). And the graded
-    allocation `GradedIncidenceAllocation (1/2) 78` holds at every aperture
-    (`gradedIncidenceAllocation_half`), also with a de la Vallée Poussin Sobolev deficit
-    (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`). Rate `½` in the graded
-    form is the ambient strip `Θ ≤ 1`. The content is that the ledger reaches the PNT rate with
-    explicit constants; every improvement must lower the exponent.
+    (`reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`). The graded
+    allocation `GradedIncidenceAllocation (1/2) 75` holds at every aperture
+    (`gradedIncidenceAllocation_half_seventyFive`, improving `78` to `75`). And the global allocation
+    holds at every aperture with either the first-order (`∫F² + ½∫F'²`) or second-order pole-tilted
+    (`¼∫F² + ∫F'²`) de la Vallée Poussin Sobolev deficit
+    (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`,
+    `exists_globalIncidenceAllocation_with_poleTilted_deLaValleePoussin_deficit`). Rate `½` in the
+    graded form is the ambient strip `Θ ≤ 1`. The content is that the ledger reaches the PNT rate
+    with explicit constants; every improvement must lower the exponent.
 60. **Which data see a sign flip.** Every complete-period quadratic form of a divisor row is an
     even function of each Selberg coordinate, so it cannot distinguish rows that differ by a sign
     character `Y(q) ↦ ±Y(q)`, and conversely equal lag covariances force such a character

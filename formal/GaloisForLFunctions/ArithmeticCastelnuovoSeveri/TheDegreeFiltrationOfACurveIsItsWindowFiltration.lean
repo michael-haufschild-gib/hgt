@@ -49,10 +49,12 @@ theorem weilTest_finset_sum {ι κ : Type*} [Fintype ι] [Fintype κ] (φ : ι �
     (hψ : ∀ q, Continuous (ψ q)) (a : ι → ℂ) (b : κ → ℂ) (u : ℝ) :
     EF.weilTest (fun t => ∑ p, a p * φ p t) (fun t => ∑ q, b q * ψ q t) u =
       ∑ p, ∑ q, a p * conj (b q) * EF.weilTest (φ p) (ψ q) u := by
-  have hint : ∀ p q, Integrable fun t => a p * φ p t * (conj (b q) * conj (ψ q (t - u))) :=
-    fun p q => ((continuous_const.mul (hφ p)).mul (continuous_const.mul
-      (Complex.continuous_conj.comp ((hψ q).comp (continuous_sub_right u))))).
-        integrable_of_hasCompactSupport (hφc p).mul_left.mul_right
+  have hint : ∀ p q, Integrable fun t => a p * φ p t * (conj (b q) * conj (ψ q (t - u))) := by
+    intro p q
+    have hc : Continuous fun t => a p * φ p t * (conj (b q) * conj (ψ q (t - u))) :=
+      (continuous_const.mul (hφ p)).mul (continuous_const.mul
+        (Complex.continuous_conj.comp ((hψ q).comp (continuous_sub_right u))))
+    exact hc.integrable_of_hasCompactSupport (hφc p).mul_left.mul_right
   simp only [RHTower.weilTest_apply, map_sum, map_mul, Finset.sum_mul_sum]
   rw [integral_finsetSum _ fun p _ => integrable_finsetSum _ fun q _ => hint p q]
   refine Finset.sum_congr rfl fun p _ => ?_
@@ -70,10 +72,8 @@ theorem hasSum_lag_translate_coset {g : ℝ → ℂ} {w ℓ : ℝ} (hℓ : 0 < �
     HasSum (fun m : ℤ => EF.weilTest (translate x g) (translate y g) (m * ℓ) * D m)
       (EF.weilTest g g 0 * D k) := by
   convert hasSum_single k (fun m hm => ?_) using 1
-  · dsimp only
-    rw [weilTest_translate, hxy, sub_self]
-  · dsimp only
-    rw [weilTest_translate]
+  · rw [weilTest_translate, hxy, sub_self]
+  · rw [weilTest_translate]
     have hz : EF.weilTest g g (m * ℓ - (x - y)) = 0 := by
       by_contra hne
       have hmem := EF.tsupport_weilTest_subset hgs hgs (subset_tsupport _ hne)
@@ -121,7 +121,8 @@ theorem hasSum_lag_blockTest_self {g : ℝ → ℂ} {w ℓ : ℝ} (hℓ : 0 < �
   have e : ∀ m : ℤ, EF.weilTest (blockTest g ℓ c x) (blockTest g ℓ c x) (m * ℓ) * D m =
       ∑ b, ∑ b', c b * conj (c b') * (EF.weilTest (translate (x + ((b : ℕ) : ℝ) * ℓ) g)
         (translate (x + ((b' : ℕ) : ℝ) * ℓ) g) (m * ℓ) * D m) := fun m => by
-    rw [blockTest, weilTest_finset_sum _ _ hφ hφc hφ, Finset.sum_mul]
+    unfold blockTest
+    rw [weilTest_finset_sum _ _ hφ hφc hφ, Finset.sum_mul]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [Finset.sum_mul]
     exact Finset.sum_congr rfl fun b' _ => by ring
@@ -147,7 +148,8 @@ theorem hasSum_lag_blockTest_sep {g : ℝ → ℂ} {w ℓ : ℝ} (hg : Continuou
   have e : ∀ m : ℤ, EF.weilTest (blockTest g ℓ c x) (blockTest g ℓ c y) (m * ℓ) * D m =
       ∑ b, ∑ b', c b * conj (c b') * (EF.weilTest (translate (x + ((b : ℕ) : ℝ) * ℓ) g)
         (translate (y + ((b' : ℕ) : ℝ) * ℓ) g) (m * ℓ) * D m) := fun m => by
-    rw [blockTest, blockTest, weilTest_finset_sum _ _ (hφ x) (hφc x) (hφ y), Finset.sum_mul]
+    unfold blockTest
+    rw [weilTest_finset_sum _ _ (hφ x) (hφc x) (hφ y), Finset.sum_mul]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [Finset.sum_mul]
     exact Finset.sum_congr rfl fun b' _ => by ring
@@ -333,7 +335,7 @@ theorem hodgeDefectAt_eq_top_of_lagFormula (Z : ZeroConfig) (hZ : TemperedConfig
       push_cast
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [← Complex.mul_conj', mul_comm (conj (y i))]
+      rw [← Complex.mul_conj']
       ring
     rw [hW F hFC2 hFc, hlag.tsum_eq, hval, weilTest_self_zero]
     have hy2 : 0 < ∑ i, ‖y i‖ ^ 2 :=
@@ -350,6 +352,7 @@ theorem hodgeDefectAt_eq_top_of_lagFormula (Z : ZeroConfig) (hZ : TemperedConfig
   rw [finrank_top, Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at h1
   exact (ENat.coe_le_coe.mpr h1).trans (le_hodgeDefectAt Z h fun i => ⟨hC2 i, hsupp i⟩)
 
+open Classical in
 /-- **The degree filtration of a lag lattice is its window filtration.** For a tempered
 configuration with a lag formula and `a > 0`, the Hodge defect at degree `a` is `0` if the
 Toeplitz window of size `⌈2a/ℓ⌉` is positive semidefinite and `∞` otherwise. -/
@@ -427,9 +430,8 @@ theorem toeplitz_trace_nonneg_iff (n : ℕ) :
   · intro h
     refine negIndex_eq_zero_of_hermQuad_nonneg fun x => ?_
     have := h fun b => conj (x b)
-    rwa [re_toeplitzForm_trace] at this
-    simp only [Complex.conj_conj] at this ⊢
-    exact this
+    rw [re_toeplitzForm_trace] at this
+    simpa only [Complex.conj_conj] using this
   · intro h c
     rw [re_toeplitzForm_trace]
     exact hermQuad_nonneg_of_negIndex_eq_zero h _

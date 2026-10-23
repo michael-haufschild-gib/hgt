@@ -403,12 +403,12 @@ theorem abs_integral_KfunW_sq_sub_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} (
       = ∑ k : Fin p.d, ∫ τ, cellW p ℓ k τ * ν τ ^ 2 := by
     rw [← integral_finsetSum _ fun (k : Fin p.d) _ => hcellν k]
     exact integral_congr_ae (Eventually.of_forall fun τ => by
-      simp only [Finset.mul_sum, Finset.sum_mul]; exact Finset.sum_congr rfl fun k _ => by ring)
+      simp only [Finset.mul_sum]; exact Finset.sum_congr rfl fun k _ => by ring)
   have e2 : ∫ τ, ν τ ^ 2 * ∑ k : Fin p.d, lor1 (τ - p.tau k)
       = ∑ k : Fin p.d, ∫ τ, lor1 (τ - p.tau k) * ν τ ^ 2 := by
     rw [← integral_finsetSum _ fun (k : Fin p.d) _ => hνi (p.tau k)]
     exact integral_congr_ae (Eventually.of_forall fun τ => by
-      simp only [Finset.mul_sum, Finset.sum_mul]; exact Finset.sum_congr rfl fun k _ => by ring)
+      simp only [Finset.mul_sum]; exact Finset.sum_congr rfl fun k _ => by ring)
   rw [e1, e2, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   exact Finset.sum_le_sum fun k _ => hterm k
 
@@ -491,7 +491,7 @@ density with `|ν(τ')| ≤ B₁ + √|τ' − τ|` for `τ ∈ S`:
 theorem abs_integral_window_Kfun_sq_sub_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} {W : ℝ → ℝ}
     (hW : HeightWeight ℓ W) {s₀ s₁ : ℝ} (hs : s₀ ≤ s₁) (hWS : ∀ τ, τ ∉ Icc s₀ s₁ → W τ = 0)
     {R₀ : ℝ} (hR₀ : 0 < R₀) (hρ : ∀ τ ∈ Icc s₀ s₁, rho p F τ ≤ R₀ ^ 2)
-    {ν : ℝ → ℝ} (hνc : Continuous ν) {B₁ : ℝ} (hB₁ : 0 ≤ B₁)
+    {ν : ℝ → ℝ} {B₁ : ℝ} (hB₁ : 0 ≤ B₁)
     (hνS : ∀ τ ∈ Icc s₀ s₁, ∀ τ', |ν τ'| ≤ B₁ + Real.sqrt |τ' - τ|)
     (hνi : ∀ a : ℝ, Integrable fun τ => lor1 (τ - a) * |ν τ|) :
     |∫ q : ℝ × ℝ, W q.1 ^ 2 * (Kfun p F q.1 q.2 ^ 2 - Kinf p F q.1 q.2 ^ 2) * ν q.1 * ν q.2|
@@ -691,7 +691,7 @@ theorem sum_lor1_tau_le (hF : LocalHypsCoreW cϱ p F) (x : ℝ) :
   simp only [one_mul] at h
   rw [Fin.sum_univ_eq_sum_range (fun i => lor1 (x - p.tau i))]
   refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ => ?_) h
-  unfold Setting.tau; push_cast; ring_nf
+  unfold Setting.tau; push_cast; rfl
 
 theorem sum_cellW_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} (hℓ : 0 < ℓ) (hℓ1 : ℓ ≤ 1) (x : ℝ) :
     ∑ k : Fin p.d, cellW p ℓ k x ≤ 8 * π * Real.sqrt ℓ / p.h := by
@@ -703,8 +703,7 @@ theorem sum_cellW_le (hF : LocalHypsCoreW cϱ p F) {ℓ : ℝ} (hℓ : 0 < ℓ) 
     _ = 2 * ℓ * ∑ k ∈ Finset.range p.d, lor1 (Real.sqrt ℓ * (x - (p.T + k * p.h))) := by
         rw [← Finset.mul_sum, Fin.sum_univ_eq_sum_range
           (fun i => lor1 (Real.sqrt ℓ * (x - p.tau i)))]
-        congr 1
-        exact Finset.sum_congr rfl fun k _ => by unfold Setting.tau; push_cast; ring_nf
+        simp only [Setting.tau, Int.cast_natCast]
     _ ≤ 2 * ℓ * (4 * π / (Real.sqrt ℓ * p.h)) := mul_le_mul_of_nonneg_left h (by positivity)
     _ = 8 * π * Real.sqrt ℓ / p.h := by
         have hs2 : Real.sqrt ℓ * Real.sqrt ℓ = ℓ := Real.mul_self_sqrt hℓ.le
@@ -720,6 +719,7 @@ theorem far_bound_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {x : ℝ}
     ∑ k : Fin p.d, f k x ≤ 32 * p.d / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by
   set u := x - 3 * p.T / 2 with hu
   have hu0 : 0 < |u| := by linarith
+  have hu2 : 0 < u ^ 2 := by rw [← sq_abs]; exact pow_pos hu0 2
   have hdist : ∀ k : Fin p.d, 3 / 4 * |u| ≤ |x - p.tau k| := by
     intro k
     have hk := tau_mem_Icc hF hT.le k
@@ -734,17 +734,16 @@ theorem far_bound_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {x : ℝ}
     refine (hf k x).trans ?_
     have hd := hdist k
     unfold lor1
-    rw [← one_div, div_le_div_iff₀ (by positivity) (by positivity)]
+    rw [← one_div, div_le_div_iff₀ (by positivity) (mul_pos (by norm_num) hu2)]
     have : (3 / 4 * |u|) ^ 2 ≤ (x - p.tau k) ^ 2 := by
       rw [← sq_abs (x - p.tau k)]; exact pow_le_pow_left₀ (by positivity) hd 2
     nlinarith [sq_abs u]
   have hlor : 1 / (2 * u ^ 2) * p.T ^ 2 ≤ lorentzW p.T (3 * p.T / 2) x := by
-    unfold lorentzW
-    rw [← hu, div_pow]
     have hT2 : p.T ^ 2 ≤ u ^ 2 := by
       rw [← sq_abs u]; exact pow_le_pow_left₀ hT.le (by linarith) 2
-    rw [show 1 + u ^ 2 / p.T ^ 2 = (p.T ^ 2 + u ^ 2) / p.T ^ 2 by field_simp, inv_div]
-    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    have e : lorentzW p.T (3 * p.T / 2) x = p.T ^ 2 / (p.T ^ 2 + u ^ 2) := by
+      unfold lorentzW; rw [← hu]; field_simp
+    rw [e, one_div, inv_mul_eq_div, div_le_div_iff₀ (mul_pos (by norm_num) hu2) (by positivity)]
     nlinarith
   calc ∑ k : Fin p.d, f k x ≤ ∑ _k : Fin p.d, 16 / (9 * u ^ 2) := Finset.sum_le_sum fun k _ => hterm k
     _ = 32 * p.d / (9 * p.T ^ 2) * (1 / (2 * u ^ 2) * p.T ^ 2) := by
@@ -755,12 +754,13 @@ theorem far_bound_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {x : ℝ}
 theorem lorentzW_ge_fifth {T x c : ℝ} (hT : 0 < T) (hx : |x - c| ≤ 2 * T) :
     1 / 5 ≤ lorentzW T c x := by
   unfold lorentzW
-  rw [← one_div, div_le_div_iff₀ (by norm_num) (by positivity), one_mul, one_mul, div_pow]
-  have : (x - c) ^ 2 ≤ (2 * T) ^ 2 := by
-    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hx 2
-  rw [div_le_iff₀ (by positivity)] at *
-  have : (x - c) ^ 2 / T ^ 2 ≤ 4 := by rw [div_le_iff₀ (by positivity)]; nlinarith
-  linarith
+  have h1 : ((x - c) / T) ^ 2 ≤ 4 := by
+    rw [div_pow, div_le_iff₀ (by positivity)]
+    have : (x - c) ^ 2 ≤ (2 * T) ^ 2 := by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hx 2
+    nlinarith
+  rw [one_div]
+  exact inv_anti₀ (by positivity) (by linarith)
 
 /-- **Lorentz domination of the lattice sum.** `Σ_k lor1(x − τ_k) ≤ C_σ lorentzW_T(x − 3T/2)`. -/
 theorem sum_lor1_tau_le_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) (x : ℝ) :
@@ -770,9 +770,12 @@ theorem sum_lor1_tau_le_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) (x 
   have hW0 := lorentzW_nonneg p.T (3 * p.T / 2) x
   rcases le_or_gt |x - 3 * p.T / 2| (2 * p.T) with hx | hx
   · have h5 := lorentzW_ge_fifth hT hx
-    have := sum_lor1_tau_le hF x
     have h0 : 0 ≤ 32 * (p.d : ℝ) / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by positivity
-    nlinarith
+    calc ∑ k : Fin p.d, lor1 (x - p.tau k) ≤ 4 * π / p.h := sum_lor1_tau_le hF x
+      _ = 20 * π / p.h * (1 / 5) := by ring
+      _ ≤ 20 * π / p.h * lorentzW p.T (3 * p.T / 2) x :=
+          mul_le_mul_of_nonneg_left h5 (by positivity)
+      _ ≤ _ := by rw [add_mul]; linarith
   · have := far_bound_lorentz hF hT hx (f := fun k y => lor1 (y - p.tau k)) fun k y => le_rfl
     have h0 : 0 ≤ 20 * π / p.h * lorentzW p.T (3 * p.T / 2) x := by positivity
     linarith
@@ -786,10 +789,12 @@ theorem sum_cellW_le_lorentz (hF : LocalHypsCoreW cϱ p F) (hT : 0 < p.T) {ℓ :
   have hW0 := lorentzW_nonneg p.T (3 * p.T / 2) x
   rcases le_or_gt |x - 3 * p.T / 2| (2 * p.T) with hx | hx
   · have h5 := lorentzW_ge_fifth hT hx
-    have := sum_cellW_le hF hℓ hℓ1 x
     have h0 : 0 ≤ 32 * (p.d : ℝ) / (9 * p.T ^ 2) * lorentzW p.T (3 * p.T / 2) x := by positivity
-    have hs : 0 ≤ 8 * π * Real.sqrt ℓ / p.h := by positivity
-    nlinarith
+    calc ∑ k : Fin p.d, cellW p ℓ k x ≤ 8 * π * Real.sqrt ℓ / p.h := sum_cellW_le hF hℓ hℓ1 x
+      _ = 40 * π * Real.sqrt ℓ / p.h * (1 / 5) := by ring
+      _ ≤ 40 * π * Real.sqrt ℓ / p.h * lorentzW p.T (3 * p.T / 2) x :=
+          mul_le_mul_of_nonneg_left h5 (by positivity)
+      _ ≤ _ := by rw [add_mul]; linarith
   · have := far_bound_lorentz hF hT hx (f := fun k y => cellW p ℓ k y) fun k y => cellW_le_lor1 ℓ k y
     have h0 : 0 ≤ 40 * π * Real.sqrt ℓ / p.h * lorentzW p.T (3 * p.T / 2) x := by positivity
     linarith

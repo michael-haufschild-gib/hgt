@@ -1520,7 +1520,7 @@ theorem markovEnergy_eq_integral_mu_add_PX {a : ℝ} {f : ℝ → ℂ} (hf : Con
       ∫ τ : ℝ, paperFT k τ * ((mu τ + PX (Real.exp (2 * a)) τ : ℝ) : ℂ) := by
     have hcancel (P S G : ℂ) : P - S + G - P = -S + G := by ring
     unfold EF.literatureRHS weilPoleTerm
-    rw [hcancel, EF.prime_term hkd.continuous hks hFk, EF.gamma_term, neg_neg,
+    rw [hcancel, EF.prime_term hkd.continuous hks hFk, EF.gamma_term,
       ← integral_add hPX hμ]
     congr 1
     ext τ
@@ -1593,31 +1593,30 @@ def evenRealTestsAt (r : ℝ) : Submodule ℝ realTests where
 
 /-- **All-Aperture Chebyshev Defect Floor on `evenRealTestsAt r` (No Pole-Vanishing or `C^∞` Hypothesis):**
 For every `r : ℝ` and every cycle `x : ℝ × ℝ × evenRealTestsAt r`,
-`-(10 + 68 e^r) ∫ f(u)² du + 2 (evenPoleMoment f)² ≤ (scalingSubsurface (evenRealTestsAt r)).defect x x`. -/
+`-(10 + 68 e^r) ∫ f(u)² du ≤ (scalingSubsurface (evenRealTestsAt r)).defect x x`. -/
 theorem even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp (r : ℝ)
     (x : ℝ × ℝ × evenRealTestsAt r) :
-    -(10 + 68 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 +
-        2 * evenPoleMoment x.2.2.1.1 ^ 2 ≤
+    -(10 + 68 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 ≤
       (scalingSubsurface (evenRealTestsAt r)).defect x x := by
   let F : ℝ → ℝ := x.2.2.1.1
   have hF2 : ContDiff ℝ 2 F := x.2.2.1.2.1
   have hFc : HasCompactSupport F := x.2.2.1.2.2
   have hFs : tsupport F ⊆ Icc (-r) r := x.2.2.2.1
   have hodd : oddPoleMoment F = 0 := oddPoleMoment_eq_zero_of_even x.2.2.2.2
+  have hodd0 : oddPoleMoment F ^ 2 = 0 := by rw [hodd]; ring
+  have heven_nn : 0 ≤ 2 * evenPoleMoment F ^ 2 := by positivity
   rw [scalingSubsurface_defect_self, weilPair_self_eq_fullZeroForm hF2 hFc]
   have hM := neg_horizonExponent_mul_le_markovEnergy_Icc hF2 hFs
   unfold fullZeroForm
-  rw [hodd, sq_zero, mul_zero, sub_zero]
-  exact add_le_add_right hM _
+  linarith
 
 /-- **Unconditional All-Aperture Chebyshev Defect Floor on the Entire Unrestricted `realTestsAt r` (`r > 0`):**
 For every aperture `r > 0` and every cycle `x : ℝ × ℝ × realTestsAt r` (requiring only `C²`
 regularity, with no parity restriction and no pole-moment vanishing hypothesis),
-`-(10 + 72 e^r) ∫ f(u)² du + 2 (evenPoleMoment f)² ≤ (scalingSubsurface (realTestsAt r)).defect x x`. -/
+`-(10 + 72 e^r) ∫ f(u)² du ≤ (scalingSubsurface (realTestsAt r)).defect x x`. -/
 theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r : ℝ}
     (hr : 0 < r) (x : ℝ × ℝ × realTestsAt r) :
-    -(10 + 72 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 +
-        2 * evenPoleMoment x.2.2.1.1 ^ 2 ≤
+    -(10 + 72 * Real.exp r) * ∫ u : ℝ, (x.2.2.1.1 u) ^ 2 ≤
       (scalingSubsurface (realTestsAt r)).defect x x := by
   let F : ℝ → ℝ := x.2.2.1.1
   have hF2 : ContDiff ℝ 2 F := x.2.2.1.2.1
@@ -1645,22 +1644,18 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hFo_supp : ∀ u : ℝ, r < |u| → oddPartReal F u = 0 :=
     fun u hu => image_eq_zero_of_notMem_tsupport fun hmem =>
       not_le_of_gt hu (abs_le.mpr (hFo_tsupp hmem))
-  have hFe_even_mom : evenPoleMoment F = evenPoleMoment (evenPartReal F) := by
-    have hsum : F = fun u => evenPartReal F u + oddPartReal F u :=
-      funext fun u => (evenPartReal_add_oddPartReal F u).symm
-    conv_lhs => rw [hsum]
-    rw [evenPoleMoment_add hFe2.continuous hFe_c hFo2.continuous hFo_c,
-      evenPoleMoment_eq_zero_of_odd (oddPartReal_neg F), add_zero]
   have hFe_odd_mom : oddPoleMoment (evenPartReal F) = 0 :=
     oddPoleMoment_eq_zero_of_even (evenPartReal_neg F)
+  have hFe_odd0 : oddPoleMoment (evenPartReal F) ^ 2 = 0 := by rw [hFe_odd_mom]; ring
+  have hFe_even_nn : 0 ≤ 2 * evenPoleMoment (evenPartReal F) ^ 2 := by positivity
   have hFe_M := neg_horizonExponent_mul_le_markovEnergy_Icc hFe2 hFe_tsupp
-  have hFe_floor : -(10 + 68 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 +
-      2 * evenPoleMoment F ^ 2 ≤ fullZeroForm (evenPartReal F) := by
+  have hFe_floor : -(10 + 68 * Real.exp r) * ∫ u : ℝ, (evenPartReal F u) ^ 2 ≤
+      fullZeroForm (evenPartReal F) := by
     unfold fullZeroForm
-    rw [hFe_odd_mom, ← hFe_even_mom, sq_zero, mul_zero, sub_zero]
-    exact add_le_add_right hFe_M _
+    linarith
   have hFo_even_mom : evenPoleMoment (oddPartReal F) = 0 :=
     evenPoleMoment_eq_zero_of_odd (oddPartReal_neg F)
+  have hFo_even0 : evenPoleMoment (oddPartReal F) ^ 2 = 0 := by rw [hFo_even_mom]; ring
   have hFo_M := neg_horizonExponent_mul_le_markovEnergy_Icc hFo2 hFo_tsupp
   have hFo_pole : 2 * oddPoleMoment (oddPartReal F) ^ 2 ≤
       4 * Real.exp r * ∫ u : ℝ, (oddPartReal F u) ^ 2 :=
@@ -1668,7 +1663,6 @@ theorem realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp {r :
   have hFo_floor : -(10 + 72 * Real.exp r) * ∫ u : ℝ, (oddPartReal F u) ^ 2 ≤
       fullZeroForm (oddPartReal F) := by
     unfold fullZeroForm
-    rw [hFo_even_mom, sq_zero, mul_zero, add_zero]
     linarith
   have hIe : 0 ≤ ∫ u : ℝ, (evenPartReal F u) ^ 2 := integral_nonneg fun _ => sq_nonneg _
   have hexp : 0 < Real.exp r := Real.exp_pos r
@@ -1687,12 +1681,10 @@ theorem gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch {r : ℝ} (hr :
         (gradedL2SourceCone (-(10 + 68 * Real.exp r)) (evenRealTestsAt r)) ∧
       (scalingSubsurface (evenRealTestsAt r)).SurfaceRiemannRochAxiom 0 0
         (gradedL2SourceCone (-(10 + 68 * Real.exp r)) (evenRealTestsAt r))) :=
-  ⟨gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x =>
-      (le_add_of_nonneg_right (by positivity)).trans
-        (realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x),
-    gradedL2SourceCone_riemannRoch_of_le_defect _ _ fun x =>
-      (le_add_of_nonneg_right (by positivity)).trans
-        (even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x)⟩
+  ⟨gradedL2SourceCone_riemannRoch_of_le_defect _ _
+      (realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr),
+    gradedL2SourceCone_riemannRoch_of_le_defect _ _
+      (even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r)⟩
 
 /-- **Overlapping Two-Prime (`r = 23/40`, `relevantShifts (23/40) = {2, 3}`) Strip-Surplus
 Defect Allocation on `scalingSubsurface (oddRealTestsAt (23/40))`:**

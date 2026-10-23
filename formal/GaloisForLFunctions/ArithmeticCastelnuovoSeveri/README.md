@@ -105,7 +105,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
 | Prime tower, Frobenius eigenvalue | translates `g(· − k log p)`, `k ∈ ℤ`; `p^{ρ − ½}` | `towerGram`, `frobEig` |
 | Effectivity | a set of cycles with the Riemann–Roch and ample axioms | `RiemannRochAxiom`, `AmpleAxiom` |
 | Effective cycle | nonnegative real test; without common component: disjoint supports | `localPair` |
-| Source section cone | cycles whose pole degrees pay a source energy: `0 ≤ x·H`, `0 ≤ x·V`, `Φ(x) ≤ 2(x·H)(x·V)` | `sourceCone`, `l2SourceCone` |
+| Source section cone | cycles whose pole degrees pay a source energy: `0 ≤ x·H`, `0 ≤ x·V`, `Φ(x) ≤ 2(x·H)(x·V)` (and graded / Sobolev / compensated variants) | `sourceCone`, `gradedSourceCone`, `l2SourceCone`, `sobolevSourceCone`, `l2CompensatedScalingSubsurface` |
 | Hecke incidence, tower form | prime part of the pairing of Hecke cycles | `heckeIncidence`, `towerForm` |
 | Odd degree-`r` subsurface | pole plane and odd tests supported in `[−r, r]` | `scalingSubsurface`, `oddRealTestsAt` |
 
@@ -211,11 +211,16 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     height-uniform and gives the alternative: the degree-defect floor rate equals the zero width
     unless off-line zeros cluster without bound
     (`scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Over `𝔽_q` the window `2g`
-    sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`). On the scaling surface of
-    a curve the degree filtration *is* the window filtration: the defect at degree `a` is `0` or `∞`
-    according as the Frobenius window of size `⌈2a/log q⌉` is positive semidefinite
-    (`hodgeDefectAt_curveConfig`), so every curve has Hodge index up to degree `log q/2`, and the
-    golden datum jumps at `log 5/2`.
+    sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`). On a lag lattice
+    (`W(f, f) = ℓ Σ_m k_f(mℓ) D(m)`) the degree filtration *is* the window filtration: the Toeplitz
+    law of Square-Root Threshold (`weil_nonneg_iff_toeplitz_of_lagFormula`) decides positivity at
+    degree `a` by the window of size `⌈2a/ℓ⌉`, and the failure is never partial — the defect jumps
+    from `0` to `∞` (`hodgeDefectAt_lagFormula`, by `W`-orthogonal block tests on separated offsets).
+    The scaling surface of a curve is a lag lattice (`W_curveConfig_lagFormula`), so every curve
+    has Hodge index up to degree `log q/2`, its defect is `0` or `∞` by purity from the window `2g`
+    on, and the golden datum jumps at `log 5/2` (`hodgeDefectAt_curveConfig`,
+    `goldenDatum_hodgeDefectAt`); the off-line lattice jumps at its Nyquist degree `L/2`
+    (`hodgeDefectAt_offLineLattice`).
 16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
     (`recurrent_pontryagin_dichotomy`); periodic configurations and zero sets of exponential
     polynomials of any finite rank recur (`expPoly_pontryagin_dichotomy`). A finite nonzero number
@@ -248,7 +253,7 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     (`card_le_towerDefect_of_top`, `almost_every_prime_sees_the_top`); for `ζ` this is the
     `AttainedTop` case of the single-base lag analysis (`RHTower.WeilLagSingleBaseLowerSide`).
 
-### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `SourceDeterminantalSectionsAndArithmeticRiemannRoch`)
+### 3.5 Effectivity and Bézout (`HodgeIndexFromEffectivity`, `DistinctEffectiveCyclesMeetNonnegatively`, `SourceDeterminantalSectionsAndArithmeticRiemannRoch`, `AllApertureSourceRiemannRochAndCoercivityLaws`)
 
 18. **Hodge index ⟺ an effectivity with the Riemann–Roch and ample axioms**
     (`exists_effectivity_iff_hodgeIndex`); for `ℤ` this is RH
@@ -259,20 +264,69 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     tests fails Riemann–Roch (`posTestCone_not_riemannRoch`): `H + V + εg` has positive square for
     small `ε`, and a sign-changing `g` keeps it and its negative out of the cone.
 20. **Cones defined by the form are tautological; cones defined by the source are not, and their
-    Riemann–Roch is a floor.** The closed positive cone satisfies the Riemann–Roch axiom and the
-    open positive cone the ample axiom on every polar surface; the other axiom of each is the Hodge
-    index (`positiveCone_ample_iff_hodgeIndex`, `openPositiveCone_riemannRoch_iff_hodgeIndex`).
-    Membership in either cone already uses the sign of `x²`. A cone can instead be defined from the
-    source alone: `x` is effective when its two pole degrees pay a source energy,
-    `Φ(x) ≤ 2(x·H)(x·V)` with `x·H, x·V ≥ 0` — a `2 × 2` determinantal condition. With
-    `Φ = c∫f²` this cone is convex, contains `0, H, V, H + V`, is stable under every Adams operation
-    and Hecke correspondence, and satisfies the ample axiom non-vacuously (`l2SourceCone_ample`,
-    `heckeCorrespondence_mem_l2SourceCone`); its Riemann–Roch axiom is *exactly* the coercive floor
-    `c∫f² ≤ W(f, f)` (`l2SourceCone_riemannRoch_iff_weilPair_ge`). So a non-tautological effectivity
-    exists, and Riemann–Roch for it is the same estimate as Weil coercivity. It holds where that
-    coercivity is proved: on the ample-orthogonal hyperplane `∫f cosh(u/2) = 0`, mixed parity,
-    through aperture `½(log 2 + 1/50)`, past the first prime (`l2SourceCone_primitiveSmooth_riemannRoch_primeTwo`),
-    and in graded form at every aperture (`gradedL2SourceCone_all_apertures_riemannRoch`).
+    all-aperture structure is completely classified.** The closed positive cone satisfies the
+    Riemann–Roch axiom and the open positive cone the ample axiom on every polar surface; the other
+    axiom of each is the Hodge index (`positiveCone_ample_iff_hodgeIndex`,
+    `openPositiveCone_riemannRoch_iff_hodgeIndex`). Membership in either cone already uses the sign
+    of `x²`. A cone can instead be defined from the source alone: `x` is effective when its two pole
+    degrees pay a source energy, `Φ(x) ≤ 2(x·H)(x·V)` with `x·H, x·V ≥ 0` — a `2 × 2` determinantal
+    condition (`sourceCone`), or in the ample half-space `0 ≤ x·(H + V)` (`gradedSourceCone`).
+    * *Universal ampleness rigidity and exact Riemann–Roch equivalence on polar surfaces:* For any
+      even fibre-invariant `Φ`, `RiemannRochAxiom (gradedSourceCone Φ) ↔ ∀ x, Φ(x) ≤ defect(x, x)`
+      (`gradedSourceCone_riemannRoch_iff_le_defect`, `sourceCone_riemannRoch_iff_le_defect`), while
+      strict ampleness (`x ∈ E ∧ x·(H + V) = 0 ⟹ x = 0`) holds on `gradedSourceCone Φ` (or
+      `sourceCone Φ`) iff `0 < Φ(x)` on every nonzero primitive cycle, in which case `0 ≤ Φ` and
+      `gradedSourceCone Φ = sourceCone Φ` identically (`strictAmple_gradedSourceCone_iff_pos_on_primitive`,
+      `gradedSourceCone_eq_sourceCone_of_strictAmple`).
+    * *Ampleness vs. coercivity dichotomy for `L²` source cones:* With `Φ = c∫f²`, `l2SourceCone c V`
+      is convex, contains `0, H, V, H + V`, is stable under every Adams operation and Hecke
+      correspondence (`heckeCorrespondence_mem_l2SourceCone`), satisfies `AmpleAxiom` iff `c > 0`
+      (`l2SourceCone_ampleAxiom_iff_pos`, `gradedL2SourceCone_ampleAxiom_iff_pos`), and satisfies
+      `RiemannRochAxiom` on `gradedL2SourceCone c V` for all `c ∈ ℝ` iff `c∫f² ≤ W(f, f)`
+      (`gradedL2SourceCone_riemannRoch_iff_weilPair_ge`, `l2SourceCone_effectivity_iff`).
+    * *Unconditional positive Riemann–Roch past the first prime and graded/compensated Riemann–Roch
+      at all apertures:* Uncompensated positive `l2SourceCone` Riemann–Roch holds with `c = 1/200` on
+      the ample-orthogonal hyperplane `∫f cosh(u/2) = 0` (mixed parity) through aperture
+      `½(log 2 + 1/50)`, past the first prime (`l2SourceCone_primitiveSmooth_riemannRoch_primeTwo`).
+      At **all** apertures `r > 0`, because the spectral symbol identity
+      `markovEnergy f = Re ∫ |f̂(τ)|² (μ(τ) + P_{e^{2r}}(τ)) dτ` holds for arbitrary `C²` compactly
+      supported tests (`markovEnergy_eq_integral_mu_add_PX`) and `2 evenPoleMoment(f)² ≥ 0` enters
+      `fullZeroForm` positively, `gradedL2SourceCone` satisfies `RiemannRochAxiom` unconditionally on
+      the **entire unrestricted `realTestsAt r`** at `c = -(10 + 72 e^r)`
+      (`realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp`,
+      `gradedL2SourceCone_realTestsAt_all_apertures_riemannRoch`), on `evenRealTestsAt r` and
+      `polarFreeSmoothRealTestsAt r` at `-(10 + 68 e^r)`, on `primitiveSmoothRealTestsAt r` at
+      `-(10 + 78 e^r)`, and on `oddRealTestsAt r` at `-78 e^r`
+      (`gradedL2SourceCone_all_apertures_riemannRoch`; plus the `r = 23/40` two-prime strip-surplus
+      allocation `scalingSubsurface_odd_defect_twentyThreeFortieths_stripSurplus_floor` and the
+      all-aperture de la Vallée Poussin Sobolev floor
+      `exists_scalingSubsurface_odd_defect_deLaValleePoussin_sobolev_floor`). Equivalently, on the
+      **compensated polar surface** `l2CompensatedScalingSubsurface κ V` (`compensatedSurface`),
+      which preserves `H, V, H + V`, fibre degrees, `polar`, `prim`, and the cones `l2SourceCone c V`
+      and `strictL2SourceCone c V` as identical sets of cycles while shifting the pairing by the
+      reserve `κ∫fg`, the unmodified cone `l2SourceCone c (realTestsAt r)` (`c > 0`,
+      `κ = 10 + 72 e^r + c`) satisfies `RiemannRochAxiom`, non-vacuous `AmpleAxiom`,
+      `SurfaceRiemannRochAxiom 0 0`, `BezoutAxiom`, and `HodgeIndex` unconditionally at all
+      apertures `r > 0` (`l2CompensatedScalingSubsurface_realTestsAt_all_apertures`,
+      `compensatedSurface_hodgeIndex_iff`).
+    * *Aperture-dependent coercivity laws, no-Hardy-weight law, doubly-exponential ceiling, and
+      strict-monotonicity self-upgrade:* On the uncompensated surface, no aperture-independent
+      weighted `L²` cone `∫ W(u)f(u)² du ≤ 2(x·H)(x·V)` (`W ≥ 0` positive on a set of positive
+      measure) satisfies `RiemannRochAxiom` at all apertures (`not_forall_aperture_weightedL2SourceCone_riemannRoch`),
+      and any `L²` coercivity constant at `r ≥ 3` obeys the unconditional Gaussian ceiling
+      `c ≤ K exp((11/2)r − π e^{2(r−2)})` (`exists_l2SourceCone_realTestsAt_coercivity_le_doubleExp`,
+      `not_forall_aperture_l2SourceCone_realTestsAt_riemannRoch`,
+      `exists_le_floorLoss_of_l2SourceCone_riemannRoch`). On `polarFreeSmoothRealTestsAt r`,
+      `RiemannRochAxiom` holds iff `c ≤ μ₀(r) := ccmRestrictedWeilPolarGroundEnergy ⟨r, hr⟩`
+      (`polarFreeSmooth_l2SourceCone_riemannRoch_iff`), and because `r ↦ μ₀(r)` is strictly
+      decreasing (`strictAnti_ccmRestrictedWeilPolarGroundEnergy`), all-aperture `HodgeIndex`
+      (`0 ≤ μ₀(r)`) **unconditionally self-upgrades** to strict positivity `0 < μ₀(r)` and
+      simultaneous `RiemannRochAxiom` + non-vacuous `AmpleAxiom` + `SurfaceRiemannRochAxiom 0 0` +
+      `BezoutAxiom` for `l2SourceCone (μ₀(r)) (polarFreeSmoothRealTestsAt r)` at every aperture
+      (`all_aperture_polarFreeSmooth_hodgeIndex_iff_ample_l2SourceCone`). For the `H¹` Sobolev
+      source cones (`sobolevSourceCone`, `gradedSobolevSourceCone`), `zetaZeroWidth ≤ σ` (`σ ≥ 0`)
+      holds iff `gradedSobolevSourceCone (-Ce^{2βr})` satisfies `RiemannRochAxiom` at all apertures
+      `r > 0` for every `β > σ` (`zetaZeroWidth_le_iff_gradedSobolevSourceCone_riemannRoch`).
 21. **Bézout positivity holds.** The collar of two cycles has the jump form
     `A(0)∫fg + ∫_0^∞ ω(x)∫(f(u) − f(u+x))(g(u) − g(u+x))` (`re_archCross_eq`); for effective cycles
     without common component the intersection is prime incidence plus collar, both positive, hence
@@ -373,8 +427,14 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     (`scalingSubsurface_odd_defect_eq_chebyshevDefectLedger`). These are identities: the explicit
     formula rewritten on the odd subsurface.
 32. **The degree floor measures the zero width.** Unconditionally
-    `δ(x, x) ≥ −((8 + ε)e^r + C)∫f²` at every degree
-    (`exists_scalingSubsurface_odd_defect_ge_neg_eight_add_eps_mul_exp`). A floor `−Ce^{2σr}∫f²` at
+    `δ(x, x) ≥ −75e^r∫f²` and `δ(x, x) ≥ −((3 + ε)e^r + C)∫f²` at every degree
+    (`scalingSubsurface_odd_defect_ge_neg_seventy_five_mul_exp`,
+    `exists_scalingSubsurface_odd_defect_ge_neg_three_add_eps_mul_exp`, lowered from `78` and `8 + ε`
+    by bipartite high-lag halving and the Cauchy–Schwarz pole-charge bound), and in Sobolev norms
+    both the first-order (`∫f² + ½∫(f')²`) and second-order pole-tilted (`¼∫f² + ∫(f')²`)
+    de la Vallée Poussin lower bounds `−K e^r e^{−c√r}` hold across all degrees
+    (`exists_scalingSubsurface_odd_defect_ge_neg_deLaValleePoussin_sobolev`,
+    `exists_scalingSubsurface_odd_defect_ge_neg_poleTilted_deLaValleePoussin_sobolev`). A floor `−Ce^{2σr}∫f²` at
     all degrees forces `|Re ρ − ½| ≤ σ` for every zero, so RH is equivalent to a subexponential floor
     and to a bounded floor (`rightZeros_zeta_eq_empty_iff_subexponential_scalingSubsurface_odd_defect_floor`,
     `rightZeros_zeta_eq_empty_iff_bddBelow_scalingSubsurface_odd_defect`). Normalized by the Sobolev
@@ -624,7 +684,8 @@ Weil's argument.
 | `ThePronicWeightIsThePoleMassOfTheSuccessorCell`, `TheSuccessorCollar` | the successor cell |
 | `TheTwoThirdsConstantIsPairCorrelation`, `BreakingTheCoalescenceBlindSpotAndThreeQuarters`, `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold`, `WhatAGramFunctionalCertifiesWithoutEffectivity` | rank–trace inertia, the coalescence blind spot, spectral slack, routes to `3/4`, corpus upgrades |
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring, Adams operations, Hecke cycles, Lefschetz splitting |
-| `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector ledgers, `(8 + ε)e^r` floor, degree floor ⟺ zero width |
+| `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector ledgers, `75e^r` and `(3 + ε)e^r` floors, first- and second-order de la Vallée Poussin Sobolev floors, shared derivative payment bootstrap, degree floor ⟺ zero width |
 | `WhichArithmeticDataForceTheSign` | Toeplitz–Rosati reflection identity, pole masking of point counts, forcing equivalences over `𝔽_q` and on the scaling surface |
 | `SectionCountRiemannRochAndPrimeBlindSelectivity` | nef quadrant and Hecke-stable ampleness, `DoF − node count = E(s)`, prime-blind section vanishing, diagonal relabeling invariance |
-| `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime |
+| `SourceDeterminantalSectionsAndArithmeticRiemannRoch` | source section cones, non-vacuous ampleness, Hecke stability, Riemann–Roch ⟺ coercive floor, Riemann–Roch past the first prime, all-aperture Chebyshev and de la Vallée Poussin floors |
+| `AllApertureSourceRiemannRochAndCoercivityLaws` | universal strict-ampleness rigidity, compensated polar surfaces and all-aperture ample source cones, no-Hardy-weight law, doubly-exponential Gaussian ceiling, closed-aperture polar ground-energy equivalence and strict-monotonicity self-upgrade, Sobolev source cones and zero-width equivalence |

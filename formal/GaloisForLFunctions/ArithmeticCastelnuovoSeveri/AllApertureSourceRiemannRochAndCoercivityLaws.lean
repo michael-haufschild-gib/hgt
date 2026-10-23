@@ -493,7 +493,8 @@ theorem compensatedSurface_polar (x y : C) :
 @[simp]
 theorem compensatedSurface_prim (x : C) :
     (S.compensatedSurface B hsymm hH hV).prim x = S.prim x := by
-  ext_iff.mpr ⟨rfl, rfl⟩; rfl
+  simp [PolarSurface.prim, PolarSurface.polarPart, S.compensatedSurface_pair_H,
+    S.compensatedSurface_pair_V]
 
 /-- The source section spaces, closed source cone, strict source cone, and graded source cone on
 `S.compensatedSurface B` are **identical as sets** to those on `S`. -/
@@ -707,8 +708,7 @@ theorem l2CompensatedScalingSubsurface_realTestsAt_all_apertures {r c : ℝ}
       S'.BezoutAxiom (strictL2SourceCone c (realTestsAt r)) ∧
       S'.HodgeIndex := by
   refine l2CompensatedScalingSubsurface_effectivity_of_floor hc (realTestsAt r) fun x => ?_
-  have h := (le_add_of_nonneg_right (by positivity)).trans
-    (realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x)
+  have h := realTestsAt_scalingSubsurface_defect_ge_neg_ten_add_seventy_two_exp hr x
   linarith [show -(10 + 72 * Real.exp r + c - c) = -(10 + 72 * Real.exp r) by ring]
 
 /-- **Unconditional All-Aperture Ample + Riemann–Roch + Bézout + HodgeIndex on `evenRealTestsAt r`
@@ -732,8 +732,7 @@ theorem l2CompensatedScalingSubsurface_even_and_polarFree_all_apertures {r c : �
   · obtain ⟨hRR, hA, hSRR, -, -, hBez, hH⟩ :=
       l2CompensatedScalingSubsurface_effectivity_of_floor (κ := 10 + 68 * Real.exp r + c) hc
         (evenRealTestsAt r) fun x => by
-          have h := (le_add_of_nonneg_right (by positivity)).trans
-            (even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x)
+          have h := even_scalingSubsurface_defect_ge_neg_ten_add_sixty_eight_exp r x
           linarith [show -(10 + 68 * Real.exp r + c - c) = -(10 + 68 * Real.exp r) by ring]
     exact ⟨hRR, hA, hSRR, hBez, hH⟩
   · obtain ⟨hRR, hA, hSRR, -, -, hBez, hH⟩ :=
@@ -783,9 +782,9 @@ theorem not_forall_aperture_weightedL2SourceCone_riemannRoch {W : ℝ → ℝ}
   have hweil_le : weilPair F F < ∫ x : ℝ, W x * F x ^ 2 := by
     rw [weilPair_self_eq_fullZeroForm hF2 hFc]
     have heven0 : evenPoleMoment F = 0 := evenPoleMoment_eq_zero_of_odd hF_odd
+    have heven0_sq : evenPoleMoment F ^ 2 = 0 := by rw [heven0]; ring
     have hfull_le : fullZeroForm F ≤ _root_.RHTower.markovEnergy (fun x => (F x : ℂ)) := by
       unfold fullZeroForm
-      rw [heven0, sq_zero, mul_zero, add_zero]
       linarith [sq_nonneg (oddPoleMoment F)]
     exact hfull_le.trans_lt hlt
   have hnn : ∀ (V : Submodule ℝ realTests) (x : ℝ × ℝ × V),

@@ -129,9 +129,9 @@ theorem sum_fin_succ_eq_sum_Icc {α : Type*} [AddCommMonoid α] (J : ℕ) (f : �
   induction J with
   | zero => simp
   | succ J ih =>
-    rw [Fin.sum_univ_castSucc, ih, Fin.val_last,
-      Finset.sum_Icc_succ_top (Nat.le_add_left 1 J)]
-    rfl
+    rw [Fin.sum_univ_castSucc]
+    simp only [Fin.val_castSucc, Fin.val_last]
+    rw [ih, Finset.sum_Icc_succ_top (Nat.le_add_left 1 J)]
 
 /-- The `r × J` **pole-jet reading matrix** at horizon `J`, drift exponent `ε`, and pole order `r`:
 its `(m, j)` entry is `(j + 1)^{-(1 - ε)} (log (j + 1))^m`. -/
@@ -164,11 +164,11 @@ theorem poleJetMatrix_mulVec_zero_eq_poleValue (k : ℕ → ℝ) (J : ℕ) (ε :
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [pow_zero, mul_one]
 
-/-- Row `1` of `(poleJetMatrix J ε r).mulVec (kernelVec k J)` equals `-poleSlope k J ε`. -/
-theorem poleJetMatrix_mulVec_one_eq_neg_poleSlope (k : ℕ → ℝ) (J : ℕ) (ε : ℝ) {r : ℕ}
+/-- Row `1` of `(poleJetMatrix J ε r).mulVec (kernelVec k J)` equals `poleSlope k J ε`. -/
+theorem poleJetMatrix_mulVec_one_eq_poleSlope (k : ℕ → ℝ) (J : ℕ) (ε : ℝ) {r : ℕ}
     (m : Fin r) (hm : m.1 = 1) :
-    ((poleJetMatrix J ε r).mulVec (kernelVec k J)) m = (-poleSlope k J ε : ℂ) := by
-  rw [poleJetMatrix_mulVec_kernelVec, hm, poleSlope, neg_neg]
+    ((poleJetMatrix J ε r).mulVec (kernelVec k J)) m = (poleSlope k J ε : ℂ) := by
+  rw [poleJetMatrix_mulVec_kernelVec, hm, poleSlope]
   congr 1
   refine Finset.sum_congr rfl fun d _ => ?_
   rw [pow_one]
@@ -186,9 +186,9 @@ theorem mem_ker_poleJetMatrix_two_iff (k : ℕ → ℝ) (J : ℕ) (ε : ℝ) :
     kernelVec k J ∈ LinearMap.ker (poleJetMatrix J ε 2).mulVecLin ↔
       poleValue k J ε = 0 ∧ poleSlope k J ε = 0 := by
   rw [LinearMap.mem_ker, Matrix.mulVecLin_apply, funext_iff, Fin.forall_fin_two,
-    poleJetMatrix_mulVec_zero_eq_poleValue k J ε 0 rfl,
-    poleJetMatrix_mulVec_one_eq_neg_poleSlope k J ε 1 rfl,
-    Pi.zero_apply, Complex.ofReal_eq_zero, Complex.ofReal_eq_zero, neg_eq_zero]
+    poleJetMatrix_mulVec_zero_eq_poleValue k J ε (0 : Fin 2) rfl,
+    poleJetMatrix_mulVec_one_eq_poleSlope k J ε (1 : Fin 2) rfl]
+  simp only [Pi.zero_apply, Complex.ofReal_eq_zero]
 
 /-- The `1 × 1` principal-part reading of a kernel `k` on an order-1 pole at `s = 1 - ε`. -/
 def principalPartReadingOne (k : ℕ → ℝ) (J : ℕ) (ε : ℝ) : Matrix (Fin 1) (Fin 1) ℂ :=
@@ -233,12 +233,12 @@ theorem h0_principalPartReadingTwo_eq_two_iff (k : ℕ → ℝ) (J : ℕ) (ε : 
 `[1, J]`, the convolved smooth power `k ⋆ d^{-ε}` has bounded receiver iff `kernelVec k J` is a
 section of `poleJetMatrix J ε 1`, and iff `h0 (principalPartReadingOne k J ε) = 1`. -/
 theorem receiverBounded_orderOnePole_iff_sections {k : ℕ → ℝ} {J : ℕ}
-    (hk0 : k 0 = 0) (hkJ : ∀ d : ℕ, J < d → k d = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    (ReceiverBounded (dirichletConv k (smoothPower ε)) ↔
+    (hkJ : ∀ d : ℕ, J < d → k d = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
+    (ReceiverBounded (RHTower.dirichletConv k (dampedSignWeight unitSign ε)) ↔
       kernelVec k J ∈ LinearMap.ker (poleJetMatrix J ε 1).mulVecLin) ∧
-    (ReceiverBounded (dirichletConv k (smoothPower ε)) ↔
+    (ReceiverBounded (RHTower.dirichletConv k (dampedSignWeight unitSign ε)) ↔
       h0 (principalPartReadingOne k J ε) = 1) := by
-  rw [receiverBounded_dirichletConv_smoothPower_iff hk0 hkJ hε hε2,
+  rw [receiverBounded_dirichletConv_unit_iff hε hε2 hkJ,
     mem_ker_poleJetMatrix_one_iff, h0_principalPartReadingOne_eq_one_iff]
   exact ⟨Iff.rfl, Iff.rfl⟩
 
@@ -247,12 +247,16 @@ theorem receiverBounded_orderOnePole_iff_sections {k : ℕ → ℝ} {J : ℕ}
 `kernelVec k J` is a section of `poleJetMatrix J ε 2`, and iff
 `h0 (principalPartReadingTwo k J ε) = 2`. -/
 theorem receiverBounded_orderTwoPole_iff_sections {k : ℕ → ℝ} {J : ℕ}
-    (hk0 : k 0 = 0) (hkJ : ∀ d : ℕ, J < d → k d = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
-    (ReceiverBounded (dirichletConv k (logWeight 1 * smoothPower ε)) ↔
+    (hkJ : ∀ d : ℕ, J < d → k d = 0) {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) :
+    (ReceiverBounded
+        (RHTower.dirichletConv k
+          (TransHorizonIncidenceMechanics.logWeight (dampedSignWeight unitSign ε))) ↔
       kernelVec k J ∈ LinearMap.ker (poleJetMatrix J ε 2).mulVecLin) ∧
-    (ReceiverBounded (dirichletConv k (logWeight 1 * smoothPower ε)) ↔
+    (ReceiverBounded
+        (RHTower.dirichletConv k
+          (TransHorizonIncidenceMechanics.logWeight (dampedSignWeight unitSign ε))) ↔
       h0 (principalPartReadingTwo k J ε) = 2) := by
-  rw [receiverBounded_dirichletConv_logWeight_unit_iff hk0 hkJ hε hε2,
+  rw [receiverBounded_dirichletConv_logWeight_unit_iff hε hε2 hkJ,
     mem_ker_poleJetMatrix_two_iff, h0_principalPartReadingTwo_eq_two_iff]
   exact ⟨Iff.rfl, Iff.rfl⟩
 
@@ -263,7 +267,7 @@ theorem poleJetMatrix_one_surjective {J : ℕ} (hJ : 1 ≤ J) (ε : ℝ) :
   let j₀ : Fin J := ⟨0, hJ⟩
   refine ⟨Pi.single j₀ (y 0), ?_⟩
   ext i
-  rw [Fin.eq_zero i, Matrix.mulVecLin_apply, Matrix.mulVec_single, Pi.single_eq_same]
+  rw [Fin.eq_zero i, Matrix.mulVecLin_apply, Matrix.mulVec_single]
   simp [poleJetMatrix, j₀]
 
 /-- **Rank, `h¹`, `h⁰`, and section codimension for the order-1 pole-jet reading (`1 ≤ J`):**
@@ -305,14 +309,17 @@ theorem poleJetMatrix_two_surjective {J : ℕ} (hJ : 2 ≤ J) (ε : ℝ) :
     norm_num
   ext i
   rw [Matrix.mulVecLin_apply, Matrix.mulVec_add, Pi.add_apply,
-    Matrix.mulVec_single, Matrix.mulVec_single, Pi.single_eq_same, Pi.single_eq_same]
+    Matrix.mulVec_single, Matrix.mulVec_single]
   fin_cases i
-  · change poleJetMatrix J ε 2 0 j₀ * c₀ + poleJetMatrix J ε 2 0 j₁ * c₁ = y 0
-    rw [h00, h01]
-    simp only [c₀]
+  · change (MulOpposite.op c₀ • (poleJetMatrix J ε 2).col j₀) 0 +
+        (MulOpposite.op c₁ • (poleJetMatrix J ε 2).col j₁) 0 = y 0
+    simp only [Pi.smul_apply, Matrix.col_apply, MulOpposite.smul_eq_mul_unop,
+      MulOpposite.unop_op, h00, h01, c₀]
     ring
-  · change poleJetMatrix J ε 2 1 j₀ * c₀ + poleJetMatrix J ε 2 1 j₁ * c₁ = y 1
-    rw [h10, h11, zero_mul, zero_add]
+  · change (MulOpposite.op c₀ • (poleJetMatrix J ε 2).col j₀) 1 +
+        (MulOpposite.op c₁ • (poleJetMatrix J ε 2).col j₁) 1 = y 1
+    simp only [Pi.smul_apply, Matrix.col_apply, MulOpposite.smul_eq_mul_unop,
+      MulOpposite.unop_op, h10, h11, zero_mul, zero_add, c₁]
     exact mul_div_cancel₀ (y 1) hb
 
 /-- **Rank, `h¹`, `h⁰`, and section codimension for the order-2 pole-jet reading (`2 ≤ J`):**
@@ -340,16 +347,19 @@ theorem h0_poleJetMatrix_one_sub_two {J : ℕ} (hJ : 2 ≤ J) (ε : ℝ) :
 
 /-- At horizon `J = 2`, the first-order Fermi kernel `fermiKernel ε` lies in the 1-dimensional
 section space of `poleJetMatrix 2 ε 1` (`h⁰ = 1`) and outside the 0-dimensional section space of
-`poleJetMatrix 2 ε 2` (`h⁰ = 0`), while at horizon `J = 3`, `doubleFermiKernel ε` lies in the
-1-dimensional section space of `poleJetMatrix 3 ε 2` (`h⁰ = 1`). -/
+`poleJetMatrix 2 ε 2` (`h⁰ = 0`), while at horizon `J = 4`, `secondOrderFermiKernel ε` lies in the
+2-dimensional section space of `poleJetMatrix 4 ε 2` (`h⁰ = 2`). -/
 theorem fermi_and_doubleFermi_poleJetSections (ε : ℝ) :
     kernelVec (fermiKernel ε) 2 ∈ LinearMap.ker (poleJetMatrix 2 ε 1).mulVecLin ∧
       kernelVec (fermiKernel ε) 2 ∉ LinearMap.ker (poleJetMatrix 2 ε 2).mulVecLin ∧
-      kernelVec (doubleFermiKernel ε) 3 ∈ LinearMap.ker (poleJetMatrix 3 ε 2).mulVecLin := by
+      kernelVec (secondOrderFermiKernel ε) 4 ∈ LinearMap.ker (poleJetMatrix 4 ε 2).mulVecLin := by
   rw [mem_ker_poleJetMatrix_one_iff, mem_ker_poleJetMatrix_two_iff, mem_ker_poleJetMatrix_two_iff]
-  exact ⟨poleValue_fermiKernel ε,
-    fun h => poleSlope_fermiKernel_ne_zero ε h.2,
-    ⟨poleValue_doubleFermiKernel ε, poleSlope_doubleFermiKernel ε⟩⟩
+  refine ⟨poleValue_fermiKernel ε, ?_,
+    ⟨poleValue_secondOrderFermiKernel ε, poleSlope_secondOrderFermiKernel ε⟩⟩
+  rintro ⟨-, hslope⟩
+  rw [poleSlope_fermiKernel] at hslope
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  linarith
 
 /-! ### 3. The zero-order receiver law as a count of sections -/
 

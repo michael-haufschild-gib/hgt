@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SchurLendingOddHodgeIndexPastFirstPrime
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.BezoutEffectivityAndTheBeurlingObstruction
-import GaloisForLFunctions.ArithmeticIncidencePositivity.ReflectedPrimePolarAllocation
+import GaloisForLFunctions.ArithmeticIncidencePositivity.SharedDerivativeEnergyAndGlobalAllocationSynthesis
 
 /-!
 # Riemann–Roch for `ℤ`, the Strict Coupled Arithmetic Cone, and the Reflected-Prime/Polar Ledger
@@ -738,6 +738,191 @@ theorem strictCoupledArithmeticCone_odd_riemannRoch_of_le_threeHundredSixtyTwoTh
     strictCoupledArithmeticCone_ample (oddRealTestsAt r), ?_⟩
   rw [strictCoupledArithmeticCone_eq_openPositiveCone]
   exact (scalingSubsurface (oddRealTestsAt r)).openPositiveCone_bezout hH
+
+/-! ### 4. Bipartite Halving, De la Vallée Poussin Sobolev Bounds, and Shared Derivative Payment on the Scaling Surface -/
+
+/-- **Improved Unconditional `-75 e^r ∫ f²` Lower Bound on the Castelnuovo–Severi Defect.**
+Combining the bipartite high-lag halving law with the sharp Cauchy–Schwarz bound on `poleCharge`
+lowers the explicit all-aperture Chebyshev prefactor on `scalingSubsurface (oddRealTestsAt r)`
+from `78` to `75`. -/
+theorem scalingSubsurface_odd_defect_ge_neg_seventy_five_mul_exp {r : ℝ} (hr : 0 < r)
+    (x : ℝ × ℝ × oddRealTestsAt r) :
+    -(75 * Real.exp r * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+      (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have hP0 : ∀ y, 0 ≤ aperturePlateau r (r + 1) y :=
+    fun y => plateauGauge_nonneg (r + 1) (r + 1 - r) y
+  have hpool := surplusPool_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hcross := crossingPotentialTerm_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq x.2.2.1.2.1 x.2.2.1.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu) (by linarith : r < r + 1)
+  have hcost := (le_abs_self _).trans
+    (abs_reflectedPrimePolarCost_le_sixtyNine_mul_exp_mul_sq
+      x.2.2.1.2.1.continuous x.2.2.1.2.2 x.2.2.2.2 hr
+      (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu))
+  have hexp1 : 1 ≤ Real.exp r := Real.one_le_exp hr.le
+  have hI0 : 0 ≤ ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  have hrem' : -(6 * Real.exp r * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+      gaugeRemainder (aperturePlateau r (r + 1)) (x.2.2.1 : ℝ → ℝ) := by
+    have h6 : 27 / 5 * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 ≤
+        6 * Real.exp r * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 :=
+      mul_le_mul_of_nonneg_right (by linarith) hI0
+    linarith
+  linarith
+
+/-- **Improved Unconditional `75 e^r ∫ f²` Upper Bound on Primitive Self-Intersections.** -/
+theorem scalingSubsurface_odd_primitive_self_le_seventy_five_mul_exp {r : ℝ} (hr : 0 < r)
+    (x : ℝ × ℝ × oddRealTestsAt r)
+    (horth : (scalingSubsurface (oddRealTestsAt r)).pair x
+      (scalingSubsurface (oddRealTestsAt r)).ample = 0) :
+    (scalingSubsurface (oddRealTestsAt r)).pair x x ≤
+      -2 * (x.1 + poleA (x.2.2.1 : ℝ → ℝ)) ^ 2 +
+        75 * Real.exp r * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 := by
+  have horth' : scalingSurface.pair (x.1, x.2.1, x.2.2.1) scalingSurface.ample = 0 := horth
+  have hself := scalingPair_odd_self_of_orthogonal_ample (x.1, x.2.1, x.2.2.1) x.2.2.2.2 horth'
+  have hdef := scalingSubsurface_odd_defect_ge_neg_seventy_five_mul_exp hr x
+  rw [scalingSubsurface_defect_self] at hdef
+  change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
+  linarith
+
+/-- **Sharp PNT `(3 + ε) e^r + C` Lower Bound on the Castelnuovo–Severi Defect.**
+Bipartite high-lag halving (`2 e^r` from the prime shifts) together with the Cauchy–Schwarz bound on
+`poleCharge` (`e^r − 2r`) lowers the asymptotic PNT prefactor on `scalingSubsurface (oddRealTestsAt r)`
+from `8 + ε` down to `3 + ε` across all degrees `r > 0`. -/
+theorem exists_scalingSubsurface_odd_defect_ge_neg_three_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      -(((3 + ε) * Real.exp r + C) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) ≤
+        (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  obtain ⟨C₀, hC₀0, hC₀⟩ := exists_reflectedPrimePolarCost_le_three_add_eps_mul_exp hε
+  refine ⟨C₀ + 27 / 5, by linarith, fun r hr x => ?_⟩
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have hP0 : ∀ y, 0 ≤ aperturePlateau r (r + 1) y :=
+    fun y => plateauGauge_nonneg (r + 1) (r + 1 - r) y
+  have hpool := surplusPool_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hcross := crossingPotentialTerm_nonneg (F := (x.2.2.1 : ℝ → ℝ)) hP0
+  have hrem := gaugeRemainder_ge_neg_const_mul_sq x.2.2.1.2.1 x.2.2.1.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu) (by linarith : r < r + 1)
+  have hcost := hC₀ r (x.2.2.1 : ℝ → ℝ) hr x.2.2.1.2.1.continuous x.2.2.1.2.2 x.2.2.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu)
+  linarith
+
+/-- **Sharp PNT `(3 + ε) e^r + C` Upper Bound on Primitive Self-Intersections.** -/
+theorem exists_scalingSubsurface_odd_primitive_self_le_three_add_eps_mul_exp {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      (scalingSubsurface (oddRealTestsAt r)).pair x
+        (scalingSubsurface (oddRealTestsAt r)).ample = 0 →
+      (scalingSubsurface (oddRealTestsAt r)).pair x x ≤
+        -2 * (x.1 + poleA (x.2.2.1 : ℝ → ℝ)) ^ 2 +
+          ((3 + ε) * Real.exp r + C) * ∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2 := by
+  obtain ⟨C, hC0, hC⟩ := exists_scalingSubsurface_odd_defect_ge_neg_three_add_eps_mul_exp hε
+  refine ⟨C, hC0, fun r hr x horth => ?_⟩
+  have horth' : scalingSurface.pair (x.1, x.2.1, x.2.2.1) scalingSurface.ample = 0 := horth
+  have hself := scalingPair_odd_self_of_orthogonal_ample (x.1, x.2.1, x.2.2.1) x.2.2.2.2 horth'
+  have hdef := hC r hr x
+  rw [scalingSubsurface_defect_self] at hdef
+  change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
+  linarith
+
+/-- **First-Order De la Vallée Poussin Sobolev Lower Bound on the Castelnuovo–Severi Defect.**
+With universal constants `c > 0` and `K > 0`, for every degree `r > 0` and every `x` on
+`scalingSubsurface (oddRealTestsAt r)`, signed prime–pole cancellation bounds the defect from below
+by `-K e^r exp(-c√r) (∫ f² + ½ ∫ (deriv f)²)`. -/
+theorem exists_scalingSubsurface_odd_defect_ge_neg_deLaValleePoussin_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      -(K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+          ((∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) + (1 / 2) * ∫ u, deriv (x.2.2.1 : ℝ → ℝ) u ^ 2)) ≤
+        (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  obtain ⟨c, hc, K, hK, halloc⟩ := exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit
+  refine ⟨c, hc, K, hK, fun r hr x => ?_⟩
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have ha := halloc r (r + 1) (x.2.2.1 : ℝ → ℝ) hr (by linarith)
+    x.2.2.1.2.1 x.2.2.1.2.2 x.2.2.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu)
+  unfold reflectedPrimePolarCost at hled
+  linarith
+
+/-- **First-Order De la Vallée Poussin Sobolev Upper Bound on Primitive Self-Intersections.** -/
+theorem exists_scalingSubsurface_odd_primitive_self_le_deLaValleePoussin_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      (scalingSubsurface (oddRealTestsAt r)).pair x
+        (scalingSubsurface (oddRealTestsAt r)).ample = 0 →
+      (scalingSubsurface (oddRealTestsAt r)).pair x x ≤
+        -2 * (x.1 + poleA (x.2.2.1 : ℝ → ℝ)) ^ 2 +
+          K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+            ((∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) + (1 / 2) * ∫ u, deriv (x.2.2.1 : ℝ → ℝ) u ^ 2) := by
+  obtain ⟨c, hc, K, hK, hdef⟩ := exists_scalingSubsurface_odd_defect_ge_neg_deLaValleePoussin_sobolev
+  refine ⟨c, hc, K, hK, fun r hr x horth => ?_⟩
+  have horth' : scalingSurface.pair (x.1, x.2.1, x.2.2.1) scalingSurface.ample = 0 := horth
+  have hself := scalingPair_odd_self_of_orthogonal_ample (x.1, x.2.1, x.2.2.1) x.2.2.2.2 horth'
+  have hd := hdef r hr x
+  rw [scalingSubsurface_defect_self] at hd
+  change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
+  linarith
+
+/-- **Second-Order Pole-Tilted De la Vallée Poussin Sobolev Lower Bound on the Castelnuovo–Severi
+Defect.** With universal constants `c > 0` and `K > 0`, for every degree `r > 0` and every `x` on
+`scalingSubsurface (oddRealTestsAt r)`, second-order critical-scale cancellation bounds the defect
+from below by `-K e^r exp(-c√r) ((1/4) ∫ f² + ∫ (deriv f)²)`. -/
+theorem exists_scalingSubsurface_odd_defect_ge_neg_poleTilted_deLaValleePoussin_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      -(K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+          ((1 / 4) * (∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) + ∫ u, deriv (x.2.2.1 : ℝ → ℝ) u ^ 2)) ≤
+        (scalingSubsurface (oddRealTestsAt r)).defect x x := by
+  obtain ⟨c, hc, K, hK, halloc⟩ :=
+    exists_globalIncidenceAllocation_with_poleTilted_deLaValleePoussin_deficit
+  refine ⟨c, hc, K, hK, fun r hr x => ?_⟩
+  have hled := scalingSubsurface_odd_defect_eq_reflectedPrimePolarLedger hr (by linarith : r < r + 1) x
+  have ha := halloc r (r + 1) (x.2.2.1 : ℝ → ℝ) hr (by linarith)
+    x.2.2.1.2.1 x.2.2.1.2.2 x.2.2.2.2
+    (fun u hu => apply_eq_zero_of_mem_oddRealTestsAt x.2.2 hu)
+  unfold reflectedPrimePolarCost at hled
+  linarith
+
+/-- **Second-Order Pole-Tilted De la Vallée Poussin Sobolev Upper Bound on Primitive
+Self-Intersections.** -/
+theorem exists_scalingSubsurface_odd_primitive_self_le_poleTilted_deLaValleePoussin_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ r : ℝ, 0 < r → ∀ x : ℝ × ℝ × oddRealTestsAt r,
+      (scalingSubsurface (oddRealTestsAt r)).pair x
+        (scalingSubsurface (oddRealTestsAt r)).ample = 0 →
+      (scalingSubsurface (oddRealTestsAt r)).pair x x ≤
+        -2 * (x.1 + poleA (x.2.2.1 : ℝ → ℝ)) ^ 2 +
+          K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+            ((1 / 4) * (∫ u, (x.2.2.1 : ℝ → ℝ) u ^ 2) + ∫ u, deriv (x.2.2.1 : ℝ → ℝ) u ^ 2) := by
+  obtain ⟨c, hc, K, hK, hdef⟩ :=
+    exists_scalingSubsurface_odd_defect_ge_neg_poleTilted_deLaValleePoussin_sobolev
+  refine ⟨c, hc, K, hK, fun r hr x horth => ?_⟩
+  have horth' : scalingSurface.pair (x.1, x.2.1, x.2.2.1) scalingSurface.ample = 0 := horth
+  have hself := scalingPair_odd_self_of_orthogonal_ample (x.1, x.2.1, x.2.2.1) x.2.2.2.2 horth'
+  have hd := hdef r hr x
+  rw [scalingSubsurface_defect_self] at hd
+  change scalingSurface.pair (x.1, x.2.1, x.2.2.1) (x.1, x.2.1, x.2.2.1) ≤ _
+  linarith
+
+/-- **Shared Derivative-Energy Payment Bootstrap Theorem.**
+Suppose a shared derivative-energy reserve `α(r) ∫ (deriv f)²` (`α(r) ≥ 0`) is paid by
+`surplusPool + crossingPotentialTerm` modulo a subexponential pure-mass error, while the remaining
+prime–polar cost `reflectedPrimePolarCost f r - α(r) ∫ (deriv f)²` is also subexponential in pure
+mass (as guaranteed at `α(r) = (1/2) K e^r exp(-c√r)` only down to rate `1/2`, or at any subexponential
+rate if the Chebyshev defect `E(s)` has subexponential `L¹` norm). Then `rightZeros zetaZeroConfig = ∅`
+and `δ(x, x) ≥ 0` holds across all degrees `r > 0`. -/
+theorem rightZeros_zeta_eq_empty_of_subexponential_shared_derivative_payment
+    (α : ℝ → ℝ)
+    (hres : ∀ σ : ℝ, 0 < σ → ∃ C₁ : ℝ, ∀ r : ℝ, 0 < r → ∀ f : oddRealTestsAt r,
+      α r * (∫ u, deriv (f.1 : ℝ → ℝ) u ^ 2) ≤
+        surplusPool (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          crossingPotentialTerm (aperturePlateau r (r + 1)) (f.1 : ℝ → ℝ) +
+          C₁ * Real.exp (2 * σ * r) * ∫ u, (f.1 : ℝ → ℝ) u ^ 2)
+    (hrem_cost : ∀ σ : ℝ, 0 < σ → ∃ C₂ : ℝ, ∀ r : ℝ, 0 < r → ∀ f : oddRealTestsAt r,
+      reflectedPrimePolarCost (f.1 : ℝ → ℝ) r - α r * (∫ u, deriv (f.1 : ℝ → ℝ) u ^ 2) ≤
+        C₂ * Real.exp (2 * σ * r) * ∫ u, (f.1 : ℝ → ℝ) u ^ 2) :
+    rightZeros zetaZeroConfig = ∅ := by
+  refine rightZeros_zeta_eq_empty_of_subexponential_reflectedPrimePolarCost fun σ hσ => ?_
+  obtain ⟨C₁, hC₁⟩ := hres σ hσ
+  obtain ⟨C₂, hC₂⟩ := hrem_cost σ hσ
+  refine ⟨C₁ + C₂, fun r hr f => ?_⟩
+  have h1 := hC₁ r hr f
+  have h2 := hC₂ r hr f
+  linarith
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 

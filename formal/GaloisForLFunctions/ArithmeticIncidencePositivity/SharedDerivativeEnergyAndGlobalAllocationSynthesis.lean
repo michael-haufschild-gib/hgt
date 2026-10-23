@@ -174,7 +174,7 @@ For every continuous test `F` supported in `[−r, r]` (`r > 0`),
 `poleCharge F = 2 (∫ F(x) sinh(x/2) dx)² ≤ (2 sinh r − 2r) ∫ F² ≤ (e^r − 2r) ∫ F²`.
 This improves `poleCharge_le_eight_mul_sinh_mul_sq` (`8 sinh r ≤ 4 e^r`) by a factor of `4`. -/
 theorem poleCharge_le_two_sinh_sub_two_r_mul_sq {F : ℝ → ℝ} {r : ℝ}
-    (hF : Continuous F) (hFc : HasCompactSupport F) (hr : 0 < r)
+    (hF : Continuous F) (_hFc : HasCompactSupport F) (hr : 0 < r)
     (hsupp : ∀ x, r < |x| → F x = 0) :
     poleCharge F ≤ (2 * Real.sinh r - 2 * r) * ∫ x, F x ^ 2 := by
   have hsinh_cont : Continuous fun x => Real.sinh (x / 2) :=

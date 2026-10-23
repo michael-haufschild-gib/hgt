@@ -182,8 +182,8 @@ theorem OrientAdmissible.summable_abs_div {ε : ℝ} {k : ℕ → ℝ} (hk : Ori
 
 theorem OrientAdmissible.summable_pole {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
     (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) : Summable fun j : ℕ => k j * (j : ℝ) ^ (-(1 - ε)) :=
-  Summable.of_abs ((hk.summable_rpow hε (by linarith) (by linarith)).congr fun j => by
-    rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)])
+  Summable.of_abs ((hk.summable_rpow (e := -(1 - ε)) hε (by linarith) (by linarith)).congr
+    fun j => by rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)])
 
 theorem abs_oddSqfWeight_div_le {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
     |oddSqfWeight ε d / d| ≤ (d : ℝ) ^ (-(1 + ε)) := by
@@ -207,8 +207,9 @@ theorem tsum_dirichletConv_oddSqf_div {ε : ℝ} (hε : 0 < ε) {h : ℕ → ℝ
 
 theorem sum_Icc_eq_sum_range {g : ℕ → ℝ} (h0 : g 0 = 0) (n : ℕ) :
     ∑ j ∈ Icc 1 n, g j = ∑ j ∈ range (n + 1), g j := by
-  rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (by omega : 0 < n + 1), h0, zero_add,
-    Nat.Ico_succ_right]
+  induction n with
+  | zero => simp [h0]
+  | succ n ih => rw [Finset.sum_range_succ, ← ih, Finset.sum_Icc_succ_top (by omega)]
 
 /-- Partial sums over `[1, J]` of a summable series vanishing at `0` converge to its sum. -/
 theorem tendsto_sum_Icc {g : ℕ → ℝ} (hg : Summable g) (h0 : g 0 = 0) :
@@ -282,12 +283,15 @@ theorem tsum_oddSqfTrunc_div (ε : ℝ) (k : ℕ → ℝ) (J : ℕ) :
     unfold oddSqfTrunc
     rw [if_neg hj]
     by_cases h1 : j = 1
-    · exact absurd (by simp [h1]) hj
+    · subst h1
+      have hJ : J = 0 := by simp only [mem_Icc, le_refl, true_and, not_le] at hj; omega
+      subst hJ
+      simp [poleValue]
     · rw [if_neg h1]; simp]
   unfold oddSqfTrunc
   have h : ∀ j ∈ Icc 1 J, ((if j ∈ Icc 1 J then k j else 0) - (if j = 1 then poleValue k J ε else 0)) /
       (j : ℝ) = k j / j - if j = 1 then poleValue k J ε else 0 := fun j hj => by
-    rw [if_pos hj]; split_ifs with h1 <;> simp [h1, sub_div]
+    rw [if_pos hj]; split_ifs with h1 <;> simp [h1]
   rw [sum_congr rfl h, sum_sub_distrib, sum_ite_eq' (Icc 1 J) 1]
   split_ifs with h1
   · rfl
@@ -317,6 +321,57 @@ theorem weightPronicEnergy_eq_truncEnergy {c o h : ℕ → ℝ} {T : ℕ} {a : �
   have hj' := (mem_Icc.1 hj).2
   exact hh d (Nat.pos_of_mem_divisors hd) ((Nat.divisor_le hd).trans (hj'.trans hn'))
 
+/-- The pole values of an admissible kernel converge to its pole pairing. -/
+theorem tendsto_poleValue {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk : OrientAdmissible ε k) :
+    Tendsto (fun J => poleValue k J ε) atTop (𝓝 (polePairing ε k)) :=
+  tendsto_sum_Icc (hk.summable_pole hε hε2) (by
+    rw [Nat.cast_zero, Real.zero_rpow (show -(1 - ε) ≠ 0 by linarith), mul_zero])
+
+/-- The means of the truncations converge to the mean of `k ⋆ o` on the paid hyperplane. -/
+theorem tendsto_mean_oddSqfTrunc {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk : OrientAdmissible ε k) (hP : polePairing ε k = 0) :
+    Tendsto (fun J => (∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) *
+        ∑' d : ℕ, oddSqfWeight ε d / d) atTop
+      (𝓝 (∑' d : ℕ, RHTower.dirichletConv k (oddSqfWeight ε) d / d)) := by
+  rw [tsum_dirichletConv_oddSqf_div hε (hk.summable_abs_div hε)]
+  refine Tendsto.mul_const _ ?_
+  have h := (tendsto_sum_Icc (hk.summable_abs_div hε).of_abs (by simp)).sub
+    (tendsto_poleValue hε hε2 hk)
+  rwa [hP, sub_zero] at h
+
+/-- The truncation energies are bounded by `4 C_ε N(k)²` beyond the cutoff. -/
+theorem truncEnergy_oddSqfTrunc_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk : OrientAdmissible ε k) {T J : ℕ} (hJ1 : 1 ≤ J) (hJT : T ≤ J) :
+    truncEnergy (RHTower.dirichletConv k (oddSqfWeight ε)) (oddSqfWeight ε) T (poleValue k J ε)
+        ((∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * ∑' d : ℕ, oddSqfWeight ε d / d) ≤
+      4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by
+  have hfin := weightPronicEnergy_dirichletConv_oddSqf_le_finite hε (oddSqfTrunc_support hJ1)
+    (poleValue_oddSqfTrunc ε k hJ1) T
+  have hsum : Summable fun j : ℕ => |oddSqfTrunc ε k J j / j| := by
+    refine summable_of_ne_finset_zero (s := Icc 1 J) fun j hj => ?_
+    unfold oddSqfTrunc
+    rw [if_neg hj]
+    by_cases h1 : j = 1
+    · exact absurd (by simp [h1, hJ1]) hj
+    · rw [if_neg h1]; simp
+  have hmeanJ := tsum_dirichletConv_oddSqf_div hε hsum
+  rw [tsum_oddSqfTrunc_div] at hmeanJ
+  have hE := weightPronicEnergy_eq_truncEnergy (c := RHTower.dirichletConv k (oddSqfWeight ε))
+    (o := oddSqfWeight ε) (h := RHTower.dirichletConv (oddSqfTrunc ε k J) (oddSqfWeight ε))
+    (T := T) (a := poleValue k J ε)
+    (fun d hd hdT => dirichletConv_oddSqfTrunc ε k hd (hdT.trans hJT))
+    ((∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * ∑' d : ℕ, oddSqfWeight ε d / d)
+  rw [← hE, ← hmeanJ]
+  refine hfin.trans ?_
+  have h2 := sum_abs_oddSqfTrunc_le hε hε2 hk hJ1
+  have h0 : 0 ≤ ∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε :=
+    sum_nonneg fun j _ => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+  calc oddSqfReceiverConst ε * (∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε) ^ 2
+      ≤ oddSqfReceiverConst ε * (2 * orientNorm ε k) ^ 2 :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 h2 2) (oddSqfReceiverConst_nonneg ε)
+    _ = 4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by ring
+
 /-- **The receiver is bounded on the paid hyperplane**: for an admissible kernel with vanishing
 pole pairing, every receiver energy of `k ⋆ o` is at most `4 C_ε N(k)²`. -/
 theorem weightPronicEnergy_dirichletConv_oddSqf_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
@@ -324,55 +379,13 @@ theorem weightPronicEnergy_dirichletConv_oddSqf_le {ε : ℝ} (hε : 0 < ε) (h�
     weightPronicEnergy (RHTower.dirichletConv k (oddSqfWeight ε))
         (∑' d : ℕ, RHTower.dirichletConv k (oddSqfWeight ε) d / d) T ≤
       4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by
-  set c := RHTower.dirichletConv k (oddSqfWeight ε)
-  set o := oddSqfWeight ε
-  set O := ∑' d : ℕ, o d / d
-  have hmean : ∑' d : ℕ, c d / d = (∑' j : ℕ, k j / j) * O :=
-    tsum_dirichletConv_oddSqf_div hε (hk.summable_abs_div hε)
-  -- the pole values and the means of the truncations converge
-  have hPJ : Tendsto (fun J => poleValue k J ε) atTop (𝓝 0) := by
-    rw [← hP]
-    exact tendsto_sum_Icc (hk.summable_pole hε hε2) (by
-      simp [Real.zero_rpow (by linarith : -(1 - ε) ≠ 0)])
-  have hmJ : Tendsto (fun J => (∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O) atTop
-      (𝓝 (∑' d : ℕ, c d / d)) := by
-    rw [hmean]
-    refine Tendsto.mul_const O ?_
-    have := (tendsto_sum_Icc (hk.summable_abs_div hε).of_abs (by simp)).sub hPJ
-    rwa [sub_zero] at this
-  have hlim : Tendsto (fun J => truncEnergy c o T (poleValue k J ε)
-      ((∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O)) atTop
-      (𝓝 (truncEnergy c o T 0 (∑' d : ℕ, c d / d))) :=
-    ((continuous_truncEnergy c o T).tendsto _).comp (hPJ.prodMk_nhds hmJ)
-  have hT : weightPronicEnergy c (∑' d : ℕ, c d / d) T =
-      truncEnergy c o T 0 (∑' d : ℕ, c d / d) :=
-    weightPronicEnergy_eq_truncEnergy (fun d _ _ => by ring) _
-  rw [hT]
-  refine le_of_tendsto hlim (eventually_atTop.2 ⟨max T 1, fun J hJ => ?_⟩)
-  have hJ1 : 1 ≤ J := (le_max_right _ _).trans hJ
-  have hJT : T ≤ J := (le_max_left _ _).trans hJ
-  have hfin := weightPronicEnergy_dirichletConv_oddSqf_le_finite hε (oddSqfTrunc_support hJ1)
-    (poleValue_oddSqfTrunc ε k hJ1) T
-  have hmeanJ : ∑' d : ℕ, RHTower.dirichletConv (oddSqfTrunc ε k J) o d / d =
-      (∑ j ∈ Icc 1 J, k j / j - poleValue k J ε) * O := by
-    rw [tsum_dirichletConv_oddSqf_div hε, tsum_oddSqfTrunc_div]
-    refine summable_of_ne_finset_zero (s := Icc 1 J) fun j hj => ?_
-    unfold oddSqfTrunc
-    rw [if_neg hj]
-    by_cases h1 : j = 1
-    · exact absurd (by simp [h1, hJ1]) hj
-    · rw [if_neg h1]; simp
-  rw [hmeanJ, weightPronicEnergy_eq_truncEnergy (c := c) (o := o)
-    (fun d hd hdT => dirichletConv_oddSqfTrunc ε k hd (hdT.trans hJT))] at hfin
-  refine hfin.trans ?_
-  have h2 := sum_abs_oddSqfTrunc_le hε hε2 hk hJ1
-  have h0 : 0 ≤ ∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε :=
-    sum_nonneg fun j _ => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
-  have hC := oddSqfReceiverConst_nonneg ε
-  calc oddSqfReceiverConst ε * (∑ j ∈ Icc 1 J, |oddSqfTrunc ε k J j| * (j : ℝ) ^ ε) ^ 2
-      ≤ oddSqfReceiverConst ε * (2 * orientNorm ε k) ^ 2 :=
-        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 h2 2) hC
-    _ = 4 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by ring
+  have hP0 : Tendsto (fun J => poleValue k J ε) atTop (𝓝 0) := hP ▸ tendsto_poleValue hε hε2 hk
+  have hlim := ((continuous_truncEnergy (RHTower.dirichletConv k (oddSqfWeight ε))
+    (oddSqfWeight ε) T).tendsto _).comp (hP0.prodMk_nhds (tendsto_mean_oddSqfTrunc hε hε2 hk hP))
+  rw [weightPronicEnergy_eq_truncEnergy (c := RHTower.dirichletConv k (oddSqfWeight ε))
+    (o := oddSqfWeight ε) (a := 0) (fun d _ _ => by ring)]
+  exact le_of_tendsto hlim (eventually_atTop.2 ⟨max T 1, fun J hJ =>
+    truncEnergy_oddSqfTrunc_le hε hε2 hk ((le_max_right _ _).trans hJ) ((le_max_left _ _).trans hJ)⟩)
 
 /-- **Payment over `o` is the closed hyperplane `P = 0`**, for every admissible kernel. -/
 theorem receiverBounded_dirichletConv_oddSqf_iff_admissible {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2)
@@ -388,6 +401,248 @@ theorem receiverBounded_dirichletConv_oddSqf_iff_admissible {ε : ℝ} (hε : 0 
       (hk.criticalWiener hε) hK hB
   · intro hP
     exact ⟨_, weightPronicEnergy_dirichletConv_oddSqf_le hε hε2 hk hP⟩
+
+/-! ### The flip is a bounded involution -/
+
+theorem injective_two_mul : Function.Injective fun m : ℕ => 2 * m := fun a b h => by
+  simp only at h; omega
+
+/-- A series supported on the even integers is its series over `2m`. -/
+theorem tsum_eq_tsum_two_mul {F : ℕ → ℝ} (hF : ∀ j, ¬ 2 ∣ j → F j = 0) :
+    ∑' j : ℕ, F j = ∑' m : ℕ, F (2 * m) := by
+  refine (injective_two_mul.tsum_eq fun j hj => ?_).symm
+  by_contra h
+  exact hj (hF j fun ⟨m, hm⟩ => h ⟨m, hm.symm⟩)
+
+theorem summable_iff_two_mul {F : ℕ → ℝ} (hF : ∀ j, ¬ 2 ∣ j → F j = 0) :
+    Summable F ↔ Summable fun m : ℕ => F (2 * m) :=
+  (injective_two_mul.summable_iff fun j hj => hF j fun ⟨m, hm⟩ => hj ⟨m, hm.symm⟩).symm
+
+theorem abs_evenPartWeight_le (k : ℕ → ℝ) (j : ℕ) : |evenPartWeight k j| ≤ |k (2 * j)| := by
+  unfold evenPartWeight; split_ifs <;> simp
+
+theorem summable_two_mul {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    Summable fun m : ℕ => |k (2 * m)| * ((2 * m : ℕ) : ℝ) ^ ε :=
+  hk.comp_injective injective_two_mul
+
+theorem tsum_two_mul_le {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    ∑' m : ℕ, |k (2 * m)| * ((2 * m : ℕ) : ℝ) ^ ε ≤ orientNorm ε k :=
+  tsum_comp_le_tsum_of_injective injective_two_mul hk
+    fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+
+/-- The even part is dominated by the even values: `|k_e(m)| m^ε ≤ |k(2m)| (2m)^ε`. -/
+theorem evenPart_le {ε : ℝ} (hε : 0 ≤ ε) (k : ℕ → ℝ) (m : ℕ) :
+    |evenPartWeight k m| * (m : ℝ) ^ ε ≤ |k (2 * m)| * ((2 * m : ℕ) : ℝ) ^ ε :=
+  mul_le_mul (abs_evenPartWeight_le k m) (Real.rpow_le_rpow (Nat.cast_nonneg m)
+    (by push_cast; linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]) hε)
+    (Real.rpow_nonneg (Nat.cast_nonneg m) _) (abs_nonneg _)
+
+theorem shiftTwo_two_mul (b : ℕ → ℝ) (m : ℕ) : shiftTwo b (2 * m) = b m := by
+  unfold shiftTwo; rw [if_pos (dvd_mul_right 2 m), Nat.mul_div_cancel_left m two_pos]
+
+theorem shiftTwo_of_not_dvd (b : ℕ → ℝ) {j : ℕ} (hj : ¬ 2 ∣ j) : shiftTwo b j = 0 := if_neg hj
+
+theorem OrientAdmissible.evenPart {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    OrientAdmissible ε (evenPartWeight k) :=
+  (summable_two_mul hk).of_nonneg_of_le
+    (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _)) (evenPart_le hε k)
+
+theorem OrientAdmissible.shiftEven {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    OrientAdmissible ε (shiftTwo (evenPartWeight k)) := by
+  unfold OrientAdmissible
+  rw [summable_iff_two_mul fun j hj => by rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]]
+  refine (summable_two_mul hk).of_nonneg_of_le
+    (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)) fun m => ?_
+  rw [shiftTwo_two_mul]
+  exact mul_le_mul_of_nonneg_right (abs_evenPartWeight_le k m) (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+
+theorem abs_oddPartKernel_le (k : ℕ → ℝ) (j : ℕ) : |oddPartKernel k j| ≤ |k j| := by
+  unfold oddPartKernel; split_ifs <;> simp
+
+theorem OrientAdmissible.oddPart {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    OrientAdmissible ε (oddPartKernel k) :=
+  hk.of_nonneg_of_le (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _))
+    fun j => mul_le_mul_of_nonneg_right (abs_oddPartKernel_le k j)
+      (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+
+theorem abs_flipKernelOf_le (k : ℕ → ℝ) (j : ℕ) (x : ℝ) (hx : 0 ≤ x) :
+    |flipKernelOf k j| * x ≤ |oddPartKernel k j| * x + |evenPartWeight k j| * x +
+      |shiftTwo (evenPartWeight k) j| * x := by
+  rw [← add_mul, ← add_mul]
+  refine mul_le_mul_of_nonneg_right ?_ hx
+  unfold flipKernelOf
+  exact (abs_sub _ _).trans (add_le_add_right (abs_add _ _) _)
+
+/-- The flip keeps admissibility. -/
+theorem OrientAdmissible.flip {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    OrientAdmissible ε (flipKernelOf k) :=
+  ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven hε)).of_nonneg_of_le
+    (fun j => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg j) _))
+    fun j => abs_flipKernelOf_le k j _ (Real.rpow_nonneg (Nat.cast_nonneg j) _)
+
+/-- **The companion class is continuous**: `N(k^♭) ≤ 3 N(k)`. -/
+theorem orientNorm_flipKernelOf_le {ε : ℝ} (hε : 0 ≤ ε) {k : ℕ → ℝ} (hk : OrientAdmissible ε k) :
+    orientNorm ε (flipKernelOf k) ≤ 3 * orientNorm ε k := by
+  have h1 : orientNorm ε (oddPartKernel k) ≤ orientNorm ε k :=
+    Summable.tsum_le_tsum (fun j => mul_le_mul_of_nonneg_right (abs_oddPartKernel_le k j)
+      (Real.rpow_nonneg (Nat.cast_nonneg j) _)) hk.oddPart hk
+  have h2 : orientNorm ε (evenPartWeight k) ≤ orientNorm ε k :=
+    (Summable.tsum_le_tsum (evenPart_le hε k) (hk.evenPart hε) (summable_two_mul hk)).trans
+      (tsum_two_mul_le hk)
+  have h3 : orientNorm ε (shiftTwo (evenPartWeight k)) ≤ orientNorm ε k := by
+    unfold orientNorm
+    rw [tsum_eq_tsum_two_mul fun j hj => by rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]]
+    refine (Summable.tsum_le_tsum (fun m => ?_) ?_ (summable_two_mul hk)).trans (tsum_two_mul_le hk)
+    · rw [shiftTwo_two_mul]
+      exact mul_le_mul_of_nonneg_right (abs_evenPartWeight_le k m)
+        (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+    · exact (summable_iff_two_mul fun j hj => by
+        rw [shiftTwo_of_not_dvd _ hj, abs_zero, zero_mul]).1 (hk.shiftEven hε)
+  calc orientNorm ε (flipKernelOf k)
+      ≤ orientNorm ε (oddPartKernel k) + orientNorm ε (evenPartWeight k) +
+          orientNorm ε (shiftTwo (evenPartWeight k)) := by
+        unfold orientNorm
+        rw [← (hk.oddPart.add (hk.evenPart hε)).tsum_add (hk.shiftEven hε),
+          ← hk.oddPart.tsum_add (hk.evenPart hε)]
+        exact Summable.tsum_le_tsum (fun j => abs_flipKernelOf_le k j _
+          (Real.rpow_nonneg (Nat.cast_nonneg j) _)) (hk.flip hε)
+          ((hk.oddPart.add (hk.evenPart hε)).add (hk.shiftEven hε))
+    _ ≤ 3 * orientNorm ε k := by linarith
+
+/-- For kernels vanishing on multiples of four the kernel flip is the even flip. -/
+theorem flipKernelOf_eq_evenFlip {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m → k m = 0) :
+    flipKernelOf k = evenFlip k := by
+  funext j
+  rw [evenFlip_apply]
+  unfold flipKernelOf oddPartKernel evenPartWeight shiftTwo
+  by_cases h1 : j % 2 = 1
+  · have h2 : ¬ 2 ∣ j := by omega
+    simp [h1, h2]
+  · have h2 : 2 ∣ j := by omega
+    by_cases h4 : (j / 2) % 2 = 1
+    · have h5 : 2 * (j / 2) = j := Nat.mul_div_cancel' h2
+      simp [h1, h2, h4, h5]
+    · have h5 : 4 ∣ j := by omega
+      simp [h1, h2, h4, hk4 j h5]
+
+/-- **The flip is an involution** of the four-free kernels. -/
+theorem flipKernelOf_flipKernelOf {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m → k m = 0) :
+    flipKernelOf (flipKernelOf k) = k := by
+  rw [flipKernelOf_eq_evenFlip hk4, flipKernelOf_eq_evenFlip (evenFlip_fourFree hk4),
+    evenFlip_evenFlip]
+
+/-- The even flip of `k ⋆ o` is `k^♭ ⋆ o`. -/
+theorem evenFlip_dirichletConv_oddSqf {k : ℕ → ℝ} (hk4 : ∀ m, 4 ∣ m → k m = 0) (ε : ℝ) :
+    evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)) =
+      RHTower.dirichletConv (flipKernelOf k) (oddSqfWeight ε) := by
+  rw [dirichletConv_flipKernelOf hk4 ε]
+  rfl
+
+/-! ### The orientation coordinates -/
+
+/-- The flip negates the even part. -/
+theorem evenPartWeight_flipKernelOf (k : ℕ → ℝ) :
+    evenPartWeight (flipKernelOf k) = fun j => -evenPartWeight k j := by
+  funext j
+  unfold evenPartWeight flipKernelOf oddPartKernel
+  by_cases h : j % 2 = 1
+  · have h2 : (2 * j) % 2 ≠ 1 := by omega
+    rw [if_pos h, if_pos h, if_neg h2, if_neg h2, shiftTwo_two_mul]
+    unfold evenPartWeight
+    rw [if_pos h]
+    ring
+  · rw [if_neg h, if_neg h, neg_zero]
+
+theorem OrientAdmissible.summable_pole_abs {ε : ℝ} {k : ℕ → ℝ} (hk : OrientAdmissible ε k)
+    (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) : Summable fun j : ℕ => |k j * (j : ℝ) ^ (-(1 - ε))| :=
+  (hk.summable_rpow hε (by linarith) (by linarith)).congr fun j => by
+    rw [abs_mul, abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg j) _)]
+
+/-- **The flip moves the pole pairing by the even part**: `P(k^♭) = P(k) + (1 − 2^ε) P(k_e)`. -/
+theorem polePairing_flipKernelOf {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) (hk : OrientAdmissible ε k) :
+    polePairing ε (flipKernelOf k) =
+      polePairing ε k + (1 - (2 : ℝ) ^ ε) * polePairing ε (evenPartWeight k) := by
+  set e := evenPartWeight k
+  have so := (hk.oddPart.summable_pole hε hε2)
+  have se := ((hk.evenPart hε.le).summable_pole hε hε2)
+  have ss := ((hk.shiftEven hε.le).summable_pole hε hε2)
+  -- the dilated part pairs to `2^{ε−1}` times the even part
+  have hshift : polePairing ε (shiftTwo e) = (2 : ℝ) ^ (ε - 1) * polePairing ε e := by
+    unfold polePairing
+    rw [tsum_eq_tsum_two_mul fun j hj => by rw [shiftTwo_of_not_dvd _ hj, zero_mul], ← tsum_mul_left]
+    refine tsum_congr fun m => ?_
+    rw [shiftTwo_two_mul, Nat.cast_mul, Nat.cast_two,
+      Real.mul_rpow (by norm_num) (Nat.cast_nonneg m), show -(1 - ε) = ε - 1 by ring]
+    ring
+  have hk' : polePairing ε k = polePairing ε (oddPartKernel k) + polePairing ε (shiftTwo e) := by
+    unfold polePairing
+    rw [← so.tsum_add ss]
+    exact tsum_congr fun j => by rw [kernel_eq_odd_add_shift hk4 j]; ring
+  have hflip : polePairing ε (flipKernelOf k) =
+      polePairing ε (oddPartKernel k) + polePairing ε e - polePairing ε (shiftTwo e) := by
+    unfold polePairing
+    rw [← so.tsum_add se, ← (so.add se).tsum_sub ss]
+    exact tsum_congr fun j => by unfold flipKernelOf; ring
+  have h2 : (2 : ℝ) * (2 : ℝ) ^ (ε - 1) = (2 : ℝ) ^ ε := by
+    rw [show ε = 1 + (ε - 1) by ring, Real.rpow_add two_pos, Real.rpow_one]; ring_nf
+  rw [hflip, hk', hshift]
+  linear_combination (-(polePairing ε e)) * h2
+
+/-- The flip negates the even-part pole pairing. -/
+theorem polePairing_evenPart_flipKernelOf (ε : ℝ) (k : ℕ → ℝ) :
+    polePairing ε (evenPartWeight (flipKernelOf k)) = -polePairing ε (evenPartWeight k) := by
+  unfold polePairing
+  rw [evenPartWeight_flipKernelOf, ← tsum_neg]
+  exact tsum_congr fun j => by ring
+
+/-! ### Both members of a flip pair -/
+
+/-- **Payment of the companion**: `(k ⋆ o)^♭` is paid iff `P(k) + (1 − 2^ε) P(k_e) = 0`. -/
+theorem receiverBounded_evenFlip_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) (hk : OrientAdmissible ε k) :
+    ReceiverBounded (evenFlip (RHTower.dirichletConv k (oddSqfWeight ε))) ↔
+      polePairing ε k + (1 - (2 : ℝ) ^ ε) * polePairing ε (evenPartWeight k) = 0 := by
+  rw [evenFlip_dirichletConv_oddSqf hk4, receiverBounded_dirichletConv_oddSqf_iff_admissible hε hε2
+    (hk.flip hε.le), polePairing_flipKernelOf hε hε2 hk4 hk]
+
+/-- **Both members of a flip pair are paid iff both orientation coordinates vanish.** -/
+theorem receiverBounded_and_evenFlip_iff {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) (hk : OrientAdmissible ε k) :
+    (ReceiverBounded (RHTower.dirichletConv k (oddSqfWeight ε)) ∧
+        ReceiverBounded (evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)))) ↔
+      (polePairing ε k = 0 ∧ polePairing ε (evenPartWeight k) = 0) := by
+  rw [receiverBounded_dirichletConv_oddSqf_iff_admissible hε hε2 hk,
+    receiverBounded_evenFlip_iff hε hε2 hk4 hk]
+  have h2 : (1 : ℝ) - (2 : ℝ) ^ ε ≠ 0 := by
+    have : (1 : ℝ) < (2 : ℝ) ^ ε := Real.one_lt_rpow (by norm_num) hε
+    linarith
+  constructor
+  · rintro ⟨h1, h3⟩
+    rw [h1, zero_add] at h3
+    exact ⟨h1, (mul_eq_zero.1 h3).resolve_left h2⟩
+  · rintro ⟨h1, h3⟩
+    exact ⟨h1, by rw [h1, h3]; ring⟩
+
+/-- **On the doubly paid subspace both receivers are bounded by the norm**: if `P(k) = P(k_e) = 0`
+then `E_T(k ⋆ o) ≤ 4 C_ε N(k)²` and `E_T((k ⋆ o)^♭) ≤ 36 C_ε N(k)²` at every cutoff. -/
+theorem weightPronicEnergy_evenFlip_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {k : ℕ → ℝ}
+    (hk4 : ∀ m, 4 ∣ m → k m = 0) (hk : OrientAdmissible ε k) (hP : polePairing ε k = 0)
+    (hPe : polePairing ε (evenPartWeight k) = 0) (T : ℕ) :
+    weightPronicEnergy (evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)))
+        (∑' d : ℕ, evenFlip (RHTower.dirichletConv k (oddSqfWeight ε)) d / d) T ≤
+      36 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by
+  rw [evenFlip_dirichletConv_oddSqf hk4]
+  have hP' : polePairing ε (flipKernelOf k) = 0 := by
+    rw [polePairing_flipKernelOf hε hε2 hk4 hk, hP, hPe]; ring
+  refine (weightPronicEnergy_dirichletConv_oddSqf_le hε hε2 (hk.flip hε.le) hP' T).trans ?_
+  have hN := orientNorm_flipKernelOf_le hε.le hk
+  have h0 := orientNorm_nonneg ε (flipKernelOf k)
+  have hC := oddSqfReceiverConst_nonneg ε
+  calc 4 * oddSqfReceiverConst ε * orientNorm ε (flipKernelOf k) ^ 2
+      ≤ 4 * oddSqfReceiverConst ε * (3 * orientNorm ε k) ^ 2 :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 hN 2) (by positivity)
+    _ = 36 * oddSqfReceiverConst ε * orientNorm ε k ^ 2 := by ring
 
 end
 

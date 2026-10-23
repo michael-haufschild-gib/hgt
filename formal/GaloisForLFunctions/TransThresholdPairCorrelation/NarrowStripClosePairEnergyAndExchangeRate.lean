@@ -31,14 +31,14 @@ estimates across the corpus (`FejerWeightedPrimeMeanSquare`,
    `δ₀ ≥ 1/(3(B − 1))` and `δ₀ / (3(1 + δ₀)²) > 0` whenever `0 < δ₀ ≤ 1/(3(B − 1))`.
 
 2. **Exact sub-threshold vanishing and `2`-adic parity doubling of the close-pair threshold
-   (`log_sub_log_ge_sub_div`, `offDiag_fejerLorentz_eq_zero_of_le_inv_b`,
-   `fejer_double_sum_eq_diag_of_le_inv_b`, `odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b`,
+   (`log_sub_log_ge_sub_div`, `offDiag_triangleFn_eq_zero_of_le_inv_b`,
+   `fejer_double_sum_eq_diag_of_le_inv_b`, `odd_offDiag_triangleFn_eq_zero_of_le_two_div_b`,
    `jacksonCloseApprox_offDiag_eq_zero_of_le_inv_four_b`,
    `jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b`):**
    - For all `1 ≤ m < n`, `log n − log m ≥ (n − m) / n ≥ 1 / n`. Hence for `X ≤ 1/b`, every
-     off-diagonal Fejér weight `Λ_b(log n − log m)` (`m ≠ n ≤ X`) vanishes identically, reducing the
-     Fejér double sum in `FejerWeightedPrimeMeanSquare` to the exact diagonal
-     `(2π/b) Σ_{n≤X} Λ(n)²/n` with zero off-diagonal error.
+     off-diagonal Fejér triangle weight `Λ_b(log n − log m)` (`m ≠ n ≤ X`) vanishes identically,
+     reducing the Fejér double sum in `FejerWeightedPrimeMeanSquare` to the exact diagonal
+     `Σ_{n≤X} Λ(n)²/n` with zero off-diagonal error.
    - For distinct odd integers `1 ≤ m < n`, `n − m ≥ 2` is even, so `log n − log m ≥ 2 / n`.
      Hence on the entire trans-threshold octave `X ≤ 2/b` (double the integer threshold `1/b`),
      every odd-odd off-diagonal Fejér weight `Λ_b(log n − log m)` vanishes identically, and any
@@ -49,7 +49,7 @@ estimates across the corpus (`FejerWeightedPrimeMeanSquare`,
      `X ≤ 1/(2b)`.
 
 3. **Trans-threshold strip confinement and 2D Selberg sieve bound on close prime pairs
-   (`offDiag_fejerLorentz_support_strip`, `sieved_closePrimePair_strip_bound`):**
+   (`offDiag_triangleFn_support_strip`, `sieved_closePrimePair_strip_bound`):**
    For general `X > 1/b`, every nonzero off-diagonal Fejér close pair `m < n ≤ X` is confined to
    the trans-threshold strip `1/b < n ≤ X` with shift `1 ≤ n − m < b n ≤ b X`, and the weighted
    shifted prime-pair sum over `1 ≤ d ≤ K` is bounded unconditionally via
@@ -58,7 +58,7 @@ estimates across the corpus (`FejerWeightedPrimeMeanSquare`,
 -/
 
 open MeasureTheory Real Set intervalIntegral Finset Zeta23.PrimeSide RHTower RHTower.Sieve
-  TransThresholdPairCorrelation
+  RHTower.FejerWeight GaloisForLFunctions.HTGeometry
 open scoped BigOperators ArithmeticFunction
 
 noncomputable section
@@ -110,11 +110,25 @@ theorem narrowStrip_beats_two_thirds_iff {F : ℝ → ℝ} {δ : ℝ} (hδ : 0 <
   have hden : 0 < 3 * (1 + δ) ^ 2 := by positivity
   have hiff1 : 2 / 3 < 2 - frobeniusFormFactor F (1 + δ) ↔
       narrowStripCesaroEnergy F δ < 2 / (3 * δ) + 4 / 3 := by
-    rw [← sub_pos, hgain, div_pos_iff_of_pos_right hden, mul_pos_iff_of_pos_left hδ]
+    have hsub : 2 - frobeniusFormFactor F (1 + δ) - 2 / 3
+        = δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) := hgain
     have h3δ : 0 < 3 * δ := by positivity
     have heq : 2 / (3 * δ) + 4 / 3 = (2 + 4 * δ) / (3 * δ) := by field_simp; ring
     rw [heq, lt_div_iff₀ h3δ]
-    constructor <;> intro h <;> linarith
+    constructor
+    · intro h
+      have hpos : 0 < δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) := by
+        linarith
+      have hnum : 0 < δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) :=
+        (div_pos_iff_of_pos_right hden).mp hpos
+      have hpar : 0 < 2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ :=
+        (mul_pos_iff_of_pos_left hδ).mp hnum
+      linarith
+    · intro h
+      have hpar : 0 < 2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ := by linarith
+      have hpos : 0 < δ * (2 - (3 * narrowStripCesaroEnergy F δ - 4) * δ) / (3 * (1 + δ) ^ 2) :=
+        div_pos (mul_pos hδ hpar) hden
+      linarith
   refine ⟨hiff1, hiff1.trans ?_⟩
   unfold narrowStripCesaroEnergy
   have h2δ : 0 < 2 / δ ^ 2 := by positivity
@@ -172,6 +186,8 @@ theorem constrainedStrip_optimal_exchange_rate {F : ℝ → ℝ} {δ B : ℝ}
     linarith
   have h2 : δ / (3 * (1 + δ) ^ 2) ≤ δ * (2 - (3 * B - 4) * δ) / (3 * (1 + δ) ^ 2) := by
     apply div_le_div_of_nonneg_right _ hden.le
+    have hsq : 0 ≤ δ ^ 2 := sq_nonneg δ
+    have hexp : δ * (2 - (3 * B - 4) * δ) - δ = δ - δ ^ 2 * (3 * (B - 1)) + δ ^ 2 := by ring
     linarith
   refine ⟨h1, h2, by positivity, fun hδeq => ?_⟩
   rw [hδeq]
@@ -192,31 +208,32 @@ theorem log_sub_log_ge_sub_div {m n : ℝ} (hm : 0 < m) (hmn : m ≤ n) :
   have h2 : m / n - 1 = -((n - m) / n) := by field_simp; ring
   linarith
 
-/-- For `0 < b`, `0 < m ≤ n`, and `b * n ≤ n − m`, the Fejér–Lorentz weight
-`fejerLorentz b (log n − log m)` and its symmetric counterpart `fejerLorentz b (log m − log n)`
+/-- For `0 < b`, `0 < m ≤ n`, and `b * n ≤ n − m`, the Fejér triangle weight
+`triangleFn b (log n − log m)` and its symmetric counterpart `triangleFn b (log m − log n)`
 vanish identically. -/
-theorem fejerLorentz_eq_zero_of_sub_ge {b m n : ℝ} (hb : 0 < b) (hm : 0 < m) (hmn : m ≤ n)
+theorem triangleFn_eq_zero_of_sub_ge {b m n : ℝ} (hb : 0 < b) (hm : 0 < m) (hmn : m ≤ n)
     (hbn : b * n ≤ n - m) :
-    fejerLorentz b (Real.log n - Real.log m) = 0 ∧
-      fejerLorentz b (Real.log m - Real.log n) = 0 := by
+    triangleFn b (Real.log n - Real.log m) = 0 ∧
+      triangleFn b (Real.log m - Real.log n) = 0 := by
   have hn : 0 < n := lt_of_lt_of_le hm hmn
   have hlog : b ≤ Real.log n - Real.log m := by
     have h1 : b ≤ (n - m) / n := (le_div_iff₀ hn).mpr hbn
     exact h1.trans (log_sub_log_ge_sub_div hm hmn)
-  have hz : fejerLorentz b (Real.log n - Real.log m) = 0 := by
-    apply fejerLorentz_eq_zero_of_le hb
+  have hz : triangleFn b (Real.log n - Real.log m) = 0 := by
+    apply triangleFn_eq_zero hb
     rw [abs_of_nonneg (by linarith)]
     exact hlog
   refine ⟨hz, ?_⟩
-  rw [show Real.log m - Real.log n = -(Real.log n - Real.log m) by ring, fejerLorentz_neg]
-  exact hz
+  apply triangleFn_eq_zero hb
+  rw [abs_sub_comm, abs_of_nonneg (by linarith)]
+  exact hlog
 
 /-- **Exact sub-threshold off-diagonal vanishing (`X ≤ 1/b`):**
 for `0 < b` and `b * X ≤ 1`, every off-diagonal pair `n ≠ m` in `primeRange X` satisfies
-`fejerLorentz b (log n − log m) = 0`. -/
-theorem offDiag_fejerLorentz_eq_zero_of_le_inv_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
+`triangleFn b (log n − log m) = 0`. -/
+theorem offDiag_triangleFn_eq_zero_of_le_inv_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
     (hbX : b * X ≤ 1) {n m : ℕ} (hn : n ∈ primeRange X) (hm : m ∈ primeRange X) (hnm : n ≠ m) :
-    fejerLorentz b (Real.log n - Real.log m) = 0 := by
+    triangleFn b (Real.log n - Real.log m) = 0 := by
   have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
   have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
   have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
@@ -227,40 +244,39 @@ theorem offDiag_fejerLorentz_eq_zero_of_le_inv_b {b X : ℝ} (hb : 0 < b) (hX : 
       linarith
     have hbm : b * (m : ℝ) ≤ (m : ℝ) - (n : ℝ) :=
       (mul_le_mul_of_nonneg_left hmX hb.le).trans (hbX.trans hdiff)
-    exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
+    exact (triangleFn_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
       (by exact_mod_cast hlt.le) hbm).2
   · have hdiff : (1 : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
       have : (m : ℝ) + 1 ≤ (n : ℝ) := by exact_mod_cast hgt
       linarith
     have hbn : b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) :=
       (mul_le_mul_of_nonneg_left hnX hb.le).trans (hbX.trans hdiff)
-    exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
+    exact (triangleFn_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
       (by exact_mod_cast hgt.le) hbn).1
 
 /-- **Upgrade of `FejerWeightedPrimeMeanSquare` below threshold (`b * X ≤ 1`):**
 for `0 < b` and `b * X ≤ 1`, the Fejér-weighted prime double sum has zero off-diagonal terms and
-equals the exact diagonal `(2π / b) Σ_{n ∈ primeRange X} Λ(n)² / n`. -/
+equals the exact diagonal `Σ_{n ∈ primeRange X} Λ(n)² / n`. -/
 theorem fejer_double_sum_eq_diag_of_le_inv_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
     (hbX : b * X ≤ 1) :
     (∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
-        acoef n * acoef m * fejerLorentz b (Real.log n - Real.log m))
-      = (2 * Real.pi / b) * ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 / n := by
-  rw [Finset.mul_sum]
+        acoef n * acoef m * triangleFn b (Real.log n - Real.log m))
+      = ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 / n := by
   refine Finset.sum_congr rfl fun n hn => ?_
   rw [Finset.sum_eq_single n]
-  · rw [sub_self, fejerLorentz_zero, ← sq, acoef_sq]
-    ring
+  · have ht0 : triangleFn b 0 = 1 := by simp [triangleFn]
+    rw [sub_self, ht0, mul_one, ← sq, acoef_sq]
   · intro m hm hmn
-    rw [offDiag_fejerLorentz_eq_zero_of_le_inv_b hb hX hbX hn hm hmn.symm, mul_zero]
+    rw [offDiag_triangleFn_eq_zero_of_le_inv_b hb hX hbX hn hm hmn.symm, mul_zero]
   · intro hnn; exact absurd hn hnn
 
 /-- **`2`-adic parity doubling of the close-pair threshold (`b * X ≤ 2`):**
 for `0 < b` and `b * X ≤ 2`, every pair of distinct odd integers `n, m ∈ primeRange X` has
-`|n − m| ≥ 2`, and therefore `fejerLorentz b (log n − log m) = 0`. -/
-theorem odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
+`|n − m| ≥ 2`, and therefore `triangleFn b (log n − log m) = 0`. -/
+theorem odd_offDiag_triangleFn_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
     (hbX : b * X ≤ 2) {n m : ℕ} (hn : n ∈ primeRange X) (hm : m ∈ primeRange X)
     (hn_odd : Odd n) (hm_odd : Odd m) (hnm : n ≠ m) :
-    fejerLorentz b (Real.log n - Real.log m) = 0 := by
+    triangleFn b (Real.log n - Real.log m) = 0 := by
   have hn1 : 1 ≤ n := one_le_of_mem_primeRange hn
   have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
   have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
@@ -274,7 +290,7 @@ theorem odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b
       linarith
     have hbm : b * ((2 * j + 1 : ℕ) : ℝ) ≤ ((2 * j + 1 : ℕ) : ℝ) - ((2 * k + 1 : ℕ) : ℝ) :=
       (mul_le_mul_of_nonneg_left hmX hb.le).trans (hbX.trans hdiff)
-    exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
+    exact (triangleFn_eq_zero_of_sub_ge hb (by exact_mod_cast hn1)
       (by exact_mod_cast hlt.le) hbm).2
   · have h2 : (2 * j + 1) + 2 ≤ 2 * k + 1 := by omega
     have hdiff : (2 : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) := by
@@ -282,7 +298,7 @@ theorem odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b
       linarith
     have hbn : b * ((2 * k + 1 : ℕ) : ℝ) ≤ ((2 * k + 1 : ℕ) : ℝ) - ((2 * j + 1 : ℕ) : ℝ) :=
       (mul_le_mul_of_nonneg_left hnX hb.le).trans (hbX.trans hdiff)
-    exact (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
+    exact (triangleFn_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
       (by exact_mod_cast hgt.le) hbn).1
 
 /-- **Exact vanishing of the odd-odd off-diagonal Fejér close-pair sum on `b * X ≤ 2`:**
@@ -291,14 +307,14 @@ double sum vanish identically. -/
 theorem odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
     (hbX : b * X ≤ 2) :
     (∑ n ∈ (primeRange X).filter Odd, ∑ m ∈ (primeRange X).filter Odd,
-        if n = m then (0 : ℝ) else acoef n * acoef m * fejerLorentz b (Real.log n - Real.log m))
+        if n = m then (0 : ℝ) else acoef n * acoef m * triangleFn b (Real.log n - Real.log m))
       = 0 := by
   refine Finset.sum_eq_zero fun n hn => Finset.sum_eq_zero fun m hm => ?_
   split_ifs with hnm
   · rfl
   · obtain ⟨hnP, hnO⟩ := Finset.mem_filter.mp hn
     obtain ⟨hmP, hmO⟩ := Finset.mem_filter.mp hm
-    rw [odd_offDiag_fejerLorentz_eq_zero_of_le_two_div_b hb hX hbX hnP hmP hnO hmO hnm, mul_zero]
+    rw [odd_offDiag_triangleFn_eq_zero_of_le_two_div_b hb hX hbX hnP hmP hnO hmO hnm, mul_zero]
 
 /-- **Downstream application to `JacksonWeightedPrimeFrobeniusDecomposition` (`4 * b * X ≤ 1`):**
 whenever `4 * b * X ≤ 1` (`X ≤ 1/(4b)`), every off-diagonal pair `n ≠ m` in `primeRange X`
@@ -385,11 +401,11 @@ theorem jacksonPairKernel_odd_offDiag_eq_zero_of_le_inv_two_b {b s₀ s₁ L X :
 /-! ## 3. Trans-Threshold Strip Confinement and 2D Selberg Sieve Bound on Close Prime Pairs -/
 
 /-- **Trans-threshold strip confinement of close pairs:**
-for `0 < b` and `1 ≤ m < n ≤ X`, if `fejerLorentz b (log n − log m) ≠ 0`, then `n` lies strictly
+for `0 < b` and `1 ≤ m < n ≤ X`, if `triangleFn b (log n − log m) ≠ 0`, then `n` lies strictly
 above the threshold `1 / b` and the additive shift `n − m` satisfies `1 ≤ n − m < b * n ≤ b * X`. -/
-theorem offDiag_fejerLorentz_support_strip {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
+theorem offDiag_triangleFn_support_strip {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ X)
     {m n : ℕ} (hm : m ∈ primeRange X) (hn : n ∈ primeRange X) (hmn : m < n)
-    (hker : fejerLorentz b (Real.log n - Real.log m) ≠ 0) :
+    (hker : triangleFn b (Real.log n - Real.log m) ≠ 0) :
     1 / b < (n : ℝ) ∧ 1 ≤ n - m ∧ ((n - m : ℕ) : ℝ) < b * (n : ℝ) ∧ b * (n : ℝ) ≤ b * X := by
   have hm1 : 1 ≤ m := one_le_of_mem_primeRange hm
   have hnX : (n : ℝ) ≤ X := cast_le_of_mem_primeRange hX hn
@@ -398,7 +414,7 @@ theorem offDiag_fejerLorentz_support_strip {b X : ℝ} (hb : 0 < b) (hX : 0 ≤ 
     have hge' : b * (n : ℝ) ≤ (n : ℝ) - (m : ℝ) := by
       have : b * (n : ℝ) ≤ ((n - m : ℕ) : ℝ) := not_lt.mp hge
       rwa [Nat.cast_sub hmn.le] at this
-    exact hker (fejerLorentz_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
+    exact hker (triangleFn_eq_zero_of_sub_ge hb (by exact_mod_cast hm1)
       (by exact_mod_cast hmn.le) hge').1
   have h1le : 1 ≤ n - m := Nat.le_sub_of_add_le' hmn
   have h1cast : (1 : ℝ) ≤ ((n - m : ℕ) : ℝ) := by exact_mod_cast h1le
