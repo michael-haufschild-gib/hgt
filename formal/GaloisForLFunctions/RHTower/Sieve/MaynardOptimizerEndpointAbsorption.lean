@@ -330,17 +330,15 @@ theorem routeT_exact_crossing_first_or_second_unbounded
       linarith
     let q := 1 + routeTGapMomentNu - 2 * alpha
     have hdlong := maynardLongGlobalAmplitudeDeficit_lt_one_millionth
-    have hqneg : q < 0 := by
-      dsimp only [q, routeTGapMomentNu]
-      have hdpos := maynardLongGlobalAmplitudeDeficit_pos
-      linarith
     have hqlo : (-501 / 1000 : ℝ) ≤ q := by
       dsimp only [q, routeTGapMomentNu]
       linarith
     have hmulQ : (187 / 100 : ℝ) * (-501 / 1000) ≤ mu * q := by
-      have hlo := mul_le_mul_of_nonneg_left hqlo (by norm_num : (0 : ℝ) ≤ 187 / 100)
-      have hhi := mul_le_mul_of_nonpos_right hmuUpper.le hqneg.le
-      exact hlo.trans hhi
+      have hlo := mul_le_mul_of_nonneg_left hqlo
+        (by linarith only [hmuLo] : (0 : ℝ) ≤ mu)
+      have hhi := mul_le_mul_of_nonpos_right hmuUpper.le
+        (by norm_num : (-501 / 1000 : ℝ) ≤ 0)
+      exact hhi.trans hlo
     have hlhs : 2 * r * (1 - alpha) + d / 100 ≤ 57 / 10000 := by
       have hrle : r ≤ 545 / 588 := hrUpper.le
       have hgapLe : 1 - alpha ≤ 3 / 1000 := by linarith

@@ -66,6 +66,15 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
   `centeredOperator_residueCombination_twice`.
 - `TheWidthDictionary`: `widthDictionary_tfae` (eight units), `one_positive_square_iff_cofinal_budget`,
   `exists_effectivity_iff_meanSquare_band`.
+- `TheLatticeOddLedgerIsBalanced`: `primeKernel_tower_le`, `primeKernel_log_add_le`, `oddFold_lattice_nonpos`,
+  `isBalanced_lattice`, `frustrationIndex_lattice_eq_zero`, `nonneg_iff_locallyPayable_lattice`,
+  `oddFold_le_primeKernel`, `frustrationMass_le_primeSumCharge`.
+- `TheRatioPartDecomposesOverCosets`: `ratioCorr_prime_pow_eq_sum_cosets`, `towerRatioPart_eq_sum_cosets`,
+  `towerOddPrimeSide_eq` (coset law: 2·Toeplitz over p-free cosets − Hankel square).
+- `LocalFactorsAreTheUnitsOfTheWienerMonoid`: `dirichletConv_localFactor_inverse`,
+  `criticalWiener_localFactorInverse_iff` (|a| < √p), `dirichletConv_comm`, `inverse_unique`, `isWienerUnit_localFactor_iff`.
+- `TheNyquistRankBound` (extended): `h1`, `h0_sub_h1`, `h1_eq_zero_iff`, `h1_eq_zero_of_frobeniusMass_ge`,
+  `h0_eq_zero_of_frobeniusMass_ge`.
 - Axiom audit: every capstone listed above depends only on `propext`, `Classical.choice`, `Quot.sound`
   (`#print axioms` over all ten modules); no `sorry`, no premises, no raised budgets.
 - Open: README §7 (frustration index of the actual odd ledger at growing aperture; beyond the rank-one law;
@@ -73,4 +82,4 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
   transport in aperture; the Nyquist bound at the diagonal).
 
 ## Log
-- 2026-10-23 — created in 1-in-progress from review-2310/fable.md; ten modules compiled, README written
+- 2026-10-23 — created in 1-in-progress from review-2310/fable.md; thirteen modules compiled, README written

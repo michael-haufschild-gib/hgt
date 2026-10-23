@@ -205,7 +205,7 @@ valid.
 - [x] `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean` (depth 9, 7)
 - [ ] `RHTower/LevinsonOddFiberDensity.lean` (depth 9, 1)
 - [ ] `RHTower/MobiusThetaInternalJetPrimeNormalComplexGraph.lean` (depth 9, 1)
-- [ ] `RHTower/Sieve/MaynardReceiverMargin.lean` (depth 9, 1)
+- [x] `RHTower/Sieve/MaynardReceiverMargin.lean` (depth 9, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellRouteTAllAmplitudeCount.lean` (depth 9, 1)
 - [ ] `RHTower/SoninCouplingBranchEstimate.lean` (depth 9, 1)
 - [ ] `RHTower/SoninEulerCrossShellOverlap.lean` (depth 9, 1)
@@ -247,7 +247,7 @@ valid.
 - [ ] `RHTower/Sieve/ChebyshevTwistBalancedBound.lean` (depth 10, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellGlobalCount.lean` (depth 10, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellGlobalMiddleHuxley.lean` (depth 10, 1)
-- [ ] `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean` (depth 10, 1)
+- [x] `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean` (depth 10, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellRouteTCount.lean` (depth 10, 1)
 - [ ] `RHTower/SigmaContractionCorollary.lean` (depth 10, 1)
 - [ ] `RHTower/SoninCouplingBranchNormalForm.lean` (depth 10, 1)
@@ -283,7 +283,7 @@ valid.
 - [ ] `RHTower/RealBoundaryDivisorLimit.lean` (depth 11, 1)
 - [x] `RHTower/Sieve/MaynardLabelAbsorption.lean` (depth 11, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellFibreCount.lean` (depth 11, 1)
-- [ ] `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean` (depth 11, 4)
+- [x] `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean` (depth 11, 4)
 - [ ] `RHTower/Sieve/MaynardSelectedCellMiddleFibreCount.lean` (depth 11, 1)
 - [ ] `RHTower/SigmaLadderContraction.lean` (depth 11, 1)
 - [ ] `RHTower/SoninInverseBranchVanishing.lean` (depth 11, 1)
@@ -315,7 +315,7 @@ valid.
 - [ ] `RHTower/LegStripEdge.lean` (depth 12, 1)
 - [ ] `RHTower/ShrinkingWindowPrimeSupply.lean` (depth 12, 1)
 - [ ] `RHTower/Sieve/MaynardFibreCount.lean` (depth 12, 1)
-- [ ] `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean` (depth 12, 1)
+- [x] `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean` (depth 12, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean` (depth 12, 2)
 - [ ] `RHTower/SigmaBlockContraction.lean` (depth 12, 1)
 - [ ] `RHTower/SoninForwardBranchVanishing.lean` (depth 12, 1)
@@ -503,10 +503,10 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` — narrowed arithmetic inputs; check and build passed.
 - [x] `RHTower/Sieve/DirichletWideRectangle.lean` — narrowed arithmetic inputs; check and build passed.
 - [x] `RHTower/Sieve/MaynardLabelAbsorption.lean` — limited constant unfolding; check and build passed.
-- `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean`
-- `RHTower/Sieve/MaynardReceiverMargin.lean`
-- `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean`
-- `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean`
+- [x] `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean` — direct monotonicity and narrowed arithmetic; check and build passed.
+- [x] `RHTower/Sieve/MaynardReceiverMargin.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean` — narrowed arithmetic and direct product bounds; check and build passed.
+- [x] `RHTower/Sieve/MaynardSelectedCellGlobalMontgomery.lean` — check and build passed; olean/ilean written.
 - `RHTower/Sieve/MaynardSelectedCellMiddleOverweight.lean`
 - `RHTower/Sieve/MultiplicativeEulerBound.lean`
 - `RHTower/Sieve/RouteTZetaBandGrowth.lean`

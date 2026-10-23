@@ -96,6 +96,7 @@ theorem primeKernel_log_add_le {a b : ℕ} (ha : 2 ≤ a) (hb : 2 ≤ b) (hab : 
 
 /-! ### Balance on the lattice -/
 
+omit [Fintype ι] in
 /-- **Every overlap of the lattice odd ledger is aligned.** -/
 theorem oddFold_lattice_nonpos {n : ι → ℕ} (hn : ∀ x, 2 ≤ n x) (hinj : Function.Injective n)
     {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 ≤ β) (b : ι → ℝ) :
@@ -121,6 +122,7 @@ theorem oddFold_lattice_nonpos {n : ι → ℕ} (hn : ∀ x, 2 ≤ n x) (hinj : 
   have hprime := primeKernel_log_add_le (hn x) (hn y) hne
   nlinarith [mul_le_mul_of_nonneg_left hK hα, mul_le_mul_of_nonneg_left hprime hβ]
 
+omit [Fintype ι] in
 /-- **The lattice odd ledger is balanced at every aperture.** -/
 theorem isBalanced_lattice {n : ι → ℕ} (hn : ∀ x, 2 ≤ n x) (hinj : Function.Injective n)
     {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 ≤ β) (b : ι → ℝ) :

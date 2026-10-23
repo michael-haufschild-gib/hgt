@@ -57,7 +57,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
   have ha0pos : 0 < alpha0 := lt_of_lt_of_le (by norm_num) ha0Range.1
   have ha0le : alpha0 ≤ alpha := by
     dsimp only [alpha0, maynardMiddleReferenceAmplitude, d]
-    linarith
+    linarith only [hd]
   have hT0 : 0 < T := zero_lt_one.trans hT
   obtain ⟨r0, hr0⟩ := hSne
   rcases hselection r0 hr0 with
@@ -66,20 +66,20 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
   have hbetaHi : beta < 1 + mu / 60 := by
     have hbetaUpper' : beta < 1 + 2 * (mu / 120) := by
       simpa only [beta] using hbetaUpper
-    linarith
+    linarith only [hbetaUpper']
   have hbeta0 : 0 < beta := lt_of_lt_of_le zero_lt_one hbetaLo
-  have hbeta90 : beta ≤ 90 := by linarith
+  have hbeta90 : beta ≤ 90 := by linarith only [hbetaHi, hmuHi]
   have halpha99 : alpha ≤ 99 / 100 := by
     rcases hbranch0 with hsmall | hmoderate | hoverweight
     · have hsmall' : beta ≤ 5 / 12 := by
         simpa only [IsMaynardSelectedCellBranch, beta] using hsmall
-      linarith
+      linarith only [hsmall', hbetaLo]
     · have hmoderate' : beta < 1 := by
         simpa only [IsMaynardSelectedCellBranch, beta] using hmoderate.2.1
-      linarith
+      linarith only [hmoderate', hbetaLo]
     · have halpha983 : alpha ≤ 983 / 1000 := by
         simpa only [IsMaynardSelectedCellBranch, beta] using hoverweight.2.1
-      linarith
+      linarith only [halpha983]
   have hAeq : (A : ℝ) = T ^ beta := by
     simpa only [A, beta] using hlength0
   have hYeq : Y = T ^ beta := by
@@ -113,7 +113,9 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
     ring
   have hreserveExponent : d / 100000 ≤ beta * (2 * (alpha - alpha0)) := by
     rw [hdiff]
-    nlinarith
+    have hmul := mul_le_mul_of_nonneg_right hbetaLo
+      (show 0 ≤ 2 * (d / 100000) by positivity)
+    linarith only [hmul, hd]
   have hreservePower : T ^ (d / 100000) ≤ Y ^ (2 * (alpha - alpha0)) := by
     rw [hYeq, ← Real.rpow_mul hT0.le]
     exact Real.rpow_le_rpow_of_exponent_le hT.le hreserveExponent
@@ -143,8 +145,8 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
       (pow_nonneg (by linarith [Real.log_nonneg hprod]) e)
   have hoptimizerOne : maynardHuxleyOptimizer alpha0 ≤ 1 := by
     dsimp only [maynardHuxleyOptimizer]
-    rw [div_le_iff₀ (by linarith : 0 < 4 * alpha0 - 2)]
-    linarith
+    rw [div_le_iff₀ (by linarith only [ha0Range.1] : 0 < 4 * alpha0 - 2)]
+    linarith only [ha0Range.1]
   have hoptimizerBeta : maynardHuxleyOptimizer alpha0 ≤ beta :=
     hoptimizerOne.trans hbetaLo
   have hYlo : T ^ maynardHuxleyOptimizer alpha0 ≤ Y := by
@@ -186,16 +188,20 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
     have hrb := hband r hr
     have hsb := hband s hs
     rw [abs_le]
-    constructor <;> linarith
+    constructor <;> linarith only [hrb.1, hrb.2, hsb.1, hsb.2]
   have hheight : T ≤ 8 * Real.pi * Y ^ 2 := by
     have hTY : T ≤ Y := by
       calc
         T = T ^ (1 : ℝ) := by rw [Real.rpow_one]
         _ ≤ T ^ beta := Real.rpow_le_rpow_of_exponent_le hT.le hbetaLo
         _ = Y := hYeq.symm
-    have hYsq : Y ≤ Y ^ 2 := by nlinarith
-    have hpi : (1 : ℝ) ≤ 8 * Real.pi := by linarith [Real.pi_gt_three]
-    exact hTY.trans (hYsq.trans (by nlinarith [sq_nonneg Y]))
+    have hYsq : Y ≤ Y ^ 2 := by
+      calc
+        Y = Y * 1 := by ring
+        _ ≤ Y * Y := mul_le_mul_of_nonneg_left hY1 hYpos.le
+        _ = Y ^ 2 := by ring
+    have hpi : (1 : ℝ) ≤ 8 * Real.pi := by linarith only [Real.pi_gt_three]
+    exact hTY.trans (hYsq.trans (le_mul_of_one_le_left (sq_nonneg Y) hpi))
   have hHuxley : IsMaynardSelectedHuxleyBound K c alpha delta label S 1 := by
     unfold IsMaynardSelectedHuxleyBound
     exact huxley_heathBrown_grouped_large_values_finset_at_amplitude
@@ -229,7 +235,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_middle_overweight_count :
         2 * (10801 : ℝ) ^ 2 * maynardMontgomeryRaisedWidthConstant * PL ≤
           maynardMiddleHuxleyCountCostConstant * PL := by
       rw [hid]
-      nlinarith
+      linarith only [hbase0]
     exact hthree.trans hcountFixed
   have hpowCost := mul_le_mul_of_nonneg_right hcostSmall
     (Real.rpow_nonneg hT0.le (beta * (2 - 2 * alpha)))

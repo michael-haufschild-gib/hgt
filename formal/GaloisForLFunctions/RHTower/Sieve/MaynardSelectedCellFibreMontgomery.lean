@@ -103,7 +103,7 @@ theorem eventually_maynardMontgomery_fibre_cost_absorbed :
       (W + 3) * Real.log T := by
     have hnonneg : 0 ≤ (W + 1) * (Real.log T - 1) := by positivity
     rw [hlogMul]
-    nlinarith
+    linarith only [hlogW, hlogN, hnonneg]
   have heE : e + 2 ≤ E := by
     dsimp only [E]
     omega
@@ -128,7 +128,7 @@ theorem eventually_maynardMontgomery_fibre_cost_absorbed :
         dsimp only [C]
         ring
   have hhalf : (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) ≤
-      T ^ (1 / 400 : ℝ) := by nlinarith
+      T ^ (1 / 400 : ℝ) := by linarith only [hTpow]
   simpa only [W] using hcost.trans (hsmallScaled.trans hhalf)
 
 /-- One fixed literal selected-cell fibre reaches the lower-strip tuned Montgomery scale. -/
@@ -292,7 +292,7 @@ theorem card_le_of_selected_montgomery_two_term_fixed_polylog_raw
     have hprod : Z * (1 + Real.log Z) ≤
         (W * Y) * (1 + Real.log (W * Y)) :=
       mul_le_mul hZwidth hlogOne (by linarith) hWYpos.le
-    nlinarith
+    linarith only [hprod]
   have hsecond : 1 / delta + 2 * Real.log Z ≤ B := by
     dsimp only [B]
     linarith
@@ -384,7 +384,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     ring
   have hbetaHi' : beta < 1 + mu / 60 := by
     dsimp only [beta]
-    nlinarith [hbetaHi]
+    linarith only [hbetaHi]
   have hrLo : 4 / 5 ≤ r := by simpa only [r, beta] using hcross
   have hrHi : r < 4 / 5 + beta := by simpa only [r, beta] using hover
   have hrTwo : r < 2 := by
@@ -416,7 +416,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     dsimp only [HF, maynardHarmonicFactor]
     have hsum0 : 0 ≤ ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by positivity
     have hcoeff0 : 0 ≤ 12 * Real.pi / delta := by positivity
-    nlinarith [mul_nonneg hcoeff0 hsum0]
+    linarith only [mul_nonneg hcoeff0 hsum0]
   have hK1 : 1 ≤ K := by
     have hiK := Finset.mem_range.mp (hS hr0)
     omega
@@ -431,16 +431,16 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     simpa only [Nat.cast_zero, zero_add, div_one] using hone
   have honeDivHF : 1 / delta ≤ HF := by
     have hpi : (1 : ℝ) ≤ 12 * Real.pi := by
-      linarith [Real.pi_gt_three]
+      linarith only [Real.pi_gt_three]
     have hnum : (1 : ℝ) ≤ 12 * Real.pi *
-        ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by
-      linarith [mul_nonneg (sub_nonneg.mpr hpi) (sub_nonneg.mpr hsum1)]
+        ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) :=
+      one_le_mul_of_one_le_of_one_le hpi hsum1
     have hdiv : 1 / delta ≤ (12 * Real.pi / delta) *
         ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by
       rw [div_eq_mul_inv, div_eq_mul_inv]
-      linarith [mul_nonneg (inv_nonneg.mpr hdelta.le) (sub_nonneg.mpr hnum)]
+      linarith only [mul_nonneg (inv_nonneg.mpr hdelta.le) (sub_nonneg.mpr hnum)]
     dsimp only [HF, maynardHarmonicFactor]
-    linarith
+    linarith only [hdiv]
   have hdeltaLog : 1 / delta + 2 * Real.log (W * Y) ≤ 3 * HF * B0 := by
     have hlog0 : 0 ≤ Real.log (W * Y) := Real.log_nonneg hWY1
     have hfirst : 1 / delta ≤ HF * B0 := by
@@ -456,8 +456,8 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
         calc
           B0 = 1 * B0 := by ring
           _ ≤ HF * B0 := mul_le_mul_of_nonneg_right hHF1 hB00)
-      linarith
-    nlinarith
+      linarith only [this]
+    linarith only [hfirst, hsecond]
   have heBound : e ≤ maynardMontgomeryFixedPolylogExponentBound := by
     dsimp only [e]
     exact heathBrownSelected_montgomeryFixedPolylogExponent_le label hell90
@@ -530,7 +530,7 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
       12 * maynardMontgomeryRaisedWidthConstant ^ 2 *
           (1 + Real.log (maynardMontgomeryRaisedWidthConstant * (N : ℝ))) ^
             (e + 2) ≤
-        (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) by nlinarith [hcostFull])
+        (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) by linarith only [hcostFull])
   let target : ℝ := 1 + mu * (1 + routeTGapMomentNu - 2 * alpha)
   obtain ⟨hwidthExp, hheightExp⟩ :=
     routeT_wide_tunedMontgomery_exponents_with_polylog_le_second
@@ -557,19 +557,18 @@ theorem eventually_maynardWindowRelevantSelectedCell_scaled_fibre_second_of_low_
     calc
       V = Y ^ (2 - 2 * alpha) := by rfl
       _ = T ^ (r * (2 - 2 * alpha)) := hYpow
-  have hbudget : (1 / 400 : ℝ) + 1 / 400 ≤ 1 / 100 := by norm_num
   have hUfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * U ≤
       T ^ (target - 1 / 200) := by
     rw [hUeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
     dsimp only [target]
-    linarith
+    linarith only [hwidthExp, hheightExp]
   have hVfinal : T ^ (1 / 400 : ℝ) * T ^ (1 / 400 : ℝ) * V ≤
       T ^ (target - 1 / 200) := by
     rw [hVeq, ← Real.rpow_add hT0, ← Real.rpow_add hT0]
     apply Real.rpow_le_rpow_of_exponent_le hT.le
     dsimp only [target]
-    linarith
+    linarith only [hwidthExp, hheightExp]
   have hsum0 : 0 ≤ U + V := add_nonneg hU0 hV0
   calc
     M * (S.card : ℝ) ≤

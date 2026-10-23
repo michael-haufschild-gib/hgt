@@ -60,7 +60,9 @@ theorem dirichletConv_localFactorKernel {p : ℕ} (hp : p.Prime) (a : ℝ) (g : 
     intro d _
     unfold localFactorKernel
     by_cases h1 : d = 1
-    · subst h1; simp [hp.one_lt.ne']
+    · subst h1
+      have : (1 : ℕ) ≠ p := hp.one_lt.ne
+      simp [this]
     · by_cases h2 : d = p
       · subst h2; simp [h1]
       · simp [h1, h2]
@@ -77,13 +79,17 @@ theorem dirichletConv_localFactor_inverse {p : ℕ} (hp : p.Prime) (a : ℝ) {n 
   by_cases hpow : ∃ m, n = p ^ m
   · obtain ⟨m, rfl⟩ := hpow
     rcases m with _ | k
-    · simp [localFactorInverse_pow hp.one_lt, unitKernel, hp.not_dvd_one]
+    · have h1 : localFactorInverse p a 1 = 1 := by
+        simpa using localFactorInverse_pow hp.one_lt a 0
+      rw [pow_zero, if_neg hp.not_dvd_one, h1, mul_zero, sub_zero]
+      simp [unitKernel]
     · have hdvd : p ∣ p ^ (k + 1) := dvd_pow_self p (Nat.succ_ne_zero k)
       have hdiv : p ^ (k + 1) / p = p ^ k := by
         rw [pow_succ, Nat.mul_div_cancel _ hp.pos]
       have hne1 : p ^ (k + 1) ≠ 1 := (one_lt_pow' hp.one_lt (Nat.succ_ne_zero k)).ne'
       rw [if_pos hdvd, hdiv, localFactorInverse_pow hp.one_lt, localFactorInverse_pow hp.one_lt]
-      simp [unitKernel, hne1, pow_succ]
+      have hu : unitKernel (p ^ (k + 1)) = 0 := by unfold unitKernel; rw [if_neg hne1]
+      rw [hu, pow_succ]
       ring
   · have hnot : ∀ k, n ≠ p ^ k := fun k h => hpow ⟨k, h⟩
     have hne1 : n ≠ 1 := fun h => hnot 0 (by rw [h, pow_zero])
@@ -104,25 +110,24 @@ theorem abs_localFactorInverse_mul_rpow {p : ℕ} (hp : p.Prime) (a : ℝ) (k : 
     |localFactorInverse p a (p ^ k)| * ((p ^ k : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) =
       (|a| * (p : ℝ) ^ (-(1 / 2 : ℝ))) ^ k := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  rw [localFactorInverse_pow hp.one_lt, abs_pow, mul_pow, Nat.cast_pow, ← Real.rpow_natCast,
-    ← Real.rpow_mul hp0.le, mul_comm, Real.rpow_mul hp0.le, Real.rpow_natCast]
+  rw [localFactorInverse_pow hp.one_lt, abs_pow, mul_pow, Nat.cast_pow]
+  congr 1
+  rw [← Real.rpow_natCast (p : ℝ) k, ← Real.rpow_mul hp0.le, mul_comm, Real.rpow_mul hp0.le,
+    Real.rpow_natCast]
 
-theorem support_subset_range_pow {p : ℕ} (hp : p.Prime) (a : ℝ) :
-    Function.support (fun n : ℕ => |localFactorInverse p a n| * (n : ℝ) ^ (-(1 / 2 : ℝ))) ⊆
-      Set.range (fun k : ℕ => p ^ k) := by
-  intro n hn
-  rw [Function.mem_support] at hn
-  by_contra hr
+theorem eq_zero_of_not_mem_range_pow (p : ℕ) (a : ℝ) {n : ℕ}
+    (hr : n ∉ Set.range (fun k : ℕ => p ^ k)) :
+    |localFactorInverse p a n| * (n : ℝ) ^ (-(1 / 2 : ℝ)) = 0 := by
   have hnot : ∀ k, n ≠ p ^ k := fun k h => hr ⟨k, h.symm⟩
-  rw [localFactorInverse_eq_zero a hnot, abs_zero, zero_mul] at hn
-  exact hn rfl
+  rw [localFactorInverse_eq_zero a hnot, abs_zero, zero_mul]
 
 /-- **The inverse tower is critical Wiener iff `|a| < √p`.** -/
 theorem criticalWiener_localFactorInverse_iff {p : ℕ} (hp : p.Prime) (a : ℝ) :
     CriticalWiener (localFactorInverse p a) ↔ |a| < Real.sqrt p := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
   unfold CriticalWiener
-  rw [← (Nat.pow_right_injective hp.two_le).summable_iff (support_subset_range_pow hp a)]
+  rw [← (Nat.pow_right_injective hp.two_le).summable_iff
+    (fun n hn => eq_zero_of_not_mem_range_pow p a hn)]
   have hcomp : ((fun n : ℕ => |localFactorInverse p a n| * (n : ℝ) ^ (-(1 / 2 : ℝ))) ∘
       fun k : ℕ => p ^ k) = fun k => (|a| * (p : ℝ) ^ (-(1 / 2 : ℝ))) ^ k := by
     funext k
@@ -193,9 +198,8 @@ theorem isWienerUnit_localFactor_iff {p : ℕ} (hp : p.Prime) (a : ℝ) :
   constructor
   · rintro ⟨-, g, hg, hinv⟩
     rw [← criticalWiener_localFactorInverse_iff hp]
-    rw [← criticalWiener_congr (b := g) fun n hn =>
-      inverse_unique (fun m hm => dirichletConv_localFactor_inverse hp a hm) hinv hn]
-    exact hg
+    exact (criticalWiener_congr fun n hn =>
+      inverse_unique (fun m hm => dirichletConv_localFactor_inverse hp a hm) hinv hn).2 hg
   · intro h
     exact ⟨criticalWiener_localFactorKernel p a, localFactorInverse p a,
       (criticalWiener_localFactorInverse_iff hp a).2 h,

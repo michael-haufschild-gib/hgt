@@ -1593,6 +1593,12 @@ inside an equivalence.
 12. **Fermi observability.** Dyadic schedules are injective exactly when at most one slot is
     missing, and the optimal physical inverse constant grows like $(4/\pi^2)(\log_2N)^2$
     (`not_fermiScheduleInjective_of_two_missing_levels`, `fermiPhysicalInverseConstant_logb_limit`).
+13. **Complete-period quadratic agreement across parity row pairs.** The torus Poincaré excess
+    `sievePoincareExcess` and all 12 complete-period quadratic forms coincide on `evenFlipRow N c`
+    and `c`, on `chiFourTwinRow ε N` and `chiFourRow ε N`, on `charTwinRow χ ε N` and
+    `charRow χ ε N`, and on `evenFlipRow N (fermiRow ε N)` and `fermiRow ε N` at every horizon
+    `N ≥ 1`, while for `0 < ε ≤ 1/2` their trans-horizon pronic receivers `horizonPronicEnergy`
+    split into bounded vs. unbounded (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`).
 
 ---
 

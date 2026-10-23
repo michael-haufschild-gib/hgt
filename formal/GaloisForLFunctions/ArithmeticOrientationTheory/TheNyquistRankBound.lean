@@ -181,8 +181,8 @@ theorem h1_eq_zero_of_frobeniusMass_ge {A : Matrix m n ℂ} {K : ℝ} (hK0 : 0 <
   have hr : A.rank ≤ Fintype.card m := rank_le_card_height A
   have h2 : (Fintype.card m : ℝ) ≤ A.rank := by
     by_contra hlt
-    push_neg at hlt
-    have : K * (A.rank : ℝ) < K * Fintype.card m := mul_lt_mul_of_pos_left hlt hK0
+    have hlt' : (A.rank : ℝ) < Fintype.card m := not_le.1 hlt
+    have : K * (A.rank : ℝ) < K * Fintype.card m := mul_lt_mul_of_pos_left hlt' hK0
     linarith
   have h3 : Fintype.card m ≤ A.rank := by exact_mod_cast h2
   omega

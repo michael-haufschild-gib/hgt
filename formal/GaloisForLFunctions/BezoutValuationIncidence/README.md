@@ -1434,6 +1434,17 @@ finite inequality.
     exactly for $\eta>\tfrac12$ (`exists_pronicWitness_not_summable_pairing`).
 11. **The residual has a linear cusp.** A critical zero gives the Báez–Duarte residual of the damped
     source a positive floor linear in the damping (`exists_criticalZero_linear_dualResidual_floor`).
+12. **Complete-period quadratic parity and trans-horizon separation.** Every complete-period
+    quadratic form (`selbergTotientDiagonalForm`, `sieveVariance`, `bezoutCoprimeQuadraticForm`,
+    `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `successorPhaseLoss`,
+    `sievePrimitiveEnergy`, `franelGcdQuadraticForm`, `sieveVarianceAboveParity`,
+    `TwoLagSieve.periodCovariance N c h`, `tupleVariance N c H`) is an even function of the Selberg
+    coordinates and invariant under `scaledSelbergRow N c ε` (`ε(q)² = 1`), with bidirectional
+    orbit characterization `periodCovariance_eq_iff_exists_scaledSelbergRow`, while
+    `primePairPlusWeight N` and `primePairMinusWeight N` (`N ≥ 3`) have identical complete-period
+    quadratic forms yet are separated by `sieveSeq N _ k` at every `k ∈ ℕ` (including `k = N + 1`),
+    `sievePrefixDiscrepancy N (3N + 1)`, `vonMangoldtReadout N`, and `sieveRenormalizedPrefixDefect N 1`
+    (`CompletePeriodQuadraticFormsSignInvarianceAndTransHorizonSeparation`).
 
 ---
 

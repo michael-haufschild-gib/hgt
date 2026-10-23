@@ -151,7 +151,12 @@ them. ACS isolates which of these mechanisms the scaling surface has.
    window `2g`, and Hodge index of its scaling surface are equivalent (`curve_hodgeIndex_tfae`). The
    defects differ: the span counts each outer eigenvalue once, the scaling surface once per period
    (`curveConfig_rightZeros_infinite_iff`). The span is the quotient of the scaling surface by the
-   period.
+   period, as an identity (`TheFrobeniusSpanIsTheTowerOfTheScalingSurface`): Weil's form of the
+   zero configuration is `Σ_i log q · Σ_m (f ⋆ g̃)(m log q) β_i^m` by Poisson summation along each
+   tilted lattice of zeros (`W_curveConfig`), so the `q`-tower `g(· − k log q)` of a test supported
+   in an interval shorter than `log q` has Gram matrix `log q · ‖g‖² · spanGram`
+   (`curve_towerGram_eq_smul_spanGram`) and tower defect = span defect
+   (`curve_tower_pontryagin_law`; `1` for the golden datum, `goldenDatum_tower_negIndex`).
 7. **Contact law.** For unitary data the window of `n` graphs is positive definite iff `n ≤ #{β}`;
    beyond, the radical is the multiples of the reduced characteristic polynomial
    (`toeplitz_pos_on_window_iff`, `exists_radical_of_lt`).
@@ -442,8 +447,25 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
    generic test; never depth or multiplicity. The growth of the defect floor in the degree is the
    zero width.
 3. **Which arithmetic data force the sign?** Not span data, integrality, functional equation or
-   positive Euler data — the golden datum has all of them and fails. A forcing input must be
-   violated by such fake data.
+   positive Euler data — the golden datum has all of them and fails (`WhichArithmeticDataForceTheSign`).
+   Raw point-count positivity `N_k ≥ 0` only tests `trace k ≤ q^{k/2} + q^{−k/2}` (`pointCount_nonneg_iff_trace_le_pole`),
+   because the polar `H⁰ ⊕ H²` pairing `polar(Γ_j, Γ_k) = q^j + q^k` (`windowSurface_polar_graphCycle`)
+   swamps the `H¹` trace throughout the critical strip `|β_i| ≤ √q`. The Toeplitz defect splits
+   universally into a sum of squares minus the Rosati reflection defect,
+   `toeplitz S e = Σ_i ‖P_e(β_i)‖² − ½ Σ_i ‖P_e(β_i) − P_e(1/β̄_i)‖²`
+   (`toeplitz_eq_frobSquareMass_sub_frobReflectionDefect`), with lag-1 reflection defect
+   `½ Σ_i (‖β_i‖ − ‖β_i‖⁻¹)²` (`frobReflectionDefect_singleton_one`, equal to `1` on `goldenDatum`
+   and `9/4` on `hidingDatum N`) and lag-2 identity
+   `trace 2 = 2g + ½ Σ_i (‖β_i‖ − ‖β_i‖⁻¹)² − 2 Σ_i (Im β_i)²`
+   (`trace_two_eq_card_add_frobReflectionDefect_sub_im_sq`). The data that force the sign (`forcing_arithmetic_data_tfae`,
+   `scalingSurface_forcing_tfae`) are: (i) pointwise Rosati fixed-point invariance `β_{reflPerm i} = β_i`
+   (or `N_2 ≥ q² + 1 − 2gq` for real-spectrum data, `unitary_iff_pointCount_two_ge_of_im_eq_zero`);
+   (ii) pole-subtracted Hasse–Weil bounds `|N_k − (q^k + 1)| ≤ 2g q^{k/2}` or `O(q^{k/2})` (`unitary_of_trace_bdd`);
+   (iii) forward light-cone Bézout positivity `BezoutAxiom positiveCone`, ample order-unit dominance
+   of the dual nef cone (`dualCone_ample_of_orderUnit`), or ambient Bézout+Riemann–Roch realizability
+   (`hodgeIndex_of_ambient_bezout_riemannRoch`, `goldenDatum_no_ambient_bezout_riemannRoch`); and over `ℤ`,
+   (iv) coupled odd-cone Bézout (`coupledArithmeticCone_bezout_iff_hodgeIndex`) and all-aperture payment
+   of the pole-cancelled two-pole Chebyshev remainder `E(s) = e^s + s − 1 − ψ(e^s)` on `(0, 2r]`.
 4. **What can a Gram functional certify without effectivity?** A proportion `2 − κ`, capped at `2/3`
    below pair correlation at `λ = 1`, with two named inputs that would reach `3/4`.
 5. **What would an effectivity for `ℤ` have to be?** A cone defined without the sign of the form,
@@ -602,6 +624,7 @@ Weil's argument.
 | `TheHodgeDefectIsCyclic` | Hecke translates, spectrally generic tests, cyclic density, cyclic Pontryagin law, RH on the rational and two-prime Hecke orbits of one test |
 | `TheHeckeTowerOfAPrimeIsThePeriodQuotient` | Frobenius eigenvalues `p^{ρ − ½}`, Toeplitz tower Gram, class separation by annihilating polynomials and Cesàro means, Frobenius weights, the tower Pontryagin law |
 | `AlmostEveryPrimeSeesEveryRightZero` | coincidence of Frobenius eigenvalues, at most one resonant prime per pair of zeros, finitely many resonant primes, one prime tower carries the whole defect |
+| `TheFrobeniusSpanIsTheTowerOfTheScalingSurface` | explicit formula of a curve on its scaling surface (Poisson along tilted lattices), `q`-tower Gram = `log q·‖g‖²·spanGram`, tower Pontryagin law over `𝔽_q` |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
 | `TheResonatorRemainderIsNegative` | cross-prime remainder on resonators is negative definite |
@@ -613,3 +636,4 @@ Weil's argument.
 | `SpectralSlackConservationAndTheHyperbolicDisplacementThreshold` | exact spectral-slack conservation and prime-side cancellation, unconditional grid-dimension ceiling `zeroSideSlack ≤ (λ − H(λ) + ε)N` and refutation on `(0, 3/4)`, Cauchy–Schwarz off-line slack amplification, hyperbolic displaced-pair counterexample and the three exact macroscopic thresholds at `κ = 4/3` |
 | `TheLambdaRingOfTheScalingSurface` | `λ`-ring series, Adams operations `adamsOp q`, Hecke cycles `heckeCycle a g`, pole-plane splitting, Lefschetz splitting, zero-side eigenlaw |
 | `RiemannRochForZAndTheReflectedPrimePolarLedger` | tautological cones, Lorentz–polar identity, odd-sector reflected-prime/polar and Chebyshev ledgers, `(8 + ε) e^r` floor, degree floor ⟺ zero width |
+| `WhichArithmeticDataForceTheSign` | universal Toeplitz–Rosati reflection identity, lag-2 trace–reflection–oscillation law, pole-masking equivalence `N_k ≥ 0 ⟺ trace k ≤ q^{k/2} + q^{−k/2}`, 9-way forcing TFAE over `𝔽_q` (`forcing_arithmetic_data_tfae`), forward light-cone Bézout (`hodgeIndex_bezout_tfae`, `goldenForwardPair_violates_openPositiveCone_bezout`), dual nef cone order-unit ampleness and ambient realizability obstruction, 9-way forcing TFAE on `scalingSurface` (`scalingSurface_forcing_tfae`) |

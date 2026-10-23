@@ -211,6 +211,23 @@ All unconditional.
    a coupling. The frustration mass of the general odd ledger is bounded by the positive coupling
    on prime-sum pairs (`frustrationMass_oddWeilLedger_le`).
 
+### 3.1″ The lattice odd ledger is balanced (`TheLatticeOddLedgerIsBalanced`)
+
+1. **Tower comparison.** Within a tower the prime weight at a lattice sum is at most the weight at
+   the lattice difference, `Λ(r^{i+j})/√r^{i+j} ≤ Λ(r^{|i−j|})/√r^{|i−j|}` (`primeKernel_tower_le`,
+   `primeKernel_log_add_le`): a prime-sum pair of lattice points is also a prime-difference pair,
+   and the difference carries the larger weight.
+2. **Balance at every aperture.** Sampled at the logarithms of distinct integers `≥ 2`, the odd
+   Weil ledger has only aligned overlaps (`oddFold_lattice_nonpos`), is balanced
+   (`isBalanced_lattice`), has frustration index `0` (`frustrationIndex_lattice_eq_zero`), and its
+   positivity is local payment (`nonneg_iff_locallyPayable_lattice`).
+3. **The frustration of the odd ledger is a continuum phenomenon**: zero on the lattice at every
+   aperture, `2` on the prime triangle between lattice points.
+4. **The prime-sum charge bounds the frustration mass.** Every overlap is at most
+   `β · prime(p_x + p_y)` (`oddFold_le_primeKernel`), so the frustration mass of any positive
+   configuration is at most `β` times its prime-sum charge (`frustrationMass_le_primeSumCharge`),
+   the charge being `Λ(n)/√n` at the integer `n = e^{p_x + p_y}` (`primeKernel_eq_of_exp_eq`).
+
 ### 3.2 The frustration of a tower is rank one (`TheFrustrationOfATowerIsRankOne`)
 
 1. **Tower locality.** `P_q(p^k) = Σ_{i≤k} q(p^i) q(p^{k−i})` (`productCorr_prime_pow`).
@@ -240,16 +257,32 @@ every tower to every other, and a sum of independent rank-one squares, one per p
    (`sum_vonMangoldt_productCorr_eq_sum_towers`): beyond the square of the support the
    frustrating part of the odd prime side is exactly the sum of the rank-one tower squares.
 
+### 3.2″ The ratio part decomposes over cosets (`TheRatioPartDecomposesOverCosets`)
+
+1. **Coset decomposition.** Writing `a = p^i a'` with `a'` prime to `p` (the `p`-free part
+   `pfreePart`), the ratio correlation at `p^k` sorts into cosets,
+   `R_q(p^k) = Σ_{a' p-free} Σ_i q(p^i a') q(p^{i+k} a')` (`ratioCorr_prime_pow_eq_sum_cosets`).
+2. **Toeplitz forms.** The ratio part of the tower of `p` is `log p` times a sum over cosets of
+   one-sided Toeplitz forms with kernel `p^{−k/2}` (`cosetToeplitz`, `towerRatioPart_eq_sum_cosets`).
+3. **The coset law.** The odd prime side of a tower is
+   `log p · (2 Σ_{a'} Toeplitz_p(q|_{a'}) − (S_p(q)² − q(1)²))` (`towerOddPrimeSide_eq`): the
+   difference correlations are coset-Toeplitz, the sum correlations one Hankel square on the unit
+   coset. This is the orientation-sensitive decomposition of §7.2 in its exact finite form.
+
 ### 3.3 The Nyquist rank bound (`TheNyquistRankBound`)
 
-1. **Rank–nullity Riemann–Roch.** `h0 A + rank A = dim` (`h0_add_rank`), and sections exist
-   beyond the nodes: `h0 A ≥ dim − #nodes` (`card_sub_card_le_h0`).
+1. **Rank–nullity Riemann–Roch.** `h0 A + rank A = dim` (`h0_add_rank`), sections exist
+   beyond the nodes: `h0 A ≥ dim − #nodes` (`card_sub_card_le_h0`), and with the obstruction
+   count `h1 A = #nodes − rank A` the Euler characteristic form `h⁰ − h¹ = dim − #nodes` holds
+   (`h0_sub_h1`); interpolation at every node is possible iff `h¹ = 0` (`h1_eq_zero_iff`).
 2. **Rank–trace law.** For a frame bound `K`, `Σ ‖A_ij‖² ≤ K · rank A`
    (`frobeniusMass_le_rank_mul`): the Gram `AᴴA` is Hermitian positive semidefinite, its trace is
    the Frobenius mass (`re_trace_conjTranspose_mul_self`), each eigenvalue is a Rayleigh quotient
    of the frame (`eigenvalues_le_of_hasFrameBound`), the rank counts the nonzero eigenvalues.
 3. **Nyquist bound.** `h0 A ≤ dim − (Frobenius mass)/K` (`h0_le_nyquist`); at full degrees of
-   freedom, `K · dim ≤ Frobenius mass`, there are no sections (`h0_eq_zero_of_frobeniusMass_ge`).
+   freedom, `K · dim ≤ Frobenius mass`, there are no sections (`h0_eq_zero_of_frobeniusMass_ge`),
+   and dually at `K · #nodes ≤ Frobenius mass` every node datum is interpolated
+   (`h1_eq_zero_of_frobeniusMass_ge`).
 4. **Dirichlet polynomials at separated heights.** The sampling matrix has unit-modulus entries
    (`frobeniusMass_dirichletSampling`: mass `(R+1) N`), the large-values estimate is a frame bound
    (`hasFrameBound_dirichletSampling`: `K = (T + 4N(1 + log N))(δ⁻¹ + 2 log N)`), and so the
@@ -301,19 +334,46 @@ This is the square-root threshold of the aperture as a sampling threshold.
    (`dirichletConv_assoc`, via `dirichletConv_eq_toArithmeticFunction`).
 3. **Orbits.** The paid class is a union of orbits of the monoid (`receiverBounded_orbit`).
 
+### 3.6′ Local factors are the units of the Wiener monoid (`LocalFactorsAreTheUnitsOfTheWienerMonoid`)
+
+1. **Inverse towers.** The local factor `δ₁ − a δ_p` has Dirichlet inverse `Σ_k a^k δ_{p^k}` away
+   from `0` (`dirichletConv_localFactor_inverse`), and the tower is critical Wiener iff
+   `|a| < √p` (`criticalWiener_localFactorInverse_iff`).
+2. **Commutativity and uniqueness.** Convolution is commutative (`dirichletConv_comm`) and inverses
+   are unique away from `0` (`inverse_unique`).
+3. **The unit law.** `δ₁ − a δ_p` is a unit of the critical Wiener monoid iff `|a| < √p`
+   (`isWienerUnit_localFactor_iff`): the local factor law of Trans-Horizon Incidence Mechanics is
+   invertibility in the stability monoid, and `√p` is where the inverse tower leaves the class.
+
 ### 3.7 The damping flow preserves orientation (`TheDampingFlowPreservesOrientation`)
 
 `C_η (Σ_d a_d v_d) = Σ_d a_d d^{−η} v_d` (`centeredOperator_residueCombination`); the sign of every
 coefficient is preserved (`sign_coeff_centeredOperator`), nonvanishing is preserved
 (`coeff_centeredOperator_ne_zero_iff`), and the flow composes (`centeredOperator_residueCombination_twice`).
 
-### 3.8 The width dictionary (`TheWidthDictionary`)
+### 3.8 The width dictionary and pole-subtracted forcing (`TheWidthDictionary`, `PoleSubtractionAndTheForcingSignDictionary`)
 
 `widthDictionary_tfae`: RH, the Hodge index of the scaling surface, the existence of an
 effectivity, one positive square in every intersection Gram, cofinal admission of the damped
 receiver, arbitrarily small pronic prefix energy, the linear Chebyshev band, and the absence of a
 finite-radius refutation of full Weil positivity are equivalent. Pairs of units are stated
 directly (`one_positive_square_iff_cofinal_budget`, `exists_effectivity_iff_meanSquare_band`).
+
+`forcingSignAndWidthDictionary_tfae` (`PoleSubtractionAndTheForcingSignDictionary`): unites the
+eight width units with the pole-subtracted forcing units of `WhichArithmeticDataForceTheSign`
+(forward light-cone Bézout, open light-cone Bézout, odd-sector Hodge index, coupled odd-cone
+Bézout, all-aperture two-pole Chebyshev defect payment, and subexponential odd-defect floor), and
+proves that a one-sided pole-subtracted prime window ceiling `windowCeiling L ≤ e^{L/2} + B(1 + L)`
+forces every unit in the dictionary (`scalingSurface_hodgeIndex_of_windowCeiling_le`,
+`positiveCone_bezout_of_windowCeiling_le`, `cofinal_budget_of_windowCeiling_le`). On curve data,
+the unsubtracted reading recording `(q, g)`, trace integrality, and `∀ k ≥ 1, N_k ≥ 0` cannot
+resolve `CurveDatum.Unitary` (`not_resolves_unsubtractedCurveReading_unitary`), whereas the lag-1
+Frobenius reflection defect reading resolves it on every `CurveDatum ι`
+(`resolves_frobReflectionReading_unitary`, `orientationFaithful_frobReflectionReading_of_flips`).
+
+### 3.9 Complete-period quadratic forms are orientation-blind (`CompletePeriodQuadraticFormsAreOrientationBlind`)
+
+The complete-period lag-covariance reading `completePeriodLagReading N c = (finiteHarmonicSum N c, fun h => TwoLagSieve.periodCovariance N c h)` refines all 12 complete-period quadratic forms of the sieve theory (`sieveVariance`, `bezoutCoprimeQuadraticForm`, `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `sievePoincareExcess`, `successorPhaseLoss`, `sievePrimitiveEnergy`, `sieveVarianceAboveParity`, `selbergTotientDiagonalForm`, `franelGcdQuadraticForm`, `tupleVariance N · H`, and `SieveMoments.translatedMoment N · (v : Fin 2 → ℕ)`) (`refines_completePeriodLagReading_*`). Its shadow at `c₁` (`N ≥ 1`) is the exact `(ℤ/2ℤ)^{N-1}` sign-character orbit of `c₁` on `Icc 1 N` (`mem_shadow_completePeriodLagReading_iff_signOrbit`). Consequently, every mean-preserving sign character `ε` (`ε 1 = 1`, `ε(q)² = 1`) — including `evenFlipRow N` and `singleModeSignFlip q₀` (`q₀ ≥ 2`) — is invisible to `completePeriodLagReading N` and to every complete-period quadratic form (`invisible_completePeriodLagReading_scaledSelbergRow`, `invisible_completePeriodLagReading_evenFlipRow`), and for `N ≥ 3` the reading fails to resolve `sieveSeq N c k` at every `k ∈ ℕ`, the sign `0 ≤ vonMangoldtReadout N c`, and the first-cell defect sign `sieveRenormalizedPrefixDefect N 1 c < 0`, witnessed by `primePairPlusWeight N` and `primePairMinusWeight N` (`not_resolves_completePeriodLagReading_sieveSeq`, `not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg`, `not_resolves_completePeriodLagReading_renormalizedPrefixDefect_neg`).
 
 ---
 
@@ -376,7 +436,12 @@ first pronic moment identity, the parity pair of the Fermi weight) are proved co
 4. **Which datum reads the even flip?** `W_c(2)`, through the first pronic moment; no amplitude
    reading does, and no amplitude reading resolves payment at or below half damping.
 5. **What is the stability group of "paid"?** The critical Wiener monoid, under which the paid
-   class is a union of orbits.
+   class is a union of orbits; among local factors its units are exactly those with `|a| < √p`.
+7. **Where is the odd Weil ledger frustrated?** Nowhere on the lattice at any aperture, and at
+   the prime triangle between lattice points: frustration is a continuum phenomenon, bounded in
+   mass by the prime-sum charge.
+8. **How is the ratio part oriented?** Coset by coset: it is a sum of one-sided Toeplitz forms
+   over the `p`-free cosets, against one Hankel square on the unit coset.
 6. **Is RH the same statement in every unit?** Yes: `widthDictionary_tfae`.
 
 ### 6.2 Tools
@@ -391,24 +456,28 @@ Built and reusable:
 - the *Dirichlet sampling matrix* with its Frobenius mass and frame bound;
 - the *three-face formula* for the even flip and its damped-class bound;
 - the *absolute-kernel L-series* bridge for Dirichlet convolutions;
-- the *orientation calculus* on readings (flip, faithfulness, closure of blindness).
+- the *orientation calculus* on readings (flip, faithfulness, closure of blindness);
+- the *tower comparison* and the *prime-sum charge bound* for the odd ledger;
+- the *coset decomposition* of dilation correlations through the `p`-free part;
+- the *inverse tower* and the *uniqueness of inverses* in the Wiener monoid;
+- the *Euler characteristic* `h⁰ − h¹` of a reading at nodes.
 
-To be built (§7): the frustration index of the actual odd Weil ledger at growing aperture; a
-section functor beyond the finite-dimensional skeleton; an orientation-faithful norm on damped
-weights.
+To be built (§7): a section functor beyond the finite-dimensional skeleton; an orientation-faithful
+norm on damped weights; the aperture-derivative identity.
 
 ---
 
 ## 7. Open problems and research topics
 
-1. **The frustration index of the odd Weil ledger at aperture `A`.** Compute or bound
-   `ν(oddFold p (weilLedgerKernel α β) b)` for the actual prime-sum pattern on
-   `{log n : n ≤ e^A}`; relate `4 ν_w / n` to the ground energy `μ(A)` and to the contact
-   aperture `A* ≥ 3/10`.
-2. **Beyond the rank-one law.** The ratio part couples towers; find the orientation-sensitive
-   decomposition of `Σ Λ(m) m^{−1/2} R_q(m)` and the class of profiles on which the ratio part
-   dominates the sum of tower squares. The sign of the odd form on such a class is a selective
-   statement (the shifted pair `ζ(s−a)ζ(s+a)` must fail it).
+1. **The frustration of the odd Weil ledger off the lattice.** On the lattice the index is `0`
+   at every aperture (§3.1″) and the prime triangle has index `2` (§3.1′); the mass is bounded by
+   the prime-sum charge. Open: the frustration index and mass of the continuum ledger on dense
+   position sets in `[0, A]` as `A → ∞`, and the relation of `4 ν_w / n` to the ground energy
+   `μ(A)` and the contact aperture `A* ≥ 3/10`.
+2. **Beyond the coset law.** The odd prime side of a tower is `2 Σ_{a'} Toeplitz − Hankel`
+   (§3.2″). Open: the class of profiles on which the coset Toeplitz forms dominate the unit-coset
+   square once the archimedean odd kernel is added, and the selectivity of that class against the
+   shifted pair `ζ(s−a)ζ(s+a)`.
 3. **Nyquist–Riemann–Roch beyond rank–nullity.** Replace the finite-dimensional test space by
    band-limited tests on an aperture, the node set by the prime-power nodes, and the frame bound
    by a Landau-type density theorem; identify the `h¹` term and the Chebyshev defect
@@ -416,9 +485,9 @@ weights.
 4. **An orientation-faithful norm.** A Banach norm on four-free damped weights in which the
    companion class is continuous and the receiver is bounded; the first pronic moment and the
    logarithmic moments are the candidates for its coordinates.
-5. **Inverses in the critical Wiener monoid.** Wiener's lemma for Dirichlet series on
-   `Re s ≥ ½`; which kernels are invertible, and whether invertible kernels preserve the unpaid
-   class as well.
+5. **Inverses in the critical Wiener monoid.** Local factors are units iff `|a| < √p` (§3.6′).
+   Open: Wiener's lemma for Dirichlet series on `Re s ≥ ½` (invertibility of a general kernel iff
+   its series has no zero on `Re s ≥ ½`), and whether units preserve the unpaid class as well.
 6. **Transport in aperture.** An aperture-derivative identity for `μ(A)` with a sign-definite
    jump term, compatible with the doubly exponential ceiling.
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
@@ -504,12 +573,19 @@ contribution of the field is its dictionary and its battery, not a mechanism.
 - `FrustrationIndexControlsTheGroundEnergy` — switching classes, frustration index and mass,
   signed Dirichlet form, ground energy, the odd Weil ledger.
 - `TheFrustrationIndexOfThePrimeTriangle` — mirror pairs, three-point bound, the prime triangle.
+- `TheLatticeOddLedgerIsBalanced` — tower comparison, balance on the lattice, the prime-sum charge.
 - `TheFrustrationOfATowerIsRankOne` — lattice correlations, tower locality, the rank-one law,
   the odd prime side.
 - `PrimePowerSumsRegroupByTowers` — regrouping by least prime factor; the global product part.
+- `TheRatioPartDecomposesOverCosets` — the `p`-free part, coset Toeplitz forms, the coset law.
 - `TheNyquistRankBound` — sections, rank–trace law, Nyquist bound, Dirichlet sampling.
 - `TheEvenFlipIsReadAtThePrimeTwo` — the even flip as an orientation, the reading at `2`, the
   parity floor for readings.
 - `TheCriticalWienerMonoid` — closure, submultiplicative norm, unit, associativity, orbits.
+- `LocalFactorsAreTheUnitsOfTheWienerMonoid` — inverse towers, uniqueness, the unit law.
 - `TheDampingFlowPreservesOrientation` — transport of residue combinations.
 - `TheWidthDictionary` — the equivalences in one theorem.
+- `PoleSubtractionAndTheForcingSignDictionary` — faithfulness of the Rosati reflection reading vs.
+  blindness of unsubtracted positivity (`resolves_frobReflectionReading_unitary`,
+  `not_resolves_unsubtractedCurveReading_unitary`), the 14-unit master dictionary
+  `forcingSignAndWidthDictionary_tfae`, and one-sided pole-subtracted window ceiling forcing.

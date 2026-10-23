@@ -1026,6 +1026,40 @@ side and the pole plane; the archimedean density is not part of this ledger.
     (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`). Rate `½` in the graded
     form is the ambient strip `Θ ≤ 1`. The content is that the ledger reaches the PNT rate with
     explicit constants; every improvement must lower the exponent.
+60. **Complete-period quadratic parity and trans-horizon separation.** Every complete-period
+    quadratic form of the finite divisor-sieve theory (`selbergTotientDiagonalForm`,
+    `sieveVariance`, `bezoutCoprimeQuadraticForm`, `sieveSuccessorCovariance`,
+    `sieveSuccessorReserve`, `sievePoincareExcess`, `successorPhaseLoss`, `sievePrimitiveEnergy`,
+    `sieveVarianceAboveParity`, `franelGcdQuadraticForm`, `TwoLagSieve.periodCovariance N c h` at
+    every lag `h` including `h = 1, 2`, `tupleVariance N c H` for every shift tuple `H`, and every
+    two-point translated moment `SieveMoments.translatedMoment N c (v : Fin 2 → ℕ)`) is diagonal in
+    the Selberg multiples coordinates `Y_{N,c}(q) = ∑_{d ≤ N, q ∣ d} c(d)/d` and hence an even
+    function of each coordinate individually, invariant under `scaledSelbergRow N c ε` for every
+    sign character `ε : ℕ → ℝ` (`ε(q)² = 1`). Conversely, by lag-spectrum Möbius inversion, two
+    rows with the same complete-period mean have the same complete-period quadratic forms (or the
+    same lag covariances on `1, …, N`) if and only if they lie in the same `(ℤ/2ℤ)^{N-1}`
+    sign-character orbit on `[1, N]` (`periodCovariance_eq_iff_exists_scaledSelbergRow`,
+    `mem_shadow_completePeriodLagReading_iff_signOrbit`). By contrast, the pointwise trans-horizon
+    response `sieveSeq N c k`, the prefix discrepancy `sievePrefixDiscrepancy N M c`, the von
+    Mangoldt pronic readout `vonMangoldtReadout N c`, the trans-horizon pronic receiver
+    `horizonPronicEnergy`, and the archimedean prime-comb energy `combEnergy F (Icc 2 N)` are not
+    sign-invariant (`sieveSeq_scaledSelbergRow_singleModeSignFlip_sub`,
+    `combEnergy_singleModeSignFlip_sub`). Evaluating `three_shift_gram` along the parity-twisted ray
+    `(θ, −θ)` yields `(A(a) − A(b))² ≤ 2A(0)(A(0) − A(b − a))` (`sq_two_atom_sub_le`), whose
+    `(ℤ/2ℤ)` average with `sq_two_atom_le` cancels the ratio lag `A(b − a)` to give
+    `A(a)² + A(b)² ≤ A(0)²` (`sq_two_atom_add_sq_sub_le`). The explicit two-prime pair
+    `primePairPlusWeight N` (`Y = δ₂ + δ₃`) and `primePairMinusWeight N` (`Y = δ₂ − δ₃`) (`N ≥ 3`)
+    has identical complete-period mean `0`, variance `3`, Bézout successor form `−2`, reserve `5`,
+    phase loss `3/2`, primitive energy `11/12`, all-lag covariances, and all-tuple variances
+    (`primePairWeights_completePeriod_coincide`), yet `sieveSeq N _ k` differs by `2c₃(k) ≠ 0` at
+    every `k ∈ ℕ` (in particular at `k = N + 1`), `sievePrefixDiscrepancy N (3N + 1)` differs by
+    `−2`, `vonMangoldtReadout N` is `log 2 + log 3` vs. `log 2 − log 3`, `sieveRenormalizedPrefixDefect N 1`
+    is `−4` vs. `0`, and `combEnergy F (Icc 2 N)` differs by `4A(log 3 − log 2)`
+    (`completePeriod_parity_and_transHorizon_separation`); cofinally across all horizons, the
+    parity pairs `(chiFourRow ε N, chiFourTwinRow ε N)`, `(charRow χ ε N, charTwinRow χ ε N)`, and
+    `(fermiRow ε N, evenFlipRow N (fermiRow ε N))` agree on all complete-period quadratic forms at
+    every `N` while splitting `horizonPronicEnergy` for `0 < ε ≤ 1/2`
+    (`CompletePeriodQuadraticFormsAgreeOnParityRowPairs`).
 
 ---
 
@@ -1068,6 +1102,13 @@ Unconditional; RH appears only inside equivalences.
    plus remainder minus the reflected-prime/polar cost, at every aperture, and that cost is the
    Chebyshev pairing (`fullZeroForm_eq_reflectedPrimePolarLedger`,
    `reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`).
+10. **Complete-period quadratic parity and trans-horizon separation.** Two rows at cutoff `N` with
+    equal mean agree on all complete-period quadratic forms (variance, Bézout successor form,
+    reserve, Poincaré excess, phase loss, primitive energy, all-lag covariances, tuple variances,
+    two-point moments) iff they lie in the same `(ℤ/2ℤ)^{N-1}` Selberg-coordinate sign orbit, while
+    `primePairPlusWeight N` and `primePairMinusWeight N` (`N ≥ 3`) are separated at every `k ∈ ℕ` by
+    `sieveSeq N _ k`, by `sievePrefixDiscrepancy`, by `vonMangoldtReadout`, and by `4A(log 3 − log 2)`
+    in `combEnergy` (`completePeriod_parity_and_transHorizon_separation`).
 
 ---
 
@@ -1186,13 +1227,9 @@ To be built:
    minus product incidence form (`fullEnergy_latticeTrain_uniform`, in
    `RHTower/ArithmeticIncidenceNarrowBumpBridge`). Open: the origin and axis packets, which an odd
    gauge reaches only through first jets, and the explicit self-energy asymptotic.
-5. **Parity.** Which complete-period quadratic forms of the sieve theory (variance, Bézout
-   successor form, two-lag covariances) are even functions of the Selberg coordinates, hence
-   invariant under every sign character on the coordinates, while the trans-horizon response is
-   not; exhibit the pair of rows this separates.
-6. **Windows across scales.** The ratio atoms at `m ≥ 4` and the product atoms couple different
+5. **Windows across scales.** The ratio atoms at `m ≥ 4` and the product atoms couple different
    dyadic windows; describe the coupling graph between windows and the size of its edges.
-7. **The shared surplus between the light cone and the thin band.** Mechanism 38 pays the odd parts
+6. **The shared surplus between the light cone and the thin band.** Mechanism 38 pays the odd parts
    of all atoms of strip width `≤ e^{−r}/(16r)`; mechanism 39 refutes it for the band of width
    `[1/48, 1/12]` at large `r`; mechanism 41 bounds the capacity by `2 log(4/ε) + 84`. (a) The
    capacity constant: the largest total weight of nested strips wider than `ε` payable by one copy,
