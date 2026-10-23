@@ -363,61 +363,123 @@ theorem continuousAt_criticalSymbol_half {t : ℝ} (ht : t ≠ 0) :
       (η : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I)) (by fun_prop)
   exact ((c1.inv₀ hne).neg).mul continuousAt_const
 
+theorem ae_ne_zero_real : ∀ᵐ t : ℝ ∂volume, t ≠ 0 := by
+  rw [ae_iff]; simpa using (measure_singleton (0 : ℝ) : volume {(0 : ℝ)} = 0)
+
+/-- The half-damping symbol is continuous away from `t = 0`. -/
+theorem continuousOn_criticalSymbol_half : ContinuousOn (criticalSymbol (1 / 2)) {(0 : ℝ)}ᶜ := by
+  intro t ht
+  have ht' : t ≠ 0 := ht
+  have hz1 : ((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I) ≠ 1 := fun h => by
+    have := congrArg Complex.im h; simp at this; exact ht' this
+  have hz2 : -(((-1 / 2 : ℝ) : ℂ) + t * I) ≠ 1 := fun h => by
+    have := congrArg Complex.re h; simp at this; norm_num at this
+  have hne : riemannZeta (((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I)) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_le_re (by simp; norm_num)
+  have hs0 : ((-1 / 2 : ℝ) : ℂ) + t * I ≠ 0 := fun h => by
+    have := congrArg Complex.re h; simp at this
+  unfold criticalSymbol
+  have c1 : ContinuousAt (fun t : ℝ =>
+      riemannZeta (((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I))) t :=
+    ((differentiableAt_riemannZeta hz1).continuousAt).comp (f := fun t : ℝ =>
+      ((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I)) (by fun_prop)
+  have c2 : ContinuousAt (fun t : ℝ => riemannZeta (-(((-1 / 2 : ℝ) : ℂ) + t * I))) t :=
+    ((differentiableAt_riemannZeta hz2).continuousAt).comp (f := fun t : ℝ =>
+      -(((-1 / 2 : ℝ) : ℂ) + t * I)) (by fun_prop)
+  exact (((c1.inv₀ hne).neg).mul (c2.div (by fun_prop) hs0)).continuousWithinAt
+
+theorem aestronglyMeasurable_criticalSymbol {η : ℝ} (h0 : 1 / 2 ≤ η) :
+    AEStronglyMeasurable (criticalSymbol η) volume := by
+  rcases h0.lt_or_eq with h | h
+  · exact (continuous_criticalSymbol h).aestronglyMeasurable
+  · subst h
+    have hm := continuousOn_criticalSymbol_half.aestronglyMeasurable
+      (measurableSet_singleton (0 : ℝ)).compl
+    rwa [restrict_compl_singleton] at hm
+
+/-- **The domination holds on `½ ≤ η < 1`** (at `η = ½` away from `t = 0`, by continuity). -/
+theorem exists_norm_sq_criticalSymbol_le_of_half_le :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ η : ℝ, 1 / 2 ≤ η → η < 1 → ∀ t : ℝ, t ≠ 0 →
+      ‖criticalSymbol η t‖ ^ 2 ≤ M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ)) := by
+  obtain ⟨M, hM, hdom⟩ := exists_norm_sq_criticalSymbol_le
+  refine ⟨M, hM, fun η h0 h1 t ht => ?_⟩
+  rcases h0.lt_or_eq with h | h
+  · exact hdom η h h1 t
+  · subst h
+    have hlim : Tendsto (fun η => criticalSymbol η t) (𝓝[>] (1 / 2)) (𝓝 (criticalSymbol (1 / 2) t)) :=
+      (continuousAt_criticalSymbol_half ht).tendsto.mono_left nhdsWithin_le_nhds
+    refine le_of_tendsto ((continuous_norm.tendsto _).comp hlim |>.pow 2) ?_
+    filter_upwards [Ioo_mem_nhdsGT (show (1 / 2 : ℝ) < 1 by norm_num)] with η hη
+    exact hdom η hη.1 hη.2 t
+
+theorem integrable_norm_sq_criticalSymbol_sub {η η' : ℝ} (h0 : 1 / 2 ≤ η) (h1 : η < 1)
+    (h0' : 1 / 2 ≤ η') (h1' : η' < 1) :
+    Integrable fun t : ℝ => ‖criticalSymbol η t - criticalSymbol η' t‖ ^ 2 := by
+  obtain ⟨M, hM, hdom⟩ := exists_norm_sq_criticalSymbol_le_of_half_le
+  refine Integrable.mono' ((integrable_critical_majorant.const_mul M).const_mul 4)
+    (((aestronglyMeasurable_criticalSymbol h0).sub
+      (aestronglyMeasurable_criticalSymbol h0')).norm.pow 2) ?_
+  filter_upwards [ae_ne_zero_real] with t ht
+  have e1 := hdom η h0 h1 t ht
+  have e2 := hdom η' h0' h1' t ht
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  calc ‖criticalSymbol η t - criticalSymbol η' t‖ ^ 2
+      ≤ (‖criticalSymbol η t‖ + ‖criticalSymbol η' t‖) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) (norm_sub_le _ _) 2
+    _ ≤ 2 * ‖criticalSymbol η t‖ ^ 2 + 2 * ‖criticalSymbol η' t‖ ^ 2 := by
+        nlinarith [sq_nonneg (‖criticalSymbol η t‖ - ‖criticalSymbol η' t‖)]
+    _ ≤ 4 * (M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ))) := by linarith
+
+/-- `∫ |F_η − F_{η'}|² ≤ 2 ∫ |F_η − F_{½}|² + 2 ∫ |F_{η'} − F_{½}|²`. -/
+theorem integral_norm_sq_criticalSymbol_sub_le {η η' : ℝ} (h0 : 1 / 2 ≤ η) (h1 : η < 1)
+    (h0' : 1 / 2 ≤ η') (h1' : η' < 1) :
+    ∫ t : ℝ, ‖criticalSymbol η t - criticalSymbol η' t‖ ^ 2 ≤
+      2 * (∫ t : ℝ, ‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ ^ 2) +
+        2 * ∫ t : ℝ, ‖criticalSymbol η' t - criticalSymbol (1 / 2) t‖ ^ 2 := by
+  have hh : (1 / 2 : ℝ) ≤ 1 / 2 := le_rfl
+  have hh1 : (1 / 2 : ℝ) < 1 := by norm_num
+  have i1 := integrable_norm_sq_criticalSymbol_sub h0 h1 hh hh1
+  have i2 := integrable_norm_sq_criticalSymbol_sub h0' h1' hh hh1
+  rw [← integral_const_mul, ← integral_const_mul, ← integral_add (i1.const_mul 2) (i2.const_mul 2)]
+  refine integral_mono (integrable_norm_sq_criticalSymbol_sub h0 h1 h0' h1')
+    ((i1.const_mul 2).add (i2.const_mul 2)) fun t => ?_
+  have e : criticalSymbol η t - criticalSymbol η' t =
+      (criticalSymbol η t - criticalSymbol (1 / 2) t) -
+        (criticalSymbol η' t - criticalSymbol (1 / 2) t) := by ring
+  simp only
+  rw [e]
+  calc ‖(criticalSymbol η t - criticalSymbol (1 / 2) t) -
+        (criticalSymbol η' t - criticalSymbol (1 / 2) t)‖ ^ 2
+      ≤ (‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ +
+          ‖criticalSymbol η' t - criticalSymbol (1 / 2) t‖) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) (norm_sub_le _ _) 2
+    _ ≤ _ := by
+        nlinarith [sq_nonneg (‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ -
+          ‖criticalSymbol η' t - criticalSymbol (1 / 2) t‖)]
+
 /-- **The critical symbol converges in mean square as `η ↓ ½`.** -/
 theorem tendsto_integral_sq_criticalSymbol_sub :
     Tendsto (fun η => ∫ t : ℝ, ‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ ^ 2)
       (𝓝[>] (1 / 2)) (𝓝 0) := by
-  obtain ⟨M, hM, hdom⟩ := exists_norm_sq_criticalSymbol_le
+  obtain ⟨M, hM, hdom⟩ := exists_norm_sq_criticalSymbol_le_of_half_le
   have hev : ∀ᶠ η in 𝓝[>] (1 / 2 : ℝ), η ∈ Ioo (1 / 2 : ℝ) 1 :=
     Ioo_mem_nhdsGT (by norm_num)
-  -- pointwise limit away from `t = 0`
   have hlim : ∀ t : ℝ, t ≠ 0 →
       Tendsto (fun η => criticalSymbol η t) (𝓝[>] (1 / 2)) (𝓝 (criticalSymbol (1 / 2) t)) :=
     fun t ht => (continuousAt_criticalSymbol_half ht).tendsto.mono_left nhdsWithin_le_nhds
-  have hhalf : ∀ t : ℝ, t ≠ 0 →
-      ‖criticalSymbol (1 / 2) t‖ ^ 2 ≤ M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ)) := by
-    intro t ht
-    refine le_of_tendsto ((continuous_norm.tendsto _).comp (hlim t ht) |>.pow 2) ?_
-    filter_upwards [hev] with η hη
-    exact hdom η hη.1 hη.2 t
-  have hae : ∀ᵐ t : ℝ ∂volume, t ≠ 0 := by
-    rw [ae_iff]; simpa using (measure_singleton (0 : ℝ) : volume {(0 : ℝ)} = 0)
-  -- measurability of the limit symbol
-  have hmeas_half : AEStronglyMeasurable (criticalSymbol (1 / 2)) volume := by
-    have hcont : ContinuousOn (criticalSymbol (1 / 2)) {(0 : ℝ)}ᶜ := fun t ht =>
-      (by
-        have ht' : t ≠ 0 := ht
-        have hz1 : ((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I) ≠ 1 := fun h => by
-          have := congrArg Complex.im h; simp at this; exact ht' this
-        have hz2 : -(((-1 / 2 : ℝ) : ℂ) + t * I) ≠ 1 := fun h => by
-          have := congrArg Complex.re h; simp at this; norm_num at this
-        have hne : riemannZeta (((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I)) ≠ 0 :=
-          riemannZeta_ne_zero_of_one_le_re (by simp; norm_num)
-        have hs0 : ((-1 / 2 : ℝ) : ℂ) + t * I ≠ 0 := fun h => by
-          have := congrArg Complex.re h; simp at this
-        unfold criticalSymbol
-        have c1 : ContinuousAt (fun t : ℝ =>
-            riemannZeta (((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I))) t :=
-          ((differentiableAt_riemannZeta hz1).continuousAt).comp (f := fun t : ℝ =>
-            ((1 / 2 : ℝ) : ℂ) - (((-1 / 2 : ℝ) : ℂ) + t * I)) (by fun_prop)
-        have c2 : ContinuousAt (fun t : ℝ => riemannZeta (-(((-1 / 2 : ℝ) : ℂ) + t * I))) t :=
-          ((differentiableAt_riemannZeta hz2).continuousAt).comp (f := fun t : ℝ =>
-            -(((-1 / 2 : ℝ) : ℂ) + t * I)) (by fun_prop)
-        exact (((c1.inv₀ hne).neg).mul (c2.div (by fun_prop) hs0)).continuousWithinAt)
-    have h := hcont.aestronglyMeasurable (measurableSet_singleton (0 : ℝ)).compl
-    rwa [restrict_compl_singleton] at h
   have hconv := tendsto_integral_filter_of_dominated_convergence
     (μ := volume) (l := 𝓝[>] (1 / 2 : ℝ))
     (F := fun η t => ‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ ^ 2) (f := fun _ => 0)
     (fun t => 4 * (M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ))))
     (by
       filter_upwards [hev] with η hη
-      exact (((continuous_criticalSymbol hη.1).aestronglyMeasurable.sub hmeas_half).norm.pow 2))
+      exact (((aestronglyMeasurable_criticalSymbol hη.1.le).sub
+        (aestronglyMeasurable_criticalSymbol le_rfl)).norm.pow 2))
     (by
       filter_upwards [hev] with η hη
-      filter_upwards [hae] with t ht
-      have h1 := hdom η hη.1 hη.2 t
-      have h2 := hhalf t ht
+      filter_upwards [ae_ne_zero_real] with t ht
+      have h1 := hdom η hη.1.le hη.2 t ht
+      have h2 := hdom (1 / 2) le_rfl (by norm_num) t ht
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       calc ‖criticalSymbol η t - criticalSymbol (1 / 2) t‖ ^ 2
           ≤ (‖criticalSymbol η t‖ + ‖criticalSymbol (1 / 2) t‖) ^ 2 :=
@@ -427,7 +489,7 @@ theorem tendsto_integral_sq_criticalSymbol_sub :
         _ ≤ 4 * (M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ))) := by linarith)
     ((integrable_critical_majorant.const_mul M).const_mul 4)
     (by
-      filter_upwards [hae] with t ht
+      filter_upwards [ae_ne_zero_real] with t ht
       have h := ((continuous_norm.tendsto _).comp
         ((hlim t ht).sub tendsto_const_nhds)).pow 2
       simpa using h)
@@ -464,17 +526,7 @@ theorem orbit_l2_tendsto_half :
     obtain ⟨hint, heq⟩ := integral_sq_sourceProfile_sub hη.1 hη.2 hη'.1 hη'.2
     have hA := sum_sq_orbitCoord_sub_le η η' T hint
     rw [heq] at hA
-    obtain ⟨M, hM, hdom⟩ := exists_norm_sq_criticalSymbol_le
-    -- `|F_η − F_{η'}|² ≤ 2|F_η − F_{½}|² + 2|F_{η'} − F_{½}|²`
-    have hI : ∫ t : ℝ, ‖criticalSymbol η t - criticalSymbol η' t‖ ^ 2 ≤ 2 * Φ η + 2 * Φ η' := by
-      have hmaj : Integrable fun t : ℝ => 4 * (M * (1 + t ^ 2) ^ (-(9 / 16 : ℝ))) :=
-        (integrable_critical_majorant.const_mul M).const_mul 4
-      have hi : ∀ ζ ∈ Ioo (1 / 2 : ℝ) 1,
-          Integrable fun t : ℝ => ‖criticalSymbol ζ t - criticalSymbol (1 / 2) t‖ ^ 2 := by
-        intro ζ hζ
-        sorry
-      sorry
-    have hπ : 0 < 1 / (2 * Real.pi) := by positivity
+    have hI := integral_norm_sq_criticalSymbol_sub_le hη.1.le hη.2 hη'.1.le hη'.2
     calc _ ≤ 8 * (1 / (2 * Real.pi) *
             ∫ t : ℝ, ‖criticalSymbol η t - criticalSymbol η' t‖ ^ 2) + 4 * (ρ η - ρ η') ^ 2 := hA
       _ ≤ _ := by gcongr
@@ -487,18 +539,65 @@ theorem orbit_l2_tendsto_half :
   have hlimR : Tendsto (fun η' => 8 * (1 / (2 * Real.pi) * (2 * Φ η + 2 * Φ η')) +
       4 * (ρ η - ρ η') ^ 2) (𝓝[>] (1 / 2))
       (𝓝 (8 * (1 / (2 * Real.pi) * (2 * Φ η + 2 * 0)) + 4 * (ρ η - ρ (1 / 2)) ^ 2)) :=
-    ((tendsto_const_nhds.add (hΦ0.const_mul 2)).const_mul _ |>.const_mul 8).add
-      ((tendsto_const_nhds.sub hρc).pow 2 |>.const_mul 4)
+    (((tendsto_const_nhds.add (hΦ0.const_mul 2)).const_mul _).const_mul 8).add
+      (((tendsto_const_nhds.sub hρc).pow 2).const_mul 4)
   have hle := le_of_tendsto_of_tendsto hlimL hlimR hbound
   have hπ : 0 < Real.pi := Real.pi_pos
-  calc _ ≤ 8 * (1 / (2 * Real.pi) * (2 * Φ η + 2 * 0)) + 4 * (ρ η - ρ (1 / 2)) ^ 2 := hle
-    _ = (8 / Real.pi) * Φ η + 4 * (ρ η - ρ (1 / 2)) ^ 2 := by field_simp; ring
+  have hsplit : 8 * (1 / (2 * Real.pi) * (2 * Φ η + 2 * 0)) + 4 * (ρ η - ρ (1 / 2)) ^ 2 =
+      (8 / Real.pi) * Φ η + 4 * (ρ η - ρ (1 / 2)) ^ 2 := by field_simp; ring
+  have hfin : (8 / Real.pi) * δ + 4 * δ ≤ ε := by
+    rw [hδ]
+    have e : (8 / Real.pi) * (ε / (16 / Real.pi + 8)) + 4 * (ε / (16 / Real.pi + 8)) = ε / 2 := by
+      field_simp; ring
+    linarith
+  calc _ ≤ _ := hle
+    _ = _ := hsplit
     _ ≤ (8 / Real.pi) * δ + 4 * δ := by gcongr
-    _ ≤ ε := by
-        rw [hδ]
-        have : (8 / Real.pi) * (ε / (16 / Real.pi + 8)) + 4 * (ε / (16 / Real.pi + 8)) =
-            ε / 2 := by field_simp; ring
-        linarith
+    _ ≤ ε := hfin
+
+/-- The orbit at half damping is the `ℓ²` limit: `C_η r → C_{½} r` as `η ↓ ½`. -/
+theorem centeredOperator_reciprocal_l2_tendsto_half :
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ η in 𝓝[>] (1 / 2 : ℝ), ∀ (hη : 0 < η) (T : ℕ),
+      ∑ n ∈ Finset.range T, (arithmeticDampingCenteredOperator hη reciprocalObservable n -
+        arithmeticDampingCenteredOperator (by norm_num : (0 : ℝ) < 1 / 2)
+          reciprocalObservable n) ^ 2 ≤ ε := by
+  intro ε hε
+  filter_upwards [orbit_l2_tendsto_half ε hε] with η h hη T
+  simp only [centeredOperator_reciprocal_eq_orbitCoord]
+  exact h T
+
+/-! ### The positive twin blows up -/
+
+theorem tendsto_positiveTwin_half (n : ℕ) :
+    Tendsto (fun ε => positiveTwin ε n) (𝓝[>] (1 / 2)) (𝓝 (positiveTwin (1 / 2) n)) := by
+  unfold positiveTwin
+  refine tendsto_tsum_of_dominated_convergence (bound := fun d : ℕ => (d : ℝ) ^ (-(3 / 2 : ℝ)))
+    (Real.summable_nat_rpow.mpr (by norm_num)) (fun d => ?_) ?_
+  · rcases Nat.eq_zero_or_pos d with rfl | hd
+    · simp
+    · have hd' : (0 : ℝ) < d := by exact_mod_cast hd
+      refine (((continuous_const.rpow continuous_neg fun _ => Or.inl hd'.ne').tendsto
+        (1 / 2)).mono_left nhdsWithin_le_nhds).mul tendsto_const_nhds
+  · filter_upwards [Ioo_mem_nhdsGT (show (1 / 2 : ℝ) < 1 by norm_num)] with ε hε d
+    rcases Nat.eq_zero_or_pos d with rfl | hd
+    · simp
+    · have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
+      rw [Real.norm_eq_abs]
+      exact (abs_rpow_mul_normalizedResidueProfile_le hd n).trans
+        (Real.rpow_le_rpow_of_exponent_le hd1 (by linarith [hε.1]))
+
+/-- **The positive twin blows up at half damping**: for every `B`, eventually as `ε ↓ ½` some
+horizon energy of `Σ_d d^{−ε} v_d` exceeds `B`. -/
+theorem positiveTwin_energy_unbounded (B : ℝ) :
+    ∀ᶠ ε in 𝓝[>] (1 / 2 : ℝ), ∃ T : ℕ, B < ∑ n ∈ Finset.range T, positiveTwin ε n ^ 2 := by
+  have hns := not_summable_positiveTwin (by norm_num : (0 : ℝ) < 1 / 2) le_rfl
+  have htend := (not_summable_iff_tendsto_nat_atTop_of_nonneg fun n => sq_nonneg _).mp hns
+  obtain ⟨T, hT⟩ := (htend.eventually (eventually_gt_atTop (B + 1))).exists
+  have hlim : Tendsto (fun ε => ∑ n ∈ Finset.range T, positiveTwin ε n ^ 2) (𝓝[>] (1 / 2))
+      (𝓝 (∑ n ∈ Finset.range T, positiveTwin (1 / 2) n ^ 2)) :=
+    tendsto_finsetSum _ fun n _ => (tendsto_positiveTwin_half n).pow 2
+  filter_upwards [hlim.eventually (eventually_gt_nhds (show B < _ by linarith))] with ε hε
+  exact ⟨T, hε⟩
 
 end
 

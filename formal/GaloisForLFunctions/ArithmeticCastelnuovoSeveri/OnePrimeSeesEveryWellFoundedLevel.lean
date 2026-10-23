@@ -235,7 +235,7 @@ theorem classSum_eq_zero_of_wellFounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
         have hτ' : ‖frobEig ℓ ρ‖ ≤ ‖frobEig ℓ τ‖ := by simpa using hτ
         exact ⟨τ, ⟨τ.2, (one_lt_norm_frobEig_iff hℓ _).mp (hb1.trans_le hτ')⟩,
           Complex.norm_conj _⟩
-    have h := tsum_ite_eq_zero_of_moments_of_wellFounded hq (w := fun τ => conj (frobEig ℓ τ))
+    have h := tsum_ite_eq_zero_of_moments_of_wellFounded hq (w := fun τ : Z.carrier => conj (frobEig ℓ τ))
       (norm_conj_frobEig_le Z hℓ)
       (fun n => (tsum_congr fun τ => by rw [zpow_natCast]).trans (hmom n))
       ((map_ne_zero _).mpr hb0) (by simpa only [Complex.norm_conj] using hw)
@@ -256,7 +256,7 @@ theorem classSum_eq_zero_of_wellFounded (Z : ZeroConfig) (hZ : TemperedConfig Z)
         · rw [re_reflect]; linarith
         · simp only [norm_inv, Complex.norm_conj, frobEig_reflect]
     have h := tsum_ite_eq_zero_of_moments_of_wellFounded hq
-      (w := fun τ => (conj (frobEig ℓ τ))⁻¹) (norm_inv_conj_frobEig_le Z hℓ)
+      (w := fun τ : Z.carrier => (conj (frobEig ℓ τ))⁻¹) (norm_inv_conj_frobEig_le Z hℓ)
       (fun n => (tsum_congr fun τ => by rw [zpow_neg, zpow_natCast, inv_pow]).trans
         (hmom (-(n : ℤ))))
       hb0 hw

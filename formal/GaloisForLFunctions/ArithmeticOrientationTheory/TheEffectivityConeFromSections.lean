@@ -76,6 +76,8 @@ and fails on the golden datum, and locate the exact properties of the ring `ℤ`
 open Complex Matrix Finset Set MeasureTheory
 open scoped BigOperators
 open Zeta23 GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+  GaloisForLFunctions.ArithmeticCriticalityTheory
+  GaloisForLFunctions.ArithmeticIncidencePositivity
   GaloisForLFunctions.BezoutValuationIncidence
   GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
   GaloisForLFunctions.ScaleSignedIncidenceCriticality
@@ -272,8 +274,9 @@ theorem sectionEffectivityCone_riemannRoch_iff_hodgeIndex (S : PolarSurface C) :
     rcases hRR x hxx with hmem | hmem
     · rw [mem_sectionEffectivityCone_iff] at hmem
       linarith [hmem.2.2, hxV]
-    · rw [mem_sectionEffectivityCone_iff, map_neg, LinearMap.neg_apply, hxH] at hmem
-      linarith [hmem.2.1]
+    · rw [mem_sectionEffectivityCone_iff] at hmem
+      have hxH' : S.pair (-x) S.H = -2 * δ := by simp [hxH]
+      linarith [hmem.2.1, hxH']
   · intro hHI
     rw [sectionEffectivityCone_eq_positiveCone_of_hodgeIndex hHI]
     exact (S.positiveCone_axioms hHI).1
@@ -301,19 +304,19 @@ theorem sectionEffectivityCone_bezout_iff_hodgeIndex (S : PolarSurface C) :
     have hz₁V : S.pair z₁ S.V = X := by
       simp [z₁, map_add, map_smul, hxV, hA_V]
     have hz₂H : S.pair z₂ S.H = X := by
-      simp [z₂, map_add, map_neg, map_smul, hxH, hA_H]
+      simp [z₂, map_add, map_smul, hxH, hA_H]
     have hz₂V : S.pair z₂ S.V = X := by
-      simp [z₂, map_add, map_neg, map_smul, hxV, hA_V]
+      simp [z₂, map_add, map_smul, hxV, hA_V]
     have hz₁ : S.pair z₁ z₁ = (X + 1) ^ 2 * X + 2 * X ^ 2 := by
       simp only [z₁, X, map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply,
         smul_eq_mul, hxA, hAx, S.pair_ample_ample]
       ring
     have hz₂ : S.pair z₂ z₂ = (X + 1) ^ 2 * X + 2 * X ^ 2 := by
-      simp only [z₂, X, map_add, map_neg, map_smul, LinearMap.add_apply, LinearMap.neg_apply,
+      simp only [z₂, X, map_add, map_smul, LinearMap.add_apply,
         LinearMap.smul_apply, smul_eq_mul, hxA, hAx, S.pair_ample_ample]
       ring
     have hz₁₂ : S.pair z₁ z₂ = -(X ^ 3 + X) := by
-      simp only [z₁, z₂, X, map_add, map_neg, map_smul, LinearMap.add_apply, LinearMap.neg_apply,
+      simp only [z₁, z₂, X, map_add, map_smul, LinearMap.add_apply,
         LinearMap.smul_apply, smul_eq_mul, hxA, hAx, S.pair_ample_ample]
       ring
     have hz₁_mem : z₁ ∈ sectionEffectivityCone S := by
@@ -399,10 +402,10 @@ theorem goldenForwardPlus_mem_sectionEffectivityCone :
     simp [PolarSurface.ample, map_add, S.pair_H_V, S.pair_V_V]
   have hH : S.pair goldenForwardPlus S.H = 1 := by
     rw [goldenForwardPlus_eq]
-    simp [map_add, map_smul, hA_H, hH0]
+    simp [S, map_add, map_smul, hA_H, hH0]
   have hV : S.pair goldenForwardPlus S.V = 1 := by
     rw [goldenForwardPlus_eq]
-    simp [map_add, map_smul, hA_V, hV0]
+    simp [S, map_add, map_smul, hA_V, hV0]
   exact ⟨hpos, by linarith, by linarith⟩
 
 /-- On `goldenDatum.windowSurface {0, 1}`, the cycle `goldenForwardMinus` has `h⁰ = 1`
@@ -420,10 +423,10 @@ theorem goldenForwardMinus_mem_sectionEffectivityCone :
     simp [PolarSurface.ample, map_add, S.pair_H_V, S.pair_V_V]
   have hH : S.pair goldenForwardMinus S.H = 1 := by
     rw [goldenForwardMinus_eq]
-    simp [map_sub, map_smul, hA_H, hH0]
+    simp [S, map_sub, map_smul, hA_H, hH0]
   have hV : S.pair goldenForwardMinus S.V = 1 := by
     rw [goldenForwardMinus_eq]
-    simp [map_sub, map_smul, hA_V, hV0]
+    simp [S, map_sub, map_smul, hA_V, hV0]
   exact ⟨hpos, by linarith, by linarith⟩
 
 /-- **Refutation of the Bézout axiom on the golden datum:** on `goldenDatum.windowSurface {0, 1}`,

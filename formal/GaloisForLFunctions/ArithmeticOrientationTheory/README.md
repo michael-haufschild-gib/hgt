@@ -252,6 +252,31 @@ All unconditional.
    configuration is at most `β` times its prime-sum charge (`frustrationMass_le_primeSumCharge`),
    the charge being `Λ(n)/√n` at the integer `n = e^{p_x + p_y}` (`primeKernel_eq_of_exp_eq`).
 
+### 3.1‴ The frustration index counts prime sums (`TheFrustrationIndexCountsPrimeSums`)
+
+1. **Switching across a cut.** Switching by a sign vector with negative set `S` trades the
+   anti-aligned overlaps across the cut `(S, Sᶜ)` for the aligned ones,
+   `misaligned(s) = misaligned(1) + 2(aligned across S − anti-aligned across S)`, for the count and
+   for the mass. So the index equals the number of positive overlaps iff every cut is dominated by
+   its aligned overlaps (`frustrationIndex_eq_iff_cutDominated`), and sparse frustration is rigid:
+   if the positive overlaps lie on a relation of degree at most `D` with `4D ≤ n`, no switching
+   helps (`cutDominated_of_sparse`).
+2. **The index is the prime-sum count.** With a positive archimedean–polar weight every overlap
+   off a prime sum is strictly aligned, so on a sample whose prime-sum pairs have degree at most a
+   quarter of the sample the frustration index is exactly the number of anti-aligned prime-sum
+   overlaps (`frustrationIndex_oddWeilLedger_of_sparse`).
+3. **It is unbounded in the aperture.** For primes `q ≥ 5` the matched sample
+   `½ log(3q/2), ½ log(2q/3)` has prime sums exactly on the matched pairs, and for small
+   archimedean–polar weight its index is exactly `2|Q|` (`frustrationIndex_matchedPos`); samples in
+   `(0, A]` therefore reach twice the number of primes in `[5, ⅔e^{2A}]`
+   (`exists_frustrationIndex_ge`).
+
+The frustration of the odd ledger is a count of prime sums of the sample: `0` on the lattice and
+on generic samples, `2` on the prime triangle, `2|Q|` on matched samples, and irremovable by
+switching once the prime sums are sparse. What the same-side atoms and the variance must pay
+therefore grows with the prime count at scale `e^{2A}`; the count bounds the ground energy from
+above through the mass, and says nothing yet about whether it is paid.
+
 ### 3.2 The frustration of a tower is rank one (`TheFrustrationOfATowerIsRankOne`)
 
 1. **Tower locality.** `P_q(p^k) = Σ_{i≤k} q(p^i) q(p^{k−i})` (`productCorr_prime_pow`).
@@ -428,28 +453,73 @@ Frobenius reflection defect reading resolves it on every `CurveDatum ι`
 
 ### 3.9 Complete-period quadratic forms are orientation-blind (`CompletePeriodQuadraticFormsAreOrientationBlind`)
 
-The complete-period lag-covariance reading `completePeriodLagReading N c = (finiteHarmonicSum N c, fun h => TwoLagSieve.periodCovariance N c h)` refines all 12 complete-period quadratic forms of the sieve theory (`sieveVariance`, `bezoutCoprimeQuadraticForm`, `sieveSuccessorCovariance`, `sieveSuccessorReserve`, `sievePoincareExcess`, `successorPhaseLoss`, `sievePrimitiveEnergy`, `sieveVarianceAboveParity`, `selbergTotientDiagonalForm`, `franelGcdQuadraticForm`, `tupleVariance N · H`, and `SieveMoments.translatedMoment N · (v : Fin 2 → ℕ)`) (`refines_completePeriodLagReading_*`). Its shadow at `c₁` (`N ≥ 1`) is the exact `(ℤ/2ℤ)^{N-1}` sign-character orbit of `c₁` on `Icc 1 N` (`mem_shadow_completePeriodLagReading_iff_signOrbit`). Consequently, every mean-preserving sign character `ε` (`ε 1 = 1`, `ε(q)² = 1`) — including `evenFlipRow N` and `singleModeSignFlip q₀` (`q₀ ≥ 2`) — is invisible to `completePeriodLagReading N` and to every complete-period quadratic form (`invisible_completePeriodLagReading_scaledSelbergRow`, `invisible_completePeriodLagReading_evenFlipRow`), and for `N ≥ 3` the reading fails to resolve `sieveSeq N c k` at every `k ∈ ℕ`, the sign `0 ≤ vonMangoldtReadout N c`, and the first-cell defect sign `sieveRenormalizedPrefixDefect N 1 c < 0`, witnessed by `primePairPlusWeight N` and `primePairMinusWeight N` (`not_resolves_completePeriodLagReading_sieveSeq`, `not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg`, `not_resolves_completePeriodLagReading_renormalizedPrefixDefect_neg`).
+The reading "complete-period mean and lag covariances" of a divisor row refines every
+complete-period quadratic form of the sieve (variance, Bézout and successor forms, reserve, Poincaré
+excess, primitive energy, Franel form, tuple variances, two-point moments). Its shadow is exactly
+the orbit of the row under the sign characters `Y(q) ↦ ±Y(q)` of the Selberg coordinates with the
+mean fixed (`mem_shadow_completePeriodLagReading_iff_signOrbit`). Every such character — the even
+flip, a single-mode flip — is invisible to it, and for `N ≥ 3` it does not resolve the response at
+any point, the sign of the von Mangoldt readout, or the sign of the first-cell defect: the rows with
+Selberg coordinates `δ₂ ± δ₃` share the reading and differ in all three
+(`not_resolves_completePeriodLagReading_sieveSeq`,
+`not_resolves_completePeriodLagReading_vonMangoldtReadout_nonneg`). Period statistics are the
+model of a reading that sees magnitudes of modes and no orientation.
 
 ### 3.10 The effectivity cone from sections (`TheEffectivityConeFromSections`)
 
-1. **Definition from `h⁰`.** On any polar surface `S : PolarSurface C`, `cycleH0 S x = h0 (cycleObstructionReading S x)` equals `1` when `x` lies in `nefQuadrant S = {x | 0 ≤ x · H ∧ 0 ≤ x · V}` and its polar budget `S.polar x x = 2(x · H)(x · V)` covers its Castelnuovo–Severi defect `S.defect x x` (`0 ≤ x²`), and `0` otherwise (`cycleH0_eq_ite`, `mem_sectionEffectivityCone_iff_defect_le_polar`). Thus `sectionEffectivityCone S = {x | 1 ≤ cycleH0 S x} = S.positiveCone ∩ nefQuadrant S` (`sectionEffectivityCone_eq_positiveCone_inter_nefQuadrant`).
-2. **Exact Bézout, Riemann–Roch, and Hodge-index equivalence.** On *every* polar surface `S`, the Hodge index theorem, the Bézout axiom `S.BezoutAxiom (sectionEffectivityCone S)`, the Riemann–Roch axiom `S.RiemannRochAxiom (sectionEffectivityCone S)`, the ample axiom `S.AmpleAxiom (sectionEffectivityCone S)`, and the full Castelnuovo–Severi package are equivalent (`sectionEffectivityCone_bezout_iff_hodgeIndex`, `sectionEffectivityCone_riemannRoch_iff_hodgeIndex`, `sectionEffectivityCone_ample_iff_hodgeIndex`, `sectionEffectivityCone_tfae`). If a primitive cycle `x` had `X = x² > 0`, the two cycles `z₁ = (X + 1)x + X(H + V)` and `z₂ = −(X + 1)x + X(H + V)` would both have `zᵢ · H = X > 0`, `zᵢ · V = X > 0`, and `zᵢ² = (X + 1)² X + 2X² > 0` (`cycleH0 S zᵢ = 1`), yet collide with `z₁ · z₂ = −(X³ + X) < 0`.
-3. **Curve calibration over `𝔽_q` vs. refutation on `goldenDatum`.** For any curve datum `D : CurveDatum ι`, the Bézout axiom for `sectionEffectivityCone (D.windowSurface W)` across all windows `W` is equivalent to the curve Hodge index, to `∀ i, ‖D.β i‖ = 1`, and to the Hasse–Weil bound (`curve_sectionEffectivityCone_bezout_tfae`, `curve_unitary_sectionEffectivityCone_castelnuovoSeveri`). On `goldenDatum.windowSurface {0, 1}`, both `goldenForwardPlus` and `goldenForwardMinus` belong to `sectionEffectivityCone` (`cycleH0 = 1`, `· H = 1`, `· V = 1`, `e_±² = 10`), yet `goldenForwardPlus · goldenForwardMinus = −6 < 0`, refuting both `BezoutAxiom` and `RiemannRochAxiom` (`goldenDatum_not_bezout_sectionEffectivityCone`).
-4. **The four properties of the ring `ℤ` used by Bézout and section effectivity.**
-   - *Pillar I (Unique factorization + archimedean order):* `Λ(ab) ≠ 0` on distinct integers `a ≠ b ≥ 2` forces `a = p^i, b = p^j` into one prime tower with `p^{|i−j|} < p^{i+j}` (`primeKernel_log_add_le`), making the integer log-lattice odd Weil ledger balanced at every aperture (`ringZ_pillar_one_primeTower_and_lattice_balance`).
-   - *Pillar II (Archimedean collar nonnegativity vs. uncalibrated positivity cones):* on the reflected prime-polar ledger of `ℤ`, `surplusPool` and `crossingPotentialTerm` are nonnegative (`ringZ_pillar_two_archimedean_collar_and_posTestCone`), whereas disjoint nonnegative cycles on `scalingSurface` meet nonnegatively (`DistinctEffectiveCyclesMeetNonnegatively.localPair_nonneg`) and `posTestCone` fails `RiemannRochAxiom` (`posTestCone_not_riemannRoch`).
-   - *Pillar III (Additive two-pole cancellation and prime-2 selectivity vs. linear kernels):* `polarBoxDoF s − primeNodeCount s = chebyshevTwoPoleDefect s = e^s + s − 1 − ψ(e^s)`, which strictly dominates `shiftedPairVonMangoldt a` (`a ≠ 0`) for `s ≥ log 2` (`ringZ_pillar_three_twoPole_selectivity`), whereas right-multiplying a linear reading by diagonal weights of equal support leaves `h0` invariant (`h0_mul_diagonal_eq_of_iff_eq_zero`).
-   - *Pillar IV (Unconditional Castelnuovo–Severi past the first prime `2` of `ℤ` and global width dictionary):* `sectionEffectivityCone` satisfies `AmpleAxiom`, `BezoutAxiom`, and `RiemannRochAxiom` unconditionally on `scalingSubsurface (oddRealTestsAt r)` for `0 < r ≤ 181/500` and on `scalingSubsurface (primitiveSmoothRealTestsAt r)` for `0 < r ≤ (log 2 + 1/50)/2` (`scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le`, `scalingSubsurface_primitiveSmooth_sectionEffectivityCone_castelnuovoSeveri_of_le`), and globally on `scalingSurface` is a unit of the width dictionary (`sectionEffectivityCone_widthDictionary_tfae`).
+1. **The cone.** A cycle has a section (`cycleH0 x = 1`) when it lies in the nef quadrant
+   `x·H ≥ 0, x·V ≥ 0` and its polar budget `2(x·H)(x·V)` covers its defect, i.e. `x² ≥ 0`; so the
+   section effectivity cone is the positive cone intersected with the nef quadrant
+   (`sectionEffectivityCone_eq_positiveCone_inter_nefQuadrant`). Membership reads the sign of the
+   form: this is a calibration device, not an independent effectivity (trap in §5).
+2. **Its axioms are the Hodge index, on every polar surface.** Bézout, Riemann–Roch, ampleness and
+   the full Castelnuovo–Severi package for this cone are each equivalent to the Hodge index
+   (`sectionEffectivityCone_tfae`). The proof of the hard direction is one collision: if a primitive
+   cycle had `X = x² > 0`, then `z_± = ±(X + 1)x + X(H + V)` are both effective, yet
+   `z₊·z₋ = −(X³ + X) < 0`.
+3. **Calibration.** Over `𝔽_q` Bézout for the cone across all windows is the curve Hodge index,
+   unitarity and the Hasse–Weil bound (`curve_sectionEffectivityCone_bezout_tfae`); on the golden
+   datum two effective cycles with `e_±² = 10` meet in `−6`
+   (`goldenDatum_not_bezout_sectionEffectivityCone`).
+4. **What of `ℤ` it touches.** Four facts recur whenever the cone is tested on the scaling surface:
+   unique factorization with the archimedean order (a prime-sum pair of integers lies in one tower,
+   where the difference carries the larger weight, so the lattice ledger is balanced); nonnegativity
+   of the archimedean collar and crossing potential; the two-pole identity
+   `DoF − node count = e^s + s − 1 − ψ(e^s)`, which separates `Λ` from the shifted pair while
+   diagonal reweighting of a rank count does not; and Weil positivity in the proved windows, which
+   gives the cone's axioms on the odd subsurface through `181/500` and on the primitive hyperplane
+   through `½(log 2 + 1/50)` (`scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le`).
+   Globally the cone's Hodge index is one more unit of the width dictionary
+   (`sectionEffectivityCone_widthDictionary_tfae`).
 
 ### 3.11 The index theorem of the receiver (`TheIndexTheoremOfTheReceiver`)
 
-1. **General vanishing law and discrete Euler characteristic.** For any `A : Matrix m n ℂ`, `h0 A = Fintype.card n ↔ A = 0` (`h0_eq_card_iff_eq_zero`), and `discreteEulerChar A = h⁰(A) − h¹(A) = dim − #nodes` (`discreteEulerChar_eq_card_sub`).
-2. **The pole law of the receiver is a count of sections.** For `0 < ε ≤ ½` and a kernel `k` supported on `[1, J]`:
-   - *Order-1 pole (`d^{−ε}`):* `ReceiverBounded (k ⋆ d^{−ε})` holds iff `kernelVec k J ∈ ker (poleJetMatrix J ε 1).mulVecLin`, and iff `h0 (principalPartReadingOne k J ε) = 1` (`receiverBounded_orderOnePole_iff_sections`). For `1 ≤ J`, `poleJetMatrix J ε 1` is surjective with `rank = 1`, `h¹ = 0`, `h⁰ = J − 1`, and section codimension `J − h⁰ = 1` (`poleJetMatrix_one_rank_h1_h0`).
-   - *Order-2 pole (`log d · d^{−ε}`):* `ReceiverBounded (k ⋆ (log d · d^{−ε}))` holds iff `kernelVec k J ∈ ker (poleJetMatrix J ε 2).mulVecLin`, and iff `h0 (principalPartReadingTwo k J ε) = 2` (`receiverBounded_orderTwoPole_iff_sections`). For `2 ≤ J`, `poleJetMatrix J ε 2` is surjective with `rank = 2`, `h¹ = 0`, `h⁰ = J − 2`, section codimension `J − h⁰ = 2` (`poleJetMatrix_two_rank_h1_h0`), and exact section drop `h0 (poleJetMatrix J ε 1) − h0 (poleJetMatrix J ε 2) = 1` (`h0_poleJetMatrix_one_sub_two`), witnessed by `fermiKernel ε` at `J = 2` and `doubleFermiKernel ε` at `J = 3` (`fermi_and_doubleFermi_poleJetSections`).
-3. **The zero-order receiver law is a count of sections.** For `0 < ε ≤ ½`, `t > 0`, and `k ∈ ℕ`, `ReceiverBounded (logPowerCosine ε t k)` holds iff the `(k + 1) × (k + 1)` diagonal jet reading `zetaJetDiagReading ε t (k + 1)` at `ρ = 1 − ε + it` has `h⁰ = k + 1` (`receiverBounded_logPowerCosine_iff_h0_eq`, `receiverBounded_oscillatingSmoothPower_iff_h0_eq`).
-4. **Euler characteristic of the node divisor from the ledger.** On `[0, s]`, `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s = chebyshevTwoPoleDefect s = e^s + s − 1 − ψ(e^s)` (`nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect`, `nodeDivisorEulerChar_below_first_prime`, `nodeDivisorEulerChar_first_prime_window`, `generalizedNodeDivisorEulerChar_shiftedPair_lt`). On `scalingSubsurface (oddRealTestsAt r)`, the reflected prime-polar ledger computes the lag-weighted integral of `nodeDivisorEulerChar` on `(0, 2r]` directly as `surplusPool + crossingPotentialTerm + gaugeRemainder − δ(x, x)` (`nodeDivisorEulerChar_integral_from_ledger`).
-5. **The Master Receiver Index Theorem and Extended Dictionary.** `receiver_index_theorem` and `receiverIndexAndSectionConeDictionary_tfae` unite the pole-order section law, the zero-multiplicity section law, the right-zero Hodge defect (`zeta_hodgeDefect_iff`), the node-divisor Euler characteristic ledger law, and the section effectivity cone `sectionEffectivityCone scalingSurface`.
+1. **Discrete Euler characteristic.** For a reading `A`, `h⁰(A) − h¹(A) = dim − #nodes`, and
+   `h⁰ = dim` iff `A = 0` (`discreteEulerChar_eq_card_sub`, `h0_eq_card_iff_eq_zero`).
+2. **Pole orders are section codimensions.** For `0 < ε ≤ ½` and a kernel supported on `[1, J]`,
+   the receiver of `k ⋆ d^{−ε}` is paid iff the kernel lies in the kernel of the pole-jet reading
+   of order one (the pole value), and the receiver of `k ⋆ (log d · d^{−ε})` iff it lies in the
+   kernel of the order-two reading (pole value and pole slope)
+   (`receiverBounded_orderOnePole_iff_sections`, `receiverBounded_orderTwoPole_iff_sections`). The
+   pole-jet readings are surjective, so `h¹ = 0` and the paid kernels have codimension exactly the
+   pole order; the drop from order one to two is one section, realized by the Fermi kernel and its
+   double (`poleJetMatrix_two_rank_h1_h0`, `fermi_and_doubleFermi_poleJetSections`).
+3. **Zero multiplicities are section counts.** The probe `d^{−ε}cos(t log d)(log d)^k` is paid iff
+   the diagonal jet reading `diag(ζ(ρ), ζ′(ρ), …, ζ^{(k)}(ρ))` at `ρ = 1 − ε + it` has `k + 1`
+   sections, i.e. vanishes (`receiverBounded_logPowerCosine_iff_h0_eq`): the probe theorems of
+   Trans-Horizon Incidence Mechanics in the language of `h⁰`.
+4. **The Euler characteristic of the prime-power node divisor.** On the logarithmic box `[0, s]`
+   degrees of freedom minus nodes is `e^s + s − 1 − ψ(e^s)`, the two-pole Chebyshev defect
+   (`nodeDivisorEulerChar_eq_chebyshevTwoPoleDefect`), smaller for the shifted pair's weighted count
+   (`generalizedNodeDivisorEulerChar_shiftedPair_lt`); on the odd subsurface its lag-weighted
+   integral over `(0, 2r]` is read off the reflected prime-polar ledger
+   (`nodeDivisorEulerChar_integral_from_ledger`). This is the continuous form of the rank–nullity
+   Riemann–Roch of §3.3.
+5. **One statement.** The pole-order law, the zero-multiplicity law, the Hodge defect count of the
+   right zeros and the node Euler characteristic are joined with the section cone in one dictionary
+   (`receiver_index_theorem`, `receiverIndexAndSectionConeDictionary_tfae`). These are exact
+   readings of quantities the corpus already decides; they turn laws into counts, and estimates
+   remain where they were.
 
 ---
 
@@ -492,6 +562,9 @@ The complete-period lag-covariance reading `completePeriodLagReading N c = (fini
 | `δ₁` is a two-sided unit on all of `ℕ`. | Only away from `0`; convolution vanishes at `0`. |
 | The damping flow changes signs. | On residue combinations it scales coefficients by `d^{−η} > 0`; the open question is magnitude, not orientation. |
 | A new unit is progress. | The dictionary is an equivalence; progress is a bound in a unit, with its input class named. |
+| The section effectivity cone is an independent effectivity. | Its membership is `x² ≥ 0` on the nef quadrant, a condition read off the form, so its Bézout and Riemann–Roch axioms are the Hodge index by construction; where it holds unconditionally (the windows through `181/500`, the primitive hyperplane through `½(log 2 + 1/50)`) it is because Weil positivity is proved there. Its value is calibration — Weil's argument over `𝔽_q`, the golden failure — not a new input (compare the tautological and source cones of Arithmetic Castelnuovo–Severi, §3.5). |
+| Frustration is a small-sample phenomenon. | The index of the odd ledger is the prime-sum count on sparse samples and reaches `2|Q|` on matched samples; it grows without bound with the aperture. |
+| A rank count of sections is selective. | Multiplying a reading by a nowhere-vanishing diagonal weight leaves its kernel and `h⁰` unchanged; the shifted pair and `Λ` have the same Dirichlet sampling counts (`h0_weightedDirichletSampling_shiftedPair_eq_vonMangoldt`, Arithmetic Castelnuovo–Severi). Selectivity needs the Frobenius mass, a norm, or the defect `E(s)`. |
 
 **Lean conventions.** Capstones take data only; universal statements over all weights or forms are
 `∀`; no RH-equivalent appears as a hypothesis; analytic inputs (the large-values estimate, the
@@ -516,23 +589,25 @@ first pronic moment identity, the parity pair of the Fermi weight) are proved co
    class is a union of orbits; its units are the kernels with no zero on the Bohr polydisk, they
    preserve the unpaid class as well, and among local factors of any degree they are exactly
    those with all Satake parameters `|α| < √p`.
-7. **Where is the odd Weil ledger frustrated?** Nowhere on the lattice at any aperture, and at
-   the prime triangle between lattice points: frustration is a continuum phenomenon, bounded in
-   mass by the prime-sum charge.
-8. **How is the ratio part oriented?** Coset by coset: it is a sum of one-sided Toeplitz forms
+6. **Where is the odd Weil ledger frustrated, and how much?** Nowhere on the lattice at any
+   aperture, and exactly on the prime sums between lattice points: frustration is a continuum
+   phenomenon, bounded in mass by the prime-sum charge, equal in index to the prime-sum count on
+   sparse samples, and unbounded as the aperture grows.
+7. **How is the ratio part oriented?** Coset by coset: it is a sum of one-sided Toeplitz forms
    over the `p`-free cosets, against one Hankel square on the unit coset.
-9. **Does the section effectivity cone `E = {x : h⁰(x) ≥ 1}` satisfy the Bézout axiom?** Yes if
+8. **Does the section effectivity cone `E = {x : h⁰(x) ≥ 1}` satisfy the Bézout axiom?** Yes if
    and only if the polar surface satisfies the Hodge index (`sectionEffectivityCone_bezout_iff_hodgeIndex`):
    it gives the curve Hodge index over `𝔽_q`, fails on `goldenDatum` (`e_+ · e_− = −6 < 0`), and
-   holds unconditionally past the first prime `2` of `ℤ` by unique factorization / prime-tower
-   balance, Lévy–Khintchine collar positivity, and two-pole Chebyshev cancellation.
-10. **How does the receiver read pole orders, zero multiplicities, and the node-divisor Euler
+   holds on the windows of `ℤ` where Weil positivity is proved, through `181/500` on odd tests.
+   Because its membership reads `x² ≥ 0`, this calibrates the shape of an effectivity; it is not
+   an independent one.
+9. **How does the receiver read pole orders, zero multiplicities, and the node-divisor Euler
     characteristic?** As exact section counts (`J − h⁰(poleJetMatrix J ε r) = r` with `h¹ = 0`,
     `h⁰(principalPartReading) = r`, and `h⁰(zetaJetDiagReading ε t (k+1)) = k + 1`), while the
     continuous Euler characteristic `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s =
     e^s + s − 1 − ψ(e^s)` is computed directly from the reflected prime-polar ledger
     (`nodeDivisorEulerChar_integral_from_ledger`, `receiver_index_theorem`).
-6. **Is RH the same statement in every unit?** Yes: `widthDictionary_tfae`,
+10. **Is RH the same statement in every unit?** Yes: `widthDictionary_tfae`,
    `sectionEffectivityCone_widthDictionary_tfae`, and `receiverIndexAndSectionConeDictionary_tfae`.
 
 ### 6.2 Tools
@@ -566,10 +641,13 @@ To be built (§7): an orientation-faithful norm on damped weights; the aperture-
 ## 7. Open problems and research topics
 
 1. **The frustration of the odd Weil ledger off the lattice.** On the lattice the index is `0`
-   at every aperture (§3.1″) and the prime triangle has index `2` (§3.1′); the mass is bounded by
-   the prime-sum charge. Open: the frustration index and mass of the continuum ledger on dense
-   position sets in `[0, A]` as `A → ∞`, and the relation of `4 ν_w / n` to the ground energy
-   `μ(A)` and the contact aperture `A* ≥ 3/10`.
+   at every aperture (§3.1″), the prime triangle has index `2` (§3.1′), on sparse samples the index
+   is the anti-aligned prime-sum count and matched samples reach `2|Q|` (§3.1‴); the mass is bounded
+   by the prime-sum charge. Open: the index and mass on dense position sets in `[0, A]` as `A → ∞`,
+   where the prime sums are no longer sparse and switching can help; the index at full
+   archimedean weight rather than small weight; and the relation of the mass bound `4 ν_w / n` to
+   the ground energy `μ(A)` and the contact aperture `A* ≥ 3/10`. A count is an upper bound on the
+   ground energy; a floor needs the frustration to be paid.
 2. **Beyond the coset law.** The odd prime side of a tower is `2 Σ_{a'} Toeplitz − Hankel`
    (§3.2″). Open: the class of profiles on which the coset Toeplitz forms dominate the unit-coset
    square once the archimedean odd kernel is added, and the selectivity of that class against the
@@ -589,24 +667,18 @@ To be built (§7): an orientation-faithful norm on damped weights; the aperture-
 7. **The Nyquist bound at the diagonal.** Sharpen the frame bound to `T + O(N)` without the
    logarithm at `1`-separated heights, and read the resulting injectivity threshold against the
    square-root threshold of the aperture.
-8. **The effectivity cone from sections.** Answered by §3.10 (`TheEffectivityConeFromSections`):
-   with `cycleH0 S x = h0 (cycleObstructionReading S x)`, `sectionEffectivityCone S = {x | 1 ≤ cycleH0 S x} =
-   S.positiveCone ∩ nefQuadrant S` satisfies `S.BezoutAxiom (sectionEffectivityCone S) ↔ S.HodgeIndex`
-   and `S.RiemannRochAxiom (sectionEffectivityCone S) ↔ S.HodgeIndex` on every polar surface `S`;
-   it gives the curve Hodge index over `𝔽_q` (`curve_sectionEffectivityCone_bezout_tfae`), fails on
-   `goldenDatum` (`goldenDatum_not_bezout_sectionEffectivityCone`), and uses the four properties of
-   `ℤ` formalized in `ringZ_pillar_one_primeTower_and_lattice_balance`,
-   `ringZ_pillar_two_archimedean_collar_and_posTestCone`, `ringZ_pillar_three_twoPole_selectivity`, and
-   `scalingSubsurface_odd_sectionEffectivityCone_castelnuovoSeveri_of_le`.
-9. **The index theorem of the receiver.** Answered by §3.11 (`TheIndexTheoremOfTheReceiver`):
-   the pole order `r ∈ {1, 2}` read by the receiver is the section codimension
-   `J − h0 (poleJetMatrix J ε r) = r` (with `h¹ = 0`) and equals `h0` on the principal-part reading
-   (`receiverBounded_orderOnePole_iff_sections`, `receiverBounded_orderTwoPole_iff_sections`), the
-   zero multiplicity `k + 1` at `1 − ε + it` is `h0 (zetaJetDiagReading ε t (k + 1)) = k + 1`
-   (`receiverBounded_logPowerCosine_iff_h0_eq`), and the continuous Euler characteristic of the
-   prime-power node divisor `nodeDivisorEulerChar s = polarBoxDoF s − primeNodeCount s =
-   e^s + s − 1 − ψ(e^s)` is computed directly from the reflected prime-polar ledger
-   (`nodeDivisorEulerChar_integral_from_ledger`, `receiver_index_theorem`).
+8. **An effectivity from sections that does not read the form.** The section cone of §3.10 has
+   the right shape — its axioms are exactly the Hodge index, it reproduces Weil over `𝔽_q` and
+   fails on the golden datum — but its sections are defined by the sign of `x²`. Open: a section
+   reading built from source data (node counts on the logarithmic box, the defect `E(s)`, the
+   Frobenius mass) whose cone has the same calibration and whose Bézout axiom is proved without
+   that sign.
+9. **An index formula for the actual receiver.** The receiver's pole orders and zero
+   multiplicities are section counts of explicit jet readings (§3.11), and the node divisor has
+   Euler characteristic `e^s + s − 1 − ψ(e^s)`. These turn laws the corpus already proves into
+   counts. Open: the Möbius receiver itself as a count — a formula for its class in terms of
+   arithmetic sections, the index theorem asked for by Trans-Horizon Incidence Mechanics (its
+   research topic 5).
 10. **The trichotomy of readings.** Prove that every orientation-faithful reading of the critical
     form crosses the Nyquist aperture, reads a magnitude, or adds data of a third kind (mass,
     dilution), and compute the precision cost of each branch. This is the Scale-Signed Incidence
@@ -659,7 +731,11 @@ beyond the diagonal that is selective, or a faithful reading that is also an est
 at the diagonal, a statement strictly stronger than the mean value theorem that passes the golden
 and shifted-pair tests: if the only sections it finds are those the large sieve already counts.
 The risk is that "section" turns out to relabel "Dirichlet polynomial on a window". Then the
-contribution of the field is its dictionary and its battery, not a mechanism.
+contribution of the field is its dictionary and its battery, not a mechanism. Part of the risk is
+already a theorem: rank-based counts are invariant under diagonal reweighting, so they cannot tell
+`Λ` from the shifted pair (Arithmetic Castelnuovo–Severi, item 33). A surviving section count must
+be coupled to the Frobenius mass or to the defect `E(s) = e^s + s − 1 − ψ(e^s)`, the exact
+"degrees of freedom minus node count" of the logarithmic box.
 
 ---
 
@@ -682,6 +758,8 @@ contribution of the field is its dictionary and its battery, not a mechanism.
   signed Dirichlet form, ground energy, the odd Weil ledger.
 - `TheFrustrationIndexOfThePrimeTriangle` — mirror pairs, three-point bound, the prime triangle.
 - `TheLatticeOddLedgerIsBalanced` — tower comparison, balance on the lattice, the prime-sum charge.
+- `TheFrustrationIndexCountsPrimeSums` — switching across cuts, cut dominance, the index as the
+  prime-sum count, matched samples.
 - `TheFrustrationOfATowerIsRankOne` — lattice correlations, tower locality, the rank-one law,
   the odd prime side.
 - `PrimePowerSumsRegroupByTowers` — regrouping by least prime factor; the global product part.
