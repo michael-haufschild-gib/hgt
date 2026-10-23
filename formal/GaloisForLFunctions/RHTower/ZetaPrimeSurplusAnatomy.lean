@@ -494,5 +494,75 @@ theorem primeSurplus_eq_fourier_add_rem {cϱ : ℝ} {p : Setting} {F : LocalFun}
   rw [ppOffDiag_eq_cos_add_sin hT hF.Phi_contDiff.continuous hF.Phi_even]
   ring
 
+/-- **At bandwidth `4/3`, the cosine-moment replacement error `ppOffDiagCos − ppOffDiagFourier` is
+`O(T^{−2/3} log T)` unconditionally** — it vanishes in the limit `T → ∞` even before dividing by
+the normalisation `(aL)² T ℓ₁ / 2π`. -/
+theorem exists_abs_ppOffDiagCos_sub_fourier_params43_le :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ᶠ T in atTop,
+      |ppOffDiagCos (params43.PhiR T) T (params43.X T)
+          - ppOffDiagFourier (params43.g T) T (params43.X T)|
+        ≤ K * (Real.log T / T ^ (2 / 3 : ℝ)) := by
+  have hP := paramsValidFam_params43
+  obtain ⟨TL, hTL⟩ := localHypsCoreW_eventually_fam hP
+  obtain ⟨C, hC0, hMV⟩ := paperInputs_zeta.MV
+  obtain ⟨C₁, hC₁⟩ := paperInputs_zeta.cheb.cheb1d
+  set C₁' : ℝ := max C₁ 0
+  have hC₁'0 : 0 ≤ C₁' := le_max_right _ _
+  set B₂ : ℝ := 8 + 2 * (params43.crho / params43.w) ^ 2
+  have hB₂0 : 0 ≤ B₂ := by positivity
+  refine ⟨16 / 3 * C * B₂ * C₁', by positivity, ?_⟩
+  filter_upwards [eventually_ge_atTop TL, eventually_ge_atTop 1, eventually_l_bounds]
+    with T hTL' hT1 ⟨hlog1, hl1, hlo, hhi⟩
+  have hF := hTL T hTL'
+  set l := Zeta23.l T
+  set L := params43.L T
+  set X := params43.X T
+  have hLl : L = 4 / 3 * l := rfl
+  have hXL : X = Real.exp L := rfl
+  have hT0 : 0 < T := by linarith
+  have hX2 : 2 ≤ X := by
+    rw [hXL]
+    have h1 : l + 1 ≤ Real.exp l := Real.add_one_le_exp l
+    have h2 : Real.exp l ≤ Real.exp L := Real.exp_le_exp.mpr (by rw [hLl]; linarith)
+    linarith
+  have hlogX : Real.log X ≤ 4 / 3 * Real.log T := by
+    rw [hXL, Real.log_exp, hLl]
+    linarith
+  have hlogX0 : 0 ≤ Real.log X := by
+    rw [hXL, Real.log_exp, hLl]
+    linarith
+  have hXT : X ≤ T ^ (4 / 3 : ℝ) := exp_lam_l_le (lam := 4 / 3) (by norm_num) hT0 hhi
+  have hcheb : ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 ≤ C₁' * (T ^ (4 / 3 : ℝ) * (4 / 3 * Real.log T)) := by
+    have hc0 : 0 ≤ ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+    have hc1 : ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 ≤ C₁ * X * Real.log X := hC₁ X hX2
+    have hc2 : C₁ * X * Real.log X ≤ C₁' * (X * Real.log X) := by
+      rw [mul_assoc]
+      exact mul_le_mul_of_nonneg_right (le_max_left _ _) (by positivity)
+    have hc3 : X * Real.log X ≤ T ^ (4 / 3 : ℝ) * (4 / 3 * Real.log T) :=
+      mul_le_mul hXT hlogX hlogX0 (Real.rpow_nonneg hT0.le _)
+    exact (hc1.trans hc2).trans (mul_le_mul_of_nonneg_left hc3 hC₁'0)
+  have hmom : ∫ x, params43.PhiR T x ^ 2 * x ^ 2 ≤ B₂ := hF.integral_Phi_sq_mul_sq_le
+  have hmain := abs_ppOffDiagCos_sub_fourier_le hMV hC0.le hF hT0
+  have hTpow : T ^ (2 : ℝ) = T ^ (4 / 3 : ℝ) * T ^ (2 / 3 : ℝ) := by
+    rw [← Real.rpow_add hT0]; norm_num
+  have hTsq : (T : ℝ) ^ 2 = T ^ (4 / 3 : ℝ) * T ^ (2 / 3 : ℝ) := by
+    rw [← hTpow, show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have hT43 : 0 < T ^ (4 / 3 : ℝ) := Real.rpow_pos_of_pos hT0 _
+  have hT23 : 0 < T ^ (2 / 3 : ℝ) := Real.rpow_pos_of_pos hT0 _
+  calc |ppOffDiagCos (params43.PhiR T) T X - ppOffDiagFourier (params43.g T) T X|
+      ≤ 4 * C * ((∫ x, params43.PhiR T x ^ 2 * x ^ 2) / T ^ 2)
+          * ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 := hmain
+    _ ≤ 4 * C * (B₂ / T ^ 2) * (C₁' * (T ^ (4 / 3 : ℝ) * (4 / 3 * Real.log T))) := by
+        have h1 : (∫ x, params43.PhiR T x ^ 2 * x ^ 2) / T ^ 2 ≤ B₂ / T ^ 2 :=
+          div_le_div_of_nonneg_right hmom (by positivity)
+        have h2 : 0 ≤ ∑ n ∈ primeRange X, (Λ n : ℝ) ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
+        have h3 : 0 ≤ 4 * C * ((∫ x, params43.PhiR T x ^ 2 * x ^ 2) / T ^ 2) :=
+          mul_nonneg (by positivity) (div_nonneg (integral_nonneg fun _ => by positivity) (by positivity))
+        exact mul_le_mul (mul_le_mul_of_nonneg_left h1 (by positivity)) hcheb h2 (by positivity)
+    _ = 16 / 3 * C * B₂ * C₁' * (Real.log T / T ^ (2 / 3 : ℝ)) := by
+        rw [hTsq]
+        field_simp
+        ring
+
 end RHTower
 

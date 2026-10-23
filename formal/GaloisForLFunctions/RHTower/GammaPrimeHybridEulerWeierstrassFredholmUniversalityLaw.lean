@@ -226,7 +226,6 @@ theorem gammaPrimeHybridOperator_isSelfAdjoint
 def gammaPrimeHybridPrimeTrace (sigma : ℝ) : ℂ :=
   ∑' p : Nat.Primes, ((p : ℕ) : ℂ) ^ (-(sigma : ℂ))
 
-set_option maxHeartbeats 800000 in
 /-- The hybrid determinant is the reciprocal Gamma factor times reciprocal zeta times the
 exponential prime-trace correction. -/
 theorem fredholmDet_gammaPrimeHybridKernel_eq_gamma_mul_zeta_mul_primeTrace

@@ -1284,7 +1284,7 @@ theorem abs_crossCorrelation_le_half_add_half_deriv_sq {F : ℝ → ℝ}
     hdcs.comp_homeomorph (Homeomorph.addRight s)
   have hI1 : Integrable fun x => |F x * deriv F (x + s)| := by
     simpa only [Real.norm_eq_abs] using
-      (hFcont.mul hd_shift_cont).norm.integrable_of_hasCompactSupport hFc.mul_right.norm
+      ((hFcont.mul hd_shift_cont).integrable_of_hasCompactSupport hFc.mul_right).norm
   have hF2 : Integrable fun x => F x ^ 2 :=
     (hFcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
   have hd2s : Integrable fun x => deriv F (x + s) ^ 2 :=
@@ -1362,8 +1362,8 @@ theorem abs_reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev {F 
       |chebyshevTwoPoleDefect s| *
         |2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2)|)
       (Ioc 0 (2 * r)) := by
-    refine hint_deriv.norm.congr_fun (fun s _ => ?_) measurableSet_Ioc
-    rw [Real.norm_eq_abs, deriv_lagTestWeight hF hFc s, abs_mul]
+    refine IntegrableOn.congr_fun hint_deriv.norm (fun s _ => ?_) measurableSet_Ioc
+    simp only [Real.norm_eq_abs, deriv_lagTestWeight hF hFc s, abs_mul]
   have hint_bound : IntegrableOn (fun s =>
       (2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) *
         ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
@@ -1444,6 +1444,7 @@ theorem reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc {F : ℝ → ℝ} {r 
       (Ioc (0 : ℝ) (2 * r)) := by
     refine ((hcont_ramp.integrableOn_Icc (a := 0) (b := 2 * r)).mono_set
       Ioc_subset_Icc_self).congr_fun (fun s hs => ?_) measurableSet_Ioc
+    simp only
     rw [polarRamp_sub_rampSum hs.1.le ((Real.exp_le_exp.mpr hs.2).trans hN)]
   have hzero : ∀ s ∈ Ioi (2 * r),
       -(criticalScalePrefix s + s ^ 2 / 2 - s) * deriv (deriv (lagTestWeight F)) s = 0 :=
@@ -1504,6 +1505,7 @@ theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix {S : ℝ} (hS : 0 < S) 
       (continuous_polarRamp.sub hcr).abs)
   refine ((hcont.integrableOn_Icc (a := 0) (b := S)).mono_set
     Ioc_subset_Icc_self).congr_fun (fun s hs => ?_) measurableSet_Ioc
+  simp only
   rw [polarRamp_sub_rampSum hs.1.le ((Real.exp_le_exp.mpr hs.2).trans hN)]
 
 /-- **Second-order signed prime–pole cancellation bound across all odd `C²_c` tests.** For every odd
@@ -1593,7 +1595,6 @@ theorem relevantShifts_twentyThreeFortieths :
   constructor
   · rintro ⟨hn2, hlog⟩
     by_contra hne
-    push_neg at hne
     have hn4 : 4 ≤ n := by omega
     have hlog4 : Real.log 4 ≤ Real.log n :=
       Real.log_le_log (by norm_num) (by exact_mod_cast hn4)
