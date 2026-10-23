@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 3 / 250.**
+**Accepted: 4 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -48,12 +48,21 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    `Re Σ_{p≡a}p^{-s} = φ(q)^{-1}log(1/|s−1|) + O(1)` near `s = 1` by the mean value theorem on
    Mathlib's residue-class L-function, Euler lower bound for `±1` patterns, and the generic criterion
    `not_receiverBounded_of_sq_norm_dirichletSeries_ge`). So a paid residue-class flip has `ρ > 1/4`.
+4. THIM §5 "the `1/4` law", sufficiency for genuine non-character `±1` patterns: for a subgroup
+   `H ≤ (ZMod q)ˣ` with `2|H| ≤ φ(q)`, the pattern `f_H` flipping every prime `p ∤ q` with
+   `p mod q ∉ H` gives a paid `f_H(d)d^{-1/2}` (`receiverBounded_subgroupFlip_half`); for index
+   `≥ 3` the receiver of `f_H(d)d^{-ε}` is paid **iff** `ε ≥ 1/2` (`receiverBounded_subgroupFlip_iff`).
+   Mechanism: orthogonality `[b ∈ H] = φ^{-1}Σ_χ c_χ χ(b)` with `c_χ ∈ {0, |H|}` puts `ζ` at exponent
+   `2/k − 1 ∈ [−1, 0]` and every `L(·, χ)` at a nonnegative exponent, so only `1/|ζ|` and upper
+   bounds for `|L|` are needed — no zero-free region for `L`.
+   `TransHorizonIncidenceMechanics/SubgroupFlipsArePaidAtHalfDamping.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — `SubgroupFlipsArePaidAtHalfDamping` compiled, axioms clean, wired; contribution 4.
 - 2026-10-23 — `TheQuarterBoundaryOfResidueClassFlips` compiled, clean, wired (extends 3).
 - 2026-10-23 — `ThePhaseDiagramOfTheConstantSignPattern` compiled, clean, wired (extends 2).
 - 2026-10-23 — `ResidueClassFlipsAndThePrimeDensityLaws` compiled, axioms clean, wired; contribution 3.

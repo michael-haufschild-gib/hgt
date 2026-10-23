@@ -1,9 +1,9 @@
 # Can ordinary Möbius window bounds control a balanced product pullback?
 
 - **ID:** goldbach-balanced-product-smoothing
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; transfer audit for the actual signed estimate
-- **Parent:** [Goldbach target](goldbach-unconditional-2026-10-23.md), Cycle 11
+- **Stage:** 5-failed
+- **Type:** FALSE transfer candidate; exact positive survivor formalized
+- **Parent:** [Goldbach target](../1-in-progress/goldbach-unconditional-2026-10-23.md), Cycle 11
 - **Source:** BVI's actual-row short-window mean-square mechanism
 
 ## Exact candidate before proof
@@ -42,10 +42,11 @@ one-dimensional progression of cofactor solutions. At h=0 the common
 divisor g is unrestricted. Thus the diagonal may exceed every averaged
 nonzero-shift contribution by a logarithmic factor.
 
-The proposed positive survivor is an explicit nonzero-determinant count,
-together with the exact smoothing-energy accounting. Establish its
-constants and scope before formalization. A generic Cauchy bound or an
-assumed short-interval estimate will not be used as its proof.
+The nonzero-determinant count is pursued in the separate
+[compensated collision audit](../1-in-progress/goldbach-compensated-product-collision-cost.md).
+The positive survivor formalized in this cycle is the complete residue
+profile and exact smoothing-energy accounting below. No short-interval
+estimate is supplied as a premise.
 
 ## Status
 
@@ -103,9 +104,12 @@ identifies every rational mode erased by the proposed transfer, not
 only parity. The sharp orthogonal projection onto residue-constant
 vectors gives its unavoidable error and the exact surviving residual.
 
-Paper derivation recorded; exact Lean dependencies and the general-modulus
-certificate are in progress. No route is retired before this positive
-survivor is formalized. No signed estimate or scientific novelty claim.
+The exact gcd Fourier reconstruction, local energy and its vanishing
+classification, actual balanced product masses, smoothing energy and signed
+pairing are now formalized in
+[ProductResidueProfile.lean](../../../../formal/GaloisForLFunctions/goldbach/ProductResidueProfile.lean).
+The totient/Ramanujan expressions above remain paper corollaries of the
+certified gcd spectrum. No signed estimate or scientific novelty claim.
 The original all-even target is unchanged.
 
 ## Exact projection accounting
@@ -166,3 +170,23 @@ Taking L=4qk²+h+1 ensures `qL>4X²+H`. All shifted products lie between
 exactly the translate by H of the ordinary integer smoothing difference.
 This model keeps every actual product multiplicity; no residue-mass
 assumption is supplied as a premise.
+
+## No-go closure
+
+- **Killing mechanism:** complete-period smoothing erases nonzero periodic
+  multiplication modes. The checked finite square-root-window family has
+  squared error at least `(E_2/34)X²`, with E_2 proved positive.
+- **Strongest positive survivor:** full gcd Fourier reconstruction and
+  centered energy; exact realization by the balanced integer products;
+  sharp orthogonal projection energy and the surviving signed covariance.
+- **New insight:** periodic bias must be retained as a signed mean pairing.
+  Removing it leaves a specific covariance, not an automatic smoothing
+  estimate. The follow-up collision audit attacks that attempted repair.
+- **Status:** dependency-closed paper proof and exact finite Lean theorems
+  recorded on the [formalized survivor card](../3-formalized/not_new_scientific_knowledge/goldbach-product-residue-profile.md).
+  Leaf compilation and eleven closure audits passed without warnings.
+  Only standard Lean foundations occur. The ordinary infinite ℓ² notation
+  and asymptotic contradiction are paper corollaries of the finite theorem.
+
+No external novelty claim or web novelty audit; this is elementary arithmetic
+salvage within the requested RH-to-Goldbach transfer audit.

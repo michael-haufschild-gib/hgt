@@ -86,6 +86,44 @@ Do not count an equivalent reformulation as a solution or new knowledge.
 
 ## Current audit and continuation
 
+- Current certified removal of damping:
+  [cofactor rectangles](../3-formalized/twin-prime-cofactor-damping-removal.md).
+  On every selected subset of `[2,X]`, `ZW<=X` and the explicit
+  clock `epsilon=(1+log(X+2))^-6` give normalized error at most
+  `6/(1+log(X+2))`. The same clock approximates the actual
+  projected prime-pair average with error at most
+  `8/(1+log(X+2))^3`. All five new capstones passed the leaf
+  check and standard-axiom audits; no analytic premise was added.
+- Verification of this batch: corpus indexes regenerated; the
+  principal damping-removal capstone is returned by lexical
+  search. All eight owned source/card files passed whitespace,
+  relative-link and applicable forbidden-proof-directive checks.
+  The existing umbrella import is intact; no umbrella was built.
+  Audit directives and all 28 owned search/PDF scratch files were
+  removed. Unchanged earlier Lean checks were not repeated.
+- Current analytic deduction:
+  [coupled-residue centering](../2-fully-proven/twin-prime-coupled-residue-centering.md).
+  Keeping the shift-dependent congruence inside one Fourier
+  expansion avoids a modulus loss. A paid square-divisor
+  truncation extends the argument to Möbius against any
+  unit-bounded second row. This is a paper deduction from the
+  checked short exponential-sum theorem; it is not Lean-certified.
+- Further completed paper deduction:
+  [uniform Ramaré cofactor](../2-fully-proven/twin-prime-ramare-weighted-cofactor-cancellation.md).
+  A positive smooth-divisor convolution transfers the existing
+  signed Möbius prefix rate to `mu(n)/(omega_P(n)+1)`, uniformly
+  for designated primes below `exp((log X)^beta)`, every fixed
+  `beta<1`, and Mellin frequencies up to every fixed `X^kappa`,
+  `kappa<1`. The tail moment is proved by a finite Euler product;
+  no unproved distribution input enters the paper deduction.
+  Lean certification and the additive-window assembly remain open.
+- Precise remaining uniformity question:
+  [fixed determinant, growing coefficients](twin-prime-fixed-determinant-uniformity.md).
+  Canonical reduced intercepts put the actual cofactor faces on
+  intervals starting at zero. Fixed determinant four does not
+  remove the growing progression modulus. The estimate still
+  needed is relative to the actual affine sample count; a
+  full-interval normalized rough-shift bound does not provide it.
 - Current analytic result:
   [balanced CRT compensation](../2-fully-proven/twin-prime-balanced-crt-compensation.md)
   has a complete paper bound `O(Y^(2-1/400))` for `Y^2<=X<=4Y^2`,
@@ -329,3 +367,21 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   literature, source-specific saving, lower prime-pair mass, or
   infinitude theorem is claimed. No difficulty was replaced by
   an unproved Lean premise. Main completion gates stay unchecked.
+- 2026-10-23 — Certified uniform cofactor damping removal and
+  compatibility with the prime-pair observable: five new capstones,
+  standard foundational axioms only. Audited the fixed-form
+  two-point proof's coefficient dependence and derived a uniform
+  coupled-residue rough-shift estimate, including its Möbius
+  version, on paper. This removes a centering loss but not the
+  fixed-shift arithmetic core. No scientific novelty or infinitude
+  claimed. Further work must establish the missing relative
+  progression or aggregate cofactor saving, rather than add
+  another equivalent detector or an assumed analytic interface.
+- 2026-10-23 — Completed the uniform Ramaré-weight paper bound
+  after checking the actual corpus coefficient. Existing damped
+  contour theorems retain a prime-set correction; the new
+  convolution argument pays a positive smooth tail separately.
+  This is a classical-method bridge, not new number-theoretic
+  knowledge or a fixed-shift prime-pair estimate. Next formal
+  target is this exact uniform bound, without a premise asserting
+  its arithmetic input. No requested infinitude gate is complete.

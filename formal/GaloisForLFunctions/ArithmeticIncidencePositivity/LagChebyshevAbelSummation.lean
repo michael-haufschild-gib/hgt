@@ -12458,6 +12458,278 @@ theorem prime_eulerRaw_le (hF : Continuous F) (hFc : HasCompactSupport F) (ns : 
   have h := eulerRaw_le hF hFc (primeEulerList ns) hadm
   rwa [eulerRaw_primeEulerList] at h
 
+/-! ### The spectral form of the lag ledger
+
+The Gram kernel of a test is the cosine transform of the nonnegative spectral density `|F̂|²`:
+the density is integrable because a `C¹` compactly supported test has `|F̂(ξ)| = O(1/|ξ|)`, so its
+square is `O(1/ξ²)`.  Every weighted lag charge is therefore the pairing of the family's **symbol**
+`S(ξ) = Σ_j w_j cos(2π a_j ξ)` against that density, and the charge per unit mass is bounded by the
+supremum of the symbol.  This is the exact form of the resonance phenomenon: a test concentrates its
+density where the symbol is largest, and no test does better. -/
+
+open FourierTransform in
+/-- The spectral density of a test: the squared modulus of its Fourier transform. -/
+noncomputable def spectralDensity (F : ℝ → ℝ) (ξ : ℝ) : ℝ :=
+  ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ ^ 2
+
+open FourierTransform Complex in
+theorem norm_fourier_le (f : ℝ → ℂ) (ξ : ℝ) : ‖𝓕 f ξ‖ ≤ ∫ x : ℝ, ‖f x‖ := by
+  rw [Real.fourier_real_eq_integral_exp_smul]
+  refine (norm_integral_le_integral_norm _).trans_eq ?_
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show ‖cexp (((-2 * Real.pi * x * ξ : ℝ) : ℂ) * I) • f x‖ = ‖f x‖
+  rw [norm_smul, Complex.norm_exp_ofReal_mul_I, one_mul]
+
+open FourierTransform Complex in
+theorem continuous_spectralDensity (hF : Continuous F) (hFc : HasCompactSupport F) :
+    Continuous (spectralDensity F) :=
+  ((VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar (by fun_prop)
+    ((Complex.continuous_ofReal.comp hF).integrable_of_hasCompactSupport
+      (hFc.comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp)))).norm.pow 2)
+
+open FourierTransform Complex in
+theorem integrable_spectralDensity (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) :
+    Integrable (spectralDensity F) := by
+  have hFcc : Continuous (fun x => ((F x : ℝ) : ℂ)) :=
+    Complex.continuous_ofReal.comp hF.continuous
+  have hFccs : HasCompactSupport (fun x => ((F x : ℝ) : ℂ)) :=
+    hFc.comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp)
+  have hFci : Integrable (fun x => ((F x : ℝ) : ℂ)) :=
+    hFcc.integrable_of_hasCompactSupport hFccs
+  have hdc : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  have hderiv : deriv (fun x => ((F x : ℝ) : ℂ)) = fun x => ((deriv F x : ℝ) : ℂ) := by
+    funext x
+    have h : HasDerivAt F (deriv F x) x := (hF.differentiable (by norm_num) x).hasDerivAt
+    exact h.ofReal_comp.deriv
+  have hdFci : Integrable (deriv (fun x => ((F x : ℝ) : ℂ))) := by
+    rw [hderiv]
+    exact (Complex.continuous_ofReal.comp hdc).integrable_of_hasCompactSupport
+      ((hFc.deriv).comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp))
+  have hdiff : Differentiable ℝ (fun x => ((F x : ℝ) : ℂ)) := by
+    intro x
+    have h : HasDerivAt F (deriv F x) x := (hF.differentiable (by norm_num) x).hasDerivAt
+    exact h.ofReal_comp.differentiableAt
+  obtain ⟨B0, hB0⟩ : ∃ B0 : ℝ, B0 = ∫ x : ℝ, ‖((F x : ℝ) : ℂ)‖ := ⟨_, rfl⟩
+  obtain ⟨B1, hB1⟩ : ∃ B1 : ℝ, B1 = ∫ x : ℝ, ‖deriv (fun y => ((F y : ℝ) : ℂ)) x‖ := ⟨_, rfl⟩
+  have hB0nn : 0 ≤ B0 := hB0 ▸ integral_nonneg fun x => norm_nonneg _
+  have hB1nn : 0 ≤ B1 := hB1 ▸ integral_nonneg fun x => norm_nonneg _
+  have hsmall : ∀ ξ, spectralDensity F ξ ≤ B0 ^ 2 := by
+    intro ξ
+    have h := norm_fourier_le (fun x => ((F x : ℝ) : ℂ)) ξ
+    rw [← hB0] at h
+    have h0 : 0 ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ := norm_nonneg _
+    rw [spectralDensity]
+    nlinarith
+  have hbig : ∀ ξ : ℝ, ξ ≠ 0 → spectralDensity F ξ ≤ B1 ^ 2 / (4 * Real.pi ^ 2 * ξ ^ 2) := by
+    intro ξ hξ
+    have hfd : 𝓕 (deriv (fun x => ((F x : ℝ) : ℂ))) ξ
+        = (2 * Real.pi * I * ξ) • 𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ := by
+      rw [Real.fourier_deriv hFci hdiff hdFci]
+    have hnorm : 2 * Real.pi * |ξ| * ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ ≤ B1 := by
+      have h := norm_fourier_le (deriv (fun x => ((F x : ℝ) : ℂ))) ξ
+      rw [← hB1] at h
+      rw [hfd, norm_smul] at h
+      have : ‖(2 * Real.pi * I * (ξ : ℂ))‖ = 2 * Real.pi * |ξ| := by
+        simp [abs_of_nonneg Real.pi_pos.le]
+      rwa [this] at h
+    have hξ0 : 0 < |ξ| := abs_pos.mpr hξ
+    have hpi : 0 < Real.pi := Real.pi_pos
+    have h0 : 0 ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ := norm_nonneg _
+    rw [spectralDensity, le_div_iff₀ (by positivity)]
+    have hsq : (ξ : ℝ) ^ 2 = |ξ| ^ 2 := (sq_abs ξ).symm
+    set X := ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ with hX
+    have hsquared : (2 * Real.pi * |ξ| * X) * (2 * Real.pi * |ξ| * X) ≤ B1 * B1 :=
+      mul_self_le_mul_self (by positivity) hnorm
+    have hexpand : (2 * Real.pi * |ξ| * X) * (2 * Real.pi * |ξ| * X) = X ^ 2 * (4 * Real.pi ^ 2 * ξ ^ 2) := by
+      rw [hsq]; ring
+    have hB1sq : B1 * B1 = B1 ^ 2 := (sq B1).symm
+    linarith [hsquared, hexpand, hB1sq]
+  refine Integrable.mono' (g := fun ξ : ℝ => (2 * B0 ^ 2 + B1 ^ 2 / (2 * Real.pi ^ 2)) * (1 + ξ ^ 2)⁻¹)
+    (integrable_inv_one_add_sq.const_mul _)
+    (((VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar (by fun_prop)
+      hFci).norm.pow 2).aestronglyMeasurable) ?_
+  refine Filter.Eventually.of_forall fun ξ => ?_
+  rw [Real.norm_eq_abs, abs_of_nonneg (by rw [spectralDensity]; positivity :
+    (0:ℝ) ≤ spectralDensity F ξ)]
+  rcases le_or_gt |ξ| 1 with hle | hgt
+  · have h1 : (1 : ℝ) + ξ ^ 2 ≤ 2 := by nlinarith [sq_abs ξ, abs_nonneg ξ]
+    have h2 : (1:ℝ)/2 ≤ (1 + ξ ^ 2)⁻¹ := by
+      rw [le_inv_comm₀ (by norm_num) (by positivity)]
+      linarith
+    have hpi : 0 < Real.pi := Real.pi_pos
+    have hc : 0 ≤ 2 * B0 ^ 2 + B1 ^ 2 / (2 * Real.pi ^ 2) := by positivity
+    have hstep : (2 * B0 ^ 2 + B1 ^ 2 / (2 * Real.pi ^ 2)) * (1 / 2)
+        ≤ (2 * B0 ^ 2 + B1 ^ 2 / (2 * Real.pi ^ 2)) * (1 + ξ ^ 2)⁻¹ :=
+      mul_le_mul_of_nonneg_left h2 hc
+    have hb1 : 0 ≤ B1 ^ 2 / (2 * Real.pi ^ 2) := by positivity
+    linarith [hsmall ξ, hstep, hb1]
+  · have hξ : ξ ≠ 0 := by
+      intro h
+      rw [h, abs_zero] at hgt
+      linarith
+    have hpi : 0 < Real.pi := Real.pi_pos
+    have hsq1 : (1:ℝ) ≤ ξ ^ 2 := by nlinarith [sq_abs ξ]
+    have hinv : (1 + ξ ^ 2)⁻¹ ≥ 1 / (2 * ξ ^ 2) := by
+      rw [ge_iff_le, div_le_iff₀ (by positivity), inv_mul_eq_div, le_div_iff₀ (by positivity)]
+      nlinarith
+    have hinvnn : 0 ≤ (1 + ξ ^ 2)⁻¹ := by positivity
+    have hsd := hbig ξ hξ
+    have hstep1 : B1 ^ 2 / (2 * Real.pi ^ 2) * (1 / (2 * ξ ^ 2))
+        ≤ B1 ^ 2 / (2 * Real.pi ^ 2) * (1 + ξ ^ 2)⁻¹ :=
+      mul_le_mul_of_nonneg_left hinv (by positivity)
+    have hval : B1 ^ 2 / (2 * Real.pi ^ 2) * (1 / (2 * ξ ^ 2)) = B1 ^ 2 / (4 * Real.pi ^ 2 * ξ ^ 2) := by
+      field_simp
+      ring
+    rw [hval] at hstep1
+    have hstep2 : B1 ^ 2 / (2 * Real.pi ^ 2) * (1 + ξ ^ 2)⁻¹
+        ≤ (2 * B0 ^ 2 + B1 ^ 2 / (2 * Real.pi ^ 2)) * (1 + ξ ^ 2)⁻¹ := by
+      have hb0 : 0 ≤ 2 * B0 ^ 2 := by positivity
+      nlinarith [hinvnn]
+    linarith [hsd, hstep1, hstep2]
+
+/-- The autocorrelation of a compactly supported test has compact support. -/
+theorem hasCompactSupport_autoCorrelation' (hF : Continuous F) (hFc : HasCompactSupport F) :
+    HasCompactSupport (autoCorrelation F) := by
+  obtain ⟨r, hr⟩ := exists_radius_of_hasCompactSupport hFc
+  refine hasCompactSupport_autoCorrelation hF (r := max r 1)
+    (lt_of_lt_of_le one_pos (le_max_right r 1)) fun y hy => hr y ?_
+  exact lt_of_le_of_lt (le_max_left r 1) hy
+
+open FourierTransform Complex in
+theorem autoCorrelation_eq_integral_spectral (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (t : ℝ) :
+    autoCorrelation F t = ∫ ξ : ℝ, Real.cos (2 * Real.pi * t * ξ) * spectralDensity F ξ := by
+  have hAc : Continuous (fun t => ((autoCorrelation F t : ℝ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (contDiff_one_autoCorrelation hF hFc).continuous
+  have hAcs : HasCompactSupport (fun t => ((autoCorrelation F t : ℝ) : ℂ)) :=
+    (hasCompactSupport_autoCorrelation' hF.continuous hFc).comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp)
+  have hAi : Integrable (fun t => ((autoCorrelation F t : ℝ) : ℂ)) :=
+    hAc.integrable_of_hasCompactSupport hAcs
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hFA : 𝓕 (fun t => ((autoCorrelation F t : ℝ) : ℂ))
+      = fun ξ => ((spectralDensity F ξ : ℝ) : ℂ) := by
+    funext ξ
+    exact fourier_ofReal_autoCorrelation_sq hF.continuous hFc ξ
+  have hFAi : Integrable (𝓕 (fun t => ((autoCorrelation F t : ℝ) : ℂ))) := by
+    rw [hFA]
+    exact hgi.ofReal
+  have hinv := hAc.fourierInv_fourier_eq hAi hFAi
+  have h1 : ((autoCorrelation F t : ℝ) : ℂ)
+      = ∫ ξ : ℝ, Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I) • ((spectralDensity F ξ : ℝ) : ℂ) := by
+    have := congrFun hinv t
+    rw [hFA] at this
+    rw [← this, Real.fourierInv_eq']
+    simp only [Real.inner_apply]
+  have hgc : Continuous (spectralDensity F) :=
+    ((VectorFourier.fourierIntegral_continuous Real.continuous_fourierChar (by fun_prop)
+      ((Complex.continuous_ofReal.comp hF.continuous).integrable_of_hasCompactSupport
+        (hFc.comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp)))).norm.pow 2)
+  have hcint : Integrable (fun ξ : ℝ =>
+      Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I) • ((spectralDensity F ξ : ℝ) : ℂ)) := by
+    refine Integrable.mono' hgi.norm ?_ (Filter.Eventually.of_forall fun ξ => ?_)
+    · exact ((Complex.continuous_exp.comp ((Complex.continuous_ofReal.comp
+        (by fun_prop : Continuous fun ξ : ℝ => 2 * Real.pi * (ξ * t))).mul continuous_const)).smul
+        (Complex.continuous_ofReal.comp hgc)).aestronglyMeasurable
+    · rw [norm_smul, Complex.norm_exp_ofReal_mul_I, one_mul, Complex.norm_real]
+  have hre0 := Complex.reCLM.integral_comp_comm hcint
+  have hre : (∫ ξ : ℝ, Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I)
+        • ((spectralDensity F ξ : ℝ) : ℂ)).re
+      = ∫ ξ : ℝ, (Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I)
+        • ((spectralDensity F ξ : ℝ) : ℂ)).re := hre0.symm
+  have hval : autoCorrelation F t
+      = (∫ ξ : ℝ, Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I)
+          • ((spectralDensity F ξ : ℝ) : ℂ)).re := by
+    rw [← h1, Complex.ofReal_re]
+  rw [hval, hre]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+  show (Complex.exp (((2 * Real.pi * (ξ * t) : ℝ)) * I) * ((spectralDensity F ξ : ℝ) : ℂ)).re
+    = Real.cos (2 * Real.pi * t * ξ) * spectralDensity F ξ
+  rw [Complex.mul_re, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im,
+    Complex.ofReal_re, Complex.ofReal_im, show 2 * Real.pi * (ξ * t) = 2 * Real.pi * t * ξ by ring]
+  ring
+
+/-- The symbol of a weighted lag family. -/
+noncomputable def lagSymbol (L : List (ℝ × ℝ)) (ξ : ℝ) : ℝ :=
+  (L.map fun p => p.1 * Real.cos (2 * Real.pi * p.2 * ξ)).sum
+
+theorem continuous_lagSymbol (L : List (ℝ × ℝ)) : Continuous (lagSymbol L) := by
+  induction L with
+  | nil =>
+      have h0 : lagSymbol [] = fun _ : ℝ => (0:ℝ) := by
+        funext ξ
+        simp [lagSymbol]
+      rw [h0]
+      exact continuous_const
+  | cons p L ih =>
+      have : lagSymbol (p :: L) = fun ξ => p.1 * Real.cos (2 * Real.pi * p.2 * ξ) + lagSymbol L ξ := by
+        funext ξ
+        rw [lagSymbol, List.map_cons, List.sum_cons, ← lagSymbol]
+      rw [this]
+      exact (continuous_const.mul (Real.continuous_cos.comp (by fun_prop))).add ih
+
+theorem abs_lagSymbol_le (L : List (ℝ × ℝ)) (ξ : ℝ) :
+    |lagSymbol L ξ| ≤ (L.map fun p => |p.1|).sum := by
+  induction L with
+  | nil => simp [lagSymbol]
+  | cons p L ih =>
+      rw [lagSymbol, List.map_cons, List.sum_cons, ← lagSymbol, List.map_cons, List.sum_cons]
+      have hp : |p.1 * Real.cos (2 * Real.pi * p.2 * ξ)| ≤ |p.1| := by
+        rw [abs_mul]
+        exact mul_le_of_le_one_right (abs_nonneg _) (Real.abs_cos_le_one _)
+      calc |p.1 * Real.cos (2 * Real.pi * p.2 * ξ) + lagSymbol L ξ|
+          ≤ |p.1 * Real.cos (2 * Real.pi * p.2 * ξ)| + |lagSymbol L ξ| := abs_add_le _ _
+        _ ≤ |p.1| + (L.map fun q => |q.1|).sum := by linarith [ih]
+
+theorem integrable_lagSymbol_mul (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) :
+    Integrable (fun ξ => lagSymbol L ξ * spectralDensity F ξ) := by
+  refine Integrable.mono' ((integrable_spectralDensity hF hFc).norm.const_mul
+    ((L.map fun p => |p.1|).sum)) ?_ (Filter.Eventually.of_forall fun ξ => ?_)
+  · exact ((continuous_lagSymbol L).mul
+      (continuous_spectralDensity hF.continuous hFc)).aestronglyMeasurable
+  · rw [Real.norm_eq_abs, abs_mul]
+    exact mul_le_mul_of_nonneg_right (abs_lagSymbol_le L ξ) (abs_nonneg _)
+
+/-- **The first-power charge is the symbol against the spectral density.** -/
+theorem eulerRaw_eq_integral_symbol (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) :
+    eulerRaw L (autoCorrelation F) = ∫ ξ : ℝ, lagSymbol L ξ * spectralDensity F ξ := by
+  induction L with
+  | nil => simp [eulerRaw, lagSymbol]
+  | cons p L ih =>
+      obtain ⟨w, a⟩ := p
+      have hsplit : ∀ ξ : ℝ, lagSymbol ((w, a) :: L) ξ * spectralDensity F ξ
+          = w * (Real.cos (2 * Real.pi * a * ξ) * spectralDensity F ξ)
+            + lagSymbol L ξ * spectralDensity F ξ := by
+        intro ξ
+        rw [lagSymbol, List.map_cons, List.sum_cons, ← lagSymbol]
+        ring
+      have hint1 : Integrable (fun ξ : ℝ => Real.cos (2 * Real.pi * a * ξ) * spectralDensity F ξ) := by
+        have := integrable_lagSymbol_mul hF hFc [(1, a)]
+        simpa [lagSymbol] using this
+      have hint2 : Integrable (fun ξ : ℝ => lagSymbol L ξ * spectralDensity F ξ) :=
+        integrable_lagSymbol_mul hF hFc L
+      rw [eulerRaw, List.map_cons, List.sum_cons, ← eulerRaw, ih,
+        autoCorrelation_eq_integral_spectral hF hFc a,
+        MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsplit),
+        MeasureTheory.integral_add (hint1.const_mul w) hint2,
+        MeasureTheory.integral_const_mul]
+
+/-- **Capacity bound**: the first-power charge is at most the sup of the symbol times the mass. -/
+theorem eulerRaw_le_symbol_bound (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F)
+    (L : List (ℝ × ℝ)) {C : ℝ} (hC : ∀ ξ, lagSymbol L ξ ≤ C) :
+    eulerRaw L (autoCorrelation F) ≤ C * autoCorrelation F 0 := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hmass : autoCorrelation F 0 = ∫ ξ : ℝ, spectralDensity F ξ := by
+    rw [autoCorrelation_eq_integral_spectral hF hFc 0]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    show Real.cos (2 * Real.pi * 0 * ξ) * spectralDensity F ξ = spectralDensity F ξ
+    rw [show 2 * Real.pi * 0 * ξ = 0 by ring, Real.cos_zero, one_mul]
+  rw [eulerRaw_eq_integral_symbol hF hFc L, hmass, ← MeasureTheory.integral_const_mul]
+  refine integral_mono (integrable_lagSymbol_mul hF hFc L) (hgi.const_mul C) fun ξ => ?_
+  have hg : 0 ≤ spectralDensity F ξ := by rw [spectralDensity]; positivity
+  exact mul_le_mul_of_nonneg_right (hC ξ) hg
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

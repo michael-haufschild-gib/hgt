@@ -904,11 +904,22 @@ Write `A = autoCorr F`, `A(t) = ∫ F(x)F(x+t) dx`, and for `x ∈ ℝ` the **la
         the Euler weights `Λ(n)/√n` the cross terms sit exactly at the ratio and product
         incidences of the pairs — the coherent subtraction asked for by AIP topic 8, with the
         reduced cost side of mechanism 47 as its left-hand side.
+      * **`spectralDensity`**, **`integrable_spectralDensity`**,
+        **`autoCorrelation_eq_integral_spectral`**, **`lagSymbol`**,
+        **`eulerRaw_eq_integral_symbol`**, **`eulerRaw_le_symbol_bound`** — the spectral form of
+        the lag ledger. A `C¹` compactly supported test has `|F̂(ξ)| = O(1/|ξ|)`, so its spectral
+        density `|F̂|²` is integrable and Fourier inversion applies: the Gram kernel is the cosine
+        transform of that nonnegative density, `A(t) = ∫ cos(2πtξ)|F̂(ξ)|²dξ`. Hence every
+        weighted lag charge is the pairing of the family's **symbol**
+        `S(ξ) = Σ_j w_j cos(2πa_jξ)` against the density, and the charge per unit mass is at most
+        `sup_ξ S(ξ)`. This is the exact form of the resonance phenomenon of the tower laws — a
+        resonant train concentrates its density where the symbol peaks, and no test does better —
+        and it puts the Dirichlet-polynomial symbol of the prime band on an unconditional footing.
 - [ ] 3 → 4  publication-ready
 
 ## Contribution index
 
-The 328 headline results of this card, in the order the card states them. Every name is a
+The 334 headline results of this card, in the order the card states them. Every name is a
 declaration of `formal/GaloisForLFunctions/ArithmeticIncidencePositivity/LagChebyshevAbelSummation.lean`;
 the file compiles with `lake --old env lean` and its capstones print the three standard axioms.
 
@@ -918,7 +929,7 @@ lines of rewriting or arithmetic closers, *(classical)* a classical fact of anal
 theory restated in the ledger language. These three classes are infrastructure, not
 contributions of the field, and are excluded.
 
-**Field contributions: 260.**  Excluded: 39 definitions, 11 algebraic restatements, 18 classical.
+**Field contributions: 264.**  Excluded: 41 definitions, 11 algebraic restatements, 18 classical.
 
 1. `testBalance`
 2. `testBalance_poleplane`
@@ -1248,6 +1259,12 @@ contributions of the field, and are excluded.
 326. `eulerRaw_eq`
 327. `primeEulerList` *(definition)*
 328. `prime_eulerRaw_le`
+329. `spectralDensity` *(definition)*
+330. `integrable_spectralDensity`
+331. `autoCorrelation_eq_integral_spectral`
+332. `lagSymbol` *(definition)*
+333. `eulerRaw_eq_integral_symbol`
+334. `eulerRaw_le_symbol_bound`
 ## Note on the Lean route
 
 The module depends on `Mathlib` alone, so it is independent of the `ArithmeticCriticalityTheory`
@@ -1261,3 +1278,4 @@ and the ledger objects, and are queued behind that cone.
 - 2026-10-23 — Euler comb ledger added (AIP topic 7); contribution index introduced and verified against the module.
 - 2026-10-23 — residual and strictness of the Euler comb payment; index re-audited and classical support marked.
 - 2026-10-23 — coherent decomposition of the first-power charge (ratio–product cross-charge); index tagged by the mechanical criteria rule.
+- 2026-10-23 — spectral form of the lag ledger: density integrability, cosine-transform identity, symbol capacity bound.

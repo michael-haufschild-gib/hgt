@@ -215,7 +215,26 @@ theorem productResidueCenteredEnergy_eq_zero_iff (q : ℕ+) :
   · intro hq
     have h : q = 1 := Subtype.ext hq
     subst q
-    simp [productResidueCenteredEnergy, productResidueCount, Subsingleton.elim]
+    have hv (a : ZMod ((1 : ℕ+) : ℕ)) : a.val = 0 := by
+      have ha := a.val_lt
+      change a.val < 1 at ha
+      omega
+    rw [productResidueCenteredEnergy_eq_gcd]
+    simp only [hv, Nat.gcd_zero_right, sum_const, card_univ, ZMod.card, nsmul_eq_mul]
+    norm_num
+
+theorem productResidueCenteredEnergy_pos_iff (q : ℕ+) :
+    0 < productResidueCenteredEnergy q ↔ 1 < (q : ℕ) := by
+  have hn : 0 ≤ productResidueCenteredEnergy q :=
+    sum_nonneg fun r _ => sq_nonneg _
+  have hz := productResidueCenteredEnergy_eq_zero_iff q
+  have hp := q.pos
+  constructor
+  · intro h
+    have hne : (q : ℕ) ≠ 1 := fun hq => (ne_of_gt h) (hz.mpr hq)
+    omega
+  · intro h
+    exact lt_of_le_of_ne hn (fun he => (Nat.ne_of_gt h) (hz.mp he.symm))
 
 /-- Averaging over a positive number of complete periods. -/
 def residueBlockAverage (q h : ℕ+) (f : ZMod (q : ℕ) → ℂ)
@@ -349,7 +368,10 @@ theorem sum_balancedProductSmoothingRow (q L h : ℕ+) (k : ℕ)
     rw [he]
     have hh := productResidueBlockAverage q h r
     unfold residueBlockAverage at hh
-    exact_mod_cast hh
+    dsimp only at hh
+    apply Complex.ofReal_injective
+    push_cast
+    exact hh
   simp only [balancedProductSmoothingRow, sum_sub_distrib, ← sum_div]
   rw [sum_comm (s := (univ : Finset (Fin (L : ℕ))))]
   simp_rw [sum_balancedProductRow]
@@ -373,13 +395,102 @@ theorem balancedProductSmoothing_energy (q L h : ℕ+) (k : ℕ) :
   rw [← sum_div, ← mul_sum]
   unfold productResidueCenteredEnergy
   field_simp
-  ring
 
 theorem balancedProductSmoothing_energy_ge (q L h : ℕ+) (k : ℕ) :
     (k : ℝ) ^ 4 / (L : ℕ) * productResidueCenteredEnergy q ≤
       ∑ r, ∑ t, (balancedProductSmoothingRow q L h k r t) ^ 2 := by
   rw [balancedProductSmoothing_energy]
   exact le_add_of_nonneg_right (sum_nonneg fun r _ => sum_nonneg fun t _ => sq_nonneg _)
+
+/-- Actual signed pairing after removing precisely the periodic product bias. -/
+theorem balancedProductSmoothing_pairing (q L h : ℕ+) (k : ℕ)
+    (g : ZMod (q : ℕ) → Fin (L : ℕ) → ℝ) :
+    (∑ r, ∑ t, balancedProductSmoothingRow q L h k r t * g r t) =
+      (k : ℝ) ^ 2 * ∑ r, ((productResidueCount q r : ℝ) - (q : ℕ)) *
+        residueFiberMean L (g r) +
+      ∑ r, ∑ t, (balancedProductSmoothingRow q L h k r t -
+        residueFiberMean L (balancedProductSmoothingRow q L h k r)) *
+          (g r t - residueFiberMean L (g r)) := by
+  have hm (r : ZMod (q : ℕ)) :
+      (L : ℕ) * residueFiberMean L (balancedProductSmoothingRow q L h k r) =
+        (k : ℝ) ^ 2 * ((productResidueCount q r : ℝ) - (q : ℕ)) :=
+    (sum_eq_card_mul_residueFiberMean L _).symm.trans
+      (sum_balancedProductSmoothingRow q L h k r)
+  have he (r : ZMod (q : ℕ)) :=
+    residueFiber_pairing_decomposition L (balancedProductSmoothingRow q L h k r) (g r)
+  simp_rw [he, hm]
+  rw [sum_add_distrib]
+  simp only [mul_assoc, ← mul_sum]
+
+/-- Width containing every shifted product without reducing its quotient modulo `L`. -/
+def balancedProductSmoothingWidth (q h : ℕ+) (k : ℕ) : ℕ+ :=
+  ⟨4 * (q : ℕ) * k ^ 2 + (h : ℕ) + 1, by omega⟩
+
+theorem balancedProductSmoothing_noWrap (q h : ℕ+) (k : ℕ)
+    (i j : Fin ((q : ℕ) * k)) (c : Fin ((q : ℕ) * (h : ℕ) + 1)) :
+    ((q : ℕ) * k + i.val + 1) * ((q : ℕ) * k + j.val + 1) + c.val <
+      (q : ℕ) * (balancedProductSmoothingWidth q h k : ℕ) := by
+  have hi : (q : ℕ) * k + i.val + 1 ≤ 2 * ((q : ℕ) * k) := by
+    have := i.is_lt
+    omega
+  have hj : (q : ℕ) * k + j.val + 1 ≤ 2 * ((q : ℕ) * k) := by
+    have := j.is_lt
+    omega
+  have hp := Nat.mul_le_mul hi hj
+  have he : (q : ℕ) * (balancedProductSmoothingWidth q h k : ℕ) =
+      (2 * ((q : ℕ) * k)) * (2 * ((q : ℕ) * k)) + (q : ℕ) * (h : ℕ) + (q : ℕ) := by
+    change (q : ℕ) * (4 * (q : ℕ) * k ^ 2 + (h : ℕ) + 1) = _
+    ring
+  rw [he]
+  have := c.is_lt
+  have := q.pos
+  omega
+
+/-- At `X = 4j²`, `H = 2j = √X`, the smoothing error has a fixed positive `X²` floor. -/
+theorem balancedProductSmoothing_squareRoot_obstruction (j : ℕ+) :
+    let k := 2 * (j : ℕ) ^ 2
+    let L := balancedProductSmoothingWidth 2 j k
+    productResidueCenteredEnergy 2 / 34 * (4 * ((j : ℕ) : ℝ) ^ 2) ^ 2 ≤
+      ∑ r, ∑ t, (balancedProductSmoothingRow 2 L j k r t) ^ 2 := by
+  let k := 2 * (j : ℕ) ^ 2
+  let L := balancedProductSmoothingWidth 2 j k
+  let x : ℝ := (j : ℕ)
+  change productResidueCenteredEnergy 2 / 34 * (4 * x ^ 2) ^ 2 ≤
+    ∑ r, ∑ t, (balancedProductSmoothingRow 2 L j k r t) ^ 2
+  have hx : 1 ≤ x := by
+    change (1 : ℝ) ≤ ((j : ℕ) : ℝ)
+    exact_mod_cast Nat.succ_le_of_lt j.pos
+  have hx0 : 0 ≤ x := le_trans zero_le_one hx
+  have hx2 : x ≤ x ^ 2 := by
+    nlinarith only [mul_nonneg hx0 (sub_nonneg.mpr hx)]
+  have hx4 : x ^ 2 ≤ x ^ 4 := by
+    nlinarith only [mul_nonneg (sq_nonneg x) (sub_nonneg.mpr (hx.trans hx2))]
+  have hk : (k : ℝ) = 2 * x ^ 2 := by
+    dsimp [k, x]
+    push_cast
+    rfl
+  have hL : ((L : ℕ) : ℝ) = 32 * x ^ 4 + x + 1 := by
+    change ((4 * 2 * (2 * (j : ℕ) ^ 2) ^ 2 + (j : ℕ) + 1 : ℕ) : ℝ) = _
+    push_cast
+    dsimp [x]
+    ring
+  have hLb : ((L : ℕ) : ℝ) ≤ 34 * x ^ 4 := by
+    rw [hL]
+    have hx4' := hx2.trans hx4
+    have h14 := hx.trans hx4'
+    linarith
+  have hLp : 0 < ((L : ℕ) : ℝ) := by exact_mod_cast L.pos
+  have hratio : (4 * x ^ 2) ^ 2 / 34 ≤ (k : ℝ) ^ 4 / (L : ℕ) := by
+    rw [div_le_div_iff₀ (by norm_num) hLp, hk]
+    nlinarith only [mul_nonneg (sub_nonneg.mpr hLb) (pow_nonneg hx0 4)]
+  have hE : 0 ≤ productResidueCenteredEnergy 2 :=
+    sum_nonneg fun r _ => sq_nonneg _
+  calc
+    productResidueCenteredEnergy 2 / 34 * (4 * x ^ 2) ^ 2 =
+        ((4 * x ^ 2) ^ 2 / 34) * productResidueCenteredEnergy 2 := by ring
+    _ ≤ (k : ℝ) ^ 4 / (L : ℕ) * productResidueCenteredEnergy 2 :=
+      mul_le_mul_of_nonneg_right hratio hE
+    _ ≤ _ := balancedProductSmoothing_energy_ge 2 L j k
 
 end
 

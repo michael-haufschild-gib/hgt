@@ -16,6 +16,8 @@ so damping can decrease with the physical horizon.
 
 Exact Möbius compensation bounds the normalized coefficients by logarithms.
 Transferring that weight to the complementary divisor removes unit cofactors.
+On cofactor rectangles, the literal CRT count removes damping uniformly,
+including every endpoint error, on a clock that still resolves prime pairs.
 -/
 
 namespace TwinPrime

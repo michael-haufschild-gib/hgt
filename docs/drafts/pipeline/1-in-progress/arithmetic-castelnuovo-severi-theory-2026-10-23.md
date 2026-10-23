@@ -90,6 +90,9 @@ survivor).
 
 - `ThePronicWeightIsThePoleMassOfTheSuccessorCell`: `integral_successorCell`, `successorCell_functionField`.
 
+- `TheGoldenCurveIsABeurlingSystem`: `goldenDatum_beurling_not_pure` (rank-one Beurling system with
+  positive integral prime counts, integral zeta, FE, violating purity).
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated

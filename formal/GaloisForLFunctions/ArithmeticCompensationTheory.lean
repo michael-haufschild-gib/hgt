@@ -2,8 +2,10 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimeCombIsATranslati
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCombAtTheHorizonIsAResolvent
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheHorizonLawHoldsAtTheDeLaValleePoussinRate
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheTranslationLawHasAnInverseSquareDeficit
+import GaloisForLFunctions.ArithmeticCompensationTheory.ThePrimePolarResidualHasTheDeLaValleePoussinSaving
 import GaloisForLFunctions.ArithmeticCompensationTheory.CompensationCoordinates
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensationDefectDecaysLogarithmically
+import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensationDefectDecaysFasterThanEveryLogPower
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheCompensatingProjectionMovesSummablyAcrossScales
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheReceiverEnergyEscapesToTheHorizon
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheSignedBudgetIsStrictlyWeakerThanThePositivePart
@@ -19,8 +21,8 @@ import GaloisForLFunctions.ArithmeticCompensationTheory.TheSeventeenThirtiethsWi
 # Arithmetic Compensation Theory
 
 Arithmetic compatibility and compensated coercivity: the prime comb at the critical horizon
-(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law), compensation coordinates of a
-divergent sector against its complement and their logarithmic rate on the actual source and summable motion across scales, the quantifier corrections of the continuation problem,
+(translation and resolvent laws, the sharp exponential rate, the de la Vallée Poussin rate of the horizon law, the inverse-square deficit of the translation law, the de la Vallée Poussin saving of the prime–polar residual), compensation coordinates of a
+divergent sector against its complement and their rate on the actual source, faster than every power of the logarithm, and summable motion across scales, the quantifier corrections of the continuation problem,
 the forced aperture loss rate, the adapted-energy criterion, the exact price of a finite change of origin and the tail price of a drifting one, the escape of a receiver blow-up to the horizon, and the `17/30` short-window transfer
 into the centred prime row. See `ArithmeticCompensationTheory/README.md`.
 -/

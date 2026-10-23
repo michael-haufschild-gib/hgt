@@ -460,6 +460,34 @@ Do not add an assumption asserting the missing discrepancy bound to a Lean theor
 - **Formal status:** `DampedPairDiagonal` now certifies the quantitative physical bridge, with five premise-free capstones. The complex `DeterminantParityBridge` has four audited capstones, including exact four-cycle invariance. Both leaf checks passed; all nine capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`. The mixed-derivative, exact flow, and full discrepancy ledger remain paper work. No unproved analytic input is assumed in either leaf.
 - **Anti-theatre assessment:** the endpoint frontier has not moved. What improved is the specification of a common source and of the exact finite-horizon, small-damping obligation. The elementary diagonal estimate is bridge work, not a claimed breakthrough.
 - **Latest formal batch:** the two finite compensations and their coefficient bounds passed ten capstone axiom audits; the exact full-height shift classification and quantitative boundary passed five. Both leaf checks passed. Every audited capstone has no analytic premise and uses only standard foundational axioms. The uniform full-height route is closed with its positive survivor, while the compensated nonunit source remains open. This is bridge and boundary work, not new number-theoretic knowledge.
+- **Damping removed on cofactor rectangles:** five further unconditional
+  capstones now certify the error `6/(1+log(X+2))` on every selected
+  subset when `ZW<=X`, using the clock `epsilon=(1+log(X+2))^-6`.
+  The same clock preserves the projected prime-pair average with
+  error `8/(1+log(X+2))^3`. The actual CRT endpoint error is paid.
+  See [certificate](../3-formalized/twin-prime-cofactor-damping-removal.md).
+  The short-cofactor target therefore concerns the undamped row
+  `U_Z(n)=sum_(dm=n,2<=m<=Z) mu(d) log m`.
+- **New analytic deduction, paper only:** retaining a coupled
+  congruence inside its Fourier expansion gives a rough-shift
+  centering bound uniform in a common modulus, arbitrary residue
+  assignments and complex shift weights. Square-divisor truncation
+  gives the Möbius version against an arbitrary bounded second row.
+  See [proof](../2-fully-proven/twin-prime-coupled-residue-centering.md).
+  Its normalization is the whole interval. The required
+  fixed-determinant estimate must instead resolve the number of
+  actual affine samples; that relative estimate remains open.
+- **Further use of the RH machinery:** the existing quantitative
+  twisted Möbius prefix theorem now gives a complete paper bound
+  for the reciprocal-Ramaré cofactor, uniformly in growing
+  designated prime sets below a stretched-logarithmic cutoff.
+  The proof keeps signed prefixes intact and pays large smooth
+  divisors with an independent positive moment. See
+  [paper deduction](../2-fully-proven/twin-prime-ramare-weighted-cofactor-cancellation.md).
+  This is precisely the separation of signed arithmetic payment
+  from positive tail payment emphasized by the compensation
+  programmes. Its Lean certificate and additive-window use remain
+  outstanding; it is not a fixed-gap positivity theorem.
 - **Next research decision:** attack the source-specific signed CRT/cofactor compensation in §4 first. Use the two-parameter flow to identify the closed family of arithmetic terms. Judge progress by a genuine bound in the normalization `Xε²`, not by the number of equivalent formulations or formalized identities.
 
 ## Gates
@@ -484,3 +512,7 @@ Do not add an assumption asserting the missing discrepancy bound to a Lean theor
   exact axis/cofactor compensation and the full-height boundary in
   Lean. The unit-cofactor faces vanish in the compensated source;
   growing nonunit cofactors and mixed terms remain unestimated.
+- 2026-10-23 — Certified uniform damping removal on the cofactor
+  rectangles and audited the exact fixed-determinant family.
+  The coupled-residue paper calculation pays rough-shift centering,
+  including Möbius, but gives no fixed-shift lower prime-pair mass.

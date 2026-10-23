@@ -171,7 +171,7 @@ theorem exists_abs_primeShift_sub_polar_le :
             (2 * (Real.sqrt n)⁻¹ * F (x + Real.log n))) -
           ∫ s in Ioi (0 : ℝ), 4 * Real.cosh (s / 2) * F (x + s)| ≤
         K * Real.exp ((2 * r + |x|) / 2) * Real.exp (-c * Real.sqrt (2 * r + |x|)) *
-          (2 * ∫ y, |deriv F y| + ∫ y, |F y|) := by
+          (2 * (∫ y, |deriv F y|) + ∫ y, |F y|) := by
   obtain ⟨c, hc, K, hK, S₀, hS₀, hE⟩ := exists_abs_chebyshevTwoPoleDefect_mul_exp_le
   refine ⟨c, hc, K, hK, S₀, hS₀, fun F hF r hr hsupp x hS N hN => ?_⟩
   set S := 2 * r + |x| with hSdef
@@ -208,7 +208,7 @@ theorem exists_abs_primeShift_sub_polar_le :
     have h1 : Integrable fun s => |deriv F (x + s)| := (hdi.comp_add_left x).abs
     have h2 : Integrable fun s => |F (x + s)| := (hFi.comp_add_left x).abs
     exact ((h1.const_mul 2).add h2).const_mul M
-  have hGint : (∫ s, G s) = M * (2 * ∫ y, |deriv F y| + ∫ y, |F y|) := by
+  have hGint : (∫ s, G s) = M * (2 * (∫ y, |deriv F y|) + ∫ y, |F y|) := by
     have h1 : Integrable fun s => |deriv F (x + s)| := (hdi.comp_add_left x).abs
     have h2 : Integrable fun s => |F (x + s)| := (hFi.comp_add_left x).abs
     have e1 : (∫ s, |deriv F (x + s)|) = ∫ y, |deriv F y| :=
@@ -240,6 +240,6 @@ theorem exists_abs_primeShift_sub_polar_le :
           _ = G s := by simp only [G]; ring
     _ ≤ ∫ s, G s := setIntegral_le_integral hGi (Eventually.of_forall fun s => by
         simp only [G]; positivity)
-    _ = M * (2 * ∫ y, |deriv F y| + ∫ y, |F y|) := hGint
+    _ = M * (2 * (∫ y, |deriv F y|) + ∫ y, |F y|) := hGint
 
 end GaloisForLFunctions.ArithmeticCompensationTheory

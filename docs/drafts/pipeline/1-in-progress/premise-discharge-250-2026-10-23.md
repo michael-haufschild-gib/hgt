@@ -14,7 +14,7 @@ Not counted: trivial premises (`(0:ℝ) < 1/2`), theorems that keep any non-typi
 restatements of an already-welded conclusion. Each module is compiled with
 `lake --old env lean <file>` and wired into its umbrella.
 
-**Discharges: 55 compiled, 197 written awaiting compile (252 written) / 250.**
+**Discharges: 251 compiled / 250** (axiom audit: standard axioms only for every module audited so far).
 
 ## Candidate finder (scratch, not in repo)
 
@@ -30,22 +30,23 @@ further discharges need statement bridging (unfolding, `↔`, weakening) found b
 
 | # | module | premise discharged (provider) | theorems |
 |---|--------|-------------------------------|----------|
-| 1–16 | `RHTower/RiemannGaussian/GaussianPremiseDischarges` ✓ | `ZetaZeroGaussianOrdinateSummable`, `RiemannXiQuadraticGrowth`, `QuarterLineDigammaGaussDifferenceFormula`, `GaussianDigammaScrewTransform`, `GaussianArithmeticExplicitFormulaIdentified`, `ZetaGaussianZeroDivisorSeparation` | 16 `*_unconditional` / `zetaGaussianCoherentKernelSeparation_proved` |
-| 17–23 | `HTGeometry/PaperFourierLLogL/GoodBoundUnconditional` ✓ | `GridBound → UnitTreeBound → AffineTreeBound → RealGoodBound`, `GoodBound` (`gridProof`, `maximal_good_sets`) | 3 interface `_holds`, `ae_tail_majorant`, `ae_convergence_of_bounded`, `median_budget_unconditional`, `circle_bill_unconditional` |
-| 24–33 | `RHTower/Zeta23InputDischarges` ✓ | `GammaFacts` (`gammaFacts`) + μ-increment constant (`mu_increment_bound`), `PaperInputs ζ` (`paperInputs_zeta`) | 6 trace-layer lemmas (2 with ∃K), 4 Theorem D variants for every valid `P` |
-| 34 | `Bottcher/Brolin/RieszDiracUnconditional` ✓ | `FundamentalSolutionProp` | `isRieszMeasureOfSmooth_dirac_unconditional` |
-| 35 | `HTGeometry/PaperStableCoordinate/AllFibersNonrectifiable` ✓ | `¬ IsCoordinate f` (`f_not_coordinate`) | `all_fibers_nonrectifiable` |
-| 36 | `RHTower/BakerHomogeneousIndependence` ✓ | `BakerTheorem` (`bakerTheorem_holds`) | `baker_homogeneous_linearIndependent` |
-| 37–44 | `RHTower/GuthMaynardCorollariesUnconditional` (pending: QuantumAlg IR missing) | `GuthMaynardLargeValuesBound` | almost-all 2/15, sharp π/ψ at 17/30, scaled/dyadic large values, fixed-σ density, class count |
-| 45–52 | `RHTower/XiZeroCopyPremiseDischarges` ✓ | `Infinite/Nonempty XiZeroCopy`, `TwistedArcMinimumPrinciple`, `xiEndpointCompletedCurvature < 1` | 7 + `completedRiemannZeta₀_zero_re_lt_half` |
-| 53–54 | `RHTower/ModularLambdaCellEnergyBoundUnconditional` ✓ | `Fintype (SL₂ℤ ⧸ Γ(2))`; then (Λ) + finite `[Γ(2):Γ_N]` | cell energy, windowed coset energy |
-| 55–57 | `RHTower/CHMDZeroMeasurePositivityUnconditional` (pending) | `Nonempty zetaZeroConfig.carrier` | KG energy, quartic moment, wave at 0 |
-| 58–68 | `RHTower/ThetaCuspSteinCertificates` (pending) | Stein ratio bounds → linear Hankel positivity → `↔` certificates | sixth-moment Hankel, three-temperature, first minor, det, aperture, cubic, discriminant, relaxed fourth (+2 forms), upper adjacent ratio, eighth crossing |
-| 69 | `RHTower/SuzukiCutoffSimpleCriticalUniqueness` (pending) | positive simple-critical density (`two_thirds_le_liminf_xiSimpleCriticalRatio`) | `suzukiCutoff_eq_zero_of_simpleCritical_vanish` |
-| 70–125 | `RHTower/RiemannGaussian/GaussianXiGrowthConstantDischarges` (pending) | ξ growth laws (quadratic, `3/2`, log-linear) as `∃ A` | 56 uniform-constant estimates |
-| 126–130 | `ArithmeticCriticalityTheory/UniformConstantDischarges` ✓ | `exists_riemannKernelReal_le_exp_sixteen` | 5 |
-| 131–134 | `HTGeometry/UniformConstantDischarges` ✓ | proved `∃`-bounds | 4 |
-| 135–243 | `*/UniformConstantDischarges*` (23 modules, pending) | proved `∃`-bounds (ζ/χ strip bounds, Stirling μ, Γ decay, kernel bounds, smooth-transition derivative bound, …) | 109 |
+| 1–16 | `RHTower/RiemannGaussian/GaussianPremiseDischarges` | `ZetaZeroGaussianOrdinateSummable`, `RiemannXiQuadraticGrowth`, `QuarterLineDigammaGaussDifferenceFormula`, `GaussianDigammaScrewTransform`, `GaussianArithmeticExplicitFormulaIdentified`, `ZetaGaussianZeroDivisorSeparation` | 16 |
+| 17–23 | `HTGeometry/PaperFourierLLogL/GoodBoundUnconditional` | `GridBound → UnitTreeBound → AffineTreeBound → RealGoodBound`, `GoodBound` | 7 |
+| 24–33 | `RHTower/Zeta23InputDischarges` | `GammaFacts`, μ-increment constant, `PaperInputs ζ` | 10 |
+| 34 | `Bottcher/Brolin/RieszDiracUnconditional` | `FundamentalSolutionProp` | 1 |
+| 35 | `HTGeometry/PaperStableCoordinate/AllFibersNonrectifiable` | `¬ IsCoordinate f` | 1 |
+| 36 | `RHTower/BakerHomogeneousIndependence` | `BakerTheorem` | 1 |
+| 37–44 | `RHTower/GuthMaynardCorollariesUnconditional` | `GuthMaynardLargeValuesBound` | 8 |
+| 45–52 | `RHTower/XiZeroCopyPremiseDischarges` | `Infinite/Nonempty XiZeroCopy`, `TwistedArcMinimumPrinciple`, `xiEndpointCompletedCurvature < 1` | 8 |
+| 53–54 | `RHTower/ModularLambdaCellEnergyBoundUnconditional` | `Fintype (SL₂ℤ ⧸ Γ(2))`, finite `[Γ(2):Γ_N]` | 2 |
+| 55–57 | `RHTower/CHMDZeroMeasurePositivityUnconditional` | `Nonempty zetaZeroConfig.carrier` | 3 |
+| 58–77 | `RHTower/ThetaCuspSteinCertificates` | Stein ratio bounds, strict first minor, `BW_{j,0,1} = wⱼ`, `BW_{j,1,1} = w_{j+1}` → `↔` certificates | 20 |
+| 78 | `RHTower/SuzukiCutoffSimpleCriticalUniqueness` | positive simple-critical density | 1 |
+| 79–134 | `RHTower/RiemannGaussian/GaussianXiGrowthConstantDischarges` | ξ growth laws as `∃ A` | 56 |
+| 135–140 | `RHTower/RiemannGaussian/ThetaTailConstantDischarges` | `exists_riemannThetaTail_exp_bound` | 6 |
+| 141–245 | `*/UniformConstantDischarges*` (23 modules) | proved `∃`-bounds (ζ/χ strip bounds, Stirling μ, Γ decay, kernel bounds, smooth-transition derivative bounds, …) | 105 |
+| 246–247 | `RHTower/CCM/UniformConstantDischarges` (Barta far defect) | smooth-transition first and second derivative bounds | 2 |
+| 248–251 | `RHTower/InstantiationPremiseDischarges` | AFE inner cutoff radius, `xiMassVerticalBound_nonneg`, `xiSpectralPoint_re_ne_zero` | 4 |
 
 Uniform-constant discharges: a consumer `(C : ℝ) (hC : P C) … ⊢ Q C` with `∃ C, P C` proved becomes
 `∃ C, ∀ …, Q C`, or the constant is eliminated when `Q` does not mention it. Drafted by a generator
@@ -54,7 +55,11 @@ provider is a bound and whose retained hypotheses only constrain data; each modu
 
 Excluded after audit: the order-24 sixth-trace chain (its moment bounds use `native_decide`);
 headline welds the authors already made (Theorem D headline, GM 30/13, Weyl/Riesz support,
-q62 Weyl discharge, PNT-power windows).
+q62 Weyl discharge, PNT-power windows, ξ-growth Jensen counts, `ThetaWronskian23` consumers,
+exponential-tower exact order, all-cofinal Cesàro no-go); weakenings of existing strict facts
+(first minor, `2 × 2` determinant); consumers that keep an analytic hypothesis (Möbius/k-free Abel
+edges, Littlewood windows, vertical mean-square window); typing side-conditions used only to build
+a term (domain memberships).
 
 ## Log
 - 2026-10-23 — created; candidate finder built; batches through #36 green; concurrent `lake build`s by other agents delete oleans transiently, so compiles of pending modules wait for them.

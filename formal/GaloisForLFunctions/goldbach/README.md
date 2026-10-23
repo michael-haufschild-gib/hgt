@@ -319,3 +319,31 @@ leaf check without warnings. Eight closures, including the simplified
 target criterion and its all-even formulation, have only those same axioms.
 Their proof and audit are recorded on the
 [finite damping card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-finite-damping-bracket.md).
+
+## Balanced product smoothing
+
+[`ProductResidueProfile.lean`](ProductResidueProfile.lean) tests BVI's
+short-window smoothing mechanism on the actual balanced product row.
+For the complete multiplication-fibre count ν_q modulo q, it proves
+
+    Σ_r ν_q(r) ψ_q(hr) = q gcd(q,h),
+    E_q = Σ_r(ν_q(r)−q)² = q Σ_h gcd(q,h)² − q³,
+    E_q = 0 ↔ q = 1.
+
+It also proves inverse Fourier reconstruction and exact realization by
+products from `(qk,2qk]²`. For their actual smoothing difference F, with
+H=qh and L positions per residue, the checked compensation law is
+
+    ΣF² = (k⁴/L)E_q + Σ(F−fibreMean(F))².
+
+The corresponding signed pairing retains the covariance of both centered
+rows. Complete-period averaging erases the periodic product profile;
+the checked family X=4j²,H=2j=√X has error at least `(E_2/34)X²`,
+where E_2>0. Thus BVI's small smoothing cost cannot be transferred to
+balanced products without accounting for their arithmetic structure.
+The missing Goldbach input remains the compensated signed covariance.
+
+The leaf and eleven proof closures pass without warnings or analytic
+premises. All dependencies use standard Lean foundations. The umbrella
+imports the leaf and was not built. Exact statements, paper proof and
+audit are on the [product residue card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-product-residue-profile.md).

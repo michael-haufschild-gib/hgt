@@ -185,27 +185,40 @@ theorem norm_floorRemainder_le_of_mem_closedBall {ε t : ℝ} (hε : 0 < ε) (h�
     _ ≤ discRate ε t * Real.sqrt n ^ (1 - ε / 2) :=
         mul_le_mul hK hpow (Real.rpow_nonneg (Real.sqrt_nonneg _) _) (hK0.trans hK)
 
+/-- `R_n` is holomorphic on the disc `|ρ − ρ₀| < ε/2`, `ρ₀ = 1 − ε + it`, and continuous up to its
+boundary. -/
+theorem diffContOnCl_floorRemainder {ε t : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) (n : ℕ) :
+    DiffContOnCl ℂ (floorRemainder n) (ball (oscillationExponent ε t) (ε / 2)) := by
+  have hδ : 0 < ε / 2 := by linarith
+  refine DifferentiableOn.diffContOnCl ?_
+  rw [closure_ball _ hδ.ne']
+  intro ρ hρ
+  rw [mem_closedBall, dist_eq_norm] at hρ
+  have hre := (Complex.abs_re_le_norm (ρ - oscillationExponent ε t)).trans hρ
+  rw [sub_re, oscillationExponent_re, abs_le] at hre
+  have h0 : ρ ≠ 0 := fun h => by rw [h, zero_re] at hre; linarith
+  have h1 : ρ ≠ 1 := fun h => by rw [h, one_re] at hre; linarith
+  exact (differentiableAt_floorRemainder n h0 h1).differentiableWithinAt
+
 /-- **Cauchy's estimate for the remainder derivative**:
 `‖∂_ρ R_n(ρ₀)‖ ≤ (2/ε) K (√n)^{1−ε/2}` at `ρ₀ = 1 − ε + it`. -/
 theorem norm_deriv_floorRemainder_le {ε t : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {n : ℕ}
     (hn : 1 ≤ n) :
     ‖deriv (floorRemainder n) (oscillationExponent ε t)‖ ≤
-      discRate ε t * Real.sqrt n ^ (1 - ε / 2) / (ε / 2) := by
-  have hδ : 0 < ε / 2 := by linarith
-  have hdiff : DifferentiableOn ℂ (floorRemainder n) (closedBall (oscillationExponent ε t) (ε / 2)) := by
-    intro ρ hρ
-    rw [mem_closedBall, dist_eq_norm] at hρ
-    have hre := (Complex.abs_re_le_norm (ρ - oscillationExponent ε t)).trans hρ
-    rw [sub_re, oscillationExponent_re, abs_le] at hre
-    have h0 : ρ ≠ 0 := fun h => by rw [h, zero_re] at hre; linarith
-    have h1 : ρ ≠ 1 := fun h => by rw [h, one_re] at hre; linarith
-    exact (differentiableAt_floorRemainder n h0 h1).differentiableWithinAt
-  have hcl : DiffContOnCl ℂ (floorRemainder n) (ball (oscillationExponent ε t) (ε / 2)) := by
-    refine DifferentiableOn.diffContOnCl ?_
-    rw [closure_ball _ hδ.ne']
-    exact hdiff
-  exact Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hδ hcl fun z hz =>
-    norm_floorRemainder_le_of_mem_closedBall hε hε2 hn (sphere_subset_closedBall hz)
+      discRate ε t * Real.sqrt n ^ (1 - ε / 2) / (ε / 2) :=
+  Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by linarith)
+    (diffContOnCl_floorRemainder hε hε2 n) fun z hz =>
+      norm_floorRemainder_le_of_mem_closedBall hε hε2 hn (sphere_subset_closedBall hz)
+
+/-- **Cauchy's estimate for the iterated remainder derivatives**:
+`‖∂^k_ρ R_n(ρ₀)‖ ≤ k! K (√n)^{1−ε/2} / (ε/2)^k`. -/
+theorem norm_iteratedDeriv_floorRemainder_le {ε t : ℝ} (hε : 0 < ε) (hε2 : ε ≤ 1 / 2) {n : ℕ}
+    (hn : 1 ≤ n) (k : ℕ) :
+    ‖iteratedDeriv k (floorRemainder n) (oscillationExponent ε t)‖ ≤
+      k.factorial * (discRate ε t * Real.sqrt n ^ (1 - ε / 2)) / (ε / 2) ^ k :=
+  Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le k (by linarith)
+    (diffContOnCl_floorRemainder hε hε2 n) fun z hz =>
+      norm_floorRemainder_le_of_mem_closedBall hε hε2 hn (sphere_subset_closedBall hz)
 
 /-! ### The log-twisted weight and its prefix -/
 

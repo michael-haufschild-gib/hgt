@@ -613,6 +613,50 @@ and fourth-order error remain paper-only. No arithmetic cancellation
 estimate or scientific novelty is claimed. Strict positivity of L_N at
 each even target remains the exact unproved step.
 
+## Cycle 15: product residues and the cost of smoothing
+
+Tested the BVI short-window mechanism on the actual balanced product row
+`d_X(v)=#{(m,n)∈(X,2X]²:mn=v}`. The proposed transfer
+`||d_X−A_Hd_X||²=o(X²)` fails: even-window averaging erases its parity
+mode. The [failed-route card](../5-failed/goldbach-balanced-product-smoothing.md)
+now has a fully formalized positive survivor in
+[`ProductResidueProfile.lean`](../../../../formal/GaloisForLFunctions/goldbach/ProductResidueProfile.lean).
+
+For ν_q(r), the complete multiplication-fibre count modulo q, proved
+
+    Σ_r ν_q(r)ψ_q(hr)=q gcd(q,h),
+    ν_q(r)=Σ_h gcd(q,h)ψ_q(−hr),
+    E_q=Σ_r(ν_q(r)−q)²=qΣ_h gcd(q,h)²−q³,
+    E_q=0 ↔ q=1.
+
+Actual balanced intervals of length qk have masses k²ν_q. For the exact
+finite encoded product smoothing difference F, with H=qh and L positions
+per residue class, proved
+
+    ΣF²=(k⁴/L)E_q+Σ(F−fibreMean(F))²,
+    ΣFg=k²Σ_r(ν_q(r)−q)fibreMean_r(g)
+          +Σ(F−fibreMean(F))(g−fibreMean(g)).
+
+Both formulas use actual product counts; no residue-profile or analytic
+premise is assumed. The width `L=4qk²+h+1` has no wraparound. At
+q=2,k=2j²,h=j the window is H=√X and the checked error floor is
+`(E_2/34)X²`, with E_2>0. The finite theorem supplies the paper asymptotic
+contradiction. The inverse Fourier and exact compensation statements are
+the positive content of the failed transfer.
+
+Direct leaf compilation and eleven closure audits passed without warnings;
+only standard Lean foundations occur. See the
+[formalized survivor](../3-formalized/not_new_scientific_knowledge/goldbach-product-residue-profile.md).
+No scientific novelty or signed cancellation claim.
+
+The follow-up [compensated collision audit](goldbach-compensated-product-collision-cost.md)
+records a stronger paper attack on removing a fixed residue profile:
+nonzero product differences have a divisor bound, while equal-product
+collisions carry a divergent prime reciprocal mass. Its finite counting
+proofs remain to be formalized. Source inspection found the unconditional
+prime-reciprocal divergence dependency. This does not discharge the signed
+Möbius covariance in Cycle 11 or the strict finite damping inequality.
+
 ## Current verified state and continuation
 
 - Goldbach target is **not proved**; main goal remains active.
@@ -633,6 +677,10 @@ each even target remains the exact unproved step.
   its full coefficient series and continuous error assertions remain paper-only.
 - Exact scientific advance claimed: **none**. The certified bridge prevents
   a false passage from rough negative parity to primality.
+- Cycle 15's exact product-residue spectrum, actual smoothing-energy
+  decomposition, signed pairing and square-root-window obstruction pass
+  direct compilation and eleven closure audits. Ordinary absolute-norm
+  smoothing transfer is retired with its positive survivor formalized.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
@@ -643,6 +691,11 @@ each even target remains the exact unproved step.
   Cycle 13 excludes a polylogarithmic family of fixed projective maps as
   a dense integer pairing mechanism. Any adaptive correspondence must
   pay its actual return multiplicities and keep the additive target.
+  Cycle 15 keeps the complete periodic product profile. Its residual signed
+  covariance remains unestimated; do not treat ordinary short-window
+  Möbius mean bounds as a bound for that covariance. The compensated
+  collision card records the next exact counting audit, not a replacement
+  for the signed arithmetic input.
   Cycle 11's predecessor-mark far-slope signed covariance remains an
   alternative analytic frontier. Its Type I deduction is closed on paper. Pursue the
   original analytic argument, rather than extending the source audits
@@ -722,3 +775,9 @@ each even target remains the exact unproved step.
   nonnegative three-scale compensation, including the exact refinement
   increment and punctured limit. Direct leaf check and eight closure audits
   passed without warnings or analytic premises. Goldbach remains unproved.
+- 2026-10-23 — Falsified ordinary product smoothing transfer and formalized
+  the complete residue profile, exact actual-row energy and signed pairing,
+  no-wrap bound and square-root-window error floor. Leaf check and eleven
+  closure audits passed without warnings or analytic premises. Recorded
+  the stronger compensated collision attack on paper. Goldbach remains
+  unproved; the original goal remains active.

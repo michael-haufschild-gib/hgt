@@ -110,7 +110,7 @@ Put `α_d(n) = ⌊n/d⌋ − n/d` (`|α_d(n)| ≤ min(1, n/d)`), cells `Δ_n(s) 
     With steps 10, 16–17: `z^{Ω(d)}d^{−1/2}` is paid **iff** `z < 1/2`, for all `z ∈ [−1, 1]`; the
     interior `(−1, 1)` is pretentious to no character, outside `receiver_trichotomy`.
 
-## Phase 6 (in progress): sufficiency for subgroup flips
+## Phase 6: sufficiency for subgroup flips
 
 19. Let `H < G = (ZMod q)ˣ`, index `k ≥ 2`, and `f_H(p) = −1` exactly for primes `p ∤ q` with
     `p mod q ∉ H`. With `c_χ = Σ_{h∈H} χ(h⁻¹) ∈ {0, |H|}` (real, nonnegative) and
@@ -130,17 +130,18 @@ Put `α_d(n) = ⌊n/d⌋ − n/d` (`|α_d(n)| ≤ min(1, n/d)`), cells `Δ_n(s) 
 - The density hypothesis is on `P` only through a Dirichlet upper density; it covers primes in
   residue classes of total density `< 1/4`. Liouville (`δ = 1`) and real characters (`δ = 1/2`) sit
   on the paid side, consistent with the corpus parity pairs.
-- Sufficiency (`δ > 1/4 ⇒ paid`) is not claimed here; it needs bounds of `F` on `Re w ∈ (1, 3/2]`
-  off the real axis (planned via the Plancherel form of step 3 for the constant-sign model
-  `f(p) ≡ z`, `z = 1 − 2δ`).
+- Sufficiency (`δ > 1/4 ⇒ paid`) is proved for the constant-sign model (steps 10, 18) and for
+  subgroup flips (steps 19–21). For a general residue pattern the `L(·, χ)` exponents can be
+  negative, and sufficiency then needs `1/|L(w, χ)|` bounds right of `Re w = 1`.
 
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven on paper (steps 1–17)
-- [x] 2 → 3  formalized (steps 1–18)
+- [x] 2 → 3  formalized (steps 1–21)
 - [ ] 3 → 4  publication-ready
 
 ## Log
+- 2026-10-23 — steps 19–21 formalized: `SubgroupFlipsArePaidAtHalfDamping`, wired, axioms clean.
 - 2026-10-23 — formalized: `TheHalfDampedReceiverReadsTheDirichletSeriesAtTheCriticalPoint`,
   `APaidReceiverBoundsTheDirichletSeriesUpToItsAbscissa`,
   `TheHalfDampedReceiverIsTheBoundaryEnergyOfItsDirichletSeries`,

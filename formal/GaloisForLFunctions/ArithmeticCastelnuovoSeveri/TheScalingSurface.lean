@@ -24,7 +24,9 @@ abstract polar surfaces therefore applies to `ζ` verbatim:
 * **RH is the existence of an effectivity** with the Riemann–Roch and ample axioms
   (`riemannHypothesis_iff_exists_effectivity`);
 * **positivity is not effectivity**: the cone of the positive pole quadrant and nonnegative tests
-  fails the Riemann–Roch axiom, unconditionally (`posTestCone_not_riemannRoch`).
+  fails the Riemann–Roch axiom, unconditionally (`posTestCone_not_riemannRoch`), and so does the
+  product of the quadrant with any scaling-closed set of tests missing one test
+  (`productCone_not_riemannRoch`).
 -/
 
 open Complex MeasureTheory

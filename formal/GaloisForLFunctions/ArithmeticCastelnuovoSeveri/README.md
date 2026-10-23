@@ -241,6 +241,19 @@ possible section theory must use near-radicals.
     pure (`witt_integral_not_pure`); the pure datum `q = 2, β = (1, 1)` has `N₁ = 3 − 2√2 ∉ ℤ`
     (`pureDatum_pointCount_one_not_int`). Integrality and purity are independent: the λ-ring
     structure does not carry the positivity, which enters only through the Hodge index (item 12).
+15″. **The golden fake curve is a rank-one Beurling system** (`TheGoldenCurveIsABeurlingSystem`).
+    Its point counts are the ghost components of nonnegative integral prime counts,
+    `N_k = Σ_{d∣k} d π_d`, `π_d ∈ ℕ` (`goldenDatum_beurling`): `N_k = 1 + 5^k − tr(B^k)` with
+    `B = [[3, 1], [1, 2]]`, the edge shift of `B` is a subshift of the full shift on five letters,
+    and `π_d` counts (besides one extra fixed point) the primitive orbits of length `d` of the full
+    shift outside the subshift. The tools are general: periodic points split by minimal period
+    (`card_perSeqs_eq_sum`), primitive orbits are free (`dvd_card_of_shift_invariant`), any
+    inclusion of subshifts gives nonnegative integral prime counts (`exists_primeCounts`), and the
+    transfer matrix counts cyclic words (`card_perSeqs_eq_trace`). So a Beurling system of Kronecker
+    rank one can have positive integral prime counts, an integral rational zeta function with the
+    pole plane split off and the functional equation, and violate purity and the Hodge index
+    (`goldenDatum_beurling_not_pure`): the selectivity against Beurling systems must come from the
+    Bézout structure of the surface, as the review's typing requires.
 
 ### 3.5 The contact law (`SpanContactLaw`)
 
@@ -339,7 +352,11 @@ possible section theory must use near-radicals.
     (`riemannHypothesis_iff_exists_effectivity`).
 22. **Positivity is not effectivity.** The pole quadrant with nonnegative tests fails the
     Riemann–Roch axiom unconditionally (`posTestCone_not_riemannRoch`, via
-    `not_riemannRoch_of_perturbation`).
+    `not_riemannRoch_of_perturbation`). More generally the product of the pole quadrant with any
+    scaling-closed set `P` of tests that misses a single test fails it
+    (`productCone_not_riemannRoch`): no positivity notion on tests (pointwise, of the transform,
+    of positive type) defines an effectivity. This is the no-go half of the success criterion
+    (§7) for the class of product cones.
 22′. **No cone avoids the positive cone.** An effectivity with the Riemann–Roch axiom and
     nonnegative degrees contains every class of positive square and positive degree
     (`openPositiveCone_subset_of_effectivity`); its ample axiom therefore contains the Hodge index
@@ -523,9 +540,11 @@ possible section theory must use near-radicals.
 **The programme succeeds when** the scaling surface carries an effectivity whose ampleness is
 proved independently of the sign of the form and which satisfies the Riemann–Roch axiom (topic 1),
 or when it is proved that no cone definable from a stated class of arithmetic data can have both —
-in either case with the `𝔽_q` reduction to Weil's proof verbatim. Until then the Hodge index of the
-scaling surface is RH-equivalent and unsupplied; the programme's theorems are the exact
-specification of what is missing and the calibration of every step over `𝔽_q`.
+in either case with the `𝔽_q` reduction to Weil's proof verbatim. The no-go half is proved for the
+class of product cones of the pole quadrant with a set of tests (item 22); every effectivity is
+classified once the Hodge index holds (item 22″); and the failure of the Hodge index is measured
+exactly, by degree and by reflection sector, by the zeros right of the line (items 20‴–20⁵). The
+effectivity half is RH-equivalent (item 21) and unsupplied.
 
 **A contribution must:**
 
@@ -568,6 +587,7 @@ specification of what is missing and the calibration of every step over `𝔽_q`
 | `FrobeniusSpanCalibration` | curve data, Lefschetz/adjunction, span defect = Toeplitz form |
 | `FrobeniusSpanHodgeIndexIsRH` | Hodge index on the span ⟺ unitarity |
 | `FakeCurvesAndTheWindowLaw` | golden datum, window visibility and hiding |
+| `TheGoldenCurveIsABeurlingSystem` | orbit counting for subshifts; the golden fake curve as a rank-one Beurling system |
 | `WittIntegralityIsNotPurity` | zeta series and ghost components, Witt splitting of the pole plane, integrality vs purity |
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |

@@ -832,6 +832,3 @@ theorem receiverBounded_subgroupFlip_iff {q : ℕ} [NeZero q] (H : Subgroup (ZMo
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_subgroupFlip_iff
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_subgroupFlip_half

@@ -31,7 +31,7 @@ zero-width scale, or a sharp obstruction with its positive survivor.
 
 ## Lean status
 
-All sixteen modules pass `lake --old env lean` (2026-10-23); no `sorry`/axiom.
+All eighteen modules pass `lake --old env lean` (2026-10-23); no `sorry`/axiom.
 
 Open (README §8): two-scale compensation rate, arithmetic corrector construction, receiver
 blow-up profiles, compensated full-ledger remainder, balanced regime, function-field calibration.

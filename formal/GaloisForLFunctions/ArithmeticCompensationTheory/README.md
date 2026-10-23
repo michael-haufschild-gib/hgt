@@ -203,6 +203,17 @@ are three different statements and remain visibly different here.
    `[−1, 1]`, since the translate `f(· + 2)` lives in `[−3, −1]`
    (`tendsto_combCharge_rescaledTest_div_combMass_zero`). Enormous energy is not an enormous signed
    charge, and certainly not a negative Weil form.
+6′. **The compensated prime–polar residual has the de la Vallée Poussin saving.** Before any
+   square, the prime atoms and the polar density cancel exactly up to the two-pole defect
+   `E(s) = e^s + s − 1 − ψ(e^s)` tested against `h′` (AIP's
+   `sum_vonMangoldt_sub_polar_eq_chebyshev`, `primeShift_sub_polarDensity_eq_chebyshev`). The
+   defect, weighted by `e^{−θs}`, `0 ≤ θ ≤ ½`, is at most `Ke^{(1−θ)S}exp(−c√S)` on `[0, S]`
+   (`exists_abs_chebyshevTwoPoleDefect_mul_exp_le`), so every lag weight of aperture `S` has
+   residual at most `Ke^S exp(−c√S)∫_0^S|h′|` (`exists_abs_sum_vonMangoldt_sub_polar_le`), and
+   every translate `x` of a `C¹` test in `[−r, r]` has ledger residual at most
+   `Ke^{S/2}exp(−c√S)(2‖F′‖₁ + ‖F‖₁)`, `S = 2r + |x|` (`exists_abs_primeShift_sub_polar_le`), with
+   universal constants. The trivial exponent of the ledger is `e^{S/2}`; the saving is exactly the
+   prime number theorem's, and an exponent `e^{θS}`, `θ < ½`, is classically a zero-free strip.
 7. **The ledger's own test class.** The profile `oddBump(x) = x e^{−1/(1−x²)}` normalized to unit
    mass gives smooth odd tests supported in `[−r, r]` on which all of the above hold at once
    (`exists_odd_smooth_family_sharp_comb_rate`).
@@ -281,6 +292,13 @@ are three different statements and remain visibly different here.
     Hence `(1 − α_P)² + ‖R_P‖²/‖L_P‖² ≤ K/log⁶P` for all large `P`
     (`exists_compensationDefect_le_inv_log_pow_six`): an explicit logarithmic rate of compensation,
     with an absolute complete energy `O(P^{1−2ε}/log⁸P)` that still grows with the cutoff.
+    The logarithmic power is not a limit of the method: feeding the Möbius harmonic saving of
+    every logarithmic power through the signed hyperbola split gives
+    `|R_ε(N)| ≤ 1 + C_m N^{1−ε}/log^m N` (`exists_norm_pmPowerDampedDivisorRemainder_le_log_pow`),
+    hence **`(1 − α_P)² + ‖R_P‖²/‖L_P‖² ≤ K_m/log^m P` for every `m`**
+    (`exists_compensationDefect_le_inv_log_pow`) and `|1 − α_P| = O(log^{−m}P)`
+    (`exists_abs_one_sub_pmCompensationAmplitude_le_log_pow`): the compensation is faster than
+    every power of the logarithm.
     The rate iterates over scales: the defects at `P = 2^k` are summable
     (`summable_compensationDefect_dyadic`), while the absolute energies are not. The moving
     projection pays a summable connection term: `|1 − α_P| ≤ K/log³P`
@@ -393,9 +411,9 @@ Each question is narrower than RH, though the strongest endpoint of several impl
 
 | Question | Answer proved here | What remains |
 |---|---|---|
-| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log⁻⁶P)` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
+| Can adjacent decompositions force a rate of compensation? | For one split the amplitude mismatch and the transverse remainder add up *exactly* to the relative complete energy (mechanism 11); on the actual large-prime sector the defect is `O(log^{−m}P)` for every `m` and summable over dyadic scales, and the moving projection's connection term is summable (mechanism 12′). | A rate from a second, compatible decomposition that bounds the absolute remainder. |
 | Can compatible constraints exclude critical blow-up profiles? | For the receiver: profiles living below the scale `E_T^{θ/(1−2ε)}`, `θ < 1`, are excluded, so a blow-up escapes to the horizon (mechanism 12‴). For the raw comb the profile is classified completely: translation on slowly varying tests, exponential resolvent on fixed tests, `J(F) > 0` on every nonzero test (mechanisms 5, 10), and on Lipschitz tests the resolvent law holds at the rate `exp(−c√r)` with universal constants (mechanism 10′). | The classification of the receiver's profiles at the horizon itself. |
-| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity. | A remainder exponent below the trivial one, which is a zero-free strip. |
+| Can prime–polar coherence be handled before squaring? | The comb's coherent part is identified before the square, and on the extremal family it contributes nothing to the first-power charge (mechanism 6); the exact prime–polar pairing is AIP's two-pole defect identity, and its residual has the de la Vallée Poussin saving `e^{S/2}exp(−c√S)` uniformly over the expanding test class (mechanism 6′). | A remainder exponent below the trivial one, which is a zero-free strip. |
 | Can origin information be recovered stably at the threshold? | In the anchored pronic norm a change of origin by `k` cells costs exactly `(k+1)(k+2)/2`, so admission never sees finite origin information (mechanism 12″); a drifting origin is priced by the tail beyond it, and uniform drift tolerance holds exactly for bounded drifts (mechanism 12⁗); the comb's coherent part is anchored at the horizon `2r` (mechanism 5). | A tail-decay rate for the actual receiver beyond the origin, which is what a drifting origin needs. |
 | Can arithmetic cross terms create a useful adapted energy? | An adapted energy is exactly admission, and cofinally RH (mechanism 17); a pointwise corrector budget is one producer. | The construction of `C_T` from source terms with independent constants. |
 | Can positivity be replaced by the right graded floor? | Positive aperture floors cannot be transported and must lose at least `πe^{2(A−2)}` (mechanism 16); SRT's graded floor at rate `2σ` is the strip `½ + σ`. | Any fixed `σ < ½`. |
@@ -438,6 +456,10 @@ that every successful route must use the same mechanism.
   lemmas and can be reused with other weights.
 - **The comb resolvent law** (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`): the leading
   term of every comb Gram form.
+- **Compensated prime–polar residuals** (`exists_abs_chebyshevTwoPoleDefect_mul_exp_le`,
+  `exists_abs_sum_vonMangoldt_sub_polar_le`, `exists_abs_primeShift_sub_polar_le`): the
+  exponentially weighted two-pole defect and the residual of every lag weight and every ledger
+  translate, with universal constants.
 - **The single-average formula and the moment calculus** (`horizonEnergy_eq_horizonIntegral_autoCorr`,
   `integral_pow_mul_horizonDensity`, `autoCorr_zero_sub_le`): `J` as an expectation of `A_F`
   under the horizon law, with explicit moments and a quadratic deficit at the origin.
@@ -502,9 +524,11 @@ that every successful route must use the same mechanism.
    deficit is exactly `4‖f′‖²/r²` to first order (mechanism 10″). Open: the second correction and
    its prime-error competition, and lower bounds on `J` over profile classes uniform in the
    profile.
-5. **The compensated remainder of the full ledger.** Pair the comb's coherent part with the pole
-   charge before squaring, on an expanding test class, and bound the remainder with an explicit
-   aperture exponent; any exponent below the trivial one is a strip.
+5. **The compensated remainder of the full ledger.** The prime–polar residual of every ledger
+   translate is bounded at the trivial exponent with the prime number theorem's saving
+   `exp(−c√S)` (mechanism 6′). Open: an exponent below `½` for the complete ledger, with its even
+   parts and the gamma factor retained, on a test class that the arithmetic singles out — any
+   such exponent is a strip.
 6. **The balanced regime.** Classify or save for the actual centred prime/Möbius incidence at
    `Q ≍ P`, keeping the omitted-residue-class main term. BVI's block mean-square estimates already
    give balanced-scale control for the stated centred rows; distinguish that result from a
@@ -522,8 +546,8 @@ that every successful route must use the same mechanism.
 2. `tendsto_combEnergy_div_combMass_sq_horizonEnergy` and `horizonEnergy_pos` — the comb resolvent
    law and strict positivity on nonzero continuous compact tests.
 3. `norm_add_sq_eq_compensation` with `pmCompleteHeadEnergy_eq_compensation` and
-   `exists_compensationDefect_le_inv_log_pow_six` — the Pythagorean compensation law, its actual
-   instance, and its logarithmic rate.
+   `exists_compensationDefect_le_inv_log_pow` — the Pythagorean compensation law, its actual
+   instance, and its rate, faster than every power of the logarithm.
 4. `exists_admitted_monotone_not_positivePartContinuation` — signed recovery is strictly weaker
    than paying every loss.
 5. `tendsto_integral_workCore_logZeta` — the core debt on positive intervals.
@@ -536,7 +560,11 @@ that every successful route must use the same mechanism.
    drifting origin is tolerated uniformly exactly when it is bounded.
 10. `admits_or_escapesToHorizon` — a blow-up of the receiver escapes to the horizon.
 11. `exists_abs_combEnergy_div_sub_horizonEnergy_le` with `exists_abs_combMass_sub_le` — the
-    horizon law and the resolvent law at the de la Vallée Poussin rate.
+    horizon law and the resolvent law at the de la Vallée Poussin rate;
+    `tendsto_sq_mul_combEnergy_rescaledTest_deficit` — the exact first correction `4‖f′‖²/r²` of
+    the translation law.
+12. `exists_abs_primeShift_sub_polar_le` — the compensated prime–polar residual of the ledger
+    with its aperture exponent.
 
 ---
 
