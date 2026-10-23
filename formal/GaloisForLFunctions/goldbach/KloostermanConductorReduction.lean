@@ -103,8 +103,24 @@ theorem sum_kloostermanUnitReduction (q d : ℕ+)
   have hk : (univ.filter (fun x => φ x = 0)).card =
       kloostermanLiftMultiplicity q d := by
     rw [kloostermanLiftMultiplicity, Fintype.card_subtype]
-    rfl
+    apply card_bij (fun x _ => Additive.toMul x)
+    · intro x hx
+      exact mem_filter.mpr ⟨mem_univ _, (mem_filter.mp hx).2⟩
+    · intro x _ y _ hxy
+      exact hxy
+    · intro y hy
+      exact ⟨Additive.ofMul y,
+        mem_filter.mpr ⟨mem_univ _, (mem_filter.mp hy).2⟩, rfl⟩
   rw [hi, hk] at h
+  let EA : Additive (ZMod ((q : ℕ) * (d : ℕ)))ˣ ≃
+      (ZMod ((q : ℕ) * (d : ℕ)))ˣ :=
+    ⟨Additive.toMul, Additive.ofMul, fun _ => rfl, fun _ => rfl⟩
+  let EB : Additive (ZMod (q : ℕ))ˣ ≃ (ZMod (q : ℕ))ˣ :=
+    ⟨Additive.toMul, Additive.ofMul, fun _ => rfl, fun _ => rfl⟩
+  have hsA := Fintype.sum_equiv EA (fun a => f (Additive.toMul (φ a)))
+    (fun x => f (kloostermanUnitReduction q d x)) (fun _ => rfl)
+  have hsB := Fintype.sum_equiv EB (fun b => f (Additive.toMul b)) f (fun _ => rfl)
+  rw [hsA, hsB] at h
   simpa only [nsmul_eq_mul] using h
 
 /-- A common coefficient factor descends with the exact unit-fibre multiplicity. -/

@@ -132,6 +132,21 @@ the product of the slopes is multiplied by `p`. Any argument
 using the transport must retain additional information about
 the actual Möbius source and the changing parameter horizons.
 
+The gauge has an exact physical interpretation. Put
+`n=c(at+b)`; then `a(ct+d)=n+Delta`. Consequently
+
+`lambda(ac) mu(at+b)mu(ct+d)`
+` = mu(at+b)^2 mu(ct+d)^2 lambda(n)lambda(n+Delta)`.
+
+This follows from `mu(m)=mu(m)^2 lambda(m)` and complete
+multiplicativity of `lambda`. Under the prime-stripping map,
+the new physical pair is the same literal `(n,n+Delta)`;
+the parameter selects a finer residue class, of modulus `p ac`.
+Thus the finite transport does not eliminate the arithmetic
+progression problem. It describes it without discarding the
+relative normalization. No one-row Möbius estimate controls
+the remaining conditional two-point mean automatically.
+
 **Next test:** audit a direct relative-normalization argument on
 these frames, instead of first passing to modulus `a*c`. The
 uniform affine cancellation conjecture above remains the exact

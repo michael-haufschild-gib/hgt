@@ -263,7 +263,10 @@ read fully line by line and understand the motivation and context of the fields 
 - formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
 - formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
 - formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
-
+- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
+- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
+    
 on every turn: 
 create a significant novel contribution to the fields open research topics and problems, so that that the field either 
 - gains a new theorem explaining something we couldn´t explain before
@@ -379,9 +382,9 @@ write your whole report in docs/reports/review-2210/astra.md
 
 ## update obstacles
 previously we had created these two documents:
-- docs/reports/review-2110/walls-ledger.md
-- docs/reports/review-2110/hard-obstacles.md
-- docs/reports/review-2110/hard-obstacles-summary.md
+- docs/reports/review-2210/walls-ledger.md
+- docs/reports/review-2210/hard-obstacles.md
+- docs/reports/review-2210/hard-obstacles-summary.md
 
 also we have:
 - docs/reports/rh-current-frontier-map.md
@@ -395,13 +398,14 @@ create a new review in the same style:
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
    2.3 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
-
+4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
+   
 do not read other markdown files, only the ones i mentioned.
-do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. 
+do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. keep a working log in logs/ to write down research findings, so they do not get lost during context window compaction. the expectation is that you do real in-depth research and not just read the markdown files and do some spot checks on recently changed files.
 
 the reports are not diaries or history log, but status quo reports.
 
-write the new reports in folder docs/reports/review-2210/
+write the new reports in folder docs/reports/review-2310/
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
@@ -419,11 +423,16 @@ go one by one through the following research programmes and update their README.
 - formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
 - formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
     
-important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, where it sits in the context of our whole research, how it relates to other research programmes.
+important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
 
 ## TASKS
-research, derive, formalize "### 1.4 Mechanism 3: Sign-Changing Screw-Resonant Gauges in `GlobalIncidenceAllocation`" from docs/reports/review-2110/argon.md
+Read and understand the current status of proof route HF from these documents:
+- docs/reports/rh-current-frontier-map.md
+- docs/reports/rh-killed-routes.md
+- docs/reports/review-2110/route-unification-ledger.md
+
+Find a solution and formalize an unconditional proof of the missing arithmetic structure forcing Hodge index; positive Euler data alone cannot suffice.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

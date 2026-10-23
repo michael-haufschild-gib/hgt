@@ -177,7 +177,9 @@ theorem abs_weightCenteredPrefix_dampedSign_le_of_linear_pos {s : ℕ → ℝ} {
         have h3' : (K : ℝ) ^ ε / ε ≤ 1 / ε * ((n : ℝ) / D) ^ ε := by
           rw [one_div_mul_eq_div]
           exact div_le_div_of_nonneg_right h3 hε.le
-        linarith
+        calc 1 + (K : ℝ) ^ ε / ε ≤ 1 / ε * ((n : ℝ) / D) ^ ε + 1 / ε * ((n : ℝ) / D) ^ ε :=
+              add_le_add h4' h3'
+          _ = (2 / ε) * ((n : ℝ) / D) ^ ε := by ring
       linarith
     have hpow : (n : ℝ) ^ (1 - ε) * ((n : ℝ) / D) ^ ε = n * (D : ℝ) ^ (-ε) := by
       rw [Real.div_rpow hn0.le hD0.le, Real.rpow_neg hD0.le, mul_div_assoc', ← Real.rpow_add hn0,
@@ -506,7 +508,7 @@ theorem abs_dampedDensity_le_of_le {ε₀ ε : ℝ} (hε₀ : 0 < ε₀) (hε_ge
     simpa only [Real.norm_eq_abs] using h
   refine habs.trans (Summable.tsum_le_tsum (fun d => ?_) (summable_abs_pmPowerDamped_div hε) hs0)
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · rw [show pmPowerDampedRealWeight ε 0 = 0 by simp [pmPowerDampedRealWeight], zero_div, abs_zero]
+  · rw [Nat.cast_zero, div_zero, abs_zero]
     exact Real.rpow_nonneg (Nat.cast_nonneg 0) _
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have h := dampedSignWeight_div (s := moebiusReal) hε d

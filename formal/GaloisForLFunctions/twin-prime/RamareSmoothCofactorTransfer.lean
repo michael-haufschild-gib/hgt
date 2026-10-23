@@ -575,5 +575,3 @@ theorem exists_ramare_cofactor_twisted_prefix_rate {β κ : ℝ}
 end
 
 end TwinPrime
-
-#print axioms TwinPrime.exists_ramare_cofactor_twisted_prefix_rate

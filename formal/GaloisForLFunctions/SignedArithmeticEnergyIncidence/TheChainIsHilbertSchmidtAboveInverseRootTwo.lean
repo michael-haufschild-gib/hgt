@@ -615,8 +615,8 @@ theorem sum_below_sqrt_le {η : ℝ} (h1 : η < 1) (n M : ℕ) :
     _ = ((r : ℕ) : ℝ) ^ (3 - 2 * η) := by
         rcases Nat.eq_zero_or_pos r with h | h
         · rw [h, Nat.cast_zero, zero_mul, Real.zero_rpow (by linarith)]
-        · rw [mul_rpow_neg_eq (show (0 : ℝ) < r by exact_mod_cast h) (a := -(2 - 2 * η)) |>.symm.trans
-            (by ring_nf) |> fun _ => by rw [← Real.rpow_one_add' (by positivity) (by linarith)]; ring_nf]
+        · have hr0 : (0 : ℝ) < r := by exact_mod_cast h
+          rw [show (3 : ℝ) - 2 * η = (2 - 2 * η) + 1 by ring, Real.rpow_add_one hr0.ne', mul_comm]
     _ ≤ _ := natSqrt_rpow_le (by linarith)
 
 /-- Above the square root: `Σ_{K² > N} K^{2−2η} J ≤ (1 + 1/(2η−1)) N^{(3−2η)/2}`. -/
@@ -649,7 +649,7 @@ theorem sum_above_sqrt_le {η : ℝ} (h1 : η < 1) (hh : 1 / 2 < η) (n M : ℕ)
   have hre : ∑ k ∈ range M, (if n + 1 < (k + 1) * (k + 1) ∧
       (n + 1) / (k + 1 + 1) < (n + 1) / (k + 1) then ((k + 1 : ℕ) : ℝ) ^ p else 0) =
       ∑ K ∈ floorJumps (n + 1) M, (K : ℝ) ^ p := by
-    rw [floorJumps, sum_filter, show Icc 1 M = Ico 1 (M + 1) by ext; simp; omega,
+    rw [floorJumps, sum_filter, show Icc 1 M = Ico 1 (M + 1) by ext; simp only [mem_Icc, mem_Ico]; omega,
       sum_Ico_eq_sum_range, show M + 1 - 1 = M by omega]
     exact sum_congr rfl fun k _ => by rw [add_comm 1 k]
   rw [hre]

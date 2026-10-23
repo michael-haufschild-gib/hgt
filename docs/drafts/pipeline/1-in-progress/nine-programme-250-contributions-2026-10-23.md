@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 4 / 250.**
+**Accepted: 5 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -56,12 +56,21 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    `2/k − 1 ∈ [−1, 0]` and every `L(·, χ)` at a nonnegative exponent, so only `1/|ζ|` and upper
    bounds for `|L|` are needed — no zero-free region for `L`.
    `TransHorizonIncidenceMechanics/SubgroupFlipsArePaidAtHalfDamping.lean`.
+5. THIM §5 "prime-density heuristics at half damping", the quarter law is height-local: for
+   `f(p) = a cos(t₀ log p)` (completely multiplicative, `a ∈ [−1, 1]`) the half-damped weight is paid
+   iff `t₀ = 0 ∧ a < 1/2`, or `t₀ ≠ 0 ∧ (a < 1 ∨ ζ(1/2 + it₀) = 0)` (`receiverBounded_oscWeight_iff`).
+   The prime mean on the real axis is `0` for `t₀ ≠ 0`, yet `a = 1` is unpaid unless `1/2 + it₀` is a
+   zero: the receiver reads `ζ` at the heights `±t₀` with exponent `a/2` each, and on the threshold it
+   detects exactly the critical zeros (`receiverBounded_oscWeight_one_iff`).
+   `TransHorizonIncidenceMechanics/OscillatingPrimePatternsReadTheCriticalZeros.lean`,
+   `…/OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — oscillating prime patterns: two THIM leaves compiled, axioms clean, wired; contribution 5.
 - 2026-10-23 — `SubgroupFlipsArePaidAtHalfDamping` compiled, axioms clean, wired; contribution 4.
 - 2026-10-23 — `TheQuarterBoundaryOfResidueClassFlips` compiled, clean, wired (extends 3).
 - 2026-10-23 — `ThePhaseDiagramOfTheConstantSignPattern` compiled, clean, wired (extends 2).

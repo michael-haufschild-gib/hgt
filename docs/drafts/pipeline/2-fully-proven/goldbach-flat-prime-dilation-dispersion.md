@@ -378,8 +378,9 @@ the absolute threshold and constant. This proves (1) on paper.
 ## Lean continuation
 
 Formalize the dependency-closed composite estimate, then (2), then the
-actual interval count and both mixed estimates. Conductor reduction is
-under active leaf verification in `goldbach/KloostermanConductorReduction.lean`.
+actual interval count and both mixed estimates. Conductor reduction
+passes direct leaf verification and six closure audits in
+`goldbach/KloostermanConductorReduction.lean`.
 The complete theorem (1) has no Lean certificate yet. Keep that status
 distinct from the already compiled collision classification and source
 closure audits.

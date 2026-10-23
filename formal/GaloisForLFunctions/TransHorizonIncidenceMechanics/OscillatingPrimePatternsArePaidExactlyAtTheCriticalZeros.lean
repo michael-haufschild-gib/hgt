@@ -474,6 +474,3 @@ theorem receiverBounded_oscWeight_iff {a t₀ : ℝ} (ha : -1 ≤ a) (ha1 : a �
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics
-
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_iff
-#print axioms GaloisForLFunctions.TransHorizonIncidenceMechanics.receiverBounded_oscWeight_one_iff

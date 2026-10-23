@@ -2,7 +2,7 @@
 
 - **ID:** goldbach-prime-dilation-dispersion
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE; actual signed-correlation attack, no Lean premise
+- **Type:** RESEARCH ROUTE; flat dispersion proved on paper, signed transfer and marked Type II open
 - **Parent:** [Goldbach target](goldbach-unconditional-2026-10-23.md), Cycles 11 and 16
 - **Sources:** `RHTower/MobiusFirstPrimeDilationCancellation.lean`, BVI residue compensation, and the actual product collision classification
 
@@ -59,16 +59,18 @@ For distinct p,q in P define the finite weighted covariance
       =Σ_(1≤r≤6X²) r · 1_(p∤r and q∤r)
           ·a_(X,Q)(T−pr)·a_(X,Q)(T−qr).
 
-**Candidate D:** for every A>0 there is B>0 such that, uniformly in the
+**Flat dispersion target D:** for every A>0 there is B>0 such that, uniformly in the
 displayed target range and for all sufficiently large X,
 
     Σ_(p,q∈P, p≠q) |Γ_(T,X,Q)(p,q)| ≪_A X⁴/(log X)^A.  (C)
 
-This is an exact, falsifiable claim about actual integer products. Its
-first unresolved point is the centered nonzero-determinant count (D).
-The unsigned divisor bound does not imply (C). The local Ramanujan tail,
-prime masks and finite interval endpoints must all be audited; no
-dependency-closed proof or external novelty claim is made.
+The [dependency-closed paper proof](../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
+now proves the stronger bound X⁴exp(−sqrt(log X)/10), even without the
+lower prime cutoff. It includes the local Ramanujan tail, both masks,
+the nonzero determinant count and all finite endpoints. It uses the
+separate paper composite Kloosterman bound; the ordinary unsigned
+divisor bound alone would not suffice. No Lean certificate for (C),
+signed Möbius saving, or external novelty claim is made.
 
 ## Why this candidate would address a signed sum
 
@@ -131,15 +133,13 @@ assumed here.
 
 ## Current attack obligations
 
-1. Attack (C) for an omitted coherent mode, especially divisors of
-   T(p−q), before formalizing any reduction as if it supplied cancellation.
-2. The complete-residue local kernel and its centered tail have now been
-   derived on paper below. Prove that the finite product incidence has
-   this main term with a uniform endpoint error; a complete-period
-   calculation alone does not give that transfer.
-3. Search the corpus for a complete weighted determinant-discrepancy
-   producer. Absolute Kloosterman norms or an unproved dispersion interface
-   do not supply it.
+1. Preserve the paper proof's distinction between the off-diagonal flat
+   dispersion and the complete signed amplifier; no marked Type II result
+   follows merely by inserting arbitrary coefficients.
+2. Formalize the complete-residue kernel and actual finite product
+   incidence, including their separate endpoint estimates.
+3. Formalize the composite Kloosterman budget and the modular-inverse
+   completion. A Kloosterman norm alone is not the completed interval estimate.
 4. Close the moving-prime-pool variance and progression dependencies.
 5. Only after the flat-source signed estimate is proved, restore the
    actual Type II coefficients and predecessor marks. That extension is
@@ -166,8 +166,8 @@ prime divisors. Thus Q=exp(sqrt(log X)) pays this tail uniformly for
 prime pool.
 
 The calculation below now includes masks and cross-denominator terms.
-The finite-interval discrepancy remains to be proved. A complete-period
-calculation does not by itself estimate the actual product incidence.
+The finite-interval discrepancy now has a separate paper proof. A
+complete-period calculation by itself would not estimate the actual incidence.
 
 The proposed analytic attack is to complete the reduced congruence in
 one row variable and retain the other row's gcd with D. A square-root
@@ -261,11 +261,11 @@ Consequently (T) has absolute value at most
 
 The uniform divisor estimate above makes this exp(−c sqrt(log X))
 for the stated Q and prime pool, for some absolute c>0 and large X.
-This closes the coherent-tail calculation on paper. It does not yet
-identify that coefficient with the finite product count up to an error
-small enough for (C).
+This closes the coherent-tail calculation on paper. The separate flat
+dispersion proof identifies this coefficient with the finite product
+count and pays its error; neither part yet has a Lean certificate.
 
-## Finite-interval attack: exact congruence and remaining estimates
+## Finite-interval calculation and formalization targets
 
 For h∈{1,p,q,pq}, imposing h|r handles the masks by inclusion–exclusion.
 Fix the second row y=m'. The original equation is
@@ -298,29 +298,29 @@ the absolutely convergent d-sum and the g-sum costs O(τ(|D|)).
 Integrating the strip in y gives the density ρ_X(T−pr)ρ_X(T−qr);
 the four h-coefficients recover (S).
 
-The next unresolved producer is a quantitative modular-hyperbola
-discrepancy, retaining every nonunit gcd. A sufficient intermediate
-bound is
+The quantitative modular-hyperbola discrepancy retains every nonunit
+gcd. Its sufficient intermediate bound is
 
     |S(a,b;M)|³ ≤ 512 τ(M)³ M² gcd(a,b,M).
 
 Its [paper proof](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
 now uses the audited prime Weil bound, odd-prime-power stationary phase,
 a sufficient two-adic eight-root bound, common-factor reduction and CRT.
-The full bound has not yet been formalized. Conductor reduction is the
-first active Lean step. Completing interval indicators would
+The full bound has not yet been formalized. Its
+[exact conductor reduction](../3-formalized/not_new_scientific_knowledge/goldbach-kloosterman-conductor-reduction.md)
+passes a leaf check and six closure audits. Completing interval indicators gives
 then give the nonzero-frequency budget
 
     O(τ(M) M^(2/3) gcd(c,M)^(1/3) (1+log M)²),
 
 with the separate one-zero-frequency costs
 O(τ(M)(1+log M)(|U| gcd(c,M)+|V|)/M).
-After m=gu and M=phy/g, summing rows should give X^(5/3+ε)
+After m=gu and M=phy/g, the paper proof sums rows at X^(5/3+ε)
 times explicit subpower factors. A partition into X^(1/6) strips
-would then pay the hyperbolic boundaries with a power saving.
-This paragraph is a proof plan, not an established finite-interval bound.
-Both mixed terms require their own endpoint audit; the complete-residue
-kernel alone must not be substituted for those estimates.
+pays the hyperbolic boundaries with a power saving. The full proof
+also completes both mixed terms and the finite correction separately.
+These are paper results awaiting formalization; the complete-residue
+kernel alone must not be substituted for those endpoint estimates.
 
 Even a proof of (C) would initially yield only the flat-source signed
 test. The elementary prime-divisor variance loses H_P^(-1/2), with

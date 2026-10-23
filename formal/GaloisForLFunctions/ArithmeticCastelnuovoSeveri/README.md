@@ -610,6 +610,7 @@ effectivity half is RH-equivalent (item 21) and unsupplied.
 | `SpanContactLaw` | contact window = number of distinct eigenvalues |
 | `TheFrobeniusSpanDefectCountsTheOuterEigenvalues` | Pontryagin law over `𝔽_q`: span defect = #distinct eigenvalues off the circle, visible at window `2g` |
 | `HodgeIndexFromEffectivity` | Riemann–Roch and ample axioms ⟺ Hodge index |
+| `BezoutEffectivityAndTheBeurlingObstruction` | Bézout positivity + Riemann–Roch / canonical surface Riemann–Roch ⟺ Hodge index; Frobenius span polar surface, positive graph cone (Bézout + ample, not RR), cohomological sign and subshift obstruction |
 | `TheScalingSurface` | the scaling surface of `ℤ`; Hodge index ⟺ RH; positivity is not effectivity |
 | `ArithmeticHodgeIndexSignatureLaw` | Gram signature law, one positive square ⟺ RH, selection of `Λ`, Pontryagin bound |
 | `InfiniteGenusLaw` | no nonzero compact transform annihilating almost all simple critical zeros; RH ⟺ positive definite |

@@ -47,8 +47,11 @@ Notation: `S = Σ_p p^{-2}`, `F(w) = Σ f(n)n^{-w}`, `C(s) = F(s + 1/2)`, `s = 1
 ## Gates
 - [x] 0 → 1  in-progress (corpus search: no oscillating multiplicative pattern; the critical-zero
   detector exists only for the non-multiplicative `d^{-ε}cos(t log d)`)
-- [ ] 1 → 2  fully-proven on paper
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven on paper
+- [x] 2 → 3  formalized (`receiverBounded_oscWeight_iff`, axioms `propext`, `Classical.choice`,
+  `Quot.sound`)
 
 ## Log
+- 2026-10-23 — formalized: `OscillatingPrimePatternsReadTheCriticalZeros` (steps 1–3),
+  `OscillatingPrimePatternsArePaidExactlyAtTheCriticalZeros` (steps 4–6), wired into the THIM umbrella.
 - 2026-10-23 — created.

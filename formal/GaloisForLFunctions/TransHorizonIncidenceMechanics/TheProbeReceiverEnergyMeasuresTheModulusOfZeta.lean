@@ -131,7 +131,6 @@ theorem probeMain_sq_div (ε t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
     ring
   rw [hM, mul_pow, hu2, hpow, hre]
   field_simp
-  ring
 
 /-- The energy of the main term. -/
 theorem sq_pronicNorm_probeMain (ε t : ℝ) (T : ℕ) :
@@ -202,7 +201,7 @@ theorem norm_sum_cpow_div_succ_sub_le {β : ℂ} (hβ0 : 0 < β.re) (hβ1 : β.r
         congr 1; ring
     _ ≤ ‖cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (1 - w) / (1 - w) - riemannZeta w‖ +
           ‖riemannZeta w‖ + ‖∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (-w) / (((n : ℝ) + 1 : ℝ) : ℂ)‖ :=
-        (norm_sub_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+        (norm_sub_le _ _).trans (add_le_add_left (norm_add_le _ _) _)
     _ ≤ partialSumRate w * 1 + ‖riemannZeta w‖ + (1 + 1 / w.re) := by
         gcongr
         exact hP.trans (mul_le_mul_of_nonneg_left hTpow hrate0)
@@ -373,6 +372,59 @@ theorem abs_sq_pronicNorm_probeMain_sub_le {ε : ℝ} (hε : 0 < ε) (hε2 : ε 
         rw [probeProfileRate, ← ha, ← hβ]
         linarith [mul_le_mul_of_nonneg_left hb0 ha2]
 
+/-- `|Φ(T)| ≤ |a|²/(1 − 2ε)`. -/
+theorem abs_probeEnergyProfile_le {ε : ℝ} (hε2 : ε < 1 / 2) (t : ℝ) {T : ℕ} (hT : 1 ≤ T) :
+    |probeEnergyProfile ε t T| ≤ ‖probeAmp ε t‖ ^ 2 / (1 - 2 * ε) := by
+  set a := probeAmp ε t with ha
+  have hγ0 : 0 < 1 - 2 * ε := by linarith
+  have hT0 : (0 : ℝ) < T := by exact_mod_cast hT
+  have hnβ : 1 - 2 * ε ≤ ‖probeCrossExponent ε t‖ := by
+    have := Complex.re_le_norm (probeCrossExponent ε t)
+    rwa [probeCrossExponent_re] at this
+  have hnT : ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I)‖ = 1 := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hT0]; simp
+  have h2 : |(a ^ 2 * ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+      probeCrossExponent ε t).re| ≤ ‖a‖ ^ 2 / (1 - 2 * ε) := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_div, norm_mul, norm_pow, hnT, mul_one]
+    exact div_le_div_of_nonneg_left (by positivity) hγ0 hnβ
+  unfold probeEnergyProfile
+  rw [← ha]
+  have h1 : 0 ≤ ‖a‖ ^ 2 / (2 * (1 - 2 * ε)) := by positivity
+  calc |‖a‖ ^ 2 / (2 * (1 - 2 * ε)) + (a ^ 2 * ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+        probeCrossExponent ε t).re / 2|
+      ≤ ‖a‖ ^ 2 / (2 * (1 - 2 * ε)) + ‖a‖ ^ 2 / (1 - 2 * ε) / 2 := by
+        refine (abs_add_le _ _).trans ?_
+        rw [abs_of_nonneg h1, abs_div, abs_two]
+        linarith
+    _ = ‖a‖ ^ 2 / (1 - 2 * ε) := by field_simp; ring
+
+/-- `Φ(T) ≥ |a|²/2 · (1/(1 − 2ε) − 1/|1 − 2ε + 2it|)`. -/
+theorem probeEnergyProfile_ge {ε : ℝ} (hε2 : ε < 1 / 2) (t : ℝ) {T : ℕ} (hT : 1 ≤ T) :
+    ‖probeAmp ε t‖ ^ 2 / 2 * (1 / (1 - 2 * ε) - 1 / ‖probeCrossExponent ε t‖) ≤
+      probeEnergyProfile ε t T := by
+  set a := probeAmp ε t with ha
+  have hγ0 : 0 < 1 - 2 * ε := by linarith
+  have hT0 : (0 : ℝ) < T := by exact_mod_cast hT
+  have hnβ0 : 0 < ‖probeCrossExponent ε t‖ := by
+    have := Complex.re_le_norm (probeCrossExponent ε t)
+    rw [probeCrossExponent_re] at this
+    linarith
+  have hnT : ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I)‖ = 1 := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hT0]; simp
+  have h2 : |(a ^ 2 * ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
+      probeCrossExponent ε t).re| ≤ ‖a‖ ^ 2 / ‖probeCrossExponent ε t‖ := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_div, norm_mul, norm_pow, hnT, mul_one]
+  unfold probeEnergyProfile
+  rw [← ha]
+  have h3 := (abs_le.mp h2).1
+  have e1 : ‖a‖ ^ 2 / 2 * (1 / (1 - 2 * ε) - 1 / ‖probeCrossExponent ε t‖) =
+      ‖a‖ ^ 2 / (2 * (1 - 2 * ε)) - ‖a‖ ^ 2 / ‖probeCrossExponent ε t‖ / 2 := by
+    field_simp
+  rw [e1]
+  linarith
+
 /-- **The probe energy law below half damping.** For `0 < ε < 1/2` and every `t ∈ ℝ`,
 `E_T / T^{1−2ε} − Φ(T) → 0`, where `Φ(T) = |a|²/(2(1−2ε)) + ½ Re(a² T^{2it}/(1 − 2ε + 2it))` and
 `a = ζ(1 − ε + it)/(1 − ε + it)`. -/
@@ -390,30 +442,8 @@ theorem tendsto_probeEnergy_div_sub_profile {ε : ℝ} (hε : 0 < ε) (hε2 : ε
   have hC0 : 0 ≤ C := by
     have h := abs_sq_pronicNorm_probeMain_sub_le hε hε2 t (T := 1) le_rfl
     exact (abs_nonneg _).trans h
-  -- the profile is bounded by `|a|²/γ`
-  have hΦ : ∀ T : ℕ, 1 ≤ T → |probeEnergyProfile ε t T| ≤ Φm := by
-    intro T hT
-    have hT0 : (0 : ℝ) < T := by exact_mod_cast hT
-    have hnβ : γ ≤ ‖probeCrossExponent ε t‖ := by
-      have := Complex.re_le_norm (probeCrossExponent ε t)
-      rwa [probeCrossExponent_re] at this
-    have hnT : ‖((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I)‖ = 1 := by
-      rw [Complex.norm_cpow_eq_rpow_re_of_pos hT0]; simp
-    have h2 : |(a ^ 2 * ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
-        probeCrossExponent ε t).re| ≤ ‖a‖ ^ 2 / γ := by
-      refine (Complex.abs_re_le_norm _).trans ?_
-      rw [norm_div, norm_mul, norm_pow, hnT, mul_one]
-      exact div_le_div_of_nonneg_left (by positivity) hγ0 hnβ
-    unfold probeEnergyProfile
-    rw [← ha, ← hγ]
-    have h1 : 0 ≤ ‖a‖ ^ 2 / (2 * γ) := by positivity
-    calc |‖a‖ ^ 2 / (2 * γ) + (a ^ 2 * ((T : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) /
-          probeCrossExponent ε t).re / 2|
-        ≤ ‖a‖ ^ 2 / (2 * γ) + ‖a‖ ^ 2 / γ / 2 := by
-          refine (abs_add_le _ _).trans ?_
-          rw [abs_of_nonneg h1, abs_div, abs_two]
-          linarith
-      _ = Φm := by rw [hΦm]; field_simp; ring
+  have hΦ : ∀ T : ℕ, 1 ≤ T → |probeEnergyProfile ε t T| ≤ Φm := fun T hT => by
+    rw [hΦm, ha, hγ]; exact abs_probeEnergyProfile_le hε2 t hT
   -- the bound on the deviation
   have hbound : ∀ T : ℕ, 1 ≤ T →
       |weightPronicEnergy (oscillatingSmoothPower ε t)
@@ -481,6 +511,217 @@ theorem tendsto_probeEnergy_div_sub_profile {ε : ℝ} (hε : 0 < ε) (hε2 : ε
   filter_upwards [eventually_ge_atTop 1] with T hT
   rw [Real.norm_eq_abs]
   exact hbound T hT
+
+
+/-- **Two-sided growth below half damping.** For `0 < ε < 1/2`, `t ≠ 0` and `ζ(1 − ε + it) ≠ 0`,
+eventually `λ/2 · T^{1−2ε} ≤ E_T ≤ 2|a|²/(1−2ε) · T^{1−2ε}` with
+`λ = |a|²/2 · (1/(1 − 2ε) − 1/|1 − 2ε + 2it|) > 0`. -/
+theorem eventually_probeEnergy_le_and_ge {ε : ℝ} (hε : 0 < ε) (hε2 : ε < 1 / 2) {t : ℝ}
+    (ht : t ≠ 0) (hz : riemannZeta (oscillationExponent ε t) ≠ 0) :
+    ∀ᶠ T : ℕ in atTop,
+      ‖probeAmp ε t‖ ^ 2 / 4 * (1 / (1 - 2 * ε) - 1 / ‖probeCrossExponent ε t‖) *
+          (T : ℝ) ^ (1 - 2 * ε) ≤
+        weightPronicEnergy (oscillatingSmoothPower ε t)
+          (∑' d : ℕ, oscillatingSmoothPower ε t d / d) T ∧
+      weightPronicEnergy (oscillatingSmoothPower ε t)
+          (∑' d : ℕ, oscillatingSmoothPower ε t d / d) T ≤
+        2 * ‖probeAmp ε t‖ ^ 2 / (1 - 2 * ε) * (T : ℝ) ^ (1 - 2 * ε) := by
+  set a := probeAmp ε t with ha
+  set γ := 1 - 2 * ε with hγ
+  have hγ0 : 0 < γ := by rw [hγ]; linarith
+  have hρ0 : oscillationExponent ε t ≠ 0 := fun h => by
+    have := congrArg Complex.re h
+    rw [oscillationExponent_re, zero_re] at this
+    linarith
+  have ha0 : 0 < ‖a‖ := norm_pos_iff.mpr (div_ne_zero hz hρ0)
+  -- `|β| > γ` off the real axis
+  have hnβ : γ < ‖probeCrossExponent ε t‖ := by
+    have hsq : ‖probeCrossExponent ε t‖ ^ 2 = γ ^ 2 + (2 * t) ^ 2 := by
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+      simp [probeCrossExponent, hγ]
+      ring
+    have h4 : 0 < (2 * t) ^ 2 := by positivity
+    nlinarith [norm_nonneg (probeCrossExponent ε t)]
+  set λ₀ := ‖a‖ ^ 2 / 2 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) with hλ
+  have hλ0 : 0 < λ₀ := by
+    have : 1 / ‖probeCrossExponent ε t‖ < 1 / γ := one_div_lt_one_div_of_lt hγ0 hnβ
+    have : 0 < ‖a‖ ^ 2 / 2 := by positivity
+    rw [hλ]; nlinarith
+  have hlim := tendsto_probeEnergy_div_sub_profile hε hε2 t
+  rw [← hγ] at hlim
+  have hev := (Metric.tendsto_nhds.mp hlim) (λ₀ / 2) (by linarith)
+  filter_upwards [hev, eventually_ge_atTop 1] with T hT hT1
+  rw [Real.dist_eq, sub_zero] at hT
+  have hT0 : (0 : ℝ) < T := by exact_mod_cast hT1
+  have hTγ : 0 < (T : ℝ) ^ γ := Real.rpow_pos_of_pos hT0 _
+  have hlo := probeEnergyProfile_ge hε2 t hT1
+  have hhi := (abs_le.mp (abs_probeEnergyProfile_le hε2 t hT1)).2
+  rw [← ha, ← hγ] at hlo hhi
+  rw [← hλ] at hlo
+  have hλm : λ₀ ≤ ‖a‖ ^ 2 / γ := by
+    rw [hλ]
+    have : 0 ≤ 1 / ‖probeCrossExponent ε t‖ := by positivity
+    have : ‖a‖ ^ 2 / 2 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) ≤ ‖a‖ ^ 2 / 2 * (1 / γ) :=
+      mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+    have e : ‖a‖ ^ 2 / 2 * (1 / γ) ≤ ‖a‖ ^ 2 / γ := by
+      rw [div_mul_div_comm, mul_one]
+      exact div_le_div_of_nonneg_left (by positivity) hγ0 (by linarith)
+    linarith
+  set E := weightPronicEnergy (oscillatingSmoothPower ε t)
+    (∑' d : ℕ, oscillatingSmoothPower ε t d / d) T with hE
+  have hq := abs_lt.mp hT
+  have hlow : λ₀ / 2 ≤ E / (T : ℝ) ^ γ := by linarith [hq.1]
+  have hupp : E / (T : ℝ) ^ γ ≤ 2 * ‖a‖ ^ 2 / γ := by
+    have : 2 * ‖a‖ ^ 2 / γ = ‖a‖ ^ 2 / γ + ‖a‖ ^ 2 / γ := by ring
+    linarith [hq.2]
+  rw [le_div_iff₀ hTγ] at hlow
+  rw [div_le_iff₀ hTγ] at hupp
+  constructor
+  · calc ‖a‖ ^ 2 / 4 * (1 / γ - 1 / ‖probeCrossExponent ε t‖) * (T : ℝ) ^ γ =
+          λ₀ / 2 * (T : ℝ) ^ γ := by rw [hλ]; ring
+      _ ≤ E := hlow
+  · exact hupp
+
+/-! ### Half damping -/
+
+/-- The rate of the main-term energy law at half damping. -/
+def halfProbeRate (t : ℝ) : ℝ :=
+  ‖probeAmp (1 / 2) t‖ ^ 2 / 2 * (2 + (oscHarmonicBound (2 * t) + 2))
+
+/-- **The main-term energy at half damping**: `|‖M‖_T² − (|a|²/2) log T| ≤ C` for `t ≠ 0`. -/
+theorem abs_sq_pronicNorm_probeMain_half_sub_le {t : ℝ} (ht : t ≠ 0) {T : ℕ} (hT : 1 ≤ T) :
+    |pronicNorm (probeMain (1 / 2) t) T ^ 2 - ‖probeAmp (1 / 2) t‖ ^ 2 / 2 * Real.log T| ≤
+      halfProbeRate t := by
+  set a := probeAmp (1 / 2) t with ha
+  have hβ : probeCrossExponent (1 / 2) t = ((2 * t : ℝ) : ℂ) * I := by
+    norm_num [probeCrossExponent]
+  have hS0 : ∑ n ∈ Icc 1 T, (n : ℝ) ^ (1 - 2 * (1 / 2 : ℝ)) / ((n : ℝ) + 1) =
+      ∑ n ∈ Icc 1 T, 1 / ((n : ℝ) + 1) :=
+    sum_congr rfl fun n _ => by norm_num
+  rw [sq_pronicNorm_probeMain, hS0, hβ, ← ha]
+  set S₀ := ∑ n ∈ Icc 1 T, 1 / ((n : ℝ) + 1) with hS₀
+  set S₁ := ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) / (((n : ℝ) + 1 : ℝ) : ℂ)
+    with hS₁
+  have h0 : |S₀ - Real.log T| ≤ 2 := abs_sum_one_div_succ_sub_log_le hT
+  have h1 : ‖S₁‖ ≤ oscHarmonicBound (2 * t) + 2 :=
+    norm_sum_cpow_I_div_succ_le (mul_ne_zero two_ne_zero ht) T
+  have hb1 : |(a ^ 2 * S₁).re| ≤ ‖a‖ ^ 2 * (oscHarmonicBound (2 * t) + 2) := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_mul, norm_pow]
+    exact mul_le_mul_of_nonneg_left h1 (by positivity)
+  have ha2 : 0 ≤ ‖a‖ ^ 2 / 2 := by positivity
+  rw [show ‖a‖ ^ 2 / 2 * S₀ + (a ^ 2 * S₁).re / 2 - ‖a‖ ^ 2 / 2 * Real.log T =
+    ‖a‖ ^ 2 / 2 * (S₀ - Real.log T) + (a ^ 2 * S₁).re / 2 by ring]
+  calc |‖a‖ ^ 2 / 2 * (S₀ - Real.log T) + (a ^ 2 * S₁).re / 2|
+      ≤ ‖a‖ ^ 2 / 2 * |S₀ - Real.log T| + |(a ^ 2 * S₁).re| / 2 := by
+        refine (abs_add_le _ _).trans ?_
+        rw [abs_mul, abs_of_nonneg ha2, abs_div, abs_two]
+    _ ≤ halfProbeRate t := by
+        rw [halfProbeRate, ← ha]
+        nlinarith [mul_le_mul_of_nonneg_left h0 ha2]
+
+/-- **The half-damped probe energy law.** For `t ≠ 0`, the receiver energy of
+`d^{-1/2} cos(t log d)` satisfies `E_T / log T → |ζ(½ + it)|²/(2|½ + it|²)`. -/
+theorem tendsto_probeEnergy_half_div_log {t : ℝ} (ht : t ≠ 0) :
+    Tendsto (fun T : ℕ => weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T) atTop
+      (𝓝 (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2))) := by
+  set a := probeAmp (1 / 2) t with ha
+  set α := ‖a‖ ^ 2 / 2 with hα
+  have hlimit : ‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+      (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2) = α := by
+    rw [hα, ha, probeAmp, norm_div, div_pow]; ring
+  rw [hlimit]
+  set B := |floorSumRate (oscillationExponent (1 / 2) t)| * Real.sqrt (1 + 1 / (1 / 2 : ℝ))
+    with hB
+  set C := halfProbeRate t with hC
+  have hB0 : 0 ≤ B := by positivity
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (abs_sq_pronicNorm_probeMain_half_sub_le ht le_rfl)
+  have hα0 : 0 ≤ α := by positivity
+  have hbound : ∀ T : ℕ, 3 ≤ T →
+      |weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+          (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T - α| ≤
+        (C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
+          2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹ := by
+    intro T hT
+    have hT1 : 1 ≤ T := by omega
+    have hL1 : 1 ≤ Real.log T := by
+      rw [Real.le_log_iff_exp_le (by positivity)]
+      have : (3 : ℝ) ≤ T := by exact_mod_cast hT
+      linarith [Real.exp_one_lt_d9]
+    have hL0 : 0 < Real.log T := by linarith
+    have h1 := abs_sqrt_probeEnergy_sub_le (ε := 1 / 2) (by norm_num) (by norm_num) t T
+    have h2 := abs_sq_pronicNorm_probeMain_half_sub_le ht hT1
+    rw [← hB] at h1
+    rw [← ha, ← hα, ← hC] at h2
+    set x := pronicNorm (probeMain (1 / 2) t) T with hx
+    have hx0 : 0 ≤ x := pronicNorm_nonneg _ _
+    have h3 := abs_sq_sub_le_of_abs_sub_le hx0 h1 h2
+    have hE0 : 0 ≤ weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T :=
+      sum_nonneg fun n _ => by positivity
+    rw [Real.sq_sqrt hE0] at h3
+    have hsL : Real.sqrt (Real.log T) ^ 2 = Real.log T := Real.sq_sqrt hL0.le
+    have hsL0 : 0 < Real.sqrt (Real.log T) := Real.sqrt_pos.mpr hL0
+    have hxle : x ≤ Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C := by
+      have hp : (Real.sqrt α * Real.sqrt (Real.log T)) ^ 2 = α * Real.log T := by
+        rw [mul_pow, Real.sq_sqrt hα0, hsL]
+      have hq : Real.sqrt C ^ 2 = C := Real.sq_sqrt hC0
+      have hpq : 0 ≤ Real.sqrt α * Real.sqrt (Real.log T) := by positivity
+      have hx2 : x ^ 2 ≤ (Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2 := by
+        have h2' := (abs_le.mp h2).2
+        nlinarith [mul_nonneg hpq (Real.sqrt_nonneg C)]
+      calc x = Real.sqrt (x ^ 2) := (Real.sqrt_sq hx0).symm
+        _ ≤ Real.sqrt ((Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) ^ 2) :=
+          Real.sqrt_le_sqrt hx2
+        _ = _ := Real.sqrt_sq (by positivity)
+    rw [show weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+        (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T - α =
+        (weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+          (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T - α * Real.log T) / Real.log T by
+        field_simp,
+      abs_div, abs_of_pos hL0, div_le_iff₀ hL0]
+    have hrhs : ((C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
+        2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹) * Real.log T =
+        C + B * (2 * Real.sqrt C + B) + 2 * B * Real.sqrt α * Real.sqrt (Real.log T) := by
+      rw [← hsL]
+      field_simp
+    rw [hrhs]
+    calc _ ≤ C + B * (2 * x + B) := h3
+      _ ≤ C + B * (2 * (Real.sqrt α * Real.sqrt (Real.log T) + Real.sqrt C) + B) := by gcongr
+      _ = C + B * (2 * Real.sqrt C + B) + 2 * B * Real.sqrt α * Real.sqrt (Real.log T) := by ring
+  have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hlim : Tendsto (fun T : ℕ => (C + B * (2 * Real.sqrt C + B)) * (Real.log T)⁻¹ +
+      2 * B * Real.sqrt α * (Real.sqrt (Real.log T))⁻¹) atTop (𝓝 0) := by
+    have t1 : Tendsto (fun T : ℕ => (Real.log T)⁻¹) atTop (𝓝 0) := hlog.inv_tendsto_atTop
+    have t2 : Tendsto (fun T : ℕ => (Real.sqrt (Real.log T))⁻¹) atTop (𝓝 0) :=
+      (Real.tendsto_sqrt_atTop.comp hlog).inv_tendsto_atTop
+    simpa using (t1.const_mul (C + B * (2 * Real.sqrt C + B))).add
+      (t2.const_mul (2 * B * Real.sqrt α))
+  refine tendsto_sub_nhds_zero_iff.mp (squeeze_zero_norm' ?_ hlim)
+  filter_upwards [eventually_ge_atTop 3] with T hT
+  rw [Real.norm_eq_abs]
+  exact hbound T hT
+
+/-- **ζ on the critical line from the receiver.** For `t ≠ 0`,
+`2|½ + it|² E_T / log T → |ζ(½ + it)|²`: the receiver energies of `d^{-1/2} cos(t log d)` evaluate
+`|ζ|` on the critical line. -/
+theorem norm_sq_riemannZeta_half_eq_limit {t : ℝ} (ht : t ≠ 0) :
+    Tendsto (fun T : ℕ => 2 * ‖oscillationExponent (1 / 2) t‖ ^ 2 *
+        (weightPronicEnergy (oscillatingSmoothPower (1 / 2) t)
+          (∑' d : ℕ, oscillatingSmoothPower (1 / 2) t d / d) T / Real.log T)) atTop
+      (𝓝 (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2)) := by
+  have hρ0 : oscillationExponent (1 / 2) t ≠ 0 := fun h => by
+    have := congrArg Complex.re h
+    rw [oscillationExponent_re, zero_re] at this
+    norm_num at this
+  have hn : 0 < ‖oscillationExponent (1 / 2) t‖ := norm_pos_iff.mpr hρ0
+  have h := (tendsto_probeEnergy_half_div_log ht).const_mul (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2)
+  rwa [show 2 * ‖oscillationExponent (1 / 2) t‖ ^ 2 *
+      (‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 /
+        (2 * ‖oscillationExponent (1 / 2) t‖ ^ 2)) =
+      ‖riemannZeta (oscillationExponent (1 / 2) t)‖ ^ 2 by field_simp] at h
 
 end
 

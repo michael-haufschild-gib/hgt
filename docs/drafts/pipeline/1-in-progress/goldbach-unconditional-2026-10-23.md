@@ -699,9 +699,12 @@ paper attacks. The masked complete-residue kernel has now been identified,
 including its cross-denominator support and the surviving double tail.
 The CRT and prime/prime-power Kloosterman sources pass closure audits.
 A [composite bound](../2-fully-proven/goldbach-composite-kloosterman-budget.md)
-is proved on paper; its conductor reduction is being formalized.
-The unresolved core is the finite-interval transfer and a uniform centered
-nonzero-determinant estimate, followed by the actual Möbius progression proof closure.
+is proved on paper; its exact conductor reduction now passes direct
+compilation and six closure audits without analytic premises.
+The [flat dispersion paper](../2-fully-proven/goldbach-flat-prime-dilation-dispersion.md)
+now closes the finite-interval transfer and both mixed terms, with an
+exponential saving in sqrt(log X). Its Lean formalization remains open,
+as do the actual Möbius progression proof closure and the signed amplifier.
 The flat balanced source is only the first signed test: restoring Cycle
 11's coefficients and predecessor marks is a separate obligation.
 
@@ -732,6 +735,9 @@ The flat balanced source is only the first signed test: restoring Cycle
 - Cycle 16's gcd-restricted nonzero collision bound and exact diagonal
   fibre classification pass compilation and six closure audits. The fixed
   periodic repair is retired with its positive classification formalized.
+- The exact Kloosterman conductor reduction also passes compilation and
+  six closure audits. The composite estimate and flat dispersion have
+  complete paper arguments; their full Lean certificates remain open.
 - Research next: attack the actual missing signed estimate, not another
   detector identity. C2 requires the polynomially sifted one-point bias;
   C3 isolates the corresponding coefficient at a vanishing weight parameter.
@@ -745,10 +751,11 @@ The flat balanced source is only the first signed test: restoring Cycle
   Cycle 15 keeps the complete periodic product profile. Its residual signed
   covariance remains unestimated; do not treat ordinary short-window
   Möbius mean bounds as a bound for that covariance. The compensated
-  collision classification is complete. Continue with the exact centered
-  prime-dilation covariance in Cycle 16, retaining local terms, masks and
-  finite endpoints. The flat case does not supply the marked Type II
-  estimate automatically.
+  collision classification is complete. The exact centered flat
+  prime-dilation covariance in Cycle 16 now has a paper proof, retaining
+  local terms, masks and finite endpoints. Formalize that exact proof and
+  close its signed amplifier. The flat case does not supply the marked
+  Type II estimate automatically.
   Cycle 11's predecessor-mark far-slope signed covariance remains an
   alternative analytic frontier. Its Type I deduction is closed on paper. Pursue the
   original analytic argument, rather than extending the source audits
@@ -782,8 +789,8 @@ The flat balanced source is only the first signed test: restoring Cycle
   overview changing under concurrent edits; no Goldbach finding. No new
   whole-repository lint run is claimed for the damping-parity extension.
   Earlier cycle checks terminated and their scratch files were removed.
-  The prime-dilation card records the current source audits and active
-  conductor-reduction formalization; no finished composite estimate is claimed.
+  The prime-dilation card records the current source audits and completed
+  conductor reduction; no Lean certificate for the composite estimate is claimed.
   Cycles 6–9 changed research cards only; no Lean proof was added or
   recompiled, and no new repository-wide verification is claimed.
 
@@ -842,3 +849,9 @@ The flat balanced source is only the first signed test: restoring Cycle
   premises. Closed the fixed-profile norm repair with its positive survivor
   and recorded the actual signed prime-dilation candidate. Goldbach remains
   unproved; no scientific novelty claimed.
+- 2026-10-23 — Derived the complete masked Ramanujan kernel and a paper
+  proof of flat centered prime-dilation dispersion, retaining finite
+  endpoints and all gcd terms. Formalized exact common-factor reduction
+  of Kloosterman sums; leaf check and six closure audits passed without
+  warnings or analytic premises. Full composite and dispersion Lean proofs,
+  signed amplification and marked Type II cancellation remain outstanding.

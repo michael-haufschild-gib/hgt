@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** Classical bridge; deliberately weaker than the Weil bound, no novelty claim
 - **Parent:** [prime-dilation dispersion](../1-in-progress/goldbach-prime-dilation-dispersion.md)
-- **Lean status:** Not formalized; no theorem stub or analytic premise added
+- **Lean status:** Common-factor reduction formalized; full cubed bound not yet formalized
 
 ## Exact statement
 
@@ -92,8 +92,9 @@ closure contains only the standard foundational axioms.
 ## Formalization obligations
 
 Formalize (1) itself, with arbitrary actual residues and positive modulus.
-Keep the common-factor phase identity, exact fibre multiplicity, the
-two-adic root count and CRT induction inside its proof closure. Do not
+The [common-factor phase identity and exact fibre multiplicity](../3-formalized/not_new_scientific_knowledge/goldbach-kloosterman-conductor-reduction.md)
+now pass a direct leaf check and six closure audits. Keep those results,
+the two-adic root count and CRT induction inside the full proof closure. Do not
 replace any of these by a supplied bound or a `Prop` interface.
 
 After (1), the finite modular-hyperbola completion and its zero-frequency

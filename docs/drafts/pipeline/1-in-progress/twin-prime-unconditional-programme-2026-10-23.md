@@ -115,12 +115,17 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   for designated primes below `exp((log X)^beta)`, every fixed
   `beta<1`, and Mellin frequencies up to every fixed `X^kappa`,
   `kappa<1`. The tail moment is proved by a finite Euler product;
-  no unproved distribution input enters the paper deduction.
+  no unproved distribution input enters the Lean proof.
   Six capstones now pass the leaf and transitive axiom audits;
   only standard foundations occur. Its stronger finite form
   separates the frequency horizon from the prime cutoff and
   reaches frequencies close to the cofactor length. The own
   umbrella is wired. Additive-window assembly remains open.
+  Verification: the cleaned leaf passed again; corpus indexes
+  were regenerated. Owned source/card whitespace and relative
+  links passed, as did the forbidden-proof-directive check.
+  Temporary axiom-print commands and all 36 owned search scratch
+  files were removed. No umbrella or unrelated leaf was built.
 - Precise remaining uniformity question:
   [fixed determinant, growing coefficients](twin-prime-fixed-determinant-uniformity.md).
   Canonical reduced intercepts put the actual cofactor faces on
@@ -128,6 +133,13 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   remove the growing progression modulus. The estimate still
   needed is relative to the actual affine sample count; a
   full-interval normalized rough-shift bound does not provide it.
+  A direct prime-stripping operation now identifies a closed
+  family of reduced primitive frames with the same determinant,
+  exact parameter normalization and a square-divisor error at
+  most `T/p^2+1`. This suggests working on the frames directly.
+  Its sign reversals admit the gauge `lambda(ac)`, so no decay
+  is inferred from the transport identity alone. The uniform
+  estimate for the actual source remains the next research test.
 - Current analytic result:
   [balanced CRT compensation](../2-fully-proven/twin-prime-balanced-crt-compensation.md)
   has a complete paper bound `O(Y^(2-1/400))` for `Y^2<=X<=4Y^2`,
@@ -389,3 +401,15 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   knowledge or a fixed-shift prime-pair estimate. Next formal
   target is this exact uniform bound, without a premise asserting
   its arithmetic input. No requested infinitude gate is complete.
+- 2026-10-23 — Certified the uniform Ramaré-cofactor theorem,
+  including its stronger finite two-scale bound: six capstones,
+  standard foundational axioms only. Moved its card to
+  `3-formalized` and wired the own umbrella. This continuation
+  is **progress**, not completion. No new scientific knowledge
+  beyond classical methods is claimed. Checked the scope of
+  the uniform cofinal first-moment theorem and retained the
+  missing second row explicitly. Derived a native affine
+  prime-stripping representation preserving determinant four
+  and reduced intercepts; its relative-normalization estimate
+  remains unproved. No analytic premise or interface replaces
+  that estimate. The infinitude gates remain unchecked.

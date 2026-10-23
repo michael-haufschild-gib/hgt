@@ -12916,6 +12916,165 @@ theorem eulerPayment_eq_integral_multiplier (hF : ContDiff ℝ 1 F) (hFc : HasCo
   rw [hsplit, ← hcos F hF hFc, ← h2, ← h1]
   linarith [hres]
 
+/-! ### How sharply a test can concentrate in frequency
+
+The transform of a test supported in `[−r, r]` is Lipschitz with constant `2πr‖F‖₁`, so its
+spectral density is Lipschitz with constant `4πr‖F‖₁²`: an aperture-`r` test cannot vary its
+density faster than the aperture allows.  Consequently a window of half-width `δ` holds at most
+`2δ(g(ξ₀) + 4πr‖F‖₁²δ)` of the mass, and the rest stays outside.  This is the quantitative form of
+the resonance limit: a test can track a peak of the symbol only if the peak is wider than the
+reciprocal aperture. -/
+
+open Complex in
+theorem norm_exp_mul_I_sub_one_le (t : ℝ) : ‖Complex.exp ((t : ℝ) * I) - 1‖ ≤ |t| := by
+  have h1 : ‖Complex.exp ((t : ℝ) * I) - 1‖ ^ 2 = 2 - 2 * Real.cos t := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+      Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, Complex.one_re, Complex.one_im]
+    nlinarith [Real.sin_sq_add_cos_sq t]
+  have h2 : ‖Complex.exp ((t : ℝ) * I) - 1‖ ^ 2 ≤ |t| ^ 2 := by
+    rw [h1, sq_abs]
+    nlinarith [Real.one_sub_sq_div_two_le_cos (x := t)]
+  have h3 := Real.sqrt_le_sqrt h2
+  rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (abs_nonneg t)] at h3
+
+open Complex in
+theorem norm_exp_mul_I_sub_le (x y : ℝ) :
+    ‖Complex.exp ((x : ℝ) * I) - Complex.exp ((y : ℝ) * I)‖ ≤ |x - y| := by
+  have hfac : Complex.exp ((x : ℝ) * I) - Complex.exp ((y : ℝ) * I)
+      = Complex.exp ((y : ℝ) * I) * (Complex.exp (((x - y : ℝ)) * I) - 1) := by
+    rw [mul_sub, ← Complex.exp_add, mul_one]
+    push_cast
+    ring_nf
+  rw [hfac, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+  exact norm_exp_mul_I_sub_one_le (x - y)
+
+variable {F : ℝ → ℝ}
+
+open FourierTransform Complex in
+theorem norm_fourier_sub_le (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hsupp : ∀ y, r < |y| → F y = 0) (ξ ξ' : ℝ) :
+    ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ - 𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖
+      ≤ 2 * Real.pi * r * (∫ x : ℝ, |F x|) * |ξ - ξ'| := by
+  have hGi : Integrable (fun x => ((F x : ℝ) : ℂ)) :=
+    (Complex.continuous_ofReal.comp hF).integrable_of_hasCompactSupport
+      (hFc.comp_left (g := fun y : ℝ => ((y : ℝ) : ℂ)) (by simp))
+  have hFi : Integrable fun x : ℝ => |F x| :=
+    (hF.abs).integrable_of_hasCompactSupport (hFc.comp_left (g := fun y : ℝ => |y|) (by simp))
+  have hxFi : Integrable fun x : ℝ => |x| * |F x| :=
+    ((continuous_abs.mul hF.abs)).integrable_of_hasCompactSupport
+      ((hFc.comp_left (g := fun y : ℝ => |y|) (by simp)).mul_left)
+  have h1 := integrable_exp_smul hGi ξ
+  have h2 := integrable_exp_smul hGi ξ'
+  rw [Real.fourier_real_eq_integral_exp_smul, Real.fourier_real_eq_integral_exp_smul,
+    ← MeasureTheory.integral_sub h1 h2]
+  have hpt : ∀ x : ℝ,
+      ‖Complex.exp (((-2 * Real.pi * x * ξ : ℝ)) * I) • ((F x : ℝ) : ℂ)
+        - Complex.exp (((-2 * Real.pi * x * ξ' : ℝ)) * I) • ((F x : ℝ) : ℂ)‖
+        ≤ 2 * Real.pi * |ξ - ξ'| * (|x| * |F x|) := by
+    intro x
+    rw [← sub_smul, norm_smul, Complex.norm_real, Real.norm_eq_abs]
+    have hb := norm_exp_mul_I_sub_le (-2 * Real.pi * x * ξ) (-2 * Real.pi * x * ξ')
+    have habs : |(-2 * Real.pi * x * ξ) - (-2 * Real.pi * x * ξ')| = 2 * Real.pi * |x| * |ξ - ξ'| := by
+      rw [show (-2 * Real.pi * x * ξ) - (-2 * Real.pi * x * ξ') = (-(2 * Real.pi * x)) * (ξ - ξ') by ring,
+        abs_mul, abs_neg, abs_mul, abs_mul, abs_of_nonneg Real.pi_pos.le]
+      norm_num
+    rw [habs] at hb
+    calc ‖Complex.exp (((-2 * Real.pi * x * ξ : ℝ)) * I) - Complex.exp (((-2 * Real.pi * x * ξ' : ℝ)) * I)‖
+          * |F x| ≤ (2 * Real.pi * |x| * |ξ - ξ'|) * |F x| :=
+          mul_le_mul_of_nonneg_right hb (abs_nonneg _)
+      _ = 2 * Real.pi * |ξ - ξ'| * (|x| * |F x|) := by ring
+  calc ‖∫ x : ℝ, (Complex.exp (((-2 * Real.pi * x * ξ : ℝ)) * I) • ((F x : ℝ) : ℂ)
+          - Complex.exp (((-2 * Real.pi * x * ξ' : ℝ)) * I) • ((F x : ℝ) : ℂ))‖
+      ≤ ∫ x : ℝ, ‖Complex.exp (((-2 * Real.pi * x * ξ : ℝ)) * I) • ((F x : ℝ) : ℂ)
+          - Complex.exp (((-2 * Real.pi * x * ξ' : ℝ)) * I) • ((F x : ℝ) : ℂ)‖ :=
+        MeasureTheory.norm_integral_le_integral_norm _
+    _ ≤ ∫ x : ℝ, 2 * Real.pi * |ξ - ξ'| * (|x| * |F x|) := by
+        refine MeasureTheory.integral_mono ((h1.sub h2).norm) (hxFi.const_mul _) hpt
+    _ = 2 * Real.pi * |ξ - ξ'| * ∫ x : ℝ, |x| * |F x| := MeasureTheory.integral_const_mul _ _
+    _ ≤ 2 * Real.pi * |ξ - ξ'| * (r * ∫ x : ℝ, |F x|) := by
+        refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+        rw [← MeasureTheory.integral_const_mul]
+        refine MeasureTheory.integral_mono hxFi (hFi.const_mul r) fun x => ?_
+        rcases le_or_gt |x| r with h | h
+        · exact mul_le_mul_of_nonneg_right h (abs_nonneg _)
+        · rw [hsupp x h]
+          simp
+    _ = 2 * Real.pi * r * (∫ x : ℝ, |F x|) * |ξ - ξ'| := by ring
+
+open FourierTransform Complex in
+theorem abs_spectralDensity_sub_le (hF : Continuous F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 ≤ r) (hsupp : ∀ y, r < |y| → F y = 0) (ξ ξ' : ℝ) :
+    |spectralDensity F ξ - spectralDensity F ξ'|
+      ≤ 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * |ξ - ξ'| := by
+  have hB : ∀ η : ℝ, ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) η‖ ≤ ∫ x : ℝ, |F x| := by
+    intro η
+    have h := norm_fourier_le (fun x => ((F x : ℝ) : ℂ)) η
+    simpa [Complex.norm_real, Real.norm_eq_abs] using h
+  have hBnn : (0:ℝ) ≤ ∫ x : ℝ, |F x| := le_trans (norm_nonneg _) (hB 0)
+  have hlip := norm_fourier_sub_le hF hFc hsupp ξ ξ'
+  have hab : |‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ - ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖|
+      ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ - 𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖ :=
+    abs_norm_sub_norm_le _ _
+  rw [spectralDensity, spectralDensity]
+  have hsq : ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ ^ 2 - ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖ ^ 2
+      = (‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ - ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖)
+        * (‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ + ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖) := by ring
+  rw [hsq, abs_mul,
+    abs_of_nonneg (by positivity : (0:ℝ) ≤ ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖
+      + ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖)]
+  calc |‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ - ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖|
+        * (‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ‖ + ‖𝓕 (fun x => ((F x : ℝ) : ℂ)) ξ'‖)
+      ≤ (2 * Real.pi * r * (∫ x : ℝ, |F x|) * |ξ - ξ'|) * (2 * (∫ x : ℝ, |F x|)) := by
+        refine mul_le_mul (le_trans hab hlip) (by linarith [hB ξ, hB ξ']) (by positivity)
+          (by positivity)
+    _ = 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * |ξ - ξ'| := by ring
+
+theorem setIntegral_spectralDensity_le (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 ≤ r) (hsupp : ∀ y, r < |y| → F y = 0) (ξ₀ : ℝ) {δ : ℝ} (hδ : 0 ≤ δ) :
+    (∫ ξ in Set.Icc (ξ₀ - δ) (ξ₀ + δ), spectralDensity F ξ)
+      ≤ 2 * δ * (spectralDensity F ξ₀ + 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ) := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hle : ∀ ξ ∈ Set.Icc (ξ₀ - δ) (ξ₀ + δ),
+      spectralDensity F ξ ≤ spectralDensity F ξ₀ + 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ := by
+    intro ξ hξ
+    rw [Set.mem_Icc] at hξ
+    have habs : |ξ - ξ₀| ≤ δ := by
+      rw [abs_le]
+      constructor <;> linarith [hξ.1, hξ.2]
+    have hlip := abs_spectralDensity_sub_le hF.continuous hFc hr hsupp ξ ξ₀
+    have h1 : spectralDensity F ξ - spectralDensity F ξ₀ ≤ |spectralDensity F ξ - spectralDensity F ξ₀| :=
+      le_abs_self _
+    have h2 : 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * |ξ - ξ₀|
+        ≤ 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ := by
+      refine mul_le_mul_of_nonneg_left habs (by positivity)
+    linarith
+  have hvol : volume.real (Set.Icc (ξ₀ - δ) (ξ₀ + δ)) = 2 * δ := by
+    rw [MeasureTheory.measureReal_def, Real.volume_Icc, ENNReal.toReal_ofReal (by linarith)]
+    ring
+  calc (∫ ξ in Set.Icc (ξ₀ - δ) (ξ₀ + δ), spectralDensity F ξ)
+      ≤ ∫ _ξ in Set.Icc (ξ₀ - δ) (ξ₀ + δ),
+          (spectralDensity F ξ₀ + 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ) :=
+        MeasureTheory.setIntegral_mono_on hgi.integrableOn
+          (continuous_const.integrableOn_Icc) measurableSet_Icc hle
+    _ = 2 * δ * (spectralDensity F ξ₀ + 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ) := by
+        rw [MeasureTheory.setIntegral_const, hvol, smul_eq_mul]
+
+/-- **Anti-concentration of the spectral density.** -/
+
+theorem mass_outside_window_ge (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) {r : ℝ}
+    (hr : 0 ≤ r) (hsupp : ∀ y, r < |y| → F y = 0) (ξ₀ : ℝ) {δ : ℝ} (hδ : 0 ≤ δ) :
+    autoCorrelation F 0 - 2 * δ * (spectralDensity F ξ₀ + 4 * Real.pi * r * (∫ x : ℝ, |F x|) ^ 2 * δ)
+      ≤ ∫ ξ in (Set.Icc (ξ₀ - δ) (ξ₀ + δ))ᶜ, spectralDensity F ξ := by
+  have hgi : Integrable (spectralDensity F) := integrable_spectralDensity hF hFc
+  have hmass : autoCorrelation F 0 = ∫ ξ : ℝ, spectralDensity F ξ := by
+    rw [autoCorrelation_eq_integral_spectral hF hFc 0]
+    refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun ξ => ?_)
+    show Real.cos (2 * Real.pi * 0 * ξ) * spectralDensity F ξ = spectralDensity F ξ
+    rw [show 2 * Real.pi * 0 * ξ = 0 by ring, Real.cos_zero, one_mul]
+  have hsplit := MeasureTheory.integral_add_compl
+    (measurableSet_Icc (a := ξ₀ - δ) (b := ξ₀ + δ)) hgi
+  linarith [setIntegral_spectralDensity_le hF hFc hr hsupp ξ₀ hδ, hsplit, hmass]
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity
 
 

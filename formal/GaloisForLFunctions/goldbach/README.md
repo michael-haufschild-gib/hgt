@@ -363,3 +363,13 @@ six proof closures pass without warnings or analytic premises. The
 separates these Lean theorems from their paper asymptotic corollaries.
 No signed Möbius cancellation or Goldbach proof follows from the unsigned
 collision counts alone.
+
+[`KloostermanConductorReduction.lean`](KloostermanConductorReduction.lean)
+proves the exact common-factor law `S(dm,dn;qd)=κ S(m,n;q)`, where κ
+is the actual unit-reduction fibre size and κ≤d. All six roots pass
+direct compilation and closure audits with only standard foundations;
+see the [conductor card](../../../docs/drafts/pipeline/3-formalized/not_new_scientific_knowledge/goldbach-kloosterman-conductor-reduction.md).
+This preserves the nonunit frequency cost in the
+[flat prime-dilation dispersion paper](../../../docs/drafts/pipeline/2-fully-proven/goldbach-flat-prime-dilation-dispersion.md).
+The full analytic estimate is paper-only; its Lean proof, the signed
+amplifier and the marked Type II extension remain open.
