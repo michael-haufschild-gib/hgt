@@ -56,3 +56,6 @@ theorem norm_bartaFarDefect_mul_exp_le_uniform :
   exact ⟨Λ, Λ₂, hΛ0, hΛ₂0, fun b hb u => norm_bartaFarDefect_mul_exp_le hb hΛ hΛ₂ u⟩
 
 end RHTower
+#print axioms RHTower.abs_deriv_bartaCutoff_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_bartaFarDefect_le_uniform -- AXIOM-AUDIT-TEMP
+#print axioms RHTower.norm_bartaFarDefect_mul_exp_le_uniform -- AXIOM-AUDIT-TEMP

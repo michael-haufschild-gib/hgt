@@ -82,6 +82,64 @@ ordinary two-point manuscript. Identify each use of:
 - lengths and starting points of the parametrizing intervals;
 - the passage from Liouville to Möbius and squarefree restrictions.
 
+## A native affine representation to test
+
+The loss from embedding both forms in a single progression suggests
+keeping the reduced frame `(a,b;c,d)` itself as the state. There
+is an exact prime-stripping operation that preserves both the
+determinant and the reduced intercepts.
+
+Let `Delta=ad-bc`, choose a prime `p` not dividing `a Delta`,
+and let `0<=r<p` solve `ar+b == 0 (mod p)`. Define
+
+`T_p^1(a,b;c,d) = (a,(ar+b)/p; pc,cr+d)`.
+
+Its determinant is exactly
+`a(cr+d)-c(ar+b)=Delta`. Since `ar+b<ap` and `cr+d<cp`,
+both new intercepts remain reduced. The first row stays primitive
+because a common divisor of `a` and `(ar+b)/p` divides `b`.
+The second stays primitive because `gcd(c,cr+d)=1` and
+`a(cr+d) == Delta (mod p)`. In particular `p` never divides
+the second new form. The corresponding operation on the second
+row is obtained by interchanging the rows.
+
+Use the zero-start parameter interval `0<=t<T`; changing the
+original `1<=t<=T` convention costs at most two in the sum.
+On the selected residue `t=pk+r`, the two original values are
+
+`p [ak+(ar+b)/p]`, `pc k+cr+d`.
+
+Thus the actual Möbius product is the negative of the new
+frame's product, except where the first new value is divisible
+by `p`. Those exceptional points are exactly the original
+condition `p^2 | at+b`. Because `p` does not divide `a`, at
+most `T/p^2+1` occur in a parameter interval of length `T`.
+The sum error is at most that count, since the original product
+vanishes there and the new product has modulus at most one.
+
+The new parameter interval is exactly `0<=k<J`. For `J>0`,
+the unnormalized selected sum is therefore `-J` times the new
+frame's normalized correlation, plus this explicit square-divisor
+error. Its natural normalization is `J`, with `|J-T/p|<=1`.
+For `J=0` both sums are empty. No product of the two slopes
+enters this finite identity.
+
+This supplies an invariant arithmetic family for a prospective
+signed-incidence argument, not a decay theorem. In particular,
+sign reversal alone cannot force decay: the unit-modulus gauge
+`lambda(ac)` reverses sign under every such operation, since
+the product of the slopes is multiplied by `p`. Any argument
+using the transport must retain additional information about
+the actual Möbius source and the changing parameter horizons.
+
+**Next test:** audit a direct relative-normalization argument on
+these frames, instead of first passing to modulus `a*c`. The
+uniform affine cancellation conjecture above remains the exact
+target. No stationary law, boundary decay, progression saving or
+entropy estimate has been proved or assumed. The displayed
+algebra is a representation-level **BRIDGE**; no novelty claim
+or separate Lean proof of cancellation is attached to it.
+
 ## Source-level audit
 
 Inspected the primary

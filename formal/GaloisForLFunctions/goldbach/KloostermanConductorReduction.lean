@@ -67,7 +67,7 @@ theorem kloostermanLiftMultiplicity_le (q d : ℕ+) :
 /-- Multiplying the phase by the second modulus factor removes that factor. -/
 theorem stdAddChar_factor_reduction (q d : ℕ+)
     (z : ZMod ((q : ℕ) * (d : ℕ))) :
-    ZMod.stdAddChar ((d : ℕ) * z) =
+    ZMod.stdAddChar (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * z) =
       ZMod.stdAddChar
         (ZMod.castHom (dvd_mul_right (q : ℕ) (d : ℕ)) (ZMod (q : ℕ)) z) := by
   have h := RHTower.HalfWeight.stdAddChar_intCast_mul
@@ -79,6 +79,71 @@ theorem stdAddChar_factor_reduction (q d : ℕ+)
     rw [map_natCast]
   rw [hz]
   simpa only [Int.cast_mul, Int.cast_natCast, ZMod.natCast_zmod_val, mul_comm] using h
+
+/-- Every observation of the reduced unit has the same exact lift multiplicity. -/
+theorem sum_kloostermanUnitReduction (q d : ℕ+)
+    (f : (ZMod (q : ℕ))ˣ → ℂ) :
+    (∑ x : (ZMod ((q : ℕ) * (d : ℕ)))ˣ,
+      f (kloostermanUnitReduction q d x)) =
+        (kloostermanLiftMultiplicity q d : ℂ) * ∑ y : (ZMod (q : ℕ))ˣ, f y := by
+  classical
+  let π := kloostermanUnitReduction q d
+  let φ : Additive (ZMod ((q : ℕ) * (d : ℕ)))ˣ →+
+      Additive (ZMod (q : ℕ))ˣ :=
+    { toFun := fun x => Additive.ofMul (π (Additive.toMul x))
+      map_zero' := π.map_one
+      map_add' := π.map_mul }
+  have h := RHTower.WeilKloosterman.sum_comp_eq_card_ker_mul φ
+    (fun y => f (Additive.toMul y))
+  have hi : univ.image φ = univ := by
+    apply eq_univ_of_forall
+    intro y
+    obtain ⟨x, hx⟩ := kloostermanUnitReduction_surjective q d (Additive.toMul y)
+    exact mem_image.mpr ⟨Additive.ofMul x, mem_univ _, hx⟩
+  have hk : (univ.filter (fun x => φ x = 0)).card =
+      kloostermanLiftMultiplicity q d := by
+    rw [kloostermanLiftMultiplicity, Fintype.card_subtype]
+    rfl
+  rw [hi, hk] at h
+  simpa only [nsmul_eq_mul] using h
+
+/-- A common coefficient factor descends with the exact unit-fibre multiplicity. -/
+theorem kloostermanSum_factor_lift (q d : ℕ+) (m n : ℤ) :
+    kloostermanSum ((q : ℕ) * (d : ℕ))
+      (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * (m : ZMod ((q : ℕ) * (d : ℕ))))
+      (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * (n : ZMod ((q : ℕ) * (d : ℕ)))) =
+        (kloostermanLiftMultiplicity q d : ℂ) *
+          kloostermanSum (q : ℕ) (m : ZMod (q : ℕ)) (n : ZMod (q : ℕ)) := by
+  have hphase (x : (ZMod ((q : ℕ) * (d : ℕ)))ˣ) :
+      kloostermanPhase ((q : ℕ) * (d : ℕ))
+        (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * m)
+        (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * n) x =
+      kloostermanPhase (q : ℕ) m n (kloostermanUnitReduction q d x) := by
+    unfold kloostermanPhase
+    rw [show (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * m) * x +
+        (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * n) * ↑x⁻¹ =
+        ((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) *
+          ((m : ZMod ((q : ℕ) * (d : ℕ))) * x + n * ↑x⁻¹) by ring]
+    rw [stdAddChar_factor_reduction]
+    apply congrArg ZMod.stdAddChar
+    simp only [map_add, map_mul, map_intCast]
+    change (m : ZMod (q : ℕ)) * ↑(kloostermanUnitReduction q d x) +
+        (n : ZMod (q : ℕ)) * ↑(kloostermanUnitReduction q d x⁻¹) = _
+    rw [map_inv]
+  unfold kloostermanSum
+  simp_rw [hphase]
+  exact sum_kloostermanUnitReduction q d
+    (kloostermanPhase (q : ℕ) (m : ZMod (q : ℕ)) (n : ZMod (q : ℕ)))
+
+/-- Descending a common coefficient factor costs at most that factor. -/
+theorem norm_kloostermanSum_factor_lift_le (q d : ℕ+) (m n : ℤ) :
+    ‖kloostermanSum ((q : ℕ) * (d : ℕ))
+      (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * (m : ZMod ((q : ℕ) * (d : ℕ))))
+      (((d : ℕ) : ZMod ((q : ℕ) * (d : ℕ))) * (n : ZMod ((q : ℕ) * (d : ℕ))))‖ ≤
+        (d : ℕ) * ‖kloostermanSum (q : ℕ) (m : ZMod (q : ℕ)) (n : ZMod (q : ℕ))‖ := by
+  rw [kloostermanSum_factor_lift, norm_mul, Complex.norm_natCast]
+  exact mul_le_mul_of_nonneg_right
+    (Nat.cast_le.mpr (kloostermanLiftMultiplicity_le q d)) (norm_nonneg _)
 
 end
 end GaloisForLFunctions.Goldbach

@@ -171,9 +171,12 @@ theorem abs_weightCenteredPrefix_dampedSign_le_of_linear_pos {s : ℕ → ℝ} {
         Real.rpow_le_rpow (Nat.cast_nonneg _) hKle hε.le
       have h4 : (1 : ℝ) ≤ ((n : ℝ) / D) ^ ε := Real.one_le_rpow hnD1 hε.le
       have h5 : 1 + (K : ℝ) ^ ε / ε ≤ (2 / ε) * ((n : ℝ) / D) ^ ε := by
-        rw [div_le_iff₀ hε, div_mul_eq_mul_div, le_div_iff₀ hε]
-        have h6 : ε * 1 ≤ 1 * ((n : ℝ) / D) ^ ε := by
+        have h4' : 1 ≤ 1 / ε * ((n : ℝ) / D) ^ ε := by
+          rw [one_div_mul_eq_div, le_div_iff₀ hε]
           nlinarith [h4]
+        have h3' : (K : ℝ) ^ ε / ε ≤ 1 / ε * ((n : ℝ) / D) ^ ε := by
+          rw [one_div_mul_eq_div]
+          exact div_le_div_of_nonneg_right h3 hε.le
         linarith
       linarith
     have hpow : (n : ℝ) ^ (1 - ε) * ((n : ℝ) / D) ^ ε = n * (D : ℝ) ^ (-ε) := by
@@ -494,13 +497,17 @@ theorem abs_dampedDensity_le_of_le {ε₀ ε : ℝ} (hε₀ : 0 < ε₀) (hε_ge
   rw [dampedDensity_eq_tsum hε, ← pmPowerDampedRealWeight_eq_dampedSignWeight]
   have hs0 : Summable (fun d : ℕ => (d : ℝ) ^ (-(1 + ε₀))) :=
     Real.summable_nat_rpow.mpr (by linarith)
+  have hnorm : Summable (fun d : ℕ => ‖pmPowerDampedRealWeight ε d / (d : ℝ)‖) := by
+    refine (summable_abs_pmPowerDamped_div hε).congr fun d => ?_
+    rw [Real.norm_eq_abs]
   have habs : |∑' d : ℕ, pmPowerDampedRealWeight ε d / d| ≤
       ∑' d : ℕ, |pmPowerDampedRealWeight ε d / d| := by
-    simpa only [Real.norm_eq_abs] using
-      norm_tsum_le_tsum_norm (by simpa only [Real.norm_eq_abs] using summable_abs_pmPowerDamped_div hε)
+    have h := norm_tsum_le_tsum_norm hnorm
+    simpa only [Real.norm_eq_abs] using h
   refine habs.trans (Summable.tsum_le_tsum (fun d => ?_) (summable_abs_pmPowerDamped_div hε) hs0)
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · simp [pmPowerDampedRealWeight, Real.zero_rpow (show -(1 + ε₀) ≠ 0 by linarith)]
+  · rw [show pmPowerDampedRealWeight ε 0 = 0 by simp [pmPowerDampedRealWeight], zero_div, abs_zero]
+    exact Real.rpow_nonneg (Nat.cast_nonneg 0) _
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have h := dampedSignWeight_div (s := moebiusReal) hε d
   simp only [dampedSignWeight] at h
@@ -625,6 +632,7 @@ theorem receiverBounded_dampedSign_of_partialSum_rpow {s : ℕ → ℝ} {β C ε
     have hSl : ∀ x : ℕ, D ≤ x → |∑ e ∈ Icc 1 x, s e| ≤ L * x := by
       intro x hx
       have hx0 : (0 : ℝ) < x := by exact_mod_cast (hD1.trans hx)
+      have hx1 : (1 : ℝ) ≤ x := by exact_mod_cast (hD1.trans hx)
       have hDx : (D : ℝ) ≤ x := by exact_mod_cast hx
       have hxβ : (x : ℝ) ^ β' = (x : ℝ) ^ (β' - 1) * x := by
         rw [Real.rpow_sub_one hx0.ne']; field_simp
@@ -761,9 +769,13 @@ theorem setOf_pos_and_receiverBounded_liouville_eq_receiverDampings :
     {ε : ℝ | 0 < ε ∧ ReceiverBounded (dampedSignWeight RHTower.liouvilleR ε)} =
       receiverDampings := by
   ext ε
-  simp only [Set.mem_setOf_eq]
-  refine and_congr_right fun hε => ?_
-  rw [← receiverBounded_moebius_iff_liouville hε, ← mem_receiverDampings_iff_receiverBounded hε]
+  constructor
+  · rintro ⟨hε, hL⟩
+    exact (mem_receiverDampings_iff_receiverBounded hε).mpr
+      ((receiverBounded_moebius_iff_liouville hε).mpr hL)
+  · intro hm
+    exact ⟨hm.1, (receiverBounded_moebius_iff_liouville hm.1).mp
+      ((mem_receiverDampings_iff_receiverBounded hm.1).mp hm)⟩
 
 /-- **The Liouville receiver damping rate equals the zero width `Θ - 1/2`.** -/
 theorem sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half :

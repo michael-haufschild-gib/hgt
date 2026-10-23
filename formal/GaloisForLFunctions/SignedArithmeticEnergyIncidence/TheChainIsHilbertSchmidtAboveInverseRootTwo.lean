@@ -562,6 +562,130 @@ theorem sq_centeredRow_le_majorant {η : ℝ} (h0 : 0 < η) (h1 : η < 1) (h2 : 
       (by linarith) hρ0
     linarith
 
+/-! ### Summing the majorant -/
+
+/-- Partial sums of `(k+1)^{−s}` are at most `ζ(s)`. -/
+theorem sum_range_rpow_le_zeta {s : ℝ} (hs : 1 < s) (M : ℕ) :
+    ∑ k ∈ range M, ((k + 1 : ℕ) : ℝ) ^ (-s) ≤ realZetaSeries s := by
+  have h := summable_realZetaTerm hs
+  refine le_trans (le_of_eq (sum_congr rfl fun k _ => ?_))
+    (h.sum_le_tsum (range M) fun k _ => Real.rpow_nonneg (by positivity) _)
+  push_cast; rfl
+
+/-- Product sums of two zeta tails. -/
+theorem sum_sum_rpow_le {s t : ℝ} (hs : 1 < s) (ht : 1 < t) (T M : ℕ) :
+    ∑ n ∈ range T, ∑ k ∈ range M, ((n + 1 : ℕ) : ℝ) ^ (-s) * ((k + 1 : ℕ) : ℝ) ^ (-t) ≤
+      realZetaSeries s * realZetaSeries t := by
+  rw [← sum_mul_sum]
+  exact mul_le_mul (sum_range_rpow_le_zeta hs T) (sum_range_rpow_le_zeta ht M)
+    (sum_nonneg fun k _ => Real.rpow_nonneg (by positivity) _)
+    (le_trans (sum_nonneg fun n _ => Real.rpow_nonneg (by positivity) _)
+      (sum_range_rpow_le_zeta hs T))
+
+/-- `(Nat.sqrt N)^p ≤ N^{p/2}`. -/
+theorem natSqrt_rpow_le {N : ℕ} {p : ℝ} (hp : 0 ≤ p) :
+    ((Nat.sqrt N : ℕ) : ℝ) ^ p ≤ (N : ℝ) ^ (p / 2) := by
+  have h1 : ((Nat.sqrt N : ℕ) : ℝ) ≤ Real.sqrt N := by
+    rw [Real.le_sqrt (Nat.cast_nonneg _) (Nat.cast_nonneg _)]
+    exact_mod_cast (by nlinarith [Nat.sqrt_le' N] : Nat.sqrt N ^ 2 ≤ N)
+  calc ((Nat.sqrt N : ℕ) : ℝ) ^ p ≤ (Real.sqrt N) ^ p :=
+        Real.rpow_le_rpow (Nat.cast_nonneg _) h1 hp
+    _ = (N : ℝ) ^ (p / 2) := by
+        rw [Real.sqrt_eq_rpow, ← Real.rpow_mul (Nat.cast_nonneg _)]; ring_nf
+
+/-- Below the square root: `Σ_{K² ≤ N} K^{2−2η} ≤ N^{(3−2η)/2}`. -/
+theorem sum_below_sqrt_le {η : ℝ} (h1 : η < 1) (n M : ℕ) :
+    ∑ k ∈ range M, (if (k + 1) * (k + 1) ≤ n + 1 then ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) else 0) ≤
+      ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2) := by
+  set r := Nat.sqrt (n + 1)
+  have hp : 0 ≤ 2 - 2 * η := by linarith
+  rw [← sum_filter]
+  have hsub : (range M).filter (fun k => (k + 1) * (k + 1) ≤ n + 1) ⊆ range r := by
+    intro k hk
+    simp only [mem_filter, mem_range] at hk ⊢
+    have : k + 1 ≤ r := Nat.le_sqrt.2 hk.2
+    omega
+  calc ∑ k ∈ (range M).filter (fun k => (k + 1) * (k + 1) ≤ n + 1), ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η)
+      ≤ ∑ k ∈ range r, ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) :=
+        sum_le_sum_of_subset_of_nonneg hsub fun k _ _ => Real.rpow_nonneg (by positivity) _
+    _ ≤ ∑ _k ∈ range r, ((r : ℕ) : ℝ) ^ (2 - 2 * η) := by
+        refine sum_le_sum fun k hk => Real.rpow_le_rpow (by positivity) ?_ hp
+        exact_mod_cast (by simpa using hk : k < r)
+    _ = ((r : ℕ) : ℝ) * ((r : ℕ) : ℝ) ^ (2 - 2 * η) := by rw [sum_const, card_range, nsmul_eq_mul]
+    _ = ((r : ℕ) : ℝ) ^ (3 - 2 * η) := by
+        rcases Nat.eq_zero_or_pos r with h | h
+        · rw [h, Nat.cast_zero, zero_mul, Real.zero_rpow (by linarith)]
+        · rw [mul_rpow_neg_eq (show (0 : ℝ) < r by exact_mod_cast h) (a := -(2 - 2 * η)) |>.symm.trans
+            (by ring_nf) |> fun _ => by rw [← Real.rpow_one_add' (by positivity) (by linarith)]; ring_nf]
+    _ ≤ _ := natSqrt_rpow_le (by linarith)
+
+/-- Above the square root: `Σ_{K² > N} K^{2−2η} J ≤ (1 + 1/(2η−1)) N^{(3−2η)/2}`. -/
+theorem sum_above_sqrt_le {η : ℝ} (h1 : η < 1) (hh : 1 / 2 < η) (n M : ℕ) :
+    ∑ k ∈ range M, (if (k + 1) * (k + 1) ≤ n + 1 then 0 else
+      ((k + 1 : ℕ) : ℝ) ^ (2 - 2 * η) * ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+      (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2) := by
+  set p := 2 - 2 * η
+  have hp0 : 0 < p := by simp only [p]; linarith
+  have hp1 : p < 1 := by simp only [p]; linarith
+  -- only jumps contribute, each with weight one
+  have hterm : ∀ k ∈ range M, (if (k + 1) * (k + 1) ≤ n + 1 then 0 else
+      ((k + 1 : ℕ) : ℝ) ^ p * ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ))) ≤
+      (if n + 1 < (k + 1) * (k + 1) ∧ (n + 1) / (k + 1 + 1) < (n + 1) / (k + 1) then
+        ((k + 1 : ℕ) : ℝ) ^ p else 0) := by
+    intro k _
+    by_cases hA : (k + 1) * (k + 1) ≤ n + 1
+    · rw [if_pos hA, if_neg (by omega)]
+    · rw [if_neg hA]
+      have hJ := div_sub_div_succ_le_one (N := n + 1) (K := k + 1) (by omega)
+      by_cases hj : (n + 1) / (k + 1 + 1) < (n + 1) / (k + 1)
+      · rw [if_pos ⟨by omega, hj⟩]
+        have : ((((n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) : ℕ) : ℝ)) ≤ 1 := by exact_mod_cast hJ
+        exact mul_le_of_le_one_right (Real.rpow_nonneg (by positivity) _) this
+      · rw [if_neg (fun h => hj h.2)]
+        have : (n + 1) / (k + 1) - (n + 1) / (k + 1 + 1) = 0 := by omega
+        rw [this]; simp
+  refine (sum_le_sum hterm).trans ?_
+  -- reindex the jumps
+  have hre : ∑ k ∈ range M, (if n + 1 < (k + 1) * (k + 1) ∧
+      (n + 1) / (k + 1 + 1) < (n + 1) / (k + 1) then ((k + 1 : ℕ) : ℝ) ^ p else 0) =
+      ∑ K ∈ floorJumps (n + 1) M, (K : ℝ) ^ p := by
+    rw [floorJumps, sum_filter, show Icc 1 M = Ico 1 (M + 1) by ext; simp; omega,
+      sum_Ico_eq_sum_range, show M + 1 - 1 = M by omega]
+    exact sum_congr rfl fun k _ => by rw [add_comm 1 k]
+  rw [hre]
+  refine (sum_floorJump_le (n + 1) M hp0.le).trans ?_
+  set r := Nat.sqrt (n + 1)
+  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  have hsplit : ∑ m ∈ Icc 1 r, (((n + 1 : ℕ) : ℝ) / m) ^ p =
+      ((n + 1 : ℕ) : ℝ) ^ p * ∑ m ∈ Icc 1 r, (m : ℝ) ^ (-p) := by
+    rw [mul_sum]
+    refine sum_congr rfl fun m hm => ?_
+    have hm0 : (0 : ℝ) < m := by have := (mem_Icc.1 hm).1; exact_mod_cast this
+    rw [Real.div_rpow hN.le hm0.le, Real.rpow_neg hm0.le, div_eq_mul_inv]
+  rw [hsplit]
+  have hhead := RHTower.sum_rpow_neg_head_le hp0 hp1 r
+  have hr := natSqrt_rpow_le (N := n + 1) (p := 1 - p) (by linarith)
+  have hone : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) ^ ((1 - p) / 2) :=
+    Real.one_le_rpow (by exact_mod_cast (by omega : 1 ≤ n + 1)) (by linarith)
+  have h2η : 1 - p = 2 * η - 1 := by simp only [p]; ring
+  have hc : 0 < 2 * η - 1 := by linarith
+  have hbound : ∑ m ∈ Icc 1 r, (m : ℝ) ^ (-p) ≤
+      (1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((1 - p) / 2) := by
+    rw [h2η] at hhead hr hone ⊢
+    have : (r : ℝ) ^ (2 * η - 1) / (2 * η - 1) ≤ ((n + 1 : ℕ) : ℝ) ^ ((2 * η - 1) / 2) / (2 * η - 1) :=
+      div_le_div_of_nonneg_right hr hc.le
+    rw [add_mul, one_mul, div_mul_eq_mul_div, one_mul]
+    linarith
+  have hexp : ((n + 1 : ℕ) : ℝ) ^ p * ((n + 1 : ℕ) : ℝ) ^ ((1 - p) / 2) =
+      ((n + 1 : ℕ) : ℝ) ^ ((3 - 2 * η) / 2) := by
+    rw [← Real.rpow_add hN]; simp only [p]; ring_nf
+  calc ((n + 1 : ℕ) : ℝ) ^ p * ∑ m ∈ Icc 1 r, (m : ℝ) ^ (-p)
+      ≤ ((n + 1 : ℕ) : ℝ) ^ p * ((1 + 1 / (2 * η - 1)) * ((n + 1 : ℕ) : ℝ) ^ ((1 - p) / 2)) :=
+        mul_le_mul_of_nonneg_left hbound (Real.rpow_nonneg hN.le _)
+    _ = (1 + 1 / (2 * η - 1)) * (((n + 1 : ℕ) : ℝ) ^ p * ((n + 1 : ℕ) : ℝ) ^ ((1 - p) / 2)) := by
+        ring
+    _ = _ := by rw [hexp]
+
 end
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

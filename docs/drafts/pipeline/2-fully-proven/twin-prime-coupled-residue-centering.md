@@ -215,11 +215,13 @@ not supply the integer-start, fixed additive-frequency input (3).
 majorant, but its underlying `moebiusTwist` is `n^(-i tau)`, and
 its displayed bound has not been shown to give (3) at these scales.
 
-The next [uniform Ramaré-cofactor deduction](twin-prime-ramare-weighted-cofactor-cancellation.md)
-now has a complete paper proof from the checked corpus prefix
-theorem. It controls the actual reciprocal factor-count weight
-for growing designated prime sets. This is a Mellin-frequency
-input; assembling the additive-window estimate remains separate.
+The [uniform Ramaré-cofactor theorem](../3-formalized/twin-prime-ramare-weighted-cofactor-cancellation.md)
+now has an unconditional Lean certificate from the proved corpus
+prefix theorem. It controls the actual reciprocal factor-count
+weight for growing designated prime sets, and its finite form
+also permits frequencies close to the cofactor length. This is
+a Mellin-frequency input; assembling the additive-window estimate
+remains separate.
 
 - [x] Exact quantifiers and a complete paper deduction.
 - [x] Frequency supremum, complex phases, and endpoint errors checked.

@@ -108,15 +108,19 @@ Do not count an equivalent reformulation as a solution or new knowledge.
   truncation extends the argument to Möbius against any
   unit-bounded second row. This is a paper deduction from the
   checked short exponential-sum theorem; it is not Lean-certified.
-- Further completed paper deduction:
-  [uniform Ramaré cofactor](../2-fully-proven/twin-prime-ramare-weighted-cofactor-cancellation.md).
+- Further certified analytic deduction:
+  [uniform Ramaré cofactor](../3-formalized/twin-prime-ramare-weighted-cofactor-cancellation.md).
   A positive smooth-divisor convolution transfers the existing
   signed Möbius prefix rate to `mu(n)/(omega_P(n)+1)`, uniformly
   for designated primes below `exp((log X)^beta)`, every fixed
   `beta<1`, and Mellin frequencies up to every fixed `X^kappa`,
   `kappa<1`. The tail moment is proved by a finite Euler product;
   no unproved distribution input enters the paper deduction.
-  Lean certification and the additive-window assembly remain open.
+  Six capstones now pass the leaf and transitive axiom audits;
+  only standard foundations occur. Its stronger finite form
+  separates the frequency horizon from the prime cutoff and
+  reaches frequencies close to the cofactor length. The own
+  umbrella is wired. Additive-window assembly remains open.
 - Precise remaining uniformity question:
   [fixed determinant, growing coefficients](twin-prime-fixed-determinant-uniformity.md).
   Canonical reduced intercepts put the actual cofactor faces on

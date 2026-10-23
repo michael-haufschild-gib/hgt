@@ -650,6 +650,7 @@ theorem goldenCounterexample_violates_hodgeIndex :
     (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample
       (goldenDatum.windowSurface {0, 1}).V = 0 ∧
     (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample goldenCounterexample = 2 := by
+  have hq : goldenDatum.q = 5 := rfl
   have hN0 : goldenDatum.pointCount 0 = 0 := by
     rw [goldenDatum_pointCount_eq]; norm_num [goldenLucas]
   have hN1 : goldenDatum.pointCount 1 = 1 := by
@@ -657,11 +658,13 @@ theorem goldenCounterexample_violates_hodgeIndex :
   have hH : (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample
       (goldenDatum.windowSurface {0, 1}).H = 0 := by
     rw [goldenDatum.windowSurface_pair_H]
-    simp [goldenCounterexample, CurveDatum.windowA, goldenDatum]
+    simp [goldenCounterexample, CurveDatum.windowA, hq]
+    norm_num
   have hV : (goldenDatum.windowSurface {0, 1}).pair goldenCounterexample
       (goldenDatum.windowSurface {0, 1}).V = 0 := by
     rw [goldenDatum.windowSurface_pair_V]
     simp [goldenCounterexample, windowB]
+    norm_num
   refine ⟨hH, hV, ?_⟩
   have hdef := goldenDatum.windowSurface_defect_self {0, 1} goldenCounterexample
   rw [(goldenDatum.windowSurface {0, 1}).defect_self, hH, hV] at hdef
@@ -669,7 +672,7 @@ theorem goldenCounterexample_violates_hodgeIndex :
     simp only [goldenCounterexample, CurveDatum.spanDefect, CurveDatum.graphPair]
     rw [Finset.sum_pair zero_ne_one, Finset.sum_pair zero_ne_one, Finset.sum_pair zero_ne_one]
     simp only [Finset.sum_pair zero_ne_one, Nat.dist_self, Nat.dist_zero_left, Nat.dist_zero_right]
-    norm_num [goldenDatum, hN0, hN1]
+    norm_num [hq, hN0, hN1]
   linarith
 
 /-! ### 5. The cohomological sign and subshift obstruction -/

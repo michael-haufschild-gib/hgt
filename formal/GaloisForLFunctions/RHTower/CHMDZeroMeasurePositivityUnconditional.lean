@@ -38,7 +38,3 @@ theorem CHMDSmallScale.chmdWave_zero_pos_unconditional : 0 < CHMDGrowthCollapse.
   CHMDSmallScale.chmdWave_zero_pos
 
 end RHTower
-#print axioms RHTower.nonempty_zetaZeroConfig_carrier -- AXIOM-AUDIT-TEMP
-#print axioms RHTower.CHMDEnergyPositivity.kgEnergyMoment_pos_unconditional -- AXIOM-AUDIT-TEMP
-#print axioms RHTower.CHMDQuarticMoment.kgQuarticMoment_pos_unconditional -- AXIOM-AUDIT-TEMP
-#print axioms RHTower.CHMDSmallScale.chmdWave_zero_pos_unconditional -- AXIOM-AUDIT-TEMP

@@ -1,9 +1,9 @@
 # Pay the reciprocal factor-count weight before changing windows
 
 - **ID:** twin-prime-ramare-weighted-cofactor-cancellation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper deduction) / BRIDGE
-- **Source:** [coupled-residue centering](twin-prime-coupled-residue-centering.md) and the existing [Möbius mean-square gap](../3-formalized/new_scientific_knowledge/matomaki-radziwill-moebius-short-interval-mean-square.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM / BRIDGE
+- **Source:** [coupled-residue centering](../2-fully-proven/twin-prime-coupled-residue-centering.md) and the existing [Möbius mean-square gap](new_scientific_knowledge/matomaki-radziwill-moebius-short-interval-mean-square.md).
 - **Statement:** Transfer the corpus's proved twisted Möbius prefix saving to the actual reciprocal-Ramaré cofactor weight, uniformly for designated primes below a stretched-logarithmic cutoff.
 
 ## Exact target
@@ -23,9 +23,9 @@ The constants are independent of `P` and `tau`. The stronger
 intermediate statement replaces `1/(omega_P(n)+1)` by
 `u^(omega_P(n))`, uniformly for every `0<=u<=1`.
 
-This is a paper deduction from established one-variable
+This is a formalized deduction from established one-variable
 cancellation, not a claimed new two-point theorem. No analytic
-input is to be assumed in Lean. Even success would not supply
+input is assumed in Lean. This result does not supply
 the fixed-shift prime-pair lower bound.
 
 ## The coefficient and the exact two-scale bound
@@ -192,9 +192,9 @@ claimed new mechanism beyond the literature.
   block decomposition. `RamarePhaseBilinear.lean` defines the exact
   coefficient `mu(m)/(card(primeFactorsIn P m)+1)`, agreeing above.
 
-## Remaining formal and arithmetic work
+## Formal certificate and remaining arithmetic work
 
-The formalization uses the following stronger finite statement. There
+The formalization also proves the following stronger finite statement. There
 exist absolute `K>0` and `T0>1` such that, for `X>0`, `H>=T0`,
 `0<a<=1/2`, `u in [0,1]`, `|tau|<=H`, and a finite prime set
 satisfying `a log p<=1` for every designated prime,
@@ -224,7 +224,7 @@ polynomial loss in `S`, provided the signed-prefix exponential
 also pays that loss. This is a direct specialization of the
 proved paper estimate, not a new cancellation conjecture.
 
-For the rough-shift scales `S=R^(99/100)` and
+For the rough-shift scales `R>1`, `S=R^(99/100)` and
 `Delta=R^(199/200)-R^(99/100)`, the tail factor is exactly
 `exp(1-R^(1/200))`. Its saving beats every fixed power of `R`.
 This matches the scale separation between the selected-prime
@@ -238,19 +238,29 @@ Verdict for this specialization: **BRIDGE**. It exposes the
 useful two-scale range of the same convolution proof; no new
 number-theoretic mechanism or fixed-shift result is claimed.
 
-The imported signed-prefix capstone's transitive axiom audit
-returned only `propext`, `Classical.choice`, and `Quot.sound`.
-The new leaf is `twin-prime/RamareSmoothCofactorTransfer.lean`;
-its fractional moment, exact twisted convolution and both finite
-prefix estimates have passed their standard-foundation axiom
-audits. The two asymptotic rate capstones are implemented and
-under the final leaf check; their certificate is not yet claimed.
+The leaf is
+[`RamareSmoothCofactorTransfer.lean`](../../../../formal/GaloisForLFunctions/twin-prime/RamareSmoothCofactorTransfer.lean).
+Its exact exported results are:
 
-The paper proof has no open analytic dependency. Its unconditional
-Lean formalization remains outstanding. The existing corpus
-provides finite-prime summability, the reciprocal-Ramaré integral,
-and the signed-prefix rate, but the precise uniform positive-tail
-transfer above has not yet been certified here.
+- `TwinPrime.ramareSmoothKernel_moment_le`: uniform fractional moment,
+  with exponent `36`.
+- `TwinPrime.ramareSmoothKernel_twisted_prefix`: exact signed-prefix
+  convolution, including the floor cutoffs.
+- `TwinPrime.exists_ramare_damped_prefix_bound`: the finite two-scale
+  bound, uniformly in the damping activity.
+- `TwinPrime.exists_ramare_cofactor_prefix_bound`: the same bound for
+  the actual reciprocal factor-count coefficient.
+- `TwinPrime.exists_ramare_cofactor_logPoly_rate`: the moving-cutoff
+  rate in the corpus's logarithmic-polynomial coordinates.
+- `TwinPrime.exists_ramare_cofactor_twisted_prefix_rate`: the literal
+  Mellin-twisted coefficient sum in the exact target above.
+
+The leaf check passed. The imported signed-prefix result, the four
+finite capstones, and the final rate's complete transitive dependency
+audit returned only `propext`, `Classical.choice`, and `Quot.sound`.
+No analytic input, extra axiom, placeholder or raised proof limit
+was added. The final rate's audit covers the logarithmic-polynomial
+rate as well. The own umbrella import is wired; no umbrella is built.
 
 This Mellin-frequency statement does not supply the additive
 frequency estimate in the rough-shift argument or an integer-start
@@ -263,8 +273,8 @@ be assembled. The fixed-shift twin-prime estimate is further away.
 - [x] Exact statement and proposed coefficient identity.
 - [x] Corpus comparison and attack of all cutoff losses.
 - [x] Complete dependency-closed paper proof.
-- [ ] Unconditional Lean certificate of the actual weighted estimate.
-- [ ] Determine what additional window and additive-frequency work remains.
+- [x] Unconditional Lean certificate of the actual weighted estimate.
+- [ ] Assemble the remaining window and additive-frequency estimates.
 
 ## Log
 
@@ -274,3 +284,10 @@ be assembled. The fixed-shift twin-prime estimate is further away.
   all-height signed-prefix theorem. Strengthened the twist range
   from powers of `log X` to every fixed `X^kappa`, `kappa<1`.
   The finite Euler moment needs no new prime-distribution input.
+- 2026-10-23 — Formalized the actual weighted rate and its stronger
+  finite two-scale bound. All six capstones are covered by the
+  successful leaf check and standard-foundation audits. This is
+  **progress**, not a proof of twin-prime infinitude. The new
+  certificate closes the growing-prime-set cofactor input; it does
+  not prove an additive-frequency window theorem or fixed-shift
+  cancellation. Scientific verdict remains **BRIDGE**.

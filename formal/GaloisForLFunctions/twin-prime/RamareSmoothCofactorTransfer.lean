@@ -1,8 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.RouteTMoebiusTwistRate
 import GaloisForLFunctions.RHTower.Sieve.DampedCofactorIntegral
-import GaloisForLFunctions.RHTower.Sieve.DampedLocalFactor
-import GaloisForLFunctions.RHTower.Sieve.DampedCorrectionMassBudget
-import GaloisForLFunctions.RHTower.Sieve.SmoothPrimeReciprocalTail
 import GaloisForLFunctions.RHTower.DampedMobiusSumsZeroFree
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusFiniteSmoothSource
 import GaloisForLFunctions.RHTower.Sieve.ZetaRealBound

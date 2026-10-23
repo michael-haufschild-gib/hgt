@@ -478,16 +478,17 @@ Do not add an assumption asserting the missing discrepancy bound to a Lean theor
   fixed-determinant estimate must instead resolve the number of
   actual affine samples; that relative estimate remains open.
 - **Further use of the RH machinery:** the existing quantitative
-  twisted Möbius prefix theorem now gives a complete paper bound
+  twisted Möbius prefix theorem now gives an unconditional Lean bound
   for the reciprocal-Ramaré cofactor, uniformly in growing
   designated prime sets below a stretched-logarithmic cutoff.
   The proof keeps signed prefixes intact and pays large smooth
   divisors with an independent positive moment. See
-  [paper deduction](../2-fully-proven/twin-prime-ramare-weighted-cofactor-cancellation.md).
+  [formalized deduction](../3-formalized/twin-prime-ramare-weighted-cofactor-cancellation.md).
   This is precisely the separation of signed arithmetic payment
   from positive tail payment emphasized by the compensation
-  programmes. Its Lean certificate and additive-window use remain
-  outstanding; it is not a fixed-gap positivity theorem.
+  programmes. Six capstones passed their leaf and transitive axiom
+  checks. Additive-window assembly remains outstanding; this is
+  not a fixed-gap positivity theorem.
 - **Next research decision:** attack the source-specific signed CRT/cofactor compensation in §4 first. Use the two-parameter flow to identify the closed family of arithmetic terms. Judge progress by a genuine bound in the normalization `Xε²`, not by the number of equivalent formulations or formalized identities.
 
 ## Gates

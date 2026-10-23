@@ -99,7 +99,7 @@ theorem probeMain_sq_div (ε t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
         (probeAmp ε t ^ 2 * (((n : ℝ) : ℂ) ^ probeCrossExponent ε t /
           (((n : ℝ) + 1 : ℝ) : ℂ))).re / 2 := by
   set a := probeAmp ε t with ha
-  set x : ℝ := n with hx
+  set x : ℝ := (n : ℝ) with hx
   have hx0 : 0 < x := by rw [hx]; exact_mod_cast hn
   have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx0.ne'
   have hsplit : (x : ℂ) ^ oscillationExponent ε t =
@@ -193,14 +193,13 @@ theorem norm_sum_cpow_div_succ_sub_le {β : ℂ} (hβ0 : 0 < β.re) (hβ1 : β.r
   have hTpow : (T : ℝ) ^ (-w.re) ≤ 1 :=
     Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hT) (by linarith)
   have hrate0 := partialSumRate_nonneg hw0
-  rw [sum_congr rfl hterm, sum_sub_distrib, ← hβ]
   have hsum : ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (-w) = cpowPartialSum w T := rfl
-  rw [hsum, ← hwre]
+  rw [sum_congr rfl hterm, sum_sub_distrib, hsum, ← hwre, hβ]
   calc ‖cpowPartialSum w T - ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (-w) / (((n : ℝ) + 1 : ℝ) : ℂ) -
-        ((T : ℝ) : ℂ) ^ β / β‖
+        ((T : ℝ) : ℂ) ^ (1 - w) / (1 - w)‖
       = ‖(cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (1 - w) / (1 - w) - riemannZeta w) +
           riemannZeta w - ∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (-w) / (((n : ℝ) + 1 : ℝ) : ℂ)‖ := by
-        rw [← hβ]; ring_nf
+        congr 1; ring
     _ ≤ ‖cpowPartialSum w T - ((T : ℝ) : ℂ) ^ (1 - w) / (1 - w) - riemannZeta w‖ +
           ‖riemannZeta w‖ + ‖∑ n ∈ Icc 1 T, ((n : ℝ) : ℂ) ^ (-w) / (((n : ℝ) + 1 : ℝ) : ℂ)‖ :=
         (norm_sub_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
@@ -253,6 +252,8 @@ theorem norm_sum_cpow_I_div_succ_le {τ : ℝ} (hτ : τ ≠ 0) (T : ℕ) :
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
     have hnC : ((n : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
     have hn1C : (((n : ℝ) + 1 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by linarith : (n : ℝ) + 1 ≠ 0)
+    have hnC' : (n : ℂ) ≠ 0 := by exact_mod_cast hn0.ne'
+    have hn1C' : (n : ℂ) + 1 ≠ 0 := by exact_mod_cast (by linarith : (n : ℝ) + 1 ≠ 0)
     push_cast
     field_simp
     ring
@@ -478,7 +479,7 @@ theorem tendsto_probeEnergy_div_sub_profile {ε : ℝ} (hε : 0 < ε) (hε2 : ε
       (t2.const_mul (2 * B * Real.sqrt Φm))
   refine squeeze_zero_norm' ?_ hlim
   filter_upwards [eventually_ge_atTop 1] with T hT
-  rw [Real.norm_eq_abs, ← hγ]
+  rw [Real.norm_eq_abs]
   exact hbound T hT
 
 end

@@ -331,6 +331,10 @@ theorem exists_lineIntegrand_oscWeight_one_ge {t₀ : ℝ} (ht₀ : 0 < t₀)
   have h := lineIntegrand_oscWeight_one_ge_of hζ1 hζ0 hζp hc₀ hcq hu hτ (by linarith)
     (by linarith) (by linarith) (by linarith)
   refine le_trans (le_of_eq ?_) h
+  have hut : u + τ ≠ 0 := by linarith
+  have hS : ‖(1 / 2 + t₀ * I : ℂ)‖ + 1 ≠ 0 := by positivity
+  simp only [A]
+  field_simp
   ring
 
 /-- **A nonzero critical value leaves the boundary pattern unpaid.** If `t₀ > 0` and
