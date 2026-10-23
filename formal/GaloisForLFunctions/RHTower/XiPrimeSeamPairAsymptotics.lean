@@ -14,8 +14,6 @@ The proof uses the existing logarithmically weighted Dirichlet summability theor
 `EulerFisherCurvature.lean`; it uses no Xi zero-location information.
 -/
 
-set_option maxHeartbeats 4000000
-
 open scoped BigOperators
 
 namespace RHTower
@@ -71,7 +69,9 @@ theorem orbitwiseNatPrimeSeamCharge_weighted_norm_sq_le_majorant
       |Real.log (p : ℝ)| ^ 2 * (2 * ‖x‖ ^ 2 + 2 * ‖y‖ ^ 2) := by
     have h0 : 0 ≤ |Real.log (p : ℝ)| * (‖x‖ + ‖y‖) := by positivity
     have hs := (sq_le_sq₀ (norm_nonneg _) h0).mpr hnorm
-    nlinarith [sq_nonneg (‖x‖ - ‖y‖)]
+    have hxy : (‖x‖ + ‖y‖) ^ 2 ≤ 2 * ‖x‖ ^ 2 + 2 * ‖y‖ ^ 2 := by
+      linarith [sq_nonneg (‖x‖ - ‖y‖)]
+    linarith [mul_le_mul_of_nonneg_left hxy (sq_nonneg |Real.log (p : ℝ)|)]
   rw [hx, hy] at hsq
   rw [primeSeamSquareMajorant]
   have hdiv := (div_le_div_iff_of_pos_right hp).mpr hsq
@@ -145,11 +145,11 @@ theorem summable_primeSeamMeanMajorant
   have hleft : Summable (fun p : Nat.Primes =>
       |Real.log (p : ℝ)| * (p : ℝ) ^ (-(1 + rho.re))) := by
     simpa only [pow_one] using!
-      hleftNat.comp_injective Subtype.coe_injective
+      hleftNat.comp_injective (Subtype.coe_injective (p := Nat.Prime))
   have hright : Summable (fun p : Nat.Primes =>
       |Real.log (p : ℝ)| * (p : ℝ) ^ (-(2 - rho.re))) := by
     simpa only [pow_one] using!
-      hrightNat.comp_injective Subtype.coe_injective
+      hrightNat.comp_injective (Subtype.coe_injective (p := Nat.Prime))
   exact hleft.add hright
 
 theorem orbitwiseNatPrimeSeamCharge_weighted_norm_le_meanMajorant

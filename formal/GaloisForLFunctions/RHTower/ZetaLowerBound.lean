@@ -67,7 +67,6 @@ theorem norm_riemannZeta_sub_le_segment {β σ' t : ℝ} (ht : 9 ≤ |t|)
   exact norm_image_sub_le_of_norm_deriv_le_segment hdiff hbound σ'
     (Set.right_mem_Icc.2 hβσ.le)
 
-set_option maxHeartbeats 1600000 in
 /-- **Quartic lower bound** right of the one-line:
 `x³/(756·log|t|) ≤ ‖ζ(1+x+it)‖⁴`. -/
 theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
@@ -112,7 +111,7 @@ theorem pow_four_norm_riemannZeta_ge {x t : ℝ} (ht : 9 ≤ |t|)
       have h6 : |2 * t| ≤ |t| ^ (2 : ℕ) := by
         rw [abs_mul]
         simp only [abs_two]
-        nlinarith
+        linarith [mul_le_mul_of_nonneg_right ht (abs_nonneg t)]
       have h7 := Real.log_le_log h2t0 h6
       rwa [Real.log_pow, Nat.cast_ofNat] at h7
     linarith

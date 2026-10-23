@@ -67,7 +67,7 @@ valid.
 - [x] `RHTower/EulerMascheroniCorrectedUpper.lean` (depth 5, 1)
 - [ ] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` (depth 5, 1)
 - [ ] `RHTower/Hedenmalm/HedenmalmThetaAllShiftedTails.lean` (depth 5, 1)
-- [ ] `RHTower/LandauSingularAtAbscissa.lean` (depth 5, 1)
+- [x] `RHTower/LandauSingularAtAbscissa.lean` (depth 5, 1)
 - [ ] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` (depth 5, 1)
 - [ ] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` (depth 5, 1)
 - [ ] `RHTower/Sieve/MultiplicativeEulerBound.lean` (depth 5, 2)

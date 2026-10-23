@@ -29,7 +29,6 @@ theorem zetaLowerA_le_one : zetaLowerA ≤ 1 := by
   rw [zetaLowerA]
   norm_num
 
-set_option maxHeartbeats 3200000 in
 /-- **Strip lower bound**: `A³/(12096·log²⁸|t|) ≤ ‖ζ(σ+it)‖⁴` for
 `|σ − 1| ≤ A/log⁹|t|`, `|t| ≥ 9`. -/
 theorem pow_four_norm_riemannZeta_ge_strip {σ t : ℝ} (ht : 9 ≤ |t|)
@@ -133,14 +132,14 @@ theorem pow_four_norm_riemannZeta_ge_strip {σ t : ℝ} (ht : 9 ≤ |t|)
             calc (1 : ℝ) = 1 ^ (8 : ℕ) := by norm_num
               _ ≤ Real.log |t| ^ (8 : ℕ) := pow_le_pow_left₀ (by norm_num) h3 8
           have h4 : zetaLowerA * (4 * Real.log |t|) ≤ 4 * Real.log |t| := by
-            nlinarith [zetaLowerA_le_one, zetaLowerA_pos, hL0]
+            exact mul_le_of_le_one_left (by linarith) zetaLowerA_le_one
           have h5 : (4 : ℝ) ≤ Real.log |t| ^ (8 : ℕ) := by
             have h6 : (2 : ℝ) ^ (8 : ℕ) ≤ Real.log |t| ^ (8 : ℕ) :=
               pow_le_pow_left₀ (by norm_num) hlogt2.le 8
-            nlinarith
+            linarith
           have h7 : 4 * Real.log |t| ≤ Real.log |t| ^ (8 : ℕ) * Real.log |t| :=
             mul_le_mul_of_nonneg_right h5 hL0.le
-          nlinarith [hL0]
+          linarith
         linarith)
       hlt
       (show 1 + zetaLowerA / Real.log |t| ^ (9 : ℕ) ≤ 3 / 2 by linarith)
@@ -157,7 +156,7 @@ theorem pow_four_norm_riemannZeta_ge_strip {σ t : ℝ} (ht : 9 ≤ |t|)
       refine le_trans hseg ?_
       have h1 : 1 + zetaLowerA / Real.log |t| ^ (9 : ℕ) - σ
           ≤ 2 * (zetaLowerA / Real.log |t| ^ (9 : ℕ)) := by linarith
-      nlinarith [sq_nonneg (Real.log |t|), hη0]
+      linarith [mul_le_mul_of_nonneg_left h1 (sq_nonneg (Real.log |t|))]
     -- `2D ≤ W` from `(2D)⁴ ≤ Z ≤ W⁴`
     have h2D : 2 * (112 * Real.log |t| ^ (2 : ℕ)
         * (2 * (zetaLowerA / Real.log |t| ^ (9 : ℕ)))) ≤ W := by

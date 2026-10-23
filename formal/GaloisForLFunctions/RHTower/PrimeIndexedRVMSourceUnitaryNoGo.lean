@@ -2151,7 +2151,6 @@ lemma entireDet2_diagMul_one_eq_tprod
     exact finiteDet2_neg_block_diagMul_one_eq_prod g s
   rw [hfin] at hdet
   exact tendsto_nhds_unique hdet hprod.hasProd
-set_option maxHeartbeats 800000 in
 theorem entireDet2_gammaPrimeHybridKernel_one_eq_gamma_mul_zeta_mul_primeTrace
     (sigma : ℝ) (hsigma : 1 < sigma) :
     GaloisForLFunctions.HTGeometry.entireDet2 (gammaPrimeHybridKernel sigma) 1 =
@@ -2204,7 +2203,7 @@ theorem entireDet2_gammaPrimeHybridKernel_one_eq_gamma_mul_zeta_mul_primeTrace
   rw [gammaPrimeHybridKernel,
     entireDet2_diagMul_one_eq_tprod (gammaPrimeHybridEigenvalue sigma)
       (summable_normSq_gammaPrimeHybridEigenvalue hsigma) (by simpa only [factor] using hprod)]
-  rw [hgammaMult.tprod_sum hprimeHas.multipliable]
+  rw [(Multipliable.tprod_sum (f := factor) hgammaMult) hprimeHas.multipliable]
   have hgammaProduct :
       (∏' n : ℕ, factor (Sum.inl n)) =
         ((sigma : ℂ) *
@@ -2268,7 +2267,7 @@ theorem entireDet2_gammaPrimeHybridKernel_one_eq_gamma_mul_zeta_mul_primeTrace
         _ = ∏' p : Nat.Primes,
               ((1 - primeEigenvalue p) * (1 - primeEigenvalue p)⁻¹) :=
             (Multipliable.tprod_mul hprimeBare.multipliable
-              (by simpa [primeEigenvalue] using hHP2.multipliable)).symm
+              hHP2.multipliable).symm
         _ = ∏' _p : Nat.Primes, (1 : ℂ) := by
             apply tprod_congr
             intro p

@@ -52,7 +52,6 @@ theorem sum_inv_mul_succ_le (N : ℕ) (hN : 1 ≤ N) (n : ℕ) :
 
 /-! ## The digamma difference is a convergent telescope -/
 
-set_option maxHeartbeats 1000000 in
 theorem norm_digamma_shift_sub_le {z : ℂ} (hz : 0 ≤ z.re) {N : ℕ} (hN : 1 ≤ N) :
     ‖Complex.digamma (z + N) - Complex.digamma (1 + N)‖ ≤ ‖z - 1‖ / (N : ℝ) := by
   have hN0 : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
@@ -124,12 +123,11 @@ theorem norm_digamma_shift_sub_le {z : ℂ} (hz : 0 ≤ z.re) {N : ℕ} (hN : 1 
     rw [div_le_iff₀ hprodpos]
     have hmono : ((N : ℝ) + j) * ((N : ℝ) + j + 1)
         ≤ ‖((1 : ℂ) + (N : ℂ)) + (j : ℂ)‖ * ‖(z + (N : ℂ)) + (j : ℂ)‖ := by
-      have hj : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
-      nlinarith [hsn, htn, hj, hN0]
+      exact (mul_comm _ _).le.trans (mul_le_mul htn hsn (by positivity) (norm_nonneg _))
     have hz1 : (0 : ℝ) ≤ ‖z - 1‖ := norm_nonneg _
     rw [mul_comm (‖z - 1‖ : ℝ) (1 / (((N : ℝ) + j) * ((N : ℝ) + j + 1))), mul_assoc]
     rw [one_div, inv_mul_eq_div, le_div_iff₀ hden]
-    nlinarith [hmono, hz1, hden]
+    exact mul_le_mul_of_nonneg_left hmono hz1
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.mul_sum]
   have hz1 : (0 : ℝ) ≤ ‖z - 1‖ := norm_nonneg _

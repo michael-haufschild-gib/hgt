@@ -234,7 +234,6 @@ theorem gammaXiHybridWeierstrassOperator_isSelfAdjoint_iff_rh (s : ℝ) :
   ⟨riemannHypothesis_of_gammaXiHybridWeierstrassOperator_isSelfAdjoint,
     gammaXiHybridWeierstrassOperator_isSelfAdjoint_of_rh s⟩
 
-set_option maxHeartbeats 800000 in
 /-- The hybrid Fredholm determinant factors into the reciprocal archimedean Gamma factor at
 `z*s` and the multiplicity-exact Xi canonical product at `z`. -/
 theorem fredholmDet_gammaXiHybridWeierstrassKernel_eq_gammaFactor_mul_xiCanonicalProduct
@@ -273,10 +272,10 @@ theorem fredholmDet_gammaXiHybridWeierstrassKernel_eq_gammaFactor_mul_xiCanonica
       Multipliable (fun q : XiZeroCopy => factor (Sum.inr q)) := by
     apply hxiHas.multipliable.congr
     intro q
-    simp [factor, gammaXiHybridWeierstrassEigenvalue,
+    simp only [factor, gammaXiHybridWeierstrassEigenvalue,
       weierstrassE1, div_eq_mul_inv]
   change (∏' i : ℕ ⊕ XiZeroCopy, factor i) = _
-  rw [hgammaMult.tprod_sum hxiMult]
+  rw [(Multipliable.tprod_sum (f := factor) hgammaMult) hxiMult]
   have hgammaProduct :
       (∏' n : ℕ, factor (Sum.inl n)) =
         (t * Complex.exp ((Real.eulerMascheroniConstant : ℂ) * t) *
@@ -317,7 +316,7 @@ theorem fredholmDet_gammaXiHybridWeierstrassKernel_eq_gammaFactor_mul_xiCanonica
             weierstrassE1 (z / xiSpectralPoint q) := by
               apply tprod_congr
               intro q
-              simp [factor, gammaXiHybridWeierstrassEigenvalue,
+              simp only [factor, gammaXiHybridWeierstrassEigenvalue,
                 weierstrassE1, div_eq_mul_inv]
       _ = xiCanonicalProduct z := hxiHas.tprod_eq
   rw [hgammaProduct, hxiProduct]

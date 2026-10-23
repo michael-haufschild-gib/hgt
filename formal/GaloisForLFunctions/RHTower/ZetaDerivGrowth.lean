@@ -15,7 +15,6 @@ namespace RHTower
 
 open Set Metric
 
-set_option maxHeartbeats 1600000 in
 /-- **Growth bound for ζ′**: `|ζ′(σ+it)| ≤ 112·log²|t|` for `|t| ≥ 9`,
 `1 − 1/(4 log|t|) ≤ σ ≤ 3/2`. -/
 theorem abs_deriv_riemannZeta_le_sq_log {σ t : ℝ} (ht : 9 ≤ |t|)
@@ -74,7 +73,7 @@ theorem abs_deriv_riemannZeta_le_sq_log {σ t : ℝ} (ht : 9 ≤ |t|)
     have hwim0 : (0 : ℝ) < |w.im| := by linarith
     -- `log|w.im| ≤ 2 log|t|` since `|w.im| ≤ |t|²`
     have hsq : |w.im| ≤ |t| ^ (2 : ℕ) := by
-      nlinarith
+      linarith [mul_le_mul_of_nonneg_right ht (abs_nonneg t)]
     have hlog2L : Real.log |w.im| ≤ 2 * Real.log |t| := by
       have h1 : Real.log |w.im| ≤ Real.log (|t| ^ (2 : ℕ)) :=
         Real.log_le_log hwim0 hsq

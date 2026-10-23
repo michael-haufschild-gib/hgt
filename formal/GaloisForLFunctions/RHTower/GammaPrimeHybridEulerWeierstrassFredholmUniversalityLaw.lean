@@ -291,7 +291,7 @@ theorem fredholmDet_gammaPrimeHybridKernel_eq_gamma_mul_zeta_mul_primeTrace
       hprimeBare.mul hprimeExp
   simp only [one_mul]
   change (∏' i : ℕ ⊕ Nat.Primes, factor i) = _
-  rw [hgammaMult.tprod_sum hprimeHas.multipliable]
+  rw [(Multipliable.tprod_sum (f := factor) hgammaMult) hprimeHas.multipliable]
   have hgammaProduct :
       (∏' n : ℕ, factor (Sum.inl n)) =
         ((sigma : ℂ) *

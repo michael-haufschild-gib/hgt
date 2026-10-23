@@ -323,8 +323,8 @@ theorem evenSoninWindowTranslation_mul_adjoint_compactEq_shell_of_canonical
     a (x * C) (x * F) x⁻¹ hxC0 hxF0
       (mul_le_mul_of_nonneg_left hFC.le hx.le) (inv_pos.mpr hx)
   rw [← hAdj] at hI
-  have hinvF : x⁻¹ * (x * F) = F := by field_simp [hx.ne']
-  have hinvC : x⁻¹ * (x * C) = C := by field_simp [hx.ne']
+  have hinvF : x⁻¹ * (x * F) = F := inv_mul_cancel_left₀ hx.ne' F
+  have hinvC : x⁻¹ * (x * C) = C := inv_mul_cancel_left₀ hx.ne' C
   rw [hinvF, hinvC, max_eq_left haF, max_eq_left (haF.trans hFC.le)] at hI
   simpa using hI
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomWardObstructionScaleQuadrature
+import GaloisForLFunctions.RHTower.PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor
 import GaloisForLFunctions.RHTower.XiCenteredOrderTwentyOneFourthTraceReduction
 
 /-!
@@ -18,86 +18,19 @@ namespace RHTower
 
 noncomputable section
 
-set_option maxRecDepth 60000 in
-set_option maxHeartbeats 2000000 in
+/-- The 64-cell lower mass of the dominant atom's fourth moment exceeds `143/50000`. -/
 theorem oneHundredFortyThree_div_fiftyThousand_lt_sum_firstAtomFourthLowerMass64 :
     (143 / 50000 : ℝ) <
       ∑ j ∈ Finset.range 56,
-        thetaCuspFirstAtomRawLowerIntervalMass64 2 j := by
-  norm_num [thetaCuspFirstAtomRawLowerIntervalMass64,
-    thetaCuspPowAffineSubTaylorMass, thetaCuspIntervalPowSubMass,
-    thetaCuspFirstSourceLowerAffineConstant64,
-    thetaCuspFirstSourceLowerAffineSlope64,
-    thetaCuspFirstRateUpperSlope64,
-    thetaCuspFirstRateUpperEndpointCertificate64,
-    thetaCuspFirstRateUpper64, thetaCuspSixtyFourthExpUpperChord,
-    thetaCuspThirtySecondExpUpper, thetaCuspThirtySecondExpLower,
-    eval_expNegTruncPoly, Nat.choose, Finset.sum_range_succ]
+        thetaCuspFirstAtomRawLowerIntervalMass64 2 j :=
+  (by norm_num : (143 / 50000 : ℝ) < 2951 / 1000000).trans
+    twoThousandNineHundredFiftyOne_div_oneMillion_lt_sum_firstAtomFourthLowerMass64
 
 /-- The certified 64-cell mass is an unconditional floor for the dominant atom's fourth moment. -/
 theorem oneHundredFortyThree_div_fiftyThousand_lt_thetaCuspAtomRawEvenMoment_two_one :
-    (143 / 50000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 := by
-  let f : ℝ → ℝ := fun x => 2 * (x ^ (4 : ℕ) * thetaCuspSourceTerm x 1)
-  have hfcont : Continuous f := by
-    dsimp only [f]
-    unfold thetaCuspSourceTerm thetaCuspSeed
-    fun_prop
-  have hfint : IntegrableOn f (Ioi 0) := by
-    have h := (integrableOn_pow_mul_thetaCuspSourceTerm 2 1).const_mul 2
-    apply h.congr
-    filter_upwards [] with x
-    dsimp only [f]
-  have hfnonneg : 0 ≤ᵐ[volume.restrict (Ioi 0)] f := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-    exact mul_nonneg (by norm_num) <|
-      mul_nonneg (pow_nonneg hx.le _) (thetaCuspSourceTerm_nonneg_of_pos hx 1)
-  have hsegment (j : ℕ) (hj : j < 56) :
-      thetaCuspFirstAtomRawLowerIntervalMass64 2 j ≤
-        ∫ x in (j : ℝ) / 64..(((j + 1 : ℕ) : ℝ) / 64), f x := by
-    rw [← intervalIntegral_thetaCuspFirstAtomRawLowerCertificate64_eq_mass]
-    apply intervalIntegral.integral_mono_on
-    · push_cast
-      linarith
-    · have hcertcont : Continuous
-          (thetaCuspFirstAtomRawLowerCertificate64 2 j) := by
-        unfold thetaCuspFirstAtomRawLowerCertificate64
-          thetaCuspSixtyFourthExpLowerTangent thetaCuspExpTaylorFive
-        fun_prop
-      exact hcertcont.intervalIntegrable _ _
-    · exact hfcont.intervalIntegrable _ _
-    · intro x hx
-      exact thetaCuspFirstAtomRawLowerCertificate64_le_density hj hx
-  have hsum :
-      (∑ j ∈ Finset.range 56, thetaCuspFirstAtomRawLowerIntervalMass64 2 j) ≤
-        ∑ j ∈ Finset.range 56,
-          ∫ x in (j : ℝ) / 64..(((j + 1 : ℕ) : ℝ) / 64), f x := by
-    exact Finset.sum_le_sum fun j hj => hsegment j (Finset.mem_range.mp hj)
-  have hjoin :
-      (∑ j ∈ Finset.range 56,
-          ∫ x in (j : ℝ) / 64..(((j + 1 : ℕ) : ℝ) / 64), f x) =
-        ∫ x in (0 : ℝ)..7 / 8, f x := by
-    convert
-      (intervalIntegral.sum_integral_adjacent_intervals
-        (f := f) (a := fun k : ℕ => (k : ℝ) / 64) (n := 56) (μ := volume)
-        (fun k _ => hfcont.intervalIntegrable _ _)) using 1 <;> norm_num
-  have hwindow : (∫ x in (0 : ℝ)..7 / 8, f x) ≤ ∫ x in Ioi 0, f x := by
-    rw [intervalIntegral.integral_of_le (by norm_num)]
-    exact setIntegral_mono_set hfint hfnonneg
-      (Filter.Eventually.of_forall fun x hx => hx.1)
-  have hraw : (∫ x in Ioi 0, f x) = thetaCuspAtomRawEvenMoment 2 1 := by
-    rw [thetaCuspAtomRawEvenMoment]
-    dsimp only [f]
-    rw [← integral_const_mul]
-  calc
-    (143 / 50000 : ℝ) <
-        ∑ j ∈ Finset.range 56,
-          thetaCuspFirstAtomRawLowerIntervalMass64 2 j :=
-      oneHundredFortyThree_div_fiftyThousand_lt_sum_firstAtomFourthLowerMass64
-    _ ≤ ∑ j ∈ Finset.range 56,
-          ∫ x in (j : ℝ) / 64..(((j + 1 : ℕ) : ℝ) / 64), f x := hsum
-    _ = ∫ x in (0 : ℝ)..7 / 8, f x := hjoin
-    _ ≤ ∫ x in Ioi 0, f x := hwindow
-    _ = thetaCuspAtomRawEvenMoment 2 1 := hraw
+    (143 / 50000 : ℝ) < thetaCuspAtomRawEvenMoment 2 1 :=
+  (by norm_num : (143 / 50000 : ℝ) < 2951 / 1000000).trans
+    twoThousandNineHundredFiftyOne_div_oneMillion_lt_thetaCuspAtomRawEvenMoment_two_one
 
 /-- Sharpened normalized fourth theta moment forced by the dominant atom. -/
 theorem oneHundredFortyThree_div_twentyFiveThousand_lt_thetaCuspNormalizedEvenMoment_two :

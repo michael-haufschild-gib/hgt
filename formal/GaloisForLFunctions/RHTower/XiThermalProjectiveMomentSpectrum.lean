@@ -122,7 +122,6 @@ theorem xiThermalProjectiveColdPartition_zero_eq_source :
   simpa only [xiThermalPositiveMoment, zero_add, pow_one] using
     xiThermalPositiveMoment_zero_eq_source
 
-set_option maxHeartbeats 500000 in
 /-- The fixed enumeration sums every cold partition value. -/
 theorem hasSum_xiThermalEnumeration_projectiveColdPartition (k : ℕ) :
     HasSum (fun j : ℕ =>
@@ -134,14 +133,10 @@ theorem hasSum_xiThermalEnumeration_projectiveColdPartition (k : ℕ) :
     Equiv.ofBijective xiThermalEnumeration xiThermalEnumeration_bijective
   have hsum : HasSum (fun q : XiZeroCopy => xiThermalNode q *
       Real.exp ((k : ℝ) * xiEndpointProjectiveReflectionDisplacement q))
-      (xiThermalProjectiveColdPartition k) := by
-    simpa [xiThermalProjectiveColdPartition] using
-      (summable_xiThermalProjectiveColdPartition k).hasSum
-  have hsumNat : HasSum
-      (fun j : ℕ => xiThermalNode (e j) *
-        Real.exp ((k : ℝ) * xiEndpointProjectiveReflectionDisplacement (e j)))
-      (xiThermalProjectiveColdPartition k) := e.hasSum_iff.mpr hsum
-  simpa [e] using hsumNat
+      (xiThermalProjectiveColdPartition k) :=
+    (summable_xiThermalProjectiveColdPartition k).hasSum
+  exact (e.hasSum_iff (f := fun q : XiZeroCopy => xiThermalNode q *
+    Real.exp ((k : ℝ) * xiEndpointProjectiveReflectionDisplacement q))).mpr hsum
 
 /-- Growing finite systems converge pointwise to the complete cold partition function. -/
 theorem tendsto_xiThermalProjectiveColdTruncation :
@@ -172,7 +167,6 @@ theorem xiThermalProjectiveColdTruncation_le_partition (N k : ℕ) :
           mul_nonneg (xiThermalNode_pos _).le (Real.exp_pos _).le)
     _ = xiThermalProjectiveColdPartition k := hsum.tsum_eq
 
-set_option maxHeartbeats 500000 in
 /-- The fixed enumeration sums every faithful projective moment. -/
 theorem hasSum_xiThermalEnumeration_projectiveMoment (m : ℕ) :
     HasSum (fun j : ℕ =>
@@ -183,14 +177,10 @@ theorem hasSum_xiThermalEnumeration_projectiveMoment (m : ℕ) :
     Equiv.ofBijective xiThermalEnumeration xiThermalEnumeration_bijective
   have hsum : HasSum (fun q : XiZeroCopy => xiThermalNode q *
       xiEndpointProjectiveReflectionDisplacement q ^ m)
-      (xiThermalProjectiveMoment m) := by
-    simpa [xiThermalProjectiveMoment] using
-      (summable_xiThermalProjectiveMoment m).hasSum
-  have hsumNat : HasSum
-      (fun j : ℕ => xiThermalNode (e j) *
-        xiEndpointProjectiveReflectionDisplacement (e j) ^ m)
-      (xiThermalProjectiveMoment m) := e.hasSum_iff.mpr hsum
-  simpa [e] using hsumNat
+      (xiThermalProjectiveMoment m) :=
+    (summable_xiThermalProjectiveMoment m).hasSum
+  exact (e.hasSum_iff (f := fun q : XiZeroCopy => xiThermalNode q *
+    xiEndpointProjectiveReflectionDisplacement q ^ m)).mpr hsum
 
 /-- The growing finite systems converge pointwise to the faithful projective moment tower. -/
 theorem tendsto_xiThermalProjectiveTruncation :

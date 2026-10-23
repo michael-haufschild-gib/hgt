@@ -45,7 +45,6 @@ end Regroup
 
 section MultiGeometric
 
-set_option maxHeartbeats 800000 in
 /-- **Summability of the monomials of nonnegative contractions.** -/
 theorem summable_multiGeometric_nonneg : ∀ (n : ℕ) (t : Fin n → ℝ), (∀ i, 0 ≤ t i) →
     (∀ i, t i < 1) → Summable fun m : Fin n → ℕ => ∏ i, (t i) ^ (m i) := by
@@ -72,11 +71,9 @@ theorem summable_multiGeometric_nonneg : ∀ (n : ℕ) (t : Fin n → ℝ), (∀
         refine hprod.congr fun p => ?_
         show (t 0) ^ p.1 * (∏ i, (t (Fin.succ i)) ^ (p.2 i)) =
           ∏ i, (t i) ^ ((Fin.consEquiv fun _ : Fin (n + 1) => ℕ) p i)
-        rw [Fin.prod_univ_succ]
-        rfl
+        simp only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ]
       exact (Equiv.summable_iff _).1 hcomp
 
-set_option maxHeartbeats 800000 in
 /-- **The geometric series in several variables.**  The product of the geometric series of the
 coordinates is the sum of all monomials in the coordinates. -/
 theorem hasSum_multiGeometric : ∀ (n : ℕ) (u : Fin n → ℂ), (∀ i, ‖u i‖ < 1) →
@@ -129,8 +126,7 @@ theorem hasSum_multiGeometric : ∀ (n : ℕ) (u : Fin n → ℂ), (∀ i, ‖u 
         funext p
         show (∏ i, (u i) ^ ((Fin.consEquiv fun _ : Fin (n + 1) => ℕ) p i)) =
           (u 0) ^ p.1 * ∏ i, (u (Fin.succ i)) ^ (p.2 i)
-        rw [Fin.prod_univ_succ]
-        rfl
+        simp only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ]
       have hcomp : HasSum ((fun m : Fin (n + 1) → ℕ => ∏ i, (u i) ^ (m i)) ∘
           (Fin.consEquiv fun _ : Fin (n + 1) => ℕ))
           ((1 - u 0)⁻¹ * ∏ i, (1 - u (Fin.succ i))⁻¹) := by

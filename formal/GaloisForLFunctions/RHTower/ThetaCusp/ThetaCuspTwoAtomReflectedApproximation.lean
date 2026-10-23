@@ -12,7 +12,6 @@ open Filter Topology
 open scoped ContDiff
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 1500000
 
 /-- The deep-tail scale condition holds throughout the unclosed middle interval. -/
 theorem thirtySevenTenths_le_firstAtomScale_of_energy_endpoint {x : ℝ} (hx : 8/95 ≤ x) :
@@ -22,7 +21,7 @@ theorem thirtySevenTenths_le_firstAtomScale_of_energy_endpoint {x : ℝ} (hx : 8
   have hm := he.trans (Real.exp_le_exp.mpr (show (16/95 : ℝ) ≤ 2*x by linarith))
   have hp := mul_le_mul_of_nonneg_left hm Real.pi_pos.le
   simp only [thetaCuspSingleAtomReflectionScale, Nat.cast_one, one_pow, mul_one]
-  nlinarith [Real.pi_gt_d2]
+  linarith [Real.pi_gt_d2]
 
 /-- Exact relative partition of the two retained atoms. -/
 def thetaCuspTwoAtomLikelihoodPartition (x : ℝ) : ℝ :=

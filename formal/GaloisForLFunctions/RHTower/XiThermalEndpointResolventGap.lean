@@ -228,7 +228,6 @@ theorem xiThermalEndpointResolventSummand_pos (q : XiZeroCopy) :
     0 < xiThermalNode q / (1 + xiThermalNode q / 4) :=
   div_pos (xiThermalNode_pos q) (by nlinarith [xiThermalNode_pos q])
 
-set_option maxHeartbeats 500000 in
 /-- The finite static thermal resolvent values converge unconditionally to the complete positive
 thermal value. -/
 theorem tendsto_xiThermalEndpointResolventTruncation :
@@ -238,12 +237,13 @@ theorem tendsto_xiThermalEndpointResolventTruncation :
     Equiv.ofBijective xiThermalEnumeration xiThermalEnumeration_bijective
   have hsum : HasSum (fun q : XiZeroCopy =>
       xiThermalNode q / (1 + xiThermalNode q / 4))
-      xiThermalEndpointResolventValue := by
-    simpa [xiThermalEndpointResolventValue] using
-      summable_xiThermalEndpointResolventValue.hasSum
+      xiThermalEndpointResolventValue :=
+    summable_xiThermalEndpointResolventValue.hasSum
   have hsumNat : HasSum (fun j : ℕ =>
       xiThermalNode (e j) / (1 + xiThermalNode (e j) / 4))
-      xiThermalEndpointResolventValue := e.hasSum_iff.mpr hsum
+      xiThermalEndpointResolventValue :=
+    (e.hasSum_iff (f := fun q : XiZeroCopy =>
+      xiThermalNode q / (1 + xiThermalNode q / 4))).mpr hsum
   have ht := hsumNat.tendsto_sum_nat
   exact ht.congr'
     (Eventually.of_forall fun _ => rfl)

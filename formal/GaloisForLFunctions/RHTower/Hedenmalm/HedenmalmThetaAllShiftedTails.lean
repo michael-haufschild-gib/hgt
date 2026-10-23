@@ -22,7 +22,6 @@ namespace HedenmalmThetaSource
 
 open HedenmalmQuantile
 
-set_option maxHeartbeats 4000000
 
 /-- Multiplication of the first theta atom by a natural exponential tilt is exactly polynomial
 multiplication by the corresponding monomial. -/

@@ -18,7 +18,6 @@ noncomputable section
 
 open scoped BigOperators
 
-set_option maxHeartbeats 1000000 in
 
 private theorem complex_tsum_pi_geometric_fin :
     ∀ (n : ℕ) (q : Fin n → ℂ), (∀ i, ‖q i‖ < 1) →
@@ -61,7 +60,8 @@ private theorem complex_tsum_pi_geometric_fin :
         (hasSum_geometric_of_norm_lt_one (hq 0)).mul hbSum habNorm
       constructor
       · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).summable_iff]
-        simpa [Function.comp_def, Fin.prod_univ_succ, a, b, r] using habNormReal
+        simpa only [Function.comp_def, Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero,
+          Fin.cons_succ, norm_mul, a, b, r] using habNormReal
       · rw [← (Fin.consEquiv fun _ : Fin (n + 1) => ℕ).tsum_eq]
         simpa only [Fin.prod_univ_succ, Fin.consEquiv_apply, Fin.cons_zero, Fin.cons_succ,
           a, b, r] using habSum.tsum_eq
