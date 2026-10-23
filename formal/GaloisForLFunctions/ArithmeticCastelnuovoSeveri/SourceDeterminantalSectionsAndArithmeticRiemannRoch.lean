@@ -1467,8 +1467,8 @@ theorem gradedL2SourceCone_riemannRoch_of_le_defect (c : ℝ) (V : Submodule ℝ
   rcases hRR x hxx with h | h
   · exact Or.inl h
   · right
-    change (0 : ℝ × ℝ × V) - x ∈ gradedL2SourceCone c V
-    rw [zero_sub]
+    have h0 : (0 : ℝ × ℝ × V) - x = -x := by abel
+    rw [h0]
     exact h
 
 /-- **All-Aperture Graded Source Riemann–Roch on `primitiveSmoothRealTestsAt r`,

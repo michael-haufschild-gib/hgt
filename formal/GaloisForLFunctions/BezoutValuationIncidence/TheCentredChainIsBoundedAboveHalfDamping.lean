@@ -480,12 +480,12 @@ theorem abs_centeredRow_le_pieces (n k : ℕ) :
   have hη : 0 < η := by linarith
   by_cases hnk : n < k
   · have hs : ¬ chainSmall n k := fun h => absurd (chainSmall_le h) (by omega)
-    rw [if_pos hnk, if_neg (by omega), if_neg hs, if_neg (by tauto)]
+    rw [if_pos hnk, if_neg (by omega), if_neg hs, if_neg (fun h => absurd h.1 (by omega))]
     simpa using abs_centeredRow_le_entrance hη hnk
   · have hkn : k ≤ n := by omega
     rw [if_neg hnk, if_pos hkn, zero_add]
     by_cases hs : chainSmall n k
-    · rw [if_pos hs, if_neg (by tauto), add_zero]
+    · rw [if_pos hs, if_neg (fun h => h.2 hs), add_zero]
       have := abs_centeredRow_le_small h1 h2 hs
       unfold chainDerivativeTerm chainShortTerm
       rw [← mul_add]; exact this
@@ -495,6 +495,153 @@ theorem abs_centeredRow_le_pieces (n k : ℕ) :
       rw [← mul_add]; exact this
 
 end Pieces
+
+/-! ### Weighted row sums -/
+
+/-- `K^{−1} ≤ N^{−1/2}` for `1 ≤ N ≤ K`. -/
+private theorem rpow_neg_one_le_of_le {N K : ℝ} (hN : 1 ≤ N) (hNK : N ≤ K) :
+    K ^ (-1 : ℝ) ≤ N ^ (-(1 / 2 : ℝ)) :=
+  (Real.rpow_le_rpow_of_nonpos (by linarith) hNK (by norm_num)).trans
+    (Real.rpow_le_rpow_of_exponent_le hN (by norm_num))
+
+/-- `K^{−1} ≤ √2 N^{−1/2}` for `0 < N ≤ 2K²`. -/
+private theorem rpow_neg_one_le_sqrt_two {N K : ℝ} (hN : 0 < N) (hK : 0 < K)
+    (h : N ≤ 2 * K ^ 2) : K ^ (-1 : ℝ) ≤ Real.sqrt 2 * N ^ (-(1 / 2 : ℝ)) := by
+  rw [Real.rpow_neg_one, Real.rpow_neg hN.le, ← Real.sqrt_eq_rpow, ← div_eq_mul_inv,
+    le_div_iff₀ (Real.sqrt_pos.mpr hN), inv_mul_eq_div, le_div_iff₀ hK]
+  calc Real.sqrt N ≤ Real.sqrt (2 * K ^ 2) := Real.sqrt_le_sqrt h
+    _ = Real.sqrt 2 * K := by rw [Real.sqrt_mul (by norm_num), Real.sqrt_sq hK.le]
+
+/-- `√N / N = N^{−1/2}`. -/
+private theorem sqrt_div_self_eq {N : ℝ} (hN : 0 < N) : Real.sqrt N / N = N ^ (-(1 / 2 : ℝ)) := by
+  rw [Real.sqrt_eq_rpow, Real.rpow_neg hN.le, div_eq_iff hN.ne', inv_mul_eq_div,
+    eq_div_iff (Real.rpow_pos_of_pos hN _).ne', ← Real.rpow_add hN]
+  norm_num
+
+/-- The exponent `s₂ = 1/2 − η − 2β` of the short-interval row sums. -/
+def chainShortExponent (η : ℝ) : ℝ := 1 / 2 - η - 2 * (1 - chainSourceExponent η)
+
+/-- The row constant of the Schur test. -/
+def chainRowConstant (η : ℝ) : ℝ :=
+  (1 + η) * (pmPowerDampedDivisorDensity η).re * realZetaSeries (1 / 2 + η) +
+    η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * realZetaSeries (1 / 2 + η) +
+    (2 * (pmPowerDampedDivisorDensity η).re +
+      chainSourceConstant η * 2 ^ (1 - chainSourceExponent η) / (1 + chainShortExponent η) +
+      Real.sqrt 2 * realZetaSeries (1 / 2 + η)) +
+    (2 * (1 + 2 * (pmPowerDampedDivisorDensity η).re) +
+      Real.sqrt 2 * (pmPowerDampedDivisorDensity η).re * realZetaSeries (1 / 2 + η))
+
+section Rows
+
+variable {η : ℝ} (h1 : 1 / 2 < η) (h2 : η ≤ 1)
+include h1 h2
+
+private theorem half_add_gt_one : 1 < 1 / 2 + η := by linarith
+
+private theorem row_entrance (n M : ℕ) :
+    ∑ k ∈ range M, (if n < k then (1 + η) * (pmPowerDampedDivisorDensity η).re *
+        ((k + 1 : ℕ) : ℝ) ^ (-1 - η) else 0) * chainWeight k ≤
+      (1 + η) * (pmPowerDampedDivisorDensity η).re * realZetaSeries (1 / 2 + η) * chainWeight n := by
+  have hη : 0 < η := by linarith
+  have hρ := RHTower.pmPowerDampedDivisorDensity_re_pos hη
+  have hc : 0 ≤ (1 + η) * (pmPowerDampedDivisorDensity η).re := by positivity
+  have hpt : ∀ k ∈ range M, (if n < k then (1 + η) * (pmPowerDampedDivisorDensity η).re *
+      ((k + 1 : ℕ) : ℝ) ^ (-1 - η) else 0) * chainWeight k ≤
+      (1 + η) * (pmPowerDampedDivisorDensity η).re * chainWeight n *
+        ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := by
+    intro k _
+    have hK0 : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
+    split_ifs with hnk
+    · unfold chainWeight
+      have e : ((k + 1 : ℕ) : ℝ) ^ (-1 - η) * ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) =
+          ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) * ((k + 1 : ℕ) : ℝ) ^ (-1 : ℝ) := by
+        rw [← Real.rpow_add hK0, ← Real.rpow_add hK0]; ring_nf
+      have hle := rpow_neg_one_le_of_le (N := ((n + 1 : ℕ) : ℝ)) (K := ((k + 1 : ℕ) : ℝ))
+        (by exact_mod_cast Nat.succ_pos n) (by exact_mod_cast (by omega : n + 1 ≤ k + 1))
+      have hp : 0 ≤ ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := Real.rpow_nonneg hK0.le _
+      calc (1 + η) * (pmPowerDampedDivisorDensity η).re * ((k + 1 : ℕ) : ℝ) ^ (-1 - η) *
+            ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))
+          = (1 + η) * (pmPowerDampedDivisorDensity η).re *
+              (((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) * ((k + 1 : ℕ) : ℝ) ^ (-1 : ℝ)) := by
+            rw [← e]; ring
+        _ ≤ (1 + η) * (pmPowerDampedDivisorDensity η).re *
+              (((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) * ((n + 1 : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hle hp) hc
+        _ = _ := by ring
+    · rw [zero_mul]
+      exact mul_nonneg (mul_nonneg hc (chainWeight_pos n).le) (Real.rpow_nonneg hK0.le _)
+  calc _ ≤ ∑ k ∈ range M, (1 + η) * (pmPowerDampedDivisorDensity η).re * chainWeight n *
+        ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := sum_le_sum hpt
+    _ = (1 + η) * (pmPowerDampedDivisorDensity η).re * chainWeight n *
+        ∑ k ∈ range M, ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := by rw [mul_sum]
+    _ ≤ (1 + η) * (pmPowerDampedDivisorDensity η).re * chainWeight n * realZetaSeries (1 / 2 + η) :=
+        mul_le_mul_of_nonneg_left (sum_range_rpow_le_zeta (half_add_gt_one h1 h2) M)
+          (mul_nonneg hc (chainWeight_pos n).le)
+    _ = _ := by ring
+
+private theorem row_derivative (n M : ℕ) :
+    ∑ k ∈ range M, (if k ≤ n then chainDerivativeTerm η n k else 0) * chainWeight k ≤
+      η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) *
+        realZetaSeries (1 / 2 + η) * chainWeight n := by
+  have hη : 0 < η := by linarith
+  have hρ := RHTower.pmPowerDampedDivisorDensity_re_pos hη
+  have hcP := chainSourceConstant_pos h1 h2
+  set β := 1 - chainSourceExponent η with hβ
+  have hβ0 : 0 ≤ β := by have := chainSourceExponent_lt_one h2; linarith
+  have hβ1 : β - 1 ≤ -(1 / 2 : ℝ) := by have := chainSourceExponent_gt_half h1; linarith
+  set N : ℝ := ((n + 1 : ℕ) : ℝ) with hN
+  have hN1 : (1 : ℝ) ≤ N := by rw [hN]; exact_mod_cast Nat.succ_pos n
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hc : 0 ≤ η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) := by positivity
+  have hpt : ∀ k ∈ range M, (if k ≤ n then chainDerivativeTerm η n k else 0) * chainWeight k ≤
+      η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * chainWeight n *
+        ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := by
+    intro k _
+    set K : ℝ := ((k + 1 : ℕ) : ℝ) with hK
+    have hK1 : (1 : ℝ) ≤ K := by rw [hK]; exact_mod_cast Nat.succ_pos k
+    have hK0 : (0 : ℝ) < K := by linarith
+    split_ifs with hkn
+    · unfold chainDerivativeTerm chainWeight
+      rw [← hN, ← hK, ← hβ]
+      have e : K * K ^ (-1 - η) * K ^ (-(1 / 2 : ℝ)) = K ^ (-(1 / 2 + η)) := by
+        conv_lhs => rw [← Real.rpow_one K]
+        rw [← Real.rpow_add hK0, ← Real.rpow_add hK0]; ring_nf
+      have hNK : N / K ≤ N := div_le_self hN0.le hK1
+      have hX : (pmPowerDampedDivisorDensity η).re + chainSourceConstant η * (N / K) ^ β ≤
+          ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * N ^ β := by
+        have hNb : 1 ≤ N ^ β := Real.one_le_rpow hN1 hβ0
+        have : (N / K) ^ β ≤ N ^ β := Real.rpow_le_rpow (by positivity) hNK hβ0
+        nlinarith
+      have hNb : N ^ β / N ≤ N ^ (-(1 / 2 : ℝ)) := by
+        rw [← Real.rpow_sub_one hN0.ne']; exact Real.rpow_le_rpow_of_exponent_le hN1 hβ1
+      have hp : 0 ≤ K ^ (-(1 / 2 + η)) := Real.rpow_nonneg hK0.le _
+      calc K / N * (η * K ^ (-1 - η) * ((pmPowerDampedDivisorDensity η).re +
+            chainSourceConstant η * (N / K) ^ β)) * K ^ (-(1 / 2 : ℝ))
+          = η * (K * K ^ (-1 - η) * K ^ (-(1 / 2 : ℝ))) *
+              (((pmPowerDampedDivisorDensity η).re + chainSourceConstant η * (N / K) ^ β) / N) := by
+            ring
+        _ ≤ η * K ^ (-(1 / 2 + η)) *
+              (((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * N ^ β / N) := by
+            rw [e]
+            exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hX hN0.le) (by positivity)
+        _ = η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * K ^ (-(1 / 2 + η)) *
+              (N ^ β / N) := by ring
+        _ ≤ η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * K ^ (-(1 / 2 + η)) *
+              N ^ (-(1 / 2 : ℝ)) := mul_le_mul_of_nonneg_left hNb (mul_nonneg hc hp)
+        _ = _ := by ring
+    · rw [zero_mul]
+      exact mul_nonneg (mul_nonneg hc (chainWeight_pos n).le) (Real.rpow_nonneg hK0.le _)
+  calc _ ≤ ∑ k ∈ range M, η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) *
+        chainWeight n * ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := sum_le_sum hpt
+    _ = η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * chainWeight n *
+        ∑ k ∈ range M, ((k + 1 : ℕ) : ℝ) ^ (-(1 / 2 + η)) := by rw [mul_sum]
+    _ ≤ η * ((pmPowerDampedDivisorDensity η).re + chainSourceConstant η) * chainWeight n *
+        realZetaSeries (1 / 2 + η) :=
+        mul_le_mul_of_nonneg_left (sum_range_rpow_le_zeta (half_add_gt_one h1 h2) M)
+          (mul_nonneg hc (chainWeight_pos n).le)
+    _ = _ := by ring
+
+end Rows
 
 end
 

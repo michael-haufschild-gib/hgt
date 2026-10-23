@@ -427,7 +427,8 @@ theorem exists_narrow_test {w : ℝ} (hw : 0 < w) :
       (Metric.mem_closedBall_self (smallBump (w / 2) hw2).rIn_pos.le)
     have hval : ∀ u, ‖bumpTest (w / 2) hw2 0 u‖ ^ 2 =
         smallBump (w / 2) hw2 u * smallBump (w / 2) hw2 u := fun u => by
-      simp only [bumpTest, sub_zero, Complex.norm_real, Real.norm_eq_abs, sq_abs, sq]
+      simp only [bumpTest, sub_zero, Complex.norm_real, Real.norm_eq_abs, sq]
+      exact abs_mul_abs_self _
     simp only [hval]
     exact ((smallBump (w / 2) hw2).continuous.mul
       (smallBump (w / 2) hw2).continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
@@ -451,7 +452,7 @@ theorem hodgeDefectAt_curveConfig_eq_top {a : ℝ} {n : ℕ} (hn : n = ⌈2 * a 
   have hpos : 0 < 2 * a / Real.log D.q := by
     by_contra h
     push Not at h
-    have : n = 0 := Nat.ceil_eq_zero.mpr h
+    have : ⌈2 * a / Real.log D.q⌉₊ = 0 := Nat.ceil_eq_zero.mpr h
     omega
   have hgap : ((n : ℝ) - 1) * Real.log D.q < 2 * a := by
     have h1 := Nat.ceil_lt_add_one hpos.le

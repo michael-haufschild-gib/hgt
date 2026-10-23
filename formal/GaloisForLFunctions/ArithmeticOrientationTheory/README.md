@@ -358,6 +358,15 @@ effectivity, one positive square in every intersection Gram, cofinal admission o
 receiver, arbitrarily small pronic prefix energy, the linear Chebyshev band, and the absence of a
 finite-radius refutation of full Weil positivity are equivalent. Pairs of units are stated
 directly (`one_positive_square_iff_cofinal_budget`, `exists_effectivity_iff_meanSquare_band`).
+`castelnuovoSeveriMetrologyAndWidthDictionary_tfae` extends this dictionary with the degree-filtered
+Hodge defect (`∀ a, hodgeDefectAt zetaZeroConfig a = 0`), the even and odd reflection-sector Hodge
+defects (`∀ a, sectorHodgeDefectAt zetaZeroConfig s a = 0`), and the Castelnuovo–Severi defect-floor
+growth rates (`oddDefectFloorRate = 0`, `fullDefectFloorRate = 0`; direct bridges
+`oddDefectFloorRate_eq_zero_iff_cofinal_budget`, `oddDefectFloorRate_eq_zero_iff_meanSquare_band`,
+`sectorHodgeDefectAt_eq_zero_iff_one_positive_square`). At general width `σ ≥ 0`,
+`gradedWidthDictionary_tfae` equates `zetaZeroWidth ≤ σ`, `oddDefectFloorRate ≤ σ`,
+`fullDefectFloorRate ≤ σ`, and the `H¹`-normalised exponential Castelnuovo–Severi defect floors on
+`scalingSubsurface (oddRealTestsAt r)` and `scalingSubsurface (realTestsAt r)`.
 
 `forcingSignAndWidthDictionary_tfae` (`PoleSubtractionAndTheForcingSignDictionary`): unites the
 eight width units with the pole-subtracted forcing units of `WhichArithmeticDataForceTheSign`

@@ -39,7 +39,7 @@ theorem realFn_apply {g : ℕ → ℝ} {n : ℕ} (hn : n ≠ 0) : realFn g n = (
 theorem norm_term_realFn (g : ℕ → ℝ) (n : ℕ) :
     ‖term (⇑(realFn g)) ((1 / 2 : ℝ) : ℂ) n‖ = |g n| * (n : ℝ) ^ (-(1 / 2 : ℝ)) := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [Real.zero_rpow (by norm_num : (-(1 / 2 : ℝ)) ≠ 0)]
+  · simp
   · rw [norm_term_eq, if_neg hn, realFn_apply hn, Complex.norm_real, Real.norm_eq_abs,
       Complex.ofReal_re, Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
 
@@ -78,7 +78,7 @@ theorem isWienerUnit_iff_isUnit (g : ℕ → ℝ) (hg : CriticalWiener g) :
     IsWienerUnit g ↔ IsUnit (toWiener g hg) := by
   constructor
   · rintro ⟨-, h, hh, hinv⟩
-    refine isUnit_of_mul_eq_one _ (toWiener h hh) (toFn_injective ?_)
+    refine isUnit_iff_exists_inv.2 ⟨toWiener h hh, toFn_injective ?_⟩
     rw [toFn_mul, toFn_one]
     show realFn g * realFn h = 1
     rw [← realFn_dirichletConv, ← realFn_unitKernel]
@@ -92,7 +92,7 @@ theorem isWienerUnit_iff_isUnit (g : ℕ → ℝ) (hg : CriticalWiener g) :
     have hWh : CriticalWiener h := by
       refine (summable_norm H).of_nonneg_of_le (fun n => by positivity) fun n => ?_
       rcases eq_or_ne n 0 with rfl | hn
-      · simp [Real.zero_rpow (by norm_num : (-(1 / 2 : ℝ)) ≠ 0)]
+      · simp
       · rw [norm_term_eq, if_neg hn, Complex.ofReal_re, Real.rpow_neg (Nat.cast_nonneg n),
           ← div_eq_mul_inv]
         exact div_le_div_of_nonneg_right (Complex.abs_re_le_norm _) (by positivity)
@@ -148,8 +148,8 @@ theorem receiverBounded_dirichletConv_iff_of_isWienerUnit {k c : ℕ → ℝ} (h
     (hc : Summable fun d : ℕ => |c d / d|) :
     ReceiverBounded (RHTower.dirichletConv k c) ↔ ReceiverBounded c := by
   refine ⟨fun h => ?_, fun h => receiverBounded_dirichletConv hk.1 hc h⟩
-  obtain ⟨-, g, hg, hinv⟩ := hk
-  have h2 := receiverBounded_dirichletConv hg (summable_abs_dirichletConv_div hk.1 hc) h
+  obtain ⟨hk1, g, hg, hinv⟩ := hk
+  have h2 := receiverBounded_dirichletConv hg (summable_abs_dirichletConv_div hk1 hc) h
   refine (receiverBounded_congr fun n hn => ?_).1 h2
   rw [← dirichletConv_assoc, dirichletConv_comm g k,
     dirichletConv_congr (fun m hm => hinv m hm) (fun _ _ => rfl) n,

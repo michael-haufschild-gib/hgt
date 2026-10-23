@@ -137,7 +137,7 @@ valid.
 - [ ] `RHTower/Sieve/VonMangoldtTwistUniformHeight.lean` (depth 7, 1)
 - [x] `RHTower/Sieve/ZetaWideRectangle.lean` (depth 7, 1)
 - [ ] `RHTower/SoninAllPrimeResidualKernel.lean` (depth 7, 1)
-- [ ] `RHTower/SoninDilationSumFourierInjective.lean` (depth 7, 1)
+- [x] `RHTower/SoninDilationSumFourierInjective.lean` (depth 7, 1)
 - [ ] `RHTower/SoninMixedBlockPolarizationSplit.lean` (depth 7, 1)
 - [ ] `RHTower/SoninPrincipalRelativeIdeal.lean` (depth 7, 2)
 - [ ] `RHTower/SoninPrincipalRelativeTraceSplitting.lean` (depth 7, 2)
@@ -173,7 +173,7 @@ valid.
 - [ ] `RHTower/Sieve/MaynardSelectedCellAllAmplitudeReceiver.lean` (depth 8, 1)
 - [x] `RHTower/Sieve/RouteTZetaBandGrowth.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/VonMangoldtTwistScaledEnvelope.lean` (depth 8, 1)
-- [ ] `RHTower/SoninEulerCornerConcrete.lean` (depth 8, 1)
+- [x] `RHTower/SoninEulerCornerConcrete.lean` (depth 8, 1)
 - [ ] `RHTower/SoninScaledAnnulusProfile.lean` (depth 8, 1)
 - [ ] `RHTower/SoninShellProductMixedTerms.lean` (depth 8, 1)
 - [ ] `RHTower/SoninTimeBandSchatten.lean` (depth 8, 1)
@@ -481,6 +481,11 @@ valid.
 Proof rewrites are present. Check and fix each listed file at default budgets, then produce
 its olean/ilean using direct `lake --old env lean` commands, one file at a time.
 Axiom audits are excluded. The following list is the fixed completion batch, not a new queue.
+
+Checkpoint: user cleared the goal after 35 entries passed their source checks and artifact builds.
+No compiler remains running. Next entry is `RHTower/SoninMixedPhysicalBlockNonvanishing.lean`.
+Unchecked entries, including further proof refinements already present, remain unverified.
+
 - [x] `HTGeometry/BriotBouquetTwoRootNoGo.lean` — build and final check passed; olean/ilean written.
 - [x] `HTGeometry/FinitePrimeRationalCoefficientField.lean` — build and final check passed; olean/ilean written.
 - [x] `HTGeometry/GammaDigammaShiftAnchor.lean` — check and build passed; olean/ilean written.
@@ -514,8 +519,8 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/Sieve/ZetaWideRectangle.lean` — narrowed truncation-bound arithmetic; check and build passed.
 - [x] `RHTower/SoninApertureFourierParityNoGo.lean` — check and build passed; olean/ilean written.
 - [x] `RHTower/SoninCouplingBranchEstimate.lean` — check and build passed; olean/ilean written.
-- `RHTower/SoninDilationSumFourierInjective.lean`
-- `RHTower/SoninEulerCornerConcrete.lean`
+- [x] `RHTower/SoninDilationSumFourierInjective.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/SoninEulerCornerConcrete.lean` — check and build passed; olean/ilean written.
 - `RHTower/SoninMixedPhysicalBlockNonvanishing.lean`
 - `RHTower/SoninPrincipalRelativeIdeal.lean`
 - `RHTower/SoninShellProductIdeal.lean`
