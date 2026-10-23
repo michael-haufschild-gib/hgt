@@ -75,8 +75,9 @@ RH and twin primes are equivalent follows from these coordinates.
 
 ## Damping removed from the arithmetic input
 
-The [uniform deformation estimate](../2-fully-proven/twin-prime-cofactor-damping-removal.md)
-now has a complete elementary paper proof. Put
+The [uniform deformation estimate](../3-formalized/twin-prime-cofactor-damping-removal.md)
+now has a complete elementary paper proof and five unconditional
+Lean capstones with standard-axiom audits. Put
 
 `U_Z(n)=sum_(dm=n, 2<=m<=Z) mu(d) log m`.
 
@@ -111,6 +112,13 @@ premise, and definitions of binary Möbius correlations. None
 supplies the candidate. The correlation-premise theorem is not
 used as an unconditional input.
 
+The search also returned `abs_truncAF_conv_le_log` in
+`RHTower/Sieve/VaughanTypeIPieces.lean`; its source was checked.
+It bounds `Lambda_truncated * mu_truncated`, using positivity
+and `Lambda*1=log`. The present row is `mu*(log_truncated)`.
+Those are different truncations, so its pointwise logarithmic
+bound is not an available estimate for `U_Z`.
+
 Checked ACCE source:
 `TheTangentFactorsThroughTheMoebiusDilation.lean`, especially
 `sum_divisors_dampedMoebius_mul_dampedLog` and
@@ -129,6 +137,12 @@ supersolution, paths, edge shares and their proved packing bounds.
 None has been constructed for this source at the required scale.
 Passing a `PathCertificate` as an unproved input would merely hide
 the missing estimate and is not an allowed proof of the candidate.
+
+The [fixed-determinant audit](twin-prime-fixed-determinant-uniformity.md)
+isolates a further possible route. Parity restriction gives primitive
+affine forms with determinant four, but growing slopes still produce
+a growing progression modulus. A fixed determinant alone does not
+remove that source of nonuniformity.
 
 ## First proof obligation
 

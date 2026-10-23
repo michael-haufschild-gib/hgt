@@ -199,6 +199,26 @@ theorem entrance_le {η : ℝ} (hη : 0 < η) (k : ℕ) :
         mul_le_mul_of_nonneg_left (by linarith) (by positivity)
     _ = _ := by rw [mul_assoc, h2]
 
+/-- **Kernel identity**: with `a = ⌊N/K⌋`, `a' = ⌊N/(K+1)⌋`,
+`C(n,k) = (K/N)(K^{−η}(ρ(a − N/K) + P(a)) − (K+1)^{−η}(ρ(a' − N/(K+1)) + P(a')))`. -/
+theorem centeredRow_eq (η : ℝ) (n k : ℕ) :
+    arithmeticDampingCenteredRow η n k =
+      ((k + 1 : ℕ) : ℝ) / ((n + 1 : ℕ) : ℝ) *
+        (((k + 1 : ℕ) : ℝ) ^ (-η) * ((pmPowerDampedDivisorDensity η).re *
+            ((((n + 1) / (k + 1) : ℕ) : ℝ) - ((n + 1 : ℕ) : ℝ) / ((k + 1 : ℕ) : ℝ)) +
+            pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1))) -
+          ((k + 1 + 1 : ℕ) : ℝ) ^ (-η) * ((pmPowerDampedDivisorDensity η).re *
+            ((((n + 1) / (k + 1 + 1) : ℕ) : ℝ) - ((n + 1 : ℕ) : ℝ) / ((k + 1 + 1 : ℕ) : ℝ)) +
+            pmPowerDampedCenteredDivisorPrefix η ((n + 1) / (k + 1 + 1)))) := by
+  have hK : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
+  have hK' : (0 : ℝ) < ((k + 1 + 1 : ℕ) : ℝ) := by positivity
+  have hN : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) := by positivity
+  unfold arithmeticDampingCenteredRow arithmeticDampingTransition arithmeticDampingEntrance
+  rw [arithmeticDampingPrefix_eq, arithmeticDampingPrefix_eq,
+    show -1 - η = -η - 1 by ring, Real.rpow_sub_one hK.ne', Real.rpow_sub_one hK'.ne']
+  field_simp
+  ring
+
 /-- **Kernel bound**: for `k ≤ n` the centred entry is at most
 `2(ρ + ζ(η) + 1) (k+1)^{1−η}/(n+1)`. -/
 theorem abs_centeredRow_le {η : ℝ} (hη : 1 < η) (n k : ℕ) :
@@ -219,12 +239,8 @@ theorem abs_centeredRow_le {η : ℝ} (hη : 1 < η) (n k : ℕ) :
   -- centre the floors: `R = (K/N)(K^{−η}(ρ(a − N/K) + P a) − K'^{−η}(ρ(a' − N/K') + P a'))`
   have hR : arithmeticDampingCenteredRow η n k =
       K / N * (K ^ (-η) * (ρ * ((a : ℝ) - N / K) + pmPowerDampedCenteredDivisorPrefix η a) -
-        K' ^ (-η) * (ρ * ((a' : ℝ) - N / K') + pmPowerDampedCenteredDivisorPrefix η a')) := by
-    unfold arithmeticDampingCenteredRow arithmeticDampingTransition arithmeticDampingEntrance
-    rw [arithmeticDampingPrefix_eq, arithmeticDampingPrefix_eq,
-      show -1 - η = -η - 1 by ring, Real.rpow_sub_one hK.ne', Real.rpow_sub_one hK'.ne']
-    field_simp
-    ring
+        K' ^ (-η) * (ρ * ((a' : ℝ) - N / K') + pmPowerDampedCenteredDivisorPrefix η a')) :=
+    centeredRow_eq η n k
   have hPa := abs_centeredPrefix_le hη a
   have hPa' := abs_centeredPrefix_le hη a'
   have hfa := abs_natDiv_sub_div_le (n + 1) (k + 1) (by omega)

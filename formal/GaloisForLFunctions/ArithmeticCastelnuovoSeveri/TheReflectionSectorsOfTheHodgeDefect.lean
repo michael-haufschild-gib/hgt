@@ -611,6 +611,3 @@ theorem zeta_sector_hodgeDefect_iff {s : ℂ} (hs : s = 1 ∨ s = -1) (n : ℕ) 
     hs n, zeta_sectorZeros_eq]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.sector_pontryagin_law
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.zeta_sector_hodgeDefect_iff

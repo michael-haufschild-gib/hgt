@@ -261,7 +261,8 @@ theorem weightCenteredPrefix_logOscillatingSmoothPower_eq {ε : ℝ} (hε : 0 < 
   congr 1
   · refine sum_congr rfl fun d _ => ?_
     rw [logOscillatingSmoothPower_eq_re hε, show ((n / d : ℕ) : ℂ) = (((n / d : ℕ) : ℝ) : ℂ) by
-      push_cast; rfl, Complex.re_mul_ofReal]
+      push_cast; rfl]
+    simp only [Complex.re_mul_ofReal]
   · rw [show (n : ℂ) = ((n : ℝ) : ℂ) by push_cast; rfl, Complex.re_mul_ofReal, neg_re]
     ring
 
@@ -482,7 +483,8 @@ theorem sum_Ioc_re_sq_div_ge {t : ℝ} (ht : t ≠ 0) (c : ℂ) {N T : ℕ} (hNT
         c ^ 2 * ((n : ℝ) : ℂ) ^ (((2 * t : ℝ) : ℂ) * I) := by
       rw [mul_pow, sq (((n : ℝ) : ℂ) ^ ((t : ℂ) * I)), ← Complex.cpow_add _ _ hnC]
       push_cast; ring_nf
-    rw [re_sq_eq_half, norm_mul, hw, mul_one, hz2, ← mul_div_assoc, Complex.div_ofReal_re]
+    rw [re_sq_eq_half, norm_mul, hw, mul_one, hz2, ← mul_div_assoc (c ^ 2),
+      Complex.div_ofReal_re]
     ring
   have hsum : ∑ n ∈ Ioc N T, (c * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re ^ 2 / n =
       ‖c‖ ^ 2 / 2 * ∑ n ∈ Ioc N T, 1 / (n : ℝ) + (c ^ 2 * S).re / 2 := by
@@ -613,13 +615,13 @@ theorem zeta_eq_zero_and_deriv_eq_zero_of_receiverBounded {ε : ℝ} (hε : 0 < 
         b * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I) +
           (Real.log n : ℂ) * (a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)) by ring,
       add_re, Complex.re_ofReal_mul]
-  have hC' : ∀ T, ∑ n ∈ Icc 1 T, ((b * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re +
+  have hC' : ∀ T : ℕ, ∑ n ∈ Icc 1 T, ((b * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re +
       Real.log n * (a * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re) ^ 2 / n ≤ C := by
     intro T
     have h := hC T
     simp only [hu] at h
     exact h
-  have hwb : ∀ n, 1 ≤ n → |(b * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re| ≤ ‖b‖ :=
+  have hwb : ∀ n : ℕ, 1 ≤ n → |(b * ((n : ℝ) : ℂ) ^ ((t : ℂ) * I)).re| ≤ ‖b‖ :=
     fun n hn => abs_re_mul_cpow_le b t hn
   rcases eq_or_ne t 0 with ht0 | ht0
   · -- `t = 0`: `a = ζ(1 − ε)/(1 − ε)` has negative real part
@@ -640,7 +642,7 @@ theorem zeta_eq_zero_and_deriv_eq_zero_of_receiverBounded {ε : ℝ} (hε : 0 < 
         rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hv0]; ring
       rw [e, sub_zero]
       exact mul_le_mul_of_nonneg_left (log_sub_one_le_sum_Ioc_one_div hN) (sq_nonneg _)
-    obtain ⟨T, hT⟩ := exists_lt_sum_sq_div_of_window (by positivity) hwb hv C
+    obtain ⟨T, hT⟩ := exists_lt_sum_sq_div_of_window ((by nlinarith : (0 : ℝ) < a.re ^ 2)) hwb hv C
     exact absurd (hC' T) (not_le.mpr hT)
   · -- `t ≠ 0`: first `a = 0`, then `b = 0`
     have ha0 : a = 0 := by

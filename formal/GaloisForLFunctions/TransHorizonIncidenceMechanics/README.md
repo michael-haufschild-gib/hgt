@@ -1306,6 +1306,29 @@ large mean drift. This is the sharp classification, not an unresolved exchange
 of limits
 ([TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping](TheHorizonLimitCommutesWithTheReceiverExactlyFromHalfDamping.lean)).
 
+**The oscillating smooth power and the shifted-pole hyperplane law.** For
+$c_{\varepsilon,t}(d)=d^{-\varepsilon}\cos(t\log d)=\operatorname{Re}(d^{\rho-1})$, $\rho=1-\varepsilon+it$,
+$0<\varepsilon\le1/2$, the Dirichlet hyperbola method gives
+$A_{\varepsilon,t}(n)=\operatorname{Re}((\zeta(\rho)/\rho)n^\rho)+O(n^{(1-\varepsilon)/2})$, so
+$\operatorname{ReceiverBounded}(c_{\varepsilon,t})\iff\zeta(1-\varepsilon+it)=0$
+([TheOscillatingSmoothPowerIsPaidExactlyAtTheZerosOfZeta](TheOscillatingSmoothPowerIsPaidExactlyAtTheZerosOfZeta.lean)).
+On $\sigma>1-\varepsilon$ its real-axis Dirichlet series is
+$\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$; when $t\ne0$,
+$1-it\ne1$ is a regular point of $\zeta$, so the real-axis Dirichlet series converges to
+$\operatorname{Re}\zeta(1-it)$ and is Lipschitz at the real abscissa $1-\varepsilon$ for every $t\ne0$
+and every $\varepsilon$, paid or unpaid: the oscillation shifts the pole from $1-\varepsilon$ to the
+conjugate points $1-\varepsilon\pm it$. Unconditionally, $c_{\varepsilon,0}$ is unpaid for all
+$0<\varepsilon\le1/2$, $c_{\varepsilon,t}$ is unpaid on every bounded box $\lvert t\rvert\le T$ for
+$0<\varepsilon\le\min(\delta,1/2)$ and on the Vinogradov–Korobov strip
+$0<\varepsilon<\min(1/2,w_{\mathrm{VK}}(\lvert t\rvert))$ for $\lvert t\rvert\ge T_0$, and the paid
+dampings at each $t$ and paid frequencies in each $[-T,T]$ are finite. For every critical Wiener
+kernel $k$ and $0<\varepsilon<1/2$, the dilated remainders keep pronic norm $O(j^{-1/2})$ and
+$$
+\operatorname{ReceiverBounded}(k\star c_{\varepsilon,t})
+\iff \sum_j k(j)j^{-(1-\varepsilon+it)}=0\ \lor\ \zeta(1-\varepsilon+it)=0
+$$
+([TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa](TheOscillatingSmoothPowerShiftsItsPoleOffTheRealAbscissa.lean)).
+
 ### 3.18 Bridges
 
 Quarter-plane zeros in any height box are finite without hypothesis, inherit
@@ -1387,6 +1410,7 @@ Poincaré law of that theory with its variance bounded below.
 | Higher prime powers are invisible to the receiver | True for $\mu$-pretentious weights; for $1$-pretentious weights they enter through the local factor $L_p$ at the pole. |
 | A separating observable bounds the receiver | The logarithmic moments separate every pair and bound nothing; separation is qualitative and carries no exponent. |
 | Divergence proofs need a nonnegative weight | The pole law proves divergence of sign-changing convolutions $k\star q$ through the Mellin pairing at $\sigma=1-\varepsilon+\delta$. |
+| Real-axis abscissa blowup or Lipschitz tests detect unpaid oscillating probes $d^{-\varepsilon}\cos(t\log d)$ ($t\ne0$) | For $t\ne0$, $\sum_d c_{\varepsilon,t}(d)d^{-\sigma}=\operatorname{Re}\zeta((\sigma+\varepsilon)-it)$ converges to $\operatorname{Re}\zeta(1-it)$ and is Lipschitz at $\sigma=1-\varepsilon$ whether $c_{\varepsilon,t}$ is paid or unpaid; the pole sits at $1-\varepsilon\pm it$. |
 
 **Lean conventions.** Everything lives in
 `GaloisForLFunctions.TransHorizonIncidenceMechanics`. Sieve objects are imported

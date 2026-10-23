@@ -284,4 +284,29 @@ theorem posTestCone_not_riemannRoch : ¬ scalingSurface.RiemannRochAxiom posTest
       Pi.smul_apply, smul_eq_mul, Submodule.coe_zero, Pi.zero_apply, signChangingTest_zero] at this
     linarith
 
+/-- The product cone of the positive pole quadrant and a set `P` of tests. -/
+def productCone (P : Set (ℝ → ℝ)) : Set ScalingCycle :=
+  {x | 0 ≤ x.1 ∧ 0 ≤ x.2.1 ∧ (x.2.2 : ℝ → ℝ) ∈ P}
+
+/-- **No product cone with a proper test cone is an effectivity.** If `P` is closed under positive
+scaling and misses some test `g`, the product cone of the positive pole quadrant and `P` fails the
+Riemann–Roch axiom: `H + V + εg` has positive square for small `ε > 0`, and neither it nor its
+negative lies in the cone. Every positivity notion on tests — pointwise, of the transform, of
+positive type — is such a `P`. -/
+theorem productCone_not_riemannRoch {P : Set (ℝ → ℝ)}
+    (hP : ∀ (c : ℝ) (f : ℝ → ℝ), 0 < c → f ∈ P → c • f ∈ P) {g : ℝ → ℝ} (hg : g ∈ realTests)
+    (hgP : g ∉ P) : ¬ scalingSurface.RiemannRochAxiom (productCone P) := by
+  refine scalingSurface.not_riemannRoch_of_perturbation (0, 0, ⟨g, hg⟩)
+    fun ε hε => ⟨fun h => ?_, fun h => ?_⟩
+  · have h3 := h.2.2
+    have he : ((scalingSurface.ample + ε • ((0 : ℝ), (0 : ℝ), (⟨g, hg⟩ : realTests))).2.2 :
+        ℝ → ℝ) = ε • g := by
+      simp [PolarSurface.ample, scalingSurface]
+    rw [he] at h3
+    have h4 := hP ε⁻¹ _ (inv_pos.mpr hε) h3
+    rw [smul_smul, inv_mul_cancel₀ hε.ne', one_smul] at h4
+    exact hgP h4
+  · have h1 := h.1
+    norm_num [PolarSurface.ample, scalingSurface] at h1
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

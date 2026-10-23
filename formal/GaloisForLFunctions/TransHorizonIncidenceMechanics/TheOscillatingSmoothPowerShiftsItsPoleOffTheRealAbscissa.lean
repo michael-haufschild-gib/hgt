@@ -90,12 +90,11 @@ theorem hasSum_oscillatingSmoothPower_mul_rpow {ε t σ : ℝ} (hσ : 1 - ε < �
   have hw0 : w ≠ 0 := fun h => by rw [h, zero_re] at hw1; linarith
   refine (Complex.hasSum_re hz).congr_fun fun d => ?_
   rcases Nat.eq_zero_or_pos d with rfl | hd
-  · rw [Nat.cast_zero, Complex.zero_cpow hw0, div_zero, zero_re]
-    rcases le_or_gt σ 0 with hσ0 | hσ0
+  · rcases le_or_gt σ 0 with hσ0 | hσ0
     · have hε0 : 0 < ε := by linarith
-      rw [oscillatingSmoothPower, Nat.cast_zero, Real.zero_rpow (neg_ne_zero.mpr hε0.ne'),
-        zero_mul, zero_mul]
-    · rw [Nat.cast_zero, Real.zero_rpow (neg_ne_zero.mpr hσ0.ne'), mul_zero]
+      simp [oscillatingSmoothPower, Real.zero_rpow (neg_ne_zero.mpr hε0.ne'),
+        Complex.zero_cpow hw0]
+    · simp [Real.zero_rpow (neg_ne_zero.mpr hσ0.ne'), Complex.zero_cpow hw0]
   · exact oscillatingSmoothPower_mul_rpow_eq_re ε t σ hd
 
 /-- On `σ > 1 − ε`, `Σ_d c_{ε,t}(d) d^{-σ} = Re ζ((σ + ε) − it)`. -/
@@ -770,6 +769,9 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
     ring
   -- bound the four error pieces
   have hG0 : ∀ j : ℕ, 0 ≤ |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ)) := fun j => by positivity
+  have hC₁0 : 0 ≤ C₁ :=
+    mul_nonneg (add_nonneg (floorSumRate_nonneg (by rw [hρre]; linarith) (by rw [hρre]; linarith))
+      (norm_nonneg _)) (Real.sqrt_nonneg _)
   have hB₁ : pronicNorm D₁ T ≤ C₁ * G := by
     refine (pronicNorm_sum_le (Icc 1 T) _ T).trans ?_
     calc ∑ j ∈ Icc 1 T, pronicNorm (fun n =>
@@ -782,7 +784,7 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
             (pronicNorm_oscillatingDilationRemainder_le hε hε1 t (mem_Icc.mp hj).1 T) (abs_nonneg _)
       _ = C₁ * ∑ j ∈ Icc 1 T, |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ)) := by
           rw [mul_sum]; exact sum_congr rfl fun j _ => by ring
-      _ ≤ C₁ * G := mul_le_mul_of_nonneg_left (hW.sum_le_tsum _ fun j _ => hG0 j) (by positivity)
+      _ ≤ C₁ * G := mul_le_mul_of_nonneg_left (hW.sum_le_tsum _ fun j _ => hG0 j) hC₁0
   have hB₂ : pronicNorm D₂ T ≤ C₂ * G := by
     refine (pronicNorm_sum_le (Icc 1 T) _ T).trans ?_
     have hj_le : ∀ j ∈ Icc 1 T,
@@ -811,9 +813,11 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
         unfold pronicNorm
         refine Real.sqrt_le_sqrt (sum_le_sum fun n hn => ?_)
         refine div_le_div_of_nonneg_right ?_ (by positivity)
-        rw [← sq_abs, ← sq_abs (‖a₀‖ * _), abs_mul, abs_of_nonneg (norm_nonneg a₀),
-          abs_of_nonneg (by split_ifs <;> positivity)]
-        exact pow_le_pow_left₀ (abs_nonneg _) (hpt n hn) 2
+        calc (if n < j then -(a₀ * ((n : ℝ) : ℂ) ^ ρ * ((j : ℝ) : ℂ) ^ (-ρ)).re else 0) ^ 2
+            = |if n < j then -(a₀ * ((n : ℝ) : ℂ) ^ ρ * ((j : ℝ) : ℂ) ^ (-ρ)).re else 0| ^ 2 :=
+              (sq_abs _).symm
+          _ ≤ (‖a₀‖ * (if n < j then (n : ℝ) ^ (1 - ε) * (j : ℝ) ^ (-(1 - ε)) else 0)) ^ 2 :=
+              pow_le_pow_left₀ (abs_nonneg _) (hpt n hn) 2
       exact hcomp.trans ((mul_le_mul_of_nonneg_left
         (pronicNorm_poleDeficit_below_le hε hε2 hj1 T) (norm_nonneg a₀)).trans
         (by rw [hC₂, mul_assoc]))
@@ -858,6 +862,7 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
               (Real.rpow_le_rpow_of_nonpos hT1 hmT (by linarith)) (by positivity)
       have h1 := tsum_of_norm_bounded (hsumtail.mul_left (((T : ℝ) + 1) ^ (-(1 / 2 - ε)))).hasSum
         hterm
+      rw [tsum_mul_left] at h1
       have h2 : ∑' m : ℕ, |k (m + (T + 1))| * ((m + (T + 1) : ℕ) : ℝ) ^ (-(1 / 2 : ℝ)) ≤ G := by
         have h := hW.sum_add_tsum_nat_add (T + 1)
         have h0 : 0 ≤ ∑ j ∈ range (T + 1), |k j| * (j : ℝ) ^ (-(1 / 2 : ℝ)) :=
@@ -876,9 +881,8 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
       unfold pronicNorm
       refine Real.sqrt_le_sqrt (sum_le_sum fun n hn => ?_)
       refine div_le_div_of_nonneg_right ?_ (by positivity)
-      rw [← sq_abs, ← sq_abs (‖τ‖ * ‖a₀‖ * _), abs_mul, abs_of_nonneg hnn,
-        abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)]
-      exact pow_le_pow_left₀ (abs_nonneg _) (hpt n hn) 2
+      calc D₄ n ^ 2 = |D₄ n| ^ 2 := (sq_abs _).symm
+        _ ≤ (‖τ‖ * ‖a₀‖ * (n : ℝ) ^ (1 - ε)) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hpt n hn) 2
     have hcancel : ((T : ℝ) + 1) ^ (-(1 / 2 - ε)) * ((T : ℝ) + 1) ^ (1 / 2 - ε) = 1 := by
       rw [← Real.rpow_add hT1, neg_add_cancel, Real.rpow_zero]
     calc pronicNorm D₄ T
@@ -911,7 +915,7 @@ theorem exists_abs_pronicNorm_dirichletConv_oscillatingSmoothPower_sub_le {ε : 
     rw [pronicNorm_smul, abs_neg, abs_one, one_mul] at h
     refine le_of_eq_of_le (pronicNorm_congr fun n hn => ?_) h
     rw [hrep n hn]; ring
-  have hM : ∀ n, (K * riemannZeta ρ / ρ * ((n : ℝ) : ℂ) ^ ρ).re = M n := fun n => by
+  have hM : ∀ n : ℕ, (K * riemannZeta ρ / ρ * ((n : ℝ) : ℂ) ^ ρ).re = M n := fun n => by
     simp only [M, ha₀, mul_div_assoc]
   simp_rw [hM]
   rw [abs_le]
@@ -1106,7 +1110,7 @@ theorem receiverBounded_dirichletConv_oscillatingSmoothPower_iff {ε : ℝ} (hε
         simp [hρ, oscillationExponent, ht0]
       have ha_re : a.re =
           (complexPoleValue k ρ).re * (riemannZeta ((1 - ε : ℝ) : ℂ)).re / (1 - ε) := by
-        rw [ha, hK_eq, hρ_eq, Complex.div_ofReal_re, Complex.re_ofReal_mul]
+        rw [ha, hK_eq, hρ_eq, Complex.div_ofReal_re, Complex.re_ofReal_mul, Complex.ofReal_re]
       have hz_neg : (riemannZeta ((1 - ε : ℝ) : ℂ)).re < 0 := by
         have hz := riemannZeta_re_le_of_lt_one (σ := 1 - ε) (by linarith) (by linarith)
         have hneg : -(1 - ε) / (1 - (1 - ε)) < 0 := div_neg_of_neg_of_pos (by linarith) (by linarith)

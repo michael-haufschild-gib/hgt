@@ -107,3 +107,62 @@ Paper derivation recorded; exact Lean dependencies and the general-modulus
 certificate are in progress. No route is retired before this positive
 survivor is formalized. No signed estimate or scientific novelty claim.
 The original all-even target is unchanged.
+
+## Exact projection accounting
+
+For a positive integer L and any real row u on L positions, write
+`m(u)=L⁻¹Σ_j u_j`. Expanding the product and using `Σ_j u_j=L m(u)`
+gives, without any hypothesis on either row,
+
+    Σ_j u_j v_j = L m(u)m(v) + Σ_j (u_j−m(u))(v_j−m(v)).
+
+Apply this independently on each residue class of a window containing L
+positions per class. For `f=d_X−A_Hd_X`, where q divides both X and H,
+the class masses are `Δ_r=(X/q)²(ν_q(r)−q)`. Thus
+
+    Σ_v f(v)² = L⁻¹ Σ_r Δ_r²
+                + Σ_r Σ_(v≡r) (f(v)−Δ_r/L)².
+
+The first term is the complete periodic obstruction. Equality in its lower
+bound holds exactly when each residual is zero. For a second real row g,
+the corresponding signed pairing is
+
+    Σ_v f(v)g(v) = Σ_r Δ_r m_r(g)
+                    + Σ_r Σ_(v≡r) (f(v)−Δ_r/L)(g(v)−m_r(g)).
+
+Consequently a Möbius mean estimate controls only the first term; the
+second is the compensated product-pullback correlation and remains open.
+No mean estimate is being substituted for that correlation. The window
+`(-H,4X²]` has L=(4X²+H)/q positions per class and contains the full
+support. This recovers the sharp projection formula with K=qL.
+
+The local centered energy vanishes exactly for q=1. Indeed, zero energy
+would force ν_q to be the constant q. For q>1 its Fourier coefficient
+at frequency 1 would then vanish, whereas the proved gcd formula makes
+that coefficient q. At q=1 the single fibre has size one. Thus every
+nontrivial modulus contributes a nonzero periodic obstruction.
+
+## Finite model with the actual product counts
+
+For q,L,h positive and k natural, put X=qk and H=qh. Encode an integer
+n by `(n mod q, floor(n/q) mod L)`. Let D_c(r,t) count ordered pairs
+m,n in `(X,2X]` whose product plus c has that label. Define
+
+    F(r,t)=D_H(r,t)−H⁻¹Σ_(0≤j<H)D_(H−j)(r,t).
+
+Every product contributes exactly once to its residue fibre, independently
+of L. Hence `Σ_t D_c(r,t)=k²ν_q(r−c)`. The complete H-step average has
+mass k²q in every residue, while H is zero modulo q. Thus
+
+    Σ_t F(r,t)=k²(ν_q(r)−q).
+
+The projection identity proved above now gives the unconditional exact law
+
+    Σ_(r,t) F(r,t)² = (k⁴/L) Σ_r(ν_q(r)−q)²
+                       + Σ_(r,t)(F(r,t)−mean_t F(r,t))².
+
+Taking L=4qk²+h+1 ensures `qL>4X²+H`. All shifted products lie between
+0 and `4X²+H`, so their encoding does not wrap. The finite row is then
+exactly the translate by H of the ordinary integer smoothing difference.
+This model keeps every actual product multiplicity; no residue-mass
+assumption is supplied as a premise.

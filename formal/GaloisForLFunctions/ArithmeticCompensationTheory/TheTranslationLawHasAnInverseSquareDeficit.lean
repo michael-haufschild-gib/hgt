@@ -24,9 +24,17 @@ test, the comb itself has an inverse-square deficit
 
 `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²`.
 
-The deficit is the resolvent's first correction (`J(F_r) = A_f(0) − 4‖f'‖²/r² + O(r^{−4})` for
-smooth `f`), not the prime error, which is `O(exp(−c√r))`. So on the slowly varying family the
-comb is a translation up to a relative error of order `r^{−2}`.
+For a `C¹` profile the deficit has an exact first-order law: `(A_f(0) − A_f(s))/s² → ½‖f′‖²`
+(`tendsto_autoCorr_deficit_div_sq`, dominated convergence of the difference quotients), hence by
+dominated convergence against the horizon law, whose second moment is `8`,
+
+`r² (A_f(0) − J(F_r)) → 4‖f′‖²`  and  `r² (A_f(0) − E_r(F_r)/S_r²) → 4‖f′‖²`
+
+(`tendsto_sq_mul_horizonEnergy_rescaledTest_deficit`,
+`tendsto_sq_mul_combEnergy_rescaledTest_deficit`). This is the first correction of the resolvent
+`(1 + 2∂)^{−1}` at scale `r`, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`; the prime error, `O(exp(−c√r))`, does
+not reach it. On the slowly varying family the comb is a translation up to exactly
+`4‖f′‖²/r²`.
 -/
 
 open Filter Topology Finset MeasureTheory Set

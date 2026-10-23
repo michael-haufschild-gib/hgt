@@ -252,8 +252,13 @@ are three different statements and remain visibly different here.
     (`integral_pow_mul_horizonDensity`). On the slowly varying family this gives
     `A_f(0) − Λ²(8/r² + 48/r³) ≤ J(F_r) ≤ A_f(0)` (`horizonEnergy_rescaledTest_ge`), and since the
     rate of mechanism 10′ has test-independent constants, the comb itself satisfies
-    `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²` (`exists_combEnergy_rescaledTest_deficit_le`). The deficit
-    is of the order of the resolvent's first correction `−4‖f′‖²/r²`, not of the prime error.
+    `0 ≤ A_f(0) − E_r(F_r)/S_r² ≤ C/r²` (`exists_combEnergy_rescaledTest_deficit_le`). For a `C¹`
+    profile the first correction is exact: `(A_f(0) − A_f(s))/s² → ½‖f′‖²`
+    (`tendsto_autoCorr_deficit_div_sq`), so `r²(A_f(0) − E_r(F_r)/S_r²) → 4‖f′‖²`
+    (`tendsto_sq_mul_horizonEnergy_rescaledTest_deficit`,
+    `tendsto_sq_mul_combEnergy_rescaledTest_deficit`): the comb's deficit on the slowly varying
+    family is the first correction `−2∂/r` of the resolvent, `‖ΨF_r‖² = ‖F_r‖² − 4‖F_r′‖² + …`, and
+    the prime error does not reach it.
 
 ### Compensation coordinates
 
@@ -493,9 +498,10 @@ that every successful route must use the same mechanism.
    space. The comb resolvent law is the model case.
 4. **Quantitative horizon asymptotics.** Strict positivity of `J` is proved; on Lipschitz tests the
    comb converges to its resolvent at the rate `exp(−c√r)` with universal constants (mechanism
-   10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying tests the deficit is
-   `O(r^{−2})` (mechanism 10″). Open: the exact first correction `−4‖f′‖²/r²` for `C¹` profiles,
-   and lower bounds on `J` over specified profile classes uniform in the profile.
+   10′); `J(F)` is the single horizon average of `A_F`, and on slowly varying `C¹` tests the
+   deficit is exactly `4‖f′‖²/r²` to first order (mechanism 10″). Open: the second correction and
+   its prime-error competition, and lower bounds on `J` over profile classes uniform in the
+   profile.
 5. **The compensated remainder of the full ledger.** Pair the comb's coherent part with the pole
    charge before squaring, on an expanding test class, and bound the remainder with an explicit
    aperture exponent; any exponent below the trivial one is a strip.

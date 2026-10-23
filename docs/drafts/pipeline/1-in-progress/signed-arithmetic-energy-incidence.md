@@ -21,7 +21,7 @@ reciprocal observable) and its norm; nothing is selected from the zeros.
 - [x] 0 → 1  in-progress: objects fixed (signed incidence forms, pair payability, balance,
   polar defect, chain orbit, adverse sequences, local companion form)
 - [x] 1 → 2  fully-proven: paper proofs of the pillars (as the Lean proofs)
-- [x] 2 → 3  formalized: 28 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
+- [x] 2 → 3  formalized: 29 Lean modules, umbrella `GaloisForLFunctions.SignedArithmeticEnergyIncidence`
   wired into `MainTheorems`; each module checked with `lake --old env lean`
 - [ ] 3 → 4  n/a
 
@@ -90,7 +90,10 @@ Foundational document: `formal/GaloisForLFunctions/SignedArithmeticEnergyInciden
   `adverse_escape_of_orthonormal`.
 - `TheRestrictedWeilFormIsCompactlyNegative` — `tendsto_of_weakConvC`,
   `compactPerturbation_adverse_weakLimit`, `ccmRestrictedWeilForm_adverse_weakLimit`.
-- `OnLineCompanionsPayOffLineDepth` — `companions_pay`, `few_companions_never_pay`.
+- `OnLineCompanionsPayOffLineDepth` — `companions_pay`, `few_companions_never_pay`,
+  `companions_pay_up_to_error`.
+- `SmoothSourcesPayAtTheTaylorPrice` — `taylorPoly_derivative_eval`, `abs_sub_taylorSum_le`,
+  `companions_pay_up_to_taylor`, `abs_trigSourceDeriv_le`, `companions_pay_aperture`.
 - `TheRadialLossLaw` — `radialLoss_add_tangential`, `abs_log_energy_sub_le`.
 
 ## Open

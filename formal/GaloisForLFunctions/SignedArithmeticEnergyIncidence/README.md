@@ -435,7 +435,19 @@ rows of the envelope class, not over just the Möbius row or rows with its exact
     more than companions and `t ≠ γ_i` for all `i`, `(X − t) Π_i (X − γ_i)` defeats every positive depth mass
     (`few_companions_never_pay`). Count alone is not a payment criterion: the locations determine
     the Lagrange price, which must satisfy `w Λ(t) ≤ 1`. This is a polynomial model, not an exact
-    truncation of a Paley–Wiener source or of the full off-line zero form.
+    truncation of a Paley–Wiener source or of the full off-line zero form. The law transfers to an
+    arbitrary source `f` at half the price: for any polynomial `p` of degree `< n`, if
+    `2 w Λ(t) ≤ 1` then `Σ f(γ_i)² − w f'(t)² ≥ −(2 Σ (f − p)(γ_i)² + 4 w (f'(t) − p'(t))²)`
+    (`companions_pay_up_to_error`, `sampleForm`): the signed floor of a general source costs
+    exactly its local polynomial approximation error at the companions and at `t`. For a smooth
+    source the Taylor polynomial at `t` reproduces `f'(t)` (`taylorPoly_derivative_eval`) and the
+    two-sided Taylor bound (`abs_sub_taylorSum_le`) prices the error: with `d ≥ 2` local degrees of
+    freedom, at least `d` companions within `δ` of `t` and `|f^{(d)}| ≤ M` there,
+    `Σ f(γ_i)² − w f'(t)² ≥ −2 #s (M δ^d/d!)²` (`companions_pay_up_to_taylor`). For a source of
+    aperture `A` — a trigonometric sum `Σ_k (a_k cos(λ_k x) + b_k sin(λ_k x))` with `|λ_k| ≤ A`, the
+    shape of a Dirichlet polynomial of length `e^A` in the height — every derivative obeys
+    `|f^{(d)}| ≤ A^d m`, `m = Σ_k (|a_k| + |b_k|)` (`abs_trigSourceDeriv_le`), and the loss is
+    `2 #s ((Aδ)^d m/d!)²` at every height (`companions_pay_aperture`).
 
 ### Continuation
 
@@ -649,7 +661,12 @@ Each question is stated with what is established and where the open part sits.
 5. **Square-root cancellation against the residue Gram.** Bound `‖Σ_d μ(d) d^{−η} v_d‖_{ℓ²}` below
    half damping on a horizon-dependent range of moduli with explicit tails; this is BVI's BV-2 in
    residue coordinates.
-6. **Signed sampling beyond the local model.** Prove the companion law of mechanism 28 for
+6. **Signed sampling beyond the local model.** The transfer to general sources is reduced to the
+   local approximation error (mechanism 28, `companions_pay_up_to_error`), and for smooth sources
+   to the Taylor remainder (`companions_pay_up_to_taylor`); for trigonometric sources of aperture `A`
+   the loss `2 #s ((Aδ)^d m/d!)²` is uniform in the height (`companions_pay_aperture`). What remains
+   is the companion geometry of the actual on-line zeros: enough of them within `δ ≪ 1/A` of every
+   height, with a controlled Lagrange price. Prove the companion law of mechanism 28 for
    Paley–Wiener sources of aperture `A`, with a Lagrange price uniform in the height, and combine it
    with sufficiently strong information about the **on-line** zeros of `ζ` to obtain the
    plain-`L²` floor at the width rate. Control the Taylor remainder and infinite zero tail as well

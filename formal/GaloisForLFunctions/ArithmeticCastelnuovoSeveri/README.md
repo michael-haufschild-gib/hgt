@@ -252,7 +252,7 @@ possible section theory must use near-radicals.
 ### 3.6 The scaling surface, the signature law and the Pontryagin law
 (`TheScalingSurface`, `ArithmeticHodgeIndexSignatureLaw`, `FiniteConfigurationPontryaginLaw`,
 `TemperedConfigurationPontryaginLaw`, `TheHodgeDefectCountsTheRightZeros`,
-`TheDegreeFiltrationOfTheHodgeDefect`)
+`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`)
 
 17. **The scaling surface is a polar surface whose defect is Weil's form**
     (`scalingSurface`, `scalingSurface_defect_self`), so **its Hodge index theorem is RH**
@@ -308,14 +308,28 @@ possible section theory must use near-radicals.
     scaling surface *is* the number of zeros right of the line. **Kronecker rank one:** a
     configuration invariant under `ρ ↦ ρ + iP` (a lattice system) has Hodge defect `0` or `∞`
     (`periodic_pontryagin_dichotomy`); finitely many off-line zeros, possible a priori for `ζ`, are
-    impossible in rank one.
-20⁗. **The degree filtration** (`TheDegreeFiltrationOfTheHodgeDefect`). The Hodge defect at degree
+    impossible in rank one. More generally every **vertically recurrent** configuration (each zero
+    recurs, up to `ε` in its real part, at unbounded heights; this is how the zero sets of almost
+    periodic Dirichlet series of finite Kronecker rank behave) has Hodge defect `0` or `∞`
+    (`recurrent_pontryagin_dichotomy`, `TheKroneckerRankDichotomy`).
+20⁗. **The degree filtration** (`TheDegreeFiltrationOfTheHodgeDefect`, `TheReflectionSectorsOfTheHodgeDefect`). The Hodge defect at degree
     `a`, `hodgeDefectAt Z a` (negative squares on tests supported in `[−a, a]`), is nondecreasing
     (`hodgeDefectAt_mono`), bounded by `#{Re ρ > ½}` (`hodgeDefectAt_le`) and exhausts it:
     `⨆_a hodgeDefectAt Z a = #{Re ρ > ½}` (`iSup_hodgeDefectAt`). For `ζ` it vanishes through
     degree `3/10` (`zeta_hodgeDefectAt_eq_zero`). The quantitative horizon of the `ε`-negative
     index at level `a` (off-line pairs below height `H` with `log H = O(e^a + log(1/ε))`, and a
     matching count for isolated visible pairs) is `RHTower.zeta_weil_inertia_law`.
+20⁵. **The reflection sectors** (`TheReflectionSectorsOfTheHodgeDefect`). On a configuration
+    symmetric under `ρ ↦ 1 − ρ` the reflection `u ↦ −u` of tests splits the Weil form into an even
+    and an odd sector, and the Pontryagin law splits with it (`sector_pontryagin_law`): the even
+    defect is `#{Re ρ > ½, Im ρ > 0}`, the odd defect `#{Re ρ > ½, Im ρ ≥ 0}`. A real zero right
+    of the line has pair term `+m|h(γ)|²` on even tests and is invisible to them
+    (`re_Wsummand_nonneg_of_sector`); the involution `τ ↦ 1 − τ` of the coordinates sends the
+    negative vector of `ρ` to minus that of `ρ̄` (`fesVec_negVec`). For `ζ`, which has no real
+    zeros, each sector carries exactly half the Hodge defect (`zeta_sector_hodgeDefect_iff`): every
+    conjugate pair of zeros right of the line gives one even and one odd negative square. The odd
+    sector alone detects every off-line zero (the review's selectivity test for the
+    reflection-odd sector); the even sector carries in addition the ample pole direction `H + V`.
 
 ### 3.7 Hodge index from effectivity (`HodgeIndexFromEffectivity`, `TheScalingSurface`)
 
@@ -412,7 +426,8 @@ possible section theory must use near-radicals.
    25′); the archimedean and polar terms carry the positivity and still require a sign argument.
 7. **Kronecker rank.** Rank-one (lattice) systems are curve data; their span is Hodge iff unitary
    (item 12), fake data exist (item 13), hiding needs genus exponential in the degree (items
-   14–15), and their Hodge defect over the scaling surface is `0` or `∞` (item 20‴). For tests of any Kronecker rank the prime part decouples into one tower per prime
+   14–15), and their Hodge defect over the scaling surface is `0` or `∞` (item 20‴); the same
+   holds for every recurrent configuration, so a finite nonzero defect needs infinite rank. For tests of any Kronecker rank the prime part decouples into one tower per prime
    (item 24, Cartesian law); direct prime edges change only one exponent; archimedean and polar terms supply
    additional coupling. Coefficients and the support box still affect the tower forms.
 
@@ -471,14 +486,19 @@ possible section theory must use near-radicals.
    test is a sum of tower forms; the interaction of different towers is the archimedean density
    `ω(|Σ_p (v_p(a) − v_p(b)) log p|)` and the pole. Bound this collar coupling on rank-`P` boxes
    and compare it with the sum `Σ_p E_p` of the envelopes, which is `≍ e^{r}` at aperture `r`.
-6. **The pole-compensated aggregate.** The survivor of item 27: subtract from `Σ_p w_p p^{iξ}` the
-   pole's mean field `∫ t^{−1/2+iξ}`; the centred aggregate is governed by the zeros, and its growth
-   rate should be the zero width.
-7. **Successor structure.** Consecutive Hecke cycles `Γ_k, Γ_{k+1}` (`k ≥ 2`) have no prime
-   intersection (`heckeIncidence_succ`); over `𝔽_q[T]` consecutive polynomials of positive degree
-   sit at lag `0`. State the pronic weight `1/(k(k+1))` as an intersection number of the
-   archimedean collar at the lag `log(1 + 1/k)` and prove that `𝔽_q[T]` is the case where successor
-   and incidence structures coincide.
+6. **The pole-compensated aggregate (answered).** The survivor of item 27: subtracting the pole's
+   mean field from the prime comb leaves the Chebyshev deficit, and its exponential rate is the zero
+   width: `SquareRootThreshold.zetaZeroWidth_eq_sInf_deficitAbsRates` (the width is the infimum of
+   the admissible rates of `|D(T)| ≤ B(1 + T)e^{(½+β)T}`). What remains open is the operator
+   arrow `polarGroundEnergyRate ≤ zetaZeroWidth` recorded there.
+7. **Successor structure (answered as a dictionary).** The pronic weight `1/(k(k+1))` is the pole
+   mass `∫ e^{−u} du` of the successor cell `[log k, log(k+1)]` (`integral_successorCell`); the
+   cells telescope to the pole mass (`sum_pronic_eq_integral`, `integral_pole_mass`). Over `ℤ`
+   the successor is transverse to the norm grading (positive cell mass, coprimality, no prime
+   incidence: `successorCell_integers`); over `𝔽_q[T]` it lies inside it (`f + 1` monic of the
+   same degree, degenerate cell, coprime: `successorCell_functionField`). Open: the archimedean
+   collar entry of two consecutive Hecke cycles, which on narrow bumps is a kernel of the form
+   `e^{x/2}/sinh x` at `x = log(1 + 1/k)` rather than the pronic weight itself.
 8. **Witt and λ-ring structure over `ℚ`.** Over `𝔽_q` the question is settled (item 15′): the
    pole plane splits off in the Witt ring, RH is purity of the `H¹` class, and integrality holds
    for fake data. Over `ℚ` the ghost components of `log ζ` are `Λ(n)`; the analogue of item 15′ is
@@ -486,9 +506,15 @@ possible section theory must use near-radicals.
    selects `Λ` among all prime weights (`one_positive_square_iff_vonMangoldt`). Open: a λ-ring
    (Adams-operation) structure on the scaling surface whose Frobenius graphs are the Hecke cycles
    of item 24, with the pole plane splitting off as over `𝔽_q`.
-9. **Spectral structure behind partial results.** Why inertia gives proportions (`2/3`) and not totality
-   (items 19–20 give the exact accounting), why finite-prime extremizers are real-rooted, and the
-   Landau–Widom rate (topic 2).
+9. **Spectral structure behind partial results.** *Real-rootedness* of ground states is explained
+   by a positivity-preserving splitting of a non-real zero, `(w − w̄₀)(w − w₀) = (w − Re w₀)² +
+   (Im w₀)²`, which divides a test into two real-rooted ones without raising its energy
+   (`RHTower.CCMFullRealRootedGround.exists_realRooted_fullGround`). *Inertia gives proportions,
+   not totality*: inertia counts each distinct off-line zero as one negative square, independently
+   of its depth and multiplicity (items 20‴, 20⁵), and a finite compression at level `a` sees only
+   the pairs below the horizon of `RHTower.zeta_weil_inertia_law`; totality needs every level
+   (item 20⁗). Open: the specific constant `2/3`, which comes from the pair-correlation input of the
+   rank–trace argument rather than from the form, and the Landau–Widom rate (topic 2).
 
 ---
 
@@ -550,9 +576,12 @@ specification of what is missing and the calibration of every step over `𝔽_q`
 | `InfiniteGenusLaw` | no nonzero compact transform annihilating almost all simple critical zeros; RH ⟺ positive definite |
 | `FiniteConfigurationPontryaginLaw` | transform interpolation and exact negative index for finite configurations |
 | `TemperedConfigurationPontryaginLaw` | absolute convergence on tempered configurations, dual tests, translated pairs, exact negative index with finitely many right zeros |
+| `TheKroneckerRankDichotomy` | recurrent (finite-rank) configurations have Hodge defect `0` or `∞` |
+| `TheReflectionSectorsOfTheHodgeDefect` | even/odd sectors: exact sector Pontryagin law; each sector of `ζ` carries half the defect |
 | `TheDegreeFiltrationOfTheHodgeDefect` | Hodge defect by degree: monotone, exhaustive, zero below `3/10` for `ζ` |
 | `TheHodgeDefectCountsTheRightZeros` | zero-side coordinates in `ℓ²`, exponential-sum uniqueness, density, the exact Pontryagin law, Hodge defect of `ζ` = #zeros right of the line |
 | `ResonatorKroneckerLaw` | Kronecker law of resonators, additive envelopes, successor orthogonality |
 | `HeckeIncidenceCartesianLaw` | Cartesian law: the prime part is a product of towers |
+| `ThePronicWeightIsThePoleMassOfTheSuccessorCell` | pronic weight = pole mass of the successor cell; `ℤ` vs `𝔽_q[T]` successor structure |
 | `TheResonatorRemainderIsNegative` | the review's adjunction remainder is negative definite on resonators |
 | `TheAdjunctionConjectureMeanField` | mean-field law, refutation of the polynomial adjunction bound |

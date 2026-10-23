@@ -14,7 +14,7 @@ no full or umbrella builds; wire finished leaves into their umbrella; no heartbe
 computations. Not counted: constant improvements, no-gos alone, renamings, proof lemmas.
 Missing dependency oleans are built one at a time with `lake --old env lean -o` (CLAUDE.md rule 4).
 
-## Accepted contributions: 7 / 250
+## Accepted contributions: 8 / 250
 
 1. THIM — the horizon limit commutes with the receiver exactly from half damping (candidate 1).
 2. THIM — the universal hyperplane on the whole critical Wiener algebra (candidate 3).
@@ -23,6 +23,7 @@ Missing dependency oleans are built one at a time with `lake --old env lean -o` 
 5. THIM — the half-damped receiver is the logarithmic energy of the partial pole sums (candidate 5).
 6. THIM — critical Wiener perturbations of the smooth power have uniformly paid rows (candidate 6).
 7. THIM / RH route — the oscillating smooth power is paid exactly at the zeros of ζ (candidate 7).
+8. THIM / RH route — the log-twisted oscillating power is paid exactly at the double zeros of ζ (candidate 8).
 
 ## Candidate 1 (THIM): the horizon limit commutes with the receiver exactly from half damping
 
@@ -131,14 +132,23 @@ the main term carries `(|a|²/4)H_T + O(1)`.
 `riemannHypothesis_iff_forall_not_receiverBounded_oscillatingSmoothPower`). Status: compiled, axioms
 `propext`, `Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
-## Candidate 8 (THIM, RH route; in progress): the log-twisted oscillating power reads double zeros
+## Candidate 8 (THIM, RH route): the log-twisted oscillating power is paid exactly at double zeros
 
-**Claim.** For `0 < ε ≤ 1/2`, `t ∈ ℝ`, `ρ = 1 − ε + it`: the receiver of `d^{-ε} cos(t log d) log d`
-is bounded ⇔ `ζ(ρ) = ζ'(ρ) = 0`. Consequence: all zeros simple ⇔ no such weight with `ε ≤ 1/2` paid.
-**Plan.** `R_n(ρ) = D_ρ(n) − ζ(2−ρ)n − ζ(ρ)n^ρ/ρ` is holomorphic in `ρ` with `|R_n| ≤ K (√n)^{Re ρ}`
-uniformly on `|ρ − ρ₀| ≤ ε/2`; Cauchy gives `|∂_ρ R_n(ρ₀)| = O(n^{(1−ε/2)/2})`. The log-weight prefix is
-`Re ∂_ρ(ζ(ρ)n^ρ/ρ) + O(n^{1/2−ε/4})`, main term `n^ρ(b + a log n)`, `a = ζ(ρ)/ρ`, `b = (ζ/ρ)'(ρ)`.
-Necessity via `Σ Re(n^{it}(b + a log n))²/n ≥ (|a|²/4)(log N)³ − O((log N)²)` (Abel on `n^{-1+2it}`).
+**Theorem (proved).** For `0 < ε ≤ 1/2`, `t ∈ ℝ`, `ρ = 1 − ε + it`: the receiver of
+`d^{-ε} cos(t log d) log d` is bounded ⇔ `ζ(ρ) = ζ'(ρ) = 0`. Hence every zero with `1/2 ≤ Re s < 1`
+is simple ⇔ no such weight is paid; with contribution 7 the receiver reads the order of vanishing.
+Mechanism: `R_n(ρ) = D_ρ(n) − ζ(2−ρ)n − ζ(ρ)n^ρ/ρ` is holomorphic with `|R_n| ≤ K(√n)^{1−ε/2}` on
+`|ρ − ρ₀| ≤ ε/2`; Cauchy gives the log-weight prefix `Re(n^ρ(b + a log n)) + O(n^{1/2−ε/4})`,
+`a = ζ(ρ)/ρ`, `b = ζ'(ρ)/ρ − ζ(ρ)/ρ²`. Necessity: on the window `N < n ≤ N²` the factor `log n ≥ log N`
+lifts the energy of `Re(a n^{it})` to order `(log N)³` against `O(log N)` from `Re(b n^{it})`;
+if `a = 0 ≠ b` the harmonic energy of `Re(b n^{it})` diverges.
+
+**Lean:** `TransHorizonIncidenceMechanics/TheLogTwistedOscillatingSmoothPowerIsPaidExactlyAtTheDoubleZerosOfZeta.lean`
+(`norm_deriv_floorRemainder_le`, `abs_weightCenteredPrefix_logOscillatingSmoothPower_sub_le`,
+`exists_sum_sq_div_le_of_receiverBounded`, `exists_lt_sum_sq_div_of_window`,
+`receiverBounded_logOscillatingSmoothPower_iff`, `receiverBounded_logOscillatingSmoothPower_half_iff`,
+`forall_simple_zero_iff_forall_not_receiverBounded`). Status: compiled, axioms `propext`,
+`Classical.choice`, `Quot.sound`; wired into the THIM umbrella.
 
 ## Checked and not pursued
 

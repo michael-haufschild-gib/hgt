@@ -1,8 +1,8 @@
 # Remove damping uniformly on cofactor rectangles
 
 - **ID:** twin-prime-cofactor-damping-removal
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper) / BRIDGE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / BRIDGE
 - **Source:** [nonunit cofactor dispersion](../1-in-progress/twin-prime-nonunit-cofactor-dispersion.md).
 - **Statement:** On every cofactor rectangle `ZW<=X`, the damped and undamped shifted correlations differ by at most `6 epsilon (1+log(X+2))^5` after normalization by `X`.
 
@@ -20,8 +20,9 @@ Let `X,Z,W` be positive integers, `Z,W>=2`, `ZW<=X`, and
 
 The superscript distinguishes the logarithmic extension from
 Lean's totalized expression at `epsilon=0`, whose value is zero.
-Every sum is finite. The correlation can be restricted to odd
-`n` throughout; all majorants below remain valid on that subset.
+Every sum is finite. The correlation can be restricted to any
+selected subset of `[2,X]`; all majorants remain valid. In
+particular, the estimate holds on the odd carrier.
 
 ## Complete paper proof
 
@@ -89,14 +90,17 @@ Sum the coefficient-deformation bound and divide by `X`. It yields
   -V_(0,Z)^log(n)V_(0,W)^log(n+2)]|
  <=6 epsilon H^5`.
 
-The same estimate holds on the odd carrier. It is uniform over
+The same estimate holds on every selected subset. It is uniform over
 the entire rectangle range, not just fixed cofactors.
 
 Choose the explicit positive schedule `epsilon_X=H^(-6)`.
 The error is at most `6/H`, which tends to zero. Independently,
 the already-proved full-source diagonal estimate has error at
-most `epsilon_X log^3(X+2)<=H^(-3)`. Thus this faster schedule
-still resolves the actual prime-pair observable, with the same
+most `epsilon_X log^3(X+2)<=H^(-3)` by the pointwise paper bound.
+The Lean certificate reuses the already-certified padded bound
+`epsilon_X log^3(X+4)`. Since `X+4<=(X+2)^2`, it obtains the
+equally vanishing bound `8/H^3`. Thus this faster schedule still
+resolves the actual prime-pair observable, with the same
 squarefree projection as the existing Lean diagonal theorem.
 
 ## What this resolves
@@ -121,14 +125,33 @@ the residue-class counting mechanism, including its endpoint
 error. The count above also uses only the elementary gap-two
 compatibility `gcd(m,k)|2`. No external analytic theorem is needed.
 
-The public Lean statement should parametrize the geometric
-domain directly, for example `X=(Z+2)(W+2)+N`, and use the
-explicit positive schedule. No analytic hypothesis is to be added.
+The public Lean statements parametrize the geometric domain by
+`X=(Z+2)(W+2)+N` and use the explicit positive schedule. No
+analytic hypothesis, correlation interface, or new axiom occurs.
+
+Certified in
+[`DampedPairDiagonal.lean`](../../../../formal/GaloisForLFunctions/twin-prime/DampedPairDiagonal.lean):
+
+- `TwinPrime.dampedCofactorTerm_exp_error`: coefficient deformation
+  at the automatically positive damping `exp(-t)`.
+- `TwinPrime.cofactorLogMass_rectangle_bound`: the complete CRT
+  majorant `3X H^4`, including the physical endpoint error.
+- `TwinPrime.cofactorDampingRemoval_error`: arbitrary-subset
+  normalized correlation error at most `6/H`.
+- `TwinPrime.primePairCofactorClock_error`: projected prime-pair
+  error at most `8/H^3`.
+- `TwinPrime.primePairCofactorClock_tendsto`: that projected error
+  tends to zero on the same cofactor-compatible clock.
+
+The foreground leaf check passed. All five capstone axiom
+audits returned only `propext`, `Classical.choice`, and `Quot.sound`.
+Temporary audit commands were removed. The own umbrella already
+imports this leaf; no umbrella was built.
 
 - [x] Exact domains, complete paper proof and endpoint costs.
 - [x] The faster schedule still resolves the original observable.
-- [ ] Unconditional Lean certificate and axiom audit.
-- [ ] Integrate with the nonunit cofactor target.
+- [x] Unconditional Lean certificate and axiom audit.
+- [x] Integrate with the nonunit cofactor target.
 
 ## Log
 
@@ -136,3 +159,6 @@ explicit positive schedule. No analytic hypothesis is to be added.
   compensations and the full-height boundary were certified.
   This calculation removes moving damping from the next analytic
   target without assuming cancellation of either Möbius row.
+- 2026-10-23 — Five unconditional capstones certified and audited.
+  The formal statement strengthens the paper's odd-carrier bound
+  to every selected subset. No signed saving or infinitude follows.

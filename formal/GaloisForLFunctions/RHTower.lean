@@ -28089,3 +28089,4 @@ import GaloisForLFunctions.RHTower.UniformConstantDischargesA
 import GaloisForLFunctions.RHTower.UniformConstantDischargesB
 import GaloisForLFunctions.RHTower.UniformConstantDischargesC
 import GaloisForLFunctions.RHTower.UniformConstantDischargesD
+import GaloisForLFunctions.RHTower.InstantiationPremiseDischarges

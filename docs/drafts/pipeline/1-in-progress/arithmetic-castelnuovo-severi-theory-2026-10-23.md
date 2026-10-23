@@ -83,6 +83,13 @@ survivor).
 - `TheDegreeFiltrationOfTheHodgeDefect`: `iSup_hodgeDefectAt` (degree filtration exhausts the right
   zeros), `zeta_hodgeDefectAt_eq_zero` (nothing visible below degree 3/10).
 
+- `TheReflectionSectorsOfTheHodgeDefect`: `sector_pontryagin_law` (even defect = #{Re>½, Im>0}, odd =
+  #{Re>½, Im≥0}); `zeta_sector_hodgeDefect_iff` (each sector of ζ carries half).
+
+- `TheKroneckerRankDichotomy`: `recurrent_pontryagin_dichotomy` (recurrent configurations: defect 0 or ∞).
+
+- `ThePronicWeightIsThePoleMassOfTheSuccessorCell`: `integral_successorCell`, `successorCell_functionField`.
+
 ## Open: aperture of the Pontryagin law
 The exact count is proved unconditionally (`pontryagin_law`, `zeta_hodgeDefect_iff`); the density
 proof gives no aperture. Explicit apertures exist only for finitely many right zeros (translated
