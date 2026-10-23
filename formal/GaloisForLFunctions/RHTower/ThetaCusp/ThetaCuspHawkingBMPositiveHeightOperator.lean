@@ -178,24 +178,26 @@ private theorem PositiveHeightTest.laplace_translation (h : PositiveHeightTest)
     ← Complex.ofReal_tsum,cuspWindow_partition_all]
   simp
 
-set_option maxHeartbeats 800000 in
 /-- Full compact positive-height periodization retains every nonparabolic height derivative. -/
 theorem PositiveHeightTest.periodize_laplace_rows (h : PositiveHeightTest) (z : UpperHalfPlane) :
     periodize h.planarTest.laplaceTest.toChartTest.field z =
       ∑' v : gammaSetHalf, ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
         deriv (deriv h.field) (gammaSetMatrix v.1 • z).im := by
   have hp : Summable (fun p : gammaSetHalf × ℤ => h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv p • z)) :=
-    cuspOrbitEquiv.summable_iff.mpr (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
+    (cuspOrbitEquiv.summable_iff (f := fun γ : PSL2Z =>
+      h.planarTest.laplaceTest.toChartTest.field (γ • z))).mpr
+      (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
   rw [periodize,← cuspOrbitEquiv.tsum_eq (fun γ : PSL2Z => h.planarTest.laplaceTest.toChartTest.field (γ • z)),hp.tsum_prod]
   exact tsum_congr (fun v => h.laplace_translation v z)
 
-set_option maxHeartbeats 800000 in
 /-- All Laplacian rows are absolutely admitted by the constructed compact seed. -/
 theorem PositiveHeightTest.laplace_rows_summable (h : PositiveHeightTest) (z : UpperHalfPlane) :
     Summable (fun v : gammaSetHalf => ((gammaSetMatrix v.1 • z).im:ℂ)^(2 : ℕ)*
       deriv (deriv h.field) (gammaSetMatrix v.1 • z).im) := by
   have hp : Summable (fun p : gammaSetHalf × ℤ => h.planarTest.laplaceTest.toChartTest.field (cuspOrbitEquiv p • z)) :=
-    cuspOrbitEquiv.summable_iff.mpr (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
+    (cuspOrbitEquiv.summable_iff (f := fun γ : PSL2Z =>
+      h.planarTest.laplaceTest.toChartTest.field (γ • z))).mpr
+      (h.planarTest.laplaceTest.toChartTest.orbit_summable z)
   exact hp.prod.congr (fun v => h.laplace_translation v z)
 
 /-- Actual native graph vector of the full compact positive-height source. -/

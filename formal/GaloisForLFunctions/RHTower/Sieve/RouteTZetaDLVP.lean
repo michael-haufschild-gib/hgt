@@ -14,7 +14,6 @@ open Complex Metric
 
 noncomputable section
 
-set_option maxHeartbeats 800000 in
 /-- **Route-T DLVP inequality.**  A zero in the retained half-disc forces this explicit scalar
 inequality, with radius and growth bound selected canonically from its height. -/
 theorem routeT_dlvp_inequality

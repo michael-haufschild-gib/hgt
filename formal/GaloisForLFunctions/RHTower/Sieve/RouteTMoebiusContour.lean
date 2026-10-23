@@ -120,7 +120,6 @@ private theorem routeTZeroFreeBudget_mono_upto
       linarith : 8 * Real.pi + 1 ≤ |y| + 1)
     (by linarith : |y| + 1 ≤ T + 1)
 
-set_option maxHeartbeats 800000 in
 /-- **Route-T contour rectangle is zero-free.** -/
 theorem routeT_contour_zero_free
     {A δ T : ℝ}
@@ -242,7 +241,6 @@ theorem norm_inv_riemannZeta_le_routeT_contour
     exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hQsq (by norm_num))
   exact hraw.trans hexp
 
-set_option maxHeartbeats 1200000 in
 /-- **Route-T four-edge Perron bound for smoothed Möbius sums.**  No classical `log⁻⁹` width
 remains in the rectangle. -/
 theorem exists_norm_tsum_moebius_smoothWeight_le_routeT :
@@ -403,7 +401,6 @@ private theorem routeT_twist_abs_bounds
   · linarith
   · exact hupp
 
-set_option maxHeartbeats 1200000 in
 /-- **Route-T four-edge Perron bound for twisted smoothed Möbius sums.**  If the contour
 half-height stays below the twist by the fixed Route-T base height, every shifted edge lies in the
 quantitative high-ordinate region.  Thus the same Route-T reciprocal bound controls all three

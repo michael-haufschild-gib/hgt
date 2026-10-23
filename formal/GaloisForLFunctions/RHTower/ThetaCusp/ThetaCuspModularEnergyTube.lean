@@ -39,7 +39,7 @@ theorem thetaCuspModularTransverseShear_le_energyTangent {x : ℝ}
   have hw0 := w_nonneg ht.1
   have hw1 : w t ≤ 1 := by rw [heq]; linarith [ht.2]
   have hs := thetaCuspModularTransverseShear_deriv_lt_quadratic ht.1
-  have hw2 : w t^(2 : ℕ) ≤ 1 := by nlinarith
+  have hw2 : w t^(2 : ℕ) ≤ 1 := pow_le_one₀ hw0 hw1
   linarith
 
 /-- A quadratic lower barrier for the complete modular gap, with its literal initial value. -/

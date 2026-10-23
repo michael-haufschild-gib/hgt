@@ -47,7 +47,6 @@ theorem charPlusOne_eq {F : ℂ → ℂ} {x : ℝ} (hx : 1 ≤ x) :
     charPlusOne F x = characteristic F ⊤ x + 1 := by
   rw [charPlusOne, max_eq_left hx]
 
-set_option maxHeartbeats 2000000 in
 /-- **The characteristic of a function omitting two values is `O(log r)`.**  The Borel growth lemma
 at exponent `1/2` supplies, inside every window, a radius where the shifted characteristic does not
 double; there the quantitative bound collapses to a logarithm. -/
@@ -135,8 +134,9 @@ theorem exists_characteristic_le_log_of_omits_two {F : ℂ → ℂ} (hF : Differ
     rw [hy, hfactor]
     have hinner : 2 * characteristic F ⊤ R + Cbig ≤ D * (T₀ + 1) := by
       rw [hD]
-      nlinarith [hcharR, hCbig0, hT₀0]
-    have hRle : 2 * R * (T₀ + 1) ≤ 2 * (x + 1) * (T₀ + 1) := by nlinarith [hRx1, hT1pos]
+      linarith [hcharR, mul_nonneg hCbig0 hT₀0]
+    have hRle : 2 * R * (T₀ + 1) ≤ 2 * (x + 1) * (T₀ + 1) :=
+      mul_le_mul_of_nonneg_right (by linarith) hT1pos.le
     have hinner0 : (0 : ℝ) ≤ 2 * characteristic F ⊤ R + Cbig := by
       have := characteristic_nonneg_of_entire hF R
       linarith
@@ -145,13 +145,14 @@ theorem exists_characteristic_le_log_of_omits_two {F : ℂ → ℂ} (hF : Differ
           mul_le_mul_of_nonneg_right hRle hinner0
       _ ≤ 2 * (x + 1) * (T₀ + 1) * (D * (T₀ + 1)) := by
           refine mul_le_mul_of_nonneg_left hinner ?_
-          nlinarith [hx1, hT1pos]
+          exact mul_nonneg (by linarith) hT1pos.le
       _ = 2 * D * (x + 1) * (T₀ + 1) ^ 2 := by ring
   have hbig1 : (1 : ℝ) ≤ 2 * D * (x + 1) * (T₀ + 1) ^ 2 := by
-    have hq1 : (1:ℝ) ≤ (T₀ + 1) ^ 2 := by nlinarith [hT₀0]
+    have hq1 : (1:ℝ) ≤ (T₀ + 1) ^ 2 := one_le_pow₀ (by linarith)
     have hq2 : (2:ℝ) ≤ x + 1 := by linarith
-    have h2 : (16 : ℝ) ≤ 2 * D * (x + 1) := by nlinarith [hD4, hq2]
-    nlinarith [h2, hq1]
+    have h2 : (16 : ℝ) ≤ 2 * D * (x + 1) := by
+      linarith [mul_le_mul hD4 hq2 (by norm_num) (by linarith)]
+    linarith [mul_le_mul h2 hq1 (by norm_num) (by linarith)]
   have hposlog : Real.posLog y ≤ Real.log (2 * D) + Real.log (x + 1) + 2 * Real.log (T₀ + 1) := by
     have hmono : Real.posLog y ≤ Real.posLog (2 * D * (x + 1) * (T₀ + 1) ^ 2) :=
       Real.posLog_le_posLog hy0 hyle

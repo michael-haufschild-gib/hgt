@@ -269,7 +269,6 @@ def regError (a : ℕ → ℝ) (N : ℕ) : ℝ :=
   4 * (∑ d ∈ Finset.Icc 1 N, |a d|) / N
     + (2 + |Real.eulerMascheroniConstant|) * ∑' i : ℕ, logWeight a (i + (N + 1))
 
-set_option maxHeartbeats 1000000 in
 lemma abs_regDefect_le (h1 : Summable (logWeight a)) {N : ℕ} (hN : 1 ≤ N) :
     |(∑ k ∈ Finset.Icc 1 N, (∑ d ∈ k.divisors, a d) / k)
         - ∑' d, modelSummand a N d| ≤ regError a N := by
@@ -369,7 +368,7 @@ lemma abs_regDefect_le (h1 : Summable (logWeight a)) {N : ℕ} (hN : 1 ≤ N) :
                 rw [abs_of_nonneg hlogN]
         have hb3 : |Real.log d| = Real.log d := abs_of_nonneg hlogd
         have hga : 0 ≤ |Real.eulerMascheroniConstant| := abs_nonneg _
-        nlinarith
+        linarith [mul_nonneg hga hlogd]
       rw [modelSummand, abs_mul, abs_div, abs_of_nonneg (le_of_lt hdpos), logWeight]
       calc |a d| / (d : ℝ) * |Real.log N + Real.eulerMascheroniConstant - Real.log d|
           ≤ |a d| / (d : ℝ) * ((2 + |Real.eulerMascheroniConstant|) * (1 + Real.log d)) :=
@@ -386,7 +385,6 @@ lemma abs_regDefect_le (h1 : Summable (logWeight a)) {N : ℕ} (hN : 1 ≤ N) :
       _ = (2 + |Real.eulerMascheroniConstant|) * ∑' i : ℕ, logWeight a (i + (N + 1)) :=
           tsum_mul_left
 
-set_option maxHeartbeats 1000000 in
 lemma tendsto_regError (_h1 : Summable (logWeight a))
     (h2 : Tendsto (fun N : ℕ => (∑ d ∈ Finset.Icc 1 N, |a d|) / N) atTop (𝓝 0)) :
     Tendsto (fun N : ℕ => regError a N) atTop (𝓝 0) := by

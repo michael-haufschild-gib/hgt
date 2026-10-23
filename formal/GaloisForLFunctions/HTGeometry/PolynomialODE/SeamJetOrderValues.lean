@@ -10,7 +10,6 @@ and `R`: `h` is linear in `M`, and `z`, `r`, `p` are independent of `M`.
 
 namespace HTGeometry
 noncomputable section
-set_option maxRecDepth 4000
 
 /-- The coupled seam recursion satisfied by the reflected modular source jets:
 initial data at order zero and one convolution step for each component. -/

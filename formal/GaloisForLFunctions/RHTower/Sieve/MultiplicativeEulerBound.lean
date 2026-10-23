@@ -134,9 +134,9 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
     Summable.of_norm hsumnorm
   -- split off the first two terms
   have hsum1 : Summable (fun e : ℕ => twistedSummand f s (p ^ (e + 1))) :=
-    (summable_nat_add_iff 1).2 hsum
+    (summable_nat_add_iff (f := fun e : ℕ => twistedSummand f s (p ^ e)) 1).2 hsum
   have hsum2 : Summable (fun e : ℕ => twistedSummand f s (p ^ (e + 2))) :=
-    (summable_nat_add_iff 2).2 hsum
+    (summable_nat_add_iff (f := fun e : ℕ => twistedSummand f s (p ^ e)) 2).2 hsum
   have hsplit : ∑' e : ℕ, twistedSummand f s (p ^ e) =
       1 + (twistedSummand f s p + ∑' e : ℕ, twistedSummand f s (p ^ (e + 2))) := by
     rw [hsum.tsum_eq_zero_add, hsum1.tsum_eq_zero_add, pow_zero, pow_one,
@@ -144,11 +144,11 @@ theorem norm_tsum_localFactor_le (hf1 : f 1 = 1) (hbdd : ∀ n, ‖f n‖ ≤ 1)
   -- the tail
   have htail : ‖∑' e : ℕ, twistedSummand f s (p ^ (e + 2))‖ ≤ 2 * q ^ 2 := by
     have hnorm2 : Summable (fun e : ℕ => ‖twistedSummand f s (p ^ (e + 2))‖) :=
-      (summable_nat_add_iff 2).2 hsumnorm
+      (summable_nat_add_iff (f := fun e : ℕ => ‖twistedSummand f s (p ^ e)‖) 2).2 hsumnorm
     refine le_trans (norm_tsum_le_tsum_norm hnorm2) ?_
     have hle : ∑' e : ℕ, ‖twistedSummand f s (p ^ (e + 2))‖ ≤ ∑' e : ℕ, q ^ (e + 2) :=
       Summable.tsum_le_tsum (fun e => hnormpow (e + 2)) hnorm2
-        ((summable_nat_add_iff 2).2 hgeom)
+        ((summable_nat_add_iff (f := fun e : ℕ => q ^ e) 2).2 hgeom)
     have hval : ∑' e : ℕ, q ^ (e + 2) = q ^ 2 * (1 - q)⁻¹ := by
       rw [show (fun e : ℕ => q ^ (e + 2)) = fun e : ℕ => q ^ 2 * q ^ e by
         funext e; rw [pow_add]; ring]

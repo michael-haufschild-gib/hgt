@@ -75,6 +75,34 @@ This module establishes three unconditional results for sub-half oscillating pro
      in which case `S_{ε,t}` is also unconditionally unbounded in pronic norm
      (`not_bdd_pronicNorm_oscillatingSawtoothPrefix_of_receiverBounded`) and locked in anti-phase
      `S_{ε,t}(n) = −Re(n^ρ/(ρ − 1)) + O((√n)^{1−ε})`.
+
+5. **The alternate Route MC receiver: short/long sawtooth split, quantitative tail energy, and
+   nonzero-frequency sawtooth/tail non-cancellation (`§5`).**
+   - Splitting `S_{ε,t}(n) = S^{\mathrm{short}}_{ε,t}(n) + S^{\mathrm{long}}_{ε,t}(n)` at the
+     hyperbola threshold `⌊√n⌋` (`oscillatingSawtoothPrefix_eq_short_add_long`), the short-modulus
+     sawtooth sum `1 ≤ d ≤ ⌊√n⌋` satisfies
+     `|S^{\mathrm{short}}_{ε,t}(n)| ≤ (1 + 1/(1 − ε)) (√n)^{1−ε}` (`abs_oscillatingShortSawtooth_le`)
+     and has uniformly bounded pronic norm `≤ (1 + 1/(1 − ε)) √(1 + 1/ε)` for every `0 < ε < 1` and
+     `t ∈ ℝ` (`pronicNorm_oscillatingShortSawtooth_le`). Hence sawtooth/tail cancellation occurs if
+     and only if the **long-modulus** sawtooth sum `⌊√n⌋ < d ≤ n` cancels the tail drift `d > n`
+     (`receiverBounded_oscillatingSmoothPower_iff_bdd_pronicNorm_longSawtooth_add_tail`).
+   - For every `0 < ε < 1/2` and `t ≠ 0` (independently of `ζ(ρ)`), the universal tail drift has
+     strictly positive lower energy rate `tailEnergyLowerRate ε t > 0` (`tailEnergyLowerRate_pos`)
+     and satisfies the two-sided power law
+     `tailEnergyLowerRate ε t · T^{1−2ε} ≤ ‖T_{ε,t}‖_T² ≤ tailEnergyUpperRate ε t · T^{1−2ε}`
+     eventually (`eventually_oscillatingTailDrift_energy_le_and_ge`).
+   - In the pronic inner product `pronicInner`, the receiver energy polarizes as
+     `E_{ε,t}(T) = ‖S_{ε,t}‖_T² + 2 ⟨S_{ε,t}, T_{ε,t}⟩_T + ‖T_{ε,t}‖_T²`
+     (`weightPronicEnergy_oscillatingSmoothPower_eq_sawtooth_tail_polarization`). Any imperfect
+     anti-alignment `−⟨S_{ε,t}, T_{ε,t}⟩_T ≤ θ ‖S_{ε,t}‖_T ‖T_{ε,t}‖_T` with `θ < 1` forces
+     `E_{ε,t}(T) ≥ (1 − θ²) ‖T_{ε,t}‖_T²` (`weightPronicEnergy_ge_one_sub_sq_mul_tail_of_pronicInner_le`)
+     and excludes admission (`not_receiverBounded_of_sawtooth_tail_inner_le`).
+   - Because `t = 0` source exclusion is closed directly from floor/tail arithmetic, the alternate
+     Route MC receiver for RH reduces to excluding sawtooth/tail (or long-sawtooth/tail)
+     cancellation for nonzero frequencies `t ≠ 0` across `0 < ε < 1/2`
+     (`riemannHypothesis_iff_forall_ne_zero_not_bdd_sawtooth_add_tail`,
+     `riemannHypothesis_iff_forall_ne_zero_not_bdd_longSawtooth_add_tail`, and the master theorem
+     `routeMC_alternate_receiver_sawtooth_tail_master`).
 -/
 
 open Complex Finset Filter Topology

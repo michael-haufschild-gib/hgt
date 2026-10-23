@@ -78,7 +78,6 @@ theorem hasSum_xiZeroCopyReciprocalSquare_pow_rawDyadicTraces
   rw [div_pow, pow_add, div_eq_mul_inv, ← inv_pow]
   ring
 
-set_option maxHeartbeats 800000 in
 /-- Absolute summability of the complete dyadic transform over expansion order and exact Xi-divisor
 copies. -/
 theorem summable_xiCentralRawDyadicTrace_double (m : ℕ) :

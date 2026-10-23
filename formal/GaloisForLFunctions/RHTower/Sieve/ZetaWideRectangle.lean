@@ -236,9 +236,9 @@ theorem norm_riemannZeta_wide_le {w : ℂ} {K : ℕ}
         have hcube := cube_sub_one_le_lineTruncation (t := w.im) (by linarith)
         have hπlt : Real.pi < 3.15 := Real.pi_lt_d2
         have hπ2 : Real.pi ^ 2 < 10 := by
-        linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
+          linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
         have hπ3 : Real.pi ^ 3 < 32 := by
-        linarith [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
+          linarith [mul_lt_mul'' hπ2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
         have hform : (w.im / (8 * Real.pi)) ^ (3 : ℕ) = w.im ^ 3 / (512 * Real.pi ^ 3) := by
           field_simp; ring
         have himbig : (10 : ℝ) ^ 5 ≤ w.im := by

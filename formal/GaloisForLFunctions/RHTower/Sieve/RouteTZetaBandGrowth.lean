@@ -92,7 +92,6 @@ theorem routeTBandTruncation_low {t : ℝ} (ht : 100000 ≤ t)
       mul_le_mul_of_nonneg_left hrpow (by positivity)
     _ ≤ t - 1 := by simpa only [T] using htop
 
-set_option maxHeartbeats 800000 in
 /-- The continuation tails remain bounded when truncation is selected one unit below the centre. -/
 theorem routeT_band_truncation_tails_le_nine
     {t y σ : ℝ} (ht : 100000 ≤ t) (hylo : t - 1 ≤ y) (hyhi : y ≤ t + 1)
@@ -111,7 +110,7 @@ theorem routeT_band_truncation_tails_le_nine
     dsimp only [N]
     exact_mod_cast Nat.one_le_two_pow
   have hN0 : 0 < N := lt_of_lt_of_le zero_lt_one hN1
-  have ht8 : 8 * Real.pi ≤ t - 1 := by nlinarith [Real.pi_lt_d2]
+  have ht8 : 8 * Real.pi ≤ t - 1 := by linarith [Real.pi_lt_d2]
   have hNroot : N ^ ((1 : ℝ) / 3) =
       (2 : ℝ) ^ (((topExponent (t - 1) : ℕ) : ℝ) / 3) := by
     dsimp only [N]
@@ -123,8 +122,9 @@ theorem routeT_band_truncation_tails_le_nine
     rw [hNroot, le_div_iff₀ (by positivity)]
     simpa only [mul_comm] using topExponent_bound ht8
   have hratiole : (t - 1) / (8 * Real.pi) ≤ t - 1 := by
-    have hden : (1 : ℝ) ≤ 8 * Real.pi := by nlinarith [Real.pi_gt_three]
-    exact (div_le_iff₀ (by positivity)).2 (by nlinarith)
+    have hden : (1 : ℝ) ≤ 8 * Real.pi := by linarith [Real.pi_gt_three]
+    exact (div_le_iff₀ (by positivity)).2
+      (by linarith [mul_le_mul_of_nonneg_left hden ht0.le])
   have hnum1 : N ^ (1 - σ) ≤ y := by
     calc
       N ^ (1 - σ) ≤ N ^ ((1 : ℝ) / 3) :=
@@ -149,8 +149,10 @@ theorem routeT_band_truncation_tails_le_nine
       rw [pow_succ]
       ring]
     exact hcube
-  have hpi2 : Real.pi ^ 2 < 10 := by nlinarith [Real.pi_lt_d2, Real.pi_pos]
-  have hpi3 : Real.pi ^ 3 < 32 := by nlinarith [hpi2, Real.pi_lt_d2, Real.pi_pos]
+  have hpi2 : Real.pi ^ 2 < 10 := by
+    linarith [mul_self_lt_mul_self Real.pi_pos.le Real.pi_lt_d2]
+  have hpi3 : Real.pi ^ 3 < 32 := by
+    linarith [mul_lt_mul'' hpi2 Real.pi_lt_d2 (sq_nonneg Real.pi) Real.pi_pos.le]
   have hform : ((t - 1) / (8 * Real.pi)) ^ (3 : ℕ) =
       (t - 1) ^ 3 / (512 * Real.pi ^ 3) := by
     field_simp
@@ -158,29 +160,29 @@ theorem routeT_band_truncation_tails_le_nine
   have hcubelower : (t - 1) ^ 3 / 16384 ≤
       ((t - 1) / (8 * Real.pi)) ^ (3 : ℕ) := by
     rw [hform, div_le_div_iff₀ (by norm_num) (by positivity)]
-    nlinarith [hpi3, pow_pos ht0 3]
+    linarith [mul_le_mul_of_nonneg_left hpi3.le (pow_pos ht0 3).le]
   have hNlower : (t - 1) ^ 3 ≤ 32768 * N := by
-    nlinarith [hcubelower, hcubeN]
+    linarith [hcubelower, hcubeN]
   have hsquare : (y + 2) ^ 2 ≤ 2 * (t - 1) ^ 2 := by
     have hy4 : y + 2 ≤ (t - 1) + 4 := by linarith
     have hnonneg : 0 ≤ y + 2 := by linarith
-    have hs1 : (y + 2) ^ 2 ≤ ((t - 1) + 4) ^ 2 := by nlinarith
-    nlinarith [hs1, sq_nonneg ((t - 1) - 4)]
+    have hs1 : (y + 2) ^ 2 ≤ ((t - 1) + 4) ^ 2 := pow_le_pow_left₀ hnonneg hy4 2
+    linarith [mul_le_mul_of_nonneg_right (by linarith : (10 : ℝ) ≤ t - 1) ht0.le]
   have hmul : 4096 * (t - 1) ^ 2 ≤ (t - 1) ^ 3 := by
     have h4096 : (4096 : ℝ) ≤ t - 1 := by linarith
     have hh := mul_le_mul_of_nonneg_right h4096 (sq_nonneg (t - 1))
-    nlinarith
+    linarith
   have hNbig : (y + 2) ^ 2 ≤ 16 * N := by
-    nlinarith [hsquare, hmul, hNlower]
+    linarith [hsquare, hmul, hNlower]
   have hsqrtmul : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN0.le
   have hsqrtnn : 0 ≤ Real.sqrt N := Real.sqrt_nonneg N
-  have hsqrtpos : 0 < Real.sqrt N := by nlinarith
+  have hsqrtpos : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
   have hsqrt : y + 2 ≤ 4 * Real.sqrt N := by
     have hquarter : (y + 2) / 4 ≤ Real.sqrt N :=
       (Real.le_sqrt (by positivity) hN0.le).mpr (by
         rw [div_pow]
         norm_num
-        nlinarith [hNbig])
+        linarith [hNbig])
     linarith
   have hmono : N ^ (-σ) ≤ N ^ (-(1 : ℝ) / 2) :=
     Real.rpow_le_rpow_of_exponent_le hN1 (by linarith)
@@ -212,7 +214,7 @@ theorem routeT_band_truncation_tails_le_nine
             mul_le_mul_of_nonneg_left hdiv (by positivity)
       _ ≤ 8 := by
         rw [mul_comm, div_mul_eq_mul_div, div_le_iff₀ hsqrtpos]
-        nlinarith
+        linarith
   dsimp only [N, w] at htail1 htail2 ⊢
   linarith
 

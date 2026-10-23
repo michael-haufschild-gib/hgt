@@ -232,7 +232,6 @@ theorem P_eq_zeroPowerSum {k : ℕ} (hk : 2 ≤ k) : P k = zeroPowerSum k := by
 def gTerm (s : ℂ) (p : XiZeroCopy × ℕ) : ℂ :=
   -(s ^ (p.2 + 1) * (xiZero p.1)⁻¹ ^ (p.2 + 2))
 
-set_option maxHeartbeats 1000000 in
 theorem summable_gTerm {s : ℂ} (hs1 : ‖s‖ ≤ 1) : Summable (gTerm s) := by
   have hmaj : Summable (fun p : XiZeroCopy × ℕ =>
       (1 / ‖xiZero p.1‖ ^ (2 : ℕ)) * (1 / 3 : ℝ) ^ p.2) :=
@@ -261,7 +260,6 @@ theorem summable_gTerm {s : ℂ} (hs1 : ‖s‖ ≤ 1) : Summable (gTerm s) := b
           (by positivity)
         exact pow_le_pow_left₀ hinvnn hinv m
 
-set_option maxHeartbeats 1000000 in
 theorem hasSum_gTerm_fiber {s : ℂ} (hs1 : ‖s‖ ≤ 1) (hs : xi s ≠ 0) (q : XiZeroCopy) :
     HasSum (fun m : ℕ => gTerm s (q, m)) ((xiZero q)⁻¹ - (xiZero q - s)⁻¹) := by
   have h3 := three_lt_norm_xiZero q
@@ -307,7 +305,6 @@ theorem hasSum_gTerm_colFiber (s : ℂ) (m : ℕ) :
     exact hsum.hasSum.mul_left _
   exact h1.neg
 
-set_option maxHeartbeats 1000000 in
 /-- **The atlas expansion of `-ξ'/ξ` at the origin.** -/
 theorem hasSum_neg_logDeriv_xi {s : ℂ} (hs1 : ‖s‖ ≤ 1) (hs : xi s ≠ 0) :
     HasSum (fun k : ℕ => P (k + 1) * s ^ k) (-logDeriv xi s) := by
@@ -321,7 +318,7 @@ theorem hasSum_neg_logDeriv_xi {s : ℂ} (hs1 : ‖s‖ ≤ 1) (hs : xi s ≠ 0)
   have hcol : HasSum (fun m : ℕ => -(s ^ (m + 1) * zeroPowerSum (m + 2)))
       (∑' p, gTerm s p) := by
     have hswap : HasSum (fun p : ℕ × XiZeroCopy => gTerm s (p.2, p.1)) (∑' p, gTerm s p) :=
-      (Equiv.hasSum_iff (Equiv.prodComm ℕ XiZeroCopy)).mpr hg.hasSum
+      (Equiv.hasSum_iff (f := gTerm s) (Equiv.prodComm ℕ XiZeroCopy)).mpr hg.hasSum
     exact hswap.prod_fiberwise (fun m => hasSum_gTerm_colFiber s m)
   rw [hS] at hcol
   have hneg : HasSum (fun m : ℕ => s ^ (m + 1) * zeroPowerSum (m + 2))

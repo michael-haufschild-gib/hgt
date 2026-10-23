@@ -37,7 +37,6 @@ theorem aestronglyMeasurable_sawtooth (hN : 1 ≤ N) (z : ℂ) :
         (f := fun v : ℝ => (v, (-z - 1 : ℂ)))
         h2.continuousAt).continuousWithinAt
 
-set_option maxHeartbeats 1600000 in
 /-- **Differentiability of the sawtooth tail** on `Re s > 0`. -/
 theorem differentiableAt_zetaSawtoothTail (hN : 1 ≤ N) {s₀ : ℂ}
     (hs : 0 < s₀.re) :
@@ -116,7 +115,7 @@ theorem differentiableAt_zetaSawtoothTail (hN : 1 ≤ N) {s₀ : ℂ}
     have h4 : (0 : ℝ) ≤ u ^ ((-z - 1).re) := Real.rpow_nonneg hu0.le _
     have h5 : Int.fract u * (Real.log u * u ^ ((-z - 1).re))
         ≤ Real.log u * u ^ ((-z - 1).re) := by
-      nlinarith [mul_nonneg hlog0 h4]
+      exact mul_le_of_le_one_left (mul_nonneg hlog0 h4) h3
     have h6 : Real.log u * u ^ ((-z - 1).re)
         ≤ Real.log u * u ^ (-(s₀.re / 2) - 1) :=
       mul_le_mul_of_nonneg_left h2 hlog0

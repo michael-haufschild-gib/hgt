@@ -30,7 +30,6 @@ theorem exp_two_lt_eight : Real.exp 2 < 8 := by
 
 open Set Filter
 
-set_option maxHeartbeats 1600000 in
 /-- **Vertical growth bound**: `|ζ(σ+it)| ≤ 14·log|t|` for `|t| ≥ 8`,
 `1 − 1/log|t| ≤ σ ≤ 2`. -/
 theorem abs_riemannZeta_le_log {σ t : ℝ} (ht : 8 ≤ |t|)
@@ -238,14 +237,14 @@ theorem abs_riemannZeta_le_log {σ t : ℝ} (ht : 8 ≤ |t|)
           have h1 : 2 / |t| ≤ 1 / 4 := by
             rw [div_le_div_iff₀ ht0 (by norm_num)]
             linarith
-          nlinarith [hE1]
+          linarith [mul_le_mul_of_nonneg_left h1 (Real.exp_pos 1).le]
   -- assemble
   have hlogN : Real.log (⌊|t|⌋₊ : ℝ) ≤ Real.log |t| :=
     Real.log_le_log hN0 hNt
   have hkey : Real.exp 1 * (Real.log |t| + 2) + Real.exp 1 / 8
       + 5 * Real.exp 1 ≤ 14 * Real.log |t| := by
     have hE := Real.exp_one_lt_d9
-    nlinarith [mul_pos (show (0 : ℝ) < 14 - Real.exp 1 by linarith)
+    linarith [mul_pos (show (0 : ℝ) < 14 - Real.exp 1 by linarith)
       (show (0 : ℝ) < Real.log |t| - 2 by linarith)]
   have hmono : Real.exp 1 * (Real.log (⌊|t|⌋₊ : ℝ) + 2)
       ≤ Real.exp 1 * (Real.log |t| + 2) := by

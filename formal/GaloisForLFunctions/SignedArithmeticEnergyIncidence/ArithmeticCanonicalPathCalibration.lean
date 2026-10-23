@@ -766,6 +766,33 @@ theorem supersolution_primeTriangleGauge_of_le {b : Fin 3 → ℝ}
   · change 0 ≤ c 2 0 * 4 + c 2 1 * 1 + c 2 2 * 1
     linarith
 
+/-- Canonical diagonal budget `b = ![6, 2, 21]` for the source-faithful prime triangle
+`primeTrianglePos` under `weilLedgerKernel 1 1`. -/
+def primeTriangleCanonicalBudget : Fin 3 → ℝ := ![6, 2, 21]
+
+/-- **Unconditional positive supersolution for the source-faithful prime triangle.** With the
+canonical diagonal budget `primeTriangleCanonicalBudget = ![6, 2, 21]`, the gauge
+`primeTriangleGauge = ![4, 1, 1]` is unconditionally a positive supersolution of
+`oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget`. -/
+theorem supersolution_primeTriangleCanonical :
+    ∀ i, 0 ≤ couplingAction
+      (oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget)
+      primeTriangleGauge i :=
+  supersolution_primeTriangleGauge_of_le (by norm_num [primeTriangleCanonicalBudget])
+    (by norm_num [primeTriangleCanonicalBudget]) (by norm_num [primeTriangleCanonicalBudget])
+
+/-- **Unconditional `PathCertificate` for the source-faithful prime triangle.** -/
+def primeTriangleCanonicalPathCertificate :
+    PathCertificate (oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget) :=
+  primeTrianglePathCertificate primeTriangleCanonicalBudget supersolution_primeTriangleCanonical
+
+/-- **Unconditional canonical-path positivity of the source-faithful prime triangle.** -/
+theorem incidenceEnergy_oddFold_primeTriangleCanonical_nonneg (f : Fin 3 → ℝ) :
+    0 ≤ incidenceEnergy
+      (oddFold primeTrianglePos (weilLedgerKernel 1 1) primeTriangleCanonicalBudget) f :=
+  incidenceEnergy_oddFold_primeTriangle_weilLedgerKernel_one_nonneg
+    primeTriangleCanonicalBudget supersolution_primeTriangleCanonical f
+
 
 /-! ### Part 4: Packed canonical paths and overlapping-budget retention on `Fin 4` -/
 
@@ -1241,6 +1268,36 @@ theorem supersolution_packedPrimeGauge_of_le {b : Fin 4 → ℝ}
     rw [Fin.sum_univ_four]
     change 0 ≤ c 3 0 * 8 + c 3 1 * 1 + c 3 2 * 1 + c 3 3 * 1
     linarith
+
+/-- Canonical diagonal budget `b = ![5, 3, 43, 41]` for the packed 4-point arithmetic configuration
+`packedPrimePos` under `weilLedgerKernel 1 1`. -/
+def packedPrimeCanonicalBudget : Fin 4 → ℝ := ![5, 3, 43, 41]
+
+/-- **Unconditional positive supersolution for the packed 4-point arithmetic configuration.** With
+the canonical diagonal budget `packedPrimeCanonicalBudget = ![5, 3, 43, 41]`, the gauge
+`packedPrimeGauge = ![8, 1, 1, 1]` is unconditionally a positive supersolution of
+`oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget`. -/
+theorem supersolution_packedPrimeCanonical :
+    ∀ i, 0 ≤ couplingAction
+      (oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget)
+      packedPrimeGauge i :=
+  supersolution_packedPrimeGauge_of_le (by norm_num [packedPrimeCanonicalBudget])
+    (by norm_num [packedPrimeCanonicalBudget]) (by norm_num [packedPrimeCanonicalBudget])
+    (by norm_num [packedPrimeCanonicalBudget])
+
+/-- **Unconditional packed `PathCertificate` for the 4-point arithmetic configuration under
+`weilLedgerKernel 1 1`.** -/
+def packedPrimeCanonicalPathCertificate :
+    PathCertificate (oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget) :=
+  packedPrimePathCertificate packedPrimeCanonicalBudget supersolution_packedPrimeCanonical
+
+/-- **Unconditional canonical-path positivity of the packed 4-point arithmetic configuration under
+`weilLedgerKernel 1 1`.** -/
+theorem incidenceEnergy_oddFold_packedPrimeCanonical_nonneg (f : Fin 4 → ℝ) :
+    0 ≤ incidenceEnergy
+      (oddFold packedPrimePos (weilLedgerKernel 1 1) packedPrimeCanonicalBudget) f :=
+  incidenceEnergy_oddFold_packedPrime_weilLedgerKernel_one_nonneg
+    packedPrimeCanonicalBudget supersolution_packedPrimeCanonical f
 
 /-- **Overlapping-budget retention along shared canonical-path steps.** In any `PathCertificate`
 for `c`, every anti-aligned overlap `(a, b)` (`a ≠ b`, `c a b > 0`) whose canonical path begins

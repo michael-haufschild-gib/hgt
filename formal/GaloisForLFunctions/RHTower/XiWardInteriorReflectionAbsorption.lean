@@ -122,7 +122,6 @@ theorem re_xiWardLeftReflectedPairResponse_ge_boundary
     Complex.im_ofNat, zero_mul, sub_zero] at hq hqc ⊢
   linarith
 
-set_option maxHeartbeats 800000 in
 private theorem re_boundary_le_left_tsum
     {w : ℂ} (hw : 1 / 2 < w.re) (hz : XiC (I * w) ≠ 0) :
     (xiAntiCausalWardBoundarySelfSymbol).re ≤
@@ -139,16 +138,15 @@ private theorem re_boundary_le_left_tsum
   have hsumLeft : Summable (fun q : XiLeftZeroCopy => F q.1) :=
     hsumF.subtype _
   have hsumG : Summable G := by
-    exact (xiRightLeftReflectEquiv.summable_iff).mpr hsumLeft
+    exact (xiRightLeftReflectEquiv.summable_iff (f := fun q : XiLeftZeroCopy => F q.1)).mpr hsumLeft
   have hinl : Summable (fun q : XiRightUpperZeroCopy =>
       G (xiRightSchwarzPairEquiv (Sum.inl q))) := by
-    exact (hsumG.comp_injective Subtype.val_injective).congr
-      (fun q => rfl)
+    simp only [xiRightSchwarzPairEquiv_inl]
+    exact hsumG.comp_injective Subtype.val_injective
   have hinr : Summable (fun q : XiRightUpperZeroCopy =>
       G (xiRightSchwarzPairEquiv (Sum.inr q))) := by
-    apply hsumG.comp_injective
-    exact xiRightZeroCopyConjEquiv.injective.comp
-      Subtype.val_injective
+    simp only [xiRightSchwarzPairEquiv_inr]
+    exact hsumG.comp_injective (xiRightZeroCopyConjEquiv.injective.comp Subtype.val_injective)
   have hsumPair : Summable (fun q : XiRightUpperZeroCopy =>
       (xiWardLeftReflectedPairResponse q w).re) := by
     exact (hinl.add hinr).congr (fun q => by
@@ -171,7 +169,7 @@ private theorem re_boundary_le_left_tsum
             G (xiRightSchwarzPairEquiv (Sum.inl q))) +
           ∑' q : XiRightUpperZeroCopy,
             G (xiRightSchwarzPairEquiv (Sum.inr q)) :=
-        (hinl.hasSum.sum hinr.hasSum).tsum_eq
+        (HasSum.sum (f := fun x => G (xiRightSchwarzPairEquiv x)) hinl.hasSum hinr.hasSum).tsum_eq
       _ = ∑' q : XiRightUpperZeroCopy,
           (G (xiRightSchwarzPairEquiv (Sum.inl q)) +
             G (xiRightSchwarzPairEquiv (Sum.inr q))) :=
@@ -310,7 +308,6 @@ private theorem left_tsum_add_critical_tsum_le_nonright_complement
     _ ≤ ∑' q : XiZeroCopy, Rᶜ.indicator F q :=
       Summable.tsum_le_tsum hpoint (hsumL.add hsumC) hsumR
 
-set_option maxHeartbeats 800000 in
 theorem re_two_I_logDeriv_nonright_eq_complement_tsum
     {w : ℂ} (hz : XiC (I * w) ≠ 0) :
     (2 * I * logDeriv xiNonrightCanonicalProduct (I * w)).re =

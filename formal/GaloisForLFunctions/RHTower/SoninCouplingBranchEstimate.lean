@@ -14,7 +14,6 @@ the annulus, so it applies to the whole test family rather than to a possibly em
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 namespace RHTower
 
@@ -80,7 +79,8 @@ theorem norm_evenSoninApertureLayer_apply_le {a b : ℝ} (hab : a ≤ b)
   · have hle : ‖evenSoninApertureLayer a b x‖ ^ (2 : ℕ) ≤
         ‖evenSoninApertureLayer a b x‖ * ‖x‖ := by
       rw [hsq]; exact hcs
-    nlinarith [hle, h]
+    rw [sq] at hle
+    exact le_of_mul_le_mul_left hle h
 
 /-- **Two-branch estimate.**  On an annulus vector the coupling is the difference of its two
 opposite dilation branches, up to twice the norm of the exact projection correction. -/

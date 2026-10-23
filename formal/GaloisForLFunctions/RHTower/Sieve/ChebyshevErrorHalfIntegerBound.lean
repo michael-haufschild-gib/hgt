@@ -19,6 +19,60 @@ open Complex ArithmeticFunction
 
 noncomputable section
 
+/-- The vertical-side coefficient at `σ₁ = 1/2 + ε/2`: for `x ≥ 4`,
+`2(1 + log 3)/σ₁ + 2(1 + log(2 + x)) log x ≤ 14 (1 + log x)^2`. -/
+private lemma halfInt_vertical_coefficient_le {x ε : ℝ} (hε : 0 < ε) (hx4 : 4 ≤ x) :
+    2 * (1 + Real.log 3) / (1 / 2 + ε / 2) + 2 * (1 + Real.log (2 + x)) * Real.log x
+      ≤ 14 * (1 + Real.log x) ^ 2 := by
+  have hσ₁0 : (0 : ℝ) < 1 / 2 + ε / 2 := by linarith
+  have hlogx0 : 0 ≤ Real.log x := Real.log_nonneg (by linarith)
+  have hlog3 : Real.log 3 ≤ 1.4 := by
+    have h34 : Real.log 3 ≤ Real.log 4 := Real.log_le_log (by norm_num) (by norm_num)
+    have h4 : Real.log 4 = 2 * Real.log 2 := by
+      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast; ring
+    linarith [Real.log_two_lt_d9]
+  have h1 : 2 * (1 + Real.log 3) / (1 / 2 + ε / 2) ≤ 10 := by
+    rw [div_le_iff₀ hσ₁0]
+    linarith
+  have h2 : 1 + Real.log (2 + x) ≤ 2 * (1 + Real.log x) := by
+    have hmono : Real.log (2 + x) ≤ Real.log (4 * x) :=
+      Real.log_le_log (by linarith) (by linarith)
+    rw [Real.log_mul (by norm_num) (by linarith)] at hmono
+    have hl4 : Real.log 4 ≤ Real.log x := Real.log_le_log (by norm_num) hx4
+    linarith
+  have h4 : (1 + Real.log (2 + x)) * Real.log x ≤ (2 * (1 + Real.log x)) * (1 + Real.log x) :=
+    mul_le_mul h2 (by linarith) hlogx0 (by linarith)
+  have hL2 : (1 : ℝ) ≤ (1 + Real.log x) ^ 2 := one_le_pow₀ (by linarith)
+  linarith
+
+/-- The Perron logarithmic error: for `x ≥ 4` and `1 ≤ y ≤ 4x`,
+`(16 log(2x) x/(π x)) · 4(1 + log y) ≤ (192/π)(1 + log x)^2`. -/
+private lemma halfInt_perron_log_le {x y : ℝ} (hx4 : 4 ≤ x) (hy1 : 1 ≤ y) (hy : y ≤ 4 * x) :
+    (16 * Real.log (2 * x) * x / (Real.pi * x)) * (4 * (1 + Real.log y))
+      ≤ (192 / Real.pi) * (1 + Real.log x) ^ 2 := by
+  have hx0 : 0 < x := by linarith
+  have hxne : x ≠ 0 := hx0.ne'
+  have hlogx0 : 0 ≤ Real.log x := Real.log_nonneg (by linarith)
+  have hlog2x : Real.log (2 * x) ≤ 1 + Real.log x := by
+    rw [Real.log_mul (by norm_num) hxne]
+    linarith [Real.log_two_lt_d9]
+  have hlogy : 1 + Real.log y ≤ 3 * (1 + Real.log x) := by
+    have hmono : Real.log y ≤ Real.log (4 * x) := Real.log_le_log (by linarith) hy
+    rw [Real.log_mul (by norm_num) hxne] at hmono
+    have hl4 : Real.log 4 ≤ Real.log x := Real.log_le_log (by norm_num) hx4
+    linarith
+  have hlogy0 : 0 ≤ 1 + Real.log y := by linarith [Real.log_nonneg hy1]
+  have hid : 16 * Real.log (2 * x) * x / (Real.pi * x) * (4 * (1 + Real.log y))
+      = (64 * Real.log (2 * x) * (1 + Real.log y)) / Real.pi := by
+    field_simp
+    ring
+  rw [hid, show (192 / Real.pi) * (1 + Real.log x) ^ 2
+      = (192 * (1 + Real.log x) ^ 2) / Real.pi by ring]
+  have hnum : 64 * Real.log (2 * x) * (1 + Real.log y) ≤ 192 * (1 + Real.log x) ^ 2 := by
+    linarith [mul_le_mul hlog2x hlogy hlogy0 (by linarith : (0 : ℝ) ≤ 1 + Real.log x)]
+  gcongr
+
 /-- **The Chebyshev error at a half-integer cutoff, under RH.**  For every `ε ∈ (0, 1/4]` there is
 a constant `C` with `|ψ(N) − N| ≤ C·(N+1/2)^{1/2+ε/2}(1 + log(N+1/2))^(2 : ℕ)` for all `N ≥ 7`. -/
 theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ}
@@ -100,63 +154,12 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
     rw [show ((1 : ℝ) + ε / 2) - 1 = ε / 2 by ring, hxrp]
     field_simp
     ring
-  have hlog2x : Real.log (2 * ((N : ℝ) + 1 / 2)) ≤ 1 + Real.log ((N : ℝ) + 1 / 2) := by
-    rw [Real.log_mul (by norm_num) (by linarith)]
-    have : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
-    linarith
-  have hlog2x0 : (0 : ℝ) ≤ Real.log (2 * ((N : ℝ) + 1 / 2)) := Real.log_nonneg (by linarith)
-  have hlogN2 : 1 + Real.log ((2 * N + 2 : ℕ) : ℝ) ≤ 3 * (1 + Real.log ((N : ℝ) + 1 / 2)) := by
-    rw [hcast]
-    have hmono : Real.log (2 * (N : ℝ) + 2) ≤ Real.log (4 * ((N : ℝ) + 1 / 2)) :=
-      Real.log_le_log (by linarith) (by linarith)
-    rw [Real.log_mul (by norm_num) (by linarith)] at hmono
-    have hl4 : Real.log 4 ≤ Real.log ((N : ℝ) + 1 / 2) := Real.log_le_log (by norm_num) hx4
-    linarith
-  have hlogN20 : (0 : ℝ) ≤ 1 + Real.log ((2 * N + 2 : ℕ) : ℝ) := by
-    have : (0 : ℝ) ≤ Real.log ((2 * N + 2 : ℕ) : ℝ) := by
-      rw [hcast]; exact Real.log_nonneg (by linarith)
-    linarith
   have hE2 : (16 * Real.log (2 * ((N : ℝ) + 1 / 2)) * ((N : ℝ) + 1 / 2)
         / (Real.pi * ((N : ℝ) + 1 / 2))) * (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ)))
-      ≤ (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-    have hid : 16 * Real.log (2 * ((N : ℝ) + 1 / 2)) * ((N : ℝ) + 1 / 2)
-        / (Real.pi * ((N : ℝ) + 1 / 2))
-        * (4 * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ)))
-        = (64 * Real.log (2 * ((N : ℝ) + 1 / 2)) * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ)))
-          / Real.pi := by
-      field_simp
-      ring
-    have hid2 : (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2
-        = (192 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2) / Real.pi := by ring
-    rw [hid, hid2]
-    have hnum : 64 * Real.log (2 * ((N : ℝ) + 1 / 2)) * (1 + Real.log ((2 * N + 2 : ℕ) : ℝ))
-        ≤ 192 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-      linarith [mul_le_mul hlog2x hlogN2 hlogN20 (by linarith : (0:ℝ) ≤ 1 + Real.log ((N : ℝ) + 1 / 2))]
-    gcongr
+      ≤ (192 / Real.pi) * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 :=
+    halfInt_perron_log_le hx4 (by rw [hcast]; linarith) (by rw [hcast]; linarith)
   -- the vertical side
-  have hlog3 : Real.log 3 ≤ 1.4 := by
-    have h34 : Real.log 3 ≤ Real.log 4 := Real.log_le_log (by norm_num) (by norm_num)
-    have h4 : Real.log 4 = 2 * Real.log 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
-      push_cast; ring
-    linarith [Real.log_two_lt_d9]
-  have hVb : 2 * (1 + Real.log 3) / (1 / 2 + ε / 2)
-        + 2 * (1 + Real.log (2 + ((N : ℝ) + 1 / 2))) * Real.log ((N : ℝ) + 1 / 2)
-      ≤ 14 * (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-    have h1 : 2 * (1 + Real.log 3) / (1 / 2 + ε / 2) ≤ 10 := by
-      rw [div_le_iff₀ hσ₁0]
-      linarith [hlog3, hε]
-    have h2 : 1 + Real.log (2 + ((N : ℝ) + 1 / 2))
-        ≤ 2 * (1 + Real.log ((N : ℝ) + 1 / 2)) := by
-      have hmono : Real.log (2 + ((N : ℝ) + 1 / 2)) ≤ Real.log (4 * ((N : ℝ) + 1 / 2)) :=
-        Real.log_le_log (by linarith) (by linarith)
-      rw [Real.log_mul (by norm_num) (by linarith)] at hmono
-      have hl4 : Real.log 4 ≤ Real.log ((N : ℝ) + 1 / 2) := Real.log_le_log (by norm_num) hx4
-      linarith
-    have h4 : (1 + Real.log (2 + ((N : ℝ) + 1 / 2))) * Real.log ((N : ℝ) + 1 / 2)
-        ≤ (2 * (1 + Real.log ((N : ℝ) + 1 / 2))) * (1 + Real.log ((N : ℝ) + 1 / 2)) :=
-      mul_le_mul h2 (by linarith) hlogx0 (by linarith)
-    linarith [h1, h4, hL2]
+  have hVb := halfInt_vertical_coefficient_le (x := (N : ℝ) + 1 / 2) hε hx4
   have hVfin : ‖VIntegral (fun s : ℂ => (-deriv riemannZeta s / riemannZeta s)
         * ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s)) (1 / 2 + ε / 2)
         (-((N : ℝ) + 1 / 2)) ((N : ℝ) + 1 / 2)‖
@@ -202,7 +205,6 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
       = (32 / (Real.pi * Real.log 2 * ε ^ 2)) * Q + (192 / Real.pi) * Q
         + (1 / (2 * Real.pi)) * (14 * K * Q)
         + (1 / (2 * Real.pi)) * ((C / ε) * Q + (C / ε) * Q) + 1 / 2 * Q := by
-    field_simp
     ring
   rw [hexpand]
   have hpiinv : (0 : ℝ) ≤ 1 / (2 * Real.pi) := by positivity

@@ -206,7 +206,6 @@ theorem stripTheta_le_of {t : ℝ} {K : ℕ} (hL : (10 : ℝ) ^ 16 ≤ wideScale
 
 /-! ### The rectangle bound -/
 
-set_option maxHeartbeats 1000000 in
 /-- **The partial sum is polylogarithmic on the wide strip.** -/
 theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     (ht16 : 16 * Real.pi ≤ t) (hL : (10 : ℝ) ^ 16 ≤ wideScale t) {K : ℕ} (hK10 : 10 ≤ K)
@@ -217,7 +216,7 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
         (n : ℂ) ^ (-(σ : ℂ) - Complex.I * (t : ℂ))‖
       ≤ wideScale t ^ (34 : ℕ) := by
   have hπ := Real.pi_pos
-  have hL0 : (0 : ℝ) < wideScale t := by nlinarith
+  have hL0 : (0 : ℝ) < wideScale t := by linarith
   have hx := thirtyone_le_log_wideScale hL
   have hxpos : (0 : ℝ) < Real.log (wideScale t) := by linarith
   have hKR : (10 : ℝ) ≤ (K : ℝ) := by exact_mod_cast hK10
@@ -230,19 +229,21 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
       have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (K : ℝ) - 1 by linarith)
       linarith
     have hlogKnn : (0 : ℝ) ≤ Real.log ((K : ℝ) - 1) := Real.log_nonneg (by linarith)
-    have hA : (0 : ℝ) ≤ ((K : ℝ) - 1) * ((K : ℝ) - 4 / 3) := by nlinarith
+    have hA : (0 : ℝ) ≤ ((K : ℝ) - 1) * ((K : ℝ) - 4 / 3) :=
+      mul_nonneg (by linarith) (by linarith)
     have hbound : largenessBound K ≤ (K : ℝ) ^ 3 + (K : ℝ) := by
       rw [largenessBound]
       have h1 : ((K : ℝ) - 1) * ((K : ℝ) - 4 / 3) * Real.log ((K : ℝ) - 1)
           ≤ ((K : ℝ) - 1) * ((K : ℝ) - 4 / 3) * ((K : ℝ) - 1) :=
         mul_le_mul_of_nonneg_left hlogK hA
       have h2 : ((K : ℝ) - 1) * ((K : ℝ) - 4 / 3) * ((K : ℝ) - 1) ≤ (K : ℝ) ^ 3 := by
-        nlinarith [hKR]
-      nlinarith
+        linarith [mul_le_mul_of_nonneg_right hKR (by linarith : (0 : ℝ) ≤ (K : ℝ))]
+      linarith [mul_le_mul_of_nonneg_left hlog2 (by linarith : (0 : ℝ) ≤ (K : ℝ))]
     have hcube := cube_lt_two_pow hK10
-    have hKsq : (1 : ℝ) ≤ (K : ℝ) ^ 2 := by nlinarith
-    have hKle : (K : ℝ) ≤ (K : ℝ) ^ 3 := by nlinarith
-    nlinarith [hbound, hcube, hKle, hKhi, hL0]
+    have hKsq : (1 : ℝ) ≤ (K : ℝ) ^ 2 := one_le_pow₀ (by linarith)
+    have hKle : (K : ℝ) ≤ (K : ℝ) ^ 3 := by
+      linarith [le_mul_of_one_le_right (by linarith : (0 : ℝ) ≤ (K : ℝ)) hKsq]
+    linarith [hbound, hcube, hKle, hKhi, hL0]
   rw [largenessBound] at hcond
   have hmain := norm_dirichlet_sigma_littlewood_capstone hσ0 hσ1 ht16 hK3 hstrip hcond
   set θ : ℝ := stripTheta t K with hθdef
@@ -256,7 +257,8 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
     have hrw : (2 : ℝ) ^ θ = Real.exp (Real.log 2 * θ) :=
       Real.rpow_def_of_pos (by norm_num) θ
     have hexp : Real.log 2 * θ ≤ 32 * Real.log (wideScale t) := by
-      nlinarith [hθle, hθnn, hxpos, hlog2lt, hlog2pos]
+      linarith [mul_le_mul_of_nonneg_left hθle hlog2pos.le,
+        mul_le_mul_of_nonneg_right hlog2lt.le (by linarith : (0 : ℝ) ≤ 45 * Real.log (wideScale t))]
     have hfin : Real.exp (32 * Real.log (wideScale t)) = wideScale t ^ (32 : ℕ) := by
       rw [show (32 : ℝ) * Real.log (wideScale t) = Real.log (wideScale t ^ (32 : ℕ)) by
         rw [Real.log_pow]; norm_num]
@@ -273,7 +275,7 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
   have hxs : Real.log (wideScale t) ≤ 2 * Real.sqrt (wideScale t) := wide_log_le_two_sqrt hL0
   have hSnn : (0 : ℝ) ≤ ((splitExponent t K : ℕ) : ℝ) := Nat.cast_nonneg _
   have hSlog : ((splitExponent t K : ℕ) : ℝ) * Real.log 2 ≤ wideScale t := by
-    have hdenpos : (0 : ℝ) < (45 : ℝ) / 100 * Real.log (wideScale t) := by nlinarith
+    have hdenpos : (0 : ℝ) < (45 : ℝ) / 100 * Real.log (wideScale t) := by linarith
     have hb : Real.log 2 ≤ 1 := by
       have h2 := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num); linarith
     have hmul : ((splitExponent t K : ℕ) : ℝ) * Real.log 2
@@ -282,16 +284,19 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
       have hstep : ((splitExponent t K : ℕ) : ℝ) * Real.log 2
           * ((45 : ℝ) / 100 * Real.log (wideScale t))
           ≤ (wideScale t + (45 : ℝ) / 100 * Real.log (wideScale t)) * Real.log 2 := by
-        nlinarith [hSd, hlog2pos, hSnn]
-      nlinarith [hstep, hxs, hs, hss, hb, hlog2pos, Real.sqrt_nonneg (wideScale t)]
+        linarith [mul_le_mul_of_nonneg_right hSd hlog2pos.le]
+      linarith [mul_le_mul_of_nonneg_left hb
+          (by linarith : (0 : ℝ) ≤ wideScale t + 45 / 100 * Real.log (wideScale t)),
+        mul_le_mul_of_nonneg_left hx hL0.le,
+        mul_le_mul_of_nonneg_left hs (Real.sqrt_nonneg (wideScale t))]
     exact le_of_mul_le_mul_right hmul hdenpos
-  have ht0 : (0 : ℝ) < t := by nlinarith
+  have ht0 : (0 : ℝ) < t := by linarith
   have hT : ((topExponent t : ℕ) : ℝ) ≤ 3 * Real.log (t / (8 * Real.pi)) / Real.log 2 :=
     topExponent_le (by linarith)
   have hTlog : Real.log (t / (8 * Real.pi)) ≤ wideScale t := by
     refine Real.log_le_log (by positivity) ?_
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left (by linarith : 2 * Real.pi ≤ 8 * Real.pi) ht0.le]
   have hT2 : ((topExponent t : ℕ) : ℝ) * Real.log 2 ≤ 3 * wideScale t := by
     rw [le_div_iff₀ hlog2pos] at hT
     linarith
@@ -301,7 +306,7 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
   have hprod : (69 : ℝ) / 100 * ((topExponent t : ℕ) : ℝ)
       ≤ ((topExponent t : ℕ) : ℝ) * Real.log 2 := by
     have h := mul_nonneg hTnn (by linarith : (0 : ℝ) ≤ Real.log 2 - 69 / 100)
-    nlinarith [h]
+    linarith [h]
   have hTle : ((topExponent t : ℕ) : ℝ) + 1 ≤ 5 * wideScale t := by
     linarith only [hT2, hprod, hL]
   have hcast : ((topExponent t + 1 - splitExponent t K : ℕ) : ℝ)
@@ -324,24 +329,24 @@ theorem norm_dirichlet_wide_rect {σ t : ℝ} (hσ0 : 0 < σ) (hσ1 : σ < 1)
       _ = wideScale t ^ (33 : ℕ) := by ring
   have htailbound : ((topExponent t + 1 - splitExponent t K : ℕ) : ℝ)
       * (2560 * (2 : ℝ) ^ (-θ)) ≤ 12800 * wideScale t := by
-    have h1 : (2560 : ℝ) * (2 : ℝ) ^ (-θ) ≤ 2560 := by nlinarith [htail2]
+    have h1 : (2560 : ℝ) * (2 : ℝ) ^ (-θ) ≤ 2560 := by linarith [htail2]
     have h2 : (0 : ℝ) ≤ ((topExponent t + 1 - splitExponent t K : ℕ) : ℝ) := Nat.cast_nonneg _
-    nlinarith [hcast, hTle, h1, h2, hL0]
+    linarith [mul_le_mul_of_nonneg_left h1 h2, hcast, hTle]
   have hfinal : (2 : ℝ) + wideScale t ^ (33 : ℕ) + 12800 * wideScale t
       ≤ wideScale t ^ (34 : ℕ) := by
     have h33 : (0 : ℝ) < wideScale t ^ (33 : ℕ) := by positivity
-    have hone : (1 : ℝ) ≤ wideScale t := by nlinarith
+    have hone : (1 : ℝ) ≤ wideScale t := by linarith
     have h32 : (12800 : ℝ) ≤ wideScale t ^ (32 : ℕ) := by
       have hstep : wideScale t ≤ wideScale t ^ (32 : ℕ) := by
         calc wideScale t = wideScale t ^ (1 : ℕ) := by ring
           _ ≤ wideScale t ^ (32 : ℕ) := pow_le_pow_right₀ hone (by norm_num)
-      nlinarith
+      linarith
     have hbig : (12800 : ℝ) * wideScale t ≤ wideScale t ^ (33 : ℕ) := by
       have heq : wideScale t ^ (32 : ℕ) * wideScale t = wideScale t ^ (33 : ℕ) := by ring
-      nlinarith [h32, hL0]
-    have h2small : (2 : ℝ) ≤ wideScale t ^ (33 : ℕ) := by nlinarith [h33, hbig, hL0]
+      linarith [mul_le_mul_of_nonneg_right h32 hL0.le]
+    have h2small : (2 : ℝ) ≤ wideScale t ^ (33 : ℕ) := by linarith [h33, hbig, hL0]
     have hmul : (3 : ℝ) * wideScale t ^ (33 : ℕ) ≤ wideScale t * wideScale t ^ (33 : ℕ) := by
-      nlinarith [h33, hL0]
+      exact mul_le_mul_of_nonneg_right (by linarith) h33.le
     have heq : wideScale t * wideScale t ^ (33 : ℕ) = wideScale t ^ (34 : ℕ) := by ring
     linarith [hmul, heq.le, heq.ge]
   linarith [hmain, hheadbound, htailbound, hfinal]

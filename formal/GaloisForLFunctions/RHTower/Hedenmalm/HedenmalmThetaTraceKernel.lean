@@ -167,7 +167,7 @@ theorem integrable_uncurry_abs_slice (S : PositiveDensitySource)
         abs_pinnedKernelSlice_le (Ioo_subset_Icc_self hu) s
       have hq : 0 < quantileSpeed S u := quantileSpeed_pos S u
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-      nlinarith [abs_nonneg (pinnedKernelSlice u s)]
+      linarith [mul_le_mul_of_nonneg_left h1 hq.le]
   · refine (integrable_quantileSpeed_mul_poly S hfin).congr ?_
     filter_upwards [ae_unitIntervalMeasure_mem_Ioo] with u hu
     have hpt : ∀ s : ℝ, ‖quantileSpeed S u * |pinnedKernelSlice u s|‖
@@ -210,7 +210,7 @@ theorem integral_quantileSpeed_min_sub (S : PositiveDensitySource)
         ≤ quantileSpeed S p.1 * |pinnedKernelSlice p.1 p.2|
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hq]
       have h2 : 0 ≤ |pinnedKernelSlice p.1 p.2| := abs_nonneg _
-      nlinarith [mul_nonneg hq.le h2, abs_nonneg (pinnedKernelSlice t p.2)]
+      linarith [mul_le_mul_of_nonneg_left h1 (mul_nonneg hq.le h2)]
   have hL : (∫ u, quantileSpeed S u * (min t u - t * u) ∂unitIntervalMeasure)
       = ∫ u, ∫ s, quantileSpeed S u * pinnedKernelSlice t s * pinnedKernelSlice u s
         ∂unitIntervalMeasure ∂unitIntervalMeasure := by

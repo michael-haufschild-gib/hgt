@@ -50,7 +50,7 @@ private theorem dampedGap_contraction {x : ℝ} (hx : 0 < x) :
   rw [(hasDerivAt_dampedGap x).deriv]
   have he := Real.exp_pos (-2*x)
   have he1 : Real.exp (-2*x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have he2 : Real.exp (-2*x)^(2 : ℕ) ≤ Real.exp (-2*x) := by nlinarith
+  have he2 : Real.exp (-2*x)^(2 : ℕ) ≤ Real.exp (-2*x) := pow_le_of_le_one he.le he1 two_ne_zero
   have hb := mul_le_mul_of_nonneg_right he2
     (sq_nonneg (1-thetaCuspModularMassDrift x/3))
   have ha := mul_pos he (thetaCuspModularGapAmplitude_pos x)

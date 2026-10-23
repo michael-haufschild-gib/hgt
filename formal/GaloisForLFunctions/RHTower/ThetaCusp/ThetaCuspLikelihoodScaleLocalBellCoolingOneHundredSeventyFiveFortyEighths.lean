@@ -90,7 +90,6 @@ theorem oneThousandFiveHundredNinetySix_mul_thetaCuspLikelihoodTailProbability_l
   have hpSmall : 1596 * p < 1 := by nlinarith
   simpa only [p, B] using hpSmall
 
-set_option maxHeartbeats 3000000 in
 /-- Scale-local Bell losses consume less than eleven thousandths of the ordinary fourth score. -/
 theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_175Over48_le
     {x : ℝ} (hx : 0 ≤ x)
@@ -133,7 +132,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
     have h22 := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     have h22' : e2 ^ (2 : ℕ) ≤ p * e4 := by
       simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h22
-    nlinarith [sq_pos_of_pos he2]
+    exact pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22') he4.le
   have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
     simpa only [B, p, e1, e2, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
@@ -148,30 +147,30 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
   have hAe2 : e1 < A * e2 := by
     have hmul := mul_lt_mul_of_pos_right hA he2
-    nlinarith
+    linarith
   have hb2 : 0 < b2 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
-    nlinarith
+    linarith
   have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hAe3 : 3 * e2 < A * e3 := by
     have hmul := mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hb3 : 0 < b3 := by
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     dsimp only [b3]
     have hcross : A * e1 ≤ 3 * A ^ (2 : ℕ) * e2 := by
       have hleft : A * e1 ≤ A * (e2 / 3) := by
         apply mul_le_mul_of_nonneg_left (by linarith) hA0.le
       have hright : A * (e2 / 3) ≤ 3 * A ^ (2 : ℕ) * e2 := by
-        nlinarith [mul_pos hA0 he2]
+        linarith [mul_pos hA0 he2, mul_lt_mul_of_pos_right hA (mul_pos hA0 he2)]
       exact hleft.trans hright
-    nlinarith
+    linarith
   have hb4Lower : (32 / 5 : ℝ) * A ^ (4 : ℕ) * e4 ≤ b4 := by
     simpa only [A, B, e4, b4] using two_fifths_le_thetaCuspLikelihoodSourceOrdinaryJetFour hx
   have hb4 : 0 < b4 := lt_of_lt_of_le (by positivity) hb4Lower
@@ -186,7 +185,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
   have hb1b3 : 4 * b1 * b3 ≤ 10 * p * b4 := by
     have hcore := hb1b3Core.trans hb1b3Moment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower (by positivity : 0 ≤ 10 * p)
-    nlinarith
+    linarith
   have hb2sqCore : b2 ^ (2 : ℕ) ≤ 16 * A ^ (4 : ℕ) * e2 ^ (2 : ℕ) := by
     have hpow := pow_le_pow_left₀ hb2.le hb2Upper 2
     calc
@@ -198,7 +197,7 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
     have hcore := hb2sqCore.trans hb2sqMoment
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ (15 / 2 : ℝ) * p)
-    nlinarith
+    linarith
   have he1four : e1 ^ (4 : ℕ) ≤ p ^ (3 : ℕ) * e4 := by
     have h11sq := pow_le_pow_left₀ (sq_nonneg e1) h11 2
     have hp0 : 0 ≤ p := hp.le
@@ -215,10 +214,10 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
       dsimp only [b1]
       have hscaled := mul_le_mul_of_nonneg_left he1four
         (by positivity : 0 ≤ 96 * A ^ (4 : ℕ))
-      nlinarith
+      linarith
     have hscaled := mul_le_mul_of_nonneg_left hb4Lower
       (by positivity : 0 ≤ 15 * p ^ (3 : ℕ))
-    nlinarith
+    linarith
   have hcoeff : (35 / 2 : ℝ) * p + 15 * p ^ (3 : ℕ) < 11 / 1000 := by
     have hpUpper : p < (1 / 1596 : ℝ) := by linarith
     have hp3 : p ^ (3 : ℕ) < (1 / 1596 : ℝ) ^ (3 : ℕ) :=
@@ -261,7 +260,6 @@ theorem nineHundredEightyNineThousandths_mul_ordinaryJetFour_lt_logJetFour_of_17
   linarith only [hloss, hpositive]
 
 
-set_option maxHeartbeats 3000000 in
 
 theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_oneThousandThreeThousandths_ordinary_of_175Over48_le
     {x : ℝ} (hx : 0 ≤ x)
@@ -327,7 +325,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_oneThousandThreeThousandt
   have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
-  have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
+  have hp : 0 < p := pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22) he4.le
   have hp0 : 0 ≤ p := hp.le
   have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
@@ -376,56 +374,56 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_oneThousandThreeThousandt
       _ = p ^ (4 : ℕ) * e6 := by ring
   have hAe2 : e1 < A * e2 := by
     have hmul := mul_lt_mul_of_pos_right hA he2
-    nlinarith
+    linarith
   have hAe3 : 3 * e2 < A * e3 := by
     have hmul := mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hAe4 : 6 * e3 < A * e4 := by
     have hmul := mul_lt_mul_of_pos_right hA he4
-    nlinarith
+    linarith
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
   have hb1Upper : b1 ≤ 2 * A * e1 := by rfl
   have hb2 : 0 < b2 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3 : 0 < b3 := by
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b3]
-    nlinarith
+    linarith [mul_pos hA0 he1]
   have hb4 : 0 < b4 := by
     have hmul := mul_lt_mul_of_pos_left hAe4 (pow_pos hA0 3)
     have htail : A * e1 < 7 * A ^ (2 : ℕ) * e2 := by
       have h := mul_lt_mul_of_pos_left hAe2 hA0
-      nlinarith
+      linarith [mul_pos hA0 he1]
     dsimp only [b4]
-    nlinarith
+    linarith
   have hseven : 7 * e2 ≤ 6 * A * e3 := by
     have hAe3' : 3 * e3 < A * e3 := by
       exact mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hsevenScaled := mul_le_mul_of_nonneg_left hseven (sq_nonneg A)
   have hb4Upper : b4 ≤ 16 * A ^ (4 : ℕ) * e4 := by
     dsimp only [b4]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb5Lower : (32 / 6 : ℝ) * A ^ (5 : ℕ) * e5 ≤ b5 := by
     have h := one_sixth_mul_likelihoodSourceLinearFive_le hx
     dsimp only [A, B, e1, e2, e3, e4, e5, b5] at h ⊢
-    nlinarith
+    linarith
   have hb5 : 0 < b5 := by
     exact lt_of_lt_of_le (by positivity :
       0 < (32 / 6 : ℝ) * A ^ (5 : ℕ) * e5) hb5Lower
   have hb6Lower : (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6 ≤ b6 := by
     have h := one_thirtieth_mul_likelihoodSourceLinearSix_le hx
     dsimp only [A, B, e1, e2, e3, e4, e5, e6, b6] at h ⊢
-    nlinarith
+    linarith
   have hb6 : 0 < b6 := by
     exact lt_of_lt_of_le (by positivity :
       0 < (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6) hb6Lower
@@ -448,21 +446,21 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_oneThousandThreeThousandt
       have h1 := mul_le_mul_of_nonneg_left hb1SqB4 (by norm_num : (0 : ℝ) ≤ 15)
       have h2 := mul_le_mul_of_nonneg_left he114
         (show 0 ≤ 960 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hterm2 : 60 * b1 * b2 * b3 ≤ 3840 * A ^ (6 : ℕ) * p ^ (2 : ℕ) * e6 := by
       have h1 := mul_le_mul_of_nonneg_left hb1B2B3 (by norm_num : (0 : ℝ) ≤ 60)
       have h2 := mul_le_mul_of_nonneg_left he123
         (show 0 ≤ 3840 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hterm3 : 15 * b2 ^ (3 : ℕ) ≤ 960 * A ^ (6 : ℕ) * p ^ (2 : ℕ) * e6 := by
       have h1 := mul_le_mul_of_nonneg_left hb2Cube (by norm_num : (0 : ℝ) ≤ 15)
       have h2 := mul_le_mul_of_nonneg_left he23cube
         (show 0 ≤ 960 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hlead := mul_le_mul_of_nonneg_left hb6Lower
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2700) (sq_nonneg p))
     dsimp only [q3]
-    nlinarith
+    linarith
   have hb1FourB2 : b1 ^ (4 : ℕ) * b2 ≤ 64 * A ^ (6 : ℕ) * (e1 ^ (4 : ℕ) * e2) := by
     calc
       b1 ^ (4 : ℕ) * b2 ≤ (2 * A * e1) ^ (4 : ℕ) * (4 * A ^ (2 : ℕ) * e2) := by gcongr
@@ -472,25 +470,25 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetSix_lt_oneThousandThreeThousandt
       have h1 := mul_le_mul_of_nonneg_left hb1FourB2 (by norm_num : (0 : ℝ) ≤ 15)
       have h2 := mul_le_mul_of_nonneg_left he112
         (show 0 ≤ 960 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hlead := mul_le_mul_of_nonneg_left hb6Lower
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 450) (pow_nonneg hp0 4))
     dsimp only [q5]
-    nlinarith
+    linarith
   have hq2nonneg : 0 ≤ q2 := by dsimp only [q2]; positivity
   have hq4nonneg : 0 ≤ q4 := by dsimp only [q4]; positivity
   have hq6nonneg : 0 ≤ q6 := by dsimp only [q6]; positivity
-  have hpLt : p < (1 / 1596 : ℝ) := by nlinarith
+  have hpLt : p < (1 / 1596 : ℝ) := by linarith
   have hp2 : p ^ (2 : ℕ) < (1 / 1596 : ℝ) ^ (2 : ℕ) :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hp4 : p ^ (4 : ℕ) < (1 / 1596 : ℝ) ^ (4 : ℕ) :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hbudget : 1 + 5400 * p ^ (2 : ℕ) + 10800 * p ^ (4 : ℕ) < (1003 / 1000 : ℝ) := by
     norm_num at hp2 hp4 ⊢
-    nlinarith
+    linarith
   have hupper : b6 + 2 * q3 + 24 * q5 < (1003 / 1000 : ℝ) * b6 := by
     have hscaled := mul_lt_mul_of_pos_right hbudget hb6
-    nlinarith
+    linarith
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetSix x =
         b6 - q2 + 2 * q3 - 6 * q4 + 24 * q5 - 120 * q6 := by

@@ -9,7 +9,6 @@ open Filter Topology
 
 namespace RHTower
 
-set_option maxHeartbeats 1000000
 
 /-! ### Concrete fixed-cutoff Sonin carrier -/
 def centralPhysicalForbidden (a : ℝ) : Submodule ℂ SoninL2 :=
@@ -98,8 +97,8 @@ theorem centralSoninProjection_evenShellVector_tendsto
     (a p : ℝ) (ha : 0 < a) (hp : 1 < p) :
     Tendsto (fun n =>
       ‖centralSoninProjection a
-          (evenShellVector a (p * a) (by nlinarith) n) -
-        evenShellVector a (p * a) (by nlinarith) n‖) atTop (𝓝 0) := by
+          (evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp) n) -
+        evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp) n‖) atTop (𝓝 0) := by
   let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
   let B : Submodule ℂ SoninL2 := centralFourierForbidden a
   letI : (Aᗮ ⊓ Bᗮ).HasOrthogonalProjection := by
@@ -107,18 +106,18 @@ theorem centralSoninProjection_evenShellVector_tendsto
     infer_instance
   have hblock : ‖soninAlternatingBlock A B‖ < 1 := by
     simpa [A, B] using norm_centralSoninAlternatingBlock_lt_one a ha
-  have hgA : ∀ n, evenShellVector a (p * a) (by nlinarith) n ∈ Aᗮ := by
+  have hgA : ∀ n, evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp) n ∈ Aᗮ := by
     intro n
     simpa [A, centralPhysicalForbidden] using
       evenShellVector_mem_physicalForbidden_orthogonal a p ha hp n
   have hBnull : Tendsto (fun n =>
-      ‖B.starProjection (evenShellVector a (p * a) (by nlinarith) n)‖)
+      ‖B.starProjection (evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp) n)‖)
       atTop (𝓝 0) := by
     simpa [B, centralFourierForbidden] using
       fourierForbidden_starProjection_evenShellVector_tendsto_zero
-        a (p * a) ha (by nlinarith)
+        a (p * a) ha (lt_mul_of_one_lt_left ha hp)
   have h := soninIntersectionProjection_tendsto_shell A B hblock
-    (evenShellVector a (p * a) (by nlinarith)) hgA hBnull
+    (evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp)) hgA hBnull
   rw [centralSoninProjection_eq_soninIntersectionProjection]
   simpa [A, B] using h
 
@@ -130,10 +129,10 @@ theorem centralPhysicalProjection_dilationSum_correctedShell_tendsto
       ‖(centralPhysicalForbidden a).starProjection
         (dilationSum p hp
           (centralSoninProjection a
-            (evenShellVector a (p * a) (by nlinarith) n)))‖) atTop (𝓝 1) := by
+            (evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp) n)))‖) atTop (𝓝 1) := by
   let A : Submodule ℂ SoninL2 := centralPhysicalForbidden a
   let W : SoninL2 →L[ℂ] SoninL2 := dilationSum p hp
-  let g : ℕ → SoninL2 := evenShellVector a (p * a) (by nlinarith)
+  let g : ℕ → SoninL2 := evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp)
   have happroxNorm : Tendsto (fun n => ‖centralSoninProjection a (g n) - g n‖)
       atTop (𝓝 0) := by
     simpa [g] using centralSoninProjection_evenShellVector_tendsto a p ha hp
@@ -173,11 +172,11 @@ theorem centralSoninDilationCorner_not_isCompactOperator
   letI : (Aᗮ ⊓ Bᗮ).HasOrthogonalProjection := by
     dsimp [A, B]
     infer_instance
-  let g : ℕ → SoninL2 := evenShellVector a (p * a) (by nlinarith)
+  let g : ℕ → SoninL2 := evenShellVector a (p * a) (lt_mul_of_one_lt_left ha hp)
   have hblock : ‖soninAlternatingBlock A B‖ < 1 := by
     simpa [A, B] using norm_centralSoninAlternatingBlock_lt_one a ha
   have hg : Orthonormal ℂ g := by
-    simpa [g] using evenShellVector_orthonormal a (p * a) ha (by nlinarith)
+    simpa [g] using evenShellVector_orthonormal a (p * a) ha (lt_mul_of_one_lt_left ha hp)
   have hgA : ∀ n, g n ∈ Aᗮ := by
     intro n
     simpa [g, A, centralPhysicalForbidden] using
@@ -185,7 +184,7 @@ theorem centralSoninDilationCorner_not_isCompactOperator
   have hBnull : Tendsto (fun n => ‖B.starProjection (g n)‖) atTop (𝓝 0) := by
     simpa [g, B, centralFourierForbidden] using
       fourierForbidden_starProjection_evenShellVector_tendsto_zero
-        a (p * a) ha (by nlinarith)
+        a (p * a) ha (lt_mul_of_one_lt_left ha hp)
   have hcross : Tendsto (fun n =>
       ‖A.starProjection
         (dilationSum p hp (soninIntersectionProjection A B (g n)))‖)

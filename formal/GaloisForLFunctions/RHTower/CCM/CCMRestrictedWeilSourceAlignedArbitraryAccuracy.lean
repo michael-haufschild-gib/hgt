@@ -81,7 +81,6 @@ structure CCMRestrictedWeilSourceApproximationCertificate
     ‖ccmArchimedeanFormToAperture a u‖ ^ 2 <
       ccmRestrictedWeilSourceAccuracyThreshold a delta * ‖u‖ ^ 2
 
-set_option maxHeartbeats 1000000 in
 /-- Every positive accuracy has an actual finite peripheral Gamma--Slepian source head. -/
 theorem exists_ccmRestrictedWeil_sourceApproximationCertificate
     (a : SuzukiPositiveAperture) {delta : ℝ} (hdelta : 0 < delta) :
@@ -161,7 +160,6 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.nonzero_nonpositive_not_
   have hpos := C.exterior_coercive hdelta u hu hune
   nlinarith
 
-set_option maxHeartbeats 1000000 in
 /-- **Arbitrarily accurate source-relative finite-block lower bound.**  Full restricted-Weil form
 is bounded below by its finite Gamma--Slepian head compression with any prescribed positive
 norm-tax.  Exterior and head--tail prime--polar couplings remain intact. -/
@@ -231,7 +229,7 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
     have h := norm_ccmArchimedeanFormToAperture_le a
       (f : CCMArchimedeanFormDomain a)
     change ‖A (f : CCMArchimedeanFormDomain a)‖ ≤ ‖f‖ at h
-    nlinarith [norm_nonneg (A (f : CCMArchimedeanFormDomain a)), norm_nonneg f]
+    exact pow_le_pow_left₀ (norm_nonneg _) h 2
   have hE0 : 0 ≤ E := ccmRestrictedWeilRemainderEnvelope_nonneg a
   have heps0 : 0 ≤ eps :=
     (ccmRestrictedWeilSourceAccuracyThreshold_pos a hdelta).le
@@ -312,7 +310,7 @@ theorem CCMRestrictedWeilSourceApproximationCertificate.form_ge_sourceHead_sub_a
     have h2 := hcrossLower (A (f : CCMArchimedeanFormDomain a))
       (A (m : CCMArchimedeanFormDomain a))
     dsimp only [X]
-    nlinarith
+    linarith
   have haccuracy : 2 * E ^ 2 * eps < delta :=
     two_mul_remainderEnvelope_sq_mul_sourceAccuracyThreshold_lt a hdelta
   rw [hsourceHeadProjection]

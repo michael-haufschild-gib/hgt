@@ -14,7 +14,6 @@ is the coupling itself.
 
 noncomputable section
 
-set_option maxHeartbeats 2000000
 
 namespace RHTower
 
@@ -72,7 +71,7 @@ theorem indicatorShell_inverse_vanishing (ha : 0 < a) (hab : a ≤ b) (hbc : b �
       (evenIndicatorCutoff (r * c) - evenIndicatorCutoff (r * b)) *
         evenDilationCLM r⁻¹ hrinv := by
     rw [mul_sub, hmc, hmb, sub_mul]
-  have hbrb : b ≤ r * b := by nlinarith
+  have hbrb : b ≤ r * b := le_mul_of_one_le_left hb0.le hr.le
   have hmono : r * b ≤ r * c := mul_le_mul_of_nonneg_left hbc hr0.le
   have hzero := evenIndicatorShell_mul_eq_zero_of_left_ceiling_le_right_floor
     a b (r * b) (r * c) hab hmono hbrb
@@ -103,7 +102,7 @@ theorem fourierShell_forward_vanishing (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤
       (evenFourierCutoff (r * c) - evenFourierCutoff (r * b)) *
         evenDilationCLM r hr0 := by
     rw [mul_sub, hmc, hmb, sub_mul]
-  have hbrb : b ≤ r * b := by nlinarith
+  have hbrb : b ≤ r * b := le_mul_of_one_le_left hb0.le hr.le
   have hmono : r * b ≤ r * c := mul_le_mul_of_nonneg_left hbc hr0.le
   have hzero := evenFourierShell_mul_eq_zero_of_left_ceiling_le_right_floor
     a b (r * b) (r * c) hab hmono hbrb

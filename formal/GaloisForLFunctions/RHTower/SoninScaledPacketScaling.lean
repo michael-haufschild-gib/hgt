@@ -14,7 +14,6 @@ estimate — it is one function seen at another scale.
 
 noncomputable section
 
-set_option maxHeartbeats 400000
 
 namespace RHTower
 

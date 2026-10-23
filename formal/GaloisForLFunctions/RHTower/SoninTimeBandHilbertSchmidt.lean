@@ -27,8 +27,6 @@ open scoped ENNReal
 
 namespace RHTower
 
-set_option maxHeartbeats 300000
-
 local instance soninTimeBandHilbertSchmidtLocalInst1 : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
 
 section Kernel
@@ -247,7 +245,7 @@ theorem hsNormSq_add_le {S T : E →L[ℂ] F}
             (‖S (b i)‖ + ‖T (b i)‖) ^ 2 := by
           rw [sq, sq]
           exact mul_self_le_mul_self (norm_nonneg _) htri
-        nlinarith [sq_nonneg (‖S (b i)‖ - ‖T (b i)‖)])
+        linarith [sq_nonneg (‖S (b i)‖ - ‖T (b i)‖)])
         (((hS.summable b).mul_left 2).add ((hT.summable b).mul_left 2))
     _ = 2 * ∑' i, ‖S (b i)‖ ^ 2 + 2 * ∑' i, ‖T (b i)‖ ^ 2 := by
       rw [Summable.tsum_add ((hS.summable b).mul_left 2) ((hT.summable b).mul_left 2),
@@ -667,7 +665,7 @@ theorem centralSoninCutoffAnticommutator_ne_zero
     (ContinuousLinearMap.hsNormSq_eq_zero_iff hHS).2 hQP
   have harea := hsNormSq_centralTimeBandOverlap_eq_four_mul_sq a ha
   change ContinuousLinearMap.hsNormSq (Q * P) = 4 * a ^ 2 at harea
-  nlinarith [sq_pos_of_pos ha]
+  linarith [sq_pos_of_pos ha]
 
 /-- The correction response to the identity observable is nonzero at every positive aperture. -/
 theorem centralSoninCornerCorrectionResponse_one_ne_zero

@@ -213,6 +213,10 @@ theorem algebraicIndependent_constants_over_finitePrimeRationalCoefficientField
     apply (IsFractionRing.isAlgebraic_iff (Polynomial K)
       finitePrimeRationalCoefficientField finitePrimeRationalCoefficientField).mpr
     exact isAlgebraic_algebraMap (R := finitePrimeRationalCoefficientField) z
+  -- the fraction-field embedding of `K[X]` is faithful
+  haveI : FaithfulSMul (Polynomial K) finitePrimeRationalCoefficientField :=
+    (faithfulSMul_iff_algebraMap_injective _ _).mpr
+      (IsFractionRing.injective (Polynomial K) finitePrimeRationalCoefficientField)
   exact (Algebra.IsAlgebraic.algebraicIndependent_iff
     (Polynomial K) finitePrimeRationalCoefficientField).mp hPoly
 

@@ -13,7 +13,6 @@ The dilation sum is consequently injective on every Fourier annulus with positiv
 
 noncomputable section
 
-set_option maxHeartbeats 1000000
 
 namespace RHTower
 
@@ -60,7 +59,7 @@ theorem eq_zero_of_evenDilationSum_apply_eq_zero_of_fourierAnnulus
     (hbv : evenFourierCutoff b v = 0) :
     v = 0 := by
   have hr0 : (0 : ℝ) < r := zero_lt_one.trans hr
-  have hr2 : (1 : ℝ) < r ^ (2 : ℕ) := by nlinarith
+  have hr2 : (1 : ℝ) < r ^ (2 : ℕ) := one_lt_pow₀ hr two_ne_zero
   have hspos : (0 : ℝ) < (r ^ (2 : ℕ))⁻¹ := inv_pos.mpr (by positivity)
   set s : ℝ := (r ^ (2 : ℕ))⁻¹ with hsdef
   have hs0 : 0 < s := hspos

@@ -9,7 +9,6 @@ amplitude strip.  A fixed `T^(1/400)` reserve absorbs all degree-60 label entrop
 colour fibres are summed and the positive label count is cancelled.
 -/
 
-set_option maxRecDepth 10000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -42,7 +41,7 @@ theorem eventually_maynardLabelCost_absorbed_four_hundred :
   have hcancel : C * (1 / (2 * C)) = 1 / 2 := by
     field_simp [hC.ne']
   have hhalf : (1 / 2 : ℝ) * T ^ (1 / 400 : ℝ) ≤
-      T ^ (1 / 400 : ℝ) := by nlinarith
+      T ^ (1 / 400 : ℝ) := by linarith
   change C * Real.log T ^ 120 ≤ T ^ (1 / 400 : ℝ)
   calc
     C * Real.log T ^ 120 ≤ C * (1 / (2 * C) * T ^ (1 / 400 : ℝ)) := hscaled

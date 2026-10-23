@@ -252,7 +252,6 @@ theorem tsum_thetaCuspLikelihoodAtomEighthMonomialMass_eq_spectralMoment
       filter_upwards with t
       ring
 
-set_option maxHeartbeats 4000000 in
 /-- Bell grades `4`, `6`, and `8` fit inside the completed higher-even Fock loss. -/
 theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
     {x : ℝ} (hx : 0 ≤ x) :
@@ -283,7 +282,7 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
       dsimp only [A, thetaCuspSingleAtomReflectionScale]
       norm_num
       have he : 1 ≤ Real.exp (2 * x) := Real.one_le_exp (by linarith)
-      nlinarith [Real.pi_pos])
+      linarith [mul_le_mul_of_nonneg_left he Real.pi_pos.le])
   have hP : 0 < P := by simpa only [P] using thetaCuspLikelihoodPartition_pos hB
   have hr : 0 ≤ r := by
     dsimp only [r]
@@ -324,7 +323,7 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
   have hpr : p ≤ r := by
     rw [hpEq]
     apply (div_le_iff₀ hden).2
-    nlinarith [sq_nonneg r]
+    linarith [sq_nonneg r]
   have hp3r3 : p ^ (3 : ℕ) ≤ r ^ (3 : ℕ) := pow_le_pow_left₀ hp hpr 3
   have hp5r5 : p ^ (5 : ℕ) ≤ r ^ (5 : ℕ) := pow_le_pow_left₀ hp hpr 5
   have hp7r7 : p ^ (7 : ℕ) ≤ r ^ (7 : ℕ) := pow_le_pow_left₀ hp hpr 7
@@ -384,12 +383,12 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
   have hgrade4 : thetaCuspLikelihoodEighthBellGradeFour x ≤
       1701 * (256 * A ^ (8 : ℕ) * p ^ (3 : ℕ) * e8) := by
     dsimp only [thetaCuspLikelihoodEighthBellGradeFour, b1, b2, b3, b4, b5]
-    nlinarith
+    linarith
   have hgrade4r : 6 * thetaCuspLikelihoodEighthBellGradeFour x ≤
       256 * (4 : ℝ) ^ (7 : ℕ) * r ^ (3 : ℕ) * A ^ (8 : ℕ) * e8 := by
     have hscale := mul_le_mul_of_nonneg_right hp3r3
       (mul_nonneg (pow_nonneg hA.le 8) he8)
-    nlinarith
+    linarith
 
   have h111113 : (e1 * e1 * (e1 * e1)) * (e1 * e3) ≤ p ^ (5 : ℕ) * e8 := by
     simpa only [e1, e3, e8, thetaCuspLikelihoodNormalizedMoment_one_eq_mean,
@@ -414,7 +413,7 @@ theorem thetaCuspLikelihoodEighthBellHigherEvenLoss_le_fock
   have hgrade6 : thetaCuspLikelihoodEighthBellGradeSix x ≤
       266 * (256 * A ^ (8 : ℕ) * p ^ (5 : ℕ) * e8) := by
     dsimp only [thetaCuspLikelihoodEighthBellGradeSix, b1, b2, b3]
-    nlinarith
+    linarith
   have hgrade6r : 120 * thetaCuspLikelihoodEighthBellGradeSix x ≤
       256 * (6 : ℝ) ^ (7 : ℕ) * r ^ (5 : ℕ) * A ^ (8 : ℕ) * e8 := by
     have hscale := mul_le_mul_of_nonneg_right hp5r5

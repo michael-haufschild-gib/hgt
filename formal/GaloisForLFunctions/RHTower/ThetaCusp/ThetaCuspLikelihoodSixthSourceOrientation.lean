@@ -88,7 +88,6 @@ private theorem ae_three_le_snd_prod
   intro z hz
   exact Set.mem_prod.mpr ⟨Set.mem_univ _, not_le.mp hz⟩
 
-set_option maxHeartbeats 1600000 in
 private theorem source_pair_grade_two_raw_bound
     {x : ℝ} (hx : 0 ≤ x) :
     let A := thetaCuspSingleAtomReflectionScale 1 x
@@ -119,7 +118,7 @@ private theorem source_pair_grade_two_raw_bound
       le_mul_of_one_le_right Real.pi_pos.le he
     dsimp only [A, thetaCuspSingleAtomReflectionScale]
     norm_num
-    nlinarith [Real.pi_gt_d2]
+    linarith [Real.pi_gt_d2]
   letI : IsFiniteMeasure μ := by
     have hzero := integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 0 hB
     simp only [pow_zero] at hzero
@@ -174,10 +173,10 @@ private theorem source_pair_grade_two_raw_bound
         (ae_three_le_thetaCuspHigherLikelihoodTiltedMeasure B)] with z hz hw
     have hz' : (47 / 5 : ℝ) < A * z.1 := by
       have := mul_lt_mul_of_pos_right hA (by linarith : 0 < z.1)
-      nlinarith
+      linarith
     have hw' : (47 / 5 : ℝ) < A * z.2 := by
       have := mul_lt_mul_of_pos_right hA (by linarith : 0 < z.2)
-      nlinarith
+      linarith
     simpa only [score, mul_add] using thetaLikelihoodSixthScore_add_le_384_mul hz' hw'
   have heval (n : ℕ) (hn : n ≤ 6) :
       (∫ z : ℝ × ℝ, (z.1 + z.2) ^ n ∂μ.prod μ) =
@@ -301,9 +300,8 @@ private theorem source_pair_grade_two_raw_bound
     ring
   rw [hleft, hrightEval] at hmono
   dsimp only [A, B, M] at hmono ⊢
-  nlinarith
+  linarith
 
-set_option maxHeartbeats 2400000 in
 /-- Quantitative sixth logarithmic source orientation.  After every negative Faa di Bruno
 particle grade is paid, more than `2/25` of the normalized leading sixth spectral moment
 survives. -/
@@ -369,7 +367,7 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
   have h22 : e2 ^ (2 : ℕ) ≤ p * e4 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 2
     simpa only [B, p, e2, e4, show 2 + 2 = 4 by norm_num, pow_two] using h
-  have hp : 0 < p := by nlinarith [sq_pos_of_pos he2]
+  have hp : 0 < p := pos_of_mul_pos_left ((sq_pos_of_pos he2).trans_le h22) he4.le
   have hp0 : 0 ≤ p := hp.le
   have h11 : e1 ^ (2 : ℕ) ≤ p * e2 := by
     have h := thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 1 1
@@ -415,45 +413,45 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
       _ = p ^ (5 : ℕ) * e6 := by ring
   have hAe2 : e1 < A * e2 := by
     have hmul := mul_lt_mul_of_pos_right hA he2
-    nlinarith
+    linarith
   have hAe3 : 3 * e2 < A * e3 := by
     have hmul := mul_lt_mul_of_pos_right hA he3
-    nlinarith
+    linarith
   have hAe4 : 6 * e3 < A * e4 := by
     have hmul := mul_lt_mul_of_pos_right hA he4
-    nlinarith
+    linarith
   have hb1 : 0 < b1 := by dsimp only [b1]; positivity
   have hb1nonneg : 0 ≤ b1 := hb1.le
   have hb1Upper : b1 ≤ 2 * A * e1 := by rfl
   have hb2 : 0 < b2 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb2nonneg : 0 ≤ b2 := hb2.le
   have hb2Upper : b2 ≤ 4 * A ^ (2 : ℕ) * e2 := by
     dsimp only [b2]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3 : 0 < b3 := by
     have hmul := mul_lt_mul_of_pos_left hAe3 (pow_pos hA0 2)
     dsimp only [b3]
-    nlinarith [mul_pos hA0 he1]
+    linarith [mul_pos hA0 he1]
   have hb3nonneg : 0 ≤ b3 := hb3.le
   have hb3Upper : b3 ≤ 8 * A ^ (3 : ℕ) * e3 := by
     have hmul := mul_lt_mul_of_pos_left hAe2 hA0
     dsimp only [b3]
-    nlinarith
+    linarith [mul_pos hA0 he1]
   have hb4 : 0 < b4 := by
     have hmul := mul_lt_mul_of_pos_left hAe4 (pow_pos hA0 3)
     have htail : A * e1 < 7 * A ^ (2 : ℕ) * e2 := by
       have h := mul_lt_mul_of_pos_left hAe2 hA0
-      nlinarith
+      linarith [mul_pos hA0 he1]
     dsimp only [b4]
-    nlinarith
+    linarith
   have hb4nonneg : 0 ≤ b4 := hb4.le
   have hb5Lower : (32 / 6 : ℝ) * A ^ (5 : ℕ) * e5 ≤ b5 := by
     have h := one_sixth_mul_likelihoodSourceLinearFive_le hx
     dsimp only [A, B, e1, e2, e3, e4, e5, b5] at h ⊢
-    nlinarith
+    linarith
   have hb5 : 0 < b5 := by
     have hlead : 0 < (32 / 6 : ℝ) * A ^ (5 : ℕ) * e5 := by positivity
     exact lt_of_lt_of_le hlead hb5Lower
@@ -461,7 +459,7 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
   have hb6Lower : (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6 ≤ b6 := by
     have h := one_thirtieth_mul_likelihoodSourceLinearSix_le hx
     dsimp only [A, B, e1, e2, e3, e4, e5, e6, b6] at h ⊢
-    nlinarith
+    linarith
   have hb6 : 0 < b6 := by
     have hlead : 0 < (64 / 30 : ℝ) * A ^ (6 : ℕ) * e6 := by positivity
     exact lt_of_lt_of_le hlead hb6Lower
@@ -515,16 +513,16 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
       have h1 := mul_le_mul_of_nonneg_left hb1CubeB3 (by norm_num : (0 : ℝ) ≤ 20)
       have h2 := mul_le_mul_of_nonneg_left he113
         (show 0 ≤ 64 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hterm2 : 45 * b1 ^ (2 : ℕ) * b2 ^ (2 : ℕ) ≤ 2880 * A ^ (6 : ℕ) * p ^ (3 : ℕ) * e6 := by
       have h1 := mul_le_mul_of_nonneg_left hb1SqB2Sq (by norm_num : (0 : ℝ) ≤ 45)
       have h2 := mul_le_mul_of_nonneg_left he122
         (show 0 ≤ 64 * A ^ (6 : ℕ) by positivity)
-      nlinarith
+      linarith
     have hlead := mul_le_mul_of_nonneg_left hb6Lower
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 1950) (pow_nonneg hp0 3))
     dsimp only [q4]
-    nlinarith
+    linarith
   have hb1Six : b1 ^ (6 : ℕ) ≤ 64 * A ^ (6 : ℕ) * e1 ^ (6 : ℕ) := by
     calc
       b1 ^ (6 : ℕ) ≤ (2 * A * e1) ^ (6 : ℕ) := pow_le_pow_left₀ hb1nonneg hb1Upper 6
@@ -535,18 +533,18 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
     have hlead := mul_le_mul_of_nonneg_left hb6Lower
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 30) (pow_nonneg hp0 5))
     dsimp only [q6]
-    nlinarith
-  have hpLt : p < (1 / 400 : ℝ) := by nlinarith
+    linarith
+  have hpLt : p < (1 / 400 : ℝ) := by linarith
   have hp3 : p ^ (3 : ℕ) < (1 / 400 : ℝ) ^ (3 : ℕ) :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hp5 : p ^ (5 : ℕ) < (1 / 400 : ℝ) ^ (5 : ℕ) :=
     pow_lt_pow_left₀ hpLt hp0 (by norm_num)
   have hbudget : 383 * p + 11700 * p ^ (3 : ℕ) + 3600 * p ^ (5 : ℕ) < 24 / 25 := by
     norm_num at hp3 hp5 ⊢
-    nlinarith
+    linarith
   have hloss : q2 + 6 * q4 + 120 * q6 < (24 / 25 : ℝ) * b6 := by
     have hscaled := mul_lt_mul_of_pos_right hbudget hb6
-    nlinarith
+    linarith
   have hdecomp :
       thetaCuspLikelihoodSourceLogPartitionJetSix x =
         b6 - q2 + 2 * q3 - 6 * q4 + 24 * q5 - 120 * q6 := by
@@ -559,7 +557,7 @@ theorem two_twentyFifths_mul_likelihoodSixthMoment_lt_sourceLogPartitionJetSix
     unfold thetaCuspLikelihoodNormalizedMoment
     ring
   rw [hdecomp]
-  nlinarith
+  linarith
 
 /-- Sixth logarithmic source jet is strictly positive on the nonnegative source half-line. -/
 theorem thetaCuspLikelihoodSourceLogPartitionJetSix_pos

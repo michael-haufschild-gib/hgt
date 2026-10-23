@@ -9,7 +9,6 @@ atoms and all first-atom reflection cancellations remain exact.
 -/
 namespace RHTower
 noncomputable section
-set_option maxHeartbeats 1500000
 
 /-- Complete deep-tail derivative majorant. -/
 def thetaCuspDeepDerivativeBound (n : ℕ) (x : ℝ) : ℝ :=

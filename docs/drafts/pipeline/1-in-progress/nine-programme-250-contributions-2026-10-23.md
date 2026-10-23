@@ -18,7 +18,7 @@ significance survives an honest audit against the user's exclusions.
 Theorems whose hypotheses are unproven analytic premises (a density bound on the flipped primes, a
 lower bound for a series) are criteria, not contributions, unless a concrete weight discharges them.
 
-**Accepted: 8 / 250.**
+**Accepted: 9 / 250.**
 
 1. THIM §5 open item "the pole law for kernels outside the critical Wiener algebra": for
    `0 < ε < 1/2`, `q ≥ 0` in `𝒞(K, ε)` with `Σ q(d)d^{-(1−ε)} = ∞`, and `Σ|k(j)|j^{-(1−ε)} < ∞` with
@@ -87,12 +87,20 @@ lower bound for a series) are criteria, not contributions, unless a concrete wei
    on boxes for `χ ≠ 1`; complex character exponents cost only a power of `log|t|`.
    `TransHorizonIncidenceMechanics/TheQuarterLawOfResidueFlips.lean`,
    `RHTower/DirichletLEulerLogarithmRightOfTheOneLine.lean`.
+9. THIM §5, the phase law: for `f(p) = a cos(t₀ log p + φ)`, `|a| ≤ 1`, `t₀ ≠ 0`, the half-damped
+   weight is paid iff `a cos φ < 1` or `ζ(1/2 + it₀) = 0` (`receiverBounded_phaseWeight_iff`). Only
+   `Re(a e^{iφ})` is read; the conjugate part couples to `arg ζ`, which is bounded at the pole
+   (`RHTower.exists_abs_im_zetaEulerLog_le`, new). Generic strip-bound payment criterion for
+   patterns: `receiverBounded_pattern_half_of_bounds`.
+   `TransHorizonIncidenceMechanics/ThePhaseLawOfOscillatingPrimePatterns.lean`,
+   `RHTower/ZetaEulerLogarithmOnBoxes.lean`.
 
 ## Active conjecture
 
 See `half-damped-receiver-pole-law-and-quarter-threshold.md`.
 
 ## Log
+- 2026-10-23 — phase law: two leaves compiled, axioms clean, wired; contribution 9.
 - 2026-10-23 — general residue flips: two leaves compiled, axioms clean, wired; contribution 8.
 - 2026-10-23 — symmetric residue flips: three leaves compiled, axioms clean, wired; contribution 7.
 - 2026-10-23 — `ThePrimeMeanIsQuantizedHeightByHeight` compiled, axioms clean, wired; contribution 6.

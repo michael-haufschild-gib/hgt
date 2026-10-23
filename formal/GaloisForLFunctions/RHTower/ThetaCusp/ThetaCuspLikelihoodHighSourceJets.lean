@@ -107,7 +107,6 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetFour
   · simp only [Function.comp_apply, Pi.pow_apply]
     ring
 
-set_option maxHeartbeats 800000 in
 /-- On source support `t ≥ 3` and scale `A > 3`, fifth score linear part retains at
 least one sixth of leading fifth moment. -/
 theorem one_sixth_mul_likelihoodSourceLinearFive_le
@@ -186,7 +185,7 @@ theorem one_sixth_mul_likelihoodSourceLinearFive_le
       have ht0 : 0 < t := lt_of_lt_of_le (by norm_num) ht
       have hmul := mul_lt_mul_of_pos_right hA ht0
       dsimp only [z]
-      nlinarith
+      linarith
     have hy : 0 ≤ y := by dsimp only [y]; linarith
     have hpoly : 0 ≤
         (5 / 6 : ℝ) * y ^ (4 : ℕ) + 20 * y ^ (3 : ℕ) + 160 * y ^ (2 : ℕ) +
@@ -195,7 +194,7 @@ theorem one_sixth_mul_likelihoodSourceLinearFive_le
         160 * y ^ (2 : ℕ) + 435 * y + 137 / 2) :=
       mul_nonneg (by linarith) hpoly
     dsimp only [f, g, z, y] at hprod ⊢
-    nlinarith [show
+    linarith [show
       A ^ (5 : ℕ) * t ^ (5 : ℕ) - 10 * A ^ (4 : ℕ) * t ^ (4 : ℕ) + 25 * A ^ (3 : ℕ) * t ^ (3 : ℕ) -
           15 * A ^ (2 : ℕ) * t ^ (2 : ℕ) + A * t -
             (1 / 6 : ℝ) * A ^ (5 : ℕ) * t ^ (5 : ℕ) =
@@ -255,7 +254,6 @@ theorem one_sixth_mul_likelihoodSourceLinearFive_le
           A * thetaCuspHigherLikelihoodSpectralMoment B 1) / P by ring]
   exact (div_le_div_iff_of_pos_right hP).2 hraw
 
-set_option maxHeartbeats 800000 in
 theorem one_thirtieth_mul_likelihoodSourceLinearSix_le
     {x : ℝ} (hx : 0 ≤ x) :
     (1 / 30 : ℝ) * thetaCuspSingleAtomReflectionScale 1 x ^ (6 : ℕ) *
@@ -288,7 +286,7 @@ theorem one_thirtieth_mul_likelihoodSourceLinearSix_le
       le_mul_of_one_le_right Real.pi_pos.le he
     dsimp only [A, thetaCuspSingleAtomReflectionScale]
     norm_num
-    nlinarith [Real.pi_gt_d2]
+    linarith [Real.pi_gt_d2]
   have h1 := integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 1 hB
   have h2 := integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 2 hB
   have h3 := integrable_pow_thetaCuspHigherLikelihoodTiltedMeasure 3 hB
@@ -413,7 +411,6 @@ theorem hasDerivAt_thetaCuspLikelihoodSourceLogPartitionJetFive
   · simp only [Function.comp_apply, Pi.pow_apply]
     ring
 
-set_option maxHeartbeats 800000 in
 /-- Unconditional fifth source-jet orientation throughout nonnegative source half-line. -/
 theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
     {x : ℝ} (hx : 0 ≤ x) :
@@ -457,17 +454,17 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
     lt_of_lt_of_le (mul_pos (by norm_num) he3) he34
   have he5 : 0 < e5 :=
     lt_of_lt_of_le (mul_pos (by norm_num) he4) he45
-  have he25 : 27 * e2 ≤ e5 := by nlinarith
+  have he25 : 27 * e2 ≤ e5 := by linarith
   have hmomentProduct : e2 * e3 ≤ p * e5 := by
     simpa only [B, p, e2, e3, e5, show 2 + 3 = 5 by norm_num] using
       thetaCuspLikelihoodNormalizedMoment_mul_le_tailProbability_mul hB 2 3
   have hfirst : 5 * m * e4 < e5 / 36 := by
     have hprod : 0 < (1 - 60 * m) * e4 := by positivity
-    nlinarith
+    linarith
   have hsecond : 10 * e2 * e3 < e5 / 18 := by
     have hprod : 0 < (1 - 180 * p) * e5 := by positivity
-    nlinarith
-  have hmOne : m < 1 := by nlinarith
+    linarith
+  have hmOne : m < 1 := by linarith
   have hmSqOne : m ^ (2 : ℕ) < 1 := pow_lt_one₀ hm.le hmOne (by norm_num)
   have hmCube : m ^ (3 : ℕ) < m := by
     calc
@@ -475,28 +472,28 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
       _ < m * 1 := mul_lt_mul_of_pos_left hmSqOne hm
       _ = m := by ring
   have hthird : 60 * m ^ (3 : ℕ) * e2 < e5 / 27 := by
-    have hcoef : 60 * m ^ (3 : ℕ) < 1 := by nlinarith
+    have hcoef : 60 * m ^ (3 : ℕ) < 1 := by linarith
     have hmul := mul_lt_mul_of_pos_right hcoef he2
-    nlinarith
+    linarith
   have hfirstA : 5 * A ^ (5 : ℕ) * m * e4 < A ^ (5 : ℕ) * e5 / 36 := by
     have hmul := mul_lt_mul_of_pos_left hfirst (pow_pos hA0 5)
-    nlinarith
+    linarith
   have hsecondA : 10 * A ^ (5 : ℕ) * e2 * e3 < A ^ (5 : ℕ) * e5 / 18 := by
     have hmul := mul_lt_mul_of_pos_left hsecond (pow_pos hA0 5)
-    nlinarith
+    linarith
   have hthirdA : 60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 < A ^ (5 : ℕ) * e5 / 27 := by
     have hmul := mul_lt_mul_of_pos_left hthird (pow_pos hA0 5)
-    nlinarith
+    linarith
   have hmSqSmall : 3600 * m ^ (2 : ℕ) < 1 := by
     have hprod : 0 < (1 - 60 * m) * (1 + 60 * m) := by positivity
-    nlinarith
-  have hcoefFour : 240000 * m ^ (2 : ℕ) < 200 / 3 := by nlinarith
+    linarith
+  have hcoefFour : 240000 * m ^ (2 : ℕ) < 200 / 3 := by linarith
   have hAe5 : 81 * e2 < A * e5 := by
     have hmul := mul_lt_mul_of_pos_right hA he5
-    nlinarith
+    linarith
   have hrawFour : 240000 * m ^ (2 : ℕ) * e2 < A * e5 := by
     have hmul := mul_lt_mul_of_pos_right hcoefFour he2
-    nlinarith
+    linarith
   have hfourthA :
       120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 < A ^ (5 : ℕ) * e5 / 2000 := by
     have hmul := mul_lt_mul_of_pos_left hrawFour (pow_pos hA0 4)
@@ -506,14 +503,14 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
       _ < (A ^ (4 : ℕ) * (A * e5)) / 2000 :=
         div_lt_div_of_pos_right hmul (by norm_num)
       _ = A ^ (5 : ℕ) * e5 / 2000 := by ring
-  have hcoefFive : 13500 * m < 225 := by nlinarith
-  have hA_sq : 9 < A ^ (2 : ℕ) := by nlinarith [sq_nonneg (A - 3)]
+  have hcoefFive : 13500 * m < 225 := by linarith
+  have hA_sq : 9 < A ^ (2 : ℕ) := by linarith [sq_nonneg (A - 3)]
   have hA2e5 : 243 * e2 < A ^ (2 : ℕ) * e5 := by
     have hmul := mul_lt_mul_of_pos_right hA_sq he5
-    nlinarith
+    linarith
   have hrawFive : 13500 * m * e2 < A ^ (2 : ℕ) * e5 := by
     have hmul := mul_lt_mul_of_pos_right hcoefFive he2
-    nlinarith
+    linarith
   have hfifthA :
       75 * A ^ (3 : ℕ) * m * e2 < A ^ (5 : ℕ) * e5 / 180 := by
     have hmul := mul_lt_mul_of_pos_left hrawFive (pow_pos hA0 3)
@@ -528,7 +525,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
           60 * A ^ (5 : ℕ) * m ^ (3 : ℕ) * e2 + 120 * A ^ (4 : ℕ) * m ^ (2 : ℕ) * e2 +
           75 * A ^ (3 : ℕ) * m * e2 < A ^ (5 : ℕ) * e5 / 6 := by
     have hAe : 0 < A ^ (5 : ℕ) * e5 := mul_pos (pow_pos hA0 5) he5
-    nlinarith
+    linarith
   have hlinear :
       (1 / 6 : ℝ) * A ^ (5 : ℕ) * e5 ≤
         A ^ (5 : ℕ) * e5 - 10 * A ^ (4 : ℕ) * e4 + 25 * A ^ (3 : ℕ) * e3 -
@@ -549,7 +546,7 @@ theorem thetaCuspLikelihoodSourceLogPartitionJetFive_neg
     thetaCuspLikelihoodThirdCumulant
   rw [thetaCuspLikelihoodVariance_eq_normalizedMoment_two_sub_mean_sq]
   unfold thetaCuspLikelihoodNormalizedMoment at *
-  nlinarith
+  linarith
 
 end
 

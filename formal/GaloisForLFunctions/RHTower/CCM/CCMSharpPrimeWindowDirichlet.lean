@@ -2,7 +2,6 @@ import GaloisForLFunctions.RHTower.CCM.CCMSharpPrimeWindowContinuation
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.NumberTheory.LSeries.Dirichlet
 
-set_option maxHeartbeats 800000
 
 open Complex Finset Set
 
@@ -207,7 +206,7 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_kernelSeries
   have hsigma : Summable
       (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       dyadicSharpPrimeWindowDoubleTerm s (e p)) := by
-    exact e.summable_iff.mpr hdouble
+    exact (e.summable_iff (f := dyadicSharpPrimeWindowDoubleTerm s)).mpr hdouble
   rw [LSeries]
   calc
     (∑' n : ℕ,
@@ -224,7 +223,7 @@ theorem LSeries_dyadicWeightedPrimeWindow_eq_kernelSeries
         dyadicSharpPrimeWindowDoubleTerm s (e ⟨n, p⟩)) = _
       rw [← hsigma.tsum_sigma]
     _ = ∑' kj : ℕ × ℕ, dyadicSharpPrimeWindowDoubleTerm s kj :=
-      e.tsum_eq (dyadicSharpPrimeWindowDoubleTerm s)
+      e.tsum_eq (f := dyadicSharpPrimeWindowDoubleTerm s)
     _ = ∑' k : ℕ, ∑' j : ℕ,
           dyadicSharpPrimeWindowDoubleTerm s (k, j) := hdouble.tsum_prod
     _ = ∑' k : ℕ,
@@ -243,7 +242,7 @@ theorem dyadicWeightedPrimeWindow_LSeriesSummable
   have hsigma : Summable
       (fun p : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n) =>
       dyadicSharpPrimeWindowDoubleTerm s (e p)) := by
-    exact e.summable_iff.mpr hdouble
+    exact (e.summable_iff (f := dyadicSharpPrimeWindowDoubleTerm s)).mpr hdouble
   exact hsigma.sigma.congr fun n => by
     change
       (∑' p : ↥(Finset.HasAntidiagonal.antidiagonal n),

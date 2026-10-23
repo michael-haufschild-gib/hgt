@@ -8,7 +8,6 @@ finite-set harmonic factor by one logarithm and absorbs it, together with any fi
 receiver loss, into half of the preserved reserve.
 -/
 
-set_option maxRecDepth 10000
 
 noncomputable section
 namespace RHTower.Sieve
@@ -44,11 +43,11 @@ theorem maynardHarmonicFactor_le_hundred_log
     have hpi := Real.pi_lt_four
     have hinv : delta⁻¹ ≤ 1 := (inv_le_one₀ hdelta0).2 hdelta
     rw [div_eq_mul_inv]
-    nlinarith [mul_le_mul_of_nonneg_left hinv (by positivity : 0 ≤ 12 * Real.pi)]
+    linarith [mul_le_mul_of_nonneg_left hinv (by positivity : 0 ≤ 12 * Real.pi)]
   have hsum0 : 0 ≤ ∑ i ∈ Finset.range K, 1 / ((i : ℝ) + 1) := by positivity
   dsimp only [maynardHarmonicFactor]
   have hprod := mul_le_mul hcoeff hsum hsum0 (by norm_num : (0 : ℝ) ≤ 48)
-  nlinarith
+  linarith
 
 /-- The harmonic factor and `q` additional receiver logarithms consume only `d/400`. -/
 theorem eventually_maynardHarmonicLogCost_absorbed (A : ℝ) (q : ℕ) :

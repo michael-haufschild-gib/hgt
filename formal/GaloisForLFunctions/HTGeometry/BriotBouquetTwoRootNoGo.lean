@@ -33,7 +33,6 @@ theorem le_exp_posLog {x : ℝ} (hx : 0 ≤ x) : x ≤ Real.exp (Real.posLog x) 
       Real.posLog_eq_log (by rw [abs_of_nonneg hx]; exact hgt.le)
     rw [hlog, Real.exp_log (by linarith)]
 
-set_option maxHeartbeats 1000000 in
 /-- **Logarithmic characteristic gives polynomial growth.**  Comparing the maximum modulus at radius
 `r` with the characteristic at `2r` turns `T(s) ≤ 6 log(s + A) + B` into a degree-`36` bound. -/
 theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Differentiable ℂ F)
@@ -77,7 +76,7 @@ theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Diffe
       rcases le_or_gt ‖z‖ 1 with hle | hgt
       · rw [hr]; simp only [max_le_iff]; constructor <;> linarith [norm_nonneg z]
       · rw [hr, max_eq_left hgt.le]; linarith
-    nlinarith [this, norm_nonneg z, hA]
+    linarith [mul_nonneg (by linarith : (0 : ℝ) ≤ A) (norm_nonneg z)]
   have hpow : (2 * r + A) ^ (36 : ℕ) ≤ ((2 + A) * (1 + ‖z‖)) ^ (36 : ℕ) :=
     pow_le_pow_left₀ (by linarith) hbase 36
   have hEpos : (0 : ℝ) < Real.exp (6 * B + 3 * C₀) := Real.exp_pos _
@@ -87,7 +86,6 @@ theorem exists_polyGrowth_of_characteristic_le_log {F : ℂ → ℂ} (hF : Diffe
     _ = Real.exp (6 * B + 3 * C₀) * (2 + A) ^ (36 : ℕ) * (1 + ‖z‖) ^ (36 : ℕ) := by
         rw [mul_pow, ← mul_assoc]
 
-set_option maxHeartbeats 1000000 in
 /-- **No nonconstant entire solution of `F' = c(F)` when `c` has two distinct roots and degree at
 least two.**  The solution omits both roots, so its derivative is zero-free; the second main theorem
 then forces `T(r,F) = O(log r)`, hence `F` is a polynomial, and the degree count

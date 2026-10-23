@@ -13,8 +13,6 @@ import GaloisForLFunctions.RHTower.TraceClassOperatorTrace
 
 noncomputable section
 
-set_option maxHeartbeats 3000000
-set_option synthInstance.maxHeartbeats 100000
 
 namespace RHTower
 
@@ -537,7 +535,7 @@ theorem physicalMixedBranch_principalRelativeEq_shellTranslation
   have hXR : IsSoninPrincipalRelativeIdeal (X * R) := by
     have hmove := evenFourierCutoff_mul_evenDilationCLM
       (q * a) q (zero_lt_one.trans hq)
-    have hscale : q⁻¹ * (q * a) = a := by field_simp
+    have hscale : q⁻¹ * (q * a) = a := inv_mul_cancel_left₀ (zero_lt_one.trans hq).ne' a
     rw [hscale] at hmove
     have hb := IsSoninPrincipalRelativeIdeal.indicatorFourier a (q * a) ha
     have hc := (hb.rightMul Uq).leftMul Upi
@@ -592,7 +590,7 @@ theorem fourierMixedBranch_principalRelativeEq_shellTranslation
   have hXA : IsSoninPrincipalRelativeIdeal (X * A) := by
     have hmove := evenIndicatorCutoff_mul_evenDilationCLM
       (q * a) q⁻¹ (inv_pos.mpr (zero_lt_one.trans hq))
-    have hscale : q⁻¹ * (q * a) = a := by field_simp
+    have hscale : q⁻¹ * (q * a) = a := inv_mul_cancel_left₀ (zero_lt_one.trans hq).ne' a
     rw [hscale] at hmove
     have hb := IsSoninPrincipalRelativeIdeal.fourierIndicator a (q * a) ha
     have hc := (hb.rightMul Uqi).leftMul Up
