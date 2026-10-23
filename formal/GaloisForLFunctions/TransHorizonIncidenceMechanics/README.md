@@ -1507,7 +1507,10 @@ bounded-height collars and iff either the long-sawtooth/tail amplitude mismatch 
 is positive (`eventually_longSawtooth_tail_quadratic_gap`, `longSawtoothTailGapTheta_lt_one_vk_and_box`,
 `not_receiverBounded_of_longSawtooth_tail_amp_mismatch_or_decorrelation`,
 `norm_sq_longSawtoothAmp_add_tailDriftAmp_eq`,
-`riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`); whereas separate tail growth
+`riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one`,
+`oscillatingLongSawtooth_add_tail_eq_quotientSum_add_sqrtTail`,
+`abs_longSawtooth_add_tail_sub_czetaStripRemainder_le`,
+`pronicNorm_longSawtooth_add_tail_sub_czetaStripRemainder_le`); whereas separate tail growth
 does not supply that gap because at any paid probe
 $\lVert S^{\mathrm{long}}_{\varepsilon,t}\rVert_T/\lVert T_{\varepsilon,t}\rVert_T\to1$ and both
 anti-alignment ratios converge to $1$

@@ -133,7 +133,7 @@ theorem norm_cpow_sub_cpow_le {K : ℝ} (hK : 1 ≤ K) {z : ℂ} (hz : z.re < 0)
     rw [norm_sub_rev]
     simpa using h
   set y : ℝ := ‖z‖ / (2 * K) with hy
-  have hy0 : 0 ≤ y := by positivity
+  have hy0 : 0 ≤ y := div_nonneg (norm_nonneg _) (by linarith)
   have hKz : 0 ≤ K ^ z.re := Real.rpow_nonneg hK0.le _
   rcases le_total y 1 with hy1 | hy1
   · have hyθ : y ≤ y ^ θ := by
@@ -142,12 +142,12 @@ theorem norm_cpow_sub_cpow_le {K : ℝ} (hK : 1 ≤ K) {z : ℂ} (hz : z.re < 0)
       · simpa using Real.rpow_le_rpow_of_exponent_ge h hy1 hθ1
     calc _ ≤ ‖z‖ * K ^ (z.re - 1) := hB
       _ = 2 * K ^ z.re * y := by
-          rw [Real.rpow_sub_one hK0.ne', hy]; field_simp
-      _ ≤ 2 * K ^ z.re * y ^ θ := mul_le_mul_of_nonneg_left hyθ (by positivity)
+          rw [Real.rpow_sub_one hK0.ne', hy]; field_simp; try ring
+      _ ≤ 2 * K ^ z.re * y ^ θ := mul_le_mul_of_nonneg_left hyθ (mul_nonneg (by norm_num) hKz)
   · have h1 : 1 ≤ y ^ θ := Real.one_le_rpow hy1 hθ0
     calc _ ≤ 2 * K ^ z.re := hA
       _ = 2 * K ^ z.re * 1 := (mul_one _).symm
-      _ ≤ 2 * K ^ z.re * y ^ θ := mul_le_mul_of_nonneg_left h1 (by positivity)
+      _ ≤ 2 * K ^ z.re * y ^ θ := mul_le_mul_of_nonneg_left h1 (mul_nonneg (by norm_num) hKz)
 
 /-! ### Column energy -/
 
@@ -163,75 +163,91 @@ theorem norm_mellin_columnProfile_le {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) 
     ‖mellin (fun x => (columnProfile η K x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ≤
       columnMellinConstant η * K ^ (-5 / 4 - η / 2) *
         (‖riemannZeta (((1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖ * (2 + |t|) ^ (-1 / 4 - η / 2)) := by
-  set s : ℂ := ((-1 / 2 : ℝ) : ℂ) + t * I with hs
-  set θ : ℝ := 3 / 4 - η / 2 with hθ
+  have hK0 : 0 < K := by linarith
+  have hη0 : 0 < η := by linarith
+  obtain ⟨θ, hθ⟩ : ∃ θ : ℝ, θ = 3 / 4 - η / 2 := ⟨_, rfl⟩
   have hθ0 : 0 ≤ θ := by rw [hθ]; linarith
   have hθ1 : θ ≤ 1 := by rw [hθ]; linarith
-  have hK0 : 0 < K := by linarith
-  have hzre : (s - η).re = -1 / 2 - η := by simp [hs]
+  have hP := norm_mellin_sourceProfile_le h0 t
+  rw [mellin_columnProfile_eq h0 h1 hK t, norm_mul]
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s = ((-1 / 2 : ℝ) : ℂ) + t * I := ⟨_, rfl⟩
+  rw [← hs] at hP ⊢
+  have hzre : (s - η).re = -1 / 2 - η := by rw [hs]; simp
   have hD := norm_cpow_sub_cpow_le hK (z := s - η) (by rw [hzre]; linarith) hθ0 hθ1
   rw [hzre] at hD
-  have hP := norm_mellin_sourceProfile_le h0 t
-  set Z := RHTower.realZetaSeries (η + 1 / 2) with hZ
-  have hZ0 : 0 ≤ Z := by
+  have hZ0 : 0 ≤ RHTower.realZetaSeries (η + 1 / 2) := by
     have := RHTower.one_le_realZetaSeries (s := η + 1 / 2) (by linarith); linarith
-  set ζn := ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖ with hζn
-  set X := ‖s‖ with hX
-  set Y : ℝ := 2 + |t| with hY
-  have hXre : 1 / 2 ≤ X := by
+  have hsre : s.re = -1 / 2 := by rw [hs]; simp
+  have hsim : s.im = t := by rw [hs]; simp
+  have hXre : 1 / 2 ≤ ‖s‖ := by
     have := Complex.abs_re_le_norm s
-    rw [show s.re = -1 / 2 by simp [hs]] at this
-    rw [hX]; norm_num at this ⊢; linarith
-  have hXim : |t| ≤ X := by
+    rw [hsre, abs_of_neg (by norm_num)] at this
+    linarith
+  have hXim : |t| ≤ ‖s‖ := by
     have := Complex.abs_im_le_norm s
-    rwa [show s.im = t by simp [hs]] at this
-  have hX0 : 0 < X := by linarith
-  have hY0 : 0 < Y := by rw [hY]; positivity
-  have hXY : Y / 6 ≤ X := by
-    rw [hY]
+    rwa [hsim] at this
+  have hX0 : 0 < ‖s‖ := by linarith
+  have hY0 : (0 : ℝ) < 2 + |t| := by positivity
+  have hXY : (2 + |t|) / 6 ≤ ‖s‖ := by
     rcases le_total |t| (1 / 2) with ht | ht <;> linarith
-  have hzn : ‖s - (η : ℂ)‖ ≤ (1 + 2 * η) * X := by
+  have hzn : ‖s - (η : ℂ)‖ ≤ (1 + 2 * η) * ‖s‖ := by
     have h := norm_sub_le s (η : ℂ)
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith : (0 : ℝ) < η)] at h
-    nlinarith
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hη0] at h
+    nlinarith [mul_le_mul_of_nonneg_left hXre hη0.le]
   -- the dilation factor in terms of `|s|`
-  have hzθ : (‖s - (η : ℂ)‖ / (2 * K)) ^ θ ≤ ((1 + 2 * η) / 2) ^ θ * X ^ θ * K ^ (-θ) := by
-    have hle : ‖s - (η : ℂ)‖ / (2 * K) ≤ (1 + 2 * η) / 2 * X * K⁻¹ := by
-      have e : (1 + 2 * η) / 2 * X * K⁻¹ = (1 + 2 * η) * X / (2 * K) := by
+  have hzθ : (‖s - (η : ℂ)‖ / (2 * K)) ^ θ ≤ ((1 + 2 * η) / 2) ^ θ * ‖s‖ ^ θ * K ^ (-θ) := by
+    have hle : ‖s - (η : ℂ)‖ / (2 * K) ≤ (1 + 2 * η) / 2 * ‖s‖ * K⁻¹ := by
+      have e : (1 + 2 * η) / 2 * ‖s‖ * K⁻¹ = (1 + 2 * η) * ‖s‖ / (2 * K) := by
         field_simp
       rw [e]
-      exact div_le_div_of_nonneg_right hzn (by positivity)
-    calc (‖s - (η : ℂ)‖ / (2 * K)) ^ θ ≤ ((1 + 2 * η) / 2 * X * K⁻¹) ^ θ :=
-          Real.rpow_le_rpow (by positivity) hle hθ0
-      _ = ((1 + 2 * η) / 2) ^ θ * X ^ θ * K ^ (-θ) := by
-          rw [Real.mul_rpow (by positivity) (by positivity),
-            Real.mul_rpow (by positivity) hX0.le, Real.inv_rpow hK0.le,
+      exact div_le_div_of_nonneg_right hzn (by linarith)
+    calc (‖s - (η : ℂ)‖ / (2 * K)) ^ θ ≤ ((1 + 2 * η) / 2 * ‖s‖ * K⁻¹) ^ θ :=
+          Real.rpow_le_rpow (div_nonneg (norm_nonneg _) (by linarith)) hle hθ0
+      _ = ((1 + 2 * η) / 2) ^ θ * ‖s‖ ^ θ * K ^ (-θ) := by
+          rw [Real.mul_rpow (mul_nonneg (by linarith) hX0.le) (inv_nonneg.2 hK0.le),
+            Real.mul_rpow (by linarith) hX0.le, Real.inv_rpow hK0.le,
             ← Real.rpow_neg hK0.le]
-  have hXθ : X ^ θ / X ≤ 6 ^ (1 / 4 + η / 2) * Y ^ (-1 / 4 - η / 2) := by
+  have hXθ : ‖s‖ ^ θ / ‖s‖ ≤ 6 ^ (1 / 4 + η / 2) * (2 + |t|) ^ (-1 / 4 - η / 2) := by
     rw [← Real.rpow_sub_one hX0.ne']
-    have h := Real.rpow_le_rpow_of_nonpos (by positivity : 0 < Y / 6) hXY
+    have h := Real.rpow_le_rpow_of_nonpos (by positivity : (0 : ℝ) < (2 + |t|) / 6) hXY
       (by rw [hθ]; linarith : θ - 1 ≤ 0)
-    calc X ^ (θ - 1) ≤ (Y / 6) ^ (θ - 1) := h
-      _ = 6 ^ (1 / 4 + η / 2) * Y ^ (-1 / 4 - η / 2) := by
+    have e1 : -(θ - 1) = 1 / 4 + η / 2 := by rw [hθ]; ring
+    have e2 : θ - 1 = -1 / 4 - η / 2 := by rw [hθ]; ring
+    calc ‖s‖ ^ (θ - 1) ≤ ((2 + |t|) / 6) ^ (θ - 1) := h
+      _ = 6 ^ (1 / 4 + η / 2) * (2 + |t|) ^ (-1 / 4 - η / 2) := by
           rw [Real.div_rpow hY0.le (by norm_num), div_eq_mul_inv,
-            ← Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 6), hθ, mul_comm]
-          ring_nf
+            ← Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 6), e1, e2, mul_comm]
   have hKe : K ^ (-1 / 2 - η) * K ^ (-θ) = K ^ (-5 / 4 - η / 2) := by
-    rw [← Real.rpow_add hK0, hθ]; ring_nf
-  rw [mellin_columnProfile_eq h0 h1 hK t, norm_mul]
+    rw [← Real.rpow_add hK0]; congr 1; rw [hθ]; ring
+  have hKa : 0 ≤ K ^ (-1 / 2 - η) := Real.rpow_nonneg hK0.le _
+  set ζn := ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖ with hζn
+  have hζ0 : 0 ≤ ζn := norm_nonneg _
+  have hW0 : 0 ≤ RHTower.realZetaSeries (η + 1 / 2) * (ζn / ‖s‖) :=
+    mul_nonneg hZ0 (div_nonneg hζ0 hX0.le)
+  have hc0 : 0 ≤ 2 * RHTower.realZetaSeries (η + 1 / 2) * ((1 + 2 * η) / 2) ^ θ *
+      (K ^ (-1 / 2 - η) * K ^ (-θ)) * ζn :=
+    mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hZ0)
+      (Real.rpow_nonneg (by linarith) _)) (mul_nonneg hKa (Real.rpow_nonneg hK0.le _))) hζ0
   calc ‖(K : ℂ) ^ (s - η) - ((K + 1 : ℝ) : ℂ) ^ (s - η)‖ *
         ‖mellin (fun x => (sourceProfile η x : ℂ)) s‖
-      ≤ (2 * K ^ (-1 / 2 - η) * (‖s - (η : ℂ)‖ / (2 * K)) ^ θ) * (Z * (ζn / X)) :=
-        mul_le_mul hD hP (norm_nonneg _) (by positivity)
-    _ ≤ (2 * K ^ (-1 / 2 - η) * (((1 + 2 * η) / 2) ^ θ * X ^ θ * K ^ (-θ))) * (Z * (ζn / X)) := by
-        gcongr
-    _ = 2 * Z * ((1 + 2 * η) / 2) ^ θ * (K ^ (-1 / 2 - η) * K ^ (-θ)) * ζn * (X ^ θ / X) := by
+      ≤ (2 * K ^ (-1 / 2 - η) * (‖s - (η : ℂ)‖ / (2 * K)) ^ θ) *
+          (RHTower.realZetaSeries (η + 1 / 2) * (ζn / ‖s‖)) :=
+        mul_le_mul hD hP (norm_nonneg _)
+          (mul_nonneg (mul_nonneg (by norm_num) hKa)
+            (Real.rpow_nonneg (div_nonneg (norm_nonneg _) (by linarith)) _))
+    _ ≤ (2 * K ^ (-1 / 2 - η) * (((1 + 2 * η) / 2) ^ θ * ‖s‖ ^ θ * K ^ (-θ))) *
+          (RHTower.realZetaSeries (η + 1 / 2) * (ζn / ‖s‖)) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hzθ (mul_nonneg (by norm_num) hKa)) hW0
+    _ = 2 * RHTower.realZetaSeries (η + 1 / 2) * ((1 + 2 * η) / 2) ^ θ *
+          (K ^ (-1 / 2 - η) * K ^ (-θ)) * ζn * (‖s‖ ^ θ / ‖s‖) := by
         ring
-    _ ≤ 2 * Z * ((1 + 2 * η) / 2) ^ θ * (K ^ (-1 / 2 - η) * K ^ (-θ)) * ζn *
-          (6 ^ (1 / 4 + η / 2) * Y ^ (-1 / 4 - η / 2)) := by
-        gcongr
-    _ = columnMellinConstant η * K ^ (-5 / 4 - η / 2) * (ζn * Y ^ (-1 / 4 - η / 2)) := by
-        rw [hKe, columnMellinConstant, ← hZ, ← hθ]; ring
+    _ ≤ 2 * RHTower.realZetaSeries (η + 1 / 2) * ((1 + 2 * η) / 2) ^ θ *
+          (K ^ (-1 / 2 - η) * K ^ (-θ)) * ζn *
+          (6 ^ (1 / 4 + η / 2) * (2 + |t|) ^ (-1 / 4 - η / 2)) :=
+        mul_le_mul_of_nonneg_left hXθ hc0
+    _ = columnMellinConstant η * K ^ (-5 / 4 - η / 2) * (ζn * (2 + |t|) ^ (-1 / 4 - η / 2)) := by
+        rw [hKe, columnMellinConstant, ← hθ]; ring
 
 /-- **Column symbol energy**:
 `∫ |M Δ_K(−½ + it)|² dt ≤ c_η² K^{−5/2−η} J_η`. -/
@@ -260,8 +276,8 @@ theorem integral_norm_sq_mellin_columnProfile_le {η : ℝ} (h0 : 1 / 2 < η) (h
             (‖riemannZeta (((1 / 2 : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖ ^ 2 *
               ((2 + |t|) ^ (-1 / 4 - η / 2)) ^ 2) := by ring
       _ = _ := by
-          rw [sq_rpow_eq hK0, sq_rpow_eq hY0]
-          ring_nf
+          rw [sq_rpow_eq hK0, sq_rpow_eq hY0, show 2 * (-5 / 4 - η / 2) = -5 / 2 - η by ring,
+            show 2 * (-1 / 4 - η / 2) = -1 / 2 - η by ring]
   calc ∫ t : ℝ, ‖mellin (fun x => (columnProfile η K x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2
       ≤ ∫ t : ℝ, columnMellinConstant η ^ 2 * K ^ (-5 / 2 - η) * F (-t) :=
         integral_mono_of_nonneg (ae_of_all _ fun t => by positivity)
@@ -276,8 +292,7 @@ def halfColumnConstant (η : ℝ) : ℝ :=
 
 theorem halfColumnConstant_nonneg (η : ℝ) : 0 ≤ halfColumnConstant η := by
   unfold halfColumnConstant
-  have := criticalWeightMass_nonneg η
-  positivity
+  exact mul_nonneg (mul_nonneg (by positivity) (sq_nonneg _)) (criticalWeightMass_nonneg η)
 
 /-- **Column bound above half damping**: for `½ < η < 1`,
 `Σ_{n<T} C_η(n,k)² ≤ M_η K^{−½−η} + 4K^{−2η}`, `K = k + 1`. -/
@@ -285,16 +300,17 @@ theorem sum_sq_centeredRow_le_halfDamping {η : ℝ} (h0 : 1 / 2 < η) (h1 : η 
     ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2 ≤
       halfColumnConstant η * ((k + 1 : ℕ) : ℝ) ^ (-1 / 2 - η) +
         4 * ((k + 1 : ℕ) : ℝ) ^ (-2 * η) := by
-  set K : ℝ := ((k + 1 : ℕ) : ℝ) with hKdef
-  have hK : 1 ≤ K := by rw [hKdef]; exact_mod_cast Nat.succ_le_succ (Nat.zero_le k)
-  have hK0 : 0 < K := by linarith
+  have hK : 1 ≤ ((k + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le k)
   obtain ⟨hint, heq⟩ := integral_columnProfile_sq_eq h0 h1 hK
   have h := sum_sq_centeredRow_le_integral (by linarith) k T hint
   rw [heq] at h
   have hM := integral_norm_sq_mellin_columnProfile_le h0 h1 hK
+  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = ((k + 1 : ℕ) : ℝ) := ⟨_, rfl⟩
+  rw [← hKdef] at h hM hK ⊢
+  have hK0 : 0 < K := by linarith
   have hKK : K ^ 2 * K ^ (-5 / 2 - η) = K ^ (-1 / 2 - η) := by
-    rw [← Real.rpow_two, ← Real.rpow_add hK0]; ring_nf
-  have hKη : (K ^ (-η)) ^ 2 = K ^ (-2 * η) := by rw [sq_rpow_eq hK0]; ring_nf
+    rw [← Real.rpow_two, ← Real.rpow_add hK0]; congr 1; ring
+  have hKη : (K ^ (-η)) ^ 2 = K ^ (-2 * η) := by rw [sq_rpow_eq hK0]; congr 1; ring
   calc ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2
       ≤ 8 * K ^ 2 * (1 / (2 * Real.pi) * ∫ t : ℝ,
           ‖mellin (fun x => (columnProfile η K x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I)‖ ^ 2) +
@@ -322,13 +338,13 @@ theorem sum_sum_sq_centeredRow_le_halfDamping {η : ℝ} (h0 : 1 / 2 < η) (h1 :
     have hs := RHTower.summable_realZetaTerm (s := 1 / 2 + η) (by linarith)
     refine le_trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
       (hs.sum_le_tsum (Finset.range M) fun k _ => Real.rpow_nonneg (by positivity) _)
-    push_cast; ring_nf
+    rw [Nat.cast_succ, show -(1 / 2 + η) = -1 / 2 - η by ring]
   have hz2 : ∑ k ∈ Finset.range M, ((k + 1 : ℕ) : ℝ) ^ (-2 * η) ≤
       RHTower.realZetaSeries (2 * η) := by
     have hs := RHTower.summable_realZetaTerm (s := 2 * η) (by linarith)
     refine le_trans (le_of_eq (Finset.sum_congr rfl fun k _ => ?_))
       (hs.sum_le_tsum (Finset.range M) fun k _ => Real.rpow_nonneg (by positivity) _)
-    push_cast; ring_nf
+    rw [Nat.cast_succ, show -(2 * η) = -2 * η by ring]
   have hC := halfColumnConstant_nonneg η
   calc ∑ k ∈ Finset.range M, ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2
       ≤ ∑ k ∈ Finset.range M, (halfColumnConstant η * ((k + 1 : ℕ) : ℝ) ^ (-1 / 2 - η) +
@@ -337,9 +353,8 @@ theorem sum_sum_sq_centeredRow_le_halfDamping {η : ℝ} (h0 : 1 / 2 < η) (h1 :
     _ = halfColumnConstant η * ∑ k ∈ Finset.range M, ((k + 1 : ℕ) : ℝ) ^ (-1 / 2 - η) +
           4 * ∑ k ∈ Finset.range M, ((k + 1 : ℕ) : ℝ) ^ (-2 * η) := by
         rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
-    _ ≤ halfDampingHSConstant η := by
-        unfold halfDampingHSConstant
-        gcongr
+    _ ≤ halfDampingHSConstant η :=
+        add_le_add (mul_le_mul_of_nonneg_left hz1 hC) (mul_le_mul_of_nonneg_left hz2 (by norm_num))
 
 /-- **The chain is bounded in `ℓ²` above half damping**: for `½ < η < 1`, finitely supported
 `b` and every horizon, `Σ_{n<T} (C_η b)(n)² ≤ (M_η ζ(½+η) + 4ζ(2η)) Σ_k b_k²`. -/
@@ -401,19 +416,17 @@ theorem not_bounded_sum_sum_sq_centeredRow_of_le_half {η : ℝ} (h0 : 0 < η) (
   rintro ⟨M, hM⟩
   set ρ := (pmPowerDampedDivisorDensity η).re with hρ
   have hρ1 : ρ < 1 := density_re_lt_one h0
-  have hc : 0 < (1 - ρ) ^ 2 := by have : 0 < 1 - ρ := by linarith
-                                 positivity
+  have hc : 0 < (1 - ρ) ^ 2 := pow_pos (by linarith) 2
   have hdiag : ∀ k : ℕ, (1 - ρ) ^ 2 * ((k + 1 : ℕ) : ℝ) ^ (-2 * η) ≤
       arithmeticDampingCenteredRow η k k ^ 2 := by
     intro k
     have hK0 : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
     have h := centeredRow_diag_ge h0 k
-    have hl : 0 ≤ (1 - ρ) * ((k + 1 : ℕ) : ℝ) ^ (-η) := by
-      have : 0 < 1 - ρ := by linarith
-      positivity
+    have hl : 0 ≤ (1 - ρ) * ((k + 1 : ℕ) : ℝ) ^ (-η) :=
+      mul_nonneg (by linarith) (Real.rpow_nonneg hK0.le _)
     calc (1 - ρ) ^ 2 * ((k + 1 : ℕ) : ℝ) ^ (-2 * η) =
           ((1 - ρ) * ((k + 1 : ℕ) : ℝ) ^ (-η)) ^ 2 := by
-          rw [mul_pow, sq_rpow_eq hK0]; ring_nf
+          rw [mul_pow, sq_rpow_eq hK0, show 2 * -η = -2 * η by ring]
       _ ≤ _ := pow_le_pow_left₀ hl h 2
   have hpart : ∀ K : ℕ, ∑ k ∈ Finset.range K, (1 - ρ) ^ 2 * ((k + 1 : ℕ) : ℝ) ^ (-2 * η) ≤ M := by
     intro K
@@ -428,8 +441,7 @@ theorem not_bounded_sum_sum_sq_centeredRow_of_le_half {η : ℝ} (h0 : 0 < η) (
     have hK0 : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by positivity
     rw [← mul_assoc, inv_mul_cancel₀ hc.ne', one_mul, show -2 * η = -(2 * η) by ring,
       Real.rpow_neg hK0.le]
-  have hs := (summable_nat_add_iff 1).mp (f := fun n : ℕ => ((n : ℝ) ^ (2 * η))⁻¹)
-    (by simpa using hsum')
+  have hs := (summable_nat_add_iff (f := fun n : ℕ => ((n : ℝ) ^ (2 * η))⁻¹) 1).mp hsum'
   have := Real.summable_nat_rpow_inv.mp hs
   linarith
 

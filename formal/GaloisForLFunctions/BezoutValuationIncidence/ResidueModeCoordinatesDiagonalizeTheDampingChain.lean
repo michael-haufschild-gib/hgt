@@ -14,7 +14,7 @@ For any sequence `b`, put `S_b(x) = x · b(x − 1)` and define the **residue-mo
 
 * `residueStep_eq_sum_floor` (inverse formula, every sequence):
   `x · b(x − 1) = Σ_{1 ≤ e ≤ x} φ_e(b) ⌊x/e⌋`, with `φ_1(b) = b(0)`.
-* `residueModeCoord_normalizedResidueProfile` (biorthogonality): `φ_e(v_f) = δ_{ef}` for `e, f ≥ 2`.
+* `residueModeCoord_normalizedResidueProfile` (biorthogonality): `φ_e(v_f) = δ_{ef}` for `e ≥ 2`.
 * `residueModeCoord_reciprocal`: the reciprocal `r(x) = 1/x` has coordinates `φ_e(r) = μ(e)`.
 * `residueModeCoord_centeredOperator` (**diagonalization**): `φ_e(C_η b) = e^{−η} φ_e(b)` for every
   `b ∈ c₀`, `e ≥ 2`, `η > 0`. In these coordinates the chain is `β_e ↦ e^{−η} β_e`, the vertical shift
@@ -100,8 +100,8 @@ private theorem residueStep_profile (f x : ℕ) :
   simp only [residueStep, normalizedResidueProfile, hx']
   rw [mul_sub, mul_div_cancel₀ _ hx0, mul_one_div]
 
-/-- **Biorthogonality**: `φ_e(v_f) = δ_{ef}` for moduli at least two. -/
-theorem residueModeCoord_normalizedResidueProfile {e f : ℕ} (he : 2 ≤ e) (hf : 2 ≤ f) :
+/-- **Biorthogonality**: `φ_e(v_f) = δ_{ef}` for `e ≥ 2` (the modes `v_0 = v_1 = 0`). -/
+theorem residueModeCoord_normalizedResidueProfile {e : ℕ} (he : 2 ≤ e) (f : ℕ) :
     residueModeCoord e (normalizedResidueProfile f) = if e = f then 1 else 0 := by
   have hinc : ∀ d, 0 < d → residueIncrement (normalizedResidueProfile f) d =
       ∑ e ∈ d.divisors, ((if e = f then (1 : ℝ) else 0) - (if e = 1 then 1 / (f : ℝ) else 0)) := by
@@ -122,9 +122,9 @@ theorem residueModeCoord_normalizedResidueProfile {e f : ℕ} (he : 2 ≤ e) (hf
   rw [residueModeCoord_eq_of_increment _ _ hinc (by omega : 0 < e), if_neg (by omega : e ≠ 1),
     sub_zero]
 
-theorem residueModeCoord_mode {e f : ℕ} (he : 2 ≤ e) (hf : 2 ≤ f) :
+theorem residueModeCoord_mode {e : ℕ} (he : 2 ≤ e) (f : ℕ) :
     residueModeCoord e (normalizedResidueMode f) = if e = f then 1 else 0 :=
-  residueModeCoord_normalizedResidueProfile he hf
+  residueModeCoord_normalizedResidueProfile he f
 
 /-- The reciprocal `r(x) = 1/x` has the Möbius function as its residue-mode coordinates. -/
 theorem residueModeCoord_reciprocal {e : ℕ} (he : 0 < e) :
@@ -201,9 +201,9 @@ def residueModeCoordCLM (e : ℕ) : C₀(ℕ, ℝ) →L[ℝ] ℝ :=
     residueModeCoordCLM e b = residueModeCoord e b := rfl
 
 /-- Biorthogonality on the `c₀` modes. -/
-theorem residueModeCoordCLM_mode {e f : ℕ} (he : 2 ≤ e) (hf : 2 ≤ f) :
+theorem residueModeCoordCLM_mode {e : ℕ} (he : 2 ≤ e) (f : ℕ) :
     residueModeCoordCLM e (normalizedResidueMode f) = if e = f then 1 else 0 :=
-  residueModeCoord_normalizedResidueProfile he hf
+  residueModeCoord_normalizedResidueProfile he f
 
 /-- **Diagonalization.** In residue-mode coordinates the centered chain is the diagonal damping
 `φ_e(C_η b) = e^{−η} φ_e(b)`, for every `b ∈ c₀`. -/
@@ -220,7 +220,7 @@ theorem residueModeCoord_centeredOperator {η : ℝ} (hη : 0 < η) {e : ℕ} (h
     have hf2 : 2 ≤ f := hf
     simp only [ContinuousLinearMap.comp_apply, _root_.smul_apply, smul_eq_mul,
       centeredOperator_normalizedResidueMode hη (by omega : 0 < f), map_smul,
-      residueModeCoordCLM_mode he hf2]
+      residueModeCoordCLM_mode he f]
     split_ifs with hef
     · rw [hef]
     · simp
@@ -259,12 +259,12 @@ theorem residueModeProjection_apply (e : ℕ) (b : C₀(ℕ, ℝ)) :
     residueModeProjection e b = residueModeCoord e b • normalizedResidueMode e := rfl
 
 /-- The projections are orthogonal idempotents: `Π_e Π_f = δ_{ef} Π_e`. -/
-theorem residueModeProjection_comp {e f : ℕ} (he : 2 ≤ e) (hf : 2 ≤ f) :
+theorem residueModeProjection_comp {e : ℕ} (he : 2 ≤ e) (f : ℕ) :
     (residueModeProjection e).comp (residueModeProjection f) =
       if e = f then residueModeProjection e else 0 := by
   ext1 b
   rw [ContinuousLinearMap.comp_apply, residueModeProjection_apply, residueModeProjection_apply,
-    ZeroAtInftyContinuousMap.coe_smul, residueModeCoord_smul, residueModeCoord_mode he hf]
+    ZeroAtInftyContinuousMap.coe_smul, residueModeCoord_smul, residueModeCoord_mode he f]
   split_ifs with hef
   · subst hef
     rw [mul_one]
@@ -318,15 +318,5 @@ theorem residueModeCoord_eq_zero_iff (b : C₀(ℕ, ℝ)) :
   exact ZeroAtInftyContinuousMap.ext fun n => (hconst n).trans hz
 
 end
-
-#print axioms residueStep_eq_sum_floor
-#print axioms residueModeCoord_normalizedResidueProfile
-#print axioms residueModeCoord_reciprocal
-#print axioms residueModeCoord_centeredOperator
-#print axioms residueModeCoord_centeredOperator_reciprocal
-#print axioms residueStep_centeredOperator
-#print axioms residueModeProjection_comp
-#print axioms residueModeProjection_comp_centeredOperator
-#print axioms residueModeCoord_eq_zero_iff
 
 end GaloisForLFunctions.BezoutValuationIncidence

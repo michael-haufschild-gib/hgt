@@ -996,9 +996,14 @@ side and the pole plane; the archimedean density is not part of this ledger.
     apertures by `72 e^r ∫ F²` (`reflectedPrimePolarCost_le_seventy_two_mul_exp_mul_sq`,
     `chebyshevTwoPoleDefect_integral_le_seventy_two_mul_exp_mul_sq`), by `((8 + ε) e^r + C) ∫ F²`
     (`exists_reflectedPrimePolarCost_le_eight_add_eps_mul_exp`), and in `H¹` through the cancelled
-    first-order and second-order defects
+    first-order and second-order defects with the pole-tilted self-convolution factorization of
+    `(lagTestWeight F)''` and the de la Vallée Poussin saving `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`
+    strictly beyond the `e^r` envelope
     (`reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev`,
-    `reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev`); and the ledger reads
+    `autoCorrelation_deriv_add_crossCorrelation_sub_quarter_eq`,
+    `reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev`,
+    `exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`,
+    `exists_chebyshevTwoPoleDefect_integral_le_exp_sub_sqrt_mul_sobolev`); and the ledger reads
     `Ẑ(F) = surplusPool + crossingPotentialTerm + gaugeRemainder − reflectedPrimePolarCost F r` at
     every `0 < r < R` (`fullZeroForm_eq_reflectedPrimePolarLedger`). Unconditionally,
     `GlobalIncidenceAllocation r R F` holds with `(1/1000) ∫ F²` coercivity margin on `(0, 181/500]`
@@ -1007,9 +1012,11 @@ side and the pole plane; the archimedean density is not part of this ledger.
     the overlapping two-prime window `r = 23/40` (`relevantShifts (23/40) = {2, 3}`) satisfies
     `reflectedPrimePolarCost F (23/40) + (1/62) ∫_{S₂} F² ≤ 2 stripSurplus_{S₂} + poleCharge F`
     (`sum_oddStripCost_le_stripSurplus_add_evenStripGain_twentyThreeFortieths`,
-    `reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`), and
+    `reflectedPrimePolarCost_le_stripSurplus_add_poleCharge_twentyThreeFortieths`),
     `GradedIncidenceAllocation (1/2) 78` holds across all apertures `0 < r < R`
-    (`gradedIncidenceAllocation_half`, `gradedIncidenceAllocation_of_half_le`).
+    (`gradedIncidenceAllocation_half`, `gradedIncidenceAllocation_of_half_le`), and the all-aperture
+    Sobolev-graded incidence allocation holds with deficit `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`
+    (`exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit`).
 
 ---
 

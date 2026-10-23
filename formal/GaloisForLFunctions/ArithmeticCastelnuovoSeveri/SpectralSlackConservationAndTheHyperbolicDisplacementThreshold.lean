@@ -48,6 +48,7 @@ This module proves four unconditional structural theorems governing the spectral
 
 4. **Hyperbolic Displaced-Pair Block Calculus, the Pythagorean Counterexample at `κ = 4/3`, and the
    Three Exact Macroscopic Displacement Thresholds (`displacedPairBlockData`,
+   `displacedPairBlockData_below_three_quarters`,
    `macroscopic_displacedPair_counterexample_at_four_thirds`,
    `hyperbolic_displacedPair_three_thresholds_at_four_thirds`):**
    An off-line zero pair with orthogonal evaluation components `‖x‖² = α² = 1 + η` and
@@ -64,9 +65,7 @@ This module proves four unconditional structural theorems governing the spectral
    (`η = 81/1600 > 0`, `s₁ = 3376966, p = 640000, N = 4656966`) gives an explicit `ZeroBlockData`
    configuration with `tr Â = N`, `‖Â‖_F² = (4/3) N`, and **strictly positive** negative-part
    credit `2 tr(Q₋) > 0` (`¬ Q.PosSemidef`, non-coalesced!), yet `s₁ < (3/4) N` and
-   `totalSlack < (1/12) N`. Thus ruling out coalescing pairs (`β − 1/2 = o(1/log T)`) is necessary
-   but **not sufficient** at `κ = 4/3`: reaching `3/4` via `totalSlack` requires macroscopic
-   off-line energy `η ≥ 1/6` (or `(1 + 2η)² ≥ 4/3` when coupled to `P`).
+   `totalSlack < (1/12) N`.
 -/
 
 open Complex Finset Matrix Filter
@@ -156,8 +155,8 @@ theorem rank_trace_add_totalSlack_eq {d : Type*} [Fintype d] [DecidableEq d]
   have hQp_psd : Qp.PosSemidef := RHLinalg.hermPosPart_posSemidef hQ
   have hQm_psd : Qm.PosSemidef := RHLinalg.hermNegPart_posSemidef hQ
   have hQpQm : Qp * Qm = 0 := RHLinalg.hermPosPart_mul_hermNegPart hQ
-  set p := hP.eigenvalues₀
-  set m := hQm_psd.isHermitian.eigenvalues₀
+  set p := hP.eigenvalues₀ with hp_def
+  set m := hQm_psd.isHermitian.eigenvalues₀ with hm_def
   have htraceP : RHLinalg.rtrace P = ∑ k, p k :=
     (RHLinalg.rtrace_eq_sum_eigenvalues hP).trans (RHLinalg.sum_eigenvalues_reindex hP id)
   have htraceQm : RHLinalg.rtrace Qm = ∑ k, m k :=
@@ -215,10 +214,16 @@ theorem rank_trace_add_totalSlack_eq {d : Type*} [Fintype d] [DecidableEq d]
     · simp only [p, m] at hk ⊢
       rw [if_pos hk, if_pos hk, if_neg hk]
       ring
-  have htraceQ : RHLinalg.rtrace Q = RHLinalg.rtrace Qp - RHLinalg.rtrace Qm :=
-    RHLinalg.rtrace_sub_decomp hQ
-  unfold totalSlack couplingDefect
-  dsimp only
+  have htraceQ : 2 * c * RHLinalg.rtrace Q =
+      2 * c * RHLinalg.rtrace Qp - 2 * c * RHLinalg.rtrace Qm := by
+    rw [RHLinalg.rtrace_sub_decomp hQ, ← hQp_def, ← hQm_def]; ring
+  change c * RHLinalg.rtrace P + 2 * c * RHLinalg.rtrace Q - c ^ 2 * (RHLinalg.posIndex hQ : ℝ) -
+      RHLinalg.frobSq (P + Q) + (c * RHLinalg.rtrace Qm + RHTower.posSlack hQ c +
+        RHTower.onSlack hP hQ c) =
+    (c ^ 2 / 4) * (P.rank : ℝ) -
+      (2 * RCLike.re (P * Qp).trace +
+        2 * (∑ k, p k * m k - RCLike.re (P * Qm).trace) +
+        ∑ k, if p k = 0 then (m k) ^ 2 + c * m k else 0)
   linarith [hexpand, hpos_eq, hon_eq, htraceQ]
 
 /-- **Exact prime-side cancellation at `c = 2`.**
@@ -252,11 +257,11 @@ theorem zeroside_rank_core_slack_le_rank {d : Type*} [Fintype d] [DecidableEq d]
 
 /-! ## 2. Unconditional Grid-Dimension Ceiling on `zeroSideSlack` and Refutation on `(0, 3/4)` -/
 
-/-- The critical-line Gram matrix `hatP Z T P` is a `d(T) × d(T)` matrix, so its rank is
+/-- The critical-line Gram matrix `hatP Z T P hconj` is a `d(T) × d(T)` matrix, so its rank is
 unconditionally at most the grid dimension `P.d T`. -/
 theorem rank_hatP_le_d (Z : ZeroConfig) (P : Params) (T : ℝ)
     (hconj : ZeroSide.PhiHatConj T P) (hc : 0 < P.a T * P.L T ^ 2) :
-    (ZeroSide.hatP Z T P).rank ≤ P.d T := by
+    (ZeroSide.hatP Z T P hconj).rank ≤ P.d T := by
   have hPm := ZeroSide.hatP_posSemidef Z T P hconj hc
   rw [← RHLinalg.posIndex_eq_rank_of_posSemidef hPm]
   exact (RHLinalg.posIndex_le_card hPm.isHermitian).trans_eq (Fintype.card_fin (P.d T))
@@ -300,7 +305,6 @@ theorem seamA_spectralSlack_le_d {Z : ZeroConfig} {P : Params} {T : ℝ}
     rw [RHTower.zeroSideSlack, RHTower.onLineParsevalDefect, dif_pos hc]; rfl
   rw [hNI] at hcore
   rw [hS]
-  push_cast at hcore
   linarith
 
 /-- Under Riemann–von Mangoldt, the grid dimension `P.d T = ⌊λ l(T) T / 2π⌋` is eventually bounded
@@ -342,7 +346,7 @@ For any abstract zero configuration `Z` satisfying the Theorem A inputs at bandw
 `(H(λ) − ε) N(T, 2T) + zeroSideSlack Z P T ≤ P.d T` eventually in `T`. -/
 theorem thmA_abstract_err_spectralSlack_le_d (Z : ZeroConfig) (hRvM : RiemannVonMangoldt Z)
     (P : Params) (hP : P.Valid) (hlam : P.lam < 1) (Err : ℝ → ℝ)
-    (hTr : Assembly.TracesBoundsE P Err P.a P.trGtilde P.trGtildeSq (fun T => (Z.N T (2 * T) : ℝ)))
+    (hTr : TracesBoundsE P Err P.a P.trGtilde P.trGtildeSq (fun T => (Z.N T (2 * T) : ℝ)))
     (hPois : ∀ᶠ T in atTop, ZeroSide.PoissonSq T P)
     (θ₀ : ℝ → ℝ) (hTail : ∀ᶠ T in atTop, Assembly.TailInputs Z P T (θ₀ T))
     (hθ₀ : ∃ C : ℝ, ∀ᶠ T in atTop, θ₀ T ≤ C * l T * T ^ (P.lam / 2 - 1))
@@ -575,9 +579,9 @@ theorem posSlack_mul_ge_sq_of_rtrace {d : Type*} [Fintype d] [DecidableEq d]
       linarith [RHLinalg.rtrace_sub_decomp hQ]
     rw [h1, RHLinalg.rtrace_hermPosPart,
       ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun i => 0 < e i)]
-    rw [Finset.sum_eq_zero (fun i hi => by
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_lt] at hi
-      exact posPart_eq_zero.mpr hi), add_zero]
+    rw [Finset.sum_eq_zero (s := Finset.filter (fun i => ¬ 0 < e i) Finset.univ) (fun i hi => by
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
+      exact posPart_eq_zero.mpr (not_lt.mp hi)), add_zero]
     exact Finset.sum_congr rfl fun i hi => by
       simp only [s, Finset.mem_filter, Finset.mem_univ, true_and] at hi
       exact posPart_eq_self.mpr hi.le
@@ -593,9 +597,9 @@ theorem posSlack_mul_ge_sq_of_rtrace {d : Type*} [Fintype d] [DecidableEq d]
       (∑ i ∈ s, (e i - c)) ^ 2 :=
     pow_le_pow_left₀ (by linarith) hle_sum 2
   have hCS : (∑ i ∈ s, (e i - c)) ^ 2 ≤ (#s : ℝ) * ∑ i ∈ s, (e i - c) ^ 2 :=
-    Finset.sq_sum_le_card_mul_sum_sq
+    sq_sum_le_card_mul_sum_sq
   have hmul : (#s : ℝ) * ∑ i ∈ s, (e i - c) ^ 2 ≤ (b : ℝ) * RHTower.posSlack hQ c := by
-    rw [hS]
+    rw [← hS]
     exact mul_le_mul_of_nonneg_right hs_le (RHTower.posSlack_nonneg hQ c)
   linarith
 
@@ -637,6 +641,12 @@ theorem offLine_slack_ge_of_rtrace_hermNegPart {d : Type*} [Fintype d] [Decidabl
 
 /-! ## 4. Hyperbolic Displaced-Pair Block Calculus and the Three Exact Thresholds at `κ = 4/3` -/
 
+@[simp]
+private lemma star_unitVec_apply {d : Type*} [DecidableEq d] (z k : d) :
+    (starRingEnd ℂ) (unitVec z k) = unitVec z k := by
+  simp only [unitVec]
+  split_ifs <;> simp
+
 /-- The hyperbolic displaced-pair `ZeroBlockData` configuration with `s₁` simple critical-line zeros
 and `p` reflected off-line pairs whose real and imaginary evaluation components have amplitudes `α`
 and `β` on an orthonormal probe frame of size `s₁ + p + p`. At `α = 1, β = 0`, this recovers the
@@ -657,8 +667,16 @@ def displacedPairBlockData (s₁ p : ℕ) (α β : ℝ) :
   m_σ _ := rfl
   v_σ z := by
     ext k
-    rcases z with i | (j | j) <;>
-      simp [unitVec, Complex.conj_ofReal, sub_eq_add_neg, mul_comm, mul_left_comm]
+    rcases z with i | (j | j)
+    · simp [Pi.star_apply, RCLike.star_def]
+    · simp only [Sum.map_inr, Equiv.sumComm_apply, Sum.swap_inl, Sum.elim_inr, Sum.elim_inl,
+        Pi.star_apply, RCLike.star_def, map_add, map_mul, Complex.conj_ofReal, Complex.conj_I,
+        star_unitVec_apply]
+      ring
+    · simp only [Sum.map_inr, Equiv.sumComm_apply, Sum.swap_inr, Sum.elim_inr, Sum.elim_inl,
+        Pi.star_apply, RCLike.star_def, map_sub, map_mul, Complex.conj_ofReal, Complex.conj_I,
+        star_unitVec_apply]
+      ring
 
 /-- Canonical off-line pair representatives for `displacedPairBlockData s₁ p α β`. -/
 def displacedPairReps (s₁ p : ℕ) (α β : ℝ) : (displacedPairBlockData s₁ p α β).PairReps where
@@ -815,8 +833,19 @@ theorem rtrace_displacedPairDiag (s₁ p : ℕ) (α β : ℝ) :
   unfold RHLinalg.rtrace displacedPairDiag
   rw [trace_diagonal, Fintype.sum_sum_type, Fintype.sum_sum_type]
   simp only [Sum.elim_inl, Sum.elim_inr, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
-    nsmul_eq_mul, map_add, RCLike.re_to_complex, mul_re, natCast_re, ofReal_re, natCast_im,
+    nsmul_eq_mul, RCLike.re_to_complex, add_re, mul_re, natCast_re, ofReal_re, natCast_im,
     ofReal_im, mul_zero, sub_zero, one_re]
+  ring
+
+/-- Trace of `displacedPairQDiag s₁ p α β`: `tr Q = 2p α² − 2p β²`. -/
+theorem rtrace_displacedPairQDiag (s₁ p : ℕ) (α β : ℝ) :
+    RHLinalg.rtrace (displacedPairQDiag s₁ p α β) =
+      2 * (p : ℝ) * α ^ 2 - 2 * (p : ℝ) * β ^ 2 := by
+  unfold RHLinalg.rtrace displacedPairQDiag
+  rw [trace_diagonal, Fintype.sum_sum_type, Fintype.sum_sum_type]
+  simp only [Sum.elim_inl, Sum.elim_inr, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+    nsmul_eq_mul, RCLike.re_to_complex, add_re, mul_re, natCast_re, ofReal_re, natCast_im,
+    ofReal_im, mul_zero, sub_zero, zero_re]
   ring
 
 /-- Squared Frobenius norm of `displacedPairDiag s₁ p α β`:
@@ -828,7 +857,8 @@ theorem frobSq_displacedPairDiag (s₁ p : ℕ) (α β : ℝ) :
     ext i j
     simp only [displacedPairDiag, conjTranspose_apply, diagonal_apply]
     by_cases hij : j = i
-    · subst hij; rcases j with _ | (_ | _) <;> simp
+    · subst hij
+      rcases j with _ | (_ | _) <;> simp [RCLike.star_def, Complex.conj_ofReal]
     · have hji : i ≠ j := Ne.symm hij
       simp [hij, hji]
   unfold RHLinalg.frobSq
@@ -836,9 +866,8 @@ theorem frobSq_displacedPairDiag (s₁ p : ℕ) (α β : ℝ) :
   unfold displacedPairDiag
   rw [diagonal_mul_diagonal, trace_diagonal, Fintype.sum_sum_type, Fintype.sum_sum_type]
   simp only [Sum.elim_inl, Sum.elim_inr, mul_one, Finset.sum_const, Finset.card_univ,
-    Fintype.card_fin, nsmul_eq_mul, map_add, RCLike.re_to_complex]
-  push_cast
-  simp only [ofReal_re]
+    Fintype.card_fin, nsmul_eq_mul, map_add, RCLike.re_to_complex,
+    ← Complex.ofReal_natCast, ← Complex.ofReal_mul, Complex.ofReal_re]
   ring
 
 /-- Whenever `p > 0` and `β ≠ 0`, `displacedPairQDiag s₁ p α β` has a strictly negative diagonal
@@ -846,17 +875,14 @@ entry `−2β² < 0`, so it is not positive semidefinite and its negative-part c
 `2 tr(Q₋)` is strictly positive. -/
 theorem negPart_credit_pos_displacedPairQDiag (s₁ : ℕ) {p : ℕ} (hp : 0 < p) (α : ℝ)
     {β : ℝ} (hβ : β ≠ 0) :
-    let Q := displacedPairQDiag s₁ p α β
-    let hQ := ((displacedPairBlockData s₁ p α β).blockP_posSemidef (by norm_num : (0 : ℝ) < 1)).isHermitian
-    ¬ Q.PosSemidef ∧
-      ∀ hQh : Q.IsHermitian, 0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQh) := by
-  dsimp only
+    ¬ (displacedPairQDiag s₁ p α β).PosSemidef ∧
+      ∀ hQh : (displacedPairQDiag s₁ p α β).IsHermitian,
+        0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQh) := by
   have hnot : ¬ (displacedPairQDiag s₁ p α β).PosSemidef := by
     intro hpsd
     let idx : Fin s₁ ⊕ (Fin p ⊕ Fin p) := Sum.inr (Sum.inr ⟨0, hp⟩)
     have hdiag := RCLike.nonneg_iff.mp (hpsd.diag_nonneg (i := idx))
-    have hentry : displacedPairQDiag s₁ p α β idx idx = ((-2 * β ^ 2 : ℝ) : ℂ) := by
-      simp [displacedPairQDiag, idx]
+    have hentry : displacedPairQDiag s₁ p α β idx idx = ((-2 * β ^ 2 : ℝ) : ℂ) := rfl
     rw [hentry] at hdiag
     simp only [ofReal_re] at hdiag
     have hβ2 : 0 < β ^ 2 := sq_pos_of_ne_zero hβ
@@ -871,99 +897,121 @@ theorem negPart_credit_pos_displacedPairQDiag (s₁ : ℕ) {p : ℕ} (hp : 0 < p
   have heig : ∀ i, 0 ≤ hQh.eigenvalues i := fun i => negPart_eq_zero.mp (hall i)
   exact hnot ((RHLinalg.specMap_id hQh) ▸ (RHLinalg.specMap_posSemidef hQh heig))
 
-/-- **Macroscopic Displaced-Pair Counterexample at `κ = 4/3`.**
-At the Pythagorean rational displacement `α = 41/40, β = 9/40` (`α² − β² = 1`,
-`η = β² = 81/1600 > 0`) with `s₁ = 3376966` simple critical zeros and `p = 640000` off-line pairs
-(`N = s₁ + 2p = 4656966`), the concrete `ZeroBlockData` configuration
-`D = displacedPairBlockData 3376966 640000 (41/40) (9/40)` satisfies:
-1. Exact trace conservation: `tr(D.blockA) = N`;
-2. Exact bandwidth-one Frobenius norm: `‖D.blockA‖_F² = (4/3) N` (`κ = 4/3`);
-3. Strictly positive off-line negative-part credit (`¬ (D.blockQ 1).PosSemidef` and
-   `0 < 2 tr(Q₋)`): the off-line pairs are at macroscopic horizontal distance from the critical
-   line, NOT coalesced;
-4. Yet the true critical-line zero count satisfies `D.s₁ = (3376966 / 4656966) N < (3/4) N`, and
-   the full spectral slack satisfies `totalSlack P Q 2 < (1/12) N`. -/
-theorem macroscopic_displacedPair_counterexample_at_four_thirds :
-    let D := displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
-    let P := D.blockP 1
-    let Q := D.blockQ 1
+/-- The off-line block matrix `(displacedPairBlockData s₁ p α β).blockQ 1` is Hermitian. -/
+theorem isHermitian_blockQ_one_displacedPairBlockData (s₁ p : ℕ) (α β : ℝ) :
+    ((displacedPairBlockData s₁ p α β).blockQ 1).IsHermitian := by
+  let D := displacedPairBlockData s₁ p α β
+  let R := displacedPairReps s₁ p α β
+  have hQeq : D.blockQ 1 = D.rePart R - D.imPart R := by
+    rw [ZeroBlockData.blockQ_eq _ R, inv_one, Complex.ofReal_one, one_smul]
+  rw [hQeq]
+  exact (D.rePart_posSemidef R).isHermitian.sub (D.imPart_posSemidef R).isHermitian
+
+/-- **General Displaced-Pair Theorem at `κ = 4/3`.**
+For any `s₁, p : ℕ` (`p > 0`) and `α, β : ℝ` (`β ≠ 0`, `α² − β² = 1`) such that
+`s₁ + 4p α⁴ + 4p β⁴ = (4/3)(s₁ + 2p)` and `s₁ < (3/4)(s₁ + 2p)`, the concrete `ZeroBlockData`
+configuration `D = displacedPairBlockData s₁ p α β` satisfies:
+1. `tr(D.blockA) = D.Ncount`,
+2. `‖D.blockA‖_F² = (4/3) D.Ncount`,
+3. `¬ (D.blockQ 1).PosSemidef` and `0 < 2 tr(Q₋)` (strictly positive off-line negative-part credit),
+4. `D.s₁ < (3/4) D.Ncount` and `totalSlack P Q 2 < (1/12) D.Ncount`. -/
+theorem displacedPairBlockData_below_three_quarters (s₁ : ℕ) {p : ℕ} (hp : 0 < p) {α β : ℝ}
+    (hβ : β ≠ 0) (hαβ : α ^ 2 - β ^ 2 = 1)
+    (hfrob_eq : (s₁ : ℝ) + 4 * (p : ℝ) * α ^ 4 + 4 * (p : ℝ) * β ^ 4 =
+      (4 / 3 : ℝ) * ((s₁ : ℝ) + 2 * (p : ℝ)))
+    (hs1_lt : (s₁ : ℝ) < (3 / 4 : ℝ) * ((s₁ : ℝ) + 2 * (p : ℝ))) :
+    let D := displacedPairBlockData s₁ p α β
     let hP := D.blockP_posSemidef (by norm_num : (0 : ℝ) < 1)
-    let hQ : Q.IsHermitian := by
-      rw [ZeroBlockData.blockQ_eq _ (displacedPairReps 3376966 640000 (41 / 40) (9 / 40)),
-        inv_one, Complex.ofReal_one, one_smul]
-      exact (D.rePart_posSemidef _).isHermitian.sub (D.imPart_posSemidef _).isHermitian
+    let hQ := isHermitian_blockQ_one_displacedPairBlockData s₁ p α β
     RHLinalg.rtrace D.blockA = (D.Ncount : ℝ) ∧
       RHLinalg.frobSq D.blockA = (4 / 3 : ℝ) * (D.Ncount : ℝ) ∧
-      ¬ Q.PosSemidef ∧
+      ¬ (D.blockQ 1).PosSemidef ∧
       0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQ) ∧
       (D.s₁ : ℝ) < (3 / 4 : ℝ) * (D.Ncount : ℝ) ∧
       totalSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) := by
   dsimp only
-  set D := displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
-  set R := displacedPairReps 3376966 640000 (41 / 40) (9 / 40)
-  have hcounts := counts_displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
-  have hA := blockA_displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
-  have hQeq := blockQ_one_displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
+  set D := displacedPairBlockData s₁ p α β
+  set R := displacedPairReps s₁ p α β
+  set hP := D.blockP_posSemidef (by norm_num : (0 : ℝ) < 1)
+  set hQ := isHermitian_blockQ_one_displacedPairBlockData s₁ p α β
+  have hcounts := counts_displacedPairBlockData s₁ p α β
+  have hN : (D.Ncount : ℝ) = (s₁ : ℝ) + 2 * (p : ℝ) := by
+    rw [hcounts.2.2.2.1]; push_cast; ring
+  have hA := blockA_displacedPairBlockData s₁ p α β
+  have hQeq := blockQ_one_displacedPairBlockData s₁ p α β
   have htr : RHLinalg.rtrace D.blockA = (D.Ncount : ℝ) := by
-    rw [hA, rtrace_displacedPairDiag, hcounts.2.2.2.1]
-    norm_num
+    rw [hA, rtrace_displacedPairDiag, hN]
+    calc (s₁ : ℝ) + 2 * (p : ℝ) * α ^ 2 - 2 * (p : ℝ) * β ^ 2
+        = (s₁ : ℝ) + 2 * (p : ℝ) * (α ^ 2 - β ^ 2) := by ring
+      _ = (s₁ : ℝ) + 2 * (p : ℝ) := by rw [hαβ]; ring
   have hfrob : RHLinalg.frobSq D.blockA = (4 / 3 : ℝ) * (D.Ncount : ℝ) := by
-    rw [hA, frobSq_displacedPairDiag, hcounts.2.2.2.1]
-    norm_num
-  have hQh : (D.blockQ 1).IsHermitian := by
-    rw [ZeroBlockData.blockQ_eq _ R, inv_one, Complex.ofReal_one, one_smul]
-    exact (D.rePart_posSemidef R).isHermitian.sub (D.imPart_posSemidef R).isHermitian
-  have hneg := negPart_credit_pos_displacedPairQDiag 3376966 (by norm_num : 0 < 640000)
-    (41 / 40) (by norm_num : (9 / 40 : ℝ) ≠ 0)
+    rw [hA, frobSq_displacedPairDiag, hN, hfrob_eq]
+  have hneg := negPart_credit_pos_displacedPairQDiag s₁ hp α hβ
   have hnot_psd : ¬ (D.blockQ 1).PosSemidef := hQeq.symm ▸ hneg.1
-  have hcred_pos : 0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQh) := by
-    have hQh' : (displacedPairQDiag 3376966 640000 (41 / 40) (9 / 40)).IsHermitian := hQeq ▸ hQh
-    have h1 := hneg.2 hQh'
-    congr 2
-  have hs1_lt : (D.s₁ : ℝ) < (3 / 4 : ℝ) * (D.Ncount : ℝ) := by
-    rw [hcounts.1, hcounts.2.2.2.1]
-    norm_num
-  have hPm := D.blockP_posSemidef (by norm_num : (0 : ℝ) < 1)
+  have hcred_pos : 0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQ) := by
+    by_contra hle
+    have hnn : 0 ≤ RHLinalg.rtrace (RHLinalg.hermNegPart hQ) := RHTower.rtrace_hermNegPart_nonneg hQ
+    have htr0 : RHLinalg.rtrace (RHLinalg.hermNegPart hQ) = 0 := by linarith
+    rw [RHLinalg.rtrace_hermNegPart] at htr0
+    have hall : ∀ i, (hQ.eigenvalues i)⁻ = 0 := fun i =>
+      (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => negPart_nonneg _)).mp htr0 i (Finset.mem_univ i)
+    have heig : ∀ i, 0 ≤ hQ.eigenvalues i := fun i => negPart_eq_zero.mp (hall i)
+    exact hnot_psd ((RHLinalg.specMap_id hQ) ▸ (RHLinalg.specMap_posSemidef hQ heig))
+  have hs1 : (D.s₁ : ℝ) < (3 / 4 : ℝ) * (D.Ncount : ℝ) := by
+    rw [hcounts.1, hN]; exact hs1_lt
   have hdec : D.blockA = D.blockP 1 + D.blockQ 1 := by
     have h := D.blockP_add_blockQ 1
     rw [inv_one, Complex.ofReal_one, one_smul] at h
     exact h.symm
-  have hrank : (D.blockP 1).rank ≤ 3376966 := by
+  have hrank : (D.blockP 1).rank ≤ s₁ := by
     have hr := D.rank_blockP_le (by norm_num : (0 : ℝ) < 1)
     rw [hcounts.1, hcounts.2.1, add_zero] at hr
     exact hr
-  have hpos : RHLinalg.posIndex hQh ≤ 640000 := by
+  have hpos : RHLinalg.posIndex hQ ≤ p := by
     have hp1 : RHLinalg.posIndex
         ((D.rePart_posSemidef R).isHermitian.sub (D.imPart_posSemidef R).isHermitian) ≤ R.p :=
       (ZeroSide.posIndex_sub_le_rank (D.rePart_posSemidef R) (D.imPart_posSemidef R)).trans
         (D.rank_rePart_le R)
     have hQeq' : D.blockQ 1 = D.rePart R - D.imPart R := by
       rw [ZeroBlockData.blockQ_eq _ R, inv_one, Complex.ofReal_one, one_smul]
-    rw [ZeroSide.posIndex_congr hQh _ hQeq', ← hcounts.2.2.2.2]
-    exact hp1
-  have htrP : RHLinalg.rtrace (D.blockP 1) ≤ (3376966 : ℝ) := by
-    have htrQ : RHLinalg.rtrace (D.blockQ 1) = 2 * (640000 : ℝ) * ((41 / 40 : ℝ) ^ 2 - (9 / 40 : ℝ) ^ 2) := by
-      rw [hQeq]
-      unfold RHLinalg.rtrace displacedPairQDiag
-      rw [trace_diagonal, Fintype.sum_sum_type, Fintype.sum_sum_type]
-      simp only [Sum.elim_inl, Sum.elim_inr, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
-        nsmul_eq_mul, map_add, RCLike.re_to_complex, mul_re, natCast_re, ofReal_re, natCast_im,
-        ofReal_im, mul_zero, sub_zero, zero_re]
-      ring
-    have htrA : RHLinalg.rtrace D.blockA = RHLinalg.rtrace (D.blockP 1) + RHLinalg.rtrace (D.blockQ 1) := by
+    rw [hcounts.2.2.2.2] at hp1
+    exact (ZeroBlockData.posIndex_congr hQ _ hQeq').trans_le hp1
+  have htrP : RHLinalg.rtrace (D.blockP 1) ≤ (s₁ : ℝ) := by
+    have htrQ : RHLinalg.rtrace (D.blockQ 1) = 2 * (p : ℝ) := by
+      rw [hQeq, rtrace_displacedPairQDiag]
+      calc 2 * (p : ℝ) * α ^ 2 - 2 * (p : ℝ) * β ^ 2 = 2 * (p : ℝ) * (α ^ 2 - β ^ 2) := by ring
+        _ = 2 * (p : ℝ) := by rw [hαβ]; ring
+    have htrA : RHLinalg.rtrace D.blockA =
+        RHLinalg.rtrace (D.blockP 1) + RHLinalg.rtrace (D.blockQ 1) := by
       rw [hdec, RHLinalg.rtrace_add]
-    rw [htr, hcounts.2.2.2.1, htrQ] at htrA
-    push_cast at htrA
     linarith
-  have hcount : (3376966 : ℝ) + 2 * (640000 : ℝ) ≤ (D.Ncount : ℝ) := by
-    rw [hcounts.2.2.2.1]; norm_num
-  have hcore := RHTower.zeroside_rank_core_slack hdec hPm hQh hrank hpos htrP hcount
-  have hslack_lt : totalSlack hPm.isHermitian hQh 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) := by
-    unfold totalSlack
-    rw [htr, hfrob, hcounts.2.2.2.1] at hcore ⊢
-    push_cast at hcore ⊢
-    linarith
-  exact ⟨htr, hfrob, hnot_psd, hcred_pos, hs1_lt, hslack_lt⟩
+  have hcount : (s₁ : ℝ) + 2 * (p : ℝ) ≤ (D.Ncount : ℝ) := hN.symm.le
+  have hcore := RHTower.zeroside_rank_core_slack hdec hP hQ hrank hpos htrP hcount
+  have hslack_lt : totalSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) := by
+    change 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQ) + RHTower.posSlack hQ 2 +
+        RHTower.onSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ)
+    linarith [hcore, htr, hfrob, hN, hs1_lt]
+  exact ⟨htr, hfrob, hnot_psd, hcred_pos, hs1, hslack_lt⟩
+
+/-- **Macroscopic Displaced-Pair Counterexample at `κ = 4/3`.**
+At the Pythagorean rational displacement `α = 41/40, β = 9/40` (`α² − β² = 1`,
+`η = β² = 81/1600 > 0`) with `s₁ = 3376966` simple critical zeros and `p = 640000` off-line pairs
+(`N = s₁ + 2p = 4656966`), the concrete `ZeroBlockData` configuration
+`D = displacedPairBlockData 3376966 640000 (41/40) (9/40)` has `tr(D.blockA) = N`,
+`‖D.blockA‖_F² = (4/3) N`, and strictly positive off-line negative-part credit `0 < 2 tr(Q₋)`
+(`¬ (D.blockQ 1).PosSemidef`), yet `D.s₁ < (3/4) N` and `totalSlack P Q 2 < (1/12) N`. -/
+theorem macroscopic_displacedPair_counterexample_at_four_thirds :
+    let D := displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
+    let hP := D.blockP_posSemidef (by norm_num : (0 : ℝ) < 1)
+    let hQ := isHermitian_blockQ_one_displacedPairBlockData 3376966 640000 (41 / 40) (9 / 40)
+    RHLinalg.rtrace D.blockA = (D.Ncount : ℝ) ∧
+      RHLinalg.frobSq D.blockA = (4 / 3 : ℝ) * (D.Ncount : ℝ) ∧
+      ¬ (D.blockQ 1).PosSemidef ∧
+      0 < 2 * RHLinalg.rtrace (RHLinalg.hermNegPart hQ) ∧
+      (D.s₁ : ℝ) < (3 / 4 : ℝ) * (D.Ncount : ℝ) ∧
+      totalSlack hP.isHermitian hQ 2 < (1 / 12 : ℝ) * (D.Ncount : ℝ) :=
+  displacedPairBlockData_below_three_quarters 3376966 (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num)
 
 /-- **The Three Exact Macroscopic Displacement Thresholds at `κ = 4/3`.**
 For a configuration of `s₁ = N − 2p` simple critical zeros and `p` hyperbolic displaced off-line
@@ -1014,12 +1062,12 @@ theorem hyperbolic_displacedPair_three_thresholds_at_four_thirds
   · constructor <;> intro h
     · have h1 : p * ((1 + 2 * η) ^ 2 - 2) ≥ 0 := by
         calc p * ((1 + 2 * η) ^ 2 - 2)
-            = 4 * (4 * p * η * (1 + η) - (1 / 12 : ℝ) * (6 * p * (1 + 2 * η) ^ 2)) := by ring
+            = 2 * (4 * p * η * (1 + η) - (1 / 12 : ℝ) * (6 * p * (1 + 2 * η) ^ 2)) := by ring
           _ ≥ 0 := by linarith
       nlinarith
     · have h1 : 0 ≤ p * ((1 + 2 * η) ^ 2 - 2) := mul_nonneg hp_pos.le (by linarith)
       have hid : 4 * p * η * (1 + η) - (1 / 12 : ℝ) * N =
-          (p * ((1 + 2 * η) ^ 2 - 2)) / 4 := by
+          (p * ((1 + 2 * η) ^ 2 - 2)) / 2 := by
         rw [hN_eq]; ring
       linarith
 

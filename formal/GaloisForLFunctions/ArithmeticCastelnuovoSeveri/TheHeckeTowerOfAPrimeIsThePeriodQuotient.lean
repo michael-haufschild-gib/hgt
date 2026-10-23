@@ -284,7 +284,7 @@ theorem tendsto_cesaro {z : ℂ} (hz : ‖z‖ ≤ 1) :
               (inv_nonneg.mpr hNpos.le)
         _ = 2 / ‖z - 1‖ * (N : ℝ)⁻¹ := mul_comm _ _
     have hlim : Tendsto (fun N : ℕ => 2 / ‖z - 1‖ * (N : ℝ)⁻¹) atTop (𝓝 0) := by
-      simpa using tendsto_inverse_atTop_nhds_zero_nat.const_mul (2 / ‖z - 1‖)
+      simpa using (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (2 / ‖z - 1‖)
     refine squeeze_zero_norm' ?_ hlim
     filter_upwards [eventually_ge_atTop 1] with N hN using hbound N hN
 
@@ -333,9 +333,9 @@ theorem conj_frobEig_mem_offVals (Z : ZeroConfig) {ℓ : ℝ} (hO : (outerEig Z 
   · refine Finset.mem_union_right _ (Finset.mem_image.mpr ⟨frobEig ℓ (reflect τ), ?_, ?_⟩)
     · refine hO.mem_toFinset.mpr ⟨reflect τ, ⟨Z.reflect_mem _ τ.2, ?_⟩, rfl⟩
       simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re]; linarith
-    · rw [frobEig_reflect, Complex.conj_conj, ← frobEig_reflect]
-      congr 1
-      simp [reflect]
+    · have h' := frobEig_reflect ℓ (reflect (τ : ℂ))
+      rw [show reflect (reflect (τ : ℂ)) = τ by simp [reflect]] at h'
+      exact h'.symm
   · exact Finset.mem_union_left _ (hO.mem_toFinset.mpr ⟨τ, ⟨τ.2, h⟩, rfl⟩)
 
 /-- **Class separation.** If the outer eigenvalues are finitely many, a vector orthogonal to every
@@ -345,6 +345,8 @@ theorem classSum_eq_zero_of_orthogonal_tower (Z : ZeroConfig) (hZ : TemperedConf
     (hO : (outerEig Z ℓ).Finite) (a : ℓ²(Z.carrier, ℂ))
     (ha : ∀ k : ℤ, inner ℂ (towerVec Z hZ hg hgc ℓ k) a = 0) (b : ℂ) :
     ∑' τ : Z.carrier, (if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) = 0 := by
+  by_cases hb0 : b = 0
+  · simp [hb0, frobEig_ne_zero]
   set q : Z.carrier → ℂ := fun τ => conj (zeroCoord Z g τ) * a τ with hq
   set c : Z.carrier → ℂ := fun τ => conj (frobEig ℓ τ) with hc
   have hc0 : ∀ τ, c τ ≠ 0 := fun τ => (map_ne_zero _).mpr (frobEig_ne_zero ℓ τ)
@@ -366,10 +368,10 @@ theorem classSum_eq_zero_of_orthogonal_tower (Z : ZeroConfig) (hZ : TemperedConf
     have := (Z.strip _ τ.2).1
     nlinarith
   have hpow : ∀ (τ : Z.carrier) (k : ℤ), ‖c τ ^ k‖ ≤ Real.exp (ℓ / 2) ^ k.natAbs := fun τ k => by
-    rcases Int.natAbs_eq k with hk | hk
-    · rw [hk, zpow_natCast, norm_pow]
+    obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg k
+    · rw [zpow_natCast, norm_pow, Int.natAbs_ofNat]
       exact pow_le_pow_left₀ (norm_nonneg _) (hcb τ) _
-    · rw [hk, zpow_neg, zpow_natCast, ← inv_pow, norm_pow]
+    · rw [_root_.zpow_neg, zpow_natCast, ← inv_pow, norm_pow, Int.natAbs_neg, Int.natAbs_ofNat]
       exact pow_le_pow_left₀ (norm_nonneg _) (hcb' τ) _
   have hsumk : ∀ k : ℤ, Summable fun τ => q τ * c τ ^ k := fun k =>
     Summable.of_norm_bounded (hqs.mul_right (Real.exp (ℓ / 2) ^ k.natAbs)) fun τ => by
@@ -420,9 +422,7 @@ theorem classSum_eq_zero_of_orthogonal_tower (Z : ZeroConfig) (hZ : TemperedConf
     by_contra hcon
     push Not at hcon
     exact hτ (by simp only [hr, hPoff τ hcon.1 hcon.2, mul_zero])
-  have hc₀0 : c₀ ≠ 0 := (map_ne_zero _).mpr (by
-    intro hb0
-    exact absurd hb0 (by intro h; exact h ▸ (frobEig_ne_zero ℓ 0) rfl |>.elim))
+  have hc₀0 : c₀ ≠ 0 := (map_ne_zero _).mpr hb0
   -- the class weight `P(c₀) · Σ_{c_τ = c₀} q_τ` vanishes
   have hclass : ∑' τ, (if c τ = c₀ then r τ else 0) = 0 := by
     rcases le_or_gt 1 ‖c₀‖ with h1 | h1
@@ -434,7 +434,9 @@ theorem classSum_eq_zero_of_orthogonal_tower (Z : ZeroConfig) (hZ : TemperedConf
           · rw [heq])
         (fun n => by
           have e : ∀ τ, r τ * (c τ / c₀) ^ n = (c₀ ^ n)⁻¹ * (q τ * P.eval (c τ) * c τ ^ (n : ℤ)) :=
-            fun τ => by rw [div_pow, zpow_natCast]; simp only [hr]; field_simp
+            fun τ => by
+              have := hc0 τ
+              rw [div_pow, zpow_natCast]; simp only [hr]; field_simp
           simp only [e, tsum_mul_left, hmP, mul_zero])
       simpa only [div_eq_one_iff_eq hc₀0] using hzz
     · have hzz := tsum_ite_eq_zero_of_moments (r := r) (z := fun τ => c₀ / c τ) hrs
@@ -446,7 +448,8 @@ theorem classSum_eq_zero_of_orthogonal_tower (Z : ZeroConfig) (hZ : TemperedConf
         (fun n => by
           have e : ∀ τ, r τ * (c₀ / c τ) ^ n = c₀ ^ n * (q τ * P.eval (c τ) * c τ ^ (-(n : ℤ))) :=
             fun τ => by
-              rw [div_pow, zpow_neg, zpow_natCast]; simp only [hr]; field_simp
+              have := hc0 τ
+              rw [div_pow, _root_.zpow_neg, zpow_natCast]; simp only [hr]; field_simp
           simp only [e, tsum_mul_left, hmP, mul_zero])
       have e : ∀ τ, (c₀ / c τ = 1) ↔ (c τ = c₀) := fun τ => by
         rw [div_eq_one_iff_eq (hc0 τ), eq_comm]
@@ -484,41 +487,63 @@ theorem eigInd_reflect (ℓ : ℝ) (b τ : ℂ) : eigInd ℓ b (reflect τ) = ei
   · intro h; rw [← h]; simp [map_inv₀]
   · intro h; rw [h]; simp [map_inv₀]
 
-/-- The coordinate function of the negative vector of `b`:
-`X_τ(g) (𝟙[β = b] − λ_b 𝟙[β = 1/b̄]) / √|W_b|`, `λ_b = W_b/|W_b|`. -/
-def eigTargetFun (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) : ℂ :=
-  ((Real.sqrt ‖frobWeight Z g ℓ b‖)⁻¹ : ℂ) * zeroCoord Z g τ *
-    (eigInd ℓ b τ - frobWeight Z g ℓ b / ‖frobWeight Z g ℓ b‖ * eigInd ℓ (reflEig b) τ)
-
 theorem norm_eigInd_le (ℓ : ℝ) (b τ : ℂ) : ‖eigInd ℓ b τ‖ ≤ 1 := by
   unfold eigInd; split_ifs <;> simp
 
-theorem norm_div_norm_le (w : ℂ) : ‖w / (‖w‖ : ℂ)‖ ≤ 1 := by
-  rcases eq_or_ne w 0 with rfl | hw
-  · simp
-  · rw [norm_div, Complex.norm_real, norm_norm, div_self (norm_ne_zero_iff.mpr hw)]
+/-- The normalization `1/√|W_b|` of the negative vector of `b`. -/
+def eigScale (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) : ℂ :=
+  ((Real.sqrt ‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹
+
+/-- The phase `λ_b = W_b/|W_b|` of the negative vector of `b`. -/
+def eigPhase (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) : ℂ :=
+  frobWeight Z g ℓ b / ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)
+
+theorem norm_eigPhase_le (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) :
+    ‖eigPhase Z g ℓ b‖ ≤ 1 := by
+  unfold eigPhase
+  rcases eq_or_ne (frobWeight Z g ℓ b) 0 with h | h
+  · simp [h]
+  · rw [norm_div, Complex.norm_real, norm_norm, div_self (norm_ne_zero_iff.mpr h)]
+
+theorem conj_eigScale_mul_eigScale (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) :
+    conj (eigScale Z g ℓ b) * eigScale Z g ℓ b = ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹ := by
+  rw [eigScale, map_inv₀, Complex.conj_ofReal, ← mul_inv, ← Complex.ofReal_mul,
+    Real.mul_self_sqrt (norm_nonneg _)]
+
+/-- `λ̄ W + λ W̄ = 2|W|` for `W ≠ 0`. -/
+theorem conj_eigPhase_mul_add (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ)
+    (hW : frobWeight Z g ℓ b ≠ 0) :
+    conj (eigPhase Z g ℓ b) * frobWeight Z g ℓ b + eigPhase Z g ℓ b * conj (frobWeight Z g ℓ b) =
+      2 * ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ) := by
+  have hn0 : ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr hW
+  have hWW := Complex.conj_mul' (frobWeight Z g ℓ b)
+  have hWW' := Complex.mul_conj' (frobWeight Z g ℓ b)
+  rw [eigPhase, map_div₀, Complex.conj_ofReal, div_mul_eq_mul_div, div_mul_eq_mul_div, hWW, hWW',
+    ← add_div]
+  field_simp
+  ring
+
+/-- The coordinate function of the negative vector of `b`:
+`X_τ(g) (𝟙[β = b] − λ_b 𝟙[β = 1/b̄]) / √|W_b|`. -/
+def eigTargetFun (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) : ℂ :=
+  eigScale Z g ℓ b * zeroCoord Z g τ *
+    (eigInd ℓ b τ - eigPhase Z g ℓ b * eigInd ℓ (reflEig b) τ)
 
 theorem memℓp_eigTargetFun (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (ℓ : ℝ) (b : ℂ) :
     Memℓp (eigTargetFun Z g ℓ b) 2 := by
-  refine ((memℓp_zeroCoord Z hZ hg hgc).norm.const_mul
-    (2 * ‖((Real.sqrt ‖frobWeight Z g ℓ b‖)⁻¹ : ℂ)‖)).mono fun τ => ?_
-  simp only [eigTargetFun, norm_mul]
-  have h1 := norm_eigInd_le ℓ b τ
-  have h2 := norm_eigInd_le ℓ (reflEig b) τ
-  have h3 := norm_div_norm_le (frobWeight Z g ℓ b)
-  have h4 : ‖eigInd ℓ b τ - frobWeight Z g ℓ b / ‖frobWeight Z g ℓ b‖ * eigInd ℓ (reflEig b) τ‖ ≤ 2 := by
+  refine ((memℓp_zeroCoord Z hZ hg hgc).norm.const_mul (2 * ‖eigScale Z g ℓ b‖)).mono fun τ => ?_
+  have h4 : ‖eigInd ℓ b τ - eigPhase Z g ℓ b * eigInd ℓ (reflEig b) τ‖ ≤ 2 := by
     refine (norm_sub_le _ _).trans ?_
     rw [norm_mul]
-    nlinarith [norm_nonneg (frobWeight Z g ℓ b / ‖frobWeight Z g ℓ b‖),
-      norm_nonneg (eigInd ℓ (reflEig b) τ)]
-  have h5 := norm_nonneg (zeroCoord Z g τ)
-  have h6 := norm_nonneg ((Real.sqrt ‖frobWeight Z g ℓ b‖)⁻¹ : ℂ)
-  calc _ = ‖((Real.sqrt ‖frobWeight Z g ℓ b‖)⁻¹ : ℂ)‖ * ‖zeroCoord Z g τ‖ *
-        ‖eigInd ℓ b τ - frobWeight Z g ℓ b / ‖frobWeight Z g ℓ b‖ * eigInd ℓ (reflEig b) τ‖ := rfl
-    _ ≤ ‖((Real.sqrt ‖frobWeight Z g ℓ b‖)⁻¹ : ℂ)‖ * ‖zeroCoord Z g τ‖ * 2 :=
+    nlinarith [norm_eigInd_le ℓ b τ, norm_eigInd_le ℓ (reflEig b) τ, norm_eigPhase_le Z g ℓ b,
+      norm_nonneg (eigPhase Z g ℓ b), norm_nonneg (eigInd ℓ (reflEig b) τ)]
+  calc ‖eigTargetFun Z g ℓ b τ‖ = ‖eigScale Z g ℓ b‖ * ‖zeroCoord Z g τ‖ *
+        ‖eigInd ℓ b τ - eigPhase Z g ℓ b * eigInd ℓ (reflEig b) τ‖ := by
+          simp only [eigTargetFun, norm_mul]
+    _ ≤ ‖eigScale Z g ℓ b‖ * ‖zeroCoord Z g τ‖ * 2 :=
         mul_le_mul_of_nonneg_left h4 (by positivity)
-    _ = _ := by ring
+    _ = 2 * ‖eigScale Z g ℓ b‖ * ‖zeroCoord Z g τ‖ := by ring
 
 /-- The negative vector of an eigenvalue `b`. -/
 def eigTarget (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g)
@@ -527,9 +552,9 @@ def eigTarget (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ} (hg : C
 
 theorem eigTarget_apply (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) :
-    eigTarget Z hZ hg hgc ℓ b τ = eigTargetFun Z g ℓ b τ := rfl
+    eigTarget Z hZ hg hgc ℓ b τ = eigScale Z g ℓ b * zeroCoord Z g τ *
+      (eigInd ℓ b τ - eigPhase Z g ℓ b * eigInd ℓ (reflEig b) τ) := rfl
 
-/-- Outer eigenvalues have modulus `> 1`. -/
 theorem one_lt_norm_of_mem_outerEig {Z : ZeroConfig} {ℓ : ℝ} (hℓ : 0 < ℓ) {b : ℂ}
     (hb : b ∈ outerEig Z ℓ) : 1 < ‖b‖ := by
   obtain ⟨ρ, hρ, rfl⟩ := hb
@@ -539,7 +564,7 @@ theorem norm_reflEig_lt_one {b : ℂ} (hb : 1 < ‖b‖) : ‖reflEig b‖ < 1 :
   rw [reflEig, norm_inv, Complex.norm_conj]
   exact inv_lt_one_of_one_lt₀ hb
 
-/-- For outer `b ≠ b'` no point lies in the class of `b` and the reflected class of `b'`. -/
+/-- For outer `b, b'` no point lies in the class of `b` and the reflected class of `b'`. -/
 theorem eigInd_mul_eigInd_refl (ℓ : ℝ) {b b' : ℂ} (hb : 1 < ‖b‖) (hb' : 1 < ‖b'‖) (τ : ℂ) :
     eigInd ℓ b τ * eigInd ℓ (reflEig b') τ = 0 := by
   unfold eigInd
@@ -553,13 +578,8 @@ theorem eigInd_mul_eigInd_refl (ℓ : ℝ) {b b' : ℂ} (hb : 1 < ‖b‖) (hb' 
 theorem eigInd_mul_eigInd (ℓ : ℝ) (b b' τ : ℂ) :
     eigInd ℓ b τ * eigInd ℓ b' τ = if b = b' then eigInd ℓ b τ else 0 := by
   unfold eigInd
-  split_ifs with h1 h2 h3 h3 h2 h3 <;> simp_all
-
-theorem eigInd_mul_eigInd (ℓ : ℝ) (b b' τ : ℂ) :
-    eigInd ℓ b τ * eigInd ℓ b' τ = if b = b' then eigInd ℓ b τ else 0 := by
-  unfold eigInd
   by_cases hbb : b = b'
-  · subst hbb; split_ifs <;> simp
+  · subst hbb; split_ifs <;> simp_all
   · rw [if_neg hbb]
     split_ifs with h1 h2
     · exact absurd (h1.symm.trans h2) hbb
@@ -571,6 +591,14 @@ theorem conj_eigInd (ℓ : ℝ) (b τ : ℂ) : conj (eigInd ℓ b τ) = eigInd �
 theorem eigInd_reflectCarrier (Z : ZeroConfig) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) :
     eigInd ℓ b ((reflectCarrier Z τ : Z.carrier) : ℂ) = eigInd ℓ (reflEig b) τ :=
   eigInd_reflect ℓ b τ
+
+/-- The reflected coordinates of the negative vector of `b`. -/
+theorem eigTarget_reflect (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) :
+    eigTarget Z hZ hg hgc ℓ b (reflectCarrier Z τ) =
+      eigScale Z g ℓ b * zeroCoord Z g (reflectCarrier Z τ) *
+        (eigInd ℓ (reflEig b) τ - eigPhase Z g ℓ b * eigInd ℓ b τ) := by
+  rw [eigTarget_apply, eigInd_reflectCarrier, eigInd_reflectCarrier, reflEig_reflEig]
 
 theorem eigInd_mul_eq_ite (ℓ : ℝ) (b τ w : ℂ) :
     eigInd ℓ b τ * w = if frobEig ℓ τ = b then w else 0 := by
@@ -590,7 +618,6 @@ theorem tsum_eigInd_reflEig (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : 
   refine tsum_congr fun τ => ?_
   simp only [reflectEquiv_apply, eigInd_reflectCarrier, reflEig_reflEig,
     reflectCarrier_reflectCarrier, map_mul, conj_eigInd, Complex.conj_conj]
-  ring
 
 theorem norm_eigInd_mul_le (ℓ : ℝ) (b τ w : ℂ) : ‖eigInd ℓ b τ * w‖ ≤ ‖w‖ := by
   rw [norm_mul]
@@ -604,51 +631,42 @@ theorem inner_reflect_eigTarget_self (Z : ZeroConfig) (hZ : TemperedConfig Z) {g
   have hbO : b ∈ outerEig Z ℓ := hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1
   have hW0 : frobWeight Z g ℓ b ≠ 0 := (Finset.mem_filter.mp hb).2
   have hn := one_lt_norm_of_mem_outerEig hℓ hbO
-  have hS1 := frobWeight_eq_tsum_eigInd Z g ℓ b
-  have hS2 := tsum_eigInd_reflEig Z g ℓ b
-  rw [lp.inner_eq_tsum]
-  simp only [RCLike.inner_apply', reflectVec_apply, eigTarget_apply, eigTargetFun,
-    eigInd_reflectCarrier, reflEig_reflEig]
-  obtain ⟨W, hWdef⟩ : ∃ W, frobWeight Z g ℓ b = W := ⟨_, rfl⟩
-  simp only [hWdef] at hW0 hS1 hS2 ⊢
-  set s : ℂ := ((Real.sqrt ‖W‖ : ℝ) : ℂ)⁻¹ with hs
-  set lam : ℂ := W / (‖W‖ : ℂ) with hlam
-  set A : Z.carrier → ℂ := fun τ =>
-    eigInd ℓ b τ * (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))
-  set B : Z.carrier → ℂ := fun τ =>
-    eigInd ℓ (reflEig b) τ * (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ)
   have hsum := summable_zeroCoord_mul_reflect Z hZ hg hgc
-  have hA : Summable A := Summable.of_norm_bounded hsum fun τ => norm_eigInd_mul_le ℓ b τ _
-  have hB : Summable B := Summable.of_norm_bounded hsum fun τ => by
-    refine (norm_eigInd_mul_le ℓ _ τ _).trans ?_
-    rw [norm_mul, norm_mul, mul_comm]
-  have hterm : ∀ τ : Z.carrier,
-      conj (s * zeroCoord Z g (reflectCarrier Z τ) *
-          (eigInd ℓ (reflEig b) τ - lam * eigInd ℓ b τ)) *
-        (s * zeroCoord Z g τ * (eigInd ℓ b τ - lam * eigInd ℓ (reflEig b) τ)) =
-      -(conj s * s) * (conj lam * A τ + lam * B τ) := fun τ => by
+  have hterm : ∀ τ : Z.carrier, inner ℂ ((reflectVec Z (eigTarget Z hZ hg hgc ℓ b)) τ)
+      ((eigTarget Z hZ hg hgc ℓ b) τ) =
+      -(conj (eigScale Z g ℓ b) * eigScale Z g ℓ b) *
+        (conj (eigPhase Z g ℓ b) * (eigInd ℓ b τ *
+            (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) +
+          eigPhase Z g ℓ b * (eigInd ℓ (reflEig b) τ *
+            (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ))) := fun τ => by
     have e1 := eigInd_mul_eigInd_refl ℓ hn hn (τ : ℂ)
     have e2 : eigInd ℓ (reflEig b) τ * eigInd ℓ b τ = 0 := by rw [mul_comm]; exact e1
-    have e3 := eigInd_mul_eigInd ℓ b b τ
-    have e4 := eigInd_mul_eigInd ℓ (reflEig b) (reflEig b) τ
-    simp only [if_pos rfl] at e3 e4
-    simp only [A, B, map_mul, map_sub, conj_eigInd]
+    have e3 : eigInd ℓ b τ * eigInd ℓ b τ = eigInd ℓ b τ := by
+      rw [eigInd_mul_eigInd, if_pos rfl]
+    have e4 : eigInd ℓ (reflEig b) τ * eigInd ℓ (reflEig b) τ = eigInd ℓ (reflEig b) τ := by
+      rw [eigInd_mul_eigInd, if_pos rfl]
+    rw [RCLike.inner_apply', reflectVec_apply, eigTarget_reflect, eigTarget_apply]
+    simp only [map_mul, map_sub, conj_eigInd]
     linear_combination
-      (conj s * conj (zeroCoord Z g (reflectCarrier Z τ)) * s * zeroCoord Z g τ) *
-        (e2 + conj lam * lam * e1 - lam * e4 - conj lam * e3)
-  rw [tsum_congr hterm, tsum_mul_left, hA.tsum_add hB, tsum_mul_left, tsum_mul_left,
-    ← hS1, hS2]
-  have hn0 : ((‖W‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr hW0
-  have hss : conj s * s = ((‖W‖ : ℝ) : ℂ)⁻¹ := by
-    rw [hs, map_inv₀, Complex.conj_ofReal, ← mul_inv, ← Complex.ofReal_mul,
-      Real.mul_self_sqrt (norm_nonneg _)]
-  have hWW : conj W * W = ((‖W‖ : ℝ) : ℂ) ^ 2 := Complex.conj_mul' W
-  have hWW' : W * conj W = ((‖W‖ : ℝ) : ℂ) ^ 2 := Complex.mul_conj' W
-  rw [hss, hlam, map_div₀, Complex.conj_ofReal]
+      (conj (eigScale Z g ℓ b) * conj (zeroCoord Z g (reflectCarrier Z τ)) *
+          eigScale Z g ℓ b * zeroCoord Z g τ) *
+        (e2 + conj (eigPhase Z g ℓ b) * eigPhase Z g ℓ b * e1 - eigPhase Z g ℓ b * e4 -
+          conj (eigPhase Z g ℓ b) * e3)
+  have hA : Summable fun τ : Z.carrier => conj (eigPhase Z g ℓ b) * (eigInd ℓ b τ *
+      (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) :=
+    (Summable.of_norm_bounded hsum fun τ => norm_eigInd_mul_le ℓ b τ _).mul_left _
+  have hB : Summable fun τ : Z.carrier => eigPhase Z g ℓ b * (eigInd ℓ (reflEig b) τ *
+      (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ)) :=
+    (Summable.of_norm_bounded hsum fun τ => by
+      refine (norm_eigInd_mul_le ℓ _ τ _).trans ?_
+      rw [norm_mul, norm_mul, Complex.norm_conj, Complex.norm_conj, mul_comm]).mul_left _
+  rw [lp.inner_eq_tsum, tsum_congr hterm, tsum_mul_left, hA.tsum_add hB, tsum_mul_left,
+    tsum_mul_left, ← frobWeight_eq_tsum_eigInd, tsum_eigInd_reflEig, conj_eigScale_mul_eigScale,
+    conj_eigPhase_mul_add Z g ℓ b hW0]
+  have hn0 : ((‖frobWeight Z g ℓ b‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr hW0
   field_simp
-  linear_combination 2 * hWW - 0 * hWW' + (hWW' - hWW)
 
-/-- **Distinct visible eigenvalues give Krein-orthogonal pairs.** -/
+/-- **Distinct outer eigenvalues give Krein-orthogonal pairs.** -/
 theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
     {b b' : ℂ} (hbO : b ∈ outerEig Z ℓ) (hbO' : b' ∈ outerEig Z ℓ) (hbb : b ≠ b') :
@@ -657,8 +675,6 @@ theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g :
   have hn' := one_lt_norm_of_mem_outerEig hℓ hbO'
   rw [lp.inner_eq_tsum]
   refine (tsum_congr fun τ => ?_).trans tsum_zero
-  simp only [RCLike.inner_apply', reflectVec_apply, eigTarget_apply, eigTargetFun,
-    eigInd_reflectCarrier, reflEig_reflEig, map_mul, map_sub, conj_eigInd]
   have e1 : eigInd ℓ (reflEig b') τ * eigInd ℓ b τ = 0 := by
     rw [mul_comm]; exact eigInd_mul_eigInd_refl ℓ hn hn' τ
   have e2 : eigInd ℓ (reflEig b') τ * eigInd ℓ (reflEig b) τ = 0 := by
@@ -667,13 +683,13 @@ theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g :
     exact hbb (by rw [← reflEig_reflEig b, ← h, reflEig_reflEig])
   have e3 : eigInd ℓ b' τ * eigInd ℓ b τ = 0 := by rw [eigInd_mul_eigInd, if_neg (Ne.symm hbb)]
   have e4 : eigInd ℓ b' τ * eigInd ℓ (reflEig b) τ = 0 := eigInd_mul_eigInd_refl ℓ hn' hn τ
-  set s := ((Real.sqrt ‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹
-  set s' := ((Real.sqrt ‖frobWeight Z g ℓ b'‖ : ℝ) : ℂ)⁻¹
-  set lam := frobWeight Z g ℓ b / (‖frobWeight Z g ℓ b‖ : ℂ)
-  set lam' := frobWeight Z g ℓ b' / (‖frobWeight Z g ℓ b'‖ : ℂ)
+  rw [RCLike.inner_apply', reflectVec_apply, eigTarget_reflect, eigTarget_apply]
+  simp only [map_mul, map_sub, conj_eigInd]
   linear_combination
-    (conj s' * conj (zeroCoord Z g (reflectCarrier Z τ)) * s * zeroCoord Z g τ) *
-      (e1 - lam * e2 - conj lam' * e3 + conj lam' * lam * e4)
+    (conj (eigScale Z g ℓ b') * conj (zeroCoord Z g (reflectCarrier Z τ)) *
+        eigScale Z g ℓ b * zeroCoord Z g τ) *
+      (e1 - eigPhase Z g ℓ b * e2 - conj (eigPhase Z g ℓ b') * e3 +
+        conj (eigPhase Z g ℓ b') * eigPhase Z g ℓ b * e4)
 
 /-- The Krein Gram of the negative vectors of the visible eigenvalues is `−2·I`. -/
 theorem inner_reflect_eigTarget (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
@@ -711,25 +727,103 @@ theorem eigTarget_mem_closure (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ 
   have hk : ∀ k : ℤ, inner ℂ (towerVec Z hZ hg hgc ℓ k) a = 0 := fun k =>
     (Submodule.mem_orthogonal _ a).mp ha _ (Submodule.subset_span ⟨k, rfl⟩)
   have hc := classSum_eq_zero_of_orthogonal_tower Z hZ hg hgc hℓ hO a hk
-  rw [← inner_conj_symm, lp.inner_eq_tsum]
   have hq := summable_conj_zeroCoord_mul Z hZ hg hgc a
-  set s := ((Real.sqrt ‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹
-  set lam := frobWeight Z g ℓ b / (‖frobWeight Z g ℓ b‖ : ℂ)
-  have e : ∀ τ : Z.carrier, inner ℂ (eigTarget Z hZ hg hgc ℓ b τ) (a τ) =
-      conj s * ((if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) -
-        conj lam * (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0)) :=
-    fun τ => by
-      simp only [RCLike.inner_apply', eigTarget_apply, eigTargetFun, map_mul, map_sub,
-        conj_eigInd, ← eigInd_mul_eq_ite]
-      ring
-  have h1 : Summable fun τ : Z.carrier =>
+  have e : ∀ τ : Z.carrier, inner ℂ ((eigTarget Z hZ hg hgc ℓ b) τ) (a τ) =
+      conj (eigScale Z g ℓ b) * (if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) -
+        conj (eigScale Z g ℓ b) * conj (eigPhase Z g ℓ b) *
+          (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0) := fun τ => by
+    rw [RCLike.inner_apply', eigTarget_apply, ← eigInd_mul_eq_ite, ← eigInd_mul_eq_ite]
+    simp only [map_mul, map_sub, conj_eigInd]
+    ring
+  have h1 : Summable fun τ : Z.carrier => conj (eigScale Z g ℓ b) *
       (if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) :=
-    Summable.of_norm_bounded hq fun τ => by split_ifs <;> simp
-  have h2 : Summable fun τ : Z.carrier =>
-      conj lam * (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0) :=
     (Summable.of_norm_bounded hq fun τ => by split_ifs <;> simp).mul_left _
-  rw [tsum_congr e, tsum_mul_left, h1.tsum_sub h2, tsum_mul_left, hc b, hc (reflEig b)]
+  have h2 : Summable fun τ : Z.carrier => conj (eigScale Z g ℓ b) * conj (eigPhase Z g ℓ b) *
+      (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0) :=
+    (Summable.of_norm_bounded hq fun τ => by split_ifs <;> simp).mul_left _
+  rw [← inner_conj_symm, lp.inner_eq_tsum, tsum_congr e, h1.tsum_sub h2, tsum_mul_left,
+    tsum_mul_left, hc b, hc (reflEig b)]
   simp
+
+/-- **The Krein form of a class-killing vector is nonnegative.** If `Y_τ = X_τ(g) E(β(τ))` and every
+outer eigenvalue `b` has `E(b) = 0` or `W_b = 0`, then `Re⟨R Y, Y⟩ ≥ 0`: the right zeros contribute
+`conj E(1/b̄) E(b) W_b = 0` class by class, the left zeros the conjugate, the on-line zeros `|Y_τ|²`. -/
+theorem re_inner_reflect_nonneg_of_classes (Z : ZeroConfig) {g : ℝ → ℂ} {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) (Y : ℓ²(Z.carrier, ℂ)) (E : ℂ → ℂ)
+    (hY : ∀ τ, Y τ = zeroCoord Z g τ * E (frobEig ℓ τ))
+    (hE : ∀ b ∈ outerEig Z ℓ, E b = 0 ∨ frobWeight Z g ℓ b = 0) :
+    0 ≤ (inner ℂ (reflectVec Z Y) Y).re := by
+  have hhs : Summable fun τ : Z.carrier => inner ℂ ((reflectVec Z Y) τ) (Y τ) :=
+    lp.summable_inner (reflectVec Z Y) Y
+  rw [lp.inner_eq_tsum]
+  simp only [RCLike.inner_apply', reflectVec_apply] at hhs ⊢
+  set h : Z.carrier → ℂ := fun τ => conj (Y (reflectCarrier Z τ)) * Y τ with hh
+  set on : Z.carrier → ℂ := fun τ => if (τ : ℂ).re = 1 / 2 then h τ else 0 with hon_def
+  set rt : Z.carrier → ℂ := fun τ => if 1 / 2 < (τ : ℂ).re then h τ else 0 with hrt_def
+  set lf : Z.carrier → ℂ := fun τ => if (τ : ℂ).re < 1 / 2 then h τ else 0 with hlf_def
+  have hon : Summable on := Summable.of_norm_bounded hhs.norm fun τ => by
+    simp only [hon_def]; split_ifs <;> simp
+  have hrt : Summable rt := Summable.of_norm_bounded hhs.norm fun τ => by
+    simp only [hrt_def]; split_ifs <;> simp
+  have hlf : Summable lf := Summable.of_norm_bounded hhs.norm fun τ => by
+    simp only [hlf_def]; split_ifs <;> simp
+  have hsplit : ∀ τ, h τ = on τ + rt τ + lf τ := fun τ => by
+    simp only [hon_def, hrt_def, hlf_def]
+    rcases lt_trichotomy (τ : ℂ).re (1 / 2) with hlt | heq | hgt
+    · rw [if_neg hlt.ne, if_neg (not_lt.mpr hlt.le), if_pos hlt]; ring
+    · rw [if_pos heq, if_neg (by rw [heq]; exact lt_irrefl _),
+        if_neg (by rw [heq]; exact lt_irrefl _)]; ring
+    · rw [if_neg hgt.ne', if_pos hgt, if_neg (not_lt.mpr hgt.le)]; ring
+  -- the left part is the conjugate of the right part
+  have hleft : ∑' τ, lf τ = conj (∑' τ, rt τ) := by
+    rw [Complex.conj_tsum, ← (reflectEquiv Z).tsum_eq]
+    refine tsum_congr fun τ => ?_
+    simp only [hlf_def, hrt_def, hh, reflectEquiv_apply, re_reflectCarrier,
+      reflectCarrier_reflectCarrier]
+    by_cases hgt : 1 / 2 < (τ : ℂ).re
+    · rw [if_pos (by linarith), if_pos hgt, map_mul, Complex.conj_conj, mul_comm]
+    · rw [if_neg (by linarith), if_neg hgt, map_zero]
+  -- the right part vanishes class by class
+  have hright : ∑' τ, rt τ = 0 := by
+    have hpart : ∀ τ, rt τ = ∑ b ∈ hO.toFinset, (if frobEig ℓ τ = b then h τ else 0) := by
+      intro τ
+      rw [Finset.sum_ite_eq']
+      simp only [hrt_def]
+      by_cases hgt : 1 / 2 < (τ : ℂ).re
+      · rw [if_pos hgt, if_pos (hO.mem_toFinset.mpr ⟨τ, ⟨τ.2, hgt⟩, rfl⟩)]
+      · rw [if_neg hgt, if_neg]
+        intro hmem
+        have h1 := one_lt_norm_of_mem_outerEig hℓ (hO.mem_toFinset.mp hmem)
+        rw [norm_frobEig, ← Real.exp_zero, Real.exp_lt_exp] at h1
+        nlinarith
+    rw [tsum_congr hpart, Summable.tsum_finsetSum fun b _ =>
+      Summable.of_norm_bounded hhs.norm fun τ => by split_ifs <;> simp]
+    refine Finset.sum_eq_zero fun b hb => ?_
+    have hcl : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then h τ else 0) =
+        conj (E (reflEig b)) * E b * (eigInd ℓ b τ *
+          (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) := fun τ => by
+      rw [eigInd_mul_eq_ite]
+      split_ifs with hβ
+      · simp only [hh, hY]
+        rw [show ((reflectCarrier Z τ : Z.carrier) : ℂ) = reflect (τ : ℂ) from rfl,
+          frobEig_reflect, hβ]
+        simp only [reflEig, map_mul]
+        ring
+      · simp
+    rw [tsum_congr hcl, tsum_mul_left, ← frobWeight_eq_tsum_eigInd]
+    rcases hE b (hO.mem_toFinset.mp hb) with h0 | h0
+    · rw [h0]; simp
+    · rw [h0, mul_zero]
+  have hfull : ∑' τ, h τ = ∑' τ, on τ + ∑' τ, rt τ + ∑' τ, lf τ := by
+    rw [tsum_congr hsplit, (hon.add hrt).tsum_add hlf, hon.tsum_add hrt]
+  rw [hfull, hleft, hright, map_zero, add_zero, add_zero, Complex.re_tsum hon]
+  refine tsum_nonneg fun τ => ?_
+  simp only [hon_def]
+  split_ifs with heq
+  · simp only [hh, reflectCarrier_eq_self heq, Complex.conj_mul', ← Complex.ofReal_pow,
+      Complex.ofReal_re]
+    positivity
+  · simp
 
 /-- **Refined bound.** With finitely many outer eigenvalues, a window of the tower has at most as
 many negative squares as there are visible eigenvalues: invisible classes contribute nothing. -/
@@ -737,8 +831,7 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
     (hO : (outerEig Z ℓ).Finite) (K : Finset ℤ) :
     hermNegIndex (towerGram Z g ℓ K) ≤ (visibleEig Z g ℓ hO).card := by
-  set O := visibleEig Z g ℓ hO
-  let Ψ : (K → ℂ) →ₗ[ℂ] (O → ℂ) :=
+  let Ψ : (K → ℂ) →ₗ[ℂ] (visibleEig Z g ℓ hO → ℂ) :=
     { toFun := fun x b => ∑ k : K, x k * conj (b : ℂ) ^ (k : ℤ)
       map_add' := fun x y => by
         funext b; simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
@@ -750,90 +843,20 @@ theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {
     have hrw : towerGram Z g ℓ K =
         zeroGram Z fun k : K => (translateTest hg hgc (((k : ℤ) : ℝ) * ℓ) : ℝ → ℂ) := rfl
     rw [hrw, hermQuad_zeroGram_eq Z hZ]
-    set Y := ∑ k : K, conj (x k) • zeroMap Z hZ (translateTest hg hgc (((k : ℤ) : ℝ) * ℓ))
-    set E : ℂ → ℂ := fun w => ∑ k : K, conj (x k) * w ^ (k : ℤ) with hE
-    have hY : ∀ τ, Y τ = zeroCoord Z g τ * E (frobEig ℓ τ) := fun τ =>
-      towerComb_apply Z hZ hg hgc ℓ K x τ
-    have hEvis : ∀ b ∈ O, E b = 0 := fun b hb => by
-      have h0 := congrFun hx ⟨b, hb⟩
+    refine re_inner_reflect_nonneg_of_classes Z hℓ hO _
+      (fun w => ∑ k : K, conj (x k) * w ^ (k : ℤ))
+      (fun τ => towerComb_apply Z hZ hg hgc ℓ K x τ) fun b hb => ?_
+    by_cases hvis : b ∈ visibleEig Z g ℓ hO
+    · left
+      have h0 := congrFun hx ⟨b, hvis⟩
       simp only [Ψ, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at h0
-      have : E b = conj (∑ k : K, x k * conj b ^ (k : ℤ)) := by
-        simp only [hE, map_sum, map_mul, map_zpow₀, Complex.conj_conj]
-      rw [this, h0, map_zero]
-    rw [lp.inner_eq_tsum]
-    simp only [RCLike.inner_apply', reflectVec_apply]
-    set h : Z.carrier → ℂ := fun τ => conj (Y (reflectCarrier Z τ)) * Y τ with hh
-    have hhs : Summable h := lp.summable_inner (reflectVec Z Y) Y
-    -- split by the position of `τ` relative to the line
-    set on : Z.carrier → ℂ := fun τ => if (τ : ℂ).re = 1 / 2 then h τ else 0
-    set rt : Z.carrier → ℂ := fun τ => if 1 / 2 < (τ : ℂ).re then h τ else 0
-    set lf : Z.carrier → ℂ := fun τ => if (τ : ℂ).re < 1 / 2 then h τ else 0
-    have hon : Summable on := Summable.of_norm_bounded hhs.norm fun τ => by
-      simp only [on]; split_ifs <;> simp
-    have hrt : Summable rt := Summable.of_norm_bounded hhs.norm fun τ => by
-      simp only [rt]; split_ifs <;> simp
-    have hlf : Summable lf := Summable.of_norm_bounded hhs.norm fun τ => by
-      simp only [lf]; split_ifs <;> simp
-    have hsplit : ∀ τ, h τ = on τ + rt τ + lf τ := fun τ => by
-      simp only [on, rt, lf]
-      rcases lt_trichotomy (τ : ℂ).re (1 / 2) with hlt | heq | hgt
-      · rw [if_neg hlt.ne, if_neg (not_lt.mpr hlt.le), if_pos hlt]; ring
-      · rw [if_pos heq, if_neg (by rw [heq]; exact lt_irrefl _),
-          if_neg (by rw [heq]; exact lt_irrefl _)]; ring
-      · rw [if_neg hgt.ne', if_pos hgt, if_neg (not_lt.mpr hgt.le)]; ring
-    -- the left part is the conjugate of the right part
-    have hleft : ∑' τ, lf τ = conj (∑' τ, rt τ) := by
-      rw [Complex.conj_tsum, ← (reflectEquiv Z).tsum_eq]
-      refine tsum_congr fun τ => ?_
-      simp only [lf, rt, h, reflectEquiv_apply, re_reflectCarrier, reflectCarrier_reflectCarrier]
-      by_cases hgt : 1 / 2 < (τ : ℂ).re
-      · rw [if_pos (by linarith), if_pos hgt, map_mul, Complex.conj_conj, mul_comm]
-      · rw [if_neg (by linarith), if_neg hgt, map_zero]
-    -- the right part vanishes class by class
-    have hright : ∑' τ, rt τ = 0 := by
-      have hpart : ∀ τ, rt τ = ∑ b ∈ hO.toFinset, (if frobEig ℓ τ = b then h τ else 0) := by
-        intro τ
-        rw [Finset.sum_ite_eq']
-        simp only [rt]
-        by_cases hgt : 1 / 2 < (τ : ℂ).re
-        · rw [if_pos hgt, if_pos (hO.mem_toFinset.mpr ⟨τ, ⟨τ.2, hgt⟩, rfl⟩)]
-        · rw [if_neg hgt, if_neg]
-          intro hmem
-          have h1 := one_lt_norm_of_mem_outerEig hℓ (hO.mem_toFinset.mp hmem)
-          rw [norm_frobEig, ← Real.exp_zero, Real.exp_lt_exp] at h1
-          nlinarith
-      rw [tsum_congr hpart, Summable.tsum_finsetSum fun b _ =>
-        Summable.of_norm_bounded hhs.norm fun τ => by split_ifs <;> simp]
-      refine Finset.sum_eq_zero fun b hb => ?_
-      have hcl : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then h τ else 0) =
-          conj (E (reflEig b)) * E b * (eigInd ℓ b τ *
-            (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) := fun τ => by
-        unfold eigInd
-        split_ifs with hβ
-        · simp only [h, hY]
-          rw [show ((reflectCarrier Z τ : Z.carrier) : ℂ) = reflect (τ : ℂ) from rfl,
-            frobEig_reflect, hβ]
-          simp only [reflEig, map_mul]
-          ring
-        · simp
-      rw [tsum_congr hcl, tsum_mul_left, ← frobWeight_eq_tsum_eigInd]
-      by_cases hvis : b ∈ O
-      · rw [hEvis b hvis]; simp
-      · have hW : frobWeight Z g ℓ b = 0 := by
-          by_contra hne
-          exact hvis (Finset.mem_filter.mpr ⟨hb, hne⟩)
-        rw [hW, mul_zero]
-    have hfull : ∑' τ, h τ = ∑' τ, on τ + ∑' τ, rt τ + ∑' τ, lf τ := by
-      rw [tsum_congr hsplit, (hon.add hrt).tsum_add hlf, hon.tsum_add hrt]
-    show 0 ≤ (∑' τ, h τ).re
-    rw [hfull, hleft, hright, map_zero, add_zero, add_zero, Complex.re_tsum hon]
-    refine tsum_nonneg fun τ => ?_
-    simp only [on]
-    split_ifs with heq
-    · simp only [h, reflectCarrier_eq_self heq, Complex.conj_mul', ← Complex.ofReal_pow,
-        Complex.ofReal_re]
-      positivity
-    · simp
+      have e : ∑ k : K, conj (x k) * b ^ (k : ℤ) = conj (∑ k : K, x k * conj b ^ (k : ℤ)) := by
+        simp only [map_sum, map_mul, map_zpow₀, Complex.conj_conj]
+      show ∑ k : K, conj (x k) * b ^ (k : ℤ) = 0
+      rw [e, h0, map_zero]
+    · right
+      by_contra hne
+      exact hvis (Finset.mem_filter.mpr ⟨hO.mem_toFinset.mpr hb, hne⟩)
   obtain ⟨V, hrank, hV⟩ := exists_isPosDefOn_finrank_eq_posIndex (-(towerGram Z g ℓ K))
   have hinj : LinearMap.ker (Ψ.domRestrict V) = ⊥ := by
     rw [LinearMap.ker_eq_bot']

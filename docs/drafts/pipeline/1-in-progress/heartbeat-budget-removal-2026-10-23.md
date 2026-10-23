@@ -40,7 +40,7 @@ valid.
 - [x] `RHTower/WindowBudget.lean` (depth 3, 1)
 - [x] `RHTower/XiHadamardFactorization.lean` (depth 3, 1)
 - [x] `RHTower/XiThermalSourceRelativeGapBound.lean` (depth 3, 1)
-- [ ] `HTGeometry/FinitePrimeRationalCoefficientField.lean` (depth 4, 4)
+- [x] `HTGeometry/FinitePrimeRationalCoefficientField.lean` (depth 4, 4)
 - [x] `HTGeometry/LpReindexCompactDichotomy.lean` (depth 4, 1)
 - [x] `RHTower/InvZetaAbscissaSubpolynomial.lean` (depth 4, 1)
 - [x] `RHTower/Sieve/RouteTZetaZeroFree.lean` (depth 4, 2)
@@ -120,7 +120,7 @@ valid.
 - [ ] `RHTower/ZetaStripLowerBound.lean` (depth 6, 1)
 - [ ] `RHTower/ZetaTruncatedExtension.lean` (depth 6, 1)
 - [ ] `HTGeometry/EulerQGammaContinuation.lean` (depth 7, 1)
-- [ ] `HTGeometry/GammaDigammaShiftAnchor.lean` (depth 7, 1)
+- [x] `HTGeometry/GammaDigammaShiftAnchor.lean` (depth 7, 1)
 - [ ] `HTGeometry/LogarithmicLaplaceScoreBounds.lean` (depth 7, 1)
 - [ ] `HTGeometry/MultiGeometricSeries.lean` (depth 7, 2)
 - [ ] `HTGeometry/OccupationVacuumAnomalyReciprocity.lean` (depth 7, 1)
@@ -154,7 +154,7 @@ valid.
 - [ ] `RHTower/XiMassPrimeSquareBoundaryResidue.lean` (depth 7, 2)
 - [ ] `RHTower/ZetaSawtoothHolomorphy.lean` (depth 7, 1)
 - [ ] `RHTower/ZetaVerticalGrowth.lean` (depth 7, 1)
-- [ ] `HTGeometry/BriotBouquetTwoRootNoGo.lean` (depth 8, 2)
+- [x] `HTGeometry/BriotBouquetTwoRootNoGo.lean` (depth 8, 2)
 - [ ] `HTGeometry/ConvolutionAtomBounds.lean` (depth 8, 1)
 - [ ] `HTGeometry/CountableDivisorConvergenceExponent.lean` (depth 8, 1)
 - [ ] `HTGeometry/EulerQGammaAnalytic.lean` (depth 8, 1)
@@ -483,9 +483,9 @@ valid.
 Proof rewrites are present. Check and fix each listed file at default budgets, then produce
 its olean/ilean using direct `lake --old env lean` commands, one file at a time.
 Axiom audits are excluded. The following list is the fixed completion batch, not a new queue.
-- `HTGeometry/BriotBouquetTwoRootNoGo.lean`
-- `HTGeometry/FinitePrimeRationalCoefficientField.lean`
-- `HTGeometry/GammaDigammaShiftAnchor.lean`
+- [x] `HTGeometry/BriotBouquetTwoRootNoGo.lean` — build and final check passed; olean/ilean written.
+- [x] `HTGeometry/FinitePrimeRationalCoefficientField.lean` — build and final check passed; olean/ilean written.
+- [x] `HTGeometry/GammaDigammaShiftAnchor.lean` — check and build passed; olean/ilean written.
 - `HTGeometry/MultiGeometricSeries.lean`
 - `HTGeometry/OccupationVacuumAnomalyReciprocity.lean`
 - [x] `HTGeometry/OmittedValueLogarithmicGrowth.lean` — build and final check passed; olean/ilean written.

@@ -40,7 +40,7 @@ set_option autoImplicit false
 
 /-- The source at a real argument: `P_η(x) = A_η(⌊x⌋) − ρ_η x`. -/
 def sourceProfile (η x : ℝ) : ℝ :=
-  arithmeticDampingPrefix η ⌊x⌋₊ - (pmPowerDampedDivisorDensity η).re * x
+  arithmeticDampingPrefix η ⌊x⌋₊ - (RHTower.pmPowerDampedDivisorDensity η).re * x
 
 /-- The column profile `Δ_K(x) = K^{−η} P(x/K) − (K+1)^{−η} P(x/(K+1))`. -/
 def columnProfile (η K x : ℝ) : ℝ :=
@@ -83,13 +83,13 @@ theorem floor_div_eq_of_mem {N K : ℕ} {x : ℝ} (hx : (N : ℝ) ≤ x) (hx' : 
 
 /-- Between two points with the same floor the source is linear with slope `−ρ`. -/
 theorem sourceProfile_eq_of_floor_eq (η : ℝ) {x y : ℝ} (h : ⌊x⌋₊ = ⌊y⌋₊) :
-    sourceProfile η x = sourceProfile η y - (pmPowerDampedDivisorDensity η).re * (x - y) := by
+    sourceProfile η x = sourceProfile η y - (RHTower.pmPowerDampedDivisorDensity η).re * (x - y) := by
   unfold sourceProfile; rw [h]; ring
 
 /-- On `[N, N + 1)` the column profile differs from its value at `N` by a linear term. -/
 theorem columnProfile_eq_of_mem (η : ℝ) {N K : ℕ} {x : ℝ} (hx : (N : ℝ) ≤ x) (hx' : x < N + 1) :
     columnProfile η K x = columnProfile η K N -
-      (pmPowerDampedDivisorDensity η).re * (x - N) *
+      (RHTower.pmPowerDampedDivisorDensity η).re * (x - N) *
         ((K : ℝ) ^ (-η) / K - ((K : ℝ) + 1) ^ (-η) / ((K : ℝ) + 1)) := by
   have h1 := sourceProfile_eq_of_floor_eq η (floor_div_eq_of_mem (K := K) hx hx')
   have h2 := sourceProfile_eq_of_floor_eq η (floor_div_eq_of_mem (K := K + 1) hx hx')
@@ -114,7 +114,7 @@ theorem sq_centeredRow_le_of_mem {η : ℝ} (hη : 0 < η) (n k : ℕ) {x : ℝ}
   have hK : 0 < K := by linarith
   have hN1 : 1 ≤ N := by rw [hNdef]; exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
   have hx0 : 0 < x := by linarith
-  set ρ := (pmPowerDampedDivisorDensity η).re with hρdef
+  set ρ := (RHTower.pmPowerDampedDivisorDensity η).re with hρdef
   have hρ0 : 0 < ρ := RHTower.pmPowerDampedDivisorDensity_re_pos hη
   have hρ1 : ρ ≤ 1 := density_re_le_one hη
   have hKη : 0 ≤ K ^ (-η) := Real.rpow_nonneg hK.le _
@@ -124,16 +124,14 @@ theorem sq_centeredRow_le_of_mem {η : ℝ} (hη : 0 < η) (n k : ℕ) {x : ℝ}
   set ε := K ^ (-η) / K - (K + 1) ^ (-η) / (K + 1) with hεdef
   have hε0 : 0 ≤ ε := by
     rw [hεdef, sub_nonneg, div_le_div_iff₀ (by linarith) hK]
-    nlinarith
+    nlinarith [mul_le_mul_of_nonneg_right hmono hK.le]
   have hε1 : ε ≤ K ^ (-η) / K := by
-    have : 0 ≤ (K + 1) ^ (-η) / (K + 1) := by positivity
+    have : 0 ≤ (K + 1) ^ (-η) / (K + 1) := div_nonneg hK1η (by linarith)
     linarith
   set D := columnProfile η K N
   set Dx := columnProfile η K x
   have hD : D = Dx + ρ * (x - N) * ε := by linarith
-  have hr0 : 0 ≤ ρ * (x - N) * ε := by
-    have : 0 ≤ x - N := by linarith
-    positivity
+  have hr0 : 0 ≤ ρ * (x - N) * ε := mul_nonneg (mul_nonneg hρ0.le (by linarith)) hε0
   have hr1 : ρ * (x - N) * ε ≤ K ^ (-η) / K := by
     have hxN : x - N ≤ 1 := by linarith
     have hxN0 : 0 ≤ x - N := by linarith
@@ -147,13 +145,14 @@ theorem sq_centeredRow_le_of_mem {η : ℝ} (hη : 0 < η) (n k : ℕ) {x : ℝ}
     rw [hD]
     linarith
   have hinv : 1 / N ^ 2 ≤ 4 / x ^ 2 := by
-    rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    nlinarith
-  have hDx0 : 0 ≤ Dx ^ 2 := sq_nonneg _
-  calc (K / N * D) ^ 2 = K ^ 2 * D ^ 2 * (1 / N ^ 2) := by field_simp
+    rw [div_le_div_iff₀ (pow_pos (by linarith) 2) (pow_pos hx0 2)]
+    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 2 * N - x) (by linarith : (0 : ℝ) ≤ 2 * N + x)]
+  have hKne : K ≠ 0 := ne_of_gt hK
+  have hKA : K * (K ^ (-η) / K) = K ^ (-η) := by field_simp
+  calc (K / N * D) ^ 2 = K ^ 2 * D ^ 2 * (1 / N ^ 2) := by ring
     _ ≤ K ^ 2 * (2 * Dx ^ 2 + 2 * (K ^ (-η) / K) ^ 2) * (1 / N ^ 2) := by gcongr
-    _ = 2 * K ^ 2 * Dx ^ 2 * (1 / N ^ 2) + 2 * (K ^ (-η)) ^ 2 / N ^ 2 := by
-        field_simp
+    _ = 2 * K ^ 2 * Dx ^ 2 * (1 / N ^ 2) + 2 * (K * (K ^ (-η) / K)) ^ 2 / N ^ 2 := by ring
+    _ = 2 * K ^ 2 * Dx ^ 2 * (1 / N ^ 2) + 2 * (K ^ (-η)) ^ 2 / N ^ 2 := by rw [hKA]
     _ ≤ 2 * K ^ 2 * Dx ^ 2 * (4 / x ^ 2) + 2 * (K ^ (-η)) ^ 2 / N ^ 2 := by gcongr
     _ = 8 * K ^ 2 * (Dx ^ 2 / x ^ 2) + 2 * (K ^ (-η)) ^ 2 / N ^ 2 := by ring
 
@@ -178,8 +177,8 @@ theorem sum_range_inv_succ_sq_le_two (T : ℕ) :
     _ = 2 * (1 / ((0 + 1 : ℕ) : ℝ)) - 2 * (1 / ((T + 1 : ℕ) : ℝ)) :=
         Finset.sum_range_sub' (fun n => 2 * (1 / ((n + 1 : ℕ) : ℝ))) T
     _ ≤ 2 := by
-        have : 0 ≤ 2 * (1 / ((T + 1 : ℕ) : ℝ)) := by positivity
-        norm_num at this ⊢
+        have h0 : 0 ≤ 2 * (1 / ((T + 1 : ℕ) : ℝ)) := by positivity
+        have h1 : (1 : ℝ) / ((0 + 1 : ℕ) : ℝ) = 1 := by norm_num
         linarith
 
 /-- **Column energy against the continuous energy**:
@@ -188,7 +187,7 @@ theorem sum_sq_centeredRow_le_integral {η : ℝ} (hη : 0 < η) (k T : ℕ)
     (hint : IntegrableOn (fun x => columnProfile η ((k + 1 : ℕ) : ℝ) x ^ 2 / x ^ 2) (Ioi 0)) :
     ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2 ≤
       8 * ((k + 1 : ℕ) : ℝ) ^ 2 *
-          ∫ x in Ioi (0 : ℝ), columnProfile η ((k + 1 : ℕ) : ℝ) x ^ 2 / x ^ 2 +
+          (∫ x in Ioi (0 : ℝ), columnProfile η ((k + 1 : ℕ) : ℝ) x ^ 2 / x ^ 2) +
         4 * (((k + 1 : ℕ) : ℝ) ^ (-η)) ^ 2 := by
   set f : ℝ → ℝ := fun x => columnProfile η ((k + 1 : ℕ) : ℝ) x ^ 2 / x ^ 2 with hf
   set c : ℝ := 8 * ((k + 1 : ℕ) : ℝ) ^ 2 with hc
@@ -205,7 +204,7 @@ theorem sum_sq_centeredRow_le_integral {η : ℝ} (hη : 0 < η) (k T : ℕ)
     rw [intervalIntegrable_iff_integrableOn_Icc_of_le hle]
     exact hint.mono_set (hsub i)
   have hpt : ∀ n : ℕ, arithmeticDampingCenteredRow η n k ^ 2 ≤
-      c * ∫ x in a n..a (n + 1), f x + 2 * e / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+      c * (∫ x in a n..a (n + 1), f x) + 2 * e / ((n + 1 : ℕ) : ℝ) ^ 2 := by
     intro n
     have hle : a n ≤ a (n + 1) := by simp only [ha]; push_cast; linarith
     have hlen : a (n + 1) - a n = 1 := by simp only [ha]; push_cast; ring
@@ -223,26 +222,28 @@ theorem sum_sq_centeredRow_le_integral {η : ℝ} (hη : 0 < η) (k T : ℕ)
       linarith
     rw [intervalIntegral.integral_const, hlen, one_smul, intervalIntegral.integral_const_mul]
       at hmono
-    linarith
+    exact sub_le_iff_le_add.mp hmono
   have hsum := intervalIntegral.sum_integral_adjacent_intervals (f := f) (μ := volume)
     (a := a) (n := T) fun i _ => hii i
   have h0T : a 0 ≤ a T := by simp only [ha]; push_cast; linarith [(Nat.cast_nonneg T : (0:ℝ) ≤ T)]
   have htail : ∫ x in a 0..a T, f x ≤ ∫ x in Ioi (0 : ℝ), f x := by
     rw [intervalIntegral.integral_of_le h0T]
     refine setIntegral_mono_set hint (ae_of_all _ fun x => hf0 x) ?_
-    refine HasSubset.Subset.eventuallyLE fun x hx => ?_
-    exact lt_of_lt_of_le (by simp only [ha]; positivity) hx.1.le
+    exact LE.le.eventuallyLE (show Ioc (a 0) (a T) ≤ Ioi (0 : ℝ) from fun x hx =>
+      lt_trans (by simp only [ha]; norm_num) hx.1)
   have hinv := sum_range_inv_succ_sq_le_two T
   calc ∑ n ∈ Finset.range T, arithmeticDampingCenteredRow η n k ^ 2
-      ≤ ∑ n ∈ Finset.range T, (c * ∫ x in a n..a (n + 1), f x +
+      ≤ ∑ n ∈ Finset.range T, (c * (∫ x in a n..a (n + 1), f x) +
           2 * e / ((n + 1 : ℕ) : ℝ) ^ 2) := Finset.sum_le_sum fun n _ => hpt n
-    _ = c * ∫ x in a 0..a T, f x + 2 * e * ∑ n ∈ Finset.range T, 1 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
+    _ = c * (∫ x in a 0..a T, f x) +
+          2 * e * ∑ n ∈ Finset.range T, 1 / ((n + 1 : ℕ) : ℝ) ^ 2 := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, hsum, Finset.mul_sum]
         congr 1
         exact Finset.sum_congr rfl fun n _ => by ring
-    _ ≤ c * ∫ x in Ioi (0 : ℝ), f x + 2 * e * 2 := by
-        gcongr
-    _ = _ := by ring
+    _ ≤ c * (∫ x in Ioi (0 : ℝ), f x) + 2 * e * 2 :=
+        add_le_add (mul_le_mul_of_nonneg_left htail hc0)
+          (mul_le_mul_of_nonneg_left hinv (by linarith))
+    _ = _ := by simp only [hc, he, hf]; ring
 
 /-! ### The source as a fractional-part series -/
 
@@ -279,16 +280,16 @@ theorem sourceProfile_eq_tsum {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤ x)
     refine Summable.of_norm_bounded hzs fun d => ?_
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (by positivity)]
     exact mul_le_of_le_one_left (by positivity) (abs_moebius_real_le_one _)
-  have hρshift : (pmPowerDampedDivisorDensity η).re =
+  have hρshift : (RHTower.pmPowerDampedDivisorDensity η).re =
       ∑' d : ℕ, (ArithmeticFunction.moebius (d + 1) : ℝ) * ((d : ℝ) + 1) ^ (-(1 + η)) := by
     rw [hρ]
     have hs : Summable fun d : ℕ => (ArithmeticFunction.moebius d : ℝ) * (d : ℝ) ^ (-(1 + η)) := by
       rw [← summable_nat_add_iff 1]
       refine hρs.congr fun d => ?_
-      push_cast; ring_nf
+      rw [Nat.cast_succ]
     rw [hs.tsum_eq_zero_add]
-    simp only [ArithmeticFunction.moebius_apply_zero, Int.cast_zero, zero_mul, zero_add]
-    exact tsum_congr fun d => by push_cast; ring_nf
+    simp only [ArithmeticFunction.map_zero, Int.cast_zero, zero_mul, zero_add]
+    exact tsum_congr fun d => by rw [Nat.cast_succ]
   -- the floor part has finite support
   set F : ℕ → ℝ := fun d =>
     (ArithmeticFunction.moebius (d + 1) : ℝ) * ((d + 1 : ℕ) : ℝ) ^ (-η) * ((m / (d + 1) : ℕ) : ℝ)
@@ -304,8 +305,8 @@ theorem sourceProfile_eq_tsum {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤ x)
     have : Finset.Icc 1 m = Finset.Ico 1 (m + 1) := by
       ext d; simp only [Finset.mem_Icc, Finset.mem_Ico]; omega
     rw [this, Finset.sum_Ico_eq_sum_range, Finset.sum_Ico_eq_sum_range]
-    simp only [Nat.sub_zero, Nat.add_sub_cancel, hF]
-    exact Finset.sum_congr rfl fun d _ => by rw [add_comm 1 d]; push_cast; ring_nf
+    simp only [Nat.sub_zero, Nat.add_sub_cancel, hF, zero_add]
+    exact Finset.sum_congr rfl fun d _ => by rw [add_comm 1 d]
   -- the linear part
   set L : ℕ → ℝ := fun d =>
     (ArithmeticFunction.moebius (d + 1) : ℝ) * ((d : ℝ) + 1) ^ (-(1 + η)) * x with hL
@@ -320,13 +321,12 @@ theorem sourceProfile_eq_tsum {η : ℝ} (hη : 0 < η) {x : ℝ} (hx : 0 ≤ x)
     rw [Int.fract, hfl]
     simp only [sourceCoeff, hF, hL]
     rw [← rpow_neg_div_self η d]
-    field_simp
     ring
   rw [tsum_congr hterm, hFs.tsum_sub hLs, hFsum, tsum_mul_right, ← hρshift]
   have hA := arithmeticDampingPrefix_eq η m
   rw [pmPowerDampedCenteredDivisorPrefix_eq_floor_sum] at hA
   unfold sourceProfile
-  rw [← hm, hA]
+  rw [show arithmeticDampingPrefix η ⌊x⌋₊ = arithmeticDampingPrefix η m from rfl, hA]
   ring
 
 /-- `0 ≤ {y} ≤ y` for `y ≥ 0`. -/
@@ -377,16 +377,16 @@ theorem abs_sourceProfile_le_rpow_add_one {η : ℝ} (h0 : 0 < η) (h1 : η < 1)
     positivity
   unfold sourceProfile
   rw [hA]
-  have e : (pmPowerDampedDivisorDensity η).re * ((⌊x⌋₊ : ℕ) : ℝ) +
-      pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊ - (pmPowerDampedDivisorDensity η).re * x =
-      pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊ +
-        (pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x) := by ring
+  have e : (RHTower.pmPowerDampedDivisorDensity η).re * ((⌊x⌋₊ : ℕ) : ℝ) +
+      RHTower.pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊ - (RHTower.pmPowerDampedDivisorDensity η).re * x =
+      RHTower.pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊ +
+        (RHTower.pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x) := by ring
   rw [e]
-  have hlin : |(pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x)| ≤ 1 := by
+  have hlin : |(RHTower.pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x)| ≤ 1 := by
     rw [abs_mul, abs_of_pos hρ0, abs_of_nonpos (by linarith)]
     nlinarith
-  calc _ ≤ |pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊| +
-        |(pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x)| := abs_add_le _ _
+  calc _ ≤ |RHTower.pmPowerDampedCenteredDivisorPrefix η ⌊x⌋₊| +
+        |(RHTower.pmPowerDampedDivisorDensity η).re * (((⌊x⌋₊ : ℕ) : ℝ) - x)| := abs_add_le _ _
     _ ≤ (1 + 1 / (1 - η) + 1 / η) * x ^ (1 - η) + 1 := by
         have := mul_le_mul_of_nonneg_left hpow hC
         linarith
@@ -422,7 +422,7 @@ theorem abs_sourceProfile_le_bound {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) {y
     have h1p : 1 ≤ y ^ (1 - η) := Real.one_le_rpow hy1 (by linarith)
     have hb : |sourceProfile η y| ≤ sourceBound η * y ^ (1 - η) := by
       calc |sourceProfile η y| ≤ (1 + 1 / (1 - η) + 1 / η) * y ^ (1 - η) + 1 * y ^ (1 - η) := by
-            nlinarith
+            linarith
         _ = (1 + 1 / (1 - η) + 1 / η + 1) * y ^ (1 - η) := by ring
         _ ≤ sourceBound η * y ^ (1 - η) := mul_le_mul_of_nonneg_right hB' (by linarith)
     refine ⟨le_trans hb ?_, hb⟩
@@ -491,7 +491,7 @@ theorem mellinConvergent_of_two_sided {f : ℝ → ℝ} (hf : Measurable f) {a B
     (h1 : ∀ x, 0 < x → |f x| ≤ B * x ^ a) (h2 : ∀ x, 0 < x → |f x| ≤ B * x ^ (1 - a)) (t : ℝ) :
     MellinConvergent (fun x => (f x : ℂ)) (((-1 / 2 : ℝ) : ℂ) + t * I) := by
   set s : ℂ := ((-1 / 2 : ℝ) : ℂ) + t * I with hs
-  have hre : (s - 1).re = -3 / 2 := by simp [hs]; norm_num
+  have hre : (s - 1).re = -3 / 2 := by norm_num [hs]
   have hmeas : Measurable (fun x : ℝ => (x : ℂ) ^ (s - 1) • ((f x : ℝ) : ℂ)) :=
     (Complex.measurable_ofReal.pow_const (s - 1)).smul (Complex.measurable_ofReal.comp hf)
   have hnorm : ∀ x : ℝ, 0 < x →
@@ -502,9 +502,9 @@ theorem mellinConvergent_of_two_sided {f : ℝ → ℝ} (hf : Measurable f) {a B
   have hp1 : IntegrableOn (fun x : ℝ => B * x ^ (a - 3 / 2)) (Ioc 0 1) := by
     have h := intervalIntegral.intervalIntegrable_rpow' (a := 0) (b := 1) (r := a - 3 / 2)
       (by linarith)
-    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one).mp h).const_mul B
+    exact Integrable.const_mul ((intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one).mp h) B
   have hp2 : IntegrableOn (fun x : ℝ => B * x ^ (-1 / 2 - a)) (Ioi 1) :=
-    (integrableOn_Ioi_rpow_of_lt (by linarith) one_pos).const_mul B
+    Integrable.const_mul (integrableOn_Ioi_rpow_of_lt (by linarith) one_pos) B
   have hI1 : IntegrableOn (fun x : ℝ => (x : ℂ) ^ (s - 1) • ((f x : ℝ) : ℂ)) (Ioc 0 1) := by
     refine hp1.mono' hmeas.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
@@ -555,15 +555,15 @@ theorem integral_sq_div_sq_eq_mellin {f : ℝ → ℝ} (hf : Measurable f) {a B 
   have hI1 : IntegrableOn (fun x => f x ^ 2 / x ^ 2) (Ioc 0 1) := by
     have h := intervalIntegral.intervalIntegrable_rpow' (a := 0) (b := 1) (r := 2 * a - 2)
       (by linarith)
-    have hp := ((intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one).mp h).const_mul
-      (B ^ 2)
+    have hp := Integrable.const_mul
+      ((intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one).mp h) (B ^ 2)
     refine hp.mono' hmeas2.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     exact hsq x hx.1 a (h1 x hx.1)
   have hI2 : IntegrableOn (fun x => f x ^ 2 / x ^ 2) (Ioi 1) := by
-    have hp := (integrableOn_Ioi_rpow_of_lt (by linarith : 2 * (1 - a) - 2 < -1)
-      one_pos).const_mul (B ^ 2)
+    have hp := Integrable.const_mul (integrableOn_Ioi_rpow_of_lt
+      (by linarith : 2 * (1 - a) - 2 < -1) one_pos) (B ^ 2)
     refine hp.mono' hmeas2.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
     have hx0 : (0 : ℝ) < x := lt_trans one_pos hx
@@ -629,21 +629,25 @@ theorem integral_sq_div_sq_eq_mellin {f : ℝ → ℝ} (hf : Measurable f) {a B 
     intro t
     have hre : (((-1 / 2 : ℝ) : ℂ) + t * I).re = -1 / 2 := by simp
     have him : (((-1 / 2 : ℝ) : ℂ) + t * I).im = t := by simp
-    rw [mellin_eq_fourier, hre, him]
-    congr 1
+    rw [mellin_eq_fourier]
+    simp only [hre, him]
+    refine congrArg (fun φ => 𝓕 φ (t / (2 * Real.pi))) ?_
     funext u
     simp only [hg]
     rw [show -(-1 / 2 : ℝ) * u = u / 2 by ring]
+  have hscale0 : ∫ t : ℝ, ‖𝓕 g (t / (2 * Real.pi))‖ ^ 2 =
+      |2 * Real.pi| • ∫ ξ : ℝ, ‖𝓕 g ξ‖ ^ 2 :=
+    Measure.integral_comp_div (fun ξ => ‖𝓕 g ξ‖ ^ 2) (2 * Real.pi)
   have hscale : ∫ t : ℝ, ‖𝓕 g (t / (2 * Real.pi))‖ ^ 2 =
       2 * Real.pi * ∫ ξ : ℝ, ‖𝓕 g ξ‖ ^ 2 := by
-    rw [Measure.integral_comp_div (fun ξ => ‖𝓕 g ξ‖ ^ 2) (2 * Real.pi),
-      abs_of_pos (by positivity), smul_eq_mul]
+    rw [hscale0, abs_of_pos (by positivity), smul_eq_mul]
   have hP := GaloisForLFunctions.HTGeometry.integral_norm_sq_fourier hgint hgL2
+  have hsub0 : ∫ x in Ioi (0 : ℝ), ‖g (-Real.log x)‖ ^ 2 * x⁻¹ = ∫ u : ℝ, ‖g u‖ ^ 2 :=
+    GaloisForLFunctions.HTGeometry.integral_Ioi_comp_neg_log_div (fun u => ‖g u‖ ^ 2)
   have hsub : ∫ u : ℝ, ‖g u‖ ^ 2 = ∫ x in Ioi (0 : ℝ), f x ^ 2 / x ^ 2 := by
-    rw [← GaloisForLFunctions.HTGeometry.integral_Ioi_comp_neg_log_div (fun u => ‖g u‖ ^ 2)]
+    rw [← hsub0]
     refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
     have hx0 : (0 : ℝ) < x := hx
-    simp only
     rw [hgnorm, neg_neg, Real.exp_log hx0, mul_pow, sq_abs]
     have he : Real.exp (-Real.log x / 2) ^ 2 = x⁻¹ := by
       rw [← Real.exp_nat_mul,
@@ -652,8 +656,7 @@ theorem integral_sq_div_sq_eq_mellin {f : ℝ → ℝ} (hf : Measurable f) {a B 
     rw [he]
     field_simp
   simp_rw [hline]
-  rw [hscale, hP, hsub]
-  field_simp
+  rw [hscale, hP, hsub, ← mul_assoc, one_div_mul_cancel (by positivity), one_mul]
 
 /-- **The Mellin transform of the fractional part**: for `−1 < Re s < 0`,
 `M[{·}](s) = ζ(−s)/s`. -/
@@ -707,7 +710,7 @@ theorem mellin_fractSeries {s : ℂ} (hs0 : -1 < s.re) (hs1 : s.re < 0) {a : ℕ
     with hT
   have hTeq : ∀ d, T d =
       fun x => (x : ℂ) ^ (s - 1) • ((a d : ℂ) • ((Int.fract (x / c d) : ℝ) : ℂ)) := by
-    intro d; funext x; simp only [hT, smul_eq_mul]; push_cast; ring
+    intro d; funext x; simp only [hT, smul_eq_mul, Complex.ofReal_mul]; try ring
   have hTint : ∀ d, Integrable (T d) (volume.restrict (Ioi 0)) := by
     intro d; rw [hTeq d]; exact (hdilConv d).const_smul (a d : ℂ)
   have hTval : ∀ d, ∫ x in Ioi (0 : ℝ), T d x =
@@ -726,36 +729,38 @@ theorem mellin_fractSeries {s : ℂ} (hs0 : -1 < s.re) (hs1 : s.re < 0) {a : ℕ
       intro x hx
       have hre : (s - 1).re = σ - 1 := by simp [hσ]
       simp only [hT]
-      rw [norm_smul, Complex.norm_cpow_eq_rpow_re_of_pos hx, hre, Complex.norm_real,
+      rw [norm_smul, Complex.norm_cpow_eq_rpow_re_of_pos (show (0 : ℝ) < x from hx), hre,
+        Complex.norm_real,
         Real.norm_eq_abs, abs_mul, abs_of_nonneg (Int.fract_nonneg _)]
       ring
     rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul]
     congr 1
-    have hsubst := integral_comp_mul_left_Ioi
-      (fun y : ℝ => y ^ (σ - 1) * Int.fract (y / c d)) 0 hcd
-    rw [mul_zero] at hsubst
+    have hsubst : ∫ x in Ioi (0 : ℝ), (c d * x) ^ (σ - 1) * Int.fract (c d * x / c d) =
+        (c d)⁻¹ • ∫ x in Ioi (0 : ℝ), x ^ (σ - 1) * Int.fract (x / c d) := by
+      have h := integral_comp_mul_left_Ioi (fun y : ℝ => y ^ (σ - 1) * Int.fract (y / c d)) 0 hcd
+      rw [mul_zero] at h
+      exact h
     have hleft : ∫ x in Ioi (0 : ℝ), (c d * x) ^ (σ - 1) * Int.fract (c d * x / c d) =
         c d ^ (σ - 1) * Z₀ := by
       rw [hZ₀, ← integral_const_mul]
       refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
       have hx0 : (0 : ℝ) < x := hx
-      simp only
       rw [Real.mul_rpow hcd.le hx0.le, mul_div_cancel_left₀ _ hcd.ne']
       ring
-    simp only at hsubst
     rw [hleft, smul_eq_mul] at hsubst
     calc ∫ x in Ioi (0 : ℝ), x ^ (σ - 1) * Int.fract (x / c d)
         = c d * ((c d)⁻¹ * ∫ x in Ioi (0 : ℝ), x ^ (σ - 1) * Int.fract (x / c d)) := by
-          field_simp
+          rw [← mul_assoc, mul_inv_cancel₀ hcd.ne', one_mul]
       _ = c d * (c d ^ (σ - 1) * Z₀) := by rw [← hsubst]
-      _ = c d ^ σ * Z₀ := by rw [Real.rpow_sub_one hcd.ne']; field_simp
+      _ = c d ^ σ * Z₀ := by
+          rw [Real.rpow_sub_one hcd.ne', ← mul_assoc, mul_div_cancel₀ _ hcd.ne']
   have hNsum : Summable fun d => ∫ x in Ioi (0 : ℝ), ‖T d x‖ := by
     simp_rw [hTnorm, ← mul_assoc]
     exact hsum.mul_right Z₀
   have hptsum : ∀ x ∈ Ioi (0 : ℝ), ∑' d, T d x = (x : ℂ) ^ (s - 1) • ((F x : ℝ) : ℂ) := by
     intro x hx
     rw [hF x hx, Complex.ofReal_tsum, smul_eq_mul, ← tsum_mul_left]
-    simp only [hT, smul_eq_mul]
+    simp only [hT, hcdef, smul_eq_mul]
   calc mellin (fun x => (F x : ℂ)) s = ∫ x in Ioi (0 : ℝ), ∑' d, T d x := by
         unfold mellin
         exact setIntegral_congr_fun measurableSet_Ioi fun x hx => (hptsum x hx).symm
@@ -787,8 +792,7 @@ theorem norm_mellin_sourceProfile_le {η : ℝ} (hη : 1 / 2 < η) (t : ℝ) :
           ((d + 1 : ℕ) : ℝ) ^ (-η) * ((d + 1 : ℕ) : ℝ) ^ (-1 / 2 : ℝ) :=
           mul_le_mul_of_nonneg_right (abs_sourceCoeff_le η d) (Real.rpow_nonneg hd.le _)
       _ = ((d : ℝ) + 1) ^ (-(η + 1 / 2)) := by
-          rw [← Real.rpow_add hd, show -η + -1 / 2 = -(η + 1 / 2) by ring]
-          push_cast; ring_nf
+          rw [← Real.rpow_add hd, show -η + -1 / 2 = -(η + 1 / 2) by ring, Nat.cast_succ]
   have hsum : Summable fun d : ℕ => |sourceCoeff η d| * ((d + 1 : ℕ) : ℝ) ^ s.re :=
     Summable.of_nonneg_of_le (fun d => by positivity) hcoef hzs
   have hM := mellin_fractSeries (s := s) (by rw [hre]; norm_num) (by rw [hre]; norm_num) hsum
@@ -835,16 +839,18 @@ theorem mellin_columnProfile_eq {η : ℝ} (h0 : 1 / 2 < η) (h1 : η < 1) {K : 
     (fun x : ℝ => (x : ℂ) ^ (s - 1) • ((sourceProfile η (x / K) : ℝ) : ℂ))
   have e2 := integral_const_mul (μ := volume.restrict (Ioi (0 : ℝ))) (((K + 1) ^ (-η) : ℝ) : ℂ)
     (fun x : ℝ => (x : ℂ) ^ (s - 1) • ((sourceProfile η (x / (K + 1)) : ℝ) : ℂ))
-  have e3 := integral_sub ((hcv K hK0).const_mul ((K ^ (-η) : ℝ) : ℂ))
-    ((hcv (K + 1) hK10).const_mul (((K + 1) ^ (-η) : ℝ) : ℂ))
+  have hcvI : ∀ c : ℝ, 0 < c → Integrable
+      (fun x : ℝ => (x : ℂ) ^ (s - 1) • ((sourceProfile η (x / c) : ℝ) : ℂ))
+      (volume.restrict (Ioi 0)) := fun c hc => hcv c hc
+  have e3 := integral_sub ((hcvI K hK0).const_mul ((K ^ (-η) : ℝ) : ℂ))
+    ((hcvI (K + 1) hK10).const_mul (((K + 1) ^ (-η) : ℝ) : ℂ))
   have hlin : mellin (fun x => (columnProfile η K x : ℂ)) s =
       ((K ^ (-η) : ℝ) : ℂ) * mellin (fun x => (sourceProfile η (x / K) : ℂ)) s -
         (((K + 1) ^ (-η) : ℝ) : ℂ) * mellin (fun x => (sourceProfile η (x / (K + 1)) : ℂ)) s := by
     unfold mellin
     rw [← e1, ← e2, ← e3]
     refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    simp only [columnProfile, smul_eq_mul]
-    push_cast
+    simp only [columnProfile, smul_eq_mul, Complex.ofReal_sub, Complex.ofReal_mul]
     ring
   have hpow : ∀ c : ℝ, 0 < c → ((c ^ (-η) : ℝ) : ℂ) * (c : ℂ) ^ s = (c : ℂ) ^ (s - η) := by
     intro c hc

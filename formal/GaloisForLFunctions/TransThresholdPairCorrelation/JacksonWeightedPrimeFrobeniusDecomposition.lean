@@ -48,9 +48,8 @@ theorem jacksonPairKernel_eq_zero_of_le_abs (hb : 0 < b) (h01 : s₀ ≤ s₁) (
       = ∫ s, ((jacksonWindow b s₀ s₁ (s + r * (2 * π / L))
         * jacksonWindow b s₀ s₁ s : ℝ) : ℂ) * cexp (-(I * ((-θ : ℝ) : ℂ) * s)) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
-    congr 2
-    push_cast
-    ring
+    dsimp only
+    rw [show I * (θ : ℂ) * (s : ℂ) = -(I * ((-θ : ℝ) : ℂ) * (s : ℂ)) by push_cast; ring]
   rw [hcongr, hz, mul_zero]
 
 /-- The continuous kernel approximation for a prime pair `(y, A)` and `(y', A')`:
@@ -141,15 +140,14 @@ theorem sum_sum_mul_sum_norm_eq {ι : Type*} (s : Finset ι) (R : Finset ℤ) (c
       |c n| * |c m| * ((∑ r ∈ R, ‖A n r‖ * ‖A m r‖) * E)
         = ∑ r ∈ R, E * ((|c n| * ‖A n r‖) * (|c m| * ‖A m r‖)) := by
     intro n m
-    rw [← mul_assoc, mul_comm _ E, mul_assoc, Finset.mul_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun r _ => ?_
-    ring
+    rw [Finset.sum_mul, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun r _ => by ring
   simp_rw [h1]
-  rw [Finset.sum_comm]
-  conv_lhs =>
-    arg 2; ext m
-    rw [Finset.sum_comm]
-  rw [Finset.sum_comm, Finset.mul_sum]
+  have hcomm : ∀ n ∈ s,
+      (∑ m ∈ s, ∑ r ∈ R, E * ((|c n| * ‖A n r‖) * (|c m| * ‖A m r‖)))
+        = ∑ r ∈ R, ∑ m ∈ s, E * ((|c n| * ‖A n r‖) * (|c m| * ‖A m r‖)) :=
+    fun _ _ => Finset.sum_comm
+  rw [Finset.sum_congr rfl hcomm, Finset.sum_comm, Finset.mul_sum]
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun n _ => ?_

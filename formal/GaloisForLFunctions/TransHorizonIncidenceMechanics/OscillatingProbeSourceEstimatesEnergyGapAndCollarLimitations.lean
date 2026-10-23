@@ -2870,6 +2870,157 @@ theorem riemannHypothesis_iff_forall_ne_zero_longSawtoothTailGapTheta_lt_one :
     · exact not_receiverBounded_oscillatingSmoothPower_zero_from_source hε hε2.le
     · exact (eventually_longSawtooth_tail_quadratic_gap hε hε2 ht).2.2.1.mp (h ε hε hε2 t ht)
 
+/-- **Exact hyperbola merge of long-sawtooth linear drift with the tail drift.** For every
+`ε, t ∈ ℝ` and `n ∈ ℕ`, the linear subtraction `−n Σ_{⌊√n⌋ < d ≤ n} c_{ε,t}(d)/d` inside
+`oscillatingLongSawtooth ε t n` identically absorbs `oscillatingTailDrift ε t n` and shifts the
+tail cutoff from `d = n` down to the hyperbola threshold `d = ⌊√n⌋`, leaving the integer-quotient
+sum `Σ_{⌊√n⌋ < d ≤ n} c_{ε,t}(d) ⌊n/d⌋` plus the rescaled square-root tail
+`(n / ⌊√n⌋) T_{ε,t}(⌊√n⌋)`. -/
+theorem oscillatingLongSawtooth_add_tail_eq_quotientSum_add_sqrtTail (ε t : ℝ) (n : ℕ) :
+    oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n =
+      (∑ d ∈ Ioc (Nat.sqrt n) n, oscillatingSmoothPower ε t d * ((n / d : ℕ) : ℝ)) +
+        (n : ℝ) * (∑ d ∈ Icc 1 (Nat.sqrt n), oscillatingSmoothPower ε t d / d -
+          ∑' d : ℕ, oscillatingSmoothPower ε t d / d) := by
+  unfold oscillatingLongSawtooth oscillatingTailDrift
+  have hsn : Nat.sqrt n ≤ n := Nat.sqrt_le_self n
+  have hsplit : Icc 1 n = Icc 1 (Nat.sqrt n) ∪ Ioc (Nat.sqrt n) n := by
+    ext d; simp only [mem_union, mem_Icc, mem_Ioc]; omega
+  have hdisj : Disjoint (Icc 1 (Nat.sqrt n)) (Ioc (Nat.sqrt n) n) :=
+    disjoint_left.mpr fun d h1 h2 => by simp only [mem_Icc, mem_Ioc] at h1 h2; omega
+  have hsub : ∑ d ∈ Ioc (Nat.sqrt n) n,
+        oscillatingSmoothPower ε t d * (((n / d : ℕ) : ℝ) - (n : ℝ) / d) =
+      ∑ d ∈ Ioc (Nat.sqrt n) n, oscillatingSmoothPower ε t d * ((n / d : ℕ) : ℝ) -
+        (n : ℝ) * ∑ d ∈ Ioc (Nat.sqrt n) n, oscillatingSmoothPower ε t d / d := by
+    rw [mul_sum, ← sum_sub_distrib]
+    exact sum_congr rfl fun d _ => by ring
+  rw [hsub, hsplit, sum_union hdisj]
+  ring
+
+/-- **Source-only finite Euler–Maclaurin packet approximation of `S^{\mathrm{long}}_{ε,t} + T_{ε,t}`.**
+Without invoking `riemannZeta` in the main term, for `0 < ε < 1`, `t ∈ ℝ`, and `n ≥ 1`,
+`S^{\mathrm{long}}_{ε,t}(n) + T_{ε,t}(n)` tracks the finite short-quotient Euler–Maclaurin packet
+`Re(czetaStripRemainder ρ (⌊√n⌋) · n^ρ / ρ)` to within
+`(floorSumRate ρ + 3 (1 + 1/(1 − ε))) (√n)^{1−ε}`. -/
+theorem abs_longSawtooth_add_tail_sub_czetaStripRemainder_le {ε : ℝ} (hε : 0 < ε)
+    (hε1 : ε < 1) (t : ℝ) {n : ℕ} (hn : 1 ≤ n) :
+    |oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n -
+      (czetaStripRemainder (oscillationExponent ε t) (Nat.sqrt n) *
+        ((n : ℝ) : ℂ) ^ oscillationExponent ε t / oscillationExponent ε t).re| ≤
+      (floorSumRate (oscillationExponent ε t) + 3 * (1 + 1 / (1 - ε))) *
+        Real.sqrt n ^ (1 - ε) := by
+  set ρ := oscillationExponent ε t with hρ
+  set s := Nat.sqrt n with hs
+  set r := Real.sqrt n with hr
+  have hs1 : 1 ≤ s := by rw [hs]; exact Nat.sqrt_pos.mpr hn
+  have hs0 : (0 : ℝ) < s := by exact_mod_cast hs1
+  have hsr : (s : ℝ) ≤ r := by rw [hs, hr]; exact Real.nat_sqrt_le_real_sqrt
+  have hrs : r < (s : ℝ) + 1 := by rw [hs, hr]; exact Real.real_sqrt_lt_nat_sqrt_succ
+  have hr0 : 0 < r := lt_of_lt_of_le hs0 hsr
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hρre : ρ.re = 1 - ε := oscillationExponent_re ε t
+  have hρ0 : 0 < ρ.re := by rw [hρre]; linarith
+  have hρ1 : ρ ≠ 1 := by
+    intro h1
+    have := congrArg Complex.re h1
+    rw [hρre, one_re] at this
+    linarith
+  have hρ_ne : ρ ≠ 0 := oscillationExponent_ne_zero hε1 t
+  have hρ_norm : 0 < ‖ρ‖ := norm_pos_iff.mpr hρ_ne
+  have hpre := abs_weightCenteredPrefix_oscillatingSmoothPower_sub_le hε hε1 t hn
+  have hshort := abs_oscillatingShortSawtooth_le hε hε1 t hn
+  have hcz := norm_czetaStripRemainder_sub_le hρ0 hρ1 hs1
+  rw [hρre] at hcz
+  have hr2s : r ≤ 2 * (s : ℝ) := by
+    have : (1 : ℝ) ≤ s := by exact_mod_cast hs1
+    linarith
+  have hr_pow : r ^ (1 - ε) ≤ 2 * (s : ℝ) ^ (1 - ε) := by
+    calc r ^ (1 - ε) ≤ (2 * (s : ℝ)) ^ (1 - ε) :=
+          Real.rpow_le_rpow hr0.le hr2s (by linarith)
+      _ = (2 : ℝ) ^ (1 - ε) * (s : ℝ) ^ (1 - ε) :=
+          Real.mul_rpow (by norm_num) hs0.le _
+      _ ≤ (2 : ℝ) ^ (1 : ℝ) * (s : ℝ) ^ (1 - ε) :=
+          mul_le_mul_of_nonneg_right
+            (Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)) (by positivity)
+      _ = 2 * (s : ℝ) ^ (1 - ε) := by rw [Real.rpow_one]
+  have hn_pow : (n : ℝ) ^ (1 - ε) = r ^ (1 - ε) * r ^ (1 - ε) := by
+    have hr2 : (n : ℝ) = r * r := by
+      rw [← sq, hr, Real.sq_sqrt (Nat.cast_nonneg n)]
+    rw [hr2, Real.mul_rpow hr0.le hr0.le]
+  have hrem_cz : |((czetaStripRemainder ρ s - riemannZeta ρ) *
+      ((n : ℝ) : ℂ) ^ ρ / ρ).re| ≤ 2 * (1 + 1 / (1 - ε)) * r ^ (1 - ε) := by
+    refine (Complex.abs_re_le_norm _).trans ?_
+    rw [norm_div, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hn0, hρre, hn_pow]
+    have hmul : ‖czetaStripRemainder ρ s - riemannZeta ρ‖ * (r ^ (1 - ε) * r ^ (1 - ε)) / ‖ρ‖ ≤
+        (‖ρ‖ * ((1 + 1 / (1 - ε)) * (s : ℝ) ^ (-(1 - ε)))) *
+          (r ^ (1 - ε) * (2 * (s : ℝ) ^ (1 - ε))) / ‖ρ‖ := by
+      refine div_le_div_of_nonneg_right ?_ hρ_norm.le
+      exact mul_le_mul hcz (mul_le_mul_of_nonneg_left hr_pow (by positivity))
+        (by positivity) (by positivity)
+    have hss : (s : ℝ) ^ (-(1 - ε)) * (s : ℝ) ^ (1 - ε) = 1 := by
+      rw [← Real.rpow_add hs0, neg_add_cancel, Real.rpow_zero]
+    calc ‖czetaStripRemainder ρ s - riemannZeta ρ‖ * (r ^ (1 - ε) * r ^ (1 - ε)) / ‖ρ‖
+        ≤ (‖ρ‖ * ((1 + 1 / (1 - ε)) * (s : ℝ) ^ (-(1 - ε)))) *
+            (r ^ (1 - ε) * (2 * (s : ℝ) ^ (1 - ε))) / ‖ρ‖ := hmul
+      _ = 2 * (1 + 1 / (1 - ε)) * r ^ (1 - ε) * ((s : ℝ) ^ (-(1 - ε)) * (s : ℝ) ^ (1 - ε)) := by
+          field_simp [hρ_norm.ne']
+      _ = 2 * (1 + 1 / (1 - ε)) * r ^ (1 - ε) := by rw [hss, mul_one]
+  have hid : oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n -
+      (czetaStripRemainder ρ s * ((n : ℝ) : ℂ) ^ ρ / ρ).re =
+      (weightCenteredPrefix (oscillatingSmoothPower ε t)
+        (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+        (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re) -
+      oscillatingShortSawtooth ε t n -
+      ((czetaStripRemainder ρ s - riemannZeta ρ) * ((n : ℝ) : ℂ) ^ ρ / ρ).re := by
+    rw [weightCenteredPrefix_oscillatingSmoothPower_eq_sawtooth_add_tail,
+      oscillatingSawtoothPrefix_eq_short_add_long]
+    have hre : ((czetaStripRemainder ρ s - riemannZeta ρ) * ((n : ℝ) : ℂ) ^ ρ / ρ).re =
+        (czetaStripRemainder ρ s * ((n : ℝ) : ℂ) ^ ρ / ρ).re -
+          (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re := by
+      rw [← Complex.sub_re]
+      congr 1; ring
+    rw [hre]; ring
+  rw [hid]
+  calc _ ≤ |weightCenteredPrefix (oscillatingSmoothPower ε t)
+            (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+          (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re -
+          oscillatingShortSawtooth ε t n| +
+        |((czetaStripRemainder ρ s - riemannZeta ρ) * ((n : ℝ) : ℂ) ^ ρ / ρ).re| := abs_sub _ _
+    _ ≤ |weightCenteredPrefix (oscillatingSmoothPower ε t)
+          (∑' d : ℕ, oscillatingSmoothPower ε t d / d) n -
+          (riemannZeta ρ * ((n : ℝ) : ℂ) ^ ρ / ρ).re| +
+        |oscillatingShortSawtooth ε t n| +
+        |((czetaStripRemainder ρ s - riemannZeta ρ) * ((n : ℝ) : ℂ) ^ ρ / ρ).re| :=
+        add_le_add_right (abs_sub _ _) _
+    _ ≤ floorSumRate ρ * r ^ (1 - ε) + (1 + 1 / (1 - ε)) * r ^ (1 - ε) +
+        2 * (1 + 1 / (1 - ε)) * r ^ (1 - ε) :=
+        add_le_add (add_le_add hpre hshort) hrem_cz
+    _ = (floorSumRate ρ + 3 * (1 + 1 / (1 - ε))) * r ^ (1 - ε) := by ring
+
+/-- **Uniform pronic-norm bound for the remainder between `S^{\mathrm{long}}_{ε,t} + T_{ε,t}` and the
+finite short-quotient Euler–Maclaurin packet.** -/
+theorem pronicNorm_longSawtooth_add_tail_sub_czetaStripRemainder_le {ε : ℝ} (hε : 0 < ε)
+    (hε1 : ε < 1) (t : ℝ) (T : ℕ) :
+    pronicNorm (fun n => oscillatingLongSawtooth ε t n + oscillatingTailDrift ε t n -
+      (czetaStripRemainder (oscillationExponent ε t) (Nat.sqrt n) *
+        ((n : ℝ) : ℂ) ^ oscillationExponent ε t / oscillationExponent ε t).re) T ≤
+      (floorSumRate (oscillationExponent ε t) + 3 * (1 + 1 / (1 - ε))) *
+        Real.sqrt (1 + 1 / ε) := by
+  set K := floorSumRate (oscillationExponent ε t) + 3 * (1 + 1 / (1 - ε)) with hK
+  have hK0 : 0 ≤ K := by
+    have hρ0 : 0 < (oscillationExponent ε t).re := by
+      rw [oscillationExponent_re]; linarith
+    have hρ1 : (oscillationExponent ε t).re < 1 := by
+      rw [oscillationExponent_re]; linarith
+    have hf0 : 0 ≤ floorSumRate (oscillationExponent ε t) := floorSumRate_nonneg hρ0 hρ1
+    have h1ε : 0 < 1 - ε := by linarith
+    positivity
+  have h := sum_sq_le_of_abs_le_sqrt_rpow hε
+    (fun n hn => abs_longSawtooth_add_tail_sub_czetaStripRemainder_le hε hε1 t hn) T
+  rw [pronicNorm]
+  calc Real.sqrt _ ≤ Real.sqrt (K ^ 2 * (1 + 1 / ε)) := Real.sqrt_le_sqrt h
+    _ = K * Real.sqrt (1 + 1 / ε) := by
+        rw [Real.sqrt_mul (sq_nonneg K), Real.sqrt_sq hK0]
+
 end
 
 end GaloisForLFunctions.TransHorizonIncidenceMechanics

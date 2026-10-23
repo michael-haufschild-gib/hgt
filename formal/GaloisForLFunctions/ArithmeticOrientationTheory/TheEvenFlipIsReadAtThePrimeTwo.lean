@@ -83,7 +83,7 @@ theorem rpow_neg_two_mul_le {ε : ℝ} (hε : 0 < ε) (d : ℕ) :
     ((2 * d : ℕ) : ℝ) ^ (-ε) ≤ (d : ℝ) ^ (-ε) := by
   rcases Nat.eq_zero_or_pos d with rfl | hd0
   · simp
-  · exact Real.rpow_le_rpow_of_exponent_nonpos (by exact_mod_cast hd0)
+  · exact Real.rpow_le_rpow_of_nonpos (by exact_mod_cast hd0)
       (by push_cast; linarith) (by linarith)
 
 /-- The flip stays in the damped class, with constant `2K`. -/

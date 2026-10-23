@@ -1292,6 +1292,14 @@ $\sigma(\mathring P_\eta)=\{0\}\cup\{d^{-\eta}:d\ge2\}$, each eigenspace is the 
 mode $v_d$, and $\mathring P_\eta$ is injective (`mem_spectrum_arithmeticDampingCenteredOperator_iff`,
 `arithmeticDampingCenteredOperator_eigen_iff`). An eigen-equation read at the first state fixes the
 entrance value, leaving a lower-triangular raw equation with diagonal $(n+1)^{-\eta}$.
+The dual system is explicit: with $S_b(x)=x\,b(x-1)$, the **residue-mode coordinates**
+$\varphi_e(b)=\sum_{d\mid e}\mu(e/d)\bigl(S_b(d)-S_b(d-1)\bigr)$ satisfy $\varphi_e(v_f)=\delta_{ef}$,
+invert as $x\,b(x-1)=\sum_{e\le x}\varphi_e(b)\lfloor x/e\rfloor$, read the reciprocal as
+$\varphi_e(r)=\mu(e)$, and diagonalize the chain on all of $c_0$:
+$\varphi_e(\mathring P_\eta b)=e^{-\eta}\varphi_e(b)$ (`residueModeCoord_centeredOperator`). In these
+coordinates damping is the shift $F(s)\mapsto F(s+\eta)$ of $F(s)=\sum_e\varphi_e(b)e^{-s}$, the
+orbit of the reciprocal is $1/\zeta(s+\eta)$, and $\varphi_e(\cdot)v_e$ are the bounded spectral
+projections. The expansion $b=\sum\varphi_e(b)v_e$ holds only as a pointwise floor sum.
 
 **The entrance tail is the absolute barrier, and only the absolute one.** Size bias converts the
 exact reciprocal tail into a lower bound for the probability tail,
