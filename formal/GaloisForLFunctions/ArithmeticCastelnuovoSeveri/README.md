@@ -200,6 +200,19 @@ them. ACS isolates which of these mechanisms the scaling surface has.
     `hodgeDefectAt_eq_of_log_onLineMass`), with explicit on-line mass under lattice, unit-window
     and logarithmic densities (`onLineMass_multiPairConfig_eq`, `hodgeDefectAt_eq_of_locallyBounded`,
     `card_le_hodgeDefectAt_of_visible_pairs`, `zeta_intersectionGram_posIndex_ge_of_visible_pairs`).
+    Under a uniform unit-window count `N(t, t + 1] ≤ D`, the height cutoff `H_m` drops out completely
+    and `n` separated right zeros at arbitrary heights become visible at the height-uniform degree
+    `0 < uniformVisibleMargin D a δ R` (`card_le_hodgeDefectAt_of_uniform_window_count`; cluster
+    visibility in a logarithmic background `one_le_hodgeDefectAt_of_isolated_cluster`). For `ζ`, the
+    local off-line density `OffLineCopiesLocallyBounded M` of Square-Root Threshold bounds the
+    off-line multiplicity in every unit-radius window (`sum_mult_offLine_window_le_of_offLineCopiesLocallyBounded`,
+    `offLineDensityBound_zeta_of_offLineCopiesLocallyBounded`), replaces the companion count
+    `P = ⌈80 log(180 Γ)⌉` around any near-top record by the height-independent constant `M` and the
+    core mass bound by `2 M (e^{w/2} B_w)²` (`zeta_near_top_cluster_collapse_of_offLineCopiesLocallyBounded`,
+    `zeta_near_top_visible_of_offLineCopiesLocallyBounded`), and makes the Castelnuovo–Severi
+    degree-defect floor rate on `scalingSubsurface` equal to `zetaZeroWidth` unless the off-line
+    zeros cluster without bound (`zetaZeroWidth_le_iff_scalingSubsurface_odd_defect_floor_of_offLineCopiesLocallyBounded`,
+    `scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`).
     Over `𝔽_q` the window `2g` sees everything; over `ℚ` no degree does (`exists_hidden_at_degree`).
 16. **Kronecker-rank dichotomy.** Vertically recurrent configurations have defect `0` or `∞`
     (`recurrent_pontryagin_dichotomy`); periodic ones and those cut out by exponential polynomials
@@ -493,8 +506,17 @@ To be built:
    (`zeta_weil_near_radical_dimension_smooth`, `RHTower.zeta_weil_near_radical_sharp_count`).
 3. **Aperture over `ℚ`.** The degree at which `n` right zeros become visible is explicit in terms
    of on-line mass, local density and logarithmic density (item 15); no degree works uniformly over
-   all configurations. Open for `ζ`: a visibility degree uniform in height, which needs the local
-   off-line density that Square-Root Threshold identifies as the clustering alternative.
+   all configurations. Under a uniform window count `N(t, t + 1] ≤ D`, separated right zeros at
+   arbitrary heights become visible at the height-uniform degree `0 < uniformVisibleMargin D a δ R`
+   (`card_le_hodgeDefectAt_of_uniform_window_count`). For `ζ`, under the local off-line density
+   `OffLineCopiesLocallyBounded M` of Square-Root Threshold, the companion count around any near-top
+   record is `≤ M` and the core mass bound is `2 M (e^{w/2} B_w)²` uniformly in height
+   (`zeta_near_top_cluster_collapse_of_offLineCopiesLocallyBounded`,
+   `zeta_near_top_visible_of_offLineCopiesLocallyBounded`), and the Castelnuovo–Severi degree-defect
+   rate on `scalingSubsurface (oddRealTestsAt r)` equals `zetaZeroWidth` unless off-line copies
+   cluster without bound (`scalingSurface_defectRate_eq_zetaZeroWidth_or_offLine_cluster`). Open for
+   `ζ`: eliminating the residual `log γ₀` factor in the Riemann–von Mangoldt tail of the Turán
+   inequality without bounded on-line density.
 4. **The collar between towers.** On rank-`P` boxes the towers couple through the collar and the
    pole only; bound this coupling against `Σ_p E_p` and decide positivity of the
    finite-Euler-product form on lattice tests.
@@ -574,6 +596,7 @@ Weil's argument.
 | `SchurLendingOddHodgeIndexPastFirstPrime` | odd-sector Hodge index of `ζ` through `181/500` |
 | `TheVisibilityDegreeOfAnIsolatedPair` | degree Hodge index = aperture positivity; isolated pair; hiding over `ℚ` |
 | `TheVisibilityDegreeOfRightZeros` | visibility degree of `n` right zeros from on-line mass, local density, and logarithmic density |
+| `HeightUniformVisibilityAndOffLineDensity` | height-uniform visibility degree under bounded local count (`uniformVisibleMargin`), off-line companion count `M` and near-top visibility under `OffLineCopiesLocallyBounded M`, Castelnuovo–Severi defect-floor equivalence and clustering alternative |
 | `TheKroneckerRankDichotomy` | recurrent configurations have defect `0` or `∞` |
 | `TheZerosOfAnExponentialPolynomialRecur` | recurrence of zeros of exponential polynomials |
 | `TheHodgeDefectIsCyclic` | Hecke translates, spectrally generic tests, cyclic density, cyclic Pontryagin law, RH on the rational and two-prime Hecke orbits of one test |

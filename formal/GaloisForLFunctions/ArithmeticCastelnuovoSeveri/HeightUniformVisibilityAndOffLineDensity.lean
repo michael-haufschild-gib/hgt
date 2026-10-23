@@ -439,42 +439,15 @@ theorem one_le_hodgeDefectAt_of_isolated_cluster (Z : ZeroConfig) (hZ : Tempered
         (1 + Real.exp a / (1 + R)) <
       2 * Z.mult ρ₀ * (∫ u, sinhTest a δ u * Real.sinh (δ * u)) ^ 2) :
     1 ≤ hodgeDefectAt Z a := by
-  set f : Fin 1 → ℝ → ℂ := fun _ => modulatedTest ρ₀.im (sinhTest a δ)
-  have hs := sinhTest_contDiff a δ
-  have hsupp : ∀ u, sinhTest a δ u ≠ 0 → |u| ≤ a := sinhTest_supp ha
-  have hfd : ∀ i, ContDiff ℝ 2 (f i) := fun _ => modulatedTest_contDiff _ hs
-  have hfs : ∀ i, tsupport (f i) ⊆ Icc (-a) a := fun _ => tsupport_modulatedTest_subset _ hsupp
-  have hfc : ∀ i, HasCompactSupport (f i) := fun i =>
-    isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (hfs i)
+  rw [Order.one_le_iff_ne_zero]
+  intro h0
+  have hnonneg := (hodgeDefectAt_eq_zero_iff Z hZ a).mp h0
+    (modulatedTest ρ₀.im (sinhTest a δ))
+    (modulatedTest_contDiff _ (sinhTest_contDiff a δ))
+    (tsupport_modulatedTest_subset _ (sinhTest_supp ha))
   have hmaster := re_W_modulatedTest_le_of_isolated Z hA₀ hloc hρ₀ hδ hre ha hR hiso
-    hs (sinhTest_odd a δ) hsupp
-  have hpd : IsPosDefOn (-(zeroGram Z f)) ⊤ := by
-    intro x _ hx0
-    rw [hermQuad_neg, hermQuad_zeroGram_of_tempered Z hZ f hfd hfc, Fin.sum_univ_one]
-    have hx : x 0 ≠ 0 := fun h => hx0 (Subsingleton.elim x 0 |>.trans (by simp [h]))
-    have hnorm : 0 < ‖conj (x 0)‖ ^ 2 := by simp [hx]
-    have hW : (Z.W (conj (x 0) • f 0) (conj (x 0) • f 0)).re =
-        ‖conj (x 0)‖ ^ 2 * (Z.W (f 0) (f 0)).re := by
-      have h1 : ∀ ρ, Z.Wsummand (conj (x 0) • f 0) (conj (x 0) • f 0) ρ =
-          ((‖conj (x 0)‖ ^ 2 : ℝ) : ℂ) * Z.Wsummand (f 0) (f 0) ρ := fun ρ => by
-        unfold ZeroConfig.Wsummand
-        have hft : ∀ z, paperFT (conj (x 0) • f 0) z = conj (x 0) * paperFT (f 0) z := fun z => by
-          rw [paperFT_def, paperFT_def, ← integral_const_mul]
-          congr 1 with u; simp [Pi.smul_apply, smul_eq_mul, mul_assoc]
-        rw [hft, hft, map_mul, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-        ring
-      rw [ZeroConfig.W, ZeroConfig.W]
-      simp_rw [h1]
-      rw [tsum_mul_left, Complex.re_ofReal_mul]
-    rw [hW]
-    have hneg : (Z.W (f 0) (f 0)).re < 0 := by simp only [f]; linarith
-    nlinarith
-  have hneg : 1 ≤ hermNegIndex (zeroGram Z f) := by
-    have h1 := finrank_le_posIndex hpd
-    rw [finrank_top, Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at h1
-    rw [hermNegIndex]
-    exact h1
-  exact (ENat.coe_le_coe.mpr hneg).trans (le_hodgeDefectAt Z f fun i => ⟨hfd i, hfs i⟩)
+    (sinhTest_contDiff a δ) (sinhTest_odd a δ) (sinhTest_supp ha)
+  linarith
 
 /-! ### 2. Near-top zero visibility of `ζ` with height-uniform companion count under bounded off-line copies -/
 

@@ -66,6 +66,8 @@ topic of the review by a theorem or by a recorded open problem with its sharp bo
   `centeredOperator_residueCombination_twice`.
 - `TheWidthDictionary`: `widthDictionary_tfae` (eight units), `one_positive_square_iff_cofinal_budget`,
   `exists_effectivity_iff_meanSquare_band`.
+- Axiom audit: every capstone listed above depends only on `propext`, `Classical.choice`, `Quot.sound`
+  (`#print axioms` over all ten modules); no `sorry`, no premises, no raised budgets.
 - Open: README §7 (frustration index of the actual odd ledger at growing aperture; beyond the rank-one law;
   Nyquist–Riemann–Roch beyond rank–nullity; orientation-faithful norm; inverses in the Wiener monoid;
   transport in aperture; the Nyquist bound at the diagonal).

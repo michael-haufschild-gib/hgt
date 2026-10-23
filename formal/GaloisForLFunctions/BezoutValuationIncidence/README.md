@@ -639,7 +639,10 @@ $J-J=0$, so toggling $J\in S$ keeps the position and flips the sign, and every b
 is the identity $\prod_{j<m}(1-X^{(j-J)b_j})=0$. One phase serves all the moduli because they are
 pairwise coprime: their differences are $M$ times numbers below $2^{m+1}$, all dividing $M$, and
 $D$ is coprime to $M$. Arbitrary-phase observability is therefore not an incidence-linear law,
-and the true horizon lies strictly between linear and $\Phi(N)\asymp N^2$.
+and the true horizon lies strictly between linear and $\Phi(N)\asymp N^2$. The same holds for the
+discrepancy: three grids with bases $D,D-K,D-2K$ share one phase, and a nonzero combination kills
+the harmonic mode and the discrepancy at the phase, so a row of positive variance has vanishing
+discrepancy on $mN+1$ consecutive prefixes (`not_exists_linear_discrepancy_observability_horizon`).
 
 **The window sandwich at quadratic order.** The response frequencies are $1/N^2$-separated, since
 a nontrivial $m$-th root of unity is at distance at least $1/m$ from $1$. Smoothing a window by a

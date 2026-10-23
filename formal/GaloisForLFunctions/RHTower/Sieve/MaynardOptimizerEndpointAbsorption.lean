@@ -54,7 +54,7 @@ theorem log_maynardFixedPolylogBase_le_edge_of_scale
       linarith
     have hsecond : maynardRaisedWidthConstant + E - 1 ≤
         maynardRaisedWidthConstant * E := by
-      linarith [mul_nonneg (sub_nonneg.mpr hwidth1) (sub_nonneg.mpr hE1)]
+      linarith only [mul_nonneg (sub_nonneg.mpr hwidth1) (sub_nonneg.mpr hE1)]
     exact hfirst.trans hsecond
   have hlogE : Real.log E ≤ routeTContourEdgeLogEnvelope A (3 * T) := by
     dsimp only [E]
@@ -72,8 +72,8 @@ theorem log_maynardFixedPolylogBase_le_edge_of_scale
     calc
       Real.log maynardRaisedWidthConstant ≤ maynardRaisedWidthConstant :=
         Real.log_le_self (le_trans (by norm_num) hwidth1)
-      _ ≤ maynardRaisedWidthConstant * routeTContourEdgeLogEnvelope A (3 * T) := by
-        nlinarith
+      _ ≤ maynardRaisedWidthConstant * routeTContourEdgeLogEnvelope A (3 * T) :=
+        le_mul_of_one_le_right hwidth0.le hedge1
   calc
     Real.log B ≤ Real.log maynardRaisedWidthConstant + Real.log E := hlogBE
     _ ≤ maynardRaisedWidthConstant * routeTContourEdgeLogEnvelope A (3 * T) +
@@ -112,8 +112,8 @@ theorem log_maynardOptimizerHuxleyCost_le_edge
     exact one_le_routeTContourEdgeLogEnvelope A (by positivity)
   have hCterm : Real.log C ≤ |Real.log C| * E := by
     have habs : Real.log C ≤ |Real.log C| := le_abs_self _
-    have hmul : |Real.log C| ≤ |Real.log C| * E := by
-      nlinarith [abs_nonneg (Real.log C)]
+    have hmul : |Real.log C| ≤ |Real.log C| * E :=
+      le_mul_of_one_le_right (abs_nonneg _) hE1
     exact habs.trans hmul
   have hecast : (e : ℝ) ≤ (maynardFixedPolylogExponentBound : ℝ) := by
     exact_mod_cast he
@@ -173,7 +173,7 @@ theorem eventually_maynardOptimizerHuxleyCost_absorbed (A : ℝ) :
   intro N e hN hNscale he
   have hT0 : 0 < T := by linarith
   have hlog3T : Real.log (3 * T) ≤ 2 * Real.log T := by
-    have hthreeSq : 3 * T ≤ T ^ (2 : ℕ) := by nlinarith
+    have hthreeSq : 3 * T ≤ T ^ (2 : ℕ) := by nlinarith only [hT]
     have hlog := Real.log_le_log (by positivity : 0 < 3 * T) hthreeSq
     rw [Real.log_pow] at hlog
     norm_num at hlog ⊢
@@ -200,7 +200,7 @@ theorem eventually_maynardOptimizerHuxleyCost_absorbed (A : ℝ) :
         _ ≤ 2 * routeTContourShiftEnvelope A (3 * T) * Real.log T := hboth
         _ = 2 * (routeTContourShiftEnvelope A (3 * T) * Real.log T) := by ring
     have hdiv : (K * routeTContourEdgeLogEnvelope A (3 * T)) / c0 ≤
-        routeTContourShiftEnvelope A (3 * T) * Real.log T := by linarith
+        routeTContourShiftEnvelope A (3 * T) * Real.log T := by linarith only [htwice]
     have hmul := (div_le_iff₀ hc0).mp hdiv
     calc
       K * routeTContourEdgeLogEnvelope A (3 * T) ≤
@@ -235,7 +235,7 @@ theorem eventually_maynardOptimizerHuxleyCost_absorbed (A : ℝ) :
     rw [← Real.exp_log hcost0, Real.rpow_def_of_pos hT0]
     apply Real.exp_le_exp.mpr
     simpa only [mul_comm] using hlogtarget
-  simpa [C, mul_assoc, mul_comm, mul_left_comm] using hcost
+  simpa only [C, mul_assoc, mul_comm, mul_left_comm] using hcost
 
 /-- Lowering amplitude by one percent of its gap pays optimizer and endpoint costs while staying
 below the universal Route-T adjacent-power cap at the original amplitude. -/
@@ -260,7 +260,7 @@ theorem maynard_optimizer_amplitude_reserve_transfer
         field_simp [halpha0pos.ne']]
     rw [div_le_div_iff₀ halpha0pos halpha]
     rw [halpha0]
-    nlinarith
+    nlinarith only [halphaLo, halphaHi]
   have hmain : (19 / 10 : ℝ) * (1 - alpha0) / alpha0 +
       (1 - alpha) / 100 ≤ 2 * (1 - alpha) / alpha := by
     have hmul := mul_le_mul_of_nonneg_left hcoeff hgap.le
@@ -314,7 +314,7 @@ theorem routeT_exact_crossing_first_or_second_unbounded
   have htheta : maynardHuxleyOptimizer alpha0 ≤ 25 / 49 := by
     dsimp only [maynardHuxleyOptimizer]
     rw [div_le_iff₀ (by linarith : 0 < 4 * alpha0 - 2)]
-    nlinarith
+    linarith only [halpha0Lo]
   have hrUpper : r < 545 / 588 := by
     have hfixed : (25 / 49 : ℝ) + 5 / 12 = 545 / 588 := by norm_num
     linarith
@@ -323,7 +323,7 @@ theorem routeT_exact_crossing_first_or_second_unbounded
   by_cases hfirst : 2 * r + 1 / 100 ≤ mu
   · left
     have hmul := mul_le_mul_of_nonneg_right hfirst hgap.le
-    nlinarith
+    linarith only [hmul, hdCost]
   · right
     have hmuUpper : mu < 187 / 100 := by
       have : mu < 2 * r + 1 / 100 := lt_of_not_ge hfirst
@@ -344,18 +344,13 @@ theorem routeT_exact_crossing_first_or_second_unbounded
     have hlhs : 2 * r * (1 - alpha) + d / 100 ≤ 57 / 10000 := by
       have hrle : r ≤ 545 / 588 := hrUpper.le
       have hgapLe : 1 - alpha ≤ 3 / 1000 := by linarith
-      have hr0 : 0 ≤ r := by
-        have hmu0 : 0 < mu := by linarith
-        by_contra hneg
-        have : r < 0 := lt_of_not_ge hneg
-        nlinarith
       have hmulR := mul_le_mul hrle hgapLe hgap.le
         (by norm_num : (0 : ℝ) ≤ 545 / 588)
-      nlinarith
+      linarith only [hmulR, hdCost, hgapLe]
     have hrhs : 63 / 1000 ≤ 1 + mu * q := by
-      nlinarith [hmulQ]
+      linarith only [hmulQ]
     dsimp only [q] at hrhs
-    exact hlhs.trans (by linarith)
+    exact hlhs.trans (by linarith only [hrhs])
 
 /-- Compatibility wrapper on Maynard's historical height range. -/
 theorem routeT_exact_crossing_first_or_second
@@ -462,7 +457,7 @@ theorem eventually_maynardOptimizerFixedLogCost_absorbed
   intro N e hN hNscale he
   have hT0 : 0 < T := by linarith
   have hlog3T : Real.log (3 * T) ≤ 2 * Real.log T := by
-    have hthreeSq : 3 * T ≤ T ^ (2 : ℕ) := by nlinarith
+    have hthreeSq : 3 * T ≤ T ^ (2 : ℕ) := by nlinarith only [hT]
     have hlog := Real.log_le_log (by positivity : 0 < 3 * T) hthreeSq
     rw [Real.log_pow] at hlog
     norm_num at hlog ⊢
@@ -489,7 +484,7 @@ theorem eventually_maynardOptimizerFixedLogCost_absorbed
         _ ≤ 2 * routeTContourShiftEnvelope A (3 * T) * Real.log T := hboth
         _ = 2 * (routeTContourShiftEnvelope A (3 * T) * Real.log T) := by ring
     have hdiv : (K * routeTContourEdgeLogEnvelope A (3 * T)) / c0 ≤
-        routeTContourShiftEnvelope A (3 * T) * Real.log T := by linarith
+        routeTContourShiftEnvelope A (3 * T) * Real.log T := by linarith only [htwice]
     have hmul := (div_le_iff₀ hc0).mp hdiv
     calc
       K * routeTContourEdgeLogEnvelope A (3 * T) ≤

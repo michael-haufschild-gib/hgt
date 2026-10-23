@@ -67,6 +67,26 @@ theorem card_sub_card_le_h0 (A : Matrix m n ℂ) :
   have h4 : (A.rank : ℝ) ≤ Fintype.card m := by exact_mod_cast h2
   linarith
 
+/-- The number of obstructions: the codimension of the range of the reading in the node space. -/
+def h1 (A : Matrix m n ℂ) : ℕ := Fintype.card m - A.rank
+
+omit [DecidableEq n] in
+/-- **Riemann–Roch for readings**: `h⁰ − h¹ = dim − #nodes`, the Euler characteristic of the
+node divisor. -/
+theorem h0_sub_h1 (A : Matrix m n ℂ) :
+    (h0 A : ℤ) - h1 A = (Fintype.card n : ℤ) - Fintype.card m := by
+  have h := h0_add_rank A
+  have hr : A.rank ≤ Fintype.card m := rank_le_card_height A
+  unfold h1
+  omega
+
+omit [DecidableEq n] in
+/-- Interpolation at every node is possible iff there are no obstructions. -/
+theorem h1_eq_zero_iff (A : Matrix m n ℂ) : h1 A = 0 ↔ A.rank = Fintype.card m := by
+  have hr : A.rank ≤ Fintype.card m := rank_le_card_height A
+  unfold h1
+  omega
+
 /-- The real part of `star u ⬝ u` is `Σ ‖u_i‖²`. -/
 theorem re_star_dotProduct_self (u : m → ℂ) : (star u ⬝ᵥ u).re = ∑ i, ‖u i‖ ^ 2 := by
   unfold dotProduct
@@ -151,6 +171,21 @@ theorem h0_eq_zero_of_frobeniusMass_ge {A : Matrix m n ℂ} {K : ℝ} (hK0 : 0 <
     rw [le_div_iff₀ hK0]; linarith
   have h3 : (h0 A : ℝ) ≤ 0 := by linarith
   exact_mod_cast le_antisymm h3 (Nat.cast_nonneg _)
+
+/-- **Interpolation at full degrees of freedom**: if the Frobenius mass reaches `K · #nodes`, the
+reading is onto and every node datum is interpolated (`h¹ = 0`). -/
+theorem h1_eq_zero_of_frobeniusMass_ge {A : Matrix m n ℂ} {K : ℝ} (hK0 : 0 < K)
+    (hK : HasFrameBound A K) (hmass : K * Fintype.card m ≤ frobeniusMass A) : h1 A = 0 := by
+  rw [h1_eq_zero_iff]
+  have h := frobeniusMass_le_rank_mul hK
+  have hr : A.rank ≤ Fintype.card m := rank_le_card_height A
+  have h2 : (Fintype.card m : ℝ) ≤ A.rank := by
+    by_contra hlt
+    push_neg at hlt
+    have : K * (A.rank : ℝ) < K * Fintype.card m := mul_lt_mul_of_pos_left hlt hK0
+    linarith
+  have h3 : Fintype.card m ≤ A.rank := by exact_mod_cast h2
+  omega
 
 /-! ### Dirichlet polynomials read at separated heights -/
 

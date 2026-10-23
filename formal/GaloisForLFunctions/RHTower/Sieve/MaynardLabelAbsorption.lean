@@ -1,5 +1,11 @@
 import GaloisForLFunctions.RHTower.Sieve.MaynardFibreCount
 
+/-!
+# Absorbing dyadic selection labels
+
+The degree-sixty label count costs a fixed multiple of `(log T)^120`.
+Absorbing this factor into `T^(1/100)` gives the global cardinality bound.
+-/
 
 noncomputable section
 namespace RHTower.Sieve
@@ -111,7 +117,7 @@ def maynardCountingPolylogConstant : ℝ :=
 
 theorem maynardCountingPolylogConstant_pos :
     0 < maynardCountingPolylogConstant := by
-  dsimp [maynardCountingPolylogConstant, maynardLabelPolylogConstant]
+  dsimp only [maynardCountingPolylogConstant, maynardLabelPolylogConstant]
   exact mul_pos
     (mul_pos
       (mul_pos (by norm_num) (pow_pos (by norm_num) 2))
@@ -148,7 +154,7 @@ theorem eventually_maynardCounting_polylog_absorbed :
   rw [← mul_assoc, hcancel] at hscaled
   have hhalfT : (1 / 2 : ℝ) * T ^ (1 / 100 : ℝ) ≤
       T ^ (1 / 100 : ℝ) := by
-    linarith [hTpow]
+    linarith only [hTpow]
   refine ⟨hlogT, ?_⟩
   change C * Real.log T ^ 120 ≤ T ^ (1 / 100 : ℝ)
   exact hscaled.trans hhalfT
@@ -201,7 +207,7 @@ theorem exists_canonical_sixty_power_card_bound_of_counting_ready
   let A : ℝ := maynardLabelPolylogConstant
   let HF : ℝ := maynardHarmonicFactor K delta
   have hE : 0 < E := by
-    dsimp [E]
+    dsimp only [E]
     exact mul_pos
       (mul_pos (by norm_num) (pow_pos (by norm_num) 2))
       maynardUniformEnergyConstant_pos
@@ -209,7 +215,7 @@ theorem exists_canonical_sixty_power_card_bound_of_counting_ready
   have hlabel' :
       (Fintype.card (HeathBrownSelectionLabel L X 60) : ℝ) ≤
         A * Real.log T0 ^ 120 := by
-    simpa [A, maynardLabelPolylogConstant] using hlabel
+    simpa only [A, maynardLabelPolylogConstant] using hlabel
   have hcoeff :
       (Fintype.card (HeathBrownSelectionLabel L X 60) : ℝ) * E ≤
         T0 ^ (1 / 100 : ℝ) := by
@@ -218,8 +224,7 @@ theorem exists_canonical_sixty_power_card_bound_of_counting_ready
           (A * Real.log T0 ^ 120) * E :=
         mul_le_mul_of_nonneg_right hlabel' hE.le
       _ = maynardCountingPolylogConstant * Real.log T0 ^ 120 := by
-        dsimp [E, A, maynardCountingPolylogConstant,
-          maynardLabelPolylogConstant]
+        dsimp only [E, A, maynardCountingPolylogConstant]
         ring
       _ ≤ T0 ^ (1 / 100 : ℝ) := hready.2.2
   have hrest : 0 ≤ HF * T0 ^ (1367 / 86400 : ℝ) :=
@@ -235,7 +240,7 @@ theorem exists_canonical_sixty_power_card_bound_of_counting_ready
                 T0 ^ (1367 / 86400 : ℝ)) := hcard
       _ = ((Fintype.card (HeathBrownSelectionLabel L X 60) : ℝ) * E) *
             (HF * T0 ^ (1367 / 86400 : ℝ)) := by
-        dsimp [E, HF]
+        dsimp only [E, HF]
         ring
   calc
     (S.card : ℝ) ≤

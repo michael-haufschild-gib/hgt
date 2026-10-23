@@ -68,8 +68,8 @@ valid.
 - [x] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` (depth 5, 1)
 - [x] `RHTower/Hedenmalm/HedenmalmThetaAllShiftedTails.lean` (depth 5, 1)
 - [x] `RHTower/LandauSingularAtAbscissa.lean` (depth 5, 1)
-- [ ] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` (depth 5, 1)
-- [ ] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` (depth 5, 1)
+- [x] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` (depth 5, 1)
+- [x] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` (depth 5, 1)
 - [ ] `RHTower/Sieve/MultiplicativeEulerBound.lean` (depth 5, 2)
 - [x] `RHTower/Sieve/RouteTMoebiusContour.lean` (depth 5, 3)
 - [x] `RHTower/Sieve/RouteTZetaDLVP.lean` (depth 5, 1)
@@ -90,7 +90,7 @@ valid.
 - [x] `HTGeometry/GammaDigammaStirlingBound.lean` (depth 6, 2)
 - [x] `RHTower/CCM/CCMInverseTiltedDyadicPrimeTomography.lean` (depth 6, 1)
 - [x] `RHTower/GammaPrimeHybridEulerWeierstrassFredholmUniversalityLaw.lean` (depth 6, 1)
-- [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` (depth 6, 12)
+- [x] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` (depth 6, 12)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixtyFourthFloor.lean` (depth 6, 2)
 - [ ] `RHTower/Sieve/RouteTZetaInverseBound.lean` (depth 6, 2)
 - [ ] `RHTower/Sieve/VonMangoldtTwistPrimeEnvelope.lean` (depth 6, 1)
@@ -167,8 +167,8 @@ valid.
 - [ ] `RHTower/GammaSewnMobiusXiWardHardyContraction.lean` (depth 8, 2)
 - [ ] `RHTower/GaussDiagonalLogResidue.lean` (depth 8, 1)
 - [ ] `RHTower/PrimeArchThetaFirstAtomFourthMomentSixteenthFloor.lean` (depth 8, 2)
-- [ ] `RHTower/RegularizedDivisorHarmonicLimit.lean` (depth 8, 2)
-- [ ] `RHTower/Sieve/DirichletWideRectangle.lean` (depth 8, 1)
+- [x] `RHTower/RegularizedDivisorHarmonicLimit.lean` (depth 8, 2)
+- [x] `RHTower/Sieve/DirichletWideRectangle.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/InghamUniformDetectorMellinFullXiPacket.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellAllAmplitudeReceiver.lean` (depth 8, 1)
 - [ ] `RHTower/Sieve/RouteTZetaBandGrowth.lean` (depth 8, 1)
@@ -281,7 +281,7 @@ valid.
 - [ ] `RHTower/CCM/CCMWeightedXiLandau.lean` (depth 11, 2)
 - [ ] `RHTower/PrimeBoundaryMonodromyEscape.lean` (depth 11, 1)
 - [ ] `RHTower/RealBoundaryDivisorLimit.lean` (depth 11, 1)
-- [ ] `RHTower/Sieve/MaynardLabelAbsorption.lean` (depth 11, 1)
+- [x] `RHTower/Sieve/MaynardLabelAbsorption.lean` (depth 11, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellFibreCount.lean` (depth 11, 1)
 - [ ] `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean` (depth 11, 4)
 - [ ] `RHTower/Sieve/MaynardSelectedCellMiddleFibreCount.lean` (depth 11, 1)
@@ -497,12 +497,12 @@ Axiom audits are excluded. The following list is the fixed completion batch, not
 - [x] `RHTower/GammaSewnMobiusXiWardHardyTransport.lean` — check and build passed; olean/ilean written.
 - [x] `RHTower/GammaXiHybridWeierstrassFredholmUniversalityLaw.lean` — check and build passed; olean/ilean written.
 - [x] `RHTower/Hedenmalm/HedenmalmThetaTraceKernel.lean` — check and build passed; olean/ilean written.
-- `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean`
-- `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean`
-- `RHTower/RegularizedDivisorHarmonicLimit.lean`
-- `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean`
-- `RHTower/Sieve/DirichletWideRectangle.lean`
-- `RHTower/Sieve/MaynardLabelAbsorption.lean`
+- [x] `RHTower/PrimeArchThetaFirstAtomFourthMomentFloor.lean` — narrowed arithmetic; check and build passed.
+- [x] `RHTower/PrimeIndexedRVMSourceUnitaryNoGo.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/RegularizedDivisorHarmonicLimit.lean` — check and build passed; olean/ilean written.
+- [x] `RHTower/Sieve/ChebyshevErrorHalfIntegerBound.lean` — narrowed arithmetic inputs; check and build passed.
+- [x] `RHTower/Sieve/DirichletWideRectangle.lean` — narrowed arithmetic inputs; check and build passed.
+- [x] `RHTower/Sieve/MaynardLabelAbsorption.lean` — limited constant unfolding; check and build passed.
 - `RHTower/Sieve/MaynardOptimizerEndpointAbsorption.lean`
 - `RHTower/Sieve/MaynardReceiverMargin.lean`
 - `RHTower/Sieve/MaynardSelectedCellFibreMontgomery.lean`

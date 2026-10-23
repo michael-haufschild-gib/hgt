@@ -44,7 +44,7 @@ private lemma halfInt_vertical_coefficient_le {x ε : ℝ} (hε : 0 < ε) (hx4 :
   have h4 : (1 + Real.log (2 + x)) * Real.log x ≤ (2 * (1 + Real.log x)) * (1 + Real.log x) :=
     mul_le_mul h2 (by linarith) hlogx0 (by linarith)
   have hL2 : (1 : ℝ) ≤ (1 + Real.log x) ^ 2 := one_le_pow₀ (by linarith)
-  linarith
+  linarith only [h1, h4, hL2]
 
 /-- The Perron logarithmic error: for `x ≥ 4` and `1 ≤ y ≤ 4x`,
 `(16 log(2x) x/(π x)) · 4(1 + log y) ≤ (192/π)(1 + log x)^2`. -/
@@ -70,7 +70,8 @@ private lemma halfInt_perron_log_le {x y : ℝ} (hx4 : 4 ≤ x) (hy1 : 1 ≤ y) 
   rw [hid, show (192 / Real.pi) * (1 + Real.log x) ^ 2
       = (192 * (1 + Real.log x) ^ 2) / Real.pi by ring]
   have hnum : 64 * Real.log (2 * x) * (1 + Real.log y) ≤ 192 * (1 + Real.log x) ^ 2 := by
-    linarith [mul_le_mul hlog2x hlogy hlogy0 (by linarith : (0 : ℝ) ≤ 1 + Real.log x)]
+    linarith only [mul_le_mul hlog2x hlogy hlogy0
+      (by linarith only [hlogx0] : (0 : ℝ) ≤ 1 + Real.log x)]
   gcongr
 
 /-- **The Chebyshev error at a half-integer cutoff, under RH.**  For every `ε ∈ (0, 1/4]` there is
@@ -124,9 +125,9 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
   have hQlogxe : Real.log ((N : ℝ) + 1 / 2) * ((N : ℝ) + 1 / 2) ^ (ε / 2) ≤ Q := by
     rw [hQdef]
     have hlogle : Real.log ((N : ℝ) + 1 / 2) ≤ (1 + Real.log ((N : ℝ) + 1 / 2)) ^ 2 := by
-      linarith [sq_nonneg (Real.log ((N : ℝ) + 1 / 2))]
+      linarith only [hlogx0, sq_nonneg (Real.log ((N : ℝ) + 1 / 2))]
     have := mul_le_mul hlogle hxe hxe0 (by positivity)
-    linarith [this]
+    linarith only [this]
   -- the master inequality
   have hmaster := norm_chebyshev_sub_halfInt_le (N := N) (σ₁ := 1 / 2 + ε / 2)
     (σ₀ := 1 + ε / 2) (T := (N : ℝ) + 1 / 2) hRH hσ₁ hσ₁1 hσ₀ hx0
@@ -170,7 +171,7 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
       positivity
     have := mul_le_mul_of_nonneg_left hVb hcoef
     rw [hQdef]
-    linarith [this]
+    linarith only [this]
   -- the horizontal sides
   have hHid : (C * Real.log ((N : ℝ) + 1 / 2) / ((1 / 2 + ε / 2) - 1 / 2))
         * (((N : ℝ) + 1 / 2) ^ ((1 : ℝ) + ε / 2) / ((N : ℝ) + 1 / 2))
@@ -199,7 +200,7 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
       norm_num
     rw [h2] at h1
     exact h1
-  have hhalf : (1 : ℝ) / 2 ≤ 1 / 2 * Q := by linarith [hQ1]
+  have hhalf : (1 : ℝ) / 2 ≤ 1 / 2 * Q := by linarith only [hQ1]
   have hexpand : (32 / (Real.pi * Real.log 2 * ε ^ 2) + 192 / Real.pi + 7 * K / Real.pi
         + C / (Real.pi * ε) + 1 / 2) * Q
       = (32 / (Real.pi * Real.log 2 * ε ^ 2)) * Q + (192 / Real.pi) * Q
@@ -218,9 +219,9 @@ theorem exists_chebyshev_error_halfInt_bound (hRH : RiemannHypothesis) {ε : ℝ
         * ((((N : ℝ) + 1 / 2 : ℝ) : ℂ) ^ s / s)) (1 / 2 + ε / 2) (1 + ε / 2)
         (-((N : ℝ) + 1 / 2))‖
       ≤ 14 * K * Q + ((C / ε) * Q + (C / ε) * Q) := by
-    linarith [hVfin, hHp.trans hHq, hHm.trans hHq]
+    linarith only [hVfin, hHp.trans hHq, hHm.trans hHq]
   have hscaled := mul_le_mul_of_nonneg_left hsides hpiinv
-  linarith [hmaster, hE, hE2, hEq1, hEq2, htri, hhalf, hscaled]
+  linarith only [hmaster, hE, hE2, hEq1, hEq2, htri, hhalf, hscaled]
 
 end
 
