@@ -48,7 +48,7 @@ theorem halfPoint_re : halfPoint.re = 1 / 2 := by simp [halfPoint]
 theorem term_absWeight (g : ℕ → ℝ) (n : ℕ) :
     LSeries.term (absWeight g) halfPoint n = ((|g n| * (n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [LSeries.term_zero, Real.zero_rpow (by norm_num : (-(1 / 2 : ℝ)) ≠ 0)]
+  · simp [LSeries.term_zero]
   · rw [LSeries.term_of_ne_zero hn, absWeight, halfPoint, ← Complex.ofReal_natCast,
       ← Complex.ofReal_cpow (Nat.cast_nonneg n), ← Complex.ofReal_div, Real.rpow_neg (Nat.cast_nonneg n),
       div_eq_mul_inv]
@@ -67,7 +67,7 @@ theorem lSeriesSummable_absWeight {g : ℕ → ℝ} (hg : CriticalWiener g) :
   Summable.of_norm ((criticalWiener_iff_summable_norm_term g).1 hg)
 
 /-- The L-series of the absolute kernel at `½` is the critical Wiener norm, as a real number. -/
-theorem lSeries_absWeight {g : ℕ → ℝ} (hg : CriticalWiener g) :
+theorem lSeries_absWeight (g : ℕ → ℝ) :
     LSeries (absWeight g) halfPoint = ((∑' n : ℕ, |g n| * (n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) := by
   unfold LSeries
   rw [Complex.ofReal_tsum]
@@ -111,7 +111,7 @@ theorem term_convolution_absWeight (a b : ℕ → ℝ) (n : ℕ) :
     LSeries.term (absWeight a ⍟ absWeight b) halfPoint n =
       ((absConv a b n * (n : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [LSeries.term_zero, Real.zero_rpow (by norm_num : (-(1 / 2 : ℝ)) ≠ 0)]
+  · simp [LSeries.term_zero]
   · rw [LSeries.term_of_ne_zero hn, convolution_absWeight, halfPoint, ← Complex.ofReal_natCast,
       ← Complex.ofReal_cpow (Nat.cast_nonneg n), ← Complex.ofReal_div,
       Real.rpow_neg (Nat.cast_nonneg n), div_eq_mul_inv]
@@ -160,7 +160,7 @@ theorem tsum_abs_dirichletConv_le {a b : ℕ → ℝ} (ha : CriticalWiener a) (h
   have h3 : (LSeries (absWeight a ⍟ absWeight b) halfPoint).re =
       (∑' n : ℕ, |a n| * (n : ℝ) ^ (-(1 / 2 : ℝ))) * ∑' n : ℕ, |b n| * (n : ℝ) ^ (-(1 / 2 : ℝ)) := by
     rw [LSeries_convolution' (lSeriesSummable_absWeight ha) (lSeriesSummable_absWeight hb),
-      lSeries_absWeight ha, lSeries_absWeight hb, ← Complex.ofReal_mul, Complex.ofReal_re]
+      lSeries_absWeight a, lSeries_absWeight b, ← Complex.ofReal_mul, Complex.ofReal_re]
   linarith
 
 /-! ### Unit and associativity -/

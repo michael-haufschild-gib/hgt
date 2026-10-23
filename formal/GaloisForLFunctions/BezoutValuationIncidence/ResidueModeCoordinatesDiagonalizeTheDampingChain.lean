@@ -91,7 +91,7 @@ theorem residueStep_eq_sum_floor (b : ℕ → ℝ) (x : ℕ) :
           (sum_divisors_residueModeCoord b (by simp only [mem_Icc] at hd; omega)).symm
     _ = _ := TransHorizonIncidenceMechanics.sum_Icc_sum_divisors_eq_floor _ x
 
-private theorem residueStep_profile {f : ℕ} (hf : 0 < f) (x : ℕ) :
+private theorem residueStep_profile (f x : ℕ) :
     residueStep (normalizedResidueProfile f) x = ((x / f : ℕ) : ℝ) - (x : ℝ) / f := by
   rcases Nat.eq_zero_or_pos x with rfl | hx
   · simp
@@ -103,14 +103,13 @@ private theorem residueStep_profile {f : ℕ} (hf : 0 < f) (x : ℕ) :
 /-- **Biorthogonality**: `φ_e(v_f) = δ_{ef}` for moduli at least two. -/
 theorem residueModeCoord_normalizedResidueProfile {e f : ℕ} (he : 2 ≤ e) (hf : 2 ≤ f) :
     residueModeCoord e (normalizedResidueProfile f) = if e = f then 1 else 0 := by
-  have hf' : 0 < f := by omega
   have hinc : ∀ d, 0 < d → residueIncrement (normalizedResidueProfile f) d =
       ∑ e ∈ d.divisors, ((if e = f then (1 : ℝ) else 0) - (if e = 1 then 1 / (f : ℝ) else 0)) := by
     intro d hd
     have hsum : ∑ e ∈ d.divisors, ((if e = f then (1 : ℝ) else 0) -
         (if e = 1 then 1 / (f : ℝ) else 0)) = (if f ∣ d then 1 else 0) - 1 / (f : ℝ) := by
       rw [sum_sub_distrib, sum_ite_eq', sum_ite_eq']
-      simp only [Nat.mem_divisors, one_dvd, true_and, ne_eq, hd.ne', not_false_eq_true, and_true,
+      simp only [Nat.mem_divisors, one_dvd, ne_eq, hd.ne', not_false_eq_true, and_true,
         ↓reduceIte]
     have hdiv : ((d / f : ℕ) : ℝ) - (((d - 1) / f : ℕ) : ℝ) = if f ∣ d then 1 else 0 := by
       have h := Nat.succ_div (a := d - 1) (b := f)
@@ -118,7 +117,7 @@ theorem residueModeCoord_normalizedResidueProfile {e f : ℕ} (he : 2 ≤ e) (hf
       rw [h]
       split_ifs <;> push_cast <;> ring
     have hd1 : ((d - 1 : ℕ) : ℝ) = (d : ℝ) - 1 := by rw [Nat.cast_sub hd, Nat.cast_one]
-    rw [hsum, residueIncrement, residueStep_profile hf', residueStep_profile hf', hd1, ← hdiv]
+    rw [hsum, residueIncrement, residueStep_profile f, residueStep_profile f, hd1, ← hdiv]
     ring
   rw [residueModeCoord_eq_of_increment _ _ hinc (by omega : 0 < e), if_neg (by omega : e ≠ 1),
     sub_zero]
@@ -219,7 +218,7 @@ theorem residueModeCoord_centeredOperator {η : ℝ} (hη : 0 < η) {e : ℕ} (h
     refine ContinuousLinearMap.ext_on hdense ?_
     rintro _ ⟨f, hf, rfl⟩
     have hf2 : 2 ≤ f := hf
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+    simp only [ContinuousLinearMap.comp_apply, _root_.smul_apply, smul_eq_mul,
       centeredOperator_normalizedResidueMode hη (by omega : 0 < f), map_smul,
       residueModeCoordCLM_mode he hf2]
     split_ifs with hef
@@ -282,10 +281,10 @@ theorem residueModeProjection_comp_centeredOperator {η : ℝ} (hη : 0 < η) {e
       (e : ℝ) ^ (-η) • residueModeProjection e := by
   constructor
   · ext1 b
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.smul_apply,
       residueModeProjection_apply, residueModeCoord_centeredOperator hη he, smul_smul]
   · ext1 b
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+    simp only [ContinuousLinearMap.comp_apply, _root_.smul_apply,
       residueModeProjection_apply, map_smul,
       centeredOperator_normalizedResidueMode hη (by omega : 0 < e), smul_smul, mul_comm]
 
@@ -319,5 +318,15 @@ theorem residueModeCoord_eq_zero_iff (b : C₀(ℕ, ℝ)) :
   exact ZeroAtInftyContinuousMap.ext fun n => (hconst n).trans hz
 
 end
+
+#print axioms residueStep_eq_sum_floor
+#print axioms residueModeCoord_normalizedResidueProfile
+#print axioms residueModeCoord_reciprocal
+#print axioms residueModeCoord_centeredOperator
+#print axioms residueModeCoord_centeredOperator_reciprocal
+#print axioms residueStep_centeredOperator
+#print axioms residueModeProjection_comp
+#print axioms residueModeProjection_comp_centeredOperator
+#print axioms residueModeCoord_eq_zero_iff
 
 end GaloisForLFunctions.BezoutValuationIncidence

@@ -17,6 +17,7 @@ the magnitudes are square summable in the pronic norm.
 -/
 
 open Finset
+open scoped ZeroAtInfty
 
 namespace GaloisForLFunctions.ArithmeticOrientationTheory
 
@@ -43,7 +44,10 @@ theorem centeredOperator_residueCombination {η : ℝ} (hη : 0 < η) {S : Finse
 theorem sign_coeff_centeredOperator (η : ℝ) {d : ℕ} (hd : 0 < d) (a : ℝ) :
     Real.sign (a * (d : ℝ) ^ (-η)) = Real.sign a := by
   have hpos : 0 < (d : ℝ) ^ (-η) := Real.rpow_pos_of_pos (by exact_mod_cast hd) _
-  rw [Real.sign_mul, Real.sign_of_pos hpos, mul_one]
+  rcases lt_trichotomy a 0 with ha | rfl | ha
+  · rw [Real.sign_of_neg ha, Real.sign_of_neg (mul_neg_of_neg_of_pos ha hpos)]
+  · rw [zero_mul]
+  · rw [Real.sign_of_pos ha, Real.sign_of_pos (mul_pos ha hpos)]
 
 /-- The transported coefficients are nonzero exactly where the original ones are. -/
 theorem coeff_centeredOperator_ne_zero_iff (η : ℝ) {d : ℕ} (hd : 0 < d) (a : ℝ) :

@@ -283,15 +283,16 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
     (`two_thirds_and_pair_correlation_escape`).
 28. **Two routes past the blind spot, each with one unproved input.** The pair `(P, Q)` remembers
     what `Â` forgets: for `Q = 0` the on-line Parseval slack restores the rank at `c = 2`
-    (`onSlack_zero_eq`, `rank_trace_add_onSlack_zero_eq_rank`), and a non-coalesced off-line pair
-    carries negative-part credit (`offLine_pair_negPart_credit_pos`). The joint `(c = 2, c = 3)`
+    (`onSlack_of_posSemidef_eq`, `rank_trace_add_onSlack_of_posSemidef_eq_rank`), and a non-coalesced off-line pair
+    carries negative-part credit (`negPart_credit_pos_iff_not_posSemidef`). The joint `(c = 2, c = 3)`
     functional is `((7 − 3κ)/4)N`, i.e. `(3/4)N` at `κ = 4/3`
     (`three_quarters_of_broken_blind_spot_at_four_thirds`). For `ζ` this gives two implications,
     not a theorem: a zero-side slack `S(T) ≥ N(T, 2T)/12` would give `3/4`
-    (`zeta_three_quarters_of_spectralSlack_one_twelfth`); `3/4` is equivalent to `κ ≤ 5/4`, the
+    (`zeta_three_quarters_of_spectralSlack`); `3/4` is equivalent to `κ ≤ 5/4`, the
     unconditional bandwidth-`4/3` constant is `43/36 = 5/4 − 1/18`, and the proposition
     `RHTower.PrimeSurplusFourThirds` filling the margin `1/18` would give `3/4`
-    (`kappa_five_fourths_iff_three_quarters`, `zeta_three_quarters_from_prime_surplus_and_double_window`).
+    (`kappa_five_fourths_iff_three_quarters`, `zeta_three_quarters_from_prime_surplus`,
+    `double_window_primeFreq_offDiag_and_exchange_rate`).
 
 ### 3.9 The λ-ring of the scaling surface (`TheLambdaRingOfTheScalingSurface`)
 
@@ -315,7 +316,7 @@ replaces the Hodge index `p = 0` by `n₊(Q) ≤ p`.
 
 ### 3.10 The odd-sector ledger and the degree floor (`RiemannRochForZAndTheReflectedPrimePolarLedger`)
 
-30. **Lorentz–polar identity.** `2 B(F) A(F) = 2 evenPoleMoment(F)² − 2 oddPoleMoment(F)²`
+30. **Lorentz–polar identity.** `2 B(F) A(F) = 2 evenPoleMoment(F)² − poleCharge(F)`
     (`two_mul_poleB_mul_poleA_eq_lorentz_moments`); on odd tests the pole charge `2 A(F)²` is the
     negative self-intersection of the polar projection `A(F)(H − V)`
     (`poleCharge_eq_two_mul_poleA_sq_of_odd`).

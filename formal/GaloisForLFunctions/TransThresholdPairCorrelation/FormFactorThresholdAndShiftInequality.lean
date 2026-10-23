@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.PairCorrelationExchangeRate
-import GaloisForLFunctions.RHTower.ZetaThreeQuartersOfPrimeSurplus
 
 /-!
 # Trans-Threshold Form-Factor Laws, the Prime-Surplus Bridge, and the Shift-Inequality Barrier
@@ -18,7 +17,7 @@ threshold and barrier laws of the trans-threshold regime:
    `∫₁^{4/3} (4/3 − α) F(α) dα ≤ 1/9`,
    which is **twice** the GUE / Montgomery value `∫₁^{4/3} (4/3 − α) · 1 dα = 1/18`.
 3. **Bridge between the spectral form-factor integral and the prime-side `43/36 + 1/18` split
-   (`primeSurplusRatio_eq_of_formFactor`, `primeSurplusRatio_le_one_eighteenth_iff`):**
+   (`primeSurplusRatio_bridge`):**
    On the prime side, the prime diagonal up to `X = (T/2π)^{4/3}` already includes `(λ − 1)/λ² = 3/16`
    of the trans-threshold mass (`43/36 = 9/8 + 5/72`), so the normalized prime-pair surplus equals
    `(9/8) ∫₁^{4/3} (4/3 − α) F(α) dα − 5/72 = (9/8)(I − 1/18) − 1/144`.
@@ -69,9 +68,10 @@ theorem frobeniusFormFactor_eq_split {F : ℝ → ℝ} {lam : ℝ} (hlam : lam �
     rw [hF_sub α hα]
   have h1 : ∫ α in (0 : ℝ)..1, (lam - α) * α = lam / 2 - 1 / 3 := by
     have e : (fun α : ℝ => (lam - α) * α) = fun α => lam * α - α ^ 2 := by funext α; ring
-    rw [e, integral_sub ((by fun_prop : Continuous fun α : ℝ => lam * α).intervalIntegrable _ _)
-      ((by fun_prop : Continuous fun α : ℝ => α ^ 2).intervalIntegrable _ _), integral_const_mul,
-      integral_id, integral_pow]
+    rw [e, intervalIntegral.integral_sub
+      ((by fun_prop : Continuous fun α : ℝ => lam * α).intervalIntegrable _ _)
+      ((by fun_prop : Continuous fun α : ℝ => α ^ 2).intervalIntegrable _ _),
+      intervalIntegral.integral_const_mul, integral_id, integral_pow]
     norm_num
     ring
   rw [hsub_eq, h1]
@@ -99,7 +99,8 @@ theorem transThresholdIntegral_four_thirds_one :
     transThresholdIntegral (fun _ => 1) (4 / 3) = 1 / 18 := by
   unfold transThresholdIntegral
   have e : (fun α : ℝ => (4 / 3 - α) * 1) = fun α => (4 / 3 : ℝ) - α := by funext α; ring
-  rw [e, integral_sub intervalIntegrable_const intervalIntegrable_id, integral_const, integral_id]
+  rw [e, intervalIntegral.integral_sub intervalIntegrable_const intervalIntegrable_id,
+    intervalIntegral.integral_const, integral_id]
   simp only [smul_eq_mul]
   norm_num
 
@@ -175,7 +176,7 @@ theorem fejer_shifted_bound_gap {I : ℝ} (hshift : (1 / 2 : ℝ) * I + 20 / 27 
 /-! ## 4. Coalescence Excess-Mass Law and Higher-Moment Rudnick–Sarnak Cap -/
 
 /-- **Coalescence excess-mass law:** if a fraction `f` of zeros coalesce into double zeros so that
-the total mass of `F(α) − D` on `[0, Λ]` is `f − (D − 1/2)` (from the diagonal jump `+f` and the
+the total mass of `F(α) − D` on `[0, Λ]` is `f + (1/2 − D)` (from the diagonal jump `+f` and the
 `[0, 1]` deficit `∫₀¹ (α − D) dα = 1/2 − D`), then the trans-threshold excess mass satisfies
 `∫₁^Λ (F(α) − D) dα = f`. -/
 theorem excess_formFactor_of_coalescence {F : ℝ → ℝ} {D Λ f : ℝ} (hF : Continuous F)
@@ -192,7 +193,8 @@ theorem excess_formFactor_of_coalescence {F : ℝ → ℝ} {D Λ f : ℝ} (hF : 
       refine integral_congr fun α hα => ?_
       rw [uIcc_of_le zero_le_one] at hα
       rw [hF_sub α hα]
-    rw [heq, integral_sub intervalIntegrable_id intervalIntegrable_const, integral_id, integral_const]
+    rw [heq, intervalIntegral.integral_sub intervalIntegrable_id intervalIntegrable_const,
+      integral_id, intervalIntegral.integral_const]
     simp only [smul_eq_mul]
     norm_num
   linarith
@@ -200,7 +202,7 @@ theorem excess_formFactor_of_coalescence {F : ℝ → ℝ} {D Λ f : ℝ} (hF : 
 /-- **Higher-moment Rudnick–Sarnak bandwidth cap:**
 For a `k`-th order (`k ≥ 3`) trace certificate `tr(G^k)` to avoid trans-threshold prime
 correlations (`k * λ ≤ 1`), the bandwidth `λ` is capped at `1/k ≤ 1/3 < 2/3`. -/
-theorem higherMoment_rudnick_sarnak_cap {k : ℕ} (hk : 3 ≤ k) {lam : ℝ} (hlam0 : 0 ≤ lam)
+theorem higherMoment_rudnick_sarnak_cap {k : ℕ} (hk : 3 ≤ k) {lam : ℝ}
     (hrs : (k : ℝ) * lam ≤ 1) :
     lam ≤ 1 / (k : ℝ) ∧ 1 / (k : ℝ) ≤ 1 / 3 ∧ lam < 2 / 3 := by
   have hk3 : (3 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk

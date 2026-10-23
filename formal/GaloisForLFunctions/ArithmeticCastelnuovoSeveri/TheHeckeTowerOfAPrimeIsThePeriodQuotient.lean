@@ -555,56 +555,418 @@ theorem eigInd_mul_eigInd (ℓ : ℝ) (b b' τ : ℂ) :
   unfold eigInd
   split_ifs with h1 h2 h3 h3 h2 h3 <;> simp_all
 
-/-- **The hyperbolic pairs.** For visible eigenvalues `b, b'`, the Krein form of the negative vectors
-is `−2` on the diagonal and `0` off it. -/
+theorem eigInd_mul_eigInd (ℓ : ℝ) (b b' τ : ℂ) :
+    eigInd ℓ b τ * eigInd ℓ b' τ = if b = b' then eigInd ℓ b τ else 0 := by
+  unfold eigInd
+  by_cases hbb : b = b'
+  · subst hbb; split_ifs <;> simp
+  · rw [if_neg hbb]
+    split_ifs with h1 h2
+    · exact absurd (h1.symm.trans h2) hbb
+    all_goals simp
+
+theorem conj_eigInd (ℓ : ℝ) (b τ : ℂ) : conj (eigInd ℓ b τ) = eigInd ℓ b τ := by
+  unfold eigInd; split_ifs <;> simp
+
+theorem eigInd_reflectCarrier (Z : ZeroConfig) (ℓ : ℝ) (b : ℂ) (τ : Z.carrier) :
+    eigInd ℓ b ((reflectCarrier Z τ : Z.carrier) : ℂ) = eigInd ℓ (reflEig b) τ :=
+  eigInd_reflect ℓ b τ
+
+theorem eigInd_mul_eq_ite (ℓ : ℝ) (b τ w : ℂ) :
+    eigInd ℓ b τ * w = if frobEig ℓ τ = b then w else 0 := by
+  unfold eigInd; split_ifs <;> simp
+
+theorem frobWeight_eq_tsum_eigInd (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) :
+    frobWeight Z g ℓ b = ∑' τ : Z.carrier,
+      eigInd ℓ b τ * (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ))) := by
+  simp only [frobWeight, eigInd_mul_eq_ite]
+
+/-- The reflected-class sum is the conjugate weight: `Σ_{β = 1/b̄} conj X_{1−τ̄} X_τ = conj W_b`. -/
+theorem tsum_eigInd_reflEig (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (b : ℂ) :
+    ∑' τ : Z.carrier, eigInd ℓ (reflEig b) τ *
+        (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ) =
+      conj (frobWeight Z g ℓ b) := by
+  rw [frobWeight_eq_tsum_eigInd, Complex.conj_tsum, ← (reflectEquiv Z).tsum_eq]
+  refine tsum_congr fun τ => ?_
+  simp only [reflectEquiv_apply, eigInd_reflectCarrier, reflEig_reflEig,
+    reflectCarrier_reflectCarrier, map_mul, conj_eigInd, Complex.conj_conj]
+  ring
+
+theorem norm_eigInd_mul_le (ℓ : ℝ) (b τ w : ℂ) : ‖eigInd ℓ b τ * w‖ ≤ ‖w‖ := by
+  rw [norm_mul]
+  exact mul_le_of_le_one_left (norm_nonneg _) (norm_eigInd_le ℓ b τ)
+
+/-- **The hyperbolic pair of a visible eigenvalue** has Krein square `−2`. -/
+theorem inner_reflect_eigTarget_self (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) {b : ℂ} (hb : b ∈ visibleEig Z g ℓ hO) :
+    inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b)) (eigTarget Z hZ hg hgc ℓ b) = -2 := by
+  have hbO : b ∈ outerEig Z ℓ := hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1
+  have hW0 : frobWeight Z g ℓ b ≠ 0 := (Finset.mem_filter.mp hb).2
+  have hn := one_lt_norm_of_mem_outerEig hℓ hbO
+  have hS1 := frobWeight_eq_tsum_eigInd Z g ℓ b
+  have hS2 := tsum_eigInd_reflEig Z g ℓ b
+  rw [lp.inner_eq_tsum]
+  simp only [RCLike.inner_apply', reflectVec_apply, eigTarget_apply, eigTargetFun,
+    eigInd_reflectCarrier, reflEig_reflEig]
+  obtain ⟨W, hWdef⟩ : ∃ W, frobWeight Z g ℓ b = W := ⟨_, rfl⟩
+  simp only [hWdef] at hW0 hS1 hS2 ⊢
+  set s : ℂ := ((Real.sqrt ‖W‖ : ℝ) : ℂ)⁻¹ with hs
+  set lam : ℂ := W / (‖W‖ : ℂ) with hlam
+  set A : Z.carrier → ℂ := fun τ =>
+    eigInd ℓ b τ * (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))
+  set B : Z.carrier → ℂ := fun τ =>
+    eigInd ℓ (reflEig b) τ * (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ)
+  have hsum := summable_zeroCoord_mul_reflect Z hZ hg hgc
+  have hA : Summable A := Summable.of_norm_bounded hsum fun τ => norm_eigInd_mul_le ℓ b τ _
+  have hB : Summable B := Summable.of_norm_bounded hsum fun τ => by
+    refine (norm_eigInd_mul_le ℓ _ τ _).trans ?_
+    rw [norm_mul, norm_mul, mul_comm]
+  have hterm : ∀ τ : Z.carrier,
+      conj (s * zeroCoord Z g (reflectCarrier Z τ) *
+          (eigInd ℓ (reflEig b) τ - lam * eigInd ℓ b τ)) *
+        (s * zeroCoord Z g τ * (eigInd ℓ b τ - lam * eigInd ℓ (reflEig b) τ)) =
+      -(conj s * s) * (conj lam * A τ + lam * B τ) := fun τ => by
+    have e1 := eigInd_mul_eigInd_refl ℓ hn hn (τ : ℂ)
+    have e2 : eigInd ℓ (reflEig b) τ * eigInd ℓ b τ = 0 := by rw [mul_comm]; exact e1
+    have e3 := eigInd_mul_eigInd ℓ b b τ
+    have e4 := eigInd_mul_eigInd ℓ (reflEig b) (reflEig b) τ
+    simp only [if_pos rfl] at e3 e4
+    simp only [A, B, map_mul, map_sub, conj_eigInd]
+    linear_combination
+      (conj s * conj (zeroCoord Z g (reflectCarrier Z τ)) * s * zeroCoord Z g τ) *
+        (e2 + conj lam * lam * e1 - lam * e4 - conj lam * e3)
+  rw [tsum_congr hterm, tsum_mul_left, hA.tsum_add hB, tsum_mul_left, tsum_mul_left,
+    ← hS1, hS2]
+  have hn0 : ((‖W‖ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast norm_ne_zero_iff.mpr hW0
+  have hss : conj s * s = ((‖W‖ : ℝ) : ℂ)⁻¹ := by
+    rw [hs, map_inv₀, Complex.conj_ofReal, ← mul_inv, ← Complex.ofReal_mul,
+      Real.mul_self_sqrt (norm_nonneg _)]
+  have hWW : conj W * W = ((‖W‖ : ℝ) : ℂ) ^ 2 := Complex.conj_mul' W
+  have hWW' : W * conj W = ((‖W‖ : ℝ) : ℂ) ^ 2 := Complex.mul_conj' W
+  rw [hss, hlam, map_div₀, Complex.conj_ofReal]
+  field_simp
+  linear_combination 2 * hWW - 0 * hWW' + (hWW' - hWW)
+
+/-- **Distinct visible eigenvalues give Krein-orthogonal pairs.** -/
+theorem inner_reflect_eigTarget_ne (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    {b b' : ℂ} (hbO : b ∈ outerEig Z ℓ) (hbO' : b' ∈ outerEig Z ℓ) (hbb : b ≠ b') :
+    inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b')) (eigTarget Z hZ hg hgc ℓ b) = 0 := by
+  have hn := one_lt_norm_of_mem_outerEig hℓ hbO
+  have hn' := one_lt_norm_of_mem_outerEig hℓ hbO'
+  rw [lp.inner_eq_tsum]
+  refine (tsum_congr fun τ => ?_).trans tsum_zero
+  simp only [RCLike.inner_apply', reflectVec_apply, eigTarget_apply, eigTargetFun,
+    eigInd_reflectCarrier, reflEig_reflEig, map_mul, map_sub, conj_eigInd]
+  have e1 : eigInd ℓ (reflEig b') τ * eigInd ℓ b τ = 0 := by
+    rw [mul_comm]; exact eigInd_mul_eigInd_refl ℓ hn hn' τ
+  have e2 : eigInd ℓ (reflEig b') τ * eigInd ℓ (reflEig b) τ = 0 := by
+    rw [eigInd_mul_eigInd, if_neg]
+    intro h
+    exact hbb (by rw [← reflEig_reflEig b, ← h, reflEig_reflEig])
+  have e3 : eigInd ℓ b' τ * eigInd ℓ b τ = 0 := by rw [eigInd_mul_eigInd, if_neg (Ne.symm hbb)]
+  have e4 : eigInd ℓ b' τ * eigInd ℓ (reflEig b) τ = 0 := eigInd_mul_eigInd_refl ℓ hn' hn τ
+  set s := ((Real.sqrt ‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹
+  set s' := ((Real.sqrt ‖frobWeight Z g ℓ b'‖ : ℝ) : ℂ)⁻¹
+  set lam := frobWeight Z g ℓ b / (‖frobWeight Z g ℓ b‖ : ℂ)
+  set lam' := frobWeight Z g ℓ b' / (‖frobWeight Z g ℓ b'‖ : ℂ)
+  linear_combination
+    (conj s' * conj (zeroCoord Z g (reflectCarrier Z τ)) * s * zeroCoord Z g τ) *
+      (e1 - lam * e2 - conj lam' * e3 + conj lam' * lam * e4)
+
+/-- The Krein Gram of the negative vectors of the visible eigenvalues is `−2·I`. -/
 theorem inner_reflect_eigTarget (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
     (hO : (outerEig Z ℓ).Finite) {b b' : ℂ} (hb : b ∈ visibleEig Z g ℓ hO)
     (hb' : b' ∈ visibleEig Z g ℓ hO) :
     inner ℂ (reflectVec Z (eigTarget Z hZ hg hgc ℓ b')) (eigTarget Z hZ hg hgc ℓ b) =
       if b = b' then -2 else 0 := by
-  have hbO : b ∈ outerEig Z ℓ := hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1
-  have hbO' : b' ∈ outerEig Z ℓ := hO.mem_toFinset.mp (Finset.mem_filter.mp hb').1
-  have hW : frobWeight Z g ℓ b ≠ 0 := (Finset.mem_filter.mp hb).2
-  have hn := one_lt_norm_of_mem_outerEig hℓ hbO
-  have hn' := one_lt_norm_of_mem_outerEig hℓ hbO'
-  rw [lp.inner_eq_tsum]
-  simp only [RCLike.inner_apply', reflectVec_apply, eigTarget_apply]
-  set W := frobWeight Z g ℓ b
-  set W' := frobWeight Z g ℓ b'
-  set s := ((Real.sqrt ‖W‖)⁻¹ : ℂ)
-  set s' := ((Real.sqrt ‖W'‖)⁻¹ : ℂ)
-  -- the reflected coordinates of the target of `b'`
-  have href : ∀ τ : Z.carrier, eigTargetFun Z g ℓ b' (reflectCarrier Z τ) =
-      s' * zeroCoord Z g (reflectCarrier Z τ) *
-        (eigInd ℓ (reflEig b') τ - W' / ‖W'‖ * eigInd ℓ b' τ) := fun τ => by
-    simp only [eigTargetFun, reflectCarrier, eigInd_reflect, reflEig_reflEig]
-    rfl
-  simp only [href]
-  by_cases hbb : b = b'
-  · subst hbb
-    rw [if_pos rfl]
-    -- expand the product; only the two cross classes survive
-    have hterm : ∀ τ : Z.carrier,
-        conj (s * zeroCoord Z g (reflectCarrier Z τ) *
-          (eigInd ℓ (reflEig b) τ - W / ‖W‖ * eigInd ℓ b τ)) * eigTargetFun Z g ℓ b τ =
-        -(conj s * s) * (conj (W / ‖W‖) * (eigInd ℓ b τ *
-          (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) +
-          W / ‖W‖ * (eigInd ℓ (reflEig b) τ *
-          (conj (zeroCoord Z g (reflectCarrier Z τ)) * zeroCoord Z g τ))) := fun τ => by
-      have e1 := eigInd_mul_eigInd_refl ℓ hn hn (τ : ℂ)
-      have e2 : eigInd ℓ (reflEig b) τ * eigInd ℓ b τ = 0 := by rw [mul_comm]; exact e1
-      have e3 := eigInd_mul_eigInd ℓ b b τ
-      have e4 := eigInd_mul_eigInd ℓ (reflEig b) (reflEig b) τ
-      have hc1 : conj (eigInd ℓ b τ) = eigInd ℓ b τ := by unfold eigInd; split_ifs <;> simp
-      have hc2 : conj (eigInd ℓ (reflEig b) τ) = eigInd ℓ (reflEig b) τ := by
-        unfold eigInd; split_ifs <;> simp
-      simp only [if_pos rfl] at e3 e4
-      simp only [eigTargetFun, map_mul, map_sub, hc1, hc2]
-      linear_combination
-        (conj s * conj (zeroCoord Z g ↑(reflectCarrier Z τ)) * s * zeroCoord Z g ↑τ) *
-          (e2 - conj (W / ↑‖W‖) * (W / ↑‖W‖) * e1)
-    sorry
-  · sorry
+  split_ifs with hbb
+  · subst hbb; exact inner_reflect_eigTarget_self Z hZ hg hgc hℓ hO hb
+  · exact inner_reflect_eigTarget_ne Z hZ hg hgc hℓ
+      (hO.mem_toFinset.mp (Finset.mem_filter.mp hb).1)
+      (hO.mem_toFinset.mp (Finset.mem_filter.mp hb').1) hbb
+
+/-! ### The tower Pontryagin law -/
+
+theorem summable_conj_zeroCoord_mul (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (a : ℓ²(Z.carrier, ℂ)) :
+    Summable fun τ : Z.carrier => ‖conj (zeroCoord Z g τ) * a τ‖ := by
+  have h2 := (lp.memℓp a).summable (by norm_num : (0 : ℝ) < (2 : ENNReal).toReal)
+  simp only [ENNReal.toReal_ofNat, Real.rpow_two] at h2
+  refine Summable.of_nonneg_of_le (fun τ => norm_nonneg _) (fun τ => ?_)
+    (((summable_sq_zeroCoord Z hZ hg hgc).add h2).div_const 2)
+  rw [norm_mul, Complex.norm_conj]
+  nlinarith [sq_nonneg (‖zeroCoord Z g τ‖ - ‖a τ‖)]
+
+/-- **The negative vectors lie in the closed span of the tower.** -/
+theorem eigTarget_mem_closure (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) (b : ℂ) :
+    eigTarget Z hZ hg hgc ℓ b ∈
+      (Submodule.span ℂ (Set.range (towerVec Z hZ hg hgc ℓ))).topologicalClosure := by
+  rw [← Submodule.orthogonal_orthogonal_eq_closure, Submodule.mem_orthogonal]
+  intro a ha
+  have hk : ∀ k : ℤ, inner ℂ (towerVec Z hZ hg hgc ℓ k) a = 0 := fun k =>
+    (Submodule.mem_orthogonal _ a).mp ha _ (Submodule.subset_span ⟨k, rfl⟩)
+  have hc := classSum_eq_zero_of_orthogonal_tower Z hZ hg hgc hℓ hO a hk
+  rw [← inner_conj_symm, lp.inner_eq_tsum]
+  have hq := summable_conj_zeroCoord_mul Z hZ hg hgc a
+  set s := ((Real.sqrt ‖frobWeight Z g ℓ b‖ : ℝ) : ℂ)⁻¹
+  set lam := frobWeight Z g ℓ b / (‖frobWeight Z g ℓ b‖ : ℂ)
+  have e : ∀ τ : Z.carrier, inner ℂ (eigTarget Z hZ hg hgc ℓ b τ) (a τ) =
+      conj s * ((if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) -
+        conj lam * (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0)) :=
+    fun τ => by
+      simp only [RCLike.inner_apply', eigTarget_apply, eigTargetFun, map_mul, map_sub,
+        conj_eigInd, ← eigInd_mul_eq_ite]
+      ring
+  have h1 : Summable fun τ : Z.carrier =>
+      (if frobEig ℓ τ = b then conj (zeroCoord Z g τ) * a τ else 0) :=
+    Summable.of_norm_bounded hq fun τ => by split_ifs <;> simp
+  have h2 : Summable fun τ : Z.carrier =>
+      conj lam * (if frobEig ℓ τ = reflEig b then conj (zeroCoord Z g τ) * a τ else 0) :=
+    (Summable.of_norm_bounded hq fun τ => by split_ifs <;> simp).mul_left _
+  rw [tsum_congr e, tsum_mul_left, h1.tsum_sub h2, tsum_mul_left, hc b, hc (reflEig b)]
+  simp
+
+/-- **Refined bound.** With finitely many outer eigenvalues, a window of the tower has at most as
+many negative squares as there are visible eigenvalues: invisible classes contribute nothing. -/
+theorem negIndex_towerGram_le_visible (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) (K : Finset ℤ) :
+    hermNegIndex (towerGram Z g ℓ K) ≤ (visibleEig Z g ℓ hO).card := by
+  set O := visibleEig Z g ℓ hO
+  let Ψ : (K → ℂ) →ₗ[ℂ] (O → ℂ) :=
+    { toFun := fun x b => ∑ k : K, x k * conj (b : ℂ) ^ (k : ℤ)
+      map_add' := fun x y => by
+        funext b; simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+      map_smul' := fun c x => by
+        funext b; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum,
+          mul_assoc] }
+  have hker : ∀ x, Ψ x = 0 → 0 ≤ hermQuad (towerGram Z g ℓ K) x := by
+    intro x hx
+    have hrw : towerGram Z g ℓ K =
+        zeroGram Z fun k : K => (translateTest hg hgc (((k : ℤ) : ℝ) * ℓ) : ℝ → ℂ) := rfl
+    rw [hrw, hermQuad_zeroGram_eq Z hZ]
+    set Y := ∑ k : K, conj (x k) • zeroMap Z hZ (translateTest hg hgc (((k : ℤ) : ℝ) * ℓ))
+    set E : ℂ → ℂ := fun w => ∑ k : K, conj (x k) * w ^ (k : ℤ) with hE
+    have hY : ∀ τ, Y τ = zeroCoord Z g τ * E (frobEig ℓ τ) := fun τ =>
+      towerComb_apply Z hZ hg hgc ℓ K x τ
+    have hEvis : ∀ b ∈ O, E b = 0 := fun b hb => by
+      have h0 := congrFun hx ⟨b, hb⟩
+      simp only [Ψ, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at h0
+      have : E b = conj (∑ k : K, x k * conj b ^ (k : ℤ)) := by
+        simp only [hE, map_sum, map_mul, map_zpow₀, Complex.conj_conj]
+      rw [this, h0, map_zero]
+    rw [lp.inner_eq_tsum]
+    simp only [RCLike.inner_apply', reflectVec_apply]
+    set h : Z.carrier → ℂ := fun τ => conj (Y (reflectCarrier Z τ)) * Y τ with hh
+    have hhs : Summable h := lp.summable_inner (reflectVec Z Y) Y
+    -- split by the position of `τ` relative to the line
+    set on : Z.carrier → ℂ := fun τ => if (τ : ℂ).re = 1 / 2 then h τ else 0
+    set rt : Z.carrier → ℂ := fun τ => if 1 / 2 < (τ : ℂ).re then h τ else 0
+    set lf : Z.carrier → ℂ := fun τ => if (τ : ℂ).re < 1 / 2 then h τ else 0
+    have hon : Summable on := Summable.of_norm_bounded hhs.norm fun τ => by
+      simp only [on]; split_ifs <;> simp
+    have hrt : Summable rt := Summable.of_norm_bounded hhs.norm fun τ => by
+      simp only [rt]; split_ifs <;> simp
+    have hlf : Summable lf := Summable.of_norm_bounded hhs.norm fun τ => by
+      simp only [lf]; split_ifs <;> simp
+    have hsplit : ∀ τ, h τ = on τ + rt τ + lf τ := fun τ => by
+      simp only [on, rt, lf]
+      rcases lt_trichotomy (τ : ℂ).re (1 / 2) with hlt | heq | hgt
+      · rw [if_neg hlt.ne, if_neg (not_lt.mpr hlt.le), if_pos hlt]; ring
+      · rw [if_pos heq, if_neg (by rw [heq]; exact lt_irrefl _),
+          if_neg (by rw [heq]; exact lt_irrefl _)]; ring
+      · rw [if_neg hgt.ne', if_pos hgt, if_neg (not_lt.mpr hgt.le)]; ring
+    -- the left part is the conjugate of the right part
+    have hleft : ∑' τ, lf τ = conj (∑' τ, rt τ) := by
+      rw [Complex.conj_tsum, ← (reflectEquiv Z).tsum_eq]
+      refine tsum_congr fun τ => ?_
+      simp only [lf, rt, h, reflectEquiv_apply, re_reflectCarrier, reflectCarrier_reflectCarrier]
+      by_cases hgt : 1 / 2 < (τ : ℂ).re
+      · rw [if_pos (by linarith), if_pos hgt, map_mul, Complex.conj_conj, mul_comm]
+      · rw [if_neg (by linarith), if_neg hgt, map_zero]
+    -- the right part vanishes class by class
+    have hright : ∑' τ, rt τ = 0 := by
+      have hpart : ∀ τ, rt τ = ∑ b ∈ hO.toFinset, (if frobEig ℓ τ = b then h τ else 0) := by
+        intro τ
+        rw [Finset.sum_ite_eq']
+        simp only [rt]
+        by_cases hgt : 1 / 2 < (τ : ℂ).re
+        · rw [if_pos hgt, if_pos (hO.mem_toFinset.mpr ⟨τ, ⟨τ.2, hgt⟩, rfl⟩)]
+        · rw [if_neg hgt, if_neg]
+          intro hmem
+          have h1 := one_lt_norm_of_mem_outerEig hℓ (hO.mem_toFinset.mp hmem)
+          rw [norm_frobEig, ← Real.exp_zero, Real.exp_lt_exp] at h1
+          nlinarith
+      rw [tsum_congr hpart, Summable.tsum_finsetSum fun b _ =>
+        Summable.of_norm_bounded hhs.norm fun τ => by split_ifs <;> simp]
+      refine Finset.sum_eq_zero fun b hb => ?_
+      have hcl : ∀ τ : Z.carrier, (if frobEig ℓ τ = b then h τ else 0) =
+          conj (E (reflEig b)) * E b * (eigInd ℓ b τ *
+            (zeroCoord Z g τ * conj (zeroCoord Z g (reflectCarrier Z τ)))) := fun τ => by
+        unfold eigInd
+        split_ifs with hβ
+        · simp only [h, hY]
+          rw [show ((reflectCarrier Z τ : Z.carrier) : ℂ) = reflect (τ : ℂ) from rfl,
+            frobEig_reflect, hβ]
+          simp only [reflEig, map_mul]
+          ring
+        · simp
+      rw [tsum_congr hcl, tsum_mul_left, ← frobWeight_eq_tsum_eigInd]
+      by_cases hvis : b ∈ O
+      · rw [hEvis b hvis]; simp
+      · have hW : frobWeight Z g ℓ b = 0 := by
+          by_contra hne
+          exact hvis (Finset.mem_filter.mpr ⟨hb, hne⟩)
+        rw [hW, mul_zero]
+    have hfull : ∑' τ, h τ = ∑' τ, on τ + ∑' τ, rt τ + ∑' τ, lf τ := by
+      rw [tsum_congr hsplit, (hon.add hrt).tsum_add hlf, hon.tsum_add hrt]
+    show 0 ≤ (∑' τ, h τ).re
+    rw [hfull, hleft, hright, map_zero, add_zero, add_zero, Complex.re_tsum hon]
+    refine tsum_nonneg fun τ => ?_
+    simp only [on]
+    split_ifs with heq
+    · simp only [h, reflectCarrier_eq_self heq, Complex.conj_mul', ← Complex.ofReal_pow,
+        Complex.ofReal_re]
+      positivity
+    · simp
+  obtain ⟨V, hrank, hV⟩ := exists_isPosDefOn_finrank_eq_posIndex (-(towerGram Z g ℓ K))
+  have hinj : LinearMap.ker (Ψ.domRestrict V) = ⊥ := by
+    rw [LinearMap.ker_eq_bot']
+    intro x hx
+    by_contra hx0
+    have h1 := hV x x.2 (fun h => hx0 (Subtype.ext h))
+    rw [hermQuad_neg] at h1
+    linarith [hker x hx]
+  have h := LinearMap.finrank_le_finrank_of_injective (LinearMap.ker_eq_bot.mp hinj)
+  rw [Module.finrank_fintype_fun_eq_card, Fintype.card_coe] at h
+  unfold hermNegIndex
+  rw [← hrank]
+  exact h
+
+/-- **Attainment on the tower.** Some window of the tower has as many negative squares as there are
+visible eigenvalues. -/
+theorem exists_towerGram_negIndex_ge (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) :
+    ∃ K : Finset ℤ, (visibleEig Z g ℓ hO).card ≤ hermNegIndex (towerGram Z g ℓ K) := by
+  set O := visibleEig Z g ℓ hO
+  set t : O → ℓ²(Z.carrier, ℂ) := fun b => eigTarget Z hZ hg hgc ℓ b with ht
+  have hRt : ∀ i j : O, inner ℂ (reflectVec Z (t j)) (t i) = if i = j then -2 else 0 := by
+    intro i j
+    rw [inner_reflect_eigTarget Z hZ hg hgc hℓ hO i.2 j.2]
+    simp only [Subtype.ext_iff]
+  set M : ℝ := ∑ b : O, ‖t b‖ + 1 with hM
+  have hM1 : 1 ≤ M := by
+    have : 0 ≤ ∑ b : O, ‖t b‖ := Finset.sum_nonneg fun _ _ => norm_nonneg _
+    linarith
+  have htM : ∀ b, ‖t b‖ ≤ M := fun b => by
+    have := Finset.single_le_sum (f := fun b => ‖t b‖) (fun _ _ => norm_nonneg _)
+      (Finset.mem_univ b)
+    linarith
+  set k := Fintype.card O with hk
+  set ε : ℝ := 1 / ((2 * M + 1) * ((k : ℝ) + 1)) with hε
+  have hε0 : 0 < ε := by positivity
+  have hε1 : ε ≤ 1 := by
+    rw [hε, div_le_one (by positivity)]
+    have : (0 : ℝ) ≤ k := Nat.cast_nonneg _
+    nlinarith
+  -- approximants from the closed span of the tower
+  have happrox : ∀ b : O, ∃ c : ℤ →₀ ℂ,
+      ‖(c.sum fun k a => a • towerVec Z hZ hg hgc ℓ k) - t b‖ < ε := by
+    intro b
+    have hmem := eigTarget_mem_closure Z hZ hg hgc hℓ hO b
+    rw [← SetLike.mem_coe, Submodule.topologicalClosure_coe, Metric.mem_closure_iff] at hmem
+    obtain ⟨y, hy, hdist⟩ := hmem ε hε0
+    obtain ⟨c, rfl⟩ := Finsupp.mem_span_range_iff_exists_finsupp.mp hy
+    exact ⟨c, by rwa [dist_comm, dist_eq_norm] at hdist⟩
+  choose c hc using happrox
+  set K : Finset ℤ := Finset.univ.biUnion fun b => (c b).support with hK
+  refine ⟨K, ?_⟩
+  set tt : K → testSpace := fun k => translateTest hg hgc (((k : ℤ) : ℝ) * ℓ) with htt
+  set C : Matrix O K ℂ := fun b k => c b k with hC
+  set f : O → testSpace := fun b => ∑ k, C b k • tt k with hf
+  have hfX : ∀ b, zeroMap Z hZ (f b) = (c b).sum fun k a => a • towerVec Z hZ hg hgc ℓ k := by
+    intro b
+    simp only [hf, map_sum, map_smul, hC, htt, Finsupp.sum]
+    rw [Finset.sum_coe_sort K (fun k => c b k • zeroMap Z hZ (translateTest hg hgc ((k : ℝ) * ℓ)))]
+    refine (Finset.sum_subset (fun k hk => Finset.mem_biUnion.mpr ⟨b, Finset.mem_univ _, hk⟩)
+      fun k _ hk => ?_).symm
+    rw [Finsupp.notMem_support_iff.mp hk, zero_smul]
+  have hentry : ∀ i j, ‖zeroGram Z (fun i => (f i : ℝ → ℂ)) i j - (if i = j then -2 else 0)‖ ≤
+      (2 * M + 1) * ε := by
+    intro i j
+    have hGij : zeroGram Z (fun i => (f i : ℝ → ℂ)) i j =
+        inner ℂ (reflectVec Z (zeroMap Z hZ (f j))) (zeroMap Z hZ (f i)) :=
+      W_eq_inner Z hZ (f i) (f j)
+    have hdi : zeroMap Z hZ (f i) = t i + (zeroMap Z hZ (f i) - t i) := by abel
+    have hdj : zeroMap Z hZ (f j) = t j + (zeroMap Z hZ (f j) - t j) := by abel
+    set ei := zeroMap Z hZ (f i) - t i
+    set ej := zeroMap Z hZ (f j) - t j
+    have hei : ‖ei‖ < ε := by simp only [ei, hfX]; exact hc i
+    have hej : ‖ej‖ < ε := by simp only [ej, hfX]; exact hc j
+    rw [hGij, hdi, hdj, reflectVec_add, inner_add_left, inner_add_right, inner_add_right, hRt i j]
+    have h1 := (norm_inner_le_norm (𝕜 := ℂ) (reflectVec Z (t j)) ei).trans_eq
+      (by rw [norm_reflectVec])
+    have h2 := (norm_inner_le_norm (𝕜 := ℂ) (reflectVec Z ej) (t i)).trans_eq
+      (by rw [norm_reflectVec])
+    have h3 := (norm_inner_le_norm (𝕜 := ℂ) (reflectVec Z ej) ei).trans_eq
+      (by rw [norm_reflectVec])
+    calc ‖(if i = j then -2 else 0) + inner ℂ (reflectVec Z (t j)) ei +
+          (inner ℂ (reflectVec Z ej) (t i) + inner ℂ (reflectVec Z ej) ei) -
+            (if i = j then -2 else 0)‖
+        = ‖inner ℂ (reflectVec Z (t j)) ei + inner ℂ (reflectVec Z ej) (t i) +
+            inner ℂ (reflectVec Z ej) ei‖ := by congr 1; ring
+      _ ≤ ‖t j‖ * ‖ei‖ + ‖ej‖ * ‖t i‖ + ‖ej‖ * ‖ei‖ :=
+        norm_add₃_le.trans (add_le_add (add_le_add h1 h2) h3)
+      _ ≤ M * ε + ε * M + ε * ε := by
+        have := htM i; have := htM j
+        gcongr
+      _ ≤ (2 * M + 1) * ε := by nlinarith
+  have hη : (2 * M + 1) * ε * (Fintype.card O : ℝ) ≤ 1 := by
+    rw [← hk, hε]
+    have : (0 : ℝ) ≤ k := Nat.cast_nonneg _
+    rw [show (2 * M + 1) * (1 / ((2 * M + 1) * ((k : ℝ) + 1))) * k = k / (k + 1) by
+      field_simp, div_le_one (by positivity)]
+    linarith
+  have hpd : IsPosDefOn (-(zeroGram Z fun i => (f i : ℝ → ℂ))) ⊤ := fun x _ hx0 => by
+    rw [hermQuad_neg]
+    obtain ⟨i, hi⟩ := Function.ne_iff.mp hx0
+    have hpos : 0 < ∑ i, ‖x i‖ ^ 2 :=
+      lt_of_lt_of_le (pow_pos (norm_pos_iff.mpr hi) 2) (Finset.single_le_sum
+        (f := fun i => ‖x i‖ ^ 2) (fun i _ => by positivity) (Finset.mem_univ i))
+    linarith [hermQuad_le_of_near _ hη hentry x]
+  have h1 := finrank_le_posIndex hpd
+  rw [finrank_top, Module.finrank_fintype_fun_eq_card] at h1
+  have hcomb : zeroGram Z (fun i => (f i : ℝ → ℂ)) = C * towerGram Z g ℓ K * Cᴴ :=
+    zeroGram_comb Z hZ tt C
+  calc (visibleEig Z g ℓ hO).card = Fintype.card O := (Fintype.card_coe _).symm
+    _ ≤ hermNegIndex (zeroGram Z fun i => (f i : ℝ → ℂ)) := h1
+    _ = hermNegIndex (C * towerGram Z g ℓ K * Cᴴ) := by rw [hcomb]
+    _ ≤ hermNegIndex (towerGram Z g ℓ K) := hermNegIndex_mul_mul_conjTranspose_le C _
+
+/-- **The tower Pontryagin law.** If a tempered configuration has finitely many outer eigenvalues at
+scale `ℓ = log p > 0`, the Weil form has `n` negative squares on some window of the Hecke tower
+`g(· − k ℓ)` iff at least `n` outer eigenvalues `p^{ρ − ½}` have nonzero Frobenius weight. -/
+theorem tower_pontryagin_law (Z : ZeroConfig) (hZ : TemperedConfig Z) {g : ℝ → ℂ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (hO : (outerEig Z ℓ).Finite) (n : ℕ) :
+    (∃ K : Finset ℤ, n ≤ hermNegIndex (towerGram Z g ℓ K)) ↔ n ≤ (visibleEig Z g ℓ hO).card := by
+  constructor
+  · rintro ⟨K, hK⟩
+    exact hK.trans (negIndex_towerGram_le_visible Z hZ hg hgc hℓ hO K)
+  · intro hn
+    obtain ⟨K, hK⟩ := exists_towerGram_negIndex_ge Z hZ hg hgc hℓ hO
+    exact ⟨K, hn.trans hK⟩
+
+/-- The visible eigenvalues are at most the distinct outer eigenvalues. -/
+theorem card_visibleEig_le (Z : ZeroConfig) (g : ℝ → ℂ) (ℓ : ℝ) (hO : (outerEig Z ℓ).Finite) :
+    ((visibleEig Z g ℓ hO).card : ℕ∞) ≤ (outerEig Z ℓ).encard := by
+  rw [hO.encard_eq_coe_toFinset_card]
+  exact ENat.coe_le_coe.mpr (Finset.card_filter_le _ _)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

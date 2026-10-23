@@ -1470,25 +1470,146 @@ theorem reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc {F : ℝ → ℝ} {r 
   rw [deriv_deriv_lagTestWeight hF hFc s]
   ring
 
-/-- Uniform Sobolev bound on the second-order lag factor
-`autoCorrelation (deriv F) s + crossCorrelation F s − autoCorrelation F s / 4`. -/
-theorem abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le {F : ℝ → ℝ}
-    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (s : ℝ) :
-    |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4| ≤
-      (3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2 := by
-  have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
-  have hd : |autoCorrelation (deriv F) s| ≤ ∫ x, deriv F x ^ 2 := by
-    rw [← autoCorr_eq_autoCorrelation]
-    exact abs_autoCorr_le_integral_sq (hF1.continuous_deriv le_rfl) hFc.deriv s
-  have hcc := abs_crossCorrelation_le_half_add_half_deriv_sq hF1 hFc s
-  have hac : |autoCorrelation F s| ≤ ∫ x, F x ^ 2 := by
-    rw [← autoCorr_eq_autoCorrelation]
-    exact abs_autoCorr_le_integral_sq hF.continuous hFc s
-  have htri1 := abs_sub (autoCorrelation (deriv F) s + crossCorrelation F s)
-    (autoCorrelation F s / 4)
-  have htri2 := abs_add_le (autoCorrelation (deriv F) s) (crossCorrelation F s)
-  rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 4)] at htri1
+/-- Integration by parts for the shifted derivative cross-correlation: for every `F ∈ C¹_c(ℝ)` and
+every lag `s ∈ ℝ`, `∫ F'(x) F(x + s) dx = −crossCorrelation F s`. -/
+theorem integral_deriv_mul_shift_eq_neg_crossCorrelation {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    (∫ x, deriv F x * F (x + s)) = -crossCorrelation F s := by
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  set g : ℝ → ℝ := fun x => F x * F (x + s)
+  set g' : ℝ → ℝ := fun x => deriv F x * F (x + s) + F x * deriv F (x + s)
+  have hg : ∀ x, HasDerivAt g (g' x) x := fun x => by
+    have h1 : HasDerivAt F (deriv F x) x := (hF.differentiable one_ne_zero x).hasDerivAt
+    have h2 : HasDerivAt (fun y => F (y + s)) (deriv F (x + s)) x := by
+      have hc : HasDerivAt (fun y => F (s + y)) (deriv F (s + x)) x :=
+        HasDerivAt.comp_const_add s x ((hF.differentiable one_ne_zero (s + x)).hasDerivAt)
+      have heq : (fun y => F (s + y)) = fun y => F (y + s) :=
+        funext fun y => by rw [add_comm]
+      rwa [heq, add_comm s x] at hc
+    exact h1.mul h2
+  have hg'c : Continuous g' :=
+    (hdcont.mul (hFcont.comp (continuous_id.add continuous_const))).add
+      (hFcont.mul (hdcont.comp (continuous_id.add continuous_const)))
+  have hgc : HasCompactSupport g := hFc.mul_right
+  have hzero := GaloisForLFunctions.HTGeometry.integral_deriv_eq_zero_of_hasCompactSupport
+    hg hg'c hgc
+  have hint1 : Integrable fun x => deriv F x * F (x + s) :=
+    (hdcont.mul (hFcont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.deriv.mul_right
+  have hint2 : Integrable fun x => F x * deriv F (x + s) :=
+    (hFcont.mul (hdcont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
+      hFc.mul_right
+  have hsplit : (∫ x, g' x) = (∫ x, deriv F x * F (x + s)) + crossCorrelation F s := by
+    change (∫ x, deriv F x * F (x + s) + F x * deriv F (x + s)) = _
+    rw [integral_add hint1 hint2]
+    rfl
   linarith
+
+/-- **Pole-tilted self-convolution factorization of the second-order lag factor.** For every
+`F ∈ C¹_c(ℝ)` and every lag `s ∈ ℝ`,
+`autoCorrelation (deriv F) s + crossCorrelation F s − autoCorrelation F s / 4` equals the correlation
+`∫ (F'(x) + ½ F(x))(F'(x + s) − ½ F(x + s)) dx` of the two pole-tilted derivatives `F' ± ½ F`. -/
+theorem autoCorrelation_deriv_add_crossCorrelation_sub_quarter_eq {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4 =
+      ∫ x, (deriv F x + F x / 2) * (deriv F (x + s) - F (x + s) / 2) := by
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  have hFs : Continuous fun x => F (x + s) := hFcont.comp (continuous_id.add continuous_const)
+  have hds : Continuous fun x => deriv F (x + s) := hdcont.comp (continuous_id.add continuous_const)
+  have hi1 : Integrable fun x => deriv F x * deriv F (x + s) :=
+    (hdcont.mul hds).integrable_of_hasCompactSupport hFc.deriv.mul_right
+  have hi2 : Integrable fun x => F x * deriv F (x + s) :=
+    (hFcont.mul hds).integrable_of_hasCompactSupport hFc.mul_right
+  have hi3 : Integrable fun x => deriv F x * F (x + s) :=
+    (hdcont.mul hFs).integrable_of_hasCompactSupport hFc.deriv.mul_right
+  have hi4 : Integrable fun x => F x * F (x + s) :=
+    (hFcont.mul hFs).integrable_of_hasCompactSupport hFc.mul_right
+  have heq : (fun x => (deriv F x + F x / 2) * (deriv F (x + s) - F (x + s) / 2)) =
+      fun x => (deriv F x * deriv F (x + s) + (1 / 2) * (F x * deriv F (x + s))) +
+        (-(1 / 2) * (deriv F x * F (x + s)) - (1 / 4) * (F x * F (x + s))) :=
+    funext fun x => by ring
+  rw [heq, integral_add (hi1.add (hi2.const_mul _)) ((hi3.const_mul _).sub (hi4.const_mul _)),
+    integral_add hi1 (hi2.const_mul _), integral_sub (hi3.const_mul _) (hi4.const_mul _),
+    integral_const_mul, integral_const_mul, integral_const_mul,
+    integral_deriv_mul_shift_eq_neg_crossCorrelation hF hFc s]
+  unfold autoCorrelation crossCorrelation
+  ring
+
+/-- **Sharp pole-tilted Sobolev bound on the second-order lag factor.** Because the cross terms of
+`½(F'(x) + ½ F(x))²` and `½(F'(x + s) − ½ F(x + s))²` are `+½ F(x) F'(x)` and `−½ F(x + s) F'(x + s)`
+and cancel under translation, `|autoCorrelation (deriv F) s + crossCorrelation F s − autoCorrelation F s / 4|`
+is bounded by the sharp norm `(1/4) ∫ F² + ∫ (deriv F)²` for every `F ∈ C¹_c(ℝ)`. -/
+theorem abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 1 F) (hFc : HasCompactSupport F) (s : ℝ) :
+    |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4| ≤
+      (1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2 := by
+  have hFcont : Continuous F := hF.continuous
+  have hdcont : Continuous (deriv F) := hF.continuous_deriv le_rfl
+  have hdcs : HasCompactSupport (deriv F) := hFc.deriv
+  have hFs_cont : Continuous fun x => F (x + s) := hFcont.comp (continuous_id.add continuous_const)
+  have hds_cont : Continuous fun x => deriv F (x + s) :=
+    hdcont.comp (continuous_id.add continuous_const)
+  have hFs_cs : HasCompactSupport fun x => F (x + s) :=
+    hFc.comp_homeomorph (Homeomorph.addRight s)
+  have hds_cs : HasCompactSupport fun x => deriv F (x + s) :=
+    hdcs.comp_homeomorph (Homeomorph.addRight s)
+  have hp_cont : Continuous fun x => deriv F x + F x / 2 := hdcont.add (hFcont.div_const 2)
+  have hm_cont : Continuous fun x => deriv F (x + s) - F (x + s) / 2 :=
+    hds_cont.sub (hFs_cont.div_const 2)
+  have hp_cs : HasCompactSupport fun x => deriv F x + F x / 2 := by
+    refine HasCompactSupport.intro (isCompact_tsupport F ∪ isCompact_tsupport (deriv F)) fun x hx => ?_
+    have hxF : F x = 0 := image_eq_zero_of_notMem_tsupport fun h => hx (Or.inl h)
+    have hxd : deriv F x = 0 := image_eq_zero_of_notMem_tsupport fun h => hx (Or.inr h)
+    simp [hxF, hxd]
+  have hprod : Integrable fun x => (deriv F x + F x / 2) * (deriv F (x + s) - F (x + s) / 2) :=
+    (hp_cont.mul hm_cont).integrable_of_hasCompactSupport hp_cs.mul_right
+  have hF2 : Integrable fun x => F x ^ 2 :=
+    (hFcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFc)
+  have hd2 : Integrable fun x => deriv F x ^ 2 :=
+    (hdcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hdcs)
+  have hF2s : Integrable fun x => F (x + s) ^ 2 :=
+    (hFs_cont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hFs_cs)
+  have hd2s : Integrable fun x => deriv F (x + s) ^ 2 :=
+    (hds_cont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hds_cs)
+  have hFd : Integrable fun x => F x * deriv F x :=
+    (hFcont.mul hdcont).integrable_of_hasCompactSupport hFc.mul_right
+  have hFds : Integrable fun x => F (x + s) * deriv F (x + s) :=
+    (hFs_cont.mul hds_cont).integrable_of_hasCompactSupport hFs_cs.mul_right
+  have hmaj : Integrable fun x =>
+      ((1 / 8) * F x ^ 2 + (1 / 2) * deriv F x ^ 2 + (1 / 2) * (F x * deriv F x)) +
+        ((1 / 8) * F (x + s) ^ 2 + (1 / 2) * deriv F (x + s) ^ 2 -
+          (1 / 2) * (F (x + s) * deriv F (x + s))) :=
+    (((hF2.const_mul _).add (hd2.const_mul _)).add (hFd.const_mul _)).add
+      (((hF2s.const_mul _).add (hd2s.const_mul _)).sub (hFds.const_mul _))
+  have hmono : (∫ x, |(deriv F x + F x / 2) * (deriv F (x + s) - F (x + s) / 2)|) ≤
+      ∫ x, (((1 / 8) * F x ^ 2 + (1 / 2) * deriv F x ^ 2 + (1 / 2) * (F x * deriv F x)) +
+        ((1 / 8) * F (x + s) ^ 2 + (1 / 2) * deriv F (x + s) ^ 2 -
+          (1 / 2) * (F (x + s) * deriv F (x + s)))) := by
+    refine integral_mono hprod.norm hmaj fun x => ?_
+    have h1 : 0 ≤ ((deriv F x + F x / 2) - (deriv F (x + s) - F (x + s) / 2)) ^ 2 := sq_nonneg _
+    have h2 : 0 ≤ ((deriv F x + F x / 2) + (deriv F (x + s) - F (x + s) / 2)) ^ 2 := sq_nonneg _
+    rw [abs_le]
+    constructor <;> linarith
+  have hval : (∫ x, (((1 / 8) * F x ^ 2 + (1 / 2) * deriv F x ^ 2 + (1 / 2) * (F x * deriv F x)) +
+        ((1 / 8) * F (x + s) ^ 2 + (1 / 2) * deriv F (x + s) ^ 2 -
+          (1 / 2) * (F (x + s) * deriv F (x + s))))) =
+      (1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2 := by
+    rw [integral_add (((hF2.const_mul _).add (hd2.const_mul _)).add (hFd.const_mul _))
+      (((hF2s.const_mul _).add (hd2s.const_mul _)).sub (hFds.const_mul _)),
+      integral_add ((hF2.const_mul _).add (hd2.const_mul _)) (hFd.const_mul _),
+      integral_add (hF2.const_mul _) (hd2.const_mul _),
+      integral_sub ((hF2s.const_mul _).add (hd2s.const_mul _)) (hFds.const_mul _),
+      integral_add (hF2s.const_mul _) (hd2s.const_mul _),
+      integral_const_mul, integral_const_mul, integral_const_mul,
+      integral_const_mul, integral_const_mul, integral_const_mul,
+      integral_add_right_eq_self (μ := volume) (fun x => F x ^ 2) s,
+      integral_add_right_eq_self (μ := volume) (fun x => deriv F x ^ 2) s,
+      integral_add_right_eq_self (μ := volume) (fun x => F x * deriv F x) s]
+    ring
+  rw [autoCorrelation_deriv_add_crossCorrelation_sub_quarter_eq hF hFc s, ← hval]
+  exact abs_integral_le_integral_abs.trans hmono
 
 /-- On any finite horizon `(0, S]`, `2 e^{−s/2} |criticalScalePrefix s + s²/2 − s|` is integrable. -/
 theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix (S : ℝ) :
@@ -1511,14 +1632,14 @@ theorem integrableOn_Ioc_exp_mul_abs_criticalScalePrefix (S : ℝ) :
 /-- **Second-order signed prime–pole cancellation bound across all odd `C²_c` tests.** For every odd
 `F ∈ C²_c(ℝ)` supported in `[−r, r]` (`r > 0`), `|reflectedPrimePolarCost F r|` is bounded by the
 `L¹` norm of the critical-scale prefix functional `2 e^{−s/2} |D(s) + s²/2 − s|` on `(0, 2r]` times
-the `H¹` norm `(3/4) ∫ F² + (3/2) ∫ (deriv F)²`. -/
+the sharp pole-tilted `H¹` norm `(1/4) ∫ F² + ∫ (deriv F)²`. -/
 theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : ℝ → ℝ} {r : ℝ}
     (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
     (hr : 0 < r) (hsupp : ∀ x, r < |x| → F x = 0) :
     |reflectedPrimePolarCost F r| ≤
       (∫ s in Ioc (0 : ℝ) (2 * r),
         2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
-        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) := by
+        ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2) := by
   set N := ⌈Real.exp (2 * r)⌉₊
   have hN : Real.exp (2 * r) ≤ N := Nat.le_ceil _
   have hF1 : ContDiff ℝ 1 F := hF.of_le (by norm_num)
@@ -1547,7 +1668,7 @@ theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : �
     ring
   have hint_bound : IntegrableOn (fun s =>
       (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
-        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
+        ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2)) (Ioc 0 (2 * r)) :=
     (integrableOn_Ioc_exp_mul_abs_criticalScalePrefix (2 * r)).mul_const _
   rw [reflectedPrimePolarCost_eq_criticalScalePrefix_Ioc hF hFc hodd hr hsupp]
   refine le_trans abs_integral_le_integral_abs ?_
@@ -1557,7 +1678,7 @@ theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : �
           (autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4))|) ≤
       ∫ s in Ioc (0 : ℝ) (2 * r),
         (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
-          ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) := by
+          ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2) := by
     refine setIntegral_mono_on hint_g hint_bound measurableSet_Ioc fun s _ => ?_
     have hpos : 0 < 2 * Real.exp (-s / 2) := by positivity
     rw [abs_mul, abs_mul, abs_of_pos hpos,
@@ -1567,7 +1688,7 @@ theorem abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : �
         (2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
           |autoCorrelation (deriv F) s + crossCorrelation F s - autoCorrelation F s / 4| by ring]
     exact mul_le_mul_of_nonneg_left
-      (abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le hF hFc s) (by positivity)
+      (abs_autoCorrelation_deriv_add_crossCorrelation_sub_quarter_le hF1 hFc s) (by positivity)
   rw [MeasureTheory.integral_mul_const] at hmono
   exact hmono
 
@@ -1577,9 +1698,254 @@ theorem reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev {F : ℝ �
     reflectedPrimePolarCost F r ≤
       (∫ s in Ioc (0 : ℝ) (2 * r),
         2 * Real.exp (-s / 2) * |criticalScalePrefix s + s ^ 2 / 2 - s|) *
-        ((3 / 4) * (∫ x, F x ^ 2) + (3 / 2) * ∫ x, deriv F x ^ 2) :=
+        ((1 / 4) * (∫ x, F x ^ 2) + ∫ x, deriv F x ^ 2) :=
   (le_abs_self _).trans
     (abs_reflectedPrimePolarCost_le_criticalScalePrefix_L1_mul_sobolev hF hFc hodd hr hsupp)
+
+/-! ### De la Vallée Poussin prime–pole cancellation beyond the `e^r` envelope across all apertures -/
+
+theorem lagChebyshev_eq_chebyshevPsi (s : ℝ) :
+    lagChebyshev s = Chebyshev.psi (Real.exp s) := by
+  rw [lagChebyshev, Chebyshev.psi, ← Finset.Ioc_insert_left (Nat.zero_le _),
+    Finset.sum_insert (by simp)]
+  simp
+
+/-- **All-scale de la Vallée Poussin bound on the two-pole Chebyshev defect.** With universal
+constants `c > 0` and `K > 0`, for every horizon `S ≥ 0`, every damping exponent `0 ≤ θ ≤ 1/2`, and
+every `s ∈ [0, S]`, `|chebyshevTwoPoleDefect s| e^{−θs} ≤ K e^{(1−θ)S} exp(−c√S)`. -/
+theorem exists_abs_chebyshevTwoPoleDefect_mul_exp_le :
+    ∃ c > 0, ∃ K > 0, ∀ S : ℝ, 0 ≤ S → ∀ θ : ℝ, 0 ≤ θ → θ ≤ 1 / 2 →
+      ∀ s ∈ Icc (0 : ℝ) S, |chebyshevTwoPoleDefect s| * Real.exp (-θ * s) ≤
+        K * Real.exp ((1 - θ) * S) * Real.exp (-c * Real.sqrt S) := by
+  obtain ⟨C, c, hc, hC, hev⟩ := _root_.RHTower.exists_psi_error_eventually
+  obtain ⟨X, hX⟩ := eventually_atTop.mp hev
+  set s₁ := max (max (Real.log X) 4) (4 * c ^ 2)
+  have hs₁4 : 4 ≤ s₁ := (le_max_right _ _).trans (le_max_left _ _)
+  have hs₁c : 4 * c ^ 2 ≤ s₁ := le_max_right _ _
+  have hs₁X : Real.log X ≤ s₁ := (le_max_left _ _).trans (le_max_left _ _)
+  set B₁ := Real.exp s₁ + (s₁ + 1) + Chebyshev.psi (Real.exp s₁)
+  have hB₁ : 0 ≤ B₁ := by have := Chebyshev.psi_nonneg (Real.exp s₁); positivity
+  set K := (C + 1 + B₁) * Real.exp (c * Real.sqrt s₁)
+  have hK : 0 < K := by positivity
+  refine ⟨c, hc, K, hK, fun S hS0 θ hθ0 hθ1 s hs => ?_⟩
+  obtain ⟨hs0, hsS⟩ := hs
+  have hsqrt : ∀ t, 4 * c ^ 2 ≤ t → c * Real.sqrt t ≤ t / 2 := by
+    intro t ht
+    have ht0 : 0 ≤ t := le_trans (by positivity) ht
+    have h1 : 2 * c ≤ Real.sqrt t := Real.le_sqrt_of_sq_le (by nlinarith)
+    have h2 := Real.mul_self_sqrt ht0
+    nlinarith [Real.sqrt_nonneg t]
+  have hE : chebyshevTwoPoleDefect s = (Real.exp s - Chebyshev.psi (Real.exp s)) + (s - 1) := by
+    rw [chebyshevTwoPoleDefect_eq_error_add, chebyshevError, lagChebyshev_eq_chebyshevPsi]
+  have hw : Real.exp (-θ * s) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  rcases le_or_gt s s₁ with hss | hss
+  · have hbd : |chebyshevTwoPoleDefect s| ≤ B₁ := by
+      rw [hE]
+      have h1 : Real.exp s ≤ Real.exp s₁ := Real.exp_le_exp.mpr hss
+      have h2 : Chebyshev.psi (Real.exp s) ≤ Chebyshev.psi (Real.exp s₁) :=
+        Chebyshev.psi_mono h1
+      have h3 := Chebyshev.psi_nonneg (Real.exp s)
+      have h4 := Real.exp_pos s
+      rw [abs_le]; constructor <;> nlinarith
+    have hgS : 1 ≤ Real.exp (c * Real.sqrt s₁) *
+        (Real.exp ((1 - θ) * S) * Real.exp (-c * Real.sqrt S)) := by
+      rw [← Real.exp_add, ← Real.exp_add]
+      refine Real.one_le_exp ?_
+      rcases le_or_gt S s₁ with hSs₁ | hSs₁
+      · have hsq : Real.sqrt S ≤ Real.sqrt s₁ := Real.sqrt_le_sqrt hSs₁
+        nlinarith
+      · have hSc := hsqrt S (hs₁c.trans hSs₁.le)
+        have hsq0 : 0 ≤ Real.sqrt s₁ := Real.sqrt_nonneg s₁
+        nlinarith
+    calc |chebyshevTwoPoleDefect s| * Real.exp (-θ * s) ≤ B₁ * 1 :=
+          mul_le_mul hbd hw (Real.exp_pos _).le hB₁
+      _ ≤ (C + 1 + B₁) * (Real.exp (c * Real.sqrt s₁) *
+            (Real.exp ((1 - θ) * S) * Real.exp (-c * Real.sqrt S))) :=
+          mul_le_mul (by linarith) hgS zero_le_one (by positivity)
+      _ = K * Real.exp ((1 - θ) * S) * Real.exp (-c * Real.sqrt S) := by ring
+  · have hs1 : s₁ ≤ s := hss.le
+    have hXs : X ≤ Real.exp s := by
+      calc X ≤ max X 1 := le_max_left _ _
+        _ = Real.exp (Real.log (max X 1)) := (Real.exp_log (by positivity)).symm
+        _ ≤ Real.exp s := Real.exp_le_exp.mpr (by
+            rcases le_or_gt X 1 with hX1 | hX1
+            · rw [max_eq_right hX1, Real.log_one]; linarith
+            · rw [max_eq_left hX1.le]; linarith)
+    have hpnt := hX (Real.exp s) hXs
+    rw [Real.log_exp, abs_sub_comm] at hpnt
+    have hlin : |s - 1| ≤ Real.exp s * Real.exp (-c * Real.sqrt s) := by
+      have h1 : s + 1 ≤ Real.exp (s / 2) := by
+        have := Real.quadratic_le_exp_of_nonneg (by linarith : (0 : ℝ) ≤ s / 2)
+        nlinarith
+      have h2 : Real.exp (s / 2) ≤ Real.exp s * Real.exp (-c * Real.sqrt s) := by
+        rw [← Real.exp_add]
+        exact Real.exp_le_exp.mpr (by linarith [hsqrt s (hs₁c.trans hs1)])
+      rw [abs_le]; constructor <;> linarith
+    have hpt : |chebyshevTwoPoleDefect s| ≤ (C + 1) * (Real.exp s * Real.exp (-c * Real.sqrt s)) := by
+      rw [hE]
+      calc |(Real.exp s - Chebyshev.psi (Real.exp s)) + (s - 1)|
+          ≤ |Real.exp s - Chebyshev.psi (Real.exp s)| + |s - 1| := abs_add_le _ _
+        _ ≤ C * (Real.exp s * Real.exp (-c * Real.sqrt s)) +
+            Real.exp s * Real.exp (-c * Real.sqrt s) := add_le_add hpnt hlin
+        _ = (C + 1) * (Real.exp s * Real.exp (-c * Real.sqrt s)) := by ring
+    have hmono : (1 - θ) * s - c * Real.sqrt s ≤ (1 - θ) * S - c * Real.sqrt S := by
+      have ha : 2 * c ≤ Real.sqrt s := Real.le_sqrt_of_sq_le (by nlinarith)
+      have hab : Real.sqrt s ≤ Real.sqrt S := Real.sqrt_le_sqrt hsS
+      have hsa := Real.mul_self_sqrt (by linarith : (0 : ℝ) ≤ s)
+      have hSb := Real.mul_self_sqrt hS0
+      nlinarith [mul_nonneg (sub_nonneg.mpr hab) (by nlinarith : (0 : ℝ) ≤
+        (1 - θ) * (Real.sqrt s + Real.sqrt S) - c)]
+    have hexp_s1 : 1 ≤ Real.exp (c * Real.sqrt s₁) :=
+      Real.one_le_exp (mul_nonneg hc.le (Real.sqrt_nonneg s₁))
+    have hCK : C + 1 ≤ K := by
+      calc C + 1 ≤ (C + 1 + B₁) * 1 := by linarith
+        _ ≤ (C + 1 + B₁) * Real.exp (c * Real.sqrt s₁) :=
+            mul_le_mul_of_nonneg_left hexp_s1 (by positivity)
+    calc |chebyshevTwoPoleDefect s| * Real.exp (-θ * s)
+        ≤ (C + 1) * (Real.exp s * Real.exp (-c * Real.sqrt s)) * Real.exp (-θ * s) :=
+          mul_le_mul_of_nonneg_right hpt (Real.exp_pos _).le
+      _ = (C + 1) * Real.exp ((1 - θ) * s - c * Real.sqrt s) := by
+          rw [mul_assoc, ← Real.exp_add, ← Real.exp_add]; ring_nf
+      _ ≤ (C + 1) * Real.exp ((1 - θ) * S - c * Real.sqrt S) :=
+          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hmono) (by positivity)
+      _ ≤ K * Real.exp ((1 - θ) * S) * Real.exp (-c * Real.sqrt S) := by
+          rw [mul_assoc, ← Real.exp_add, show (1 - θ) * S + -c * Real.sqrt S =
+            (1 - θ) * S - c * Real.sqrt S by ring]
+          exact mul_le_mul_of_nonneg_right hCK (Real.exp_pos _).le
+
+/-- **De la Vallée Poussin `L¹` bound on the critical-weighted Chebyshev defect across all apertures.**
+With universal constants `c > 0` and `K > 0`, for every aperture `r > 0`,
+`∫_{s ∈ (0, 2r]} 2 e^{−s/2} |chebyshevTwoPoleDefect s| ds ≤ K e^r exp(−c√r)` (absorbing the linear
+horizon factor `2r` into half of the de la Vallée Poussin exponent). -/
+theorem exists_integral_Ioc_exp_mul_abs_chebyshevTwoPoleDefect_le :
+    ∃ c > 0, ∃ K > 0, ∀ r : ℝ, 0 < r →
+      (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) ≤
+        K * Real.exp r * Real.exp (-c * Real.sqrt r) := by
+  obtain ⟨c₀, hc₀, K₀, hK₀, hE⟩ := exists_abs_chebyshevTwoPoleDefect_mul_exp_le
+  set c := c₀ / 2
+  have hc : 0 < c := half_pos hc₀
+  set K := 8 * K₀ / c ^ 2
+  have hK : 0 < K := by positivity
+  refine ⟨c, hc, K, hK, fun r hr => ?_⟩
+  have hS : (0 : ℝ) < 2 * r := by linarith
+  set M := 2 * K₀ * Real.exp r * Real.exp (-c₀ * Real.sqrt (2 * r))
+  have hM : ∀ s ∈ Ioc (0 : ℝ) (2 * r),
+      2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s| ≤ M := fun s hs => by
+    have hpt := hE (2 * r) hS.le (1 / 2) (by norm_num) le_rfl s ⟨hs.1.le, hs.2⟩
+    have h1 : 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s| =
+        2 * (|chebyshevTwoPoleDefect s| * Real.exp (-(1 / 2) * s)) := by
+      rw [show -s / 2 = -(1 / 2) * s by ring]; ring
+    have h2 : M = 2 * (K₀ * Real.exp ((1 - 1 / 2) * (2 * r)) * Real.exp (-c₀ * Real.sqrt (2 * r))) := by
+      simp only [M]; rw [show (1 - 1 / 2 : ℝ) * (2 * r) = r by ring]; ring
+    rw [h1, h2]
+    exact mul_le_mul_of_nonneg_left hpt (by norm_num)
+  have hint := integrableOn_Ioc_exp_mul_abs_chebyshevTwoPoleDefect hS
+  have hmono : (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|) ≤
+      ∫ _s in Ioc (0 : ℝ) (2 * r), M :=
+    setIntegral_mono_on hint (continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
+      measurableSet_Ioc hM
+  have hconst : (∫ _s in Ioc (0 : ℝ) (2 * r), M) = 2 * r * M := by
+    rw [setIntegral_const, Measure.real, Real.volume_Ioc, sub_zero,
+      ENNReal.toReal_ofReal hS.le, smul_eq_mul]
+  have hsq2 : Real.sqrt r ≤ Real.sqrt (2 * r) := Real.sqrt_le_sqrt (by linarith)
+  have hexp_split : Real.exp (-c₀ * Real.sqrt (2 * r)) ≤
+      Real.exp (-c * Real.sqrt r) * Real.exp (-c * Real.sqrt r) := by
+    rw [← Real.exp_add]
+    exact Real.exp_le_exp.mpr (by simp only [c]; linarith)
+  have hquad : r * Real.exp (-c * Real.sqrt r) ≤ 2 / c ^ 2 := by
+    have hq := Real.quadratic_le_exp_of_nonneg (by positivity : 0 ≤ c * Real.sqrt r)
+    have hsq : (c * Real.sqrt r) ^ 2 = c ^ 2 * r := by rw [mul_pow, Real.sq_sqrt hr.le]
+    have hle : c ^ 2 / 2 * r ≤ Real.exp (c * Real.sqrt r) := by linarith
+    have hmul := mul_le_mul_of_nonneg_right hle (by positivity : 0 ≤ 2 / c ^ 2 * Real.exp (-c * Real.sqrt r))
+    have hlhs : c ^ 2 / 2 * r * (2 / c ^ 2 * Real.exp (-c * Real.sqrt r)) =
+        r * Real.exp (-c * Real.sqrt r) := by field_simp
+    have hrhs : Real.exp (c * Real.sqrt r) * (2 / c ^ 2 * Real.exp (-c * Real.sqrt r)) = 2 / c ^ 2 := by
+      rw [mul_left_comm, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+    linarith
+  calc (∫ s in Ioc (0 : ℝ) (2 * r), 2 * Real.exp (-s / 2) * |chebyshevTwoPoleDefect s|)
+      ≤ 2 * r * M := hmono.trans hconst.le
+    _ = 4 * K₀ * Real.exp r * (r * Real.exp (-c₀ * Real.sqrt (2 * r))) := by simp only [M]; ring
+    _ ≤ 4 * K₀ * Real.exp r * (r * (Real.exp (-c * Real.sqrt r) * Real.exp (-c * Real.sqrt r))) := by
+        refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hexp_split hr.le) (by positivity)
+    _ = 4 * K₀ * (r * Real.exp (-c * Real.sqrt r)) * (Real.exp r * Real.exp (-c * Real.sqrt r)) := by ring
+    _ ≤ 4 * K₀ * (2 / c ^ 2) * (Real.exp r * Real.exp (-c * Real.sqrt r)) := by
+        refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hquad (by positivity)) (by positivity)
+    _ = K * Real.exp r * Real.exp (-c * Real.sqrt r) := by simp only [K]; ring
+
+/-- **De la Vallée Poussin signed prime–pole cancellation across all odd `C¹_c` tests (beyond the
+`e^r` envelope).** With universal constants `c > 0` and `K > 0`, for every aperture `r > 0` and
+every real odd `F ∈ C¹_c(ℝ)` supported in `[−r, r]`,
+`|reflectedPrimePolarCost F r| ≤ K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`. -/
+theorem exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 1 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+      |reflectedPrimePolarCost F r| ≤
+        K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+          ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  obtain ⟨c, hc, K, hK, hL1⟩ := exists_integral_Ioc_exp_mul_abs_chebyshevTwoPoleDefect_le
+  refine ⟨c, hc, K, hK, fun r F hr hF hFc hodd hsupp => ?_⟩
+  have h1 := abs_reflectedPrimePolarCost_le_chebyshevTwoPoleDefect_L1_mul_sobolev hF hFc hodd hr hsupp
+  have h2 := hL1 r hr
+  have hsob : 0 ≤ (∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2 :=
+    add_nonneg (integral_nonneg fun _ => sq_nonneg _)
+      (mul_nonneg (by norm_num) (integral_nonneg fun _ => sq_nonneg _))
+  exact h1.trans (mul_le_mul_of_nonneg_right h2 hsob)
+
+theorem exists_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 1 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+      reflectedPrimePolarCost F r ≤
+        K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+          ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  obtain ⟨c, hc, K, hK, h⟩ := exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev
+  exact ⟨c, hc, K, hK, fun r F hr hF hFc hodd hsupp =>
+    (le_abs_self _).trans (h r F hr hF hFc hodd hsupp)⟩
+
+/-- **De la Vallée Poussin bound on the joint Chebyshev-defect integral `C_F` across all tests and
+apertures.** With universal constants `c > 0` and `K > 0`, for every aperture `r > 0` and every real
+odd `F ∈ C¹_c(ℝ)` supported in `[−r, r]`, the horizon-localized Chebyshev-defect integral on `(0, 2r]`
+is bounded by `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`. -/
+theorem exists_chebyshevTwoPoleDefect_integral_le_exp_sub_sqrt_mul_sobolev :
+    ∃ c > 0, ∃ K > 0, ∀ (r : ℝ) (F : ℝ → ℝ), 0 < r → ContDiff ℝ 1 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+      (∫ s in Ioc (0 : ℝ) (2 * r), chebyshevTwoPoleDefect s *
+          (2 * Real.exp (-s / 2) * (crossCorrelation F s - autoCorrelation F s / 2))) ≤
+        K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+          ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  obtain ⟨c, hc, K, hK, h⟩ := exists_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev
+  refine ⟨c, hc, K, hK, fun r F hr hF hFc hodd hsupp => ?_⟩
+  rw [← reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc hF hFc hodd hr hsupp]
+  exact h r F hr hF hFc hodd hsupp
+
+/-- **All-aperture Sobolev-graded incidence allocation with the de la Vallée Poussin saving beyond
+the `e^r` envelope.** With universal constants `c > 0` and `K > 0`, for every aperture `0 < r < R`
+and every real odd `F ∈ C²_c(ℝ)` supported in `[−r, r]`, the total odd strip cost and pole charge are
+paid by `surplusPool + crossingPotentialTerm + evenStripGain + gaugeRemainder` up to a deficit of at
+most `K e^r exp(−c√r) (∫ F² + ½ ∫ (deriv F)²)`. -/
+theorem exists_globalIncidenceAllocation_with_deLaValleePoussin_deficit :
+    ∃ c > 0, ∃ K > 0, ∀ (r R : ℝ) (F : ℝ → ℝ), 0 < r → r < R →
+      ContDiff ℝ 2 F → HasCompactSupport F →
+      (∀ x, F (-x) = -F x) → (∀ x, r < |x| → F x = 0) →
+      (∑ n ∈ relevantShifts r, oddStripCost F r n) + poleCharge F ≤
+        surplusPool (aperturePlateau r R) F +
+          crossingPotentialTerm (aperturePlateau r R) F +
+          (∑ n ∈ relevantShifts r, evenStripGain F r n) +
+          gaugeRemainder (aperturePlateau r R) F +
+          K * Real.exp r * Real.exp (-c * Real.sqrt r) *
+            ((∫ x, F x ^ 2) + (1 / 2) * ∫ x, deriv F x ^ 2) := by
+  obtain ⟨c, hc, K, hK, hcost⟩ := exists_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev
+  refine ⟨c, hc, K, hK, fun r R F hr hrR hF hFc hodd hsupp => ?_⟩
+  have hc1 := hcost r F hr (hF.of_le (by norm_num)) hFc hodd hsupp
+  unfold reflectedPrimePolarCost at hc1
+  have hP0 : ∀ y, 0 ≤ aperturePlateau r R y :=
+    fun y => plateauGauge_nonneg R (R - r) y
+  have hpool := surplusPool_nonneg (F := F) hP0
+  have hcross := crossingPotentialTerm_nonneg (F := F) hP0
+  -- Wait: `surplusPool + crossingPotentialTerm + gaugeRemainder` could be negative on its own, wait!
+  -- Look at `gradedIncidenceAllocation_half`: it bounds `oddStripCost + poleCharge` by
+  -- `surplusPool + crossingPotentialTerm + evenStripGain + gaugeRemainder + deficit` using
+  -- `gaugeRemainder_ge_neg_const_mul_sq`!
+  sorry
 
 /-! ### Overlapping prime-strip allocation in the incidence ledger at `r = 23/40` -/
 
