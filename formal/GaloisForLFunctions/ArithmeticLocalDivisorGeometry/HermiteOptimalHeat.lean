@@ -28,9 +28,11 @@ theorem hermite_heat_time_lower_bound {p : ℝ[X]} (m : ℕ) {a s : ℝ} (ha : 0
     (by positivity : 0 < 2 * s) hdeg hp (by simpa only [htime] using hc) hz
   have he : 0 < hermiteEdge (2 * m + 2) := hermiteEdge_pos (by omega)
   have hsq := mul_self_le_mul_self (Real.sqrt_nonneg a) hb
-  rw [← pow_two, mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt ha.le] at hsq
+  have hsq' : a ≤ (2 * s) * hermiteEdge (2 * m + 2) ^ 2 := by
+    simpa only [← pow_two, mul_pow, Real.sq_sqrt ha.le,
+      Real.sq_sqrt (show 0 ≤ 2 * s by positivity)] using hsq
   apply (div_le_iff₀ (mul_pos (by norm_num) (sq_pos_of_pos he))).mpr
-  nlinarith only [hsq]
+  nlinarith only [hsq']
 
 /-- Each polynomial in the fixed-depth even class has an attained positive first heat time. -/
 theorem fixed_depth_first_heat_time {p : ℝ[X]} (m : ℕ) {a : ℝ} (ha : 0 < a)
@@ -104,6 +106,20 @@ theorem tendsto_central_to_optimal_heat_ratio :
   have hd : (2 * m + 4 : ℝ) ≠ 0 := by positivity
   field_simp
   <;> ring
+
+/-- Positive root depth cancels from the comparison of the two exact heat thresholds. -/
+theorem central_to_optimal_heat_ratio (m : ℕ) {a : ℝ} (ha : 0 < a) :
+    (a * maskedPairHeatThreshold m) / (a / (2 * hermiteEdge (2 * m + 2) ^ 2)) =
+      2 * hermiteEdge (2 * m + 2) ^ 2 * maskedPairHeatThreshold m := by
+  have he : 0 < hermiteEdge (2 * m + 2) := hermiteEdge_pos (by omega)
+  field_simp
+  <;> ring
+
+/-- The same factor-two limit holds for every fixed positive squared depth. -/
+theorem tendsto_central_to_optimal_heat_times {a : ℝ} (ha : 0 < a) :
+    Tendsto (fun m : ℕ => (a * maskedPairHeatThreshold m) /
+      (a / (2 * hermiteEdge (2 * m + 2) ^ 2))) atTop (𝓝 2) := by
+  simpa only [central_to_optimal_heat_ratio _ ha] using tendsto_central_to_optimal_heat_ratio
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry

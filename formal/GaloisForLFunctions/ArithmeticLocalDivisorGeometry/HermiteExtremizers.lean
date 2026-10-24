@@ -134,6 +134,15 @@ theorem coeffNonneg_heat_hermiteExtremizer_iff (m : ℕ) (s : ℝ) :
 def scaledHermiteExtremizer (r : ℝ) (m : ℕ) : ℝ[X] :=
   C (r ^ (2 * m + 4)) * (hermiteExtremizer m).comp (C r⁻¹ * X)
 
+/-- The Gaussian parameter `λ` gives the normalization `λ^(m+2)` in degree `2m+4`. -/
+theorem scaledHermiteExtremizer_sqrt {lam : ℝ} (hlam : 0 < lam) (m : ℕ) :
+    scaledHermiteExtremizer (Real.sqrt lam) m = C (lam ^ (m + 2)) *
+      ((hermiteReal (2 * m + 4)).comp (C (Real.sqrt lam)⁻¹ * X) -
+        C ((hermiteReal (2 * m + 4)).eval (hermiteEdge (2 * m + 2)))) := by
+  have hp : Real.sqrt lam ^ (2 * m + 4) = lam ^ (m + 2) := by
+    rw [show 2 * m + 4 = 2 * (m + 2) by omega, pow_mul, Real.sq_sqrt hlam.le]
+  rw [scaledHermiteExtremizer, hp, hermiteExtremizer, sub_comp, C_comp]
+
 theorem scaledHermiteExtremizer_degree {r : ℝ} (hr : 0 < r) (m : ℕ) :
     (scaledHermiteExtremizer r m).natDegree = 2 * m + 4 := by
   rw [scaledHermiteExtremizer, natDegree_C_mul (pow_ne_zero _ hr.ne'), natDegree_comp,

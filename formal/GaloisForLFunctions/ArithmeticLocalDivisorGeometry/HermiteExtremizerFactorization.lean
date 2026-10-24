@@ -201,7 +201,7 @@ theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ
     have hd := scaledHermiteExtremizer_degree hr m
     rw [hz, natDegree_zero] at hd
     omega
-  have hmult (x : ℝ) (hx : x ^ 2 = h ^ 2) (hx0 : x ≠ 0) :
+  have hmult (x : ℝ) (hx : x ^ 2 = h ^ 2) :
       rootMultiplicity x (scaledHermiteExtremizer r m) = 2 := by
     have hfac : scaledHermiteExtremizer r m = (X ^ 2 - C (x ^ 2)) ^ 2 * q := by
       simpa only [hx] using hq
@@ -214,7 +214,7 @@ theorem scaledHermiteExtremizer_rootMultiplicity {r : ℝ} (hr : 0 < r) (m : ℕ
     · rw [hfac, second_derivative_squared_pair_eval]
       have hxpos : 0 < x ^ 2 := by rw [hx]; exact sq_pos_of_pos hh
       exact (mul_pos (mul_pos (by norm_num) hxpos) (hpos x)).ne'
-  exact ⟨hmult h rfl hh.ne', hmult (-h) (neg_sq h) (neg_ne_zero.mpr hh.ne')⟩
+  exact ⟨hmult h rfl, hmult (-h) (neg_sq h)⟩
 
 end
 end GaloisForLFunctions.ArithmeticLocalDivisorGeometry

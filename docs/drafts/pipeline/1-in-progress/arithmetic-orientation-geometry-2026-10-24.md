@@ -36,13 +36,16 @@ the seven questions and building the six tools of the summary §2.3.
 - [ ] 3 → 4  publication-ready: README
 
 ## Status
-- Built and compiled (`lake --old env lean`, no errors): `ScalingDataAndWeilPlanes`,
+- Compiled with `lake --old env lean`, `#print axioms` audited (propext, Classical.choice,
+  Quot.sound only), wired into `ArithmeticOrientationGeometry.lean`: `ScalingDataAndWeilPlanes`,
   `TheCorrespondenceAlgebra`, `TheScalingDatumOfAConfiguration`, `TheOrientationOfACycle`,
-  `EulerFactorsAndPayment`; wired into `ArithmeticOrientationGeometry.lean`, umbrella imported by
-  `MainTheorems.lean`. README first version written.
-- Also built: `TheArchimedeanPlaceOrientsOrbitSegments`.
-- Next: orientation rate = depth of the deepest seen zero (σ-version of the orientation theorem);
-  multiplicity-blindness (Q3); battery (golden curve, cluster configuration); answers synthesis.
+  `EulerFactorsAndPayment`, `TheArchimedeanPlaceOrientsOrbitSegments`,
+  `TheOrientationRateIsTheDepthOfTheDeepestSeenZero`, `TheSelectivityBatteryOfOrientation`,
+  `TheShiftedPairAndTheClusterModels`, `SectionsOnTheOrbitOfACycle`, `EventualHasseWeilIsHasseWeil`,
+  `TheOrientationIndexOfACycle`, `CorrectorsAndTheLefschetzTrace` (topics A–D, F, G).
+- Not built: topic E (sieve one-sided Lefschetz bound).
+- Open: ℤ shifted pair as a zero-side datum (its zeros leave the strip unless the zero width is
+  below `½ − a`); planted Euler factors; parity twins; mechanism equivalence.
 
 ## Log
 - 2026-10-24 — created; corpus survey of ACS (λ-ring, Lefschetz identity, envelope cone), AOT
