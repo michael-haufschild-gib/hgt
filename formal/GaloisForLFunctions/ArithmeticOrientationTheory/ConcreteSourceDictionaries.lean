@@ -150,10 +150,11 @@ theorem oddFifthSpline_support (x : ℝ) (hx : (1/5 : ℝ) < |x|) : oddFifthSpli
     fifthSpline_support (-x) (by simpa only [abs_neg] using hx), sub_self]
 
 theorem oddFifthSpline_compact : HasCompactSupport oddFifthSpline := by
-  apply IsCompact.of_isClosed_subset isCompact_Icc isClosed_closure
-  apply closure_minimal _ isClosed_Icc
-  intro x hx
-  exact abs_le.mp (le_of_not_gt (fun h => hx (oddFifthSpline_support x h)))
+  have hs : tsupport oddFifthSpline ⊆ Icc (-(1/5 : ℝ)) (1/5) := by
+    apply closure_minimal _ isClosed_Icc
+    intro x hx
+    exact abs_le.mp (le_of_not_gt (fun h => hx (oddFifthSpline_support x h)))
+  exact IsCompact.of_isClosed_subset isCompact_Icc isClosed_closure hs
 
 /-- Riemann–Roch for the certified odd cone pays this exact prime–polar allocation. -/
 theorem oddFifthSpline_riemannRoch_allocation :

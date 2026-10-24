@@ -96,10 +96,9 @@ theorem hermite_edge_strict_min_nonneg (n : ℕ) {x : ℝ} (hx : 0 ≤ x)
       rw [show n + 2 = (n + 1) + 1 by omega, derivative_hermiteReal_succ,
         eval_mul, eval_C, hermiteEdge_isRoot, mul_zero]
     change (hermiteSonin (n + 2)).eval x < (hermiteSonin (n + 2)).eval (hermiteEdge n) at hs
-    simp only [hermiteSonin, eval_add, eval_mul, eval_C, eval_pow, hd, zero_pow,
-      OfNat.ofNat_ne_zero, add_zero] at hs
+    simp only [hermiteSonin, eval_add, eval_mul, eval_C, eval_pow, hd,
+      show (0 : ℝ) ^ 2 = 0 by ring, add_zero] at hs
     have hN : 0 < (n + 2 : ℕ) := by omega
-    have hNr : 0 < (n + 2 : ℝ) := by positivity
     have hsquare : (hermiteReal (n + 2)).eval x ^ 2 <
         (hermiteReal (n + 2)).eval (hermiteEdge n) ^ 2 := by
       have hmul := (le_add_of_nonneg_right (sq_nonneg

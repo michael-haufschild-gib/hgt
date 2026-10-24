@@ -260,7 +260,7 @@ theorem fullZeroForm_eq_levy_add_horizon_add_criticalDeficit {F : ℝ → ℝ}
   have hmass : ArchimedeanAnomaly.autocorr F 0 = ∫ x, F x ^ 2 :=
     RHTower.AutocorrelationKrein.autocorr_zero_eq F
   have hfar : ∀ v : ℝ, 2 * A < |v| → ArchimedeanAnomaly.autocorr F v = 0 :=
-    autocorr_eq_zero_of_far hsupp
+    fun _ => autocorr_eq_zero_of_far hsupp
   have hazero : ∀ x : ℝ, L ≤ x → ArchimedeanAnomaly.autocorr F x = 0 := fun x hx =>
     hfar x (by rw [abs_of_nonneg (by linarith : (0 : ℝ) ≤ x)]; linarith)
   have haC2 : ContDiff ℝ 2 (ArchimedeanAnomaly.autocorr F) := contDiff_autocorr hF hFc
@@ -324,7 +324,8 @@ theorem fullZeroForm_ge_neg_of_doubleGaugeDerivative_le {F : ℝ → ℝ}
   have hgamma : -((|Zeta23.EF.gammaBracket 0| + 2) * ∫ x, F x ^ 2) ≤
       (Zeta23.EF.gammaBracket 0 - 2) * ∫ x, F x ^ 2 := by
     have hg := neg_abs_le (Zeta23.EF.gammaBracket 0)
-    exact mul_le_mul_of_nonneg_right (by linarith) hmass0
+    have hg' : -(|Zeta23.EF.gammaBracket 0| + 2) ≤ Zeta23.EF.gammaBracket 0 - 2 := by linarith
+    simpa only [neg_mul] using mul_le_mul_of_nonneg_right hg' hmass0
   set g : ℝ → ℝ := fun t =>
     ccmPrimeDeficitIncoming t * doubleGaugeDerivative (ArchimedeanAnomaly.autocorr F) t
   have hg_cont : Continuous g :=
@@ -493,7 +494,8 @@ theorem exists_integral_abs_ccmPrimeDeficitIncoming_le_vk
       nlinarith [Real.exp_pos (A / 2)]
     have hcexp : 2 * c * Real.exp A = 2 * C₀ * Real.exp (A - κ * A ^ ex) := by
       dsimp [c]
-      rw [mul_assoc, mul_assoc, ← Real.exp_add]
+      rw [show 2 * (C₀ * Real.exp (-κ * A ^ ex)) * Real.exp A =
+        2 * C₀ * (Real.exp (-κ * A ^ ex) * Real.exp A) by ring, ← Real.exp_add]
       congr 2; ring
     linarith [hmono, heval, hle_c, hcexp]
   have hdom : Real.exp (A / 2) ≤ Real.exp M_κ * Real.exp (A - κ * A ^ ex) := by
@@ -812,7 +814,7 @@ theorem zetaZeroWidth_le_iff_endpoint_gradedSobolevSourceCone_riemannRoch {σ : 
 an infimum equality to exact closed-ray identification and minimum attainment. -/
 theorem fullDefectFloorRates_eq_Ici : fullDefectFloorRates = Ici zetaZeroWidth := by
   ext β
-  rw [fullDefectFloorRates, mem_setOf_eq, mem_Ici]
+  rw [fullDefectFloorRates, mem_setOf_eq, Set.mem_Ici]
   constructor
   · rintro ⟨hβ, h⟩
     exact (zetaZeroWidth_le_iff_endpoint_sobolev_defect_floor hβ).1.mpr h
@@ -825,7 +827,7 @@ theorem fullDefectFloorRates_eq_Ici : fullDefectFloorRates = Ici zetaZeroWidth :
 an infimum equality to exact closed-ray identification and minimum attainment. -/
 theorem oddDefectFloorRates_eq_Ici : oddDefectFloorRates = Ici zetaZeroWidth := by
   ext β
-  rw [oddDefectFloorRates, mem_setOf_eq, mem_Ici]
+  rw [oddDefectFloorRates, mem_setOf_eq, Set.mem_Ici]
   constructor
   · rintro ⟨hβ, h⟩
     exact (zetaZeroWidth_le_iff_endpoint_sobolev_defect_floor hβ).2.mpr h

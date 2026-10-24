@@ -26,9 +26,13 @@ theorem forwardPolyHeat_comp_dilation (s r : ℝ) (p : ℝ[X]) :
   | add p q hp hq => simp only [add_comp, forwardPolyHeat_add, hp, hq]
   | monomial n c ih =>
     have he : C c * X ^ (n + 1) = X * (C c * X ^ n) := by ring
-    simp only [he, mul_comp, X_comp]
-    rw [mul_assoc, forwardPolyHeat_C_mul, forwardPolyHeat_X_mul, ih, hd,
-      forwardPolyHeat_X_mul]
+    have hcomp : (X * (C c * X ^ n)).comp (C r * X) =
+        C r * (X * (C c * X ^ n).comp (C r * X)) := by
+      rw [mul_comp, X_comp]
+      ring
+    conv_lhs => rw [he, hcomp]
+    conv_rhs => rw [he, forwardPolyHeat_X_mul]
+    rw [forwardPolyHeat_C_mul, forwardPolyHeat_X_mul, ih, hd]
     simp only [add_comp, mul_comp, X_comp, C_comp, map_mul, map_pow, map_ofNat]
     ring
 
