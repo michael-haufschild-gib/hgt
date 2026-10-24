@@ -120,15 +120,11 @@ theorem orientationIndex_law (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ �
     (hf : f ∈ realTests) {D : Set ℝ} (hD : DenseShifts D) (n : ℕ) :
     (∃ S : Finset ℝ, ↑S ⊆ D ∧ n ≤ hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f))) ↔
       (n : ℕ∞) ≤ (seenRightZeros Z f).encard := by
-  have h : ∀ S : Finset ℝ,
-      hermNegIndex (zeroGram Z fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) =
-        hermNegIndex (zeroGram (seenConfig Z f) fun s : S =>
-          ArithmeticCastelnuovoSeveri.translate s (cx f)) :=
-    fun S => by rw [zeroGram_translates_seenConfig]
-  simp only [h]
-  rw [← rightZeros_seenConfig]
-  exact cyclic_pontryagin_law (seenConfig Z f) (temperedConfig_seenConfig hZ f) (cx_contDiff hf.1)
-    (cx_hasCompactSupport hf.2) (spectrallyGeneric_seenConfig Z f) hD n
+  have hcyc := cyclic_pontryagin_law (seenConfig Z f) (temperedConfig_seenConfig hZ f)
+    (cx_contDiff hf.1) (cx_hasCompactSupport hf.2) (spectrallyGeneric_seenConfig Z f) hD n
+  rw [rightZeros_seenConfig] at hcyc
+  refine (exists_congr fun S => and_congr_right fun _ => ?_).trans hcyc
+  rw [zeroGram_translates_seenConfig Z f S]
 
 /-- **An orbit with no negative square sees no right zero.** -/
 theorem orientationIndex_eq_zero_iff (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
@@ -164,8 +160,9 @@ theorem zeta_orientationIndex_law {f : ℝ → ℝ} (hf : f ∈ realTests) {D : 
       (fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f)) = zeroGram zetaZeroConfig fun s : S => ArithmeticCastelnuovoSeveri.translate s (cx f) :=
     fun S => weilGram_eq_zeroGram _ (fun s => translate_contDiff (cx_contDiff hf.1) s)
       (fun s => translate_hasCompactSupport (cx_hasCompactSupport hf.2) s)
-  simp_rw [hW]
-  exact orientationIndex_law zetaZeroConfig temperedConfig_zetaZeroConfig hf hD n
+  refine (exists_congr fun S => and_congr_right fun _ => ?_).trans
+    (orientationIndex_law zetaZeroConfig temperedConfig_zetaZeroConfig hf hD n)
+  rw [hW S]
 
 /-- **The signature of an orbit surface.** The intersection Gram matrix of the pole plane and finitely
 many translates of a real test has at least `n + 1` positive squares, for some finite family of
@@ -182,7 +179,7 @@ theorem zeta_orbit_signature_law {f : ℝ → ℝ} (hf : f ∈ realTests) {D : S
       n ≤ hermNegIndex (weilGram (fun k => (ArithmeticFunction.vonMangoldt k : ℝ)) fun s : S =>
         ArithmeticCastelnuovoSeveri.translate s (cx f)) := fun S => by
     rw [posIndex_intersectionGram]; omega
-  simp only [h]
-  exact zeta_orientationIndex_law hf hD n
+  exact (exists_congr fun S => and_congr_right fun _ => h S).trans
+    (zeta_orientationIndex_law hf hD n)
 
 end GaloisForLFunctions.ArithmeticOrientationGeometry

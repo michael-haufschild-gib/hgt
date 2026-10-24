@@ -30,6 +30,30 @@ finite witness objects for certificate checks. Select applicable source-specific
 variants when a dictionary has a different domain. Never invent missing
 arithmetic estimates to make a dictionary applicable.
 
+## Exact concrete targets
+
+- **Spline inputs:** `U_a(x)=splineProbe(4x/a)`, for every a>0. Prove nonzero
+  C² compact support in [-a,a], `|U_a|≤exp(4)/2`,
+  `|U_a'|≤3exp(4)/a`, `∫|U_a'|≤6exp(4)`, and
+  `∫U_a²≤a exp(8)/2`. Retain the exact scaled Fourier variable `(a/4)r`,
+  quartic decay, and the weighted Fourier and Gamma integrability conclusions.
+- **Critical scales:** channel-to-slope allowances `125000·10¹⁵` and
+  `66000·10⁸`; polynomial-window allowance `363000·10¹⁵` and exponent
+  `10⁻²¹`. The quarter-radius, quarter-depth visibility probe retains its
+  supplied loudness parameter. Centered rows use δ=1/10, ε=1/2, C=2:
+  exponents 11/10, 283/170, 71/120, and coefficient 8; P₀ remains existential.
+- **Dictionary sources:** the radius-1/5 spline, its odd part, the aperture
+  chain 1/10, 1/5, 3/10, and the actual half-damped Möbius receiver.
+  Conclusions include the 1/5000 terminal margin, compensated constant
+  -1/5000, empty hull and quotient rank zero, prime-two heat window
+  `a≤1/(32n)`, exact Suzuki tangent, odd-cone Riemann–Roch allocation,
+  graded cost `75 exp(1/5)∫F²`, and the scale-four Lefschetz identity.
+- **Finite certificates:** golden span and tower dimension two; canonical
+  triangle and packed graph; radical horizon five (states dividing 30);
+  Hausdorff orders 0–3; four central-slice quadratic Jensen tests; five
+  positive theta moments and four adjacent inequalities; heat-Hankel ranks
+  1–4 at time κ/4; stack `[(1,1),(2,1/2),(1,1)]`.
+
 ## Current evidence and gaps
 
 - J7's global HF ceiling application has no proved input. Its exact premise
